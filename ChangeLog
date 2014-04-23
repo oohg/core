@@ -1,11 +1,39 @@
 /*
- * $Id: ChangeLog,v 1.1251 2014-04-17 01:15:46 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1252 2014-04-23 00:21:03 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-04-22 21:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./compile_MINGW.BAT
+     - All references to ./Resource/Filler.
+     ; Last line of RC files must end with a CRLF.
+     + /l and -l option: use log file for compiler output.
+   * doc/classes.txt
+     * Updated.
+   * ./ide/mgide.hbp
+     ! Temporary log file is not deleted.
+     * Delete auxiliary files builded for compilation.
+     * Temporary files moved to project's folder.
+     * Some comments deleted.
+     * Some messages.
+     * Method BldMinGW.
+     * Method SaveProject.
+     - Flag -mno-cygwin.
+     * Title of some msginfo windows.
+     * Default libraries at link time.
+     * Default compiler from BCC to MinGW.
+     * Format.
+       TODO: add a switch to avoid deleting temporary files.
+       TODO: localize messages.
+   * ./include/i_exec.ch
+     + EXECUTE FILE <executable> WAIT HIDE.
+       TODO: implement missing Extended options.
+   * ./compile_MINGW.BAT
+     * Previous entry amended.
 
 2014-04-16 22:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./compile_MINGW.BAT

@@ -1,5 +1,5 @@
 /*
- * $Id: mgide.prg,v 1.3 2014-04-17 01:15:46 fyurisich Exp $
+ * $Id: mgide.prg,v 1.4 2014-04-23 00:21:07 fyurisich Exp $
  */
 
 #include "oohg.ch"
@@ -179,18 +179,18 @@ RETURN NIL
 *-------------------------
 METHOD SETASMAIN( ) CLASS THMI
 *-------------------------
-//cnomain:=form_tree.tree_1.item(form_tree.tree_1.value)
+//cnomain:=Form_Tree.tree_1.item(Form_Tree.tree_1.value)
 ///if searchtype(cnomain)# "Prg module"
 ///   return nil
 ///else
-///   nnomain:=form_tree.tree_1.value
+///   nnomain:=Form_Tree.tree_1.value
 ///endif
 //nmain:=searchitem("Prg module","Prg module")
 ///nmain:=++
-///if form_tree.tree_1.item(nmain)#"CH module"   //// todo ok
+///if Form_Tree.tree_1.item(nmain)#"CH module"   //// todo ok
 ///   t:=cnomain
-///   form_tree.tree_1.item(form_tree.tree_1.value):=form_tree.tree_1.item(nmain)
-///   form_tree.tree_1.item(nmain):=t
+///   Form_Tree.tree_1.item(Form_Tree.tree_1.value):=Form_Tree.tree_1.item(nmain)
+///   Form_Tree.tree_1.item(nmain):=t
 //else
 
 //endif
@@ -209,7 +209,7 @@ SET INTERACTIVECLOSE OFF
 SET NAVIGATION EXTENDED
 set BROWSESYNC ON
 
-DECLARE WINDOW form_tree
+DECLARE WINDOW Form_Tree
 DECLARE WINDOW form_prefer
 DECLARE WINDOW form_main
 DECLARE WINDOW _errors
@@ -251,14 +251,14 @@ cvcx                  :=getdesktopwidth()
 cvcy                  :=getdesktopheight()
 
 if cvcx<800 .or. cvcy<600
-   msginfo('800 x 600 or grater  Best viewed','Information')
+   MsgInfo( 'Best viewed with 800x600 or greater resolution.', 'ooHGIDE+' )
 endif
 
 *-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._-._.-._.-._.-._.-._.-._.-._
 *                      Main Window -  760 x 500   30,134
 *-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._-._.-._.-._.-._.-._.-._.-._
 
-DEFINE WINDOW form_tree OBJ Form_tree ;
+DEFINE WINDOW Form_Tree OBJ Form_Tree ;
    AT 0,0 ;
    WIDTH 800 ;
    HEIGHT 600 ;
@@ -267,7 +267,7 @@ DEFINE WINDOW form_tree OBJ Form_tree ;
    FONT "Times new Roman" SIZE 11 ;
    ICON "Edit" ;
    ON SIZE AjustaFrame(oFrame,oTree) ;     // MigSoft
-   ON INTERACTIVECLOSE IF(MsgYesNo("Exit Program ?",left(cNameApp,16)),myide:exit(), .F.) ;
+   ON INTERACTIVECLOSE If( MsgYesNo( "Exit program?", 'ooHGIDE+' ), myide:exit(), .F. ) ;
    NOSHOW ;
    backcolor myide:asystemcolor
 
@@ -351,7 +351,7 @@ DEFINE WINDOW form_tree OBJ Form_tree ;
       BUTTON Button_13 ;
       TOOLTIP 'Exit ' ;
       PICTURE 'M1';
-      ACTION IF(MsgYesNo("Exit Program ?",left(cNameApp,16)),myide:exit(), Nil) AUTOSIZE
+      ACTION If( MsgYesNo( "Exit program?", 'ooHGIDE+' ), myide:exit(), Nil ) AUTOSIZE
 
       BUTTON Button_1 ;
       TOOLTIP 'New...' ;
@@ -430,7 +430,7 @@ DEFINE WINDOW form_tree OBJ Form_tree ;
    width 420               ;
    height 219              ;
 
-   form_tree:tree_1:fontitalic:=.T.
+   Form_Tree:tree_1:fontitalic:=.T.
 
    If Empty(rtl)
       Desactiva(0)  // MigSoft
@@ -454,7 +454,7 @@ END WINDOW
    END WINDOW
 
    CENTER WINDOW Form_Splash
-   CENTER WINDOW form_tree
+   CENTER WINDOW Form_Tree
 
    IF .NOT. FILE('hmi.INI')
       a := MEMOWRIT('hmi.INI','[PROJECT]')
@@ -488,9 +488,9 @@ END WINDOW
    GET myide:cPellFolder     SECTION 'COMPILER' ENTRY "PELLESFOLDER"  default 'c:\PellesC'
    //****************** MODE
    GET myide:nCompxBase      SECTION 'WHATCOMP' ENTRY "XBASECOMP"     default 1  // 1 Harbour  2 xHarbour
-   GET myide:nCompilerC      SECTION 'WHATCOMP' ENTRY "CCOMPILER"     default 2  // 1 MinGW    2 BCC   3 Pelles C
+   GET myide:nCompilerC      SECTION 'WHATCOMP' ENTRY "CCOMPILER"     default 1  // 1 MinGW    2 BCC   3 Pelles C
    //****************** OTHER
-   GET myide:ltbuild         SECTION 'SETTINGS' ENTRY "BUILD"         default 2  // 1 Compile.bat 2 Owm Make
+   GET myide:ltbuild         SECTION 'SETTINGS' ENTRY "BUILD"         default 2  // 1 Compile.bat 2 Own Make
    GET myide:lsnap           SECTION 'SETTINGS' ENTRY "SNAP"          default 0
    GET myide:clib            SECTION 'SETTINGS' ENTRY "LIB"           default ''
 
@@ -947,10 +947,10 @@ CENTER WINDOW waitmess
 
 
 if rtl=NIL
-   ACTIVATE WINDOW form_tree,form_main,waitmess,cvccontrols,form_splash
+   ACTIVATE WINDOW Form_Tree,form_main,waitmess,cvccontrols,form_splash
 else
-   form_tree.hide
-   ACTIVATE WINDOW form_tree,form_main,waitmess,cvccontrols,form_splash nowait
+   Form_Tree.hide
+   ACTIVATE WINDOW Form_Tree,form_main,waitmess,cvccontrols,form_splash nowait
    analizar(rtl)
 endif
 Return
@@ -958,45 +958,48 @@ Return
 Procedure AjustaFrame(oFrame,oTree) // MigSoft
    LOCAL aInfo
    aInfo := ARRAY( 4 )
-   GetClientRect( form_tree:hWnd, aInfo )
+   GetClientRect( Form_Tree:hWnd, aInfo )
 
    oframe:width  := aInfo[ 3 ] - 65
    oframe:height := aInfo[ 4 ] - 120
    oTree:height  := oframe:height - 50
 
    If ( oframe:width < ( image_front:width + 270 ) ) .OR. ( oframe:height < ( image_front:height + 80 ) )
-      HIDE CONTROL image_front OF form_tree
+      HIDE CONTROL image_front OF Form_Tree
    Else
-      SHOW CONTROL image_front OF form_tree
+      SHOW CONTROL image_front OF Form_Tree
    Endif
 
 Return
 
 function ayuhelp()
-EXECUTE FILE CHELPDIR+"\oohg.chm"
+   EXECUTE FILE CHELPDIR + "\oohg.chm"
 return nil
 
 Function Desactiva(nOp)   // MigSoft
    If nOp = 0
-      SetProperty('Form_tree','Add','enabled',.F.)
-      SetProperty('Form_tree','Button_1','enabled',.F.)
+      SetProperty('Form_Tree','Add','enabled',.F.)
+      SetProperty('Form_Tree','Button_1','enabled',.F.)
     Else
-      SetProperty('Form_tree','Add','enabled',.T.)
-      SetProperty('Form_tree','Button_1','enabled',.T.)
+      SetProperty('Form_Tree','Add','enabled',.T.)
+      SetProperty('Form_Tree','Button_1','enabled',.T.)
     Endif
 Return Nil
 
 Function BorraTemp()    // MigSoft
 
-*   ferase('_temp.log')
-*   ferase('_temp1.log')
-   ferase('_Build.bat')
-   ferase('Makefile.Gcc')
-   ferase('error.lst')
-   ferase('End.Txt')
-   ferase('_temp.rc')
-   ferase('b32.bc')
-   ferase('_Temp.bc')
+   FErase( '_temp.log' )
+   FErase( '_temp1.log' )
+   FErase( '_build.bat' )
+   FErase( 'makefile.gcc' )
+   FErase( 'error.lst' )
+   FErase( 'end.txt' )
+   FErase( '_temp.rc' )
+   FErase( '_temp.o' )
+   FErase( 'b32.bc' )
+   FErase( '_temp.bc' )
+   FErase( 'comp.bat' )
+   FErase( '_oohg_resconfig.h' )
 
 Return Nil
 
@@ -1054,7 +1057,7 @@ return self
 Function analizar(cFormx)
 *------------------------------------------------------------------------------*
 Local cItem,cParent
-cItem:= Form_tree:Tree_1:Item ( Form_tree:Tree_1:value )
+cItem:= Form_Tree:Tree_1:Item ( Form_Tree:Tree_1:value )
 cParent= myide:searchtype(citem)
 if HB_IsString( cFormx )
    cParent:="Form module"
@@ -1062,12 +1065,12 @@ if HB_IsString( cFormx )
 endif
 if cParent=='Form module' .and. cItem#cParent .and. cItem#'Project'
    if .not. myide:form_activated
-*       HIDE WINDOW form_tree                                        // MigSoft
+*       HIDE WINDOW Form_Tree                                        // MigSoft
        form_main:frame_2:caption:="Control : "
        myide:modifyform(cItem,cParent)
-*       SHOW WINDOW form_tree
+*       SHOW WINDOW Form_Tree
    else
-       msginfo('only one form can be edited at the same time','Information')
+       MsgStop( 'Can only edit one form at a time.', 'ooHGIDE+' )
        return nil
    endif
 endif
@@ -1086,14 +1089,14 @@ METHOD Exit() CLASS THMI
 *------------------------------------------------------------------------------*
 local a
 if .not. myide:lPsave
-   if msgyesno('Project not saved (save ?)','Question')
+   If MsgYesNo( 'Project not saved, save it now?', 'ooHGIDE+' )
       myide:saveproject()
    endif
 endif
 a:=memowrit(exedir,getcurrentfolder())
 myide:end()
-if iswindowactive(form_tree)
-   form_tree:release()
+if iswindowactive(Form_Tree)
+   Form_Tree:release()
 endif
 Return
 
@@ -1103,7 +1106,7 @@ METHOD printit() CLASS THMI
 local citem,cParent,cArch,i,contlin
 set interactiveclose on
 public _oohg_printlibrary:="HBPRINTER"
-cItem:= Form_tree:Tree_1:Item ( Form_tree:Tree_1:value )
+cItem:= Form_Tree:Tree_1:Item ( Form_Tree:Tree_1:value )
 cParent= myide:searchtype(citem)
 if myide:searchtype(citem)=='Prg module' .and. cItem#'Prg module'
    cArch:=memoread(citem+'.prg')
@@ -1120,7 +1123,7 @@ else
             if myide:searchtype(citem)=='RC module' .and. cItem#'RC module'
                cArch:=memoread(citem+'.rc')
             else
-               msginfo("This item Can't be printed",'Information')
+               MsgInfo( "This item can't be printed.", 'ooHGIDE+' )
                return
             endif
          endif
@@ -1215,7 +1218,7 @@ oprint:=tprint()
 oprint:init()
 oprint:selprinter(.T. , .T.  )  /// select,preview,land
 if oprint:lprerror
-   msgstop('Printing problem.')
+   MsgStop( 'Error detected while printing.', 'ooHGIDE+' )
    oprint:release()
    return nil
 endif
@@ -1327,9 +1330,9 @@ METHOD dataman() CLASS THMI
 if .not. iswindowdefined(_dbu)
    databaseview1()
 else
-   msginfo('Data manager already running','Information')
+   MsgInfo( 'Data manager is already running.', 'ooHGIDE+' )
 endif
-form_tree:maximize()
+Form_Tree:maximize()
 return
          
 
@@ -1342,7 +1345,7 @@ iTime := Seconds()
 Do While Seconds() - iTime < 1
 EndDo
 Form_Splash:release()
-Form_tree:maximize()
+Form_Tree:maximize()
 cursorarrow()
 Return
 
@@ -1407,11 +1410,11 @@ endif
 cursorwait()
 waitmess:hmi_label_101:value:='Searching....'
 waitmess:show()
-nItems:=Form_tree:Tree_1:ItemCount
+nItems:=Form_Tree:Tree_1:ItemCount
 cOutput:=''
 For i:= 1  to nItems
 
-    cItem:=Form_tree:Tree_1:Item (i)
+    cItem:=Form_Tree:Tree_1:Item (i)
 
     if myide:searchtypeadd(i)=='RC module' .and. cItem<>'RC module'
        if file(cItem+'.rc')
@@ -1471,9 +1474,9 @@ Next i
 waitmess:hide()
 cursorarrow()
 if coutput==''
-   msginfo('Text not found','Information')
+   MsgInfo( 'Text not found.', 'ooHGIDE+' )
 else
-   msginfo(coutput,cTextsearch+' Found in...')
+   MsgInfo( cTextsearch + ' found in: ' + CRLF + coutput, 'ooHGIDE+' )
 endif
 return
 
@@ -1561,320 +1564,282 @@ Return
 *                     COMPILING WITH MINGW AND HARBOUR
 *-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._-._.-._.-._.-._.-._.-._.-._
 
-*-------------------------
-METHOD BldMinGW(nOption) CLASS THMI
-*-------------------------
-local output,i,nitems,nPos,cprgname,cexe,cError
-LOCAL aPrgFiles       := {}
-LOCAL nPrgFiles   //////////////    := PrgFiles.List_1.ItemCount
-LOCAL cMakeExe
-LOCAL cParams
-LOCAL cOut            := ''
+//------------------------------------------------------------------------------
+METHOD BldMinGW( nOption ) CLASS THMI
+//------------------------------------------------------------------------------
+   Local aPrgFiles
+   Local cError
+   Local cError1
+   Local cExe
+   Local cFile
+   Local cFile1
+   Local cFileRC
+   Local cHarbourFolder := myide:cHbMinGWFolder + '\'
+   Local cItem
+   Local cMinGWFolder := myide:cMinGWFolder + '\'
+   Local cMiniGuiFolder := myide:cGUIHbMinGW + '\'
+   Local cOut
+   Local cPrgName
+   Local cProjFolder := myide:cProjFolder + '\'
+   Local DosComm1
+   Local i
+   Local nItems
+   Local nPrgFiles
 
-LOCAL cProjFolder     := myide:cProjFolder+'\'
-LOCAL cMinGWFolder    := myide:cMinGWFolder+'\'
-LOCAL cMiniGuiFolder  := myide:cGUIHbMinGW+'\'
-LOCAL cHarbourFolder  := myide:cHbMinGWFolder+'\'
+   Form_Tree:button_9:Enabled := .F.
+   Form_Tree:button_10:Enabled := .F.
+   Form_Tree:button_11:Enabled := .F.
+   CursorWait()
+   waitmess:hmi_label_101:Value := 'Compiling ...'
+   waitmess:Show()
 
-LOCAL nFile
-LOCAL lDebug := .F.
+   Begin Sequence
+      // Check folders
+      If Empty( myide:cProjectName )
+         waitmess:Hide()
+         MsgStop( 'You must save the project before building it.', 'ooHGIDE+' )
+         Break
+      EndIf
 
-nItems:=Form_tree:Tree_1:ItemCount
-*memowrit('error.lst'," ") ?
-if len(alltrim(myide:cprojectname))=0
-   msginfo('You must define a project name'+CRLF+'Build Premature end','Information')
-   return
-endif
-cos=upper(gete('os'))
-if len(cos)=0
-   cos=gete('os_type')
-endif
-form_tree:button_9:enabled:=.F.
-form_tree:button_10:enabled:=.F.
-form_tree:button_11:enabled:=.F.
-cursorwait()
-do events
-DO CASE
-   CASE myide:ltbuild==2    // Owm Make MinGW
-   //////////////////////////////////
+      If Empty( cMinGWFolder )
+         waitmess:Hide()
+         MsgStop( 'The MinGW folder must be specified to build a project.', 'ooHGIDE+' )
+         Break
+      EndIf
 
+      If Empty( cMiniGuiFolder )
+         waitmess:Hide()
+         MsgStop( 'The ooHG-Hb-MinGW folder must be specified to build a project.', 'ooHGIDE+' )
+         Break
+      EndIf
 
-  BEGIN SEQUENCE
+      If Empty( cHarbourFolder )
+         waitmess:Hide()
+         MsgStop( 'The Harbour-MinGW folder must be specified to build a project.', 'ooHGIDE+' )
+         Break
+      EndIf
 
-   IF EMPTY(myide:cProjectname)     ////////    IF EMPTY(cProjName)
-      MsgStop('You must save the project before building it.','ooHGIDE+')
-      BREAK
-    ENDIF
+      // Prepare to build
+      SetCurrentFolder( cProjFolder )
+      BorraTemp()
+      cPrgName := DelExt( myide:cProjectName )
+      cExe := cPrgName + '.exe'
+      If File( cExe )
+         DELETE FILE ( cExe )
+      EndIf
+      If File( cExe )
+         waitmess:Hide()
+         MsgInfo( 'Error building project.' + CRLF + 'Is EXE running?', 'ooHGIDE+' )
+         Break
+      EndIf
 
-    IF EMPTY(cProjFolder) /////////////  .OR. EMPTY(PrgFiles.List_1.Item(1))
-      MsgStop('You must open and save a project before building it.', 'ooHGIDE+')
-      BREAK
-    ENDIF
+      Do Case
+      Case myide:lTBuild == 2    // Own Make MinGW
 
-    IF EMPTY(cMinGWFolder)
-      MsgStop('The BCC folder must be specified to build a project.', 'ooHGIDE+')
-      BREAK
-    ENDIF
+         // Build list of source files
+         nItems := Form_Tree:Tree_1:ItemCount
+         aPrgFiles := {}
+         For i := 1 To nItems
+            cItem := Form_Tree:Tree_1:Item( i )
+            If myide:SearchTypeAdd( myide:SearchItem( cItem, 'Prg module' ) ) == 'Prg module' .and. cItem <> 'Prg module'
+               If aScan( aPrgFiles, Upper( cItem + '.PRG' ) ) == 0
+                  aAdd( aPrgFiles, Upper( AllTrim( cItem + '.PRG' ) ) )
+               EndIf
+            EndIf
+         Next i
+         nPrgFiles := Len( aPrgFiles )
+         If nPrgFiles == 0
+            waitmess:Hide()
+            MsgStop( 'Project has no .PRG files.', 'ooHGIDE+' )
+            Break
+         EndIf
 
-    IF EMPTY(cMiniGuiFolder)
-      MsgStop('The ooHG folder must be specified to build a project.', 'ooHGIDE+')
-      BREAK
-    ENDIF
-
-    IF EMPTY(cHarbourFolder)
-      MsgStop('The Harbour folder must be specified to build a project.', 'ooHGIDE+')
-      BREAK
-    ENDIF
-
-    SetCurrentFolder(cProjFolder)
-    DELETE FILE(cProjFolder +  'End.Txt')
-    waitmess:hmi_label_101:value:='Compiling....'
-    waitmess:show()
-    nPrgfiles:=0
-    aArraux:={}
-    For i:=nitems to 1  step -1
-          cItem:= Form_tree:Tree_1:Item ( i )
-          if (myide:searchtypeadd(myide:searchitem(cItem,"Prg module"))=='Prg module') .and.( cItem<>'Prg module')
-             IF ascan(aArraux,upper(cItem+".PRG"))=0
-                  AADD(aArraux, upper(ALLTRIM( cItem+'.prg' )))
-                  nPrgfiles++
-                endif
-          endif
-    NEXT i
-
-    Aprgfiles:=aclone(aArraux)
-    For i:=1 to Nprgfiles
-        Aprgfiles[i]:=aArraux[Nprgfiles+1-i ]
-    Next i
-
-    DELETE FILE ( cProjFolder + If ( Right ( cProjFolder , 1 ) != '\' , '\' , '' ) +  'End.Txt' )
-
-    CreateFolder(cProjFolder +  'OBJ')
-
-    cOut += 'PATH = '+cMinGWFolder+'BIN;'+cMinGWFolder+'LIBEXEC\GCC\MINGW\3.4.5'+';'+ Left ( cProjFolder , Len(cProjFolder ) - 1 ) + CRLF
-    cOut += 'MINGW = '+ Left ( cMinGWFolder , Len(cMinGWFolder ) - 1 )+CRLF
-    cOut += 'HRB_DIR = '+ Left ( cHarbourFolder , Len(cHarbourFolder ) - 1 )+CRLF
-    cOut += 'PROJECTFOLDER = '+ Left ( cProjFolder , Len(cProjFolder ) - 1 )+CRLF
-    cOut += 'APP_NAME = ' + delext(myide:cprojectname) + '.exe' + CRLF
-    cOut += 'INC_DIR = '+cMiniGUIFolder + If ( Right ( cMiniGUIFolder , 1 ) != '\' , '\' , '' ) + 'INCLUDE' + CRLF
-    cOut += 'OBJ_DIR = '+cPROJFOLDER + If ( Right ( cPROJFOLDER , 1 ) != '\' , '\' , '' ) + 'OBJ'  + CRLF
-    cOut += 'MINIGUI_INSTALL = ' + Left ( cMiniGUIFolder , Len(cMiniGUIFolder ) - 1 )+CRLF
-
-    ///// cOut += 'CFLAGS =  -Wall -mwindows -mno-cygwin -O3' + CRLF
-    cOut += 'CFLAGS = -Wall -mwindows -O3 -Wl,--allow-multiple-definition ' + CRLF
-    cOut += CRLF
-
-***** Resources make File .o
-
-      cFilerc := Left ( aPrgFiles [1] , Len(aPrgFiles [1] ) - 4 )
-
-      If File ( cPROJFOLDER + If ( Right ( cPROJFOLDER , 1 ) != '\' , '\' , '' ) +  cFilerc+'.rc' )  // Existe .RC
-         DosComm1 := "/c copy /b "+cMiniGUIFolder+"\resources\oohg.rc+"+cFilerc+".rc+"+cMiniGUIFolder+"\resources\filler "+cMiniGUIFolder+"\resources\_temp.rc >NUL"
-         EXECUTE FILE "CMD.EXE" PARAMETERS DosComm1 HIDE
-      Else   // No existe .RC
-         DosComm1 := "/c copy /b "+cMiniGUIFolder+"\resources\oohg.rc "+cMiniGUIFolder+"\resources\_temp.rc >NUL"
-         EXECUTE FILE "CMD.EXE" PARAMETERS DosComm1 HIDE
-      Endif
-
-      DosComm2 := "/c "+cMinGWFolder+"BIN\windres -i "+cMiniGUIFolder+"\resources\_temp.rc -o "+cMiniGUIFolder+"\resources\_temp.o"
-      EXECUTE FILE "CMD.EXE" PARAMETERS DosComm2 HIDE
-
-*    cOut += 'SOURCE='+Left ( aPrgFiles [1] , Len(aPrgFiles [1] ) - 4 )+CRLF
-    cOut += 'SOURCE='+delext(myide:cprojectname)+CRLF
-    cOut += CRLF
-
-    cfile1 := Left ( aPrgFiles [1] , Len(aPrgFiles [1] ) - 4 )
-    cOut += 'all: '+cfile1+'.exe $(OBJ_DIR)/'+cfile1+'.o $(OBJ_DIR)/'+cfile1+'.c'
-
-    For i := 2 To Len ( aPrgFiles)
-        cfile := Left ( aPrgFiles [i] , Len(aPrgFiles [i] ) - 4 )
-        cOut += ' $(OBJ_DIR)/'+cfile+'.o $(OBJ_DIR)/'+cfile+'.c'
-    Next i
-
-    If file(cProjFolder + If ( Right ( cProjFolder , 1 ) != '\' , '\' , '' )+cfile1+'.rc')
-       cOut += ' $(MINIGUI_INSTALL)/resources/_temp.o '
-    Else
-       cOut += ' $(MINIGUI_INSTALL)/resources/_temp.o '
-    Endif
-
-    cOut += CRLF
-    cOut += CRLF
-
-    cOut += cfile1+'.exe  :'
-
-    For i := 1 To Len ( aPrgFiles)
-        cfile := Left ( aPrgFiles [i] , Len(aPrgFiles [i] ) - 4 )
-        cOut += ' $(OBJ_DIR)/'+cfile+'.o '
-    Next
-
-    If file(cPROJFOLDER + If ( Right ( cPROJFOLDER , 1 ) != '\' , '\' , '' )+cfile1+'.rc')
-       cOut += ' $(MINIGUI_INSTALL)/resources/_temp.o '
-    else
-       cOut += ' $(MINIGUI_INSTALL)/resources/_temp.o '
-    Endif
-
-    cOut += CRLF
-    cOut += '	gcc -Wall -mno-cygwin -o$(SOURCE).exe '
-    cOut += ' -mwindows '
-
-    For i := 1 To Len ( aPrgFiles)
-        cfile := Left ( aPRGFILES [i] , Len(aPRGFILES [i] ) - 4 )
-        cOut += '$(OBJ_DIR)/'+cfile+'.o '
-    Next
-
-    If file(cPROJFOLDER + If ( Right ( cPROJFOLDER , 1 ) != '\' , '\' , '' )+cfile1+'.rc')
-       cOut += ' $(MINIGUI_INSTALL)/resources/_temp.o '
-    else
-       cOut += ' $(MINIGUI_INSTALL)/resources/_temp.o '
-    endif
-
-    cOut += '-L$(MINGW)/lib -L$(HRB_DIR)/lib -L$(HRB_DIR)/lib/win/mingw -L$(MINIGUI_INSTALL)/lib -L$(MINIGUI_INSTALL)/lib/gcc -Wl,--start-group '  // MigSoft
-    cOut += '-looHG -lhbprinter -lminiprint -lgtgui -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbpp -lhbrtl -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lhbodbc -lodbc32 -lsocket -lhbmysql -lxhb -lmysqldll -ldll -lhbwin -lhbcpage -lhbmzip -lhbzlib -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32'
-    cOut += ' -Wl,--end-group '
-
-    cOut += CRLF
-    cOut += CRLF
-
-    For i := 1 To Len ( aPrgFiles)
-        cfile := Left ( aPrgFiles [i] , Len(aPrgFiles [i] ) - 4 )
-        cOut += '$(OBJ_DIR)/'+cfile+'.o    : $(OBJ_DIR)/'+cfile+'.c'+CRLF
-        cOut += '	gcc $(CFLAGS)  -I$(INC_DIR) -I$(HRB_DIR)/include -I$(MINGW)/include -I$(MINGW)/LIB/GCC/MINGW32/3.4.5/include -c $(OBJ_DIR)/'+cfile+'.c -o $(OBJ_DIR)/'+cfile+'.o'+CRLF
-    next
-
-    cOut += CRLF
-
-    For i := 1 To Len ( aPrgFiles)
-        cfile := Left ( aPRGFILES [i] , Len(aPRGFILES [i] ) - 4 )
-        cOut += '$(OBJ_DIR)/'+cfile+'.c   : $(PROJECTFOLDER)/'+cfile+'.prg'+CRLF
-        cOut += '	$(HRB_DIR)/bin/harbour.exe $^ -n -w -I$(HRB_DIR)/include -I$(MINIGUI_INSTALL)/include -i$(INC_DIR) -I$(PROJECTFOLDER) -d__WINDOWS__ -o$@ $^'+CRLF
-    next i
-
-    cOut += CRLF
-
-    if file(cProjFolder + If ( Right ( cProjFolder , 1 ) != '\' , '\' , '' )+cfile1+'.rc')
-        cOut += '$(MINIGUI_INSTALL)/resources/_temp.o    : $(MINIGUI_INSTALL)/resources/_temp.rc'+CRLF
-        cOut += '	windres -i $(MINIGUI_INSTALL)/resources/_temp.rc -o $(MINIGUI_INSTALL)/resources/_temp.o' +CRLF
-    else
-        cOut += '$(MINIGUI_INSTALL)/resources/oohg.o         : $(MINIGUI_INSTALL)/resources/oohg.rc'+CRLF
-        cOut += '	windres -i $(MINIGUI_INSTALL)/resources/_temp.rc -o $(MINIGUI_INSTALL)/resources/_temp.o --include-dir $(MINIGUI_INSTALL)/resources ' +CRLF
-    endif
-
-    Memowrit ( cProjFolder + If ( Right ( cProjFolder , 1 ) != '\' , '\' , '' ) +  'Makefile.Gcc' , cOut )
-
-    cMakeExe := cMinGWFolder+'BIN\mingw32-make.exe'
-    cParams  := '-f  makefile.gcc 1>_temp.log 2>&1 3>&2'
-
-    Memowrit ( cProjFolder + If ( Right ( cProjFolder , 1 ) != '\' , '\' , '' ) + '_Build.Bat' , 'REM @echo off' + CRLF +"REM SET PATH=;"+CRLF+ cMakeExe + ' ' + cParams +CRLF + 'Echo End > ' + cProjFolder + If ( Right ( cProjFolder , 1 ) != '\' , '\' , '' ) + 'End.Txt' + CRLF )
-
-    lProcess := .Y.
-    waitrun('_Build.bat', 0  )
-    waitmess:hide()
-     cError:=memoread('_temp.log')
-     cError1:=memoread('_temp1.log')
-         if (at(upper('error'),upper(cError))>0).or.(at(upper('fatal'),upper(cError))>0)
-            myide:viewerrors(cError+cError1)    //// cvc
-           /// myide:viewerrors(cError1)
-            BREAK
+         // Build RC temp file
+         DosComm1 := '/c echo #define oohgpath ' + cMiniGUIFolder + '\resources > ' + cProjFolder + '_oohg_resconfig.h'
+         EXECUTE FILE 'CMD.EXE' PARAMETERS DosComm1 HIDE
+         cFileRC := Left( aPrgFiles[1], Len( aPrgFiles[1] ) - 4 )
+         If File( cProjFolder + cFileRC + '.rc' )
+            DosComm1 := '/c copy /b ' + cMiniGUIFolder + '\resources\oohg.rc+' + cFileRC + '.rc ' + cProjFolder + '_temp.rc > NUL'
          Else
-            BorraTemp() // MigSoft
-         endif
-         if noption==0
-            msginfo('Make Finished.','Information')
-         endif
-         if noption==1
-            npos:=at(".",myide:cprojectname)
-            cprgname:=substr(myide:cprojectname,1,npos-1)
-            cexe:=cprgname+'.exe'
-            cursorwait()
-            EXECUTE FILE cexe
-            cursorarrow()
-         endif
-         BorraObj()  // MigSoft
-  END SEQUENCE
+            DosComm1 := '/c copy /b ' + cMiniGUIFolder + '\resources\oohg.rc ' + cProjFolder + '_temp.rc > NUL'
+         EndIf
+         EXECUTE FILE 'CMD.EXE' PARAMETERS DosComm1 HIDE
 
+         // Build make script
+         cOut := ''
+         cOut += 'PATH = ' + cMinGWFolder + 'BIN;' + cMinGWFolder + 'LIBEXEC\GCC\MINGW\3.4.5' + ';' + Left( cProjFolder, Len( cProjFolder ) - 1 ) + CRLF
+         cOut += 'MINGW = ' + Left( cMinGWFolder, Len( cMinGWFolder ) - 1 ) + CRLF
+         cOut += 'HRB_DIR = ' + Left( cHarbourFolder, Len( cHarbourFolder ) - 1 ) + CRLF
+         cOut += 'PROJECTFOLDER = ' + Left( cProjFolder, Len( cProjFolder ) - 1 ) + CRLF
+         cOut += 'APP_NAME = ' + cExe + CRLF
+         cOut += 'INC_DIR = ' + cMiniGUIFolder + If( Right( cMiniGUIFolder, 1 ) != '\', '\', '' ) + 'INCLUDE' + CRLF
+         cOut += 'OBJ_DIR = ' + cProjFolder + 'OBJ' + CRLF
+         cOut += 'MINIGUI_INSTALL = ' + Left( cMiniGUIFolder, Len( cMiniGUIFolder ) - 1 ) + CRLF
+         cOut += 'CFLAGS = -Wall -mwindows -O3 -Wl,--allow-multiple-definition' + CRLF
+         cOut += CRLF
+         cOut += 'SOURCE=' + cPrgName + CRLF
+         cOut += CRLF
+         cFile1 := Left( aPrgFiles[1], Len( aPrgFiles[1] ) - 4 )
+         cOut += 'all: ' + cFile1 + '.exe $(OBJ_DIR)/' + cFile1 + '.o $(OBJ_DIR)/' + cFile1 + '.c'
+         For i := 2 To nPrgFiles
+            cFile := Left( aPrgFiles[i], Len( aPrgFiles[i] ) - 4 )
+            cOut += ' $(OBJ_DIR)/' + cFile + '.o $(OBJ_DIR)/' + cFile + '.c'
+         Next i
+         cOut += ' $(PROJECTFOLDER)/_temp.o' + CRLF
+         cOut += CRLF
+         cOut += cFile1 + '.exe  :'
+         For i := 1 To nPrgFiles
+            cFile := Left( aPrgFiles[i], Len( aPrgFiles[i] ) - 4 )
+            cOut += ' $(OBJ_DIR)/' + cFile + '.o '
+         Next i
+         cOut += ' $(PROJECTFOLDER)/_temp.o' + CRLF
+         cOut += '	gcc -Wall -o$(SOURCE).exe -mwindows '
+         For i := 1 To nPrgFiles
+            cFile := Left( aPrgFiles[i], Len( aPrgFiles[i] ) - 4 )
+            cOut += '$(OBJ_DIR)/' + cFile + '.o '
+         Next i
+         cOut += ' $(PROJECTFOLDER)/_temp.o '
+         cOut += '-L$(MINGW)/lib -L$(HRB_DIR)/lib -L$(HRB_DIR)/lib/win/mingw -L$(MINIGUI_INSTALL)/lib -L$(MINIGUI_INSTALL)/lib/gcc -Wl,--start-group '
+         cOut += '-looHG -lhbprinter -lminiprint -lgtgui -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32'
+         cOut += ' -Wl,--end-group' + CRLF
+         cOut += CRLF
+         For i := 1 To nPrgFiles
+            cFile := Left( aPrgFiles[i], Len(aPrgFiles[i] ) - 4 )
+            cOut += '$(OBJ_DIR)/' + cFile + '.o    : $(OBJ_DIR)/' + cFile + '.c' + CRLF
+            cOut += '	gcc $(CFLAGS)  -I$(INC_DIR) -I$(HRB_DIR)/include -I$(MINGW)/include -I$(MINGW)/LIB/GCC/MINGW32/3.4.5/include -c $(OBJ_DIR)/' + cFile + '.c -o $(OBJ_DIR)/' + cFile + '.o' + CRLF
+         Next i
+         cOut += CRLF
+         For i := 1 To nPrgFiles
+            cFile := Left( aPrgFiles[i], Len( aPrgFiles[i] ) - 4 )
+            cOut += '$(OBJ_DIR)/' + cFile + '.c   : $(PROJECTFOLDER)/' + cFile + '.prg' + CRLF
+            cOut += '	$(HRB_DIR)/bin/harbour.exe $^ -n -w -q -I$(HRB_DIR)/include -I$(MINIGUI_INSTALL)/include -i$(INC_DIR) -I$(PROJECTFOLDER) -d__WINDOWS__ -o$@ $^' + CRLF
+         Next i
+         cOut += CRLF
+         cOut += '$(PROJECTFOLDER)/_temp.o    : $(PROJECTFOLDER)/_temp.rc' + CRLF
+         cOut += '	windres -i $(PROJECTFOLDER)/_temp.rc -o $(PROJECTFOLDER)/_temp.o' + CRLF
+         MemoWrit( 'Makefile.Gcc', cOut )
 
-   CASE myide:ltbuild==1 // Compile.bat
+         // Build batch
+         cOut := ''
+         cOut += 'REM @echo off' + CRLF
+         cOut += 'REM SET PATH=;' + CRLF
+         cOut += cMinGWFolder + 'BIN\mingw32-make.exe -f makefile.gcc 1>_temp.log 2>&1 3>&2' + CRLF
+         cOut += 'Echo End > ' + cProjFolder + 'End.Txt' + CRLF
+         MemoWrit( '_Build.Bat', cOut )
 
-      cursorwait()
-      output=''
-      For i:=1 to nitems  /////to 1 step -1
-          cItem:= Form_tree:Tree_1:Item ( i )
-          if (myide:searchtypeadd(myide:searchitem(cItem,"Prg module"))=='Prg module') .and.( cItem<>'Prg module')
-                IF AT(upper(cItem+'.prg'),upper(output))=0
-                   output += "# include  '"+citem+".prg'"+crlf+crlf
-                endif
-          endif
-      next i
-      output += CRLF+CRLF
-      npos:=at(".",myide:cprojectname)
-      cprgname:=substr(myide:cprojectname,1,npos-1)
-      if memowrit(cprgname+'.prg',output)
-         if .not. file('compile.bat') .and. ! IsFileInPath('compile.bat')
-            msginfo('You must copy the compile.bat distributed with ooHG to the actual project directory, or put in current path','Information')
-            cursorarrow()
-            form_tree:button_9:enabled:=.T.
-            form_tree:button_10:enabled:=.T.
-            form_tree:button_11:enabled:=.T.
-            return
-         endif
+         // Create folder for objects
+         CreateFolder( cProjFolder + 'OBJ' )
 
-         set printer to comp.bat
-         set print on
-         set console off
-         ? "compile " + cprgname + " /nr"
-         set console on
-         set print off
-         set printer to
+         // Build
+         EXECUTE FILE '_Build.bat' WAIT HIDE
 
-         waitmess:hmi_label_101:value:='Compiling....'
-         waitmess:show()
-         if cos='WINDOWS_NT'
-            waitrun("comp.bat",0)
-         else
-            EXECUTE FILE 'comp.bat'  WAIT
-         endif
-         waitmess:hide()
-         cursorarrow()
-         cError:=memoread('error.lst')
-         if (at(upper('error'),upper(cError))>0).or.(at(upper('fatal'),upper(cError))>0)
-            myide:viewerrors(cError)
-            return
-         endif
-         if noption=0
-            msginfo('Project builded.','Information')
-         endif
-         if noption==1 .or. noption==2
-            cexe:=cprgname+'.exe'
-            cursorwait()
-            EXECUTE FILE cexe
-            cursorarrow()
-         endif
-      endif
-ENDCASE
-cursorarrow()
-form_tree:button_9:enabled:=.T.
-form_tree:button_10:enabled:=.T.
-form_tree:button_11:enabled:=.T.
-do events
+         waitmess:Hide()
+
+         // Check for errors
+         cError := MemoRead( '_temp.log' )
+         cError1 := Upper( cError )
+         If At( 'ERROR', cError1 ) > 0 .or. At( 'FATAL', cError1 ) > 0 .or. At( 'LD RETURNED 1 EXIT STATUS', cError1 ) > 0
+            myide:ViewErrors( cError + MemoRead( '_temp1.log' ) )
+            Break
+         EndIf
+
+         // Cleanup
+         BorraTemp()
+         If nOption == 0
+            MsgInfo( 'Project builded.', 'ooHGIDE+' )
+         ElseIf nOption == 1
+            EXECUTE FILE cExe
+         EndIf
+         BorraObj()
+
+      Case myide:lTBuild == 1 // Compile.bat
+
+         // Check for compile file
+         If ! File( 'compile.bat' ) .and. ! IsFileInPath( 'compile.bat' )
+            waitmess:Hide()
+            MsgInfo( 'Copy file COMPILE.BAT from ooHG root folder to the current' + CRLF + 'project folder, or add ooHG root folder to PATH.', 'ooHGIDE+' )
+            Break
+         EndIf
+
+         // Build auxiliary source file
+         nItems := Form_Tree:Tree_1:ItemCount
+         aPrgFiles := {}
+         For i := 1 To nItems
+            cItem := Form_Tree:Tree_1:Item( i )
+            If myide:SearchTypeAdd( myide:SearchItem( cItem, 'Prg module' ) ) == 'Prg module' .and. cItem <> 'Prg module'
+               If aScan( aPrgFiles, Upper( cItem + '.PRG' ) ) == 0
+                  aAdd( aPrgFiles, Upper( AllTrim( cItem + '.PRG' ) ) )
+               EndIf
+            EndIf
+         Next i
+         nPrgFiles := Len( aPrgFiles )
+         If nPrgFiles == 0
+            waitmess:Hide()
+            MsgStop( 'Project has no .PRG files.', 'ooHGIDE+' )
+            Break
+         EndIf
+         cOut := ''
+         For i := 1 To nPrgFiles
+            cOut += "# include '" + aPrgFiles[i] + ".prg'" + CRLF + CRLF
+         Next i
+         MemoWrit( cPrgName + '.prg', cOut )
+
+         // Build batch
+         SET PRINTER TO comp.bat
+         SET PRINT ON
+         SET CONSOLE OFF
+         ? 'compile ' + cPrgName + ' /nr /l'
+         SET CONSOLE ON
+         SET PRINT OFF
+         SET PRINTER TO
+
+         // Build
+         EXECUTE FILE 'comp.bat' WAIT HIDE
+
+         waitmess:Hide()
+
+         // Check for errors
+         cError := MemoRead( 'error.lst' )
+         cError1 := Upper( cError )
+         If At( 'ERROR', cError1 ) > 0 .or. At( 'FATAL', cError1 ) > 0 .or. At( 'LD RETURNED 1 EXIT STATUS', cError1 ) > 0
+            myide:ViewErrors( cError )
+            Break
+         EndIf
+
+         // Cleanup
+         BorraTemp()
+         If nOption == 0
+            MsgInfo( 'Project builded.', 'ooHGIDE+' )
+         ElseIf nOption == 1 .or. nOption == 2
+            EXECUTE FILE cExe
+         EndIf
+
+      EndCase
+   End Sequence
+
+   CursorArrow()
+   Form_Tree:button_9:Enabled := .T.
+   Form_Tree:button_10:Enabled := .T.
+   Form_Tree:button_11:Enabled := .T.
 Return
 
 *-------------------------
 METHOD runp() CLASS THMI
 *-------------------------
-form_tree:button_9:enabled:=.F.
-form_tree:button_10:enabled:=.F.
-form_tree:button_11:enabled:=.F.
+Form_Tree:button_9:enabled:=.F.
+Form_Tree:button_10:enabled:=.F.
+Form_Tree:button_11:enabled:=.F.
 npos:=at(".",myide:cprojectname)
 cprgname:=substr(myide:cprojectname,1,npos-1)
 cexe:=cprgname+'.exe'
 if file(cexe)
    EXECUTE FILE cexe
 else
-   msgstop(cexe+' not found.','Information')
+   MsgStop( cexe + ' not found.', 'ooHGIDE+' )
 endif
-form_tree:button_9:enabled:=.T.
-form_tree:button_10:enabled:=.T.
-form_tree:button_11:enabled:=.T.
+Form_Tree:button_9:enabled:=.T.
+Form_Tree:button_10:enabled:=.T.
+Form_Tree:button_11:enabled:=.T.
 return
 
 *-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._-._.-._.-._.-._.-._.-._.-._
@@ -1899,19 +1864,18 @@ LOCAL cHarbourFolder  := myide:cxHbMinGWFolder+'\'
 LOCAL nFile
 LOCAL lDebug := .F.
 
-nItems:=Form_tree:Tree_1:ItemCount
-memowrit('error.lst'," ")
+nItems:=Form_Tree:Tree_1:ItemCount
 if len(alltrim(myide:cprojectname))=0
-   msginfo('You must define a project name'+CRLF+'Build Premature end','Information')
+   MsgInfo( 'You must define a project name.' + CRLF+ 'Build Premature end', 'ooHGIDE+' )
    return
 endif
 cos=upper(gete('os'))
 if len(cos)=0
    cos=gete('os_type')
 endif
-form_tree:button_9:enabled:=.F.
-form_tree:button_10:enabled:=.F.
-form_tree:button_11:enabled:=.F.
+Form_Tree:button_9:enabled:=.F.
+Form_Tree:button_10:enabled:=.F.
+Form_Tree:button_11:enabled:=.F.
 cursorwait()
 do events
 DO CASE
@@ -1919,32 +1883,32 @@ DO CASE
    //////////////////////////////////
 
 
-  BEGIN SEQUENCE
+   BEGIN SEQUENCE
 
-   IF EMPTY(myide:cProjectname)     ////////    IF EMPTY(cProjName)
-      MsgStop('You must save the project before building it.','ooHGIDE+')
-      BREAK
-    ENDIF
+      // Check folders
+      If Empty( myide:cProjectName )
+//         waitmess:Hide()
+         MsgStop( 'You must save the project before building it.', 'ooHGIDE+' )
+         Break
+      EndIf
 
-    IF EMPTY(cProjFolder) /////////////  .OR. EMPTY(PrgFiles.List_1.Item(1))
-      MsgStop('You must open and save a project before building it.', 'ooHGIDE+')
-      BREAK
-    ENDIF
+      If Empty( cMinGWFolder )
+//         waitmess:Hide()
+         MsgStop( 'The MinGW folder must be specified to build a project.', 'ooHGIDE+' )
+         Break
+      EndIf
 
-    IF EMPTY(cMinGWFolder)
-      MsgStop('The BCC folder must be specified to build a project.', 'ooHGIDE+')
-      BREAK
-    ENDIF
+      If Empty( cMiniGuiFolder )
+//         waitmess:Hide()
+         MsgStop( 'The ooHG-xHb-MinGW folder must be specified to build a project.', 'ooHGIDE+' )
+         Break
+      EndIf
 
-    IF EMPTY(cMiniGuiFolder)
-      MsgStop('The ooHG folder must be specified to build a project.', 'ooHGIDE+')
-      BREAK
-    ENDIF
-
-    IF EMPTY(cHarbourFolder)
-      MsgStop('The Harbour folder must be specified to build a project.', 'ooHGIDE+')
-      BREAK
-    ENDIF
+      If Empty( cHarbourFolder )
+//         waitmess:Hide()
+         MsgStop( 'The xHarbour-MinGW folder must be specified to build a project.', 'ooHGIDE+' )
+         Break
+      EndIf
 
     SetCurrentFolder(cProjFolder)
     DELETE FILE(cProjFolder +  'End.Txt')
@@ -1953,7 +1917,7 @@ DO CASE
     nPrgfiles:=0
     aArraux:={}
     For i:=nitems to 1  step -1
-          cItem:= Form_tree:Tree_1:Item ( i )
+          cItem:= Form_Tree:Tree_1:Item ( i )
           if (myide:searchtypeadd(myide:searchitem(cItem,"Prg module"))=='Prg module') .and.( cItem<>'Prg module')
              IF ascan(aArraux,upper(cItem+".PRG"))=0
                   AADD(aArraux, upper(ALLTRIM( cItem+'.prg' )))
@@ -1980,7 +1944,7 @@ DO CASE
     cOut += 'OBJ_DIR = '+cPROJFOLDER + If ( Right ( cPROJFOLDER , 1 ) != '\' , '\' , '' ) + 'OBJ'  + CRLF
     cOut += 'MINIGUI_INSTALL = ' + Left ( cMiniGUIFolder , Len(cMiniGUIFolder ) - 1 )+CRLF
 
-    cOut += 'CFLAGS =  -Wall -mwindows -mno-cygwin -O3' + CRLF
+    cOut += 'CFLAGS =  -Wall -mwindows -O3' + CRLF
     cOut += CRLF
     
 ***** Resources make File .o
@@ -2011,7 +1975,7 @@ DO CASE
     Next i
 
     If file(cProjFolder + If ( Right ( cProjFolder , 1 ) != '\' , '\' , '' )+cfile1+'.rc')
-       cOut += ' $(MINIGUI_INSTALL)/resources/_temp.o '
+       cOut += ' $(cProjFolder)/_temp.o '
     Else
        cOut += ' $(MINIGUI_INSTALL)/resources/oohg.o '
     Endif
@@ -2027,13 +1991,13 @@ DO CASE
     Next
 
     If file(cPROJFOLDER + If ( Right ( cPROJFOLDER , 1 ) != '\' , '\' , '' )+cfile1+'.rc')
-       cOut += ' $(MINIGUI_INSTALL)/resources/_temp.o '
+       cOut += ' $(cProjFolder)/_temp.o '
     else
        cOut += ' $(MINIGUI_INSTALL)/resources/oohg.o '
     Endif
 
     cOut += CRLF
-    cOut += '	gcc -Wall -mno-cygwin -o$(SOURCE).exe '
+    cOut += '	gcc -Wall -o$(SOURCE).exe '
     cOut += ' -mwindows '
 
     For i := 1 To Len ( aPrgFiles)
@@ -2042,7 +2006,7 @@ DO CASE
     Next
 
     If file(cPROJFOLDER + If ( Right ( cPROJFOLDER , 1 ) != '\' , '\' , '' )+cfile1+'.rc')
-       cOut += ' $(MINIGUI_INSTALL)/resources/_temp.o '
+       cOut += ' $(cProjFolder)/_temp.o '
     else
        cOut += ' $(MINIGUI_INSTALL)/resources/oohg.o '
     endif
@@ -2071,8 +2035,8 @@ DO CASE
     cOut += CRLF
 
     if file(cProjFolder + If ( Right ( cProjFolder , 1 ) != '\' , '\' , '' )+cfile1+'.rc')
-        cOut += '$(MINIGUI_INSTALL)/resources/_temp.o    : $(cProjectFolder)/'+CFILE1+'.rc'+CRLF
-        cOut += '	windres -i $(cProjectFolder)/'+CFILE1+'.rc -o $(MINIGUI_INSTALL)/resources/_temp.o' +CRLF
+        cOut += '$(cProjFolder)/_temp.o    : $(cProjFolder)/'+CFILE1+'.rc'+CRLF
+        cOut += '	windres -i $(cProjFolder)/'+CFILE1+'.rc -o $(cProjFolder)/_temp.o' +CRLF
     else
         cOut += '$(MINIGUI_INSTALL)/resources/oohg.o         : $(MINIGUI_INSTALL)/resources/oohg.rc'+CRLF
         cOut += '	windres -i $(MINIGUI_INSTALL)/resources/oohg.rc -o $(MINIGUI_INSTALL)/resources/oohg.o --include-dir $(MINIGUI_INSTALL)/resources ' +CRLF
@@ -2085,7 +2049,6 @@ DO CASE
 
     Memowrit ( cProjFolder + If ( Right ( cProjFolder , 1 ) != '\' , '\' , '' ) + '_Build.Bat' , 'REM @echo off' + CRLF +"REM SET PATH=;"+CRLF+ cMakeExe + ' ' + cParams +CRLF + 'Echo End > ' + cProjFolder + If ( Right ( cProjFolder , 1 ) != '\' , '\' , '' ) + 'End.Txt'+CRLF)
 
-    lProcess := .Y.
     waitrun('_Build.bat', 0  )
     waitmess:hide()
      cError:=memoread('_temp1.log')
@@ -2096,7 +2059,7 @@ DO CASE
             BorraTemp() // MigSoft
          endif
          if noption==0
-            msginfo('Make Finished.','Information')
+            MsgInfo( 'Project builded.', 'ooHGIDE+' )
          endif
          if noption==1
             npos:=at(".",myide:cprojectname)
@@ -2115,7 +2078,7 @@ DO CASE
       cursorwait()
       output=''
       For i:=1 to nitems  /////to 1 step -1
-          cItem:= Form_tree:Tree_1:Item ( i )
+          cItem:= Form_Tree:Tree_1:Item ( i )
           if (myide:searchtypeadd(myide:searchitem(cItem,"Prg module"))=='Prg module') .and.( cItem<>'Prg module')
                 IF AT(upper(cItem+'.prg'),upper(output))=0
                    output += "# include  '"+citem+".prg'"+crlf+crlf
@@ -2127,24 +2090,27 @@ DO CASE
       cprgname:=substr(myide:cprojectname,1,npos-1)
       if memowrit(cprgname+'.prg',output)
          if .not. file('compile.bat') .and. ! IsFileInPath('compile.bat')
-            msginfo('You must copy the compile.bat distributed with ooHG to the actual project directory, or put in current path','Information')
+            MsgInfo( 'Copy file COMPILE.BAT from ooHG root folder to the current' + CRLF + 'project folder, or add ooHG root folder to PATH.', 'ooHGIDE+' )
             cursorarrow()
-            form_tree:button_9:enabled:=.T.
-            form_tree:button_10:enabled:=.T.
-            form_tree:button_11:enabled:=.T.
+            Form_Tree:button_9:enabled:=.T.
+            Form_Tree:button_10:enabled:=.T.
+            Form_Tree:button_11:enabled:=.T.
             return
          endif
+
+         waitmess:hmi_label_101:value:='Compiling ...'
+         waitmess:show()
 
          set printer to comp.bat
          set print on
          set console off
-         ? "compile " + cprgname
+         ? "compile " + cprgname + " /nr"
          set console on
          set print off
          set printer to
 
-         waitmess:hmi_label_101:value:='Compiling....'
-         waitmess:show()
+         ferase('error.lst')
+
          if cos='WINDOWS_NT'
             waitrun("comp.bat",0)
          else
@@ -2158,7 +2124,7 @@ DO CASE
             return
          endif
          if noption=0
-            msginfo('Project builded.','Information')
+            MsgInfo( 'Project builded.', 'ooHGIDE+' )
          endif
          if noption==1 .or. noption==2
             cexe:=cprgname+'.exe'
@@ -2169,9 +2135,9 @@ DO CASE
       endif
 ENDCASE
 cursorarrow()
-form_tree:button_9:enabled:=.T.
-form_tree:button_10:enabled:=.T.
-form_tree:button_11:enabled:=.T.
+Form_Tree:button_9:enabled:=.T.
+Form_Tree:button_10:enabled:=.T.
+Form_Tree:button_11:enabled:=.T.
 do events
 Return
 
@@ -2190,58 +2156,57 @@ LOCAL cParams
 LOCAL cOut            := ''
 
 LOCAL cProjFolder     := myide:cProjFolder+'\'
-LOCAL cBccFolder      := myide:cBCCFolder+'\'
+LOCAL cCompFolder     := myide:cBCCFolder+'\'
 LOCAL cMiniGuiFolder  := myide:cGuiHbBCC+'\'
 LOCAL cHarbourFolder  := myide:cHbBCCFolder+'\'
 
 LOCAL nFile
 LOCAL lDebug := .F.
 
-nItems:=Form_tree:Tree_1:ItemCount
-memowrit('error.lst'," ")
+nItems:=Form_Tree:Tree_1:ItemCount
 if len(alltrim(myide:cprojectname))=0
-   msginfo('You must define a project name'+CRLF+'Build Premature end','Information')
+   MsgInfo('You must define a project name'+CRLF+'Build Premature end','ooHGIDE+')
    return
 endif
 cos=upper(gete('os'))
 if len(cos)=0
    cos=gete('os_type')
 endif
-form_tree:button_9:enabled:=.F.
-form_tree:button_10:enabled:=.F.
-form_tree:button_11:enabled:=.F.
+Form_Tree:button_9:enabled:=.F.
+Form_Tree:button_10:enabled:=.F.
+Form_Tree:button_11:enabled:=.F.
 cursorwait()
 do events
 DO CASE
    CASE myide:ltbuild==2 // Own Make BCC
 
 
-  BEGIN SEQUENCE
+   BEGIN SEQUENCE
 
-   IF EMPTY(myide:cProjectname)     ////////    IF EMPTY(cProjName)
-      MsgStop('You must save the project before building it.','ooHGIDE+')
-      BREAK
-    ENDIF
+      // Check folders
+      If Empty( myide:cProjectName )
+//         waitmess:Hide()
+         MsgStop( 'You must save the project before building it.', 'ooHGIDE+' )
+         Break
+      EndIf
 
-    IF EMPTY(cProjFolder) /////////////  .OR. EMPTY(PrgFiles.List_1.Item(1))
-      MsgStop('You must open and save a project before building it.', 'ooHGIDE+')
-      BREAK
-    ENDIF
+      If Empty( cCompFolder )
+//         waitmess:Hide()
+         MsgStop( 'The BCC folder must be specified to build a project.', 'ooHGIDE+' )
+         Break
+      EndIf
 
-    IF EMPTY(cBccFolder)
-      MsgStop('The BCC folder must be specified to build a project.', 'ooHGIDE+')
-      BREAK
-    ENDIF
+      If Empty( cMiniGuiFolder )
+//         waitmess:Hide()
+         MsgStop( 'The ooHG-Hb-BCC folder must be specified to build a project.', 'ooHGIDE+' )
+         Break
+      EndIf
 
-    IF EMPTY(cMiniGuiFolder)
-      MsgStop('The ooHG folder must be specified to build a project.', 'ooHGIDE+')
-      BREAK
-    ENDIF
-
-    IF EMPTY(cHarbourFolder)
-      MsgStop('The Harbour folder must be specified to build a project.', 'ooHGIDE+')
-      BREAK
-    ENDIF
+      If Empty( cHarbourFolder )
+//         waitmess:Hide()
+         MsgStop( 'The Harbour-Borland C folder must be specified to build a project.', 'ooHGIDE+' )
+         Break
+      EndIf
 
     SetCurrentFolder(cProjFolder)
     DELETE FILE(cProjFolder +  'End.Txt')
@@ -2250,7 +2215,7 @@ DO CASE
     nPrgfiles:=0
     aArraux:={}
     For i:=nitems to 1  step -1
-          cItem:= Form_tree:Tree_1:Item ( i )
+          cItem:= Form_Tree:Tree_1:Item ( i )
           if (myide:searchtypeadd(myide:searchitem(cItem,"Prg module"))=='Prg module') .and.( cItem<>'Prg module')
              IF ascan(aArraux,upper(cItem+".PRG"))=0
                   AADD(aArraux, upper(ALLTRIM( cItem+'.prg' )))
@@ -2267,14 +2232,14 @@ DO CASE
     CreateFolder(cProjFolder +  'OBJ')
 
     cOut += 'HARBOUR_EXE = ' + cHarbourFolder + 'BIN\HARBOUR.EXE'  + CRLF
-    cOut += 'CC = ' + cBccFolder + 'BIN\BCC32.EXE'  + CRLF
-    cOut += 'ILINK_EXE = ' + cBccFolder + 'BIN\ILINK32.EXE'  + CRLF
-    cOut += 'BRC_EXE = ' + cBccFolder + 'BIN\BRC32.EXE'  + CRLF
+    cOut += 'CC = ' + cCompFolder + 'BIN\BCC32.EXE'  + CRLF
+    cOut += 'ILINK_EXE = ' + cCompFolder + 'BIN\ILINK32.EXE'  + CRLF
+    cOut += 'BRC_EXE = ' + cCompFolder + 'BIN\BRC32.EXE'  + CRLF
     cOut += 'APP_NAME = ' + delext(myide:cprojectname) + '.exe' + CRLF
     cOut += 'RC_FILE = ' + cMiniGuiFolder + 'RESOURCES\oohg.RC' + CRLF
     cOut += 'INCLUDE_DIR = ' + cHarbourFolder + 'INCLUDE;' + ;
     cMiniGuiFolder + 'INCLUDE' + ';' + DelSlash(cProjFolder) + CRLF
-    cOut += 'CC_LIB_DIR = ' + cBccFolder + 'LIB'  + CRLF
+    cOut += 'CC_LIB_DIR = ' + cCompFolder + 'LIB'  + CRLF
     cOut += 'HRB_LIB_DIR = ' + cHarbourFolder + 'LIB'  + CRLF
     cOut += 'OBJ_DIR = ' + cProjFolder + 'OBJ' + CRLF
     cOut += 'C_DIR = ' + cProjFolder + 'OBJ' + CRLF
@@ -2285,7 +2250,7 @@ DO CASE
       cOut += 'HARBOUR_FLAGS = /i$(INCLUDE_DIR) /n $(USER_FLAGS)' + CRLF
     ENDIF
     cOut += 'COBJFLAGS =  -c -O2 -tW -M  -I' + ;
-      cBccFolder + 'INCLUDE -I$(INCLUDE_DIR) -L' + cBccFolder + 'LIB' + CRLF
+      cCompFolder + 'INCLUDE -I$(INCLUDE_DIR) -L' + cCompFolder + 'LIB' + CRLF
     cOut += CRLF
     if Nprgfiles>1
        cOut += '$(APP_NAME) : $(OBJ_DIR)\' + ;
@@ -2318,7 +2283,7 @@ DO CASE
         IF(nFile > 1, '>', '') +'b32.bc ' + CRLF
     NEXT i
 
-    cOut += ' echo ' + cBccFolder + 'LIB\c0w32.obj, + >> b32.bc ' + CRLF
+    cOut += ' echo ' + cCompFolder + 'LIB\c0w32.obj, + >> b32.bc ' + CRLF
     cOut += ' echo $(APP_NAME),' + ;
       LEFT(aPrgFiles[1], LEN(aPrgFiles[1]) - 4) + '.map, + >> b32.bc' + CRLF
     cOut += ' echo ' + cMiniGuiFolder  + 'LIB\oohg.lib + >> b32.bc' + CRLF
@@ -2362,10 +2327,10 @@ DO CASE
     cMiniGuiFolder  + 'RESOURCES\oohg.res >> b32.bc' + CRLF
 
     IF lDebug
-      cOut += ' $(ILINK_EXE)  -Gn -Tpe -ap -L'+ cBccFolder + 'LIB' + ' -L' + cHarbourFolder + 'LIB\win\bcc' + ; // MigSoft
+      cOut += ' $(ILINK_EXE)  -Gn -Tpe -ap -L'+ cCompFolder + 'LIB' + ' -L' + cHarbourFolder + 'LIB\win\bcc' + ; // MigSoft
               ' -L' + cHarbourFolder + 'LIB' + ' -L' + cMiniGuiFolder + 'LIB\bcc' + ' @b32.bc' + CRLF
     ELSE
-      cOut += ' $(ILINK_EXE)  -Gn -Tpe -aa -L'+ cBccFolder + 'LIB' + ' -L'+ cHarbourFolder + 'LIB\win\bcc' +; // MigSoft
+      cOut += ' $(ILINK_EXE)  -Gn -Tpe -aa -L'+ cCompFolder + 'LIB' + ' -L'+ cHarbourFolder + 'LIB\win\bcc' +; // MigSoft
               ' -L' + cHarbourFolder + 'LIB' + ' -L' + cMiniGuiFolder + 'LIB\bcc' + ' @b32.bc' + CRLF
     ENDIF
 
@@ -2386,7 +2351,7 @@ DO CASE
 
     MEMOWRIT(cProjFolder +  '_Temp.bc', cOut)
 
-    cMakeExe := cBccFolder + 'BIN\MAKE.EXE'
+    cMakeExe := cCompFolder + 'BIN\MAKE.EXE'
     cParams  := '/f' + cProjFolder +  '_Temp.bc' + ;
       ' > ' + cProjFolder +  '_Temp.log'
     MEMOWRIT(cProjFolder + '_Build.bat', ;
@@ -2394,7 +2359,6 @@ DO CASE
       cMakeExe + ' ' + cParams + CRLF + ;
       'echo End > ' + cProjFolder + 'End.txt' + CRLF)
 
-    lProcess            := .Y.
     waitrun('_Build.bat', 0  )
     waitmess:hide()
      cError:=memoread('_temp.log')
@@ -2405,7 +2369,7 @@ DO CASE
             BorraTemp() // MigSoft
          endif
          if noption==0
-            msginfo('Make Finished.','Information')
+            MsgInfo( 'Project builded.', 'ooHGIDE+' )
          endif
          if noption==1
             npos:=at(".",myide:cprojectname)
@@ -2423,7 +2387,7 @@ DO CASE
       cursorwait()
       output=''
       For i:=1 to nitems  /////to 1 step -1
-          cItem:= Form_tree:Tree_1:Item ( i )
+          cItem:= Form_Tree:Tree_1:Item ( i )
           if (myide:searchtypeadd(myide:searchitem(cItem,"Prg module"))=='Prg module') .and.( cItem<>'Prg module')
                 IF AT(upper(cItem+'.prg'),upper(output))=0
                    output += "# include  '"+citem+".prg'"+crlf+crlf
@@ -2435,24 +2399,27 @@ DO CASE
       cprgname:=substr(myide:cprojectname,1,npos-1)
       if memowrit(cprgname+'.prg',output)
          if .not. file('compile.bat') .and. ! IsFileInPath('compile.bat')
-            msginfo('You must copy the compile.bat distributed with ooHGIDE+ sample to the actual project directory, or put in current path','Information')
+            MsgInfo( 'Copy file COMPILE.BAT from ooHG root folder to the current' + CRLF + 'project folder, or add ooHG root folder to PATH.', 'ooHGIDE+' )
             cursorarrow()
-            form_tree:button_9:enabled:=.T.
-            form_tree:button_10:enabled:=.T.
-            form_tree:button_11:enabled:=.T.
+            Form_Tree:button_9:enabled:=.T.
+            Form_Tree:button_10:enabled:=.T.
+            Form_Tree:button_11:enabled:=.T.
             return
          endif
+
+         waitmess:hmi_label_101:value:='Compiling ...'
+         waitmess:show()
 
          set printer to comp.bat
          set print on
          set console off
-         ? "compile " + cprgname
+         ? "compile " + cprgname + " /nr"
          set console on
          set print off
          set printer to
 
-         waitmess:hmi_label_101:value:='Compiling....'
-         waitmess:show()
+         ferase('error.lst')
+
          if cos='WINDOWS_NT'
             waitrun("comp.bat",0)
          else
@@ -2466,7 +2433,7 @@ DO CASE
             return
          endif
          if noption=0
-            msginfo('Project builded.','Information')
+            MsgInfo( 'Project builded.', 'ooHGIDE+' )
          endif
          if noption==1 .or. noption==2
             cexe:=cprgname+'.exe'
@@ -2477,9 +2444,9 @@ DO CASE
       endif
 ENDCASE
 cursorarrow()
-form_tree:button_9:enabled:=.T.
-form_tree:button_10:enabled:=.T.
-form_tree:button_11:enabled:=.T.
+Form_Tree:button_9:enabled:=.T.
+Form_Tree:button_10:enabled:=.T.
+Form_Tree:button_11:enabled:=.T.
 do events
 Return
 
@@ -2498,58 +2465,57 @@ LOCAL cParams
 LOCAL cOut            := ''
 
 LOCAL cProjFolder     := myide:cProjFolder+'\'
-LOCAL cBccFolder      := myide:cBCCFolder+'\'
+LOCAL cCompFolder     := myide:cBCCFolder+'\'
 LOCAL cMiniGuiFolder  := myide:cGuixHbBCC+'\'
 LOCAL cHarbourFolder  := myide:cxHbBCCFolder+'\'
 
 LOCAL nFile
 LOCAL lDebug := .F.
 
-nItems:=Form_tree:Tree_1:ItemCount
-memowrit('error.lst'," ")
+nItems:=Form_Tree:Tree_1:ItemCount
 if len(alltrim(myide:cprojectname))=0
-   msginfo('You must define a project name'+CRLF+'Build Premature end','Information')
+   MsgInfo('You must define a project name'+CRLF+'Build Premature end','ooHGIDE+')
    return
 endif
 cos=upper(gete('os'))
 if len(cos)=0
    cos=gete('os_type')
 endif
-form_tree:button_9:enabled:=.F.
-form_tree:button_10:enabled:=.F.
-form_tree:button_11:enabled:=.F.
+Form_Tree:button_9:enabled:=.F.
+Form_Tree:button_10:enabled:=.F.
+Form_Tree:button_11:enabled:=.F.
 cursorwait()
 do events
 DO CASE
    CASE myide:ltbuild==2 // Own Make BCC
 
 
-  BEGIN SEQUENCE
+   BEGIN SEQUENCE
 
-   IF EMPTY(myide:cProjectname)     ////////    IF EMPTY(cProjName)
-      MsgStop('You must save the project before building it.','ooHGIDE+')
-      BREAK
-    ENDIF
+      // Check folders
+      If Empty( myide:cProjectName )
+//         waitmess:Hide()
+         MsgStop( 'You must save the project before building it.', 'ooHGIDE+' )
+         Break
+      EndIf
 
-    IF EMPTY(cProjFolder) /////////////  .OR. EMPTY(PrgFiles.List_1.Item(1))
-      MsgStop('You must open and save a project before building it.', 'ooHGIDE+')
-      BREAK
-    ENDIF
+      If Empty( cCompFolder )
+//         waitmess:Hide()
+         MsgStop( 'The BCC folder must be specified to build a project.', 'ooHGIDE+' )
+         Break
+      EndIf
 
-    IF EMPTY(cBccFolder)
-      MsgStop('The BCC folder must be specified to build a project.', 'ooHGIDE+')
-      BREAK
-    ENDIF
+      If Empty( cMiniGuiFolder )
+//         waitmess:Hide()
+         MsgStop( 'The ooHG-xHb-BCC folder must be specified to build a project.', 'ooHGIDE+' )
+         Break
+      EndIf
 
-    IF EMPTY(cMiniGuiFolder)
-      MsgStop('The ooHG folder must be specified to build a project.', 'ooHGIDE+')
-      BREAK
-    ENDIF
-
-    IF EMPTY(cHarbourFolder)
-      MsgStop('The Harbour folder must be specified to build a project.', 'ooHGIDE+')
-      BREAK
-    ENDIF
+      If Empty( cHarbourFolder )
+//         waitmess:Hide()
+         MsgStop( 'The xHarbour-Borland C folder must be specified to build a project.', 'ooHGIDE+' )
+         Break
+      EndIf
 
     SetCurrentFolder(cProjFolder)
     DELETE FILE(cProjFolder +  'End.Txt')
@@ -2558,7 +2524,7 @@ DO CASE
     nPrgfiles:=0
     aArraux:={}
     For i:=nitems to 1  step -1
-          cItem:= Form_tree:Tree_1:Item ( i )
+          cItem:= Form_Tree:Tree_1:Item ( i )
           if (myide:searchtypeadd(myide:searchitem(cItem,"Prg module"))=='Prg module') .and.( cItem<>'Prg module')
              IF ascan(aArraux,upper(cItem+".PRG"))=0
                   AADD(aArraux, upper(ALLTRIM( cItem+'.prg' )))
@@ -2575,14 +2541,14 @@ DO CASE
     CreateFolder(cProjFolder +  'OBJ')
 
     cOut += 'HARBOUR_EXE = ' + cHarbourFolder + 'BIN\HARBOUR.EXE'  + CRLF
-    cOut += 'CC = ' + cBccFolder + 'BIN\BCC32.EXE'  + CRLF
-    cOut += 'ILINK_EXE = ' + cBccFolder + 'BIN\ILINK32.EXE'  + CRLF
-    cOut += 'BRC_EXE = ' + cBccFolder + 'BIN\BRC32.EXE'  + CRLF
+    cOut += 'CC = ' + cCompFolder + 'BIN\BCC32.EXE'  + CRLF
+    cOut += 'ILINK_EXE = ' + cCompFolder + 'BIN\ILINK32.EXE'  + CRLF
+    cOut += 'BRC_EXE = ' + cCompFolder + 'BIN\BRC32.EXE'  + CRLF
     cOut += 'APP_NAME = ' + delext(myide:cprojectname) + '.exe' + CRLF
     cOut += 'RC_FILE = ' + cMiniGuiFolder + 'RESOURCES\oohg.RC' + CRLF
     cOut += 'INCLUDE_DIR = ' + cHarbourFolder + 'INCLUDE;' + ;
     cMiniGuiFolder + 'INCLUDE' + ';' + DelSlash(cProjFolder) + CRLF
-    cOut += 'CC_LIB_DIR = ' + cBccFolder + 'LIB'  + CRLF
+    cOut += 'CC_LIB_DIR = ' + cCompFolder + 'LIB'  + CRLF
     cOut += 'HRB_LIB_DIR = ' + cHarbourFolder + 'LIB'  + CRLF
     cOut += 'OBJ_DIR = ' + cProjFolder + 'OBJ' + CRLF
     cOut += 'C_DIR = ' + cProjFolder + 'OBJ' + CRLF
@@ -2593,7 +2559,7 @@ DO CASE
       cOut += 'HARBOUR_FLAGS = /i$(INCLUDE_DIR) /n $(USER_FLAGS)' + CRLF
     ENDIF
     cOut += 'COBJFLAGS =  -c -O2 -tW -M  -I' + ;
-      cBccFolder + 'INCLUDE -I$(INCLUDE_DIR) -L' + cBccFolder + 'LIB' + CRLF
+      cCompFolder + 'INCLUDE -I$(INCLUDE_DIR) -L' + cCompFolder + 'LIB' + CRLF
     cOut += CRLF
 
     if Nprgfiles>1
@@ -2627,7 +2593,7 @@ DO CASE
         IF(nFile > 1, '>', '') +'b32.bc ' + CRLF
     NEXT i
 
-    cOut += ' echo ' + cBccFolder + 'LIB\c0w32.obj, + >> b32.bc ' + CRLF
+    cOut += ' echo ' + cCompFolder + 'LIB\c0w32.obj, + >> b32.bc ' + CRLF
     cOut += ' echo $(APP_NAME),' + ;
       LEFT(aPrgFiles[1], LEN(aPrgFiles[1]) - 4) + '.map, + >> b32.bc' + CRLF
     cOut += ' echo ' + cMiniGuiFolder  + 'LIB\oohg.lib + >> b32.bc' + CRLF
@@ -2673,10 +2639,10 @@ DO CASE
     cMiniGuiFolder  + 'RESOURCES\oohg.res >> b32.bc' + CRLF
 
     IF lDebug
-      cOut += ' $(ILINK_EXE)  -Gn -Tpe -ap -L'+ cBccFolder + 'LIB' + ;
+      cOut += ' $(ILINK_EXE)  -Gn -Tpe -ap -L'+ cCompFolder + 'LIB' + ;
         ' @b32.bc' + CRLF
     ELSE
-      cOut += ' $(ILINK_EXE)  -Gn -Tpe -aa -L'+ cBccFolder + 'LIB' + ;
+      cOut += ' $(ILINK_EXE)  -Gn -Tpe -aa -L'+ cCompFolder + 'LIB' + ;
         ' @b32.bc' + CRLF
     ENDIF
 
@@ -2697,7 +2663,7 @@ DO CASE
 
     MEMOWRIT(cProjFolder +  '_Temp.bc', cOut)
 
-    cMakeExe := cBccFolder + 'BIN\MAKE.EXE'
+    cMakeExe := cCompFolder + 'BIN\MAKE.EXE'
     cParams  := '/f' + cProjFolder +  '_Temp.bc' + ;
       ' > ' + cProjFolder +  '_Temp.log'
     MEMOWRIT(cProjFolder + '_Build.bat', ;
@@ -2705,7 +2671,6 @@ DO CASE
       cMakeExe + ' ' + cParams + CRLF + ;
       'echo End > ' + cProjFolder + 'End.txt' + CRLF)
 
-    lProcess            := .Y.
     waitrun('_Build.bat', 0  )
     waitmess:hide()
      cError:=memoread('_temp.log')
@@ -2716,7 +2681,7 @@ DO CASE
             BorraTemp() // MigSoft
          endif
          if noption==0
-            msginfo('Make Finished.','Information')
+            MsgInfo( 'Project builded.', 'ooHGIDE+' )
          endif
          if noption==1
             npos:=at(".",myide:cprojectname)
@@ -2734,7 +2699,7 @@ DO CASE
       cursorwait()
       output=''
       For i:=1 to nitems  /////to 1 step -1
-          cItem:= Form_tree:Tree_1:Item ( i )
+          cItem:= Form_Tree:Tree_1:Item ( i )
           if (myide:searchtypeadd(myide:searchitem(cItem,"Prg module"))=='Prg module') .and.( cItem<>'Prg module')
                 IF AT(upper(cItem+'.prg'),upper(output))=0
                    output += "# include  '"+citem+".prg'"+crlf+crlf
@@ -2746,24 +2711,27 @@ DO CASE
       cprgname:=substr(myide:cprojectname,1,npos-1)
       if memowrit(cprgname+'.prg',output)
          if .not. file('compile.bat') .and. ! IsFileInPath('compile.bat')
-            msginfo('You must copy the compile.bat distributed with ooHGIDE+ sample to the actual project directory, or put in current path','Information')
+            MsgInfo( 'Copy file COMPILE.BAT from ooHG root folder to the current' + CRLF + 'project folder, or add ooHG root folder to PATH.', 'ooHGIDE+' )
             cursorarrow()
-            form_tree:button_9:enabled:=.T.
-            form_tree:button_10:enabled:=.T.
-            form_tree:button_11:enabled:=.T.
+            Form_Tree:button_9:enabled:=.T.
+            Form_Tree:button_10:enabled:=.T.
+            Form_Tree:button_11:enabled:=.T.
             return
          endif
+
+         waitmess:hmi_label_101:value:='Compiling ...'
+         waitmess:show()
 
          set printer to comp.bat
          set print on
          set console off
-         ? "compile " + cprgname
+         ? "compile " + cprgname + " /nr"
          set console on
          set print off
          set printer to
 
-         waitmess:hmi_label_101:value:='Compiling....'
-         waitmess:show()
+         ferase('error.lst')
+
          if cos='WINDOWS_NT'
             waitrun("comp.bat",0)
          else
@@ -2777,7 +2745,7 @@ DO CASE
             return
          endif
          if noption=0
-            msginfo('Project builded.','Information')
+            MsgInfo( 'Project builded.', 'ooHGIDE+')
          endif
          if noption==1 .or. noption==2
             cexe:=cprgname+'.exe'
@@ -2788,9 +2756,9 @@ DO CASE
       endif
 ENDCASE
 cursorarrow()
-form_tree:button_9:enabled:=.T.
-form_tree:button_10:enabled:=.T.
-form_tree:button_11:enabled:=.T.
+Form_Tree:button_9:enabled:=.T.
+Form_Tree:button_10:enabled:=.T.
+Form_Tree:button_11:enabled:=.T.
 do events
 Return
 
@@ -2809,58 +2777,57 @@ LOCAL cParams
 LOCAL cOut            := ''
 
 LOCAL cProjFolder     := myide:cProjFolder+'\'
-LOCAL cBccFolder      := myide:cPellFolder+'\'
+LOCAL cCompFolder     := myide:cPellFolder+'\'
 LOCAL cMiniGuiFolder  := myide:cGuixHbPelles+'\'
 LOCAL cHarbourFolder  := myide:cxHbPellFolder+'\'
 
 LOCAL nFile
 LOCAL lDebug := .F.
 
-nItems:=Form_tree:Tree_1:ItemCount
-memowrit('error.lst'," ")
+nItems:=Form_Tree:Tree_1:ItemCount
 if len(alltrim(myide:cprojectname))=0
-   msginfo('You must define a project name'+CRLF+'Build Premature end','Information')
+   MsgInfo('You must define a project name'+CRLF+'Build Premature end','ooHGIDE+')
    return
 endif
 cos=upper(gete('os'))
 if len(cos)=0
    cos=gete('os_type')
 endif
-form_tree:button_9:enabled:=.F.
-form_tree:button_10:enabled:=.F.
-form_tree:button_11:enabled:=.F.
+Form_Tree:button_9:enabled:=.F.
+Form_Tree:button_10:enabled:=.F.
+Form_Tree:button_11:enabled:=.F.
 cursorwait()
 do events
 DO CASE
    CASE myide:ltbuild==2 // Own Make BCC
 
 
-  BEGIN SEQUENCE
+   BEGIN SEQUENCE
 
-   IF EMPTY(myide:cProjectname)     ////////    IF EMPTY(cProjName)
-      MsgStop('You must save the project before building it.','ooHGIDE+')
-      BREAK
-    ENDIF
+      // Check folders
+      If Empty( myide:cProjectName )
+//         waitmess:Hide()
+         MsgStop( 'You must save the project before building it.', 'ooHGIDE+' )
+         Break
+      EndIf
 
-    IF EMPTY(cProjFolder) /////////////  .OR. EMPTY(PrgFiles.List_1.Item(1))
-      MsgStop('You must open and save a project before building it.', 'ooHGIDE+')
-      BREAK
-    ENDIF
+      If Empty( cCompFolder )
+//         waitmess:Hide()
+         MsgStop( 'The Pelles C folder must be specified to build a project.', 'ooHGIDE+' )
+         Break
+      EndIf
 
-    IF EMPTY(cBccFolder)
-      MsgStop('The BCC folder must be specified to build a project.', 'ooHGIDE+')
-      BREAK
-    ENDIF
+      If Empty( cMiniGuiFolder )
+//         waitmess:Hide()
+         MsgStop( 'The ooHG-xHb-Pelles C folder must be specified to build a project.', 'ooHGIDE+' )
+         Break
+      EndIf
 
-    IF EMPTY(cMiniGuiFolder)
-      MsgStop('The ooHG folder must be specified to build a project.', 'ooHGIDE+')
-      BREAK
-    ENDIF
-
-    IF EMPTY(cHarbourFolder)
-      MsgStop('The Harbour folder must be specified to build a project.', 'ooHGIDE+')
-      BREAK
-    ENDIF
+      If Empty( cHarbourFolder )
+//         waitmess:Hide()
+         MsgStop( 'The xHarbour-Pelles C folder must be specified to build a project.', 'ooHGIDE+' )
+         Break
+      EndIf
 
     SetCurrentFolder(cProjFolder)
     DELETE FILE(cProjFolder +  'End.Txt')
@@ -2869,7 +2836,7 @@ DO CASE
     nPrgfiles:=0
     aArraux:={}
     For i:=nitems to 1  step -1
-          cItem:= Form_tree:Tree_1:Item ( i )
+          cItem:= Form_Tree:Tree_1:Item ( i )
           if (myide:searchtypeadd(myide:searchitem(cItem,"Prg module"))=='Prg module') .and.( cItem<>'Prg module')
              IF ascan(aArraux,upper(cItem+".PRG"))=0
                   AADD(aArraux, upper(ALLTRIM( cItem+'.prg' )))
@@ -2886,15 +2853,15 @@ DO CASE
     CreateFolder(cProjFolder +  'OBJ')
 
     cOut += 'HARBOUR_EXE = ' + cHarbourFolder + 'BIN\HARBOUR.EXE'  + CRLF
-    cOut += 'CC = ' + cBccFolder + 'BIN\POCC.EXE'  + CRLF
-    cOut += 'ILINK_EXE = ' + cBccFolder + 'BIN\POLINK.EXE'  + CRLF
-    cOut += 'BRC_EXE = ' + cBccFolder + 'BIN\PORC.EXE'  + CRLF
+    cOut += 'CC = ' + cCompFolder + 'BIN\POCC.EXE'  + CRLF
+    cOut += 'ILINK_EXE = ' + cCompFolder + 'BIN\POLINK.EXE'  + CRLF
+    cOut += 'BRC_EXE = ' + cCompFolder + 'BIN\PORC.EXE'  + CRLF
     cOut += 'APP_NAME = ' + delext(myide:cprojectname) + '.exe' + CRLF
     cOut += 'RC_FILE = ' + cMiniGuiFolder + 'RESOURCES\oohg.RC' + CRLF
     cOut += 'INCLUDE_DIR = ' + cHarbourFolder + 'INCLUDE;' + cMiniGuiFolder+'INCLUDE;'+DelSlash(cProjFolder) + CRLF
     cOut += 'INCLUDE_C_DIR = ' + cHarbourFolder+'INCLUDE -I'+cMiniGuiFolder+'INCLUDE -I'+DelSlash(cProjFolder)+;
-             ' -I'+cBccFolder+'INCLUDE -I'+cBccFolder+'INCLUDE\WIN'+CRLF
-    cOut += 'CC_LIB_DIR = ' + cBccFolder + 'LIB'  + CRLF
+             ' -I'+cCompFolder+'INCLUDE -I'+cCompFolder+'INCLUDE\WIN'+CRLF
+    cOut += 'CC_LIB_DIR = ' + cCompFolder + 'LIB'  + CRLF
     cOut += 'HRB_LIB_DIR = ' + cHarbourFolder + 'LIB'  + CRLF
     cOut += 'OBJ_DIR = ' + cProjFolder + 'OBJ' + CRLF
     cOut += 'C_DIR = ' + cProjFolder + 'OBJ' + CRLF
@@ -3018,17 +2985,16 @@ DO CASE
       cOut += '    $(CC) $(COBJFLAGS) -Fo$@ $**' + CRLF
     NEXT i
 
-    HB_MEMOWRIT(cProjFolder +  '_Temp.bc', cOut)
+    HB_MEMOWRIT(cProjFolder +  '_Temp.bc', cOut)         // Adds EOF
 
-    cMakeExe := cBccFolder + 'BIN\POMAKE.EXE'
+    cMakeExe := cCompFolder + 'BIN\POMAKE.EXE'
     cParams  := '/F ' + cProjFolder +  '_Temp.bc' + ;
       ' > ' + cProjFolder +  '_Temp.log'
     HB_MEMOWRIT(cProjFolder + '_Build.bat', ;
       '@echo off' + CRLF + ;
       cMakeExe + ' ' + cParams + CRLF + ;
-      'echo End > ' + cProjFolder + 'End.txt' + CRLF)
+      'echo End > ' + cProjFolder + 'End.txt' + CRLF)    // Adds EOF
 
-    lProcess            := .Y.
     waitrun('_Build.bat', 0  )
     waitmess:hide()
      cError:=memoread('_temp.log')
@@ -3039,7 +3005,7 @@ DO CASE
             BorraTemp() // MigSoft
          endif
          if noption==0
-            msginfo('Make Finished.','Information')
+            MsgInfo( 'Project builded.', 'ooHGIDE+' )
          endif
          if noption==1
             npos:=at(".",myide:cprojectname)
@@ -3057,7 +3023,7 @@ DO CASE
       cursorwait()
       output=''
       For i:=1 to nitems  /////to 1 step -1
-          cItem:= Form_tree:Tree_1:Item ( i )
+          cItem:= Form_Tree:Tree_1:Item ( i )
           if (myide:searchtypeadd(myide:searchitem(cItem,"Prg module"))=='Prg module') .and.( cItem<>'Prg module')
                 IF AT(upper(cItem+'.prg'),upper(output))=0
                    output += "# include  '"+citem+".prg'"+crlf+crlf
@@ -3069,24 +3035,27 @@ DO CASE
       cprgname:=substr(myide:cprojectname,1,npos-1)
       if memowrit(cprgname+'.prg',output)
          if .not. file('compile.bat') .and. ! IsFileInPath('compile.bat')
-            msginfo('You must copy the compile.bat distributed with ooHGIDE+ sample to the actual project directory, or put in current path','Information')
+            MsgInfo( 'Copy file COMPILE.BAT from ooHG root folder to the current' + CRLF + 'project folder, or add ooHG root folder to PATH.', 'ooHGIDE+' )
             cursorarrow()
-            form_tree:button_9:enabled:=.T.
-            form_tree:button_10:enabled:=.T.
-            form_tree:button_11:enabled:=.T.
+            Form_Tree:button_9:enabled:=.T.
+            Form_Tree:button_10:enabled:=.T.
+            Form_Tree:button_11:enabled:=.T.
             return
          endif
+
+         waitmess:hmi_label_101:value:='Compiling ...'
+         waitmess:show()
 
          set printer to comp.bat
          set print on
          set console off
-         ? "compile " + cprgname
+         ? "compile " + cprgname + " /nr"
          set console on
          set print off
          set printer to
 
-         waitmess:hmi_label_101:value:='Compiling....'
-         waitmess:show()
+         ferase('error.lst')
+
          if cos='WINDOWS_NT'
             waitrun("comp.bat",0)
          else
@@ -3100,7 +3069,7 @@ DO CASE
             return
          endif
          if noption=0
-            msginfo('Project builded.','Information')
+            MsgInfo( 'Project builded.', 'ooHGIDE+' )
          endif
          if noption==1 .or. noption==2
             cexe:=cprgname+'.exe'
@@ -3111,9 +3080,9 @@ DO CASE
       endif
 ENDCASE
 cursorarrow()
-form_tree:button_9:enabled:=.T.
-form_tree:button_10:enabled:=.T.
-form_tree:button_11:enabled:=.T.
+Form_Tree:button_9:enabled:=.T.
+Form_Tree:button_10:enabled:=.T.
+Form_Tree:button_11:enabled:=.T.
 do events
 Return
 
@@ -3132,58 +3101,57 @@ LOCAL cParams
 LOCAL cOut            := ''
 
 LOCAL cProjFolder     := myide:cProjFolder+'\'
-LOCAL cBccFolder      := myide:cPellFolder+'\'
+LOCAL cCompFolder     := myide:cPellFolder+'\'
 LOCAL cMiniGuiFolder  := myide:cGuiHbPelles+'\'
 LOCAL cHarbourFolder  := myide:cHbPellFolder+'\'
 
 LOCAL nFile
 LOCAL lDebug := .F.
 
-nItems:=Form_tree:Tree_1:ItemCount
-*memowrit('error.lst'," ")
+nItems:=Form_Tree:Tree_1:ItemCount
 if len(alltrim(myide:cprojectname))=0
-   msginfo('You must define a project name'+CRLF+'Build Premature end','Information')
+   MsgInfo('You must define a project name'+CRLF+'Build Premature end','ooHGIDE+')
    return
 endif
 cos=upper(gete('os'))
 if len(cos)=0
    cos=gete('os_type')
 endif
-form_tree:button_9:enabled:=.F.
-form_tree:button_10:enabled:=.F.
-form_tree:button_11:enabled:=.F.
+Form_Tree:button_9:enabled:=.F.
+Form_Tree:button_10:enabled:=.F.
+Form_Tree:button_11:enabled:=.F.
 cursorwait()
 do events
 DO CASE
    CASE myide:ltbuild==2 // Own Make BCC
 
 
-  BEGIN SEQUENCE
+   BEGIN SEQUENCE
 
-   IF EMPTY(myide:cProjectname)     ////////    IF EMPTY(cProjName)
-      MsgStop('You must save the project before building it.','ooHGIDE+')
-      BREAK
-    ENDIF
+      // Check folders
+      If Empty( myide:cProjectName )
+//         waitmess:Hide()
+         MsgStop( 'You must save the project before building it.', 'ooHGIDE+' )
+         Break
+      EndIf
 
-    IF EMPTY(cProjFolder) /////////////  .OR. EMPTY(PrgFiles.List_1.Item(1))
-      MsgStop('You must open and save a project before building it.', 'ooHGIDE+')
-      BREAK
-    ENDIF
+      If Empty( cCompFolder )
+//         waitmess:Hide()
+         MsgStop( 'The Pelles C folder must be specified to build a project.', 'ooHGIDE+' )
+         Break
+      EndIf
 
-    IF EMPTY(cBccFolder)
-      MsgStop('The BCC folder must be specified to build a project.', 'ooHGIDE+')
-      BREAK
-    ENDIF
+      If Empty( cMiniGuiFolder )
+//         waitmess:Hide()
+         MsgStop( 'The ooHG-Hb-Pelles C folder must be specified to build a project.', 'ooHGIDE+' )
+         Break
+      EndIf
 
-    IF EMPTY(cMiniGuiFolder)
-      MsgStop('The ooHG folder must be specified to build a project.', 'ooHGIDE+')
-      BREAK
-    ENDIF
-
-    IF EMPTY(cHarbourFolder)
-      MsgStop('The Harbour folder must be specified to build a project.', 'ooHGIDE+')
-      BREAK
-    ENDIF
+      If Empty( cHarbourFolder )
+//         waitmess:Hide()
+         MsgStop( 'The Harbour-Pelles C folder must be specified to build a project.', 'ooHGIDE+' )
+         Break
+      EndIf
 
     SetCurrentFolder(cProjFolder)
     DELETE FILE(cProjFolder +  'End.Txt')
@@ -3192,7 +3160,7 @@ DO CASE
     nPrgfiles:=0
     aArraux:={}
     For i:=nitems to 1  step -1
-          cItem:= Form_tree:Tree_1:Item ( i )
+          cItem:= Form_Tree:Tree_1:Item ( i )
           if (myide:searchtypeadd(myide:searchitem(cItem,"Prg module"))=='Prg module') .and.( cItem<>'Prg module')
              IF ascan(aArraux,upper(cItem+".PRG"))=0
                   AADD(aArraux, upper(ALLTRIM( cItem+'.prg' )))
@@ -3209,15 +3177,15 @@ DO CASE
     CreateFolder(cProjFolder +  'OBJ')
 
     cOut += 'HARBOUR_EXE = ' + cHarbourFolder + 'BIN\HARBOUR.EXE'  + CRLF
-    cOut += 'CC = ' + cBccFolder + 'BIN\POCC.EXE'  + CRLF
-    cOut += 'ILINK_EXE = ' + cBccFolder + 'BIN\POLINK.EXE'  + CRLF
-    cOut += 'BRC_EXE = ' + cBccFolder + 'BIN\PORC.EXE'  + CRLF
+    cOut += 'CC = ' + cCompFolder + 'BIN\POCC.EXE'  + CRLF
+    cOut += 'ILINK_EXE = ' + cCompFolder + 'BIN\POLINK.EXE'  + CRLF
+    cOut += 'BRC_EXE = ' + cCompFolder + 'BIN\PORC.EXE'  + CRLF
     cOut += 'APP_NAME = ' + delext(myide:cprojectname) + '.exe' + CRLF
     cOut += 'RC_FILE = ' + cMiniGuiFolder + 'RESOURCES\oohg.RC' + CRLF
     cOut += 'INCLUDE_DIR = ' + cHarbourFolder + 'INCLUDE;' + cMiniGuiFolder+'INCLUDE;'+DelSlash(cProjFolder) + CRLF
     cOut += 'INCLUDE_C_DIR = ' + cHarbourFolder+'INCLUDE -I'+cMiniGuiFolder+'INCLUDE -I'+DelSlash(cProjFolder)+;
-             ' -I'+cBccFolder+'INCLUDE -I'+cBccFolder+'INCLUDE\WIN'+CRLF
-    cOut += 'CC_LIB_DIR = ' + cBccFolder + 'LIB' + CRLF
+             ' -I'+cCompFolder+'INCLUDE -I'+cCompFolder+'INCLUDE\WIN'+CRLF
+    cOut += 'CC_LIB_DIR = ' + cCompFolder + 'LIB' + CRLF
 
     If file(cHarbourFolder + 'LIB\hbwin.lib')
        cOut += 'HRB_LIB_DIR = ' + cHarbourFolder + 'LIB'  + CRLF
@@ -3359,20 +3327,19 @@ DO CASE
     NEXT i
 
 #ifndef __XHARBOUR__
-  hb_MemoWrit(cProjFolder +  '_Temp.bc', cOut)
+  hb_MemoWrit(cProjFolder +  '_Temp.bc', cOut)         // Adds EOF
 #else
   MemoWrit(cProjFolder +  '_Temp.bc', cOut, .N.)
 #endif
 
-    cMakeExe := cBccFolder + 'BIN\POMAKE.EXE'
+    cMakeExe := cCompFolder + 'BIN\POMAKE.EXE'
     cParams  := '/F ' + cProjFolder +  '_Temp.bc' + ;
       ' > ' + cProjFolder +  '_Temp.log'
     HB_MEMOWRIT(cProjFolder + '_Build.bat', ;
       '@echo off' + CRLF + ;
       cMakeExe + ' ' + cParams + CRLF + ;
-      'echo End > ' + cProjFolder + 'End.txt' + CRLF)
+      'echo End > ' + cProjFolder + 'End.txt' + CRLF)       // Adds EOF
 
-    lProcess            := .Y.
     waitrun('_Build.bat', 0  )
     waitmess:hide()
      cError:=memoread('_temp.log')
@@ -3383,7 +3350,7 @@ DO CASE
             BorraTemp() // MigSoft
          endif
          if noption==0
-            msginfo('Make Finished.','Information')
+            MsgInfo( 'Project builded.', 'ooHGIDE+' )
          endif
          if noption==1
             npos:=at(".",myide:cprojectname)
@@ -3401,7 +3368,7 @@ DO CASE
       cursorwait()
       output=''
       For i:=1 to nitems  /////to 1 step -1
-          cItem:= Form_tree:Tree_1:Item ( i )
+          cItem:= Form_Tree:Tree_1:Item ( i )
           if (myide:searchtypeadd(myide:searchitem(cItem,"Prg module"))=='Prg module') .and.( cItem<>'Prg module')
                 IF AT(upper(cItem+'.prg'),upper(output))=0
                    output += "# include  '"+citem+".prg'"+crlf+crlf
@@ -3413,24 +3380,27 @@ DO CASE
       cprgname:=substr(myide:cprojectname,1,npos-1)
       if memowrit(cprgname+'.prg',output)
          if .not. file('compile.bat') .and. ! IsFileInPath('compile.bat')
-            msginfo('You must copy the compile.bat distributed with ooHGIDE+ sample to the actual project directory, or put in current path','Information')
+            MsgInfo( 'Copy file COMPILE.BAT from ooHG root folder to the current' + CRLF + 'project folder, or add ooHG root folder to PATH.', 'ooHGIDE+' )
             cursorarrow()
-            form_tree:button_9:enabled:=.T.
-            form_tree:button_10:enabled:=.T.
-            form_tree:button_11:enabled:=.T.
+            Form_Tree:button_9:enabled:=.T.
+            Form_Tree:button_10:enabled:=.T.
+            Form_Tree:button_11:enabled:=.T.
             return
          endif
+
+         waitmess:hmi_label_101:value:='Compiling ...'
+         waitmess:show()
 
          set printer to comp.bat
          set print on
          set console off
-         ? "compile " + cprgname
+         ? "compile " + cprgname + " /nr"
          set console on
          set print off
          set printer to
 
-         waitmess:hmi_label_101:value:='Compiling....'
-         waitmess:show()
+         ferase('error.lst')
+
          if cos='WINDOWS_NT'
             waitrun("comp.bat",0)
          else
@@ -3444,7 +3414,7 @@ DO CASE
             return
          endif
          if noption=0
-            msginfo('Project builded.','Information')
+            MsgInfo( 'Project builded.', 'ooHGIDE+' )
          endif
          if noption==1 .or. noption==2
             cexe:=cprgname+'.exe'
@@ -3455,9 +3425,9 @@ DO CASE
       endif
 ENDCASE
 cursorarrow()
-form_tree:button_9:enabled:=.T.
-form_tree:button_10:enabled:=.T.
-form_tree:button_11:enabled:=.T.
+Form_Tree:button_9:enabled:=.T.
+Form_Tree:button_10:enabled:=.T.
+Form_Tree:button_11:enabled:=.T.
 do events
 
 Return
@@ -3497,9 +3467,9 @@ DEFINE WINDOW c_errors obj c_errors  ;
 END WINDOW
 CENTER WINDOW c_errors
 ACTIVATE WINDOW c_errors
-form_tree:button_9:enabled:=.T.
-form_tree:button_10:enabled:=.T.
-form_tree:button_11:enabled:=.T.
+Form_Tree:button_9:enabled:=.T.
+Form_Tree:button_10:enabled:=.T.
+Form_Tree:button_11:enabled:=.T.
 return
 
 *-------------------------
@@ -3546,20 +3516,20 @@ return
 METHOD Newproject() CLASS THMI
 *-------------------------
 if .not. myide:lPsave
-   if msgyesno('Actual Project not saved (save ?)','Question')
+   If MsgYesNo( 'Current project not saved, save it now?', 'ooHGIDE+' )
       myide:saveproject()
    endif
 endif
 
-form_tree:Tree_1:deleteAllitems()
-Form_tree:Tree_1:AddItem( 'Project'   , 0 )
-Form_tree:Tree_1:AddItem( 'Form module' , 1 )
-Form_tree:Tree_1:AddItem( 'Prg module' , 1 )
-Form_tree:Tree_1:AddItem( 'CH module' , 1 )
-Form_tree:Tree_1:AddItem( 'Rpt module' , 1 )
-Form_tree:Tree_1:AddItem( 'RC module' , 1 )
-Form_tree:Tree_1:value := 1
-Form_tree:title := cNameApp
+Form_Tree:Tree_1:deleteAllitems()
+Form_Tree:Tree_1:AddItem( 'Project'   , 0 )
+Form_Tree:Tree_1:AddItem( 'Form module' , 1 )
+Form_Tree:Tree_1:AddItem( 'Prg module' , 1 )
+Form_Tree:Tree_1:AddItem( 'CH module' , 1 )
+Form_Tree:Tree_1:AddItem( 'Rpt module' , 1 )
+Form_Tree:Tree_1:AddItem( 'RC module' , 1 )
+Form_Tree:Tree_1:value := 1
+Form_Tree:title := cNameApp
 myide:lPsave:=.F.
 myide:cprojectname:=''
    Desactiva(0)           // MigSoft
@@ -3649,15 +3619,15 @@ END INI
 ************
 myide:cprojectname:=myide:cFile
 cproject:=memoread(myide:cFile)
-form_tree:title := cNameApp+' ('+myide:cfile+')'
-Form_tree:Tree_1:deleteAllitems()
+Form_Tree:title := cNameApp+' ('+myide:cfile+')'
+Form_Tree:Tree_1:deleteAllitems()
 ncontlin:=mlcount(cproject)
-Form_tree:Tree_1:AddItem( 'Project'   , 0 )
-Form_tree:Tree_1:AddItem( 'Form module' , 1 )
-Form_tree:Tree_1:AddItem( 'Prg module' , 1 )
-Form_tree:Tree_1:AddItem( 'CH module' , 1 )
-Form_tree:Tree_1:AddItem( 'Rpt module' , 1 )
-Form_tree:Tree_1:AddItem( 'RC module' , 1 )
+Form_Tree:Tree_1:AddItem( 'Project'   , 0 )
+Form_Tree:Tree_1:AddItem( 'Form module' , 1 )
+Form_Tree:Tree_1:AddItem( 'Prg module' , 1 )
+Form_Tree:Tree_1:AddItem( 'CH module' , 1 )
+Form_Tree:Tree_1:AddItem( 'Rpt module' , 1 )
+Form_Tree:Tree_1:AddItem( 'RC module' , 1 )
 sw:=0
 For i:=1 to ncontlin
     aAdd(Aline,trim(memoline(cproject,,i)))
@@ -3694,40 +3664,49 @@ For i:=1 to ncontlin
           endif
     endcase
 Next i
-Form_tree:Tree_1:value := 1
-form_tree:tree_1:Expand ( 1 )
+Form_Tree:Tree_1:value := 1
+Form_Tree:tree_1:Expand ( 1 )
 return
 
+//------------------------------------------------------------------------------
+METHOD SaveProject() CLASS THMI
+//------------------------------------------------------------------------------
+   Local Output
+   Local nIitems
+   Local i
 
-*-------------------------
-METHOD Saveproject() CLASS THMI
-*-------------------------
-local Output,nIitems,i
-Output := ''
-nItems:=Form_tree:Tree_1:ItemCount
-for i:=1 to nItems
-    cItem:= Form_tree:Tree_1:Item ( i )
-    Output += cItem +  CRLF
-next i
-Output += ''
-**********
-if len(trim(myide:cprojectname))=0
-   myide:cprojectname:=PutFile ( { {'ooHGIDE+ project files *.pmg','*.pmg'} }  , 'Save Project' )
-   if Upper ( Right (myide:cprojectname , 4 ) ) != '.PMG'
-      myide:cprojectname:= myide:cprojectname + '.pmg'
-      if upper(myide:cprojectname)=upper('.pmg')
-         myide:cprojectname:=''
-      endif
-   endif
-endif
-memowrit (myide:cprojectname,output)
-pmgFolder := OnlyFolder( myide:cprojectname )              // MigSoft
-form_tree:title:=cNameApp+' ('+myide:cProjectname+')'
-myide:lPsave:=.T.
-   If Len(myide:cprojectname) > 0
-      Desactiva(1)  // MigSoft
+   Output := ''
+   nItems := Form_Tree:Tree_1:ItemCount
+   For i := 1 To nItems
+      cItem := Form_Tree:Tree_1:Item( i )
+      Output += cItem + CRLF
+   Next i
+   Output += ''
+
+   If Empty( myide:cProjectName )
+      myide:cProjectName := PutFile( { { 'ooHGIDE+ project files *.pmg', '*.pmg' } }, 'ooHGIDE+ - Save Project' )
+      If Upper( Right( myide:cProjectName, 4 ) ) != '.PMG'
+         myide:cProjectName += '.pmg'
+      EndIf
+      If Upper( myide:cProjectName ) == '.PMG'
+         myide:cProjectName := ''
+      EndIf
+   EndIf
+
+   pmgFolder := OnlyFolder( myide:cProjectName )
+   Form_Tree:Title := cNameApp + ' (' + myide:cProjectName + ')'
+   If ! Empty( myide:cProjectName)
+      Desactiva( 1 )
    Endif
-return
+
+   If Empty( myide:cProjectName )
+      MsgStop( 'Project not saved.', 'ooHGIDE+' )
+   Else
+      MemoWrit( myide:cProjectName, Output )
+      myide:lPsave := .T.
+      MsgInfo( 'Project saved.', 'ooHGIDE+' )
+   EndIf
+Return
 
 
 *-------------------------
@@ -3736,20 +3715,20 @@ METHOD newform() CLASS THMI
 local cPform
 cPform:=inputbox('Form module','Add Form module')
 if val(cPform)>0
-   msgstop('The name must begin with a letter.','Information')
+   MsgStop( 'The name must begin with a letter.', 'ooHGIDE+' )
    return
 endif
 if at('.',cPform)#0
-   msgstop('The name must not have (.)','Information')
+   MsgStop( 'The name must not contain a dot (.) in it.', 'ooHGIDE+' )
    return
 endif
 
 if len(cPform)>0
    if myide:searchitem(cPform,'Form module')>0 .and. myide:searchtypeadd(myide:searchitem(cPform,'Form module'))=='Form module'
-      msgstop('This name is not permited.','Information')
+      MsgStop( 'This name is not allowed.', 'ooHGIDE+' )
       return
    endif
-   Form_tree:Tree_1:AddItem( cPform , 2 )
+   Form_Tree:Tree_1:AddItem( cPform , 2 )
    myide:lPsave:=.F.
 endif
 Return
@@ -3760,10 +3739,10 @@ METHOD newformfromar(cPform) CLASS THMI
 *-------------------------
 if len(cPform)>0
    if myide:searchitem(cPform,'Form module')>0 .and. myide:searchtypeadd(myide:searchitem(cPform,'Form module'))=='Form module'
-      msgstop('This name is not permited.','Information')
+      MsgStop( 'This name is not allowed.', 'ooHGIDE+' )
       return
    endif
-   Form_tree:Tree_1:AddItem( cPform , 2 )
+   Form_Tree:Tree_1:AddItem( cPform , 2 )
 endif
 Return
 
@@ -3774,11 +3753,11 @@ METHOD Newprgfromar(cPprg) CLASS THMI
 local nValue
 if len(cPprg)>0
    if myide:searchitem(cPprg,"Prg module")>0 .and. myide:searchtypeadd(myide:searchitem(cPprg,"Prg module"))=='Prg module'
-      msgstop('This name is not permited.','Information')
+      MsgStop( 'This name is not allowed.', 'ooHGIDE+' )
       return
    endif
    nValue:=myide:searchitem('Prg module',"Prg module")
-   Form_tree:Tree_1:AddItem( cPprg , nValue)
+   Form_Tree:Tree_1:AddItem( cPprg , nValue)
 endif
 Return
 
@@ -3789,11 +3768,11 @@ METHOD Newchfromar(cPch) CLASS THMI
 local nValue
 if len(cPch)>0
    if myide:searchitem(cPch,"CH module")>0 .and. myide:searchtypeadd(myide:searchitem(Cpch,"CH module"))=='CH module'
-      msgstop('This name is not permited.','Information')
+      MsgStop( 'This name is not allowed.', 'ooHGIDE+' )
       return
    endif
    nValue:=myide:searchitem('CH module',"CH module")
-   Form_tree:Tree_1:AddItem( cPch , nValue)
+   Form_Tree:Tree_1:AddItem( cPch , nValue)
 endif
 Return
 
@@ -3804,11 +3783,11 @@ METHOD Newrcfromar(cPrc) CLASS THMI
 local nValue
 if len(cPrc)>0
    if myide:searchitem(cPrc,"RC module")>0 .and. myide:searchtypeadd(myide:searchitem(Cprc,"RC module"))=='RC module'
-      msgstop('This name is not permited.','Information')
+      MsgStop( 'This name is not allowed.', 'ooHGIDE+' )
       return
    endif
    nValue:=myide:searchitem('RC module',"RC module")
-   Form_tree:Tree_1:AddItem( cPrc , nValue)
+   Form_Tree:Tree_1:AddItem( cPrc , nValue)
 endif
 Return
 
@@ -3819,11 +3798,11 @@ METHOD Newrptfromar(cPrpt) CLASS THMI
 local nValue
 if len(cPrpt)>0
    if myide:searchitem(cPrpt,"Rpt module")>0 .and. myide:searchtypeadd(myide:searchitem(Cprpt,"Rpt module"))=='Rpt module'
-      msgstop('This name is not permited.','Information')
+      MsgStop( 'This name is not allowed.', 'ooHGIDE+' )
       return
    endif
    nValue:=myide:searchitem('Rpt module',"Rpt module")
-   Form_tree:Tree_1:AddItem( cPrpt , nValue)
+   Form_Tree:Tree_1:AddItem( cPrpt , nValue)
 endif
 Return
 
@@ -3836,20 +3815,20 @@ local cPprg,nValue
 nvalue:=0
 cPprg:=inputbox('Prg Module','Add Prg Module')
 if val(cPprg)>0
-   msgstop('The name must begin with a letter.','Information')
+   MsgStop( 'The name must begin with a letter.', 'ooHGIDE+' )
    return
 endif
 if at('.',cPprg)#0
-   msgstop('The name must not have (.)','Information')
+   MsgStop( 'The name must not contain a dot (.) in it.', 'ooHGIDE+' )
    return
 endif
 if len(cPprg)>0
    if myide:searchitem(cPprg,'Prg module')>0 .and. myide:searchtypeadd(myide:searchitem(cPprg,'Prg module'))=='Prg module'
-      msgstop('This name is not permited.','Information')
+      MsgStop( 'This name is not allowed.', 'ooHGIDE+' )
       return
    endif
    nValue:=myide:searchitem('Prg module','Prg module')
-   Form_tree:Tree_1:AddItem( cPprg , nValue)
+   Form_Tree:Tree_1:AddItem( cPprg , nValue)
    myide:lPsave:=.F.
 endif
 Return
@@ -3861,20 +3840,20 @@ METHOD Newch() CLASS THMI
 local cPch,nValue
 cPch:=inputbox('CH Module','Add CH Module')
 if val(cPch)>0
-   msgstop('The name must begin with a letter.','Information')
+   MsgStop( 'The name must begin with a letter.', 'ooHGIDE+' )
    return
 endif
 if at('.',cPch)#0
-   msgstop('The name must not have (.)','Information')
+   MsgStop( 'The name must not contain a dot (.) in it.', 'ooHGIDE+' )
    return
 endif
 if len(cPch)>0
    if myide:searchitem(cPch,'CH module')>0 .and. myide:searchtypeadd(myide:searchitem(Cpch,'CH module'))=='CH module'
-      msgstop('This name is not permited.','Information')
+      MsgStop( 'This name is not allowed.', 'ooHGIDE+' )
       return
    endif
    nValue:=myide:searchitem('CH module','CH module')
-   Form_tree:Tree_1:AddItem( cPch , nValue)
+   Form_Tree:Tree_1:AddItem( cPch , nValue)
    myide:lPsave:=.F.
 endif
 Return
@@ -3886,20 +3865,20 @@ METHOD Newrc() CLASS THMI
 local cPrc,nValue
 cPrc:=inputbox('RC Module','Add RC Module')
 if val(cPrc)>0
-   msgstop('The name must begin with a letter.','Information')
+   MsgStop( 'The name must begin with a letter.', 'ooHGIDE+' )
    return
 endif
 if at('.',cPrc)#0
-   msgstop('The name must not have (.)','Information')
+   MsgStop( 'The name must not contain a dot (.) in it.', 'ooHGIDE+' )
    return
 endif
 if len(cPrc)>0
    if myide:searchitem(cPrc,'RC module')>0 .and. myide:searchtypeadd(myide:searchitem(Cprc,'RC module'))=='RC module'
-      msgstop('This name is not permited.','Information')
+      MsgStop( 'This name is not allowed.', 'ooHGIDE+' )
       return
    endif
    nValue:=myide:searchitem('RC module','RC module')
-   Form_tree:Tree_1:AddItem( cPrc , nValue)
+   Form_Tree:Tree_1:AddItem( cPrc , nValue)
    myide:lPsave:=.F.
 endif
 Return
@@ -3911,20 +3890,20 @@ METHOD Newrpt() CLASS THMI
 local cPrpt,nValue
 cPrpt:=inputbox('Rpt Module','Add Rpt Module')
 if val(cPrpt)>0
-   msgstop('The name must begin with a letter.','Information')
+   MsgStop( 'The name must begin with a letter.', 'ooHGIDE+' )
    return
 endif
 if at('.',cPrpt)#0
-   msgstop('The name must not have (.)','Information')
+   MsgStop( 'The name must not contain a dot (.) in it.', 'ooHGIDE+' )
    return
 endif
 if len(cPrpt)>0
    if myide:searchitem(cPrpt,'Rpt module')>0 .and. myide:searchtypeadd(myide:searchitem(Cprpt,'Rpt module'))=='Rpt module'
-      msgstop('This name is not permited.','Information')
+      MsgStop( 'This name is not allowed.', 'ooHGIDE+' )
       return
    endif
    nValue:=myide:searchitem('Rpt module','Rpt module')
-   Form_tree:Tree_1:AddItem( cPrpt , nValue)
+   Form_Tree:Tree_1:AddItem( cPrpt , nValue)
    myide:lPsave:=.F.
 endif
 Return
@@ -3934,14 +3913,14 @@ Return
 METHOD deleteitemp() CLASS THMI
 *-------------------------
 local cItem,cparent
-cItem:=form_tree:Tree_1:item(form_tree:Tree_1:Value)
+cItem:=Form_Tree:Tree_1:item(Form_Tree:Tree_1:Value)
 if cItem == 'Form module' .or. cItem=='Prg module' .or. cItem == 'Project' .or. cItem=='CH module' .or. cItem=='Rpt module' .or. cItem=='RC module'
-   msgstop('This Item can not be deleted.','Information')
+   MsgStop( "This item can't be deleted.", 'ooHGIDE+' )
    return
 endif
 
-if msgyesno("Are you sure?","Confirm remove item "+cItem)
-   Form_tree:Tree_1:DeleteItem( form_tree:Tree_1:Value )
+   If MsgYesNo( 'Item ' + cItem + ' will be removed, are you sure?', 'ooHGIDE+' )
+   Form_Tree:Tree_1:DeleteItem( Form_Tree:Tree_1:Value )
    myide:lPsave:=.F.
 endif
 return
@@ -3951,9 +3930,9 @@ METHOD searchitem(cnameitem,cparent) CLASS THMI
 *-------------------------
 local nitems,i,cItem,sw
 sw:=0
-nItems:=Form_tree:Tree_1:ItemCount
+nItems:=Form_Tree:Tree_1:ItemCount
 for i:=1 to nItems
-    cItem:=Form_tree:Tree_1:Item ( i )
+    cItem:=Form_Tree:Tree_1:Item ( i )
     if cItem==cparent
        sw:=1
     endif
@@ -3974,19 +3953,19 @@ IF !HB_IsNumeric( nvalue)
    Return NIL
 ENDIF
 For l:= nValue to 1 step -1
-    if form_tree:Tree_1:item(l) == 'Form module'
+    if Form_Tree:Tree_1:item(l) == 'Form module'
        return ('Form module')
     endif
-    if form_tree:Tree_1:item(l) == 'Prg module'
+    if Form_Tree:Tree_1:item(l) == 'Prg module'
        return ('Prg module')
     endif
-    if form_tree:Tree_1:item(l) == 'CH module'
+    if Form_Tree:Tree_1:item(l) == 'CH module'
        return ('CH module')
     endif
-    if form_tree:Tree_1:item(l) == 'Rpt module'
+    if Form_Tree:Tree_1:item(l) == 'Rpt module'
        return ('Rpt module')
     endif
-    if form_tree:Tree_1:item(l) == 'RC module'
+    if Form_Tree:Tree_1:item(l) == 'RC module'
        return ('RC module')
     endif
 Next l
@@ -3997,21 +3976,21 @@ return nil
 METHOD searchtype() CLASS THMI
 *-------------------------
 local i
-nValue:= form_tree:Tree_1:Value
+nValue:= Form_Tree:Tree_1:Value
 For i:= nValue to 1 step -1
-    if form_tree:Tree_1:item(i) == 'Form module'
+    if Form_Tree:Tree_1:item(i) == 'Form module'
        return ('Form module')
     endif
-    if form_tree:Tree_1:item(i) == 'Prg module'
+    if Form_Tree:Tree_1:item(i) == 'Prg module'
        return ('Prg module')
     endif
-    if form_tree:Tree_1:item(i) == 'CH module'
+    if Form_Tree:Tree_1:item(i) == 'CH module'
        return ('CH module')
     endif
-    if form_tree:Tree_1:item(i) == 'Rpt module'
+    if Form_Tree:Tree_1:item(i) == 'Rpt module'
        return ('Rpt module')
     endif
-    if form_tree:Tree_1:item(i) == 'RC module'
+    if Form_Tree:Tree_1:item(i) == 'RC module'
        return ('RC module')
     endif
 Next i
@@ -4022,7 +4001,7 @@ return nil
 METHOD modifyitem(cItem,cparent) CLASS THMI
 *-------------------------
 if citem=NIL
-   cItem:=form_tree:Tree_1:item(form_tree:Tree_1:Value)
+   cItem:=Form_Tree:Tree_1:item(Form_Tree:Tree_1:Value)
    cParent= myide:searchtype(myide:searchitem(cItem,'Form module'))
 endif
 
@@ -4101,7 +4080,7 @@ return nil
 METHOD modifyRpt(cItem,cparent) CLASS THMI
 *-------------------------
 if citem=NIL
-   cItem:=form_tree:Tree_1:item(form_tree:Tree_1:Value)
+   cItem:=Form_Tree:Tree_1:item(Form_Tree:Tree_1:Value)
    cParent= myide:searchtype(myide:searchitem(cItem,'Rpt module'))
 endif
 
@@ -4116,7 +4095,7 @@ METHOD modifyform(citem,cparent) CLASS THMI
 *-------------------------
 local npos
 if citem=NIL
-   cItem:=form_tree:Tree_1:item(form_tree:Tree_1:Value)
+   cItem:=Form_Tree:Tree_1:item(Form_Tree:Tree_1:Value)
    cParent= myide:searchtype(myide:searchitem(cItem,'Form module'))
 endif
 citem:=lower(citem)
@@ -4130,23 +4109,22 @@ if cParent == 'Form module'
 endif
 return  nil
 
-*-------------------------
-METHOD savefile(cdfile) CLASS THMI
-*-------------------------
-if alltrim(editbcvc:edit_1:value)==''
-   if file(Cdfile)
-      delete file &cdfile
-   endif
-   myide:lsave:=.T.
-   return  nil
-endif
-if memoWrit (cdfile,rtrim(editbcvc:edit_1:value))
-   myide:lsave:=.T.
-else
-   msginfo('Error writing '+cdfile)
-endif
-return  nil
-
+//------------------------------------------------------------------------------
+METHOD SaveFile( cdfile ) CLASS THMI
+//------------------------------------------------------------------------------
+   If AllTrim( editbcvc:edit_1:Value ) == ''
+      If File( cdfile )
+         DELETE FILE &cdfile
+      EndIf
+      myide:lSave := .T.
+   Else
+      If MemoWrit( cdfile, RTrim( editbcvc:edit_1:Value ) )
+         myide:lSave := .T.
+      Else
+         MsgStop( 'Error writing ' + cdfile + '.', 'ooHGIDE+' )
+      EndIf
+   EndIf
+Return Nil
 
 *-------------------------
 METHOD Openfile(cdfile) CLASS THMI
@@ -4181,12 +4159,12 @@ IF len(alltrim(myide:cExteditor))=0
 
    if iswindowdefined(editbcvc)
       waitmess:hide()
-      msginfo('only one file can be edited at the same time','Information')
+      MsgStop( 'Can only edit one form at a time.', 'ooHGIDE+' )
       return nil
    endif
 
-   nwidth:=getformobject("form_tree"):width - (getformobject("form_tree"):width/3.5)
-   nheight:=getformobject("form_tree"):height-160
+   nwidth:=getformobject("Form_Tree"):width - (getformobject("Form_Tree"):width/3.5)
+   nheight:=getformobject("Form_Tree"):height-160
 
           // Migsoft , cvc modified
    DEFINE WINDOW editbcvc obj editbcvc AT 109,80 WIDTH nWidth  HEIGHT nHeight TITLE cNameApp+" "+cdfile ICON 'EDIT' CHILD FONT "Courier New" SIZE 10 backcolor myide:asystemcolor ON SIZE AjustaEditor()
@@ -4196,11 +4174,11 @@ IF len(alltrim(myide:cExteditor))=0
              ON GOTFOCUS {|| myide:posxy() }                  // MigSoft
 
       if len(editbcvc:edit_1:value)>100000
-         msginfo('You should use another program editor')
+         MsgInfo( 'You should use another program editor', 'ooHGIDE+' )
       endif
 
       if len(editbcvc:edit_1:value)>250000
-         msgstop('You must use another program editor')
+         MsgStop('You must use another program editor', 'ooHGIDE+' )
          return nil
       endif
 
@@ -4735,7 +4713,7 @@ if myide:npostext>0
    editbcvc.edit_1.caretpos:=myide:npostext-1
 else
    editbcvc:edit_1:setfocus()
-   msginfo('End search','Information')
+   MsgInfo( 'No more matches found.', 'ooHGIDE+' )
 endif
 return nil
 
@@ -4758,7 +4736,7 @@ return nposluna
 METHOD saveandexit(cdfile) CLASS THMI
 *-------------------------
 if .not. myide:lsave
-   if msgyesno('File not saved (save ?)','Question')
+   if MsgYesNo( 'File not saved, save it now?', 'ooHGIDE+' )
       myide:savefile(cdfile)
    endif
 endif
@@ -4770,7 +4748,7 @@ METHOD databaseview() CLASS THMI
 *-------------------------
 local cdfile,npos,i,j
 if iswindowdefined(Form_brow)
-   msginfo('Browse already running','Information')
+   MsgInfo( 'Browse is already running.', 'ooHGIDE+' )
    return nil
 endif
 ***set interactiveclose on
@@ -4807,10 +4785,10 @@ return
 *-------------------------
 METHOD disable_button() CLASS THMI
 *-------------------------
-form_tree:button_7:enabled := .F.
-form_tree:button_9:enabled := .F.
-form_tree:button_10:enabled := .F.
-form_tree:button_11:enabled := .F.
+Form_Tree:button_7:enabled := .F.
+Form_Tree:button_9:enabled := .F.
+Form_Tree:button_10:enabled := .F.
+Form_Tree:button_11:enabled := .F.
 return
 
 
@@ -4818,7 +4796,7 @@ return
 METHOD exitform() CLASS THMI
 *-------------------------
 if .not. myform:lFsave
-   if msgyesno('Form not saved (save ?)','Question')
+   if MsgYesNo( 'Form not saved, save it now?', 'ooHGIDE+' )
       myform:save(0)
    endif
 
@@ -4837,10 +4815,10 @@ endif
 cvccontrols:hide()
 
 form_main:hide()
-form_tree:button_7:enabled := .T.
-form_tree:button_9:enabled := .T.
-form_tree:button_10:enabled := .T.
-form_tree:button_11:enabled := .T.
+Form_Tree:button_7:enabled := .T.
+Form_Tree:button_9:enabled := .T.
+Form_Tree:button_10:enabled := .T.
+Form_Tree:button_11:enabled := .T.
 myide:form_activated:=.F.
 return
 
@@ -4849,7 +4827,7 @@ static function databaseview2()
 *-------------------------
 local cdfile,npos,i,j
 if iswindowdefined(Form_brow)
-   msginfo('Browse already running','Information')
+   MsgInfo( 'Browse is already running.', 'ooHGIDE+' )
    return nil
 endif
 ***set interactiveclose on

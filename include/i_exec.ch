@@ -1,5 +1,5 @@
 /*
- * $Id: i_exec.ch,v 1.1 2005-08-06 23:50:17 guerra000 Exp $
+ * $Id: i_exec.ch,v 1.2 2014-04-23 00:21:07 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -102,6 +102,10 @@ WaitRun ( <executable> , 3 )
 #xcommand EXECUTE FILE <executable> WAIT MINIMIZE ;
 => ;
 WaitRun ( <executable> , 6 )
+
+#xcommand EXECUTE FILE <executable> WAIT HIDE ;
+=> ;
+WaitRun ( <executable> , 0 )
 
 #xcommand EXECUTE ;
 		[ OPERATION <operation> ] ;

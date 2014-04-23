@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.75 2014-04-11 02:27:45 fyurisich Exp $
+ * $Id: classes.txt,v 1.76 2014-04-23 00:21:06 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -932,7 +932,7 @@ CLASS TGRID FROM TCONTROL
    DATA PICTURE                   INIT NIL
    DATA RCLICKONCHECKBOX          INIT .T.
    DATA READONLY                  INIT NIL
-   DATA SEARCHCOL                 INIT 1
+   DATA SEARCHCOL                 INIT 0
    DATA SEARCHLAPSE               INIT 1000
    DATA SEARCHWRAP                INIT .T.
    DATA SETIMAGELISTCOMMAND       INIT LVM_SETIMAGELIST
