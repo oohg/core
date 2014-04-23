@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.246 2014-04-23 22:52:42 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.247 2014-04-23 23:51:54 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -4360,11 +4360,12 @@ Local aControlRect
       // hit on an empty row
       Return { 0, 0, 0, 0, 0, 0 }
    Else
-      aControlRect := { 0, 0, 0, 0 }                                            // left, top, right, bottom
+      aControlRect := { 0, 0, 0, 0 }                                           // left, top, right, bottom
+      GetClientRect( ::hWnd, aControlRect )
+      nClientWidth := aControlRect[ 3 ] - aControlRect[ 1 ]
+
+      aControlRect := { 0, 0, 0, 0 }                                           // left, top, right, bottom
       GetWindowRect( ::hWnd, aControlRect )
-      r := { 0, 0, 0, 0 }                                                       // left, top, right, bottom
-      GetClientRect( ::hWnd, r )
-      nClientWidth := r[ 3 ] - r[ 1 ]
 
       r := ListView_GetSubitemRect( ::hWnd, r[ 1 ] - 1, r[ 2 ] - 1 )           // top, left, width, height
 

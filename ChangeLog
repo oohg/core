@@ -1,11 +1,17 @@
 /*
- * $Id: ChangeLog,v 1.1254 2014-04-23 22:52:39 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1255 2014-04-23 23:51:54 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-04-23 20:51 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     ! Grid/XBrowse/Browse control with EDIT INPLACE edits wrong
+       cell when doubleclicking on a cell beyond the first
+       visible ones.
 
 2014-04-23 19:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_altsyntax.ch
