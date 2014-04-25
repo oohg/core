@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.107 2014-04-23 22:52:42 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.108 2014-04-25 01:48:07 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -122,6 +122,7 @@ Memvariables
 #xtranslate _OOHG_ActiveControlTrailingFontColor      => _OOHG_ActiveControlInfo \[  25 \]
 #xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
 
+#xtranslate _OOHG_ActiveControlInsertType             => _OOHG_ActiveControlInfo \[  95 \]
 #xtranslate _OOHG_ActiveControlRClickOnCheckbox       => _OOHG_ActiveControlInfo \[  96 \]
 #xtranslate _OOHG_ActiveControlClickOnCheckbox        => _OOHG_ActiveControlInfo \[  97 \]
 #xtranslate _OOHG_ActiveControlOnHeaderRClick         => _OOHG_ActiveControlInfo \[  98 \]
@@ -1109,7 +1110,12 @@ TEXT BOX
         _OOHG_ActiveControlAction2      := Nil    ;;
         _OOHG_ActiveControlCenterAlign  := Nil    ;;
         _OOHG_ActiveControlDefaultYear  := Nil    ;;
-        _OOHG_ActiveControlOnTextFilled := Nil
+        _OOHG_ActiveControlOnTextFilled := Nil    ;;
+        _OOHG_ActiveControlInsertType   := Nil
+
+#xcommand INSERTTYPE <inserttype> ;
+        => ;
+        _OOHG_ActiveControlInsertType := <inserttype>
 
 #xcommand UPPERCASE <uppercase> ;
         => ;
@@ -1218,7 +1224,8 @@ TEXT BOX
                 _OOHG_ActiveControlWhen, ;
                 _OOHG_ActiveControlCenterAlign, ;
                 _OOHG_ActiveControlDefaultYear, ;
-                _OOHG_ActiveControlOnTextFilled ), Nil, _OOHG_ActiveControlAssignObject )
+                _OOHG_ActiveControlOnTextFilled, ;
+                _OOHG_ActiveControlInsertType ), Nil, _OOHG_ActiveControlAssignObject )
 
 /*----------------------------------------------------------------------------
 MONTH CALENDAR

@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.247 2014-04-23 23:51:54 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.248 2014-04-25 01:48:07 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -4146,7 +4146,7 @@ Local aCellData, nItem, i, nSearchCol
       If ::AllowEdit .AND. ( ::lLikeExcel .OR. EditControlLikeExcel( Self, ::Value[ 2 ] ) )
          If ! ::lNestedEdit
             ::lNestedEdit := .T.
-            ::EditCell( , , , Chr( wParam ), , , -1 )
+            ::EditCell( , , , Chr( wParam ) )
             ::lNestedEdit := .F.
          EndIf
          Return 0
@@ -4748,7 +4748,7 @@ METHOD New( cPicture, cFunction, cType, nOnFocusPos, lButtons, aImages, oGrid, l
 Return Self
 
 METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys ) CLASS TGridControlTextBox
-Local lRet := .F., i
+Local lRet := .F., i, aPos, nPos1, nPos2, cText, nPos
 
    If ! IsWindowDefined( _oohg_gridwn )
        If HB_IsObject( ::oGrid ) .AND. ::oGrid:InPlace .AND. ( ::lNoModal .OR. ::oGrid:lNoModal )
@@ -4809,6 +4809,24 @@ Local lRet := .F., i
    If IsWindowDefined( _oohg_gridwn ) .AND. ! IsWindowActive( _oohg_gridwn )
       If HB_IsObject( ::oControl )
          ::oControl:SetFocus()
+         If HB_IsObject( ::oGrid ) .AND. ::oGrid:InPlace .AND. ( ::lLikeExcel .OR. ::oGrid:lLikeExcel )
+            If ::oControl:Type == "TEXTPICTURE"
+               If ValType( uValue ) $ "CM" .AND. Len( uValue ) == 1
+                  aPos := ::oControl:GetSelection()
+                  nPos1 := aPos[ 1 ]
+                  nPos2 := aPos[ 2 ]
+                  cText := ::oControl:Caption
+                  nPos := nPos1
+                  cText := TTextPicture_Clear( cText, nPos + 1, nPos2 - nPos1, ::oControl:ValidMask, ::oControl:InsertStatus )
+                  If TTextPicture_Events2_String( ::oControl, @cText, @nPos, uValue, ::oControl:ValidMask, ::oControl:PictureMask, ::oControl:InsertStatus )
+                     ::oControl:Caption := cText
+                     SendMessage( ::oControl:hWnd, EM_SETSEL, nPos, nPos )
+                  EndIf
+               EndIf
+            Else
+               ::oControl:CaretPos := -1
+            EndIf
+         EndIf
       EndIf
       If HB_IsObject( ::oWindow )
          ::oWindow:Activate()

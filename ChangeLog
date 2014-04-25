@@ -1,11 +1,39 @@
 /*
- * $Id: ChangeLog,v 1.1255 2014-04-23 23:51:54 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1256 2014-04-25 01:48:07 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-04-24 22:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     ! Cell edition when using EDITLIKEEXCEL clause.
+   * include/i_textbox.ch
+     + INSERTTYPE <nInsertType> clause.
+       <nInsertType> possible values are:
+       0 = Default: each time the control gots focus, it's set to
+       overwrite for TTextPicture and to insert for the rest.
+       1 = Same as default for the first time the control gots focus,
+       the next times the control got focus, it remembers the previous
+       value.
+       2 = The state of the INSERT key is used to set the type.
+   * Format.
+   * include/i_altsyntax.ch
+     + INSERTTYPE <nInsertType> clause to DEFINE TEXTBOX.
+   * source/h_textbox.prg
+     * Comment.
+     + Support for INSERTTYPE clause.
+     * Functions TTextPicture_Events2_String and TTextPicture_Clear
+       made public.
+     ! Method KeyPressed do not updates control's caption.
+     * Method KeyPressed (cString, nPos) returns a logical value
+       indicating if the control's captions has been changed. In
+       that case nPos is set to the caret's position after the change.
+     ; This method pastes the characters in cString to the control's
+       caption, starting from position nPos, and honoring the
+       control's INPUTMASK if present.
 
 2014-04-23 20:51 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg

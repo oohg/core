@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.93 2014-04-08 22:05:45 fyurisich Exp $
+ * $Id: h_textbox.prg,v 1.94 2014-04-25 01:48:07 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -162,7 +162,7 @@ METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
                HelpId, readonly, bold, italic, underline, strikeout, field, ;
                backcolor, fontcolor, invisible, notabstop, lRtl, lAutoSkip, ;
                lNoBorder, OnFocusPos, lDisabled, bValid, bAction, aBitmap, ;
-               nBtnwidth, bAction2, bWhen, lCenter, OnTextFilled ) CLASS TText
+               nBtnwidth, bAction2, bWhen, lCenter, OnTextFilled, nInsType ) CLASS TText
 *-----------------------------------------------------------------------------*
 Local nStyle := ES_AUTOHSCROLL, nStyleEx := 0
 
@@ -175,7 +175,8 @@ Local nStyle := ES_AUTOHSCROLL, nStyleEx := 0
               readonly, bold, italic, underline, strikeout, field, ;
               backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
               lAutoSkip, nStyleEx, lNoBorder, OnFocusPos, lDisabled, bValid, ;
-              bAction, aBitmap, nBtnwidth, bAction2, bWhen, lCenter, OnTextFilled )
+              bAction, aBitmap, nBtnwidth, bAction2, bWhen, lCenter, ;
+              OnTextFilled, nInsType )
 
 Return Self
 
@@ -187,17 +188,18 @@ METHOD Define2( cControlName, cParentForm, x, y, w, h, cValue, ;
                 backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
                 lAutoSkip, nStyleEx, lNoBorder, OnFocusPos, lDisabled, ;
                 bValid, bAction, aBitmap, nBtnwidth, bAction2, bWhen, ;
-                lCenter, OnTextFilled ) CLASS TText
+                lCenter, OnTextFilled, nInsType ) CLASS TText
 *-----------------------------------------------------------------------------*
 Local nControlHandle
 Local break := Nil
 
    // Assign STANDARD values to optional params.
-   ASSIGN ::nCol    VALUE x TYPE "N"
-   ASSIGN ::nRow    VALUE y TYPE "N"
-   ASSIGN ::nWidth  VALUE w TYPE "N"
-   ASSIGN ::nHeight VALUE h TYPE "N"
-   ASSIGN ::bWhen   VALUE bWhen TYPE "B"
+   ASSIGN ::nCol         VALUE x        TYPE "N"
+   ASSIGN ::nRow         VALUE y        TYPE "N"
+   ASSIGN ::nWidth       VALUE w        TYPE "N"
+   ASSIGN ::nHeight      VALUE h        TYPE "N"
+   ASSIGN ::bWhen        VALUE bWhen    TYPE "B"
+   ASSIGN ::nInsertType  VALUE nInsType TYPE "N"
 
    If HB_IsNumeric( nMaxLength ) .AND. nMaxLength >= 0
       ::nMaxLength := Int( nMaxLength )
@@ -489,13 +491,15 @@ Return ::Super:Events_Command( wParam )
 METHOD InsertStatus( lValue ) CLASS TText
 *------------------------------------------------------------------------------*
 /*
+ * ::nInsertType values
+ *
  * 0 = Default: each time the control gots focus, it's set to
  *     overwrite for TTextPicture and to insert for the rest.
  *
  * 1 = Same as default for the first time the control gots focus,
  *     the next times the control got focus, it remembers the previous value.
  *
- * 2 = The state of the INSERT key is used always, instead of lInsert.
+ * 2 = The state of the INSERT key is used to set the type, instead of lInsert.
  */
    If HB_IsLogical( lValue )
       // Set
@@ -792,7 +796,8 @@ METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, uValue, ;
                italic, underline, strikeout, field, backcolor, fontcolor, ;
                invisible, notabstop, lRtl, lAutoSkip, lNoBorder, OnFocusPos, ;
                lDisabled, bValid, lUpper, lLower, bAction, aBitmap, ;
-               nBtnwidth, bAction2, bWhen, lCenter, nYear, OnTextFilled ) CLASS TTextPicture
+               nBtnwidth, bAction2, bWhen, lCenter, nYear, OnTextFilled, ;
+               nInsType ) CLASS TTextPicture
 *-----------------------------------------------------------------------------*
 Local nStyle := ES_AUTOHSCROLL, nStyleEx := 0
 
@@ -822,7 +827,8 @@ Local nStyle := ES_AUTOHSCROLL, nStyleEx := 0
               readonly, bold, italic, underline, strikeout, field, ;
               backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
               lAutoSkip, nStyleEx, lNoBorder, OnFocusPos, lDisabled, bValid, ;
-              bAction, aBitmap, nBtnwidth, bAction2, bWhen, lCenter, OnTextFilled )
+              bAction, aBitmap, nBtnwidth, bAction2, bWhen, lCenter, ;
+              OnTextFilled, nInsType )
 
 Return Self
 
@@ -1263,7 +1269,7 @@ METHOD KeyPressed( cString, nPos ) CLASS TTextPicture
    ElseIf nPos < 0
       nPos := Len( ::Caption )
    EndIf
-Return TTextPicture_Events2_String( Self, ::Caption, nPos, cString, ::ValidMask, ::PictureMask, ::InsertStatus )
+Return TTextPicture_Events2_String( Self, @::Caption, @nPos, cString, ::ValidMask, ::PictureMask, ::InsertStatus )
 
 *------------------------------------------------------------------------------*
 STATIC FUNCTION TTextPicture_Events2_Key( Self, cText, nPos, cChar, aValidMask, cPictureMask, lInsert )
@@ -1347,7 +1353,7 @@ Local lChange := .F., nPos1, cMask
 Return lChange
 
 *------------------------------------------------------------------------------*
-STATIC FUNCTION TTextPicture_Events2_String( Self, cText, nPos, cString, aValidMask, cPictureMask, lInsert )
+FUNCTION TTextPicture_Events2_String( Self, cText, nPos, cString, aValidMask, cPictureMask, lInsert )
 *------------------------------------------------------------------------------*
 Local lChange := .F.
    Do While Len( cString ) > 0 .AND. nPos < Len( cPictureMask )
@@ -1363,7 +1369,7 @@ Local lChange := .F.
 Return lChange
 
 *------------------------------------------------------------------------------*
-STATIC FUNCTION TTextPicture_Clear( cText, nPos, nCount, aValidMask, lInsert )
+FUNCTION TTextPicture_Clear( cText, nPos, nCount, aValidMask, lInsert )
 *------------------------------------------------------------------------------*
 Local nClear, nBase
    nCount := Max( Min( nCount, ( Len( aValidMask ) - nPos + 1 ) ), 0 )
@@ -1513,7 +1519,7 @@ METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
                HelpId, readonly, bold, italic, underline, strikeout, field , ;
                backcolor , fontcolor , invisible , notabstop, lRtl, lAutoSkip, ;
                lNoBorder, OnFocusPos, lDisabled, bValid, bAction, aBitmap, ;
-               nBtnwidth, bAction2, bWhen, lCenter, OnTextFilled ) CLASS TTextNum
+               nBtnwidth, bAction2, bWhen, lCenter, OnTextFilled, nInsType ) CLASS TTextNum
 *-----------------------------------------------------------------------------*
 Local nStyle := ES_NUMBER + ES_AUTOHSCROLL, nStyleEx := 0
 
@@ -1526,7 +1532,8 @@ Local nStyle := ES_NUMBER + ES_AUTOHSCROLL, nStyleEx := 0
               readonly, bold, italic, underline, strikeout, field, ;
               backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
               lAutoSkip, nStyleEx, lNoBorder, OnFocusPos, lDisabled, bValid, ;
-              bAction, aBitmap, nBtnwidth, bAction2, bWhen, lCenter, OnTextFilled )
+              bAction, aBitmap, nBtnwidth, bAction2, bWhen, lCenter, ;
+              OnTextFilled, nInsType )
 
 Return Self
 
@@ -1586,7 +1593,8 @@ FUNCTION DefineTextBox( cControlName, cParentForm, x, y, Width, Height, ;
                         fontcolor, invisible, notabstop, lRtl, lAutoSkip, ;
                         lNoBorder, OnFocusPos, lDisabled, bValid, ;
                         date, numeric, inputmask, format, subclass, bAction, ;
-                        aBitmap, nBtnwidth, bAction2, bWhen, lCenter, nYear, OnTextFilled )
+                        aBitmap, nBtnwidth, bAction2, bWhen, lCenter, nYear, ;
+                        OnTextFilled, nInsType )
 *-----------------------------------------------------------------------------*
 Local Self, lInsert
 
@@ -1598,8 +1606,6 @@ Local Self, lInsert
          inputmask := "@" + format
       EndIf
    EndIf
-
-   lInsert := Nil
 
    // Checks for date textbox
    If ( HB_IsLogical( date ) .AND. date ) .OR. HB_IsDate( value )
@@ -1630,14 +1636,14 @@ Local Self, lInsert
    If ValType( inputmask ) $ "CM"
       // If inputmask is defined, it's TTextPicture()
       Self := _OOHG_SelectSubClass( TTextPicture(), subclass )
-      ASSIGN ::InsertStatus VALUE lInsert TYPE "L"
       ::Define( cControlName, cParentForm, x, y, width, height, value, ;
                 inputmask, cFontname, nFontsize, cTooltip, uLostfocus, ;
                 uGotfocus, uChange, uEnter, right, HelpId, readonly, bold, ;
                 italic, underline, strikeout, field, backcolor, fontcolor, ;
                 invisible, notabstop, lRtl, lAutoSkip, lNoBorder, OnFocusPos, ;
                 lDisabled, bValid, lUpper, lLower, bAction, aBitmap, ;
-                nBtnwidth, bAction2, bWhen, lCenter, nYear, OnTextFilled )
+                nBtnwidth, bAction2, bWhen, lCenter, nYear, OnTextFilled, ;
+                nInsType )
    Else
       Self := _OOHG_SelectSubClass( If( numeric, TTextNum(), TText() ), subclass )
       ::Define( cControlName, cParentForm, x, y, Width, Height, Value, ;
@@ -1646,7 +1652,9 @@ Local Self, lInsert
                 HelpId, readonly, bold, italic, underline, strikeout, field, ;
                 backcolor, fontcolor, invisible, notabstop, lRtl, lAutoSkip, ;
                 lNoBorder, OnFocusPos, lDisabled, bValid, bAction, aBitmap, ;
-                nBtnwidth, bAction2, bWhen, lCenter, OnTextFilled )
+                nBtnwidth, bAction2, bWhen, lCenter, OnTextFilled, nInsType )
    EndIf
+
+   ASSIGN ::InsertStatus VALUE lInsert TYPE "L"
 
 Return Self
