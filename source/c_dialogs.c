@@ -1,5 +1,5 @@
 /*
- * $Id: c_dialogs.c,v 1.13 2013-07-27 02:08:17 fyurisich Exp $
+ * $Id: c_dialogs.c,v 1.14 2014-04-28 00:44:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -381,7 +381,7 @@ HB_FUNC( C_BROWSEFORFOLDER ) // Syntax: C_BROWSEFORFOLDER([<hWnd>],[<cTitle>],<n
    BrowseInfo.pidlRoot = pidlBrowse;
    BrowseInfo.pszDisplayName = lpBuffer;
    BrowseInfo.lpszTitle = HB_ISNIL (2) ? "Select a Folder" : hb_parc(2);
-   BrowseInfo.ulFlags = hb_parni(3);
+   BrowseInfo.ulFlags = HB_ISNIL(3) ? 0 : hb_parni(3);
    BrowseInfo.lpfn = HB_ISCHAR(5) ? BrowseCallbackProc : NULL ;
    BrowseInfo.lParam = HB_ISCHAR(5) ? (LPARAM) (char *) hb_parc(5) : 1 ;
    BrowseInfo.iImage = 0;
