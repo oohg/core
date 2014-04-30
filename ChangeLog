@@ -1,11 +1,34 @@
 /*
- * $Id: ChangeLog,v 1.1258 2014-04-28 00:44:27 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1259 2014-04-30 02:36:23 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-04-29 23:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * doc/classes.txt
+     * Updated.
+   * include/i_altsyntax.ch
+     + Clause BACKGROUND to DEFINE RADIOGROUP.
+   * include/i_radiogroup.ch
+     + Clause BACKGROUND <bkgrnd> where <bkgrnd> must be an object.
+       The object's device context is used to create a brush for
+       painting the TRadioItem controls, thus creating the ilusion
+       that controls are transparent.
+   * include/oohg.h
+     + Define for s_oBkGrnd symbol.
+   * source/h_controlmisc.prg
+     + Support for BACKGROUND clause in function EVENTS_COLOR_INTAB.
+   * source/c_controlmisc.c
+     + OBKGRND to s_SymbolNames list.
+   * source/h_radio.prg
+     + DATA oBkGrnd to TRadioGroup class.
+     + New parameter to TRadioGroup:Define().
+     + New parameter to TRadioGroup:InsertItem().
+     + DATA oBkGrnd to TRadioItem class.
+     + New parameter to TRadioItem:Define().
 
 2014-04-27 21:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/c_dialogs.c

@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.144 2014-04-09 02:45:49 fyurisich Exp $
+ * $Id: h_controlmisc.prg,v 1.145 2014-04-30 02:36:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2066,6 +2066,38 @@ HB_FUNC( EVENTS_COLOR_INTAB )
    }
    else
    {
+      _OOHG_Send( pSelf, s_Type );
+      hb_vmSend( 0 );
+      if( strcmp( hb_parc( -1 ), "RADIOITEM" ) == 0 )
+      {
+         _OOHG_Send( pSelf, s_oBkGrnd );
+         hb_vmSend( 0 );
+         if( hb_param( -1, HB_IT_OBJECT ) )
+         {
+            _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_hWnd );
+            hb_vmSend( 0 );
+            hwnd = HWNDparam( -1 );
+
+            if( ValidHandler( hwnd ) )
+            {
+               DeleteObject( oSelf->BrushHandle );
+
+               oSelf->BrushHandle = GetTabBrush( hwnd );
+
+               SetBkMode( hdc, TRANSPARENT );
+
+               GetWindowRect( oSelf->hWnd, &rc );
+               lprc = &rc;
+               MapWindowPoints( NULL, hwnd, (LPPOINT) lprc, 2 );
+
+               SetBrushOrgEx( hdc, -rc.left, -rc.top, NULL );
+
+               hb_retnl( ( LONG ) oSelf->BrushHandle );
+               return;
+            }
+         }
+      }
+
       _OOHG_Send( pSelf, s_Transparent );
       hb_vmSend( 0 );
       if( hb_parl( -1 ) )

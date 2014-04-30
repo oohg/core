@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.108 2014-04-25 01:48:07 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.109 2014-04-30 02:36:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -121,6 +121,7 @@ Memvariables
 #xtranslate _OOHG_ActiveControlTitleBackColor         => _OOHG_ActiveControlInfo \[  24 \]
 #xtranslate _OOHG_ActiveControlTrailingFontColor      => _OOHG_ActiveControlInfo \[  25 \]
 #xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
+#xtranslate _OOHG_ActiveControlBackground             => _OOHG_ActiveControlInfo \[  27 \]
 
 #xtranslate _OOHG_ActiveControlInsertType             => _OOHG_ActiveControlInfo \[  95 \]
 #xtranslate _OOHG_ActiveControlRClickOnCheckbox       => _OOHG_ActiveControlInfo \[  96 \]
@@ -978,7 +979,8 @@ RADIO GROUP
         _OOHG_ActiveControlTransparent := .F.    ;;
         _OOHG_ActiveControlAutoSize    := .F.    ;;
         _OOHG_ActiveControlThemed      := .F.    ;;
-        _OOHG_ActiveControlHorizontal  := .F.
+        _OOHG_ActiveControlHorizontal  := .F.    ;;
+        _OOHG_ActiveControlBackground  := Nil
 
 #xcommand OPTIONS <aOptions> ;
         => ;
@@ -991,6 +993,10 @@ RADIO GROUP
 #xcommand HORIZONTAL <horizontal> ;
         => ;
         _OOHG_ActiveControlHorizontal := <horizontal>
+
+#xcommand BACKGROUND <bkgrnd> ;
+        => ;
+        _OOHG_ActiveControlBackground := <bkgrnd>
 
 #xcommand END RADIOGROUP ;
         => ;
@@ -1022,7 +1028,8 @@ RADIO GROUP
                 _OOHG_ActiveControlDisabled, ;
                 _OOHG_ActiveControlRtl, ;
                 _OOHG_ActiveControlHeight, ;
-                _OOHG_ActiveControlThemed )
+                _OOHG_ActiveControlThemed, ;
+                _OOHG_ActiveControlBackground )
 
 /*----------------------------------------------------------------------------
 SLIDER

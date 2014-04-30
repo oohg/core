@@ -1,5 +1,5 @@
 /*
- * $Id: h_radio.prg,v 1.36 2014-02-15 01:17:23 guerra000 Exp $
+ * $Id: h_radio.prg,v 1.37 2014-04-30 02:36:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -107,6 +107,7 @@ CLASS TRadioGroup FROM TLabel
    DATA lHorizontal   INIT .F.
    DATA nSpacing      INIT nil
    DATA lThemed       INIT .F.
+   DATA oBkGrnd       INIT nil
 
    METHOD RowMargin           BLOCK { |Self| - ::Row }
    METHOD ColMargin           BLOCK { |Self| - ::Col }
@@ -134,7 +135,7 @@ METHOD Define( ControlName, ParentForm, x, y, aOptions, Value, fontname, ;
                fontsize, tooltip, change, width, spacing, HelpId, invisible, ;
                notabstop, bold, italic, underline, strikeout, backcolor, ;
                fontcolor, transparent, autosize, horizontal, lDisabled, lRtl, ;
-               height, themed ) CLASS TRadioGroup
+               height, themed, bkgrnd ) CLASS TRadioGroup
 *-----------------------------------------------------------------------------*
 Local i, oItem, uToolTip
 
@@ -146,6 +147,7 @@ Local i, oItem, uToolTip
    ASSIGN ::lAutoSize   VALUE autosize    TYPE "L"
    ASSIGN ::lHorizontal VALUE horizontal  TYPE "L"
    ASSIGN ::Transparent VALUE transparent TYPE "L"
+   ASSIGN ::oBkGrnd     VALUE bkgrnd      TYPE "O"
 
    ASSIGN ::nSpacing     VALUE Spacing    TYPE "N"
    If HB_IsNumeric( ::nSpacing )
@@ -186,7 +188,7 @@ Local i, oItem, uToolTip
                aOptions[ i ], .F., ( i == 1 ), ;
                ::AutoSize, ::Transparent, , , ;
                , , , , , , ;
-               uToolTip, ::HelpId, , .T., , )
+               uToolTip, ::HelpId, , .T., , , bkgrnd )
       AADD( ::aOptions, oItem )
       If ::lHorizontal
          x += Spacing
@@ -292,13 +294,14 @@ Note that TMultiPage control expects an Image as third parameter.
 */
 
 *-----------------------------------------------------------------------------*
-METHOD InsertItem( nPosition, cCaption, nImage, uToolTip ) CLASS TRadioGroup
+METHOD InsertItem( nPosition, cCaption, nImage, uToolTip, bkgrnd ) CLASS TRadioGroup
 *-----------------------------------------------------------------------------*
 Local nPos2, Spacing, oItem, x, y, nValue, hWnd
    EMPTY( nImage )
    IF  ( ! VALTYPE( uToolTip ) $ "CM" .OR. EMPTY( uToolTip ) ) .AND. ! HB_IsBlock( uToolTip )
       uToolTip := ::ToolTip
    ENDIF
+   ASSIGN bkgrnd VALUE bkgrnd TYPE "O" DEFAULT ::oBkGrnd
 
    nValue := ::Value
 
@@ -344,7 +347,7 @@ Local nPos2, Spacing, oItem, x, y, nValue, hWnd
             cCaption, .F., ( nPosition == 1 ), ;
             ::AutoSize, ::Transparent, , , ;
             , , , , , , ;
-            uToolTip, ::HelpId, , .T., , )
+            uToolTip, ::HelpId, , .T., , , bkgrnd )
    ::aOptions[ nPosition ] := oItem
 
    If nPosition > 1
@@ -409,6 +412,7 @@ CLASS TRadioItem FROM TLabel
    DATA nHeight       INIT 25
    DATA IconWidth     INIT 19
    DATA TabHandle     INIT 0
+   DATA oBkGrnd       INIT 0
 
    METHOD Define
    METHOD Value             SETGET
@@ -423,7 +427,7 @@ METHOD Define( ControlName, ParentForm, x, y, width, height, ;
                caption, value, lFirst, ;
                autosize, transparent, fontcolor, backcolor, ;
                fontname, fontsize, bold, italic, underline, strikeout, ;
-               tooltip, HelpId, invisible, notabstop, lDisabled, lRtl ) CLASS TRadioItem
+               tooltip, HelpId, invisible, notabstop, lDisabled, lRtl, bkgrnd ) CLASS TRadioItem
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle, oContainer
 
@@ -433,6 +437,12 @@ Local ControlHandle, nStyle, oContainer
    ASSIGN ::nHeight VALUE height TYPE "N"
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor,, lRtl )
+
+   If HB_IsObject( bkgrnd )
+      ::oBkGrnd := bkgrnd
+   ElseIf ::Parent:Type == "RADIOGROUP"
+      ::oBkGrnd := ::Parent:oBkGrnd
+   Endif
 
    nStyle := ::InitStyle( ,, Invisible, notabstop, lDisabled )
 
