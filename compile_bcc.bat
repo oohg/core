@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: compile_bcc.bat,v 1.11 2013-10-27 20:37:49 guerra000 Exp $
+rem $Id: compile_bcc.bat,v 1.12 2014-05-06 21:59:55 fyurisich Exp $
 rem
 cls
 
@@ -28,14 +28,72 @@ rem set LIB_GUI=lib\hb\bcc
 rem set LIB_HRB=lib\win\bcc
 rem set BIN_HRB=bin\win\bcc
 
+rem *** Parse Switches ***
+set TFILE=%1
+set COMP_TYPE=STD
+set EXTRA=
+set NO_RUN=FALSE
+set PRG_LOG=
+set C_LOG=
+:LOOP_START
+if "%2"==""    goto LOOP_END
+if "%2"=="/d"  goto COMP_DEBUG
+if "%2"=="-d"  goto COMP_DEBUG
+if "%2"=="/D"  goto COMP_DEBUG
+if "%2"=="-D"  goto COMP_DEBUG
+if "%2"=="-p"  goto PPO
+if "%2"=="/p"  goto PPO
+if "%2"=="-P"  goto PPO
+if "%2"=="/P"  goto PPO
+if "%2"=="-w3" goto W3
+if "%2"=="/w3" goto W3
+if "%2"=="-W3" goto W3
+if "%2"=="/W3" goto W3
+if "%2"=="-nr" goto NORUN
+if "%2"=="-Nr" goto NORUN
+if "%2"=="-nR" goto NORUN
+if "%2"=="-NR" goto NORUN
+if "%2"=="/nr" goto NORUN
+if "%2"=="/Nr" goto NORUN
+if "%2"=="/nR" goto NORUN
+if "%2"=="/NR" goto NORUN
+if "%2"=="/l"  goto USELOG
+if "%2"=="-l"  goto USELOG
+if "%2"=="/L"  goto USELOG
+if "%2"=="-L"  goto USELOG
+set EXTRA=%EXTRA% %2
+shift
+goto LOOP_START
+:COMP_DEBUG
+set COMP_TYPE=DEBUG
+shift
+goto LOOP_START
+:PPO
+set EXTRA=%EXTRA% -p
+shift
+goto LOOP_START
+:W3
+set EXTRA=%EXTRA% -w3
+shift
+goto LOOP_START
+:NORUN
+set NO_RUN=TRUE
+shift
+goto LOOP_START
+:USELOG
+set PRG_LOG=-q0 1^>error.lst 2^>^&1
+set C_LOG=>error.lst
+shift
+goto LOOP_START
+:LOOP_END
+
 rem *** Set GT and Check for Debug Switch ***
 set HG_USE_GT=gtwin
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/d" goto DEBUG_COMP
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/D" goto DEBUG_COMP
+if "%COMP_TYPE%"=="DEBUG" goto DEBUG_COMP
 
 rem *** Set GT and Compile with Harbour ***
 if exist %HG_HRB%\%LIB_HRB%\gtgui.lib set HG_USE_GT=gtgui
-%HG_HRB%\%BIN_HRB%\harbour %1.prg -n -i%HG_HRB%\include;%HG_ROOT%\include; %2 %3
+%HG_HRB%\%BIN_HRB%\harbour %TFILE%.prg -n %EXTRA% -i%HG_HRB%\include;%HG_ROOT%\include; %PRG_LOG%
 
 rem *** Continue with .c Compilation ***
 goto C_COMP
@@ -44,7 +102,7 @@ goto C_COMP
 :DEBUG_COMP
 rem *** Compile with Harbour Using -b Option ***
 echo OPTIONS NORUNATSTARTUP > INIT.CLD
-%HG_HRB%\%BIN_HRB%\harbour %1.prg -n -b -i%HG_HRB%\include;%HG_ROOT%\include; %2 %3
+%HG_HRB%\%BIN_HRB%\harbour %TFILE%.prg -n -b %EXTRA% -i%HG_HRB%\include;%HG_ROOT%\include; %PRG_LOG%
 
 
 :C_COMP
@@ -52,18 +110,18 @@ rem *** Check for Errors in Harbour Compilation ***
 if errorlevel 1 goto EXIT1
 
 rem *** Compile with BCC and Check for Errors ***
-%HG_BCC%\bin\bcc32 -c -O2 -tW -M -I%HG_HRB%\include;%HG_BCC%\include;%HG_ROOT%\include; -L%HG_BCC%\lib; %1.c
+%HG_BCC%\bin\bcc32 -c -O2 -tW -M -I%HG_HRB%\include;%HG_BCC%\include;%HG_ROOT%\include; -L%HG_BCC%\lib; %TFILE%.c %C_LOG%
 if errorlevel 1 goto EXIT2
 
 rem *** Process Resource File and Check for Errors ***
-if exist %1.rc %HG_BCC%\bin\brc32 -r %1.rc
+if exist %TFILE%.rc %HG_BCC%\bin\brc32 -r %TFILE%.rc %C_LOG%
 if errorlevel 1 goto EXIT3
 
 rem *** Build Response File ***
 echo c0w32.obj + > b32.bc
-echo %1.obj, + >> b32.bc
-echo %1.exe, + >> b32.bc
-echo %1.map, + >> b32.bc
+echo %TFILE%.obj, + >> b32.bc
+echo %TFILE%.exe, + >> b32.bc
+echo %TFILE%.map, + >> b32.bc
 echo %HG_ROOT%\%LIB_GUI%\oohg.lib + >> b32.bc
 
 rem *** Compiler Libraries ***
@@ -113,7 +171,7 @@ echo cw32.lib + >> b32.bc
 echo import32.lib, >> b32.bc
 
 rem *** Resource Files ***
-if exist %1.res echo %1.res + >> b32.bc
+if exist %TFILE%.res echo %TFILE%.res + >> b32.bc
 if exist %HG_ROOT%\resources\oohg.res echo %HG_ROOT%\resources\oohg.res + >> b32.bc
 
 rem *** Check for Debug Switch ***
@@ -121,14 +179,14 @@ for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/d" GOTO DEBUG_LINK
 for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/D" GOTO DEBUG_LINK
 
 rem *** Link ***
-%HG_BCC%\bin\ilink32 -Gn -Tpe -aa -L%HG_BCC%\lib; @b32.bc
+%HG_BCC%\bin\ilink32 -Gn -Tpe -aa -L%HG_BCC%\lib; @b32.bc %C_LOG%
 
 goto CLEANUP
 
 
 :DEBUG_LINK
 rem *** Link ***
-%HG_BCC%\bin\ilink32 -Gn -Tpe -ap -L%HG_BCC%\lib; @b32.bc
+%HG_BCC%\bin\ilink32 -Gn -Tpe -ap -L%HG_BCC%\lib; @b32.bc %C_LOG%
 
 goto CLEANUP
 
@@ -151,40 +209,50 @@ if errorlevel 1 goto EXIT4
 
 rem *** Cleanup ***
 del *.tds
-del %1.c
-del %1.map
-del %1.obj
+del %TFILE%.c
+del %TFILE%.map
+del %TFILE%.obj
 del b32.bc
-if exist %1.res del %1.res
+if exist %TFILE%.res del %TFILE%.res
 set HG_USE_GT=
+set EXTRA=
+set PRG_LOG=
+set C_LOG=
 
 rem *** Execute ***
-%1
+if "%NO_RUN%"=="FALSE" %TFILE%
+set TFILE=
+set NO_RUN=
 goto EXIT
 
 
 :EXIT4
 rem *** Cleanup ***
 del b32.bc
-del %1.map
-del %1.obj
-del %1.tds
+del %TFILE%.map
+del %TFILE%.obj
+del %TFILE%.tds
 
 
 :EXIT3
 rem *** Cleanup ***
-if exist %1.res del %1.res
+if exist %TFILE%.res del %TFILE%.res
 
 
 :EXIT2
 rem *** Cleanup ***
-del %1.c
+del %TFILE%.c
 
 
 :EXIT1
 rem *** Cleanup ***
 set HG_USE_GT=
+set EXTRA=
+set NO_RUN=
+set PRG_LOG=
+set C_LOG=
 
 
 :EXIT
+rem *** Cleanup ***
 if exist init.cld del init.cld
