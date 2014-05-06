@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: xml.bat,v 1.3 2013-08-22 22:25:08 fyurisich Exp $
+rem $Id: xml.bat,v 1.4 2014-05-06 21:49:58 fyurisich Exp $
 rem
 cls
 
@@ -28,7 +28,7 @@ if errorlevel 1 goto EXIT1
 
 IF EXIST resul.txt del resul.txt
 
-SET OOHG_X_FLAGS=-c -O2 -tW -tWM -d -a8 -OS -5 -6 -I%hg_hrb%\include;%hg_bcc%\include;%hg_root%\include; -L%hg_hrb%\%LIB_HRB%;%hg_bcc%\lib;
+SET OOHG_X_FLAGS=-c -O2 -tW -tWM -d -a8 -OS -5 -6 -I%hg_hrb%\include;%hg_bcc%\include;%hg_root%\include; -L%hg_hrb%\%LIB_HRB%;%hg_bcc%\lib; -D__XHARBOUR__
 
 for %%a in (%HG_FILES1_PRG%) do if not errorlevel 1 %hg_bcc%\bin\bcc32 %OOHG_X_FLAGS% %%a.c >> resul.txt
 if errorlevel 1 goto EXIT2

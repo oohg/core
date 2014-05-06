@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.94 2014-04-25 01:48:07 fyurisich Exp $
+ * $Id: h_textbox.prg,v 1.95 2014-05-06 21:49:58 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -399,11 +399,7 @@ METHOD MaxLength( nLen ) CLASS TText
 *------------------------------------------------------------------------------*
    If HB_IsNumeric( nLen )
       ::nMaxLength := If( nLen >= 1, nLen, 0 )
-      If ::nMaxLength > 64000
-         SendMessage( ::hWnd, EM_EXLIMITTEXT, 0, ::nMaxLength )
-      Else
-         SendMessage( ::hWnd, EM_LIMITTEXT, ::nMaxLength, 0 )
-      endif
+      SendMessage( ::hWnd, EM_LIMITTEXT, ::nMaxLength, 0 )
    EndIf
 Return SendMessage( ::hWnd, EM_GETLIMITTEXT, 0, 0 )
 
@@ -536,8 +532,6 @@ Return nLine
 #include <commctrl.h>
 #include "oohg.h"
 
-#define EM_EXLIMITTEXT (WM_USER+53)
-
 static WNDPROC lpfnOldWndProc = 0;
 
 static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
@@ -572,14 +566,7 @@ HB_FUNC( INITTEXTBOX )
 
    if( hb_parni( 8 ) != 0 )
    {
-      if( hb_parni( 8 ) > 64000 )
-      {
-         SendMessage( hedit, ( UINT ) EM_EXLIMITTEXT, ( WPARAM) 0, ( LPARAM ) hb_parni( 8 ) );
-      }
-      else
-      {
-         SendMessage( hedit, ( UINT ) EM_LIMITTEXT, ( WPARAM) hb_parni( 8 ), ( LPARAM ) 0 );
-      }
+      SendMessage( hedit, ( UINT ) EM_LIMITTEXT, ( WPARAM) hb_parni( 8 ), ( LPARAM ) 0 );
    }
 
    lpfnOldWndProc = ( WNDPROC ) SetWindowLong( hedit, GWL_WNDPROC, ( LONG ) SubClassFunc );

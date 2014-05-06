@@ -1,5 +1,5 @@
 /*
- * $Id: h_richeditbox.prg,v 1.31 2014-04-11 21:21:07 fyurisich Exp $
+ * $Id: h_richeditbox.prg,v 1.32 2014-05-06 21:49:58 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -114,6 +114,7 @@ CLASS TEditRich FROM TEdit
    METHOD SetSelectionBackColor
    METHOD HideSelection
    METHOD GetSelText
+   METHOD MaxLength
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
@@ -213,14 +214,7 @@ HB_FUNC( INITRICHEDITBOX )
 
       if( hb_parni( 8 ) != 0 )
       {
-         if( hb_parni( 8 ) > 64000 )
-         {
-            SendMessage( hwndRE, EM_EXLIMITTEXT, ( WPARAM) 0, ( LPARAM ) hb_parni( 8 ) );
-         }
-         else
-         {
-            SendMessage( hwndRE, EM_LIMITTEXT, ( WPARAM) hb_parni( 8 ), ( LPARAM ) 0 );
-         }
+         SendMessage( hwndRE, EM_EXLIMITTEXT, ( WPARAM) 0, ( LPARAM ) hb_parni( 8 ) );
       }
 
       SendMessage( hwndRE, EM_SETEVENTMASK, 0, ( LPARAM ) Mask );
@@ -584,3 +578,12 @@ Local cSelText := RichEdit_GetSelText( ::hWnd )
    EndIf
 
 Return cSelText
+
+*-----------------------------------------------------------------------------*
+METHOD MaxLength( nLen ) CLASS TEditRich
+*-----------------------------------------------------------------------------*
+   If HB_IsNumeric( nLen )
+      SendMessage( ::hWnd, EM_EXLIMITTEXT, 0, nLen )
+   EndIf
+Return SendMessage( ::hWnd, EM_GETLIMITTEXT, 0, 0 )
+

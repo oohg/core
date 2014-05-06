@@ -1,11 +1,23 @@
 /*
- * $Id: ChangeLog,v 1.1259 2014-04-30 02:36:23 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1260 2014-05-06 21:49:57 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-05-06 18:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/xml.bat
+     ! Missing define.
+   * source/h_richeditbox.prg
+     + Method MaxLength.
+     * Always use EM_EXLIMITTEXT to set maximun lenght in
+       Function InitRicheditBox.
+   * source/h_textbox.prg
+     ! Maxlength is not set correctly when value is greater
+       than 64000 (at define time or using method MaxLength).
+     - Unused define.
 
 2014-04-29 23:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt
