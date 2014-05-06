@@ -1,5 +1,5 @@
 /*
- * $Id: h_richeditbox.prg,v 1.32 2014-05-06 21:49:58 fyurisich Exp $
+ * $Id: h_richeditbox.prg,v 1.33 2014-05-06 22:04:19 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -114,7 +114,7 @@ CLASS TEditRich FROM TEdit
    METHOD SetSelectionBackColor
    METHOD HideSelection
    METHOD GetSelText
-   METHOD MaxLength
+   METHOD MaxLength  SETGET
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS

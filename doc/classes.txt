@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.77 2014-04-30 02:36:23 fyurisich Exp $
+ * $Id: classes.txt,v 1.78 2014-05-06 22:04:19 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -637,6 +637,7 @@ CLASS TEDITRICH FROM TEDIT
    METHOD FONTCOLOR               SETGET
    METHOD GETSELTEXT
    METHOD HIDESELECTION
+   METHOD MAXLENGTH               SETGET
    METHOD RICHVALUE               SETGET
    METHOD SETSELECTIONBACKCOLOR
    METHOD SETSELECTIONTEXTCOLOR
