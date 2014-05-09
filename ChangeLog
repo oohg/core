@@ -1,11 +1,21 @@
 /*
- * $Id: ChangeLog,v 1.1262 2014-05-06 22:04:19 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1263 2014-05-09 21:35:59 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-05-09 18:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source\h_grid.prg
+     ! Clicking outside of a checkbox toggles it's state.
+     ! Clicking outside of a checkbox on the first subitem do not
+       selects the row.
+     - Unneeded condition.
+     * Function ListView_HitOnCheckbox uses undocumented metrics
+       instead of using ListView_SubItemHitTest() flags.
+       See comments.
 
 2014-05-06 19:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt

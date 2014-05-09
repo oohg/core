@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.248 2014-04-25 01:48:07 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.249 2014-05-09 21:36:00 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2566,7 +2566,8 @@ Local lvc, _ThisQueryTemp, nvkey, uValue, lGo, aItem
       RedrawWindow( ::hWnd )
 
    ElseIf nNotify == NM_CLICK
-      If ::lCheckBoxes .AND. HB_IsBlock( ::OnCheckChange )
+      If ::lCheckBoxes
+         // detect item
          uValue := ListView_HitOnCheckBox( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ), GetCursorCol() - GetWindowCol( ::hWnd ) )
       Else
          uValue := 0
@@ -2585,14 +2586,16 @@ Local lvc, _ThisQueryTemp, nvkey, uValue, lGo, aItem
       If uValue > 0
          // change check mark
          ::CheckItem( uValue, ! ::CheckItem( uValue ) )
-         // skip default action
-         Return 1
       ElseIf uValue < 0
-         Return 1
+         // select item
+         ::Value := ListView_HitTest( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ), GetCursorCol() - GetWindowCol( ::hWnd ) )[ 1 ]
       EndIf
 
+      // skip default action
+      Return 1
+
    ElseIf nNotify == NM_RCLICK
-      If ::lCheckBoxes .AND. HB_IsBlock( ::OnCheckChange )
+      If ::lCheckBoxes
          // detect item
          uValue := ListView_HitOnCheckBox( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ), GetCursorCol() - GetWindowCol( ::hWnd ) )
       Else
@@ -2612,11 +2615,13 @@ Local lvc, _ThisQueryTemp, nvkey, uValue, lGo, aItem
          If ::ContextMenu != Nil .AND. ::RClickOnCheckbox
             ::ContextMenu:Activate()
          EndIf
-         // skip default action
-         Return 1
       ElseIf uValue < 0
-         Return 1
+         // select item
+         ::Value := ListView_HitTest( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ), GetCursorCol() - GetWindowCol( ::hWnd ) )[ 1 ]
       EndIf
+
+     // skip default action
+      Return 1
 
    EndIf
 
@@ -6593,9 +6598,27 @@ HB_FUNC( LISTVIEW_HITTEST )
 
 HB_FUNC( LISTVIEW_HITONCHECKBOX )
 {
+   /*
+    * The default behaviour of listview is a little odd because it does not limit the toggle
+    * of a checkbox to the clicks done inside it (or in it's borders). Sometimes it's toggle
+    * when the click is done in the outside of the checkbox, and other times a click inside
+    * it is ignored. This happens because the checkbox is drawn in an area different than
+    * the defined state area (thus renders the LVHT_ONITEMSTATEICON flag useless).
+    * The width of the state area is defined by the state imagelist width (XP=16 Win7=13)
+    * and the height equals the height of the row. The checkbox dimensions are 13x13.
+    * Under Win7 the clickable zone of the checkbox does not include it's rightmost 2 pixels.
+    * Under WinXP the gap between the item's state image area and the item's icon area is
+    * 2 pixels wide. Under Win7 is only 1 pixel wide.
+    * Win7 places the checkbox centered in the y axe, but instead of using it's real height
+    * it uses 16. XP uses a fixed 4 pixel margin.
+    * The listview, as far as I know, exports no way of knowing the checkbox's rect nor
+    * the size of the aforementioned gap.
+    */
    POINT point ;
    LVHITTESTINFO lvhti;
-   int item;
+   int item, cx, cy, chkWidth, gapWidth, margin;
+   RECT rcIcon;
+   OSVERSIONINFO osvi;
 
    point.y = hb_parni( 2 );
    point.x = hb_parni( 3 );
@@ -6604,29 +6627,64 @@ HB_FUNC( LISTVIEW_HITONCHECKBOX )
 
    ListView_SubItemHitTest( HWNDparam( 1 ), &lvhti );
 
-   /* The control changes de checkbox state when the item's
-    * state area if clicked. The item's state area is defined
-    * by the state imagelist dimensions, so it includes the
-    * checkbox and also it's outer margin (2 pixels).
-    * When the click is inside or in the border of the checkbox
-    * the flags field equals LVHT_ONITEMSTATEICON, but when the
-    * click is in the outer margin the flags field equals
-    * LVHT_ONITEMICON|LVHT_ONITEMLABEL|LVHT_ONITEMSTATEICON.
-    */
+   if( lvhti.iSubItem == 0)
+   {
+      ListView_GetSubItemRect( HWNDparam( 1 ), lvhti.iItem, lvhti.iSubItem, LVIR_ICON, &rcIcon );
 
-   if( lvhti.flags == LVHT_ONITEMSTATEICON )
-   {
-      // hit is on a checkbox
-      item = lvhti.iItem + 1;
-   }
-   else if( lvhti.flags & LVHT_ONITEMSTATEICON )
-   {
-      // hit is inside the state area but in the outside of the checkbox
-      item = -1;
+      ImageList_GetIconSize( ListView_GetImageList( HWNDparam( 1 ), LVSIL_STATE ), &cx, &cy );
+
+      osvi.dwOSVersionInfoSize = sizeof( OSVERSIONINFO );
+      GetVersionEx( (OSVERSIONINFO *) &osvi );
+
+      if( osvi.dwMajorVersion >= 6 )                   // Win Vista or later
+      {
+         chkWidth = cx;
+         gapWidth = 1;
+
+         if( ( rcIcon.left - gapWidth > point.x ) && ( point.x >= rcIcon.left - chkWidth - gapWidth ) )
+         {
+            margin = ( rcIcon.bottom - rcIcon.top - chkWidth - 3 ) / 2;
+
+            if( ( rcIcon.bottom - margin > point.y ) && ( point.y >= rcIcon.bottom - margin - chkWidth ) )
+            {
+               item = lvhti.iItem + 1;
+            }
+            else
+            {
+              item = -1;
+            }
+         }
+         else
+         {
+            item = -1;
+         }
+      }
+      else                                             // XP or older
+      {
+         chkWidth = cx - 3;
+         gapWidth = 2;
+
+         if( ( rcIcon.left - gapWidth > point.x ) && ( point.x >= rcIcon.left - chkWidth - gapWidth ) )
+         {
+            margin = 4;
+
+            if( ( rcIcon.top + margin + chkWidth > point.y ) && ( point.y >= rcIcon.top + margin ) )
+            {
+               item = lvhti.iItem + 1;
+            }
+            else
+            {
+               item = -1;
+            }
+         }
+         else
+         {
+            item = -1;
+         }
+      }
    }
    else
    {
-      // hit is outside the state area
       item = 0;
    }
 
@@ -7104,7 +7162,7 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
          if( x == 1)
          {
             rcBack.top = rcIcon.top;
-            rcBack.left = ( ( x == 1 ) && ( ! bCheckBoxes ) && bPLM ) ? 0 : rcIcon.left;
+            rcBack.left = ( ( ! bCheckBoxes ) && bPLM ) ? 0 : rcIcon.left;
             rcBack.bottom = bNoGrid ? rcIcon.bottom : ( rcIcon.bottom - 1 );
             rcBack.right = rcIcon.right;
          }
