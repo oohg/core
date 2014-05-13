@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.109 2014-04-30 02:36:23 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.110 2014-05-13 21:33:32 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -123,6 +123,7 @@ Memvariables
 #xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
 #xtranslate _OOHG_ActiveControlBackground             => _OOHG_ActiveControlInfo \[  27 \]
 
+#xtranslate _OOHG_ActiveControlSearchLapse            => _OOHG_ActiveControlInfo \[  94 \]
 #xtranslate _OOHG_ActiveControlInsertType             => _OOHG_ActiveControlInfo \[  95 \]
 #xtranslate _OOHG_ActiveControlRClickOnCheckbox       => _OOHG_ActiveControlInfo \[  96 \]
 #xtranslate _OOHG_ActiveControlClickOnCheckbox        => _OOHG_ActiveControlInfo \[  97 \]
@@ -1704,7 +1705,8 @@ COMBO BOX
         _OOHG_ActiveControlIntegralHeight    := .F.  ;;
         _OOHG_ActiveControlNoRefresh         := Nil  ;;
         _OOHG_ActiveControlSourceOrder       := Nil  ;;
-        _OOHG_ActiveControlOnRefresh         := Nil
+        _OOHG_ActiveControlOnRefresh         := Nil  ;;
+        _OOHG_ActiveControlSearchLapse       := Nil
 
 #xcommand DELAYEDLOAD <delayedload> ;
         => ;
@@ -1713,6 +1715,10 @@ COMBO BOX
 #xcommand INCREMENTAL <incremental> ;
         => ;
         _OOHG_ActiveControlIncrementalSearch := <incremental>
+
+#xcommand SEARCHLAPSE <lapse> ;
+        => ;
+        _OOHG_ActiveControlSearchLapse := <lapse>
 
 #xcommand INTEGRALHEIGHT <integralheight> ;
         => ;
@@ -1832,7 +1838,8 @@ COMBO BOX
                 _OOHG_ActiveControlIntegralHeight, ;
                 _OOHG_ActiveControlNoRefresh, ;
                 _OOHG_ActiveControlSourceOrder, ;
-                _OOHG_ActiveControlOnRefresh )
+                _OOHG_ActiveControlOnRefresh, ;
+                _OOHG_ActiveControlSearchLapse )
 
 /*----------------------------------------------------------------------------
 DATEPICKER

@@ -1,5 +1,5 @@
 /*
- * $Id: i_combobox.ch,v 1.16 2014-04-23 22:52:42 fyurisich Exp $
+ * $Id: i_combobox.ch,v 1.17 2014-05-13 21:33:32 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -137,6 +137,7 @@
             [ <rfrsh: REFRESH, NOREFRESH> ] ;
             [ SOURCEORDER <sourceorder> ] ;
             [ ON REFRESH <refresh> ] ;
+            [ SEARCHLAPSE <nLapse> ] ;
    =>;
             [ <obj> := ] _OOHG_SelectSubClass( TCombo(), [ <subclass>() ] ): ;
                   Define( <(name)>, <(parent)>, <col>, <row>, <w>, <aRows>, <value>, ;
@@ -150,7 +151,7 @@
                   <fontcolor>, <listwidth>, <{onListDisplay}>, <{onListClose}>, ;
                   <{imagesource}>, <{itemimagenumber}>, <.delay.>, <.incremental.>, ;
                   <.winsize.>, iif( upper( #<rfrsh> ) == "NOREFRESH", .F., iif( upper( #<rfrsh> ) == "REFRESH", .T., NIL ) ), ;
-                  <(sourceorder)>, <{refresh}> )
+                  <(sourceorder)>, <{refresh}>, <nLapse> )
 
 // SPLITBOX VERSION
 
@@ -202,6 +203,7 @@
             [ <rfrsh: REFRESH, NOREFRESH> ] ;
             [ SOURCEORDER <sourceorder> ] ;
             [ ON REFRESH <refresh> ] ;
+            [ SEARCHLAPSE <nLapse> ] ;
    =>;
             [ <obj> := ] _OOHG_SelectSubClass( TCombo(), [ <subclass>() ] ): ;
                   Define( <(name)>, <(parent)>,, , <w>, <aRows>, <value>, ;
@@ -214,7 +216,7 @@
                   <fontcolor>, <listwidth>, <{onListDisplay}>, <{onListClose}>, ;
                   <{imagesource}>, <{itemimagenumber}>, <.delay.>, <.incremental.>, ;
                   <.winsize.>, iif( upper( #<rfrsh> ) == "NOREFRESH", .F., iif( upper( #<rfrsh> ) == "REFRESH", .T., NIL ) ), ;
-                  <(sourceorder)>, <{refresh}> )
+                  <(sourceorder)>, <{refresh}>, <nLapse> )
 
 #command SET COMBOREFRESH ON  => SetComboRefresh( .T. )
 #command SET COMBOREFRESH OFF => SetComboRefresh( .F. )

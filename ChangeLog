@@ -1,11 +1,17 @@
 /*
- * $Id: ChangeLog,v 1.1263 2014-05-09 21:35:59 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1264 2014-05-13 21:33:32 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-05-13 18:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_altsyntax.ch
+   * include/i_combobox.ch
+   * source/h_combo.prg
+     + Support for SEARCHLAPSE <nLapse> clause.
 
 2014-05-09 18:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source\h_grid.prg

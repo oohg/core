@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.81 2014-02-20 20:07:34 fyurisich Exp $
+ * $Id: h_combo.prg,v 1.82 2014-05-13 21:33:32 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -92,7 +92,6 @@
 ---------------------------------------------------------------------------*/
 
 #include "oohg.ch"
-#include "common.ch"
 #include "hbclass.ch"
 #include "i_windefs.ch"
 
@@ -173,7 +172,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, rows, value, fontname, ;
                TextHeight, lDisabled, lFirstItem, lAdjustImages, backcolor, ;
                fontcolor, listwidth, onListDisplay, onListClose, ImageSource, ;
                ItemNumber, lDelayLoad, lIncremental, lWinSize, lRefresh, ;
-               sourceorder, onrefresh ) CLASS TCombo
+               sourceorder, onrefresh, nLapse ) CLASS TCombo
 *-----------------------------------------------------------------------------*
 Local ControlHandle, WorkArea, uField, nStyle
 
@@ -195,6 +194,9 @@ Local ControlHandle, WorkArea, uField, nStyle
    ASSIGN ::lRefresh      VALUE lRefresh      TYPE "L" DEFAULT NIL
    ASSIGN ::SourceOrder   VALUE sourceorder   TYPE "CMNB"
    ASSIGN ::OnRefresh     VALUE onrefresh     TYPE "B"
+   IF HB_IsNumeric( nLapse ) .and. nLapse >= 0
+      ::SearchLapse := nLapse
+   ENDIF
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .t., lRtl )
    ::SetFont(, , bold, italic, underline, strikeout )
@@ -589,7 +591,7 @@ Local nArea, BackRec, nMax, i, nStart, bField, bValueSource, lNoEval, BackOrd :=
                ::uIniTime := HB_MilliSeconds()
                ::cText := Upper( Chr( wParam ) )
                nStart := ComboGetCursel( ::hWnd )
-            ElseIf HB_MilliSeconds() > ::uIniTime + ::SearchLapse
+            ElseIf ::SearchLapse > 0 .AND. HB_MilliSeconds() > ::uIniTime + ::SearchLapse
                ::uIniTime := HB_MilliSeconds()
                ::cText := Upper( Chr( wParam ) )
                nStart := ComboGetCursel( ::hWnd )
