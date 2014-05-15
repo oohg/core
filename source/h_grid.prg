@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.249 2014-05-09 21:36:00 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.250 2014-05-15 03:15:59 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -3737,7 +3737,6 @@ Local lRet, uValue
       uValue := ::Value
    EndDo
 
-   // TODO: revisar si esto es necesario
    If lRet
       ListView_Scroll( ::hWnd, - _OOHG_GridArrayWidths( ::hWnd, ::aWidths ), 0 )
    EndIf
@@ -4595,7 +4594,7 @@ Local lRet := .F., i, nSize
              AT nRow, nCol WIDTH nWidth HEIGHT nHeight ;
              CHILD NOSIZE NOCAPTION ;
              FONT cFontName SIZE nFontSize ;
-             ON INIT ( ::onLostFocus := { || ::oGrid:bPosition := 9, lRet := ::Valid() } )
+             ON INIT ( ::onLostFocus := { |bAux| ::oGrid:bPosition := 9, bAux := ::onLostFocus, ::onLostFocus := Nil, lRet := ::Valid(), ::onLostFocus := bAux } )
        Else
           DEFINE WINDOW _oohg_gridwn OBJ ::oWindow ;
              AT nRow, nCol WIDTH nWidth HEIGHT nHeight ;
@@ -4604,7 +4603,7 @@ Local lRet := .F., i, nSize
        EndIf
 
           ::bCancel := { || ::oWindow:Release() }
-          ::bOk     := { || lRet := ::Valid() }
+          ::bOk     := { |bAux| ::oGrid:bPosition := -1, bAux := ::onLostFocus, ::onLostFocus := Nil, lRet := ::Valid(), ::onLostFocus := bAux }
 
           ON KEY RETURN OF ( ::oWindow ) ACTION EVAL( ::bOk )
           ON KEY ESCAPE OF ( ::oWindow ) ACTION EVAL( ::bCancel )
@@ -4761,7 +4760,7 @@ Local lRet := .F., i, aPos, nPos1, nPos2, cText, nPos
              AT nRow - 3, nCol - 3 WIDTH nWidth + 6 HEIGHT nHeight + 6 ;
              CHILD NOSIZE NOCAPTION ;
              FONT cFontName SIZE nFontSize ;
-             ON INIT ( ::onLostFocus := { || ::oGrid:bPosition := 9, lRet := ::Valid() } )
+             ON INIT ( ::onLostFocus := { |bAux| ::oGrid:bPosition := 9, bAux := ::onLostFocus, ::onLostFocus := Nil, lRet := ::Valid(), ::onLostFocus := bAux } )
        Else
           DEFINE WINDOW _oohg_gridwn OBJ ::oWindow ;
              AT nRow - 3, nCol - 3 WIDTH nWidth + 6 HEIGHT nHeight + 6 ;
@@ -4770,7 +4769,7 @@ Local lRet := .F., i, aPos, nPos1, nPos2, cText, nPos
        EndIf
 
           ::bCancel := { || ::oWindow:Release() }
-          ::bOk     := { || lRet := ::Valid() }
+          ::bOk     := { |bAux| ::oGrid:bPosition := -1, bAux := ::onLostFocus, ::onLostFocus := Nil, lRet := ::Valid(), ::onLostFocus := bAux }
 
           ON KEY RETURN OF ( ::oWindow ) ACTION EVAL( ::bOk )
           ON KEY ESCAPE OF ( ::oWindow ) ACTION EVAL( ::bCancel )

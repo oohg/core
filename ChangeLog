@@ -1,11 +1,19 @@
 /*
- * $Id: ChangeLog,v 1.1265 2014-05-15 02:18:28 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1266 2014-05-15 03:15:59 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-05-15 00:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source\h_grid.prg
+     ! Valid messages are showed twice when using EDITLIKEEXCEL
+       and NOMODALEDIT clauses.
+     ! Wrong behaviour after finishing edition with Enter key if
+       a previous exit attempt using mouse was aborted because the
+       valid clause returned .f.
 
 2014-05-14 23:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_misc.ch
