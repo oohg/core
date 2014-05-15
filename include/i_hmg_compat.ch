@@ -1,5 +1,5 @@
 /*
- * $Id: i_hmg_compat.ch,v 1.29 2014-04-01 22:58:53 fyurisich Exp $
+ * $Id: i_hmg_compat.ch,v 1.30 2014-05-15 02:18:28 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -96,6 +96,25 @@
 #define __OOHG_HMG_COMPAT__
 
 #xtranslate RANDOM( <arg1> )   =>   HB_RANDOM( <arg1> )
+
+#xtranslate Application.ExeName => GetModuleFileName()
+
+#xtranslate GetExeFileName() =>  GetModuleFileName()
+
+#xtranslate IFNIL( <v1>,<exp1>,<exp2> )       => iif( (<v1>) == NIL,<exp1>,<exp2> )
+#xtranslate IFARRAY( <v1>,<exp1>,<exp2> )     => iif( ISARRAY( <v1> ),<exp1>,<exp2> )
+#xtranslate IFBLOCK( <v1>,<exp1>,<exp2> )     => iif( ISBLOCK( <v1> ),<exp1>,<exp2> )
+#xtranslate IFCHARACTER( <v1>,<exp1>,<exp2> ) => iif( ISCHARACTER( <v1> ),<exp1>,<exp2> )
+#xtranslate IFCHAR( <v1>,<exp1>,<exp2> )      => iif( ISCHAR( <v1> ),<exp1>,<exp2> )
+#xtranslate IFSTRING( <v1>,<exp1>,<exp2> )    => iif( ISSTRING( <v1> ),<exp1>,<exp2> )
+#xtranslate IFDATE( <v1>,<exp1>,<exp2> )      => iif( ISDATE( <v1> ),<exp1>,<exp2> )
+#xtranslate IFLOGICAL( <v1>,<exp1>,<exp2> )   => iif( ISLOGICAL( <v1> ),<exp1>,<exp2> )
+#xtranslate IFNUMBER( <v1>,<exp1>,<exp2> )    => iif( ISNUMBER( <v1> ),<exp1>,<exp2> )
+#xtranslate IFNUMERIC( <v1>,<exp1>,<exp2> )   => iif( ISNUMERIC( <v1> ),<exp1>,<exp2> )
+#xtranslate IFOBJECT( <v1>,<exp1>,<exp2> )    => iif( ISOBJECT( <v1> ),<exp1>,<exp2> )
+#xtranslate IFEMPTY( <v1>,<exp1>,<exp2> )     => iif( EMPTY( <v1> ),<exp1>,<exp2> )
+
+#xtranslate _HMG_ThisFormName => _OOHG_ThisForm:Name
 
 #xcommand BREAK <break> ;
    =>;

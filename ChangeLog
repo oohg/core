@@ -1,11 +1,42 @@
 /*
- * $Id: ChangeLog,v 1.1264 2014-05-13 21:33:32 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1265 2014-05-15 02:18:28 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-05-14 23:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_misc.ch
+     - Defines related to the Windows Registry.
+   * include/i_registry.ch
+     + Defines related to the Windows Registry.
+     + New clauses present in HMG Extended.
+     * Some defines with optional clauses.
+   * include/i_hmg_compat.ch
+     + Translations for Application.ExeName, GetExeFileName(),
+       _HMG_ThisFormName and IF*() pseudofunctions.
+   * source/h_registry.prg
+     * Include oohg.ch instead of i_misc.ch.
+     - Some comments.
+     * Format.
+     * ::nError is updated by ::Close().
+     + RegConnectRegistry at C-Level.
+     * Functions at C-Level now return the value returned
+       by the underlying API function.
+     - Unused parameters of RegOpenKeyExA().
+     * Copyright notice simplified.
+     + Functions IsRegistryKey, CreateRegistryKey, GetRegistryValue,
+       SetRegistryValue, DeleteRegistryVar, DeleteRegistryKey.
+       Adapted from HMG Extended.
+   * source/common_make.bat
+     + Paramater to suppress line number display when compiling using
+       an error log.
+   * source/xml.bat
+     * All relevant messages are redirected to log file (resul.txt).
+     * Non relevant messages are suppressed.
+     * Format.
 
 2014-05-13 18:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_altsyntax.ch

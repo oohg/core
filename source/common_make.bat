@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: common_make.bat,v 1.26 2013-09-23 02:22:07 fyurisich Exp $
+rem $Id: common_make.bat,v 1.27 2014-05-15 02:18:28 fyurisich Exp $
 rem
 
 if "%1"=="" goto INFO
@@ -16,11 +16,11 @@ rem /// Checks Harbour/xHarbour
 if exist %1 goto XHARBOUR_COMPILE
 
 :HARBOUR_COMPILE
-SET OOHG_X_FLAGS=-i"%hg_hrb%\include;%hg_root%\include" -n1 -w3 -gc0 -es2
+SET OOHG_X_FLAGS=-i"%hg_hrb%\include;%hg_root%\include" -n1 -w3 -gc0 -es2 %2
 GOTO PRG_COMPILE
 
 :XHARBOUR_COMPILE
-SET OOHG_X_FLAGS=-i"%hg_hrb%\include;%hg_root%\include" -n1 -w2 -gc0 -es2
+SET OOHG_X_FLAGS=-i"%hg_hrb%\include;%hg_root%\include" -n1 -w2 -gc0 -es2 %2
 GOTO PRG_COMPILE
 
 rem /// Compile PRG source files
