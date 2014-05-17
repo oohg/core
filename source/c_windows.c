@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.78 2013-07-03 01:44:52 migsoft Exp $
+ * $Id: c_windows.c,v 1.79 2014-05-17 21:30:00 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1347,6 +1347,11 @@ HB_FUNC( GETWINDOWSTYLE )
    hb_retnl( GetWindowLong( HWNDparam( 1 ), GWL_STYLE ) );
 }
 
+HB_FUNC( SETWINDOWEXSTYLE )
+{
+   hb_retnl( SetWindowLong( HWNDparam( 1 ), GWL_EXSTYLE, hb_parnl( 2 ) ) );
+}
+
 HB_FUNC( SETWINDOWSTYLE )
 {
    hb_retnl( SetWindowLong( HWNDparam( 1 ), GWL_STYLE, hb_parnl( 2 ) ) );
@@ -1380,6 +1385,22 @@ HB_FUNC( WINDOWSTYLEFLAG )
    }
 
    hb_retnl( GetWindowLong( HWNDparam( 1 ), GWL_STYLE ) & hb_parnl( 2 ) );
+}
+
+HB_FUNC( WINDOWEXSTYLEFLAG )
+{
+   HWND hWnd;
+   long lMask;
+
+   hWnd = HWNDparam( 1 );
+   lMask = hb_parnl( 2 );
+   if( HB_ISNUM( 3 ) )
+   {
+      SetWindowLong( hWnd, GWL_EXSTYLE, ( ( GetWindowLong( hWnd, GWL_EXSTYLE ) & ( ~ lMask ) ) | ( hb_parnl( 3 ) & lMask ) ) );
+      RedrawWindow( hWnd, 0, 0, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+   }
+
+   hb_retnl( GetWindowLong( HWNDparam( 1 ), GWL_EXSTYLE ) & hb_parnl( 2 ) );
 }
 
 HB_FUNC( ANIMATEWINDOW )                // hWnd, nTime, nFlags, lHide

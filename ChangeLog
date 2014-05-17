@@ -1,11 +1,52 @@
 /*
- * $Id: ChangeLog,v 1.1266 2014-05-15 03:15:59 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1267 2014-05-17 21:29:59 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-05-16 00:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * doc/classes.txt
+     * Updated.
+   * include/i_hmg_compat.ch
+     + Translations for more Application.<property> clauses.
+     * Translation for Application.ExeName clause.
+   * include/i_windefs.ch
+     + SWP_NOZORDER.
+   * include/oohg.h
+     + Define for s_Events_NCDestroy.
+   * source/c_controlmisc.c
+     + EVENTS_NCDESTROY to s_SymmbolNames array.
+   * source/c_windows.c
+     + SetWindowExStyle().
+     + WindowExStyleFlag().
+   * source/common_make.bat
+       + h_application to file list.
+   + source/h_application.prg
+     ; TApplication class.
+   * source/h_form.prg
+     + Data lTopmost to TForm class.
+     + Method HelpButton to TForm class.
+     + Method Event_NCDestroy to TForm class.
+     - Comments.
+     * Format.
+     * Handling of topmost style in method TForm:Define().
+     * Method TForm:Topmost() moved to PRG level.
+     ! Method TForm:Topmost() return value.
+     * Method Events_Destroy no longer updates _OOHG_aFormhWnd
+       and _OOHG_aFormObjects arrays. This task was moved to
+       Method Event_NCDestroy. See comments in source.
+     + Function SetFormTopmost at C-level.
+     * Function UnRegisterWindow now returns .T. or .F.
+   * source/h_windows.prg
+     * Method Tabstop uses IsWindowStyle() to return current setting.
+     * Format.
+   * source/makelib_mingw.bat
+       + h_application to file list.
+   * source/oohg.hbp
+       + h_application to file list.
 
 2014-05-15 00:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source\h_grid.prg

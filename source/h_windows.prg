@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.249 2013-10-12 19:55:57 fyurisich Exp $
+ * $Id: h_windows.prg,v 1.250 2014-05-17 21:30:00 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1032,7 +1032,7 @@ METHOD TabStop( lTabStop ) CLASS TWindow
    IF HB_IsLogical( lTabStop )
       WindowStyleFlag( ::hWnd, WS_TABSTOP, IF( lTabStop, WS_TABSTOP, 0 ) )
    ENDIF
-RETURN ( WindowStyleFlag( ::hWnd, WS_TABSTOP ) != 0 )
+RETURN IsWindowStyle( ::hWnd, WS_TABSTOP )
 
 *------------------------------------------------------------------------------*
 METHOD Style( nStyle ) CLASS TWindow
@@ -2072,7 +2072,7 @@ METHOD LINE(nRow ,nCol ,nToRow ,nToCol ,nWidth ,aColor, nStyle ) CLASS TWindow
 return nil
 
 *------------------------------------------------------------------------------*
-METHOD FILL(nRow , nCol , nToRow , nToCol , aColor) Class TWindow
+METHOD FILL(nRow , nCol , nToRow , nToCol , aColor) CLASS TWindow
 *------------------------------------------------------------------------------*
 
    default aColor to {0,0,0}
@@ -2106,7 +2106,7 @@ Return nil
 
 *------------------------------------------------------------------------------*
 METHOD ROUNDbox (nRow ,nCol ,nToRow ,nToCol ,nWidth , aColor, lStyle, ;
-   nStyle, nBrStyle, aBrColor ) CLASS tWindow
+   nStyle, nBrStyle, aBrColor ) CLASS TWindow
 *------------------------------------------------------------------------------*
 local lBrushColor
 
@@ -2132,7 +2132,7 @@ Return nil
 
 *------------------------------------------------------------------------------*
 METHOD Ellipse (nRow ,nCol ,nToRow ,nToCol ,nWidth , aColor, lStyle, ;
-   nStyle, nBrStyle, aBrColor ) CLASS tWindow
+   nStyle, nBrStyle, aBrColor ) CLASS TWindow
 *------------------------------------------------------------------------------*
 local lBrushColor
 
@@ -2169,7 +2169,7 @@ return nil
 
 *------------------------------------------------------------------------------*
 METHOD Pie(nRow ,nCol ,nToRow ,nToCol,x1,y1,x2,y2,nWidth , aColor, lStyle, ;
-   nStyle, nBrStyle, aBrColor ) CLASS tWindow
+   nStyle, nBrStyle, aBrColor ) CLASS TWindow
 *------------------------------------------------------------------------------*
 local lBrushColor
 

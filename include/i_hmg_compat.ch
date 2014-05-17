@@ -1,5 +1,5 @@
 /*
- * $Id: i_hmg_compat.ch,v 1.30 2014-05-15 02:18:28 fyurisich Exp $
+ * $Id: i_hmg_compat.ch,v 1.31 2014-05-17 21:30:00 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -97,7 +97,31 @@
 
 #xtranslate RANDOM( <arg1> )   =>   HB_RANDOM( <arg1> )
 
-#xtranslate Application.ExeName => GetModuleFileName()
+#xtranslate Application.ArgC                => TApplication():ArgC
+#xtranslate Application.Args                => TApplication():Args
+#xtranslate Application.BackColor           => TApplication():BackColor
+#xtranslate Application.BackColor := <arg>  => TApplication():BackColor( <arg> )
+#xtranslate Application.Col                 => TApplication():Col
+#xtranslate Application.Col := <arg>        => TApplication():Col( <arg> )
+#xtranslate Application.Cursor := <arg>     => TApplication():Cursor( <arg> )
+#xtranslate Application.Drive               => TApplication():Drive
+#xtranslate Application.ExeName             => TApplication():ExeName
+#xtranslate Application.FormName            => TApplication():MainName
+#xtranslate Application.Handle              => TApplication():Handle
+#xtranslate Application.Height              => TApplication():Height
+#xtranslate Application.Height := <arg>     => TApplication():Height( <arg> )
+#xtranslate Application.HelpButton          => TApplication():HelpButton
+#xtranslate Application.HelpButton := <arg> => TApplication():HelpButton( <arg> )
+#xtranslate Application.Name                => TApplication():Name
+#xtranslate Application.Path                => TApplication():Path
+#xtranslate Application.Row                 => TApplication():Row
+#xtranslate Application.Row := <arg>        => TApplication():Row( <arg> )
+#xtranslate Application.Title               => TApplication():Title
+#xtranslate Application.Title := <arg>      => TApplication():Title( <arg> )
+#xtranslate Application.Topmost             => TApplication():Topmost
+#xtranslate Application.Topmost := <arg>    => TApplication():Topmost( <arg> )
+#xtranslate Application.Width               => TApplication():Width
+#xtranslate Application.Width := <arg>      => TApplication():Width( <arg> )
 
 #xtranslate GetExeFileName() =>  GetModuleFileName()
 

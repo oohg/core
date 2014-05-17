@@ -1,6 +1,29 @@
 /*
- * $Id: classes.txt,v 1.78 2014-05-06 22:04:19 fyurisich Exp $
+ * $Id: classes.txt,v 1.79 2014-05-17 21:29:59 fyurisich Exp $
  */
+
+*------------------------------------------------------------------------------*
+CLASS TAPPLICATION
+   DATA ARGC                      INIT HB_ARGC()
+   DATA ARGS                      INIT GETCOMMANDLINEARGS()
+   DATA EXENAME                   INIT GETPROGRAMFILENAME()
+
+   METHOD BACKCOLOR               SETGET
+   METHOD COL                     SETGET
+   METHOD CURSOR                  SETGET
+   METHOD DRIVE
+   METHOD MAINNAME
+   METHOD FORMOBJECT
+   METHOD HANDLE
+   METHOD HEIGHT                  SETGET
+   METHOD HELPBUTTON              SETGET
+   METHOD NAME
+   METHOD PATH
+   METHOD ROW                     SETGET
+   METHOD TITLE                   SETGET
+   METHOD TOPMOST                 SETGET
+   METHOD WIDTH                   SETGET
+ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS HBPRINTER
@@ -237,6 +260,9 @@ CLASS TACTIVEX FROM TCONTROL
    METHOD EVENTMAP
    METHOD RELEASE
 ENDCLASS
+
+*------------------------------------------------------------------------------*
+CLASS TACTIVEX FROM TCONTROL
 
 *------------------------------------------------------------------------------*
 CLASS TANIMATEBOX FROM TCONTROL
@@ -690,6 +716,7 @@ CLASS TFORM FROM TWINDOW
    DATA LFORM                     INIT .T.
    DATA LINTERNAL                 INIT .F.
    DATA LSHOWED                   INIT .F.
+   DATA LTOPMOST                  INIT .F.
    DATA MAXHEIGHT                 INIT 0
    DATA MAXWIDTH                  INIT 0
    DATA MINHEIGHT                 INIT 0

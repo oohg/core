@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.57 2014-04-08 22:05:45 fyurisich Exp $
+ * $Id: i_windefs.ch,v 1.58 2014-05-17 21:30:00 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -795,6 +795,7 @@
 
 #define SWP_NOSIZE                    0x0001
 #define SWP_NOMOVE                    0x0002
+#define SWP_NOZORDER                  0x0004
 #define SWP_NOACTIVATE                0x0010
 #define SWP_FRAMECHANGED              0x0020
 

@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.47 2014-02-15 01:17:23 guerra000 Exp $
+ * $Id: h_form.prg,v 1.48 2014-05-17 21:30:00 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -207,9 +207,9 @@ CLASS TForm FROM TWindow
    DATA NotifyMenu            INIT nil
    DATA cNotifyIconName       INIT ""
    DATA cNotifyIconToolTip    INIT ""
-   //CGR
+   DATA lTopmost              INIT .F.
    DATA TagControl
-   DATA Tag	INIT ""
+   DATA Tag	                  INIT ""
 
    METHOD NotifyIcon          SETGET
    METHOD NotifyToolTip       SETGET
@@ -261,8 +261,10 @@ CLASS TForm FROM TWindow
 
    METHOD Events
    METHOD Events_Destroy
+   METHOD Events_NCDestroy
    METHOD Events_VScroll
    METHOD Events_HScroll
+   METHOD HelpButton          SETGET
    METHOD HelpTopic(lParam)   BLOCK { | Self, lParam | HelpTopic( GetControlObjectByHandle( GetHelpData( lParam ) ):HelpId , 2 ), Self, nil }
    METHOD ScrollControls
    METHOD MessageLoop
@@ -364,7 +366,10 @@ Local Formhandle
                 if( !HB_IsLogical( nosysmenu ) .OR. ! nosysmenu, WS_SYSMENU, 0 ) + ;
                 if( !HB_IsLogical( nocaption )  .OR. ! nocaption, WS_CAPTION, 0 )
 
-   nStyleEx += if( HB_IsLogical( topmost ) .AND. topmost, WS_EX_TOPMOST, 0 )
+   If HB_IsLogical( topmost ) .AND. topmost
+     ::lTopmost := .T.
+     nStyleEx += WS_EX_TOPMOST
+   EndIf
 
    If HB_IsLogical( mdi ) .AND. mdi
       If nWindowType != 0
@@ -892,7 +897,9 @@ Local aControls, nWidth, nHeight
    nHeight := ::ClientHeight
 Return ::ClientsPos2( aControls, nWidth, nHeight )
 
+
 #pragma BEGINDUMP
+
 HB_FUNC_STATIC( TFORM_BACKCOLOR )
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
@@ -918,29 +925,22 @@ HB_FUNC_STATIC( TFORM_BACKCOLOR )
    // Return value was set in _OOHG_DetermineColorReturn()
 }
 
-HB_FUNC_STATIC( TFORM_TOPMOST )
+HB_FUNC( SETFORMTOPMOST )
 {
-   PHB_ITEM pSelf = hb_stackSelfItem();
-   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   HWND hWnd = HWNDparam( 1 );
 
-   if( ValidHandler( oSelf->hWnd ) )
+   if( hb_parl( 2 ) )
    {
-      if( HB_ISLOG( 1 ) )
-      {
-         if( hb_parl( 1 ) )
-         {
-            SetWindowPos( oSelf->hWnd, HWND_TOPMOST,   0, 0, 0, 0, SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE );
-         }
-         else
-         {
-            SetWindowPos( oSelf->hWnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE );
-         }
-      }
+      SetWindowPos( hWnd, HWND_TOPMOST,   0, 0, 0, 0, SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE );
    }
-
-   hb_ret();
+   else
+   {
+      SetWindowPos( hWnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE );
+   }
 }
+
 #pragma ENDDUMP
+
 
  *----------------------------------
 Method GetWindowstate( ) CLASS Tform
@@ -1032,72 +1032,96 @@ Return lRetVal
 *-----------------------------------------------------------------------------*
 METHOD Events_Destroy() CLASS TForm
 *-----------------------------------------------------------------------------*
-Local mVar, i
+Local mVar
 
    ::ReleaseAttached()
 
-   // If ::Active
    // Any data must be destroyed... regardless FORM is active or not.
 
-      // Delete Notify icon
-      ShowNotifyIcon( ::hWnd, .F. , 0, "" )
-      If ::NotifyMenu != nil
-         ::NotifyMenu:Release()
-      EndIf
+   // Delete Notify icon
+   ShowNotifyIcon( ::hWnd, .F. , 0, "" )
+   If ::NotifyMenu != nil
+      ::NotifyMenu:Release()
+   EndIf
 
-      If ::oMenu != NIL
-         ::oMenu:Release()
-         ::oMenu := nil
-      EndIf
+   If ::oMenu != NIL
+      ::oMenu:Release()
+      ::oMenu := nil
+   EndIf
 
-      // Update Form Index Variable
-      If ! Empty( ::Name )
-         mVar := '_' + ::Name
-         if type( mVar ) != 'U'
-            __MVPUT( mVar , 0 )
-         EndIf
+   // Update Form Index Variable
+   If ! Empty( ::Name )
+      mVar := '_' + ::Name
+      if type( mVar ) != 'U'
+         __MVPUT( mVar , 0 )
       EndIf
+   EndIf
 
-      // Removes from container
-      If ::Container != NIL
-         ::Container:DeleteControl( Self )
-      EndIf
+   // Removes from container
+   If ::Container != NIL
+      ::Container:DeleteControl( Self )
+   EndIf
 
-      // Removes from parent
-      If ::Parent != NIL
-         ::Parent:DeleteControl( Self )
-      EndIf
+   // Removes from parent
+   If ::Parent != NIL
+      ::Parent:DeleteControl( Self )
+   EndIf
 
-      // Verify if window was multi-activated
-      If ::Active
-         ::ActivateCount[ 1 ]--
-         If ::ActivateCount[ 1 ] < 1
-            _MessageLoopEnd( ::ActivateCount[ 2 ] )
-            ::ActivateCount[ 2 ] := NIL
-            ::ActivateCount[ 3 ] := .F.
-         Endif
+   // Verify if window was multi-activated
+   If ::Active
+      ::ActivateCount[ 1 ]--
+      If ::ActivateCount[ 1 ] < 1
+         _MessageLoopEnd( ::ActivateCount[ 2 ] )
+         ::ActivateCount[ 2 ] := NIL
+         ::ActivateCount[ 3 ] := .F.
       Endif
+   Endif
 
-      // Removes WINDOW from the array
-      i := Ascan( _OOHG_aFormhWnd, ::hWnd )
-      IF i > 0
-         _OOHG_DeleteArrayItem( _OOHG_aFormhWnd, I )
-         _OOHG_DeleteArrayItem( _OOHG_aFormObjects, I )
-      ENDIF
+/*
+   We can´t remove hWnd from the arrays at this point
+   because we need to use GetFormObjectByHandle() to
+   process WM_NCDESTROY message. See ::Events_NCDestroy
+   and _OOHG_WndProcForm() function.
 
-      *** ::Type == "MODAL"
-      // Eliminates active modal
-      IF Len( _OOHG_ActiveModal ) != 0 .AND. ATAIL( _OOHG_ActiveModal ):hWnd == ::hWnd
-         _OOHG_DeleteArrayItem( _OOHG_ActiveModal, Len( _OOHG_ActiveModal ) )
-      ENDIF
+   // Removes WINDOW from the array
+   i := Ascan( _OOHG_aFormhWnd, ::hWnd )
+   IF i > 0
+      _OOHG_DeleteArrayItem( _OOHG_aFormhWnd, I )
+      _OOHG_DeleteArrayItem( _OOHG_aFormObjects, I )
+   ENDIF
+*/
 
-      ::Active := .F.
-      ::Super:Release()
+   // Eliminates active modal
+   IF Len( _OOHG_ActiveModal ) != 0 .AND. ATAIL( _OOHG_ActiveModal ):hWnd == ::hWnd
+      _OOHG_DeleteArrayItem( _OOHG_ActiveModal, Len( _OOHG_ActiveModal ) )
+   ENDIF
 
-   // EndIf
-   // Any data must be destroyed... regardless FORM is active or not.
+   ::Active := .F.
+   ::Super:Release()
 
 Return nil
+
+*-----------------------------------------------------------------------------*
+METHOD Events_NCDestroy CLASS TForm
+*-----------------------------------------------------------------------------*
+Local i
+   /*
+    * UnRegisterWindow( ::Name )
+    *
+    * This doen't works because a class cant be
+    * unregistered if a window of that class exists.
+    * To avoid problems we must unregister in
+    * ::Define before defining again.
+    * Windows automatically unregisteres all
+    * remaining classes at the end of the application.
+    */
+
+   i := aScan( _OOHG_aFormhWnd, ::hWnd )
+   If i > 0
+      _OOHG_DeleteArrayItem( _OOHG_aFormhWnd, i )
+      _OOHG_DeleteArrayItem( _OOHG_aFormObjects, i )
+   EndIf
+Return Nil
 
 *-----------------------------------------------------------------------------*
 METHOD Events_VScroll( wParam ) CLASS TForm
@@ -1123,6 +1147,31 @@ METHOD ScrollControls() CLASS TForm
    AEVAL( ::aControls, { |o| If( o:Container == nil, o:SizePos(), ) } )
    ReDrawWindow( ::hWnd )
 RETURN Self
+
+*-----------------------------------------------------------------------------*
+METHOD Topmost( lTopmost ) CLASS TForm
+*-----------------------------------------------------------------------------*
+   If HB_IsLogical( lTopmost )
+      ::lTopmost := lTopmost
+      SetFormTopmost( ::hWnd, lTopmost )
+   EndIf
+Return ::lTopmost
+
+*-----------------------------------------------------------------------------*
+METHOD HelpButton( lShow ) CLASS TForm
+*-----------------------------------------------------------------------------*
+   If HB_IsLogical( lShow )
+      If lShow
+         WindowExStyleFlag( ::hWnd, WS_EX_CONTEXTHELP, WS_EX_CONTEXTHELP )
+         WindowStyleFlag( ::hWnd, WS_MAXIMIZEBOX + WS_MINIMIZEBOX, 0 )
+      Else
+         WindowExStyleFlag( ::hWnd, WS_EX_CONTEXTHELP, 0 )
+         WindowStyleFlag( ::hWnd, WS_MAXIMIZEBOX + WS_MINIMIZEBOX, WS_MAXIMIZEBOX + WS_MINIMIZEBOX )
+      EndIf
+      SetWindowPos( ::hWnd, 0, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE + SWP_NOZORDER + SWP_NOACTIVATE + SWP_FRAMECHANGED )
+   EndIf
+Return IsWindowExStyle( ::hWnd, WS_EX_CONTEXTHELP )
+
 
 #pragma BEGINDUMP
 
@@ -1531,6 +1580,15 @@ Local oCtrl, lMinim, nOffset,nDesp
       Else
          ::OnHideFocusManagement()
       EndIf
+
+      /*
+       * This function must return NIL after processing WM_CLOSE so the
+       * OS can do it's default processing. This processing ends with
+       * (a) the posting of a WM_DESTROY message to the queue (will be
+       * processed by this same function), immediately followed by
+       * (b) the sending of a WM_NCDESTROY message to the form's
+       * WindowProc (redirected to _OOHG_WndProcForm()).
+       */
 
    ***********************************************************************
    case nMsg == WM_DESTROY
@@ -2922,15 +2980,14 @@ LRESULT APIENTRY _OOHG_WndProcForm( HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM
    pSave = hb_itemNew( NULL );
    pSelf = hb_itemNew( NULL );
    hb_itemCopy( pSave, hb_param( -1, HB_IT_ANY ) );
-   hb_itemCopy( pSelf, GetFormObjectByHandle( hWnd ) );
+   hb_itemCopy( pSelf, GetFormObjectByHandle( hWnd ) );     // See ::Events_Destroy()
 
    iReturn = _OOHG_WndProc( pSelf, hWnd, uiMsg, wParam, lParam, lpfnOldWndProc );
 
    if( uiMsg == WM_NCDESTROY )
    {
-      _OOHG_Send( pSelf, s_Name );
+      _OOHG_Send( pSelf, s_Events_NCDestroy );
       hb_vmSend( 0 );
-      UnregisterClass( hb_parc( -1 ), GetModuleHandle( NULL ) );
    }
 
    hb_itemReturn( pSave );
@@ -3044,7 +3101,7 @@ HB_FUNC( REGISTERWINDOW )
 
 HB_FUNC( UNREGISTERWINDOW )
 {
-   UnregisterClass( hb_parc( 1 ), GetModuleHandle( NULL ) );
+   hb_retl( UnregisterClass( hb_parc( 1 ), GetModuleHandle( NULL ) ) );
 }
 
 HB_FUNC( INITDUMMY )

@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.h,v 1.60 2014-04-30 02:36:23 fyurisich Exp $
+ * $Id: oohg.h,v 1.61 2014-05-17 21:30:00 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -209,7 +209,8 @@ HBRUSH GetTabBrush( HWND hWnd );
 #define s_GridSelectedColors   75
 #define s_TEdit                76
 #define s_oBkGrnd              77
-#define s_LastSymbol           78
+#define s_Events_NCDestroy     78
+#define s_LastSymbol           79
 
 #ifdef __XHARBOUR__
    #define HB_STORNI( n, x, y )   hb_storni( n, x, y )
