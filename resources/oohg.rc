@@ -1,5 +1,5 @@
 //
-// $Id: oohg.rc,v 1.7 2013-07-30 01:51:17 fyurisich Exp $
+// $Id: oohg.rc,v 1.8 2014-05-20 01:08:47 fyurisich Exp $
 //
 // Use this file with MinGW Compiler
 
@@ -34,6 +34,7 @@ MINIGUI_EDIT_DEL        BITMAP          oohgpath\edit_del.bmp
 MINIGUI_EDIT_SET        BITMAP          oohgpath\edit_set.bmp
 MINIGUI_EDIT_UNDO       BITMAP          oohgpath\edit_undo.bmp
 
+ZZZ_AAAOOHG             ICON            oohgpath\OOHG.ICO
 ZZZ_AAAWINDOW           ICON            oohgpath\WINDOW.ICO
 ZZZ_LED_ON              ICON            oohgpath\LED_ON.ICO
 ZZZ_LED_OFF             ICON            oohgpath\LED_OFF.ICO

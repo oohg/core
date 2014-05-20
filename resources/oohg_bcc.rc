@@ -1,5 +1,5 @@
 //
-// $Id: oohg_bcc.rc,v 1.2 2013-07-30 01:51:18 fyurisich Exp $
+// $Id: oohg_bcc.rc,v 1.3 2014-05-20 01:08:47 fyurisich Exp $
 //
 // Use CompileRes.bat to build oohg.res from this file using Borland Compiler
 
@@ -25,6 +25,7 @@ MINIGUI_EDIT_DEL        BITMAP          edit_del.bmp
 MINIGUI_EDIT_SET        BITMAP          edit_set.bmp
 MINIGUI_EDIT_UNDO       BITMAP          edit_undo.bmp
 
+ZZZ_AAAOOHG             ICON            OOHG.ICO
 ZZZ_AAAWINDOW           ICON            WINDOW.ICO
 ZZZ_LED_ON              ICON            LED_ON.ICO
 ZZZ_LED_OFF             ICON            LED_OFF.ICO
