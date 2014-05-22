@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.250 2014-05-15 03:15:59 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.251 2014-05-22 21:11:15 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -4755,58 +4755,61 @@ METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, 
 Local lRet := .F., i, aPos, nPos1, nPos2, cText, nPos
 
    If ! IsWindowDefined( _oohg_gridwn )
-       If HB_IsObject( ::oGrid ) .AND. ::oGrid:InPlace .AND. ( ::lNoModal .OR. ::oGrid:lNoModal )
-          DEFINE WINDOW _oohg_gridwn OBJ ::oWindow ;
-             AT nRow - 3, nCol - 3 WIDTH nWidth + 6 HEIGHT nHeight + 6 ;
-             CHILD NOSIZE NOCAPTION ;
-             FONT cFontName SIZE nFontSize ;
-             ON INIT ( ::onLostFocus := { |bAux| ::oGrid:bPosition := 9, bAux := ::onLostFocus, ::onLostFocus := Nil, lRet := ::Valid(), ::onLostFocus := bAux } )
-       Else
-          DEFINE WINDOW _oohg_gridwn OBJ ::oWindow ;
-             AT nRow - 3, nCol - 3 WIDTH nWidth + 6 HEIGHT nHeight + 6 ;
-             MODAL NOSIZE NOCAPTION ;
-             FONT cFontName SIZE nFontSize
-       EndIf
+      If HB_IsObject( ::oGrid ) .AND. ::oGrid:InPlace .AND. ( ::lNoModal .OR. ::oGrid:lNoModal )
+         DEFINE WINDOW _oohg_gridwn OBJ ::oWindow ;
+            AT nRow - 3, nCol - 3 WIDTH nWidth + 6 HEIGHT nHeight + 6 ;
+            CHILD NOSIZE NOCAPTION ;
+            FONT cFontName SIZE nFontSize ;
+            ON INIT ( ::onLostFocus := { |bAux| ::oGrid:bPosition := 9, bAux := ::onLostFocus, ::onLostFocus := Nil, lRet := ::Valid(), ::onLostFocus := bAux } )
 
-          ::bCancel := { || ::oWindow:Release() }
-          ::bOk     := { |bAux| ::oGrid:bPosition := -1, bAux := ::onLostFocus, ::onLostFocus := Nil, lRet := ::Valid(), ::onLostFocus := bAux }
+         ::bOk := { |bAux| ::oGrid:bPosition := -1, bAux := ::onLostFocus, ::onLostFocus := Nil, lRet := ::Valid(), ::onLostFocus := bAux }
+      Else
+         DEFINE WINDOW _oohg_gridwn OBJ ::oWindow ;
+            AT nRow - 3, nCol - 3 WIDTH nWidth + 6 HEIGHT nHeight + 6 ;
+            MODAL NOSIZE NOCAPTION ;
+            FONT cFontName SIZE nFontSize
 
-          ON KEY RETURN OF ( ::oWindow ) ACTION EVAL( ::bOk )
-          ON KEY ESCAPE OF ( ::oWindow ) ACTION EVAL( ::bCancel )
+         ::bOk := { || lRet := ::Valid() }
+      EndIf
 
-          If HB_IsArray( aKeys )
-             For i := 1 To Len( aKeys )
-                If HB_IsArray( aKeys[ i ] ) .AND. Len( aKeys[ i ] ) > 1
-                   If ValType( aKeys[ i, 1 ] ) $ "CM" .AND. HB_IsBlock( aKeys[ i, 2 ] )
-                      If ! ( aKeys[ i, 1 ] == "RETURN" .OR. aKeys[ i, 1 ] == "ESCAPE" .OR. ( aKeys[ i, 1 ] == ::cEditKey .AND. HB_IsObject( ::oGrid ) .AND. ::oGrid:InPlace .AND. ( ::lLikeExcel .OR. ::oGrid:lLikeExcel ) ) )
-                         _DefineAnyKey( ::oWindow, aKeys[ i, 1 ], aKeys[ i, 2 ] )
-                      EndIf
-                   EndIf
-                EndIf
-             Next
-          EndIf
+         ::bCancel := { || ::oWindow:Release() }
 
-          ::CreateControl( uValue, ::oWindow, 0, 0, nWidth + 6, nHeight + 6 )
+         ON KEY RETURN OF ( ::oWindow ) ACTION EVAL( ::bOk )
+         ON KEY ESCAPE OF ( ::oWindow ) ACTION EVAL( ::bCancel )
 
-          If HB_IsObject( ::oGrid ) .AND. ::oGrid:InPlace .AND. ( ::lLikeExcel .OR. ::oGrid:lLikeExcel )
-             ON KEY UP             OF ( ::oControl ) ACTION ( ::oGrid:bPosition := 1, EVAL( ::bOk ) )
-             ON KEY RIGHT          OF ( ::oControl ) ACTION ( ::oGrid:bPosition := 2, EVAL( ::bOk ) )
-             ON KEY LEFT           OF ( ::oControl ) ACTION ( ::oGrid:bPosition := 3, EVAL( ::bOk ) )
-             ON KEY HOME           OF ( ::oControl ) ACTION ( ::oGrid:bPosition := 4, EVAL( ::bOk ) )
-             ON KEY END            OF ( ::oControl ) ACTION ( ::oGrid:bPosition := 5, EVAL( ::bOk ) )
-             ON KEY DOWN           OF ( ::oControl ) ACTION ( ::oGrid:bPosition := 6, EVAL( ::bOk ) )
-             ON KEY PRIOR          OF ( ::oControl ) ACTION ( ::oGrid:bPosition := 7, EVAL( ::bOk ) )
-             ON KEY NEXT           OF ( ::oControl ) ACTION ( ::oGrid:bPosition := 8, EVAL( ::bOk ) )
-             ON KEY ( ::cEditKey ) OF ( ::oControl ) ACTION TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey )
-             ::oControl:OnClick     := { || TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey ) }
-             ::oControl:OnDblClick  := { || TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey ) }
-             ::oControl:OnRClick    := { || TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey ) }
-             ::oControl:OnRDblClick := { || TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey ) }
-             ::oControl:OnMClick    := { || TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey ) }
-             ::oControl:OnMDblClick := { || TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey ) }
-          EndIf
+         If HB_IsArray( aKeys )
+            For i := 1 To Len( aKeys )
+               If HB_IsArray( aKeys[ i ] ) .AND. Len( aKeys[ i ] ) > 1
+                  If ValType( aKeys[ i, 1 ] ) $ "CM" .AND. HB_IsBlock( aKeys[ i, 2 ] )
+                     If ! ( aKeys[ i, 1 ] == "RETURN" .OR. aKeys[ i, 1 ] == "ESCAPE" .OR. ( aKeys[ i, 1 ] == ::cEditKey .AND. HB_IsObject( ::oGrid ) .AND. ::oGrid:InPlace .AND. ( ::lLikeExcel .OR. ::oGrid:lLikeExcel ) ) )
+                        _DefineAnyKey( ::oWindow, aKeys[ i, 1 ], aKeys[ i, 2 ] )
+                     EndIf
+                  EndIf
+               EndIf
+            Next
+         EndIf
 
-          ::Value := ::ControlValue
+         ::CreateControl( uValue, ::oWindow, 0, 0, nWidth + 6, nHeight + 6 )
+
+         If HB_IsObject( ::oGrid ) .AND. ::oGrid:InPlace .AND. ( ::lLikeExcel .OR. ::oGrid:lLikeExcel )
+            ON KEY UP             OF ( ::oControl ) ACTION ( ::oGrid:bPosition := 1, EVAL( ::bOk ) )
+            ON KEY RIGHT          OF ( ::oControl ) ACTION ( ::oGrid:bPosition := 2, EVAL( ::bOk ) )
+            ON KEY LEFT           OF ( ::oControl ) ACTION ( ::oGrid:bPosition := 3, EVAL( ::bOk ) )
+            ON KEY HOME           OF ( ::oControl ) ACTION ( ::oGrid:bPosition := 4, EVAL( ::bOk ) )
+            ON KEY END            OF ( ::oControl ) ACTION ( ::oGrid:bPosition := 5, EVAL( ::bOk ) )
+            ON KEY DOWN           OF ( ::oControl ) ACTION ( ::oGrid:bPosition := 6, EVAL( ::bOk ) )
+            ON KEY PRIOR          OF ( ::oControl ) ACTION ( ::oGrid:bPosition := 7, EVAL( ::bOk ) )
+            ON KEY NEXT           OF ( ::oControl ) ACTION ( ::oGrid:bPosition := 8, EVAL( ::bOk ) )
+            ON KEY ( ::cEditKey ) OF ( ::oControl ) ACTION TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey )
+            ::oControl:OnClick     := { || TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey ) }
+            ::oControl:OnDblClick  := { || TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey ) }
+            ::oControl:OnRClick    := { || TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey ) }
+            ::oControl:OnRDblClick := { || TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey ) }
+            ::oControl:OnMClick    := { || TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey ) }
+            ::oControl:OnMDblClick := { || TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey ) }
+         EndIf
+
+         ::Value := ::ControlValue
       END WINDOW
    EndIf
 

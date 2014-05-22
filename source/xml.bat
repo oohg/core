@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: xml.bat,v 1.5 2014-05-15 02:18:28 fyurisich Exp $
+rem $Id: xml.bat,v 1.6 2014-05-22 21:11:15 fyurisich Exp $
 rem
 cls
 
@@ -74,5 +74,5 @@ set HG_FILES1_PRG=
 set HG_FILES2_PRG=
 set HG_FILES_C=
 
-echo See result.txt
+echo See resul.txt
 echo.
