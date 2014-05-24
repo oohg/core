@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.ch,v 1.8 2013-12-31 18:50:24 guerra000 Exp $
+ * $Id: winprint.ch,v 1.9 2014-05-24 20:38:49 fyurisich Exp $
  */
 // ---------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -42,7 +42,8 @@ MEMVAR HBPRN
 #xcommand SELECT DEFAULT [<p: PREVIEW>]=>  hbprn:selectprinter(NIL,<.p.>)
 #xcommand SELECT PRINTER <cprinter> [<p: PREVIEW>]=>  hbprn:selectprinter(<cprinter>,<.p.>)
 
-#xcommand ENABLE THUMBNAILS => hbprn:thumbnails:=.t.
+#xcommand ENABLE THUMBNAILS => hbprn:thumbnails := .T.
+#xcommand DISABLE THUMBNAILS => hbprn:thumbnails := .F.
 #xcommand SET PREVIEW RECT <row>,<col>,<row2>,<col2> => hbprn:previewrect:={<row>,<col>,<row2>,<col2>}
 #xcommand SET PREVIEW SCALE <scale> => hbprn:previewscale:=<scale>
 
