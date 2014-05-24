@@ -1,11 +1,25 @@
 /*
- * $Id: ChangeLog,v 1.1273 2014-05-24 20:38:48 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1274 2014-05-24 21:55:24 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-05-24 18:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/hbprinter_@_commands.htm
+   * manual/hbprinter_set_commands.htm
+     + Missing commands.
+   * manual/hbprinter_constants.htm
+     + Missing constants.
+   * manual/hbprinter_font_commands.htm
+   * manual/hbprinter_get_commands.htm
+   * manual/hbprinter_print_commands.htm
+   * manual/hbprinter_set_commands.htm
+     * Some descriptions.
+   * manual/oohg.hhk
+     * Updated.
 
 2014-05-24 17:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/winprint.ch

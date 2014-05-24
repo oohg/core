@@ -134,6 +134,11 @@
 		<param name="Local" value="LABEL.HTM">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="LIBRARIES">
+		<param name="Name" value="LIBRARIES">
+		<param name="Local" value="LIBRARIES.HTM">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="LISTBOX">
 		<param name="Name" value="LISTBOX">
 		<param name="Local" value="LISTBOX.HTM">

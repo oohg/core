@@ -1,5 +1,5 @@
 <!--
-$Id: HBPRINTER_SET_COMMANDS.HTM,v 1.1 2014-05-24 20:34:09 fyurisich Exp $
+$Id: HBPRINTER_SET_COMMANDS.HTM,v 1.2 2014-05-24 21:55:24 fyurisich Exp $
 -->
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -184,7 +184,7 @@ Libraries &gt; HBPRINTER &gt; </div>
 
 <p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES">
 <b>SET UNITS ROWCOL | MM | INCHES | PIXELS [ ABSOLUTE ]</b><br>
-Sets mesure units for @... commands.
+Sets the mesure units for @... commands.
 <p><b>SET UNITS</b><br>
 Same as SET UNITS ROWCOL.
 <p><b>SET UNITS ROWS &lt;r&gt; COLS &lt;c&gt; [ ABSOLUTE ]</b><br>
@@ -195,6 +195,8 @@ Selects a printer using a dialog box.
 Selects the default printer.
 <p><b>SELECT PRINTER &lt;cprinter&gt; [ PREVIEW ]</b><br>
 Selects the indicated printer.
+<p><b>DEFINE IMAGELIST &lt;cimglist&gt; PICTURE &lt;cpicture&gt; [ ICONCOUNT &lt;nicons&gt; ]</b><br>
+Loads a bitmap image into an imagelist ("nicons" is the number of number of individual iconos stored in the image).
 <p><b>ENABLE THUMBNAILS</b><br>
 Enables thumbails in print preview.
 <p><b>DISABLE THUMBNAILS</b><br>
@@ -202,29 +204,39 @@ Disables thumbails in print preview.
 <p><b>SET THUMBNAILS ON | OFF</b><br>
 Enables / disables thumbails in print preview.
 <p><b>SET PREVIEW RECT &lt;row&gt;, &lt;col&gt;, &lt;row2&gt;, &lt;col2&gt;</b><br>
-Sets print preview area.
+Sets the area for print preview.
 <p><b>SET PREVIEW SCALE &lt;scale&gt;</b><br>
-Sets scale for print preview.
+Sets the scale for print preview.
 <p><b>SET PAGE [ ORIENTATION &lt;orient&gt; ] [ PAPERSIZE &lt;psize&gt; ] [ FONT &lt;cfont&gt; ]</b><br>
 Sets page's orientation, paper size and/or default font.
 <p><b>SET ORIENTATION PORTRAIT</b><br>
-Sets paper orientation to portrait.
+Sets paper's orientation to portrait.
 <p><b>SET ORIENTATION LANDSCAPE</b><br>
-Sets paper orientation to landscape.
+Sets paper's orientation to landscape.
 <p><b>SET PAPERSIZE &lt;psize&gt;</b><br>
-Sets paper size.
+Sets paper's size.
 <p><b>SET QUALITY &lt;quality&gt;</b><br>
-Sets printer quality.
+Sets printer's quality.
 <p><b>SET COLORMODE &lt;mode&gt;</b><br>
-Sets printer color mode.
+Sets printer's color mode.
 <p><b>SET PREVIEW ON | OFF</b><br>
-Sets printer preview.
+Sets printer's preview.
 <p><b>SET TEXTCOLOR &lt;clr&gt; | &lt;aRGBColor&gt;</b><br>
-Sets default text color.
+Sets the default color for text.
 <p><b>SET BACKCOLOR &lt;nColor&gt; | &lt;aRGBColor&gt;</b><br>
-Sets default background color.
+Sets the default color for background.
 <p><b>SET PRINT MARGINS [ TOP &lt;lm&gt; ] [ LEFT &lt;rm&gt; ]</b><br>
 Sets printing margins.
+<p><b>SET DUPLEX VERTICAL | HORIZONTAL</b><br>
+Enables duplex printing using long-edge / short-edge binding.
+<p><b>SET DUPLEX OFF</b><br>
+Disables duplex printing.
+<p><b>SET BIN &lt;prnbin&gt;</b><br>
+Sets printer's default bin.
+<p><b>SET CHANGES LOCAL</b><br>
+Instructs HBPRINTER not to change the system's printer settings.
+<p><b>SET CHANGES GLOBAL</b><br>
+Instructs HBPRINTER to change the system's printer settings (default behaviour).
 </span>
 
 </div>
