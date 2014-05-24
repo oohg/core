@@ -1,5 +1,5 @@
 <!--
-$Id: TPRINT.HTM,v 1.1 2013-07-26 00:15:12 fyurisich Exp $
+$Id: TPRINT.HTM,v 1.2 2014-05-24 20:34:08 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -136,58 +136,39 @@ visibility:hidden;
 <body>
 
 <div id="winchm_template_title">
-<div id="winchm_template_button"><A href="CLASSES.HTM" title="Previous topic"><img id="winchm_template_prev" alt="Previous topic" src="template4/btn_prev_n.gif" border="0"></a><img id="winchm_template_next" alt="Next topic" src="template4/btn_next_g.gif" border="0"></div>
-TPRINT</div>
+<div id="winchm_template_button"><A href="CLASSES.HTM" title="Previous topic"><img id="winchm_template_prev" alt="Previous topic" src="template4/btn_prev_n.gif" border="0"></a><A href="LIBRARIES.HTM" title="Next topic"><img id="winchm_template_next" alt="Next topic" src="template4/btn_next_n.gif" border="0"></a></div>
+TPRINT CLASS</div>
 <div id="winchm_template_navigation">Help &gt; 
 Classes &gt; </div>
 <div id="winchm_template_content">
 <font face="Arial" size="2">
-<p><strong>CLASS TPRINT</strong></p>
-<p><strong>TPRINT </strong> (ctlibrary)<br />
+<p><strong>TPRINT( cLibrary )</strong> <br />
   &nbsp;&nbsp;Initializes the class 
-  and sets the printing library use.<br />
+  and sets the library which will be used for printing.<br />
   &nbsp;&nbsp;Returns an object that allows 
-  you to configure a print job,<br />
-  &nbsp;&nbsp;create and print it or save it to 
-  disk.</p>
+  you to configure the print job,<br />
+  &nbsp;&nbsp;build it and print it or save it to
+  a file.</p>
 <p>&nbsp;&nbsp;Instructions for use:</p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;oTPrintObject: = <strong>TPRINT</strong> (ctlibrary)</p>
-<p>&nbsp;&nbsp;The possible values ??are ctlibrary:</p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&quot;<strong>HBPRINTER</strong>&quot; Print using the 
-  library HBprinter<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;&quot;<strong>MINIPRINT</strong>&quot; Print using the library 
-  Miniprint<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;<strong>&quot;DOSPRINT&quot;</strong> Print directly to printer as 
-  DOS<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;<strong>&quot;CALCPRINT&quot;</strong> Print generating an OpenOffice Calc 
-  file&nbsp;&nbsp;(Must 
-  be installed OpenOffice)<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;<strong>&quot;EXCELPRINT&quot;</strong> Generates an 
-  Excel&nbsp;&nbsp;&nbsp;(Excel 
-  must be installed)<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;<strong>&quot;RTFPRINT&quot;</strong> Generates an RTF 
-  file<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;<strong>&quot;HTMLPRINT&quot;</strong> Generates an 
-  HTML<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;<strong>&quot;PDFPRINT&quot;</strong> Generates a PDF 
-  file<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;<strong>&quot;CSVPRINT&quot;</strong> Generates a file with comma-separate 
-  values&nbsp;(CSV)<br />
-  &nbsp;&nbsp;&nbsp;<strong>&nbsp;&quot;RAWPRINT&quot;</strong> Print directly to a spool 
-  queue&nbsp;&nbsp;(In 
-  binary)<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;<strong>&quot;SPREADSHEETPRINT&quot;</strong> Generate an Excel BIFF 
-  format&nbsp;&nbsp;(No 
-  need for Excel or OpenOffice)<br />
+<p>&nbsp;&nbsp;&nbsp;&nbsp;oTPrintObject: = <strong>TPRINT( cLibrary )</strong></p>
+<p>&nbsp;&nbsp;The possible values for cLibrary are:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&quot;<strong>HBPRINTER</strong>&quot; Prints using HBPrinter library.<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&quot;<strong>MINIPRINT</strong>&quot; Prints using Miniprint library.<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;<strong>&quot;DOSPRINT&quot;</strong> Prints directly to printer (DOS printing).<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;<strong>&quot;CALCPRINT&quot;</strong> Generates an OpenOffice Calc file (OpenOffice must be installed installed).<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;<strong>&quot;EXCELPRINT&quot;</strong> Generates an Excel file (Excel must be installed).<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;<strong>&quot;RTFPRINT&quot;</strong> Generates an RTF file.<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;<strong>&quot;HTMLPRINT&quot;</strong> Generates an HTML file.<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;<strong>&quot;PDFPRINT&quot;</strong> Generates a PDF file.<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;<strong>&quot;CSVPRINT&quot;</strong> Generates a comma-separated values file (CSV).<br />
+  &nbsp;&nbsp;&nbsp;<strong>&nbsp;&quot;RAWPRINT&quot;</strong> Prints directly to a spool queue (in binary).<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;<strong>&quot;SPREADSHEETPRINT&quot;</strong> Generates an Excel file using BIFF format (neither Excel nor OpenOffice needs to be installed).<br />
   <br />
-  &nbsp;&nbsp;If the parameter is omitted, the 
-  selected library depends on the<br />
-  &nbsp;&nbsp;<strong>_OOHG_PrintLibrary</strong> Variable (see 
-  below).<br />
-  &nbsp;&nbsp;If the parameter type is not string or is a string, not 
-  a<br />
-  &nbsp;&nbsp;valid value, the selected 
-  library is <strong>&quot;MINIPRINT&quot;</strong> .</p>
+  &nbsp;&nbsp;If cLibrary is omitted, the selected library depends on <strong>_OOHG_PrintLibrary</strong> variable.<br />
+  &nbsp;&nbsp;If the variable is not a string, <strong>&quot;MINIPRINT&quot;</strong> will be selected.<br />
+  &nbsp;&nbsp;If its a string but its value is not one of the expected values, <strong>&quot;HBPRINTER&quot;</strong> will be selected.<br />
+  &nbsp;&nbsp;If cLibrary is present but is not one of the expected string values, <strong>&quot;MINIPRINT&quot;</strong> will be selected.<br />
+</p>
 <p>&nbsp;</p>
 <p><U><strong>MAIN METHODS</strong></U></p>
 <p>Detailed below available methods and parameters.<br />
@@ -443,7 +424,7 @@ Classes &gt; </div>
   as public, you can specify the library<br />
   &nbsp;&nbsp;default printer to use. 
   One can use any of the values<br />
-  &nbsp;&nbsp;ctlibrary parameter. This variable 
+  &nbsp;&nbsp;cLibrary parameter. This variable
   is useful to use the<br />
   &nbsp;&nbsp;commands &quot;Report Form&quot;, &quot;Edit&quot; and &quot;Edit 
   Extended&quot;.<br />
@@ -495,9 +476,9 @@ Classes &gt; </div>
 <p></p>
 </div>
 <div id="winchm_template_footer"><FONT color=#808080 
-size=1>Copyright © 2013 MigSoft - </FONT><A 
-href="http://www.oohg.org"><FONT 
-size=1>http://www.oohg.org</FONT></A> 
+size=1>Copyright © 2013-2014 MigSoft - </FONT><A 
+href="https://sourceforge.net/projects/oohg/"><FONT 
+size=1>https://sourceforge.net/projects/oohg/</FONT></A> 
      </div>
 
 </body>

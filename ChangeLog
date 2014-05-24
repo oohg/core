@@ -1,11 +1,87 @@
 /*
- * $Id: ChangeLog,v 1.1271 2014-05-22 23:03:13 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1272 2014-05-24 20:35:21 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-05-24 17:32 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/activex.htm
+   * manual/animatebox.htm
+   * manual/browse.htm
+   * manual/button.htm
+   * manual/checkbox.htm
+   * manual/checkbutton.htm
+   * manual/checklist.htm
+   * manual/classes.htm
+   * manual/combobox.htm
+   * manual/datepicker.htm
+   * manual/do_report.htm
+   * manual/draw_in_window.htm
+   * manual/editbox.htm
+   * manual/edit_extended.htm
+   * manual/edit_workarea.htm
+   * manual/frame.htm
+   * manual/grid.htm
+   * manual/hotkey.htm
+   * manual/hotkeybox.htm
+   * manual/hyperlink.htm
+   * manual/image.htm
+   * manual/images
+   * manual/internal.htm
+   * manual/ipaddress.htm
+   * manual/label.htm
+   * manual/listbox.htm
+   * manual/monthcalendar.htm
+   * manual/overview.htm
+   * manual/player.htm
+   * manual/progressbar.htm
+   * manual/progressmeter.htm
+   * manual/radiogroup.htm
+   * manual/richeditbox.htm
+   * manual/screensaver.htm
+   * manual/slider.htm
+   * manual/spinner.htm
+   * manual/splitbox.htm
+   * manual/statusbar.htm
+   * manual/tab.htm
+   * manual/textarray.htm
+   * manual/textbox.htm
+   * manual/timepicker.htm
+   * manual/timer.htm
+   * manual/toolbar.htm
+   * manual/tprint.htm
+   * manual/tree.htm
+   * manual/uncompress.htm
+   * manual/wave.htm
+   * manual/window.htm
+   * manual/xbrowse.htm
+     * Copyright updated.
+   * manual/classes.htm
+     * Synchronized with doc/clases.txt file.
+   * manual/tprint.htm
+     * Use of _OOHG_PrintLibrary variable.
+   + manual/hbprinter.htm
+   + manual/hbprinter_@_commands.htm
+   + manual/hbprinter_constants.htm
+   + manual/hbprinter_drawing_commands.htm
+   + manual/hbprinter_font_commands.htm
+   + manual/hbprinter_get_commands.htm
+   + manual/hbprinter_print_commands.htm
+   + manual/hbprinter_sample.htm
+   + manual/hbprinter_set_commands.htm
+   + manual/hbprinter_set_get_text_commands.htm
+   + manual/libraries.htm
+   + manual/images/HBPRINTER_SAMPLE_1.PNG
+   + manual/images/HBPRINTER_SAMPLE_2.PNG
+     + Documentation on HBPrinter library. Some content was
+       borrowed from HMG Extended help manual.
+   * manual/oohg.hhc
+   * manual/oohg.hhk
+   * manual/oohg.hhp
+     * Updated.
 
 2014-05-22 20:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./COPYING

@@ -9,10 +9,11 @@ Error log file=ooHG.log
 Full-text search=Yes
 Index file=ooHG.hhk
 Language=0xc0a Español (alfabetización internacional)
-Title=ooHG Reference 2013 by MigSoft
+Title=ooHG Reference 2014 by MigSoft
 
 [WINDOWS]
-main="ooHG Reference 2013 by MigSoft","ooHG.hhc","ooHG.hhk","OVERVIEW.HTM","OVERVIEW.HTM","OVERVIEW.HTM",,,,0x23520,270,0x387e,[50,50,950,700],0xb0000,0x0,,0,0,,0
+main="ooHG Reference 2014 by MigSoft","ooHG.hhc","ooHG.hhk","OVERVIEW.HTM","OVERVIEW.HTM","OVERVIEW.HTM",,,,0x23520,270,0x387e,[50,50,950,700],0xb0000,,,,,,0
+
 
 [FILES]
 ACTIVEX.HTM

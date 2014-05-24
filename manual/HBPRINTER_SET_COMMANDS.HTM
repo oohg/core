@@ -1,5 +1,5 @@
 <!--
-$Id: OVERVIEW.HTM,v 1.2 2014-05-24 20:34:08 fyurisich Exp $
+$Id: HBPRINTER_SET_COMMANDS.HTM,v 1.1 2014-05-24 20:34:09 fyurisich Exp $
 -->
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -12,8 +12,8 @@ xmlns="http://www.w3.org/TR/REC-html40">
 <meta name=ProgId content=Word.Document>
 <meta name=Generator content="Microsoft Word 11">
 <meta name=Originator content="Microsoft Word 11">
-<link rel=File-List href="OVERVIEW_archivos/filelist.xml">
-<title>Overview</title>
+<link rel=File-List href="HBPRINTER_SET_COMMANDS_archivos/filelist.xml">
+<title>HBPRINTER SET COMMANDS</title>
 
 <style>
 <!--
@@ -47,8 +47,8 @@ html {
 body {
 	padding: 0px;
 	margin: 0px;
-	overflow: auto; 
-	background-color: #FFFFFF; 
+	overflow: auto;
+	background-color: #FFFFFF;
 }
 
 #winchm_template_navigation{
@@ -66,12 +66,12 @@ body {
 	font-size: 10px;
 	font-style: normal;
 	font-weight: normal;
-	color: #626262; 
-	 
+	color: #626262;
+
 	border-bottom-style: solid;
 	border-bottom-width: 1px;
 	border-bottom-color: #DBDBDB;
-	
+
 	background-color: #E2EDFA;
 	width: auto;
 }
@@ -89,7 +89,7 @@ body {
 	font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
 	font-weight: bold;
 	font-size: 18px;
-	color: 353535;	
+	color: 353535;
 
 	margin-top: 0px;
 	margin-left: 0px;
@@ -100,7 +100,7 @@ body {
 	padding-left: 5px;
 	padding-bottom: 10px;
 	padding-right: 10px;
-	
+
 	border-bottom-style: solid;
 	border-bottom-width: 1px;
 	border-bottom-color: #C7C7C7;
@@ -125,7 +125,7 @@ body {
 	border-width: 1px;
 	border-color: #c0c0c0;
 	border-top-style: solid;
-	
+
 	margin-top: 0px;
 	margin-left: 15px;
 	margin-bottom: 5px;
@@ -140,8 +140,8 @@ body {
 	font-size: 9px;
 	color: #909090;
 
-	text-align: left;	
-	width: auto;	
+	text-align: left;
+	width: auto;
 }
 
 #winchm_template_navigation a:link	{text-decoration: none;color: #0000ff}
@@ -166,29 +166,75 @@ visibility:hidden;
 <body>
 
 <div id="winchm_template_title">
-<div id="winchm_template_button"><img id="winchm_template_prev" alt="Previous topic" src="template4/btn_prev_g.gif" border="0"><A href="ACTIVEX.HTM" title="Next topic"><img id="winchm_template_next" alt="Next topic" src="template4/btn_next_n.gif" border="0"></a>
-</div>
-Overview</div>
-
-<div id="winchm_template_navigation">Help &gt; 
-</div>
-
+<div id="winchm_template_button"><A href="HBPRINTER_GET_COMMANDS.HTM" title="Previous topic"><img id="winchm_template_prev" alt="Previous topic" src="template4/btn_prev_n.gif" border="0"></a><A href="HBPRINTER_@_COMMANDS.HTM" title="Next topic"><img id="winchm_template_next" alt="Next topic" src="template4/btn_next_n.gif" border="0"></a></div>
+HBPRINTER LIBRARY</div>
+<div id="winchm_template_navigation">Help &gt;
+Libraries &gt; HBPRINTER &gt; </div>
 <div id="winchm_template_content">
+
 <div class=Section1>
-<span lang=ES style="COLOR: gray; mso-ansi-language: ES">
-<p class=MsoNormal align=center><IMG alt="" src="images/harbour-logo.jpg"></p>
-<p class=MsoNormal>&nbsp;</p>
-<p class=MsoNormal align=center><IMG border=0 alt="" src="images/bm0.gif"><br>
-<FONT size=2 face=Arial>© <EM>2013-2014 MigSoft - Version 14.0524</EM></FONT></p>
+
+<p class=MsoNormal><span lang=ES style="COLOR: darkgreen; mso-ansi-language: ES">///////////////////////////////////////////////////////////////////////////////
+<br>
+// HBPRINTER SET COMMANDS <br>
+///////////////////////////////////////////////////////////////////////////////
+<br>
+</span><span lang=ES style="COLOR: gray; mso-ansi-language: ES"><br>
 </span>
-</div>
+
+<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES">
+<b>SET UNITS ROWCOL | MM | INCHES | PIXELS [ ABSOLUTE ]</b><br>
+Sets mesure units for @... commands.
+<p><b>SET UNITS</b><br>
+Same as SET UNITS ROWCOL.
+<p><b>SET UNITS ROWS &lt;r&gt; COLS &lt;c&gt; [ ABSOLUTE ]</b><br>
+Sets property MaxRow to (r-1) and property MaxCol to (c-1).
+<p><b>SELECT BY DIALOG [ PREVIEW ]</b><br>
+Selects a printer using a dialog box.
+<p><b>SELECT DEFAULT [ PREVIEW ]</b><br>
+Selects the default printer.
+<p><b>SELECT PRINTER &lt;cprinter&gt; [ PREVIEW ]</b><br>
+Selects the indicated printer.
+<p><b>ENABLE THUMBNAILS</b><br>
+Enables thumbails in print preview.
+<p><b>DISABLE THUMBNAILS</b><br>
+Disables thumbails in print preview.
+<p><b>SET THUMBNAILS ON | OFF</b><br>
+Enables / disables thumbails in print preview.
+<p><b>SET PREVIEW RECT &lt;row&gt;, &lt;col&gt;, &lt;row2&gt;, &lt;col2&gt;</b><br>
+Sets print preview area.
+<p><b>SET PREVIEW SCALE &lt;scale&gt;</b><br>
+Sets scale for print preview.
+<p><b>SET PAGE [ ORIENTATION &lt;orient&gt; ] [ PAPERSIZE &lt;psize&gt; ] [ FONT &lt;cfont&gt; ]</b><br>
+Sets page's orientation, paper size and/or default font.
+<p><b>SET ORIENTATION PORTRAIT</b><br>
+Sets paper orientation to portrait.
+<p><b>SET ORIENTATION LANDSCAPE</b><br>
+Sets paper orientation to landscape.
+<p><b>SET PAPERSIZE &lt;psize&gt;</b><br>
+Sets paper size.
+<p><b>SET QUALITY &lt;quality&gt;</b><br>
+Sets printer quality.
+<p><b>SET COLORMODE &lt;mode&gt;</b><br>
+Sets printer color mode.
+<p><b>SET PREVIEW ON | OFF</b><br>
+Sets printer preview.
+<p><b>SET TEXTCOLOR &lt;clr&gt; | &lt;aRGBColor&gt;</b><br>
+Sets default text color.
+<p><b>SET BACKCOLOR &lt;nColor&gt; | &lt;aRGBColor&gt;</b><br>
+Sets default background color.
+<p><b>SET PRINT MARGINS [ TOP &lt;lm&gt; ] [ LEFT &lt;rm&gt; ]</b><br>
+Sets printing margins.
+</span>
+
 </div>
 
-<div id="winchm_template_footer">
-<FONT color=#808080 size=1>Copyright © 2013-2014 MigSoft - </FONT>
-<A href="https://sourceforge.net/projects/oohg/"><FONT size=1>https://sourceforge.net/projects/oohg/</FONT></A>
+</div>
+
+<div id="winchm_template_footer"><FONT color=#808080
+size=1>Copyright © 2013-2014 MigSoft - </FONT><A
+href="https://sourceforge.net/projects/oohg/"><FONT
+size=1>https://sourceforge.net/projects/oohg/</FONT></A>
 </div>
 
 </body>
-
-</html>
