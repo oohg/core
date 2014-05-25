@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.48 2014-05-17 21:30:00 fyurisich Exp $
+ * $Id: h_form.prg,v 1.49 2014-05-25 01:25:53 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1958,7 +1958,9 @@ METHOD Visible( lVisible ) CLASS TFormModal
 
          AEVAL( _OOHG_aFormObjects, { |o| if( ! o:lInternal .AND. o:hWnd != ::hWnd .AND. IsWindowEnabled( o:hWnd ), ( AADD( ::LockedForms, o ), DisableWindow( o:hWnd ) ) , ) } )
 
-         AADD( _OOHG_ActiveModal, Self )
+         If Len( _OOHG_ActiveModal ) == 0  .OR. aTail( _OOHG_ActiveModal ):hWnd != ::hWnd
+           AADD( _OOHG_ActiveModal, Self )
+         EndIf
          EnableWindow( ::hWnd )
       ENDIF
    ENDIF

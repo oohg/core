@@ -1,11 +1,17 @@
 /*
- * $Id: ChangeLog,v 1.1274 2014-05-24 21:55:24 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1275 2014-05-25 01:25:53 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-05-24 22:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_form.prg
+     ! RTE "Non top modal window can't be released." when releasing
+       a modal window after the release of a second modal window that
+       was moved around the screen.
 
 2014-05-24 18:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * manual/hbprinter_@_commands.htm
