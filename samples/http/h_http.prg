@@ -1,5 +1,5 @@
 /*
- * $Id: h_http.prg,v 1.1 2012-09-19 01:49:09 fyurisich Exp $
+ * $Id: h_http.prg,v 1.2 2014-05-30 22:11:15 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -150,17 +150,24 @@ Local cUrl, cResponse, cHeader, i, cRet
    cUrl += cPage
 
    If Connection:Open( cUrl )
-      // This method also retrieves the headers
       cResponse := Connection:Read()
+      If ! hb_IsString( cResponse )
+         cResponse := "<No data returned>"
+      EndIf
 
       If hb_IsLogical( uRet )
-         cHeader := Connection:cReply + hb_OsNewLine()
+         cHeader := Connection:cReply
+         If ! hb_IsString( cHeader )
+            cHeader := "<No header returned>"
+         EndIf
+         cHeader += hb_OsNewLine()
+
          For i := 1 to Len( Connection:hHeaders )
-//            #ifdef __XHARBOUR__
+            #ifdef __XHARBOUR__
                cHeader += hGetKeyAt( Connection:hHeaders, i ) + ": " + hGetValueAt( Connection:hHeaders, i ) + hb_OsNewLine()
-//            #else
-//               cHeader += hb_HKeyAt( Connection:hHeaders, i ) + ": " + hb_HValueAt( Connection:hHeaders, i ) + hb_OsNewLine()
-//            #endif
+            #else
+               cHeader += hb_HKeyAt( Connection:hHeaders, i ) + ": " + hb_HValueAt( Connection:hHeaders, i ) + hb_OsNewLine()
+            #endif
          Next
          cHeader += hb_OsNewLine()
 
@@ -173,7 +180,7 @@ Local cUrl, cResponse, cHeader, i, cRet
          cRet := cResponse
       EndIf
    Else
-      cRet := ""
+      cRet := "<Error opening URL>"
    EndIf
 
 Return cRet

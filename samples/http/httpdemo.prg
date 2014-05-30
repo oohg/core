@@ -1,5 +1,5 @@
 /*
- * $Id: httpdemo.prg,v 1.1 2012-09-19 01:49:09 fyurisich Exp $
+ * $Id: httpdemo.prg,v 1.2 2014-05-30 22:11:15 fyurisich Exp $
  */
 /*
  * Http Sample n° 1
@@ -52,20 +52,25 @@ PROCEDURE TestHttpMem( nOption )
 
    // Creates a public memvar to hold the connection's object
 
-   OPEN CONNECTION oConn SERVER 'harbour-project.sourceforge.net' PORT 80 HTTP
+   OPEN CONNECTION oConn SERVER 'www.itlnet.net' PORT 80 HTTP
 
-   DO CASE
-   CASE nOption == 1
-      GET URL '/index.html' TO cResponse CONNECTION oConn
-   CASE nOption == 2
-      GET URL '/index.html' TO cResponse CONNECTION oConn HEADERS
-   OTHERWISE
-      GET URL '/index.html' TO cResponse CONNECTION oConn NOHEADERS
-   ENDCASE
+   IF oConn == Nil
+       AUTOMSGBOX( "No connection !!!" )
+   ELSE
+      DO CASE
+      CASE nOption == 1
+         GET URL '/programming/program/Reference/c53g01c/menu.html' TO cResponse CONNECTION oConn
+      CASE nOption == 2
+         GET URL '/programming/program/Reference/c53g01c/menu.html' TO cResponse CONNECTION oConn HEADERS
+      OTHERWISE
+         GET URL '/programming/program/Reference/c53g01c/menu.html' TO cResponse CONNECTION oConn NOHEADERS
+      ENDCASE
 
-   CLOSE CONNECTION oConn
+      CLOSE CONNECTION oConn
+      RELEASE oConn
 
-   AUTOMSGBOX( cResponse )
+      AUTOMSGBOX( cResponse )
+   ENDIF
 
 RETURN
 
@@ -74,20 +79,24 @@ PROCEDURE TestHttpRef( nOption )
 
    // The connection's object is stored to an already existing variable
 
-   OPEN CONNECTION OBJ oConn SERVER 'harbour-project.sourceforge.net' PORT 80 HTTP
+   OPEN CONNECTION OBJ oConn SERVER 'harbour.github.io' PORT 80 HTTP
 
-   DO CASE
-   CASE nOption == 1
-      GET URL '/index.html' TO cResponse CONNECTION oConn
-   CASE nOption == 2
-      GET URL '/index.html' TO cResponse CONNECTION oConn HEADERS
-   OTHERWISE
-      GET URL '/index.html' TO cResponse CONNECTION oConn NOHEADERS
-   ENDCASE
+   IF oConn == Nil
+       AUTOMSGBOX( "No connection !!!" )
+   ELSE
+      DO CASE
+      CASE nOption == 1
+         GET URL '/index.html' TO cResponse CONNECTION oConn
+      CASE nOption == 2
+         GET URL '/index.html' TO cResponse CONNECTION oConn HEADERS
+      OTHERWISE
+         GET URL '/index.html' TO cResponse CONNECTION oConn NOHEADERS
+      ENDCASE
 
-   CLOSE CONNECTION oConn
+      CLOSE CONNECTION oConn
 
-   AUTOMSGBOX( cResponse )
+      AUTOMSGBOX( cResponse )
+   ENDIF
 
 RETURN
 
