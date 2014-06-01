@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.131 2014-01-25 01:23:21 guerra000 Exp $
+* $Id: h_print.prg,v 1.132 2014-06-01 15:08:41 fyurisich Exp $
 */
 
 #include 'hbclass.ch'
@@ -257,9 +257,9 @@ METHOD Init() CLASS TPRINTBASE
 RETURN Self
 
 *-----------------------------------------------------------------------------*
-METHOD SelPrinter( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, lHide, nRes, nBin ) CLASS TPRINTBASE
+METHOD SelPrinter( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, lHide, nRes, nBin, nDuplex, lCollate ) CLASS TPRINTBASE
 *-----------------------------------------------------------------------------*
-   DEFAULT nBin TO NIL
+   DEFAULT lSelect TO .T.
 
    IF ::Exit
       ::lPrError := .T.
@@ -277,7 +277,7 @@ METHOD SelPrinter( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, lHide, 
     ::ImPreview := .T.
    ENDIF
 
-   ::SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, nBin )
+   ::SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, nBin, nDuplex, lCollate )
 RETURN Self
 
 *-----------------------------------------------------------------------------*
@@ -1093,11 +1093,9 @@ LOCAL nVDispl := 1
 RETURN Self
 
 *-----------------------------------------------------------------------------*
-METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, nBin ) CLASS TMINIPRINT
+METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, nBin, nDuplex, lCollate ) CLASS TMINIPRINT
 *-----------------------------------------------------------------------------*
-LOCAL nOrientation, lSucess
-
-   DEFAULT nRes TO PRINTER_RES_MEDIUM
+LOCAL nOrientation, lSucess, nCollate
 
    IF lLandscape
       nOrientation := PRINTER_ORIENT_LANDSCAPE
@@ -1105,121 +1103,91 @@ LOCAL nOrientation, lSucess
       nOrientation := PRINTER_ORIENT_PORTRAIT
    ENDIF
 
-   IF lSelect .AND. lPreview .AND. cPrinterX = NIL
-      ::cPrinter := GetPrinter()
-      If Empty( ::cPrinter )
+   DEFAULT nPaperSize TO -999
+   DEFAULT nRes       TO -999
+   DEFAULT nBin       TO -999
+   DEFAULT nDuplex    TO -999
+
+   IF HB_IsLogical( lCollate )
+      IF lCollate
+         nCollate := PRINTER_COLLATE_TRUE
+      ELSE
+         nCollate := PRINTER_COLLATE_FALSE
+      ENDIF
+   ELSE
+      nCollate := -999
+   ENDIF
+
+   IF cPrinterX = NIL
+      IF lSelect
+         ::cPrinter := GetPrinter()
+         IF Empty( ::cPrinter )
+            ::lPrError := .T.
+            RETURN NIL
+         ENDIF
+
+         IF lPreview
+            SELECT PRINTER ::cPrinter TO lSucess ;
+               ORIENTATION nOrientation ;
+               PAPERSIZE nPaperSize ;
+               QUALITY nRes ;
+               DEFAULTSOURCE nBin ;
+               DUPLEX nDuplex ;
+               COLLATE nCollate ;
+               PREVIEW
+         ELSE
+            SELECT PRINTER ::cPrinter TO lSucess ;
+               ORIENTATION nOrientation ;
+               PAPERSIZE nPaperSize ;
+               QUALITY nRes ;
+               DEFAULTSOURCE nBin ;
+               DUPLEX nDuplex ;
+               COLLATE nCollate
+         ENDIF
+      ELSE
+         IF lPreview
+            SELECT PRINTER DEFAULT TO lSucess ;
+               ORIENTATION nOrientation  ;
+               PAPERSIZE nPaperSize ;
+               QUALITY nRes ;
+               DEFAULTSOURCE nBin ;
+               DUPLEX nDuplex ;
+               COLLATE nCollate ;
+               PREVIEW
+         ELSE
+            SELECT PRINTER DEFAULT TO lSucess  ;
+               ORIENTATION nOrientation  ;
+               PAPERSIZE nPaperSize ;
+               QUALITY nRes ;
+               DEFAULTSOURCE nBin ;
+               DUPLEX nDuplex ;
+               COLLATE nCollate
+         ENDIF
+      ENDIF
+   ELSE
+      ::cPrinter := cPrinterX
+      IF Empty( ::cPrinter )
          ::lPrError := .T.
          RETURN NIL
       ENDIF
 
-      IF nPaperSize # NIL
+      IF lPreview
          SELECT PRINTER ::cPrinter TO lSucess ;
             ORIENTATION nOrientation ;
             PAPERSIZE nPaperSize ;
             QUALITY nRes ;
             DEFAULTSOURCE nBin ;
+            DUPLEX nDuplex ;
+            COLLATE nCollate ;
             PREVIEW
       ELSE
          SELECT PRINTER ::cPrinter TO lSucess ;
             ORIENTATION nOrientation ;
-            QUALITY nRes ;
-            DEFAULTSOURCE nBin ;
-            PREVIEW
-      ENDIF
-   ENDIF
-
-   IF ( ! lSelect ) .AND. lPreview .AND. cPrinterX = NIL
-      IF nPaperSize # NIL
-         SELECT PRINTER DEFAULT TO lSucess ;
-            ORIENTATION nOrientation  ;
             PAPERSIZE nPaperSize ;
             QUALITY nRes ;
             DEFAULTSOURCE nBin ;
-            PREVIEW
-      ELSE
-         SELECT PRINTER DEFAULT TO lSucess ;
-            ORIENTATION nOrientation  ;
-            QUALITY nRes ;
-            DEFAULTSOURCE nBin ;
-            PREVIEW
-      ENDIF
-   ENDIF
-
-   IF ( ! lSelect ) .AND. ( ! lPreview ) .AND. cPrinterX = NIL
-      IF nPaperSize # NIL
-         SELECT PRINTER DEFAULT TO lSucess  ;
-            ORIENTATION nOrientation  ;
-            QUALITY nRes ;
-            DEFAULTSOURCE nBin ;
-            PAPERSIZE nPaperSize
-      ELSE
-         SELECT PRINTER DEFAULT TO lSucess  ;
-            QUALITY nRes ;
-            DEFAULTSOURCE nBin ;
-            ORIENTATION nOrientation
-      ENDIF
-   ENDIF
-
-   IF lSelect .AND. ! lPreview .AND. cPrinterX = NIL
-      ::cPrinter := GetPrinter()
-      If Empty( ::cPrinter )
-         ::lPrError := .T.
-         RETURN NIL
-      ENDIF
-
-      IF nPaperSize # NIL
-         SELECT PRINTER ::cPrinter TO lSucess ;
-            ORIENTATION nOrientation ;
-            QUALITY nRes ;
-            DEFAULTSOURCE nBin ;
-            PAPERSIZE nPaperSize
-      ELSE
-         SELECT PRINTER ::cPrinter TO lSucess ;
-            QUALITY nRes ;
-            DEFAULTSOURCE nBin ;
-            ORIENTATION nOrientation
-      ENDIF
-   ENDIF
-
-   IF cPrinterX # NIL .AND. lPreview
-      If Empty( cPrinterX )
-         ::lPrError := .T.
-         RETURN NIL
-      ENDIF
-
-      IF nPaperSize # NIL
-         SELECT PRINTER cPrinterX TO lSucess ;
-            ORIENTATION nOrientation ;
-            QUALITY nRes ;
-            PAPERSIZE nPaperSize ;
-            DEFAULTSOURCE nBin ;
-            PREVIEW
-      ELSE
-         SELECT PRINTER cPrinterX TO lSucess ;
-            ORIENTATION nOrientation ;
-            QUALITY nRes ;
-            DEFAULTSOURCE nBin ;
-            PREVIEW
-      ENDIF
-   ENDIF
-
-   IF cPrinterX # NIL .AND. ! lPreview
-      If Empty( cPrinterX )
-         ::lPrError := .T.
-         RETURN NIL
-      ENDIF
-
-      IF nPaperSize # NIL
-         SELECT PRINTER cPrinterX TO lSucess ;
-            ORIENTATION nOrientation ;
-            QUALITY nRes ;
-            DEFAULTSOURCE nBin ;
-            PAPERSIZE nPaperSize
-      ELSE
-         SELECT PRINTER cPrinterX TO lSucess ;
-            QUALITY nRes ;
-            DEFAULTSOURCE nBin ;
-            ORIENTATION nOrientation
+            DUPLEX nDuplex ;
+            COLLATE nCollate
       ENDIF
    ENDIF
 
@@ -1441,7 +1409,7 @@ LOCAL nVDispl := 1
 RETURN Self
 
 *-----------------------------------------------------------------------------*
-METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, nBin ) CLASS THBPRINTER
+METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, nBin, nDuplex, lCollate ) CLASS THBPRINTER
 *-----------------------------------------------------------------------------*
    IF lSelect .AND. lPreview .AND. cPrinterX = NIL
       SELECT BY DIALOG PREVIEW
@@ -1488,7 +1456,26 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
       SET QUALITY nRes   // Default is PRINTER_RES_MEDIUM
    ENDIF
 
-   SET BIN nBin
+   IF nBin # NIL
+      SET BIN nBin
+   ENDIF
+
+   DO CASE
+   CASE nDuplex == DMDUP_VERTICAL
+      SET DUPLEX VERTICAL
+   CASE nDuplex == DMDUP_HORIZONTAL
+      SET DUPLEX HORIZONTAL
+   CASE nDuplex == DMDUP_SIMPLEX
+      SET DUPLEX OFF
+   ENDCASE
+
+   IF HB_IsLogical( lCollate )
+      IF lCollate
+         SET COLLATE ON
+      ELSE
+         SET COLLATE OFF
+      ENDIF
+   ENDIF
 RETURN Self
 
 *-----------------------------------------------------------------------------*
@@ -3164,7 +3151,7 @@ METHOD InitX() CLASS TCALCPRINT
 RETURN Self
 
 *-----------------------------------------------------------------------------*
-METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize ,cPrinterX) CLASS TCALCPRINT
+METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX ) CLASS TCALCPRINT
 *-----------------------------------------------------------------------------*
 LOCAL bErrorBlock
 LOCAL oError

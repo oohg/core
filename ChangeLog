@@ -1,11 +1,41 @@
 /*
- * $Id: ChangeLog,v 1.1276 2014-05-25 14:52:14 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1277 2014-06-01 15:08:41 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-06-01 12:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/winprint.ch
+     + SET COLLATE ON/OFF.
+     + SET BIN TO.
+     + DMCOLLATE_TRUE and DMCOLLATE_FALSE constants.
+   * source/h_print.prg
+     ! Some printers do not support QUALITY setting.
+     ! Printer name not saved when a specific printer is selected
+       in TMiniPrint.
+     + DUPLEX setting to TPrint:SelPrinter(), supported by
+       MiniPrint and HBPrinter.
+     + COLLATE setting to TPrint:SelPrinter(), supported by
+       MiniPrint and HBPrinter.
+     + lSelect will default to .T. if omitted.
+     * nBin and nRes handling.
+   * source/miniprint.prg
+     ! App hangs when printing an image under Vista.
+     ! "Copies" field is not enabled in Print dialog.
+     ! Printing multiple copies with/without collation.
+     ! Check for supported properties in function
+       _HMG_PRINTER_SETPRINTERPROPERTIES.
+       See http://support.microsoft.com/kb/140285/EN-US
+     ! Memory leak in function _HMG_PRINTER_SETPRINTERPROPERTIES.
+
+2014-05-30 19:11 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * samples/http/h_http.prg
+   * samples/http/httpdemo.prg
+     * Address.
+     + Checks.
 
 2014-05-25 11:51 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog

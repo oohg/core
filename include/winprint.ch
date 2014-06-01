@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.ch,v 1.9 2014-05-24 20:38:49 fyurisich Exp $
+ * $Id: winprint.ch,v 1.10 2014-06-01 15:08:41 fyurisich Exp $
  */
 // ---------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -9,6 +9,7 @@
 // ---------------------------------------------------------------------------
 
 MEMVAR HBPRN
+
 #xcommand SET CHANGES GLOBAL => hbprn:lGlobalChanges := .T.
 #xcommand SET CHANGES LOCAL => hbprn:lGlobalChanges := .F.
 
@@ -16,31 +17,34 @@ MEMVAR HBPRN
 #xcommand SET DUPLEX HORIZONTAL => hbprn:setdevmode(DM_DUPLEX,DMDUP_HORIZONTAL)
 #xcommand SET DUPLEX OFF => hbprn:setdevmode(DM_DUPLEX,DMDUP_SIMPLEX)
 
+#xcommand SET COLLATE ON => hbprn:setdevmode(DM_COLLATE,DMCOLLATE_TRUE)
+#xcommand SET COLLATE OFF => hbprn:setdevmode(DM_COLLATE,DMCOLLATE_FALSE)
+
 #xcommand SET QUALITY <q> => hbprn:setdevmode(DM_PRINTQUALITY,<q>)
 #xcommand SET COLORMODE <c> => hbprn:setdevmode(DM_COLOR,<c>)
 
-#xcommand INIT PRINTSYS =>  hbprn:=hbprinter():new()
+#xcommand INIT PRINTSYS => hbprn:=hbprinter():new()
 #xcommand START DOC [NAME <docname>] => hbprn:startdoc(<docname>)
 #xcommand START PAGE => hbprn:startpage()
 #xcommand END PAGE => IIF ( TYPE( "_OOHG_AllVars" ) == "A" .AND. ! EMPTY( _OOHG_ActiveFrame ) , DO( "_EndTabPage" ) , hbprn:endpage() )
 #xcommand END DOC => hbprn:enddoc()
-#xcommand RELEASE PRINTSYS =>  hbprn:end()
+#xcommand RELEASE PRINTSYS => hbprn:end()
 
-#xcommand GET DEFAULT PRINTER TO <cprinter> =>  <cprinter>:=hbprn:printerdefault
-#xcommand GET SELECTED PRINTER TO <cprinter> =>  <cprinter>:=hbprn:printername
-#xcommand GET PAPERS TO <a_names_numbers> =>  <a_names_numbers>:=aclone(hbprn:papernames)
-#xcommand GET BINS TO <a_names_numbers> =>  <a_names_numbers>:=aclone(hbprn:binnames)
-#xcommand GET PRINTERS TO <aprinters> =>  <aprinters>:=aclone(hbprn:printers)
-#xcommand GET PORTS TO <aports> =>  <aports>:=aclone(hbprn:ports)
+#xcommand GET DEFAULT PRINTER TO <cprinter> => <cprinter>:=hbprn:printerdefault
+#xcommand GET SELECTED PRINTER TO <cprinter> => <cprinter>:=hbprn:printername
+#xcommand GET PAPERS TO <a_names_numbers> => <a_names_numbers>:=aclone(hbprn:papernames)
+#xcommand GET BINS TO <a_names_numbers> => <a_names_numbers>:=aclone(hbprn:binnames)
+#xcommand GET PRINTERS TO <aprinters> => <aprinters>:=aclone(hbprn:printers)
+#xcommand GET PORTS TO <aports> => <aports>:=aclone(hbprn:ports)
 
 #xtranslate HBPRNMAXROW => hbprn:maxrow
 #xtranslate HBPRNMAXCOL => hbprn:maxcol
 #xtranslate HBPRNERROR => hbprn:error
 #xtranslate HBPRNCOLOR(<clr>) => hbprn:dxcolors(<clr>)
 
-#xcommand SELECT BY DIALOG [<p: PREVIEW>]=>  hbprn:selectprinter("",<.p.>)
-#xcommand SELECT DEFAULT [<p: PREVIEW>]=>  hbprn:selectprinter(NIL,<.p.>)
-#xcommand SELECT PRINTER <cprinter> [<p: PREVIEW>]=>  hbprn:selectprinter(<cprinter>,<.p.>)
+#xcommand SELECT BY DIALOG [<p: PREVIEW>]=> hbprn:selectprinter("",<.p.>)
+#xcommand SELECT DEFAULT [<p: PREVIEW>]=> hbprn:selectprinter(NIL,<.p.>)
+#xcommand SELECT PRINTER <cprinter> [<p: PREVIEW>]=> hbprn:selectprinter(<cprinter>,<.p.>)
 
 #xcommand ENABLE THUMBNAILS => hbprn:thumbnails := .T.
 #xcommand DISABLE THUMBNAILS => hbprn:thumbnails := .F.
@@ -50,10 +54,10 @@ MEMVAR HBPRN
 #xcommand SET PAGE [ORIENTATION <orient>] [PAPERSIZE <psize>] [FONT <cfont>] ;
                => hbprn:setpage(<orient>,<psize>,<cfont>)
 
-#xcommand SET ORIENTATION PORTRAIT  => hbprn:setdevmode(DM_ORIENTATION,DMORIENT_PORTRAIT)
+#xcommand SET ORIENTATION PORTRAIT => hbprn:setdevmode(DM_ORIENTATION,DMORIENT_PORTRAIT)
 #xcommand SET ORIENTATION LANDSCAPE => hbprn:setdevmode(DM_ORIENTATION,DMORIENT_LANDSCAPE)
 #xcommand SET PAPERSIZE <psize> => hbprn:setdevmode(DM_PAPERSIZE,<psize>)
-#xcommand SET BIN <prnbin> => hbprn:setdevmode(DM_DEFAULTSOURCE,<prnbin>)
+#xcommand SET BIN [TO] <prnbin> => hbprn:setdevmode(DM_DEFAULTSOURCE,<prnbin>)
 
 #xcommand SET TEXTCOLOR <clr> => hbprn:settextcolor(<clr>)
 #xcommand GET TEXTCOLOR [TO] <clr> => <clr>:=hbprn:gettexcolor()
@@ -65,9 +69,9 @@ MEMVAR HBPRN
 #xcommand GET BKMODE [TO] <mode> => <mode>:=hbprn:getbkmode()
 #xcommand SET PRINT MARGINS [TOP <lm>] [LEFT <rm>] =>hbprn:setviewportorg(<lm>,<rm>)
 
-#xcommand SET THUMBNAILS ON  => hbprn:Thumbnails := .T.
+#xcommand SET THUMBNAILS ON => hbprn:Thumbnails := .T.
 #xcommand SET THUMBNAILS OFF => hbprn:Thumbnails := .F.
-#xcommand SET PREVIEW ON  => hbprn:PreviewMode := .T.
+#xcommand SET PREVIEW ON => hbprn:PreviewMode := .T.
 #xcommand SET PREVIEW OFF => hbprn:PreviewMode := .F.
 
 #xcommand DEFINE IMAGELIST <cimglist> PICTURE <cpicture> [ICONCOUNT <nicons>] ;
@@ -77,7 +81,7 @@ MEMVAR HBPRN
           => hbprn:drawimagelist(<cimglist>,<nicon>,<row>,<col>,<row2>,<col2>,ILD_NORMAL,<color>)
 #xcommand @ <row>,<col>,<row2>,<col2> DRAW IMAGELIST <cimglist> ICON <nicon> BLEND25 [BACKGROUND <color>];
           => hbprn:drawimagelist(<cimglist>,<nicon>,<row>,<col>,<row2>,<col2>,ILD_BLEND25,<color>)
-#xcommand @ <row>,<col>,<row2>,<col2> DRAW IMAGELIST <cimglist> ICON <nicon>  BLEND50 [BACKGROUND <color>];
+#xcommand @ <row>,<col>,<row2>,<col2> DRAW IMAGELIST <cimglist> ICON <nicon> BLEND50 [BACKGROUND <color>];
           => hbprn:drawimagelist(<cimglist>,<nicon>,<row>,<col>,<row2>,<col2>,ILD_BLEND50,<color>)
 #xcommand @ <row>,<col>,<row2>,<col2> DRAW IMAGELIST <cimglist> ICON <nicon> MASK [BACKGROUND <color>];
           => hbprn:drawimagelist(<cimglist>,<nicon>,<row>,<col>,<row2>,<col2>,ILD_MASK,<color>)
@@ -86,14 +90,14 @@ MEMVAR HBPRN
 
 #xcommand DEFINE BRUSH <cbrush> [STYLE <style>] [COLOR <clr>] [HATCH <hatch>] ;
                             => hbprn:definebrush(<cbrush>,<style>,<clr>,<hatch>)
-#xcommand CHANGE  BRUSH <cbrush> [STYLE <style>] [COLOR <clr>] [HATCH <hatch>] ;
+#xcommand CHANGE BRUSH <cbrush> [STYLE <style>] [COLOR <clr>] [HATCH <hatch>] ;
                             => hbprn:modifybrush(<cbrush>,<style>,<clr>,<hatch>)
 #xcommand SELECT BRUSH <cbrush>;
                             => hbprn:selectbrush(<cbrush>)
 
 #xcommand DEFINE PEN <cpen> [STYLE <style>] [WIDTH <width>] [COLOR <clr>] ;
                             => hbprn:definepen(<cpen>,<style>,<width>,<clr>)
-#xcommand CHANGE  PEN <cpen> [STYLE <style>] [WIDTH <width>] [COLOR <clr>] ;
+#xcommand CHANGE PEN <cpen> [STYLE <style>] [WIDTH <width>] [COLOR <clr>] ;
                             => hbprn:modifypen(<cpen>,<style>,<width>,<clr>)
 
 #xcommand SELECT PEN <cpen> ;
@@ -303,6 +307,9 @@ MEMVAR HBPRN
 #define DMBIN_LAST          DMBIN_FORMSOURCE
 #define DMBIN_USER          256     /* device specific bins start here */
 
+/* collate */
+#define DMCOLLATE_TRUE      1
+#define DMCOLLATE_FALSE     0
 
 /* orientation */
 #define DMORIENT_PORTRAIT   1
@@ -467,7 +474,7 @@ MEMVAR HBPRN
 #define DEFAULT_PALETTE     15
 #define SYSTEM_FIXED_FONT   16
 
-/* duplex enable */
+/* duplex */
 #define DMDUP_SIMPLEX    1
 #define DMDUP_VERTICAL   2
 #define DMDUP_HORIZONTAL 3
@@ -545,7 +552,6 @@ MEMVAR HBPRN
 #define DMPAPER_A2                  66  /* A2 420 x 594 mm                    */
 #define DMPAPER_A3_TRANSVERSE       67  /* A3 Transverse 297 x 420 mm         */
 #define DMPAPER_A3_EXTRA_TRANSVERSE 68  /* A3 Extra Transverse 322 x 445 mm   */
-
 #define DMPAPER_DBL_JAPANESE_POSTCARD 69 /* Japanese Double Postcard 200 x 148 mm */
 #define DMPAPER_A6                  70  /* A6 105 x 148 mm                 */
 #define DMPAPER_JENV_KAKU2          71  /* Japanese Envelope Kaku #2       */
@@ -596,7 +602,6 @@ MEMVAR HBPRN
 #define DMPAPER_PENV_8_ROTATED      116 /* PRC Envelope #8 Rotated 309 x 120 mm */
 #define DMPAPER_PENV_9_ROTATED      117 /* PRC Envelope #9 Rotated 324 x 229 mm */
 #define DMPAPER_PENV_10_ROTATED     118 /* PRC Envelope #10 Rotated 458 x 324 mm */
-
 #define DMPAPER_USER                256
 
 #endif

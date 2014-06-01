@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.prg,v 1.43 2014-01-25 01:23:22 guerra000 Exp $
+ * $Id: miniprint.prg,v 1.44 2014-06-01 15:08:41 fyurisich Exp $
  */
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
@@ -32,7 +32,7 @@
 
  Parts of this project are based upon:
 
-   "Harbour GUI framework for Win32")
+   "Harbour GUI framework for Win32"
    Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
    Copyright 2001 Antonio Linares <alinares@fivetech.com>
    www - http://www.harbour-project.org
@@ -369,7 +369,7 @@ PUBLIC _OOHG_Auxil_Zoom
          FONTSIZE 9
          VALUE 1
          OPTIONS { _HMG_PRINTER_UserMessages [16], _HMG_PRINTER_UserMessages [17] }
-         ONCHANGE If( This.Value == 1, ( _HMG_PRINTER_PRINTPAGES.Label_1.Enabled := .F., _HMG_PRINTER_PRINTPAGES.Label_2.Enabled := .F., _HMG_PRINTER_PRINTPAGES.Spinner_1.Enabled := .F., _HMG_PRINTER_PRINTPAGES.Spinner_2.Enabled := .F., _HMG_PRINTER_PRINTPAGES.Combo_1.Enabled := .F., _HMG_PRINTER_PRINTPAGES.Label_4.Enabled := .F. ), ( _HMG_PRINTER_PRINTPAGES.Label_1.Enabled := .T., _HMG_PRINTER_PRINTPAGES.Label_2.Enabled := .T., _HMG_PRINTER_PRINTPAGES.Spinner_1.Enabled := .T., _HMG_PRINTER_PRINTPAGES.Spinner_2.Enabled := .T., _HMG_PRINTER_PRINTPAGES.Combo_1.Enabled := .T., _HMG_PRINTER_PRINTPAGES.Label_4.Enabled := .T., _HMG_PRINTER_PRINTPAGES.Spinner_1.SetFocus ) )
+         ONCHANGE If( This.Value == 1, ( _HMG_PRINTER_PRINTPAGES.Spinner_1.Enabled := .F., _HMG_PRINTER_PRINTPAGES.Spinner_2.Enabled := .F., _HMG_PRINTER_PRINTPAGES.Combo_1.Enabled := .F. ), ( _HMG_PRINTER_PRINTPAGES.Spinner_1.Enabled := .T., _HMG_PRINTER_PRINTPAGES.Spinner_2.Enabled := .T., _HMG_PRINTER_PRINTPAGES.Combo_1.Enabled := .T., _HMG_PRINTER_PRINTPAGES.Spinner_1.SetFocus ) )
       END RADIOGROUP
 
       DEFINE LABEL Label_1
@@ -391,6 +391,7 @@ PUBLIC _OOHG_Auxil_Zoom
          VALUE 1
          RANGEMIN 1
          RANGEMAX _HMG_PRINTER_PageCount
+         DISABLED .T.
       END SPINNER
 
       DEFINE LABEL Label_2
@@ -412,6 +413,7 @@ PUBLIC _OOHG_Auxil_Zoom
          VALUE _HMG_PRINTER_PageCount
          RANGEMIN 1
          RANGEMAX _HMG_PRINTER_PageCount
+         DISABLED .T.
       END SPINNER
 
       DEFINE LABEL Label_4
@@ -432,6 +434,7 @@ PUBLIC _OOHG_Auxil_Zoom
          FONTSIZE 9
          VALUE 1
          ITEMS {_HMG_PRINTER_UserMessages [21], _HMG_PRINTER_UserMessages [22], _HMG_PRINTER_UserMessages [23] }
+         DISABLED .T.
       END COMBOBOX
 
       DEFINE BUTTON Ok
@@ -466,6 +469,7 @@ PUBLIC _OOHG_Auxil_Zoom
          VALUE _HMG_PRINTER_UserMessages [20] + ':'
       END LABEL
 
+// See comment in function _HMG_PRINTER_PrintPages
       DEFINE SPINNER SPINNER_3
          ROW 100
          COL 355
@@ -475,7 +479,7 @@ PUBLIC _OOHG_Auxil_Zoom
          VALUE _HMG_PRINTER_Copies
          RANGEMIN 1
          RANGEMAX 999
-         ONCHANGE( IF( _IsControlDefined ("CHECKBOX_1", "_HMG_PRINTER_PRINTPAGES"), If( This.Value > 1, SetProperty( '_HMG_PRINTER_PRINTPAGES', 'CHECKBOX_1', 'ENABLED', .T.), SetProperty( '_HMG_PRINTER_PRINTPAGES', 'CHECKBOX_1', 'ENABLED', .F. ) ), NIL ) )
+         DISABLED ( _HMG_PRINTER_Copies > 1 )
       END SPINNER
 
       DEFINE CHECKBOX CHECKBOX_1
@@ -484,8 +488,9 @@ PUBLIC _OOHG_Auxil_Zoom
          WIDTH 110
          FONTNAME 'Arial'
          FONTSIZE 9
-         VALUE IF( _HMG_PRINTER_Collate == 1, .T., .F. )
+         VALUE ( _HMG_PRINTER_Collate == 1 )
          CAPTION _HMG_PRINTER_UserMessages [14]
+         DISABLED ( _HMG_PRINTER_Copies > 1 )
       END CHECKBOX
    END WINDOW
 
@@ -753,26 +758,43 @@ RETURN
 *------------------------------------------------------------------------------*
 PROCEDURE _HMG_PRINTER_PrintPages
 *------------------------------------------------------------------------------*
-*LOCAL aProp := {}
-
    DisableWindow( GetFormHandle( "_HMG_PRINTER_PPNAV" ) )
    DisableWindow( GetFormHandle( "_HMG_PRINTER_SHOWTHUMBNAILS" ) )
    DisableWindow( GetFormHandle( "_HMG_PRINTER_SHOWPREVIEW" ) )
+/*
+   _HMG_PRINTER_Copies > 1
+   The printer will print a predefined number of copies using collation if
+   _HMG_PRINTER_Collate == 1.
+   Only one copy must be sent to the printer.
+   Spinner_3 must show the value of _HMG_PRINTER_Copies.
+   CheckBox_1 must be checked only if the value of _HMG_PRINTER_Collate is 1.
+   Both controls must be DISABLED.
 
+   _HMG_PRINTER_Copies <= 1
+   The printer will print only one copy even if it supports multicopy.
+   The number of copies indicated by Spinner_3 must be sent to the printer in
+   the order defined by CheckBox_1.
+   Spinner_3 initial value must be 1.
+   CheckBox_1 initial state must be checked only if the value of
+   _HMG_PRINTER_Collate is 1.
+   Both controls must be ENABLED.
+
+   _HMG_PRINTER_Collate == 1
+   Indicates that the printer will collate documents when printing multiples
+   copies ( _HMG_PRINTER_Copies > 1 ).
+
+   _HMG_PRINTER_Collate # 1
+   Indicates that the printer will not collate documents (even if it supports
+   collation) when printing multiples copies ( _HMG_PRINTER_Copies > 1 ).
+*/
    _HMG_PRINTER_PRINTPAGES.Radio_1.Value := 1
-   _HMG_PRINTER_PRINTPAGES.Label_1.Enabled := .F.
-   _HMG_PRINTER_PRINTPAGES.Label_2.Enabled := .F.
-   _HMG_PRINTER_PRINTPAGES.Label_4.Enabled := .F.
    _HMG_PRINTER_PRINTPAGES.Spinner_1.Enabled := .F.
    _HMG_PRINTER_PRINTPAGES.Spinner_2.Enabled := .F.
    _HMG_PRINTER_PRINTPAGES.Combo_1.Enabled := .F.
-   _HMG_PRINTER_PRINTPAGES.CheckBox_1.Enabled := .F.
-
-   If _HMG_PRINTER_Copies > 1 .OR. _HMG_PRINTER_Collate == 1
-
-      _HMG_PRINTER_PRINTPAGES.Spinner_3.Enabled := .F.
-
-   EndIf
+   _HMG_PRINTER_PRINTPAGES.Spinner_3.Value := _HMG_PRINTER_Copies
+   _HMG_PRINTER_PRINTPAGES.Spinner_3.Enabled := ( _HMG_PRINTER_Copies <= 1 )
+   _HMG_PRINTER_PRINTPAGES.CheckBox_1.Value := ( _HMG_PRINTER_Collate == 1 )
+   _HMG_PRINTER_PRINTPAGES.CheckBox_1.Enabled := ( _HMG_PRINTER_Copies <= 1 )
 
    ShowWindow( GetFormHandle( "_HMG_PRINTER_PRINTPAGES" ) )
 RETURN
@@ -786,6 +808,7 @@ LOCAL PageTo
 LOCAL p
 LOCAL OddOnly := .F.
 LOCAL EvenOnly := .F.
+LOCAL nCopies
 
    If _HMG_PRINTER_PrintPages.Radio_1.Value == 1
 
@@ -805,28 +828,14 @@ LOCAL EvenOnly := .F.
 
    EndIf
 
+// See comment in function _HMG_PRINTER_PrintPages
+   nCopies := If( _HMG_PRINTER_Copies > 1, 1, _HMG_PRINTER_PrintPages.Spinner_3.Value )
+
    _HMG_PRINTER_StartDoc( _HMG_PRINTER_hDC_Bak, _OOHG_PRINTER_DocName )
 
-   If _HMG_PRINTER_Copies > 1 .OR. _HMG_PRINTER_Collate == 1
+   If _HMG_PRINTER_PrintPages.CheckBox_1.Value  // Collate
 
-      For i := PageFrom To PageTo
-         If OddOnly == .T.
-            If i / 2 != Int( i / 2 )
-               _HMG_PRINTER_PRINTPAGE( _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_BasePageName + StrZero( i, 6 ) + ".emf" )
-            EndIf
-         ElseIf EvenOnly == .T.
-            If i / 2 == Int( i / 2 )
-               _HMG_PRINTER_PRINTPAGE( _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_BasePageName + StrZero( i, 6 ) + ".emf" )
-            EndIf
-         Else
-            _HMG_PRINTER_PRINTPAGE( _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_BasePageName + StrZero( i, 6 ) + ".emf" )
-         EndIf
-      Next i
-
-   Else
-
-      If _HMG_PRINTER_PrintPages.Spinner_3.Value == 1 // Copies
-
+      For p := 1 To nCopies
          For i := PageFrom To PageTo
             If OddOnly == .T.
                If i / 2 != Int( i / 2 )
@@ -840,48 +849,25 @@ LOCAL EvenOnly := .F.
                _HMG_PRINTER_PRINTPAGE( _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_BasePageName + StrZero( i, 6 ) + ".emf" )
             EndIf
          Next i
+      Next p
 
-      Else
+   Else
 
-         If _HMG_PRINTER_PrintPages.CheckBox_1.Value == .F.
-
-            For p := 1 To _HMG_PRINTER_PrintPages.Spinner_3.Value
-               For i := PageFrom To PageTo
-                  If OddOnly == .T.
-                     If i / 2 != Int( i / 2 )
-                        _HMG_PRINTER_PRINTPAGE( _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_BasePageName + StrZero( i, 6 ) + ".emf" )
-                     EndIf
-                  ElseIf EvenOnly == .T.
-                     If i / 2 == Int( i / 2 )
-                        _HMG_PRINTER_PRINTPAGE( _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_BasePageName + StrZero( i, 6 ) + ".emf" )
-                     EndIf
-                  Else
-                     _HMG_PRINTER_PRINTPAGE( _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_BasePageName + StrZero( i, 6 ) + ".emf" )
-                  EndIf
-               Next i
-            Next p
-
-         Else
-
-            For i := PageFrom To PageTo
-               For p := 1 To _HMG_PRINTER_PrintPages.Spinner_3.Value
-                  If OddOnly == .T.
-                     If i / 2 != Int( i / 2 )
-                        _HMG_PRINTER_PRINTPAGE( _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_BasePageName + StrZero( i, 6 ) + ".emf" )
-                     EndIf
-                  ElseIf EvenOnly == .T.
-                     If i / 2 == Int( i / 2 )
-                        _HMG_PRINTER_PRINTPAGE( _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_BasePageName + StrZero( i, 6 ) + ".emf" )
-                     EndIf
-                  Else
-                     _HMG_PRINTER_PRINTPAGE( _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_BasePageName + StrZero( i, 6 ) + ".emf" )
-                  EndIf
-               Next p
-            Next i
-
-         EndIf
-
-      EndIf
+      For i := PageFrom To PageTo
+         For p := 1 To nCopies
+            If OddOnly == .T.
+               If i / 2 != Int( i / 2 )
+                  _HMG_PRINTER_PRINTPAGE( _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_BasePageName + StrZero( i, 6 ) + ".emf" )
+               EndIf
+            ElseIf EvenOnly == .T.
+               If i / 2 == Int( i / 2 )
+                  _HMG_PRINTER_PRINTPAGE( _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_BasePageName + StrZero( i, 6 ) + ".emf" )
+               EndIf
+            Else
+               _HMG_PRINTER_PRINTPAGE( _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_BasePageName + StrZero( i, 6 ) + ".emf" )
+            EndIf
+         Next p
+      Next i
 
    EndIf
 
@@ -2882,6 +2868,7 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
    LONG lFlag;
    HDC hdcPrint;
    int fields = 0;
+   DWORD dmFields;
 
    bFlag = OpenPrinter( (char *) hb_parc( 1 ), &hPrinter, NULL );
 
@@ -2997,7 +2984,7 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
    }
 
    ///////////////////////////////////////////////////////////////////////
-   // Specify Fields
+   // Specify fields to change
    //////////////////////////////////////////////////////////////////////
 
    // Orientation
@@ -3060,17 +3047,24 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
       fields = fields | DM_COLLATE;
    }
 
+   dmFields = pi2->pDevMode->dmFields;
    pi2->pDevMode->dmFields = fields;
 
    ///////////////////////////////////////////////////////////////////////
-   // Load Fields
+   // Load fields values
    //////////////////////////////////////////////////////////////////////
 
    // Orientation
    if( hb_parni( 2 ) != -999 )
    {
-      if( ! ( pi2->pDevMode->dmFields & DM_ORIENTATION ) )
+      if( ! ( dmFields & DM_ORIENTATION ) )
       {
+         GlobalFree( pi2 );
+         ClosePrinter( hPrinter );
+         if( pDevMode )
+         {
+            GlobalFree( pDevMode );
+         }
          MessageBox( 0, "Printer Configuration Failed: ORIENTATION Property Not Supported By Selected Printer", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
 
          hb_reta( 4 );
@@ -3087,8 +3081,14 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
    // PaperSize
    if( hb_parni( 3 ) != -999 )
    {
-      if( ! ( pi2->pDevMode->dmFields & DM_PAPERSIZE ) )
+      if( ! ( dmFields & DM_PAPERSIZE ) )
       {
+         GlobalFree( pi2 );
+         ClosePrinter( hPrinter );
+         if( pDevMode )
+         {
+            GlobalFree( pDevMode );
+         }
          MessageBox( 0, "Printer Configuration Failed: PAPERSIZE Property Not Supported By Selected Printer", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
 
          hb_reta( 4 );
@@ -3105,8 +3105,14 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
    // PaperLenght
    if( hb_parni( 4 ) != -999 )
    {
-      if( ! ( pi2->pDevMode->dmFields & DM_PAPERLENGTH ) )
+      if( ! ( dmFields & DM_PAPERLENGTH ) )
       {
+         GlobalFree( pi2 );
+         ClosePrinter( hPrinter );
+         if( pDevMode )
+         {
+            GlobalFree( pDevMode );
+         }
          MessageBox( 0, "Printer Configuration Failed: PAPERLENGTH Property Not Supported By Selected Printer", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
 
          hb_reta( 4 );
@@ -3123,8 +3129,14 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
    // PaperWidth
    if( hb_parni( 5 ) != -999 )
    {
-      if( ! ( pi2->pDevMode->dmFields & DM_PAPERWIDTH ) )
+      if( ! ( dmFields & DM_PAPERWIDTH ) )
       {
+         GlobalFree( pi2 );
+         ClosePrinter( hPrinter );
+         if( pDevMode )
+         {
+            GlobalFree( pDevMode );
+         }
          MessageBox( 0, "Printer Configuration Failed: PAPERWIDTH Property Not Supported By Selected Printer", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
 
          hb_reta( 4 );
@@ -3141,8 +3153,14 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
    // Copies
    if( hb_parni( 6 ) != -999 )
    {
-      if( ! ( pi2->pDevMode->dmFields & DM_COPIES ) )
+      if( ! ( dmFields & DM_COPIES ) )
       {
+         GlobalFree( pi2 );
+         ClosePrinter( hPrinter );
+         if( pDevMode )
+         {
+            GlobalFree( pDevMode );
+         }
          MessageBox( 0, "Printer Configuration Failed: COPIES Property Not Supported By Selected Printer", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
 
          hb_reta( 4 );
@@ -3159,8 +3177,14 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
    // Default Source
    if( hb_parni( 7 ) != -999 )
    {
-      if( ! ( pi2->pDevMode->dmFields & DM_DEFAULTSOURCE ) )
+      if( ! ( dmFields & DM_DEFAULTSOURCE ) )
       {
+         GlobalFree( pi2 );
+         ClosePrinter( hPrinter );
+         if( pDevMode )
+         {
+            GlobalFree( pDevMode );
+         }
          MessageBox( 0, "Printer Configuration Failed: DEFAULTSOURCE Property Not Supported By Selected Printer", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
 
          hb_reta( 4 );
@@ -3177,8 +3201,14 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
    // Print Quality
    if( hb_parni( 8 ) != -999 )
    {
-      if( ! ( pi2->pDevMode->dmFields & DM_PRINTQUALITY ) )
+      if( ! ( dmFields & DM_PRINTQUALITY ) )
       {
+         GlobalFree( pi2 );
+         ClosePrinter( hPrinter );
+         if( pDevMode )
+         {
+            GlobalFree( pDevMode );
+         }
          MessageBox( 0, "Printer Configuration Failed: QUALITY Property Not Supported By Selected Printer", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
 
          hb_reta( 4 );
@@ -3195,8 +3225,14 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
    // Print Color
    if( hb_parni( 9 ) != -999 )
    {
-      if( ! ( pi2->pDevMode->dmFields & DM_COLOR ) )
+      if( ! ( dmFields & DM_COLOR ) )
       {
+         GlobalFree( pi2 );
+         ClosePrinter( hPrinter );
+         if( pDevMode )
+         {
+            GlobalFree( pDevMode );
+         }
          MessageBox( 0, "Printer Configuration Failed: COLOR Property Not Supported By Selected Printer", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
 
          hb_reta( 4 );
@@ -3213,8 +3249,14 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
    // Print Duplex
    if( hb_parni( 10 ) != -999 )
    {
-      if( ! ( pi2->pDevMode->dmFields & DM_DUPLEX ) )
+      if( ! ( dmFields & DM_DUPLEX ) )
       {
+         GlobalFree( pi2 );
+         ClosePrinter( hPrinter );
+         if( pDevMode )
+         {
+            GlobalFree( pDevMode );
+         }
          MessageBox( 0, "Printer Configuration Failed: DUPLEX Property Not Supported By Selected Printer", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
 
          hb_reta( 4 );
@@ -3231,8 +3273,14 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
    // Print Collate
    if( hb_parni( 11 ) != -999 )
    {
-      if( ! ( pi2->pDevMode->dmFields & DM_COLLATE ) )
+      if( ! ( dmFields & DM_COLLATE ) )
       {
+         GlobalFree( pi2 );
+         ClosePrinter( hPrinter );
+         if( pDevMode )
+         {
+            GlobalFree( pDevMode );
+         }
          MessageBox( 0, "Printer Configuration Failed: COLLATE Property Not Supported By Selected Printer", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
 
          hb_reta( 4 );
@@ -3282,6 +3330,8 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
    }
    else
    {
+      MessageBox( 0, "Printer Configuration Failed! (009)", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
+
       hb_reta( 4 );
       HB_STORNL( 0, -1, 1 );
       HB_STORC( "", -1, 2 );
@@ -3600,12 +3650,15 @@ HB_FUNC( _HMG_PRINTER_C_IMAGE )
       {
          nFileSize = GetFileSize( hFile, NULL );
          hGlobal = GlobalAlloc( GPTR, nFileSize );
-         ReadFile( hFile, hGlobal, nFileSize, &nReadByte, NULL );
+         if( hGlobal )
+         {
+            ReadFile( hFile, hGlobal, nFileSize, &nReadByte, NULL );
+            CreateStreamOnHGlobal( hGlobal, FALSE, &iStream );
+            OleLoadPicture( iStream, nFileSize, TRUE, &IID_IPicture, (LPVOID*) iPictureRef );
+            iStream->lpVtbl->Release( iStream );
+            GlobalFree( hGlobal );
+         }
          CloseHandle( hFile );
-         CreateStreamOnHGlobal( hGlobal, TRUE, &iStream );
-         OleLoadPicture( iStream, nFileSize, TRUE, &IID_IPicture, (LPVOID*) iPictureRef );
-         iStream->lpVtbl->Release( iStream );
-         GlobalFree( hGlobal );
 
          if( iPicture == 0 )
          {
