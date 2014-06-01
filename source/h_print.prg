@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.132 2014-06-01 15:08:41 fyurisich Exp $
+* $Id: h_print.prg,v 1.133 2014-06-01 19:26:31 fyurisich Exp $
 */
 
 #include 'hbclass.ch'
@@ -257,7 +257,7 @@ METHOD Init() CLASS TPRINTBASE
 RETURN Self
 
 *-----------------------------------------------------------------------------*
-METHOD SelPrinter( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, lHide, nRes, nBin, nDuplex, lCollate ) CLASS TPRINTBASE
+METHOD SelPrinter( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, lHide, nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nPaperLength, nPaperWidth ) CLASS TPRINTBASE
 *-----------------------------------------------------------------------------*
    DEFAULT lSelect TO .T.
 
@@ -277,7 +277,7 @@ METHOD SelPrinter( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, lHide, 
     ::ImPreview := .T.
    ENDIF
 
-   ::SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, nBin, nDuplex, lCollate )
+   ::SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nPaperLength, nPaperWidth )
 RETURN Self
 
 *-----------------------------------------------------------------------------*
@@ -1093,9 +1093,9 @@ LOCAL nVDispl := 1
 RETURN Self
 
 *-----------------------------------------------------------------------------*
-METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, nBin, nDuplex, lCollate ) CLASS TMINIPRINT
+METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nPaperLength, nPaperWidth ) CLASS TMINIPRINT
 *-----------------------------------------------------------------------------*
-LOCAL nOrientation, lSucess, nCollate
+LOCAL nOrientation, lSucess, nCollate, nColor
 
    IF lLandscape
       nOrientation := PRINTER_ORIENT_LANDSCAPE
@@ -1103,10 +1103,14 @@ LOCAL nOrientation, lSucess, nCollate
       nOrientation := PRINTER_ORIENT_PORTRAIT
    ENDIF
 
-   DEFAULT nPaperSize TO -999
-   DEFAULT nRes       TO -999
-   DEFAULT nBin       TO -999
-   DEFAULT nDuplex    TO -999
+   DEFAULT nPaperSize   TO -999
+   DEFAULT nRes         TO -999
+   DEFAULT nBin         TO -999
+   DEFAULT nDuplex      TO -999
+   DEFAULT nCopies      TO -999
+   DEFAULT nScale       TO -999
+   DEFAULT nPaperLength TO -999
+   DEFAULT nPaperWidth  TO -999
 
    IF HB_IsLogical( lCollate )
       IF lCollate
@@ -1116,6 +1120,16 @@ LOCAL nOrientation, lSucess, nCollate
       ENDIF
    ELSE
       nCollate := -999
+   ENDIF
+
+   IF HB_IsLogical( lColor )
+      IF lColor
+         nColor := PRINTER_COLOR_COLOR
+      ELSE
+         nColor := PRINTER_COLOR_MONOCHROME
+      ENDIF
+   ELSE
+      nColor := -999
    ENDIF
 
    IF cPrinterX = NIL
@@ -1134,6 +1148,11 @@ LOCAL nOrientation, lSucess, nCollate
                DEFAULTSOURCE nBin ;
                DUPLEX nDuplex ;
                COLLATE nCollate ;
+               COPIES nCopies ;
+               COLOR nColor ;
+               SCALE nScale ;
+               PAPERLENGTH nPaperLength ;
+               PAPERWIDTH nPaperWidth ;
                PREVIEW
          ELSE
             SELECT PRINTER ::cPrinter TO lSucess ;
@@ -1142,7 +1161,12 @@ LOCAL nOrientation, lSucess, nCollate
                QUALITY nRes ;
                DEFAULTSOURCE nBin ;
                DUPLEX nDuplex ;
-               COLLATE nCollate
+               COLLATE nCollate ;
+               COPIES nCopies ;
+               COLOR nColor ;
+               SCALE nScale ;
+               PAPERLENGTH nPaperLength ;
+               PAPERWIDTH nPaperWidth
          ENDIF
       ELSE
          IF lPreview
@@ -1153,6 +1177,11 @@ LOCAL nOrientation, lSucess, nCollate
                DEFAULTSOURCE nBin ;
                DUPLEX nDuplex ;
                COLLATE nCollate ;
+               COPIES nCopies ;
+               COLOR nColor ;
+               SCALE nScale ;
+               PAPERLENGTH nPaperLength ;
+               PAPERWIDTH nPaperWidth ;
                PREVIEW
          ELSE
             SELECT PRINTER DEFAULT TO lSucess  ;
@@ -1161,7 +1190,12 @@ LOCAL nOrientation, lSucess, nCollate
                QUALITY nRes ;
                DEFAULTSOURCE nBin ;
                DUPLEX nDuplex ;
-               COLLATE nCollate
+               COLLATE nCollate ;
+               COPIES nCopies ;
+               COLOR nColor ;
+               SCALE nScale ;
+               PAPERLENGTH nPaperLength ;
+               PAPERWIDTH nPaperWidth
          ENDIF
       ENDIF
    ELSE
@@ -1179,6 +1213,11 @@ LOCAL nOrientation, lSucess, nCollate
             DEFAULTSOURCE nBin ;
             DUPLEX nDuplex ;
             COLLATE nCollate ;
+            COPIES nCopies ;
+            COLOR nColor ;
+            SCALE nScale ;
+            PAPERLENGTH nPaperLength ;
+            PAPERWIDTH nPaperWidth ;
             PREVIEW
       ELSE
          SELECT PRINTER ::cPrinter TO lSucess ;
@@ -1187,7 +1226,12 @@ LOCAL nOrientation, lSucess, nCollate
             QUALITY nRes ;
             DEFAULTSOURCE nBin ;
             DUPLEX nDuplex ;
-            COLLATE nCollate
+            COLLATE nCollate ;
+            COPIES nCopies ;
+            COLOR nColor ;
+            SCALE nScale ;
+            PAPERLENGTH nPaperLength ;
+            PAPERWIDTH nPaperWidth
       ENDIF
    ENDIF
 
@@ -1409,7 +1453,7 @@ LOCAL nVDispl := 1
 RETURN Self
 
 *-----------------------------------------------------------------------------*
-METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, nBin, nDuplex, lCollate ) CLASS THBPRINTER
+METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nPaperLength, nPaperWidth ) CLASS THBPRINTER
 *-----------------------------------------------------------------------------*
    IF lSelect .AND. lPreview .AND. cPrinterX = NIL
       SELECT BY DIALOG PREVIEW
@@ -1475,6 +1519,30 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
       ELSE
          SET COLLATE OFF
       ENDIF
+   ENDIF
+
+   IF nCopies # NIL
+      SET COPIES TO nCopies
+   ENDIF
+
+   IF HB_IsLogical( lColor )
+      IF lColor
+         SET COLORMODE DMCOLOR_COLOR
+      ELSE
+         SET COLORMODE DMCOLOR_MONOCHROME
+      ENDIF
+   ENDIF
+
+   IF nScale # NIL
+      SET SCALE TO nScale
+   ENDIF
+
+   IF nPaperLength # NIL
+      SET PAPERLENGTH TO nPaperLength
+   ENDIF
+
+   IF nPaperWidth # NIL
+      SET PAPERWIDTH TO nPaperWidth
    ENDIF
 RETURN Self
 

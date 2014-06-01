@@ -1,11 +1,37 @@
 /*
- * $Id: ChangeLog,v 1.1277 2014-06-01 15:08:41 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1278 2014-06-01 19:26:31 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-06-01 16:26 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/miniprint.ch
+     * Format.
+   * include/winprint.ch
+     + SET COPIES TO.
+     + SET SCALE TO.
+     + SET PAPERLENGTH TO.
+     + SET PAPERWIDTH TO.
+     + Support for PAPERLENGTH and PAPERWIDTH properties.
+     * Format.
+   * source/winprint.prg
+     + Support for PAPERLENGTH and PAPERWIDTH.
+   * source/miniprint.prg
+     + Support for SCALE property.
+   * source/h_print.prg
+     + COPIES setting to TPrint:SelPrinter(), supported by
+       MiniPrint and HBPrinter.
+     + COLOR setting to TPrint:SelPrinter(), supported by
+       MiniPrint and HBPrinter.
+     + SCALE setting to TPrint:SelPrinter(), supported by
+       MiniPrint and HBPrinter.
+     + PAPERLENGTH setting to TPrint:SelPrinter(), supported by
+       MiniPrint and HBPrinter.
+     + PAPERWIDTH setting to TPrint:SelPrinter(), supported by
+       MiniPrint and HBPrinter.
 
 2014-06-01 12:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/winprint.ch

@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.prg,v 1.44 2014-06-01 15:08:41 fyurisich Exp $
+ * $Id: miniprint.prg,v 1.45 2014-06-01 19:26:31 fyurisich Exp $
  */
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
@@ -82,7 +82,6 @@ MEMVAR _HMG_PRINTER_PageCount
 MEMVAR _HMG_PRINTER_Copies
 MEMVAR _HMG_PRINTER_Collate
 MEMVAR _HMG_PRINTER_hDC
-*MEMVAR a
 MEMVAR _HMG_PRINTER_BasePageName
 MEMVAR _HMG_PRINTER_CurrentPageNumber
 MEMVAR _HMG_PRINTER_SizeFactor
@@ -100,7 +99,7 @@ MEMVAR _OOHG_Auxil_Page
 MEMVAR _OOHG_Auxil_Zoom
 
 *------------------------------------------------------------------------------*
-PROCEDURE _HMG_PRINTER_ShowPreview
+PROCEDURE _HMG_PRINTER_ShowPreview()
 *------------------------------------------------------------------------------*
 *LOCAL ModalHandle := 0
 *LOCAL Tmp
@@ -469,7 +468,7 @@ PUBLIC _OOHG_Auxil_Zoom
          VALUE _HMG_PRINTER_UserMessages [20] + ':'
       END LABEL
 
-// See comment in function _HMG_PRINTER_PrintPages
+// See comment in function _HMG_PRINTER_PrintPages()
       DEFINE SPINNER SPINNER_3
          ROW 100
          COL 355
@@ -529,7 +528,7 @@ PUBLIC _OOHG_Auxil_Zoom
 RETURN
 
 *------------------------------------------------------------------------------*
-PROCEDURE CreateThumbNails
+PROCEDURE CreateThumbNails()
 *------------------------------------------------------------------------------*
 LOCAL tFactor
 LOCAL tWidth
@@ -604,7 +603,7 @@ PROCEDURE _HMG_PRINTER_ProcessThumbnails()
 RETURN
 
 *------------------------------------------------------------------------------*
-PROCEDURE _HMG_PRINTER_SavePages
+PROCEDURE _HMG_PRINTER_SavePages()
 *------------------------------------------------------------------------------*
 LOCAL c, i, f, t, d, x, a
 
@@ -681,14 +680,14 @@ PROCEDURE _HMG_PRINTER_PreviewClose()
 RETURN
 
 *------------------------------------------------------------------------------*
-PROCEDURE _HMG_PRINTER_CleanPreview
+PROCEDURE _HMG_PRINTER_CleanPreview()
 *------------------------------------------------------------------------------*
    AEval( Directory( GetTempFolder() + "\" + _HMG_PRINTER_TimeStamp + "_HMG_print_preview_*.Emf" ), ;
                      { |file| Ferase( GetTempFolder() + '\' + file[1] ) } )
 RETURN
 
 *------------------------------------------------------------------------------*
-PROCEDURE _HMG_PRINTER_PreviewRefresh
+PROCEDURE _HMG_PRINTER_PreviewRefresh()
 *------------------------------------------------------------------------------*
 LOCAL hwnd
 LOCAL nRow
@@ -756,7 +755,7 @@ LOCAL nScrollMax
 RETURN
 
 *------------------------------------------------------------------------------*
-PROCEDURE _HMG_PRINTER_PrintPages
+PROCEDURE _HMG_PRINTER_PrintPages()
 *------------------------------------------------------------------------------*
    DisableWindow( GetFormHandle( "_HMG_PRINTER_PPNAV" ) )
    DisableWindow( GetFormHandle( "_HMG_PRINTER_SHOWTHUMBNAILS" ) )
@@ -800,7 +799,7 @@ PROCEDURE _HMG_PRINTER_PrintPages
 RETURN
 
 *------------------------------------------------------------------------------*
-PROCEDURE _HMG_PRINTER_PrintPagesDo
+PROCEDURE _HMG_PRINTER_PrintPagesDo()
 *------------------------------------------------------------------------------*
 LOCAL i
 LOCAL PageFrom
@@ -828,7 +827,7 @@ LOCAL nCopies
 
    EndIf
 
-// See comment in function _HMG_PRINTER_PrintPages
+// See comment in function _HMG_PRINTER_PrintPages()
    nCopies := If( _HMG_PRINTER_Copies > 1, 1, _HMG_PRINTER_PrintPages.Spinner_3.Value )
 
    _HMG_PRINTER_StartDoc( _HMG_PRINTER_hDC_Bak, _OOHG_PRINTER_DocName )
@@ -883,7 +882,7 @@ LOCAL nCopies
 RETURN
 
 *------------------------------------------------------------------------------*
-PROCEDURE _HMG_PRINTER_MouseZoom
+PROCEDURE _HMG_PRINTER_MouseZoom()
 *------------------------------------------------------------------------------*
 LOCAL Width := GetDesktopWidth()
 LOCAL Height := GetDesktopHeight()
@@ -987,7 +986,7 @@ LOCAL DeltaHeight := 35 + GetTitleHeight() + GetBorderHeight() + 10
 RETURN
 
 *------------------------------------------------------------------------------*
-PROCEDURE _HMG_PRINTER_Zoom
+PROCEDURE _HMG_PRINTER_Zoom()
 *------------------------------------------------------------------------------*
    If _HMG_PRINTER_Dz # 0
 
@@ -1027,7 +1026,7 @@ PROCEDURE _HMG_PRINTER_Zoom
 RETURN
 
 *------------------------------------------------------------------------------*
-PROCEDURE _HMG_PRINTER_ScrollLeft
+PROCEDURE _HMG_PRINTER_ScrollLeft()
 *------------------------------------------------------------------------------*
    _HMG_PRINTER_Dx := _HMG_PRINTER_Dx + _HMG_PRINTER_ScrollStep
    If _HMG_PRINTER_Dx >= 500
@@ -1038,7 +1037,7 @@ PROCEDURE _HMG_PRINTER_ScrollLeft
 RETURN
 
 *------------------------------------------------------------------------------*
-PROCEDURE _HMG_PRINTER_ScrollRight
+PROCEDURE _HMG_PRINTER_ScrollRight()
 *------------------------------------------------------------------------------*
    _HMG_PRINTER_Dx := _HMG_PRINTER_Dx - _HMG_PRINTER_ScrollStep
    If _HMG_PRINTER_Dx <= -500
@@ -1049,7 +1048,7 @@ PROCEDURE _HMG_PRINTER_ScrollRight
 RETURN
 
 *------------------------------------------------------------------------------*
-PROCEDURE _HMG_PRINTER_ScrollUp
+PROCEDURE _HMG_PRINTER_ScrollUp()
 *------------------------------------------------------------------------------*
    _HMG_PRINTER_Dy := _HMG_PRINTER_Dy + _HMG_PRINTER_ScrollStep
    If _HMG_PRINTER_Dy >= 500
@@ -1060,7 +1059,7 @@ PROCEDURE _HMG_PRINTER_ScrollUp
 RETURN
 
 *------------------------------------------------------------------------------*
-PROCEDURE _HMG_PRINTER_ScrollDown
+PROCEDURE _HMG_PRINTER_ScrollDown()
 *------------------------------------------------------------------------------*
    _HMG_PRINTER_Dy := _HMG_PRINTER_Dy - _HMG_PRINTER_ScrollStep
    If _HMG_PRINTER_Dy <= -500
@@ -1319,7 +1318,7 @@ PROCEDURE _HMG_PRINTER_H_Pie( nHdc, nRow, nCol, nToRow, nToCol, x1, y1, x2, y2, 
 RETURN
 
 *------------------------------------------------------------------------------*
-PROCEDURE _HMG_PRINTER_InitUserMessages
+PROCEDURE _HMG_PRINTER_InitUserMessages()
 *------------------------------------------------------------------------------*
 LOCAL   cLang
 PUBLIC  _HMG_PRINTER_UserMessages [103]
@@ -3047,6 +3046,12 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
       fields = fields | DM_COLLATE;
    }
 
+   // Scale
+   if( hb_parni( 12 ) != -999 )
+   {
+      fields = fields | DM_SCALE;
+   }
+
    dmFields = pi2->pDevMode->dmFields;
    pi2->pDevMode->dmFields = fields;
 
@@ -3292,6 +3297,30 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
       }
 
       pi2->pDevMode->dmCollate = (short) hb_parni( 11 );
+   }
+
+   // Scale
+   if( hb_parni( 12 ) != -999 )
+   {
+      if( ! ( dmFields & DM_SCALE ) )
+      {
+         GlobalFree( pi2 );
+         ClosePrinter( hPrinter );
+         if( pDevMode )
+         {
+            GlobalFree( pDevMode );
+         }
+         MessageBox( 0, "Printer Configuration Failed: SCALE Property Not Supported By Selected Printer", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
+
+         hb_reta( 4 );
+         HB_STORNL( 0, -1, 1 );
+         HB_STORC( "", -1, 2 );
+         HB_STORNI( 0, -1, 3 );
+         HB_STORNI( 0, -1, 4 );
+         return;
+      }
+
+      pi2->pDevMode->dmCollate = (short) hb_parni( 12 );
    }
 
    //////////////////////////////////////////////////////////////////////
