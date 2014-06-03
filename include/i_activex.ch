@@ -1,5 +1,5 @@
 /*
- * $Id: i_activex.ch,v 1.1 2007-03-25 22:41:42 guerra000 Exp $
+ * $Id: i_activex.ch,v 1.2 2014-06-03 00:34:12 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -52,16 +52,16 @@
  *
  */
 
-#command @ <row>,<col> ACTIVEX <name>       ;
-        [ OBJ <obj> ]                       ;
-        [ <dummy1: OF, PARENT> <parent> ]   ;
-        [ WIDTH <width> ]                   ;
-        [ HEIGHT <height> ]                 ;
-        [ PROGID <progid> ]                 ;
-        [ <notabstop: NOTABSTOP> ]          ;
-        [ <disabled: DISABLED> ]            ;
-        [ SUBCLASS <subclass> ]             ;
-	=>;
-        [ <obj> := ] _OOHG_SelectSubClass( TActiveX(), [ <subclass>() ] ): ;
-        Define( <(name)>, <(parent)>, <col>, <row>, <width>, <height>, ;
-                <progid>, <.notabstop.>, <.disabled.> )
+#command @ <row>, <col> ACTIVEX <name> ;
+      [ OBJ <obj> ] ;
+      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ WIDTH <width> ] ;
+      [ HEIGHT <height> ] ;
+      [ PROGID <progid> ] ;
+      [ <notabstop: NOTABSTOP> ] ;
+      [ <disabled: DISABLED> ] ;
+      [ SUBCLASS <subclass> ] ;
+   => ;
+      [ <obj> := ] _OOHG_SelectSubClass( TActiveX(), [ <subclass>() ] ): ;
+            Define( <(name)>, <(parent)>, <col>, <row>, <width>, <height>, ;
+            <progid>, <.notabstop.>, <.disabled.> )

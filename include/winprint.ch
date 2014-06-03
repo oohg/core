@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.ch,v 1.11 2014-06-01 19:26:31 fyurisich Exp $
+ * $Id: winprint.ch,v 1.12 2014-06-03 00:34:12 fyurisich Exp $
  */
 // ---------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -8,7 +8,9 @@
 // http://rrylko.republika.pl
 // ---------------------------------------------------------------------------
 
+#ifndef NO_HBPRN_DECLARATION
 MEMVAR HBPRN
+#endif
 
 #xcommand SET CHANGES GLOBAL ;
    => ;

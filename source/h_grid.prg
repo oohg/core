@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.251 2014-05-22 21:11:15 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.252 2014-06-03 00:34:12 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2611,13 +2611,14 @@ Local lvc, _ThisQueryTemp, nvkey, uValue, lGo, aItem
       If uValue > 0
          // change check mark
          ::CheckItem( uValue, ! ::CheckItem( uValue ) )
-         // fire context menu
-         If ::ContextMenu != Nil .AND. ::RClickOnCheckbox
-            ::ContextMenu:Activate()
-         EndIf
       ElseIf uValue < 0
          // select item
          ::Value := ListView_HitTest( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ), GetCursorCol() - GetWindowCol( ::hWnd ) )[ 1 ]
+      EndIf
+
+      // fire context menu
+      If ::ContextMenu != Nil .AND. ::RClickOnCheckbox
+         ::ContextMenu:Activate()
       EndIf
 
      // skip default action

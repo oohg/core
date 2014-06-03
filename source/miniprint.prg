@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.prg,v 1.45 2014-06-01 19:26:31 fyurisich Exp $
+ * $Id: miniprint.prg,v 1.46 2014-06-03 00:34:13 fyurisich Exp $
  */
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
@@ -110,19 +110,19 @@ LOCAL tvHeight
 LOCAL icb
 LOCAL _HMG_PRINTER_SHOWPREVIEW, _HMG_PRINTER_PPNAV, _HMG_PRINTER_SHOWTHUMBNAILS, oSep
 
-PUBLIC _HMG_PRINTER_BasePageName := GetTempFolder() + "\" + _HMG_PRINTER_TimeStamp + "_HMG_print_preview_"
-PUBLIC _HMG_PRINTER_CurrentPageNumber := 1
-PUBLIC _HMG_PRINTER_SizeFactor
-PUBLIC _HMG_PRINTER_Dx := 0
-PUBLIC _HMG_PRINTER_Dy := 0
-PUBLIC _HMG_PRINTER_Dz := 0
-PUBLIC _HMG_PRINTER_ScrollStep := 10
-PUBLIC _HMG_PRINTER_ZoomClick_xOffset := 0
-PUBLIC _HMG_PRINTER_ThumbUpdate := .T.
-PUBLIC _HMG_PRINTER_ThumbScroll
-PUBLIC _HMG_PRINTER_PrevPageNumber := 0
-PUBLIC _OOHG_Auxil_Page
-PUBLIC _OOHG_Auxil_Zoom
+   PUBLIC _HMG_PRINTER_BasePageName := GetTempFolder() + "\" + _HMG_PRINTER_TimeStamp + "_HMG_print_preview_"
+   PUBLIC _HMG_PRINTER_CurrentPageNumber := 1
+   PUBLIC _HMG_PRINTER_SizeFactor
+   PUBLIC _HMG_PRINTER_Dx := 0
+   PUBLIC _HMG_PRINTER_Dy := 0
+   _HMG_PRINTER_PreviewZoom()                          // PUBLIC _HMG_PRINTER_Dz := 0
+   PUBLIC _HMG_PRINTER_ScrollStep := 10
+   PUBLIC _HMG_PRINTER_ZoomClick_xOffset := 0
+   PUBLIC _HMG_PRINTER_ThumbUpdate := .T.
+   PUBLIC _HMG_PRINTER_ThumbScroll
+   PUBLIC _HMG_PRINTER_PrevPageNumber := 0
+   PUBLIC _OOHG_Auxil_Page
+   PUBLIC _OOHG_Auxil_Zoom
 
    If _HMG_PRINTER_hDC_Bak == 0
       RETURN
@@ -249,9 +249,6 @@ PUBLIC _OOHG_Auxil_Zoom
          @ 8, 550 TEXTBOX zoom OBJ _OOHG_Auxil_Zoom PICTURE '99.99' NUMERIC WIDTH 75 VALUE _HMG_PRINTER_Dz/200 IMAGE "HP_ZOOM" ;
          ACTION ( _HMG_PRINTER_Dz := _OOHG_Auxil_Zoom:Value*200, ;
                   _HMG_PRINTER_SHOWPREVIEW:Show() )
-
-                //      @ 8, 700 TextBox dx picture '99.99' numeric width 75 value _HMG_PRINTER_dx image "HP_ZOOM" ;
-                //      action (_HMG_PRINTER_Dx := _HMG_PRINTER_PPNAV:dx:Value*100, _HMG_PRINTER_SHOWPREVIEW:Show() )
       END WINDOW
 
       _HMG_PRINTER_PPNAV:ClientAdjust := 1
@@ -1917,8 +1914,27 @@ RETURN NIL
 *------------------------------------------------------------------------------*
 FUNCTION TextAlign( nAlign )
 *------------------------------------------------------------------------------*
-  CVCSETTEXTALIGN( _HMG_PRINTER_hDC, nAlign )
+   CVCSETTEXTALIGN( _HMG_PRINTER_hDC, nAlign )
 RETURN NIL
+
+*------------------------------------------------------------------------------*
+FUNCTION _HMG_PRINTER_PreviewZoom( nSize )
+*------------------------------------------------------------------------------*
+   If PCount() > 1
+      If ! __MVEXIST( '_HMG_PRINTER_Dz' )
+         __MVPUBLIC( '_HMG_PRINTER_Dz' )
+      EndIf
+      _HMG_PRINTER_Dz := nSize * 200
+      If HB_IsObject( _OOHG_Auxil_Zoom )
+         _OOHG_Auxil_Zoom:Value := _HMG_PRINTER_Dz / 200
+      EndIf
+   Else
+      If ! __MVEXIST( '_HMG_PRINTER_Dz' )
+         __MVPUBLIC( '_HMG_PRINTER_Dz' )
+         _HMG_PRINTER_Dz := 0
+      EndIf
+   EndIf
+RETURN ( _HMG_PRINTER_Dz / 200 )
 
 
 #pragma BEGINDUMP

@@ -1,11 +1,40 @@
 /*
- * $Id: ChangeLog,v 1.1278 2014-06-01 19:26:31 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1279 2014-06-03 00:34:11 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-06-02 21:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_activex.ch
+   * include/i_browse.ch
+   * include/i_media.ch
+     * Format.
+   * include/miniprint.ch
+     + SET PREVIEW ZOOM <nZoom>.
+   * include/winprint.ch
+     + Switch to avoid declaring hbprn as MEMVAR.
+   * source/h_print.prg
+     - Unneeded methods from TPRINTBASE subclasses.
+     * ::SetPreviewSize() calls ::SetPreviewSizeX().
+     * In THBPRINTER class, default preview size was moved from
+       ::BeginDocX() to ::InitX().
+     * THBPRINTER:SetPreviewSizeX() defaults to 2.
+     + Support for setting the preview size in TMINIPRINT.
+     + Data oHBPrn to THBPRINTER class.
+     * Use oHBPrn instead of PUBLIC hbprn.
+     * hbprn:RoundRect() calls substituted by @ ... ROUNDRECT.
+   * source/winprint.prg
+     * Name of temp files.
+   * source/miniprint.prg
+     + Function _HMG_PRINTER_PreviewZoom( nSize ) to set/get
+       the preview's zoom value.
+     * Use PreviewZoom() to initialize _HMG_PRINTER_Dz var.
+     - Commented code.
+   * source/h_grid.prg
+     ! Context menu is not fired after right click.
 
 2014-06-01 16:26 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/miniprint.ch

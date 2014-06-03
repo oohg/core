@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.53 2014-06-01 19:26:31 fyurisich Exp $
+ * $Id: winprint.prg,v 1.54 2014-06-03 00:34:13 fyurisich Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -196,7 +196,7 @@ local aprnport
       ::error:=1
    ENDIF
    ::TimeStamp := strzero( Seconds() * 100 , 8 )
-   ::BaseDoc := rr_GetTempFolder() + "\" + ::TimeStamp + "_HMG_print_preview_"
+   ::BaseDoc := rr_GetTempFolder() + '\' + ::TimeStamp + "_HBPrinter_preview_"
 return self
 
 METHOD SelectPrinter( cPrinter ,lPrev ) CLASS HBPrinter

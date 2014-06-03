@@ -1,10 +1,11 @@
 /*
-* $Id: h_print.prg,v 1.133 2014-06-01 19:26:31 fyurisich Exp $
+* $Id: h_print.prg,v 1.134 2014-06-03 00:34:12 fyurisich Exp $
 */
 
 #include 'hbclass.ch'
 #include 'oohg.ch'
 #include 'miniprint.ch'
+#define NO_HBPRN_DECLARATION
 #include 'winprint.ch'
 #include "fileio.ch"
 
@@ -22,6 +23,8 @@ MEMVAR _HMG_PRINTER_TIMESTAMP
 MEMVAR _HMG_PRINTER_NAME
 MEMVAR _HMG_PRINTER_PAGECOUNT
 MEMVAR _HMG_PRINTER_HDC_BAK
+
+#define hbprn ::oHBPrn
 
 *-----------------------------------------------------------------------------*
 FUNCTION TPrint( cLibX )
@@ -196,13 +199,9 @@ CLASS TPRINTBASE
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
-METHOD SetPreviewSize( nTam ) CLASS TPRINTBASE
+METHOD SetPreviewSize( nSize ) CLASS TPRINTBASE
 *-----------------------------------------------------------------------------*
-   IF nTam = NIL .OR. nTam > 5
-      nTam := 3
-   ENDIF
-   ::SetPreviewSizeX( nTam )
-RETURN Self
+RETURN ::SetPreviewSizeX( nSize )
 
 *-----------------------------------------------------------------------------*
 METHOD SetProp( lMode ) CLASS TPRINTBASE
@@ -891,8 +890,20 @@ CLASS TMINIPRINT FROM TPRINTBASE
    METHOD GetDefPrinterX
    METHOD PrintRoundRectangleX
    METHOD PrintBarcodeX
+   METHOD SetPreviewSizeX
 
 ENDCLASS
+
+*-----------------------------------------------------------------------------*
+METHOD SetPreviewSizeX( nSize ) CLASS TMINIPRINT
+*-----------------------------------------------------------------------------*
+   IF _HMG_PRINTER_Preview
+      IF nSize == NIL .OR. nSize < -9.99 .OR. nSize > 99.99
+         nSize := 0
+      ENDIF
+      SET PREVIEW ZOOM nSize
+   ENDIF
+RETURN Self
 
 *-----------------------------------------------------------------------------*
 METHOD PrintBarcodeX( y, x, y1, x1, aColor ) CLASS TMINIPRINT
@@ -903,15 +914,16 @@ RETURN Self
 *-----------------------------------------------------------------------------*
 METHOD InitX() CLASS TMINIPRINT
 *-----------------------------------------------------------------------------*
-   PUBLIC _HMG_PRINTER_APRINTERPROPERTIES
-   PUBLIC _HMG_PRINTER_HDC
-   PUBLIC _HMG_PRINTER_COPIES
-   PUBLIC _HMG_PRINTER_COLLATE
-   PUBLIC _HMG_PRINTER_PREVIEW
-   PUBLIC _HMG_PRINTER_TIMESTAMP
-   PUBLIC _HMG_PRINTER_NAME
-   PUBLIC _HMG_PRINTER_PAGECOUNT
-   PUBLIC _HMG_PRINTER_HDC_BAK
+   PUBLIC _HMG_PRINTER_aPrinterProperties
+   PUBLIC _HMG_PRINTER_hDC
+   PUBLIC _HMG_PRINTER_Copies
+   PUBLIC _HMG_PRINTER_Collate
+   PUBLIC _HMG_PRINTER_Preview
+   PUBLIC _HMG_PRINTER_TimeStamp
+   PUBLIC _HMG_PRINTER_Name
+   PUBLIC _HMG_PRINTER_PageCount
+   PUBLIC _HMG_PRINTER_hDC_Bak
+   PUBLIC _HMG_PRINTER_PreviewSize
 
    ::aPrinters := aPrinters()
    ::cPrintLibrary := "MINIPRINT"
@@ -944,15 +956,16 @@ RETURN Self
 *-----------------------------------------------------------------------------*
 METHOD ReleaseX() CLASS TMINIPRINT
 *-----------------------------------------------------------------------------*
-   RELEASE _HMG_PRINTER_APRINTERPROPERTIES
-   RELEASE _HMG_PRINTER_HDC
-   RELEASE _HMG_PRINTER_COPIES
-   RELEASE _HMG_PRINTER_COLLATE
-   RELEASE _HMG_PRINTER_PREVIEW
-   RELEASE _HMG_PRINTER_TIMESTAMP
-   RELEASE _HMG_PRINTER_NAME
-   RELEASE _HMG_PRINTER_PAGECOUNT
-   RELEASE _HMG_PRINTER_HDC_BAK
+   RELEASE _HMG_PRINTER_aPrinterProperties
+   RELEASE _HMG_PRINTER_hDC
+   RELEASE _HMG_PRINTER_Copies
+   RELEASE _HMG_PRINTER_Collate
+   RELEASE _HMG_PRINTER_Preview
+   RELEASE _HMG_PRINTER_TimeStamp
+   RELEASE _HMG_PRINTER_Name
+   RELEASE _HMG_PRINTER_PageCount
+   RELEASE _HMG_PRINTER_hDC_Bak
+   RELEASE _HMG_PRINTER_PreviewSize
 RETURN NIL
 
 *-----------------------------------------------------------------------------*
@@ -1266,6 +1279,8 @@ RETURN Self
 
 CLASS THBPRINTER FROM TPRINTBASE
 
+   VAR oHBPrn INIT Nil
+
    METHOD InitX
    METHOD BeginDocX
    METHOD EndDocX
@@ -1288,20 +1303,18 @@ ENDCLASS
 *-----------------------------------------------------------------------------*
 METHOD InitX() CLASS THBPRINTER
 *-----------------------------------------------------------------------------*
-   PUBLIC hbprn
-
    INIT PRINTSYS
    GET PRINTERS TO ::aPrinters
    GET PORTS TO ::aPorts
    SET UNITS MM
    SET CHANGES LOCAL         // sets printer options not permanent
+   SET PREVIEW SCALE 2
    ::cPrintLibrary := "HBPRINTER"
 RETURN Self
 
 *-----------------------------------------------------------------------------*
 METHOD BeginDocX() CLASS THBPRINTER
 *-----------------------------------------------------------------------------*
-   ::SetPreviewSize( 2 )
    START DOC NAME ::Cargo
    DEFINE FONT "F0" NAME "Courier New" SIZE 10
    DEFINE FONT "F1" NAME "Courier New" SIZE 10 BOLD
@@ -1331,8 +1344,6 @@ RETURN Self
 METHOD ReleaseX() CLASS THBPRINTER
 *-----------------------------------------------------------------------------*
    RELEASE PRINTSYS
-// Do not release: in case there are two open dialogs a RTE will occur
-// RELEASE hbprn
 RETURN Self
 
 *-----------------------------------------------------------------------------*
@@ -1562,9 +1573,12 @@ METHOD SetColorX() CLASS THBPRINTER
 RETURN Self
 
 *-----------------------------------------------------------------------------*
-METHOD SetPreviewSizeX( nTam ) CLASS THBPRINTER
+METHOD SetPreviewSizeX( nSize ) CLASS THBPRINTER
 *-----------------------------------------------------------------------------*
-   SET PREVIEW SCALE nTam
+   IF nSize == NIL .OR. nSize < 1 .OR. nSize > 5
+      nSize := 2
+   ENDIF
+   SET PREVIEW SCALE nSize
 RETURN Self
 
 *-----------------------------------------------------------------------------*
@@ -1576,9 +1590,9 @@ LOCAL nVDispl := 1
    CHANGE PEN "C0" WIDTH ntwPen * 10 COLOR atColor
    SELECT PEN "C0"
    IF ::cUnits = "MM"
-      hbprn:RoundRect( nLin, nCol, nLinF, nColF, 10, 10, "C0" )
+      @ nLin, nCol, nLinF, nColF ROUNDRECT ROUNDR 10 ROUNDC 10 PEN "C0"
    ELSE
-      hbprn:RoundRect( nLin * ::nmVer * nVDispl + ::nvFij, nCol * ::nmHor + ::nhFij * 2, nLinF * ::nmVer * nVDispl + ::nvFij, nColF * ::nmHor + ::nhFij * 2, 10, 10, "C0" )
+      @ nLin * ::nmVer * nVDispl + ::nvFij, nCol * ::nmHor + ::nhFij * 2, nLinF * ::nmVer * nVDispl + ::nvFij, nColF * ::nmHor + ::nhFij * 2 ROUNDRECT ROUNDR 10 ROUNDC 10 PEN "C0"
    ENDIF
 RETURN Self
 
@@ -1598,16 +1612,9 @@ CLASS TDOSPRINT FROM TPRINTBASE
    METHOD EndDocX
    METHOD BeginPageX
    METHOD EndPageX
-   METHOD ReleaseX             BLOCK { || NIL }
    METHOD PrintDataX
-   METHOD PrintImage           BLOCK { || NIL }
    METHOD PrintLineX
-   METHOD PrintRectangleX      BLOCK { || NIL }
    METHOD SelPrinterX
-   METHOD GetDefPrinterX       BLOCK { || NIL }
-   METHOD SetColorX            BLOCK { || NIL }
-   METHOD SetPreviewSizeX      BLOCK { || NIL }
-   METHOD PrintRoundRectangleX BLOCK { || NIL }
    METHOD CondenDosX
    METHOD NormalDosX
    METHOD SearchString
@@ -1939,20 +1946,11 @@ CLASS TEXCELPRINT FROM TPRINTBASE
    METHOD InitX
    METHOD BeginDocX
    METHOD EndDocX
-   METHOD BeginPageX
    METHOD EndPageX
    METHOD ReleaseX
    METHOD PrintDataX
    METHOD PrintImageX
-   METHOD PrintLineX           BLOCK { || NIL }
-   METHOD PrintRectangleX      BLOCK { || NIL }
    METHOD SelPrinterX
-   METHOD GetDefPrinterX       BLOCK { || NIL }
-   METHOD SetColorX            BLOCK { || NIL }
-   METHOD SetPreviewSizeX      BLOCK { || NIL }
-   METHOD PrintRoundRectangleX BLOCK { || NIL }
-   METHOD CondenDosX           BLOCK { || NIL }
-   METHOD NormalDosX           BLOCK { || NIL }
 
 ENDCLASS
 
@@ -2048,11 +2046,6 @@ METHOD ReleaseX() CLASS TEXCELPRINT
 *-----------------------------------------------------------------------------*
    ::oHoja := NIL
    ::oExcel := NIL
-RETURN Self
-
-*-----------------------------------------------------------------------------*
-METHOD BeginPageX() CLASS TEXCELPRINT
-*-----------------------------------------------------------------------------*
 RETURN Self
 
 *-----------------------------------------------------------------------------*
@@ -2169,20 +2162,9 @@ CLASS TSPREADSHEETPRINT FROM TPRINTBASE
    METHOD InitX
    METHOD BeginDocX
    METHOD EndDocX
-   METHOD BeginPageX           BLOCK { || NIL }
    METHOD EndPageX
    METHOD ReleaseX
    METHOD PrintDataX
-   METHOD PrintImageX          BLOCK { || NIL }
-   METHOD PrintLineX           BLOCK { || NIL }
-   METHOD PrintRectangleX      BLOCK { || NIL }
-   METHOD SelPrinterX          BLOCK { || NIL }
-   METHOD GetDefPrinterX       BLOCK { || NIL }
-   METHOD SetColorX            BLOCK { || NIL }
-   METHOD SetPreviewSizeX      BLOCK { || NIL }
-   METHOD PrintRoundRectangleX BLOCK { || NIL }
-   METHOD CondenDosX           BLOCK { || NIL }
-   METHOD NormalDosX           BLOCK { || NIL }
    METHOD AddPage
 
 ENDCLASS
@@ -2364,20 +2346,10 @@ CLASS TRTFPRINT FROM TPRINTBASE
    METHOD InitX
    METHOD BeginDocX
    METHOD EndDocX
-   METHOD BeginPageX
    METHOD EndPageX
-   METHOD ReleaseX             BLOCK { || NIL }
    METHOD PrintDataX
-   METHOD PrintImage           BLOCK { || NIL }
    METHOD PrintLineX
-   METHOD PrintRectangleX      BLOCK { || NIL }
    METHOD SelPrinterX
-   METHOD GetDefPrinterX       BLOCK { || NIL }
-   METHOD SetColorX            BLOCK { || NIL }
-   METHOD SetPreviewSizeX      BLOCK { || NIL }
-   METHOD PrintRoundRectangleX BLOCK { || NIL }
-   METHOD CondenDosX
-   METHOD NormalDosX
 
 ENDCLASS
 
@@ -2444,11 +2416,6 @@ LOCAL i, cFilePath
                   _OOHG_Messages( 12, 36 ) + Chr( 13 ) + cFilePath )
       ENDIF
    ENDIF
-RETURN Self
-
-*-----------------------------------------------------------------------------*
-METHOD BeginPageX() CLASS TRTFPRINT
-*-----------------------------------------------------------------------------*
 RETURN Self
 
 *-----------------------------------------------------------------------------*
@@ -2715,16 +2682,6 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX ) CLASS
    ::lPrintRtf := lLandscape
 RETURN Self
 
-*-----------------------------------------------------------------------------*
-METHOD CondenDosX() CLASS TRTFPRINT
-*-----------------------------------------------------------------------------*
-RETURN Self
-
-*-----------------------------------------------------------------------------*
-METHOD NormalDosX() CLASS TRTFPRINT
-*-----------------------------------------------------------------------------*
-RETURN Self
-
 
 
 
@@ -2734,22 +2691,11 @@ CLASS TCSVPRINT FROM TPRINTBASE
    DATA aPrintCsv INIT {}
 
    METHOD InitX
-   METHOD BeginDocX
    METHOD EndDocX
-   METHOD BeginPageX
    METHOD EndPageX
-   METHOD ReleaseX             BLOCK { || NIL }
    METHOD PrintDataX
-   METHOD PrintImage           BLOCK { || NIL }
    METHOD PrintLineX
-   METHOD PrintRectangleX      BLOCK { || NIL }
    METHOD SelPrinterX
-   METHOD GetDefPrinterX       BLOCK { || NIL }
-   METHOD SetColorX            BLOCK { || NIL }
-   METHOD SetPreviewSizeX      BLOCK { || NIL }
-   METHOD PrintRoundRectangleX BLOCK { || NIL }
-   METHOD CondenDosX
-   METHOD NormalDosX
 
 ENDCLASS
 
@@ -2758,11 +2704,6 @@ METHOD InitX() CLASS TCSVPRINT
 *-----------------------------------------------------------------------------*
    ::ImPreview := .F.
    ::cPrintLibrary := "CSVPRINT"
-RETURN Self
-
-*-----------------------------------------------------------------------------*
-METHOD BeginDocX() CLASS TCSVPRINT
-*-----------------------------------------------------------------------------*
 RETURN Self
 
 *-----------------------------------------------------------------------------*
@@ -2787,11 +2728,6 @@ LOCAL i
                   _OOHG_Messages( 12, 36 ) + Chr( 13 ) + cFilePath )
       ENDIF
    ENDIF
-RETURN Self
-
-*-----------------------------------------------------------------------------*
-METHOD BeginPageX() CLASS TCSVPRINT
-*-----------------------------------------------------------------------------*
 RETURN Self
 
 *-----------------------------------------------------------------------------*
@@ -2861,16 +2797,6 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX ) CLASS
    ::aPrintCsv := {}
 RETURN Self
 
-*-----------------------------------------------------------------------------*
-METHOD CondenDosX() CLASS TCSVPRINT
-*-----------------------------------------------------------------------------*
-RETURN Self
-
-*-----------------------------------------------------------------------------*
-METHOD NormalDosX() CLASS TCSVPRINT
-*-----------------------------------------------------------------------------*
-RETURN Self
-
 
 
 
@@ -2889,17 +2815,12 @@ CLASS TPDFPRINT FROM TPRINTBASE
    METHOD BeginDocX
    METHOD EndDocX
    METHOD BeginPageX
-   METHOD EndPageX
-   METHOD ReleaseX
    METHOD PrintDataX
    METHOD PrintBarcodeX
    METHOD PrintImageX
    METHOD PrintLineX
    METHOD PrintRectangleX
    METHOD SelPrinterX
-   METHOD GetDefPrinterX
-   METHOD SetColorX
-   METHOD SetPreviewSizeX
    METHOD PrintRoundRectangleX
 
 ENDCLASS
@@ -2984,16 +2905,6 @@ RETURN Self
 METHOD BeginPageX() CLASS TPDFPRINT
 *-----------------------------------------------------------------------------*
    ::oPdf:NewPage( ::cPageSize, ::cPageOrient, , ::cFontName, ::nFontType, ::nFontSize )
-RETURN Self
-
-*-----------------------------------------------------------------------------*
-METHOD EndPageX() CLASS TPDFPRINT
-*-----------------------------------------------------------------------------*
-RETURN Self
-
-*-----------------------------------------------------------------------------*
-METHOD ReleaseX() CLASS TPDFPRINT
-*-----------------------------------------------------------------------------*
 RETURN Self
 
 *-----------------------------------------------------------------------------*
@@ -3160,22 +3071,6 @@ LOCAL nPos
    ENDIF
 RETURN Self
 
-*-----------------------------------------------------------------------------*
-METHOD GetDefPrinterX() CLASS TPDFPRINT
-*-----------------------------------------------------------------------------*
-LOCAL cDefPrinter := NIL
-RETURN cDefPrinter
-
-*-----------------------------------------------------------------------------*
-METHOD SetColorX() CLASS TPDFPRINT
-*-----------------------------------------------------------------------------*
-RETURN Self
-
-*-----------------------------------------------------------------------------*
-METHOD SetPreviewSizeX( /* ntam */ ) CLASS TPDFPRINT
-*-----------------------------------------------------------------------------*
-RETURN Self
-
 
 
 
@@ -3195,20 +3090,9 @@ CLASS TCALCPRINT FROM TPRINTBASE
    METHOD InitX
    METHOD BeginDocX
    METHOD EndDocX
-   METHOD BeginPageX
    METHOD EndPageX
-   METHOD ReleaseX
    METHOD PrintDataX
-   METHOD PrintImage           BLOCK { || NIL }
-   METHOD PrintLineX           BLOCK { || NIL }
-   METHOD PrintRectangleX      BLOCK { || NIL }
    METHOD SelPrinterX
-   METHOD GetDefPrinterX       BLOCK { || NIL }
-   METHOD SetColorX            BLOCK { || NIL }
-   METHOD SetPreviewSizeX      BLOCK { || NIL }
-   METHOD PrintRoundRectangleX BLOCK { || NIL }
-   METHOD CondenDosX           BLOCK { || NIL }
-   METHOD NormalDosX           BLOCK { || NIL }
 
 ENDCLASS
 
@@ -3301,16 +3185,6 @@ LOCAL cName
                   _OOHG_Messages( 12, 36 ) + Chr( 13 ) + cName )
       ENDIF
    ENDIF
-RETURN Self
-
-*-----------------------------------------------------------------------------*
-METHOD ReleaseX() CLASS TCALCPRINT
-*-----------------------------------------------------------------------------*
-RETURN Self
-
-*-----------------------------------------------------------------------------*
-METHOD BeginPageX() CLASS TCALCPRINT
-*-----------------------------------------------------------------------------*
 RETURN Self
 
 *-----------------------------------------------------------------------------*

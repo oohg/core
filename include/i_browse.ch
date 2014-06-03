@@ -1,5 +1,5 @@
 /*
- * $Id: i_browse.ch,v 1.47 2014-04-01 22:58:53 fyurisich Exp $
+ * $Id: i_browse.ch,v 1.48 2014-06-03 00:34:12 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -96,11 +96,13 @@
 #define BROWSE_JTFY_CENTER         2
 #define BROWSE_JTFY_JUSTIFYMASK    3
 
-#translate MemVar . <AreaName> . <FieldName> =>  MemVar<AreaName><FieldName>
+#translate MemVar . <AreaName> . <FieldName> ;
+   => ;
+      MemVar<AreaName><FieldName>
+
 ///////////////////////////////////////////////////////////////////////////////
 // STANDARD BROWSE
 ///////////////////////////////////////////////////////////////////////////////
-
 #command @ <row>,<col> BROWSE <name> ;
       [ <dummy01: OF, PARENT> <parent> ] ;
       [ OBJ <oObj> ] ;
@@ -114,10 +116,10 @@
       [ VALUE <value> ] ;
       [ FONT <fontname> ] ;
       [ SIZE <fontsize> ] ;
-      [ <bold : BOLD> ] ;
-      [ <italic : ITALIC> ] ;
-      [ <underline : UNDERLINE> ] ;
-      [ <strikeout : STRIKEOUT> ] ;
+      [ <bold: BOLD> ] ;
+      [ <italic: ITALIC> ] ;
+      [ <underline: UNDERLINE> ] ;
+      [ <strikeout: STRIKEOUT> ] ;
       [ TOOLTIP <tooltip> ] ;
       [ BACKCOLOR <backcolor> ] ;
       [ DYNAMICBACKCOLOR <dynamicbackcolor> ] ;
@@ -128,9 +130,9 @@
       [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
       [ <dummy05: ONDBLCLICK, ON DBLCLICK> <dblclick> ] ;
       [ <dummy06: ONCLICK, ON CLICK> <click> ] ;
-      [ <edit : EDIT> ] ;
-      [ <inplace : INPLACE> ] ;
-      [ <append : APPEND> ] ;
+      [ <edit: EDIT> ] ;
+      [ <inplace: INPLACE> ] ;
+      [ <append: APPEND> ] ;
       [ <dummy07: ONHEADCLICK, ON HEADCLICK> <aHeadClick> ] ;
       [ <dummy08: WHEN, COLUMNWHEN> <aWhenFields> ] ;
       [ VALID <aValidFields> ] ;
@@ -192,7 +194,7 @@
       [ <oObj> := ] _OOHG_SelectSubClass( TOBrowse(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, <widths>, ;
             <Fields>, <value>, <fontname>, <fontsize>, <tooltip>, <{change}>, ;
-            <{dblclick}>, <aHeadClick>, <{gotfocus}>, <{lostfocus}>, <(workarea)> , ;
+            <{dblclick}>, <aHeadClick>, <{gotfocus}>, <{lostfocus}>, <(workarea)>, ;
             <.delete.>, <.style.>, <aImage>, <aJust>, <helpid>, <.bold.>, ;
             <.italic.>, <.underline.>, <.strikeout.>, <.break.>, <backcolor>, ;
             <fontcolor>, <.lock.>, <.inplace.>, <.novscroll.>, <.append.>, ;
@@ -202,7 +204,7 @@
             <columninfo>, ! <.noshowheaders.>, <{enter}>, <.disabled.>, <.notabstop.>, ;
             <.invisible.>, <.descending.>, <{bWhenDel}>, <DelMsg>, <{onDelete}>, ;
             <aHeaderImages>, <aImgAlign>, <.fullmove.>, <aSelectedColors>, <aEditKeys>, ;
-            if( <.forcerefresh.>, 0, if( <.norefresh.>, 1, nil ) ), ;
+            iif( <.forcerefresh.>, 0, if( <.norefresh.>, 1, nil ) ), ;
             iif( upper( #<bffr> ) == "DOUBLEBUFFER", .T., iif( upper( #<bffr> ) == "SINGLEBUFFER", .F., .T. ) ), ;
             iif( upper( #<focus> ) == "NOFOCUSRECT", .F., iif( upper( #<focus> ) == "FOCUSRECT", .T., NIL ) ), ;
             <.plm.>, iif( upper( #<sync> ) == "UNSYNCHRONIZED", .F., iif( upper( #<sync> ) == "SYNCHRONIZED", .T., NIL ) ), ;
@@ -212,11 +214,26 @@
             iif( upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., iif( upper( #<edtctrls> ) == "DYNAMICCONTROLS", .F., NIL ) ), ;
             <{bheadrclick}> )
 
-#command SET BROWSESYNC ON  => SetBrowseSync( .T. )
-#command SET BROWSESYNC OFF => SetBrowseSync( .F. )
+#command SET BROWSESYNC ON ;
+   => ;
+      SetBrowseSync( .T. )
 
-#command SET BROWSEFIXEDBLOCKS ON  => SetBrowseFixedBlocks( .T. )
-#command SET BROWSEFIXEDBLOCKS OFF => SetBrowseFixedBlocks( .F. )
+#command SET BROWSESYNC OFF ;
+   => ;
+      SetBrowseSync( .F. )
 
-#command SET BROWSEFIXEDCONTROLS ON  => SetBrowseFixedControls( .T. )
-#command SET BROWSEFIXEDCONTROLS OFF => SetBrowseFixedControls( .F. )
+#command SET BROWSEFIXEDBLOCKS ON ;
+   => ;
+      SetBrowseFixedBlocks( .T. )
+
+#command SET BROWSEFIXEDBLOCKS OFF ;
+   => ;
+      SetBrowseFixedBlocks( .F. )
+
+#command SET BROWSEFIXEDCONTROLS ON ;
+   => ;
+      SetBrowseFixedControls( .T. )
+
+#command SET BROWSEFIXEDCONTROLS OFF ;
+   => ;
+      SetBrowseFixedControls( .F. )

@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.ch,v 1.9 2014-06-01 19:26:31 fyurisich Exp $
+ * $Id: miniprint.ch,v 1.10 2014-06-03 00:34:12 fyurisich Exp $
  */
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
@@ -326,6 +326,10 @@
       [ <lBrushColor : BRUESHCOLOR> <aBrColor> ] ;
    => ;
       _HMG_PRINTER_H_Pie( _HMG_PRINTER_hDC, <Row>, <Col>, <ToRow>, <ToCol>, <x1>, <y1>, <x2>, <y2>, <aColor>\[1\], <aColor>\[2\], <aColor>\[3\], <.lcolor.>, <.lBrushStyle.>, <nBrStyle>, <.lBrushColor.>, <aBrColor> )
+
+#xcommand SET PREVIEW ZOOM <nZoom> ;
+   => ;
+      _HMG_PRINTER_PreviewZoom( <nZoom> )
 
 ///////////////////////////////////////////////////////////////////////////////
 // PRINTER CONFIGURATION CONSTANTS
