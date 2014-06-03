@@ -1,5 +1,5 @@
 /*
- * $Id: h_image.prg,v 1.31 2014-03-30 19:39:42 fyurisich Exp $
+ * $Id: h_image.prg,v 1.32 2014-06-03 20:14:33 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -119,6 +119,8 @@ CLASS TImage FROM TControl
    METHOD SizePos
    METHOD RePaint
    METHOD Release
+   METHOD OriginalSize
+   METHOD CurrentSize
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
@@ -203,6 +205,10 @@ LOCAL nAttrib, aPictSize
 Return ::cPicture
 
 *-----------------------------------------------------------------------------*
+//METHOD FitToWidth() CLASS TImage
+*-----------------------------------------------------------------------------*
+
+*-----------------------------------------------------------------------------*
 METHOD HBitMap( hBitMap ) CLASS TImage
 *-----------------------------------------------------------------------------*
    If ValType( hBitMap ) $ "NP"
@@ -279,6 +285,29 @@ METHOD Release() CLASS TImage
       DeleteObject( ::hImage )
    ENDIF
 RETURN ::Super:Release()
+
+*-----------------------------------------------------------------------------*
+METHOD OriginalSize() CLASS TImage
+*-----------------------------------------------------------------------------*
+Local aRet
+   IF ValidHandler( ::hImage )
+      aRet := { _BitMapWidth( ::hImage ), _BitMapHeight( ::hImage ) }
+   ELSE
+      aRet := { 0, 0 }
+   ENDIF
+RETURN aRet
+
+*-----------------------------------------------------------------------------*
+METHOD CurrentSize() CLASS TImage
+*-----------------------------------------------------------------------------*
+Local aRet
+   IF ValidHandler( ::AuxHandle )
+      aRet := { _BitMapWidth( ::AuxHandle ), _BitMapHeight( ::AuxHandle ) }
+   ELSE
+      aRet := { 0, 0 }
+   ENDIF
+RETURN aRet
+
 
 #pragma BEGINDUMP
 

@@ -1,11 +1,18 @@
 /*
- * $Id: ChangeLog,v 1.1279 2014-06-03 00:34:11 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1280 2014-06-03 20:14:33 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-06-03 17:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_image.prg
+     + Method OriginalSize, returns the original image's size as
+       an array { width, height }.
+     + Method CurrenteSize, returns the size of the currently
+       displayed image as an array { width, height }.
 
 2014-06-02 21:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_activex.ch
