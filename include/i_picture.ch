@@ -1,5 +1,5 @@
 /*
- * $Id: i_picture.ch,v 1.3 2014-03-22 13:45:54 fyurisich Exp $
+ * $Id: i_picture.ch,v 1.4 2014-06-06 00:55:42 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -111,7 +111,7 @@
 	      [ <clientedge: CLIENTEDGE> ] ;
 	      [ TOOLTIP <tooltip> ] ;
          [ <imagesize: IMAGESIZE> ] ;
-         [ <notrans: NOTRANSPARENT> ] ;
+         [ <notrans: NOLOADTRANSPARENT> ] ;
          [ <no3dcolors: NO3DCOLORS> ] ;
          [ <nodib: NODIBSECTION> ] ;
  =>;

@@ -1,5 +1,5 @@
 /*
- * $Id: i_hmg_compat.ch,v 1.31 2014-05-17 21:30:00 fyurisich Exp $
+ * $Id: i_hmg_compat.ch,v 1.32 2014-06-06 00:55:42 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -281,7 +281,7 @@
       [ FONTCOLOR <fontcolor> ] ;                                
       [ <nohotlight : NOHOTLIGHT> ] ;                            
       [ <flat: FLAT> ] ;
-      [ <notrans: NOTRANSPARENT > ] ;
+      [ <notrans: NOLOADTRANSPARENT > ] ;
       [ <noxpstyle: NOXPSTYLE > ] ;                              
       [ ON GOTFOCUS <gotfocus> ] ;
       [ ON LOSTFOCUS <lostfocus> ] ;

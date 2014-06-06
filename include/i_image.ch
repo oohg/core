@@ -1,5 +1,5 @@
 /*
- * $Id: i_image.ch,v 1.11 2013-09-28 16:26:18 fyurisich Exp $
+ * $Id: i_image.ch,v 1.12 2014-06-06 00:55:42 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -112,46 +112,14 @@
          [ TOOLTIP <tooltip> ] ;
          [ <border: BORDER> ] ;
          [ <clientedge: CLIENTEDGE> ] ;
-         [ <notrans: NOTRANSPARENT> ] ;
+         [ <notrans: NOLOADTRANSPARENT> ] ;
          [ <no3dcolors: NO3DCOLORS> ] ;
          [ <nodib: NODIBSECTION> ] ;
+         [ <style: TRANSPARENT> ] ;
 =>;
          [ <obj> := ] _OOHG_SelectSubClass( TImage(), [ <subclass>() ] ): ;
                         Define( <(name)>, <(parent)>, <col>, <row>, <filename>, <w>, <h>, ;
                         <{action}>, <helpid>, <.invisible.>, <.stretch.>, ;
                         <.whitebackground.>, <.rtl.>, <backcolor>, <buffer>, <hbitmap>, ;
                         ! <.noresize.>, <.imagesize.>, <tooltip>, <.border.>, <.clientedge.>, ;
-                        <.notrans.>, <.no3dcolors.>, <.nodib.>)
-
-/*
-#command @ <row>,<col> IMAGE <name> ;
-        [ OBJ <obj> ] ;
-   [ <dummy1: OF, PARENT> <parent> ] ;
-   [ <dummy2: ACTION,ON CLICK,ONCLICK> <action> ];
-   [ WIDTH <w> ] ;
-   [ HEIGHT <h> ] ;
-   [ <stretch: STRETCH> ] ;
-   [ HELPID <helpid> ]       ;
-   [ <invisible: INVISIBLE> ] ;
-        [ <rtl: RTL> ] ;
-        [ SUBCLASS <subclass> ] ;
-        [ BACKCOLOR <backcolor> ] ;
-        [ PICTURE <filename> ] ;
-        [ BUFFER <buffer> ] ;
-        [ HBITMAP <hbitmap> ] ;
-        [ <imagesize: IMAGESIZE> ] ;
-        [ <whitebackground: WHITEBACKGROUND> ] ;
-        [ <noresize: NORESIZE> ] ;
-        ;
-   [ <border: BORDER> ] ;
-   [ <clientedge: CLIENTEDGE> ] ;
-   [ TOOLTIP <tooltip> ] ;
- =>;
-        [ <obj> := ] _OOHG_SelectSubClass( TPicture(), [ <subclass>() ] ): ;
-        Define( <(name)>, <(parent)>, <col>, <row>, <filename>, <w>, <h>, ;
-        <buffer>, <hbitmap>, <.stretch.>, ! <.noresize.>, <.imagesize.>, ;
-        <.border.>, <.clientedge.>, ;
-        IF( <.whitebackground.>, 0xFFFFFF, <backcolor> ), ;
-        <{action}>, <tooltip>, ;
-        <helpid>, <.rtl.>, <.invisible.> )
-*/
+                        <.notrans.>, <.no3dcolors.>, <.nodib.>, <.style.> )

@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.110 2014-05-13 21:33:32 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.111 2014-06-06 00:55:41 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -123,6 +123,7 @@ Memvariables
 #xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
 #xtranslate _OOHG_ActiveControlBackground             => _OOHG_ActiveControlInfo \[  27 \]
 
+#xtranslate _OOHG_ActiveControlNoLoadTransparent      => _OOHG_ActiveControlInfo \[  93 \]
 #xtranslate _OOHG_ActiveControlSearchLapse            => _OOHG_ActiveControlInfo \[  94 \]
 #xtranslate _OOHG_ActiveControlInsertType             => _OOHG_ActiveControlInfo \[  95 \]
 #xtranslate _OOHG_ActiveControlRClickOnCheckbox       => _OOHG_ActiveControlInfo \[  96 \]
@@ -1489,19 +1490,20 @@ IMAGE
 #xcommand DEFINE IMAGE <name> ;
         => ;
         _OOHG_ClearActiveControlInfo( <(name)> )  ;;
-        _OOHG_ActiveControlPicture         := Nil ;;
-        _OOHG_ActiveControlAction          := Nil ;;
-        _OOHG_ActiveControlStretch         := .F. ;;
-        _OOHG_ActiveControlNoResize        := .F. ;;
-        _OOHG_ActiveControlBorder          := .F. ;;
-        _OOHG_ActiveControlClientEdge      := .F. ;;
-        _OOHG_ActiveControlImagesize       := .F. ;;
-        _OOHG_ActiveControlBuffer          := Nil ;;
-        _OOHG_ActiveControlHBitmap         := Nil ;;
-        _OOHG_ActiveControlWhiteBackground := Nil ;;
-        _OOHG_ActiveControlNoDIBSection    := .F. ;;
-        _OOHG_ActiveControlNo3DColors      := .F. ;;
-        _OOHG_ActiveControlTransparent     := .T.
+        _OOHG_ActiveControlPicture           := Nil ;;
+        _OOHG_ActiveControlAction            := Nil ;;
+        _OOHG_ActiveControlStretch           := .F. ;;
+        _OOHG_ActiveControlNoResize          := .F. ;;
+        _OOHG_ActiveControlBorder            := .F. ;;
+        _OOHG_ActiveControlClientEdge        := .F. ;;
+        _OOHG_ActiveControlImagesize         := .F. ;;
+        _OOHG_ActiveControlBuffer            := Nil ;;
+        _OOHG_ActiveControlHBitmap           := Nil ;;
+        _OOHG_ActiveControlWhiteBackground   := Nil ;;
+        _OOHG_ActiveControlNoDIBSection      := .F. ;;
+        _OOHG_ActiveControlNo3DColors        := .F. ;;
+        _OOHG_ActiveControlNoLoadTransparent := .F. ;;
+        _OOHG_ActiveControlTransparent       := .F.
 
 #xcommand STRETCH <stretch> ;
         => ;
@@ -1523,9 +1525,9 @@ IMAGE
         => ;
         _OOHG_ActiveControlNoDIBSection := <nodib>
 
-#xcommand NOTRANSPARENT <notransparent> ;
+#xcommand NOLOADTRANSPARENT <noloadtransparent> ;
         => ;
-        _OOHG_ActiveControlTransparent := ! <notransparent>
+        _OOHG_ActiveControlNoLoadTransparent := <noloadtransparent>
 
 #xcommand END IMAGE ;
         => ;
@@ -1551,9 +1553,10 @@ IMAGE
                 _OOHG_ActiveControlTooltip, ;
                 _OOHG_ActiveControlBorder, ;
                 _OOHG_ActiveControlClientEdge, ;
-                ! _OOHG_ActiveControlTransparent, ;
+                _OOHG_ActiveControlNoLoadTransparent, ;
                 _OOHG_ActiveControlNo3DColors, ;
-                _OOHG_ActiveControlNoDIBSection )
+                _OOHG_ActiveControlNoDIBSection, ;
+                _OOHG_ActiveControlTransparent )
 
 /*----------------------------------------------------------------------------
 CHECK BOX/BUTTON

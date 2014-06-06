@@ -1,11 +1,58 @@
 /*
- * $Id: ChangeLog,v 1.1280 2014-06-03 20:14:33 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1281 2014-06-06 00:55:41 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-06-05 21:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_altsyntax.ch
+     + Support for TRANSPARENT in DEFINE IMAGE.
+     * NOTRANPARENT renamed as NOLOADTRANSPARENT.
+   * include/i_button.ch
+     * NOTRANPARENT renamed as NOLOADTRANSPARENT.
+   * include/i_hmg_compat.ch
+     * NOTRANPARENT renamed as NOLOADTRANSPARENT.
+   * include/i_image.ch
+     * NOTRANPARENT renamed as NOLOADTRANSPARENT.
+     + TRANSPARENT.
+     - Commented code.
+   * include/i_picture.ch
+     * NOTRANPARENT renamed as NOLOADTRANSPARENT.
+   * include/oohg.h
+     + Define for s_aExcludeArea.
+   * source/c_controlmisc.c
+     + aExcludeArea to s_SymbolNames.
+   * source/h_image.prg
+     + Call to ::Parent:Redraw() in method RePaint to force
+       the repainting of all siblings (the ones without
+       WS_EX_TRANSPARENT are painted first, the ones with
+       WS_EX_TRANSPARENT are painted last).
+     ! Control is not repainted properly after changing image,
+       when control is placed upon another Image control.
+     + DATA aExcludeArea.
+     + New parameter to method Define.
+     + Support for WS_EX_TRANSPARENT in method Define.
+     - Comments.
+     + C-level function PtInExcludeArea().
+     * Method Events, message WM_NCHITTEST. If the mouse was
+       clicked inside the exclude area defined by aExcludeArea,
+       return HTTRANSPARENT, thus disabling ON CLICK event and
+       tooltip popup.
+     ; aExcludeArea must be an array. Each item must be an
+       array of 4 numeric items {left, top, right, bottom}.
+       Each item defines a rectangular area inside the Image
+       control that should be considered tranparent to mouse
+       clicks.
+     ; This changes allow that an Image control placed under
+       another Image control can have an ON CLICK event and/or a
+       tooltip associated to non-excluded areas.
+     ; To be painted correctly, all Image controls placed upon
+       another Image control must have TRANSPARENT clause, while
+       the backmost must not have that clause. And alternative
+       is to define first the backmost control.
 
 2014-06-03 17:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_image.prg

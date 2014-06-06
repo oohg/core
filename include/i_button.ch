@@ -1,5 +1,5 @@
 /*
- * $Id: i_button.ch,v 1.19 2013-09-28 16:26:17 fyurisich Exp $
+ * $Id: i_button.ch,v 1.20 2014-06-06 00:55:42 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -119,7 +119,7 @@
             [ <dummy3: PICTURE, ICON> <bitmap> ] ;
             [ BUFFER <buffer> ] ;
             [ HBITMAP <hbitmap> ] ;
-            [ <notrans: NOTRANSPARENT> ] ;
+            [ <notrans: NOLOADTRANSPARENT> ] ;
             [ <scale: FORCESCALE> ] ;
             [ <cancel: CANCEL> ] ;
             [ <alignment:LEFT,RIGHT,TOP,BOTTOM,CENTER> ] ;
@@ -163,7 +163,7 @@
             [ <dummy3: PICTURE, ICON> <bitmap> ] ;
             [ BUFFER <buffer> ] ;
             [ HBITMAP <hbitmap> ] ;
-            [ <notrans: NOTRANSPARENT> ] ;
+            [ <notrans: NOLOADTRANSPARENT> ] ;
             [ <scale: FORCESCALE> ] ;
             [ FIELD <field> ] ;
             [ <no3dcolors: NO3DCOLORS> ] ;

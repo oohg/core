@@ -1,5 +1,5 @@
 /*
- * $Id: h_image.prg,v 1.32 2014-06-03 20:14:33 fyurisich Exp $
+ * $Id: h_image.prg,v 1.33 2014-06-06 00:55:42 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -108,6 +108,7 @@ CLASS TImage FROM TControl
    DATA lNoDIBSection   INIT .F.
    DATA lNo3DColors     INIT .F.
    DATA lNoTransparent  INIT .F.
+   DATA aExcludeArea    INIT {}
 
    METHOD Define
    METHOD Picture       SETGET
@@ -129,7 +130,7 @@ ENDCLASS
 METHOD Define( ControlName, ParentForm, x, y, FileName, w, h, ProcedureName, ;
                HelpId, invisible, stretch, lWhiteBackground, lRtl, backcolor, ;
                cBuffer, hBitMap, autofit, imagesize, ToolTip, Border, ClientEdge, ;
-               lNoTransparent, lNo3DColors, lNoDIB ) CLASS TImage
+               lNoTransparent, lNo3DColors, lNoDIB, lStyleTransp ) CLASS TImage
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle, nStyleEx
 
@@ -153,6 +154,9 @@ Local ControlHandle, nStyle, nStyleEx
              if( ValType( Border ) == "L" .AND. Border, WS_BORDER, 0 )
 
    nStyleEx := if( ValType( ClientEdge ) == "L" .AND. ClientEdge, WS_EX_CLIENTEDGE, 0 )
+   IF HB_IsLogical( lStyleTransp ) .AND. lStyleTransp
+      nStyleEx += WS_EX_TRANSPARENT
+   ENDIF
 
    ControlHandle := InitImage( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, ::lRtl, nStyleEx )
 
@@ -203,10 +207,6 @@ LOCAL nAttrib, aPictSize
       ::RePaint()
    ENDIF
 Return ::cPicture
-
-*-----------------------------------------------------------------------------*
-//METHOD FitToWidth() CLASS TImage
-*-----------------------------------------------------------------------------*
 
 *-----------------------------------------------------------------------------*
 METHOD HBitMap( hBitMap ) CLASS TImage
@@ -276,6 +276,7 @@ METHOD RePaint() CLASS TImage
    ELSE
       SendMessage( ::hWnd, STM_SETIMAGE, IMAGE_BITMAP, ::hImage )
    ENDIF
+   ::Parent:Redraw()
 RETURN Self
 
 *-----------------------------------------------------------------------------*
@@ -318,6 +319,7 @@ RETURN aRet
 #include "hbvm.h"
 #include "hbstack.h"
 #include <windows.h>
+#include <windowsx.h>
 #include <commctrl.h>
 #include "oohg.h"
 
@@ -346,6 +348,42 @@ HB_FUNC( INITIMAGE )   // ( hWnd, hMenu, nCol, nRow, nWidth, nHeight, nStyle, lR
    HWNDret( h );
 }
 
+BOOL PtInExcludeArea( PHB_ITEM pArea, int x, int y )
+{
+   PHB_ITEM pSector;
+   ULONG ulCount;
+
+   if( pArea )                                                             
+   {
+      for( ulCount = 1; ulCount <= hb_arrayLen( pArea ); ulCount++ )
+      {
+         if( HB_IS_ARRAY( hb_arrayGetItemPtr( pArea, ulCount ) ) )         
+         {
+            if( hb_arrayLen( hb_arrayGetItemPtr( pArea, ulCount ) ) >= 4 ) 
+            {
+               pSector = hb_arrayGetItemPtr( pArea, ulCount );
+
+               if( HB_IS_NUMERIC( hb_arrayGetItemPtr( pSector, 1 ) ) &&    
+                   HB_IS_NUMERIC( hb_arrayGetItemPtr( pSector, 2 ) ) &&    
+                   HB_IS_NUMERIC( hb_arrayGetItemPtr( pSector, 3 ) ) &&    
+                   HB_IS_NUMERIC( hb_arrayGetItemPtr( pSector, 4 ) ) )     
+               {
+                  if( ( hb_arrayGetNL( pSector, 1 ) <= x ) &&      
+                      ( x < hb_arrayGetNL( pSector, 3 ) ) &&
+                      ( hb_arrayGetNL( pSector, 2 ) <= y ) &&
+                      ( y < hb_arrayGetNL( pSector, 4 ) ) )
+                  {
+                     return TRUE;
+                  }
+               }
+            }
+         }
+      }
+   }
+
+   return FALSE;
+}
+
 HB_FUNC_STATIC( TIMAGE_EVENTS )
 {
    HWND hWnd      = ( HWND )   hb_parnl( 1 );
@@ -354,15 +392,26 @@ HB_FUNC_STATIC( TIMAGE_EVENTS )
    LPARAM lParam  = ( LPARAM ) hb_parnl( 4 );
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   POINT pt;
+   PHB_ITEM pArea;
+   BOOL bPtInExcludeArea;
 
    switch( message )
    {
       case WM_NCHITTEST:
-         if( oSelf->lAux[ 0 ] )
+         _OOHG_Send( pSelf, s_aExcludeArea );
+         hb_vmSend( 0 );
+         pArea = hb_param( -1, HB_IT_ARRAY );
+         pt.x = GET_X_LPARAM( lParam );
+         pt.y = GET_Y_LPARAM( lParam );
+         MapWindowPoints( HWND_DESKTOP, hWnd, &pt, 1 );
+         bPtInExcludeArea = PtInExcludeArea( pArea, pt.x, pt.y );
+
+         if( oSelf->lAux[ 0 ] && ! bPtInExcludeArea )
          {
             hb_retni( DefWindowProc( hWnd, message, wParam, lParam ) );
          }
-         else if( oSelf->lAux[ 1 ] )
+         else if( oSelf->lAux[ 1 ] && ! bPtInExcludeArea )
          {
             hb_retni( HTCLIENT );
          }
