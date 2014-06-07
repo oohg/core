@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.49 2014-05-25 01:25:53 fyurisich Exp $
+ * $Id: h_form.prg,v 1.50 2014-06-07 02:08:02 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -412,7 +412,7 @@ Local Formhandle
 
    ASSIGN clientarea VALUE clientarea TYPE "L" DEFAULT .F.
    If clientarea
-      ::SizePos( ,, ( ::Width * 2 ) - ::ClientWidth, ( ::Height * 2 ) - ::ClientHeight )
+      ::SizePos( , , ::Width + ::nWidth - ::ClientWidth, ::Height + ::nHeight - ::ClientHeight )
    EndIf
 
    ::ParentDefaults( FontName, FontSize )

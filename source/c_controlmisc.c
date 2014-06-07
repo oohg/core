@@ -1,5 +1,5 @@
 /*
- * $Id: c_controlmisc.c,v 1.70 2014-06-06 00:55:42 fyurisich Exp $
+ * $Id: c_controlmisc.c,v 1.71 2014-06-07 02:08:02 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -288,14 +288,9 @@ void _OOHG_DoEvent( PHB_ITEM pSelf, int iSymbol, char *cType, PHB_ITEM pArray )
 
 void _OOHG_DoEventMouseCoords( PHB_ITEM pSelf, int iSymbol, char *cType, LPARAM lParam )
 {
-   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
    PHB_ITEM pArray;
-   POINT pnt;
-   RECT rect;
 
    pArray = hb_itemArrayNew( 2 );
-   GetCursorPos( &pnt );
-   GetWindowRect( oSelf->hWnd, &rect );
    hb_arraySetNI( pArray, 1, HIWORD( lParam ) );
    hb_arraySetNI( pArray, 2, LOWORD( lParam ) );
 

@@ -1,5 +1,5 @@
 /*
- * $Id: h_image.prg,v 1.33 2014-06-06 00:55:42 fyurisich Exp $
+ * $Id: h_image.prg,v 1.34 2014-06-07 02:08:03 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -130,7 +130,7 @@ ENDCLASS
 METHOD Define( ControlName, ParentForm, x, y, FileName, w, h, ProcedureName, ;
                HelpId, invisible, stretch, lWhiteBackground, lRtl, backcolor, ;
                cBuffer, hBitMap, autofit, imagesize, ToolTip, Border, ClientEdge, ;
-               lNoTransparent, lNo3DColors, lNoDIB, lStyleTransp ) CLASS TImage
+               lNoTransparent, lNo3DColors, lNoDIB, lStyleTransp, aArea ) CLASS TImage
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle, nStyleEx
 
@@ -144,6 +144,7 @@ Local ControlHandle, nStyle, nStyleEx
    ASSIGN ::lNoTransparent VALUE lNoTransparent TYPE "L"
    ASSIGN ::lNo3DColors    VALUE lNo3DColors    TYPE "L"
    ASSIGN ::lNoDIBSection  VALUE lNoDIB         TYPE "L"
+   ASSIGN ::aExcludeArea   VALUE aArea          TYPE "A"
 
    ::SetForm( ControlName, ParentForm,,,, BackColor,, lRtl )
    If HB_IsLogical( lWhiteBackground ) .AND. lWhiteBackground
@@ -304,6 +305,8 @@ METHOD CurrentSize() CLASS TImage
 Local aRet
    IF ValidHandler( ::AuxHandle )
       aRet := { _BitMapWidth( ::AuxHandle ), _BitMapHeight( ::AuxHandle ) }
+   ELSEIF ValidHandler( ::hImage )
+      aRet := { _BitMapWidth( ::hImage ), _BitMapHeight( ::hImage ) }
    ELSE
       aRet := { 0, 0 }
    ENDIF

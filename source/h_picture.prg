@@ -1,5 +1,5 @@
 /*
- * $Id: h_picture.prg,v 1.14 2014-03-30 19:39:42 fyurisich Exp $
+ * $Id: h_picture.prg,v 1.15 2014-06-07 02:08:03 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -67,6 +67,7 @@ CLASS TPicture FROM TControl
    DATA lNoDIBSection      INIT .F.
    DATA lNo3DColors        INIT .F.
    DATA lNoTransparent     INIT .F.
+   DATA aExcludeArea       INIT {}
 
    METHOD Define
    METHOD RePaint
@@ -84,6 +85,8 @@ CLASS TPicture FROM TControl
    METHOD nDegree          SETGET
    METHOD Redraw
    METHOD ToolTip          SETGET
+   METHOD OriginalSize
+   METHOD CurrentSize
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
@@ -92,7 +95,7 @@ ENDCLASS
 METHOD Define( ControlName, ParentForm, x, y, FileName, w, h, cBuffer, hBitMap, ;
                stretch, autofit, imagesize, BORDER, CLIENTEDGE, BackColor, ;
                ProcedureName, ToolTip, HelpId, lRtl, invisible, lNoTransparent, ;
-               lNo3DColors, lNoDIB ) CLASS TPicture
+               lNo3DColors, lNoDIB, lStyleTransp, aArea ) CLASS TPicture
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle, nStyleEx
 
@@ -106,6 +109,7 @@ Local ControlHandle, nStyle, nStyleEx
    ASSIGN ::lNoTransparent VALUE lNoTransparent TYPE "L"
    ASSIGN ::lNo3DColors    VALUE lNo3DColors    TYPE "L"
    ASSIGN ::lNoDIBSection  VALUE lNoDIB         TYPE "L"
+   ASSIGN ::aExcludeArea   VALUE aArea          TYPE "A"
 
    IF BackColor == NIL
       BackColor := GetSysColor( COLOR_3DFACE )
@@ -117,6 +121,9 @@ Local ControlHandle, nStyle, nStyleEx
              if( ValType( BORDER ) == "L" .AND. BORDER, WS_BORDER, 0 )
 
    nStyleEx := if( ValType( CLIENTEDGE ) == "L" .AND. CLIENTEDGE, WS_EX_CLIENTEDGE, 0 )
+   IF HB_IsLogical( lStyleTransp ) .AND. lStyleTransp
+      nStyleEx += WS_EX_TRANSPARENT
+   ENDIF
 
    Controlhandle := InitPictureControl( ::ContainerhWnd, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, nStyle, nStyleEx, ::lRtl )
 
@@ -312,6 +319,31 @@ Local nRangeMin, nRangeMax, nPos
    EndIf
 Return nPos
 
+*-----------------------------------------------------------------------------*
+METHOD OriginalSize() CLASS TPicture
+*-----------------------------------------------------------------------------*
+Local aRet
+   IF ValidHandler( ::hImage )
+      aRet := { _BitMapWidth( ::hImage ), _BitMapHeight( ::hImage ) }
+   ELSE
+      aRet := { 0, 0 }
+   ENDIF
+RETURN aRet
+
+*-----------------------------------------------------------------------------*
+METHOD CurrentSize() CLASS TPicture
+*-----------------------------------------------------------------------------*
+Local aRet
+   IF ValidHandler( ::AuxHandle )
+      aRet := { _BitMapWidth( ::AuxHandle ), _BitMapHeight( ::AuxHandle ) }
+   ELSEIF ValidHandler( ::hImage )
+      aRet := { _BitMapWidth( ::hImage ), _BitMapHeight( ::hImage ) }
+   ELSE
+      aRet := { 0, 0 }
+   ENDIF
+RETURN aRet
+
+
 #pragma BEGINDUMP
 
 #define s_Super s_TControl
@@ -329,6 +361,7 @@ Return nPos
 #include "hbvm.h"
 #include "hbstack.h"
 #include <windows.h>
+#include <windowsx.h>
 #include <commctrl.h>
 #include "oohg.h"
 
@@ -398,7 +431,7 @@ HB_FUNC( INITPICTURECONTROL )
 void _OOHG_PictureControl_RePaint( PHB_ITEM pSelf, RECT *rect, HDC hdc )
 {
    BITMAP bm;
-   HBITMAP hBmp;
+   HBITMAP hBmp, hBmpOld = NULL;
    SCROLLINFO ScrollInfo;
    int iWidth = 0, iHeight = 0, iAux;
    int iScrollHorz = 0, iScrollVert = 0;
@@ -452,7 +485,7 @@ void _OOHG_PictureControl_RePaint( PHB_ITEM pSelf, RECT *rect, HDC hdc )
    hDCAux = CreateCompatibleDC( hdc );
    if( hBmp )
    {
-      SelectObject( hDCAux, hBmp );
+      hBmpOld = SelectObject( hDCAux, hBmp );
    }
 
    SetStretchBltMode( hdc, COLORONCOLOR );
@@ -544,11 +577,17 @@ void _OOHG_PictureControl_RePaint( PHB_ITEM pSelf, RECT *rect, HDC hdc )
       rect->top = iAux;
    }
 
+   if( hBmp )
+   {
+      SelectObject( hDCAux, hBmpOld );
+   }
    DeleteDC( hDCAux );
    DeleteObject( hBrush );
 }
 
 #define _ScrollSkip 20
+
+BOOL PtInExcludeArea( PHB_ITEM pArea, int x, int y );
 
 HB_FUNC_STATIC( TPICTURE_EVENTS )
 {
@@ -583,9 +622,12 @@ HB_FUNC_STATIC( TPICTURE_EVENTS )
             else
             {
                hdc = BeginPaint( hWnd, &ps );
-               _OOHG_PictureControl_RePaint( pSelf, &rect, hdc );
+               if( hdc )
+               {
+                  _OOHG_PictureControl_RePaint( pSelf, &rect, hdc );
+               }
                EndPaint( hWnd, &ps );
-               hb_retni( 1 );
+               hb_retni( 0 );
             }
          }
          break;
@@ -721,46 +763,65 @@ HB_FUNC_STATIC( TPICTURE_EVENTS )
          break;
 
       case WM_MOUSEWHEEL:
-         _OOHG_Send( pSelf, s_Events_VScroll );
-         hb_vmPushLong( ( HIWORD( wParam ) == WHEEL_DELTA ) ? SB_LINEUP : SB_LINEDOWN );
-         hb_vmSend( 1 );
-         hb_ret();
+         {
+            _OOHG_Send( pSelf, s_Events_VScroll );
+            hb_vmPushLong( ( HIWORD( wParam ) == WHEEL_DELTA ) ? SB_LINEUP : SB_LINEDOWN );
+            hb_vmSend( 1 );
+            hb_ret();
+         }
          break;
 
       case WM_LBUTTONUP:
-         SendMessage( GetParent( hWnd ), WM_COMMAND, MAKEWORD( STN_CLICKED, 0 ), ( LPARAM ) hWnd );
+         {
+            SendMessage( GetParent( hWnd ), WM_COMMAND, MAKEWORD( STN_CLICKED, 0 ), ( LPARAM ) hWnd );
+         }
          break;
 
       case WM_NCHITTEST:
-         if( oSelf->lAux[ 0 ] )
          {
-            hb_retni( DefWindowProc( hWnd, message, wParam, lParam ) );
-         }
-         else if( oSelf->lAux[ 2 ] )
-         {
-            hb_retni( HTCLIENT );
-         }
-         else
-         {
-            hb_retni( HTTRANSPARENT );
+            POINT pt;
+            PHB_ITEM pArea;
+            BOOL bPtInExcludeArea;
+
+            _OOHG_Send( pSelf, s_aExcludeArea );
+            hb_vmSend( 0 );
+            pArea = hb_param( -1, HB_IT_ARRAY );
+            pt.x = GET_X_LPARAM( lParam );
+            pt.y = GET_Y_LPARAM( lParam );
+            MapWindowPoints( HWND_DESKTOP, hWnd, &pt, 1 );
+            bPtInExcludeArea = PtInExcludeArea( pArea, pt.x, pt.y );
+
+            if( oSelf->lAux[ 0 ] && ! bPtInExcludeArea )
+            {
+               hb_retni( DefWindowProc( hWnd, message, wParam, lParam ) );
+            }
+            else if( oSelf->lAux[ 2 ] && ! bPtInExcludeArea )
+            {
+               hb_retni( HTCLIENT );
+            }
+            else
+            {
+               hb_retni( HTTRANSPARENT );
+            }
          }
          break;
 
-
       default:
-         _OOHG_Send( pSelf, s_Super );
-         hb_vmSend( 0 );
-         _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_Events );
-         HWNDpush( hWnd );
-         hb_vmPushLong( message );
-         hb_vmPushLong( wParam );
-         hb_vmPushLong( lParam );
-         hb_vmSend( 4 );
+         {
+            _OOHG_Send( pSelf, s_Super );
+            hb_vmSend( 0 );
+            _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_Events );
+            HWNDpush( hWnd );
+            hb_vmPushLong( message );
+            hb_vmPushLong( wParam );
+            hb_vmPushLong( lParam );
+            hb_vmSend( 4 );
+         }
          break;
    }
 }
 
-HB_FUNC_STATIC( TPICTURE_NDEGREE )   // ( nDegree )
+HB_FUNC_STATIC( TPICTURE_NDEGREE )
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
@@ -773,7 +834,7 @@ HB_FUNC_STATIC( TPICTURE_NDEGREE )   // ( nDegree )
    hb_retnl( oSelf->lAux[ 1 ] );
 }
 
-HB_FUNC_STATIC( TPICTURE_REDRAW )   // ()
+HB_FUNC_STATIC( TPICTURE_REDRAW )
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
