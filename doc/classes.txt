@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.79 2014-05-17 21:29:59 fyurisich Exp $
+ * $Id: classes.txt,v 1.80 2014-06-07 02:41:58 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -332,22 +332,11 @@ CLASS TCALCPRINT FROM TPRINTBASE
    DATA OSHEET                    INIT NIL
 
    METHOD BEGINDOCX
-   METHOD BEGINPAGEX
-   METHOD CONDENDOSX              BLOCK {|| NIL}
    METHOD ENDDOCX
    METHOD ENDPAGEX
-   METHOD GETDEFPRINTERX          BLOCK {|| NIL}
    METHOD INITX
-   METHOD NORMALDOSX              BLOCK {|| NIL}
    METHOD PRINTDATAX
-   METHOD PRINTIMAGE              BLOCK {|| NIL}
-   METHOD PRINTLINEX              BLOCK {|| NIL}
-   METHOD PRINTRECTANGLEX         BLOCK {|| NIL}
-   METHOD PRINTROUNDRECTANGLEX    BLOCK {|| NIL}
-   METHOD RELEASEX
    METHOD SELPRINTERX
-   METHOD SETCOLORX               BLOCK {|| NIL}
-   METHOD SETPREVIEWSIZEX         BLOCK {|| NIL}
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -575,23 +564,14 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS TCSVPRINT FROM TPRINTBASE
-   METHOD BEGINDOCX
-   METHOD BEGINPAGEX
-   METHOD CONDENDOSX
+   DATA aPrintCsv INIT {}
+
    METHOD ENDDOCX
    METHOD ENDPAGEX
-   METHOD GETDEFPRINTERX          BLOCK {|| NIL}
    METHOD INITX
-   METHOD NORMALDOSX
    METHOD PRINTDATAX
-   METHOD PRINTIMAGE              BLOCK {|| NIL}
    METHOD PRINTLINEX
-   METHOD PRINTRECTANGLEX         BLOCK {|| NIL}
-   METHOD PRINTROUNDRECTANGLEX    BLOCK {|| NIL}
-   METHOD RELEASEX                BLOCK {|| NIL}
    METHOD SELPRINTERX
-   METHOD SETCOLORX               BLOCK {|| NIL}
-   METHOD SETPREVIEWSIZEX         BLOCK {|| NIL}
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -609,10 +589,7 @@ ENDCLASS
 *------------------------------------------------------------------------------*
 CLASS TDOSPRINT FROM TPRINTBASE
    DATA CBUSCA                    INIT ""
-   DATA CIMPNAME                  INIT ""
-   DATA CPORTNAME                 INIT ""
    DATA CSTRING                   INIT ""
-   DATA CTIPOIMP                  INIT ""
    DATA LISWIN                    INIT .F.
    DATA NOCCUR                    INIT 0
 
@@ -621,20 +598,13 @@ CLASS TDOSPRINT FROM TPRINTBASE
    METHOD CONDENDOSX
    METHOD ENDDOCX
    METHOD ENDPAGEX
-   METHOD GETDEFPRINTERX          BLOCK {|| NIL}
    METHOD INITX
    METHOD NEXTSEARCH
    METHOD NORMALDOSX
    METHOD PRINTDATAX
-   METHOD PRINTIMAGE              BLOCK {|| NIL}
    METHOD PRINTLINEX
-   METHOD PRINTRECTANGLEX         BLOCK {|| NIL}
-   METHOD PRINTROUNDRECTANGLEX    BLOCK {|| NIL}
-   METHOD RELEASEX                BLOCK {|| NIL}
    METHOD SEARCHSTRING
    METHOD SELPRINTERX
-   METHOD SETCOLORX               BLOCK {|| NIL}
-   METHOD SETPREVIEWSIZEX         BLOCK {|| NIL}
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -671,28 +641,18 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS TEXCELPRINT FROM TPRINTBASE
-   DATA CPORT                     INIT "PRN"
    DATA CTLINEA                   INIT ""
    DATA OEXCEL                    INIT NIL
    DATA OHOJA                     INIT NIL
 
    METHOD BEGINDOCX
-   METHOD BEGINPAGEX
-   METHOD CONDENDOSX              BLOCK {|| NIL}
    METHOD ENDDOCX
    METHOD ENDPAGEX
-   METHOD GETDEFPRINTERX          BLOCK {|| NIL}
    METHOD INITX
-   METHOD NORMALDOSX              BLOCK {|| NIL}
    METHOD PRINTDATAX
    METHOD PRINTIMAGEX
-   METHOD PRINTLINEX              BLOCK {|| NIL}
-   METHOD PRINTRECTANGLEX         BLOCK {|| NIL}
-   METHOD PRINTROUNDRECTANGLEX    BLOCK {|| NIL}
    METHOD RELEASEX
    METHOD SELPRINTERX
-   METHOD SETCOLORX               BLOCK {|| NIL}
-   METHOD SETPREVIEWSIZEX         BLOCK {|| NIL}
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -773,10 +733,12 @@ CLASS TFORM FROM TWINDOW
    METHOD EVENTS
    METHOD EVENTS_DESTROY
    METHOD EVENTS_HSCROLL
+   METHOD EVENT_NCDESTROY
    METHOD EVENTS_VSCROLL
    METHOD FOCUSEDCONTROL
    METHOD GETWINDOWSTATE
    METHOD HEIGHT                  SETGET
+   METHOD HELPBUTTON
    METHOD HELPTOPIC
    METHOD HIDE
    METHOD INSPECTOR
@@ -1286,6 +1248,8 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS THBPRINTER FROM TPRINTBASE
+   DATA   OHBPRN
+
    METHOD BEGINDOCX
    METHOD BEGINPAGEX
    METHOD ENDDOCX
@@ -1320,6 +1284,7 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS TIMAGE FROM TCONTROL
+   DATA AEXCLUDEAREA              INIT {}
    DATA AUTOFIT                   INIT .T.
    DATA BONCLICK                  INIT ""
    DATA CPICTURE                  INIT ""
@@ -1334,10 +1299,12 @@ CLASS TIMAGE FROM TCONTROL
    DATA TYPE                      INIT "IMAGE" READONLY
 
    METHOD BUFFER                  SETGET
+   METHOD CURRENTSIZE
    METHOD DEFINE
    METHOD EVENTS
    METHOD HBITMAP                 SETGET
    METHOD ONCLICK                 SETGET
+   METHOD ORIGINALSIZE
    METHOD PICTURE                 SETGET
    METHOD RELEASE
    METHOD REPAINT
@@ -1567,6 +1534,7 @@ CLASS TMINIPRINT FROM TPRINTBASE
    METHOD PRINTROUNDRECTANGLEX
    METHOD RELEASEX
    METHOD SELPRINTERX
+   METHOD SETPREVIEWSIZEX
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -1752,8 +1720,6 @@ CLASS TPDFPRINT FROM TPRINTBASE
    METHOD BEGINDOCX
    METHOD BEGINPAGEX
    METHOD ENDDOCX
-   METHOD ENDPAGEX
-   METHOD GETDEFPRINTERX
    METHOD INITX
    METHOD PRINTBARCODEX
    METHOD PRINTDATAX
@@ -1761,14 +1727,12 @@ CLASS TPDFPRINT FROM TPRINTBASE
    METHOD PRINTLINEX
    METHOD PRINTRECTANGLEX
    METHOD PRINTROUNDRECTANGLEX
-   METHOD RELEASEX
    METHOD SELPRINTERX
-   METHOD SETCOLORX
-   METHOD SETPREVIEWSIZEX
 ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS TPICTURE FROM TCONTROL
+   DATA AEXCLUDEAREA              INIT {}
    DATA AUTOFIT                   INIT .F.
    DATA BONCLICK                  INIT NIL
    DATA CPICTURE                  INIT ""
@@ -1784,12 +1748,14 @@ CLASS TPICTURE FROM TCONTROL
    DATA TYPE                      INIT "PICTURE" READONLY
 
    METHOD BUFFER                  SETGET
+   METHOD CURRENTSIZE
    METHOD DEFINE
    METHOD EVENTS
    METHOD HBITMAP                 SETGET
    METHOD HORIZONTALSCROLL        SETGET
    METHOD NDEGREE                 SETGET
    METHOD ONCLICK                 SETGET
+   METHOD ORIGINALSIZE
    METHOD PICTURE                 SETGET
    METHOD REDRAW
    METHOD RELEASE
@@ -1895,6 +1861,7 @@ CLASS TPRINTBASE
    METHOD PRINTIMAGEX             BLOCK {|| NIL}
    METHOD PRINTLINE
    METHOD PRINTLINEX              BLOCK {|| NIL}
+   METHOD PRINTMODE
    METHOD PRINTRAW
    METHOD PRINTRAWX               BLOCK {|| NIL}
    METHOD PRINTRECTANGLE
@@ -2014,7 +1981,8 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS TRAWPRINT FROM TDOSPRINT
-   METHOD ENDDOCX
+   METHOD INITX
+   METHOD SELPRINTERX
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -2067,22 +2035,12 @@ CLASS TRTFPRINT FROM TPRINTBASE
    DATA LPRINTRTF                 INIT .F.
 
    METHOD BEGINDOCX
-   METHOD BEGINPAGEX
-   METHOD CONDENDOSX
    METHOD ENDDOCX
    METHOD ENDPAGEX
-   METHOD GETDEFPRINTERX          BLOCK {|| NIL}
    METHOD INITX
-   METHOD NORMALDOSX
    METHOD PRINTDATAX
-   METHOD PRINTIMAGE              BLOCK {|| NIL}
    METHOD PRINTLINEX
-   METHOD PRINTRECTANGLEX         BLOCK {|| NIL}
-   METHOD PRINTROUNDRECTANGLEX    BLOCK {|| NIL}
-   METHOD RELEASEX                BLOCK {|| NIL}
    METHOD SELPRINTERX
-   METHOD SETCOLORX               BLOCK {|| NIL}
-   METHOD SETPREVIEWSIZEX         BLOCK {|| NIL}
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -2216,22 +2174,11 @@ CLASS TSPREADSHEETPRINT FROM TPRINTBASE
 
    METHOD ADDPAGE
    METHOD BEGINDOCX
-   METHOD BEGINPAGEX              BLOCK {|| NIL}
-   METHOD CONDENDOSX              BLOCK {|| NIL}
    METHOD ENDDOCX
    METHOD ENDPAGEX
-   METHOD GETDEFPRINTERX          BLOCK {|| NIL}
    METHOD INITX
-   METHOD NORMALDOSX              BLOCK {|| NIL}
    METHOD PRINTDATAX
-   METHOD PRINTIMAGEX             BLOCK {|| NIL}
-   METHOD PRINTLINEX              BLOCK {|| NIL}
-   METHOD PRINTRECTANGLEX         BLOCK {|| NIL}
-   METHOD PRINTROUNDRECTANGLEX    BLOCK {|| NIL}
    METHOD RELEASEX
-   METHOD SELPRINTERX             BLOCK {|| NIL}
-   METHOD SETCOLORX               BLOCK {|| NIL}
-   METHOD SETPREVIEWSIZEX         BLOCK {|| NIL}
 ENDCLASS
 
 *------------------------------------------------------------------------------*
