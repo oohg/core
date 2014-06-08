@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.112 2014-06-07 02:08:02 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.113 2014-06-08 22:56:24 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -635,6 +635,10 @@ FRAME
         _OOHG_ActiveControlDynamicForeColor := <aDynamicForeColor>
 
 #xcommand WHEN <aWhenFields> ;
+        => ;
+        _OOHG_ActiveControlWhen := <aWhenFields>
+
+#xcommand COLUMNWHEN <aWhenFields> ;
         => ;
         _OOHG_ActiveControlWhen := <aWhenFields>
 
