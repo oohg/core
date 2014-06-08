@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.134 2014-06-03 00:34:12 fyurisich Exp $
+* $Id: h_print.prg,v 1.135 2014-06-08 15:26:41 fyurisich Exp $
 */
 
 #include 'hbclass.ch'
@@ -104,97 +104,101 @@ RETURN o_Print_
 
 CLASS TPRINTBASE
 
-   DATA cPrintLibrary      INIT "HBPRINTER"   READONLY
-   DATA nmHor              INIT ( 10 / 4.75 ) READONLY
-   DATA nmVer              INIT ( 10 / 2.35 ) READONLY
-   DATA nhFij              INIT ( 12 / 3.70 ) READONLY
-   DATA nvFij              INIT ( 12 / 1.65 ) READONLY
-   DATA cUnits             INIT "ROWCOL"      READONLY
-   DATA nLMargin           INIT 0
-   DATA nTMargin           INIT 0
-   DATA cPrinter           INIT ""            READONLY
-   DATA aPrinters          INIT {}            READONLY
-   DATA aPorts             INIT {}            READONLY
-   DATA lPrError           INIT .F.           READONLY
-   DATA Exit               INIT .F.           READONLY
-   DATA aColor             INIT {0, 0, 0}     READONLY    // brush color
-   DATA cFontName          INIT "Courier New" READONLY
-   DATA nFontSize          INIT 12                        // never set READONLY
-   DATA aFontColor         INIT {0, 0, 0}     READONLY    // font color
-   DATA lFontBold          INIT .F.           READONLY
-   DATA lFontItalic        INIT .F.           READONLY
-   DATA nwPen              INIT 0.1           READONLY    // pen width
-   DATA TempFile           INIT GetTempDir() + "T" + AllTrim( Str( Int( HB_Random( 999999 ) ), 8 ) ) + ".prn" READONLY
-   DATA ImPreview          INIT .F.           READONLY
-   DATA lWinHide           INIT .T.           READONLY
-   DATA cVersion           INIT "(oohg-tprint)V 4.9" READONLY
-   DATA Cargo              INIT "list"                    // document name
-   DATA nLinPag            INIT 0             READONLY
-   DATA aLinCelda          INIT {}            READONLY
-   DATA nUnitsLin          INIT 1             READONLY
-   DATA lProp              INIT .F.           READONLY
-   DATA cPort              INIT "prn"
+   DATA aColor                   INIT {0, 0, 0}            READONLY    // brush color
+   DATA aFontColor               INIT {0, 0, 0}            READONLY    // font color
+   DATA aLinCelda                INIT {}                   READONLY
+   DATA aPorts                   INIT {}                   READONLY
+   DATA aPrinters                INIT {}                   READONLY
+   DATA Cargo                    INIT "list"                           // document name
+   DATA cFontName                INIT "Courier New"        READONLY
+   DATA cPort                    INIT "prn"
+   DATA cPrinter                 INIT ""                   READONLY
+   DATA cPrintLibrary            INIT "HBPRINTER"          READONLY
+   DATA cUnits                   INIT "ROWCOL"             READONLY
+   DATA cVersion                 INIT "(oohg-tprint)V 4.9" READONLY
+   DATA Exit                     INIT .F.                  READONLY
+   DATA ImPreview                INIT .F.                  READONLY
+   DATA lFontBold                INIT .F.                  READONLY
+   DATA lFontItalic              INIT .F.                  READONLY
+   DATA lFontStrikeout           INIT .F.                  READONLY
+   DATA lFontUnderline           INIT .F.                  READONLY
+   DATA lPrError                 INIT .F.                  READONLY
+   DATA lProp                    INIT .F.                  READONLY
+   DATA lWinHide                 INIT .T.                  READONLY
+   DATA nFontAngle               INIT 0                    READONLY
+   DATA nFontSize                INIT 12                               // never set READONLY
+   DATA nFontWidth               INIT 0                    READONLY
+   DATA nhFij                    INIT ( 12 / 3.70 )        READONLY
+   DATA nLinPag                  INIT 0                    READONLY
+   DATA nLMargin                 INIT 0
+   DATA nmHor                    INIT ( 10 / 4.75 )        READONLY
+   DATA nmVer                    INIT ( 10 / 2.35 )        READONLY
+   DATA nTMargin                 INIT 0
+   DATA nUnitsLin                INIT 1                    READONLY
+   DATA nvFij                    INIT ( 12 / 1.65 )        READONLY
+   DATA nwPen                    INIT 0.1                  READONLY    // pen width
+   DATA TempFile                 INIT GetTempDir() + "T" + AllTrim( Str( Int( HB_Random( 999999 ) ), 8 ) ) + ".prn" READONLY
 
-   METHOD Init
-   METHOD InitX            BLOCK { || NIL }
-   METHOD SetProp
-   METHOD SetCpl
    METHOD BeginDoc
-   METHOD BeginDocX        BLOCK { || NIL }
-   METHOD EndDoc
-   METHOD EndDocX          BLOCK { || NIL }
-   METHOD PrintDos
-   METHOD PrintDosX        BLOCK { || NIL }
-   METHOD PrintRaw
-   METHOD PrintRawX        BLOCK { || NIL }
+   METHOD BeginDocX              BLOCK { || NIL }
    METHOD BeginPage
-   METHOD BeginPageX       BLOCK { || NIL }
-   METHOD CondenDos        BLOCK { || NIL }
-   METHOD CondenDosX       BLOCK { || NIL }
-   METHOD NormalDos        BLOCK { || NIL }
-   METHOD NormalDosX       BLOCK { || NIL }
-   METHOD EndPage
-   METHOD EndPageX         BLOCK { || NIL }
-   METHOD Release
-   METHOD ReleaseX         BLOCK { || NIL }
-   METHOD PrintData
-   METHOD PrintDataX       BLOCK { || NIL }
-   METHOD PrintBarcode
-   METHOD PrintBarcodeX    BLOCK { || NIL }
-   METHOD Ean13
+   METHOD BeginPageX             BLOCK { || NIL }
+   METHOD Codabar
    METHOD Code128
    METHOD Code3_9
-   METHOD Int25
+   METHOD CondenDos              BLOCK { || NIL }
+   METHOD CondenDosX             BLOCK { || NIL }
+   METHOD Ean13
    METHOD Ean8
-   METHOD Upca
-   METHOD Sup5
-   METHOD Codabar
-   METHOD Ind25
-   METHOD Mat25
-   METHOD Go_Code
-   METHOD PrintImage
-   METHOD PrintImageX      BLOCK { || NIL }
-   METHOD PrintLine
-   METHOD PrintLineX       BLOCK { || NIL }
-   METHOD PrintRectangle
-   METHOD PrintRectangleX  BLOCK { || NIL }
-   METHOD SelPrinter
-   METHOD SelPrinterX      BLOCK { || NIL }
+   METHOD EndDoc
+   METHOD EndDocX                BLOCK { || NIL }
+   METHOD EndPage
+   METHOD EndPageX               BLOCK { || NIL }
    METHOD GetDefPrinter
-   METHOD GetDefPrinterX   BLOCK { || NIL }
-   METHOD SetColor
-   METHOD SetColorX        BLOCK { || NIL }
-   METHOD SetFont
-   METHOD SetFontX         BLOCK { || NIL }
-   METHOD SetPreviewSize
-   METHOD SetPreviewSizeX  BLOCK { || NIL }
-   METHOD SetUnits                                   // mm or rowcol
-   METHOD PrintRoundRectangle
-   METHOD PrintRoundRectangleX  BLOCK { || NIL }
-   METHOD Version               INLINE ::cVersion
-   METHOD SetLMargin
-   METHOD SetTMargin
+   METHOD GetDefPrinterX         BLOCK { || NIL }
+   METHOD Go_Code
+   METHOD Ind25
+   METHOD Init
+   METHOD InitX                  BLOCK { || NIL }
+   METHOD Int25
+   METHOD Mat25
+   METHOD NormalDos              BLOCK { || NIL }
+   METHOD NormalDosX             BLOCK { || NIL }
+   METHOD PrintBarcode
+   METHOD PrintBarcodeX          BLOCK { || NIL }
+   METHOD PrintData
+   METHOD PrintDataX             BLOCK { || NIL }
+   METHOD PrintDos
+   METHOD PrintDosX              BLOCK { || NIL }
+   METHOD PrintImage
+   METHOD PrintImageX            BLOCK { || NIL }
+   METHOD PrintLine
+   METHOD PrintLineX             BLOCK { || NIL }
    METHOD PrintMode
+   METHOD PrintRaw
+   METHOD PrintRawX              BLOCK { || NIL }
+   METHOD PrintRectangle
+   METHOD PrintRectangleX        BLOCK { || NIL }
+   METHOD PrintRoundRectangle
+   METHOD PrintRoundRectangleX   BLOCK { || NIL }
+   METHOD Release
+   METHOD ReleaseX               BLOCK { || NIL }
+   METHOD SelPrinter
+   METHOD SelPrinterX            BLOCK { || NIL }
+   METHOD SetColor
+   METHOD SetColorX              BLOCK { || NIL }
+   METHOD SetCpl
+   METHOD SetFont
+   METHOD SetFontX               BLOCK { || NIL }
+   METHOD SetLMargin
+   METHOD SetPreviewSize
+   METHOD SetPreviewSizeX        BLOCK { || NIL }
+   METHOD SetProp
+   METHOD SetTMargin
+   METHOD SetUnits                                   // mm or rowcol
+   METHOD Sup5
+   METHOD Upca
+   METHOD Version                INLINE ::cVersion
 
 ENDCLASS
 
@@ -217,6 +221,7 @@ RETURN NIL
 *-----------------------------------------------------------------------------*
 METHOD SetCpl( nCpl ) CLASS TPRINTBASE
 *-----------------------------------------------------------------------------*
+   DEFAULT nCpl to 80
    DO CASE
    CASE nCpl = 60
       ::nFontSize := 14
@@ -282,9 +287,9 @@ RETURN Self
 *-----------------------------------------------------------------------------*
 METHOD BeginDoc( cDocm ) CLASS TPRINTBASE
 *-----------------------------------------------------------------------------*
-LOCAL oLabel, oImage, cDoc
+LOCAL oLabel, oImage, cTitle
 
-   cDoc := _OOHG_Messages( 12, 2 )
+   cTitle := _OOHG_Messages( 12, 2 )
 
    IF HB_IsString( cDocm )
       ::Cargo := cDocm
@@ -296,7 +301,7 @@ LOCAL oLabel, oImage, cDoc
    DEFINE WINDOW _modalhide ;
       AT 0,0 ;
       WIDTH 0 HEIGHT 0 ;
-      TITLE cDoc MODAL NOSHOW NOSIZE NOSYSMENU NOCAPTION
+      TITLE cTitle MODAL NOSHOW NOSIZE NOSYSMENU NOCAPTION
    END WINDOW
    ACTIVATE WINDOW _modalhide NOWAIT
 
@@ -304,7 +309,7 @@ LOCAL oLabel, oImage, cDoc
       DEFINE WINDOW _oohg_winreport ;
          AT 0,0 ;
          WIDTH 400 HEIGHT 120 ;
-         TITLE cDoc CHILD NOSIZE NOSYSMENU NOCAPTION
+         TITLE cTitle CHILD NOSIZE NOSYSMENU NOCAPTION
 
          @ 5, 5 FRAME myframe WIDTH 390 HEIGHT 110
 
@@ -317,7 +322,7 @@ LOCAL oLabel, oImage, cDoc
 
          @ 22, 225 LABEL label_101 VALUE '......' FONT "Courier New" SIZE 10
 
-         @ 55, 10 LABEL label_1 OBJ oLabel VALUE cDoc WIDTH 300 HEIGHT 32 FONT "Courier New"
+         @ 55, 10 LABEL label_1 OBJ oLabel VALUE cTitle WIDTH 300 HEIGHT 32 FONT "Courier New"
 
          DEFINE TIMER timer_101 ;
             INTERVAL 1000 ;
@@ -338,12 +343,14 @@ RETURN Self
 *-----------------------------------------------------------------------------*
 METHOD SetLMargin( nLMar ) CLASS TPRINTBASE
 *-----------------------------------------------------------------------------*
+   DEFAULT nLMar TO 0
    ::nLMargin := nLMar
 RETURN Self
 
 *-----------------------------------------------------------------------------*
 METHOD SetTMargin( nTMar ) CLASS TPRINTBASE
 *-----------------------------------------------------------------------------*
+   DEFAULT nTMar TO 0
    ::nTMargin := nTMar
 RETURN Self
 
@@ -367,24 +374,33 @@ RETURN Self
 *-----------------------------------------------------------------------------*
 METHOD SetColor( atColor ) CLASS TPRINTBASE
 *-----------------------------------------------------------------------------*
+   DEFAULT atColor TO {0, 0, 0}
    ::aColor := atColor
    ::SetColorX()
 RETURN Self
 
 *-----------------------------------------------------------------------------*
-METHOD SetFont( cFont, nSize, aColor, lBold, lItalic ) CLASS TPRINTBASE
+METHOD SetFont( cFont, nSize, aColor, lBold, lItalic, nAngle, lUnder, lStrike, nWidth ) CLASS TPRINTBASE
 *-----------------------------------------------------------------------------*
    DEFAULT cFont   TO ::cFontName
    DEFAULT nSize   TO ::nFontSize
    DEFAULT aColor  TO ::aFontColor
    DEFAULT lBold   TO ::lFontBold
    DEFAULT lItalic TO ::lFontItalic
+   DEFAULT nAngle  TO ::nFontAngle
+   DEFAULT lUnder  TO ::lFontUnderline
+   DEFAULT lStrike TO ::lFontStrikeout
+   DEFAULT nWidth  TO ::nFontWidth
 
-   ::cFontName   := cFont
-   ::nFontSize   := nSize
-   ::aFontColor  := aColor
-   ::lFontBold   := lBold
-   ::lFontItalic := lItalic
+   ::cFontName      := cFont
+   ::nFontSize      := nSize
+   ::aFontColor     := aColor
+   ::lFontBold      := lBold
+   ::lFontItalic    := lItalic
+   ::nFontAngle     := nAngle
+   ::lFontUnderline := lUnder
+   ::lFontStrikeout := lStrike
+   ::nFontWidth     := nWidth
 RETURN Self
 
 *-----------------------------------------------------------------------------*
@@ -407,20 +423,19 @@ RETURN ::GetDefPrinterX()
 *-----------------------------------------------------------------------------*
 METHOD SetUnits( cUnitsX, nUnitsLinX ) CLASS TPRINTBASE
 *-----------------------------------------------------------------------------*
+   DEFAULT cUnitsX TO "ROWCOL"
+   cUnitsX := Upper( cUnitsX )
    IF cUnitsX = "MM"
       ::cUnits := "MM"
    ELSE
       ::cUnits := "ROWCOL"
    ENDIF
-   IF nUnitsLinX = NIL
-      ::nUnitsLin := 1
-   ELSE
-      ::nUnitsLin := nUnitsLinX
-   ENDIF
+   DEFAULT nUnitsLinX TO 1
+   ::nUnitsLin := nUnitsLinX
 RETURN Self
 
 *-----------------------------------------------------------------------------*
-METHOD PrintData( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, lItalic, nAngle ) CLASS TPRINTBASE
+METHOD PrintData( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, lItalic, nAngle, lUnder, lStrike, nWidth ) CLASS TPRINTBASE
 *-----------------------------------------------------------------------------*
 LOCAL cText, cSpace, uAux, cType := ValType( uData )
 
@@ -471,7 +486,10 @@ LOCAL cText, cSpace, uAux, cType := ValType( uData )
    DEFAULT aColor  TO ::aFontColor
    DEFAULT lBold   TO ::lFontBold
    DEFAULT lItalic TO ::lFontItalic
-   DEFAULT nAngle  TO 0
+   DEFAULT nAngle  TO ::nFontAngle
+   DEFAULT lUnder  TO ::lFontUnderline
+   DEFAULT lStrike TO ::lFontStrikeout
+   DEFAULT nWidth  TO ::nFontWidth
 
    IF ::cUnits = "MM"
       ::nmVer := 1
@@ -495,7 +513,7 @@ LOCAL cText, cSpace, uAux, cType := ValType( uData )
       cText := cSpace + cText
    ENDIF
 
-   ::PrintDataX( ::nTMargin + nLin, ::nLMargin + nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, cText, lItalic, nAngle )
+   ::PrintDataX( ::nTMargin + nLin, ::nLMargin + nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, cText, lItalic, nAngle, lUnder, lStrike, nWidth )
 RETURN Self
 
 *-----------------------------------------------------------------------------*
@@ -564,7 +582,6 @@ METHOD Ean8( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPRINTBAS
 *-----------------------------------------------------------------------------*
 LOCAL nLen := 0
 
-   // TODO: test parameters
    DEFAULT nHeigth TO 1.5
    IF lHorz
       ::Go_Code( _Upc( cCode, 7 ), nRow, nCol, lHorz, aColor, nWidth, nHeigth * 0.90 )
@@ -579,7 +596,6 @@ METHOD Ean13( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPRINTBA
 *-----------------------------------------------------------------------------*
  LOCAL nLen := 0
 
-   // TODO: test parameters
    DEFAULT nHeigth TO 1.5
    IF lHorz
       ::Go_Code( _Ean13( cCode ), nRow, nCol, lHorz, aColor, nWidth, nHeigth * 0.90 )
@@ -592,17 +608,13 @@ RETURN Self
 *-----------------------------------------------------------------------------*
 METHOD Code128( nRow, nCol, cCode, cMode, aColor, lHorz, nWidth, nHeigth ) CLASS TPRINTBASE
 *-----------------------------------------------------------------------------*
-   // TODO: test parameters
-
-        ::Go_Code( _Code128( cCode, cMode ), nRow, nCol, lHorz, aColor, nWidth, nHeigth )
+   ::Go_Code( _Code128( cCode, cMode ), nRow, nCol, lHorz, aColor, nWidth, nHeigth )
 RETURN Self
 
 *-----------------------------------------------------------------------------*
 METHOD Code3_9( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPRINTBASE
 *-----------------------------------------------------------------------------*
 LOCAL lCheck := .T.
-
-   // TODO: test parameters
    ::Go_Code( _Code3_9( cCode, lCheck ), nRow, nCol, lHorz, aColor, nWidth, nHeigth )
 RETURN Self
 
@@ -610,17 +622,13 @@ RETURN Self
 METHOD Int25( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPRINTBASE
 *-----------------------------------------------------------------------------*
 LOCAL lCheck := .T.
-
-   // TODO: test parameters
-   ::Go_Code( _int25( cCode, lCheck ), nRow, nCol, lHorz, aColor, nWidth, nHeigth )
+   ::Go_Code( _Int25( cCode, lCheck ), nRow, nCol, lHorz, aColor, nWidth, nHeigth )
 RETURN Self
 
 *-----------------------------------------------------------------------------*
 METHOD Upca( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPRINTBASE
 *-----------------------------------------------------------------------------*
 LOCAL nLen := 0
-
-   // TODO: test parameters
    DEFAULT nHeigth TO 1.5
    IF lHorz
       ::Go_Code( _Upc( cCode ), nRow, nCol, lHorz, aColor, nWidth, nHeigth * 0.90 )
@@ -639,7 +647,6 @@ RETURN Self
 *-----------------------------------------------------------------------------*
 METHOD Codabar( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPRINTBASE
 *-----------------------------------------------------------------------------*
-   // TODO: test parameters
    ::Go_Code( _Codabar( cCode ), nRow, nCol, lHorz, aColor, nWidth, nHeigth )
 RETURN Self
 
@@ -647,8 +654,6 @@ RETURN Self
 METHOD Ind25( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPRINTBASE
 *-----------------------------------------------------------------------------*
 LOCAL lCheck := .T.
-
-   // TODO: test parameters
    ::Go_Code( _Ind25( cCode, lCheck ), nRow, nCol, lHorz, aColor, nWidth, nHeigth )
 RETURN Self
 
@@ -656,8 +661,6 @@ RETURN Self
 METHOD Mat25( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPRINTBASE
 *-----------------------------------------------------------------------------*
 LOCAL lCheck := .T.
-
-   // TODO: test parameters
    ::Go_Code( _Mat25( cCode, lCheck), nRow, nCol, lHorz, aColor, nWidth, nHeigth )
 RETURN Self
 
@@ -666,6 +669,8 @@ METHOD Go_Code( cBarcode, ny, nx, lHorz, aColor, nWidth, nLen ) CLASS TPRINTBASE
 *-----------------------------------------------------------------------------*
 LOCAL n
 
+   DEFAULT ny     TO 0
+   DEFAULT nx     TO 0
    DEFAULT aColor TO { 0, 0, 0 }
    DEFAULT lHorz  TO .T.
    DEFAULT nWidth TO 0.495           // 1/3 M/mm 0.25 width
@@ -681,16 +686,6 @@ LOCAL n
             ny += nWidth
          ENDIF
       ELSE
-          //////////////////////////////////
-     /////      IF SubStr( cBarcode, n, 1 ) = '1'
-      ///   IF lHorz
-      ////      ::PrintBarcodeX( ny, nx, ny + nLen, nx + nWidth, {255,255,255} )
-          ///  nx += nWidth
-       ///  ELSE
-      ////      ::PrintBarcodeX( ny, nx, ny + nWidth, nx + nlen , {255,255,255} )
-         ///   ny += nWidth
-      ////   ENDIF
-          /////////////////////////////////
          IF lHorz
             nx += nWidth
          ELSE
@@ -876,20 +871,20 @@ RETURN NIL
 
 CLASS TMINIPRINT FROM TPRINTBASE
 
-   METHOD InitX
    METHOD BeginDocX
-   METHOD EndDocX
    METHOD BeginPageX
+   METHOD EndDocX
    METHOD EndPageX
-   METHOD ReleaseX
+   METHOD GetDefPrinterX
+   METHOD InitX
+   METHOD PrintBarcodeX
    METHOD PrintDataX
    METHOD PrintImageX
    METHOD PrintLineX
    METHOD PrintRectangleX
-   METHOD SelPrinterX
-   METHOD GetDefPrinterX
    METHOD PrintRoundRectangleX
-   METHOD PrintBarcodeX
+   METHOD ReleaseX
+   METHOD SelPrinterX
    METHOD SetPreviewSizeX
 
 ENDCLASS
@@ -969,101 +964,360 @@ METHOD ReleaseX() CLASS TMINIPRINT
 RETURN NIL
 
 *-----------------------------------------------------------------------------*
-METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, cText, lItalic, nAngle ) CLASS TMINIPRINT
+METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, cText, lItalic, nAngle, lUnder, lStrike, nWidth ) CLASS TMINIPRINT
 *-----------------------------------------------------------------------------*
    Empty( uData )
-   DEFAULT aColor TO ::aFontColor
    Empty( nLen )
-   Empty( nAngle )
 
-   IF ::cUnits = "MM"
-      DO CASE
-      CASE lItalic
-         IF ! lBold
-            IF cAlign = "R"
-               TextAlign( 2 )
-               @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize ITALIC COLOR aColor
-            ELSEIF cAlign = "C"
-               TextAlign( 1 )
-               @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize ITALIC COLOR aColor
-            ELSE
-               @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize ITALIC COLOR aColor
+   IF ::cUnits == "MM"
+      IF lItalic
+         IF lBold
+            IF lUnder
+               IF lStrike
+                  IF cAlign = "R"
+                     TextAlign( 2 )
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD ITALIC COLOR aColor ANGLE nAngle UNDERLINE STRIKEOUT WIDTH nWidth
+                  ELSEIF cAlign = "C"
+                     TextAlign( 1 )
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD ITALIC COLOR aColor ANGLE nAngle UNDERLINE STRIKEOUT WIDTH nWidth
+                  ELSE
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD ITALIC COLOR aColor ANGLE nAngle UNDERLINE STRIKEOUT WIDTH nWidth
+                  ENDIF
+               ELSE   // ! lStrike
+                  IF cAlign = "R"
+                     TextAlign( 2 )
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD ITALIC COLOR aColor ANGLE nAngle UNDERLINE  WIDTH nWidth
+                  ELSEIF cAlign = "C"
+                     TextAlign( 1 )
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD ITALIC COLOR aColor ANGLE nAngle UNDERLINE  WIDTH nWidth
+                  ELSE
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD ITALIC COLOR aColor ANGLE nAngle UNDERLINE  WIDTH nWidth
+                  ENDIF
+               ENDIF
+            ELSE   // ! lUnder
+               IF lStrike
+                  IF cAlign = "R"
+                     TextAlign( 2 )
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD ITALIC COLOR aColor ANGLE nAngle STRIKEOUT WIDTH nWidth
+                  ELSEIF cAlign = "C"
+                     TextAlign( 1 )
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD ITALIC COLOR aColor ANGLE nAngle STRIKEOUT WIDTH nWidth
+                  ELSE
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD ITALIC COLOR aColor ANGLE nAngle STRIKEOUT WIDTH nWidth
+                  ENDIF
+               ELSE   // ! lStrike
+                  IF cAlign = "R"
+                     TextAlign( 2 )
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD ITALIC COLOR aColor ANGLE nAngle WIDTH nWidth
+                  ELSEIF cAlign = "C"
+                     TextAlign( 1 )
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD ITALIC COLOR aColor ANGLE nAngle WIDTH nWidth
+                  ELSE
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD ITALIC COLOR aColor ANGLE nAngle WIDTH nWidth
+                  ENDIF
+               ENDIF
             ENDIF
-         ELSE
-            IF cAlign = "R"
-               TextAlign( 2 )
-               @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD ITALIC COLOR aColor
-            ELSEIF cAlign = "C"
-               TextAlign( 1 )
-               @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD ITALIC COLOR aColor
-            ELSE
-               @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD ITALIC COLOR aColor
+         ELSE   // ! lBold
+            IF lUnder
+               IF lStrike
+                  IF cAlign = "R"
+                     TextAlign( 2 )
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize ITALIC COLOR aColor ANGLE nAngle UNDERLINE STRIKEOUT WIDTH nWidth
+                  ELSEIF cAlign = "C"
+                     TextAlign( 1 )
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize ITALIC COLOR aColor ANGLE nAngle UNDERLINE STRIKEOUT WIDTH nWidth
+                  ELSE
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize ITALIC COLOR aColor ANGLE nAngle UNDERLINE STRIKEOUT WIDTH nWidth
+                  ENDIF
+               ELSE   // ! lStrike
+                  IF cAlign = "R"
+                     TextAlign( 2 )
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize ITALIC COLOR aColor ANGLE nAngle UNDERLINE WIDTH nWidth
+                  ELSEIF cAlign = "C"
+                     TextAlign( 1 )
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize ITALIC COLOR aColor ANGLE nAngle UNDERLINE WIDTH nWidth
+                  ELSE
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize ITALIC COLOR aColor ANGLE nAngle UNDERLINE WIDTH nWidth
+                  ENDIF
+               ENDIF
+            ELSE   // ! lUnder
+               IF lStrike
+                  IF cAlign = "R"
+                     TextAlign( 2 )
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize ITALIC COLOR aColor ANGLE nAngle STRIKEOUT WIDTH nWidth
+                  ELSEIF cAlign = "C"
+                     TextAlign( 1 )
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize ITALIC COLOR aColor ANGLE nAngle STRIKEOUT WIDTH nWidth
+                  ELSE
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize ITALIC COLOR aColor ANGLE nAngle STRIKEOUT WIDTH nWidth
+                  ENDIF
+               ELSE   // ! lStrike
+                  IF cAlign = "R"
+                     TextAlign( 2 )
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize ITALIC COLOR aColor ANGLE nAngle WIDTH nWidth
+                  ELSEIF cAlign = "C"
+                     TextAlign( 1 )
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize ITALIC COLOR aColor ANGLE nAngle WIDTH nWidth
+                  ELSE
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize ITALIC COLOR aColor ANGLE nAngle WIDTH nWidth
+                  ENDIF
+               ENDIF
             ENDIF
          ENDIF
-      OTHERWISE
-         IF ! lBold
-            IF cAlign = "R"
-               TextAlign( 2 )
-               @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize COLOR aColor
-            ELSEIF cAlign="C"
-               TextAlign( 1 )
-               @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize COLOR aColor
-            ELSE
-               @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize COLOR aColor
+      ELSE   // ! lItalic
+         IF lBold
+            IF lUnder
+               IF lStrike
+                  IF cAlign = "R"
+                     TextAlign( 2 )
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD COLOR aColor ANGLE nAngle UNDERLINE STRIKEOUT WIDTH nWidth
+                  ELSEIF cAlign = "C"
+                     TextAlign( 1 )
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD COLOR aColor ANGLE nAngle UNDERLINE STRIKEOUT WIDTH nWidth
+                  ELSE
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD COLOR aColor ANGLE nAngle UNDERLINE STRIKEOUT WIDTH nWidth
+                  ENDIF
+               ELSE   // ! lStrike
+                  IF cAlign = "R"
+                     TextAlign( 2 )
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD COLOR aColor ANGLE nAngle UNDERLINE WIDTH nWidth
+                  ELSEIF cAlign = "C"
+                     TextAlign( 1 )
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD COLOR aColor ANGLE nAngle UNDERLINE WIDTH nWidth
+                  ELSE
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD COLOR aColor ANGLE nAngle UNDERLINE WIDTH nWidth
+                  ENDIF
+               ENDIF
+            ELSE   // ! lUnder
+               IF lStrike
+                  IF cAlign = "R"
+                     TextAlign( 2 )
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD COLOR aColor ANGLE nAngle STRIKEOUT WIDTH nWidth
+                  ELSEIF cAlign = "C"
+                     TextAlign( 1 )
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD COLOR aColor ANGLE nAngle STRIKEOUT WIDTH nWidth
+                  ELSE
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD COLOR aColor ANGLE nAngle STRIKEOUT WIDTH nWidth
+                  ENDIF
+               ELSE   // ! lStrike
+                  IF cAlign = "R"
+                     TextAlign( 2 )
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD COLOR aColor ANGLE nAngle WIDTH nWidth
+                  ELSEIF cAlign = "C"
+                     TextAlign( 1 )
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD COLOR aColor ANGLE nAngle WIDTH nWidth
+                  ELSE
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD COLOR aColor ANGLE nAngle WIDTH nWidth
+                  ENDIF
+               ENDIF
             ENDIF
-         ELSE
-            IF cAlign = "R"
-               TextAlign( 2 )
-               @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD COLOR aColor
-            ELSEIF cAlign = "C"
-               TextAlign( 1 )
-               @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD COLOR aColor
-            ELSE
-               @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD COLOR aColor
+         ELSE   // ! lBold
+            IF lUnder
+               IF lStrike
+                  IF cAlign = "R"
+                     TextAlign( 2 )
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize COLOR aColor ANGLE nAngle UNDERLINE STRIKEOUT WIDTH nWidth
+                  ELSEIF cAlign = "C"
+                     TextAlign( 1 )
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize COLOR aColor ANGLE nAngle UNDERLINE STRIKEOUT WIDTH nWidth
+                  ELSE
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize COLOR aColor ANGLE nAngle UNDERLINE STRIKEOUT WIDTH nWidth
+                  ENDIF
+               ELSE   // ! lStrike
+                  IF cAlign = "R"
+                     TextAlign( 2 )
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize COLOR aColor ANGLE nAngle UNDERLINE WIDTH nWidth
+                  ELSEIF cAlign = "C"
+                     TextAlign( 1 )
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize COLOR aColor ANGLE nAngle UNDERLINE WIDTH nWidth
+                  ELSE
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize COLOR aColor ANGLE nAngle UNDERLINE WIDTH nWidth
+                  ENDIF
+               ENDIF
+            ELSE   // ! lUnder
+               IF lStrike
+                  IF cAlign = "R"
+                     TextAlign( 2 )
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize COLOR aColor ANGLE nAngle STRIKEOUT WIDTH nWidth
+                  ELSEIF cAlign = "C"
+                     TextAlign( 1 )
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize COLOR aColor ANGLE nAngle STRIKEOUT WIDTH nWidth
+                  ELSE
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize COLOR aColor ANGLE nAngle STRIKEOUT WIDTH nWidth
+                  ENDIF
+               ELSE   // ! lStrike
+                  IF cAlign = "R"
+                     TextAlign( 2 )
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize COLOR aColor ANGLE nAngle WIDTH nWidth
+                  ELSEIF cAlign = "C"
+                     TextAlign( 1 )
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize COLOR aColor ANGLE nAngle WIDTH nWidth
+                  ELSE
+                     @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize COLOR aColor ANGLE nAngle WIDTH nWidth
+                  ENDIF
+               ENDIF
             ENDIF
          ENDIF
-      ENDCASE
-
+      ENDIF
       TextAlign( 0 )
-   ELSE
-      DO CASE
-      CASE lItalic
-         IF ! lBold
-            IF cAlign = "R"
-               TextAlign( 2 )
-               @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 + ( Len( cText ) ) * ::nmHor PRINT ( cText ) FONT cFont SIZE nSize ITALIC COLOR aColor
-               TextAlign( 0 )
-            ELSE
-               @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT ( cText ) FONT cFont SIZE nSize ITALIC COLOR aColor
+   ELSE   // ::cUnits == "ROWCOL"
+      IF lItalic
+         IF lBold
+            IF lUnder
+               IF lStrike
+                  IF cAlign = "R"
+                     TextAlign( 2 )
+                     @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 + ( Len( cText ) ) * ::nmHor PRINT ( cText ) FONT cFont SIZE nSize  BOLD ITALIC COLOR aColor ANGLE nAngle UNDERLINE STRIKEOUT WIDTH nWidth
+                     TextAlign( 0 )
+                  ELSE
+                     @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT ( cText ) FONT cFont SIZE nSize BOLD ITALIC COLOR aColor ANGLE nAngle UNDERLINE STRIKEOUT WIDTH nWidth
+                  ENDIF
+               ELSE   // ! lStrike
+                  IF cAlign = "R"
+                     TextAlign( 2 )
+                     @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 + ( Len( cText ) ) * ::nmHor PRINT ( cText ) FONT cFont SIZE nSize  BOLD ITALIC COLOR aColor ANGLE nAngle UNDERLINE WIDTH nWidth
+                     TextAlign( 0 )
+                  ELSE
+                     @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT ( cText ) FONT cFont SIZE nSize BOLD ITALIC COLOR aColor ANGLE nAngle UNDERLINE WIDTH nWidth
+                  ENDIF
+               ENDIF
+            ELSE   // ! lUnder
+               IF lStrike
+                  IF cAlign = "R"
+                     TextAlign( 2 )
+                     @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 + ( Len( cText ) ) * ::nmHor PRINT ( cText ) FONT cFont SIZE nSize  BOLD ITALIC COLOR aColor ANGLE nAngle STRIKEOUT WIDTH nWidth
+                     TextAlign( 0 )
+                  ELSE
+                     @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT ( cText ) FONT cFont SIZE nSize BOLD ITALIC COLOR aColor ANGLE nAngle STRIKEOUT WIDTH nWidth
+                  ENDIF
+               ELSE   // ! lStrike
+                  IF cAlign = "R"
+                     TextAlign( 2 )
+                     @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 + ( Len( cText ) ) * ::nmHor PRINT ( cText ) FONT cFont SIZE nSize  BOLD ITALIC COLOR aColor ANGLE nAngle WIDTH nWidth
+                     TextAlign( 0 )
+                  ELSE
+                     @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT ( cText ) FONT cFont SIZE nSize BOLD ITALIC COLOR aColor ANGLE nAngle WIDTH nWidth
+                  ENDIF
+               ENDIF
             ENDIF
-         ELSE
-            IF cAlign = "R"
-               TextAlign( 2 )
-               @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 + ( Len( cText ) ) * ::nmHor PRINT ( cText ) FONT cFont SIZE nSize  BOLD ITALIC COLOR aColor
-               TextAlign( 0 )
-            ELSE
-               @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT ( cText ) FONT cFont SIZE nSize BOLD ITALIC COLOR aColor
+         ELSE   // ! lBold
+            IF lUnder
+               IF lStrike
+                  IF cAlign = "R"
+                     TextAlign( 2 )
+                     @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 + ( Len( cText ) ) * ::nmHor PRINT ( cText ) FONT cFont SIZE nSize  ITALIC COLOR aColor ANGLE nAngle UNDERLINE STRIKEOUT WIDTH nWidth
+                     TextAlign( 0 )
+                  ELSE
+                     @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT ( cText ) FONT cFont SIZE nSize ITALIC COLOR aColor ANGLE nAngle UNDERLINE STRIKEOUT WIDTH nWidth
+                  ENDIF
+               ELSE   // ! lStrike
+                  IF cAlign = "R"
+                     TextAlign( 2 )
+                     @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 + ( Len( cText ) ) * ::nmHor PRINT ( cText ) FONT cFont SIZE nSize  ITALIC COLOR aColor ANGLE nAngle UNDERLINE WIDTH nWidth
+                     TextAlign( 0 )
+                  ELSE
+                     @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT ( cText ) FONT cFont SIZE nSize ITALIC COLOR aColor ANGLE nAngle UNDERLINE WIDTH nWidth
+                  ENDIF
+               ENDIF
+            ELSE   // ! lUnder
+               IF lStrike
+                  IF cAlign = "R"
+                     TextAlign( 2 )
+                     @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 + ( Len( cText ) ) * ::nmHor PRINT ( cText ) FONT cFont SIZE nSize  ITALIC COLOR aColor ANGLE nAngle STRIKEOUT WIDTH nWidth
+                     TextAlign( 0 )
+                  ELSE
+                     @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT ( cText ) FONT cFont SIZE nSize ITALIC COLOR aColor ANGLE nAngle STRIKEOUT WIDTH nWidth
+                  ENDIF
+               ELSE   // ! lStrike
+                  IF cAlign = "R"
+                     TextAlign( 2 )
+                     @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 + ( Len( cText ) ) * ::nmHor PRINT ( cText ) FONT cFont SIZE nSize  ITALIC COLOR aColor ANGLE nAngle WIDTH nWidth
+                     TextAlign( 0 )
+                  ELSE
+                     @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT ( cText ) FONT cFont SIZE nSize ITALIC COLOR aColor ANGLE nAngle WIDTH nWidth
+                  ENDIF
+               ENDIF
             ENDIF
          ENDIF
-      OTHERWISE
-         IF ! lBold
-            IF cAlign = "R"
-               TextAlign( 2 )
-               @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 + ( Len( cText ) ) * ::nmHor PRINT ( cText ) FONT cFont SIZE nSize COLOR aColor
-               TextAlign( 0 )
-            ELSE
-               @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT ( cText ) FONT cFont SIZE nSize COLOR aColor
+      ELSE   // ! lItalic
+         IF lBold
+            IF lUnder
+               IF lStrike
+                  IF cAlign = "R"
+                     TextAlign( 2 )
+                     @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 + ( Len( cText ) ) * ::nmHor PRINT ( cText ) FONT cFont SIZE nSize  BOLD COLOR aColor ANGLE nAngle UNDERLINE STRIKEOUT WIDTH nWidth
+                     TextAlign( 0 )
+                  ELSE
+                     @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT ( cText ) FONT cFont SIZE nSize BOLD COLOR aColor ANGLE nAngle UNDERLINE STRIKEOUT WIDTH nWidth
+                  ENDIF
+               ELSE   // ! lStrike
+                  IF cAlign = "R"
+                     TextAlign( 2 )
+                     @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 + ( Len( cText ) ) * ::nmHor PRINT ( cText ) FONT cFont SIZE nSize  BOLD COLOR aColor ANGLE nAngle UNDERLINE WIDTH nWidth
+                     TextAlign( 0 )
+                  ELSE
+                     @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT ( cText ) FONT cFont SIZE nSize BOLD COLOR aColor ANGLE nAngle UNDERLINE WIDTH nWidth
+                  ENDIF
+               ENDIF
+            ELSE   // ! lUnder
+               IF lStrike
+                  IF cAlign = "R"
+                     TextAlign( 2 )
+                     @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 + ( Len( cText ) ) * ::nmHor PRINT ( cText ) FONT cFont SIZE nSize  BOLD COLOR aColor ANGLE nAngle STRIKEOUT WIDTH nWidth
+                     TextAlign( 0 )
+                  ELSE
+                     @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT ( cText ) FONT cFont SIZE nSize BOLD COLOR aColor ANGLE nAngle STRIKEOUT WIDTH nWidth
+                  ENDIF
+               ELSE   // ! lStrike
+                  IF cAlign = "R"
+                     TextAlign( 2 )
+                     @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 + ( Len( cText ) ) * ::nmHor PRINT ( cText ) FONT cFont SIZE nSize  BOLD COLOR aColor ANGLE nAngle WIDTH nWidth
+                     TextAlign( 0 )
+                  ELSE
+                     @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT ( cText ) FONT cFont SIZE nSize BOLD COLOR aColor ANGLE nAngle WIDTH nWidth
+                  ENDIF
+               ENDIF
             ENDIF
-         ELSE
-            IF cAlign = "R"
-               TextAlign( 2 )
-               @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 + ( Len( cText ) ) * ::nmHor PRINT ( cText ) FONT cFont SIZE nSize BOLD COLOR aColor
-               TextAlign( 0 )
-            ELSE
-               @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT ( cText ) FONT cFont SIZE nSize BOLD COLOR aColor
+         ELSE   // ! lBold
+            IF lUnder
+               IF lStrike
+                  IF cAlign = "R"
+                     TextAlign( 2 )
+                     @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 + ( Len( cText ) ) * ::nmHor PRINT ( cText ) FONT cFont SIZE nSize  COLOR aColor ANGLE nAngle UNDERLINE STRIKEOUT WIDTH nWidth
+                     TextAlign( 0 )
+                  ELSE
+                     @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT ( cText ) FONT cFont SIZE nSize COLOR aColor ANGLE nAngle UNDERLINE STRIKEOUT WIDTH nWidth
+                  ENDIF
+               ELSE   // ! lStrike
+                  IF cAlign = "R"
+                     TextAlign( 2 )
+                     @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 + ( Len( cText ) ) * ::nmHor PRINT ( cText ) FONT cFont SIZE nSize  COLOR aColor ANGLE nAngle UNDERLINE WIDTH nWidth
+                     TextAlign( 0 )
+                  ELSE
+                     @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT ( cText ) FONT cFont SIZE nSize COLOR aColor ANGLE nAngle UNDERLINE WIDTH nWidth
+                  ENDIF
+               ENDIF
+            ELSE   // ! lUnder
+               IF lStrike
+                  IF cAlign = "R"
+                     TextAlign( 2 )
+                     @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 + ( Len( cText ) ) * ::nmHor PRINT ( cText ) FONT cFont SIZE nSize  COLOR aColor ANGLE nAngle STRIKEOUT WIDTH nWidth
+                     TextAlign( 0 )
+                  ELSE
+                     @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT ( cText ) FONT cFont SIZE nSize COLOR aColor ANGLE nAngle STRIKEOUT WIDTH nWidth
+                  ENDIF
+               ELSE   // ! lStrike
+                  IF cAlign = "R"
+                     TextAlign( 2 )
+                     @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 + ( Len( cText ) ) * ::nmHor PRINT ( cText ) FONT cFont SIZE nSize  COLOR aColor ANGLE nAngle WIDTH nWidth
+                     TextAlign( 0 )
+                  ELSE
+                     @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT ( cText ) FONT cFont SIZE nSize COLOR aColor ANGLE nAngle WIDTH nWidth
+                  ENDIF
+               ENDIF
             ENDIF
          ENDIF
-      ENDCASE
+      ENDIF
    ENDIF
 RETURN Self
 
@@ -1082,8 +1336,6 @@ METHOD PrintLineX( nLin, nCol, nLinF, nColF, atColor, ntwPen ) CLASS TMINIPRINT
 *-----------------------------------------------------------------------------*
 LOCAL nVDispl := 1
 
-   DEFAULT atColor TO ::aColor
-
    IF ::cUnits = "MM"
       @ nLin, nCol PRINT LINE TO nLinF, nColF COLOR atColor PENWIDTH ntwPen
    ELSE
@@ -1095,8 +1347,6 @@ RETURN Self
 METHOD PrintRectangleX( nLin, nCol, nLinF, nColF, atColor, ntwPen ) CLASS TMINIPRINT
 *-----------------------------------------------------------------------------*
 LOCAL nVDispl := 1
-
-   DEFAULT atColor TO ::aColor
 
    IF ::cUnits = "MM"
       @ nLin, nCol PRINT RECTANGLE TO nLinF, nColF COLOR atColor PENWIDTH ntwPen
@@ -1264,8 +1514,6 @@ METHOD PrintRoundRectangleX( nLin, nCol, nLinF, nColF, atColor, ntwPen ) CLASS T
 *-----------------------------------------------------------------------------*
 LOCAL nVDispl := 1  // nVDispl := 1.009
 
-   DEFAULT atColor TO ::aColor
-
    IF ::cUnits = "MM"
       @ nLin, nCol PRINT RECTANGLE TO nLinF, nColF COLOR atColor PENWIDTH ntwPen ROUNDED
    ELSE
@@ -1279,24 +1527,24 @@ RETURN Self
 
 CLASS THBPRINTER FROM TPRINTBASE
 
-   VAR oHBPrn INIT Nil
+   DATA oHBPrn INIT Nil
 
-   METHOD InitX
    METHOD BeginDocX
-   METHOD EndDocX
    METHOD BeginPageX
+   METHOD EndDocX
    METHOD EndPageX
-   METHOD ReleaseX
+   METHOD GetDefPrinterX
+   METHOD InitX
+   METHOD PrintBarcodeX
    METHOD PrintDataX
    METHOD PrintImageX
    METHOD PrintLineX
    METHOD PrintRectangleX
+   METHOD PrintRoundRectangleX
+   METHOD ReleaseX
    METHOD SelPrinterX
-   METHOD GetDefPrinterX
    METHOD SetColorX
    METHOD SetPreviewSizeX
-   METHOD PrintRoundRectangleX
-   METHOD PrintBarcodeX
 
 ENDCLASS
 
@@ -1316,10 +1564,10 @@ RETURN Self
 METHOD BeginDocX() CLASS THBPRINTER
 *-----------------------------------------------------------------------------*
    START DOC NAME ::Cargo
-   DEFINE FONT "F0" NAME "Courier New" SIZE 10
-   DEFINE FONT "F1" NAME "Courier New" SIZE 10 BOLD
-   DEFINE FONT "F2" NAME "Courier New" SIZE 10 ITALIC
-   DEFINE FONT "F3" NAME "Courier New" SIZE 10 BOLD ITALIC
+   DEFINE FONT "F0" NAME ::cFontName SIZE ::nFontSize
+   SELECT FONT "F0"
+   DEFINE PEN "C0" WIDTH ::nwPen COLOR ::aColor
+   SELECT PEN "C0"
 RETURN Self
 
 *-----------------------------------------------------------------------------*
@@ -1347,67 +1595,92 @@ METHOD ReleaseX() CLASS THBPRINTER
 RETURN Self
 
 *-----------------------------------------------------------------------------*
-METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, cText, lItalic, nAngle ) CLASS THBPRINTER
+METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, cText, lItalic, nAngle, lUnder, lStrike, nWidth ) CLASS THBPRINTER
 *-----------------------------------------------------------------------------*
    Empty( uData )
-   DEFAULT aColor TO ::aFontColor
    Empty( nLen )
-
-   SELECT FONT "F0"
-   CHANGE FONT "F0" NAME cFont SIZE nSize ANGLE nAngle
-
-   IF lBold
-      SELECT FONT "F1"
-      CHANGE FONT "F1" NAME cFont SIZE nSize ANGLE nAngle BOLD
-   ENDIF
 
    IF lItalic
       IF lBold
-         SELECT FONT "F3"
-         CHANGE FONT "F3" NAME cFont SIZE nSize ANGLE nAngle BOLD ITALIC
-      ELSE
-         SELECT FONT "F2"
-         CHANGE FONT "F2" NAME cFont SIZE nSize ANGLE nAngle ITALIC
+         IF lUnder
+            IF lStrike
+               CHANGE FONT "F0" NAME cFont SIZE nSize WIDTH nWidth ANGLE nAngle ITALIC BOLD UNDERLINE STRIKEOUT
+            ELSE   // ! lStrike
+               CHANGE FONT "F0" NAME cFont SIZE nSize WIDTH nWidth ANGLE nAngle ITALIC BOLD UNDERLINE NOSTRIKEOUT
+            ENDIF
+         ELSE   // ! lUnder
+            IF lStrike
+               CHANGE FONT "F0" NAME cFont SIZE nSize WIDTH nWidth ANGLE nAngle ITALIC BOLD NOUNDERLINE STRIKEOUT
+            ELSE   // ! lStrike
+               CHANGE FONT "F0" NAME cFont SIZE nSize WIDTH nWidth ANGLE nAngle ITALIC BOLD NOUNDERLINE NOSTRIKEOUT
+            ENDIF
+         ENDIF
+      ELSE   // ! lBold
+         IF lUnder
+            IF lStrike
+               CHANGE FONT "F0" NAME cFont SIZE nSize WIDTH nWidth ANGLE nAngle ITALIC NOBOLD UNDERLINE STRIKEOUT
+            ELSE   // ! lStrike
+               CHANGE FONT "F0" NAME cFont SIZE nSize WIDTH nWidth ANGLE nAngle ITALIC NOBOLD UNDERLINE NOSTRIKEOUT
+            ENDIF
+         ELSE   // ! lUnder
+            IF lStrike
+               CHANGE FONT "F0" NAME cFont SIZE nSize WIDTH nWidth ANGLE nAngle ITALIC NOBOLD NOUNDERLINE STRIKEOUT
+            ELSE   // ! lStrike
+               CHANGE FONT "F0" NAME cFont SIZE nSize WIDTH nWidth ANGLE nAngle ITALIC NOBOLD NOUNDERLINE NOSTRIKEOUT
+            ENDIF
+         ENDIF
+      ENDIF
+   ELSE   // ! lItalic
+      IF lBold
+         IF lUnder
+            IF lStrike
+               CHANGE FONT "F0" NAME cFont SIZE nSize WIDTH nWidth ANGLE nAngle NOITALIC BOLD UNDERLINE STRIKEOUT
+            ELSE   // ! lStrike
+               CHANGE FONT "F0" NAME cFont SIZE nSize WIDTH nWidth ANGLE nAngle NOITALIC BOLD UNDERLINE NOSTRIKEOUT
+            ENDIF
+         ELSE   // ! lUnder
+            IF lStrike
+               CHANGE FONT "F0" NAME cFont SIZE nSize WIDTH nWidth ANGLE nAngle NOITALIC BOLD NOUNDERLINE STRIKEOUT
+            ELSE   // ! lStrike
+               CHANGE FONT "F0" NAME cFont SIZE nSize WIDTH nWidth ANGLE nAngle NOITALIC BOLD NOUNDERLINE NOSTRIKEOUT
+            ENDIF
+         ENDIF
+      ELSE   // ! lBold
+         IF lUnder
+            IF lStrike
+               CHANGE FONT "F0" NAME cFont SIZE nSize WIDTH nWidth ANGLE nAngle NOITALIC NOBOLD UNDERLINE STRIKEOUT
+            ELSE   // ! lStrike
+               CHANGE FONT "F0" NAME cFont SIZE nSize WIDTH nWidth ANGLE nAngle NOITALIC NOBOLD UNDERLINE NOSTRIKEOUT
+            ENDIF
+         ELSE   // ! lUnder
+            IF lStrike
+               CHANGE FONT "F0" NAME cFont SIZE nSize WIDTH nWidth ANGLE nAngle NOITALIC NOBOLD NOUNDERLINE STRIKEOUT
+            ELSE   // ! lStrike
+               CHANGE FONT "F0" NAME cFont SIZE nSize WIDTH nWidth ANGLE nAngle NOITALIC NOBOLD NOUNDERLINE NOSTRIKEOUT
+            ENDIF
+         ENDIF
       ENDIF
    ENDIF
+
+   SELECT FONT "F0"
 
    SET TEXTCOLOR aColor
 
    IF ::cUnits = "MM"
-      IF ! lBold
-         IF cAlign = "R"
-            @ nLin, nCol SAY ( cText ) ALIGN TA_RIGHT TO PRINT
-         ELSEIF cAlign = "C"
-            @ nLin, nCol SAY ( cText ) ALIGN TA_CENTER TO PRINT
-         ELSE
-            @ nLin, nCol SAY ( cText ) TO PRINT
-         ENDIF
+      IF cAlign = "R"
+         @ nLin, nCol SAY ( cText ) ALIGN TA_RIGHT TO PRINT
+      ELSEIF cAlign = "C"
+         @ nLin, nCol SAY ( cText ) ALIGN TA_CENTER TO PRINT
       ELSE
-         IF cAlign = "R"
-            @ nLin, nCol SAY ( cText ) ALIGN TA_RIGHT TO PRINT
-         ELSEIF cAlign = "C"
-            @ nLin, nCol SAY ( cText ) ALIGN TA_CENTER TO PRINT
-         ELSE
-            @ nLin, nCol SAY ( cText ) TO PRINT
-         ENDIF
+         @ nLin, nCol SAY ( cText ) TO PRINT
       ENDIF
    ELSE
-      IF ! lBold
-         IF cAlign = "R"
-            SET TEXT ALIGN RIGHT
-            @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 + ( Len( cText ) ) * ::nmHor SAY ( cText ) TO PRINT
-            SET TEXT ALIGN LEFT
-         ELSE
-            @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 SAY ( cText ) TO PRINT
-         ENDIF
+      IF cAlign = "R"
+         SET TEXT ALIGN RIGHT
+         @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 + ( Len( cText ) ) * ::nmHor SAY ( cText ) TO PRINT
+         SET TEXT ALIGN LEFT
       ELSE
-         IF cAlign = "R"
-            SET TEXT ALIGN RIGHT
-            @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 + ( Len( cText ) ) * ::nmHor SAY ( cText ) TO PRINT
-            SET TEXT ALIGN LEFT
-         ELSE
-            @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 SAY ( cText ) TO PRINT
-         ENDIF
+         @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 SAY ( cText ) TO PRINT
       ENDIF
    ENDIF
 RETURN Self
@@ -1492,17 +1765,18 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
       RETURN NIL
    ENDIF
 
-   DEFINE FONT "f0" NAME ::cFontName SIZE ::nFontSize
-   DEFINE FONT "f1" NAME ::cFontName SIZE ::nFontSize BOLD
+   DEFINE FONT "F0" NAME ::cFontName SIZE ::nFontSize
+   SELECT FONT "F0"
 
    DEFINE PEN "C0" WIDTH ::nwPen COLOR ::aColor
    SELECT PEN "C0"
 
    IF lLandscape
-      SET PAGE ORIENTATION DMORIENT_LANDSCAPE FONT "f0"
+      SET PAGE ORIENTATION DMORIENT_LANDSCAPE FONT "F0"
    ELSE
-      SET PAGE ORIENTATION DMORIENT_PORTRAIT  FONT "f0"
+      SET PAGE ORIENTATION DMORIENT_PORTRAIT  FONT "F0"
    ENDIF
+
    IF nPaperSize # NIL
       SET PAGE PAPERSIZE nPaperSize
    ENDIF
@@ -1602,23 +1876,25 @@ RETURN Self
 
 CLASS TDOSPRINT FROM TPRINTBASE
 
-   DATA cString INIT ""
-   DATA cbusca  INIT ""
-   DATA nOccur  INIT 0
-   DATA liswin  INIT .F.
+   DATA cbusca                   INIT ""
+   DATA cString                  INIT ""
+   DATA liswin                   INIT .F.
+   DATA nOccur                   INIT 0
 
-   METHOD InitX
    METHOD BeginDocX
-   METHOD EndDocX
    METHOD BeginPageX
-   METHOD EndPageX
-   METHOD PrintDataX
-   METHOD PrintLineX
-   METHOD SelPrinterX
    METHOD CondenDosX
-   METHOD NormalDosX
-   METHOD SearchString
+   METHOD EndDocX
+   METHOD EndPageX
+   METHOD InitX
    METHOD NextSearch
+   METHOD NormalDosX
+   METHOD PrintDataX
+   METHOD PrintImage             BLOCK { || NIL }
+   METHOD PrintLineX
+   METHOD SearchString
+   METHOD SelPrinterX
+   METHOD SetPreviewSize         BLOCK { || NIL }
 
 ENDCLASS
 
@@ -1679,7 +1955,7 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX ) CLASS
 RETURN Self
 
 *-----------------------------------------------------------------------------*
-FUNCTION aLocalPorts()
+STATIC FUNCTION aLocalPorts()
 *-----------------------------------------------------------------------------*
 LOCAL aPrnPort, aResults := {}
 
@@ -1738,13 +2014,6 @@ LOCAL nHandle, wr, nx, ny
             BUTTON but_5 CAPTION _OOHG_Messages( 12, 26 ) ACTION ::SearchString( print_preview.edit_p.Value ) TOOLTIP _OOHG_Messages( 12, 27 )
             BUTTON but_6 CAPTION _OOHG_Messages( 12, 28 ) ACTION ::NextSearch() TOOLTIP _OOHG_Messages( 12, 29 )
          END TOOLBAR
-
-//       @ 010, nx - 40 BUTTON but_4 CAPTION "X" WIDTH 30 ACTION ( print_preview.Release() ) TOOLTIP _OOHG_Messages( 12, 19 )
-//       @ 090, nx - 40 BUTTON but_1 CAPTION "+ +" WIDTH 30 ACTION Zoom( "+" ) TOOLTIP _OOHG_Messages( 12, 21 )
-//       @ 170, nx - 40 BUTTON but_2 CAPTION "- -" WIDTH 30 ACTION Zoom( "-" ) TOOLTIP _OOHG_Messages( 12, 23 )
-//       @ 250, nx - 40 BUTTON but_3 CAPTION "P" WIDTH 30 ACTION ::PrintMode() TOOLTIP _OOHG_Messages( 12, 25 ) + ::cPrintLibrary
-//       @ 330, nx - 40 BUTTON but_5 CAPTION "S" WIDTH 30 ACTION ( ::SearchString( print_preview.edit_p.Value ) ) TOOLTIP _OOHG_Messages( 12, 27 )
-//       @ 410, nx - 40 BUTTON but_6 CAPTION "N" WIDTH 30 ACTION ::NextSearch() TOOLTIP _OOHG_Messages( 12, 29 )
       END WINDOW
 
       CENTER WINDOW print_preview
@@ -1772,7 +2041,7 @@ METHOD EndPageX() CLASS TDOSPRINT
 RETURN Self
 
 *-----------------------------------------------------------------------------*
-METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, cText, lItalic ) CLASS TDOSPRINT
+METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, cText, lItalic, nAngle, lUnder, lStrike, nWidth ) CLASS TDOSPRINT
 *-----------------------------------------------------------------------------*
    Empty( uData )
    Empty( cFont )
@@ -1780,12 +2049,16 @@ METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen,
    Empty( aColor )
    Empty( cAlign )
    Empty( nLen )
-   Empty( lItalic)
+   Empty( lItalic )
+   Empty( nAngle )
+   Empty( lUnder )
+   Empty( lStrike )
+   Empty( nWidth )
 
-   IF ! lBold
+   IF lBold
+      @ nLin, nCol SAY ( cText )
       @ nLin, nCol SAY ( cText )
    ELSE
-      @ nLin, nCol SAY ( cText )
       @ nLin, nCol SAY ( cText )
    ENDIF
 RETURN Self
@@ -1939,18 +2212,24 @@ RETURN Self
 // Based upon a contribution of Jose Miguel josemisu@yahoo.com.ar
 CLASS TEXCELPRINT FROM TPRINTBASE
 
-    DATA oExcel  INIT NIL
-    DATA oHoja   INIT NIL
-    DATA cTlinea INIT ""
+   DATA cTlinea                  INIT ""
+   DATA oExcel                   INIT NIL
+   DATA oHoja                    INIT NIL
 
-   METHOD InitX
    METHOD BeginDocX
    METHOD EndDocX
    METHOD EndPageX
-   METHOD ReleaseX
+   METHOD InitX
    METHOD PrintDataX
    METHOD PrintImageX
+   METHOD ReleaseX
    METHOD SelPrinterX
+   METHOD SetPreviewSize         BLOCK { || NIL }
+/*
+   TODO: Add METHOD PrintLineX using cell borders.
+   TODO: Add METHOD PrintRectangleX using cell borders.
+   TODO: Add METHOD BeginPageX using Worksheets.Add()
+*/
 
 ENDCLASS
 
@@ -1986,7 +2265,7 @@ RETURN Self
 METHOD BeginDocX() CLASS TEXCELPRINT
 *-----------------------------------------------------------------------------*
    ::oExcel:WorkBooks:Add()
-   ::oExcel:Visible:=.F.
+   ::oExcel:Visible := .F.
    ::oHoja := ::oExcel:ActiveSheet()
    ::oHoja:Name := ::Cargo
    ::oHoja:Cells:Font:Name := ::cFontName
@@ -2002,33 +2281,25 @@ LOCAL nCol, cName, cExt        //, nNum
        ::oHoja:Columns( nCol ):AutoFit()
    NEXT
 
-// aVersion := { ;
-//               { "12.0", "2007" }, ;
-//               { "11.0", "2003" }, ;
-//               { "10.0", "2002/XP" }, ;
-//               { "9.0", "2000" }, ;
-//               { "8.0", "97" }, ;
-//               { "7.0", "95" }, ;
-//               { "6.0", "6"} }
-
    ::oExcel:DisplayAlerts :=.F.
    ::oHoja:Cells( 1, 1 ):Select()
    ::oExcel:Visible := .F.
 
    IF Val( ::oExcel:Version ) > 11.5
-//    nNum := 46                       // I'm not sure
       cExt := "xlsx"
    ELSE
-//    nNum := 39
       cExt := "xls"
    ENDIF
 
    cName := ParseName( ::Cargo, cExt )
 
-   ::oHoja:SaveAs( cName )
-// ::oHoja:SaveAs( cName, nNum, "", "", .F., .F. )
+   BEGIN SEQUENCE WITH { |oErr| Break( oErr ) }
+      ::oHoja:SaveAs( cName )
+   RECOVER
+      MsgInfo( _OOHG_Messages( 12, 45 ) + Chr( 13 ) + cName )
+   END SEQUENCE
 
-   InKey( 1 )
+   HB_IdleSleep( 1 )
    ::oExcel:Quit()
    ::oHoja := NIL
    ::oExcel := NIL
@@ -2044,7 +2315,14 @@ RETURN Self
 *-----------------------------------------------------------------------------*
 METHOD ReleaseX() CLASS TEXCELPRINT
 *-----------------------------------------------------------------------------*
+   IF ::oHoja # NIL
+      ::oExcel:DisplayAlerts := .F.
+      ::oHoja:Close( .F. )
+   ENDIF
    ::oHoja := NIL
+   IF ::oExcel # NIL
+      ::oExcel:Quit()
+   ENDIF
    ::oExcel := NIL
 RETURN Self
 
@@ -2078,13 +2356,12 @@ LOCAL cRange
 RETURN Self
 
 *-----------------------------------------------------------------------------*
-METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, cText, lItalic ) CLASS TEXCELPRINT
+METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, cText, lItalic, nAngle, lUnder, lStrike, nWidth ) CLASS TEXCELPRINT
 *-----------------------------------------------------------------------------*
 LOCAL aLinCellX
-
    Empty( uData )
-   Empty( aColor )
    Empty( nLen )
+   Empty( nWidth )
 
    nLin++
    IF ::nUnitsLin > 1
@@ -2100,6 +2377,7 @@ LOCAL aLinCellX
    aLinCellX := ::aLinCelda[ nLin ]
 
    ::oHoja:Cells( nLin, aLinCellX ):Value := "'" + Space( nCol ) + cText
+
    IF cFont # ::cFontName
       ::oHoja:Cells( nLin, aLinCellX ):Font:Name := cFont
    ENDIF
@@ -2112,13 +2390,28 @@ LOCAL aLinCellX
    IF lItalic
       ::oHoja:Cells( nLin, aLinCellX ):Font:Italic := lItalic
    ENDIF
-
    DO CASE
    CASE cAlign = "R"
       ::oHoja:Cells( nLin, aLinCellX ):HorizontalAlignment := -4152  // Right
    CASE cAlign = "C"
       ::oHoja:Cells( nLin, aLinCellX ):HorizontalAlignment := -4108  // Center
    ENDCASE
+   ::oHoja:Cells( nLin, aLinCellX ):Font:Color := RGB( aColor[ 3 ], aColor[ 2 ], aColor[ 1 ] )
+   ::oHoja:Cells( nLin, aLinCellX ):Orientation := nAngle
+   /*
+      Orientation valid values are:
+      -90 <= nAngle <= 90
+      xlDownward   -4170 Text runs from top to bottom (each
+                         character is rotated -90 degrees).
+      xlHorizontal -4128 Text runs horizontally.
+      xlUpward     -4171 Text runs from bottom to top (each
+                         character is rotated 90 degrees).
+      xlVertical   -4166 Text runs from top to bottom (but
+                         characters are not rotated).
+   */
+   ::oHoja:Cells( nLin, aLinCellX ):Font:Underline := IF( lUnder, 1, 0 )
+   ::oHoja:Cells( nLin, aLinCellX ):Font:StrikeThrough := lStrike
+
 RETURN Self
 
 *-----------------------------------------------------------------------------*
@@ -2151,21 +2444,22 @@ RETURN Self
 
 
 
-// Ciro 2011/8/19
 CLASS TSPREADSHEETPRINT FROM TPRINTBASE
 
-   DATA aDoc    INIT {}
-   DATA nXls    INIT 0
-   DATA nLinRel INIT 0
-   DATA nLpp    INIT 60        // lines per page
+   DATA aDoc                     INIT {}
+   DATA nLinRel                  INIT 0
+   DATA nLpp                     INIT 60        // lines per page
+   DATA nXls                     INIT 0
 
-   METHOD InitX
+   METHOD AddPage
    METHOD BeginDocX
    METHOD EndDocX
    METHOD EndPageX
-   METHOD ReleaseX
+   METHOD InitX
    METHOD PrintDataX
-   METHOD AddPage
+   METHOD PrintImage             BLOCK { || NIL }
+   METHOD ReleaseX
+   METHOD SetPreviewSize         BLOCK { || NIL }
 
 ENDCLASS
 
@@ -2268,7 +2562,7 @@ METHOD ReleaseX() CLASS TSPREADSHEETPRINT
 RETURN Self
 
 *-----------------------------------------------------------------------------*
-METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, cText, lItalic ) CLASS TSPREADSHEETPRINT
+METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, cText, lItalic, nAngle, lUnder, lStrike, nWidth ) CLASS TSPREADSHEETPRINT
 *-----------------------------------------------------------------------------*
 LOCAL cLineI, cLineF
 
@@ -2280,6 +2574,10 @@ LOCAL cLineI, cLineF
    Empty( nLen )
    Empty( cText )
    Empty( lItalic )
+   Empty( nAngle )
+   Empty( lUnder )
+   Empty( lStrike )
+   Empty( nWidth )
 
    nLin++
    uData := AutoType( uData )
@@ -2318,10 +2616,15 @@ LOCAL nCol, cName
    cName := ParseName( ::Cargo, "html" )
    ::oExcel:DisplayAlerts := .F.
 
-   ::oHoja:SaveAs( cName, 44, "", "", .F., .F. )
+   BEGIN SEQUENCE WITH { |oErr| Break( oErr ) }
+      ::oHoja:SaveAs( cName, 44, "", "", .F., .F. )
+   RECOVER
+      MsgInfo( _OOHG_Messages( 12, 45 ) + Chr( 13 ) + cName )
+   END SEQUENCE
 
+   HB_IdleSleep( 1 )
    ::oExcel:Quit()
-   ::ohoja := NIL
+   ::oHoja := NIL
    ::oExcel := NIL
 
    IF ::ImPreview
@@ -2338,18 +2641,25 @@ RETURN Self
 
 CLASS TRTFPRINT FROM TPRINTBASE
 
-   DATA aPrintRtf  INIT {}
-   DATA nPrintRtf  INIT 10
-   DATA lPrintRtf  INIT .F.
-   DATA lIndentAll INIT .F.
+   DATA aPrintRtf                INIT {}
+   DATA lIndentAll               INIT .F.
+   DATA lPrintRtf                INIT .F.
+   DATA nPrintRtf                INIT 10
 
-   METHOD InitX
    METHOD BeginDocX
    METHOD EndDocX
    METHOD EndPageX
+   METHOD InitX
    METHOD PrintDataX
+   METHOD PrintImage             BLOCK { || NIL }
    METHOD PrintLineX
    METHOD SelPrinterX
+   METHOD SetPreviewSize         BLOCK { || NIL }
+/*
+   TODO: Add METHOD PrintRectangleX
+   TODO: Add METHOD PrintRoundRectangleX
+   TODO: Add BeginPageX
+*/
 
 ENDCLASS
 
@@ -2367,7 +2677,12 @@ LOCAL cMarginInf := LTrim( Str( Round( 15 * 56.7, 0 ) ) )
 LOCAL cMarginLef := LTrim( Str( Round( 10 * 56.7, 0 ) ) )
 LOCAL cMarginRig := LTrim( Str( Round( 10 * 56.7, 0 ) ) )
 
-// If you insert a new font in the document's font table please add it also to array aFontTable in Method PrinDataX
+/*
+   If you insert a new font in the document's font table please add it also to array aFontTable in Method PrinDataX
+
+   Font table starts with {\fonttbl
+   Each font definition starts with {\fNNN
+*/
    AAdd( ::aPrintRtf, "{\rtf1\ansi\ansicpg1252\uc1 \deff0\deflang3082\deflangfe3082{\fonttbl{\f0\froman\fcharset0\fprq2{\*\panose 02020603050405020304}Times New Roman;}{\f2\fmodern\fcharset0\fprq1{\*\panose 02070309020205020404}Courier New;}" )
    AAdd( ::aPrintRtf, "{\f106\froman\fcharset238\fprq2 Times New Roman CE;}{\f107\froman\fcharset204\fprq2 Times New Roman Cyr;}{\f109\froman\fcharset161\fprq2 Times New Roman Greek;}{\f110\froman\fcharset162\fprq2 Times New Roman Tur;}" )
    AAdd( ::aPrintRtf, "{\f111\froman\fcharset177\fprq2 Times New Roman (Hebrew);}{\f112\froman\fcharset178\fprq2 Times New Roman (Arabic);}{\f113\froman\fcharset186\fprq2 Times New Roman Baltic;}{\f122\fmodern\fcharset238\fprq1 Courier New CE;}" )
@@ -2376,7 +2691,6 @@ LOCAL cMarginRig := LTrim( Str( Round( 10 * 56.7, 0 ) ) )
    AAdd( ::aPrintRtf, "\red255\green255\blue0;\red255\green255\blue255;\red0\green0\blue128;\red0\green128\blue128;\red0\green128\blue0;\red128\green0\blue128;\red128\green0\blue0;\red128\green128\blue0;\red128\green128\blue128;\red192\green192\blue192;}{\stylesheet{" )
    AAdd( ::aPrintRtf, "\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang3082\langfe3082\cgrid\langnp3082\langfenp3082 \snext0 Normal;}{\*\cs10 \additive Default Paragraph Font;}}{\info{\author nobody }{\operator Jose Miguel}" )
    AAdd( ::aPrintRtf, "{\creatim\yr2000\mo12\dy29\hr17\min26}{\revtim\yr2002\mo3\dy6\hr9\min32}{\printim\yr2002\mo3\dy4\hr16\min32}{\version10}{\edmins16}{\nofpages1}{\nofwords167}{\nofchars954}{\*\company xyz}{\nofcharsws0}{\vern8249}}" )
-// AAdd( ::aPrintRtf, "\paperw11907\paperh16840\margl284\margr284\margt1134\margb1134 \widowctrl\ftnbj\aenddoc\hyphhotz425\noxlattoyen\expshrtn\noultrlspc\dntblnsbdb\nospaceforul\hyphcaps0\horzdoc\dghspace120\dgvspace120\dghorigin1701\dgvorigin1984\dghshow0\dgvshow3" )
    AAdd( ::aPrintRtf, IIF( ::lPrintRtf, "\paperw16840\paperh11907", "\paperw11907\paperh16840" ) + ;
                                         "\margl" + cMarginLef + "\margr" + cMarginRig + "\margt" + cMarginSup + "\margb" + cMarginInf + ;
                                         " \widowctrl\ftnbj\aenddoc\hyphhotz425\noxlattoyen\expshrtn\noultrlspc\dntblnsbdb\nospaceforul\hyphcaps0\horzdoc\dghspace120\dgvspace120\dghorigin1701\dgvorigin1984\dghshow0\dgvshow3" )
@@ -2480,12 +2794,44 @@ LOCAL nLin, i1, i2
       ENDIF
 
       IF ::cUnits = "MM"
-         ::aPrintRtf[ Len( ::aPrintRtf ) ] := ::aPrintRtf[ Len( ::aPrintRtf ) ] + "\tab " + if( ::aLinCelda[ i1, 6 ], "\b ", "" ) + ::aLinCelda[ i1, 3 ] + if( ::aLinCelda[ i1, 6 ], "\b0", "" )
+         ::aPrintRtf[ Len( ::aPrintRtf ) ] := ::aPrintRtf[ Len( ::aPrintRtf ) ] + "\tab " + ;
+                                              if( ::aLinCelda[ i1, 6 ], "\b ", "" ) + ;
+                                              if( ::aLinCelda[ i1, 7 ], "\i ", "" ) + ;
+                                              if( ::aLinCelda[ i1, 8 ], "\ul ", "" ) + ;
+                                              if( ::aLinCelda[ i1, 9 ], "\strike ", "" ) + ;
+                                              ::aLinCelda[ i1, 3 ] + ;
+                                              if( ::aLinCelda[ i1, 6 ], "\b0", "" ) + ;
+                                              if( ::aLinCelda[ i1, 7 ], "\i0", "" ) + ;
+                                              if( ::aLinCelda[ i1, 8 ], "\ul0 ", "" ) + ;
+                                              if( ::aLinCelda[ i1, 9 ], "\strike0 ", "" )
       ELSE
          IF ::aLinCelda[ i1, 6 ]        // Bold
-            ::aPrintRtf[ Len( ::aPrintRtf ) ] := ::aPrintRtf[ Len( ::aPrintRtf ) ] + "\b " + space(::aLinCelda[ i1, 2 ]) + ::aLinCelda[ i1, 3 ] + "\b0"
-         ELSE
-            ::aPrintRtf[ Len( ::aPrintRtf ) ] := ::aPrintRtf[ Len( ::aPrintRtf ) ] + if( Right( ::aPrintRtf[ Len( ::aPrintRtf ) ], 1 ) == " ", "", " " ) + space(::aLinCelda[ i1, 2 ]) + ::aLinCelda[ i1, 3 ]
+            ::aPrintRtf[ Len( ::aPrintRtf ) ] += "\b "
+         ENDIF
+         IF ::aLinCelda[ i1, 7 ]        // Italic
+            ::aPrintRtf[ Len( ::aPrintRtf ) ] += "\i "
+         ENDIF
+         IF ::aLinCelda[ i1, 8 ]        // Underline
+            ::aPrintRtf[ Len( ::aPrintRtf ) ] += "\ul "
+         ENDIF
+         IF ::aLinCelda[ i1, 9 ]        // Strikeout
+            ::aPrintRtf[ Len( ::aPrintRtf ) ] += "\strike "
+         ENDIF
+         IF Right( ::aPrintRtf[ Len( ::aPrintRtf ) ], 1 ) # " "
+            ::aPrintRtf[ Len( ::aPrintRtf ) ] += " "
+         ENDIF
+         ::aPrintRtf[ Len( ::aPrintRtf ) ] += space(::aLinCelda[ i1, 2 ]) + ::aLinCelda[ i1, 3 ]
+         IF ::aLinCelda[ i1, 9 ]        // Strikeout
+            ::aPrintRtf[ Len( ::aPrintRtf ) ] += "\strike0"
+         ENDIF
+         IF ::aLinCelda[ i1, 8 ]        // Underline
+            ::aPrintRtf[ Len( ::aPrintRtf ) ] += "\ul0"
+         ENDIF
+         IF ::aLinCelda[ i1, 7 ]        // Italic
+            ::aPrintRtf[ Len( ::aPrintRtf ) ] += "\i0"
+         ENDIF
+         IF ::aLinCelda[ i1, 6 ]        // Bold
+            ::aPrintRtf[ Len( ::aPrintRtf ) ] += "\b0"
          ENDIF
       ENDIF
    NEXT
@@ -2495,7 +2841,7 @@ LOCAL nLin, i1, i2
 RETURN Self
 
 *-----------------------------------------------------------------------------*
-METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, cText, lItalic ) CLASS TRTFPRINT
+METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, cText, lItalic, nAngle, lUnder, lStrike, nWidth ) CLASS TRTFPRINT
 *-----------------------------------------------------------------------------*
 LOCAL nFontTableStart, i, j, aFonts, cFontNumber, cNext, nParLevel, cFontName
 LOCAL nNextFont := 201, aFontTable := { {"0",   "TIMES NEW ROMAN" }, ;
@@ -2519,7 +2865,8 @@ LOCAL nNextFont := 201, aFontTable := { {"0",   "TIMES NEW ROMAN" }, ;
    Empty( cFont )
    Empty( aColor )
    Empty( nLen )
-   Empty( lItalic )
+   Empty( nAngle )
+   Empty( nWidth )
 
    nLin++
    IF ::nUnitsLin > 1
@@ -2655,7 +3002,7 @@ LOCAL nNextFont := 201, aFontTable := { {"0",   "TIMES NEW ROMAN" }, ;
       ENDIF
    ENDIF
 
-   AAdd( ::aLinCelda, { nLin, nCol, Space( ::nLMargin ) + cText, nSize, cAlign, lBold } )
+   AAdd( ::aLinCelda, { nLin, nCol, Space( ::nLMargin ) + cText, nSize, cAlign, lBold, lItalic, lUnder, lStrike } )
 RETURN Self
 
 *-----------------------------------------------------------------------------*
@@ -2688,14 +3035,16 @@ RETURN Self
 
 CLASS TCSVPRINT FROM TPRINTBASE
 
-   DATA aPrintCsv INIT {}
+   DATA aPrintCsv                INIT {}
 
-   METHOD InitX
    METHOD EndDocX
    METHOD EndPageX
+   METHOD InitX
    METHOD PrintDataX
+   METHOD PrintImage             BLOCK { || NIL }
    METHOD PrintLineX
    METHOD SelPrinterX
+   METHOD SetPreviewSize         BLOCK { || NIL }
 
 ENDCLASS
 
@@ -2755,7 +3104,7 @@ LOCAL nLin, i
 RETURN Self
 
 *-----------------------------------------------------------------------------*
-METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, cText, lItalic ) CLASS TCSVPRINT
+METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, cText, lItalic, nAngle, lUnder, lStrike, nWidth ) CLASS TCSVPRINT
 *-----------------------------------------------------------------------------*
    Empty( uData )
    Empty( cFont )
@@ -2763,6 +3112,10 @@ METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen,
    Empty( aColor )
    Empty( nLen )
    Empty( lItalic )
+   Empty( nAngle )
+   Empty( lUnder )
+   Empty( lStrike )
+   Empty( nWidth )
 
    nLin ++
    IF ::nUnitsLin > 1
@@ -2803,25 +3156,26 @@ RETURN Self
 
 CLASS TPDFPRINT FROM TPRINTBASE
 
-   DATA oPDF        AS OBJECT                     // the pdf object
-   DATA cDocument   AS CHARACTER INIT ""          // document's name
-   DATA cPageSize   AS CHARACTER INIT ""          // page size
-   DATA cPageOrient AS CHARACTER INIT ""          // P = portrait, L = Landscape
-   DATA nFontType   AS NUMERIC   INIT 1           // font type (normal=0 or bold=1)
-   DATA lPreview    AS LOGICAL   INIT .F.         // .T. will open the document after creation
    DATA aPaper      AS ARRAY     INIT {} HIDDEN   // paper types supported by pdf class
+   DATA cDocument   AS CHARACTER INIT ""          // document's name
+   DATA cPageOrient AS CHARACTER INIT ""          // P = portrait, L = Landscape
+   DATA cPageSize   AS CHARACTER INIT ""          // page size
+   DATA lPreview    AS LOGICAL   INIT .F.         // .T. will open the document after creation
+   DATA nFontType   AS NUMERIC   INIT 1           // font type (normal=0 or bold=1)
+   DATA oPDF        AS OBJECT                     // the pdf object
 
-   METHOD InitX
    METHOD BeginDocX
-   METHOD EndDocX
    METHOD BeginPageX
-   METHOD PrintDataX
+   METHOD EndDocX
+   METHOD InitX
    METHOD PrintBarcodeX
+   METHOD PrintDataX
    METHOD PrintImageX
    METHOD PrintLineX
    METHOD PrintRectangleX
-   METHOD SelPrinterX
    METHOD PrintRoundRectangleX
+   METHOD SelPrinterX
+   METHOD SetPreviewSize         BLOCK { || NIL }
 
 ENDCLASS
 
@@ -2908,27 +3262,18 @@ METHOD BeginPageX() CLASS TPDFPRINT
 RETURN Self
 
 *-----------------------------------------------------------------------------*
-METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, cText, lItalic ) CLASS TPDFPRINT
+METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, cText, lItalic, nAngle, lUnder, lStrike, nWidth ) CLASS TPDFPRINT
 *-----------------------------------------------------------------------------*
 LOCAL nType
 LOCAL cColor := Chr( 253 )
 LOCAL i
-
-   DEFAULT cFont  TO ::cFontName
-   DEFAULT nSize  TO ::nFontSize
-   DEFAULT aColor TO ::aFontColor
-
-   IF ! HB_IsLogical( lBold )
-      lBold := .F.
-   ENDIF
-
-   IF ! HB_IsLogical( lItalic )
-      lItalic := .F.
-   ENDIF
-
    Empty( uData )
    Empty( cAlign )
    Empty( nLen )
+   Empty( nAngle )
+   Empty( lUnder )
+   Empty( lStrike )
+   Empty( nWidth )
 
    FOR Each i in aColor
       cColor += Chr( i )
@@ -2944,7 +3289,7 @@ LOCAL i
       IF lBold
          nType := 3   // bold and italic
       ELSE
-         nType:= 2    // only italic
+         nType := 2    // only italic
       ENDIF
    ENDIF
 
@@ -3078,21 +3423,28 @@ RETURN Self
 // CALC contributed by Jose Miguel, adapted by CVC
 CLASS TCALCPRINT FROM TPRINTBASE
 
-    DATA oServiceManager INIT NIL
-    DATA oDesktop        INIT NIL
-    DATA oDocument       INIT NIL
-    DATA oSchedule       INIT NIL
-    DATA oSheet          INIT NIL
-    DATA oCell           INIT NIL
-    DATA oColums         INIT NIL
-    DATA oColumn         INIT NIL
+   DATA oCell                    INIT NIL
+   DATA oColumn                  INIT NIL
+   DATA oColums                  INIT NIL
+   DATA oDesktop                 INIT NIL
+   DATA oDocument                INIT NIL
+   DATA oSchedule                INIT NIL
+   DATA oServiceManager          INIT NIL
+   DATA oSheet                   INIT NIL
 
-   METHOD InitX
    METHOD BeginDocX
    METHOD EndDocX
    METHOD EndPageX
+   METHOD InitX
    METHOD PrintDataX
    METHOD SelPrinterX
+   METHOD SetPreviewSize         BLOCK { || NIL }
+/*
+   TODO: Add METHOD PrintImageX
+   TODO: Add METHOD PrintLineX
+   TODO: Add METHOD PrintRectangleX
+   TODO: Add METHOD BeginPageX
+*/
 
 ENDCLASS
 
@@ -3153,8 +3505,6 @@ LOCAL laPropertyValue := Array( 10 )
    ::oDocument := ::oDesktop:loadComponentFromURL( "private:factory/scalc", "_blank", 0, @laPropertyValue )
    ::oSchedule := ::oDocument:GetSheets()
    ::oSheet := ::oSchedule:GetByIndex( 0 )
-// ::oSheet:CharFontName := ::cFontName
-// ::oSheet:CharHeight := ::nFontSize
 RETURN Self
 
 *-----------------------------------------------------------------------------*
@@ -3219,7 +3569,9 @@ LOCAL nLin, i, nCol, aColor
          ::oCell:CharHeight := ::aLinCelda[ i, 4 ]
       ENDIF
       IF ::aLinCelda[ i, 7] = .T.
-         ::oCell:CharWeight := 150
+         ::oCell:CharWeight := 150                                 // Bold
+      ELSE
+         ::oCell:CharWeight := 100                  
       ENDIF
       DO CASE
       CASE ::aLinCelda[ i, 5 ] = "R"
@@ -3231,6 +3583,21 @@ LOCAL nLin, i, nCol, aColor
       IF aColor[ 3 ] <> 0 .OR. aColor[ 2 ] <> 0 .OR. aColor[ 1 ] <> 0
          ::oCell:CharColor := RGB( aColor[ 3 ], aColor[ 2 ], aColor[ 1 ] )
       ENDIF
+      ::oCell:CharPosture := IF( ::aLinCelda[ i, 9], 1, 0)         // Italic
+      DO CASE                                                      // Angle/Orientation
+      CASE ::aLinCelda[ i, 10] == -4128                            // STANDARD
+         ::oCell:Orientation := 0
+      CASE ::aLinCelda[ i, 10] == -4170                            // TOPBOTTOM
+         ::oCell:Orientation := 1
+      CASE ::aLinCelda[ i, 10] == -4171                            // BOTTOMTOP
+         ::oCell:Orientation := 2
+      CASE ::aLinCelda[ i, 10] == -4166                            // STACKED
+         ::oCell:Orientation := 3
+      OTHERWISE
+         ::oCell:RotateAngle := ::aLinCelda[ i, 10]
+      ENDCASE
+      ::oCell:CharUnderline := IF( ::aLinCelda[ i, 11], 1, 0)
+      ::oCell:CharStrikeout := IF( ::aLinCelda[ i, 12], 1, 0)
       nCol++
    NEXT
    ::nLinPag := ::nLinPag + nLin + 1
@@ -3238,13 +3605,13 @@ LOCAL nLin, i, nCol, aColor
 RETURN Self
 
 *-----------------------------------------------------------------------------*
-METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, cText, nAngle ) CLASS TCALCPRINT
+METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, cText, lItalic, nAngle, lUnder, lStrike, nWidth ) CLASS TCALCPRINT
 *-----------------------------------------------------------------------------*
-   Empty( nAngle )
    Empty( nCol )
    Empty( uData )
    Empty( aColor )
    Empty( nLen )
+   Empty( nWidth )
 
    IF ::nUnitsLin > 1
       nLin := Round( nLin / ::nUnitsLin, 0 )
@@ -3252,7 +3619,7 @@ METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen,
    IF ::cUnits = "MM"
       cText := AllTrim( cText )
    ENDIF
-   AAdd( ::aLinCelda, { nLin, nCol, cText, nSize, cAlign, cFont, lBold, aColor } )
+   AAdd( ::aLinCelda, { nLin, nCol, cText, nSize, cAlign, cFont, lBold, aColor, lItalic, nAngle, lUnder, lStrike } )
 RETURN Self
 
 
@@ -3289,10 +3656,14 @@ RETURN Self
 
 // Important: this function do not sets the start and end codes
 *-----------------------------------------------------------------------------*
-FUNCTION _Codabar( cCode )
+STATIC FUNCTION _Codabar( cCode )
 *-----------------------------------------------------------------------------*
 LOCAL n, cBarcode := '', nCar
 
+   IF ValType( cCode ) != 'C'
+      MsgInfo( _OOHG_Messages( 12, 42 ) )
+      RETURN NIL
+   ENDIF
    cCode := Upper( cCode )
    FOR n := 1 TO Len( cCode )
       IF ( nCar := At( SubStr( cCode, n, 1 ), CODABAR_CHARS ) ) > 0
@@ -3410,7 +3781,7 @@ RETURN cBarcode
                        "2331112" }
 
 *-----------------------------------------------------------------------------*
-FUNCTION _Code128( cCode, cMode )
+STATIC FUNCTION _Code128( cCode, cMode )
 *-----------------------------------------------------------------------------*
 LOCAL nSum := 0, cBarcode, cCar
 LOCAL cTemp, n, nCar, nCount := 0
@@ -3550,11 +3921,16 @@ RETURN cBarcode
 #define CODE3_9_CHARS '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ-. *$/+%'
 
 *-----------------------------------------------------------------------------*
-FUNCTION _Code3_9( cCode, lCheck )
+STATIC FUNCTION _Code3_9( cCode, lCheck )
 *-----------------------------------------------------------------------------*
 LOCAL cCar, m, n, cBarcode := '', nCheck := 0
 
+   IF ValType( cCode ) != 'C'
+      MsgInfo( _OOHG_Messages( 12, 42 ) )
+      RETURN NIL
+   ENDIF
    DEFAULT lCheck TO .F.
+
    cCode := Upper( cCode )
    IF Len( cCode ) > 32
       cCode := Left( cCode, 32 )
@@ -3580,10 +3956,15 @@ RETURN cBarcode
 #define EAN_FIRST "ooooooooeoeeooeeoeooeeeooeooeeoeeooeoeeeoooeoeoeoeoeeooeeoeo"
 
 *-----------------------------------------------------------------------------*
-FUNCTION _Ean13( cCode )
+STATIC FUNCTION _Ean13( cCode )
 *-----------------------------------------------------------------------------*
 LOCAL cBarcode, nChar
 LOCAL cLeft, cRight, cString, cMask, k, n
+
+   IF ValType( cCode ) != 'C'
+      MsgInfo( _OOHG_Messages( 12, 42 ) )
+      RETURN NIL
+   ENDIF
 
    k := Left( AllTrim( cCode ) + '000000000000', 12 )
    k := k + Ean13_Check( k )                           // Check digit
@@ -3642,13 +4023,13 @@ LOCAL s1, s2, l, nControl, n
 RETURN Str( nControl, 1, 0)
 
 *-----------------------------------------------------------------------------*
-FUNCTION _Ean13bl( nLen )
+STATIC FUNCTION _Ean13bl( nLen )
 *-----------------------------------------------------------------------------*
    nLen := Int( nLen / 2 )
 RETURN '101' + Replicate( '0', nLen * 7 ) + '01010' + Replicate( '0', nLen * 7) + '101'
 
 *-----------------------------------------------------------------------------*
-FUNCTION _Upc( cCode, nLen )
+STATIC FUNCTION _Upc( cCode, nLen )
 *-----------------------------------------------------------------------------*
 LOCAL n, cBarcode, nChar
 LOCAL cLeft, cRight, k
@@ -3686,7 +4067,7 @@ LOCAL cLeft, cRight, k
 RETURN cBarcode
 
 *-----------------------------------------------------------------------------*
-FUNCTION _Upcabl()
+STATIC FUNCTION _Upcabl()
 *-----------------------------------------------------------------------------*
 LOCAL cBarcode
 
@@ -3732,10 +4113,14 @@ RETURN Str( nControl, 1, 0 )
 
 // EAN 5 digit supplement
 *-----------------------------------------------------------------------------*
-FUNCTION _Sup5( cCode )
+STATIC FUNCTION _Sup5( cCode )
 *-----------------------------------------------------------------------------*
 LOCAL k, cControl, n, cBarcode := '1011', nCar
 
+   IF ValType( cCode ) != 'C'
+      MsgInfo( _OOHG_Messages( 12, 42 ) )
+      RETURN NIL
+   ENDIF
    k := Left( AllTrim( cCode ) + '00000', 5 )
    cControl := Right( Str( Val( SubStr( k, 1, 1 ) ) * 3 + ;
                            Val( SubStr( k, 3, 1 ) ) * 3 + ;
@@ -3770,10 +4155,14 @@ RETURN cBarcode
 
 // Code 25 interleaved
 *-----------------------------------------------------------------------------*
-FUNCTION _Int25( cCode, lMode )
+STATIC FUNCTION _Int25( cCode, lMode )
 *-----------------------------------------------------------------------------*
 LOCAL n, cBarCode :='', cLeft, cRight, nLen, nCheck := 0, cPre, m
 
+   IF ValType( cCode ) != 'C'
+      MsgInfo( _OOHG_Messages( 12, 42 ) )
+      RETURN NIL
+   ENDIF
    DEFAULT lMode TO .T.
 
    cCode := Transform( cCode, '@9' )     // get rid of characters
@@ -3784,11 +4173,11 @@ LOCAL n, cBarCode :='', cLeft, cRight, nLen, nCheck := 0, cPre, m
    ENDIF
 
    IF lMode
-		IF nLen % 2 = 0
-			nLen++
-			cCode := '0' + cCode
-		ENDIF
-		FOR n := 1 TO Len( cCode ) STEP 2
+      IF nLen % 2 = 0
+         nLen++
+         cCode := '0' + cCode
+      ENDIF
+      FOR n := 1 TO Len( cCode ) STEP 2
          nCheck += Val( SubStr( cCode, n, 1 ) ) * 3 + Val( SubStr( cCode, n + 1, 1 ) )
       NEXT
       cCode += Right( Str( nCheck, 10, 0), 1 )
@@ -3820,10 +4209,14 @@ RETURN cBarCode
 
 // Matrix 25
 *-----------------------------------------------------------------------------*
-FUNCTION _Mat25( cCode, lCheck )
+STATIC FUNCTION _Mat25( cCode, lCheck )
 *-----------------------------------------------------------------------------*
 LOCAL cPre, cBarcode := '', nCheck, n
 
+   IF ValType( cCode ) != 'C'
+      MsgInfo( _OOHG_Messages( 12, 42 ) )
+      RETURN NIL
+   ENDIF
    DEFAULT lCheck TO .F.
 
    cCode := Transform( cCode, '@9' ) // get rid of characters
@@ -3856,10 +4249,14 @@ return cBarcode
 
 // Industrial 25
 *-----------------------------------------------------------------------------*
-FUNCTION _Ind25(cCode,lCheck)
+STATIC FUNCTION _Ind25( cCode, lCheck )
 *-----------------------------------------------------------------------------*
 LOCAL cPre, cBarCode := '', nCheck, n
 
+   IF ValType( cCode ) != 'C'
+      MsgInfo( _OOHG_Messages( 12, 42 ) )
+      RETURN NIL
+   ENDIF
    DEFAULT lCheck TO .F.
 
    cCode := Transform( cCode, '@9' ) // // get rid of characters

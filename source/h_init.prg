@@ -1,5 +1,5 @@
 /*
- * $Id: h_init.prg,v 1.32 2013-08-02 03:08:54 fyurisich Exp $
+ * $Id: h_init.prg,v 1.33 2014-06-08 15:26:41 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -420,9 +420,10 @@ Local acButton, acLabel, acUser, acPrint
                          "CSV extension not asociated !!!", ;
                          "PDF extension not asociated !!!", ;
                          "ODT extension not asociated !!!", ;
-                         'Barcode c128 requires a character value !!!', ;
+                         'Barcodes require a character value !!!', ;
                          'Code 128 modes are A, B or C (character values) !!!', ;
-                         "Open Calc not found !!!" }
+                         "Open Calc not found !!!", ;
+                         "Error saving file: " }
 
 RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
 
@@ -1851,15 +1852,16 @@ Local acButton, acLabel, acUser, acPrint
                          "Información", ;
                          'No se detectó Excel !!!', ;
                          "La extensión XLS no está asociada !!!", ;
-                         "File saved in: ", ;
+                         "Archivo guardado en: ", ;
                          "La extensión HTML no está asociada !!!", ;
                          "La extensión RTF no está asociada !!!", ;
                          "La extensión CSV no está asociada !!!", ;
                          "La extensión PDF no está asociada !!!", ;
                          "La extensión ODT no está asociada !!!", ;
-                         'Los códigos de barra c128 requieren una cadena !!!', ;
+                         'Los códigos de barra requieren una cadena !!!', ;
                          'Los modos válidos de códigos de barra c128 son A, B or C !!!', ;
-                         "No se detectó OpenCalc !!!" }
+                         "No se detectó OpenCalc !!!", ;
+                         "No se pudo guardar el archivo: " }
 
 RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
 

@@ -1,11 +1,76 @@
 /*
- * $Id: ChangeLog,v 1.1282 2014-06-07 02:08:02 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1283 2014-06-08 15:26:41 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-06-08 12:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     ! Typo.
+   * doc/classes.txt
+     * Updated.
+   * source/h_init.prg
+     * Print messages.
+   * source/h_print.prg
+     * Format.
+     % Some conditionals.
+     + DATAs nFontAngle, lFontUnderline, lFontStrikeout and
+       nFontWidth to TPRINTBASE.
+     + Default values for parameters of methods SetCpl, SetLMargin,
+       SetTMargin, SetColor, SetUnits and Go_Code of TPRINTBASE.
+     + Parameters to methods SetFont and PrintData of TPRINTBASE.
+     - T*O*D*O*s.
+     - Commented code.
+     + Parameters to methods PrintDataX of subclasses.
+     - Default values for parameters of methods PrintDataX, PrintLineX,
+       PrintRectangleX and PrintRoundRectangleX of subclasses.
+     ; If methods PrintDataX, PrintLineX, PrintRectangleX or
+       PrintRoundRectangleX are called directly, the caller must
+       provide all the required parameters.
+     * THBPRINTER uses only one font and one pen. This change
+       affected
+     + In subclasses, some methods wrongly deleted in previous commits
+       and some methods not used are now declared as a NIL block.
+     + Error handling in TEXCELPRINT():EndDocX().
+     * TEXCELPRINT():ReleaseX() discards workbook and quits Excel.
+     + Support for cell color in TEXCELPRINT.
+     + Error handling in THTMLPRINT():EndDocX().
+     + Support for italic in TRTFPRINT and TCALCPRINT.
+     * All internal functions declared as STATIC.
+     + Parameters validation in functions _Codabar(), _Code3_9(),
+       _Ean13(), _Sup5(), _Int25(), _Mat25() and _Ind25().
+     + Support for:
+       Subclass          ANGLE    UNDERLINE STRIKEOUT WIDTH
+       TMINIPRINT         Yes       Yes       Yes      Yes
+       THBPRINTER         Yes       Yes       Yes      Yes
+       TDOSPRINT          No        No        No       No
+       TRAWPRINT          No        No        No       No
+       TEXCELPRINT        Yes(;)    Yes       Yes      No
+       TSPREADSHEETPRINT  No        No        No       No
+       THTMLPRINT         Yes(;)    Yes       Yes      No
+       TRTFPRINT          No        Yes       Yes      No
+       TCSVPRINT          No        No        No       No
+       TPDFPRINT          No        No        No       No
+       TCALCPRINT         Yes(;)    Yes       Yes      No
+     ; In TEXCELPRINT, THTMLPRINT and TCALCPRINT, the nAngle parameter
+       sets the text's orientation. Valid values are:
+          -90 <= nAngle <= 90
+          xlDownward   -4170 Text runs from top to bottom (each
+                             character is rotated -90 degrees).
+          xlHorizontal -4128 Text runs horizontally.
+          xlUpward     -4171 Text runs from bottom to top (each
+                             character is rotated 90 degrees).
+          xlVertical   -4166 Text runs from top to bottom (but
+                             characters are not rotated).
+     + T*O*D*O*s about methods that can be implemented to
+       improve some subclasses.
+
+2014-06-06 23:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * doc/classes.txt
+     * Updated.
 
 2014-06-06 23:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog.003
@@ -1027,7 +1092,7 @@
      + NOTRANSPARENT, NO3DCOLORS and NODIBSECTION clauses to Picture
        controls.
      * Format.
-     ; This clauses improves image support.
+     ; This clauses improve image support.
    * include/i_altsyntax.ch
      * .NOT. changed by !
      ! DEFINE IMAGE.

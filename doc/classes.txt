@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.80 2014-06-07 02:41:58 fyurisich Exp $
+ * $Id: classes.txt,v 1.81 2014-06-08 15:26:41 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -337,6 +337,7 @@ CLASS TCALCPRINT FROM TPRINTBASE
    METHOD INITX
    METHOD PRINTDATAX
    METHOD SELPRINTERX
+   METHOD SETPREVIEWSIZE          BLOCK { || NIL }
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -504,7 +505,7 @@ CLASS TCONTROL FROM TWINDOW
    DATA POSTBLOCK                 INIT NIL
    DATA SETIMAGELISTCOMMAND       INIT 0
    DATA SETIMAGELISTWPARAM        INIT TVSIL_NORMAL
-   DATA TAG			                INIT ""
+   DATA TAG                       INIT ""
    DATA TRANSPARENT               INIT .F.
    DATA XOLDVALUE                 INIT NIL
 
@@ -526,7 +527,7 @@ CLASS TCONTROL FROM TWINDOW
    METHOD EVENTS_MEASUREITEM      BLOCK { || NIL }
    METHOD EVENTS_NOTIFY
    METHOD FOCUSEFFECT
-   METHOD FONTANGLE			       SETGET
+   METHOD FONTANGLE               SETGET
    METHOD FONTBOLD                SETGET
    METHOD FONTITALIC              SETGET
    METHOD FONTNAME                SETGET
@@ -564,14 +565,16 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS TCSVPRINT FROM TPRINTBASE
-   DATA aPrintCsv INIT {}
+   DATA APRINTCSV                 INIT {}
 
    METHOD ENDDOCX
    METHOD ENDPAGEX
    METHOD INITX
    METHOD PRINTDATAX
+   METHOD PRINTIMAGE              BLOCK { || NIL }
    METHOD PRINTLINEX
    METHOD SELPRINTERX
+   METHOD SETPREVIEWSIZE          BLOCK { || NIL }
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -602,9 +605,11 @@ CLASS TDOSPRINT FROM TPRINTBASE
    METHOD NEXTSEARCH
    METHOD NORMALDOSX
    METHOD PRINTDATAX
+   METHOD PRINTIMAGE              BLOCK { || NIL }
    METHOD PRINTLINEX
    METHOD SEARCHSTRING
    METHOD SELPRINTERX
+   METHOD SETPREVIEWSIZE          BLOCK { || NIL }
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -653,6 +658,7 @@ CLASS TEXCELPRINT FROM TPRINTBASE
    METHOD PRINTIMAGEX
    METHOD RELEASEX
    METHOD SELPRINTERX
+   METHOD SETPREVIEWSIZE          BLOCK { || NIL }
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -1248,24 +1254,24 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS THBPRINTER FROM TPRINTBASE
-   DATA   OHBPRN
+   DATA OHBPRN                    INIT NIL
 
-   METHOD BEGINDOCX
-   METHOD BEGINPAGEX
-   METHOD ENDDOCX
-   METHOD ENDPAGEX
-   METHOD GETDEFPRINTERX
    METHOD INITX
-   METHOD PRINTBARCODEX
+   METHOD BEGINDOCX
+   METHOD ENDDOCX
+   METHOD BEGINPAGEX
+   METHOD ENDPAGEX
+   METHOD RELEASEX
    METHOD PRINTDATAX
    METHOD PRINTIMAGEX
    METHOD PRINTLINEX
    METHOD PRINTRECTANGLEX
-   METHOD PRINTROUNDRECTANGLEX
-   METHOD RELEASEX
    METHOD SELPRINTERX
+   METHOD GETDEFPRINTERX
    METHOD SETCOLORX
    METHOD SETPREVIEWSIZEX
+   METHOD PRINTROUNDRECTANGLEX
+   METHOD PRINTBARCODEX
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -1728,6 +1734,7 @@ CLASS TPDFPRINT FROM TPRINTBASE
    METHOD PRINTRECTANGLEX
    METHOD PRINTROUNDRECTANGLEX
    METHOD SELPRINTERX
+   METHOD SETPREVIEWSIZE          BLOCK { || NIL }
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -1803,6 +1810,7 @@ CLASS TPRINTBASE
    DATA APRINTERS                 INIT {}                     READONLY
    DATA CARGO                     INIT  "list"                           // DOCUMENT NAME
    DATA CFONTNAME                 INIT "Courier New"          READONLY
+   DATA CPORT                     INIT "prn"
    DATA CPRINTER                  INIT ""                     READONLY
    DATA CPRINTLIBRARY             INIT "HBPRINTER"            READONLY
    DATA CUNITS                    INIT "ROWCOL"               READONLY
@@ -1811,10 +1819,14 @@ CLASS TPRINTBASE
    DATA IMPREVIEW                 INIT .F.                    READONLY
    DATA LFONTBOLD                 INIT .F.                    READONLY
    DATA LFONTITALIC               INIT .F.                    READONLY
+   DATA LFONTSTRIKEOUT            INIT .F.                    READONLY
+   DATA LFONTUNDERLINE            INIT .F.                    READONLY
    DATA LPRERROR                  INIT .F.                    READONLY
    DATA LPROP                     INIT .F.                    READONLY
    DATA LWINHIDE                  INIT .T.                    READONLY
+   DATA NFONTANGLE                INIT 0                      READONLY
    DATA NFONTSIZE                 INIT 12
+   DATA NFONTWIDTH                INIT 0                      READONLY
    DATA NHFIJ                     INIT (12/3.70)              READONLY
    DATA NLINPAG                   INIT 0                      READONLY
    DATA NLMARGIN                  INIT 0
@@ -2039,8 +2051,10 @@ CLASS TRTFPRINT FROM TPRINTBASE
    METHOD ENDPAGEX
    METHOD INITX
    METHOD PRINTDATAX
+   METHOD PRINTIMAGE              BLOCK { || NIL }
    METHOD PRINTLINEX
    METHOD SELPRINTERX
+   METHOD SETPREVIEWSIZE          BLOCK { || NIL }
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -2178,7 +2192,9 @@ CLASS TSPREADSHEETPRINT FROM TPRINTBASE
    METHOD ENDPAGEX
    METHOD INITX
    METHOD PRINTDATAX
+   METHOD PRINTIMAGE              BLOCK { || NIL }
    METHOD RELEASEX
+   METHOD SETPREVIEWSIZE          BLOCK { || NIL }
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -2430,7 +2446,7 @@ ENDCLASS
 CLASS TTOOLBAR FROM TCONTROL
    DATA LADJUST                   INIT .T.
    DATA LFIXFONT                  INIT .T.
-   DATA LTOP	                   INIT .T.
+   DATA LTOP                      INIT .T.
    DATA NBUTTONHEIGHT             INIT 0
    DATA NBUTTONWIDTH              INIT 0
    DATA TYPE                      INIT "TOOLBAR" READONLY
