@@ -1,5 +1,5 @@
 /*
- * $Id: dbview.prg,v 1.1 2013-11-19 19:15:41 migsoft Exp $
+ * $Id: dbview.prg,v 1.2 2014-06-12 14:10:27 migsoft Exp $
  */
 
 /*
@@ -946,7 +946,7 @@ Procedure FontNameBrowse(nOpt)
 
              oWndBase.&(cbrowse_n).Fontname := 'MS Sans Serif'
              oWndBase.&(cbrowse_n).Fontsize := 8
-         Next    
+         Next
       Endif
       SaveArchIni(cBaseFolder+'\')
       Actualizar()
@@ -969,52 +969,45 @@ Procedure ExportData()
                    {"XML files (*.xml)"       , "*.xml"} , ;
                    {"Excel files (*.xls)"     , "*.xls"} , ;
                    {"Dbase III files (*.prg)" , "*.prg"} , ;
-                   {"All files (*.*)"        , "*.*"  }  }
+                   {"All files (*.*)"         , "*.*"  }  }
 
-	cSaveFile := PutFile2( aFiles, , ,  )
+	cSaveFile := PutFile( aFiles , , , , Lower( Alias() ), .T. )
+                  // Putfile( aFilter, title, cIniFolder, nochangedir, cDefaultFileName, lForceExt )
 
 	IF !Empty( cSaveFile )
 
 	        If right(cSaveFile,3)=='dbf'
                    nIndex := 1
                    cExt :='dbf'
-                Endif
-                If right(cSaveFile,3)=='txt'
+                ElseIf right(cSaveFile,3)=='txt'
                    nIndex := 2
                    cExt :='txt'
-                Endif
-	        If right(cSaveFile,3)=='dat'
+                ElseIf right(cSaveFile,3)=='dat'
                    nIndex := 3
                    cExt :='dat'
-                Endif
-	        If right(cSaveFile,3)=='xls'
+                ElseIf right(cSaveFile,3)=='xls'
                    nIndex := 4
                    cExt :='xls'
-                Endif
-	        If right(cSaveFile,3)=='prg'
+                ElseIf right(cSaveFile,3)=='prg'
                    nIndex := 5
                    cExt :='prg'
-                Endif
-	        If right(cSaveFile,3)=='csv'
+                ElseIf right(cSaveFile,3)=='csv'
                    nIndex := 6
                    cExt :='csv'
-                Endif
-	        If right(cSaveFile,3)=='sql'
+                ElseIf right(cSaveFile,3)=='sql'
                    nIndex := 7
                    cExt :='sql'
-                Endif
-	        If right(cSaveFile,4)=='html'
+                ElseIf right(cSaveFile,4)=='html'
                    nIndex := 8
                    cExt :='html'
-                Endif
-	        If right(cSaveFile,3)=='xml'
+                ElseIf right(cSaveFile,3)=='xml'
                    nIndex := 9
                    cExt :='xml'
                 Endif
 
                 MsgInfo(cSaveFile,PROGRAM)
 
-		cSaveFile := IF( ( AT( ".", cSaveFile ) > 0 ), cSaveFile, ( cSaveFile + "." + cExt ) )
+		cSaveFile := IF( ( AT( ".", cSaveFile ) > 0 ), cSaveFile, ( cSaveFile + "." + IF( Empty(cExt), "dbf", cExt ) ) )
 
 		IF File( cSaveFile )
 			IF !MsgYesNo( cSaveFile + " already exists." + CRLF + ;
