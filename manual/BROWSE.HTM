@@ -1,5 +1,5 @@
 <!--
-$Id: BROWSE.HTM,v 1.2 2014-05-24 20:34:08 fyurisich Exp $
+$Id: BROWSE.HTM,v 1.3 2014-06-17 00:35:28 fyurisich Exp $
 -->
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -185,808 +185,164 @@ Controls &gt; </div>
 // STANDARD BROWSE <br>
 ///////////////////////////////////////////////////////////////////////////////
 <br>
-</span><span lang=ES style='color:gray;mso-ansi-language:ES'><br>
-</span><span lang=ES style='color:black;mso-ansi-language:ES'>#<span
-class=SpellE>command</span>&nbsp;@&nbsp;&lt;<span class=SpellE>row</span>&gt;,&lt;col&gt;&nbsp;BROWSE&nbsp;&lt;<span
-class=SpellE>name</span>&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;&lt;Dummy:
-OF,&nbsp; PARENT&gt; &lt;<span class=SpellE>parent</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;OBJ&nbsp;&lt;<span
-class=SpellE>oObj</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;WIDTH&nbsp;&lt;w&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;HEIGHT&nbsp;&lt;h&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;HEADERS&nbsp;&lt;<span
-class=SpellE>headers</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;WIDTHS&nbsp;&lt;<span
-class=SpellE>widths</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;WORKAREA&nbsp;&lt;<span
-class=SpellE>workarea</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;FIELDS&nbsp;&lt;<span
-class=SpellE>Fields</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;INPUTMASK&nbsp;&lt;Picture&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;VALUE&nbsp;&lt;<span
-class=SpellE>value</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;FONT&nbsp;&lt;<span
-class=SpellE>fontname</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;SIZE&nbsp;&lt;<span
-class=SpellE>fontsize</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;&lt;<span
-class=SpellE>bold</span>&nbsp;:&nbsp;BOLD&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;&lt;<span
-class=SpellE>italic</span>&nbsp;:&nbsp;ITALIC&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;&lt;<span
-class=SpellE>underline</span>&nbsp;:&nbsp;UNDERLINE&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;&lt;<span
-class=SpellE>strikeout</span>&nbsp;:&nbsp;STRIKEOUT&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;TOOLTIP&nbsp;&lt;<span
-class=SpellE>tooltip</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;BACKCOLOR&nbsp;&lt;<span
-class=SpellE>backcolor</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;DYNAMICBACKCOLOR&nbsp;&lt;<span
-class=SpellE>dynamicbackcolor</span>&gt;&nbsp;]&nbsp;; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;DYNAMICFORECOLOR&nbsp;&lt;<span
-class=SpellE>dynamicforecolor</span>&gt;&nbsp;]&nbsp;; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;FONTCOLOR&nbsp;&lt;<span
-class=SpellE>fontcolor</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;ON&nbsp;GOTFOCUS&nbsp;&lt;<span
-class=SpellE>gotfocus</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;ON&nbsp;CHANGE&nbsp;&lt;<span
-class=SpellE>change</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;ON&nbsp;LOSTFOCUS&nbsp;&lt;<span
-class=SpellE>lostfocus</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;ON&nbsp;DBLCLICK&nbsp;&lt;<span
-class=SpellE>dblclick</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;&lt;<span
-class=SpellE>edit</span>&nbsp;:&nbsp;EDIT&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;&lt;<span
-class=SpellE>inplace</span>&nbsp;:&nbsp;INPLACE&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;&lt;<span
-class=SpellE>append</span>&nbsp;:&nbsp;APPEND&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;ON&nbsp;HEADCLICK&nbsp;&lt;<span
-class=SpellE>aHeadClick</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;&lt;dummy2:&nbsp;WHEN,&nbsp;COLUMNWHEN&gt;&nbsp;&lt;<span
-class=SpellE>aWhenFields</span>&gt;&nbsp;]&nbsp;; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;VALID&nbsp;&lt;<span
-class=SpellE>aValidFields</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;VALIDMESSAGES&nbsp;&lt;<span
-class=SpellE>aValidMessages</span>&gt;&nbsp;]&nbsp;; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;READONLY&nbsp;&lt;<span
-class=SpellE>aReadOnly</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;&lt;<span
-class=SpellE>lock</span>:&nbsp;LOCK&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;&lt;<span
-class=SpellE>Delete</span>:&nbsp;DELETE&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;&lt;<span
-class=SpellE>style</span>:&nbsp;NOLINES&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;IMAGE&nbsp;&lt;<span
-class=SpellE>aImage</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;JUSTIFY&nbsp;&lt;<span
-class=SpellE>aJust</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;&lt;<span
-class=SpellE>novscroll</span>:&nbsp;NOVSCROLL&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;HELPID&nbsp;&lt;<span
-class=SpellE>helpid</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;&lt;<span
-class=SpellE>break</span>:&nbsp;BREAK&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;&lt;<span
-class=SpellE>rtl</span>:&nbsp;RTL&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;ON&nbsp;APPEND&nbsp;&lt;<span
-class=SpellE>onappend</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;ON&nbsp;EDITCELL&nbsp;&lt;<span
-class=SpellE>editcell</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;COLUMNCONTROLS&nbsp;&lt;<span
-class=SpellE>editcontrols</span>&gt;&nbsp;]&nbsp;; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;REPLACEFIELD&nbsp;&lt;<span
-class=SpellE>replacefields</span>&gt;&nbsp;]&nbsp;; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;SUBCLASS&nbsp;&lt;<span
-class=SpellE>subclass</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;&lt;<span
-class=SpellE>reccount</span>:&nbsp;RECCOUNT&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;COLUMNINFO&nbsp;&lt;<span
-class=SpellE>columninfo</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp; ; <o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
-class=SpellE><span class=GramE>noshowheaders</span></span>: NOHEADERS&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-class=GramE>[ ON</span> ENTER &lt;<span class=SpellE>enter</span>&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
-class=SpellE><span class=GramE>disabled</span></span>: DISABLED&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
-class=SpellE><span class=GramE>notabstop</span></span>: NOTABSTOP&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
-class=GramE>invisible</span>: INVISIBLE&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
-class=SpellE><span class=GramE>descending</span></span>: DESCENDING&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-class=GramE>[ DELETEWHEN</span> &lt;<span class=SpellE>bWhenDel</span>&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-class=GramE>[ DELETEMSG</span> &lt;<span class=SpellE>DelMsg</span>&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-class=GramE>[ ON</span> DELETE &lt;<span class=SpellE>onDelete</span>&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-class=GramE>[ HEADERIMAGES</span> &lt;<span class=SpellE>aHeaderImages</span>&gt;
-] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-class=GramE>[ IMAGESALIGN</span> &lt;<span class=SpellE>aImgAlign</span>&gt; ]
-;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
-class=SpellE><span class=GramE>fullmove</span></span>: FULLMOVE&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-class=GramE>[ SELECTEDCOLORS</span> &lt;<span class=SpellE>aSelectedColors</span>&gt;
-] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-class=GramE>[ EDITKEYS</span> &lt;<span class=SpellE>aEditKeys</span>&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
-class=SpellE><span class=GramE>forcerefresh</span></span>: FORCEREFRESH&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
-class=SpellE><span class=GramE>norefresh</span></span>: NOREFRESH&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
-class=SpellE><span class=GramE>bffr</span></span>: DOUBLEBUFFER,
-SINGLEBUFFER&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
-class=SpellE><span class=GramE>focus</span></span>: NOFOCUSRECT, FOCUSRECT&gt;
-] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
-class=SpellE><span class=GramE>plm</span></span>: PAINTLEFTMARGIN&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
-class=SpellE><span class=GramE>sync</span></span>: SYNCHRONIZED,
-UNSYNCHRONIZED&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
-class=SpellE><span class=GramE>fixedcols</span></span>: FIXEDCOLS&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
-class=SpellE><span class=GramE>nodelmsg</span></span>: NODELETEMSG&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
-class=SpellE><span class=GramE>updall</span></span>: UPDATEALL&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-class=GramE>[ ON</span> ABORTEDIT &lt;<span class=SpellE>abortedit</span>&gt; ]
-;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
-class=SpellE>fixedwidths</span>: FIXEDWIDTHS&gt; ] ;<br>
-&nbsp;&nbsp;&nbsp; =&gt;; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ &lt;<span
-class=SpellE>oObj</span>&gt; := ] _<span class=SpellE>OOHG_SelectSubClass</span>(
-<span class=SpellE>TOBrowse</span>(), [ &lt;<span class=SpellE>subclass</span>&gt;()
-] ): ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>Define( &lt;(<span class=SpellE>name</span>)&gt;, &lt;(<span
-class=SpellE>parent</span>)&gt;, &lt;col&gt;, &lt;<span class=SpellE>row</span>&gt;,
-&lt;w&gt;, &lt;h&gt;, &lt;<span class=SpellE>headers</span>&gt;, &lt;<span
-class=SpellE>widths</span><span class=GramE>&gt;, ;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;<span class=SpellE>Fields</span>&gt;, &lt;<span class=SpellE>value</span>&gt;,
-&lt;<span class=SpellE>fontname</span>&gt;, &lt;<span class=SpellE>fontsize</span>&gt;,
-&lt;<span class=SpellE>tooltip</span>&gt;, &lt;{<span class=SpellE>change</span>}<span
-class=GramE>&gt;, ;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;{<span class=SpellE><span class=GramE>dblclick</span></span>}&gt;,
-&lt;<span class=SpellE>aHeadClick</span>&gt;, &lt;{<span class=SpellE>gotfocus</span>}&gt;,
-&lt;{<span class=SpellE>lostfocus</span>}&gt;, &lt;(<span class=SpellE>workarea</span>)&gt;
-, ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;.<span class=SpellE>delete</span>.&gt;, &lt;.<span class=SpellE>style</span>.&gt;,
-&lt;<span class=SpellE>aImage</span>&gt;, &lt;<span class=SpellE>aJust</span>&gt;,
-&lt;<span class=SpellE>helpid</span>&gt;, &lt;.<span class=SpellE>bold</span>.<span
-class=GramE>&gt;, ;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;.<span class=SpellE>italic</span>.&gt;, &lt;.<span class=SpellE>underline</span>.&gt;,
-&lt;.<span class=SpellE>strikeout</span>.&gt;, &lt;.<span class=SpellE>break</span>.&gt;,
-&lt;<span class=SpellE>backcolor</span><span class=GramE>&gt;, ;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;<span class=SpellE><span class=GramE>fontcolor</span></span>&gt;,
-&lt;.<span class=SpellE>lock</span>.&gt;, &lt;.<span class=SpellE>inplace</span>.&gt;,
-&lt;.<span class=SpellE>novscroll</span>.&gt;, &lt;.<span class=SpellE>append</span>.&gt;,
-;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;<span class=SpellE><span class=GramE>aReadOnly</span></span>&gt;,
-&lt;<span class=SpellE>aValidFields</span>&gt;, &lt;<span class=SpellE>aValidMessages</span>&gt;,
-&lt;.<span class=SpellE>edit</span>.&gt;, ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;<span class=SpellE><span class=GramE>dynamicbackcolor</span></span>&gt;,
-&lt;<span class=SpellE>aWhenFields</span>&gt;, &lt;<span class=SpellE>dynamicforecolor</span>&gt;,
-&lt;Picture&gt;, &lt;.<span class=SpellE>rtl</span>.&gt;, ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;{<span class=SpellE><span class=GramE>onappend</span></span>}&gt;,
-&lt;{<span class=SpellE>editcell</span>}&gt;, &lt;<span class=SpellE>editcontrols</span>&gt;,
-&lt;<span class=SpellE>replacefields</span>&gt;, &lt;.<span class=SpellE>reccount</span>.&gt;,
-;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;<span class=SpellE><span class=GramE>columninfo</span></span>&gt;, !
-&lt;.<span class=SpellE>noshowheaders</span>.&gt;, &lt;{<span class=SpellE>enter</span>}&gt;,
-&lt;.<span class=SpellE>disabled</span>.&gt;, &lt;.<span class=SpellE>notabstop</span>.<span
-class=GramE>&gt;, ;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp; </span><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&lt;.invisible.&gt;,
-&lt;.<span class=SpellE>descending</span>.&gt;, &lt;{<span class=SpellE>bWhenDel</span>}&gt;,
-&lt;<span class=SpellE>DelMsg</span>&gt;, &lt;{<span class=SpellE>onDelete</span>}<span
-class=GramE>&gt;, ;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;<span class=SpellE><span class=GramE>aHeaderImages</span></span>&gt;,
-&lt;<span class=SpellE>aImgAlign</span>&gt;, &lt;.<span class=SpellE>fullmove</span>.&gt;,
-&lt;<span class=SpellE>aSelectedColors</span>&gt;, &lt;<span class=SpellE>aEditKeys</span>&gt;,
-;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span class=SpellE><span class=GramE>if</span></span>( &lt;.<span
-class=SpellE>forcerefresh</span>.&gt;, 0, <span class=SpellE>if</span>( &lt;.<span
-class=SpellE>norefresh</span>.&gt;, 1, <span class=SpellE>nil</span> ) ), ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span class=SpellE>iif</span>( <span class=SpellE>upper</span>( #&lt;<span
-class=SpellE>bffr</span>&gt; ) == &quot;DOUBLEBUFFER&quot;, .T., <span
-class=SpellE>iif</span>( <span class=SpellE>upper</span>( #&lt;<span
-class=SpellE>bffr</span>&gt; ) == &quot;SINGLEBUFFER&quot;, .F., .T. ) ), ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span class=SpellE>iif</span>( <span class=SpellE>upper</span>( #&lt;<span
-class=SpellE>focus</span>&gt; ) == &quot;NOFOCUSRECT&quot;, .F., <span
-class=SpellE>iif</span>( <span class=SpellE>upper</span>( #&lt;<span
-class=SpellE>focus</span>&gt; ) == &quot;FOCUSRECT&quot;, .T., NIL ) ), ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;.<span class=SpellE>plm</span>.&gt;, <span class=SpellE>iif</span>( <span
-class=SpellE>upper</span>( #&lt;<span class=SpellE>sync</span>&gt; ) ==
-&quot;UNSYNCHRONIZED&quot;, .F., <span class=SpellE>iif</span>( <span
-class=SpellE>upper</span>( #&lt;<span class=SpellE>sync</span>&gt; ) ==
-&quot;SYNCHRONIZED&quot;, .T., NIL ) ), ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;.<span class=SpellE>fixedcols</span>.&gt;, &lt;.<span class=SpellE>nodelmsg</span>.&gt;,
-&lt;.<span class=SpellE>updall</span>.&gt;, <span class=GramE>&lt;{</span><span
-class=SpellE>abortedit</span>}&gt;, &lt;{<span class=SpellE>click</span>}&gt;,
-&lt;.<span class=SpellE>fixedwidths</span>.&gt; )<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><o:p>&nbsp;</o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'>#<span
-class=SpellE>command</span> SET BROWSESYNC ON<span
-style='mso-spacerun:yes'>&nbsp; </span>=&gt; <span class=SpellE><span
-class=GramE>SetBrowseSync</span></span><span class=GramE>(</span> .T. )<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'>#<span
-class=SpellE>command</span> SET BROWSESYNC OFF =&gt; <span class=SpellE><span
-class=GramE>SetBrowseSync</span></span><span class=GramE>(</span> .F. )<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><o:p>&nbsp;</o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:gray;mso-ansi-language:ES'><br>
-</span><span lang=ES style='color:darkgreen;mso-ansi-language:ES'>///////////////////////////////////////////////////////////////////////////////
-<br>
-// SPLITBOX BROWSE <br>
-///////////////////////////////////////////////////////////////////////////////
-<br>
-</span><span lang=ES style='color:gray;mso-ansi-language:ES'><br>
-</span><span lang=ES style='color:black;mso-ansi-language:ES'>#<span
-class=SpellE>command</span>&nbsp;BROWSE&nbsp;&lt;<span class=SpellE>name</span>&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;OF&nbsp;&lt;<span
-class=SpellE>parent</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;OBJ&nbsp;&lt;<span
-class=SpellE>oObj</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;WIDTH&nbsp;&lt;w&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;HEIGHT&nbsp;&lt;h&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp; </span>[&nbsp;HEADERS&nbsp;&lt;<span
-class=SpellE>headers</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;WIDTHS&nbsp;&lt;<span
-class=SpellE>widths</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;WORKAREA&nbsp;&lt;<span
-class=SpellE>WorkArea</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;FIELDS&nbsp;&lt;<span
-class=SpellE>Fields</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;INPUTMASK&nbsp;&lt;Picture&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;VALUE&nbsp;&lt;<span
-class=SpellE>value</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;FONT&nbsp;&lt;<span
-class=SpellE>fontname</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;SIZE&nbsp;&lt;<span
-class=SpellE>fontsize</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;&lt;<span
-class=SpellE>bold</span>&nbsp;:&nbsp;BOLD&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;&lt;<span
-class=SpellE>italic</span>&nbsp;:&nbsp;ITALIC&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;&lt;<span
-class=SpellE>underline</span>&nbsp;:&nbsp;UNDERLINE&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;&lt;<span
-class=SpellE>strikeout</span>&nbsp;:&nbsp;STRIKEOUT&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;TOOLTIP&nbsp;&lt;<span
-class=SpellE>tooltip</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;BACKCOLOR&nbsp;&lt;<span
-class=SpellE>backcolor</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;DYNAMICBACKCOLOR&nbsp;&lt;<span
-class=SpellE>dynamicbackcolor</span>&gt;&nbsp;]&nbsp;; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;DYNAMICFORECOLOR&nbsp;&lt;<span
-class=SpellE>dynamicforecolor</span>&gt;&nbsp;]&nbsp;; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;FONTCOLOR&nbsp;&lt;<span
-class=SpellE>fontcolor</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;ON&nbsp;GOTFOCUS&nbsp;&lt;<span
-class=SpellE>gotfocus</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;ON&nbsp;CHANGE&nbsp;&lt;<span
-class=SpellE>change</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;ON&nbsp;LOSTFOCUS&nbsp;&lt;<span
-class=SpellE>lostfocus</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;ON&nbsp;DBLCLICK&nbsp;&lt;<span
-class=SpellE>dblclick</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;&lt;<span
-class=SpellE>edit</span>&nbsp;:&nbsp;EDIT&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;&lt;<span
-class=SpellE>inplace</span>&nbsp;:&nbsp;INPLACE&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;&lt;<span
-class=SpellE>append</span>&nbsp;:&nbsp;APPEND&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;ON&nbsp;HEADCLICK&nbsp;&lt;<span
-class=SpellE>aHeadClick</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;&lt;dummy2:&nbsp;WHEN,&nbsp;COLUMNWHEN&gt;&nbsp;&lt;<span
-class=SpellE>aWhenFields</span>&gt;&nbsp;]&nbsp;; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;VALID&nbsp;&lt;<span
-class=SpellE>aValidFields</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;VALIDMESSAGES&nbsp;&lt;<span
-class=SpellE>aValidMessages</span>&gt;&nbsp;]&nbsp;; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;READONLY&nbsp;&lt;<span
-class=SpellE>aReadOnly</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;&lt;<span
-class=SpellE>lock</span>:&nbsp;LOCK&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;&lt;<span
-class=SpellE>Delete</span>:&nbsp;DELETE&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;&lt;<span
-class=SpellE>style</span>:&nbsp;NOLINES&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;IMAGE&nbsp;&lt;<span
-class=SpellE>aImage</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;JUSTIFY&nbsp;&lt;<span
-class=SpellE>aJust</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;&lt;<span
-class=SpellE>novscroll</span>:&nbsp;NOVSCROLL&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;HELPID&nbsp;&lt;<span
-class=SpellE>helpid</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>[&nbsp;&lt;<span
-class=SpellE>break</span>:&nbsp;BREAK&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;&lt;<span
-class=SpellE>rtl</span>:&nbsp;RTL&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;ON&nbsp;APPEND&nbsp;&lt;<span
-class=SpellE>onappend</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;ON&nbsp;EDITCELL&nbsp;&lt;<span
-class=SpellE>editcell</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;COLUMNCONTROLS&nbsp;&lt;<span
-class=SpellE>editcontrols</span>&gt;&nbsp;]&nbsp;; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;REPLACEFIELD&nbsp;&lt;<span
-class=SpellE>replacefields</span>&gt;&nbsp;]&nbsp;; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;SUBCLASS&nbsp;&lt;<span
-class=SpellE>subclass</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;&lt;<span
-class=SpellE>reccount</span>:&nbsp;RECCOUNT&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;COLUMNINFO&nbsp;&lt;<span
-class=SpellE>columninfo</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp; ; <o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
-class=SpellE><span class=GramE>noshowheaders</span></span>: NOHEADERS&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-class=GramE>[ ON</span> ENTER &lt;<span class=SpellE>enter</span>&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
-class=SpellE><span class=GramE>disabled</span></span>: DISABLED&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
-class=SpellE><span class=GramE>notabstop</span></span>: NOTABSTOP&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
-class=GramE>invisible</span>: INVISIBLE&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
-class=SpellE><span class=GramE>descending</span></span>: DESCENDING&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-class=GramE>[ DELETEWHEN</span> &lt;<span class=SpellE>bWhenDel</span>&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-class=GramE>[ DELETEMSG</span> &lt;<span class=SpellE>DelMsg</span>&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-class=GramE>[ ON</span> DELETE &lt;<span class=SpellE>onDelete</span>&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-class=GramE>[ HEADERIMAGES</span> &lt;<span class=SpellE>aHeaderImages</span>&gt;
-] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-class=GramE>[ IMAGESALIGN</span> &lt;<span class=SpellE>aImgAlign</span>&gt; ]
-;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
-class=SpellE><span class=GramE>fullmove</span></span>: FULLMOVE&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-class=GramE>[ SELECTEDCOLORS</span> &lt;<span class=SpellE>aSelectedColors</span>&gt;
-] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-class=GramE>[ EDITKEYS</span> &lt;<span class=SpellE>aEditKeys</span>&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
-class=SpellE><span class=GramE>forcerefresh</span></span>: FORCEREFRESH&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
-class=SpellE><span class=GramE>norefresh</span></span>: NOREFRESH&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
-class=SpellE><span class=GramE>bffr</span></span>: DOUBLEBUFFER,
-SINGLEBUFFER&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
-class=SpellE><span class=GramE>focus</span></span>: NOFOCUSRECT, FOCUSRECT&gt;
-] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
-class=SpellE><span class=GramE>plm</span></span>: PAINTLEFTMARGIN&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
-class=SpellE><span class=GramE>sync</span></span>: SYNCHRONIZED,
-UNSYNCHRONIZED&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
-class=SpellE><span class=GramE>fixedcols</span></span>: FIXEDCOLS&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
-class=SpellE><span class=GramE>nodelmsg</span></span>: NODELETEMSG&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
-class=SpellE><span class=GramE>updall</span></span>: UPDATEALL&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-class=GramE>[ ON</span> ABORTEDIT &lt;<span class=SpellE>abortedit</span>&gt; ]
-;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
-class=SpellE><span class=GramE>fixedwidths</span></span>: FIXEDWIDTHS&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp; </span>=&gt; ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
-class=SpellE><span class=GramE>oObj</span></span>&gt; := ] _<span class=SpellE>OOHG_SelectSubClass</span>(
-<span class=SpellE>TOBrowse</span>(), [ &lt;<span class=SpellE>subclass</span>&gt;()
-] )<span class=GramE>: ;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>Define( &lt;(<span class=SpellE>name</span>)&gt;, &lt;(<span
-class=SpellE>parent</span>)&gt;<span class=GramE>, , ,</span> &lt;w&gt;,
-&lt;h&gt;, &lt;<span class=SpellE>headers</span>&gt;, &lt;<span class=SpellE>widths</span>&gt;,
-&lt;<span class=SpellE>Fields</span>&gt;, ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;<span class=SpellE><span class=GramE>value</span></span>&gt;, &lt;<span
-class=SpellE>fontname</span>&gt;, &lt;<span class=SpellE>fontsize</span>&gt;,
-&lt;<span class=SpellE>tooltip</span>&gt;, &lt;{<span class=SpellE>change</span>}&gt;,
-&lt;{<span class=SpellE>dblclick</span>}&gt;, ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;<span class=SpellE><span class=GramE>aHeadClick</span></span>&gt;,
-&lt;{<span class=SpellE>gotfocus</span>}&gt;, &lt;{<span class=SpellE>lostfocus</span>}&gt;,
-&lt;(<span class=SpellE>WorkArea</span>)&gt;, &lt;.<span class=SpellE>Delete</span>.&gt;,
-;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;.<span class=SpellE>style</span>.&gt;, &lt;<span class=SpellE>aImage</span>&gt;,
-&lt;<span class=SpellE>aJust</span>&gt;, &lt;<span class=SpellE>helpid</span>&gt;,
-&lt;.<span class=SpellE>bold</span>.&gt;, &lt;.<span class=SpellE>italic</span>.<span
-class=GramE>&gt;, ;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span style='mso-spacerun:yes'>&nbsp;</span>&lt;.<span class=SpellE>underline</span>.&gt;,
-&lt;.<span class=SpellE>strikeout</span>.&gt;, &lt;.<span class=SpellE>break</span>.&gt;,
-&lt;<span class=SpellE>backcolor</span>&gt;, &lt;<span class=SpellE>fontcolor</span><span
-class=GramE>&gt;, ;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;.<span class=SpellE>lock</span>.&gt;, &lt;.<span class=SpellE>inplace</span>.&gt;,
-&lt;.<span class=SpellE>novscroll</span>.&gt;, &lt;.<span class=SpellE>append</span>.&gt;,
-&lt;<span class=SpellE>aReadOnly</span><span class=GramE>&gt;, ;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;<span class=SpellE><span class=GramE>aValidFields</span></span>&gt;,
-&lt;<span class=SpellE>aValidMessages</span>&gt;, &lt;.<span class=SpellE>edit</span>.&gt;,
-&lt;<span class=SpellE>dynamicbackcolor</span>&gt;, ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;<span class=SpellE><span class=GramE>aWhenFields</span></span>&gt;,
-&lt;<span class=SpellE>dynamicforecolor</span>&gt;, &lt;Picture&gt;, &lt;.<span
-class=SpellE>rtl</span>.&gt;, &lt;{<span class=SpellE>onappend</span>}&gt;, ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;{<span class=SpellE><span class=GramE>editcell</span></span>}&gt;,
-&lt;<span class=SpellE>editcontrols</span>&gt;, &lt;<span class=SpellE>replacefields</span>&gt;,
-&lt;.<span class=SpellE>reccount</span>.&gt;, ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;<span class=SpellE><span class=GramE>columninfo</span></span>&gt;, !
-&lt;.<span class=SpellE>noshowheaders</span>.&gt;, &lt;{<span class=SpellE>enter</span>}&gt;,
-&lt;.<span class=SpellE>disabled</span>.&gt;, &lt;.<span class=SpellE>notabstop</span>.<span
-class=GramE>&gt;, ;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;.invisible.&gt;, &lt;.<span class=SpellE>descending</span>.&gt;,
-&lt;{<span class=SpellE>bWhenDel</span>}&gt;, &lt;<span class=SpellE>DelMsg</span>&gt;,
-&lt;{<span class=SpellE>onDelete</span>}<span class=GramE>&gt;, ;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;<span class=SpellE><span class=GramE>aHeaderImages</span></span>&gt;,
-&lt;<span class=SpellE>aImgAlign</span>&gt;, &lt;.<span class=SpellE>fullmove</span>.&gt;,
-&lt;<span class=SpellE>aSelectedColors</span>&gt;, &lt;<span class=SpellE>aEditKeys</span>&gt;,
-;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span class=SpellE><span class=GramE>if</span></span>( &lt;.<span
-class=SpellE>forcerefresh</span>.&gt;, 0, <span class=SpellE>if</span>( &lt;.<span
-class=SpellE>norefresh</span>.&gt;, 1, <span class=SpellE>nil</span> ) ), ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span class=SpellE>iif</span>( <span class=SpellE>upper</span>( #&lt;<span
-class=SpellE>bffr</span>&gt; ) == &quot;DOUBLEBUFFER&quot;, .T., <span
-class=SpellE>iif</span>( <span class=SpellE>upper</span>( #&lt;<span
-class=SpellE>bffr</span>&gt; ) == &quot;SINGLEBUFFER&quot;, .F., .T. ) ), ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span class=SpellE>iif</span>( <span class=SpellE>upper</span>( #&lt;<span
-class=SpellE>focus</span>&gt; ) == &quot;NOFOCUSRECT&quot;, .F., <span
-class=SpellE>iif</span>( <span class=SpellE>upper</span>( #&lt;<span
-class=SpellE>focus</span>&gt; ) == &quot;FOCUSRECT&quot;, .T., NIL ) ), ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;.<span class=SpellE>plm</span>.&gt;, <span class=SpellE>iif</span>( <span
-class=SpellE>upper</span>( #&lt;<span class=SpellE>sync</span>&gt; ) ==
-&quot;UNSYNCHRONIZED&quot;, .F., <span class=SpellE>iif</span>( <span
-class=SpellE>upper</span>( #&lt;<span class=SpellE>sync</span>&gt; ) ==
-&quot;SYNCHRONIZED&quot;, .T., NIL ) ), ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;.<span class=SpellE>fixedcols</span>.&gt;, &lt;.<span class=SpellE>nodelmsg</span>.&gt;,
-&lt;.<span class=SpellE>updall</span>.&gt;, <span class=GramE>&lt;{</span><span
-class=SpellE>abortedit</span>}&gt;, &lt;{<span class=SpellE>click</span>}&gt;,
-&lt;.<span class=SpellE>fixedwidths</span>.&gt; )<br>
-</span><span lang=ES style='color:gray;mso-ansi-language:ES'><br
-style='mso-special-character:line-break'>
-<br style='mso-special-character:line-break'>
-</span></p>
+</span>
+
+<p>
+<span lang=ES style="COLOR: black; mso-ansi-language: ES">
+<PRE>
+#command @ &lt;row&gt;,&lt;col&gt; BROWSE &lt;name&gt; ;
+      [ &lt;dummy01: OF, PARENT&gt; &lt;parent&gt; ] ;
+      [ OBJ &lt;oObj&gt; ] ;
+      [ WIDTH &lt;w&gt; ] ;
+      [ HEIGHT &lt;h&gt; ] ;
+      [ HEADERS &lt;headers&gt; ] ;
+      [ WIDTHS &lt;widths&gt; ] ;
+      [ WORKAREA &lt;workarea&gt; ] ;
+      [ FIELDS &lt;Fields&gt; ] ;
+      [ INPUTMASK &lt;Picture&gt; ] ;
+      [ VALUE &lt;value&gt; ] ;
+      [ FONT &lt;fontname&gt; ] ;
+      [ SIZE &lt;fontsize&gt; ] ;
+      [ &lt;bold: BOLD&gt; ] ;
+      [ &lt;italic: ITALIC&gt; ] ;
+      [ &lt;underline: UNDERLINE&gt; ] ;
+      [ &lt;strikeout: STRIKEOUT&gt; ] ;
+      [ TOOLTIP &lt;tooltip&gt; ] ;
+      [ BACKCOLOR &lt;backcolor&gt; ] ;
+      [ DYNAMICBACKCOLOR &lt;dynamicbackcolor&gt; ] ;
+      [ DYNAMICFORECOLOR &lt;dynamicforecolor&gt; ] ;
+      [ FONTCOLOR &lt;fontcolor&gt; ] ;
+      [ &lt;dummy02: ONGOTFOCUS, ON GOTFOCUS&gt; &lt;gotfocus&gt; ] ;
+      [ &lt;dummy03: ONCHANGE, ON CHANGE&gt; &lt;change&gt; ] ;
+      [ &lt;dummy04: ONLOSTFOCUS, ON LOSTFOCUS&gt; &lt;lostfocus&gt; ] ;
+      [ &lt;dummy05: ONDBLCLICK, ON DBLCLICK&gt; &lt;dblclick&gt; ] ;
+      [ &lt;dummy06: ONCLICK, ON CLICK&gt; &lt;click&gt; ] ;
+      [ &lt;edit: EDIT&gt; ] ;
+      [ &lt;inplace: INPLACE&gt; ] ;
+      [ &lt;append: APPEND&gt; ] ;
+      [ &lt;dummy07: ONHEADCLICK, ON HEADCLICK&gt; &lt;aHeadClick&gt; ] ;
+      [ &lt;dummy08: WHEN, COLUMNWHEN&gt; &lt;aWhenFields&gt; ] ;
+      [ VALID &lt;aValidFields&gt; ] ;
+      [ VALIDMESSAGES &lt;aValidMessages&gt; ] ;
+      [ READONLY &lt;aReadOnly&gt; ] ;
+      [ &lt;lock: LOCK&gt; ] ;
+      [ &lt;delete: DELETE&gt; ] ;
+      [ &lt;style: NOLINES&gt; ] ;
+      [ IMAGE &lt;aImage&gt; ] ;
+      [ JUSTIFY &lt;aJust&gt; ] ;
+      [ &lt;novscroll: NOVSCROLL&gt; ] ;
+      [ HELPID &lt;helpid&gt; ] ;
+      [ &lt;break: BREAK&gt; ] ;
+      [ &lt;rtl: RTL&gt; ] ;
+      [ &lt;dummy09: ONAPPEND, ON APPEND&gt; &lt;onappend&gt; ] ;
+      [ &lt;dummy10: ONEDITCELL, ON EDITCELL&gt; &lt;editcell&gt; ] ;
+      [ COLUMNCONTROLS &lt;editcontrols&gt; ] ;
+      [ REPLACEFIELD &lt;replacefields&gt; ] ;
+      [ SUBCLASS &lt;subclass&gt; ] ;
+      [ &lt;reccount: RECCOUNT&gt; ] ;
+      [ COLUMNINFO &lt;columninfo&gt; ] ;
+      [ &lt;noshowheaders: NOHEADERS&gt; ] ;
+      [ &lt;dummy11: ONENTER, ON ENTER&gt; &lt;enter&gt; ] ;
+      [ &lt;disabled: DISABLED&gt; ] ;
+      [ &lt;notabstop: NOTABSTOP&gt; ] ;
+      [ &lt;invisible: INVISIBLE&gt; ] ;
+      [ &lt;descending: DESCENDING&gt; ] ;
+      [ DELETEWHEN &lt;bWhenDel&gt; ] ;
+      [ DELETEMSG &lt;DelMsg&gt; ] ;
+      [ &lt;dummy12: ONDELETE, ON DELETE&gt; &lt;onDelete&gt; ] ;
+      [ HEADERIMAGES &lt;aHeaderImages&gt; ] ;
+      [ IMAGESALIGN &lt;aImgAlign&gt; ] ;
+      [ &lt;fullmove: FULLMOVE&gt; ] ;
+      [ SELECTEDCOLORS &lt;aSelectedColors&gt; ] ;
+      [ EDITKEYS &lt;aEditKeys&gt; ] ;
+      [ &lt;forcerefresh: FORCEREFRESH&gt; ] ;
+      [ &lt;norefresh: NOREFRESH&gt; ] ;
+      [ &lt;bffr: DOUBLEBUFFER, SINGLEBUFFER&gt; ] ;
+      [ &lt;focus: NOFOCUSRECT, FOCUSRECT&gt; ] ;
+      [ &lt;plm: PAINTLEFTMARGIN&gt; ] ;
+      [ &lt;sync: SYNCHRONIZED, UNSYNCHRONIZED&gt; ] ;
+      [ &lt;fixedcols: FIXEDCOLS&gt; ] ;
+      [ &lt;nodelmsg: NODELETEMSG&gt; ] ;
+      [ &lt;updall: UPDATEALL&gt; ] ;
+      [ &lt;dummy13: ONABORTEDIT, ON ABORTEDIT&gt; &lt;abortedit&gt; ] ;
+      [ &lt;fixedwidths: FIXEDWIDTHS&gt; ] ;
+      [ &lt;blocks: FIXEDBLOCKS, DYNAMICBLOCKS&gt; ] ;
+      [ BEFORECOLMOVE &lt;bBefMov&gt; ] ;
+      [ AFTERCOLMOVE &lt;bAftMov&gt; ] ;
+      [ BEFORECOLSIZE &lt;bBefSiz&gt; ] ;
+      [ AFTERCOLSIZE &lt;bAftSiz&gt; ] ;
+      [ BEFOREAUTOFIT &lt;bBefAut&gt; ] ;
+      [ &lt;excel: EDITLIKEEXCEL&gt; ] ;
+      [ &lt;buts: USEBUTTONS&gt; ] ;
+      [ &lt;upcol: UPDATECOLORS&gt; ] ;
+      [ &lt;edtctrls: FIXEDCONTROLS, DYNAMICCONTROLS&gt; ] ;
+      [ &lt;dummy14: ONHEADRCLICK, ON HEADRCLICK&gt; &lt;bheadrclick&gt; ] ;
+   =&gt; ;
+      [ &lt;oObj&gt; := ] _OOHG_SelectSubClass( TOBrowse(), [ &lt;subclass&gt;() ] ): ;
+            Define( &lt;(name)&gt;, &lt;(parent)&gt;, &lt;col&gt;, &lt;row&gt;, &lt;w&gt;, &lt;h&gt;, &lt;headers&gt;, &lt;widths&gt;, ;
+            &lt;Fields&gt;, &lt;value&gt;, &lt;fontname&gt;, &lt;fontsize&gt;, &lt;tooltip&gt;, &lt;{change}&gt;, ;
+            &lt;{dblclick}&gt;, &lt;aHeadClick&gt;, &lt;{gotfocus}&gt;, &lt;{lostfocus}&gt;, &lt;(workarea)&gt;, ;
+            &lt;.delete.&gt;, &lt;.style.&gt;, &lt;aImage&gt;, &lt;aJust&gt;, &lt;helpid&gt;, &lt;.bold.&gt;, ;
+            &lt;.italic.&gt;, &lt;.underline.&gt;, &lt;.strikeout.&gt;, &lt;.break.&gt;, &lt;backcolor&gt;, ;
+            &lt;fontcolor&gt;, &lt;.lock.&gt;, &lt;.inplace.&gt;, &lt;.novscroll.&gt;, &lt;.append.&gt;, ;
+            &lt;aReadOnly&gt;, &lt;aValidFields&gt;, &lt;aValidMessages&gt;, &lt;.edit.&gt;, ;
+            &lt;dynamicbackcolor&gt;, &lt;aWhenFields&gt;, &lt;dynamicforecolor&gt;, &lt;Picture&gt;, &lt;.rtl.&gt;, ;
+            &lt;{onappend}&gt;, &lt;{editcell}&gt;, &lt;editcontrols&gt;, &lt;replacefields&gt;, &lt;.reccount.&gt;, ;
+            &lt;columninfo&gt;, ! &lt;.noshowheaders.&gt;, &lt;{enter}&gt;, &lt;.disabled.&gt;, &lt;.notabstop.&gt;, ;
+            &lt;.invisible.&gt;, &lt;.descending.&gt;, &lt;{bWhenDel}&gt;, &lt;DelMsg&gt;, &lt;{onDelete}&gt;, ;
+            &lt;aHeaderImages&gt;, &lt;aImgAlign&gt;, &lt;.fullmove.&gt;, &lt;aSelectedColors&gt;, &lt;aEditKeys&gt;, ;
+            iif( &lt;.forcerefresh.&gt;, 0, if( &lt;.norefresh.&gt;, 1, nil ) ), ;
+            iif( upper( #&lt;bffr&gt; ) == "DOUBLEBUFFER", .T., iif( upper( #&lt;bffr&gt; ) == "SINGLEBUFFER", .F., .T. ) ), ;
+            iif( upper( #&lt;focus&gt; ) == "NOFOCUSRECT", .F., iif( upper( #&lt;focus&gt; ) == "FOCUSRECT", .T., NIL ) ), ;
+            &lt;.plm.&gt;, iif( upper( #&lt;sync&gt; ) == "UNSYNCHRONIZED", .F., iif( upper( #&lt;sync&gt; ) == "SYNCHRONIZED", .T., NIL ) ), ;
+            &lt;.fixedcols.&gt;, &lt;.nodelmsg.&gt;, &lt;.updall.&gt;, &lt;{abortedit}&gt;, &lt;{click}&gt;, &lt;.fixedwidths.&gt;, ;
+            iif( upper( #&lt;blocks&gt; ) == "FIXEDBLOCKS", .T., iif( upper( #&lt;blocks&gt; ) == "DYNAMICBLOCKS", .F., NIL ) ), ;
+            &lt;{bBefMov}&gt;, &lt;{bAftMov}&gt;, &lt;{bBefSiz}&gt;, &lt;{bAftSiz}&gt;, &lt;{bBefAut}&gt;, &lt;.excel.&gt;, &lt;.buts.&gt;, &lt;.upcol.&gt;, ;
+            iif( upper( #&lt;edtctrls&gt; ) == "FIXEDCONTROLS", .T., iif( upper( #&lt;edtctrls&gt; ) == "DYNAMICCONTROLS", .F., NIL ) ), ;
+            &lt;{bheadrclick}&gt; )
+
+#command SET BROWSESYNC ON ;
+   =&gt; ;
+      SetBrowseSync( .T. )
+
+#command SET BROWSESYNC OFF ;
+   =&gt; ;
+      SetBrowseSync( .F. )
+
+#command SET BROWSEFIXEDBLOCKS ON ;
+   =&gt; ;
+      SetBrowseFixedBlocks( .T. )
+
+#command SET BROWSEFIXEDBLOCKS OFF ;
+   =&gt; ;
+      SetBrowseFixedBlocks( .F. )
+
+#command SET BROWSEFIXEDCONTROLS ON ;
+   =&gt; ;
+      SetBrowseFixedControls( .T. )
+
+#command SET BROWSEFIXEDCONTROLS OFF ;
+   =&gt; ;
+      SetBrowseFixedControls( .F. )
+
+#translate MemVar . &lt;AreaName&gt; . &lt;FieldName&gt; ;
+   =&gt; ;
+      MemVar&lt;AreaName&gt;&lt;FieldName&gt;
+
+<b>Column justification constants:</b>
+   BROWSE_JTFY_LEFT
+   BROWSE_JTFY_RIGHT
+   BROWSE_JTFY_CENTER
+   BROWSE_JTFY_JUSTIFYMASK
+</PRE>
+</span>
 
 </div>
 
 </div>
 <div id="winchm_template_footer"><FONT color=#808080 
 size=1>Copyright © 2013-2014 MigSoft - </FONT><A 
-href="https://sourceforge.net/projects/oohg/"><FONT 
+href="https://sourceforge.net/projects/oohg/" target="_blank"><FONT 
 size=1>https://sourceforge.net/projects/oohg/</FONT></A> 
      </div>
 

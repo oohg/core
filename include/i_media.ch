@@ -1,5 +1,5 @@
 /*
- * $Id: i_media.ch,v 1.5 2014-06-03 00:34:12 fyurisich Exp $
+ * $Id: i_media.ch,v 1.6 2014-06-17 00:35:28 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -97,8 +97,8 @@
 #command @ <row>, <col> ANIMATEBOX <name> ;
       [ OBJ <obj> ] ;
       [ <dummy1: OF, PARENT> <parent> ] ;
-      WIDTH <w> ;
-      HEIGHT <h> ;
+      [ WIDTH <w> ] ;
+      [ HEIGHT <h> ] ;
       [ FILE <file> ] ;
       [ <autoplay: AUTOPLAY> ] ;
       [ <center: CENTER> ] ;

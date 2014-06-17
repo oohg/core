@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: makelib_mingw.bat,v 1.35 2014-05-17 21:30:00 fyurisich Exp $
+rem $Id: makelib_mingw.bat,v 1.36 2014-06-17 00:35:47 fyurisich Exp $
 rem
 cls
 
@@ -32,7 +32,7 @@ rem set LIB_HRB=lib\win\mingw64
 rem set BIN_HRB=bin\win\mingw64
 
 rem *** Create Lib Folder ***
-if not exist %HG_ROOT%\%LIB_GUI%\liboohg.a md %HG_ROOT%\%LIB_GUI% >nul
+if not exist %HG_ROOT%\%LIB_GUI%\nul md %HG_ROOT%\%LIB_GUI% >nul
 
 rem *** Delete Old Libraries ***
 if exist %HG_ROOT%\%LIB_GUI%\liboohg.a      del %HG_ROOT%\%LIB_GUI%\liboohg.a
@@ -88,10 +88,10 @@ if exist %HG_ROOT%\%LIB_GUI%\libminiprint.a copy %HG_ROOT%\%LIB_GUI%\libminiprin
 :EXIT2
 set PATH=%TPATH%
 set TPATH=
-del *.o
+for %%a in (*.o) do del %%a
 
 :EXIT1
-del h_*.c
+for %%a in (h_*.c) do del %%a
 if exist winprint.c  del winprint.c
 if exist miniprint.c del miniprint.c
 

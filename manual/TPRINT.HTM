@@ -1,5 +1,5 @@
 <!--
-$Id: TPRINT.HTM,v 1.2 2014-05-24 20:34:08 fyurisich Exp $
+$Id: TPRINT.HTM,v 1.3 2014-06-17 00:35:29 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -17,8 +17,8 @@ html {
 body {
 	padding: 0px;
 	margin: 0px;
-	overflow: auto; 
-	background-color: #FFFFFF; 
+	overflow: auto;
+	background-color: #FFFFFF;
 }
 
 #winchm_template_navigation{
@@ -36,12 +36,12 @@ body {
 	font-size: 10px;
 	font-style: normal;
 	font-weight: normal;
-	color: #626262; 
-	 
+	color: #626262;
+
 	border-bottom-style: solid;
 	border-bottom-width: 1px;
 	border-bottom-color: #DBDBDB;
-	
+
 	background-color: #E2EDFA;
 	width: auto;
 }
@@ -59,7 +59,7 @@ body {
 	font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
 	font-weight: bold;
 	font-size: 18px;
-	color: 353535;	
+	color: 353535;
 
 	margin-top: 0px;
 	margin-left: 0px;
@@ -70,7 +70,7 @@ body {
 	padding-left: 5px;
 	padding-bottom: 10px;
 	padding-right: 10px;
-	
+
 	border-bottom-style: solid;
 	border-bottom-width: 1px;
 	border-bottom-color: #C7C7C7;
@@ -95,7 +95,7 @@ body {
 	border-width: 1px;
 	border-color: #c0c0c0;
 	border-top-style: solid;
-	
+
 	margin-top: 0px;
 	margin-left: 15px;
 	margin-bottom: 5px;
@@ -110,8 +110,8 @@ body {
 	font-size: 9px;
 	color: #909090;
 
-	text-align: left;	
-	width: auto;	
+	text-align: left;
+	width: auto;
 }
 
 #winchm_template_navigation a:link	{text-decoration: none;color: #0000ff}
@@ -138,347 +138,406 @@ visibility:hidden;
 <div id="winchm_template_title">
 <div id="winchm_template_button"><A href="CLASSES.HTM" title="Previous topic"><img id="winchm_template_prev" alt="Previous topic" src="template4/btn_prev_n.gif" border="0"></a><A href="LIBRARIES.HTM" title="Next topic"><img id="winchm_template_next" alt="Next topic" src="template4/btn_next_n.gif" border="0"></a></div>
 TPRINT CLASS</div>
-<div id="winchm_template_navigation">Help &gt; 
+<div id="winchm_template_navigation">Help &gt;
 Classes &gt; </div>
 <div id="winchm_template_content">
-<font face="Arial" size="2">
-<p><strong>TPRINT( cLibrary )</strong> <br />
-  &nbsp;&nbsp;Initializes the class 
-  and sets the library which will be used for printing.<br />
-  &nbsp;&nbsp;Returns an object that allows 
-  you to configure the print job,<br />
-  &nbsp;&nbsp;build it and print it or save it to
-  a file.</p>
-<p>&nbsp;&nbsp;Instructions for use:</p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;oTPrintObject: = <strong>TPRINT( cLibrary )</strong></p>
-<p>&nbsp;&nbsp;The possible values for cLibrary are:</p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&quot;<strong>HBPRINTER</strong>&quot; Prints using HBPrinter library.<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;&quot;<strong>MINIPRINT</strong>&quot; Prints using Miniprint library.<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;<strong>&quot;DOSPRINT&quot;</strong> Prints directly to printer (DOS printing).<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;<strong>&quot;CALCPRINT&quot;</strong> Generates an OpenOffice Calc file (OpenOffice must be installed installed).<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;<strong>&quot;EXCELPRINT&quot;</strong> Generates an Excel file (Excel must be installed).<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;<strong>&quot;RTFPRINT&quot;</strong> Generates an RTF file.<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;<strong>&quot;HTMLPRINT&quot;</strong> Generates an HTML file.<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;<strong>&quot;PDFPRINT&quot;</strong> Generates a PDF file.<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;<strong>&quot;CSVPRINT&quot;</strong> Generates a comma-separated values file (CSV).<br />
-  &nbsp;&nbsp;&nbsp;<strong>&nbsp;&quot;RAWPRINT&quot;</strong> Prints directly to a spool queue (in binary).<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;<strong>&quot;SPREADSHEETPRINT&quot;</strong> Generates an Excel file using BIFF format (neither Excel nor OpenOffice needs to be installed).<br />
-  <br />
-  &nbsp;&nbsp;If cLibrary is omitted, the selected library depends on <strong>_OOHG_PrintLibrary</strong> variable.<br />
-  &nbsp;&nbsp;If the variable is not a string, <strong>&quot;MINIPRINT&quot;</strong> will be selected.<br />
-  &nbsp;&nbsp;If its a string but its value is not one of the expected values, <strong>&quot;HBPRINTER&quot;</strong> will be selected.<br />
-  &nbsp;&nbsp;If cLibrary is present but is not one of the expected string values, <strong>&quot;MINIPRINT&quot;</strong> will be selected.<br />
-</p>
-<p>&nbsp;</p>
-<p><U><strong>MAIN METHODS</strong></U></p>
-<p>Detailed below available methods and parameters.<br />
-  <br />
-  <U>Note</U>: All parameters of all methods are optional.</p>
-<p><br />
-  <strong>:: Init ()<br />
-  </strong>&nbsp;&nbsp;Initializes some variables 
-  for each library.</p>
-<p><strong>::SelPrinter(lselect, lpreview, llandscape, npapersize, 
-  cprinterx, lshow, nres, nbin)<br />
-  </strong>&nbsp;&nbsp;Initializes the 
-  printer.<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;lselect =. T. sample dialog to select 
-  printer<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;lselect =. F. uses the default 
-  printer<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;lpreview =. T. shows the preview before 
-  printing (default)<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;lpreview =. F. shows no 
-  preview<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;llandscape =. T. horizontal 
-  print<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;llanscape =. F. vertical 
-  printing<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;npapersize = paper size according HBPRINTER 
-  standards,<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;see 
-  end of this document<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;cprinterx =                    printer name if you 
-  want to make an 
-  impression<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;directly 
-  without using the default printer 
-  without<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;select 
-  for dialogue<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;lshow =. T. waiting window displays 
-  while preparing printing (default)<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;lshow =. F. hides 
-  the window waiting while preparing printing<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;nres = 
-  resolution defaults to PRINTER_RES_MEDIUM<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;nbin = tray 
-  number which is taken from the paper (defaults to NIL)</p>
-<p><strong>::BeginDoc(cname)<br />
-  </strong>&nbsp;&nbsp;Sign the 
-  paper.<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;cname = name of the document (if no 
-  default takes place&nbsp;Bookseller 
-  the print).<br />
-  &nbsp;&nbsp;In cases where a file is generated, is also cName 
-  name<br />
-  &nbsp;&nbsp;generated file with file type extension 
-  generated.<br />
-  &nbsp;&nbsp;If you need to save in a different folder from the 
-  current<br />
-  &nbsp;&nbsp;route should be included in the name.</p>
-<p><strong>:: SetPreviewSize ()<br />
-  </strong>&nbsp;&nbsp;Sets the preview size for HBPRINTER 
-  (no effect for other libraries).<br />
-  <br />
-  &nbsp;&nbsp;Values ??can be:<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;1 
-  Child<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;2 largest<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;3 even 
-  bigger<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;etc.</p>
-<p><strong>:: BeginPage ()<br />
-</strong>&nbsp;&nbsp;Start a page.</p>
-<p><strong>::PrintData (nfila, ncolumna, data to print, 
-  ctipoletra, ntamañoletra,&nbsp;lbold, 
-  aColor, calineacion, Nancho)<br />
-</strong>&nbsp;&nbsp;Prints data.</p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;nfila = row 
-  print<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;= column printing 
-  ncolumna<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;= data to print may be any 
-  type<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;ctipoletra = font to use, if not specified 
-  takes<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;that 
-  is in progress (default Courier New)<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;ntamañoletra = 
-  font size in points<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;lbold =. T. bold 
-  type<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;lbold =. F. 
-  normal<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;aColor = RGB arrangement to give a color to 
-  text<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;calineacion =                    alignment of 
-  data:<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;L&quot; 
-  left 
-  (default)<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;C&quot; 
-  center<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;R&quot; 
-  right<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;Nancho = field size should be used when you 
-  want<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;align 
-  the center or right, default is 15</p>
-<p><strong>::PrintImage(nfila, ncol, nfilaf, ncolf, 
-  cimagen)<br />
-  </strong>&nbsp;&nbsp;Prints one image.<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;nfila = 
-  initial print row<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;ncol = initial 
-  column<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;nfilaf = final 
-  row<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;ncolf = final 
-  column<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;cimagen = graphic print</p>
-<p><strong>::PrintLine(nfila, ncol, nfilaf, ncolf, atcolor, 
-  ntwpen)<br />
-  </strong>&nbsp;&nbsp;Prints a line from one position to 
-  another.<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;nfila =  initial print 
-  row<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;ncol = initial 
-  column<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;nfilaf = final 
-  row<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;ncolf = final 
-  column<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;atcolor = array RGB color to 
-  use<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;ntwpen = width of the brush, default 
-  1<br />
-  &nbsp;&nbsp;Note: if DOS only printed if the initial line is equal to the 
-  final.</p>
-<p><strong>::PrintRectangle(nfila, ncol, nfilaf, ncolf, atcolor, 
-  ntwpen)<br />
-  </strong>&nbsp;&nbsp;Prints a rectangle.<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;nfila = 
-  initial print row<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;ncol = initial 
-  column<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;nfilaf = final 
-  row<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;ncolf = final 
-  column<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;atcolor = array RGB color to 
-  use<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;ntwpen = width of the brush, default 1</p>
-<p><strong>::PrintRoundRectangle(nfila, ncol, nfilaf, ncolf, 
-  atcolor, ntwpen)<br />
-  </strong>&nbsp;&nbsp;Prints a rectangle with rounded 
-  corners.<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;nfila = initial print 
-  row<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;ncol = initial 
-  column<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;nfilaf = final 
-  row<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;ncolf = final 
-  column<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;atcolor = array RGB color to 
-  use<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;ntwpen brush width = default 1</p>
-<p><strong>::SetColor 
-  (atcolor)<br />
-  </strong>&nbsp;&nbsp;Sets the current color to a new 
-  value.<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;atcolor = array RGB</p>
-<p><strong>::GetDefPrinter ()</strong> <br />
-  &nbsp;&nbsp;Gets the default 
-  printer.</p>
-<p><strong>::SetUnits(cunits)<br />
-  </strong>&nbsp;&nbsp;The units used. By 
-  default uses ROWCOL although<br />
-  &nbsp;&nbsp;everything is done internally in MM 
-  to be more accurate between<br />
-  &nbsp;&nbsp;multiple 
-  printers.<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;cunits = possible values ??are &quot;MM&quot; and 
-  &quot;ROWCOL&quot;</p>
-<p><strong>::EndPage()<br />
-</strong>&nbsp;&nbsp;Ends a page.</p>
-<p><strong>:: EndDoc ()<br />
-</strong>&nbsp;&nbsp;Ends a document.</p>
-<p><strong>:: Release ()<br />
-  </strong>&nbsp;&nbsp;Releases the object 
-  TPRINT.</p>
-<p><strong>:: Release ()<br />
-  </strong>&nbsp;&nbsp;Returns the class 
-  version.</p>
-<p><strong>::SetLMargin(nlmar)<br />
-  </strong>&nbsp;&nbsp;Set the left 
-  margin.</p>
-<p><strong>::SetTMargin(ntmar)<br />
-  </strong>&nbsp;&nbsp;Set the top 
-  margin.</p>
-<p><strong>:: SetFont (CFont, nsize, aColor, lbold, 
-  litalic)<br />
-  </strong>&nbsp;&nbsp;Sets the default font.<br />
-  &nbsp;&nbsp;CFont = 
-  name<br />
-  &nbsp;&nbsp;nSize = size<br />
-  &nbsp;&nbsp;aColor = 
-  color<br />
-  &nbsp;&nbsp;lbold = bold<br />
-  &nbsp;&nbsp;litalic = italic</p>
-<p><strong>::SetCPL(ncpl)<br />
-  </strong>&nbsp;&nbsp;Sets the font size in 
-  caracters per line.<br />
-  &nbsp;&nbsp;Valid values ??are 
-  ncpl:<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;60 - using font size 
-  14<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;80 - using size 12 
-  (default)<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;96 - used size 
-  10<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;120 - using font size 
-  8<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;140 - used font size 
-  7<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;160 - used font size 6</p>
-<p><strong>::PrintBarCode(NLIN, ncol, cbarcode, ctipo, aColor, 
-  lhori, nWidth, nHeight)<br />
-  </strong>&nbsp;&nbsp;Prints a 
-  barcode.<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;NLIN = row where 
-  print<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;ncol = column being 
-  printed<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;= code printed 
-  cbarcode<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;ctipo = encoding 
-  type<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;aColor = color<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;lhori = orientation (. T. =    
-  horizontal. F. vertical)<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;nWidth 
-  = width of the bars<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;nHeight =                    height of the bars</p>
-<p><strong>:: SetProp (lmode)</strong> <br />
-  &nbsp;&nbsp;Sets whether the row 
-  height to print will be proportional to<br />
-  &nbsp;&nbsp;Current font size overall 
-  (lmode =. T.) or be proportional<br />
-  &nbsp;&nbsp;to size 10 (lmode =. F.).</p>
-<p>&nbsp;</p>
-<p><strong><U>Important variables</U></strong></p>
-<p><strong>_OOHG_PrintLibrary</strong><br />
-  &nbsp;&nbsp;Defining this variable 
-  as public, you can specify the library<br />
-  &nbsp;&nbsp;default printer to use. 
-  One can use any of the values<br />
-  &nbsp;&nbsp;cLibrary parameter. This variable
-  is useful to use the<br />
-  &nbsp;&nbsp;commands &quot;Report Form&quot;, &quot;Edit&quot; and &quot;Edit 
-  Extended&quot;.<br />
-  &nbsp;&nbsp;If not defined or if the type is not string, the 
-  default library<br />
-  &nbsp;&nbsp;is 
-  &quot;MINIPRINT&quot;. If a string is not valid is 
-  &quot;HBPRINTER&quot;.</p>
-<p><br />
-  <strong>::aPrinters<br />
-  </strong>&nbsp;&nbsp;Settlement of the 
-  available printers on the system.</p>
-<p><strong>::APorts<br />
-  </strong>&nbsp;&nbsp;Arrangement of ports available 
-  on the system.</p>
-<p><strong>::LPrError<br />
-  </strong>&nbsp;&nbsp;Logical variable. If an error 
-  occurs returns. T., defaults. F.</p>
-<p><strong>::aColor<br />
-  </strong>&nbsp;&nbsp;Current Color brush used in 
-  drawing lines and boxes,<br />
-  &nbsp;&nbsp;black default.</p>
-<p><strong>::cFontName</strong><br />
-  &nbsp;&nbsp;Send current default Courier 
-  New</p>
-<p><strong>::nFontSize<br />
-  </strong>&nbsp;&nbsp;Current Font size global 
-  default 10. Use with caution.</p>
-<p><strong>::aFontColor<br />
-  </strong>&nbsp;&nbsp;Current Font color, black 
-  default.</p>
-<p><strong>::lFontBold</strong><br />
-  &nbsp;&nbsp;. T. if the current font is 
-  bold.</p>
-<p><strong>::lFontItalic<br />
-  </strong>&nbsp;&nbsp;. T. if the current font is 
-  in italics.</p>
-<p><strong>::cVersion</strong><br />
-  &nbsp;&nbsp;Version number of the 
-  class.</p>
-<p>&nbsp;</p>
-<p><strong>PAPER SIZE</strong></p>
-<p>View miniprint.ch, i_report.ch or winprint.ch<br />
-  <br />
-  <U>Note</U>: Not all sizes are supported in all versions of 
-  Windows, see wingdi.h file in 
-  the folder C compiler include</p>
-</font>
-<p></p>
+
+<div class=Section1>
+
+<p class=MsoNormal><span lang=ES style="COLOR: darkgreen; mso-ansi-language: ES">
+///////////////////////////////////////////////////////////////////////////////<br>
+// TPRINT Class<br>
+///////////////////////////////////////////////////////////////////////////////<br>
+</span>
+<p>
+<span lang=ES style="COLOR: black; mso-ansi-language: ES">
+<PRE>
+This class is a wrapper for different methods of printing a report or
+exporting it to a file.
+
+<u>How to use it</u>
+
+The general procedure to use this class is:
+
+   1. Instantiate an object.
+   2. Initialize object variables and allocate resources.
+   3. Select a printer (if you want to print the document.)
+   4. Signal the start of the document.
+   5. Repeat for each page:
+      Signal the start of the page.
+      Print data.
+      Signal the end of the page.
+   6. Signal the end of the document.
+   7. Release allocated resources.
+
+   Note: all this steps are required to obtain the intended output and avoid
+         errors and memory leaks.
+
+<u>How to instantiate an object</u>
+
+<b>oTPrintObject := TPRINT( cMethod )</b>
+
+  Returns an object that allows you to build a document and to print or export
+  it to a file.
+
+  Valid values for cMethod are:
+    HBPRINTER        = Prints using HBPrinter library.
+    MINIPRINT        = Prints using Miniprint library.
+    DOSPRINT         = Prints directly to printer (DOS printing).
+    CALCPRINT        = Generates an OpenOffice Calc file
+                       (OpenOffice must be installed installed).
+    EXCELPRINT       = Generates an Excel file
+                       (Excel must be installed).
+    RTFPRINT         = Generates an RTF file.
+    HTMLPRINT        = Generates an HTML file.
+    PDFPRINT         = Generates a PDF file.
+    CSVPRINT         = Generates a comma-separated values file (CSV).
+    RAWPRINT         = Prints directly to a spool queue (in binary).
+    SPREADSHEETPRINT = Generates an Excel file using BIFF format
+                       (neither Excel nor OpenOffice are need).
+
+  If cMethod is omitted, the selected library depends on _OOHG_PrintLibrary
+  variable.
+  If the variable is not a string, MINIPRINT will be selected.
+  If its a string but its value is not one of the expected values,
+  HBPRINTER will be selected.
+  If cMethod is present but is not one of the expected string values,
+  MINIPRINT will be selected.
+
+<u>Available methods</u>
+
+<b>::Init()</b>
+
+  Initializes underlying method's variables.
+
+<b>::SelPrinter( lSelect, lPreview, lLandscape, nPaperSize, cPrinter, ;
+              lHide, nRes, nBin, nDuplex, lCollate, nCopies, lColor, ;
+              nScale, nPaperLength, nPaperWidth )</b>
+
+  For HBPRINTER, MINIPRINT, DOSPRINT and RAWPRINT methods, selects
+  and initializes the printer. For EXCELPRINT, opens an instance of
+  Excel (no pararameters are needed). For RTFPRINT, sets the page
+  orientation. Does nothing for CSVPRINT.
+
+xxx
+
+
+  Parameters:
+    lSelect      = .T. to select the printer from a dialog (default),
+                   .F. to print in the system's default printer
+                   It's ignored if cPrinter is not NIL.
+    lPreview     = .T. to show a preview before printing (default),
+                   .F. to print directly.
+    lLandscape   = .T. to print in landscape orientation,
+                   .F. to print in portrait orientation (default).
+    nPaperSize   = sets the paper size (defaults to printer's value).
+                   See "miniprint.ch" and "winprint.ch" for valid values.
+                   Check "wingdi.h" to see if a given paper size is
+                   supported by a given Windows version.
+    cPrinter     = name of an existing printer to use for printing
+                   (if omitted and lSelect is .T. a selection dialog will
+                   pop up, if it's .F. the default printer will be used).
+    lHide        = .F. to show a "wait window while printing (default),
+                   .T. to show none.
+    nRes         = resolution (defaults to printer's value).
+                   See "miniprint.ch" and "winprint.ch" for valid values.
+    nBin         = tray number from which the paper will be taken
+                   (defaults to printer's value).
+                   See "miniprint.ch" and "winprint.ch" for valid values.
+    nDuplex      = duplex type (defaults to printer's value).
+                   See "miniprint.ch" and "winprint.ch" for valid values.
+    lCollate     = .T. to enable collate printing if printer supports it,
+                   .F. to disable (defaults to printer's value).
+    nCopies      = number of copies that the printer will print if it
+                   supports automatic multiple copies printing (defaults
+                   to printer's value)
+    lColor       = for color printers, sets monochrome or color mode.
+    nScale       = Specifies the factor by which the printed output is to
+                   be scaled.
+    nPaperLength = Overrides the length of the paper specified by the
+                   nPaperSize parameter. Use tenths of a millimeter.
+    nPaperWidth  = Overrides the width of the paper specified by the
+                   nPaperSize parameter. Use tenths of a millimeter.
+
+<b>::BeginDoc( cName )</b>
+
+  Signs the start of a document.
+
+  Parameters:
+    cName        = name of the print document (defaults to "list").
+                   If the library generates a file, any provided extension
+                   will be stripped and a default extension will be added.
+                   Provide a path to save in a specific folder (defaults
+                   to My Documents).
+
+<b>::EndDoc()</b>
+
+  Signs the end of a document.
+  For HBPRINTER, MINIPRINT and DOSPRINT methods: displays a preview screen
+  with the document's content.
+  For EXCELPRINT, SPREADSHEETPRINT, HTMLPRINT, RTFPRINT, CSVPRINT, PDFPRINT
+  and CALCPRINT methods: opens the document using the default application.
+
+<b>::BeginPage()</b>
+
+  Signs the start of a page inside a document.
+
+<b>::EndPage()</b>
+
+  Signs the end of a page inside a document.
+
+<b>::SetPreviewSize( nSize )</b>
+
+  Sets the preview size (zoom) for HBPRINTER and MINIPRINT methods.
+
+  Parameters:
+    nSize        = For HBPRINTER method:
+                      1 to 5 (small to big, defaults to 3).
+                   For MINIPRINT method:
+                      -9.99 to 99.99 (small to big, defaults to 0).
+
+<b>::SetUnits( cUnits )</b>
+
+  Sets the printing units to be used for printing.
+
+  Parameters:
+    cUnits       = MM (milimiters) or ROWCOL (rows and cols, default).
+
+  Note: The class works internally with MM to try to obtain documents that
+        when printed look in the same way on different printers.
+
+<b>::PrintData( nLin, nCol, uData, cFont, nSize, lBold, aColor, ;
+             cAlign, nLen, lItalic, nAngle, lUnder, lStrike, nWidth )</b>
+
+  Prints data in a page.
+Agregar que imprime cada librería !!!!!!!!!!!!
+MINIPRINT - todo
+HBPRINTER - todo
+CALCPRINT - falta nWidth
+ver los empty
+
+  Parameters:
+     nLin        = y coordinate to print at (row), defaults to 1.
+     nCol        = x coordinate to print at (column), defaults to 1.
+     uData       = data to print (any type), defaults to &quot;&quot;.
+     cFont       = font to use for printing. Defaults to value of
+                   oTPrintObject:cFontName (initialized to Courier New).
+     nSize       = size of the font in points. Defaults to value of
+                   oTPrintObject:nFontSize (initialized to 12).
+     lBold       = .T. for printing with bold weight, .F. for
+                   printing with normal weight. Defauls to value of
+                   oTPrintObject:lFontBold (initialized to .F.).
+     aColor      = text color (RGB array). Defaults to value of
+                   oTPrintObject:aFontColor (initialized to BLACK).
+     cAlign      = text alignment:
+                      L - left (default)
+                      C - center
+                      R - right
+     nLen        = width (in chars) of the field where the data will be
+                   printed, this value is used to right or center align
+                   the data, defaults to 15.
+     lItalic     = .T. for printing with italic style, .F. for
+                   printing without it. Defauls to value of
+                   oTPrintObject:lFontItalic (initialized to .F.).
+     nAngle      = the rotation of a character in tenths of a degree,
+                   defaults to 0.
+     lUnder      = .T. for printing with underlined style, .F. for
+                   printing without it. Defauls to value of
+                   oTPrintObject:lFontUnderline (initialized to .F.).
+     lStrike     = .T. for printing with strikedoud style, .F. for
+                   printing without it. Defauls to value of
+                   oTPrintObject:lFontStrikeout (initialized to .F.).
+     nWidth      = the average width of characters in the requested font,
+                   defaults to system default.
+
+  Notes:
+     Objects are printed as &quot;&lt;Object&gt;&quot;.
+     Arrays are printed as &quot;&lt;Array&gt;&quot;.
+     Blocks are evaluated and their results are printed.
+     For more information on fonts search MSDN for CreateFont function.
+
+<b>::PrintImage(nfila, ncol, nfilaf, ncolf, cimagen)</b>
+
+  Prints an image.
+
+  Parameters:
+     nRow        = initial print row
+     nCol        = initial column
+     nfilaf      = final row
+     ncolf       = final column
+     cimagen     = graphic print
+
+<b>::PrintLine(nfila, ncol, nfilaf, ncolf, atcolor, ntwpen)</b>
+  Prints a line from one position to
+  another.
+  nfila =  initial print
+  row
+  ncol = initial
+  column
+  nfilaf = final
+  row
+  ncolf = final
+  column
+  atcolor = array RGB color to
+  use
+  ntwpen = width of the brush, default
+  1
+  Note: if DOS only printed if the initial line is equal to the
+  final.
+
+<b>::PrintRectangle(nfila, ncol, nfilaf, ncolf, atcolor, ntwpen)</b>
+  Prints a rectangle.
+  nfila =
+  initial print row
+  ncol = initial
+  column
+  nfilaf = final
+  row
+  ncolf = final
+  column
+  atcolor = array RGB color to
+  use
+  ntwpen = width of the brush, default 1
+
+<b>::PrintRoundRectangle(nfila, ncol, nfilaf, ncolf, atcolor, ntwpen)</b>
+  Prints a rectangle with rounded
+  corners.
+  nfila = initial print
+  row
+  ncol = initial
+  column
+  nfilaf = final
+  row
+  ncolf = final
+  column
+  atcolor = array RGB color to
+  use
+  ntwpen brush width = default 1
+
+<b>::SetColor(atcolor)</b>
+  Sets the text's current color to a new value.
+  atcolor = array RGB
+
+<b>::GetDefPrinter()</b>
+  Gets the default printer.
+
+<b>::Release()</b>
+  Releases the TPRINT object and all allocated resources.
+
+<b>::Release()</b>
+  Returns the version number of the class.
+
+<b>::SetLMargin(nlmar)</b>
+  Sets the left margin.
+
+<b>::SetTMargin(ntmar)</b>
+  Set the top
+  margin.
+
+<b>::SetFont (CFont, nsize, aColor, lbold, litalic)</b>
+  Sets the default font.
+  CFont =
+  name
+  nSize = size
+  aColor =
+  color
+  lbold = bold
+  litalic = italic
+
+<b>::SetCPL( nCpl )</b>
+
+  Sets the font size in caracters per line.
+
+  Parameters:
+  nCpl           = 60, using font size 14,
+                   80, using font size 12
+                   96, using font size 10,
+                   120, using font size 8,
+                   140, using font size 7,
+                   160, using font size 6.
+  Defaults to 80, for all methods except RTFPRINT which defaults to 96.
+
+<b>::PrintBarCode(NLIN, ncol, cbarcode, ctipo, aColor, lhori, nWidth, nHeight)</b>
+  Prints a
+  barcode.
+  NLIN = row where
+  print
+  ncol = column being
+  printed
+  = code printed
+  cbarcode
+  ctipo = encoding
+  type
+  aColor = color
+  lhori = orientation (. T. =
+  horizontal. F. vertical)
+  nWidth
+  = width of the bars
+  nHeight =                    height of the bars
+
+<b>::SetProp (lmode)</b>
+  Sets whether the row
+  height to print will be proportional to
+  Current font size overall
+  (lmode =. T.) or be proportional
+  to size 10 (lmode =. F.).
+
+<b>Important variables</b>
+
+  _OOHG_PrintLibrary
+  Defining this variable
+  as public, you can specify the library
+  default printer to use.
+  One can use any of the values
+  cMethod parameter. This variable
+  is useful to use the
+  commands Report Form, Edit and Edit
+  Extended.
+  If not defined or if the type is not string, the
+  default library
+  is
+  MINIPRINT. If a string is not valid is
+  HBPRINTER.
+
+  ::aPrinters
+  Settlement of the
+  available printers on the system.
+::APorts
+  Arrangement of ports available
+  on the system.
+::LPrError
+  Logical variable. If an error
+  occurs returns. T., defaults. F.
+::aColor
+  Current Color brush used in
+  drawing lines and boxes,
+  black default.
+::cFontName
+  Send current default Courier
+  New
+::nFontSize
+  Current Font size global
+  default 10. Use with caution.
+::aFontColor
+  Current Font color, black
+  default.
+::lFontBold
+  . T. if the current font is
+  bold.
+::lFontItalic
+  . T. if the current font is
+  in italics.
+::cVersion
+  Version number of the
+  class.
+</PRE>
+</span>
+
 </div>
-<div id="winchm_template_footer"><FONT color=#808080 
-size=1>Copyright © 2013-2014 MigSoft - </FONT><A 
-href="https://sourceforge.net/projects/oohg/"><FONT 
-size=1>https://sourceforge.net/projects/oohg/</FONT></A> 
+<div id="winchm_template_footer"><FONT color=#808080
+size=1>Copyright © 2013-2014 MigSoft - </FONT><A
+href="https://sourceforge.net/projects/oohg/" target="_blank"><FONT
+size=1>https://sourceforge.net/projects/oohg/</FONT></A>
      </div>
 
 </body>

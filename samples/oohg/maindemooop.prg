@@ -1,5 +1,5 @@
 /*
- * $Id: maindemooop.prg,v 1.1 2012-06-24 16:48:31 fyurisich Exp $
+ * $Id: maindemooop.prg,v 1.2 2014-06-17 00:35:46 fyurisich Exp $
  */
 
 /*
@@ -38,6 +38,7 @@ oWnd:title:="Main Demo oop version"
 oWnd:OnClick:={|| msginfo(str(_OOHG_MouseRow)+str(_OOHG_MouseCol)) }
 
 
+_DefineAnyKey( oWnd, "ESCAPE", {|| oWnd:Release } )
 
    DEFINE TOOLBAR Toolbr buttonsize 50,20
       BUTTON TBN1 CAPTION "Boton 1" ACTION MSGINFO("Toolbar 1!")

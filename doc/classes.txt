@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.81 2014-06-08 15:26:41 fyurisich Exp $
+ * $Id: classes.txt,v 1.82 2014-06-17 00:35:28 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -322,9 +322,10 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS TCALCPRINT FROM TPRINTBASE
+   DATA LSEPARATESHEETS           INIT .F.
+   DATA NHORZRESOL                INIT PIXELSPERINCHX()
+   DATA NVERTRESOL                INIT PIXELSPERINCHY()
    DATA OCELL                     INIT NIL
-   DATA OCOLUMN                   INIT NIL
-   DATA OCOLUMS                   INIT NIL
    DATA ODESKTOP                  INIT NIL
    DATA ODOCUMENT                 INIT NIL
    DATA OSCHEDULE                 INIT NIL
@@ -332,12 +333,14 @@ CLASS TCALCPRINT FROM TPRINTBASE
    DATA OSHEET                    INIT NIL
 
    METHOD BEGINDOCX
+   METHOD BEGINPAGEX
    METHOD ENDDOCX
    METHOD ENDPAGEX
    METHOD INITX
    METHOD PRINTDATAX
-   METHOD SELPRINTERX
-   METHOD SETPREVIEWSIZE          BLOCK { || NIL }
+   METHOD PRINTIMAGEX
+   METHOD RELEASEX
+   METHOD SETPREVIEWSIZE         BLOCK { || NIL }
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -572,8 +575,6 @@ CLASS TCSVPRINT FROM TPRINTBASE
    METHOD INITX
    METHOD PRINTDATAX
    METHOD PRINTIMAGE              BLOCK { || NIL }
-   METHOD PRINTLINEX
-   METHOD SELPRINTERX
    METHOD SETPREVIEWSIZE          BLOCK { || NIL }
 ENDCLASS
 
@@ -646,7 +647,7 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS TEXCELPRINT FROM TPRINTBASE
-   DATA CTLINEA                   INIT ""
+   DATA LSEPARATESHEETS           INIT .F.
    DATA OEXCEL                    INIT NIL
    DATA OHOJA                     INIT NIL
 
@@ -657,7 +658,6 @@ CLASS TEXCELPRINT FROM TPRINTBASE
    METHOD PRINTDATAX
    METHOD PRINTIMAGEX
    METHOD RELEASEX
-   METHOD SELPRINTERX
    METHOD SETPREVIEWSIZE          BLOCK { || NIL }
 ENDCLASS
 
@@ -1275,7 +1275,17 @@ CLASS THBPRINTER FROM TPRINTBASE
 ENDCLASS
 
 *------------------------------------------------------------------------------*
-CLASS THTMLPRINT FROM TEXCELPRINT
+CLASS THTMLPRINT
+   Implemented via FUNCTION THtmlPrint().
+ENDCLASS
+
+*------------------------------------------------------------------------------*
+CLASS THTMLPRINTFROMCALC FROM TCALCPRINT
+   METHOD ENDDOCX
+ENDCLASS
+
+*------------------------------------------------------------------------------*
+CLASS THTMLPRINTFROMEXCEL FROM TEXCELPRINT
    METHOD ENDDOCX
 ENDCLASS
 
@@ -1719,7 +1729,6 @@ CLASS TPDFPRINT FROM TPRINTBASE
    DATA CDOCUMENT   AS CHARACTER  INIT ""          // NOMBRE DEL DOCUMENTO
    DATA CPAGEORIENT AS CHARACTER  INIT ""          // P = PORTRAIT, L = LANDSCAPE
    DATA CPAGESIZE   AS CHARACTER  INIT ""          // TAMAÑO DE PAGINA
-   DATA LPREVIEW    AS LOGICAL    INIT .F.         // INDICA SI ABRIMOS EL PDF AL FINALIZAR
    DATA NFONTTYPE   AS NUMERIC    INIT 1           // TIPO DE FUENTE(NORMAL=0 O NEGRITA=1)
    DATA OPDF        AS OBJECT                      // EL OBJETO PDF
 
@@ -1802,14 +1811,21 @@ CLASS TPLAYER FROM TCONTROL
 ENDCLASS
 
 *------------------------------------------------------------------------------*
+CLASS TPRINT
+   Implemented via TPrint() function.
+ENDCLASS
+
+*------------------------------------------------------------------------------*
 CLASS TPRINTBASE
    DATA ACOLOR                    INIT {1,1,1}                READONLY
    DATA AFONTCOLOR                INIT {0,0,0}                READONLY
    DATA ALINCELDA                 INIT {}                     READONLY
+   DATA APAGENAMES                INIT {}                     READONLY
    DATA APORTS                    INIT {}                     READONLY
    DATA APRINTERS                 INIT {}                     READONLY
    DATA CARGO                     INIT  "list"                           // DOCUMENT NAME
    DATA CFONTNAME                 INIT "Courier New"          READONLY
+   DATA CPAGENAME                 INIT ""                     READONLY   // CURRENT PAGE NAME
    DATA CPORT                     INIT "prn"
    DATA CPRINTER                  INIT ""                     READONLY
    DATA CPRINTLIBRARY             INIT "HBPRINTER"            READONLY
@@ -1823,6 +1839,7 @@ CLASS TPRINTBASE
    DATA LFONTUNDERLINE            INIT .F.                    READONLY
    DATA LPRERROR                  INIT .F.                    READONLY
    DATA LPROP                     INIT .F.                    READONLY
+   DATA LSHOWERRORS               INIT .T.
    DATA LWINHIDE                  INIT .T.                    READONLY
    DATA NFONTANGLE                INIT 0                      READONLY
    DATA NFONTSIZE                 INIT 12
@@ -2054,6 +2071,7 @@ CLASS TRTFPRINT FROM TPRINTBASE
    METHOD PRINTIMAGE              BLOCK { || NIL }
    METHOD PRINTLINEX
    METHOD SELPRINTERX
+   METHOD SETPAGEMARGINS
    METHOD SETPREVIEWSIZE          BLOCK { || NIL }
 ENDCLASS
 

@@ -1,11 +1,159 @@
 /*
- * $Id: ChangeLog,v 1.1285 2014-06-12 14:10:26 migsoft Exp $
+ * $Id: ChangeLog,v 1.1286 2014-06-17 00:35:27 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-06-16 21:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * doc/classes.txt
+     * Updated.
+   * include/i_activex.ch
+     * Added line end to last line.
+   * include/i_media.ch
+     * Width and height made optional.
+   * manual/activex.htm
+   * manual/animatebox.htm
+   * manual/browse.htm
+   * manual/button.htm
+   * manual/checkbox.htm
+   * manual/checkbutton.htm
+   * manual/checklist.htm
+   * manual/classes.htm
+   * manual/combobox.htm
+   * manual/datepicker.htm
+   * manual/do_report.htm
+   * manual/draw_in_window.htm
+   * manual/editbox.htm
+   * manual/edit_extended.htm
+   * manual/edit_workarea.htm
+   * manual/frame.htm
+   * manual/grid.htm
+   * manual/hbprinter.htm
+   * manual/hbprinter_@_commands.htm
+   * manual/hbprinter_constants.htm
+   * manual/hbprinter_drawing_commands.htm
+   * manual/hbprinter_font_commands.htm
+   * manual/hbprinter_get_commands.htm
+   * manual/hbprinter_print_commands.htm
+   * manual/hbprinter_sample.htm
+   * manual/hbprinter_set_commands.htm
+   * manual/hbprinter_set_get_text_commands.htm
+   * manual/hotkey.htm
+   * manual/hotkeybox.htm
+   * manual/hyperlink.htm
+   * manual/image.htm
+   * manual/internal.htm
+   * manual/ipaddress.htm
+   * manual/label.htm
+   * manual/libraries.htm
+   * manual/listbox.htm
+   * manual/monthcalendar.htm
+   * manual/overview.htm
+   * manual/player.htm
+   * manual/progressbar.htm
+   * manual/progressmeter.htm
+   * manual/radiogroup.htm
+   * manual/richeditbox.htm
+   * manual/screensaver.htm
+   * manual/slider.htm
+   * manual/spinner.htm
+   * manual/splitbox.htm
+   * manual/statusbar.htm
+   * manual/tab.htm
+   * manual/textarray.htm
+   * manual/textbox.htm
+   * manual/timepicker.htm
+   * manual/timer.htm
+   * manual/toolbar.htm
+   * manual/tprint.htm
+   * manual/tree.htm
+   * manual/uncompress.htm
+   * manual/wave.htm
+   * manual/window.htm
+   * manual/xbrowse.htm
+     * Updated.
+     * Open external URLs in the default browser.
+   * samples/oohg/maindemo.prg
+     + ON KEY ESCAPE.
+   * samples/oohg/printtest.prg
+     + ON KEY ESCAPE.
+     * Some lines to show new characteristics.
+   * source/makelib_mingw.bat
+   * source/xml.bat
+     * Some commands to avoid misleading responses.
+   * source/c_image.c
+     * _OOHG_SizeOfBitmapFromFile() to use _OOHG_LoadImage().
+   * source/h_init.prg
+     * Message.
+   * source/h_pdf.prg
+     ! Color in method Box.
+   * source/h_print.prg
+     * TPRINTBASE:Init() sets ::lPrError to .T.
+     ! Missing call to subclass SetFontX().
+     * Format.
+     + DATAs aPageNames, cPageName and lShowErrors to TPRINTBASE.
+     * All methods return NIL when something goes wrong.
+     + New parameters to TPRINTBASE:PrintImage() and to subclassses
+       PrintImageX() methods. Currently they only apply to TCALCPRINT,
+       see below.
+     - Unused parameter from TPRINTBASE:PrintRectangle().
+     * All inkey() calls replaced by HB_IdleSleep().
+     - Default values for parameters of methods PrintBarcodeX(),
+       PrintLineX() and PrintRectangleX() of THBPRINTER and TPDFPRINT.
+     ! BEGIN SEQUENCE syntax not supported by xHarbour.
+     + DATA lSeparateSheet to TEXCELPRINT and TCALCPRINT. When .T.,
+       data is printed using a new added sheet after BeginPage().
+     - Unused DATA cTlinea in TEXCELPRINT.
+     + Support for images not in the current folder to TEXCELPRINT.
+     ! Underline printing using TEXCELPRINT.
+     - Method SelPrinterX() from TEXCELPRINT. It's content was
+       transfered to method InitX().
+     * Default font size handling in TRTFPRINT.
+     + Support for user's font sizes different than 8, 10, 12 and 14
+       in TRTFPRINT. See changes in method EndPageX.
+     + Method SetPageMargins in TRTFPRINT. Use it before calling
+       method BeginDoc().
+     * TRTFPRINT:BeginDocX() to enable future changing of color table.
+     ! Additional fonts are added with the same number in TRTFPRINT.
+     + Error handling in TRTFPRINT:EndDocX().
+     + Printing of horizontal lines using dashes to TRTFPRINT.
+     - Methods SelPrinterX() and PrintLineX() from TCSVPRINT.
+     - Unused DATA lPreview from TPDFPRINT.
+     ! Color in TPDFPRINT:PrintRectangleX.
+     - Unused DATA oColumn and oColums from TCALCPRINT.
+     + DATAs nHorzResol and nVertResol to TCALCPRINT.
+     + Methods PrintImageX() and ReleaseX() to TCALCPRINT.
+     - Method SelPrinterX() from TCALCPRINT. It's content was
+       transfered to method InitX().
+     * Handling of column autofit to avoid changing the aspect ratio
+       of images in TCALCPRINT. See methods EndPageX() and EndDocX().
+     + Method PrintImageX() to TCALCPRINT.
+       Parameter aResol: declares the image resolution. Takes an array
+       {nHorRes, nVerRes} or a number (equivalent to {nRes, nRes}).
+       Resolution is used to calculate the image's original size, in
+       the same ways as OpenOffice Calc calculates it.
+       It´s measured in DPI.
+       Parameter aSize: declares de image size. Takes an array
+       {nHorSize, nVerSize} or a number (equivalent to {nSize, nSize}).
+       It´s measured in 100/th of MM.
+       Resolution takes precedence over size.
+     + Public function OO_ConvertToURL( cFile ).
+     + C-functions PixelsPerInchX() and PixelsPerInchY(). They return
+       the number of pixels per logical inch along the screen width
+       and height.
+     + THTMLPRINTEXCEL class to print as HTML using Excel.
+     + THTMLPRINTCALC class to print as HTML using Calc.
+     * THTMLPRINT is now a function that returns an object from
+       one of the previous classes. This enables exporting to HTML
+       using Calc if Excel is not installed.
+     * Handling of internal structures in TRTFPRINT, TCALCPRINT.
+       Now should be safe to print 2 or more documents without
+       releasing and re-initiating the class.
+     + Some comments.
+     + More TO*DOs.
 
 2014-06-12 10:05 UTC-0400 MigSoft <migsoft@oohg.org>
    * samples/dbview/prgs/dbview.prg

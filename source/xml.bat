@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: xml.bat,v 1.6 2014-05-22 21:11:15 fyurisich Exp $
+rem $Id: xml.bat,v 1.7 2014-06-17 00:35:47 fyurisich Exp $
 rem
 cls
 
@@ -17,7 +17,7 @@ if "%BIN_HRB%"=="" set BIN_HRB=bin
 rem if "%LIB_HRB%"=="" set LIB_HRB=lib\win\bcc
 rem if "%BIN_HRB%"=="" set BIN_HRB=bin\win\bcc
 
-if not exist %hg_root%\%LIB_GUI%\oohg.lib md %hg_root%\%LIB_GUI% >nul
+if not exist %hg_root%\%LIB_GUI%\nul md %hg_root%\%LIB_GUI% >nul
 
 if exist %hg_root%\%LIB_GUI%\oohg.lib del %hg_root%\%LIB_GUI%\oohg.lib > nul
 if exist %hg_root%\%LIB_GUI%\hbprinter.lib del %hg_root%\%LIB_GUI%\hbprinter.lib > nul

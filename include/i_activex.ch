@@ -1,5 +1,5 @@
 /*
- * $Id: i_activex.ch,v 1.2 2014-06-03 00:34:12 fyurisich Exp $
+ * $Id: i_activex.ch,v 1.3 2014-06-17 00:35:28 fyurisich Exp $
  */
 /*
  * ooHG source code:

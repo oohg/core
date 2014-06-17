@@ -1,5 +1,5 @@
 <!--
-$Id: ANIMATEBOX.HTM,v 1.2 2014-05-24 20:34:08 fyurisich Exp $
+$Id: ANIMATEBOX.HTM,v 1.3 2014-06-17 00:35:28 fyurisich Exp $
 -->
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -47,8 +47,8 @@ html {
 body {
 	padding: 0px;
 	margin: 0px;
-	overflow: auto; 
-	background-color: #FFFFFF; 
+	overflow: auto;
+	background-color: #FFFFFF;
 }
 
 #winchm_template_navigation{
@@ -66,12 +66,12 @@ body {
 	font-size: 10px;
 	font-style: normal;
 	font-weight: normal;
-	color: #626262; 
-	 
+	color: #626262;
+
 	border-bottom-style: solid;
 	border-bottom-width: 1px;
 	border-bottom-color: #DBDBDB;
-	
+
 	background-color: #E2EDFA;
 	width: auto;
 }
@@ -89,7 +89,7 @@ body {
 	font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
 	font-weight: bold;
 	font-size: 18px;
-	color: 353535;	
+	color: 353535;
 
 	margin-top: 0px;
 	margin-left: 0px;
@@ -100,7 +100,7 @@ body {
 	padding-left: 5px;
 	padding-bottom: 10px;
 	padding-right: 10px;
-	
+
 	border-bottom-style: solid;
 	border-bottom-width: 1px;
 	border-bottom-color: #C7C7C7;
@@ -125,7 +125,7 @@ body {
 	border-width: 1px;
 	border-color: #c0c0c0;
 	border-top-style: solid;
-	
+
 	margin-top: 0px;
 	margin-left: 15px;
 	margin-bottom: 5px;
@@ -140,8 +140,8 @@ body {
 	font-size: 9px;
 	color: #909090;
 
-	text-align: left;	
-	width: auto;	
+	text-align: left;
+	width: auto;
 }
 
 #winchm_template_navigation a:link	{text-decoration: none;color: #0000ff}
@@ -168,669 +168,160 @@ visibility:hidden;
 <div id="winchm_template_title">
 <div id="winchm_template_button"><A href="ACTIVEX.HTM" title="Previous topic"><img id="winchm_template_prev" alt="Previous topic" src="template4/btn_prev_n.gif" border="0"></a><A href="BROWSE.HTM" title="Next topic"><img id="winchm_template_next" alt="Next topic" src="template4/btn_next_n.gif" border="0"></a></div>
 ANIMATEBOX</div>
-<div id="winchm_template_navigation">Help &gt; 
+<div id="winchm_template_navigation">Help &gt;
 Controls &gt; </div>
 <div id="winchm_template_content">
 
 <div class=Section1>
 
-<p class=MsoNormal><span lang=ES style="COLOR: darkgreen; mso-ansi-language: ES">///////////////////////////////////////////////////////////////////////////////
-<br>
- // ANIMATEBOX&nbsp; <br>
+<PRE>
+<span style='color:darkgreen'><b>
 ///////////////////////////////////////////////////////////////////////////////
-<br>
-</span><span lang=ES style="COLOR: gray; mso-ansi-language: ES"><br>
-</span><span lang=ES style="COLOR: blue; mso-ansi-language: ES">#</span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">command</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">@</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;row&gt;,&lt;col&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp; </span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">ANIMATEBOX</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;name&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES">&nbsp; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span lang=ES style="COLOR: black; mso-ansi-language: ES">[</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">OBJ</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;obj&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">]</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span lang=ES style="COLOR: blue; mso-ansi-language: ES">;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES"> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">[</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;dummy1:</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">OF,</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">PARENT&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;parent&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">]</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">WIDTH</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;w&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">HEIGHT</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;h&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">[</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">FILE</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;file&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">]</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">[</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;autoplay:</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">AUTOPLAY&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">]</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">[</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;center</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">:</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">CENTER&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">]</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">[</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;transparent:</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">TRANSPARENT&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">]</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">[</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">HELPID</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;helpid&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">]</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span lang=ES style="COLOR: blue; mso-ansi-language: ES">;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span lang=ES style="COLOR: black; mso-ansi-language: ES">[</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">SUBCLASS</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;subclass&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">]</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span lang=ES style="COLOR: blue; mso-ansi-language: ES">;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES"> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">[</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;invisible:</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">INVISIBLE&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">]</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;&nbsp;&nbsp; </span><span
- lang=ES style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES"> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">[</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;notabstop:</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">NOTABSTOP&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">]</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;&nbsp;&nbsp; </span><span
- lang=ES style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span lang=ES style="COLOR: black; mso-ansi-language: ES">[</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;disabled:</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">DISABLED&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">]</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span lang=ES style="COLOR: blue; mso-ansi-language: ES">;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span lang=ES style="COLOR: black; mso-ansi-language: ES">[</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;rtl:</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">RTL&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">]</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span lang=ES style="COLOR: blue; mso-ansi-language: ES">;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES"> <br>
-&nbsp;&nbsp;&nbsp; </span><span lang=ES style="COLOR:
- blue; mso-ansi-language: ES">=</span><span lang=ES style="COLOR: black; mso-ansi-language: ES">&gt;</span><span
- lang=ES style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES"> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">[</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;obj&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">:</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">=</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES style="COLOR:
- black; mso-ansi-language: ES">]</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES style="COLOR: black; mso-ansi-language: ES">_OOHG_SelectSubClass(</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">TAnimateBox(),</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">[</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;subclass&gt;()</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">]</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">):</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">Define(</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;(name)&gt;,</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;(parent)&gt;,</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;col&gt;,</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;row&gt;,</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;w&gt;,</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;h&gt;,</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;.autoplay.&gt;,</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;.center.&gt;,</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;.transparent.&gt;,</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;file&gt;,</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;helpid&gt;,</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span lang=ES style="COLOR: black; mso-ansi-language: ES">&lt;.invisible.&gt;,</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;.notabstop.&gt;,</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;.disabled.&gt;,</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;.rtl.&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">)</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES"> <br>
-<br>
-</span><span lang=ES style="COLOR: blue; mso-ansi-language: ES">#</span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">command</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">OPEN</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">ANIMATEBOX</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;ControlName&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">OF</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;ParentForm&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">FILE</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;FileName&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-</span><span lang=ES style="COLOR: blue; mso-ansi-language: ES">=</span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-</span><span lang=ES style="COLOR: black; mso-ansi-language: ES">GetControlObject(</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;(ControlName)&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">,</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;(ParentForm)&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">):Open(</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;FileName&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">)</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES"> <br>
-<br>
-</span><span lang=ES style="COLOR: blue; mso-ansi-language: ES">#</span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">command</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">PLAY</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">ANIMATEBOX</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;ControlName&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">OF</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;ParentForm&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-</span><span lang=ES style="COLOR: blue; mso-ansi-language: ES">=</span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-</span><span lang=ES style="COLOR: black; mso-ansi-language: ES">GetControlObject(</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;(ControlName)&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">,</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;(ParentForm)&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">):Play()</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES"> <br>
-<br>
-</span><span lang=ES style="COLOR: blue; mso-ansi-language: ES">#</span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">command</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">SEEK</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">ANIMATEBOX</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;ControlName&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">OF</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;ParentForm&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">POSITION</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;frame&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-</span><span lang=ES style="COLOR: blue; mso-ansi-language: ES">=</span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-</span><span lang=ES style="COLOR: black; mso-ansi-language: ES">GetControlObject(</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;(ControlName)&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">,</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;(ParentForm)&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">):Seek(</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;frame&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">)</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES"> <br>
-<br>
-</span><span lang=ES style="COLOR: blue; mso-ansi-language: ES">#</span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">command</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">STOP</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">ANIMATEBOX</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;ControlName&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">OF</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;ParentForm&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-</span><span lang=ES style="COLOR: blue; mso-ansi-language: ES">=</span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-</span><span lang=ES style="COLOR: black; mso-ansi-language: ES">GetControlObject(</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;(ControlName)&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">,</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;(ParentForm)&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">):Stop()</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES"> <br>
-<br>
-</span><span lang=ES style="COLOR: blue; mso-ansi-language: ES">#</span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">command</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">CLOSE</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">ANIMATEBOX</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;ControlName&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">OF</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;ParentForm&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-</span><span lang=ES style="COLOR: blue; mso-ansi-language: ES">=</span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-</span><span lang=ES style="COLOR: black; mso-ansi-language: ES">GetControlObject(</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;(ControlName)&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">,</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;(ParentForm)&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">):Close()</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES"> <br>
-<br>
-</span><span lang=ES style="COLOR: blue; mso-ansi-language: ES">#</span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">command</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">DESTROY</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">ANIMATEBOX</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;ControlName&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">OF</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;ParentForm&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-</span><span lang=ES style="COLOR: blue; mso-ansi-language: ES">=</span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-</span><span lang=ES style="COLOR: black; mso-ansi-language: ES">GetControlObject(</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;(ControlName)&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">,</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;(ParentForm)&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">):Release()</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES"> <br>
-<br>
-</span><span lang=ES style="COLOR: blue; mso-ansi-language: ES">#</span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">translate</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp; </span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">OpenAnimateBox</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">(</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;ControlName&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">,</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;ParentForm&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">,</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;FileName&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">)</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-</span><span lang=ES style="COLOR: blue; mso-ansi-language: ES">=</span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-</span><span lang=ES style="COLOR: black; mso-ansi-language: ES">GetControlObject(</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;(ControlName)&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">,</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;(ParentForm)&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">):Open(</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;FileName&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">)</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES"> <br>
-<br>
-</span><span lang=ES style="COLOR: blue; mso-ansi-language: ES">#</span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">translate</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp; </span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">PlayAnimateBox</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">(</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;ControlName&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">,</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;ParentForm&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">)</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-</span><span lang=ES style="COLOR: blue; mso-ansi-language: ES">=</span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-</span><span lang=ES style="COLOR: black; mso-ansi-language: ES">GetControlObject(</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;(ControlName)&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">,</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;(ParentForm)&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">):Play()</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES"> <br>
-<br>
-</span><span lang=ES style="COLOR: blue; mso-ansi-language: ES">#</span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">translate</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp; </span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">SeekAnimateBox</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">(</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;ControlName&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">,</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;ParentForm&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">,</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;frame&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">)</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-</span><span lang=ES style="COLOR: blue; mso-ansi-language: ES">=</span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-</span><span lang=ES style="COLOR: black; mso-ansi-language: ES">GetControlObject(</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;(ControlName)&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">,</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;(ParentForm)&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">):Seek(</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;frame&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">)</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES"> <br>
-<br>
-</span><span lang=ES style="COLOR: blue; mso-ansi-language: ES">#</span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">translate</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">StopAnimateBox</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">(</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;ControlName&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">,</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;ParentForm&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">)</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-</span><span lang=ES style="COLOR: blue; mso-ansi-language: ES">=</span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-</span><span lang=ES style="COLOR: black; mso-ansi-language: ES">GetControlObject(</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;(ControlName)&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">,</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;(ParentForm)&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">):Stop()</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES"> <br>
-<br>
-</span><span lang=ES style="COLOR: blue; mso-ansi-language: ES">#</span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">translate</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">CloseAnimateBox</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">(</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;ControlName&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">,</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;ParentForm&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">)</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-</span><span lang=ES style="COLOR: blue; mso-ansi-language: ES">=</span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-</span><span lang=ES style="COLOR: black; mso-ansi-language: ES">GetControlObject(</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;(ControlName)&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">,</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;(ParentForm)&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">):Close()</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES"> <br>
-<br>
-</span><span lang=ES style="COLOR: blue; mso-ansi-language: ES">#</span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">translate</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">DestroyAnimateBox</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">(</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;ControlName&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">,</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;ParentForm&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">)</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-</span><span lang=ES style="COLOR: blue; mso-ansi-language: ES">=</span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-</span><span lang=ES style="COLOR: black; mso-ansi-language: ES">GetControlObject(</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;(ControlName)&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">,</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;(ParentForm)&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">):Release()</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES"> <br>
-<br style="mso-special-character: line-break"><br style="mso-special-character: line-break"></span></p>
+// ANIMATEBOX
+///////////////////////////////////////////////////////////////////////////////
+</b></span>
+
+Creates an animation control inside a form, to play an AVI file.
+A set of commands is provided for manipulating an existing control.
+Note that the file must not contain sound or it will not be played.
+
+<p><u>Control creation</u>:
+
+*** Standard syntax:
+
+   @ &lt;row&gt;, &lt;col&gt; ANIMATEBOX &lt;name&gt; ;
+      [ OBJ &lt;obj&gt; ] ;
+      [ &lt;OF, PARENT&gt; &lt;parent&gt; ] ;
+      [ WIDTH &lt;widht&gt; ] ;
+      [ HEIGHT &lt;height&gt; ] ;
+      [ FILE &lt;file&gt; ] ;
+      [ &lt;autoplay: AUTOPLAY&gt; ] ;
+      [ &lt;center: CENTER&gt; ] ;
+      [ &lt;transparent: TRANSPARENT&gt; ] ;
+      [ HELPID &lt;helpid&gt; ] ;
+      [ SUBCLASS &lt;subclass&gt; ] ;
+      [ &lt;invisible: INVISIBLE&gt; ] ;
+      [ &lt;notabstop: NOTABSTOP&gt; ] ;
+      [ &lt;disabled: DISABLED&gt; ] ;
+      [ &lt;rtl: RTL&gt; ]
+
+   Is translated by the preprocessor to this OOP syntax:
+
+   [ &lt;obj&gt; := ] _OOHG_SelectSubClass( TAnimateBox(), [ &lt;subclass&gt;() ] ): ;
+      Define( &lt;(name)&gt;, &lt;(parent)&gt;, &lt;col&gt;, &lt;row&gt;, &lt;widht&gt;, &lt;height&gt;, ;
+      &lt;.autoplay.&gt;, &lt;.center.&gt;, &lt;.transparent.&gt;, &lt;file&gt;, &lt;helpid&gt;, ;
+      &lt;.invisible.&gt;, &lt;.notabstop.&gt;, &lt;.disabled.&gt;, &lt;.rtl.&gt; )
+
+*** Alternative syntax:
+
+   DEFINE ANIMATEBOX &lt;name&gt; ;
+      [ AUTOPLAY &lt;autoplay&gt; ]
+      [ CENTER &lt;center&gt; ]
+      [ COL &lt;col&gt; ]
+      [ DISABLED &lt;disabled: .T., .F.&gt; ]
+      [ FILE &lt;file&gt; ]
+      [ HEIGHT &lt;height&gt; ]
+      [ HELPID &lt;helpid&gt; ]
+      [ OBJECT &lt;obj&gt; ]
+      [ PARENT &lt;parent&gt; ]
+      [ ROW &lt;row&gt; ]
+      [ RTL &lt;rtl: .T., .F.&gt; ]
+      [ SUBCLASS &lt;subclass&gt; ]
+      [ TABSTOP &lt;tabstop: .T., .F.&gt; ]
+      [ TRANSPARENT &lt;transparent: .T., .F.&gt; ]
+      [ VISIBLE &lt;visible: .T., .F.&gt; ]
+      [ WIDTH &lt;width&gt; ]
+   END ANIMATEBOX
+
+   Is translated by the preprocessor to this OOP syntax:
+
+   _OOHG_SelectSubClass( TAnimateBox(), &lt;subclass&gt;(), { |_o_| &lt;obj&gt; := _o_ } ): ;
+      Define( &lt;(name)&gt;, &lt;(parent)&gt;, &lt;col&gt;, &lt;row&gt;, &lt;width&gt;, &lt;height&gt;, ;
+      &lt;autoplay&gt;, &lt;center&gt;, &lt;transparent&gt;, &lt;file&gt;, &lt;helpid&gt;, ! &lt;visible&gt;, ;
+      ! &lt;tabstop&gt;, ! &lt;disabled&gt;, &lt;rtl&gt; )
+
+*** Alternate OOP syntax:
+
+   [ &lt;oObj&gt; := ] TAnimateBox():Define( cName, [ cParent ], [ nCol ], [ nRow ], ;
+      [ nWidth ], [ nHeight ], [ lAutoplay ], [ lCenter ], [ lTransparent ], ;
+      [ cFile ], [ nHelpId ], [ lInvisible ], [ lNoTabstop ], [ lDisabled ], [ lRtl ] )
+
+<p><u>Related commands</u>:
+
+*** Standard syntax:
+
+   OPEN ANIMATEBOX &lt;ControlName&gt; OF &lt;ParentForm&gt; FILE &lt;FileName&gt;
+      Loads an AVI file and shows its first frame.
+   PLAY ANIMATEBOX &lt;ControlName&gt; OF &lt;ParentForm&gt;
+      Plays the file in the background while the app continues executing.
+   SEEK ANIMATEBOX &lt;ControlName&gt; OF &lt;ParentForm&gt; POSITION &lt;Frame&gt;
+      Shows the indicated frame.
+   STOP ANIMATEBOX &lt;ControlName&gt; OF &lt;ParentForm&gt;
+      Stops playing the file. The last played frame remains displayed.
+   CLOSE ANIMATEBOX &lt;ControlName&gt; OF &lt;ParentForm&gt;
+      Closes the file.
+   DESTROY ANIMATEBOX &lt;ControlName&gt; OF &lt;ParentForm&gt;
+      Releases the control.
+
+*** Alternative syntax:
+
+   OpenAnimateBox( &lt;ControlName&gt;, &lt;ParentForm&gt;, &lt;FileName&gt; )
+      Loads an AVI file and shows its first frame.
+   PlayAnimateBox( &lt;ControlName&gt;, &lt;ParentForm&gt; )
+      Plays the file in the background while the app continues executing.
+   SeekAnimateBox( &lt;ControlName&gt;, &lt;ParentForm&gt;, &lt;frame&gt; )
+      Shows the indicated frame.
+   StopAnimateBox( &lt;ControlName&gt;, &lt;ParentForm&gt; )
+      Stops playing the file. The last played frame remains displayed.
+   CloseAnimateBox( &lt;ControlName&gt;, &lt;ParentForm&gt; )
+      Closes the file.
+   DestroyAnimateBox( &lt;ControlName&gt;, &lt;ParentForm&gt; )
+      Releases the control.
+
+<p><u>Notes on clauses</u>:
+
+   1. OBJ and OBJECT set the variable &lt;obj&gt; with a reference to the control.
+      When using OBJECT, the variable must be previously declared.
+      When using OBJ, if the variable does not exist, it's assumed PRIVATE.
+   2. PARENT declares which window is the parent (owner) of the control.
+      Can be ommited only when used inside a DEFINE WINDOW / END WINDOW structure.
+   3. ROW and COL define the position of the control inside it's parent client area.
+   4. WIDTH and HEIGHT define the dimension of the control.
+   5. TABSTOP and NOTABSTOP specify if the control can/can't be focused using TAB key.
+      Default is TABSTOP.
+   6. DISABLED specifies that the control can't receive mouse clicks and key presses.
+      Default is ENABLED.
+   7. SUBCLASS indicates that the control must be an instance of the specified class,
+      instead of the default TActiveX class.
+   8. VISIBLE and INVISIBLE specify if the control must be visible/hidden when created.
+      Default is VISIBLE.
+   9. RTL specifies that the control must have WS_EX_LTRREADING, WS_EX_LEFT and
+      WS_EX_LEFTSCROLLBAR styles.
+      Default is .F.
+  10. HELPID associates a help topic within the current help file to the control.
+  11. FILE specifies that the control must load and show the firt frame of the
+      indicated AVI file.
+  12. AUTOPLAY specifies that the control must have <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/bb761886(v=vs.85).aspx" target="_blank">ACS_AUTOPLAY</a> style.
+      Default is .F.
+  13. CENTER specifies that the control must have <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/bb761886(v=vs.85).aspx" target="_blank">ACS_CENTER</a> style.
+      Default is .F.
+  14. TRANSPARENT specifies that the control must have <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/bb761886(v=vs.85).aspx" target="_blank">ACS_TRANSPARENT</a> style.
+      Default is .F.
+
+<p><u>Notes on parameters</u>:
+
+   1. &lt;Frame&gt;, &lt;helpid&gt;, &lt;row&gt;, &lt;col&gt;, &lt;width&gt; and &lt;height&gt; must be numbers.
+   2. &lt;name&gt;, &lt;parent&gt;, &lt;ControlName&gt; and &lt;ParentForm&gt; must be valid identifiers
+      enclosed or not within quotes.
+   3. &lt;file&gt; and &lt;FileName&gt; must be strings.
+   4. &lt;obj&gt; and &lt;subclass&gt; must be valid identifiers not enclosed within quotes.
+</PRE>
 
 </div>
-
 </div>
-<div id="winchm_template_footer"><FONT color=#808080 
-size=1>Copyright © 2013-2014 MigSoft - </FONT><A 
-href="https://sourceforge.net/projects/oohg/"><FONT 
-size=1>https://sourceforge.net/projects/oohg/</FONT></A> 
-     </div>
+<div id="winchm_template_footer"><FONT color=#808080 size=1>Copyright © 2013-2014 MigSoft - </FONT>
+<A href="https://sourceforge.net/projects/oohg/" target="_blank"><FONT size=1>https://sourceforge.net/projects/oohg/</FONT></A>
+</div>
 
 </body>
 

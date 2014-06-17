@@ -1,5 +1,5 @@
 /*
- * $Id: c_image.c,v 1.35 2014-04-07 00:07:09 fyurisich Exp $
+ * $Id: c_image.c,v 1.36 2014-06-17 00:35:47 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -572,50 +572,15 @@ HB_FUNC( _OOHG_SIZEOFBITMAPFROMFILE )   // ( cFile )
 {
    HBITMAP hBitmap;
    BITMAP bm;
-   char *cImage = ( char * ) hb_parc( 1 );
-   HICON hIcon;
-   ICONINFO sIconInfo;
+
+   hBitmap = (HBITMAP) _OOHG_LoadImage( ( char * ) hb_parc( 1 ), 0, 0, 0, NULL, 0 );
 
    memset( &bm, 0, sizeof( bm ) );
 
-   // Try to load BITMAP from EXE
-   hBitmap = LoadImage( GetModuleHandle( NULL ), cImage, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION );
-   if( ! hBitmap )
-   {
-      // Try to load BITMAP from FILE
-      hBitmap = LoadImage( NULL, cImage, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_LOADFROMFILE );
-   }
    if( hBitmap )
    {
       GetObject( hBitmap, sizeof( bm ), &bm );
-
       DeleteObject( hBitmap );
-   }
-   else
-   {
-      // Try to load ICON from EXE
-      hIcon = LoadImage( GetModuleHandle( NULL ), cImage, IMAGE_ICON, 0, 0, LR_DEFAULTCOLOR );
-      if( ! hIcon )
-      {
-         // Try to extract from EXE
-         hIcon = ExtractIcon( GetModuleHandle( NULL ), cImage, 0 );
-         if( ! hIcon )
-         {
-            // Try to load ICON from FILE
-            hIcon = LoadImage( NULL, cImage, IMAGE_ICON, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE );
-         }
-      }
-      if( hIcon )
-      {
-         if( GetIconInfo( hIcon, &sIconInfo ) )
-         {
-            GetObject( sIconInfo.hbmColor, sizeof( bm ), &bm );
-
-            DeleteObject( sIconInfo.hbmMask );
-            DeleteObject( sIconInfo.hbmColor );
-         }
-         DestroyIcon( hIcon );
-      }
    }
 
    hb_reta( 3 );

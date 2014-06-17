@@ -1,5 +1,5 @@
 /*
- * $Id: h_init.prg,v 1.33 2014-06-08 15:26:41 fyurisich Exp $
+ * $Id: h_init.prg,v 1.34 2014-06-17 00:35:47 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -422,7 +422,7 @@ Local acButton, acLabel, acUser, acPrint
                          "ODT extension not asociated !!!", ;
                          'Barcodes require a character value !!!', ;
                          'Code 128 modes are A, B or C (character values) !!!', ;
-                         "Open Calc not found !!!", ;
+                         "Calc not found !!!", ;
                          "Error saving file: " }
 
 RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }

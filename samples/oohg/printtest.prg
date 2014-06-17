@@ -1,5 +1,5 @@
 /*
- * $Id: printtest.prg,v 1.9 2012-06-24 16:35:16 fyurisich Exp $
+ * $Id: printtest.prg,v 1.10 2014-06-17 00:35:46 fyurisich Exp $
  */
 
 #include 'oohg.ch'
@@ -16,6 +16,8 @@ set date ansi
                 height 300 ;
 		title 'print Test' ;
                 MODAL
+
+      on key escape of pr_form action pr_form.release
 
           @ 50,50 Image image_1 picture "hbprint_print" width 80 height 80
 
@@ -129,15 +131,15 @@ if oprint:lprerror
 
       oprint:printdata(18,10, TRANSFORM(1500.00, "999,999.99"),"arial",10 , .F. , ,"R" ,)
       /// a la derecha con letra arial
-      oprint:printdata(19,10, TRANSFORM(25000.00,"999,999.99"),"arial",10 , .F. , ,"R" ,)
+      oprint:printdata(19,10, TRANSFORM(25000.00,"999,999.99"),"arial",20 , .F. , ,"R" ,)
       oprint:printdata(29,40,"TPRINT Version: "+oprint:version())
-      oprint:printimage(21,10,30,30,"cvcjpg.jpg")
+      oprint:printimage(21,10,30,30,"cvcjpg.jpg",100)
       oprint:printline(21,10,21,30,,1)
       oprint:printrectangle(35,10,50,30,{0,0,255},1)
 ////      oprint:printrectangle(35,10,50,30)
-      oprint:printroundrectangle(35,40,50,55)
+//      oprint:printroundrectangle(35,40,50,55)
       oprint:printbarcode(53,20,"123456789012","EAN13")
-      oprint:printline(51,50,58,50,,1)
+      oprint:printline(51,50,58,50,,1)                 
       oprint:endpage()
       oprint:enddoc()
       oprint:RELEASE()

@@ -1,5 +1,5 @@
 /*
-* $Id: h_pdf.prg,v 1.10 2013-12-23 18:24:19 guerra000 Exp $
+* $Id: h_pdf.prg,v 1.11 2014-06-17 00:35:47 fyurisich Exp $
 */
 //ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
 //
@@ -1651,52 +1651,50 @@ RETURN self
 //ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
 
 METHOD Box( x1, y1, x2, y2, nBorder, nShade, cUnits, cColor, cId )
+LOCAL cBoxColor := ""
 
-local cBoxColor
-
-DEFAULT nBorder TO 0
-DEFAULT nShade  TO 0
-DEFAULT cUnits  TO "M"
-DEFAULT cColor  TO ""
+   DEFAULT nBorder       TO 0
+   DEFAULT nShade        TO 0
+   DEFAULT cUnits        TO "M"
+   DEFAULT cColor        TO ""
 
    IF ! ::lIsPageActive
       ::NewPage()
    ENDIF
 
-   cBoxColor := ""
-   IF !empty( cColor )
-  cBoxColor := " " + Chr_RGB( substr( cColor, 2, 1 )) + " " + ;
- Chr_RGB( substr( cColor, 3, 1 )) + " " + ;
- Chr_RGB( substr( cColor, 4, 1 )) + " rg "
-  IF empty( alltrim( cBoxColor ) )
- cBoxColor := ""
-  ENDIF
+   IF ! Empty( cColor )
+      cBoxColor += CRLF + ;
+                   Chr_RGB( substr( cColor, 2, 1 )) + " " + ;
+                   Chr_RGB( substr( cColor, 3, 1 )) + " " + ;
+                   Chr_RGB( substr( cColor, 4, 1 )) + ;
+                   " rg" + ;
+                   CRLF
    ENDIF
 
    IF ::aReport[ HEADEREDIT ]
-  return ::Header( "PDFBOX", cId, { x1, y1, x2, y2, nBorder, nShade, cUnits } )
+      return ::Header( "PDFBOX", cId, { x1, y1, x2, y2, nBorder, nShade, cUnits } )
    ENDIF
 
    IF cUnits == "M"
-  y1 += 0.5
-  y2 += 0.5
+      y1 += 0.5
+      y2 += 0.5
 
-  IF nShade > 0
- ::aReport[ PAGEBUFFER ] += CRLF + transform( 1.00 - nShade / 100.00, "9.99") + " g " + cBoxColor + ltrim(str(::M2X( y1 ))) + " " + ltrim(str(::M2Y( x1 ))) + " " + ltrim(str(::M2X( y2 - y1 ))) + " -" + ltrim(str(::M2X( x2 - x1 ))) + " re f 0 g"
-  ENDIF
+      IF nShade > 0
+         ::aReport[ PAGEBUFFER ] += CRLF + transform( 1.00 - nShade / 100.00, "9.99") + " g " + cBoxColor + ltrim(str(::M2X( y1 ))) + " " + ltrim(str(::M2Y( x1 ))) + " " + ltrim(str(::M2X( y2 - y1 ))) + " -" + ltrim(str(::M2X( x2 - x1 ))) + " re f 0 g"
+      ENDIF
 
-  IF nBorder > 0
- ::aReport[ PAGEBUFFER ] += CRLF + "0 g " + ltrim(str(::M2X( y1 ))) + " " + ltrim(str(::M2Y( x1 ))) + " " + ltrim(str(::M2X( y2 - y1 ))) + " -" + ltrim(str(::M2X( nBorder ))) + " re f"
- ::aReport[ PAGEBUFFER ] += CRLF + "0 g " + ltrim(str(::M2X( y2 - nBorder ))) + " " + ltrim(str(::M2Y( x1 ))) + " " + ltrim(str(::M2X( nBorder ))) + " -" + ltrim(str(::M2X( x2 - x1 ))) + " re f"
- ::aReport[ PAGEBUFFER ] += CRLF + "0 g " + ltrim(str(::M2X( y1 ))) + " " + ltrim(str(::M2Y( x2 - nBorder ))) + " " + ltrim(str(::M2X( y2 - y1 ))) + " -" + ltrim(str(::M2X( nBorder ))) + " re f"
- ::aReport[ PAGEBUFFER ] += CRLF + "0 g " + ltrim(str(::M2X( y1 ))) + " " + ltrim(str(::M2Y( x1 ))) + " " + ltrim(str(::M2X( nBorder ))) + " -" + ltrim(str(::M2X( x2 - x1 ))) + " re f"
-  ENDIF
+      IF nBorder > 0
+         ::aReport[ PAGEBUFFER ] += CRLF + "0 g " + cBoxColor + ltrim(str(::M2X( y1 ))) + " " + ltrim(str(::M2Y( x1 ))) + " " + ltrim(str(::M2X( y2 - y1 ))) + " -" + ltrim(str(::M2X( nBorder ))) + " re f"
+         ::aReport[ PAGEBUFFER ] += CRLF + "0 g " + cBoxColor + ltrim(str(::M2X( y2 - nBorder ))) + " " + ltrim(str(::M2Y( x1 ))) + " " + ltrim(str(::M2X( nBorder ))) + " -" + ltrim(str(::M2X( x2 - x1 ))) + " re f"
+         ::aReport[ PAGEBUFFER ] += CRLF + "0 g " + cBoxColor + ltrim(str(::M2X( y1 ))) + " " + ltrim(str(::M2Y( x2 - nBorder ))) + " " + ltrim(str(::M2X( y2 - y1 ))) + " -" + ltrim(str(::M2X( nBorder ))) + " re f"
+         ::aReport[ PAGEBUFFER ] += CRLF + "0 g " + cBoxColor + ltrim(str(::M2X( y1 ))) + " " + ltrim(str(::M2Y( x1 ))) + " " + ltrim(str(::M2X( nBorder ))) + " -" + ltrim(str(::M2X( x2 - x1 ))) + " re f"
+      ENDIF
    ELSEIF cUnits == "D"// "Dots"
-  IF nShade > 0
- ::aReport[ PAGEBUFFER ] += CRLF + transform( 1.00 - nShade / 100.00, "9.99") + " g " + cBoxColor + ltrim(str( y1 )) + " " + ltrim(str( ::aReport[ PAGEY ] - x1 )) + " " + ltrim(str( y2 - y1 )) + " -" + ltrim(str( x2 - x1 )) + " re f 0 g"
-  ENDIF
+      IF nShade > 0
+         ::aReport[ PAGEBUFFER ] += CRLF + transform( 1.00 - nShade / 100.00, "9.99") + " g " + cBoxColor + ltrim(str( y1 )) + " " + ltrim(str( ::aReport[ PAGEY ] - x1 )) + " " + ltrim(str( y2 - y1 )) + " -" + ltrim(str( x2 - x1 )) + " re f 0 g"
+      ENDIF
 
-  IF nBorder > 0
+      IF nBorder > 0
 /*
 1
  ÚÄÄÄÄÄ¿
@@ -1704,11 +1702,11 @@ DEFAULT cColor  TO ""
  ÀÄÄÄÄÄÙ
 3
 */
- ::aReport[ PAGEBUFFER ] += CRLF + "0 g " + ltrim(str( y1 )) + " " + ltrim(str( ::aReport[ PAGEY ] - x1 )) + " " + ltrim(str( y2 - y1 )) + " -" + ltrim(str( nBorder )) + " re f"
- ::aReport[ PAGEBUFFER ] += CRLF + "0 g " + ltrim(str( y2 - nBorder )) + " " + ltrim(str( ::aReport[ PAGEY ] - x1 )) + " " + ltrim(str( nBorder )) + " -" + ltrim(str( x2 - x1 )) + " re f"
- ::aReport[ PAGEBUFFER ] += CRLF + "0 g " + ltrim(str( y1 )) + " " + ltrim(str( ::aReport[ PAGEY ] - x2 + nBorder )) + " " + ltrim(str( y2 - y1 )) + " -" + ltrim(str( nBorder )) + " re f"
- ::aReport[ PAGEBUFFER ] += CRLF + "0 g " + ltrim(str( y1 )) + " " + ltrim(str( ::aReport[ PAGEY ] - x1 )) + " " + ltrim(str( nBorder )) + " -" + ltrim(str( x2 - x1 )) + " re f"
-  ENDIF
+         ::aReport[ PAGEBUFFER ] += CRLF + "0 g " + cBoxColor + ltrim(str( y1 )) + " " + ltrim(str( ::aReport[ PAGEY ] - x1 )) + " " + ltrim(str( y2 - y1 )) + " -" + ltrim(str( nBorder )) + " re f"
+         ::aReport[ PAGEBUFFER ] += CRLF + "0 g " + cBoxColor + ltrim(str( y2 - nBorder )) + " " + ltrim(str( ::aReport[ PAGEY ] - x1 )) + " " + ltrim(str( nBorder )) + " -" + ltrim(str( x2 - x1 )) + " re f"
+         ::aReport[ PAGEBUFFER ] += CRLF + "0 g " + cBoxColor + ltrim(str( y1 )) + " " + ltrim(str( ::aReport[ PAGEY ] - x2 + nBorder )) + " " + ltrim(str( y2 - y1 )) + " -" + ltrim(str( nBorder )) + " re f"
+         ::aReport[ PAGEBUFFER ] += CRLF + "0 g " + cBoxColor + ltrim(str( y1 )) + " " + ltrim(str( ::aReport[ PAGEY ] - x1 )) + " " + ltrim(str( nBorder )) + " -" + ltrim(str( x2 - x1 )) + " re f"
+      ENDIF
    ENDIF
 RETURN self
 
