@@ -1,5 +1,5 @@
 /*
- * $Id: c_image.c,v 1.36 2014-06-17 00:35:47 fyurisich Exp $
+ * $Id: c_image.c,v 1.37 2014-06-17 20:01:12 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -191,7 +191,7 @@ HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor, long l
 HBITMAP _OOHG_ScaleImage( HWND hWnd, HBITMAP hImage, int iWidth, int iHeight, int scalestrech, LONG BackColor )
 {
    RECT fromRECT, toRECT;
-   HBITMAP hpic = 0;
+   HBITMAP hOldTo, hOldFrom, hpic = 0;
    BITMAP bm;
    long lWidth, lHeight;
    HDC imgDC, fromDC, toDC;
@@ -218,7 +218,7 @@ HBITMAP _OOHG_ScaleImage( HWND hWnd, HBITMAP hImage, int iWidth, int iHeight, in
       lHeight = bm.bmHeight;
       SetRect( &fromRECT, 0, 0, lWidth, lHeight );
       FillRect( fromDC, &fromRECT, hBrush );
-      SelectObject( fromDC, hImage );
+      hOldFrom = SelectObject( fromDC, hImage );
 
       // TO parameters
       GetClientRect( hWnd, &toRECT );
@@ -241,13 +241,15 @@ HBITMAP _OOHG_ScaleImage( HWND hWnd, HBITMAP hImage, int iWidth, int iHeight, in
       SetRect( &toRECT, 0, 0, iWidth, iHeight );
       hpic = CreateCompatibleBitmap( imgDC, iWidth, iHeight );
       FillRect( toDC, &toRECT, hBrush );
-      SelectObject( toDC, hpic );
+      hOldTo = SelectObject( toDC, hpic );
 
       SetStretchBltMode( toDC, COLORONCOLOR );
       StretchBlt( toDC, 0, 0, iWidth, iHeight, fromDC, 0, 0, lWidth, lHeight, SRCCOPY );
 
       DeleteDC( imgDC );
+      SelectObject( fromDC, hOldFrom );
       DeleteDC( fromDC);
+      SelectObject( toDC, hOldTo );
       DeleteDC( toDC );
       DeleteObject( hBrush );
    }

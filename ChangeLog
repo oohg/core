@@ -1,11 +1,21 @@
 /*
- * $Id: ChangeLog,v 1.1286 2014-06-17 00:35:27 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1287 2014-06-17 20:01:12 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-06-17 17:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_window.ch
+     + ON MOVE clause.
+   * source/c_image.c
+     ! Memory leak.
+   * source/h_form.prg
+     + Support for ON MOVE clause.
+   * source/h_print.prg
+     ! Function not found error at compile time.
 
 2014-06-16 21:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt

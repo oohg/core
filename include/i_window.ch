@@ -1,5 +1,5 @@
 /*
- * $Id: i_window.ch,v 1.48 2013-05-26 18:35:16 fyurisich Exp $
+ * $Id: i_window.ch,v 1.49 2014-06-17 20:01:12 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -182,6 +182,7 @@
                [ <nocaption: NOCAPTION> ] ;
                [ CURSOR <cursor> ] ;
                [ ON INIT <InitProcedure> ] ;
+               [ ON MOVE <MoveProcedure> ] ;
                [ ON RELEASE <ReleaseProcedure> ] ;
                [ ON INTERACTIVECLOSE <interactivecloseprocedure> ] ;
                [ ON MOUSECLICK <ClickProcedure> ] ;
@@ -237,7 +238,7 @@
                <.mdichild.>, <.mdiclient.>, [ <subclass>() ], <.clientarea.>, <{RestoreProcedure}>, ;
                <{RClickProcedure}>, <{MClickProcedure}>, <{DblClickProcedure}>, ;
                <{RDblClickProcedure}>, <{MDblClickProcedure}>, <minwidth>, <maxwidth>, <minheight>, ;
-               <maxheight> ) ;;
+               <maxheight>, <{MoveProcedure}> ) ;;
          DECLARE WINDOW <w>
 
    #xcommand LOAD WINDOW <w> ;
@@ -344,6 +345,7 @@
                [ <nocaption: NOCAPTION> ] ;
                [ CURSOR <cursor> ] ;
                [ ON INIT <InitProcedure> ] ;
+               [ ON MOVE <MoveProcedure> ] ;
                [ ON RELEASE <ReleaseProcedure> ] ;
                [ ON INTERACTIVECLOSE <interactivecloseprocedure> ] ;
                [ ON MOUSECLICK <ClickProcedure> ] ;
@@ -399,7 +401,7 @@
                <.mdichild.>, <.mdiclient.>, [ <subclass>() ], <.clientarea.>, <{RestoreProcedure}>, ;
                <{RClickProcedure}>, <{MClickProcedure}>, <{DblClickProcedure}>, ;
                <{RDblClickProcedure}>, <{MDblClickProcedure}>, <minwidth>, <maxwidth>, <minheight>, ;
-               <maxheight> )
+               <maxheight>, <{MoveProcedure}> )
 
 ////////////////////////////////////////////////////////////
 // Set AutoAdjust

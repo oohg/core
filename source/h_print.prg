@@ -1,5 +1,5 @@
 /*
- * $Id: h_print.prg,v 1.136 2014-06-17 00:35:47 fyurisich Exp $
+ * $Id: h_print.prg,v 1.137 2014-06-17 20:01:12 fyurisich Exp $
  */
 
 #include 'hbclass.ch'
@@ -49,10 +49,14 @@ LOCAL o_Print_
             o_Print_ := tcsvprint()
          ELSEIF _OOHG_PrintLibrary = "HTMLPRINT"
             o_Print_ := thtmlprint()
+         ELSEIF _OOHG_PrintLibrary = "HTMLPRINTFROMCALC"
+            o_Print_ := thtmlprintfromcalc()
+         ELSEIF _OOHG_PrintLibrary = "HTMLPRINTFROMEXCEL"
+            o_Print_ := thtmlprintfromexcel()
          ELSEIF _OOHG_PrintLibrary = "PDFPRINT"
             o_Print_ := tpdfprint()
          ELSEIF _OOHG_PrintLibrary = "RAWPRINT"
-            o_Print_ := tRAWprint()
+            o_Print_ := trawprint()
          ELSEIF _OOHG_PrintLibrary = "SPREADSHEETPRINT"
             o_Print_ := tspreadsheetprint()
 
@@ -81,6 +85,10 @@ LOCAL o_Print_
             o_Print_ := tcsvprint()
          ELSEIF cLibX = "HTMLPRINT"
             o_Print_ := thtmlprint()
+         ELSEIF cLibX = "HTMLPRINTFROMCALC"
+            o_Print_ := thtmlprintfromcalc()
+         ELSEIF cLibX = "HTMLPRINTFROMEXCEL"
+            o_Print_ := thtmlprintfromexcel()
          ELSEIF cLibX = "PDFPRINT"
             o_Print_ := tpdfprint()
          ELSEIF cLibX = "RAWPRINT"
