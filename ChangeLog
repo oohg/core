@@ -1,11 +1,22 @@
 /*
- * $Id: ChangeLog,v 1.1287 2014-06-17 20:01:12 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1288 2014-06-18 23:15:48 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-06-18 20:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_var.ch
+     + _OOHG_RegisteredForms.
+       It's an array with the objects of all existing forms.
+       Last element corresponds to the last form defined.
+     + _OOHG_LastDefinedForm.
+       It's the last element of _OOHG_RegisteredForms.
+   * source/h_form.prg
+     + Function _OOHG_FormObjects().
+       Returns an array with the objects of all existing forms.
 
 2014-06-17 17:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_window.ch

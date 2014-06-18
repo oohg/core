@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.51 2014-06-17 20:01:12 fyurisich Exp $
+ * $Id: h_form.prg,v 1.52 2014-06-18 23:15:48 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2513,6 +2513,11 @@ Function _EndWindow()
       ATAIL( _OOHG_ActiveForm ):EndWindow()
    EndIf
 Return Nil
+
+*-----------------------------------------------------------------------------*
+Function _OOHG_FormObjects()
+*-----------------------------------------------------------------------------*
+Return aClone( _OOHG_aFormObjects )
 
 // Initializes C variables
 *-----------------------------------------------------------------------------*

@@ -1,5 +1,5 @@
 /*
- * $Id: i_var.ch,v 1.22 2013-03-27 00:07:56 fyurisich Exp $
+ * $Id: i_var.ch,v 1.23 2014-06-18 23:15:48 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -138,3 +138,5 @@ MEMVAR _OOHG_AllVars
 
 #xtranslate  _OOHG_SameEnterDblClick   => _OOHG_AllVArs \[  33 \]
 
+#xtranslate  _OOHG_RegisteredForms     => _OOHG_FormObjects()
+#xtranslate  _OOHG_LastDefinedForm     => aTail( _OOHG_RegisteredForms )
