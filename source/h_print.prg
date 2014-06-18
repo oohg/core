@@ -1,5 +1,5 @@
 /*
- * $Id: h_print.prg,v 1.137 2014-06-17 20:01:12 fyurisich Exp $
+ * $Id: h_print.prg,v 1.138 2014-06-18 23:44:48 fyurisich Exp $
  */
 
 #include 'hbclass.ch'
@@ -1777,24 +1777,25 @@ RETURN Self
 *-----------------------------------------------------------------------------*
 METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nPaperLength, nPaperWidth ) CLASS THBPRINTER
 *-----------------------------------------------------------------------------*
-   IF lSelect .AND. lPreview .AND. cPrinterX = NIL
-      SELECT BY DIALOG PREVIEW
-   ENDIF
-   IF lSelect .AND. ( ! lPreview ) .AND. cPrinterX = NIL
-      SELECT BY DIALOG
-   ENDIF
-   IF ( ! lSelect ) .AND. lPreview .AND. cPrinterX = NIL
-      SELECT DEFAULT PREVIEW
-   ENDIF
-   IF ( ! lSelect ) .AND. ( ! lPreview ) .AND. cPrinterX = NIL
-      SELECT DEFAULT
-   ENDIF
-
-   IF cPrinterX # NIL
+   IF lSelect
       IF lPreview
-         SELECT PRINTER cPrinterX PREVIEW
+         SELECT BY DIALOG PREVIEW
       ELSE
-         SELECT PRINTER cPrinterX
+         SELECT BY DIALOG
+      ENDIF
+   ELSE
+      IF cPrinterX == NIL
+         IF lPreview
+            SELECT DEFAULT PREVIEW
+         ELSE
+            SELECT DEFAULT
+         ENDIF
+      ELSE
+         IF lPreview
+            SELECT PRINTER cPrinterX PREVIEW
+         ELSE
+            SELECT PRINTER cPrinterX
+         ENDIF
       ENDIF
    ENDIF
 

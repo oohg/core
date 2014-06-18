@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.1288 2014-06-18 23:15:48 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1289 2014-06-18 23:44:48 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-06-18 20:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_print.prg
+     ! Tprint( "HBPRINTER" ):SelPrinter() does not open printer
+       selection dialog when lSelect is .T. and cPrinterX is not NIL.
 
 2014-06-18 20:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_var.ch
