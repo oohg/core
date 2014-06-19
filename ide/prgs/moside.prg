@@ -1,11 +1,11 @@
 /*
- * $Id: moside.prg,v 1.2 2014-04-15 00:46:19 fyurisich Exp $
+ * $Id: moside.prg,v 1.3 2014-06-19 18:53:30 fyurisich Exp $
  */
 
 #include 'oohg.ch'
 *** move / size / delete
 *--------------------------------
-function kmove()  //// keyboard move
+function kmove( myIDe )  //// keyboard move
 *--------------------------------
    if nhandlep=0
       msginfo("you must select a control first","information")
@@ -18,11 +18,11 @@ function kmove()  //// keyboard move
    swkm:=.T.
    declare window form_1
    /////erase window form_1
-   ON KEY LEFT   OF Form_1 ACTION KMueve("L")
-   ON KEY RIGHT  OF Form_1 ACTION KMueve("R")
-   ON KEY UP     OF Form_1 ACTION KMueve("U")
-   ON KEY DOWN   OF Form_1 ACTION KMueve("D")
-   ON KEY ESCAPE OF Form_1 ACTION KMueve("E")
+   ON KEY LEFT   OF Form_1 ACTION KMueve( "L", myIDe )
+   ON KEY RIGHT  OF Form_1 ACTION KMueve( "R", myIDe )
+   ON KEY UP     OF Form_1 ACTION KMueve( "U", myIDe )
+   ON KEY DOWN   OF Form_1 ACTION KMueve( "D", myIDe )
+   ON KEY ESCAPE OF Form_1 ACTION KMueve( "E", myIDe )
 
 
    if iscontroldefined(statusbar,form_1)
@@ -31,11 +31,11 @@ function kmove()  //// keyboard move
    DEFINE STATUSBAR of form_1
         STATUSITEM ""
    END STATUSBAR
-   kmueve("")
+   kmueve( "", myIDe )
 return nil
 
 *------------------------
-function kmueve(cpar)
+function kmueve( cpar, myIde )
 *------------------------
 local jj,nr,nc,ncaux,nraux,ocontrolm
 if nhandlep=0
@@ -55,16 +55,16 @@ SetCursorPos( nc , nr )
 
 do case
   case cpar="L"
-       form_1:&cname:col:= form_1:&cname:col  - iif(myide:lsnap=1,10,1)
+       form_1:&cname:col:= form_1:&cname:col  - iif(myIde:lsnap=1,10,1)
         myform:lfsave:=.F.
   case cpar="R"
-       form_1:&cname:col:= form_1:&cname:col  + iif(myide:lsnap=1,10,1)
+       form_1:&cname:col:= form_1:&cname:col  + iif(myIde:lsnap=1,10,1)
         myform:lfsave:=.F.
   case cpar="U"
-       form_1:&cname:row:= form_1:&cname:row - iif(myide:lsnap=1,10,1)
+       form_1:&cname:row:= form_1:&cname:row - iif(myIde:lsnap=1,10,1)
        myform:lfsave:=.F.
   case cpar="D"
-       form_1:&cname:row:= form_1:&cname:row  + iif(myide:lsnap=1,10,1)
+       form_1:&cname:row:= form_1:&cname:row  + iif(myIde:lsnap=1,10,1)
         myform:lfsave:=.F.
   case cpar="E"
      RELEASE KEY LEFT   OF Form_1
@@ -92,7 +92,7 @@ do case
             endif
             END STATUSBAR
         endif
-        if myide:lsnap=1
+        if myIde:lsnap=1
            snap(cname)
         endif
 endcase
@@ -118,7 +118,7 @@ form_1:&cname:col:=ncol
 return nil
 
 *------------------------------------------------------------------------------*
-function MoveControl()
+function MoveControl( myIde )
 *------------------------------------------------------------------------------*
 local i , iRow , iCol , iWidth , iHeight , h , j , k , l , z , eRow , eCol , dRow , dCol , BaseRow , BaseCol, BaseWidth , BaseHeight , TitleHeight , BorderWidth , BorderHeight  , CurrentPage , IsInTab , SupMin , iMin,cname,jk,jl
 local ocontrol
@@ -138,7 +138,7 @@ if jk>0
    oControl:Row := oControl:Row + ( nRowActual - nRowAnterior )
    oControl:col := oControl:col + ( ncolActual - ncolAnterior )
 
-   if myide:lsnap=1
+   if myIde:lsnap=1
       snap(ocontrol:name)
    endif
    CShowControl (ocontrol:hwnd)
@@ -250,7 +250,7 @@ else                   &&&& si es tab
    endif
 endif
 
-if oControl:hwnd > 0  
+if oControl:hwnd > 0
    if oControl:type=='MESSAGEBAR'
       return
    endif
@@ -263,7 +263,7 @@ if oControl:hwnd > 0
 
       if ocontrol:type='TAB'
 
-         
+
  *************  si es un TAB
          cname:=lower(ocontrol:name)
          l:=myform:ncontrolw
@@ -291,7 +291,7 @@ muestrasino()  //// rellena controles en listbox
 return
 
 *------------------------------
-function manualmosi(nopcion)
+function manualmosi( nopcion, myIde )
 *------------------------------
 local i,cname,j, Title , aLabels , aInitValues , aFormats , aResults,ctipo
 local ocontrol
@@ -315,30 +315,30 @@ if nopcion=1
                         Title:=cname+" Move/Size properties"
                            if siesdeste(jl,'RADIOGROUP')
                               aLabels         := { 'Row' ,'Col','Width' }
-	                      aInitValues     := { Row, col, width     }
-        	              aFormats        := { '9999','9999','9999'}
+                         aInitValues     := { Row, col, width     }
+                         aFormats        := { '9999','9999','9999'}
                               aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
                               if aresults[1] == Nil
-        	                 return
+                            return
                               endif
                               if aresults[1] >0 .and. aresults[2]>0 .and. aresults[3]>0
                               ///   form_1.hide
-        	                 form_1:&cname:row := aresults[1]
+                            form_1:&cname:row := aresults[1]
                                  form_1:&cname:col := aresults[2]
                                  form_1:&cname:width := aresults[3]
                               endif
                           ///    form_1.show
                            else
                               aLabels         := { 'Row' ,'Col','Width', 'Height' }
-	                      aInitValues     := { Row, col, width, height     }
-        	              aFormats        := { '9999','9999','9999','9999'}
+                         aInitValues     := { Row, col, width, height     }
+                         aFormats        := { '9999','9999','9999','9999'}
                               aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
                               if aresults[1] == Nil
-        	                 return
+                            return
                               endif
                               if aresults[1] >0 .and. aresults[2]>0 .and. aresults[3]>0 .and. aresults[4]>0
                             ///     form_1.hide
-        	                 form_1:&cname:row := aresults[1]
+                            form_1:&cname:row := aresults[1]
                                  form_1:&cname:col := aresults[2]
                                  if siesdeste(jl,'MONTHCALENDAR') .or. siesdeste(jl,'TIMER')
                                  else
@@ -346,12 +346,12 @@ if nopcion=1
                                      form_1:&cname:height:= aresults[4]
                                  endif
                             //     form_1.show
-        	               endif
+                          endif
                            endif
 
                    //// endif
                    ///// erase window form_1
-                    if myide:lsnap=1
+                    if myIde:lsnap=1
                        snap(cname)
                     endif
 
@@ -375,7 +375,7 @@ else
                 aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
 
                 if aresults[1] == Nil
-      	           return
+                    return
                 endif
 
               ///  form_1.hide

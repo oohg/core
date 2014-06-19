@@ -1,5 +1,5 @@
 /*
- * $Id: dbucvc.prg,v 1.2 2014-04-15 00:46:19 fyurisich Exp $
+ * $Id: dbucvc.prg,v 1.3 2014-06-19 18:53:30 fyurisich Exp $
  */
 
 #include "oohg.ch"
@@ -7,14 +7,14 @@
 #define IDH_DEFCONTEXTMENU 1302
 #define IDH_DEFNOTIFYMENU 1303
 
-function databaseview1
+Function DatabaseView1( myIde )
 public _DBUdbfopened := .f.
 public _DBUfname := ""
 set century on
 set interactiveclose on
 declare window _dbubrowse
 declare window _dbu
-define window _DBU at 0,0 width 800 height 600 title "ooHG DataBase Utility" icon "dbu.ico" child backcolor myide:asystemcolor  on init DBUtogglemenu() on release DBUclosedbfs() 
+define window _DBU at 0,0 width 800 height 600 title "ooHG DataBase Utility" icon "dbu.ico" child backcolor myIde:asystemcolor  on init DBUtogglemenu() on release DBUclosedbfs()
    define main menu
       popup "File"
          item "Create" action DBUcreanew() 

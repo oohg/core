@@ -1,5 +1,5 @@
 /*
- * $Id: saveform.prg,v 1.2 2014-04-15 00:46:19 fyurisich Exp $
+ * $Id: saveform.prg,v 1.3 2014-06-19 18:53:30 fyurisich Exp $
  */
 
 /////#include 'oohg.ch'
@@ -36,8 +36,8 @@ local swpop:=0
 	BorderWidth 	:= GetBorderWidth()
 	BorderHeight 	:= GetBorderHeight()
         Output := ''+CRLF
-        OUTPUT += '* ooHG IDE plus form generated code'+CRLF
-        output += '* (c)2004 Ciro Vargas Clemow   pcman2010@yahoo.com'+CRLF
+        OUTPUT += '* ooHG IDE Plus form generated code'+CRLF
+        output += '* (c)2003-2014 Ciro Vargas Clemow <pcman2010@yahoo.com>'+CRLF
         Output += ''+CRLF
 	Output += 'DEFINE WINDOW '+ ' TEMPLATE ; '+CRLF
         output += 'AT ' + Alltrim(Str(baserow)) + ',' + Alltrim(Str(baseCol)) + ' ;' +CRLF
@@ -1635,7 +1635,7 @@ function makecontrols(j,output,row,col,width,height,mlyform)
                                 if len(myform:avalue[j]) > 0
                                    Output += 'VALUE ' +"'"+myform:avalue[j] + "'"+' ; ' +CRLF
                                 else
-                                   Output += 'VALUE ' +" 'ooHGIDE+ Home ' " + ' ; ' +CRLF
+                                   Output += 'VALUE ' +" 'ooHG IDE+ Home ' " + ' ; ' +CRLF
                                 endif
                                 if len(myform:aaddress[j]) > 0
                                    Output += 'ADDRESS ' +"'"+myform:aaddress[j] +"'"+ ' ; ' +CRLF

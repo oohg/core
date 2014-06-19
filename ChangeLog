@@ -1,11 +1,99 @@
 /*
- * $Id: ChangeLog,v 1.1289 2014-06-18 23:44:48 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1290 2014-06-19 18:53:30 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-06-19 15:53 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/fmgs/form_prefer.fmg
+     * Use :: instead of myIde:
+   * ide/fmgs/intfonco.fmg
+     + myIde in call to function sdefcol.
+   * ide/fmgs/mymenued.fmg
+     * Use ::cfBackcolor instead of myIde:asystemcolor.
+     * Use :: instead of TMyMenu::
+   * ide/fmgs/mytoolbared.fmg
+     * Use ::Backcolor instead of myIde:asystemcolor.
+   * ide/fmgs/orderf.fmg
+     * Use :: instead of myIde:
+   * ide/prgs/dbucvc.prg
+     + myIde parameter to function DatabaseView1.
+   * ide/prgs/formedit.prg
+     * Format.
+     * Comments.
+     + DATA myIde to CLASS TForm1.
+     + myIde parameter to method vd.
+     * Use ::cfbackcolor instead of myform:cfbackcolor.
+     * Use :: instead of myform:
+     * Use ::myIde instead of myIde in all methods of TForm1.
+     + myIde parameter to functions ms, ppiccheckbutt, panimatebox,
+       pbrowse, pbutton, pcheckbox, pcheckbtn, pcombobox, pdatepicker,
+       peditbox, pframe, pgrid, phyplink, pimage, pipaddress, plabel,
+       plistbox, pmonthcal, ppicbutt, pplayer, pprogressbar, ptimer,
+       pradiogroup, prichedit, pslider, pspinner, ptextbox, ptree,
+       ProcessContainers, ProcessContainersfill and HELP_F1.
+     - Dummy procedure pulse.
+     * CursorMove call substituted by ooHG's CursorHand.
+     * CursorSize call substituted by ooHG's CursorSizeNESE.
+     % Function DebugT.
+     - C_SETFOCUS, INTERACTIVESIZE, INTERACTIVEMOVE, LOADCURSOR2,
+       CURSORHAND, CURSORSIZE and CURSORMOVE.
+   * ide/prgs/intfocop.prg
+     + myIde parameter to functions intfoco, intfoco1 and sdefcol.
+     - Commented code.
+     * Format.
+     * References to form_1 now use object.
+   * ide/prgs/menued.prg
+     + DATA cfBackcolor to CLASS TmyMenuEd.
+     * Use :: instead of tmymenu:
+     * Use myMenuEd. instead of myMenuEd: to avoid using a private var.
+   * ide/prgs/mgide.prg
+     * Some format.
+     * Message titles.
+     * Translated non-english messages.
+     - PUBLICs cDrive and editbcvc.
+     * Global SETs moved to CLASS THMI.
+     + DATA cHelpFolder to CLASS THMI.
+     - CONSTRUCTOR clause from method NewIde of THMI.
+     - Unused methods End and SetAsMain of THMI.
+     * cHelpDir substituted by ::cHelpFolder.
+     * Use :: instead of myide:
+     - Commented code.
+     - Function ayuhelp.
+     * Function BorraObj.
+     + myIde parameter to functions CompileOptions, openauxi, databaseview2
+     * Copyright notice.
+     + Added support for multiple RC files in methods BldMinGW,
+       xBldMinGW, BuildBCC, xBuildBCC, XBldPellC, BldPellC
+     + Building synchronized with standard bats.
+     ! Compilation with compile.bat
+     + Rename and move of exe file.
+     - Function GETEXEFILENAME.
+     + Function ZAPDIRECTORY.
+   * ide/prgs/moside.prg
+     + myIde parameter to functions kmove, kmueve, MoveControl and
+       manualmosi.
+   * ide/prgs/orden.prg
+     + myIde parameter to function OrderControl.
+   * ide/prgs/propeven.prg
+     + myIde parameter to functions Properties_Click, Events_Click,
+       FrmProperties, FrmEvents, StatPropEvents and TabProp.
+   * ide/prgs/repoedit.prg
+     + myIde parameter to functions Repo_Edit, LeaDatoR, LeaDatoLogicR.
+     * Format.
+     * Message titles.
+     * Unused functions commented out.
+   * ide/prgs/saveform.prg
+     * Copyright notice.
+   * ide/prgs/toolbed.prg
+     + DATA BackColor to CLASS Tmytoolbared.
+     * Use myToolbarEd. instead of myToolbarEd: to avoid using a
+       private var.
+     * Use :: instead of tmytoolb:
+     + tMyToolb parameter to function tbparsea.
 
 2014-06-18 20:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_print.prg

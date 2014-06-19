@@ -1,211 +1,184 @@
 /*
- * $Id: intfocop.prg,v 1.2 2014-04-15 00:46:19 fyurisich Exp $
+ * $Id: intfocop.prg,v 1.3 2014-06-19 18:53:30 fyurisich Exp $
  */
 
 #include 'oohg.ch'
-*------------------------------------------------------------------------------*
-function intfoco(qw)
-*------------------------------------------------------------------------------*
-local i , iRow , iCol , iWidth , iHeight , h , j , k , l , z , eRow , eCol , dRow , dCol , BaseRow , BaseCol, BaseWidth , BaseHeight , TitleHeight , BorderWidth , BorderHeight  , CurrentPage , IsInTab , SupMin , iMin,cname,jk,jl
-declare window form_main
-declare window form_1
 
-        if qw=0
-           intfoco1(0)
-           return
-        endif
-        h := GetFormHandle ( myform:designform )
-	BaseRow 	:= GetWindowRow ( h ) + GetBorderHeight()
-	BaseCol 	:= GetWindowCol ( h ) + GetBorderWidth()
-	BaseWidth 	:= GetWindowWidth ( h )
-	BaseHeight 	:= GetWindowHeight ( h )
-	TitleHeight 	:= GetTitleHeight()
-	BorderWidth 	:= GetBorderWidth()
-	BorderHeight 	:= GetBorderHeight()
-***
-                i:=nhandlep
+//------------------------------------------------------------------------------
+FUNCTION IntFoco( qw, myIde )
+//------------------------------------------------------------------------------
+LOCAL i, iRow, iCol, iWidth, iHeight, h, j, k, l, z, eRow, eCol, dRow, dCol
+LOCAL BaseRow, BaseCol, BaseWidth, BaseHeight, TitleHeight, BorderWidth
+LOCAL BorderHeight, CurrentPage, IsInTab, SupMin, iMin, cName, jk, jl
 
-                jk:=i
+   IF qw == 0
+      IntFoco1( 0, myIDe )
+      RETURN NIL
+   ENDIF
 
-                if jk>0
+   h := GetFormHandle( myForm:DesignForm )
+   BaseRow := GetWindowRow( h ) + GetBorderHeight()
+   BaseCol := GetWindowCol( h ) + GetBorderWidth()
+   BaseWidth := GetWindowWidth( h )
+   BaseHeight := GetWindowHeight( h )
+   TitleHeight := GetTitleHeight()
+   BorderWidth := GetBorderWidth()
+   BorderHeight := GetBorderHeight()
 
-                   if siesdeste(jk,'IMAGE') .or. siesdeste(jk,'TIMER') ;
-                      .or. siesdeste(jk,'PLAYER')  .or. siesdeste(jk,'ANIMATE') ;
-                    .or. siesdeste(jk,'PICCHECKBUTT') .or. siesdeste(jk,'PICBUTT')
-                      return
-                   endif
-                   owindow:=getformobject("form_1")       
-                   si:=ascan(myform:acontrolw,{  |c| lower( c ) == lower(owindow:acontrols[jk]:name) } )
+   i := nHandleP
+   jk := i
 
+   IF jk > 0
+      IF SiEsDEste( jk, 'IMAGE' ) .OR. SiEsDEste( jk, 'TIMER' ) .OR. ;
+         SiEsDEste( jk, 'PLAYER' ) .OR. SiEsDEste( jk, 'ANIMATE') .OR. ;
+         SiEsDEste( jk, 'PICCHECKBUTT' ) .OR. SiEsDEste( jk, 'PICBUTT' )
+         RETURN NIL
+      ENDIF
 
-                   if si>0
-                      intfoco1(si)
-                      CHideControl (owindow:acontrols[jk])
-                      CShowControl (owindow:acontrols[jk])
-                      return
-                   endif
-                else
-                   return
-                endif
-return
-*----------------------
-function intfoco1(si)
-*----------------------
-load window intfonco
-if si=0
-   intfonco.label_1.value:='  Form : '+myform:cfname
-else
-   intfonco.label_1.value:='Control: '+myform:aname[si]
-endif
-activate window intfonco
-return
+      oWindow := GetFormObject( "form_1" )
+      si := aScan( myForm:aControlW, { |c| Lower( c ) == Lower( oWindow:aControls[jk]:Name ) } )
+      IF si > 0
+         IntFoco1( si, myIde )
+         CHideControl( oWindow:aControls[jk] )
+         CShowControl( oWindow:aControls[jk] )
+         RETURN NIL
+      ENDIF
+   ELSE
+      RETURN NIL
+   ENDIF
+RETURN NIL
 
-*---------------------
-function sdefcol(si)
-*---------------------
-local cCode:='{',cbackcolor,acolor
-local cname
-if si=0
-else
-  cname:=myform:acontrolw[si]
-endif
-cCode:=myide:asystemcoloraux
-if si=0
-   myform:cfbackcolor:='NIL'
-   myform:lfsave:=.F.
-**********
-   form_1.backcolor:=cCode
-   form_1.hide
-   form_1.show
-   intfonco.button_103.setfocus
-***********
-   return
-endif
-myform:abackcolor[si]:='NIL'
-getcontrolobject(cname,"form_1"):backcolor:=cCode
-myform:lfsave:=.F.
-return
+//------------------------------------------------------------------------------
+FUNCTION IntFoco1( si, myIde )
+//------------------------------------------------------------------------------
+   LOAD WINDOW intfonco
+   IF si == 0
+      intfonco.label_1.Value := '  Form : ' + myForm:cFName
+   ELSE
+      intfonco.label_1.Value := 'Control: ' + myForm:aName[si]
+   ENDIF
+   ACTIVATE WINDOW intfonco
+RETURN NIL
 
-*--------------------
-function gfontt(si)
-*--------------------
-local cname,ncolor,afont
+//------------------------------------------------------------------------------
+FUNCTION SDefCol( si, myide )
+//------------------------------------------------------------------------------
+LOCAL cCode, cBackColor, aColor, cName, oWindow
+   cCode := myide:aSystemColorAux
+   IF si == 0
+      myForm:cFBackColor := 'NIL'
+      myForm:lFSave := .F.
+      oWindow := GetFormObject( "form_1" )
+      oWindow:BackColor := cCode
+      oWindow:Hide()
+      oWindow:Show()
+      intfonco.button_103.SetFocus
+   ELSE
+      myForm:aBackColor[si] := 'NIL'
+      myForm:lFSave := .F.
+      cName := myForm:aControlW[si]
+      GetControlObject( cName, "form_1" ):BackColor := cCode
+   ENDIF
+RETURN NIL
 
-if si=0
-   afont:=getfont(myform:cffontname,myform:nffontsize,.F.,.F.,{0,0,0},.F.,.F.,0)
-else
-   cname:=myform:acontrolw[si]
-   nfontcolor:=myform:afontcolor[si]
-   afont:=getfont(myform:afontname[si],myform:afontsize[si],myform:abold[si],myform:afontitalic[si],&nfontcolor,myform:afontunderline[si],myform:afontstrikeout[si],0)
-endif
-if afont[1]="" .and. afont[2]=0.and. (.not. afont[3]) .and. (.not. afont[4]) .and. ( afont[5,1]=NIL .and. afont[5,2]=NIL .and. afont[5,3]=NIL) .and. (.not. afont[6]) .and. (.not. afont[7]) .and. afont[8]=0
-   return
-endif
-if si=0 .and. len(afont[1])>0
-   myform:cffontname:=afont[1]
-endif
-if si=0 .and. afont[2]>0
-   myform:nffontsize:=afont[2]
-endif
-if si=0
-   myform:lfsave:=.F.
-   return
-endif
+//------------------------------------------------------------------------------
+FUNCTION GFontT( si )
+//------------------------------------------------------------------------------
+LOCAL cName, aFont, nRed, nGreen, nBlue
 
-if len(afont[1])>0
-   myform:afontname[si]:=afont[1]
-   getcontrolobject(cname,"form_1"):fontname:=afont[1]
-endif
-if afont[2]>0
-   myform:afontsize[si]:=afont[2]
-   getcontrolobject(cname,"form_1"):fontsize:=afont[2]
-endif
+   IF si == 0
+      aFont := GetFont( myForm:cFFontName, myForm:nFFontSize, .F. , .F. , {0, 0, 0} , .F., .F., 0 )
+   ELSE
+      cName := myForm:aControlW[si]
+      nFontColor := myForm:aFontColor[si]
+      aFont := GetFont( myForm:aFontName[si], myForm:aFontSize[si], myForm:aBold[si], myForm:aFontItalic[si], &nFontColor, myForm:aFontUnderline[si], myForm:aFontStrikeout[si], 0 )
+   ENDIF
+   IF aFont[1] == "" .AND. aFont[2] == 0 .AND. ( ! aFont[3] ) .AND.  ( ! aFont[4] ) .AND. ;
+      aFont[5, 1] == NIL .AND. aFont[5,2] == NIL .AND.  aFont[5, 3] == NIL .AND. ;
+      ( ! aFont[6] ) .AND. ( ! aFont[7]) .AND. aFont[8] == 0
+      RETURN NIL
+   ENDIF
+   IF si == 0 .AND. Len( aFont[1] ) > 0
+      myForm:cFFontName := aFont[1]
+   ENDIF
+   IF si == 0 .AND. aFont[2] > 0
+      myForm:nFFontSize := aFont[2]
+   ENDIF
+   IF si == 0
+      myForm:lFSave := .F.
+      RETURN NIL
+   ENDIF
 
-if myform:abold[si]<>afont[3]
-   myform:abold[si]:=afont[3]
-   getcontrolobject(cname,"form_1"):fontbold:=afont[3]
-endif
-if myform:afontitalic[si]<>afont[4]
-   myform:afontitalic[si]:=afont[4]
-   getcontrolobject(cname,"form_1"):fontitalic:=afont[4]
-endif
-nred:=afont[5,1]
-ngreen:=afont[5,2]
-nblue:=afont[5,3]
-if nred<>NIL .and. ngreen<>NIL .and. nblue<>NIL
-   ccolor:='{'+str(nred,3)+','+str(ngreen,3)+','+str(nblue,3)+'}'
-   myform:afontcolor[si]:=ccolor
-getcontrolobject(cname,"form_1"):fontcolor:=&ccolor
-endif
+   IF Len( aFont[1] ) > 0
+      myForm:aFontName[si] := aFont[1]
+      GetControlObject( cName, "form_1" ):FontName := aFont[1]
+   ENDIF
+   IF aFont[2] > 0
+      myForm:aFontSize[si] := aFont[2]
+      GetControlObject( cName, "form_1" ):FontSize := aFont[2]
+   ENDIF
 
-if myform:afontunderline[si]<>afont[6]
-   myform:afontunderline[si]:=afont[6]
-getcontrolobject(cname,"form_1"):fontunderline:=afont[6]
-endif
-if myform:afontstrikeout[si]<>afont[7]
-   myform:afontstrikeout[si]:=afont[7]
-getcontrolobject(cname,"form_1"):fontstrikeout:=afont[7]
-endif
-myform:lfsave:=.F.
-return
+   IF myForm:aBold[si] <> aFont[3]
+      myForm:aBold[si] := aFont[3]
+      GetControlObject( cName, "form_1" ):FontBold := aFont[3]
+   ENDIF
+   IF myForm:aFontItalic[si] <> aFont[4]
+      myForm:aFontItalic[si] := aFont[4]
+      GetControlObject( cName, "form_1" ):FontItalic := aFont[4]
+   ENDIF
+   nRed := aFont[5,1]
+   nGreen := aFont[5,2]
+   nBlue := aFont[5,3]
+   IF nRed <> NIL .AND. nGreen <> NIL .AND. nBlue <> NIL
+      cColor := '{ ' + Str( nRed, 3 ) + ', ' + Str(nGreen, 3) + ', ' + Str( nBlue, 3 ) + ' }'
+      myForm:aFontColor[si] := cColor
+      GetControlObject( cName, "form_1" ):FontColor := &cColor
+   ENDIF
 
-*--------------------
-function gbackc(si)
-*--------------------
-local cCode:='{',cbackcolor,acolor
-local cname
-if si=0
-  cbackcolor:=myform:cfbackcolor
-else
-  cname:=myform:acontrolw[si]
-  cbackcolor:=myform:abackcolor[si]
-endif
-if len(cbackcolor)>0
-   acolor:=getcolor(&cbackcolor)
-else
-   acolor:=getcolor()
-endif
-if acolor[1]=NIL .and. acolor[2]=NIL .and. acolor[3]=NIL
-   return
-endif
-cCode += ALLTRIM(STR( acolor[1] )) + " , "
-cCode += ALLTRIM(STR( acolor[2] )) + " , "
-cCode += ALLTRIM(STR( acolor[3] )) + " }"
-if si=0
-   myform:cfbackcolor:=cCode
-   myform:lfsave:=.F.
-**********
-   form_1.backcolor:=&ccode
-   form_1.hide
-   form_1.show
-   intfonco.button_103.setfocus
-***********
-   return
-endif
-myform:abackcolor[si]:=cCode
-getcontrolobject(cname,"form_1"):backcolor:=&cCode
-myform:lfsave:=.F.
-return
+   IF myForm:aFontUnderline[si] <> aFont[6]
+      myForm:aFontUnderline[si] := aFont[6]
+      GetControlObject( cName, "form_1" ):FontUnderline := aFont[6]
+   ENDIF
+   IF myForm:aFontStrikeout[si] <> aFont[7]
+      myForm:aFontStrikeout[si] := aFont[7]
+   GetControlObject( cName, "form_1" ):FontStrikeout := aFont[7]
+   ENDIF
+   myForm:lFSave := .F.
+RETURN NIL
 
-/*
-#pragma BEGINDUMP
+//------------------------------------------------------------------------------
+FUNCTION GBackC( si )
+//------------------------------------------------------------------------------
+LOCAL cCode, cBackColor, aColor, oWindow, cName
 
-#define HB_OS_WIN_32_USED
-#define _WIN32_WINNT   0x0400
-#include <windows.h>
-#include "hbapi.h"
-#include "hbapiitm.h"
-
-
-HB_FUNC ( ISWINDOWVISIBLE )
-{
-   hb_retl( IsWindowVisible( ( HWND ) hb_parnl( 1 ) ) );
-}
-
-HB_FUNC ( GETWINDOW )
-{
-   hb_retnl( ( LONG ) GetWindow( ( HWND ) hb_parnl( 1 ), hb_parni( 2 ) ) );
-}
-
-#pragma ENDDUMP
-*/
+   IF si == 0
+     cBackColor := myForm:cfBackColor
+   ELSE
+     cName := myForm:aControlW[si]
+     cBackColor := myForm:aBackColor[si]
+   ENDIF
+   IF Len( cBackColor ) > 0
+      aColor := GetColor( &cBackColor )
+   ELSE
+      aColor := GetColor()
+   ENDIF
+   IF aColor[1] == NIL .AND. aColor[2] == NIL .AND. aColor[3] == NIL
+      RETURN NIL
+   ENDIF
+   cCode := '{ ' + AllTrim( Str( aColor[1] ) ) + ", " + ;
+                   AllTrim( Str( aColor[2] ) ) + ", " + ;
+                   AllTrim( Str( aColor[3] ) ) + " }"
+   IF si == 0
+      myForm:cFBackColor := cCode
+      myForm:lFSave := .F.
+      oWindow := GetFormObject( "form_1" )
+      oWindow:BackColor := &cCode
+      oWindow:Hide()
+      oWindow:Show()
+      intfonco.button_103.SetFocus
+   ELSE
+      myForm:aBackColor[si] := cCode
+      GetControlObject( cName, "form_1" ):BackColor := &cCode
+      myForm:lFSave := .F.
+   ENDIF
+RETURN NIL

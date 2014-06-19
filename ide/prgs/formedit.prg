@@ -1,9 +1,9 @@
 /*
- * $Id: formedit.prg,v 1.1 2014-04-14 00:16:29 fyurisich Exp $
+ * $Id: formedit.prg,v 1.2 2014-06-19 18:53:30 fyurisich Exp $
  */
 
 /*
- * Copyright 2003-2011 Ciro Vargas Clemow <pcman2010@yahoo.com>
+ * Copyright 2003-2014 Ciro Vargas Clemow <pcman2010@yahoo.com>
  * http://sistemasvc.tripod.com/
  */
 
@@ -12,399 +12,388 @@
 #DEFINE CRLF CHR(13)+CHR(10)
 #DEFINE CR CHR(13)
 #DEFINE LF CHR(10)
-#DEFINE WM_PAINT	15
+#DEFINE WM_PAINT   15
 
-CLASS tform1
-************************************** variables varias
-DATA Designform          INIT 'Form_1'
-DATA CurrentControl      INIT	0
-DATA nform               INIT 1
-DATA ncontrolw           INIT 0
-DATA lfsave              INIT .T.
-DATA cform               INIT ''
-DATA aline               INIT {}
-DATA acontrolw           INIT {}
-DATA actrltype           INIT {}
-DATA swtab               INIT .F.
-*************************************** variables de propiedades y eventos
-DATA afontsize           INIT {}
-DATA afontname           INIT {}
-DATA abold               INIT {}
-DATA afontcolor          INIT {}
-DATA afontitalic         INIT {}
-DATA afontunderline      INIT {}
-DATA afontstrikeout      INIT {}
-DATA abackcolor          INIT {}
-DATA avalue              INIT {}
-DATA avaluen             INIT {}
-DATA avaluel             INIT {}
-DATA aspeed              INIT {}
-DATA Avalue              INIT  {}
-DATA Avaluen             INIT  {}
-DATA Avaluel             INIT  {}
-DATA Acaption            INIT  {}
-DATA Apicture            INIT  {}
-DATA Afield              INIT  {}
-DATA Apassword           INIT   {}
-DATA Anumeric            INIT   {}
-DATA AinputmasK          INIT   {}
-DATA Auppercase          INIT  {}
-DATA Alowercase          INIT  {}
-DATA Aopaque             INIT  {}
-DATA Anoticks            INIT  {}
-DATA Aboth               INIT  {}
-DATA Atop                INIT  {}
-DATA Aleft               INIT  {}
-DATA Ainvisible          INIT  {}
-DATA Anotabstop          INIT  {}
-DATA Awrap               INIT  {}
-DATA Aincrement          INIT  {}
-DATA Asort               INIT  {}
-DATA Astretch            INIT  {}
-DATA Afile               INIT  {}
-DATA Aautoplay           INIT  {}
-DATA Acenter             INIT   {}
-DATA Acenteralign        INIT   {}
-DATA Ashownone           INIT  {}
-DATA Aupdown             INIT  {}
-DATA Areadonly           INIT  {}
-DATA Abreak              INIT  {}
-DATA Aitems              INIT  {}
-DATA Aitemsource         INIT  {}
-DATA Avaluesource        INIT  {}
-DATA Aheaders            INIT  {}
-DATA Awidths             INIT  {}
-DATA Aonheadclick        INIT  {}
-DATA Amultiselect        INIT  {}
-DATA Anolines            INIT  {}
-DATA Aimage              INIT  {}
-DATA Aworkarea           INIT  {}
-DATA Afields             INIT  {}
-DATA Avalid              INIT  {}
-DATA Awhen              INIT  {}
-DATA Avalidmess          INIT  {}
-DATA Areadonlyb          INIT  {}
-DATA Alock               INIT  {}
-DATA Adelete             INIT  {}
-DATA Ajustify            INIT  {}
-DATA Ahelpid             INIT  {}
-DATA Arightalign         INIT  {}
-DATA Atooltip            INIT   {}
-DATA Amaxlength          INIT  {}
-DATA Aongotfocus         INIT  {}
-DATA Aonchange           INIT  {}
-DATA Aonlostfocus        INIT  {}
-DATA Aonenter            INIT  {}
-DATA Aondisplaychange    INIT  {}
-DATA Aondblclick         INIT   {}
-DATA Aaction             INIT  {}
-DATA Arange              INIT  {}
-DATA Avertical           INIT   {}
-DATA Asmooth             INIT  {}
-DATA Aspacing            INIT  {}
-DATA Avisible            INIT  {}
-DATA Aenabled            INIT  {}
-DATA Atransparent        INIT  {}
-DATA Adate               INIT  {}
-DATA Anotoday            INIT  {}
-DATA Anotodaycircle      INIT  {}
-DATA Aweeknumbers        INIT  {}
-DATA Aaddress            INIT  {}
-DATA Ahandcursor         INIT  {}
-DATA Atabpage            INIT  {}
-DATA Aname               INIT  {}
-DATA Anumber             INIT  {}
-DATA Aflat               INIT  {}
-DATA Abuttons            INIT  {}
-DATA Ahottrack           INIT  {}
-DATA Adisplayedit        INIT  {}
-DATA Anodeimages         INIT  {}
-DATA Aitemimages         INIT  {}
-DATA ANorootbutton       INIT  {}
-DATA AItemids            INIT  {}
-DATA Anovscroll          INIT  {}
-DATA Anohscroll          INIT  {}
-DATA Adynamicbackcolor   INIT  {}
-DATA Adynamicforecolor   INIT  {}
-DATA Acolumncontrols     INIT  {}
-DATA Aoneditcell         INIT  {}
-DATA Aonappend           INIT  {}
-DATA Ainplace            INIT  {}
-DATA Aedit               INIT  {}
-DATA Aappend              INIT {}
-DATA Aclientedge         INIT  {}
-DATA afocusedpos         INIT  {}  // pb
+//------------------------------------------------------------------------------
+CLASS TForm1
+//------------------------------------------------------------------------------
+   // variables varias
+   DATA Designform           INIT 'Form_1'
+   DATA CurrentControl       INIT 0
+   DATA nform                INIT 1
+   DATA ncontrolw            INIT 0
+   DATA lfsave               INIT .T.
+   DATA cform                INIT ''
+   DATA aline                INIT {}
+   DATA acontrolw            INIT {}
+   DATA actrltype            INIT {}
+   DATA swtab                INIT .F.
+   DATA myIde                INIT Nil
 
+   // variables de propiedades y eventos
+   DATA afontsize            INIT {}
+   DATA afontname            INIT {}
+   DATA abold                INIT {}
+   DATA afontcolor           INIT {}
+   DATA afontitalic          INIT {}
+   DATA afontunderline       INIT {}
+   DATA afontstrikeout       INIT {}
+   DATA abackcolor           INIT {}
+   DATA avalue               INIT {}
+   DATA avaluen              INIT {}
+   DATA avaluel              INIT {}
+   DATA aspeed               INIT {}
+   DATA Avalue               INIT {}
+   DATA Avaluen              INIT {}
+   DATA Avaluel              INIT {}
+   DATA Acaption             INIT {}
+   DATA Apicture             INIT {}
+   DATA Afield               INIT {}
+   DATA Apassword            INIT {}
+   DATA Anumeric             INIT {}
+   DATA AinputmasK           INIT {}
+   DATA Auppercase           INIT {}
+   DATA Alowercase           INIT {}
+   DATA Aopaque              INIT {}
+   DATA Anoticks             INIT {}
+   DATA Aboth                INIT {}
+   DATA Atop                 INIT {}
+   DATA Aleft                INIT {}
+   DATA Ainvisible           INIT {}
+   DATA Anotabstop           INIT {}
+   DATA Awrap                INIT {}
+   DATA Aincrement           INIT {}
+   DATA Asort                INIT {}
+   DATA Astretch             INIT {}
+   DATA Afile                INIT {}
+   DATA Aautoplay            INIT {}
+   DATA Acenter              INIT {}
+   DATA Acenteralign         INIT {}
+   DATA Ashownone            INIT {}
+   DATA Aupdown              INIT {}
+   DATA Areadonly            INIT {}
+   DATA Abreak               INIT {}
+   DATA Aitems               INIT {}
+   DATA Aitemsource          INIT {}
+   DATA Avaluesource         INIT {}
+   DATA Aheaders             INIT {}
+   DATA Awidths              INIT {}
+   DATA Aonheadclick         INIT {}
+   DATA Amultiselect         INIT {}
+   DATA Anolines             INIT {}
+   DATA Aimage               INIT {}
+   DATA Aworkarea            INIT {}
+   DATA Afields              INIT {}
+   DATA Avalid               INIT {}
+   DATA Awhen                INIT {}
+   DATA Avalidmess           INIT {}
+   DATA Areadonlyb           INIT {}
+   DATA Alock                INIT {}
+   DATA Adelete              INIT {}
+   DATA Ajustify             INIT {}
+   DATA Ahelpid              INIT {}
+   DATA Arightalign          INIT {}
+   DATA Atooltip             INIT {}
+   DATA Amaxlength           INIT {}
+   DATA Aongotfocus          INIT {}
+   DATA Aonchange            INIT {}
+   DATA Aonlostfocus         INIT {}
+   DATA Aonenter             INIT {}
+   DATA Aondisplaychange     INIT {}
+   DATA Aondblclick          INIT {}
+   DATA Aaction              INIT {}
+   DATA Arange               INIT {}
+   DATA Avertical            INIT {}
+   DATA Asmooth              INIT {}
+   DATA Aspacing             INIT {}
+   DATA Avisible             INIT {}
+   DATA Aenabled             INIT {}
+   DATA Atransparent         INIT {}
+   DATA Adate                INIT {}
+   DATA Anotoday             INIT {}
+   DATA Anotodaycircle       INIT {}
+   DATA Aweeknumbers         INIT {}
+   DATA Aaddress             INIT {}
+   DATA Ahandcursor          INIT {}
+   DATA Atabpage             INIT {}
+   DATA Aname                INIT {}
+   DATA Anumber              INIT {}
+   DATA Aflat                INIT {}
+   DATA Abuttons             INIT {}
+   DATA Ahottrack            INIT {}
+   DATA Adisplayedit         INIT {}
+   DATA Anodeimages          INIT {}
+   DATA Aitemimages          INIT {}
+   DATA ANorootbutton        INIT {}
+   DATA AItemids             INIT {}
+   DATA Anovscroll           INIT {}
+   DATA Anohscroll           INIT {}
+   DATA Adynamicbackcolor    INIT {}
+   DATA Adynamicforecolor    INIT {}
+   DATA Acolumncontrols      INIT {}
+   DATA Aoneditcell          INIT {}
+   DATA Aonappend            INIT {}
+   DATA Ainplace             INIT {}
+   DATA Aedit                INIT {}
+   DATA Aappend              INIT {}
+   DATA Aclientedge          INIT {}
+   DATA afocusedpos          INIT {}  // pb
 
-********************* variable de formas
+   // variables de forms
+   DATA Cftitle              INIT ""
+   DATA cfname               INIT ""
+   DATA cficon               INIT ""
+   DATA lfmain               INIT ""
+   DATA lfchild              INIT .F.
+   DATA lfmodal              INIT .F.
+   DATA lfnoshow             INIT .F.
+   DATA lftopmost            INIT .F.
+   DATA lfnominimize         INIT .F.
+   DATA lfnomaximize         INIT .F.
+   DATA lfnosize             INIT .F.
+   DATA lfnosysmenu          INIT .F.
+   DATA lfnocaption          INIT .F.
+   DATA lfnoautorelease      INIT .F.
+   DATA lfhelpbutton         INIT .F.
+   DATA lffocused            INIT .F.
+   DATA lfbreak              INIT .F.
+   DATA lfsplitchild         INIT .F.
+   DATA lfgrippertext        INIT .F.
+   DATA cfbackcolor          INIT "{212,208,200}"
+   DATA cfcursor             INIT ""
+   DATA cffontname           INIT "MS Sans Serif"
+   DATA nffontsize           INIT 9
+   DATA nfvirtualw           INIT 0
+   DATA nfvirtualh           INIT 0
+   DATA cfontcolor           INIT ""
+   DATA cbackcolor           INIT ""
+   DATA cfnotifyicon         INIT ""
+   DATA cfnotifytooltip      INIT ""
+   DATA cfobj                INIT ""
 
-DATA Cftitle             INIT ""
-DATA cfname              INIT ""
-DATA cficon              INIT ""
-DATA lfmain              INIT ""
-DATA lfchild   INIT .F.
-DATA lfmodal   INIT .F.
-DATA lfnoshow   INIT .F.
-DATA lftopmost   INIT .F.
-DATA lfnominimize   INIT .F.
-DATA lfnomaximize   INIT .F.
-DATA lfnosize   INIT .F.
-DATA lfnosysmenu   INIT .F.
-DATA lfnocaption   INIT .F.
-DATA lfnoautorelease INIT .F.
-DATA lfhelpbutton    INIT .F.
-DATA lffocused        INIT .F.
-DATA lfbreak          INIT .F.
-DATA lfsplitchild      INIT .F.
-DATA lfgrippertext      INIT .F.
-DATA cfbackcolor  INIT  "{212,208,200}"
-DATA cfcursor  INIT  ""
-DATA cffontname   INIT "MS Sans Serif"
-DATA nffontsize  INIT  9
-DATA nfvirtualw   INIT  0
-DATA nfvirtualh   INIT  0
-DATA cfontcolor INIT ""
-DATA cbackcolor INIT ""
-DATA cfnotifyicon   INIT ""
-DATA cfnotifytooltip   INIT ""
-DATA cfobj           INIT ""
-*** events
-DATA cfoninit  INIT ""
-DATA cfonrelease  INIT ""
-DATA cfoninteractiveclose  INIT ""
-DATA cfonmouseclick  INIT ""
-DATA cfonmousemove  INIT ""
-DATA cfonmousedrag  INIT ""
-DATA cfongottfocus  INIT ""
-DATA cfonlostfocus  INIT ""
-DATA cfonscrollup  INIT ""
-DATA cfonscrolldown  INIT ""
-DATA cfonscrollleft  INIT ""
-DATA cfonscrollright  INIT ""
-DATA cfonhscrollbox  INIT ""
-DATA cfonvscrollbox  INIT ""
-DATA cfonnotifyclick  INIT ""
-DATA cfonsize  INIT ""
-DATA cfonpaint  INIT ""
-DATA cfoninit  INIT ""
-DATA cfonrelease  INIT ""
-DATA cfonmouseclick  INIT ""
-DATA cfonmousedrag  INIT ""
-DATA cfonmousemove  INIT ""
-DATA cfonsize  INIT ""
-DATA cfonpaint  INIT ""
-DATA cfongotfocus  INIT ""
-DATA cfonlostfocus  INIT ""
-******************************** variables de statusbar
-DATA cscaption  INIT ''
-DATA csfontname INIT 'MS Sans Serif'
-DATA nsfontsize INIT 9
-DATA cscolor INIT ''
-DATA nswidth INIT 80
-DATA csaction INIT ''
-DATA csicon INIT ''
-DATA lsflat INIT .F.
-DATA lsstat INIT .F.
-DATA lsraised INIT .F.
-DATA cstooltip INIT ''
-DATA lskeyboard INIT .F.
-DATA lsdate INIT .F.
-DATA nsdatewidth INIT 80
-*DATA csdateaction INIT ''
-*DATA csdatetooltip INIT ''
-DATA lstime INIT .F.
-DATA nstimewidth INIT 80
-*DATA cstimeaction INIT ''
-*DATA cstimetooltip INIT ''
-******************************** variables de contadores de tipos de controles
-DATA ButtonCount		INIT  0
-DATA CheckBoxCount	INIT  0
-DATA ListBoxCount	INIT  0
-DATA ComboBoxCount	INIT  0
-DATA CheckButtonCount	INIT  0
-DATA GridCount		INIT  0
-DATA FrameCount		INIT  0
-DATA TabCount		INIT  0
-DATA ImageCount		INIT  0
-DATA AnimateCount	INIT  0
-DATA DatepickerCount	INIT  0
-DATA TextBoxCount	INIT  0
-DATA EditBoxCount	INIT  0
-DATA LabelCount		INIT  0
-DATA PlayerCount		INIT  0
-DATA ProgressBarCount	INIT  0
-DATA RadioGroupCount	INIT  0
-DATA SliderCount		INIT  0
-DATA SpinnerCount	INIT  0
-DATA Timercount          INIT  0
-DATA BrowseCount         INIT  0
-DATA Treecount           INIT  0
-DATA Ipaddresscount      INIT  0
-DATA Monthcalendarcount  INIT  0
-DATA Hyperlinkcount      INIT  0
-DATA Richeditboxcount    INIT  0
+   // variables de events
+   DATA cfoninit             INIT ""
+   DATA cfonrelease          INIT ""
+   DATA cfoninteractiveclose INIT ""
+   DATA cfonmouseclick       INIT ""
+   DATA cfonmousemove        INIT ""
+   DATA cfonmousedrag        INIT ""
+   DATA cfongottfocus        INIT ""
+   DATA cfonlostfocus        INIT ""
+   DATA cfonscrollup         INIT ""
+   DATA cfonscrolldown       INIT ""
+   DATA cfonscrollleft       INIT ""
+   DATA cfonscrollright      INIT ""
+   DATA cfonhscrollbox       INIT ""
+   DATA cfonvscrollbox       INIT ""
+   DATA cfonnotifyclick      INIT ""
+   DATA cfonsize             INIT ""
+   DATA cfonpaint            INIT ""
+   DATA cfoninit             INIT ""
+   DATA cfonrelease          INIT ""
+   DATA cfonmouseclick       INIT ""
+   DATA cfonmousedrag        INIT ""
+   DATA cfonmousemove        INIT ""
+   DATA cfonsize             INIT ""
+   DATA cfonpaint            INIT ""
+   DATA cfongotfocus         INIT ""
+   DATA cfonlostfocus        INIT ""
 
+   // variables de statusbar
+   DATA cscaption            INIT ''
+   DATA csfontname           INIT 'MS Sans Serif'
+   DATA nsfontsize           INIT 9
+   DATA cscolor              INIT ''
+   DATA nswidth              INIT 80
+   DATA csaction             INIT ''
+   DATA csicon               INIT ''
+   DATA lsflat               INIT .F.
+   DATA lsstat               INIT .F.
+   DATA lsraised             INIT .F.
+   DATA cstooltip            INIT ''
+   DATA lskeyboard           INIT .F.
+   DATA lsdate               INIT .F.
+   DATA nsdatewidth          INIT 80
+// DATA csdateaction         INIT ''
+// DATA csdatetooltip        INIT ''
+   DATA lstime               INIT .F.
+   DATA nstimewidth          INIT 80
+// DATA cstimeaction         INIT ''
+// DATA cstimetooltip        INIT ''
 
-METHOD vd(cItem1) CONSTRUCTOR
-METHOD end() INLINE return
-METHOD verifybar()
-METHOD what(citem1)
-METHOD iniarray(nform,ncontrolwl,controlname,ctypectrl,noanade)
-METHOD AddControl()
-METHOD new()
-METHOD Newagain()
-METHOD Open(cItem1)
-METHOD fillcontrolaux()
-METHOD fillcontrol()
-METHOD Control_click(wpar)
-******METHOD leeprg()
-METHOD leatipo(cname)
-METHOD leadato(cName,cPropmet,cDefault)
-METHOD leadatostatus(cName,cPropmet,cDefault)
-METHOD leadatologic(cName,cPropmet,cDefault)
-METHOD learow(cName)
-METHOD learowf(cname)
-METHOD leacol(cName)
-METHOD leacolf(cname)
-METHOD clean(cfvalue)
-METHOD leadato_oop(cName,cPropmet,cDefault)
-METHOD save(Cas)
+   // variables de contadores de tipos de controles
+   DATA ButtonCount           INIT  0
+   DATA CheckBoxCount        INIT  0
+   DATA ListBoxCount          INIT  0
+   DATA ComboBoxCount       INIT  0
+   DATA CheckButtonCount    INIT  0
+   DATA GridCount           INIT  0
+   DATA FrameCount      INIT  0
+   DATA TabCount      INIT  0
+   DATA ImageCount      INIT  0
+   DATA AnimateCount   INIT  0
+   DATA DatepickerCount   INIT  0
+   DATA TextBoxCount   INIT  0
+   DATA EditBoxCount   INIT  0
+   DATA LabelCount      INIT  0
+   DATA PlayerCount      INIT  0
+   DATA ProgressBarCount   INIT  0
+   DATA RadioGroupCount   INIT  0
+   DATA SliderCount      INIT  0
+   DATA SpinnerCount   INIT  0
+   DATA Timercount          INIT  0
+   DATA BrowseCount         INIT  0
+   DATA Treecount           INIT  0
+   DATA Ipaddresscount      INIT  0
+   DATA Monthcalendarcount  INIT  0
+   DATA Hyperlinkcount      INIT  0
+   DATA Richeditboxcount    INIT  0
 
+   METHOD vd( cItem1, myIde ) CONSTRUCTOR
+   METHOD end() INLINE return
+   METHOD verifybar()
+   METHOD what(citem1)
+   METHOD iniarray(nform,ncontrolwl,controlname,ctypectrl,noanade)
+   METHOD AddControl()
+   METHOD new()
+   METHOD Newagain()
+   METHOD Open(cItem1)
+   METHOD fillcontrolaux()
+   METHOD fillcontrol()
+   METHOD Control_click(wpar)
+   // METHOD leeprg()
+   METHOD leatipo(cname)
+   METHOD leadato(cName,cPropmet,cDefault)
+   METHOD leadatostatus(cName,cPropmet,cDefault)
+   METHOD leadatologic(cName,cPropmet,cDefault)
+   METHOD learow(cName)
+   METHOD learowf(cname)
+   METHOD leacol(cName)
+   METHOD leacolf(cname)
+   METHOD clean(cfvalue)
+   METHOD leadato_oop(cName,cPropmet,cDefault)
+   METHOD save(Cas)
 ENDCLASS
 
 *------------------------------------------------------------------------------*
-METHOD vd(cItem1) CLASS tform1
+METHOD vd( cItem1, myIde ) CLASS TForm1
 *------------------------------------------------------------------------------*
 local nNumcont:=0
-Public swcursor,myhandle:=0 ,cfbackcolor:=myform:cfbackcolor,swkm:=.F.
-Public swordenfd:=.F.
-swcursor:=0
-nhandlep:=0
-declare window form_main
-declare window form_tree
-declare window form_1
-declare window cvccontrols
-declare window waitmess
-declare window lista
+   Public swcursor := 0, myhandle := 0, cfbackcolor := ::cfbackcolor, swkm:=.F., swordenfd:=.F.
 
-set interactiveclose off
+   nhandlep := 0
 
-cursorwait()
+   DECLARE WINDOW form_main
+   DECLARE WINDOW form_tree
+   DECLARE WINDOW form_1
+   DECLARE WINDOW cvccontrols
+   DECLARE WINDOW waitmess
+   DECLARE WINDOW lista
 
-with Object myform
+   SET INTERACTIVECLOSE OFF
 
-:ButtonCount		:= nNumcont
-:CheckBoxCount		:= nNumcont
-:ListBoxCount		:= nNumcont
-:ComboBoxCount		:= nNumcont
-:CheckButtonCount	:= nNumcont
-:GridCount		:= nNumcont
-:FrameCount		:= nNumcont
-:TabCount		:= nNumcont
-:ImageCount		:= nNumcont
-:AnimateCount		:= nNumcont
-:DatepickerCount	:= nNumcont
-:TextBoxCount		:= nNumcont
-:EditBoxCount		:= nNumcont
-:LabelCount		:= nNumcont
-:PlayerCount		:= nNumcont
-:ProgressBarCount	:= nNumcont
-:RadioGroupCount	:= nNumcont
-:SliderCount		:= nNumcont
-:SpinnerCount		:= nNumcont
-:Timercount             := nNumcont
-:BrowseCount            := nNumcont
-:Treecount              := nNumcont
-:Ipaddresscount         := nNumcont
-:Monthcalendarcount     := nNUmcont
-:Hyperlinkcount         := nNUmcont
-:Richeditboxcount       := nNUmcont
-************************************
-:Aline                    :={}
-*************************************
-*********** form adds
-*** propiedades de los forms
-:cftitle  :=""
-:cfname   :=""
-:cficon   :=""
-:lfmain   :=.F.
-:lfchild  :=.F.
-:lfmodal  :=.F.
-:lfhelpbutton:=.F.
-:lffocused:=.F.
-:lfbreak:=.F.
-:lfsplitchild:=.F.
-:lfgrippertext:=.F.
-:lfnoshow  :=.F.
-:lftopmost  :=.F.
-:lfnominimize  :=.F.
-:lfnomaximize  :=.F.
-:lfnosize  :=.F.
-:lfnosysmenu  :=.F.
-:lfnocaption  :=.F.
-:lfnoautorelease := .F.
-:cfbackcolor := myide:cdbackcolor
-:cffontname  :="MS Sans Serif"
-:nffontsize := 9
-:nfvirtualw := 0
-:nfvirtualh := 0
+   CursorWait()
 
-:cfontcolor:=""
-:cfcursor:=""
-:cbackcolor:=myide:cdbackcolor
-*** events
-:cfnotifyicon  :=""
-:cfnotifytooltip  :=""
-:cfoninit :=""
-:cfonrelease :=""
-:cfonmouseclick :=""
-:cfonmousemove :=""
-:cfonmousedrag :=""
-:cfongottfocus :=""
-:cfonlostfocus :=""
-:cfonscrollup :=""
-:cfonscrolldown :=""
-:cfonscrollleft :=""
-:cfonscrollright :=""
-:cfonhscrollbox :=""
-:cfonvscrollbox :=""
-:cfonnotifyclick :=""
-:cfonsize :=""
-:cfonpaint :=""
-:cfoninteractiveclose:=""
-************** statusbar
-:cscaption :=''
-:csfontname:='MS Sans Serif'
-:nsfontsize:=9
-:cscolor:=''
-:nswidth:=80
-:csaction:=''
-:csicon:=''
-:lsflat:=.F.
-:lsstat:=.F.
-:lsraised:=.F.
-:cstooltip:=''
-:lskeyboard:=.F.
-:lsdate:=.F.
-:nsdatewidth:=80
-*	:csdateaction:=''
-*	:csdatetooltip:=''
-:lstime:=.F.
-:nstimewidth:=80
-*	:cstimeaction:=''
-*	:cstimetooltip:=''
+   ::myIde                := myIde
+   ::ButtonCount          := nNumcont
+   ::CheckBoxCount        := nNumcont
+   ::ListBoxCount         := nNumcont
+   ::ComboBoxCount        := nNumcont
+   ::CheckButtonCount     := nNumcont
+   ::GridCount            := nNumcont
+   ::FrameCount           := nNumcont
+   ::TabCount             := nNumcont
+   ::ImageCount           := nNumcont
+   ::AnimateCount         := nNumcont
+   ::DatepickerCount      := nNumcont
+   ::TextBoxCount         := nNumcont
+   ::EditBoxCount         := nNumcont
+   ::LabelCount           := nNumcont
+   ::PlayerCount          := nNumcont
+   ::ProgressBarCount     := nNumcont
+   ::RadioGroupCount      := nNumcont
+   ::SliderCount          := nNumcont
+   ::SpinnerCount         := nNumcont
+   ::Timercount           := nNumcont
+   ::BrowseCount          := nNumcont
+   ::Treecount            := nNumcont
+   ::Ipaddresscount       := nNumcont
+   ::Monthcalendarcount   := nNUmcont
+   ::Hyperlinkcount       := nNUmcont
+   ::Richeditboxcount     := nNUmcont
+   ::Aline                := {}
+   ::cftitle              := ""
+   ::cfname               := ""
+   ::cficon               := ""
+   ::lfmain               := .F.
+   ::lfchild              := .F.
+   ::lfmodal              := .F.
+   ::lfhelpbutton         := .F.
+   ::lffocused            := .F.
+   ::lfbreak              := .F.
+   ::lfsplitchild         := .F.
+   ::lfgrippertext        := .F.
+   ::lfnoshow             := .F.
+   ::lftopmost            := .F.
+   ::lfnominimize         := .F.
+   ::lfnomaximize         := .F.
+   ::lfnosize             := .F.
+   ::lfnosysmenu          := .F.
+   ::lfnocaption          := .F.
+   ::lfnoautorelease      := .F.
+   ::cfbackcolor          := ::myIde:cdbackcolor
+   ::cffontname           := "MS Sans Serif"
+   ::nffontsize           := 9
+   ::nfvirtualw           := 0
+   ::nfvirtualh           := 0
+   ::cfontcolor           := ""
+   ::cfcursor             := ""
+   ::cbackcolor           := ::myIde:cdbackcolor
+   ::cfnotifyicon         := ""
+   ::cfnotifytooltip      := ""
+   ::cfoninit             := ""
+   ::cfonrelease          := ""
+   ::cfonmouseclick       := ""
+   ::cfonmousemove        := ""
+   ::cfonmousedrag        := ""
+   ::cfongottfocus        := ""
+   ::cfonlostfocus        := ""
+   ::cfonscrollup         := ""
+   ::cfonscrolldown       := ""
+   ::cfonscrollleft       := ""
+   ::cfonscrollright      := ""
+   ::cfonhscrollbox       := ""
+   ::cfonvscrollbox       := ""
+   ::cfonnotifyclick      := ""
+   ::cfonsize             := ""
+   ::cfonpaint            := ""
+   ::cfoninteractiveclose :=  ""
+   ::cscaption            := ''
+   ::csfontname           := 'MS Sans Serif'
+   ::nsfontsize           := 9
+   ::cscolor              := ''
+   ::nswidth              := 80
+   ::csaction             := ''
+   ::csicon               := ''
+   ::lsflat               := .F.
+   ::lsstat               := .F.
+   ::lsraised             := .F.
+   ::cstooltip            := ''
+   ::lskeyboard           := .F.
+   ::lsdate               := .F.
+   ::nsdatewidth          := 80
+   ::lstime               := .F.
+   ::nstimewidth          := 80
+   ::nffontsize           := 10
 
- :nffontsize:=10
-
- form_main:TITLE:='ooHG IDE plus - Form designer'
- form_main:frame_1:caption:="Form: "+ cItem1
- myide:disable_button()
- :what(citem1)
-END
+   form_main:Title := 'ooHG IDE Plus - Form designer'
+   form_main:frame_1:Caption := "Form: " + cItem1
+   ::myIde:Disable_Button()
+   ::What( citem1 )
 Return Self
 
 *---------------------------------
-METHOD verifybar() CLASS TFORM1
+METHOD verifybar() CLASS TForm1
 *---------------------------------
 if .not. myform:lsstat  &&&&  lstat
     cvccontrols.control_30.visible:=.T.
@@ -436,7 +425,7 @@ myform:lfsave:=.F.
 return
 
 *---------------------------------
-METHOD what(citem1) CLASS tform1
+METHOD what(citem1) CLASS TForm1
 *---------------------------------
 local npos,npos1,nd
 myform:cForm:=citem1
@@ -461,7 +450,7 @@ cursorarrow()
 return
 
 *-----------------------------------------------------------------------------
-METHOD iniarray(nform,ncontrolwl,controlname,ctypectrl,noanade) CLASS tform1
+METHOD iniarray(nform,ncontrolwl,controlname,ctypectrl,noanade) CLASS TForm1
 *-----------------------------------------------------------------------------
  **** inicia array de controles para la forma actual
  with Object myform
@@ -707,7 +696,7 @@ asize(&arreglo,len(&arreglo)-1)
 return nil
 
 *---------------------
-static function ms()
+static function ms( myIde )
 *---------------------
 local i,ocontrol,jk,nl
 jk:=myhandle
@@ -736,7 +725,7 @@ if swcursor=1
    oControl:Row := oControl:Row + ( nRowActual - nRowAnterior )
    oControl:col := oControl:col + ( ncolActual - ncolAnterior )
 
-   if myide:lsnap=1
+   if myIde:lsnap=1
       snap(ocontrol:name)
    endif
 ***********************
@@ -808,12 +797,12 @@ endif
 return nil
 
 *------------------------------------------------------------------------------*
-METHOD AddControl() CLASS tform1
+METHOD AddControl() CLASS TForm1
 *------------------------------------------------------------------------------*
 local aName,x,i,swborrado
 with Object myform
         swkm:=.F.
-	Do Case
+   Do Case
         Case :currentcontrol == 1
 ***************
              x:=chiffram()
@@ -821,228 +810,228 @@ with Object myform
                 dibuja1(x)
                 return
              endif
-	Case :currentcontrol == 2
-		:ButtonCount++
-		ControlName := 'button_'+Alltrim(str(:ButtonCount))
+   Case :currentcontrol == 2
+      :ButtonCount++
+      ControlName := 'button_'+Alltrim(str(:ButtonCount))
                 do while iscontroldefined(&Controlname,form_1)
-        		:ButtonCount++
+              :ButtonCount++
                    ControlName := 'button_'+Alltrim(str(:Buttoncount))
                 enddo
                 :ncontrolw++
                 :iniarray(:nform,:ncontrolw,controlname,'BUTTON')
                 :aaction[:ncontrolw]:="msginfo('Button pressed')"
-		@ _oohg_mouserow,_oohg_mousecol BUTTON &ControlName OF Form_1  FONT 'MS Sans Serif' SIZE 10 ON GOTFOCUS dibuja(this:name) NOTABSTOP
+      @ _oohg_mouserow,_oohg_mousecol BUTTON &ControlName OF Form_1  FONT 'MS Sans Serif' SIZE 10 ON GOTFOCUS dibuja(this:name) NOTABSTOP
                 :abackcolor[:ncontrolw]:=cfbackcolor
-		ProcessContainers( ControlName )
-	Case :currentcontrol == 3
-		:CheckBoxCount++
-		ControlName := 'checkbox_'+Alltrim(str(:CheckBoxCount))
+      ProcessContainers( ControlName )
+   Case :currentcontrol == 3
+      :CheckBoxCount++
+      ControlName := 'checkbox_'+Alltrim(str(:CheckBoxCount))
                 do while iscontroldefined(&Controlname,form_1)
-        		:CheckBoxCount++
+              :CheckBoxCount++
                    ControlName := 'checkbox_'+Alltrim(str(:CheckBoxCount))
                 enddo
                 :ncontrolw++
-		@ _oohg_mouserow,_oohg_mousecol CHECKBOX &ControlName OF Form_1 CAPTION ControlName FONT 'San serif' SIZE 10 ;
+      @ _oohg_mouserow,_oohg_mousecol CHECKBOX &ControlName OF Form_1 CAPTION ControlName FONT 'San serif' SIZE 10 ;
                 ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name) NOTABSTOP
                 :iniarray(:nform,:ncontrolw,controlname,'CHECKBOX')
                 :abackcolor[:ncontrolw]:=cfbackcolor
                 if cfbackcolor#'NIL'
                    getcontrolobject(controlname,"form_1"):backcolor:= &cfbackcolor
                 endif
-		ProcessContainers( ControlName )
-	Case :currentcontrol == 4
-		:ListBoxCount++
-		ControlName := 'list_'+Alltrim(str(:ListBoxcount))
+      ProcessContainers( ControlName )
+   Case :currentcontrol == 4
+      :ListBoxCount++
+      ControlName := 'list_'+Alltrim(str(:ListBoxcount))
                 do while iscontroldefined(&Controlname,form_1)
- 				:ListBoxCount++
+             :ListBoxCount++
                    ControlName := 'list_'+Alltrim(str(:ListBoxCount))
                 enddo
-		aName := { ControlName }
+      aName := { ControlName }
                 :ncontrolw++
-		@ _oohg_mouserow,_oohg_mousecol LISTBOX &ControlName OF Form_1 WIDTH 100 HEIGHT 100 ITEMS aName FONT 'MS Sans Serif' SIZE 10 ;
+      @ _oohg_mouserow,_oohg_mousecol LISTBOX &ControlName OF Form_1 WIDTH 100 HEIGHT 100 ITEMS aName FONT 'MS Sans Serif' SIZE 10 ;
                 ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name) NOTABSTOP
                 :iniarray(:nform,:ncontrolw,controlname,'LIST')
-		ProcessContainers( ControlName )
-	Case :currentcontrol == 5
-		:ComboBoxCount++
-		ControlName := 'combo_'+Alltrim(str(:ComboBoxCount))
+      ProcessContainers( ControlName )
+   Case :currentcontrol == 5
+      :ComboBoxCount++
+      ControlName := 'combo_'+Alltrim(str(:ComboBoxCount))
                 do while iscontroldefined(&Controlname,form_1)
-     					:ComboBoxCount++
+                    :ComboBoxCount++
                    ControlName := 'combo_'+Alltrim(str(:ComboboxCount))
                 enddo
-		aName := { ControlName,' ' }
+      aName := { ControlName,' ' }
                 :ncontrolw++
-		@ _oohg_mouserow,_oohg_mousecol COMBOBOX &ControlName OF Form_1 WIDTH 100 HEIGHT 100 ITEMS aName VALUE 1 FONT 'San serif' SIZE 10 ;
+      @ _oohg_mouserow,_oohg_mousecol COMBOBOX &ControlName OF Form_1 WIDTH 100 HEIGHT 100 ITEMS aName VALUE 1 FONT 'San serif' SIZE 10 ;
                 ON GOTFOCUS dibuja(this:name) NOTABSTOP
                 :iniarray(:nform,:ncontrolw,controlname,'COMBO')
-		ProcessContainers( ControlName )
-	Case :currentcontrol == 6
-		:CheckButtonCount++
+      ProcessContainers( ControlName )
+   Case :currentcontrol == 6
+      :CheckButtonCount++
 
-		ControlName := 'checkbtn_'+Alltrim(str(:CheckButtonCount))
+      ControlName := 'checkbtn_'+Alltrim(str(:CheckButtonCount))
                 do while iscontroldefined(&Controlname,form_1)
-   		:CheckButtonCount++
+         :CheckButtonCount++
                    ControlName := 'checkbtn_'+Alltrim(str(:CheckbuttonCount))
                 enddo
                 :ncontrolw++
-		@ _oohg_mouserow,_oohg_mousecol CHECKBUTTON &ControlName OF Form_1 CAPTION ControlName FONT 'MS Sans Serif' SIZE 10 ;
+      @ _oohg_mouserow,_oohg_mousecol CHECKBUTTON &ControlName OF Form_1 CAPTION ControlName FONT 'MS Sans Serif' SIZE 10 ;
                 ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name) NOTABSTOP
                 :iniarray(:nform,:ncontrolw,controlname,'CHECKBTN')
-		ProcessContainers( ControlName )
-	Case :currentcontrol == 7
-		:GridCount++
-		ControlName := 'grid_'+Alltrim(str(:GridCount))
+      ProcessContainers( ControlName )
+   Case :currentcontrol == 7
+      :GridCount++
+      ControlName := 'grid_'+Alltrim(str(:GridCount))
                 do while iscontroldefined(&Controlname,form_1)
-				:GridCount++
+            :GridCount++
                    ControlName := 'grid_'+Alltrim(str(:GridCount))
                 enddo
-		aName := { { ControlName ,''} }
+      aName := { { ControlName ,''} }
                      :ncontrolw++
                 :iniarray(:nform,:ncontrolw,controlname,'GRID')
-		@ _oohg_mouserow,_oohg_mousecol GRID &ControlName OF Form_1 HEADERS {'',''} WIDTHS {60,60} ITEMS aName TOOLTIP 'To move/size click on header area' FONT 'MS Sans Serif' SIZE 10 ;
+      @ _oohg_mouserow,_oohg_mousecol GRID &ControlName OF Form_1 HEADERS {'',''} WIDTHS {60,60} ITEMS aName TOOLTIP 'To move/size click on header area' FONT 'MS Sans Serif' SIZE 10 ;
                 ON GOTFOCUS dibuja(this:name)
-		ProcessContainers( ControlName )
-	Case :currentcontrol == 8
-		:frameCount++
-		ControlName := 'frame_'+Alltrim(str(:FrameCount))
+      ProcessContainers( ControlName )
+   Case :currentcontrol == 8
+      :frameCount++
+      ControlName := 'frame_'+Alltrim(str(:FrameCount))
                 do while iscontroldefined(&Controlname,form_1)
-			:frameCount++
+         :frameCount++
                    ControlName := 'frame_'+Alltrim(str(:FrameCount))
                 enddo
                 :ncontrolw++
                 :iniarray(:nform,:ncontrolw,controlname,'FRAME')
-		@ _oohg_mouserow, _oohg_mousecol FRAME &ControlName OF Form_1 CAPTION ControlName WIDTH 140 HEIGHT 140  FONT 'MS Sans Serif' SIZE 10
+      @ _oohg_mouserow, _oohg_mousecol FRAME &ControlName OF Form_1 CAPTION ControlName WIDTH 140 HEIGHT 140  FONT 'MS Sans Serif' SIZE 10
                 :abackcolor[:ncontrolw]:=cfbackcolor
                 if cfbackcolor#'NIL'
                    getcontrolobject(controlname,"form_1"):backcolor:= &cfbackcolor
                 endif
-		ProcessContainers( ControlName )
-	Case :currentcontrol == 9
-		:TabCount++
-		ControlName := 'tab_'+Alltrim(str(:TabCount))
+      ProcessContainers( ControlName )
+   Case :currentcontrol == 9
+      :TabCount++
+      ControlName := 'tab_'+Alltrim(str(:TabCount))
                 do while iscontroldefined(&Controlname,form_1)
                    :TabCount++
                    ControlName := 'tab_'+Alltrim(str(:TabCount))
                 enddo
                 :ncontrolw++
                 :iniarray(:nform,:ncontrolw,controlname,'TAB')
-		DEFINE TAB &ControlName OF Form_1 AT _oohg_mouserow,_oohg_mousecol WIDTH 300 HEIGHT 250 FONT 'MS Sans Serif' SIZE 10 TOOLTIP Controlname ON CHANGE dibuja(this:name)
-			DEFINE PAGE 'Page 1' IMAGE ' '
-			END PAGE
-			DEFINE PAGE 'Page 2' IMAGE ' '
+      DEFINE TAB &ControlName OF Form_1 AT _oohg_mouserow,_oohg_mousecol WIDTH 300 HEIGHT 250 FONT 'MS Sans Serif' SIZE 10 TOOLTIP Controlname ON CHANGE dibuja(this:name)
+         DEFINE PAGE 'Page 1' IMAGE ' '
+         END PAGE
+         DEFINE PAGE 'Page 2' IMAGE ' '
                         END PAGE
-		END TAB
+      END TAB
 ***               :atabpage[:ncontrolw,2]=NIL
                 :acaption[:ncontrolw]="{'Page 1','Page 2'}"
                 :aimage[:ncontrolw]="{' ',' '}"
                 :swtab:=.T.
-	Case :currentcontrol == 10
-		:ImageCount++
-		ControlName := 'image_'+Alltrim(str(:ImageCount))
+   Case :currentcontrol == 10
+      :ImageCount++
+      ControlName := 'image_'+Alltrim(str(:ImageCount))
                 do while iscontroldefined(&Controlname,form_1)
-			:ImageCount++
+         :ImageCount++
                    ControlName := 'image_'+Alltrim(str(:ImageCount))
                 enddo
                 :ncontrolw++
                 :iniarray(:nform,:ncontrolw,controlname,'IMAGE')
-		@ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 100 HEIGHT 100 VALUE ControlName BORDER ACTION dibuja(this:name) FONT 'MS Sans Serif' SIZE 10
+      @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 100 HEIGHT 100 VALUE ControlName BORDER ACTION dibuja(this:name) FONT 'MS Sans Serif' SIZE 10
 
-		ProcessContainers( ControlName )
-	Case :currentcontrol == 11
-		:AnimateCount++
-		ControlName := 'animate_'+Alltrim(str(:AnimateCount))
+      ProcessContainers( ControlName )
+   Case :currentcontrol == 11
+      :AnimateCount++
+      ControlName := 'animate_'+Alltrim(str(:AnimateCount))
                 do while iscontroldefined(&Controlname,form_1)
                    :AnimateCount++
                    ControlName := 'animate_'+Alltrim(str(:AnimateCount))
                 enddo
                 :ncontrolw++
                 :iniarray(:nform,:ncontrolw,controlname,'ANIMATE')
-		@ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 100 HEIGHT 50 VALUE ControlName BORDER ACTION dibuja(this:name) FONT 'MS Sans Serif' SIZE 10
-		ProcessContainers( ControlName )
-	Case :currentcontrol == 12
-		:DatePickerCount++
-		ControlName := 'datepicker_'+Alltrim(str(:DatePickerCount))
+      @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 100 HEIGHT 50 VALUE ControlName BORDER ACTION dibuja(this:name) FONT 'MS Sans Serif' SIZE 10
+      ProcessContainers( ControlName )
+   Case :currentcontrol == 12
+      :DatePickerCount++
+      ControlName := 'datepicker_'+Alltrim(str(:DatePickerCount))
                 do while iscontroldefined(&Controlname,form_1)
-				:DatePickerCount++
+            :DatePickerCount++
                    ControlName := 'datepicker_'+Alltrim(str(:DatePickerCount))
                 enddo
                 :ncontrolw++
                 :iniarray(:nform,:ncontrolw,controlname,'DATEPICKER')
-		@ _oohg_mouserow,_oohg_mousecol DATEPICKER &ControlName OF Form_1 TOOLTIP ControlName FONT 'MS Sans Serif' SIZE 10 ;
+      @ _oohg_mouserow,_oohg_mousecol DATEPICKER &ControlName OF Form_1 TOOLTIP ControlName FONT 'MS Sans Serif' SIZE 10 ;
                 ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name) NOTABSTOP
-		ProcessContainers( ControlName )
-	Case :currentcontrol == 13
-		:TextBoxCount++
-		ControlName := 'text_'+Alltrim(str(:TextBoxCount))
+      ProcessContainers( ControlName )
+   Case :currentcontrol == 13
+      :TextBoxCount++
+      ControlName := 'text_'+Alltrim(str(:TextBoxCount))
                 do while iscontroldefined(&Controlname,form_1)
-        		:TextBoxCount++
+              :TextBoxCount++
                    ControlName := 'text_'+Alltrim(str(:TextBoxcount))
                 enddo
                 :ncontrolw++
-		@ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 120 HEIGHT 24 BACKCOLOR WHITE CLIENTEDGE ACTION dibuja(this:name) FONT 'San serif' SIZE 10
+      @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 120 HEIGHT 24 BACKCOLOR WHITE CLIENTEDGE ACTION dibuja(this:name) FONT 'San serif' SIZE 10
                 getcontrolobject(controlname,"form_1"):value:=controlname
                 :iniarray(:nform,:ncontrolw,controlname,'TEXT')
-		ProcessContainers( ControlName )
-	Case :currentcontrol == 14
-		:EditBoxCount++
-		ControlName := 'edit_'+Alltrim(str(:EditBoxCount))
+      ProcessContainers( ControlName )
+   Case :currentcontrol == 14
+      :EditBoxCount++
+      ControlName := 'edit_'+Alltrim(str(:EditBoxCount))
                 do while iscontroldefined(&Controlname,form_1)
-		     :EditBoxCount++
+           :EditBoxCount++
                     ControlName := 'edit_'+Alltrim(str(:EditBoxcount))
                 enddo
                 :ncontrolw++
-		@ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 120 HEIGHT 120 VALUE ControlName BACKCOLOR WHITE CLIENTEDGE HSCROLL VSCROLL ACTION dibuja(this:name)
+      @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 120 HEIGHT 120 VALUE ControlName BACKCOLOR WHITE CLIENTEDGE HSCROLL VSCROLL ACTION dibuja(this:name)
                 getcontrolobject(controlname,"form_1"):fontname:='MS Sans Serif'
                 getcontrolobject(controlname,"form_1"):fontsize:=10
                 :iniarray(:nform,:ncontrolw,controlname,'EDIT')
-		ProcessContainers( ControlName )
-	Case :currentcontrol == 15
+      ProcessContainers( ControlName )
+   Case :currentcontrol == 15
                 :LabelCount++
-		ControlName := 'label_'+Alltrim(str(:LabelCount))
+      ControlName := 'label_'+Alltrim(str(:LabelCount))
                 do while iscontroldefined(&Controlname,form_1)
                    :LabelCount++
                    ControlName := 'label_'+Alltrim(str(:LabelCount))
                 enddo
                 :ncontrolw++
-		@ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 VALUE ControlName  ACTION dibuja(this:name) FONT 'MS Sans Serif' SIZE 10
+      @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 VALUE ControlName  ACTION dibuja(this:name) FONT 'MS Sans Serif' SIZE 10
                 getcontrolobject(controlname,"form_1"):value:= "Empty label"
                 :iniarray(:nform,:ncontrolw,controlname,'LABEL')
                 :abackcolor[:ncontrolw]:=cfbackcolor
                 if cfbackcolor#'NIL'
                    getcontrolobject(controlname,"form_1"):backcolor:= &cfbackcolor
                 endif
-		ProcessContainers( ControlName )
-	Case :currentcontrol == 16
-		:PlayerCount++
-		ControlName := 'player_'+Alltrim(str(:PlayerCount))
+      ProcessContainers( ControlName )
+   Case :currentcontrol == 16
+      :PlayerCount++
+      ControlName := 'player_'+Alltrim(str(:PlayerCount))
                 do while iscontroldefined(&Controlname,form_1)
-              		:PlayerCount++
+                    :PlayerCount++
                    ControlName := 'player_'+Alltrim(str(:PlayerCount))
                 enddo
                 :ncontrolw++
-		@ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 100 HEIGHT 100 VALUE ControlName BORDER ACTION dibuja(this:name) FONT 'MS Sans Serif' SIZE 10
+      @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 100 HEIGHT 100 VALUE ControlName BORDER ACTION dibuja(this:name) FONT 'MS Sans Serif' SIZE 10
                 :iniarray(:nform,:ncontrolw,controlname,'PLAYER')
-		ProcessContainers( ControlName )
-	Case :currentcontrol == 17
-		:ProgressBarCount++
-		ControlName := 'progressbar_'+Alltrim(str(:ProgressBarCount))
+      ProcessContainers( ControlName )
+   Case :currentcontrol == 17
+      :ProgressBarCount++
+      ControlName := 'progressbar_'+Alltrim(str(:ProgressBarCount))
                 do while iscontroldefined(&Controlname,form_1)
-      				:ProgressBarCount++
+                  :ProgressBarCount++
                    ControlName := 'progressbar_'+Alltrim(str(:ProgressBarCount))
                 enddo
                 :ncontrolw++
-		@ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 120 HEIGHT 26 VALUE Controlname BORDER ACTION dibuja(this:name)
+      @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 120 HEIGHT 26 VALUE Controlname BORDER ACTION dibuja(this:name)
                 :iniarray(:nform,:ncontrolw,controlname,'PROGRESSBAR')
-		ProcessContainers( ControlName )
-	Case :currentcontrol == 18
-		:RadioGroupCount++
-		ControlName := 'radiogroup_'+Alltrim(str(:RadioGroupCount))
+      ProcessContainers( ControlName )
+   Case :currentcontrol == 18
+      :RadioGroupCount++
+      ControlName := 'radiogroup_'+Alltrim(str(:RadioGroupCount))
                 do while iscontroldefined(&Controlname,form_1)
-			:RadioGroupCount++
+         :RadioGroupCount++
                    ControlName := 'radiogroup_'+Alltrim(str(:RadioGroupCount))
                 enddo
                 :ncontrolw++
-		@ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 100 HEIGHT 25*2+8 VALUE ControlName BORDER ACTION dibuja(this:name) FONT 'MS Sans Serif' SIZE 10
+      @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 100 HEIGHT 25*2+8 VALUE ControlName BORDER ACTION dibuja(this:name) FONT 'MS Sans Serif' SIZE 10
                 :iniarray(:nform,:ncontrolw,controlname,'RADIOGROUP')
                 :abackcolor[:ncontrolw]:=cfbackcolor
                 if cfbackcolor#'NIL'
@@ -1050,86 +1039,86 @@ with Object myform
                 endif
                 :aitems[:ncontrolw]:="{'option 1','option 2'}"
                 :aspacing[:ncontrolw]:=25
-		ProcessContainers( ControlName )
-	Case :currentcontrol == 19
-		:SliderCount++
-		ControlName := 'slider_'+Alltrim(str(:SliderCount))
+      ProcessContainers( ControlName )
+   Case :currentcontrol == 19
+      :SliderCount++
+      ControlName := 'slider_'+Alltrim(str(:SliderCount))
                 do while iscontroldefined(&Controlname,form_1)
-			:SliderCount++
+         :SliderCount++
                    ControlName := 'slider_'+Alltrim(str(:SliderCount))
                 enddo
                 :ncontrolw++
-		@ _oohg_mouserow,_oohg_mousecol SLIDER &ControlName OF Form_1 RANGE 1,10 VALUE 5 ON CHANGE dibuja(this:name) NOTABSTOP
+      @ _oohg_mouserow,_oohg_mousecol SLIDER &ControlName OF Form_1 RANGE 1,10 VALUE 5 ON CHANGE dibuja(this:name) NOTABSTOP
                 :iniarray(:nform,:ncontrolw,controlname,'SLIDER')
                 :abackcolor[:ncontrolw]:=cfbackcolor
                 if cfbackcolor#'NIL'
                    getcontrolobject(controlname,"form_1"):backcolor:= &cfbackcolor
                 endif
-		ProcessContainers( ControlName )
-	Case :currentcontrol == 20
-		:SpinnerCount++
-		ControlName := 'spinner_'+Alltrim(str(:SpinnerCount))
+      ProcessContainers( ControlName )
+   Case :currentcontrol == 20
+      :SpinnerCount++
+      ControlName := 'spinner_'+Alltrim(str(:SpinnerCount))
                 do while iscontroldefined(&Controlname,form_1)
-			:SpinnerCount++
+         :SpinnerCount++
                    ControlName := 'spinner_'+Alltrim(str(:SpinnerCount))
                 enddo
                 :ncontrolw++
-		@ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 120 HEIGHT 24 VALUE ControlName BACKCOLOR WHITE CLIENTEDGE VSCROLL ACTION dibuja(this:name)
+      @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 120 HEIGHT 24 VALUE ControlName BACKCOLOR WHITE CLIENTEDGE VSCROLL ACTION dibuja(this:name)
                 getcontrolobject(controlname,"form_1"):fontname:= 'MS Sans Serif'
                 getcontrolobject(controlname,"form_1"):fontsize:= 10
                 :iniarray(:nform,:ncontrolw,controlname,'SPINNER')
-		ProcessContainers( ControlName )
-	Case :currentcontrol == 21
-		:CheckButtonCount++
-		ControlName := 'piccheckbutt_'+Alltrim(str(:CheckButtonCount))
+      ProcessContainers( ControlName )
+   Case :currentcontrol == 21
+      :CheckButtonCount++
+      ControlName := 'piccheckbutt_'+Alltrim(str(:CheckButtonCount))
                 do while iscontroldefined(&Controlname,form_1)
-			:CheckButtonCount++
+         :CheckButtonCount++
                    ControlName := 'piccheckbutt_'+Alltrim(str(:CheckButtonCount))
                 enddo
                 :ncontrolw++
-		@ _oohg_mouserow,_oohg_mousecol CHECKBUTTON &ControlName OF Form_1 PICTURE 'A4' WIDTH 30 HEIGHT 30 VALUE .F. ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name) NOTABSTOP
+      @ _oohg_mouserow,_oohg_mousecol CHECKBUTTON &ControlName OF Form_1 PICTURE 'A4' WIDTH 30 HEIGHT 30 VALUE .F. ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name) NOTABSTOP
                 :iniarray(:nform,:ncontrolw,controlname,'PICCHECKBUTT')
-		ProcessContainers( ControlName )
-	Case :currentcontrol == 22
-		:ButtonCount++
-		ControlName := 'picbutt_'+Alltrim(str(:ButtonCount))
+      ProcessContainers( ControlName )
+   Case :currentcontrol == 22
+      :ButtonCount++
+      ControlName := 'picbutt_'+Alltrim(str(:ButtonCount))
                 do while iscontroldefined(&Controlname,form_1)
-			:ButtonCount++
+         :ButtonCount++
                    ControlName := 'picbutt_'+Alltrim(str(:ButtonCount))
                 enddo
                 :ncontrolw++
                 :iniarray(:nform,:ncontrolw,controlname,'PICBUTT')
                 :aaction[:ncontrolw]:="msginfo('Pic button pressed')"
-		@ _oohg_mouserow,_oohg_mousecol BUTTON &ControlName OF Form_1 PICTURE 'A4' WIDTH 30 HEIGHT 30 ON GOTFOCUS dibuja(this:name) NOTABSTOP
-		ProcessContainers( ControlName )
-      	Case :currentcontrol == 23
-		:TimerCount++
-		ControlName := 'timer_'+Alltrim(str(:timerCount))
+      @ _oohg_mouserow,_oohg_mousecol BUTTON &ControlName OF Form_1 PICTURE 'A4' WIDTH 30 HEIGHT 30 ON GOTFOCUS dibuja(this:name) NOTABSTOP
+      ProcessContainers( ControlName )
+         Case :currentcontrol == 23
+      :TimerCount++
+      ControlName := 'timer_'+Alltrim(str(:timerCount))
                 do while iscontroldefined(&Controlname,form_1)
-			:timerCount++
+         :timerCount++
                    ControlName := 'timer_'+Alltrim(str(:timerCount))
                 enddo
                 :ncontrolw++
                 :iniarray(:nform,:ncontrolw,controlname,'TIMER')
-		@ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 100 HEIGHT 20 VALUE ControlName BORDER ACTION dibuja(this:name) FONT 'MS Sans Serif' SIZE 10
-		ProcessContainers( ControlName )
-	Case :currentcontrol == 24
-		:BrowseCount++
-   		ControlName := 'browse_'+Alltrim(str(:browseCount))
+      @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 100 HEIGHT 20 VALUE ControlName BORDER ACTION dibuja(this:name) FONT 'MS Sans Serif' SIZE 10
+      ProcessContainers( ControlName )
+   Case :currentcontrol == 24
+      :BrowseCount++
+         ControlName := 'browse_'+Alltrim(str(:browseCount))
                 do while iscontroldefined(&Controlname,form_1)
-				:browseCount++
+            :browseCount++
                    ControlName := 'browse_'+Alltrim(str(:browseCount))
                 enddo
-		aName := { { ControlName ,''} }
+      aName := { { ControlName ,''} }
                 :ncontrolw++
                 :iniarray(:nform,:ncontrolw,controlname,'BROWSE')
-		@ _oohg_mouserow,_oohg_mousecol GRID &ControlName OF Form_1 HEADERS {'one','two'} WIDTHS {60,60} ITEMS aName TOOLTIP 'To move/size click on header area' FONT 'MS Sans Serif' SIZE 10 ON GOTFOCUS dibuja(this:name)
-		ProcessContainers( ControlName )
-	Case :currentcontrol == 25
-		:TreeCount++
-   		ControlName := 'tree_'+Alltrim(str(:treecount))
+      @ _oohg_mouserow,_oohg_mousecol GRID &ControlName OF Form_1 HEADERS {'one','two'} WIDTHS {60,60} ITEMS aName TOOLTIP 'To move/size click on header area' FONT 'MS Sans Serif' SIZE 10 ON GOTFOCUS dibuja(this:name)
+      ProcessContainers( ControlName )
+   Case :currentcontrol == 25
+      :TreeCount++
+         ControlName := 'tree_'+Alltrim(str(:treecount))
                 do while iscontroldefined(&Controlname,form_1)
-				:treecount++
+            :treecount++
                    ControlName := 'tree_'+Alltrim(str(:treeCount))
                 enddo
                 :ncontrolw++
@@ -1137,58 +1126,58 @@ with Object myform
 
                 DEFINE TREE &ControlName OF Form_1 AT _oohg_mouserow,_oohg_mousecol  WIDTH 100 HEIGHT 100 VALUE 1 ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name)
                    NODE 'Tree'
-        	   END NODE
+              END NODE
                    NODE 'Nodes'
-        	   END NODE
+              END NODE
                 END TREE
 
-		ProcessContainers( ControlName )
-	Case :currentcontrol == 26
-		:IpaddressCount++
-   		ControlName := 'ipaddress_'+Alltrim(str(:ipaddressCount))
+      ProcessContainers( ControlName )
+   Case :currentcontrol == 26
+      :IpaddressCount++
+         ControlName := 'ipaddress_'+Alltrim(str(:ipaddressCount))
                 do while iscontroldefined(&Controlname,form_1)
-			:ipaddressCount++
+         :ipaddressCount++
                    ControlName := 'ipaddress_'+Alltrim(str(:ipaddressCount))
                 enddo
                 :ncontrolw++
                 :iniarray(:nform,:ncontrolw,controlname,'IPADDRESS')
-		@ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 VALUE '   .   .   .   ' BACKCOLOR WHITE CLIENTEDGE ACTION dibuja(this:name) FONT 'Courier new' SIZE 9
-		ProcessContainers( ControlName )
+      @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 VALUE '   .   .   .   ' BACKCOLOR WHITE CLIENTEDGE ACTION dibuja(this:name) FONT 'Courier new' SIZE 9
+      ProcessContainers( ControlName )
         Case :currentcontrol == 27
-		:MonthcalendarCount++
-   		ControlName := 'monthcal_'+Alltrim(str(:monthcalendarCount))
+      :MonthcalendarCount++
+         ControlName := 'monthcal_'+Alltrim(str(:monthcalendarCount))
                 do while iscontroldefined(&Controlname,form_1)
-				:monthcalendarCount++
+            :monthcalendarCount++
                    ControlName := 'monthcal_'+Alltrim(str(:monthcalendarCount))
                 enddo
                 :ncontrolw++
                 :iniarray(:nform,:ncontrolw,controlname,'MONTHCALENDAR')
-		@ _oohg_mouserow,_oohg_mousecol MONTHCALENDAR &ControlName OF Form_1  NOTABSTOP ON CHANGE dibuja(this:name)
-		ProcessContainers( ControlName )
+      @ _oohg_mouserow,_oohg_mousecol MONTHCALENDAR &ControlName OF Form_1  NOTABSTOP ON CHANGE dibuja(this:name)
+      ProcessContainers( ControlName )
         Case :currentcontrol == 28
-		:hyperlinkCount++
-   		ControlName := 'Hyperlink_'+Alltrim(str(:HyperlinkCount))
+      :hyperlinkCount++
+         ControlName := 'Hyperlink_'+Alltrim(str(:HyperlinkCount))
                 Do while iscontroldefined(&Controlname,form_1)
-   		:hyperlinkCount++
+         :hyperlinkCount++
                    ControlName := 'Hyperlink_'+Alltrim(str(:HyperlinkCount))
                 enddo
                 :ncontrolw++
                 :iniarray(:nform,:ncontrolw,controlname,'HYPERLINK')
-		@ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 VALUE Controlname ACTION dibuja(this:name) BORDER FONT 'MS Sans Serif' SIZE 9
-		ProcessContainers( ControlName )
+      @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 VALUE Controlname ACTION dibuja(this:name) BORDER FONT 'MS Sans Serif' SIZE 9
+      ProcessContainers( ControlName )
         case :currentcontrol ==29
-        	:richeditBoxCount++
-		ControlName := 'richeditbox_'+Alltrim(str(:richeditboxCount))
+           :richeditBoxCount++
+      ControlName := 'richeditbox_'+Alltrim(str(:richeditboxCount))
                 do while iscontroldefined(&Controlname,form_1)
-        		:richeditBoxCount++
+              :richeditBoxCount++
                    ControlName := 'richeditbox_'+Alltrim(str(:richeditboxcount))
                 enddo
                 :ncontrolw++
-		@ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 120 HEIGHT 124 BACKCOLOR WHITE CLIENTEDGE ACTION dibuja(this:name) FONT 'MS Sans Serif' SIZE 10
+      @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 120 HEIGHT 124 BACKCOLOR WHITE CLIENTEDGE ACTION dibuja(this:name) FONT 'MS Sans Serif' SIZE 10
                 getcontrolobject(controlname,"form_1"):value:= controlname
                 :iniarray(:nform,:ncontrolw,controlname,'RICHEDIT')
-		ProcessContainers( ControlName )
-	EndCase
+      ProcessContainers( ControlName )
+   EndCase
            :control_click(1)
            :lFsave:=.F.
 
@@ -1284,7 +1273,7 @@ endif
 return nil
 
 *------------------------------------------------------------------------------*
-METHOD  Open(cItem1)  CLASS tform1
+METHOD  Open(cItem1)  CLASS TForm1
 *-----------------------------------------------------------------------------*
 local i,nContlin,nPosilin,cForma
 cForma:=memoread(cItem1)
@@ -1341,45 +1330,45 @@ return nil
 
 
 *------------------------------------------------------------------------------*
-METHOD New() CLASS tform1
+METHOD New() CLASS TForm1
 *------------------------------------------------------------------------------*
 whlp:='formedit'
-	if .not. IsWindowDefined(Form_1)
+   if .not. IsWindowDefined(Form_1)
            cfbackcolor:=myform:cfbackcolor
 
                    DEFINE WINDOW Form_1 obj Form_1 ;
-			AT myide:mainheight + 46 ,66 ;
-			WIDTH 700 ;
-			HEIGHT 410 ;
-			TITLE 'Form' ICON 'VD' ;
-			CHILD ;
-			ON MOUSECLICK myform:AddControl() ;
+         AT ::myIde:mainheight + 46 ,66 ;
+         WIDTH 700 ;
+         HEIGHT 410 ;
+         TITLE 'Form' ICON 'VD' ;
+         CHILD ;
+         ON MOUSECLICK myform:AddControl() ;
                         ON MOUSEMOVE cordenada() ;
-                        ON MOUSEDRAG ms() ;
+                        ON MOUSEDRAG ms( ::myIde ) ;
                         ON GOTFOCUS mispuntos() ;
                         ON PAINT {|| refrefo(), mispuntos() } ;
                         BACKCOLOR &cfbackcolor ;
                         FONT 'MS Sans Serif' SIZE 10   ;
                         NOMAXIMIZE NOMINIMIZE
 
-			DEFINE CONTEXT MENU
-      				ITEM 'Properties' ACTION Properties_Click()
-                                ITEM 'Events    ' name events ACTION Events_click()
-                                ITEM 'Interactive Font/Color' ACTION intfoco(1)
-                                ITEM 'Manual Move/Size'  ACTION manualmosi(1)
-				ITEM 'Interactive Move' ACTION MoveControl()
-				ITEM 'Keyboard Move' ACTION kMove()
-				ITEM 'Interactive Size' ACTION SizeControl()
+         DEFINE CONTEXT MENU
+                  ITEM 'Properties' ACTION Properties_Click( ::myIde )
+                                ITEM 'Events    ' name events ACTION Events_click( ::myIde )
+                                ITEM 'Interactive Font/Color' ACTION intfoco( 1, ::myIde )
+                                ITEM 'Manual Move/Size'  ACTION manualmosi( 1, ::myIde )
+            ITEM 'Interactive Move' ACTION MoveControl( ::myIde )
+            ITEM 'Keyboard Move' ACTION kMove( ::myIde )
+            ITEM 'Interactive Size' ACTION SizeControl()
                                 SEPARATOR
                                 ITEM 'Delete' ACTION DeleteControl()
-			END MENU
+         END MENU
 
 
                         ON KEY DELETE ACTION deletecontrol()
                         ON KEY F1 ACTION help_f1('FORMEDIT')
                         ON KEY ALT+D ACTION debug()
 
-		END WINDOW
+      END WINDOW
 
                 DEFINE WINDOW lista obj lista ;
                 AT 120 , 665 ;                                                 // MigSoft
@@ -1390,7 +1379,7 @@ whlp:='formedit'
                 CHILD ;
                 NOMAXIMIZE NOMINIMIZE ;
                 NOSIZE ;
-                backcolor myide:asystemcolor
+                backcolor ::myIde:asystemcolor
 
 
                 @ 20,10 GRID listacon obj olistacon ;                          // MigSoft
@@ -1411,17 +1400,17 @@ whlp:='formedit'
                  olistacon:fullmove:=.T.
 
 
-			DEFINE CONTEXT MENU
-      				ITEM 'Properties' ACTION Properties_Click()
-                                ITEM 'Events    ' name events ACTION Events_click()
-                                ITEM 'Interactive Font/Color' ACTION intfoco(1)
-                                ITEM 'Manual Move/Size'  ACTION manualmosi(1)
-				ITEM 'Interactive Move' ACTION MoveControl()
-				ITEM 'Keyboard Move' ACTION kMove()
-				ITEM 'Interactive Size' ACTION SizeControl()
+         DEFINE CONTEXT MENU
+                  ITEM 'Properties' ACTION Properties_Click( ::myIde )
+                                ITEM 'Events    ' name events ACTION Events_click( ::myIde )
+                                ITEM 'Interactive Font/Color' ACTION intfoco( 1, ::myIde )
+                                ITEM 'Manual Move/Size'  ACTION manualmosi( 1, ::myIde )
+            ITEM 'Interactive Move' ACTION MoveControl( ::myIde )
+            ITEM 'Keyboard Move' ACTION kMove( ::myIde )
+            ITEM 'Interactive Size' ACTION SizeControl()
                                 SEPARATOR
                                 ITEM 'Delete' ACTION DeleteControl()
-			END MENU
+         END MENU
 
          @ 420,30 label lop value  "Right Click  -  click or enter to modify Cord" FONT "Calibri" SIZE 9 autosize
          @ 435,30 label lop1 value "More Options" FONT "Calibri" SIZE 9 autosize
@@ -1433,7 +1422,7 @@ whlp:='formedit'
           cvccontrols:show()
 
 
-                myide:form_activated:=.T.
+                ::myIde:form_activated:=.T.
 
 ////////// importante añadir el primer elemento
      myform:ncontrolw++
@@ -1473,7 +1462,7 @@ dibuja(cname)           //////// cvc  2012/01/15
 return nil
 
 *-----------------------------------------------------------------------------
-METHOD Newagain() CLASS tform1
+METHOD Newagain() CLASS TForm1
 *------------------------------------------------------------------------------*
 whlp:='formedit'
 if  IsWindowDefined(Form_1)
@@ -1500,17 +1489,17 @@ else
        nvh := NIL  ////  myform:nfvirtualh
     endif
 
-    DEFINE WINDOW Form_1 obj Form_1 AT myide:mainheight + 42 , 66 ;
-			WIDTH nfwidth ;
-			HEIGHT nfheight ;
+    DEFINE WINDOW Form_1 obj Form_1 AT ::myIde:mainheight + 42 , 66 ;
+         WIDTH nfwidth ;
+         HEIGHT nfheight ;
                         VIRTUAL WIDTH  nvw  ;
                         VIRTUAL HEIGHT nvh  ;
-			TITLE 'Title' ;
+         TITLE 'Title' ;
                         ICON 'VD' ;
-			CHILD NOSHOW  ;
-			ON MOUSECLICK myform:AddControl()  ;
+         CHILD NOSHOW  ;
+         ON MOUSECLICK myform:AddControl()  ;
                         ON MOUSEMOVE cordenada() ;
-                        ON MOUSEDRAG ms() ;
+                        ON MOUSEDRAG ms( ::myIde ) ;
                         ON GOTFOCUS mispuntos() ;
                         ON PAINT {|| refrefo(),mispuntos() } ;
                         BACKCOLOR &cfbackcolor ;
@@ -1519,17 +1508,17 @@ else
                         NOMAXIMIZE NOMINIMIZE
 
 
-			DEFINE CONTEXT MENU
-      				ITEM 'Properties' ACTION Properties_Click()
-                                ITEM 'Events    ' name events ACTION Events_click()
-                                ITEM 'Interactive Font/Color' ACTION intfoco(1)
-                                ITEM 'Manual Move/Size'  ACTION manualmosi(1)
-				ITEM 'Interactive Move' ACTION MoveControl()
-				ITEM 'Keyboard Move' ACTION kMove()
-				ITEM 'Interactive Size' ACTION SizeControl()
+         DEFINE CONTEXT MENU
+                  ITEM 'Properties' ACTION Properties_Click( ::myIde )
+                                ITEM 'Events    ' name events ACTION Events_click( ::myIde )
+                                ITEM 'Interactive Font/Color' ACTION intfoco( 1, ::myIde )
+                                ITEM 'Manual Move/Size'  ACTION manualmosi( 1, ::myIde )
+            ITEM 'Interactive Move' ACTION MoveControl( ::myIde )
+            ITEM 'Keyboard Move' ACTION kMove( ::myIde )
+            ITEM 'Interactive Size' ACTION SizeControl()
                                 SEPARATOR
                                 ITEM 'Delete' ACTION DeleteControl()
-			END MENU
+         END MENU
 
 
 
@@ -1548,7 +1537,7 @@ else
         CHILD ;
         NOMAXIMIZE NOMINIMIZE ;
         NOSIZE ;
-        backcolor myide:asystemcolor
+        backcolor ::myIde:asystemcolor
 
                  @ 20,10 GRID listacon  obj olistacon ;            // MigSoft
                  WIDTH  260 ;
@@ -1565,14 +1554,14 @@ else
 
                  olistacon:fullmove:=.T.
 
-		DEFINE CONTEXT MENU
-      			ITEM 'Properties' ACTION Properties_Click()
-                        ITEM 'Events    ' name events ACTION Events_click()
-                        ITEM 'Interactive Font/Color' ACTION intfoco(1)
-                        ITEM 'Manual Move/Size'  ACTION manualmosi(1)
-	                ITEM 'Interactive Move' ACTION MoveControl()
-                        ITEM 'Keyboard Move' ACTION kMove()
-			ITEM 'Interactive Size' ACTION SizeControl()
+      DEFINE CONTEXT MENU
+               ITEM 'Properties' ACTION Properties_Click( ::myIde )
+                        ITEM 'Events    ' name events ACTION Events_click( ::myIde )
+                        ITEM 'Interactive Font/Color' ACTION intfoco( 1, ::myIde )
+                        ITEM 'Manual Move/Size'  ACTION manualmosi( 1, ::myIde )
+                   ITEM 'Interactive Move' ACTION MoveControl( ::myIde )
+                        ITEM 'Keyboard Move' ACTION kMove( ::myIde )
+         ITEM 'Interactive Size' ACTION SizeControl()
                         SEPARATOR
                         ITEM 'Delete' ACTION DeleteControl()
                 END MENU
@@ -1585,7 +1574,7 @@ else
     form_main:show()
     cvccontrols:show()
 
-    myide:form_activated:=.T.
+    ::myIde:form_activated:=.T.
     myform:fillcontrol()
     muestrasino()
 *********************************
@@ -1598,7 +1587,7 @@ else
        append from &archivo
     endif
 
-    tbparsea()
+    tbparsea( tmytoolb )
     use
 ******************************
     Activate window form_1,lista
@@ -1608,12 +1597,12 @@ Return  nil
 
 
 *------------------------------------
-METHOD fillcontrolaux() CLASS tform1
+METHOD fillcontrolaux() CLASS TForm1
 *------------------------------------
 Public nfwidth,nfheight
 myform:cffontname:=myform:clean(myform:leadato('WINDOW','FONT','MS Sans Serif'))
 myform:nffontsize:=val(myform:leadato('WINDOW','SIZE','10'))
-myform:cfbackcolor:=myform:leadato('WINDOW','BACKCOLOR',myide:cdbackcolor)
+myform:cfbackcolor:=myform:leadato('WINDOW','BACKCOLOR',::myIde:cdbackcolor)
 /////form_1:backcolor:=&(myform:cfbackcolor)
 
 nfwidth:=val(myform:leadato('WINDOW','WIDTH','640'))
@@ -1623,7 +1612,7 @@ myform:nfvirtualh:=val(myform:leadato('WINDOW','VIRTUAL HEIGHT','0'))
 return
 
 *---------------------------------
-METHOD fillcontrol() CLASS tform1
+METHOD fillcontrol() CLASS TForm1
 *---------------------------------
 local i,ctipo
 with Object myform
@@ -1641,9 +1630,9 @@ for i:=1 to len(:aline)
      :lsflat:=:leadatologic('DEFINE STATUSBAR','FLAT','F')
      :lsraised:=:leadatologic('DEFINE STATUSBAR','RAISED','F')
 
-     :lsflat:=iif(:lsflat='T',.T.,.F.)   
+     :lsflat:=iif(:lsflat='T',.T.,.F.)
 
-     :lsraised:=iif(:lsraised='T',.T.,.F.)   
+     :lsraised:=iif(:lsraised='T',.T.,.F.)
 
      :cstooltip:=:leadato('DEFINE STATUSBAR','TOOLTIP','')
      :lsdate:=:leadatologic('DEFINE STATUSBAR','DATE','F')
@@ -1651,7 +1640,7 @@ for i:=1 to len(:aline)
      :lskeyboard:=:leadatologic('DEFINE STATUSBAR','KEYBOARD','F')
 
      :lsdate:=iif(:lsdate='T',.T.,.F.)
-     :lstime:=iif(:lstime='T',.T.,.F.)   
+     :lstime:=iif(:lstime='T',.T.,.F.)
      :lskeyboard:=iif(:lskeyboard='T',.T.,.F.)
      exit
 ***********i:=len(:aline)+1
@@ -1672,64 +1661,64 @@ do case
 case ctipo=='DEFINE'
    :actrltype[i]:='STATUSBAR'
 case ctipo=='FORM'
-   pforma(i)
+   pforma( i )
 case ctipo=='BUTTON'
-   pbutton(i)
+   pbutton( i, ::myIde )
 case ctipo=="CHECKBOX"
-   pcheckbox(i)
+   pcheckbox( i, ::myIde )
 case ctipo=="LISTBOX"
-   plistbox(i)
+   plistbox( i, ::myIde )
 case ctipo=='COMBOBOX'
-   pcombobox(i)
+   pcombobox( i, ::myIde )
 case ctipo='CHECKBTN'
-   pcheckbtn(i)
+   pcheckbtn( i, ::myIde )
 case ctipo=='PICCHECKBUTT'
-     ppiccheckbutt(i)
+     ppiccheckbutt( i, ::myIde )
 case ctipo=="PICBUTT"
-   ppicbutt(i)
+   ppicbutt( i, ::myIde )
 case ctipo=="IMAGE"
-   pimage(i)
+   pimage( i, ::myIde )
 case ctipo=="ANIMATEBOX"
-   panimatebox(i)   
+   panimatebox( i, ::myIde )
 case ctipo="DATEPICKER"
-   pdatepicker(i)
+   pdatepicker( i, ::myIde )
 case ctipo='GRID'
-   pgrid(i)
+   pgrid( i, ::myIde )
 case ctipo='BROWSE'
-   pbrowse(i)
+   pbrowse( i, ::myIde )
 case ctipo=='FRAME'
-   pframe(i)
+   pframe( i, ::myIde )
 case ctipo=="TEXTBOX"
-   ptextbox(i)
+   ptextbox( i, ::myIde )
 case ctipo=="EDITBOX"
-   peditbox(i)
+   peditbox( i, ::myIde )
 case ctipo='RADIOGROUP'
-   pradiogroup(i)
+   pradiogroup( i, ::myIde )
 case ctipo="PROGRESSBAR"
-   pprogressbar(i)
+   pprogressbar( i, ::myIde )
 case ctipo='SLIDER'
-   pslider(i)
+   pslider( i, ::myIde )
 case ctipo='SPINNER'
-   pspinner(i)
+   pspinner( i, ::myIde )
 case ctipo="PLAYER"
-   pplayer(i)
+   pplayer( i, ::myIde )
 case ctipo=='LABEL'
-   plabel(i)
+   plabel( i, ::myIde )
 case ctipo="TIMER"
-   ptimer(i)
+   ptimer( i, ::myIde )
 case ctipo='IPADDRESS'
-   pipaddress(i)
+   pipaddress( i, ::myIde )
 case ctipo='MONTHCALENDAR'
-   pmonthcal(i)
+   pmonthcal( i, ::myIde )
 case ctipo='HYPERLINK'
-   phyplink(i)
+   phyplink( i, ::myIde )
 case ctipo='TREE'
-   ptree(i)
+   ptree( i, ::myIde )
 case ctipo='RICHEDITBOX'
-   prichedit(i)
+   prichedit( i, ::myIde )
 case ctipo='TAB'
    :swtab:=.T.
-   ptab(i)
+   ptab( i )
 endcase
 next i
 close data
@@ -1739,7 +1728,7 @@ if file(:cfname+'.tbr')
    select 10
    use &archivo alias Dtoolbar
    nbuttons:=reccount()
-   if  nbuttons>0  
+   if  nbuttons>0
 *****
    go 1
    Apar:={}
@@ -1769,10 +1758,10 @@ if file(:cfname+'.tbr')
 
        wcaption:=ltrim(rtrim(dtoolbar->item))
 
-       cname:="hmi_cvc_tb_button_"+alltrim(str(i,2) )  
+       cname:="hmi_cvc_tb_button_"+alltrim(str(i,2) )
        button &cname  ;
        caption wcaption   ;
-       action NIL    
+       action NIL
    skip
    next i
    END TOOLBAR
@@ -1793,28 +1782,28 @@ if file(:cfname+'.mnm')
    DEFINE MAIN MENU of form_1
    do while .not. eof()
       if recn() < reccount()
-         skip           
+         skip
          signiv:=level
          skip -1
       else
-         signiv=0   
-      endif     
+         signiv=0
+      endif
       niv=level
       if ( signiv > level )
          if lower(trim(auxit))='separator'
-            SEPARATOR     
+            SEPARATOR
          else
             POPUP alltrim(auxit)
             swpop++
-         endif                            
+         endif
       else
          if lower(trim(auxit))='separator'
-            SEPARATOR     
+            SEPARATOR
          else
-            ITEM  alltrim(auxit)  ACTION  NIL  
+            ITEM  alltrim(auxit)  ACTION  NIL
             if trim(named)==''
             else
-               if menues->checked='X' 
+               if menues->checked='X'
                  /// cc:=:cfname+'.'+trim(named)+'.checked:=.T.'
                  /// output+= cc + CRLF
                endif
@@ -1836,9 +1825,9 @@ if file(:cfname+'.mnm')
    nnivaux:=niv-1
    do while swpop>0
       nnivaux--
-      END POPUP               
+      END POPUP
       swpop--
-   enddo                
+   enddo
    END MENU
    use
    endif
@@ -1847,12 +1836,12 @@ endif
 *********************
 
 waitmess:hide()
-form_1:show()  
+form_1:show()
 if :lsstat
 
     DEFINE STATUSBAR of form_1
             if len(:cscaption)> 0
-               STATUSITEM :cscaption              
+               STATUSITEM :cscaption
             else
                statusitem " "
             endif
@@ -1863,7 +1852,7 @@ if :lsstat
                DATE WIDTH 95
             endif
             if :lstime
-               CLOCK WIDTH 85                             
+               CLOCK WIDTH 85
             endif
    END STATUSBAR
 
@@ -1879,7 +1868,7 @@ end
 return nil
 
 *---------------------------------------------------------
-METHOD Control_Click(wpar) CLASS tform1
+METHOD Control_Click(wpar) CLASS TForm1
 *------------------------------------------------------------------------------*
 
 if lsi
@@ -1899,7 +1888,7 @@ endif
 Return nil
 
 *----------------------------------
-METHOD leatipo(cname) CLASS tform1
+METHOD leatipo(cname) CLASS TForm1
 *----------------------------------
 local q,r,s,nposcorq,nposa,cregresa,zl
 cregresa:=''
@@ -1942,7 +1931,7 @@ endif
 return cregresa
 
 *------------------------------------------------------
-METHOD leadato(cName,cPropmet,cDefault) CLASS tform1
+METHOD leadato(cName,cPropmet,cDefault) CLASS TForm1
 *----------------------------------------------------
 local i,sw,zi,cvc,zl,npos
 sw:=0
@@ -1973,7 +1962,7 @@ endif
 Next i
 return cDefault
 *--------------------------------------------------------
-METHOD leadatostatus(cName,cPropmet,cDefault) CLASS tform1
+METHOD leadatostatus(cName,cPropmet,cDefault) CLASS TForm1
 *---------------------------------------------------------
 local i,sw,zi,cvc,zl
 sw:=0
@@ -2002,7 +1991,7 @@ Next i
 return cDefault
 
 *----------------------------------------------------------
-METHOD leadatologic(cName,cPropmet,cDefault) CLASS tform1
+METHOD leadatologic(cName,cPropmet,cDefault) CLASS TForm1
 *----------------------------------------------------------
 local i,sw,zi,cvc,zl
 sw:=0
@@ -2030,7 +2019,7 @@ Next i
 return cDefault
 
 *---------------------------------
-METHOD learow(cName) CLASS tform1
+METHOD learow(cName) CLASS TForm1
 *---------------------------------
 local i,npos,nrow,zi,zl
 cvc:=ascan( myform:acontrolw, { |c| lower( c ) == lower(cname)  } )
@@ -2047,7 +2036,7 @@ Next i
 return nrow
 
 *------------------------------------
-METHOD learowf(cname) CLASS tform1
+METHOD learowf(cname) CLASS TForm1
 *-------------------------------------
 local i,npos1,npos2,nrow,zi,zl
 cvc:=ascan( myform:acontrolw, { |c| lower( c ) == lower(cname)  } )
@@ -2064,7 +2053,7 @@ Next i
 return nrow
 
 *-----------------------------------
-METHOD leacol(cName) CLASS tform1
+METHOD leacol(cName) CLASS TForm1
 *-----------------------------------
 local i,npos,ncol,zi,zl
 cvc:=ascan( myform:acontrolw, { |c| lower( c ) == lower(cname) } )
@@ -2079,7 +2068,7 @@ endif
 Next i
 return ncol
 *------------------------------------
-METHOD leacolf(cname) CLASS tform1
+METHOD leacolf(cname) CLASS TForm1
 *------------------------------------
 local i,npos,ncol,zi,zl
 cvc:=ascan( myform:acontrolw, { |c| lower( c ) == lower(cname)  } )
@@ -2095,14 +2084,14 @@ Next i
 return ncol
 
 *----------------------------------
-METHOD clean(cfvalue) CLASS tform1
+METHOD clean(cfvalue) CLASS TForm1
 *----------------------------------
 cfvalue:=strtran(cfvalue,'"','')
 cfvalue:=strtran(cfvalue,"'","")
 return cfvalue
 
 *---------------------------------------------------------
-METHOD leadato_oop(cName,cPropmet,cDefault) CLASS tform1
+METHOD leadato_oop(cName,cPropmet,cDefault) CLASS TForm1
 *---------------------------------------------------------
 local i,mlyform,nposx,zi,zl,npos1,nd
 nposx:=rat('.',myform:cform)
@@ -2159,7 +2148,7 @@ DRAW line IN WINDOW form_1 AT 1,800  TO h,800   PENCOLOR { 255 ,0 , 0 }  penwidt
 return nil
 
 *------------------------
-static function ptree(i)
+static function ptree( i, myIde )
 *------------------------
    cname:=myform:acontrolw[i]
    myform:actrltype[i]:='TREE'
@@ -2241,7 +2230,7 @@ static function ptree(i)
    myform:aonlostfocus[i]:=conlostfocus
    myform:aondblclick[i]:=condblclick
 
-   ProcessContainersfill( Cname,nrow,ncol )
+   ProcessContainersfill( Cname,nrow,ncol, myIde )
 return
 
 *-----------------------
@@ -2320,7 +2309,7 @@ static function ptab(i)
 
    form_1:&cname:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTITALIC','.F.')))='.T.',.T.,.F.)
 
-   
+
    form_1:&cname:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
 
 
@@ -2341,7 +2330,7 @@ static function ptab(i)
 
 return
 *-----------------------------
-static function pipaddress(i) 
+static function pipaddress( i, myIde )
 *-----------------------------
    cname:=myform:acontrolw[i]
    myform:actrltype[i]:='IPADDRESS'
@@ -2375,14 +2364,14 @@ static function pipaddress(i)
    else
         form_1:&cname:fontname := cffontname
    endif
-   myform:afontsize[i]:=nfontsize   
+   myform:afontsize[i]:=nfontsize
    if nfontsize>0
       form_1:&cname:fontsize := nfontsize
    else
       form_1:&cname:fontsize := nffontsize
    endif
 
-   myform:anotabstop[i]:=iif(lnotabstop='T',.T.,.F.)   
+   myform:anotabstop[i]:=iif(lnotabstop='T',.T.,.F.)
 
    myform:aenabled[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'ENABLED','.T.')))='.T.',.T.,.F.)
    myform:avisible[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'VISIBLE','.T.')))='.T.',.T.,.F.)
@@ -2399,8 +2388,8 @@ static function pipaddress(i)
 
    myform:afontcolor[i]:=myform:clean(myform:leadato_oop(cname,'FONTCOLOR','{0,0,0}'))
    cfontcolor:=myform:afontcolor[i]
-   form_1:&cname:fontcolor:=&cfontcolor   
-  
+   form_1:&cname:fontcolor:=&cfontcolor
+
 
    myform:avalue[i]:=cValue
    myform:atooltip[i]:=ctooltip
@@ -2411,11 +2400,11 @@ static function pipaddress(i)
    myform:ahelpid[i]:=nhelpid
 
    form_1:&cname:value := cvalue
-   ProcessContainersfill( Cname,nrow,ncol )
+   ProcessContainersfill( Cname,nrow,ncol, myIde )
 return
 
 *--------------------------
-static function ptimer(i) 
+static function ptimer( i, myIde )
 *--------------------------
    cname:=myform:acontrolw[i]
    myform:actrltype[i]:='TIMER'
@@ -2430,11 +2419,11 @@ static function ptimer(i)
    myform:aaction[i]:=caction
    myform:aenabled[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'ENABLED','.T.')))='.T.',.T.,.F.)
 
-   ProcessContainersfill( Cname,nrow,ncol )
+   ProcessContainersfill( Cname,nrow,ncol, myIde )
 return
 
 *-------------------------
-static function pforma(i) 
+static function pforma(i)
 *-------------------------
    myform:actrltype[i]:='FORM'
    nfrow:=val(myform:learowf(myform:cfname))
@@ -2450,7 +2439,7 @@ static function pforma(i)
    myform:nfvirtualw:=val(myform:leadato('DEFINE WINDOW','VIRTUAL WIDTH','0'))
    myform:nfvirtualh:=val(myform:leadato('DEFINE WINDOW','VIRTUAL HEIGHT','0'))
 
-                            
+
    myform:lfmain:=myform:leadatologic('DEFINE WINDOW',"MAIN","")
    myform:lfchild:=myform:leadatologic('DEFINE WINDOW',"CHILD","")
    myform:lfmodal:=myform:leadatologic('DEFINE WINDOW',"MODAL","")
@@ -2517,10 +2506,10 @@ static function pforma(i)
    myform:lfbreak:=iif(myform:lfbreak='T',.T.,.F.)
    myform:lfsplitchild:=iif(myform:lfsplitchild='T',.T.,.F.)
    myform:lfgrippertext:=iif(myform:lfgrippertext='T',.T.,.F.)
-   
+
 return
 *---------------------------
-static function plabel(i)  
+static function plabel( i, myIde )
 *---------------------------
    cName:=myform:acontrolw[i]
    myform:actrltype[i]:='LABEL'
@@ -2528,21 +2517,21 @@ static function plabel(i)
    cfontname:=myform:clean(myform:leadato(cname,'FONT',cffontname))
    nfontsize:=val(myform:leadato(cname,'SIZE',str(nffontsize)))
 
-***  lbold:=myform:leadatologic(cname,"BOLD","F")   
+***  lbold:=myform:leadatologic(cname,"BOLD","F")
 **   cfontcolor:=myform:clean(myform:leadato(cname,'FONTCOLOR','{0,0,0}'))
 
    cbackcolor:=myform:clean(myform:leadato(cname,'BACKCOLOR','NIL'))
 
-   ltrans:=myform:leadatologic(cname,"TRANSPARENT","")   
+   ltrans:=myform:leadatologic(cname,"TRANSPARENT","")
    lrightalign:=myform:leadatologic(cname,"RIGHTALIGN","")
-   lcenteralign:=myform:leadatologic(cname,"CENTERALIGN","")   
+   lcenteralign:=myform:leadatologic(cname,"CENTERALIGN","")
    lautosize:=myform:leadatologic(cname,"AUTOSIZE","")
-   lclientedge:=myform:leadatologic(cname,"CLIENTEDGE","")   
+   lclientedge:=myform:leadatologic(cname,"CLIENTEDGE","")
 
    nrow:=val(myform:learow(cName))
    ncol:=val(myform:leacol(cname))
 
-   
+
    nWidth:=val(myform:leadato(cname,'WIDTH','120'))
 
    nHeight:=val(myform:leadato(cname,'HEIGHT','24'))
@@ -2600,9 +2589,9 @@ static function plabel(i)
    myform:abackcolor[i]:=cbackcolor
 
    myform:afontcolor[i]:=myform:clean(myform:leadato_oop(cname,'FONTCOLOR','{0,0,0}'))
-   
 
- ****  myform:afontcolor[i]:=cfontcolor  
+
+ ****  myform:afontcolor[i]:=cfontcolor
    cfontcolor:=myform:afontcolor[i]
    form_1:&cname:fontcolor:=&cfontcolor
 
@@ -2626,18 +2615,18 @@ static function plabel(i)
 
   myform:aclientedge[i]:=iif(lclientedge='T',.T.,.F.)
 
-  ProcessContainersfill( Cname,nrow,ncol )
+  ProcessContainersfill( Cname,nrow,ncol, myIde )
 return
 
 *--------------------------
-static function pplayer(i) 
+static function pplayer( i, myIde )
 *--------------------------
    cname:=myform:acontrolw[i]
    myform:actrltype[i]:='PLAYER'
    myform:aname[i]:=myform:acontrolw[i]
    nrow:=val(myform:learow(cName))
    ncol:=val(myform:leacol(cname))
-      
+
    nWidth:=val(myform:leadato(cname,'WIDTH','0'))
    nHeight:=val(myform:leadato(cname,'HEIGHT','0'))
    cplayfile:=myform:clean(myform:leadato(cname,'FILE',''))
@@ -2650,10 +2639,10 @@ static function pplayer(i)
 
    myform:afile[i]:=cplayfile
    myform:ahelpid[i]:=nhelpid
-   ProcessContainersfill( Cname,nrow,ncol )
+   ProcessContainersfill( Cname,nrow,ncol, myIde )
 return
 *----------------------------
-static function pspinner(i) 
+static function pspinner( i, myIde )
 *----------------------------
    cname:=myform:acontrolw[i]
    myform:actrltype[i]:='SPINNER'
@@ -2727,11 +2716,11 @@ static function pspinner(i)
    myform:areadonly[i]:=iif(lreadonly='T',.T.,.F.)
 
    myform:aincrement[i]:=nincrement
-   ProcessContainersfill( Cname,nrow,ncol )
+   ProcessContainersfill( Cname,nrow,ncol, myIde )
 return
 
 *--------------------------
-static function pslider(i)
+static function pslider( i, myIde )
 *--------------------------
    cname:=myform:acontrolw[i]
    myform:actrltype[i]:='SLIDER'
@@ -2783,11 +2772,11 @@ static function pslider(i)
    myform:ahelpid[i]:=nhelpid
    myform:avaluen[i]:=nvalue
    myform:aonchange[i]:=conchange
-   ProcessContainersfill( Cname,nrow,ncol )
+   ProcessContainersfill( Cname,nrow,ncol, myIde )
 return
 
 *--------------------------------
-static function pprogressbar(i)
+static function pprogressbar( i, myIde )
 *--------------------------------
    cname:=myform:acontrolw[i]
    myform:actrltype[i]:='PROGRESSBAR'
@@ -2826,11 +2815,11 @@ static function pprogressbar(i)
 
    myform:arange[i]:=crange
    myform:ahelpid[i]:=nhelpid
-   ProcessContainersfill( Cname,nrow,ncol )
+   ProcessContainersfill( Cname,nrow,ncol, myIde )
 return
 
 *------------------------------
-static function pradiogroup(i)
+static function pradiogroup( i, myIde )
 *------------------------------
    cname:=myform:acontrolw[i]
    myform:actrltype[i]:='RADIOGROUP'
@@ -2908,11 +2897,11 @@ static function pradiogroup(i)
    myform:aspacing[i]:=nspacing
    myform:ahelpid[i]:=nhelpid
    myform:aonchange[i]:=conchange
-   ProcessContainersfill( Cname,nrow,ncol )
+   ProcessContainersfill( Cname,nrow,ncol, myIde )
 return
 
 *---------------------------
-static function peditbox(i)
+static function peditbox( i, myIde )
 *---------------------------
    cname:=myform:acontrolw[i]
    myform:actrltype[i]:='EDIT'
@@ -2987,11 +2976,11 @@ static function peditbox(i)
    myform:aongotfocus[i]:=congotfocus
    myform:aonlostfocus[i]:=conlostfocus
    form_1:&cname:value := cvalue
-   ProcessContainersfill( Cname,nrow,ncol )
+   ProcessContainersfill( Cname,nrow,ncol, myIde )
 return
 
 *-----------------------------
-static function prichedit(i)
+static function prichedit( i, myIde )
 *-----------------------------
    cname:=myform:acontrolw[i]
    myform:actrltype[i]:='RICHEDIT'
@@ -3062,10 +3051,10 @@ static function prichedit(i)
    myform:aongotfocus[i]:=congotfocus
    myform:aonlostfocus[i]:=conlostfocus
    form_1:&cname:value := cvalue
-   ProcessContainersfill( Cname,nrow,ncol )
+   ProcessContainersfill( Cname,nrow,ncol, myIde )
 return
 *--------------------------
-static function pframe(i)
+static function pframe( i, myIde )
 *--------------------------
    cName:=myform:acontrolw[i]
    myform:actrltype[i]:='FRAME'
@@ -3113,11 +3102,11 @@ static function pframe(i)
    form_1:&cname:fontcolor:=&cfontcolor
    myform:aCaption[i]:=cCaption
    myform:aopaque[i]:=lopaque
-   ProcessContainersfill( Cname,nrow,ncol )
+   ProcessContainersfill( Cname,nrow,ncol, myIde )
 return
 
 *--------------------------
-static function pbrowse(i)
+static function pbrowse( i, myIde )
 *-------------------------
    cname:=myform:acontrolw[i]
    myform:actrltype[i]:='BROWSE'
@@ -3237,10 +3226,10 @@ static function pbrowse(i)
    myform:ahelpid[i]:=nhelpid
    myform:acolumncontrols[i]:=ccolumncontrols
    myform:ainputmask[i]:=cinputmask
-   ProcessContainersfill( Cname,nrow,ncol )
+   ProcessContainersfill( Cname,nrow,ncol, myIde )
 return
 *-------------------------
-static function pgrid(i)
+static function pgrid( i, myIde )
 *-------------------------
    cname:=myform:acontrolw[i]
    myform:actrltype[i]:='GRID'
@@ -3346,10 +3335,10 @@ static function pgrid(i)
    myform:avalidmess[i]:=cvalidmess
    myform:ainputmask[i]:=cinputmask
 
-   ProcessContainersfill( Cname,nrow,ncol )
+   ProcessContainersfill( Cname,nrow,ncol, myIde )
 return
 *-----------------------------
-static function pdatepicker(i)
+static function pdatepicker( i, myIde )
 *-----------------------------
    cname:=myform:acontrolw[i]
    myform:actrltype[i]:='DATEPICKER'
@@ -3425,10 +3414,10 @@ static function pdatepicker(i)
    myform:aonlostfocus[i]:=conlostfocus
    myform:aonenter[i]:=conenter
 
-   ProcessContainersfill( Cname,nrow,ncol )
+   ProcessContainersfill( Cname,nrow,ncol, myIde )
 return
 *-----------------------------
-static function pmonthcal(i)
+static function pmonthcal( i, myIde )
 *-----------------------------
    cname:=myform:acontrolw[i]
    myform:actrltype[i]:='MONTHCALENDAR'
@@ -3499,10 +3488,10 @@ static function pmonthcal(i)
    form_1:&cname:tooltip:=ctooltip
    myform:ahelpid[i]:=nhelpid
    myform:aonchange[i]:=conchange
-   ProcessContainersfill( Cname,nrow,ncol )
+   ProcessContainersfill( Cname,nrow,ncol, myIde )
 return
 *-----------------------------
-static function phyplink(i)
+static function phyplink( i, myIde )
 *-----------------------------
    cName:=myform:acontrolw[i]
    myform:actrltype[i]:='HYPERLINK'
@@ -3514,7 +3503,7 @@ static function phyplink(i)
 
    ctooltip:=myform:clean(myform:leadato(cname,'TOOLTIP',''))
    caddress:=myform:clean(myform:leadato(cname,'ADDRESS','http://sistemascvc.tripod.com'))
-   cvalue:=myform:clean(myform:leadato(cname,'VALUE','ooHGIDE+ Home'))
+   cvalue:=myform:clean(myform:leadato(cname,'VALUE','ooHG IDE+ Home'))
    nWidth:=val(myform:leadato(cname,'WIDTH','100'))
    nHeight:=val(myform:leadato(cname,'HEIGHT','28'))
    nhelpid:=val(myform:leadato(cname,'HELPID','0'))
@@ -3561,11 +3550,11 @@ static function phyplink(i)
    myform:atooltip[i]:=ctooltip
     form_1:&cname:tooltip:=ctooltip
    myform:ahelpid[i]:=nhelpid
-   ProcessContainersfill( Cname,nrow,ncol )
+   ProcessContainersfill( Cname,nrow,ncol, myIde )
 return
 
 *------------------------------
-static function panimatebox(i)
+static function panimatebox( i, myIde )
 *------------------------------
    cname:=myform:acontrolw[i]
    myform:actrltype[i]:='ANIMATE'
@@ -3599,10 +3588,10 @@ static function panimatebox(i)
    myform:atransparent[i]:=iif(ltrans='T',.T.,.F.)
 
    myform:ahelpid[i]:=nhelpid
-   ProcessContainersfill( Cname,nrow,ncol )
+   ProcessContainersfill( Cname,nrow,ncol, myIde )
 return
 *--------------------------
-static function pimage(i)
+static function pimage( i, myIde )
 *--------------------------
    cname:=myform:acontrolw[i]
    myform:actrltype[i]:='IMAGE'
@@ -3636,10 +3625,10 @@ static function pimage(i)
 
    myform:astretch[i]:=iif(lstretch='T',.T.,.F.)
    myform:ahelpid[i]:=nHelpid
-   ProcessContainersfill( Cname,nrow,ncol )
+   ProcessContainersfill( Cname,nrow,ncol, myIde )
 return
 *----------------------------
-static function ppicbutt(i)
+static function ppicbutt( i, myIde )
 *----------------------------
    cName:=myform:acontrolw[i]
    myform:actrltype[i]:='PICBUTT'
@@ -3682,10 +3671,10 @@ static function ppicbutt(i)
    myform:aongotfocus[i]:=congotfocus
    myform:aonlostfocus[i]:=conlostfocus
 
-   ProcessContainersfill( Cname,nrow,ncol )
+   ProcessContainersfill( Cname,nrow,ncol, myIde )
 return
 *--------------------------------
-static function ppiccheckbutt(i)
+static function ppiccheckbutt( i, myIde )
 *--------------------------------
    cname:=myform:acontrolw[i]
    myform:actrltype[i]:='PICCHECKBUTT'
@@ -3729,10 +3718,10 @@ static function ppiccheckbutt(i)
    myform:aongotfocus[i]:=congotfocus
    myform:aonlostfocus[i]:=conlostfocus
    myform:aonchange[i]:=conchange
-   ProcessContainersfill( Cname,nrow,ncol )
+   ProcessContainersfill( Cname,nrow,ncol, myIde )
 return
 *---------------------------
-static function pcheckbtn(i)
+static function pcheckbtn( i, myIde )
 *---------------------------
    cname:=myform:acontrolw[i]
    myform:actrltype[i]:='CHECKBTN'
@@ -3805,10 +3794,10 @@ static function pcheckbtn(i)
    myform:aongotfocus[i]:=congotfocus
    myform:aonlostfocus[i]:=conlostfocus
    myform:aonchange[i]:=conchange
-   ProcessContainersfill( Cname,nrow,ncol )
+   ProcessContainersfill( Cname,nrow,ncol, myIde )
 return
 *------------------------------
-static function pcombobox(i)
+static function pcombobox( i, myIde )
 *------------------------------
    cname:=myform:acontrolw[i]
    myform:actrltype[i]:='COMBO'
@@ -3886,10 +3875,10 @@ static function pcombobox(i)
   myform:aonenter[i]:=conenter
   myform:aondisplaychange[i]:=condisplaychange
 
-  ProcessContainersfill( Cname,nrow,ncol )
+  ProcessContainersfill( Cname,nrow,ncol, myIde )
 return
 *----------------------------
-static function plistbox(i)
+static function plistbox( i, myIde )
 *----------------------------
    cname:=myform:acontrolw[i]
    myform:actrltype[i]:='LIST'
@@ -3967,10 +3956,10 @@ static function plistbox(i)
   myform:aonchange[i]:=conchange
   myform:aondblclick[i]:=condblclick
 
-  ProcessContainersfill( Cname,nrow,ncol )
+  ProcessContainersfill( Cname,nrow,ncol, myIde )
 return
 *-----------------------------
-static function pcheckbox(i)
+static function pcheckbox( i, myIde )
 *-----------------------------
    cName:=myform:acontrolw[i]
    myform:actrltype[i]:='CHECKBOX'
@@ -4041,11 +4030,11 @@ static function pcheckbox(i)
    myform:aongotfocus[i]:=congotfocus
    myform:aonlostfocus[i]:=conlostfocus
    myform:aonchange[i]:=conchange
-   ProcessContainersfill( Cname,nrow,ncol )
+   ProcessContainersfill( Cname,nrow,ncol, myIde )
 return
 
 *---------------------------
-static function pbutton(i)
+static function pbutton( i, myIde )
 *---------------------------
 
    cName:=myform:acontrolw[i]
@@ -4127,7 +4116,7 @@ static function pbutton(i)
       endif
    endif
 
-  
+
    myform:atooltip[i]:=ctooltip
     form_1:&cname:tooltip:=ctooltip
    myform:aaction[i]:=caction
@@ -4138,11 +4127,11 @@ static function pbutton(i)
 
    myform:aongotfocus[i]:=congotfocus
    myform:aonlostfocus[i]:=conlostfocus
-   ProcessContainersfill( Cname,nrow,ncol )
+   ProcessContainersfill( Cname,nrow,ncol, myIde )
 return
 
 *----------------------------
-static function ptextbox(i)
+static function ptextbox( i, myIde )
 *----------------------------
    cname:=myform:acontrolw[i]
    myform:actrltype[i]:='TEXT'
@@ -4263,28 +4252,28 @@ static function ptextbox(i)
      myform:avalid[i]:=cvalid
      myform:awhen[i]:=cwhen
 
-     ProcessContainersfill( Cname,nrow,ncol )
+     ProcessContainersfill( Cname,nrow,ncol, myIde )
 return
 
 *------------------------------------------------------------------------------*
-static function ProcessContainers( ControlName )
+static function ProcessContainers( ControlName, myIde )
 *------------------------------------------------------------------------------*
 local i , ActivePage , z,k,k1 ,ocontrol,owindow,alsc
 if .not. (myform:swtab)
    return nil
 endif
         owindow:=getformobject('Form_1')
-	For i := 1 To Len (owindow:acontrols)
+   For i := 1 To Len (owindow:acontrols)
             ocontrol:=owindow:acontrols[i]
-		If ocontrol:type == 'TAB'
+      If ocontrol:type == 'TAB'
                         cname:=ocontrol:name
                         ndesrow:=ocontrol:row   &&& cordenada del tab para desplazamiento del mouse
                         ndescol:=ocontrol:col
-			If ( _ooHG_mouserow > ocontrol:Row ) .And. (_ooHG_mouserow < ocontrol:Row + ocontrol:Height ) .And. ( _ooHG_mousecol > ocontrol:Col ) .And. ( _ooHG_mousecol < ocontrol:Col + ocontrol:Width )
-				ActivePage := _GetValue ( ocontrol:Name , 'Form_1' )
-				aAdd ( ocontrol:aPages[ActivePage] , GetControlobject ( ControlName , 'Form_1' ) )
+         If ( _ooHG_mouserow > ocontrol:Row ) .And. (_ooHG_mouserow < ocontrol:Row + ocontrol:Height ) .And. ( _ooHG_mousecol > ocontrol:Col ) .And. ( _ooHG_mousecol < ocontrol:Col + ocontrol:Width )
+            ActivePage := _GetValue ( ocontrol:Name , 'Form_1' )
+            aAdd ( ocontrol:aPages[ActivePage] , GetControlobject ( ControlName , 'Form_1' ) )
                                 form_1:&cname:AddControl(controlname, activepage,_ooHG_mouserow - ndesrow ,_ooHG_mousecol - ndescol )
-                                alsc:=myide:asystemcoloraux
+                                alsc := myIde:asystemcoloraux
                                 form_1:&controlname:backcolor:=alsc
                                 cvc:=ascan( myform:acontrolw, { |c| lower( c ) == lower(controlname) } )
                                 if cvc>0
@@ -4314,23 +4303,23 @@ endif
                                next k1
                            next k
 
-                	CHideControl ( GetControlobject ( ControlName , 'Form_1' ):hwnd )
-			CShowControl ( GetControlobject ( ControlName , 'Form_1' ):hwnd )
-				EndIf
+                   CHideControl ( GetControlobject ( ControlName , 'Form_1' ):hwnd )
+         CShowControl ( GetControlobject ( ControlName , 'Form_1' ):hwnd )
+            EndIf
 
-			Exit
+         Exit
 
 
-		EndIf
+      EndIf
 
-	Next i
+   Next i
 
 Return
 
 
 *----------------------------------------------------
 ** llena los TABS, previo cargado de los controles en la forma
-static function ProcessContainersfill( ControlName,row,col )
+static function ProcessContainersfill( ControlName, row, col, myIde )
 *------------------------------------------------------------------------------*
 local i , pagecount , z,l,swpagename,pagename,swnoestab
 if .not. myform:swtab
@@ -4381,7 +4370,7 @@ if pagecount>0 .and. swnoestab=0
    form_1:&tabname:addcontrol(Controlname,pagecount,row,col)
 
    if myform:abackcolor[z]="NIL"
-      alsc:=myide:asystemcoloraux
+      alsc := myIde:asystemcoloraux
       form_1:&controlname:backcolor:=alsc
    endif
 endif
@@ -4427,23 +4416,6 @@ cimages:=substr(cimages,1,len(cimages)-1)+'}'
 myform:acaption[h]:=ccaptions
 myform:aimage[h]:=cimages
 return nil
-
-
-*------------------
-Procedure pulse
-*------------------
-return nil    ///// me pidieron quitarlo y creo que tenian razon
-///oControl:=GetControlObjectByHandle( getfocus() )
-///if ocontrol:hwnd > 0
-///   cName:=lower(oControl:name )
-///       For j:=1 to myform:ncontrolw
-///            if lower(myform:acontrolw[j]) == cname
-///                  msginfo(myform:aaction[j],"Action Information")
-///                  c_setfocus (GetFormhandle('FORM_1'))
-///            endif
-///       Next
-///endif
-///return nil
 
 
 *-------------------------
@@ -4525,17 +4497,17 @@ form_main:labelyx:value:=strzero(irow,4)+','+strzero(icol,4)
 if .not. iswindowactive(form_1)
    return nil
 endif
-BorderWidth 	:= GetBorderWidth()
-BorderHeight 	:= GetBorderHeight()
+BorderWidth    := GetBorderWidth()
+BorderHeight    := GetBorderHeight()
 ****swcursor:=0
 ****************************************
 
-		iMin := 0
+      iMin := 0
 
-		w_OOHG_MouseRow = _OOHG_MouseRow  -  BorderHeight
-		w_OOHG_MouseCol = _OOHG_MouseCol  - BorderWidth
+      w_OOHG_MouseRow = _OOHG_MouseRow  -  BorderHeight
+      w_OOHG_MouseCol = _OOHG_MouseCol  - BorderWidth
 
-		For i := 2 To Len (myform:aname)
+      For i := 2 To Len (myform:aname)
                     wcnamet:=myform:aname[i]
              if valtype(wcnamet)='C' .and. wcnamet#'' ;
                 .and. (.not. (myform:actrltype[i]$'STATUSBAR'))
@@ -4560,7 +4532,7 @@ BorderHeight 	:= GetBorderHeight()
                       iMin := i
                    EndIf
                 endif
-		endif
+      endif
              endif
        Next i
 
@@ -4568,7 +4540,7 @@ BorderHeight 	:= GetBorderHeight()
 
              if imin>0
 
-                   cursormove()
+                   CursorHand()
 
                 swcursor:=1
                 myhandle=imin
@@ -4581,7 +4553,7 @@ BorderHeight 	:= GetBorderHeight()
 
 
         Imin:=0
-	For i := 2 To Len (myform:aname)
+   For i := 2 To Len (myform:aname)
              wcnamet:=myform:aname[i]
              if valtype(wcnamet)='C' .and. wcnamet#'' .and. (.not. (myform:actrltype[i]$'STATUSBAR'))
                 ocontrol:=getcontrolobject(wcnamet,'form_1')
@@ -4610,10 +4582,10 @@ BorderHeight 	:= GetBorderHeight()
              endif
              endif
              endif
-       	Next i
+          Next i
 
              if imin>0
-                cursorsize()
+                CursorSizeNWSE()
                 swcursor:=2
                 myhandle=imin
              else
@@ -4639,7 +4611,7 @@ return .F.
 
 
 *------------------------
-function HELP_F1(C_P)
+function HELP_F1(C_P, myIde )
 *-------------------------
 LOCAL WR,I, H, F
 **PARAMETER C_P,L_N,I_V
@@ -4755,7 +4727,7 @@ DEFINE WINDOW FAYUDA  obj fayuda  ;
    TITLE 'Help' ;
    ICON 'Edit' ;
    modal on release closeoff() ;
-   backcolor myide:asystemcolor
+   backcolor myIde:asystemcolor
 
    on key ESCAPE of fayuda ACTION { || fayuda:release() , closeoff()  }
 
@@ -4781,24 +4753,18 @@ return nil
 
 
 /////////// funciones para hacer debug....
-procedure debugt
-local i,l
+Function DebugT
+   Local i, l, oForm, aCont
 
-l:=len(getformobject("form_1"):acontrols)
-
-//////msgbox(str(myhandle)+","+str(nhandlep)+","+str(l))
-
-for i:=1 to l
-
-      arr:=(getformobject("form_1"):acontrols[i] )
-         if arr:container:name#NIL
-            msginfo(arr:container:name)
-         endif
-
-//      c:=str(arr[1])+","+str(arr[2])+","+str(arr[3])
-///      msgbox(myide:aname[i])
-next i
-return
+   oForm := GetFormObject( "form_1" )
+   l := Len( oForm:aControls )
+   For i := 1 To l
+      aCont := oForm:aControls[i]
+      If aCont:Container:Name # NIL
+         MsgInfo( aCont:Container:Name )
+      EndIf
+   Next i
+Return Nil
 
 
 procedure debugw
@@ -4840,11 +4806,6 @@ return hidewindow(x)
 #include "hbapiitm.h"
 /////#include "wingdi.h"
 
-HB_FUNC ( C_SETFOCUS )
-{
-   hb_retnl( (LONG) SetFocus( (HWND) hb_parnl( 1 ) ) );
-}
-
 HB_FUNC ( HB_GETDC )
 {
    hb_retnl( (ULONG) GetDC( (HWND) hb_parnl(1) ) ) ;
@@ -4855,7 +4816,6 @@ HB_FUNC ( HB_RELEASEDC )
    hb_retl( ReleaseDC( (HWND) hb_parnl(1), (HDC) hb_parnl(2) ) ) ;
 }
 
-
 HB_FUNC( SETPIXEL )
 {
 
@@ -4864,27 +4824,6 @@ HB_FUNC( SETPIXEL )
                               hb_parni( 3 )      ,
                               (COLORREF) hb_parnl( 4 )
                             ) ) ;
-}
-
-HB_FUNC ( INTERACTIVESIZE )
-{
-
-        keybd_event(
-                VK_DOWN,
-                0,
-                0,
-                0
-        );
-
-        keybd_event(
-                VK_RIGHT,
-                0,
-                0,
-                0
-        );
-
-        SendMessage( GetFocus() , WM_SYSCOMMAND , SC_SIZE , 0 );
-
 }
 
 HB_FUNC ( INTERACTIVESIZEHANDLE )
@@ -4926,49 +4865,6 @@ HB_FUNC ( INTERACTIVEMOVEHANDLE )
 
         SendMessage( (HWND) hb_parnl(1) , WM_SYSCOMMAND , SC_MOVE ,10 );
 
-}
-
-HB_FUNC ( INTERACTIVEMOVE )
-{
-
-        keybd_event(
-                VK_RIGHT,       // virtual-key code
-                0,              // hardware scan code
-                0,              // flags specifying various function optio
-                0               // additional data associated with keystro
-        );
-        keybd_event(
-                VK_LEFT,        // virtual-key code
-                0,              // hardware scan code
-                0,              // flags specifying various function optio
-                0               // additional data associated with keystro
-        );
-
-        SendMessage( GetFocus() , WM_SYSCOMMAND , SC_MOVE ,10 );
-
-}
-
-HB_FUNC( LOADCURSOR2 )
-{
-  HINSTANCE hInstance    = (HINSTANCE) hb_parnl(1);  // handle to application instance
-  LPCTSTR   lpCursorName = (LPCTSTR)   hb_parc(2);   // name string or resource identifier
-
-  hb_retnl( (long) LoadCursor( hInstance, lpCursorName ) );
-}
-
-HB_FUNC( CURSORHAND )
-{
-   hb_retnl( (long) SetCursor( LoadCursor( 0, IDC_NO ) ) );
-}
-
-HB_FUNC( CURSORSIZE )
-{
-   hb_retnl( (long) SetCursor( LoadCursor( 0, IDC_SIZENWSE ) ) );
-}
-
-HB_FUNC( CURSORMOVE )
-{
-   hb_retnl( (long) SetCursor( LoadCursor( 0, IDC_HAND ) ) );
 }
 
 #pragma ENDDUMP

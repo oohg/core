@@ -1,20 +1,22 @@
 /*
- * $Id: orden.prg,v 1.2 2014-04-15 00:46:19 fyurisich Exp $
+ * $Id: orden.prg,v 1.3 2014-06-19 18:53:30 fyurisich Exp $
  */
 
 #include 'oohg.ch'
-function ordercontrol()
 
-set interactiveclose on
+//------------------------------------------------------------------------------
+Function OrderControl( myIde )
+//------------------------------------------------------------------------------
+   SET INTERACTIVECLOSE ON
 
-load window orderf AS ordercontrol
-ordercontrol:=getformobject("ordercontrol")
-ordercontrol:backcolor:=myide:asystemcolor
-center window ordercontrol
-activate window ordercontrol
-swordenfd:=.F.
-mispuntos()
-return nil
+   LOAD WINDOW orderf AS ordercontrol
+   ordercontrol := GetFormObject( "ordercontrol" )
+   ordercontrol:backcolor := myIde:asystemcolor
+   CENTER WINDOW ordercontrol
+   ACTIVATE WINDOW ordercontrol
+   swordenfd := .F.
+   MisPuntos()
+Return Nil
 
 *------------------------
 function llenatipos()

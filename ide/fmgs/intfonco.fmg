@@ -13,7 +13,7 @@ DEFINE WINDOW TEMPLATE AT 132 , 235 WIDTH 308 HEIGHT 244 TITLE "Interactive Font
         WIDTH  100
         HEIGHT 28
         CAPTION "Font Type"
-        ACTION gfontt(si)
+        ACTION GFontT( si )
         FONTNAME "Arial"
         FONTSIZE 9
         TOOLTIP ""
@@ -37,7 +37,7 @@ DEFINE WINDOW TEMPLATE AT 132 , 235 WIDTH 308 HEIGHT 244 TITLE "Interactive Font
         WIDTH  100
         HEIGHT 28
         CAPTION "Backcolor"
-        ACTION gbackc(si)
+        ACTION GBackC( si )
         FONTNAME "Arial"
         FONTSIZE 9
         TOOLTIP ""
@@ -107,7 +107,7 @@ DEFINE WINDOW TEMPLATE AT 132 , 235 WIDTH 308 HEIGHT 244 TITLE "Interactive Font
         WIDTH  110
         HEIGHT 28
         CAPTION "Default BackColor"
-        ACTION sdefcol(si)
+        ACTION SDefCol( si, myIde )
         FONTNAME "Arial"
         FONTSIZE 9
         TOOLTIP ""

@@ -1,5 +1,5 @@
 /*
- * $Id: propeven.prg,v 1.2 2014-04-15 00:46:19 fyurisich Exp $
+ * $Id: propeven.prg,v 1.3 2014-06-19 18:53:30 fyurisich Exp $
  */
 
 #include 'oohg.ch'
@@ -8,21 +8,21 @@
 #define SS_RIGHT            2
 
 *----------------------------
-Procedure Properties_Click
+Function Properties_Click( myIde )
 *----------------------------
 local i,cname,j, Title , aLabels , aInitValues , aFormats , aResults,ctipo,jh,nn,temp
 declare window form_1
 
 with object myform
 
-	h := GetFormHandle ( :designform )
-	BaseRow 	:= GetWindowRow ( h ) + GetBorderHeight()
-	BaseCol 	:= GetWindowCol ( h ) + GetBorderWidth()
-	BaseWidth 	:= GetWindowWidth ( h )
-	BaseHeight 	:= GetWindowHeight ( h )
-	TitleHeight 	:= GetTitleHeight()
-	BorderWidth 	:= GetBorderWidth()
-	BorderHeight 	:= GetBorderHeight()
+   h := GetFormHandle ( :designform )
+   BaseRow    := GetWindowRow ( h ) + GetBorderHeight()
+   BaseCol    := GetWindowCol ( h ) + GetBorderWidth()
+   BaseWidth    := GetWindowWidth ( h )
+   BaseHeight    := GetWindowHeight ( h )
+   TitleHeight    := GetTitleHeight()
+   BorderWidth    := GetBorderWidth()
+   BorderHeight    := GetBorderHeight()
 
                 i:=nhandlep
                 if i>0
@@ -39,7 +39,7 @@ with object myform
                       aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
                       if aresults[1] == Nil
                          **   msginfo('Properties abandoned','Information')
-                         return
+                         Return Nil
                       endif
                       if len(aresults[1] )>0
                          ocontrol:caption:= aresults[1]
@@ -52,12 +52,12 @@ with object myform
                        endif
                       :aenabled[j]:=aresults[5]
                       :avisible[j]:=aresults[6]
-                      return
+                      Return Nil
                    else
                       if ocontrol:type == 'TAB'
                          cname:=lower(ocontrol:name)
                          sa:=ascan( :acontrolw, { |c| lower( c ) == cname  } )
-	                 TabProp(i)   &&&& propiedades de TAB personalizadas
+                    TabProp( i, myIDe )   // propiedades de TAB personalizadas
                          cacaptions:=:acaption[sa]
                          carreglo:= &cacaptions
                          cnametab:=:acontrolw[sa]
@@ -82,7 +82,7 @@ with object myform
                          aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
                          if aresults[1] == Nil
                       **      msginfo('Properties abandoned','Information')
-                            return
+                            Return Nil
                          endif
                          if aresults[7] .and. aresults[3]
                             msginfo("Uppercase and Lowercase at the same time It's not logic","Information")
@@ -136,7 +136,7 @@ with object myform
 
 
                       endif
-                      
+
                       if :actrltype[j]=="IPADDRESS"
                          Title:=cnamew+" properties"
                          aLabels         := { 'Tooltip'        ,'Value'        ,'Helpid'        , 'Enabled','Visible','Notabstop','Name'}
@@ -145,7 +145,7 @@ with object myform
                          aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
                          if aresults[1] == Nil
                       **      msginfo('Properties abandoned','Information')
-                            return
+                            Return Nil
                          endif
 
 
@@ -176,7 +176,7 @@ with object myform
                          aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
                          if aresults[1] == Nil
                       **      msginfo('Properties abandoned','Information')
-                            return
+                            Return Nil
                          endif
 
 
@@ -205,7 +205,7 @@ with object myform
                          aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
                          if aresults[1] == Nil
                       **      msginfo('Properties abandoned','Information')
-                            return
+                            Return Nil
                          endif
 
 
@@ -233,13 +233,13 @@ with object myform
                          aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
                          if aresults[1] == Nil
                         ***    msginfo('Properties abandoned','Information')
-                            return
+                            Return Nil
                          endif
 
                          :atooltip[j]:=aresults[1]
 
                          ocontrol:tooltip:=aresults[1]
-                    
+
                          if aresults[2] >0
                             :amaxlength[j]:=aresults[2]
                          else
@@ -247,7 +247,7 @@ with object myform
                          endif
                          :areadonly[j]:=aresults[3]
 
-                        
+
                             ocontrol:value:= aresults[4]
                             :avalue[j]:=aresults[4]
 
@@ -272,13 +272,13 @@ with object myform
                          aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
                          if aresults[1] == Nil
                         ***    msginfo('Properties abandoned','Information')
-                            return
+                            Return Nil
                          endif
 
                          :atooltip[j]:=aresults[1]
 
                                ocontrol:tooltip:=aresults[1]
-                     
+
                          if aresults[2] >0
                             :amaxlength[j]:=aresults[2]
                          else
@@ -316,7 +316,7 @@ with object myform
                          aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
                          if aresults[1] == Nil
                            *** msginfo('Properties abandoned','Information')
-                            return
+                            Return Nil
                          endif
 
                          :aheaders[j]:=aresults[1]
@@ -347,7 +347,7 @@ with object myform
                          :ainplace[j]:=aresults[22]
                          :ainputmask[j]:=aresults[23]
                          :aedit[j]:=aresults[24]
-                      endif                  
+                      endif
                       if :actrltype[j]=="LABEL"
                          Title:=cnamew+" properties"
                          aLabels         := { 'Value'         ,  'Bold'       ,'Helpid'         , 'Transparent','centeralign','rightalign', 'Tooltip','Name','Autosize',"Enabled","Visible","Clientedge" }
@@ -356,7 +356,7 @@ with object myform
                          aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
                          if aresults[1] == Nil
 ****                            msginfo('Properties abandoned','Information')
-                            return
+                            Return Nil
                          endif
 
                          if len(aresults[1])>0
@@ -383,7 +383,7 @@ with object myform
                           if .not. aresults[5] .and. .not. aresults[6]
                               ocontrol:align:=SS_LEFT
                           endif
-                                
+
                           :atooltip[j]:=ltrim(aresults[7])
                           if len(aresults[8])>0
                                :aname[j]:=strtran(aresults[8]," ","")
@@ -402,7 +402,7 @@ with object myform
                          aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
                          if aresults[1] == Nil
     ****                        msginfo('Properties abandoned','Information')
-                            return
+                            Return Nil
                          endif
 
                          :arange[j]:=aresults[1]
@@ -428,7 +428,7 @@ with object myform
                          aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
                          if aresults[1] == Nil
         ****                    msginfo('Properties abandoned','Information')
-                            return
+                            Return Nil
                          endif
                          :arange[j]:=aresults[1]
                          :avaluen[j]:=aresults[2]
@@ -467,7 +467,7 @@ with object myform
                          aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
                          if aresults[1] == Nil
             ****                msginfo('Properties abandoned','Information')
-                            return
+                            Return Nil
                          endif
 
                          :arange[j]:=aresults[1]
@@ -495,7 +495,7 @@ with object myform
                             aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
                             if aresults[1] == Nil
                 ***               msginfo('Properties abandoned','Information')
-                              return
+                              Return Nil
                             endif
 
                             if len(aresults[1])>0
@@ -508,7 +508,7 @@ with object myform
                              :atooltip[j]:=aresults[2]
 
                                ocontrol:tooltip:=aresults[2]
-                        
+
                             :ahelpid[j]:=aresults[3]
                             :anotabstop[j]:=aresults[4]
                             :aenabled[j]:=aresults[5]
@@ -529,7 +529,7 @@ with object myform
 
                               if aresults[1] == Nil
                    ****              msginfo('Properties abandoned','Information')
-                                return
+                                Return Nil
                               endif
 
 
@@ -542,7 +542,7 @@ with object myform
                               :atooltip[j]:=aresults[3]
 
                                  ocontrol:tooltip:=aresults[3]
-                          
+
                               :ahelpid[j]:=aresults[4]
                               :afield[j]:=aresults[5]
                               :atransparent[j]:=aresults[6]
@@ -561,7 +561,7 @@ with object myform
                               aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
                               if aresults[1] == Nil
                        ****          msginfo('Properties abandoned','Information')
-                                return
+                                Return Nil
                               endif
 
                               :avaluen[j]:=aresults[1]
@@ -599,7 +599,7 @@ with object myform
                               aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
                               if aresults[1] == Nil
                        ****          msginfo('Properties abandoned','Information')
-                                return
+                                Return Nil
                               endif
 
                               :aheaders[j]:=aresults[1]
@@ -639,7 +639,7 @@ with object myform
                               aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
                               if aresults[1] == Nil
                            ***      msginfo('Properties abandoned','Information')
-                                return
+                                Return Nil
                               endif
                               ***********
                               nllaves1:=0
@@ -658,7 +658,7 @@ with object myform
                               if (len(&citems)<2) .or. (nllaves1#1) .or. (nllaves2#1)
                                  citems:="{'option 1','option 2'}"
                                  msginfo('minimun 2 options','Information')
-                                 return
+                                 Return Nil
                               endif
                               **********
                               :avaluen[j]:=aresults[1]
@@ -688,7 +688,7 @@ with object myform
                               aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
                               if aresults[1] == Nil
                 ***                 msginfo('Properties abandoned','Information')
-                                return
+                                Return Nil
                               endif
 
                               :avaluen[j]:=aresults[1]
@@ -701,7 +701,7 @@ with object myform
                               :atooltip[j]:=aresults[3]
 
                                  ocontrol:tooltip:=aresults[3]
-                          
+
                               :ahelpid[j]:=aresults[4]
                               :anotabstop[j]:=aresults[5]
                               :asort[j]:=  aresults[6]
@@ -727,7 +727,7 @@ with object myform
 
                               if aresults[1] == Nil
                    ***              msginfo('Properties abandoned','Information')
-                                return
+                                Return Nil
                               endif
                               :avaluel[j]:=aresults[1]
                               ocontrol:value:=aresults[1]
@@ -742,7 +742,7 @@ with object myform
                               :atooltip[j]:=aresults[3]
 
                                  ocontrol:tooltip:=aresults[3]
-                           
+
                               :ahelpid[j]:=aresults[4]
                               if .not. empty(aresults[5] )
                                 :aname[j]:=aresults[5]
@@ -760,7 +760,7 @@ with object myform
 
                               if aresults[1] == Nil
             *****                     msginfo('Properties abandoned','Information')
-                                return
+                                Return Nil
                               endif
                               :avaluel[j]:=aresults[1]
 
@@ -774,7 +774,7 @@ with object myform
                               :atooltip[j]:=aresults[3]
 
                                   ocontrol:tooltip:=aresults[3]
-                          
+
 
                               :ahelpid[j]:=aresults[4]
                               if .not. empty(aresults[5] )
@@ -792,7 +792,7 @@ with object myform
                             aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
                             if aresults[1] == Nil
          ****                      msginfo('Properties abandoned','Information')
-                              return
+                              Return Nil
                             endif
 
 
@@ -822,7 +822,7 @@ with object myform
                             aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
                             if aresults[1] == Nil
            ****                    msginfo('Properties abandoned','Information')
-                              return
+                              Return Nil
                             endif
                             if len(aresults[1] )>0
                                :apicture[j]:=aresults[1]
@@ -845,7 +845,7 @@ with object myform
                             aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
                             if aresults[1] == Nil
              ***                  msginfo('Properties abandoned','Information')
-                              return
+                              Return Nil
                             endif
                             if aresults[1]>0
                                :avaluen[j]:=aresults[1]
@@ -866,7 +866,7 @@ with object myform
 
                             if aresults[1] == Nil
               ***                 msginfo('Properties abandoned','Information')
-                              return
+                              Return Nil
                             endif
                             :afile[j]:=aresults[1]
                             :aautoplay[j]:=aresults[2]
@@ -876,7 +876,7 @@ with object myform
                             :atooltip[j]:=aresults[6]
 
                                 ocontrol:tooltip:=aresults[6]
-                         
+
                             if .not. empty(aresults[7])
                                :aname[j]:=aresults[7]
                             endif
@@ -893,7 +893,7 @@ with object myform
 
                             if aresults[1] == Nil
               ***                 msginfo('Properties abandoned','Information')
-                              return
+                              Return Nil
                             endif
                             :afile[j]:=aresults[1]
                             :ahelpid[j]:=aresults[2]
@@ -913,7 +913,7 @@ with object myform
 
                          if aresults[1] == Nil
               ***              msginfo('Properties abandoned','Information')
-                            return
+                            Return Nil
                          endif
 
 
@@ -923,7 +923,7 @@ with object myform
                          :atooltip[j]:=aresults[2]
 
                             ocontrol:tooltip:=aresults[2]
-                    
+
                          :ashownone[j]:=aresults[3]
                          :aupdown[j]:=aresults[4]
                          :arightalign[j]:=aresults[5]
@@ -945,7 +945,7 @@ with object myform
 
                          if aresults[1] == Nil
               ***              msginfo('Properties abandoned','Information')
-                            return
+                            Return Nil
                          endif
                             :afontname[j]:=aresults[1]
 
@@ -959,7 +959,7 @@ with object myform
                          :atooltip[j]:=aresults[2]
 
                             ocontrol:tooltip:=aresults[2]
-                        
+
                          :anotoday[j]:=aresults[3]
                          :anotodaycircle[j]:=aresults[4]
                          :aweeknumbers[j]:=aresults[5]
@@ -972,7 +972,7 @@ with object myform
                       endif
 
                    endif
-		next j
+      next j
                      endif
                    endif
                 endif
@@ -980,23 +980,23 @@ with object myform
 
 :lFsave:=.F.
 End
-Return
+Return Nil
 
 *-------------------------
-Procedure events_click()
+Function Events_Click( myIDe )
 *-------------------------
 local i,cname,j, Title , aLabels , aInitValues , aFormats , aResults
 WITH OBJECT myform
         i = nhandlep
-	if i > 0
+   if i > 0
            ocontrol:=getformobject('form_1'):acontrols[i]
            cname:=lower(ocontrol:name)
            x:=ascan(:acontrolw, { |c| lower( c ) ==  cname  } )
-		if ocontrol:type  == 'TAB'
+      if ocontrol:type  == 'TAB'
                    Tabevent(i)
                    :lFsave:=.F.
-                   return nil            &&&& lo meti yo
-		Else
+                   Return Nil            &&&& lo meti yo
+      Else
                 cName:=lower(ocontrol:name)
                 nform:=1
                 For j:=1 to :ncontrolw
@@ -1010,7 +1010,7 @@ WITH OBJECT myform
                         aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
                          if aresults[1] == Nil
                ***             msginfo('Events abandoned','Information')
-                            return
+                            Return Nil
                          endif
                          :aonenter[j]:=aresults[1]
                          :aonchange[j]:=aresults[2]
@@ -1026,7 +1026,7 @@ WITH OBJECT myform
                          aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
                          if aresults[1] == Nil
               ***              msginfo('Events abandoned','Information')
-                            return
+                            Return Nil
                          endif
                          :aongotfocus[j]:=aresults[1]
                          :aonlostfocus[j]:=aresults[2]
@@ -1040,7 +1040,7 @@ WITH OBJECT myform
                          aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
                          if aresults[1] == Nil
              ***               msginfo('Events abandoned','Information')
-                            return
+                            Return Nil
                          endif
                          :aonchange[j]:=aresults[1]
                          :aongotfocus[j]:=aresults[2]
@@ -1055,7 +1055,7 @@ WITH OBJECT myform
                          aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
                          if aresults[1] == Nil
              ***               msginfo('Events abandoned','Information')
-                            return
+                            Return Nil
                          endif
                          :aonchange[j]:=aresults[1]
                          :aongotfocus[j]:=aresults[2]
@@ -1069,7 +1069,7 @@ WITH OBJECT myform
                          aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
                          if aresults[1] == Nil
             ****                msginfo('Events abandoned','Information')
-                            return
+                            Return Nil
                          endif
                          :aonchange[j]:=aresults[1]
                          :aongotfocus[j]:=aresults[2]
@@ -1087,7 +1087,7 @@ WITH OBJECT myform
                          aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
                          if aresults[1] == Nil
             ****                msginfo('Events abandoned','Information')
-                            return
+                            Return Nil
                          endif
                          :aonchange[j]:=aresults[1]
                          :aongotfocus[j]:=aresults[2]
@@ -1104,7 +1104,7 @@ WITH OBJECT myform
                          aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
                          if aresults[1] == Nil
             ****                msginfo('Events abandoned','Information')
-                            return
+                            Return Nil
                          endif
                          :aonchange[j]:=aresults[1]
                          :aongotfocus[j]:=aresults[2]
@@ -1125,7 +1125,7 @@ WITH OBJECT myform
                          aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
                          if aresults[1] == Nil
              ****               msginfo('Events abandoned','Information')
-                            return
+                            Return Nil
                          endif
                          :aonchange[j]:=aresults[1]
                          :aongotfocus[j]:=aresults[2]
@@ -1140,7 +1140,7 @@ WITH OBJECT myform
                          aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
                          if aresults[1] == Nil
               ****              msginfo('Events abandoned','Information')
-                            return
+                            Return Nil
                          endif
                          :aonchange[j]:=aresults[1]
                          :aongotfocus[j]:=aresults[2]
@@ -1155,7 +1155,7 @@ WITH OBJECT myform
                          aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
                          if aresults[1] == Nil
               ****              msginfo('Events abandoned','Information')
-                            return
+                            Return Nil
                          endif
                          :aonchange[j]:=aresults[1]
                          :aongotfocus[j]:=aresults[2]
@@ -1171,7 +1171,7 @@ WITH OBJECT myform
                          aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
                          if aresults[1] == Nil
           *****                  msginfo('Events abandoned','Information')
-                            return
+                            Return Nil
                          endif
                          :aonchange[j]:=aresults[1]
                          :aongotfocus[j]:=aresults[2]
@@ -1185,7 +1185,7 @@ WITH OBJECT myform
                          aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
                          if aresults[1] == Nil
           ***                  msginfo('Events abandoned','Information')
-                            return
+                            Return Nil
                          endif
                          :aonchange[j]:=aresults[1]
                          :aongotfocus[j]:=aresults[2]
@@ -1199,7 +1199,7 @@ WITH OBJECT myform
                          aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
                          if aresults[1] == Nil
           ***                  msginfo('Events abandoned','Information')
-                            return
+                            Return Nil
                          endif
                          :aongotfocus[j]:=aresults[1]
                          :aonlostfocus[j]:=aresults[2]
@@ -1213,7 +1213,7 @@ WITH OBJECT myform
                          aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
                          if aresults[1] == Nil
            ****                 msginfo('Events abandoned','Information')
-                            return
+                            Return Nil
                          endif
                          :aaction[j]:=aresults[1]
                       endif
@@ -1225,7 +1225,7 @@ WITH OBJECT myform
                          aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
                          if aresults[1] == Nil
            ****                 msginfo('Events abandoned','Information')
-                            return
+                            Return Nil
                          endif
                          :aonchange[j]:=aresults[1]
                       endif
@@ -1237,7 +1237,7 @@ WITH OBJECT myform
                          aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
                          if aresults[1] == Nil
            ****                 msginfo('Events abandoned','Information')
-                            return
+                            Return Nil
                          endif
                          :aaction[j]:=aresults[1]
                       endif
@@ -1249,7 +1249,7 @@ WITH OBJECT myform
                          aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
                          if aresults[1] == Nil
            ****                 msginfo('Events abandoned','Information')
-                            return
+                            Return Nil
                          endif
                          :aaction[j]:=aresults[1]
                       endif
@@ -1258,10 +1258,10 @@ WITH OBJECT myform
                          aLabels         := { 'On change'  }
                          aInitValues     := { :aonchange[j] }
                          aFormats        := { 250 }
-	                 aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
+                    aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
                          if aresults[1] == Nil
           ****                  msginfo('Events abandoned','Information')
-                            return
+                            Return Nil
                          endif
                          :aonchange[j]:=aresults[1]
                       endif
@@ -1273,7 +1273,7 @@ WITH OBJECT myform
                          aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
                          if aresults[1] == Nil
          ****                   msginfo('Events abandoned','Information')
-                            return
+                            Return Nil
                          endif
                          :aonchange[j]:=aresults[1]
                       endif
@@ -1285,7 +1285,7 @@ WITH OBJECT myform
                          aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
                          if aresults[1] == Nil
          ****                   msginfo('Events abandoned','Information')
-                            return
+                            Return Nil
                          endif
                          :aonchange[j]:=aresults[1]
                          :aongotfocus[j]:=aresults[2]
@@ -1300,7 +1300,7 @@ WITH OBJECT myform
                          aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
                          if aresults[1] == Nil
         ****                    msginfo('Events abandoned','Information')
-                            return
+                            Return Nil
                          endif
                          :aonchange[j]:=aresults[1]
                          :aongotfocus[j]:=aresults[2]
@@ -1314,7 +1314,7 @@ WITH OBJECT myform
                          aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
                          if aresults[1] == Nil
         ****                    msginfo('Events abandoned','Information')
-                            return
+                            Return Nil
                          endif
                          :aonchange[j]:=aresults[1]
                          :aongotfocus[j]:=aresults[2]
@@ -1323,16 +1323,17 @@ WITH OBJECT myform
                    endif
                 next j
 
-		EndIf
+      EndIf
 
 
-	EndIf
+   EndIf
 :lFsave:=.F.
 END
-return
+Return Nil
+
 
 *-------------------------
-function frmproperties()
+Function FrmProperties( myIde )
 *-------------------------
 with object myform
  Title:='Form '+:cfname+" properties"
@@ -1347,7 +1348,7 @@ with object myform
 
                   if aresults[1] == Nil
             ***         msginfo('Form Properties abandoned','Information')
-                            return
+                            Return Nil
                   endif
 
                          :cftitle:=aresults[1]
@@ -1424,10 +1425,11 @@ with object myform
                          :cfobj:=aresults[24]
                          :lFsave:=.F.
 end
-return
+Return Nil
+
 
 *----------------------
-function frmevents()
+Function FrmEvents( myIde )
 *----------------------
 local i,cname,j, Title , aLabels , aInitValues , aFormats , aResults
 
@@ -1440,7 +1442,7 @@ with object myform
                          aResults        := myinputwindow ( Title , aLabels , aInitValues , aFormats )
                          if aresults[1] == Nil
                ****             msginfo('Events abandoned','Information')
-                            return
+                            Return Nil
                          endif
           :cfoninit:=aresults[1]
           :cfonrelease:=aresults[2]
@@ -1461,13 +1463,14 @@ with object myform
           :cfoninteractiveclose:=aresults[17]
 :lFsave:=.F.
 end
-return
+Return Nil
+
 
 *-------------------------
-function statpropevents()
+Function StatPropEvents( myIde )
 *-------------------------
 with object myform
-     myide:lvirtual:=.T.
+     myIde:lvirtual:=.T.
      cname:='Statusbar'
      Title:=cname+" properties"
      aLabels         := { 'Caption'        ,'Width' ,'Action','icon','flat','raised','tooltip','date','time','Keyboard' }
@@ -1477,7 +1480,7 @@ with object myform
      if aresults[1] == Nil
         **   msginfo('Properties abandoned','Information')
        :control_click(1)
-       return
+       Return Nil
      endif
 
   form_1.statusbar.release
@@ -1510,9 +1513,11 @@ with object myform
     :lFsave:=.F.
     :control_click(1)
  end
-return
+Return Nil
+
+
 *-----------------------
-function TabProp(i)
+Function TabProp( i, myIde )
 *-----------------------
 local ki
 with object myform
@@ -1534,14 +1539,15 @@ with object myform
         tabprop.check_5.value:=:aenabled[ki]
         tabprop.check_6.value:=:avisible[ki]
 
-	CENTER WINDOW tabProp
+   CENTER WINDOW tabProp
 
-	ACTIVATE WINDOW TabProp
-	end
-Return nil
+   ACTIVATE WINDOW TabProp
+   end
+Return Nil
+
 
 *--------------------
-function Tabevent(i)
+Function Tabevent( i )
 *--------------------
 local ki
 with object myform
@@ -1552,14 +1558,15 @@ with object myform
         tabprop.text_101.value:=:aonchange[ki]
         tabprop.title:="Tab events "+:aname[ki]
 
-	CENTER WINDOW tabProp
+   CENTER WINDOW tabProp
 
-	ACTIVATE WINDOW TabProp
+   ACTIVATE WINDOW TabProp
 end
-Return nil
+Return Nil
+
 
 *-------------------------
-function cambiacap(cname)
+Function CambiaCap( cName )
 *-------------------------
 local i
 cacaptions:=  tabprop.text_101.value
@@ -1570,9 +1577,11 @@ if HB_Isarray(acaptions)
        otab:caption(i,acaptions[i])
    next i
 endif
-return nil
+Return Nil
+
+
 *-----------------------------
-function addtabpageaux(i)
+Function AddTabPageAux( i )
 *-----------------------------
 local j,cname
 with object myform
@@ -1591,10 +1600,11 @@ tabprop.Edit_2.value:=:aimage[j]
 cname:=:acontrolw[j]
 ocontrol:addpage(auxpages+1,'Page '+alltrim(str(auxpages+1)),'')
 end
-return
+Return Nil
+
 
 *------------------------------
-function deletetabpageaux(i)
+Function DeleteTabPageAux( i )
 *------------------------------
 local p,j,cname,p1,k
 with object myform
@@ -1606,7 +1616,7 @@ caux:=:acaption[j]
 caux1:=&(caux)
 auxpages:=len(caux1)
 if auxpages<=1
-   return nil
+   Return Nil
 endif
 p=rat(",",:acaption[j])
 p1=rat(",",:aimage[j])
@@ -1637,6 +1647,6 @@ ocontrol:visible:=.F.
 ocontrol:visible:=.T.
 
 end
-return
+Return Nil
 *------------------------------------------------------------------------------*
 

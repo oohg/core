@@ -1,5 +1,5 @@
 /*
- * $Id: mytoolbared.fmg,v 1.2 2014-04-15 00:46:19 fyurisich Exp $
+ * $Id: mytoolbared.fmg,v 1.3 2014-06-19 18:53:30 fyurisich Exp $
  */
 
 * Harbour Minigui IDE HMI+ form generated code
@@ -12,7 +12,7 @@ AT 108,99 ;
  TITLE ' ' ; 
  ICON '' ; 
 MODAL ;
-BACKCOLOR myide:asystemcolor ; 
+BACKCOLOR ::Backcolor ;
 FONT 'arial' ;
 SIZE 10 ;
 
@@ -23,7 +23,7 @@ HEIGHT 21 ;
 VALUE 'Caption' ; 
 FONT 'Arial' ; 
 SIZE 10 ;
-BACKCOLOR myide:asystemcolor ; 
+BACKCOLOR ::Backcolor ;
 
 
 
@@ -36,7 +36,7 @@ HEIGHT 16 ;
 VALUE 'Name' ; 
 FONT 'Arial' ; 
 SIZE 10 ;
-BACKCOLOR myide:asystemcolor ; 
+BACKCOLOR ::Backcolor ;
 
 
 
@@ -49,7 +49,7 @@ HEIGHT 21 ;
 VALUE 'Action' ; 
 FONT 'Arial' ; 
 SIZE 10 ;
-BACKCOLOR myide:asystemcolor ; 
+BACKCOLOR ::Backcolor ;
 
 
 
@@ -62,7 +62,7 @@ HEIGHT 22 ;
 VALUE 'Image' ; 
 FONT 'Arial' ; 
 SIZE 10 ;
-BACKCOLOR myide:asystemcolor ; 
+BACKCOLOR ::Backcolor ;
 
 
 
@@ -132,7 +132,7 @@ SIZE 10 ;
 
 
 MYTOOLBARED.button_101.fontcolor:={0,0,0}
-MYTOOLBARED.button_101.backcolor:=myide:asystemcolor
+MYTOOLBARED.button_101.backcolor:=::Backcolor
 
 @ 220,16 BUTTON button_102 ;
 CAPTION 'Delete item' ; 
@@ -145,7 +145,7 @@ SIZE 10 ;
 
 
 MYTOOLBARED.button_102.fontcolor:={0,0,0}
-MYTOOLBARED.button_102.backcolor:=myide:asystemcolor
+MYTOOLBARED.button_102.backcolor:=::Backcolor
 
 @ 266,16 BUTTON button_103 ;
 CAPTION 'New item' ; 
@@ -158,7 +158,7 @@ SIZE 10 ;
 
 
 MYTOOLBARED.button_103.fontcolor:={0,0,0}
-MYTOOLBARED.button_103.backcolor:=myide:asystemcolor
+MYTOOLBARED.button_103.backcolor:=::Backcolor
 
 @ 396,577 BUTTON button_tbp ;
 CAPTION 'Font' ; 
@@ -171,7 +171,7 @@ SIZE 10 ;
 
 
 MYTOOLBARED.button_tbp.fontcolor:={0,0,0}
-MYTOOLBARED.button_tbp.backcolor:=myide:asystemcolor
+MYTOOLBARED.button_tbp.backcolor:=::Backcolor
 
 @ 353,16 BUTTON button_106 ;
 CAPTION '/\' ; 
@@ -184,7 +184,7 @@ SIZE 10 ;
 
 
 MYTOOLBARED.button_106.fontcolor:={0,0,0}
-MYTOOLBARED.button_106.backcolor:=myide:asystemcolor
+MYTOOLBARED.button_106.backcolor:=::Backcolor
 
 @ 396,17 BUTTON button_107 ;
 CAPTION '\/' ; 
@@ -197,7 +197,7 @@ SIZE 10 ;
 
 
 MYTOOLBARED.button_107.fontcolor:={0,0,0}
-MYTOOLBARED.button_107.backcolor:=myide:asystemcolor
+MYTOOLBARED.button_107.backcolor:=::Backcolor
 
 @ 353,134 BUTTON button_108 ;
 CAPTION 'Save / Exit' ; 
@@ -210,7 +210,7 @@ SIZE 10 ;
 
 
 MYTOOLBARED.button_108.fontcolor:={0,0,0}
-MYTOOLBARED.button_108.backcolor:=myide:asystemcolor
+MYTOOLBARED.button_108.backcolor:=::Backcolor
 
 @ 396,133 BUTTON button_109 ;
 CAPTION 'Discard ' ; 
@@ -223,7 +223,7 @@ SIZE 10 ;
 
 
 MYTOOLBARED.button_109.fontcolor:={0,0,0}
-MYTOOLBARED.button_109.backcolor:=myide:asystemcolor
+MYTOOLBARED.button_109.backcolor:=::Backcolor
 
 @ 170,142 CHECKBOX checkbox_101 ;
 CAPTION 'Check' ;
@@ -237,7 +237,7 @@ ON CHANGE TMYtoolb:escribe1y() ;
 
 
 MYTOOLBARED.checkbox_101.fontcolor:={0,0,0}
-MYTOOLBARED.checkbox_101.backcolor:=myide:asystemcolor
+MYTOOLBARED.checkbox_101.backcolor:=::Backcolor
 
 @ 211,143 CHECKBOX checkbox_102 ;
 CAPTION 'Autosize' ;
@@ -251,7 +251,7 @@ ON CHANGE TMYtoolb:escribe1z() ;
 
 
 MYTOOLBARED.checkbox_102.fontcolor:={0,0,0}
-MYTOOLBARED.checkbox_102.backcolor:=myide:asystemcolor
+MYTOOLBARED.checkbox_102.backcolor:=::Backcolor
 
 @ 249,144 CHECKBOX checkbox_103 ;
 CAPTION 'Separator' ;
@@ -265,7 +265,7 @@ ON CHANGE TMYtoolb:escribe3a() ;
 
 
 MYTOOLBARED.checkbox_103.fontcolor:={0,0,0}
-MYTOOLBARED.checkbox_103.backcolor:=myide:asystemcolor
+MYTOOLBARED.checkbox_103.backcolor:=::Backcolor
 
 @ 291,144 CHECKBOX checkbox_104 ;
 CAPTION 'Group' ;
@@ -279,7 +279,7 @@ ON CHANGE TMYtoolb:escribe3b() ;
 
 
 MYTOOLBARED.checkbox_104.fontcolor:={0,0,0}
-MYTOOLBARED.checkbox_104.backcolor:=myide:asystemcolor
+MYTOOLBARED.checkbox_104.backcolor:=::Backcolor
 
 @ 314,313 CHECKBOX checkbox_1 ;
 CAPTION 'Flat' ;
@@ -292,7 +292,7 @@ SIZE 10 ;
 
 
 MYTOOLBARED.checkbox_1.fontcolor:={0,0,0}
-MYTOOLBARED.checkbox_1.backcolor:=myide:asystemcolor
+MYTOOLBARED.checkbox_1.backcolor:=::Backcolor
 
 @ 316,415 CHECKBOX checkbox_3 ;
 CAPTION 'Righttext' ;
@@ -305,7 +305,7 @@ SIZE 10 ;
 
 
 MYTOOLBARED.checkbox_3.fontcolor:={0,0,0}
-MYTOOLBARED.checkbox_3.backcolor:=myide:asystemcolor
+MYTOOLBARED.checkbox_3.backcolor:=::Backcolor
 
 @ 343,314 CHECKBOX checkbox_2 ;
 CAPTION 'Bottom' ;
@@ -318,7 +318,7 @@ SIZE 10 ;
 
 
 MYTOOLBARED.checkbox_2.fontcolor:={0,0,0}
-MYTOOLBARED.checkbox_2.backcolor:=myide:asystemcolor
+MYTOOLBARED.checkbox_2.backcolor:=::Backcolor
 
 @ 342,416 CHECKBOX checkbox_4 ;
 CAPTION 'Border' ;
@@ -331,7 +331,7 @@ SIZE 10 ;
 
 
 MYTOOLBARED.checkbox_4.fontcolor:={0,0,0}
-MYTOOLBARED.checkbox_4.backcolor:=myide:asystemcolor
+MYTOOLBARED.checkbox_4.backcolor:=::Backcolor
 
 @ 375,318 LABEL label_1 ; 
 WIDTH 82 ; 
@@ -339,7 +339,7 @@ HEIGHT 18 ;
 VALUE 'Toolbar Name' ; 
 FONT 'arial' ; 
 SIZE 10 ;
-BACKCOLOR myide:asystemcolor ; 
+BACKCOLOR ::Backcolor ;
 
 
 
@@ -364,7 +364,7 @@ HEIGHT 22 ;
 VALUE 'Tooltip' ; 
 FONT 'arial' ; 
 SIZE 10 ;
-BACKCOLOR myide:asystemcolor ; 
+BACKCOLOR ::Backcolor ;
 
 
 
@@ -389,7 +389,7 @@ HEIGHT 53 ;
 VALUE 'Button Width Height' ; 
 FONT 'arial' ; 
 SIZE 10 ;
-BACKCOLOR myide:asystemcolor ; 
+BACKCOLOR ::Backcolor ;
 
 
 
@@ -430,7 +430,7 @@ HEIGHT 144 ;
 
 
 MYTOOLBARED.frame_1.fontcolor:={0,0,0}
-MYTOOLBARED.frame_1.backcolor:=myide:asystemcolor
+MYTOOLBARED.frame_1.backcolor:=::Backcolor
 MYTOOLBARED.frame_1.fontname:='arial'
 MYTOOLBARED.frame_1.fontsize:= 10
 
@@ -445,7 +445,7 @@ SIZE 10 ;
 
 
 MYTOOLBARED.button_1.fontcolor:={  0,  0,  0}
-MYTOOLBARED.button_1.backcolor:=myide:asystemcolor
+MYTOOLBARED.button_1.backcolor:=::Backcolor
 
 @ 17,277 BROWSE browse_101 ;
 WIDTH 357 ;
@@ -485,7 +485,7 @@ HEIGHT 17 ;
 VALUE 'Tooltip' ; 
 FONT 'arial' ; 
 SIZE 10 ;
-BACKCOLOR myide:asystemcolor ; 
+BACKCOLOR ::Backcolor ;
 
 
 

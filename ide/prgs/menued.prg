@@ -1,92 +1,99 @@
 /*
- * $Id: menued.prg,v 1.2 2014-04-15 00:46:19 fyurisich Exp $
+ * $Id: menued.prg,v 1.3 2014-06-19 18:53:30 fyurisich Exp $
  */
 
 #include "dbstruct.ch"
 #include "oohg.ch"
 #include "hbclass.ch"
-#DEFINE CRLF CHR(13)+CHR(10)
 
-CLASS TMYMENUED FROM TFORM1
+#define CRLF CHR(13) + CHR(10)
 
-VAR nlevel INIT 0
+DEFINE WINDOW myMenuEd
 
-METHOD menu_ed( ntipo ) 
-METHOD exitmenu( ntipo) 
-METHOD discard()
-METHOD abrir()
-METHOD borrar()
-METHOD nextm()
-METHOD escribe()
-METHOD escribe1()
-METHOD escribe1a()
-METHOD escribe1x()
-METHOD escribe1y()
-METHOD escribe1z()
-METHOD escribe2()
-METHOD readlevel()
-METHOD insertar()
-METHOD cursordown()
-METHOD cursorup()
+CLASS TmyMenuEd FROM TForm1
+   VAR nlevel      INIT 0
+   VAR cfBackcolor INIT Nil
 
+   METHOD menu_ed( ntipo )
+   METHOD exitmenu( ntipo)
+   METHOD discard()
+   METHOD abrir()
+   METHOD borrar()
+   METHOD nextm()
+   METHOD escribe()
+   METHOD escribe1()
+   METHOD escribe1a()
+   METHOD escribe1x()
+   METHOD escribe1y()
+   METHOD escribe1z()
+   METHOD escribe2()
+   METHOD readlevel()
+   METHOD insertar()
+   METHOD cursordown()
+   METHOD cursorup()
 ENDCLASS
-*-----------------------------------------------
-METHOD menu_ed( ntipo,cbutton ) CLASS TMYMENUED
-*-----------------------------------------------
-local ctitulo:=''
-local archivo:=''
-tmymenu:abrir()
-zap
-do case
-   case ntipo=1
-        ctitulo:='Main'
-        archivo:=myform:cfname+'.mnm'
-        if file(archivo)
-           append from &archivo 
-        endif
-  case ntipo=2
-        ctitulo:='Context'
-        archivo:=myform:cfname+'.mnc'
-        if file(archivo)
-           append from &archivo 
-        endif
-  case ntipo=3
-        ctitulo:='Notify'
-        archivo:=myform:cfname+'.mnn'
-        if file(archivo)
-           append from  &archivo 
-        endif
-  case ntipo=4
-        ctitulo:='Drop Down'
-        archivo:=myform:cfname+'.'+alltrim(cbutton)+'.mnd'
-        if file(archivo)
-           append from &archivo 
-        endif
-endcase
-go top
-load window mymenued        
-mymenued:=getformobject("mymenued")
-mymenued:backcolor:=myide:asystemcolor
-mymenued:browse_101:value:=1
-if ntipo>1
-   mymenued:button_104:enabled:=.F.           
-   mymenued:button_105:enabled:=.F.
-endif
-mymenued:title:='ooHGIDE+ '+ctitulo+' menu editor'
 
-ACTIVATE WINDOW mymenued
-Return
+*-----------------------------------------------
+METHOD menu_ed( nTipo, cButton ) CLASS TMYMENUED
+*-----------------------------------------------
+Local cTitulo := '', cArchivo := ''
+
+   ::Abrir()
+   ZAP
+
+   DO CASE
+   CASE nTipo == 1
+      cTitulo := 'Main'
+      cArchivo := myForm:cFName + '.mnm'
+      IF File( cArchivo )
+         APPEND FROM &cArchivo
+      ENDIF
+   CASE nTipo == 2
+      cTitulo := 'Context'
+      cArchivo := myForm:cFName + '.mnc'
+      IF File( cArchivo )
+         APPEND FROM &cArchivo
+      ENDIF
+   CASE nTipo == 3
+      cTitulo := 'Notify'
+      cArchivo := myForm:cFName + '.mnn'
+      IF File( cArchivo )
+         APPEND FROM &cArchivo
+      ENDIF
+   CASE nTipo == 4
+      cTitulo := 'Drop Down'
+      cArchivo := myForm:cFName + '.' + AllTrim( cButton ) + '.mnd'
+      IF File( cArchivo )
+         APPEND FROM &cArchivo
+      ENDIF
+   ENDCASE
+
+   GO TOP
+
+   LOAD WINDOW myMenuEd
+   myMenuEd.BackColor := myIde:aSystemColor
+   myMenuEd.browse_101.Value := 1
+   IF nTipo > 1
+      myMenuEd.button_104.Enabled := .F.
+      myMenuEd.button_105.Enabled := .F.
+   ENDIF
+   myMenuEd.Title := 'ooHG IDE+ ' + cTitulo + ' menu editor'
+
+   ACTIVATE WINDOW myMenuEd
+RETURN NIL
+
+/*
 *-------------------------
 static function entlev()
 *-------------------------
-go mymenued:browse_101:value
+go myMenuEd.browse_101.value
 cdata:=alltrim(menues->lev)
 cnivelu:=inputbox('Data','User level',cdata)
 if len(cnivelu)>0
    replace menues->lev with cnivelu
 endif
 return
-
+*/
 *------------------------------------------------------
 METHOD exitmenu( ntipo,cbutton )  CLASS TMYMENUED  &&&&&&& save and exit
 *------------------------------------------------------
@@ -102,35 +109,35 @@ if ntipo=1 .and. nregs>0
    DEFINE MAIN MENU of form_1
    do while .not. eof()
       if recn() < reccount()
-         skip           
+         skip
          signiv:=level
          skip -1
       else
-         signiv=0   
-      endif     
+         signiv=0
+      endif
       niv=level
       if signiv>level
          if lower(trim(auxit))='separator'
-            SEPARATOR     
+            SEPARATOR
          else
             POPUP alltrim(auxit)
             swpop++
-         endif                            
+         endif
       else
          if lower(trim(auxit))='separator'
-            SEPARATOR     
+            SEPARATOR
          else
-            ITEM  alltrim(auxit)  ACTION  NIL  
+            ITEM  alltrim(auxit)  ACTION  NIL
             if trim(named)==''
             else
-               if menues->checked='X' 
+               if menues->checked='X'
                endif
                if menues->enabled='X'
                endif
             endif
          endif
 **********************************
-         do while signiv<niv 
+         do while signiv<niv
             END POPUP
             swpop--
             niv--
@@ -141,14 +148,14 @@ if ntipo=1 .and. nregs>0
    nnivaux:=niv-1
    do while swpop>0
       nnivaux--
-      END POPUP               
+      END POPUP
       swpop--
    enddo
-                
+
    END MENU
 endif
 /////use
-mymenued:release()
+myMenuEd.release()
 inkey(0.9)
 close data
 if ntipo=1
@@ -177,7 +184,7 @@ return
 METHOD discard() CLASS TMYMENUED
 *--------------------------------
 select menues
-mymenued:release()
+myMenuEd.release()
 inkey(0.9)
 close data
 mispuntos()
@@ -267,14 +274,14 @@ METHOD borrar() CLASS TMYMENUED
 *-------------------------------
 select menues
 
-go mymenued:browse_101:value
+go myMenuEd.browse_101.value
 
 delete
 inkey(0.5)
 pack
-mymenued:browse_101:value:=1
-mymenued:browse_101:refresh()
-mymenued:browse_101:setfocus()
+myMenuEd.browse_101.value:=1
+myMenuEd.browse_101.refresh()
+myMenuEd.browse_101.setfocus()
 Return
 
 *------------------------------
@@ -284,118 +291,118 @@ select menues
 ///msgbox(1)
 append blank
 //automsgbox(2)
-mymenued:browse_101:value:=reccount()
+myMenuEd.browse_101.value:=reccount()
 ///automsgbox(3)
-mymenued:browse_101:refresh()
+myMenuEd.browse_101.refresh()
 Return
 
 *--------------------------------
 METHOD escribe() CLASS TMYMENUED
 *--------------------------------
 select menues
-go mymenued:browse_101:value
-replace item with space(tmymenu:nlevel*3)+ltrim(mymenued:text_101:value)
-replace auxit with ltrim(mymenued:text_101:value)
+go myMenuEd.browse_101.value
+replace item with space(::nlevel*3)+ltrim(myMenuEd.text_101.value)
+replace auxit with ltrim(myMenuEd.text_101.value)
 
-mymenued:browse_101:refresh()
+myMenuEd.browse_101.refresh()
 Return
 *---------------------------------
 METHOD escribe1() CLASS TMYMENUED
 *---------------------------------
 select menues
-go mymenued:browse_101:value
-replace named with mymenued:text_102:value
+go myMenuEd.browse_101.value
+replace named with myMenuEd.text_102.value
 
-mymenued:browse_101:refresh()
+myMenuEd.browse_101.refresh()
 Return
 
 *----------------------------------
 METHOD escribe1a() CLASS TMYMENUED
 *----------------------------------
 select menues
-go mymenued:browse_101:value
-replace image with mymenued:text_103:value
+go myMenuEd.browse_101.value
+replace image with myMenuEd.text_103.value
 
-mymenued:browse_101:refresh()
+myMenuEd.browse_101.refresh()
 Return
 
 *----------------------------------
 METHOD escribe1x() CLASS TMYMENUED
 *----------------------------------
 select menues
-go mymenued:browse_101:value
-replace action with mymenued:edit_101:value
+go myMenuEd.browse_101.value
+replace action with myMenuEd.edit_101.value
 
-mymenued:browse_101:refresh()
+myMenuEd.browse_101.refresh()
 return
 *----------------------------------
 METHOD escribe1y() CLASS TMYMENUED
 *----------------------------------
 select menues
-if len(trim(mymenued:text_102:value))=0 .and. mymenued:checkbox_101:value=.T.
-   mymenued:checkbox_101:value:=.F.
+if len(trim(myMenuEd.text_102.value))=0 .and. myMenuEd.checkbox_101.value=.T.
+   myMenuEd.checkbox_101.value:=.F.
    msginfo('You must define first a name for this item')
    return
 endif
-go mymenued:browse_101:value
-if mymenued:checkbox_101:value = .T.
+go myMenuEd.browse_101.value
+if myMenuEd.checkbox_101.value = .T.
    replace checked with 'X'
 else
    replace checked with ' '
 endif
 
-mymenued:browse_101:refresh()
+myMenuEd.browse_101.refresh()
 return
 
 *-----------------------------------
 METHOD escribe1z() CLASS TMYMENUED
 *-----------------------------------
 select menues
-if len(trim(mymenued:text_102:value))=0 .and. mymenued:checkbox_102:value=.T.
-   mymenued:checkbox_102:value:= .F.
+if len(trim(myMenuEd.text_102.value))=0 .and. myMenuEd.checkbox_102.value=.T.
+   myMenuEd.checkbox_102.value:= .F.
    msginfo('You must define first a name for this item')
    return
 endif
-go mymenued:browse_101:value
-if mymenued:checkbox_102:value = .T.
+go myMenuEd.browse_101.value
+if myMenuEd.checkbox_102.value = .T.
    replace enabled with 'X'
 else
    replace enabled with ' '
 endif
 
-mymenued:browse_101:refresh()
+myMenuEd.browse_101.refresh()
 return
 
 *----------------------------------
 METHOD escribe2() CLASS TMYMENUED
 *----------------------------------
 select menues
-go mymenued:browse_101:value
-replace item with space(tmymenu:nlevel*3)+ltrim(item)
-replace level with tmymenu:nlevel
+go myMenuEd.browse_101.value
+replace item with space(::nlevel*3)+ltrim(item)
+replace level with ::nlevel
 
-mymenued:browse_101:refresh()
+myMenuEd.browse_101.refresh()
 Return
 
 *----------------------------------
 METHOD readlevel() CLASS TMYMENUED
 *----------------------------------
 select menues
-go mymenued:browse_101:value
-tmymenu:nlevel:= menues->level
-mymenued:text_101:value:=ltrim(menues->item)
-mymenued:text_102:value:=menues->named
-mymenued:edit_101:value:=menues->action
-mymenued:text_103:value:=menues->image
+go myMenuEd.browse_101.value
+::nlevel:= menues->level
+myMenuEd.text_101.value:=ltrim(menues->item)
+myMenuEd.text_102.value:=menues->named
+myMenuEd.edit_101.value:=menues->action
+myMenuEd.text_103.value:=menues->image
 if menues->checked='X'
-   mymenued:checkbox_101:value:=.T.
+   myMenuEd.checkbox_101.value:=.T.
 else
-   mymenued:checkbox_101:value:=.F.
+   myMenuEd.checkbox_101.value:=.F.
 endif
 if menues->enabled='X'
-   mymenued:checkbox_102:value:=.T.
+   myMenuEd.checkbox_102.value:=.T.
 else
-   mymenued:checkbox_102:value:=.F.
+   myMenuEd.checkbox_102.value:=.F.
 endif
 Return
 
@@ -404,8 +411,8 @@ METHOD insertar() CLASS TMYMENUED
 *---------------------------------
 local nregaux
 select menues
-mymenued:browse_101:setfocus()
-go mymenued:browse_101:value
+myMenuEd.browse_101.setfocus()
+go myMenuEd.browse_101.value
 nregaux=recn()
 go bottom
 ********** insert record
@@ -419,7 +426,7 @@ do while recn() > nregaux
    wlevel:=level
    wimage:=image
    wlev:=lev
-   skip 
+   skip
    replace item with witem
    replace named with wname
    replace action with waction
@@ -433,16 +440,16 @@ replace item with ""
 replace named with ""
 replace action with ""
 replace auxit with ""
-replace level with tmymenu:nlevel
+replace level with ::nlevel
 replace image with ""
 replace lev   with ""
 
 skip -1
-mymenued:browse_101:refresh()
-mymenued:text_101:value:=''
-mymenued:text_102:value:=''
-mymenued:text_103:value:=''
-mymenued:edit_101:value:=''
+myMenuEd.browse_101.refresh()
+myMenuEd.text_101.value:=''
+myMenuEd.text_102.value:=''
+myMenuEd.text_103.value:=''
+myMenuEd.edit_101.value:=''
 Return
 
 *-----------------------------------
@@ -450,7 +457,7 @@ METHOD cursordown() CLASS TMYMENUED
 *-----------------------------------
 local nregaux,zq
 select menues
-nregaux=mymenued:browse_101:value
+nregaux=myMenuEd.browse_101.value
 if nregaux=reccount()
    playbeep()
    return nil
@@ -497,11 +504,11 @@ replace enabled with w2enabled
 replace checked with w2checked
 replace lev  with w2lev
 
-zq:=mymenued:browse_101:value
+zq:=myMenuEd.browse_101.value
 zq++
-mymenued:browse_101:value:=zq
-mymenued:browse_101:setfocus()
-mymenued:browse_101:refresh()
+myMenuEd.browse_101.value:=zq
+myMenuEd.browse_101.setfocus()
+myMenuEd.browse_101.refresh()
 Return
 
 *---------------------------------
@@ -509,7 +516,7 @@ METHOD cursorup() CLASS TMYMENUED
 *---------------------------------
 local nregaux,zq
 select menues
-nregaux=mymenued:browse_101:value
+nregaux=myMenuEd.browse_101.value
 if nregaux=1
    playbeep()
    return nil
@@ -556,10 +563,10 @@ replace enabled with w2enabled
 replace checked with w2checked
 replace lev with w2lev
 
-zq:=mymenued:browse_101:value
+zq:=myMenuEd.browse_101.value
 zq--
-mymenued:browse_101:value:=zq
-mymenued:browse_101:setfocus()
-mymenued:browse_101:refresh()
+myMenuEd.browse_101.value:=zq
+myMenuEd.browse_101.setfocus()
+myMenuEd.browse_101.refresh()
 Return
 

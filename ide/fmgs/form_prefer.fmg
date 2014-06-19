@@ -1,5 +1,5 @@
 /*
- * $Id: form_prefer.fmg,v 1.2 2014-04-15 00:46:19 fyurisich Exp $
+ * $Id: form_prefer.fmg,v 1.3 2014-06-19 18:53:30 fyurisich Exp $
  */
 
 * ooHG IDE plus form generated code
@@ -23,7 +23,7 @@ DEFINE WINDOW  TEMPLATE ;
 
 @ 320,402 BUTTON button_101 ;
 CAPTION '&Ok' ;
-ACTION myide:okprefer() ;
+ACTION ::okprefer() ;
 WIDTH 100 ;
 HEIGHT 28 ;
 FONT 'arial' ;
