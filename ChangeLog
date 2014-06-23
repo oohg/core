@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.1291 2014-06-23 22:17:33 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1292 2014-06-23 22:58:35 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-06-23 19:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source\h_grid.prg
+     ! RTE after editing a Grid (BPOSITION not found at line 4607
+       of TGridControl_CreateWindow).
 
 2014-06-23 19:17 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * manual/tprint.html

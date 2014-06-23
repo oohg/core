@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.252 2014-06-03 00:34:12 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.253 2014-06-23 22:58:35 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -4596,15 +4596,18 @@ Local lRet := .F., i, nSize
              CHILD NOSIZE NOCAPTION ;
              FONT cFontName SIZE nFontSize ;
              ON INIT ( ::onLostFocus := { |bAux| ::oGrid:bPosition := 9, bAux := ::onLostFocus, ::onLostFocus := Nil, lRet := ::Valid(), ::onLostFocus := bAux } )
+
+          ::bOk := { |bAux| ::oGrid:bPosition := -1, bAux := ::onLostFocus, ::onLostFocus := Nil, lRet := ::Valid(), ::onLostFocus := bAux }
        Else
           DEFINE WINDOW _oohg_gridwn OBJ ::oWindow ;
              AT nRow, nCol WIDTH nWidth HEIGHT nHeight ;
              MODAL NOSIZE NOCAPTION ;
              FONT cFontName SIZE nFontSize
+
+          ::bOk := { || lRet := ::Valid() }
        EndIf
 
           ::bCancel := { || ::oWindow:Release() }
-          ::bOk     := { |bAux| ::oGrid:bPosition := -1, bAux := ::onLostFocus, ::onLostFocus := Nil, lRet := ::Valid(), ::onLostFocus := bAux }
 
           ON KEY RETURN OF ( ::oWindow ) ACTION EVAL( ::bOk )
           ON KEY ESCAPE OF ( ::oWindow ) ACTION EVAL( ::bCancel )
