@@ -1,5 +1,5 @@
 <!--
-$Id: TPRINT.HTM,v 1.3 2014-06-17 00:35:29 fyurisich Exp $
+$Id: TPRINT.HTM,v 1.4 2014-06-23 22:17:33 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -144,83 +144,92 @@ Classes &gt; </div>
 
 <div class=Section1>
 
-<p class=MsoNormal><span lang=ES style="COLOR: darkgreen; mso-ansi-language: ES">
-///////////////////////////////////////////////////////////////////////////////<br>
-// TPRINT Class<br>
-///////////////////////////////////////////////////////////////////////////////<br>
-</span>
-<p>
-<span lang=ES style="COLOR: black; mso-ansi-language: ES">
 <PRE>
-This class is a wrapper for different methods of printing a report or
+<span style='color:darkgreen'><b>
+///////////////////////////////////////////////////////////////////////////////
+// TPRINT Class
+///////////////////////////////////////////////////////////////////////////////
+</b></span>
+
+This class is a wrapper for different modes of printing a report or
 exporting it to a file.
 
-<u>How to use it</u>
+<p><u>How to use it</u>:
 
 The general procedure to use this class is:
 
-   1. Instantiate an object.
-   2. Initialize object variables and allocate resources.
-   3. Select a printer (if you want to print the document.)
-   4. Signal the start of the document.
-   5. Repeat for each page:
-      Signal the start of the page.
-      Print data.
-      Signal the end of the page.
-   6. Signal the end of the document.
-   7. Release allocated resources.
+  1. Instantiate an object.
+  2. Initialize object variables and allocate resources.
+  3. Select a printer (if you want to print the document.)
+  4. Signal the start of the document.
+  5. Repeat for each page:
+     Signal the start of the page.
+     Print data, barcodes, images, lines and rectangles.
+     Signal the end of the page.
+  6. Signal the end of the document.
+  7. Release allocated resources.
 
-   Note: all this steps are required to obtain the intended output and avoid
-         errors and memory leaks.
+  Notes:
+    All this steps are required to obtain the intended output
+    and avoid errors and memory leaks.
+    See .\samples\oohg\printtest.prg for a functional sample.
+    Use &quot;compile MainDemoOop&quot; to build and test it.
 
-<u>How to instantiate an object</u>
+<p><u>How to instantiate an object</u>:
 
-<b>oTPrintObject := TPRINT( cMethod )</b>
+<b>oTPrintObject := TPRINT( cMode )</b>
 
-  Returns an object that allows you to build a document and to print or export
-  it to a file.
+  Returns an object that allows you to build a document and to print
+  or export it to a file.
 
-  Valid values for cMethod are:
-    HBPRINTER        = Prints using HBPrinter library.
-    MINIPRINT        = Prints using Miniprint library.
-    DOSPRINT         = Prints directly to printer (DOS printing).
-    CALCPRINT        = Generates an OpenOffice Calc file
-                       (OpenOffice must be installed installed).
-    EXCELPRINT       = Generates an Excel file
-                       (Excel must be installed).
-    RTFPRINT         = Generates an RTF file.
-    HTMLPRINT        = Generates an HTML file.
-    PDFPRINT         = Generates a PDF file.
-    CSVPRINT         = Generates a comma-separated values file (CSV).
-    RAWPRINT         = Prints directly to a spool queue (in binary).
-    SPREADSHEETPRINT = Generates an Excel file using BIFF format
-                       (neither Excel nor OpenOffice are need).
+  Valid values for cMode are:
+    HBPRINTER          = Prints using HBPrinter library.
+    MINIPRINT          = Prints using Miniprint library.
+    DOSPRINT           = Prints directly to printer (DOS printing).
+    CALCPRINT          = Generates an OpenOffice Calc file
+                         (OpenOffice must be installed installed).
+    EXCELPRINT         = Generates an Excel file
+                         (Excel must be installed).
+    RTFPRINT           = Generates an RTF file.
+    HTMLPRINT          = Generates an HTML file using Excel if installed
+                         or Calc if it's not.
+    HTMLPRINTFROMCALC  = Generates an HTML file using Calc.
+    HTMLPRINTFROMEXCEL = Generates an HTML file using Excel.
+    PDFPRINT           = Generates a PDF file.
+    CSVPRINT           = Generates a comma-separated values file (CSV).
+    RAWPRINT           = Prints directly to a spool queue (in binary).
+    SPREADSHEETPRINT   = Generates an Excel file using BIFF format
+                         (neither Excel nor OpenOffice are need).
 
-  If cMethod is omitted, the selected library depends on _OOHG_PrintLibrary
-  variable.
-  If the variable is not a string, MINIPRINT will be selected.
-  If its a string but its value is not one of the expected values,
-  HBPRINTER will be selected.
-  If cMethod is present but is not one of the expected string values,
-  MINIPRINT will be selected.
+  Notes:
+    If cMode is omitted, the selected library depends on public variable
+    _OOHG_PrintLibrary.
+    If the variable is not a string, MINIPRINT will be selected.
+    If its a string but its value is not one of the expected values,
+    HBPRINTER will be selected.
+    If cMode is present but is not one of the expected string values,
+    MINIPRINT will be selected.
+    Once the TRINT object is created, _OOHG_PrintLibrary is set to the
+    selected mode.
 
-<u>Available methods</u>
+<p><u>Main methods</u>:
 
 <b>::Init()</b>
 
-  Initializes underlying method's variables.
+  Initializes object variables and allocates resources.
+
+  Notes:
+    This method sets the DATA lPrError .T. if another document is
+    being printed.
 
 <b>::SelPrinter( lSelect, lPreview, lLandscape, nPaperSize, cPrinter, ;
               lHide, nRes, nBin, nDuplex, lCollate, nCopies, lColor, ;
               nScale, nPaperLength, nPaperWidth )</b>
 
-  For HBPRINTER, MINIPRINT, DOSPRINT and RAWPRINT methods, selects
-  and initializes the printer. For EXCELPRINT, opens an instance of
-  Excel (no pararameters are needed). For RTFPRINT, sets the page
-  orientation. Does nothing for CSVPRINT.
-
-xxx
-
+  For HBPRINTER, MINIPRINT, DOSPRINT and RAWPRINT modes, selects
+  and initializes the printer. For RTFPRINT, sets the page orientation.
+  For TPDFPRINT, sets the page size and orientation. Does nothing for
+  other modes.
 
   Parameters:
     lSelect      = .T. to select the printer from a dialog (default),
@@ -231,305 +240,735 @@ xxx
     lLandscape   = .T. to print in landscape orientation,
                    .F. to print in portrait orientation (default).
     nPaperSize   = sets the paper size (defaults to printer's value).
-                   See "miniprint.ch" and "winprint.ch" for valid values.
-                   Check "wingdi.h" to see if a given paper size is
+                   See &quot;miniprint.ch&quot; and &quot;winprint.ch&quot; for valid values.
+                   Check &quot;wingdi.h&quot; to see if a given paper size is
                    supported by a given Windows version.
     cPrinter     = name of an existing printer to use for printing
                    (if omitted and lSelect is .T. a selection dialog will
                    pop up, if it's .F. the default printer will be used).
-    lHide        = .F. to show a "wait window while printing (default),
+    lHide        = .F. to show a &quot;wait&quot; window while printing (default),
                    .T. to show none.
     nRes         = resolution (defaults to printer's value).
-                   See "miniprint.ch" and "winprint.ch" for valid values.
+                   See &quot;miniprint.ch&quot; and &quot;winprint.ch&quot; for valid values.
     nBin         = tray number from which the paper will be taken
                    (defaults to printer's value).
-                   See "miniprint.ch" and "winprint.ch" for valid values.
+                   See &quot;miniprint.ch&quot; and &quot;winprint.ch&quot; for valid values.
     nDuplex      = duplex type (defaults to printer's value).
-                   See "miniprint.ch" and "winprint.ch" for valid values.
+                   See &quot;miniprint.ch&quot; and &quot;winprint.ch&quot; for valid values.
     lCollate     = .T. to enable collate printing if printer supports it,
                    .F. to disable (defaults to printer's value).
     nCopies      = number of copies that the printer will print if it
                    supports automatic multiple copies printing (defaults
-                   to printer's value)
-    lColor       = for color printers, sets monochrome or color mode.
+                   to printer's value).
+    lColor       = for color printers, sets monochrome or color mode
+                   (defaults to printer's value).
     nScale       = Specifies the factor by which the printed output is to
-                   be scaled.
+                   be scaled (defaults to printer's value).
     nPaperLength = Overrides the length of the paper specified by the
-                   nPaperSize parameter. Use tenths of a millimeter.
+                   nPaperSize parameter (defaults to printer's value).
+                   Unit: 1/10 mm.
     nPaperWidth  = Overrides the width of the paper specified by the
-                   nPaperSize parameter. Use tenths of a millimeter.
+                   nPaperSize parameter (defaults to printer's value).
+                   Unit: 1/10 mm.
+
+  Parameter support by printing mode:
+    MINIPRINT and HBPRINTER:
+      All.
+    DOSPRINT:
+      Only lSelect, lPreview, cPrinter and lHide are suppported.
+    RAWPRINT:
+      Only lSelect, cPrinter and lHide are suppported.
+    RTFPRINT:
+      Only lPreview, lLandscape and lHide are supported.
+    PDFPRINT:
+      Only lPreview, lLandscape, nPaperSize and lHide are supported.
+    EXCELPRINT, SPREADSHEETPRINT, HTMLPRINT, HTMLPRINTFROMEXCEL,
+    HTMLPRINTFROMCALC, CSVPRINT and CALCPRINT:
+      Only lPreview and lHide are supported.
 
 <b>::BeginDoc( cName )</b>
 
-  Signs the start of a document.
+  Signals the start of a document.
 
   Parameters:
-    cName        = name of the print document (defaults to "list").
-                   If the library generates a file, any provided extension
-                   will be stripped and a default extension will be added.
-                   Provide a path to save in a specific folder (defaults
-                   to My Documents).
+    cName = name of the print document (defaults to &quot;list&quot;).
+            If the library generates a file, any provided extension
+            will be stripped and a default extension will be added.
+            Provide a path to save in a specific folder (defaults
+            to My Documents).
 
-<b>::EndDoc()</b>
+  Notes:
+    Default extensions are:
+      "dos" for DOSPRINT.
+      "raw" for RAWPRINT.
+      "rtf" for RTFPRINT.
+      "pdf" for PDFPRINT.
+      "xls" for EXCELPRINT using Excel version previous to 2007.
+      "xlsx" for EXCELPRINT using Excel version 2007 or later.
+      "xls" for SPREADSHEETPRINT.
+      "html" for HTMLPRINT, HTMLPRINTFROMEXCEL and HTMLPRINTFROMCALC.
+      "csv" for CSVPRINT.
+      "odt" for CALCPRINT.
 
-  Signs the end of a document.
-  For HBPRINTER, MINIPRINT and DOSPRINT methods: displays a preview screen
-  with the document's content.
-  For EXCELPRINT, SPREADSHEETPRINT, HTMLPRINT, RTFPRINT, CSVPRINT, PDFPRINT
-  and CALCPRINT methods: opens the document using the default application.
+<b>::BeginPage( cName )</b>
 
-<b>::BeginPage()</b>
+  Signals the start of a page inside a document.
 
-  Signs the start of a page inside a document.
+  Parameters:
+    cName = name of the page. Must be unique.
+            Defaults to &quot;Page_&quot; + page_number.
+            For EXCELPRINT and CALCPRINT: the page name is used as
+            caption for the sheet.
+
+  xxx
+   METHOD CondenDos              BLOCK { || NIL }
+   METHOD NormalDos              BLOCK { || NIL }
+   METHOD SetBarColor
 
 <b>::EndPage()</b>
 
-  Signs the end of a page inside a document.
+  Signals the end of a page inside a document.
 
-<b>::SetPreviewSize( nSize )</b>
+<b>::EndDoc( lSaveTemp )</b>
 
-  Sets the preview size (zoom) for HBPRINTER and MINIPRINT methods.
-
-  Parameters:
-    nSize        = For HBPRINTER method:
-                      1 to 5 (small to big, defaults to 3).
-                   For MINIPRINT method:
-                      -9.99 to 99.99 (small to big, defaults to 0).
-
-<b>::SetUnits( cUnits )</b>
-
-  Sets the printing units to be used for printing.
+  Signals the end of a document.
 
   Parameters:
-    cUnits       = MM (milimiters) or ROWCOL (rows and cols, default).
+    lSaveTemp = .T. to save temporary files, .F. to discard.
 
-  Note: The class works internally with MM to try to obtain documents that
-        when printed look in the same way on different printers.
+  Notes:
+    For HBPRINTER, MINIPRINT, DOSPRINT and RAWPRINT modes: if lPreview
+    parameter of method SelPrinter was .T., a preview screen with the
+    document's content is shown.
+    For EXCELPRINT, CALCPRINT, SPREADSHEETPRINT, HTMLPRINT, HTMLPRINTCALC,
+    HTMLPRINTEXCEL, RTFPRINT, CSVPRINT and PDFPRINT modes: opens the
+    document using the systems' default application.
+
+  Parameter support by printing mode:
+    lSaveTemp is only supported by DOSPRINT and RAWPRINT modes.
+
+<b>::Release()</b>
+
+  Releases the TPRINT object and all allocated resources.
+
+<p><u>Data print methods</u>:
 
 <b>::PrintData( nLin, nCol, uData, cFont, nSize, lBold, aColor, ;
              cAlign, nLen, lItalic, nAngle, lUnder, lStrike, nWidth )</b>
 
   Prints data in a page.
-Agregar que imprime cada librería !!!!!!!!!!!!
-MINIPRINT - todo
-HBPRINTER - todo
-CALCPRINT - falta nWidth
-ver los empty
 
   Parameters:
-     nLin        = y coordinate to print at (row), defaults to 1.
-     nCol        = x coordinate to print at (column), defaults to 1.
-     uData       = data to print (any type), defaults to &quot;&quot;.
-     cFont       = font to use for printing. Defaults to value of
-                   oTPrintObject:cFontName (initialized to Courier New).
-     nSize       = size of the font in points. Defaults to value of
-                   oTPrintObject:nFontSize (initialized to 12).
-     lBold       = .T. for printing with bold weight, .F. for
-                   printing with normal weight. Defauls to value of
-                   oTPrintObject:lFontBold (initialized to .F.).
-     aColor      = text color (RGB array). Defaults to value of
-                   oTPrintObject:aFontColor (initialized to BLACK).
-     cAlign      = text alignment:
-                      L - left (default)
-                      C - center
-                      R - right
-     nLen        = width (in chars) of the field where the data will be
-                   printed, this value is used to right or center align
-                   the data, defaults to 15.
-     lItalic     = .T. for printing with italic style, .F. for
-                   printing without it. Defauls to value of
-                   oTPrintObject:lFontItalic (initialized to .F.).
-     nAngle      = the rotation of a character in tenths of a degree,
-                   defaults to 0.
-     lUnder      = .T. for printing with underlined style, .F. for
-                   printing without it. Defauls to value of
-                   oTPrintObject:lFontUnderline (initialized to .F.).
-     lStrike     = .T. for printing with strikedoud style, .F. for
-                   printing without it. Defauls to value of
-                   oTPrintObject:lFontStrikeout (initialized to .F.).
-     nWidth      = the average width of characters in the requested font,
-                   defaults to system default.
+    nLin    = y coordinate of starting point (ROWCOL or MM).
+              Defaults to 1.
+    nCol    = x coordinate of starting point (ROWCOL or MM).
+              Defaults to 1.
+    uData   = data to print (see note), defaults to &quot;&quot;.
+    cFont   = name of the default font for printing. Defaults to value
+              of DATA cFontName. See MSDN for CreateFont function to
+              learn more about fonts.
+    nSize   = size of the font in points. Defaults to value of DATA
+              nFontSize.
+    lBold   = .T. for printing with bold weight, .F. for printing with
+              normal weight. Defauls to value of DATA lFontBold.
+    aColor  = text color of printed data ({nRed, nGreen, nBlue}).
+              Defaults to value of DATA aFontColor.
+    cAlign  = text alignment:
+                 L - left (default)
+                 C - center
+                 R - right
+    nLen    = width (in chars) of the field where the data will be
+              printed, this value is used to right or center align
+              the data in a part of the line. Defaults to 15.
+    lItalic = .T. for printing with italic style, .F. for printing
+              without. Defauls to value of DATA lFontItalic.
+    nAngle  = the rotation of a character. Unit: 1/10 degree.
+              Defaults to 0.
+    lUnder  = .T. for printing with underlined style, .F. for printing
+              without. Defauls to value of DATA lFontUnderline.
+    lStrike = .T. for printing with strikedoud style, .F. for printing
+              without. Defauls to value of DATA lFontStrikeout.
+    nWidth  = the average width of characters. Unit: logical units.
+              Defaults to system's default value.
 
   Notes:
-     Objects are printed as &quot;&lt;Object&gt;&quot;.
-     Arrays are printed as &quot;&lt;Array&gt;&quot;.
-     Blocks are evaluated and their results are printed.
-     For more information on fonts search MSDN for CreateFont function.
+    Codeblocks are evaluated and the resulting values are treated
+    according the following rules.
+    Strings and memos are printed as they are.
+    Numbers are converted to strings using AllTrim( Str( uData ) ).
+    Dates are converted to strings usings DtoC( uData ).
+    Logicals are converted to &quot;T&quot; or &quot;F&quot;.
+    Timestaps are converted to strings using TtoC( uData ).
+    Objects are printed as &quot;&lt; Object &gt;&quot;.
+    Arrays are printed as &quot;&lt; Array &gt;&quot;.
+    Other data type values are printed as empty strings.
+     
+  Parameter support by printing mode:
+    MINIPRINT:
+      All.
+    THBPRINTER:
+      All.
+    DOSPRINT:
+      Only nLin, nCol, uData, lBold, cAlign and nLen.
+    RAWPRINT:
+      Only nLin, nCol, uData, lBold, cAlign and nLen.
+    EXCELPRINT:
+      nWidth is not supported.
+    SPREADSHEETPRINT:
+      Only nLin, nCol, uData, cAlign and nLen.
+    RTFPRINT:
+      cFont, aColor, nAngle and nWidth are not supported.
+      This mode uses &quot;Times New Roman&quot; as default font when
+      printing in MM and &quot;Courier New&quot; when printing in ROWCOL.
+      You can embed whatever format you want in uData, as long as it's
+      written using proper RTF syntax. Notice that the content of a
+      RichEditBox control can be printed this way.
+    CSVPRINT:
+      Only nLin, nCol, uData, cAlign and nLen.
+    PDFPRINT:
+      nAngle, lUnder, lStrike and nWidth are not supported.
+      cFont accepts &quot;Helvetica&quot;, &quot;Times&quot; and &quot;Courier&quot;. Other fonts are
+      mapped to them: roman types to &quot;Times&quot;, &quot;Ariel&quot; to &quot;Helvetica&quot; and
+      the remaining ones to &quot;Courier&quot;.
+    CALCPRINT:
+      nWidth is not supported.
+    HTMLPRINT:
+      nWidth is not supported.
+    HTMLPRINTFROMCALC:
+      nWidth is not supported.
+    HTMLPRINTFROMEXCEL:
+      nWidth is not supported.
 
-<b>::PrintImage(nfila, ncol, nfilaf, ncolf, cimagen)</b>
+<b>::PrintImage( nSRow, nSCol, nERow, nECol, cImage, aResol, aSize )</b>
 
   Prints an image.
 
   Parameters:
-     nRow        = initial print row
-     nCol        = initial column
-     nfilaf      = final row
-     ncolf       = final column
-     cimagen     = graphic print
+    nSRow  = y coordinate of the upper left corner.
+             Defaults to 1.
+    nSCol  = x coordinate of the upper left corner.
+             Defaults to 1.
+    nERow  = y coordinate of the lower right corner.
+             Defaults to 4.
+    nECol  = x coordinate of the lower right corner.
+             Defaults to 4.
+    cImage = name of the image to print. Must point to a file.
+             MINIPRINT and HBPRINTER also accept images from the resource
+             file. See note. Defaults to &quot;&lt;&gt;&quot;.
+    aResol = array specifing horizontal and vertical resolution of the
+             image (or a number if both values are the same). Unit: DPI.
+    aSize  = array specifing width and height of the image (or a number
+             if both values are the same). Unit: 1/100 mm.
 
-<b>::PrintLine(nfila, ncol, nfilaf, ncolf, atcolor, ntwpen)</b>
-  Prints a line from one position to
-  another.
-  nfila =  initial print
-  row
-  ncol = initial
-  column
-  nfilaf = final
-  row
-  ncolf = final
-  column
-  atcolor = array RGB color to
-  use
-  ntwpen = width of the brush, default
-  1
-  Note: if DOS only printed if the initial line is equal to the
-  final.
+  Notes:
+    MINIPRINT and HBPRINTER support ICO, BMP, JPG and GIF formats.
+    EXCELPRINT and HTMLPRINTFROMEXCEL support formats supported by Excel.
+    CALCPRINT and HTMLPRINTFROMCALC support formats supported by Calc.
+    PDFPRINT supports JPG and GIF formats. Beware that cImage must point
+    to a file with TIF, TIFF, JPG or JPEG extension.
+    DOSPRINT, RAWPRINT, SPREADSHEETPRINT, RTFPRINT and CSVPRINT do not
+    support image printing.
+    When using HTMLPRINT, supported formats depend on the underlying app
+    installed on the system (if both Excel and Calc are installed, the
+    first takes precedence; you can test DATA cPrintLibrary to identify
+    which one is being used).
 
-<b>::PrintRectangle(nfila, ncol, nfilaf, ncolf, atcolor, ntwpen)</b>
-  Prints a rectangle.
-  nfila =
-  initial print row
-  ncol = initial
-  column
-  nfilaf = final
-  row
-  ncolf = final
-  column
-  atcolor = array RGB color to
-  use
-  ntwpen = width of the brush, default 1
+  Parameter support by printing mode:
+    aResol and aSize are supported by CALCPRINT mode only.
+    Specify aResol to print the image at its original size. To find the
+    image resolution use a graphics software like IrfanView.
+    Specify aSize to print the image at a different size.
+    If both parameters are specified, resolution takes precedence.
+    If none is specified the resulting size is defined by Calc.
 
-<b>::PrintRoundRectangle(nfila, ncol, nfilaf, ncolf, atcolor, ntwpen)</b>
-  Prints a rectangle with rounded
-  corners.
-  nfila = initial print
-  row
-  ncol = initial
-  column
-  nfilaf = final
-  row
-  ncolf = final
-  column
-  atcolor = array RGB color to
-  use
-  ntwpen brush width = default 1
+<b>::PrintLine( nSRow, nSCol, nERow, nECol, aColor, nWidth, lSolid )</b>
 
-<b>::SetColor(atcolor)</b>
-  Sets the text's current color to a new value.
-  atcolor = array RGB
+  Prints a line from one point to another.
+
+  Parameters:
+    nSRow  = y coordinate of the starting point.
+             Defaults to 1.
+    nSCol  = x coordinate of the starting point.
+             Defaults to 1.
+    nERow  = y coordinate of the ending point.
+             Defaults to 4.
+    nECol  = x coordinate of the ending point.
+             Defaults to 4.
+    aColor = line's color ({nRed, nGreen, nBlue}).
+             Defaults to value of DATA aColor.
+    nWidth = line's width (see note).
+             Defaults to value of DATA nwPen.
+    lSolid = .F. for dashed line, .T. for continuous (default).
+
+  Notes:
+    DOSPRINT, RAWPRINT and RTFPRINT modes only support the printing of
+    horizontal lines (nSRow == nERow). Lines are printed using dashes.
+    PDFPRINT mode only supports the printing of horizontal (nSRow == nERow)
+    or vertical (nSCol == nECol) lines.
+    MINIPRINT and HBPRINTER can print horizontal, vertical and oblique lines.
+    Other modes don't support line printing.
+    nWidth units: mm for MINIPRINT and HBPRINTER, 1/72 inches for PDFPRINT.
+    If nWidth is greater than 1, lSolid is ignored and assumed .T.
+
+  Parameter support by printing mode:
+    MINIPRINT and HBPRINTER:
+      All.
+    PDFPRINT:        
+      lSolid not suported (assumed .T.).
+    DOSPRINT and RAWPRINT:
+      aColor, nWidth and lSolid not supported.
+    RTFPRINT:
+      nWidth and lSolid not supported.
+
+<b>::PrintRectangle( nSRow, nSCol, nERow, nECol, aColorOut, nWidth, lSolid, aColorFil )</b>
+
+  Prints a rectangle defined by 4 lines between points:
+    {nSRow, nSCol} to {nSRow, nECol},
+    {nSRow, nECol} to {nERow, nECol},
+    {nERow, nECol} to {nERow, nSCol} and
+    {nERow, nSCol} to {nSRow, nSCol}.
+
+  Parameters:
+    nSRow     = y coordinate of the upper left corner.
+                Defaults to 1.
+    nSCol     = x coordinate of the upper left corner.
+                Defaults to 1.
+    nERow     = y coordinate of the lower right corner.
+                Defaults to 4.
+    nECol     = x coordinate of the lower right corner.
+                Defaults to 4.
+    aColorOut = outline color ({nRed, nGreen, nBlue}).
+                Defaults to value of DATA aColor.
+    nWidth    = border's width (see note).
+                Defaults to value of DATA nwPen.
+    lSolid    = .F. for dashed line, .T. for continuous (default).
+    aColorFil = filling color ({nRed, nGreen, nBlue}).
+                Defaults to WHITE.
+
+  Notes:
+    Only PDFPRINT, MINIPRINT and HBPRINTER support rectangle printing.
+    nWidth units: mm for MINIPRINT and HBPRINTER, 1/72 inches for PDFPRINT.
+    If nWidth is greater than 1, lSolid is ignored and assumed .T.
+
+  Parameter support by printing mode:
+    MINIPRINT and HBPRINTER:
+      All.
+    PDFPRINT:
+      lSolid not suported (assumed .T.).
+
+<b>::PrintRoundRectangle( nSRow, nSCol, nERow, nECol, aColorOut, nWidth, lSolid, aColorFil )</b>
+
+  Prints a rectangle with rounded corners, defined by 4 lines between
+  points:
+    {nSRow, nSCol} to {nSRow, nECol},
+    {nSRow, nECol} to {nERow, nECol},
+    {nERow, nECol} to {nERow, nSCol} and
+    {nERow, nSCol} to {nSRow, nSCol}.
+
+  Parameters:
+    nSRow     = y coordinate of the upper left corner.
+                Defaults to 1.
+    nSCol     = x coordinate of the upper left corner.
+                Defaults to 1.
+    nERow     = y coordinate of the lower right corner.
+                Defaults to 4.
+    nECol     = x coordinate of the lower right corner.
+                Defaults to 4.
+    aColorOut = outline color ({nRed, nGreen, nBlue}).
+                Defaults to value of DATA aColor.
+    nWidth    = border's width (see note).
+                Defaults to value of DATA nwPen.
+    lSolid    = .F. for dashed line, .T. for continuous (default).
+    aColorFil = filling color ({nRed, nGreen, nBlue}).
+                Defaults to WHITE.
+
+  Notes:
+    Only MINIPRINT and HBPRINTER support round rectangle printing.
+    PDFPRINT prints them with squared corners.
+    nWidth units: mm for MINIPRINT and HBPRINTER, 1/72 inches for PDFPRINT.
+    If nWidth is greater than 1, lSolid is ignored and assumed .T.
+
+  Parameter support by printing mode:
+    MINIPRINT and HBPRINTER:
+      All.
+    PDFPRINT:
+      lSolid not suported (assumed .T.).
+
+<b>::PrintBarCode( nRow, nCol, cCode, cType, aColor, lHorizontal, nWidth, nHeight )</b>
+
+  Generates and prints a barcode of a certain type.
+
+  Parameters:
+    nRow        = y coordinate of the starting point.
+                  Defaults to 1.
+    nCol        = x coordinate of the starting point.
+                  Defaults to 1.
+    cCode       = value to be converted into a barcode.
+                  Defaults to &quot;&lt;&gt;&quot;.
+    cType       = encoding type of the barcode. Supported types are
+                  CODE128A, CODE128B, CODE128C, CODE39, EAN8, EAN13,
+                  INTER25, UPCA, SUP5, CODABAR, IND25 and MAT25.
+                  Defaults to CODE128C.
+    aColor      = bars' color ({nRed, nGreen, nBlue}).
+                  Defaults to value of DATA aBarColor.
+    lHorizontal = .F. for vertical printing, .T. for horizontal (default).
+    nWidth      = width of each bar. Unit: mm.
+                  Defaults to NIL.
+    nHeight     = height of each bar. Unit: mm.
+                  Defaults to 10.
+
+  Notes:
+    This method is a wrapper for methods ::Code128, ::Code3_9, ::Codabar,
+    ::Ean8, ::Ean13, ::Ind25, ::Int25, ::Mat25, ::Sup5 and ::Upca.
+
+<b>::Code128( nRow, nCol, cCode, cVariant, aColor, lHorizontal, nWidth, nHeigth )</b>
+
+  Generates and prints a CODE128A, CODE128B or CODE128C encoded barcode.
+
+  Parameters:
+    nRow        = y coordinate of the starting point.
+                  Defaults to 1.
+    nCol        = x coordinate of the starting point.
+                  Defaults to 1.
+    cCode       = value to be converted into a barcode.
+    cVariant    = code variant to print. Supported types are &quot;A&quot;, &quot;B&quot;, &quot;C&quot;
+                  or &quot;&quot; (variable mode: cCode is analized to identify type).
+    aColor      = bars' color ({nRed, nGreen, nBlue}).
+    lHorizontal = .F. for vertical printing, .T. for horizontal.
+    nWidth      = width of each bar. Unit: mm.
+    nHeight     = height of each bar. Unit: mm.
+
+  Notes:
+    This method relies on function _Code128() to generate the barcode
+    and on method ::Go_Code to print it.
+
+<b>::Code3_9( nRow, nCol, cCode, aColor, lHorizontal, nWidth, nHeigth )</b>
+
+  Generates and prints a CODE39 encoded barcode.
+
+  Parameters:
+    nRow        = y coordinate of the starting point.
+                  Defaults to 1.
+    nCol        = x coordinate of the starting point.
+                  Defaults to 1.
+    cCode       = value to be converted into a barcode.
+    aColor      = bars' color ({nRed, nGreen, nBlue}).
+    lHorizontal = .F. for vertical printing, .T. for horizontal.
+    nWidth      = width of each bar. Unit: mm.
+    nHeight     = height of each bar. Unit: mm.
+
+  Notes:
+    This method relies on function _Code3_9() to generate the barcode
+    and on method ::Go_Code to print it.
+
+<b>::Codabar( nRow, nCol, cCode, aColor, lHorizontal, nWidth, nHeigth )</b>
+
+  Generates and prints a CODABAR encoded barcode.
+
+  Parameters:
+    nRow        = y coordinate of the starting point.
+                  Defaults to 1.
+    nCol        = x coordinate of the starting point.
+                  Defaults to 1.
+    cCode       = value to be converted into a barcode.
+    aColor      = bars' color ({nRed, nGreen, nBlue}).
+    lHorizontal = .F. for vertical printing, .T. for horizontal.
+    nWidth      = width of each bar. Unit: mm.
+    nHeight     = height of each bar. Unit: mm.
+
+  Notes:
+    This method relies on function _Codabar() to generate the barcode
+    and on method ::Go_Code to print it.
+
+<b>::Ean8( nRow, nCol, cCode, aColor, lHorizontal, nWidth, nHeigth )</b>
+
+  Generates and prints an EAN-8 encoded barcode.
+
+  Parameters:
+    nRow        = y coordinate of the starting point.
+                  Defaults to 1.
+    nCol        = x coordinate of the starting point.
+                  Defaults to 1.
+    cCode       = value to be converted into a barcode.
+    aColor      = bars' color ({nRed, nGreen, nBlue}).
+    lHorizontal = .F. for vertical printing, .T. for horizontal.
+    nWidth      = width of each bar. Unit: mm. Defaults to 1.5
+    nHeight     = height of each bar. Unit: mm.
+
+  Notes:
+    This method relies on functions _Upc() and _Ean13bl() to generate
+    the barcode and on method ::Go_Code to print it.
+
+<b>::Ean13( nRow, nCol, cCode, aColor, lHorizontal, nWidth, nHeigth )</b>
+
+  Generates and prints an EAN-13 encoded barcode.
+
+  Parameters:
+    nRow        = y coordinate of the starting point.
+                  Defaults to 1.
+    nCol        = x coordinate of the starting point.
+                  Defaults to 1.
+    cCode       = value to be converted into a barcode.
+    aColor      = bars' color ({nRed, nGreen, nBlue}).
+    lHorizontal = .F. for vertical printing, .T. for horizontal.
+    nWidth      = width of each bar. Unit: mm. Defaults to 1.5
+    nHeight     = height of each bar. Unit: mm.
+
+  Notes:
+    This method relies on functions _Ean13() and _Ean13bl() to generate
+    the barcode and on method ::Go_Code to print it.
+
+<b>::Ind25( nRow, nCol, cCode, aColor, lHorizontal, nWidth, nHeigth )</b>
+
+  Generates and prints a CODE 25 INDUSTRIAL encoded barcode.
+
+  Parameters:
+    nRow        = y coordinate of the starting point.
+                  Defaults to 1.
+    nCol        = x coordinate of the starting point.
+                  Defaults to 1.
+    cCode       = value to be converted into a barcode.
+    aColor      = bars' color ({nRed, nGreen, nBlue}).
+    lHorizontal = .F. for vertical printing, .T. for horizontal.
+    nWidth      = width of each bar. Unit: mm.
+    nHeight     = height of each bar. Unit: mm.
+
+  Notes:
+    This method relies on functions _Ind25() to generate the barcode
+    and on method ::Go_Code to print it.
+
+<b>::Int25( nRow, nCol, cCode, aColor, lHorizontal, nWidth, nHeigth )</b>
+
+  Generates and prints a CODE 25 INTERLEAVED encoded barcode.
+
+  Parameters:
+    nRow        = y coordinate of the starting point.
+                  Defaults to 1.
+    nCol        = x coordinate of the starting point.
+                  Defaults to 1.
+    cCode       = value to be converted into a barcode.
+    aColor      = bars' color ({nRed, nGreen, nBlue}).
+    lHorizontal = .F. for vertical printing, .T. for horizontal.
+    nWidth      = width of each bar. Unit: mm.
+    nHeight     = height of each bar. Unit: mm.
+
+  Notes:
+    This method relies on functions _Int25() to generate the barcode
+    and on method ::Go_Code to print it.
+
+<b>::Upca( nRow, nCol, cCode, aColor, lHorizontal, nWidth, nHeigth )</b>
+
+  Generates and prints an UPC-A encoded barcode.
+
+  Parameters:
+    nRow        = y coordinate of the starting point.
+                  Defaults to 1.
+    nCol        = x coordinate of the starting point.
+                  Defaults to 1.
+    cCode       = value to be converted into a barcode.
+    aColor      = bars' color ({nRed, nGreen, nBlue}).
+    lHorizontal = .F. for vertical printing, .T. for horizontal.
+    nWidth      = width of each bar. Unit: mm. Defaults to 1.5
+    nHeight     = height of each bar. Unit: mm.
+
+  Notes:
+    This method relies on functions _Upc() and _Upcabl() to generate
+    the barcode and on method ::Go_Code to print it.
+
+<b>::Mat25( nRow, nCol, cCode, aColor, lHorizontal, nWidth, nHeigth )</b>
+
+  Generates and prints a MATRIX 2 OF 5 encoded barcode.
+
+  Parameters:
+    nRow        = y coordinate of the starting point.
+                  Defaults to 1.
+    nCol        = x coordinate of the starting point.
+                  Defaults to 1.
+    cCode       = value to be converted into a barcode.
+    aColor      = bars' color ({nRed, nGreen, nBlue}).
+    lHorizontal = .F. for vertical printing, .T. for horizontal.
+    nWidth      = width of each bar. Unit: mm.
+    nHeight     = height of each bar. Unit: mm.
+
+  Notes:
+    This method relies on functions _Mat25() to generate the barcode
+    and on method ::Go_Code to print it.
+
+<b>::Sup5( nRow, nCol, cCode, aColor, lHorizontal, nWidth, nHeigth )</b>
+
+  Generates and prints an EAN-5 encoded barcode.
+
+  Parameters:
+    nRow        = y coordinate of the starting point.
+                  Defaults to 1.
+    nCol        = x coordinate of the starting point.
+                  Defaults to 1.
+    cCode       = value to be converted into a barcode.
+    aColor      = bars' color ({nRed, nGreen, nBlue}).
+    lHorizontal = .F. for vertical printing, .T. for horizontal.
+    nWidth      = width of each bar. Unit: mm.
+    nHeight     = height of each bar. Unit: mm.
+
+  Notes:
+    This method relies on functions _Sup5() to generate the barcode
+    and on method ::Go_Code to print it.
+
+<b>::Go_Code( cBarcode, nRow, nCol, lHorizontal, aColor, nWidth, nHeigth )</b>
+
+  Prints a barcode.
+
+  Parameters:
+    cBarCode    = barcode to print.
+    nRow        = y coordinate of the starting point.
+                  Defaults to 0.
+    nCol        = x coordinate of the starting point.
+                  Defaults to 0.
+    aColor      = bars' color ({nRed, nGreen, nBlue}).
+                  Defaults to BLACK.
+    lHorizontal = .F. for vertical printing, .T. for horizontal (default).
+    nWidth      = width of each bar. Unit: mm. Defaults to 0.495.
+    nHeight     = height of each bar. Unit: mm. Defaults to 15.
+
+<p><u>Other methods</u>:
 
 <b>::GetDefPrinter()</b>
-  Gets the default printer.
 
-<b>::Release()</b>
-  Releases the TPRINT object and all allocated resources.
+  Gets the name of the default printer.
 
-<b>::Release()</b>
-  Returns the version number of the class.
+  Notes:
+    Applies only to MINIPRINT and HBPRINTER modes.
 
-<b>::SetLMargin(nlmar)</b>
-  Sets the left margin.
+<b>::PrintMode()</b>
 
-<b>::SetTMargin(ntmar)</b>
-  Set the top
-  margin.
+  Prints the content of the file pointed by DATA cTempFile.
 
-<b>::SetFont (CFont, nsize, aColor, lbold, litalic)</b>
-  Sets the default font.
-  CFont =
-  name
-  nSize = size
-  aColor =
-  color
-  lbold = bold
-  litalic = italic
+  Notes:
+    Applies only to DOSPRINT and RAWPRINT modes.
+    For DOSPRINT is equivalent to ::PrintDos( ::cTempFile ).
+    For RAWPRINT is equivalent to ::PrintRaw( ::cTempFile ).
+
+<b>::PrintDos( cFile )</b>
+
+  Prints the content of a file, by copying it to the printer port
+  specified by DATA cPort, using DOS Copy command.
+
+  Parameters:
+    cFile = name of the file to print.
+
+<b>::PrintRaw( cFile )</b>
+
+  Prints the content of the file pointed by DATA TempFile, by
+  copying it to the printer specified by DATA cPrinter, using
+  Windows WritePrinter function.
+
+<b>::SetColor( aColor )</b>
+
+  Sets the default color for text, lines and rectangles.
+
+  Parameters:
+    aColor = color ({nRed, nGreen, nBlue}).
+             Defaults to BLACK.
+
+  Notes:
+    This method sets the DATA aColor.
 
 <b>::SetCPL( nCpl )</b>
 
-  Sets the font size in caracters per line.
+  Sets the maximum number of printed characters per line.
 
   Parameters:
-  nCpl           = 60, using font size 14,
-                   80, using font size 12
-                   96, using font size 10,
-                   120, using font size 8,
-                   140, using font size 7,
-                   160, using font size 6.
-  Defaults to 80, for all methods except RTFPRINT which defaults to 96.
+    nCpl = 60, 80, 96, 120, 140 or 160. Defaults to 80 for all modes
+           except for RTFPRINT which defaults to 96.
 
-<b>::PrintBarCode(NLIN, ncol, cbarcode, ctipo, aColor, lhori, nWidth, nHeight)</b>
-  Prints a
-  barcode.
-  NLIN = row where
-  print
-  ncol = column being
-  printed
-  = code printed
-  cbarcode
-  ctipo = encoding
-  type
-  aColor = color
-  lhori = orientation (. T. =
-  horizontal. F. vertical)
-  nWidth
-  = width of the bars
-  nHeight =                    height of the bars
+  Notes:
+    The desired number of CPL is achieved by the setting of the default
+    size of the font (DATA nFontSize) to 14, 12, 10, 8, 7 and 6 points
+    respectively.
 
-<b>::SetProp (lmode)</b>
-  Sets whether the row
-  height to print will be proportional to
-  Current font size overall
-  (lmode =. T.) or be proportional
-  to size 10 (lmode =. F.).
+<b>::SetFont( cFont, nSize, aColor, lBold, lItalic, nAngle, lUnder, lStrike, nWidth )</b>
 
-<b>Important variables</b>
+  Sets the attributes of the default font.
 
-  _OOHG_PrintLibrary
-  Defining this variable
-  as public, you can specify the library
-  default printer to use.
-  One can use any of the values
-  cMethod parameter. This variable
-  is useful to use the
-  commands Report Form, Edit and Edit
-  Extended.
-  If not defined or if the type is not string, the
-  default library
-  is
-  MINIPRINT. If a string is not valid is
-  HBPRINTER.
+  Parameters:
+    cFont   = name of a font installed in the system.
+              Defaults to value of DATA cFontName.
+    nSize   = size in points.
+              Defaults to value of DATA nFontSize.
+    aColor  = color ({nRed, nGreen, nBlue}).
+              Defaults to value of DATA aFontColor.
+    lBold   = .T. for bold type, .F. for non bold type.
+              Defaults to value of DATA lFontBold.
+    lItalic = .T. for italic type, .F. for non-italic type.
+              Defaults to value of DATA lFontItalic.
+    nAngle  = the rotation of the characters. Unit: 1/10 degree.
+              Defaults to value of DATA nFontAngle.
+    lUnder  = .T. for underline type, .F. for non underline type.
+              Defaults to value of DATA lFontUnderline.
+    lStrike = .T. for strikeout type, .F. for non strikeout type.
+              Defaults to value of DATA lFontStrikeout.
+    nWidth  = average width of characters, in logical units.
+              Defaults to value of DATA nFontWidth.
 
-  ::aPrinters
-  Settlement of the
-  available printers on the system.
-::APorts
-  Arrangement of ports available
-  on the system.
-::LPrError
-  Logical variable. If an error
-  occurs returns. T., defaults. F.
-::aColor
-  Current Color brush used in
-  drawing lines and boxes,
-  black default.
-::cFontName
-  Send current default Courier
-  New
-::nFontSize
-  Current Font size global
-  default 10. Use with caution.
-::aFontColor
-  Current Font color, black
-  default.
-::lFontBold
-  . T. if the current font is
-  bold.
-::lFontItalic
-  . T. if the current font is
-  in italics.
-::cVersion
-  Version number of the
-  class.
+  Notes:
+    Search MSDN for CreateFont function to learn more about fonts.
+
+<b>::SetLMargin( nLMar )</b>
+
+  Sets the left margin for printed lines.
+
+  Parameters:
+    nLMar = number of columns or millimiters. Defaults to 0.
+
+<b>::SetPreviewSize( nSize )</b>
+
+  Sets the preview initial size (zoom) for HBPRINTER and MINIPRINT modes.
+
+  Parameters:
+    nSize = For HBPRINTER mode: 1 to 5 (small to big).
+                                Defaults to 3.
+            For MINIPRINT mode: -9.99 to 99.99 (small to big).
+                                Defaults to 0.
+   
+<b>::SetProp( lMode )</b>
+
+  Sets whether the row height will be proportional to the size of the
+  default font (DATA nFontSize) or to 10 points.
+
+  Parameters:
+    lMode = .T. for nFontSize, .F. for 10 points (default).
+
+<b>::SetShowErrors( lShow )</b>
+
+  Enables or disables the display of messages when an error occurs.
+
+<b>::SetTMargin( nTMar )</b>
+
+  Sets the top margin for printed pages.
+
+  Parameters:
+    nTMar = number of rows or millimiters. Defaults to 0.
+
+<b>::SetUnits( cUnits, nUnitsLin )</b>
+
+  Sets the units that will be used for printing.
+
+  Parameters:
+    cUnits = MM for milimiters or ROWCOL for rows and columns (default).
+
+  Notes:
+    The class uses internally MM to try to obtain documents that look
+    in the same way when printed on different printers.
+
+<b>::Version()</b>
+
+  Gets the version number of the TPRINT library.
+
+<p><u>Datas</u>:
+
+<b>::aColor</b>
+
+   TODO: explain important datas.
+
 </PRE>
 </span>
 

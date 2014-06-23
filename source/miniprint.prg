@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.prg,v 1.46 2014-06-03 00:34:13 fyurisich Exp $
+ * $Id: miniprint.prg,v 1.47 2014-06-23 22:17:33 fyurisich Exp $
  */
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
@@ -2010,10 +2010,10 @@ HB_FUNC( _HMG_PRINTER_C_PRINT )
    // 14: Color Flag
    // 15: FontName Flag
    // 16: FontSize Flag
-   // 17: lWidth
-   // 18: nWidth
-   // 19: lAngle
-   // 20: Angle
+   // 17: lAngle
+   // 18: nAngle
+   // 19: lWidth
+   // 20: Width
 
    HGDIOBJ hgdiobj;
    char FontName [32];
@@ -2027,8 +2027,8 @@ HB_FUNC( _HMG_PRINTER_C_PRINT )
    int b;
    int x = hb_parni( 3 );
    int y = hb_parni( 2 );
-   long nWidth;
-   long nAngle ;
+   long nAngle;
+   long nWidth ;
    HFONT hfont;
    HDC hdcPrint = (HDC) hb_parnl( 1 );
    int FontHeight;
@@ -2089,24 +2089,24 @@ HB_FUNC( _HMG_PRINTER_C_PRINT )
          b = 0;
       }
 
-      // Width
+      // Angle
       if( hb_parl( 17 ) )
       {
-         nWidth = hb_parnl( 18 );
-      }
-      else
-      {
-         nWidth = 0;
-      }
-
-      // Angle
-      if( hb_parl( 19 ) )
-      {
-         nAngle = hb_parnl( 20 );
+         nAngle = hb_parnl( 18 );
       }
       else
       {
          nAngle = 0;
+      }
+
+      // Width
+      if( hb_parl( 19 ) )
+      {
+         nWidth = hb_parnl( 20 );
+      }
+      else
+      {
+         nWidth = 0;
       }
 
       // Fontname
@@ -2132,9 +2132,9 @@ HB_FUNC( _HMG_PRINTER_C_PRINT )
       FontHeight = -MulDiv( FontSize, GetDeviceCaps( hdcPrint, LOGPIXELSY ), 72 );
 
       hfont = CreateFont( FontHeight,
+                          nWidth,
                           nAngle,
-                          nWidth,
-                          nWidth,
+                          nAngle,
                           fnWeight,
                           fdwItalic,
                           fdwUnderline,
@@ -3631,6 +3631,7 @@ HB_FUNC( _HMG_PRINTER_C_IMAGE )
       if( hFile == INVALID_HANDLE_VALUE )
       {
          hbmp = (HBITMAP) LoadImage( GetModuleHandle(NULL), hb_parc( 2 ), IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION );
+         // TODO: Use _OOHG_LoadImage
          if( hbmp!=NULL )
          {
             picd.cbSizeofstruct = sizeof( PICTDESC );

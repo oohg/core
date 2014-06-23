@@ -1,5 +1,5 @@
 /*
- * $Id: printtest.prg,v 1.10 2014-06-17 00:35:46 fyurisich Exp $
+ * $Id: printtest.prg,v 1.11 2014-06-23 22:17:33 fyurisich Exp $
  */
 
 #include 'oohg.ch'
@@ -132,14 +132,16 @@ if oprint:lprerror
       oprint:printdata(18,10, TRANSFORM(1500.00, "999,999.99"),"arial",10 , .F. , ,"R" ,)
       /// a la derecha con letra arial
       oprint:printdata(19,10, TRANSFORM(25000.00,"999,999.99"),"arial",20 , .F. , ,"R" ,)
-      oprint:printdata(29,40,"TPRINT Version: "+oprint:version())
       oprint:printimage(21,10,30,30,"cvcjpg.jpg",100)
-      oprint:printline(21,10,21,30,,1)
-      oprint:printrectangle(35,10,50,30,{0,0,255},1)
-////      oprint:printrectangle(35,10,50,30)
-//      oprint:printroundrectangle(35,40,50,55)
+
+      oprint:printline(21,40,21,60,,1,.F.)
+      oprint:printdata(29,40,"TPRINT Version: "+oprint:version())
+      oprint:printrectangle(35,10,50,30,BLUE,1,.T.,RED)
+      oprint:printrectangle(3,3,6,6)
+      oprint:printroundrectangle(35,40,50,55,,.5,.F.)
+      oprint:printline(51,50,58,50,,1)
       oprint:printbarcode(53,20,"123456789012","EAN13")
-      oprint:printline(51,50,58,50,,1)                 
+
       oprint:endpage()
       oprint:enddoc()
       oprint:RELEASE()

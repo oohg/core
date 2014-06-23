@@ -1,11 +1,55 @@
 /*
- * $Id: ChangeLog,v 1.1290 2014-06-19 18:53:30 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1291 2014-06-23 22:17:33 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-06-23 19:17 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/tprint.html
+     * Updated.
+   * samples/oohg/printtest.prg
+     * Updated.
+   * source/h_pdf.pdf
+     + Methods _OOHG_Box and _OOHG_Line.
+   * source/h_print.prg
+     * DATAs accessible by functions are now READONLY.
+     + TPRINTBASE DATAs aBarColor, cDocument, lSaveTemp and lLandscape.
+     * Renamed TPRINTBASE DATA TempFile to cTempFile.
+     * Changed version to 4.10
+     - Methods PrintDosX and PrintRawX from TPRINTBASE.
+     + Methods PrintModeX, SetBarColor and SetShowErrors to TPRINTBASE.
+     + Parameter lSaveTemp to method EndDoc of TPRINTBASE.
+     + Parameter lSolid to method PrintLine of TPRINTBASE.
+     + Parameter lSolid and arColor to methods PrintRectangle and
+       PrintRoundRectangle of TPRINTBASE.
+     + Parameter cFile to methods PrintMode, PrintDos and PrintRaw of
+       TPRINTBASE.
+     * Method PrintMode of TPRINTBASE calls PrintModeX.
+     - DATA liswin from TDOSPRINT.
+     + Method PrintModeX of TDOSPRINT.
+     + Methods BeginDocX and PrintModeX to TRAWPRINT.
+     * Handling of document's name.
+     + Methods BeginDocX and InitX to THTMLPRINTFROMEXCEL and
+       THTMLPRINTFROMCALC.
+     - DATA lLandscape FROM TRTFPRINT.
+     + Method BeginDocX to TCSVPRINT.
+     - DATA cDocument from TPDFPRINT.
+     * Function ParseName returned to public.
+     * Method PrintLineX of TPDFPRINT uses method _OOHG_Line of TPDF.
+     * Methods PrintRectangle and PrintRoundRectangle use methos _OOHG_Box
+       of TPDF.
+     * Functions for barcode generation returned to public.
+     + Missing parameters in same method's declarations.
+     * Comments.
+     * Format.
+     + More TO*DOs.
+   * source/miniprint.prg
+     * Incorrect parameters names.
+   * source/winprint.prg
+     ! Brush and pen not working when printing a rounded rectangle.
 
 2014-06-19 15:53 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ide/fmgs/form_prefer.fmg

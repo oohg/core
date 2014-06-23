@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.54 2014-06-03 00:34:13 fyurisich Exp $
+ * $Id: winprint.prg,v 1.55 2014-06-23 22:17:33 fyurisich Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -3162,6 +3162,7 @@ LPVOID rr_loadpicturefromresource(char * resname,LONG *lwidth,LONG *lheight)
    int nSize ;
 
    hbmpx = (HBITMAP) LoadImage(GetModuleHandle(NULL),resname,IMAGE_BITMAP,0,0,LR_CREATEDIBSECTION);
+   // TODO: Use _OOHG_LoadImage
    if( hbmpx != NULL )
    {
       picd.cbSizeofstruct=sizeof(PICTDESC);
@@ -3481,8 +3482,8 @@ HB_FUNC (RR_GETTEXTEXTENT)
 
 HB_FUNC (RR_ROUNDRECT)
 {
- LONG xpen  =hb_parnl(3);
- LONG xbrush=hb_parnl(4);
+ LONG xpen  =hb_parnl(4);
+ LONG xbrush=hb_parnl(5);
  if (xpen!=0) SelectObject(hDC ,(HPEN) xpen);
  if (xbrush!=0) SelectObject(hDC ,(HBRUSH) xbrush);
 
