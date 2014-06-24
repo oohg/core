@@ -1,5 +1,5 @@
 /*
- * $Id: mgide.prg,v 1.5 2014-06-19 18:53:30 fyurisich Exp $
+ * $Id: mgide.prg,v 1.6 2014-06-24 17:39:25 fyurisich Exp $
  */
 
 #include "oohg.ch"
@@ -167,255 +167,250 @@ METHOD NewIde( rtl) CLASS THMI
 local i,npos,capellido,cnombre, nRed, nGreen, nBlue
 public csyscolor,cvccvar
 
-SET DELETED ON
-SET CENTURY ON
-SET EXACT ON
-SET INTERACTIVECLOSE OFF
-SET NAVIGATION EXTENDED
-SET BROWSESYNC ON
+   SET DELETED ON
+   SET CENTURY ON
+   SET EXACT ON
+   SET INTERACTIVECLOSE OFF
+   SET NAVIGATION EXTENDED
+   SET BROWSESYNC ON
 
-DECLARE WINDOW Form_Tree
-DECLARE WINDOW form_prefer
-DECLARE WINDOW form_main
-DECLARE WINDOW _errors
-DECLARE WINDOW editbcvc
-DECLARE WINDOW form_brow
-DECLARE WINDOW cvcControls
-DECLARE WINDOW waitmess
-DECLARE WINDOW form_splash
+   DECLARE WINDOW Form_Tree
+   DECLARE WINDOW form_prefer
+   DECLARE WINDOW form_main
+   DECLARE WINDOW _errors
+   DECLARE WINDOW editbcvc
+   DECLARE WINDOW form_brow
+   DECLARE WINDOW cvcControls
+   DECLARE WINDOW waitmess
+   DECLARE WINDOW form_splash
 
    ::cHelpFolder := GetStartupFolder()
-exedir   := mgidefolder                          // MigSoft
-lCorre   := .F.   ///// no es proyecto
+   exedir := mgidefolder                          // MigSoft
+   lCorre := .F.   ///// no es proyecto
 
-if rtl#NIL .and. rtl#"RTL"
-   rtl:=lower(rtl)
-   npos:=at(".",rtl)
-   if npos>0
-      capellido := substr(rtl,npos+1,3)
-      cnombre   := substr(rtl,1,npos-1)
-      if lower(capellido)="pmg"
-         lcorre := .T.
+   if rtl#NIL .and. rtl#"RTL"
+      rtl:=lower(rtl)
+      npos:=at(".",rtl)
+      if npos>0
+         capellido := substr(rtl,npos+1,3)
+         cnombre   := substr(rtl,1,npos-1)
+         if lower(capellido)="pmg"
+            lcorre := .T.
+         endif
+      endif
+   else
+      if file(exedir)
+         cvccvar:=alltrim(memoread(exedir))
+         dirchange(cvccvar)
       endif
    endif
-else
-   if file(exedir)
-      cvccvar:=alltrim(memoread(exedir))
-      dirchange(cvccvar)
+
+   nesquema := 4
+   nRed     := GETRED(GETSYSCOLOR(nesquema))
+   nGreen   := GETGREEN(GETSYSCOLOR(nesquema))
+   nBlue    := GETBLUE(GETSYSCOLOR(nesquema))
+
+   csyscolor :='{'+str(nred,3)+','+str(ngreen,3)+','+str(nblue,3)+'}'
+   ::asystemcoloraux := &csyscolor
+   cvcx :=getdesktopwidth()
+   cvcy :=getdesktopheight()
+
+   if cvcx<800 .or. cvcy<600
+      MsgInfo( 'Best viewed with 800x600 or greater resolution.', 'ooHG IDE+' )
    endif
-endif
-
-nesquema := 4
-nRed     := GETRED(GETSYSCOLOR(nesquema))
-nGreen   := GETGREEN(GETSYSCOLOR(nesquema))
-nBlue    := GETBLUE(GETSYSCOLOR(nesquema))
-
-csyscolor             :='{'+str(nred,3)+','+str(ngreen,3)+','+str(nblue,3)+'}'
-::asystemcoloraux := &csyscolor
-cvcx                  :=getdesktopwidth()
-cvcy                  :=getdesktopheight()
-
-if cvcx<800 .or. cvcy<600
-   MsgInfo( 'Best viewed with 800x600 or greater resolution.', 'ooHG IDE+' )
-endif
 
 *-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._-._.-._.-._.-._.-._.-._.-._
 *                      Main Window -  760 x 500   30,134
 *-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._-._.-._.-._.-._.-._.-._.-._
 
-DEFINE WINDOW Form_Tree OBJ Form_Tree ;
-   AT 0,0 ;
-   WIDTH 800 ;
-   HEIGHT 600 ;
-   TITLE cNameApp ;
-   MAIN ;
-   FONT "Times new Roman" SIZE 11 ;
-   ICON "Edit" ;
-   ON SIZE AjustaFrame(oFrame,oTree) ;     // MigSoft
-   ON INTERACTIVECLOSE If( MsgYesNo( "Exit program?", 'ooHG IDE+' ), ::exit(), .F. ) ;
-   NOSHOW ;
-   backcolor ::asystemcolor
+   DEFINE WINDOW Form_Tree OBJ Form_Tree ;
+      AT 0,0 ;
+      WIDTH 800 ;
+      HEIGHT 600 ;
+      TITLE cNameApp ;
+      MAIN ;
+      FONT "Times new Roman" SIZE 11 ;
+      ICON "Edit" ;
+      ON SIZE AjustaFrame(oFrame,oTree) ;     // MigSoft
+      ON INTERACTIVECLOSE If( MsgYesNo( "Exit program?", 'ooHG IDE+' ), ::exit(), .F. ) ;
+      NOSHOW ;
+      BACKCOLOR ::asystemcolor
 
-   DEFINE STATUSBAR FONT "Verdana" SIZE 9       // MigSoft
-      STATUSITEM cNameApp+"                                 F1 Help    F5 Build    F6 Build / Run    F7 Run    F8 Debug"
-   END STATUSBAR
+      DEFINE STATUSBAR FONT "Verdana" SIZE 9       // MigSoft
+         STATUSITEM cNameApp+"                                 F1 Help    F5 Build    F6 Build / Run    F7 Run    F8 Debug"
+      END STATUSBAR
 
-   DEFINE MAIN MENU
-      POPUP '&File'
-         ITEM '&New project ' ACTION ::newproject()
-         ITEM '&Open Project' ACTION ::openproject()
-         ITEM '&Save Project' ACTION ::saveproject()
-         SEPARATOR
-         ITEM '&Preferences' ACTION ::preferences()
-         SEPARATOR
-         ITEM '&Exit' ACTION ::exit()
-      END POPUP
-      POPUP 'Pro&ject'
-         POPUP 'Add' NAME 'Add'                    // MigSoft
-            ITEM 'Form ' ACTION ::newform()
-            ITEM 'Prg  ' ACTION ::newprg()
-            ITEM 'CH   ' ACTION ::newch()
-            ITEM 'Rpt  ' ACTION ::newrpt()
-            ITEM 'RC   ' ACTION ::newrc()
-         end popup
-         SEPARATOR
-         ITEM "Modify item" Action analizar( Self )
-         SEPARATOR
-         ITEM 'Remove Item' ACTION ::deleteitemp()
-         SEPARATOR
-         ITEM 'View / Print Item' ACTION ::printit()
-      END POPUP
-      POPUP 'Build / Run / Debug'
-         ITEM 'Build Project'         ACTION CompileOptions( Self, 1 )
-         ITEM 'Build and Run Project' ACTION CompileOptions( Self, 2 )
-         ITEM 'Run Project'           ACTION CompileOptions( Self, 3 )
-         ITEM 'Debug Project'         ACTION CompileOptions( Self, 4 )
-      END POPUP
-      POPUP 'Tools'
-         ITEM 'Global Search Text'  ACTION ::searchtext()
-         ITEM 'Quickbrowse'  ACTION ::databaseview()
-         ITEM 'Data Manager'  ACTION ::dataman()
-      END POPUP
+      DEFINE MAIN MENU
+         POPUP '&File'
+            ITEM '&New project ' ACTION ::newproject()
+            ITEM '&Open Project' ACTION ::openproject()
+            ITEM '&Save Project' ACTION ::saveproject()
+            SEPARATOR
+            ITEM '&Preferences' ACTION ::preferences()
+            SEPARATOR
+            ITEM '&Exit' ACTION ::exit()
+         END POPUP
+         POPUP 'Pro&ject'
+            POPUP 'Add' NAME 'Add'                    // MigSoft
+               ITEM 'Form ' ACTION ::newform()
+               ITEM 'Prg  ' ACTION ::newprg()
+               ITEM 'CH   ' ACTION ::newch()
+               ITEM 'Rpt  ' ACTION ::newrpt()
+               ITEM 'RC   ' ACTION ::newrc()
+            END POPUP
+            SEPARATOR
+            ITEM "Modify item" Action analizar( Self )
+            SEPARATOR
+            ITEM 'Remove Item' ACTION ::deleteitemp()
+            SEPARATOR
+            ITEM 'View / Print Item' ACTION ::printit()
+         END POPUP
+         POPUP 'Build / Run / Debug'
+            ITEM 'Build Project'         ACTION CompileOptions( Self, 1 )
+            ITEM 'Build and Run Project' ACTION CompileOptions( Self, 2 )
+            ITEM 'Run Project'           ACTION CompileOptions( Self, 3 )
+            ITEM 'Debug Project'         ACTION CompileOptions( Self, 4 )
+         END POPUP
+         POPUP 'Tools'
+            ITEM 'Global Search Text'  ACTION ::searchtext()
+            ITEM 'Quickbrowse'  ACTION ::databaseview()
+            ITEM 'Data Manager'  ACTION ::dataman()
+         END POPUP
 
-      POPUP '&Help'
-         ITEM 'ooHG Syntax Help' ACTION _Execute( GetActiveWindow(), Nil, ::cHelpFolder + "\oohg.chm", Nil, Nil, 5 )
-         ITEM '&About' ACTION ::about()
-         ITEM 'Shell info' ACTION shellabout(cNameApp,"Shell info")
-      END POPUP
-   END MENU
+         POPUP '&Help'
+            ITEM 'ooHG Syntax Help' ACTION _Execute( GetActiveWindow(), Nil, ::cHelpFolder + "\oohg.chm", Nil, Nil, 5 )
+            ITEM '&About' ACTION ::about()
+            ITEM 'Shell info' ACTION shellabout(cNameApp,"Shell info")
+         END POPUP
+      END MENU
 
-   ON KEY F1 action help_f1('PROJECT')
-   ON KEY F5 action CompileOptions( Self, 1 )
-   ON KEY F6 action CompileOptions( Self, 2 )
-   ON KEY F7 action CompileOptions( Self, 3 )
-   ON KEY F8 action CompileOptions( Self, 4 )
+      ON KEY F1 action help_f1('PROJECT')
+      ON KEY F5 action CompileOptions( Self, 1 )
+      ON KEY F6 action CompileOptions( Self, 2 )
+      ON KEY F7 action CompileOptions( Self, 3 )
+      ON KEY F8 action CompileOptions( Self, 4 )
 
-   @ 65,30 frame frame_tree OBJ oFrame width cvcx-30  height cvcy-65
+      @ 65,30 frame frame_tree OBJ oFrame width cvcx-30  height cvcy-65
 
-   DEFINE TREE Tree_1 OBJ oTree AT 90,50 WIDTH 200 HEIGHT cvcy-290 VALUE 1 ;   // MigSoft
-      TOOLTIP 'Double click to modify items'   ;
-      ON DBLCLICK analizar( Self ) ;
-      NODEIMAGES { "cl_fl", "op_fl"};
-      ITEMIMAGES { "doc", "doc_fl" };
+      DEFINE TREE Tree_1 OBJ oTree AT 90,50 WIDTH 200 HEIGHT cvcy-290 VALUE 1 ;   // MigSoft
+         TOOLTIP 'Double click to modify items'   ;
+         ON DBLCLICK analizar( Self ) ;
+         NODEIMAGES { "cl_fl", "op_fl"};
+         ITEMIMAGES { "doc", "doc_fl" };
 
-      NODE 'Project'  IMAGES { "doc" }
-         TREEITEM 'Form module'
-         TREEITEM 'Prg module'
-         TREEITEM 'CH module'
-         TREEITEM 'Rpt module'
-         TREEITEM 'RC module'
-      END NODE
+         NODE 'Project'  IMAGES { "doc" }
+            TREEITEM 'Form module'
+            TREEITEM 'Prg module'
+            TREEITEM 'CH module'
+            TREEITEM 'Rpt module'
+            TREEITEM 'RC module'
+         END NODE
 
-   END TREE
+      END TREE
 
-   DEFINE SPLITBOX
+      DEFINE SPLITBOX
+         DEFINE TOOLBAR ToolBar_1y BUTTONSIZE 16,16 FLAT ;
+            FONT 'Times new roman' SIZE 10 ITALIC
 
-   DEFINE TOOLBAR ToolBar_1y BUTTONSIZE 16,16 FLAT ;
-      FONT 'Times new roman' SIZE 10 ITALIC
+            BUTTON Button_13 ;
+            TOOLTIP 'Exit ' ;
+            PICTURE 'M1';
+            ACTION If( MsgYesNo( "Exit program?", 'ooHG IDE+' ), ::exit(), Nil ) AUTOSIZE
 
-      BUTTON Button_13 ;
-      TOOLTIP 'Exit ' ;
-      PICTURE 'M1';
-      ACTION If( MsgYesNo( "Exit program?", 'ooHG IDE+' ), ::exit(), Nil ) AUTOSIZE
+            BUTTON Button_1 ;
+            TOOLTIP 'New...' ;
+            PICTURE 'M2';
+            ACTION ::newform() DROPDOWN AUTOSIZE
 
-      BUTTON Button_1 ;
-      TOOLTIP 'New...' ;
-      PICTURE 'M2';
-      ACTION ::newform() DROPDOWN AUTOSIZE
+            BUTTON Button_1b ;
+            TOOLTIP 'Open...' ;
+            PICTURE 'M3';
+            ACTION ::openproject() AUTOSIZE
 
-      BUTTON Button_1b ;
-      TOOLTIP 'Open...' ;
-      PICTURE 'M3';
-      ACTION ::openproject() AUTOSIZE
+            BUTTON Button_01 ;
+            TOOLTIP 'Save...' ;
+            PICTURE 'M4';
+            ACTION ::saveproject() AUTOSIZE
 
-      BUTTON Button_01 ;
-      TOOLTIP 'Save...' ;
-      PICTURE 'M4';
-      ACTION ::saveproject() AUTOSIZE
+            BUTTON Button_7 ;
+            TOOLTIP 'Remove Item' ;
+            PICTURE 'M5' ;
+            ACTION ::deleteitemp() AUTOSIZE
 
-      BUTTON Button_7 ;
-      TOOLTIP 'Remove Item' ;
-      PICTURE 'M5' ;
-      ACTION ::deleteitemp() AUTOSIZE
+            BUTTON Button_7a ;
+            TOOLTIP 'View / Print Item' ;
+            Picture 'M6' ;
+            ACTION ::printit() separator AUTOSIZE
 
-      BUTTON Button_7a ;
-      TOOLTIP 'View / Print Item' ;
-      Picture 'M6' ;
-      ACTION ::printit() separator AUTOSIZE
+            BUTTON Button_9 ;
+            TOOLTIP 'Build project' ;
+            PICTURE 'M7';
+            ACTION CompileOptions( Self, 1 )
 
-      BUTTON Button_9 ;
-      TOOLTIP 'Build project' ;
-      PICTURE 'M7';
-      ACTION CompileOptions( Self, 1 )
+            BUTTON Button_10 ;
+            TOOLTIP 'Build / Run' ;
+            PICTURE 'M8' ;
+            ACTION CompileOptions( Self, 2 )
 
-      BUTTON Button_10 ;
-      TOOLTIP 'Build / Run' ;
-      PICTURE 'M8' ;
-      ACTION CompileOptions( Self, 2 )
+            BUTTON Button_11 ;
+            TOOLTIP 'Run' ;
+            PICTURE 'M9';
+            ACTION CompileOptions( Self, 3 ) DROPDOWN AUTOSIZE separator
 
-      BUTTON Button_11 ;
-      TOOLTIP 'Run' ;
-      PICTURE 'M9';
-      ACTION CompileOptions( Self, 3 ) DROPDOWN AUTOSIZE separator
+            BUTTON Button_8 ;
+            TOOLTIP 'Global Search Text' ;
+            PICTURE 'M10';
+            ACTION ::Searchtext() separator AUTOSIZE
 
-      BUTTON Button_8 ;
-      TOOLTIP 'Global Search Text' ;
-      PICTURE 'M10';
-      ACTION ::Searchtext() separator AUTOSIZE
+            BUTTON Button_qb ;
+            TOOLTIP 'Quick Browse' ;
+            PICTURE 'M11';
+            ACTION ::databaseview() AUTOSIZE
 
-      BUTTON Button_qb ;
-      TOOLTIP 'Quick Browse' ;
-      PICTURE 'M11';
-      ACTION ::databaseview() AUTOSIZE
+            BUTTON Button_12 ;
+            TOOLTIP 'Data Manager' ;
+            PICTURE 'M12';
+            ACTION ::dataman() AUTOSIZE
+         END TOOLBAR
 
-      BUTTON Button_12 ;
-      TOOLTIP 'Data Manager' ;
-      PICTURE 'M12';
-      ACTION ::dataman() AUTOSIZE
+         DEFINE DROPDOWN MENU BUTTON Button_1
+            ITEM 'Form'    ACTION ::newform()
+            ITEM 'Prg'     ACTION ::newprg()
+            ITEM 'CH'      ACTION ::newch()
+            ITEM 'Rpt'     ACTION ::newrpt()
+            ITEM 'RC'      ACTION ::newrc()
+         END MENU
 
-   END TOOLBAR
+         DEFINE DROPDOWN MENU BUTTON Button_11
+            ITEM 'Run  ' ACTION CompileOptions( Self, 3 )
+            ITEM 'Debug' ACTION CompileOptions( Self, 4 )
+         END MENU
+      END SPLITBOX
 
-   DEFINE DROPDOWN MENU BUTTON Button_1
-      ITEM 'Form'    ACTION ::newform()
-      ITEM 'Prg'     ACTION ::newprg()
-      ITEM 'CH'      ACTION ::newch()
-      ITEM 'Rpt'     ACTION ::newrpt()
-      ITEM 'RC'      ACTION ::newrc()
-   END MENU
+      @ 135,280 image image_front OBJ image_front ;
+         picture 'hmiq' ;
+         width 420 ;
+         height 219
 
-   DEFINE DROPDOWN MENU BUTTON Button_11
-      ITEM 'Run  ' ACTION CompileOptions( Self, 3 )
-      ITEM 'Debug' ACTION CompileOptions( Self, 4 )
-   END MENU
+      Form_Tree:tree_1:fontitalic:=.T.
 
-   END SPLITBOX
-
-   @ 135,280 image image_front OBJ image_front ;
-   picture 'hmiq'          ;
-   width 420               ;
-   height 219              ;
-
-   Form_Tree:tree_1:fontitalic:=.T.
-
-   If Empty(rtl)
-      Desactiva(0)  // MigSoft
-   Else
-      Desactiva(1)  // MigSoft
-   Endif
-
-END WINDOW
+      If Empty(rtl)
+         Desactiva(0)  // MigSoft
+      Else
+         Desactiva(1)  // MigSoft
+      Endif
+   END WINDOW
 
    DEFINE WINDOW Form_Splash obj Form_splash ;
-   AT 0,0 ;
-   WIDTH 584 HEIGHT 308 ;
-   TITLE '';
-   MODAL TOPMOST NOCAPTION ;
-   ON INIT ::SplashDelay() ;
+      AT 0,0 ;
+      WIDTH 584 HEIGHT 308 ;
+      TITLE '';
+      MODAL TOPMOST NOCAPTION ;
+      ON INIT ::SplashDelay() ;
 
-   @ 0,0 IMAGE image_splash PICTURE 'hmi'  ;
-   WIDTH 584 ;
-   HEIGHT 308
-
+      @ 0,0 IMAGE image_splash PICTURE 'hmi'  ;
+         WIDTH 584 ;
+         HEIGHT 308
    END WINDOW
 
    CENTER WINDOW Form_Splash
@@ -426,276 +421,270 @@ END WINDOW
    ENDIF
 
    BEGIN INI FILE 'hmi.INI'
-
-   //****************** PROJECT
-   GET ::cProjFolder     SECTION 'PROJECT'  ENTRY "PROJFOLDER"    default ''      // MigSoft
-   GET ::cOutFile        SECTION 'PROJECT'  ENTRY "OUTFILE"       default ''
-   //****************** EDITOR
-   GET ::cExteditor      SECTION 'EDITOR'   ENTRY "EXTERNAL"      default ''
-   //****************** OOHG
-   GET ::cGuiHbMinGW     SECTION 'GUILIB'   ENTRY "GUIHBMINGW"    default 'c:\oohg'
-   GET ::cGuiHbBCC       SECTION 'GUILIB'   ENTRY "GUIHBBCC"      default 'c:\oohg'
-   GET ::cGuiHbPelles    SECTION 'GUILIB'   ENTRY "GUIHBPELL"     default 'c:\oohg'
-   GET ::cGuixHbMinGW    SECTION 'GUILIB'   ENTRY "GUIXHBMINGW"   default 'c:\oohg'
-   GET ::cGuixHbBCC      SECTION 'GUILIB'   ENTRY "GUIXHBBCC"     default 'c:\oohg'
-   GET ::cGuixHbPelles   SECTION 'GUILIB'   ENTRY "GUIXHBPELL"    default 'c:\oohg'
-   //****************** HARBOUR
-   GET ::cHbMinGWFolder  SECTION 'HARBOUR'  ENTRY "HBMINGW"       default 'c:\harbourm'
-   GET ::cHbBCCFolder    SECTION 'HARBOUR'  ENTRY "HBBCC"         default 'c:\harbourb'
-   GET ::cHbPellFolder   SECTION 'HARBOUR'  ENTRY "HBPELLES"      default 'c:\harbourp'
-   //****************** XHARBOUR
-   GET ::cxHbMinGWFolder SECTION 'HARBOUR'  ENTRY "XHBMINGW"      default 'c:\xharbourm'
-   GET ::cxHbBCCFolder   SECTION 'HARBOUR'  ENTRY "XHBBCC"        default 'c:\xharbourb'
-   GET ::cxHbPellFolder  SECTION 'HARBOUR'  ENTRY "XHBPELLES"     default 'c:\xharbourp'
-   //****************** C COMPILER
-   GET ::cMinGWFolder    SECTION 'COMPILER' ENTRY "MINGWFOLDER"   default 'c:\MinGW'
-   GET ::cBCCFolder      SECTION 'COMPILER' ENTRY "BCCFOLDER"     default 'c:\Borland\BCC55'
-   GET ::cPellFolder     SECTION 'COMPILER' ENTRY "PELLESFOLDER"  default 'c:\PellesC'
-   //****************** MODE
-   GET ::nCompxBase      SECTION 'WHATCOMP' ENTRY "XBASECOMP"     default 1  // 1 Harbour  2 xHarbour
-   GET ::nCompilerC      SECTION 'WHATCOMP' ENTRY "CCOMPILER"     default 1  // 1 MinGW    2 BCC   3 Pelles C
-   //****************** OTHER
-   GET ::ltbuild         SECTION 'SETTINGS' ENTRY "BUILD"         default 2  // 1 Compile.bat 2 Own Make
-   GET ::lsnap           SECTION 'SETTINGS' ENTRY "SNAP"          default 0
-   GET ::clib            SECTION 'SETTINGS' ENTRY "LIB"           default ''
-
+      //****************** PROJECT
+      GET ::cProjFolder     SECTION 'PROJECT'  ENTRY "PROJFOLDER"    default ''      // MigSoft
+      GET ::cOutFile        SECTION 'PROJECT'  ENTRY "OUTFILE"       default ''
+      //****************** EDITOR
+      GET ::cExteditor      SECTION 'EDITOR'   ENTRY "EXTERNAL"      default ''
+      //****************** OOHG
+      GET ::cGuiHbMinGW     SECTION 'GUILIB'   ENTRY "GUIHBMINGW"    default 'c:\oohg'
+      GET ::cGuiHbBCC       SECTION 'GUILIB'   ENTRY "GUIHBBCC"      default 'c:\oohg'
+      GET ::cGuiHbPelles    SECTION 'GUILIB'   ENTRY "GUIHBPELL"     default 'c:\oohg'
+      GET ::cGuixHbMinGW    SECTION 'GUILIB'   ENTRY "GUIXHBMINGW"   default 'c:\oohg'
+      GET ::cGuixHbBCC      SECTION 'GUILIB'   ENTRY "GUIXHBBCC"     default 'c:\oohg'
+      GET ::cGuixHbPelles   SECTION 'GUILIB'   ENTRY "GUIXHBPELL"    default 'c:\oohg'
+      //****************** HARBOUR
+      GET ::cHbMinGWFolder  SECTION 'HARBOUR'  ENTRY "HBMINGW"       default 'c:\harbourm'
+      GET ::cHbBCCFolder    SECTION 'HARBOUR'  ENTRY "HBBCC"         default 'c:\harbourb'
+      GET ::cHbPellFolder   SECTION 'HARBOUR'  ENTRY "HBPELLES"      default 'c:\harbourp'
+      //****************** XHARBOUR
+      GET ::cxHbMinGWFolder SECTION 'HARBOUR'  ENTRY "XHBMINGW"      default 'c:\xharbourm'
+      GET ::cxHbBCCFolder   SECTION 'HARBOUR'  ENTRY "XHBBCC"        default 'c:\xharbourb'
+      GET ::cxHbPellFolder  SECTION 'HARBOUR'  ENTRY "XHBPELLES"     default 'c:\xharbourp'
+      //****************** C COMPILER
+      GET ::cMinGWFolder    SECTION 'COMPILER' ENTRY "MINGWFOLDER"   default 'c:\MinGW'
+      GET ::cBCCFolder      SECTION 'COMPILER' ENTRY "BCCFOLDER"     default 'c:\Borland\BCC55'
+      GET ::cPellFolder     SECTION 'COMPILER' ENTRY "PELLESFOLDER"  default 'c:\PellesC'
+      //****************** MODE
+      GET ::nCompxBase      SECTION 'WHATCOMP' ENTRY "XBASECOMP"     default 1  // 1 Harbour  2 xHarbour
+      GET ::nCompilerC      SECTION 'WHATCOMP' ENTRY "CCOMPILER"     default 1  // 1 MinGW    2 BCC   3 Pelles C
+      //****************** OTHER
+      GET ::ltbuild         SECTION 'SETTINGS' ENTRY "BUILD"         default 2  // 1 Compile.bat 2 Own Make
+      GET ::lsnap           SECTION 'SETTINGS' ENTRY "SNAP"          default 0
+      GET ::clib            SECTION 'SETTINGS' ENTRY "LIB"           default ''
    END INI
 
-    DEFINE WINDOW waitmess obj waitmess  ;
-    AT 10,10  ;
-    width 150 ;
-    height 100 ;
-    Title "Information"  CHILD NOSYSMENU NOCAPTION NOSHOW  ;
-    backcolor ::asystemcolor
+   DEFINE WINDOW waitmess obj waitmess  ;
+      AT 10,10  ;
+      WIDTH 150 ;
+      HEIGHT 100 ;
+      TITLE "Information"  CHILD NOSYSMENU NOCAPTION NOSHOW  ;
+      BACKCOLOR ::asystemcolor
 
-    @ 35,15 label hmi_label_101 value '              '  autosize font 'Times new Roman'  SIZE 14
-
-    END WINDOW
+      @ 35,15 label hmi_label_101 value '              '  autosize font 'Times new Roman'  SIZE 14
+   END WINDOW
 
 *-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._-._.-._.-._.-._.-._.-._.-._
 *                          Horizontal buttons
 *-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._-._.-._.-._.-._.-._.-._.-._
 
    DEFINE WINDOW  Form_main ;
-   AT 0,0 ;
-   WIDTH 689 ;
-   HEIGHT 104 ;
-   TITLE '' ;
-   CHILD ;
-   NOSHOW  ;
-   NOMAXIMIZE ;
-   NOSIZE ;
-   OBJ Form_main ;
-   ICON "Edit" ;
-   FONT 'MS Sans Serif' ;
-   SIZE 10 ;
-   backcolor ::asystemcolor ;
-   ON MINIMIZE  minim() ;
-   ON MAXIMIZE  maxim() ;
-   ON RESTORE maxim()
+      AT 0,0 ;
+      WIDTH 689 ;
+      HEIGHT 104 ;
+      TITLE '' ;
+      CHILD ;
+      NOSHOW  ;
+      NOMAXIMIZE ;
+      NOSIZE ;
+      OBJ Form_main ;
+      ICON "Edit" ;
+      FONT 'MS Sans Serif' ;
+      SIZE 10 ;
+      BACKCOLOR ::asystemcolor ;
+      ON MINIMIZE  minim() ;
+      ON MAXIMIZE  maxim() ;
+      ON RESTORE maxim()
 
+      @ 17,10 BUTTON exit ;
+         PICTURE 'A1';
+         ACTION ::exitform() ;
+         WIDTH 28 ;
+         HEIGHT 28 ;
+         TOOLTIP 'Exit' ;
 
-   @ 17,10 BUTTON exit ;
-   PICTURE 'A1';
-   ACTION ::exitform() ;
-   WIDTH 28 ;
-   HEIGHT 28 ;
-   TOOLTIP 'Exit' ;
+      @ 17,41 BUTTON save ;
+         PICTURE 'A2';
+         ACTION {|| myform:Save(0) } ;
+         WIDTH 30 ;
+         HEIGHT 28 ;
+         TOOLTIP 'Save' ;
 
-   @ 17,41 BUTTON save ;
-   PICTURE 'A2';
-   ACTION {|| myform:Save(0) } ;
-   WIDTH 30 ;
-   HEIGHT 28 ;
-   TOOLTIP 'Save' ;
+      @ 17,73 BUTTON save_as ;
+         PICTURE 'A3';
+         ACTION myform:save(1) ;
+         WIDTH 30 ;
+         HEIGHT 28 ;
+         TOOLTIP 'Save as' ;
 
-   @ 17,73 BUTTON save_as ;
-   PICTURE 'A3';
-   ACTION myform:save(1) ;
-   WIDTH 30 ;
-   HEIGHT 28 ;
-   TOOLTIP 'Save as' ;
+      @ 17,112 BUTTON form_prop ;
+         PICTURE 'A4';
+         ACTION FrmProperties( Self ) ;
+         WIDTH 30 ;
+         HEIGHT 28 ;
+         TOOLTIP 'Properties' ;
 
-   @ 17,112 BUTTON form_prop ;
-   PICTURE 'A4';
-   ACTION FrmProperties( Self ) ;
-   WIDTH 30 ;
-   HEIGHT 28 ;
-   TOOLTIP 'Properties' ;
+      @ 17,144 BUTTON events_prop ;
+         PICTURE 'A5';
+         ACTION FrmEvents( Self ) ;
+         WIDTH 30 ;
+         HEIGHT 28 ;
+         TOOLTIP 'Events' ;
 
-   @ 17,144 BUTTON events_prop ;
-   PICTURE 'A5';
-   ACTION FrmEvents( Self ) ;
-   WIDTH 30 ;
-   HEIGHT 28 ;
-   TOOLTIP 'Events' ;
+      @ 17,176 BUTTON form_mc ;
+         PICTURE 'A6';
+         ACTION IntFoco( 0, Self ) ;
+         WIDTH 30 ;
+         HEIGHT 28 ;
+         TOOLTIP 'Fonts and Colors' ;
 
-   @ 17,176 BUTTON form_mc ;
-   PICTURE 'A6';
-   ACTION IntFoco( 0, Self ) ;
-   WIDTH 30 ;
-   HEIGHT 28 ;
-   TOOLTIP 'Fonts and Colors' ;
+      @ 17,209 BUTTON tbc_fmms ;
+         PICTURE 'A7';
+         ACTION ManualMoSi( 0, Self ) ;
+         WIDTH 30 ;
+         HEIGHT 28 ;
+         TOOLTIP 'Manual Move/Size' ;
 
-   @ 17,209 BUTTON tbc_fmms ;
-   PICTURE 'A7';
-   ACTION ManualMoSi( 0, Self ) ;
-   WIDTH 30 ;
-   HEIGHT 28 ;
-   TOOLTIP 'Manual Move/Size' ;
+      @ 17,240 BUTTON mmenu1 ;
+         PICTURE 'A8';
+         ACTION tMyMenu:menu_ed( 1 ) ;
+         WIDTH 30 ;
+         HEIGHT 28 ;
+         TOOLTIP 'Main Menu' ;
 
-   @ 17,240 BUTTON mmenu1 ;
-   PICTURE 'A8';
-   ACTION tMyMenu:menu_ed( 1 ) ;
-   WIDTH 30 ;
-   HEIGHT 28 ;
-   TOOLTIP 'Main Menu' ;
+      @ 17,273 BUTTON mmenu2 ;
+         PICTURE 'A9';
+         ACTION tMyMenu:menu_ed( 2 ) ;
+         WIDTH 30 ;
+         HEIGHT 28 ;
+         TOOLTIP 'Context Menu' ;
 
-   @ 17,273 BUTTON mmenu2 ;
-   PICTURE 'A9';
-   ACTION tMyMenu:menu_ed( 2 ) ;
-   WIDTH 30 ;
-   HEIGHT 28 ;
-   TOOLTIP 'Context Menu' ;
+      @ 17,303 BUTTON mmenu3 ;
+         PICTURE 'A10';
+         ACTION tMyMenu:menu_ed( 3 ) ;
+         WIDTH 30 ;
+         HEIGHT 28 ;
+         TOOLTIP 'Notify Menu' ;
 
-   @ 17,303 BUTTON mmenu3 ;
-   PICTURE 'A10';
-   ACTION tMyMenu:menu_ed( 3 ) ;
-   WIDTH 30 ;
-   HEIGHT 28 ;
-   TOOLTIP 'Notify Menu' ;
+      @ 17,337 BUTTON toolb ;
+         PICTURE 'A11';
+         ACTION { || tMyToolb:tb_ed() } ;
+         WIDTH 30 ;
+         HEIGHT 28 ;
+         TOOLTIP 'Toolbar' ;
 
-   @ 17,337 BUTTON toolb ;
-   PICTURE 'A11';
-   ACTION { || tMyToolb:tb_ed() } ;
-   WIDTH 30 ;
-   HEIGHT 28 ;
-   TOOLTIP 'Toolbar' ;
+      @ 17,368 BUTTON form_co ;
+         PICTURE 'A12';
+         ACTION OrderControl( Self ) ;
+         WIDTH 30 ;
+         HEIGHT 28 ;
+         TOOLTIP 'Order'
 
-   @ 17,368 BUTTON form_co ;
-   PICTURE 'A12';
-   ACTION OrderControl( Self ) ;
-   WIDTH 30 ;
-   HEIGHT 28 ;
-   TOOLTIP 'Order' ;
+      @ 17,400 BUTTON  butt_status ;
+         PICTURE 'A13';
+         ACTION { || myform:verifybar() } ;
+         WIDTH 30 ;
+         HEIGHT 28 ;
+         TOOLTIP 'Statusbar On/Off' ;
 
-   @ 17,400 BUTTON  butt_status ;
-   PICTURE 'A13';
-   ACTION { || myform:verifybar() } ;
-   WIDTH 30 ;
-   HEIGHT 28 ;
-   TOOLTIP 'Statusbar On/Off' ;
+      @ 17,444 BUTTON tbc_prop ;
+         PICTURE 'A4';
+         ACTION Properties_Click( Self ) ;
+         WIDTH 30 ;
+         HEIGHT 28 ;
+         TOOLTIP 'Properties' ;
 
-   @ 17,444 BUTTON tbc_prop ;
-   PICTURE 'A4';
-   ACTION Properties_Click( Self ) ;
-   WIDTH 30 ;
-   HEIGHT 28 ;
-   TOOLTIP 'Properties' ;
+      @ 17,477 BUTTON tbc_events ;
+         PICTURE 'A5';
+         ACTION Events_Click( Self )  ;
+         WIDTH 30 ;
+         HEIGHT 28 ;
+         TOOLTIP 'Events' ;
 
-   @ 17,477 BUTTON tbc_events ;
-   PICTURE 'A5';
-   ACTION events_click( Self )  ;
-   WIDTH 30 ;
-   HEIGHT 28 ;
-   TOOLTIP 'Events' ;
+      @ 17,510 BUTTON tbc_ifc ;
+         PICTURE 'A6';
+         ACTION intfoco( 1, Self )  ;
+         WIDTH 30 ;
+         HEIGHT 28 ;
+         TOOLTIP 'Font Color' ;
 
-   @ 17,510 BUTTON tbc_ifc ;
-   PICTURE 'A6';
-   ACTION intfoco( 1, Self )  ;
-   WIDTH 30 ;
-   HEIGHT 28 ;
-   TOOLTIP 'Font Color' ;
+      @ 17,540 BUTTON tbc_mms  ;
+         PICTURE 'A7';
+         ACTION manualmosi( 1, Self )  ;
+         WIDTH 30 ;
+         HEIGHT 28 ;
+         TOOLTIP 'Manual Move/Size' ;
 
-   @ 17,540 BUTTON tbc_mms  ;
-   PICTURE 'A7';
-   ACTION manualmosi( 1, Self )  ;
-   WIDTH 30 ;
-   HEIGHT 28 ;
-   TOOLTIP 'Manual Move/Size' ;
+      @ 17,572 BUTTON tbc_im ;
+         PICTURE 'A17';
+         ACTION MoveControl( Self )  ;
+         WIDTH 30 ;
+         HEIGHT 28 ;
+         TOOLTIP 'Interactive Move' ;
 
-   @ 17,572 BUTTON tbc_im ;
-   PICTURE 'A17';
-   ACTION MoveControl( Self )  ;
-   WIDTH 30 ;
-   HEIGHT 28 ;
-   TOOLTIP 'Interactive Move' ;
+      @ 17,604 BUTTON tbc_is ;
+         PICTURE 'A14';
+         ACTION SizeControl()  ;
+         WIDTH 30 ;
+         HEIGHT 28 ;
+         TOOLTIP 'Interactive Size' ;
 
-   @ 17,604 BUTTON tbc_is ;
-   PICTURE 'A14';
-   ACTION sizecontrol()  ;
-   WIDTH 30 ;
-   HEIGHT 28 ;
-   TOOLTIP 'Interactive Size' ;
+      @ 17,634 BUTTON tbc_del ;
+         PICTURE 'A16';
+         ACTION DeleteControl() ;
+         WIDTH 30 ;
+         HEIGHT 28 ;
+         TOOLTIP 'Delete' ;
 
-   @ 17,634 BUTTON tbc_del ;
-   PICTURE 'A16';
-   ACTION deletecontrol() ;
-   WIDTH 30 ;
-   HEIGHT 28 ;
-   TOOLTIP 'Delete' ;
+      @ 0,105 FRAME frame_1 ;
+         CAPTION "Form : " ;
+         WIDTH 332 ;
+         HEIGHT 65 ;
+         OPAQUE  ;
+         TRANSPARENT  ;
 
-   @ 0,105 FRAME frame_1 ;
-   CAPTION "Form : " ;
-   WIDTH 332 ;
-   HEIGHT 65 ;
-   OPAQUE  ;
-   TRANSPARENT  ;
+      form_main.frame_1.fontcolor:= { 0,0,0 }
+      form_main.frame_1.fontname:="MS Sans Serif"
+      form_main.frame_1.fontsize:=9
 
-   form_main.frame_1.fontcolor:= { 0,0,0 }
-   form_main.frame_1.fontname:="MS Sans Serif"
-   form_main.frame_1.fontsize:=9
+      @ 0,436 FRAME frame_2 ;
+         CAPTION "Control : " ;
+         WIDTH 236 ;
+         HEIGHT 65 ;
+         OPAQUE ;
 
-   @ 0,436 FRAME frame_2 ;
-   CAPTION "Control : " ;
-   WIDTH 236 ;
-   HEIGHT 65 ;
-   OPAQUE ;
+      form_main.frame_2.fontcolor:= { 0,0,0 }
+      form_main.frame_2.fontname:="MS Sans Serif"
+      form_main.frame_2.fontsize:=9
 
-   form_main.frame_2.fontcolor:= { 0,0,0 }
-   form_main.frame_2.fontname:="MS Sans Serif"
-   form_main.frame_2.fontsize:=9
+      @ 0,4 FRAME frame_3 ;
+         CAPTION "Action" ;
+         WIDTH 105 ;
+         HEIGHT 65  ;
 
-   @ 0,4 FRAME frame_3 ;
-   CAPTION "Action" ;
-   WIDTH 105 ;
-   HEIGHT 65  ;
+      form_main.frame_3.fontcolor:=  { 0,0,0 }
+      form_main.frame_3.fontname:="MS Sans Serif"
+      form_main.frame_3.fontsize:=9
 
-   form_main.frame_3.fontcolor:=  { 0,0,0 }
-   form_main.frame_3.fontname:="MS Sans Serif"
-   form_main.frame_3.fontsize:=9
+      @ 48,115 LABEL label_1 ;
+         WIDTH 120 ;
+         HEIGHT 24 ;
+         VALUE '' ;
+         FONT 'MS Sans Serif' ;
+         SIZE 9  ;
+         AUTOSIZE  ;
 
-   @ 48,115 LABEL label_1 ;
-   WIDTH 120 ;
-   HEIGHT 24 ;
-   VALUE '' ;
-   FONT 'MS Sans Serif' ;
-   SIZE 9  ;
-   AUTOSIZE  ;
+      form_main.label_1.fontcolor:=  { 0,0,0 }
 
-   form_main.label_1.fontcolor:=  { 0,0,0 }
+      @ 48,446 LABEL label_2 ;
+         WIDTH 120 ;
+         HEIGHT 24 ;
+         VALUE 'r:    c:    w:    h: ' ;
+         FONT 'MS Sans Serif' ;
+         SIZE 9  ;
+         AUTOSIZE ;
 
-   @ 48,446 LABEL label_2 ;
-   WIDTH 120 ;
-   HEIGHT 24 ;
-   VALUE 'r:    c:    w:    h: ' ;
-   FONT 'MS Sans Serif' ;
-   SIZE 9  ;
-   AUTOSIZE ;
+      form_main.label_2.fontcolor:=  { 0,0,0 }
 
-   form_main.label_2.fontcolor:=  { 0,0,0 }
-
-   @ 48,300 LABEL labelyx ;
-   WIDTH 98 ;
-   HEIGHT 24 ;
-   VALUE '0000,0000' ;
-   FONT 'MS Sans Serif' ;
-   SIZE 9  ;
-   AUTOSIZE ;
+      @ 48,300 LABEL labelyx ;
+         WIDTH 98 ;
+         HEIGHT 24 ;
+         VALUE '0000,0000' ;
+         FONT 'MS Sans Serif' ;
+         SIZE 9  ;
+         AUTOSIZE ;
 
    END WINDOW
-
-
 
 ////ON KEY ALT+D ACTION debug()
 

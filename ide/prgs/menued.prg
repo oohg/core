@@ -1,5 +1,5 @@
 /*
- * $Id: menued.prg,v 1.3 2014-06-19 18:53:30 fyurisich Exp $
+ * $Id: menued.prg,v 1.4 2014-06-24 17:39:25 fyurisich Exp $
  */
 
 #include "dbstruct.ch"
@@ -8,7 +8,7 @@
 
 #define CRLF CHR(13) + CHR(10)
 
-DEFINE WINDOW myMenuEd
+DECLARE WINDOW myMenuEd
 
 CLASS TmyMenuEd FROM TForm1
    VAR nlevel      INIT 0
