@@ -1,5 +1,5 @@
 /*
- * $Id: h_image.prg,v 1.34 2014-06-07 02:08:03 fyurisich Exp $
+ * $Id: h_image.prg,v 1.35 2014-06-24 03:03:22 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -178,7 +178,7 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD Picture( cPicture ) CLASS TImage
 *-----------------------------------------------------------------------------*
-LOCAL nAttrib, aPictSize
+LOCAL nAttrib, aPictSize, lGDIp
    IF VALTYPE( cPicture ) $ "CM"
       DeleteObject( ::hImage )
       ::cPicture := cPicture
@@ -199,8 +199,15 @@ LOCAL nAttrib, aPictSize
          nAttrib := LR_CREATEDIBSECTION
       ENDIF
 
+      // GDI+ crashes on call to GdipCreateHBITMAPFromBitmap in _OOHG_GDIPLoadPicture()
+      IF ".EMF" $ Upper( Right( cPicture, 4 ) )
+         lGDIp := _OOHG_SETGDIP( .F. )
+      ENDIF
       // load image at full size
       ::hImage := _OOHG_BitmapFromFile( Self, cPicture, nAttrib, .F. )
+      IF ".EMF" $ Upper( Right( cPicture, 4 ) )
+         _OOHG_SETGDIP( lGDIp )
+      ENDIF
       IF ::ImageSize
          ::nWidth  := _BitMapWidth( ::hImage )
          ::nHeight := _BitMapHeight( ::hImage )
