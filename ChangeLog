@@ -1,11 +1,23 @@
 /*
- * $Id: ChangeLog,v 1.1294 2014-06-24 17:39:24 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1295 2014-06-25 00:00:15 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-06-24 21:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/prgs/moside.prg
+     + Ctrl+Left to reduce control's widht.
+     + Ctrl+Right to increase control's widht.
+     + Ctrl+Up to reduce control's height.
+     + Ctrl+Down to increase control's height.
+     ; Thanks to David Field for his code.
+     * Message.
+   * ide/prgs/formedit.prg
+     * Message.
+     * Format.
 
 2014-06-24 14:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ide/prgs/menued.prg

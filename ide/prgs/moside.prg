@@ -1,5 +1,5 @@
 /*
- * $Id: moside.prg,v 1.3 2014-06-19 18:53:30 fyurisich Exp $
+ * $Id: moside.prg,v 1.4 2014-06-25 00:00:15 fyurisich Exp $
  */
 
 #include 'oohg.ch'
@@ -8,7 +8,7 @@
 function kmove( myIDe )  //// keyboard move
 *--------------------------------
    if nhandlep=0
-      msginfo("you must select a control first","information")
+      MsgStop( "You must select a control first.","OOHG IDE+")
       return nil
    endif
 
@@ -18,12 +18,15 @@ function kmove( myIDe )  //// keyboard move
    swkm:=.T.
    declare window form_1
    /////erase window form_1
-   ON KEY LEFT   OF Form_1 ACTION KMueve( "L", myIDe )
-   ON KEY RIGHT  OF Form_1 ACTION KMueve( "R", myIDe )
-   ON KEY UP     OF Form_1 ACTION KMueve( "U", myIDe )
-   ON KEY DOWN   OF Form_1 ACTION KMueve( "D", myIDe )
-   ON KEY ESCAPE OF Form_1 ACTION KMueve( "E", myIDe )
-
+   ON KEY LEFT       OF Form_1 ACTION KMueve( "L", myIDe )
+   ON KEY RIGHT      OF Form_1 ACTION KMueve( "R", myIDe )
+   ON KEY UP         OF Form_1 ACTION KMueve( "U", myIDe )
+   ON KEY DOWN       OF Form_1 ACTION KMueve( "D", myIDe )
+   ON KEY ESCAPE     OF Form_1 ACTION KMueve( "E", myIDe )
+	ON KEY CTRL+LEFT  OF Form_1 ACTION KMueve( "W-", myIDe )
+   ON KEY CTRL+RIGHT OF Form_1 ACTION KMueve( "W+", myIDe )
+   ON KEY CTRL+UP    OF Form_1 ACTION KMueve( "H-", myIDe )
+   ON KEY CTRL+DOWN  OF Form_1 ACTION KMueve( "H+", myIDe )
 
    if iscontroldefined(statusbar,form_1)
       form_1.statusbar.release()
@@ -65,6 +68,18 @@ do case
        myform:lfsave:=.F.
   case cpar="D"
        form_1:&cname:row:= form_1:&cname:row  + iif(myIde:lsnap=1,10,1)
+        myform:lfsave:=.F.
+  case cpar="W-"
+       form_1:&cname:width -- //:= form_1:&cname:width  + iif(myide:lsnap=1,10,1)
+        myform:lfsave:=.F.
+  case cpar="W+"
+       form_1:&cname:Width ++ //:= form_1:&cname:row  + iif(myide:lsnap=1,10,1)
+        myform:lfsave:=.F.
+  case cpar="H-"
+       form_1:&cname:Height -- //:= form_1:&cname:row  + iif(myide:lsnap=1,10,1)
+        myform:lfsave:=.F.
+  case cpar="H+"
+       form_1:&cname:Height ++ //:= form_1:&cname:row  + iif(myide:lsnap=1,10,1)
         myform:lfsave:=.F.
   case cpar="E"
      RELEASE KEY LEFT   OF Form_1

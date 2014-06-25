@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.2 2014-06-19 18:53:30 fyurisich Exp $
+ * $Id: formedit.prg,v 1.3 2014-06-25 00:00:15 fyurisich Exp $
  */
 
 /*
@@ -1466,7 +1466,7 @@ METHOD Newagain() CLASS TForm1
 *------------------------------------------------------------------------------*
 whlp:='formedit'
 if  IsWindowDefined(Form_1)
-    msginfo('only one Form can be edited at the same time','Information')
+    MsgStop( 'Only one form can be edited at the same time.', 'OOHG IDE+' )
 else
     myform:fillcontrolaux()
     cffontname:=myform:cffontname
@@ -1555,16 +1555,16 @@ else
                  olistacon:fullmove:=.T.
 
       DEFINE CONTEXT MENU
-               ITEM 'Properties' ACTION Properties_Click( ::myIde )
-                        ITEM 'Events    ' name events ACTION Events_click( ::myIde )
-                        ITEM 'Interactive Font/Color' ACTION intfoco( 1, ::myIde )
-                        ITEM 'Manual Move/Size'  ACTION manualmosi( 1, ::myIde )
-                   ITEM 'Interactive Move' ACTION MoveControl( ::myIde )
-                        ITEM 'Keyboard Move' ACTION kMove( ::myIde )
+         ITEM 'Properties' ACTION Properties_Click( ::myIde )
+         ITEM 'Events    ' name events ACTION Events_click( ::myIde )
+         ITEM 'Interactive Font/Color' ACTION intfoco( 1, ::myIde )
+         ITEM 'Manual Move/Size'  ACTION manualmosi( 1, ::myIde )
+         ITEM 'Interactive Move' ACTION MoveControl( ::myIde )
+         ITEM 'Keyboard Move' ACTION kMove( ::myIde )
          ITEM 'Interactive Size' ACTION SizeControl()
-                        SEPARATOR
-                        ITEM 'Delete' ACTION DeleteControl()
-                END MENU
+         SEPARATOR
+         ITEM 'Delete' ACTION DeleteControl()
+      END MENU
 
          @ 420,30 label lop value "Right Click  -  click or enter to modify Cord" FONT "Calibri" SIZE 9 autosize
          @ 435,30 label lop1 value "More Options" FONT "Calibri" SIZE 9 autosize
