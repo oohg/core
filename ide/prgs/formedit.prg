@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.3 2014-06-25 00:00:15 fyurisich Exp $
+ * $Id: formedit.prg,v 1.4 2014-06-25 20:11:58 fyurisich Exp $
  */
 
 /*
@@ -138,6 +138,7 @@ CLASS TForm1
    DATA Aappend              INIT {}
    DATA Aclientedge          INIT {}
    DATA afocusedpos          INIT {}  // pb
+   DATA acobj                INIT {}  //gca
 
    // variables de forms
    DATA Cftitle              INIT ""
@@ -220,34 +221,35 @@ CLASS TForm1
    DATA nstimewidth          INIT 80
 // DATA cstimeaction         INIT ''
 // DATA cstimetooltip        INIT ''
+   DATA cscobj               INIT ''    //GCA
 
    // variables de contadores de tipos de controles
-   DATA ButtonCount           INIT  0
+   DATA ButtonCount          INIT  0
    DATA CheckBoxCount        INIT  0
-   DATA ListBoxCount          INIT  0
-   DATA ComboBoxCount       INIT  0
-   DATA CheckButtonCount    INIT  0
-   DATA GridCount           INIT  0
-   DATA FrameCount      INIT  0
-   DATA TabCount      INIT  0
-   DATA ImageCount      INIT  0
-   DATA AnimateCount   INIT  0
-   DATA DatepickerCount   INIT  0
-   DATA TextBoxCount   INIT  0
-   DATA EditBoxCount   INIT  0
-   DATA LabelCount      INIT  0
-   DATA PlayerCount      INIT  0
-   DATA ProgressBarCount   INIT  0
-   DATA RadioGroupCount   INIT  0
-   DATA SliderCount      INIT  0
-   DATA SpinnerCount   INIT  0
-   DATA Timercount          INIT  0
-   DATA BrowseCount         INIT  0
-   DATA Treecount           INIT  0
-   DATA Ipaddresscount      INIT  0
-   DATA Monthcalendarcount  INIT  0
-   DATA Hyperlinkcount      INIT  0
-   DATA Richeditboxcount    INIT  0
+   DATA ListBoxCount         INIT  0
+   DATA ComboBoxCount        INIT  0
+   DATA CheckButtonCount     INIT  0
+   DATA GridCount            INIT  0
+   DATA FrameCount           INIT  0
+   DATA TabCount             INIT  0
+   DATA ImageCount           INIT  0
+   DATA AnimateCount         INIT  0
+   DATA DatepickerCount      INIT  0
+   DATA TextBoxCount         INIT  0
+   DATA EditBoxCount         INIT  0
+   DATA LabelCount           INIT  0
+   DATA PlayerCount          INIT  0
+   DATA ProgressBarCount     INIT  0
+   DATA RadioGroupCount      INIT  0
+   DATA SliderCount          INIT  0
+   DATA SpinnerCount         INIT  0
+   DATA Timercount           INIT  0
+   DATA BrowseCount          INIT  0
+   DATA Treecount            INIT  0
+   DATA Ipaddresscount       INIT  0
+   DATA Monthcalendarcount   INIT  0
+   DATA Hyperlinkcount       INIT  0
+   DATA Richeditboxcount     INIT  0
 
    METHOD vd( cItem1, myIde ) CONSTRUCTOR
    METHOD end() INLINE return
@@ -372,6 +374,7 @@ local nNumcont:=0
    ::csfontname           := 'MS Sans Serif'
    ::nsfontsize           := 9
    ::cscolor              := ''
+   ::cscobj               := ''
    ::nswidth              := 80
    ::csaction             := ''
    ::csicon               := ''
@@ -450,243 +453,240 @@ cursorarrow()
 return
 
 *-----------------------------------------------------------------------------
-METHOD iniarray(nform,ncontrolwl,controlname,ctypectrl,noanade) CLASS TForm1
+METHOD IniArray( nform, ncontrolwl, controlname, ctypectrl, noanade ) CLASS TForm1
 *-----------------------------------------------------------------------------
- **** inicia array de controles para la forma actual
- with Object myform
- if noanade=NIL
+   // inicia array de controles para la forma actual
+   WITH OBJECT myform
+      IF noanade == NIL
+         aAdd( :acontrolw, controlname )
+         aAdd( :actrltype, ctypectrl )
+         aAdd( :aenabled, .T. )
+         aAdd( :avisible, .T. )
+         aAdd( :afontname, :cffontname )
+         aAdd( :afontsize, :nffontsize )
+         aAdd( :abold, .F. )
+         aAdd( :abackcolor, "{255, 255, 255}" )
+         aAdd( :afontcolor, "{0, 0, 0}" )
+         aAdd( :afontitalic, .F. )
+         aAdd( :afontunderline, .F. )
+         aAdd( :afontstrikeout, .F. )
+         aAdd( :atransparent, .F. )
+         aAdd( :acaption, "" )
+         aAdd( :apicture, "" )
+         aAdd( :avalue, "" )
+         aAdd( :avaluen, 0 )
+         aAdd( :avaluel, .F. )
+         aAdd( :atooltip, "" )
+         aAdd( :amaxlength, 30 )
+         aAdd( :awrap, .F. )
+         aAdd( :aincrement, 0 )
+         aAdd( :auppercase, .F. )
+         aAdd( :apassword, .F. )
+         aAdd( :anumeric, .F. )
+         aAdd( :ainputmasK, "" )
+         aAdd( :auppercase, .F. )
+         aAdd( :alowercase, .F. )
+         aAdd( :aaction, "" )
+         aAdd( :aopaque, .F. )
+         aAdd( :arange, "" )
+         aAdd( :anotabstop, .F. )
+         aAdd( :asort, .F. )
+         aAdd( :afile, "" )
+         aAdd( :ainvisible, .F. )
+         aAdd( :aautoplay, .F. )
+         aAdd( :acenter, .F. )
+         aAdd( :acenteralign, .F. )
+         aAdd( :atransparent, .F. )
+         aAdd( :ashownone, .F. )
+         aAdd( :aupdown, .F. )
+         aAdd( :areadonly, .F. )
+         aAdd( :avertical, .F. )
+         aAdd( :asmooth, .F. )
+         aAdd( :anoticks, .F. )
+         aAdd( :aboth, .F. )
+         aAdd( :atop, .F. )
+         aAdd( :aleft, .F. )
+         aAdd( :abreak, .F. )
+         aAdd( :aitems,  "" )
+         aAdd( :aitemsource, "" )
+         aAdd( :avaluesource, "" )
+         aAdd( :amultiselect, .F. )
+         aAdd( :ahelpid, 0 )
+         aAdd( :aspacing, 0 )
+         aAdd( :aheaders, "{'one', 'two'}" )
+         aAdd( :awidths, '{60, 60}' )
+         aAdd( :aonheadclick, '' )
+         aAdd( :anolines, .F. )
+         aAdd( :aimage, '' )
+         aAdd( :astretch, .F. )
+         aAdd( :aworkarea, 'Alias()' )
+         aAdd( :afields, '' )
+         aAdd( :afield, '' )
+         aAdd( :avalid, '' )
+         aAdd( :awhen, '' )
+         aAdd( :avalidmess, '' )
+         aAdd( :areadonlyb, '' )
+         aAdd( :alock, .F. )
+         aAdd( :adelete, .F. )
+         aAdd( :ajustify, '' )
+         aAdd( :adate, .F. )
+         aAdd( :aongotfocus, "" )
+         aAdd( :aonchange, "" )
+         aAdd( :aonlostfocus, "" )
+         aAdd( :aonenter, "" )
+         aAdd( :aondisplaychange, "" )
+         aAdd( :aondblclick, "" )
+         aAdd( :arightalign, .F. )
+         aAdd( :anotoday, .F. )
+         aAdd( :anotodaycircle, .F. )
+         aAdd( :aweeknumbers, .F. )
+         aAdd( :aaddress, "" )
+         aAdd( :ahandcursor, .F. )
+         aAdd( :atabpage, {'', 0} )    
+         aAdd( :aname, controlname )
+         aAdd( :anumber, 0 )
+         aAdd( :aflat, .F. )
+         aAdd( :abuttons, .F. )
+         aAdd( :ahottrack, .F. )
+         aAdd( :adisplayedit, .F. )
+         aAdd( :Anodeimages, '' )
+         aAdd( :Aitemimages, ''  )
+         aAdd( :ANorootbutton, .F. )
+         aAdd( :AItemids, .F. )
+         aAdd( :Anovscroll, .F. )
+         aAdd( :Anohscroll, .F. )
+         aAdd( :Adynamicbackcolor, "" )
+         aAdd( :Adynamicforecolor, "" )
+         aAdd( :Acolumncontrols, "" )
+         aAdd( :Aoneditcell, "" )
+         aAdd( :Aonappend, "" )
+         aAdd( :Ainplace, .T. )
+         aAdd( :Aedit, .F. )
+         aAdd( :Aappend, .F. )
+         aAdd( :Aclientedge, .F. )
+         aAdd( :afocusedpos, -2 )  // pb
+         aAdd( :aspeed, 1 )
+         aAdd( :acobj, '' )        //gca
+      ELSE
+         z:=ncontrolwl
+         myAdel( "myform:acontrolw", z )
+         myAdel( "myform:actrltype", z )
+         myAdel( "myform:aenabled", z )
+         myAdel( "myform:avisible", z )
+         myAdel( "myform:afontname", z )
+         myAdel( "myform:afontsize", z )
+         myAdel( "myform:abold", z )
+         myAdel( "myform:abackcolor", z )
+         myAdel( "myform:afontcolor", z )
+         myAdel( "myform:afontitalic", z )
+         myAdel( "myform:afontunderline", z )
+         myAdel( "myform:afontstrikeout", z )
+         myAdel( "myform:atransparent", z )
+         myAdel( "myform:acaption", z )
+         myAdel( "myform:apicture", z )
+         myAdel( "myform:avalue", z )
+         myAdel( "myform:avaluen", z )
+         myAdel( "myform:avaluel", z )
+         myAdel( "myform:atooltip", z )
+         myAdel( "myform:amaxlength", z )
+         myAdel( "myform:awrap", z )
+         myAdel( "myform:aincrement", z )
+         myAdel( "myform:auppercase", z )
+         myAdel( "myform:apassword", z )
+         myAdel( "myform:anumeric", z )
+         myAdel( "myform:ainputmasK", z )
+         myAdel( "myform:auppercase", z )
+         myAdel( "myform:alowercase", z )
+         myAdel( "myform:aaction", z )
+         myAdel( "myform:aopaque", z )
+         myAdel( "myform:arange", z )
+         myAdel( "myform:anotabstop", z )
+         myAdel( "myform:asort", z )
+         myAdel( "myform:afile", z )
+         myAdel( "myform:ainvisible", z )
+         myAdel( "myform:aautoplay", z )
+         myAdel( "myform:acenter", z )
+         myAdel( "myform:acenteralign", z )
+         myAdel( "myform:atransparent", z )
+         myAdel( "myform:ashownone", z )
+         myAdel( "myform:aupdown", z )
+         myAdel( "myform:areadonly", z )
+         myAdel( "myform:avertical", z )
+         myAdel( "myform:asmooth", z )
+         myAdel( "myform:anoticks", z )
+         myAdel( "myform:aboth", z )
+         myAdel( "myform:atop", z )
+         myAdel( "myform:aleft", z )
+         myAdel( "myform:abreak", z )
+         myAdel( "myform:aitems",  z )
+         myAdel( "myform:aitemsource", z )
+         myAdel( "myform:avaluesource", z )
+         myAdel( "myform:amultiselect", z )
+         myAdel( "myform:ahelpid", z )
+         myAdel( "myform:aspacing", z )
+         myAdel( "myform:aheaders", z )
+         myAdel( "myform:awidths", z )
+         myAdel( "myform:aonheadclick", z )
+         myAdel( "myform:anolines", z )
+         myAdel( "myform:aimage", z )
+         myAdel( "myform:astretch", z )
+         myAdel( "myform:aworkarea", z )
+         myAdel( "myform:afields", z )
+         myAdel( "myform:afield", z )
+         myAdel( "myform:avalid", z )
+         myAdel( "myform:awhen", z )
+         myAdel( "myform:avalidmess", z )
+         myAdel( "myform:areadonlyb", z )
+         myAdel( "myform:alock", z )
+         myAdel( "myform:adelete", z )
+         myAdel( "myform:ajustify", z )
+         myAdel( "myform:adate", z )
+         myAdel( "myform:aongotfocus", z )
+         myAdel( "myform:aonchange", z )
+         myAdel( "myform:aonlostfocus", z )
+         myAdel( "myform:aonenter", z )
+         myAdel( "myform:aondisplaychange", z )
+         myAdel( "myform:aondblclick", z )
+         myAdel( "myform:arightalign", z )
+         myAdel( "myform:anotoday", z )
+         myAdel( "myform:anotodaycircle", z )
+         myAdel( "myform:aweeknumbers", z )
+         myAdel( "myform:aaddress", z )
+         myAdel( "myform:ahandcursor", z )
+         myAdel( "myform:atabpage", z )
+         myAdel( "myform:aname", z )
+         myAdel( "myform:anumber", z )
+         myAdel( "myform:aflat", z )
+         myAdel( "myform:abuttons", z )
+         myAdel( "myform:ahottrack", z )
+         myAdel( "myform:adisplayedit", z )
+         myAdel( "myform:Anodeimages", z )
+         myAdel( "myform:Aitemimages", z  )
+         myAdel( "myform:ANorootbutton", z )
+         myAdel( "myform:AItemids", z )
+         myAdel( "myform:Anovscroll", z )
+         myAdel( "myform:Anohscroll", z )
+         myAdel( "myform:Adynamicbackcolor", z )
+         myAdel( "myform:Adynamicforecolor", z )
+         myAdel( "myform:Acolumncontrols", z )
+         myAdel( "myform:Aoneditcell", z )
+         myAdel( "myform:Aonappend", z )
+         myAdel( "myform:Ainplace", z )
+         myAdel( "myform:Aedit", z )
+         myAdel( "myform:Aappend", z )
+         myAdel( "myform:Aclientedge", z )
+         myAdel( "myform:afocusedpos", z )  // pb
+         myAdel( "myform:acobj", z)         //gca
+         myAdel( "myform:aspeed", z )
+         :ncontrolw --
+         IF :ncontrolw == 1
+            myhandle := 0
+            nhandlep := 0
+         ENDIF
+      ENDIF
+   END
+RETURN
 
-     aadd(:acontrolw,controlname)
-     aadd(:actrltype,ctypectrl)
-     aadd(:aenabled,.T.)
-     aadd(:avisible,.T.)
-     aadd(:afontname,:cffontname)
-     aadd(:afontsize,:nffontsize)
-     aadd(:abold,.F.)
-     aadd(:abackcolor,"{255,255,255}")
-     aadd(:afontcolor,"{0,0,0}")
-     aadd(:afontitalic,.F.)
-     aadd(:afontunderline,.F.)
-     aadd(:afontstrikeout,.F.)
-     aadd(:atransparent,.F.)
-     aadd(:acaption,"")
-     aadd(:apicture,"")
-     aadd(:avalue,"")
-     aadd(:avaluen,0)
-     aadd(:avaluel,.F.)
-     aadd(:atooltip,"")
-     aadd(:amaxlength,30)
-     aadd(:awrap,.F.)
-     aadd(:aincrement,0)
-     aadd(:auppercase,.f.)
-     aadd(:apassword,.f.)
-     aadd(:anumeric,.f.)
-     aadd(:ainputmasK,"")
-     aadd(:auppercase,.f.)
-     aadd(:alowercase,.f.)
-     aadd(:aaction,"")
-     aadd(:aopaque,.F.)
-     aadd(:arange,"")
-     aadd(:anotabstop,.F.)
-     aadd(:asort,.F.)
-     aadd(:afile,"")
-     aadd(:ainvisible,.F.)
-     aadd(:aautoplay,.F.)
-     aadd(:acenter,.F.)
-     aadd(:acenteralign,.F.)
-     aadd(:atransparent,.F.)
-     aadd(:ashownone,.F.)
-     aadd(:aupdown,.F.)
-     aadd(:areadonly,.F.)
-     aadd(:avertical,.F.)
-     aadd(:asmooth,.F.)
-     aadd(:anoticks,.F.)
-     aadd(:aboth,.F.)
-     aadd(:atop,.F.)
-     aadd(:aleft,.F.)
-     aadd(:abreak,.F.)
-     aadd(:aitems, "")
-     aadd(:aitemsource,"")
-     aadd(:avaluesource,"")
-     aadd(:amultiselect,.F.)
-     aadd(:ahelpid,0)
-     aadd(:aspacing,0)
-     aadd(:aheaders,"{'one','two'}")
-     aadd(:awidths,'{60,60}')
-     aadd(:aonheadclick,'')
-     aadd(:anolines,.F.)
-     aadd(:aimage,'')
-     aadd(:astretch,.f.)
-     aadd(:aworkarea,'ALIAS()')
-     aadd(:afields,'')
-     aadd(:afield,'')
-     aadd(:avalid,'')
-     aadd(:awhen,'')
-     aadd(:avalidmess,'')
-     aadd(:areadonlyb,'')
-     aadd(:alock,.F.)
-     aadd(:adelete,.F.)
-     aadd(:ajustify,'')
-     aadd(:adate,.F.)
-     aadd(:aongotfocus,"")
-     aadd(:aonchange,"")
-     aadd(:aonlostfocus,"")
-     aadd(:aonenter,"")
-     aadd(:aondisplaychange,"")
-     aadd(:aondblclick,"")
-     aadd(:arightalign,.f.)
-     aadd(:anotoday,.f.)
-     aadd(:anotodaycircle,.f.)
-     aadd(:aweeknumbers,.f.)
-     aadd(:aaddress,"")
-     aadd(:ahandcursor,.F.)
-     aadd(:atabpage,{'',0})  //     aadd(:atabpage[1,1],'')  &&& nombre del TAB a que pertenece   :atabpage[1,2]:=0   &&& numero de la pagina
-     aadd(:aname,controlname)
-     aadd(:anumber,0)
-     aadd(:aflat,.F.)
-     aadd(:abuttons,.F.)
-     aadd(:ahottrack,.F.)
-     aadd(:adisplayedit,.F.)
-     aadd(:Anodeimages,'')
-     aadd(:Aitemimages,'' )
-     aadd(:ANorootbutton,.F.)
-     aadd(:AItemids,.F.)
-     aadd(:Anovscroll,.F.)
-     aadd(:Anohscroll,.F.)
-     aadd(:Adynamicbackcolor,"")
-     aadd(:Adynamicforecolor,"")
-     aadd(:Acolumncontrols,"")
-     aadd(:Aoneditcell,"")
-     aadd(:Aonappend,"")
-     aadd(:Ainplace,.T.)
-     aadd(:Aedit,.F.)
-     aadd(:Aappend,.F.)
-     aadd(:Aclientedge,.F.)
-     aadd(:afocusedpos,-2)  // pb
-
-     aadd(:aspeed,1)
-
-   else
-
-     z:=ncontrolwl
-
-     myadel("myform:acontrolw",z)
-     myadel("myform:actrltype",z)
-     myadel("myform:aenabled",z)
-     myadel("myform:avisible",z)
-     myadel("myform:afontname",z)
-     myadel("myform:afontsize",z)
-     myadel("myform:abold",z)
-     myadel("myform:abackcolor",z)
-     myadel("myform:afontcolor",z)
-     myadel("myform:afontitalic",z)
-     myadel("myform:afontunderline",z)
-     myadel("myform:afontstrikeout",z)
-     myadel("myform:atransparent",z)
-     myadel("myform:acaption",z)
-     myadel("myform:apicture",z)
-     myadel("myform:avalue",z)
-     myadel("myform:avaluen",z)
-     myadel("myform:avaluel",z)
-     myadel("myform:atooltip",z)
-     myadel("myform:amaxlength",z)
-     myadel("myform:awrap",z)
-     myadel("myform:aincrement",z)
-     myadel("myform:auppercase",z)
-     myadel("myform:apassword",z)
-     myadel("myform:anumeric",z)
-     myadel("myform:ainputmasK",z)
-     myadel("myform:auppercase",z)
-     myadel("myform:alowercase",z)
-     myadel("myform:aaction",z)
-     myadel("myform:aopaque",z)
-     myadel("myform:arange",z)
-     myadel("myform:anotabstop",z)
-     myadel("myform:asort",z)
-     myadel("myform:afile",z)
-     myadel("myform:ainvisible",z)
-     myadel("myform:aautoplay",z)
-     myadel("myform:acenter",z)
-     myadel("myform:acenteralign",z)
-     myadel("myform:atransparent",z)
-     myadel("myform:ashownone",z)
-     myadel("myform:aupdown",z)
-     myadel("myform:areadonly",z)
-     myadel("myform:avertical",z)
-     myadel("myform:asmooth",z)
-     myadel("myform:anoticks",z)
-     myadel("myform:aboth",z)
-     myadel("myform:atop",z)
-     myadel("myform:aleft",z)
-     myadel("myform:abreak",z)
-     myadel("myform:aitems", z)
-     myadel("myform:aitemsource",z)
-     myadel("myform:avaluesource",z)
-     myadel("myform:amultiselect",z)
-     myadel("myform:ahelpid",z)
-     myadel("myform:aspacing",z)
-     myadel("myform:aheaders",z)
-     myadel("myform:awidths",z)
-     myadel("myform:aonheadclick",z)
-     myadel("myform:anolines",z)
-     myadel("myform:aimage",z)
-     myadel("myform:astretch",z)
-     myadel("myform:aworkarea",z)
-     myadel("myform:afields",z)
-     myadel("myform:afield",z)
-     myadel("myform:avalid",z)
-     myadel("myform:awhen",z)
-     myadel("myform:avalidmess",z)
-     myadel("myform:areadonlyb",z)
-     myadel("myform:alock",z)
-     myadel("myform:adelete",z)
-     myadel("myform:ajustify",z)
-     myadel("myform:adate",z)
-     myadel("myform:aongotfocus",z)
-     myadel("myform:aonchange",z)
-     myadel("myform:aonlostfocus",z)
-     myadel("myform:aonenter",z)
-     myadel("myform:aondisplaychange",z)
-     myadel("myform:aondblclick",z)
-     myadel("myform:arightalign",z)
-     myadel("myform:anotoday",z)
-     myadel("myform:anotodaycircle",z)
-     myadel("myform:aweeknumbers",z)
-     myadel("myform:aaddress",z)
-     myadel("myform:ahandcursor",z)
-     myadel("myform:atabpage",z)
-     myadel("myform:aname",z)
-     myadel("myform:anumber",z)
-     myadel("myform:aflat",z)
-     myadel("myform:abuttons",z)
-     myadel("myform:ahottrack",z)
-     myadel("myform:adisplayedit",z)
-     myadel("myform:Anodeimages",z)
-     myadel("myform:Aitemimages",z )
-     myadel("myform:ANorootbutton",z)
-     myadel("myform:AItemids",z)
-     myadel("myform:Anovscroll",z)
-     myadel("myform:Anohscroll",z)
-     myadel("myform:Adynamicbackcolor",z)
-     myadel("myform:Adynamicforecolor",z)
-     myadel("myform:Acolumncontrols",z)
-     myadel("myform:Aoneditcell",z)
-     myadel("myform:Aonappend",z)
-     myadel("myform:Ainplace",z)
-     myadel("myform:Aedit",z)
-     myadel("myform:Aappend",z)
-     myadel("myform:Aclientedge",z)
-     myadel("myform:afocusedpos",z)  // pb
-
-     myadel("myform:aspeed",z)
-     :ncontrolw--
-     if :ncontrolw=1
-        myhandle:=0
-        nhandlep:=0
-     endif
-  endif
-  end
-return
 *----------------------------------
 static function myadel(arreglo,z)
 *----------------------------------
@@ -1321,6 +1321,7 @@ For i:=1 to nContlin
         exit
     endif
 next i
+
 For i:=1 to (myform:ncontrolw - 1)
     myform:anumber[i]:=myform:aspeed[i+1]-1
 next i
@@ -1466,7 +1467,7 @@ METHOD Newagain() CLASS TForm1
 *------------------------------------------------------------------------------*
 whlp:='formedit'
 if  IsWindowDefined(Form_1)
-    MsgStop( 'Only one form can be edited at the same time.', 'OOHG IDE+' )
+    MsgStop( 'Can only edit one form at a time.', 'OOHG IDE+' )
 else
     myform:fillcontrolaux()
     cffontname:=myform:cffontname
@@ -1612,7 +1613,7 @@ myform:nfvirtualh:=val(myform:leadato('WINDOW','VIRTUAL HEIGHT','0'))
 return
 
 *---------------------------------
-METHOD fillcontrol() CLASS TForm1
+METHOD FillControl() CLASS TForm1
 *---------------------------------
 local i,ctipo
 with Object myform
@@ -1638,7 +1639,7 @@ for i:=1 to len(:aline)
      :lsdate:=:leadatologic('DEFINE STATUSBAR','DATE','F')
      :lstime:=:leadatologic('DEFINE STATUSBAR','CLOCK','F')
      :lskeyboard:=:leadatologic('DEFINE STATUSBAR','KEYBOARD','F')
-
+     :cscobj:=:leadato('DEFINE STATUSBAR','OBJ','')
      :lsdate:=iif(:lsdate='T',.T.,.F.)
      :lstime:=iif(:lstime='T',.T.,.F.)
      :lskeyboard:=iif(:lskeyboard='T',.T.,.F.)
@@ -2172,6 +2173,8 @@ static function ptree( i, myIde )
    congotfocus:=myform:leadato(cname,'ON GOTFOCUS','')
    conlostfocus:=myform:leadato(cname,'ON LOSTFOCUS','')
    condblclick:=myform:leadato(cname,'ON DBLCLICK','')
+   cobj:=myform:leadato(cname,'OBJ','')
+    myform:acobj[i]:=cobj
 
    myform:anodeimages[i]:=cnodeimages
    myform:aitemimages[i]:=citemimages
@@ -2208,6 +2211,8 @@ static function ptree( i, myIde )
    else
       form_1:&cname:fontsize := nffontsize
    endif
+   cobj:=myform:leadato(cname,'OBJ','')
+    myform:acobj[i]:=cobj
 
    myform:aenabled[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'ENABLED','.T.')))='.T.',.T.,.F.)
    myform:avisible[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'VISIBLE','.T.')))='.T.',.T.,.F.)
@@ -2254,6 +2259,8 @@ static function ptab(i)
    lvertical:=myform:leadatologic(cname,'VERTICAL',"F")
    lbuttons:=myform:leadatologic(cname,'BUTTONS',"F")
    lhottrack:=myform:leadatologic(cname,'HOTTRACK',"F")
+   cobj:=myform:leadato(cname,'OBJ','')
+    myform:acobj[i]:=cobj
 
    DEFINE TAB &cname of form_1 ;
    AT nrow , ncol ;
@@ -2352,6 +2359,8 @@ static function pipaddress( i, myIde )
    conchange:=myform:leadato(cname,'ON CHANGE','')
    congotfocus:=myform:leadato(cname,'ON GOTFOCUS','')
    conlostfocus:=myform:leadato(cname,'ON LOSTFOCUS','')
+   cobj:=myform:leadato(cname,'OBJ','')
+    myform:acobj[i]:=cobj
 
    @ nrow, ncol LABEL &Cname OF Form_1 VALUE '   .   .   .   ' BACKCOLOR WHITE CLIENTEDGE ACTION dibuja(this:name) FONT 'Courier new' SIZE 10
 
@@ -2414,6 +2423,8 @@ static function ptimer( i, myIde )
    ncol:=val(myform:leadato(cname,'COL','0'))
    ninterval:=val(myform:leadato(cname,'INTERVAL','1000'))
    caction:=myform:leadato(cname,'ACTION','')
+   cobj:=myform:leadato(cname,'OBJ','')
+    myform:acobj[i]:=cobj
    @ nRow,nCol LABEL &CName OF Form_1 WIDTH 100 HEIGHT 20 VALUE CName BORDER ACTION dibuja(this:name)
    myform:avaluen[i]:=ninterval
    myform:aaction[i]:=caction
@@ -2539,6 +2550,8 @@ static function plabel( i, myIde )
    cvalue:=myform:clean(myform:leadato(cname,'VALUE',cname))
    nhelpid:=val(myform:leadato(cname,'HELPID','0'))
    caction:=myform:leadato(cname,"ACTION","")
+   cobj:=myform:leadato(cname,'OBJ','')
+    myform:acobj[i]:=cobj
 ****** autoplay ---> autosize
 
    if lrightalign='T'
@@ -2631,6 +2644,8 @@ static function pplayer( i, myIde )
    nHeight:=val(myform:leadato(cname,'HEIGHT','0'))
    cplayfile:=myform:clean(myform:leadato(cname,'FILE',''))
    nHelpid:=val(myform:leadato(cname,'HELPID','0'))
+   cobj:=myform:leadato(cname,'OBJ','')
+    myform:acobj[i]:=cobj
 
    @ nRow,nCol LABEL &CName OF Form_1 WIDTH nwidth HEIGHT nheight VALUE CName BORDER ACTION dibuja(this:name)
 
@@ -2666,6 +2681,8 @@ static function pspinner( i, myIde )
    lwrap:=myform:leadatologic(cname,'WRAP',"F")
    lreadonly:=myform:leadatologic(cname,'READONLY',"F")
    nincrement:=val(myform:leadato(cname,'INCREMENT','0'))
+   cobj:=myform:leadato(cname,'OBJ','')
+    myform:acobj[i]:=cobj
 
    @ nRow,nCol LABEL &CName OF Form_1 WIDTH nwidth HEIGHT nheight VALUE CName ACTION dibuja(this:name) BACKCOLOR WHITE CLIENTEDGE VSCROLL
 
@@ -2740,6 +2757,8 @@ static function pslider( i, myIde )
    ltop:=myform:leadatologic(cname,'NTOP','F')
    lleft:=myform:leadatologic(cname,'LEFT','F')
    nhelpid:=val(myform:leadato(cname,'HELPID','0'))
+   cobj:=myform:leadato(cname,'OBJ','')
+    myform:acobj[i]:=cobj
 
    myform:atooltip[i]:=ctooltip
 
@@ -2791,6 +2810,8 @@ static function pprogressbar( i, myIde )
    lvertical:=myform:leadatologic(cname,'VERTICAL','F')
    lsmooth:=myform:leadatologic(cname,'SMOOTH','F')
    nhelpid:=val(myform:leadato(cname,'HELPID','0'))
+   cobj:=myform:leadato(cname,'OBJ','')
+    myform:acobj[i]:=cobj
 
    myform:atooltip[i]:=ctooltip
 
@@ -2856,6 +2877,8 @@ static function pradiogroup( i, myIde )
    endif
    litems:=len(&citems)
    cOnchange:=myform:leadato(cname,'ON CHANGE','')
+   cobj:=myform:leadato(cname,'OBJ','')
+    myform:acobj[i]:=cobj
 
    @ nRow,nCol LABEL &CName OF Form_1 WIDTH nwidth HEIGHT nspacing*litems+8 VALUE CName BORDER ACTION dibuja(this:name)
 
@@ -2929,6 +2952,8 @@ static function peditbox( i, myIde )
    conchange:=myform:leadato(cname,'ON CHANGE','')
    congotfocus:=myform:leadato(cname,'ON GOTFOCUS','')
    conlostfocus:=myform:leadato(cname,'ON LOSTFOCUS','')
+   cobj:=myform:leadato(cname,'OBJ','')
+    myform:acobj[i]:=cobj
 
    @ nRow,nCol LABEL &CName OF Form_1 WIDTH nwidth HEIGHT nheight VALUE CName BACKCOLOR WHITE CLIENTEDGE HSCROLL VSCROLL ACTION dibuja(this:name)
 
@@ -3006,6 +3031,8 @@ static function prichedit( i, myIde )
    conchange:=myform:leadato(cname,'ON CHANGE','')
    congotfocus:=myform:leadato(cname,'ON GOTFOCUS','')
    conlostfocus:=myform:leadato(cname,'ON LOSTFOCUS','')
+   cobj:=myform:leadato(cname,'OBJ','')
+    myform:acobj[i]:=cobj
 
    @ nRow,nCol LABEL &CName OF Form_1 WIDTH nwidth HEIGHT nheight VALUE CName BACKCOLOR WHITE CLIENTEDGE  ACTION dibuja(this:name)
 
@@ -3073,6 +3100,8 @@ static function pframe( i, myIde )
 
 
    lopaque:=iif(upper(lopaque)='T',.T.,.F.)
+   cobj:=myform:leadato(cname,'OBJ','')
+    myform:acobj[i]:=cobj
 
    if lopaque
       @ nRow,nCol FRAME &cName OF Form_1 CAPTION cCaption WIDTH nWidth HEIGHT nHeight OPAQUE
@@ -3161,6 +3190,8 @@ static function pbrowse( i, myIde )
    linplace:=iif(linplace='T',.T.,.F.)
    ledit:=iif(ledit='T',.T.,.F.)
    lappend:=iif(lappend='T',.T.,.F.)
+   cobj:=myform:leadato(cname,'OBJ','')
+    myform:acobj[i]:=cobj
 
    @ nRow,nCol GRID &CName OF Form_1 WIDTH nwidth HEIGHT nheight  HEADERS {  cname,'' }  WIDTHS { 100,60 } ITEMS { { "" ,"" } }  TOOLTIP 'Properties and events right click on header area' ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name)
 
@@ -3231,45 +3262,45 @@ return
 *-------------------------
 static function pgrid( i, myIde )
 *-------------------------
-   cname:=myform:acontrolw[i]
-   myform:actrltype[i]:='GRID'
-   myform:aname[i]:=myform:acontrolw[i]
+  cname:=myform:acontrolw[i]
+  myform:actrltype[i]:='GRID'
+  myform:aname[i]:=myform:acontrolw[i]
 
-   nrow:=val(myform:learow(cName))
-   ncol:=val(myform:leacol(cname))
-   nWidth:=val(myform:leadato(cname,'WIDTH','0'))
-   nHeight:=val(myform:leadato(cname,'HEIGHT','0'))
-   cheaders:=myform:leadato(cname,'HEADERS',"{'one','two'} ")
-   cwidths:=myform:leadato(cname,'WIDTHS',"{80,60}")
-   citems:=myform:leadato(cname,'ITEMS',"")
-   cvalue:=myform:leadato(cname,'VALUE','')
-   cfontname:=myform:clean(myform:leadato(cname,'FONT',cffontname))
-   nfontsize:=val(myform:leadato(cname,'SIZE',str(nffontsize)))
-   ctooltip:=myform:clean(myform:leadato(cname,'TOOLTIP',''))
-   cdynamicbackcolor:=myform:leadato(cname,"DYNAMICBACKCOLOR","")
-   cdynamicforecolor:=myform:leadato(cname,"DYNAMICFORECOLOR","")
-   ccolumncontrols:=myform:leadato(cname,"COLUMNCONTROLS","")
-   creadonly:=myform:leadato(cname,'READONLY',"")
-   cinputmask:=myform:leadato(cname,'INPUTMASK',"")
+  nrow:=val(myform:learow(cName))
+  ncol:=val(myform:leacol(cname))
+  nWidth:=val(myform:leadato(cname,'WIDTH','0'))
+  nHeight:=val(myform:leadato(cname,'HEIGHT','0'))
+  cheaders:=myform:leadato(cname,'HEADERS',"{'one','two'} ")
+  cwidths:=myform:leadato(cname,'WIDTHS',"{80,60}")
+  citems:=myform:leadato(cname,'ITEMS',"")
+  cvalue:=myform:leadato(cname,'VALUE','')
+  cfontname:=myform:clean(myform:leadato(cname,'FONT',cffontname))
+  nfontsize:=val(myform:leadato(cname,'SIZE',str(nffontsize)))
+  ctooltip:=myform:clean(myform:leadato(cname,'TOOLTIP',''))
+  cdynamicbackcolor:=myform:leadato(cname,"DYNAMICBACKCOLOR","")
+  cdynamicforecolor:=myform:leadato(cname,"DYNAMICFORECOLOR","")
+  ccolumncontrols:=myform:leadato(cname,"COLUMNCONTROLS","")
+  creadonly:=myform:leadato(cname,'READONLY',"")
+  cinputmask:=myform:leadato(cname,'INPUTMASK',"")
 
-   congotfocus:=myform:leadato(cname,'ON GOTFOCUS','')
-   conlostfocus:=myform:leadato(cname,'ON LOSTFOCUS','')
-   conchange:=myform:leadato(cname,'ON CHANGE','')
-   condblclick:=myform:leadato(cname,'ON DBLCLICK','')
-   conheadclick:=myform:leadato(cname,'ON HEADCLICK','')
-   coneditcell:=myform:leadato(cname,'ON EDITCELL','')
-   lmultiselect:=myform:leadatologic(cname,'MULTISELECT',"")
-   lnolines:=myform:leadatologic(cname,'NOLINES',"")
-   linplace:=myform:leadatologic(cname,'INPLACE',"")
-   cimage:=myform:leadato(cname,'IMAGE',"")
-   cjustify:=myform:leadato(cname,'JUSTIFY',"")
-   nhelpid:=val(myform:leadato(cname,'HELPID','0'))
-   lbreak:=myform:leadatologic(cname,'BREAK',"")
-   ledit:=myform:leadatologic(cname,'EDIT',"")
-   cvalid:=myform:leadato(cname,'VALID',"")
-   cwhen:=myform:leadato(cname,'WHEN',"")
-   cvalidmess:=myform:leadato(cname,'VALIDMESSAGES',"")
-
+  congotfocus:=myform:leadato(cname,'ON GOTFOCUS','')
+  conlostfocus:=myform:leadato(cname,'ON LOSTFOCUS','')
+  conchange:=myform:leadato(cname,'ON CHANGE','')
+  condblclick:=myform:leadato(cname,'ON DBLCLICK','')
+  conheadclick:=myform:leadato(cname,'ON HEADCLICK','')
+  coneditcell:=myform:leadato(cname,'ON EDITCELL','')
+  lmultiselect:=myform:leadatologic(cname,'MULTISELECT',"")
+  lnolines:=myform:leadatologic(cname,'NOLINES',"")
+  linplace:=myform:leadatologic(cname,'INPLACE',"")
+  cimage:=myform:leadato(cname,'IMAGE',"")
+  cjustify:=myform:leadato(cname,'JUSTIFY',"")
+  nhelpid:=val(myform:leadato(cname,'HELPID','0'))
+  lbreak:=myform:leadatologic(cname,'BREAK',"")
+  ledit:=myform:leadatologic(cname,'EDIT',"")
+  cvalid:=myform:leadato(cname,'VALID',"")
+  cwhen:=myform:leadato(cname,'WHEN',"")
+  cvalidmess:=myform:leadato(cname,'VALIDMESSAGES',"")
+  cobj:=myform:leadato(cname,'OBJ','')
    lmultiselect:=iif(lmultiselect='T',.T.,.F.)
 
    lnolines:=iif(lnolines='T',.T.,.F.)
@@ -3334,6 +3365,7 @@ static function pgrid( i, myIde )
    myform:areadonlyb[i]:=creadonly
    myform:avalidmess[i]:=cvalidmess
    myform:ainputmask[i]:=cinputmask
+    myform:acobj[i]:=cobj
 
    ProcessContainersfill( Cname,nrow,ncol, myIde )
 return
@@ -3365,6 +3397,8 @@ static function pdatepicker( i, myIde )
    lupdown:=myform:leadatologic(cname,'UPDOWN',"")
    lrightalign:=myform:leadatologic(cname,'RIGHTALIGN',"")
    nhelpid:=val(myform:leadato(cname,'HELPID','0'))
+   cobj:=myform:leadato(cname,'OBJ','')
+    myform:acobj[i]:=cobj
 
 
    @ nRow,nCol DATEPICKER &CName OF Form_1 WIDTH nwidth ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name) NOTABSTOP
@@ -3447,6 +3481,8 @@ static function pmonthcal( i, myIde )
    lnotabstop:=myform:leadatologic(cname,'NOTABSTOP',"")
 
    nhelpid:=val(myform:leadato(cname,'HELPID','0'))
+   cobj:=myform:leadato(cname,'OBJ','')
+    myform:acobj[i]:=cobj
 
    @ nrow,ncol MONTHCALENDAR &Cname OF Form_1  NOTABSTOP ON CHANGE dibuja(this:name)
 
@@ -3508,6 +3544,8 @@ static function phyplink( i, myIde )
    nHeight:=val(myform:leadato(cname,'HEIGHT','28'))
    nhelpid:=val(myform:leadato(cname,'HELPID','0'))
    lhandcursor:=myform:leadatologic(cname,'HANDCURSOR',"")
+   cobj:=myform:leadato(cname,'OBJ','')
+    myform:acobj[i]:=cobj
 
 
 @ nrow,ncol LABEL &cName OF Form_1 value cvalue BORDER ACTION dibuja(this:name) WIDTH nwidth HEIGHT nheight
@@ -3573,7 +3611,8 @@ static function panimatebox( i, myIde )
 
    ltrans:=myform:leadatologic(cname,'TRANSPARENT',"")
    nHelpid:=val(myform:leadato(cname,'HELPID','0'))
-
+   cobj:=myform:leadato(cname,'OBJ','')
+    myform:acobj[i]:=cobj
 
    @ nRow,nCol LABEL &CName OF Form_1 WIDTH nwidth HEIGHT nheight VALUE CName BORDER ACTION dibuja(this:name)
 
@@ -3613,6 +3652,8 @@ static function pimage( i, myIde )
 *      else
 *         @ nrow,ncol IMAGE &cname OF Form_1 PICTURE cpicture WIDTH nWidth HEIGHT nheight
 *      endif
+   cobj:=myform:leadato(cname,'OBJ','')
+    myform:acobj[i]:=cobj
 
    @ nrow,ncol LABEL &Cname OF Form_1 WIDTH nwidth HEIGHT nheight VALUE CName BORDER ACTION dibuja(this:name) FONT 'MS Sans Serif' SIZE 10
 
@@ -3650,6 +3691,8 @@ static function ppicbutt( i, myIde )
 
    cOnlostfocus:=myform:leadato(cname,'ON LOSTFOCUS','')
    cauxfile:=cpicture+'.BMP'
+   cobj:=myform:leadato(cname,'OBJ','')
+    myform:acobj[i]:=cobj
    if file(cauxfile)
       @ nrow,ncol Button &cName OF Form_1 PICTURE cauxfile  WIDTH nwidth HEIGHT nheight ON GOTFOCUS dibuja(this:name) NOTABSTOP
     else
@@ -3697,6 +3740,8 @@ static function ppiccheckbutt( i, myIde )
    lvaluelaux:=iif(lvaluel='.T.',.T.,.F.)
 
    cauxfile:=cpicture+'.BMP'
+   cobj:=myform:leadato(cname,'OBJ','')
+    myform:acobj[i]:=cobj
 
    if file(cauxfile)
       @ nRow,nCol CHECKBUTTON &CName OF Form_1 PICTURE cauxfile WIDTH nwidth HEIGHT nheight ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name) NOTABSTOP
@@ -3745,8 +3790,8 @@ static function pcheckbtn( i, myIde )
 
    lvaluel:=myform:leadato(cname,'VALUE',"")
    lvaluelaux:=iif(lvaluel='.T.',.T.,.F.)
-
-
+   cobj:=myform:leadato(cname,'OBJ','')
+    myform:acobj[i]:=cobj
 
    @ nRow,nCol CHECKBUTTON &CName OF Form_1 CAPTION Ccaption WIDTH nwidth HEIGHT nheight VALUE lvaluelaux ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name) NOTABSTOP
 
@@ -3825,6 +3870,8 @@ static function pcombobox( i, myIde )
    cOnlostfocus:=myform:leadato(cname,'ON LOSTFOCUS','')
    cOnenter:=myform:leadato(cname,'ON ENTER','')
    cOndisplaychange:=myform:leadato(cname,'ON DISPLAYCHANGE','')
+   cobj:=myform:leadato(cname,'OBJ','')
+    myform:acobj[i]:=cobj
 
   @ nRow,nCol COMBOBOX &CName OF Form_1 WIDTH nwidth ITEMS { cname,' ' } VALUE 1 ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name) NOTABSTOP
 
@@ -3904,6 +3951,8 @@ static function plistbox( i, myIde )
    cOngotfocus:=myform:leadato(cname,'ON GOTFOCUS','')
    cOnlostfocus:=myform:leadato(cname,'ON LOSTFOCUS','')
    cOndblclick:=myform:leadato(cname,'ON DBLCLICK','')
+   cobj:=myform:leadato(cname,'OBJ','')
+    myform:acobj[i]:=cobj
 
  @ nRow,nCol LISTBOX &CName OF Form_1 WIDTH nwidth HEIGHT nheight ITEMS {cname} ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name) NOTABSTOP
 
@@ -3983,6 +4032,8 @@ static function pcheckbox( i, myIde )
 
    lvaluel:=myform:leadato(cname,'VALUE',"")
    lvaluelaux:=iif(lvaluel='.T.',.T.,.F.)
+   cobj:=myform:leadato(cname,'OBJ','')
+    myform:acobj[i]:=cobj
 
    @ nRow,nCol CHECKBOX &CName OF Form_1 CAPTION Ccaption WIDTH nwidth HEIGHT nheight VALUE lvaluelaux FONT cfontname SIZE nfontsize ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name) NOTABSTOP
 
@@ -4063,6 +4114,7 @@ static function pbutton( i, myIde )
    cOngotfocus:=myform:leadato(cname,'ON GOTFOCUS','')
 
    cOnlostfocus:=myform:leadato(cname,'ON LOSTFOCUS','')
+   cobj:=myform:leadato(cname,'OBJ','')
 
 @ nrow,ncol Button &cName OF Form_1 CAPTION cCaption  WIDTH nwidth HEIGHT nheight ON GOTFOCUS dibuja(this:name) NOTABSTOP
 
@@ -4127,6 +4179,8 @@ static function pbutton( i, myIde )
 
    myform:aongotfocus[i]:=congotfocus
    myform:aonlostfocus[i]:=conlostfocus
+    myform:acobj[i]:=cobj
+
    ProcessContainersfill( Cname,nrow,ncol, myIde )
 return
 
@@ -4136,7 +4190,6 @@ static function ptextbox( i, myIde )
    cname:=myform:acontrolw[i]
    myform:actrltype[i]:='TEXT'
    myform:aname[i]:=myform:acontrolw[i]
-
    nrow:=val(myform:learow(cName))
    ncol:=val(myform:leacol(cname))
    cfontname:=myform:clean(myform:leadato(cname,'FONT',cffontname))
@@ -4168,7 +4221,7 @@ static function ptextbox( i, myIde )
    nFocusedPos:= val(myform:leadato(cname,'FOCUSEDPOS','-2'))   // pb
    cvalid:= myform:leadato(cname,'VALID','')
    cwhen:=myform:leadato(cname,'WHEN','')
-
+   cobj:=myform:leadato(cname,'OBJ','')
 
    if luppercase='T'
       luppercase=.T.
@@ -4251,7 +4304,7 @@ static function ptextbox( i, myIde )
      myform:afocusedpos[i]:=nFocusedPos   // pb
      myform:avalid[i]:=cvalid
      myform:awhen[i]:=cwhen
-
+       myform:acobj[i]:=cobj
      ProcessContainersfill( Cname,nrow,ncol, myIde )
 return
 
@@ -4720,7 +4773,7 @@ wr:=WR+"2) Selecting control with mouse, and select delete on context menu"+CRLF
 wr:=WR+"3) Selecting control with mouse, and press the delete key"+CRLF+CRLF
 endcase
 
-set interactiveclose on
+SET INTERACTIVECLOSE ON
 DEFINE WINDOW FAYUDA  obj fayuda  ;
    AT 10,10 ;
    WIDTH 620 HEIGHT 460 ;
@@ -4868,4 +4921,3 @@ HB_FUNC ( INTERACTIVEMOVEHANDLE )
 }
 
 #pragma ENDDUMP
-

@@ -1,5 +1,5 @@
 /*
- * $Id: toolbed.prg,v 1.3 2014-06-19 18:53:30 fyurisich Exp $
+ * $Id: toolbed.prg,v 1.4 2014-06-25 20:11:58 fyurisich Exp $
  */
 
 #include "dbstruct.ch"
@@ -282,75 +282,68 @@ return nil
 *-------------------------
 METHOD exittb()  CLASS Tmytoolbared  &&&&&&& save and exit
 *-------------------------
-local nbuttons:=0,nw,nh,i
-//select dtoolbar
-select 10
-count to nbuttons for .not. deleted()
-if nbuttons>0
-*******************
-if len(trim(myToolbarEd.text_1.value))=0
-   msginfo('Toolbar must have a name','Information')
-   return nil
-endif
-if myToolbarEd.text_2.value<=0
-   msginfo('Width must be grater than 0','Information')
-   return nil
-endif
-if myToolbarEd.text_3.value<=0
-   msginfo('Height must be grater than 0','Information')
-   return nil
-endif
-::tbsave()    &&&& una vez validados los graba
-*******************
-nw:=(::nwidth)
-nh:=(::nheight)
+local nbuttons:=0,nw,nh,i, lDeleted
 
-if iscontroldefined(hmitb,form_1)
-    release control hmitb of form_1
-endif
-GO 1
-DEFINE Toolbar hmitb of form_1  buttonsize nw , nh
+   //select dtoolbar
+   select 10
+   count to nbuttons for .not. deleted()
+   if nbuttons > 0
+      if len( trim( myToolbarEd.text_1.value ) ) = 0
+         msginfo( 'Toolbar must have a name', 'OOHG IDE+' )
+         return nil
+      endif
+      if myToolbarEd.text_2.value <= 0
+         msginfo( 'Width must be grater than 0', 'OOHG IDE+' )
+         return nil
+      endif
+      if myToolbarEd.text_3.value <= 0
+         msginfo( 'Height must be grater than 0', 'OOHG IDE+' )
+         return nil
+      endif
+      ::tbsave()    &&&& una vez validados los graba
+      nw:=(::nwidth)
+      nh:=(::nheight)
 
-      for i=1 to nbuttons
-          cname:="hmi_cvc_tb_button_"+alltrim(str(i,2) )
-
-          WCAPTION:= LTRIM(RTRIM(DTOOLBAR->ITEM))
-          button &cname  ;
-          caption WCAPTION  ;
-          action NIL
-          ****************************
-          cvarchivo:=myform:cfname+'.'+alltrim(dtoolbar->named)+'.mnd'
-          if file(cvarchivo)
-             replace dtoolbar->drop with 'X'
-          else
-             replace dtoolbar->drop with ' '
-          endif
-          ****************************
-          skip
-      next i
-END TOOLBAR
-myToolbarEd.release()
-//inkey(0.9)
-myform:lfsave:=.F.
-//close data
-use
-archivo:=myform:cfname+'.tbr'
-copy file dtoolbar.dbf to &archivo  ///////removido por problema en 98
-/////close data
-else
-   if iscontroldefined(hmitb,form_1)
-       release control hmitb of form_1
+      if iscontroldefined( hmitb, form_1)
+         release control hmitb of form_1
+      endif
+      lDeleted := SET( _SET_DELETED, .T. )
+      GO 1
+      DEFINE Toolbar hmitb of form_1 buttonsize nw, nh
+         for i := 1 to nbuttons
+            cname := "hmi_cvc_tb_button_" + alltrim( str( i, 2 ) )
+            WCAPTION := LTRIM( RTRIM( DTOOLBAR->ITEM ) )
+            button &cname ;
+            caption WCAPTION ;
+            action NIL
+            cvarchivo := myform:cfname + '.' + alltrim( dtoolbar->named ) + '.mnd'
+            if file( cvarchivo )
+               replace dtoolbar->drop with 'X'
+            else
+               replace dtoolbar->drop with ' '
+            endif
+            skip
+         next i
+      END TOOLBAR
+      myToolbarEd.release()
+      myform:lfsave := .F.
+      use
+      SET( _SET_DELETED, lDeleted )
+      archivo := myform:cfname + '.tbr'
+      copy file dtoolbar.dbf to &archivo
+   else
+      if iscontroldefined( hmitb, form_1 )
+         release control hmitb of form_1
+      endif
+      myToolbarEd.release()
+      myform:lfsave:=.F.
+      use
+      archivo := myform:cfname + '.tbr'
+      if file( archivo )
+         erase &archivo
+      endif
    endif
-   myToolbarEd.release()
-   myform:lfsave:=.F.
-   use
-   //close data
-   archivo:=myform:cfname+'.tbr'
-   if file (archivo)
-      erase &archivo
-   endif
-endif
-mispuntos()
+   MisPuntos()
 return
 
 *-------------------------

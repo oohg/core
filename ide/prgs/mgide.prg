@@ -1,5 +1,5 @@
 /*
- * $Id: mgide.prg,v 1.6 2014-06-24 17:39:25 fyurisich Exp $
+ * $Id: mgide.prg,v 1.7 2014-06-25 20:11:58 fyurisich Exp $
  */
 
 #include "oohg.ch"
@@ -167,7 +167,6 @@ METHOD NewIde( rtl) CLASS THMI
 local i,npos,capellido,cnombre, nRed, nGreen, nBlue
 public csyscolor,cvccvar
 
-   SET DELETED ON
    SET CENTURY ON
    SET EXACT ON
    SET INTERACTIVECLOSE OFF
@@ -1052,35 +1051,37 @@ Return
 *-------------------------
 METHOD printit() CLASS THMI
 *-------------------------
-local citem,cParent,cArch,i,contlin
-set interactiveclose on
-public _oohg_printlibrary:="HBPRINTER"
-cItem:= Form_Tree:Tree_1:Item ( Form_Tree:Tree_1:value )
-cParent= ::searchtype(citem)
-if ::searchtype(citem)=='Prg module' .and. cItem#'Prg module'
-   cArch:=memoread(citem+'.prg')
-else
-   if ::searchtype(citem)=='Form module' .and. cItem#'Form module'
-      cArch:=memoread(citem+'.fmg')
-   else
-      if ::searchtype(citem)=='CH module' .and. cItem#'CH module'
-         cArch:=memoread(citem+'.ch')
-      else
-         if ::searchtype(citem)=='Rpt module' .and. cItem#'Rpt module'
-            cArch:=memoread(citem+'.rpt')
-         else
-            if ::searchtype(citem)=='RC module' .and. cItem#'RC module'
-               cArch:=memoread(citem+'.rc')
-            else
-               MsgInfo( "This item can't be printed.", 'ooHG IDE+' )
-               return
-            endif
-         endif
-      endif
-   endif
-endif
-::viewsource(cArch)
-return nil
+LOCAL cItem, cParent, cArch
+
+   SET INTERACTIVECLOSE ON
+   PUBLIC _OOHG_PrintLibrary := "HBPRINTER"
+   cItem := Form_Tree:Tree_1:Item( Form_Tree:Tree_1:value )
+   cParent := ::searchtype( cItem )
+   IF ::searchtype( cItem ) == 'Prg module' .AND. cItem # 'Prg module'
+      cArch := MemoRead( cItem + '.prg' )
+   ELSE
+      IF ::searchtype( cItem ) == 'Form module' .AND. cItem # 'Form module'
+         cArch := MemoRead( cItem + '.fmg' )
+      ELSE
+         IF ::searchtype( cItem ) == 'CH module' .AND. cItem # 'CH module'
+            cArch := MemoRead( cItem + '.ch' )
+         ELSE
+            IF ::searchtype( cItem ) == 'Rpt module' .AND. cItem # 'Rpt module'
+               cArch := MemoRead( cItem + '.rpt' )
+            ELSE
+               IF ::searchtype( cItem ) == 'RC module' .AND. cItem # 'RC module'
+                  cArch := MemoRead( cItem + '.rc' )
+               ELSE
+                  MsgInfo( "This item can't be printed.", 'ooHG IDE+' )
+                  RETURN NIL
+               ENDIF
+            ENDIF
+         ENDIF
+      ENDIF
+   ENDIF
+   ::ViewSource( cArch )
+   SET INTERACTIVECLOSE OFF
+RETURN NIL
 
 /**********************************************/
 Procedure CompileOptions( myIde, nOpt )
@@ -3445,7 +3446,7 @@ METHOD ViewErrors( wr ) CLASS THMI
 Return Nil
 
 *-------------------------
-METHOD viewsource(wr) CLASS THMI
+METHOD ViewSource( wr ) CLASS THMI
 *-------------------------
 if !HB_IsString( wr )
    return nil
@@ -4719,34 +4720,34 @@ return
 *-------------------------
 METHOD databaseview() CLASS THMI
 *-------------------------
-local cdfile,npos,i,j
-if iswindowdefined(Form_brow)
-   MsgInfo( 'Browse is already running.', 'ooHG IDE+' )
-   return nil
-endif
-***set interactiveclose on
-curfol:=curdir()
-curdrv:=curdrive()+':\'   //MigSoft
-cdFile:=''
-cdFile:=getFile ( { {'dbf files *.dbf','*.dbf'} }  , 'Open Dbf file',,.F.,.F. )
-if len(cdFile)>0
-   npos:=at(".",cdfile)
-   cdfile:=left(cdfile,npos-1)
-   J:=0
-   for i:=1 to len(cdfile)
-       if substr(cdfile,i,1)=='\'
-          j:=i
-       endif
-   next i
-   cdfile:=substr(cdfile,j+1,len(cdfile))
-   use &cdfile SHARED
-   SET DELETED ON
-   EDIT EXTENDED WORKAREA &cdfile TITLE 'Browsing of ... '+cdfile ;
+LOCAL cdfile, npos, i, j
 
-   Close data
-endif
-DIRCHANGE(curdrv+curfol)
-return
+   if iswindowdefined(Form_brow)
+      MsgInfo( 'Browse is already running.', 'ooHG IDE+' )
+      RETURN NIL
+   endif
+   curfol:=curdir()
+   curdrv:=curdrive()+':\'
+   cdFile:=''
+   cdFile:=getFile ( { {'dbf files *.dbf','*.dbf'} }  , 'Open Dbf file',,.F.,.F. )
+   if len(cdFile)>0
+      npos:=at(".",cdfile)
+      cdfile:=left(cdfile,npos-1)
+      J:=0
+      for i:=1 to len(cdfile)
+          if substr(cdfile,i,1)=='\'
+             j:=i
+          endif
+      next i
+      cdfile:=substr(cdfile,j+1,len(cdfile))
+      USE &cdfile SHARED
+      SET INTERACTIVECLOSE ON
+      EDIT EXTENDED WORKAREA &cdfile TITLE 'Browsing of ... '+cdfile
+      SET INTERACTIVECLOSE OFF
+      CLOSE DATABASES
+   endif
+   DIRCHANGE( curdrv + curfol )
+RETURN NIL
 
 *-------------------------
 METHOD exitview() CLASS THMI
@@ -4798,12 +4799,11 @@ return
 *-------------------------
 static Function databaseview2( myIde )
 *-------------------------
-local cdfile,npos,i,j
+local cdfile,npos,i,j,lDeleted
 if iswindowdefined(Form_brow)
    MsgInfo( 'Browse is already running.', 'ooHG IDE+' )
    return nil
 endif
-***set interactiveclose on
 curfol:=curdir()
 curdrv:=curdrive()+':\'   //MigSoft
 cdFile:=''
@@ -4817,9 +4817,9 @@ if len(cdFile)>0
           j:=i
        endif
    next i
+   lDeleted := SET( _SET_DELETED, .F. )                  // make deleted records visible
    cdfile:=substr(cdfile,j+1,len(cdfile))
    use &cdfile SHARED
-   SET DELETED ON
    AfieldNames := &cdfile->(ARRAY(FCOUNT()))
    aTypes := &cdfile->(ARRAY(FCOUNT()))
    aWidths := &cdfile->(ARRAY(FCOUNT()))
@@ -4863,7 +4863,7 @@ if len(cdFile)>0
          col 150
          value  "ALT-A (Add record) - Delete (Delete record) - Dbl_click (Modify record)"
          width 500
-      end label
+      END LABEL
 
    END WINDOW
 
@@ -4871,7 +4871,8 @@ if len(cdFile)>0
 
    CENTER WINDOW Form_brow
    ACTIVATE WINDOW Form_brow
-   Close all
+   CLOSE DATABASES
+   SET( _SET_DELETED, lDeleted )
 endif
 DIRCHANGE(curdrv+curfol)
 return
@@ -4894,7 +4895,7 @@ org:=mayusculas(alabels,avalues,aformats)
 alabels:=org[1]
 avalues:=org[2]
 aformats:=org[3]
-set interactiveclose on
+SET INTERACTIVECLOSE ON
 l := Len ( aLabels )
 
 Private aResult [l]
@@ -5013,7 +5014,7 @@ endif
 ACTIVATE WINDOW _InputWindow
 
 myIde:lvirtual:=.F.
-set interactiveclose off
+SET INTERACTIVECLOSE OFF
 Return ( aResult )
 
 *-----------------------------------------------------------------------------*

@@ -1,5 +1,5 @@
 /*
- * $Id: orden.prg,v 1.3 2014-06-19 18:53:30 fyurisich Exp $
+ * $Id: orden.prg,v 1.4 2014-06-25 20:11:58 fyurisich Exp $
  */
 
 #include 'oohg.ch'
@@ -8,7 +8,6 @@
 Function OrderControl( myIde )
 //------------------------------------------------------------------------------
    SET INTERACTIVECLOSE ON
-
    LOAD WINDOW orderf AS ordercontrol
    ordercontrol := GetFormObject( "ordercontrol" )
    ordercontrol:backcolor := myIde:asystemcolor
@@ -171,10 +170,10 @@ cursorarrow()
 return nil
 
 *----------------
-function actsic()
+FUNCTION actsic()
 *----------------
-set interactiveclose off
-return
+   SET INTERACTIVECLOSE OFF
+RETURN NIL
 
 *---------------------
 function swapea(x1,x2)

@@ -1,5 +1,5 @@
 /*
- * $Id: menued.prg,v 1.4 2014-06-24 17:39:25 fyurisich Exp $
+ * $Id: menued.prg,v 1.5 2014-06-25 20:11:58 fyurisich Exp $
  */
 
 #include "dbstruct.ch"
@@ -157,7 +157,7 @@ endif
 /////use
 myMenuEd.release()
 inkey(0.9)
-close data
+CLOSE DATABASES
 if ntipo=1
    archivo:=myform:cfname+'.mnm'
    copy file menues.dbf to &archivo
@@ -272,16 +272,13 @@ Return
 *-------------------------------
 METHOD borrar() CLASS TMYMENUED
 *-------------------------------
-select menues
-
-go myMenuEd.browse_101.value
-
-delete
-inkey(0.5)
-pack
-myMenuEd.browse_101.value:=1
-myMenuEd.browse_101.refresh()
-myMenuEd.browse_101.setfocus()
+   select menues
+   go myMenuEd.browse_101.value
+   delete
+   pack
+   myMenuEd.browse_101.value := 1
+   myMenuEd.browse_101.refresh()
+   myMenuEd.browse_101.setfocus()
 Return
 
 *------------------------------

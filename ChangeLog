@@ -1,11 +1,39 @@
 /*
- * $Id: ChangeLog,v 1.1295 2014-06-25 00:00:15 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1296 2014-06-25 20:11:58 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-06-25 17:11 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/prgs/toolbed.prg
+     * Handling of SET DELETED.
+     * Messages.
+   * ide/prgs/orden.prg
+     * Format.
+   * ide/prgs/menued.prg
+     * Format.
+     - Inkey() call.
+   * ide/prgs/dbucvc.prg
+     * Messages.
+     * Handling of SET DELETED and SET INTERACTIVECLOSE.
+     - Unused code.
+     * Format.
+   * ide/prgs/mgide.prg
+     - Unneeded sets.
+     * Format.
+     + Missing SET INTERACTIVECLOSE OFF.
+     - Comments.
+     * Handling of SET DELETED.
+   * ide/prgs/propeven.prg
+   * ide/prgs/saveform.prg
+   + ./ide/fmgs/tabprop.fmg
+     + Support for OBJ property.
+     ; Thanks to Gustavo C. Asborno for his code.
+     * Format.
+     * FMG cleanup.
 
 2014-06-24 21:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ide/prgs/moside.prg
