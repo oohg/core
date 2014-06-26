@@ -1,5 +1,5 @@
 /*
- * $Id: saveform.prg,v 1.4 2014-06-25 20:11:58 fyurisich Exp $
+ * $Id: saveform.prg,v 1.5 2014-06-26 02:13:26 fyurisich Exp $
  */
 
 /////#include 'oohg.ch'
@@ -146,6 +146,12 @@ LOCAL swpop := 0
       Output += ' ;' + CRLF + '   ON VSCROLLBOX ' + myForm:cfonvscrollbox
    ENDIF
    Output += IIF( myForm:lfhelpbutton, ' ;' + CRLF + "HELPBUTTON", "")
+   IF Len( myForm:cfonmaximize ) > 0
+      Output += ' ;' + CRLF + '   ON MAXIMIZE ' + myForm:cfonmaximize
+   ENDIF
+   IF Len( myForm:cfonminimize ) > 0
+      Output += ' ;' + CRLF + '   ON MINIMIZE ' + myForm:cfonminimize
+   ENDIF
    Output += CRLF + CRLF
 
 // HASTA AQUI DEFINICION BASICA DE LA FORMA
@@ -1065,6 +1071,9 @@ FUNCTION MakeControls( j, Output, row, col, width, height, mlyform )
      IF Len( myForm:aondblclick[j] ) > 0
            Output += 'ON DBLCLICK ' + myForm:aondblclick[j] + ' ;' + CRLF
      ENDIF
+     IF Len( myForm:aonenter[j] ) > 0
+           Output += 'ON ENTER ' + myForm:aONENTER[j] + ' ;' +CRLF
+     ENDIF
      IF Len( myForm:aonheadclick[j] ) > 0
            Output += 'ON HEADCLICK ' + myForm:aonheadclick[j] + ' ;' + CRLF
      ENDIF
@@ -1796,6 +1805,9 @@ FUNCTION MakeControls( j, Output, row, col, width, height, mlyform )
       ENDIF
       IF myForm:aclientedge[j]
          Output += 'CLIENTEDGE ' + ' ;' + CRLF
+      ENDIF
+      IF myForm:aborder[j]
+         Output += 'BORDER '+ ' ;' + CRLF
       ENDIF
       Output += CRLF + CRLF
    ENDIF

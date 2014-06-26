@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.4 2014-06-25 20:11:58 fyurisich Exp $
+ * $Id: formedit.prg,v 1.5 2014-06-26 02:13:26 fyurisich Exp $
  */
 
 /*
@@ -139,6 +139,8 @@ CLASS TForm1
    DATA Aclientedge          INIT {}
    DATA afocusedpos          INIT {}  // pb
    DATA acobj                INIT {}  //gca
+   DATA aBorder              INIT {}  //GCA
+   DATA aOnEnter             INIT {}  //gca
 
    // variables de forms
    DATA Cftitle              INIT ""
@@ -171,6 +173,8 @@ CLASS TForm1
    DATA cfnotifyicon         INIT ""
    DATA cfnotifytooltip      INIT ""
    DATA cfobj                INIT ""
+   DATA cfonmaximize         INIT ""  //gca
+   DATA cfonminimize         INIT ""  //gca
 
    // variables de events
    DATA cfoninit             INIT ""
@@ -388,6 +392,8 @@ local nNumcont:=0
    ::lstime               := .F.
    ::nstimewidth          := 80
    ::nffontsize           := 10
+   ::cfonmaximize         := ""
+   ::cfonminimize         := ""
 
    form_main:Title := 'ooHG IDE Plus - Form designer'
    form_main:frame_1:Caption := "Form: " + cItem1
@@ -567,6 +573,8 @@ METHOD IniArray( nform, ncontrolwl, controlname, ctypectrl, noanade ) CLASS TFor
          aAdd( :afocusedpos, -2 )  // pb
          aAdd( :aspeed, 1 )
          aAdd( :acobj, '' )        //gca
+         aAdd( :aborder, .F. )     //gca
+         aAdd( :aonenter, '' )     //gca
       ELSE
          z:=ncontrolwl
          myAdel( "myform:acontrolw", z )
@@ -678,6 +686,7 @@ METHOD IniArray( nform, ncontrolwl, controlname, ctypectrl, noanade ) CLASS TFor
          myAdel( "myform:afocusedpos", z )  // pb
          myAdel( "myform:acobj", z)         //gca
          myAdel( "myform:aspeed", z )
+         myAdel( "myform:aonenter", z )     //gca
          :ncontrolw --
          IF :ncontrolw == 1
             myhandle := 0
@@ -2492,6 +2501,8 @@ static function pforma(i)
    myform:cfonscrollleft:=myform:leadato('DEFINE WINDOW','ON SCROLLLEFT','')
    myform:cfonhscrollbox:=myform:leadato('DEFINE WINDOW','ON HSCROLLBOX','')
    myform:cfonvscrollbox:=myform:leadato('DEFINE WINDOW','ON VSCROLLBOX','')
+   myform:cfonmaximize:=myform:leadato('DEFINE WINDOW','ON MAXIMIZE','')
+   myform:cfonminimize:=myform:leadato('DEFINE WINDOW','ON MINIMIZE','')
 
    myform:lfmain:=iif(myform:lfmain='T',.T.,.F.)
    myform:lfmodal:=iif(myform:lfmodal='T',.T.,.F.)
@@ -2538,6 +2549,7 @@ static function plabel( i, myIde )
    lcenteralign:=myform:leadatologic(cname,"CENTERALIGN","")
    lautosize:=myform:leadatologic(cname,"AUTOSIZE","")
    lclientedge:=myform:leadatologic(cname,"CLIENTEDGE","")
+   lborder:=myform:leadatologic(cname,"BORDER","")
 
    nrow:=val(myform:learow(cName))
    ncol:=val(myform:leacol(cname))
@@ -2617,15 +2629,11 @@ static function plabel( i, myIde )
   endif
 
   myform:aaction[i]:=iif(len(caction)>0,caction,'')
-
   myform:avalue[i]:=cValue
-
   myform:arightalign[i]:=iif(lrightalign='T',.T.,.F.)
-
   myform:acenteralign[i]:=iif(lcenteralign='T',.T.,.F.)
-
+  myform:aborder[i]:=iif(lborder='T',.T.,.F.)
   myform:ahelpid[i]:=nhelpid
-
   myform:aclientedge[i]:=iif(lclientedge='T',.T.,.F.)
 
   ProcessContainersfill( Cname,nrow,ncol, myIde )
@@ -3287,6 +3295,7 @@ static function pgrid( i, myIde )
   conlostfocus:=myform:leadato(cname,'ON LOSTFOCUS','')
   conchange:=myform:leadato(cname,'ON CHANGE','')
   condblclick:=myform:leadato(cname,'ON DBLCLICK','')
+  conenter:=myform:leadato(cname,'ON ENTER','')
   conheadclick:=myform:leadato(cname,'ON HEADCLICK','')
   coneditcell:=myform:leadato(cname,'ON EDITCELL','')
   lmultiselect:=myform:leadatologic(cname,'MULTISELECT',"")
@@ -3347,6 +3356,7 @@ static function pgrid( i, myIde )
    myform:aonlostfocus[i]:=conlostfocus
    myform:aonchange[i]:=conchange
    myform:aondblclick[i]:=condblclick
+   myform:aonenter[i]:=conenter
    myform:aonheadclick[i]:=conheadclick
    myform:aoneditcell[i]:=coneditcell
    myform:amultiselect[i]:=lmultiselect

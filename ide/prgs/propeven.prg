@@ -1,5 +1,5 @@
 /*
- * $Id: propeven.prg,v 1.4 2014-06-25 20:11:58 fyurisich Exp $
+ * $Id: propeven.prg,v 1.5 2014-06-26 02:13:26 fyurisich Exp $
  */
 
 #include 'oohg.ch'
@@ -205,7 +205,7 @@ LOCAL i, cname, j, Title, aLabels, aInitValues, aFormats, aResults, ctipo, jh, n
                      IF :aCtrlType[j] == "EDIT"
                         Title:=cnamew+" properties"
                         aLabels     := { 'ToolTip',    'MaxLength',    'ReadOnly',    'Value',    'HelpId',    'Break',    'Field',    'Name',    'Enabled',    'Visible',   'NoTabStop',    'NoVScroll',    'NoHScroll',    'Obj' }
-                        aInitValues := { :atooltip[j], :amaxlength[j], :areadonly[j], :avalue[j], :ahelpid[j], :abreak[j], :afield[j], :aname[j], :aenabled[j], avisible[j], :anotabstop[j], :anovscroll[j], :anohscroll[j], :acobj[j] }
+                        aInitValues := { :atooltip[j], :amaxlength[j], :areadonly[j], :avalue[j], :ahelpid[j], :abreak[j], :afield[j], :aname[j], :aenabled[j], :avisible[j], :anotabstop[j], :anovscroll[j], :anohscroll[j], :acobj[j] }
                         aFormats    := { 120,          '999999',       .F.,           800,        '999',       .F.,        250,        30,        .F.,          .F.,         .F.,            .F.,            .F.,            31 }
                         aResults    := myInputWindow( Title, aLabels, aInitValues, aFormats )
                         IF aresults[1] == NIL
@@ -314,9 +314,9 @@ LOCAL i, cname, j, Title, aLabels, aInitValues, aFormats, aResults, ctipo, jh, n
 
                      IF :aCtrlType[j] == "LABEL"
                         Title:=cnamew+" properties"
-                        aLabels     := { 'Value',    'Bold',    'HelpId',    'Transparent',    'CenterAlign',    'RightAlign',    'ToolTip',    'Name',    'AutoSize',    "Enabled",    "Visible",    "ClientEdge",    'Obj' }
-                        aInitValues := { :avalue[j], :abold[j], :ahelpid[j], :atransparent[j], :acenteralign[j], :arightalign[j], :atooltip[j], :aname[j], :aautoplay[j], :aenabled[j], :avisible[j], :aclientedge[j], :acobj[j] }
-                        aFormats    := { 300,        .F.,       '999',       .F.,              .F.,              .F.,             120,          30,        .F.,           .F.,          .F.,          .F.,             31 }
+                        aLabels     := { 'Value',    'Bold',    'HelpId',    'Transparent',    'CenterAlign',    'RightAlign',    'ToolTip',    'Name',    'AutoSize',    "Enabled",    "Visible",    "ClientEdge",    "Border",   'Obj' }
+                        aInitValues := { :avalue[j], :abold[j], :ahelpid[j], :atransparent[j], :acenteralign[j], :arightalign[j], :atooltip[j], :aname[j], :aautoplay[j], :aenabled[j], :avisible[j], :aclientedge[j], :aborder[j], :acobj[j] }
+                        aFormats    := { 300,        .F.,       '999',       .F.,              .F.,              .F.,             120,          30,        .F.,           .F.,          .F.,          .F.,             .F.,         31 }
                         aResults    := myInputWindow( Title, aLabels, aInitValues, aFormats )
                         IF aresults[1] == NIL
                            RETURN NIL
@@ -351,7 +351,8 @@ LOCAL i, cname, j, Title, aLabels, aInitValues, aFormats, aResults, ctipo, jh, n
                         :aenabled[j]:=aresults[10]
                         :avisible[j]:=aresults[11]
                         :aclientedge[j]:=aresults[12]
-                        :acobj[j]:=aresults[13]
+                        :aborder[j]:=aresults[13]
+                        :acobj[j]:=aresults[14]
                      ENDIF
 
                      IF :aCtrlType[j] == "PROGRESSBAR"
@@ -966,9 +967,9 @@ LOCAL i, cname, j, Title, aLabels, aInitValues, aFormats, aResults
 
                   IF :aCtrlType[j] == 'GRID'
                      Title:=cnamew+" events"
-                     aLabels     := { 'On Change',   'On GotFocus',   'On LostFocus',   'On DblClick',   'On Headclcik',   "On EditCell" }
-                     aInitValues := { :aonchange[j], :aongotfocus[j], :aonlostfocus[j], :aondblclick[j], :aonheadclick[j], :aoneditcell[j] }
-                     aFormats    := { 250,           250,             250,              250,             250,              800 }
+                     aLabels     := { 'On Change',   'On GotFocus',   'On LostFocus',   'On DblClick',   'On Enter',   'On Headclcik',   "On EditCell" }
+                     aInitValues := { :aonchange[j], :aongotfocus[j], :aonlostfocus[j], :aondblclick[j], :aOnEnter[j], :aonheadclick[j], :aoneditcell[j] }
+                     aFormats    := { 250,           250,             250,              250,             250,          250,              800 }
                      aResults    := myInputWindow( Title, aLabels, aInitValues, aFormats )
                      IF aresults[1] == NIL
                         RETURN NIL
@@ -977,8 +978,9 @@ LOCAL i, cname, j, Title, aLabels, aInitValues, aFormats, aResults
                      :aongotfocus[j]:=aresults[2]
                      :aonlostfocus[j]:=aresults[3]
                      :aondblclick[j]:=aresults[4]
-                     :aonheadclick[j]:=aresults[5]
-                     :aoneditcell[j]:=aresults[6]
+                     :aonenter[j]:=aresults[5]
+                     :aonheadclick[j]:=aresults[6]
+                     :aoneditcell[j]:=aresults[7]
                   ENDIF
 
                   IF :aCtrlType[j] == 'TREE'
@@ -1324,9 +1326,9 @@ LOCAL i, cname, j, Title, aLabels, aInitValues, aFormats, aResults
    WITH OBJECT myForm
       Title:='Form '+:cfname+" events"
       myide:lvirtual:=.T.
-      aLabels     := { 'On Init', 'On Release', 'On MouseClick', 'On MouseMove', 'On MouseDrag', 'On GotFocus', 'On LostFocus', 'On ScrollUp', 'On ScrollDown', 'On ScrollLeft', 'On ScrollRight', 'On HScrollBox', 'On VScrollBox', 'On Size', 'On Paint', 'On NotifyClick', "On InteractiveClose" }
-      aInitValues := { :cfoninit, :cfonrelease, :cfonmouseclick, :cfonmousemove, :cfonmousedrag, :cfongotfocus, :cfonlostfocus, :cfonscrollup, :cfonscrolldown, :cfonscrollleft, :cfonscrollright, :cfonhscrollbox, :cfonvscrollbox, :cfonsize, :cfonpaint, :cfonnotifyclick, :cfoninteractiveclose }
-      aFormats    := { 250,       250,          250,             250,            250,            250,           250,            250,           250,             250,             250,              250,             250,             250,       250,        250,              250 }
+      aLabels     := { 'On Init', 'On Release', 'On MouseClick', 'On MouseMove', 'On MouseDrag', 'On GotFocus', 'On LostFocus', 'On ScrollUp', 'On ScrollDown', 'On ScrollLeft', 'On ScrollRight', 'On HScrollBox', 'On VScrollBox', 'On Size', 'On Paint', 'On NotifyClick', "On InteractiveClose", "On Maximize", "On Minimize" }
+      aInitValues := { :cfoninit, :cfonrelease, :cfonmouseclick, :cfonmousemove, :cfonmousedrag, :cfongotfocus, :cfonlostfocus, :cfonscrollup, :cfonscrolldown, :cfonscrollleft, :cfonscrollright, :cfonhscrollbox, :cfonvscrollbox, :cfonsize, :cfonpaint, :cfonnotifyclick, :cfoninteractiveclose, :cfonmaximize, :cfonminimize }
+      aFormats    := { 250,       250,          250,             250,            250,            250,           250,            250,           250,             250,             250,              250,             250,             250,       250,        250,              250,                   250,           250 }
       aResults    := myInputWindow( Title, aLabels, aInitValues, aFormats )
       IF aresults[1] == NIL
          RETURN NIL
@@ -1348,6 +1350,8 @@ LOCAL i, cname, j, Title, aLabels, aInitValues, aFormats, aResults
       :cfonpaint:=aresults[15]
       :cfonnotifyclick:=aresults[16]
       :cfoninteractiveclose:=aresults[17]
+      :cfonmaximize:=aresults[18]
+      :cfonminimize:=aresults[19]
       :lFsave:=.F.
    END
 RETURN NIL
