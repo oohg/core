@@ -1,5 +1,5 @@
 /*
- * $Id: i_label.ch,v 1.9 2008-11-11 06:04:48 guerra000 Exp $
+ * $Id: i_label.ch,v 1.10 2014-06-27 22:24:38 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -91,67 +91,42 @@
         Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#command @ <row>,<col> LABEL <name>   ;
-        [ OBJ <obj> ] ;
-	[ <dummy1: OF, PARENT> <parent> ] ;
-	[ VALUE <value> ]   ;
-        [ <dummy: ACTION, ON CLICK, ONCLICK> <action> ] ;
-	[ WIDTH <width> ]   ;
-	[ HEIGHT <height> ]   ;
-	[ <autosize : AUTOSIZE> ] ;
-	[ FONT <fontname> ]   ;
-	[ SIZE <fontsize> ]   ;
-	[ <bold : BOLD> ] ;
-	[ <italic : ITALIC> ] ;
-	[ <underline : UNDERLINE> ] ;
-	[ <strikeout : STRIKEOUT> ] ;
-	[ TOOLTIP <tooltip> ] ;
-	[ BACKCOLOR <backcolor> ] ;
-	[ FONTCOLOR <fontcolor> ] ;
-	[ <border: BORDER> ] ;
-	[ <clientedge: CLIENTEDGE> ] ;
-	[ <hscroll: HSCROLL> ] ;
-	[ <vscroll: VSCROLL> ] ;
-	[ <transparent: TRANSPARENT> ] ;
-	[ <rightalign: RIGHTALIGN> ]	;
-	[ <centeralign: CENTERALIGN> ]	;
-	[ HELPID <helpid> ] 		;
-        [ <invisible: INVISIBLE> ]      ;
-        [ <rtl: RTL> ]                  ;
-        [ <nowordwrap: NOWORDWRAP> ]    ;
-        [ <noprefix: NOPREFIX> ] ;
-        [ INPUTMASK <picture> ] ;
-        [ SUBCLASS <subclass> ] ;
-	=>;
-        [ <obj> := ] _OOHG_SelectSubClass( TLabel(), [ <subclass>() ] ):Define( ;
-        <(name)>,    ;
-        <(parent)>,    ;
-	<col>,     ;
-	<row>,     ;
-	<value>,    ;
-	<width>,    ;
-	<height>,    ;
-	<fontname>,    ;
-	<fontsize>,    ;
-	<.bold.>,    ;
-	<.border.> ,   ;
-	<.clientedge.> ,  ;
-	<.hscroll.> ,   ;
-	<.vscroll.> ,   ;
-	<.transparent.> ,   ;
-	[ <backcolor> ], ;
-	[ <fontcolor> ], ;
-	<{action}>,	;
-	<tooltip>,	;
-	<helpid>, ;
-	<.invisible.>, ;
-	<.italic.>, ;
-	<.underline.>, ;
-	<.strikeout.> , ;
-	<.autosize.> , ;
-	<.rightalign.> , ;
-        <.centeralign.> , ;
-        <.rtl.> , ;
-        <.nowordwrap.> , ;
-        <.noprefix.> , ;
-        <picture> )
+#command @ <row>,<col> LABEL <name> ;
+      [ OBJ <obj> ] ;
+      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ VALUE <value> ] ;
+      [ <dummy: ACTION, ON CLICK, ONCLICK> <action> ] ;
+      [ WIDTH <width> ] ;
+      [ HEIGHT <height> ] ;
+      [ <autosize : AUTOSIZE> ] ;
+      [ FONT <fontname> ] ;
+      [ SIZE <fontsize> ] ;
+      [ <bold : BOLD> ] ;
+      [ <italic : ITALIC> ] ;
+      [ <underline : UNDERLINE> ] ;
+      [ <strikeout : STRIKEOUT> ] ;
+      [ TOOLTIP <tooltip> ] ;
+      [ BACKCOLOR <backcolor> ] ;
+      [ FONTCOLOR <fontcolor> ] ;
+      [ <border: BORDER> ] ;
+      [ <clientedge: CLIENTEDGE> ] ;
+      [ <hscroll: HSCROLL> ] ;
+      [ <vscroll: VSCROLL> ] ;
+      [ <transparent: TRANSPARENT> ] ;
+      [ <rightalign: RIGHTALIGN> ] ;
+      [ <centeralign: CENTERALIGN> ] ;
+      [ HELPID <helpid> ] ;
+      [ <invisible: INVISIBLE> ] ;
+      [ <rtl: RTL> ] ;
+      [ <nowordwrap: NOWORDWRAP> ] ;
+      [ <noprefix: NOPREFIX> ] ;
+      [ INPUTMASK <picture> ] ;
+      [ SUBCLASS <subclass> ] ;
+   => ;
+      [ <obj> := ] _OOHG_SelectSubClass( TLabel(), [ <subclass>() ] ):Define( ;
+            <(name)>, <(parent)>, <col>, <row>, <value>, <width>, <height>, ;
+            <fontname>, <fontsize>, <.bold.>, <.border.>, <.clientedge.>, ;
+            <.hscroll.>, <.vscroll.>, <.transparent.>, [ <backcolor> ], ;
+            [ <fontcolor> ], <{action}>, <tooltip>, <helpid>, <.invisible.>, ;
+            <.italic.>, <.underline.>, <.strikeout.>, <.autosize.>, <.rightalign.>, ;
+            <.centeralign.>, <.rtl.>, <.nowordwrap.>, <.noprefix.>, <picture> )

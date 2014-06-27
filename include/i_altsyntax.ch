@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.113 2014-06-08 22:56:24 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.114 2014-06-27 22:24:38 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -835,7 +835,8 @@ ANIMATEBOX COMMANDS
                 _OOHG_ActiveControlInvisible, ;
                 _OOHG_ActiveControlNoTabStop, ;
                 _OOHG_ActiveControlDisabled, ;
-                _OOHG_ActiveControlRtl )
+                _OOHG_ActiveControlRtl, ;
+                _OOHG_ActiveControlTooltip )
 
 #xcommand DEFINE PLAYER <name> ;
         => ;

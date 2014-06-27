@@ -1,5 +1,5 @@
 <!--
-$Id: ANIMATEBOX.HTM,v 1.3 2014-06-17 00:35:28 fyurisich Exp $
+$Id: ANIMATEBOX.HTM,v 1.4 2014-06-27 22:24:38 fyurisich Exp $
 -->
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -203,14 +203,15 @@ Note that the file must not contain sound or it will not be played.
       [ &lt;invisible: INVISIBLE&gt; ] ;
       [ &lt;notabstop: NOTABSTOP&gt; ] ;
       [ &lt;disabled: DISABLED&gt; ] ;
-      [ &lt;rtl: RTL&gt; ]
+      [ &lt;rtl: RTL&gt; ] ;
+      [ &lt;tooltip: TOOLTIP&gt; ]
 
    Is translated by the preprocessor to this OOP syntax:
 
    [ &lt;obj&gt; := ] _OOHG_SelectSubClass( TAnimateBox(), [ &lt;subclass&gt;() ] ): ;
       Define( &lt;(name)&gt;, &lt;(parent)&gt;, &lt;col&gt;, &lt;row&gt;, &lt;widht&gt;, &lt;height&gt;, ;
       &lt;.autoplay.&gt;, &lt;.center.&gt;, &lt;.transparent.&gt;, &lt;file&gt;, &lt;helpid&gt;, ;
-      &lt;.invisible.&gt;, &lt;.notabstop.&gt;, &lt;.disabled.&gt;, &lt;.rtl.&gt; )
+      &lt;.invisible.&gt;, &lt;.notabstop.&gt;, &lt;.disabled.&gt;, &lt;.rtl.&gt;, &lt;tooltip&gt; )
 
 *** Alternative syntax:
 
@@ -228,6 +229,7 @@ Note that the file must not contain sound or it will not be played.
       [ RTL &lt;rtl: .T., .F.&gt; ]
       [ SUBCLASS &lt;subclass&gt; ]
       [ TABSTOP &lt;tabstop: .T., .F.&gt; ]
+      [ TOOLTIP &lt;tooltip&gt; ]
       [ TRANSPARENT &lt;transparent: .T., .F.&gt; ]
       [ VISIBLE &lt;visible: .T., .F.&gt; ]
       [ WIDTH &lt;width&gt; ]
@@ -238,13 +240,14 @@ Note that the file must not contain sound or it will not be played.
    _OOHG_SelectSubClass( TAnimateBox(), &lt;subclass&gt;(), { |_o_| &lt;obj&gt; := _o_ } ): ;
       Define( &lt;(name)&gt;, &lt;(parent)&gt;, &lt;col&gt;, &lt;row&gt;, &lt;width&gt;, &lt;height&gt;, ;
       &lt;autoplay&gt;, &lt;center&gt;, &lt;transparent&gt;, &lt;file&gt;, &lt;helpid&gt;, ! &lt;visible&gt;, ;
-      ! &lt;tabstop&gt;, ! &lt;disabled&gt;, &lt;rtl&gt; )
+      ! &lt;tabstop&gt;, ! &lt;disabled&gt;, &lt;rtl&gt;, &lt;tooltip&gt; )
 
 *** Alternate OOP syntax:
 
    [ &lt;oObj&gt; := ] TAnimateBox():Define( cName, [ cParent ], [ nCol ], [ nRow ], ;
       [ nWidth ], [ nHeight ], [ lAutoplay ], [ lCenter ], [ lTransparent ], ;
-      [ cFile ], [ nHelpId ], [ lInvisible ], [ lNoTabstop ], [ lDisabled ], [ lRtl ] )
+      [ cFile ], [ nHelpId ], [ lInvisible ], [ lNoTabstop ], [ lDisabled ], ;
+      [ lRtl ], [ cToolTip ] )
 
 <p><u>Related commands</u>:
 
@@ -280,33 +283,37 @@ Note that the file must not contain sound or it will not be played.
 
 <p><u>Notes on clauses</u>:
 
-   1. OBJ and OBJECT set the variable &lt;obj&gt; with a reference to the control.
+   1. OBJ and OBJECT set a reference to the control into variable &lt;obj&gt;.
       When using OBJECT, the variable must be previously declared.
-      When using OBJ, if the variable does not exist, it's assumed PRIVATE.
+      When using OBJ, if the variable does not exist, it's created PRIVATE.
    2. PARENT declares which window is the parent (owner) of the control.
-      Can be ommited only when used inside a DEFINE WINDOW / END WINDOW structure.
-   3. ROW and COL define the position of the control inside it's parent client area.
-   4. WIDTH and HEIGHT define the dimension of the control.
-   5. TABSTOP and NOTABSTOP specify if the control can/can't be focused using TAB key.
-      Default is TABSTOP.
-   6. DISABLED specifies that the control can't receive mouse clicks and key presses.
-      Default is ENABLED.
-   7. SUBCLASS indicates that the control must be an instance of the specified class,
-      instead of the default TActiveX class.
-   8. VISIBLE and INVISIBLE specify if the control must be visible/hidden when created.
-      Default is VISIBLE.
+      It can be ommited when used inside a DEFINE/END WINDOW structure.
+   3. ROW and COL define the position of the control inside it's parent client
+      area. Default is 0.
+   4. WIDTH and HEIGHT define the dimension of the control. Default is 0.
+   5. TABSTOP and NOTABSTOP specify if the control can/can't be focused using
+      TAB key. Default is TABSTOP.
+   6. DISABLED specifies that the control can't receive mouse clicks and
+      pressed keys. Default is ENABLED.
+   7. SUBCLASS indicates that the control must be an instance of the specified
+      class, instead of the default TActiveX class.
+   8. VISIBLE and INVISIBLE specify if the control must be visible/hidden when
+      created. Default is VISIBLE.
    9. RTL specifies that the control must have WS_EX_LTRREADING, WS_EX_LEFT and
       WS_EX_LEFTSCROLLBAR styles.
       Default is .F.
-  10. HELPID associates a help topic within the current help file to the control.
+  10. HELPID associates a help topic within the current help file to the
+      control. Default is 0.
   11. FILE specifies that the control must load and show the firt frame of the
-      indicated AVI file.
+      indicated AVI file. Default is NIL.
   12. AUTOPLAY specifies that the control must have <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/bb761886(v=vs.85).aspx" target="_blank">ACS_AUTOPLAY</a> style.
       Default is .F.
   13. CENTER specifies that the control must have <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/bb761886(v=vs.85).aspx" target="_blank">ACS_CENTER</a> style.
       Default is .F.
   14. TRANSPARENT specifies that the control must have <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/bb761886(v=vs.85).aspx" target="_blank">ACS_TRANSPARENT</a> style.
       Default is .F.
+  15. TOOLTIP sets a text that will be display when the mouse is positioned
+      over the control. Default is NIL.
 
 <p><u>Notes on parameters</u>:
 

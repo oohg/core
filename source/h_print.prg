@@ -1,5 +1,5 @@
 /*
- * $Id: h_print.prg,v 1.139 2014-06-23 22:17:33 fyurisich Exp $
+ * $Id: h_print.prg,v 1.140 2014-06-27 22:24:39 fyurisich Exp $
  */
 
 #include 'hbclass.ch'
@@ -2383,8 +2383,6 @@ LOCAL nBefore
    ::oExcel:SheetsInNewWorkbook := 1
    ::oBook := ::oExcel:WorkBooks:Add()
    ::oExcel:SheetsInNewWorkbook := nBefore
-
-   ::oBook:ActiveSheet():Name := ::cPageName
 RETURN Self
 
 *-----------------------------------------------------------------------------*
@@ -3903,7 +3901,6 @@ LOCAL oPropertyValue, oSheet
       ::oDocument:Sheets:RemoveByName( oSheet:Name )
    ENDDO
    oSheet := ::oDocument:Sheets:GetByIndex( 0 )
-   oSheet:Name := ::cPageName
    ::oDocument:getCurrentController:SetActiveSheet( oSheet )
    ::oSchedule := ::oDocument:GetSheets()
 RETURN Self

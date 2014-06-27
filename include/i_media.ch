@@ -1,5 +1,5 @@
 /*
- * $Id: i_media.ch,v 1.6 2014-06-17 00:35:28 fyurisich Exp $
+ * $Id: i_media.ch,v 1.7 2014-06-27 22:24:38 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -109,10 +109,11 @@
       [ <notabstop: NOTABSTOP> ] ;
       [ <disabled: DISABLED> ] ;
       [ <rtl: RTL> ] ;
+      [ TOOLTIP <tooltip> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TAnimateBox(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <.autoplay.>, <.center.>, <.transparent.>, <file>, <helpid>, ;
-            <.invisible.>, <.notabstop.>, <.disabled.>, <.rtl.> )
+            <.invisible.>, <.notabstop.>, <.disabled.>, <.rtl.>, <tooltip> )
 
 #command OPEN ANIMATEBOX <ControlName> OF <ParentForm> FILE <FileName> ;
    => ;

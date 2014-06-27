@@ -1,5 +1,5 @@
 /*
- * $Id: h_media.prg,v 1.7 2009-12-23 23:55:21 guerra000 Exp $
+ * $Id: h_media.prg,v 1.8 2014-06-27 22:24:39 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -222,7 +222,7 @@ ENDCLASS
 *-----------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, col, row, w, h, autoplay, center, ;
                transparent, file, HelpId, Invisible, NoTabStop, lDisabled, ;
-               lRtl ) CLASS TAnimateBox
+               lRtl, ToolTip ) CLASS TAnimateBox
 *-----------------------------------------------------------------------------*
 Local hh, nStyle
 
@@ -241,7 +241,7 @@ Local hh, nStyle
 
    hh := InitAnimate( ::ContainerhWnd, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle )
 
-   ::Register( hh, ControlName, HelpId )
+   ::Register( hh, ControlName, HelpId,, ToolTip )
 
    if valtype(file) <> 'U'
       ::Open( File )

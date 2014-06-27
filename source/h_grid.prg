@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.253 2014-06-23 22:58:35 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.254 2014-06-27 22:24:39 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -6624,6 +6624,7 @@ HB_FUNC( LISTVIEW_HITONCHECKBOX )
    LVHITTESTINFO lvhti;
    int item, cx, cy, chkWidth, gapWidth, margin;
    RECT rcIcon;
+   LPRECT lprcIcon = &rcIcon;
    OSVERSIONINFO osvi;
 
    point.y = hb_parni( 2 );
@@ -6635,7 +6636,7 @@ HB_FUNC( LISTVIEW_HITONCHECKBOX )
 
    if( lvhti.iSubItem == 0)
    {
-      ListView_GetSubItemRect( HWNDparam( 1 ), lvhti.iItem, lvhti.iSubItem, LVIR_ICON, &rcIcon );
+      ListView_GetSubItemRect( HWNDparam( 1 ), lvhti.iItem, lvhti.iSubItem, LVIR_ICON, lprcIcon );
 
       ImageList_GetIconSize( ListView_GetImageList( HWNDparam( 1 ), LVSIL_STATE ), &cx, &cy );
 
@@ -6965,6 +6966,8 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
    int x, y;
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
    RECT rcIcon, rcBack;
+   LPRECT lprcIcon = &rcIcon;
+   LPRECT lprcBack = &rcBack;
    HBRUSH hBrush;
    LV_ITEM LI;
    char buffer[ 1024 ];
@@ -7162,7 +7165,7 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
       if( LI.iImage != -1 )
       {
          // Get icon's rect
-         ListView_GetSubItemRect( lplvcd->nmcd.hdr.hwndFrom, lplvcd->nmcd.dwItemSpec, lplvcd->iSubItem, LVIR_ICON, &rcIcon );
+         ListView_GetSubItemRect( lplvcd->nmcd.hdr.hwndFrom, lplvcd->nmcd.dwItemSpec, lplvcd->iSubItem, LVIR_ICON, lprcIcon );
 
          // Calculate area for background and paint it
          if( x == 1)
@@ -7199,9 +7202,9 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
           * Use LVIR_ICON to get the left of the icon area, and use this value as the right
           * of the area to paint.
           */
-         ListView_GetSubItemRect( lplvcd->nmcd.hdr.hwndFrom, lplvcd->nmcd.dwItemSpec, lplvcd->iSubItem, LVIR_LABEL, &rcBack );
+         ListView_GetSubItemRect( lplvcd->nmcd.hdr.hwndFrom, lplvcd->nmcd.dwItemSpec, lplvcd->iSubItem, LVIR_LABEL, lprcBack );
          rcBack.left = rcBack.right - ListView_GetColumnWidth( lplvcd->nmcd.hdr.hwndFrom, lplvcd->iSubItem );
-         ListView_GetSubItemRect( lplvcd->nmcd.hdr.hwndFrom, lplvcd->nmcd.dwItemSpec, lplvcd->iSubItem, LVIR_ICON, &rcIcon );
+         ListView_GetSubItemRect( lplvcd->nmcd.hdr.hwndFrom, lplvcd->nmcd.dwItemSpec, lplvcd->iSubItem, LVIR_ICON, lprcIcon );
          rcBack.right = rcIcon.right;
 
          // Paint to get rid of empty space at left

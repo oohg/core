@@ -1,11 +1,28 @@
 /*
- * $Id: ChangeLog,v 1.1298 2014-06-26 02:22:23 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1299 2014-06-27 22:24:38 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-06-27 19:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Previous entry.
+   * source/h_print.prg
+     ! RTE in TEXCELPRINT:BeginDocX() due to wrong assignment of
+       sheet name.
+     * Wrong assignment of sheet name in TCALCPRINT:BeginDocX().
+   * source\h_grid.prg
+     ! Warnings from MinGW in Harbour nightly version.
+   * include/i_label.ch
+   * include/i_altsyntax.ch
+   * include/i_media.ch
+   * source/h_media.ch
+     + ANIMATEBOX's TOOLTIP clause.
+   * manual/animatebox.htm
+     * Updated.
 
 2014-06-25 23:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog
@@ -17,6 +34,7 @@
    * ide/prgs/formedit.prg
    * ide/prgs/propeven.prg
    * ide/prgs/saveform.prg
+     + Support for Label's BORDER clause.
      + Support for Grid's ON ENTER clause.
      + Support for ON MAXIMIZE and ON MINIMIZE form's clauses.
      ; Thanks to Gustavo C. Asborno for his code.
@@ -43,7 +61,7 @@
      * Handling of SET DELETED.
    * ide/prgs/propeven.prg
    * ide/prgs/saveform.prg
-   + ./ide/fmgs/tabprop.fmg
+   + ide/fmgs/tabprop.fmg
      + Support for OBJ property.
      ; Thanks to Gustavo C. Asborno for his code.
      * Format.
