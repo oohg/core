@@ -1,5 +1,5 @@
 /*
- * $Id: c_image.c,v 1.37 2014-06-17 20:01:12 fyurisich Exp $
+ * $Id: c_image.c,v 1.38 2014-06-29 00:49:17 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -575,7 +575,7 @@ HB_FUNC( _OOHG_SIZEOFBITMAPFROMFILE )   // ( cFile )
    HBITMAP hBitmap;
    BITMAP bm;
 
-   hBitmap = (HBITMAP) _OOHG_LoadImage( ( char * ) hb_parc( 1 ), 0, 0, 0, NULL, 0 );
+   hBitmap = (HBITMAP) _OOHG_LoadImage( ( char * ) hb_parc( 1 ), LR_CREATEDIBSECTION, 0, 0, NULL, 0 );
 
    memset( &bm, 0, sizeof( bm ) );
 

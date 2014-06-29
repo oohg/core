@@ -1,11 +1,20 @@
 /*
- * $Id: ChangeLog,v 1.1299 2014-06-27 22:24:38 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1300 2014-06-29 00:49:17 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-06-27 21:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/c_image.c
+     ! BMPs with 4 BPP have no transparency when shown in a button.
+     ; By default, IMAGE control loads images using LR_CREATEDIBSECTION.
+       By default, BUTTON control loads images using LR_LOADMAP3DCOLORS
+       when the image has a color depth of 8 BPP or less. For higher
+       values, LR_DEFAULTCOLOR is used.
+       To mimic BUTTON's behaviour, add NODIBSECTION to IMAGE control.
 
 2014-06-27 19:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog
