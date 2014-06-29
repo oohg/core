@@ -1,11 +1,24 @@
 /*
- * $Id: ChangeLog,v 1.1300 2014-06-29 00:49:17 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1301 2014-06-29 23:42:06 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-06-29 20:41 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_timer.ch
+     + EOL at last line.
+   * include/i_editbox.ch
+     * Format
+   * include/i_datepicker.ch
+     * Format
+   * include/i_ipaddress.ch
+     * Format
+     + Support for FONTCOLOR and BACKCOLOR clauses.
+   * source/h_ipaddress.prg
+     + Support for FONTCOLOR and BACKCOLOR clauses.
 
 2014-06-27 21:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/c_image.c

@@ -1,5 +1,5 @@
 /*
- * $Id: h_ipaddress.prg,v 1.10 2013-07-03 01:44:52 migsoft Exp $
+ * $Id: h_ipaddress.prg,v 1.11 2014-06-29 23:42:06 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -111,7 +111,7 @@ ENDCLASS
 METHOD Define( ControlName, ParentForm, x, y, w, h, aValue, fontname, ;
                fontsize, tooltip, lostfocus, gotfocus, change, HelpId, ;
                invisible, notabstop, bold, italic, underline, strikeout, lRtl, ;
-               lDisabled ) CLASS TIpAddress
+               lDisabled, FontColor, BackColor ) CLASS TIpAddress
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle
 
@@ -121,15 +121,15 @@ Local ControlHandle, nStyle
    ASSIGN ::nWidth  VALUE w TYPE "N"
    ASSIGN ::nHeight VALUE h TYPE "N"
 
-   ::SetForm( ControlName, ParentForm, FontName, FontSize, , , .T., lRtl )
+   ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .T., lRtl )
 
    nStyle := ::InitStyle( ,, Invisible, NoTabStop, lDisabled )
 
    ControlHandle := InitIPAddress( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, ::lRtl )
 
- If aValue <> Nil
+   If aValue <> Nil
       SetIPAddress( ControlHandle, aValue[ 1 ], aValue[ 2 ], aValue[ 3 ], aValue[ 4 ] )
- EndIf
+   EndIf
 
    ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )

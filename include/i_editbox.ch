@@ -1,5 +1,5 @@
 /*
- * $Id: i_editbox.ch,v 1.5 2006-02-11 06:19:32 guerra000 Exp $
+ * $Id: i_editbox.ch,v 1.6 2014-06-29 23:42:06 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -92,76 +92,78 @@
 ---------------------------------------------------------------------------*/
 
 #command @ <row>,<col> EDITBOX <name> ;
-                [ OBJ <obj> ] ;
-		[ <dummy1: OF, PARENT> <parent> ] ;
-		[ WIDTH <w> ] ;
-		[ HEIGHT <h> ] ;
-		[ FIELD <field> ]		;
-		[ VALUE <value> ] ;
-		[ < readonly: READONLY > ] ;
-		[ FONT <f> ] ;
-		[ SIZE <s> ] ;
-		[ <bold : BOLD> ] ;
-		[ <italic : ITALIC> ] ;
-		[ <underline : UNDERLINE> ] ;
-		[ <strikeout : STRIKEOUT> ] ;
-		[ TOOLTIP <tooltip> ] ;
-		[ BACKCOLOR <backcolor> ] ;
-		[ FONTCOLOR <fontcolor> ] ;
-		[ MAXLENGTH <maxlenght> ] ;
-                [ ON GOTFOCUS <gotfocus> ] ;
-                [ ON CHANGE <change> ] ;
-                [ ON LOSTFOCUS <lostfocus> ] ;
-		[ HELPID <helpid> ] 		;
-		[ <invisible: INVISIBLE> ] ;
-		[ <notabstop: NOTABSTOP> ] ;
-		[ <novscroll: NOVSCROLL> ] 	;
-		[ <nohscroll: NOHSCROLL> ] 	;
-                [ <rtl: RTL> ] ;
-                [ <noborder: NOBORDER> ] ;
-                [ FOCUSEDPOS <focusedpos> ]     ;
-	=>;
-        [ <obj> := ] TEdit():Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <value>, <f>, ;
-                <s>, <tooltip>, <maxlenght>, <{gotfocus}>, <{change}>, <{lostfocus}>, <.readonly.>, ;
-                .f. , <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, ;
-                <.strikeout.>, <(field)>, <backcolor>, <fontcolor>, <.novscroll.>, <.nohscroll.>, ;
-                <.rtl.>, <.noborder.>, <focusedpos> )
+      [ OBJ <obj> ] ;
+      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ WIDTH <w> ] ;
+      [ HEIGHT <h> ] ;
+      [ FIELD <field> ]      ;
+      [ VALUE <value> ] ;
+      [ < readonly: READONLY > ] ;
+      [ FONT <f> ] ;
+      [ SIZE <s> ] ;
+      [ <bold : BOLD> ] ;
+      [ <italic : ITALIC> ] ;
+      [ <underline : UNDERLINE> ] ;
+      [ <strikeout : STRIKEOUT> ] ;
+      [ TOOLTIP <tooltip> ] ;
+      [ BACKCOLOR <backcolor> ] ;
+      [ FONTCOLOR <fontcolor> ] ;
+      [ MAXLENGTH <maxlenght> ] ;
+      [ ON GOTFOCUS <gotfocus> ] ;
+      [ ON CHANGE <change> ] ;
+      [ ON LOSTFOCUS <lostfocus> ] ;
+      [ HELPID <helpid> ]       ;
+      [ <invisible: INVISIBLE> ] ;
+      [ <notabstop: NOTABSTOP> ] ;
+      [ <novscroll: NOVSCROLL> ]    ;
+      [ <nohscroll: NOHSCROLL> ]    ;
+      [ <rtl: RTL> ] ;
+      [ <noborder: NOBORDER> ] ;
+      [ FOCUSEDPOS <focusedpos> ]     ;
+   => ;
+      [ <obj> := ] TEdit():Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, ;
+            <value>, <f>, <s>, <tooltip>, <maxlenght>, <{gotfocus}>, <{change}>, ;
+            <{lostfocus}>, <.readonly.>, .f., <helpid>, <.invisible.>, ;
+            <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
+            <(field)>, <backcolor>, <fontcolor>, <.novscroll.>, <.nohscroll.>, ;
+            <.rtl.>, <.noborder.>, <focusedpos> )
 
 //SPLITBOX VERSION
 
 #command EDITBOX <name> ;
-                [ OBJ <obj> ] ;
-		[ <dummy1: OF, PARENT> <parent> ] ;
-		[ WIDTH <w> ] ;
-		[ HEIGHT <h> ] ;
-		[ FIELD <field> ]		;
-		[ VALUE <value> ] ;
-		[ < readonly: READONLY > ] ;
-		[ FONT <f> ] ;
-		[ SIZE <s> ] ;
-		[ <bold : BOLD> ] ;
-		[ <italic : ITALIC> ] ;
-		[ <underline : UNDERLINE> ] ;
-		[ <strikeout : STRIKEOUT> ] ;
-		[ TOOLTIP <tooltip> ] ;
-		[ BACKCOLOR <backcolor> ] ;
-		[ FONTCOLOR <fontcolor> ] ;
-		[ MAXLENGTH <maxlenght> ] ;
-                [ ON GOTFOCUS <gotfocus> ] ;
-                [ ON CHANGE <change> ] ;
-                [ ON LOSTFOCUS <lostfocus> ] ;
-		[ HELPID <helpid> ] 		;
-		[ <break: BREAK> ] ;
-		[ <invisible: INVISIBLE> ] ;
-		[ <notabstop: NOTABSTOP> ] ;
-		[ <novscroll: NOVSCROLL> ] 	;
-		[ <nohscroll: NOHSCROLL> ] 	;
-                [ <rtl: RTL> ] ;
-                [ <noborder: NOBORDER> ] ;
-                [ FOCUSEDPOS <focusedpos> ]     ;
-	=>;
-        [ <obj> := ] TEdit():Define( <(name)>, <(parent)>,,, <w>, <h>, <value>, <f>, <s>, <tooltip>, ;
-                <maxlenght>, <{gotfocus}>, <{change}>, <{lostfocus}>, <.readonly.>, <.break.>, ;
-                <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, ;
-                <.strikeout.>, <(field)>, <backcolor>, <fontcolor>, <.novscroll.>, <.nohscroll.>, ;
-                <.rtl.>, <.noborder.>, <focusedpos> )
+      [ OBJ <obj> ] ;
+      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ WIDTH <w> ] ;
+      [ HEIGHT <h> ] ;
+      [ FIELD <field> ] ;
+      [ VALUE <value> ] ;
+      [ < readonly: READONLY > ] ;
+      [ FONT <f> ] ;
+      [ SIZE <s> ] ;
+      [ <bold : BOLD> ] ;
+      [ <italic : ITALIC> ] ;
+      [ <underline : UNDERLINE> ] ;
+      [ <strikeout : STRIKEOUT> ] ;
+      [ TOOLTIP <tooltip> ] ;
+      [ BACKCOLOR <backcolor> ] ;
+      [ FONTCOLOR <fontcolor> ] ;
+      [ MAXLENGTH <maxlenght> ] ;
+      [ ON GOTFOCUS <gotfocus> ] ;
+      [ ON CHANGE <change> ] ;
+      [ ON LOSTFOCUS <lostfocus> ] ;
+      [ HELPID <helpid> ] ;
+      [ <break: BREAK> ] ;
+      [ <invisible: INVISIBLE> ] ;
+      [ <notabstop: NOTABSTOP> ] ;
+      [ <novscroll: NOVSCROLL> ] ;
+      [ <nohscroll: NOHSCROLL> ] ;
+      [ <rtl: RTL> ] ;
+      [ <noborder: NOBORDER> ] ;
+      [ FOCUSEDPOS <focusedpos> ] ;
+   => ;
+      [ <obj> := ] TEdit():Define( <(name)>, <(parent)>,,, <w>, <h>, <value>, ;
+            <f>, <s>, <tooltip>, <maxlenght>, <{gotfocus}>, <{change}>, ;
+            <{lostfocus}>, <.readonly.>, <.break.>, <helpid>, <.invisible.>, ;
+            <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
+            <(field)>, <backcolor>, <fontcolor>, <.novscroll.>, <.nohscroll.>, ;
+            <.rtl.>, <.noborder.>, <focusedpos> )

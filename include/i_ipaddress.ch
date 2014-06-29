@@ -1,5 +1,5 @@
 /*
- * $Id: i_ipaddress.ch,v 1.4 2008-09-29 00:36:45 guerra000 Exp $
+ * $Id: i_ipaddress.ch,v 1.5 2014-06-29 23:42:06 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -92,30 +92,33 @@
 ---------------------------------------------------------------------------*/
 
 #command @ <row>, <col> IPADDRESS <name> ;
-        [ OBJ <obj> ]                ;
-	[ <dummy1: OF, PARENT> <parent> ] ;
-	[ HEIGHT <height> ]          ;
-	[ WIDTH <width> ]            ;
-        [ VALUE <value> ]            ;
-	[ FONT <fontname> ]          ;
-	[ SIZE <fontsize> ]          ;
-	[ <bold : BOLD> ] ;
-	[ <italic : ITALIC> ] ;
-	[ <underline : UNDERLINE> ] ;
-	[ <strikeout : STRIKEOUT> ] ;
-	[ TOOLTIP <tooltip> ]        ;
-	[ ON CHANGE <change> ]       ;
-	[ ON GOTFOCUS <gotfocus> ]   ;
-	[ ON LOSTFOCUS <lostfocus> ] ;
-	[ HELPID <helpid> ] 		     ;
-	[ <invisible : INVISIBLE> ] ;
-	[ <notabstop : NOTABSTOP> ] ;
-        [ <disabled : DISABLED> ] ;
-        [ <rtl: RTL> ]              ;
-        [ SUBCLASS <subclass> ] ;
-=>;
-        [ <obj> := ] _OOHG_SelectSubClass( TIPAddress(), [ <subclass>() ] ): ;
-        Define( <(name)>, <(parent)>, <col>, <row>, <width>, <height>, [ <value> ], ;
-                <fontname>, <fontsize>, <tooltip>, <{lostfocus}>, <{gotfocus}>, ;
-                <{change}>, <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, ;
-                <.italic.>, <.underline.>, <.strikeout.>, <.rtl.>, <.disabled.> )
+      [ OBJ <obj> ] ;
+      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ HEIGHT <height> ] ;
+      [ WIDTH <width> ] ;
+      [ VALUE <value> ] ;
+      [ FONT <fontname> ] ;
+      [ SIZE <fontsize> ] ;
+      [ <bold : BOLD> ] ;
+      [ <italic : ITALIC> ] ;
+      [ <underline : UNDERLINE> ] ;
+      [ <strikeout : STRIKEOUT> ] ;
+      [ TOOLTIP <tooltip> ] ;
+      [ ON CHANGE <change> ] ;
+      [ ON GOTFOCUS <gotfocus> ] ;
+      [ ON LOSTFOCUS <lostfocus> ] ;
+      [ HELPID <helpid> ] ;
+      [ <invisible : INVISIBLE> ] ;
+      [ <notabstop : NOTABSTOP> ] ;
+      [ <disabled : DISABLED> ] ;
+      [ <rtl: RTL> ] ;
+      [ SUBCLASS <subclass> ] ;
+      [ FONTCOLOR <fontcolor> ] ;
+      [ BACKCOLOR <backcolor> ] ;
+   => ;
+      [ <obj> := ] _OOHG_SelectSubClass( TIPAddress(), [ <subclass>() ] ): ;
+            Define( <(name)>, <(parent)>, <col>, <row>, <width>, <height>, ;
+            [ <value> ], <fontname>, <fontsize>, <tooltip>, <{lostfocus}>, ;
+            <{gotfocus}>, <{change}>, <helpid>, <.invisible.>, <.notabstop.>, ;
+            <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, <.rtl.>, ;
+            <.disabled.>, <fontcolor>, <backcolor> )

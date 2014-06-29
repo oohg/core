@@ -1,5 +1,5 @@
 /*
- * $Id: i_datepicker.ch,v 1.6 2011-07-15 14:36:51 fyurisich Exp $
+ * $Id: i_datepicker.ch,v 1.7 2014-06-29 23:42:06 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -93,34 +93,34 @@
 
 #command @ <row>,<col> DATEPICKER <name> ;
                 [ OBJ <obj> ] ;
-		[ <dummy1: OF, PARENT> <parent> ] ;
-		[ VALUE <v> ] ;
-		[ FIELD <field> ] ;
-		[ WIDTH <w> ] ;
-		[ HEIGHT <h> ] ;
-		[ FONT <fontname> ] ;
-		[ SIZE <fontsize> ] ;
-		[ <bold : BOLD> ] ;
-		[ <italic : ITALIC> ] ;
-		[ <underline : UNDERLINE> ] ;
-		[ <strikeout : STRIKEOUT> ] ;
-		[ TOOLTIP <tooltip> ] ;
-		[ < shownone: SHOWNONE > ] ;
-		[ < updown: UPDOWN > ] ;
-		[ < rightalign: RIGHTALIGN > ] ;
-		[ ON GOTFOCUS <gotfocus> ] ;
-		[ ON CHANGE <change> ] ;
-		[ ON LOSTFOCUS <lostfocus> ] ;
-                [ ON ENTER <enter> ]		;
-		[ HELPID <helpid> ] 		;
-		[ <invisible: INVISIBLE> ] ;
-		[ <notabstop: NOTABSTOP> ] ;
+      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ VALUE <v> ] ;
+      [ FIELD <field> ] ;
+      [ WIDTH <w> ] ;
+      [ HEIGHT <h> ] ;
+      [ FONT <fontname> ] ;
+      [ SIZE <fontsize> ] ;
+      [ <bold : BOLD> ] ;
+      [ <italic : ITALIC> ] ;
+      [ <underline : UNDERLINE> ] ;
+      [ <strikeout : STRIKEOUT> ] ;
+      [ TOOLTIP <tooltip> ] ;
+      [ < shownone: SHOWNONE > ] ;
+      [ < updown: UPDOWN > ] ;
+      [ < rightalign: RIGHTALIGN > ] ;
+      [ ON GOTFOCUS <gotfocus> ] ;
+      [ ON CHANGE <change> ] ;
+      [ ON LOSTFOCUS <lostfocus> ] ;
+                [ ON ENTER <enter> ]      ;
+      [ HELPID <helpid> ]       ;
+      [ <invisible: INVISIBLE> ] ;
+      [ <notabstop: NOTABSTOP> ] ;
                 [ <disabled: DISABLED> ] ;
                 [ <noborder: NOBORDER> ] ;
                 [ <rtl: RTL> ] ;
                 [ SUBCLASS <subclass> ] ;
                 [ <dummy2: RANGE> <min> , <max> ] ;
-	=> ;
+   => ;
         [ <obj> := ] _OOHG_SelectSubClass( TDatePick(), [ <subclass>() ] ): ;
                      Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <v>, <fontname>, <fontsize>, ;
                      <tooltip>, <{change}>, <{lostfocus}>, <{gotfocus}>, <.shownone.>, <.updown.>, <.rightalign.>, ;
@@ -129,36 +129,37 @@
 
 
 #command @ <row>,<col> TIMEPICKER <name> ;
-                [ OBJ <obj> ] ;
-		[ <dummy1: OF, PARENT> <parent> ] ;
-		[ VALUE <v> ] ;
-		[ FIELD <field> ] ;
-		[ WIDTH <w> ] ;
-		[ HEIGHT <h> ] ;
-		[ FONT <fontname> ] ;
-		[ SIZE <fontsize> ] ;
-		[ <bold : BOLD> ] ;
-		[ <italic : ITALIC> ] ;
-		[ <underline : UNDERLINE> ] ;
-		[ <strikeout : STRIKEOUT> ] ;
-		[ TOOLTIP <tooltip> ] ;
-		[ < shownone: SHOWNONE > ] ;
-		[ < updown: UPDOWN > ] ;
-		[ < rightalign: RIGHTALIGN > ] ;
-		[ ON GOTFOCUS <gotfocus> ] ;
-		[ ON CHANGE <change> ] ;
-		[ ON LOSTFOCUS <lostfocus> ] ;
-                [ ON ENTER <enter> ]		;
-		[ HELPID <helpid> ] 		;
-		[ <invisible: INVISIBLE> ] ;
-		[ <notabstop: NOTABSTOP> ] ;
-                [ <disabled: DISABLED> ] ;
-                [ <noborder: NOBORDER> ] ;
-                [ <rtl: RTL> ] ;
-                [ SUBCLASS <subclass> ] ;
-	=> ;
-        [ <obj> := ] _OOHG_SelectSubClass( TTimePick(), [ <subclass>() ] ): ;
-                     Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <v>, <fontname>, <fontsize>, ;
-                     <tooltip>, <{change}>, <{lostfocus}>, <{gotfocus}>, <.shownone.>, <.updown.>, <.rightalign.>, ;
-                     <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
-                     <(field)>, <{enter}>, <.rtl.>, <.disabled.>, <.noborder.> )
+      [ OBJ <obj> ] ;
+      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ VALUE <v> ] ;
+      [ FIELD <field> ] ;
+      [ WIDTH <w> ] ;
+      [ HEIGHT <h> ] ;
+      [ FONT <fontname> ] ;
+      [ SIZE <fontsize> ] ;
+      [ <bold : BOLD> ] ;
+      [ <italic : ITALIC> ] ;
+      [ <underline : UNDERLINE> ] ;
+      [ <strikeout : STRIKEOUT> ] ;
+      [ TOOLTIP <tooltip> ] ;
+      [ < shownone: SHOWNONE > ] ;
+      [ < updown: UPDOWN > ] ;
+      [ < rightalign: RIGHTALIGN > ] ;
+      [ ON GOTFOCUS <gotfocus> ] ;
+      [ ON CHANGE <change> ] ;
+      [ ON LOSTFOCUS <lostfocus> ] ;
+      [ ON ENTER <enter> ] ;
+      [ HELPID <helpid> ] ;
+      [ <invisible: INVISIBLE> ] ;
+      [ <notabstop: NOTABSTOP> ] ;
+      [ <disabled: DISABLED> ] ;
+      [ <noborder: NOBORDER> ] ;
+      [ <rtl: RTL> ] ;
+      [ SUBCLASS <subclass> ] ;
+   => ;
+      [ <obj> := ] _OOHG_SelectSubClass( TTimePick(), [ <subclass>() ] ): ;
+            Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <v>, <fontname>, ;
+            <fontsize>, <tooltip>, <{change}>, <{lostfocus}>, <{gotfocus}>, ;
+            <.shownone.>, <.updown.>, <.rightalign.>, <helpid>, <.invisible.>, ;
+            <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
+            <(field)>, <{enter}>, <.rtl.>, <.disabled.>, <.noborder.> )

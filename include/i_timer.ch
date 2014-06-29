@@ -1,5 +1,5 @@
 /*
- * $Id: i_timer.ch,v 1.4 2006-11-26 23:07:36 guerra000 Exp $
+ * $Id: i_timer.ch,v 1.5 2014-06-29 23:42:06 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -92,12 +92,12 @@
 ---------------------------------------------------------------------------*/
 
 #command DEFINE TIMER <name> ;
-                [ OBJ <obj> ] ;
-		[ <dummy1: OF, PARENT> <parent> ] ;
-		INTERVAL <interval> ;
-		ACTION <action> ;
-                [ SUBCLASS <subclass> ]         ;
-                [ <disabled: DISABLED> ]        ;
-	=>;
-        [ <obj> := ] _OOHG_SelectSubClass( TTimer(), [ <subclass>() ] ): ;
-                     Define( <(name)>, <(parent)>, <interval>, <{action}>, <.disabled.> )
+      [ OBJ <obj> ] ;
+      [ <dummy1: OF, PARENT> <parent> ] ;
+      INTERVAL <interval> ;
+      ACTION <action> ;
+      [ SUBCLASS <subclass> ] ;
+      [ <disabled: DISABLED> ] ;
+	=> ;
+      [ <obj> := ] _OOHG_SelectSubClass( TTimer(), [ <subclass>() ] ): ;
+            Define( <(name)>, <(parent)>, <interval>, <{action}>, <.disabled.> )
