@@ -1,5 +1,5 @@
 /*
- * $Id: h_picture.prg,v 1.15 2014-06-07 02:08:03 fyurisich Exp $
+ * $Id: h_picture.prg,v 1.16 2014-07-01 23:49:50 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -87,6 +87,8 @@ CLASS TPicture FROM TControl
    METHOD ToolTip          SETGET
    METHOD OriginalSize
    METHOD CurrentSize
+   METHOD Blend
+   METHOD Copy
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
@@ -144,7 +146,7 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD Picture( cPicture, lNoRepaint ) CLASS TPicture
 *-----------------------------------------------------------------------------*
-LOCAL nAttrib, aPictSize
+LOCAL nAttrib, aPictSize, lGDIp
    IF VALTYPE( cPicture ) $ "CM"
       DeleteObject( ::hImage )
       ::cPicture := cPicture
@@ -165,8 +167,15 @@ LOCAL nAttrib, aPictSize
          nAttrib := LR_CREATEDIBSECTION
       ENDIF
 
+      // GDI+ crashes on call to GdipCreateHBITMAPFromBitmap in _OOHG_GDIPLoadPicture()
+      IF ".EMF" $ Upper( Right( cPicture, 4 ) )
+         lGDIp := _OOHG_SetGDIP( .F. )
+      ENDIF
       // load image at full size
       ::hImage := _OOHG_BitmapFromFile( Self, cPicture, nAttrib, .F. )
+      IF ".EMF" $ Upper( Right( cPicture, 4 ) )
+         _OOHG_SetGDIP( lGDIp )
+      ENDIF
       If ! HB_IsLogical( lNoRepaint ) .OR. ! lNoRepaint
          ::RePaint()
       EndIf
@@ -247,14 +256,14 @@ LOCAL nWidth, nHeight, nAux
 // TO DO: ROTATE
       ::AuxHandle := _OOHG_SetBitmap( Self, ::hImage, 0, ::Stretch, ::AutoFit )
    ELSEIF ! ::nZoom == 1
-      ::AuxHandle := _OOHG_ScaleImage( Self, ::hImage, ( _BitmapWidth( ::hImage ) * ::nZoom ) + 0.999, ( _BitmapHeight( ::hImage ) * ::nZoom ) + 0.999 )
+      ::AuxHandle := _OOHG_ScaleImage( Self, ::hImage, ( _OOHG_BitmapWidth( ::hImage ) * ::nZoom ) + 0.999, ( _OOHG_BitmapHeight( ::hImage ) * ::nZoom ) + 0.999 )
    ELSE
       ::AuxHandle := ::hImage
    ENDIF
 
    // Rotate size
-   nWidth  := _BitMapWidth( ::AuxHandle )
-   nHeight := _BitMapHeight( ::AuxHandle )
+   nWidth  := _OOHG_BitMapWidth( ::AuxHandle )
+   nHeight := _OOHG_BitMapHeight( ::AuxHandle )
    IF ::nDegree == 90 .OR. ::nDegree == 270
       nAux := nWidth
       nWidth := nHeight
@@ -324,7 +333,7 @@ METHOD OriginalSize() CLASS TPicture
 *-----------------------------------------------------------------------------*
 Local aRet
    IF ValidHandler( ::hImage )
-      aRet := { _BitMapWidth( ::hImage ), _BitMapHeight( ::hImage ) }
+      aRet := { _OOHG_BitMapWidth( ::hImage ), _OOHG_BitMapHeight( ::hImage ) }
    ELSE
       aRet := { 0, 0 }
    ENDIF
@@ -335,13 +344,27 @@ METHOD CurrentSize() CLASS TPicture
 *-----------------------------------------------------------------------------*
 Local aRet
    IF ValidHandler( ::AuxHandle )
-      aRet := { _BitMapWidth( ::AuxHandle ), _BitMapHeight( ::AuxHandle ) }
+      aRet := { _OOHG_BitMapWidth( ::AuxHandle ), _OOHG_BitMapHeight( ::AuxHandle ) }
    ELSEIF ValidHandler( ::hImage )
-      aRet := { _BitMapWidth( ::hImage ), _BitMapHeight( ::hImage ) }
+      aRet := { _OOHG_BitMapWidth( ::hImage ), _OOHG_BitMapHeight( ::hImage ) }
    ELSE
       aRet := { 0, 0 }
    ENDIF
 RETURN aRet
+
+*-----------------------------------------------------------------------------*
+METHOD Blend( hSprite, nImgX, nImgY, nImgW, nImgH, aColor, nSprX, nSprY, nSprW, nSprH ) CLASS TPicture
+*-----------------------------------------------------------------------------*
+   _OOHG_BlendImage( ::hImage, nImgX, nImgY, nImgW, nImgH, hSprite, aColor, nSprX, nSprY, nSprW, nSprH )
+   ::RePaint()
+RETURN Self
+
+*-----------------------------------------------------------------------------*
+METHOD Copy( lAsDIB ) CLASS TPicture
+*-----------------------------------------------------------------------------*
+   DEFAULT lAsDIB TO ! ::lNoDIBSection
+   // Do not forget to call DeleteObject
+RETURN _OOHG_CopyBitmap( ::hImage, 0, 0 )
 
 
 #pragma BEGINDUMP

@@ -1,5 +1,5 @@
 /*
- * $Id: c_image.c,v 1.38 2014-06-29 00:49:17 fyurisich Exp $
+ * $Id: c_image.c,v 1.39 2014-07-01 23:49:50 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -93,6 +93,13 @@
 
 #ifndef CINTERFACE
    #define CINTERFACE
+#endif
+#ifndef WINVER
+   #define WINVER 0x0500
+#endif
+#if ( WINVER < 0x0500 )
+   #undef WINVER
+   #define WINVER 0x0500
 #endif
 #define _WIN32_IE      0x0500
 #define HB_OS_WIN_32_USED
@@ -669,7 +676,7 @@ HB_FUNC( _OOHG_SETBITMAP )   // ( oSelf, hBitmap, iMessage, lScaleStretch, lAuto
    HWNDret( hBitmap2 );
 }
 
-HB_FUNC( _BITMAPWIDTH )
+HB_FUNC( _OOHG_BITMAPWIDTH )
 {
    BITMAP bm;
    HBITMAP hBmp;
@@ -683,7 +690,7 @@ HB_FUNC( _BITMAPWIDTH )
    hb_retni( bm.bmWidth );
 }
 
-HB_FUNC( _BITMAPHEIGHT )
+HB_FUNC( _OOHG_BITMAPHEIGHT )
 {
    BITMAP bm;
    HBITMAP hBmp;
@@ -715,4 +722,80 @@ HB_FUNC( _OOHG_SCALEIMAGE )            // ( oSelf, hBitMap, nWidth, nHeight )
    hBitmap = _OOHG_ScaleImage( oSelf->hWnd, ( HBITMAP ) HWNDparam( 2 ), hb_parni( 3 ), hb_parni( 4 ), FALSE, oSelf->lBackColor );
 
    HWNDret( hBitmap );
+}
+
+HB_FUNC( _OOHG_BLENDIMAGE )            // ( hImage, nImgX, nImgY, nImgW, nImgH, hSprite, aColor, nSprX, nSprY, nSprW, nSprH )
+{
+   HBITMAP hImage, hSprite;
+   int iSprX, iSprY, iSprW, iSprH, iImgX, iImgY, iImgW, iImgH;
+   LONG clrTransp = -1;
+   BITMAP bmSprite;
+   HDC hdc, hdc_I, hdc_S;
+   HBITMAP hOldI, hOldS;
+
+   hImage = (HBITMAP) HWNDparam( 1 );
+   hSprite = (HBITMAP) HWNDparam( 6 );
+
+   if( ValidHandler( hImage ) && ValidHandler( hSprite ) )
+   {
+      // Put images in DCs
+      hdc = GetDC( NULL );
+      hdc_I = CreateCompatibleDC( hdc );
+      hOldI = SelectObject( hdc_I, hImage );
+      hdc_S = CreateCompatibleDC( hdc );
+      hOldS = SelectObject( hdc_S, hSprite );
+
+      // Get transparent color
+      _OOHG_DetermineColor( hb_param( 7, HB_IT_ANY ), &clrTransp );
+      if( clrTransp == -1 )
+      {
+         clrTransp = GetPixel( hdc_S, 0, 0 );
+      }
+
+      // Set dimensions
+      GetObject( hSprite, sizeof( BITMAP ), &bmSprite );
+      iImgX = HB_ISNIL( 2 ) ? 0 : hb_parni( 2 );
+      iImgY = HB_ISNIL( 3 ) ? 0 : hb_parni( 3 );
+      iImgW = hb_parni( 4 );
+      if( iImgW <= 0 )
+      {
+         iImgW = bmSprite.bmWidth;
+      }
+      iImgH = hb_parni( 5 );
+      if( iImgH <= 0 )
+      {
+         iImgH = bmSprite.bmHeight;
+      }
+      iSprX = HB_ISNIL( 8 ) ? 0 : hb_parni( 8 );
+      iSprY = HB_ISNIL( 9 ) ? 0 : hb_parni( 9 );
+      iSprW = hb_parni( 10 );
+      if( iSprW <= 0 )
+      {
+         iSprW = bmSprite.bmWidth;
+      }
+      iSprH = hb_parni( 11 );
+      if( iSprH <= 0 )
+      {
+         iSprH = bmSprite.bmHeight;
+      }
+
+      // Blend
+      TransparentBlt( hdc_I, iImgX, iImgY, iImgW, iImgH, hdc_S, iSprX, iSprY, iSprW, iSprH, clrTransp );
+
+      // Clean
+      SelectObject( hdc_I, hOldI );
+      DeleteDC( hdc_I );
+      SelectObject( hdc_S, hOldS );
+      DeleteDC( hdc_S );
+      DeleteDC( hdc );
+   }
+}
+
+HB_FUNC( _OOHG_COPYBITMAP )            // ( hBitmap, nWidth, nHeight, iAttributes)
+{
+   HBITMAP hCopy;
+
+   hCopy = CopyImage( ( HBITMAP ) HWNDparam( 1 ), IMAGE_BITMAP, hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ) );
+
+   HWNDret( hCopy );
 }

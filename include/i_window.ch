@@ -1,5 +1,5 @@
 /*
- * $Id: i_window.ch,v 1.49 2014-06-17 20:01:12 fyurisich Exp $
+ * $Id: i_window.ch,v 1.50 2014-07-01 23:49:50 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -113,7 +113,7 @@
 
    #xcommand DECLARE WINDOW <w> ;
    =>;
-         #xtranslate <w> . \<p:Name,Title,Height,Width,VirtualHeight,VirtualWidth,Col,Row,BackColor,FocusedControl,hWnd,Object,Cursor,NotifyIcon,NotifyToolTip,SaveAs,MinWidth,MaxWidth,MinHeight,MaxHeight\> => GetExistingFormObject( <(w)> ):\<p\> ;;
+         #xtranslate <w> . \<p:Name,Title,Height,Width,ClientHeight,ClientWidth,VirtualHeight,VirtualWidth,Col,Row,BackColor,FocusedControl,hWnd,Object,Cursor,NotifyIcon,NotifyToolTip,SaveAs,MinWidth,MaxWidth,MinHeight,MaxHeight\> => GetExistingFormObject( <(w)> ):\<p\> ;;
          #xtranslate <w> . \<p:Activate,Center,Release,Maximize,Minimize,Restore,Show,Hide,Print,SetFocus\> \[()\] => GetExistingFormObject( <(w)> ):\<p\> () ;;
          #xtranslate <w> . \<c\> . \<p:Value,Name,Address,BackColor,FontColor,Picture,ToolTip,FontName,FontSize,FontBold,FontUnderline,FontItalic,FontStrikeOut,Caption,Row,Col,Width,Height,Visible,Enabled,Checked,ItemCount,RangeMin,RangeMax,CaretPos,ForeColor,ScrollCaret,GetEditSel,Stretch,Indent,SelColor,OnChange,AllowAppend,AllowDelete,AllowEdit,Action,OnClick,Length,hWnd,Object,ReadOnly\> => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ;;
          #xtranslate <w> . \<c\> . \<p:DisplayValue,Position,ForeColor\> => GetProperty ( <(w)>, \<(c)\> , \<(p)\> ) ;;
@@ -222,6 +222,7 @@
                [ MAXWIDTH <maxwidth> ] ;
                [ MINHEIGHT <minheight> ] ;
                [ MAXHEIGHT <maxheight> ] ;
+               [ BACKIMAGE <backimage> [ <stretch: STRETCH> ] ] ;
    =>;
          [ <obj> := ] ;
          DefineWindow( <(w)>, <title>, <col>, <row>, <wi>, <h>, <.nominimize.>, <.nomaximize.>, <.nosize.>, ;
@@ -238,7 +239,7 @@
                <.mdichild.>, <.mdiclient.>, [ <subclass>() ], <.clientarea.>, <{RestoreProcedure}>, ;
                <{RClickProcedure}>, <{MClickProcedure}>, <{DblClickProcedure}>, ;
                <{RDblClickProcedure}>, <{MDblClickProcedure}>, <minwidth>, <maxwidth>, <minheight>, ;
-               <maxheight>, <{MoveProcedure}> ) ;;
+               <maxheight>, <{MoveProcedure}>, <backimage>, <.stretch.> ) ;;
          DECLARE WINDOW <w>
 
    #xcommand LOAD WINDOW <w> ;
@@ -385,6 +386,7 @@
                [ MAXWIDTH <maxwidth> ] ;
                [ MINHEIGHT <minheight> ] ;
                [ MAXHEIGHT <maxheight> ] ;
+               [ BACKIMAGE <backimage> [ <stretch: STRETCH> ] ] ;
    =>;
          [ <obj> := ] ;
          DefineWindow( , <title>, <col>, <row>, <wi>, <h>, <.nominimize.>, <.nomaximize.>, <.nosize.>, ;
@@ -401,7 +403,7 @@
                <.mdichild.>, <.mdiclient.>, [ <subclass>() ], <.clientarea.>, <{RestoreProcedure}>, ;
                <{RClickProcedure}>, <{MClickProcedure}>, <{DblClickProcedure}>, ;
                <{RDblClickProcedure}>, <{MDblClickProcedure}>, <minwidth>, <maxwidth>, <minheight>, ;
-               <maxheight>, <{MoveProcedure}> )
+               <maxheight>, <{MoveProcedure}>, <backimage>, <.stretch.> )
 
 ////////////////////////////////////////////////////////////
 // Set AutoAdjust

@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.52 2014-06-18 23:15:48 fyurisich Exp $
+ * $Id: h_form.prg,v 1.53 2014-07-01 23:49:50 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -148,38 +148,39 @@ void _OOHG_SetMouseCoords( PHB_ITEM pSelf, int iCol, int iRow );
 *------------------------------------------------------------------------------*
 CLASS TForm FROM TWindow
 *------------------------------------------------------------------------------*
-   DATA oToolTip       INIT nil
-   DATA Focused        INIT .T.
+   DATA oToolTip           INIT nil
+   DATA Focused            INIT .T.
    DATA LastFocusedControl INIT 0
-   DATA AutoRelease    INIT .F.
-   DATA ActivateCount  INIT { 0, NIL, .T. }
-   DATA oMenu          INIT nil
-   DATA hWndClient     INIT NIL
-   DATA oWndClient     INIT NIL
-   DATA lInternal      INIT .F.
-   DATA lForm          INIT .T.
-   DATA nWidth         INIT 300
-   DATA nHeight        INIT 300
-   DATA lShowed        INIT .F.
+   DATA AutoRelease        INIT .F.
+   DATA ActivateCount      INIT { 0, NIL, .T. }
+   DATA oMenu              INIT nil
+   DATA hWndClient         INIT NIL
+   DATA oWndClient         INIT NIL
+   DATA lInternal          INIT .F.
+   DATA lForm              INIT .T.
+   DATA nWidth             INIT 300
+   DATA nHeight            INIT 300
+   DATA lShowed            INIT .F.
+   DATA lStretchBack       INIT .T.
+   DATA hBackImage         INIT nil
+   DATA lentersizemove     INIT .F.
+   DATA ldefined           INIT .F.
 
-   DATA lentersizemove INIT .F.
-   DATA ldefined       INIT .F.
-
-   DATA OnRelease      INIT nil
-   DATA OnInit         INIT nil
-   DATA OnMove         INIT nil
-   DATA OnSize         INIT nil
-   DATA OnPaint        INIT nil
-   DATA OnScrollUp     INIT nil
-   DATA OnScrollDown   INIT nil
-   DATA OnScrollLeft   INIT nil
-   DATA OnScrollRight  INIT nil
-   DATA OnHScrollBox   INIT nil
-   DATA OnVScrollBox   INIT nil
+   DATA OnRelease          INIT nil
+   DATA OnInit             INIT nil
+   DATA OnMove             INIT nil
+   DATA OnSize             INIT nil
+   DATA OnPaint            INIT nil
+   DATA OnScrollUp         INIT nil
+   DATA OnScrollDown       INIT nil
+   DATA OnScrollLeft       INIT nil
+   DATA OnScrollRight      INIT nil
+   DATA OnHScrollBox       INIT nil
+   DATA OnVScrollBox       INIT nil
    DATA OnInteractiveClose INIT nil
-   DATA OnMaximize     INIT nil
-   DATA OnMinimize     INIT nil
-   DATA OnRestore      INIT nil
+   DATA OnMaximize         INIT nil
+   DATA OnMinimize         INIT nil
+   DATA OnRestore          INIT nil
 
    DATA nVirtualHeight INIT 0
    DATA nVirtualWidth  INIT 0
@@ -224,7 +225,7 @@ CLASS TForm FROM TWindow
    METHOD TopMost             SETGET
    METHOD VirtualWidth        SETGET
    METHOD VirtualHeight       SETGET
-
+   METHOD BackImage           SETGET
    METHOD AutoAdjust
    METHOD AdjustWindowSize
    METHOD ClientsPos
@@ -1175,6 +1176,39 @@ METHOD HelpButton( lShow ) CLASS TForm
       SetWindowPos( ::hWnd, 0, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE + SWP_NOZORDER + SWP_NOACTIVATE + SWP_FRAMECHANGED )
    EndIf
 Return IsWindowExStyle( ::hWnd, WS_EX_CONTEXTHELP )
+
+*-----------------------------------------------------------------------------*
+METHOD BackImage( uBackImage ) CLASS TForm
+*-----------------------------------------------------------------------------*
+LOCAL hImageWork
+   If PCount() > 0
+      If ::hBackImage != NIL
+         DeleteObject( ::hBackImage )
+      Endif
+
+      If ValType( uBackImage ) $ "CM"
+         ::hBackImage := _OOHG_BitmapFromFile( Self, uBackImage, LR_CREATEDIBSECTION, .F. )
+      ElseIf ValidHandler( uBackImage )
+         ::hBackImage := uBackImage
+      Else
+         ::hBackImage := NIL
+      EndIf
+
+      If ::hBackImage == NIL
+         ::BackBitmap := NIL
+      Else
+         If ::lStretchBack
+            hImageWork := _OOHG_ScaleImage( Self, ::hBackImage, ::ClientWidth, ::ClientHeight )
+         Else
+            hImageWork := _OOHG_CopyBitmap( ::hBackImage, 0, 0, LR_CREATEDIBSECTION )
+         Endif
+         ::BackBitmap := hImageWork
+         DeleteObject( hImageWork )
+      EndIf
+
+      ReDrawWindow( ::hWnd )
+   EndIf
+Return ::hBackImage
 
 
 #pragma BEGINDUMP
@@ -2355,7 +2389,7 @@ FUNCTION DefineWindow( FormName, Caption, x, y, w, h, nominimize, nomaximize, no
                        mdichild, mdiclient, subclass, clientarea, restoreprocedure, ;
                        RClickProcedure, MClickProcedure, DblClickProcedure, ;
                        RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, ;
-                       minheight, maxheight, MoveProcedure )
+                       minheight, maxheight, MoveProcedure, cBackImage, lStretchBack )
 *------------------------------------------------------------------------------*
 //Local nStyle := 0, nStyleEx := 0
 Local Self
@@ -2503,6 +2537,9 @@ Local aError := {}
       ::NotifyToolTip := NotifyIconToolTip
       ::NotifyIconLeftClick := NotifyIconLeftClick
    endif
+
+   ::lStretchBack := lStretchBack
+   ::BackImage := cBackImage
 
 Return Self
 

@@ -1,5 +1,5 @@
 /*
- * $Id: h_msgbox.prg,v 1.16 2013-09-23 02:22:07 fyurisich Exp $
+ * $Id: h_msgbox.prg,v 1.17 2014-07-01 23:49:50 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -266,41 +266,92 @@ Return Nil
 
 
 *-----------------------------------------------------------------------------*
-Function MsgInfoExt( cInfo, cTitulo, nSecs )
+Function MsgInfoExt( cInfo, cTitulo, nSecs, aBackColor )
 *-----------------------------------------------------------------------------*
 * (c) LuchoMiranda@telefonica.Net
 * modified by Ciro Vargas Clemow for ooHG
 *-----------------------------------------------------------------------------*
 Local nWidth, nHeight
 
-   DEFAULT cInfo TO _OOHG_MsgDefaultMessage
-   DEFAULT cTitulo TO _OOHG_MsgDefaultTitle
-   DEFAULT nSecs TO 0
+   DEFAULT cInfo      TO _OOHG_MsgDefaultMessage
+   DEFAULT cTitulo    TO _OOHG_MsgDefaultTitle
+   DEFAULT nSecs      TO 0
+   DEFAULT aBackColor TO {204, 216, 124}
 
-   cInfo   := STRTRAN(STRTRAN(cInfo, CHR(13), CHR(13)+CHR(10)), CHR(13)+CHR(10)+CHR(10), CHR(13)+CHR(10))
-   nWidth  := MAX(MAXLINE(cInfo), LEN(cTitulo)) * 12
-   nHeight := MLCOUNT(cInfo) * 20
+   cInfo   := StrTran( StrTran(cInfo, Chr( 13 ), CRLF), CRLF + Chr( 10 ), CRLF )
+   nWidth  := Max( MaxLine( cInfo ), Len( cTitulo ) ) * 12
+   nHeight := MLCount( cInfo ) * 20
 
-   DefineWindow( "_Win_1", , 0, 0, nWidth, 115 + nHeight, .F., .F., .F., .F., .T., , , , , , , {204, 216, 124}, , .F., .T., , , , , , , , , , , , , , , , , .F., , , , .F., , , .F., .F., , .F., .F., .F., .F., .F., .F., .F., .F., .F., .F., , .F., , , , , , , , , , ) ;
+   DEFINE WINDOW _Win_1 ;
+      AT 0, 0 ;
+      WIDTH nWidth ;
+      HEIGHT 115 + nHeight ;
+      NOCAPTION ;
+      BACKCOLOR aBackColor ;
+      TOPMOST ;
+      MINWIDTH nWidth ;
+      MAXWIDTH nWidth ;
+      MINHEIGHT 115 + nHeight ;
+      MAXHEIGHT 115 + nHeight
 
-   _DefineAnyKey(, "ESCAPE", {|| _OOHG_ThisForm:release()} )
-   _DefineAnyKey(, "RETURN", {|| _OOHG_ThisForm:release()} )
+      ON KEY ESCAPE ACTION _Win_1.Release
+      ON KEY RETURN ACTION _Win_1.Release
 
-   IF nSecs = 1 .OR. nSecs > 1
-      _OOHG_SelectSubClass( TTimer(), ): Define( "_timer__x", , nSecs*1000, {|| _OOHG_ThisForm:Release() }, .F. )
-   ENDIF
+      IF nSecs >= 1
+         DEFINE TIMER _timer__x ;
+            INTERVAL nSecs * 1000 ;
+            ACTION _Win_1.Release
+      ENDIF
+   END WINDOW
 
-   _OOHG_SelectSubClass( TLabel(), ):Define( "Label_1", , 000, 12, cTitulo, nWidth, 40, "Times NEW Roman", 18, .F., .F., .F., .F., .F., .T., , {0, 0, 0}, , , , .F., .F., .F., .F., .F., .F., .T., .F., .F., .F., )
-   _OOHG_SelectSubClass( TLabel(), ):Define( "Label_2", , 0-5, 46, "", nWidth+10, 20 + nHeight, "Arial", 13, .T., .T., .T., .F., .F., .F., {248, 244, 199}, {250, 50, 100}, , , , .F., .F., .F., .F., .F., .F., .T., .F., .F., .F., )
-   _OOHG_SelectSubClass( TLabel(), ):Define( "Label_3", , 000, 56, cInfo, nWidth, 00 + nHeight, "Times NEW Roman", 14, .F., .F., .F., .F., .F., .T., {177, 156, 037}, {000, 00, 000}, , , , .F., .F., .F., .F., .F., .F., .T., .F., .F., .F., )
+   @ 12, 00 LABEL Label_1 ;
+      PARENT _Win_1 ;
+      VALUE cTitulo ;
+      WIDTH _Win_1.ClientWidth ;
+      HEIGHT 40 ;
+      FONT "Times NEW Roman" ;
+      SIZE 18 ;
+      TRANSPARENT ;
+      FONTCOLOR {0, 0, 0} ;
+      CENTERALIGN
 
-   _OOHG_SelectSubClass( TButton(), ): Define( "Button_1", , (nWidth/2)-40, GetExistingFormObject( "_Win_1" ):Height-40, , {|| _OOHG_ThisForm:Release()}, 60, 25, "Arial", 10, , , , .F., .F., , .F., .F., .F., .F., .F., .F., .F., .F., , , "MINIGUI_EDIT_OK", .F., .F., .F., )
+   @ 46, 00 LABEL Label_2 ;
+      PARENT _Win_1 ;
+      VALUE "" ;
+      WIDTH _Win_1.ClientWidth ;
+      HEIGHT 20 + nHeight ;
+      FONT "Arial" ;
+      SIZE 13 ;
+      BOLD ;
+      BORDER ;
+      CLIENTEDGE ;
+      BACKCOLOR {248, 244, 199} ;
+      FONTCOLOR {250, 50, 100} ;
+      CENTERALIGN
 
-   GetExistingControlObject( "button_1", "_Win_1" ):setfocus ()
+   @ 56, 00 LABEL Label_3 ;
+      PARENT _Win_1 ;
+      VALUE cInfo ;
+      WIDTH _Win_1.ClientWidth ;
+      HEIGHT nHeight ;
+      FONT "Times NEW Roman" ;
+      SIZE 14 ;
+      TRANSPARENT ;
+      BACKCOLOR {177, 156, 037} ;
+      FONTCOLOR {0, 0, 0} ;
+      CENTERALIGN
 
-   _EndWindow ()
-   DoMethod ( "_Win_1", "Center" )
-   _ActivateWindow( {"_Win_1"}, .F. )
+   @ _Win_1.Height - 40, ( _Win_1.ClientWidth - 60 ) / 2  BUTTON Button_1 ;
+      PARENT _Win_1 ;
+      ACTION _Win_1.Release ;
+      WIDTH 60 ;
+      HEIGHT 25 ;
+      ICON "MINIGUI_EDIT_OK"
+
+    _Win_1.Button_1.SetFocus()
+
+   _Win_1.Center
+   _Win_1.Activate
 
 Return Nil
 

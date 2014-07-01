@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.62 2014-04-09 02:45:48 fyurisich Exp $
+ * $Id: h_button.prg,v 1.63 2014-07-01 23:49:50 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -277,8 +277,8 @@ LOCAL nAttrib, aPictSize
 
       ::hImage := _OOHG_BitmapFromFile( Self, cPicture, nAttrib, ::AutoFit .AND. ! ::ImageSize .AND. ! ::Stretch )
       IF ::ImageSize
-         ::nWidth  := _BitMapWidth( ::hImage )
-         ::nHeight := _BitMapHeight( ::hImage )
+         ::nWidth  := _OOHG_BitMapWidth( ::hImage )
+         ::nHeight := _OOHG_BitMapHeight( ::hImage )
       ENDIF
       ::RePaint()
    ENDIF
@@ -291,8 +291,8 @@ METHOD HBitMap( hBitMap ) CLASS TButton
       DeleteObject( ::hImage )
       ::hImage := hBitMap
       IF ::ImageSize
-         ::nWidth  := _BitMapWidth( ::hImage )
-         ::nHeight := _BitMapHeight( ::hImage )
+         ::nWidth  := _OOHG_BitMapWidth( ::hImage )
+         ::nHeight := _OOHG_BitMapHeight( ::hImage )
       ENDIF
       ::RePaint()
    EndIf
@@ -305,8 +305,8 @@ METHOD Buffer( cBuffer ) CLASS TButton
       DeleteObject( ::hImage )
       ::hImage := _OOHG_BitmapFromBuffer( Self, cBuffer, ::AutoFit .AND. ! ::ImageSize .AND. ! ::Stretch )
       IF ::ImageSize
-         ::nWidth  := _BitMapWidth( ::hImage )
-         ::nHeight := _BitMapHeight( ::hImage )
+         ::nWidth  := _OOHG_BitMapWidth( ::hImage )
+         ::nHeight := _OOHG_BitMapHeight( ::hImage )
       ENDIF
       ::RePaint()
    EndIf

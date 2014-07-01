@@ -1,5 +1,5 @@
 /*
- * $Id: h_image.prg,v 1.35 2014-06-24 03:03:22 fyurisich Exp $
+ * $Id: h_image.prg,v 1.36 2014-07-01 23:49:50 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -122,6 +122,8 @@ CLASS TImage FROM TControl
    METHOD Release
    METHOD OriginalSize
    METHOD CurrentSize
+   METHOD Blend
+   METHOD Copy
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
@@ -201,16 +203,16 @@ LOCAL nAttrib, aPictSize, lGDIp
 
       // GDI+ crashes on call to GdipCreateHBITMAPFromBitmap in _OOHG_GDIPLoadPicture()
       IF ".EMF" $ Upper( Right( cPicture, 4 ) )
-         lGDIp := _OOHG_SETGDIP( .F. )
+         lGDIp := _OOHG_SetGDIP( .F. )
       ENDIF
       // load image at full size
       ::hImage := _OOHG_BitmapFromFile( Self, cPicture, nAttrib, .F. )
       IF ".EMF" $ Upper( Right( cPicture, 4 ) )
-         _OOHG_SETGDIP( lGDIp )
+         _OOHG_SetGDIP( lGDIp )
       ENDIF
       IF ::ImageSize
-         ::nWidth  := _BitMapWidth( ::hImage )
-         ::nHeight := _BitMapHeight( ::hImage )
+         ::nWidth  := _OOHG_BitMapWidth( ::hImage )
+         ::nHeight := _OOHG_BitMapHeight( ::hImage )
       ENDIF
       ::RePaint()
    ENDIF
@@ -223,8 +225,8 @@ METHOD HBitMap( hBitMap ) CLASS TImage
       DeleteObject( ::hImage )
       ::hImage := hBitMap
       IF ::ImageSize
-         ::nWidth  := _BitMapWidth( ::hImage )
-         ::nHeight := _BitMapHeight( ::hImage )
+         ::nWidth  := _OOHG_BitMapWidth( ::hImage )
+         ::nHeight := _OOHG_BitMapHeight( ::hImage )
       ENDIF
       ::RePaint()
    EndIf
@@ -238,8 +240,8 @@ METHOD Buffer( cBuffer ) CLASS TImage
       // load image at full size
       ::hImage := _OOHG_BitmapFromBuffer( Self, cBuffer, .F. )
       IF ::ImageSize
-         ::nWidth  := _BitMapWidth( ::hImage )
-         ::nHeight := _BitMapHeight( ::hImage )
+         ::nWidth  := _OOHG_BitMapWidth( ::hImage )
+         ::nHeight := _OOHG_BitMapHeight( ::hImage )
       ENDIF
       ::RePaint()
    EndIf
@@ -300,7 +302,7 @@ METHOD OriginalSize() CLASS TImage
 *-----------------------------------------------------------------------------*
 Local aRet
    IF ValidHandler( ::hImage )
-      aRet := { _BitMapWidth( ::hImage ), _BitMapHeight( ::hImage ) }
+      aRet := { _OOHG_BitMapWidth( ::hImage ), _OOHG_BitMapHeight( ::hImage ) }
    ELSE
       aRet := { 0, 0 }
    ENDIF
@@ -311,13 +313,27 @@ METHOD CurrentSize() CLASS TImage
 *-----------------------------------------------------------------------------*
 Local aRet
    IF ValidHandler( ::AuxHandle )
-      aRet := { _BitMapWidth( ::AuxHandle ), _BitMapHeight( ::AuxHandle ) }
+      aRet := { _OOHG_BitMapWidth( ::AuxHandle ), _OOHG_BitMapHeight( ::AuxHandle ) }
    ELSEIF ValidHandler( ::hImage )
-      aRet := { _BitMapWidth( ::hImage ), _BitMapHeight( ::hImage ) }
+      aRet := { _OOHG_BitMapWidth( ::hImage ), _OOHG_BitMapHeight( ::hImage ) }
    ELSE
       aRet := { 0, 0 }
    ENDIF
 RETURN aRet
+
+*-----------------------------------------------------------------------------*
+METHOD Blend( hSprite, nImgX, nImgY, nImgW, nImgH, aColor, nSprX, nSprY, nSprW, nSprH ) CLASS TImage
+*-----------------------------------------------------------------------------*
+   _OOHG_BlendImage( ::hImage, nImgX, nImgY, nImgW, nImgH, hSprite, aColor, nSprX, nSprY, nSprW, nSprH )
+   ::RePaint()
+RETURN Self
+
+*-----------------------------------------------------------------------------*
+METHOD Copy( lAsDIB ) CLASS TImage
+*-----------------------------------------------------------------------------*
+   DEFAULT lAsDIB TO ! ::lNoDIBSection
+   // Do not forget to call DeleteObject
+RETURN _OOHG_CopyBitmap( ::hImage, 0, 0 )
 
 
 #pragma BEGINDUMP

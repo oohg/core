@@ -1,11 +1,67 @@
 /*
- * $Id: ChangeLog,v 1.1301 2014-06-29 23:42:06 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1302 2014-07-01 23:49:50 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-07-01 20:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Backslahes with slashes in previous entries.
+   * source/h_picture.prg
+     ! Crash at GdipCreateHBITMAPFromBitmap call in _OOHG_GDIPLoadPicture()
+       when loading an EMF file. This is not a solution, but a hack, to
+       avoid using GDI+.
+   * source/h_msgbox.prg
+     + Added aBackColor parameter to function MsgInfoExt.
+     * Control's syntax in function MsgInfoExt.
+   * source/h_image.prg
+   * source/h_picture.prg
+     + Method Copy( lAsDIB ) to TPICTURE and TIMAGE classes.
+       Returns a copy of the HBITMAP currently loaded (new handle).
+       This handle must be explicitly release using DeleteObject
+       to prevent memory leaks.
+       When lAsDIB is .T., the copy is a DIB. When is .F., it's a DDB.
+       lAsDIB defaults to (! ::lNoDIBSection).
+     + Method Blend to TPICTURE and TIMAGE classes.
+       Draws a given image over the currently loaded image (changing it).
+       Parameters:
+          hSprite: image to draw (HBITMAP handle).
+          nImgX, nImgY: destination point in control's image
+                        (default to 0).
+          nImgW, nImgH: width and height of the destination rectangle
+                        (default to hSprite width and height).
+          aColor: hSprite's color to be treated as transparent
+                  (defaults to the color of the upper left pixel).
+          nSprX, nSprY: origin point in hSprite image
+                        (default to 0).
+          nSprW, nSprH: width and height of the origin rectangle
+                        (default to hSprite width and height).
+       Supported images: BMP, up to 24 BPP (no alpha channel).
+   * source/h_picture.prg
+   * source/h_image.prg
+   * source/h_button.prg
+     * Calls to _BITMAPWIDTH renamed to _OOHG_BITMAPWIDTH.
+     * Calls to _BITMAPHEIGHT renamed to _OOHG_BITMAPHEIGHT.
+   * source/c_image.c
+     + Minimum required Windows version.
+     + Functions _OOHG_BLENDIMAGE() and _OOHG_COPYBITMAP().
+     * Function _BITMAPWIDTH renamed to _OOHG_BITMAPWIDTH.
+     * Function _BITMAPHEIGHT renamed to _OOHG_BITMAPHEIGHT.
+   * include/i_this.ch
+     + ClientWidth and ClientHeigth properties to ThisWindow.
+   * include/i_window.ch
+     + ClientWidth and ClientHeigth properties to DECLARE WINDOW.
+     + BACKIMAGE and STRETCH clauses.
+   * ./compile_MINGW.bat
+     + libmsimg32.a
+   * ./compile_bcc.bat
+     + msimg32.lib
+   * source/h_form.prg
+     + METHOD BackImage to set an image as form's background.
+     + DATAs lStretchBack and hBackImage.
 
 2014-06-29 20:41 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_timer.ch
@@ -36,7 +92,7 @@
      ! RTE in TEXCELPRINT:BeginDocX() due to wrong assignment of
        sheet name.
      * Wrong assignment of sheet name in TCALCPRINT:BeginDocX().
-   * source\h_grid.prg
+   * source/h_grid.prg
      ! Warnings from MinGW in Harbour nightly version.
    * include/i_label.ch
    * include/i_altsyntax.ch
@@ -116,7 +172,7 @@
        avoid using GDI+.
 
 2014-06-23 19:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * source\h_grid.prg
+   * source/h_grid.prg
      ! RTE after editing a Grid (BPOSITION not found at line 4607
        of TGridControl_CreateWindow).
 
@@ -795,7 +851,7 @@
      * Include flag.
 
 2014-05-22 18:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * source\h_grid.prg
+   * source/h_grid.prg
      ! RTE after editing a Grid (BPOSITION not found at line 4772
        of TGridControlTextbox_CreateWindow).
    * source/xml.bat
@@ -853,7 +909,7 @@
        + h_application to file list.
 
 2014-05-15 00:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * source\h_grid.prg
+   * source/h_grid.prg
      ! Valid messages are showed twice when using EDITLIKEEXCEL
        and NOMODALEDIT clauses.
      ! Wrong behaviour after finishing edition with Enter key if
@@ -898,7 +954,7 @@
      + Support for SEARCHLAPSE <nLapse> clause.
 
 2014-05-09 18:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * source\h_grid.prg
+   * source/h_grid.prg
      ! Clicking outside of a checkbox toggles it's state.
      ! Clicking outside of a checkbox on the first subitem do not
        selects the row.
@@ -1323,7 +1379,7 @@
    * include/i_grid.ch
      + NOCLICKONCHECKBOX.
      + NORCLICKONCHECKBOX.
-   * source\h_grid.prg
+   * source/h_grid.prg
      + DATAs ClickOnCheckbox and RClickOnCheckbox.
      + New parameters to methods Define and Define2.
      * Format.
@@ -1340,7 +1396,7 @@
      * Updated.
 
 2014-04-09 20:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * source\h_grid.prg
+   * source/h_grid.prg
      ! Clicking in the outer margin of a checkbox toggles
        it's state without evaluating the OnCheckChange block.
 
@@ -1349,13 +1405,13 @@
      ! Methods AddColumn and SetColumn build incorrectly the
        column's columnblock when using FIXEDBLOCKS.
      % Methods AddColumn and SetColumn.
-   * source\h_grid.prg
+   * source/h_grid.prg
      ! After last change, images are drawn in a different size.
 
 2014-04-08 23:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt
      * Updated.
-   * source\h_grid.prg
+   * source/h_grid.prg
      * Initial value of DATAs HeaderImageList and HeaderFontHandle.
      + DATAs ImageListColor and ImageListFlags.
      + Method AddBitMap.
@@ -1374,7 +1430,7 @@
      ! Method AddBitMap fails adding an array of images to an
        existing imagelist.
      + Method ClearBitMaps to release control's imagelist.
-   * source\h_button.prg
+   * source/h_button.prg
      * SetImageXP now returns a handle to the imagelist
        associated with the control so it can disposed when the
        control is released.
@@ -1431,7 +1487,7 @@
    * include/i_altsyntax.ch
      - ABORTEDIT clause.
      + ONABORTEDIT and ON ABORTEDIT clauses.
-   * source\h_grid.prg
+   * source/h_grid.prg
      + Self as second parameter when evaluating HEADRCLICK codeblock.
 
 2014-03-30 16:39 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
@@ -1784,11 +1840,11 @@
      + Support for clause ONHEADRCLICK.
    * source/h_checklist.prg
      + Missing and new parameters in TGrid():Define() call.
-   * include\i_altsyntax.ch
-   * include\i_grid.ch
-   * include\i_browse.ch
-   * include\i_xbrowse.ch
-   * include\i_hmg_compat.ch
+   * include/i_altsyntax.ch
+   * include/i_grid.ch
+   * include/i_browse.ch
+   * include/i_xbrowse.ch
+   * include/i_hmg_compat.ch
      + Clause ONHEADRCLICK to Grid, Browse and XBrowse controls.
 
 2013-12-01 21:26 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
