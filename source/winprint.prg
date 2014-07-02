@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.55 2014-06-23 22:17:33 fyurisich Exp $
+ * $Id: winprint.prg,v 1.56 2014-07-02 23:14:22 fyurisich Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -2266,37 +2266,40 @@ HB_FUNC (RR_DELETEDC)
   DeleteDC((HDC) hb_parnl(1));
 }
 
-
 HB_FUNC (RR_GETDEVICECAPS)
 {
- TEXTMETRIC tm;
- UINT i;
- HFONT xfont=(HFONT) hb_parnl(2);
- if (xfont!=0)
-    SelectObject(hDCRef,xfont);
- GetTextMetrics(hDCRef,&tm);
- devcaps[ 0]=GetDeviceCaps(hDCRef,VERTSIZE);
- devcaps[ 1]=GetDeviceCaps(hDCRef,HORZSIZE);
- devcaps[ 2]=GetDeviceCaps(hDCRef,VERTRES);
- devcaps[ 3]=GetDeviceCaps(hDCRef,HORZRES);
- devcaps[ 4]=GetDeviceCaps(hDCRef,LOGPIXELSY);
- devcaps[ 5]=GetDeviceCaps(hDCRef,LOGPIXELSX);
- devcaps[ 6]=GetDeviceCaps(hDCRef,PHYSICALHEIGHT);
- devcaps[ 7]=GetDeviceCaps(hDCRef,PHYSICALWIDTH);
- devcaps[ 8]=GetDeviceCaps(hDCRef,PHYSICALOFFSETY);
- devcaps[ 9]=GetDeviceCaps(hDCRef,PHYSICALOFFSETX);
+   TEXTMETRIC tm;
+   UINT i;
+   HFONT xfont = (HFONT) hb_parnl(2);
 
- devcaps[10]=tm.tmHeight;
- devcaps[11]=tm.tmAveCharWidth;
- devcaps[12]=(int) ((devcaps[3]-tm.tmAscent)/tm.tmHeight);
- devcaps[13]=(int) (devcaps[4]/tm.tmAveCharWidth);
- devcaps[14]=pi2->pDevMode->dmOrientation;
- devcaps[15]=(int) tm.tmAscent;
- devcaps[16]=(int) pi2->pDevMode->dmPaperSize;
- for(i = 1; i <= hb_parinfa(1,0); i++)
-     HB_STORNI(devcaps[i-1],1,i);
- if (xfont!=0)
-    SelectObject(hDCRef,hfont);
+   if( xfont != 0 )
+      SelectObject( hDCRef, xfont );
+
+   GetTextMetrics( hDCRef, &tm );
+
+   devcaps[ 0] = GetDeviceCaps( hDCRef, VERTSIZE );
+   devcaps[ 1] = GetDeviceCaps( hDCRef, HORZSIZE );
+   devcaps[ 2] = GetDeviceCaps( hDCRef, VERTRES );
+   devcaps[ 3] = GetDeviceCaps( hDCRef, HORZRES );
+   devcaps[ 4] = GetDeviceCaps( hDCRef, LOGPIXELSY );
+   devcaps[ 5] = GetDeviceCaps( hDCRef, LOGPIXELSX );
+   devcaps[ 6] = GetDeviceCaps( hDCRef, PHYSICALHEIGHT );
+   devcaps[ 7] = GetDeviceCaps( hDCRef, PHYSICALWIDTH );
+   devcaps[ 8] = GetDeviceCaps( hDCRef, PHYSICALOFFSETY );
+   devcaps[ 9] = GetDeviceCaps( hDCRef, PHYSICALOFFSETX );
+   devcaps[10] = tm.tmHeight;
+   devcaps[11] = tm.tmAveCharWidth;
+   devcaps[12] = (int) ( ( devcaps[3] - tm.tmAscent ) / tm.tmHeight );
+   devcaps[13] = (int) ( devcaps[4] / tm.tmAveCharWidth );
+   devcaps[14] = pi2->pDevMode->dmOrientation;
+   devcaps[15] = (int) tm.tmAscent;
+   devcaps[16] = (int) pi2->pDevMode->dmPaperSize;
+
+   for( i = 1; i <= hb_parinfa( 1, 0 ); i ++ )
+      HB_STORNI( devcaps[i-1], 1, i );
+
+   if( xfont != 0 )
+      SelectObject(hDCRef,hfont);
 }
 
 HB_FUNC (RR_SETDEVMODE)
