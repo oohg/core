@@ -1,5 +1,5 @@
 /*
- * $Id: i_ini.ch,v 1.1 2005-08-06 23:53:54 guerra000 Exp $
+ * $Id: i_ini.ch,v 1.2 2014-07-04 22:33:07 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -91,35 +91,35 @@
         Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#translate CRLF => chr(13)+chr(10)
+#translate CRLF => Chr(13) + Chr(10)
 
 #xcommand BEGIN INI ;
-             [ <file: FILENAME, FILE, DISK> <cIniFile> ] ;
-       => ;
-          BeginIni( "",<cIniFile> )
+      [ <file : FILENAME, FILE, DISK> <cIniFile> ] ;
+   => ;
+      BeginIni( "", <cIniFile> )
 
 #xcommand END INI ;
-     => ;
-	_EndIni ()
+   => ;
+      _EndIni()
 
 #xcommand DEL SECTION <cSection> ;
-       => ;
-          _DelIniSection( <cSection> )
+   => ;
+      _DelIniSection( <cSection> )
 
 #xcommand DEL SECTION <cSection> ;
-              ENTRY <cEntry> ;
-       => ;
-          _DelIniEntry( <cSection>, <cEntry> )
+      ENTRY <cEntry> ;
+   => ;
+      _DelIniEntry( <cSection>, <cEntry> )
 
 #xcommand GET <uVar> ;
-             [ SECTION <cSection> ] ;
-             [ ENTRY <cEntry> ] ;
-             [ DEFAULT <uDefault> ] ;
-       => ;
-          <uVar> := _GetIni( <cSection>, <cEntry>, <uDefault>, <uVar> )
+      [ SECTION <cSection> ] ;
+      [ ENTRY <cEntry> ] ;
+      [ DEFAULT <uDefault> ] ;
+   => ;
+      <uVar> := _GetIni( <cSection>, <cEntry>, <uDefault>, <uVar> )
 
 #xcommand SET [ SECTION <cSection> ] ;
-              [ ENTRY <cEntry> ] ;
-              [ TO <uVal> ] ;
-       => ;
-          _SetIni( <cSection>, <cEntry>, <uVal> )
+      [ ENTRY <cEntry> ] ;
+      [ TO <uVal> ] ;
+   => ;
+      _SetIni( <cSection>, <cEntry>, <uVal> )

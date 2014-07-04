@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.6 2014-07-04 20:16:02 fyurisich Exp $
+ * $Id: formedit.prg,v 1.7 2014-07-04 22:33:07 fyurisich Exp $
  */
 
 /*
@@ -9,7 +9,7 @@
 
 #include "oohg.ch"
 #include "hbclass.ch"
-#DEFINE CRLF CHR(13)+CHR(10)
+
 #DEFINE CR CHR(13)
 #DEFINE LF CHR(10)
 #DEFINE WM_PAINT   15
@@ -30,7 +30,11 @@ CLASS TForm1
    DATA swtab                INIT .F.
    DATA myIde                INIT Nil
 
-   // variables de propiedades y eventos
+   /*
+      Variables de propiedades y eventos.
+      Cada vez que se agrega una propiedad o un evento nuevo a un control, se debe agregar una DATA aquí.
+      Esa DATA debe inicializarse en el método IniArray.
+   */
    DATA afontsize            INIT {}
    DATA afontname            INIT {}
    DATA abold                INIT {}
@@ -1651,6 +1655,10 @@ LOCAL i, cTipo
            cTipo := :LeaTipo( :aControlW[i] )
          ENDIF
 
+/*
+   Por cada nuevo control se debe agregar un CASE llamando a la función que carga las propiedades desde el form.
+   Por cada nueva propiedad se debe agrebar una línea en la correspondiente p(función) para cargar su valor desde el form.
+*/
          DO CASE
          CASE cTipo == 'DEFINE'
             :aCtrlType[i] := 'STATUSBAR'

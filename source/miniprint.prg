@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.prg,v 1.47 2014-06-23 22:17:33 fyurisich Exp $
+ * $Id: miniprint.prg,v 1.48 2014-07-04 22:33:07 fyurisich Exp $
  */
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
@@ -3078,7 +3078,7 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
    // Orientation
    if( hb_parni( 2 ) != -999 )
    {
-      if( ! ( dmFields & DM_ORIENTATION ) )
+      if( ! ( ( dmFields & DM_ORIENTATION ) == DM_ORIENTATION ) )
       {
          GlobalFree( pi2 );
          ClosePrinter( hPrinter );
@@ -3102,7 +3102,7 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
    // PaperSize
    if( hb_parni( 3 ) != -999 )
    {
-      if( ! ( dmFields & DM_PAPERSIZE ) )
+      if( ! ( ( dmFields & DM_PAPERSIZE ) == DM_PAPERSIZE ) )
       {
          GlobalFree( pi2 );
          ClosePrinter( hPrinter );
@@ -3126,7 +3126,7 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
    // PaperLenght
    if( hb_parni( 4 ) != -999 )
    {
-      if( ! ( dmFields & DM_PAPERLENGTH ) )
+      if( ! ( ( dmFields & DM_PAPERLENGTH ) == DM_PAPERLENGTH ) )
       {
          GlobalFree( pi2 );
          ClosePrinter( hPrinter );
@@ -3150,7 +3150,7 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
    // PaperWidth
    if( hb_parni( 5 ) != -999 )
    {
-      if( ! ( dmFields & DM_PAPERWIDTH ) )
+      if( ! ( ( dmFields & DM_PAPERWIDTH ) == DM_PAPERWIDTH ) )
       {
          GlobalFree( pi2 );
          ClosePrinter( hPrinter );
@@ -3174,7 +3174,7 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
    // Copies
    if( hb_parni( 6 ) != -999 )
    {
-      if( ! ( dmFields & DM_COPIES ) )
+      if( ! ( ( dmFields & DM_COPIES ) == DM_COPIES ) )
       {
          GlobalFree( pi2 );
          ClosePrinter( hPrinter );
@@ -3198,7 +3198,7 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
    // Default Source
    if( hb_parni( 7 ) != -999 )
    {
-      if( ! ( dmFields & DM_DEFAULTSOURCE ) )
+      if( ! ( ( dmFields & DM_DEFAULTSOURCE ) == DM_DEFAULTSOURCE ) )
       {
          GlobalFree( pi2 );
          ClosePrinter( hPrinter );
@@ -3222,7 +3222,7 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
    // Print Quality
    if( hb_parni( 8 ) != -999 )
    {
-      if( ! ( dmFields & DM_PRINTQUALITY ) )
+      if( ! ( ( dmFields & DM_PRINTQUALITY ) == DM_PRINTQUALITY ) )
       {
          GlobalFree( pi2 );
          ClosePrinter( hPrinter );
@@ -3246,7 +3246,7 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
    // Print Color
    if( hb_parni( 9 ) != -999 )
    {
-      if( ! ( dmFields & DM_COLOR ) )
+      if( ! ( ( dmFields & DM_COLOR ) == DM_COLOR ) )
       {
          GlobalFree( pi2 );
          ClosePrinter( hPrinter );
@@ -3270,7 +3270,7 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
    // Print Duplex
    if( hb_parni( 10 ) != -999 )
    {
-      if( ! ( dmFields & DM_DUPLEX ) )
+      if( ! ( ( dmFields & DM_DUPLEX ) == DM_DUPLEX ) )
       {
          GlobalFree( pi2 );
          ClosePrinter( hPrinter );
@@ -3294,7 +3294,7 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
    // Print Collate
    if( hb_parni( 11 ) != -999 )
    {
-      if( ! ( dmFields & DM_COLLATE ) )
+      if( ! ( ( dmFields & DM_COLLATE ) == DM_COLLATE ) )
       {
          GlobalFree( pi2 );
          ClosePrinter( hPrinter );
@@ -3318,7 +3318,7 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
    // Scale
    if( hb_parni( 12 ) != -999 )
    {
-      if( ! ( dmFields & DM_SCALE ) )
+      if( ! ( ( dmFields & DM_SCALE ) == DM_SCALE ) )
       {
          GlobalFree( pi2 );
          ClosePrinter( hPrinter );
