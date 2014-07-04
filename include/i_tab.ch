@@ -1,5 +1,5 @@
 /*
- * $Id: i_tab.ch,v 1.6 2008-03-23 22:13:00 guerra000 Exp $
+ * $Id: i_tab.ch,v 1.7 2014-07-04 20:16:03 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -82,67 +82,68 @@
 
  Parts of this project are based upon:
 
-	"Harbour GUI framework for Win32"
- 	Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- 	Copyright 2001 Antonio Linares <alinares@fivetech.com>
-	www - http://www.harbour-project.org
+   "Harbour GUI framework for Win32"
+    Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
+    Copyright 2001 Antonio Linares <alinares@fivetech.com>
+   www - http://www.harbour-project.org
 
-	"Harbour Project"
-	Copyright 1999-2003, http://www.harbour-project.org/
+   "Harbour Project"
+   Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
 #command DEFINE TAB <name> ;
-                [ OBJ <obj> ] ;
-		[ <dummy1: OF, PARENT> <parent> ] ;
-		AT <row> , <col> ;
-		WIDTH <w> ;
-		HEIGHT <h> ;
-		[ VALUE <value> ] ;
-		[ FONT <f> ] ;
-		[ SIZE <s> ] ;
-		[ <bold : BOLD> ] ;
-		[ <italic : ITALIC> ] ;
-		[ <underline : UNDERLINE> ] ;
-		[ <strikeout : STRIKEOUT> ] ;
-		[ TOOLTIP <tooltip> ] ;
-                [ <buttons: BUTTONS> ]       ;
-                [ <flat: FLAT> ]       ;
-                [ <hottrack: HOTTRACK> ]       ;
-                [ <vertical: VERTICAL> ]       ;
-		[ ON CHANGE <change> ] ;
-                [ <notabstop: NOTABSTOP> ]       ;
-                [ <rtl: RTL> ]       ;
-                [ SUBCLASS <subclass> ] ;
-                [ <internals: INTERNALS> ]     ;
-                [ <invisible: INVISIBLE> ]     ;
-                [ <disabled: DISABLED> ]       ;
-                [ <multiline: MULTILINE> ]     ;
-	=>;
-             [ <obj> := ] _OOHG_SelectSubClass( TTab(), [ <subclass>() ] ): ;
-             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, {}, {}, <value>, <f>, <s>, <tooltip>, ;
-                     <{change}>, <.buttons.>, <.flat.>, <.hottrack.>, <.vertical.>, <.notabstop.>, , ;
-                     <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, {}, <.rtl.>, <.internals.>, ;
-                     <.invisible.>, <.disabled.>, <.multiline.> )
+      [ OBJ <obj> ] ;
+      [ <dummy1 : OF, PARENT> <parent> ] ;
+      AT <row>, <col> ;
+      WIDTH <w> ;
+      HEIGHT <h> ;
+      [ VALUE <value> ] ;
+      [ FONT <f> ] ;
+      [ SIZE <s> ] ;
+      [ <bold : BOLD> ] ;
+      [ <italic : ITALIC> ] ;
+      [ <underline : UNDERLINE> ] ;
+      [ <strikeout : STRIKEOUT> ] ;
+      [ TOOLTIP <tooltip> ] ;
+      [ <buttons : BUTTONS> ] ;
+      [ <flat : FLAT> ] ;
+      [ <hottrack : HOTTRACK> ] ;
+      [ <vertical : VERTICAL> ] ;
+      [ ON CHANGE <change> ] ;
+      [ <notabstop : NOTABSTOP> ] ;
+      [ <rtl : RTL> ] ;
+      [ SUBCLASS <subclass> ] ;
+      [ <internals : INTERNALS> ] ;
+      [ <invisible : INVISIBLE> ] ;
+      [ <disabled : DISABLED> ] ;
+      [ <multiline : MULTILINE> ] ;
+   => ;
+      [ <obj> := ] _OOHG_SelectSubClass( TTab(), [ <subclass>() ] ): ;
+            Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, {}, {}, ;
+            <value>, <f>, <s>, <tooltip>, <{change}>, <.buttons.>, <.flat.>, ;
+            <.hottrack.>, <.vertical.>, <.notabstop.>, , <.bold.>, <.italic.>, ;
+            <.underline.>, <.strikeout.>, {}, <.rtl.>, <.internals.>, ;
+            <.invisible.>, <.disabled.>, <.multiline.> )
 
 #command PAGE <caption> [ IMAGE <image> ] [ NAME <name> ] [ OBJ <obj> ] [ SUBCLASS <subclass> ] ;
-	=>;
-        [ <obj> := ] ;
-        _BeginTabPage( <caption>, <image>,, <(name)>, [ <subclass>() ] )
+   => ;
+      [ <obj> := ] ;
+            _BeginTabPage( <caption>, <image>, , <(name)>, [ <subclass>() ] )
 
 #command DEFINE PAGE <caption> [ IMAGE <image> ] [ NAME <name> ] [ OBJ <obj> ] [ SUBCLASS <subclass> ] ;
-	=>;
-        [ <obj> := ] ;
-        _BeginTabPage( <caption>, <image>,, <(name)>, [ <subclass>() ] )
+   => ;
+      [ <obj> := ] ;
+            _BeginTabPage( <caption>, <image>, , <(name)>, [ <subclass>() ] )
 
 #command DEFINE TAB PAGE <caption> [ IMAGE <image> ] [ NAME <name> ] [ OBJ <obj> ] [ SUBCLASS <subclass> ] ;
-	=>;
-        [ <obj> := ] ;
-        _BeginTabPage( <caption>, <image>,, <(name)>, [ <subclass>() ] )
+   => ;
+      [ <obj> := ] ;
+            _BeginTabPage( <caption>, <image>, , <(name)>, [ <subclass>() ] )
 
 #command END PAGE ;
-	=>;
-	_EndTabPage()
+   => ;
+      _EndTabPage()
 
 #command END TAB ;
-	=>;
-	_EndTab()
+   => ;
+      _EndTab()

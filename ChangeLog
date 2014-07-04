@@ -1,11 +1,84 @@
 /*
- * $Id: ChangeLog,v 1.1303 2014-07-02 23:14:22 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1304 2014-07-04 20:16:02 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-07-04 17:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/classes.htm
+   * doc/classes.txt
+     * Updated.
+   * include/i_datepicker.ch
+   * include/i_hyperlink.ch
+   * include/i_monthcal.ch
+   * include/i_slider.ch
+   * include/i_spinner.ch
+   * include/i_tab.ch
+     * Format.
+   * include/i_image.ch
+   * include/i_label.ch
+     + DISABLED clause.
+     * Format.
+   * include/i_button.ch
+     * Format.
+     + BACKCOLOR clause.
+   * source/h_frame.prg
+     * Simultaneous use of OPAQUE and TRANSPARENT clauses at
+       define time will raise a RTE.
+   * source/h_form.prg
+     - Unused DATAs Tag and TagControl.
+   * source/h_controlmisc.prg
+     - Unused DATA Tag.
+   * source/h_image.prg
+   * source/h_label.prg
+     + Support for DISABLED clause.
+   * source/h_button.prg
+     + Support for BACKCOLOR clause.
+   * ide/prgs/mgide.prg
+     - Comments.
+     * Format.
+   * ide/prgs/orden.prg
+     ! Missing swap of recently added properties.
+   * ide/prgs/formedit.prg
+     ! Missing resize of aBorder array.
+     ; Thanks to Gustavo C. Asborno for his help.
+     + Unneeded method End of class TForm1.
+     - Comments.
+     * Format.
+     * Method Open of TForm1 to handle lines without a space at the end.
+     * Method LeaDato_oop of TForm1 to return default value if an
+       = char is not present in the line.
+     * Method LeaDatoStatus of TForm1 to return default value if the
+       property value is not present.
+     * Method LeaDatoStatus of TForm1 to check if ";" is at the line's end.
+     * Method LeaDato of TForm1 to return default value if the
+       property value is not present.
+     * Method LeaDatoStatu of TForm1 to check if ";" is at the line's end.
+     * Some functions p(Control): default unused properties to control's
+       defaulta values.
+     * Some functions p(Control): read more properties from preferred
+       syntax. Support for reading semi-oop syntax was preserved.
+     + Properties to IMAGE and LABEL.
+     * Use Eof() instead of RecCount().
+   * ide/prgs/saveform.prg
+     * Indentation of generated FMG.
+     * Avoid ";" at the last line of a control.
+     * Use Eof() instead of RecCount().
+     * Comments.
+     * Format.
+     + Detail of missing clauses for BUTTON, CHECKBOX, TREE, LIST, COMBO,
+       CHECKBUTTON, GRID, BROWSE, IMAGE, TIMER, ANIMATEBOX, DATEPICKER,
+       TEXT, EDIT, RICHEDIT, IPADDRESS, HYPERLINK, .
+     + Clauses FontColor, Bold, Italic, Underline, Strikeout,
+       BackColor, Invisible and Disabled to TREE.
+     + Clauses ToolTip, Invisible and Disabled to ANIMATEBOX.
+     + Clauses FontColor, Bold, Italic, Underline, Strikeout,
+       BackColor, Invisible and Disabled to IPADDRESS control.
+     + Clauses FontColor, Bold, Italic, Underline, Strikeout,
+       BackColor, Invisible and Disabled to HYPERLINK control.
 
 2014-07-02 20:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_print.prg

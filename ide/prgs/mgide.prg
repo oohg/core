@@ -1,5 +1,5 @@
 /*
- * $Id: mgide.prg,v 1.7 2014-06-25 20:11:58 fyurisich Exp $
+ * $Id: mgide.prg,v 1.8 2014-07-04 20:16:02 fyurisich Exp $
  */
 
 #include "oohg.ch"
@@ -416,7 +416,7 @@ public csyscolor,cvccvar
    CENTER WINDOW Form_Tree
 
    IF .NOT. FILE('hmi.INI')
-      a := MEMOWRIT('hmi.INI','[PROJECT]')
+      a := MemoWrit('hmi.INI','[PROJECT]')
    ENDIF
 
    BEGIN INI FILE 'hmi.INI'
@@ -628,9 +628,7 @@ public csyscolor,cvccvar
       @ 0,105 FRAME frame_1 ;
          CAPTION "Form : " ;
          WIDTH 332 ;
-         HEIGHT 65 ;
-         OPAQUE  ;
-         TRANSPARENT  ;
+         HEIGHT 65
 
       form_main.frame_1.fontcolor:= { 0,0,0 }
       form_main.frame_1.fontname:="MS Sans Serif"
@@ -1042,7 +1040,7 @@ if .not. ::lPsave
       ::saveproject()
    endif
 endif
-a:=memowrit(exedir,getcurrentfolder())
+a:=MemoWrit( exedir, getcurrentfolder() )
 if iswindowactive(Form_Tree)
    Form_Tree:release()
 endif
@@ -2962,7 +2960,7 @@ METHOD XBldPellC( nOption ) CLASS THMI
             cOut += '$(OBJ_DIR)\' + aPrgFiles[i] + '.obj : $(C_DIR)\' + aPrgFiles[i] + '.c' + CRLF
             cOut += '   $(CC) $(COBJFLAGS) -Fo$@ $**' + CRLF
          Next i
-         MemoWrit( '_temp.bc', cOut )      /// revisar
+         MemoWrit( '_temp.bc', cOut )
 
          // Build batch
          cOut := ''
@@ -3302,7 +3300,7 @@ METHOD BldPellC(nOption) CLASS THMI
             cOut += '$(OBJ_DIR)\' + aPrgFiles[i] + '.obj : $(C_DIR)\' + aPrgFiles[i] + '.c' + CRLF
             cOut += '   $(CC) $(COBJFLAGS) -Fo$@ $**' + CRLF
          Next i
-         MemoWrit( '_temp.bc', cOut )      /// revisar
+         MemoWrit( '_temp.bc', cOut )    
 
          // Build batch
          cOut := ''
@@ -3550,7 +3548,7 @@ if cvar#NIL
 endif
 chmi := "hmi.INI"
 IF .not. file(chmi)
-   a:=memowrit(chmi,'[PROJECT]')
+   a := MemoWrit( chmi, '[PROJECT]' )
 else
 
 ENDIF
@@ -4001,7 +3999,7 @@ if cParent == 'Prg module'                                    // MigSoft
       endif
       output+="*------------------------------------------------------*"+CRLF+CRLF
       output += 'Return Nil'+CRLF+CRLF
-      memowrit(cItem+'.prg',output)
+      MemoWrit( cItem + '.prg', output )
       ::Openfile(cItem+'.prg')
       ::alinet:={}
    endif
@@ -4019,7 +4017,7 @@ if cParent == 'CH module'
       output+=' *        Date: '+dtoc(date())+CRLF
       output+=' */'+CRLF+CRLF
       output += '#'+CRLF
-      memowrit(cItem+'.ch',output)
+      MemoWrit( cItem + '.ch', output )
       ::Openfile(cItem+'.ch')
       ::alinet:={}
    endif
@@ -4042,7 +4040,7 @@ if cParent == 'RC module'
       wauxi:=memoread('auxi.rc')
 /////////////// ojo
       output+= wauxi
-      memowrit(cItem+'.rc',output)
+      MemoWrit( cItem + '.rc', output )
       ::Openfile(cItem+'.rc')
       ::alinet:={}
    endif

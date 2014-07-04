@@ -1,5 +1,5 @@
 /*
- * $Id: h_label.prg,v 1.28 2011-08-14 00:08:54 nulcrc Exp $
+ * $Id: h_label.prg,v 1.29 2014-07-04 20:16:03 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -123,7 +123,7 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, w, h, fontname, ;
                lTRANSPARENT, aRGB_bk, aRGB_font, ProcedureName, tooltip, ;
                HelpId, invisible, italic, underline, strikeout, autosize, ;
                rightalign, centeralign, lRtl, lNoWordWrap, lNoPrefix, ;
-               cPicture ) CLASS TLabel
+               cPicture, lDisabled ) CLASS TLabel
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle, nStyleEx
 
@@ -133,10 +133,11 @@ Local ControlHandle, nStyle, nStyleEx
    ASSIGN ::nHeight     VALUE h TYPE "N"
    ASSIGN ::Transparent VALUE ltransparent TYPE "L" DEFAULT .F.
    ASSIGN ::Picture     VALUE cPicture     TYPE "CM"
+   ASSIGN lDisabled     VALUE lDisabled    TYPE "L" DEFAULT .F.
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, aRGB_font, aRGB_bk, , lRtl )
 
-   nStyle := ::InitStyle( ,, Invisible, .T. ) + ;
+   nStyle := ::InitStyle( ,, Invisible, .T., lDisabled ) + ;
              if( HB_IsLogical( BORDER )    .AND. BORDER,     WS_BORDER,   0 ) + ;
              if( HB_IsLogical( HSCROLL )   .AND. HSCROLL,    WS_HSCROLL,  0 ) + ;
              if( HB_IsLogical( VSCROLL ) .AND. VSCROLL,    WS_VSCROLL,  0 ) + ;

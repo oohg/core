@@ -1,5 +1,5 @@
 /*
- * $Id: propeven.prg,v 1.5 2014-06-26 02:13:26 fyurisich Exp $
+ * $Id: propeven.prg,v 1.6 2014-07-04 20:16:03 fyurisich Exp $
  */
 
 #include 'oohg.ch'
@@ -35,9 +35,9 @@ LOCAL i, cname, j, Title, aLabels, aInitValues, aFormats, aResults, ctipo, jh, n
             cname:=:acontrolw[j]
             cnamew:=:aname[j]
             Title:=cnamew+" properties"
-            aLabels     := { 'Caption',    'Opaque',    'Transparent',    'Name',    'Enabled',    'Visible' }
-            aInitValues := { :acaption[j], :aopaque[j], :atransparent[j], :aname[j], :aenabled[j], :avisible[j] }
-            aFormats    := { 30,           .F.,         .F.,              30,        .F.,          .F. }
+            aLabels     := { 'Caption',    'Opaque',    'Transparent',    'Name',    'Enabled',    'Visible',    'Obj' }
+            aInitValues := { :acaption[j], :aopaque[j], :atransparent[j], :aname[j], :aenabled[j], :avisible[j], :acobj[j] }
+            aFormats    := { 30,           .F.,         .F.,              30,        .F.,          .F.,          31 }
             aResults    := myInputWindow( Title, aLabels, aInitValues, aFormats )
             IF aresults[1] == NIL
                RETURN NIL
@@ -53,6 +53,7 @@ LOCAL i, cname, j, Title, aLabels, aInitValues, aFormats, aResults, ctipo, jh, n
             ENDIF
             :aenabled[j]:=aresults[5]
             :avisible[j]:=aresults[6]
+            ::acobj := aresults[7]
             RETURN NIL
          ELSE
             IF ocontrol:type == 'TAB'
@@ -314,9 +315,9 @@ LOCAL i, cname, j, Title, aLabels, aInitValues, aFormats, aResults, ctipo, jh, n
 
                      IF :aCtrlType[j] == "LABEL"
                         Title:=cnamew+" properties"
-                        aLabels     := { 'Value',    'Bold',    'HelpId',    'Transparent',    'CenterAlign',    'RightAlign',    'ToolTip',    'Name',    'AutoSize',    "Enabled",    "Visible",    "ClientEdge",    "Border",   'Obj' }
-                        aInitValues := { :avalue[j], :abold[j], :ahelpid[j], :atransparent[j], :acenteralign[j], :arightalign[j], :atooltip[j], :aname[j], :aautoplay[j], :aenabled[j], :avisible[j], :aclientedge[j], :aborder[j], :acobj[j] }
-                        aFormats    := { 300,        .F.,       '999',       .F.,              .F.,              .F.,             120,          30,        .F.,           .F.,          .F.,          .F.,             .F.,         31 }
+                        aLabels     := { 'Value',    'HelpId',    'Transparent',    'CenterAlign',    'RightAlign',    'ToolTip',    'Name',    'AutoSize',    "Enabled",    "Visible",    "ClientEdge",    "Border",   'Obj',     "InputMask" }
+                        aInitValues := { :avalue[j], :ahelpid[j], :atransparent[j], :acenteralign[j], :arightalign[j], :atooltip[j], :aname[j], :aautoplay[j], :aenabled[j], :avisible[j], :aclientedge[j], :aborder[j], :acobj[j], :ainputmask[j] }
+                        aFormats    := { 300,        '999',       .F.,              .F.,              .F.,             120,          30,        .F.,           .F.,          .F.,          .F.,             .F.,         31,        800 }
                         aResults    := myInputWindow( Title, aLabels, aInitValues, aFormats )
                         IF aresults[1] == NIL
                            RETURN NIL
@@ -328,31 +329,30 @@ LOCAL i, cname, j, Title, aLabels, aInitValues, aFormats, aResults, ctipo, jh, n
                            :avalue[j]:=aresults[1]
                              ocontrol:value:="Empty label"
                         ENDIF
-                        :abold[j]:=aresults[2]
-                        ocontrol:fontbold:=aresults[2]
-                        :ahelpid[j]:=aresults[3]
-                        :atransparent[j]:=aresults[4]
-                        :acenteralign[j]:=aresults[5]
+                        :ahelpid[j]:=aresults[2]
+                        :atransparent[j]:=aresults[3]
+                        :acenteralign[j]:=aresults[4]
+                        IF aresults[4]
+                           ocontrol:align := SS_CENTER
+                        ENDIF
+                        :arightalign[j]:=aresults[5]
                         IF aresults[5]
-                           ocontrol:align:=SS_CENTER
+                           ocontrol:align := SS_RIGHT
                         ENDIF
-                        :arightalign[j]:=aresults[6]
-                        IF aresults[6]
-                           ocontrol:align:=SS_RIGHT
+                        IF .not. aresults[4] .and. .not. aresults[5]
+                           ocontrol:align := SS_LEFT
                         ENDIF
-                        IF .not. aresults[5] .and. .not. aresults[6]
-                           ocontrol:align:=SS_LEFT
+                        :atooltip[j]:=ltrim(aresults[6])
+                        IF len(aresults[7])>0
+                           :aname[j]:=strtran(aresults[7], " ", "")
                         ENDIF
-                        :atooltip[j]:=ltrim(aresults[7])
-                        IF len(aresults[8])>0
-                           :aname[j]:=strtran(aresults[8], " ", "")
-                        ENDIF
-                        :aautoplay[j]:=aresults[09]
-                        :aenabled[j]:=aresults[10]
-                        :avisible[j]:=aresults[11]
-                        :aclientedge[j]:=aresults[12]
-                        :aborder[j]:=aresults[13]
-                        :acobj[j]:=aresults[14]
+                        :aautoplay[j]:=aresults[8]
+                        :aenabled[j]:=aresults[9]
+                        :avisible[j]:=aresults[10]
+                        :aclientedge[j]:=aresults[11]
+                        :aborder[j]:=aresults[12]
+                        :acobj[j]:=aresults[13]
+                        :ainputmask[j] := aresults[14]
                      ENDIF
 
                      IF :aCtrlType[j] == "PROGRESSBAR"
@@ -381,9 +381,9 @@ LOCAL i, cname, j, Title, aLabels, aInitValues, aFormats, aResults, ctipo, jh, n
 
                      IF :aCtrlType[j] == "SLIDER"
                         Title:=cnamew+" properties"
-                        aLabels     := { 'Range',    'Value ',    'ToolTip',    'Vertical',    'Both',    'Top',    'Left',    'HelpId',    'Name',    'Enabled',    'Visible',    'Obj' }
-                        aInitValues := { :arange[j], :avaluen[j], :atooltip[j], :avertical[j], :aboth[j], :atop[j], :aleft[j], :ahelpid[j], :aname[j], :aenabled[j], :avisible[j], :acobj[j] }
-                        aFormats    := { 20,         '999',       120,          .F.,           .F.,       .F.,      .F.,       '999',       30,        .F.,          .F.,          31  }
+                        aLabels     := { 'Range',    'Value ',    'ToolTip',    'Vertical',    'Both',    'Top',    'Left',    'HelpId',    'Name',    'Enabled',    'Visible',    'Obj',    'NoTicks' }
+                        aInitValues := { :arange[j], :avaluen[j], :atooltip[j], :avertical[j], :aboth[j], :atop[j], :aleft[j], :ahelpid[j], :aname[j], :aenabled[j], :avisible[j], :acobj[j], :anoticks[j] }
+                        aFormats    := { 20,         '999',       120,          .F.,           .F.,       .F.,      .F.,       '999',       30,        .F.,          .F.,          31,        .F.  }
                         aResults    := myInputWindow( Title, aLabels, aInitValues, aFormats )
                         IF aresults[1] == NIL
                            RETURN NIL
@@ -686,7 +686,7 @@ LOCAL i, cname, j, Title, aLabels, aInitValues, aFormats, aResults, ctipo, jh, n
                         aLabels     := { 'Value',     'Picture',    'ToolTip',    'HelpId',    'Name',    'Enabled',    'Visible',    "NoTabStop",    'Obj' }
                         aInitValues := { :avaluel[j], :apicture[j], :atooltip[j], :ahelpid[j], :aname[j], :aenabled[j], :avisible[j], :anotabstop[j], :acobj[j] }
                         aFormats    := { .F.,         31,           120,          '999',       30,        .F.,          .F.,          .F.,            31 }
-                        aResults    := myInputWindow( Title, aLabels, aInitValues, aFormats )
+                         aResults    := myInputWindow( Title, aLabels, aInitValues, aFormats )
                         IF aresults[1] == NIL
                            RETURN NIL
                         ENDIF
@@ -710,7 +710,7 @@ LOCAL i, cname, j, Title, aLabels, aInitValues, aFormats, aResults, ctipo, jh, n
                      ENDIF
 
                      IF :aCtrlType[j] == "PICBUTT"
-                        Title:=cnamew+" properties"
+                        Title       := cNameW + " properties"
                         aLabels     := { 'Picture',    'ToolTip',    'HelpId',    'NoTabStop',    'Name',    'Enabled',    'Visible',    'Flat',    'Obj' }
                         aInitValues := { :apicture[j], :atooltip[j], :ahelpid[j], :anotabstop[j], :aname[j], :aenabled[j], :avisible[j], :aflat[j], :acobj[j] }
                         aFormats    := { 30,           120,          '999',       .F.,            30,        .T.,          .T.,          .F.,       31  }
@@ -718,45 +718,49 @@ LOCAL i, cname, j, Title, aLabels, aInitValues, aFormats, aResults, ctipo, jh, n
                         IF aresults[1] == NIL
                            RETURN NIL
                         ENDIF
-                        IF len(aresults[1])>0
-                          :apicture[j]:=aresults[1]
+                        IF Len( aresults[1] ) > 0
+                          :apicture[j]  := aresults[1]
                         ELSE
-                           :apicture[j]:=aresults[1]
+                           :apicture[j]  := aresults[1]
                         ENDIF
-                        :atooltip[j]:=aresults[2]
-                        ocontrol:tooltip:=aresults[2]
-                        :ahelpid[j]:=aresults[3]
-                        :anotabstop[j]:=aresults[4]
-                        IF .not. empty(aresults[5] )
-                           :aname[j]:=aresults[5]
+                        :atooltip[j]     := aresults[2]
+                        ocontrol:tooltip := aresults[2]
+                        :ahelpid[j]      := aresults[3]
+                        :anotabstop[j]   := aresults[4]
+                        IF ! Empty( aresults[5] )
+                           :aname[j]     := aresults[5]
                         ENDIF
-                        :aenabled[j]:=aresults[6]
-                        :avisible[j]:=aresults[7]
-                        :aflat[j]:=aresults[8]
-                        :acobj[j]:=aresults[9]
+                        :aenabled[j]     := aresults[6]
+                        :avisible[j]     := aresults[7]
+                        :aflat[j]        := aresults[8]
+                        :acobj[j]        := aresults[9]
                      ENDIF
 
                      IF :aCtrlType[j] == "IMAGE"
-                        Title:=cnamew+" properties"
-                        aLabels     := { 'Picture',    'HelpId',    'Stretch',    'Name',    'Enabled',    'Visible',    'Obj' }
-                        aInitValues := { :apicture[j], :ahelpid[j], :astretch[j], :aname[j], :aenabled[j], :avisible[j], :acobj[j] }
-                        aFormats    := { 30,           '999',       .F.,          30,        .F.,          .F.,          31}
+                        Title       := cNameW + " properties"
+                        aLabels     := { 'Picture',    'ToolTip',    'HelpId',    'Stretch',    'Name',    'Enabled',    'Visible',    'Obj',     "ClientEdge",    "Border",    'Transparent' }
+                        aInitValues := { :apicture[j], :atooltip[j], :ahelpid[j], :astretch[j], :aname[j], :aenabled[j], :avisible[j], :acobj[j], :aclientedge[j], :aborder[j], :atransparent[j] }
+                        aFormats    := { 30,           120,          '999',       .F.,          30,        .F.,          .F.,          31,        .F.,             .F.,         .F. }
                         aResults    := myInputWindow( Title, aLabels, aInitValues, aFormats )
                         IF aresults[1] == NIL
                            RETURN NIL
                         ENDIF
-                        IF len(aresults[1] )>0
-                           :apicture[j]:=aresults[1]
+                        IF Len( aresults[1] ) > 0
+                           :apicture[j]   := aresults[1]
                         ENDIF
-                        :ahelpid[j]:=aresults[2]
-                        :astretch[j]:=aresults[3]
-                        IF .not. empty(aresults[4])
-                           :aname[j]:=aresults[4]
-                           ocontrol:value:=:aname[j]
+                        :atooltip[j]      := aresults[2]
+                        :ahelpid[j]       := aresults[3]
+                        :astretch[j]      := aresults[4]
+                        IF ! Empty(aresults[5])
+                           ocontrol:value := ;
+                           :aname[j]      := aresults[5]
                         ENDIF
-                        :aenabled[j]:=aresults[5]
-                        :avisible[j]:=aresults[6]
-                        :acobj[j]:=aresults[7]
+                        :aenabled[j]      := aresults[6]
+                        :avisible[j]      := aresults[7]
+                        :acobj[j]         := aresults[8]
+                        :aclientedge[j]   := aresults[9]
+                        :aborder[j]       := aresults[10]
+                        :atransparent[j]  := aresults[11]
                      ENDIF
 
                      IF :aCtrlType[j] == "TIMER"
@@ -783,7 +787,6 @@ LOCAL i, cname, j, Title, aLabels, aInitValues, aFormats, aResults, ctipo, jh, n
                         Title:=cnamew+" properties"
                         aLabels     := { 'File',    'Autoplay',    'Center ',   'Transparent',    'HelpId',    'ToolTip',    'Name',    'Enabled',    'Visible',    'Obj' }
                         aInitValues := { :afile[j], :aautoplay[j], :acenter[j], :atransparent[j], :ahelpid[j], :atooltip[j], :aname[j], :aenabled[j], :avisible[j], :acobj[j] }
-                        aFormats    := { 30,        .F.,           .F.,         .F.,              '999',       120,          30,        .F.,          .F.,          31 }
                         aResults    := myInputWindow( Title, aLabels, aInitValues, aFormats )
                         IF aresults[1] == NIL
                           RETURN NIL
@@ -848,10 +851,10 @@ LOCAL i, cname, j, Title, aLabels, aInitValues, aFormats, aResults, ctipo, jh, n
                      ENDIF
 
                      IF :aCtrlType[j] == "MONTHCALENDAR"
-                        Title:=cnamew+" properties"
-                        aLabels     := { 'Value',    'ToolTip',    'NoToday',    'NoTodayCircle',    'WeekNumbers',    'HelpId',    'Visible',    'Enabled',    'Name',    'Obj' }
-                        aInitValues := { :avalue[j], :atooltip[j], :anotoday[j], :anotodaycircle[j], :aweeknumbers[j], :ahelpid[j], :avisible[j], :aenabled[j], :aname[j], :acobj[j] }
-                        aFormats    := { 30,         120,          .F.,          .F.,                .F.,              '999',       .T.,          .T.,          30,        31 }
+                        Title       := cNameW + " properties"
+                        aLabels     := { 'Value',    'ToolTip',    'NoToday',    'NoTodayCircle',    'WeekNumbers',    'HelpId',    'Visible',    'Enabled',    'Name',    'Obj',     'NoTabStop' }
+                        aInitValues := { :avalue[j], :atooltip[j], :anotoday[j], :anotodaycircle[j], :aweeknumbers[j], :ahelpid[j], :avisible[j], :aenabled[j], :aname[j], :acobj[j], :anotabstop[j] }
+                        aFormats    := { 30,         120,          .F.,          .F.,                .F.,              '999',       .T.,          .T.,          30,        31,        .F. }
                         aResults    := myInputWindow( Title, aLabels, aInitValues, aFormats )
                         IF aresults[1] == NIL
                            RETURN NIL
@@ -874,6 +877,7 @@ LOCAL i, cname, j, Title, aLabels, aInitValues, aFormats, aResults, ctipo, jh, n
                            :aname[j]:=aresults[9]
                         ENDIF
                         :acobj[j]:=aresults[10]
+                        :anotabstop[j] := aresults[11]
                      ENDIF
 
                   ENDIF

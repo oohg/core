@@ -1,5 +1,5 @@
 /*
- * $Id: i_datepicker.ch,v 1.7 2014-06-29 23:42:06 fyurisich Exp $
+ * $Id: i_datepicker.ch,v 1.8 2014-07-04 20:16:03 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -91,9 +91,9 @@
         Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#command @ <row>,<col> DATEPICKER <name> ;
-                [ OBJ <obj> ] ;
-      [ <dummy1: OF, PARENT> <parent> ] ;
+#command @ <row>, <col> DATEPICKER <name> ;
+      [ OBJ <obj> ] ;
+      [ <dummy1 : OF, PARENT> <parent> ] ;
       [ VALUE <v> ] ;
       [ FIELD <field> ] ;
       [ WIDTH <w> ] ;
@@ -105,30 +105,30 @@
       [ <underline : UNDERLINE> ] ;
       [ <strikeout : STRIKEOUT> ] ;
       [ TOOLTIP <tooltip> ] ;
-      [ < shownone: SHOWNONE > ] ;
-      [ < updown: UPDOWN > ] ;
-      [ < rightalign: RIGHTALIGN > ] ;
+      [ < shownone : SHOWNONE > ] ;
+      [ < updown : UPDOWN > ] ;
+      [ < rightalign : RIGHTALIGN > ] ;
       [ ON GOTFOCUS <gotfocus> ] ;
       [ ON CHANGE <change> ] ;
       [ ON LOSTFOCUS <lostfocus> ] ;
-                [ ON ENTER <enter> ]      ;
-      [ HELPID <helpid> ]       ;
-      [ <invisible: INVISIBLE> ] ;
-      [ <notabstop: NOTABSTOP> ] ;
-                [ <disabled: DISABLED> ] ;
-                [ <noborder: NOBORDER> ] ;
-                [ <rtl: RTL> ] ;
-                [ SUBCLASS <subclass> ] ;
-                [ <dummy2: RANGE> <min> , <max> ] ;
+      [ ON ENTER <enter> ] ;
+      [ HELPID <helpid> ] ;
+      [ <invisible : INVISIBLE> ] ;
+      [ <notabstop : NOTABSTOP> ] ;
+      [ <disabled : DISABLED> ] ;
+      [ <noborder : NOBORDER> ] ;
+      [ <rtl : RTL> ] ;
+      [ SUBCLASS <subclass> ] ;
+      [ <dummy2 : RANGE> <min>, <max> ] ;
    => ;
-        [ <obj> := ] _OOHG_SelectSubClass( TDatePick(), [ <subclass>() ] ): ;
-                     Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <v>, <fontname>, <fontsize>, ;
-                     <tooltip>, <{change}>, <{lostfocus}>, <{gotfocus}>, <.shownone.>, <.updown.>, <.rightalign.>, ;
-                     <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
-                     <(field)>, <{enter}>, <.rtl.>, <.disabled.>, <.noborder.>, <min>, <max> )
+      [ <obj> := ] _OOHG_SelectSubClass( TDatePick(), [ <subclass>() ] ): ;
+            Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <v>, <fontname>, <fontsize>, ;
+            <tooltip>, <{change}>, <{lostfocus}>, <{gotfocus}>, <.shownone.>, <.updown.>, <.rightalign.>, ;
+            <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
+            <(field)>, <{enter}>, <.rtl.>, <.disabled.>, <.noborder.>, <min>, <max> )
 
 
-#command @ <row>,<col> TIMEPICKER <name> ;
+#command @ <row>, <col> TIMEPICKER <name> ;
       [ OBJ <obj> ] ;
       [ <dummy1: OF, PARENT> <parent> ] ;
       [ VALUE <v> ] ;
@@ -142,19 +142,19 @@
       [ <underline : UNDERLINE> ] ;
       [ <strikeout : STRIKEOUT> ] ;
       [ TOOLTIP <tooltip> ] ;
-      [ < shownone: SHOWNONE > ] ;
-      [ < updown: UPDOWN > ] ;
-      [ < rightalign: RIGHTALIGN > ] ;
+      [ < shownone : SHOWNONE > ] ;
+      [ < updown : UPDOWN > ] ;
+      [ < rightalign : RIGHTALIGN > ] ;
       [ ON GOTFOCUS <gotfocus> ] ;
       [ ON CHANGE <change> ] ;
       [ ON LOSTFOCUS <lostfocus> ] ;
       [ ON ENTER <enter> ] ;
       [ HELPID <helpid> ] ;
-      [ <invisible: INVISIBLE> ] ;
-      [ <notabstop: NOTABSTOP> ] ;
-      [ <disabled: DISABLED> ] ;
-      [ <noborder: NOBORDER> ] ;
-      [ <rtl: RTL> ] ;
+      [ <invisible : INVISIBLE> ] ;
+      [ <notabstop : NOTABSTOP> ] ;
+      [ <disabled : DISABLED> ] ;
+      [ <noborder : NOBORDER> ] ;
+      [ <rtl : RTL> ] ;
       [ SUBCLASS <subclass> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TTimePick(), [ <subclass>() ] ): ;

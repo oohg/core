@@ -1,5 +1,5 @@
 <!--
-$Id: CLASSES.HTM,v 1.3 2014-06-17 00:35:28 fyurisich Exp $
+$Id: CLASSES.HTM,v 1.4 2014-07-04 20:16:03 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -356,8 +356,8 @@ CLASS OOHG_TERRORHTML
    DATA CLANG                     INIT ""
    DATA FILENAME                  INIT "ERRORLOG.HTM"
    DATA PATH                      INIT ""
-   DATA POSTHEADER                INIT '&lt;/p&gt;'
-   DATA PREHEADER                 INIT '&lt;HR&gt;' + CHR( 13 ) + CHR( 10 ) + '&lt;p class="updated"&gt;'
+   DATA POSTHEADER                INIT '</p>'
+   DATA PREHEADER                 INIT '<HR>' + CHR( 13 ) + CHR( 10 ) + '<p class="updated">'
 
    METHOD CREATELOG
    METHOD ERRORHEADER
@@ -388,7 +388,7 @@ CLASS TACTIVEX FROM TCONTROL
    DATA NHEIGHT                   INIT NIL
    DATA NWIDTH                    INIT NIL
    DATA OOLE                      INIT NIL
-   DATA TYPE                      INIT "ACTIVEX" READONLY
+   DATA TYPE                      INIT "ACTIVEX"             READONLY
 
    DELEGATE GET TO OOLE
    DELEGATE SET TO OOLE
@@ -405,7 +405,7 @@ CLASS TACTIVEX FROM TCONTROL
 
 *------------------------------------------------------------------------------*
 CLASS TANIMATEBOX FROM TCONTROL
-   DATA TYPE                      INIT "ANIMATEBOX" READONLY
+   DATA TYPE                      INIT "ANIMATEBOX"          READONLY
 
    METHOD CLOSE
    METHOD DEFINE
@@ -431,7 +431,7 @@ CLASS TBUTTON FROM TCONTROL
    DATA NHEIGHT                   INIT 28
    DATA NWIDTH                    INIT 100
    DATA STRETCH                   INIT .F.
-   DATA TYPE                      INIT "BUTTON" READONLY
+   DATA TYPE                      INIT "BUTTON"              READONLY
 
    METHOD BUFFER                  SETGET
    METHOD DEFINE
@@ -451,7 +451,7 @@ ENDCLASS
 CLASS TBUTTONCHECK FROM TBUTTON
    DATA NHEIGHT                   INIT 28
    DATA NWIDTH                    INIT 100
-   DATA TYPE                      INIT "CHECKBUTTON" READONLY
+   DATA TYPE                      INIT "CHECKBUTTON"         READONLY
 
    METHOD DEFINE
    METHOD DEFINEIMAGE
@@ -461,15 +461,15 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS TCALCPRINT FROM TPRINTBASE
-   DATA LSEPARATESHEETS           INIT .F.
-   DATA NHORZRESOL                INIT PIXELSPERINCHX()
-   DATA NVERTRESOL                INIT PIXELSPERINCHY()
    DATA OCELL                     INIT NIL
    DATA ODESKTOP                  INIT NIL
    DATA ODOCUMENT                 INIT NIL
    DATA OSCHEDULE                 INIT NIL
    DATA OSERVICEMANAGER           INIT NIL
    DATA OSHEET                    INIT NIL
+   DATA NHORZRESOL                INIT PIXELSPERINCHX()
+   DATA NVERTRESOL                INIT PIXELSPERINCHY()
+   DATA LSEPARATESHEETS           INIT .F.
 
    METHOD BEGINDOCX
    METHOD BEGINPAGEX
@@ -479,7 +479,7 @@ CLASS TCALCPRINT FROM TPRINTBASE
    METHOD PRINTDATAX
    METHOD PRINTIMAGEX
    METHOD RELEASEX
-   METHOD SETPREVIEWSIZE         BLOCK { || NIL }
+   METHOD SETPREVIEWSIZE          BLOCK { || NIL }
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -492,7 +492,7 @@ CLASS TCHECKBOX FROM TLABEL
    DATA NWIDTH                    INIT 100
    DATA TABHANDLE                 INIT 0
    DATA THREESTATE                INIT .F.
-   DATA TYPE                      INIT "CHECKBOX" READONLY
+   DATA TYPE                      INIT "CHECKBOX"            READONLY
 
    METHOD DEFINE
    METHOD EVENTS_COLOR
@@ -503,12 +503,12 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS TCHECKLIST FROM TGRID
-   DATA ALLOWEDIT                 INIT .F. READONLY
-   DATA FULLMOVE                  INIT .F. READONLY
-   DATA INPLACE                   INIT .F. READONLY
+   DATA ALLOWEDIT                 INIT .F.                   READONLY
+   DATA FULLMOVE                  INIT .F.                   READONLY
+   DATA INPLACE                   INIT .F.                   READONLY
    DATA LASTCHANGEDITEM           INIT 0
-   DATA LCHECKBOXES               INIT .T. READONLY
-   DATA TYPE                      INIT "CHECKLIST" READONLY
+   DATA LCHECKBOXES               INIT .T.                   READONLY
+   DATA TYPE                      INIT "CHECKLIST"           READONLY
 
    METHOD ADDCOLUMN               BLOCK { || NIL }
    METHOD ADDITEM
@@ -589,7 +589,7 @@ CLASS TCOMBO FROM TLABEL
    DATA ONREFRESH                 INIT NIL
    DATA SEARCHLAPSE               INIT 1000
    DATA SOURCEORDER               INIT NIL
-   DATA TYPE                      INIT "COMBO" READONLY
+   DATA TYPE                      INIT "COMBO"               READONLY
    DATA UFIELD                    INIT NIL
    DATA UINITIME                  INIT 0
    DATA VALUESOURCE               INIT ""
@@ -647,7 +647,6 @@ CLASS TCONTROL FROM TWINDOW
    DATA POSTBLOCK                 INIT NIL
    DATA SETIMAGELISTCOMMAND       INIT 0
    DATA SETIMAGELISTWPARAM        INIT TVSIL_NORMAL
-   DATA TAG                       INIT ""
    DATA TRANSPARENT               INIT .F.
    DATA XOLDVALUE                 INIT NIL
 
@@ -697,7 +696,7 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS TCONTROLGROUP FROM TCONTROL
-   DATA TYPE                      INIT "CONTROLGROUP" READONLY
+   DATA TYPE                      INIT "CONTROLGROUP"        READONLY
 
    METHOD ADDCONTROL
    METHOD DEFINE
@@ -707,8 +706,9 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS TCSVPRINT FROM TPRINTBASE
-   DATA APRINTCSV                 INIT {}
+   DATA APRINTCSV                 INIT {}                    READONLY
 
+   METHOD BEGINDOCX
    METHOD ENDDOCX
    METHOD ENDPAGEX
    METHOD INITX
@@ -721,7 +721,7 @@ ENDCLASS
 CLASS TDATEPICK FROM TCONTROL
    DATA NHEIGHT                   INIT 24
    DATA NWIDTH                    INIT 120
-   DATA TYPE                      INIT "DATEPICK" READONLY
+   DATA TYPE                      INIT "DATEPICK"            READONLY
 
    METHOD DEFINE
    METHOD EVENTS_NOTIFY
@@ -731,10 +731,9 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS TDOSPRINT FROM TPRINTBASE
-   DATA CBUSCA                    INIT ""
-   DATA CSTRING                   INIT ""
-   DATA LISWIN                    INIT .F.
-   DATA NOCCUR                    INIT 0
+   DATA CBUSCA                    INIT ""                    READONLY
+   DATA CSTRING                   INIT ""                    READONLY
+   DATA NOCCUR                    INIT 0                     READONLY
 
    METHOD BEGINDOCX
    METHOD BEGINPAGEX
@@ -747,6 +746,7 @@ CLASS TDOSPRINT FROM TPRINTBASE
    METHOD PRINTDATAX
    METHOD PRINTIMAGE              BLOCK { || NIL }
    METHOD PRINTLINEX
+   METHOD PRINTMODEX
    METHOD SEARCHSTRING
    METHOD SELPRINTERX
    METHOD SETPREVIEWSIZE          BLOCK { || NIL }
@@ -754,7 +754,7 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS TEDIT FROM TTEXT
-   DATA TYPE                      INIT "EDIT" READONLY
+   DATA TYPE                      INIT "EDIT"                READONLY
    DATA NONFOCUSPOS               INIT -4
 
    METHOD DEFINE
@@ -769,7 +769,7 @@ CLASS TEDITRICH FROM TEDIT
    DATA NHEIGHT                   INIT 240
    DATA NWIDTH                    INIT 120
    DATA ONSELCHANGE               INIT NIL
-   DATA TYPE                      INIT "RICHEDIT" READONLY
+   DATA TYPE                      INIT "RICHEDIT"            READONLY
 
    METHOD BACKCOLOR               SETGET
    METHOD DEFINE
@@ -786,11 +786,13 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS TEXCELPRINT FROM TPRINTBASE
+   DATA OEXCEL                    INIT NIL                   READONLY
+   DATA OBOOK                     INIT NIL                   READONLY
+   DATA OHOJA                     INIT NIL                   READONLY
    DATA LSEPARATESHEETS           INIT .F.
-   DATA OEXCEL                    INIT NIL
-   DATA OHOJA                     INIT NIL
 
    METHOD BEGINDOCX
+   METHOD BEGINPAGEX
    METHOD ENDDOCX
    METHOD ENDPAGEX
    METHOD INITX
@@ -814,6 +816,7 @@ CLASS TFORM FROM TWINDOW
    DATA GRAPHCONTROLS             INIT {}
    DATA GRAPHDATA                 INIT {}
    DATA GRAPHTASKS                INIT {}
+   DATA HBACKIMAGE                INIT NIL
    DATA HWNDCLIENT                INIT NIL
    DATA LASTFOCUSEDCONTROL        INIT 0
    DATA LDEFINED                  INIT .F.
@@ -821,6 +824,7 @@ CLASS TFORM FROM TWINDOW
    DATA LFORM                     INIT .T.
    DATA LINTERNAL                 INIT .F.
    DATA LSHOWED                   INIT .F.
+   DATA LSTRETCHBACK              INIT .T.
    DATA LTOPMOST                  INIT .F.
    DATA MAXHEIGHT                 INIT 0
    DATA MAXWIDTH                  INIT 0
@@ -857,13 +861,12 @@ CLASS TFORM FROM TWINDOW
    DATA RANGEHEIGHT               INIT 0
    DATA RANGEWIDTH                INIT 0
    DATA SPLITCHILDLIST            INIT {}
-   DATA TAG                       INIT ""
-   DATA TAGCONTROL
 
    METHOD ACTIVATE
    METHOD ADJUSTWINDOWSIZE
    METHOD AUTOADJUST
    METHOD BACKCOLOR               SETGET
+   METHOD BACKIMAGE               SETGET
    METHOD CENTER
    METHOD CHECKINTERACTIVECLOSE
    METHOD CLIENTSPOS
@@ -918,7 +921,7 @@ CLASS TFORMINTERNAL FROM TFORM
    DATA FOCUSED                   INIT .F.
    DATA LADJUST                   INIT .F.
    DATA LINTERNAL                 INIT .T.
-   DATA TYPE                      INIT "I" READONLY
+   DATA TYPE                      INIT "I"                   READONLY
 
    METHOD COL                     SETGET
    METHOD CONTAINERCOL
@@ -931,7 +934,7 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS TFORMMDICHILD FROM TFORMINTERNAL
-   DATA TYPE                      INIT "L" READONLY
+   DATA TYPE                      INIT "L"                   READONLY
 
    METHOD DEFINE
    METHOD DEFWINDOWPROC
@@ -941,7 +944,7 @@ ENDCLASS
 CLASS TFORMMDICLIENT FROM TFORMINTERNAL
    DATA NHEIGHT                   INIT 0
    DATA NWIDTH                    INIT 0
-   DATA TYPE                      INIT "D" READONLY
+   DATA TYPE                      INIT "D"                   READONLY
 
    METHOD DEFINE
    METHOD DEFWINDOWPROC
@@ -952,7 +955,7 @@ ENDCLASS
 *------------------------------------------------------------------------------*
 CLASS TFORMMAIN FROM TFORM
    DATA LFIRSTACTIVATE            INIT .F.
-   DATA TYPE                      INIT "A" READONLY
+   DATA TYPE                      INIT "A"                   READONLY
 
    METHOD ACTIVATE
    METHOD CHECKINTERACTIVECLOSE
@@ -964,7 +967,7 @@ ENDCLASS
 CLASS TFORMMODAL FROM TFORM
    DATA LOCKEDFORMS               INIT {}
    DATA OPREVWINDOW               INIT NIL
-   DATA TYPE                      INIT "M" READONLY
+   DATA TYPE                      INIT "M"                   READONLY
 
    METHOD ACTIVATE
    METHOD DEFINE
@@ -975,7 +978,7 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS TFORMSPLIT FROM TFORMINTERNAL
-   DATA TYPE                      INIT "X" READONLY
+   DATA TYPE                      INIT "X"                   READONLY
 
    METHOD DEFINE
 ENDCLASS
@@ -985,7 +988,7 @@ CLASS TFRAME FROM TCONTROL
    DATA NHEIGHT                   INIT 140
    DATA NWIDTH                    INIT 140
    DATA TABHANDLE                 INIT 0
-   DATA TYPE                      INIT "FRAME" READONLY
+   DATA TYPE                      INIT "FRAME"               READONLY
 
    METHOD DEFINE
    METHOD EVENTS_COLOR
@@ -1072,7 +1075,7 @@ CLASS TGRID FROM TCONTROL
    DATA SEARCHWRAP                INIT .T.
    DATA SETIMAGELISTCOMMAND       INIT LVM_SETIMAGELIST
    DATA SETIMAGELISTWPARAM        INIT LVSIL_SMALL
-   DATA TYPE                      INIT "GRID" READONLY
+   DATA TYPE                      INIT "GRID"                READONLY
    DATA UINITIME                  INIT 0
    DATA VALID                     INIT NIL
    DATA VALIDMESSAGES             INIT NIL
@@ -1159,7 +1162,7 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS TGRIDBYCELL FROM TGRID
-   DATA TYPE                      INIT "GRIDBYCELL" READONLY
+   DATA TYPE                      INIT "GRIDBYCELL"          READONLY
 
    MESSAGE EDITALLCELLS           METHOD EDITGRID
 
@@ -1210,7 +1213,7 @@ CLASS TGRIDCONTROL
    DATA OCONTROL                  INIT NIL
    DATA OGRID                     INIT NIL
    DATA OWINDOW                   INIT NIL
-   DATA TYPE                      INIT "TGRIDCONTROL" READONLY
+   DATA TYPE                      INIT "TGRIDCONTROL"        READONLY
    DATA VALUE                     INIT NIL
 
    METHOD CONTROLVALUE            SETGET
@@ -1393,24 +1396,24 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS THBPRINTER FROM TPRINTBASE
-   DATA OHBPRN                    INIT NIL
+   DATA OHBPRN                    INIT NIL READONLY
 
-   METHOD INITX
    METHOD BEGINDOCX
-   METHOD ENDDOCX
    METHOD BEGINPAGEX
+   METHOD ENDDOCX
    METHOD ENDPAGEX
-   METHOD RELEASEX
+   METHOD GETDEFPRINTERX
+   METHOD INITX
+   METHOD PRINTBARCODEX
    METHOD PRINTDATAX
    METHOD PRINTIMAGEX
    METHOD PRINTLINEX
    METHOD PRINTRECTANGLEX
+   METHOD PRINTROUNDRECTANGLEX
+   METHOD RELEASEX
    METHOD SELPRINTERX
-   METHOD GETDEFPRINTERX
    METHOD SETCOLORX
    METHOD SETPREVIEWSIZEX
-   METHOD PRINTROUNDRECTANGLEX
-   METHOD PRINTBARCODEX
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -1420,12 +1423,16 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS THTMLPRINTFROMCALC FROM TCALCPRINT
+   METHOD BEGINDOCX
    METHOD ENDDOCX
+   METHOD INITX
 ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS THTMLPRINTFROMEXCEL FROM TEXCELPRINT
+   METHOD BEGINDOCX
    METHOD ENDDOCX
+   METHOD INITX
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -1453,7 +1460,9 @@ CLASS TIMAGE FROM TCONTROL
    DATA STRETCH                   INIT .F.
    DATA TYPE                      INIT "IMAGE" READONLY
 
+   METHOD BLEND
    METHOD BUFFER                  SETGET
+   METHOD COPY
    METHOD CURRENTSIZE
    METHOD DEFINE
    METHOD EVENTS
@@ -1798,6 +1807,8 @@ CLASS TPDF
    DATA AFO3                      INIT {...}
    DATA AREPORT
 
+   METHOD _OOHG_BOX
+   METHOD _OOHG_LINE
    METHOD ATSAY
    METHOD BOLD
    METHOD BOLDITALIC
@@ -1864,12 +1875,11 @@ ENDCLASS
 
 *---------------------------------------
 CLASS TPDFPRINT FROM TPRINTBASE
-   DATA APAPER      AS ARRAY      INIT {} HIDDEN   // ARRAY CON LOS TIPOS DE PAPEL SOPORTADOS POR LA CLASE
-   DATA CDOCUMENT   AS CHARACTER  INIT ""          // NOMBRE DEL DOCUMENTO
-   DATA CPAGEORIENT AS CHARACTER  INIT ""          // P = PORTRAIT, L = LANDSCAPE
-   DATA CPAGESIZE   AS CHARACTER  INIT ""          // TAMAÑO DE PAGINA
-   DATA NFONTTYPE   AS NUMERIC    INIT 1           // TIPO DE FUENTE(NORMAL=0 O NEGRITA=1)
-   DATA OPDF        AS OBJECT                      // EL OBJETO PDF
+   DATA APAPER                    INIT {}                    READONLY // PAPER TYPES SUPPORTED BY PDF CLASS
+   DATA CPAGEORIENT               INIT ""                             // P = PORTRAIT, L = LANDSCAPE
+   DATA CPAGESIZE                 INIT ""                             // PAGE SIZE
+   DATA NFONTTYPE                 INIT 1                              // FONT TYPE (NORMAL=0 OR BOLD=1)
+   DATA OPDF                      INIT NIL                            // REFERENCE TO THE TPDF OBJECT
 
    METHOD BEGINDOCX
    METHOD BEGINPAGEX
@@ -1902,7 +1912,9 @@ CLASS TPICTURE FROM TCONTROL
    DATA STRETCH                   INIT .F.
    DATA TYPE                      INIT "PICTURE" READONLY
 
+   METHOD BLEND
    METHOD BUFFER                  SETGET
+   METHOD COPY
    METHOD CURRENTSIZE
    METHOD DEFINE
    METHOD EVENTS
@@ -1956,104 +1968,109 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS TPRINTBASE
-   DATA ACOLOR                    INIT {1,1,1}                READONLY
-   DATA AFONTCOLOR                INIT {0,0,0}                READONLY
-   DATA ALINCELDA                 INIT {}                     READONLY
-   DATA APAGENAMES                INIT {}                     READONLY
-   DATA APORTS                    INIT {}                     READONLY
-   DATA APRINTERS                 INIT {}                     READONLY
-   DATA CARGO                     INIT  "list"                           // DOCUMENT NAME
-   DATA CFONTNAME                 INIT "Courier New"          READONLY
-   DATA CPAGENAME                 INIT ""                     READONLY   // CURRENT PAGE NAME
-   DATA CPORT                     INIT "prn"
-   DATA CPRINTER                  INIT ""                     READONLY
-   DATA CPRINTLIBRARY             INIT "HBPRINTER"            READONLY
-   DATA CUNITS                    INIT "ROWCOL"               READONLY
-   DATA CVERSION                  INIT "(oohg-tprint)V 4.3"   READONLY
-   DATA EXIT                      INIT .F.                    READONLY
-   DATA IMPREVIEW                 INIT .F.                    READONLY
-   DATA LFONTBOLD                 INIT .F.                    READONLY
-   DATA LFONTITALIC               INIT .F.                    READONLY
-   DATA LFONTSTRIKEOUT            INIT .F.                    READONLY
-   DATA LFONTUNDERLINE            INIT .F.                    READONLY
-   DATA LPRERROR                  INIT .F.                    READONLY
-   DATA LPROP                     INIT .F.                    READONLY
-   DATA LSHOWERRORS               INIT .T.
-   DATA LWINHIDE                  INIT .T.                    READONLY
-   DATA NFONTANGLE                INIT 0                      READONLY
-   DATA NFONTSIZE                 INIT 12
-   DATA NFONTWIDTH                INIT 0                      READONLY
-   DATA NHFIJ                     INIT (12/3.70)              READONLY
-   DATA NLINPAG                   INIT 0                      READONLY
-   DATA NLMARGIN                  INIT 0
-   DATA NMHOR                     INIT (10)/4.75              READONLY
-   DATA NMVER                     INIT (10)/2.35              READONLY
-   DATA NTMARGIN                  INIT 0
-   DATA NUNITSLIN                 INIT 1                      READONLY
-   DATA NVFIJ                     INIT (12/1.65)              READONLY
-   DATA NWPEN                     INIT 0.1                    READONLY   // PEN WIDTH
-   DATA TEMPFILE                  INIT ...                    READONLY
+   DATA ABARCOLOR                 INIT {1, 1, 1}             READONLY    // BRUSH COLOR FOR BARCODES
+   DATA ACOLOR                    INIT {0, 0, 0}             READONLY    // BRUSH COLOR
+   DATA AFONTCOLOR                INIT {0, 0, 0}             READONLY    // FONT COLOR
+   DATA ALINCELDA                 INIT {}                    READONLY
+   DATA APAGENAMES                INIT {}                    READONLY
+   DATA APORTS                    INIT {}                    READONLY
+   DATA APRINTERS                 INIT {}                    READONLY
+   DATA CARGO                     INIT "LIST"                READONLY    // DOCUMENT'S NAME WITHOUT EXTENSION
+   DATA CDOCUMENT                 INIT ""                    READONLY    // DOCUMENT'S NAME WITH EXTENSION
+   DATA CFONTNAME                 INIT "COURIER NEW"         READONLY
+   DATA CPAGENAME                 INIT ""                    READONLY    // CURRENT PAGE NAME
+   DATA CPORT                     INIT "PRN"
+   DATA CPRINTER                  INIT ""
+   DATA CPRINTLIBRARY             INIT "HBPRINTER"           READONLY
+   DATA CTEMPFILE                 INIT TEMP_FILE_NAME        READONLY
+   DATA CUNITS                    INIT "ROWCOL"              READONLY
+   DATA CVERSION                  INIT "(OOHG-TPRINT)V 4.10" READONLY
+   DATA EXIT                      INIT .F.                   READONLY
+   DATA IMPREVIEW                 INIT .T.                   READONLY
+   DATA LFONTBOLD                 INIT .F.                   READONLY
+   DATA LFONTITALIC               INIT .F.                   READONLY
+   DATA LFONTSTRIKEOUT            INIT .F.                   READONLY
+   DATA LFONTUNDERLINE            INIT .F.                   READONLY
+   DATA LLANDSCAPE                INIT .F.                   READONLY    // PAGE ORIENTATION
+   DATA LPRERROR                  INIT .F.                   READONLY
+   DATA LPROP                     INIT .F.                   READONLY
+   DATA LSAVETEMP                 INIT .F.                   READONLY
+   DATA LSHOWERRORS               INIT .T.                   READONLY
+   DATA LWINHIDE                  INIT .F.                   READONLY
+   DATA NFONTANGLE                INIT 0                     READONLY
+   DATA NFONTSIZE                 INIT 12                    READONLY
+   DATA NFONTWIDTH                INIT 0                     READONLY
+   DATA NHFIJ                     INIT ( 12 / 3.70 )         READONLY
+   DATA NLINPAG                   INIT 0                     READONLY
+   DATA NLMARGIN                  INIT 0                     READONLY
+   DATA NMHOR                     INIT ( 10 / 4.75 )         READONLY
+   DATA NMVER                     INIT ( 10 / 2.35 )         READONLY
+   DATA NTMARGIN                  INIT 0                     READONLY
+   DATA NUNITSLIN                 INIT 1                     READONLY
+   DATA NVFIJ                     INIT ( 12 / 1.65 )         READONLY
+   DATA NWPEN                     INIT 0.1                   READONLY    // PEN WIDTH IN MM, DO NOT EXCEED 1
 
    METHOD BEGINDOC
-   METHOD BEGINDOCX               BLOCK {|| NIL}
+   METHOD BEGINDOCX               BLOCK { || NIL }
    METHOD BEGINPAGE
-   METHOD BEGINPAGEX              BLOCK {|| NIL}
+   METHOD BEGINPAGEX              BLOCK { || NIL }
    METHOD CODABAR
    METHOD CODE128
    METHOD CODE3_9
-   METHOD CONDENDOS               BLOCK {|| NIL}
-   METHOD CONDENDOSX              BLOCK {|| NIL}
+   METHOD CONDENDOS               BLOCK { || NIL }
+   METHOD CONDENDOSX              BLOCK { || NIL }
    METHOD EAN13
    METHOD EAN8
    METHOD ENDDOC
-   METHOD ENDDOCX                 BLOCK {|| NIL}
+   METHOD ENDDOCX                 BLOCK { || NIL }
    METHOD ENDPAGE
-   METHOD ENDPAGEX                BLOCK {|| NIL}
+   METHOD ENDPAGEX                BLOCK { || NIL }
    METHOD GETDEFPRINTER
-   METHOD GETDEFPRINTERX          BLOCK {|| NIL}
+   METHOD GETDEFPRINTERX          BLOCK { || NIL }
    METHOD GO_CODE
    METHOD IND25
    METHOD INIT
-   METHOD INITX                   BLOCK {|| NIL}
+   METHOD INITX                   BLOCK { || NIL }
    METHOD INT25
    METHOD MAT25
-   METHOD NORMALDOS               BLOCK {|| NIL}
-   METHOD NORMALDOSX              BLOCK {|| NIL}
+   METHOD NORMALDOS               BLOCK { || NIL }
+   METHOD NORMALDOSX              BLOCK { || NIL }
    METHOD PRINTBARCODE
-   METHOD PRINTBARCODEX           BLOCK {|| NIL}
+   METHOD PRINTBARCODEX           BLOCK { || NIL }
    METHOD PRINTDATA
-   METHOD PRINTDATAX              BLOCK {|| NIL}
+   METHOD PRINTDATAX              BLOCK { || NIL }
    METHOD PRINTDOS
-   METHOD PRINTDOSX               BLOCK {|| NIL}
    METHOD PRINTIMAGE
-   METHOD PRINTIMAGEX             BLOCK {|| NIL}
+   METHOD PRINTIMAGEX             BLOCK { || NIL }
    METHOD PRINTLINE
-   METHOD PRINTLINEX              BLOCK {|| NIL}
+   METHOD PRINTLINEX              BLOCK { || NIL }
    METHOD PRINTMODE
+   METHOD PRINTMODEX              BLOCK { || NIL }
    METHOD PRINTRAW
-   METHOD PRINTRAWX               BLOCK {|| NIL}
    METHOD PRINTRECTANGLE
-   METHOD PRINTRECTANGLEX         BLOCK {|| NIL}
+   METHOD PRINTRECTANGLEX         BLOCK { || NIL }
    METHOD PRINTROUNDRECTANGLE
-   METHOD PRINTROUNDRECTANGLEX    BLOCK {|| NIL}
+   METHOD PRINTROUNDRECTANGLEX    BLOCK { || NIL }
    METHOD RELEASE
-   METHOD RELEASEX                BLOCK {|| NIL}
+   METHOD RELEASEX                BLOCK { || NIL }
    METHOD SELPRINTER
-   METHOD SELPRINTERX             BLOCK {|| NIL}
+   METHOD SELPRINTERX             BLOCK { || NIL }
+   METHOD SETBARCOLOR
    METHOD SETCOLOR
-   METHOD SETCOLORX               BLOCK {|| NIL}
+   METHOD SETCOLORX               BLOCK { || NIL }
    METHOD SETCPL
    METHOD SETFONT
-   METHOD SETFONTX                BLOCK {|| NIL}
+   METHOD SETFONTX                BLOCK { || NIL }
    METHOD SETLMARGIN
    METHOD SETPREVIEWSIZE
-   METHOD SETPREVIEWSIZEX         BLOCK {|| NIL}
+   METHOD SETPREVIEWSIZEX         BLOCK { || NIL }
    METHOD SETPROP
+   METHOD SETSHOWERRORS
    METHOD SETTMARGIN
-   METHOD SETUNITS                                                       // MM O ROWCOL
+   METHOD SETUNITS
    METHOD SUP5
    METHOD UPCA
-   METHOD VERSION
+   METHOD VERSION                 INLINE ::CVERSION
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -2149,7 +2166,9 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS TRAWPRINT FROM TDOSPRINT
+   METHOD BEGINDOCX
    METHOD INITX
+   METHOD PRINTMODEX
    METHOD SELPRINTERX
 ENDCLASS
 
@@ -2197,10 +2216,14 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS TRTFPRINT FROM TPRINTBASE
-   DATA APRINTRTF                 INIT {}
-   DATA NPRINTRTF                 INIT 10
-   DATA LINDENTALL                INIT .F.
-   DATA LPRINTRTF                 INIT .F.
+   DATA APRINTRTF                 INIT {}                    READONLY    // DOCUMENT LINES
+   DATA LINDENTALL                INIT .F.                               // INDENT LINES
+   DATA NPRINTRTF                                            READONLY    // LAST FONT SIZE USED
+   DATA NFONTSIZE                 INIT 10                    READONLY    // IN TPRINTBASE IS 12
+   DATA NMARGINLEF                INIT 10                    READONLY    // IN MM
+   DATA NMARGINSUP                INIT 15                    READONLY    // IN MM
+   DATA NMARGINRIG                INIT 10                    READONLY    // IN MM
+   DATA NMARGININF                INIT 15                    READONLY    // IN MM
 
    METHOD BEGINDOCX
    METHOD ENDDOCX
@@ -2210,6 +2233,7 @@ CLASS TRTFPRINT FROM TPRINTBASE
    METHOD PRINTIMAGE              BLOCK { || NIL }
    METHOD PRINTLINEX
    METHOD SELPRINTERX
+   METHOD SETCPL
    METHOD SETPAGEMARGINS
    METHOD SETPREVIEWSIZE          BLOCK { || NIL }
 ENDCLASS
@@ -2235,7 +2259,7 @@ CLASS TSCROLLBAR FROM TCONTROL
    DATA ONTOP                     INIT NIL
    DATA ONTRACK                   INIT NIL
    DATA SCROLLTYPE                INIT SB_CTL
-   DATA TYPE                      INIT "SCROLLBAR" READONLY
+   DATA TYPE                      INIT "SCROLLBAR"           READONLY
 
    MESSAGE EVENTS_HSCROLL
    MESSAGE LEFT
@@ -2338,10 +2362,10 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS TSPREADSHEETPRINT FROM TPRINTBASE
-   DATA ADOC                      INIT {}
-   DATA NXLS                      INIT 0
-   DATA NLINREL                   INIT 0
-   DATA NLPP                      INIT 60         // LINES PER PAGE
+   DATA ADOC                      INIT {}                    READONLY
+   DATA NLINREL                   INIT 0                     READONLY
+   DATA NLPP                      INIT 60                    READONLY    // LINES PER PAGE
+   DATA NXLS                      INIT 0                     READONLY
 
    METHOD ADDPAGE
    METHOD BEGINDOCX
@@ -2349,9 +2373,9 @@ CLASS TSPREADSHEETPRINT FROM TPRINTBASE
    METHOD ENDPAGEX
    METHOD INITX
    METHOD PRINTDATAX
-   METHOD PRINTIMAGE              BLOCK { || NIL }
+   METHOD PRINTIMAGE             BLOCK { || NIL }
    METHOD RELEASEX
-   METHOD SETPREVIEWSIZE          BLOCK { || NIL }
+   METHOD SETPREVIEWSIZE         BLOCK { || NIL }
 ENDCLASS
 
 *------------------------------------------------------------------------------*

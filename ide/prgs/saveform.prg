@@ -1,18 +1,22 @@
 /*
- * $Id: saveform.prg,v 1.5 2014-06-26 02:13:26 fyurisich Exp $
+ * $Id: saveform.prg,v 1.6 2014-07-04 20:16:03 fyurisich Exp $
  */
 
 /////#include 'oohg.ch'
 
+/*
+   All keywords, properties and control names must be followed by a space.
+*/
+
 DECLARE WINDOW Form_1
 
 *------------------------------------------------------------------------------*
-METHOD Save(Cas) CLASS TFORM1
+METHOD Save( lSaveAs ) CLASS TFORM1
 *------------------------------------------------------------------------------*
-LOCAL i, h, BaseRow, BaseCol, TitleHeight, BorderWidth, BorderHeight, Name, Row, Col, Width, height, Output, j, p, k, m, jn, npos, mlyform
-LOCAL swpop := 0
+LOCAL i, h, BaseRow, BaseCol, TitleHeight, BorderWidth, BorderHeight, cName, nRow, nCol, nWidth, nHeight, Output, j, p, k, m, jn, npos, mlyform
+LOCAL swpop, lDeleted, archivo, signiv, niv, nnivaux, nSpacing := 3
 
-   IF .Not. IsWindowDefined( Form_1 )
+   IF ! IsWindowDefined( Form_1 )
       RETURN
    ENDIF
 
@@ -38,2105 +42,2789 @@ LOCAL swpop := 0
    BorderWidth := GetBorderWidth()
    BorderHeight := GetBorderHeight()
 
+//***************************  Header
    Output := '' + CRLF
    Output += '* ooHG IDE Plus form generated code' + CRLF
    Output += '* (c)2003-2014 Ciro Vargas Clemow <pcman2010@yahoo.com > ' + CRLF
    Output += CRLF
+
+//***************************  Form start
    Output += 'DEFINE WINDOW TEMPLATE ;' + CRLF
-   Output += '   AT ' + LTrim( Str( BaseRow ) ) + ', ' + LTrim( Str( BaseCol ) ) + ' ;' + CRLF
-   Output += IIF( ! Empty( myForm:cfobj ), "   OBJ " + myForm:cfobj + " ;" + CRLF, "")
-   Output += '   WIDTH ' + LTrim( Str( BaseWidth ) ) + ' ;' + CRLF
-   Output += '   HEIGHT ' + LTrim(Str( BaseHeight ) )
+   Output += Space( nSpacing ) + 'AT ' + LTrim( Str( BaseRow ) ) + ', ' + LTrim( Str( BaseCol ) ) + ' ;' + CRLF
+   Output += IIF( ! Empty( myForm:cfobj ), Space( nSpacing ) + 'OBJ ' + AllTrim( myForm:cfobj ) + " ;" + CRLF, '')
+   Output += Space( nSpacing ) + 'WIDTH ' + LTrim( Str( BaseWidth ) ) + ' ;' + CRLF
+   Output += Space( nSpacing ) + 'HEIGHT ' + LTrim( Str( BaseHeight ) )
    IF myForm:nfvirtualw > 0
-      Output +=  ' ;' + CRLF + '   VIRTUAL WIDTH ' + LTrim(Str( myForm:nfvirtualw ) )
+      Output += ' ;' + CRLF + Space( nSpacing ) + 'VIRTUAL WIDTH ' + LTrim( Str( myForm:nfvirtualw ) )
    ENDIF
    IF myForm:nfvirtualh > 0
-      Output += ' ;' + CRLF + '  VIRTUAL HEIGHT ' + LTrim( Str( myForm:nfvirtualh ) )
+      Output += ' ;' + CRLF + Space( nSpacing ) + 'VIRTUAL HEIGHT ' + LTrim( Str( myForm:nfvirtualh ) )
    ENDIF
    IF Len( myForm:cftitle ) > 0
-      Output += ' ;' + CRLF + '   TITLE ' + "'" + myForm:cftitle + "'"
+      Output += ' ;' + CRLF + Space( nSpacing ) + 'TITLE ' + "'" + AllTrim( myForm:cftitle ) + "'"
    ENDIF
    IF Len( myForm:cficon ) > 0
-      Output += ' ;' + CRLF + '   ICON ' + "'" + myForm:cficon + "'"
+      Output += ' ;' + CRLF + Space( nSpacing ) + 'ICON ' + "'" + AllTrim( myForm:cficon ) + "'"
    ENDIF
-   Output += IIF( myForm:lfmain, ' ;' + CRLF + "   MAIN", "" )
-   Output += IIF( myForm:lfsplitchild, ' ;' + CRLF + "   SPLITCHILD", "" )
-   Output += IIF( myForm:lfchild, ' ;' + CRLF + "   CHILD", "" )
-   Output += IIF( myForm:lfmodal, ' ;' + CRLF + "   MODAL", "" )
-   Output += IIF( myForm:lfnoshow, ' ;' + CRLF + "   NOSHOW", "" )
-   Output += IIF( myForm:lftopmost, ' ;' + CRLF + "   TOPMOST", "" )
-   Output += IIF( myForm:lfnoautorelease, ' ;' + CRLF + "   NOAUTORELEASE", "" )
-   Output += IIF( myForm:lfnominimize, ' ;' + CRLF + "   NOMINIMIZE", "" )
-   Output += IIF( myForm:lfnomaximize, ' ;' + CRLF + "   NOMAXIMIZE", "" )
-   Output += IIF( myForm:lfnosize, ' ;' + CRLF + "   NOSIZE", "" )
-   Output += IIF( myForm:lfnosysmenu, ' ;' + CRLF + "   NOSYSMENU", "" )
-   Output += IIF( myForm:lfnocaption, ' ;' + CRLF + "   NOCAPTION", "" )
+   Output += IIF( myForm:lfmain, ' ;' + CRLF + Space( nSpacing ) + 'MAIN ', '' )
+   Output += IIF( myForm:lfsplitchild, ' ;' + CRLF + Space( nSpacing ) + 'SPLITCHILD ', '' )
+   Output += IIF( myForm:lfchild, ' ;' + CRLF + Space( nSpacing ) + 'CHILD ', '' )
+   Output += IIF( myForm:lfmodal, ' ;' + CRLF + Space( nSpacing ) + 'MODAL ', '' )
+   Output += IIF( myForm:lfnoshow, ' ;' + CRLF + Space( nSpacing ) + 'NOSHOW ', '' )
+   Output += IIF( myForm:lftopmost, ' ;' + CRLF + Space( nSpacing ) + 'TOPMOST ', '' )
+   Output += IIF( myForm:lfnoautorelease, ' ;' + CRLF + Space( nSpacing ) + 'NOAUTORELEASE ', '' )
+   Output += IIF( myForm:lfnominimize, ' ;' + CRLF + Space( nSpacing ) + 'NOMINIMIZE ', '' )
+   Output += IIF( myForm:lfnomaximize, ' ;' + CRLF + Space( nSpacing ) + 'NOMAXIMIZE ', '' )
+   Output += IIF( myForm:lfnosize, ' ;' + CRLF + Space( nSpacing ) + 'NOSIZE ', '' )
+   Output += IIF( myForm:lfnosysmenu, ' ;' + CRLF + Space( nSpacing ) + 'NOSYSMENU ', '' )
+   Output += IIF( myForm:lfnocaption, ' ;' + CRLF + Space( nSpacing ) + 'NOCAPTION ', '' )
    IF Len( myForm:cfcursor ) > 0
-      Output += ' ;' + CRLF + '   CURSOR ' + "'" + myForm:cfcursor + "'"
+      Output += ' ;' + CRLF + Space( nSpacing ) + 'CURSOR ' + "'" + AllTrim( myForm:cfcursor ) + "'"
    ENDIF
    IF Len( myForm:cfoninit ) > 0
-      Output += ' ;' + CRLF + '   ON INIT ' + myForm:cfoninit
+      Output += ' ;' + CRLF + Space( nSpacing ) + 'ON INIT ' + AllTrim( myForm:cfoninit )
    ENDIF
    IF Len( myForm:cfonrelease ) > 0
-      Output += ' ;' + CRLF + '   ON RELEASE ' + myForm:cfonrelease
+      Output += ' ;' + CRLF + Space( nSpacing ) + 'ON RELEASE ' + AllTrim( myForm:cfonrelease )
    ENDIF
    IF Len( myForm:cfoninteractiveclose ) > 0
-      Output += ' ;' + CRLF + '   ON INTERACTIVECLOSE ' + myForm:cfoninteractiveclose
+      Output += ' ;' + CRLF + Space( nSpacing ) + 'ON INTERACTIVECLOSE ' + AllTrim( myForm:cfoninteractiveclose )
    ENDIF
    IF Len( myForm:cfonmouseclick ) > 0
-      Output += ' ;' + CRLF + '   ON MOUSECLICK ' + myForm:cfonmouseclick
+      Output += ' ;' + CRLF + Space( nSpacing ) + 'ON MOUSECLICK ' + AllTrim( myForm:cfonmouseclick )
    ENDIF
    IF Len( myForm:cfonmousedrag ) > 0
-      Output += ' ;' + CRLF + '   ON MOUSEDRAG ' + myForm:cfonmousedrag
+      Output += ' ;' + CRLF + Space( nSpacing ) + 'ON MOUSEDRAG ' + AllTrim( myForm:cfonmousedrag )
    ENDIF
    IF Len( myForm:cfonmousemove ) > 0
-      Output += ' ;' + CRLF + '   ON MOUSEMOVE ' + myForm:cfonmousemove
+      Output += ' ;' + CRLF + Space( nSpacing ) + 'ON MOUSEMOVE ' + AllTrim( myForm:cfonmousemove )
    ENDIF
    IF Len( myForm:cfonsize ) > 0
-      Output += ' ;' + CRLF + '   ON SIZE ' + myForm:cfonsize
+      Output += ' ;' + CRLF + Space( nSpacing ) + 'ON SIZE ' + AllTrim( myForm:cfonsize )
    ENDIF
    IF Len( myForm:cfonpaint ) > 0
-      Output += ' ;' + CRLF + '   ON PAINT ' + myForm:cfonpaint
+      Output += ' ;' + CRLF + Space( nSpacing ) + 'ON PAINT ' + AllTrim( myForm:cfonpaint )
    ENDIF
-   IF Len( myForm:cfbackcolor ) > 0 .AND. myForm:cfbackcolor # 'NIL'
-      Output += ' ;' + CRLF + '   BACKCOLOR ' + myForm:cfbackcolor
+   IF myForm:cfbackcolor # 'NIL' .AND. Len( myForm:cfbackcolor ) > 0
+      Output += ' ;' + CRLF + Space( nSpacing ) + 'BACKCOLOR ' + AllTrim( myForm:cfbackcolor )
    ENDIF
    IF Len( myForm:cffontname ) > 0
-      Output += ' ;' + CRLF + "   FONT " + "'" + myForm:cffontname + "'"
+      Output += ' ;' + CRLF + Space( nSpacing ) + 'FONT ' + "'" + AllTrim( myForm:cffontname ) + "'"
    ENDIF
    IF myForm:nffontsize > 0
-      Output += ' ;' + CRLF + '   SIZE ' + LTrim( Str( myForm:nffontsize ) )
+      Output += ' ;' + CRLF + Space( nSpacing ) + 'SIZE ' + LTrim( Str( myForm:nffontsize ) )
    ELSE
-      Output += ' ;' + CRLF + '   SIZE ' + LTrim( Str( 10 ) )
+      Output += ' ;' + CRLF + Space( nSpacing ) + 'SIZE ' + LTrim( Str( 10 ) )
    ENDIF
-      Output += IIF( myForm:lfgrippertext, "GRIPPERTEXT", "")
+   Output += IIF( myForm:lfgrippertext, ' ;' + CRLF + Space( nSpacing ) + 'GRIPPERTEXT ', '' )
    IF Len( myForm:cfnotifyicon ) > 0
-      Output += ' ;' + CRLF + "   NOTIFYICON " + "'" + myForm:cfnotifyicon + "'"
+      Output += ' ;' + CRLF + Space( nSpacing ) + 'NOTIFYICON ' + "'" + AllTrim( myForm:cfnotifyicon ) + "'"
    ENDIF
    IF Len( myForm:cfnotifytooltip ) > 0
-      Output += ' ;' + CRLF + "   NOTIFYTOOLTIP " + "'" + myForm:cfnotifytooltip + "'"
+      Output += ' ;' + CRLF + Space( nSpacing ) + 'NOTIFYTOOLTIP ' + "'" + AllTrim( myForm:cfnotifytooltip ) + "'"
    ENDIF
    IF Len( myForm:cfonnotifyclick ) > 0
-      Output += ' ;' + CRLF + '   ON NOTIFYCLICK ' + myForm:cfonnotifyclick
+      Output += ' ;' + CRLF + Space( nSpacing ) + 'ON NOTIFYCLICK ' + AllTrim( myForm:cfonnotifyclick )
    ENDIF
-   Output += IIF( myForm:lfbreak, ' ;' + CRLF + "   BREAK", "")
-   Output += IIF( myForm:lffocused, ' ;' + CRLF + "   FOCUSED", "")
+   Output += IIF( myForm:lfbreak, ' ;' + CRLF + Space( nSpacing ) + 'BREAK ', '')
+   Output += IIF( myForm:lffocused, ' ;' + CRLF + Space( nSpacing ) + ' FOCUSED ', '')
    IF Len( myForm:cfongotfocus ) > 0
-      Output += ' ;' + CRLF + '   ON GOTFOCUS ' + myForm:cfongotfocus
+      Output += ' ;' + CRLF + Space( nSpacing ) + 'ON GOTFOCUS ' + AllTrim( myForm:cfongotfocus )
    ENDIF
    IF Len( myForm:cfonlostfocus ) > 0
-      Output += ' ;' + CRLF + '   ON LOSTFOCUS ' + myForm:cfonlostfocus
+      Output += ' ;' + CRLF + Space( nSpacing ) + 'ON LOSTFOCUS ' + AllTrim( myForm:cfonlostfocus )
    ENDIF
    IF Len( myForm:cfonscrollup ) > 0
-      Output += ' ;' + CRLF + '   ON SCROLLUP ' + myForm:cfonscrollup
+      Output += ' ;' + CRLF + Space( nSpacing ) + 'ON SCROLLUP ' + AllTrim( myForm:cfonscrollup )
    ENDIF
    IF Len( myForm:cfonscrolldown ) > 0
-      Output += ' ;' + CRLF + '   ON SCROLLDOWN ' + myForm:cfonscrolldown
+      Output += ' ;' + CRLF + Space( nSpacing ) + 'ON SCROLLDOWN ' + AllTrim( myForm:cfonscrolldown )
    ENDIF
    IF Len( myForm:cfonscrollright ) > 0
-      Output += ' ;' + CRLF + '   ON SCROLLRIGHT ' + myForm:cfonscrollright
+      Output += ' ;' + CRLF + Space( nSpacing ) + 'ON SCROLLRIGHT ' + AllTrim( myForm:cfonscrollright )
    ENDIF
    IF Len( myForm:cfonscrollleft ) > 0
-      Output += ' ;' + CRLF + '   ON SCROLLLEFT ' + myForm:cfonscrollleft
+      Output += ' ;' + CRLF + Space( nSpacing ) + 'ON SCROLLLEFT ' + AllTrim( myForm:cfonscrollleft )
    ENDIF
    IF Len( myForm:cfonhscrollbox ) > 0
-      Output += ' ;' + CRLF + '   ON HSCROLLBOX ' + myForm:cfonhscrollbox
+      Output += ' ;' + CRLF + Space( nSpacing ) + 'ON HSCROLLBOX ' + AllTrim( myForm:cfonhscrollbox )
    ENDIF
    IF Len( myForm:cfonvscrollbox ) > 0
-      Output += ' ;' + CRLF + '   ON VSCROLLBOX ' + myForm:cfonvscrollbox
+      Output += ' ;' + CRLF + Space( nSpacing ) + 'ON VSCROLLBOX ' + AllTrim( myForm:cfonvscrollbox )
    ENDIF
-   Output += IIF( myForm:lfhelpbutton, ' ;' + CRLF + "HELPBUTTON", "")
+   Output += IIF( myForm:lfhelpbutton, ' ;' + CRLF + Space( nSpacing ) + 'HELPBUTTON ', '')
    IF Len( myForm:cfonmaximize ) > 0
-      Output += ' ;' + CRLF + '   ON MAXIMIZE ' + myForm:cfonmaximize
+      Output += ' ;' + CRLF + Space( nSpacing ) + 'ON MAXIMIZE ' + AllTrim( myForm:cfonmaximize )
    ENDIF
    IF Len( myForm:cfonminimize ) > 0
-      Output += ' ;' + CRLF + '   ON MINIMIZE ' + myForm:cfonminimize
+      Output += ' ;' + CRLF + Space( nSpacing ) + 'ON MINIMIZE ' + AllTrim( myForm:cfonminimize )
    ENDIF
    Output += CRLF + CRLF
+/*
+   TODO: Add this properties
 
-// HASTA AQUI DEFINICION BASICA DE LA FORMA
+   [ <modalsize: MODALSIZE> ] ;
+   [ <mdi: MDI> ] ;
+   [ <mdiclient: MDICLIENT> ] ;
+   [ <mdichild: MDICHILD> ] ;
+   [ <internal: INTERNAL> ] ;
+   [ ON MOVE <MoveProcedure> ] ;
+   [ ON RESTORE <RestoreProcedure> ] ;
+   [ <rtl: RTL> ] ;
+   [ <clientarea: CLIENTAREA> ] ;
+   [ ON RCLICK <RClickProcedure> ] ;
+   [ ON MCLICK <MClickProcedure> ] ;
+   [ ON DBLCLICK <DblClickProcedure> ] ;
+   [ ON RDBLCLICK <RDblClickProcedure> ] ;
+   [ ON MDBLCLICK <MDblClickProcedure> ] ;
+   [ MINWIDTH <minwidth> ] ;
+   [ MAXWIDTH <maxwidth> ] ;
+   [ MINHEIGHT <minheight> ] ;
+   [ MAXHEIGHT <maxheight> ] ;
+   [ BACKIMAGE <backimage> [ <stretch: STRETCH> ] ] ;
+*/
 
+//***************************  Statusbar
    wvalor := .F.
    IF myForm:lsstat
       wvalor := .T.
    ENDIF
    IF wvalor
-      Output += '   DEFINE STATUSBAR'
+      // Must end with a space
+      Output += Space( nSpacing ) + 'DEFINE STATUSBAR '
       IF ! Empty( myForm:cscobj )
          Output += ' ;' + CRLF
-         Output += '      OBJ ' + myForm:cscobj
+         Output += Space( nSpacing * 2 ) + 'OBJ ' + AllTrim( myForm:cscobj )
       ENDIF
       Output += CRLF
 
       IF Len( myForm:cscaption ) > 0
-         Output += '      STATUSITEM ' + "'" + myForm:cscaption + "'"
+         Output += Space( nSpacing * 2 ) + 'STATUSITEM ' + "'" + AllTrim( myForm:cscaption ) + "'"
       ELSE
-         Output += "      STATUSITEM ''"
+         Output += Space( nSpacing * 2 ) + 'STATUSITEM ' + "'" + "'"
       ENDIF
       IF myForm:nswidth > 0
          Output += ' ;' + CRLF
-         Output += '         WIDTH ' + LTrim( Str( myForm:nswidth ) )
+         Output += Space( nSpacing * 3 ) + 'WIDTH ' + LTrim( Str( myForm:nswidth ) )
       ENDIF
       IF Len( myForm:csaction ) > 0
          Output += ' ;' + CRLF
-         Output += '         ACTION ' + myForm:csaction
+         Output += Space( nSpacing * 3 ) + 'ACTION ' + AllTrim( myForm:csaction )
       ENDIF
       IF Len( myForm:csicon ) > 0
          Output += ' ;' + CRLF
-         Output += "         ICON '" + myForm:csicon + "'"
+         Output += Space( nSpacing * 3 ) + 'ICON ' + "'" + AllTrim( myForm:csicon ) + "'"
       ENDIF
       IF myForm:lsflat
          Output += ' ;' + CRLF
-         Output += '         FLAT'
+         Output += Space( nSpacing * 3 ) + 'FLAT '
       ENDIF
       IF myForm:lsraised
          Output += ' ;' + CRLF
-         Output += '         RAISED'
+         Output += Space( nSpacing * 3 ) + 'RAISED '
       ENDIF
       IF Len( myForm:cstooltip ) > 0
          Output += ' ;' + CRLF
-         Output += "         TOOLTIP '" + myForm:cstooltip + "'"
+         Output += Space( nSpacing * 3 ) + 'TOOLTIP ' + "'" + AllTrim( myForm:cstooltip ) + "'"
       ENDIF
       Output += CRLF
 
       IF myForm:lskeyboard
-         Output += '      KEYBOARD' + CRLF
+         Output += Space( nSpacing * 2 ) + 'KEYBOARD ' + CRLF
       ENDIF
 
       IF myForm:lsdate
-         Output += '      DATE ;' + CRLF
-         Output += '         WIDTH ' + LTrim( Str( 80 ) ) + CRLF
+         Output += Space( nSpacing * 2 ) + 'DATE ;' + CRLF
+         Output += Space( nSpacing * 3 ) + 'WIDTH ' + LTrim( Str( 80 ) ) + CRLF
       ENDIF
 /*
       IF Len( csdateaction ) > 0
-         Output += '      ACTION ' + csdateaction + ' ;' + CRLF
+         Output += Space( nSpacing * 2 ) + 'ACTION ' + AllTrim( csdateaction ) + ' ;' + CRLF
       ENDIF
       IF Len( csdatetooltip ) > 0
-         Output += '      TOOLTIP ' + '"' + csdatetooltip + '" ;' + CRLF
+         Output += Space( nSpacing * 2 ) + 'TOOLTIP ' + '"' + AllTrim( csdatetooltip ) + '" ;' + CRLF
       ENDIF
 */
 
       IF myForm:lstime
-         Output += '      CLOCK ;' + CRLF
-         Output += '         WIDTH ' + LTrim( Str( 80 ) ) + CRLF
+         Output += Space( nSpacing * 2 ) + 'CLOCK ;' + CRLF
+         Output += Space( nSpacing * 3 ) + 'WIDTH ' + LTrim( Str( 80 ) ) + CRLF
       ENDIF
 /*
       IF Len( cstimeaction ) > 0
-         Output += '      ACTION ' + cstimeaction + ' ;' + CRLF
+         Output += Space( nSpacing * 2 ) + 'ACTION ' + AllTrim( cstimeaction ) + ' ;' + CRLF
       ENDIF
       IF Len( cstimetooltip ) > 0
-         Output += '      TOOLTIP ' + '"' + cstimetooltip + '" ;' + CRLF
+         Output += Space( nSpacing * 2 ) + 'TOOLTIP ' + '"' + AllTrim( cstimetooltip ) + '" ;' + CRLF
       ENDIF
 */
 
-      Output += '   END STATUSBAR' + CRLF
+      Output += Space( nSpacing ) + 'END STATUSBAR ' + CRLF
       Output += CRLF
    ENDIF
+/*
+   TODO: Add this properties
 
-//***************************  Inicio de creación de menú principal
+   [ FONT <fontname> ] ;
+   [ SIZE <fontsize> ] ;
+   [ <bold: BOLD> ] ;
+   [ <top: TOP> ] ;
+   [ <italic: ITALIC> ] ;
+   [ <underline: UNDERLINE> ] ;
+   [ <strikeout: STRIKEOUT> ] ;
+   [ MESSAGE <msg> ] ;
+   [ <noautoadjust: NOAUTOADJUST> ] ;
+   [ WIDTH <nSize> ] ;
+   [ ACTION <uAction> ] ;
+   [ TOOLTIP <cToolTip> ] ;
+   [ <align: LEFT, CENTER, RIGHT> ] ;
+
+#xcommand STATUSITEM [ <cMsg> ] ;
+      [ WIDTH <nSize> ] ;
+      [ ACTION <uAction> ] ;
+      [ ICON <cBitmap> ] ;
+      [ <styl:FLAT, RAISED> ] ;
+      [ TOOLTIP <cToolTip> ] ;
+      [ <align:LEFT, CENTER, RIGHT> ] ;
+
+#xcommand DATE ;
+      [ <w: WIDTH > <nSize> ] ;
+      [ ACTION <uAction> ] ;
+      [ TOOLTIP <cToolTip> ] ;
+      [ <styl:FLAT, RAISED> ] ;
+      [ <align:LEFT, CENTER, RIGHT> ] ;
+
+#xcommand CLOCK ;
+      [ WIDTH <nSize> ] ;
+      [ ACTION <uAction> ] ;
+      [ TOOLTIP <cToolTip> ] ;
+      [ <ampm: AMPM> ] ;
+      [ ICON <cBitmap> ] ;
+      [ <styl:FLAT, RAISED> ] ;
+      [ <align:LEFT, CENTER, RIGHT> ] ;
+
+#xcommand KEYBOARD ;
+      [ WIDTH <nSize> ] ;
+      [ ACTION <uAction> ] ;
+      [ TOOLTIP <cToolTip> ] ;
+      [ ICON <cBitmap> ] ;
+      [ <styl:FLAT, RAISED> ] ;
+      [ <align:LEFT, CENTER, RIGHT> ] ;
+*/
+
+//***************************  Main menu
    CLOSE DATABASES
+   lDeleted := SET( _SET_DELETED, .T. )
 
    IF File( myForm:cfname + '.mnm' )
       archivo := myForm:cfname + '.mnm'
       SELECT 10
-      use &archivo exclusive alias menues
-      pack
-      IF reccount() > 0
-         Output += '   DEFINE MAIN MENU' + CRLF
-         do while .not. eof()
-            IF recn() < reccount()
-               skip
-               signiv := level
-               skip -1
-            ELSE
+      USE &archivo EXCLUSIVE ALIAS menues
+      GO TOP
+      IF ! Eof()
+         Output += Space( nSpacing ) + 'DEFINE MAIN MENU ' + CRLF
+         swpop := 0
+         DO WHILE ! Eof()
+            SKIP
+            IF Eof()
                signiv := 0
+            ELSE
+               signiv := menues->level
             ENDIF
-            niv := level
-            IF signiv > level
-               IF lower( trim( auxit ) ) = 'separator'
-                  Output += space( 6 * level + 3 ) + 'SEPARATOR' + CRLF
+            SKIP -1
+            niv := menues->level
+            IF signiv > menues->level
+               IF Lower( AllTrim( menues->auxit ) ) == 'separator'
+                  Output += Space( nSpacing * ( menues->level + 2 ) ) + 'SEPARATOR ' + CRLF
                ELSE
-                  Output +=space( 6 * level + 3 ) + 'POPUP ' + "'" + Trim( auxit ) + "'" + IIF( Trim( named ) # "", " NAME " + "'" + AllTrim( named ) + "'", "") + " " + CRLF
-                  IF menues->enabled = 'X'
-                     cc := "//" + mlyform + '.' + Trim( named ) + '.enabled := .F.'
-                     Output += cc + CRLF
-                     cc := "SetProperty('" + mlyform + "', " + "'" + trim(named) + "', " + "'enabled', .F.)"
-                     Output += cc + CRLF
+                  Output += Space( nSpacing * ( menues->level + 2 ) ) + 'POPUP ' + "'" + AllTrim( menues->auxit ) + "'" + IIF( AllTrim( menues->named ) # '', " NAME " + "'" + AllTrim( menues->named ) + "'", '') + CRLF
+                  IF menues->enabled == 'X'
+// This is needed to read DISABLED clause         TODO: Add DISABLE clause to menus
+                     Output += Space( nSpacing * ( menues->level + 2 ) ) + "// " + mlyform + '.' + AllTrim( menues->named ) + '.enabled := .F.' + CRLF
+                     Output += Space( nSpacing * ( menues->level + 2 ) ) + "SetProperty('" + mlyform + "', " + "'" + AllTrim( menues->named ) + "', " + "'enabled', .F.)" + CRLF
                   ENDIF
                   swpop ++
                ENDIF
             ELSE
-               IF lower( trim( auxit ) ) = 'separator'
-                  Output += space( 6 * level + 3 ) + 'SEPARATOR' + CRLF
+               IF Lower( AllTrim( menues->auxit ) ) == 'separator'
+                  Output += Space( nSpacing * ( menues->level + 2 ) ) + 'SEPARATOR ' + CRLF
                ELSE
-                  Output += space( 6 * level + 3 ) + 'ITEM ' + "'" + trim(auxit) + "'" + ' ACTION ' + IIF( Len( Trim( action ) ) # 0, Trim( ACTION ), "MsgBox( 'item' )") + " "
-                  IF Trim( named ) == ''
-                     Output += "" + IIF( TRIM(menues->IMAGE) # "", " IMAGE " + "'" + AllTrim(menues->IMAGE) + "'", "") + " " + CRLF
+                  Output += Space( nSpacing * ( menues->level + 2 ) ) + 'ITEM ' + "'" + AllTrim( menues->auxit ) + "'" + ' ACTION ' + IIF( Len( AllTrim( menues->action ) ) # 0, AllTrim( menues->action ), "MsgBox( 'item' )") + ' '
+                  IF AllTrim( menues->named ) == ''
+                     Output += '' + IIF( AllTrim( menues->image ) # '', ' IMAGE ' + "'" + AllTrim( menues->image ) + "'", '') + ' ' + CRLF
                   ELSE
-                     Output += "NAME " + "'" + AllTrim(NAMED) + "'" + IIF( TRIM(menues->IMAGE) # "", " IMAGE " + "'" + AllTrim(menues->IMAGE) + "'", "") + " " + CRLF
-                     IF menues->checked = 'X'
-                        cc := "//" + mlyform + '.' + trim(named) + '.checked := .F.'
-                        Output += cc + CRLF
-                        cc := "SetProperty('" + mlyform + "', " + "'" + trim(named) + "', " + "'checked', .F.)"
-                        Output += cc + CRLF
+                     Output += "NAME " + "'" + AllTrim( menues->named ) + "'" + IIF( AllTrim( menues->image ) # '', " IMAGE " + "'" + AllTrim( menues->image ) + "'", '') + CRLF
+                     IF menues->checked == 'X'
+// This is needed to read CHECKED clause         TODO: Add CHECKED clause to menus
+                        Output += Space( nSpacing * ( menues->level + 2 ) ) + "// " + mlyform + '.' + AllTrim( menues->named ) + '.checked := .F.' + CRLF
+                        Output += Space( nSpacing * ( menues->level + 2 ) ) + "SetProperty('" + mlyform + "', " + "'" + AllTrim( menues->named ) + "', " + "'checked', .F.)" + CRLF
                      ENDIF
-                     IF menues->enabled = 'X'
-                        cc := "//" + mlyform + '.' + trim(named) + '.enabled := .F.'
-                        Output += cc + CRLF
-                        cc := "SetProperty('" + mlyform + "', " + "'" + trim(named) + "', " + "'enabled', .F.)"
-                        Output += cc + CRLF
+                     IF menues->enabled == 'X'
+                        Output += Space( nSpacing * ( menues->level + 2 ) ) + "// " + mlyform + '.' + AllTrim( menues->named ) + '.enabled := .F.' + CRLF
+                        Output += Space( nSpacing * ( menues->level + 2 ) ) + "SetProperty('" + mlyform + "', " + "'" + AllTrim( menues->named ) + "', " + "'enabled', .F.)" + CRLF
                      ENDIF
                   ENDIF
                ENDIF
-               do while signiv < niv
-                  Output += space( ( niv - 1 ) * 6 + 3 ) + 'END POPUP' + CRLF
+               DO WHILE signiv < niv
+                  Output += Space( nSpacing * ( niv + 1) ) + 'END POPUP ' + CRLF
                   swpop --
                   niv --
-               enddo
+               ENDDO
             ENDIF
-            skip
-         enddo
+            SKIP
+         ENDDO
          nnivaux := niv - 1
-         do while swpop > 0
+         DO WHILE swpop > 0
             nnivaux --
-            Output += space( nnivaux * 6 + 3 ) + 'END POPUP' + CRLF
-            swpop--
-         enddo
-         Output += '   END MENU' + CRLF + CRLF
+            Output += Space( nSpacing * ( nnivaux + 1 ) ) + 'END POPUP ' + CRLF
+            swpop --
+         ENDDO
+         Output += Space( nSpacing ) + 'END MENU ' + CRLF + CRLF
       ENDIF
       CLOSE DATABASES
    ENDIF
-//***************************  Fin de creación de menú principal
 
-        IF file(myForm:cfname + '.mnc')
-           archivo := myForm:cfname + '.mnc'
-           select 20
-           use &archivo alias menues
-           IF  reccount( ) > 0
-               Output +=CRLF + 'DEFINE CONTEXT MENU ' + CRLF
-               **************
-               do while .not. eof()
-               IF lower(trim(auxit))='separator'
-                  Output +=space(6*level) + 'SEPARATOR' + CRLF
-               ELSE
-                  Output +=space(6*level) + 'ITEM ' + "'" + trim(auxit) + "'" + ' ACTION ' + IIF( Len( trim(action)) # 0, trim(ACTION), "msgbox('item')") + " "
-                  IF trim(named)==''
-                     Output +="" + IIF( Len( TRIM(menues->IMAGE)) # 0, " IMAGE " + "'" + AllTrim(menues->IMAGE) + "'", "") + " " + CRLF
-                  ELSE
-                     Output += "NAME " + "'" + AllTrim(NAMED) + "'" + IIF( Len( TRIM(menues->IMAGE)) # 0, " IMAGE " + "'" + AllTrim(menues->IMAGE) + "'", "") + " " + CRLF
-                     IF menues->checked='X'
-                        cc := "//" + mlyform + '.' + trim(named) + '.checked := .F.'
-                        Output += cc + CRLF
-                        cc := "SetProperty('" + mlyform + "', " + "'" + trim(named) + "', " + "'checked', .F.)"
-
-
-////                        cc := mlyform + '.' + trim(named) + '.checked := .T.'
-                        Output += cc + CRLF
-                     ENDIF
-                     IF menues->enabled='X'
-
-                        cc := "//" + mlyform + '.' + trim(named) + '.enabled := .F.'
-                        Output += cc + CRLF
-                        cc := "SetProperty('" + mlyform + "', " + "'" + trim(named) + "', " + "'enabled', .F.)"
-
-                        Output += cc + CRLF
-                     ENDIF
-                  ENDIF
-               ENDIF
-               skip
-               enddo
-               Output +=CRLF
-               Output += '   END MENU' + CRLF + CRLF
-               use
-****    fin de menu contextual
-           ENDIF
-        ENDIF
-        close data
-        IF file(myForm:cfname + '.mnn')
-           archivo := myForm:cfname + '.mnn'
-           select 30
-           use &archivo alias menues
-           IF  reccount( ) > 0
-               Output +=CRLF + 'DEFINE NOTIFY MENU ' + CRLF
-               **************
-               do while .not. eof()
-               IF lower(trim(auxit))='separator'
-                  Output +=space(6*level) + 'SEPARATOR' + CRLF
-               ELSE
-                  Output +=space(6*level) + 'ITEM ' + "'" + trim(auxit) + "'" + ' ACTION ' + IIF( Len( trim(action)) # 0, trim(ACTION), "msgbox('item')") + " "
-                  IF trim(named)==''
-                     Output +="" + IIF( Len( TRIM(menues->IMAGE)) # 0, " IMAGE " + "'" + AllTrim(menues->IMAGE) + "'", "") + " " + CRLF
-                  ELSE
-                     Output += "NAME " + "'" + AllTrim(NAMED) + "'" + IIF( Len( TRIM(menues->IMAGE)) # 0, " IMAGE " + "'" + AllTrim(menues->IMAGE) + "'", "") + " " + CRLF
-                     IF menues->checked='X'
-                        cc := "//" + mlyform + '.' + trim(named) + '.checked := .F.'
-                        Output += cc + CRLF
-                        cc := "SetProperty('" + mlyform + "', " + "'" + trim(named) + "', " + "'checked', .F.)"
-
-                        Output += cc + CRLF
-                     ENDIF
-                     IF menues->enabled='X'
-                        cc := "//" + mlyform + '.' + trim(named) + '.enabled := .F.'
-                        Output += cc + CRLF
-                        cc := "SetProperty('" + mlyform + "', " + "'" + trim(named) + "', " + "'enabled', .F.)"
-
-                        Output += cc + CRLF
-                     ENDIF
-                  ENDIF
-               ENDIF
-               skip
-               enddo
-               Output +=CRLF
-               Output += '   END MENU' + CRLF + CRLF
-           use
-******          fin de menu notify
-           ENDIF
-        ENDIF
-
-        ***** end menus creation
-        close data
-        IF file(myForm:cfname + '.tbr')
-           archivo := myForm:cfname + '.tbr'
-           select 40
-           use &archivo exclusive alias dDtoolbar
-           pack
-           IF  reccount( ) > 0
-               Output +=CRLF + 'DEFINE TOOLBAR ' + tmytoolb:ctbname + ' ;' + CRLF
-               Output += '   BUTTONSIZE ' + LTrim( Str( tmytoolb:nwidth ) ) + ', ' + LTrim( Str( tmytoolb:nheight ) ) + '  ;' + CRLF
-               Output +=IIF( Len( tmytoolb:cfont ) > 0, 'FONT ' + "'" + tmytoolb:cfont + "' ;" + CRLF, '')
-               Output +=IIF( tmytoolb:nsize > 0, 'SIZE ' + LTrim( Str( tmytoolb:nsize ) ) + " ;" + CRLF, '')
-               Output +=IIF( tmytoolb:lbold, 'BOLD ;' + CRLF, '')
-               Output +=IIF( tmytoolb:litalic, 'ITALIC ;' + CRLF, '')
-               Output +=IIF( tmytoolb:lunderline, 'UNDERLINE ;' + CRLF, '')
-               Output +=IIF( tmytoolb:lstrikeout, 'STRIKEOUT ;' + CRLF, '')
-               Output +=IIF( Len( tmytoolb:ctooltip ) > 0, 'TOOLTIP ' + "'" + tmytoolb:ctooltip + "' ;" + CRLF, '')
-               Output +=IIF( tmytoolb:lflat, 'FLAT ;' + CRLF, '')
-               Output +=IIF( tmytoolb:lbottom, 'BOTTOM ;' + CRLF, '')
-               Output +=IIF( tmytoolb:lrighttext, 'RIGHTTEXT ;' + CRLF, '')
-               Output +=IIF( tmytoolb:lborder, 'BORDER ;' + CRLF, '')
-
-               Output +=CRLF + CRLF
-               go top
-               **************
-               do while .not. eof()
-                  Output += '   BUTTON ' + trim(NAMED) + ' ;' + CRLF
-                  Output += '   CAPTION ' + "'" + trim(ITEM) + "'" + ' ;' + CRLF
-                  IF Len( trim(DdTOOLBAR->IMAGE) ) > 0
-                    Output += '   PICTURE ' + "'" + trim(DdTOOLBAR->IMAGE) + "'" + ' ;' + CRLF
-                  ENDIF
-                  Output += '   ACTION ' + trim(DdTOOLBAR->ACTION) + ' ;' + CRLF
-                  IF DdTOOLBAR->Separator='X'
-                     Output += '   SEPARATOR  ;' + CRLF
-                  ENDIF
-                  IF DdTOOLBAR->AUTOSIZE='X'
-                     Output += '   AUTOSIZE  ;' + CRLF
-                  ENDIF
-                  IF DdTOOLBAR->check='X'
-                     Output += '   CHECK  ;' + CRLF
-                  ENDIF
-                  IF DdTOOLBAR->group='X'
-                     Output += '   GROUP  ;' + CRLF
-                  ENDIF
-
-
-                  IF fcount( ) > 9
-                     IF DdTOOLBAR->drop='X'
-                        Output += '   DROPDOWN  ;' + CRLF
-                     ENDIF
-                     IF fcount( ) > 10
-                        IF .not. Empty(DdTOOLBAR->tooltip )
-                           Output +="Tooltip  '" + rtrim(Ddtoolbar->tooltip) + "'" + " ;" + CRLF
-                        ENDIF
-                     ENDIF
-                  ENDIF
-                  **** VER GROUP Y SEPARATOR
-                  skip
-                  Output +=CRLF + CRLF
-               enddo
-               Output +=CRLF
-               Output += '   END TOOLBAR' + CRLF + CRLF
-           ENDIF
-        go top
-        do while .not. eof()
-           cbutton := AllTrim(ddtoolbar->named)
-           carchivo := myForm:cfname + '.' + cbutton + '.mnd'
-           IF file(carchivo)
-           select 50
-           use &carchivo alias menues
-           IF  reccount( ) > 0
-               Output +=CRLF + CRLF + 'DEFINE DROPDOWN MENU BUTTON ' + cbutton + CRLF
-               **************
-               do while .not. eof()
-               IF lower(trim(auxit))='separator'
-                  Output +=space(6*level) + 'SEPARATOR' + CRLF
-               ELSE
-                  Output +=space(6*level) + 'ITEM ' + "'" + trim(auxit) + "'" + ' ACTION ' + IIF( Len( trim(action)) # 0, trim(ACTION), "msgbox('item')") + " "
-                  IF trim(named)==''
-                     Output +="" + IIF( Len( TRIM(menues->IMAGE)) # 0, " IMAGE " + "'" + AllTrim(menues->IMAGE) + "'", "") + " " + CRLF
-                  ELSE
-                     Output += "NAME " + NAMED + IIF( Len( TRIM(menues->IMAGE)) # 0, " IMAGE " + "'" + AllTrim(menues->IMAGE) + "'", "") + " " + CRLF
-
-                     IF menues->checked='X'
-                        cc := "//" + mlyform + '.' + trim(named) + '.checked := .F.'
-                        Output += cc + CRLF
-                        cc := "SetProperty('" + mlyform + "', " + "'" + trim(named) + "', " + "'checked', .F.)"
-
-                        Output += cc + CRLF
-                     ENDIF
-                     IF menues->enabled='X'
-                        cc := "//" + mlyform + '.' + trim(named) + '.enabled := .F.'
-                        Output += cc + CRLF
-                        cc := "SetProperty('" + mlyform + "', " + "'" + trim(named) + "', " + "'enabled', .F.)"
-
-                        Output += cc + CRLF
-                     ENDIF
-                  ENDIF
-               ENDIF
-               skip
-               enddo
-               Output +=CRLF
-               Output += '   END MENU' + CRLF + CRLF
-           ENDIF
-           ENDIF
-           select 40
-           skip
-        enddo
-        ENDIF
-        ********** dropdown menu
-
-        ***** end toolbar ****    fin de toolbar
-
-        j := 1
-        do while j <=  myForm:ncontrolw
-               do while upper(myForm:acontrolw[j])='TEMPLATE' .AND. upper(myForm:acontrolw[j])='STATUSBAR'  .AND. upper(myForm:acontrolw[j])='MAINMENU' ;
-                 .AND. upper(myForm:acontrolw[j])='CONTEXTMENU' .AND. upper(myForm:acontrolw[j])='NOTIFYMENU' .AND. j< myForm:ncontrolw
-                  j ++
-               enddo
-            name := myForm:acontrolw[j]
-            nhandle := myascan(name)
-*********
-            IF nhandle=0
-               j ++
-               loop
-            ENDIF
-            owindow := getformobject("Form_1")
-            Row    := GetWindowRow ( owindow:acontrols[nhandle]:hwnd ) - BaseRow - TitleHeight - BorderHeight
-            Col    := GetWindowCol ( owindow:acontrols[nhandle]:hwnd ) - BaseCol - BorderWidth
-            Width  := GetWindowWidth ( owindow:acontrols[nhandle]:hwnd )
-            Height := GetWindowHeight ( owindow:acontrols[nhandle]:hwnd )
-
-                        IF myForm:actrltype[j] == 'TAB'
-                           Output += '*****@ ' + LTrim( Str( Row ) ) + ', ' + LTrim( Str( Col ) ) + ' TAB ' + myForm:aname[j] + '  ' + CRLF
-                           Output += 'DEFINE TAB ' + myForm:aname[j] + ' ;' + CRLF
-                           IF ! Empty(myForm:acobj[j])
-                              Output += 'OBJ ' + myForm:acobj[j] + ' ;' + CRLF
-                           ENDIF
-                           Output += 'AT ' + Str( row, 4) + ', ' + Str( col, 4) + '  ;' + CRLF
-                           Output += 'WIDTH  ' + LTrim(Str( Width)) + ' ;' + CRLF
-                           Output += 'HEIGHT ' + LTrim(Str( Height)) + ' ;' + CRLF
-                           IF Len( myForm:avalue[j] ) > 0
-                              Output += 'VALUE ' + myForm:avalue[j] + ' ;' + CRLF
-                           ENDIF
-                           IF Len( myForm:afontname[j] ) > 0
-                              Output += "FONT " + "'" + myForm:afontname[j] + "'" +  ' ;' + CRLF
-                           ENDIF
-                           IF myForm:afontsize[j] > 0
-                              Output += 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) ) + ' ;' + CRLF
-                           ENDIF
-                           IF Len( myForm:atooltip[j] ) > 0
-                              Output += 'TOOLTIP ' + "'" + myForm:atooltip[j] + "'" + ' ;' + CRLF
-                           ENDIF
-                           IF myForm:abuttons[j]
-                              Output += 'BUTTONS ' + '  ;' + CRLF
-                           ENDIF
-                           IF myForm:aflat[j]
-                              Output += 'FLAT ' + '  ;' + CRLF
-                           ENDIF
-                           IF myForm:ahottrack[j]
-                              Output += 'HOTTRACK ' + '  ;' + CRLF
-                           ENDIF
-                           IF myForm:avertical[j]
-                              Output += 'VERTICAL ' + '  ;' + CRLF
-                           ENDIF
-                           IF Len( myForm:aonchange[j] ) > 0
-                              Output += 'ON CHANGE ' + myForm:aonchange[j] + ' ;' + CRLF
-                           ENDIF
-                           Output += '  ' + '  ' + CRLF + CRLF
-                            **************
-****                           cuantos page hay ?
-                           cacaptions := myForm:acaption[j]
-                           caimages := myForm:aimage[j]
-                           acaptions := &cacaptions
-                           aimage := &caimages
-                           currentpage := 1
-                           Output += "DEFINE PAGE '" + acaptions[currentpage] + "'" + '  ;' + CRLF
-                           Output += "IMAGE '" + ltrim(aimage[currentpage]) + "'" + '  ' + CRLF + CRLF
-                           for k=1 to myForm:ncontrolw
-                               IF myForm:atabpage[k, 1] # NIL
-                                  IF myForm:atabpage[k, 1]==myForm:acontrolw[j]
-                                     IF myForm:atabpage[k, 2] # currentpage
-                                         Output += 'END PAGE' + CRLF + CRLF
-                                         currentpage ++
-                                        Output += "DEFINE PAGE '" + acaptions[currentpage] + "'" + '  ;' + CRLF
-                                        Output += "IMAGE '" + ltrim(aimage[currentpage]) + "'" + '  ' + CRLF + CRLF
-                                     ENDIF
-
-                                     p := myascan(myForm:acontrolw[k])
-                                     IF p > 0
-                                        owindow := getformobject("Form_1")
-                                        Row     := owindow:acontrols[p]:row
-                                        Col     := owindow:acontrols[p]:col
-                                        Width   := owindow:acontrols[p]:width
-                                        Height  := owindow:acontrols[p]:height
-                                        Output := makecontrols(k, Output, row, col, width, height, mlyform)
-                                     ENDIF
-                                  ENDIF
-                               ENDIF
-                           next k
-
-                           Output += 'END PAGE ' + '  ' + CRLF
-                           IF myForm:afontitalic[j]
-                               Output += mlyform + '.' + name + '.fontitalic := .T.' + CRLF
-                           ENDIF
-                           IF myForm:afontunderline[j]
-                               Output += mlyform + '.' + name + '.fontunderline := .T.' + CRLF
-                           ENDIF
-                           IF myForm:afontstrikeout[j]
-                               Output += mlyform + '.' + name + '.fontstrikeout := .T.' + CRLF
-                           ENDIF
-                           IF myForm:abold[j]
-                               Output += mlyform + '.' + name + '.fontbold := .T.' + CRLF
-                           ENDIF
-                           IF .not. myForm:aenabled[j]
-                              Output += mlyform + '.' + name + '.enabled := .F.' + CRLF
-                           ENDIF
-                           IF .not. myForm:avisible[j]
-                              Output += mlyform + '.' + name + '.visible := .F.' + CRLF
-                           ENDIF
-
-                           Output +="END TAB" + CRLF + CRLF
-*************************************************
-                           Output +=CRLF
-                        ELSE
-                           IF myForm:actrltype[j] # 'TAB' .AND. myForm:atabpage[j, 2]=0 .OR. myForm:atabpage[j, 2]=NIL
-                              Output := makecontrols(j, Output, row, col, width, height, mlyform)
-                           ENDIF
-                        ENDIF
-           j ++
-        enddo
-Output += 'END WINDOW ' + CRLF + CRLF
-cursorarrow()
-****RETURN
-IF cAs==1
-   IF .not. memoWrit ( PutFile ( { {'Form files *.fmg', '*.fmg'} }, 'Save Form As', , .T. ), Output )
-      msgstop('Error writing Form', 'Information')
-      RETURN
-   ENDIF
-ELSE
-   IF .not. memowrit(myForm:cForm, Output)
-      msgstop('Error writing ' + myForm:cForm, 'Information')
-      RETURN
-   ENDIF
-   myForm:lfSave := .T.
-ENDIF
-close data
-IF file(myForm:cfname + '.mnm')
-   archivo := myForm:cfname + '.mnm'
-   select 20
-   use &archivo alias menues
-   nbuttons := reccount()
-   swpop := 0
-   IF nbuttons > 0
-     go top
-   DEFINE MAIN MENU of Form_1
-   do while .not. eof()
-      IF recn() < reccount()
-         skip
-         signiv := level
-         skip -1
-      ELSE
-         signiv=0
-      ENDIF
-      niv=level
-      IF signiv > level
-         IF lower(trim(auxit))='separator'
-            SEPARATOR
-         ELSE
-            POPUP AllTrim(auxit)
-            swpop ++
-         ENDIF
-      ELSE
-         IF lower(trim(auxit))='separator'
-            SEPARATOR
-         ELSE
-            ITEM  AllTrim(auxit)  ACTION  NIL
-            IF trim(named)==''
+//***************************  Context menu
+   IF File( myForm:cfname + '.mnc' )
+      archivo := myForm:cfname + '.mnc'
+      SELECT 20
+      USE &archivo EXCLUSIVE ALIAS menues
+      GO TOP
+      IF ! Eof()
+         Output += Space( nSpacing ) + 'DEFINE CONTEXT MENU ' + CRLF
+         DO WHILE ! Eof()
+            IF Lower( AllTrim( menues->auxit ) ) == 'separator'
+               Output += Space( nSpacing * ( menues->level + 2 ) ) + 'SEPARATOR ' + CRLF
             ELSE
-               IF menues->checked='X'
-                 /// cc := myForm:cfname + '.' + trim(named) + '.checked := .T.'
-                 /// Output += cc + CRLF
-               ENDIF
-               IF menues->enabled='X'
-                  ///cc := myForm:cfname + '.' + trim(named) + '.enabled := .F.'
-                  ///Output += cc + CRLF
+               Output += Space( nSpacing * ( menues->level + 2 ) ) + 'ITEM ' + "'" + AllTrim( menues->auxit ) + "'" + ' ACTION ' + IIF( Len( AllTrim( menues->action ) ) # 0, AllTrim( menues->action ), "MsgBox( 'item' )")
+               IF AllTrim( menues->named ) == ''
+                  Output += IIF( Len( AllTrim( menues->image ) ) # 0, ' IMAGE ' + "'" + AllTrim( menues->image ) + "'", '') + CRLF
+               ELSE
+                  Output += " NAME " + "'" + AllTrim( menues->named ) + "'" + IIF( Len( AllTrim( menues->image ) ) # 0, " IMAGE " + "'" + AllTrim( menues->image ) + "'", '') + CRLF
+                  IF menues->checked == 'X'
+                     Output += Space( nSpacing * ( menues->level + 2 ) ) + "// " + mlyform + '.' + AllTrim( menues->named ) + '.checked := .F.' + CRLF
+                     Output += Space( nSpacing * ( menues->level + 2 ) ) + "SetProperty('" + mlyform + "', " + "'" + AllTrim( menues->named ) + "', " + "'checked', .F.)" + CRLF
+                  ENDIF
+                  IF menues->enabled == 'X'
+                     Output += Space( nSpacing * ( menues->level + 2 ) ) + "// " + mlyform + '.' + AllTrim( menues->named ) + '.enabled := .F.' + CRLF
+                     Output += Space( nSpacing * ( menues->level + 2 ) ) + "SetProperty('" + mlyform + "', " + "'" + AllTrim( menues->named ) + "', " + "'enabled', .F.)" + CRLF
+                  ENDIF
                ENDIF
             ENDIF
-         ENDIF
-**********************************
-         do while signiv<niv
-            END POPUP
-            swpop--
-            niv--
-         enddo
+            SKIP
+         ENDDO
+         Output += Space( nSpacing ) + 'END MENU ' + CRLF + CRLF
       ENDIF
-      skip
-   enddo
-   nnivaux := niv-1
-   do while swpop > 0
-      nnivaux--
-      END POPUP
-      swpop--
-   enddo
-   END MENU
-   use
+      CLOSE DATABASES
    ENDIF
-ENDIF
-RETURN
 
-*-------------------------------------------------------------
-FUNCTION MakeControls( j, Output, row, col, width, height, mlyform )
-*-------------------------------------------------------------
-
-   IF myForm:actrltype[j]  == "BUTTON"
-     Output += '@ ' + LTrim( Str( Row ) ) + ', ' + LTrim( Str( Col ) ) + ' BUTTON ' + myForm:aname[j] + ' ;' + CRLF
-      IF ! Empty(myForm:acobj[j])
-         Output += 'OBJ ' + myForm:acobj[j] + ' ;' + CRLF
+//***************************  Notify menu
+   IF File( myForm:cfname + '.mnn' )
+      archivo := myForm:cfname + '.mnn'
+      SELECT 30
+      USE &archivo EXCLUSIVE ALIAS menues
+      GO TOP
+      IF ! Eof()
+         Output += Space( nSpacing ) + 'DEFINE NOTIFY MENU ' + CRLF
+         DO WHILE ! Eof()
+            IF Lower( AllTrim( menues->auxit ) ) == 'separator'
+                  Output += Space( nSpacing * ( menues->level + 2 ) ) + 'SEPARATOR ' + CRLF
+            ELSE
+               Output += Space( nSpacing * ( menues->level + 2 ) ) + 'ITEM ' + "'" + AllTrim( menues->auxit ) + "'" + ' ACTION ' + IIF( Len( AllTrim( menues->action ) ) # 0, AllTrim( menues->action ), "MsgBox( 'item' )")
+               IF AllTrim( menues->named ) == ''
+                  Output += IIF( Len( AllTrim( menues->image ) ) # 0, ' IMAGE ' + "'" + AllTrim( menues->image ) + "'", '') + CRLF
+               ELSE
+                  Output += " NAME " + "'" + AllTrim( menues->named ) + "'" + IIF( Len( AllTrim( menues->image ) ) # 0, " IMAGE " + "'" + AllTrim( menues->image ) + "'", '') + CRLF
+                  IF menues->checked == 'X'
+                     Output += Space( nSpacing * ( menues->level + 2 ) ) + "// " + mlyform + '.' + AllTrim( menues->named ) + '.checked := .F.' + CRLF
+                     Output += Space( nSpacing * ( menues->level + 2 ) ) + "SetProperty('" + mlyform + "', " + "'" + AllTrim( menues->named ) + "', " + "'checked', .F.)" + CRLF
+                  ENDIF
+                  IF menues->enabled == 'X'
+                     Output += Space( nSpacing * ( menues->level + 2 ) ) + "// " + mlyform + '.' + AllTrim( menues->named ) + '.enabled := .F.' + CRLF
+                     Output += Space( nSpacing * ( menues->level + 2 ) ) + "SetProperty('" + mlyform + "', " + "'" + AllTrim( menues->named ) + "', " + "'enabled', .F.)" + CRLF
+                  ENDIF
+               ENDIF
+            ENDIF
+            SKIP
+         ENDDO
+         Output += Space( nSpacing ) + 'END MENU ' + CRLF + CRLF
       ENDIF
-     IF Len( myForm:acaption[j] ) > 0
-         Output += "CAPTION " + "'" + myForm:acaption[j] + "'" + ' ;' + CRLF
-     ELSE
-         Output += "CAPTION " + "'" + myForm:aname[j] + "'" + " ;" + CRLF
-     ENDIF
-      IF Len( myForm:aPicture[j] ) > 0
-         Output += "PICTURE " + "'" + myForm:apicture[j] + "'" + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aaction[j] ) > 0
-        Output += 'ACTION ' + myForm:aaction[j] + ' ;' + CRLF
-     ELSE
-        Output += 'ACTION ' + 'MsgInfo("Button Pressed")' + ' ;' + CRLF
-     ENDIF
-     Output += 'WIDTH ' + LTrim(Str( Width)) + ' ;' + CRLF
-     Output += 'HEIGHT ' + LTrim(Str( Height)) + ' ;' + CRLF
-     IF Len( myForm:afontname[j] ) > 0
-         Output += "FONT " + "'" + myForm:afontname[j] + "'" +  ' ;' + CRLF
-     ENDIF
-     IF myForm:afontsize[j] > 0
-         Output += 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) ) + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:atooltip[j] ) > 0
-         Output += 'TOOLTIP ' + "'" + myForm:atooltip[j] + "'" + ' ;' + CRLF
-     ENDIF
-     IF myForm:aflat[j]
-        Output += 'FLAT ' + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:ajustify[j] ) > 0 .AND. Len( myForm:aPicture[j] ) > 0 .AND. Len( myForm:acaption[j] ) > 0
-          Output += myForm:ajustify[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aongotfocus[j] ) > 0
-        Output += 'ON GOTFOCUS ' + myForm:aongotfocus[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aonlostfocus[j] ) > 0
-        Output += 'ON LOSTFOCUS ' + myForm:aonlostfocus[j] + ' ;' + CRLF
-     ENDIF
-     IF myForm:anotabstop[j]
-        Output += 'NOTABSTOP ' + ' ;' + CRLF
-     ENDIF
-     IF myForm:ahelpid[j] > 0
-        Output += 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) ) + ' ;' + CRLF
-     ENDIF
+      CLOSE DATABASES
+   ENDIF
 
-     Output += ' ' + CRLF + CRLF
+//***************************  Toolbar
+   IF File( myForm:cfname + '.tbr' )
+      archivo := myForm:cfname + '.tbr'
+      SELECT 40
+      USE &archivo EXCLUSIVE ALIAS ddtoolbar
+      GO TOP
+      IF ! Eof()
+         Output += Space( nSpacing ) + 'DEFINE TOOLBAR ' + AllTrim( tmytoolb:ctbname ) + ' ;' + CRLF
+         Output += Space( nSpacing * 2 ) + 'BUTTONSIZE ' + LTrim( Str( tmytoolb:nwidth ) ) + ', ' + LTrim( Str( tmytoolb:nheight ) )
+         Output += IIF( Len( tmytoolb:cfont ) > 0, ' ;' + CRLF + Space( nSpacing * 2 ) + 'FONT ' + "'" + AllTrim( tmytoolb:cfont ), '' )
+         Output += IIF( tmytoolb:nsize > 0, ' ;' + CRLF + Space( nSpacing * 2 ) + 'SIZE ' + LTrim( Str( tmytoolb:nsize ) ), '' )
+         Output += IIF( tmytoolb:lbold, ' ;' + CRLF + Space( nSpacing * 2 ) + 'BOLD ', '' )
+         Output += IIF( tmytoolb:litalic, ' ;' + CRLF + Space( nSpacing * 2 ) + 'ITALIC ', '' )
+         Output += IIF( tmytoolb:lunderline, ' ;' + CRLF + Space( nSpacing * 2 ) + 'UNDERLINE ', '' )
+         Output += IIF( tmytoolb:lstrikeout, ' ;' + CRLF + Space( nSpacing * 2 ) + 'STRIKEOUT ', '' )
+         Output += IIF( Len( tmytoolb:ctooltip ) > 0, ' ;' + CRLF + Space( nSpacing * 2 ) + 'TOOLTIP ' + "'" + AllTrim( tmytoolb:ctooltip ) + "'", '' )
+         Output += IIF( tmytoolb:lflat, ' ;' + CRLF + Space( nSpacing * 2 ) + 'FLAT ', '' )
+         Output += IIF( tmytoolb:lbottom, ' ;' + CRLF + Space( nSpacing * 2 ) + 'BOTTOM ', '' )
+         Output += IIF( tmytoolb:lrighttext, ' ;' + CRLF + Space( nSpacing * 2 ) + 'RIGHTTEXT ', '' )
+         Output += IIF( tmytoolb:lborder, ' ;' + CRLF + Space( nSpacing * 2 ) + 'BORDER ', '' )
+         Output += CRLF + CRLF
+         DO WHILE ! Eof()
+            Output += Space( nSpacing ) + 'BUTTON ' + AllTrim( ddtoolbar->named )
+            Output += ' ;' + CRLF + Space( nSpacing * 2 ) + 'CAPTION ' + "'" + AllTrim( ddtoolbar->item ) + "'"
+            IF Len( AllTrim( ddtoolbar->image ) ) > 0
+              Output += ' ;' + CRLF + Space( nSpacing * 2 ) + 'PICTURE ' + "'" + AllTrim( ddtoolbar->image ) + "'"
+            ENDIF
+            Output += ' ;' + CRLF + Space( nSpacing * 2 ) + 'ACTION ' + AllTrim( ddtoolbar->ACTION )
+            IF ddtoolbar->Separator='X'
+               Output += ' ;' + CRLF + Space( nSpacing * 2 ) + 'SEPARATOR '
+            ENDIF
+            IF ddtoolbar->AUTOSIZE='X'
+               Output += ' ;' + CRLF + Space( nSpacing * 2 ) + 'AUTOSIZE '
+            ENDIF
+            IF ddtoolbar->check='X'
+               Output += ' ;' + CRLF + Space( nSpacing * 2 ) + 'CHECK '
+            ENDIF
+            IF ddtoolbar->group='X'
+               Output += ' ;' + CRLF + Space( nSpacing * 2 ) + 'GROUP '
+            ENDIF
+            IF FCount() > 9
+               IF ddtoolbar->drop == 'X'
+                  Output += ' ;' + CRLF + Space( nSpacing * 2 ) + 'DROPDOWN '
+               ENDIF
+               IF FCount() > 10
+                  IF ! Empty( ddtoolbar->tooltip )
+                     Output += ' ;' + CRLF + Space( nSpacing * 2 ) + "TOOLTIP '" + AllTrim( ddtoolbar->tooltip ) + "'"
+                  ENDIF
+               ENDIF
+            ENDIF
+            SKIP
+            Output += CRLF + CRLF
+/*
+   TODO: Add this properties
+
+   [ OBJ <obj> ] ;
+   [ <wholedropdown: WHOLEDROPDOWN> ] ;
+*/
+         ENDDO
+         Output += Space( nSpacing ) + 'END TOOLBAR ' + CRLF + CRLF
+      ENDIF
+/*
+   TODO: Add this properties
+
+   [ OBJ <obj> ] ;
+   [ CAPTION <caption> ] ;
+   [ ACTION <action> ] ;
+   [ <vertical: VERTICAL> ] ;
+   [ GRIPPERTEXT <caption> ] ;
+   [ <break: BREAK> ] ;
+   [ <rtl: RTL> ] ;
+   [ <notabstop: NOTABSTOP> ] ;
+*/
+
+//***************************  Dropdown menu
+      GO TOP
+      DO WHILE ! Eof()
+         cbutton := AllTrim( ddtoolbar->named )
+         carchivo := myForm:cfname + '.' + cbutton + '.mnd'
+         IF file( carchivo )
+            SELECT 50
+            USE &carchivo EXCLUSIVE ALIAS menues
+            GO TOP
+            IF ! Eof()
+               Output += Space( nSpacing ) + 'DEFINE DROPDOWN MENU BUTTON ' + cbutton + CRLF + CRLF
+               DO WHILE ! Eof()
+                  IF Lower( AllTrim( menues->auxit ) ) == 'separator'
+                     Output += Space( nSpacing * ( menues->level + 1 ) ) + 'SEPARATOR ' + CRLF
+                  ELSE
+                     Output += Space( nSpacing * ( menues->level + 1 ) ) + 'ITEM ' + "'" + AllTrim( menues->auxit ) + "'" + ' ACTION ' + IIF( Len( AllTrim( menues->action ) ) # 0, AllTrim( menues->action ), "MsgBox( 'item' )" )
+                     IF AllTrim( menues->named ) == ''
+                        Output += IIF( Len( AllTrim( menues->image ) ) # 0, ' IMAGE ' + "'" + AllTrim( menues->image ) + "'", '') + CRLF
+                     ELSE
+                        Output += "NAME " + AllTrim( menues->named ) + IIF( Len( AllTrim( menues->image ) ) # 0, ' IMAGE ' + "'" + AllTrim( menues->image ) + "'", '') + CRLF
+                        IF menues->checked == 'X'
+                           Output += Space( nSpacing * ( menues->level + 1 ) ) + "// " + mlyform + '.' + AllTrim(menues->named) + '.checked := .F.' + CRLF
+                           Output += "SetProperty('" + mlyform + "', " + "'" + AllTrim( menues->named ) + "', " + "'checked', .F.)" + CRLF
+                        ENDIF
+                        IF menues->enabled == 'X'
+                           Output += Space( nSpacing * ( menues->level + 1 ) ) + "// " + mlyform + '.' + AllTrim( menues->named ) + '.enabled := .F.' + CRLF
+                           Output += Space( nSpacing * ( menues->level + 1 ) ) + "SetProperty('" + mlyform + "', " + "'" + AllTrim( menues->named ) + "', " + "'enabled', .F.)" + CRLF
+                        ENDIF
+                     ENDIF
+                  ENDIF
+                  SKIP
+               ENDDO
+               Output += CRLF
+               Output += Space( nSpacing ) + 'END MENU ' + CRLF + CRLF
+            ENDIF
+         ENDIF
+         SELECT 40
+         SKIP
+      ENDDO
+      CLOSE DATABASES
+   ENDIF
+
+   SET( _SET_DELETED, lDeleted )
+
+//***************************  Form controls
+   j := 1
+   DO WHILE j <= myForm:ncontrolw
+      DO WHILE Upper( myForm:acontrolw[j] ) == 'TEMPLATE' .AND. ;
+               Upper( myForm:acontrolw[j] ) == 'STATUSBAR' .AND. ;
+               Upper( myForm:acontrolw[j] ) == 'MAINMENU' .AND. ;
+               Upper( myForm:acontrolw[j] ) == 'CONTEXTMENU' .AND. ;
+               Upper( myForm:acontrolw[j] ) == 'NOTIFYMENU' .AND. ;
+               j < myForm:ncontrolw
+         j ++
+      ENDDO
+      cName := myForm:acontrolw[j]
+      nhandle := myaScan( cName )
+      IF nhandle == 0
+         j ++
+         LOOP
+      ENDIF
+      owindow := getformobject( "Form_1" )
+      nRow    := GetWindowRow( owindow:acontrols[nhandle]:hwnd ) - BaseRow - TitleHeight - BorderHeight
+      nCol    := GetWindowCol( owindow:acontrols[nhandle]:hwnd ) - BaseCol - BorderWidth
+      nWidth  := GetWindowWidth( owindow:acontrols[nhandle]:hwnd )
+      nHeight := GetWindowHeight( owindow:acontrols[nhandle]:hwnd )
+
+//***************************  Tab start
+      IF myForm:actrltype[j] == 'TAB'
+         // Do not delete next line, it's needed to load the fmg properly.
+         Output += Space( nSpacing ) + '*****@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' TAB ' + AllTrim( myForm:aname[j] ) + ' ;' + CRLF
+         Output += Space( nSpacing ) + 'DEFINE TAB ' + AllTrim( myForm:aname[j] ) + ' ;' + CRLF
+         IF ! Empty( myForm:acobj[j] )
+            Output += Space( nSpacing * 2) + 'OBJ ' + myForm:acobj[j] + ' ;' + CRLF
+         ENDIF
+         Output += Space( nSpacing * 2) + 'AT ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' ;' + CRLF
+         Output += Space( nSpacing * 2) + 'WIDTH ' + LTrim( Str( nWidth ) ) + ' ;' + CRLF
+         Output += Space( nSpacing * 2) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+         IF Len( myForm:avalue[j] ) > 0
+            Output += ' ;' + CRLF + Space( nSpacing * 2) + 'VALUE ' + AllTrim( myForm:avalue[j] )
+         ENDIF
+         IF Len( myForm:afontname[j] ) > 0
+            Output += ' ;' + CRLF + Space( nSpacing * 2) + 'FONT ' + "'" + myForm:afontname[j] + "'"
+         ENDIF
+         IF myForm:afontsize[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * 2) + 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) )
+         ENDIF
+         IF Len( myForm:atooltip[j] ) > 0
+            Output += ' ;' + CRLF + Space( nSpacing * 2) + 'TOOLTIP ' + "'" + myForm:atooltip[j] + "'"
+         ENDIF
+         IF myForm:abuttons[j]
+            Output += ' ;' + CRLF + Space( nSpacing * 2) + 'BUTTONS '
+         ENDIF
+         IF myForm:aflat[j]
+            Output += ' ;' + CRLF + Space( nSpacing * 2) + 'FLAT '
+         ENDIF
+         IF myForm:ahottrack[j]
+            Output += ' ;' + CRLF + Space( nSpacing * 2) + 'HOTTRACK '
+         ENDIF
+         IF myForm:avertical[j]
+            Output += ' ;' + CRLF + Space( nSpacing * 2) + 'VERTICAL '
+         ENDIF
+         IF Len( myForm:aonchange[j] ) > 0
+            Output += ' ;' + CRLF + Space( nSpacing * 2) + 'ON CHANGE ' + myForm:aonchange[j]
+         ENDIF
+         Output += CRLF + CRLF
+/*
+   TODO: Add this properties
+
+   [ <bold : BOLD> ] ;
+   [ <italic : ITALIC> ] ;
+   [ <underline : UNDERLINE> ] ;
+   [ <strikeout : STRIKEOUT> ] ;
+   [ <notabstop : NOTABSTOP> ] ;
+   [ <rtl : RTL> ] ;
+   [ <internals : INTERNALS> ] ;
+   [ <invisible : INVISIBLE> ] ;
+   [ <disabled : DISABLED> ] ;
+   [ <multiline : MULTILINE> ] ;
+*/
+//***************************  Tab pages
+         cacaptions := myForm:acaption[j]
+         caimages := myForm:aimage[j]
+         acaptions := &cacaptions
+         aimage := &caimages
+         currentpage := 1
+         Output += Space( nSpacing * 2) + 'DEFINE PAGE ' + "'" + acaptions[currentpage] + "'" + ' ;' + CRLF
+         Output += Space( nSpacing * 3) + 'IMAGE ' + "'" + AllTrim(aimage[currentpage]) + "'" + CRLF + CRLF
+         FOR k := 1 TO myForm:ncontrolw
+            IF myForm:atabpage[k, 1] # NIL
+               IF myForm:atabpage[k, 1] == myForm:acontrolw[j]
+                  IF myForm:atabpage[k, 2] # currentpage
+                     Output += Space( nSpacing * 2) + 'END PAGE ' + CRLF + CRLF
+                     currentpage ++
+                     Output += Space( nSpacing * 2) + 'DEFINE PAGE ' + "'" + acaptions[currentpage] + "'" + ' ;' + CRLF
+                     Output += Space( nSpacing * 3) + 'IMAGE ' + "'" + AllTrim(aimage[currentpage]) + "'" + CRLF + CRLF
+                  ENDIF
+/*
+   TODO: Add this properties
+
+   [ NAME <name> ]
+   [ OBJ <obj> ]
+*/
+//***************************  Tab page controls
+                  p := myaScan( myForm:acontrolw[k] )
+                  IF p > 0
+                     owindow := getformobject( "Form_1" )
+                     nRow    := owindow:acontrols[p]:Row
+                     nCol    := owindow:acontrols[p]:Col
+                     nWidth  := owindow:acontrols[p]:Width
+                     nHeight := owindow:acontrols[p]:Height
+                     Output  := MakeControls( k, Output, nRow, nCol, nWidth, nHeight, mlyform, nSpacing, 3)
+                  ENDIF
+               ENDIF
+            ENDIF
+         NEXT k
+//***************************  Tab end
+         Output += Space( nSpacing * 2) + 'END PAGE ' + CRLF
+         IF myForm:afontitalic[j]
+            Output += Space( nSpacing * 2) + mlyform + '.' + cName + '.fontitalic := .T.' + CRLF
+         ENDIF
+         IF myForm:afontunderline[j]
+            Output += Space( nSpacing * 2) + mlyform + '.' + cName + '.fontunderline := .T.' + CRLF
+         ENDIF
+         IF myForm:afontstrikeout[j]
+            Output += Space( nSpacing * 2) + mlyform + '.' + cName + '.fontstrikeout := .T.' + CRLF
+         ENDIF
+         IF myForm:abold[j]
+            Output += Space( nSpacing * 2) + mlyform + '.' + cName + '.fontbold := .T.' + CRLF
+         ENDIF
+         IF ! myForm:aenabled[j]
+            Output += Space( nSpacing * 2) + mlyform + '.' + cName + '.enabled := .F.' + CRLF
+         ENDIF
+         IF ! myForm:avisible[j]
+            Output += Space( nSpacing * 2) + mlyform + '.' + cName + '.visible := .F.' + CRLF
+         ENDIF
+         Output += Space( nSpacing ) + "END TAB " + CRLF + CRLF
+      ELSE
+//***************************  Other controls
+         IF myForm:actrltype[j] # 'TAB' .AND. ( myForm:atabpage[j, 2] == NIL .OR. myForm:atabpage[j, 2] == 0 )
+            Output := MakeControls( j, Output, nRow, nCol, nWidth, nHeight, mlyform, nSpacing, 1 )
+         ENDIF
+      ENDIF
+      j ++
+   ENDDO
+
+//***************************  Form end
+   Output += 'END WINDOW ' + CRLF + CRLF
+   CursorArrow()
+
+//***************************  Save FMG
+   IF lSaveAs == 1
+      IF ! MemoWrit( PutFile( { {'Form files *.fmg', '*.fmg'} }, 'Save Form As', , .T. ), Output )
+         MsgStop( 'Error writing FMG file.', 'OOHG IDE+' )
+         RETURN NIL
+      ENDIF
+   ELSE
+      IF ! MemoWrit( myForm:cForm, Output )
+         MsgStop( 'Error writing ' + myForm:cForm + ".", 'OOHG IDE+' )
+         RETURN NIL
+      ENDIF
+      myForm:lfSave := .T.
+   ENDIF
+
+//***************************  Rebuild form's menu
+   IF File( myForm:cfname + '.mnm' )
+      lDeleted := SET( _SET_DELETED, .T. )
+
+      archivo := myForm:cfname + '.mnm'
+      SELECT 20
+      USE &archivo EXCLUSIVE ALIAS menues
+      GO TOP
+      IF ! Eof()
+         swpop := 0
+         DEFINE MAIN MENU OF Form_1
+            DO WHILE ! Eof()
+               SKIP
+               IF Eof()
+                  signiv := 0
+               ELSE
+                  signiv := menues->level
+               ENDIF
+               SKIP -1
+               niv := menues->level
+               IF signiv > menues->level
+                  IF Lower( AllTrim( menues->auxit ) ) == 'separator'
+                     SEPARATOR
+                  ELSE
+                     POPUP AllTrim( menues->auxit )
+                     swpop ++
+                  ENDIF
+               ELSE
+                  IF Lower( AllTrim( menues->auxit ) ) == 'separator'
+                     SEPARATOR
+                  ELSE
+                     ITEM AllTrim( menues->auxit ) ACTION NIL
+                  ENDIF
+
+                  DO WHILE signiv < niv
+                     END POPUP
+                     swpop --
+                     niv --
+                  ENDDO
+               ENDIF
+               SKIP
+            ENDDO
+            nnivaux := niv - 1
+            DO WHILE swpop > 0
+               nnivaux--
+               END POPUP
+               swpop --
+            ENDDO
+         END MENU
+      ENDIF
+      CLOSE DATABASES
+      SET( _SET_DELETED, lDeleted )
+   ENDIF
+RETURN NIL
+
+*------------------------------------------------------------------------------*
+STATIC FUNCTION MakeControls( j, Output, nRow, nCol, nWidth, nHeight, mlyform, nSpacing, nLevel )
+*------------------------------------------------------------------------------*
+LOCAL cName
+
+/*
+   TODO: Add ON GOTFOCUS and ON LOSTFOCUS to all controls
+*/
+
+   IF myForm:actrltype[j] == 'BUTTON'
+      // Must end with a space
+      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' BUTTON ' + AllTrim( myForm:aname[j] ) + ' '
+      IF ! Empty( myForm:acobj[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( myForm:acobj[j] )
+      ENDIF
+      IF Len( myForm:acaption[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + "'" + AllTrim( myForm:acaption[j] ) + "'"
+      ELSE
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + "'" + AllTrim( myForm:aname[j] ) + "'"
+      ENDIF
+      IF Len( myForm:aPicture[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PICTURE ' + "'" + AllTrim( myForm:apicture[j] ) + "'"
+      ENDIF
+      IF Len( myForm:aaction[j] ) > 0
+        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + AllTrim( myForm:aaction[j] )
+      ELSE
+        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + "MsgInfo( 'Button Pressed' )"
+      ENDIF
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+      IF Len( myForm:afontname[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + "'" + AllTrim( myForm:afontname[j] ) + "'"
+      ENDIF
+      IF myForm:afontsize[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) )
+      ENDIF
+      IF Len( myForm:atooltip[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+      ENDIF
+      IF myForm:aflat[j]
+        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FLAT '
+      ENDIF
+      IF Len( myForm:ajustify[j] ) > 0 .AND. Len( myForm:aPicture[j] ) > 0 .AND. Len( myForm:acaption[j] ) > 0
+          // Must end with a space
+          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + Upper( AllTrim( myForm:ajustify[j] ) ) + " "
+      ENDIF
+      IF Len( myForm:aongotfocus[j] ) > 0
+        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( myForm:aongotfocus[j] )
+      ENDIF
+      IF Len( myForm:aonlostfocus[j] ) > 0
+        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( myForm:aonlostfocus[j] )
+      ENDIF
+      IF myForm:anotabstop[j]
+        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
+      ENDIF
+      IF myForm:ahelpid[j] > 0
+        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) )
+      ENDIF
+/*
+   TODO: Add this properties
+
+   [ <bold : BOLD> ] ;
+   [ <italic : ITALIC> ] ;
+   [ <underline : UNDERLINE> ] ;
+   [ <strikeout : STRIKEOUT> ] ;
+   [ ON MOUSEMOVE <onmousemove> ] ;
+   [ <invisible: INVISIBLE> ] ;
+   [ <rtl: RTL> ] ;
+   [ <noprefix: NOPREFIX> ] ;
+   [ <disabled: DISABLED> ] ;
+   [ BUFFER <buffer> ] ;
+   [ HBITMAP <hbitmap> ] ;
+   [ <notrans: NOLOADTRANSPARENT> ] ;
+   [ <scale: FORCESCALE> ] ;
+   [ <cancel: CANCEL> ] ;
+   [ <alignment:LEFT,RIGHT,TOP,BOTTOM,CENTER> ] ;
+   [ <multiline: MULTILINE> ] ;
+   [ <themed : THEMED> ] ;
+   [ IMAGEMARGIN <aImageMargin> ] ;
+   [ <no3dcolors: NO3DCOLORS> ] ;
+   [ <autofit: AUTOFIT, ADJUST> ] ;
+   [ <lDIB: DIBSECTION> ] ;
+   [ BACKCOLOR <backcolor> ] ;
+*/
+      Output += CRLF + CRLF
    ENDIF
 
    IF myForm:actrltype[j] == 'CHECKBOX'
-     Output += '@ ' + LTrim( Str( Row ) ) + ', ' + LTrim( Str( Col ) ) + ' CHECKBOX ' + myForm:aname[j] + ' ;' + CRLF
-      IF ! Empty(myForm:acobj[j])
-         Output += 'OBJ ' + myForm:acobj[j] + ' ;' + CRLF
+      // Must end with a space
+      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' CHECKBOX ' + AllTrim( myForm:aname[j] ) + ' '
+      IF ! Empty( myForm:acobj[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( myForm:acobj[j] )
       ENDIF
-
-     IF Len( myForm:acaption[j] ) > 0
-         Output += 'CAPTION ' + "'" + myForm:acaption[j] + "'" + ' ;' + CRLF
-     ELSE
-         Output += 'CAPTION ' + " ' " + " ' " + ' ;' + CRLF
-     ENDIF
-     Output += 'WIDTH ' + LTrim(Str( Width)) + ' ;' + CRLF
-      Output += 'HEIGHT ' + LTrim(Str( Height)) + ';' + CRLF
-     IF myForm:avaluel[j]
-       Output += 'VALUE .T.' + ' ;' + CRLF
-     ELSE
-       Output += 'VALUE .F.' + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:afield[j] ) > 0
-       Output += 'FIELD ' + myForm:afield[j] + ' ;' + CRLF
-     ENDIF
-
-     IF Len( myForm:afontname[j] ) > 0
-        Output += "FONT " + "'" + myForm:afontname[j] + "'" +  ' ;' + CRLF
-     ENDIF
-     IF myForm:afontsize[j] > 0
-        Output += 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) ) + ' ;' + CRLF
+      IF Len( myForm:acaption[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + "'" + AllTrim( myForm:acaption[j] ) + "'"
+      ELSE
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + " '" + "'"
       ENDIF
-     IF Len( myForm:atooltip[j] ) > 0
-        Output += "TOOLTIP " + "'" + myForm:atooltip[j] + "'" +  ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aonchange[j] ) > 0
-        Output += 'ON CHANGE ' + myForm:aonchange[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aongotfocus[j] ) > 0
-        Output += 'ON GOTFOCUS ' + myForm:aongotfocus[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aonlostfocus[j] ) > 0
-        Output += 'ON LOSTFOCUS ' + myForm:aonlostfocus[j] + ' ;' + CRLF
-     ENDIF
-     IF myForm:atransparent[j]
-        Output += 'TRANSPARENT ' + ' ;' + CRLF
-     ENDIF
-     IF myForm:anotabstop[j]
-        Output += 'NOTABSTOP ' + ' ;' + CRLF
-     ENDIF
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+      IF myForm:avaluel[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE .T.'
+      ELSE
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE .F.'
+      ENDIF
+      IF Len( myForm:afield[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIELD ' + AllTrim( myForm:afield[j] )
+      ENDIF
+      IF Len( myForm:afontname[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + "'" + AllTrim( myForm:afontname[j] ) + "'"
+      ENDIF
+      IF myForm:afontsize[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) )
+       ENDIF
+      IF Len( myForm:atooltip[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+      ENDIF
+      IF Len( myForm:aonchange[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( myForm:aonchange[j] )
+      ENDIF
+      IF Len( myForm:aongotfocus[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( myForm:aongotfocus[j] )
+      ENDIF
+      IF Len( myForm:aonlostfocus[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( myForm:aonlostfocus[j] )
+      ENDIF
+      IF myForm:atransparent[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TRANSPARENT '
+      ENDIF
+      IF myForm:anotabstop[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
+      ENDIF
+      IF myForm:ahelpid[j] > 0
+        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) )
+      ENDIF
+/*
+   TODO: Add this properties
 
-     Output += ' ' + CRLF + CRLF
+   [ <bold : BOLD> ] ;
+   [ <italic : ITALIC> ] ;
+   [ <underline : UNDERLINE> ] ;
+   [ <strikeout : STRIKEOUT> ] ;
+   [ BACKCOLOR <backcolor> ] ;
+   [ FONTCOLOR <fontcolor> ] ;
+   [ <invisible: INVISIBLE> ] ;
+   [ <autosize: AUTOSIZE > ] ;
+   [ <disabled: DISABLED > ] ;
+   [ <rtl: RTL> ] ;
+   [ <threestate : THREESTATE> ] ;
+   [ <leftalign: LEFTALIGN> ] ;
+   [ <themed : THEMED> ] ;
+*/
+      Output += CRLF + CRLF
    ENDIF
-   IF myForm:actrltype[j] == 'TREE'
-     Output += '*****@ ' + LTrim( Str( Row ) ) + ', ' + LTrim( Str( Col ) ) + ' TREE ' + myForm:aname[j] + '  ' + CRLF
-     Output += 'DEFINE TREE ' + myForm:aname[j] + ' ;' + CRLF
-      IF ! Empty(myForm:acobj[j])
-         Output += 'OBJ ' + myForm:acobj[j] + ' ;' + CRLF
-      ENDIF
-     Output += 'AT ' + LTrim( Str( row ) ) + ', ' + LTrim( Str( col ) ) + '  ;' + CRLF
-     Output += 'WIDTH  ' + LTrim(Str( Width)) + ' ;' + CRLF
-     Output += 'HEIGHT ' + LTrim(Str( Height)) + ' ;' + CRLF
-     IF Len( myForm:afontname[j] ) > 0
-         Output += "FONT " + "'" + myForm:afontname[j] + "'" +  ' ;' + CRLF
-     ENDIF
-     IF myForm:afontsize[j] > 0
-        Output += 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) ) + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:atooltip[j] ) > 0
-         Output += "TOOLTIP " + "'" + myForm:atooltip[j] + "'" +  ' ' + CRLF
-     ENDIF
-     IF Len( myForm:aonchange[j] ) > 0
-        Output += 'ON CHANGE ' + myForm:aonchange[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aongotfocus[j] ) > 0
-        Output += 'ON GOTFOCUS ' + myForm:aongotfocus[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aonlostfocus[j] ) > 0
-        Output += 'ON LOSTFOCUS ' + myForm:aonlostfocus[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aondblclick[j] ) > 0
-        Output += 'ON DBLCLICK ' + myForm:aondblclick[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:anodeimages[j] ) > 0
-        Output += 'NODEIMAGES ' + myForm:anodeimages[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aitemimages[j] ) > 0
-        Output += 'ITEMIMAGES ' + myForm:aitemimages[j] + ' ;' + CRLF
-     ENDIF
-     IF myForm:anorootbutton[j]
-        Output += 'NOROOTBUTTON ' + ' ;' + CRLF
-     ENDIF
-     IF myForm:aitemids[j]
-        Output += 'ITEMIDS ' +  ' ;' + CRLF
-     ENDIF
-     IF myForm:ahelpid[j] > 0
-        Output += 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) ) + ' ;' + CRLF
-     ENDIF
 
-     Output +=CRLF
-     Output +="END TREE" + CRLF + CRLF
+   IF myForm:actrltype[j] == 'TREE'
+      // Do not delete next line, it's needed to load the fmg properly.
+      Output += Space( nSpacing ) + '*****@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' TREE ' + AllTrim( myForm:aname[j] ) + ' ;' + CRLF
+      Output += Space( nSpacing * nLevel ) + 'DEFINE TREE ' + AllTrim( myForm:aname[j] )
+      IF ! Empty( myForm:acobj[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( myForm:acobj[j] )
+      ENDIF
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AT ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) )
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+      IF Len( myForm:afontname[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + "'" + AllTrim( myForm:afontname[j] ) + "'"
+      ENDIF
+      IF myForm:afontsize[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) )
+      ENDIF
+      IF Len( myForm:afontcolor[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + AllTrim( myForm:afontcolor[j] )
+      ENDIF
+      IF myForm:abold[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
+      ENDIF
+      IF myForm:afontitalic[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
+      ENDIF
+      IF myForm:afontunderline[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
+      ENDIF
+      IF myForm:afontstrikeout[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
+      ENDIF
+      IF myForm:abackcolor[j] # 'NIL' .AND. Len( myForm:abackcolor[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + AllTrim( myForm:abackcolor[j] )
+      ENDIF
+      IF ! myForm:avisible[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
+      ENDIF
+      IF ! myForm:aenabled[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
+      ENDIF
+      IF Len( myForm:atooltip[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+      ENDIF
+      IF Len( myForm:aonchange[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( myForm:aonchange[j] )
+      ENDIF
+      IF Len( myForm:aongotfocus[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( myForm:aongotfocus[j] )
+      ENDIF
+      IF Len( myForm:aonlostfocus[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( myForm:aonlostfocus[j] )
+      ENDIF
+      IF Len( myForm:aondblclick[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON DBLCLICK ' + AllTrim( myForm:aondblclick[j] )
+      ENDIF
+      IF Len( myForm:anodeimages[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NODEIMAGES ' + AllTrim( myForm:anodeimages[j] )
+      ENDIF
+      IF Len( myForm:aitemimages[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITEMIMAGES ' + AllTrim( myForm:aitemimages[j] )
+      ENDIF
+      IF myForm:anorootbutton[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOROOTBUTTON '
+      ENDIF
+      IF myForm:aitemids[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITEMIDS '
+      ENDIF
+      IF myForm:ahelpid[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) )
+      ENDIF
+      Output += CRLF
+      Output += Space( nSpacing * nLevel ) + "END TREE " + CRLF + CRLF
+/*
+   TODO: Add this properties
+
+   FULLROWSELECT ;
+   [ VALUE <value> ] ;
+   [ <rtl: RTL> ]                  ;
+   [ ON ENTER <enter> ]            ;
+   [ <break: BREAK> ]              ;
+   [ <notabstop: NOTABSTOP> ] ;
+   [ SELCOLOR <selcolor> ] ;
+   [ <selbold: SELBOLD> ] ;
+   [ <checkboxes: CHECKBOXES> ] ;
+   [ <editlabels: EDITLABELS> ] ;
+   [ <noHScr: NOHSCROLL> ] ;
+   [ <noScr: NOSCROLL> ] ;
+   [ <hott: HOTTRACKING> ] ;
+   [ <nobuts: NOBUTTONS> ] ;
+   [ <drag: ENABLEDRAG> ] ;
+   [ <drop: ENABLEDROP> ] ;
+   [ TARGET <aTarget> ] ;
+   [ <single: SINGLEEXPAND> ] ;
+   [ <noborder: BORDERLESS> ] ;
+   [ ON LABELEDIT <labeledit> ] ;
+   [ VALID <valid> ] ;
+   [ ON CHECKCHANGE <checkchange> ] ;
+   [ INDENT <pixels> ] ;
+   [ ON DROP <ondrop> ] ;
+   [ <nolines: NOLINES> ] ;
+*/
    ENDIF
 
    IF myForm:actrltype[j] == 'LIST'
-       Output += '@ ' + LTrim( Str( Row ) ) + ', ' + LTrim( Str( Col ) ) + ' LISTBOX ' + myForm:aname[j] + ' ;' + CRLF
-      IF ! Empty(myForm:acobj[j])
-         Output += 'OBJ ' + myForm:acobj[j] + ' ;' + CRLF
+      // Must end with a space
+      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' LISTBOX ' + AllTrim( myForm:aname[j] ) + ' '
+      IF ! Empty( myForm:acobj[j ] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( myForm:acobj[j] )
       ENDIF
-     Output += 'WIDTH  ' + LTrim(Str( Width)) + ' ;' + CRLF
-     Output += 'HEIGHT ' + LTrim(Str( Height)) + ' ;' + CRLF
-     IF Len( myForm:aitems[j] ) > 0
-           Output += "ITEMS  " + myForm:aitems[j] + "  ;" + CRLF
-     ENDIF
-
-     IF myForm:avaluen[j] > 0
-           Output += 'VALUE ' + LTrim( Str( myForm:avaluen[j] ) ) + ' ;' + CRLF
-     ENDIF
-
-     IF Len( myForm:afontname[j] ) > 0
-           Output += "FONT " + "'" + myForm:afontname[j] + "'" +  ' ;' + CRLF
-     ENDIF
-     IF myForm:afontsize[j] > 0
-           Output += 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) ) + ' ;' + CRLF
-     ENDIF
-
-     IF Len( myForm:atooltip[j] ) > 0
-           Output += "TOOLTIP " + "'" + myForm:atooltip[j] + "'" +  ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aonchange[j] ) > 0
-           Output += 'ON CHANGE ' + myForm:aonchange[j] + ' ;' + CRLF
-     ENDIF
-
-     IF Len( myForm:aongotfocus[j] ) > 0
-           Output += 'ON GOTFOCUS ' + myForm:aongotfocus[j] + ' ;' + CRLF
-     ENDIF
-
-     IF Len( myForm:aonlostfocus[j] ) > 0
-           Output += 'ON LOSTFOCUS ' + myForm:aonlostfocus[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aondblclick[j] ) > 0
-           Output += 'ON DBLCLICK ' + myForm:aondblclick[j] + ' ;' + CRLF
-     ENDIF
-
-     IF myForm:amultiselect[j]
-           Output += 'MULTISELECT ' + ' ;' + CRLF
-     ENDIF
-     IF myForm:ahelpid[j] > 0
-           Output += 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) ) + ' ;' + CRLF
-     ENDIF
-     IF myForm:abreak[j]
-           Output += 'BREAK ' + ' ;' + CRLF
-     ENDIF
-     IF myForm:anotabstop[j]
-        Output += 'NOTABSTOP ' + ' ;' + CRLF
-     ENDIF
-     IF myForm:asort[j]
-        Output += 'SORT ' + ' ;' + CRLF
-     ENDIF
-
-     Output += ' ' + CRLF + CRLF
-   ENDIF
-   IF myForm:actrltype[j] == 'COMBO'
-      Output += '@ ' + LTrim( Str( Row ) ) + ', ' + LTrim( Str( Col ) ) + ' COMBOBOX ' + myForm:aname[j] + ' ;' + CRLF
-      IF ! Empty(myForm:acobj[j])
-         Output += 'OBJ ' + myForm:acobj[j] + ' ;' + CRLF
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+      IF Len( myForm:aitems[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITEMS ' + AllTrim( myForm:aitems[j] )
       ENDIF
-
-     IF Len( myForm:aitems[j] ) > 0
-           Output += "ITEMS  " + myForm:aitems[j] + "  ;" + CRLF
-     ENDIF
-     IF Len( myForm:aitemsource[j] ) > 0
-           Output += "ITEMSOURCE " + myForm:aitemsource[j] + "  ;" + CRLF
-     ENDIF
-     IF myForm:avaluen[j] > 0
-           Output += 'VALUE ' + LTrim( Str( myForm:avaluen[j] ) ) + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:avaluesource[j] ) > 0
-           Output += "VALUESOURCE " + myForm:avaluesource[j] + "  ;" + CRLF
-     ENDIF
-     IF myForm:adisplayedit[j]
-        Output += 'DISPLAYEDIT ' + ' ;' + CRLF
-     ENDIF
-     Output += 'WIDTH  ' + LTrim(Str( Width)) + ' ;' + CRLF
-   ////   Output += 'HEIGHT ' + LTrim(Str( Height)) + ' ;' + CRLF
-     IF Len( myForm:afontname[j] ) > 0
-       Output += "FONT " + "'" + myForm:afontname[j] + "'" +  ' ;' + CRLF
-     ENDIF
-
-     IF myForm:afontsize[j] > 0
-           Output += 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) ) + ' ;' + CRLF
-     ENDIF
-
-     IF Len( myForm:atooltip[j] ) > 0
-           Output += "TOOLTIP " + "'" + myForm:atooltip[j] + "'" +  ' ;' + CRLF
-     ENDIF
-
-     IF Len( myForm:aonchange[j] ) > 0
-           Output += 'ON CHANGE ' + myForm:aonchange[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aongotfocus[j] ) > 0
-           Output += 'ON GOTFOCUS ' + myForm:aongotfocus[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aonlostfocus[j] ) > 0
-           Output += 'ON LOSTFOCUS ' + myForm:aonlostfocus[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aonenter[j] ) > 0
-           Output += 'ON ENTER ' + myForm:aonenter[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aondisplaychange[j] ) > 0
-           Output += 'ON DISPLAYCHANGE ' + myForm:aondisplaychange[j] + ' ;' + CRLF
-     ENDIF
-     IF myForm:anotabstop[j]
-        Output += 'NOTABSTOP ' + ' ;' + CRLF
-     ENDIF
-     IF myForm:ahelpid[j] > 0
-           Output += 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) ) + ' ;' + CRLF
-     ENDIF
-     IF myForm:abreak[j]
-        Output += 'BREAK ' + ' ;' + CRLF
-     ENDIF
-     IF myForm:asort[j]
-        Output += 'SORT ' + ' ;' + CRLF
-     ENDIF
-
-     Output += CRLF + CRLF
-   ENDIF
-   IF myForm:actrltype[j] == 'CHECKBTN'
-     Output += '@ ' + LTrim( Str( Row ) ) + ', ' + LTrim( Str( Col ) ) + ' CHECKBUTTON ' + myForm:aname[j] + ' ;' + CRLF
-      IF ! Empty(myForm:acobj[j])
-         Output += 'OBJ ' + myForm:acobj[j] + ' ;' + CRLF
+      IF myForm:avaluen[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( myForm:avaluen[j] ) )
       ENDIF
-     IF Len( myForm:acaption[j] ) > 0
-         Output += 'CAPTION ' + "'" + myForm:acaption[j] + "'" + ' ;' + CRLF
-     ELSE
-         Output += 'CAPTION ' + "'" + myForm:aname[j] + "'" + ' ;' + CRLF
-     ENDIF
-     Output += 'WIDTH ' + LTrim(Str( Width)) + ' ;' + CRLF
-      Output += 'HEIGHT ' + LTrim(Str( Height)) + ';' + CRLF
-     IF myForm:avaluel[j]
-        Output += 'VALUE .T.' + ' ;' + CRLF
-     ELSE
-        Output += 'VALUE .F.' + ' ;' + CRLF
-     ENDIF
-
-     IF Len( myForm:afontname[j] ) > 0
-           Output += "FONT " + "'" + myForm:afontname[j] + "'" +  ' ;' + CRLF
-     ENDIF
-     IF myForm:afontsize[j] > 0
-           Output += 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) ) + ' ;' + CRLF
-      ENDIF
-     IF Len( myForm:atooltip[j] ) > 0
-           Output += "TOOLTIP " + "'" + myForm:atooltip[j] + "'" +  ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aonchange[j] ) > 0
-           Output += 'ON CHANGE ' + myForm:aonchange[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aongotfocus[j] ) > 0
-           Output += 'ON GOTFOCUS ' + myForm:aongotfocus[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aonlostfocus[j] ) > 0
-           Output += 'ON LOSTFOCUS ' + myForm:aonlostfocus[j] + ' ;' + CRLF
-     ENDIF
-     IF myForm:ahelpid[j] > 0
-           Output += 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) ) + ' ;' + CRLF
-     ENDIF
-     IF myForm:anotabstop[j]
-        Output += 'NOTABSTOP ' + ' ;' + CRLF
-     ENDIF
-     Output += ' ' + CRLF + CRLF
-
-   ENDIF
-   IF myForm:actrltype[j] == 'GRID'
-      Output += '@ ' + LTrim( Str( Row ) ) + ', ' + LTrim( Str( Col ) ) + ' GRID ' + myForm:aname[j] + ' ;' + CRLF
-      IF ! Empty(myForm:acobj[j])
-         Output += 'OBJ ' + myForm:acobj[j] + ' ;' + CRLF
-      ENDIF
-     Output += 'WIDTH ' + LTrim(Str( Width)) + ' ;' + CRLF
-     Output += 'HEIGHT ' + LTrim(Str( Height)) + ' ;' + CRLF
-
-     Output += 'HEADERS ' + myForm:aheaders[j] + ' ;' + CRLF
-     Output += 'WIDTHS  ' + myForm:awidths[j] + ' ;' + CRLF
-     IF Len( myForm:aitems[j] ) > 0
-        Output += 'ITEMS  ' + myForm:aitems[j]  + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:avalue[j] ) > 0
-         Output += ' VALUE  ' + myForm:avalue[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:adynamicbackcolor[j] ) > 0
-           Output += 'DYNAMICBACKCOLOR ' + myForm:adynamicbackcolor[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:adynamicforecolor[j] ) > 0
-           Output += 'DYNAMICFORECOLOR ' + myForm:adynamicforecolor[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:acolumncontrols[j] ) > 0
-           Output += 'COLUMNCONTROLS ' + myForm:acolumncontrols[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:afontname[j] ) > 0
-           Output += "FONT " + "'" + myForm:afontname[j] + "'" +  ' ;' + CRLF
-     ENDIF
-     IF myForm:afontsize[j] > 0
-           Output += 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) ) + ' ;' + CRLF
-      ENDIF
-     IF Len( myForm:atooltip[j] ) > 0
-           Output += "TOOLTIP " + "'" + myForm:atooltip[j] + "'" +  ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aonchange[j] ) > 0
-           Output += 'ON CHANGE ' + myForm:aonchange[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aongotfocus[j] ) > 0
-           Output += 'ON GOTFOCUS ' + myForm:aongotfocus[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aonlostfocus[j] ) > 0
-           Output += 'ON LOSTFOCUS ' + myForm:aonlostfocus[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aondblclick[j] ) > 0
-           Output += 'ON DBLCLICK ' + myForm:aondblclick[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aonenter[j] ) > 0
-           Output += 'ON ENTER ' + myForm:aONENTER[j] + ' ;' +CRLF
-     ENDIF
-     IF Len( myForm:aonheadclick[j] ) > 0
-           Output += 'ON HEADCLICK ' + myForm:aonheadclick[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aoneditcell[j] ) > 0
-           Output += 'ON EDITCELL ' + myForm:aoneditcell[j] + ' ;' + CRLF
-     ENDIF
-     IF myForm:amultiselect[j]
-        Output += 'MULTISELECT' + ' ;' + CRLF
-     ENDIF
-     IF myForm:anolines[j]
-        Output += 'NOLINES' + ' ;' + CRLF
-     ENDIF
-     IF myForm:ainplace[j]
-        Output += 'INPLACE' + ' ;' + CRLF
-     ENDIF
-     IF myForm:aedit[j]
-        Output += 'EDIT' + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aimage[j] ) > 0
-           Output += 'IMAGE ' + myForm:aimage[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:ajustify[j] ) > 0
-           Output += 'JUSTIFY ' + (myForm:ajustify[j]) + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:awhen[j] ) > 0
-           Output += 'WHEN ' + myForm:awhen[j] + ' ;' + CRLF
-     ENDIF
-
-     IF Len( myForm:avalid[j] ) > 0
-           Output += 'VALID ' + myForm:avalid[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:avalidmess[j] ) > 0
-           Output += 'VALIDMESSAGES ' + myForm:avalidmess[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:areadonlyb[j] ) > 0
-        Output += 'READONLY ' + myForm:areadonlyb[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:ainputmask[j] ) > 0
-           Output += "INPUTMASK " + myForm:ainputmask[j] +  ' ;' + CRLF
-     ENDIF
-     IF myForm:ahelpid[j] > 0
-           Output += 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) ) + ' ;' + CRLF
-     ENDIF
-     IF myForm:abreak[j]
-        Output += 'BREAK' + ' ;' + CRLF
-     ENDIF
-
-      Output += CRLF + CRLF
-   ENDIF
-   IF myForm:actrltype[j] == 'BROWSE'
-               Output += '@ ' + LTrim( Str( Row ) ) + ', ' + LTrim( Str( Col ) ) + ' BROWSE ' + myForm:aname[j] + ' ;' + CRLF
-      IF ! Empty(myForm:acobj[j])
-         Output += 'OBJ ' + myForm:acobj[j] + ' ;' + CRLF
-      ENDIF
-     Output += 'WIDTH ' + LTrim(Str( Width)) + ' ;' + CRLF
-     Output += 'HEIGHT ' + LTrim(Str( Height)) + ' ;' + CRLF
-     IF Len( myForm:aheaders[j] ) > 0
-        Output += 'HEADERS ' + myForm:aheaders[j] + ' ;' + CRLF
-     ELSE
-        Output += 'HEADERS ' + "{'', ''} " + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:awidths[j] ) > 0
-        Output += 'WIDTHS  ' + myForm:awidths[j] + ' ;' + CRLF
-     ELSE
-        Output += 'WIDTHS ' + "{90, 60}" + ' ;' + CRLF
-     ENDIF
-     Output += 'WORKAREA ' + myForm:aworkarea[j] + ' ;' + CRLF
-     IF Len( myForm:afields[j] ) > 0
-        Output += 'FIELDS  ' + myForm:afields[j]  + ' ;' + CRLF
-     ELSE
-        Output += 'FIELDS  ' + "{'field1', 'field2'}" + ' ;' + CRLF
-     ENDIF
-     IF myForm:avaluen[j] > 0
-         Output += 'VALUE  ' + LTrim( Str( myForm:avaluen[j] ) ) + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:afontname[j] ) > 0
-           Output += "FONT " + "'" + myForm:afontname[j] + "'" +  ' ;' + CRLF
-     ENDIF
-     IF myForm:afontsize[j] > 0
-           Output += 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) ) + ' ;' + CRLF
-      ENDIF
-     IF Len( myForm:atooltip[j] ) > 0
-           Output += "TOOLTIP " + "'" + myForm:atooltip[j] + "'" +  ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:ainputmask[j] ) > 0
-           Output += "INPUTMASK " + myForm:ainputmask[j] +  ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:adynamicbackcolor[j] ) > 0
-           Output += 'DYNAMICBACKCOLOR ' + myForm:adynamicbackcolor[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:adynamicforecolor[j] ) > 0
-           Output += 'DYNAMICFORECOLOR ' + myForm:adynamicforecolor[j] + ' ;' + CRLF
-     ENDIF
-
-     IF Len( myForm:acolumncontrols[j] ) > 0
-           Output += 'COLUMNCONTROLS ' + myForm:acolumncontrols[j] + ' ;' + CRLF
-     ENDIF
-
-     IF Len( myForm:aonchange[j] ) > 0
-           Output += 'ON CHANGE ' + myForm:aonchange[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aongotfocus[j] ) > 0
-           Output += 'ON GOTFOCUS ' + myForm:aongotfocus[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aonlostfocus[j] ) > 0
-           Output += 'ON LOSTFOCUS ' + myForm:aonlostfocus[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aondblclick[j] ) > 0
-          Output += 'ON DBLCLICK ' + myForm:aondblclick[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aonheadclick[j] ) > 0
-           Output += 'ON HEADCLICK ' + myForm:aonheadclick[j] + ' ;' + CRLF
-     ENDIF
-
-     IF Len( myForm:aoneditcell[j] ) > 0
-           Output += 'ON EDITCELL ' + myForm:aoneditcell[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aonappend[j] ) > 0
-           Output += 'ON APPEND ' + myForm:aonappend[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:awhen[j] ) > 0
-           Output += 'WHEN ' + myForm:awhen[j] + ' ;' + CRLF
-     ENDIF
-
-     IF Len( myForm:avalid[j] ) > 0
-           Output += 'VALID ' + myForm:avalid[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:avalidmess[j] ) > 0
-           Output += 'VALIDMESSAGES ' + myForm:avalidmess[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:areadonlyb[j] ) > 0
-        Output += 'READONLY ' + myForm:areadonlyb[j] + ' ;' + CRLF
-     ENDIF
-     IF myForm:alock[j]
-        Output += 'LOCK' + ' ;' + CRLF
-     ENDIF
-     IF myForm:adelete[j]
-        Output += 'DELETE' + ' ;' + CRLF
-     ENDIF
-       IF myForm:ainplace[j]
-        Output += 'INPLACE' + ' ;' + CRLF
-     ENDIF
-       IF myForm:aedit[j]
-        Output += 'EDIT' + ' ;' + CRLF
-     ENDIF
-
-     IF myForm:anolines[j]
-        Output += 'NOLINES' + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aimage[j] ) > 0
-           Output += 'IMAGE ' + myForm:aimage[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:ajustify[j] ) > 0
-           Output += 'JUSTIFY ' + (myForm:ajustify[j]) + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aonenter[j] ) > 0
-          Output += 'ON ENTER ' + myForm:aonenter[j] + ' ;' + CRLF
-     ENDIF
-
-      IF myForm:ahelpid[j] > 0
-           Output += 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) ) + ' ;' + CRLF
-     ENDIF
-     IF myForm:aappend[j]
-        Output += 'APPEND' + ' ;' + CRLF
-     ENDIF
-
-     Output += CRLF + CRLF
-      ENDIF
-   IF myForm:actrltype[j] == 'IMAGE'
-      Output += '@ ' + LTrim( Str( Row ) ) + ', ' + LTrim( Str( Col ) ) + ' IMAGE ' + myForm:aname[j] + ' ;' + CRLF
-      IF ! Empty(myForm:acobj[j])
-         Output += 'OBJ ' + myForm:acobj[j] + ' ;' + CRLF
-      ENDIF
-     IF Len( myForm:aaction[j] ) > 0
-         Output += 'ACTION ' + myForm:aaction[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:apicture[j] ) > 0
-         Output += 'PICTURE ' + '"' + myForm:apicture[j] + '" ;' + CRLF
-        ELSE
-         Output += 'PICTURE "demo.bmp"' + ' ;' + CRLF
-     ENDIF
-     ****
-     Output += 'WIDTH ' + LTrim(Str( Width)) + ' ;' + CRLF
-     Output += 'HEIGHT ' + LTrim(Str( Height)) + ' ;' + CRLF
-
-     IF myForm:astretch[j]
-        Output += 'STRETCH ' + ' ;' + CRLF
-     ELSE
-     ENDIF
-     IF myForm:ahelpid[j] > 0
-           Output += 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) ) + ' ;' + CRLF
-     ENDIF
-
-     Output += CRLF + CRLF
-
-   ENDIF
-   IF myForm:actrltype[j] == 'TIMER'
-     Output += '*****@ ' + LTrim( Str( Row ) ) + ', ' + LTrim( Str( Col ) ) + ' TIMER ' + myForm:aname[j] + '  ' + CRLF
-      Output += 'DEFINE TIMER ' + myForm:aname[j] + ' ;' + CRLF
-      IF ! Empty(myForm:acobj[j])
-         Output += 'OBJ ' + myForm:acobj[j] + ' ;' + CRLF
-      ENDIF
-     IF myForm:avaluen[j] > 999
-         Output += 'INTERVAL ' + LTrim( Str( myForm:avaluen[j] ) ) + ' ;' +  CRLF
-        ELSE
-          Output += 'INTERVAL ' + LTrim( Str( 1000 ) ) + ' ;' +  CRLF
-     ENDIF
-     IF Len( myForm:aaction[j] ) > 0
-         Output += 'ACTION ' + myForm:aaction[j] + ' ;' + CRLF
-     ELSE
-          Output += 'ACTION ' + ' _dummy() ' + ' ;' + CRLF
-     ENDIF
-     Output += ' &&&& ROW ' + LTrim( Str( Row ) ) + ' ;' + CRLF
-     Output += ' &&&& COL ' + LTrim( Str( Col ) ) + ' ;' + CRLF
-     Output += CRLF + CRLF
-   ENDIF
-   IF myForm:actrltype[j] == 'ANIMATE'
-      Output += '@ ' + LTrim( Str( Row ) ) + ', ' + LTrim( Str( Col ) ) + ' ANIMATEBOX ' + myForm:aname[j] + ' ;' + CRLF
-     IF ! Empty(myForm:acobj[j])
-         Output += 'OBJ ' + myForm:acobj[j] + ' ;' + CRLF
-      ENDIF
-     Output += ' WIDTH ' + LTrim(Str( Width))  + ' ;' + CRLF
-     Output += ' HEIGHT ' + LTrim(Str( Height)) + ' ;' + CRLF
-     IF Len( myForm:afile[j] ) > 0
-       Output += 'FILE ' + '"' + myForm:afile[j] + '" ;' + CRLF
-     ENDIF
-     IF myForm:aautoplay[j]
-           Output += 'AUTOPLAY ' + ' ;' + CRLF
-     ENDIF
-     IF myForm:acenter[j]
-           Output += 'CENTER ' + ' ;' + CRLF
-     ENDIF
-     IF myForm:atransparent[j]
-           Output += 'TRANSPARENT ' + ' ;' + CRLF
-     ENDIF
-     IF myForm:ahelpid[j] > 0
-           Output += 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) ) + ' ;' + CRLF
-     ENDIF
-     Output += CRLF + CRLF
-   ENDIF
-   IF myForm:actrltype[j] == 'DATEPICKER'
-      Output += '@ ' + LTrim( Str( Row ) ) + ', ' + LTrim( Str( Col ) ) + ' DATEPICKER ' + myForm:aname[j] + ' ;' + CRLF
-     IF ! Empty(myForm:acobj[j])
-         Output += 'OBJ ' + myForm:acobj[j] + ' ;' + CRLF
-      ENDIF
-     IF Len( myForm:avalue[j] ) > 0
-         Output += "VALUE " + myForm:avalue[j] + "  ;" + CRLF
-     ENDIF
-     IF Len( myForm:afield[j] ) > 0
-         Output += 'FIELD ' + myForm:afield[j] + ' ;' + CRLF
-     ENDIF
-     Output += ' WIDTH ' + LTrim(Str( Width))  + ' ;' + CRLF
-     IF Len( myForm:afontname[j] ) > 0
-           Output += "FONT " + "'" + myForm:afontname[j] + "'" +  ' ;' + CRLF
-     ENDIF
-     IF myForm:afontsize[j] > 0
-           Output += 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) ) + ' ;' + CRLF
-      ENDIF
-     IF Len( myForm:atooltip[j] ) > 0
-           Output += "TOOLTIP " + "'" + myForm:atooltip[j] + "'" +  ' ;' + CRLF
-     ENDIF
-     IF myForm:ashownone[j]
-           Output += 'SHOWNONE ' + ' ;' + CRLF
-     ENDIF
-     IF myForm:aupdown[j]
-           Output += 'UPDOWN ' + ' ;' + CRLF
-     ENDIF
-
-     IF myForm:arightalign[j]
-           Output += 'RIGHTALIGN ' + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aonchange[j] ) > 0
-           Output += 'ON CHANGE ' + myForm:aonchange[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aongotfocus[j] ) > 0
-           Output += 'ON GOTFOCUS ' + myForm:aongotfocus[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aonlostfocus[j] ) > 0
-           Output += 'ON LOSTFOCUS ' + myForm:aonlostfocus[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aonenter[j] ) > 0
-           Output += 'ON ENTER ' + myForm:aonenter[j] + ' ;' + CRLF
-     ENDIF
-     IF myForm:ahelpid[j] > 0
-           Output += 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) ) + ' ;' + CRLF
-     ENDIF
-     Output += CRLF + CRLF
-
-   ENDIF
-   IF myForm:actrltype[j] == 'TEXT'
-     cFontname   := myForm:afontname[j]
-     nFontsize   := myForm:afontsize[j]
-     ctooltip    := myForm:atooltip[j]
-     nmaxlength :=  myForm:amaxlength[j]
-     luppercase := myForm:auppercase[j]
-     llowercase := myForm:alowercase[j]
-     lrightalign := myForm:arightalign[j]
-     lpassword := myForm:apassword[j]
-     lnumeric := myForm:anumeric[j]
-     cinputmask := myForm:ainputmask[j]
-     cFormat := myForm:afields[j]
-     conenter := myForm:aonenter[j]
-     conchange := myForm:aonchange[j]
-     congotfocus := myForm:aongotfocus[j]
-     conlostfocus := myForm:aonlostfocus[j]
-     nFocusedPos := myForm:afocusedpos[j] // pb
-     cvalid := myForm:avalid[j]
-     cwhen := myForm:awhen[j]
-
-     IF Len( myForm:atooltip[j] ) > 0
-        ctooltip :=  "TOOLTIP '" + myForm:atooltip[j] + "'" + ' ;' + CRLF
-     ELSE
-        ctooltip := ''
-     ENDIF
-
-     IF myForm:adate[j]
-        cdate := 'DATE' + ' ;' + CRLF
-     ELSE
-        cdate := ''
-     ENDIF
-
-     IF myForm:amaxlength[j] > 0
-        cmaxlength :=  'MAXLENGTH ' + LTrim( Str( myForm:amaxlength[j] ) ) + ' ;' + CRLF
-     ELSE
-        cmaxlength := ''
-     ENDIF
-
-     IF myForm:auppercase[j]
-        cuppercase :=  'UPPERCASE ;' + CRLF
-     ELSE
-        cuppercase := ''
-     ENDIF
-
-     IF myForm:alowercase[j]
-        clowercase :=  'LOWERCASE ;' + CRLF
-     ELSE
-        clowercase := ''
-     ENDIF
-
-     IF myForm:arightalign[j]
-        crightalign :=  'RIGHTALIGN ;' + CRLF
-     ELSE
-        crightalign := ''
-     ENDIF
-
-     cnumeric := ''
-     IF myForm:anumeric[j]
-        cnumeric :=  'NUMERIC ;' + CRLF
-        IF Len( myForm:ainputmask[j] ) > 0
-           cnumeric = cnumeric + 'INPUTMASK ' + "'" + myForm:ainputmask[j] + "'" + ' ;' + CRLF
-        ENDIF
-     ELSE
-        IF Len( myForm:ainputmask[j] ) > 0
-           cnumeric = 'INPUTMASK ' + "'" + myForm:ainputmask[j] + "'" + ' ;' + CRLF
-        ENDIF
-     ENDIF
-
-     IF Len( myForm:afields[j] ) > 0
-        cFormat =  'FORMAT ' + "'" + myForm:afields[j] + "'" + ' ;' + CRLF
-     ELSE
-        cFormat = ""
-     ENDIF
-
-     IF myForm:apassword[j]
-        cpassword :=  'PASSWORD ;' + CRLF
-     ELSE
-        cpassword := ''
-     ENDIF
-
-     // pb
-     // si tiene el valor -2 que es el valor x defecto, no es necesario agregar esta propiedad
-
-     cFocusedPos :=  ''
-     IF myForm:afocusedpos[j] <> -2
-        cFocusedPos :=  'FOCUSEDPOS ' + LTrim( Str( myForm:afocusedpos[j] ) ) + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:avalid[j] ) > 0
-        cvalid :=  'VALID ' + myForm:avalid[j] + ' ;' + CRLF
-     ENDIF
-
-     IF Len( myForm:awhen[j] ) > 0
-        cwhen :=  'WHEN ' + myForm:awhen[j] + ' ;' + CRLF
-     ENDIF
-
-     IF Len( myForm:aongotfocus[j] ) > 0
-        congotfocus :=  'ON GOTFOCUS ' + myForm:aongotfocus[j] + ' ;' + CRLF
-     ELSE
-        congotfocus := ''
-     ENDIF
-     IF Len( myForm:aonlostfocus[j] ) > 0
-        conlostfocus :=  'ON LOSTFOCUS ' + myForm:aonlostfocus[j] + ' ;' + CRLF
-     ELSE
-        conlostfocus := ''
-     ENDIF
-
-     IF Len( myForm:aonchange[j] ) > 0
-        conchange :=  'ON CHANGE ' + myForm:aonchange[j] + ' ;' + CRLF
-     ELSE
-        conchange := ''
-     ENDIF
-
-     IF Len( myForm:aonenter[j] ) > 0
-        conenter :=  'ON ENTER ' + myForm:aonenter[j] + ' ;' + CRLF
-     ELSE
-        conenter := ''
-     ENDIF
-      Output += '@ ' + LTrim( Str( Row ) ) + ', ' + LTrim( Str( Col ) ) + ' TEXTBOX ' + myForm:aname[j] + ' ;' + CRLF
-      IF ! Empty(myForm:acobj[j])
-         Output += 'OBJ ' + myForm:acobj[j] + ' ;' + CRLF
-      ENDIF
-     Output += 'HEIGHT ' + LTrim(Str( Height)) + ' ;' + CRLF
-     IF Len( myForm:afield[j] ) > 0
-        Output += 'FIELD ' + myForm:afield[j] + ' ;' + CRLF
-     ENDIF
-     cValue  := myForm:avalue[j]
-     IF cValue == NIL
-        cvalue=""
-     ENDIF
-     IF Len( cValue ) > 0
-        IF myForm:anumeric[j]
-           Output += 'VALUE ' + cValue + ' ;' + CRLF
-        ELSE
-           IF myForm:adate[j]
-              Output += 'VALUE ' + cValue + ' ;' + CRLF
-           ELSE
-              Output += 'VALUE ' + "'" + cValue + "'" + ' ;' + CRLF
-           ENDIF
-        ENDIF
-
-     ENDIF
-     IF myForm:areadonly[j]
-        Output += 'READONLY ' + ' ;' + CRLF
-     ENDIF
-     Output += 'WIDTH ' + LTrim(Str( Width)) + ' ;' + CRLF
-     Output += cpassword
-
-     IF Len( myForm:aFontname[j] ) > 0
-        Output += 'Font ' + "'" + myForm:aFontname[j] + "'" + ' ;' + CRLF
-     ENDIF
-     IF myForm:afontsize[j] > 0
-        Output += 'size ' + LTrim( Str( myForm:afontsize[j] ) ) + ' ;' + CRLF
-     ENDIF
-
-     Output += cTooltip
-     Output += cnumeric
-
-     Output += cFormat
-
-     Output += cdate
-     Output += cMaxlength
-     Output += cUppercase
-
-     Output += congotfocus
-     Output += conlostfocus
-     Output += conchange
-     Output += conenter
-     Output += crightalign
-
-     IF myForm:anotabstop[j]
-        Output += ' NOTABSTOP ' + ' ;' + CRLF
-     ENDIF
-
-     Output += cFocusedPos   // pb
-
-     Output += cvalid
-     Output += cwhen
-
-     Output += CRLF + CRLF
-   ENDIF
-   IF myForm:actrltype[j] == 'EDIT'
-     Output += '@ ' + LTrim( Str( Row ) ) + ', ' + LTrim( Str( Col ) ) + ' EDITBOX ' + myForm:aName[j] + ' ;' + CRLF
-     IF ! Empty(myForm:acobj[j])
-         Output += 'OBJ ' + myForm:acobj[j] + ' ;' + CRLF
-      ENDIF
-     Output += 'WIDTH ' + LTrim(Str( Width)) + ' ;' + CRLF
-     Output += 'HEIGHT ' + LTrim(Str( Height)) + ' ;' + CRLF
-     IF Len( myForm:afield[j] ) > 0
-        Output += 'FIELD ' + myForm:afield[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:avalue[j] ) > 0
-        Output += 'VALUE ' + "'" + myForm:avalue[j] + "'" + ' ;' + CRLF
-     ENDIF
-     IF myForm:areadonly[j]
-        Output += 'READONLY ' + ' ;' + CRLF
-     ENDIF
-
-     IF Len( myForm:afontname[j] ) > 0
-           Output += "FONT " + "'" + myForm:afontname[j] + "'" +  ' ;' + CRLF
-     ENDIF
-     IF myForm:afontsize[j] > 0
-           Output += 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) ) + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:atooltip[j] ) > 0
-           Output += "TOOLTIP " + "'" + myForm:atooltip[j] + "'" +  ' ;' + CRLF
-     ENDIF
-
-     IF myForm:amaxlength[j] > 0
-        Output += 'MAXLENGTH ' + LTrim( Str( myForm:amaxlength[j] ) ) + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aonchange[j] ) > 0
-           Output += 'ON CHANGE ' + myForm:aonchange[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aongotfocus[j] ) > 0
-           Output += 'ON GOTFOCUS ' + myForm:aongotfocus[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aonlostfocus[j] ) > 0
-           Output += 'ON LOSTFOCUS ' + myForm:aonlostfocus[j] + ' ;' + CRLF
-     ENDIF
-     IF myForm:ahelpid[j] > 0
-           Output += 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) ) + ' ;' + CRLF
-     ENDIF
-     IF myForm:abreak[j]
-        Output += 'BREAK ' + ' ;' + CRLF
-     ENDIF
-     IF myForm:anotabstop[j]
-        Output += 'NOTABSTOP ' + ' ;' + CRLF
-     ENDIF
-     IF myForm:anovscroll[j]
-        Output += 'NOVSCROLL ' + ' ;' + CRLF
-     ENDIF
-     IF myForm:anohscroll[j]
-        Output += 'NOHSCROLL ' + ' ;' + CRLF
-     ENDIF
-
-      Output += CRLF + CRLF
-   ENDIF
-   IF myForm:actrltype[j] == 'RICHEDIT'
-     Output += '@ ' + LTrim( Str( Row ) ) + ', ' + LTrim( Str( Col ) ) + ' RICHEDITBOX ' + myForm:aName[j] + ' ;' + CRLF
-     IF ! Empty(myForm:acobj[j])
-         Output += 'OBJ ' + myForm:acobj[j] + ' ;' + CRLF
-      ENDIF
-     Output += 'WIDTH ' + LTrim(Str( Width)) + ' ;' + CRLF
-     Output += 'HEIGHT ' + LTrim(Str( Height)) + ' ;' + CRLF
-     IF Len( myForm:afield[j] ) > 0
-        Output += 'FIELD ' + myForm:afield[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:avalue[j] ) > 0
-        Output += 'VALUE ' + "'" + myForm:avalue[j] + "'" + ' ;' + CRLF
-     ENDIF
-     IF myForm:areadonly[j]
-        Output += 'READONLY ' + ' ;' + CRLF
-     ENDIF
-
-     IF Len( myForm:afontname[j] ) > 0
-           Output += "FONT " + "'" + myForm:afontname[j] + "'" +  ' ;' + CRLF
-     ENDIF
-     IF myForm:afontsize[j] > 0
-           Output += 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) ) + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:atooltip[j] ) > 0
-           Output += "TOOLTIP " + "'" + myForm:atooltip[j] + "'" +  ' ;' + CRLF
-     ENDIF
-
-     IF myForm:amaxlength[j] > 0
-        Output += 'MAXLENGTH ' + LTrim( Str( myForm:amaxlength[j] ) ) + ' ;' + CRLF
-     ENDIF
-     IF myForm:abreak[j]
-        Output += 'BREAK ' + ' ;' + CRLF
-     ENDIF
-     IF myForm:anotabstop[j]
-        Output += 'NOTABSTOP ' + ' ;' + CRLF
-     ENDIF
-
-     IF Len( myForm:aonchange[j] ) > 0
-           Output += 'ON CHANGE ' + myForm:aonchange[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aongotfocus[j] ) > 0
-           Output += 'ON GOTFOCUS ' + myForm:aongotfocus[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aonlostfocus[j] ) > 0
-           Output += 'ON LOSTFOCUS ' + myForm:aonlostfocus[j] + ' ;' + CRLF
-     ENDIF
-     IF myForm:ahelpid[j] > 0
-           Output += 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) ) + ' ;' + CRLF
-     ENDIF
-
-      Output += CRLF + CRLF
-   ENDIF
-   IF myForm:actrltype[j] == 'IPADDRESS'
-
-      Output += '@ ' + LTrim( Str( Row ) ) + ', ' + LTrim( Str( Col ) ) + ' IPADDRESS ' + myForm:aname[j] + ' ;' + CRLF
-     IF ! Empty(myForm:acobj[j])
-         Output += 'OBJ ' + myForm:acobj[j] + ' ;' + CRLF
-      ENDIF
-     Output += 'WIDTH ' + LTrim(Str( Width)) + ' ;' + CRLF
-     Output += 'HEIGHT ' + LTrim(Str( Height)) + ' ;' + CRLF
-     IF Len( myForm:avalue[j] ) > 0
-        Output += 'VALUE ' + myForm:avalue[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:afontname[j] ) > 0
-           Output += "FONT " + "'" + myForm:afontname[j] + "'" +  ' ;' + CRLF
-     ENDIF
-     IF myForm:afontsize[j] > 0
-           Output += 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) ) + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:atooltip[j] ) > 0
-           Output += "TOOLTIP " + "'" + myForm:atooltip[j] + "'" +  ' ;' + CRLF
-     ENDIF
-
-     IF Len( myForm:aonchange[j] ) > 0
-           Output += 'ON CHANGE ' + myForm:aonchange[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aongotfocus[j] ) > 0
-           Output += 'ON GOTFOCUS ' + myForm:aongotfocus[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aonlostfocus[j] ) > 0
-           Output += 'ON LOSTFOCUS ' + myForm:aonlostfocus[j] + ' ;' + CRLF
-     ENDIF
-     IF myForm:ahelpid[j] > 0
-           Output += 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) ) + ' ;' + CRLF
-     ENDIF
-     IF myForm:anotabstop[j]
-        Output += 'NOTABSTOP ' + ' ;' + CRLF
-     ENDIF
-      Output += CRLF + CRLF
-   ENDIF
-   IF myForm:actrltype[j] == 'HYPERLINK'
-     Output += '@ ' + LTrim( Str( Row ) ) + ', ' + LTrim( Str( Col ) ) + ' HYPERLINK ' + myForm:aname[j] + ' ;' + CRLF
-     IF ! Empty(myForm:acobj[j])
-         Output += 'OBJ ' + myForm:acobj[j] + ' ;' + CRLF
-      ENDIF
-     Output += 'WIDTH ' + LTrim(Str( Width)) + ' ;' + CRLF
-     Output += 'HEIGHT ' + LTrim(Str( Height)) + ' ;' + CRLF
-     IF Len( myForm:avalue[j] ) > 0
-        Output += 'VALUE ' + "'" + myForm:avalue[j] + "'" + ' ;' + CRLF
-     ELSE
-        Output += 'VALUE ' + " 'ooHG IDE + Home ' " + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aaddress[j] ) > 0
-        Output += 'ADDRESS ' + "'" + myForm:aaddress[j] + "'" + ' ;' + CRLF
-     ELSE
-        Output += 'ADDRESS ' + "'http://sistemascvc.tripod.com'" + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:afontname[j] ) > 0
-           Output += "FONT " + "'" + myForm:afontname[j] + "'" +  ' ;' + CRLF
-     ENDIF
-     IF myForm:afontsize[j] > 0
-           Output += 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) ) + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:atooltip[j] ) > 0
-           Output += "TOOLTIP " + "'" + myForm:atooltip[j] + "'" +  ' ;' + CRLF
-     ENDIF
-
-     IF myForm:ahelpid[j] > 0
-           Output += 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) ) + ' ;' + CRLF
-     ENDIF
-     IF myForm:ahandcursor[j]
-        Output += 'HANDCURSOR ' + ' ;' + CRLF
-     ENDIF
-      Output += CRLF + CRLF
-   ENDIF
-
-   IF myForm:actrltype[j] == 'MONTHCALENDAR'
-     Output += '@ ' + LTrim( Str( Row ) ) + ', ' + LTrim( Str( Col ) ) + ' MONTHCALENDAR ' + myForm:aname[j] + ' ;' + CRLF
-     IF ! Empty(myForm:acobj[j])
-         Output += 'OBJ ' + myForm:acobj[j] + ' ;' + CRLF
-      ENDIF
-     IF Len( myForm:avalue[j] ) > 0
-        Output += 'VALUE ' + myForm:avalue[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:afontname[j] ) > 0
-           Output += "FONT " + "'" + myForm:afontname[j] + "'" +  ' ;' + CRLF
-     ENDIF
-     IF myForm:afontsize[j] > 0
-           Output += 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) ) + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:atooltip[j] ) > 0
-           Output += "TOOLTIP " + "'" + myForm:atooltip[j] + "'" +  ' ;' + CRLF
-     ENDIF
-
-     IF Len( myForm:aonchange[j] ) > 0
-           Output += 'ON CHANGE ' + myForm:aonchange[j] + ' ;' + CRLF
-     ENDIF
-
-     IF myForm:ahelpid[j] > 0
-           Output += 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) ) + ' ;' + CRLF
-     ENDIF
-     IF myForm:anotabstop[j]
-        Output += 'NOTABSTOP ' + ' ;' + CRLF
-     ENDIF
-      Output += CRLF + CRLF
-   ENDIF
-   IF myForm:actrltype[j] == 'LABEL'
-
-      Output += '@ ' + LTrim( Str( Row ) ) + ', ' + LTrim( Str( Col ) ) + ' LABEL ' + myForm:aname[j] + ' ;' + CRLF
-      IF ! Empty(myForm:acobj[j])
-         Output += 'OBJ ' + myForm:acobj[j] + ' ;' + CRLF
-      ENDIF
-      IF myForm:aautoplay[j]
-         Output += 'AUTOSIZE ;' + CRLF
-      ELSE
-         Output += 'WIDTH ' + LTrim(Str( Width)) + ' ;' + CRLF
-         Output += 'HEIGHT ' + LTrim(Str( Height)) + ' ;' + CRLF
-      ENDIF
-      IF Len( myForm:aValue[j] ) > 0
-         Output += 'VALUE ' + "'" + myForm:avalue[j] + "'" + ' ;' + CRLF
-      ENDIF
-      IF Len( myForm:aaction[j] ) > 0
-         Output += 'ACTION ' + myForm:aaction[j] + ' ;' + CRLF
-      ENDIF
-      IF Len( myForm:aFontname[j] ) > 0
-         Output += 'FONT ' + "'" + myForm:afontname[j] + "'" + ' ;' + CRLF
+      IF Len( myForm:afontname[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + "'" + AllTrim( myForm:afontname[j] ) + "'"
       ENDIF
       IF myForm:afontsize[j] > 0
-         Output += 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) ) + ' ;' + CRLF      // MigSoft
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) )
       ENDIF
-      IF Len( myForm:abackcolor[j] ) > 0 .AND. myForm:abackcolor[j] # 'NIL'
-         Output += 'BACKCOLOR ' + myForm:abackcolor[j] + ' ;' + CRLF
-      ENDIF
-   /*
-      IF Len( afontcolor[j] ) > 0
-         Output += 'FONTCOLOR ' + "'" + afontcolor[j] + "'" + ' ;' + CRLF
-      ENDIF
-   */
-      IF myForm:abold[j]
-         Output += 'BOLD ;' + CRLF
-      ENDIF
-      IF myForm:ahelpid[j] > 0
-        Output += 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) ) + ' ;' + CRLF
-      ENDIF
-      IF myForm:atransparent[j]
-         Output += 'TRANSPARENT ' + ' ;' + CRLF
-      ENDIF
-      IF myForm:acenteralign[j]
-         Output += 'CENTERALIGN ' + ' ;' + CRLF
-      ENDIF
-      IF myForm:arightalign[j]
-         Output += 'RIGHTALIGN ' + ' ;' + CRLF
-      ENDIF
-      IF myForm:aclientedge[j]
-         Output += 'CLIENTEDGE ' + ' ;' + CRLF
-      ENDIF
-      IF myForm:aborder[j]
-         Output += 'BORDER '+ ' ;' + CRLF
-      ENDIF
-      Output += CRLF + CRLF
-   ENDIF
-   IF myForm:actrltype[j] == 'PLAYER'
-      Output += '@ ' + LTrim( Str( Row ) ) + ', ' + LTrim( Str( Col ) ) + ' PLAYER ' + myForm:aname[j] + ' ;' + CRLF
-     IF ! Empty(myForm:acobj[j])
-         Output += 'OBJ ' + myForm:acobj[j] + ' ;' + CRLF
-      ENDIF
-     Output += 'WIDTH ' + LTrim(Str( Width)) + ' ;' + CRLF
-     Output += 'HEIGHT ' + LTrim(Str( Height)) + ' ;' + CRLF
-     Output += 'FILE "' + myForm:afile[j] + '"' +  ' ;' + CRLF
-     IF myForm:ahelpid[j] > 0
-       Output += 'HELPID ' + LTrim( Str( ahelpid[j] ) ) + ' ;' + CRLF
-     ENDIF
-     Output += CRLF + CRLF
-   ENDIF
-   IF myForm:actrltype[j] == 'PROGRESSBAR'
-       Output += '@ ' + LTrim( Str( Row ) ) + ', ' + LTrim( Str( Col ) ) + ' PROGRESSBAR ' + myForm:aname[j] + ' ;' + CRLF
-     IF ! Empty(myForm:acobj[j])
-         Output += 'OBJ ' + myForm:acobj[j] + ' ;' + CRLF
-      ENDIF
-     IF Len( myForm:arange[j] ) > 0
-        Output += 'RANGE ' + myForm:arange[j] + ' ;' + CRLF
-     ENDIF
-
-     Output += 'WIDTH ' + LTrim(Str( Width)) + ' ;' + CRLF
-     Output += 'HEIGHT ' + LTrim(Str( Height)) + ' ;' + CRLF
-     IF Len( myForm:atooltip[j] ) > 0
-        Output += 'TOOLTIP ' + "'" + myForm:atooltip[j] + "'" + ' ;' + CRLF
-     ENDIF
-     IF myForm:avertical[j]
-        Output += 'VERTICAL ' + ' ;' + CRLF
-     ENDIF
-     IF myForm:asmooth[j]
-        Output += 'SMOOTH ' + ' ;' + CRLF
-     ENDIF
-     IF myForm:ahelpid[j] > 0
-        Output += 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) ) + ' ;' + CRLF
-     ENDIF
-     Output += CRLF + CRLF
-   ENDIF
-   IF myForm:actrltype[j] == 'RADIOGROUP'
-      Output += '@ ' + LTrim( Str( Row ) ) + ', ' + LTrim( Str( Col ) ) + ' RADIOGROUP ' + myForm:aname[j] + ' ;' + CRLF
-     IF ! Empty(myForm:acobj[j])
-         Output += 'OBJ ' + myForm:acobj[j] + ' ;' + CRLF
-      ENDIF
-     IF Len( myForm:aitems[j] ) > 0
-           Output += "OPTIONS  " + myForm:aitems[j] + "  ;" + CRLF
-     ENDIF
-
-     IF myForm:avaluen[j] > 0
-           Output += 'VALUE ' + LTrim( Str( myForm:avaluen[j] ) ) + ' ;' + CRLF
-     ENDIF
-     Output += 'WIDTH  ' + LTrim(Str( Width)) + ' ;' + CRLF
-     IF myForm:aspacing[j] > 0
-           Output += "SPACING " + LTrim( Str( myForm:aspacing[j] ) ) +  ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:afontname[j] ) > 0
-           Output += "FONT " + "'" + myForm:afontname[j] + "'" +  ' ;' + CRLF
-     ENDIF
-     IF myForm:afontsize[j] > 0
-           Output += 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) ) + ' ;' + CRLF
-     ENDIF
-
-     IF Len( myForm:atooltip[j] ) > 0
-           Output += "TOOLTIP " + "'" + myForm:atooltip[j] + "'" +  ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aonchange[j] ) > 0
-           Output += 'ON CHANGE ' + myForm:aonchange[j] + ' ;' + CRLF
-     ENDIF
-     IF myForm:atransparent[j]
-        Output += 'TRANSPARENT ' + ' ;' + CRLF
-     ENDIF
-     IF myForm:ahelpid[j] > 0
-           Output += 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) ) + ' ;' + CRLF
-     ENDIF
-     Output += CRLF + CRLF
-   ENDIF
-   IF myForm:actrltype[j] == 'SLIDER'
-      Output += '@ ' + LTrim( Str( Row ) ) + ', ' + LTrim( Str( Col ) ) + ' SLIDER ' + myForm:aname[j] + ' ;' + CRLF
-     IF ! Empty(myForm:acobj[j])
-         Output += 'OBJ ' + myForm:acobj[j] + ' ;' + CRLF
-      ENDIF
-      IF Len( myForm:arange[j] ) > 0
-         Output += 'RANGE ' + myForm:arange[j] + ' ;' + CRLF
-      ELSE
-         Output += 'RANGE 1, 100' + ' ;' + CRLF
-      ENDIF
-
-      IF myForm:avaluen[j] > 0
-         Output += 'VALUE ' + LTrim( Str( myForm:avaluen[j] ) ) + ' ;' + CRLF
-      ENDIF
-
-      Output += 'WIDTH ' + LTrim(Str( Width)) + ' ;' + CRLF
-      Output += 'HEIGHT ' + LTrim(Str( Height)) + ' ;' + CRLF
       IF Len( myForm:atooltip[j] ) > 0
-         Output += 'TOOLTIP ' + "'" + myForm:atooltip[j] + "'" + ' ;' + CRLF
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
       ENDIF
       IF Len( myForm:aonchange[j] ) > 0
-         Output += 'ON CHANGE ' + myForm:aonchange[j] + ' ;' + CRLF
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( myForm:aonchange[j] )
       ENDIF
-      IF myForm:avertical[j]
-         Output += ' VERTICAL ' + ' ;' + CRLF
-      ENDIF
-     IF myForm:anoticks[j]
-         Output += 'NOTICKS ' + ' ;' + CRLF
-      ENDIF
-     IF myForm:aboth[j]
-         Output += 'BOTH ' + ' ;' + CRLF
-      ENDIF
-     IF myForm:atop[j]
-         Output += 'TOP ' + ' ;' + CRLF
-      ENDIF
-
-     IF myForm:aleft[j]
-         Output += 'LEFT ' + ' ;' + CRLF
-     ENDIF
-
-     IF myForm:ahelpid[j] > 0
-        Output += 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) ) + ' ;' + CRLF
-     ENDIF
-     Output += CRLF + CRLF
-   ENDIF
-   IF myForm:actrltype[j] == 'SPINNER'
-      Output += '@ ' + LTrim( Str( Row ) ) + ', ' + LTrim( Str( Col ) ) + ' SPINNER ' + myForm:aname[j] + ' ;' + CRLF
-     IF ! Empty(myForm:acobj[j])
-         Output += 'OBJ ' + myForm:acobj[j] + ' ;' + CRLF
-      ENDIF
-     IF Len( myForm:arange[j] ) > 0
-        Output += 'RANGE ' + myForm:arange[j] + ' ;' + CRLF
-     ENDIF
-
-     IF myForm:avaluen[j] > 0
-        Output += 'VALUE ' + LTrim( Str( myForm:avaluen[j] ) ) + ' ;' + CRLF
-     ENDIF
-
-     Output += 'WIDTH ' + LTrim(Str( Width)) + ' ;' + CRLF
-     Output += 'HEIGHT ' + LTrim(Str( Height)) + ' ;' + CRLF
-     IF Len( myForm:afontname[j] ) > 0
-           Output += "FONT " + "'" + myForm:afontname[j] + "'" +  ' ;' + CRLF
-     ENDIF
-     IF myForm:afontsize[j] > 0
-           Output += 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) ) + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:atooltip[j] ) > 0
-           Output += "TOOLTIP " + "'" + myForm:atooltip[j] + "'" +  ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aonchange[j] ) > 0
-        Output += 'ON CHANGE ' + myForm:aonchange[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aongotfocus[j] ) > 0
-        Output += 'ON GOTFOCUS ' + myForm:aongotfocus[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aonlostfocus[j] ) > 0
-        Output += 'ON LOSTFOCUS ' + myForm:aonlostfocus[j] + ' ;' + CRLF
-     ENDIF
-     IF myForm:ahelpid[j] > 0
-        Output += 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) ) + ' ;' + CRLF
-     ENDIF
-     IF myForm:anotabstop[j]
-        Output += 'NOTABSTOP ' + ' ;' + CRLF
-     ENDIF
-     IF myForm:awrap[j]
-        Output += 'WRAP ' + ' ;' + CRLF
-     ENDIF
-     IF myForm:areadonly[j]
-        Output += 'READONLY ' + ' ;' + CRLF
-     ENDIF
-     IF myForm:aincrement[j] > 0
-        Output += 'INCREMENT ' + LTrim( Str( myForm:aincrement[j] ) ) + ' ;' + CRLF
-     ENDIF
-     Output += CRLF + CRLF
-   ENDIF
-   IF myForm:actrltype[j] == 'PICCHECKBUTT'
-     Output += '@ ' + LTrim( Str( Row ) ) + ', ' + LTrim( Str( Col ) ) + ' CHECKBUTTON ' + myForm:aname[j] + ' ;' + CRLF
-     IF ! Empty(myForm:acobj[j])
-         Output += 'OBJ ' + myForm:acobj[j] + ' ;' + CRLF
-      ENDIF
-     IF Len( myForm:apicture[j] ) > 0
-         Output += 'PICTURE ' + "'" + myForm:apicture[j] + "'" + ' ;' + CRLF
-     ELSE
-         Output += 'PICTURE ' + "'" + "" + "'" + ' ;' + CRLF
-     ENDIF
-     Output += 'WIDTH ' + LTrim(Str( Width)) + ' ;' + CRLF
-      Output += 'HEIGHT ' + LTrim(Str( Height)) + ';' + CRLF
-     IF myForm:avaluel[j]
-        Output += 'VALUE .T.' + ' ;' + CRLF
-     ELSE
-        Output += 'VALUE .F.' + ' ;' + CRLF
-     ENDIF
-
-     IF Len( myForm:atooltip[j] ) > 0
-           Output += "TOOLTIP " + "'" + myForm:atooltip[j] + "'" +  ' ;' + CRLF
-     ENDIF
-     IF myForm:anotabstop[j]
-        Output += 'NOTABSTOP ' + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aonchange[j] ) > 0
-           Output += 'ON CHANGE ' + myForm:aonchange[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aongotfocus[j] ) > 0
-           Output += 'ON GOTFOCUS ' + myForm:aongotfocus[j] + ' ;' + CRLF
-     ENDIF
-     IF Len( myForm:aonlostfocus[j] ) > 0
-           Output += 'ON LOSTFOCUS ' + myForm:aonlostfocus[j] + ' ;' + CRLF
-     ENDIF
-     IF myForm:ahelpid[j] > 0
-           Output += 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) ) + ' ;' + CRLF
-      ENDIF
-     Output += + CRLF + CRLF
-   ENDIF
-   IF myForm:actrltype[j] == 'PICBUTT'
-     Output += '@ ' + LTrim( Str( Row ) ) + ', ' + LTrim( Str( Col ) ) + ' BUTTON ' + myForm:aname[j] + ' ;' + CRLF
-     IF ! Empty(myForm:acobj[j])
-         Output += 'OBJ ' + myForm:acobj[j] + ' ;' + CRLF
-      ENDIF
-     IF Len( myForm:apicture[j] ) > 0
-         Output += "PICTURE " + "'" + myForm:apicture[j] + "'" + ';' + CRLF
-     ELSE
-         Output += "PICTURE " + "'" + "" + "'" + " ;" + CRLF
-     ENDIF
-     IF Len( myForm:aaction[j] ) > 0
-        Output += 'ACTION ' + myForm:aaction[j] + ' ;' + CRLF
-     ELSE
-        Output += 'ACTION ' + 'MsgInfo("Button Pressed")' + CRLF
-     ENDIF
-     Output += 'WIDTH ' + LTrim(Str( Width)) + ' ;' + CRLF
-     Output += 'HEIGHT ' + LTrim(Str( Height)) + ' ;' + CRLF
-
-     IF Len( myForm:atooltip[j] ) > 0
-         Output += 'TOOLTIP ' + "'" + myForm:atooltip[j] + "'" + ' ;' + CRLF
-     ENDIF
-
-     IF myForm:aflat[j]
-         Output += 'FLAT ' + ' ;' + CRLF
-      ENDIF
-
       IF Len( myForm:aongotfocus[j] ) > 0
-         Output += 'ON GOTFOCUS ' + myForm:aongotfocus[j] + ' ;' + CRLF
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( myForm:aongotfocus[j] )
       ENDIF
       IF Len( myForm:aonlostfocus[j] ) > 0
-         Output += 'ON LOSTFOCUS ' + myForm:aonlostfocus[j] + ' ;' + CRLF
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( myForm:aonlostfocus[j] )
       ENDIF
-     IF myForm:anotabstop[j]
-        Output += 'NOTABSTOP ' + ' ;' + CRLF
-     ENDIF
-     IF myForm:ahelpid[j] > 0
-         Output += 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) ) + ' ;' + CRLF
-     ENDIF
-     Output += CRLF + CRLF
-   ENDIF
-   IF myForm:actrltype[j] == 'FRAME'
-      Output += '@ ' + LTrim( Str( Row ) ) + ', ' + LTrim( Str( Col ) ) + ' FRAME ' + myForm:aname[j]  + ' ;' + CRLF
-     Output += 'CAPTION ' + '"' + myForm:acaption[j] + '"' + ' ;' + CRLF
-     Output += 'WIDTH ' + LTrim(Str( Width)) + ' ;' + CRLF
-     Output += 'HEIGHT ' + LTrim(Str( Height)) + ' ;' + CRLF
-     IF myForm:aopaque[j]
-       Output += 'OPAQUE ' + ' ;' + CRLF
-     ENDIF
-     IF myForm:atransparent[j]
-        Output += 'TRANSPARENT ' + ' ;' + CRLF
-     ENDIF
+      IF Len( myForm:aondblclick[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON DBLCLICK ' + AllTrim( myForm:aondblclick[j] )
+      ENDIF
+      IF myForm:amultiselect[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'MULTISELECT '
+      ENDIF
+      IF myForm:ahelpid[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) )
+      ENDIF
+      IF myForm:abreak[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BREAK '
+      ENDIF
+      IF myForm:anotabstop[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
+      ENDIF
+      IF myForm:asort[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SORT '
+      ENDIF
+/*
+   TODO: Add this properties
+
+   [ <bold: BOLD> ] ;
+   [ <italic: ITALIC> ] ;
+   [ <underline: UNDERLINE> ] ;
+   [ <strikeout: STRIKEOUT> ] ;
+   [ BACKCOLOR <backcolor> ] ;
+   [ FONTCOLOR <fontcolor> ] ;
+   [ <invisible: INVISIBLE> ] ;
+   [ <rtl: RTL> ] ;
+   [ ON ENTER <enter> ]            ;
+   [ <disabled: DISABLED> ]        ;
+   [ IMAGE <aImage> [ <fit: FIT> ] ] ;
+   [ TEXTHEIGHT <textheight> ] ;
+   [ <novscroll: NOVSCROLL> ] ;
+*/
       Output += CRLF + CRLF
    ENDIF
-   IF myForm:aname[j] # NIL
-      name := myForm:aname[j]
-   ENDIF
-   IF UPPER(myForm:actrltype[j])$'MONTHCALENDAR HYPLINK IPADDRESS TEXT CHECKBOX BUTTON CHECKBTN COMBO DATEPICKER EDIT FRAME GRID IMAGE LABEL LIST PLAYER PROGRESSBAR RADIOGROUP SLIDER SPINNER ANIMATE BROWSE TAB RICHEDIT TIMER PICBUTT PICCHECKBUTT' .AND. j > 1
-      Output += CRLF
-     IF .not. myForm:aenabled[j]
-        Output += mlyform + '.' + name + '.enabled := .F.' + CRLF
-     ENDIF
-     IF myForm:actrltype[j] # 'TIMER'
-        IF .not. myForm:avisible[j]
-           Output += mlyform + '.' + name + '.visible := .F.' + CRLF
-        ENDIF
-     ENDIF
-   ENDIF
-   IF UPPER(myForm:actrltype[j])$'LABEL ANIMATE' .AND. j > 1
-      Output += CRLF
+
+   IF myForm:actrltype[j] == 'COMBO'
+      // Must end with a space
+      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' COMBOBOX ' + AllTrim( myForm:aname[j] ) + ' '
+      IF ! Empty( myForm:acobj[j ] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( myForm:acobj[j] )
+      ENDIF
+      IF Len( myForm:aitems[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITEMS ' + AllTrim( myForm:aitems[j] )
+      ENDIF
+      IF Len( myForm:aitemsource[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITEMSOURCE ' + AllTrim( myForm:aitemsource[j] )
+      ENDIF
+      IF myForm:avaluen[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( myForm:avaluen[j] ) )
+      ENDIF
+      IF Len( myForm:avaluesource[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUESOURCE ' + AllTrim( myForm:avaluesource[j] )
+      ENDIF
+      IF myForm:adisplayedit[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISPLAYEDIT '
+      ENDIF
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+      // Do not include HEIGHT
+      IF Len( myForm:afontname[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + "'" + AllTrim( myForm:afontname[j] ) + "'"
+      ENDIF
+      IF myForm:afontsize[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) )
+      ENDIF
       IF Len( myForm:atooltip[j] ) > 0
-         Output += mlyform + '.' + name + '.tooltip := ' + "'" + myForm:atooltip[j] + "' " + CRLF
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+      ENDIF
+      IF Len( myForm:aonchange[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( myForm:aonchange[j] )
+      ENDIF
+      IF Len( myForm:aongotfocus[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( myForm:aongotfocus[j] )
+      ENDIF
+      IF Len( myForm:aonlostfocus[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( myForm:aonlostfocus[j] )
+      ENDIF
+      IF Len( myForm:aonenter[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON ENTER ' + AllTrim( myForm:aonenter[j] )
+      ENDIF
+      IF Len( myForm:aondisplaychange[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON DISPLAYCHANGE ' + myForm:aondisplaychange[j]
+      ENDIF
+      IF myForm:anotabstop[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
+      ENDIF
+      IF myForm:ahelpid[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) )
+      ENDIF
+      IF myForm:abreak[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BREAK '
+      ENDIF
+      IF myForm:asort[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SORT '
+      ENDIF
+/*
+   TODO: Add this properties
+
+   [ ITEMIMAGENUMBER <itemimagenumber> ] ;
+   [ <bold : BOLD> ] ;
+   [ <italic : ITALIC> ] ;
+   [ <underline : UNDERLINE> ] ;
+   [ <strikeout : STRIKEOUT> ] ;
+   [ <invisible : INVISIBLE> ] ;
+   [ IMAGE <aImage> ] ;
+   [ IMAGESOURCE <imagesource> ] ;
+   [ <fit: FIT> ] ;
+   [ <rtl: RTL> ] ;
+   [ TEXTHEIGHT <textheight> ] ;
+   [ <disabled : DISABLED> ] ;
+   [ <firstitem : FIRSTITEM> ] ;
+   [ BACKCOLOR <backcolor> ] ;
+   [ FONTCOLOR <fontcolor> ] ;
+   [ LISTWIDTH <listwidth> ];
+   [ ON LISTDISPLAY <onListDisplay> ] ;
+   [ ON LISTCLOSE <onListClose> ] ;
+   [ <delay: DELAYEDLOAD> ] ;
+   [ <incremental: INCREMENTAL> ] ;
+   [ <winsize: INTEGRALHEIGHT> ] ;
+   [ <rfrsh: REFRESH, NOREFRESH> ] ;
+   [ SOURCEORDER <sourceorder> ] ;
+   [ ON REFRESH <refresh> ] ;
+   [ SEARCHLAPSE <nLapse> ] ;
+   [ GRIPPERTEXT <grippertext> ] ;
+   [ <break: BREAK> ] ;
+*/
+      Output += CRLF + CRLF
+   ENDIF
+
+   IF myForm:actrltype[j] == 'CHECKBTN'
+      // Must end with a space
+      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' CHECKBUTTON ' + AllTrim( myForm:aname[j] ) + ' '
+      IF ! Empty( myForm:acobj[j ] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( myForm:acobj[j] )
+      ENDIF
+      IF Len( myForm:acaption[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + "'" + AllTrim( myForm:acaption[j] ) + "'"
+      ELSE
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + "'" + AllTrim( myForm:aname[j] ) + "'"
+      ENDIF
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+      IF myForm:avaluel[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE .T.'
+      ELSE
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE .F.'
+      ENDIF
+      IF Len( myForm:afontname[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + "'" + AllTrim( myForm:afontname[j] ) + "'"
+      ENDIF
+      IF myForm:afontsize[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) )
+      ENDIF
+      IF Len( myForm:atooltip[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+      ENDIF
+      IF Len( myForm:aonchange[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( myForm:aonchange[j] )
+      ENDIF
+      IF Len( myForm:aongotfocus[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( myForm:aongotfocus[j] )
+      ENDIF
+      IF Len( myForm:aonlostfocus[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( myForm:aonlostfocus[j] )
+      ENDIF
+      IF myForm:ahelpid[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) )
+      ENDIF
+      IF myForm:anotabstop[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
+      ENDIF
+/*
+   TODO: Add this properties
+
+   [ <bold : BOLD> ] ;
+   [ <italic : ITALIC> ] ;
+   [ <underline : UNDERLINE> ] ;
+   [ <strikeout : STRIKEOUT> ] ;
+   [ <invisible: INVISIBLE> ] ;
+   [ <rtl: RTL> ]                    ;
+   [ <dummy3: PICTURE, ICON> <bitmap> ] ;
+   [ BUFFER <buffer> ] ;
+   [ HBITMAP <hbitmap> ] ;
+   [ <notrans: NOLOADTRANSPARENT> ] ;
+   [ <scale: FORCESCALE> ] ;
+   [ FIELD <field> ] ;
+   [ <no3dcolors: NO3DCOLORS> ] ;
+   [ <autofit: AUTOFIT, ADJUST> ] ;
+   [ <lDIB: DIBSECTION> ] ;
+   [ BACKCOLOR <backcolor> ] ;
+*/
+      Output += CRLF + CRLF
+   ENDIF
+
+   IF myForm:actrltype[j] == 'GRID'
+      // Must end with a space
+      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' GRID ' + AllTrim( myForm:aname[j] ) + ' '
+      IF ! Empty( myForm:acobj[j ] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( myForm:acobj[j] )
+      ENDIF
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEADERS ' + AllTrim( myForm:aheaders[j] )
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTHS ' + AllTrim( myForm:awidths[j] )
+      IF Len( myForm:aitems[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITEMS ' + AllTrim( myForm:aitems[j] )
+      ENDIF
+      IF Len( myForm:avalue[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + AllTrim( myForm:avalue[j] )
+      ENDIF
+      IF myForm:adynamicbackcolor[j] # NIL .AND. Len( myForm:adynamicbackcolor[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DYNAMICBACKCOLOR ' + AllTrim( myForm:adynamicbackcolor[j] )
+      ENDIF
+      IF myForm:adynamicforecolor[j] # NIL .AND. Len( myForm:adynamicforecolor[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DYNAMICFORECOLOR ' + AllTrim( myForm:adynamicforecolor[j] )
+      ENDIF
+      IF Len( myForm:acolumncontrols[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'COLUMNCONTROLS ' + AllTrim( myForm:acolumncontrols[j] )
+      ENDIF
+      IF Len( myForm:afontname[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + "'" + AllTrim( myForm:afontname[j] ) + "'"
+      ENDIF
+      IF myForm:afontsize[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) )
+      ENDIF
+      IF Len( myForm:atooltip[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+      ENDIF
+      IF Len( myForm:aonchange[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( myForm:aonchange[j] )
+      ENDIF
+      IF Len( myForm:aongotfocus[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( myForm:aongotfocus[j] )
+      ENDIF
+      IF Len( myForm:aonlostfocus[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( myForm:aonlostfocus[j] )
+      ENDIF
+      IF Len( myForm:aondblclick[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON DBLCLICK ' + AllTrim( myForm:aondblclick[j] )
+      ENDIF
+      IF Len( myForm:aonenter[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON ENTER ' + AllTrim( myForm:aonenter[j] ) + ' ;' +CRLF
+      ENDIF
+      IF Len( myForm:aonheadclick[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON HEADCLICK ' + AllTrim( myForm:aonheadclick[j] )
+      ENDIF
+      IF Len( myForm:aoneditcell[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON EDITCELL ' + AllTrim( myForm:aoneditcell[j] )
+      ENDIF
+      IF myForm:amultiselect[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'MULTISELECT '
+      ENDIF
+      IF myForm:anolines[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOLINES '
+      ENDIF
+      IF myForm:ainplace[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INPLACE '
+      ENDIF
+      IF myForm:aedit[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'EDIT '
+      ENDIF
+      IF Len( myForm:aimage[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'IMAGE ' + AllTrim( myForm:aimage[j] )
+      ENDIF
+      IF Len( myForm:ajustify[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'JUSTIFY ' + AllTrim( myForm:ajustify[j] )
+      ENDIF
+      IF Len( myForm:awhen[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WHEN ' + AllTrim( myForm:awhen[j] )
+      ENDIF
+      IF Len( myForm:avalid[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALID ' + AllTrim( myForm:avalid[j] )
+      ENDIF
+      IF Len( myForm:avalidmess[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALIDMESSAGES ' + AllTrim( myForm:avalidmess[j] )
+      ENDIF
+      IF Len( myForm:areadonlyb[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'READONLY ' + AllTrim( myForm:areadonlyb[j] )
+      ENDIF
+      IF Len( myForm:ainputmask[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INPUTMASK ' + AllTrim( myForm:ainputmask[j] )
+      ENDIF
+      IF myForm:ahelpid[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) )
+      ENDIF
+      IF myForm:abreak[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BREAK '
+      ENDIF
+/*
+   TODO: Add this properties
+
+   [ <bold : BOLD> ] ;
+   [ <italic : ITALIC> ] ;
+   [ <underline : UNDERLINE> ] ;
+   [ <strikeout : STRIKEOUT> ] ;
+   [ BACKCOLOR <backcolor> ] ;
+   [ FONTCOLOR <fontcolor> ] ;
+   [ <dummy06: ONCLICK, ON CLICK> <click> ] ;
+   [ <ownerdata: VIRTUAL> ] ;
+   [ ITEMCOUNT <itemcount> ] ;
+   [ <dummy08: ONQUERYDATA, ON QUERYDATA> <dispinfo> ] ;
+   [ <rtl: RTL> ] ;
+   [ <noshowheaders: NOHEADERS> ] ;
+   [ <disabled: DISABLED> ] ;
+   [ <notabstop: NOTABSTOP> ] ;
+   [ <invisible: INVISIBLE> ] ;
+   [ HEADERIMAGES <aHeaderImages> ] ;
+   [ IMAGESALIGN <aImgAlign> ] ;
+   [ <fullmove: FULLMOVE> ] ;
+   [ <bycell: NAVIGATEBYCELL> ] ;
+   [ SELECTEDCOLORS <aSelectedColors> ] ;
+   [ EDITKEYS <aEditKeys> ] ;
+   [ <checkboxes: CHECKBOXES> ] ;
+   [ <dummy12: ONCHECKCHANGE, ON CHECKCHANGE> <checkchange> ] ;
+   [ <bffr: DOUBLEBUFFER, SINGLEBUFFER> ] ;
+   [ <focus: NOFOCUSRECT, FOCUSRECT> ] ;
+   [ <plm: PAINTLEFTMARGIN> ] ;
+   [ <fixedcols: FIXEDCOLS> ] ;
+   [ <dummy13: ONABORTEDIT, ON ABORTEDIT> <abortedit> ] ;
+   [ <fixedwidths: FIXEDWIDTHS> ] ;
+   [ BEFORECOLMOVE <bBefMov> ] ;
+   [ AFTERCOLMOVE <bAftMov> ] ;
+   [ BEFORECOLSIZE <bBefSiz> ] ;
+   [ AFTERCOLSIZE <bAftSiz> ] ;
+   [ BEFOREAUTOFIT <bBefAut> ] ;
+   [ <excel: EDITLIKEEXCEL> ] ;
+   [ <buts: USEBUTTONS> ] ;
+   [ <delete: DELETE> ] ;
+   [ DELETEWHEN <bWhenDel> ] ;
+   [ DELETEMSG <DelMsg> ] ;
+   [ <dummy14: ONDELETE, ON DELETE> <onDelete> ] ;
+   [ <nodelmsg: NODELETEMSG> ] ;
+   [ <append : APPEND> ] ;
+   [ <dummy15: ONAPPEND, ON APPEND> <onappend> ] ;
+   [ <nomodal : NOMODALEDIT> ] ;
+   [ <edtctrls: FIXEDCONTROLS, DYNAMICCONTROLS> ] ;
+   [ <dummy16: ONHEADRCLICK, ON HEADRCLICK> <bheadrclick> ] ;
+   [ <noclick: NOCLICKONCHECKBOX> ] ;
+   [ <norclick: NORCLICKONCHECKBOX> ] ;
+*/
+      Output += CRLF + CRLF
+   ENDIF
+
+   IF myForm:actrltype[j] == 'BROWSE'
+      // Must end with a space
+      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' BROWSE ' + AllTrim( myForm:aname[j] ) + ' '
+      IF ! Empty( myForm:acobj[j ] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( myForm:acobj[j] )
+      ENDIF
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+      IF Len( myForm:aheaders[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEADERS ' + AllTrim( myForm:aheaders[j] )
+      ELSE
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEADERS ' + "{'', ''}"
+      ENDIF
+      IF Len( myForm:awidths[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTHS ' + AllTrim( myForm:awidths[j] )
+      ELSE
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTHS ' + "{90, 60}"
+      ENDIF
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WORKAREA ' + AllTrim( myForm:aworkarea[j] )
+      IF Len( myForm:afields[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIELDS ' + AllTrim( myForm:afields[j] )
+      ELSE
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIELDS ' + "{'field1', 'field2'}"
+      ENDIF
+      IF myForm:avaluen[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( myForm:avaluen[j] ) )
+      ENDIF
+      IF Len( myForm:afontname[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + "'" + AllTrim( myForm:afontname[j] ) + "'"
+      ENDIF
+      IF myForm:afontsize[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) )
+      ENDIF
+      IF Len( myForm:atooltip[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+      ENDIF
+      IF Len( myForm:ainputmask[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INPUTMASK ' + AllTrim( myForm:ainputmask[j] )
+      ENDIF
+      IF myForm:adynamicbackcolor[j] # NIL .AND. Len( myForm:adynamicbackcolor[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DYNAMICBACKCOLOR ' + AllTrim( myForm:adynamicbackcolor[j] )
+      ENDIF
+      IF myForm:adynamicforecolor[j] # NIL .AND. Len( myForm:adynamicforecolor[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DYNAMICFORECOLOR ' + AllTrim( myForm:adynamicforecolor[j] )
+      ENDIF
+      IF Len( myForm:acolumncontrols[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'COLUMNCONTROLS ' + AllTrim( myForm:acolumncontrols[j] )
+      ENDIF
+      IF Len( myForm:aonchange[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( myForm:aonchange[j] )
+      ENDIF
+      IF Len( myForm:aongotfocus[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( myForm:aongotfocus[j] )
+      ENDIF
+      IF Len( myForm:aonlostfocus[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( myForm:aonlostfocus[j] )
+      ENDIF
+      IF Len( myForm:aondblclick[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON DBLCLICK ' + AllTrim( myForm:aondblclick[j] )
+      ENDIF
+      IF Len( myForm:aonheadclick[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON HEADCLICK ' + AllTrim( myForm:aonheadclick[j] )
+      ENDIF
+      IF Len( myForm:aoneditcell[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON EDITCELL ' + AllTrim( myForm:aoneditcell[j] )
+      ENDIF
+      IF Len( myForm:aonappend[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON APPEND ' + AllTrim( myForm:aonappend[j] )
+      ENDIF
+      IF Len( myForm:awhen[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WHEN ' + AllTrim( myForm:awhen[j] )
+      ENDIF
+      IF Len( myForm:avalid[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALID ' + AllTrim( myForm:avalid[j] )
+      ENDIF
+      IF Len( myForm:avalidmess[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALIDMESSAGES ' + AllTrim( myForm:avalidmess[j] )
+      ENDIF
+      IF Len( myForm:areadonlyb[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'READONLY ' + AllTrim( myForm:areadonlyb[j] )
+      ENDIF
+      IF myForm:alock[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'LOCK '
+      ENDIF
+      IF myForm:adelete[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DELETE '
+      ENDIF
+      IF myForm:ainplace[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INPLACE '
+      ENDIF
+      IF myForm:aedit[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'EDIT '
+      ENDIF
+      IF myForm:anolines[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOLINES '
+      ENDIF
+      IF Len( myForm:aimage[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'IMAGE ' + AllTrim( myForm:aimage[j] )
+      ENDIF
+      IF Len( myForm:ajustify[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'JUSTIFY ' + AllTrim( myForm:ajustify[j] )
+      ENDIF
+      IF Len( myForm:aonenter[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON ENTER ' + AllTrim( myForm:aonenter[j] )
+      ENDIF
+      IF myForm:ahelpid[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) )
+      ENDIF
+      IF myForm:aappend[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'APPEND '
+      ENDIF
+/*
+   TODO: Add this properties
+
+   [ <bold: BOLD> ] ;
+   [ <italic: ITALIC> ] ;
+   [ <underline: UNDERLINE> ] ;
+   [ <strikeout: STRIKEOUT> ] ;
+   [ BACKCOLOR <backcolor> ] ;
+   [ FONTCOLOR <fontcolor> ] ;
+   [ <dummy06: ONCLICK, ON CLICK> <click> ] ;
+   [ <novscroll: NOVSCROLL> ] ;
+   [ <break: BREAK> ] ;
+   [ <rtl: RTL> ] ;
+   [ REPLACEFIELD <replacefields> ] ;
+   [ SUBCLASS <subclass> ] ;
+   [ <reccount: RECCOUNT> ] ;
+   [ COLUMNINFO <columninfo> ] ;
+   [ <noshowheaders: NOHEADERS> ] ;
+   [ <disabled: DISABLED> ] ;
+   [ <notabstop: NOTABSTOP> ] ;
+   [ <invisible: INVISIBLE> ] ;
+   [ <descending: DESCENDING> ] ;
+   [ DELETEWHEN <bWhenDel> ] ;
+   [ DELETEMSG <DelMsg> ] ;
+   [ <dummy12: ONDELETE, ON DELETE> <onDelete> ] ;
+   [ HEADERIMAGES <aHeaderImages> ] ;
+   [ IMAGESALIGN <aImgAlign> ] ;
+   [ <fullmove: FULLMOVE> ] ;
+   [ SELECTEDCOLORS <aSelectedColors> ] ;
+   [ EDITKEYS <aEditKeys> ] ;
+   [ <forcerefresh: FORCEREFRESH> ] ;
+   [ <norefresh: NOREFRESH> ] ;
+   [ <bffr: DOUBLEBUFFER, SINGLEBUFFER> ] ;
+   [ <focus: NOFOCUSRECT, FOCUSRECT> ] ;
+   [ <plm: PAINTLEFTMARGIN> ] ;
+   [ <sync: SYNCHRONIZED, UNSYNCHRONIZED> ] ;
+   [ <fixedcols: FIXEDCOLS> ] ;
+   [ <nodelmsg: NODELETEMSG> ] ;
+   [ <updall: UPDATEALL> ] ;
+   [ <dummy13: ONABORTEDIT, ON ABORTEDIT> <abortedit> ] ;
+   [ <fixedwidths: FIXEDWIDTHS> ] ;
+   [ <blocks: FIXEDBLOCKS, DYNAMICBLOCKS> ] ;
+   [ BEFORECOLMOVE <bBefMov> ] ;
+   [ AFTERCOLMOVE <bAftMov> ] ;
+   [ BEFORECOLSIZE <bBefSiz> ] ;
+   [ AFTERCOLSIZE <bAftSiz> ] ;
+   [ BEFOREAUTOFIT <bBefAut> ] ;
+   [ <excel: EDITLIKEEXCEL> ] ;
+   [ <buts: USEBUTTONS> ] ;
+   [ <upcol: UPDATECOLORS> ] ;
+   [ <edtctrls: FIXEDCONTROLS, DYNAMICCONTROLS> ] ;
+   [ <dummy14: ONHEADRCLICK, ON HEADRCLICK> <bheadrclick> ] ;
+*/
+      Output += CRLF + CRLF
+   ENDIF
+
+   IF myForm:actrltype[j] == 'IMAGE'
+      // Must end with a space
+      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' IMAGE ' + AllTrim( myForm:aname[j] ) + ' '
+      IF ! Empty( myForm:acobj[j ] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( myForm:acobj[j] )
+      ENDIF
+      IF Len( myForm:aaction[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + AllTrim( myForm:aaction[j] )
+      ENDIF
+      IF Len( myForm:apicture[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + "PICTURE '" + AllTrim( myForm:apicture[j] ) + "'"
+      ELSE
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + "PICTURE 'oohg.bmp'"
+      ENDIF
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+      IF myForm:astretch[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRETCH '
+      ENDIF
+      IF myForm:ahelpid[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) )
+      ENDIF
+      IF Len( myForm:atooltip[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+      ENDIF
+      IF myForm:aborder[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BORDER '
+      ENDIF
+      IF myForm:aclientedge[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CLIENTEDGE '
+      ENDIF
+      IF ! myForm:avisible[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
+      ENDIF
+      IF ! myForm:aenabled[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
+      ENDIF
+      IF myForm:atransparent[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TRANSPARENT '
+      ENDIF
+      IF myForm:abackcolor[j] # 'NIL' .AND. Len( myForm:abackcolor[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + AllTrim( myForm:abackcolor[j] )
+      ENDIF
+/*
+   TODO: Add this properties
+
+   [ <rtl: RTL> ] ;
+   [ <whitebackground: WHITEBACKGROUND> ] ;
+   [ BUFFER <buffer> ] ;
+   [ HBITMAP <hbitmap> ] ;
+   [ <noresize: NORESIZE> ] ;
+   [ <imagesize: IMAGESIZE> ] ;
+   [ <notrans: NOLOADTRANSPARENT> ] ;
+   [ <no3dcolors: NO3DCOLORS> ] ;
+   [ <nodib: NODIBSECTION> ] ;
+   [ EXCLUDEAREA <area> ] ;
+
+*/
+      Output += CRLF + CRLF
+   ENDIF
+
+   IF myForm:actrltype[j] == 'TIMER'
+      // Do not delete next 3 lines, they are needed to load the control properly.
+      Output += Space( nSpacing ) + '*****@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' TIMER ' + AllTrim( myForm:aname[j] ) + ' ;' + CRLF
+      Output += Space( nSpacing ) + '*****' + Space( nSpacing ) + 'ROW ' + LTrim( Str( nRow ) ) + ' ;' + CRLF
+      Output += Space( nSpacing ) + '*****' + Space( nSpacing ) + 'COL ' + LTrim( Str( nCol ) ) + CRLF
+      Output += Space( nSpacing * ( nLevel + 1 ) ) + 'DEFINE TIMER ' + AllTrim( myForm:aname[j] )
+      IF ! Empty( myForm:acobj[j ] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( myForm:acobj[j] )
+      ENDIF
+      IF myForm:avaluen[j] > 999
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INTERVAL ' + LTrim( Str( myForm:avaluen[j] ) )
+      ELSE
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INTERVAL ' + LTrim( Str( 1000 ) )
+      ENDIF
+      IF Len( myForm:aaction[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + AllTrim( myForm:aaction[j] )
+      ELSE
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + '_dummy()'
+      ENDIF
+/*
+   TODO: Add this properties
+
+   [ <disabled: DISABLED> ] 
+
+*/
+      Output += CRLF + CRLF
+   ENDIF
+
+   IF myForm:actrltype[j] == 'ANIMATE'
+      // Must end with a space
+      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' ANIMATEBOX ' + AllTrim( myForm:aname[j] ) + ' '
+      IF ! Empty( myForm:acobj[j ] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( myForm:acobj[j] )
+      ENDIF
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+      IF Len( myForm:afile[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + "FILE '" + AllTrim( myForm:afile[j] ) + "'"
+      ENDIF
+      IF myForm:aautoplay[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AUTOPLAY '
+      ENDIF
+      IF myForm:acenter[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CENTER '
+      ENDIF
+      IF myForm:atransparent[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TRANSPARENT '
+      ENDIF
+      IF myForm:ahelpid[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) )
+      ENDIF
+      IF Len( myForm:atooltip[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+      ENDIF
+      IF ! myForm:avisible[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
+      ENDIF
+      IF ! myForm:aenabled[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
+      ENDIF
+/*
+   TODO: Add this properties
+
+   [ <notabstop: NOTABSTOP> ] ;
+   [ <rtl: RTL> ] ;
+*/
+      Output += CRLF + CRLF
+   ENDIF
+
+   IF myForm:actrltype[j] == 'DATEPICKER'
+      // Must end with a space
+      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' DATEPICKER ' + AllTrim( myForm:aname[j] ) + ' '
+      IF ! Empty( myForm:acobj[j ] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( myForm:acobj[j] )
+      ENDIF
+      IF Len( myForm:avalue[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + AllTrim( myForm:avalue[j] )
+      ENDIF
+      IF Len( myForm:afield[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIELD ' + AllTrim( myForm:afield[j] )
+      ENDIF
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+      IF Len( myForm:afontname[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + "'" + AllTrim( myForm:afontname[j] ) + "'"
+      ENDIF
+      IF myForm:afontsize[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) )
+      ENDIF
+      IF Len( myForm:atooltip[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+      ENDIF
+      IF myForm:ashownone[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SHOWNONE '
+      ENDIF
+      IF myForm:aupdown[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UPDOWN '
+      ENDIF
+      IF myForm:arightalign[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RIGHTALIGN '
+      ENDIF
+      IF Len( myForm:aonchange[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( myForm:aonchange[j] )
+      ENDIF
+      IF Len( myForm:aongotfocus[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( myForm:aongotfocus[j] )
+      ENDIF
+      IF Len( myForm:aonlostfocus[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( myForm:aonlostfocus[j] )
+      ENDIF
+      IF Len( myForm:aonenter[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON ENTER ' + AllTrim( myForm:aonenter[j] )
+      ENDIF
+      IF myForm:ahelpid[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) )
+      ENDIF
+/*
+   TODO: Add this properties
+
+   [ HEIGHT <h> ] ;
+   [ <bold : BOLD> ] ;
+   [ <italic : ITALIC> ] ;
+   [ <underline : UNDERLINE> ] ;
+   [ <strikeout : STRIKEOUT> ] ;
+   [ <invisible: INVISIBLE> ] ;
+   [ <notabstop: NOTABSTOP> ] ;
+   [ <disabled: DISABLED> ] ;
+   [ <noborder: NOBORDER> ] ;
+   [ <rtl: RTL> ] ;
+   [ <dummy2: RANGE> <min> , <max> ] ;
+*/
+      Output += CRLF + CRLF
+   ENDIF
+
+   IF myForm:actrltype[j] == 'TEXT'
+      // Must end with a space
+      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' TEXTBOX ' + AllTrim( myForm:aname[j] ) + ' '
+      IF ! Empty( myForm:acobj[j ] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( myForm:acobj[j] )
+      ENDIF
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+      IF Len( myForm:afield[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIELD ' + AllTrim( myForm:afield[j] )
+      ENDIF
+      cValue  := AllTrim( myForm:avalue[j] )
+      IF cValue == NIL
+         cvalue := ''
+      ENDIF
+      IF Len( cValue ) > 0
+         IF myForm:anumeric[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + cValue
+         ELSE
+            IF myForm:adate[j]
+               Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + cValue
+            ELSE
+               Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + "'" + cValue + "'"
+            ENDIF
+         ENDIF
+      ENDIF
+      IF myForm:areadonly[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'READONLY '
+      ENDIF
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+      IF myForm:apassword[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PASSWORD '
+      ENDIF
+      IF Len( myForm:aFontname[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + "'" + AllTrim( myForm:afontname[j] ) + "'"
+      ENDIF
+      IF myForm:afontsize[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) )
+      ENDIF
+      IF Len( myForm:atooltip[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+      ENDIF
+      IF myForm:anumeric[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NUMERIC '
+         IF Len( myForm:ainputmask[j] ) > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INPUTMASK ' + "'" + myForm:ainputmask[j] + "'"
+         ENDIF
+      ELSE
+         IF Len( myForm:ainputmask[j] ) > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INPUTMASK ' + "'" + myForm:ainputmask[j] + "'"
+         ENDIF
+      ENDIF
+      IF Len( myForm:afields[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FORMAT ' + "'" + myForm:afields[j] + "'"
+      ENDIF
+      IF myForm:adate[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DATE '
+      ENDIF
+      IF myForm:amaxlength[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'MAXLENGTH ' + LTrim( Str( myForm:amaxlength[j] ) )
+      ENDIF
+      IF myForm:auppercase[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UPPERCASE '
+      ENDIF
+      IF myForm:aLowercase[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'LOWERCASE '
+      ENDIF
+      IF Len( myForm:aongotfocus[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( myForm:aongotfocus[j] )
+      ENDIF
+      IF Len( myForm:aonlostfocus[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( myForm:aonlostfocus[j] )
+      ENDIF
+      IF Len( myForm:aonchange[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( myForm:aonchange[j] )
+      ENDIF
+      IF Len( myForm:aonenter[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON ENTER ' + AllTrim( myForm:aonenter[j] )
+      ENDIF
+      IF myForm:arightalign[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RIGHTALIGN '
+      ENDIF
+      IF myForm:anotabstop[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
+      ENDIF
+      IF myForm:afocusedpos[j] <> -2            // default value, see DATA nOnFocusPos in h_textbox.prg
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FOCUSEDPOS ' + LTrim( Str( myForm:afocusedpos[j] ) )
+      ENDIF
+      IF Len( myForm:avalid[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALID ' + AllTrim( myForm:avalid[j] )
+      ENDIF
+      IF Len( myForm:awhen[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WHEN ' + AllTrim( myForm:awhen[j] )
+      ENDIF
+      IF myForm:ahelpid[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) )
+      ENDIF
+/*
+   TODO: Add this properties
+
+   [ <bold : BOLD> ] ;
+   [ <italic : ITALIC> ] ;
+   [ <underline : UNDERLINE> ] ;
+   [ <strikeout : STRIKEOUT> ] ;
+   [ BACKCOLOR <backcolor> ] ;
+   [ FONTCOLOR <fontcolor> ] ;
+   [ ON TEXTFILLED <textfilled> ] ;
+   [ <centeralign: CENTERALIGN> ] ;
+   [ <invisible: INVISIBLE> ] ;
+   [ <rtl: RTL> ] ;
+   [ <autoskip: AUTOSKIP> ] ;
+   [ <noborder: NOBORDER> ] ;
+   [ <disabled: DISABLED> ] ;
+   [ DEFAULTYEAR <year> ] ;
+   [ ACTION <action> ] ;
+   [ ACTION2 <action2> ] ;
+   [ IMAGE <abitmap> ] ;
+   [ BUTTONWIDTH <btnwidth> ] ;
+   [ INSERTTYPE <nInsType> ] ;
+*/
+      Output += CRLF + CRLF
+   ENDIF
+
+   IF myForm:actrltype[j] == 'EDIT'
+      // Must end with a space
+      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' EDITBOX ' + AllTrim( myForm:aname[j] ) + ' '
+      IF ! Empty( myForm:acobj[j ] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( myForm:acobj[j] )
+      ENDIF
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+      IF Len( myForm:afield[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIELD ' + AllTrim( myForm:afield[j] )
+      ENDIF
+      IF Len( myForm:avalue[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + "'" + AllTrim( myForm:avalue[j] ) + "'"
+      ENDIF
+      IF myForm:areadonly[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'READONLY '
+      ENDIF
+      IF Len( myForm:afontname[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + "'" + AllTrim( myForm:afontname[j] ) + "'"
+      ENDIF
+      IF myForm:afontsize[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) )
+      ENDIF
+      IF Len( myForm:atooltip[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+      ENDIF
+      IF myForm:amaxlength[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'MAXLENGTH ' + LTrim( Str( myForm:amaxlength[j] ) )
+      ENDIF
+      IF Len( myForm:aonchange[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( myForm:aonchange[j] )
+      ENDIF
+      IF Len( myForm:aongotfocus[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( myForm:aongotfocus[j] )
+      ENDIF
+      IF Len( myForm:aonlostfocus[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( myForm:aonlostfocus[j] )
+      ENDIF
+      IF myForm:ahelpid[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) )
+      ENDIF
+      IF myForm:abreak[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BREAK '
+      ENDIF
+      IF myForm:anotabstop[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
+      ENDIF
+      IF myForm:anovscroll[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOVSCROLL '
+      ENDIF
+      IF myForm:anohscroll[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOHSCROLL '
+      ENDIF
+/*
+   TODO: Add this properties
+
+   [ <bold : BOLD> ] ;
+   [ <italic : ITALIC> ] ;
+   [ <underline : UNDERLINE> ] ;
+   [ <strikeout : STRIKEOUT> ] ;
+   [ BACKCOLOR <backcolor> ] ;
+   [ FONTCOLOR <fontcolor> ] ;
+   [ <invisible: INVISIBLE> ] ;
+   [ <rtl: RTL> ] ;
+   [ <noborder: NOBORDER> ] ;
+   [ FOCUSEDPOS <focusedpos> ]     ;
+*/
+      Output += CRLF + CRLF
+   ENDIF
+
+   IF myForm:actrltype[j] == 'RICHEDIT'
+      // Must end with a space
+      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' RICHEDITBOX ' + AllTrim( myForm:aname[j] ) + ' '
+      IF ! Empty( myForm:acobj[j ] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( myForm:acobj[j] )
+      ENDIF
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+      IF Len( myForm:afield[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIELD ' + AllTrim( myForm:afield[j] )
+      ENDIF
+      IF Len( myForm:avalue[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + "'" + AllTrim( myForm:avalue[j] ) + "'"
+      ENDIF
+      IF myForm:areadonly[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'READONLY '
+      ENDIF
+      IF Len( myForm:afontname[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + "'" + AllTrim( myForm:afontname[j] ) + "'"
+      ENDIF
+      IF myForm:afontsize[j] > 0
+        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) )
+      ENDIF
+      IF Len( myForm:atooltip[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+      ENDIF
+      IF myForm:amaxlength[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'MAXLENGTH ' + LTrim( Str( myForm:amaxlength[j] ) )
+      ENDIF
+      IF myForm:abreak[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BREAK '
+      ENDIF
+      IF myForm:anotabstop[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
+      ENDIF
+      IF Len( myForm:aonchange[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( myForm:aonchange[j] )
+      ENDIF
+      IF Len( myForm:aongotfocus[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( myForm:aongotfocus[j] )
+      ENDIF
+      IF Len( myForm:aonlostfocus[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( myForm:aonlostfocus[j] )
+      ENDIF
+      IF myForm:ahelpid[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) )
+      ENDIF
+/*
+   TODO: Add this properties
+
+   [ <bold : BOLD> ] ;
+   [ <italic : ITALIC> ] ;
+   [ <underline : UNDERLINE> ] ;
+   [ <strikeout : STRIKEOUT> ] ;
+   [ BACKCOLOR <backcolor> ] ;
+   [ FONTCOLOR <fontcolor> ] ;
+   [ ON SELCHANGE <selchange> ] ;
+   [ <invisible: INVISIBLE> ] ;
+   [ <rtl: RTL> ] ;
+   [ <disabled: DISABLED> ] ;
+   [ <nohidesel: NOHIDESEL> ] ;
+   [ FOCUSEDPOS <focusedpos> ] ;
+   [ <novscroll: NOVSCROLL> ] ;
+   [ <nohscroll: NOHSCROLL> ] ;
+*/
+      Output += CRLF + CRLF
+   ENDIF
+
+   IF myForm:actrltype[j] == 'IPADDRESS'
+      // Must end with a space
+      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' IPADDRESS ' + AllTrim( myForm:aname[j] ) + ' '
+      IF ! Empty( myForm:acobj[j ] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( myForm:acobj[j] )
+      ENDIF
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+      IF Len( myForm:avalue[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + AllTrim( myForm:avalue[j] )
+      ENDIF
+      IF Len( myForm:afontname[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + "'" + AllTrim( myForm:afontname[j] ) + "'"
+      ENDIF
+      IF myForm:afontsize[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) )
+      ENDIF
+      IF Len( myForm:atooltip[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+      ENDIF
+      IF Len( myForm:aonchange[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( myForm:aonchange[j] )
+      ENDIF
+      IF Len( myForm:aongotfocus[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( myForm:aongotfocus[j] )
+      ENDIF
+      IF Len( myForm:aonlostfocus[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( myForm:aonlostfocus[j] )
+      ENDIF
+      IF myForm:ahelpid[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) )
+      ENDIF
+      IF myForm:anotabstop[j]
+        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
+      ENDIF
+      IF Len( myForm:afontcolor[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + AllTrim( myForm:afontcolor[j] )
+      ENDIF
+      IF myForm:abold[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
+      ENDIF
+      IF myForm:afontitalic[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
+      ENDIF
+      IF myForm:afontunderline[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
+      ENDIF
+      IF myForm:afontstrikeout[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
+      ENDIF
+      IF myForm:abackcolor[j] # 'NIL' .AND. Len( myForm:abackcolor[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + AllTrim( myForm:abackcolor[j] )
+      ENDIF
+      IF ! myForm:avisible[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
+      ENDIF
+      IF ! myForm:aenabled[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
+      ENDIF
+/*
+   TODO: Add this properties
+
+   [ <rtl: RTL> ]
+*/
+      Output += CRLF + CRLF
+   ENDIF
+
+   IF myForm:actrltype[j] == 'HYPERLINK'
+      // Must end with a space
+      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' HYPERLINK ' + AllTrim( myForm:aname[j] ) + ' '
+      IF ! Empty( myForm:acobj[j ] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( myForm:acobj[j] )
+      ENDIF
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+      IF Len( myForm:avalue[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + "'" + AllTrim( myForm:avalue[j] ) + "'"
+      ELSE
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + "ooHG Home"
+      ENDIF
+      IF Len( myForm:aaddress[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ADDRESS ' + "'" + AllTrim( myForm:aaddress[j] ) + "'"
+      ELSE
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ADDRESS ' + "'https://sourceforge.net/projects/oohg/'"
+      ENDIF
+      IF Len( myForm:afontname[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + "'" + AllTrim( myForm:afontname[j] ) + "'"
+      ENDIF
+      IF myForm:afontsize[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) )
+      ENDIF
+      IF Len( myForm:atooltip[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+      ENDIF
+      IF myForm:ahelpid[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) )
+      ENDIF
+      IF myForm:ahandcursor[j]
+        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HANDCURSOR '
+      ENDIF
+      IF Len( myForm:afontcolor[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + AllTrim( myForm:afontcolor[j] )
+      ENDIF
+      IF myForm:abold[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
+      ENDIF
+      IF myForm:afontitalic[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
+      ENDIF
+      IF myForm:afontunderline[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
+      ENDIF
+      IF myForm:afontstrikeout[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
+      ENDIF
+      IF myForm:abackcolor[j] # 'NIL' .AND. Len( myForm:abackcolor[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + AllTrim( myForm:abackcolor[j] )
+      ENDIF
+      IF ! myForm:avisible[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
+      ENDIF
+      IF ! myForm:aenabled[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
+      ENDIF
+      Output += CRLF + CRLF
+   ENDIF
+/*
+   TODO: Add this properties
+
+   [ <autosize : AUTOSIZE> ] ;
+   [ <border: BORDER> ] ;
+   [ <clientedge: CLIENTEDGE> ] ;
+   [ <hscroll: HSCROLL> ] ;
+   [ <vscroll: VSCROLL> ] ;
+   [ <transparent: TRANSPARENT> ] ;
+   [ <rtl: RTL> ]               ;
+*/
+
+   IF myForm:actrltype[j] == 'MONTHCALENDAR'
+      // Must end with a space
+      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' MONTHCALENDAR ' + AllTrim( myForm:aname[j] ) + ' '
+      IF ! Empty( myForm:acobj[j ] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( myForm:acobj[j] )
+      ENDIF
+      IF Len( myForm:avalue[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + AllTrim( myForm:avalue[j] )
+      ENDIF
+      IF Len( myForm:afontname[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + "'" + AllTrim( myForm:afontname[j] ) + "'"
+      ENDIF
+      IF myForm:afontsize[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) )
+      ENDIF
+      IF Len( myForm:afontcolor[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + AllTrim( myForm:afontcolor[j] )
+      ENDIF
+      IF myForm:abold[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
+      ENDIF
+      IF myForm:afontitalic[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
+      ENDIF
+      IF myForm:afontunderline[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
+      ENDIF
+      IF myForm:afontstrikeout[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
+      ENDIF
+      IF myForm:abackcolor[j] # 'NIL' .AND. Len( myForm:abackcolor[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + AllTrim( myForm:abackcolor[j] )
+      ENDIF
+      IF Len( myForm:atooltip[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+      ENDIF
+      IF Len( myForm:aonchange[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( myForm:aonchange[j] )
+      ENDIF
+      IF myForm:ahelpid[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) )
+      ENDIF
+      IF myForm:anotabstop[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
+      ENDIF
+      IF ! myForm:avisible[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
+      ENDIF
+      IF ! myForm:aenabled[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
+      ENDIF
+      IF myForm:aNoToday[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTODAY '
+      ENDIF
+      IF myForm:aNoTodayCircle[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTODAYCIRCLE '
+      ENDIF
+      IF myForm:aWeekNumbers[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WEEKNUMBERS '
+      ENDIF
+      Output += CRLF + CRLF
+   ENDIF
+/*
+   TODO: Add this properties
+
+   [ <rtl: RTL> ] ;
+   [ TITLEFONTCOLOR <titlefontcolor> ] ;
+   [ TITLEBACKCOLOR <titlebackcolor> ] ;
+   [ TRAILINGFONTCOLOR <trailingfontcolor> ] ;
+   [ BACKGROUNDCOLOR <backgroundcolor> ] ;
+*/
+
+   IF myForm:actrltype[j] == 'LABEL'
+      // Must end with a space
+      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' LABEL ' + AllTrim( myForm:aname[j] ) + ' '
+      IF ! Empty( myForm:acobj[j ] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( myForm:acobj[j] )
+      ENDIF
+      IF myForm:aautoplay[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AUTOSIZE '
+      ELSE
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+      ENDIF
+      IF Len( myForm:aValue[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + "'" + AllTrim( myForm:avalue[j] ) + "'"
+      ENDIF
+      IF Len( myForm:aaction[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + AllTrim( myForm:aaction[j] )
+      ENDIF
+      IF Len( myForm:aFontname[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + "'" + AllTrim( myForm:afontname[j] ) + "'"
+      ENDIF
+      IF myForm:afontsize[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) )
+      ENDIF
+      IF Len( myForm:afontcolor[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + AllTrim( myForm:afontcolor[j] )
+      ENDIF
+      IF myForm:abold[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
+      ENDIF
+      IF myForm:afontitalic[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
+      ENDIF
+      IF myForm:afontunderline[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
+      ENDIF
+      IF myForm:afontstrikeout[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
+      ENDIF
+      IF myForm:abackcolor[j] # 'NIL' .AND. Len( myForm:abackcolor[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + AllTrim( myForm:abackcolor[j] )
+      ENDIF
+      IF myForm:ahelpid[j] > 0
+        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) )
+      ENDIF
+      IF myForm:atransparent[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TRANSPARENT '
+      ENDIF
+      IF myForm:acenteralign[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CENTERALIGN '
+      ENDIF
+      IF myForm:arightalign[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RIGHTALIGN '
+      ENDIF
+      IF myForm:aclientedge[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CLIENTEDGE '
+      ENDIF
+      IF myForm:aborder[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BORDER '
+      ENDIF
+      IF Len( myForm:atooltip[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+      ENDIF
+      IF ! myForm:avisible[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
+      ENDIF
+      IF ! myForm:aenabled[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
+      ENDIF
+      IF Len( myForm:ainputmask[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INPUTMASK ' + AllTrim( myForm:ainputmask[j] )
+      ENDIF
+      Output += CRLF + CRLF
+   ENDIF
+/*
+   TODO: Add this properties
+
+   [ <hscroll: HSCROLL> ] ;
+   [ <vscroll: VSCROLL> ] ;
+   [ <rtl: RTL> ] ;
+   [ <nowordwrap: NOWORDWRAP> ] ;
+   [ <noprefix: NOPREFIX> ] ;
+*/
+
+   IF myForm:actrltype[j] == 'PLAYER'
+      // Must end with a space
+      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' PLAYER ' + AllTrim( myForm:aname[j] ) + ' '
+      IF ! Empty( myForm:acobj[j ] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( myForm:acobj[j] )
+      ENDIF
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + "FILE '" + AllTrim( myForm:afile[j] ) + "'"
+      IF myForm:ahelpid[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ahelpid[j] ) )
+      ENDIF
+      Output += CRLF + CRLF
+   ENDIF
+/*
+   TODO: Add this properties
+
+   [ <noautosizewindow: NOAUTOSIZEWINDOW> ] ;
+   [ <noautosizemovie : NOAUTOSIZEMOVIE> ] ;
+   [ <noerrordlg: NOERRORDLG> ] ;
+   [ <nomenu: NOMENU> ] ;
+   [ <noopen: NOOPEN> ] ;
+   [ <noplaybar: NOPLAYBAR> ] ;
+   [ <showall: SHOWALL> ] ;
+   [ <showmode: SHOWMODE> ] ;
+   [ <showname: SHOWNAME> ] ;
+   [ <showposition: SHOWPOSITION> ] ;
+   [ <invisible: INVISIBLE> ] ;
+   [ <notabstop: NOTABSTOP> ] ;
+   [ <disabled: DISABLED> ] ;
+   [ <rtl: RTL> ] ;
+*/
+
+   IF myForm:actrltype[j] == 'PROGRESSBAR'
+      // Must end with a space
+      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' PROGRESSBAR ' + AllTrim( myForm:aname[j] ) + ' '
+      IF ! Empty( myForm:acobj[j ] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( myForm:acobj[j] )
+      ENDIF
+      IF Len( myForm:arange[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RANGE ' + AllTrim( myForm:arange[j] )
+      ENDIF
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+      IF Len( myForm:atooltip[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+      ENDIF
+      IF myForm:avertical[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VERTICAL '
+      ENDIF
+      IF myForm:asmooth[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SMOOTH '
+      ENDIF
+      IF myForm:ahelpid[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) )
+      ENDIF
+      Output += CRLF + CRLF
+   ENDIF
+/*
+   TODO: Add this properties
+
+   [ VALUE <v> ]         ;
+   [ <invisible : INVISIBLE> ]   ;
+   [ BACKCOLOR <backcolor> ]   ;
+   [ FORECOLOR <barcolor> ]   ;
+   [ <rtl: RTL> ]                  ;
+   [ MARQUEE <nVelocity> ] ;
+*/
+
+   IF myForm:actrltype[j] == 'RADIOGROUP'
+      // Must end with a space
+      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' RADIOGROUP ' + AllTrim( myForm:aname[j] ) + ' '
+      IF ! Empty( myForm:acobj[j ] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( myForm:acobj[j] )
+      ENDIF
+      IF Len( myForm:aitems[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + "OPTIONS " + AllTrim( myForm:aitems[j] )
+      ENDIF
+      IF myForm:avaluen[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( myForm:avaluen[j] ) )
+      ENDIF
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+      IF myForm:aspacing[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + "SPACING " + LTrim( Str( myForm:aspacing[j] ) )
+      ENDIF
+      IF Len( myForm:afontname[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + "'" + AllTrim( myForm:afontname[j] ) + "'"
+      ENDIF
+      IF myForm:afontsize[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) )
+      ENDIF
+      IF Len( myForm:atooltip[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+      ENDIF
+      IF Len( myForm:aonchange[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( myForm:aonchange[j] )
+      ENDIF
+      IF myForm:atransparent[j]
+        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TRANSPARENT '
+      ENDIF
+      IF myForm:ahelpid[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) )
+      ENDIF
+      Output += CRLF + CRLF
+   ENDIF
+/*
+   TODO: Add this properties
+
+   [ <bold : BOLD> ] ;
+   [ <italic : ITALIC> ] ;
+   [ <underline : UNDERLINE> ] ;
+   [ <strikeout : STRIKEOUT> ] ;
+   [ BACKCOLOR <backcolor> ] ;
+   [ FONTCOLOR <fontcolor> ] ;
+   [ <invisible : INVISIBLE> ] ;
+   [ <notabstop : NOTABSTOP> ] ;
+   [ <autosize : AUTOSIZE> ] ;
+   [ <horizontal: HORIZONTAL> ] ;
+   [ <disabled : DISABLED> ] ;
+   [ <rtl : RTL> ] ;
+   [ HEIGHT <height> ] ;
+   [ <themed : THEMED> ] ;
+   [ BACKGROUND <bkgrnd> ] ;
+*/
+
+   IF myForm:actrltype[j] == 'SLIDER'
+      // Must end with a space
+      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' SLIDER ' + AllTrim( myForm:aname[j] ) + ' '
+      IF ! Empty( myForm:acobj[j ] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( myForm:acobj[j] )
+      ENDIF
+      IF Len( myForm:arange[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RANGE ' + AllTrim( myForm:arange[j] )
+      ELSE
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RANGE 1, 100'
+      ENDIF
+      IF myForm:avaluen[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( myForm:avaluen[j] ) )
+      ENDIF
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+      IF Len( myForm:atooltip[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+      ENDIF
+      IF Len( myForm:aonchange[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( myForm:aonchange[j] )
+      ENDIF
+      IF myForm:avertical[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VERTICAL '
+      ENDIF
+      IF myForm:anoticks[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTICKS '
+      ENDIF
+      IF myForm:aboth[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOTH '
+      ENDIF
+      IF myForm:atop[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOP '
+      ENDIF
+      IF myForm:aleft[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'LEFT '
+      ENDIF
+      IF myForm:ahelpid[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) )
+      ENDIF
+      Output += CRLF + CRLF
+   ENDIF
+/*
+   TODO: Add this properties
+
+   [ BACKCOLOR <backcolor> ] ;
+   [ <invisible : INVISIBLE> ] ;
+   [ <notabstop : NOTABSTOP> ] ;
+   [ <rtl: RTL> ] ;
+   [ <disabled: DISABLED> ] ;
+*/
+
+   IF myForm:actrltype[j] == 'SPINNER'
+      // Must end with a space
+      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' SPINNER ' + AllTrim( myForm:aname[j] ) + ' '
+      IF ! Empty( myForm:acobj[j ] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( myForm:acobj[j] )
+      ENDIF
+      IF Len( myForm:arange[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RANGE ' + AllTrim( myForm:arange[j] )
+      ENDIF
+      IF myForm:avaluen[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( myForm:avaluen[j] ) )
+      ENDIF
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+      IF Len( myForm:afontname[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + "'" + AllTrim( myForm:afontname[j] ) + "'"
+      ENDIF
+      IF myForm:afontsize[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) )
+      ENDIF
+      IF Len( myForm:atooltip[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+      ENDIF
+      IF Len( myForm:aonchange[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( myForm:aonchange[j] )
+      ENDIF
+      IF Len( myForm:aongotfocus[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( myForm:aongotfocus[j] )
+      ENDIF
+      IF Len( myForm:aonlostfocus[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( myForm:aonlostfocus[j] )
+      ENDIF
+      IF myForm:ahelpid[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) )
+      ENDIF
+      IF myForm:anotabstop[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
+      ENDIF
+      IF myForm:awrap[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WRAP '
+      ENDIF
+      IF myForm:areadonly[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'READONLY '
+      ENDIF
+      IF myForm:aincrement[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INCREMENT ' + LTrim( Str( myForm:aincrement[j] ) )
+      ENDIF
+      Output += CRLF + CRLF
+   ENDIF
+/*
+   TODO: Add this properties
+
+   [ <bold : BOLD> ] ;
+   [ <italic : ITALIC> ] ;
+   [ <underline : UNDERLINE> ] ;
+   [ <strikeout : STRIKEOUT> ] ;
+   [ BACKCOLOR <backcolor> ] ;
+   [ FONTCOLOR <fontcolor> ] ;
+   [ <invisible : INVISIBLE> ] ;
+   [ <rtl: RTL> ] ;
+   [ <noborder: NOBORDER> ] ;
+*/
+
+   IF myForm:actrltype[j] == 'PICCHECKBUTT'
+      // Must end with a space
+      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' CHECKBUTTON ' + AllTrim( myForm:aname[j] ) + ' '
+      IF ! Empty( myForm:acobj[j ] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( myForm:acobj[j] )
+      ENDIF
+      IF Len( myForm:apicture[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PICTURE ' + "'" + AllTrim( myForm:apicture[j] ) + "'"
+      ELSE
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PICTURE ' + "'" + '' + "'"
+      ENDIF
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+      IF myForm:avaluel[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE .T.'
+      ELSE
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE .F.'
+      ENDIF
+      IF Len( myForm:atooltip[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+      ENDIF
+      IF myForm:anotabstop[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
+      ENDIF
+      IF Len( myForm:aonchange[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( myForm:aonchange[j] )
+      ENDIF
+      IF Len( myForm:aongotfocus[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( myForm:aongotfocus[j] )
+      ENDIF
+      IF Len( myForm:aonlostfocus[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( myForm:aonlostfocus[j] )
+      ENDIF
+      IF myForm:ahelpid[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) )
+      ENDIF
+      Output += CRLF + CRLF
+   ENDIF
+/*
+   TODO: Add this properties
+
+   [ CAPTION <caption> ] ;
+   [ FONT <f> ] ;
+   [ SIZE <n> ] ;
+   [ <bold : BOLD> ] ;
+   [ <italic : ITALIC> ] ;
+   [ <underline : UNDERLINE> ] ;
+   [ <strikeout : STRIKEOUT> ] ;
+   [ <invisible: INVISIBLE> ] ;
+   [ <rtl: RTL> ]                    ;
+   [ BUFFER <buffer> ] ;
+   [ HBITMAP <hbitmap> ] ;
+   [ <notrans: NOLOADTRANSPARENT> ] ;
+   [ <scale: FORCESCALE> ] ;
+   [ FIELD <field> ] ;
+   [ <no3dcolors: NO3DCOLORS> ] ;
+   [ <autofit: AUTOFIT, ADJUST> ] ;
+   [ <lDIB: DIBSECTION> ] ;
+*/
+
+   IF myForm:actrltype[j] == 'PICBUTT'
+      // Must end with a space
+      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' BUTTON ' + AllTrim( myForm:aname[j] ) + ' '
+      IF ! Empty( myForm:acobj[j ] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( myForm:acobj[j] )
+      ENDIF
+      IF Len( myForm:apicture[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + "PICTURE " + "'" + AllTrim( myForm:apicture[j] ) + "'"
+      ELSE
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + "PICTURE " + "'" + '' + "'"
+      ENDIF
+      IF Len( myForm:aaction[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + AllTrim( myForm:aaction[j] )
+      ELSE
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + "MsgInfo( 'Button Pressed' )"
+      ENDIF
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+      IF Len( myForm:atooltip[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+      ENDIF
+      IF myForm:aflat[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FLAT '
+      ENDIF
+      IF Len( myForm:aongotfocus[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( myForm:aongotfocus[j] )
+      ENDIF
+      IF Len( myForm:aonlostfocus[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( myForm:aonlostfocus[j] )
+      ENDIF
+      IF myForm:anotabstop[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
+      ENDIF
+      IF myForm:ahelpid[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) )
+      ENDIF
+      Output += CRLF + CRLF
+   ENDIF
+/*
+   TODO: Add this properties
+
+   [ FONT <font> ] ;
+   [ SIZE <size> ] ;
+   [ <bold : BOLD> ] ;
+   [ <italic : ITALIC> ] ;
+   [ <underline : UNDERLINE> ] ;
+   [ <strikeout : STRIKEOUT> ] ;
+   [ ON MOUSEMOVE <onmousemove> ] ;
+   [ <invisible: INVISIBLE> ] ;
+   [ <rtl: RTL> ] ;
+   [ <noprefix: NOPREFIX> ] ;
+   [ <disabled: DISABLED> ] ;
+   [ CAPTION <caption> ] ;
+   [ BUFFER <buffer> ] ;
+   [ HBITMAP <hbitmap> ] ;
+   [ <notrans: NOLOADTRANSPARENT> ] ;
+   [ <scale: FORCESCALE> ] ;
+   [ <cancel: CANCEL> ] ;
+   [ <alignment:LEFT,RIGHT,TOP,BOTTOM,CENTER> ] ;
+   [ <multiline: MULTILINE> ] ;
+   [ <themed : THEMED> ] ;
+   [ IMAGEMARGIN <aImageMargin> ] ;
+   [ <no3dcolors: NO3DCOLORS> ] ;
+   [ <autofit: AUTOFIT, ADJUST> ] ;
+   [ <lDIB: DIBSECTION> ] ;
+*/
+
+   IF myForm:actrltype[j] == 'FRAME'
+      // Must end with a space
+      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' FRAME ' + AllTrim( myForm:aname[j] ) + ' '
+      IF ! Empty( myForm:acobj[j ] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( myForm:acobj[j] )
+      ENDIF
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + "CAPTION '" + AllTrim( myForm:acaption[j] ) + "'"
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+      IF myForm:aopaque[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OPAQUE '
+      ENDIF
+      IF myForm:atransparent[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TRANSPARENT '
+      ENDIF
+      IF Len( myForm:afontname[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + "'" + AllTrim( myForm:afontname[j] ) + "'"
+      ENDIF
+      IF myForm:afontsize[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) )
+      ENDIF
+      IF Len( myForm:afontcolor[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + AllTrim( myForm:afontcolor[j] )
+      ENDIF
+      IF myForm:abold[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
+      ENDIF
+      IF myForm:afontitalic[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
+      ENDIF
+      IF myForm:afontunderline[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
+      ENDIF
+      IF myForm:afontstrikeout[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
+      ENDIF
+      IF ! myForm:aenabled[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
+      ENDIF
+      IF ! myForm:avisible[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
+      ENDIF
+      // Frame's backcolor defaults to Form's backcolor.   TODO: Check
+      IF myForm:cfbackcolor # 'NIL' .AND. Len( myForm:cfbackcolor ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + AllTrim( myForm:cfbackcolor )
+      ENDIF
+      Output += CRLF + CRLF
+   ENDIF
+/*
+   TODO: Add this properties
+
+   [ <rtl: RTL> ] ;
+*/
+
+   // TODO: move up if control syntax supports the property
+   IF myForm:aname[j] # NIL
+      cName := myForm:aname[j]
+   ENDIF
+   IF Upper( myForm:actrltype[j] ) $ 'TEXT CHECKBOX BUTTON CHECKBTN COMBO DATEPICKER EDIT GRID LIST PLAYER PROGRESSBAR RADIOGROUP SLIDER SPINNER BROWSE TAB RICHEDIT TIMER PICBUTT PICCHECKBUTT' .AND. j > 1
+      IF ! myForm:aenabled[j]
+         Output += Space( nSpacing * ( nLevel + 1 ) ) + mlyform + '.' + cName + '.enabled := .F.' + CRLF
       ENDIF
    ENDIF
-   IF  UPPER(myForm:actrltype[j])$'MONTHCALENDAR HYPLINK TEXT LABEL FRAME EDIT DATEPICKER BUTTON CHECKBOX LIST COMBO CHECKBTN GRID SPINNER BROWSE RADIOGROUP RICHEDIT TREE' .AND. j > 1
-     IF myForm:afontitalic[j]
-         Output += mlyform + '.' + name + '.fontitalic := .T.' + CRLF
-     ENDIF
-     IF myForm:afontunderline[j]
-         Output += mlyform + '.' + name + '.fontunderline := .T.' + CRLF
-     ENDIF
-     IF myForm:afontstrikeout[j]
-         Output += mlyform + '.' + name + '.fontstrikeout := .T.' + CRLF
-     ENDIF
-     IF myForm:abold[j]
-         Output += mlyform + '.' + name + '.fontbold := .T.' + CRLF
-     ENDIF
+   IF Upper( myForm:actrltype[j] ) $ 'TEXT CHECKBOX BUTTON CHECKBTN COMBO DATEPICKER EDIT GRID LIST PLAYER PROGRESSBAR RADIOGROUP SLIDER SPINNER BROWSE TAB RICHEDIT PICBUTT PICCHECKBUTT' .AND. j > 1
+      IF myForm:actrltype[j] # 'TIMER'
+         IF ! myForm:avisible[j]
+            Output += Space( nSpacing * ( nLevel + 1 ) ) + mlyform + '.' + cName + '.visible := .F.' + CRLF
+         ENDIF
+      ENDIF
    ENDIF
-   IF UPPER(myForm:actrltype[j])$'HYPLINK LABEL FRAME TEXT EDIT DATEPICKER BUTTON CHECKBOX LIST COMBO CHECKBTN GRID SPINNER BROWSE RADIOGROUP PROGRESSBAR RICHEDIT TREE' .AND. j > 1
-     IF Len( myForm:afontcolor[j] ) > 0
-        Output += mlyform + '.' + name + '.fontcolor := ' + trim(myForm:afontcolor[j]) + CRLF
-     ENDIF
+   IF  UPPER( myForm:actrltype[j] ) $ 'TEXT EDIT DATEPICKER BUTTON CHECKBOX LIST COMBO CHECKBTN GRID SPINNER BROWSE RADIOGROUP RICHEDIT' .AND. j > 1
+      IF myForm:afontitalic[j]
+         Output += Space( nSpacing * ( nLevel + 1 ) ) + mlyform + '.' + cName + '.fontitalic := .T.' + CRLF
+      ENDIF
+      IF myForm:afontunderline[j]
+         Output += Space( nSpacing * ( nLevel + 1 ) ) + mlyform + '.' + cName + '.fontunderline := .T.' + CRLF
+      ENDIF
+      IF myForm:afontstrikeout[j]
+         Output += Space( nSpacing * ( nLevel + 1 ) ) + mlyform + '.' + cName + '.fontstrikeout := .T.' + CRLF
+      ENDIF
+      IF myForm:abold[j]
+         Output += Space( nSpacing * ( nLevel + 1 ) ) + mlyform + '.' + cName + '.fontbold := .T.' + CRLF
+      ENDIF
    ENDIF
-   IF UPPER(myForm:actrltype[j])$'HYPLINK SLIDER FRAME TEXT EDIT DATEPICKER BUTTON CHECKBOX LIST COMBO CHECKBTN GRID SPINNER BROWSE RADIOGROUP PROGRESSBAR RICHEDIT' .AND. j > 1
-     IF Len( myForm:abackcolor[j] ) > 0 .AND. myForm:abackcolor[j] # 'NIL'
-       Output += mlyform + '.' + name + '.backcolor := ' + trim(myForm:abackcolor[j]) + CRLF
-     ENDIF
+   IF UPPER( myForm:actrltype[j] ) $ 'TEXT EDIT CHECKBOX LIST COMBO GRID SPINNER BROWSE RADIOGROUP PROGRESSBAR RICHEDIT' .AND. j > 1
+      IF myForm:afontcolor[j] # 'NIL' .AND. Len( myForm:afontcolor[j] ) > 0
+        Output += Space( nSpacing * ( nLevel + 1 ) ) + mlyform + '.' + cName + '.fontcolor := ' + AllTrim( myForm:afontcolor[j] ) + CRLF
+      ENDIF
    ENDIF
-   IF UPPER(myForm:actrltype[j])$'FRAME' .AND. j > 1
-    IF Len( myForm:afontname[j] ) > 0
-       Output += mlyform + '.' + name + '.fontname := ' + "'" + trim(myForm:afontname[j]) + "'" + CRLF
-    ENDIF
-    IF myForm:afontsize[j] > 0
-       Output += mlyform + '.' + name + '.fontsize := ' + LTrim( Str( myForm:afontsize[j] ) ) + CRLF
-    ENDIF
+   IF UPPER(myForm:actrltype[j])$'SLIDER TEXT EDIT BUTTON CHECKBOX LIST COMBO CHECKBTN GRID SPINNER BROWSE RADIOGROUP PROGRESSBAR RICHEDIT' .AND. j > 1
+      IF myForm:abackcolor[j] # 'NIL' .AND. Len( myForm:abackcolor[j] ) > 0
+         Output += Space( nSpacing * ( nLevel + 1 ) ) + mlyform + '.' + cName + '.backcolor := ' + AllTrim( myForm:abackcolor[j] ) + CRLF
+      ENDIF
    ENDIF
-   Output +=CRLF
+   Output += CRLF
 RETURN Output
 
-*---------------------------
-FUNCTION myascan( cName )
-*---------------------------
-LOCAL ai, nhandle := 0, l
+*------------------------------------------------------------------------------*
+STATIC FUNCTION myaScan( cName )
+*------------------------------------------------------------------------------*
+LOCAL ai, nHandle := 0, l
 
-   l := Len( Form_1:acontrols )
+   l := Len( Form_1:aControls )
    FOR ai := 1 TO l
-      IF Lower( Form_1:acontrols[ai]:Name ) == Lower( cName )
-         nhandle := ai
+      IF Lower( Form_1:aControls[ai]:Name ) == Lower( cName )
+         nHandle := ai
          EXIT
       ENDIF
    NEXT ai
-RETURN nhandle
+RETURN nHandle
+
+/*
+   TODO: Add this controls
+
+   ACTIVEX
+   CHECKLIST
+   TIMEPICKER
+   HOTKEYBOX
+   INTERNAL
+   PICTURE
+   PROGRESSMETER
+   SCROLLBAR
+   SPLITBOX
+   TEXTARRAY
+   XBROWSE
+*/

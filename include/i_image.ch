@@ -1,5 +1,5 @@
 /*
- * $Id: i_image.ch,v 1.13 2014-06-07 02:08:02 fyurisich Exp $
+ * $Id: i_image.ch,v 1.14 2014-07-04 20:16:03 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -92,35 +92,36 @@
 ---------------------------------------------------------------------------*/
 
 #command @ <row>,<col> IMAGE <name> ;
-         [ OBJ <obj> ] ;
-         [ <dummy1: OF, PARENT> <parent> ] ;
-         [ <dummy2: ACTION,ON CLICK,ONCLICK> <action> ];
-         [ WIDTH <w> ] ;
-         [ HEIGHT <h> ] ;
-         [ <stretch: STRETCH> ] ;
-         [ HELPID <helpid> ]       ;
-         [ <invisible: INVISIBLE> ] ;
-         [ <rtl: RTL> ] ;
-         [ SUBCLASS <subclass> ] ;
-         [ <whitebackground: WHITEBACKGROUND> ] ;
-         [ BACKCOLOR <backcolor> ] ;
-         [ PICTURE <filename> ] ;
-         [ BUFFER <buffer> ] ;
-         [ HBITMAP <hbitmap> ] ;
-         [ <noresize: NORESIZE> ] ;
-         [ <imagesize: IMAGESIZE> ] ;
-         [ TOOLTIP <tooltip> ] ;
-         [ <border: BORDER> ] ;
-         [ <clientedge: CLIENTEDGE> ] ;
-         [ <notrans: NOLOADTRANSPARENT> ] ;
-         [ <no3dcolors: NO3DCOLORS> ] ;
-         [ <nodib: NODIBSECTION> ] ;
-         [ <style: TRANSPARENT> ] ;
-         [ EXCLUDEAREA <area> ] ;
-=>;
-         [ <obj> := ] _OOHG_SelectSubClass( TImage(), [ <subclass>() ] ): ;
-                        Define( <(name)>, <(parent)>, <col>, <row>, <filename>, <w>, <h>, ;
-                        <{action}>, <helpid>, <.invisible.>, <.stretch.>, ;
-                        <.whitebackground.>, <.rtl.>, <backcolor>, <buffer>, <hbitmap>, ;
-                        ! <.noresize.>, <.imagesize.>, <tooltip>, <.border.>, <.clientedge.>, ;
-                        <.notrans.>, <.no3dcolors.>, <.nodib.>, <.style.>, <area> )
+      [ OBJ <obj> ] ;
+      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ <dummy2: ACTION,ON CLICK,ONCLICK> <action> ];
+      [ WIDTH <w> ] ;
+      [ HEIGHT <h> ] ;
+      [ <stretch: STRETCH> ] ;
+      [ HELPID <helpid> ]       ;
+      [ <invisible: INVISIBLE> ] ;
+      [ <rtl: RTL> ] ;
+      [ SUBCLASS <subclass> ] ;
+      [ <whitebackground: WHITEBACKGROUND> ] ;
+      [ BACKCOLOR <backcolor> ] ;
+      [ PICTURE <filename> ] ;
+      [ BUFFER <buffer> ] ;
+      [ HBITMAP <hbitmap> ] ;
+      [ <noresize: NORESIZE> ] ;
+      [ <imagesize: IMAGESIZE> ] ;
+      [ TOOLTIP <tooltip> ] ;
+      [ <border: BORDER> ] ;
+      [ <clientedge: CLIENTEDGE> ] ;
+      [ <notrans: NOLOADTRANSPARENT> ] ;
+      [ <no3dcolors: NO3DCOLORS> ] ;
+      [ <nodib: NODIBSECTION> ] ;
+      [ <style: TRANSPARENT> ] ;
+      [ EXCLUDEAREA <area> ] ;
+      [ <disabled: DISABLED> ] ;
+   => ;
+      [ <obj> := ] _OOHG_SelectSubClass( TImage(), [ <subclass>() ] ):Define( ;
+            <(name)>, <(parent)>, <col>, <row>, <filename>, <w>, <h>, <{action}>, ;
+            <helpid>, <.invisible.>, <.stretch.>, <.whitebackground.>, <.rtl.>, ;
+            <backcolor>, <buffer>, <hbitmap>, ! <.noresize.>, <.imagesize.>, ;
+            <tooltip>, <.border.>, <.clientedge.>, <.notrans.>, <.no3dcolors.>, ;
+            <.nodib.>, <.style.>, <area>, <.disabled.> )

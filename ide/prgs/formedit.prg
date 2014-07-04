@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.5 2014-06-26 02:13:26 fyurisich Exp $
+ * $Id: formedit.prg,v 1.6 2014-07-04 20:16:02 fyurisich Exp $
  */
 
 /*
@@ -14,9 +14,9 @@
 #DEFINE LF CHR(10)
 #DEFINE WM_PAINT   15
 
-//------------------------------------------------------------------------------
+*------------------------------------------------------------------------------*
 CLASS TForm1
-//------------------------------------------------------------------------------
+*------------------------------------------------------------------------------*
    // variables varias
    DATA Designform           INIT 'Form_1'
    DATA CurrentControl       INIT 0
@@ -138,7 +138,7 @@ CLASS TForm1
    DATA Aappend              INIT {}
    DATA Aclientedge          INIT {}
    DATA afocusedpos          INIT {}  // pb
-   DATA acobj                INIT {}  //gca
+   DATA acobj                INIT {}  //gca                // TODO: cambiar a aObj
    DATA aBorder              INIT {}  //GCA
    DATA aOnEnter             INIT {}  //gca
 
@@ -256,29 +256,27 @@ CLASS TForm1
    DATA Richeditboxcount     INIT  0
 
    METHOD vd( cItem1, myIde ) CONSTRUCTOR
-   METHOD end() INLINE return
-   METHOD verifybar()
-   METHOD what(citem1)
-   METHOD iniarray(nform,ncontrolwl,controlname,ctypectrl,noanade)
+   METHOD VerifyBar()
+   METHOD What( citem1 )
+   METHOD IniArray( nForm, nControlwl, ControlName, cTypeCtrl, noanade )
    METHOD AddControl()
-   METHOD new()
-   METHOD Newagain()
-   METHOD Open(cItem1)
-   METHOD fillcontrolaux()
-   METHOD fillcontrol()
-   METHOD Control_click(wpar)
-   // METHOD leeprg()
-   METHOD leatipo(cname)
-   METHOD leadato(cName,cPropmet,cDefault)
-   METHOD leadatostatus(cName,cPropmet,cDefault)
-   METHOD leadatologic(cName,cPropmet,cDefault)
-   METHOD learow(cName)
-   METHOD learowf(cname)
-   METHOD leacol(cName)
-   METHOD leacolf(cname)
-   METHOD clean(cfvalue)
-   METHOD leadato_oop(cName,cPropmet,cDefault)
-   METHOD save(Cas)
+   METHOD New()
+   METHOD NewAgain()
+   METHOD Open( cItem1 )
+   METHOD FillControlAux()
+   METHOD FillControl()
+   METHOD Control_Click( wpar )
+   METHOD LeaTipo( cName )
+   METHOD LeaDato( cName, cPropmet, cDefault )
+   METHOD LeaDatoStatus( cName, cPropmet, cDefault )
+   METHOD LeaDatoLogic( cName, cPropmet, cDefault )
+   METHOD LeaRow( cName )
+   METHOD LeaRowF( cName )
+   METHOD LeaCol( cName )
+   METHOD LeaColF( cName )
+   METHOD Clean( cFValue )
+   METHOD LeaDato_Oop( cName, cPropmet, cDefault )
+   METHOD Save( Cas )
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -324,9 +322,9 @@ local nNumcont:=0
    ::BrowseCount          := nNumcont
    ::Treecount            := nNumcont
    ::Ipaddresscount       := nNumcont
-   ::Monthcalendarcount   := nNUmcont
-   ::Hyperlinkcount       := nNUmcont
-   ::Richeditboxcount     := nNUmcont
+   ::Monthcalendarcount   := nNumcont
+   ::Hyperlinkcount       := nNumcont
+   ::Richeditboxcount     := nNumcont
    ::Aline                := {}
    ::cftitle              := ""
    ::cfname               := ""
@@ -401,9 +399,9 @@ local nNumcont:=0
    ::What( citem1 )
 Return Self
 
-*---------------------------------
-METHOD verifybar() CLASS TForm1
-*---------------------------------
+*------------------------------------------------------------------------------*
+METHOD VerifyBar() CLASS TForm1
+*------------------------------------------------------------------------------*
 if .not. myform:lsstat  &&&&  lstat
     cvccontrols.control_30.visible:=.T.
     myform:lsstat:=.T.
@@ -433,9 +431,9 @@ endif
 myform:lfsave:=.F.
 return
 
-*---------------------------------
-METHOD what(citem1) CLASS TForm1
-*---------------------------------
+*------------------------------------------------------------------------------*
+METHOD What( cItem1 ) CLASS TForm1
+*------------------------------------------------------------------------------*
 local npos,npos1,nd
 myform:cForm:=citem1
 npos:=rat(".",myform:cForm)
@@ -458,9 +456,9 @@ endif
 cursorarrow()
 return
 
-*-----------------------------------------------------------------------------
+*------------------------------------------------------------------------------*
 METHOD IniArray( nform, ncontrolwl, controlname, ctypectrl, noanade ) CLASS TForm1
-*-----------------------------------------------------------------------------
+*------------------------------------------------------------------------------*
    // inicia array de controles para la forma actual
    WITH OBJECT myform
       IF noanade == NIL
@@ -684,9 +682,10 @@ METHOD IniArray( nform, ncontrolwl, controlname, ctypectrl, noanade ) CLASS TFor
          myAdel( "myform:Aappend", z )
          myAdel( "myform:Aclientedge", z )
          myAdel( "myform:afocusedpos", z )  // pb
-         myAdel( "myform:acobj", z)         //gca
          myAdel( "myform:aspeed", z )
+         myAdel( "myform:acobj", z)         //gca
          myAdel( "myform:aonenter", z )     //gca
+         myAdel( "myform:aborder", z )      // gca
          :ncontrolw --
          IF :ncontrolw == 1
             myhandle := 0
@@ -696,17 +695,17 @@ METHOD IniArray( nform, ncontrolwl, controlname, ctypectrl, noanade ) CLASS TFor
    END
 RETURN
 
-*----------------------------------
-static function myadel(arreglo,z)
-*----------------------------------
+*------------------------------------------------------------------------------*
+STATIC FUNCTION myadel(arreglo,z)
+*------------------------------------------------------------------------------*
 q:=z
 adel(&arreglo,q)
 asize(&arreglo,len(&arreglo)-1)
 return nil
 
-*---------------------
-static function ms( myIde )
-*---------------------
+*------------------------------------------------------------------------------*
+STATIC FUNCTION ms( myIde )
+*------------------------------------------------------------------------------*
 local i,ocontrol,jk,nl
 jk:=myhandle
 if swcursor=1
@@ -1194,9 +1193,10 @@ with Object myform
            muestrasino()
 end
 Return
-*------------------------
-function borracon( )    /////// para futuro uso
-*------------------------
+
+*------------------------------------------------------------------------------*
+FUNCTION borracon()    /////// para futuro uso
+*------------------------------------------------------------------------------*
 local i,cvalor,j
 local owindow:=getformobject('Form_1')
 local back:= owindow:backcolor
@@ -1216,16 +1216,16 @@ for i:= 2 to myform:ncontrolw
 next i
 return nil
 
-*------------------------
-function dibuja(xName)
-*------------------------
-local  cValor:= lower(xName)
-dibuja1(Ascan( getformobject('Form_1'):aControls, { |o| lower(o:Name) == cValor } ) )
-return nil
+*------------------------------------------------------------------------------*
+FUNCTION Dibuja( xName )
+*------------------------------------------------------------------------------*
+LOCAL cValor := Lower( xName )
+   Dibuja1( aScan( GetFormObject( 'Form_1' ):aControls, { |o| Lower( o:Name ) == cValor } ) )
+RETURN NIL
 
-*--------------------
-function dibuja1(h)
-*--------------------
+*------------------------------------------------------------------------------*
+FUNCTION Dibuja1( h )
+*------------------------------------------------------------------------------*
 local l,ocontrol,owindow,nrow,ncol,nwidth,nheight,clabel,y,x,y1,x1
 local z:=h
 
@@ -1282,62 +1282,58 @@ endif
 return nil
 
 *------------------------------------------------------------------------------*
-METHOD  Open(cItem1)  CLASS TForm1
-*-----------------------------------------------------------------------------*
-local i,nContlin,nPosilin,cForma
-cForma:=memoread(cItem1)
-nContlin:=mlcount(Cforma)
+METHOD Open( cFMG )  CLASS TForm1
+*------------------------------------------------------------------------------*
+LOCAL i, j, nContlin, cForma, nStart, nEnd
 
-For i:=1 to nContlin
-    aAdd(myform:aline,memoline(Cforma,800,i))
-    if myform:aline[i]# NIL
-       if at("DEFINE WINDOW",myform:aline[i])#0 .OR. ( at("@ ",myform:aline[i]) > 0 .AND. AT(",",myform:aline[i])>0  )
-       ////////// .and. (.not. at("@E",myform:aline[i]) > 0  )
-          myform:ncontrolw++
-*** ojo aqui
-         IF at("WINDOW",myform:aline[i]) > 0
-            if at("WINDOW",myform:aline[i]) > 0
-                nPoscor:=at("WINDOW",myform:aline[i])+7
-            endif
-         ELSE
-            nPoscor1:=at(',',myform:aline[i]) +1
-            For q:=nposcor1 to len(myform:aline[i])
-                if asc(substr(myform:aline[i],q,1))>=65
-                   nposcor2:=q
-                   **** q:=len(myform:aline[i])
-                   exit
-                endif
-            next q
-            For q:=nposcor2 to len(myform:aline[i])
-                if substr(myform:aline[i],q,1)=" "
-                   nposcor:=q
-                   exit
-                endif
-            next q
+   cForma := MemoRead( cFMG )
+   nContlin := MLCount( cForma )
 
+   FOR i := 1 TO nContlin
+      aAdd( myform:aline, MemoLine( cForma, 800, i ) )
+      IF myform:aline[i] # NIL
+         IF At( "DEFINE WINDOW", myform:aline[i] ) # 0 .OR. ( At( "@ ", myform:aline[i] ) > 0 .AND. At( ",", myform:aline[i] ) > 0 )
+            myform:ncontrolw ++
+            IF At( "WINDOW", myform:aline[i] ) > 0
+               nStart := At( "WINDOW", myform:aline[i] ) + 7
+               nEnd := Len( myform:aline[i] )
+            ELSE
+               nStart := At( ',', myform:aline[i] ) + 1
+               FOR j := nStart TO Len( myform:aline[i] )
+                  // Stop at the first letter
+                  IF Asc( SubStr( myform:aline[i], j, 1 ) ) >= 65
+                     EXIT
+                  ENDIF
+               NEXT j
+               nStart := j
+               FOR j := nStart TO Len( myform:aline[i] )
+                  // Stop at the first space
+                  IF SubStr( myform:aline[i], j, 1) == " "
+                     EXIT
+                  ENDIF
+               NEXT j
+               nEnd := j
+            ENDIF
+            cvcControl := SubStr( myform:aline[i], nEnd + 1 )
+            cvcControl := StrTran( cvcControl, ";", "" )
+            cvcControl := StrTran( cvcControl, chr(10), "" )
+            cvcControl := StrTran( cvcControl, chr(13), "" )
+            cvcControl := StrTran( cvcControl, " ", "" )
+            myform:IniArray( myform:nform, myform:ncontrolw, cvcControl, '' )
+            myform:aspeed[myform:ncontrolw] := i
          ENDIF
-        nLenlin:=len(trim(myform:aline[i]))
-        cvcControl:=substr(rtrim(myform:aline[i]),nPoscor,nLenlin)
-        cvccontrol:=strtran(cvccontrol,";","")
-        cvccontrol:=strtran(cvccontrol,chr(10),"")
-        cvccontrol:=strtran(cvccontrol,chr(13),"")
-        cvccontrol:=strtran(cvccontrol," ","")
+      ELSE
+         EXIT
+      ENDIF
+   NEXT i
 
-        myform:iniarray(myform:nform,myform:ncontrolw,cvccontrol,'')
-        myform:aspeed[myform:ncontrolw]:=i
-       ENDIF
-    else
-        exit
-    endif
-next i
+   FOR i := 1 TO ( myform:ncontrolw - 1 )
+       myform:anumber[i] := myform:aspeed[i+1] - 1
+   NEXT i
 
-For i:=1 to (myform:ncontrolw - 1)
-    myform:anumber[i]:=myform:aspeed[i+1]-1
-next i
-myform:anumber[myform:ncontrolw]:=ncontlin
-myform:newagain()
-return nil
-
+   myform:anumber[myform:ncontrolw] := nContlin
+   myform:NewAgain()
+RETURN NIL
 
 *------------------------------------------------------------------------------*
 METHOD New() CLASS TForm1
@@ -1443,9 +1439,10 @@ activate window form_1
 
      EndIf
 Return
-*-----------------------------------
-static function validapos(olistacon)
-*-----------------------------------
+
+*------------------------------------------------------------------------------*
+STATIC FUNCTION ValidaPos( oListaCon )
+*------------------------------------------------------------------------------*
 wvalue:=this.cellrowindex
 cname:=olistacon:cell(wvalue,6)
 oname:=getcontrolobject(cname,"form_1")
@@ -1471,416 +1468,408 @@ dibuja(cname)           //////// cvc  2012/01/15
 ///muestrasino()
 return nil
 
-*-----------------------------------------------------------------------------
-METHOD Newagain() CLASS TForm1
 *------------------------------------------------------------------------------*
-whlp:='formedit'
-if  IsWindowDefined(Form_1)
-    MsgStop( 'Can only edit one form at a time.', 'OOHG IDE+' )
-else
-    myform:fillcontrolaux()
-    cffontname:=myform:cffontname
-    nffontsize:=myform:nffontsize
-    cfbackcolor:=myform:cfbackcolor
-    cursorwait()
-    waitmess:hmi_label_101:value:='Loading Form....'
-    waitmess:show()
+METHOD NewAgain() CLASS TForm1
+*------------------------------------------------------------------------------*
+   if IsWindowDefined( Form_1 )
+      MsgStop( 'Can only edit one form at a time.', 'OOHG IDE+' )
+   else
+      whlp := 'formedit'
 
+      myform:FillControlAux()
+      cffontname  := myform:cffontname
+      nffontsize  := myform:nffontsize
+      cfbackcolor := myform:cfbackcolor
+      CursorWait()
+      waitmess:hmi_label_101:Value := 'Loading Form....'
+      waitmess:show()
 
-    if myform:nfvirtualw <= nfwidth
-      nvw := NIL
-    else
-      nvw:= NIL  /////  myform:nfvirtualw
-    endif
+      if myform:nfvirtualw <= nfwidth
+         nvw := NIL
+      else
+         nvw:= NIL  /////  myform:nfvirtualw
+      endif
 
-    if myform:nfvirtualh <= nfheight
-       nvh := NIL
-    else
-       nvh := NIL  ////  myform:nfvirtualh
-    endif
+      if myform:nfvirtualh <= nfheight
+         nvh := NIL
+      else
+         nvh := NIL  ////  myform:nfvirtualh
+      endif
 
-    DEFINE WINDOW Form_1 obj Form_1 AT ::myIde:mainheight + 42 , 66 ;
+      DEFINE WINDOW Form_1 obj Form_1 AT ::myIde:mainheight + 42, 66 ;
          WIDTH nfwidth ;
          HEIGHT nfheight ;
-                        VIRTUAL WIDTH  nvw  ;
-                        VIRTUAL HEIGHT nvh  ;
+         VIRTUAL WIDTH  nvw  ;
+         VIRTUAL HEIGHT nvh  ;
          TITLE 'Title' ;
-                        ICON 'VD' ;
+         ICON 'VD' ;
          CHILD NOSHOW  ;
          ON MOUSECLICK myform:AddControl()  ;
-                        ON MOUSEMOVE cordenada() ;
-                        ON MOUSEDRAG ms( ::myIde ) ;
-                        ON GOTFOCUS mispuntos() ;
-                        ON PAINT {|| refrefo(),mispuntos() } ;
-                        BACKCOLOR &cfbackcolor ;
-                        FONT cffontname ;
-                        SIZE nffontsize ;
-                        NOMAXIMIZE NOMINIMIZE
-
+         ON MOUSEMOVE cordenada() ;
+         ON MOUSEDRAG ms( ::myIde ) ;
+         ON GOTFOCUS mispuntos() ;
+         ON PAINT {|| refrefo(),mispuntos() } ;
+         BACKCOLOR &cfbackcolor ;
+         FONT cffontname ;
+         SIZE nffontsize ;
+         NOMAXIMIZE NOMINIMIZE
 
          DEFINE CONTEXT MENU
-                  ITEM 'Properties' ACTION Properties_Click( ::myIde )
-                                ITEM 'Events    ' name events ACTION Events_click( ::myIde )
-                                ITEM 'Interactive Font/Color' ACTION intfoco( 1, ::myIde )
-                                ITEM 'Manual Move/Size'  ACTION manualmosi( 1, ::myIde )
+            ITEM 'Properties' ACTION Properties_Click( ::myIde )
+            ITEM 'Events    ' NAME events ACTION Events_click( ::myIde )
+            ITEM 'Interactive Font/Color' ACTION intfoco( 1, ::myIde )
+            ITEM 'Manual Move/Size' ACTION manualmosi( 1, ::myIde )
             ITEM 'Interactive Move' ACTION MoveControl( ::myIde )
             ITEM 'Keyboard Move' ACTION kMove( ::myIde )
             ITEM 'Interactive Size' ACTION SizeControl()
-                                SEPARATOR
-                                ITEM 'Delete' ACTION DeleteControl()
+            SEPARATOR
+            ITEM 'Delete' ACTION DeleteControl()
          END MENU
 
+         ON KEY ALT+D ACTION debug()
+         ON KEY DELETE ACTION deletecontrol()
+         ON KEY F1 ACTION help_f1('FORMEDIT')
+      END WINDOW
 
+      DEFINE WINDOW lista obj lista ;
+         AT 120, 665 ;                                  
+         WIDTH 285 ;
+         HEIGHT 450 + GetTitleHeight() + GetBorderheight() ;
+         TITLE 'Control Inspector' ;
+         ICON 'Edit' ;
+         CHILD ;
+         NOMAXIMIZE NOMINIMIZE ;
+         NOSIZE ;
+         BACKCOLOR ::myIde:asystemcolor
 
-                        ON KEY ALT+D ACTION debug()
-                        ON KEY DELETE ACTION deletecontrol()
-                        ON KEY F1 ACTION help_f1('FORMEDIT')
+         @ 20, 10 GRID listacon OBJ olistacon ;
+            WIDTH 260 ;
+            HEIGHT 400  ;
+            HEADERS {'Name','row','col','width','height','int-name'} ;
+            WIDTHS {80,40,40,45,50,0 } ;
+            FONT "Arial" ;
+            SIZE 10      ;
+            INPLACE EDIT ;
+            READONLY {.t.,.f.,.f.,.f.,.f.,.t.}  ;
+            JUSTIFY { ,1,1,1,1, } ;
+            ON GOTFOCUS muestrasino() ;
+            ON EDITCELL validapos(olistacon) ;
+            FULLMOVE
 
-    END WINDOW
+         DEFINE CONTEXT MENU
+            ITEM 'Properties' ACTION Properties_Click( ::myIde )
+            ITEM 'Events    ' name events ACTION Events_click( ::myIde )
+            ITEM 'Interactive Font/Color' ACTION intfoco( 1, ::myIde )
+            ITEM 'Manual Move/Size'  ACTION manualmosi( 1, ::myIde )
+            ITEM 'Interactive Move' ACTION MoveControl( ::myIde )
+            ITEM 'Keyboard Move' ACTION kMove( ::myIde )
+            ITEM 'Interactive Size' ACTION SizeControl()
+            SEPARATOR
+            ITEM 'Delete' ACTION DeleteControl()
+         END MENU
 
-    DEFINE WINDOW lista obj lista ;
-        AT 120 , 665 ;                                             // MigSoft
-        WIDTH 285 ;
-        HEIGHT 450 + GetTitleHeight() + GetBorderheight() ;
-        TITLE 'Control Inspector' ;
-        ICON 'Edit' ;
-        CHILD ;
-        NOMAXIMIZE NOMINIMIZE ;
-        NOSIZE ;
-        backcolor ::myIde:asystemcolor
+         @ 420, 30 LABEL lop VALUE "Right Click  -  click or enter to modify Cord" FONT "Calibri" SIZE 9 AUTOSIZE
+         @ 435, 30 LABEL lop1 VALUE "More Options" FONT "Calibri" SIZE 9 AUTOSIZE
+      END WINDOW
 
-                 @ 20,10 GRID listacon  obj olistacon ;            // MigSoft
-                 WIDTH  260 ;
-                 HEIGHT 400  ;
-                 headers {'Name','row','col','width','height','int-name'}     ;
-                 WIDTHS {80,40,40,45,50,0 } ;
-                 FONT "Arial" ;
-                 SIZE 10      ;
-                 INPLACE EDIT ;
-                 readonly {.t.,.f.,.f.,.f.,.f.,.t.}  ;
-                 justify { ,1,1,1,1,  }  ;
-                 ON GOTFOCUS muestrasino()  ;
-                 ON EDITCELL validapos(olistacon)
+      form_main:Show()
+      cvcControls:Show()
 
-                 olistacon:fullmove:=.T.
+      ::myIde:form_activated := .T.
+      myform:FillControl()
+      MuestraSiNo()
 
-      DEFINE CONTEXT MENU
-         ITEM 'Properties' ACTION Properties_Click( ::myIde )
-         ITEM 'Events    ' name events ACTION Events_click( ::myIde )
-         ITEM 'Interactive Font/Color' ACTION intfoco( 1, ::myIde )
-         ITEM 'Manual Move/Size'  ACTION manualmosi( 1, ::myIde )
-         ITEM 'Interactive Move' ACTION MoveControl( ::myIde )
-         ITEM 'Keyboard Move' ACTION kMove( ::myIde )
-         ITEM 'Interactive Size' ACTION SizeControl()
-         SEPARATOR
-         ITEM 'Delete' ACTION DeleteControl()
+      tmytoolb:Abrir()
+      ZAP
+      ctitulo := 'Toolbar'
+      archivo := myform:cfname + '.tbr'
+      IF File(archivo)
+         APPEND FROM &archivo
+      ENDIF
+
+      tbParsea( tmytoolb )
+      USE
+
+      ACTIVATE WINDOW form_1, lista
+   ENDIF
+RETURN  NIL
+
+*------------------------------------------------------------------------------*
+METHOD FillControlAux() CLASS TForm1
+*------------------------------------------------------------------------------*
+   Public nfwidth, nfheight
+
+   myform:cffontname  := myform:Clean( myform:LeaDato( 'WINDOW', 'FONT', 'MS Sans Serif' ) )
+   myform:nffontsize  := Val( myform:LeaDato( 'WINDOW', 'SIZE', '10' ) )
+   myform:cfbackcolor := myform:LeaDato( 'WINDOW', 'BACKCOLOR', ::myIde:cdbackcolor )
+   nfwidth            := Val( myform:LeaDato( 'WINDOW', 'WIDTH', '640' ) )
+   nfheight           := Val( myform:LeaDato( 'WINDOW', 'HEIGHT', '480' ) )
+   myform:nfvirtualw  := Val( myform:LeaDato( 'WINDOW', 'VIRTUAL WIDTH', '0' ) )
+   myform:nfvirtualh  := Val( myform:LeaDato( 'WINDOW', 'VIRTUAL HEIGHT', '0' ) )
+RETURN NIL
+
+*------------------------------------------------------------------------------*
+METHOD FillControl() CLASS TForm1
+*------------------------------------------------------------------------------*
+LOCAL i, cTipo
+
+   WITH OBJECT myForm
+      :swTab := .F.
+
+********************** Load statusbar data
+      FOR i := 1 TO Len( :aLine )
+         IF At( Upper( 'DEFINE STATUSBAR' ), Upper( :aLine[i] ) ) # 0
+            :lsstat := .T.
+            form_main:butt_status:Value := .T.
+            cvccontrols.control_30.Visible := .T.
+
+            :csCaption  := :Clean( :LeaDato( 'DEFINE STATUSBAR', 'STATUSITEM', '' ) )
+            :nsWidth    := Val( :LeaDato( 'DEFINE STATUSBAR', 'WIDTH', '0' ) )
+            :csAction   := :LeaDato( 'DEFINE STATUSBAR', 'ACTION', '' )
+            :csIcon     := :LeaDato( 'DEFINE STATUSBAR', 'ICON', '' )
+            :lsFlat     := ( :LeaDatoLogic( 'DEFINE STATUSBAR', 'FLAT', 'F' ) == "T" )
+            :lsRaised   := ( :LeaDatoLogic( 'DEFINE STATUSBAR', 'RAISED', 'F' ) == "T" )
+            :csToolTip  := :LeaDato('DEFINE STATUSBAR','TOOLTIP', '' )
+            :lsDate     := ( :LeaDatoLogic('DEFINE STATUSBAR','DATE', 'F' ) == "T" )
+            :lsTime     := ( :LeaDatoLogic('DEFINE STATUSBAR','CLOCK', 'F' ) == "T" )
+            :lsKeyboard := ( :LeaDatoLogic('DEFINE STATUSBAR','KEYBOARD', 'F' ) == "T" )
+            :cscObj     := :LeaDato('DEFINE STATUSBAR','OBJ','')
+            EXIT
+         ELSE
+            :lsstat := .F.
+
+            form_main:butt_status:Value := .F.
+            cvccontrols.control_30.Visible := .F.
+         ENDIF
+      NEXT i
+
+********************** Controls
+      FOR i := 1 TO :nControlW
+         IF i == 1
+           cTipo := 'FORM'
+         ELSE
+           cTipo := :LeaTipo( :aControlW[i] )
+         ENDIF
+
+         DO CASE
+         CASE cTipo == 'DEFINE'
+            :aCtrlType[i] := 'STATUSBAR'
+         CASE cTipo == 'FORM'
+            pForma( i )
+         CASE cTipo == 'BUTTON'
+            pButton( i, ::myIde )
+         CASE cTipo == "CHECKBOX"
+            pCheckBox( i, ::myIde )
+         CASE cTipo == "LISTBOX"
+            pListBox( i, ::myIde )
+         CASE cTipo == 'COMBOBOX'
+            pComboBox( i, ::myIde )
+         CASE cTipo == 'CHECKBTN'
+            pCheckBtn( i, ::myIde )
+         CASE cTipo == 'PICCHECKBUTT'
+              pPicCheckButt( i, ::myIde )
+         CASE cTipo == "PICBUTT"
+            pPicButt( i, ::myIde )
+         CASE cTipo == "IMAGE"
+            pImage( i, ::myIde )
+         CASE cTipo == "ANIMATEBOX"
+            pAnimateBox( i, ::myIde )
+         CASE cTipo == "DATEPICKER"
+            pDatePicker( i, ::myIde )
+         CASE cTipo == 'GRID'
+            pGrid( i, ::myIde )
+         CASE cTipo == 'BROWSE'
+            pBrowse( i, ::myIde )
+         CASE cTipo == 'FRAME'
+            pFrame( i, ::myIde )
+         CASE cTipo == "TEXTBOX"
+            pTextBox( i, ::myIde )
+         CASE cTipo == "EDITBOX"
+            pEditBox( i, ::myIde )
+         CASE cTipo == 'RADIOGROUP'
+            pRadioGroup( i, ::myIde )
+         CASE cTipo == "PROGRESSBAR"
+            pProgressBar( i, ::myIde )
+         CASE cTipo == 'SLIDER'
+            pSlider( i, ::myIde )
+         CASE cTipo == 'SPINNER'
+            pSpinner( i, ::myIde )
+         CASE cTipo == "PLAYER"
+            pPlayer( i, ::myIde )
+         CASE cTipo == 'LABEL'
+            pLabel( i, ::myIde )
+         CASE cTipo == "TIMER"
+            pTimer( i, ::myIde )
+         CASE cTipo == 'IPADDRESS'
+            pIPAddress( i, ::myIde )
+         CASE cTipo == 'MONTHCALENDAR'
+            pMonthCal( i, ::myIde )
+         CASE cTipo == 'HYPERLINK'
+            pHypLink( i, ::myIde )
+         CASE cTipo == 'TREE'
+            pTree( i, ::myIde )
+         CASE cTipo == 'RICHEDITBOX'
+            pRichedit( i, ::myIde )
+         CASE cTipo == 'TAB'
+            :swTab := .T.
+            pTab( i )
+         ENDCASE
+      NEXT i
+
+      CLOSE DATABASES
+      lDeleted := SET( _SET_DELETED, .T. )
+
+********************** Toolbar
+      IF File( :cfname + '.tbr' )
+         archivo := :cfname + '.tbr'
+         SELECT 10
+         USE &archivo EXCLUSIVE ALIAS dtoolbar
+         GO TOP
+         IF ! Eof()
+            aPar  := {}
+            wVar  := dtoolbar->auxit
+            nPosi := 1
+            nPosf := 1
+            IF Len( AllTrim( wVar ) ) == 0
+               wvar := 'toolbar_1, 65, 65, , .F., .F., .F., .T., Arial, 10, .F., .F., .F., .F., 0, 0, 0'
+            ENDIF
+            FOR i := 1 TO Len( wVar )
+               IF SubStr( wvar, i, 1 ) == ','
+                  nPosf := i
+                  aAdd( Apar, AllTrim( SubStr( wvar, nPosi, nPosf - nPosi ) ) )
+                  nPosi := nPosf + 1
+               ENDIF
+            NEXT i
+            aAdd( aPar, Alltrim( SubStr( wVar, nPosi ) ) )
+
+            nw := Val( aPar[2] )
+            nh := Val( aPar[3] )
+            tmytoolb:nwidth  := nw
+            tmytoolb:nheight := nh
+
+            DEFINE TOOLBAR hmitb OF form_1  ;
+               BUTTONSIZE nw, nh
+
+               GO TOP
+               DO WHILE ! Eof()
+                  wCaption := LTrim( RTrim( dtoolbar->item ) )
+                  cName := "hmi_cvc_tb_button_" + AllTrim( Str( i, 2 ) )
+
+                  BUTTON &cName ;
+                     CAPTION wCaption ;
+                     ACTION NIL
+
+                  SKIP
+               ENDDO
+            END TOOLBAR
+         ENDIF
+
+         CLOSE DATABASES
+      ENDIF
+
+*********************** Menu
+      DEFINE MAIN MENU OF Form_1
+         IF File( :cfname + '.mnm' )
+            archivo := :cfname + '.mnm'
+            SELECT 20
+            USE &archivo EXCLUSIVE ALIAS menues
+            GO TOP
+            swpop := 0
+            IF ! Eof()
+               DO WHILE ! Eof()
+                  SKIP
+                  IF Eof()
+                     signiv := 0
+                  ELSE
+                     signiv := menues->level
+                  ENDIF
+                  SKIP -1
+
+                  niv := menues->level
+                  IF signiv > menues->level
+                     IF Lower( RTrim( menues->auxit ) ) == 'separator'
+                        SEPARATOR
+                     ELSE
+                        POPUP AllTrim( menues->auxit )
+                        swpop ++
+                     ENDIF
+                  ELSE
+                     IF Lower( RTrim( menues->auxit ) ) == 'separator'
+                        SEPARATOR
+                     ELSE
+                        ITEM AllTrim( auxit ) ACTION NIL
+                        IF ! RTrim( menues->named ) == ''
+                           IF menues->checked == 'X'
+                             /// cc:=:cfname+'.'+trim(named)+'.checked:=.T.'
+                             /// output+= cc + CRLF
+                           ENDIF
+                           IF menues->enabled == 'X'
+                              ///cc:=:cfname+'.'+trim(named)+'.enabled:=.F.'
+                              ///output+= cc + CRLF
+                           ENDIF
+                        ENDIF
+                     ENDIF
+
+                     DO WHILE signiv < niv
+                        END POPUP
+                        swpop --
+                        niv --
+                     ENDDO
+                  ENDIF
+
+                  SKIP
+               ENDDO
+
+               nnivaux := niv - 1
+               DO WHILE swpop > 0
+                  nnivaux --
+                  END POPUP
+                  swpop --
+               ENDDO
+            ENDIF
+
+            CLOSE DATABASES
+         ENDIF
       END MENU
 
-         @ 420,30 label lop value "Right Click  -  click or enter to modify Cord" FONT "Calibri" SIZE 9 autosize
-         @ 435,30 label lop1 value "More Options" FONT "Calibri" SIZE 9 autosize
+      SET( _SET_DELETED, lDeleted )
 
-    end window
-
-    form_main:show()
-    cvccontrols:show()
-
-    ::myIde:form_activated:=.T.
-    myform:fillcontrol()
-    muestrasino()
-*********************************
-
-    tmytoolb:abrir()
-    zap
-    ctitulo:='Toolbar'
-    archivo:=myform:cfname+'.tbr'
-    if file(archivo)
-       append from &archivo
-    endif
-
-    tbparsea( tmytoolb )
-    use
-******************************
-    Activate window form_1,lista
-
-EndIf
-Return  nil
-
-
-*------------------------------------
-METHOD fillcontrolaux() CLASS TForm1
-*------------------------------------
-Public nfwidth,nfheight
-myform:cffontname:=myform:clean(myform:leadato('WINDOW','FONT','MS Sans Serif'))
-myform:nffontsize:=val(myform:leadato('WINDOW','SIZE','10'))
-myform:cfbackcolor:=myform:leadato('WINDOW','BACKCOLOR',::myIde:cdbackcolor)
-/////form_1:backcolor:=&(myform:cfbackcolor)
-
-nfwidth:=val(myform:leadato('WINDOW','WIDTH','640'))
-nfheight:=val(myform:leadato('WINDOW','HEIGHT','480'))
-myform:nfvirtualw:=val(myform:leadato('WINDOW','VIRTUAL WIDTH','0'))
-myform:nfvirtualh:=val(myform:leadato('WINDOW','VIRTUAL HEIGHT','0'))
-return
-
-*---------------------------------
-METHOD FillControl() CLASS TForm1
-*---------------------------------
-local i,ctipo
-with Object myform
-:swtab:=.F.
-for i:=1 to len(:aline)
-  if at(upper('DEFINE STATUSBAR'),upper(:aline[i]))#0
-     :lsstat:=.T.
-     form_main:butt_status:value:=.T.
-     cvccontrols.control_30.visible:=.T.
-
-     :cscaption:=:clean(:leadato('DEFINE STATUSBAR','STATUSITEM',''))
-     :nswidth:=val(:leadato('DEFINE STATUSBAR','WIDTH','0'))
-     :csaction:=:leadato('DEFINE STATUSBAR','ACTION','')
-     :csicon:=:leadato('DEFINE STATUSBAR','ICON','')
-     :lsflat:=:leadatologic('DEFINE STATUSBAR','FLAT','F')
-     :lsraised:=:leadatologic('DEFINE STATUSBAR','RAISED','F')
-
-     :lsflat:=iif(:lsflat='T',.T.,.F.)
-
-     :lsraised:=iif(:lsraised='T',.T.,.F.)
-
-     :cstooltip:=:leadato('DEFINE STATUSBAR','TOOLTIP','')
-     :lsdate:=:leadatologic('DEFINE STATUSBAR','DATE','F')
-     :lstime:=:leadatologic('DEFINE STATUSBAR','CLOCK','F')
-     :lskeyboard:=:leadatologic('DEFINE STATUSBAR','KEYBOARD','F')
-     :cscobj:=:leadato('DEFINE STATUSBAR','OBJ','')
-     :lsdate:=iif(:lsdate='T',.T.,.F.)
-     :lstime:=iif(:lstime='T',.T.,.F.)
-     :lskeyboard:=iif(:lskeyboard='T',.T.,.F.)
-     exit
-***********i:=len(:aline)+1
-  else
-     :lsstat:=.F.
-     form_main:butt_status:value:=.F.
-     cvccontrols.control_30.visible:=.F.
-  endif
-next i
-
-for i:=1 to :ncontrolw
-   if i==1
-     ctipo:='FORM'
-   else
-     ctipo:=:leatipo(:aControlw[i])
-   endif
-do case
-case ctipo=='DEFINE'
-   :actrltype[i]:='STATUSBAR'
-case ctipo=='FORM'
-   pforma( i )
-case ctipo=='BUTTON'
-   pbutton( i, ::myIde )
-case ctipo=="CHECKBOX"
-   pcheckbox( i, ::myIde )
-case ctipo=="LISTBOX"
-   plistbox( i, ::myIde )
-case ctipo=='COMBOBOX'
-   pcombobox( i, ::myIde )
-case ctipo='CHECKBTN'
-   pcheckbtn( i, ::myIde )
-case ctipo=='PICCHECKBUTT'
-     ppiccheckbutt( i, ::myIde )
-case ctipo=="PICBUTT"
-   ppicbutt( i, ::myIde )
-case ctipo=="IMAGE"
-   pimage( i, ::myIde )
-case ctipo=="ANIMATEBOX"
-   panimatebox( i, ::myIde )
-case ctipo="DATEPICKER"
-   pdatepicker( i, ::myIde )
-case ctipo='GRID'
-   pgrid( i, ::myIde )
-case ctipo='BROWSE'
-   pbrowse( i, ::myIde )
-case ctipo=='FRAME'
-   pframe( i, ::myIde )
-case ctipo=="TEXTBOX"
-   ptextbox( i, ::myIde )
-case ctipo=="EDITBOX"
-   peditbox( i, ::myIde )
-case ctipo='RADIOGROUP'
-   pradiogroup( i, ::myIde )
-case ctipo="PROGRESSBAR"
-   pprogressbar( i, ::myIde )
-case ctipo='SLIDER'
-   pslider( i, ::myIde )
-case ctipo='SPINNER'
-   pspinner( i, ::myIde )
-case ctipo="PLAYER"
-   pplayer( i, ::myIde )
-case ctipo=='LABEL'
-   plabel( i, ::myIde )
-case ctipo="TIMER"
-   ptimer( i, ::myIde )
-case ctipo='IPADDRESS'
-   pipaddress( i, ::myIde )
-case ctipo='MONTHCALENDAR'
-   pmonthcal( i, ::myIde )
-case ctipo='HYPERLINK'
-   phyplink( i, ::myIde )
-case ctipo='TREE'
-   ptree( i, ::myIde )
-case ctipo='RICHEDITBOX'
-   prichedit( i, ::myIde )
-case ctipo='TAB'
-   :swtab:=.T.
-   ptab( i )
-endcase
-next i
-close data
-********************** toolbar
-if file(:cfname+'.tbr')
-   archivo:=:cfname+'.tbr'
-   select 10
-   use &archivo alias Dtoolbar
-   nbuttons:=reccount()
-   if  nbuttons>0
-*****
-   go 1
-   Apar:={}
-   wvar:=Dtoolbar->auxit
-   nposi:=1
-   nposf:=1
-   if len(trim(wvar))=0
-      wvar:='toolbar_1 ,   65 ,   65 ,  , .F. , .F. , .F. , .T. , Arial , 10 , .F. , .F. , .F. , .F. , 0 , 0 , 0'
-   endif
-   for i:=1 to len(wvar)
-    if substr(wvar,i,1)=','
-       nposf:=i
-       aadd(Apar,ltrim(substr(wvar,nposi,nposf-nposi-1)))
-       nposi:=nposf+1
-    endif
-   next i
-   aadd(Apar,substr(wvar,nposi,6))
-   nw:=val(apar[2])
-   nh:=val(apar[3])
-
-   tmytoolb:nwidth :=nw
-   tmytoolb:nheight:=nh
-   define toolbar hmitb of form_1  ;
-   buttonsize nw, nh
-   GO 1
-   for i=1 to nbuttons
-
-       wcaption:=ltrim(rtrim(dtoolbar->item))
-
-       cname:="hmi_cvc_tb_button_"+alltrim(str(i,2) )
-       button &cname  ;
-       caption wcaption   ;
-       action NIL
-   skip
-   next i
-   END TOOLBAR
-   USE
-   endif
-endif
-define main menu of form_1
-end menu
-********************** carga menu
-if file(:cfname+'.mnm')
-   archivo:=:cfname+'.mnm'
-   select 20
-   use &archivo alias menues
-   nbuttons:=reccount()
-   swpop:=0
-   if nbuttons>0
-     go top
-   DEFINE MAIN MENU of form_1
-   do while .not. eof()
-      if recn() < reccount()
-         skip
-         signiv:=level
-         skip -1
-      else
-         signiv=0
-      endif
-      niv=level
-      if ( signiv > level )
-         if lower(trim(auxit))='separator'
-            SEPARATOR
-         else
-            POPUP alltrim(auxit)
-            swpop++
-         endif
-      else
-         if lower(trim(auxit))='separator'
-            SEPARATOR
-         else
-            ITEM  alltrim(auxit)  ACTION  NIL
-            if trim(named)==''
-            else
-               if menues->checked='X'
-                 /// cc:=:cfname+'.'+trim(named)+'.checked:=.T.'
-                 /// output+= cc + CRLF
-               endif
-               if menues->enabled='X'
-                  ///cc:=:cfname+'.'+trim(named)+'.enabled:=.F.'
-                  ///output+= cc + CRLF
-               endif
-            endif
-         endif
-**********************************
-         do while signiv<niv
-            END POPUP
-            swpop--
-            niv--
-         enddo
-      endif
-      skip
-   enddo
-   nnivaux:=niv-1
-   do while swpop>0
-      nnivaux--
-      END POPUP
-      swpop--
-   enddo
-   END MENU
-   use
-   endif
-endif
-
-*********************
-
-waitmess:hide()
-form_1:show()
-if :lsstat
-
-    DEFINE STATUSBAR of form_1
-            if len(:cscaption)> 0
+********************** Show statusbar
+      waitmess:Hide()
+      form_1:Show()
+      IF :lsstat
+         DEFINE STATUSBAR of form_1
+            IF Len( :csCaption ) > 0
                STATUSITEM :cscaption
-            else
-               statusitem " "
-            endif
-            if :lskeyboard
+            ELSE
+               STATUSITEM " "
+            ENDIF
+            IF :lsKeyboard
                KEYBOARD
-            endif
-            if :lsdate
+            ENDIF
+            IF :lsDate
                DATE WIDTH 95
-            endif
-            if :lstime
+            ENDIF
+            IF :lsTime
                CLOCK WIDTH 85
-            endif
-   END STATUSBAR
+            ENDIF
+         END STATUSBAR
+      ENDIF
 
-endif
-if :ncontrolw=1
-   myhandle:=0
-   nhandlep:=0
-endif
-form_main:show()
-cvccontrols:show()
-cursorarrow()
-end
-return nil
+      IF :nControlW == 1
+         myHandle := 0
+         nHandleP := 0
+      ENDIF
 
-*---------------------------------------------------------
-METHOD Control_Click(wpar) CLASS TForm1
+      form_main:Show()
+      cvccontrols:Show()
+      CursorArrow()
+   END WITH
+RETURN NIL
+
 *------------------------------------------------------------------------------*
-
+METHOD Control_Click( wpar ) CLASS TForm1
+*------------------------------------------------------------------------------*
 if lsi
     for i:=1 to 29
         cccontrol:='Control_'+padl(ltrim(str(i,2)),2,'0')
@@ -1897,15 +1886,15 @@ endif
 
 Return nil
 
-*----------------------------------
-METHOD leatipo(cname) CLASS TForm1
-*----------------------------------
-local q,r,s,nposcorq,nposa,cregresa,zl
-cregresa:=''
+*------------------------------------------------------------------------------*
+METHOD LeaTipo( cName ) CLASS TForm1
+*------------------------------------------------------------------------------*
+local q, r, s, nposcorq, nposa, cregresa, zl
+   cregresa := ''
 ***************
-cvc:=ascan( myform:acontrolw, { |c| lower( c ) == lower(cname)  } )
-zi:=iif(cvc>0,myform:aspeed[cvc],1)
-zl:=iif(cvc>0,myform:anumber[cvc],len(myform:aline))
+   cvc := aScan( myform:acontrolw, { |c| Lower( c ) == Lower( cName ) } )
+   zi  := IIF( cvc > 0, myform:aspeed[cvc], 1)
+   zl  := IIF( cvc > 0, myform:anumber[cvc], Len( myform:aline ) )
 **************
 for q:=zi to zl
      s:=at(upper(cname)+' ',upper(myform:aline[q]))
@@ -1923,7 +1912,7 @@ for q:=zi to zl
 next q
 
 if upper(cregresa)=='CHECKBUTTON'
-   ctregresa:=myform:leadatologic(cname,'CAPTION','')
+   ctregresa:=myform:LeaDatoLogic(cname,'CAPTION','')
    if ctregresa='T'
       cregresa:='CHECKBTN'
    else
@@ -1931,7 +1920,7 @@ if upper(cregresa)=='CHECKBUTTON'
    endif
 endif
 if upper(cregresa)=='BUTTON'
-   ctregresa:=myform:leadatologic(cname,'CAPTION','')
+   ctregresa:=myform:LeaDatoLogic(cname,'CAPTION','')
    if ctregresa='T'
       cregresa:='BUTTON'
    else
@@ -1940,97 +1929,103 @@ if upper(cregresa)=='BUTTON'
 endif
 return cregresa
 
-*------------------------------------------------------
-METHOD leadato(cName,cPropmet,cDefault) CLASS TForm1
-*----------------------------------------------------
-local i,sw,zi,cvc,zl,npos
-sw:=0
-cvc:=ascan( myform:acontrolw, { |c| lower( c ) == lower(cname)  } )
-zi:=iif(cvc>0,myform:aspeed[cvc],1)
-zl:=iif(cvc>0,myform:anumber[cvc],len(myform:aline))
+*------------------------------------------------------------------------------*
+METHOD LeaDato( cName, cPropmet, cDefault ) CLASS TForm1
+*------------------------------------------------------------------------------*
+LOCAL i, sw := 0, zi, cvc, zl, nPos, cFValue
 
-For i:=zi to zl
+   cvc := aScan( myform:acontrolw, { |c| Lower( c ) == Lower( cName ) } )
+   zi  := IIF( cvc > 0, myform:aspeed[cvc], 1 )
+   zl  := IIF( cvc > 0, myform:anumber[cvc], Len( myform:aline ) )
+   FOR i := zi TO zl
+      IF At( Upper( cName ) + ' ' , Upper( myform:aline[i] ) ) # 0 .AND. sw == 0  ///// ubica el control en la forma y a partir de ahí busca la propiedad
+         sw := 1
+      ELSE
+         IF sw == 1
+            IF Len( RTrim( myform:aline[i] ) ) == 0
+               RETURN cDefault
+            ENDIF
+            nPos := At( Upper( cPropmet ) + ' ', Upper( myform:aline[i] ) )
+            IF nPos > 0 .AND. SubStr( myform:aline[i], nPos - 1, 1) # "."
+               cFValue := SubStr( myform:aline[i], nPos + Len( cPropmet ) )
+               cFValue := RTrim( cFValue )
+               IF Right( cFValue, 1 ) == ";"
+                  cFValue := SubStr( cFValue, 1, Len( cFValue ) - 1 )
+               ENDIF
+               cFValue := AllTrim( cFValue )
+               IF Len( cFValue ) == 0
+                  RETURN cDefault
+               ELSE
+                  RETURN cFValue
+               ENDIF
+            ENDIF
+         ENDIF
+      ENDIF
+   NEXT i
+RETURN cDefault
 
-if at(upper(cname)+' ',upper(myform:aline[i]))#0 .and. sw=0  ///// ubica el control en la forma y a partir de ahi busca la propiedad
-   sw:=1
-else
-   if sw==1
-      if len(trim(myform:aline[i]))==0
-         return cDefault
-      endif
-      npos:=at(upper(cPropmet)+' ',upper(myform:aline[i]) )
+*------------------------------------------------------------------------------*
+METHOD LeaDatoStatus( cName, cPropmet, cDefault ) CLASS TForm1
+*------------------------------------------------------------------------------*
+LOCAL i, sw := 0, zi, cvc, zl, nPos, cFValue
 
-            if npos>0 .and. substr(myform:aline[i],npos-1,1)#"."
-               cfvalue:=substr(myform:aline[i],npos+len(Cpropmet),500)
-               cfvalue:=trim(cfvalue)
-               cfvalue:=substr(cfvalue,1,len(cfvalue)-1)
+   cvc := aScan( myform:acontrolw, { |c| Lower( c ) == Lower( cName ) } )
+   zi  := IIF( cvc > 0, myform:aspeed[cvc], 1 )
+   zl  := IIF( cvc > 0, myform:anumber[cvc], Len( myform:aline ) )
+   FOR i := zi TO zl
+      IF At( Upper( cName ) + ' ' , Upper( myform:aline[i] ) ) # 0 .AND. sw == 0
+         sw := 1
+      ELSE
+         IF sw == 1
+            IF Len( RTrim( myform:aline[i] ) ) == 0
+               RETURN cDefault
+            ENDIF
+            nPos := At( Upper( cPropmet ) + ' ', Upper( myform:aline[i] ) )
+            IF nPos > 0
+               cFValue := SubStr( myform:aline[i], nPos + Len( cPropmet ), Len( myform:aline[i] ) )
+               cFValue := RTrim( cFValue)
+               IF Right( cFValue, 1 ) == ";"
+                  cFValue := SubStr( cFValue, 1, Len( cFValue ) - 1 )
+               ENDIF
+               cFValue := AllTrim( cFValue )
+               IF Len( cFValue ) == 0
+                  RETURN cDefault
+               ELSE
+                  RETURN cFValue
+               ENDIF
+            ENDIF
+         ENDIF
+      ENDIF
+   NEXT i
+RETURN cDefault
 
-               return alltrim(cfvalue)
-            endif
-   endif
-endif
-Next i
-return cDefault
-*--------------------------------------------------------
-METHOD leadatostatus(cName,cPropmet,cDefault) CLASS TForm1
-*---------------------------------------------------------
-local i,sw,zi,cvc,zl
-sw:=0
-cvc:=ascan( myform:acontrolw, { |c| lower( c ) == lower(cname)  } )
-zi:=iif(cvc>0,myform:aspeed[cvc],1)
-zl:=iif(cvc>0,myform:anumber[cvc],len(myform:aline))
-For i:=zi to zl
-if at(upper(cname)+' ',upper(myform:aline[i]))#0 .and. sw=0
-   sw:=1
-else
-   if sw==1
-      if len(trim(myform:aline[i]))==0
-         return cDefault
-      endif
-      npos:=at(upper(cPropmet)+' ',upper(myform:aline[i]))
+*------------------------------------------------------------------------------*
+METHOD LeaDatoLogic( cName, cPropmet, cDefault ) CLASS TForm1
+*------------------------------------------------------------------------------*
+LOCAL i, sw := 0, zi, cvc, zl
 
-      if npos>0
-         cfvalue:=substr(myform:aline[i],npos+len(Cpropmet),len(myform:aline[i]))
-         cfvalue:=trim(cfvalue)
-         cfvalue:=substr(cfvalue,1,len(cfvalue)-1)
-         return alltrim(cfvalue)
-      endif
-   endif
-endif
-Next i
-return cDefault
+   cvc := aScan( myform:acontrolw, { |c| Lower( c ) == Lower( cname ) } )
+   zi  := IIF( cvc > 0, myform:aspeed[cvc], 1 )
+   zl  := IIF( cvc > 0, myform:anumber[cvc], Len( myform:aline ) )
+   FOR i := zi TO zl
+      IF At( Upper( cname ) + ' ', Upper( myform:aline[i] ) ) # 0 .AND. sw == 0
+         sw := 1
+      ELSE
+         IF sw == 1
+            IF Len( RTrim( myform:aline[i] ) ) == 0
+               RETURN cDefault
+            ENDIF
+            IF At( Upper( cPropmet ) + ' ', Upper( myform:aline[i] ) ) > 0
+               RETURN 'T'
+            ENDIF
+         ENDIF
+      ENDIF
+   NEXT i
+RETURN cDefault
 
-*----------------------------------------------------------
-METHOD leadatologic(cName,cPropmet,cDefault) CLASS TForm1
-*----------------------------------------------------------
-local i,sw,zi,cvc,zl
-sw:=0
-
-cvc:=ascan( myform:acontrolw, { |c| lower( c ) == lower(cname)  } )
-zi:=iif(cvc>0,myform:aspeed[cvc],1)
-zl:=iif(cvc>0,myform:anumber[cvc],len(myform:aline))
-For i:=zi to zl
-    if at(upper(cname)+' ',upper(myform:aline[i]))#0 .and. sw=0
-       sw:=1
-    else
-       if sw==1
-
-          if len(trim(myform:aline[i]))==0
-             return cDefault
-          endif
-          if at(upper(cPropmet)+' ',upper(myform:aline[i]))>0
-             return 'T'
-          endif
-
-       endif
-    endif
-
-Next i
-return cDefault
-
-*---------------------------------
-METHOD learow(cName) CLASS TForm1
-*---------------------------------
+*------------------------------------------------------------------------------*
+METHOD LeaRow( cName ) CLASS TForm1
+*------------------------------------------------------------------------------*
 local i,npos,nrow,zi,zl
 cvc:=ascan( myform:acontrolw, { |c| lower( c ) == lower(cname)  } )
 zi:=iif(cvc>0,myform:aspeed[cvc],1)
@@ -2045,9 +2040,9 @@ For i:=zi to zl
 Next i
 return nrow
 
-*------------------------------------
-METHOD learowf(cname) CLASS TForm1
-*-------------------------------------
+*------------------------------------------------------------------------------*
+METHOD LeaRowF( cname ) CLASS TForm1
+*------------------------------------------------------------------------------*
 local i,npos1,npos2,nrow,zi,zl
 cvc:=ascan( myform:acontrolw, { |c| lower( c ) == lower(cname)  } )
 zi:=iif(cvc>0,myform:aspeed[cvc],1)
@@ -2062,9 +2057,9 @@ For i:=zi to zl
 Next i
 return nrow
 
-*-----------------------------------
-METHOD leacol(cName) CLASS TForm1
-*-----------------------------------
+*------------------------------------------------------------------------------*
+METHOD LeaCol( cName ) CLASS TForm1
+*------------------------------------------------------------------------------*
 local i,npos,ncol,zi,zl
 cvc:=ascan( myform:acontrolw, { |c| lower( c ) == lower(cname) } )
 zi:=iif(cvc>0,myform:aspeed[cvc],1)
@@ -2077,9 +2072,10 @@ if at(upper(cname)+' ',upper(myform:aline[i]))#0
 endif
 Next i
 return ncol
-*------------------------------------
-METHOD leacolf(cname) CLASS TForm1
-*------------------------------------
+
+*------------------------------------------------------------------------------*
+METHOD LeaColF( cName ) CLASS TForm1
+*------------------------------------------------------------------------------*
 local i,npos,ncol,zi,zl
 cvc:=ascan( myform:acontrolw, { |c| lower( c ) == lower(cname)  } )
 zi:=iif(cvc>0,myform:aspeed[cvc],1)
@@ -2093,40 +2089,42 @@ endif
 Next i
 return ncol
 
-*----------------------------------
-METHOD clean(cfvalue) CLASS TForm1
-*----------------------------------
-cfvalue:=strtran(cfvalue,'"','')
-cfvalue:=strtran(cfvalue,"'","")
-return cfvalue
+*------------------------------------------------------------------------------*
+METHOD Clean( cFValue ) CLASS TForm1
+*------------------------------------------------------------------------------*
+   cFValue := StrTran( cFValue, '"', '')
+   cFValue := StrTran( cFValue, "'", "")
+RETURN cFValue
 
-*---------------------------------------------------------
-METHOD leadato_oop(cName,cPropmet,cDefault) CLASS TForm1
-*---------------------------------------------------------
-local i,mlyform,nposx,zi,zl,npos1,nd
-nposx:=rat('.',myform:cform)
-npos1:=rat('\',myform:cform)
-nd:=1
-if npos1=0
-  npos1:=1
-  nd:=0
-endif
-mlyform:=substr(myform:cform,npos1+nd,nposx-npos1-nd)
-cvc:=ascan( myform:acontrolw, { |c| lower( c ) == lower(cname)  } )
-zi:=iif(cvc>0,myform:aspeed[cvc],1)
-zl:=iif(cvc>0,myform:anumber[cvc],len(myform:aline))
-For i:=zi to zl
-if at(upper(mlyform)+'.'+upper(cname)+'.'+upper(cPropmet),upper(myform:aline[i]))>0
-   npos=rat('=',myform:aline[i])+1
-   return trim(substr(myform:aline[i],npos,len(myform:aline[i])))
-endif
-next i
-return cdefault
+*------------------------------------------------------------------------------*
+METHOD LeaDato_Oop( cName, cPropmet, cDefault ) CLASS TForm1
+*------------------------------------------------------------------------------*
+LOCAL i, mlyform, nposx, zi, zl,npos1, nd, cvc
 
+   nposx := RAt( '.', myform:cform )
+   npos1 := RAt( '\', myform:cform )
+   nd := 1
+   IF npos1 == 0
+     npos1 := 1
+     nd := 0
+   ENDIF
+   mlyform := SubStr( myform:cForm, npos1 + nd, nposx - npos1 - nd )
+   cvc := aScan( myform:acontrolw, { |c| Lower( c ) == Lower( cName) } )
+   zi := IIF( cvc > 0, myform:aspeed[cvc], 1 )
+   zl := IIF( cvc > 0, myform:anumber[cvc], Len( myform:aline ) )
+   FOR i := zi TO zl
+      IF At( Upper( mlyform ) + '.' + Upper( cname ) + '.' + Upper( cPropmet ), Upper( myform:aline[i] ) ) > 0
+         npos := RAt( '=', myform:aline[i] ) + 1
+         IF nPos > 1
+            RETURN RTrim( SubStr( myform:aline[i], npos ) )   
+         ENDIF
+      ENDIF
+   NEXT i
+RETURN cDefault
 
-*---------------------
-function ntabpages(k)
-*---------------------
+*------------------------------------------------------------------------------*
+FUNCTION nTabPages( k )
+*------------------------------------------------------------------------------*
 local cname
 if hb_isNumeric(k)
    cname:=myform:acontrolw[k]
@@ -2134,9 +2132,9 @@ endif
 sw:=0
 return nil
 
-*----------------------
-function mispuntos()
-*----------------------
+*------------------------------------------------------------------------------*
+FUNCTION MisPuntos()
+*------------------------------------------------------------------------------*
 local hdc := HB_GetDC( Form_1:Hwnd )
 local h := form_1:height
 local w:=  form_1:width
@@ -2148,130 +2146,142 @@ local i,j
         NEXT
     NEXT
 
-HB_ReleaseDC( Form_1:Hwnd , hdc )
+   HB_ReleaseDC( Form_1:Hwnd , hdc )
 
 
-DRAW line IN WINDOW form_1 AT 480,1  TO 480,w  PENCOLOR { 255 ,0 , 0 }  penwidth 1  ///FILLCOLOR {255,0,0}
-DRAW line IN WINDOW form_1 AT 600,1  TO 600,w   PENCOLOR { 255 ,0 , 0 }  penwidth 1  ///FILLCOLOR {255,0,0}
-DRAW line IN WINDOW form_1 AT 1,640  TO h,640  PENCOLOR { 255 ,0 , 0 }  penwidth 1  /////FILLCOLOR {255,0,0}
-DRAW line IN WINDOW form_1 AT 1,800  TO h,800   PENCOLOR { 255 ,0 , 0 }  penwidth 1  //// FILLCOLOR {255,0,0}
-return nil
+   DRAW line IN WINDOW form_1 AT 480,1  TO 480,w  PENCOLOR { 255 ,0 , 0 }  penwidth 1  ///FILLCOLOR {255,0,0}
+   DRAW line IN WINDOW form_1 AT 600,1  TO 600,w   PENCOLOR { 255 ,0 , 0 }  penwidth 1  ///FILLCOLOR {255,0,0}
+   DRAW line IN WINDOW form_1 AT 1,640  TO h,640  PENCOLOR { 255 ,0 , 0 }  penwidth 1  /////FILLCOLOR {255,0,0}
+   DRAW line IN WINDOW form_1 AT 1,800  TO h,800   PENCOLOR { 255 ,0 , 0 }  penwidth 1  //// FILLCOLOR {255,0,0}
 
-*------------------------
-static function ptree( i, myIde )
-*------------------------
-   cname:=myform:acontrolw[i]
-   myform:actrltype[i]:='TREE'
-   myform:aname[i]:=cname
+RETURN NIL
 
-   ncol:=val(myform:leacol(cName))
-   nrow:=val(myform:leadato(cname,'AT','100'))
-   cfontname:=myform:clean(myform:leadato(cname,'FONT',''))
-   nfontsize:=val(myform:leadato(cname,'SIZE','10'))
-   nwidth:=val(myform:leadato(cname,'WIDTH','120'))
-   nheight:=val(myform:leadato(cname,'HEIGHT','24'))
-   ctooltip:=myform:clean(myform:leadato(cname,'TOOLTIP',''))
+*------------------------------------------------------------------------------*
+STATIC FUNCTION pTree( i, myIde )
+*------------------------------------------------------------------------------*
+LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aFontColor, lBold, lItalic, lUnderline, lStrikeout, aBackColor, lVisible, lEnabled, cToolTip, cOnChange, cOnGotFocus, cOnLostFocus, cOnDblClick, cNodeimages, cItemimages, lNoRootButton, lItemIds, nHelpId
 
-   cnodeimages:=myform:leadato(cname,'NODEIMAGES',"")
-   citemimages:=myform:leadato(cname,'ITEMIMAGES',"")
-   lnorootbutton:=myform:leadatologic(cname,'NOROOTBUTTON',"F")
-   litemids:=myform:leadatologic(cname,'ITEMIDS',"F")
-   nhelpid:=val(myform:leadato(cname,'HELPID','0'))
+   // Load properties
+   cName         := myform:acontrolw[i]
+   cObj          := myform:LeaDato( cName, 'OBJ', '' )
+   nRow          := Val( myform:LeaDato( cName, 'AT', '100' ) )
+   nCol          := Val( myform:LeaCol( cName ) )
+   nWidth        := Val( myform:LeaDato( cName, 'WIDTH', '120' ) )              // use control's default value
+   nHeight       := Val( myform:LeaDato( cName, 'HEIGHT', '120' ) )              // use control's default value
+   cFontName     := myform:Clean( myform:LeaDato( cName, 'FONT', '' ) )
+   nFontSize     := Val( myform:LeaDato( cName, 'SIZE', '0' ) )
+   aFontColor    := myform:LeaDato( cName, "FONTCOLOR", '' )
+   aFontColor    := myform:Clean( myform:LeaDato_Oop( cName, 'FONTCOLOR', aFontColor ) )
+   lBold         := ( myform:LeaDatoLogic( cName, 'BOLD', "F" ) == "T" )
+   lBold         := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lItalic       := ( myform:LeaDatoLogic( cName, 'ITALIC', "F" ) == "T" )
+   lItalic       := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTITALIC', IF( lItalic, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lUnderline    := ( myform:LeaDatoLogic( cName, 'UNDERLINE', "F" ) == "T" )
+   lUnderline    := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTUNDERLINE', IF( lUnderline, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lStrikeout    := ( myform:LeaDatoLogic( cName, 'STRIKEOUT', "F" ) == "T" )
+   lStrikeout    := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) ) == '.T.' )
+   aBackColor    := myform:LeaDato( cName, "BACKCOLOR", '' )
+   aBackColor    := myform:Clean( myform:LeaDato_Oop( cName, 'BACKCOLOR', aBackColor ) )
+   lVisible      := ( myform:LeaDatoLogic( cName, 'INVISIBLE', "F" ) == "F" )
+   lVisible      := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lEnabled      := ( myform:LeaDatoLogic( cName, 'DISABLED', "F" ) == "F" )
+   lEnabled      := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) ) == '.T.' )
+   cToolTip      := myform:Clean( myform:LeaDato( cName, 'TOOLTIP', '' ) )
+   cOnChange     := myform:LeaDato( cName, 'ON CHANGE', '' )
+   cOnGotFocus   := myform:LeaDato( cName, 'ON GOTFOCUS', '' )
+   cOnLostFocus  := myform:LeaDato( cName, 'ON LOSTFOCUS', '' )
+   cOnDblClick   := myform:LeaDato( cName, 'ON DBLCLICK', '' )
+   cNodeImages   := myform:LeaDato( cName, 'NODEIMAGES', '' )
+   cItemImages   := myform:LeaDato( cName, 'ITEMIMAGES', '' )
+   lNoRootButton := ( myform:LeaDatoLogic( cName, 'NOROOTBUTTON', "F" ) == "T" )
+   lItemIds      := ( myform:LeaDatoLogic( cName, 'ITEMIDS', "F" ) == "T" )
+   nHelpId       := Val( myform:LeaDato( cName, 'HELPID', '0' ) )
 
-   conchange:=myform:leadato(cname,'ON CHANGE','')
-   congotfocus:=myform:leadato(cname,'ON GOTFOCUS','')
-   conlostfocus:=myform:leadato(cname,'ON LOSTFOCUS','')
-   condblclick:=myform:leadato(cname,'ON DBLCLICK','')
-   cobj:=myform:leadato(cname,'OBJ','')
-    myform:acobj[i]:=cobj
+   // Show control
+   DEFINE TREE &cName OF Form_1 ;
+      AT nRow, nCol ;
+      WIDTH nWidth ;
+      HEIGHT nHeight ;
+      ON GOTFOCUS Dibuja( this:name ) ;
+      ON CHANGE Dibuja( this:name )
 
-   myform:anodeimages[i]:=cnodeimages
-   myform:aitemimages[i]:=citemimages
-   myform:anorootbutton[i]:=iif(lnorootbutton='T',.T.,.F.)
-   myform:aitemids[i]:=iif(litemids='T',.T.,.F.)
+      NODE 'Tree'
+      END NODE
 
-   myform:ahelpid[i]:=nhelpid
-
-
-   DEFINE TREE &cname of form_1 ;
-   AT nrow , ncol ;
-   WIDTH nwidth ;
-   HEIGHT nheight    ;
-   ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name)
-
-   NODE 'Tree'
-   END NODE
-   NODE 'Nodes'
-   END NODE
-
+      NODE 'Nodes'
+      END NODE
    END TREE
+   IF Len( cFontName ) > 0
+      Form_1:&cName:FontName   := cFontName
+   ENDIF
+   IF nFontSize > 0
+      Form_1:&cName:FontSize   := nFontSize
+   ENDIF
+   IF Len( aFontColor ) > 0
+      Form_1:&cName:FontColor  := &aFontColor
+   ENDIF
+   Form_1:&cName:FontBold      := lBold
+   Form_1:&cName:FontItalic    := lItalic
+   Form_1:&cName:FontUnderline := lUnderline
+   Form_1:&cName:FontStrikeout := lStrikeout
+   IF Len( aBackColor ) > 0
+      Form_1:&cName:BackColor  := &aBackColor
+   ENDIF
+   Form_1:&cName:ToolTip       := cToolTip
 
-   oconrol:=getcontrolobject(cname,"form_1")
+   // Save properties
+   myform:aCtrlType[i]      := 'TREE'
+   myform:aName[i]          := cName
+   myform:acObj[i]          := cObj
+   myform:aFontName[i]      := cFontName
+   myform:aFontSize[i]      := nFontSize
+   myform:aFontColor[i]     := aFontColor
+   myForm:aBold[i]          := lBold
+   myForm:aFontItalic[i]    := lItalic
+   myForm:aFontUnderline[i] := lUnderline
+   myForm:aFontStrikeout[i] := lStrikeout
+   myform:aBackColor[i]     := aBackColor
+   myform:aVisible[i]       := lVisible
+   myform:aEnabled[i]       := lEnabled
+   myform:aToolTip[i]       := cToolTip
+   myform:aOnChange[i]      := cOnChange
+   myform:aOnGotFocus[i]    := cOnGotFocus
+   myform:aOnLostFocus[i]   := cOnLostFocus
+   myform:aOnDblClick[i]    := cOnDblClick
+   myform:aNodeImages[i]    := cNodeImages
+   myform:aItemImages[i]    := cItemImages
+   myform:aNoRootButton[i]  := lNoRootButton
+   myform:aItemIds[i]       := lItemIds
+   myform:aHelpId[i]        := nHelpId
 
-   myform:afontname[i]:=cfontname
-   if len(cfontname)>0
-       form_1:&cname:fontname := cfontname
-   else
-       form_1:&cname:fontname := cffontname
-   endif
-   myform:afontsize[i]:=nfontsize
-   if nfontsize>0
-      form_1:&cname:fontsize := nfontsize
-   else
-      form_1:&cname:fontsize := nffontsize
-   endif
-   cobj:=myform:leadato(cname,'OBJ','')
-    myform:acobj[i]:=cobj
-
-   myform:aenabled[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'ENABLED','.T.')))='.T.',.T.,.F.)
-   myform:avisible[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'VISIBLE','.T.')))='.T.',.T.,.F.)
-
-   form_1:&cname:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTITALIC','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontbold:=myform:abold[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTBOLD','.F.')))='.T.',.T.,.F.)
-
-   myform:abackcolor[i]:=myform:clean(myform:leadato_oop(cname,'BACKCOLOR','{255,255,255}'))
-
-   myform:afontcolor[i]:=myform:clean(myform:leadato_oop(cname,'FONTCOLOR','{0,0,0}'))
-   cfontcolor:=myform:afontcolor[i]
-   form_1:&cname:fontcolor:=&cfontcolor
-
-   myform:atooltip[i]:=ctooltip
-   form_1:&cname:tooltip:=ctooltip
-   myform:aonchange[i]:=conchange
-   myform:aongotfocus[i]:=congotfocus
-   myform:aonlostfocus[i]:=conlostfocus
-   myform:aondblclick[i]:=condblclick
-
-   ProcessContainersfill( Cname,nrow,ncol, myIde )
+   ProcessContainersFill( cName, nRow, nCol, myIde )
 return
 
-*-----------------------
-static function ptab(i)
-*-----------------------
-   cname:=myform:acontrolw[i]
+*------------------------------------------------------------------------------*
+STATIC FUNCTION pTab(i)
+*------------------------------------------------------------------------------*
+   cName:=myform:acontrolw[i]
    myform:actrltype[i]:='TAB'
-   myform:aname[i]:=cname
+   myform:aname[i]:=cName
 
-   ncol:=val(myform:leacol(cName))
-   nrow:=val(myform:leadato(cname,'AT','100'))
-   cfontname:=myform:clean(myform:leadato(cname,'FONT',cffontname))  // MigSoft
-   nfontsize:=val(myform:leadato(cname,'SIZE',str(nffontsize)))      // MigSoft
-   nwidth:=val(myform:leadato(cname,'WIDTH','120'))
-   nheight:=val(myform:leadato(cname,'HEIGHT','24'))
-   nvalue:=(myform:leadato(cname,'VALUE','0'))
-   ctooltip:=myform:clean(myform:leadato(cname,'TOOLTIP',''))
-   cimage:=myform:clean(myform:leadato(cname,'IMAGE',''))
-   conchange:=myform:leadato(cname,'ON CHANGE','')
-   lflat:=myform:leadatologic(cname,'FLAT',"F")
-   lvertical:=myform:leadatologic(cname,'VERTICAL',"F")
-   lbuttons:=myform:leadatologic(cname,'BUTTONS',"F")
-   lhottrack:=myform:leadatologic(cname,'HOTTRACK',"F")
-   cobj:=myform:leadato(cname,'OBJ','')
+   ncol:=val(myform:LeaCol( cName))
+   nrow:=val(myform:LeaDato(cName,'AT','100'))
+   cfontname:=myform:Clean( myform:LeaDato(cName,'FONT',cffontname))
+   nfontsize:=val(myform:LeaDato(cName,'SIZE',str(nffontsize)))     
+   nwidth:=val(myform:LeaDato(cName,'WIDTH','0')) 
+   nheight:=val(myform:LeaDato(cName,'HEIGHT','0')) 
+   nvalue:=(myform:LeaDato(cName,'VALUE','0'))
+   ctooltip:=myform:Clean( myform:LeaDato(cName,'TOOLTIP',''))
+   cimage:=myform:Clean( myform:LeaDato(cName,'IMAGE',''))
+   conchange:=myform:LeaDato(cName,'ON CHANGE','')
+   lflat:=myform:LeaDatoLogic(cName,'FLAT',"F")
+   lvertical:=myform:LeaDatoLogic(cName,'VERTICAL',"F")
+   lbuttons:=myform:LeaDatoLogic(cName,'BUTTONS',"F")
+   lhottrack:=myform:LeaDatoLogic(cName,'HOTTRACK',"F")
+   cobj:=myform:LeaDato(cName,'OBJ','')
     myform:acobj[i]:=cobj
 
-   DEFINE TAB &cname of form_1 ;
+   DEFINE TAB &cName of form_1 ;
    AT nrow , ncol ;
    WIDTH nwidth ;
    HEIGHT nheight    ;
@@ -2302,207 +2312,220 @@ static function ptab(i)
 
    myform:afontname[i]:=cfontname
    if len(cfontname)>0
-      form_1:&cname:fontname := cfontname
+      form_1:&cName:fontname := cfontname
    else
-      form_1:&cname:fontname := myform:cffontname
+      form_1:&cName:fontname := myform:cffontname
    endif
 
    myform:afontsize[i]:=nfontsize
    if nfontsize>0
-    form_1:&cname:fontsize := nfontsize
+    form_1:&cName:fontsize := nfontsize
    else
-     form_1:&cname:fontsize := myform:nffontsize
+     form_1:&cName:fontsize := myform:nffontsize
    endif
 
    myform:atooltip[i]:=ctooltip
    myform:aimage[i]:=cimage
 
 
-   myform:aenabled[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'ENABLED','.T.')))='.T.',.T.,.F.)
-   myform:avisible[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'VISIBLE','.T.')))='.T.',.T.,.F.)
+   myform:aenabled[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'ENABLED','.T.')))='.T.',.T.,.F.)
+   myform:avisible[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'VISIBLE','.T.')))='.T.',.T.,.F.)
 
-   ocontrol:=getcontrolobject(cname,"form_1")
+   ocontrol:=getcontrolobject(cName,"form_1")
 
-   form_1:&cname:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTITALIC','.F.')))='.T.',.T.,.F.)
-
-
-   form_1:&cname:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTITALIC','.F.')))='.T.',.T.,.F.)
 
 
-  form_1:&cname:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
 
 
-   form_1:&cname:fontbold:=myform:abold[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTBOLD','.F.')))='.T.',.T.,.F.)
+  form_1:&cName:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
 
-   myform:afontcolor[i]:=myform:clean(myform:leadato_oop(cname,'FONTCOLOR','{0,0,0}'))
+
+   form_1:&cName:fontbold:=myform:abold[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTBOLD','.F.')))='.T.',.T.,.F.)
+
+   myform:afontcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName,'FONTCOLOR',''))
    cfontcolor:=myform:afontcolor[i]
-   form_1:&cname:fontcolor:=&cfontcolor
+   form_1:&cName:fontcolor:=&cfontcolor
 
 
    myform:avalue[i]:=nValue
    myform:aonchange[i]:=conchange
 
-   cuantospage(cname)
+   cuantospage(cName)
 
 return
-*-----------------------------
-static function pipaddress( i, myIde )
-*-----------------------------
-   cname:=myform:acontrolw[i]
-   myform:actrltype[i]:='IPADDRESS'
-   myform:aname[i]:=myform:acontrolw[i]
-   nrow:=val(myform:learow(cName))
-   ncol:=val(myform:leacol(cname))
 
-   cfontname:=myform:clean(myform:leadato(cname,'FONT',''))
-   nfontsize:=val(myform:leadato(cname,'SIZE','10'))
-   nwidth:=val(myform:leadato(cname,'WIDTH','120'))
-   nheight:=val(myform:leadato(cname,'HEIGHT','24'))
-   cvalue:=myform:clean(myform:leadato(cname,'VALUE',''))
-   ctooltip:=myform:clean(myform:leadato(cname,'TOOLTIP',''))
+*------------------------------------------------------------------------------*
+STATIC FUNCTION pIpAddress( i, myIde )
+*------------------------------------------------------------------------------*
+LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cValue, cFontName, nFontSize, aFontColor, lBold, lItalic, lUnderline, lStrikeout, aBackColor, lVisible, lEnabled, cToolTip, cOnChange, cOngotfocus, cOnLostfocus, nHelpId, lNoTabStop
 
-   nhelpid:=val(myform:leadato(cname,'HELPID','0'))
-   lnotabstop:=myform:leadatologic(cname,'NOTABSTOP',"F")
+   // Load properties
+   cName        := myform:acontrolw[i]
+   cObj         := myform:LeaDato( cName, 'OBJ', '' )
+   nRow         := Val( myform:LeaRow( cName ) )
+   nCol         := Val( myform:LeaCol( cName ) )
+   nWidth       := Val( myform:LeaDato( cName, 'WIDTH', '120' ) )
+   nHeight      := Val( myform:LeaDato( cName, 'HEIGHT', '24' ) )
+   cValue       := myform:Clean( myform:LeaDato( cName, 'VALUE', '   .   .   .   ' ) )
+   cFontName    := myform:Clean( myform:LeaDato( cName, 'FONT', '' ) )
+   nFontSize    := Val( myform:LeaDato( cName, 'SIZE', '0' ) )
+   aFontColor   := myform:LeaDato( cName, "FONTCOLOR", '' )
+   aFontColor   := myform:Clean( myform:LeaDato_Oop( cName, 'FONTCOLOR', aFontColor ) )
+   lBold        := ( myform:LeaDatoLogic( cName, 'BOLD', "F" ) == "T" )
+   lBold        := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lItalic      := ( myform:LeaDatoLogic( cName, 'ITALIC', "F" ) == "T" )
+   lItalic      := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTITALIC', IF( lItalic, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lUnderline   := ( myform:LeaDatoLogic( cName, 'UNDERLINE', "F" ) == "T" )
+   lUnderline   := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTUNDERLINE', IF( lUnderline, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lStrikeout   := ( myform:LeaDatoLogic( cName, 'STRIKEOUT', "F" ) == "T" )
+   lStrikeout   := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) ) == '.T.' )
+   aBackColor   := myform:LeaDato( cName, "BACKCOLOR", '' )
+   aBackColor   := myform:Clean( myform:LeaDato_Oop( cName, 'BACKCOLOR', aBackColor ) )
+   lVisible     := ( myform:LeaDatoLogic( cName, 'INVISIBLE', "F" ) == "F" )
+   lVisible     := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lEnabled     := ( myform:LeaDatoLogic( cName, 'DISABLED', "F" ) == "F" )
+   lEnabled     := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) ) == '.T.' )
+   cToolTip     := myform:Clean( myform:LeaDato( cName, 'TOOLTIP', '' ) )
+   cOnChange    := myform:LeaDato( cName, 'ON CHANGE', '' )
+   cOnGotfocus  := myform:LeaDato( cName, 'ON GOTFOCUS', '' )
+   cOnLostfocus := myform:LeaDato( cName, 'ON LOSTFOCUS', '' )
+   nHelpId      := Val(myform:LeaDato( cName, 'HELPID', '0' ) )
+   lNoTabStop   := ( myform:LeaDatoLogic( cName, 'NOTABSTOP', 'F' ) == "T" )
 
-***   conenter:=myform:leadato(cname,'ON ENTER','')
-   conchange:=myform:leadato(cname,'ON CHANGE','')
-   congotfocus:=myform:leadato(cname,'ON GOTFOCUS','')
-   conlostfocus:=myform:leadato(cname,'ON LOSTFOCUS','')
-   cobj:=myform:leadato(cname,'OBJ','')
-    myform:acobj[i]:=cobj
+   // Show control
+   @ nRow, nCol LABEL &cName ;
+      OF Form_1 ;
+      VALUE cValue ;
+      BACKCOLOR WHITE ;
+      CLIENTEDGE ;
+      ACTION Dibuja( this:name )
+   IF Len( cFontName ) > 0
+      Form_1:&cName:FontName   := cFontName
+   ENDIF
+   IF nFontSize > 0
+      Form_1:&cName:FontSize   := nFontSize
+   ENDIF
+   IF Len( aFontColor ) > 0
+      Form_1:&cName:FontColor  := &aFontColor
+   ENDIF
+   Form_1:&cName:FontBold      := lBold
+   Form_1:&cName:FontItalic    := lItalic
+   Form_1:&cName:FontUnderline := lUnderline
+   Form_1:&cName:FontStrikeout := lStrikeout
+   IF Len( aBackColor ) > 0
+      Form_1:&cName:BackColor  := &aBackColor
+   ENDIF
+   Form_1:&cName:ToolTip       := cToolTip
 
-   @ nrow, ncol LABEL &Cname OF Form_1 VALUE '   .   .   .   ' BACKCOLOR WHITE CLIENTEDGE ACTION dibuja(this:name) FONT 'Courier new' SIZE 10
+   // Save properties
+   myform:aCtrlType[i]      := 'IPADDRESS'
+   myform:aName[i]          := cName
+   myform:acObj[i]          := cObj
+   myform:aValue[i]         := cValue
+   myform:aFontName[i]      := cFontName
+   myform:aFontSize[i]      := nFontSize
+   myform:aFontColor[i]     := aFontColor
+   myForm:aBold[i]          := lBold
+   myForm:aFontItalic[i]    := lItalic
+   myForm:aFontUnderline[i] := lUnderline
+   myForm:aFontStrikeout[i] := lStrikeout
+   myform:aBackColor[i]     := aBackColor
+   myform:aVisible[i]       := lVisible
+   myform:aEnabled[i]       := lEnabled
+   myform:aToolTip[i]       := cToolTip
+   myform:aOnChange[i]      := cOnChange
+   myform:aOnGotFocus[i]    := cOnGotFocus
+   myform:aOnLostFocus[i]   := cOnLostFocus
+   myform:aHelpId[i]        := nHelpId
+   myform:aNoTabStop[i]     := lNoTabStop
 
-   myform:afontname[i]:=cfontname
-
-   ocontrol:=getcontrolobject(cname,"form_1")
-
-   if len(cfontname)>0
-        form_1:&cname:fontname := cfontname
-   else
-        form_1:&cname:fontname := cffontname
-   endif
-   myform:afontsize[i]:=nfontsize
-   if nfontsize>0
-      form_1:&cname:fontsize := nfontsize
-   else
-      form_1:&cname:fontsize := nffontsize
-   endif
-
-   myform:anotabstop[i]:=iif(lnotabstop='T',.T.,.F.)
-
-   myform:aenabled[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'ENABLED','.T.')))='.T.',.T.,.F.)
-   myform:avisible[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'VISIBLE','.T.')))='.T.',.T.,.F.)
-
-   form_1:&cname:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTITALIC','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontbold:=myform:abold[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTBOLD','.F.')))='.T.',.T.,.F.)
-
-
-   myform:abackcolor[i]:=myform:clean(myform:leadato_oop(cname,'BACKCOLOR','{255,255,255}'))
-   cbackcolor:=myform:abackcolor[i]
-   form_1:&cname:backcolor:=&cbackcolor
-
-   myform:afontcolor[i]:=myform:clean(myform:leadato_oop(cname,'FONTCOLOR','{0,0,0}'))
-   cfontcolor:=myform:afontcolor[i]
-   form_1:&cname:fontcolor:=&cfontcolor
-
-
-   myform:avalue[i]:=cValue
-   myform:atooltip[i]:=ctooltip
-   form_1:&cname:tooltip:=ctooltip
-   myform:aonchange[i]:=conchange
-   myform:aongotfocus[i]:=congotfocus
-   myform:aonlostfocus[i]:=conlostfocus
-   myform:ahelpid[i]:=nhelpid
-
-   form_1:&cname:value := cvalue
-   ProcessContainersfill( Cname,nrow,ncol, myIde )
+   ProcessContainersFill( cName, nRow, nCol, myIde )
 return
 
-*--------------------------
-static function ptimer( i, myIde )
-*--------------------------
-   cname:=myform:acontrolw[i]
+*------------------------------------------------------------------------------*
+STATIC FUNCTION pTimer( i, myIde )
+*------------------------------------------------------------------------------*
+   cName:=myform:acontrolw[i]
    myform:actrltype[i]:='TIMER'
    myform:aname[i]:=myform:acontrolw[i]
 
-   nrow:=val(myform:leadato(cname,'ROW','0'))
-   ncol:=val(myform:leadato(cname,'COL','0'))
-   ninterval:=val(myform:leadato(cname,'INTERVAL','1000'))
-   caction:=myform:leadato(cname,'ACTION','')
-   cobj:=myform:leadato(cname,'OBJ','')
+   nrow:=val(myform:LeaDato(cName,'ROW','0'))
+   ncol:=val(myform:LeaDato(cName,'COL','0'))
+   ninterval:=val(myform:LeaDato(cName,'INTERVAL','1000'))
+   caction:=myform:LeaDato(cName,'ACTION','')
+   cobj:=myform:LeaDato(cName,'OBJ','')
     myform:acobj[i]:=cobj
-   @ nRow,nCol LABEL &CName OF Form_1 WIDTH 100 HEIGHT 20 VALUE CName BORDER ACTION dibuja(this:name)
+   @ nRow,nCol LABEL &cName OF Form_1 WIDTH 100 HEIGHT 20 VALUE cName BORDER ACTION dibuja(this:name)
    myform:avaluen[i]:=ninterval
    myform:aaction[i]:=caction
-   myform:aenabled[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'ENABLED','.T.')))='.T.',.T.,.F.)
+   myform:aenabled[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'ENABLED','.T.')))='.T.',.T.,.F.)
 
-   ProcessContainersfill( Cname,nrow,ncol, myIde )
+   ProcessContainersFill( cName, nRow, nCol, myIde )
 return
 
-*-------------------------
-static function pforma(i)
-*-------------------------
+*------------------------------------------------------------------------------*
+STATIC FUNCTION pForma(i)
+*------------------------------------------------------------------------------*
    myform:actrltype[i]:='FORM'
    nfrow:=val(myform:learowf(myform:cfname))
    nfcol:=val(myform:leacolf(myform:cfname))
    ****
-   myform:cftitle:=myform:clean(myform:leadato('DEFINE WINDOW','TITLE',''))
-   nfwidth:=val(myform:leadato('DEFINE WINDOW','WIDTH','640'))
-   nfheight:=val(myform:leadato('DEFINE WINDOW','HEIGHT','480'))+gettitleheight()
+   myform:cftitle:=myform:Clean( myform:LeaDato('DEFINE WINDOW','TITLE',''))
+   nfwidth:=val(myform:LeaDato('DEFINE WINDOW','WIDTH','640'))
+   nfheight:=val(myform:LeaDato('DEFINE WINDOW','HEIGHT','480'))+gettitleheight()
 
-   myform:cfobj:=myform:leadato('DEFINE WINDOW','OBJ','')
-   myform:cficon:=myform:clean(myform:leadato('WINDOW','ICON',''))
+   myform:cfobj:=myform:LeaDato('DEFINE WINDOW','OBJ','')
+   myform:cficon:=myform:Clean( myform:LeaDato('WINDOW','ICON',''))
 
-   myform:nfvirtualw:=val(myform:leadato('DEFINE WINDOW','VIRTUAL WIDTH','0'))
-   myform:nfvirtualh:=val(myform:leadato('DEFINE WINDOW','VIRTUAL HEIGHT','0'))
+   myform:nfvirtualw:=val(myform:LeaDato('DEFINE WINDOW','VIRTUAL WIDTH','0'))
+   myform:nfvirtualh:=val(myform:LeaDato('DEFINE WINDOW','VIRTUAL HEIGHT','0'))
 
 
-   myform:lfmain:=myform:leadatologic('DEFINE WINDOW',"MAIN","")
-   myform:lfchild:=myform:leadatologic('DEFINE WINDOW',"CHILD","")
-   myform:lfmodal:=myform:leadatologic('DEFINE WINDOW',"MODAL","")
-   myform:lfnoshow:=myform:leadatologic('DEFINE WINDOW',"NOSHOW","")
-   myform:lftopmost:=myform:leadatologic('DEFINE WINDOW',"TOPMOST","")
-   myform:lfnominimize:=myform:leadatologic('DEFINE WINDOW',"NOMINIMIZE","")
-   myform:lfnomaximize:=myform:leadatologic('DEFINE WINDOW',"NOMAXIMIZE","")
-   myform:lfnosize:=myform:leadatologic('DEFINE WINDOW',"NOSIZE","")
-   myform:lfnosysmenu:=myform:leadatologic('DEFINE WINDOW',"NOSYSMENU","")
-   myform:lfnocaption:=myform:leadatologic('DEFINE WINDOW',"NOCAPTION","")
-   myform:lfnoautorelease:=myform:leadatologic('DEFINE WINDOW',"NOAUTORELEASE","")
-   myform:lfhelpbutton:=myform:leadatologic('DEFINE WINDOW',"HELPBUTTON","")
-   myform:lffocused:=myform:leadatologic('DEFINE WINDOW',"FOCUSED","")
-   myform:lfbreak:=myform:leadatologic('DEFINE WINDOW',"BREAK","")
-   myform:lfsplitchild:=myform:leadatologic('DEFINE WINDOW',"SPLITCHILD","")
-   myform:lfgrippertext:=myform:leadatologic('DEFINE WINDOW',"GRIPPERTEXT","")
+   myform:lfmain:=myform:LeaDatoLogic('DEFINE WINDOW',"MAIN","")
+   myform:lfchild:=myform:LeaDatoLogic('DEFINE WINDOW',"CHILD","")
+   myform:lfmodal:=myform:LeaDatoLogic('DEFINE WINDOW',"MODAL","")
+   myform:lfnoshow:=myform:LeaDatoLogic('DEFINE WINDOW',"NOSHOW","")
+   myform:lftopmost:=myform:LeaDatoLogic('DEFINE WINDOW',"TOPMOST","")
+   myform:lfnominimize:=myform:LeaDatoLogic('DEFINE WINDOW',"NOMINIMIZE","")
+   myform:lfnomaximize:=myform:LeaDatoLogic('DEFINE WINDOW',"NOMAXIMIZE","")
+   myform:lfnosize:=myform:LeaDatoLogic('DEFINE WINDOW',"NOSIZE","")
+   myform:lfnosysmenu:=myform:LeaDatoLogic('DEFINE WINDOW',"NOSYSMENU","")
+   myform:lfnocaption:=myform:LeaDatoLogic('DEFINE WINDOW',"NOCAPTION","")
+   myform:lfnoautorelease:=myform:LeaDatoLogic('DEFINE WINDOW',"NOAUTORELEASE","")
+   myform:lfhelpbutton:=myform:LeaDatoLogic('DEFINE WINDOW',"HELPBUTTON","")
+   myform:lffocused:=myform:LeaDatoLogic('DEFINE WINDOW',"FOCUSED","")
+   myform:lfbreak:=myform:LeaDatoLogic('DEFINE WINDOW',"BREAK","")
+   myform:lfsplitchild:=myform:LeaDatoLogic('DEFINE WINDOW',"SPLITCHILD","")
+   myform:lfgrippertext:=myform:LeaDatoLogic('DEFINE WINDOW',"GRIPPERTEXT","")
 
-   myform:cfoninit:=myform:leadato('DEFINE WINDOW','ON INIT','')
-   myform:cfonrelease:=myform:leadato('DEFINE WINDOW','ON RELEASE','')
-   myform:cfoninteractiveclose:=myform:leadato('DEFINE WINDOW','ON INTERACTIVECLOSE','')
-   myform:cfonmouseclick:=myform:leadato('DEFINE WINDOW','ON MOUSECLICK','')
-   myform:cfonmousedrag:=myform:leadato('DEFINE WINDOW','ON MOUSEDRAG','')
-   myform:cfonmousemove:=myform:leadato('DEFINE WINDOW','ON MOUSEMOVE','')
-   myform:cfonsize:=myform:leadato('DEFINE WINDOW','ON SIZE','')
-   myform:cfonpaint:=myform:leadato('DEFINE WINDOW','ON PAINT','')
-   myform:cfbackcolor:=myform:leadato('DEFINE WINDOW','BACKCOLOR','NIL')
-   myform:cfcursor:=myform:leadato('DEFINE WINDOW','CURSOR','')
+   myform:cfoninit:=myform:LeaDato('DEFINE WINDOW','ON INIT','')
+   myform:cfonrelease:=myform:LeaDato('DEFINE WINDOW','ON RELEASE','')
+   myform:cfoninteractiveclose:=myform:LeaDato('DEFINE WINDOW','ON INTERACTIVECLOSE','')
+   myform:cfonmouseclick:=myform:LeaDato('DEFINE WINDOW','ON MOUSECLICK','')
+   myform:cfonmousedrag:=myform:LeaDato('DEFINE WINDOW','ON MOUSEDRAG','')
+   myform:cfonmousemove:=myform:LeaDato('DEFINE WINDOW','ON MOUSEMOVE','')
+   myform:cfonsize:=myform:LeaDato('DEFINE WINDOW','ON SIZE','')
+   myform:cfonpaint:=myform:LeaDato('DEFINE WINDOW','ON PAINT','')
+   myform:cfbackcolor:=myform:LeaDato('DEFINE WINDOW','BACKCOLOR','NIL')
+   myform:cfcursor:=myform:LeaDato('DEFINE WINDOW','CURSOR','')
 *********ojo aqui
-   myform:cffontname:=myform:clean(myform:leadato('DEFINE WINDOW','FONT','MS Sans Serif'))
-   myform:nffontsize:=val(myform:leadato('DEFINE WINDOW','SIZE','10'))
-   myform:cfnotifyicon:=myform:clean(myform:leadato('DEFINE WINDOW','NOTIFYICON',''))
-   myform:cfnotifytooltip:=myform:clean(myform:leadato('DEFINE WINDOW','NOTIFYTOOLTIP',''))
-   myform:cfonnotifyclick:=myform:leadato('DEFINE WINDOW','ON NOTIFYCLICK','')
-   myform:cfongotfocus:=myform:leadato('DEFINE WINDOW','ON GOTFOCUS','')
-   myform:cfonlostfocus:=myform:leadato('DEFINE WINDOW','ON LOSTFOCUS','')
-   myform:cfonscrollup:=myform:leadato('DEFINE WINDOW','ON SCROLLUP','')
-   myform:cfonscrolldown:=myform:leadato('DEFINE WINDOW','ON SCROLLDOWN','')
-   myform:cfonscrollright:=myform:leadato('DEFINE WINDOW','ON SCROLLRIGHT','')
-   myform:cfonscrollleft:=myform:leadato('DEFINE WINDOW','ON SCROLLLEFT','')
-   myform:cfonhscrollbox:=myform:leadato('DEFINE WINDOW','ON HSCROLLBOX','')
-   myform:cfonvscrollbox:=myform:leadato('DEFINE WINDOW','ON VSCROLLBOX','')
-   myform:cfonmaximize:=myform:leadato('DEFINE WINDOW','ON MAXIMIZE','')
-   myform:cfonminimize:=myform:leadato('DEFINE WINDOW','ON MINIMIZE','')
+   myform:cffontname:=myform:Clean( myform:LeaDato('DEFINE WINDOW','FONT','MS Sans Serif'))
+   myform:nffontsize:=val(myform:LeaDato('DEFINE WINDOW','SIZE','10'))
+   myform:cfnotifyicon:=myform:Clean( myform:LeaDato('DEFINE WINDOW','NOTIFYICON',''))
+   myform:cfnotifytooltip:=myform:Clean( myform:LeaDato('DEFINE WINDOW','NOTIFYTOOLTIP',''))
+   myform:cfonnotifyclick:=myform:LeaDato('DEFINE WINDOW','ON NOTIFYCLICK','')
+   myform:cfongotfocus:=myform:LeaDato('DEFINE WINDOW','ON GOTFOCUS','')
+   myform:cfonlostfocus:=myform:LeaDato('DEFINE WINDOW','ON LOSTFOCUS','')
+   myform:cfonscrollup:=myform:LeaDato('DEFINE WINDOW','ON SCROLLUP','')
+   myform:cfonscrolldown:=myform:LeaDato('DEFINE WINDOW','ON SCROLLDOWN','')
+   myform:cfonscrollright:=myform:LeaDato('DEFINE WINDOW','ON SCROLLRIGHT','')
+   myform:cfonscrollleft:=myform:LeaDato('DEFINE WINDOW','ON SCROLLLEFT','')
+   myform:cfonhscrollbox:=myform:LeaDato('DEFINE WINDOW','ON HSCROLLBOX','')
+   myform:cfonvscrollbox:=myform:LeaDato('DEFINE WINDOW','ON VSCROLLBOX','')
+   myform:cfonmaximize:=myform:LeaDato('DEFINE WINDOW','ON MAXIMIZE','')
+   myform:cfonminimize:=myform:LeaDato('DEFINE WINDOW','ON MINIMIZE','')
 
    myform:lfmain:=iif(myform:lfmain='T',.T.,.F.)
    myform:lfmodal:=iif(myform:lfmodal='T',.T.,.F.)
@@ -2530,261 +2553,269 @@ static function pforma(i)
    myform:lfgrippertext:=iif(myform:lfgrippertext='T',.T.,.F.)
 
 return
-*---------------------------
-static function plabel( i, myIde )
-*---------------------------
-   cName:=myform:acontrolw[i]
-   myform:actrltype[i]:='LABEL'
-   myform:aname[i]:=myform:acontrolw[i]
-   cfontname:=myform:clean(myform:leadato(cname,'FONT',cffontname))
-   nfontsize:=val(myform:leadato(cname,'SIZE',str(nffontsize)))
 
-***  lbold:=myform:leadatologic(cname,"BOLD","F")
-**   cfontcolor:=myform:clean(myform:leadato(cname,'FONTCOLOR','{0,0,0}'))
+*------------------------------------------------------------------------------*
+STATIC FUNCTION pLabel( i, myIde )
+*------------------------------------------------------------------------------*
 
-   cbackcolor:=myform:clean(myform:leadato(cname,'BACKCOLOR','NIL'))
+   // Load properties
+   cName        := myform:acontrolw[i]
+   cObj         := myform:LeaDato( cName, 'OBJ', '' )
+   nRow         := Val( myform:LeaRow( cName))
+   nCol         := Val( myform:LeaCol( cName))
+   nWidth       := Val( myform:LeaDato( cName, 'WIDTH', '120' ) )
+   nHeight      := Val( myform:LeaDato( cName, 'HEIGHT', '24' ) )
+   cAction      := myform:LeaDato( cName, 'ACTION', "" )
+   cToolTip     := myform:Clean( myform:LeaDato( cName, 'TOOLTIP', '' ) )
+   cToolTip     := myform:Clean( myform:LeaDato_Oop( cName, 'TOOLTIP', cToolTip ) )
+   lBorder      := ( myform:LeaDatoLogic( cName, "BORDER", "F" ) == "T" )
+   lClientEdge  := ( myform:LeaDatoLogic( cName, "CLIENTEDGE", "F") == "T" )
+   lVisible     := ( myform:LeaDatoLogic( cName, 'INVISIBLE', "F" ) == "T" )
+   lVisible     := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lEnabled     := ( myform:LeaDatoLogic( cName, 'DISABLED', "F" ) == "F" )
+   lEnabled     := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lTrans       := ( myform:LeaDatoLogic( cName, "TRANSPARENT", "F" ) == "T" )
+   nHelpId      := Val( myform:LeaDato( cName, 'HELPID', '0' ) )
+   aBackColor   := myform:LeaDato( cName, "BACKCOLOR", '' )
+   aBackColor   := myform:Clean( myform:LeaDato_Oop( cName, 'BACKCOLOR', aBackColor ) )
+   cValue       := myform:Clean( myform:LeaDato( cName, 'VALUE', '' ) )
+   cFontName    := myform:Clean( myform:LeaDato( cName, 'FONT', '' ) )
+   nFontSize    := Val( myform:LeaDato( cName, 'SIZE', '0' ) )
+   aFontColor   := myform:LeaDato( cName, "FONTCOLOR", '' )
+   aFontColor   := myform:Clean( myform:LeaDato_Oop( cName, 'FONTCOLOR', aFontColor ) )
+   lBold        := ( myform:LeaDatoLogic( cName, 'BOLD', "F" ) == "T" )
+   lBold        := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lItalic      := ( myform:LeaDatoLogic( cName, 'ITALIC', "F" ) == "T" )
+   lItalic      := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTITALIC', IF( lItalic, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lUnderline   := ( myform:LeaDatoLogic( cName, 'UNDERLINE', "F" ) == "T" )
+   lUnderline   := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTUNDERLINE', IF( lUnderline, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lStrikeout   := ( myform:LeaDatoLogic( cName, 'STRIKEOUT', "F" ) == "T" )
+   lStrikeout   := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lRightAlign  := ( myform:LeaDatoLogic( cName, "RIGHTALIGN", "F" ) == "T" )
+   lCenterAlign := ( myform:LeaDatoLogic( cName, "CENTERALIGN", "F" ) == "T" )
+   lAutoSize    := ( myform:LeaDatoLogic( cName, "AUTOSIZE", "F" ) == "T" )
+   cInputMask   := myform:LeaDato( cName, 'INPUTMASK', "" )
 
-   ltrans:=myform:leadatologic(cname,"TRANSPARENT","")
-   lrightalign:=myform:leadatologic(cname,"RIGHTALIGN","")
-   lcenteralign:=myform:leadatologic(cname,"CENTERALIGN","")
-   lautosize:=myform:leadatologic(cname,"AUTOSIZE","")
-   lclientedge:=myform:leadatologic(cname,"CLIENTEDGE","")
-   lborder:=myform:leadatologic(cname,"BORDER","")
+   // Show control
+   IF lRightAlign
+      @ nRow, nCol LABEL &cName OF Form_1 ;
+         WIDTH nWidth ;
+         HEIGHT nHeight ;
+         VALUE cValue ;
+         ACTION Dibuja( This:Name ) ;
+         RIGHTALIGN
+   ELSE
+      IF lCenterAlign
+         @ nRow, nCol LABEL &cName OF Form_1 ;
+            WIDTH nWidth ;
+            HEIGHT nHeight ;
+            VALUE cValue ;
+            ACTION Dibuja( This:Name ) ;
+            CENTERALIGN
+      ELSE
+         @ nRow, nCol LABEL &cName OF Form_1 ;
+            WIDTH nWidth ;
+            HEIGHT nHeight ;
+            VALUE cValue ;
+            ACTION Dibuja( This:Name )
+      ENDIF
+   ENDIF
+   IF Len( cFontName ) > 0
+      Form_1:&cName:FontName   := cFontName
+   ENDIF
+   IF nFontSize > 0
+      Form_1:&cName:FontSize   := nFontSize
+   ENDIF
+   IF Len( aFontColor ) > 0
+      Form_1:&cName:FontColor  := &aFontColor
+   ENDIF
+   Form_1:&cName:FontBold      := lBold
+   Form_1:&cName:FontItalic    := lItalic
+   Form_1:&cName:FontUnderline := lUnderline
+   Form_1:&cName:FontStrikeout := lStrikeout
+   IF Len( aBackColor ) > 0
+      Form_1:&cName:BackColor  := &aBackColor
+   ENDIF
+   Form_1:&cName:ToolTip       := cToolTip
 
-   nrow:=val(myform:learow(cName))
-   ncol:=val(myform:leacol(cname))
+   // Save properties
+   myform:actrltype[i]      := 'LABEL'
+   myform:aname[i]          := cName
+   myform:acobj[i]          := cObj
+   myform:aAction[i]        := cAction
+   myform:aToolTip[i]       := cToolTip
+   myform:aBorder[i]        := lBorder
+   myform:aClientEdge[i]    := lClientEdge
+   myform:aVisible[i]       := lVisible
+   myform:aEnabled[i]       := lEnabled
+   myform:aTransparent[i]   := lTrans
+   myform:aHelpid[i]        := nHelpid
+   myform:aBackColor[i]     := aBackColor
+   myform:aValue[i]         := cValue
+   myform:aFontName[i]      := cFontName
+   myform:aFontSize[i]      := nFontSize
+   myform:aFontColor[i]     := aFontColor
+   myForm:aBold[i]          := lBold
+   myForm:aFontItalic[i]    := lItalic
+   myForm:aFontUnderline[i] := lUnderline
+   myForm:aFontStrikeout[i] := lStrikeout
+   myform:aRightAlign[i]    := lRightAlign
+   myform:aCenterAlign[i]   := lCenterAlign
+   myform:aAutoplay[i]      := lAutoSize
+   myform:aInputMask[i]     := cInputMask
 
-
-   nWidth:=val(myform:leadato(cname,'WIDTH','120'))
-
-   nHeight:=val(myform:leadato(cname,'HEIGHT','24'))
-
-   cvalue:=myform:clean(myform:leadato(cname,'VALUE',cname))
-   nhelpid:=val(myform:leadato(cname,'HELPID','0'))
-   caction:=myform:leadato(cname,"ACTION","")
-   cobj:=myform:leadato(cname,'OBJ','')
-    myform:acobj[i]:=cobj
-****** autoplay ---> autosize
-
-   if lrightalign='T'
-          @ nRow,nCol LABEL &cName OF Form_1 WIDTH nWidth HEIGHT nHeight VALUE cValue ACTION dibuja(this:name) RIGHTALIGN
-   else
-      if lcenteralign='T'
-            @ nRow,nCol LABEL &cName OF Form_1 WIDTH nWidth HEIGHT nHeight VALUE cValue ACTION dibuja(this:name) CENTERALIGN
-      else
-            @ nRow,nCol LABEL &cName OF Form_1 WIDTH nWidth HEIGHT nHeight VALUE cValue  ACTION dibuja(this:name)
-      endif
-   endif
-
-   if lautosize='T'
-      myform:aautoplay[i]:=.T.
-   else
-      myform:aautoplay[i]:=.F.
-   endif
-
-   ocontrol:=getcontrolobject(cname,"form_1")
-
-   myform:afontname[i]:=cfontname
-   if len(cfontname)>0
-        form_1:&cname:fontname := cfontname
-   else
-        form_1:&cname:fontname := cffontname
-   endif
-
-   myform:afontsize[i]:=nfontsize
-   if nfontsize>0
-        form_1:&cname:fontsize := nfontsize
-   else
-        form_1:&cname:fontsize := nffontsize
-        ocontrol:fontsize:=nffontsize
-   endif
-
-   myform:atooltip[i]:=myform:clean(myform:leadato_oop(cname,'TOOLTIP',''))
-
-   myform:atransparent[i]:=iif(ltrans='T',.T.,.F.)
-
-   myform:aenabled[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'ENABLED','.T.')))='.T.',.T.,.F.)
-   myform:avisible[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'VISIBLE','.T.')))='.T.',.T.,.F.)
-
-   form_1:&cname:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTITALIC','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontbold:=myform:abold[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTBOLD','.F.')))='.T.',.T.,.F.)
-
-   myform:abackcolor[i]:=cbackcolor
-
-   myform:afontcolor[i]:=myform:clean(myform:leadato_oop(cname,'FONTCOLOR','{0,0,0}'))
-
-
- ****  myform:afontcolor[i]:=cfontcolor
-   cfontcolor:=myform:afontcolor[i]
-   form_1:&cname:fontcolor:=&cfontcolor
-
-
-  if len(cbackcolor)>0 .and. cbackcolor#'NIL'
-
-     form_1:&cname:backcolor:=&cbackcolor
-  else
-     form_1:&cname:backcolor:= { -1,-1,-1 }
-  endif
-
-  myform:aaction[i]:=iif(len(caction)>0,caction,'')
-  myform:avalue[i]:=cValue
-  myform:arightalign[i]:=iif(lrightalign='T',.T.,.F.)
-  myform:acenteralign[i]:=iif(lcenteralign='T',.T.,.F.)
-  myform:aborder[i]:=iif(lborder='T',.T.,.F.)
-  myform:ahelpid[i]:=nhelpid
-  myform:aclientedge[i]:=iif(lclientedge='T',.T.,.F.)
-
-  ProcessContainersfill( Cname,nrow,ncol, myIde )
+   ProcessContainersFill( cName, nRow, nCol, myIde )
 return
 
-*--------------------------
-static function pplayer( i, myIde )
-*--------------------------
-   cname:=myform:acontrolw[i]
+*------------------------------------------------------------------------------*
+STATIC FUNCTION pPlayer( i, myIde )
+*------------------------------------------------------------------------------*
+   cName:=myform:acontrolw[i]
    myform:actrltype[i]:='PLAYER'
    myform:aname[i]:=myform:acontrolw[i]
-   nrow:=val(myform:learow(cName))
-   ncol:=val(myform:leacol(cname))
+   nrow:=val(myform:LeaRow( cName))
+   ncol:=val(myform:LeaCol( cName))
 
-   nWidth:=val(myform:leadato(cname,'WIDTH','0'))
-   nHeight:=val(myform:leadato(cname,'HEIGHT','0'))
-   cplayfile:=myform:clean(myform:leadato(cname,'FILE',''))
-   nHelpid:=val(myform:leadato(cname,'HELPID','0'))
-   cobj:=myform:leadato(cname,'OBJ','')
+   nWidth:=val(myform:LeaDato(cName,'WIDTH','0'))
+   nHeight:=val(myform:LeaDato(cName,'HEIGHT','0'))
+   cplayfile:=myform:Clean( myform:LeaDato(cName,'FILE',''))
+   nHelpid:=val(myform:LeaDato(cName,'HELPID','0'))
+   cobj:=myform:LeaDato(cName,'OBJ','')
     myform:acobj[i]:=cobj
 
-   @ nRow,nCol LABEL &CName OF Form_1 WIDTH nwidth HEIGHT nheight VALUE CName BORDER ACTION dibuja(this:name)
+   @ nRow,nCol LABEL &cName OF Form_1 WIDTH nwidth HEIGHT nheight VALUE cName BORDER ACTION dibuja(this:name)
 
-   myform:aenabled[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'ENABLED','.T.')))='.T.',.T.,.F.)
-   myform:avisible[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'VISIBLE','.T.')))='.T.',.T.,.F.)
+   myform:aenabled[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'ENABLED','.T.')))='.T.',.T.,.F.)
+   myform:avisible[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'VISIBLE','.T.')))='.T.',.T.,.F.)
 
    myform:afile[i]:=cplayfile
    myform:ahelpid[i]:=nhelpid
-   ProcessContainersfill( Cname,nrow,ncol, myIde )
+
+   ProcessContainersFill( cName, nRow, nCol, myIde )
 return
-*----------------------------
-static function pspinner( i, myIde )
-*----------------------------
-   cname:=myform:acontrolw[i]
+
+*------------------------------------------------------------------------------*
+STATIC FUNCTION pSpinner( i, myIde )
+*------------------------------------------------------------------------------*
+   cName:=myform:acontrolw[i]
    myform:actrltype[i]:='SPINNER'
    myform:aname[i]:=myform:acontrolw[i]
-   nrow:=val(myform:learow(cName))
-   ncol:=val(myform:leacol(cname))
+   nrow:=val(myform:LeaRow( cName))
+   ncol:=val(myform:LeaCol( cName))
+   cobj:=myform:LeaDato(cName,'OBJ','')
+   crange:=myform:LeaDato(cName,'RANGE','1,10')
+   nvalue:=val(myform:LeaDato(cName,'VALUE','0'))
+   nwidth:=val(myform:LeaDato(cName,'WIDTH','120'))
+   nheight:=val(myform:LeaDato(cName,'HEIGHT','24'))
+   cfontname:=myform:Clean( myform:LeaDato(cName,'FONT',cffontname))
+   nfontsize:=val(myform:LeaDato(cName,'SIZE',str(nffontsize)))
+   ctooltip:=myform:Clean( myform:LeaDato(cName,'TOOLTIP',''))
+   conchange:=myform:LeaDato(cName,'ON CHANGE','')
+   congotfocus:=myform:LeaDato(cName,'ON GOTFOCUS','')
+   conlostfocus:=myform:LeaDato(cName,'ON LOSTFOCUS','')
+   nhelpid:=val(myform:LeaDato(cName,'HELPID','0'))
+   lNoTabStop:=myform:LeaDatoLogic(cName,'NOTABSTOP',"F")
+   lwrap:=myform:LeaDatoLogic(cName,'WRAP',"F")
+   lreadonly:=myform:LeaDatoLogic(cName,'READONLY',"F")
+   nincrement:=val(myform:LeaDato(cName,'INCREMENT','0'))
 
-   nwidth:=val(myform:leadato(cname,'WIDTH','0'))
-   nheight:=val(myform:leadato(cname,'HEIGHT','0'))
-   cfontname:=myform:clean(myform:leadato(cname,'FONT',cffontname))
-   nfontsize:=val(myform:leadato(cname,'SIZE',str(nffontsize)))
-   crange:=myform:leadato(cname,'RANGE','1,10')
-   nvalue:=val(myform:leadato(cname,'VALUE','0'))
-   ctooltip:=myform:clean(myform:leadato(cname,'TOOLTIP',''))
-   conchange:=myform:leadato(cname,'ON CHANGE','')
-   congotfocus:=myform:leadato(cname,'ON GOTFOCUS','')
-   conlostfocus:=myform:leadato(cname,'ON LOSTFOCUS','')
-   nhelpid:=val(myform:leadato(cname,'HELPID','0'))
-
-   lnotabstop:=myform:leadatologic(cname,'NOTABSTOP',"F")
-   lwrap:=myform:leadatologic(cname,'WRAP',"F")
-   lreadonly:=myform:leadatologic(cname,'READONLY',"F")
-   nincrement:=val(myform:leadato(cname,'INCREMENT','0'))
-   cobj:=myform:leadato(cname,'OBJ','')
     myform:acobj[i]:=cobj
 
-   @ nRow,nCol LABEL &CName OF Form_1 WIDTH nwidth HEIGHT nheight VALUE CName ACTION dibuja(this:name) BACKCOLOR WHITE CLIENTEDGE VSCROLL
+   @ nRow,nCol LABEL &cName OF Form_1 WIDTH nwidth HEIGHT nheight VALUE cName ACTION dibuja(this:name) BACKCOLOR WHITE CLIENTEDGE VSCROLL
 
    myform:afontname[i]:=cfontname
 
    if len(cfontname)>0
-      form_1:&cname:fontname := cfontname
+      form_1:&cName:fontname := cfontname
    else
-      form_1:&cname:fontname := cffontname
+      form_1:&cName:fontname := cffontname
    endif
 
    myform:afontsize[i]:=nfontsize
    if nfontsize>0
-      form_1:&cname:fontsize := nfontsize
+      form_1:&cName:fontsize := nfontsize
    else
-        form_1:&cname:fontsize := nffontsize
+        form_1:&cName:fontsize := nffontsize
    endif
 
-   myform:aenabled[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'ENABLED','.T.')))='.T.',.T.,.F.)
-   myform:avisible[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'VISIBLE','.T.')))='.T.',.T.,.F.)
+   myform:aenabled[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'ENABLED','.T.')))='.T.',.T.,.F.)
+   myform:avisible[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'VISIBLE','.T.')))='.T.',.T.,.F.)
 
-   form_1:&cname:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTITALIC','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontbold:=myform:abold[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTBOLD','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTITALIC','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontbold:=myform:abold[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTBOLD','.F.')))='.T.',.T.,.F.)
 
-   cbackcolor:= myform:abackcolor[i]:=myform:clean(myform:leadato_oop(cname,'BACKCOLOR','{255,255,255}'))
+   cbackcolor:= myform:abackcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName,'BACKCOLOR',''))
    if len(cbackcolor)>0
-      form_1:&cname:backcolor:=&cbackcolor
+      form_1:&cName:backcolor:=&cbackcolor
    endif
-   myform:afontcolor[i]:=myform:clean(myform:leadato_oop(cname,'FONTCOLOR','{0,0,0}'))
+   myform:afontcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName,'FONTCOLOR',''))
    cfontcolor:=myform:afontcolor[i]
-   form_1:&cname:fontcolor:=&cfontcolor
+   form_1:&cName:fontcolor:=&cfontcolor
 
    myform:arange[i]:=crange
    myform:ahelpid[i]:=nhelpid
    myform:avaluen[i]:=nvalue
    myform:atooltip[i]:=ctooltip
-   form_1:&cname:tooltip:=ctooltip
+   form_1:&cName:tooltip:=ctooltip
    myform:aonchange[i]:=conchange
    myform:aongotfocus[i]:=congotfocus
    myform:aonlostfocus[i]:=conlostfocus
 
-   myform:anotabstop[i]:=iif(lnotabstop='T',.T.,.F.)
+   myform:anotabstop[i]:=iif(lNoTabStop='T',.T.,.F.)
 
    myform:awrap[i]:=iif(lwrap='T',.T.,.F.)
 
    myform:areadonly[i]:=iif(lreadonly='T',.T.,.F.)
 
    myform:aincrement[i]:=nincrement
-   ProcessContainersfill( Cname,nrow,ncol, myIde )
+
+   ProcessContainersFill( cName, nRow, nCol, myIde )
 return
 
-*--------------------------
-static function pslider( i, myIde )
-*--------------------------
-   cname:=myform:acontrolw[i]
+*------------------------------------------------------------------------------*
+STATIC FUNCTION pSlider( i, myIde )
+*------------------------------------------------------------------------------*
+   cName:=myform:acontrolw[i]
    myform:actrltype[i]:='SLIDER'
    myform:aname[i]:=myform:acontrolw[i]
 
-   nrow:=val(myform:learow(cName))
-   ncol:=val(myform:leacol(cname))
-   nwidth:=val(myform:leadato(cname,'WIDTH','0'))
-   nheight:=val(myform:leadato(cname,'HEIGHT','0'))
-   crange:=myform:leadato(cname,'RANGE','1,10')
-   nvalue:=val(myform:leadato(cname,'VALUE','0'))
-   ctooltip:=myform:clean(myform:leadato(cname,'TOOLTIP',''))
-   conchange:=myform:leadato(cname,'ON CHANGE','')
-   lvertical:=myform:leadatologic(cname,'VERTICAL','F')
-   lnoticks:=myform:leadatologic(cname,'NOTICKS','F')
-   lboth:=myform:leadatologic(cname,'BOTH','F')
-   ltop:=myform:leadatologic(cname,'NTOP','F')
-   lleft:=myform:leadatologic(cname,'LEFT','F')
-   nhelpid:=val(myform:leadato(cname,'HELPID','0'))
-   cobj:=myform:leadato(cname,'OBJ','')
+   nrow:=val(myform:LeaRow( cName))
+   ncol:=val(myform:LeaCol( cName))
+   cobj:=myform:LeaDato(cName,'OBJ','')
+   crange:=myform:LeaDato(cName,'RANGE','1,10')
+   nvalue:=val(myform:LeaDato(cName,'VALUE','0'))
+   nwidth:=val(myform:LeaDato(cName,'WIDTH','0'))
+   nheight:=val(myform:LeaDato(cName,'HEIGHT','0'))
+   ctooltip:=myform:Clean( myform:LeaDato(cName,'TOOLTIP',''))
+   conchange:=myform:LeaDato(cName,'ON CHANGE','')
+   lvertical:=myform:LeaDatoLogic(cName,'VERTICAL','F')
+   lnoticks:=myform:LeaDatoLogic(cName,'NOTICKS','F')
+   lboth:=myform:LeaDatoLogic(cName,'BOTH','F')
+   ltop:=myform:LeaDatoLogic(cName,'TOP','F')
+   lleft:=myform:LeaDatoLogic(cName,'LEFT','F')
+   nhelpid:=val(myform:LeaDato(cName,'HELPID','0'))
+
     myform:acobj[i]:=cobj
 
    myform:atooltip[i]:=ctooltip
 
    if lvertical="T"
-      @ nRow,nCol SLIDER &CName OF Form_1 RANGE 1,10 VALUE 5 WIDTH nwidth HEIGHT nheight ON CHANGE dibuja(this:name) NOTABSTOP VERTICAL
+      @ nRow,nCol SLIDER &cName OF Form_1 RANGE 1,10 VALUE 5 WIDTH nwidth HEIGHT nheight ON CHANGE dibuja(this:name) NOTABSTOP VERTICAL
    else
-      @ nRow,nCol SLIDER &CName OF Form_1 RANGE 1,10 VALUE 5 WIDTH nwidth HEIGHT nheight ON CHANGE dibuja(this:name) NOTABSTOP
+      @ nRow,nCol SLIDER &cName OF Form_1 RANGE 1,10 VALUE 5 WIDTH nwidth HEIGHT nheight ON CHANGE dibuja(this:name) NOTABSTOP
    endif
 
-   myform:aenabled[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'ENABLED','.T.')))='.T.',.T.,.F.)
-   myform:avisible[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'VISIBLE','.T.')))='.T.',.T.,.F.)
+   myform:aenabled[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'ENABLED','.T.')))='.T.',.T.,.F.)
+   myform:avisible[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'VISIBLE','.T.')))='.T.',.T.,.F.)
 
-   form_1:&cname:tooltip:=ctooltip
+   form_1:&cName:tooltip:=ctooltip
 
-   myform:abackcolor[i]:=myform:clean(myform:leadato_oop(cname,'BACKCOLOR','NIL'))
+   myform:abackcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName,'BACKCOLOR','NIL'))
    cbackcolor:=myform:abackcolor[i]
    if cbackcolor#'NIL'
-      form_1:&cname:backcolor:=&cbackcolor
+      form_1:&cName:backcolor:=&cbackcolor
    endif
 
    myform:avertical[i]:=iif(lvertical='T',.T.,.F.)
@@ -2799,75 +2830,82 @@ static function pslider( i, myIde )
    myform:ahelpid[i]:=nhelpid
    myform:avaluen[i]:=nvalue
    myform:aonchange[i]:=conchange
-   ProcessContainersfill( Cname,nrow,ncol, myIde )
+
+   ProcessContainersFill( cName, nRow, nCol, myIde )
 return
 
-*--------------------------------
-static function pprogressbar( i, myIde )
-*--------------------------------
-   cname:=myform:acontrolw[i]
+*------------------------------------------------------------------------------*
+STATIC FUNCTION pProgressbar( i, myIde )
+*------------------------------------------------------------------------------*
+   cName:=myform:acontrolw[i]
    myform:actrltype[i]:='PROGRESSBAR'
    myform:aname[i]:=myform:acontrolw[i]
 
-   nrow:=val(myform:learow(cName))
-   ncol:=val(myform:leacol(cname))
-   nwidth:=val(myform:leadato(cname,'WIDTH','120'))
-   nheight:=val(myform:leadato(cname,'HEIGHT','24'))
-   crange:=myform:leadato(cname,'RANGE','1,100')
-   ctooltip:=myform:clean(myform:leadato(cname,'TOOLTIP',''))
-   lvertical:=myform:leadatologic(cname,'VERTICAL','F')
-   lsmooth:=myform:leadatologic(cname,'SMOOTH','F')
-   nhelpid:=val(myform:leadato(cname,'HELPID','0'))
-   cobj:=myform:leadato(cname,'OBJ','')
+   nrow:=val(myform:LeaRow( cName))
+   ncol:=val(myform:LeaCol( cName))
+
+   lVertical := ( myform:LeaDatoLogic( cName, 'VERTICAL', 'F' ) == "T" )
+   IF lVertical
+      nWidth  := Val( myform:LeaDato( cName, 'WIDTH', '25'))
+      nHeight := Val( myform:LeaDato( cName, 'HEIGHT', '120'))
+   ELSE
+      nWidth  := Val( myform:LeaDato( cName, 'WIDTH', '120'))
+      nHeight := Val( myform:LeaDato( cName, 'HEIGHT', '25'))
+   ENDIF
+   crange:=myform:LeaDato(cName,'RANGE','1,100')
+   ctooltip:=myform:Clean( myform:LeaDato(cName,'TOOLTIP',''))
+   lsmooth:=myform:LeaDatoLogic(cName,'SMOOTH','F')
+   nhelpid:=val(myform:LeaDato(cName,'HELPID','0'))
+   cobj:=myform:LeaDato(cName,'OBJ','')
     myform:acobj[i]:=cobj
 
    myform:atooltip[i]:=ctooltip
 
 
-   @ nrow,ncol LABEL &Cname OF Form_1 WIDTH nwidth HEIGHT nheight VALUE Cname BORDER ACTION dibuja(this:name)
+   @ nrow,ncol LABEL &cName OF Form_1 WIDTH nwidth HEIGHT nheight VALUE cName BORDER ACTION dibuja(this:name)
 
-   myform:aenabled[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'ENABLED','.T.')))='.T.',.T.,.F.)
-   myform:avisible[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'VISIBLE','.T.')))='.T.',.T.,.F.)
+   myform:aenabled[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'ENABLED','.T.')))='.T.',.T.,.F.)
+   myform:avisible[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'VISIBLE','.T.')))='.T.',.T.,.F.)
 
-   myform:afontcolor[i]:=myform:clean(myform:leadato_oop(cname,'FONTCOLOR','{0,0,0}'))
+   myform:afontcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName,'FONTCOLOR',''))
    cfontcolor:=myform:afontcolor[i]
 
-   form_1:&cname:fontcolor:=&cfontcolor
+   form_1:&cName:fontcolor:=&cfontcolor
 
-   myform:abackcolor[i]:=myform:clean(myform:leadato_oop(cname,'BACKCOLOR','{255,255,255}'))
+   myform:abackcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName,'BACKCOLOR',''))
    cbackcolor:=myform:abackcolor[i]
-   form_1:&cname:backcolor:=&cbackcolor
-    form_1:&cname:tooltip:=ctooltip
-   myform:avertical[i]:=iif(lvertical='T',.T.,.F.)
+   form_1:&cName:backcolor:=&cbackcolor
+    form_1:&cName:tooltip:=ctooltip
+   myform:aVertical[i] := lVertical
 
    myform:asmooth[i]:=iif(lsmooth='T',.T.,.F.)
 
    myform:arange[i]:=crange
    myform:ahelpid[i]:=nhelpid
-   ProcessContainersfill( Cname,nrow,ncol, myIde )
+
+   ProcessContainersFill( cName, nRow, nCol, myIde )
 return
 
-*------------------------------
-static function pradiogroup( i, myIde )
-*------------------------------
-   cname:=myform:acontrolw[i]
+*------------------------------------------------------------------------------*
+STATIC FUNCTION pRadiogroup( i, myIde )
+*------------------------------------------------------------------------------*
+   cName:=myform:acontrolw[i]
    myform:actrltype[i]:='RADIOGROUP'
    myform:aname[i]:=myform:acontrolw[i]
 
-   nrow:=val(myform:learow(cName))
-   ncol:=val(myform:leacol(cname))
-   nwidth:=val(myform:leadato(cname,'WIDTH','0'))
-   nheight:=val(myform:leadato(cname,'HEIGHT','100'))
-   ctooltip:=myform:clean(myform:leadato(cname,'TOOLTIP',''))
-
-   cfontname:=myform:clean(myform:leadato(cname,'FONT',cffontname))
-   nfontsize:=val(myform:leadato(cname,'SIZE',str(nffontsize)))
-   ctooltip:=myform:clean(myform:leadato(cname,'TOOLTIP',''))
-   citems:=myform:leadato(cname,'OPTIONS',"{'option 1','option 2'}")
-   nvalue:=val(myform:leadato(cname,'VALUE','0'))
-   nspacing:=val(myform:leadato(cname,'SPACING',"25"))
-   ltrans:=myform:leadatologic(cname,'TRANSPARENT','')
-   nhelpid:=val(myform:leadato(cname,'HELPID',"0"))
+   nrow:=val(myform:LeaRow( cName))
+   ncol:=val(myform:LeaCol( cName))
+   cobj:=myform:LeaDato(cName,'OBJ','')
+   citems:=myform:LeaDato(cName,'OPTIONS',"{'option 1','option 2'}")
+   nvalue:=val(myform:LeaDato(cName,'VALUE','0'))
+   nwidth:=val(myform:LeaDato(cName,'WIDTH','120'))
+   nspacing:=val(myform:LeaDato(cName,'SPACING',"25"))
+   cfontname:=myform:Clean( myform:LeaDato(cName,'FONT',cffontname))
+   nfontsize:=val(myform:LeaDato(cName,'SIZE',str(nffontsize)))
+   ctooltip:=myform:Clean( myform:LeaDato(cName,'TOOLTIP',''))
+   cOnchange:=myform:LeaDato(cName,'ON CHANGE','')
+   ltrans:=myform:LeaDatoLogic(cName,'TRANSPARENT','')
+   nhelpid:=val(myform:LeaDato(cName,'HELPID',"0"))
    nllaves1:=0
    nllaves2:=0
    for ki:=1 to len(citems)
@@ -2884,312 +2922,343 @@ static function pradiogroup( i, myIde )
       citems:="{'option 1','option 2'}"
    endif
    litems:=len(&citems)
-   cOnchange:=myform:leadato(cname,'ON CHANGE','')
-   cobj:=myform:leadato(cname,'OBJ','')
     myform:acobj[i]:=cobj
 
-   @ nRow,nCol LABEL &CName OF Form_1 WIDTH nwidth HEIGHT nspacing*litems+8 VALUE CName BORDER ACTION dibuja(this:name)
+   @ nRow,nCol LABEL &cName OF Form_1 WIDTH nwidth HEIGHT nspacing*litems+8 VALUE cName BORDER ACTION dibuja(this:name)
 
    myform:afontname[i]:=cfontname
    if len(cfontname)>0
-        form_1:&cname:fontname := cfontname
+        form_1:&cName:fontname := cfontname
    else
-        form_1:&cname:fontname := cffontname
+        form_1:&cName:fontname := cffontname
    endif
 
    myform:atransparent[i]:=iif(ltrans='T',.T.,.F.)
 
    myform:afontsize[i]:=nfontsize
    if nfontsize>0
-        form_1:&cname:fontsize := nfontsize
+        form_1:&cName:fontsize := nfontsize
    else
-        form_1:&cname:fontsize := nffontsize
+        form_1:&cName:fontsize := nffontsize
    endif
 
-   myform:aenabled[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'ENABLED','.T.')))='.T.',.T.,.F.)
-   myform:avisible[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'VISIBLE','.T.')))='.T.',.T.,.F.)
+   myform:aenabled[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'ENABLED','.T.')))='.T.',.T.,.F.)
+   myform:avisible[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'VISIBLE','.T.')))='.T.',.T.,.F.)
 
-   form_1:&cname:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTITALIC','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontbold:=myform:abold[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTBOLD','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTITALIC','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontbold:=myform:abold[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTBOLD','.F.')))='.T.',.T.,.F.)
 
-   myform:abackcolor[i]:=myform:clean(myform:leadato_oop(cname,'BACKCOLOR','NIL'))
+   myform:abackcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName,'BACKCOLOR','NIL'))
    cbackcolor:=myform:abackcolor[i]
    if cbackcolor#"NIL"
-      form_1:&cname:backcolor:=&cbackcolor
+      form_1:&cName:backcolor:=&cbackcolor
    endif
-   myform:afontcolor[i]:=myform:clean(myform:leadato_oop(cname,'FONTCOLOR','{0,0,0}'))
+   myform:afontcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName,'FONTCOLOR',''))
    cfontcolor:=myform:afontcolor[i]
-   form_1:&cname:fontcolor:=&cfontcolor
+   form_1:&cName:fontcolor:=&cfontcolor
    myform:atooltip[i]:=ctooltip
    myform:avaluen[i]:=nvalue
    myform:aitems[i]:=citems
    myform:aspacing[i]:=nspacing
    myform:ahelpid[i]:=nhelpid
    myform:aonchange[i]:=conchange
-   ProcessContainersfill( Cname,nrow,ncol, myIde )
+
+   ProcessContainersFill( cName, nRow, nCol, myIde )
 return
 
-*---------------------------
-static function peditbox( i, myIde )
-*---------------------------
-   cname:=myform:acontrolw[i]
+*------------------------------------------------------------------------------*
+STATIC FUNCTION pEditbox( i, myIde )
+*------------------------------------------------------------------------------*
+   cName:=myform:acontrolw[i]
    myform:actrltype[i]:='EDIT'
    myform:aname[i]:=myform:acontrolw[i]
 
-   nrow:=val(myform:learow(cName))
-   ncol:=val(myform:leacol(cname))
-   nwidth:=val(myform:leadato(cname,'WIDTH','0'))
-   nheight:=val(myform:leadato(cname,'HEIGHT','0'))
+   nrow:=val(myform:LeaRow( cName))
+   ncol:=val(myform:LeaCol( cName))
+   nwidth:=val(myform:LeaDato(cName,'WIDTH','120'))
+   nheight:=val(myform:LeaDato(cName,'HEIGHT','240'))
 
-   cfontname:=myform:clean(myform:leadato(cname,'FONT',cffontname))
-   nfontsize:=val(myform:leadato(cname,'SIZE',str(nffontsize)))
+   cfontname:=myform:Clean( myform:LeaDato(cName,'FONT',cffontname))
+   nfontsize:=val(myform:LeaDato(cName,'SIZE',str(nffontsize)))
 
-   cvalue:=myform:clean(myform:leadato(cname,'VALUE',''))
-   cfield:=myform:leadato(cname,'FIELD','')
-   ctooltip:=myform:clean(myform:leadato(cname,'TOOLTIP',''))
-   nmaxlength:=val(myform:leadato(cname,'MAXLENGTH','500'))
-   lreadonly:=myform:leadatologic(cname,"READONLY","F")
-   lbreak:=myform:leadatologic(cname,"BREAK","F")
-   nhelpid:=val(myform:leadato(cname,'HELPID','0'))
-   lnotabstop:=myform:leadatologic(cname,"NOTABSTOP","F")
-   lnovscroll:=myform:leadatologic(cname,"NOVSCROLL","F")
-   lnohscroll:=myform:leadatologic(cname,"NOHSCROLL","F")
+   cvalue:=myform:Clean( myform:LeaDato(cName,'VALUE',''))
+   cfield:=myform:LeaDato(cName,'FIELD','')
+   ctooltip:=myform:Clean( myform:LeaDato(cName,'TOOLTIP',''))
+   nmaxlength:=val(myform:LeaDato(cName,'MAXLENGTH','500'))
+   lreadonly:=myform:LeaDatoLogic(cName,"READONLY","F")
+   lbreak:=myform:LeaDatoLogic(cName,"BREAK","F")
+   nhelpid:=val(myform:LeaDato(cName,'HELPID','0'))
+   lNoTabStop:=myform:LeaDatoLogic(cName,"NOTABSTOP","F")
+   lnovscroll:=myform:LeaDatoLogic(cName,"NOVSCROLL","F")
+   lnohscroll:=myform:LeaDatoLogic(cName,"NOHSCROLL","F")
 
-   conchange:=myform:leadato(cname,'ON CHANGE','')
-   congotfocus:=myform:leadato(cname,'ON GOTFOCUS','')
-   conlostfocus:=myform:leadato(cname,'ON LOSTFOCUS','')
-   cobj:=myform:leadato(cname,'OBJ','')
+   conchange:=myform:LeaDato(cName,'ON CHANGE','')
+   congotfocus:=myform:LeaDato(cName,'ON GOTFOCUS','')
+   conlostfocus:=myform:LeaDato(cName,'ON LOSTFOCUS','')
+   cobj:=myform:LeaDato(cName,'OBJ','')
     myform:acobj[i]:=cobj
 
-   @ nRow,nCol LABEL &CName OF Form_1 WIDTH nwidth HEIGHT nheight VALUE CName BACKCOLOR WHITE CLIENTEDGE HSCROLL VSCROLL ACTION dibuja(this:name)
+   @ nRow,nCol LABEL &cName OF Form_1 WIDTH nwidth HEIGHT nheight VALUE cName BACKCOLOR WHITE CLIENTEDGE HSCROLL VSCROLL ACTION dibuja(this:name)
 
    myform:areadonly[i]:=iif(lreadonly='T',.T.,.F.)
    myform:abreak[i]:=iif(lbreak='T',.T.,.F.)
-   myform:anotabstop[i]:=iif(lnotabstop='T',.T.,.F.)
+   myform:anotabstop[i]:=iif(lNoTabStop='T',.T.,.F.)
    myform:anovscroll[i]:=iif(lnovscroll='T',.T.,.F.)
    myform:anohscroll[i]:=iif(lnohscroll='T',.T.,.F.)
 
    myform:afontname[i]:=cfontname
    if len(cfontname)>0
-        form_1:&cname:fontname := cfontname
+        form_1:&cName:fontname := cfontname
    else
-        form_1:&cname:fontname := cffontname
+        form_1:&cName:fontname := cffontname
    endif
    myform:afontsize[i]:=nfontsize
    if nfontsize>0
-        form_1:&cname:fontsize := nfontsize
+        form_1:&cName:fontsize := nfontsize
    else
-        form_1:&cname:fontsize := nffontsize
+        form_1:&cName:fontsize := nffontsize
    endif
 
-   myform:aenabled[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'ENABLED','.T.')))='.T.',.T.,.F.)
-   myform:avisible[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'VISIBLE','.T.')))='.T.',.T.,.F.)
+   myform:aenabled[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'ENABLED','.T.')))='.T.',.T.,.F.)
+   myform:avisible[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'VISIBLE','.T.')))='.T.',.T.,.F.)
 
-   form_1:&cname:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTITALIC','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontbold:=myform:abold[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTBOLD','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTITALIC','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontbold:=myform:abold[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTBOLD','.F.')))='.T.',.T.,.F.)
 
-   myform:abackcolor[i]:=myform:clean(myform:leadato_oop(cname,'BACKCOLOR','{255,255,255}'))
+   myform:abackcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName,'BACKCOLOR',''))
    cbackcolor:=myform:abackcolor[i]
-   form_1:&cname:backcolor:=&cbackcolor
-   myform:afontcolor[i]:=myform:clean(myform:leadato_oop(cname,'FONTCOLOR','{0,0,0}'))
+   form_1:&cName:backcolor:=&cbackcolor
+   myform:afontcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName,'FONTCOLOR',''))
    cfontcolor:=myform:afontcolor[i]
-   form_1:&cname:fontcolor:=&cfontcolor
+   form_1:&cName:fontcolor:=&cfontcolor
 
    myform:ahelpid[i]:=nhelpid
    myform:avalue[i]:=cValue
    myform:afield[i]:=cfield
    myform:atooltip[i]:=ctooltip
-   form_1:&cname:tooltip:=ctooltip
+   form_1:&cName:tooltip:=ctooltip
    myform:amaxlength[i]:=nmaxlength
    myform:aonchange[i]:=conchange
    myform:aongotfocus[i]:=congotfocus
    myform:aonlostfocus[i]:=conlostfocus
-   form_1:&cname:value := cvalue
-   ProcessContainersfill( Cname,nrow,ncol, myIde )
+   form_1:&cName:value := cvalue
+
+   ProcessContainersFill( cName, nRow, nCol, myIde )
 return
 
-*-----------------------------
-static function prichedit( i, myIde )
-*-----------------------------
-   cname:=myform:acontrolw[i]
+*------------------------------------------------------------------------------*
+STATIC FUNCTION pRichedit( i, myIde )
+*------------------------------------------------------------------------------*
+   cName:=myform:acontrolw[i]
    myform:actrltype[i]:='RICHEDIT'
    myform:aname[i]:=myform:acontrolw[i]
 
-   nrow:=val(myform:learow(cName))
-   ncol:=val(myform:leacol(cname))
-   nwidth:=val(myform:leadato(cname,'WIDTH','0'))
-   nheight:=val(myform:leadato(cname,'HEIGHT','0'))
+   nrow:=val(myform:LeaRow( cName))
+   ncol:=val(myform:LeaCol( cName))
+   nwidth:=val(myform:LeaDato(cName,'WIDTH','120'))
+   nheight:=val(myform:LeaDato(cName,'HEIGHT','240'))
 
-   cfontname:=myform:clean(myform:leadato(cname,'FONT',cffontname))
-   nfontsize:=val(myform:leadato(cname,'SIZE',str(nffontsize)))
+   cfontname:=myform:Clean( myform:LeaDato(cName,'FONT',cffontname))
+   nfontsize:=val(myform:LeaDato(cName,'SIZE',str(nffontsize)))
 
-   cvalue:=myform:clean(myform:leadato(cname,'VALUE',''))
-   cfield:=myform:leadato(cname,'FIELD','')
-   ctooltip:=myform:clean(myform:leadato(cname,'TOOLTIP',''))
-   nmaxlength:=val(myform:leadato(cname,'MAXLENGTH','60'))
-   lreadonly:=myform:leadatologic(cname,"READONLY","F")
-   lbreak:=myform:leadatologic(cname,"BREAK","F")
-   lnotabstop:=myform:leadatologic(cname,"NOTABSTOP","F")
-   nhelpid:=val(myform:leadato(cname,'HELPID','0'))
+   cvalue:=myform:Clean( myform:LeaDato(cName,'VALUE',''))
+   cfield:=myform:LeaDato(cName,'FIELD','')
+   ctooltip:=myform:Clean( myform:LeaDato(cName,'TOOLTIP',''))
+   nmaxlength:=val(myform:LeaDato(cName,'MAXLENGTH','60'))
+   lreadonly:=myform:LeaDatoLogic(cName,"READONLY","F")
+   lbreak:=myform:LeaDatoLogic(cName,"BREAK","F")
+   lNoTabStop:=myform:LeaDatoLogic(cName,"NOTABSTOP","F")
+   nhelpid:=val(myform:LeaDato(cName,'HELPID','0'))
 
-   conchange:=myform:leadato(cname,'ON CHANGE','')
-   congotfocus:=myform:leadato(cname,'ON GOTFOCUS','')
-   conlostfocus:=myform:leadato(cname,'ON LOSTFOCUS','')
-   cobj:=myform:leadato(cname,'OBJ','')
+   conchange:=myform:LeaDato(cName,'ON CHANGE','')
+   congotfocus:=myform:LeaDato(cName,'ON GOTFOCUS','')
+   conlostfocus:=myform:LeaDato(cName,'ON LOSTFOCUS','')
+   cobj:=myform:LeaDato(cName,'OBJ','')
     myform:acobj[i]:=cobj
 
-   @ nRow,nCol LABEL &CName OF Form_1 WIDTH nwidth HEIGHT nheight VALUE CName BACKCOLOR WHITE CLIENTEDGE  ACTION dibuja(this:name)
+   @ nRow,nCol LABEL &cName OF Form_1 WIDTH nwidth HEIGHT nheight VALUE cName BACKCOLOR WHITE CLIENTEDGE  ACTION dibuja(this:name)
 
    myform:areadonly[i]:=iif(lreadonly='T',.T.,.F.)
    myform:abreak[i]:=iif(lbreak='T',.T.,.F.)
-   myform:anotabstop[i]:=iif(lnotabstop='T',.T.,.F.)
+   myform:anotabstop[i]:=iif(lNoTabStop='T',.T.,.F.)
 
    myform:afontname[i]:=cfontname
    if len(cfontname)>0
-        form_1:&cname:fontname := cfontname
+        form_1:&cName:fontname := cfontname
    else
-        form_1:&cname:fontname := cffontname
+        form_1:&cName:fontname := cffontname
    endif
    myform:afontsize[i]:=nfontsize
    if nfontsize>0
-        form_1:&cname:fontsize := nfontsize
+        form_1:&cName:fontsize := nfontsize
    else
-        form_1:&cname:fontsize := nffontsize
+        form_1:&cName:fontsize := nffontsize
    endif
 
-   myform:aenabled[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'ENABLED','.T.')))='.T.',.T.,.F.)
-   myform:avisible[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'VISIBLE','.T.')))='.T.',.T.,.F.)
+   myform:aenabled[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'ENABLED','.T.')))='.T.',.T.,.F.)
+   myform:avisible[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'VISIBLE','.T.')))='.T.',.T.,.F.)
 
-   form_1:&cname:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTITALIC','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontbold:=myform:abold[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTBOLD','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTITALIC','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontbold:=myform:abold[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTBOLD','.F.')))='.T.',.T.,.F.)
 
-   myform:abackcolor[i]:=myform:clean(myform:leadato_oop(cname,'BACKCOLOR','{255,255,255}'))
+   myform:abackcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName,'BACKCOLOR',''))
    cbackcolor:=myform:abackcolor[i]
-   form_1:&cname:backcolor:=&cbackcolor
-   myform:afontcolor[i]:=myform:clean(myform:leadato_oop(cname,'FONTCOLOR','{0,0,0}'))
+   form_1:&cName:backcolor:=&cbackcolor
+   myform:afontcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName,'FONTCOLOR',''))
    cfontcolor:=myform:afontcolor[i]
-   form_1:&cname:fontcolor:=&cfontcolor
+   form_1:&cName:fontcolor:=&cfontcolor
 
    myform:ahelpid[i]:=nhelpid
    myform:avalue[i]:=cValue
    myform:afield[i]:=cfield
    myform:atooltip[i]:=ctooltip
-    form_1:&cname:tooltip:=ctooltip
+    form_1:&cName:tooltip:=ctooltip
    myform:amaxlength[i]:=nmaxlength
    myform:aonchange[i]:=conchange
    myform:aongotfocus[i]:=congotfocus
    myform:aonlostfocus[i]:=conlostfocus
-   form_1:&cname:value := cvalue
-   ProcessContainersfill( Cname,nrow,ncol, myIde )
+   form_1:&cName:value := cvalue
+
+   ProcessContainersFill( cName, nRow, nCol, myIde )
 return
-*--------------------------
-static function pframe( i, myIde )
-*--------------------------
+
+*------------------------------------------------------------------------------*
+STATIC FUNCTION pFrame( i, myIde )
+*------------------------------------------------------------------------------*
+
+   // Load properties
+   cName      := myform:acontrolw[i]
+   cObj       := myform:LeaDato( cName, 'OBJ', '' )
+   nRow       := Val( myform:LeaRow( cName))
+   nCol       := Val( myform:LeaCol( cName))
+   nWidth     := Val( myform:LeaDato( cName, 'WIDTH', '140' ) )
+   nHeight    := Val( myform:LeaDato( cName, 'HEIGHT', '140' ) )
+   cCaption   := myform:Clean( myform:LeaDato( cName, 'CAPTION', cName ) )
+   lOpaque    := ( myform:LeaDatoLogic( cName, "OPAQUE", "F") == "T" )
+   lTrans     := ( myform:LeaDatoLogic( cName, "TRANSPARENT", "F" ) == "T" )
+   cFontName  := myform:Clean( myform:LeaDato( cName, 'FONT', '' ) )
+   nFontSize  := Val( myform:LeaDato( cName, 'SIZE', '0' ) )
+   aFontColor := myform:LeaDato( cName, "FONTCOLOR", '' )
+   aFontColor := myform:Clean( myform:LeaDato_Oop( cName, 'FONTCOLOR', aFontColor ) )
+   lBold      := ( myform:LeaDatoLogic( cName, 'BOLD', "F" ) == "T" )
+   lBold      := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lItalic    := ( myform:LeaDatoLogic( cName, 'ITALIC', "F" ) == "T" )
+   lItalic    := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTITALIC', IF( lItalic, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lUnderline := ( myform:LeaDatoLogic( cName, 'UNDERLINE', "F" ) == "T" )
+   lUnderline := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTUNDERLINE', IF( lUnderline, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lStrikeout := ( myform:LeaDatoLogic( cName, 'STRIKEOUT', "F" ) == "T" )
+   lStrikeout := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) ) == '.T.' )
+   aBackColor := myform:LeaDato( cName, "BACKCOLOR", '' )
+   aBackColor := myform:Clean( myform:LeaDato_Oop( cName, 'BACKCOLOR', aBackColor ) )
+   lVisible   := ( myform:LeaDatoLogic( cName, 'INVISIBLE', "F" ) == "F" )
+   lVisible   := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lEnabled   := ( myform:LeaDatoLogic( cName, 'DISABLED', "F" ) == "F" )
+   lEnabled   := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) ) == '.T.' )
+
+   IF lOpaque
+      @ nRow, nCol FRAME &cName OF Form_1 ;
+         CAPTION cCaption ;
+         WIDTH nWidth ;
+         HEIGHT nHeight ;
+         OPAQUE
+   ELSE
+      @ nRow, nCol FRAME &cName OF Form_1 ;
+         CAPTION cCaption ;
+         WIDTH nWidth ;
+         HEIGHT nHeight ;
+         TRANSPARENT  
+   ENDIF
+   IF Len( cFontName ) > 0
+      Form_1:&cName:FontName   := cFontName
+   ENDIF
+   IF nFontSize > 0
+      Form_1:&cName:FontSize   := nFontSize
+   ENDIF
+   IF Len( aFontColor ) > 0
+      Form_1:&cName:FontColor  := &aFontColor
+   ENDIF
+   Form_1:&cName:FontBold      := lBold
+   Form_1:&cName:FontItalic    := lItalic
+   Form_1:&cName:FontUnderline := lUnderline
+   Form_1:&cName:FontStrikeout := lStrikeout
+   IF Len( aBackColor ) > 0
+      Form_1:&cName:BackColor  := &aBackColor
+   ENDIF
+
+   myform:aCtrlType[i]      := 'FRAME'
+   myform:aName[i]          := cName
+   myform:acobj[i]          := cObj
+   myform:aCaption[i]       := cCaption
+   myform:aTransparent[i]   := lTrans
+   myform:aOpaque[i]        := lOpaque
+   myform:aFontName[i]      := cFontName
+   myform:aFontSize[i]      := nFontSize
+   myform:aFontColor[i]     := aFontColor
+   myForm:aBold[i]          := lBold
+   myForm:aFontItalic[i]    := lItalic
+   myForm:aFontUnderline[i] := lUnderline
+   myForm:aFontStrikeout[i] := lStrikeout
+   myform:aBackColor[i]     := aBackColor
+   myform:aVisible[i]       := lVisible
+   myform:aEnabled[i]       := lEnabled
+
+   ProcessContainersFill( cName, nRow, nCol, myIde )
+return
+
+*------------------------------------------------------------------------------*
+STATIC FUNCTION pBrowse( i, myIde )
+*------------------------------------------------------------------------------*
    cName:=myform:acontrolw[i]
-   myform:actrltype[i]:='FRAME'
-   myform:aname[i]:=myform:acontrolw[i]
-
-   nrow:=val(myform:learow(cName))
-   ncol:=val(myform:leacol(cname))
-
-   nWidth:=val(myform:leadato(cname,'WIDTH','0'))
-
-   nHeight:=val(myform:leadato(cname,'HEIGHT','0'))
-
-   cCaption:=myform:clean(myform:leadato(cname,'CAPTION',cname))
-   lopaque:=myform:leadatologic(cname,"OPAQUE","F")
-   ltrans:=myform:leadatologic(cname,'TRANSPARENT',"")
-
-
-   lopaque:=iif(upper(lopaque)='T',.T.,.F.)
-   cobj:=myform:leadato(cname,'OBJ','')
-    myform:acobj[i]:=cobj
-
-   if lopaque
-      @ nRow,nCol FRAME &cName OF Form_1 CAPTION cCaption WIDTH nWidth HEIGHT nHeight OPAQUE
-   else
-      @ nRow,nCol FRAME &cName OF Form_1 CAPTION cCaption WIDTH nWidth HEIGHT nHeight
-   endif
-
-   myform:aenabled[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'ENABLED','.T.')))='.T.',.T.,.F.)
-   myform:avisible[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'VISIBLE','.T.')))='.T.',.T.,.F.)
-
-   form_1:&cname:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTITALIC','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontbold:=myform:abold[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTBOLD','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontname:=myform:afontname[i]:=myform:clean(myform:leadato_oop(cname,'FONTNAME',myform:cffontname))
-   form_1:&cname:fontsize:=myform:afontsize[i]:=val(myform:clean(myform:leadato_oop(cname,'FONTSIZE',str(myform:nffontsize,3))))
-
-   myform:atransparent[i]:=iif(ltrans='T',.T.,.F.)
-
-   myform:abackcolor[i]:=myform:clean(myform:leadato_oop(cname,'BACKCOLOR','NIL'))
-   cbackcolor:=myform:abackcolor[i]
-   if cbackcolor#'NIL'
-      form_1:&cname:backcolor:=&cbackcolor
-   endif
-   myform:afontcolor[i]:=myform:clean(myform:leadato_oop(cname,'FONTCOLOR','{0,0,0}'))
-   cfontcolor:=myform:afontcolor[i]
-   form_1:&cname:fontcolor:=&cfontcolor
-   myform:aCaption[i]:=cCaption
-   myform:aopaque[i]:=lopaque
-   ProcessContainersfill( Cname,nrow,ncol, myIde )
-return
-
-*--------------------------
-static function pbrowse( i, myIde )
-*-------------------------
-   cname:=myform:acontrolw[i]
    myform:actrltype[i]:='BROWSE'
    myform:aname[i]:=myform:acontrolw[i]
 
-   nrow:=val(myform:learow(cName))
-   ncol:=val(myform:leacol(cname))
-   nWidth:=val(myform:leadato(cname,'WIDTH','0'))
+   nrow:=val(myform:LeaRow( cName))
+   ncol:=val(myform:LeaCol( cName))
+   nWidth:=val(myform:LeaDato(cName,'WIDTH','240'))
 
-   nHeight:=val(myform:leadato(cname,'HEIGHT','0'))
-   cheaders:=myform:leadato(cname,'HEADERS',"{'',''} ")
-   cworkarea:=myform:leadato(cname,'WORKAREA',"ALIAS()")
-   cwidths:=myform:leadato(cname,'WIDTHS',"{100,60}")
-   cfields:=myform:leadato(cname,'FIELDS',"{ 'field1','field2'}")
-   nvalue:=val(myform:leadato(cname,'VALUE',''))
-   cfontname:=myform:clean(myform:leadato(cname,'FONT',cffontname))
-   nfontsize:=val(myform:leadato(cname,'SIZE',str(nffontsize)))
-   ctooltip:=myform:clean(myform:leadato(cname,'TOOLTIP',''))
-   congotfocus:=myform:leadato(cname,'ON GOTFOCUS','')
-   conlostfocus:=myform:leadato(cname,'ON LOSTFOCUS','')
-   conchange:=myform:leadato(cname,'ON CHANGE','')
-   coneditcell:=myform:leadato(cname,'ON EDITCELL','')
-   conappend:=myform:leadato(cname,'ON APPEND','')
-   condblclick:=myform:leadato(cname,'ON DBLCLICK','')
-   conenter:=myform:leadato(cname,'ON ENTER','')
+   nHeight:=val(myform:LeaDato(cName,'HEIGHT','120'))
+   cheaders:=myform:LeaDato(cName,'HEADERS',"{'',''} ")
+   cworkarea:=myform:LeaDato(cName,'WORKAREA',"ALIAS()")
+   cwidths:=myform:LeaDato(cName,'WIDTHS',"{100,60}")
+   cfields:=myform:LeaDato(cName,'FIELDS',"{ 'field1','field2'}")
+   nvalue:=val(myform:LeaDato(cName,'VALUE',''))
+   cfontname:=myform:Clean( myform:LeaDato(cName,'FONT',cffontname))
+   nfontsize:=val(myform:LeaDato(cName,'SIZE',str(nffontsize)))
+   ctooltip:=myform:Clean( myform:LeaDato(cName,'TOOLTIP',''))
+   congotfocus:=myform:LeaDato(cName,'ON GOTFOCUS','')
+   conlostfocus:=myform:LeaDato(cName,'ON LOSTFOCUS','')
+   conchange:=myform:LeaDato(cName,'ON CHANGE','')
+   coneditcell:=myform:LeaDato(cName,'ON EDITCELL','')
+   conappend:=myform:LeaDato(cName,'ON APPEND','')
+   condblclick:=myform:LeaDato(cName,'ON DBLCLICK','')
+   conenter:=myform:LeaDato(cName,'ON ENTER','')
 
-   ccolumncontrols:=myform:leadato(cname,"COLUMNCONTROLS","")
-   cinputmask:=myform:leadato(cname,'INPUTMASK',"")
+   ccolumncontrols:=myform:LeaDato(cName,"COLUMNCONTROLS","")
+   cinputmask:=myform:LeaDato(cName,'INPUTMASK',"")
 
-   conheadclick:=myform:leadato(cname,'ON HEADCLICK','')
-   cvalid:=myform:leadato(cname,'VALID',"")
-   cwhen:=myform:leadato(cname,'WHEN',"")
-   cvalidmess:=myform:leadato(cname,'VALIDMESSAGES',"")
-   cdynamicbackcolor:=myform:leadato(cname,"DYNAMICBACKCOLOR","")
-   cdynamicforecolor:=myform:leadato(cname,"DYNAMICFORECOLOR","")
-   creadonly:=myform:leadato(cname,'READONLY',"")
-   llock:=myform:leadatologic(cname,'LOCK',"")
-   ldelete:=myform:leadatologic(cname,'DELETE',"")
-   ledit:=myform:leadatologic(cname,'EDIT',"")
-   lappend:=myform:leadatologic(cname,'APPEND ;',"")
-   lnolines:=myform:leadatologic(cname,'NOLINES',"")
-   cjustify:=myform:leadato(cname,'JUSTIFY',"")
-   cimage:=myform:leadato(cname,'IMAGE',"")
-   nhelpid:=val(myform:leadato(cname,'HELPID','0'))
-   linplace:=myform:leadatologic(cname,'INPLACE',"")
-   Name := { { Cname ,''} }
+   conheadclick:=myform:LeaDato(cName,'ON HEADCLICK','')
+   cvalid:=myform:LeaDato(cName,'VALID',"")
+   cwhen:=myform:LeaDato(cName,'WHEN',"")
+   cvalidmess:=myform:LeaDato(cName,'VALIDMESSAGES',"")
+   cdynamicbackcolor:=myform:LeaDato(cName,"DYNAMICBACKCOLOR","")
+   cdynamicforecolor:=myform:LeaDato(cName,"DYNAMICFORECOLOR","")
+   creadonly:=myform:LeaDato(cName,'READONLY',"")
+   llock:=myform:LeaDatoLogic(cName,'LOCK',"")
+   ldelete:=myform:LeaDatoLogic(cName,'DELETE',"")
+   ledit:=myform:LeaDatoLogic(cName,'EDIT',"")
+   lappend:=myform:LeaDatoLogic(cName,'APPEND',"")
+   lnolines:=myform:LeaDatoLogic(cName,'NOLINES',"")
+   cjustify:=myform:LeaDato(cName,'JUSTIFY',"")
+   cimage:=myform:LeaDato(cName,'IMAGE',"")
+   nhelpid:=val(myform:LeaDato(cName,'HELPID','0'))
+   linplace:=myform:LeaDatoLogic(cName,'INPLACE',"")
+   Name := { { cName ,''} }
 
 
    lnolines:=iif(lnolines='T',.T.,.F.)
@@ -3198,10 +3267,10 @@ static function pbrowse( i, myIde )
    linplace:=iif(linplace='T',.T.,.F.)
    ledit:=iif(ledit='T',.T.,.F.)
    lappend:=iif(lappend='T',.T.,.F.)
-   cobj:=myform:leadato(cname,'OBJ','')
+   cobj:=myform:LeaDato(cName,'OBJ','')
     myform:acobj[i]:=cobj
 
-   @ nRow,nCol GRID &CName OF Form_1 WIDTH nwidth HEIGHT nheight  HEADERS {  cname,'' }  WIDTHS { 100,60 } ITEMS { { "" ,"" } }  TOOLTIP 'Properties and events right click on header area' ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name)
+   @ nRow,nCol GRID &cName OF Form_1 WIDTH nwidth HEIGHT nheight  HEADERS {  cName,'' }  WIDTHS { 100,60 } ITEMS { { "" ,"" } }  TOOLTIP 'Properties and events right click on header area' ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name)
 
    myform:aheaders[i]:=cheaders
    myform:awidths[i]:=cwidths
@@ -3211,30 +3280,30 @@ static function pbrowse( i, myIde )
 
    myform:afontname[i]:=cfontname
    if len(cfontname)>0
-        form_1:&cname:fontname := cfontname
+        form_1:&cName:fontname := cfontname
    else
-        form_1:&cname:fontname := cffontname
+        form_1:&cName:fontname := cffontname
    endif
    myform:afontsize[i]:=nfontsize
    if nfontsize>0
-        form_1:&cname:fontsize := nfontsize
+        form_1:&cName:fontsize := nfontsize
    else
-        form_1:&cname:fontsize := nffontsize
+        form_1:&cName:fontsize := nffontsize
    endif
 
-   myform:aenabled[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'ENABLED','.T.')))='.T.',.T.,.F.)
-   myform:avisible[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'VISIBLE','.T.')))='.T.',.T.,.F.)
+   myform:aenabled[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'ENABLED','.T.')))='.T.',.T.,.F.)
+   myform:avisible[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'VISIBLE','.T.')))='.T.',.T.,.F.)
 
-   form_1:&cname:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTITALIC','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontbold:=myform:abold[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTBOLD','.F.')))='.T.',.T.,.F.)
-   myform:afontcolor[i]:=myform:clean(myform:leadato_oop(cname,'FONTCOLOR','{0,0,0}'))
+   form_1:&cName:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTITALIC','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontbold:=myform:abold[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTBOLD','.F.')))='.T.',.T.,.F.)
+   myform:afontcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName,'FONTCOLOR',''))
    cfontcolor:=myform:afontcolor[i]
-   form_1:&cname:fontcolor:=&cfontcolor
-   myform:abackcolor[i]:=myform:clean(myform:leadato_oop(cname,'BACKCOLOR','{255,255,255}'))
+   form_1:&cName:fontcolor:=&cfontcolor
+   myform:abackcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName,'BACKCOLOR',''))
    cbackcolor:=myform:abackcolor[i]
-   form_1:&cname:backcolor:=&cbackcolor
+   form_1:&cName:backcolor:=&cbackcolor
 
    myform:atooltip[i]:=ctooltip
    myform:aongotfocus[i]:=congotfocus
@@ -3265,51 +3334,53 @@ static function pbrowse( i, myIde )
    myform:ahelpid[i]:=nhelpid
    myform:acolumncontrols[i]:=ccolumncontrols
    myform:ainputmask[i]:=cinputmask
-   ProcessContainersfill( Cname,nrow,ncol, myIde )
+
+   ProcessContainersFill( cName, nRow, nCol, myIde )
 return
-*-------------------------
-static function pgrid( i, myIde )
-*-------------------------
-  cname:=myform:acontrolw[i]
+
+*------------------------------------------------------------------------------*
+STATIC FUNCTION pGrid( i, myIde )
+*------------------------------------------------------------------------------*
+  cName:=myform:acontrolw[i]
   myform:actrltype[i]:='GRID'
   myform:aname[i]:=myform:acontrolw[i]
 
-  nrow:=val(myform:learow(cName))
-  ncol:=val(myform:leacol(cname))
-  nWidth:=val(myform:leadato(cname,'WIDTH','0'))
-  nHeight:=val(myform:leadato(cname,'HEIGHT','0'))
-  cheaders:=myform:leadato(cname,'HEADERS',"{'one','two'} ")
-  cwidths:=myform:leadato(cname,'WIDTHS',"{80,60}")
-  citems:=myform:leadato(cname,'ITEMS',"")
-  cvalue:=myform:leadato(cname,'VALUE','')
-  cfontname:=myform:clean(myform:leadato(cname,'FONT',cffontname))
-  nfontsize:=val(myform:leadato(cname,'SIZE',str(nffontsize)))
-  ctooltip:=myform:clean(myform:leadato(cname,'TOOLTIP',''))
-  cdynamicbackcolor:=myform:leadato(cname,"DYNAMICBACKCOLOR","")
-  cdynamicforecolor:=myform:leadato(cname,"DYNAMICFORECOLOR","")
-  ccolumncontrols:=myform:leadato(cname,"COLUMNCONTROLS","")
-  creadonly:=myform:leadato(cname,'READONLY',"")
-  cinputmask:=myform:leadato(cname,'INPUTMASK',"")
+  nrow:=val(myform:LeaRow( cName))
+  ncol:=val(myform:LeaCol( cName))
+  nWidth:=val(myform:LeaDato(cName,'WIDTH','240'))
+  nHeight:=val(myform:LeaDato(cName,'HEIGHT','120'))
+  cheaders:=myform:LeaDato(cName,'HEADERS',"{'one','two'} ")
+  cwidths:=myform:LeaDato(cName,'WIDTHS',"{80,60}")
+  citems:=myform:LeaDato(cName,'ITEMS',"")
+  cvalue:=myform:LeaDato(cName,'VALUE','')
+  cfontname:=myform:Clean( myform:LeaDato(cName,'FONT',cffontname))
+  nfontsize:=val(myform:LeaDato(cName,'SIZE',str(nffontsize)))
+  ctooltip:=myform:Clean( myform:LeaDato(cName,'TOOLTIP',''))
+  cdynamicbackcolor:=myform:LeaDato(cName,"DYNAMICBACKCOLOR","")
+  cdynamicforecolor:=myform:LeaDato(cName,"DYNAMICFORECOLOR","")
+  ccolumncontrols:=myform:LeaDato(cName,"COLUMNCONTROLS","")
+  creadonly:=myform:LeaDato(cName,'READONLY',"")
+  cinputmask:=myform:LeaDato(cName,'INPUTMASK',"")
 
-  congotfocus:=myform:leadato(cname,'ON GOTFOCUS','')
-  conlostfocus:=myform:leadato(cname,'ON LOSTFOCUS','')
-  conchange:=myform:leadato(cname,'ON CHANGE','')
-  condblclick:=myform:leadato(cname,'ON DBLCLICK','')
-  conenter:=myform:leadato(cname,'ON ENTER','')
-  conheadclick:=myform:leadato(cname,'ON HEADCLICK','')
-  coneditcell:=myform:leadato(cname,'ON EDITCELL','')
-  lmultiselect:=myform:leadatologic(cname,'MULTISELECT',"")
-  lnolines:=myform:leadatologic(cname,'NOLINES',"")
-  linplace:=myform:leadatologic(cname,'INPLACE',"")
-  cimage:=myform:leadato(cname,'IMAGE',"")
-  cjustify:=myform:leadato(cname,'JUSTIFY',"")
-  nhelpid:=val(myform:leadato(cname,'HELPID','0'))
-  lbreak:=myform:leadatologic(cname,'BREAK',"")
-  ledit:=myform:leadatologic(cname,'EDIT',"")
-  cvalid:=myform:leadato(cname,'VALID',"")
-  cwhen:=myform:leadato(cname,'WHEN',"")
-  cvalidmess:=myform:leadato(cname,'VALIDMESSAGES',"")
-  cobj:=myform:leadato(cname,'OBJ','')
+  congotfocus:=myform:LeaDato(cName,'ON GOTFOCUS','')
+  conlostfocus:=myform:LeaDato(cName,'ON LOSTFOCUS','')
+  conchange:=myform:LeaDato(cName,'ON CHANGE','')
+  condblclick:=myform:LeaDato(cName,'ON DBLCLICK','')
+  conenter:=myform:LeaDato(cName,'ON ENTER','')
+  conheadclick:=myform:LeaDato(cName,'ON HEADCLICK','')
+  coneditcell:=myform:LeaDato(cName,'ON EDITCELL','')
+  lmultiselect:=myform:LeaDatoLogic(cName,'MULTISELECT',"")
+  lnolines:=myform:LeaDatoLogic(cName,'NOLINES',"")
+  linplace:=myform:LeaDatoLogic(cName,'INPLACE',"")
+  cimage:=myform:LeaDato(cName,'IMAGE',"")
+  cjustify:=myform:LeaDato(cName,'JUSTIFY',"")
+  nhelpid:=val(myform:LeaDato(cName,'HELPID','0'))
+  lbreak:=myform:LeaDatoLogic(cName,'BREAK',"")
+  ledit:=myform:LeaDatoLogic(cName,'EDIT',"")
+  cvalid:=myform:LeaDato(cName,'VALID',"")
+  cwhen:=myform:LeaDato(cName,'WHEN',"")
+  cvalidmess:=myform:LeaDato(cName,'VALIDMESSAGES',"")
+  cobj:=myform:LeaDato(cName,'OBJ','')
    lmultiselect:=iif(lmultiselect='T',.T.,.F.)
 
    lnolines:=iif(lnolines='T',.T.,.F.)
@@ -3317,7 +3388,7 @@ static function pgrid( i, myIde )
    ledit:=iif(ledit='T',.T.,.F.)
    lbreak:=iif(lbreak='T',.T.,.F.)
 
-   @ nRow,nCol GRID &CName OF Form_1 WIDTH nwidth HEIGHT nheight  HEADERS {  cname,'' }  WIDTHS { 100,60 } ITEMS { { "" ,"" } }  TOOLTIP 'Properties and events right click on header area' ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name)
+   @ nRow,nCol GRID &cName OF Form_1 WIDTH nwidth HEIGHT nheight  HEADERS {  cName,'' }  WIDTHS { 100,60 } ITEMS { { "" ,"" } }  TOOLTIP 'Properties and events right click on header area' ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name)
 
    myform:aheaders[i]:=cheaders
    myform:awidths[i]:=cwidths
@@ -3326,31 +3397,31 @@ static function pgrid( i, myIde )
 
    myform:afontname[i]:=cfontname
    if len(cfontname)>0
-        form_1:&cname:fontname := cfontname
+        form_1:&cName:fontname := cfontname
    else
-        form_1:&cname:fontname := cffontname
+        form_1:&cName:fontname := cffontname
    endif
    myform:afontsize[i]:=nfontsize
    if nfontsize>0
-        form_1:&cname:fontsize := nfontsize
+        form_1:&cName:fontsize := nfontsize
    else
-        form_1:&cname:fontsize := nffontsize
+        form_1:&cName:fontsize := nffontsize
    endif
 
-   myform:aenabled[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'ENABLED','.T.')))='.T.',.T.,.F.)
-   myform:avisible[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'VISIBLE','.T.')))='.T.',.T.,.F.)
+   myform:aenabled[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'ENABLED','.T.')))='.T.',.T.,.F.)
+   myform:avisible[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'VISIBLE','.T.')))='.T.',.T.,.F.)
 
-   form_1:&cname:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTITALIC','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontbold:=myform:abold[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTBOLD','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTITALIC','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontbold:=myform:abold[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTBOLD','.F.')))='.T.',.T.,.F.)
 
-   myform:abackcolor[i]:=myform:clean(myform:leadato_oop(cname,'BACKCOLOR','{255,255,255}'))
+   myform:abackcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName,'BACKCOLOR',''))
    cbackcolor:=myform:abackcolor[i]
-   form_1:&cname:backcolor:=&cbackcolor
-   myform:afontcolor[i]:=myform:clean(myform:leadato_oop(cname,'FONTCOLOR','{0,0,0}'))
+   form_1:&cName:backcolor:=&cbackcolor
+   myform:afontcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName,'FONTCOLOR',''))
    cfontcolor:=myform:afontcolor[i]
-   form_1:&cname:fontcolor:=&cfontcolor
+   form_1:&cName:fontcolor:=&cfontcolor
    myform:atooltip[i]:=ctooltip
    myform:aongotfocus[i]:=congotfocus
    myform:aonlostfocus[i]:=conlostfocus
@@ -3377,41 +3448,41 @@ static function pgrid( i, myIde )
    myform:ainputmask[i]:=cinputmask
     myform:acobj[i]:=cobj
 
-   ProcessContainersfill( Cname,nrow,ncol, myIde )
+   ProcessContainersFill( cName, nRow, nCol, myIde )
 return
-*-----------------------------
-static function pdatepicker( i, myIde )
-*-----------------------------
-   cname:=myform:acontrolw[i]
+
+*------------------------------------------------------------------------------*
+STATIC FUNCTION pDatepicker( i, myIde )
+*------------------------------------------------------------------------------*
+   cName:=myform:acontrolw[i]
    myform:actrltype[i]:='DATEPICKER'
    myform:aname[i]:=myform:acontrolw[i]
 
-   nrow:=val(myform:learow(cName))
-   ncol:=val(myform:leacol(cname))
+   nrow:=val(myform:LeaRow( cName))
+   ncol:=val(myform:LeaCol( cName))
    myform:aname[i]:=myform:acontrolw[i]
 
-   nWidth:=val(myform:leadato(cname,'WIDTH','120'))
-****   nHeight:=val(myform:leadato(cname,'HEIGHT','0'))
-   cfontname:=myform:clean(myform:leadato(cname,'FONT',cffontname))
-   nfontsize:=val(myform:leadato(cname,'SIZE',str(nffontsize)))
-   ctooltip:=myform:clean(myform:leadato(cname,'TOOLTIP',''))
+   nWidth:=val(myform:LeaDato(cName,'WIDTH','120'))
+   cfontname:=myform:Clean( myform:LeaDato(cName,'FONT',cffontname))
+   nfontsize:=val(myform:LeaDato(cName,'SIZE',str(nffontsize)))
+   ctooltip:=myform:Clean( myform:LeaDato(cName,'TOOLTIP',''))
 
-   congotfocus:=myform:leadato(cname,'ON GOTFOCUS','')
-   cfield:=myform:leadato(cname,'FIELD','')
-   cvalue:=myform:leadato(cname,'VALUE','')
-   conlostfocus:=myform:leadato(cname,'ON LOSTFOCUS','')
-   conchange:=myform:leadato(cname,'ON CHANGE','')
-   conenter:=myform:leadato(cname,'ON ENTER','')
+   congotfocus:=myform:LeaDato(cName,'ON GOTFOCUS','')
+   cfield:=myform:LeaDato(cName,'FIELD','')
+   cvalue:=myform:LeaDato(cName,'VALUE','')
+   conlostfocus:=myform:LeaDato(cName,'ON LOSTFOCUS','')
+   conchange:=myform:LeaDato(cName,'ON CHANGE','')
+   conenter:=myform:LeaDato(cName,'ON ENTER','')
 
-   lshownone:=myform:leadatologic(cname,'SHOWNONE',"")
-   lupdown:=myform:leadatologic(cname,'UPDOWN',"")
-   lrightalign:=myform:leadatologic(cname,'RIGHTALIGN',"")
-   nhelpid:=val(myform:leadato(cname,'HELPID','0'))
-   cobj:=myform:leadato(cname,'OBJ','')
+   lshownone:=myform:LeaDatoLogic(cName,'SHOWNONE',"")
+   lupdown:=myform:LeaDatoLogic(cName,'UPDOWN',"")
+   lrightalign:=myform:LeaDatoLogic(cName,'RIGHTALIGN',"")
+   nhelpid:=val(myform:LeaDato(cName,'HELPID','0'))
+   cobj:=myform:LeaDato(cName,'OBJ','')
     myform:acobj[i]:=cobj
 
 
-   @ nRow,nCol DATEPICKER &CName OF Form_1 WIDTH nwidth ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name) NOTABSTOP
+   @ nRow,nCol DATEPICKER &cName OF Form_1 WIDTH nwidth ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name) NOTABSTOP
 
    myform:avalue[i]:=cvalue
 
@@ -3423,33 +3494,33 @@ static function pdatepicker( i, myIde )
 
    myform:afontname[i]:=cfontname
    if len(cfontname)>0
-        form_1:&cname:fontname := cfontname
+        form_1:&cName:fontname := cfontname
    else
-        form_1:&cname:fontname := cffontname
+        form_1:&cName:fontname := cffontname
    endif
    myform:afontsize[i]:=nfontsize
    if nfontsize>0
-        form_1:&cname:fontsize := nfontsize
+        form_1:&cName:fontsize := nfontsize
    else
-        form_1:&cname:fontsize := nffontsize
+        form_1:&cName:fontsize := nffontsize
    endif
 
-   myform:aenabled[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'ENABLED','.T.')))='.T.',.T.,.F.)
-   myform:avisible[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'VISIBLE','.T.')))='.T.',.T.,.F.)
+   myform:aenabled[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'ENABLED','.T.')))='.T.',.T.,.F.)
+   myform:avisible[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'VISIBLE','.T.')))='.T.',.T.,.F.)
 
-   form_1:&cname:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTITALIC','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontbold:=myform:abold[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTBOLD','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTITALIC','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontbold:=myform:abold[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTBOLD','.F.')))='.T.',.T.,.F.)
 
-   myform:abackcolor[i]:=myform:clean(myform:leadato_oop(cname,'BACKCOLOR','{255,255,255}'))
+   myform:abackcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName,'BACKCOLOR',''))
    cbackcolor:=myform:abackcolor[i]
-   form_1:&cname:backcolor:=&cbackcolor
-   myform:afontcolor[i]:=myform:clean(myform:leadato_oop(cname,'FONTCOLOR','{0,0,0}'))
+   form_1:&cName:backcolor:=&cbackcolor
+   myform:afontcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName,'FONTCOLOR',''))
    cfontcolor:=myform:afontcolor[i]
-   form_1:&cname:fontcolor:=&cfontcolor
+   form_1:&cName:fontcolor:=&cfontcolor
    myform:atooltip[i]:=ctooltip
-   form_1:&cname:tooltip:=ctooltip
+   form_1:&cName:tooltip:=ctooltip
    myform:ahelpid[i]:=nhelpid
    myform:afield[i]:=cfield
 
@@ -3458,250 +3529,312 @@ static function pdatepicker( i, myIde )
    myform:aonlostfocus[i]:=conlostfocus
    myform:aonenter[i]:=conenter
 
-   ProcessContainersfill( Cname,nrow,ncol, myIde )
-return
-*-----------------------------
-static function pmonthcal( i, myIde )
-*-----------------------------
-   cname:=myform:acontrolw[i]
-   myform:actrltype[i]:='MONTHCALENDAR'
-   myform:aname[i]:=cname
-
-
-   nrow:=val(myform:learow(cName))
-   ncol:=val(myform:leacol(cname))
-
-////   nWidth:=val(myform:leadato(cname,'WIDTH','0'))  197
-////  nHeight:=val(myform:leadato(cname,'HEIGHT','0')) 151
-/// el alto y ancho deben ser constantes
-   nwidth:=217
-   nheight:=181
-   cfontname:=myform:clean(myform:leadato(cname,'FONT',cffontname))
-   nfontsize:=val(myform:leadato(cname,'SIZE',str(nffontsize)))
-   ctooltip:=myform:clean(myform:leadato(cname,'TOOLTIP',''))
-
-****   congotfocus:=myform:leadato(cname,'ON GOTFOCUS','')
-   cvalue:=myform:leadato(cname,'VALUE','')
-**   conlostfocus:=myform:leadato(cname,'ON LOSTFOCUS','')
-   conchange:=myform:leadato(cname,'ON CHANGE','')
-
-   lnotoday:=myform:leadatologic(cname,'NOTODAY',"")
-   lnotodaycircle:=myform:leadatologic(cname,'NOTODAYCIRCLE',"")
-   lweeknumbers:=myform:leadatologic(cname,'WEEKNUMBERS',"")
-   lnotabstop:=myform:leadatologic(cname,'NOTABSTOP',"")
-
-   nhelpid:=val(myform:leadato(cname,'HELPID','0'))
-   cobj:=myform:leadato(cname,'OBJ','')
-    myform:acobj[i]:=cobj
-
-   @ nrow,ncol MONTHCALENDAR &Cname OF Form_1  NOTABSTOP ON CHANGE dibuja(this:name)
-
-   myform:avalue[i]:=cvalue
-
-   myform:anotoday[i]:=iif(lnotoday='T',.T.,.F.)
-
-   myform:anotodaycircle[i]:=iif(lnotodaycircle='T',.T.,.F.)
-
-   myform:aweeknumbers[i]:=iif(lweeknumbers='T',.T.,.F.)
-
-   myform:anotabstop[i]:=iif(lnotabstop='T',.T.,.F.)
-
-   myform:afontname[i]:=cfontname
-   if len(cfontname)>0
-        form_1:&cname:fontname := cfontname
-   else
-        form_1:&cname:fontname := cffontname
-   endif
-   myform:afontsize[i]:=nfontsize
-   if nfontsize>0
-        form_1:&cname:fontsize := nfontsize
-   else
-        form_1:&cname:fontsize := nffontsize
-   endif
-
-   myform:aenabled[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'ENABLED','.T.')))='.T.',.T.,.F.)
-   myform:avisible[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'VISIBLE','.T.')))='.T.',.T.,.F.)
-
-   form_1:&cname:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTITALIC','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontbold:=myform:abold[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTBOLD','.F.')))='.T.',.T.,.F.)
-
-   myform:afontcolor[i]:=myform:clean(myform:leadato_oop(cname,'FONTCOLOR','{0,0,0}'))
-   cfontcolor:=myform:afontcolor[i]
-   form_1:&cname:fontcolor:=&cfontcolor
-   myform:atooltip[i]:=ctooltip
-   form_1:&cname:tooltip:=ctooltip
-   myform:ahelpid[i]:=nhelpid
-   myform:aonchange[i]:=conchange
-   ProcessContainersfill( Cname,nrow,ncol, myIde )
-return
-*-----------------------------
-static function phyplink( i, myIde )
-*-----------------------------
-   cName:=myform:acontrolw[i]
-   myform:actrltype[i]:='HYPERLINK'
-   myform:aname[i]:=myform:acontrolw[i]
-   cfontname:=myform:clean(myform:leadato(cname,'FONT',cffontname))
-   nfontsize:=val(myform:leadato(cname,'SIZE',str(nffontsize)))
-   nrow:=val(myform:learow(cName))
-   ncol:=val(myform:leacol(cname))
-
-   ctooltip:=myform:clean(myform:leadato(cname,'TOOLTIP',''))
-   caddress:=myform:clean(myform:leadato(cname,'ADDRESS','http://sistemascvc.tripod.com'))
-   cvalue:=myform:clean(myform:leadato(cname,'VALUE','ooHG IDE+ Home'))
-   nWidth:=val(myform:leadato(cname,'WIDTH','100'))
-   nHeight:=val(myform:leadato(cname,'HEIGHT','28'))
-   nhelpid:=val(myform:leadato(cname,'HELPID','0'))
-   lhandcursor:=myform:leadatologic(cname,'HANDCURSOR',"")
-   cobj:=myform:leadato(cname,'OBJ','')
-    myform:acobj[i]:=cobj
-
-
-@ nrow,ncol LABEL &cName OF Form_1 value cvalue BORDER ACTION dibuja(this:name) WIDTH nwidth HEIGHT nheight
-   myform:afontname[i]:=cfontname
-   if len(cfontname)>0
-        form_1:&cname:fontname := cfontname
-   else
-        form_1:&cname:fontname := cffontname
-   endif
-   myform:afontsize[i]:=nfontsize
-   if nfontsize>0
-        form_1:&cname:fontsize := nfontsize
-   else
-        form_1:&cname:fontsize := nffontsize
-   endif
-
-   myform:aenabled[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'ENABLED','.T.')))='.T.',.T.,.F.)
-   myform:avisible[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'VISIBLE','.T.')))='.T.',.T.,.F.)
-   if lhandcursor=''
-      myform:ahandcursor[i]:=.F.
-   else
-      myform:ahandcursor[i]:=.T.
-   endif
-   myform:aaddress[i]:=caddress
-
-   form_1:&cname:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTITALIC','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontbold:=myform:abold[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTBOLD','.F.')))='.T.',.T.,.F.)
-   myform:abackcolor[i]:=myform:clean(myform:leadato_oop(cname,'BACKCOLOR','NIL'))
-   cbackcolor:=myform:abackcolor[i]
-   if cbackcolor#'NIL'
-      form_1:&cname:backcolor:=&cbackcolor
-   endif
-   myform:afontcolor[i]:=myform:clean(myform:leadato_oop(cname,'FONTCOLOR','{0,0,0}'))
-   cfontcolor:=myform:afontcolor[i]
-   form_1:&cname:fontcolor:=&cfontcolor
-
-   myform:avalue[i]:=cvalue
-   myform:atooltip[i]:=ctooltip
-    form_1:&cname:tooltip:=ctooltip
-   myform:ahelpid[i]:=nhelpid
-   ProcessContainersfill( Cname,nrow,ncol, myIde )
+   ProcessContainersFill( cName, nRow, nCol, myIde )
 return
 
-*------------------------------
-static function panimatebox( i, myIde )
-*------------------------------
-   cname:=myform:acontrolw[i]
-   myform:actrltype[i]:='ANIMATE'
-   myform:aname[i]:=myform:acontrolw[i]
+*------------------------------------------------------------------------------*
+STATIC FUNCTION pMonthcal( i, myIde )
+*------------------------------------------------------------------------------*
 
-   nrow:=val(myform:learow(cName))
-   ncol:=val(myform:leacol(cname))
+   // Load properties
+   cName          := myform:acontrolw[i]
+   cObj           := myform:LeaDato( cName, 'OBJ', '' )
+   nRow           := Val( myform:LeaRow( cName ) )
+   nCol           := Val( myform:LeaCol( cName ) )
+   cValue         := myform:Clean( myform:LeaDato( cName, 'VALUE', '' ) )
+   cFontName      := myform:Clean( myform:LeaDato( cName, 'FONT', '' ) )
+   nFontSize      := Val( myform:LeaDato( cName, 'SIZE', '0' ) )
+   aFontColor     := myform:LeaDato( cName, "FONTCOLOR", '' )
+   aFontColor     := myform:Clean( myform:LeaDato_Oop( cName, 'FONTCOLOR', aFontColor ) )
+   lBold          := ( myform:LeaDatoLogic( cName, 'BOLD', "F" ) == "T" )
+   lBold          := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lItalic        := ( myform:LeaDatoLogic( cName, 'ITALIC', "F" ) == "T" )
+   lItalic        := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTITALIC', IF( lItalic, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lUnderline     := ( myform:LeaDatoLogic( cName, 'UNDERLINE', "F" ) == "T" )
+   lUnderline     := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTUNDERLINE', IF( lUnderline, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lStrikeout     := ( myform:LeaDatoLogic( cName, 'STRIKEOUT', "F" ) == "T" )
+   lStrikeout     := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) ) == '.T.' )
+   aBackColor     := myform:LeaDato( cName, "BACKCOLOR", '' )
+   aBackColor     := myform:Clean( myform:LeaDato_Oop( cName, 'BACKCOLOR', aBackColor ) )
+   lVisible       := ( myform:LeaDatoLogic( cName, 'INVISIBLE', "F" ) == "F" )
+   lVisible       := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lEnabled       := ( myform:LeaDatoLogic( cName, 'DISABLED', "F" ) == "F" )
+   lEnabled       := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) ) == '.T.' )
+   cToolTip       := myform:Clean( myform:LeaDato( cName, 'TOOLTIP', '' ) )
+   nHelpID        := Val( myform:LeaDato( cName, 'HELPID', '0' ) )
+   cOnChange      := myform:LeaDato( cName, 'ON CHANGE', '' )
+   lNoToday       := ( myform:LeaDatoLogic( cName, 'NOTODAY', 'F' ) == 'T' )
+   lNoTodayCircle := ( myform:LeaDatoLogic( cName, 'NOTODAYCIRCLE', 'F' ) == 'T' )
+   lWeekNumbers   := ( myform:LeaDatoLogic( cName, 'WEEKNUMBERS', 'F' ) == 'T' )
+   lNoTabStop     := ( myform:LeaDatoLogic( cName, 'NOTABSTOP', 'F' ) == 'T' )
 
-   nWidth:=val(myform:leadato(cname,'WIDTH','0'))
-   nHeight:=val(myform:leadato(cname,'HEIGHT','0'))
+   // Show control
+   @ nRow, nCol MONTHCALENDAR &cName OF Form_1 ;
+      VALUE cValue ;
+      ON CHANGE Dibuja( This:Name )
+   IF Len( cFontName ) > 0
+      Form_1:&cName:FontName   := cFontName
+   ENDIF
+   IF nFontSize > 0
+      Form_1:&cName:FontSize   := nFontSize
+   ENDIF
+   IF Len( aFontColor ) > 0
+      Form_1:&cName:FontColor  := &aFontColor
+   ENDIF
+   Form_1:&cName:FontBold      := lBold
+   Form_1:&cName:FontItalic    := lItalic
+   Form_1:&cName:FontUnderline := lUnderline
+   Form_1:&cName:FontStrikeout := lStrikeout
+   IF Len( aBackColor ) > 0
+      Form_1:&cName:BackColor  := &aBackColor
+   ENDIF
+   Form_1:&cName:ToolTip       := cToolTip
 
-   cfile:=myform:clean(myform:leadato(cname,'FILE',""))
-***
-   lautoplay:=myform:leadatologic(cname,'AUTOPLAY',"")
-   lcentrado:=myform:leadatologic(cname,'CENTER',"")
+   // Save properties
+   myform:aCtrlType[i]      := 'MONTHCALENDAR'
+   myform:aName[i]          := cName
+   myform:acObj[i]          := cObj
+   myform:aValue[i]         := cValue
+   myform:aFontName[i]      := cFontName
+   myform:aFontSize[i]      := nFontSize
+   myform:aFontColor[i]     := aFontColor
+   myForm:aBold[i]          := lBold
+   myForm:aFontItalic[i]    := lItalic
+   myForm:aFontUnderline[i] := lUnderline
+   myForm:aFontStrikeout[i] := lStrikeout
+   myform:aBackColor[i]     := aBackColor
+   myform:aVisible[i]       := lVisible
+   myform:aEnabled[i]       := lEnabled
+   myform:aToolTip[i]       := cToolTip
+   myform:aHelpId[i]        := nHelpId
+   myform:aOnChange[i]      := cOnChange
+   myform:aNoToday[i]       := lNoToday
+   myform:aNoTodayCircle[i] := lNoTodayCircle
+   myform:aWeekNumbers[i]   := lWeekNumbers
+   myform:aNoTabStop[i]     := lNoTabStop
 
-   ltrans:=myform:leadatologic(cname,'TRANSPARENT',"")
-   nHelpid:=val(myform:leadato(cname,'HELPID','0'))
-   cobj:=myform:leadato(cname,'OBJ','')
-    myform:acobj[i]:=cobj
-
-   @ nRow,nCol LABEL &CName OF Form_1 WIDTH nwidth HEIGHT nheight VALUE CName BORDER ACTION dibuja(this:name)
-
-   myform:afile[i]:=cfile
-
-   myform:aenabled[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'ENABLED','.T.')))='.T.',.T.,.F.)
-   myform:avisible[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'VISIBLE','.T.')))='.T.',.T.,.F.)
-   myform:atooltip[i]:=myform:clean(myform:leadato_oop(cname,'TOOLTIP',''))
-   form_1:&cname:tooltip:= myform:atooltip[i]
-   myform:aautoplay[i]:=iif(lautoplay='T',.T.,.F.)
-   myform:acenter[i]:=iif(lcentrado='T',.T.,.F.)
-   myform:atransparent[i]:=iif(ltrans='T',.T.,.F.)
-
-   myform:ahelpid[i]:=nhelpid
-   ProcessContainersfill( Cname,nrow,ncol, myIde )
+   ProcessContainersFill( cName, nRow, nCol, myIde )
 return
-*--------------------------
-static function pimage( i, myIde )
-*--------------------------
-   cname:=myform:acontrolw[i]
-   myform:actrltype[i]:='IMAGE'
-   myform:aname[i]:=myform:acontrolw[i]
 
-   nrow:=val(myform:learow(cName))
-   ncol:=val(myform:leacol(cname))
+*------------------------------------------------------------------------------*
+STATIC FUNCTION pHyplink( i, myIde )
+*------------------------------------------------------------------------------*
+LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cValue, cAddress, cFontName, nFontSize, aFontColor, lBold, lItalic, lUnderline, lStrikeout, aBackColor, lVisible, lEnabled, cToolTip, nHelpID, lHandCursor
 
-   nWidth:=val(myform:leadato(cname,'WIDTH','100'))
-   nHeight:=val(myform:leadato(cname,'HEIGHT','100'))
-   cAction:=myform:leadato(cname,'ACTION',"")
+   // Load properties
+   cName        := myform:acontrolw[i]
+   cObj         := myform:LeaDato( cName, 'OBJ', '' )
+   nRow         := Val( myform:LeaRow( cName ) )
+   nCol         := Val( myform:LeaCol( cName ) )
+   nWidth       := Val( myform:LeaDato( cName, 'WIDTH', '100' ) )
+   nHeight      := Val( myform:LeaDato( cName, 'HEIGHT', '24' ) )
+   cValue       := myform:Clean( myform:LeaDato( cName, 'VALUE', 'ooHG Home' ) )
+   cAddress     := myform:Clean( myform:LeaDato( cName, 'ADDRESS', 'https://sourceforge.net/projects/oohg/' ) )
+   cFontName    := myform:Clean( myform:LeaDato( cName, 'FONT', '' ) )
+   nFontSize    := Val( myform:LeaDato( cName, 'SIZE', '0' ) )
+   aFontColor   := myform:LeaDato( cName, "FONTCOLOR", '' )
+   aFontColor   := myform:Clean( myform:LeaDato_Oop( cName, 'FONTCOLOR', aFontColor ) )
+   lBold        := ( myform:LeaDatoLogic( cName, 'BOLD', "F" ) == "T" )
+   lBold        := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lItalic      := ( myform:LeaDatoLogic( cName, 'ITALIC', "F" ) == "T" )
+   lItalic      := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTITALIC', IF( lItalic, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lUnderline   := ( myform:LeaDatoLogic( cName, 'UNDERLINE', "F" ) == "T" )
+   lUnderline   := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTUNDERLINE', IF( lUnderline, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lStrikeout   := ( myform:LeaDatoLogic( cName, 'STRIKEOUT', "F" ) == "T" )
+   lStrikeout   := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) ) == '.T.' )
+   aBackColor   := myform:LeaDato( cName, "BACKCOLOR", '' )
+   aBackColor   := myform:Clean( myform:LeaDato_Oop( cName, 'BACKCOLOR', aBackColor ) )
+   lVisible     := ( myform:LeaDatoLogic( cName, 'INVISIBLE', "F" ) == "F" )
+   lVisible     := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lEnabled     := ( myform:LeaDatoLogic( cName, 'DISABLED', "F" ) == "F" )
+   lEnabled     := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) ) == '.T.' )
+   cToolTip     := myform:Clean( myform:LeaDato( cName, 'TOOLTIP', '' ) )
+   nHelpID      := Val( myform:LeaDato( cName, 'HELPID', '0' ) )
+   lHandCursor  := ( myform:LeaDatoLogic( cName, 'HANDCURSOR', 'F' ) == 'T' )
 
-   nHelpid:=val(myform:leadato(cname,'HELPID','0'))
-   lstretch:=myform:leadatologic(cname,'STRETCH',"F")
-   cPicture:=myform:clean(myform:leadato(cname,'PICTURE','IMAGE.BMP'))
+   // Show control
+   @ nRow, nCol LABEL &cName OF Form_1 ;
+      WIDTH nWidth ;
+      HEIGHT nHeight ;
+      BORDER ;
+      VALUE cValue ;
+      ACTION Dibuja( This:Name )
+   IF Len( cFontName ) > 0
+      Form_1:&cName:FontName   := cFontName
+   ENDIF
+   IF nFontSize > 0
+      Form_1:&cName:FontSize   := nFontSize
+   ENDIF
+   IF Len( aFontColor ) > 0
+      Form_1:&cName:FontColor  := &aFontColor
+   ENDIF
+   Form_1:&cName:FontBold      := lBold
+   Form_1:&cName:FontItalic    := lItalic
+   Form_1:&cName:FontUnderline := lUnderline
+   Form_1:&cName:FontStrikeout := lStrikeout
+   IF Len( aBackColor ) > 0
+      Form_1:&cName:BackColor  := &aBackColor
+   ENDIF
+   Form_1:&cName:ToolTip       := cToolTip
+   IF lHandCursor
+      Form_1:&cName:Cursor     := IDC_HAND
+   ENDIF
 
-*      IF lstretch='T'
-*         @ nrow,ncol IMAGE &cname OF Form_1 PICTURE cpicture WIDTH nWidth HEIGHT nheight STRETCH
-*      else
-*         @ nrow,ncol IMAGE &cname OF Form_1 PICTURE cpicture WIDTH nWidth HEIGHT nheight
-*      endif
-   cobj:=myform:leadato(cname,'OBJ','')
-    myform:acobj[i]:=cobj
+   // Save properties
+   myform:aCtrlType[i]      := 'HYPERLINK'
+   myform:aName[i]          := cName
+   myform:acObj[i]          := cObj
+   myform:aValue[i]         := cValue
+   myform:aAddress[i]       := cAddress
+   myform:aFontName[i]      := cFontName
+   myform:aFontSize[i]      := nFontSize
+   myform:aFontColor[i]     := aFontColor
+   myForm:aBold[i]          := lBold
+   myForm:aFontItalic[i]    := lItalic
+   myForm:aFontUnderline[i] := lUnderline
+   myForm:aFontStrikeout[i] := lStrikeout
+   myform:aBackColor[i]     := aBackColor
+   myform:aVisible[i]       := lVisible
+   myform:aEnabled[i]       := lEnabled
+   myform:aToolTip[i]       := cToolTip
+   myform:aHelpId[i]        := nHelpId
+   myform:aHandCursor[i]    := lHandCursor
 
-   @ nrow,ncol LABEL &Cname OF Form_1 WIDTH nwidth HEIGHT nheight VALUE CName BORDER ACTION dibuja(this:name) FONT 'MS Sans Serif' SIZE 10
-
-   myform:aenabled[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'ENABLED','.T.')))='.T.',.T.,.F.)
-   myform:avisible[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'VISIBLE','.T.')))='.T.',.T.,.F.)
-
-
-   myform:aPicture[i]:=cPicture
-   myform:aaction[i]:=cAction
-
-   myform:astretch[i]:=iif(lstretch='T',.T.,.F.)
-   myform:ahelpid[i]:=nHelpid
-   ProcessContainersfill( Cname,nrow,ncol, myIde )
+   ProcessContainersFill( cName, nRow, nCol, myIde )
 return
-*----------------------------
-static function ppicbutt( i, myIde )
-*----------------------------
+
+*------------------------------------------------------------------------------*
+STATIC FUNCTION pAnimatebox( i, myIde )
+*------------------------------------------------------------------------------*
+LOCAL cName, cObj, nWidth, nHeight, cFile, lAutoplay, lCenter, lTrans, nHelpid, cToolTip, lVisible, lEnabled
+
+   // Load properties
+   cName     := myform:acontrolw[i]
+   cObj      := myform:LeaDato( cName, 'OBJ', '' )
+   nRow      := Val( myform:LeaRow( cName))
+   nCol      := Val( myform:LeaCol( cName))
+   nWidth    := Val( myform:LeaDato( cName, 'WIDTH', '0' ) )
+   nHeight   := Val( myform:LeaDato( cName, 'HEIGHT', '0' ) )
+   cFile     := myform:Clean( myform:LeaDato( cName, 'FILE', '' ) )
+   lAutoplay := ( myform:LeaDatoLogic( cName, 'AUTOPLAY', '') == "T" )
+   lCenter   := ( myform:LeaDatoLogic( cName, 'CENTER', '' ) == "T" )
+   lTrans    := ( myform:LeaDatoLogic( cName, 'TRANSPARENT', '' ) == "T" )
+   nHelpid   := Val(myform:LeaDato( cName, 'HELPID', '0' ) )
+   cToolTip  := myform:Clean( myform:LeaDato( cName, 'TOOLTIP', '' ) )
+   cToolTip  := myform:Clean( myform:LeaDato_Oop( cName, 'TOOLTIP', cToolTip ) )
+   lVisible  := ( myform:LeaDatoLogic( cName, 'INVISIBLE', "F" ) == "F" )
+   lVisible  := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lEnabled  := ( myform:LeaDatoLogic( cName, 'DISABLED', "F" ) == "F" )
+   lEnabled  := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) ) == '.T.' )
+
+   // Show control
+   @ nRow, nCol LABEL &cName ;
+      OF Form_1 ;
+      WIDTH nWidth ;
+      HEIGHT nHeight ;
+      VALUE cName ;
+      BORDER ;
+      ACTION Dibuja( this:name )
+   Form_1:&cName:ToolTip := cToolTip
+
+   // Save properties
+   myform:actrltype[i]    := 'ANIMATE'
+   myform:aname[i]        := cName
+   myform:acobj[i]        := cObj
+   myform:afile[i]        := cFile
+   myform:aautoplay[i]    := lAutoplay
+   myform:acenter[i]      := lCenter
+   myform:atransparent[i] := lTrans
+   myform:ahelpid[i]      := nHelpId
+   myform:atooltip[i]     := cToolTip
+   myform:avisible[i]     := lVisible
+   myform:aenabled[i]     := lEnabled
+
+   ProcessContainersFill( cName, nRow, nCol, myIde )
+RETURN NIL
+
+*------------------------------------------------------------------------------*
+STATIC FUNCTION pImage( i, myIde )
+*------------------------------------------------------------------------------*
+LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cAction, cPicture, lStretch, cToolTip, lBorder, lClientEdge, lVisible, lEnabled, lTrans, nHelpId, aBackColor
+
+   // Load properties
+   cName       := myform:acontrolw[i]
+   cObj        := myform:LeaDato( cName, 'OBJ', '' )
+   nRow        := Val( myform:LeaRow( cName))
+   nCol        := Val( myform:LeaCol( cName))
+   nWidth      := Val( myform:LeaDato( cName, 'WIDTH', '100' ) )
+   nHeight     := Val( myform:LeaDato( cName, 'HEIGHT', '100' ) )
+   cAction     := myform:LeaDato( cName, 'ACTION', "" )
+   cPicture    := myform:Clean( myform:LeaDato(cName, 'PICTURE', 'IMAGE.BMP' ) )
+   lStretch    := ( myform:LeaDatoLogic( cName, 'STRETCH', "F") == "T" )
+   cToolTip    := myform:Clean( myform:LeaDato( cName, 'TOOLTIP', '' ) )
+   cToolTip    := myform:Clean( myform:LeaDato_Oop( cName, 'TOOLTIP', cToolTip ) )
+   lBorder     := ( myform:LeaDatoLogic( cName, "BORDER", "F" ) == "T" )
+   lClientEdge := ( myform:LeaDatoLogic( cName, "CLIENTEDGE", "F") == "T" )
+   lVisible    := ( myform:LeaDatoLogic( cName, 'INVISIBLE', "F" ) == "F" )
+   lVisible    := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lEnabled    := ( myform:LeaDatoLogic( cName, 'DISABLED', "F" ) == "F" )
+   lEnabled    := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lTrans      := ( myform:LeaDatoLogic( cName, "TRANSPARENT", "F" ) == "T" )
+   nHelpId     := Val( myform:LeaDato( cName, 'HELPID', '0' ) )
+   aBackColor  := myform:LeaDato( cName, "BACKCOLOR", '' )
+   aBackColor  := myform:Clean( myform:LeaDato_Oop( cName, 'BACKCOLOR', aBackColor ) )
+
+   // Show control
+   @ nRow, nCol LABEL &cName OF Form_1 ;
+      WIDTH nWidth ;
+      HEIGHT nHeight ;
+      VALUE cName ;
+      BORDER ;
+      ACTION Dibuja( This:Name )
+   Form_1:&cName:ToolTip := cToolTip
+   IF Len( aBackColor ) > 0
+      Form_1:&cName:BackColor  := &aBackColor
+   ENDIF
+
+   // Save properties
+   myform:actrltype[i]    := 'IMAGE'
+   myform:aname[i]        := cName
+   myform:acobj[i]        := cObj
+   myform:aAction[i]      := cAction
+   myform:aPicture[i]     := cPicture
+   myform:aStretch[i]     := lStretch  
+   myform:aToolTip[i]     := cToolTip
+   myform:aBorder[i]      := lBorder
+   myform:aClientEdge[i]  := lClientEdge
+   myform:aVisible[i]     := lVisible
+   myform:aEnabled[i]     := lEnabled
+   myform:aTransparent[i] := lTrans
+   myform:aHelpid[i]      := nHelpid
+   myform:aBackColor[i]   := aBackColor
+
+   ProcessContainersFill( cName, nRow, nCol, myIde )
+return
+
+*------------------------------------------------------------------------------*
+STATIC FUNCTION pPicButt( i, myIde )
+*------------------------------------------------------------------------------*
    cName:=myform:acontrolw[i]
    myform:actrltype[i]:='PICBUTT'
    myform:aname[i]:=myform:acontrolw[i]
 
-   nrow:=val(myform:learow(cName))
-   ncol:=val(myform:leacol(cname))
+   nrow:=val(myform:LeaRow( cName))
+   ncol:=val(myform:LeaCol( cName))
 
-   ctooltip:=myform:clean(myform:leadato(cname,'TOOLTIP',''))
-   cPicture:=myform:clean(myform:leadato(cname,'PICTURE',''))
-   cAction:=myform:leadato(cname,'ACTION',"msginfo('Button pressed')")
-   nWidth:=val(myform:leadato(cname,'WIDTH','30'))
-   nHeight:=val(myform:leadato(cname,'HEIGHT','30'))
-   nhelpid:=val(myform:leadato(cname,'HELPID','0'))
-   lnotabstop:=myform:leadatologic(cname,'NOTABSTOP',"")
-   lflat:=myform:leadatologic(cname,'FLAT',"")
+   cobj:=myform:LeaDato(cName,'OBJ','')
+   cPicture:=myform:Clean( myform:LeaDato(cName,'PICTURE',''))
+   cAction:=myform:LeaDato(cName,'ACTION',"msginfo('Button pressed')")
+   nWidth:=val(myform:LeaDato(cName,'WIDTH','100'))
+   nHeight:=val(myform:LeaDato(cName,'HEIGHT','28'))
+   ctooltip:=myform:Clean( myform:LeaDato(cName,'TOOLTIP',''))
+   lflat:=myform:LeaDatoLogic(cName,'FLAT',"")
+   cOngotfocus:=myform:LeaDato(cName,'ON GOTFOCUS','')
+   cOnlostfocus:=myform:LeaDato(cName,'ON LOSTFOCUS','')
+   lNoTabStop:=myform:LeaDatoLogic(cName,'NOTABSTOP',"")
+   nhelpid:=val(myform:LeaDato(cName,'HELPID','0'))
 
-   cOngotfocus:=myform:leadato(cname,'ON GOTFOCUS','')
-
-   cOnlostfocus:=myform:leadato(cname,'ON LOSTFOCUS','')
-   cauxfile:=cpicture+'.BMP'
-   cobj:=myform:leadato(cname,'OBJ','')
+   cauxfile:=cpicture+'.BMP'              // TODO: Check
     myform:acobj[i]:=cobj
    if file(cauxfile)
       @ nrow,ncol Button &cName OF Form_1 PICTURE cauxfile  WIDTH nwidth HEIGHT nheight ON GOTFOCUS dibuja(this:name) NOTABSTOP
@@ -3709,220 +3842,222 @@ static function ppicbutt( i, myIde )
        @ nrow,ncol Button &cName OF Form_1 PICTURE 'A4'  WIDTH nwidth HEIGHT nheight ON GOTFOCUS dibuja(this:name) NOTABSTOP
    endif
 
-   myform:aenabled[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'ENABLED','.T.')))='.T.',.T.,.F.)
-   myform:avisible[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'VISIBLE','.T.')))='.T.',.T.,.F.)
+   myform:aenabled[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'ENABLED','.T.')))='.T.',.T.,.F.)
+   myform:avisible[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'VISIBLE','.T.')))='.T.',.T.,.F.)
 
    myform:aPicture[i]:=cPicture
    myform:atooltip[i]:=ctooltip
-    form_1:&cname:tooltip:=ctooltip
+    form_1:&cName:tooltip:=ctooltip
    myform:aaction[i]:=caction
    myform:ahelpid[i]:=nhelpid
 
-   myform:anotabstop[i]:=iif(lnotabstop='T',.T.,.F.)
+   myform:anotabstop[i]:=iif(lNoTabStop='T',.T.,.F.)
    myform:aflat[i]:=iif(lflat='T',.T.,.F.)
 
    myform:aongotfocus[i]:=congotfocus
    myform:aonlostfocus[i]:=conlostfocus
 
-   ProcessContainersfill( Cname,nrow,ncol, myIde )
+   ProcessContainersFill( cName, nRow, nCol, myIde )
 return
-*--------------------------------
-static function ppiccheckbutt( i, myIde )
-*--------------------------------
-   cname:=myform:acontrolw[i]
+
+*------------------------------------------------------------------------------*
+STATIC FUNCTION pPicCheckButt( i, myIde )
+*------------------------------------------------------------------------------*
+   cName:=myform:acontrolw[i]
    myform:actrltype[i]:='PICCHECKBUTT'
    myform:aname[i]:=myform:acontrolw[i]
 
-   nrow:=val(myform:learow(cName))
-   ncol:=val(myform:leacol(cname))
-   nWidth:=val(myform:leadato(cname,'WIDTH','0'))
-   nHeight:=val(myform:leadato(cname,'HEIGHT','0'))
-   cpicture:=myform:clean(myform:leadato(cname,'PICTURE',''))
-   ctooltip:=myform:clean(myform:leadato(cname,'TOOLTIP',''))
-   lvalue:=myform:leadato(cname,'VALUE','')
-   nhelpid:=val(myform:leadato(cname,'HELPID',"0"))
-   cOnchange:=myform:leadato(cname,'ON CHANGE','')
-   cOngotfocus:=myform:leadato(cname,'ON GOTFOCUS','')
-   cOnlostfocus:=myform:leadato(cname,'ON LOSTFOCUS','')
-   lnotabstop:=myform:leadatologic(cname,'NOTABSTOP',"")
+   nrow:=val(myform:LeaRow( cName))
+   ncol:=val(myform:LeaCol( cName))
+   cobj:=myform:LeaDato(cName,'OBJ','')
+   cpicture:=myform:Clean( myform:LeaDato(cName,'PICTURE',''))
+   nWidth:=val(myform:LeaDato(cName,'WIDTH','100'))
+   nHeight:=val(myform:LeaDato(cName,'HEIGHT','28'))
+   lValue := ( myform:LeaDatoLogic( cName, 'VALUE', 'F' ) == "T" )
+   ctooltip:=myform:Clean( myform:LeaDato(cName,'TOOLTIP',''))
+   lNoTabStop := ( myform:LeaDatoLogic( cName, 'NOTABSTOP', 'F' ) == "T" )
+   cOnchange:=myform:LeaDato(cName,'ON CHANGE','')
+   cOngotfocus:=myform:LeaDato(cName,'ON GOTFOCUS','')
+   cOnlostfocus:=myform:LeaDato(cName,'ON LOSTFOCUS','')
+   nhelpid:=val(myform:LeaDato(cName,'HELPID',"0"))
 
-   lvaluel:=myform:leadato(cname,'VALUE',"")
-   lvaluelaux:=iif(lvaluel='.T.',.T.,.F.)
+   cauxfile:=cpicture+'.BMP'            // TODO: Check
 
-   cauxfile:=cpicture+'.BMP'
-   cobj:=myform:leadato(cname,'OBJ','')
     myform:acobj[i]:=cobj
 
    if file(cauxfile)
-      @ nRow,nCol CHECKBUTTON &CName OF Form_1 PICTURE cauxfile WIDTH nwidth HEIGHT nheight ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name) NOTABSTOP
+      @ nRow,nCol CHECKBUTTON &cName OF Form_1 PICTURE cauxfile WIDTH nwidth HEIGHT nheight ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name) NOTABSTOP
    else
-      @ nRow,nCol CHECKBUTTON &CName OF Form_1 PICTURE 'A4' WIDTH nwidth HEIGHT nheight ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name) NOTABSTOP
+      @ nRow,nCol CHECKBUTTON &cName OF Form_1 PICTURE 'A4' WIDTH nwidth HEIGHT nheight ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name) NOTABSTOP
    endif
 
-   myform:aenabled[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'ENABLED','.T.')))='.T.',.T.,.F.)
-   myform:avisible[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'VISIBLE','.T.')))='.T.',.T.,.F.)
+   myform:aenabled[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'ENABLED','.T.')))='.T.',.T.,.F.)
+   myform:avisible[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'VISIBLE','.T.')))='.T.',.T.,.F.)
    myform:atooltip[i]:=ctooltip
-    form_1:&cname:tooltip:=ctooltip
+    form_1:&cName:tooltip:=ctooltip
 
-   form_1:&cname:value := myform:avaluel[i]
+   form_1:&cName:value := myform:avaluel[i]
    myform:apicture[i]:=cpicture
-   myform:avaluel[i]:=lvaluelaux
+   myform:avaluel[i] := lValue
    myform:ahelpid[i]:=nhelpid
-   myform:anotabstop[i]:=iif(lnotabstop='T',.T.,.F.)
+   myform:aNoTabStop[i]     := lNoTabStop
 
    myform:aongotfocus[i]:=congotfocus
    myform:aonlostfocus[i]:=conlostfocus
    myform:aonchange[i]:=conchange
-   ProcessContainersfill( Cname,nrow,ncol, myIde )
+
+   ProcessContainersFill( cName, nRow, nCol, myIde )
 return
-*---------------------------
-static function pcheckbtn( i, myIde )
-*---------------------------
-   cname:=myform:acontrolw[i]
+
+*------------------------------------------------------------------------------*
+STATIC FUNCTION pCheckBtn( i, myIde )
+*------------------------------------------------------------------------------*
+   cName:=myform:acontrolw[i]
    myform:actrltype[i]:='CHECKBTN'
    myform:aname[i]:=myform:acontrolw[i]
 
-   nrow:=val(myform:learow(cName))
-   ncol:=val(myform:leacol(cname))
-   nWidth:=val(myform:leadato(cname,'WIDTH','30'))
-   nHeight:=val(myform:leadato(cname,'HEIGHT','30'))
-   cCaption:=myform:clean(myform:leadato(cname,'CAPTION',cName))
-   cfontname:=myform:clean(myform:leadato(cname,'FONT',cffontname))
-   nfontsize:=val(myform:leadato(cname,'SIZE',str(nffontsize)))
-   ctooltip:=myform:clean(myform:leadato(cname,'TOOLTIP',''))
-   lvalue:=myform:leadato(cname,'VALUE','')
-   nhelpid:=val(myform:leadato(cname,'HELPID',"0"))
-   lnotabstop:=myform:leadatologic(cname,'NOTABSTOP',"")
+   nrow:=val(myform:LeaRow( cName))
+   ncol:=val(myform:LeaCol( cName))
+   nWidth:=val(myform:LeaDato(cName,'WIDTH','100'))
+   nHeight:=val(myform:LeaDato(cName,'HEIGHT','28'))
+   cCaption:=myform:Clean( myform:LeaDato(cName,'CAPTION',cName))
+   cfontname:=myform:Clean( myform:LeaDato(cName,'FONT',cffontname))
+   nfontsize:=val(myform:LeaDato(cName,'SIZE',str(nffontsize)))
+   ctooltip:=myform:Clean( myform:LeaDato(cName,'TOOLTIP',''))
+   lvalue:=myform:LeaDato(cName,'VALUE','')
+   nhelpid:=val(myform:LeaDato(cName,'HELPID',"0"))
+   lNoTabStop:=myform:LeaDatoLogic(cName,'NOTABSTOP',"")
 
-   cOnchange:=myform:leadato(cname,'ON CHANGE','')
-   cOngotfocus:=myform:leadato(cname,'ON GOTFOCUS','')
-   cOnlostfocus:=myform:leadato(cname,'ON LOSTFOCUS','')
+   cOnchange:=myform:LeaDato(cName,'ON CHANGE','')
+   cOngotfocus:=myform:LeaDato(cName,'ON GOTFOCUS','')
+   cOnlostfocus:=myform:LeaDato(cName,'ON LOSTFOCUS','')
 
-   lvaluel:=myform:leadato(cname,'VALUE',"")
+   lvaluel:=myform:LeaDato(cName,'VALUE',"")
    lvaluelaux:=iif(lvaluel='.T.',.T.,.F.)
-   cobj:=myform:leadato(cname,'OBJ','')
+   cobj:=myform:LeaDato(cName,'OBJ','')
     myform:acobj[i]:=cobj
 
-   @ nRow,nCol CHECKBUTTON &CName OF Form_1 CAPTION Ccaption WIDTH nwidth HEIGHT nheight VALUE lvaluelaux ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name) NOTABSTOP
+   @ nRow,nCol CHECKBUTTON &cName OF Form_1 CAPTION Ccaption WIDTH nwidth HEIGHT nheight VALUE lvaluelaux ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name) NOTABSTOP
 
    myform:afontname[i]:=cfontname
    if len(cfontname)>0
-        form_1:&cname:fontname := cfontname
+        form_1:&cName:fontname := cfontname
    else
-        form_1:&cname:fontname := cffontname
+        form_1:&cName:fontname := cffontname
    endif
    myform:afontsize[i]:=nfontsize
    if nfontsize>0
-        form_1:&cname:fontsize := nfontsize
+        form_1:&cName:fontsize := nfontsize
    else
-        form_1:&cname:fontsize := nffontsize
+        form_1:&cName:fontsize := nffontsize
    endif
 
-   myform:aenabled[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'ENABLED','.T.')))='.T.',.T.,.F.)
-   myform:avisible[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'VISIBLE','.T.')))='.T.',.T.,.F.)
+   myform:aenabled[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'ENABLED','.T.')))='.T.',.T.,.F.)
+   myform:avisible[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'VISIBLE','.T.')))='.T.',.T.,.F.)
 
-   form_1:&cname:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTITALIC','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontbold:=myform:abold[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTBOLD','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTITALIC','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontbold:=myform:abold[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTBOLD','.F.')))='.T.',.T.,.F.)
 
-   myform:abackcolor[i]:=myform:clean(myform:leadato_oop(cname,'BACKCOLOR','NIL'))
+   myform:abackcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName,'BACKCOLOR','NIL'))
    cbackcolor:=myform:abackcolor[i]
    if cbackcolor#'NIL'
-      form_1:&cname:backcolor:=&cbackcolor
+      form_1:&cName:backcolor:=&cbackcolor
    endif
-   myform:afontcolor[i]:=myform:clean(myform:leadato_oop(cname,'FONTCOLOR','{0,0,0}'))
+   myform:afontcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName,'FONTCOLOR',''))
    cfontcolor:=myform:afontcolor[i]
-   form_1:&cname:fontcolor:=&cfontcolor
+   form_1:&cName:fontcolor:=&cfontcolor
 
    myform:atooltip[i]:=ctooltip
 
-    form_1:&cname:tooltip:=ctooltip
+    form_1:&cName:tooltip:=ctooltip
    myform:acaption[i]:=ccaption
 
    myform:avaluel[i]:=lvaluelaux
 
    myform:ahelpid[i]:=nhelpid
 
-   myform:anotabstop[i]:=iif(lnotabstop='T',.T.,.F.)
+   myform:anotabstop[i]:=iif(lNoTabStop='T',.T.,.F.)
 
    myform:aongotfocus[i]:=congotfocus
    myform:aonlostfocus[i]:=conlostfocus
    myform:aonchange[i]:=conchange
-   ProcessContainersfill( Cname,nrow,ncol, myIde )
+
+   ProcessContainersFill( cName, nRow, nCol, myIde )
 return
-*------------------------------
-static function pcombobox( i, myIde )
-*------------------------------
-   cname:=myform:acontrolw[i]
+
+*------------------------------------------------------------------------------*
+STATIC FUNCTION pComboBox( i, myIde )
+*------------------------------------------------------------------------------*
+   cName:=myform:acontrolw[i]
    myform:actrltype[i]:='COMBO'
    myform:aname[i]:=myform:acontrolw[i]
 
-   nrow:=val(myform:learow(cName))
-   ncol:=val(myform:leacol(cname))
-   nWidth:=val(myform:leadato(cname,'WIDTH','0'))
-////   nHeight:=val(myform:leadato(cname,'HEIGHT','0'))
-   citems:=myform:leadato(cname,'ITEMS','')
-   citemsource:=myform:leadato(cname,'ITEMSOURCE','')
-   nvalue:=val(myform:leadato(cname,'VALUE','0'))
-   cvaluesource:=myform:leadato(cname,'VALUESOURCE','')
-   cfontname:=myform:clean(myform:leadato(cname,'FONT',cffontname))
-   nfontsize:=val(myform:leadato(cname,'SIZE',str(nffontsize)))
-   ctooltip:=myform:clean(myform:leadato(cname,'TOOLTIP',''))
-   nhelpid:=val(myform:leadato(cname,'HELPID',"0"))
-   lnotabstop:=myform:leadatologic(cname,'NOTABSTOP',"")
-   lsort:=myform:leadatologic(cname,'SORT',"")
-   lbreak:=myform:leadatologic(cname,'BREAK',"")
-   ldisplayedit:=myform:leadatologic(cname,'DISPLAYEDIT',"")
+   nrow:=val(myform:LeaRow( cName))
+   ncol:=val(myform:LeaCol( cName))
+   nWidth:=val(myform:LeaDato(cName,'WIDTH','120'))
+   citems:=myform:LeaDato(cName,'ITEMS','')
+   citemsource:=myform:LeaDato(cName,'ITEMSOURCE','')
+   nvalue:=val(myform:LeaDato(cName,'VALUE','0'))
+   cvaluesource:=myform:LeaDato(cName,'VALUESOURCE','')
+   cfontname:=myform:Clean( myform:LeaDato(cName,'FONT',cffontname))
+   nfontsize:=val(myform:LeaDato(cName,'SIZE',str(nffontsize)))
+   ctooltip:=myform:Clean( myform:LeaDato(cName,'TOOLTIP',''))
+   nhelpid:=val(myform:LeaDato(cName,'HELPID',"0"))
+   lNoTabStop:=myform:LeaDatoLogic(cName,'NOTABSTOP',"")
+   lsort:=myform:LeaDatoLogic(cName,'SORT',"")
+   lbreak:=myform:LeaDatoLogic(cName,'BREAK',"")
+   ldisplayedit:=myform:LeaDatoLogic(cName,'DISPLAYEDIT',"")
 
-   cOnchange:=myform:leadato(cname,'ON CHANGE','')
-   cOngotfocus:=myform:leadato(cname,'ON GOTFOCUS','')
-   cOnlostfocus:=myform:leadato(cname,'ON LOSTFOCUS','')
-   cOnenter:=myform:leadato(cname,'ON ENTER','')
-   cOndisplaychange:=myform:leadato(cname,'ON DISPLAYCHANGE','')
-   cobj:=myform:leadato(cname,'OBJ','')
+   cOnchange:=myform:LeaDato(cName,'ON CHANGE','')
+   cOngotfocus:=myform:LeaDato(cName,'ON GOTFOCUS','')
+   cOnlostfocus:=myform:LeaDato(cName,'ON LOSTFOCUS','')
+   cOnenter:=myform:LeaDato(cName,'ON ENTER','')
+   cOndisplaychange:=myform:LeaDato(cName,'ON DISPLAYCHANGE','')
+   cobj:=myform:LeaDato(cName,'OBJ','')
     myform:acobj[i]:=cobj
 
-  @ nRow,nCol COMBOBOX &CName OF Form_1 WIDTH nwidth ITEMS { cname,' ' } VALUE 1 ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name) NOTABSTOP
+  @ nRow,nCol COMBOBOX &cName OF Form_1 WIDTH nwidth ITEMS { cName,' ' } VALUE 1 ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name) NOTABSTOP
 
 
    myform:afontname[i]:=cfontname
    if len(cfontname)>0
-        form_1:&cname:fontname := cfontname
+        form_1:&cName:fontname := cfontname
    else
-        form_1:&cname:fontname := cffontname
+        form_1:&cName:fontname := cffontname
    endif
    myform:afontsize[i]:=nfontsize
    if nfontsize>0
-        form_1:&cname:fontsize := nfontsize
+        form_1:&cName:fontsize := nfontsize
    else
-        form_1:&cname:fontsize := nffontsize
+        form_1:&cName:fontsize := nffontsize
    endif
 
-   myform:aenabled[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'ENABLED','.T.')))='.T.',.T.,.F.)
-   myform:avisible[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'VISIBLE','.T.')))='.T.',.T.,.F.)
+   myform:aenabled[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'ENABLED','.T.')))='.T.',.T.,.F.)
+   myform:avisible[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'VISIBLE','.T.')))='.T.',.T.,.F.)
 
-   form_1:&cname:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTITALIC','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontbold:=myform:abold[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTBOLD','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTITALIC','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontbold:=myform:abold[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTBOLD','.F.')))='.T.',.T.,.F.)
 
-   myform:abackcolor[i]:=myform:clean(myform:leadato_oop(cname,'BACKCOLOR','{255,255,255}'))
+   myform:abackcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName,'BACKCOLOR',''))
    cbackcolor:=myform:abackcolor[i]
-   form_1:&cname:backcolor:=&cbackcolor
-   myform:afontcolor[i]:=myform:clean(myform:leadato_oop(cname,'FONTCOLOR','{0,0,0}'))
+   form_1:&cName:backcolor:=&cbackcolor
+   myform:afontcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName,'FONTCOLOR',''))
    cfontcolor:=myform:afontcolor[i]
-   form_1:&cname:fontcolor:=&cfontcolor
+   form_1:&cName:fontcolor:=&cfontcolor
 
   myform:atooltip[i]:=ctooltip
-    form_1:&cname:tooltip:=ctooltip
+    form_1:&cName:tooltip:=ctooltip
   myform:aitems[i]:=citems
   myform:aitemsource[i]:=citemsource
   myform:avaluen[i]:=nvalue
   myform:avaluesource[i]:=cvaluesource
   myform:ahelpid[i]:=nhelpid
 
-  myform:anotabstop[i]:=iif(lnotabstop='T',.T.,.F.)
+  myform:anotabstop[i]:=iif(lNoTabStop='T',.T.,.F.)
   myform:asort[i]:=iif(lsort='T',.T.,.F.)
   myform:abreak[i]:=iif(lbreak='T',.T.,.F.)
   myform:adisplayedit[i]:=iif(ldisplayedit='T',.T.,.F.)
@@ -3932,77 +4067,78 @@ static function pcombobox( i, myIde )
   myform:aonenter[i]:=conenter
   myform:aondisplaychange[i]:=condisplaychange
 
-  ProcessContainersfill( Cname,nrow,ncol, myIde )
+   ProcessContainersFill( cName, nRow, nCol, myIde )
 return
-*----------------------------
-static function plistbox( i, myIde )
-*----------------------------
-   cname:=myform:acontrolw[i]
+
+*------------------------------------------------------------------------------*
+STATIC FUNCTION pListBox( i, myIde )
+*------------------------------------------------------------------------------*
+   cName:=myform:acontrolw[i]
    myform:actrltype[i]:='LIST'
    myform:aname[i]:=myform:acontrolw[i]
 
-   nrow:=val(myform:learow(cName))
-   ncol:=val(myform:leacol(cname))
-   nWidth:=val(myform:leadato(cname,'WIDTH','0'))
-   nHeight:=val(myform:leadato(cname,'HEIGHT','0'))
-   cfontname:=myform:clean(myform:leadato(cname,'FONT',cffontname))
-   nfontsize:=val(myform:leadato(cname,'SIZE',str(nffontsize)))
-   ctooltip:=myform:clean(myform:leadato(cname,'TOOLTIP',''))
-   citems:=myform:leadato(cname,'ITEMS','')
+   nrow:=val(myform:LeaRow( cName))
+   ncol:=val(myform:LeaCol( cName))
+   nWidth:=val(myform:LeaDato(cName,'WIDTH','120'))
+   nHeight:=val(myform:LeaDato(cName,'HEIGHT','120'))
+   cfontname:=myform:Clean( myform:LeaDato(cName,'FONT',cffontname))
+   nfontsize:=val(myform:LeaDato(cName,'SIZE',str(nffontsize)))
+   ctooltip:=myform:Clean( myform:LeaDato(cName,'TOOLTIP',''))
+   citems:=myform:LeaDato(cName,'ITEMS','')
 
-   nvalue:=val(myform:leadato(cname,'VALUE','0'))
-   lmultiselect:=myform:leadatologic(cname,'MULTISELECT',"F")
-   nhelpid:=val(myform:leadato(cname,'HELPID',"0"))
-   lnotabstop:=myform:leadatologic(cname,'NOTABSTOP',"")
-   lbreak:=myform:leadatologic(cname,'BREAK',"")
-   lsort:=myform:leadatologic(cname,'SORT',"")
+   nvalue:=val(myform:LeaDato(cName,'VALUE','0'))
+   lmultiselect:=myform:LeaDatoLogic(cName,'MULTISELECT',"F")
+   nhelpid:=val(myform:LeaDato(cName,'HELPID',"0"))
+   lNoTabStop:=myform:LeaDatoLogic(cName,'NOTABSTOP',"")
+   lbreak:=myform:LeaDatoLogic(cName,'BREAK',"")
+   lsort:=myform:LeaDatoLogic(cName,'SORT',"")
 
-   cOnchange:=myform:leadato(cname,'ON CHANGE','')
-   cOngotfocus:=myform:leadato(cname,'ON GOTFOCUS','')
-   cOnlostfocus:=myform:leadato(cname,'ON LOSTFOCUS','')
-   cOndblclick:=myform:leadato(cname,'ON DBLCLICK','')
-   cobj:=myform:leadato(cname,'OBJ','')
+   cOnchange:=myform:LeaDato(cName,'ON CHANGE','')
+   cOngotfocus:=myform:LeaDato(cName,'ON GOTFOCUS','')
+   cOnlostfocus:=myform:LeaDato(cName,'ON LOSTFOCUS','')
+   cOndblclick:=myform:LeaDato(cName,'ON DBLCLICK','')
+   cobj:=myform:LeaDato(cName,'OBJ','')
     myform:acobj[i]:=cobj
 
- @ nRow,nCol LISTBOX &CName OF Form_1 WIDTH nwidth HEIGHT nheight ITEMS {cname} ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name) NOTABSTOP
+ @ nRow,nCol LISTBOX &cName OF Form_1 WIDTH nwidth HEIGHT nheight ITEMS {cName} ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name) NOTABSTOP
 
   myform:atooltip[i]:=ctooltip
 
    myform:afontname[i]:=cfontname
    if len(cfontname)>0
-        form_1:&cname:fontname := cfontname
+        form_1:&cName:fontname := cfontname
    else
-        form_1:&cname:fontname := cffontname
+        form_1:&cName:fontname := cffontname
    endif
    myform:afontsize[i]:=nfontsize
    if nfontsize>0
-        form_1:&cname:fontsize := nfontsize
+        form_1:&cName:fontsize := nfontsize
    else
-        form_1:&cname:fontsize := nffontsize
+        form_1:&cName:fontsize := nffontsize
    endif
 
-   myform:aenabled[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'ENABLED','.T.')))='.T.',.T.,.F.)
-   myform:avisible[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'VISIBLE','.T.')))='.T.',.T.,.F.)
+   myform:aenabled[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'ENABLED','.T.')))='.T.',.T.,.F.)
+   myform:avisible[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'VISIBLE','.T.')))='.T.',.T.,.F.)
 
 
-  form_1:&cname:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTITALIC','.F.')))='.T.',.T.,.F.)
-  form_1:&cname:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
-  form_1:&cname:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
-  form_1:&cname:fontbold:=myform:abold[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTBOLD','.F.')))='.T.',.T.,.F.)
-   myform:abackcolor[i]:=myform:clean(myform:leadato_oop(cname,'BACKCOLOR','{255,255,255}'))
+  form_1:&cName:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTITALIC','.F.')))='.T.',.T.,.F.)
+  form_1:&cName:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
+  form_1:&cName:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
+  form_1:&cName:fontbold:=myform:abold[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTBOLD','.F.')))='.T.',.T.,.F.)
+   myform:abackcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName,'BACKCOLOR',''))
    cbackcolor:=myform:abackcolor[i]
-   form_1:&cname:backcolor:=&cbackcolor
-   myform:afontcolor[i]:=myform:clean(myform:leadato_oop(cname,'FONTCOLOR','{0,0,0}'))
+   form_1:&cName:backcolor:=&cbackcolor
+   myform:afontcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName,'FONTCOLOR',''))
    cfontcolor:=myform:afontcolor[i]
-   form_1:&cname:fontcolor:=&cfontcolor
+   form_1:&cName:fontcolor:=&cfontcolor
   myform:atooltip[i]:=ctooltip
-    form_1:&cname:tooltip:=ctooltip
+    form_1:&cName:tooltip:=ctooltip
   myform:aitems[i]:=citems
   myform:avaluen[i]:=nvalue
 
   myform:amultiselect[i]:=iif(lmultiselect='T',.T.,.F.)
 
-  myform:anotabstop[i]:=iif(lnotabstop='T',.T.,.F.)
+  myform:anotabstop[i]:=iif(lNoTabStop='T',.T.,.F.)
 
   myform:asort[i]:=iif(lsort='T',.T.,.F.)
 
@@ -4015,150 +4151,151 @@ static function plistbox( i, myIde )
   myform:aonchange[i]:=conchange
   myform:aondblclick[i]:=condblclick
 
-  ProcessContainersfill( Cname,nrow,ncol, myIde )
+   ProcessContainersFill( cName, nRow, nCol, myIde )
 return
-*-----------------------------
-static function pcheckbox( i, myIde )
-*-----------------------------
+
+*------------------------------------------------------------------------------*
+STATIC FUNCTION pCheckBox( i, myIde )
+*------------------------------------------------------------------------------*
    cName:=myform:acontrolw[i]
    myform:actrltype[i]:='CHECKBOX'
    myform:aname[i]:=myform:acontrolw[i]
 
-   nrow:=val(myform:learow(cName))
-   ncol:=val(myform:leacol(cname))
-   cfontname:=myform:clean(myform:leadato(cname,'FONT',cffontname))
-   nfontsize:=val(myform:leadato(cname,'SIZE',str(nffontsize)))
-   ctooltip:=myform:clean(myform:leadato(cname,'TOOLTIP',''))
-   cCaption:=myform:clean(myform:leadato(cname,'CAPTION',cName))
-   nWidth:=val(myform:leadato(cname,'WIDTH','0'))
-   nHeight:=val(myform:leadato(cname,'HEIGHT','0'))
-   cOnchange:=myform:leadato(cname,'ON CHANGE','')
-   cfield:=myform:leadato(cname,'FIELD','')
-   cOngotfocus:=myform:leadato(cname,'ON GOTFOCUS','')
-   cOnlostfocus:=myform:leadato(cname,'ON LOSTFOCUS','')
-   nhelpid:=val(myform:leadato(cname,'HELPID','0'))
-   ltrans:=myform:leadatologic(cname,'TRANSPARENT',"")
-   lnotabstop:=myform:leadatologic(cname,'NOTABSTOP',"")
+   nrow:=val(myform:LeaRow( cName))
+   ncol:=val(myform:LeaCol( cName))
+   cfontname:=myform:Clean( myform:LeaDato(cName,'FONT',cffontname))
+   nfontsize:=val(myform:LeaDato(cName,'SIZE',str(nffontsize)))
+   ctooltip:=myform:Clean( myform:LeaDato(cName,'TOOLTIP',''))
+   cCaption:=myform:Clean( myform:LeaDato(cName,'CAPTION',cName))
+   nWidth:=val(myform:LeaDato(cName,'WIDTH','100'))
+   nHeight:=val(myform:LeaDato(cName,'HEIGHT','28'))
+   cOnchange:=myform:LeaDato(cName,'ON CHANGE','')
+   cfield:=myform:LeaDato(cName,'FIELD','')
+   cOngotfocus:=myform:LeaDato(cName,'ON GOTFOCUS','')
+   cOnlostfocus:=myform:LeaDato(cName,'ON LOSTFOCUS','')
+   nhelpid:=val(myform:LeaDato(cName,'HELPID','0'))
+   ltrans:=myform:LeaDatoLogic(cName,'TRANSPARENT',"")
+   lNoTabStop:=myform:LeaDatoLogic(cName,'NOTABSTOP',"")
 
-   lvaluel:=myform:leadato(cname,'VALUE',"")
+   lvaluel:=myform:LeaDato(cName,'VALUE',"")
    lvaluelaux:=iif(lvaluel='.T.',.T.,.F.)
-   cobj:=myform:leadato(cname,'OBJ','')
+   cobj:=myform:LeaDato(cName,'OBJ','')
     myform:acobj[i]:=cobj
 
-   @ nRow,nCol CHECKBOX &CName OF Form_1 CAPTION Ccaption WIDTH nwidth HEIGHT nheight VALUE lvaluelaux FONT cfontname SIZE nfontsize ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name) NOTABSTOP
+   @ nRow,nCol CHECKBOX &cName OF Form_1 CAPTION Ccaption WIDTH nwidth HEIGHT nheight VALUE lvaluelaux FONT cfontname SIZE nfontsize ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name) NOTABSTOP
 
    myform:afontname[i]:=cfontname
    if len(cfontname)>0
-        form_1:&cname:fontname := cfontname
+        form_1:&cName:fontname := cfontname
    else
-        form_1:&cname:fontname := cffontname
+        form_1:&cName:fontname := cffontname
    endif
    myform:afontsize[i]:=nfontsize
    if nfontsize>0
-        form_1:&cname:fontsize := nfontsize
+        form_1:&cName:fontsize := nfontsize
    else
-        form_1:&cname:fontsize := nffontsize
+        form_1:&cName:fontsize := nffontsize
    endif
 
 
    myform:atransparent[i]:=iif(ltrans='T',.T.,.F.)
 
-   myform:aenabled[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'ENABLED','.T.')))='.T.',.T.,.F.)
-   myform:avisible[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'VISIBLE','.T.')))='.T.',.T.,.F.)
+   myform:aenabled[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'ENABLED','.T.')))='.T.',.T.,.F.)
+   myform:avisible[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'VISIBLE','.T.')))='.T.',.T.,.F.)
 
-   form_1:&cname:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTITALIC','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontbold:=myform:abold[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTBOLD','.F.')))='.T.',.T.,.F.)
-   myform:abackcolor[i]:=myform:clean(myform:leadato_oop(cname,'BACKCOLOR','NIL'))
+   form_1:&cName:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTITALIC','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontbold:=myform:abold[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTBOLD','.F.')))='.T.',.T.,.F.)
+   myform:abackcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName,'BACKCOLOR','NIL'))
    cbackcolor:=myform:abackcolor[i]
    if cbackcolor#'NIL'
-      form_1:&cname:backcolor:=&cbackcolor
+      form_1:&cName:backcolor:=&cbackcolor
    endif
-   myform:afontcolor[i]:=myform:clean(myform:leadato_oop(cname,'FONTCOLOR','{0,0,0}'))
+   myform:afontcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName,'FONTCOLOR',''))
    cfontcolor:=myform:afontcolor[i]
-   form_1:&cname:fontcolor:=&cfontcolor
+   form_1:&cName:fontcolor:=&cfontcolor
    myform:atooltip[i]:=ctooltip
-    form_1:&cname:tooltip:=ctooltip
+    form_1:&cName:tooltip:=ctooltip
 
    myform:acaption[i]:=ccaption
    myform:ahelpid[i]:=nhelpid
    myform:afield[i]:=cfield
-   myform:anotabstop[i]:=iif(lnotabstop='T',.T.,.F.)
+   myform:anotabstop[i]:=iif(lNoTabStop='T',.T.,.F.)
    myform:avaluel[i]:=lvaluelaux
 
 
    myform:aongotfocus[i]:=congotfocus
    myform:aonlostfocus[i]:=conlostfocus
    myform:aonchange[i]:=conchange
-   ProcessContainersfill( Cname,nrow,ncol, myIde )
+
+   ProcessContainersFill( cName, nRow, nCol, myIde )
 return
 
-*---------------------------
-static function pbutton( i, myIde )
-*---------------------------
-
+*------------------------------------------------------------------------------*
+STATIC FUNCTION pButton( i, myIde )
+*------------------------------------------------------------------------------*
    cName:=myform:acontrolw[i]
    myform:actrltype[i]:='BUTTON'
    myform:aname[i]:=myform:acontrolw[i]
-   cfontname:=myform:clean(myform:leadato(cname,'FONT',cffontname))
-   nfontsize:=val(myform:leadato(cname,'SIZE',str(nffontsize)))
-   nrow:=val(myform:learow(cName))
-   ncol:=val(myform:leacol(cname))
+   cfontname:=myform:Clean( myform:LeaDato(cName,'FONT',cffontname))
+   nfontsize:=val(myform:LeaDato(cName,'SIZE',str(nffontsize)))
+   nrow:=val(myform:LeaRow( cName))
+   ncol:=val(myform:LeaCol( cName))
 
-   ctooltip:=myform:clean(myform:leadato(cname,'TOOLTIP',''))
-   cCaption:=myform:clean(myform:leadato(cname,'CAPTION',cName))
-   cPicture:= myform:clean(myform:leadato(cname,'PICTURE',''))
-   cAction:=myform:leadato(cname,'ACTION',"msginfo('Button pressed')")
-   nWidth:=val(myform:leadato(cname,'WIDTH','100'))
-   nHeight:=val(myform:leadato(cname,'HEIGHT','28'))
-   nhelpid:=val(myform:leadato(cname,'HELPID','0'))
-   lnotabstop:=myform:leadatologic(cname,'NOTABSTOP',"")
-   lflat:=myform:leadatologic(cname,'FLAT',"")
+   ctooltip:=myform:Clean( myform:LeaDato(cName,'TOOLTIP',''))
+   cCaption:=myform:Clean( myform:LeaDato(cName,'CAPTION',cName))
+   cPicture:= myform:Clean( myform:LeaDato(cName,'PICTURE',''))
+   cAction:=myform:LeaDato(cName,'ACTION',"msginfo('Button pressed')")
+   nWidth:=val(myform:LeaDato(cName,'WIDTH','100'))
+   nHeight:=val(myform:LeaDato(cName,'HEIGHT','28'))
+   nhelpid:=val(myform:LeaDato(cName,'HELPID','0'))
+   lNoTabStop:=myform:LeaDatoLogic(cName,'NOTABSTOP',"")
+   lflat:=myform:LeaDatoLogic(cName,'FLAT',"")
 
-   ltop:=myform:leadatologic(cname,'TOP',"")
-   lbottom:=myform:leadatologic(cname,'BOTTOM',"")
-   lleft:=myform:leadatologic(cname,'LEFT',"")
-   lright:=myform:leadatologic(cname,'RIGHT',"")
+   ltop:=myform:LeaDatoLogic(cName,'TOP',"")
+   lbottom:=myform:LeaDatoLogic(cName,'BOTTOM',"")
+   lleft:=myform:LeaDatoLogic(cName,'LEFT',"")
+   lright:=myform:LeaDatoLogic(cName,'RIGHT',"")
 
-   cOngotfocus:=myform:leadato(cname,'ON GOTFOCUS','')
+   cOngotfocus:=myform:LeaDato(cName,'ON GOTFOCUS','')
 
-   cOnlostfocus:=myform:leadato(cname,'ON LOSTFOCUS','')
-   cobj:=myform:leadato(cname,'OBJ','')
+   cOnlostfocus:=myform:LeaDato(cName,'ON LOSTFOCUS','')
+   cobj:=myform:LeaDato(cName,'OBJ','')
 
 @ nrow,ncol Button &cName OF Form_1 CAPTION cCaption  WIDTH nwidth HEIGHT nheight ON GOTFOCUS dibuja(this:name) NOTABSTOP
 
    myform:afontname[i]:=cfontname
    if len(cfontname)>0
-        form_1:&cname:fontname := cfontname
+        form_1:&cName:fontname := cfontname
    else
-        form_1:&cname:fontname := cffontname
+        form_1:&cName:fontname := cffontname
    endif
    myform:afontsize[i]:=nfontsize
    if nfontsize>0
-        form_1:&cname:fontsize := nfontsize
+        form_1:&cName:fontsize := nfontsize
    else
-        form_1:&cname:fontsize := nffontsize
+        form_1:&cName:fontsize := nffontsize
    endif
 
-   myform:aenabled[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'ENABLED','.T.')))='.T.',.T.,.F.)
-   myform:avisible[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'VISIBLE','.T.')))='.T.',.T.,.F.)
+   myform:aenabled[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'ENABLED','.T.')))='.T.',.T.,.F.)
+   myform:avisible[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'VISIBLE','.T.')))='.T.',.T.,.F.)
 
-   form_1:&cname:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTITALIC','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontbold:=myform:abold[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTBOLD','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTITALIC','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontbold:=myform:abold[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTBOLD','.F.')))='.T.',.T.,.F.)
 
 
-   myform:abackcolor[i]:=myform:clean(myform:leadato_oop(cname,'BACKCOLOR','NIL'))
+   myform:abackcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName,'BACKCOLOR','NIL'))
 
    cbackcolor:=myform:abackcolor[i]
    if cbackcolor#'NIL'
-      form_1:&cname:backcolor:=&cbackcolor
+      form_1:&cName:backcolor:=&cbackcolor
    endif
-   myform:afontcolor[i]:=myform:clean(myform:leadato_oop(cname,'FONTCOLOR','{0,0,0}'))
+   myform:afontcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName,'FONTCOLOR',''))
    cfontcolor:=myform:afontcolor[i]
-   form_1:&cname:fontcolor:=&cfontcolor
+   form_1:&cName:fontcolor:=&cfontcolor
 
    myform:aCaption[i]:=cCaption
    myform:aPicture[i]:=cPicture
@@ -4180,58 +4317,58 @@ static function pbutton( i, myIde )
 
 
    myform:atooltip[i]:=ctooltip
-    form_1:&cname:tooltip:=ctooltip
+    form_1:&cName:tooltip:=ctooltip
    myform:aaction[i]:=caction
    myform:ahelpid[i]:=nhelpid
 
-   myform:anotabstop[i]:=iif(lnotabstop='T',.T.,.F.)
+   myform:anotabstop[i]:=iif(lNoTabStop='T',.T.,.F.)
    myform:aflat[i]:=iif(lflat='T',.T.,.F.)
 
    myform:aongotfocus[i]:=congotfocus
    myform:aonlostfocus[i]:=conlostfocus
     myform:acobj[i]:=cobj
 
-   ProcessContainersfill( Cname,nrow,ncol, myIde )
+   ProcessContainersFill( cName, nRow, nCol, myIde )
 return
 
-*----------------------------
-static function ptextbox( i, myIde )
-*----------------------------
-   cname:=myform:acontrolw[i]
+*------------------------------------------------------------------------------*
+STATIC FUNCTION pTextBox( i, myIde )
+*------------------------------------------------------------------------------*
+   cName:=myform:acontrolw[i]
    myform:actrltype[i]:='TEXT'
    myform:aname[i]:=myform:acontrolw[i]
-   nrow:=val(myform:learow(cName))
-   ncol:=val(myform:leacol(cname))
-   cfontname:=myform:clean(myform:leadato(cname,'FONT',cffontname))
-   nfontsize:=val(myform:leadato(cname,'SIZE',str(nffontsize)))
-   nwidth:=val(myform:leadato(cname,'WIDTH','120'))
-   nheight:=val(myform:leadato(cname,'HEIGHT','24'))
-   cvalue:=myform:clean(myform:leadato(cname,'VALUE',''))
-   cfield:=myform:leadato(cname,'FIELD','')
-   ctooltip:=myform:clean(myform:leadato(cname,'TOOLTIP',''))
-   nmaxlength:=val(myform:leadato(cname,'MAXLENGTH','30'))
-   nhelpid:=val(myform:leadato(cname,'HELPID','0'))
-   luppercase:=myform:leadatologic(cname,"UPPERCASE","F")
-   llowercase:=myform:leadatologic(cname,"LOWERCASE","F")
-   lpassword:=myform:leadatologic(cname,"PASSWORD","F")
-   lnumeric:=myform:leadatologic(cname,"NUMERIC","F")
-   lrightalign:=myform:leadatologic(cname,"RIGHTALIGN","F")
-   lnotabstop:=myform:leadatologic(cname,'NOTABSTOP',"F")
-   ldate:=myform:leadatologic(cname,'DATE',"F")
-   cinputmask:=myform:clean(myform:leadato(cname,'INPUTMASK',""))
+   nrow:=val(myform:LeaRow( cName))
+   ncol:=val(myform:LeaCol( cName))
+   cfontname:=myform:Clean( myform:LeaDato(cName,'FONT',cffontname))
+   nfontsize:=val(myform:LeaDato(cName,'SIZE',str(nffontsize)))
+   nwidth:=val(myform:LeaDato(cName,'WIDTH','120'))
+   nheight:=val(myform:LeaDato(cName,'HEIGHT','24'))
+   cvalue:=myform:Clean( myform:LeaDato(cName,'VALUE',''))
+   cfield:=myform:LeaDato(cName,'FIELD','')
+   ctooltip:=myform:Clean( myform:LeaDato(cName,'TOOLTIP',''))
+   nmaxlength:=val(myform:LeaDato(cName,'MAXLENGTH','30'))
+   nhelpid:=val(myform:LeaDato(cName,'HELPID','0'))
+   luppercase:=myform:LeaDatoLogic(cName,"UPPERCASE","F")
+   llowercase:=myform:LeaDatoLogic(cName,"LOWERCASE","F")
+   lpassword:=myform:LeaDatoLogic(cName,"PASSWORD","F")
+   lnumeric:=myform:LeaDatoLogic(cName,"NUMERIC","F")
+   lrightalign:=myform:LeaDatoLogic(cName,"RIGHTALIGN","F")
+   lNoTabStop:=myform:LeaDatoLogic(cName,'NOTABSTOP',"F")
+   ldate:=myform:LeaDatoLogic(cName,'DATE',"F")
+   cinputmask:=myform:Clean( myform:LeaDato(cName,'INPUTMASK',""))
    if len(cinputmask)>0
       nmaxlength:=0
    endif
-   cformat:=myform:clean(myform:leadato(cname,'FORMAT',""))
-   conenter:=myform:leadato(cname,'ON ENTER','')
-   conchange:=myform:leadato(cname,'ON CHANGE','')
-   congotfocus:=myform:leadato(cname,'ON GOTFOCUS','')
-   conlostfocus:=myform:leadato(cname,'ON LOSTFOCUS','')
-   lreadonly:=myform:leadatologic(cname,'READONLY',"")
-   nFocusedPos:= val(myform:leadato(cname,'FOCUSEDPOS','-2'))   // pb
-   cvalid:= myform:leadato(cname,'VALID','')
-   cwhen:=myform:leadato(cname,'WHEN','')
-   cobj:=myform:leadato(cname,'OBJ','')
+   cformat:=myform:Clean( myform:LeaDato(cName,'FORMAT',""))
+   conenter:=myform:LeaDato(cName,'ON ENTER','')
+   conchange:=myform:LeaDato(cName,'ON CHANGE','')
+   congotfocus:=myform:LeaDato(cName,'ON GOTFOCUS','')
+   conlostfocus:=myform:LeaDato(cName,'ON LOSTFOCUS','')
+   lreadonly:=myform:LeaDatoLogic(cName,'READONLY',"")
+   nFocusedPos:= val(myform:LeaDato(cName,'FOCUSEDPOS','-2'))   // pb
+   cvalid:= myform:LeaDato(cName,'VALID','')
+   cwhen:=myform:LeaDato(cName,'WHEN','')
+   cobj:=myform:LeaDato(cName,'OBJ','')
 
    if luppercase='T'
       luppercase=.T.
@@ -4257,41 +4394,41 @@ static function ptextbox( i, myIde )
 
    myform:afontname[i]:=cfontname
    if len(cfontname)>0
-        form_1:&cname:fontname := cfontname
+        form_1:&cName:fontname := cfontname
    else
-        form_1:&cname:fontname := cffontname
+        form_1:&cName:fontname := cffontname
    endif
    myform:afontsize[i]:=nfontsize
    if nfontsize>0
-        form_1:&cname:fontsize := nfontsize
+        form_1:&cName:fontsize := nfontsize
    else
-        form_1:&cname:fontsize := nffontsize
+        form_1:&cName:fontsize := nffontsize
    endif
 
    myform:adate[i]:=iif(ldate='T',.T.,.F.)
 
 
-   myform:anotabstop[i]:=iif(lnotabstop='T',.T.,.F.)
+   myform:anotabstop[i]:=iif(lNoTabStop='T',.T.,.F.)
 
-   myform:aenabled[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'ENABLED','.T.')))='.T.',.T.,.F.)
-   myform:avisible[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'VISIBLE','.T.')))='.T.',.T.,.F.)
+   myform:aenabled[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'ENABLED','.T.')))='.T.',.T.,.F.)
+   myform:avisible[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'VISIBLE','.T.')))='.T.',.T.,.F.)
 
-   form_1:&cname:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTITALIC','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
-   form_1:&cname:fontbold:=myform:abold[i]:=iif(upper(myform:clean(myform:leadato_oop(cname,'FONTBOLD','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTITALIC','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontbold:=myform:abold[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTBOLD','.F.')))='.T.',.T.,.F.)
 
-   myform:abackcolor[i]:=myform:clean(myform:leadato_oop(cname,'BACKCOLOR','{255,255,255}'))
+   myform:abackcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName,'BACKCOLOR',''))
    cbackcolor:=myform:abackcolor[i]
-   form_1:&cname:backcolor:=&cbackcolor
+   form_1:&cName:backcolor:=&cbackcolor
 
-   myform:afontcolor[i]:=myform:clean(myform:leadato_oop(cname,'FONTCOLOR','{0,0,0}'))
+   myform:afontcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName,'FONTCOLOR',''))
    cfontcolor:=myform:afontcolor[i]
-   form_1:&cname:fontcolor:=&cfontcolor
+   form_1:&cName:fontcolor:=&cfontcolor
      myform:avalue[i]:=cValue
      myform:afield[i]:=cfield
      myform:atooltip[i]:=ctooltip
-     form_1:&cname:tooltip:=ctooltip
+     form_1:&cName:tooltip:=ctooltip
      myform:amaxlength[i]:=nmaxlength
      myform:auppercase[i]:=luppercase
      myform:alowercase[i]:=llowercase
@@ -4315,11 +4452,12 @@ static function ptextbox( i, myIde )
      myform:avalid[i]:=cvalid
      myform:awhen[i]:=cwhen
        myform:acobj[i]:=cobj
-     ProcessContainersfill( Cname,nrow,ncol, myIde )
+
+   ProcessContainersFill( cName, nRow, nCol, myIde )
 return
 
 *------------------------------------------------------------------------------*
-static function ProcessContainers( ControlName, myIde )
+STATIC FUNCTION ProcessContainers( ControlName, myIde )
 *------------------------------------------------------------------------------*
 local i , ActivePage , z,k,k1 ,ocontrol,owindow,alsc
 if .not. (myform:swtab)
@@ -4329,13 +4467,13 @@ endif
    For i := 1 To Len (owindow:acontrols)
             ocontrol:=owindow:acontrols[i]
       If ocontrol:type == 'TAB'
-                        cname:=ocontrol:name
+                        cName:=ocontrol:name
                         ndesrow:=ocontrol:row   &&& cordenada del tab para desplazamiento del mouse
                         ndescol:=ocontrol:col
          If ( _ooHG_mouserow > ocontrol:Row ) .And. (_ooHG_mouserow < ocontrol:Row + ocontrol:Height ) .And. ( _ooHG_mousecol > ocontrol:Col ) .And. ( _ooHG_mousecol < ocontrol:Col + ocontrol:Width )
             ActivePage := _GetValue ( ocontrol:Name , 'Form_1' )
             aAdd ( ocontrol:aPages[ActivePage] , GetControlobject ( ControlName , 'Form_1' ) )
-                                form_1:&cname:AddControl(controlname, activepage,_ooHG_mouserow - ndesrow ,_ooHG_mousecol - ndescol )
+                                form_1:&cName:AddControl(controlname, activepage,_ooHG_mouserow - ndesrow ,_ooHG_mousecol - ndescol )
                                 alsc := myIde:asystemcoloraux
                                 form_1:&controlname:backcolor:=alsc
                                 cvc:=ascan( myform:acontrolw, { |c| lower( c ) == lower(controlname) } )
@@ -4379,10 +4517,9 @@ endif
 
 Return
 
-
-*----------------------------------------------------
-** llena los TABS, previo cargado de los controles en la forma
-static function ProcessContainersfill( ControlName, row, col, myIde )
+// llena los TABS, previo cargado de los controles en la forma
+*------------------------------------------------------------------------------*
+STATIC FUNCTION ProcessContainersFill( ControlName, row, col, myIde )
 *------------------------------------------------------------------------------*
 local i , pagecount , z,l,swpagename,pagename,swnoestab
 if .not. myform:swtab
@@ -4410,7 +4547,7 @@ for i:=l to 1 step -1
           if swpagename=0
              npos:=at(upper('DEFINE PAGE '),upper(myform:aline[i]))
              pagename:=alltrim(substr(myform:aline[i],npos+6,len(myform:aline[I])-1))
-             pagename:=myform:clean(pagename)
+             pagename:=myform:Clean( pagename)
              swpagename:=1
           endif
           pagecount++
@@ -4439,9 +4576,9 @@ if pagecount>0 .and. swnoestab=0
 endif
 return nil
 
-*----------------------------
-function cuantospage(tabname)
-*----------------------------
+*------------------------------------------------------------------------------*
+FUNCTION CuantosPage( tabname )
+*------------------------------------------------------------------------------*
 local i,pagecount:=0,swb:=0,h
 h:=ascan( myform:acontrolw, { |c| lower( c ) == lower(tabname)  } )
 ccaptions:='{'
@@ -4455,12 +4592,12 @@ for i=1 to len(myform:aline)
        npospage:=at('DEFINE PAGE ',upper(myform:aline[i]))
        cpagename:=alltrim(substr(myform:aline[i],npospage+11,len(myform:aline[i])))
        nrat:=rat(';',cpagename)
-       cpagename:=alltrim(myform:clean(substr(cpagename,1,nrat-1)))
+       cpagename:=alltrim(myform:Clean( substr(cpagename,1,nrat-1)))
 
        nposimage:=at('IMAGE ',upper(myform:aline[i+1]))
        if nposimage>0
           cimage:=alltrim(substr(myform:aline[i+1],nposimage+6,len(myform:aline[i])))
-          cimage:=myform:clean(substr(cimage,1,len(myform:aline[i+1])))
+          cimage:=myform:Clean( substr(cimage,1,len(myform:aline[i+1])))
        else
           cimage:=''
        endif
@@ -4480,17 +4617,16 @@ myform:acaption[h]:=ccaptions
 myform:aimage[h]:=cimages
 return nil
 
-
-*-------------------------
-function procesacontrol()
-*-------------------------
-local i,j,x,cname,owindow
+*------------------------------------------------------------------------------*
+FUNCTION ProcesaControl()
+*------------------------------------------------------------------------------*
+local i,j,x,cName,owindow
 j:=(lista:listacon:value)+1
-cname:=myform:acontrolw[j]
+cName:=myform:acontrolw[j]
 owindow:=getformobject("form_1")
 x:=0
 for i:=1 to len(owindow:acontrols)
-    if lower(cname)=lower(owindow:acontrols[i]:name)
+    if lower(cName)=lower(owindow:acontrols[i]:name)
        x=i
        if owindow:acontrols[i]:row # owindow:acontrols[i]:containerrow .or. owindow:acontrols[i]:col # owindow:acontrols[i]:containercol
           oGenerico:=owindow:acontrols[i]
@@ -4507,30 +4643,31 @@ if x>0
 endif
 myform:lFsave:=.F.
 RETURN NIL
-*--------------------
-function minim()
-*--------------------
-cvccontrols:minimize()
-lista:minimize()
-return nil
 
-*----------------
-function maxim()
-*----------------
-cvccontrols:restore()
-lista:restore()
-return nil
+*------------------------------------------------------------------------------*
+FUNCTION Minim()
+*------------------------------------------------------------------------------*
+   cvccontrols:Minimize()
+   lista:Minimize()
+RETURN NIL
 
-*---------------------
-function muestrasino()
-*---------------------
-local i,ccontrol,oocontrol,nrow,ncol,nwidth,nheight,cname,j,nl
+*------------------------------------------------------------------------------*
+FUNCTION Maxim()
+*------------------------------------------------------------------------------*
+   cvccontrols:Restore()
+   lista:Restore()
+RETURN NIL
+
+*------------------------------------------------------------------------------*
+FUNCTION MuestraSiNo()
+*------------------------------------------------------------------------------*
+local i,ccontrol,oocontrol,nrow,ncol,nwidth,nheight,cName,j,nl
    lista.listacon.deleteallitems
    for i= 2 to len(myform:aname)
 //// ojo aqui estaab desde 2
        if len(trim(myform:acontrolw[i]))>0
           ccontrol:=myform:acontrolw[i]
-          cname:=myform:aname[i]
+          cName:=myform:aname[i]
           nl:=0
           for j:=1 to len(getformobject('Form_1'):acontrols)
               if lower(getformobject('Form_1'):acontrols[j]:name)= lower(ccontrol)
@@ -4544,15 +4681,15 @@ local i,ccontrol,oocontrol,nrow,ncol,nwidth,nheight,cname,j,nl
               ncol:=oocontrol:col
               nwidth:=oocontrol:width
               nheight:=oocontrol:height
-              olistacon:additem({cname,str(nrow,4),str(ncol,4),str(nwidth,4),str(nheight,4),ccontrol})
+              olistacon:additem({cName,str(nrow,4),str(ncol,4),str(nwidth,4),str(nheight,4),ccontrol})
           endif
        endif
    next i
 return nil
 
-*---------------------
-function cordenada()
-*---------------------
+*------------------------------------------------------------------------------*
+FUNCTION Cordenada()
+*------------------------------------------------------------------------------*
 local ocontrol
 iRow := _ooHG_mouserow
 iCol := _ooHG_mousecol
@@ -4571,10 +4708,10 @@ BorderHeight    := GetBorderHeight()
       w_OOHG_MouseCol = _OOHG_MouseCol  - BorderWidth
 
       For i := 2 To Len (myform:aname)
-                    wcnamet:=myform:aname[i]
-             if valtype(wcnamet)='C' .and. wcnamet#'' ;
+                    wcNamet:=myform:aname[i]
+             if valtype(wcNamet)='C' .and. wcNamet#'' ;
                 .and. (.not. (myform:actrltype[i]$'STATUSBAR'))
-                ocontrol:=getcontrolobject(wcnamet,'form_1')
+                ocontrol:=getcontrolobject(wcNamet,'form_1')
                 if ocontrol:hwnd>0
                 if ocontrol:row=ocontrol:containerrow .and. ocontrol:col=ocontrol:containercol
                    if ( w_ooHG_mouserow >= ocontrol:Row -10 ) .And. ;
@@ -4617,9 +4754,9 @@ BorderHeight    := GetBorderHeight()
 
         Imin:=0
    For i := 2 To Len (myform:aname)
-             wcnamet:=myform:aname[i]
-             if valtype(wcnamet)='C' .and. wcnamet#'' .and. (.not. (myform:actrltype[i]$'STATUSBAR'))
-                ocontrol:=getcontrolobject(wcnamet,'form_1')
+             wcNamet:=myform:aname[i]
+             if valtype(wcNamet)='C' .and. wcNamet#'' .and. (.not. (myform:actrltype[i]$'STATUSBAR'))
+                ocontrol:=getcontrolobject(wcNamet,'form_1')
              if ocontrol:hwnd>0
              if ocontrol:type='TOOLBAR'
              else
@@ -4659,12 +4796,12 @@ BorderHeight    := GetBorderHeight()
              endif
 return nil
 
-*---------------------------------
-static function sionomc(cname)
-*---------------------------------
+*------------------------------------------------------------------------------*
+STATIC FUNCTION SioNoMC(cName)
+*------------------------------------------------------------------------------*
 local i
 for i:=2 to len(myform:acontrolw)
-    if lower(myform:acontrolw[i])=lower(cname)
+    if lower(myform:acontrolw[i])=lower(cName)
        if myform:actrltype[i]$'MONTHCALENDAR TIMER'
           return .T.
        endif
@@ -4673,9 +4810,9 @@ next i
 return .F.
 
 
-*------------------------
-function HELP_F1(C_P, myIde )
-*-------------------------
+*------------------------------------------------------------------------------*
+FUNCTION Help_F1( C_P, myIde )
+*------------------------------------------------------------------------------*
 LOCAL WR,I, H, F
 **PARAMETER C_P,L_N,I_V
 
@@ -4808,15 +4945,16 @@ CENTER WINDOW fayuda
 ACTIVATE WINDOW fayuda
 RETURN NIL
 
-*---------------------------
-static function closeoff()
-SET INTERACTIVECLOSE OFF
-return nil
-*---------------------------
-
+*------------------------------------------------------------------------------*
+STATIC FUNCTION CloseOff()
+*------------------------------------------------------------------------------*
+   SET INTERACTIVECLOSE OFF
+RETURN NIL
 
 /////////// funciones para hacer debug....
-Function DebugT
+*------------------------------------------------------------------------------*
+FUNCTION DebugT
+*------------------------------------------------------------------------------*
    Local i, l, oForm, aCont
 
    oForm := GetFormObject( "form_1" )
@@ -4829,34 +4967,40 @@ Function DebugT
    Next i
 Return Nil
 
+*------------------------------------------------------------------------------*
+FUNCTION DebugW
+*------------------------------------------------------------------------------*
+LOCAL i
+   FOR i := 1 TO Len( myform:aname )
+     MsgBox( myform:aname[i] )
+   NEXT i
+RETURN NIL
 
-procedure debugw
-local i,cname,j,row,col,width,height,sw,fr
-for i:= 1 to len(myform:aname)
-  msgbox(myform:aname[i])
-next i
-return nil
+*------------------------------------------------------------------------------*
+FUNCTION Debug
+*------------------------------------------------------------------------------*
+LOCAL i, cs := ''
+   cs := cs + '# controles ' + Str( myform:ncontrolw - 1, 4 ) + CRLF
+   FOR i := 1 TO myform:ncontrolw
+       IF Upper( myform:acontrolw[i] ) # 'TEMPLATE' .AND. ;
+          Upper( myform:acontrolw[i] ) # 'STATUSBAR' .AND. ;
+          Upper( myform:acontrolw[i] ) # 'MAINMENU' .AND. ;
+          Upper( myform:acontrolw[i] ) # 'CONTEXTMENU' .AND. ;
+          Upper( myform:acontrolw[i] ) # 'NOTIFYMENU'
+          IF myform:atabpage[i,1] # NIL .AND. myform:atabpage[i, 1] # ''
+             cs := cs + myform:acontrolw[i] + ' | ' + myform:actrltype[i] + ' | ' + Str( myform:atabpage[i, 2] )+ ' | ' + myform:atabpage[i, 1] + CRLF
+          ELSE
+             cs := cs + myform:acontrolw[i] + ' | ' + myform:actrltype[i] + ' |-> ' + myform:acaption[i] + CRLF
+          ENDIF
+       ENDIF
+   NEXT i
+   MsgInfo( cs )
+RETURN NIL
 
-procedure debug
-local i,cs
-cs:=''
-cs:=cs+'# controles '+str(myform:ncontrolw-1,4)+ CRLF
-for i:=1 to myform:ncontrolw
-    if upper(myform:acontrolw[i])#'TEMPLATE' .AND. upper(myform:acontrolw[i])#'STATUSBAR' .AND. upper(myform:acontrolw[i])#'MAINMENU'   .AND. upper(myform:acontrolw[i])#'CONTEXTMENU' .AND. upper(myform:acontrolw[i])#'NOTIFYMENU'
-       if myform:atabpage[i,1]#NIL .and. myform:atabpage[i,1]#''
-          cs:=cs+myform:acontrolw[i]+' | ' + myform:actrltype[i] +' | '+str(myform:atabpage[i,2])+' | '+myform:atabpage[i,1] +CRLF
-       else
-             cs:=cs+myform:acontrolw[i]+' | ' + myform:actrltype[i] + ' |-> '+myform:acaption[i]+CRLF
-       endif
-    endif
-next i
-msginfo(cs)
-return
-
-*------------------------
-function chidecontrol(x)
-*------------------------
-return hidewindow(x)
+*------------------------------------------------------------------------------*
+FUNCTION cHideControl( x )
+*------------------------------------------------------------------------------*
+RETURN HideWindow( x )
 
 #include 'saveform.prg'
 

@@ -1,5 +1,5 @@
 /*
- * $Id: i_monthcal.ch,v 1.5 2010-05-15 21:05:04 guerra000 Exp $
+ * $Id: i_monthcal.ch,v 1.6 2014-07-04 20:16:03 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -91,38 +91,38 @@
         Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#command @ <row>,<col> MONTHCALENDAR <name> ;
-                [ OBJ <obj> ] ;
-		[ <dummy1: OF, PARENT> <parent> ] ;
-		[ VALUE <v> ] ;
-		[ FONT <fontname> ] ;
-		[ SIZE <fontsize> ] ;
-		[ <bold : BOLD> ] ;
-		[ <italic : ITALIC> ] ;
-		[ <underline : UNDERLINE> ] ;
-		[ <strikeout : STRIKEOUT> ] ;
-		[ TOOLTIP <tooltip> ] ;
-		[ < notoday: NOTODAY > ] ;
-		[ < notodaycircle: NOTODAYCIRCLE > ] ;
-		[ < weeknumbers: WEEKNUMBERS > ] ;
-		[ < invisible: INVISIBLE > ] ;
-		[ < notabstop: NOTABSTOP > ] ;
-		[ ON CHANGE <change> ] ;
-		[ HELPID <helpid> ] 		;
-                [ <rtl: RTL> ] ;
-                [ SUBCLASS <subclass> ] ;
-                [ <disabled: DISABLED> ]        ;
-                [ FONTCOLOR <fontcolor> ] ;
-                [ BACKCOLOR <backcolor> ] ;
-                [ TITLEFONTCOLOR <titlefontcolor> ] ;
-                [ TITLEBACKCOLOR <titlebackcolor> ] ;
-                [ TRAILINGFONTCOLOR <trailingfontcolor> ] ;
-                [ BACKGROUNDCOLOR <backgroundcolor> ] ;
-	=>;
-        [ <obj> := ] _OOHG_SelectSubClass( TMonthCal(), [ <subclass>() ] ):Define( ;
-                     <(name)>, <(parent)>, <col>, <row>, 0, 0, <v>, <fontname>, <fontsize>, ;
-                     <tooltip>, <.notoday.>, <.notodaycircle.>, <.weeknumbers.>, <{change}>, ;
-                     <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, <.italic.>, ;
-                     <.underline.>, <.strikeout.>, <.rtl.>, <.disabled.>, <fontcolor>, ;
-                     <backcolor>, <titlefontcolor>, <titlebackcolor>, <trailingfontcolor>, ;
-                     <backgroundcolor> )
+#command @ <row>, <col> MONTHCALENDAR <name> ;
+      [ OBJ <obj> ] ;
+      [ <dummy1 : OF, PARENT> <parent> ] ;
+      [ VALUE <v> ] ;
+      [ FONT <fontname> ] ;
+      [ SIZE <fontsize> ] ;
+      [ <bold : BOLD> ] ;
+      [ <italic : ITALIC> ] ;
+      [ <underline : UNDERLINE> ] ;
+      [ <strikeout : STRIKEOUT> ] ;
+      [ TOOLTIP <tooltip> ] ;
+      [ < notoday : NOTODAY > ] ;
+      [ < notodaycircle : NOTODAYCIRCLE > ] ;
+      [ < weeknumbers : WEEKNUMBERS > ] ;
+      [ < invisible : INVISIBLE > ] ;
+      [ < notabstop : NOTABSTOP > ] ;
+      [ ON CHANGE <change> ] ;
+      [ HELPID <helpid> ] ;
+      [ <rtl : RTL> ] ;
+      [ SUBCLASS <subclass> ] ;
+      [ <disabled : DISABLED> ] ;
+      [ FONTCOLOR <fontcolor> ] ;
+      [ BACKCOLOR <backcolor> ] ;
+      [ TITLEFONTCOLOR <titlefontcolor> ] ;
+      [ TITLEBACKCOLOR <titlebackcolor> ] ;
+      [ TRAILINGFONTCOLOR <trailingfontcolor> ] ;
+      [ BACKGROUNDCOLOR <backgroundcolor> ] ;
+   => ;
+      [ <obj> := ] _OOHG_SelectSubClass( TMonthCal(), [ <subclass>() ] ):Define( ;
+            <(name)>, <(parent)>, <col>, <row>, 0, 0, <v>, <fontname>, <fontsize>, ;
+            <tooltip>, <.notoday.>, <.notodaycircle.>, <.weeknumbers.>, <{change}>, ;
+            <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, <.italic.>, ;
+            <.underline.>, <.strikeout.>, <.rtl.>, <.disabled.>, <fontcolor>, ;
+            <backcolor>, <titlefontcolor>, <titlebackcolor>, <trailingfontcolor>, ;
+            <backgroundcolor> )

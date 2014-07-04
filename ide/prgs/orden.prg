@@ -1,5 +1,5 @@
 /*
- * $Id: orden.prg,v 1.4 2014-06-25 20:11:58 fyurisich Exp $
+ * $Id: orden.prg,v 1.5 2014-07-04 20:16:02 fyurisich Exp $
  */
 
 #include 'oohg.ch'
@@ -285,10 +285,11 @@ cambia("myform:aedit",x1,x2)
 cambia("myform:aappend",x1,x2)
 cambia("myform:aclientedge",x1,x2)
 cambia("myform:afocusedpos",x1,x2)
-
 cambia("myform:anumber",x1,x2)
 cambia("myform:aspeed",x1,x2)
-
+cambia("myform:acobj",x1,x2)  //gca
+cambia("myform:aborder",x1,x2)  //gca
+cambia("myform:aonenter",x1,x2)  //gca
 
 t83:=myform:atabpage[x1,1]  &&& nombre del TAB a que pertenece
 t84:=myform:atabpage[x1,2]   &&& numero de la pagina

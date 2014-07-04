@@ -1,5 +1,5 @@
 /*
- * $Id: i_hyperlink.ch,v 1.4 2005-10-22 06:04:31 guerra000 Exp $
+ * $Id: i_hyperlink.ch,v 1.5 2014-07-04 20:16:03 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -91,54 +91,34 @@
         Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#command @ <row>,<col> HYPERLINK <name>   ;
-   [ OBJ <obj> ] ;
-   [ <dummy1: OF, PARENT> <parent> ] ;
-   [ VALUE <value> ]   ;
-   [ ADDRESS <address>];
-   [ WIDTH <width> ]   ;
-   [ HEIGHT <height> ]   ;
-   [ <autosize : AUTOSIZE> ] ;
-   [ FONT <fontname> ]   ;
-   [ SIZE <fontsize> ]   ;
-   [ <bold : BOLD> ] ;
-   [ <italic : ITALIC> ] ;
-   [ TOOLTIP <tooltip> ] ;
-   [ BACKCOLOR <backcolor> ] ;
-   [ FONTCOLOR <fontcolor> ] ;
-   [ <border: BORDER> ] ;
-   [ <clientedge: CLIENTEDGE> ] ;
-   [ <hscroll: HSCROLL> ] ;
-   [ <vscroll: VSCROLL> ] ;
-   [ <transparent: TRANSPARENT> ] ;
-   [ <handcursor: HANDCURSOR> ] ;
-   [ HELPID <helpid> ] 		;
-   [ <invisible: INVISIBLE> ]   ;
-   [ <rtl: RTL> ]               ;
- =>;
-   [ <obj> := ] THyperLink():Define( ;
-   <(name)>,    ;
-   <(parent)>,    ;
-   <col>,     ;
-   <row>,     ;
-   <value>,    ;
-   <address>,  ;
-   <width>,    ;
-   <height>,    ;
-   <fontname>,    ;
-   <fontsize>,    ;
-   <.bold.>,    ;
-   <.border.> ,   ;
-   <.clientedge.> ,  ;
-   <.hscroll.> ,   ;
-   <.vscroll.> ,   ;
-   <.transparent.> ,   ;
-   [ <backcolor> ], ;
-   [ <fontcolor> ], ;
-   <tooltip>,	;
-   <helpid>, ;
-	<.invisible.>, ;
-	<.italic.>, ;
-	<.autosize.> , ;
-        <.handcursor.>, ;
-        <.rtl.> )
+#command @ <row>, <col> HYPERLINK <name> ;
+      [ OBJ <obj> ] ;
+      [ <dummy1 : OF, PARENT> <parent> ] ;
+      [ VALUE <value> ] ;
+      [ ADDRESS <address>] ;
+      [ WIDTH <width> ] ;
+      [ HEIGHT <height> ] ;
+      [ <autosize : AUTOSIZE> ] ;
+      [ FONT <fontname> ] ;
+      [ SIZE <fontsize> ] ;
+      [ <bold : BOLD> ] ;
+      [ <italic : ITALIC> ] ;
+      [ TOOLTIP <tooltip> ] ;
+      [ BACKCOLOR <backcolor> ] ;
+      [ FONTCOLOR <fontcolor> ] ;
+      [ <border : BORDER> ] ;
+      [ <clientedge : CLIENTEDGE> ] ;
+      [ <hscroll : HSCROLL> ] ;
+      [ <vscroll : VSCROLL> ] ;
+      [ <transparent : TRANSPARENT> ] ;
+      [ <handcursor : HANDCURSOR> ] ;
+      [ HELPID <helpid> ] ;
+      [ <invisible : INVISIBLE> ] ;
+      [ <rtl : RTL> ] ;
+   => ;
+      [ <obj> := ] THyperLink():Define( ;
+            <(name)>, <(parent)>, <col>, <row>, <value>, <address>, ;
+            <width>, <height>, <fontname>, <fontsize>, <.bold.>, <.border.>, ;
+            <.clientedge.>, <.hscroll.>, <.vscroll.>, <.transparent.>, ;
+            [ <backcolor> ], [ <fontcolor> ], <tooltip>, <helpid>, ;
+            <.invisible.>, <.italic.>, <.autosize.>, <.handcursor.>, <.rtl.> )

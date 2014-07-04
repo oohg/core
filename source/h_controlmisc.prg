@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.145 2014-04-30 02:36:23 fyurisich Exp $
+ * $Id: h_controlmisc.prg,v 1.146 2014-07-04 20:16:03 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1258,7 +1258,6 @@ CLASS TControl FROM TWindow
    DATA xOldValue            INIT nil
    DATA OldColor
    DATA OldBackColor
-   DATA Tag                  INIT ""
 
    METHOD Row                SETGET
    METHOD Col                SETGET

@@ -1,5 +1,5 @@
 /*
- * $Id: h_frame.prg,v 1.14 2014-03-30 19:39:42 fyurisich Exp $
+ * $Id: h_frame.prg,v 1.15 2014-07-04 20:16:03 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -114,13 +114,17 @@ METHOD Define( ControlName, ParentForm, y, x, w, h, caption, fontname, ;
 Local ControlHandle, nStyle
 Local oTab
 
-   ASSIGN ::nCol        VALUE x TYPE "N"
-   ASSIGN ::nRow        VALUE y TYPE "N"
-   ASSIGN ::nWidth      VALUE w TYPE "N"
-   ASSIGN ::nHeight     VALUE h TYPE "N"
+   ASSIGN ::nCol      VALUE x           TYPE "N"
+   ASSIGN ::nRow      VALUE y           TYPE "N"
+   ASSIGN ::nWidth    VALUE w           TYPE "N"
+   ASSIGN ::nHeight   VALUE h           TYPE "N"
+   ASSIGN caption     VALUE caption     TYPE "CM" DEFAULT ""
+   ASSIGN opaque      VALUE opaque      TYPE "L"  DEFAULT .F.
+   ASSIGN transparent VALUE transparent TYPE "L"  DEFAULT .T.
 
-   ASSIGN caption VALUE caption TYPE "CM" DEFAULT ""
-   ASSIGN opaque  VALUE opaque  TYPE "L"  DEFAULT .F.
+   If opaque .AND. transparent
+      MsgOOHGError( "OPAQUE and TRANSPARENT clauses can't be used simultaneously. Program Terminated." )
+   EndIf
 
    If valtype( caption ) == 'U'
       caption := ""

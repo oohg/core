@@ -1,5 +1,5 @@
 /*
- * $Id: i_spinner.ch,v 1.4 2005-11-09 05:45:54 guerra000 Exp $
+ * $Id: i_spinner.ch,v 1.5 2014-07-04 20:16:03 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -82,46 +82,46 @@
 
  Parts of this project are based upon:
 
-	"Harbour GUI framework for Win32"
- 	Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- 	Copyright 2001 Antonio Linares <alinares@fivetech.com>
-	www - http://www.harbour-project.org
+   "Harbour GUI framework for Win32"
+    Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
+    Copyright 2001 Antonio Linares <alinares@fivetech.com>
+   www - http://www.harbour-project.org
 
-	"Harbour Project"
-	Copyright 1999-2003, http://www.harbour-project.org/
+   "Harbour Project"
+   Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#command @ <row>,<col> SPINNER <name> ;
-                [ OBJ <obj> ] ;
-		[ <dummy1: OF, PARENT> <parent> ] ;
-		RANGE <rl> , <rh> ;
-		[ VALUE <value> ] ;
-		[ WIDTH <w> ] ;
-		[ HEIGHT <h> ] ;
-		[ FONT <fontname> ] ;
-		[ SIZE <fontsize> ] ;
-		[ <bold : BOLD> ] ;
-		[ <italic : ITALIC> ] ;
-		[ <underline : UNDERLINE> ] ;
-		[ <strikeout : STRIKEOUT> ] ;
-		[ TOOLTIP <tooltip> ] ;
-		[ BACKCOLOR <backcolor> ] ;
-		[ FONTCOLOR <fontcolor> ] ;
-		[ ON GOTFOCUS <gotfocus> ] ;
-		[ ON CHANGE <change> ] ;
-		[ ON LOSTFOCUS <lostfocus> ] ;
-		[ HELPID <helpid> ] 		;
-		[ <invisible : INVISIBLE> ] ;
-		[ <notabstop : NOTABSTOP> ] ;
-		[ <wrap : WRAP> ] ;
-		[ <readonly : READONLY> ] ;
-		[ INCREMENT <inc> ] ;
-                [ <rtl: RTL> ] ;
-                [ <noborder: NOBORDER> ] ;
-	=>;
-        [ <obj> := ] TSpinner():Define( <(name)>, <(parent)>, <col>, <row>, <w>, <value>, ;
-                    <fontname>, <fontsize>, <rl>, <rh>, <tooltip>, <{change}>, ;
-                    <{lostfocus}>, <{gotfocus}>, <h>, <helpid>, <.invisible.>, ;
-                    <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
-                    <.wrap.>, <.readonly.>, <inc> , <backcolor> , <fontcolor>, <.rtl.>, ;
-                    <.noborder.> )
+#command @ <row>, <col> SPINNER <name> ;
+      [ OBJ <obj> ] ;
+      [ <dummy1 : OF, PARENT> <parent> ] ;
+      RANGE <rl>, <rh> ;
+      [ VALUE <value> ] ;
+      [ WIDTH <w> ] ;
+      [ HEIGHT <h> ] ;
+      [ FONT <fontname> ] ;
+      [ SIZE <fontsize> ] ;
+      [ <bold : BOLD> ] ;
+      [ <italic : ITALIC> ] ;
+      [ <underline : UNDERLINE> ] ;
+      [ <strikeout : STRIKEOUT> ] ;
+      [ TOOLTIP <tooltip> ] ;
+      [ BACKCOLOR <backcolor> ] ;
+      [ FONTCOLOR <fontcolor> ] ;
+      [ ON GOTFOCUS <gotfocus> ] ;
+      [ ON CHANGE <change> ] ;
+      [ ON LOSTFOCUS <lostfocus> ] ;
+      [ HELPID <helpid> ] ;
+      [ <invisible : INVISIBLE> ] ;
+      [ <notabstop : NOTABSTOP> ] ;
+      [ <wrap : WRAP> ] ;
+      [ <readonly : READONLY> ] ;
+      [ INCREMENT <inc> ] ;
+      [ <rtl : RTL> ] ;
+      [ <noborder : NOBORDER> ] ;
+   => ;
+      [ <obj> := ] TSpinner():Define( <(name)>, <(parent)>, <col>, <row>, <w>, ;
+            <value>, <fontname>, <fontsize>, <rl>, <rh>, <tooltip>, <{change}>, ;
+            <{lostfocus}>, <{gotfocus}>, <h>, <helpid>, <.invisible.>, ;
+            <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
+            <.wrap.>, <.readonly.>, <inc>, <backcolor>, <fontcolor>, <.rtl.>, ;
+            <.noborder.> )

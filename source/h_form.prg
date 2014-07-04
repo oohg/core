@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.53 2014-07-01 23:49:50 fyurisich Exp $
+ * $Id: h_form.prg,v 1.54 2014-07-04 20:16:03 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -210,8 +210,6 @@ CLASS TForm FROM TWindow
    DATA cNotifyIconName       INIT ""
    DATA cNotifyIconToolTip    INIT ""
    DATA lTopmost              INIT .F.
-   DATA TagControl
-   DATA Tag	                  INIT ""
 
    METHOD NotifyIcon          SETGET
    METHOD NotifyToolTip       SETGET

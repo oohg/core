@@ -1,5 +1,5 @@
 /*
- * $Id: i_slider.ch,v 1.3 2006-11-01 04:07:05 guerra000 Exp $
+ * $Id: i_slider.ch,v 1.4 2014-07-04 20:16:03 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -91,30 +91,30 @@
         Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#command @ <row>,<col> SLIDER <name> ;
-                [ OBJ <obj> ] ;
-		[ <dummy1: OF, PARENT> <parent> ] ;
-                [ RANGE <lo>,<hi> ] ;
-		[ VALUE <value> ] ;
-		[ WIDTH <w> ] ;
-		[ HEIGHT <h> ] ;
-		[ TOOLTIP <tooltip> ]  ;
-		[ BACKCOLOR <backcolor> ] ;
-		[ ON CHANGE <change> ] ;
-		[ <vertical: VERTICAL> ] ;
-		[ <noticks: NOTICKS> ] ;
-		[ <both: BOTH> ] ;
-		[ <top: TOP> ] ;
-		[ <left: LEFT> ] ;
-		[ HELPID <helpid> ] 		;
-		[ <invisible : INVISIBLE> ] ;
-		[ <notabstop : NOTABSTOP> ] ;
-                [ <rtl: RTL> ] ;
-                [ SUBCLASS <subclass> ] ;
-                [ <disabled: DISABLED> ] ;
-	=>;
-        [ <obj> := ] _OOHG_SelectSubClass( TSlider(), [ <subclass>() ] ): ;
-                   Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h> , <lo>, <hi>, ;
-                   <value>, <tooltip>, <{change}>, <.vertical.>, <.noticks.>, ;
-                   <.both.>, <.top.>, <.left.>, <helpid>, <.invisible.>, ;
-                   <.notabstop.>, <backcolor>, <.rtl.>, <.disabled.> )
+#command @ <row>, <col> SLIDER <name> ;
+      [ OBJ <obj> ] ;
+      [ <dummy1 : OF, PARENT> <parent> ] ;
+      [ RANGE <lo>, <hi> ] ;
+      [ VALUE <value> ] ;
+      [ WIDTH <w> ] ;
+      [ HEIGHT <h> ] ;
+      [ TOOLTIP <tooltip> ] ;
+      [ BACKCOLOR <backcolor> ] ;
+      [ ON CHANGE <change> ] ;
+      [ <vertical : VERTICAL> ] ;
+      [ <noticks : NOTICKS> ] ;
+      [ <both : BOTH> ] ;
+      [ <top : TOP> ] ;
+      [ <left : LEFT> ] ;
+      [ HELPID <helpid> ] ;
+      [ <invisible : INVISIBLE> ] ;
+      [ <notabstop : NOTABSTOP> ] ;
+      [ <rtl : RTL> ] ;
+      [ SUBCLASS <subclass> ] ;
+      [ <disabled : DISABLED> ] ;
+   => ;
+      [ <obj> := ] _OOHG_SelectSubClass( TSlider(), [ <subclass>() ] ): ;
+            Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <lo>, <hi>, ;
+            <value>, <tooltip>, <{change}>, <.vertical.>, <.noticks.>, ;
+            <.both.>, <.top.>, <.left.>, <helpid>, <.invisible.>, ;
+            <.notabstop.>, <backcolor>, <.rtl.>, <.disabled.> )

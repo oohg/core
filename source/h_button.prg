@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.63 2014-07-01 23:49:50 fyurisich Exp $
+ * $Id: h_button.prg,v 1.64 2014-07-04 20:16:03 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -133,7 +133,8 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h, ;
                NoTabStop, HelpId, invisible, bold, italic, underline, ;
                strikeout, lRtl, lNoPrefix, lDisabled, cBuffer, hBitMap, ;
                cImage, lNoTransparent, lScale, lCancel, cAlign, lMultiLine, ;
-               themed, aImageMargin, OnMouseMove, lNo3DColors, lAutoFit, lNoDIB ) CLASS TButton
+               themed, aImageMargin, OnMouseMove, lNo3DColors, lAutoFit, ;
+               lNoDIB, backcolor ) CLASS TButton
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle, lBitMap, i
 
@@ -168,7 +169,7 @@ Local ControlHandle, nStyle, lBitMap, i
       ::aImageMargin := {aImageMargin, aImageMargin, aImageMargin, aImageMargin}
    EndIf
 
-   ::SetForm( ControlName, ParentForm, FontName, FontSize,,,, lRtl )
+   ::SetForm( ControlName, ParentForm, FontName, FontSize, , backcolor, , lRtl )
    nStyle := ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + BS_PUSHBUTTON + ;
              if( ValType( flat ) == "L"      .AND. flat,         BS_FLAT, 0 )     + ;
              if( ValType( lNoPrefix ) == "L" .AND. lNoPrefix,    SS_NOPREFIX, 0 ) + ;
@@ -682,7 +683,7 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
                fontsize, tooltip, changeprocedure, w, h, lostfocus, gotfocus, ;
                HelpId, invisible, notabstop, bold, italic, underline, ;
                strikeout, field, lRtl, BitMap, cBuffer, hBitMap, ;
-               lNoTransparent, lScale, lNo3DColors, lAutoFit, lNoDIB ) CLASS TButtonCheck
+               lNoTransparent, lScale, lNo3DColors, lAutoFit, lNoDIB, backcolor ) CLASS TButtonCheck
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle
 
@@ -694,7 +695,7 @@ Local ControlHandle, nStyle
       value := .F.
    ENDIF
 
-   ::SetForm( ControlName, ParentForm, FontName, FontSize,,,, lRtl )
+   ::SetForm( ControlName, ParentForm, FontName, FontSize, , backcolor, , lRtl )
 
    nStyle := ::InitStyle( ,, Invisible, NoTabStop ) + BS_AUTOCHECKBOX + ;
              BS_PUSHLIKE
