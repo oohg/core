@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.7 2014-07-04 22:33:07 fyurisich Exp $
+ * $Id: formedit.prg,v 1.8 2014-07-05 18:46:25 fyurisich Exp $
  */
 
 /*
@@ -12,7 +12,6 @@
 
 #DEFINE CR CHR(13)
 #DEFINE LF CHR(10)
-#DEFINE WM_PAINT   15
 
 *------------------------------------------------------------------------------*
 CLASS TForm1

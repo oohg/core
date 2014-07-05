@@ -1,11 +1,66 @@
 /*
- * $Id: ChangeLog,v 1.1305 2014-07-04 22:33:07 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1306 2014-07-05 18:46:25 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-07-05 15:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/prgs/formedit.prg
+     - Duplicated define.
+   * source/miniprint.prg
+     ! Printing is aborted with "Printer Configuration Failed" message.
+     + Defines for error codes.
+     + Error code in array returned by function
+       _HMG_PRINTER_PRINTDIALOG.
+     + Error code in array returned by function
+       _HMG_PRINTER_SETPRINTERPROPERTIES.
+     + Comments.
+     + Parameters bVerbose, bAbort and bGlobal to function
+       _HMG_PRINTER_SETPRINTERPROPERTIES.
+     ! Memory leak in function _HMG_PRINTER_SETPRINTERPROPERTIES.
+   * include/miniprint.ch
+     + Clause NOERRORMSG: suppress the display of error messages in
+       function _HMG_PRINTER_SETPRINTERPROPERTIES.
+       Errors are reported in var _HMG_PRINTER_Error.
+     + Clause IGNOREERRORS: instructs function
+       _HMG_PRINTER_SETPRINTERPROPERTIES to ignore errors derived from
+       not supported properties and to continue configuring the
+       supported ones.
+       Errors are reported (ORed) in var _HMG_PRINTER_Error.
+     + Clause GLOBAL: instructs function _HMG_PRINTER_SETPRINTERPROPERTIES
+       to change the system's printer settings.
+     + Var _HMG_PRINTER_Error is setted with the error code.
+     + Defines for error codes.
+   * source/h_print.prg
+     * Format.
+     * DATAs cPort and cPrinter from TPRINTBASE are now READONLY.
+       Use methods SetDosPort and SetRawPrinter to set them.
+     + DATAs lIndentAll, lSeparateSheets and nFontType to TPRINTBASE.
+       Use methods SetIndentation, SetSeparateSheets and SetFontType
+       to set them.
+     + METHODs SetDosPort, SetFontType, SetIndentation, SetRawPrinter
+       and SetSeparateSheets to TPRINTBASE.
+     + PUBLIC _HMG_PRINTER_Error to TMINIPRINT.
+     * All print modes set DATA cPrinter:
+       MINIPRINT and HBPRINTER to the selected printer.
+       DOSPRINT to "CMD.EXE".
+       RAWPRINT to the selected printer or "" if none is selected.
+       EXCELPRINT and HTMLPRINTFROMEXCEL to "EXCEL".
+       SPREADSHEETPRINT to "BIFF".
+       RTFPRINT to "RTF".
+       CSVPRINT to "CSV".
+       PDFPRINT to "PDF".
+       CALCPRINT and HTMLPRINTFROMCALC to "CALC".
+     * DATA cPort is set to "PRN" When printer select dialog is aborted.
+     - DATA lSeparateSheets from TEXCELPRINT.
+     + Method SelPrinterX to TEXCELPRINT, TCSVPRINT and TCALCPRINT.
+     - DATA lIndentAll from TRTFPRINT.
+     - DATA nFontType from TPDFPRINT.
+     - DATA lSeparateSheets from TCALCPRINT.
+     * All DATAs of TPDFPRINT and TCALCPRINT are now READONLY.
 
 2014-07-04 19:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/miniprint.prg

@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.prg,v 1.48 2014-07-04 22:33:07 fyurisich Exp $
+ * $Id: miniprint.prg,v 1.49 2014-07-05 18:46:25 fyurisich Exp $
  */
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
@@ -1955,6 +1955,31 @@ RETURN ( _HMG_PRINTER_Dz / 200 )
 #include "olectl.h"
 #include "oohg.h"
 
+// error codes returned by _HMG_PRINTER_SETPRINTERPROPERTIES
+#define ERR_OPEN_PRINTER                            0x00000001
+#define ERR_GET_PRINTER_BUFFER_SIZE                 0x00000002
+#define ERR_ALLOCATE_PRINTER_BUFFER                 0x00000004
+#define ERR_GET_PRINTER_SETTINGS                    0x00000008
+#define ERR_GET_DOCUMENT_BUFFER_SIZE                0x00000010
+#define ERR_ALLOCATE_DOCUMENT_BUFFER                0x00000020
+#define ERR_GET_DOCUMENT_SETTINGS                   0x00000040
+#define ERR_ORIENTATION_NOT_SUPPORTED               0x00000080
+#define ERR_PAPERSIZE_NOT_SUPPORTED                 0x00000100
+#define ERR_PAPERLENGTH_NOT_SUPPORTED               0x00000200
+#define ERR_PAPERWIDTH_NOT_SUPPORTED                0x00000400
+#define ERR_COPIES_NOT_SUPPORTED                    0x00000800
+#define ERR_DEFAULTSOURCE_NOT_SUPPORTED             0x00001000
+#define ERR_QUALITY_NOT_SUPPORTED                   0x00002000
+#define ERR_COLOR_NOT_SUPPORTED                     0x00004000
+#define ERR_DUPLEX_NOT_SUPPORTED                    0x00008000
+#define ERR_COLLATE_NOT_SUPPORTED                   0x00010000
+#define ERR_SCALE_NOT_SUPPORTED                     0x00020000
+#define ERR_SET_DOCUMENT_SETTINGS                   0x00040000
+#define ERR_CREATING_DC                             0x00080000
+// error codes returned by _HMG_PRINTER_PRINTDIALOG
+#define ERR_PRINTDLG                                0x00100000
+
+
 HB_FUNC( CVCSETTEXTALIGN )
 {
    hb_retni( SetTextAlign( (HDC) hb_parnl( 1 ), hb_parni( 2 ) ) );
@@ -2373,21 +2398,23 @@ HB_FUNC( _HMG_PRINTER_PRINTDIALOG )
    {
       pDevMode = (LPDEVMODE) GlobalLock( pd.hDevMode );
 
-      hb_reta( 4 );
+      hb_reta( 5 );
       HB_STORNL( (LONG) pd.hDC, -1, 1 );
       HB_STORC( ( char * ) pDevMode->dmDeviceName, -1, 2 );
       HB_STORNI( pDevMode->dmCopies, -1, 3 );
       HB_STORNI( pDevMode->dmCollate, -1, 4 );
+      HB_STORNI( 0, -1, 5 );
 
       GlobalUnlock( pd.hDevMode );
    }
    else
    {
-      hb_reta( 4 );
+      hb_reta( 5 );
       HB_STORNL( 0, -1, 1 );
       HB_STORC( "", -1, 2 );
       HB_STORNI( 0, -1, 3 );
       HB_STORNI( 0, -1, 4 );
+      HB_STORNI( ERR_PRINTDLG, -1, 5 );
    }
 }
 
@@ -2873,6 +2900,11 @@ HB_FUNC( _HMG_PRINTER_C_LINE )
    }
 }
 
+/*
+http://support.microsoft.com/kb/246772/EN-US
+http://support.microsoft.com/default.aspx?scid=kb;EN-US;Q167345
+http://support.microsoft.com/kb/140285/EN-US
+*/
 HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
 {
    HANDLE hPrinter = NULL;
@@ -2880,22 +2912,32 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
    PRINTER_INFO_2 *pi2;
    DEVMODE *pDevMode = NULL;
    BOOL bFlag;
+   BOOL bVerbose = ! hb_parl( 13 );
+   BOOL bAbort = ! hb_parl( 14 );
+   BOOL bGlobal = ! hb_parl( 15 );
    LONG lFlag;
    HDC hdcPrint;
    int fields = 0;
-   DWORD dmFields;
+   int error = 0;
+
+   ///////////////////////////////////////////////////////////////////////
+   // Get the current settings from the printer's driver
+   ///////////////////////////////////////////////////////////////////////
 
    bFlag = OpenPrinter( (char *) hb_parc( 1 ), &hPrinter, NULL );
 
    if( !bFlag || ( hPrinter == NULL ) )
    {
-      MessageBox( 0, "Printer Configuration Failed! (001)", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
-
-      hb_reta( 4 );
+      if( bVerbose )
+      {
+         MessageBox( 0, "Printer Configuration Failed! (ERR_OPEN_PRINTER)", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
+      }
+      hb_reta( 5 );
       HB_STORNL( 0, -1, 1 );
       HB_STORC( "", -1, 2 );
       HB_STORNI( 0, -1, 3 );
       HB_STORNI( 0, -1, 4 );
+      HB_STORNI( ERR_OPEN_PRINTER, -1, 5 );
       return;
    }
 
@@ -2906,13 +2948,16 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
    if( ( ( ! bFlag ) && ( GetLastError() != ERROR_INSUFFICIENT_BUFFER ) ) || ( dwNeeded == 0 ) )
    {
       ClosePrinter( hPrinter );
-      MessageBox( 0, "Printer Configuration Failed! (002)", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
-
-      hb_reta( 4 );
+      if( bVerbose )
+      {
+         MessageBox( 0, "Printer Configuration Failed! (ERR_GET_PRINTER_BUFFER_SIZE)", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
+      }
+      hb_reta( 5 );
       HB_STORNL( 0, -1, 1 );
       HB_STORC( "", -1, 2 );
       HB_STORNI( 0, -1, 3 );
       HB_STORNI( 0, -1, 4 );
+      HB_STORNI( ERR_GET_PRINTER_BUFFER_SIZE, -1, 5 );
       return;
    }
 
@@ -2921,13 +2966,16 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
    if( pi2 == NULL )
    {
       ClosePrinter( hPrinter );
-      MessageBox( 0, "Printer Configuration Failed! (003)", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
-
-      hb_reta( 4 );
+      if( bVerbose )
+      {
+         MessageBox( 0, "Printer Configuration Failed! (ERR_ALLOCATE_PRINTER_BUFFER)", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
+      }
+      hb_reta( 5 );
       HB_STORNL( 0, -1, 1 );
       HB_STORC( "", -1, 2 );
       HB_STORNI( 0, -1, 3 );
       HB_STORNI( 0, -1, 4 );
+      HB_STORNI( ERR_ALLOCATE_PRINTER_BUFFER, -1, 5 );
       return;
    }
 
@@ -2937,13 +2985,16 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
    {
       GlobalFree( pi2 );
       ClosePrinter( hPrinter );
-      MessageBox( 0, "Printer Configuration Failed! (004)", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
-
-      hb_reta( 4 );
+      if( bVerbose )
+      {
+         MessageBox( 0, "Printer Configuration Failed! (ERR_GET_PRINTER_SETTINGS)", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
+      }
+      hb_reta( 5 );
       HB_STORNL( 0, -1, 1 );
       HB_STORC( "", -1, 2 );
       HB_STORNI( 0, -1, 3 );
       HB_STORNI( 0, -1, 4 );
+      HB_STORNI( ERR_GET_PRINTER_SETTINGS, -1, 5 );
       return;
    }
 
@@ -2954,13 +3005,16 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
       {
          GlobalFree( pi2 );
          ClosePrinter( hPrinter );
-         MessageBox( 0, "Printer Configuration Failed! (005)", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
-
-         hb_reta( 4 );
+         if( bVerbose )
+         {
+            MessageBox( 0, "Printer Configuration Failed! (ERR_GET_DOCUMENT_BUFFER_SIZE)", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
+         }
+         hb_reta( 5 );
          HB_STORNL( 0, -1, 1 );
          HB_STORC( "", -1, 2 );
          HB_STORNI( 0, -1, 3 );
          HB_STORNI( 0, -1, 4 );
+         HB_STORNI( ERR_GET_DOCUMENT_BUFFER_SIZE, -1, 5 );
          return;
       }
 
@@ -2969,13 +3023,16 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
       {
          GlobalFree( pi2 );
          ClosePrinter( hPrinter );
-         MessageBox( 0, "Printer Configuration Failed! (006)", "Error! (006)", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
-
-         hb_reta( 4 );
+         if( bVerbose )
+         {
+            MessageBox( 0, "Printer Configuration Failed! (ERR_ALLOCATE_DOCUMENT_BUFFER)", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
+         }
+         hb_reta( 5 );
          HB_STORNL( 0, -1, 1 );
          HB_STORC( "", -1, 2 );
          HB_STORNI( 0, -1, 3 );
          HB_STORNI( 0, -1, 4 );
+         HB_STORNI( ERR_ALLOCATE_DOCUMENT_BUFFER, -1, 5 );
          return;
       }
 
@@ -2984,14 +3041,16 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
       {
          GlobalFree( pDevMode );
          GlobalFree( pi2 );
-         ClosePrinter( hPrinter );
-         MessageBox( 0, "Printer Configuration Failed! (007)", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
-
-         hb_reta( 4 );
+         if( bVerbose )
+         {
+            MessageBox( 0, "Printer Configuration Failed! (ERR_GET_DOCUMENT_SETTINGS)", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
+         }
+         hb_reta( 5 );
          HB_STORNL( 0, -1, 1 );
          HB_STORC( "", -1, 2 );
          HB_STORNI( 0, -1, 3 );
          HB_STORNI( 0, -1, 4 );
+         HB_STORNI( ERR_GET_DOCUMENT_SETTINGS, -1, 5 );
          return;
       }
 
@@ -2999,405 +3058,453 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
    }
 
    ///////////////////////////////////////////////////////////////////////
-   // Specify fields to change
-   //////////////////////////////////////////////////////////////////////
-
-   // Orientation
-   if( hb_parni( 2 ) != -999 )
-   {
-      fields = fields | DM_ORIENTATION;
-   }
-
-   // PaperSize
-   if( hb_parni( 3 ) != -999 )
-   {
-      fields = fields | DM_PAPERSIZE;
-   }
-
-   // PaperLenght
-   if( hb_parni( 4 ) != -999 )
-   {
-      fields = fields | DM_PAPERLENGTH;
-   }
-
-   // PaperWidth
-   if( hb_parni( 5 ) != -999 )
-   {
-      fields = fields | DM_PAPERWIDTH ;
-   }
-
-   // Copies
-   if( hb_parni( 6 ) != -999 )
-   {
-      fields = fields | DM_COPIES;
-   }
-
-   // Default Source
-   if( hb_parni( 7 ) != -999 )
-   {
-      fields = fields | DM_DEFAULTSOURCE;
-   }
-
-   // Print Quality
-   if( hb_parni( 8 ) != -999 )
-   {
-      fields = fields | DM_PRINTQUALITY;
-   }
-
-   // Print Color
-   if( hb_parni( 9 ) != -999 )
-   {
-      fields = fields | DM_COLOR;
-   }
-
-   // Print Duplex Mode
-   if( hb_parni( 10 ) != -999 )
-   {
-      fields = fields | DM_DUPLEX;
-   }
-
-   // Print Collate
-   if( hb_parni( 11 ) != -999 )
-   {
-      fields = fields | DM_COLLATE;
-   }
-
-   // Scale
-   if( hb_parni( 12 ) != -999 )
-   {
-      fields = fields | DM_SCALE;
-   }
-
-   dmFields = pi2->pDevMode->dmFields;
-   pi2->pDevMode->dmFields = fields;
-
+   // Set new values if the driver supports changing the properties
    ///////////////////////////////////////////////////////////////////////
-   // Load fields values
-   //////////////////////////////////////////////////////////////////////
 
    // Orientation
    if( hb_parni( 2 ) != -999 )
    {
-      if( ! ( ( dmFields & DM_ORIENTATION ) == DM_ORIENTATION ) )
+      if( pi2->pDevMode->dmFields & DM_ORIENTATION )
       {
-         GlobalFree( pi2 );
-         ClosePrinter( hPrinter );
-         if( pDevMode )
+         fields = fields | DM_ORIENTATION;
+         pi2->pDevMode->dmOrientation = (short) hb_parni( 2 );
+      }
+      else
+      {
+         if( bVerbose )
+         {
+            MessageBox( 0, "Printer Configuration Failed: ORIENTATION Property Not Supported By Selected Printer", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
+         }
+         if( bAbort )
          {
             GlobalFree( pDevMode );
+            GlobalFree( pi2 );
+            ClosePrinter( hPrinter );
+            hb_reta( 5 );
+            HB_STORNL( 0, -1, 1 );
+            HB_STORC( "", -1, 2 );
+            HB_STORNI( 0, -1, 3 );
+            HB_STORNI( 0, -1, 4 );
+            HB_STORNI( ERR_ORIENTATION_NOT_SUPPORTED, -1, 5 );
+            return;
          }
-         MessageBox( 0, "Printer Configuration Failed: ORIENTATION Property Not Supported By Selected Printer", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
-
-         hb_reta( 4 );
-         HB_STORNL( 0, -1, 1 );
-         HB_STORC( "", -1, 2 );
-         HB_STORNI( 0, -1, 3 );
-         HB_STORNI( 0, -1, 4 );
-         return;
+         else
+         {
+            error = error | ERR_ORIENTATION_NOT_SUPPORTED;
+         }
       }
-
-      pi2->pDevMode->dmOrientation = (short) hb_parni( 2 );
    }
 
    // PaperSize
    if( hb_parni( 3 ) != -999 )
    {
-      if( ! ( ( dmFields & DM_PAPERSIZE ) == DM_PAPERSIZE ) )
+      if( pi2->pDevMode->dmFields & DM_PAPERSIZE )
       {
-         GlobalFree( pi2 );
-         ClosePrinter( hPrinter );
-         if( pDevMode )
+         fields = fields | DM_PAPERSIZE;
+         pi2->pDevMode->dmPaperSize = (short) hb_parni( 3 );
+      }
+      else
+      {
+         if( bVerbose )
+         {
+            MessageBox( 0, "Printer Configuration Failed: PAPERSIZE Property Not Supported By Selected Printer", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
+         }
+         if( bAbort )
          {
             GlobalFree( pDevMode );
+            GlobalFree( pi2 );
+            ClosePrinter( hPrinter );
+            hb_reta( 5 );
+            HB_STORNL( 0, -1, 1 );
+            HB_STORC( "", -1, 2 );
+            HB_STORNI( 0, -1, 3 );
+            HB_STORNI( 0, -1, 4 );
+            HB_STORNI( ERR_PAPERSIZE_NOT_SUPPORTED, -1, 5 );
+            return;
          }
-         MessageBox( 0, "Printer Configuration Failed: PAPERSIZE Property Not Supported By Selected Printer", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
-
-         hb_reta( 4 );
-         HB_STORNL( 0, -1, 1 );
-         HB_STORC( "", -1, 2 );
-         HB_STORNI( 0, -1, 3 );
-         HB_STORNI( 0, -1, 4 );
-         return;
+         else
+         {
+            error = error | ERR_PAPERSIZE_NOT_SUPPORTED;
+         }
       }
-
-      pi2->pDevMode->dmPaperSize = (short) hb_parni( 3 );
    }
 
    // PaperLenght
    if( hb_parni( 4 ) != -999 )
    {
-      if( ! ( ( dmFields & DM_PAPERLENGTH ) == DM_PAPERLENGTH ) )
+      if( pi2->pDevMode->dmFields & DM_PAPERLENGTH )
       {
-         GlobalFree( pi2 );
-         ClosePrinter( hPrinter );
-         if( pDevMode )
+         fields = fields | DM_PAPERLENGTH;
+         pi2->pDevMode->dmPaperLength = (short) hb_parni( 4 ) * 10;
+      }
+      else
+      {
+         if( bVerbose )
+         {
+            MessageBox( 0, "Printer Configuration Failed: PAPERLENGTH Property Not Supported By Selected Printer", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
+         }
+         if( bAbort )
          {
             GlobalFree( pDevMode );
+            GlobalFree( pi2 );
+            ClosePrinter( hPrinter );
+            hb_reta( 5 );
+            HB_STORNL( 0, -1, 1 );
+            HB_STORC( "", -1, 2 );
+            HB_STORNI( 0, -1, 3 );
+            HB_STORNI( 0, -1, 4 );
+            HB_STORNI( ERR_PAPERLENGTH_NOT_SUPPORTED, -1, 5 );
+            return;
          }
-         MessageBox( 0, "Printer Configuration Failed: PAPERLENGTH Property Not Supported By Selected Printer", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
-
-         hb_reta( 4 );
-         HB_STORNL( 0, -1, 1 );
-         HB_STORC( "", -1, 2 );
-         HB_STORNI( 0, -1, 3 );
-         HB_STORNI( 0, -1, 4 );
-         return;
+         else
+         {
+            error = error | ERR_PAPERLENGTH_NOT_SUPPORTED;
+         }
       }
-
-      pi2->pDevMode->dmPaperLength = (short) hb_parni( 4 ) * 10;
    }
 
    // PaperWidth
    if( hb_parni( 5 ) != -999 )
    {
-      if( ! ( ( dmFields & DM_PAPERWIDTH ) == DM_PAPERWIDTH ) )
+      if( pi2->pDevMode->dmFields & DM_PAPERWIDTH )
       {
-         GlobalFree( pi2 );
-         ClosePrinter( hPrinter );
-         if( pDevMode )
+         fields = fields | DM_PAPERWIDTH ;
+         pi2->pDevMode->dmPaperWidth = (short) hb_parni( 5 ) * 10;
+      }
+      else
+      {
+         if( bVerbose )
+         {
+            MessageBox( 0, "Printer Configuration Failed: PAPERWIDTH Property Not Supported By Selected Printer", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
+         }
+         if( bAbort )
          {
             GlobalFree( pDevMode );
+            GlobalFree( pi2 );
+            ClosePrinter( hPrinter );
+            hb_reta( 5 );
+            HB_STORNL( 0, -1, 1 );
+            HB_STORC( "", -1, 2 );
+            HB_STORNI( 0, -1, 3 );
+            HB_STORNI( 0, -1, 4 );
+            HB_STORNI( ERR_PAPERWIDTH_NOT_SUPPORTED, -1, 5 );
+            return;
          }
-         MessageBox( 0, "Printer Configuration Failed: PAPERWIDTH Property Not Supported By Selected Printer", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
-
-         hb_reta( 4 );
-         HB_STORNL( 0, -1, 1 );
-         HB_STORC( "", -1, 2 );
-         HB_STORNI( 0, -1, 3 );
-         HB_STORNI( 0, -1, 4 );
-         return;
+         else
+         {
+            error = error | ERR_PAPERWIDTH_NOT_SUPPORTED;
+         }
       }
-
-      pi2->pDevMode->dmPaperWidth = (short) hb_parni( 5 ) * 10;
    }
 
    // Copies
    if( hb_parni( 6 ) != -999 )
    {
-      if( ! ( ( dmFields & DM_COPIES ) == DM_COPIES ) )
+      if( pi2->pDevMode->dmFields & DM_COPIES )
       {
-         GlobalFree( pi2 );
-         ClosePrinter( hPrinter );
-         if( pDevMode )
+         fields = fields | DM_COPIES;
+         pi2->pDevMode->dmCopies = (short) hb_parni( 6 );
+      }
+      else
+      {
+         if( bVerbose )
+         {
+            MessageBox( 0, "Printer Configuration Failed: COPIES Property Not Supported By Selected Printer", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
+         }
+         if( bAbort )
          {
             GlobalFree( pDevMode );
+            GlobalFree( pi2 );
+            ClosePrinter( hPrinter );
+            hb_reta( 5 );
+            HB_STORNL( 0, -1, 1 );
+            HB_STORC( "", -1, 2 );
+            HB_STORNI( 0, -1, 3 );
+            HB_STORNI( 0, -1, 4 );
+            HB_STORNI( ERR_COPIES_NOT_SUPPORTED, -1, 5 );
+            return;
          }
-         MessageBox( 0, "Printer Configuration Failed: COPIES Property Not Supported By Selected Printer", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
-
-         hb_reta( 4 );
-         HB_STORNL( 0, -1, 1 );
-         HB_STORC( "", -1, 2 );
-         HB_STORNI( 0, -1, 3 );
-         HB_STORNI( 0, -1, 4 );
-         return;
+         else
+         {
+            error = error | ERR_COPIES_NOT_SUPPORTED;
+         }
       }
-
-      pi2->pDevMode->dmCopies = (short) hb_parni( 6 );
    }
 
    // Default Source
    if( hb_parni( 7 ) != -999 )
    {
-      if( ! ( ( dmFields & DM_DEFAULTSOURCE ) == DM_DEFAULTSOURCE ) )
+      if( pi2->pDevMode->dmFields & DM_DEFAULTSOURCE )
       {
-         GlobalFree( pi2 );
-         ClosePrinter( hPrinter );
-         if( pDevMode )
+         fields = fields | DM_DEFAULTSOURCE;
+         pi2->pDevMode->dmDefaultSource = (short) hb_parni( 7 );
+      }
+      else
+      {
+         if( bVerbose )
+         {
+            MessageBox( 0, "Printer Configuration Failed: DEFAULTSOURCE Property Not Supported By Selected Printer", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
+         }
+         if( bAbort )
          {
             GlobalFree( pDevMode );
+            GlobalFree( pi2 );
+            ClosePrinter( hPrinter );
+            hb_reta( 5 );
+            HB_STORNL( 0, -1, 1 );
+            HB_STORC( "", -1, 2 );
+            HB_STORNI( 0, -1, 3 );
+            HB_STORNI( 0, -1, 4 );
+            HB_STORNI( ERR_DEFAULTSOURCE_NOT_SUPPORTED, -1, 5 );
+            return;
          }
-         MessageBox( 0, "Printer Configuration Failed: DEFAULTSOURCE Property Not Supported By Selected Printer", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
-
-         hb_reta( 4 );
-         HB_STORNL( 0, -1, 1 );
-         HB_STORC( "", -1, 2 );
-         HB_STORNI( 0, -1, 3 );
-         HB_STORNI( 0, -1, 4 );
-         return;
+         else
+         {
+            error = error | ERR_DEFAULTSOURCE_NOT_SUPPORTED;
+         }
       }
-
-      pi2->pDevMode->dmDefaultSource = (short) hb_parni( 7 );
    }
 
    // Print Quality
    if( hb_parni( 8 ) != -999 )
    {
-      if( ! ( ( dmFields & DM_PRINTQUALITY ) == DM_PRINTQUALITY ) )
+      if( pi2->pDevMode->dmFields & DM_PRINTQUALITY )
       {
-         GlobalFree( pi2 );
-         ClosePrinter( hPrinter );
-         if( pDevMode )
+         fields = fields | DM_PRINTQUALITY;
+         pi2->pDevMode->dmPrintQuality = (short) hb_parni( 8 );
+      }
+      else
+      {
+         if( bVerbose )
+         {
+            MessageBox( 0, "Printer Configuration Failed: QUALITY Property Not Supported By Selected Printer", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
+         }
+         if( bAbort )
          {
             GlobalFree( pDevMode );
+            GlobalFree( pi2 );
+            ClosePrinter( hPrinter );
+            hb_reta( 5 );
+            HB_STORNL( 0, -1, 1 );
+            HB_STORC( "", -1, 2 );
+            HB_STORNI( 0, -1, 3 );
+            HB_STORNI( 0, -1, 4 );
+            HB_STORNI( ERR_QUALITY_NOT_SUPPORTED, -1, 5 );
+            return;
          }
-         MessageBox( 0, "Printer Configuration Failed: QUALITY Property Not Supported By Selected Printer", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
-
-         hb_reta( 4 );
-         HB_STORNL( 0, -1, 1 );
-         HB_STORC( "", -1, 2 );
-         HB_STORNI( 0, -1, 3 );
-         HB_STORNI( 0, -1, 4 );
-         return;
+         else
+         {
+            error = error | ERR_QUALITY_NOT_SUPPORTED;
+         }
       }
-
-      pi2->pDevMode->dmPrintQuality = (short) hb_parni( 8 );
    }
 
    // Print Color
    if( hb_parni( 9 ) != -999 )
    {
-      if( ! ( ( dmFields & DM_COLOR ) == DM_COLOR ) )
+      if( pi2->pDevMode->dmFields & DM_COLOR )
       {
-         GlobalFree( pi2 );
-         ClosePrinter( hPrinter );
-         if( pDevMode )
+         fields = fields | DM_COLOR;
+         pi2->pDevMode->dmColor = (short) hb_parni( 9 );
+      }
+      else
+      {
+         if( bVerbose )
+         {
+            MessageBox( 0, "Printer Configuration Failed: COLOR Property Not Supported By Selected Printer", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
+         }
+         if( bAbort )
          {
             GlobalFree( pDevMode );
+            GlobalFree( pi2 );
+            ClosePrinter( hPrinter );
+            hb_reta( 5 );
+            HB_STORNL( 0, -1, 1 );
+            HB_STORC( "", -1, 2 );
+            HB_STORNI( 0, -1, 3 );
+            HB_STORNI( 0, -1, 4 );
+            HB_STORNI( ERR_COLOR_NOT_SUPPORTED, -1, 5 );
+            return;
          }
-         MessageBox( 0, "Printer Configuration Failed: COLOR Property Not Supported By Selected Printer", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
-
-         hb_reta( 4 );
-         HB_STORNL( 0, -1, 1 );
-         HB_STORC( "", -1, 2 );
-         HB_STORNI( 0, -1, 3 );
-         HB_STORNI( 0, -1, 4 );
-         return;
+         else
+         {
+            error = error | ERR_COLOR_NOT_SUPPORTED;
+         }
       }
-
-      pi2->pDevMode->dmColor = (short) hb_parni( 9 );
    }
 
    // Print Duplex
    if( hb_parni( 10 ) != -999 )
    {
-      if( ! ( ( dmFields & DM_DUPLEX ) == DM_DUPLEX ) )
+      if( pi2->pDevMode->dmFields & DM_DUPLEX )
       {
-         GlobalFree( pi2 );
-         ClosePrinter( hPrinter );
-         if( pDevMode )
+         fields = fields | DM_DUPLEX;
+         pi2->pDevMode->dmDuplex = (short) hb_parni( 10 );
+      }
+      else
+      {
+         if( bVerbose )
+         {
+            MessageBox( 0, "Printer Configuration Failed: DUPLEX Property Not Supported By Selected Printer", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
+         }
+         if( bAbort )
          {
             GlobalFree( pDevMode );
+            GlobalFree( pi2 );
+            ClosePrinter( hPrinter );
+            hb_reta( 5 );
+            HB_STORNL( 0, -1, 1 );
+            HB_STORC( "", -1, 2 );
+            HB_STORNI( 0, -1, 3 );
+            HB_STORNI( 0, -1, 4 );
+            HB_STORNI( ERR_DUPLEX_NOT_SUPPORTED, -1, 5 );
+            return;
          }
-         MessageBox( 0, "Printer Configuration Failed: DUPLEX Property Not Supported By Selected Printer", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
-
-         hb_reta( 4 );
-         HB_STORNL( 0, -1, 1 );
-         HB_STORC( "", -1, 2 );
-         HB_STORNI( 0, -1, 3 );
-         HB_STORNI( 0, -1, 4 );
-         return;
+         else
+         {
+            error = error | ERR_DUPLEX_NOT_SUPPORTED;
+         }
       }
-
-      pi2->pDevMode->dmDuplex = (short) hb_parni( 10 );
    }
 
    // Print Collate
    if( hb_parni( 11 ) != -999 )
    {
-      if( ! ( ( dmFields & DM_COLLATE ) == DM_COLLATE ) )
+      if( pi2->pDevMode->dmFields & DM_COLLATE )
       {
-         GlobalFree( pi2 );
-         ClosePrinter( hPrinter );
-         if( pDevMode )
+         fields = fields | DM_COLLATE;
+         pi2->pDevMode->dmCollate = (short) hb_parni( 11 );
+      }
+      else
+      {
+         if( bVerbose )
+         {
+            MessageBox( 0, "Printer Configuration Failed: COLLATE Property Not Supported By Selected Printer", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
+         }
+         if( bAbort )
          {
             GlobalFree( pDevMode );
+            GlobalFree( pi2 );
+            ClosePrinter( hPrinter );
+            hb_reta( 5 );
+            HB_STORNL( 0, -1, 1 );
+            HB_STORC( "", -1, 2 );
+            HB_STORNI( 0, -1, 3 );
+            HB_STORNI( 0, -1, 4 );
+            HB_STORNI( ERR_COLLATE_NOT_SUPPORTED, -1, 5 );
+            return;
          }
-         MessageBox( 0, "Printer Configuration Failed: COLLATE Property Not Supported By Selected Printer", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
-
-         hb_reta( 4 );
-         HB_STORNL( 0, -1, 1 );
-         HB_STORC( "", -1, 2 );
-         HB_STORNI( 0, -1, 3 );
-         HB_STORNI( 0, -1, 4 );
-         return;
+         else
+         {
+            error = error | ERR_COLLATE_NOT_SUPPORTED;
+         }
       }
-
-      pi2->pDevMode->dmCollate = (short) hb_parni( 11 );
    }
 
    // Scale
    if( hb_parni( 12 ) != -999 )
    {
-      if( ! ( ( dmFields & DM_SCALE ) == DM_SCALE ) )
+      if( pi2->pDevMode->dmFields & DM_SCALE )
       {
-         GlobalFree( pi2 );
-         ClosePrinter( hPrinter );
-         if( pDevMode )
+         fields = fields | DM_SCALE;
+         pi2->pDevMode->dmCollate = (short) hb_parni( 12 );
+      }
+      else
+      {
+         if( bVerbose )
+         {
+            MessageBox( 0, "Printer Configuration Failed: SCALE Property Not Supported By Selected Printer", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
+         }
+         if( bAbort )
          {
             GlobalFree( pDevMode );
+            GlobalFree( pi2 );
+            ClosePrinter( hPrinter );
+            hb_reta( 5 );
+            HB_STORNL( 0, -1, 1 );
+            HB_STORC( "", -1, 2 );
+            HB_STORNI( 0, -1, 3 );
+            HB_STORNI( 0, -1, 4 );
+            HB_STORNI( ERR_SCALE_NOT_SUPPORTED, -1, 5 );
+            return;
          }
-         MessageBox( 0, "Printer Configuration Failed: SCALE Property Not Supported By Selected Printer", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
-
-         hb_reta( 4 );
-         HB_STORNL( 0, -1, 1 );
-         HB_STORC( "", -1, 2 );
-         HB_STORNI( 0, -1, 3 );
-         HB_STORNI( 0, -1, 4 );
-         return;
+         else
+         {
+            error = error | ERR_SCALE_NOT_SUPPORTED;
+         }
       }
-
-      pi2->pDevMode->dmCollate = (short) hb_parni( 12 );
    }
 
-   //////////////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////////
+   // Update driver
+   ///////////////////////////////////////////////////////////////////////
 
+   // Specify exactly what we are attempting to change
+   pi2->pDevMode->dmFields = fields;
+
+   // Do not attempt to set security descriptor
    pi2->pSecurityDescriptor = NULL;
 
    lFlag = DocumentProperties( NULL, hPrinter, (char *) hb_parc( 1 ), pi2->pDevMode, pi2->pDevMode, DM_IN_BUFFER | DM_OUT_BUFFER );
 
    if( lFlag != IDOK )
    {
+      GlobalFree( pDevMode );
       GlobalFree( pi2 );
       ClosePrinter( hPrinter );
-      if( pDevMode )
+      if( bVerbose )
       {
-         GlobalFree( pDevMode );
+         MessageBox( 0, "Printer Configuration Failed! (ERR_SET_DOCUMENT_SETTINGS)", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
       }
-      MessageBox( 0, "Printer Configuration Failed! (008)", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
-
-      hb_reta( 4 );
+      hb_reta( 5 );
       HB_STORNL( 0, -1, 1 );
       HB_STORC( "", -1, 2 );
       HB_STORNI( 0, -1, 3 );
       HB_STORNI( 0, -1, 4 );
+      HB_STORNI( ERR_SET_DOCUMENT_SETTINGS, -1, 5 );
       return;
    }
 
+   // Make changes global
+   if( bGlobal )
+   {
+      SetPrinter( hPrinter, 2, (LPBYTE) pi2, 0 );
+   }
+
+   ///////////////////////////////////////////////////////////////////////
+   // Create a DC to handle the print job
+   ///////////////////////////////////////////////////////////////////////
+
    hdcPrint = CreateDC( NULL, TEXT( hb_parc( 1 ) ), NULL, pi2->pDevMode );
 
-   if( hdcPrint != NULL )
+   if( hdcPrint == NULL )
    {
-      hb_reta( 4 );
-      HB_STORNL( (LONG) hdcPrint, -1, 1 );
-      HB_STORC( hb_parc( 1 ), -1, 2 );
-      HB_STORNI( (INT) pi2->pDevMode->dmCopies, -1, 3 );
-      HB_STORNI( (INT) pi2->pDevMode->dmCollate, -1, 4 );
-   }
-   else
-   {
-      MessageBox( 0, "Printer Configuration Failed! (009)", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
-
-      hb_reta( 4 );
+      GlobalFree( pDevMode );
+      GlobalFree( pi2 );
+      ClosePrinter( hPrinter );
+      if( bVerbose )
+      {
+         MessageBox( 0, "Printer Configuration Failed! (ERR_CREATING_DC)", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
+      }
+      hb_reta( 5 );
       HB_STORNL( 0, -1, 1 );
       HB_STORC( "", -1, 2 );
       HB_STORNI( 0, -1, 3 );
       HB_STORNI( 0, -1, 4 );
+      HB_STORNI( ERR_CREATING_DC, -1, 5 );
+      return;
    }
 
-   if( pi2 )
-   {
-      GlobalFree( pi2 );
-   }
+   hb_reta( 5 );
+   HB_STORNL( (LONG) hdcPrint, -1, 1 );
+   HB_STORC( hb_parc( 1 ), -1, 2 );
+   HB_STORNI( (INT) pi2->pDevMode->dmCopies, -1, 3 );
+   HB_STORNI( (INT) pi2->pDevMode->dmCollate, -1, 4 );
+   HB_STORNI( error, -1, 5 );
 
-   if( hPrinter )
-   {
-      ClosePrinter( hPrinter );
-   }
-
-   if( pDevMode )
-   {
-      GlobalFree( pDevMode );
-   }
+   GlobalFree( pDevMode );
+   GlobalFree( pi2 );
+   ClosePrinter( hPrinter );
 }
 
 HB_FUNC( _HMG_PRINTER_STARTPAGE_PREVIEW )

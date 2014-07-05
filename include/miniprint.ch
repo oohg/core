@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.ch,v 1.10 2014-06-03 00:34:12 fyurisich Exp $
+ * $Id: miniprint.ch,v 1.11 2014-07-05 18:46:25 fyurisich Exp $
  */
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
@@ -54,6 +54,9 @@
       [ <lCollate : COLLATE> <nCollate> ] ;
       [ <lScale : SCALE> <nScale> ] ;
       [ <lPreview : PREVIEW> ] ;
+      [ <lSilent : NOERRORMSGS> ] ;
+      [ <lIgnore : IGNOREERRORS> ] ;
+      [ <lGlobal : GLOBAL> ] ;
    => ;
       _HMG_PRINTER_aPrinterProperties := _HMG_PRINTER_SetPrinterProperties( ;
             <cPrinter>, ;
@@ -67,10 +70,14 @@
             If( <.lColor.>, <nColor>, -999 ), ;
             If( <.lDuplex.>, <nDuplex>, -999 ), ;
             If( <.lCollate.>, <nCollate>, -999 ), ;
-            If( <.lScale.>, <nScale>, -999 ) ) ;;
+            If( <.lScale.>, <nScale>, -999 ), ;
+            <.lSilent.>, ;
+            <.lIgnore.>, ;
+            <.lGlobal.> ) ;;
       _HMG_PRINTER_hDC := _HMG_PRINTER_aPrinterProperties\[1\] ;;
       _HMG_PRINTER_Copies := _HMG_PRINTER_aPrinterProperties\[3\] ;;
       _HMG_PRINTER_Collate := _HMG_PRINTER_aPrinterProperties\[4\] ;;
+      _HMG_PRINTER_Error := _HMG_PRINTER_aPrinterProperties\[5\] ;;
       _HMG_PRINTER_Preview := <.lPreview.> ;;
       _HMG_PRINTER_InitUserMessages() ;;
       _HMG_PRINTER_TimeStamp := StrZero( Seconds() * 100, 8 ) ;;
@@ -89,6 +96,9 @@
       [ <lCollate : COLLATE> <nCollate> ] ;
       [ <lScale : SCALE> <nScale> ] ;
       [ <lPreview : PREVIEW> ] ;
+      [ <lSilent : NOERRORMSGS> ] ;
+      [ <lIgnore : IGNOREERRORS> ] ;
+      [ <lGlobal : GLOBAL> ] ;
    => ;
       _HMG_PRINTER_aPrinterProperties := _HMG_PRINTER_SetPrinterProperties( ;
             <cPrinter>, ;
@@ -102,10 +112,14 @@
             If( <.lColor.>, <nColor>, -999 ), ;
             If( <.lDuplex.>, <nDuplex>, -999 ), ;
             If( <.lCollate.>, <nCollate>, -999 ), ;
-            If( <.lScale.>, <nScale>, -999 ) ) ;;
+            If( <.lScale.>, <nScale>, -999 ), ;
+            <.lSilent.>, ;
+            <.lIgnore.>, ;
+            <.lGlobal.> ) ;;
       _HMG_PRINTER_hDC := _HMG_PRINTER_aPrinterProperties\[1\] ;;
       _HMG_PRINTER_Copies := _HMG_PRINTER_aPrinterProperties\[3\] ;;
       _HMG_PRINTER_Collate := _HMG_PRINTER_aPrinterProperties\[4\] ;;
+      _HMG_PRINTER_Error := _HMG_PRINTER_aPrinterProperties\[5\] ;;
       <lSuccess> := If( _HMG_PRINTER_hDC <> 0, .T., .F. ) ;;
       _HMG_PRINTER_Preview := <.lPreview.> ;;
       _HMG_PRINTER_InitUserMessages() ;;
@@ -125,6 +139,9 @@
       [ <lCollate : COLLATE> <nCollate> ] ;
       [ <lScale : SCALE> <nScale> ] ;
       [ <lPreview : PREVIEW> ] ;
+      [ <lSilent : NOERRORMSGS> ] ;
+      [ <lIgnore : IGNOREERRORS> ] ;
+      [ <lGlobal : GLOBAL> ] ;
    => ;
       _HMG_PRINTER_Name := GetDefaultPrinter() ;;
       _HMG_PRINTER_aPrinterProperties := _HMG_PRINTER_SetPrinterProperties( ;
@@ -139,10 +156,14 @@
             If( <.lColor.>, <nColor>, -999 ), ;
             If( <.lDuplex.>, <nDuplex>, -999 ), ;
             If( <.lCollate.>, <nCollate>, -999 ), ;
-            If( <.lScale.>, <nScale>, -999 ) ) ;;
+            If( <.lScale.>, <nScale>, -999 ), ;
+            <.lSilent.>, ;
+            <.lIgnore.>, ;
+            <.lGlobal.> ) ;;
       _HMG_PRINTER_hDC := _HMG_PRINTER_aPrinterProperties\[1\] ;;
       _HMG_PRINTER_Copies := _HMG_PRINTER_aPrinterProperties\[3\] ;;
       _HMG_PRINTER_Collate := _HMG_PRINTER_aPrinterProperties\[4\] ;;
+      _HMG_PRINTER_Error := _HMG_PRINTER_aPrinterProperties\[5\] ;;
       _HMG_PRINTER_Preview := <.lPreview.> ;;
       _HMG_PRINTER_InitUserMessages() ;;
       _HMG_PRINTER_TimeStamp := StrZero( Seconds() * 100, 8 ) ;;
@@ -160,6 +181,9 @@
       [ <lCollate : COLLATE> <nCollate> ] ;
       [ <lScale : SCALE> <nScale> ] ;
       [ <lPreview : PREVIEW> ] ;
+      [ <lSilent : NOERRORMSGS> ] ;
+      [ <lIgnore : IGNOREERRORS> ] ;
+      [ <lGlobal : GLOBAL> ] ;
    => ;
       _HMG_PRINTER_Name := GetDefaultPrinter() ;;
       _HMG_PRINTER_aPrinterProperties := _HMG_PRINTER_SetPrinterProperties( ;
@@ -174,10 +198,14 @@
             If( <.lColor.>, <nColor>, -999 ), ;
             If( <.lDuplex.>, <nDuplex>, -999 ), ;
             If( <.lCollate.>, <nCollate>, -999 ), ;
-            If( <.lScale.>, <nScale>, -999 ) ) ;;
+            If( <.lScale.>, <nScale>, -999 ), ;
+            <.lSilent.>, ;
+            <.lIgnore.>, ;
+            <.lGlobal.> ) ;;
       _HMG_PRINTER_hDC := _HMG_PRINTER_aPrinterProperties\[1\] ;;
       _HMG_PRINTER_Copies := _HMG_PRINTER_aPrinterProperties\[3\] ;;
       _HMG_PRINTER_Collate := _HMG_PRINTER_aPrinterProperties\[4\] ;;
+      _HMG_PRINTER_Error := _HMG_PRINTER_aPrinterProperties\[5\] ;;
       <lSuccess> := If( _HMG_PRINTER_hDC <> 0, .T., .F. ) ;;
       _HMG_PRINTER_Preview := <.lPreview.> ;;
       _HMG_PRINTER_InitUserMessages() ;;
@@ -190,6 +218,7 @@
       _HMG_PRINTER_Name := _HMG_PRINTER_aPrinterProperties\[2\] ;;
       _HMG_PRINTER_Copies := _HMG_PRINTER_aPrinterProperties\[3\] ;;
       _HMG_PRINTER_Collate := _HMG_PRINTER_aPrinterProperties\[4\] ;;
+      _HMG_PRINTER_Error := _HMG_PRINTER_aPrinterProperties\[5\] ;;
       _HMG_PRINTER_Preview := <.lPreview.> ;;
       _HMG_PRINTER_InitUserMessages() ;;
       _HMG_PRINTER_TimeStamp := StrZero( Seconds() * 100, 8 )
@@ -201,6 +230,7 @@
       _HMG_PRINTER_Name := _HMG_PRINTER_aPrinterProperties\[2\] ;;
       _HMG_PRINTER_Copies := _HMG_PRINTER_aPrinterProperties\[3\] ;;
       _HMG_PRINTER_Collate := _HMG_PRINTER_aPrinterProperties\[4\] ;;
+      _HMG_PRINTER_Error := _HMG_PRINTER_aPrinterProperties\[5\] ;;
       <lSuccess> := If( _HMG_PRINTER_hDC <> 0, .T., .F. ) ;;
       _HMG_PRINTER_Preview := <.lPreview.> ;;
       _HMG_PRINTER_InitUserMessages() ;;
@@ -518,3 +548,26 @@
 #define BR_BDIAGONAL                                3       // /////
 #define BR_CROSS                                    4       // +++++
 #define BR_DIAGCROSS                                5       // xxxxx
+
+/* error codes for SELECT PRINTER command */
+#define ERR_OPEN_PRINTER                            0x00000001
+#define ERR_GET_PRINTER_BUFFER_SIZE                 0x00000002
+#define ERR_ALLOCATE_PRINTER_BUFFER                 0x00000004
+#define ERR_GET_PRINTER_SETTINGS                    0x00000008
+#define ERR_GET_DOCUMENT_BUFFER_SIZE                0x00000010
+#define ERR_ALLOCATE_DOCUMENT_BUFFER                0x00000020
+#define ERR_GET_DOCUMENT_SETTINGS                   0x00000040
+#define ERR_ORIENTATION_NOT_SUPPORTED               0x00000080
+#define ERR_PAPERSIZE_NOT_SUPPORTED                 0x00000100
+#define ERR_PAPERLENGTH_NOT_SUPPORTED               0x00000200
+#define ERR_PAPERWIDTH_NOT_SUPPORTED                0x00000400
+#define ERR_COPIES_NOT_SUPPORTED                    0x00000800
+#define ERR_DEFAULTSOURCE_NOT_SUPPORTED             0x00001000
+#define ERR_QUALITY_NOT_SUPPORTED                   0x00002000
+#define ERR_COLOR_NOT_SUPPORTED                     0x00004000
+#define ERR_DUPLEX_NOT_SUPPORTED                    0x00008000
+#define ERR_COLLATE_NOT_SUPPORTED                   0x00010000
+#define ERR_SCALE_NOT_SUPPORTED                     0x00020000
+#define ERR_SET_DOCUMENT_SETTINGS                   0x00040000
+#define ERR_CREATING_DC                             0x00080000
+#define ERR_PRINTDLG                                0x00100000

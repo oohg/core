@@ -1,5 +1,5 @@
 /*
- * $Id: h_print.prg,v 1.141 2014-07-02 23:14:22 fyurisich Exp $
+ * $Id: h_print.prg,v 1.142 2014-07-05 18:46:25 fyurisich Exp $
  */
 
 #include 'hbclass.ch'
@@ -14,15 +14,16 @@
 
 MEMVAR _OOHG_PrintLibrary
 MEMVAR _OOHG_PRINTER_DocName
-MEMVAR _HMG_PRINTER_APRINTERPROPERTIES
-MEMVAR _HMG_PRINTER_HDC
-MEMVAR _HMG_PRINTER_COPIES
-MEMVAR _HMG_PRINTER_COLLATE
-MEMVAR _HMG_PRINTER_PREVIEW
-MEMVAR _HMG_PRINTER_TIMESTAMP
-MEMVAR _HMG_PRINTER_NAME
-MEMVAR _HMG_PRINTER_PAGECOUNT
-MEMVAR _HMG_PRINTER_HDC_BAK
+MEMVAR _HMG_PRINTER_aPrinterProperties
+MEMVAR _HMG_PRINTER_Collate
+MEMVAR _HMG_PRINTER_Copies
+MEMVAR _HMG_PRINTER_Error
+MEMVAR _HMG_PRINTER_hDC
+MEMVAR _HMG_PRINTER_hDC_Bak
+MEMVAR _HMG_PRINTER_Name
+MEMVAR _HMG_PRINTER_PageCount
+MEMVAR _HMG_PRINTER_Preview
+MEMVAR _HMG_PRINTER_TimeStamp
 
 #define hbprn ::oHBPrn
 #define TEMP_FILE_NAME ( GetTempDir() + "T" + AllTrim( Str( Int( HB_Random( 999999 ) ), 8 ) ) + ".prn" )
@@ -113,111 +114,153 @@ RETURN o_Print_
 
 CLASS TPRINTBASE
 
-   DATA aColor                   INIT {0, 0, 0}             READONLY    // brush color
-   DATA aBarColor                INIT {1, 1, 1}             READONLY    // brush color for barcodes
-   DATA aFontColor               INIT {0, 0, 0}             READONLY    // font color
-   DATA aLinCelda                INIT {}                    READONLY
-   DATA aPageNames               INIT {}                    READONLY
-   DATA aPorts                   INIT {}                    READONLY
-   DATA aPrinters                INIT {}                    READONLY
-   DATA Cargo                    INIT "list"                READONLY    // document's name without extension
-   DATA cDocument                INIT ""                    READONLY    // document's name with extension
-   DATA cFontName                INIT "Courier New"         READONLY
-   DATA cPageName                INIT ""                    READONLY    // current page name
-   DATA cPort                    INIT "PRN"                 
-   DATA cPrinter                 INIT ""
-   DATA cPrintLibrary            INIT "HBPRINTER"           READONLY
-   DATA cTempFile                INIT TEMP_FILE_NAME        READONLY
-   DATA cUnits                   INIT "ROWCOL"              READONLY
-   DATA cVersion                 INIT "(oohg-tprint)V 4.10" READONLY
-   DATA Exit                     INIT .F.                   READONLY
-   DATA ImPreview                INIT .T.                   READONLY
-   DATA lFontBold                INIT .F.                   READONLY
-   DATA lFontItalic              INIT .F.                   READONLY
-   DATA lFontStrikeout           INIT .F.                   READONLY
-   DATA lFontUnderline           INIT .F.                   READONLY
-   DATA lLandscape               INIT .F.                   READONLY    // Page orientation
-   DATA lPrError                 INIT .F.                   READONLY
-   DATA lProp                    INIT .F.                   READONLY
-   DATA lSaveTemp                INIT .F.                   READONLY
-   DATA lShowErrors              INIT .T.                   READONLY
-   DATA lWinHide                 INIT .F.                   READONLY
-   DATA nFontAngle               INIT 0                     READONLY
-   DATA nFontSize                INIT 12                    READONLY
-   DATA nFontWidth               INIT 0                     READONLY
-   DATA nhFij                    INIT ( 12 / 3.70 )         READONLY
-   DATA nLinPag                  INIT 0                     READONLY
-   DATA nLMargin                 INIT 0                     READONLY
-   DATA nmHor                    INIT ( 10 / 4.75 )         READONLY
-   DATA nmVer                    INIT ( 10 / 2.35 )         READONLY
-   DATA nTMargin                 INIT 0                     READONLY
-   DATA nUnitsLin                INIT 1                     READONLY
-   DATA nvFij                    INIT ( 12 / 1.65 )         READONLY
-   DATA nwPen                    INIT 0.1                   READONLY    // pen width in MM, do not exceed 1
+   DATA aBarColor                 INIT {1, 1, 1}             READONLY    // brush color for barcodes
+   DATA aColor                    INIT {0, 0, 0}             READONLY    // brush color
+   DATA aFontColor                INIT {0, 0, 0}             READONLY    // font color
+   DATA aLinCelda                 INIT {}                    READONLY
+   DATA aPageNames                INIT {}                    READONLY
+   DATA aPorts                    INIT {}                    READONLY
+   DATA aPrinters                 INIT {}                    READONLY
+   DATA Cargo                     INIT "list"                READONLY    // document's name without extension
+   DATA cDocument                 INIT ""                    READONLY    // document's name with extension
+   DATA cFontName                 INIT "Courier New"         READONLY
+   DATA cPageName                 INIT ""                    READONLY    // current page name
+   DATA cPort                     INIT "PRN"                 READONLY
+   DATA cPrinter                  INIT ""                    READONLY
+   DATA cPrintLibrary             INIT "HBPRINTER"           READONLY
+   DATA cTempFile                 INIT TEMP_FILE_NAME        READONLY
+   DATA cUnits                    INIT "ROWCOL"              READONLY
+   DATA cVersion                  INIT "(oohg-tprint)V 4.10" READONLY
+   DATA Exit                      INIT .F.                   READONLY
+   DATA ImPreview                 INIT .T.                   READONLY
+   DATA lFontBold                 INIT .F.                   READONLY
+   DATA lFontItalic               INIT .F.                   READONLY
+   DATA lFontStrikeout            INIT .F.                   READONLY
+   DATA lFontUnderline            INIT .F.                   READONLY
+   DATA lIndentAll                INIT .F.                   READONLY    // Indent RicheEdit lines
+   DATA lLandscape                INIT .F.                   READONLY    // Page orientation
+   DATA lPrError                  INIT .F.                   READONLY
+   DATA lProp                     INIT .F.                   READONLY
+   DATA lSaveTemp                 INIT .F.                   READONLY
+   DATA lSeparateSheets           INIT .F.                   READONLY
+   DATA lShowErrors               INIT .T.                   READONLY
+   DATA lWinHide                  INIT .F.                   READONLY
+   DATA nFontAngle                INIT 0                     READONLY
+   DATA nFontSize                 INIT 12                    READONLY
+   DATA nFontType                 INIT 1                     READONLY // font type (normal=0 or bold=1)
+   DATA nFontWidth                INIT 0                     READONLY
+   DATA nhFij                     INIT ( 12 / 3.70 )         READONLY
+   DATA nLinPag                   INIT 0                     READONLY
+   DATA nLMargin                  INIT 0                     READONLY
+   DATA nmHor                     INIT ( 10 / 4.75 )         READONLY
+   DATA nmVer                     INIT ( 10 / 2.35 )         READONLY
+   DATA nTMargin                  INIT 0                     READONLY
+   DATA nUnitsLin                 INIT 1                     READONLY
+   DATA nvFij                     INIT ( 12 / 1.65 )         READONLY
+   DATA nwPen                     INIT 0.1                   READONLY    // pen width in MM, do not exceed 1
 
    METHOD BeginDoc
-   METHOD BeginDocX              BLOCK { || NIL }
+   METHOD BeginDocX               BLOCK { || NIL }
    METHOD BeginPage
-   METHOD BeginPageX             BLOCK { || NIL }
+   METHOD BeginPageX              BLOCK { || NIL }
    METHOD Codabar
    METHOD Code128
    METHOD Code3_9
-   METHOD CondenDos              BLOCK { || NIL }
-   METHOD CondenDosX             BLOCK { || NIL }
+   METHOD CondenDos               BLOCK { || NIL }
+   METHOD CondenDosX              BLOCK { || NIL }
    METHOD Ean13
    METHOD Ean8
    METHOD EndDoc
-   METHOD EndDocX                BLOCK { || NIL }
+   METHOD EndDocX                 BLOCK { || NIL }
    METHOD EndPage
-   METHOD EndPageX               BLOCK { || NIL }
+   METHOD EndPageX                BLOCK { || NIL }
    METHOD GetDefPrinter
-   METHOD GetDefPrinterX         BLOCK { || NIL }
+   METHOD GetDefPrinterX          BLOCK { || NIL }
    METHOD Go_Code
    METHOD Ind25
    METHOD Init
-   METHOD InitX                  BLOCK { || NIL }
+   METHOD InitX                   BLOCK { || NIL }
    METHOD Int25
    METHOD Mat25
-   METHOD NormalDos              BLOCK { || NIL }
-   METHOD NormalDosX             BLOCK { || NIL }
+   METHOD NormalDos               BLOCK { || NIL }
+   METHOD NormalDosX              BLOCK { || NIL }
    METHOD PrintBarcode
-   METHOD PrintBarcodeX          BLOCK { || NIL }
+   METHOD PrintBarcodeX           BLOCK { || NIL }
    METHOD PrintData
-   METHOD PrintDataX             BLOCK { || NIL }
+   METHOD PrintDataX              BLOCK { || NIL }
    METHOD PrintDos
    METHOD PrintImage
-   METHOD PrintImageX            BLOCK { || NIL }
+   METHOD PrintImageX             BLOCK { || NIL }
    METHOD PrintLine
-   METHOD PrintLineX             BLOCK { || NIL }
+   METHOD PrintLineX              BLOCK { || NIL }
    METHOD PrintMode
-   METHOD PrintModeX             BLOCK { || NIL }
+   METHOD PrintModeX              BLOCK { || NIL }
    METHOD PrintRaw
    METHOD PrintRectangle
-   METHOD PrintRectangleX        BLOCK { || NIL }
+   METHOD PrintRectangleX         BLOCK { || NIL }
    METHOD PrintRoundRectangle
-   METHOD PrintRoundRectangleX   BLOCK { || NIL }
+   METHOD PrintRoundRectangleX    BLOCK { || NIL }
    METHOD Release
-   METHOD ReleaseX               BLOCK { || NIL }
+   METHOD ReleaseX                BLOCK { || NIL }
    METHOD SelPrinter
-   METHOD SelPrinterX            BLOCK { || NIL }
-   METHOD SetColor
+   METHOD SelPrinterX             BLOCK { || NIL }
    METHOD SetBarColor
-   METHOD SetColorX              BLOCK { || NIL }
+   METHOD SetColor
+   METHOD SetColorX               BLOCK { || NIL }
    METHOD SetCpl
+   METHOD SetDosPort
    METHOD SetFont
-   METHOD SetFontX               BLOCK { || NIL }
+   METHOD SetFontType
+   METHOD SetFontX                BLOCK { || NIL }
+   METHOD SetIndentation
    METHOD SetLMargin
    METHOD SetPreviewSize
-   METHOD SetPreviewSizeX        BLOCK { || NIL }
+   METHOD SetPreviewSizeX         BLOCK { || NIL }
    METHOD SetProp
+   METHOD SetRawPrinter
+   METHOD SetSeparateSheets
    METHOD SetShowErrors
    METHOD SetTMargin
-   METHOD SetUnits                                  
+   METHOD SetUnits
    METHOD Sup5
    METHOD Upca
    METHOD Version                INLINE ::cVersion
 
 ENDCLASS
+
+*-----------------------------------------------------------------------------*
+METHOD SetIndentation( lIndentAll ) CLASS TPRINTBASE
+*-----------------------------------------------------------------------------*
+   IF HB_IsLogical( lIndentAll )
+      ::lIndentAll := lIndentAll
+   ELSE
+      ::lIndentAll := .F.
+   ENDIF
+RETURN Self
+
+*-----------------------------------------------------------------------------*
+METHOD SetFontType( nFontType ) CLASS TPRINTBASE
+*-----------------------------------------------------------------------------*
+   IF ! HB_IsNumeric( nFontType )
+      ::nFontType := 0
+   ELSEIF nFontType == 0
+      ::nFontType := 0
+   ELSEIF nFontType == 1
+      ::nFontType := 1
+   ELSE
+      ::nFontType := 0
+   ENDIF
+RETURN Self
+
+*-----------------------------------------------------------------------------*
+METHOD SetSeparateSheets( lSeparateSheets ) CLASS TPRINTBASE
+*-----------------------------------------------------------------------------*
+   IF HB_IsLogical( lSeparateSheets )
+      ::lSeparateSheets := lSeparateSheets
+   ELSE
+      ::lSeparateSheets := .F.
+   ENDIF
+RETURN Self
 
 *-----------------------------------------------------------------------------*
 METHOD SetShowErrors( lShow ) CLASS TPRINTBASE
@@ -868,6 +911,41 @@ METHOD PrintMode( cFile ) CLASS TPRINTBASE
 RETURN Self
 
 *-----------------------------------------------------------------------------*
+METHOD SetDosPort( cPort ) CLASS TPRINTBASE
+*-----------------------------------------------------------------------------*
+LOCAL nPos, cAux, lFound, i
+
+   DO CASE
+   CASE ! HB_IsString( cPort )
+      ::cPort := "PRN"
+   CASE Empty( cPort )
+      ::cPort := "PRN"
+   CASE cPort $ "PRN LPT1: LPT2: LPT3: LPT4: LPT5: LPT6:"
+      ::cPort := cPort
+   OTHERWISE
+      ::aPorts := ASort( aLocalPorts() )
+      lFound := .F.
+
+      FOR i := 1 TO Len( ::aPorts )
+         cAux := ::aPorts[i]
+         IF ( nPos := At( ",", cAux ) ) > 0
+            cAux := Left( cAux, nPos -  1 )
+         ENDIF
+         IF cPort == cAux
+            lFound := .T.
+            EXIT
+         ENDIF
+      NEXT i
+
+      IF lFound
+         ::cPort := cPort
+      ELSE
+         ::cPort := "PRN"
+      ENDIF
+   ENDCASE
+RETURN Self
+
+*-----------------------------------------------------------------------------*
 METHOD PrintDos( cFile ) CLASS TPRINTBASE
 *-----------------------------------------------------------------------------*
 LOCAL cBat, nHdl
@@ -926,12 +1004,30 @@ LOCAL nResult, cMsg := "", aData
                        { -4, _OOHG_Messages( 12, 8 ) }, ;
                        { -5, _OOHG_Messages( 12, 9 ) }, ;
                        { -6, cFile + _OOHG_Messages( 12, 10 ) } }
-            cMsg += aData[ AScan( aData, { | x | x[ 1 ] == nResult } ), 2 ]
+            cMsg += aData[ aScan( aData, { | x | x[ 1 ] == nResult } ), 2 ]
             AutoMsgStop( cMsg )
          ENDIF
          RETURN NIL
       ENDIF
    ENDIF
+RETURN Self
+
+*-----------------------------------------------------------------------------*
+METHOD SetRawPrinter( cPrinter ) CLASS TPRINTBASE
+*-----------------------------------------------------------------------------*
+   DO CASE
+   CASE ! HB_IsString( cPrinter )
+      ::cPrinter := ""
+   CASE Empty( cPrinter )
+      ::cPrinter := GetDefaultPrinter()
+   OTHERWISE
+      ::aPrinters := ASort( aPrinters() )
+      IF aScan( ::aPrinters, cPrinter ) > 0
+         ::cPrinter := cPrinter
+      ELSE
+         ::cPrinter := GetDefaultPrinter()
+      ENDIF
+   ENDCASE
 RETURN Self
 
 
@@ -979,15 +1075,15 @@ RETURN Self
 METHOD InitX() CLASS TMINIPRINT
 *-----------------------------------------------------------------------------*
    PUBLIC _HMG_PRINTER_aPrinterProperties
-   PUBLIC _HMG_PRINTER_hDC
-   PUBLIC _HMG_PRINTER_Copies
    PUBLIC _HMG_PRINTER_Collate
-   PUBLIC _HMG_PRINTER_Preview
-   PUBLIC _HMG_PRINTER_TimeStamp
+   PUBLIC _HMG_PRINTER_Copies
+   PUBLIC _HMG_PRINTER_Error
+   PUBLIC _HMG_PRINTER_hDC
+   PUBLIC _HMG_PRINTER_hDC_Bak
    PUBLIC _HMG_PRINTER_Name
    PUBLIC _HMG_PRINTER_PageCount
-   PUBLIC _HMG_PRINTER_hDC_Bak
-   PUBLIC _HMG_PRINTER_PreviewSize
+   PUBLIC _HMG_PRINTER_Preview
+   PUBLIC _HMG_PRINTER_TimeStamp
 
    ::aPrinters := aPrinters()
    ::cPrintLibrary := "MINIPRINT"
@@ -1021,15 +1117,15 @@ RETURN Self
 METHOD ReleaseX() CLASS TMINIPRINT
 *-----------------------------------------------------------------------------*
    RELEASE _HMG_PRINTER_aPrinterProperties
-   RELEASE _HMG_PRINTER_hDC
-   RELEASE _HMG_PRINTER_Copies
    RELEASE _HMG_PRINTER_Collate
-   RELEASE _HMG_PRINTER_Preview
-   RELEASE _HMG_PRINTER_TimeStamp
+   RELEASE _HMG_PRINTER_Copies
+   RELEASE _HMG_PRINTER_Error
+   RELEASE _HMG_PRINTER_hDC
+   RELEASE _HMG_PRINTER_hDC_Bak
    RELEASE _HMG_PRINTER_Name
    RELEASE _HMG_PRINTER_PageCount
-   RELEASE _HMG_PRINTER_hDC_Bak
-   RELEASE _HMG_PRINTER_PreviewSize
+   RELEASE _HMG_PRINTER_Preview
+   RELEASE _HMG_PRINTER_TimeStamp
 RETURN Self
 
 *-----------------------------------------------------------------------------*
@@ -1515,6 +1611,7 @@ LOCAL nOrientation, lSucess, nCollate, nColor
                PAPERWIDTH nPaperWidth
          ENDIF
       ELSE
+         ::cPrinter := ::GetDefPrinter()
          IF lPreview
             SELECT PRINTER DEFAULT TO lSucess ;
                ORIENTATION nOrientation  ;
@@ -1598,7 +1695,7 @@ RETURN GetDefaultPrinter()
 
 CLASS THBPRINTER FROM TPRINTBASE
 
-   DATA oHBPrn                   INIT NIL                   READONLY
+   DATA oHBPrn                    INIT NIL                   READONLY
 
    METHOD BeginDocX
    METHOD BeginPageX
@@ -1846,6 +1943,8 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
       RETURN NIL
    ENDIF
 
+   ::cPrinter := ::oHBPrn:PrinterName
+
    DEFINE FONT "F0" NAME ::cFontName SIZE ::nFontSize
    SELECT FONT "F0"
    DEFINE BRUSH "B0" COLOR ::aColor STYLE BS_SOLID
@@ -1943,9 +2042,9 @@ RETURN Self
 
 CLASS TDOSPRINT FROM TPRINTBASE
 
-   DATA cBusca                   INIT ""                    READONLY
-   DATA cString                  INIT ""                    READONLY
-   DATA nOccur                   INIT 0                     READONLY
+   DATA cBusca                    INIT ""                    READONLY
+   DATA cString                   INIT ""                    READONLY
+   DATA nOccur                    INIT 0                     READONLY
 
    METHOD BeginDocX
    METHOD BeginPageX
@@ -1956,12 +2055,12 @@ CLASS TDOSPRINT FROM TPRINTBASE
    METHOD NextSearch
    METHOD NormalDosX
    METHOD PrintDataX
-   METHOD PrintImage             BLOCK { || NIL }
+   METHOD PrintImage              BLOCK { || NIL }
    METHOD PrintLineX
    METHOD PrintModeX
    METHOD SearchString
    METHOD SelPrinterX
-   METHOD SetPreviewSize         BLOCK { || NIL }
+   METHOD SetPreviewSize          BLOCK { || NIL }
 /*
    TODO: Add METHOD PrintRectangleX using two horizontal lines and pairs of |
 */
@@ -1996,6 +2095,8 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
    Empty( nPaperLength )
    Empty( nPaperWidth )
 
+   ::cPrinter := "CMD.EXE"
+
    IF HB_IsString( cPrinterX )
       cPrinterX := Upper( cPrinterX )
       IF ! cPrinterX $ "PRN LPT1: LPT2: LPT3: LPT4: LPT5: LPT6:"
@@ -2026,7 +2127,7 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
 
          @ 53, 65 BUTTON ok CAPTION _OOHG_Messages( 12, 15 ) ACTION ( ::cPort := SubStr( myselprinter.combo_1.Item( myselprinter.combo_1.Value ), 1, AT(",", myselprinter.combo_1.Item( myselprinter.combo_1.Value ))-1 ), myselprinter.Release() )
 
-         @ 53,175 BUTTON cancel CAPTION _OOHG_Messages( 12, 16 ) ACTION ( ::lPrError := .T., myselprinter.Release() )
+         @ 53,175 BUTTON cancel CAPTION _OOHG_Messages( 12, 16 ) ACTION ( ::cPort := "PRN", ::lPrError := .T., myselprinter.Release() )
       END WINDOW
 
       CENTER WINDOW myselprinter
@@ -2276,7 +2377,6 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
    Empty( lPreview )
    Empty( lLandscape )
    Empty( nPaperSize )
-   Empty( cPrinterX )
    Empty( nRes )
    Empty( nBin )
    Empty( nDuplex )
@@ -2294,6 +2394,7 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
    ENDDO
 
    IF lSelect
+      ::cPrinter := ""
       ::aPrinters := ASort( aPrinters() )
 
       DEFINE WINDOW myselprinter  ;
@@ -2304,7 +2405,7 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
          MODAL ;
          NOSIZE
 
-         @ 15, 10 COMBOBOX combo_1 ITEMS ::aPrinters VALUE AScan( ::aPrinters, GetDefaultPrinter() ) WIDTH 320
+         @ 15, 10 COMBOBOX combo_1 ITEMS ::aPrinters VALUE aScan( ::aPrinters, GetDefaultPrinter() ) WIDTH 320
 
          @ 53, 65 BUTTON ok CAPTION _OOHG_Messages( 12, 15 ) ACTION ( ::cPrinter := myselprinter.combo_1.Item( myselprinter.combo_1.Value ), myselprinter.Release() )
          @ 53, 175 BUTTON cancel CAPTION _OOHG_Messages( 12, 16 ) ACTION ( ::lPrError := .T., myselprinter.Release() )
@@ -2314,10 +2415,10 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
       myselprinter.ok.SetFocus()
       ACTIVATE WINDOW myselprinter
    ELSE
-      IF ! Empty( cPrinterX )
-         ::cPrinter := cPrinterX
-      ELSE
+      IF Empty( cPrinterX )
          ::cPrinter := GetDefaultPrinter()
+      ELSE
+         ::cPrinter := cPrinterX
       ENDIF
    ENDIF
 RETURN Self
@@ -2329,10 +2430,9 @@ RETURN Self
 // Based upon a contribution of Jose Miguel josemisu@yahoo.com.ar
 CLASS TEXCELPRINT FROM TPRINTBASE
 
-   DATA oExcel                   INIT NIL                   READONLY
-   DATA oBook                    INIT NIL                   READONLY
-   DATA oHoja                    INIT NIL                   READONLY
-   DATA lSeparateSheets          INIT .F.
+   DATA oExcel                    INIT NIL                   READONLY
+   DATA oBook                     INIT NIL                   READONLY
+   DATA oHoja                     INIT NIL                   READONLY
 
    METHOD BeginDocX
    METHOD BeginPageX
@@ -2342,7 +2442,8 @@ CLASS TEXCELPRINT FROM TPRINTBASE
    METHOD PrintDataX
    METHOD PrintImageX
    METHOD ReleaseX
-   METHOD SetPreviewSize         BLOCK { || NIL }
+   METHOD SelPrinterX             BLOCK { |Self| Self:cPrinter := "EXCEL" }
+   METHOD SetPreviewSize          BLOCK { || NIL }
 /*
    TODO: Add METHOD PrintLineX using cell borders.
    TODO: Add METHOD PrintRectangleX using cell borders.
@@ -2595,10 +2696,10 @@ RETURN Self
 
 CLASS TSPREADSHEETPRINT FROM TPRINTBASE
 
-   DATA aDoc                     INIT {}                    READONLY
-   DATA nLinRel                  INIT 0                     READONLY
-   DATA nLpp                     INIT 60                    READONLY    // lines per page
-   DATA nXls                     INIT 0                     READONLY
+   DATA aDoc                      INIT {}                    READONLY
+   DATA nLinRel                   INIT 0                     READONLY
+   DATA nLpp                      INIT 60                    READONLY    // lines per page
+   DATA nXls                      INIT 0                     READONLY
 
    METHOD AddPage
    METHOD BeginDocX
@@ -2606,9 +2707,10 @@ CLASS TSPREADSHEETPRINT FROM TPRINTBASE
    METHOD EndPageX
    METHOD InitX
    METHOD PrintDataX
-   METHOD PrintImage             BLOCK { || NIL }
+   METHOD PrintImage              BLOCK { || NIL }
    METHOD ReleaseX
-   METHOD SetPreviewSize         BLOCK { || NIL }
+   METHOD SelPrinterX             BLOCK { |Self| Self:cPrinter := "BIFF" }
+   METHOD SetPreviewSize          BLOCK { || NIL }
 /*
    TODO: Add SelPrinterX to open a dialog to select file.
 */
@@ -2917,26 +3019,25 @@ RETURN Self
 
 CLASS TRTFPRINT FROM TPRINTBASE
 
-   DATA aPrintRtf                INIT {}                    READONLY    // Document lines
-   DATA lIndentAll               INIT .F.                               // Indent lines
-   DATA nPrintRtf                                           READONLY    // Last font size used
-   DATA nFontSize                INIT 10                    READONLY    // In TPRINTBASE is 12
-   DATA nMarginLef               INIT 10                    READONLY    // in mm
-   DATA nMarginSup               INIT 15                    READONLY    // in mm
-   DATA nMarginRig               INIT 10                    READONLY    // in mm
-   DATA nMarginInf               INIT 15                    READONLY    // in mm
+   DATA aPrintRtf                 INIT {}                    READONLY    // Document lines
+   DATA nPrintRtf                 INIT 0                     READONLY    // Last font size used
+   DATA nFontSize                 INIT 10                    READONLY    // In TPRINTBASE is 12
+   DATA nMarginLef                INIT 10                    READONLY    // in mm
+   DATA nMarginSup                INIT 15                    READONLY    // in mm
+   DATA nMarginRig                INIT 10                    READONLY    // in mm
+   DATA nMarginInf                INIT 15                    READONLY    // in mm
 
    METHOD BeginDocX
    METHOD EndDocX
    METHOD EndPageX
    METHOD InitX
    METHOD PrintDataX
-   METHOD PrintImage             BLOCK { || NIL }
+   METHOD PrintImage              BLOCK { || NIL }
    METHOD PrintLineX
    METHOD SelPrinterX
    METHOD SetCpl
    METHOD SetPageMargins
-   METHOD SetPreviewSize         BLOCK { || NIL }
+   METHOD SetPreviewSize          BLOCK { || NIL }
 /*
    TODO: Add BeginPageX
    TODO: Add SetFontX to change default font, adding it
@@ -3365,7 +3466,7 @@ LOCAL nNextFont := 201, aFontTable := { {"0",   "TIMES NEW ROMAN" }, ;
          ENDDO
 
          FOR i := 1 TO Len( aFonts )
-            IF ( j := ASCAN( aFontTable, { |f| f[2] == aFonts[i, 2] } ) ) > 0
+            IF ( j := aScan( aFontTable, { |f| f[2] == aFonts[i, 2] } ) ) > 0
                // Substitute font references
                cText := StrTran( cText, '\f' + aFonts[i, 1] + ' ', '\f' + aFontTable[j, 1] + ' ' )
                cText := StrTran( cText, '\f' + aFonts[i, 1] + '\', '\f' + aFontTable[j, 1] + '\' )
@@ -3427,6 +3528,7 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
    Empty( nPaperWidth )
 
    ::lLandscape := lLandscape
+   ::cPrinter := "RTF"
 RETURN Self
 
 
@@ -3435,15 +3537,16 @@ RETURN Self
 
 CLASS TCSVPRINT FROM TPRINTBASE
 
-   DATA aPrintCsv                INIT {}                    READONLY
+   DATA aPrintCsv                 INIT {}                    READONLY
 
    METHOD BeginDocX
    METHOD EndDocX
    METHOD EndPageX
    METHOD InitX
    METHOD PrintDataX
-   METHOD PrintImage             BLOCK { || NIL }
-   METHOD SetPreviewSize         BLOCK { || NIL }
+   METHOD PrintImage              BLOCK { || NIL }
+   METHOD SelPrinterX             BLOCK { |Self| Self:cPrinter := "CSV" }
+   METHOD SetPreviewSize          BLOCK { || NIL }
 /*
    TODO: Add SelPrinterX to open a dialog to select file.
 */
@@ -3544,11 +3647,10 @@ RETURN Self
 
 CLASS TPDFPRINT FROM TPRINTBASE
 
-   DATA aPaper                   INIT {}                    READONLY // paper types supported by pdf class
-   DATA cPageOrient              INIT ""                             // P = portrait, L = Landscape
-   DATA cPageSize                INIT ""                             // page size
-   DATA nFontType                INIT 1                              // font type (normal=0 or bold=1)
-   DATA oPDF                     INIT NIL                            // reference to the TPDF object
+   DATA aPaper                    INIT {}                    READONLY // paper types supported by pdf class
+   DATA cPageOrient               INIT "P"                   READONLY // P = portrait, L = Landscape
+   DATA cPageSize                 INIT ""                    READONLY // page size
+   DATA oPDF                      INIT NIL                   READONLY // reference to the TPDF object
 
    METHOD BeginDocX
    METHOD BeginPageX
@@ -3561,7 +3663,7 @@ CLASS TPDFPRINT FROM TPRINTBASE
    METHOD PrintRectangleX
    METHOD PrintRoundRectangleX
    METHOD SelPrinterX
-   METHOD SetPreviewSize         BLOCK { || NIL }
+   METHOD SetPreviewSize          BLOCK { || NIL }
 
 ENDCLASS
 
@@ -3721,7 +3823,7 @@ LOCAL nHDispl := 1.300
    IF HB_IsString( cImage )
       cImage := Upper( cImage )
       // The only supported image formats are jpg and tiff.
-      IF ASCAN( { ".jpg", ".jpeg", ".tif", ".tiff" }, LOWER( SUBSTR( cImage, RAT( ".", cImage ) ) ) ) == 0
+      IF aScan( { ".jpg", ".jpeg", ".tif", ".tiff" }, LOWER( SUBSTR( cImage, RAT( ".", cImage ) ) ) ) == 0
          RETURN NIL
       ENDIF
    ELSE
@@ -3801,13 +3903,15 @@ LOCAL nPos
    DEFAULT nPaperSize TO 0
 
    ::cPageOrient := IIF( lLandscape, "L", "P" )
-   nPos := AScan( ::aPaper, { | x | x[ 1 ] = nPaperSize } )
+   nPos := aScan( ::aPaper, { | x | x[ 1 ] = nPaperSize } )
 
    If nPos > 0
       ::cPageSize := ::aPaper[ nPos ][ 2 ]
    ELSE
       ::cPageSize := "LETTER"
    ENDIF
+
+   ::cPrinter := "PDF"
 RETURN Self
 
 
@@ -3817,15 +3921,14 @@ RETURN Self
 // CALC contributed by Jose Miguel, adapted by CVC
 CLASS TCALCPRINT FROM TPRINTBASE
 
-   DATA oCell                    INIT NIL
-   DATA oDesktop                 INIT NIL
-   DATA oDocument                INIT NIL
-   DATA oSchedule                INIT NIL
-   DATA oServiceManager          INIT NIL
-   DATA oSheet                   INIT NIL
-   DATA nHorzResol               INIT PixelsPerInchX()
-   DATA nVertResol               INIT PixelsPerInchY()
-   DATA lSeparateSheets          INIT .F.
+   DATA oCell                     INIT NIL                   READONLY
+   DATA oDesktop                  INIT NIL                   READONLY
+   DATA oDocument                 INIT NIL                   READONLY
+   DATA oSchedule                 INIT NIL                   READONLY
+   DATA oServiceManager           INIT NIL                   READONLY
+   DATA oSheet                    INIT NIL                   READONLY
+   DATA nHorzResol                INIT PixelsPerInchX()      READONLY
+   DATA nVertResol                INIT PixelsPerInchY()      READONLY
 
    METHOD BeginDocX
    METHOD BeginPageX
@@ -3835,7 +3938,8 @@ CLASS TCALCPRINT FROM TPRINTBASE
    METHOD PrintDataX
    METHOD PrintImageX
    METHOD ReleaseX
-   METHOD SetPreviewSize         BLOCK { || NIL }
+   METHOD SelPrinterX             BLOCK { |Self| Self:cPrinter := "CALC" }
+   METHOD SetPreviewSize          BLOCK { || NIL }
 /*
    TODO: Add METHOD PrintLineX using cell borders.
    TODO: Add METHOD PrintRectangleX using cell borders.
