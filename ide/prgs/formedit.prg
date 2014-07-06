@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.9 2014-07-06 15:29:41 fyurisich Exp $
+ * $Id: formedit.prg,v 1.10 2014-07-06 19:37:51 fyurisich Exp $
  */
 
 /*
@@ -2377,7 +2377,7 @@ LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cValue, cFontName, nFontSize, aF
    nCol         := Val( myform:LeaCol( cName ) )
    nWidth       := Val( myform:LeaDato( cName, 'WIDTH', '120' ) )
    nHeight      := Val( myform:LeaDato( cName, 'HEIGHT', '24' ) )
-   cValue       := myform:Clean( myform:LeaDato( cName, 'VALUE', '   .   .   .   ' ) )
+   cValue       := myform:Clean( myform:LeaDato( cName, 'VALUE', '' ) )
    cFontName    := myform:Clean( myform:LeaDato( cName, 'FONT', '' ) )
    nFontSize    := Val( myform:LeaDato( cName, 'SIZE', '0' ) )
    aFontColor   := myform:LeaDato( cName, 'FONTCOLOR', 'NIL' )
@@ -2406,7 +2406,7 @@ LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cValue, cFontName, nFontSize, aF
    // Show control
    @ nRow, nCol LABEL &cName ;
       OF Form_1 ;
-      VALUE cValue ;
+      VALUE "127.000.000.001" ;
       BACKCOLOR WHITE ;
       CLIENTEDGE ;
       ACTION Dibuja( this:name )

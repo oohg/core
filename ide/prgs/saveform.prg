@@ -1,5 +1,5 @@
 /*
- * $Id: saveform.prg,v 1.7 2014-07-06 15:29:41 fyurisich Exp $
+ * $Id: saveform.prg,v 1.8 2014-07-06 19:37:51 fyurisich Exp $
  */
 
 /////#include 'oohg.ch'
@@ -2052,7 +2052,7 @@ LOCAL cName, lBlankLine := .F.
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
       IF Len( myForm:avalue[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + "'" + AllTrim( myForm:avalue[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + AllTrim( myForm:avalue[j] )
       ENDIF
       IF Len( myForm:afontname[j] ) > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + "'" + AllTrim( myForm:afontname[j] ) + "'"

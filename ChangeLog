@@ -1,11 +1,19 @@
 /*
- * $Id: ChangeLog,v 1.1307 2014-07-06 15:29:41 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1308 2014-07-06 19:37:51 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-07-06 16:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_ipaddress.prg
+     * Accept a string value at define time.
+   * ide/prgs/saveform.prg
+     ! Value of IPADDRESS not saved properly to FMG.
+   * ide/prgs/formedit.prg
+     ! Display 127.000.000.0001 instead of value of IPADDRESS control.
 
 2014-07-06 12:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ide/prgs/saveform.prg

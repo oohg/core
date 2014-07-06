@@ -1,5 +1,5 @@
 /*
- * $Id: h_ipaddress.prg,v 1.11 2014-06-29 23:42:06 fyurisich Exp $
+ * $Id: h_ipaddress.prg,v 1.12 2014-07-06 19:37:51 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -128,7 +128,11 @@ Local ControlHandle, nStyle
    ControlHandle := InitIPAddress( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, ::lRtl )
 
    If aValue <> Nil
-      SetIPAddress( ControlHandle, aValue[ 1 ], aValue[ 2 ], aValue[ 3 ], aValue[ 4 ] )
+      If HB_IsArray( aValue )
+         SetIPAddress( ControlHandle, aValue[ 1 ], aValue[ 2 ], aValue[ 3 ], aValue[ 4 ] )
+      Elseif HB_IsString( uValue )
+         SetIPAddress( ControlHandle, aValue )
+      EndIf
    EndIf
 
    ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
