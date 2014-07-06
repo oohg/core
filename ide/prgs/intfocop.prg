@@ -1,5 +1,5 @@
 /*
- * $Id: intfocop.prg,v 1.3 2014-06-19 18:53:30 fyurisich Exp $
+ * $Id: intfocop.prg,v 1.4 2014-07-06 15:29:41 fyurisich Exp $
  */
 
 #include 'oohg.ch'
@@ -35,7 +35,7 @@ LOCAL BorderHeight, CurrentPage, IsInTab, SupMin, iMin, cName, jk, jl
          RETURN NIL
       ENDIF
 
-      oWindow := GetFormObject( "form_1" )
+      oWindow := GetFormObject( "Form_1" )
       si := aScan( myForm:aControlW, { |c| Lower( c ) == Lower( oWindow:aControls[jk]:Name ) } )
       IF si > 0
          IntFoco1( si, myIde )
@@ -68,7 +68,7 @@ LOCAL cCode, cBackColor, aColor, cName, oWindow
    IF si == 0
       myForm:cFBackColor := 'NIL'
       myForm:lFSave := .F.
-      oWindow := GetFormObject( "form_1" )
+      oWindow := GetFormObject( "Form_1" )
       oWindow:BackColor := cCode
       oWindow:Hide()
       oWindow:Show()
@@ -77,7 +77,7 @@ LOCAL cCode, cBackColor, aColor, cName, oWindow
       myForm:aBackColor[si] := 'NIL'
       myForm:lFSave := .F.
       cName := myForm:aControlW[si]
-      GetControlObject( cName, "form_1" ):BackColor := cCode
+      GetControlObject( cName, "Form_1" ):BackColor := cCode
    ENDIF
 RETURN NIL
 
@@ -111,40 +111,47 @@ LOCAL cName, aFont, nRed, nGreen, nBlue
 
    IF Len( aFont[1] ) > 0
       myForm:aFontName[si] := aFont[1]
-      GetControlObject( cName, "form_1" ):FontName := aFont[1]
+      GetControlObject( cName, "Form_1" ):FontName := aFont[1]
    ENDIF
    IF aFont[2] > 0
       myForm:aFontSize[si] := aFont[2]
-      GetControlObject( cName, "form_1" ):FontSize := aFont[2]
+      GetControlObject( cName, "Form_1" ):FontSize := aFont[2]
    ENDIF
 
    IF myForm:aBold[si] <> aFont[3]
       myForm:aBold[si] := aFont[3]
-      GetControlObject( cName, "form_1" ):FontBold := aFont[3]
+      GetControlObject( cName, "Form_1" ):FontBold := aFont[3]
    ENDIF
    IF myForm:aFontItalic[si] <> aFont[4]
       myForm:aFontItalic[si] := aFont[4]
-      GetControlObject( cName, "form_1" ):FontItalic := aFont[4]
+      GetControlObject( cName, "Form_1" ):FontItalic := aFont[4]
    ENDIF
    nRed := aFont[5,1]
    nGreen := aFont[5,2]
    nBlue := aFont[5,3]
    IF nRed <> NIL .AND. nGreen <> NIL .AND. nBlue <> NIL
-      cColor := '{ ' + Str( nRed, 3 ) + ', ' + Str(nGreen, 3) + ', ' + Str( nBlue, 3 ) + ' }'
+      cColor := '{ ' + LTrim( Str( nRed ) ) + ', ' + ;
+                       LTrim( Str( nGreen ) ) + ', ' + ;
+                       LTrim( Str( nBlue ) ) + ' }'
       myForm:aFontColor[si] := cColor
-      GetControlObject( cName, "form_1" ):FontColor := &cColor
+      GetControlObject( cName, "Form_1" ):FontColor := &cColor
    ENDIF
 
    IF myForm:aFontUnderline[si] <> aFont[6]
       myForm:aFontUnderline[si] := aFont[6]
-      GetControlObject( cName, "form_1" ):FontUnderline := aFont[6]
+      GetControlObject( cName, "Form_1" ):FontUnderline := aFont[6]
    ENDIF
    IF myForm:aFontStrikeout[si] <> aFont[7]
       myForm:aFontStrikeout[si] := aFont[7]
-   GetControlObject( cName, "form_1" ):FontStrikeout := aFont[7]
+   GetControlObject( cName, "Form_1" ):FontStrikeout := aFont[7]
    ENDIF
    myForm:lFSave := .F.
 RETURN NIL
+
+/*
+   TODO: Add a function to reset font attributes to defaults.
+         Add a button to intfonco.fmg to execute de function.
+*/
 
 //------------------------------------------------------------------------------
 FUNCTION GBackC( si )
@@ -165,20 +172,20 @@ LOCAL cCode, cBackColor, aColor, oWindow, cName
    IF aColor[1] == NIL .AND. aColor[2] == NIL .AND. aColor[3] == NIL
       RETURN NIL
    ENDIF
-   cCode := '{ ' + AllTrim( Str( aColor[1] ) ) + ", " + ;
-                   AllTrim( Str( aColor[2] ) ) + ", " + ;
-                   AllTrim( Str( aColor[3] ) ) + " }"
+   cCode := '{ ' + LTrim( Str( aColor[1] ) ) + ", " + ;
+                   LTrim( Str( aColor[2] ) ) + ", " + ;
+                   LTrim( Str( aColor[3] ) ) + " }"
    IF si == 0
       myForm:cFBackColor := cCode
       myForm:lFSave := .F.
-      oWindow := GetFormObject( "form_1" )
+      oWindow := GetFormObject( "Form_1" )
       oWindow:BackColor := &cCode
       oWindow:Hide()
       oWindow:Show()
       intfonco.button_103.SetFocus
    ELSE
       myForm:aBackColor[si] := cCode
-      GetControlObject( cName, "form_1" ):BackColor := &cCode
+      GetControlObject( cName, "Form_1" ):BackColor := &cCode
       myForm:lFSave := .F.
    ENDIF
 RETURN NIL

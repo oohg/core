@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.111 2014-04-11 02:27:46 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.112 2014-07-06 15:29:42 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1005,22 +1005,22 @@ Local cWorkArea, uGridValue
 
    ElseIf nMsg == WM_KEYDOWN
       Do Case
-      Case wParam == 36 // HOME
+      Case wParam == VK_HOME
          ::GoTop()
          Return 0
-      Case wParam == 35 // END
+      Case wParam == VK_END
          ::GoBottom()
          Return 0
-      Case wParam == 33 // PGUP
+      Case wParam == VK_PRIOR
          ::PageUp()
          Return 0
-      Case wParam == 34 // PGDN
+      Case wParam == VK_NEXT
          ::PageDown()
          Return 0
-      Case wParam == 38 // UP
+      Case wParam == VK_UP
          ::Up()
          Return 0
-      Case wParam == 40 // DOWN
+      Case wParam == VK_DOWN
          ::Down()
          Return 0
       EndCase
@@ -1107,7 +1107,6 @@ Local nvKey, lGo
       EndIf
 
    EndIf
-// Return ::Super:Events_Notify( wParam, lParam )
 Return ::TGrid:Events_Notify( wParam, lParam )
 
 *-----------------------------------------------------------------------------*
@@ -1140,9 +1139,6 @@ Local nValue
       If nValue <= 1
          If ::ItemCount >= ::CountPerPage
             ::DeleteItem( ::ItemCount )
-            // ????????????
-            // DO EVENTS
-            // ????????????
          EndIf
          ::InsertBlank( 1 )
       Else

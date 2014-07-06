@@ -1,5 +1,5 @@
 /*
- * $Id: i_scroll.ch,v 1.1 2007-07-01 19:37:04 guerra000 Exp $
+ * $Id: i_scroll.ch,v 1.2 2014-07-06 15:29:41 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -52,39 +52,40 @@
  *
  */
 
-#command @ <row>, <col> SCROLLBAR <name>                ;
-                        [ OBJ <obj> ]                   ;
-                        [ <dummy1: OF, PARENT> <parent> ] ;
-                        [ HEIGHT <height> ]             ;
-                        [ WIDTH <width> ]               ;
-                        [ RANGE <min> , <max> ]         ;
-                        [ ON CHANGE <change> ]          ;
-                        [ ON <dummy2: LINEUP, LINELEFT> <lineup> ] ;
-                        [ ON <dummy3: LINEDOWN, LINERIGHT> <linedown> ] ;
-                        [ ON <dummy4: PAGEUP, PAGELEFT> <pageup> ] ;
-                        [ ON <dummy5: PAGEDOWN, PAGERIGHT> <pagedown> ] ;
-                        [ ON <dummy6: TOP, LEFT> <top> ] ;
-                        [ ON <dummy7: BOTTOM, RIGHT> <bottom> ] ;
-                        [ ON THUMB <thumb> ]            ;
-                        [ ON TRACK <track> ]            ;
-                        [ ON ENDTRACK <endtrack> ]      ;
-                        [ HELPID <helpid> ]             ;
-                        [ <invisible: INVISIBLE> ]      ;
-                        [ TOOLTIP <tooltip> ]           ;
-                        [ <rtl: RTL> ]                  ;
-                        [ <horz: HORIZONTAL> ]          ;
-                        [ <vert: VERTICAL> ]            ;
-                        [ <attached: ATTACHED> ]        ;
-                        [ VALUE <value> ]               ;
-                        [ <disabled: DISABLED> ]        ;
-                        [ SUBCLASS <subclass> ]         ;
-                        [ LINESKIP <lineskip> ]         ;
-                        [ PAGESKIP <pageskip> ]         ;
-                        [ <auto: AUTOMOVE> ]            ;
-         =>;
-        [ <obj> := ] _OOHG_SelectSubClass( TScrollBar(), [ <subclass>() ] ): ;
-                     Define( <(name)>, <(parent)>, <col>, <row>, <width>, <height>, ;
-                     <min>, <max>, <{change}>, <{lineup}>, <{linedown}>, <{pageup}>, <{pagedown}>, ;
-                     <{top}>, <{bottom}>, <{thumb}>, <{track}>, <{endtrack}>, <helpid>, ;
-                     <.invisible.>, <tooltip>, <.rtl.>, iif( <.horz.>, 0, iif( <.vert.>, 1, nil ) ), ;
-                     <.attached.>, <value>, <disabled>, <lineskip>, <pageskip>, <.auto.> )
+#command @ <row>, <col> SCROLLBAR <name> ;
+      [ OBJ <obj> ] ;
+      [ <dummy1 : OF, PARENT> <parent> ] ;
+      [ HEIGHT <height> ] ;
+      [ WIDTH <width> ] ;
+      [ RANGE <min>, <max> ] ;
+      [ ON CHANGE <change> ] ;
+      [ ON <dummy2 : LINEUP, LINELEFT> <lineup> ] ;
+      [ ON <dummy3 : LINEDOWN, LINERIGHT> <linedown> ] ;
+      [ ON <dummy4 : PAGEUP, PAGELEFT> <pageup> ] ;
+      [ ON <dummy5 : PAGEDOWN, PAGERIGHT> <pagedown> ] ;
+      [ ON <dummy6 : TOP, LEFT> <top> ] ;
+      [ ON <dummy7 : BOTTOM, RIGHT> <bottom> ] ;
+      [ ON THUMB <thumb> ] ;
+      [ ON TRACK <track> ] ;
+      [ ON ENDTRACK <endtrack> ] ;
+      [ HELPID <helpid> ] ;
+      [ <invisible : INVISIBLE> ] ;
+      [ TOOLTIP <tooltip> ] ;
+      [ <rtl : RTL> ] ;
+      [ <horz : HORIZONTAL> ] ;
+      [ <vert : VERTICAL> ] ;
+      [ <attached : ATTACHED> ] ;
+      [ VALUE <value> ] ;
+      [ <disabled : DISABLED> ] ;
+      [ SUBCLASS <subclass> ] ;
+      [ LINESKIP <lineskip> ] ;
+      [ PAGESKIP <pageskip> ] ;
+      [ <auto : AUTOMOVE> ] ;
+   => ;
+      [ <obj> := ] _OOHG_SelectSubClass( TScrollBar(), [ <subclass>() ] ): ;
+            Define( <(name)>, <(parent)>, <col>, <row>, <width>, <height>, ;
+            <min>, <max>, <{change}>, <{lineup}>, <{linedown}>, <{pageup}>, ;
+            <{pagedown}>, <{top}>, <{bottom}>, <{thumb}>, <{track}>, ;
+            <{endtrack}>, <helpid>, <.invisible.>, <tooltip>, <.rtl.>, ;
+            IIF( <.horz.>, 0, IIF( <.vert.>, 1, NIL ) ), <.attached.>, ;
+            <value>, <disabled>, <lineskip>, <pageskip>, <.auto.> )

@@ -1,11 +1,39 @@
 /*
- * $Id: ChangeLog,v 1.1306 2014-07-05 18:46:25 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1307 2014-07-06 15:29:41 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-07-06 12:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/prgs/saveform.prg
+     * Get rid of double spaces at EOL in saved FMG.
+     * Get rid of extra line between controls in saved FMG.
+     ! Value of IPADDRESS not saved properly to FMG.
+     ! NIL colors are saved to FMG.
+   * ide/prgs/intfocop.prg
+     * Format.
+   * ide/prgs/formedit.prg
+     * Format.
+     * Control's fontname and fontsize do not default to form's.
+     * All colors default to 'NIL'.
+     * Do not force colors to form's.
+   * source/h_xbrowse.prg
+     * Changed some hardwired constants by defined constants.
+     - Some comments.
+   * source/h_grid.prg
+     * DeleteItem now returns .T. if item was deleted or .F. if not.
+     + Methods Define2, AddColumn2 and DeleteColumn2 to TGridByCell.
+       They will be needed in future Browse By Cell.
+     ! Method TGridByCell:ColumnHide() not working properly.
+     + Some parentheses  for clarity.
+     * LISTVIEWDELETESTRING() now returns .T. if succeeds or .F. if not.
+   * source/h_init.prg
+     * Some message translations.
+   * include/i_scroll.ch
+     * Format.
 
 2014-07-05 15:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ide/prgs/formedit.prg

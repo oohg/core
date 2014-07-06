@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.254 2014-06-27 22:24:39 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.255 2014-07-06 15:29:41 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -280,14 +280,12 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox ) CLASS TGrid
 *-----------------------------------------------------------------------------*
-Local nStyle := LVS_SINGLESEL
-
    ::Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               aRows, value, fontname, fontsize, tooltip, change, dblclick, ;
               aHeadClick, gotfocus, lostfocus, nogrid, aImage, aJust, ;
               break, HelpId, bold, italic, underline, strikeout, ownerdata, ;
               ondispinfo, itemcount, editable, backcolor, fontcolor, ;
-              dynamicbackcolor, dynamicforecolor, aPicture, lRtl, nStyle, ;
+              dynamicbackcolor, dynamicforecolor, aPicture, lRtl, LVS_SINGLESEL, ;
               inplace, editcontrols, readonly, valid, validmessages, ;
               editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
               lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
@@ -2677,8 +2675,7 @@ METHOD DeleteItem( nItem ) CLASS TGrid
 *-----------------------------------------------------------------------------*
    _OOHG_DeleteArrayItem( ::GridForeColor, nItem )
    _OOHG_DeleteArrayItem( ::GridBackColor, nItem )
-   ListViewDeleteString( ::hWnd, nItem )
-Return Nil
+Return ListViewDeleteString( ::hWnd, nItem )
 
 *-----------------------------------------------------------------------------*
 METHOD Item( nItem, uValue, uForeColor, uBackColor ) CLASS TGrid
@@ -3357,6 +3354,7 @@ CLASS TGridByCell FROM TGrid
    DATA nColPos             INIT 0 HIDDEN
 
    METHOD Define
+   METHOD Define2
    METHOD Value             SETGET
    METHOD AppendItem
    METHOD EditGrid
@@ -3370,8 +3368,10 @@ CLASS TGridByCell FROM TGrid
    METHOD GoBottom
    METHOD IsColumnWhen
    METHOD AddColumn
+   METHOD AddColumn2
    METHOD ColumnHide
    METHOD DeleteColumn
+   METHOD DeleteColumn2
    METHOD EditCell
    METHOD EditCell2
    METHOD Events
@@ -3403,17 +3403,13 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
                lFixedCtrls, bHeadRClick ) CLASS TGridByCell
 *-----------------------------------------------------------------------------*
-Local nStyle := LVS_SINGLESEL
-
-   ASSIGN lFocusRect VALUE lFocusRect TYPE "L" DEFAULT .F.
-
    ::Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               aRows, value, fontname, fontsize, tooltip, change, dblclick, ;
               aHeadClick, gotfocus, lostfocus, nogrid, aImage, aJust, ;
               break, HelpId, bold, italic, underline, strikeout, ownerdata, ;
               ondispinfo, itemcount, editable, backcolor, fontcolor, ;
-              dynamicbackcolor, dynamicforecolor, aPicture, lRtl, nStyle, ;
-              InPlace, editcontrols, readonly, valid, validmessages, ;
+              dynamicbackcolor, dynamicforecolor, aPicture, lRtl, LVS_SINGLESEL, ;
+              inplace, editcontrols, readonly, valid, validmessages, ;
               editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
               lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
               aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
@@ -3422,6 +3418,44 @@ Local nStyle := LVS_SINGLESEL
               bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
               bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
               lFixedCtrls, bHeadRClick )
+Return Self
+
+*-----------------------------------------------------------------------------*
+METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
+                aRows, value, fontname, fontsize, tooltip, change, dblclick, ;
+                aHeadClick, gotfocus, lostfocus, nogrid, aImage, aJust, ;
+                break, HelpId, bold, italic, underline, strikeout, ownerdata, ;
+                ondispinfo, itemcount, editable, backcolor, fontcolor, ;
+                dynamicbackcolor, dynamicforecolor, aPicture, lRtl, nStyle, ;
+                inplace, editcontrols, readonly, valid, validmessages, ;
+                editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
+                lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
+                aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
+                lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
+                bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
+                bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
+                bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
+                lFixedCtrls, bHeadRClick ) CLASS TGridByCell
+*-----------------------------------------------------------------------------*
+Local nStyle := LVS_SINGLESEL
+
+   ASSIGN lFocusRect VALUE lFocusRect TYPE "L" DEFAULT .F.
+
+   ::Super:Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
+                    aRows, value, fontname, fontsize, tooltip, change, dblclick, ;
+                    aHeadClick, gotfocus, lostfocus, nogrid, aImage, aJust, ;
+                    break, HelpId, bold, italic, underline, strikeout, ownerdata, ;
+                    ondispinfo, itemcount, editable, backcolor, fontcolor, ;
+                    dynamicbackcolor, dynamicforecolor, aPicture, lRtl, nStyle, ;
+                    InPlace, editcontrols, readonly, valid, validmessages, ;
+                    editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
+                    lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
+                    aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
+                    lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
+                    bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
+                    bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
+                    bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
+                    lFixedCtrls, bHeadRClick )
 
    // By default, search in the current column
    ::SearchCol := -1
@@ -3894,6 +3928,15 @@ METHOD AddColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor,
                   lNoDelete, uPicture, uEditControl, uHeadClick, uValid, ;
                   uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign ) CLASS TGridByCell
 *-----------------------------------------------------------------------------*
+Return ::AddColumn2( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor, ;
+                     lNoDelete, uPicture, uEditControl, uHeadClick, uValid, ;
+                     uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign )
+
+*-----------------------------------------------------------------------------*
+METHOD AddColumn2( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor, ;
+                   lNoDelete, uPicture, uEditControl, uHeadClick, uValid, ;
+                   uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign ) CLASS TGridByCell
+*-----------------------------------------------------------------------------*
 Local aValue
    aValue := ::Value
 
@@ -3918,13 +3961,18 @@ Local aValue
          If aValue[ 2 ] == nColIndex
             ::Value := { 0, 0 }
          EndIf
-         ::ColumnWidth( nColIndex, 0 )
+         ::Super:ColumnHide( nColIndex )
       EndIf
    EndIf
 Return Nil
 
 *-----------------------------------------------------------------------------*
 METHOD DeleteColumn( nColIndex, lNoDelete ) CLASS TGridByCell
+*-----------------------------------------------------------------------------*
+Return ::DeleteColumn2( nColIndex, lNoDelete )
+
+*-----------------------------------------------------------------------------*
+METHOD DeleteColumn2( nColIndex, lNoDelete ) CLASS TGridByCell
 *-----------------------------------------------------------------------------*
 Local aValue
    aValue := ::Value
@@ -4170,6 +4218,8 @@ Local aCellData, nItem, i, nSearchCol
             ::uIniTime := HB_MilliSeconds()
             ::cText += Upper( Chr( wParam ) )
          EndIf
+
+// TODO: Search all cells instead of ::SearchCol
 
          If ::SearchCol < 0
             nSearchCol := ::Value[ 2 ]
@@ -6462,22 +6512,22 @@ HB_FUNC( LISTVIEW_GETFIRSTITEM )
 
 HB_FUNC( LISTVIEW_SETCURSEL )
 {
-   ListView_SetItemState( HWNDparam( 1 ), ( WPARAM ) hb_parni( 2 ) -1, LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED );
+   ListView_SetItemState( HWNDparam( 1 ), ( WPARAM ) ( hb_parni( 2 ) - 1 ), LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED );
 }
 
 HB_FUNC( LISTVIEW_CLEARCURSEL )
 {
-   ListView_SetItemState( HWNDparam( 1 ), ( WPARAM ) hb_parni( 2 ) - 1, 0, LVIS_FOCUSED | LVIS_SELECTED );
+   ListView_SetItemState( HWNDparam( 1 ), ( WPARAM ) ( hb_parni( 2 ) - 1 ), 0, LVIS_FOCUSED | LVIS_SELECTED );
 }
 
 HB_FUNC( LISTVIEWDELETESTRING )
 {
-   SendMessage( HWNDparam( 1 ), LVM_DELETEITEM, ( WPARAM ) hb_parni( 2 ) -1, 0 );
+   hb_retl( ListView_DeleteItem( HWNDparam( 1 ), (WPARAM) ( hb_parni( 2 ) - 1 ) ) );
 }
 
 HB_FUNC( LISTVIEWRESET )
 {
-   SendMessage( HWNDparam( 1 ), LVM_DELETEALLITEMS, 0, 0 );
+   hb_retl( ListView_DeleteAllItems( HWNDparam( 1 ) ) );
 }
 
 HB_FUNC( LISTVIEWGETMULTISEL )

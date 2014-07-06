@@ -1,5 +1,5 @@
 /*
- * $Id: saveform.prg,v 1.6 2014-07-04 20:16:03 fyurisich Exp $
+ * $Id: saveform.prg,v 1.7 2014-07-06 15:29:41 fyurisich Exp $
  */
 
 /////#include 'oohg.ch'
@@ -193,7 +193,7 @@ LOCAL swpop, lDeleted, archivo, signiv, niv, nnivaux, nSpacing := 3
       // Must end with a space
       Output += Space( nSpacing ) + 'DEFINE STATUSBAR '
       IF ! Empty( myForm:cscobj )
-         Output += ' ;' + CRLF
+         Output += ';' + CRLF
          Output += Space( nSpacing * 2 ) + 'OBJ ' + AllTrim( myForm:cscobj )
       ENDIF
       Output += CRLF
@@ -653,7 +653,7 @@ LOCAL swpop, lDeleted, archivo, signiv, niv, nnivaux, nSpacing := 3
          aimage := &caimages
          currentpage := 1
          Output += Space( nSpacing * 2) + 'DEFINE PAGE ' + "'" + acaptions[currentpage] + "'" + ' ;' + CRLF
-         Output += Space( nSpacing * 3) + 'IMAGE ' + "'" + AllTrim(aimage[currentpage]) + "'" + CRLF + CRLF
+         Output += Space( nSpacing * 3) + 'IMAGE ' + "'" + AllTrim(aimage[currentpage]) + "'" + CRLF
          FOR k := 1 TO myForm:ncontrolw
             IF myForm:atabpage[k, 1] # NIL
                IF myForm:atabpage[k, 1] == myForm:acontrolw[j]
@@ -661,7 +661,7 @@ LOCAL swpop, lDeleted, archivo, signiv, niv, nnivaux, nSpacing := 3
                      Output += Space( nSpacing * 2) + 'END PAGE ' + CRLF + CRLF
                      currentpage ++
                      Output += Space( nSpacing * 2) + 'DEFINE PAGE ' + "'" + acaptions[currentpage] + "'" + ' ;' + CRLF
-                     Output += Space( nSpacing * 3) + 'IMAGE ' + "'" + AllTrim(aimage[currentpage]) + "'" + CRLF + CRLF
+                     Output += Space( nSpacing * 3) + 'IMAGE ' + "'" + AllTrim(aimage[currentpage]) + "'" + CRLF
                   ENDIF
 /*
    TODO: Add this properties
@@ -714,6 +714,8 @@ LOCAL swpop, lDeleted, archivo, signiv, niv, nnivaux, nSpacing := 3
 
 //***************************  Form end
    Output += 'END WINDOW ' + CRLF + CRLF
+   Output := StrTran( Output, "  ;", " ;" )
+
    CursorArrow()
 
 //***************************  Save FMG
@@ -788,7 +790,7 @@ RETURN NIL
 *------------------------------------------------------------------------------*
 STATIC FUNCTION MakeControls( j, Output, nRow, nCol, nWidth, nHeight, mlyform, nSpacing, nLevel )
 *------------------------------------------------------------------------------*
-LOCAL cName
+LOCAL cName, lBlankLine := .F.
 
 /*
    TODO: Add ON GOTFOCUS and ON LOSTFOCUS to all controls
@@ -956,7 +958,7 @@ LOCAL cName
       IF myForm:afontsize[j] > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) )
       ENDIF
-      IF Len( myForm:afontcolor[j] ) > 0
+      IF myForm:afontcolor[j] # 'NIL'
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + AllTrim( myForm:afontcolor[j] )
       ENDIF
       IF myForm:abold[j]
@@ -971,7 +973,7 @@ LOCAL cName
       IF myForm:afontstrikeout[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
       ENDIF
-      IF myForm:abackcolor[j] # 'NIL' .AND. Len( myForm:abackcolor[j] ) > 0
+      IF myForm:abackcolor[j] # 'NIL'
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + AllTrim( myForm:abackcolor[j] )
       ENDIF
       IF ! myForm:avisible[j]
@@ -1287,10 +1289,10 @@ LOCAL cName
       IF Len( myForm:avalue[j] ) > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + AllTrim( myForm:avalue[j] )
       ENDIF
-      IF myForm:adynamicbackcolor[j] # NIL .AND. Len( myForm:adynamicbackcolor[j] ) > 0
+      IF Len( myForm:adynamicbackcolor[j] ) > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DYNAMICBACKCOLOR ' + AllTrim( myForm:adynamicbackcolor[j] )
       ENDIF
-      IF myForm:adynamicforecolor[j] # NIL .AND. Len( myForm:adynamicforecolor[j] ) > 0
+      IF Len( myForm:adynamicforecolor[j] ) > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DYNAMICFORECOLOR ' + AllTrim( myForm:adynamicforecolor[j] )
       ENDIF
       IF Len( myForm:acolumncontrols[j] ) > 0
@@ -1459,10 +1461,10 @@ LOCAL cName
       IF Len( myForm:ainputmask[j] ) > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INPUTMASK ' + AllTrim( myForm:ainputmask[j] )
       ENDIF
-      IF myForm:adynamicbackcolor[j] # NIL .AND. Len( myForm:adynamicbackcolor[j] ) > 0
+      IF Len( myForm:adynamicbackcolor[j] ) > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DYNAMICBACKCOLOR ' + AllTrim( myForm:adynamicbackcolor[j] )
       ENDIF
-      IF myForm:adynamicforecolor[j] # NIL .AND. Len( myForm:adynamicforecolor[j] ) > 0
+      IF Len( myForm:adynamicforecolor[j] ) > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DYNAMICFORECOLOR ' + AllTrim( myForm:adynamicforecolor[j] )
       ENDIF
       IF Len( myForm:acolumncontrols[j] ) > 0
@@ -1627,7 +1629,7 @@ LOCAL cName
       IF myForm:atransparent[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TRANSPARENT '
       ENDIF
-      IF myForm:abackcolor[j] # 'NIL' .AND. Len( myForm:abackcolor[j] ) > 0
+      IF myForm:abackcolor[j] # 'NIL'
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + AllTrim( myForm:abackcolor[j] )
       ENDIF
 /*
@@ -1776,7 +1778,7 @@ LOCAL cName
    [ <disabled: DISABLED> ] ;
    [ <noborder: NOBORDER> ] ;
    [ <rtl: RTL> ] ;
-   [ <dummy2: RANGE> <min> , <max> ] ;
+   [ <dummy2: RANGE> <min>, <max> ] ;
 */
       Output += CRLF + CRLF
    ENDIF
@@ -2050,7 +2052,7 @@ LOCAL cName
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
       IF Len( myForm:avalue[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + AllTrim( myForm:avalue[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + "'" + AllTrim( myForm:avalue[j] ) + "'"
       ENDIF
       IF Len( myForm:afontname[j] ) > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + "'" + AllTrim( myForm:afontname[j] ) + "'"
@@ -2076,7 +2078,7 @@ LOCAL cName
       IF myForm:anotabstop[j]
         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
       ENDIF
-      IF Len( myForm:afontcolor[j] ) > 0
+      IF myForm:afontcolor[j] # 'NIL'
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + AllTrim( myForm:afontcolor[j] )
       ENDIF
       IF myForm:abold[j]
@@ -2091,7 +2093,7 @@ LOCAL cName
       IF myForm:afontstrikeout[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
       ENDIF
-      IF myForm:abackcolor[j] # 'NIL' .AND. Len( myForm:abackcolor[j] ) > 0
+      IF myForm:abackcolor[j] # 'NIL'
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + AllTrim( myForm:abackcolor[j] )
       ENDIF
       IF ! myForm:avisible[j]
@@ -2141,7 +2143,7 @@ LOCAL cName
       IF myForm:ahandcursor[j]
         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HANDCURSOR '
       ENDIF
-      IF Len( myForm:afontcolor[j] ) > 0
+      IF myForm:afontcolor[j] # 'NIL'
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + AllTrim( myForm:afontcolor[j] )
       ENDIF
       IF myForm:abold[j]
@@ -2156,7 +2158,7 @@ LOCAL cName
       IF myForm:afontstrikeout[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
       ENDIF
-      IF myForm:abackcolor[j] # 'NIL' .AND. Len( myForm:abackcolor[j] ) > 0
+      IF myForm:abackcolor[j] # 'NIL'
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + AllTrim( myForm:abackcolor[j] )
       ENDIF
       IF ! myForm:avisible[j]
@@ -2194,7 +2196,7 @@ LOCAL cName
       IF myForm:afontsize[j] > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) )
       ENDIF
-      IF Len( myForm:afontcolor[j] ) > 0
+      IF myForm:afontcolor[j] # 'NIL'
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + AllTrim( myForm:afontcolor[j] )
       ENDIF
       IF myForm:abold[j]
@@ -2209,7 +2211,7 @@ LOCAL cName
       IF myForm:afontstrikeout[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
       ENDIF
-      IF myForm:abackcolor[j] # 'NIL' .AND. Len( myForm:abackcolor[j] ) > 0
+      IF myForm:abackcolor[j] # 'NIL'
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + AllTrim( myForm:abackcolor[j] )
       ENDIF
       IF Len( myForm:atooltip[j] ) > 0
@@ -2275,7 +2277,7 @@ LOCAL cName
       IF myForm:afontsize[j] > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) )
       ENDIF
-      IF Len( myForm:afontcolor[j] ) > 0
+      IF myForm:afontcolor[j] # 'NIL'
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + AllTrim( myForm:afontcolor[j] )
       ENDIF
       IF myForm:abold[j]
@@ -2290,7 +2292,7 @@ LOCAL cName
       IF myForm:afontstrikeout[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
       ENDIF
-      IF myForm:abackcolor[j] # 'NIL' .AND. Len( myForm:abackcolor[j] ) > 0
+      IF myForm:abackcolor[j] # 'NIL'
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + AllTrim( myForm:abackcolor[j] )
       ENDIF
       IF myForm:ahelpid[j] > 0
@@ -2723,7 +2725,7 @@ LOCAL cName
       IF myForm:afontsize[j] > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) )
       ENDIF
-      IF Len( myForm:afontcolor[j] ) > 0
+      IF myForm:afontcolor[j] # 'NIL'
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + AllTrim( myForm:afontcolor[j] )
       ENDIF
       IF myForm:abold[j]
@@ -2763,40 +2765,50 @@ LOCAL cName
    IF Upper( myForm:actrltype[j] ) $ 'TEXT CHECKBOX BUTTON CHECKBTN COMBO DATEPICKER EDIT GRID LIST PLAYER PROGRESSBAR RADIOGROUP SLIDER SPINNER BROWSE TAB RICHEDIT TIMER PICBUTT PICCHECKBUTT' .AND. j > 1
       IF ! myForm:aenabled[j]
          Output += Space( nSpacing * ( nLevel + 1 ) ) + mlyform + '.' + cName + '.enabled := .F.' + CRLF
+         lBlankLine := .T.
       ENDIF
    ENDIF
    IF Upper( myForm:actrltype[j] ) $ 'TEXT CHECKBOX BUTTON CHECKBTN COMBO DATEPICKER EDIT GRID LIST PLAYER PROGRESSBAR RADIOGROUP SLIDER SPINNER BROWSE TAB RICHEDIT PICBUTT PICCHECKBUTT' .AND. j > 1
       IF myForm:actrltype[j] # 'TIMER'
          IF ! myForm:avisible[j]
             Output += Space( nSpacing * ( nLevel + 1 ) ) + mlyform + '.' + cName + '.visible := .F.' + CRLF
+            lBlankLine := .T.
          ENDIF
       ENDIF
    ENDIF
    IF  UPPER( myForm:actrltype[j] ) $ 'TEXT EDIT DATEPICKER BUTTON CHECKBOX LIST COMBO CHECKBTN GRID SPINNER BROWSE RADIOGROUP RICHEDIT' .AND. j > 1
       IF myForm:afontitalic[j]
          Output += Space( nSpacing * ( nLevel + 1 ) ) + mlyform + '.' + cName + '.fontitalic := .T.' + CRLF
+         lBlankLine := .T.
       ENDIF
       IF myForm:afontunderline[j]
          Output += Space( nSpacing * ( nLevel + 1 ) ) + mlyform + '.' + cName + '.fontunderline := .T.' + CRLF
+         lBlankLine := .T.
       ENDIF
       IF myForm:afontstrikeout[j]
          Output += Space( nSpacing * ( nLevel + 1 ) ) + mlyform + '.' + cName + '.fontstrikeout := .T.' + CRLF
+         lBlankLine := .T.
       ENDIF
       IF myForm:abold[j]
          Output += Space( nSpacing * ( nLevel + 1 ) ) + mlyform + '.' + cName + '.fontbold := .T.' + CRLF
+         lBlankLine := .T.
       ENDIF
    ENDIF
    IF UPPER( myForm:actrltype[j] ) $ 'TEXT EDIT CHECKBOX LIST COMBO GRID SPINNER BROWSE RADIOGROUP PROGRESSBAR RICHEDIT' .AND. j > 1
-      IF myForm:afontcolor[j] # 'NIL' .AND. Len( myForm:afontcolor[j] ) > 0
-        Output += Space( nSpacing * ( nLevel + 1 ) ) + mlyform + '.' + cName + '.fontcolor := ' + AllTrim( myForm:afontcolor[j] ) + CRLF
+      IF myForm:afontcolor[j] # 'NIL'
+         Output += Space( nSpacing * ( nLevel + 1 ) ) + mlyform + '.' + cName + '.fontcolor := ' + AllTrim( myForm:afontcolor[j] ) + CRLF
+         lBlankLine := .T.
       ENDIF
    ENDIF
    IF UPPER(myForm:actrltype[j])$'SLIDER TEXT EDIT BUTTON CHECKBOX LIST COMBO CHECKBTN GRID SPINNER BROWSE RADIOGROUP PROGRESSBAR RICHEDIT' .AND. j > 1
-      IF myForm:abackcolor[j] # 'NIL' .AND. Len( myForm:abackcolor[j] ) > 0
+      IF myForm:abackcolor[j] # 'NIL'
          Output += Space( nSpacing * ( nLevel + 1 ) ) + mlyform + '.' + cName + '.backcolor := ' + AllTrim( myForm:abackcolor[j] ) + CRLF
+         lBlankLine := .T.
       ENDIF
    ENDIF
-   Output += CRLF
+   IF lBlankLine
+      Output += CRLF
+   ENDIF
 RETURN Output
 
 *------------------------------------------------------------------------------*
