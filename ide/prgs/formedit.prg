@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.10 2014-07-06 19:37:51 fyurisich Exp $
+ * $Id: formedit.prg,v 1.11 2014-07-06 20:11:13 fyurisich Exp $
  */
 
 /*
@@ -2406,7 +2406,7 @@ LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cValue, cFontName, nFontSize, aF
    // Show control
    @ nRow, nCol LABEL &cName ;
       OF Form_1 ;
-      VALUE "127.000.000.001" ;
+      VALUE IIF( Empty( cValue ), '   .   .   .   ', cValue ) ;
       BACKCOLOR WHITE ;
       CLIENTEDGE ;
       ACTION Dibuja( this:name )

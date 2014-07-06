@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.1308 2014-07-06 19:37:51 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1309 2014-07-06 20:11:13 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-07-06 17:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/prgs/formedit.prg
+     ! Display "   .   .   .   " when IPADDRESS's value clause is
+       not present.
 
 2014-07-06 16:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_ipaddress.prg
