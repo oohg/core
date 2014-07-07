@@ -1,5 +1,5 @@
 <!--
-$Id: CLASSES.HTM,v 1.4 2014-07-04 20:16:03 fyurisich Exp $
+$Id: CLASSES.HTM,v 1.5 2014-07-07 02:08:23 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -461,15 +461,14 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS TCALCPRINT FROM TPRINTBASE
-   DATA OCELL                     INIT NIL
-   DATA ODESKTOP                  INIT NIL
-   DATA ODOCUMENT                 INIT NIL
-   DATA OSCHEDULE                 INIT NIL
-   DATA OSERVICEMANAGER           INIT NIL
-   DATA OSHEET                    INIT NIL
-   DATA NHORZRESOL                INIT PIXELSPERINCHX()
-   DATA NVERTRESOL                INIT PIXELSPERINCHY()
-   DATA LSEPARATESHEETS           INIT .F.
+   DATA OCELL                     INIT NIL                   READONLY
+   DATA ODESKTOP                  INIT NIL                   READONLY
+   DATA ODOCUMENT                 INIT NIL                   READONLY
+   DATA OSCHEDULE                 INIT NIL                   READONLY
+   DATA OSERVICEMANAGER           INIT NIL                   READONLY
+   DATA OSHEET                    INIT NIL                   READONLY
+   DATA NHORZRESOL                INIT PIXELSPERINCHX()      READONLY
+   DATA NVERTRESOL                INIT PIXELSPERINCHY()      READONLY
 
    METHOD BEGINDOCX
    METHOD BEGINPAGEX
@@ -479,6 +478,7 @@ CLASS TCALCPRINT FROM TPRINTBASE
    METHOD PRINTDATAX
    METHOD PRINTIMAGEX
    METHOD RELEASEX
+   METHOD SELPRINTERX             BLOCK { |SELF| SELF:CPRINTER := "CALC" }
    METHOD SETPREVIEWSIZE          BLOCK { || NIL }
 ENDCLASS
 
@@ -714,6 +714,7 @@ CLASS TCSVPRINT FROM TPRINTBASE
    METHOD INITX
    METHOD PRINTDATAX
    METHOD PRINTIMAGE              BLOCK { || NIL }
+   METHOD SELPRINTERX             BLOCK { |SELF| SELF:CPRINTER := "CSV" }
    METHOD SETPREVIEWSIZE          BLOCK { || NIL }
 ENDCLASS
 
@@ -789,7 +790,6 @@ CLASS TEXCELPRINT FROM TPRINTBASE
    DATA OEXCEL                    INIT NIL                   READONLY
    DATA OBOOK                     INIT NIL                   READONLY
    DATA OHOJA                     INIT NIL                   READONLY
-   DATA LSEPARATESHEETS           INIT .F.
 
    METHOD BEGINDOCX
    METHOD BEGINPAGEX
@@ -799,6 +799,7 @@ CLASS TEXCELPRINT FROM TPRINTBASE
    METHOD PRINTDATAX
    METHOD PRINTIMAGEX
    METHOD RELEASEX
+   METHOD SELPRINTERX             BLOCK { |SELF| SELF:CPRINTER := "EXCEL" }
    METHOD SETPREVIEWSIZE          BLOCK { || NIL }
 ENDCLASS
 
@@ -1056,9 +1057,9 @@ CLASS TGRID FROM TCONTROL
    DATA LNOMODAL                  INIT .F.
    DATA LPLM                      INIT .F.
    DATA LTRACKING                 INIT .F.
-   DATA NCOLPOS                   INIT 0
+   DATA NCOLPOS                   INIT 1
    DATA NHEIGHT                   INIT 120
-   DATA NROWPOS                   INIT 0
+   DATA NROWPOS                   INIT 1
    DATA NVISIBLEITEMS             INIT 0
    DATA NWIDTH                    INIT 240
    DATA ONABORTEDIT               INIT NIL
@@ -1083,11 +1084,12 @@ CLASS TGRID FROM TCONTROL
    METHOD ADDBITMAP
    METHOD ADDCOLUMN
    METHOD ADDITEM
+   METHOD ADJUSTRESIZE
    METHOD APPEND                  SETGET
    METHOD APPENDITEM
    METHOD BACKCOLOR               SETGET
    METHOD CELL
-   METHOD CELLCAPTION
+   METHOD CELLCAPTION(
    METHOD CELLIMAGE
    METHOD CHECKITEM               SETGET
    METHOD COLUMNAUTOFIT
@@ -1146,8 +1148,8 @@ CLASS TGRID FROM TCONTROL
    METHOD RIGHT
    METHOD SCROLLTOCOL
    METHOD SCROLLTOLEFT
+   METHOD SCROLLTONEXT
    METHOD SCROLLTOPRIOR
-   METHOD SCROLLTORIGHT
    METHOD SCROLLTORIGHT
    METHOD SETCOLUMN
    METHOD SETITEMCOLOR
@@ -1163,15 +1165,19 @@ ENDCLASS
 *------------------------------------------------------------------------------*
 CLASS TGRIDBYCELL FROM TGRID
    DATA TYPE                      INIT "GRIDBYCELL"          READONLY
+   DATA NROWPOS                   INIT 0 HIDDEN
+   DATA NCOLPOS                   INIT 0 HIDDEN
 
    MESSAGE EDITALLCELLS           METHOD EDITGRID
 
    METHOD ADDCOLUMN
+   METHOD ADDCOLUMN2
    METHOD APPENDITEM
    METHOD COLUMNHIDE
    METHOD DEFINE
+   METHOD DEFINE2
    METHOD DELETECOLUMN
-   METHOD DELETEITEM
+   METHOD DELETECOLUMN2
    METHOD DOCHANGE
    METHOD DOWN
    METHOD EDITCELL
@@ -1396,7 +1402,7 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS THBPRINTER FROM TPRINTBASE
-   DATA OHBPRN                    INIT NIL READONLY
+   DATA OHBPRN                    INIT NIL                   READONLY
 
    METHOD BEGINDOCX
    METHOD BEGINPAGEX
@@ -1876,10 +1882,9 @@ ENDCLASS
 *---------------------------------------
 CLASS TPDFPRINT FROM TPRINTBASE
    DATA APAPER                    INIT {}                    READONLY // PAPER TYPES SUPPORTED BY PDF CLASS
-   DATA CPAGEORIENT               INIT ""                             // P = PORTRAIT, L = LANDSCAPE
-   DATA CPAGESIZE                 INIT ""                             // PAGE SIZE
-   DATA NFONTTYPE                 INIT 1                              // FONT TYPE (NORMAL=0 OR BOLD=1)
-   DATA OPDF                      INIT NIL                            // REFERENCE TO THE TPDF OBJECT
+   DATA CPAGEORIENT               INIT "P"                   READONLY // P = PORTRAIT, L = LANDSCAPE
+   DATA CPAGESIZE                 INIT ""                    READONLY // PAGE SIZE
+   DATA OPDF                      INIT NIL                   READONLY // REFERENCE TO THE TPDF OBJECT
 
    METHOD BEGINDOCX
    METHOD BEGINPAGEX
@@ -1979,8 +1984,8 @@ CLASS TPRINTBASE
    DATA CDOCUMENT                 INIT ""                    READONLY    // DOCUMENT'S NAME WITH EXTENSION
    DATA CFONTNAME                 INIT "COURIER NEW"         READONLY
    DATA CPAGENAME                 INIT ""                    READONLY    // CURRENT PAGE NAME
-   DATA CPORT                     INIT "PRN"
-   DATA CPRINTER                  INIT ""
+   DATA CPORT                     INIT "PRN"                 READONLY
+   DATA CPRINTER                  INIT ""                    READONLY
    DATA CPRINTLIBRARY             INIT "HBPRINTER"           READONLY
    DATA CTEMPFILE                 INIT TEMP_FILE_NAME        READONLY
    DATA CUNITS                    INIT "ROWCOL"              READONLY
@@ -1991,14 +1996,17 @@ CLASS TPRINTBASE
    DATA LFONTITALIC               INIT .F.                   READONLY
    DATA LFONTSTRIKEOUT            INIT .F.                   READONLY
    DATA LFONTUNDERLINE            INIT .F.                   READONLY
+   DATA LINDENTALL                INIT .F.                   READONLY    // INDENT RICHEEDIT LINES
    DATA LLANDSCAPE                INIT .F.                   READONLY    // PAGE ORIENTATION
    DATA LPRERROR                  INIT .F.                   READONLY
    DATA LPROP                     INIT .F.                   READONLY
    DATA LSAVETEMP                 INIT .F.                   READONLY
+   DATA LSEPARATESHEETS           INIT .F.                   READONLY
    DATA LSHOWERRORS               INIT .T.                   READONLY
    DATA LWINHIDE                  INIT .F.                   READONLY
    DATA NFONTANGLE                INIT 0                     READONLY
    DATA NFONTSIZE                 INIT 12                    READONLY
+   DATA NFONTTYPE                 INIT 1                     READONLY // FONT TYPE (NORMAL=0 OR BOLD=1)
    DATA NFONTWIDTH                INIT 0                     READONLY
    DATA NHFIJ                     INIT ( 12 / 3.70 )         READONLY
    DATA NLINPAG                   INIT 0                     READONLY
@@ -2059,18 +2067,23 @@ CLASS TPRINTBASE
    METHOD SETCOLOR
    METHOD SETCOLORX               BLOCK { || NIL }
    METHOD SETCPL
+   METHOD SETDOSPORT
    METHOD SETFONT
+   METHOD SETFONTTYPE
    METHOD SETFONTX                BLOCK { || NIL }
+   METHOD SETINDENTATION
    METHOD SETLMARGIN
    METHOD SETPREVIEWSIZE
    METHOD SETPREVIEWSIZEX         BLOCK { || NIL }
    METHOD SETPROP
+   METHOD SETRAWPRINTER
+   METHOD SETSEPARATESHEETS
    METHOD SETSHOWERRORS
    METHOD SETTMARGIN
    METHOD SETUNITS
    METHOD SUP5
    METHOD UPCA
-   METHOD VERSION                 INLINE ::CVERSION
+   METHOD VERSION                INLINE ::CVERSION
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -2217,8 +2230,7 @@ ENDCLASS
 *------------------------------------------------------------------------------*
 CLASS TRTFPRINT FROM TPRINTBASE
    DATA APRINTRTF                 INIT {}                    READONLY    // DOCUMENT LINES
-   DATA LINDENTALL                INIT .F.                               // INDENT LINES
-   DATA NPRINTRTF                                            READONLY    // LAST FONT SIZE USED
+   DATA NPRINTRTF                 INIT 0                     READONLY    // LAST FONT SIZE USED
    DATA NFONTSIZE                 INIT 10                    READONLY    // IN TPRINTBASE IS 12
    DATA NMARGINLEF                INIT 10                    READONLY    // IN MM
    DATA NMARGINSUP                INIT 15                    READONLY    // IN MM
@@ -2373,9 +2385,10 @@ CLASS TSPREADSHEETPRINT FROM TPRINTBASE
    METHOD ENDPAGEX
    METHOD INITX
    METHOD PRINTDATAX
-   METHOD PRINTIMAGE             BLOCK { || NIL }
+   METHOD PRINTIMAGE              BLOCK { || NIL }
    METHOD RELEASEX
-   METHOD SETPREVIEWSIZE         BLOCK { || NIL }
+   METHOD SELPRINTERX             BLOCK { |SELF| SELF:CPRINTER := "BIFF" }
+   METHOD SETPREVIEWSIZE          BLOCK { || NIL }
 ENDCLASS
 
 *------------------------------------------------------------------------------*
