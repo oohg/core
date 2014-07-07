@@ -1,5 +1,5 @@
 /*
- * $Id: i_checklist.ch,v 1.5 2012-10-18 00:46:46 fyurisich Exp $
+ * $Id: i_checklist.ch,v 1.6 2014-07-07 01:51:43 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -72,10 +72,10 @@
       [ FONTCOLOR <fontcolor> ] ;
       [ SELECTEDCOLORS <aSelectedColors> ] ;
       [ TOOLTIP <tooltip> ] ;
-      [ ON CHANGE <change> ] ;
-      [ ON GOTFOCUS <gotfocus> ] ;
-      [ ON LOSTFOCUS <lostfocus> ] ;
-      [ ON CLICK <click> ] ;
+      [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
+      [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
+      [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
+      [ <dummy06: ONCLICK, ON CLICK> <click> ] ;
       [ <break: BREAK> ] ;
       [ HELPID <helpid> ] ;
       [ <disabled: DISABLED> ] ;

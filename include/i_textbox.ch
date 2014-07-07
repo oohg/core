@@ -1,5 +1,5 @@
 /*
- * $Id: i_textbox.ch,v 1.22 2014-04-25 01:48:07 fyurisich Exp $
+ * $Id: i_textbox.ch,v 1.23 2014-07-07 01:51:43 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -112,11 +112,11 @@
       [ <upper: UPPERCASE> ] ;
       [ <lower: LOWERCASE> ] ;
       [ <password: PASSWORD> ] ;
-      [ ON CHANGE <change> ] ;
-      [ ON GOTFOCUS <gotfocus> ] ;
-      [ ON LOSTFOCUS <lostfocus> ] ;
+      [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
+      [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
+      [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
       [ ON TEXTFILLED <textfilled> ] ;
-      [ ON ENTER <enter> ] ;
+      [ <dummy11: ONENTER, ON ENTER> <enter> ] ;
       [ <RightAlign: RIGHTALIGN> ] ;
       [ <centeralign: CENTERALIGN> ] ;
       [ <invisible: INVISIBLE> ] ;

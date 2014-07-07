@@ -1,5 +1,5 @@
 /*
- * $Id: i_scroll.ch,v 1.2 2014-07-06 15:29:41 fyurisich Exp $
+ * $Id: i_scroll.ch,v 1.3 2014-07-07 01:51:43 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -58,7 +58,7 @@
       [ HEIGHT <height> ] ;
       [ WIDTH <width> ] ;
       [ RANGE <min>, <max> ] ;
-      [ ON CHANGE <change> ] ;
+      [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
       [ ON <dummy2 : LINEUP, LINELEFT> <lineup> ] ;
       [ ON <dummy3 : LINEDOWN, LINERIGHT> <linedown> ] ;
       [ ON <dummy4 : PAGEUP, PAGELEFT> <pageup> ] ;

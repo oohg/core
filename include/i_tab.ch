@@ -1,5 +1,5 @@
 /*
- * $Id: i_tab.ch,v 1.7 2014-07-04 20:16:03 fyurisich Exp $
+ * $Id: i_tab.ch,v 1.8 2014-07-07 01:51:43 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -109,7 +109,7 @@
       [ <flat : FLAT> ] ;
       [ <hottrack : HOTTRACK> ] ;
       [ <vertical : VERTICAL> ] ;
-      [ ON CHANGE <change> ] ;
+      [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
       [ <notabstop : NOTABSTOP> ] ;
       [ <rtl : RTL> ] ;
       [ SUBCLASS <subclass> ] ;

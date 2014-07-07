@@ -1,5 +1,5 @@
 /*
- * $Id: i_button.ch,v 1.21 2014-07-04 20:16:03 fyurisich Exp $
+ * $Id: i_button.ch,v 1.22 2014-07-07 01:51:43 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -105,8 +105,8 @@
       [ <strikeout : STRIKEOUT> ] ;
       [ TOOLTIP <tooltip> ] ;
       [ <flat: FLAT> ] ;
-      [ ON GOTFOCUS <gotfocus> ] ;
-      [ ON LOSTFOCUS <lostfocus> ] ;
+      [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
+      [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
       [ ON MOUSEMOVE <onmousemove> ] ;
       [ <notabstop: NOTABSTOP> ] ;
       [ HELPID <helpid> ] ;
@@ -155,9 +155,9 @@
       [ <underline : UNDERLINE> ] ;
       [ <strikeout : STRIKEOUT> ] ;
       [ TOOLTIP <tooltip> ] ;
-      [ ON GOTFOCUS <gotfocus> ] ;
-      [ ON CHANGE <change> ] ;
-      [ ON LOSTFOCUS <lostfocus> ] ;
+      [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
+      [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
+      [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
       [ HELPID <helpid> ] ;
       [ <invisible: INVISIBLE> ] ;
       [ <notabstop: NOTABSTOP> ] ;

@@ -1,5 +1,5 @@
 /*
- * $Id: i_slider.ch,v 1.4 2014-07-04 20:16:03 fyurisich Exp $
+ * $Id: i_slider.ch,v 1.5 2014-07-07 01:51:43 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -100,7 +100,7 @@
       [ HEIGHT <h> ] ;
       [ TOOLTIP <tooltip> ] ;
       [ BACKCOLOR <backcolor> ] ;
-      [ ON CHANGE <change> ] ;
+      [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
       [ <vertical : VERTICAL> ] ;
       [ <noticks : NOTICKS> ] ;
       [ <both : BOTH> ] ;

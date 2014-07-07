@@ -1,5 +1,5 @@
 /*
- * $Id: i_internal.ch,v 1.2 2012-05-24 19:32:30 fyurisich Exp $
+ * $Id: i_internal.ch,v 1.3 2014-07-07 01:51:43 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -91,39 +91,39 @@
         Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#command DEFINE INTERNAL <name>   ;
-        [ AT <row>,<col> ]                ;
-        [ OBJ <obj> ]                     ;
-	[ <dummy1: OF, PARENT> <parent> ] ;
-        [ ON CLICK <action> ]             ;
-        [ WIDTH <width> ]                 ;
-        [ HEIGHT <height> ]               ;
-        [ BACKCOLOR <backcolor> ]         ;
-        [ TOOLTIP <tooltip> ]             ;
-        [ ON GOTFOCUS <gotfocus> ]        ;
-        [ ON LOSTFOCUS <lostfocus> ]      ;
-        [ <border: BORDER> ]              ;
-        [ <clientedge: CLIENTEDGE> ]      ;
-        [ CURSOR <cursor> ]               ;
-        [ VIRTUAL WIDTH <vWidth> ]        ;
-        [ VIRTUAL HEIGHT <vHeight> ]      ;
-        [ ON MOUSEDRAG <MouseDragProcedure> ] ;
-        [ ON MOUSEMOVE <MouseMoveProcedure> ] ;
-        [ <notabstop: NOTABSTOP> ]        ;
-        [ HELPID <helpid> ]               ;
-        [ <invisible: INVISIBLE> ]        ;
-        [ <rtl: RTL> ]                    ;
-        [ SUBCLASS <subclass> ]           ;
-        [ <transparent: TRANSPARENT> ]    ;
-	=>;
-        [ <obj> := ] _OOHG_SelectSubClass( TInternal(), [ <subclass>() ] ): ;
-                     Define( <(name)>, <(parent)>, <col>, <row>, <{action}>, ;
-                     <width>, <height>, <backcolor>, <tooltip>, ;
-                     <gotfocus>, <lostfocus>, <.transparent.>, <.border.>, ;
-                     <.clientedge.>, <cursor>, <vHeight>, <vWidth>, ;
-                     <MouseDragProcedure>, <MouseMoveProcedure>, <notabstop>, ;
-                     <helpid>, <.invisible.>, <.rtl.> )
+#command DEFINE INTERNAL <name> ;
+      [ AT <row>, <col> ] ;
+      [ OBJ <obj> ] ;
+      [ <dummy1 : OF, PARENT> <parent> ] ;
+      [ <dummy06 : ONCLICK, ON CLICK> <action> ] ;
+      [ WIDTH <width> ] ;
+      [ HEIGHT <height> ] ;
+      [ BACKCOLOR <backcolor> ] ;
+      [ TOOLTIP <tooltip> ] ;
+      [ <dummy02 : ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
+      [ <dummy04 : ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
+      [ <border : BORDER> ] ;
+      [ <clientedge : CLIENTEDGE> ] ;
+      [ CURSOR <cursor> ] ;
+      [ VIRTUAL WIDTH <vWidth> ] ;
+      [ VIRTUAL HEIGHT <vHeight> ] ;
+      [ ON MOUSEDRAG <MouseDragProcedure> ] ;
+      [ ON MOUSEMOVE <MouseMoveProcedure> ] ;
+      [ <notabstop : NOTABSTOP> ] ;
+      [ HELPID <helpid> ] ;
+      [ <invisible : INVISIBLE> ] ;
+      [ <rtl : RTL> ] ;
+      [ SUBCLASS <subclass> ] ;
+      [ <transparent : TRANSPARENT> ] ;
+   => ;
+      [ <obj> := ] _OOHG_SelectSubClass( TInternal(), [ <subclass>() ] ): ;
+            Define( <(name)>, <(parent)>, <col>, <row>, <{action}>, ;
+            <width>, <height>, <backcolor>, <tooltip>, <gotfocus>, ;
+            <lostfocus>, <.transparent.>, <.border.>, <.clientedge.>, ;
+            <cursor>, <vHeight>, <vWidth>, <MouseDragProcedure>, ;
+            <MouseMoveProcedure>, <notabstop>, <helpid>, <.invisible.>, ;
+            <.rtl.> )
 
 #command END INTERNAL ;
-	=>;
-        _EndInternal()
+   => ;
+      _EndInternal()

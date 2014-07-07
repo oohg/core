@@ -1,5 +1,5 @@
 /*
- * $Id: h_ipaddress.prg,v 1.12 2014-07-06 19:37:51 fyurisich Exp $
+ * $Id: h_ipaddress.prg,v 1.13 2014-07-07 01:51:43 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -130,7 +130,7 @@ Local ControlHandle, nStyle
    If aValue <> Nil
       If HB_IsArray( aValue )
          SetIPAddress( ControlHandle, aValue[ 1 ], aValue[ 2 ], aValue[ 3 ], aValue[ 4 ] )
-      Elseif HB_IsString( uValue )
+      Elseif HB_IsString( aValue )
          SetIPAddress( ControlHandle, aValue )
       EndIf
    EndIf

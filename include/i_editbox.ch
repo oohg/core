@@ -1,5 +1,5 @@
 /*
- * $Id: i_editbox.ch,v 1.6 2014-06-29 23:42:06 fyurisich Exp $
+ * $Id: i_editbox.ch,v 1.7 2014-07-07 01:51:43 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -109,9 +109,9 @@
       [ BACKCOLOR <backcolor> ] ;
       [ FONTCOLOR <fontcolor> ] ;
       [ MAXLENGTH <maxlenght> ] ;
-      [ ON GOTFOCUS <gotfocus> ] ;
-      [ ON CHANGE <change> ] ;
-      [ ON LOSTFOCUS <lostfocus> ] ;
+      [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
+      [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
+      [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
       [ HELPID <helpid> ]       ;
       [ <invisible: INVISIBLE> ] ;
       [ <notabstop: NOTABSTOP> ] ;
@@ -148,9 +148,9 @@
       [ BACKCOLOR <backcolor> ] ;
       [ FONTCOLOR <fontcolor> ] ;
       [ MAXLENGTH <maxlenght> ] ;
-      [ ON GOTFOCUS <gotfocus> ] ;
-      [ ON CHANGE <change> ] ;
-      [ ON LOSTFOCUS <lostfocus> ] ;
+      [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
+      [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
+      [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
       [ HELPID <helpid> ] ;
       [ <break: BREAK> ] ;
       [ <invisible: INVISIBLE> ] ;

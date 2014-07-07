@@ -1,11 +1,61 @@
 /*
- * $Id: ChangeLog,v 1.1309 2014-07-06 20:11:13 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1310 2014-07-07 01:51:43 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-07-06 22:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/prgs/formedit.prg
+     - Comments.
+     * Format.
+     * New control backcolor and fontcolor default to NIL.
+       If the color is not changed, the control will be saved to the
+       FMG without BACKCOLOR and FONTCOLOR clauses. This way the
+       control can default to form's colors.
+     * New control fontname defaults to "" and fontsize defaults to
+       0. If they're not changed, the control  will be saved to the
+       FMG without FONT and SIZE clauses. This way the control can
+       default to form's fontname and fontsize.
+     * The label representing IPADDRESS control is now created without
+       FONT and SIZE clauses. This way the label defaults to form's
+       fontname and fontsize.
+     * New forms are created without FONT and SIZE clauses. This way
+       they default to OOHG's values ("Arial" and 9).
+     * Width of Control Inspector form.
+   * source/h_grid.prg
+     ! Context menu is not opened after RClick.
+     ! Duplicate variable declaration compile error.
+   * source/h_ipaddress.prg
+     ! Variable not declared compile error.
+   * include/i_button.ch
+   * include/i_checkbox.ch
+   * include/i_checklist.ch
+   * include/i_combobox.ch
+   * include/i_datepicker.ch
+   * include/i_editbox.ch
+   * include/i_hmg_compat.ch
+   * include/i_hotkeybox.ch
+   * include(i_internal.ch
+   * include/i_ipaddress.ch
+   * include/i_listbox.ch
+   * include/i_radiogroup.ch
+   * include/i_richeditbox.ch
+   * include/i_scroll.ch
+   * include/i_slider.ch
+   * include/i_spinner.ch
+   * include/i_tab.ch
+   * include/i_textbox.ch
+   * include/i_tree.ch
+   * include/i_window.ch
+     + ONGOTFOCUS clause.
+     + ONLOSTFOCUS clause.
+     + ONCHANGE clause.
+     + ONCLICK clause.
+     + ONENTER clause.
+     * Format.
 
 2014-07-06 17:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ide/prgs/formedit.prg

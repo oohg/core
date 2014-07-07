@@ -1,5 +1,5 @@
 /*
- * $Id: i_spinner.ch,v 1.5 2014-07-04 20:16:03 fyurisich Exp $
+ * $Id: i_spinner.ch,v 1.6 2014-07-07 01:51:43 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -107,9 +107,9 @@
       [ TOOLTIP <tooltip> ] ;
       [ BACKCOLOR <backcolor> ] ;
       [ FONTCOLOR <fontcolor> ] ;
-      [ ON GOTFOCUS <gotfocus> ] ;
-      [ ON CHANGE <change> ] ;
-      [ ON LOSTFOCUS <lostfocus> ] ;
+      [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
+      [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
+      [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
       [ HELPID <helpid> ] ;
       [ <invisible : INVISIBLE> ] ;
       [ <notabstop : NOTABSTOP> ] ;

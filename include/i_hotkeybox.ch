@@ -1,5 +1,5 @@
 /*
- * $Id: i_hotkeybox.ch,v 1.1 2006-10-21 21:07:26 guerra000 Exp $
+ * $Id: i_hotkeybox.ch,v 1.2 2014-07-07 01:51:43 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -49,36 +49,37 @@
  *
  */
 
-#command @ <row>, <col> HOTKEYBOX <name>                  ;
-                        [ OBJ <obj> ]                   ;
-			[ <dummy1: OF, PARENT> <parent> ] ;
-                        [ HEIGHT <height> ]          	;
-                        [ WIDTH <width> ]            	;
-                        [ VALUE <value> ]               ;
-                        [ FONT <fontname> ]          	;
-                        [ SIZE <fontsize> ]          	;
-			[ <bold : BOLD> ] ;
-			[ <italic : ITALIC> ] ;
-			[ <underline : UNDERLINE> ] ;
-			[ <strikeout : STRIKEOUT> ] ;
-                        [ TOOLTIP <tooltip> ]        	;
-			[ BACKCOLOR <backcolor> ] ;
-			[ FONTCOLOR <fontcolor> ] ;
-                        [ ON CHANGE <change> ]       	;
-                        [ ON GOTFOCUS <gotfocus> ]   	;
-                        [ ON LOSTFOCUS <lostfocus> ] 	;
-                        [ ON ENTER <enter> ]		;
-			[ <invisible: INVISIBLE> ]	;
-			[ <notabstop: NOTABSTOP> ]	;
-                        [ <rtl: RTL> ]                  ;
-                        [ HELPID <helpid> ]             ;
-                        [ SUBCLASS <subclass> ]         ;
-                        [ <disabled: DISABLED> ]        ;
-                        [ <noalt: NOALT> ]              ;
-         =>;
-        [ <obj> := ] _OOHG_SelectSubClass( THotKeyBox(), [ <subclass>() ] ): ;
-                        Define( <(name)>, <(parent)>, <col>, <row>, <width>, <height>, ;
-                        <value>, <fontname>, <fontsize>, <tooltip>, <{lostfocus}>, <{gotfocus}>, ;
-                        <{change}>, <{enter}>, <helpid>, <.bold.>, <.italic.>, <.underline.>, ;
-                        <.strikeout.>, <backcolor>, <fontcolor>, <.invisible.>, <.notabstop.>, ;
-                        <.rtl.>, <.disabled.>, <.noalt.> )
+#command @ <row>, <col> HOTKEYBOX <name> ;
+      [ OBJ <obj> ] ;
+      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ HEIGHT <height> ] ;
+      [ WIDTH <width> ] ;
+      [ VALUE <value> ] ;
+      [ FONT <fontname> ] ;
+      [ SIZE <fontsize> ] ;
+      [ <bold : BOLD> ] ;
+      [ <italic : ITALIC> ] ;
+      [ <underline : UNDERLINE> ] ;
+      [ <strikeout : STRIKEOUT> ] ;
+      [ TOOLTIP <tooltip> ] ;
+      [ BACKCOLOR <backcolor> ] ;
+      [ FONTCOLOR <fontcolor> ] ;
+      [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
+      [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
+      [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
+      [ <dummy11: ONENTER, ON ENTER> <enter> ] ;
+      [ <invisible: INVISIBLE> ] ;
+      [ <notabstop: NOTABSTOP> ] ;
+      [ <rtl: RTL> ] ;
+      [ HELPID <helpid> ] ;
+      [ SUBCLASS <subclass> ] ;
+      [ <disabled: DISABLED> ] ;
+      [ <noalt: NOALT> ] ;
+   => ;
+      [ <obj> := ] _OOHG_SelectSubClass( THotKeyBox(), [ <subclass>() ] ): ;
+            Define( <(name)>, <(parent)>, <col>, <row>, <width>, <height>, ;
+            <value>, <fontname>, <fontsize>, <tooltip>, <{lostfocus}>, ;
+            <{gotfocus}>, <{change}>, <{enter}>, <helpid>, <.bold.>, ;
+            <.italic.>, <.underline.>, <.strikeout.>, <backcolor>, ;
+            <fontcolor>, <.invisible.>, <.notabstop.>, <.rtl.>, <.disabled.>, ;
+            <.noalt.> )

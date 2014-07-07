@@ -1,5 +1,5 @@
 /*
- * $Id: i_datepicker.ch,v 1.8 2014-07-04 20:16:03 fyurisich Exp $
+ * $Id: i_datepicker.ch,v 1.9 2014-07-07 01:51:43 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -108,10 +108,10 @@
       [ < shownone : SHOWNONE > ] ;
       [ < updown : UPDOWN > ] ;
       [ < rightalign : RIGHTALIGN > ] ;
-      [ ON GOTFOCUS <gotfocus> ] ;
-      [ ON CHANGE <change> ] ;
-      [ ON LOSTFOCUS <lostfocus> ] ;
-      [ ON ENTER <enter> ] ;
+      [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
+      [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
+      [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
+      [ <dummy11: ONENTER, ON ENTER> <enter> ] ;
       [ HELPID <helpid> ] ;
       [ <invisible : INVISIBLE> ] ;
       [ <notabstop : NOTABSTOP> ] ;
@@ -145,10 +145,10 @@
       [ < shownone : SHOWNONE > ] ;
       [ < updown : UPDOWN > ] ;
       [ < rightalign : RIGHTALIGN > ] ;
-      [ ON GOTFOCUS <gotfocus> ] ;
-      [ ON CHANGE <change> ] ;
-      [ ON LOSTFOCUS <lostfocus> ] ;
-      [ ON ENTER <enter> ] ;
+      [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
+      [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
+      [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
+      [ <dummy11: ONENTER, ON ENTER> <enter> ] ;
       [ HELPID <helpid> ] ;
       [ <invisible : INVISIBLE> ] ;
       [ <notabstop : NOTABSTOP> ] ;

@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.11 2014-07-06 20:11:13 fyurisich Exp $
+ * $Id: formedit.prg,v 1.12 2014-07-07 01:51:43 fyurisich Exp $
  */
 
 /*
@@ -469,11 +469,11 @@ METHOD IniArray( nform, ncontrolwl, controlname, ctypectrl, noanade ) CLASS TFor
          aAdd( :actrltype, ctypectrl )
          aAdd( :aenabled, .T. )
          aAdd( :avisible, .T. )
-         aAdd( :afontname, :cffontname )
-         aAdd( :afontsize, :nffontsize )
+         aAdd( :afontname, "" )
+         aAdd( :afontsize, 0 )
          aAdd( :abold, .F. )
-         aAdd( :abackcolor, "{255, 255, 255}" )
-         aAdd( :afontcolor, "{0, 0, 0}" )
+         aAdd( :abackcolor, "NIL" )
+         aAdd( :afontcolor, "NIL" )
          aAdd( :afontitalic, .F. )
          aAdd( :afontunderline, .F. )
          aAdd( :afontstrikeout, .F. )
@@ -571,11 +571,11 @@ METHOD IniArray( nform, ncontrolwl, controlname, ctypectrl, noanade ) CLASS TFor
          aAdd( :Aedit, .F. )
          aAdd( :Aappend, .F. )
          aAdd( :Aclientedge, .F. )
-         aAdd( :afocusedpos, -2 )  // pb
+         aAdd( :afocusedpos, -2 )
          aAdd( :aspeed, 1 )
-         aAdd( :acobj, '' )        //gca
-         aAdd( :aborder, .F. )     //gca
-         aAdd( :aonenter, '' )     //gca
+         aAdd( :acobj, '' )
+         aAdd( :aborder, .F. )
+         aAdd( :aonenter, '' )
       ELSE
          z:=ncontrolwl
          myAdel( "myform:acontrolw", z )
@@ -834,10 +834,11 @@ LOCAL aName, x, i, swBorrado
          @ _oohg_mouserow, _oohg_mousecol BUTTON &ControlName OF Form_1 ;
             FONT 'MS Sans Serif' SIZE 10 ;
             ON GOTFOCUS Dibuja( This:Name ) ;
+            ACTION Dibuja( This:Name ) ;
             NOTABSTOP
          :abackcolor[:ncontrolw] := cFBackcolor
          ProcessContainers( ControlName )
-      CASE :currentcontrol == 3
+      CASE :CurrentControl == 3
          :CheckBoxCount ++
          ControlName := 'checkbox_' + LTrim( Str( :CheckBoxCount ) )
          DO WHILE IsControlDefined( &Controlname, Form_1 )
@@ -849,13 +850,15 @@ LOCAL aName, x, i, swBorrado
          @ _oohg_mouserow,_oohg_mousecol CHECKBOX &ControlName OF Form_1 ;
             CAPTION ControlName ;
             FONT 'San serif' SIZE 10 ;
-            ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name) NOTABSTOP
+            ON GOTFOCUS Dibuja( This:Name ) ;
+            ON CHANGE Dibuja( This:Name ) ;
+            NOTABSTOP
          :abackcolor[:ncontrolw] := cFBackcolor
          IF cFBackcolor # 'NIL' .AND. Len( cFBackcolor ) > 0
             GetControlObject( ControlName, "Form_1" ):BackColor:= &cFBackcolor
          ENDIF
          ProcessContainers( ControlName )
-   Case :currentcontrol == 4
+   Case :CurrentControl == 4
       :ListBoxCount++
       ControlName := 'list_'+Alltrim(str(:ListBoxcount))
                 do while iscontroldefined(&Controlname,form_1)
@@ -865,10 +868,12 @@ LOCAL aName, x, i, swBorrado
       aName := { ControlName }
                 :ncontrolw++
       @ _oohg_mouserow,_oohg_mousecol LISTBOX &ControlName OF Form_1 WIDTH 100 HEIGHT 100 ITEMS aName FONT 'MS Sans Serif' SIZE 10 ;
-                ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name) NOTABSTOP
+                ON GOTFOCUS dibuja(this:name) ;
+                ON CHANGE dibuja(this:name) ;
+                NOTABSTOP
                 :iniarray(:nform,:ncontrolw,controlname,'LIST')
       ProcessContainers( ControlName )
-   Case :currentcontrol == 5
+   Case :CurrentControl == 5
       :ComboBoxCount++
       ControlName := 'combo_'+Alltrim(str(:ComboBoxCount))
                 do while iscontroldefined(&Controlname,form_1)
@@ -877,11 +882,16 @@ LOCAL aName, x, i, swBorrado
                 enddo
       aName := { ControlName,' ' }
                 :ncontrolw++
-      @ _oohg_mouserow,_oohg_mousecol COMBOBOX &ControlName OF Form_1 WIDTH 100 HEIGHT 100 ITEMS aName VALUE 1 FONT 'San serif' SIZE 10 ;
-                ON GOTFOCUS dibuja(this:name) NOTABSTOP
+      @ _oohg_mouserow,_oohg_mousecol COMBOBOX &ControlName OF Form_1 ;
+         WIDTH 100 ;
+         HEIGHT 100 ;
+         ITEMS aName ;
+         VALUE 1 ;
+         ON GOTFOCUS Dibuja( This:Name ) ;
+         NOTABSTOP
                 :iniarray(:nform,:ncontrolw,controlname,'COMBO')
       ProcessContainers( ControlName )
-   Case :currentcontrol == 6
+   Case :CurrentControl == 6
       :CheckButtonCount++
 
       ControlName := 'checkbtn_'+Alltrim(str(:CheckButtonCount))
@@ -894,7 +904,7 @@ LOCAL aName, x, i, swBorrado
                 ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name) NOTABSTOP
                 :iniarray(:nform,:ncontrolw,controlname,'CHECKBTN')
       ProcessContainers( ControlName )
-   Case :currentcontrol == 7
+   Case :CurrentControl == 7
       :GridCount++
       ControlName := 'grid_'+Alltrim(str(:GridCount))
                 do while iscontroldefined(&Controlname,form_1)
@@ -907,7 +917,7 @@ LOCAL aName, x, i, swBorrado
       @ _oohg_mouserow,_oohg_mousecol GRID &ControlName OF Form_1 HEADERS {'',''} WIDTHS {60,60} ITEMS aName TOOLTIP 'To move/size click on header area' FONT 'MS Sans Serif' SIZE 10 ;
                 ON GOTFOCUS dibuja(this:name)
       ProcessContainers( ControlName )
-   Case :currentcontrol == 8
+   Case :CurrentControl == 8
       :frameCount++
       ControlName := 'frame_'+Alltrim(str(:FrameCount))
                 do while iscontroldefined(&Controlname,form_1)
@@ -922,7 +932,7 @@ LOCAL aName, x, i, swBorrado
                    GetControlObject( controlname,"form_1"):backcolor:= &cFBackcolor
                 ENDIF
       ProcessContainers( ControlName )
-   Case :currentcontrol == 9
+   Case :CurrentControl == 9
       :TabCount++
       ControlName := 'tab_'+Alltrim(str(:TabCount))
                 do while iscontroldefined(&Controlname,form_1)
@@ -941,7 +951,7 @@ LOCAL aName, x, i, swBorrado
                 :acaption[:ncontrolw]="{'Page 1','Page 2'}"
                 :aimage[:ncontrolw]="{' ',' '}"
                 :swtab:=.T.
-   Case :currentcontrol == 10
+   Case :CurrentControl == 10
       :ImageCount++
       ControlName := 'image_'+Alltrim(str(:ImageCount))
                 do while iscontroldefined(&Controlname,form_1)
@@ -953,7 +963,7 @@ LOCAL aName, x, i, swBorrado
       @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 100 HEIGHT 100 VALUE ControlName BORDER ACTION dibuja(this:name) FONT 'MS Sans Serif' SIZE 10
 
       ProcessContainers( ControlName )
-   Case :currentcontrol == 11
+   Case :CurrentControl == 11
       :AnimateCount++
       ControlName := 'animate_'+Alltrim(str(:AnimateCount))
                 do while iscontroldefined(&Controlname,form_1)
@@ -964,7 +974,7 @@ LOCAL aName, x, i, swBorrado
                 :iniarray(:nform,:ncontrolw,controlname,'ANIMATE')
       @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 100 HEIGHT 50 VALUE ControlName BORDER ACTION dibuja(this:name) FONT 'MS Sans Serif' SIZE 10
       ProcessContainers( ControlName )
-   Case :currentcontrol == 12
+   Case :CurrentControl == 12
       :DatePickerCount++
       ControlName := 'datepicker_'+Alltrim(str(:DatePickerCount))
                 do while iscontroldefined(&Controlname,form_1)
@@ -976,7 +986,7 @@ LOCAL aName, x, i, swBorrado
       @ _oohg_mouserow,_oohg_mousecol DATEPICKER &ControlName OF Form_1 TOOLTIP ControlName FONT 'MS Sans Serif' SIZE 10 ;
                 ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name) NOTABSTOP
       ProcessContainers( ControlName )
-   Case :currentcontrol == 13
+   Case :CurrentControl == 13
       :TextBoxCount++
       ControlName := 'text_'+Alltrim(str(:TextBoxCount))
                 do while iscontroldefined(&Controlname,form_1)
@@ -988,7 +998,7 @@ LOCAL aName, x, i, swBorrado
                 GetControlObject( controlname,"form_1"):value:=controlname
                 :iniarray(:nform,:ncontrolw,controlname,'TEXT')
       ProcessContainers( ControlName )
-   Case :currentcontrol == 14
+   Case :CurrentControl == 14
       :EditBoxCount++
       ControlName := 'edit_'+Alltrim(str(:EditBoxCount))
                 do while iscontroldefined(&Controlname,form_1)
@@ -1001,7 +1011,7 @@ LOCAL aName, x, i, swBorrado
                 GetControlObject( controlname,"form_1"):fontsize:=10
                 :iniarray(:nform,:ncontrolw,controlname,'EDIT')
       ProcessContainers( ControlName )
-   Case :currentcontrol == 15
+   Case :CurrentControl == 15
                 :LabelCount++
       ControlName := 'label_'+Alltrim(str(:LabelCount))
                 do while iscontroldefined(&Controlname,form_1)
@@ -1017,7 +1027,7 @@ LOCAL aName, x, i, swBorrado
             GetControlObject( ControlName, "Form_1" ):BackColor:= &cFBackcolor
          ENDIF
       ProcessContainers( ControlName )
-   Case :currentcontrol == 16
+   Case :CurrentControl == 16
       :PlayerCount++
       ControlName := 'player_'+Alltrim(str(:PlayerCount))
                 do while iscontroldefined(&Controlname,form_1)
@@ -1028,7 +1038,7 @@ LOCAL aName, x, i, swBorrado
       @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 100 HEIGHT 100 VALUE ControlName BORDER ACTION dibuja(this:name) FONT 'MS Sans Serif' SIZE 10
                 :iniarray(:nform,:ncontrolw,controlname,'PLAYER')
       ProcessContainers( ControlName )
-   Case :currentcontrol == 17
+   Case :CurrentControl == 17
       :ProgressBarCount++
       ControlName := 'progressbar_'+Alltrim(str(:ProgressBarCount))
                 do while iscontroldefined(&Controlname,form_1)
@@ -1039,7 +1049,7 @@ LOCAL aName, x, i, swBorrado
       @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 120 HEIGHT 26 VALUE Controlname BORDER ACTION dibuja(this:name)
                 :iniarray(:nform,:ncontrolw,controlname,'PROGRESSBAR')
       ProcessContainers( ControlName )
-   Case :currentcontrol == 18
+   Case :CurrentControl == 18
       :RadioGroupCount++
       ControlName := 'radiogroup_'+Alltrim(str(:RadioGroupCount))
                 do while iscontroldefined(&Controlname,form_1)
@@ -1056,7 +1066,7 @@ LOCAL aName, x, i, swBorrado
                 :aitems[:ncontrolw]:="{'option 1','option 2'}"
                 :aspacing[:ncontrolw]:=25
       ProcessContainers( ControlName )
-   Case :currentcontrol == 19
+   Case :CurrentControl == 19
       :SliderCount++
       ControlName := 'slider_'+Alltrim(str(:SliderCount))
                 do while iscontroldefined(&Controlname,form_1)
@@ -1071,7 +1081,7 @@ LOCAL aName, x, i, swBorrado
             GetControlObject( ControlName, "Form_1" ):BackColor:= &cFBackcolor
          ENDIF
       ProcessContainers( ControlName )
-   Case :currentcontrol == 20
+   Case :CurrentControl == 20
       :SpinnerCount++
       ControlName := 'spinner_'+Alltrim(str(:SpinnerCount))
                 do while iscontroldefined(&Controlname,form_1)
@@ -1084,7 +1094,7 @@ LOCAL aName, x, i, swBorrado
                 GetControlObject( controlname,"form_1"):fontsize:= 10
                 :iniarray(:nform,:ncontrolw,controlname,'SPINNER')
       ProcessContainers( ControlName )
-   Case :currentcontrol == 21
+   Case :CurrentControl == 21
       :CheckButtonCount++
       ControlName := 'piccheckbutt_'+Alltrim(str(:CheckButtonCount))
                 do while iscontroldefined(&Controlname,form_1)
@@ -1095,7 +1105,7 @@ LOCAL aName, x, i, swBorrado
       @ _oohg_mouserow,_oohg_mousecol CHECKBUTTON &ControlName OF Form_1 PICTURE 'A4' WIDTH 30 HEIGHT 30 VALUE .F. ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name) NOTABSTOP
                 :iniarray(:nform,:ncontrolw,controlname,'PICCHECKBUTT')
       ProcessContainers( ControlName )
-   Case :currentcontrol == 22
+   Case :CurrentControl == 22
       :ButtonCount++
       ControlName := 'picbutt_'+Alltrim(str(:ButtonCount))
                 do while iscontroldefined(&Controlname,form_1)
@@ -1105,9 +1115,15 @@ LOCAL aName, x, i, swBorrado
                 :ncontrolw++
                 :iniarray(:nform,:ncontrolw,controlname,'PICBUTT')
                 :aaction[:ncontrolw]:="msginfo('Pic button pressed')"
-      @ _oohg_mouserow,_oohg_mousecol BUTTON &ControlName OF Form_1 PICTURE 'A4' WIDTH 30 HEIGHT 30 ON GOTFOCUS dibuja(this:name) NOTABSTOP
+      @ _oohg_mouserow,_oohg_mousecol BUTTON &ControlName OF Form_1 ;
+         PICTURE 'A4' ;
+         WIDTH 30 ;
+         HEIGHT 30 ;
+         ON GOTFOCUS Dibuja( This:Name ) ;
+         ACTION Dibuja( This:Name ) ;
+         NOTABSTOP
       ProcessContainers( ControlName )
-         Case :currentcontrol == 23
+         Case :CurrentControl == 23
       :TimerCount++
       ControlName := 'timer_'+Alltrim(str(:timerCount))
                 do while iscontroldefined(&Controlname,form_1)
@@ -1118,7 +1134,7 @@ LOCAL aName, x, i, swBorrado
                 :iniarray(:nform,:ncontrolw,controlname,'TIMER')
       @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 100 HEIGHT 20 VALUE ControlName BORDER ACTION dibuja(this:name) FONT 'MS Sans Serif' SIZE 10
       ProcessContainers( ControlName )
-   Case :currentcontrol == 24
+   Case :CurrentControl == 24
       :BrowseCount++
          ControlName := 'browse_'+Alltrim(str(:browseCount))
                 do while iscontroldefined(&Controlname,form_1)
@@ -1130,7 +1146,7 @@ LOCAL aName, x, i, swBorrado
                 :iniarray(:nform,:ncontrolw,controlname,'BROWSE')
       @ _oohg_mouserow,_oohg_mousecol GRID &ControlName OF Form_1 HEADERS {'one','two'} WIDTHS {60,60} ITEMS aName TOOLTIP 'To move/size click on header area' FONT 'MS Sans Serif' SIZE 10 ON GOTFOCUS dibuja(this:name)
       ProcessContainers( ControlName )
-   Case :currentcontrol == 25
+   Case :CurrentControl == 25
       :TreeCount++
          ControlName := 'tree_'+Alltrim(str(:treecount))
                 do while iscontroldefined(&Controlname,form_1)
@@ -1148,18 +1164,22 @@ LOCAL aName, x, i, swBorrado
                 END TREE
 
       ProcessContainers( ControlName )
-   Case :currentcontrol == 26
-      :IpaddressCount++
-         ControlName := 'ipaddress_'+Alltrim(str(:ipaddressCount))
-                do while iscontroldefined(&Controlname,form_1)
-         :ipaddressCount++
-                   ControlName := 'ipaddress_'+Alltrim(str(:ipaddressCount))
-                enddo
-                :ncontrolw++
-                :iniarray(:nform,:ncontrolw,controlname,'IPADDRESS')
-      @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 VALUE '   .   .   .   ' BACKCOLOR WHITE CLIENTEDGE ACTION dibuja(this:name) FONT 'Courier new' SIZE 9
+   Case :CurrentControl == 26
+      :IpaddressCount ++
+      ControlName := 'ipaddress_' + LTrim( Str( :ipaddressCount ) )
+      DO WHILE IsControlDefined( &Controlname, Form_1 )
+         :ipaddressCount ++
+         ControlName := 'ipaddress_' + LTrim( Str( :ipaddressCount ) )
+      ENDDO
+      :nControlW ++
+      :IniArray( :nform, :ncontrolw, ControlName, 'IPADDRESS' )
+      @ _oohg_mouserow, _oohg_mousecol LABEL &ControlName OF Form_1 ;
+         VALUE '   .   .   .   ' ;
+         BACKCOLOR WHITE ;
+         CLIENTEDGE ;
+         ACTION Dibuja( This:Name )
       ProcessContainers( ControlName )
-        Case :currentcontrol == 27
+   Case :CurrentControl == 27
       :MonthcalendarCount++
          ControlName := 'monthcal_'+Alltrim(str(:monthcalendarCount))
                 do while iscontroldefined(&Controlname,form_1)
@@ -1170,7 +1190,7 @@ LOCAL aName, x, i, swBorrado
                 :iniarray(:nform,:ncontrolw,controlname,'MONTHCALENDAR')
       @ _oohg_mouserow,_oohg_mousecol MONTHCALENDAR &ControlName OF Form_1  NOTABSTOP ON CHANGE dibuja(this:name)
       ProcessContainers( ControlName )
-        Case :currentcontrol == 28
+        Case :CurrentControl == 28
       :hyperlinkCount++
          ControlName := 'Hyperlink_'+Alltrim(str(:HyperlinkCount))
                 Do while iscontroldefined(&Controlname,form_1)
@@ -1181,7 +1201,7 @@ LOCAL aName, x, i, swBorrado
                 :iniarray(:nform,:ncontrolw,controlname,'HYPERLINK')
       @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 VALUE Controlname ACTION dibuja(this:name) BORDER FONT 'MS Sans Serif' SIZE 9
       ProcessContainers( ControlName )
-        case :currentcontrol ==29
+        case :CurrentControl ==29
            :richeditBoxCount++
       ControlName := 'richeditbox_'+Alltrim(str(:richeditboxCount))
                 do while iscontroldefined(&Controlname,form_1)
@@ -1346,107 +1366,98 @@ RETURN NIL
 *------------------------------------------------------------------------------*
 METHOD New() CLASS TForm1
 *------------------------------------------------------------------------------*
-whlp:='formedit'
-   if .not. IsWindowDefined(Form_1)
-           cFBackcolor:=myform:cFBackcolor
+   whlp := 'formedit'
+   IF ! IsWindowDefined( Form_1 )
+      cFBackcolor:=myform:cFBackcolor
 
-                   DEFINE WINDOW Form_1 obj Form_1 ;
+      DEFINE WINDOW Form_1 OBJ Form_1 ;
          AT ::myIde:mainheight + 46 ,66 ;
          WIDTH 700 ;
          HEIGHT 410 ;
          TITLE 'Form' ICON 'VD' ;
          CHILD ;
          ON MOUSECLICK myform:AddControl() ;
-                        ON MOUSEMOVE cordenada() ;
-                        ON MOUSEDRAG ms( ::myIde ) ;
-                        ON GOTFOCUS mispuntos() ;
-                        ON PAINT {|| refrefo(), mispuntos() } ;
-                        BACKCOLOR &cFBackcolor ;
-                        FONT 'MS Sans Serif' SIZE 10   ;
-                        NOMAXIMIZE NOMINIMIZE
+         ON MOUSEMOVE cordenada() ;
+         ON MOUSEDRAG ms( ::myIde ) ;
+         ON GOTFOCUS mispuntos() ;
+         ON PAINT {|| refrefo(), mispuntos() } ;
+         BACKCOLOR &cFBackcolor ;
+         NOMAXIMIZE NOMINIMIZE
 
          DEFINE CONTEXT MENU
-                  ITEM 'Properties' ACTION Properties_Click( ::myIde )
-                                ITEM 'Events    ' name events ACTION Events_click( ::myIde )
-                                ITEM 'Interactive Font/Color' ACTION intfoco( 1, ::myIde )
-                                ITEM 'Manual Move/Size'  ACTION manualmosi( 1, ::myIde )
+            ITEM 'Properties' ACTION Properties_Click( ::myIde )
+            ITEM 'Events    ' NAME events ACTION Events_click( ::myIde )
+            ITEM 'Interactive Font/Color' ACTION intfoco( 1, ::myIde )
+            ITEM 'Manual Move/Size' ACTION manualmosi( 1, ::myIde )
             ITEM 'Interactive Move' ACTION MoveControl( ::myIde )
             ITEM 'Keyboard Move' ACTION kMove( ::myIde )
             ITEM 'Interactive Size' ACTION SizeControl()
-                                SEPARATOR
-                                ITEM 'Delete' ACTION DeleteControl()
+            SEPARATOR
+            ITEM 'Delete' ACTION DeleteControl()
          END MENU
 
-
-                        ON KEY DELETE ACTION deletecontrol()
-                        ON KEY F1 ACTION help_f1('FORMEDIT')
-                        ON KEY ALT+D ACTION debug()
-
+         ON KEY DELETE ACTION DeleteControl()
+         ON KEY F1 ACTION Help_F1( 'FORMEDIT' )
+         ON KEY ALT+D ACTION Debug()
       END WINDOW
 
-                DEFINE WINDOW lista obj lista ;
-                AT 120 , 665 ;                                                 // MigSoft
-                WIDTH 285 ;
-                HEIGHT 450 + GetTitleHeight() + GetBorderheight() ;
-                TITLE 'Control Inspector' ;
-                ICON 'Edit' ;
-                CHILD ;
-                NOMAXIMIZE NOMINIMIZE ;
-                NOSIZE ;
-                backcolor ::myIde:asystemcolor
+      DEFINE WINDOW Lista OBJ Lista ;
+         AT 120, 665 ;
+         WIDTH 300 ;
+         HEIGHT 450 ;
+         CLIENTAREA ;
+         TITLE 'Control Inspector' ;
+         ICON 'Edit' ;
+         CHILD ;
+         NOMAXIMIZE NOMINIMIZE ;
+         NOSIZE ;
+         BACKCOLOR ::myIde:asystemcolor
 
+         @ 20, 10 GRID ListaCon OBJ oListaCon ;
+            WIDTH 280 ;
+            HEIGHT 400  ;
+            headers {'Name', 'Row', 'Col', 'Width', 'Height', 'int-name'} ;
+            WIDTHS {80, 40, 40, 45, 50, 0 } ;
+            FONT "Arial" ;
+            SIZE 10 ;
+            INPLACE EDIT ;
+            READONLY {.T., .F., .F., .F., .F., .T.}  ;
+            JUSTIFY {GRID_JTFY_LEFT, GRID_JTFY_RIGHT, GRID_JTFY_RIGHT, GRID_JTFY_RIGHT, GRID_JTFY_RIGHT, GRID_JTFY_LEFT}  ;
+            FULLMOVE ;
+            ON GOTFOCUS MuestraSiNo() ;
+            ON EDITCELL ValidaPos( oListaCon )
 
-                @ 20,10 GRID listacon obj olistacon ;                          // MigSoft
-                 WIDTH  260 ;
-                 HEIGHT 400  ;
-                 headers {'Name','row','col','width','height','int-name'}     ;
-                 WIDTHS {80,40,40,45,50,0 } ;
-                 FONT "Arial" ;
-                 SIZE 10      ;
-                 INPLACE EDIT ;
-                 readonly {.t.,.f.,.f.,.f.,.f.,.t.}  ;
-                 justify { ,1,1,1,1,  }  ;
-                 ON GOTFOCUS muestrasino() ;
-                 ON EDITCELL validapos(olistacon)
-
-        ////            ON CHANGE procesacontrol() ;           ///cvc
-
-                 olistacon:fullmove:=.T.
-
-
-         DEFINE CONTEXT MENU
-                  ITEM 'Properties' ACTION Properties_Click( ::myIde )
-                                ITEM 'Events    ' name events ACTION Events_click( ::myIde )
-                                ITEM 'Interactive Font/Color' ACTION intfoco( 1, ::myIde )
-                                ITEM 'Manual Move/Size'  ACTION manualmosi( 1, ::myIde )
+// TODO: This context should open on the control clicked and not the control selected in the form
+         DEFINE CONTEXT MENU CONTROL ListaCon OF Lista
+            ITEM 'Properties' ACTION Properties_Click( ::myIde )
+            ITEM 'Events    ' name events ACTION Events_click( ::myIde )
+            ITEM 'Interactive Font/Color' ACTION intfoco( 1, ::myIde )
+            ITEM 'Manual Move/Size'  ACTION manualmosi( 1, ::myIde )
             ITEM 'Interactive Move' ACTION MoveControl( ::myIde )
             ITEM 'Keyboard Move' ACTION kMove( ::myIde )
             ITEM 'Interactive Size' ACTION SizeControl()
-                                SEPARATOR
-                                ITEM 'Delete' ACTION DeleteControl()
+            SEPARATOR
+            ITEM 'Delete' ACTION DeleteControl()
          END MENU
 
          @ 420,30 label lop value  "Right Click  -  click or enter to modify Cord" FONT "Calibri" SIZE 9 autosize
          @ 435,30 label lop1 value "More Options" FONT "Calibri" SIZE 9 autosize
 
-           end window
+      END WINDOW
 
+      form_main:Show()
+      cvcControls:Show()
 
-          form_main:show()
-          cvccontrols:show()
-
-
-                ::myIde:form_activated:=.T.
+      ::myIde:form_activated := .T.
 
 ////////// importante añadir el primer elemento
-     myform:ncontrolw++
-     myform:iniarray(myform:nform,myform:ncontrolw,"TEMPLATE",'FORM')
-///     activate window form_1,lista
-activate window lista nowait
-activate window form_1
+      myform:nControlW ++
+      myform:IniArray( myform:nForm, myform:nControlW, "TEMPLATE", 'FORM' )
 
-     EndIf
-Return
+      ACTIVATE WINDOW Lista NOWAIT
+      ACTIVATE WINDOW Form_1
+   ENDIF
+RETURN
 
 *------------------------------------------------------------------------------*
 STATIC FUNCTION ValidaPos( oListaCon )
@@ -1504,7 +1515,8 @@ METHOD NewAgain() CLASS TForm1
          nvh := NIL  ////  myform:nfvirtualh
       endif
 
-      DEFINE WINDOW Form_1 obj Form_1 AT ::myIde:mainheight + 42, 66 ;
+      DEFINE WINDOW Form_1 OBJ Form_1 ;
+         AT ::myIde:mainheight + 42, 66 ;
          WIDTH nfwidth ;
          HEIGHT nfheight ;
          VIRTUAL WIDTH  nvw  ;
@@ -1539,10 +1551,11 @@ METHOD NewAgain() CLASS TForm1
          ON KEY F1 ACTION help_f1('FORMEDIT')
       END WINDOW
 
-      DEFINE WINDOW lista obj lista ;
+      DEFINE WINDOW Lista OBJ Lista ;
          AT 120, 665 ;                                  
-         WIDTH 285 ;
-         HEIGHT 450 + GetTitleHeight() + GetBorderheight() ;
+         WIDTH 300 ;
+         HEIGHT 450 ;
+         CLIENTAREA ;
          TITLE 'Control Inspector' ;
          ICON 'Edit' ;
          CHILD ;
@@ -1550,25 +1563,25 @@ METHOD NewAgain() CLASS TForm1
          NOSIZE ;
          BACKCOLOR ::myIde:asystemcolor
 
-         @ 20, 10 GRID listacon OBJ olistacon ;
-            WIDTH 260 ;
+         @ 20, 10 GRID ListaCon OBJ oListaCon ;
+            WIDTH 280 ;
             HEIGHT 400  ;
-            HEADERS {'Name','row','col','width','height','int-name'} ;
-            WIDTHS {80,40,40,45,50,0 } ;
+            headers {'Name', 'Row', 'Col', 'Width', 'Height', 'int-name'} ;
+            WIDTHS {80, 40, 40, 45, 50, 0 } ;
             FONT "Arial" ;
-            SIZE 10      ;
+            SIZE 10 ;
             INPLACE EDIT ;
-            READONLY {.t.,.f.,.f.,.f.,.f.,.t.}  ;
-            JUSTIFY { ,1,1,1,1, } ;
-            ON GOTFOCUS muestrasino() ;
-            ON EDITCELL validapos(olistacon) ;
-            FULLMOVE
+            READONLY {.T., .F., .F., .F., .F., .T.}  ;
+            JUSTIFY {GRID_JTFY_LEFT, GRID_JTFY_RIGHT, GRID_JTFY_RIGHT, GRID_JTFY_RIGHT, GRID_JTFY_RIGHT, GRID_JTFY_LEFT}  ;
+            FULLMOVE ;
+            ON GOTFOCUS MuestraSiNo() ;
+            ON EDITCELL ValidaPos( oListaCon )
 
-         DEFINE CONTEXT MENU
+         DEFINE CONTEXT MENU CONTROL ListaCon OF Lista
             ITEM 'Properties' ACTION Properties_Click( ::myIde )
-            ITEM 'Events    ' name events ACTION Events_click( ::myIde )
-            ITEM 'Interactive Font/Color' ACTION intfoco( 1, ::myIde )
-            ITEM 'Manual Move/Size'  ACTION manualmosi( 1, ::myIde )
+            ITEM 'Events    ' NAME events ACTION Events_click( ::myIde )
+            ITEM 'Interactive Font/Color' ACTION IntFoco( 1, ::myIde )
+            ITEM 'Manual Move/Size' ACTION ManualMosi( 1, ::myIde )
             ITEM 'Interactive Move' ACTION MoveControl( ::myIde )
             ITEM 'Keyboard Move' ACTION kMove( ::myIde )
             ITEM 'Interactive Size' ACTION SizeControl()
@@ -1882,21 +1895,20 @@ RETURN NIL
 *------------------------------------------------------------------------------*
 METHOD Control_Click( wpar ) CLASS TForm1
 *------------------------------------------------------------------------------*
-if lsi
-    for i:=1 to 29
-        cccontrol:='Control_'+padl(ltrim(str(i,2)),2,'0')
-        lsi:=.F.
-        cvccontrols:&(cccontrol):value:=.F.
-    next i
-    myform:currentcontrol:=wpar
-    cccontrol:='Control_'+padl(ltrim(str(wpar,2)),2,'0')
-    lsi:=.F.
-    cvccontrols:&(cccontrol):value:=.T.
-else
-   lsi:=.T.
-endif
-
-Return nil
+   IF lsi
+      FOR i := 1 TO 29
+         cccontrol := 'Control_' + PadL( LTrim( Str( i, 2 ) ), 2, '0' )
+         lsi := .F.
+         cvccontrols:&(cccontrol):Value := .F.
+      NEXT i
+      myform:CurrentControl := wpar
+      cccontrol := 'Control_' + PadL( LTrim( Str( wpar, 2 ) ), 2, '0' )
+      lsi := .F.
+      cvccontrols:&(cccontrol):Value := .T.
+   ELSE
+      lsi := .T.
+   ENDIF
+RETURN NIL
 
 *------------------------------------------------------------------------------*
 METHOD LeaTipo( cName ) CLASS TForm1
@@ -2214,6 +2226,7 @@ LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aFontColor
       AT nRow, nCol ;
       WIDTH nWidth ;
       HEIGHT nHeight ;
+      NOTABSTOP ;
       ON GOTFOCUS Dibuja( this:name ) ;
       ON CHANGE Dibuja( this:name )
 
@@ -2293,11 +2306,13 @@ STATIC FUNCTION pTab(i)
    cobj:=myform:LeaDato(cName,'OBJ','')
     myform:acobj[i]:=cobj
 
-   DEFINE TAB &cName of form_1 ;
-   AT nrow , ncol ;
-   WIDTH nwidth ;
-   HEIGHT nheight    ;
-   TOOLTIP 'Properties and events right click on header area' ON CHANGE dibuja(this:name)
+   DEFINE TAB &cName OF Form_1 ;
+      AT nrow, ncol ;
+      WIDTH nwidth ;
+      HEIGHT nheight    ;
+      TOOLTIP 'Properties and events right click on header area' ;
+      ON CHANGE Dibuja( This:Name ) ;
+      NOTABSTOP
 
    END TAB
 
@@ -2409,7 +2424,7 @@ LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cValue, cFontName, nFontSize, aF
       VALUE IIF( Empty( cValue ), '   .   .   .   ', cValue ) ;
       BACKCOLOR WHITE ;
       CLIENTEDGE ;
-      ACTION Dibuja( this:name )
+      ACTION Dibuja( This:Name )
    IF Len( cFontName ) > 0
       Form_1:&cName:FontName   := cFontName
    ENDIF
@@ -2520,8 +2535,8 @@ STATIC FUNCTION pForma(i)
    myform:cFBackcolor:=myform:LeaDato('DEFINE WINDOW', 'BACKCOLOR', 'NIL')
    myform:cfcursor:=myform:LeaDato('DEFINE WINDOW','CURSOR','')
 *********ojo aqui
-   myform:cffontname:=myform:Clean( myform:LeaDato('DEFINE WINDOW','FONT','MS Sans Serif'))     // TODO: la fuente por defecto debe ser la de la clase
-   myform:nffontsize:=val(myform:LeaDato('DEFINE WINDOW','SIZE','10'))
+   myform:cffontname:=myform:Clean( myform:LeaDato('DEFINE WINDOW','FONT',''))     // TODO: la fuente por defecto debe ser la de la clase
+   myform:nffontsize:=val(myform:LeaDato('DEFINE WINDOW','SIZE','0'))
    myform:cfnotifyicon:=myform:Clean( myform:LeaDato('DEFINE WINDOW','NOTIFYICON',''))
    myform:cfnotifytooltip:=myform:Clean( myform:LeaDato('DEFINE WINDOW','NOTIFYTOOLTIP',''))
    myform:cfonnotifyclick:=myform:LeaDato('DEFINE WINDOW','ON NOTIFYCLICK','')
@@ -2538,7 +2553,6 @@ STATIC FUNCTION pForma(i)
 
    myform:lfmain:=iif(myform:lfmain='T',.T.,.F.)
    myform:lfmodal:=iif(myform:lfmodal='T',.T.,.F.)
-
 
    form_1:row := nfrow
    form_1:col := nfcol
@@ -2612,16 +2626,16 @@ LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cAction, cToolTip, lBorder, lCli
          WIDTH nWidth ;
          HEIGHT nHeight ;
          VALUE cValue ;
-         ACTION Dibuja( This:Name ) ;
-         RIGHTALIGN
+         RIGHTALIGN ;
+         ACTION Dibuja( This:Name )
    ELSE
       IF lCenterAlign
          @ nRow, nCol LABEL &cName OF Form_1 ;
             WIDTH nWidth ;
             HEIGHT nHeight ;
             VALUE cValue ;
-            ACTION Dibuja( This:Name ) ;
-            CENTERALIGN
+            CENTERALIGN ;
+            ACTION Dibuja( This:Name )
       ELSE
          @ nRow, nCol LABEL &cName OF Form_1 ;
             WIDTH nWidth ;
@@ -2693,7 +2707,12 @@ STATIC FUNCTION pPlayer( i, myIde )
    cobj:=myform:LeaDato(cName,'OBJ','')
     myform:acobj[i]:=cobj
 
-   @ nRow,nCol LABEL &cName OF Form_1 WIDTH nwidth HEIGHT nheight VALUE cName BORDER ACTION dibuja(this:name)
+   @ nRow, nCol LABEL &cName OF Form_1 ;
+      WIDTH nwidth ;
+      HEIGHT nheight ;
+      VALUE cName ;
+      BORDER ;
+      ACTION Dibuja( This:Name )
 
    myform:aenabled[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'ENABLED','.T.')))='.T.',.T.,.F.)
    myform:avisible[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'VISIBLE','.T.')))='.T.',.T.,.F.)
@@ -2731,7 +2750,14 @@ STATIC FUNCTION pSpinner( i, myIde )
 
     myform:acobj[i]:=cobj
 
-   @ nRow,nCol LABEL &cName OF Form_1 WIDTH nwidth HEIGHT nheight VALUE cName ACTION dibuja(this:name) BACKCOLOR WHITE CLIENTEDGE VSCROLL
+   @ nRow,nCol LABEL &cName OF Form_1 ;
+      WIDTH nwidth ;
+      HEIGHT nheight ;
+      VALUE cName ;
+      ACTION Dibuja( This:Name ) ;
+      BACKCOLOR WHITE ;
+      CLIENTEDGE ;
+      VSCROLL
 
    myform:afontname[i]:=cfontname
    IF Len( cFontName ) > 0
@@ -2808,9 +2834,22 @@ STATIC FUNCTION pSlider( i, myIde )
    myform:atooltip[i]:=ctooltip
 
    if lvertical="T"
-      @ nRow,nCol SLIDER &cName OF Form_1 RANGE 1,10 VALUE 5 WIDTH nwidth HEIGHT nheight ON CHANGE dibuja(this:name) NOTABSTOP VERTICAL
+      @ nRow, nCol SLIDER &cName OF Form_1 ;
+         RANGE 1, 10 ;
+         VALUE 5 ;
+         WIDTH nwidth ;
+         HEIGHT nheight ;
+         ON CHANGE Dibuja( This:Name ) ;
+         NOTABSTOP ;
+         VERTICAL
    else
-      @ nRow,nCol SLIDER &cName OF Form_1 RANGE 1,10 VALUE 5 WIDTH nwidth HEIGHT nheight ON CHANGE dibuja(this:name) NOTABSTOP
+      @ nRow, nCol SLIDER &cName OF Form_1 ;
+         RANGE 1, 10 ;
+         VALUE 5 ;
+         WIDTH nwidth ;
+         HEIGHT nheight ;
+         ON CHANGE Dibuja( This:Name ) ;
+         NOTABSTOP
    endif
 
    myform:aenabled[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'ENABLED','.T.')))='.T.',.T.,.F.)
@@ -2868,7 +2907,12 @@ STATIC FUNCTION pProgressbar( i, myIde )
    myform:atooltip[i]:=ctooltip
 
 
-   @ nrow,ncol LABEL &cName OF Form_1 WIDTH nwidth HEIGHT nheight VALUE cName BORDER ACTION dibuja(this:name)
+   @ nrow,ncol LABEL &cName OF Form_1 ;
+      WIDTH nwidth ;
+      HEIGHT nheight ;
+      VALUE cName ;
+      BORDER ;
+      ACTION Dibuja( This:Name )
 
    myform:aenabled[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'ENABLED','.T.')))='.T.',.T.,.F.)
    myform:avisible[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'VISIBLE','.T.')))='.T.',.T.,.F.)
@@ -2933,7 +2977,12 @@ STATIC FUNCTION pRadiogroup( i, myIde )
    litems:=len(&citems)
     myform:acobj[i]:=cobj
 
-   @ nRow,nCol LABEL &cName OF Form_1 WIDTH nwidth HEIGHT nspacing*litems+8 VALUE cName BORDER ACTION dibuja(this:name)
+   @ nRow, nCol LABEL &cName OF Form_1 ;
+      WIDTH nwidth ;
+      HEIGHT nspacing * litems + 8 ;
+      VALUE cName ;
+      BORDER ;
+      ACTION Dibuja( This:Name )
 
    myform:afontname[i]:=cfontname
    IF Len( cFontName ) > 0
@@ -3094,7 +3143,13 @@ STATIC FUNCTION pRichedit( i, myIde )
    cobj:=myform:LeaDato(cName,'OBJ','')
     myform:acobj[i]:=cobj
 
-   @ nRow,nCol LABEL &cName OF Form_1 WIDTH nwidth HEIGHT nheight VALUE cName BACKCOLOR WHITE CLIENTEDGE  ACTION dibuja(this:name)
+   @ nRow, nCol LABEL &cName OF Form_1 ;
+      WIDTH nwidth ;
+      HEIGHT nheight ;
+      VALUE cName ;
+      BACKCOLOR WHITE ;
+      CLIENTEDGE ;
+      ACTION Dibuja( This:Name )
 
    myform:areadonly[i]:=iif(lreadonly='T',.T.,.F.)
    myform:abreak[i]:=iif(lbreak='T',.T.,.F.)
@@ -3186,7 +3241,7 @@ STATIC FUNCTION pFrame( i, myIde )
          CAPTION cCaption ;
          WIDTH nWidth ;
          HEIGHT nHeight ;
-         TRANSPARENT  
+         TRANSPARENT
    ENDIF
    IF Len( cFontName ) > 0
       Form_1:&cName:FontName   := cFontName
@@ -3284,7 +3339,16 @@ STATIC FUNCTION pBrowse( i, myIde )
    cobj:=myform:LeaDato(cName,'OBJ','')
     myform:acobj[i]:=cobj
 
-   @ nRow,nCol GRID &cName OF Form_1 WIDTH nwidth HEIGHT nheight  HEADERS {  cName,'' }  WIDTHS { 100,60 } ITEMS { { "" ,"" } }  TOOLTIP 'Properties and events right click on header area' ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name)
+   @ nRow,nCol GRID &cName OF Form_1 ;
+      WIDTH nwidth ;
+      HEIGHT nheight ;
+      HEADERS { cName, '' } ;
+      WIDTHS { 100, 60 } ;
+      ITEMS { { "", "" } } ;
+      TOOLTIP 'Properties and events right click on header area' ;
+      NOTABSTOP ;
+      ON GOTFOCUS Dibuja( This:Name ) ;
+      ON CHANGE Dibuja( This:Name )
 
    myform:aheaders[i]:=cheaders
    myform:awidths[i]:=cwidths
@@ -3402,7 +3466,16 @@ STATIC FUNCTION pGrid( i, myIde )
    ledit:=iif(ledit='T',.T.,.F.)
    lbreak:=iif(lbreak='T',.T.,.F.)
 
-   @ nRow,nCol GRID &cName OF Form_1 WIDTH nwidth HEIGHT nheight  HEADERS {  cName,'' }  WIDTHS { 100,60 } ITEMS { { "" ,"" } }  TOOLTIP 'Properties and events right click on header area' ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name)
+   @ nRow, nCol GRID &cName OF Form_1 ;
+      WIDTH nwidth ;
+      HEIGHT nheight ;
+      HEADERS { cName, '' } ;
+      WIDTHS { 100, 60 } ;
+      ITEMS { { "", "" } } ;
+      TOOLTIP 'Properties and events right click on header area' ;
+      NOTABSTOP ;
+      ON GOTFOCUS Dibuja( This:Name ) ;
+      ON CHANGE Dibuja( This:Name )
 
    myform:aheaders[i]:=cheaders
    myform:awidths[i]:=cwidths
@@ -3496,7 +3569,11 @@ STATIC FUNCTION pDatepicker( i, myIde )
     myform:acobj[i]:=cobj
 
 
-   @ nRow,nCol DATEPICKER &cName OF Form_1 WIDTH nwidth ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name) NOTABSTOP
+   @ nRow, nCol DATEPICKER &cName OF Form_1 ;
+      WIDTH nwidth ;
+      ON GOTFOCUS dibuja(this:name) ;
+      ON CHANGE dibuja(this:name) ;
+      NOTABSTOP
 
    myform:avalue[i]:=cvalue
 
@@ -3748,7 +3825,7 @@ LOCAL cName, cObj, nWidth, nHeight, cFile, lAutoplay, lCenter, lTrans, nHelpid, 
       HEIGHT nHeight ;
       VALUE cName ;
       BORDER ;
-      ACTION Dibuja( this:name )
+      ACTION Dibuja( This:Name )
    Form_1:&cName:ToolTip := cToolTip
 
    // Save properties
@@ -3850,11 +3927,23 @@ STATIC FUNCTION pPicButt( i, myIde )
 
    cauxfile:=cpicture+'.BMP'              // TODO: Check
     myform:acobj[i]:=cobj
-   if file(cauxfile)
-      @ nrow,ncol Button &cName OF Form_1 PICTURE cauxfile  WIDTH nwidth HEIGHT nheight ON GOTFOCUS dibuja(this:name) NOTABSTOP
-    else
-       @ nrow,ncol Button &cName OF Form_1 PICTURE 'A4'  WIDTH nwidth HEIGHT nheight ON GOTFOCUS dibuja(this:name) NOTABSTOP
-   endif
+   IF File(cauxfile)
+      @ nRow, nCol BUTTON &cName OF Form_1 ;
+         PICTURE cAuxFile ;
+         WIDTH nWidth ;
+         HEIGHT nHeight ;
+         ON GOTFOCUS Dibuja( This:Name ) ;
+         ACTION Dibuja( This:Name ) ;
+         NOTABSTOP
+   ELSE
+      @ nRow, nCol BUTTON &cName OF Form_1 ;
+         PICTURE 'A4' ;
+         WIDTH nWidth ;
+         HEIGHT nHeight ;
+         ON GOTFOCUS Dibuja( This:Name ) ;
+         ACTION Dibuja( This:Name ) ;
+         NOTABSTOP
+   ENDIF
 
    myform:aenabled[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'ENABLED','.T.')))='.T.',.T.,.F.)
    myform:avisible[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'VISIBLE','.T.')))='.T.',.T.,.F.)
@@ -3900,9 +3989,21 @@ STATIC FUNCTION pPicCheckButt( i, myIde )
     myform:acobj[i]:=cobj
 
    if file(cauxfile)
-      @ nRow,nCol CHECKBUTTON &cName OF Form_1 PICTURE cauxfile WIDTH nwidth HEIGHT nheight ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name) NOTABSTOP
+      @ nRow, nCol CHECKBUTTON &cName OF Form_1 ;
+         PICTURE cauxfile ;
+         WIDTH nwidth ;
+         HEIGHT nheight ;
+         ON GOTFOCUS Dibuja( This:Name ) ;
+         ON CHANGE Dibuja( This:Name ) ;
+         NOTABSTOP
    else
-      @ nRow,nCol CHECKBUTTON &cName OF Form_1 PICTURE 'A4' WIDTH nwidth HEIGHT nheight ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name) NOTABSTOP
+      @ nRow, nCol CHECKBUTTON &cName OF Form_1 ;
+         PICTURE 'A4' ;
+         WIDTH nwidth ;
+         HEIGHT nheight ;
+         ON GOTFOCUS Dibuja( This:Name ) ;
+         ON CHANGE Dibuja( This:Name ) ;
+         NOTABSTOP
    endif
 
    myform:aenabled[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'ENABLED','.T.')))='.T.',.T.,.F.)
@@ -3951,7 +4052,14 @@ STATIC FUNCTION pCheckBtn( i, myIde )
    cobj:=myform:LeaDato(cName,'OBJ','')
     myform:acobj[i]:=cobj
 
-   @ nRow,nCol CHECKBUTTON &cName OF Form_1 CAPTION Ccaption WIDTH nwidth HEIGHT nheight VALUE lvaluelaux ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name) NOTABSTOP
+   @ nRow, nCol CHECKBUTTON &cName OF Form_1 ;
+      CAPTION Ccaption ;
+      WIDTH nwidth ;
+      HEIGHT nheight ;
+      VALUE lvaluelaux ;
+      ON GOTFOCUS Dibuja( This:Name ) ;
+      ON CHANGE Dibuja( This:Name ) ;
+      NOTABSTOP
 
    myform:afontname[i]:=cfontname
    IF Len( cFontName ) > 0
@@ -4028,9 +4136,15 @@ STATIC FUNCTION pComboBox( i, myIde )
    cOnenter:=myform:LeaDato(cName,'ON ENTER','')
    cOndisplaychange:=myform:LeaDato(cName,'ON DISPLAYCHANGE','')
    cobj:=myform:LeaDato(cName,'OBJ','')
-    myform:acobj[i]:=cobj
+   myform:acobj[i]:=cobj
 
-  @ nRow,nCol COMBOBOX &cName OF Form_1 WIDTH nwidth ITEMS { cName,' ' } VALUE 1 ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name) NOTABSTOP
+   @ nRow, nCol COMBOBOX &cName OF Form_1 ;
+      WIDTH nwidth ;
+      ITEMS { cName, ' ' } ;
+      VALUE 1 ;
+      ON GOTFOCUS Dibuja( This:Name ) ;
+      ON CHANGE Dibuja( This:Name ) ;
+      NOTABSTOP
 
    myform:afontname[i]:=cfontname
    IF Len( cFontName ) > 0
@@ -4111,7 +4225,13 @@ STATIC FUNCTION pListBox( i, myIde )
    cobj:=myform:LeaDato(cName,'OBJ','')
    myform:acobj[i]:=cobj
 
-   @ nRow,nCol LISTBOX &cName OF Form_1 WIDTH nwidth HEIGHT nheight ITEMS {cName} ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name) NOTABSTOP
+   @ nRow, nCol LISTBOX &cName OF Form_1 ;
+      WIDTH nwidth ;
+      HEIGHT nheight ;
+      ITEMS {cName} ;
+      ON GOTFOCUS Dibuja( This:Name ) ;
+      ON CHANGE Dibuja( This:Name ) ;
+      NOTABSTOP
 
    myform:atooltip[i]:=ctooltip
 
@@ -4193,7 +4313,14 @@ STATIC FUNCTION pCheckBox( i, myIde )
    cobj:=myform:LeaDato(cName,'OBJ','')
     myform:acobj[i]:=cobj
 
-   @ nRow,nCol CHECKBOX &cName OF Form_1 CAPTION Ccaption WIDTH nwidth HEIGHT nheight VALUE lvaluelaux FONT cfontname SIZE nfontsize ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name) NOTABSTOP
+   @ nRow, nCol CHECKBOX &cName OF Form_1 ;
+      CAPTION Ccaption ;
+      WIDTH nwidth ;
+      HEIGHT nheight ;
+      VALUE lvaluelaux ;
+      ON GOTFOCUS Dibuja( This:Name ) ;
+      ON CHANGE Dibuja( This:Name ) ;
+      NOTABSTOP
 
    myform:afontname[i]:=cfontname
    IF Len( cFontName ) > 0
@@ -4271,7 +4398,13 @@ STATIC FUNCTION pButton( i, myIde )
    cOnlostfocus:=myform:LeaDato(cName,'ON LOSTFOCUS','')
    cobj:=myform:LeaDato(cName,'OBJ','')
 
-@ nrow,ncol Button &cName OF Form_1 CAPTION cCaption  WIDTH nwidth HEIGHT nheight ON GOTFOCUS dibuja(this:name) NOTABSTOP
+   @ nrow, ncol Button &cName OF Form_1 ;
+      CAPTION cCaption ;
+      WIDTH nwidth ;
+      HEIGHT nheight ;
+      ON GOTFOCUS Dibuja( This:Name ) ;
+      ACTION Dibuja( This:Name ) ;
+      NOTABSTOP
 
    myform:afontname[i]:=cfontname
    IF Len( cFontName ) > 0
@@ -4396,7 +4529,13 @@ STATIC FUNCTION pTextBox( i, myIde )
 
    lrightalign:=iif(lrightalign='T',.T.,.F.)
 
-   @ nRow,nCol LABEL &cName OF Form_1 WIDTH nWidth HEIGHT nHeight VALUE "" ACTION dibuja(this:name) FONT cfontname SIZE nfontsize BACKCOLOR WHITE CLIENTEDGE
+   @ nRow, nCol LABEL &cName OF Form_1 ;
+      WIDTH nWidth ;
+      HEIGHT nHeight ;
+      VALUE "" ;
+      ACTION Dibuja( This:Name ) ;
+      BACKCOLOR WHITE ;
+      CLIENTEDGE
 
    myform:afontname[i]:=cfontname
    IF Len( cFontName ) > 0

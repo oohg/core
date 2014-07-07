@@ -1,5 +1,5 @@
 /*
- * $Id: i_hmg_compat.ch,v 1.32 2014-06-06 00:55:42 fyurisich Exp $
+ * $Id: i_hmg_compat.ch,v 1.33 2014-07-07 01:51:43 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -283,8 +283,8 @@
       [ <flat: FLAT> ] ;
       [ <notrans: NOLOADTRANSPARENT > ] ;
       [ <noxpstyle: NOXPSTYLE > ] ;                              
-      [ ON GOTFOCUS <gotfocus> ] ;
-      [ ON LOSTFOCUS <lostfocus> ] ;
+      [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
+      [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
       [ <notabstop: NOTABSTOP> ] ;
       [ HELPID <helpid> ] ;
       [ <invisible: INVISIBLE> ] ;
@@ -321,8 +321,8 @@
             [ <strikeout> ] ;
             [ TOOLTIP <tooltip> ] ;
             [ <flat> ] ;
-            [ ON GOTFOCUS <gotfocus> ] ;
-            [ ON LOSTFOCUS <lostfocus> ] ;
+      [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
+            [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
             [ <notabstop> ] ;
             [ HELPID <helpid> ]       ;
             [ <invisible> ] ;
@@ -386,10 +386,10 @@ TODO:
       [ <lowercase: LOWERCASE> ] ;
       [ <numeric: NUMERIC> ] ;
       [ <password: PASSWORD> ] ;
-      [ ON CHANGE <change> ] ;
-      [ ON GOTFOCUS <gotfocus> ] ;
-      [ ON LOSTFOCUS <lostfocus> ] ;
-      [ ON ENTER <enter> ] ;
+      [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
+      [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
+      [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
+      [ <dummy11: ONENTER, ON ENTER> <enter> ] ;
       [ <rightalign: RIGHTALIGN> ] ;
       [ <invisible: INVISIBLE> ] ;
       [ <notabstop: NOTABSTOP> ] ;
@@ -430,10 +430,10 @@ TODO:
             [ <uppercase> ] ;
             [ <lowercase> ] ;
             [ <password> ] ;
-            [ ON CHANGE <change> ] ;
-            [ ON GOTFOCUS <gotfocus> ] ;
-            [ ON LOSTFOCUS <lostfocus> ] ;
-            [ ON ENTER <enter> ] ;
+            [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
+      [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
+            [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
+            [ <dummy11: ONENTER, ON ENTER> <enter> ] ;
             [ <rightalign> ] ;
             [ <invisible> ] ;
             [ <notabstop> ] ;

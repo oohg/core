@@ -1,5 +1,5 @@
 /*
- * $Id: i_checkbox.ch,v 1.9 2013-05-25 14:37:09 fyurisich Exp $
+ * $Id: i_checkbox.ch,v 1.10 2014-07-07 01:51:43 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -92,40 +92,41 @@
 ---------------------------------------------------------------------------*/
 
 #command @ <row>,<col> CHECKBOX <name> ;
-         [ OBJ <obj> ] ;
-         [ <dummy1: OF, PARENT> <parent> ] ;
-         [ CAPTION <caption> ] ;
-         [ WIDTH <w> ] ;
-         [ HEIGHT <h> ] ;
-         [ FIELD <field> ]   ;
-         [ VALUE <value> ] ;
-         [ FONT <f> ] ;
-         [ SIZE <n> ] ;
-         [ <bold : BOLD> ] ;
-         [ <italic : ITALIC> ] ;
-         [ <underline : UNDERLINE> ] ;
-         [ <strikeout : STRIKEOUT> ] ;
-         [ TOOLTIP <tooltip> ] ;
-         [ BACKCOLOR <backcolor> ] ;
-         [ FONTCOLOR <fontcolor> ] ;
-         [ ON GOTFOCUS <gotfocus> ] ;
-         [ ON CHANGE <change> ] ;
-         [ ON LOSTFOCUS <lostfocus> ] ;
-         [ <transparent: TRANSPARENT> ] ;
-         [ HELPID <helpid> ] ;
-         [ <invisible: INVISIBLE> ] ;
-         [ <notabstop: NOTABSTOP> ] ;
-         [ <autosize: AUTOSIZE > ] ;
-         [ <disabled: DISABLED > ] ;
-         [ SUBCLASS <subclass> ] ;
-         [ <rtl: RTL> ] ;
-         [ <threestate : THREESTATE> ] ;
-         [ <leftalign: LEFTALIGN> ] ;
-         [ <themed : THEMED> ] ;
-   =>;
-         [ <obj> := ] _OOHG_SelectSubClass( TCheckBox(), [ <subclass>() ] ): ;
-               Define( <(name)>, <(parent)>, <col>, <row>, <caption>, <value>, <f>, <n>, ;
-               <tooltip>, <{change}>, [<w>], [<h>], <{lostfocus}>, <{gotfocus}>, <helpid>, ;
-               <.invisible.>, <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
-               <(field)>, <backcolor>, <fontcolor>, <.transparent.>, <.autosize.>, <.rtl.>, ;
-               <.disabled.>, <.threestate.>, <.leftalign.>, <.themed.> )
+      [ OBJ <obj> ] ;
+      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ CAPTION <caption> ] ;
+      [ WIDTH <w> ] ;
+      [ HEIGHT <h> ] ;
+      [ FIELD <field> ] ;
+      [ VALUE <value> ] ;
+      [ FONT <f> ] ;
+      [ SIZE <n> ] ;
+      [ <bold : BOLD> ] ;
+      [ <italic : ITALIC> ] ;
+      [ <underline : UNDERLINE> ] ;
+      [ <strikeout : STRIKEOUT> ] ;
+      [ TOOLTIP <tooltip> ] ;
+      [ BACKCOLOR <backcolor> ] ;
+      [ FONTCOLOR <fontcolor> ] ;
+      [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
+      [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
+      [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
+      [ <transparent: TRANSPARENT> ] ;
+      [ HELPID <helpid> ] ;
+      [ <invisible: INVISIBLE> ] ;
+      [ <notabstop: NOTABSTOP> ] ;
+      [ <autosize: AUTOSIZE > ] ;
+      [ <disabled: DISABLED > ] ;
+      [ SUBCLASS <subclass> ] ;
+      [ <rtl: RTL> ] ;
+      [ <threestate : THREESTATE> ] ;
+      [ <leftalign: LEFTALIGN> ] ;
+      [ <themed : THEMED> ] ;
+   => ;
+      [ <obj> := ] _OOHG_SelectSubClass( TCheckBox(), [ <subclass>() ] ): ;
+            Define( <(name)>, <(parent)>, <col>, <row>, <caption>, <value>, ;
+            <f>, <n>, <tooltip>, <{change}>, [<w>], [<h>], <{lostfocus}>, ;
+            <{gotfocus}>, <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, ;
+            <.italic.>, <.underline.>, <.strikeout.>, <(field)>, <backcolor>, ;
+            <fontcolor>, <.transparent.>, <.autosize.>, <.rtl.>, <.disabled.>, ;
+            <.threestate.>, <.leftalign.>, <.themed.> )

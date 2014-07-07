@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.255 2014-07-06 15:29:41 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.256 2014-07-07 01:51:43 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2615,7 +2615,7 @@ Local lvc, _ThisQueryTemp, nvkey, uValue, lGo, aItem
       EndIf
 
       // fire context menu
-      If ::ContextMenu != Nil .AND. ::RClickOnCheckbox
+      If ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. uValue <= 0 )
          ::ContextMenu:Activate()
       EndIf
 
@@ -3437,8 +3437,6 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                 bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
                 lFixedCtrls, bHeadRClick ) CLASS TGridByCell
 *-----------------------------------------------------------------------------*
-Local nStyle := LVS_SINGLESEL
-
    ASSIGN lFocusRect VALUE lFocusRect TYPE "L" DEFAULT .F.
 
    ::Super:Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;

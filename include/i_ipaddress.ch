@@ -1,5 +1,5 @@
 /*
- * $Id: i_ipaddress.ch,v 1.5 2014-06-29 23:42:06 fyurisich Exp $
+ * $Id: i_ipaddress.ch,v 1.6 2014-07-07 01:51:43 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -104,9 +104,9 @@
       [ <underline : UNDERLINE> ] ;
       [ <strikeout : STRIKEOUT> ] ;
       [ TOOLTIP <tooltip> ] ;
-      [ ON CHANGE <change> ] ;
-      [ ON GOTFOCUS <gotfocus> ] ;
-      [ ON LOSTFOCUS <lostfocus> ] ;
+      [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
+      [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
+      [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
       [ HELPID <helpid> ] ;
       [ <invisible : INVISIBLE> ] ;
       [ <notabstop : NOTABSTOP> ] ;

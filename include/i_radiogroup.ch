@@ -1,5 +1,5 @@
 /*
- * $Id: i_radiogroup.ch,v 1.8 2014-04-30 02:36:23 fyurisich Exp $
+ * $Id: i_radiogroup.ch,v 1.9 2014-07-07 01:51:43 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -107,7 +107,7 @@
             [ TOOLTIP <tooltip> ] ;
             [ BACKCOLOR <backcolor> ] ;
             [ FONTCOLOR <fontcolor> ] ;
-            [ ON CHANGE <change> ] ;
+            [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
             [ <transparent: TRANSPARENT> ] ;
             [ HELPID <helpid> ] ;
             [ <invisible : INVISIBLE> ] ;
