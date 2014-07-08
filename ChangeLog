@@ -1,11 +1,48 @@
 /*
- * $Id: ChangeLog,v 1.1311 2014-07-07 02:08:23 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1312 2014-07-08 03:02:37 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-07-08 00:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_form.prg
+   * include/i_window.ch
+     + FONTCOLOR clause to DEFINE WINDOW.
+   * manual/tprint.html
+     * Updated.
+   * ide/prgs/formedit.prg
+     + DATA cFFontColor.
+     * DATA cFFontName inital value.
+     * DATA nFFontSize inital value.
+     - METHOD FillControlAux.
+     - Comments.
+     - Unused code.
+     * New forms are created using the preferred font/size/color
+       or OOHG's default.
+     * Control inspector message.
+     ! Error loading toolbar.
+     + FONTCOLOR clause recognition when loading DEFINE WINDOW.
+   * ide/fmgs/form_prefer.fmg
+     + Default font for newly created forms to Preferences/Other.
+     - Unneeded code.
+   * ide/prgs/mgide.prg
+     * Format.
+     + Default font for newly created forms to Preferences/Other.
+     - PUBLIC whlp.
+     + DATA cFormDefFontName INIT 'MS Sans Serif'.
+     + DATA nFormDefFontSize INIT 10.
+     + DATA cFormDefFontColor INIT '{0, 0, 0}'.
+     + New DATAs to INI file.
+     + Default font for newly created forms to Preferences/Other.
+     + Functions GetPreferredFont and ResetPreferredFont.
+   * ide/prgs/intfocop.prg
+     + TO*DO.
+   * ide/prgs/saveform.prg
+     * Do not force form's size to 10 if it's NIL.
+     + Save FONTCOLOR clause for forms.
 
 2014-07-06 23:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * manual/classes.htm

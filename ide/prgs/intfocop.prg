@@ -1,5 +1,5 @@
 /*
- * $Id: intfocop.prg,v 1.4 2014-07-06 15:29:41 fyurisich Exp $
+ * $Id: intfocop.prg,v 1.5 2014-07-08 03:02:41 fyurisich Exp $
  */
 
 #include 'oohg.ch'
@@ -87,7 +87,7 @@ FUNCTION GFontT( si )
 LOCAL cName, aFont, nRed, nGreen, nBlue
 
    IF si == 0
-      aFont := GetFont( myForm:cFFontName, myForm:nFFontSize, .F. , .F. , {0, 0, 0} , .F., .F., 0 )
+      aFont := GetFont( myForm:cFFontName, myForm:nFFontSize, .F. , .F. , {0, 0, 0} , .F., .F., 0 ) // TODO: revisar fuentes
    ELSE
       cName := myForm:aControlW[si]
       nFontColor := myForm:aFontColor[si]

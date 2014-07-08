@@ -1,5 +1,5 @@
 /*
- * $Id: i_window.ch,v 1.51 2014-07-07 01:51:43 fyurisich Exp $
+ * $Id: i_window.ch,v 1.52 2014-07-08 03:02:41 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -195,6 +195,7 @@
       [ ON PAINT <PaintProcedure> ] ;
       [ BACKCOLOR <backcolor> ] ;
       [ FONT <FontName> SIZE <FontSize> ] ;
+      [ FONTCOLOR <FontColor> ] ;
       [ NOTIFYICON <NotifyIcon> ] ;
       [ NOTIFYTOOLTIP <NotifyIconTooltip> ] ;
       [ ON NOTIFYCLICK <NotifyLeftClick> ] ;
@@ -243,7 +244,7 @@
             <{MClickProcedure}>, <{DblClickProcedure}>, ;
             <{RDblClickProcedure}>, <{MDblClickProcedure}>, <minwidth>, ;
             <maxwidth>, <minheight>, <maxheight>, <{MoveProcedure}>, ;
-            <backimage>, <.stretch.> ) ;;
+            <backimage>, <.stretch.>, <FontColor> ) ;;
       DECLARE WINDOW <w>
 
 #xcommand LOAD WINDOW <w> ;
@@ -364,6 +365,7 @@
       [ ON PAINT <PaintProcedure> ] ;
       [ BACKCOLOR <backcolor> ] ;
       [ FONT <FontName> SIZE <FontSize> ] ;
+      [ FONTCOLOR <FontColor> ] ;
       [ NOTIFYICON <NotifyIcon> ] ;
       [ NOTIFYTOOLTIP <NotifyIconTooltip> ] ;
       [ ON NOTIFYCLICK <NotifyLeftClick> ] ;
@@ -412,7 +414,7 @@
             <{MClickProcedure}>, <{DblClickProcedure}>, ;
             <{RDblClickProcedure}>, <{MDblClickProcedure}>, <minwidth>, ;
             <maxwidth>, <minheight>, <maxheight>, <{MoveProcedure}>, ;
-            <backimage>, <.stretch.> )
+            <backimage>, <.stretch.>, <FontColor> )
 
 ////////////////////////////////////////////////////////////
 // Set AutoAdjust

@@ -1,5 +1,5 @@
 <!--
-$Id: TPRINT.HTM,v 1.4 2014-06-23 22:17:33 fyurisich Exp $
+$Id: TPRINT.HTM,v 1.5 2014-07-08 03:02:41 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -319,11 +319,6 @@ The general procedure to use this class is:
             Defaults to &quot;Page_&quot; + page_number.
             For EXCELPRINT and CALCPRINT: the page name is used as
             caption for the sheet.
-
-  xxx
-   METHOD CondenDos              BLOCK { || NIL }
-   METHOD NormalDos              BLOCK { || NIL }
-   METHOD SetBarColor
 
 <b>::EndPage()</b>
 
@@ -831,12 +826,26 @@ The general procedure to use this class is:
 
 <p><u>Other methods</u>:
 
+<b>::CondenDos()</b>
+
+  Sets the printer to condensed mode.
+
+  Notes:
+    Applies only to DOSPRINT mode.
+
 <b>::GetDefPrinter()</b>
 
   Gets the name of the default printer.
 
   Notes:
     Applies only to MINIPRINT and HBPRINTER modes.
+
+<b>::NormalDos()</b>
+
+  Sets the printer to normal mode.
+
+  Notes:
+    Applies only to DOSPRINT mode.
 
 <b>::PrintMode()</b>
 
@@ -861,6 +870,17 @@ The general procedure to use this class is:
   copying it to the printer specified by DATA cPrinter, using
   Windows WritePrinter function.
 
+<b>::SetBarColor( aColor )</b>
+
+  Sets the default color for barcodes.
+
+  Parameters:
+    aColor = color ({nRed, nGreen, nBlue}).
+             Defaults to almost BLACK ({1, 1, 1}).
+
+  Notes:
+    This method sets the DATA aBarColor.
+
 <b>::SetColor( aColor )</b>
 
   Sets the default color for text, lines and rectangles.
@@ -884,6 +904,16 @@ The general procedure to use this class is:
     The desired number of CPL is achieved by the setting of the default
     size of the font (DATA nFontSize) to 14, 12, 10, 8, 7 and 6 points
     respectively.
+
+<b>::SetDosPort( cPort )</b>
+
+  Sets the DOS port to use for printing.
+
+  Parameters:
+    cPort = PRN, LPT1: to LPT6: and system's local ports.
+
+  Notes:
+    Applies only to DOSPRINT mode.
 
 <b>::SetFont( cFont, nSize, aColor, lBold, lItalic, nAngle, lUnder, lStrike, nWidth )</b>
 
@@ -912,6 +942,28 @@ The general procedure to use this class is:
   Notes:
     Search MSDN for CreateFont function to learn more about fonts.
 
+<b>::SetFontType( nFontType )</b>
+
+  Sets the default weight of the letter for a page.
+
+  Parameters:
+    nFontType = 0 for normal weight, 1 for bold.
+
+  Notes:
+    Applies only to PDFPRINT mode.
+
+<b>::SetIndentation( lIndentation )</b>
+
+  Sets the indentation mode when printing the RichValue of a RichEditBox.
+  Parameters:
+    lIndentation = when .T. and the RichValue contains more than one
+                   line, all lines are placed at the column specified
+                   in the PrintData call. When .F., subsequent lines
+                   are placed at column 0.
+
+  Notes:
+    Applies only to TRTFPRINT mode.
+
 <b>::SetLMargin( nLMar )</b>
 
   Sets the left margin for printed lines.
@@ -936,6 +988,23 @@ The general procedure to use this class is:
 
   Parameters:
     lMode = .T. for nFontSize, .F. for 10 points (default).
+
+<b>::SetRawPrinter( cPrinter )</b>
+
+  Sets the printer queue to use when printing through the spooler.
+
+  Parameters:
+    cPrinter = name of a printer managed by the system's spool.
+
+  Notes:
+    Applies only to RAWPRINT mode.
+
+<b>::SetSeparateSheet( lSeparateSheets )</b>
+
+  Sets the use of a different sheet for each page in the document.
+
+  Notes:
+    Applies only to EXCELPRINT and CALCPRINT.
 
 <b>::SetShowErrors( lShow )</b>
 
@@ -965,9 +1034,52 @@ The general procedure to use this class is:
 
 <p><u>Datas</u>:
 
-<b>::aColor</b>
+   All the datas are READONLY.
 
-   TODO: explain important datas.
+                                 <u>Initial value</u>              <u>Notes</u>
+
+   <b>::aBarColor</b>         {1, 1, 1}                            brush color for barcodes
+   <b>::aColor</b>            {0, 0, 0}                            brush color
+   <b>::aFontColor</b>        {0, 0, 0}                            font color
+   <b>::aPageNames</b>        {}                                   page's names
+   <b>::aPorts</b>            {}                                   available printing ports
+   <b>::aPrinters</b>         {}                                   available printers
+   <b>::Cargo</b>             "list"                               document's name without extension
+   <b>::cDocument</b>         ""                                   document's name with extension
+   <b>::cFontName</b>         "Courier New"                        font name
+   <b>::cPageName</b>         ""                                   current page name
+   <b>::cPort</b>             "PRN"                                currently selected port
+   <b>::cPrinter</b>          ""                                   currently selected printer
+   <b>::cPrintLibrar</b>y     "HBPRINTER"                          currently selected printer mode
+   <b>::cTempFile</b>         TEMP_FILE_NAME
+   <b>::cUnits</b>            "ROWCOL"                             currently selected printing units
+   <b>::cVersion</b>          "(oohg-tprint)V 4.10"                library's current version
+   <b>::ImPreview</b>         .T.
+   <b>::lFontBold</b>         .F.
+   <b>::lFontItalic</b>       .F.
+   <b>::lFontStrikeout</b>    .F.
+   <b>::lFontUnderline</b>    .F.
+   <b>::lIndentAll</b>        .F.                                  Indent RicheEdit lines
+   <b>::lLandscape</b>        .F.                                  Page orientation
+   <b>::lPrError</b>          .F.
+   <b>::lProp</b>             .F.
+   <b>::lSaveTemp</b>         .F.
+   <b>::lSeparateSheets</b>   .T.
+   <b>::lShowErrors</b>       .T.
+   <b>::lWinHide</b>          .F.
+   <b>::nFontAngle</b>        0
+   <b>::nFontSize</b>         12
+   <b>::nFontType</b>         1
+   <b>::nFontWidth</b>        0
+   <b>::nhFij</b>             ( 12 / 3.70 )
+   <b>::nLinPag</b>           0
+   <b>::nLMargin</b>          0
+   <b>::nmHor</b>             ( 10 / 4.75 )
+   <b>::nmVer</b>             ( 10 / 2.35 )
+   <b>::nTMargin</b>          0
+   <b>::nUnitsLin</b>         1
+   <b>::nvFij</b>             ( 12 / 1.65 )
+   <b>::nwPen</b>             0.1                                  pen width in MM, do not exceed 1
 
 </PRE>
 </span>

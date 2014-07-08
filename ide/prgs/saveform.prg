@@ -1,5 +1,5 @@
 /*
- * $Id: saveform.prg,v 1.8 2014-07-06 19:37:51 fyurisich Exp $
+ * $Id: saveform.prg,v 1.9 2014-07-08 03:02:41 fyurisich Exp $
  */
 
 /////#include 'oohg.ch'
@@ -108,13 +108,14 @@ LOCAL swpop, lDeleted, archivo, signiv, niv, nnivaux, nSpacing := 3
    IF myForm:cfbackcolor # 'NIL' .AND. Len( myForm:cfbackcolor ) > 0
       Output += ' ;' + CRLF + Space( nSpacing ) + 'BACKCOLOR ' + AllTrim( myForm:cfbackcolor )
    ENDIF
-   IF Len( myForm:cffontname ) > 0
-      Output += ' ;' + CRLF + Space( nSpacing ) + 'FONT ' + "'" + AllTrim( myForm:cffontname ) + "'"
+   IF Len( myForm:cFFontName ) > 0
+      Output += ' ;' + CRLF + Space( nSpacing ) + 'FONT ' + "'" + AllTrim( myForm:cFFontName ) + "'"
    ENDIF
-   IF myForm:nffontsize > 0
-      Output += ' ;' + CRLF + Space( nSpacing ) + 'SIZE ' + LTrim( Str( myForm:nffontsize ) )
-   ELSE
-      Output += ' ;' + CRLF + Space( nSpacing ) + 'SIZE ' + LTrim( Str( 10 ) )
+   IF myForm:nFFontSize > 0
+      Output += ' ;' + CRLF + Space( nSpacing ) + 'SIZE ' + LTrim( Str( myForm:nFFontSize ) )
+   ENDIF
+   IF myForm:cFFontColor # 'NIL'
+      Output += ' ;' + CRLF + Space( nSpacing ) + 'FONTCOLOR ' + AllTrim( myForm:cFFontColor )
    ENDIF
    Output += IIF( myForm:lfgrippertext, ' ;' + CRLF + Space( nSpacing ) + 'GRIPPERTEXT ', '' )
    IF Len( myForm:cfnotifyicon ) > 0

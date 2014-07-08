@@ -1,5 +1,5 @@
 /*
- * $Id: mgide.prg,v 1.8 2014-07-04 20:16:02 fyurisich Exp $
+ * $Id: mgide.prg,v 1.9 2014-07-08 03:02:41 fyurisich Exp $
  */
 
 #include "oohg.ch"
@@ -21,7 +21,6 @@
 Function Main( rtl1 )
 //------------------------------------------------------------------------------
    Public nhandlep    := 0
-   Public whlp        := ''
    Public myform
    Public exedir      := ''
    Public rtl         := rtl1
@@ -52,25 +51,22 @@ CLASS THMI
    VAR cHelpFolder        INIT ''
    VAR cProjFolder        INIT ''
    VAR cOutFile           INIT ''
-
    VAR cExteditor         INIT ''
-
+   VAR cFormDefFontName   INIT 'MS Sans Serif'
+   VAR nFormDefFontSize   INIT 10
+   VAR cFormDefFontColor  INIT '{0, 0, 0}'
    VAR cGuiHbBCC          INIT ''
    VAR cGuiHbMinGW        INIT ''
    VAR cGuiHbPelles       INIT ''
-
    VAR cGuixHbBCC         INIT ''
    VAR cGuixHbMinGW       INIT ''
    VAR cGuixHbPelles      INIT ''
-
    VAR cHbBCCFolder       INIT ''
    VAR cHbMinGWFolder     INIT ''
    VAR cHbPellFolder      INIT ''
-
    VAR cxHbBCCFolder      INIT ''
    VAR cxHbMinGWFolder    INIT ''
    VAR cxHbPellFolder     INIT ''
-
    VAR cBCCFolder         INIT ''
    VAR cMinGWFolder       INIT ''
    VAR cPellFolder        INIT ''
@@ -103,60 +99,56 @@ CLASS THMI
    VAR mainheight         INIT 50 + GetTitleHeight() + GetBorderHeight()
    VAR form_activated     INIT .F.
 
-   METHOD NewIde()
-   METHOD exit()
-   METHOD deleteitemp()
-   METHOD printit()
-   METHOD about()
-   METHOD dataman()
-   METHOD splashdelay()
-   METHOD preferences()
-   METHOD okprefer()
-   METHOD searchtext()
+   METHOD About()
    METHOD BldMinGW( nOption )
-   METHOD BuildBcc( nOption )
    METHOD BldPellC( nOption )
-   METHOD xBldMinGW( nOption )
-   METHOD xBuildBCC( nOption )
-   METHOD xBldPellC( nOption )
-   METHOD viewsource( wr )
-   METHOD viewerrors( wr )
-   METHOD runp()
-   METHOD newproject()
-   METHOD openproject()
-   METHOD saveproject()
-
-   METHOD newform()
-   METHOD newformfromar(cPform)
-   METHOD Newprgfromar(cPprg)
-   METHOD Newchfromar(cPch)
-   METHOD Newrcfromar(cPrc)
-   METHOD Newrptfromar(cPrpt)
-
-   METHOD Newprg()
-   METHOD Newch()
-   METHOD Newrc()
-   METHOD Newrpt()
-
-   METHOD searchitem(cnameitem,cparent)
-   METHOD searchtypeadd(nvalue)
-   METHOD searchtype()
-   METHOD modifyitem()
-   METHOD modifyRpt()
-   METHOD modifyform()
-
-   METHOD savefile(cdfile)
-   METHOD Openfile(cdfile)
+   METHOD BuildBcc( nOption )
+   METHOD databaseview()
+   METHOD dataman()
+   METHOD deleteitemp()
+   METHOD disable_button()
+   METHOD exit()
+   METHOD exitform()
+   METHOD exitview()
    METHOD goline()
    METHOD lookchanges()
-   METHOD posxy()
-   METHOD txtsearch()
+   METHOD modifyform()
+   METHOD modifyitem()
+   METHOD modifyRpt()
+   METHOD Newch()
+   METHOD Newchfromar(cPch)
+   METHOD newform()
+   METHOD newformfromar(cPform)
+   METHOD NewIde()
+   METHOD Newprg()
+   METHOD Newprgfromar(cPprg)
+   METHOD newproject()
+   METHOD Newrc()
+   METHOD Newrcfromar(cPrc)
+   METHOD Newrpt()
+   METHOD Newrptfromar(cPrpt)
    METHOD nextsearch()
+   METHOD OkPrefer( aFont )
+   METHOD Openfile(cdfile)
+   METHOD openproject()
+   METHOD posxy()
+   METHOD preferences()
+   METHOD printit()
+   METHOD runp()
    METHOD saveandexit(cdfile)
-   METHOD databaseview()
-   METHOD exitview()
-   METHOD disable_button()
-   METHOD exitform()
+   METHOD savefile(cdfile)
+   METHOD saveproject()
+   METHOD searchitem(cnameitem,cparent)
+   METHOD searchtext()
+   METHOD searchtype()
+   METHOD searchtypeadd(nvalue)
+   METHOD splashdelay()
+   METHOD txtsearch()
+   METHOD viewerrors( wr )
+   METHOD viewsource( wr )
+   METHOD xBldMinGW( nOption )
+   METHOD xBldPellC( nOption )
+   METHOD xBuildBCC( nOption )
 
 ENDCLASS
 RETURN NIL
@@ -174,7 +166,7 @@ public csyscolor,cvccvar
    SET BROWSESYNC ON
 
    DECLARE WINDOW Form_Tree
-   DECLARE WINDOW form_prefer
+   DECLARE WINDOW Form_prefer
    DECLARE WINDOW form_main
    DECLARE WINDOW _errors
    DECLARE WINDOW editbcvc
@@ -415,42 +407,49 @@ public csyscolor,cvccvar
    CENTER WINDOW Form_Splash
    CENTER WINDOW Form_Tree
 
-   IF .NOT. FILE('hmi.INI')
-      a := MemoWrit('hmi.INI','[PROJECT]')
+   IF .NOT. FILE('hmi.ini')
+      a := MemoWrit('hmi.ini','[PROJECT]')
    ENDIF
 
-   BEGIN INI FILE 'hmi.INI'
+   BEGIN INI FILE 'hmi.ini'
       //****************** PROJECT
-      GET ::cProjFolder     SECTION 'PROJECT'  ENTRY "PROJFOLDER"    default ''      // MigSoft
-      GET ::cOutFile        SECTION 'PROJECT'  ENTRY "OUTFILE"       default ''
+      GET ::cProjFolder       SECTION 'PROJECT'   ENTRY "PROJFOLDER"    DEFAULT ''
+      GET ::cOutFile          SECTION 'PROJECT'   ENTRY "OUTFILE"       DEFAULT ''
       //****************** EDITOR
-      GET ::cExteditor      SECTION 'EDITOR'   ENTRY "EXTERNAL"      default ''
+      GET ::cExteditor        SECTION 'EDITOR'    ENTRY "EXTERNAL"      DEFAULT ''
+      //****************** FORM'S FONT
+      GET ::cFormDefFontName   SECTION "FORMFONT" ENTRY "FONT"          DEFAULT ::cFormDefFontName
+      IF ::cFormDefFontName == 'NIL'
+         ::cFormDefFontName := ''
+      ENDIF
+      GET ::nFormDefFontSize   SECTION "FORMFONT" ENTRY "SIZE"          DEFAULT ::nFormDefFontSize
+      GET ::cFormDefFontColor  SECTION "FORMFONT" ENTRY "COLOR"         DEFAULT ::cFormDefFontColor
       //****************** OOHG
-      GET ::cGuiHbMinGW     SECTION 'GUILIB'   ENTRY "GUIHBMINGW"    default 'c:\oohg'
-      GET ::cGuiHbBCC       SECTION 'GUILIB'   ENTRY "GUIHBBCC"      default 'c:\oohg'
-      GET ::cGuiHbPelles    SECTION 'GUILIB'   ENTRY "GUIHBPELL"     default 'c:\oohg'
-      GET ::cGuixHbMinGW    SECTION 'GUILIB'   ENTRY "GUIXHBMINGW"   default 'c:\oohg'
-      GET ::cGuixHbBCC      SECTION 'GUILIB'   ENTRY "GUIXHBBCC"     default 'c:\oohg'
-      GET ::cGuixHbPelles   SECTION 'GUILIB'   ENTRY "GUIXHBPELL"    default 'c:\oohg'
+      GET ::cGuiHbMinGW       SECTION 'GUILIB'    ENTRY "GUIHBMINGW"    DEFAULT 'c:\oohg'
+      GET ::cGuiHbBCC         SECTION 'GUILIB'    ENTRY "GUIHBBCC"      DEFAULT 'c:\oohg'
+      GET ::cGuiHbPelles      SECTION 'GUILIB'    ENTRY "GUIHBPELL"     DEFAULT 'c:\oohg'
+      GET ::cGuixHbMinGW      SECTION 'GUILIB'    ENTRY "GUIXHBMINGW"   DEFAULT 'c:\oohg'
+      GET ::cGuixHbBCC        SECTION 'GUILIB'    ENTRY "GUIXHBBCC"     DEFAULT 'c:\oohg'
+      GET ::cGuixHbPelles     SECTION 'GUILIB'    ENTRY "GUIXHBPELL"    DEFAULT 'c:\oohg'
       //****************** HARBOUR
-      GET ::cHbMinGWFolder  SECTION 'HARBOUR'  ENTRY "HBMINGW"       default 'c:\harbourm'
-      GET ::cHbBCCFolder    SECTION 'HARBOUR'  ENTRY "HBBCC"         default 'c:\harbourb'
-      GET ::cHbPellFolder   SECTION 'HARBOUR'  ENTRY "HBPELLES"      default 'c:\harbourp'
+      GET ::cHbMinGWFolder    SECTION 'HARBOUR'   ENTRY "HBMINGW"       DEFAULT 'c:\harbourm'
+      GET ::cHbBCCFolder      SECTION 'HARBOUR'   ENTRY "HBBCC"         DEFAULT 'c:\harbourb'
+      GET ::cHbPellFolder     SECTION 'HARBOUR'   ENTRY "HBPELLES"      DEFAULT 'c:\harbourp'
       //****************** XHARBOUR
-      GET ::cxHbMinGWFolder SECTION 'HARBOUR'  ENTRY "XHBMINGW"      default 'c:\xharbourm'
-      GET ::cxHbBCCFolder   SECTION 'HARBOUR'  ENTRY "XHBBCC"        default 'c:\xharbourb'
-      GET ::cxHbPellFolder  SECTION 'HARBOUR'  ENTRY "XHBPELLES"     default 'c:\xharbourp'
+      GET ::cxHbMinGWFolder   SECTION 'HARBOUR'   ENTRY "XHBMINGW"      DEFAULT 'c:\xharbourm'
+      GET ::cxHbBCCFolder     SECTION 'HARBOUR'   ENTRY "XHBBCC"        DEFAULT 'c:\xharbourb'
+      GET ::cxHbPellFolder    SECTION 'HARBOUR'   ENTRY "XHBPELLES"     DEFAULT 'c:\xharbourp'
       //****************** C COMPILER
-      GET ::cMinGWFolder    SECTION 'COMPILER' ENTRY "MINGWFOLDER"   default 'c:\MinGW'
-      GET ::cBCCFolder      SECTION 'COMPILER' ENTRY "BCCFOLDER"     default 'c:\Borland\BCC55'
-      GET ::cPellFolder     SECTION 'COMPILER' ENTRY "PELLESFOLDER"  default 'c:\PellesC'
+      GET ::cMinGWFolder      SECTION 'COMPILER'  ENTRY "MINGWFOLDER"   DEFAULT 'c:\MinGW'
+      GET ::cBCCFolder        SECTION 'COMPILER'  ENTRY "BCCFOLDER"     DEFAULT 'c:\Borland\BCC55'
+      GET ::cPellFolder       SECTION 'COMPILER'  ENTRY "PELLESFOLDER"  DEFAULT 'c:\PellesC'
       //****************** MODE
-      GET ::nCompxBase      SECTION 'WHATCOMP' ENTRY "XBASECOMP"     default 1  // 1 Harbour  2 xHarbour
-      GET ::nCompilerC      SECTION 'WHATCOMP' ENTRY "CCOMPILER"     default 1  // 1 MinGW    2 BCC   3 Pelles C
+      GET ::nCompxBase        SECTION 'WHATCOMP'  ENTRY "XBASECOMP"     DEFAULT 1  // 1 Harbour  2 xHarbour
+      GET ::nCompilerC        SECTION 'WHATCOMP'  ENTRY "CCOMPILER"     DEFAULT 1  // 1 MinGW    2 BCC   3 Pelles C
       //****************** OTHER
-      GET ::ltbuild         SECTION 'SETTINGS' ENTRY "BUILD"         default 2  // 1 Compile.bat 2 Own Make
-      GET ::lsnap           SECTION 'SETTINGS' ENTRY "SNAP"          default 0
-      GET ::clib            SECTION 'SETTINGS' ENTRY "LIB"           default ''
+      GET ::ltbuild           SECTION 'SETTINGS'  ENTRY "BUILD"         DEFAULT 2  // 1 Compile.bat 2 Own Make
+      GET ::lsnap             SECTION 'SETTINGS'  ENTRY "SNAP"          DEFAULT 0
+      GET ::clib              SECTION 'SETTINGS'  ENTRY "LIB"           DEFAULT ''
    END INI
 
    DEFINE WINDOW waitmess obj waitmess  ;
@@ -494,14 +493,14 @@ public csyscolor,cvccvar
 
       @ 17,41 BUTTON save ;
          PICTURE 'A2';
-         ACTION {|| myform:Save(0) } ;
+         ACTION {|| myform:Save( 0 ) } ;
          WIDTH 30 ;
          HEIGHT 28 ;
          TOOLTIP 'Save' ;
 
       @ 17,73 BUTTON save_as ;
          PICTURE 'A3';
-         ACTION myform:save(1) ;
+         ACTION myform:Save( 1 ) ;
          WIDTH 30 ;
          HEIGHT 28 ;
          TOOLTIP 'Save as' ;
@@ -571,7 +570,7 @@ public csyscolor,cvccvar
 
       @ 17,400 BUTTON  butt_status ;
          PICTURE 'A13';
-         ACTION { || myform:verifybar() } ;
+         ACTION { || myform:VerifyBar() } ;
          WIDTH 30 ;
          HEIGHT 28 ;
          TOOLTIP 'Statusbar On/Off' ;
@@ -712,175 +711,175 @@ DEFINE WINDOW cvcControls obj cvcControls ;
    PICTURE 'SELECT' ;
    VALUE .T. WIDTH 28 HEIGHT 28 ;
    TOOLTIP 'Select Object' ;
-   ON CHANGE myform:Control_Click(1)
+   ON CHANGE myform:Control_Click( 1 )
 
    @ 001,29 CHECKBUTTON Control_02 ;
    PICTURE 'BUTTON1' ;                     // Cambio en .RC
    VALUE .F. WIDTH 28 HEIGHT 28 ;
    TOOLTIP 'Button and ButtonMixed' ;
-   ON CHANGE myform:Control_Click(2)
+   ON CHANGE myform:Control_Click( 2 )
 
    @ 030,0 CHECKBUTTON Control_03 ;
    PICTURE 'CHECKBOX1' ;                     // Cambio en .RC
    VALUE .F. WIDTH 28 HEIGHT 28 ;
    TOOLTIP 'CheckBox' ;
-   ON CHANGE myform:Control_Click(3)
+   ON CHANGE myform:Control_Click( 3 )
 
    @ 030,29 CHECKBUTTON Control_04 ;
    PICTURE 'LISTBOX1' ;                     // Cambio en .RC
    VALUE .F. WIDTH 28 HEIGHT 28 ;
    TOOLTIP 'ListBox' ;
-   ON CHANGE myform:Control_Click(4)
+   ON CHANGE myform:Control_Click( 4 )
 
    @ 060,0 CHECKBUTTON Control_05 ;
    PICTURE 'COMBOBOX1' ;                     // Cambio en .RC
    VALUE .F. WIDTH 28 HEIGHT 28 ;
    TOOLTIP 'ComboBox' ;
-   ON CHANGE myform:Control_Click(5)
+   ON CHANGE myform:Control_Click( 5 )
 
    @ 060,29 CHECKBUTTON Control_06 ;
    PICTURE 'CHECKBUTTON' ;
    VALUE .F. WIDTH 28 HEIGHT 28 ;
    TOOLTIP 'CheckButton' ;
-   ON CHANGE myform:Control_Click(6)
+   ON CHANGE myform:Control_Click( 6 )
 
    @ 090,0 CHECKBUTTON Control_07 ;
    PICTURE 'GRID' ;
    VALUE .F. WIDTH 28 HEIGHT 28 ;
    TOOLTIP 'Grid' ;
-   ON CHANGE myform:Control_Click(7)
+   ON CHANGE myform:Control_Click( 7 )
 
    @ 090,29 CHECKBUTTON Control_08 ;
    PICTURE 'FRAME' ;
    VALUE .F. WIDTH 28 HEIGHT 28 ;
    TOOLTIP 'Frame' ;
-   ON CHANGE  myform:Control_Click(8)
+   ON CHANGE  myform:Control_Click( 8 )
 
    @ 120,0 CHECKBUTTON Control_09 ;
    PICTURE 'TAB' ;
    VALUE .F. WIDTH 28 HEIGHT 28 ;
    TOOLTIP 'Tab' ;
-   ON CHANGE myform:Control_Click(9)
+   ON CHANGE myform:Control_Click( 9 )
 
    @ 120,29 CHECKBUTTON Control_10 ;
    PICTURE 'IMAGE' ;
    VALUE .F. WIDTH 28 HEIGHT 28 ;
    TOOLTIP 'Image' ;
-   ON CHANGE myform:Control_Click(10)
+   ON CHANGE myform:Control_Click( 10 )
 
    @ 150,0 CHECKBUTTON Control_11 ;
    PICTURE 'ANIMATEBOX' ;
    VALUE .F. WIDTH 28 HEIGHT 28 ;
    TOOLTIP 'AnimateBox' ;
-   ON CHANGE myform:Control_Click(11)
+   ON CHANGE myform:Control_Click( 11 )
 
    @ 150,29 CHECKBUTTON Control_12 ;
    PICTURE 'DATEPICKER' ;
    VALUE .F. WIDTH 28 HEIGHT 28 ;
    TOOLTIP 'DatePicker' ;
-   ON CHANGE myform:Control_Click(12)
+   ON CHANGE myform:Control_Click( 12 )
 
    @ 180,0 CHECKBUTTON Control_13 ;
    PICTURE 'TEXTBOX' ;
    VALUE .F. WIDTH 28 HEIGHT 28 ;
    TOOLTIP 'TextBox' ;
-   ON CHANGE myform:Control_Click(13)
+   ON CHANGE myform:Control_Click( 13 )
 
    @ 180,29 CHECKBUTTON Control_14 ;
    PICTURE 'EDITBOX' ;
    VALUE .F. WIDTH 28 HEIGHT 28 ;
    TOOLTIP 'EditBox' ;
-   ON CHANGE myform:Control_Click(14)
+   ON CHANGE myform:Control_Click( 14 )
 
    @ 210,0 CHECKBUTTON Control_15 ;
    PICTURE 'LABEL' ;
    VALUE .F. WIDTH 28 HEIGHT 28 ;
    TOOLTIP 'Label' ;
-   ON CHANGE myform:Control_Click(15)
+   ON CHANGE myform:Control_Click( 15 )
 
    @ 210,29 CHECKBUTTON Control_16 ;
    PICTURE 'PLAYER' ;
    VALUE .F. WIDTH 28 HEIGHT 28 ;
    TOOLTIP 'Player' ;
-   ON CHANGE myform:Control_Click(16)
+   ON CHANGE myform:Control_Click( 16 )
 
    @ 240,0 CHECKBUTTON Control_17 ;
    PICTURE 'PROGRESSBAR' ;
    VALUE .F. WIDTH 28 HEIGHT 28 ;
    TOOLTIP 'ProgressBar' ;
-   ON CHANGE myform:Control_Click(17)
+   ON CHANGE myform:Control_Click( 17 )
 
    @ 240,29 CHECKBUTTON Control_18 ;
    PICTURE 'RADIOGROUP' ;
    VALUE .F. WIDTH 28 HEIGHT 28 ;
    TOOLTIP 'RadioGroup' ;
-   ON CHANGE myform:Control_Click(18)
+   ON CHANGE myform:Control_Click( 18 )
 
    @ 270,0 CHECKBUTTON Control_19 ;
    PICTURE 'SLIDER' ;
    VALUE .F. WIDTH 28 HEIGHT 28 ;
    TOOLTIP 'Slider' ;
-   ON CHANGE myform:Control_Click(19)
+   ON CHANGE myform:Control_Click( 19 )
 
    @ 270,29 CHECKBUTTON Control_20 ;
    PICTURE 'SPINNER' ;
    VALUE .F. WIDTH 28 HEIGHT 28 ;
    TOOLTIP 'Spinner' ;
-   ON CHANGE myform:Control_Click(20)
+   ON CHANGE myform:Control_Click( 20 )
 
    @ 300,0 CHECKBUTTON Control_21 ;
    PICTURE 'IMAGECHECKBUTTON' ;
    VALUE .F. WIDTH 28 HEIGHT 28 ;
    TOOLTIP 'Picture CheckButton' ;
-   ON CHANGE myform:Control_Click(21)
+   ON CHANGE myform:Control_Click( 21 )
 
    @ 300,29 CHECKBUTTON Control_22 ;
    PICTURE 'IMAGEBUTTON' ;
    VALUE .F. WIDTH 28 HEIGHT 28 ;
    TOOLTIP 'Picture Button' ;
-   ON CHANGE myform:Control_Click(22)
+   ON CHANGE myform:Control_Click( 22 )
 
    @ 330,0 CHECKBUTTON Control_23 ;
    PICTURE 'TIMER' ;
    VALUE .F. WIDTH 28 HEIGHT 28 ;
    TOOLTIP 'Timer' ;
-   ON CHANGE myform:Control_Click(23)
+   ON CHANGE myform:Control_Click( 23 )
 
    @ 330,29 CHECKBUTTON Control_24 ;
    PICTURE 'GRID' ;
    VALUE .F. WIDTH 28 HEIGHT 28 ;
    TOOLTIP 'Browse' ;
-   ON CHANGE myform:Control_Click(24)
+   ON CHANGE myform:Control_Click( 24 )
 
    @ 360,0 CHECKBUTTON Control_25 ;
    PICTURE 'TREE' ;
    VALUE .F. WIDTH 28 HEIGHT 28 ;
    TOOLTIP 'Tree' ;
-   ON CHANGE myform:Control_Click(25)
+   ON CHANGE myform:Control_Click( 25 )
 
    @ 360,29 CHECKBUTTON Control_26 ;
    PICTURE 'IPAD' ;
    VALUE .F. WIDTH 28 HEIGHT 28 ;
    TOOLTIP 'IPAddress' ;
-   ON CHANGE myform:Control_Click(26)
+   ON CHANGE myform:Control_Click( 26 )
 
    @ 390,0 CHECKBUTTON Control_27 ;
    PICTURE 'MONTHCAL' ;
    VALUE .F. WIDTH 28 HEIGHT 28 ;
    TOOLTIP 'Monthcalendar' ;
-   ON CHANGE myform:Control_Click(27)
+   ON CHANGE myform:Control_Click( 27 )
 
    @ 390,29 CHECKBUTTON Control_28 ;
    PICTURE 'HYPLINK' ;
    VALUE .F. WIDTH 28 HEIGHT 28 ;
    TOOLTIP 'Hyperlink' ;
-   ON CHANGE myform:Control_Click(28)
+   ON CHANGE myform:Control_Click( 28 )
 
    @ 420,0 CHECKBUTTON Control_29 ;
    PICTURE 'RICHEDIT' ;
    VALUE .F. WIDTH 28 HEIGHT 28 ;
    TOOLTIP 'Richeditbox' ;
-   ON CHANGE myform:Control_Click(29)
+   ON CHANGE myform:Control_Click( 29 )
 
    @ 420,29 CHECKBUTTON Control_30 ;
    PICTURE 'stat' ;
@@ -1298,54 +1297,76 @@ cursorarrow()
 Return
 
 *-------------------------
-METHOD preferences() CLASS THMI
+METHOD Preferences() CLASS THMI
 *-------------------------
-   load window form_prefer
+Local aFont := { ::cFormDefFontName, ;
+                 ::nFormDefFontSize, ;
+                 .F., ;
+                 .F., ;
+                 &(::cFormDefFontColor), ;
+                 .F., ;
+                 .F., ;
+                 0 }
 
-   form_prefer                    := getformobject("form_prefer")
+   LOAD WINDOW Form_prefer
 
-   form_prefer:backcolor          := ::asystemcolor
+   Form_prefer                    := GetFormObject( "Form_prefer" )
+   Form_prefer:backcolor          := ::aSystemColor
+   Form_prefer:text_3:value       := ::cProjFolder
+   Form_prefer:text_4:value       := ::cOutFile
+   Form_prefer:text_12:value      := ::cGuiHbMinGW
+   Form_prefer:text_9:value       := ::cGuiHbBCC
+   Form_prefer:text_11:value      := ::cGuiHbPelles
+   Form_prefer:text_16:value      := ::cGuixHbMinGW
+   Form_prefer:text_17:value      := ::cGuixHbBCC
+   Form_prefer:text_18:value      := ::cGuixHbPelles
+   Form_prefer:text_8:value       := ::cHbMinGWFolder
+   Form_prefer:text_2:value       := ::cHbBCCFolder
+   Form_prefer:text_7:value       := ::cHbPellFolder
+   Form_prefer:text_13:value      := ::cxHbMinGWFolder
+   Form_prefer:text_14:value      := ::cxHbBCCFolder
+   Form_prefer:text_15:value      := ::cxHbPellFolder
+   Form_prefer:text_10:value      := ::cMinGWFolder
+   Form_prefer:text_5:value       := ::cBCCFolder
+   Form_prefer:text_6:value       := ::cPellFolder
+   Form_prefer:radiogroup_1:value := ::nCompxBase
+   Form_prefer:radiogroup_2:value := ::nCompilerC
+   Form_prefer:text_1:value       := ::cExteditor
+   Form_prefer:text_font:value    := IF( Empty( ::cFormDefFontName ), _OOHG_DefaultFontName, ::cFormDefFontName ) + ' ' + ;
+                                     LTrim( Str( IF( ::nFormDefFontSize > 0, ::nFormDefFontSize, _OOHG_DefaultFontSize ), 2, 0 ) ) + ;
+                                     IF( ::cFormDefFontColor == 'NIL', '', ', Color ' + ::cFormDefFontColor )
+   Form_prefer:Radiogroup_3:value := ::ltbuild
+   Form_prefer:text_lib:value     := ::clib
+   Form_prefer:checkbox_105:value := ( ::lsnap == 1 )
 
-   form_prefer:text_3:value       := ::cProjFolder
-   form_prefer:text_4:value       := ::cOutFile
+   Form_prefer:checkbox_105:backcolor := Form_prefer.BackColor
 
-   form_prefer:text_12:value      := ::cGuiHbMinGW
-   form_prefer:text_9:value       := ::cGuiHbBCC
-   form_prefer:text_11:value      := ::cGuiHbPelles
+   ACTIVATE WINDOW Form_prefer
 
-   form_prefer:text_16:value      := ::cGuixHbMinGW
-   form_prefer:text_17:value      := ::cGuixHbBCC
-   form_prefer:text_18:value      := ::cGuixHbPelles
+RETURN NIL
 
-   form_prefer:text_8:value       := ::cHbMinGWFolder
-   form_prefer:text_2:value       := ::cHbBCCFolder
-   form_prefer:text_7:value       := ::cHbPellFolder
+//------------------------------------------------------------------------------
+STATIC FUNCTION GetPreferredFont( aFont )
+//------------------------------------------------------------------------------
+   aFont := GetFont( aFont[1], aFont[2], aFont[3], aFont[4], aFont[5], aFont[6], aFont[7], aFont[8] )
+   Form_prefer:text_font:value := ;
+      IF( Empty( aFont[1] ), _OOHG_DefaultFontName, aFont[1] ) + " " + ;
+      LTrim( Str( IF( aFont[2] > 0, aFont[2], _OOHG_DefaultFontSize ) ) ) + ;
+      IF( aFont[3], " Bold", "" ) + ;
+      IF( aFont[4], " Italic", "" ) + ;
+      IF( aFont[6], " Underline", "" ) + ;
+      IF( aFont[7], " Strikeout", "" ) + ;
+      IF( aFont[5, 1] # NIL, ", Color " + '{ ' + LTrim( Str( aFont[5, 1] ) ) + ', ' + ;
+                                                 LTrim( Str( aFont[5, 2] ) ) + ', ' + ;
+                                                 LTrim( Str( aFont[5, 3] ) ) + ' }', "" )
+RETURN NIL
 
-   form_prefer:text_13:value      := ::cxHbMinGWFolder
-   form_prefer:text_14:value      := ::cxHbBCCFolder
-   form_prefer:text_15:value      := ::cxHbPellFolder
-
-   form_prefer:text_10:value      := ::cMinGWFolder
-   form_prefer:text_5:value       := ::cBCCFolder
-   form_prefer:text_6:value       := ::cPellFolder
-
-   form_prefer:radiogroup_1:value := ::nCompxBase
-   form_prefer:radiogroup_2:value := ::nCompilerC
-
-   form_prefer:text_1:value       := ::cExteditor
-
-   form_prefer:Radiogroup_3:value := ::ltbuild
-   form_prefer:text_lib:value     := ::clib
-   form_prefer:checkbox_105:value := iif(::lsnap=1,.T.,.F.)
-
-   form_prefer:checkbox_105:backcolor := ::asystemcolor
-   form_prefer:button_101:backcolor   := ::asystemcolor
-   form_prefer:button_102:backcolor   := ::asystemcolor
-
-   ACTIVATE WINDOW form_prefer
-
-return
-
+//------------------------------------------------------------------------------
+STATIC FUNCTION ResetPreferredFont( aFont )
+//------------------------------------------------------------------------------
+   aFont := { '', 0, .F., .F., NIL, .F., .F., 0 }
+   Form_prefer:text_font:value := _OOHG_DefaultFontName + " " + LTrim( Str( _OOHG_DefaultFontSize ) )
+RETURN NIL
 
 *-------------------------
 METHOD searchtext() CLASS THMI
@@ -1429,54 +1450,53 @@ endif
 return
 
 *-------------------------
-METHOD okprefer() CLASS THMI
+METHOD OkPrefer( aFont ) CLASS THMI
 *-------------------------
 
-   ::cProjFolder     := pmgFolder                     // MigSoft
-   ::cOutFile        := form_prefer:text_4:value
+   ::cProjFolder        := pmgFolder
+   ::cOutFile           := Form_prefer:text_4:Value
+   ::cExteditor         := AllTrim( Form_prefer:text_1:Value )
+   ::cGuiHbMinGW        := Form_prefer:text_12:Value
+   ::cGuiHbBCC          := Form_prefer:text_9:Value
+   ::cGuiHbPelles       := Form_prefer:text_11:Value
+   ::cGuixHbMinGW       := Form_prefer:text_16:Value
+   ::cGuixHbBCC         := Form_prefer:text_17:Value
+   ::cGuixHbPelles      := Form_prefer:text_18:Value
+   ::cHbMinGWFolder     := Form_prefer:text_8:Value
+   ::cHbBCCFolder       := Form_prefer:text_2:Value
+   ::cHbPellFolder      := Form_prefer:text_7:Value
+   ::cxHbMinGWFolder    := Form_prefer:text_13:Value
+   ::cxHbBCCFolder      := Form_prefer:text_14:Value
+   ::cxHbPellFolder     := Form_prefer:text_15:Value
+   ::cMinGWFolder       := Form_prefer:text_10:Value
+   ::cBCCFolder         := Form_prefer:text_5:Value
+   ::cPellFolder        := Form_prefer:text_6:Value
+   ::nCompxBase         := Form_prefer:radiogroup_1:Value
+   ::nCompilerC         := Form_prefer:radiogroup_2:Value
+   ::ltbuild            := Form_prefer:Radiogroup_3:Value
+   ::lsnap              := iif(Form_prefer:checkbox_105:Value,1,0)
+   ::clib               := Form_prefer:text_lib:Value
+   ::cFormDefFontName   := IIF( Empty( aFont[1] ), '', aFont[1] )
+   ::nFormDefFontSize   := IIF( aFont[2] > 0, Int( aFont[2] ), 0 )
+   ::cFormDefFontColor  := IIF( aFont[5] == NIL .OR. aFont[5,1] == NIL, ;
+                                'NIL', ;
+                                '{ ' + LTrim( Str( aFont[5, 1] ) ) + ', ' + ;
+                                       LTrim( Str( aFont[5, 2] ) ) + ', ' + ;
+                                       LTrim( Str( aFont[5, 3] ) ) + ' }' )
 
-   if len(trim(form_prefer:text_1:value))=0
-      ::cExteditor:=""
-   else
-      ::cExteditor:=form_prefer:text_1:value
-   endif
+   Form_prefer:Release()
 
-   ::cGuiHbMinGW     := form_prefer:text_12:value
-   ::cGuiHbBCC       := form_prefer:text_9:value
-   ::cGuiHbPelles    := form_prefer:text_11:value
-   ::cGuixHbMinGW    := form_prefer:text_16:value
-   ::cGuixHbBCC      := form_prefer:text_17:value
-   ::cGuixHbPelles   := form_prefer:text_18:value
+   SetCurrentFolder( ::cProjFolder )
 
-   ::cHbMinGWFolder  := form_prefer:text_8:value
-   ::cHbBCCFolder    := form_prefer:text_2:value
-   ::cHbPellFolder   := form_prefer:text_7:value
-
-   ::cxHbMinGWFolder :=  form_prefer:text_13:value
-   ::cxHbBCCFolder   :=  form_prefer:text_14:value
-   ::cxHbPellFolder  :=  form_prefer:text_15:value
-
-   ::cMinGWFolder    := form_prefer:text_10:value
-   ::cBCCFolder      := form_prefer:text_5:value
-   ::cPellFolder     := form_prefer:text_6:value
-
-   ::nCompxBase      := form_prefer:radiogroup_1:value
-   ::nCompilerC      := form_prefer:radiogroup_2:value
-
-   ::ltbuild         := form_prefer:Radiogroup_3:value
-   ::lsnap           := iif(form_prefer:checkbox_105:value,1,0)
-   ::clib            := form_prefer:text_lib:value
-
-   form_prefer:release()
-
-   SetCurrentFolder(::cProjFolder)    // MigSoft
-
-   BEGIN INI FILE 'hmi.INI'
-
+   BEGIN INI FILE 'hmi.ini'
          SET SECTION 'PROJECT'  ENTRY "PROJFOLDER"   TO ::cProjFolder
          SET SECTION 'PROJECT'  ENTRY "OUTFILE"      TO ::cOutFile
 
          SET SECTION "EDITOR"   ENTRY "EXTERNAL"     TO ::cExteditor
+
+         SET SECTION "FORMFONT" ENTRY "FONT"         TO IIF( Empty( ::cFormDefFontName ), 'NIL', ::cFormDefFontName )
+         SET SECTION "FORMFONT" ENTRY "SIZE"         TO LTrim( Str( ::nFormDefFontSize, 2, 0 ) )
+         SET SECTION "FORMFONT" ENTRY "COLOR"        TO ::cFormDefFontColor
 
          SET SECTION 'GUILIB'   ENTRY "GUIHBMINGW"   TO ::cGuiHbMinGW
          SET SECTION 'GUILIB'   ENTRY "GUIHBBCC"     TO ::cGuiHbBCC
@@ -1503,7 +1523,6 @@ METHOD okprefer() CLASS THMI
          SET SECTION "SETTINGS" ENTRY "BUILD"        to ::ltbuild
          SET SECTION "SETTINGS" ENTRY "LIB"          to ::clib
          SET SECTION "SETTINGS" ENTRY "SNAP"         to ::lsnap
-
    END INI
 
 Return
@@ -4063,23 +4082,23 @@ return nil
 
 
 *-------------------------
-METHOD modifyform(citem,cparent) CLASS THMI
+METHOD ModifyForm( cItem, cParent ) CLASS THMI
 *-------------------------
-local npos
-if citem=NIL
-   cItem:=Form_Tree:Tree_1:item(Form_Tree:Tree_1:Value)
-   cParent= ::searchtype(::searchitem(cItem,'Form module'))
-endif
-citem:=lower(citem)
-do while (npos:=at(".",cItem))>0
-   cItem:=substr(cItem,1,npos-1)
-enddo
-if cParent == 'Form module'
-   myform:=tform1()
-   myform:vd( cItem + '.fmg', Self )
-   close data
-endif
-return  nil
+LOCAL nPos
+   IF cItem == NIL
+      cItem := Form_Tree:Tree_1:Item( Form_Tree:Tree_1:Value )
+      cParent := ::SearchType( ::SearchItem( cItem, 'Form module' ) )
+   ENDIF
+   cItem := Lower( cItem )
+   DO WHILE ( nPos := At( ".", cItem ) ) > 0
+      cItem := SubStr( cItem, 1, nPos - 1 )
+   ENDDO
+   IF cParent == 'Form module'
+      myform := TForm1()
+      myform:vd( cItem + '.fmg', Self )
+      CLOSE DATABASES
+   ENDIF
+RETURN NIL
 
 //------------------------------------------------------------------------------
 METHOD SaveFile( cdfile ) CLASS THMI
@@ -4135,8 +4154,8 @@ IF len(alltrim(::cExteditor))=0
       return nil
    endif
 
-   nwidth:=getformobject("Form_Tree"):width - (getformobject("Form_Tree"):width/3.5)
-   nheight:=getformobject("Form_Tree"):height-160
+   nwidth:=GetFormObject("Form_Tree"):width - (GetFormObject("Form_Tree"):width/3.5)
+   nheight:=GetFormObject("Form_Tree"):height-160
 
           // Migsoft , cvc modified
    DEFINE WINDOW editbcvc obj editbcvc AT 109,80 WIDTH nWidth  HEIGHT nHeight TITLE cNameApp+" "+cdfile ICON 'EDIT' CHILD FONT "Courier New" SIZE 10 backcolor ::asystemcolor ON SIZE AjustaEditor()
@@ -4769,7 +4788,7 @@ METHOD exitform() CLASS THMI
 *-------------------------
 if .not. myform:lFsave
    if MsgYesNo( 'Form not saved, save it now?', 'ooHG IDE+' )
-      myform:save(0)
+      myform:Save( 0 )
    endif
 
 endif

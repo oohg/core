@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.12 2014-07-07 01:51:43 fyurisich Exp $
+ * $Id: formedit.prg,v 1.13 2014-07-08 03:02:41 fyurisich Exp $
  */
 
 /*
@@ -166,9 +166,10 @@ CLASS TForm1
    DATA lfsplitchild         INIT .F.
    DATA lfgrippertext        INIT .F.
    DATA cFBackcolor          INIT "{212, 208, 200}"
-   DATA cfcursor             INIT ""
-   DATA cffontname           INIT "MS Sans Serif"
-   DATA nffontsize           INIT 9
+   DATA cFCursor             INIT ""
+   DATA cFFontName           INIT ''
+   DATA nFFontSize           INIT 0
+   DATA cFFontColor          INIT 'NIL'
    DATA nfvirtualw           INIT 0
    DATA nfvirtualh           INIT 0
    DATA cfontcolor           INIT ""
@@ -209,7 +210,7 @@ CLASS TForm1
 
    // variables de statusbar
    DATA cscaption            INIT ''
-   DATA csfontname           INIT 'MS Sans Serif'
+   DATA csfontname           INIT 'MS Sans Serif' // TODO: del ide
    DATA nsfontsize           INIT 9
    DATA cscolor              INIT ''
    DATA nswidth              INIT 80
@@ -266,7 +267,6 @@ CLASS TForm1
    METHOD New()
    METHOD NewAgain()
    METHOD Open( cItem1 )
-   METHOD FillControlAux()
    METHOD FillControl()
    METHOD Control_Click( wpar )
    METHOD LeaTipo( cName )
@@ -349,8 +349,9 @@ local nNumcont:=0
    ::lfnocaption          := .F.
    ::lfnoautorelease      := .F.
    ::cFBackcolor          := ::myIde:cdbackcolor
-   ::cffontname           := "MS Sans Serif"
-   ::nffontsize           := 9
+   ::cFFontName           := ::myIde:cFormDefFontName
+   ::nFFontSize           := ::myIde:nFormDefFontSize
+   ::cFFontColor          := ::myIde:cFormDefFontColor
    ::nfvirtualw           := 0
    ::nfvirtualh           := 0
    ::cfontcolor           := ""
@@ -376,7 +377,7 @@ local nNumcont:=0
    ::cfonpaint            := ""
    ::cfoninteractiveclose :=  ""
    ::cscaption            := ''
-   ::csfontname           := 'MS Sans Serif'
+   ::csfontname           := 'MS Sans Serif'          // todo: revisar
    ::nsfontsize           := 9
    ::cscolor              := ''
    ::cscobj               := ''
@@ -392,7 +393,6 @@ local nNumcont:=0
    ::nsdatewidth          := 80
    ::lstime               := .F.
    ::nstimewidth          := 80
-   ::nffontsize           := 10
    ::cfonmaximize         := ""
    ::cfonminimize         := ""
 
@@ -405,34 +405,33 @@ Return Self
 *------------------------------------------------------------------------------*
 METHOD VerifyBar() CLASS TForm1
 *------------------------------------------------------------------------------*
-if .not. myform:lsstat  &&&&  lstat
-    cvccontrols.control_30.visible:=.T.
-    myform:lsstat:=.T.
+   IF ! myform:lsstat
+      cvccontrols.control_30.Visible := .T.
+      myform:lsstat := .T.
 
-    DEFINE STATUSBAR of form_1
-            if len(myform:cscaption)> 0
-               STATUSITEM myform:cscaption
-            else
-               statusitem ""
-            endif
-            if myform:lskeyboard
-               KEYBOARD
-            endif
-            if myform:lsdate
-               DATE WIDTH 95
-            endif
-            if myform:lstime
-               CLOCK WIDTH 85
-            endif
-   END STATUSBAR
-
-else
-    cvccontrols.control_30.visible:=.F.
-    myform:lsstat:=.F.
-    form_1.statusbar.release
-endif
-myform:lfsave:=.F.
-return
+      DEFINE STATUSBAR of form_1
+         IF Len( myform:cscaption ) > 0
+            STATUSITEM myform:cscaption
+         ELSE
+            STATUSITEM ""
+         ENDIF
+         IF myform:lskeyboard
+            KEYBOARD
+         ENDIF
+         IF myform:lsdate
+            DATE WIDTH 95
+         ENDIF
+         IF myform:lstime
+            CLOCK WIDTH 85
+         ENDIF
+      END STATUSBAR
+   ELSE
+      cvccontrols.control_30.Visible := .F.
+      myform:lsstat := .F.
+      form_1.Statusbar.Release
+   ENDIF
+   myform:lfsave := .F.
+RETURN NIL
 
 *------------------------------------------------------------------------------*
 METHOD What( cItem1 ) CLASS TForm1
@@ -812,6 +811,7 @@ METHOD AddControl() CLASS TForm1
 *------------------------------------------------------------------------------*
 LOCAL aName, x, i, swBorrado
 
+// TODO: los controles definidos acá deber ser iguales a los definidos en las function p(Control)
    WITH OBJECT myform
       swkm := .F.
       DO CASE
@@ -832,7 +832,6 @@ LOCAL aName, x, i, swBorrado
          :IniArray( :nForm, :nControlW, ControlName, 'BUTTON' )
          :aaction[:ncontrolw] := "MsgInfo( 'Button pressed' )"
          @ _oohg_mouserow, _oohg_mousecol BUTTON &ControlName OF Form_1 ;
-            FONT 'MS Sans Serif' SIZE 10 ;
             ON GOTFOCUS Dibuja( This:Name ) ;
             ACTION Dibuja( This:Name ) ;
             NOTABSTOP
@@ -849,7 +848,6 @@ LOCAL aName, x, i, swBorrado
          :IniArray( :nForm, :nControlW, ControlName, 'CHECKBOX' )
          @ _oohg_mouserow,_oohg_mousecol CHECKBOX &ControlName OF Form_1 ;
             CAPTION ControlName ;
-            FONT 'San serif' SIZE 10 ;
             ON GOTFOCUS Dibuja( This:Name ) ;
             ON CHANGE Dibuja( This:Name ) ;
             NOTABSTOP
@@ -858,20 +856,23 @@ LOCAL aName, x, i, swBorrado
             GetControlObject( ControlName, "Form_1" ):BackColor:= &cFBackcolor
          ENDIF
          ProcessContainers( ControlName )
-   Case :CurrentControl == 4
-      :ListBoxCount++
-      ControlName := 'list_'+Alltrim(str(:ListBoxcount))
-                do while iscontroldefined(&Controlname,form_1)
-             :ListBoxCount++
-                   ControlName := 'list_'+Alltrim(str(:ListBoxCount))
-                enddo
+   CASE :CurrentControl == 4
+      :ListBoxCount ++
+      ControlName := 'list_' + LTrim( Str( :ListBoxcount ) )
+      DO WHILE IsControlDefined( &Controlname, Form_1 )
+         :ListBoxCount ++
+         ControlName := 'list_' + LTrim( Str( :ListBoxCount ) )
+      ENDDO
       aName := { ControlName }
-                :ncontrolw++
-      @ _oohg_mouserow,_oohg_mousecol LISTBOX &ControlName OF Form_1 WIDTH 100 HEIGHT 100 ITEMS aName FONT 'MS Sans Serif' SIZE 10 ;
-                ON GOTFOCUS dibuja(this:name) ;
-                ON CHANGE dibuja(this:name) ;
-                NOTABSTOP
-                :iniarray(:nform,:ncontrolw,controlname,'LIST')
+      :nControlW ++
+      @ _oohg_mouserow, _oohg_mousecol LISTBOX &ControlName OF Form_1 ;
+         WIDTH 100 ;
+         HEIGHT 100 ;
+         ITEMS aName ;
+         ON GOTFOCUS Dibuja( This:Name ) ;
+         ON CHANGE Dibuja( This:Name ) ;
+         NOTABSTOP
+      :IniArray( :nForm, :nControlW, ControlName, 'LIST')
       ProcessContainers( ControlName )
    Case :CurrentControl == 5
       :ComboBoxCount++
@@ -891,31 +892,37 @@ LOCAL aName, x, i, swBorrado
          NOTABSTOP
                 :iniarray(:nform,:ncontrolw,controlname,'COMBO')
       ProcessContainers( ControlName )
-   Case :CurrentControl == 6
-      :CheckButtonCount++
-
-      ControlName := 'checkbtn_'+Alltrim(str(:CheckButtonCount))
-                do while iscontroldefined(&Controlname,form_1)
-         :CheckButtonCount++
-                   ControlName := 'checkbtn_'+Alltrim(str(:CheckbuttonCount))
-                enddo
-                :ncontrolw++
-      @ _oohg_mouserow,_oohg_mousecol CHECKBUTTON &ControlName OF Form_1 CAPTION ControlName FONT 'MS Sans Serif' SIZE 10 ;
-                ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name) NOTABSTOP
-                :iniarray(:nform,:ncontrolw,controlname,'CHECKBTN')
+   CASE :CurrentControl == 6
+      :CheckButtonCount ++
+      ControlName := 'checkbtn_' + LTrim( Str( :CheckButtonCount ) )
+      DO WHILE IsControlDefined( &Controlname, Form_1 )
+         :CheckButtonCount ++
+         ControlName := 'checkbtn_' + LTrim( Str( :CheckbuttonCount ) )
+      ENDDO
+      :nControlW ++
+      @ _oohg_mouserow, _oohg_mousecol CHECKBUTTON &ControlName OF Form_1 ;
+         CAPTION ControlName ;
+         ON GOTFOCUS Dibuja( This:Name ) ;
+         ON CHANGE Dibuja( This:Name) ;
+         NOTABSTOP
+      :IniArray( :nForm, :nControlW, ControlName, 'CHECKBTN' )
       ProcessContainers( ControlName )
    Case :CurrentControl == 7
-      :GridCount++
-      ControlName := 'grid_'+Alltrim(str(:GridCount))
-                do while iscontroldefined(&Controlname,form_1)
-            :GridCount++
-                   ControlName := 'grid_'+Alltrim(str(:GridCount))
-                enddo
-      aName := { { ControlName ,''} }
-                     :ncontrolw++
-                :iniarray(:nform,:ncontrolw,controlname,'GRID')
-      @ _oohg_mouserow,_oohg_mousecol GRID &ControlName OF Form_1 HEADERS {'',''} WIDTHS {60,60} ITEMS aName TOOLTIP 'To move/size click on header area' FONT 'MS Sans Serif' SIZE 10 ;
-                ON GOTFOCUS dibuja(this:name)
+      :GridCount ++
+      ControlName := 'grid_' + LTrim( Str( :GridCount ) )
+      DO WHILE IsControlDefined( &Controlname, Form_1 )
+         :GridCount ++
+         ControlName := 'grid_' + LTrim( Str( :GridCount ) )
+      ENDDO
+      aName := { { ControlName, ''} }
+      :nControlw ++
+      @ _oohg_mouserow, _oohg_mousecol GRID &ControlName OF Form_1 ;
+         HEADERS {'', ''} ;
+         WIDTHS {60, 60} ;
+         ITEMS aName ;
+         TOOLTIP 'To move/size click on header area' ;
+         ON GOTFOCUS Dibuja( This:Name )
+      :IniArray( :nForm, :nControlW, ControlName, 'GRID' )
       ProcessContainers( ControlName )
    Case :CurrentControl == 8
       :frameCount++
@@ -926,7 +933,7 @@ LOCAL aName, x, i, swBorrado
                 enddo
                 :ncontrolw++
                 :iniarray(:nform,:ncontrolw,controlname,'FRAME')
-      @ _oohg_mouserow, _oohg_mousecol FRAME &ControlName OF Form_1 CAPTION ControlName WIDTH 140 HEIGHT 140  FONT 'MS Sans Serif' SIZE 10
+      @ _oohg_mouserow, _oohg_mousecol FRAME &ControlName OF Form_1 CAPTION ControlName WIDTH 140 HEIGHT 140
                 :abackcolor[:ncontrolw]:=cFBackcolor
          IF cFBackcolor # 'NIL' .AND. Len( cFBackcolor ) > 0
                    GetControlObject( controlname,"form_1"):backcolor:= &cFBackcolor
@@ -941,7 +948,7 @@ LOCAL aName, x, i, swBorrado
                 enddo
                 :ncontrolw++
                 :iniarray(:nform,:ncontrolw,controlname,'TAB')
-      DEFINE TAB &ControlName OF Form_1 AT _oohg_mouserow,_oohg_mousecol WIDTH 300 HEIGHT 250 FONT 'MS Sans Serif' SIZE 10 TOOLTIP Controlname ON CHANGE dibuja(this:name)
+      DEFINE TAB &ControlName OF Form_1 AT _oohg_mouserow,_oohg_mousecol WIDTH 300 HEIGHT 250 TOOLTIP Controlname ON CHANGE dibuja(this:name)
          DEFINE PAGE 'Page 1' IMAGE ' '
          END PAGE
          DEFINE PAGE 'Page 2' IMAGE ' '
@@ -960,7 +967,7 @@ LOCAL aName, x, i, swBorrado
                 enddo
                 :ncontrolw++
                 :iniarray(:nform,:ncontrolw,controlname,'IMAGE')
-      @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 100 HEIGHT 100 VALUE ControlName BORDER ACTION dibuja(this:name) FONT 'MS Sans Serif' SIZE 10
+      @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 100 HEIGHT 100 VALUE ControlName BORDER ACTION dibuja(this:name)
 
       ProcessContainers( ControlName )
    Case :CurrentControl == 11
@@ -972,7 +979,7 @@ LOCAL aName, x, i, swBorrado
                 enddo
                 :ncontrolw++
                 :iniarray(:nform,:ncontrolw,controlname,'ANIMATE')
-      @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 100 HEIGHT 50 VALUE ControlName BORDER ACTION dibuja(this:name) FONT 'MS Sans Serif' SIZE 10
+      @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 100 HEIGHT 50 VALUE ControlName BORDER ACTION dibuja(this:name)
       ProcessContainers( ControlName )
    Case :CurrentControl == 12
       :DatePickerCount++
@@ -983,7 +990,7 @@ LOCAL aName, x, i, swBorrado
                 enddo
                 :ncontrolw++
                 :iniarray(:nform,:ncontrolw,controlname,'DATEPICKER')
-      @ _oohg_mouserow,_oohg_mousecol DATEPICKER &ControlName OF Form_1 TOOLTIP ControlName FONT 'MS Sans Serif' SIZE 10 ;
+      @ _oohg_mouserow,_oohg_mousecol DATEPICKER &ControlName OF Form_1 TOOLTIP ControlName ;
                 ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name) NOTABSTOP
       ProcessContainers( ControlName )
    Case :CurrentControl == 13
@@ -994,7 +1001,7 @@ LOCAL aName, x, i, swBorrado
                    ControlName := 'text_'+Alltrim(str(:TextBoxcount))
                 enddo
                 :ncontrolw++
-      @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 120 HEIGHT 24 BACKCOLOR WHITE CLIENTEDGE ACTION dibuja(this:name) FONT 'San serif' SIZE 10
+      @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 120 HEIGHT 24 BACKCOLOR WHITE CLIENTEDGE ACTION dibuja(this:name)
                 GetControlObject( controlname,"form_1"):value:=controlname
                 :iniarray(:nform,:ncontrolw,controlname,'TEXT')
       ProcessContainers( ControlName )
@@ -1007,8 +1014,6 @@ LOCAL aName, x, i, swBorrado
                 enddo
                 :ncontrolw++
       @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 120 HEIGHT 120 VALUE ControlName BACKCOLOR WHITE CLIENTEDGE HSCROLL VSCROLL ACTION dibuja(this:name)
-                GetControlObject( controlname,"form_1"):fontname:='MS Sans Serif'
-                GetControlObject( controlname,"form_1"):fontsize:=10
                 :iniarray(:nform,:ncontrolw,controlname,'EDIT')
       ProcessContainers( ControlName )
    Case :CurrentControl == 15
@@ -1019,7 +1024,7 @@ LOCAL aName, x, i, swBorrado
                    ControlName := 'label_'+Alltrim(str(:LabelCount))
                 enddo
                 :ncontrolw++
-      @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 VALUE ControlName  ACTION dibuja(this:name) FONT 'MS Sans Serif' SIZE 10
+      @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 VALUE ControlName  ACTION dibuja(this:name)
                 GetControlObject( controlname,"form_1"):value:= "Empty label"
                 :iniarray(:nform,:ncontrolw,controlname,'LABEL')
                 :abackcolor[:ncontrolw]:=cFBackcolor
@@ -1035,7 +1040,7 @@ LOCAL aName, x, i, swBorrado
                    ControlName := 'player_'+Alltrim(str(:PlayerCount))
                 enddo
                 :ncontrolw++
-      @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 100 HEIGHT 100 VALUE ControlName BORDER ACTION dibuja(this:name) FONT 'MS Sans Serif' SIZE 10
+      @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 100 HEIGHT 100 VALUE ControlName BORDER ACTION dibuja(this:name) 
                 :iniarray(:nform,:ncontrolw,controlname,'PLAYER')
       ProcessContainers( ControlName )
    Case :CurrentControl == 17
@@ -1057,7 +1062,7 @@ LOCAL aName, x, i, swBorrado
                    ControlName := 'radiogroup_'+Alltrim(str(:RadioGroupCount))
                 enddo
                 :ncontrolw++
-      @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 100 HEIGHT 25*2+8 VALUE ControlName BORDER ACTION dibuja(this:name) FONT 'MS Sans Serif' SIZE 10
+      @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 100 HEIGHT 25*2+8 VALUE ControlName BORDER ACTION dibuja(this:name) 
                 :iniarray(:nform,:ncontrolw,controlname,'RADIOGROUP')
                 :abackcolor[:ncontrolw]:=cFBackcolor
                 IF cFBackcolor # 'NIL' .AND. Len( cFBackcolor ) > 0
@@ -1090,8 +1095,6 @@ LOCAL aName, x, i, swBorrado
                 enddo
                 :ncontrolw++
       @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 120 HEIGHT 24 VALUE ControlName BACKCOLOR WHITE CLIENTEDGE VSCROLL ACTION dibuja(this:name)
-                GetControlObject( controlname,"form_1"):fontname:= 'MS Sans Serif'
-                GetControlObject( controlname,"form_1"):fontsize:= 10
                 :iniarray(:nform,:ncontrolw,controlname,'SPINNER')
       ProcessContainers( ControlName )
    Case :CurrentControl == 21
@@ -1132,7 +1135,7 @@ LOCAL aName, x, i, swBorrado
                 enddo
                 :ncontrolw++
                 :iniarray(:nform,:ncontrolw,controlname,'TIMER')
-      @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 100 HEIGHT 20 VALUE ControlName BORDER ACTION dibuja(this:name) FONT 'MS Sans Serif' SIZE 10
+      @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 100 HEIGHT 20 VALUE ControlName BORDER ACTION dibuja(this:name) 
       ProcessContainers( ControlName )
    Case :CurrentControl == 24
       :BrowseCount++
@@ -1144,7 +1147,7 @@ LOCAL aName, x, i, swBorrado
       aName := { { ControlName ,''} }
                 :ncontrolw++
                 :iniarray(:nform,:ncontrolw,controlname,'BROWSE')
-      @ _oohg_mouserow,_oohg_mousecol GRID &ControlName OF Form_1 HEADERS {'one','two'} WIDTHS {60,60} ITEMS aName TOOLTIP 'To move/size click on header area' FONT 'MS Sans Serif' SIZE 10 ON GOTFOCUS dibuja(this:name)
+      @ _oohg_mouserow,_oohg_mousecol GRID &ControlName OF Form_1 HEADERS {'one','two'} WIDTHS {60,60} ITEMS aName TOOLTIP 'To move/size click on header area' ON GOTFOCUS dibuja(this:name)
       ProcessContainers( ControlName )
    Case :CurrentControl == 25
       :TreeCount++
@@ -1199,7 +1202,7 @@ LOCAL aName, x, i, swBorrado
                 enddo
                 :ncontrolw++
                 :iniarray(:nform,:ncontrolw,controlname,'HYPERLINK')
-      @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 VALUE Controlname ACTION dibuja(this:name) BORDER FONT 'MS Sans Serif' SIZE 9
+      @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 VALUE Controlname ACTION dibuja(this:name) BORDER
       ProcessContainers( ControlName )
         case :CurrentControl ==29
            :richeditBoxCount++
@@ -1209,7 +1212,7 @@ LOCAL aName, x, i, swBorrado
                    ControlName := 'richeditbox_'+Alltrim(str(:richeditboxcount))
                 enddo
                 :ncontrolw++
-      @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 120 HEIGHT 124 BACKCOLOR WHITE CLIENTEDGE ACTION dibuja(this:name) FONT 'MS Sans Serif' SIZE 10
+      @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 120 HEIGHT 124 BACKCOLOR WHITE CLIENTEDGE ACTION dibuja(this:name)
                 GetControlObject( controlname,"form_1"):value:= controlname
                 :iniarray(:nform,:ncontrolw,controlname,'RICHEDIT')
       ProcessContainers( ControlName )
@@ -1366,9 +1369,8 @@ RETURN NIL
 *------------------------------------------------------------------------------*
 METHOD New() CLASS TForm1
 *------------------------------------------------------------------------------*
-   whlp := 'formedit'
    IF ! IsWindowDefined( Form_1 )
-      cFBackcolor:=myform:cFBackcolor
+      cFBackcolor := myform:cFBackcolor
 
       DEFINE WINDOW Form_1 OBJ Form_1 ;
          AT ::myIde:mainheight + 46 ,66 ;
@@ -1381,7 +1383,10 @@ METHOD New() CLASS TForm1
          ON MOUSEDRAG ms( ::myIde ) ;
          ON GOTFOCUS mispuntos() ;
          ON PAINT {|| refrefo(), mispuntos() } ;
-         BACKCOLOR &cFBackcolor ;
+         BACKCOLOR &( myform:cFBackcolor ) ;
+         FONT ::cFFontName ;
+         SIZE ::nFFontSize ;
+         FONTCOLOR &( ::cFFontColor ) ;
          NOMAXIMIZE NOMINIMIZE
 
          DEFINE CONTEXT MENU
@@ -1440,9 +1445,8 @@ METHOD New() CLASS TForm1
             ITEM 'Delete' ACTION DeleteControl()
          END MENU
 
-         @ 420,30 label lop value  "Right Click  -  click or enter to modify Cord" FONT "Calibri" SIZE 9 autosize
-         @ 435,30 label lop1 value "More Options" FONT "Calibri" SIZE 9 autosize
-
+         @ 420, 30 LABEL lop1 VALUE "Click or enter to modify position or dimension." FONT "Calibri" SIZE 9 AUTOSIZE
+         @ 435, 30 LABEL lop2 VALUE "Use right click to display more options." FONT "Calibri" SIZE 9 AUTOSIZE
       END WINDOW
 
       form_main:Show()
@@ -1490,48 +1494,40 @@ return nil
 *------------------------------------------------------------------------------*
 METHOD NewAgain() CLASS TForm1
 *------------------------------------------------------------------------------*
-   if IsWindowDefined( Form_1 )
-      MsgStop( 'Can only edit one form at a time.', 'OOHG IDE+' )
-   else
-      whlp := 'formedit'
+LOCAL nFWidth, nFHeight
 
-      myform:FillControlAux()
-      cffontname  := myform:cffontname
-      nffontsize  := myform:nffontsize
-      cFBackcolor := myform:cFBackcolor
+   IF IsWindowDefined( Form_1 )
+      MsgStop( 'Can only edit one form at a time.', 'OOHG IDE+' )
+   ELSE
       CursorWait()
       waitmess:hmi_label_101:Value := 'Loading Form....'
-      waitmess:show()
+      waitmess:Show()
 
-      if myform:nfvirtualw <= nfwidth
-         nvw := NIL
-      else
-         nvw:= NIL  /////  myform:nfvirtualw
-      endif
-
-      if myform:nfvirtualh <= nfheight
-         nvh := NIL
-      else
-         nvh := NIL  ////  myform:nfvirtualh
-      endif
+      // Do not force a font when form has none, use OOHG default
+      ::cFFontName  := ::Clean( ::LeaDato( 'WINDOW', 'FONT', '' ) )
+      ::nFFontSize  := Val( ::LeaDato( 'WINDOW', 'SIZE', '0' ) )
+      ::cFBackcolor := ::LeaDato( 'WINDOW', 'BACKCOLOR', 'NIL' )
+      nFWidth       := Val( ::LeaDato( 'WINDOW', 'WIDTH', '640' ) )
+      nFHeight      := Val( ::LeaDato( 'WINDOW', 'HEIGHT', '480' ) )
+      ::nfvirtualw  := Val( ::LeaDato( 'WINDOW', 'VIRTUAL WIDTH', '0' ) )
+      ::nfvirtualh  := Val( ::LeaDato( 'WINDOW', 'VIRTUAL HEIGHT', '0' ) )
 
       DEFINE WINDOW Form_1 OBJ Form_1 ;
          AT ::myIde:mainheight + 42, 66 ;
-         WIDTH nfwidth ;
-         HEIGHT nfheight ;
-         VIRTUAL WIDTH  nvw  ;
-         VIRTUAL HEIGHT nvh  ;
+         WIDTH nFWidth ;
+         HEIGHT nFHeight ;
          TITLE 'Title' ;
          ICON 'VD' ;
          CHILD NOSHOW  ;
-         ON MOUSECLICK myform:AddControl()  ;
-         ON MOUSEMOVE cordenada() ;
+         ON MOUSECLICK ::AddControl()  ;
+         ON MOUSEMOVE Cordenada() ;
          ON MOUSEDRAG ms( ::myIde ) ;
-         ON GOTFOCUS mispuntos() ;
-         ON PAINT {|| refrefo(),mispuntos() } ;
-         BACKCOLOR &cFBackcolor ;
-         FONT cffontname ;
-         SIZE nffontsize ;
+         ON GOTFOCUS MisPuntos() ;
+         ON PAINT {|| RefreFo(), MisPuntos() } ;
+         BACKCOLOR &( ::cFBackcolor ) ;
+         FONT ::cFFontName ;
+         SIZE ::nFFontSize ;
+         FONTCOLOR &( ::cFFontColor ) ;
          NOMAXIMIZE NOMINIMIZE
 
          DEFINE CONTEXT MENU
@@ -1589,23 +1585,22 @@ METHOD NewAgain() CLASS TForm1
             ITEM 'Delete' ACTION DeleteControl()
          END MENU
 
-         @ 420, 30 LABEL lop VALUE "Right Click  -  click or enter to modify Cord" FONT "Calibri" SIZE 9 AUTOSIZE
-         @ 435, 30 LABEL lop1 VALUE "More Options" FONT "Calibri" SIZE 9 AUTOSIZE
+         @ 420, 30 LABEL lop1 VALUE "Click or enter to modify position or dimension." FONT "Calibri" SIZE 9 AUTOSIZE
+         @ 435, 30 LABEL lop2 VALUE "Use right click to display more options." FONT "Calibri" SIZE 9 AUTOSIZE
       END WINDOW
 
       form_main:Show()
       cvcControls:Show()
 
       ::myIde:form_activated := .T.
-      myform:FillControl()
+      ::FillControl()
       MuestraSiNo()
 
-      tmytoolb:Abrir()
+      tMyToolb:Abrir()
       ZAP
-      ctitulo := 'Toolbar'
-      archivo := myform:cfname + '.tbr'
-      IF File(archivo)
-         APPEND FROM &archivo
+      cTitulo := 'Toolbar'                   // TODO: remove ?
+      IF File( ::cFName + '.tbr' )
+         APPEND FROM ( ::cFName + '.tbr' )
       ENDIF
 
       tbParsea( tmytoolb )
@@ -1614,20 +1609,6 @@ METHOD NewAgain() CLASS TForm1
       ACTIVATE WINDOW form_1, lista
    ENDIF
 RETURN  NIL
-
-*------------------------------------------------------------------------------*
-METHOD FillControlAux() CLASS TForm1
-*------------------------------------------------------------------------------*
-   Public nfwidth, nfheight
-
-   myform:cffontname  := myform:Clean( myform:LeaDato( 'WINDOW', 'FONT', 'MS Sans Serif' ) )   // TODO: la fuente por defecto debe ser la de la clase
-   myform:nffontsize  := Val( myform:LeaDato( 'WINDOW', 'SIZE', '10' ) )
-   myform:cFBackcolor := myform:LeaDato( 'WINDOW', 'BACKCOLOR', ::myIde:cdbackcolor )
-   nfwidth            := Val( myform:LeaDato( 'WINDOW', 'WIDTH', '640' ) )
-   nfheight           := Val( myform:LeaDato( 'WINDOW', 'HEIGHT', '480' ) )
-   myform:nfvirtualw  := Val( myform:LeaDato( 'WINDOW', 'VIRTUAL WIDTH', '0' ) )
-   myform:nfvirtualh  := Val( myform:LeaDato( 'WINDOW', 'VIRTUAL HEIGHT', '0' ) )
-RETURN NIL
 
 *------------------------------------------------------------------------------*
 METHOD FillControl() CLASS TForm1
@@ -1775,16 +1756,17 @@ LOCAL i, cTipo
             DEFINE TOOLBAR hmitb OF form_1  ;
                BUTTONSIZE nw, nh
 
+               i := 1
                GO TOP
                DO WHILE ! Eof()
                   wCaption := LTrim( RTrim( dtoolbar->item ) )
                   cName := "hmi_cvc_tb_button_" + AllTrim( Str( i, 2 ) )
-
                   BUTTON &cName ;
                      CAPTION wCaption ;
                      ACTION NIL
 
                   SKIP
+                  i ++
                ENDDO
             END TOOLBAR
          ENDIF
@@ -2492,21 +2474,18 @@ return
 *------------------------------------------------------------------------------*
 STATIC FUNCTION pForma(i)
 *------------------------------------------------------------------------------*
+LOCAL nFWidth, nFHeight
+
    myform:actrltype[i]:='FORM'
    nfrow:=val(myform:learowf(myform:cfname))
    nfcol:=val(myform:leacolf(myform:cfname))
-   ****
    myform:cftitle:=myform:Clean( myform:LeaDato('DEFINE WINDOW','TITLE',''))
-   nfwidth:=val(myform:LeaDato('DEFINE WINDOW','WIDTH','640'))
-   nfheight:=val(myform:LeaDato('DEFINE WINDOW','HEIGHT','480'))+gettitleheight()
-
+   nFWidth:=val(myform:LeaDato('DEFINE WINDOW','WIDTH','640'))
+   nFHeight:=val(myform:LeaDato('DEFINE WINDOW','HEIGHT','480'))+gettitleheight()
    myform:cfobj:=myform:LeaDato('DEFINE WINDOW','OBJ','')
    myform:cficon:=myform:Clean( myform:LeaDato('WINDOW','ICON',''))
-
    myform:nfvirtualw:=val(myform:LeaDato('DEFINE WINDOW','VIRTUAL WIDTH','0'))
    myform:nfvirtualh:=val(myform:LeaDato('DEFINE WINDOW','VIRTUAL HEIGHT','0'))
-
-
    myform:lfmain:=myform:LeaDatoLogic('DEFINE WINDOW',"MAIN","")
    myform:lfchild:=myform:LeaDatoLogic('DEFINE WINDOW',"CHILD","")
    myform:lfmodal:=myform:LeaDatoLogic('DEFINE WINDOW',"MODAL","")
@@ -2523,7 +2502,6 @@ STATIC FUNCTION pForma(i)
    myform:lfbreak:=myform:LeaDatoLogic('DEFINE WINDOW',"BREAK","")
    myform:lfsplitchild:=myform:LeaDatoLogic('DEFINE WINDOW',"SPLITCHILD","")
    myform:lfgrippertext:=myform:LeaDatoLogic('DEFINE WINDOW',"GRIPPERTEXT","")
-
    myform:cfoninit:=myform:LeaDato('DEFINE WINDOW','ON INIT','')
    myform:cfonrelease:=myform:LeaDato('DEFINE WINDOW','ON RELEASE','')
    myform:cfoninteractiveclose:=myform:LeaDato('DEFINE WINDOW','ON INTERACTIVECLOSE','')
@@ -2534,9 +2512,11 @@ STATIC FUNCTION pForma(i)
    myform:cfonpaint:=myform:LeaDato('DEFINE WINDOW','ON PAINT','')
    myform:cFBackcolor:=myform:LeaDato('DEFINE WINDOW', 'BACKCOLOR', 'NIL')
    myform:cfcursor:=myform:LeaDato('DEFINE WINDOW','CURSOR','')
-*********ojo aqui
-   myform:cffontname:=myform:Clean( myform:LeaDato('DEFINE WINDOW','FONT',''))     // TODO: la fuente por defecto debe ser la de la clase
-   myform:nffontsize:=val(myform:LeaDato('DEFINE WINDOW','SIZE','0'))
+   // Do not force a font when form has none, use OOHG default
+   myform:cFFontName  := myform:Clean( myform:LeaDato( 'DEFINE WINDOW', 'FONT', '' ) )
+   myform:nFFontSize  := Val( myform:LeaDato( 'DEFINE WINDOW', 'SIZE', '0' ) )
+   myform:cFFontColor := myform:LeaDato( 'DEFINE WINDOW', 'FONTCOLOR', 'NIL' )
+   myform:cFFontColor := myform:Clean( myform:LeaDato_Oop( 'DEFINE WINDOW', 'FONTCOLOR', myform:cFFontColor ) )
    myform:cfnotifyicon:=myform:Clean( myform:LeaDato('DEFINE WINDOW','NOTIFYICON',''))
    myform:cfnotifytooltip:=myform:Clean( myform:LeaDato('DEFINE WINDOW','NOTIFYTOOLTIP',''))
    myform:cfonnotifyclick:=myform:LeaDato('DEFINE WINDOW','ON NOTIFYCLICK','')
@@ -2550,16 +2530,8 @@ STATIC FUNCTION pForma(i)
    myform:cfonvscrollbox:=myform:LeaDato('DEFINE WINDOW','ON VSCROLLBOX','')
    myform:cfonmaximize:=myform:LeaDato('DEFINE WINDOW','ON MAXIMIZE','')
    myform:cfonminimize:=myform:LeaDato('DEFINE WINDOW','ON MINIMIZE','')
-
    myform:lfmain:=iif(myform:lfmain='T',.T.,.F.)
    myform:lfmodal:=iif(myform:lfmodal='T',.T.,.F.)
-
-   form_1:row := nfrow
-   form_1:col := nfcol
-   form_1:width := nfwidth
-   form_1:height := nfheight - GetTitleHeight()
-   form_1:title := myform:cftitle
-
    myform:lfchild:=iif(myform:lfchild='T',.T.,.F.)
    myform:lfnoshow:=iif(myform:lfnoshow='T',.T.,.F.)
    myform:lftopmost:=iif(myform:lftopmost='T',.T.,.F.)
@@ -2575,7 +2547,15 @@ STATIC FUNCTION pForma(i)
    myform:lfsplitchild:=iif(myform:lfsplitchild='T',.T.,.F.)
    myform:lfgrippertext:=iif(myform:lfgrippertext='T',.T.,.F.)
 
-return
+   Form_1:Row       := nFRow
+   Form_1:Col       := nFCol
+   Form_1:Width     := nFWidth
+   Form_1:Height    := nFHeight - GetTitleHeight()
+   Form_1:Title     := myForm:cFTitle
+   Form_1:cFontName := IIF( Empty( myform:cFFontName ), _OOHG_DefaultFontName, myform:cFFontName )
+   Form_1:nFontSize := IIF( myform:nFFontSize > 0, myform:nFFontSize, _OOHG_DefaultFontSize )
+   Form_1:FontColor := &( myform:cFFontColor )
+RETURN NIL
 
 *------------------------------------------------------------------------------*
 STATIC FUNCTION pLabel( i, myIde )
