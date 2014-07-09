@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.95 2014-05-06 21:49:58 fyurisich Exp $
+ * $Id: h_textbox.prg,v 1.96 2014-07-09 21:54:50 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -253,11 +253,19 @@ Local break := Nil
    EndIf
 
    If HB_IsBlock( bAction )
-      @ 2,::ClientWidth + 2 - nBtnwidth BUTTON 0 WIDTH nBtnwidth HEIGHT 100 ACTION Eval( bAction ) OF ( Self ) PICTURE aBitmap[ 1 ] OBJ ::oButton1
+      IF Empty( aBitmap[ 1 ] )
+         @ 2,::ClientWidth + 2 - nBtnwidth BUTTON 0 WIDTH nBtnwidth HEIGHT 100 ACTION Eval( bAction ) OF ( Self ) CAPTION '...' OBJ ::oButton1
+      ELSE
+         @ 2,::ClientWidth + 2 - nBtnwidth BUTTON 0 WIDTH nBtnwidth HEIGHT 100 ACTION Eval( bAction ) OF ( Self ) PICTURE aBitmap[ 1 ] OBJ ::oButton1
+      ENDIF
    EndIf
 
    If HB_IsBlock( bAction2 )
-      @ 2,::ClientWidth + 2 - nBtnwidth BUTTON 0 WIDTH nBtnwidth HEIGHT 100 ACTION Eval( bAction2 ) OF ( Self ) PICTURE aBitmap[ 2 ] OBJ ::oButton2
+      IF Empty( aBitmap[ 2 ] )
+         @ 2,::ClientWidth + 2 - nBtnwidth BUTTON 0 WIDTH nBtnwidth HEIGHT 100 ACTION Eval( bAction2 ) OF ( Self ) CAPTION '...' OBJ ::oButton2
+      ELSE
+         @ 2,::ClientWidth + 2 - nBtnwidth BUTTON 0 WIDTH nBtnwidth HEIGHT 100 ACTION Eval( bAction2 ) OF ( Self ) PICTURE aBitmap[ 2 ] OBJ ::oButton2
+      ENDIF
    EndIf
 
 Return Self
