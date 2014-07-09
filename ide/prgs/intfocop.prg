@@ -1,5 +1,5 @@
 /*
- * $Id: intfocop.prg,v 1.5 2014-07-08 03:02:41 fyurisich Exp $
+ * $Id: intfocop.prg,v 1.6 2014-07-09 21:41:05 fyurisich Exp $
  */
 
 #include 'oohg.ch'
@@ -87,70 +87,83 @@ FUNCTION GFontT( si )
 LOCAL cName, aFont, nRed, nGreen, nBlue
 
    IF si == 0
-      aFont := GetFont( myForm:cFFontName, myForm:nFFontSize, .F. , .F. , {0, 0, 0} , .F., .F., 0 ) // TODO: revisar fuentes
+      aFont := GetFont( myForm:cFFontName, myForm:nFFontSize, .F. , .F. , {0, 0, 0} , .F., .F., 0 )
+      IF aFont[1] == "" .AND. aFont[2] == 0 .AND. ( ! aFont[3] ) .AND.  ( ! aFont[4] ) .AND. ;
+         aFont[5, 1] == NIL .AND. aFont[5,2] == NIL .AND.  aFont[5, 3] == NIL .AND. ;
+         ( ! aFont[6] ) .AND. ( ! aFont[7]) .AND. aFont[8] == 0
+         RETURN NIL
+      ENDIF
+
+      IF Len( aFont[1] ) > 0
+         myForm:cFFontName := aFont[1]
+         GetFormObject( "Form_1" ):cFontName := aFont[1]
+      ENDIF
+      IF aFont[2] > 0
+         myForm:nFFontSize := aFont[2]
+         GetFormObject( "Form_1" ):cFontSize := aFont[2]
+      ENDIF
+      nRed := aFont[5,1]
+      nGreen := aFont[5,2]
+      nBlue := aFont[5,3]
+      IF nRed <> NIL .AND. nGreen <> NIL .AND. nBlue <> NIL
+         cColor := '{ ' + LTrim( Str( nRed ) ) + ', ' + ;
+                          LTrim( Str( nGreen ) ) + ', ' + ;
+                          LTrim( Str( nBlue ) ) + ' }'
+         myForm:cFFontColor := cColor
+         GetFormObject( "Form_1" ):FontColor := &cColor
+      ENDIF
    ELSE
       cName := myForm:aControlW[si]
       nFontColor := myForm:aFontColor[si]
       aFont := GetFont( myForm:aFontName[si], myForm:aFontSize[si], myForm:aBold[si], myForm:aFontItalic[si], &nFontColor, myForm:aFontUnderline[si], myForm:aFontStrikeout[si], 0 )
-   ENDIF
-   IF aFont[1] == "" .AND. aFont[2] == 0 .AND. ( ! aFont[3] ) .AND.  ( ! aFont[4] ) .AND. ;
-      aFont[5, 1] == NIL .AND. aFont[5,2] == NIL .AND.  aFont[5, 3] == NIL .AND. ;
-      ( ! aFont[6] ) .AND. ( ! aFont[7]) .AND. aFont[8] == 0
-      RETURN NIL
-   ENDIF
-   IF si == 0 .AND. Len( aFont[1] ) > 0
-      myForm:cFFontName := aFont[1]
-   ENDIF
-   IF si == 0 .AND. aFont[2] > 0
-      myForm:nFFontSize := aFont[2]
-   ENDIF
-   IF si == 0
-      myForm:lFSave := .F.
-      RETURN NIL
-   ENDIF
+      IF aFont[1] == "" .AND. aFont[2] == 0 .AND. ( ! aFont[3] ) .AND.  ( ! aFont[4] ) .AND. ;
+         aFont[5, 1] == NIL .AND. aFont[5,2] == NIL .AND.  aFont[5, 3] == NIL .AND. ;
+         ( ! aFont[6] ) .AND. ( ! aFont[7]) .AND. aFont[8] == 0
+         RETURN NIL
+      ENDIF
 
-   IF Len( aFont[1] ) > 0
-      myForm:aFontName[si] := aFont[1]
-      GetControlObject( cName, "Form_1" ):FontName := aFont[1]
-   ENDIF
-   IF aFont[2] > 0
-      myForm:aFontSize[si] := aFont[2]
-      GetControlObject( cName, "Form_1" ):FontSize := aFont[2]
-   ENDIF
+      IF Len( aFont[1] ) > 0
+         myForm:aFontName[si] := aFont[1]
+         GetControlObject( cName, "Form_1" ):FontName := aFont[1]
+      ENDIF
+      IF aFont[2] > 0
+         myForm:aFontSize[si] := aFont[2]
+         GetControlObject( cName, "Form_1" ):FontSize := aFont[2]
+      ENDIF
 
-   IF myForm:aBold[si] <> aFont[3]
-      myForm:aBold[si] := aFont[3]
-      GetControlObject( cName, "Form_1" ):FontBold := aFont[3]
-   ENDIF
-   IF myForm:aFontItalic[si] <> aFont[4]
-      myForm:aFontItalic[si] := aFont[4]
-      GetControlObject( cName, "Form_1" ):FontItalic := aFont[4]
-   ENDIF
-   nRed := aFont[5,1]
-   nGreen := aFont[5,2]
-   nBlue := aFont[5,3]
-   IF nRed <> NIL .AND. nGreen <> NIL .AND. nBlue <> NIL
-      cColor := '{ ' + LTrim( Str( nRed ) ) + ', ' + ;
-                       LTrim( Str( nGreen ) ) + ', ' + ;
-                       LTrim( Str( nBlue ) ) + ' }'
-      myForm:aFontColor[si] := cColor
-      GetControlObject( cName, "Form_1" ):FontColor := &cColor
-   ENDIF
-
-   IF myForm:aFontUnderline[si] <> aFont[6]
-      myForm:aFontUnderline[si] := aFont[6]
-      GetControlObject( cName, "Form_1" ):FontUnderline := aFont[6]
-   ENDIF
-   IF myForm:aFontStrikeout[si] <> aFont[7]
-      myForm:aFontStrikeout[si] := aFont[7]
-   GetControlObject( cName, "Form_1" ):FontStrikeout := aFont[7]
+      IF myForm:aBold[si] <> aFont[3]
+         myForm:aBold[si] := aFont[3]
+         GetControlObject( cName, "Form_1" ):FontBold := aFont[3]
+      ENDIF
+      IF myForm:aFontItalic[si] <> aFont[4]
+         myForm:aFontItalic[si] := aFont[4]
+         GetControlObject( cName, "Form_1" ):FontItalic := aFont[4]
+      ENDIF
+      nRed := aFont[5,1]
+      nGreen := aFont[5,2]
+      nBlue := aFont[5,3]
+      IF nRed <> NIL .AND. nGreen <> NIL .AND. nBlue <> NIL
+         cColor := '{ ' + LTrim( Str( nRed ) ) + ', ' + ;
+                          LTrim( Str( nGreen ) ) + ', ' + ;
+                          LTrim( Str( nBlue ) ) + ' }'
+         myForm:aFontColor[si] := cColor
+         GetControlObject( cName, "Form_1" ):FontColor := &cColor
+      ENDIF
+      IF myForm:aFontUnderline[si] <> aFont[6]
+         myForm:aFontUnderline[si] := aFont[6]
+         GetControlObject( cName, "Form_1" ):FontUnderline := aFont[6]
+      ENDIF
+      IF myForm:aFontStrikeout[si] <> aFont[7]
+         myForm:aFontStrikeout[si] := aFont[7]
+         GetControlObject( cName, "Form_1" ):FontStrikeout := aFont[7]
+      ENDIF
    ENDIF
    myForm:lFSave := .F.
 RETURN NIL
 
 /*
    TODO: Add a function to reset font attributes to defaults.
-         Add a button to intfonco.fmg to execute de function.
+         Add buttons to reset Name, Size and Color individually.
 */
 
 //------------------------------------------------------------------------------

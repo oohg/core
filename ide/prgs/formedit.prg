@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.13 2014-07-08 03:02:41 fyurisich Exp $
+ * $Id: formedit.prg,v 1.14 2014-07-09 21:41:05 fyurisich Exp $
  */
 
 /*
@@ -144,6 +144,7 @@ CLASS TForm1
    DATA acobj                INIT {}  //gca                // TODO: cambiar a aObj
    DATA aBorder              INIT {}  //GCA
    DATA aOnEnter             INIT {}  //gca
+   DATA aAction2             INIT {}
 
    // variables de forms
    DATA Cftitle              INIT ""
@@ -575,6 +576,7 @@ METHOD IniArray( nform, ncontrolwl, controlname, ctypectrl, noanade ) CLASS TFor
          aAdd( :acobj, '' )
          aAdd( :aborder, .F. )
          aAdd( :aonenter, '' )
+         aAdd( ::aAction2, "" )
       ELSE
          z:=ncontrolwl
          myAdel( "myform:acontrolw", z )
@@ -832,6 +834,7 @@ LOCAL aName, x, i, swBorrado
          :IniArray( :nForm, :nControlW, ControlName, 'BUTTON' )
          :aaction[:ncontrolw] := "MsgInfo( 'Button pressed' )"
          @ _oohg_mouserow, _oohg_mousecol BUTTON &ControlName OF Form_1 ;
+            CAPTION ControlName ;
             ON GOTFOCUS Dibuja( This:Name ) ;
             ACTION Dibuja( This:Name ) ;
             NOTABSTOP
@@ -4486,6 +4489,9 @@ STATIC FUNCTION pTextBox( i, myIde )
    lreadonly:=myform:LeaDatoLogic(cName,'READONLY',"")
    nFocusedPos:= val(myform:LeaDato(cName,'FOCUSEDPOS','-2'))   // pb
    cvalid:= myform:LeaDato(cName,'VALID','')
+   caction:= myform:LeaDato(cName,'ACTION','')
+   caction2:= myform:LeaDato(cName,'ACTION2','')
+   cimage:= myform:LeaDato(cName,'IMAGE','')
    cwhen:=myform:LeaDato(cName,'WHEN','')
    cobj:=myform:LeaDato(cName,'OBJ','')
 
@@ -4574,6 +4580,9 @@ STATIC FUNCTION pTextBox( i, myIde )
         myform:amaxlength[i]=0
      endif
      myform:afocusedpos[i]:=nFocusedPos   // pb
+     myform:aaction[i]:=caction           // rhs
+     myform:aaction2[i]:=caction2         // rhs
+     myform:aimage[i]:=cimage             // rhs
      myform:avalid[i]:=cvalid
      myform:awhen[i]:=cwhen
        myform:acobj[i]:=cobj

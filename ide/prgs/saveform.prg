@@ -1,5 +1,5 @@
 /*
- * $Id: saveform.prg,v 1.9 2014-07-08 03:02:41 fyurisich Exp $
+ * $Id: saveform.prg,v 1.10 2014-07-09 21:41:05 fyurisich Exp $
  */
 
 /////#include 'oohg.ch'
@@ -792,10 +792,6 @@ RETURN NIL
 STATIC FUNCTION MakeControls( j, Output, nRow, nCol, nWidth, nHeight, mlyform, nSpacing, nLevel )
 *------------------------------------------------------------------------------*
 LOCAL cName, lBlankLine := .F.
-
-/*
-   TODO: Add ON GOTFOCUS and ON LOSTFOCUS to all controls
-*/
 
    IF myForm:actrltype[j] == 'BUTTON'
       // Must end with a space
@@ -1877,6 +1873,15 @@ LOCAL cName, lBlankLine := .F.
       IF Len( myForm:awhen[j] ) > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WHEN ' + AllTrim( myForm:awhen[j] )
       ENDIF
+      IF Len( myForm:aaction[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + AllTrim( myForm:aaction[j] )
+      ENDIF
+      IF Len( myForm:aaction2[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION2 ' + AllTrim( myForm:aaction2[j] )
+      ENDIF
+      IF Len( myForm:aimage[j] ) > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'IMAGE ' + AllTrim( myForm:aimage[j] )
+      ENDIF
       IF myForm:ahelpid[j] > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) )
       ENDIF
@@ -1897,9 +1902,6 @@ LOCAL cName, lBlankLine := .F.
    [ <noborder: NOBORDER> ] ;
    [ <disabled: DISABLED> ] ;
    [ DEFAULTYEAR <year> ] ;
-   [ ACTION <action> ] ;
-   [ ACTION2 <action2> ] ;
-   [ IMAGE <abitmap> ] ;
    [ BUTTONWIDTH <btnwidth> ] ;
    [ INSERTTYPE <nInsType> ] ;
 */

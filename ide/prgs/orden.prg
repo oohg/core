@@ -1,5 +1,5 @@
 /*
- * $Id: orden.prg,v 1.5 2014-07-04 20:16:02 fyurisich Exp $
+ * $Id: orden.prg,v 1.6 2014-07-09 21:41:05 fyurisich Exp $
  */
 
 #include 'oohg.ch'
@@ -285,6 +285,7 @@ cambia("myform:aedit",x1,x2)
 cambia("myform:aappend",x1,x2)
 cambia("myform:aclientedge",x1,x2)
 cambia("myform:afocusedpos",x1,x2)
+cambia("myform:aaction2",x1,x2)
 cambia("myform:anumber",x1,x2)
 cambia("myform:aspeed",x1,x2)
 cambia("myform:acobj",x1,x2)  //gca

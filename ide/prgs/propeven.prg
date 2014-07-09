@@ -1,5 +1,5 @@
 /*
- * $Id: propeven.prg,v 1.6 2014-07-04 20:16:03 fyurisich Exp $
+ * $Id: propeven.prg,v 1.7 2014-07-09 21:41:05 fyurisich Exp $
  */
 
 #include 'oohg.ch'
@@ -78,10 +78,10 @@ LOCAL i, cname, j, Title, aLabels, aInitValues, aFormats, aResults, ctipo, jh, n
 
                      IF :aCtrlType[j] == "TEXT"
                         Title:=cnamew+" properties"
-                        // pb - se agrega propiedad focusedpos
-                        aLabels     := { 'ToolTip',    'MaxLength',    'UpperCase',    'RightAlign',    'Value',    'Password',    'Lowercase',    'Numeric',    'Inputmask',    'HelpId',    'Field',    'ReadOnly',    'Enabled',    'Visible',    'NoTabStop',    'Date',    'Name',    'Format',    'FocusedPos',    'Valid',    'When',    'Obj' }
-                        aInitValues := { :atooltip[j], :amaxlength[j], :auppercase[j], :arightalign[j], :avalue[j], :apassword[j], :alowercase[j], :anumeric[j], :ainputmask[j], :ahelpid[j], :afield[j], :areadonly[j], :aenabled[j], :avisible[j], :anotabstop[j], :adate[j], :aname[j], :afields[j], :afocusedpos[j], :avalid[j], :awhen[j], :acobj[j] }
-                        aFormats    := { 120,          '999',          NIL,            NIL,             40,         .F.,           .F.,            .F.,          30,             '999',       250,        .F.,           .F.,          .F.,          .F.,            .F.,       30,        30,          '99',            250,        250,       31 }
+                        // rhs - se agregan metodos "action" y "action2" y propiedad "image"
+                        aLabels     := { 'ToolTip',    'MaxLength',    'UpperCase',    'RightAlign',    'Value',    'Password',    'Lowercase',    'Numeric',    'Inputmask',    'HelpId',    'Field',    'ReadOnly',    'Enabled',    'Visible',    'NoTabStop',    'Date',    'Name',    'Format',    'FocusedPos',    'Valid',    'When',    'Obj',       'Action',    'Action2',    'Image'    }
+                        aInitValues := { :atooltip[j], :amaxlength[j], :auppercase[j], :arightalign[j], :avalue[j], :apassword[j], :alowercase[j], :anumeric[j], :ainputmask[j], :ahelpid[j], :afield[j], :areadonly[j], :aenabled[j], :avisible[j], :anotabstop[j], :adate[j], :aname[j], :afields[j], :afocusedpos[j], :avalid[j], :awhen[j], :acobj[j],   :aaction[j], :aaction2[j], :aimage[j] }
+                        aFormats    := { 120,          '999',          NIL,            NIL,             40,         .F.,           .F.,            .F.,          30,             '999',       250,        .F.,           .F.,          .F.,          .F.,            .F.,       30,        30,          '99',            250,        250,       31,          250,         250,          250        }
                         aResults    := myInputWindow( Title, aLabels, aInitValues, aFormats )
                         IF aresults[1] == NIL
                            RETURN NIL
@@ -123,6 +123,9 @@ LOCAL i, cname, j, Title, aLabels, aInitValues, aFormats, aResults, ctipo, jh, n
                         :avalid[j]:=aresults[20]
                         :awhen[j]:=aresults[21]
                         :acobj[j]:=aresults[22]     //gca
+                        :aaction[j]:=aresults[23]   //rhs
+                        :aaction2[j]:=aresults[24]  //rhs
+                        :aimage[j]:=aresults[25]    //rhs
                      ENDIF
 
                      IF :aCtrlType[j] == "IPADDRESS"
