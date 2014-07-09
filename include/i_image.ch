@@ -1,15 +1,21 @@
 /*
- * $Id: i_image.ch,v 1.14 2014-07-04 20:16:03 fyurisich Exp $
+ * $Id: i_image.ch,v 1.15 2014-07-09 02:25:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * Image definitions
  *
- * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.oohg.org
+ * Copyright 2007-2014 Vicente Guerra <vicente@guerra.com.mx>
  *
- * Portions of this code are copyrighted by the Harbour MiniGUI library.
+ * Portions of this project are based upon Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
+ *
+ * Portions of this project are based upon Harbour GUI framework for Win32.
+ * Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
+ * Copyright 2001 Antonio Linares <alinares@fivetech.com>
+ *
+ * Portions of this project are based upon Harbour Project.
+ * Copyright 1999-2014, http://www.harbour-project.org/
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,9 +28,9 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this software; see the file COPYING.  If not, write to
- * the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307 USA (or visit the web site http://www.gnu.org/).
+ * along with this software; see the file COPYING.TXT.  If not, write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301,USA (or download from http://www.gnu.org/licenses/).
  *
  * As a special exception, the ooHG Project gives permission for
  * additional uses of the text contained in its release of ooHG.
@@ -49,56 +55,16 @@
  * If you write modifications of your own for ooHG, it is your choice
  * whether to permit this exception to apply to your modifications.
  * If you do not wish that, delete this exception notice.
- *
  */
-/*----------------------------------------------------------------------------
- MINIGUI - Harbour Win32 GUI library source code
 
- Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
- http://www.geocities.com/harbour_minigui/
-
- This program is free software; you can redistribute it and/or modify it under
- the terms of the GNU General Public License as published by the Free Software
- Foundation; either version 2 of the License, or (at your option) any later
- version.
-
- This program is distributed in the hope that it will be useful, but WITHOUT
- ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License along with
- this software; see the file COPYING. If not, write to the Free Software
- Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA (or
- visit the web site http://www.gnu.org/).
-
- As a special exception, you have permission for additional uses of the text
- contained in this release of Harbour Minigui.
-
- The exception is that, if you link the Harbour Minigui library with other
- files to produce an executable, this does not by itself cause the resulting
- executable to be covered by the GNU General Public License.
- Your use of that executable is in no way restricted on account of linking the
- Harbour-Minigui library code into it.
-
- Parts of this project are based upon:
-
-        "Harbour GUI framework for Win32"
-        Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
-        Copyright 2001 Antonio Linares <alinares@fivetech.com>
-        www - http://www.harbour-project.org
-
-        "Harbour Project"
-        Copyright 1999-2003, http://www.harbour-project.org/
----------------------------------------------------------------------------*/
-
-#command @ <row>,<col> IMAGE <name> ;
+#command @ <row>, <col> IMAGE <name> ;
       [ OBJ <obj> ] ;
       [ <dummy1: OF, PARENT> <parent> ] ;
-      [ <dummy2: ACTION,ON CLICK,ONCLICK> <action> ];
+      [ <dummy2: ACTION,ON CLICK,ONCLICK> <action> ] ;
       [ WIDTH <w> ] ;
       [ HEIGHT <h> ] ;
       [ <stretch: STRETCH> ] ;
-      [ HELPID <helpid> ]       ;
+      [ HELPID <helpid> ] ;
       [ <invisible: INVISIBLE> ] ;
       [ <rtl: RTL> ] ;
       [ SUBCLASS <subclass> ] ;
@@ -120,8 +86,9 @@
       [ <disabled: DISABLED> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TImage(), [ <subclass>() ] ):Define( ;
-            <(name)>, <(parent)>, <col>, <row>, <filename>, <w>, <h>, <{action}>, ;
-            <helpid>, <.invisible.>, <.stretch.>, <.whitebackground.>, <.rtl.>, ;
-            <backcolor>, <buffer>, <hbitmap>, ! <.noresize.>, <.imagesize.>, ;
-            <tooltip>, <.border.>, <.clientedge.>, <.notrans.>, <.no3dcolors.>, ;
-            <.nodib.>, <.style.>, <area>, <.disabled.> )
+            <(name)>, <(parent)>, <col>, <row>, <filename>, <w>, <h>, ;
+            <{action}>, <helpid>, <.invisible.>, <.stretch.>, ;
+            <.whitebackground.>, <.rtl.>, <backcolor>, <buffer>, <hbitmap>, ;
+            ! <.noresize.>, <.imagesize.>, <tooltip>, <.border.>, ;
+            <.clientedge.>, <.notrans.>, <.no3dcolors.>, <.nodib.>, <.style.>, ;
+            <area>, <.disabled.> )

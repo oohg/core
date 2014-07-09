@@ -1,15 +1,21 @@
 /*
- * $Id: i_grid.ch,v 1.35 2014-04-11 02:27:46 fyurisich Exp $
+ * $Id: i_grid.ch,v 1.36 2014-07-09 02:25:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * Grid definitions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2007-2014 Vicente Guerra <vicente@guerra.com.mx>
  *
- * Portions of this code are copyrighted by the Harbour MiniGUI library.
+ * Portions of this project are based upon Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
+ *
+ * Portions of this project are based upon Harbour GUI framework for Win32.
+ * Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
+ * Copyright 2001 Antonio Linares <alinares@fivetech.com>
+ *
+ * Portions of this project are based upon Harbour Project.
+ * Copyright 1999-2014, http://www.harbour-project.org/
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,9 +28,9 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this software; see the file COPYING.  If not, write to
- * the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307 USA (or visit the web site http://www.gnu.org/).
+ * along with this software; see the file COPYING.TXT.  If not, write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301,USA (or download from http://www.gnu.org/licenses/).
  *
  * As a special exception, the ooHG Project gives permission for
  * additional uses of the text contained in its release of ooHG.
@@ -49,59 +55,20 @@
  * If you write modifications of your own for ooHG, it is your choice
  * whether to permit this exception to apply to your modifications.
  * If you do not wish that, delete this exception notice.
- *
  */
-/*----------------------------------------------------------------------------
- MINIGUI - Harbour Win32 GUI library source code
 
- Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
- http://www.geocities.com/harbour_minigui/
+#define GRID_JTFY_LEFT      0
+#define GRID_JTFY_RIGHT     1
+#define GRID_JTFY_CENTER    2
 
- This program is free software; you can redistribute it and/or modify it under
- the terms of the GNU General Public License as published by the Free Software
- Foundation; either version 2 of the License, or (at your option) any later
- version.
+#define HEADER_IMG_AT_LEFT  0
+#define HEADER_IMG_AT_RIGHT 1
 
- This program is distributed in the hope that it will be useful, but WITHOUT
- ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License along with
- this software; see the file COPYING. If not, write to the Free Software
- Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA (or
- visit the web site http://www.gnu.org/).
-
- As a special exception, you have permission for additional uses of the text
- contained in this release of Harbour Minigui.
-
- The exception is that, if you link the Harbour Minigui library with other
- files to produce an executable, this does not by itself cause the resulting
- executable to be covered by the GNU General Public License.
- Your use of that executable is in no way restricted on account of linking the
- Harbour-Minigui library code into it.
-
- Parts of this project are based upon:
-
-        "Harbour GUI framework for Win32"
-        Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
-        Copyright 2001 Antonio Linares <alinares@fivetech.com>
-        www - http://www.harbour-project.org
-
-        "Harbour Project"
-        Copyright 1999-2003, http://www.harbour-project.org/
+/*---------------------------------------------------------------------------
+STANDARD VERSION
 ---------------------------------------------------------------------------*/
 
-#define GRID_JTFY_LEFT           0
-#define GRID_JTFY_RIGHT          1
-#define GRID_JTFY_CENTER         2
-
-#define HEADER_IMG_AT_LEFT       0
-#define HEADER_IMG_AT_RIGHT      1
-
-///////////////////////////////////////////////////////////////////////////////
-// GRID (STANDARD VERSION)
-///////////////////////////////////////////////////////////////////////////////
-#command @ <row>,<col> GRID <name> ;
+#command @ <row>, <col> GRID <name> ;
       [ OBJ <obj> ] ;
       [ <dummy01: OF, PARENT> <parent> ] ;
       [ WIDTH <w> ] ;
@@ -113,10 +80,10 @@
       [ VALUE <value> ] ;
       [ FONT <fontname> ] ;
       [ SIZE <fontsize> ] ;
-      [ <bold : BOLD> ] ;
-      [ <italic : ITALIC> ] ;
-      [ <underline : UNDERLINE> ] ;
-      [ <strikeout : STRIKEOUT> ] ;
+      [ <bold: BOLD> ] ;
+      [ <italic: ITALIC> ] ;
+      [ <underline: UNDERLINE> ] ;
+      [ <strikeout: STRIKEOUT> ] ;
       [ TOOLTIP <tooltip> ] ;
       [ BACKCOLOR <backcolor> ] ;
       [ FONTCOLOR <fontcolor> ] ;
@@ -128,7 +95,7 @@
       [ <dummy05: ONDBLCLICK, ON DBLCLICK> <dblclick> ] ;
       [ <dummy06: ONCLICK, ON CLICK> <click> ] ;
       [ <dummy07: ONHEADCLICK, ON HEADCLICK> <aHeadClick> ] ;
-      [ <edit : EDIT> ] ;
+      [ <edit: EDIT> ] ;
       [ <ownerdata: VIRTUAL> ] ;
       [ ITEMCOUNT <itemcount> ] ;
       [ <dummy08: ONQUERYDATA, ON QUERYDATA> <dispinfo> ] ;
@@ -178,38 +145,44 @@
       [ DELETEMSG <DelMsg> ] ;
       [ <dummy14: ONDELETE, ON DELETE> <onDelete> ] ;
       [ <nodelmsg: NODELETEMSG> ] ;
-      [ <append : APPEND> ] ;
+      [ <append: APPEND> ] ;
       [ <dummy15: ONAPPEND, ON APPEND> <onappend> ] ;
-      [ <nomodal : NOMODALEDIT> ] ;
+      [ <nomodal: NOMODALEDIT> ] ;
       [ <edtctrls: FIXEDCONTROLS, DYNAMICCONTROLS> ] ;
       [ <dummy16: ONHEADRCLICK, ON HEADRCLICK> <bheadrclick> ] ;
       [ <noclick: NOCLICKONCHECKBOX> ] ;
       [ <norclick: NORCLICKONCHECKBOX> ] ;
    =>;
-      [ <obj> := ] _OOHG_SelectSubClass(iif( <.bycell.>, TGridByCell(), iif( <.multiselect.>, TGridMulti(), TGrid() ) ), [ <subclass>() ] ): ;
-            Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, ;
-            <widths>, <rows>, <value>, <fontname>, <fontsize>, <tooltip>, ;
-            <{change}>, <{dblclick}>, <aHeadClick>, <{gotfocus}>, <{lostfocus}>, ;
-            <.style.>, <aImage>, <aJust>, <.break.>, <helpid>, <.bold.>, ;
-            <.italic.>, <.underline.>, <.strikeout.>, <.ownerdata.>, <{dispinfo}>, ;
-            <itemcount>, <.edit.>, <backcolor>, <fontcolor>, <dynamicbackcolor>, ;
-            <dynamicforecolor>, <Picture>, <.rtl.>, <.inplace.>, <editcontrols>, ;
-            <aReadOnly>, <aValidFields>, <aValidMessages>, <{editcell}>, ;
-            <aWhenFields>, <.disabled.>, <.notabstop.>, <.invisible.>, ;
-            ! <.noshowheaders.>, <{enter}>, <aHeaderImages>, <aImgAlign>, <.fullmove.>, ;
+      [ <obj> := ] _OOHG_SelectSubClass( IIF( <.bycell.>, TGridByCell(), ;
+            IIF( <.multiselect.>, TGridMulti(), TGrid() ) ), ;
+            [ <subclass>() ] ):Define( <(name)>, <(parent)>, <col>, <row>, ;
+            <w>, <h>, <headers>, <widths>, <rows>, <value>, <fontname>, ;
+            <fontsize>, <tooltip>, <{change}>, <{dblclick}>, <aHeadClick>, ;
+            <{gotfocus}>, <{lostfocus}>, <.style.>, <aImage>, <aJust>, ;
+            <.break.>, <helpid>, <.bold.>, <.italic.>, <.underline.>, ;
+            <.strikeout.>, <.ownerdata.>, <{dispinfo}>, <itemcount>, <.edit.>, ;
+            <backcolor>, <fontcolor>, <dynamicbackcolor>, <dynamicforecolor>, ;
+            <Picture>, <.rtl.>, <.inplace.>, <editcontrols>, <aReadOnly>, ;
+            <aValidFields>, <aValidMessages>, <{editcell}>, <aWhenFields>, ;
+            <.disabled.>, <.notabstop.>, <.invisible.>, ! <.noshowheaders.>, ;
+            <{enter}>, <aHeaderImages>, <aImgAlign>, <.fullmove.>, ;
             <aSelectedColors>, <aEditKeys>, <.checkboxes.>, <{checkchange}>, ;
-            iif( upper( #<bffr> ) == "DOUBLEBUFFER", .T., iif( upper( #<bffr> ) == "SINGLEBUFFER", .F., .T. ) ), ;
-            iif( #<focus> == "NOFOCUSRECT", .F., iif( #<focus> == "FOCUSRECT", .T., NIL ) ), ;
+            IIF( Upper( #<bffr> ) == "DOUBLEBUFFER", .T., ;
+            IIF( Upper( #<bffr> ) == "SINGLEBUFFER", .F., .T. ) ), ;
+            IIF( #<focus> == "NOFOCUSRECT", .F., ;
+            IIF( #<focus> == "FOCUSRECT", .T., NIL ) ), ;
             <.plm.>, <.fixedcols.>, <{abortedit}>, <{click}>, <.fixedwidths.>, ;
-            <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}>, <.excel.>, ;
-            <.buts.>, <.delete.>, <{onDelete}>, <{bWhenDel}>, <DelMsg>, <.nodelmsg.>, ;
-            <.append.>, <{onappend}>, <.nomodal.>, ;
-            iif( upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., iif( upper( #<edtctrls> ) == "DYNAMICCONTROLS", .F., NIL ) ), ;
+            <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}>, ;
+            <.excel.>, <.buts.>, <.delete.>, <{onDelete}>, <{bWhenDel}>, ;
+            <DelMsg>, <.nodelmsg.>, <.append.>, <{onappend}>, <.nomodal.>, ;
+            IIF( Upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., ;
+            IIF( Upper( #<edtctrls> ) == "DYNAMICCONTROLS", .F., NIL ) ), ;
             <{bheadrclick}>, ! <.noclick.>, ! <.norclick.> )
 
-///////////////////////////////////////////////////////////////////////////////
-// GRID (SPLITBOX VERSION)
-///////////////////////////////////////////////////////////////////////////////
+/*---------------------------------------------------------------------------
+SPLITBOX VERSION
+---------------------------------------------------------------------------*/
+
 #command GRID <name> ;
       [ OBJ <obj> ] ;
       [ <dummy01: OF, PARENT> <parent> ] ;
@@ -222,10 +195,10 @@
       [ VALUE <value> ] ;
       [ FONT <fontname> ] ;
       [ SIZE <fontsize> ] ;
-      [ <bold : BOLD> ] ;
-      [ <italic : ITALIC> ] ;
-      [ <underline : UNDERLINE> ] ;
-      [ <strikeout : STRIKEOUT> ] ;
+      [ <bold: BOLD> ] ;
+      [ <italic: ITALIC> ] ;
+      [ <underline: UNDERLINE> ] ;
+      [ <strikeout: STRIKEOUT> ] ;
       [ TOOLTIP <tooltip> ] ;
       [ BACKCOLOR <backcolor> ] ;
       [ FONTCOLOR <fontcolor> ] ;
@@ -237,7 +210,7 @@
       [ <dummy05: ONDBLCLICK, ON DBLCLICK> <dblclick> ] ;
       [ <dummy06: ONCLICK, ON CLICK> <click> ] ;
       [ <dummy07: ONHEADCLICK, ON HEADCLICK> <aHeadClick> ] ;
-      [ <edit : EDIT> ] ;
+      [ <edit: EDIT> ] ;
       [ <ownerdata: VIRTUAL> ] ;
       [ ITEMCOUNT <itemcount> ] ;
       [ <dummy08: ONQUERYDATA, ON QUERYDATA> <dispinfo> ] ;
@@ -287,34 +260,44 @@
       [ DELETEMSG <DelMsg> ] ;
       [ <dummy14: ONDELETE, ON DELETE> <onDelete> ] ;
       [ <nodelmsg: NODELETEMSG> ] ;
-      [ <append : APPEND> ] ;
+      [ <append: APPEND> ] ;
       [ <dummy15: ONAPPEND, ON APPEND> <onappend> ] ;
-      [ <nomodal : NOMODALEDIT> ] ;
+      [ <nomodal: NOMODALEDIT> ] ;
       [ <edtctrls: FIXEDCONTROLS, DYNAMICCONTROLS> ] ;
       [ <dummy16: ONHEADRCLICK, ON HEADRCLICK> <bheadrclick> ] ;
       [ <noclick: NOCLICKONCHECKBOX> ] ;
       [ <norclick: NORCLICKONCHECKBOX> ] ;
    =>;
-      [ <obj> := ] _OOHG_SelectSubClass(iif( <.bycell.>, TGridByCell(), iif( <.multiselect.>, TGridMulti(), TGrid() ) ), [ <subclass>() ] ): ;
-            Define( <(name)>, <(parent)>, , , <w>, <h>, <headers>, ;
-            <widths>, <rows>, <value>, <fontname>, <fontsize>, <tooltip>, ;
-            <{change}>, <{dblclick}>, <aHeadClick>, <{gotfocus}>, <{lostfocus}>, ;
-            <.style.>, <aImage>, <aJust>, <.break.>, <helpid>, <.bold.>, ;
-            <.italic.>, <.underline.>, <.strikeout.>, <.ownerdata.>, <{dispinfo}>, ;
-            <itemcount>, <.edit.>, <backcolor>, <fontcolor>, <dynamicbackcolor>, ;
-            <dynamicforecolor>, <Picture>, <.rtl.>, <.inplace.>, <editcontrols>, ;
-            <aReadOnly>, <aValidFields>, <aValidMessages>, <{editcell}>, ;
-            <aWhenFields>, <.disabled.>, <.notabstop.>, <.invisible.>, ;
-            ! <.noshowheaders.>, <{enter}>, <aHeaderImages>, <aImgAlign>, <.fullmove.>, ;
-            <aSelectedColors>, <aEditKeys>, <.checkboxes.>, <{checkchange}>, ;
-            iif( upper( #<bffr> ) == "DOUBLEBUFFER", .T., iif( upper( #<bffr> ) == "SINGLEBUFFER", .F., .T. ) ), ;
-            iif( #<focus> == "NOFOCUSRECT", .F., iif( #<focus> == "FOCUSRECT", .T., NIL ) ), ;
+      [ <obj> := ] _OOHG_SelectSubClass( IIF( <.bycell.>, TGridByCell(), ;
+            IIF( <.multiselect.>, TGridMulti(), TGrid() ) ), ;
+            [ <subclass>() ] ):Define( <(name)>, <(parent)>, , , <w>, <h>, ;
+            <headers>, <widths>, <rows>, <value>, <fontname>, <fontsize>, ;
+            <tooltip>, <{change}>, <{dblclick}>, <aHeadClick>, <{gotfocus}>, ;
+            <{lostfocus}>, <.style.>, <aImage>, <aJust>, <.break.>, <helpid>, ;
+            <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, <.ownerdata.>, ;
+            <{dispinfo}>, <itemcount>, <.edit.>, <backcolor>, <fontcolor>, ;
+            <dynamicbackcolor>, <dynamicforecolor>, <Picture>, <.rtl.>, ;
+            <.inplace.>, <editcontrols>, <aReadOnly>, <aValidFields>, ;
+            <aValidMessages>, <{editcell}>, <aWhenFields>, <.disabled.>, ;
+            <.notabstop.>, <.invisible.>, ! <.noshowheaders.>, <{enter}>, ;
+            <aHeaderImages>, <aImgAlign>, <.fullmove.>, <aSelectedColors>, ;
+            <aEditKeys>, <.checkboxes.>, <{checkchange}>, ;
+            IIF( Upper( #<bffr> ) == "DOUBLEBUFFER", .T., ;
+            IIF( Upper( #<bffr> ) == "SINGLEBUFFER", .F., .T. ) ), ;
+            IIF( #<focus> == "NOFOCUSRECT", .F., ;
+            IIF( #<focus> == "FOCUSRECT", .T., NIL ) ), ;
             <.plm.>, <.fixedcols.>, <{abortedit}>, <{click}>, <.fixedwidths.>, ;
-            <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}>, <.excel.>, ;
-            <.buts.>, <.delete.>, <{onDelete}>, <{bWhenDel}>, <DelMsg>, <.nodelmsg.>, ;
-            <.append.>, <{onappend}>, <.nomodal.>, ;
-            iif( upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., iif( upper( #<edtctrls> ) == "DYNAMICCONTROLS", .F., NIL ) ), ;
+            <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}>, ;
+            <.excel.>, <.buts.>, <.delete.>, <{onDelete}>, <{bWhenDel}>, ;
+            <DelMsg>, <.nodelmsg.>, <.append.>, <{onappend}>, <.nomodal.>, ;
+            IIF( Upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., ;
+            IIF( Upper( #<edtctrls> ) == "DYNAMICCONTROLS", .F., NIL ) ), ;
             <{bheadrclick}>, ! <.noclick.>, ! <.norclick.> )
 
-#command SET GRIDFIXEDCONTROLS ON  => SetGridFixedControls( .T. )
-#command SET GRIDFIXEDCONTROLS OFF => SetGridFixedControls( .F. )
+#command SET GRIDFIXEDCONTROLS ON ;
+   => ;
+      SetGridFixedControls( .T. )
+
+#command SET GRIDFIXEDCONTROLS OFF ;
+   => ;
+      SetGridFixedControls( .F. )

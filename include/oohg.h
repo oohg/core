@@ -1,12 +1,21 @@
 /*
- * $Id: oohg.h,v 1.62 2014-06-06 00:55:42 fyurisich Exp $
+ * $Id: oohg.h,v 1.63 2014-07-09 02:25:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * C level definitions
  *
- * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.oohg.org
+ * Copyright 2007-2014 Vicente Guerra <vicente@guerra.com.mx>
+ *
+ * Portions of this project are based upon Harbour MiniGUI library.
+ * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
+ *
+ * Portions of this project are based upon Harbour GUI framework for Win32.
+ * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
+ * Copyright 2001 Antonio Linares <alinares@fivetech.com>
+ *
+ * Portions of this project are based upon Harbour Project.
+ * Copyright 1999-2014, http://www.harbour-project.org/
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,9 +28,9 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this software; see the file COPYING.  If not, write to
- * the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307 USA (or visit the web site http://www.gnu.org/).
+ * along with this software; see the file COPYING.TXT.  If not, write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301,USA (or download from http://www.gnu.org/licenses/).
  *
  * As a special exception, the ooHG Project gives permission for
  * additional uses of the text contained in its release of ooHG.
@@ -46,7 +55,6 @@
  * If you write modifications of your own for ooHG, it is your choice
  * whether to permit this exception to apply to your modifications.
  * If you do not wish that, delete this exception notice.
- *
  */
 
 #ifdef OOHG_HWND_POINTER
@@ -83,17 +91,18 @@ typedef struct OOHG_Window {
    HFONT      hFontHandle;
    LONG       lOldBackColor, lUseBackColor;
 
-//   int        iRow, iCol, iWidth, iHeight;
-//   HB_ITEM    oParent;
-//   HB_ITEM    oContainer;
-//   BYTE       *cFontName;
-//   int        iFontSize;
-//   BOOL       bBold, bItalic, bUnderline, bStrikeout;
-//   int        iRowMargin, iColMargin;
-//   BOOL       bRtl;
-//   HWND       hContextMenu;
-//   BOOL       bEnabled;
 /*
+   int        iRow, iCol, iWidth, iHeight;
+   HB_ITEM    oParent;
+   HB_ITEM    oContainer;
+   BYTE       *cFontName;
+   int        iFontSize;
+   BOOL       bBold, bItalic, bUnderline, bStrikeout;
+   int        iRowMargin, iColMargin;
+   BOOL       bRtl;
+   HWND       hContextMenu;
+   BOOL       bEnabled;
+
    DATA aControls      INIT {}
    DATA aControlsNames INIT {}
    DATA lInternal      INIT .T.
@@ -130,7 +139,7 @@ int _OOHG_SearchControlHandleInArray( HWND hWnd );
 PHB_ITEM _OOHG_GetExistingObject( HWND hWnd, BOOL bForm, BOOL bForceAny );
 HBRUSH GetTabBrush( HWND hWnd );
 
-// Symbol tables
+// Symbols table
 #define s_Events_Notify        0
 #define s_GridForeColor        1
 #define s_GridBackColor        2

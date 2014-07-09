@@ -1,5 +1,5 @@
 /*
- * $Id: h_init.prg,v 1.35 2014-07-06 15:29:42 fyurisich Exp $
+ * $Id: h_init.prg,v 1.36 2014-07-09 02:25:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -99,7 +99,7 @@ STATIC _OOHG_Messages := { {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {} }
 
 INIT PROCEDURE _OOHG_INIT()
 
-   Public _OOHG_AllVars[ 33 ]
+   Public _OOHG_AllVars[ 34 ]
 
     _OOHG_Main              := NIL
 
@@ -124,6 +124,7 @@ INIT PROCEDURE _OOHG_INIT()
 
    _OOHG_DefaultFontName    := 'Arial'
    _OOHG_DefaultFontSize    := 9
+   _OOHG_DefaultFontColor   := NIL
 
    _OOHG_TempWindowName     := ""
 

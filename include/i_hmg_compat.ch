@@ -1,15 +1,21 @@
 /*
- * $Id: i_hmg_compat.ch,v 1.33 2014-07-07 01:51:43 fyurisich Exp $
+ * $Id: i_hmg_compat.ch,v 1.34 2014-07-09 02:25:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
- * Compatibility commands
+ * HGM Extended compatibility commands
  *
- * Copyright 2008 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2007-2014 Vicente Guerra <vicente@guerra.com.mx>
  *
- * Portions of this code are copyrighted by the Harbour MiniGUI library.
+ * Portions of this project are based upon Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
+ *
+ * Portions of this project are based upon Harbour GUI framework for Win32.
+ * Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
+ * Copyright 2001 Antonio Linares <alinares@fivetech.com>
+ *
+ * Portions of this project are based upon Harbour Project.
+ * Copyright 1999-2014, http://www.harbour-project.org/
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,9 +28,9 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this software; see the file COPYING.  If not, write to
- * the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307 USA (or visit the web site http://www.gnu.org/).
+ * along with this software; see the file COPYING.TXT.  If not, write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301,USA (or download from http://www.gnu.org/licenses/).
  *
  * As a special exception, the ooHG Project gives permission for
  * additional uses of the text contained in its release of ooHG.
@@ -49,53 +55,15 @@
  * If you write modifications of your own for ooHG, it is your choice
  * whether to permit this exception to apply to your modifications.
  * If you do not wish that, delete this exception notice.
- *
  */
-/*----------------------------------------------------------------------------
- MINIGUI - Harbour Win32 GUI library source code
-
- Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
- http://www.geocities.com/harbour_minigui/
-
- This program is free software; you can redistribute it and/or modify it under
- the terms of the GNU General Public License as published by the Free Software
- Foundation; either version 2 of the License, or (at your option) any later
- version.
-
- This program is distributed in the hope that it will be useful, but WITHOUT
- ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License along with
- this software; see the file COPYING. If not, write to the Free Software
- Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA (or
- visit the web site http://www.gnu.org/).
-
- As a special exception, you have permission for additional uses of the text
- contained in this release of Harbour Minigui.
-
- The exception is that, if you link the Harbour Minigui library with other
- files to produce an executable, this does not by itself cause the resulting
- executable to be covered by the GNU General Public License.
- Your use of that executable is in no way restricted on account of linking the
- Harbour-Minigui library code into it.
-
- Parts of this project are based upon:
-
- "Harbour GUI framework for Win32"
- Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- Copyright 2001 Antonio Linares <alinares@fivetech.com>
- www - http://www.harbour-project.org
-
- "Harbour Project"
- Copyright 1999-2003, http://www.harbour-project.org/
----------------------------------------------------------------------------*/
 
 #ifndef __OOHG_HMG_COMPAT__
 
 #define __OOHG_HMG_COMPAT__
 
-#xtranslate RANDOM( <arg1> )   =>   HB_RANDOM( <arg1> )
+#xtranslate RANDOM( <arg1> ) ;
+   => ;
+      HB_Random( <arg1> )
 
 #xtranslate Application.ArgC                => TApplication():ArgC
 #xtranslate Application.Args                => TApplication():Args
@@ -123,35 +91,75 @@
 #xtranslate Application.Width               => TApplication():Width
 #xtranslate Application.Width := <arg>      => TApplication():Width( <arg> )
 
-#xtranslate GetExeFileName() =>  GetModuleFileName()
+#xtranslate GetExeFileName() ;
+   => ;
+      GetModuleFileName()
 
-#xtranslate IFNIL( <v1>,<exp1>,<exp2> )       => iif( (<v1>) == NIL,<exp1>,<exp2> )
-#xtranslate IFARRAY( <v1>,<exp1>,<exp2> )     => iif( ISARRAY( <v1> ),<exp1>,<exp2> )
-#xtranslate IFBLOCK( <v1>,<exp1>,<exp2> )     => iif( ISBLOCK( <v1> ),<exp1>,<exp2> )
-#xtranslate IFCHARACTER( <v1>,<exp1>,<exp2> ) => iif( ISCHARACTER( <v1> ),<exp1>,<exp2> )
-#xtranslate IFCHAR( <v1>,<exp1>,<exp2> )      => iif( ISCHAR( <v1> ),<exp1>,<exp2> )
-#xtranslate IFSTRING( <v1>,<exp1>,<exp2> )    => iif( ISSTRING( <v1> ),<exp1>,<exp2> )
-#xtranslate IFDATE( <v1>,<exp1>,<exp2> )      => iif( ISDATE( <v1> ),<exp1>,<exp2> )
-#xtranslate IFLOGICAL( <v1>,<exp1>,<exp2> )   => iif( ISLOGICAL( <v1> ),<exp1>,<exp2> )
-#xtranslate IFNUMBER( <v1>,<exp1>,<exp2> )    => iif( ISNUMBER( <v1> ),<exp1>,<exp2> )
-#xtranslate IFNUMERIC( <v1>,<exp1>,<exp2> )   => iif( ISNUMERIC( <v1> ),<exp1>,<exp2> )
-#xtranslate IFOBJECT( <v1>,<exp1>,<exp2> )    => iif( ISOBJECT( <v1> ),<exp1>,<exp2> )
-#xtranslate IFEMPTY( <v1>,<exp1>,<exp2> )     => iif( EMPTY( <v1> ),<exp1>,<exp2> )
+#xtranslate IFNIL( <v1>, <exp1>, <exp2> ) ;
+   => ;
+      IIF( ( <v1> ) == NIL, <exp1>, <exp2> )
 
-#xtranslate _HMG_ThisFormName => _OOHG_ThisForm:Name
+#xtranslate IFARRAY( <v1>, <exp1>, <exp2> ) ;
+   => ;
+   IIF( ISARRAY( <v1> ), <exp1>, <exp2> )
+
+#xtranslate IFBLOCK( <v1>, <exp1>, <exp2> ) ;
+   => ;
+      IIF( ISBLOCK( <v1> ), <exp1>, <exp2> )
+
+#xtranslate IFCHARACTER( <v1>, <exp1>, <exp2> ) ;
+   => ;
+    IIF( ISCHARACTER( <v1> ), <exp1>, <exp2> )
+
+#xtranslate IFCHAR( <v1>, <exp1>, <exp2> ) ;
+   => ;
+      IIF( ISCHAR( <v1> ), <exp1>, <exp2> )
+
+#xtranslate IFSTRING( <v1>, <exp1>, <exp2> ) ;
+   => ;
+      IIF( ISSTRING( <v1> ), <exp1>, <exp2> )
+
+#xtranslate IFDATE( <v1>, <exp1>, <exp2> ) ;
+   => ;
+   IIF( ISDATE( <v1> ), <exp1>, <exp2> )
+
+#xtranslate IFLOGICAL( <v1>, <exp1>, <exp2> ) ;
+   => ;
+   IIF( ISLOGICAL( <v1> ), <exp1>, <exp2> )
+
+#xtranslate IFNUMBER( <v1>, <exp1>, <exp2> ) ;
+   => ;
+      IIF( ISNUMBER( <v1> ), <exp1>, <exp2> )
+
+#xtranslate IFNUMERIC( <v1>, <exp1>, <exp2> ) ;
+   => ;
+      IIF( ISNUMERIC( <v1> ), <exp1>, <exp2> )
+
+#xtranslate IFOBJECT( <v1>, <exp1>, <exp2> ) ;
+   => ;
+      IIF( ISOBJECT( <v1> ), <exp1>, <exp2> )
+
+#xtranslate IFEMPTY( <v1>, <exp1>, <exp2> ) ;
+   => ;
+      IIF( EMPTY( <v1> ), <exp1>, <exp2> )
+
+#xtranslate _HMG_ThisFormName ;
+   => ;
+      _OOHG_ThisForm:Name
 
 #xcommand BREAK <break> ;
-   =>;
-        _OOHG_ActiveControlBreak         := <break>
+   => ;
+      _OOHG_ActiveControlBreak := <break>
 
 #define PICTALIGNMENT //
 
-///////////////////////////////////////////////////////////////////////////////
-// SPLITBOX BROWSE
-///////////////////////////////////////////////////////////////////////////////
+/*---------------------------------------------------------------------------
+SPLITBOX VERSION
+---------------------------------------------------------------------------*/
+
 #command BROWSE <name> ;
       [ <dummy01: OF, PARENT> <parent> ] ;
-      [ OBJ <oObj> ] ;
+      [ OBJ <obj> ] ;
       [ WIDTH <w> ] ;
       [ HEIGHT <h> ] ;
       [ HEADERS <headers> ] ;
@@ -237,30 +245,40 @@
       [ <edtctrls: FIXEDCONTROLS, DYNAMICCONTROLS> ] ;
       [ <dummy14: ONHEADRCLICK, ON HEADRCLICK> <bheadrclick> ] ;
    => ;
-      [ <oObj> := ] _OOHG_SelectSubClass( TOBrowse(), [ <subclass>() ] ): ;
-            Define( <(name)>, <(parent)>, , , <w>, <h>, <headers>, <widths>, <Fields>, ;
-            <value>, <fontname>, <fontsize>, <tooltip>, <{change}>, <{dblclick}>, ;
-            <aHeadClick>, <{gotfocus}>, <{lostfocus}>, <(WorkArea)>, <.Delete.>, ;
-            <.style.>, <aImage>, <aJust>, <helpid>, <.bold.>, <.italic.>, ;
-            <.underline.>, <.strikeout.>, <.break.>, <backcolor>, <fontcolor>, ;
-            <.lock.>, <.inplace.>, <.novscroll.>, <.append.>, <aReadOnly>, ;
-            <aValidFields>, <aValidMessages>, <.edit.>, <dynamicbackcolor>, ;
-            <aWhenFields>, <dynamicforecolor>, <Picture>, <.rtl.>, <{onappend}>, ;
-            <{editcell}>, <editcontrols>, <replacefields>, <.reccount.>, ;
-            <columninfo>, ! <.noshowheaders.>, <{enter}>, <.disabled.>, <.notabstop.>, ;
-            <.invisible.>, <.descending.>, <{bWhenDel}>, <DelMsg>, <{onDelete}>, ;
-            <aHeaderImages>, <aImgAlign>, <.fullmove.>, <aSelectedColors>, <aEditKeys>, ;
-            if( <.forcerefresh.>, 0, if( <.norefresh.>, 1, nil ) ), ;
-            iif( upper( #<bffr> ) == "DOUBLEBUFFER", .T., iif( upper( #<bffr> ) == "SINGLEBUFFER", .F., .T. ) ), ;
-            iif( upper( #<focus> ) == "NOFOCUSRECT", .F., iif( upper( #<focus> ) == "FOCUSRECT", .T., NIL ) ), ;
-            <.plm.>, iif( upper( #<sync> ) == "UNSYNCHRONIZED", .F., iif( upper( #<sync> ) == "SYNCHRONIZED", .T., NIL ) ), ;
-            <.fixedcols.>, <.nodelmsg.>, <.updall.>, <{abortedit}>, <{click}>, <.fixedwidths.>, ;
-            iif( upper( #<blocks> ) == "FIXEDBLOCKS", .T., iif( upper( #<blocks> ) == "DYNAMICBLOCKS", .F., NIL ) ), ;
-            <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}>, <.excel.>, <.buts.>, <.upcol.>, ;
-            iif( upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., iif( upper( #<blocks> ) == "DYNAMICCONTROLS", .F., NIL ) ), ;
+      [ <obj> := ] _OOHG_SelectSubClass( TOBrowse(), [ <subclass>() ] ): ;
+            Define( <(name)>, <(parent)>, , , <w>, <h>, <headers>, <widths>, ;
+            <Fields>, <value>, <fontname>, <fontsize>, <tooltip>, <{change}>, ;
+            <{dblclick}>, <aHeadClick>, <{gotfocus}>, <{lostfocus}>, ;
+            <(WorkArea)>, <.Delete.>, <.style.>, <aImage>, <aJust>, <helpid>, ;
+            <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, <.break.>, ;
+            <backcolor>, <fontcolor>, <.lock.>, <.inplace.>, <.novscroll.>, ;
+            <.append.>, <aReadOnly>, <aValidFields>, <aValidMessages>, ;
+            <.edit.>, <dynamicbackcolor>, <aWhenFields>, <dynamicforecolor>, ;
+            <Picture>, <.rtl.>, <{onappend}>, <{editcell}>, <editcontrols>, ;
+            <replacefields>, <.reccount.>, <columninfo>, ! <.noshowheaders.>, ;
+            <{enter}>, <.disabled.>, <.notabstop.>, <.invisible.>, ;
+            <.descending.>, <{bWhenDel}>, <DelMsg>, <{onDelete}>, ;
+            <aHeaderImages>, <aImgAlign>, <.fullmove.>, <aSelectedColors>, ;
+            <aEditKeys>, ;
+            IIF( <.forcerefresh.>, 0, IIF( <.norefresh.>, 1, NIL ) ), ;
+            IIF( Upper( #<bffr> ) == "DOUBLEBUFFER", .T., ;
+            IIF( Upper( #<bffr> ) == "SINGLEBUFFER", .F., .T. ) ), ;
+            IIF( Upper( #<focus> ) == "NOFOCUSRECT", .F., ;
+            IIF( Upper( #<focus> ) == "FOCUSRECT", .T., NIL ) ), ;
+            <.plm.>, ;
+            IIF( Upper( #<sync> ) == "UNSYNCHRONIZED", .F., ;
+            IIF( Upper( #<sync> ) == "SYNCHRONIZED", .T., NIL ) ), ;
+            <.fixedcols.>, <.nodelmsg.>, <.updall.>, <{abortedit}>, <{click}>, ;
+            <.fixedwidths.>, ;
+            IIF( Upper( #<blocks> ) == "FIXEDBLOCKS", .T., ;
+            IIF( Upper( #<blocks> ) == "DYNAMICBLOCKS", .F., NIL ) ), ;
+            <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}>, ;
+            <.excel.>, <.buts.>, <.upcol.>, ;
+            IIF( Upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., ;
+            IIF( Upper( #<blocks> ) == "DYNAMICCONTROLS", .F., NIL ) ), ;
             <{bheadrclick}> )
 
-#xcommand @ <row>,<col> BUTTONEX <name> ;
+#xcommand @ <row>, <col> BUTTONEX <name> ;
       [ OBJ <obj> ] ;
       [ <dummy1: OF, PARENT> <parent> ] ;
       [ CAPTION <caption> ] ;
@@ -270,16 +288,16 @@
       [ HEIGHT <h> ] ;
       [ FONT <font> ] ;
       [ SIZE <size> ] ;
-      [ <bold : BOLD> ] ;
-      [ <italic : ITALIC> ] ;
-      [ <underline : UNDERLINE> ] ;
-      [ <strikeout : STRIKEOUT> ] ;
-      [ <uptext : UPPERTEXT> ] ;
-      [ <ladjust : AUTOFIT, ADJUST> ] ;
+      [ <bold: BOLD> ] ;
+      [ <italic: ITALIC> ] ;
+      [ <underline: UNDERLINE> ] ;
+      [ <strikeout: STRIKEOUT> ] ;
+      [ <uptext: UPPERTEXT> ] ;
+      [ <ladjust: AUTOFIT, ADJUST> ] ;
       [ TOOLTIP <tooltip> ] ;
       [ BACKCOLOR <backcolor> ] ;                                
       [ FONTCOLOR <fontcolor> ] ;                                
-      [ <nohotlight : NOHOTLIGHT> ] ;                            
+      [ <nohotlight: NOHOTLIGHT> ] ;
       [ <flat: FLAT> ] ;
       [ <notrans: NOLOADTRANSPARENT > ] ;
       [ <noxpstyle: NOXPSTYLE > ] ;                              
@@ -300,7 +318,7 @@
       [ <cancel: CANCEL> ] ;
       [ <alignment:LEFT,RIGHT,TOP,BOTTOM,CENTER> ] ;
       [ <multiline: MULTILINE> ] ;
-      [ <themed : THEMED> ] ;
+      [ <themed: THEMED> ] ;
       [ IMAGEMARGIN <aImageMargin> ] ;
       [ <no3dcolors: NO3DCOLORS> ] ;
       [ <lDIB: DIBSECTION> ] ;
@@ -310,7 +328,7 @@
             [ PARENT <parent> ] ;
             [ CAPTION <caption> ] ;
             [ PICTURE <bitmap> ] ;
-            [ ACTION <action> ];
+            [ ACTION <action> ] ;
             [ WIDTH <w> ] ;
             [ HEIGHT <h> ] ;
             [ FONT <font> ] ;
@@ -321,10 +339,10 @@
             [ <strikeout> ] ;
             [ TOOLTIP <tooltip> ] ;
             [ <flat> ] ;
-      [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
-            [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
+            [ ON GOTFOCUS <gotfocus> ] ;
+            [ ON LOSTFOCUS <lostfocus> ] ;
             [ <notabstop> ] ;
-            [ HELPID <helpid> ]       ;
+            [ HELPID <helpid> ] ;
             [ <invisible> ] ;
             [ <notrans> ] ;
             [ <ladjust> ] ;
@@ -345,21 +363,35 @@
             [ <lDIB> ]
 
 /*
-TODO:
+TODO: Try to implement this BUTTONEX clauses
       [ PICTURE <bitmap> ] ;
       [ ICON <icon> ] ;
       [ BACKCOLOR <backcolor> ] ;
       [ FONTCOLOR <fontcolor> ] ;
-      [ <nohotlight : NOHOTLIGHT> ] ;
+      [ <nohotlight: NOHOTLIGHT> ] ;
       [ <noxpstyle: NOXPSTYLE > ] ;
       [ <default: DEFAULT> ] ;
 */
 
-#xtranslate BUTTONEX [ <x> ] LEFTTEXT => BUTTONEX [ <x> ] RIGHT
-#xtranslate BUTTONEX [ <x> ] VERTICAL => BUTTONEX [ <x> ] TOP
-#xtranslate BUTTONEX [ <x> ] VERTICAL [ <y> ] UPPERTEXT => BUTTONEX [ <x> ] BOTTOM [ <y> ]
-#xtranslate BUTTONEX [ <x> ] UPPERTEXT [ <y> ] VERTICAL => BUTTONEX [ <x> ] BOTTOM [ <y> ]
-#xtranslate <Form> . <Button> . Icon => <Form>.<Button>.Picture
+#xtranslate BUTTONEX [ <x> ] LEFTTEXT ;
+   => ;
+      BUTTONEX [ <x> ] RIGHT
+
+#xtranslate BUTTONEX [ <x> ] VERTICAL ;
+   => ;
+      BUTTONEX [ <x> ] TOP
+
+#xtranslate BUTTONEX [ <x> ] VERTICAL [ <y> ] UPPERTEXT ;
+   => ;
+      BUTTONEX [ <x> ] BOTTOM [ <y> ]
+
+#xtranslate BUTTONEX [ <x> ] UPPERTEXT [ <y> ] VERTICAL ;
+   => ;
+      BUTTONEX [ <x> ] BOTTOM [ <y> ]
+
+#xtranslate <Form> . <Button> . Icon ;
+   => ;
+      <Form>.<Button>.Picture
 
 #xtranslate @ <row>, <col> BTNTEXTBOX <name> ;
       [ ID <nId> ] ;
@@ -416,7 +448,7 @@ TODO:
             [ WIDTH <width> ] ;
             [ FIELD <field> ] ;
             [ VALUE <value> ] ;
-            [ <readonly> ];
+            [ <readonly> ] ;
             [ FONT <fontname> ] ;
             [ SIZE <fontsize> ] ;
             [ <bold> ] ;
@@ -430,10 +462,10 @@ TODO:
             [ <uppercase> ] ;
             [ <lowercase> ] ;
             [ <password> ] ;
-            [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
-      [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
-            [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
-            [ <dummy11: ONENTER, ON ENTER> <enter> ] ;
+            [ ON CHANGE <change> ] ;
+            [ ON GOTFOCUS <gotfocus> ] ;
+            [ ON LOSTFOCUS <lostfocus> ] ;
+            [ ON ENTER <enter> ] ;
             [ <rightalign> ] ;
             [ <invisible> ] ;
             [ <notabstop> ] ;
@@ -455,6 +487,8 @@ TODO:
             [ BUTTONWIDTH <btnwidth> ] ;
             [ WHEN <bWhen> ]
 
-#xtranslate DISABLEEDIT => READONLY
+#xtranslate DISABLEEDIT ;
+   => ;
+      READONLY
 
 #endif

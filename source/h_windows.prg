@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.250 2014-05-17 21:30:00 fyurisich Exp $
+ * $Id: h_windows.prg,v 1.251 2014-07-09 02:25:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1288,6 +1288,7 @@ METHOD ParentDefaults( cFontName, nFontSize, uFontColor ) CLASS TWindow
       ::FontColor := ::Parent:FontColor
    else
        // Default
+       ::FontColor := _OOHG_DefaultFontColor
    endif
 
 Return Self

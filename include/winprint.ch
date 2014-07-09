@@ -1,12 +1,66 @@
 /*
- * $Id: winprint.ch,v 1.12 2014-06-03 00:34:12 fyurisich Exp $
+ * $Id: winprint.ch,v 1.13 2014-07-09 02:25:23 fyurisich Exp $
  */
-// ---------------------------------------------------------------------------
-// HBPRINTER - Harbour Win32 Printing library source code
-//
-// Copyright 2002 Richard Rylko <rrylko@poczta.onet.pl>
-// http://rrylko.republika.pl
-// ---------------------------------------------------------------------------
+/*
+ * ooHG source code:
+ * HBPRINTER printing library
+ *
+ * Copyright 2007-2014 Vicente Guerra <vicente@guerra.com.mx>
+ *
+ * Portions of this project are based upon Harbour MiniGUI library.
+ * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
+ *
+ * Portions of this project are based upon Harbour GUI framework for Win32.
+ * Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
+ * Copyright 2001 Antonio Linares <alinares@fivetech.com>
+ *
+ * Portions of this project are based upon Harbour Project.
+ * Copyright 1999-2014, http://www.harbour-project.org/
+ *
+ * Portions of this project are based upon HBPRINTER Harbour Win32 Printing
+ * library source code.
+ * Copyright 2002 Ryszard Rylko <rrylko@poczta.onet.pl>
+ * http://rrylko.republika.pl
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this software; see the file COPYING.TXT.  If not, write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301,USA (or download from http://www.gnu.org/licenses/).
+ *
+ * As a special exception, the ooHG Project gives permission for
+ * additional uses of the text contained in its release of ooHG.
+ *
+ * The exception is that, if you link the ooHG libraries with other
+ * files to produce an executable, this does not by itself cause the
+ * resulting executable to be covered by the GNU General Public License.
+ * Your use of that executable is in no way restricted on account of
+ * linking the ooHG library code into it.
+ *
+ * This exception does not however invalidate any other reasons why
+ * the executable file might be covered by the GNU General Public License.
+ *
+ * This exception applies only to the code released by the ooHG
+ * Project under the name ooHG. If you copy code from other
+ * ooHG Project or Free Software Foundation releases into a copy of
+ * ooHG, as the General Public License permits, the exception does
+ * not apply to the code that you add in this way. To avoid misleading
+ * anyone as to the status of such modified files, you must delete
+ * this exception notice from them.
+ *
+ * If you write modifications of your own for ooHG, it is your choice
+ * whether to permit this exception to apply to your modifications.
+ * If you do not wish that, delete this exception notice.
+ */
 
 #ifndef NO_HBPRN_DECLARATION
 MEMVAR HBPRN
@@ -78,7 +132,8 @@ MEMVAR HBPRN
 
 #xcommand END PAGE ;
    => ;
-      If( Type( "_OOHG_AllVars" ) == "A" .AND. ! Empty( _OOHG_ActiveFrame ), Do( "_EndTabPage" ), hbprn:EndPage() )
+      IIF( Type( "_OOHG_AllVars" ) == "A" .AND. ! Empty( _OOHG_ActiveFrame ), ;
+            Do( "_EndTabPage" ), hbprn:EndPage() )
 
 #xcommand END DOC ;
    => ;
@@ -128,15 +183,15 @@ MEMVAR HBPRN
    => ;
       hbprn:DxColors( <clr> )
 
-#xcommand SELECT BY DIALOG [ <p : PREVIEW> ] ;
+#xcommand SELECT BY DIALOG [ <p: PREVIEW> ] ;
    => ;
       hbprn:SelectPrinter( "", <.p.> )
 
-#xcommand SELECT DEFAULT [ <p : PREVIEW> ] ;
+#xcommand SELECT DEFAULT [ <p: PREVIEW> ] ;
    => ;
       hbprn:SelectPrinter( NIL, <.p.> )
 
-#xcommand SELECT PRINTER <cprinter> [ <p : PREVIEW> ] ;
+#xcommand SELECT PRINTER <cprinter> [ <p: PREVIEW> ] ;
    => ;
       hbprn:SelectPrinter( <cprinter>, <.p.> )
 
@@ -242,28 +297,32 @@ MEMVAR HBPRN
       [ NORMAL ] ;
       [ BACKGROUND <color> ] ;
    => ;
-      hbprn:DrawImagelist( <cimglist>, <nicon>, <row>, <col>, <row2>, <col2>, ILD_NORMAL, <color> )
+      hbprn:DrawImagelist( <cimglist>, <nicon>, <row>, <col>, <row2>, <col2>, ;
+            ILD_NORMAL, <color> )
 
 #xcommand @ <row>, <col>, <row2>, <col2> DRAW IMAGELIST <cimglist> ;
       ICON <nicon> ;
       BLEND25 ;
       [ BACKGROUND <color> ] ;
    => ;
-      hbprn:DrawImagelist( <cimglist>, <nicon>, <row>, <col>, <row2>, <col2>, ILD_BLEND25, <color> )
+      hbprn:DrawImagelist( <cimglist>, <nicon>, <row>, <col>, <row2>, <col2>, ;
+            ILD_BLEND25, <color> )
 
 #xcommand @ <row>, <col>, <row2>, <col2> DRAW IMAGELIST <cimglist> ;
       ICON <nicon> ;
       BLEND50 ;
       [ BACKGROUND <color> ] ;
    => ;
-      hbprn:DrawImagelist( <cimglist>, <nicon>, <row>, <col>, <row2>, <col2>, ILD_BLEND50, <color> )
+      hbprn:DrawImagelist( <cimglist>, <nicon>, <row>, <col>, <row2>, <col2>, ;
+            ILD_BLEND50, <color> )
 
 #xcommand @ <row>, <col>, <row2>, <col2> DRAW IMAGELIST <cimglist> ;
       ICON <nicon> ;
       MASK ;
       [ BACKGROUND <color> ] ;
    => ;
-      hbprn:DrawImagelist( <cimglist>, <nicon>, <row>, <col>, <row2>, <col2>, _ILD_MASK, <color> )
+      hbprn:DrawImagelist( <cimglist>, <nicon>, <row>, <col>, <row2>, <col2>, ;
+            _ILD_MASK, <color> )
 
 #xcommand DEFINE BRUSH <cbrush> ;
       [ STYLE <style> ] ;
@@ -306,28 +365,30 @@ MEMVAR HBPRN
       [ SIZE <size> ] ;
       [ WIDTH <width> ] ;
       [ ANGLE <angle> ] ;
-      [ <bold : BOLD> ] ;
-      [ <italic : ITALIC> ] ;
-      [ <underline : UNDERLINE> ] ;
-      [ <strikeout : STRIKEOUT> ];
+      [ <bold: BOLD> ] ;
+      [ <italic: ITALIC> ] ;
+      [ <underline: UNDERLINE> ] ;
+      [ <strikeout: STRIKEOUT> ] ;
    => ;
-      hbprn:DefineFont( <cfont>, <cface>, <size>, <width>, <angle>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>)
+      hbprn:DefineFont( <cfont>, <cface>, <size>, <width>, <angle>, <.bold.>, ;
+            <.italic.>, <.underline.>, <.strikeout.>)
 
 #xcommand CHANGE FONT <cfont> ;
       [ NAME <cface> ] ;
       [ SIZE <size> ] ;
       [ WIDTH <width> ] ;
       [ ANGLE <angle> ] ;
-      [ <bold : BOLD> ] ;
-      [ <nbold : NOBOLD> ] ;
-      [ <italic : ITALIC> ] ;
-      [ <nitalic : NOITALIC> ] ;
-      [ <underline : UNDERLINE> ] ;
-      [ <nunderline : NOUNDERLINE> ] ;
-      [ <strikeout : STRIKEOUT> ] ;
-      [ <nstrikeout : NOSTRIKEOUT> ] ;
+      [ <bold: BOLD> ] ;
+      [ <nbold: NOBOLD> ] ;
+      [ <italic: ITALIC> ] ;
+      [ <nitalic: NOITALIC> ] ;
+      [ <underline: UNDERLINE> ] ;
+      [ <nunderline: NOUNDERLINE> ] ;
+      [ <strikeout: STRIKEOUT> ] ;
+      [ <nstrikeout: NOSTRIKEOUT> ] ;
    => ;
-      hbprn:ModifyFont( <cfont>, <cface>, <size>, <width>, <angle>, <.bold.>, <.nbold.>, <.italic.>, <.nitalic.>, <.underline.>, <.nunderline.>, <.strikeout.>, <.nstrikeout.> )
+      hbprn:ModifyFont( <cfont>, <cface>, <size>, <width>, <angle>, <.bold.>, ;
+            <.nbold.>, <.italic.>, <.nitalic.>, <.underline.>, <.nunderline.>, <.strikeout.>, <.nstrikeout.> )
 
 #xcommand SELECT FONT <cfont> ;
    => ;
@@ -340,9 +401,10 @@ MEMVAR HBPRN
 #xcommand @ <row>, <col>, <row2>, <col2> DRAW TEXT <txt> ;
       [ STYLE <style> ] ;
       [ FONT <cfont> ] ;
-      [ <lNoWordBreak : NOWORDBREAK> ] ;
+      [ <lNoWordBreak: NOWORDBREAK> ] ;
    => ;
-      hbprn:DrawText( <row>, <col>, <row2>, <col2>, <txt>, <style>, <cfont>, <.lNoWordBreak.>)
+      hbprn:DrawText( <row>, <col>, <row2>, <col2>, <txt>, <style>, <cfont>, ;
+            <.lNoWordBreak.>)
 
 #xcommand @ <row>, <col> TEXTOUT <txt> [ FONT <cfont> ] ;
    => ;
@@ -372,7 +434,8 @@ MEMVAR HBPRN
       [ PEN <cpen> ] ;
       [ BRUSH <cbrush> ] ;
    => ;
-      hbprn:RoundRect( <row>, <col>, <row2>, <col2>, <tor>, <toc>, <cpen>, <cbrush> )
+      hbprn:RoundRect( <row>, <col>, <row2>, <col2>, <tor>, <toc>, <cpen>, ;
+            <cbrush> )
 
 #xcommand @ <row>, <col>, <row2>, <col2> FRAMERECT [ BRUSH <cbrush> ] ;
    => ;
@@ -393,7 +456,8 @@ MEMVAR HBPRN
       RADIAL2 <row4>, <col4> ;
       [ PEN <cpen> ] ;
    => ;
-      hbprn:Arc( <row>, <col>, <row2>, <col2>, <row3>, <col3>, <row4>, <col4>, <cpen> )
+      hbprn:Arc( <row>, <col>, <row2>, <col2>, <row3>, <col3>, <row4>, <col4>, ;
+            <cpen> )
 
 #xcommand @ <row>, <col> ARCTO ;
       RADIAL1 <row3>, <col3> ;
@@ -408,7 +472,8 @@ MEMVAR HBPRN
       [ PEN <cpen> ] ;
       [ BRUSH <cbrush> ] ;
    => ;
-      hbprn:Chord( <row>, <col>, <row2>, <col2>, <row3>, <col3>, <row4>, <col4>, <cpen>, <cbrush> )
+      hbprn:Chord( <row>, <col>, <row2>, <col2>, <row3>, <col3>, <row4>, ;
+            <col4>, <cpen>, <cbrush> )
 
 #xcommand @ <row>, <col>, <row2>, <col2> PIE ;
       RADIAL1 <row3>, <col3> ;
@@ -416,7 +481,8 @@ MEMVAR HBPRN
       [ PEN <cpen> ] ;
       [ BRUSH <cbrush> ] ;
    => ;
-      hbprn:Pie( <row>, <col>, <row2>, <col2>, <row3>, <col3>, <row4>, <col4>, <cpen>, <cbrush> )
+      hbprn:Pie( <row>, <col>, <row2>, <col2>, <row3>, <col3>, <row4>, <col4>, ;
+            <cpen>, <cbrush> )
 
 #xcommand POLYGON <apoints> ;
       [ PEN <cpen> ] ;
@@ -437,12 +503,12 @@ MEMVAR HBPRN
    => ;
       hbprn:SetUnits( 0 )
 
-#xcommand SET UNITS <units : ROWCOL, MM, INCHES, PIXELS> ;
-      [ <absolute : ABSOLUTE> ] ;
+#xcommand SET UNITS <units: ROWCOL, MM, INCHES, PIXELS> ;
+      [ <absolute: ABSOLUTE> ] ;
    => ;
-      hbprn:SetUnits( <"units">, , , <.absolute.> )
+      hbprn:SetUnits( <"units">,,, <.absolute.> )
 
-#xcommand SET UNITS ROWS <r> COLS <c> [ <absolute : ABSOLUTE> ] ;
+#xcommand SET UNITS ROWS <r> COLS <c> [ <absolute: ABSOLUTE> ] ;
    => ;
       hbprn:SetUnits( 4, <r>, <c>, <.absolute.> )
 
@@ -462,7 +528,8 @@ MEMVAR HBPRN
       AT <row>, <col>, <row2>, <col2> ;
       ELLIPSE <ewidth>, <eheight> ;
    => ;
-      hbprn:DefineRoundrectRgn( <creg>, <row>, <col>, <row2>, <col2>, <ewidth>, <eheight> )
+      hbprn:DefineRoundrectRgn( <creg>, <row>, <col>, <row2>, <col2>, ;
+            <ewidth>, <eheight> )
 
 #xcommand COMBINE REGIONS <creg1>, <creg2> TO <creg> [ STYLE <style> ] ;
    => ;
@@ -547,7 +614,7 @@ MEMVAR HBPRN
 
 #xcommand @ <row>, <col> PICTURE <cpic> IMAGESIZE ;
    => ;
-      hbprn:Picture( <row>, <col>, , , <cpic>, , , .T. )
+      hbprn:Picture( <row>, <col>,,, <cpic>,,, .T. )
 
 #xcommand @ <row>, <col>, <row2>, <col2> LINE [ PEN <cpen> ] ;
    => ;
@@ -561,7 +628,10 @@ MEMVAR HBPRN
    => ;
       hbprn:GetTextExtent( <txt>, <asize>, <cfont> )
 
-/* field selection bits for SetDevMode "what" parameter */
+/*---------------------------------------------------------------------------
+FIELD SELECTION BITS FOR SETDEVMODE "WHAT" PARAMETER
+---------------------------------------------------------------------------*/
+
 #define DM_ORIENTATION                        0x00000001
 #define DM_PAPERSIZE                          0x00000002
 #define DM_PAPERLENGTH                        0x00000004
@@ -591,7 +661,10 @@ MEMVAR HBPRN
 #define DM_PANNINGWIDTH                       0x08000000
 #define DM_PANNINGHEIGHT                      0x10000000
 
-/* bin selections */
+/*---------------------------------------------------------------------------
+BIN SELECTIONS
+---------------------------------------------------------------------------*/
+
 #define DMBIN_FIRST                           DMBIN_UPPER
 #define DMBIN_UPPER                           1
 #define DMBIN_ONLYONE                         1
@@ -608,33 +681,51 @@ MEMVAR HBPRN
 #define DMBIN_CASSETTE                        14
 #define DMBIN_FORMSOURCE                      15
 #define DMBIN_LAST                            DMBIN_FORMSOURCE
-#define DMBIN_USER                            256     /* device specific bins start here */
+#define DMBIN_USER                            256 // device specific bins start here
 
-/* collate */
+/*---------------------------------------------------------------------------
+COLLATE
+---------------------------------------------------------------------------*/
+
 #define DMCOLLATE_TRUE                        1
 #define DMCOLLATE_FALSE                       0
 
-/* orientation */
+/*---------------------------------------------------------------------------
+ORIENTATION
+---------------------------------------------------------------------------*/
+
 #define DMORIENT_PORTRAIT                     1
 #define DMORIENT_LANDSCAPE                    2
 
-/* color enable/disable for color printers */
+/*---------------------------------------------------------------------------
+COLOR ENABLE/DISABLE FOR COLOR PRINTERS
+---------------------------------------------------------------------------*/
+
 #define DMCOLOR_MONOCHROME                    1
 #define DMCOLOR_COLOR                         2
 
-/* print qualities */
+/*---------------------------------------------------------------------------
+PRINT QUALITY
+---------------------------------------------------------------------------*/
+
 #define DMRES_DRAFT                           (-1)
 #define DMRES_LOW                             (-2)
 #define DMRES_MEDIUM                          (-3)
 #define DMRES_HIGH                            (-4)
 
-/* imagelist drawing styles */
+/*---------------------------------------------------------------------------
+IMAGELIST DRAWING STYLES
+---------------------------------------------------------------------------*/
+
 #define ILD_NORMAL                            0x0000
 #define ILD_MASK                              0x0010
 #define ILD_BLEND25                           0x0002
 #define ILD_BLEND50                           0x0004
 
-/* brush styles */
+/*---------------------------------------------------------------------------
+BRUSH STYLES
+---------------------------------------------------------------------------*/
+
 #define BS_SOLID                              0
 #define BS_NULL                               1
 #define BS_HOLLOW                             BS_NULL
@@ -647,7 +738,10 @@ MEMVAR HBPRN
 #define BS_DIBPATTERN8X8                      8
 #define BS_MONOPATTERN                        9
 
-/* hatch styles */
+/*---------------------------------------------------------------------------
+HATCH STYLES
+---------------------------------------------------------------------------*/
+
 #define HS_HORIZONTAL                         0       /* ----- */
 #define HS_VERTICAL                           1       /* ||||| */
 #define HS_FDIAGONAL                          2       /* \\\\\ */
@@ -655,7 +749,10 @@ MEMVAR HBPRN
 #define HS_CROSS                              4       /* +++++ */
 #define HS_DIAGCROSS                          5       /* xxxxx */
 
-/* pen styles */
+/*---------------------------------------------------------------------------
+PEN STYLES
+---------------------------------------------------------------------------*/
+
 #define PS_SOLID                              0
 #define PS_DASH                               1       /* -------  */
 #define PS_DOT                                2       /* .......  */
@@ -667,7 +764,10 @@ MEMVAR HBPRN
 #define PS_ALTERNATE                          8
 #define PS_STYLE_MASK                         0x0000000F
 
-/* CombineRgn() styles */
+/*---------------------------------------------------------------------------
+COMBINERGN() STYLES
+---------------------------------------------------------------------------*/
+
 #define RGN_AND                               1
 #define RGN_OR                                2
 #define RGN_XOR                               3
@@ -676,12 +776,18 @@ MEMVAR HBPRN
 #define RGN_MIN                               RGN_AND
 #define RGN_MAX                               RGN_COPY
 
-/* PolyFill() modes */
+/*---------------------------------------------------------------------------
+POLYFILL() MODES
+---------------------------------------------------------------------------*/
+
 #define ALTERNATE                             1
 #define WINDING                               2
 #define POLYFILL_LAST                         2
 
-/* text alignment options */
+/*---------------------------------------------------------------------------
+TEXT ALIGNMENT OPTIONS
+---------------------------------------------------------------------------*/
+
 #define TA_NOUPDATECP                         0
 #define TA_UPDATECP                           1
 #define TA_LEFT                               0
@@ -693,13 +799,19 @@ MEMVAR HBPRN
 #define TA_RTLREADING                         256
 #define TA_MASK                               ( TA_BASELINE + TA_CENTER + TA_UPDATECP + TA_RTLREADING )
 
-/* scroll bar constants */
+/*---------------------------------------------------------------------------
+SCROLL BAR CONSTANTS
+---------------------------------------------------------------------------*/
+
 #define SB_HORZ                               0
 #define SB_VERT                               1
 #define SB_CTL                                2
 #define SB_BOTH                               3
 
-/* DrawText() format flags */
+/*---------------------------------------------------------------------------
+DRAWTEXT() FORMAT FLAGS
+---------------------------------------------------------------------------*/
+
 #define DT_TOP                                0x00000000
 #define DT_LEFT                               0x00000000
 #define DT_CENTER                             0x00000001
@@ -725,7 +837,10 @@ MEMVAR HBPRN
 #define DT_HIDEPREFIX                         0x00100000
 #define DT_PREFIXONLY                         0x00200000
 
-/* charset constants */
+/*---------------------------------------------------------------------------
+CHARSET CONSTANTS
+---------------------------------------------------------------------------*/
+
 #define ANSI_CHARSET                          0
 #define DEFAULT_CHARSET                       1
 #define SYMBOL_CHARSET                        2
@@ -747,7 +862,10 @@ MEMVAR HBPRN
 #define MAC_CHARSET                           77
 #define BALTIC_CHARSET                        186
 
-/* stock logical objects */
+/*---------------------------------------------------------------------------
+STOCK LOGICAL OBJECTS
+---------------------------------------------------------------------------*/
+
 #define WHITE_BRUSH                           0
 #define LTGRAY_BRUSH                          1
 #define GRAY_BRUSH                            2
@@ -766,133 +884,139 @@ MEMVAR HBPRN
 #define DEFAULT_PALETTE                       15
 #define SYSTEM_FIXED_FONT                     16
 
-/* duplex */
+/*---------------------------------------------------------------------------
+DUPLEX
+---------------------------------------------------------------------------*/
+
 #define DMDUP_SIMPLEX                         1
 #define DMDUP_VERTICAL                        2
 #define DMDUP_HORIZONTAL                      3
 
-/* predefined values for SetDevMode() papersize */
+/*---------------------------------------------------------------------------
+PREDEFINED VALUES FOR SETDEVMODE() PAPERSIZE
+---------------------------------------------------------------------------*/
+
 #ifndef DMPAPER_FIRST
 
 #define DMPAPER_FIRST                         DMPAPER_LETTER
-#define DMPAPER_LETTER                        1   /* Letter 8 1/2 x 11 in                          */
-#define DMPAPER_LETTERSMALL                   2   /* Letter Small 8 1/2 x 11 in                    */
-#define DMPAPER_TABLOID                       3   /* Tabloid 11 x 17 in                            */
-#define DMPAPER_LEDGER                        4   /* Ledger 17 x 11 in                             */
-#define DMPAPER_LEGAL                         5   /* Legal 8 1/2 x 14 in                           */
-#define DMPAPER_STATEMENT                     6   /* Statement 5 1/2 x 8 1/2 in                    */
-#define DMPAPER_EXECUTIVE                     7   /* Executive 7 1/4 x 10 1/2 in                   */
-#define DMPAPER_A3                            8   /* A3 297 x 420 mm                               */
-#define DMPAPER_A4                            9   /* A4 210 x 297 mm                               */
-#define DMPAPER_A4SMALL                       10  /* A4 Small 210 x 297 mm                         */
-#define DMPAPER_A5                            11  /* A5 148 x 210 mm                               */
-#define DMPAPER_B4                            12  /* B4 (JIS) 250 x 354                            */
-#define DMPAPER_B5                            13  /* B5 (JIS) 182 x 257 mm                         */
-#define DMPAPER_FOLIO                         14  /* Folio 8 1/2 x 13 in                           */
-#define DMPAPER_QUARTO                        15  /* Quarto 215 x 275 mm                           */
-#define DMPAPER_10X14                         16  /* 10x14 in                                      */
-#define DMPAPER_11X17                         17  /* 11x17 in                                      */
-#define DMPAPER_NOTE                          18  /* Note 8 1/2 x 11 in                            */
-#define DMPAPER_ENV_9                         19  /* Envelope #9 3 7/8 x 8 7/8                     */
-#define DMPAPER_ENV_10                        20  /* Envelope #10 4 1/8 x 9 1/2                    */
-#define DMPAPER_ENV_11                        21  /* Envelope #11 4 1/2 x 10 3/8                   */
-#define DMPAPER_ENV_12                        22  /* Envelope #12 4 \276 x 11                      */
-#define DMPAPER_ENV_14                        23  /* Envelope #14 5 x 11 1/2                       */
-#define DMPAPER_CSHEET                        24  /* C size sheet                                  */
-#define DMPAPER_DSHEET                        25  /* D size sheet                                  */
-#define DMPAPER_ESHEET                        26  /* E size sheet                                  */
-#define DMPAPER_ENV_DL                        27  /* Envelope DL 110 x 220mm                       */
-#define DMPAPER_ENV_C5                        28  /* Envelope C5 162 x 229 mm                      */
-#define DMPAPER_ENV_C3                        29  /* Envelope C3  324 x 458 mm                     */
-#define DMPAPER_ENV_C4                        30  /* Envelope C4  229 x 324 mm                     */
-#define DMPAPER_ENV_C6                        31  /* Envelope C6  114 x 162 mm                     */
-#define DMPAPER_ENV_C65                       32  /* Envelope C65 114 x 229 mm                     */
-#define DMPAPER_ENV_B4                        33  /* Envelope B4  250 x 353 mm                     */
-#define DMPAPER_ENV_B5                        34  /* Envelope B5  176 x 250 mm                     */
-#define DMPAPER_ENV_B6                        35  /* Envelope B6  176 x 125 mm                     */
-#define DMPAPER_ENV_ITALY                     36  /* Envelope 110 x 230 mm                         */
-#define DMPAPER_ENV_MONARCH                   37  /* Envelope Monarch 3.875 x 7.5 in               */
-#define DMPAPER_ENV_PERSONAL                  38  /* 6 3/4 Envelope 3 5/8 x 6 1/2 in               */
-#define DMPAPER_FANFOLD_US                    39  /* US Std Fanfold 14 7/8 x 11 in                 */
-#define DMPAPER_FANFOLD_STD_GERMAN            40  /* German Std Fanfold 8 1/2 x 12 in              */
-#define DMPAPER_FANFOLD_LGL_GERMAN            41  /* German Legal Fanfold 8 1/2 x 13 in            */
-#define DMPAPER_ISO_B4                        42  /* B4 (ISO) 250 x 353 mm                         */
-#define DMPAPER_JAPANESE_POSTCARD             43  /* Japanese Postcard 100 x 148 mm                */
-#define DMPAPER_9X11                          44  /* 9 x 11 in                                     */
-#define DMPAPER_10X11                         45  /* 10 x 11 in                                    */
-#define DMPAPER_15X11                         46  /* 15 x 11 in                                    */
-#define DMPAPER_ENV_INVITE                    47  /* Envelope Invite 220 x 220 mm                  */
-#define DMPAPER_RESERVED_48                   48  /* RESERVED--DO NOT USE                          */
-#define DMPAPER_RESERVED_49                   49  /* RESERVED--DO NOT USE                          */
-#define DMPAPER_LETTER_EXTRA                  50  /* Letter Extra 9 \275 x 12 in                   */
-#define DMPAPER_LEGAL_EXTRA                   51  /* Legal Extra 9 \275 x 15 in                    */
-#define DMPAPER_TABLOID_EXTRA                 52  /* Tabloid Extra 11.69 x 18 in                   */
-#define DMPAPER_A4_EXTRA                      53  /* A4 Extra 9.27 x 12.69 in                      */
-#define DMPAPER_LETTER_TRANSVERSE             54  /* Letter Transverse 8 \275 x 11 in              */
-#define DMPAPER_A4_TRANSVERSE                 55  /* A4 Transverse 210 x 297 mm                    */
-#define DMPAPER_LETTER_EXTRA_TRANSVERSE       56  /* Letter Extra Transverse 9\275 x 12 in         */
-#define DMPAPER_A_PLUS                        57  /* SuperA/SuperA/A4 227 x 356 mm                 */
-#define DMPAPER_B_PLUS                        58  /* SuperB/SuperB/A3 305 x 487 mm                 */
-#define DMPAPER_LETTER_PLUS                   59  /* Letter Plus 8.5 x 12.69 in                    */
-#define DMPAPER_A4_PLUS                       60  /* A4 Plus 210 x 330 mm                          */
-#define DMPAPER_A5_TRANSVERSE                 61  /* A5 Transverse 148 x 210 mm                    */
-#define DMPAPER_B5_TRANSVERSE                 62  /* B5 (JIS) Transverse 182 x 257 mm              */
-#define DMPAPER_A3_EXTRA                      63  /* A3 Extra 322 x 445 mm                         */
-#define DMPAPER_A5_EXTRA                      64  /* A5 Extra 174 x 235 mm                         */
-#define DMPAPER_B5_EXTRA                      65  /* B5 (ISO) Extra 201 x 276 mm                   */
-#define DMPAPER_A2                            66  /* A2 420 x 594 mm                               */
-#define DMPAPER_A3_TRANSVERSE                 67  /* A3 Transverse 297 x 420 mm                    */
-#define DMPAPER_A3_EXTRA_TRANSVERSE           68  /* A3 Extra Transverse 322 x 445 mm              */
-#define DMPAPER_DBL_JAPANESE_POSTCARD         69  /* Japanese Double Postcard 200 x 148 mm         */
-#define DMPAPER_A6                            70  /* A6 105 x 148 mm                               */
-#define DMPAPER_JENV_KAKU2                    71  /* Japanese Envelope Kaku #2                     */
-#define DMPAPER_JENV_KAKU3                    72  /* Japanese Envelope Kaku #3                     */
-#define DMPAPER_JENV_CHOU3                    73  /* Japanese Envelope Chou #3                     */
-#define DMPAPER_JENV_CHOU4                    74  /* Japanese Envelope Chou #4                     */
-#define DMPAPER_LETTER_ROTATED                75  /* Letter Rotated 11 x 8 1/2 11 in               */
-#define DMPAPER_A3_ROTATED                    76  /* A3 Rotated 420 x 297 mm                       */
-#define DMPAPER_A4_ROTATED                    77  /* A4 Rotated 297 x 210 mm                       */
-#define DMPAPER_A5_ROTATED                    78  /* A5 Rotated 210 x 148 mm                       */
-#define DMPAPER_B4_JIS_ROTATED                79  /* B4 (JIS) Rotated 364 x 257 mm                 */
-#define DMPAPER_B5_JIS_ROTATED                80  /* B5 (JIS) Rotated 257 x 182 mm                 */
-#define DMPAPER_JAPANESE_POSTCARD_ROTATED     81  /* Japanese Postcard Rotated 148 x 100 mm        */
-#define DMPAPER_DBL_JAPANESE_POSTCARD_ROTATED 82  /* Double Japanese Postcard Rotated 148 x 200 mm */
-#define DMPAPER_A6_ROTATED                    83  /* A6 Rotated 148 x 105 mm                       */
-#define DMPAPER_JENV_KAKU2_ROTATED            84  /* Japanese Envelope Kaku #2 Rotated             */
-#define DMPAPER_JENV_KAKU3_ROTATED            85  /* Japanese Envelope Kaku #3 Rotated             */
-#define DMPAPER_JENV_CHOU3_ROTATED            86  /* Japanese Envelope Chou #3 Rotated             */
-#define DMPAPER_JENV_CHOU4_ROTATED            87  /* Japanese Envelope Chou #4 Rotated             */
-#define DMPAPER_B6_JIS                        88  /* B6 (JIS) 128 x 182 mm                         */
-#define DMPAPER_B6_JIS_ROTATED                89  /* B6 (JIS) Rotated 182 x 128 mm                 */
-#define DMPAPER_12X11                         90  /* 12 x 11 in                                    */
-#define DMPAPER_JENV_YOU4                     91  /* Japanese Envelope You #4                      */
-#define DMPAPER_JENV_YOU4_ROTATED             92  /* Japanese Envelope You #4 Rotated              */
-#define DMPAPER_P16K                          93  /* PRC 16K 146 x 215 mm                          */
-#define DMPAPER_P32K                          94  /* PRC 32K 97 x 151 mm                           */
-#define DMPAPER_P32KBIG                       95  /* PRC 32K(Big) 97 x 151 mm                      */
-#define DMPAPER_PENV_1                        96  /* PRC Envelope #1 102 x 165 mm                  */
-#define DMPAPER_PENV_2                        97  /* PRC Envelope #2 102 x 176 mm                  */
-#define DMPAPER_PENV_3                        98  /* PRC Envelope #3 125 x 176 mm                  */
-#define DMPAPER_PENV_4                        99  /* PRC Envelope #4 110 x 208 mm                  */
-#define DMPAPER_PENV_5                        100 /* PRC Envelope #5 110 x 220 mm                  */
-#define DMPAPER_PENV_6                        101 /* PRC Envelope #6 120 x 230 mm                  */
-#define DMPAPER_PENV_7                        102 /* PRC Envelope #7 160 x 230 mm                  */
-#define DMPAPER_PENV_8                        103 /* PRC Envelope #8 120 x 309 mm                  */
-#define DMPAPER_PENV_9                        104 /* PRC Envelope #9 229 x 324 mm                  */
-#define DMPAPER_PENV_10                       105 /* PRC Envelope #10 324 x 458 mm                 */
-#define DMPAPER_P16K_ROTATED                  106 /* PRC 16K Rotated                               */
-#define DMPAPER_P32K_ROTATED                  107 /* PRC 32K Rotated                               */
-#define DMPAPER_P32KBIG_ROTATED               108 /* PRC 32K(Big) Rotated                          */
-#define DMPAPER_PENV_1_ROTATED                109 /* PRC Envelope #1 Rotated 165 x 102 mm          */
-#define DMPAPER_PENV_2_ROTATED                110 /* PRC Envelope #2 Rotated 176 x 102 mm          */
-#define DMPAPER_PENV_3_ROTATED                111 /* PRC Envelope #3 Rotated 176 x 125 mm          */
-#define DMPAPER_PENV_4_ROTATED                112 /* PRC Envelope #4 Rotated 208 x 110 mm          */
-#define DMPAPER_PENV_5_ROTATED                113 /* PRC Envelope #5 Rotated 220 x 110 mm          */
-#define DMPAPER_PENV_6_ROTATED                114 /* PRC Envelope #6 Rotated 230 x 120 mm          */
-#define DMPAPER_PENV_7_ROTATED                115 /* PRC Envelope #7 Rotated 230 x 160 mm          */
-#define DMPAPER_PENV_8_ROTATED                116 /* PRC Envelope #8 Rotated 309 x 120 mm          */
-#define DMPAPER_PENV_9_ROTATED                117 /* PRC Envelope #9 Rotated 324 x 229 mm          */
-#define DMPAPER_PENV_10_ROTATED               118 /* PRC Envelope #10 Rotated 458 x 324 mm         */
+#define DMPAPER_LETTER                        1   // Letter 8 1/2 x 11 in
+#define DMPAPER_LETTERSMALL                   2   // Letter Small 8 1/2 x 11 in
+#define DMPAPER_TABLOID                       3   // Tabloid 11 x 17 in
+#define DMPAPER_LEDGER                        4   // Ledger 17 x 11 in
+#define DMPAPER_LEGAL                         5   // Legal 8 1/2 x 14 in
+#define DMPAPER_STATEMENT                     6   // Statement 5 1/2 x 8 1/2 in
+#define DMPAPER_EXECUTIVE                     7   // Executive 7 1/4 x 10 1/2 in
+#define DMPAPER_A3                            8   // A3 297 x 420 mm
+#define DMPAPER_A4                            9   // A4 210 x 297 mm
+#define DMPAPER_A4SMALL                       10  // A4 Small 210 x 297 mm
+#define DMPAPER_A5                            11  // A5 148 x 210 mm
+#define DMPAPER_B4                            12  // B4 (JIS) 250 x 354
+#define DMPAPER_B5                            13  // B5 (JIS) 182 x 257 mm
+#define DMPAPER_FOLIO                         14  // Folio 8 1/2 x 13 in
+#define DMPAPER_QUARTO                        15  // Quarto 215 x 275 mm
+#define DMPAPER_10X14                         16  // 10x14 in
+#define DMPAPER_11X17                         17  // 11x17 in
+#define DMPAPER_NOTE                          18  // Note 8 1/2 x 11 in
+#define DMPAPER_ENV_9                         19  // Envelope #9 3 7/8 x 8 7/8
+#define DMPAPER_ENV_10                        20  // Envelope #10 4 1/8 x 9 1/2
+#define DMPAPER_ENV_11                        21  // Envelope #11 4 1/2 x 10 3/8
+#define DMPAPER_ENV_12                        22  // Envelope #12 4 \276 x 11
+#define DMPAPER_ENV_14                        23  // Envelope #14 5 x 11 1/2
+#define DMPAPER_CSHEET                        24  // C size sheet
+#define DMPAPER_DSHEET                        25  // D size sheet
+#define DMPAPER_ESHEET                        26  // E size sheet
+#define DMPAPER_ENV_DL                        27  // Envelope DL 110 x 220mm
+#define DMPAPER_ENV_C5                        28  // Envelope C5 162 x 229 mm
+#define DMPAPER_ENV_C3                        29  // Envelope C3  324 x 458 mm
+#define DMPAPER_ENV_C4                        30  // Envelope C4  229 x 324 mm
+#define DMPAPER_ENV_C6                        31  // Envelope C6  114 x 162 mm
+#define DMPAPER_ENV_C65                       32  // Envelope C65 114 x 229 mm
+#define DMPAPER_ENV_B4                        33  // Envelope B4  250 x 353 mm
+#define DMPAPER_ENV_B5                        34  // Envelope B5  176 x 250 mm
+#define DMPAPER_ENV_B6                        35  // Envelope B6  176 x 125 mm
+#define DMPAPER_ENV_ITALY                     36  // Envelope 110 x 230 mm
+#define DMPAPER_ENV_MONARCH                   37  // Envelope Monarch 3.875 x 7.5 in
+#define DMPAPER_ENV_PERSONAL                  38  // 6 3/4 Envelope 3 5/8 x 6 1/2 in
+#define DMPAPER_FANFOLD_US                    39  // US Std Fanfold 14 7/8 x 11 in
+#define DMPAPER_FANFOLD_STD_GERMAN            40  // German Std Fanfold 8 1/2 x 12 in
+#define DMPAPER_FANFOLD_LGL_GERMAN            41  // German Legal Fanfold 8 1/2 x 13 in
+#define DMPAPER_ISO_B4                        42  // B4 (ISO) 250 x 353 mm
+#define DMPAPER_JAPANESE_POSTCARD             43  // Japanese Postcard 100 x 148 mm
+#define DMPAPER_9X11                          44  // 9 x 11 in
+#define DMPAPER_10X11                         45  // 10 x 11 in
+#define DMPAPER_15X11                         46  // 15 x 11 in
+#define DMPAPER_ENV_INVITE                    47  // Envelope Invite 220 x 220 mm
+#define DMPAPER_RESERVED_48                   48  // RESERVED--DO NOT USE
+#define DMPAPER_RESERVED_49                   49  // RESERVED--DO NOT USE
+#define DMPAPER_LETTER_EXTRA                  50  // Letter Extra 9 \275 x 12 in
+#define DMPAPER_LEGAL_EXTRA                   51  // Legal Extra 9 \275 x 15 in
+#define DMPAPER_TABLOID_EXTRA                 52  // Tabloid Extra 11.69 x 18 in
+#define DMPAPER_A4_EXTRA                      53  // A4 Extra 9.27 x 12.69 in
+#define DMPAPER_LETTER_TRANSVERSE             54  // Letter Transverse 8 \275 x 11 in
+#define DMPAPER_A4_TRANSVERSE                 55  // A4 Transverse 210 x 297 mm
+#define DMPAPER_LETTER_EXTRA_TRANSVERSE       56  // Letter Extra Transverse 9\275 x 12 in
+#define DMPAPER_A_PLUS                        57  // SuperA/SuperA/A4 227 x 356 mm
+#define DMPAPER_B_PLUS                        58  // SuperB/SuperB/A3 305 x 487 mm
+#define DMPAPER_LETTER_PLUS                   59  // Letter Plus 8.5 x 12.69 in
+#define DMPAPER_A4_PLUS                       60  // A4 Plus 210 x 330 mm
+#define DMPAPER_A5_TRANSVERSE                 61  // A5 Transverse 148 x 210 mm
+#define DMPAPER_B5_TRANSVERSE                 62  // B5 (JIS) Transverse 182 x 257 mm
+#define DMPAPER_A3_EXTRA                      63  // A3 Extra 322 x 445 mm
+#define DMPAPER_A5_EXTRA                      64  // A5 Extra 174 x 235 mm
+#define DMPAPER_B5_EXTRA                      65  // B5 (ISO) Extra 201 x 276 mm
+#define DMPAPER_A2                            66  // A2 420 x 594 mm
+#define DMPAPER_A3_TRANSVERSE                 67  // A3 Transverse 297 x 420 mm
+#define DMPAPER_A3_EXTRA_TRANSVERSE           68  // A3 Extra Transverse 322 x 445 mm
+#define DMPAPER_DBL_JAPANESE_POSTCARD         69  // Japanese Double Postcard 200 x 148 mm
+#define DMPAPER_A6                            70  // A6 105 x 148 mm
+#define DMPAPER_JENV_KAKU2                    71  // Japanese Envelope Kaku #2
+#define DMPAPER_JENV_KAKU3                    72  // Japanese Envelope Kaku #3
+#define DMPAPER_JENV_CHOU3                    73  // Japanese Envelope Chou #3
+#define DMPAPER_JENV_CHOU4                    74  // Japanese Envelope Chou #4
+#define DMPAPER_LETTER_ROTATED                75  // Letter Rotated 11 x 8 1/2 11 in
+#define DMPAPER_A3_ROTATED                    76  // A3 Rotated 420 x 297 mm
+#define DMPAPER_A4_ROTATED                    77  // A4 Rotated 297 x 210 mm
+#define DMPAPER_A5_ROTATED                    78  // A5 Rotated 210 x 148 mm
+#define DMPAPER_B4_JIS_ROTATED                79  // B4 (JIS) Rotated 364 x 257 mm
+#define DMPAPER_B5_JIS_ROTATED                80  // B5 (JIS) Rotated 257 x 182 mm
+#define DMPAPER_JAPANESE_POSTCARD_ROTATED     81  // Japanese Postcard Rotated 148 x 100 mm
+#define DMPAPER_DBL_JAPANESE_POSTCARD_ROTATED 82  // Double Japanese Postcard Rotated 148 x 200 mm
+#define DMPAPER_A6_ROTATED                    83  // A6 Rotated 148 x 105 mm
+#define DMPAPER_JENV_KAKU2_ROTATED            84  // Japanese Envelope Kaku #2 Rotated
+#define DMPAPER_JENV_KAKU3_ROTATED            85  // Japanese Envelope Kaku #3 Rotated
+#define DMPAPER_JENV_CHOU3_ROTATED            86  // Japanese Envelope Chou #3 Rotated
+#define DMPAPER_JENV_CHOU4_ROTATED            87  // Japanese Envelope Chou #4 Rotated
+#define DMPAPER_B6_JIS                        88  // B6 (JIS) 128 x 182 mm
+#define DMPAPER_B6_JIS_ROTATED                89  // B6 (JIS) Rotated 182 x 128 mm
+#define DMPAPER_12X11                         90  // 12 x 11 in
+#define DMPAPER_JENV_YOU4                     91  // Japanese Envelope You #4
+#define DMPAPER_JENV_YOU4_ROTATED             92  // Japanese Envelope You #4 Rotated
+#define DMPAPER_P16K                          93  // PRC 16K 146 x 215 mm
+#define DMPAPER_P32K                          94  // PRC 32K 97 x 151 mm
+#define DMPAPER_P32KBIG                       95  // PRC 32K(Big) 97 x 151 mm
+#define DMPAPER_PENV_1                        96  // PRC Envelope #1 102 x 165 mm
+#define DMPAPER_PENV_2                        97  // PRC Envelope #2 102 x 176 mm
+#define DMPAPER_PENV_3                        98  // PRC Envelope #3 125 x 176 mm
+#define DMPAPER_PENV_4                        99  // PRC Envelope #4 110 x 208 mm
+#define DMPAPER_PENV_5                        100 // PRC Envelope #5 110 x 220 mm
+#define DMPAPER_PENV_6                        101 // PRC Envelope #6 120 x 230 mm
+#define DMPAPER_PENV_7                        102 // PRC Envelope #7 160 x 230 mm
+#define DMPAPER_PENV_8                        103 // PRC Envelope #8 120 x 309 mm
+#define DMPAPER_PENV_9                        104 // PRC Envelope #9 229 x 324 mm
+#define DMPAPER_PENV_10                       105 // PRC Envelope #10 324 x 458 mm
+#define DMPAPER_P16K_ROTATED                  106 // PRC 16K Rotated
+#define DMPAPER_P32K_ROTATED                  107 // PRC 32K Rotated
+#define DMPAPER_P32KBIG_ROTATED               108 // PRC 32K(Big) Rotated
+#define DMPAPER_PENV_1_ROTATED                109 // PRC Envelope #1 Rotated 165 x 102 mm
+#define DMPAPER_PENV_2_ROTATED                110 // PRC Envelope #2 Rotated 176 x 102 mm
+#define DMPAPER_PENV_3_ROTATED                111 // PRC Envelope #3 Rotated 176 x 125 mm
+#define DMPAPER_PENV_4_ROTATED                112 // PRC Envelope #4 Rotated 208 x 110 mm
+#define DMPAPER_PENV_5_ROTATED                113 // PRC Envelope #5 Rotated 220 x 110 mm
+#define DMPAPER_PENV_6_ROTATED                114 // PRC Envelope #6 Rotated 230 x 120 mm
+#define DMPAPER_PENV_7_ROTATED                115 // PRC Envelope #7 Rotated 230 x 160 mm
+#define DMPAPER_PENV_8_ROTATED                116 // PRC Envelope #8 Rotated 309 x 120 mm
+#define DMPAPER_PENV_9_ROTATED                117 // PRC Envelope #9 Rotated 324 x 229 mm
+#define DMPAPER_PENV_10_ROTATED               118 // PRC Envelope #10 Rotated 458 x 324 mm
 #define DMPAPER_USER                          256
 
 #endif

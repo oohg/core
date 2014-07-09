@@ -1,76 +1,92 @@
 /*
- * $Id: miniprint.ch,v 1.11 2014-07-05 18:46:25 fyurisich Exp $
+ * $Id: miniprint.ch,v 1.12 2014-07-09 02:25:23 fyurisich Exp $
  */
-/*----------------------------------------------------------------------------
- MINIGUI - Harbour Win32 GUI library source code
-
- Copyright 2002-05 Roberto Lopez <roblez@ciudad.com.ar>
- http://www.geocities.com/harbour_minigui/
-
- This program is free software; you can redistribute it and/or modify it under
- the terms of the GNU General Public License as published by the Free Software
- Foundation; either version 2 of the License, or (at your option) any later
- version.
-
- This program is distributed in the hope that it will be useful, but WITHOUT
- ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License along with
- this software; see the file COPYING. If not, write to the Free Software
- Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA (or
- visit the web site http://www.gnu.org/).
-
- As a special exception, you have permission for additional uses of the text
- contained in this release of Harbour Minigui.
-
- The exception is that, if you link the Harbour Minigui library with other
- files to produce an executable, this does not by itself cause the resulting
- executable to be covered by the GNU General Public License.
- Your use of that executable is in no way restricted on account of linking the
- Harbour-Minigui library code into it.
-
- Parts of this project are based upon:
-
-   "Harbour GUI framework for Win32"
-   Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
-   Copyright 2001 Antonio Linares <alinares@fivetech.com>
-   www - http://www.harbour-project.org
-
-   "Harbour Project"
-   Copyright 1999-2003, http://www.harbour-project.org/
----------------------------------------------------------------------------*/
+/*
+ * ooHG source code:
+ * Miniprint libray definitions
+ *
+ * Copyright 2007-2014 Vicente Guerra <vicente@guerra.com.mx>
+ *
+ * Portions of this project are based upon Harbour MiniGUI library.
+ * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
+ *
+ * Portions of this project are based upon Harbour GUI framework for Win32.
+ * Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
+ * Copyright 2001 Antonio Linares <alinares@fivetech.com>
+ *
+ * Portions of this project are based upon Harbour Project.
+ * Copyright 1999-2014, http://www.harbour-project.org/
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this software; see the file COPYING.TXT.  If not, write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301,USA (or download from http://www.gnu.org/licenses/).
+ *
+ * As a special exception, the ooHG Project gives permission for
+ * additional uses of the text contained in its release of ooHG.
+ *
+ * The exception is that, if you link the ooHG libraries with other
+ * files to produce an executable, this does not by itself cause the
+ * resulting executable to be covered by the GNU General Public License.
+ * Your use of that executable is in no way restricted on account of
+ * linking the ooHG library code into it.
+ *
+ * This exception does not however invalidate any other reasons why
+ * the executable file might be covered by the GNU General Public License.
+ *
+ * This exception applies only to the code released by the ooHG
+ * Project under the name ooHG. If you copy code from other
+ * ooHG Project or Free Software Foundation releases into a copy of
+ * ooHG, as the General Public License permits, the exception does
+ * not apply to the code that you add in this way. To avoid misleading
+ * anyone as to the status of such modified files, you must delete
+ * this exception notice from them.
+ *
+ * If you write modifications of your own for ooHG, it is your choice
+ * whether to permit this exception to apply to your modifications.
+ * If you do not wish that, delete this exception notice.
+ */
 
 #xcommand SELECT PRINTER <cPrinter> ;
-      [ <lOrientation : ORIENTATION> <nOrientation> ] ;
-      [ <lPaperSize : PAPERSIZE> <nPaperSize> ] ;
-      [ <lPaperLength : PAPERLENGTH> <nPaperLength> ] ;
-      [ <lPaperWidth : PAPERWIDTH> <nPaperWidth> ] ;
-      [ <lCopies : COPIES> <nCopies> ] ;
-      [ <lDefaultSource : DEFAULTSOURCE> <nDefaultSource> ] ;
-      [ <lQuality : QUALITY> <nQuality> ] ;
-      [ <lColor : COLOR> <nColor> ] ;
-      [ <lDuplex : DUPLEX> <nDuplex> ] ;
-      [ <lCollate : COLLATE> <nCollate> ] ;
-      [ <lScale : SCALE> <nScale> ] ;
-      [ <lPreview : PREVIEW> ] ;
-      [ <lSilent : NOERRORMSGS> ] ;
-      [ <lIgnore : IGNOREERRORS> ] ;
-      [ <lGlobal : GLOBAL> ] ;
+      [ <lOrientation: ORIENTATION> <nOrientation> ] ;
+      [ <lPaperSize: PAPERSIZE> <nPaperSize> ] ;
+      [ <lPaperLength: PAPERLENGTH> <nPaperLength> ] ;
+      [ <lPaperWidth: PAPERWIDTH> <nPaperWidth> ] ;
+      [ <lCopies: COPIES> <nCopies> ] ;
+      [ <lDefaultSource: DEFAULTSOURCE> <nDefaultSource> ] ;
+      [ <lQuality: QUALITY> <nQuality> ] ;
+      [ <lColor: COLOR> <nColor> ] ;
+      [ <lDuplex: DUPLEX> <nDuplex> ] ;
+      [ <lCollate: COLLATE> <nCollate> ] ;
+      [ <lScale: SCALE> <nScale> ] ;
+      [ <lPreview: PREVIEW> ] ;
+      [ <lSilent: NOERRORMSGS> ] ;
+      [ <lIgnore: IGNOREERRORS> ] ;
+      [ <lGlobal: GLOBAL> ] ;
    => ;
       _HMG_PRINTER_aPrinterProperties := _HMG_PRINTER_SetPrinterProperties( ;
             <cPrinter>, ;
-            If( <.lOrientation.>, <nOrientation>, -999 ), ;
-            If( <.lPaperSize.>, <nPaperSize>, -999 ), ;
-            If( <.lPaperLength.>, <nPaperLength>, -999 ), ;
-            If( <.lPaperWidth.>, <nPaperWidth>, -999 ), ;
-            If( <.lCopies.>, <nCopies>, -999 ), ;
-            If( <.lDefaultSource.>, <nDefaultSource>, -999 ), ;
-            If( <.lQuality.>, <nQuality>, -999 ), ;
-            If( <.lColor.>, <nColor>, -999 ), ;
-            If( <.lDuplex.>, <nDuplex>, -999 ), ;
-            If( <.lCollate.>, <nCollate>, -999 ), ;
-            If( <.lScale.>, <nScale>, -999 ), ;
+            IIF( <.lOrientation.>, <nOrientation>, -999 ), ;
+            IIF( <.lPaperSize.>, <nPaperSize>, -999 ), ;
+            IIF( <.lPaperLength.>, <nPaperLength>, -999 ), ;
+            IIF( <.lPaperWidth.>, <nPaperWidth>, -999 ), ;
+            IIF( <.lCopies.>, <nCopies>, -999 ), ;
+            IIF( <.lDefaultSource.>, <nDefaultSource>, -999 ), ;
+            IIF( <.lQuality.>, <nQuality>, -999 ), ;
+            IIF( <.lColor.>, <nColor>, -999 ), ;
+            IIF( <.lDuplex.>, <nDuplex>, -999 ), ;
+            IIF( <.lCollate.>, <nCollate>, -999 ), ;
+            IIF( <.lScale.>, <nScale>, -999 ), ;
             <.lSilent.>, ;
             <.lIgnore.>, ;
             <.lGlobal.> ) ;;
@@ -84,35 +100,35 @@
       _HMG_PRINTER_Name := <cPrinter>
 
 #xcommand SELECT PRINTER <cPrinter> TO <lSuccess> ;
-      [ <lOrientation : ORIENTATION> <nOrientation> ] ;
-      [ <lPaperSize : PAPERSIZE> <nPaperSize> ] ;
-      [ <lPaperLength : PAPERLENGTH> <nPaperLength> ] ;
-      [ <lPaperWidth : PAPERWIDTH> <nPaperWidth> ] ;
-      [ <lCopies : COPIES> <nCopies> ] ;
-      [ <lDefaultSource : DEFAULTSOURCE> <nDefaultSource> ] ;
-      [ <lQuality : QUALITY> <nQuality> ] ;
-      [ <lColor : COLOR> <nColor> ] ;
-      [ <lDuplex : DUPLEX> <nDuplex> ] ;
-      [ <lCollate : COLLATE> <nCollate> ] ;
-      [ <lScale : SCALE> <nScale> ] ;
-      [ <lPreview : PREVIEW> ] ;
-      [ <lSilent : NOERRORMSGS> ] ;
-      [ <lIgnore : IGNOREERRORS> ] ;
-      [ <lGlobal : GLOBAL> ] ;
+      [ <lOrientation: ORIENTATION> <nOrientation> ] ;
+      [ <lPaperSize: PAPERSIZE> <nPaperSize> ] ;
+      [ <lPaperLength: PAPERLENGTH> <nPaperLength> ] ;
+      [ <lPaperWidth: PAPERWIDTH> <nPaperWidth> ] ;
+      [ <lCopies: COPIES> <nCopies> ] ;
+      [ <lDefaultSource: DEFAULTSOURCE> <nDefaultSource> ] ;
+      [ <lQuality: QUALITY> <nQuality> ] ;
+      [ <lColor: COLOR> <nColor> ] ;
+      [ <lDuplex: DUPLEX> <nDuplex> ] ;
+      [ <lCollate: COLLATE> <nCollate> ] ;
+      [ <lScale: SCALE> <nScale> ] ;
+      [ <lPreview: PREVIEW> ] ;
+      [ <lSilent: NOERRORMSGS> ] ;
+      [ <lIgnore: IGNOREERRORS> ] ;
+      [ <lGlobal: GLOBAL> ] ;
    => ;
       _HMG_PRINTER_aPrinterProperties := _HMG_PRINTER_SetPrinterProperties( ;
             <cPrinter>, ;
-            If( <.lOrientation.>, <nOrientation>, -999 ), ;
-            If( <.lPaperSize.>, <nPaperSize>, -999 ), ;
-            If( <.lPaperLength.>, <nPaperLength>, -999 ), ;
-            If( <.lPaperWidth.>, <nPaperWidth>, -999 ), ;
-            If( <.lCopies.>, <nCopies>, -999 ), ;
-            If( <.lDefaultSource.>, <nDefaultSource>, -999 ), ;
-            If( <.lQuality.>, <nQuality>, -999 ), ;
-            If( <.lColor.>, <nColor>, -999 ), ;
-            If( <.lDuplex.>, <nDuplex>, -999 ), ;
-            If( <.lCollate.>, <nCollate>, -999 ), ;
-            If( <.lScale.>, <nScale>, -999 ), ;
+            IIF( <.lOrientation.>, <nOrientation>, -999 ), ;
+            IIF( <.lPaperSize.>, <nPaperSize>, -999 ), ;
+            IIF( <.lPaperLength.>, <nPaperLength>, -999 ), ;
+            IIF( <.lPaperWidth.>, <nPaperWidth>, -999 ), ;
+            IIF( <.lCopies.>, <nCopies>, -999 ), ;
+            IIF( <.lDefaultSource.>, <nDefaultSource>, -999 ), ;
+            IIF( <.lQuality.>, <nQuality>, -999 ), ;
+            IIF( <.lColor.>, <nColor>, -999 ), ;
+            IIF( <.lDuplex.>, <nDuplex>, -999 ), ;
+            IIF( <.lCollate.>, <nCollate>, -999 ), ;
+            IIF( <.lScale.>, <nScale>, -999 ), ;
             <.lSilent.>, ;
             <.lIgnore.>, ;
             <.lGlobal.> ) ;;
@@ -120,43 +136,43 @@
       _HMG_PRINTER_Copies := _HMG_PRINTER_aPrinterProperties\[3\] ;;
       _HMG_PRINTER_Collate := _HMG_PRINTER_aPrinterProperties\[4\] ;;
       _HMG_PRINTER_Error := _HMG_PRINTER_aPrinterProperties\[5\] ;;
-      <lSuccess> := If( _HMG_PRINTER_hDC <> 0, .T., .F. ) ;;
+      <lSuccess> := IIF( _HMG_PRINTER_hDC <> 0, .T., .F. ) ;;
       _HMG_PRINTER_Preview := <.lPreview.> ;;
       _HMG_PRINTER_InitUserMessages() ;;
       _HMG_PRINTER_TimeStamp := StrZero( Seconds() * 100, 8 ) ;;
       _HMG_PRINTER_Name := <cPrinter>
 
 #xcommand SELECT PRINTER DEFAULT ;
-      [ <lOrientation : ORIENTATION> <nOrientation> ] ;
-      [ <lPaperSize : PAPERSIZE> <nPaperSize> ] ;
-      [ <lPaperLength : PAPERLENGTH> <nPaperLength> ] ;
-      [ <lPaperWidth : PAPERWIDTH> <nPaperWidth> ] ;
-      [ <lCopies : COPIES> <nCopies> ] ;
-      [ <lDefaultSource : DEFAULTSOURCE> <nDefaultSource> ] ;
-      [ <lQuality : QUALITY> <nQuality> ] ;
-      [ <lColor : COLOR> <nColor> ] ;
-      [ <lDuplex : DUPLEX> <nDuplex> ] ;
-      [ <lCollate : COLLATE> <nCollate> ] ;
-      [ <lScale : SCALE> <nScale> ] ;
-      [ <lPreview : PREVIEW> ] ;
-      [ <lSilent : NOERRORMSGS> ] ;
-      [ <lIgnore : IGNOREERRORS> ] ;
-      [ <lGlobal : GLOBAL> ] ;
+      [ <lOrientation: ORIENTATION> <nOrientation> ] ;
+      [ <lPaperSize: PAPERSIZE> <nPaperSize> ] ;
+      [ <lPaperLength: PAPERLENGTH> <nPaperLength> ] ;
+      [ <lPaperWidth: PAPERWIDTH> <nPaperWidth> ] ;
+      [ <lCopies: COPIES> <nCopies> ] ;
+      [ <lDefaultSource: DEFAULTSOURCE> <nDefaultSource> ] ;
+      [ <lQuality: QUALITY> <nQuality> ] ;
+      [ <lColor: COLOR> <nColor> ] ;
+      [ <lDuplex: DUPLEX> <nDuplex> ] ;
+      [ <lCollate: COLLATE> <nCollate> ] ;
+      [ <lScale: SCALE> <nScale> ] ;
+      [ <lPreview: PREVIEW> ] ;
+      [ <lSilent: NOERRORMSGS> ] ;
+      [ <lIgnore: IGNOREERRORS> ] ;
+      [ <lGlobal: GLOBAL> ] ;
    => ;
       _HMG_PRINTER_Name := GetDefaultPrinter() ;;
       _HMG_PRINTER_aPrinterProperties := _HMG_PRINTER_SetPrinterProperties( ;
             _HMG_PRINTER_Name, ;
-            If( <.lOrientation.>, <nOrientation>, -999 ), ;
-            If( <.lPaperSize.>, <nPaperSize>, -999 ), ;
-            If( <.lPaperLength.>, <nPaperLength>, -999 ), ;
-            If( <.lPaperWidth.>, <nPaperWidth>, -999 ), ;
-            If( <.lCopies.>, <nCopies>, -999 ), ;
-            If( <.lDefaultSource.>, <nDefaultSource>, -999 ), ;
-            If( <.lQuality.>, <nQuality>, -999 ), ;
-            If( <.lColor.>, <nColor>, -999 ), ;
-            If( <.lDuplex.>, <nDuplex>, -999 ), ;
-            If( <.lCollate.>, <nCollate>, -999 ), ;
-            If( <.lScale.>, <nScale>, -999 ), ;
+            IIF( <.lOrientation.>, <nOrientation>, -999 ), ;
+            IIF( <.lPaperSize.>, <nPaperSize>, -999 ), ;
+            IIF( <.lPaperLength.>, <nPaperLength>, -999 ), ;
+            IIF( <.lPaperWidth.>, <nPaperWidth>, -999 ), ;
+            IIF( <.lCopies.>, <nCopies>, -999 ), ;
+            IIF( <.lDefaultSource.>, <nDefaultSource>, -999 ), ;
+            IIF( <.lQuality.>, <nQuality>, -999 ), ;
+            IIF( <.lColor.>, <nColor>, -999 ), ;
+            IIF( <.lDuplex.>, <nDuplex>, -999 ), ;
+            IIF( <.lCollate.>, <nCollate>, -999 ), ;
+            IIF( <.lScale.>, <nScale>, -999 ), ;
             <.lSilent.>, ;
             <.lIgnore.>, ;
             <.lGlobal.> ) ;;
@@ -169,36 +185,36 @@
       _HMG_PRINTER_TimeStamp := StrZero( Seconds() * 100, 8 ) ;;
 
 #xcommand SELECT PRINTER DEFAULT TO <lSuccess> ;
-      [ <lOrientation : ORIENTATION> <nOrientation> ] ;
-      [ <lPaperSize : PAPERSIZE> <nPaperSize> ] ;
-      [ <lPaperLength : PAPERLENGTH> <nPaperLength> ] ;
-      [ <lPaperWidth : PAPERWIDTH> <nPaperWidth> ] ;
-      [ <lCopies : COPIES> <nCopies> ] ;
-      [ <lDefaultSource : DEFAULTSOURCE> <nDefaultSource> ] ;
-      [ <lQuality : QUALITY> <nQuality> ] ;
-      [ <lColor : COLOR> <nColor> ] ;
-      [ <lDuplex : DUPLEX> <nDuplex> ] ;
-      [ <lCollate : COLLATE> <nCollate> ] ;
-      [ <lScale : SCALE> <nScale> ] ;
-      [ <lPreview : PREVIEW> ] ;
-      [ <lSilent : NOERRORMSGS> ] ;
-      [ <lIgnore : IGNOREERRORS> ] ;
-      [ <lGlobal : GLOBAL> ] ;
+      [ <lOrientation: ORIENTATION> <nOrientation> ] ;
+      [ <lPaperSize: PAPERSIZE> <nPaperSize> ] ;
+      [ <lPaperLength: PAPERLENGTH> <nPaperLength> ] ;
+      [ <lPaperWidth: PAPERWIDTH> <nPaperWidth> ] ;
+      [ <lCopies: COPIES> <nCopies> ] ;
+      [ <lDefaultSource: DEFAULTSOURCE> <nDefaultSource> ] ;
+      [ <lQuality: QUALITY> <nQuality> ] ;
+      [ <lColor: COLOR> <nColor> ] ;
+      [ <lDuplex: DUPLEX> <nDuplex> ] ;
+      [ <lCollate: COLLATE> <nCollate> ] ;
+      [ <lScale: SCALE> <nScale> ] ;
+      [ <lPreview: PREVIEW> ] ;
+      [ <lSilent: NOERRORMSGS> ] ;
+      [ <lIgnore: IGNOREERRORS> ] ;
+      [ <lGlobal: GLOBAL> ] ;
    => ;
       _HMG_PRINTER_Name := GetDefaultPrinter() ;;
       _HMG_PRINTER_aPrinterProperties := _HMG_PRINTER_SetPrinterProperties( ;
             _HMG_PRINTER_Name, ;
-            If( <.lOrientation.>, <nOrientation>, -999 ), ;
-            If( <.lPaperSize.>, <nPaperSize>, -999 ), ;
-            If( <.lPaperLength.>, <nPaperLength>, -999 ), ;
-            If( <.lPaperWidth.>, <nPaperWidth>, -999 ), ;
-            If( <.lCopies.>, <nCopies>, -999 ), ;
-            If( <.lDefaultSource.>, <nDefaultSource>, -999 ), ;
-            If( <.lQuality.>, <nQuality>, -999 ), ;
-            If( <.lColor.>, <nColor>, -999 ), ;
-            If( <.lDuplex.>, <nDuplex>, -999 ), ;
-            If( <.lCollate.>, <nCollate>, -999 ), ;
-            If( <.lScale.>, <nScale>, -999 ), ;
+            IIF( <.lOrientation.>, <nOrientation>, -999 ), ;
+            IIF( <.lPaperSize.>, <nPaperSize>, -999 ), ;
+            IIF( <.lPaperLength.>, <nPaperLength>, -999 ), ;
+            IIF( <.lPaperWidth.>, <nPaperWidth>, -999 ), ;
+            IIF( <.lCopies.>, <nCopies>, -999 ), ;
+            IIF( <.lDefaultSource.>, <nDefaultSource>, -999 ), ;
+            IIF( <.lQuality.>, <nQuality>, -999 ), ;
+            IIF( <.lColor.>, <nColor>, -999 ), ;
+            IIF( <.lDuplex.>, <nDuplex>, -999 ), ;
+            IIF( <.lCollate.>, <nCollate>, -999 ), ;
+            IIF( <.lScale.>, <nScale>, -999 ), ;
             <.lSilent.>, ;
             <.lIgnore.>, ;
             <.lGlobal.> ) ;;
@@ -206,12 +222,12 @@
       _HMG_PRINTER_Copies := _HMG_PRINTER_aPrinterProperties\[3\] ;;
       _HMG_PRINTER_Collate := _HMG_PRINTER_aPrinterProperties\[4\] ;;
       _HMG_PRINTER_Error := _HMG_PRINTER_aPrinterProperties\[5\] ;;
-      <lSuccess> := If( _HMG_PRINTER_hDC <> 0, .T., .F. ) ;;
+      <lSuccess> := IIF( _HMG_PRINTER_hDC <> 0, .T., .F. ) ;;
       _HMG_PRINTER_Preview := <.lPreview.> ;;
       _HMG_PRINTER_InitUserMessages() ;;
       _HMG_PRINTER_TimeStamp := StrZero( Seconds() * 100, 8 ) ;;
 
-#xcommand SELECT PRINTER DIALOG [ <lPreview : PREVIEW> ] ;
+#xcommand SELECT PRINTER DIALOG [ <lPreview: PREVIEW> ] ;
    => ;
       _HMG_PRINTER_aPrinterProperties = _HMG_PRINTER_PrintDialog() ;;
       _HMG_PRINTER_hDC := _HMG_PRINTER_aPrinterProperties\[1\] ;;
@@ -223,7 +239,7 @@
       _HMG_PRINTER_InitUserMessages() ;;
       _HMG_PRINTER_TimeStamp := StrZero( Seconds() * 100, 8 )
 
-#xcommand SELECT PRINTER DIALOG TO <lSuccess> [ <lPreview : PREVIEW> ] ;
+#xcommand SELECT PRINTER DIALOG TO <lSuccess> [ <lPreview: PREVIEW> ] ;
    => ;
       _HMG_PRINTER_aPrinterProperties = _HMG_PRINTER_PrintDialog() ;;
       _HMG_PRINTER_hDC := _HMG_PRINTER_aPrinterProperties\[1\] ;;
@@ -231,7 +247,7 @@
       _HMG_PRINTER_Copies := _HMG_PRINTER_aPrinterProperties\[3\] ;;
       _HMG_PRINTER_Collate := _HMG_PRINTER_aPrinterProperties\[4\] ;;
       _HMG_PRINTER_Error := _HMG_PRINTER_aPrinterProperties\[5\] ;;
-      <lSuccess> := If( _HMG_PRINTER_hDC <> 0, .T., .F. ) ;;
+      <lSuccess> := IIF( _HMG_PRINTER_hDC <> 0, .T., .F. ) ;;
       _HMG_PRINTER_Preview := <.lPreview.> ;;
       _HMG_PRINTER_InitUserMessages() ;;
       _HMG_PRINTER_TimeStamp := StrZero( Seconds() * 100, 8 )
@@ -239,131 +255,174 @@
 #xcommand START PRINTDOC [ NAME <cname> ] ;
    => ;
       _HMG_PRINTER_SetJobName( <cname> ) ;;
-      If( _HMG_PRINTER_Preview, ( _HMG_PRINTER_PageCount := 0, _HMG_PRINTER_hDC_Bak := _HMG_PRINTER_hDC ), _HMG_PRINTER_StartDoc( _HMG_PRINTER_hDC, _OOHG_PRINTER_DocName ) )
+      IIF( _HMG_PRINTER_Preview, ;
+           ( _HMG_PRINTER_PageCount := 0, ;
+             _HMG_PRINTER_hDC_Bak := _HMG_PRINTER_hDC ), ;
+           _HMG_PRINTER_StartDoc( _HMG_PRINTER_hDC, _OOHG_PRINTER_DocName ) )
 
 #xcommand START PRINTPAGE ;
    => ;
-      If( _HMG_PRINTER_Preview, ( _HMG_PRINTER_hDC := _HMG_PRINTER_StartPage_Preview( _HMG_PRINTER_hDC_Bak, GetTempFolder() + '\' + _HMG_PRINTER_TimeStamp + "_HMG_print_preview_" + AllTrim( StrZero( ++ _HMG_PRINTER_PageCount, 6 ) ) + ".Emf" ) ), _HMG_PRINTER_StartPage( _HMG_PRINTER_hDC ) )
+      IIF( _HMG_PRINTER_Preview, ;
+           ( _HMG_PRINTER_hDC := _HMG_PRINTER_StartPage_Preview( ;
+                _HMG_PRINTER_hDC_Bak, ;
+                ( GetTempFolder() + ;
+                  '\' + ;
+                  _HMG_PRINTER_TimeStamp + ;
+                  "_HMG_print_preview_" + ;
+                  StrZero( ++ _HMG_PRINTER_PageCount, 6, 0 ) + ;
+                  ".Emf" ) ) ), ;
+           _HMG_PRINTER_StartPage( _HMG_PRINTER_hDC ) )
 
 #xcommand END PRINTPAGE ;
    => ;
-      If( _HMG_PRINTER_Preview, _HMG_PRINTER_EndPage_Preview( _HMG_PRINTER_hDC ), _HMG_PRINTER_EndPage( _HMG_PRINTER_hDC ) )
+      IIF( _HMG_PRINTER_Preview, ;
+           _HMG_PRINTER_EndPage_Preview( _HMG_PRINTER_hDC ), ;
+           _HMG_PRINTER_EndPage( _HMG_PRINTER_hDC ) )
 
 #xcommand END PRINTDOC ;
    => ;
-      If( _HMG_PRINTER_Preview, _HMG_PRINTER_ShowPreview(), _HMG_PRINTER_EndDoc( _HMG_PRINTER_hDC ) )
+      IIF( _HMG_PRINTER_Preview, ;
+           _HMG_PRINTER_ShowPreview(), ;
+           _HMG_PRINTER_EndDoc( _HMG_PRINTER_hDC ) )
 
 #xcommand ABORT PRINTDOC ;
    => ;
       _HMG_PRINTER_AbortDoc( _HMG_PRINTER_hDC )
 
 #xcommand @ <Row>, <Col> PRINT [ DATA ] <cText> ;
-      [ <lfont : FONT> <cFontName> ] ;
-      [ <lsize : SIZE> <nFontSize> ] ;
-      [ <bold : BOLD> ] ;
-      [ <italic : ITALIC> ] ;
-      [ <underline : UNDERLINE> ] ;
-      [ <strikeout : STRIKEOUT> ] ;
-      [ <lcolor : COLOR> <aColor> ] ;
-      [ <lAngle : ANGLE> <nAngle> ] ;
-      [ <lWidth : WIDTH> <nWidth> ] ;
+      [ <lfont: FONT> <cFontName> ] ;
+      [ <lsize: SIZE> <nFontSize> ] ;
+      [ <bold: BOLD> ] ;
+      [ <italic: ITALIC> ] ;
+      [ <underline: UNDERLINE> ] ;
+      [ <strikeout: STRIKEOUT> ] ;
+      [ <lcolor: COLOR> <aColor> ] ;
+      [ <lAngle: ANGLE> <nAngle> ] ;
+      [ <lWidth: WIDTH> <nWidth> ] ;
    => ;
-      _HMG_PRINTER_H_Print( _HMG_PRINTER_hDC, <Row>, <Col>, <cFontName>, <nFontSize>, <aColor>\[1\], <aColor>\[2\], <aColor>\[3\], <cText>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, <.lcolor.>, <.lfont.>, <.lsize.>, <.lAngle.>, <nAngle>, <.lWidth.>, <nWidth> )
+      _HMG_PRINTER_H_Print( _HMG_PRINTER_hDC, <Row>, <Col>, <cFontName>, ;
+         <nFontSize>, <aColor>\[1\], <aColor>\[2\], <aColor>\[3\], <cText>, ;
+         <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, <.lcolor.>, ;
+         <.lfont.>, <.lsize.>, <.lAngle.>, <nAngle>, <.lWidth.>, <nWidth> )
 
 #xcommand @ <Row>, <Col> PRINT [ DATA ] <cText> ;
       TO <ToRow>, <ToCol> ;
-      [ <lfont : FONT> <cFontName> ] ;
-      [ <lsize : SIZE> <nFontSize> ] ;
-      [ <bold : BOLD> ] ;
-      [ <italic : ITALIC> ] ;
-      [ <underline : UNDERLINE> ] ;
-      [ <strikeout : STRIKEOUT> ] ;
-      [ <lcolor : COLOR> <aColor> ] ;
-      [ <lAngle : ANGLE> <nAngle> ] ;
-      [ <lWidth : WIDTH> <nWidth> ] ;
+      [ <lfont: FONT> <cFontName> ] ;
+      [ <lsize: SIZE> <nFontSize> ] ;
+      [ <bold: BOLD> ] ;
+      [ <italic: ITALIC> ] ;
+      [ <underline: UNDERLINE> ] ;
+      [ <strikeout: STRIKEOUT> ] ;
+      [ <lcolor: COLOR> <aColor> ] ;
+      [ <lAngle: ANGLE> <nAngle> ] ;
+      [ <lWidth: WIDTH> <nWidth> ] ;
    => ;
-      _HMG_PRINTER_H_MultiLine_Print( _HMG_PRINTER_hDC, <Row>, <Col>, <ToRow>, <ToCol>, <cFontName>, <nFontSize>, <aColor>\[1\], <aColor>\[2\], <aColor>\[3\], <cText>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, <.lcolor.>, <.lfont.>, <.lsize.>, <.lAngle.>, <nAngle>, <.lWidth.>, <nWidth> )
+      _HMG_PRINTER_H_MultiLine_Print( _HMG_PRINTER_hDC, <Row>, <Col>, <ToRow>, ;
+         <ToCol>, <cFontName>, <nFontSize>, <aColor>\[1\], <aColor>\[2\], ;
+         <aColor>\[3\], <cText>, <.bold.>, <.italic.>, <.underline.>, ;
+         <.strikeout.>, <.lcolor.>, <.lfont.>, <.lsize.>, <.lAngle.>, ;
+         <nAngle>, <.lWidth.>, <nWidth> )
 
 #xcommand @ <nRow>, <nCol> PRINT IMAGE <cImage> ;
       WIDTH <nWidth> ;
       HEIGHT <nheight> ;
-      [ <stretch : STRETCH> ] ;
+      [ <stretch: STRETCH> ] ;
    => ;
-      _HMG_PRINTER_H_Image( _HMG_PRINTER_hDC, <cImage>, <nRow>, <nCol>, <nheight>, <nWidth>, <.stretch.> )
+      _HMG_PRINTER_H_Image( _HMG_PRINTER_hDC, <cImage>, <nRow>, <nCol>, ;
+         <nheight>, <nWidth>, <.stretch.> )
 
 #xcommand @ <Row>, <Col> PRINT LINE TO <ToRow>, <ToCol> ;
-      [ <lwidth : PENWIDTH> <Width> ] ;
-      [ <lcolor : COLOR> <aColor> ] ;
-      [ <lStyle : STYLE> <nStyle> ] ;
+      [ <lwidth: PENWIDTH> <Width> ] ;
+      [ <lcolor: COLOR> <aColor> ] ;
+      [ <lStyle: STYLE> <nStyle> ] ;
    => ;
-      _HMG_PRINTER_H_Line( _HMG_PRINTER_hDC, <Row>, <Col>, <ToRow>, <ToCol>, <Width>, <aColor>\[1\], <aColor>\[2\], <aColor>\[3\], <.lwidth.>, <.lcolor.>, <.lStyle.>, <nStyle> )
+      _HMG_PRINTER_H_Line( _HMG_PRINTER_hDC, <Row>, <Col>, <ToRow>, <ToCol>, ;
+         <Width>, <aColor>\[1\], <aColor>\[2\], <aColor>\[3\], <.lwidth.>, ;
+         <.lcolor.>, <.lStyle.>, <nStyle> )
 
 #xcommand @ <Row>, <Col> PRINT RECTANGLE TO <ToRow>, <ToCol> ;
-      [ <lwidth : PENWIDTH> <Width> ] ;
-      [ <lcolor : COLOR> <aColor> ] ;
-      [ <lStyle : STYLE> <nStyle> ] ;
-      [ <lBrushStyle : BRUSHSTYLE> <nBrStyle> ] ;
-      [ <lBrushColor : BRUSHCOLOR> <aBrColor> ] ;
+      [ <lwidth: PENWIDTH> <Width> ] ;
+      [ <lcolor: COLOR> <aColor> ] ;
+      [ <lStyle: STYLE> <nStyle> ] ;
+      [ <lBrushStyle: BRUSHSTYLE> <nBrStyle> ] ;
+      [ <lBrushColor: BRUSHCOLOR> <aBrColor> ] ;
    => ;
-      _HMG_PRINTER_H_Rectangle( _HMG_PRINTER_hDC, <Row>, <Col>, <ToRow>, <ToCol>, <Width>, <aColor>\[1\], <aColor>\[2\], <aColor>\[3\], <.lwidth.>, <.lcolor.>, <.lStyle.>, <nStyle>, <.lBrushStyle.>, <nBrStyle>, <.lBrushColor.>, <aBrColor> )
+      _HMG_PRINTER_H_Rectangle( _HMG_PRINTER_hDC, <Row>, <Col>, <ToRow>, ;
+         <ToCol>, <Width>, <aColor>\[1\], <aColor>\[2\], <aColor>\[3\], ;
+         <.lwidth.>, <.lcolor.>, <.lStyle.>, <nStyle>, <.lBrushStyle.>, ;
+         <nBrStyle>, <.lBrushColor.>, <aBrColor> )
 
 #xcommand @ <Row>, <Col> PRINT RECTANGLE TO <ToRow>, <ToCol> ;
-      [ <lwidth : PENWIDTH> <Width> ] ;
-      [ <lcolor : COLOR> <aColor> ] ;
-      [ <lStyle : STYLE> <nStyle> ] ;
-      [ <lBrushStyle : BRUSHSTYLE> <nBrStyle> ] ;
-      [ <lBrushColor : BRUSHCOLOR> <aBrColor> ] ;
+      [ <lwidth: PENWIDTH> <Width> ] ;
+      [ <lcolor: COLOR> <aColor> ] ;
+      [ <lStyle: STYLE> <nStyle> ] ;
+      [ <lBrushStyle: BRUSHSTYLE> <nBrStyle> ] ;
+      [ <lBrushColor: BRUSHCOLOR> <aBrColor> ] ;
       ROUNDED ;
    => ;
-      _HMG_PRINTER_H_RoundRectangle( _HMG_PRINTER_hDC, <Row>, <Col>, <ToRow>, <ToCol>, <Width>, <aColor>\[1\], <aColor>\[2\], <aColor>\[3\], <.lwidth.>, <.lcolor.>, <.lStyle.>, <nStyle>, <.lBrushStyle.>, <nBrStyle>, <.lBrushColor.>, <aBrColor> )
+      _HMG_PRINTER_H_RoundRectangle( _HMG_PRINTER_hDC, <Row>, <Col>, <ToRow>, ;
+         <ToCol>, <Width>, <aColor>\[1\], <aColor>\[2\], <aColor>\[3\], ;
+         <.lwidth.>, <.lcolor.>, <.lStyle.>, <nStyle>, <.lBrushStyle.>, ;
+         <nBrStyle>, <.lBrushColor.>, <aBrColor> )
 
 #xcommand @ <Row>, <Col> PRINT FILL TO <ToRow>, <ToCol> ;
-      [ <lcolor : COLOR> <aColor> ] ;
-      [ <lBrushStyle : BRUSHSTYLE> <nBrStyle> ] ;
-      [ <lBrushColor : BRUESHCOLOR> <aBrColor> ] ;
+      [ <lcolor: COLOR> <aColor> ] ;
+      [ <lBrushStyle: BRUSHSTYLE> <nBrStyle> ] ;
+      [ <lBrushColor: BRUESHCOLOR> <aBrColor> ] ;
    => ;
-      _HMG_PRINTER_H_Fill( _HMG_PRINTER_hDC, <Row>, <Col>, <ToRow>, <ToCol>, <aColor>\[1\], <aColor>\[2\], <aColor>\[3\], <.lcolor.>, <.lBrushStyle.>, <nBrStyle>, <.lBrushColor.>, <aBrColor> )
+      _HMG_PRINTER_H_Fill( _HMG_PRINTER_hDC, <Row>, <Col>, <ToRow>, <ToCol>, ;
+         <aColor>\[1\], <aColor>\[2\], <aColor>\[3\], <.lcolor.>, ;
+         <.lBrushStyle.>, <nBrStyle>, <.lBrushColor.>, <aBrColor> )
 
 #xcommand @ <Row>, <Col> PRINT RECTANGLE TO <ToRow>, <ToCol> ;
-      [ <lwidth : PENWIDTH> <Width> ] ;
-      [ <lcolor : COLOR> <aColor> ] ;
-      [ <lStyle : STYLE> <nStyle> ] ;
-      [ <lBrushStyle : BRUSHSTYLE> <nBrStyle> ] ;
-      [ <lBrushColor : BRUSHCOLOR> <aBrColor> ] ;
+      [ <lwidth: PENWIDTH> <Width> ] ;
+      [ <lcolor: COLOR> <aColor> ] ;
+      [ <lStyle: STYLE> <nStyle> ] ;
+      [ <lBrushStyle: BRUSHSTYLE> <nBrStyle> ] ;
+      [ <lBrushColor: BRUSHCOLOR> <aBrColor> ] ;
       ROUNDED ;
    => ;
-      _HMG_PRINTER_H_RoundRectangle( _HMG_PRINTER_hDC, <Row>, <Col>, <ToRow>, <ToCol>, <Width>, <aColor>\[1\], <aColor>\[2\], <aColor>\[3\], <.lwidth.>, <.lcolor.>, <.lStyle.>, <nStyle>, <.lBrushStyle.>, <nBrStyle>, <.lBrushColor.>, <aBrColor> )
+      _HMG_PRINTER_H_RoundRectangle( _HMG_PRINTER_hDC, <Row>, <Col>, <ToRow>, ;
+         <ToCol>, <Width>, <aColor>\[1\], <aColor>\[2\], <aColor>\[3\], ;
+         <.lwidth.>, <.lcolor.>, <.lStyle.>, <nStyle>, <.lBrushStyle.>, ;
+         <nBrStyle>, <.lBrushColor.>, <aBrColor> )
 
 #xcommand @ <Row>, <Col> PRINT ELLIPSE TO <ToRow>, <ToCol> ;
-      [ <lcolor : COLOR> <aColor> ] ;
-      [ <lBrushStyle : BRUSHSTYLE> <nBrStyle> ] ;
-      [ <lBrushColor : BRUESHCOLOR> <aBrColor> ] ;
+      [ <lcolor: COLOR> <aColor> ] ;
+      [ <lBrushStyle: BRUSHSTYLE> <nBrStyle> ] ;
+      [ <lBrushColor: BRUESHCOLOR> <aBrColor> ] ;
    => ;
-      _HMG_PRINTER_H_Ellipse( _HMG_PRINTER_hDC, <Row>, <Col>, <ToRow>, <ToCol>, <aColor>\[1\], <aColor>\[2\], <aColor>\[3\], <.lcolor.>, <.lBrushStyle.>, <nBrStyle>, <.lBrushColor.>, <aBrColor> )
+      _HMG_PRINTER_H_Ellipse( _HMG_PRINTER_hDC, <Row>, <Col>, <ToRow>, ;
+         <ToCol>, <aColor>\[1\], <aColor>\[2\], <aColor>\[3\], <.lcolor.>, ;
+         <.lBrushStyle.>, <nBrStyle>, <.lBrushColor.>, <aBrColor> )
 
 #xcommand @ <Row>, <Col> PRINT ARC TO <ToRow>, <ToCol> ;
       LIMITS <x1>, <y1>, <x2>, <y2> ;
-      [ <lcolor : COLOR> <aColor> ] ;
-      [ <lBrushStyle : BRUSHSTYLE> <nBrStyle> ] ;
-      [ <lBrushColor : BRUESHCOLOR> <aBrColor> ] ;
+      [ <lcolor: COLOR> <aColor> ] ;
+      [ <lBrushStyle: BRUSHSTYLE> <nBrStyle> ] ;
+      [ <lBrushColor: BRUESHCOLOR> <aBrColor> ] ;
    => ;
-      _HMG_PRINTER_H_Arc( _HMG_PRINTER_hDC, <Row>, <Col>, <ToRow>, <ToCol>, <x1>, <y1>, <x2>, <y2>, <aColor>\[1\], <aColor>\[2\], <aColor>\[3\], <.lcolor.>, <.lBrushStyle.>, <nBrStyle>, <.lBrushColor.>, <aBrColor> )
+      _HMG_PRINTER_H_Arc( _HMG_PRINTER_hDC, <Row>, <Col>, <ToRow>, <ToCol>, ;
+         <x1>, <y1>, <x2>, <y2>, <aColor>\[1\], <aColor>\[2\], <aColor>\[3\], ;
+         <.lcolor.>, <.lBrushStyle.>, <nBrStyle>, <.lBrushColor.>, <aBrColor> )
 
 #xcommand @ <Row>, <Col> PRINT PIE TO <ToRow>, <ToCol> ;
       LIMITS <x1>, <y1>, <x2>, <y2> ;
-      [ <lcolor : COLOR> <aColor> ] ;
-      [ <lBrushStyle : BRUSHSTYLE> <nBrStyle> ] ;
-      [ <lBrushColor : BRUESHCOLOR> <aBrColor> ] ;
+      [ <lcolor: COLOR> <aColor> ] ;
+      [ <lBrushStyle: BRUSHSTYLE> <nBrStyle> ] ;
+      [ <lBrushColor: BRUESHCOLOR> <aBrColor> ] ;
    => ;
-      _HMG_PRINTER_H_Pie( _HMG_PRINTER_hDC, <Row>, <Col>, <ToRow>, <ToCol>, <x1>, <y1>, <x2>, <y2>, <aColor>\[1\], <aColor>\[2\], <aColor>\[3\], <.lcolor.>, <.lBrushStyle.>, <nBrStyle>, <.lBrushColor.>, <aBrColor> )
+      _HMG_PRINTER_H_Pie( _HMG_PRINTER_hDC, <Row>, <Col>, <ToRow>, <ToCol>, ;
+         <x1>, <y1>, <x2>, <y2>, <aColor>\[1\], <aColor>\[2\], <aColor>\[3\], ;
+         <.lcolor.>, <.lBrushStyle.>, <nBrStyle>, <.lBrushColor.>, <aBrColor> )
 
 #xcommand SET PREVIEW ZOOM <nZoom> ;
    => ;
       _HMG_PRINTER_PreviewZoom( <nZoom> )
 
-///////////////////////////////////////////////////////////////////////////////
-// PRINTER CONFIGURATION CONSTANTS
-///////////////////////////////////////////////////////////////////////////////
+/*---------------------------------------------------------------------------
+PRINTER CONFIGURATION CONSTANTS
+---------------------------------------------------------------------------*/
 
 /* collate */
 #define PRINTER_COLLATE_TRUE  1

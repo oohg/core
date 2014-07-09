@@ -1,15 +1,21 @@
 /*
- * $Id: i_controlmisc.ch,v 1.8 2012-08-27 05:50:50 guerra000 Exp $
+ * $Id: i_controlmisc.ch,v 1.9 2014-07-09 02:25:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * Miscelaneous control definitions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2007-2014 Vicente Guerra <vicente@guerra.com.mx>
  *
- * Portions of this code are copyrighted by the Harbour MiniGUI library.
+ * Portions of this project are based upon Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
+ *
+ * Portions of this project are based upon Harbour GUI framework for Win32.
+ * Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
+ * Copyright 2001 Antonio Linares <alinares@fivetech.com>
+ *
+ * Portions of this project are based upon Harbour Project.
+ * Copyright 1999-2014, http://www.harbour-project.org/
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,9 +28,9 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this software; see the file COPYING.  If not, write to
- * the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307 USA (or visit the web site http://www.gnu.org/).
+ * along with this software; see the file COPYING.TXT.  If not, write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301,USA (or download from http://www.gnu.org/licenses/).
  *
  * As a special exception, the ooHG Project gives permission for
  * additional uses of the text contained in its release of ooHG.
@@ -49,49 +55,12 @@
  * If you write modifications of your own for ooHG, it is your choice
  * whether to permit this exception to apply to your modifications.
  * If you do not wish that, delete this exception notice.
- *
  */
-/*----------------------------------------------------------------------------
- MINIGUI - Harbour Win32 GUI library source code
 
- Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
- http://www.geocities.com/harbour_minigui/
-
- This program is free software; you can redistribute it and/or modify it under
- the terms of the GNU General Public License as published by the Free Software
- Foundation; either version 2 of the License, or (at your option) any later
- version.
-
- This program is distributed in the hope that it will be useful, but WITHOUT
- ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License along with
- this software; see the file COPYING. If not, write to the Free Software
- Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA (or
- visit the web site http://www.gnu.org/).
-
- As a special exception, you have permission for additional uses of the text
- contained in this release of Harbour Minigui.
-
- The exception is that, if you link the Harbour Minigui library with other
- files to produce an executable, this does not by itself cause the resulting
- executable to be covered by the GNU General Public License.
- Your use of that executable is in no way restricted on account of linking the
- Harbour-Minigui library code into it.
-
- Parts of this project are based upon:
-
- "Harbour GUI framework for Win32"
- Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- Copyright 2001 Antonio Linares <alinares@fivetech.com>
- www - http://www.harbour-project.org
-
- "Harbour Project"
- Copyright 1999-2003, http://www.harbour-project.org/
+/*---------------------------------------------------------------------------
+STANDARD CURSORS
 ---------------------------------------------------------------------------*/
 
-// standard cursors
 #define IDC_ARROW       32512
 #define IDC_IBEAM       32513
 #define IDC_WAIT        32514
@@ -109,114 +78,126 @@
 
 #command SETFOCUS <n> OF <w> ;
    => ;
-         DoMethod ( <(w)>, <(n)>, 'SetFocus' )
+      DoMethod( <(w)>, <(n)>, 'SetFocus' )
 
 #command ADD ITEM <i> TO <n> OF <p> ;
    => ;
-         DoMethod ( <(p)>, <(n)>, 'AddItem', <i> )
+      DoMethod( <(p)>, <(n)>, 'AddItem', <i> )
 
-#command ADD COLUMN [ INDEX <index> ] [ CAPTION <caption> ] [ WIDTH <width> ] [ JUSTIFY <justify> ] TO <control> OF <parent> ;
+#command ADD COLUMN ;
+      [ INDEX <index> ] ;
+      [ CAPTION <caption> ] ;
+      [ WIDTH <width> ] ;
+      [ JUSTIFY <justify> ] ;
+      TO <control> OF <parent> ;
    => ;
-         DoMethod ( <(parent)>, <(control)>, 'AddColumn', <index>, <caption>, <width>, <justify> )
+      DoMethod( <(parent)>, <(control)>, 'AddColumn', <index>, <caption>, ;
+            <width>, <justify> )
 
 #command DELETE COLUMN [ INDEX ] <index> FROM <control> OF <parent> ;
    => ;
-         DoMethod ( <(parent)>, <(control)>, 'DeleteColumn', <index> )
+      DoMethod( <(parent)>, <(control)>, 'DeleteColumn', <index> )
 
 #command DELETE ITEM <i> FROM <n> OF <p> ;
    => ;
-         DoMethod ( <(p)>, <(n)>, 'DeleteItem', <i> )
+      DoMethod( <(p)>, <(n)>, 'DeleteItem', <i> )
 
 #command DELETE ITEM ALL FROM <n> OF <p> ;
    => ;
-         DoMethod ( <(p)>, <(n)>, 'DeleteAllItems' )
+      DoMethod( <(p)>, <(n)>, 'DeleteAllItems' )
 
 #command ENABLE CONTROL <control> OF <form> ;
    => ;
-         SetProperty ( <(form)>, <(control)>, 'Enabled', .T. )
+      SetProperty ( <(form)>, <(control)>, 'Enabled', .T. )
 
 #command SHOW CONTROL <control> OF <form> ;
    => ;
-         DoMethod ( <(form)>, <(control)>, 'Show' )
+      DoMethod( <(form)>, <(control)>, 'Show' )
 
 #command HIDE CONTROL <control> OF <form> ;
    => ;
-         DoMethod ( <(form)>, <(control)>, 'Hide' )
+      DoMethod( <(form)>, <(control)>, 'Hide' )
 
 #command DISABLE CONTROL <control> OF <form> ;
    => ;
-         SetProperty ( <(form)>, <(control)>, 'Enabled', .F. )
+      SetProperty ( <(form)>, <(control)>, 'Enabled', .F. )
 
 #command RELEASE CONTROL <control> OF <form> ;
    => ;
-         DoMethod ( <(form)>, <(control)>, 'Release' )
+      DoMethod( <(form)>, <(control)>, 'Release' )
 
 #command SET FONT TO <fontname>, <fontsize> ;
    => ;
-         _OOHG_DefaultFontName := <fontname> ; _OOHG_DefaultFontSize := <fontsize>
+      _OOHG_DefaultFontName := <fontname> ;;
+      _OOHG_DefaultFontSize := <fontsize>
+
+#command SET FONT TO <fontname>, <fontsize>, <fontcolor> ;
+   => ;
+      _OOHG_DefaultFontName := <fontname> ;;
+      _OOHG_DefaultFontSize := <fontsize> ;;
+      _OOHG_DefaultFontColor := <fontcolor>
 
 #command DEFINE PROPERTY <property> TO [ CONTROL ] [ <control> OF ] <form> VALUE <value> ;
    => ;
-         DefineProperty( <(property)>, <(control)>, <(form)>, <value> )
+      DefineProperty( <(property)>, <(control)>, <(form)>, <value> )
 
 #translate MODIFY [ PROPERTY ] [ CONTROL ] <Arg2> OF <Arg1> <Arg3> <Arg4> ;
    => ;
-         SetProperty ( <(Arg1)>, <(Arg2)>, <(Arg3)>, <Arg4> )
+      SetProperty ( <(Arg1)>, <(Arg2)>, <(Arg3)>, <Arg4> )
 
 #xtranslate MODIFY [ PROPERTY ] [ CONTROL ] <Arg2> OF <Arg1> <Arg3> ( <Arg4> ) <Arg5> ;
    => ;
-         SetProperty ( <(Arg1)>, <(Arg2)>, <(Arg3)>, <Arg4>, <Arg5> )
+      SetProperty ( <(Arg1)>, <(Arg2)>, <(Arg3)>, <Arg4>, <Arg5> )
 
 #xtranslate FETCH [ PROPERTY ] [ CONTROL ] <Arg2> OF <Arg1> <Arg3> TO <Arg4> ;
    => ;
-         <Arg4> := GetProperty ( <(Arg1)>, <(Arg2)>, <(Arg3)> )
+      <Arg4> := GetProperty ( <(Arg1)>, <(Arg2)>, <(Arg3)> )
 
 #xtranslate FETCH [ PROPERTY ] [ CONTROL ] <Arg2> OF <Arg1> <Arg3> (<Arg4>) TO <Arg5> ;
    => ;
-         <Arg5> := GetProperty ( <(Arg1)>, <(Arg2)>, <(Arg3)>, <Arg4> )
+      <Arg5> := GetProperty ( <(Arg1)>, <(Arg2)>, <(Arg3)>, <Arg4> )
 
 #xtranslate MODIFY [ PROPERTY ] [ CONTROL ] <Arg2> OF <Arg1> <Arg3> .T. ;
    => ;
-         SetProperty ( <(Arg1)>, <(Arg2)>, <(Arg3)>, .T. )
+      SetProperty ( <(Arg1)>, <(Arg2)>, <(Arg3)>, .T. )
 
 #xtranslate MODIFY [ PROPERTY ] [ CONTROL ] <Arg2> OF <Arg1> <Arg3> .F. ;
    => ;
-         SetProperty ( <(Arg1)>, <(Arg2)>, <(Arg3)>, .F. )
+      SetProperty ( <(Arg1)>, <(Arg2)>, <(Arg3)>, .F. )
 
 #xtranslate MODIFY [ PROPERTY ] [ CONTROL ] <Arg2> OF <Arg1> <Arg3> { <Arg4, ...> } ;
    => ;
-         SetProperty ( <(Arg1)>, <(Arg2)>, <(Arg3)>, \{<Arg4>\} )
+      SetProperty ( <(Arg1)>, <(Arg2)>, <(Arg3)>, \{<Arg4>\} )
 
 #translate SET MULTIPLE <x:ON,OFF> [<warning: WARNING>] ;
    => ;
-         _OOHG_SetMultiple( <(x)>, <.warning.> )
+      _OOHG_SetMultiple( <(x)>, <.warning.> )
 
 #translate SET CONTEXTMENUS OFF ;
    => ;
-         _OOHG_ShowContextMenus( .F. )
+      _OOHG_ShowContextMenus( .F. )
 
 #translate SET CONTEXTMENUS ON ;
    => ;
-         _OOHG_ShowContextMenus( .T. )
+      _OOHG_ShowContextMenus( .T. )
 
 #translate SET CONTEXT MENU OFF ;
    => ;
-         _OOHG_ShowContextMenus( .F. )
+      _OOHG_ShowContextMenus( .F. )
 
 #translate SET CONTEXT MENU ON ;
    => ;
-         _OOHG_ShowContextMenus( .T. )
+      _OOHG_ShowContextMenus( .T. )
 
 #xcommand EXIT PROCEDURE <name> ;
    => ;
-         INIT PROCEDURE <name> ;;
-         MsgStop ('EXIT PROCEDURE Statement is not Supported in ooHG. Use Main Window ON RELEASE Event Procedure Instead. Program Terminated.','ooHG Error') ;;
-         ExitProcess()
+      INIT PROCEDURE <name> ;;
+      MsgOOHGError( "EXIT PROCEDURE statement is not supported in ooHG. Use main window's ON RELEASE event procedure instead. Program Terminated." )
 
 #translate SET SAMEENTERDBLCLICK OFF ;
    => ;
-         _OOHG_SameEnterDblClick := .F.
+      _OOHG_SameEnterDblClick := .F.
 
 #translate SET SAMEENTERDBLCLICK ON ;
    => ;
-         _OOHG_SameEnterDblClick := .T.
+      _OOHG_SameEnterDblClick := .T.

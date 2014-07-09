@@ -1,15 +1,23 @@
 /*
- * $Id: i_graph.ch,v 1.5 2012-02-03 12:27:27 fyurisich Exp $
+ * $Id: i_graph.ch,v 1.6 2014-07-09 02:25:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
- * Graphic grawing definitions
+/*
+ * ooHG source code:
+ * Graphic drawing definitions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2007-2014 Vicente Guerra <vicente@guerra.com.mx>
  *
- * Portions of this code are copyrighted by the Harbour MiniGUI library.
+ * Portions of this project are based upon Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
+ *
+ * Portions of this project are based upon Harbour GUI framework for Win32.
+ * Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
+ * Copyright 2001 Antonio Linares <alinares@fivetech.com>
+ *
+ * Portions of this project are based upon Harbour Project.
+ * Copyright 1999-2014, http://www.harbour-project.org/
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,9 +30,9 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this software; see the file COPYING.  If not, write to
- * the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307 USA (or visit the web site http://www.gnu.org/).
+ * along with this software; see the file COPYING.TXT.  If not, write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301,USA (or download from http://www.gnu.org/licenses/).
  *
  * As a special exception, the ooHG Project gives permission for
  * additional uses of the text contained in its release of ooHG.
@@ -49,224 +57,162 @@
  * If you write modifications of your own for ooHG, it is your choice
  * whether to permit this exception to apply to your modifications.
  * If you do not wish that, delete this exception notice.
- *
  */
-/*----------------------------------------------------------------------------
- MINIGUI - Harbour Win32 GUI library source code
-
- Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
- http://www.geocities.com/harbour_minigui/
-
- This program is free software; you can redistribute it and/or modify it under
- the terms of the GNU General Public License as published by the Free Software
- Foundation; either version 2 of the License, or (at your option) any later
- version.
-
- This program is distributed in the hope that it will be useful, but WITHOUT
- ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License along with
- this software; see the file COPYING. If not, write to the Free Software
- Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA (or
- visit the web site http://www.gnu.org/).
-
- As a special exception, you have permission for additional uses of the text
- contained in this release of Harbour Minigui.
-
- The exception is that, if you link the Harbour Minigui library with other
- files to produce an executable, this does not by itself cause the resulting
- executable to be covered by the GNU General Public License.
- Your use of that executable is in no way restricted on account of linking the
- Harbour-Minigui library code into it.
-
- Parts of this project are based upon:
-
-        "Harbour GUI framework for Win32"
-        Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
-        Copyright 2001 Antonio Linares <alinares@fivetech.com>
-        www - http://www.harbour-project.org
-
-        "Harbour Project"
-        Copyright 1999-2003, http://www.harbour-project.org/
----------------------------------------------------------------------------*/
 
 #xcommand DRAW TEXT IN WINDOW <windowname> ;
-          AT <nRow>,<nCol> ;
-          VALUE <cString> ;
-          [FONT <cFont>] ;
-          [SIZE <nSize>] ;
-          [BACKCOLOR <aBkRGB>] ;
-          [FONTCOLOR <aRGB>] ;
-          [<lBold : BOLD> ] ;
-          [<lItalic : ITALIC> ] ;
-          [<lUnderline : UNDERLINE> ] ;
-          [<lStrikeout : STRIKEOUT> ] ;
-          [ <transparent: TRANSPARENT> ] ;
-       =>  ;
-          drawtextout(<(windowname)>,<nRow>,<nCol>,<cString>,<aRGB>,<aBkRGB>,<cFont>,<nSize>, ;
-                <.lBold.>,<.lItalic.>,<.lUnderline.>,<.lStrikeout.>,<.transparent.>)
+      AT <nRow>, <nCol> ;
+      VALUE <cString> ;
+      [ FONT <cFont> ] ;
+      [ SIZE <nSize> ] ;
+      [ BACKCOLOR <aBkRGB> ] ;
+      [ FONTCOLOR <aRGB> ] ;
+      [ <lBold: BOLD> ] ;
+      [ <lItalic: ITALIC> ] ;
+      [ <lUnderline: UNDERLINE> ] ;
+      [ <lStrikeout: STRIKEOUT> ] ;
+      [ <transparent: TRANSPARENT> ] ;
+   => ;
+      DrawTextOut( <(windowname)>, <nRow>, <nCol>, <cString>, <aRGB>, ;
+            <aBkRGB>, <cFont>, <nSize>, <.lBold.>, <.lItalic.>, ;
+            <.lUnderline.>, <.lStrikeout.>, <.transparent.> )
 
-#xcommand DRAW LINE IN WINDOW <windowname> AT <frow>,<fcol> ;
-             TO <trow>,<tcol> ;
-             [PENCOLOR <penrgb>] ;
-             [PENWIDTH <pnwidth>];
-          =>;
-          drawline(<(windowname)>,<frow>,<fcol>,<trow>,<tcol>,[<penrgb>],<pnwidth>)
+#xcommand DRAW LINE IN WINDOW <windowname> AT <frow>, <fcol> ;
+      TO <trow>,<tcol> ;
+      [ PENCOLOR <penrgb> ] ;
+      [ PENWIDTH <pnwidth> ] ;
+   => ;
+      DrawLine( <(windowname)>, <frow>, <fcol>, <trow>, <tcol>, ;
+            [<penrgb>], <pnwidth> )
 
-#xcommand DRAW RECTANGLE IN WINDOW <windowname> AT <frow>,<fcol> ;
-             TO <trow>,<tcol> ;
-             [PENCOLOR <penrgb>] ;
-             [PENWIDTH <pnwidth>];
-             [FILLCOLOR <fillrgb>];
-          =>;
-          drawrect(<(windowname)>,<frow>,<fcol>,<trow>,<tcol>,[<penrgb>],<pnwidth>,[<fillrgb>])
+#xcommand DRAW RECTANGLE IN WINDOW <windowname> AT <frow>, <fcol> ;
+      TO <trow>, <tcol> ;
+      [ PENCOLOR <penrgb> ] ;
+      [ PENWIDTH <pnwidth> ] ;
+      [ FILLCOLOR <fillrgb> ] ;
+   => ;
+      DrawRect( <(windowname)>, <frow>, <fcol>, <trow>, <tcol>, [<penrgb>], ;
+            <pnwidth>, [<fillrgb>] )
 
-#xcommand DRAW ROUNDRECTANGLE IN WINDOW <windowname> AT <frow>,<fcol> ;
-             TO <trow>,<tcol> ;
-             ROUNDWIDTH <width>;
-             ROUNDHEIGHT <height>;
-             [PENCOLOR <penrgb>] ;
-             [PENWIDTH <pnwidth>];
-             [FILLCOLOR <fillrgb>];
-          =>;
-          drawroundrect(<(windowname)>,<frow>,<fcol>,<trow>,<tcol>,<width>,<height>,[<penrgb>],<pnwidth>,[<fillrgb>])
+#xcommand DRAW ROUNDRECTANGLE IN WINDOW <windowname> AT <frow>, <fcol> ;
+      TO <trow>, <tcol> ;
+      ROUNDWIDTH <width> ;
+      ROUNDHEIGHT <height>;
+      [ PENCOLOR <penrgb> ] ;
+      [ PENWIDTH <pnwidth> ] ;
+      [ FILLCOLOR <fillrgb> ] ;
+   => ;
+      DrawRoundRect( <(windowname)>, <frow>, <fcol>, <trow>, <tcol>, <width>, ;
+            <height>, [<penrgb>], <pnwidth>, [<fillrgb>] )
 
-#xcommand DRAW ELLIPSE IN WINDOW <windowname> AT <frow>,<fcol> ;
-             TO <trow>,<tcol> ;
-             [PENCOLOR <penrgb>] ;
-             [PENWIDTH <pnwidth>];
-             [FILLCOLOR <fillrgb>];
-          =>;
-          drawellipse(<(windowname)>,<frow>,<fcol>,<trow>,<tcol>,[<penrgb>],<pnwidth>,[<fillrgb>])
+#xcommand DRAW ELLIPSE IN WINDOW <windowname> AT <frow>, <fcol> ;
+      TO <trow>, <tcol> ;
+      [ PENCOLOR <penrgb> ] ;
+      [ PENWIDTH <pnwidth> ] ;
+      [ FILLCOLOR <fillrgb> ] ;
+   => ;
+      DrawEllipse( <(windowname)>, <frow>, <fcol>, <trow>, <tcol>, [<penrgb>], ;
+            <pnwidth>, [<fillrgb>] )
 
-#xcommand DRAW ARC IN WINDOW <windowname> AT <frow>,<fcol> ;
-             TO <trow>,<tcol> ;
-             FROM RADIAL <rrow>, <rcol>;
-             TO RADIAL <rrow1>, <rcol1>;
-             [PENCOLOR <penrgb>] ;
-             [PENWIDTH <pnwidth>];
-          =>;
-          drawarc(<(windowname)>,<frow>,<fcol>,<trow>,<tcol>,<rrow>,<rcol>,<rrow1>,<rcol1>,[<penrgb>],<pnwidth>)
+#xcommand DRAW ARC IN WINDOW <windowname> AT <frow>, <fcol> ;
+      TO <trow>, <tcol> ;
+      FROM RADIAL <rrow>, <rcol> ;
+      TO RADIAL <rrow1>, <rcol1> ;
+      [ PENCOLOR <penrgb>] ;
+      [ PENWIDTH <pnwidth>] ;
+   => ;
+   DrawArc( <(windowname)>, <frow>, <fcol>, <trow>, <tcol>, <rrow>, <rcol>, ;
+         <rrow1>, <rcol1>, [<penrgb>], <pnwidth> )
 
-#xcommand DRAW PIE IN WINDOW <windowname> AT <frow>,<fcol> ;
-             TO <trow>,<tcol> ;
-             FROM RADIAL <rrow>, <rcol>;
-             TO RADIAL <rrow1>, <rcol1>;
-             [PENCOLOR <penrgb>] ;
-             [PENWIDTH <pnwidth>];
-             [FILLCOLOR <fillrgb>];
-          =>;
-          drawpie(<(windowname)>,<frow>,<fcol>,<trow>,<tcol>,<rrow>,<rcol>,<rrow1>,<rcol1>,[<penrgb>],<pnwidth>,[<fillrgb>])
+#xcommand DRAW PIE IN WINDOW <windowname> AT <frow>, <fcol> ;
+      TO <trow>, <tcol> ;
+      FROM RADIAL <rrow>, <rcol> ;
+      TO RADIAL <rrow1>, <rcol1> ;
+      [ PENCOLOR <penrgb> ] ;
+      [ PENWIDTH <pnwidth> ] ;
+      [ FILLCOLOR <fillrgb> ] ;
+   => ;
+   DrawPie( <(windowname)>, <frow>, <fcol>, <trow>, <tcol>, <rrow>, <rcol>, ;
+         <rrow1>, <rcol1>, [<penrgb>], <pnwidth>, [<fillrgb>] )
 
-// Points should be in the format {{row1,col1},{row2,col2},{row3,col3},{row4,col4}.....}
+/*
+ * POINTS must be specified using this syntax:
+ *    { {row1, col1}, {row2,col2}, {row3,col3}, ... }
+ */
 #xcommand DRAW POLYGON IN WINDOW <windowname> ;
-            POINTS <pointsarr> ;
-            [PENCOLOR <penrgb>] ;
-            [PENWIDTH <penwidth>] ;
-            [FILLCOLOR <fillrgb>] ;
-         =>;
-         drawpolygon(<(windowname)>,[<pointsarr>],[<penrgb>],<penwidth>,[<fillrgb>])
+      POINTS <pointsarr> ;
+      [ PENCOLOR <penrgb> ] ;
+      [ PENWIDTH <penwidth> ] ;
+      [ FILLCOLOR <fillrgb> ] ;
+   => ;
+      DrawPolygon( <(windowname)>, [<pointsarr>], [<penrgb>], ;
+            <penwidth>, [<fillrgb>] )
 
 #xcommand DRAW POLYBEZIER IN WINDOW <windowname> ;
-            POINTS <pointsarr> ;
-            [PENCOLOR <penrgb>] ;
-            [PENWIDTH <penwidth>] ;
-         =>;
-         drawpolybezier(<(windowname)>,[<pointsarr>],[<penrgb>],<penwidth>)
+      POINTS <pointsarr> ;
+      [ PENCOLOR <penrgb> ] ;
+      [ PENWIDTH <penwidth> ] ;
+   =>;
+      DrawPolyBezier( <(windowname)>, [<pointsarr>], [<penrgb>], <penwidth> )
 
-#xcommand ERASE WINDOW <windowname> => erasewindow(<(windowname)>)
+#xcommand ERASE WINDOW <windowname> ;
+   => ;
+      EraseWindow( <(windowname)> )
 
+#xcommand DEFAULT <uVar1> := <uVal1> [, <uVarN> := <uValN> ] ;
+   => ;
+      <uVar1> := IIF( <uVar1> == NIL, <uVal1>, <uVar1> ) ;;
+      [ <uVarN> := IIF( <uVarN> == NIL, <uValN>, <uVarN> ) ; ]
 
-#xcommand DEFAULT <uVar1> := <uVal1> ;
-               [, <uVarN> := <uValN> ] => ;
-                  <uVar1> := IIf( <uVar1> == nil, <uVal1>, <uVar1> ) ;;
-                [ <uVarN> := IIf( <uVarN> == nil, <uValN>, <uVarN> ); ]
-
-#translate RGB( <nRed>, <nGreen>, <nBlue> ) => ;
-              ( <nRed> + ( <nGreen> * 256 ) + ( <nBlue> * 65536 ) )
+#translate RGB( <nRed>, <nGreen>, <nBlue> ) ;
+   => ;
+      ( <nRed> + ( <nGreen> * 256 ) + ( <nBlue> * 65536 ) )
 
 #xcommand DRAW GRAPH IN WINDOW <window> ;
-      AT <nT>,<nL> ;
-      TO <nB>,<nR>	;
-      TITLE <cTitle>	;
+      AT <nT>, <nL> ;
+      TO <nB>, <nR> ;
+      TITLE <cTitle> ;
       TYPE PIE ;
       SERIES <aSer> ;
       DEPTH <nD> ;
-      SERIENAMES <aName>	;
-      COLORS <aColor>			;
-		[ <l3D : 3DVIEW> ]		;
-		[ <lxVal : SHOWXVALUES> ]	;
-		[ <lSLeg : SHOWLEGENDS> ]	;
-                [ <lNoBorder : NOBORDER> ]      ;
-      => ;
-                DrawPieGraph(<(window)>,;
-		<nT>,;
-		<nL>,;
-		<nB>,;
-		<nR>,;
-		<aSer>,;
-		<aName>,;
-		<aColor>,;
-		<cTitle>,;
-		<nD>,;
-		<.l3D.>,;
-		<.lxVal.>,;
-                <.lSLeg.>,;
-                <.lNoBorder.>)
-/*
- * <nType> indicates the graph type, use:
- *   BARS or 1
- *   LINES or 2
- *   POINTS or 3
- */
+      SERIENAMES <aName> ;
+      COLORS <aColor> ;
+      [ <l3D: 3DVIEW> ] ;
+      [ <lxVal: SHOWXVALUES> ] ;
+      [ <lSLeg: SHOWLEGENDS> ] ;
+      [ <lNoBorder: NOBORDER> ] ;
+   => ;
+      DrawPieGraph( <(window)>, <nT>, <nL>, <nB>, <nR>, <aSer>, <aName>, ;
+            <aColor>, <cTitle>, <nD>, <.l3D.>, <.lxVal.>, <.lSLeg.>, ;
+            <.lNoBorder.> )
 
-#xcommand DRAW GRAPH				;
-		IN WINDOW <window>		;
-		AT <nT>,<nL>			;
-		[ TO <nB>,<nR> ]		;
-		[ TITLE <cTitle> ]		;
-		TYPE <nType>			;
-		SERIES <aSer>			;
-		YVALUES <aYVal>		;
-		DEPTH <nD>			;
-		[ BARWIDTH <nW> ]		;
-		HVALUES <nRange>		;
-		SERIENAMES <aName>		;
-		COLORS <aColor>		;
-		[ <l3D : 3DVIEW> ]		;
-		[ <lGrid : SHOWGRID> ]	;
-		[ <lxVal : SHOWXVALUES> ]	;
-		[ <lyVal : SHOWYVALUES> ]	;
-		[ <lSLeg : SHOWLEGENDS> ]	;
-                [ LEGENDSWIDTH <nLegendWindth> ] ;
-		[ <lNoborder : NOBORDER> ]	;
-=> ;
-                GraphShow(<(window)>,   ;
-		<nT>,				;
-		<nL>,				;
-		<nB>,				;
-		<nR>,				;
-		Nil,				;
-		Nil,				;
-		<aSer>,			;
-		<cTitle>,			;
-		<aYVal>,			;
-		<nD>,				;
-		<nW>,;
-		Nil,			;
-		<nRange>,			;
-		<.l3D.>,			;
-		<.lGrid.>,			;
-		.f.,			;
-		.f.,			;
-		<.lxVal.>,			;
-		<.lyVal.>,			;
-		<.lSLeg.>,			;
-		<aName>,			;
-		<aColor>,			;
-		<(nType)>,			;
-		.f.,			;
-                Nil,                    ;
-                <nLegendWindth>,        ;
-                <.lNoborder.> )
+/*
+ * <nType> valid values are:
+ *    "BARS" or 1
+ *    "LINES" or 2
+ *    "POINTS" or 3
+ */
+#xcommand DRAW GRAPH ;
+      IN WINDOW <window> ;
+      AT <nT>, <nL> ;
+      [ TO <nB>, <nR> ] ;
+      [ TITLE <cTitle> ] ;
+      TYPE <nType> ;
+      SERIES <aSer> ;
+      YVALUES <aYVal> ;
+      DEPTH <nD> ;
+      [ BARWIDTH <nW> ] ;
+      HVALUES <nRange> ;
+      SERIENAMES <aName> ;
+      COLORS <aColor> ;
+      [ <l3D: 3DVIEW> ] ;
+      [ <lGrid: SHOWGRID> ] ;
+      [ <lxVal: SHOWXVALUES> ] ;
+      [ <lyVal: SHOWYVALUES> ] ;
+      [ <lSLeg: SHOWLEGENDS> ] ;
+      [ LEGENDSWIDTH <nLegendWindth> ] ;
+      [ <lNoborder: NOBORDER> ] ;
+   => ;
+      GraphShow( <(window)>, <nT>, <nL>, <nB>, <nR>, NIL, NIL, <aSer>, ;
+            <cTitle>, <aYVal>, <nD>, <nW>, NIL, <nRange>, <.l3D.>, <.lGrid.>, ;
+            .F., .F., <.lxVal.>, <.lyVal.>, <.lSLeg.>, <aName>, <aColor>, ;
+            <(nType)>, .F., NIL, <nLegendWindth>, <.lNoborder.> )
