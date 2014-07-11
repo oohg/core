@@ -1,5 +1,5 @@
 /*
- * $Id: propeven.prg,v 1.7 2014-07-09 21:41:05 fyurisich Exp $
+ * $Id: propeven.prg,v 1.8 2014-07-11 01:11:03 fyurisich Exp $
  */
 
 #include 'oohg.ch'
@@ -53,7 +53,7 @@ LOCAL i, cname, j, Title, aLabels, aInitValues, aFormats, aResults, ctipo, jh, n
             ENDIF
             :aenabled[j]:=aresults[5]
             :avisible[j]:=aresults[6]
-            ::acobj := aresults[7]
+            :acobj := aresults[7]
             RETURN NIL
          ELSE
             IF ocontrol:type == 'TAB'

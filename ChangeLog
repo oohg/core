@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.1315 2014-07-09 21:54:50 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1316 2014-07-11 01:11:02 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-07-10 22:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/propeven.prg
+     ! RTE when creating a FRAME control.
+     ; Thanks to Ricardo Sassy for this fix.
 
 2014-07-09 18:54 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_textbox.prg
