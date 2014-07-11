@@ -1,5 +1,5 @@
 /*
- * $Id: h_print.prg,v 1.142 2014-07-05 18:46:25 fyurisich Exp $
+ * $Id: h_print.prg,v 1.143 2014-07-11 01:52:14 fyurisich Exp $
  */
 
 #include 'hbclass.ch'
@@ -317,7 +317,7 @@ METHOD Init() CLASS TPRINTBASE
 *-----------------------------------------------------------------------------*
    IF IsWindowActive( _modalhide )
       IF ::lShowErrors
-         MsgStop( _OOHG_Messages( 12, 1 ) )
+         MsgStop( _OOHG_Messages( 12, 1 ), _OOHG_Messages( 12, 12 ) )
       ENDIF
       ::lPrError := .T.
       ::Exit := .T.
@@ -974,7 +974,7 @@ RETURN Self
 *-----------------------------------------------------------------------------*
 METHOD PrintRaw( cFile ) CLASS TPRINTBASE
 *-----------------------------------------------------------------------------*
-LOCAL nResult, cMsg := "", aData
+LOCAL nResult, cMsg, aData
 
    IF HB_IsString( cFile ) .AND. ! Empty( cFile )
       IF ::lSaveTemp
@@ -1004,8 +1004,8 @@ LOCAL nResult, cMsg := "", aData
                        { -4, _OOHG_Messages( 12, 8 ) }, ;
                        { -5, _OOHG_Messages( 12, 9 ) }, ;
                        { -6, cFile + _OOHG_Messages( 12, 10 ) } }
-            cMsg += aData[ aScan( aData, { | x | x[ 1 ] == nResult } ), 2 ]
-            AutoMsgStop( cMsg )
+            cMsg := aData[ aScan( aData, { | x | x[ 1 ] == nResult } ), 2 ]
+            MsgStop( cMsg, _OOHG_Messages( 12, 12 ) )
          ENDIF
          RETURN NIL
       ENDIF
@@ -2101,7 +2101,7 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
       cPrinterX := Upper( cPrinterX )
       IF ! cPrinterX $ "PRN LPT1: LPT2: LPT3: LPT4: LPT5: LPT6:"
          IF ::lShowError
-            AutoMsgStop( _OOHG_Messages( 12, 13 ) )
+            MsgStop( _OOHG_Messages( 12, 13 ), _OOHG_Messages( 12, 12 ) )
          ENDIF
          ::lPrError := .T.
          RETURN NIL
@@ -2520,7 +2520,7 @@ LOCAL nCol, bErrorBlock, uRet := Self
       HB_IdleSleep( 1 )
    RECOVER
       IF ::lShowErrors
-         MsgStop( _OOHG_Messages( 12, 45 ) + Chr( 13 ) + ::cDocument )
+         MsgStop( _OOHG_Messages( 12, 45 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( 12, 12 ) )
       ENDIF
       uRet := NIL
    END SEQUENCE
@@ -2532,7 +2532,7 @@ LOCAL nCol, bErrorBlock, uRet := Self
    IF uRet # NIL .AND. ::ImPreview
       IF ShellExecute( 0, "open", "rundll32.exe", "url.dll,FileProtocolHandler " + ::cDocument, , 1) <= 32
          IF ::lShowErrors
-            MsgStop( _OOHG_Messages( 12, 35 ) + Chr( 13 ) + Chr( 13 ) + _OOHG_Messages( 12, 36 ) + Chr( 13 ) + ::cDocument )
+            MsgStop( _OOHG_Messages( 12, 35 ) + Chr( 13 ) + Chr( 13 ) + _OOHG_Messages( 12, 36 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( 12, 12 ) )
          ENDIF
          uRet := NIL
       ENDIF
@@ -2795,7 +2795,7 @@ LOCAL i, anHeader, nLen, nI, cEof
    IF ::ImPreview
       IF ShellExecute( 0, "open", "rundll32.exe", "url.dll,FileProtocolHandler " + ::cDocument, , 1) <= 32
          IF ::lShowErrors
-            MsgStop( _OOHG_Messages( 12, 35 ) + Chr( 13 ) + Chr( 13 ) + _OOHG_Messages( 12, 36 ) + Chr( 13 ) + ::cDocument )
+            MsgStop( _OOHG_Messages( 12, 35 ) + Chr( 13 ) + Chr( 13 ) + _OOHG_Messages( 12, 36 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( 12, 12 ) )
          ENDIF
          RETURN NIL
       ENDIF
@@ -2913,7 +2913,7 @@ LOCAL nCol, bErrorBlock, uRet := Self
       HB_IdleSleep( 1 )
    RECOVER
       IF ::lShowErrors
-         MsgStop( _OOHG_Messages( 12, 45 ) + Chr( 13 ) + ::cDocument )
+         MsgStop( _OOHG_Messages( 12, 45 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( 12, 12 ) )
       ENDIF
       uRet := NIL
    END SEQUENCE
@@ -2925,7 +2925,7 @@ LOCAL nCol, bErrorBlock, uRet := Self
    IF uRet # NIL .AND. ::ImPreview
       IF ShellExecute( 0, "open", "rundll32.exe", "url.dll,FileProtocolHandler " + ::cDocument, , 1) <= 32
          IF ::lShowErrors
-            MsgStop( _OOHG_Messages( 12, 37 ) + Chr( 13 ) + Chr( 13 ) + _OOHG_Messages( 12, 36 ) + Chr( 13 ) + ::cDocument )
+            MsgStop( _OOHG_Messages( 12, 37 ) + Chr( 13 ) + Chr( 13 ) + _OOHG_Messages( 12, 36 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( 12, 12 ) )
          ENDIF
          uRet := NIL
       ENDIF
@@ -2984,7 +2984,7 @@ LOCAL bErrorBlock, uRet := Self, oPropertyValue
       HB_IdleSleep( 1 )
    RECOVER
       IF ::lShowErrors
-         MsgStop( _OOHG_Messages( 12, 45 ) + Chr( 13 ) + ::cDocument )
+         MsgStop( _OOHG_Messages( 12, 45 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( 12, 12 ) )
       ENDIF
       uRet := NIL
    END SEQUENCE
@@ -2996,7 +2996,7 @@ LOCAL bErrorBlock, uRet := Self, oPropertyValue
    IF uRet # NIL .AND. ::ImPreview
       IF ShellExecute( 0, "open", "rundll32.exe", "url.dll,FileProtocolHandler " + ::cDocument, , 1) <= 32
          IF ::lShowErrors
-            MsgStop( _OOHG_Messages( 12, 37 ) + Chr( 13 ) + Chr( 13 ) + _OOHG_Messages( 12, 36 ) + Chr( 13 ) + ::cDocument )
+            MsgStop( _OOHG_Messages( 12, 37 ) + Chr( 13 ) + Chr( 13 ) + _OOHG_Messages( 12, 36 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( 12, 12 ) )
          ENDIF
          uRet := NIL
       ENDIF
@@ -3202,14 +3202,14 @@ LOCAL i, bErrorBlock, uRet := Self
       IF ::ImPreview
          IF ShellExecute( 0, "open", "rundll32.exe", "url.dll,FileProtocolHandler " + ::cDocument, , 1 ) <= 32
             IF ::lShowErrors
-               MsgStop( _OOHG_Messages( 12, 38 ) + Chr( 13 ) + Chr( 13 ) + _OOHG_Messages( 12, 36 ) + Chr( 13 ) + ::cDocument )
+               MsgStop( _OOHG_Messages( 12, 38 ) + Chr( 13 ) + Chr( 13 ) + _OOHG_Messages( 12, 36 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( 12, 12 ) )
             ENDIF
             uRet := NIL
          ENDIF
       ENDIF
    RECOVER
       IF ::lShowErrors
-         MsgStop( _OOHG_Messages( 12, 45 ) + Chr( 13 ) + ::cDocument )
+         MsgStop( _OOHG_Messages( 12, 45 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( 12, 12 ) )
       ENDIF
       uRet := NIL
    END SEQUENCE
@@ -3583,7 +3583,7 @@ LOCAL i
    IF ::ImPreview
       IF ShellExecute( 0, "open", "rundll32.exe", "url.dll,FileProtocolHandler " + ::cDocument, , 1 ) <= 32
          IF ::lShowErrors
-            MsgStop( _OOHG_Messages( 12, 39 ) + Chr( 13 ) + Chr( 13 ) + _OOHG_Messages( 12, 36 ) + Chr( 13 ) + ::cDocument )
+            MsgStop( _OOHG_Messages( 12, 39 ) + Chr( 13 ) + Chr( 13 ) + _OOHG_Messages( 12, 36 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( 12, 12 ) )
          ENDIF
          RETURN NIL
       ENDIF
@@ -3738,7 +3738,7 @@ METHOD EndDocX() CLASS TPDFPRINT
    IF ::ImPreview
       IF ShellExecute( 0, "open", "rundll32.exe", "url.dll,FileProtocolHandler " + ::cDocument, , 1) <= 32
          IF ::lShowErrors
-            MsgStop( _OOHG_Messages( 12, 40 ) + Chr( 13 ) + Chr( 13 ) + _OOHG_Messages( 12, 36 ) + Chr( 13 ) + ::cDocument )
+            MsgStop( _OOHG_Messages( 12, 40 ) + Chr( 13 ) + Chr( 13 ) + _OOHG_Messages( 12, 36 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( 12, 12 ) )
          ENDIF
          RETURN NIL
       ENDIF
@@ -4047,7 +4047,7 @@ LOCAL bErrorBlock, uRet := Self
       HB_IdleSleep( 1 )
    RECOVER
       IF ::lShowErrors
-         MsgStop( _OOHG_Messages( 12, 45 ) + Chr( 13 ) + ::cDocument )
+         MsgStop( _OOHG_Messages( 12, 45 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( 12, 12 ) )
       ENDIF
       uRet := NIL
    END SEQUENCE
@@ -4059,7 +4059,7 @@ LOCAL bErrorBlock, uRet := Self
    IF uRet # NIL .AND. ::ImPreview
       IF ShellExecute( 0, "open", "rundll32.exe", "url.dll,FileProtocolHandler " + ::cDocument, , 1) <= 32
          IF ::lShowErrors
-            MsgStop( _OOHG_Messages( 12, 41 ) + Chr( 13 ) + Chr( 13 ) + _OOHG_Messages( 12, 36 ) + Chr( 13 ) + ::cDocument )
+            MsgStop( _OOHG_Messages( 12, 41 ) + Chr( 13 ) + Chr( 13 ) + _OOHG_Messages( 12, 36 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( 12, 12 ) )
          ENDIF
          uRet := NIL
       ENDIF
@@ -4321,7 +4321,7 @@ LOCAL n, cBarcode := '', nCar
    DEFAULT lShowErrors TO .T.
    IF ValType( cCode ) != 'C'
       IF lShowErrors
-         MsgStop( _OOHG_Messages( 12, 42 ) )
+         MsgStop( _OOHG_Messages( 12, 42 ), _OOHG_Messages( 12, 12 ) )
       ENDIF
       RETURN NIL
    ENDIF
@@ -4451,7 +4451,7 @@ LOCAL lCodeC := .F., lCodeA := .F.
    DEFAULT lShowErrors TO .T.
    IF ValType( cCode ) != 'C'
       IF lShowErrors
-         MsgStop( _OOHG_Messages( 12, 42 ) )
+         MsgStop( _OOHG_Messages( 12, 42 ), _OOHG_Messages( 12, 12 ) )
       ENDIF
       RETURN NIL
    ENDIF
@@ -4460,7 +4460,7 @@ LOCAL lCodeC := .F., lCodeA := .F.
          cMode := Upper( cMode )
       ELSE
          IF lShowErrors
-            MsgStop( _OOHG_Messages( 12, 43 ) )
+            MsgStop( _OOHG_Messages( 12, 43 ), _OOHG_Messages( 12, 12 ) )
          ENDIF
          RETURN NIL
       ENDIF
@@ -4595,7 +4595,7 @@ LOCAL cCar, m, n, cBarcode := '', nCheck := 0
    DEFAULT lShowErrors TO .T.
    IF ValType( cCode ) != 'C'
       IF lShowErrors
-         MsgStop( _OOHG_Messages( 12, 42 ) )
+         MsgStop( _OOHG_Messages( 12, 42 ), _OOHG_Messages( 12, 12 ) )
       ENDIF
       RETURN NIL
    ENDIF
@@ -4633,7 +4633,7 @@ LOCAL cBarcode, nChar, cLeft, cRight, cString, cMask, k, n
    DEFAULT lShowErrors TO .T.
    IF ValType( cCode ) != 'C'
       IF lShowErrors
-         MsgStop( _OOHG_Messages( 12, 42 ) )
+         MsgStop( _OOHG_Messages( 12, 42 ), _OOHG_Messages( 12, 12 ) )
       ENDIF
       RETURN NIL
    ENDIF
@@ -4791,7 +4791,7 @@ LOCAL k, cControl, n, cBarcode := '1011', nCar
    DEFAULT lShowErrors TO .T.
    IF ValType( cCode ) != 'C'
       IF lShowErrors
-         MsgStop( _OOHG_Messages( 12, 42 ) )
+         MsgStop( _OOHG_Messages( 12, 42 ), _OOHG_Messages( 12, 12 ) )
       ENDIF
       RETURN NIL
    ENDIF
@@ -4836,7 +4836,7 @@ LOCAL n, cBarCode :='', cLeft, cRight, nLen, nCheck := 0, cPre, m
    DEFAULT lShowErrors TO .T.
    IF ValType( cCode ) != 'C'
       IF lShowErrors
-         MsgStop( _OOHG_Messages( 12, 42 ) )
+         MsgStop( _OOHG_Messages( 12, 42 ), _OOHG_Messages( 12, 12 ) )
       ENDIF
       RETURN NIL
    ENDIF
@@ -4893,7 +4893,7 @@ LOCAL cPre, cBarcode := '', nCheck, n
    DEFAULT lShowErrors TO .T.
    IF ValType( cCode ) != 'C'
       IF lShowErrors
-         MsgStop( _OOHG_Messages( 12, 42 ) )
+         MsgStop( _OOHG_Messages( 12, 42 ), _OOHG_Messages( 12, 12 ) )
       ENDIF
       RETURN NIL
    ENDIF
@@ -4936,7 +4936,7 @@ LOCAL cPre, cBarCode := '', nCheck, n
    DEFAULT lShowErrors TO .T.
    IF ValType( cCode ) != 'C'
       IF lShowErrors
-         MsgStop( _OOHG_Messages( 12, 42 ) )
+         MsgStop( _OOHG_Messages( 12, 42 ), _OOHG_Messages( 12, 12 ) )
       ENDIF
       RETURN NIL
    ENDIF
