@@ -1,5 +1,5 @@
 /*
- * $Id: Mpm.prg,v 1.1 2013-11-18 20:40:25 migsoft Exp $
+ * $Id: Mpm.prg,v 1.2 2014-07-11 19:38:40 migsoft Exp $
  */
 
 /*
@@ -22,7 +22,7 @@
 #pragma -ko+
 
 #include "oohg.ch"
-#include <common.ch>
+#include "common.ch"
 #include "mpm.ch"
 
 *---------------------------------------------------------------------*
@@ -989,6 +989,7 @@ Procedure DefineWindowHotKeys()
    ON KEY F6  OF Main  ACTION DispMem()
    ON KEY F7  OF Main  ACTION _OOHG_CallDump()
    ON KEY F8  OF Main  ACTION DateMod()
+   ON KEY F9  OF Main  ACTION MsgInfo( iif( IsOS64(),"x64","x32" ), "OS Architecture"  )
    ON KEY F10 OF Main  ACTION ExitProg()
 Return
 *---------------------------------------------------------------------*
@@ -1247,10 +1248,12 @@ Function Hblibs( cRuta,cHb,cCclr )
       cRuta := cRuta + '\lib\win\msvc'
    ElseIf File(cRuta+'\lib\libvm.a') .and. cCclr == 1
       cRuta := cRuta + '\lib'
-   ElseIf File(cRuta+'\lib\libhbvm.a') .and. cCclr == 1
+   ElseIf File(cRuta+'\lib\libhbvm.a') .and. cCclr == 1 .and. (main.check_64.value == .F.)
       cRuta := cRuta + '\lib'
-   ElseIf File(cRuta+'\lib\win\mingw\libhbvm.a') .and. cCclr == 1
+   ElseIf File(cRuta+'\lib\win\mingw\libhbvm.a') .and. cCclr == 1 .and. (main.check_64.value == .F.)
       cRuta := cRuta + '\lib\win\mingw'
+   ElseIf File(cRuta+'\lib\win\mingw64\libhbvm.a') .and. cCclr == 1 .and. (main.check_64.value == .T.)
+      cRuta := cRuta + '\lib\win\mingw64'
    Else
       cRuta := cRuta + '\lib'
    Endif
@@ -1334,7 +1337,7 @@ Return(cHblibs)
 *---------------------------------------------------------------------*
 Function Auto_GUI(cRuta)
 *---------------------------------------------------------------------*
-   If File(cRuta+'\lib\oohg.lib')
+   If File(cRuta+'\lib\oohg.lib') .and. (main.check_64.value == .F.)
       cRuta := cRuta + '\lib'
    ElseIf File(cRuta+'\lib\minigui.lib')
       cRuta := cRuta + '\lib'
@@ -1346,12 +1349,18 @@ Function Auto_GUI(cRuta)
       cRuta := cRuta + '\lib'
    ElseIf File(cRuta+'\lib\hb\bcc\oohg.lib')
       cRuta := cRuta + '\lib\hb\bcc'
-   ElseIf File(cRuta+'\lib\hb\pocc\oohg.lib')
+   ElseIf File(cRuta+'\lib\hb\pocc\oohg.lib') .and. (main.check_64.value == .F.)
       cRuta := cRuta + '\lib\hb\pocc'
-   ElseIf File(cRuta+'\lib\hb\mingw\liboohg.a')
+   ElseIf File(cRuta+'\lib\hb\pocc64\oohg.lib') .and. (main.check_64.value == .T.)
+      cRuta := cRuta + '\lib\hb\pocc64'
+   ElseIf File(cRuta+'\lib\hb\mingw\liboohg.a') .and. (main.check_64.value == .F.)
       cRuta := cRuta + '\lib\hb\mingw'
-   ElseIf File(cRuta+'\lib\hb\msvc\oohg.lib')
+   ElseIf File(cRuta+'\lib\hb\mingw64\liboohg.a') .and. (main.check_64.value == .T.)
+      cRuta := cRuta + '\lib\hb\mingw64'
+   ElseIf File(cRuta+'\lib\hb\msvc\oohg.lib') .and. (main.check_64.value == .F.)
       cRuta := cRuta + '\lib\hb\msvc'
+   ElseIf File(cRuta+'\lib\hb\msvc64\oohg.lib') .and. (main.check_64.value == .T.)
+      cRuta := cRuta + '\lib\hb\msvc64'
    ElseIf File(cRuta+'\lib\xhb\bcc\oohg.lib')
       cRuta := cRuta + '\lib\xhb\bcc'
    ElseIf File(cRuta+'\lib\xhb\pocc\oohg.lib')
@@ -1910,9 +1919,9 @@ FUNCTION DateMod()
   LOCAL cProjFldr:= iif( Empty(main.text_1.value), CurDir(), AllTrim(main.text_1.value) )
 
   IF !EMPTY( aDir1 )
-    nTargDate := DateTime(aDir2[1][3], aDir2[1][4])
+    nTargDate := FDateTime(aDir2[1][3], aDir2[1][4])
     FOR nFile := 1 TO nFiles
-        IF DateTime( aDir1[nFile][3], aDir1[nFile][4] ) > nTargDate
+        IF FDateTime( aDir1[nFile][3], aDir1[nFile][4] ) > nTargDate
            lMod := .T.
         ENDIF
     NEXT

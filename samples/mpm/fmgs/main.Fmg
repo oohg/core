@@ -1,5 +1,5 @@
 /*
- * $Id: main.Fmg,v 1.1 2013-11-18 20:46:50 migsoft Exp $
+ * $Id: main.Fmg,v 1.2 2014-07-11 19:38:40 migsoft Exp $
  */
 
 *HMGS-MINIGUI-IDE Two-Way Form Designer Generated Code
@@ -35,7 +35,9 @@ DEFINE WINDOW TEMPLATE AT 196 , 293 WIDTH 625 HEIGHT 496 TITLE "(c) MigSoft Proj
                HEIGHT 28
                ACTION If ( !Empty( Folder := GetFolder() ) , main.Text_1.Value := Folder , )
               PICTURE "mfolder"
-        END BUTTON  
+              THEMED .T.
+              TOP .T.
+        END BUTTON
 
         DEFINE FRAME Frame_1
                ROW    170
@@ -143,7 +145,7 @@ DEFINE WINDOW TEMPLATE AT 196 , 293 WIDTH 625 HEIGHT 496 TITLE "(c) MigSoft Proj
                HEIGHT 28
                CAPTION "Yes"
                FONTNAME 'Arial'
-               TOOLTIP ''
+               TOOLTIP 'UPX.EXE is necesary'
         END CHECKBOX  
 
         DEFINE LABEL Label_1
@@ -178,6 +180,29 @@ DEFINE WINDOW TEMPLATE AT 196 , 293 WIDTH 625 HEIGHT 496 TITLE "(c) MigSoft Proj
                TRANSPARENT .T.
                RIGHTALIGN .T.
         END LABEL
+
+        DEFINE LABEL Label_64
+               ROW    130
+               COL    215
+               WIDTH  122
+               HEIGHT 24
+               VALUE "64 Bits"
+               FONTBOLD .T.
+               TRANSPARENT .T.
+               RIGHTALIGN .T.
+        END LABEL
+
+        DEFINE CHECKBOX Check_64
+               ROW    125
+               COL    370
+               WIDTH  100
+               HEIGHT 28
+               CAPTION "Yes"
+               FONTNAME 'Arial'
+               TOOLTIP 'Only activate in OS x64'
+               ON CHANGE CPUArch()
+        END CHECKBOX
+
 
         DEFINE LABEL Label_4
                ROW    190
@@ -599,7 +624,6 @@ DEFINE WINDOW TEMPLATE AT 196 , 293 WIDTH 625 HEIGHT 496 TITLE "(c) MigSoft Proj
                HEIGHT 140
                CAPTION "xHarbour"
                OPAQUE .T.
-               TRANSPARENT .T.
         END FRAME  
 
         DEFINE FRAME Frame_37
@@ -609,7 +633,6 @@ DEFINE WINDOW TEMPLATE AT 196 , 293 WIDTH 625 HEIGHT 496 TITLE "(c) MigSoft Proj
                HEIGHT 140
                CAPTION "User Flags"
                OPAQUE .T.
-               TRANSPARENT .T.
         END FRAME  
 
         DEFINE LABEL Label_10
@@ -894,7 +917,6 @@ DEFINE WINDOW TEMPLATE AT 196 , 293 WIDTH 625 HEIGHT 496 TITLE "(c) MigSoft Proj
                HEIGHT 140
                CAPTION "Compiler"
                OPAQUE .T.
-               TRANSPARENT .T.
         END FRAME  
 
         DEFINE FRAME Frame_7
@@ -904,7 +926,6 @@ DEFINE WINDOW TEMPLATE AT 196 , 293 WIDTH 625 HEIGHT 496 TITLE "(c) MigSoft Proj
                HEIGHT 140
                CAPTION "User Flags"
                OPAQUE .T.
-               TRANSPARENT .T.
         END FRAME  
 
         DEFINE LABEL Label_3
@@ -1111,7 +1132,6 @@ DEFINE WINDOW TEMPLATE AT 196 , 293 WIDTH 625 HEIGHT 496 TITLE "(c) MigSoft Proj
                HEIGHT 140
                CAPTION "GUI Harbour"
                OPAQUE .T.
-               TRANSPARENT .T.
         END FRAME  
 
         DEFINE FRAME Frame_10
@@ -1121,7 +1141,6 @@ DEFINE WINDOW TEMPLATE AT 196 , 293 WIDTH 625 HEIGHT 496 TITLE "(c) MigSoft Proj
                HEIGHT 140
                CAPTION "GUI xHarbour"
                OPAQUE .T.
-               TRANSPARENT .T.
         END FRAME  
 
         DEFINE LABEL Label_15
@@ -1266,7 +1285,6 @@ DEFINE WINDOW TEMPLATE AT 196 , 293 WIDTH 625 HEIGHT 496 TITLE "(c) MigSoft Proj
                FONTNAME 'Arial'
                CAPTION "Tools"
                OPAQUE .T.
-               TRANSPARENT .T.
         END FRAME  
 
         DEFINE TEXTBOX Text_28
@@ -1615,3 +1633,4 @@ DEFINE WINDOW TEMPLATE AT 196 , 293 WIDTH 625 HEIGHT 496 TITLE "(c) MigSoft Proj
      END FRAME
 
 END WINDOW
+

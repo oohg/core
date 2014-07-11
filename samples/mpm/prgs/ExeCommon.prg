@@ -1,5 +1,5 @@
 /*
- * $Id: ExeCommon.prg,v 1.1 2013-11-18 20:40:24 migsoft Exp $
+ * $Id: ExeCommon.prg,v 1.2 2014-07-11 19:38:40 migsoft Exp $
  */
 
 #include "oohg.ch"
@@ -78,6 +78,8 @@ Procedure MsgBuild()
             if MsgYesNo('File: '+ GetName(ExeName)+'.exe Already Exist, Rebuild?',"Rebuild Project") == .F.
                BREAK
             Else
+               cDos1 := '/c Taskkill /f /im '+GetName(ExeName)+'.exe'
+               EXECUTE FILE "CMD.EXE" PARAMETERS cDos1 HIDE
                main.RichEdit_1.Value := ''
             Endif
          Endif

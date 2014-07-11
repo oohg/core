@@ -1,11 +1,20 @@
 /*
- * $Id: MpmCommon.prg,v 1.1 2013-11-18 20:40:25 migsoft Exp $
+ * $Id: MpmCommon.prg,v 1.2 2014-07-11 19:38:40 migsoft Exp $
  */
 
 #include "oohg.ch"
 
    DECLARE WINDOW main
 
+Procedure CPUArch()
+    If !IsOS64()
+       main.check_64.value := .F.
+    Endif
+Return
+
+Function IsOS64()
+    Local Win64 := GetENV("ProgramFiles(x86)")
+Return( iif( Empty(Win64), .F. , .T. ) )
 
 Function VerifyTop( cFile )
     Local aDirectry := {}
@@ -183,7 +192,7 @@ Function cFileDisc( cPathMask )
 Return If( At( ":", cPathMask ) == 2, Upper( Left( cPathMask, 2 ) ), "" )
 
 *---------------------------------------------------------------------*
-FUNCTION DateTime(dDate, cTime)
+FUNCTION FDateTime(dDate, cTime)
 *---------------------------------------------------------------------*
   LOCAL nDateTime := (dDate - CTOD('')) + SECS(cTime)/86400
 RETURN nDateTime

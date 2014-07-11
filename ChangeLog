@@ -1,11 +1,23 @@
 /*
- * $Id: ChangeLog,v 1.1319 2014-07-11 01:52:14 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1320 2014-07-11 19:38:39 migsoft Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-07-11 15:37 UTC-0400 MigSoft <migsoft@oohg.org>
+   * samples/mpm/Readme.txt
+     * Updated.
+   * samples/mpm/fmg/main.fmg
+   * samples/mpm/fmg/mpm.ch
+   * samples/mpm/prgs/ExeCommon.prg
+   * samples/mpm/prgs/ExeGcc.prg
+   * samples/mpm/prgs/Mpm.prg
+   * samples/mpm/prgs/MpmAso.prg
+   * samples/mpm/prgs/MpmCommon.prg
+     * Added option x64 compile only for MinGW.
 
 2014-07-10 22:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_print.prg

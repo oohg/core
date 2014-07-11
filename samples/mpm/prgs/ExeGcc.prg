@@ -1,5 +1,5 @@
 /*
- * $Id: ExeGcc.prg,v 1.1 2013-11-18 20:40:24 migsoft Exp $
+ * $Id: ExeGcc.prg,v 1.2 2014-07-11 19:38:40 migsoft Exp $
  */
 
 #include "oohg.ch"
@@ -48,23 +48,41 @@ Procedure Build2( ProjectName )  // Executable MinGW
             cDEBUG = ''
         Endif
 
+        If ( file(HARBOURFOLDER+"\bin\harbour.exe") ) .and. (main.check_64.value == .F.)
+             c_ruta_hb   := "/bin"
+             If ( file( HARBOURFOLDER+"\lib\win\mingw\libhbvm.a" ) )
+                  c_dirlib_hb := "/lib/win/mingw"
+             Else
+                  c_dirlib_hb := "/lib"
+             Endif
+        ElseIf ( file(HARBOURFOLDER+"\bin\win\mingw\harbour.exe") ) .and. (main.check_64.value == .F.)
+            c_ruta_hb   := "/bin/win/mingw"
+            c_dirlib_hb := "/lib/win/mingw"
+        ElseIf ( file(HARBOURFOLDER+"\bin\win\mingw64\harbour.exe") ) .and. (main.check_64.value == .T.)
+            c_ruta_hb   := "/bin/win/mingw64"
+            c_dirlib_hb := "/lib/win/mingw64"
+        Else
+            c_ruta_hb   := "/bin"
+            c_dirlib_hb := "/lib"
+        Endif
+
         cUserFlags := iif( empty(USERFLAGS),'',' '+USERFLAGS )
         cIncFolder := MINIGUIFOLDER + '\INCLUDE' + ' -I'+HARBOURFOLDER + '\INCLUDE' + IIF( Empty( INCFOLDER ),"",' -I'+ INCFOLDER )
         cLibFolder := IIF( Empty( LIBFOLDER ),"",' -L'+ LIBFOLDER )
 
-        Out := Out + 'PATH = '+MINGW32FOLDER+'\BIN;'+MINGW32FOLDER+'\LIBEXEC\GCC\MINGW32\3.4.5'+';'+PROJECTFOLDER +NewLi
-        Out := Out + 'MINGW = '+MINGW32FOLDER +NewLi
-        Out := Out + 'HRB_DIR = '+HARBOURFOLDER  +NewLi
-        Out := Out + 'MINIGUI_INSTALL = '+MINIGUIFOLDER  +NewLi
+        Out := Out + 'PATH = '+MINGW32FOLDER+'\BIN;'+MINGW32FOLDER+'\LIBEXEC\GCC\MINGW32\3.4.5'+';'+PROJECTFOLDER + NewLi
+        Out := Out + 'MINGW = '+MINGW32FOLDER + NewLi
+        Out := Out + 'HRB_DIR = '+HARBOURFOLDER + NewLi
+        Out := Out + 'MINIGUI_INSTALL = '+MINIGUIFOLDER + NewLi
         Out := Out + 'INC_DIR = '+ cIncFolder + NewLi
         Out := Out + 'OBJ_DIR = '+PROJECTFOLDER + cOBJ_DIR + NewLi
-        Out := Out + 'PROJECTFOLDER = '+PROJECTFOLDER +NewLi
+        Out := Out + 'PROJECTFOLDER = '+PROJECTFOLDER + NewLi
         Out := Out + 'USER_FLAGS = '+USERFLAGS +NewLi
 
         If WITHGTMODE = 2
            // Out := Out + 'CFLAGS = -Wall -mno-cygwin -O3' +NewLi
             Out := Out + 'CFLAGS = -Wall -O3' +NewLi
-            
+
         Else
            // Out := Out + 'CFLAGS = -Wall -mwindows -mno-cygwin -O3 -Wl,--allow-multiple-definition '+USERCFLAGS+NewLi
             Out := Out + 'CFLAGS = -Wall -mwindows -O3 -Wl,--allow-multiple-definition '+USERCFLAGS+NewLi
@@ -147,12 +165,18 @@ Procedure Build2( ProjectName )  // Executable MinGW
         Out := Out +' $(MINIGUI_INSTALL)/resources/_temp.o '
 
         If HBCHOICE == 1
-            cRutaLibs :=' -L$(MINIGUI_INSTALL)/lib -L$(MINIGUI_INSTALL)/lib/hb/mingw '
-        Else
+           If ( main.check_64.value == .F. )
+              cRutaLibs :=' -L$(MINIGUI_INSTALL)/lib -L$(MINIGUI_INSTALL)/lib/hb/mingw -L$(HRB_DIR)'+c_dirlib_hb
+           Else
+              cRutaLibs :=' -L$(MINIGUI_INSTALL)/lib/hb/mingw64 -L$(HRB_DIR)'+c_dirlib_hb
+           Endif
+        Endif
+
+        If HBCHOICE == 2
             cRutaLibs :=' -L$(MINIGUI_INSTALL)/lib -L$(MINIGUI_INSTALL)/lib/xhb/mingw '
         Endif
 
-        Out := Out +'-L$(MINGW)/lib -L$(HRB_DIR)/lib -L$(HRB_DIR)/lib/win/mingw'+cLibFolder+cRutaLibs+' -L. -Wl,--start-group '
+        Out := Out +'-L$(MINGW)/lib '+cLibFolder+cRutaLibs+' -L. -Wl,--start-group '
 
         cHMGLibs1  :=' -lhmg '+cLibsUser
         cHMGLibs2  :=' -lgraph -ledit -lreport -lini -leditex -lcrypt '
@@ -225,7 +249,7 @@ Procedure Build2( ProjectName )  // Executable MinGW
             If upper(Right( PRGFILES [i] , 3 )) = 'PRG'
                 cfile := Left ( PRGFILES [i] , Len(PRGFILES [i] ) - 4 )
                 Out := Out +'$(OBJ_DIR)/'+GetName(cfile)+'.c   : '+cfile+'.prg'+NewLi
-                Out := Out +'	$(HRB_DIR)/bin/harbour.exe $^ -n '+RetHbLevel()+cUserFlags+cDEBUG+' -I$(HRB_DIR)/include -I$(MINIGUI_INSTALL)/include -i$(INC_DIR) -I$(PROJECTFOLDER) -I. -d__WINDOWS__ -o$@ $^'+NewLi
+                Out := Out +'	$(HRB_DIR)'+c_ruta_hb+'\harbour.exe $^ -n '+RetHbLevel()+cUserFlags+cDEBUG+' -I$(HRB_DIR)/include -I$(MINIGUI_INSTALL)/include -i$(INC_DIR) -I$(PROJECTFOLDER) -I. -d__WINDOWS__ -o$@ $^'+NewLi
             Endif
         next i
 
