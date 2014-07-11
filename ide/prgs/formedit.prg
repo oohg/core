@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.14 2014-07-09 21:41:05 fyurisich Exp $
+ * $Id: formedit.prg,v 1.15 2014-07-11 01:17:20 fyurisich Exp $
  */
 
 /*
@@ -839,7 +839,7 @@ LOCAL aName, x, i, swBorrado
             ACTION Dibuja( This:Name ) ;
             NOTABSTOP
          :abackcolor[:ncontrolw] := cFBackcolor
-         ProcessContainers( ControlName )
+         ProcessContainers( ControlName, ::myIde )
       CASE :CurrentControl == 3
          :CheckBoxCount ++
          ControlName := 'checkbox_' + LTrim( Str( :CheckBoxCount ) )
@@ -858,7 +858,7 @@ LOCAL aName, x, i, swBorrado
          IF cFBackcolor # 'NIL' .AND. Len( cFBackcolor ) > 0
             GetControlObject( ControlName, "Form_1" ):BackColor:= &cFBackcolor
          ENDIF
-         ProcessContainers( ControlName )
+         ProcessContainers( ControlName, ::myIde )
    CASE :CurrentControl == 4
       :ListBoxCount ++
       ControlName := 'list_' + LTrim( Str( :ListBoxcount ) )
@@ -876,7 +876,7 @@ LOCAL aName, x, i, swBorrado
          ON CHANGE Dibuja( This:Name ) ;
          NOTABSTOP
       :IniArray( :nForm, :nControlW, ControlName, 'LIST')
-      ProcessContainers( ControlName )
+      ProcessContainers( ControlName, ::myIde )
    Case :CurrentControl == 5
       :ComboBoxCount++
       ControlName := 'combo_'+Alltrim(str(:ComboBoxCount))
@@ -894,7 +894,7 @@ LOCAL aName, x, i, swBorrado
          ON GOTFOCUS Dibuja( This:Name ) ;
          NOTABSTOP
                 :iniarray(:nform,:ncontrolw,controlname,'COMBO')
-      ProcessContainers( ControlName )
+      ProcessContainers( ControlName, ::myIde )
    CASE :CurrentControl == 6
       :CheckButtonCount ++
       ControlName := 'checkbtn_' + LTrim( Str( :CheckButtonCount ) )
@@ -909,7 +909,7 @@ LOCAL aName, x, i, swBorrado
          ON CHANGE Dibuja( This:Name) ;
          NOTABSTOP
       :IniArray( :nForm, :nControlW, ControlName, 'CHECKBTN' )
-      ProcessContainers( ControlName )
+      ProcessContainers( ControlName, ::myIde )
    Case :CurrentControl == 7
       :GridCount ++
       ControlName := 'grid_' + LTrim( Str( :GridCount ) )
@@ -926,7 +926,7 @@ LOCAL aName, x, i, swBorrado
          TOOLTIP 'To move/size click on header area' ;
          ON GOTFOCUS Dibuja( This:Name )
       :IniArray( :nForm, :nControlW, ControlName, 'GRID' )
-      ProcessContainers( ControlName )
+      ProcessContainers( ControlName, ::myIde )
    Case :CurrentControl == 8
       :frameCount++
       ControlName := 'frame_'+Alltrim(str(:FrameCount))
@@ -941,7 +941,7 @@ LOCAL aName, x, i, swBorrado
          IF cFBackcolor # 'NIL' .AND. Len( cFBackcolor ) > 0
                    GetControlObject( controlname,"form_1"):backcolor:= &cFBackcolor
                 ENDIF
-      ProcessContainers( ControlName )
+      ProcessContainers( ControlName, ::myIde )
    Case :CurrentControl == 9
       :TabCount++
       ControlName := 'tab_'+Alltrim(str(:TabCount))
@@ -972,7 +972,7 @@ LOCAL aName, x, i, swBorrado
                 :iniarray(:nform,:ncontrolw,controlname,'IMAGE')
       @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 100 HEIGHT 100 VALUE ControlName BORDER ACTION dibuja(this:name)
 
-      ProcessContainers( ControlName )
+      ProcessContainers( ControlName, ::myIde )
    Case :CurrentControl == 11
       :AnimateCount++
       ControlName := 'animate_'+Alltrim(str(:AnimateCount))
@@ -983,7 +983,7 @@ LOCAL aName, x, i, swBorrado
                 :ncontrolw++
                 :iniarray(:nform,:ncontrolw,controlname,'ANIMATE')
       @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 100 HEIGHT 50 VALUE ControlName BORDER ACTION dibuja(this:name)
-      ProcessContainers( ControlName )
+      ProcessContainers( ControlName, ::myIde )
    Case :CurrentControl == 12
       :DatePickerCount++
       ControlName := 'datepicker_'+Alltrim(str(:DatePickerCount))
@@ -995,7 +995,7 @@ LOCAL aName, x, i, swBorrado
                 :iniarray(:nform,:ncontrolw,controlname,'DATEPICKER')
       @ _oohg_mouserow,_oohg_mousecol DATEPICKER &ControlName OF Form_1 TOOLTIP ControlName ;
                 ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name) NOTABSTOP
-      ProcessContainers( ControlName )
+      ProcessContainers( ControlName, ::myIde )
    Case :CurrentControl == 13
       :TextBoxCount++
       ControlName := 'text_'+Alltrim(str(:TextBoxCount))
@@ -1007,7 +1007,7 @@ LOCAL aName, x, i, swBorrado
       @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 120 HEIGHT 24 BACKCOLOR WHITE CLIENTEDGE ACTION dibuja(this:name)
                 GetControlObject( controlname,"form_1"):value:=controlname
                 :iniarray(:nform,:ncontrolw,controlname,'TEXT')
-      ProcessContainers( ControlName )
+      ProcessContainers( ControlName, ::myIde )
    Case :CurrentControl == 14
       :EditBoxCount++
       ControlName := 'edit_'+Alltrim(str(:EditBoxCount))
@@ -1018,7 +1018,7 @@ LOCAL aName, x, i, swBorrado
                 :ncontrolw++
       @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 120 HEIGHT 120 VALUE ControlName BACKCOLOR WHITE CLIENTEDGE HSCROLL VSCROLL ACTION dibuja(this:name)
                 :iniarray(:nform,:ncontrolw,controlname,'EDIT')
-      ProcessContainers( ControlName )
+      ProcessContainers( ControlName, ::myIde )
    Case :CurrentControl == 15
                 :LabelCount++
       ControlName := 'label_'+Alltrim(str(:LabelCount))
@@ -1034,7 +1034,7 @@ LOCAL aName, x, i, swBorrado
          IF cFBackcolor # 'NIL' .AND. Len( cFBackcolor ) > 0
             GetControlObject( ControlName, "Form_1" ):BackColor:= &cFBackcolor
          ENDIF
-      ProcessContainers( ControlName )
+      ProcessContainers( ControlName, ::myIde )
    Case :CurrentControl == 16
       :PlayerCount++
       ControlName := 'player_'+Alltrim(str(:PlayerCount))
@@ -1045,7 +1045,7 @@ LOCAL aName, x, i, swBorrado
                 :ncontrolw++
       @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 100 HEIGHT 100 VALUE ControlName BORDER ACTION dibuja(this:name) 
                 :iniarray(:nform,:ncontrolw,controlname,'PLAYER')
-      ProcessContainers( ControlName )
+      ProcessContainers( ControlName, ::myIde )
    Case :CurrentControl == 17
       :ProgressBarCount++
       ControlName := 'progressbar_'+Alltrim(str(:ProgressBarCount))
@@ -1056,7 +1056,7 @@ LOCAL aName, x, i, swBorrado
                 :ncontrolw++
       @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 120 HEIGHT 26 VALUE Controlname BORDER ACTION dibuja(this:name)
                 :iniarray(:nform,:ncontrolw,controlname,'PROGRESSBAR')
-      ProcessContainers( ControlName )
+      ProcessContainers( ControlName, ::myIde )
    Case :CurrentControl == 18
       :RadioGroupCount++
       ControlName := 'radiogroup_'+Alltrim(str(:RadioGroupCount))
@@ -1073,7 +1073,7 @@ LOCAL aName, x, i, swBorrado
                 ENDIF
                 :aitems[:ncontrolw]:="{'option 1','option 2'}"
                 :aspacing[:ncontrolw]:=25
-      ProcessContainers( ControlName )
+      ProcessContainers( ControlName, ::myIde )
    Case :CurrentControl == 19
       :SliderCount++
       ControlName := 'slider_'+Alltrim(str(:SliderCount))
@@ -1088,7 +1088,7 @@ LOCAL aName, x, i, swBorrado
          IF cFBackcolor # 'NIL' .AND. Len( cFBackcolor ) > 0
             GetControlObject( ControlName, "Form_1" ):BackColor:= &cFBackcolor
          ENDIF
-      ProcessContainers( ControlName )
+      ProcessContainers( ControlName, ::myIde )
    Case :CurrentControl == 20
       :SpinnerCount++
       ControlName := 'spinner_'+Alltrim(str(:SpinnerCount))
@@ -1099,7 +1099,7 @@ LOCAL aName, x, i, swBorrado
                 :ncontrolw++
       @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 120 HEIGHT 24 VALUE ControlName BACKCOLOR WHITE CLIENTEDGE VSCROLL ACTION dibuja(this:name)
                 :iniarray(:nform,:ncontrolw,controlname,'SPINNER')
-      ProcessContainers( ControlName )
+      ProcessContainers( ControlName, ::myIde )
    Case :CurrentControl == 21
       :CheckButtonCount++
       ControlName := 'piccheckbutt_'+Alltrim(str(:CheckButtonCount))
@@ -1110,7 +1110,7 @@ LOCAL aName, x, i, swBorrado
                 :ncontrolw++
       @ _oohg_mouserow,_oohg_mousecol CHECKBUTTON &ControlName OF Form_1 PICTURE 'A4' WIDTH 30 HEIGHT 30 VALUE .F. ON GOTFOCUS dibuja(this:name) ON CHANGE dibuja(this:name) NOTABSTOP
                 :iniarray(:nform,:ncontrolw,controlname,'PICCHECKBUTT')
-      ProcessContainers( ControlName )
+      ProcessContainers( ControlName, ::myIde )
    Case :CurrentControl == 22
       :ButtonCount++
       ControlName := 'picbutt_'+Alltrim(str(:ButtonCount))
@@ -1128,7 +1128,7 @@ LOCAL aName, x, i, swBorrado
          ON GOTFOCUS Dibuja( This:Name ) ;
          ACTION Dibuja( This:Name ) ;
          NOTABSTOP
-      ProcessContainers( ControlName )
+      ProcessContainers( ControlName, ::myIde )
          Case :CurrentControl == 23
       :TimerCount++
       ControlName := 'timer_'+Alltrim(str(:timerCount))
@@ -1139,7 +1139,7 @@ LOCAL aName, x, i, swBorrado
                 :ncontrolw++
                 :iniarray(:nform,:ncontrolw,controlname,'TIMER')
       @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 100 HEIGHT 20 VALUE ControlName BORDER ACTION dibuja(this:name) 
-      ProcessContainers( ControlName )
+      ProcessContainers( ControlName, ::myIde )
    Case :CurrentControl == 24
       :BrowseCount++
          ControlName := 'browse_'+Alltrim(str(:browseCount))
@@ -1151,7 +1151,7 @@ LOCAL aName, x, i, swBorrado
                 :ncontrolw++
                 :iniarray(:nform,:ncontrolw,controlname,'BROWSE')
       @ _oohg_mouserow,_oohg_mousecol GRID &ControlName OF Form_1 HEADERS {'one','two'} WIDTHS {60,60} ITEMS aName TOOLTIP 'To move/size click on header area' ON GOTFOCUS dibuja(this:name)
-      ProcessContainers( ControlName )
+      ProcessContainers( ControlName, ::myIde )
    Case :CurrentControl == 25
       :TreeCount++
          ControlName := 'tree_'+Alltrim(str(:treecount))
@@ -1169,7 +1169,7 @@ LOCAL aName, x, i, swBorrado
               END NODE
                 END TREE
 
-      ProcessContainers( ControlName )
+      ProcessContainers( ControlName, ::myIde )
    Case :CurrentControl == 26
       :IpaddressCount ++
       ControlName := 'ipaddress_' + LTrim( Str( :ipaddressCount ) )
@@ -1184,7 +1184,7 @@ LOCAL aName, x, i, swBorrado
          BACKCOLOR WHITE ;
          CLIENTEDGE ;
          ACTION Dibuja( This:Name )
-      ProcessContainers( ControlName )
+      ProcessContainers( ControlName, ::myIde )
    Case :CurrentControl == 27
       :MonthcalendarCount++
          ControlName := 'monthcal_'+Alltrim(str(:monthcalendarCount))
@@ -1195,7 +1195,7 @@ LOCAL aName, x, i, swBorrado
                 :ncontrolw++
                 :iniarray(:nform,:ncontrolw,controlname,'MONTHCALENDAR')
       @ _oohg_mouserow,_oohg_mousecol MONTHCALENDAR &ControlName OF Form_1  NOTABSTOP ON CHANGE dibuja(this:name)
-      ProcessContainers( ControlName )
+      ProcessContainers( ControlName, ::myIde )
         Case :CurrentControl == 28
       :hyperlinkCount++
          ControlName := 'Hyperlink_'+Alltrim(str(:HyperlinkCount))
@@ -1206,7 +1206,7 @@ LOCAL aName, x, i, swBorrado
                 :ncontrolw++
                 :iniarray(:nform,:ncontrolw,controlname,'HYPERLINK')
       @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 VALUE Controlname ACTION dibuja(this:name) BORDER
-      ProcessContainers( ControlName )
+      ProcessContainers( ControlName, ::myIde )
         case :CurrentControl ==29
            :richeditBoxCount++
       ControlName := 'richeditbox_'+Alltrim(str(:richeditboxCount))
@@ -1218,7 +1218,7 @@ LOCAL aName, x, i, swBorrado
       @ _oohg_mouserow,_oohg_mousecol LABEL &ControlName OF Form_1 WIDTH 120 HEIGHT 124 BACKCOLOR WHITE CLIENTEDGE ACTION dibuja(this:name)
                 GetControlObject( controlname,"form_1"):value:= controlname
                 :iniarray(:nform,:ncontrolw,controlname,'RICHEDIT')
-      ProcessContainers( ControlName )
+      ProcessContainers( ControlName, ::myIde )
    EndCase
            :control_click(1)
            :lFsave:=.F.
