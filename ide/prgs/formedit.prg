@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.15 2014-07-11 01:17:20 fyurisich Exp $
+ * $Id: formedit.prg,v 1.16 2014-07-12 15:29:21 fyurisich Exp $
  */
 
 /*
@@ -477,7 +477,7 @@ METHOD IniArray( nform, ncontrolwl, controlname, ctypectrl, noanade ) CLASS TFor
          aAdd( :afontitalic, .F. )
          aAdd( :afontunderline, .F. )
          aAdd( :afontstrikeout, .F. )
-         aAdd( :atransparent, .F. )
+         aAdd( :atransparent, .T. )
          aAdd( :acaption, "" )
          aAdd( :apicture, "" )
          aAdd( :avalue, "" )
@@ -1382,6 +1382,7 @@ METHOD New() CLASS TForm1
          TITLE 'Form' ICON 'VD' ;
          CHILD ;
          ON MOUSECLICK myform:AddControl() ;
+         ON DBLCLICK Properties_Click( ::myIde ) ;
          ON MOUSEMOVE cordenada() ;
          ON MOUSEDRAG ms( ::myIde ) ;
          ON GOTFOCUS mispuntos() ;
@@ -1523,6 +1524,7 @@ LOCAL nFWidth, nFHeight
          ICON 'VD' ;
          CHILD NOSHOW  ;
          ON MOUSECLICK ::AddControl()  ;
+         ON DBLCLICK Properties_Click( ::myIde ) ;
          ON MOUSEMOVE Cordenada() ;
          ON MOUSEDRAG ms( ::myIde ) ;
          ON GOTFOCUS MisPuntos() ;
@@ -2581,7 +2583,7 @@ LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cAction, cToolTip, lBorder, lCli
    lVisible     := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) ) == '.T.' )
    lEnabled     := ( myform:LeaDatoLogic( cName, 'DISABLED', "F" ) == "F" )
    lEnabled     := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) ) == '.T.' )
-   lTrans       := ( myform:LeaDatoLogic( cName, "TRANSPARENT", "F" ) == "T" )
+   lTrans       := ( myform:LeaDatoLogic( cName, "TRANSPARENT", "T" ) == "T" )
    nHelpId      := Val( myform:LeaDato( cName, 'HELPID', '0' ) )
    aBackColor   := myform:LeaDato( cName, 'BACKCOLOR', 'NIL' )
    aBackColor   := myform:Clean( myform:LeaDato_Oop( cName, 'BACKCOLOR', aBackColor ) )

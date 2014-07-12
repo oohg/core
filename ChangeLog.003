@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog.003,v 1.3 2014-06-07 02:08:02 fyurisich Exp $
+ * $Id: ChangeLog.003,v 1.4 2014-07-12 15:29:21 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -3272,7 +3272,7 @@
        the browse without entering append mode when using FULLMOVE.
    * source/h_xbrowse.prg
      + Added DATA RefreshType.
-     * Modified EditItem_B method to support NOFREFRESH clause.
+     * Modified EditItem_B method to support NOREFRESH clause.
      
 2012-03-08 22:15 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_browse.prg
