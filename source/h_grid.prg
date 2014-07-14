@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.256 2014-07-07 01:51:43 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.257 2014-07-14 21:35:17 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -794,11 +794,22 @@ Return bRet
 *--------------------------------------------------------------------------*
 METHOD AppendItem() CLASS TGrid
 *--------------------------------------------------------------------------*
-   ::lAppendMode := .T.
-   ::InsertBlank( ::ItemCount + 1 )
-   ::Value := ::ItemCount
-   ::Events_Enter()
-   ::lAppendMode := .F.
+   IF ! ::lNestedEdit
+      ::lNestedEdit := .T.
+      ::cText := ""
+      ::lAppendMode := .T.
+      ::InsertBlank( ::ItemCount + 1 )
+      ::Value := ::ItemCount
+      If ::FullMove
+         ::EditGrid()
+      ElseIf ::InPlace
+         ::EditAllCells()
+      Else
+         ::EditItem()
+      EndIf
+      ::lAppendMode := .F.
+      ::lNestedEdit := .F.
+   EndIf
 Return Nil
 
 *--------------------------------------------------------------------------*
@@ -847,6 +858,7 @@ Local lRet
          EndIf
 
          If ! lRet
+            _OOHG_Eval( ::OnAbortEdit, 0, 0 )
             Exit
          EndIf
       EndIf
@@ -1180,7 +1192,7 @@ METHOD EditItem() CLASS TGrid
 Local nItem, aItems, nColumn
    nItem := ::FirstSelectedItem
    If nItem == 0
-      Return Nil
+      Return .F.
    EndIf
 
    aItems := ::Item( nItem )
@@ -1211,7 +1223,7 @@ Local nItem, aItems, nColumn
       _OOHG_Eval( ::OnEditCell, nItem, 0 )
       _ClearThisCellInfo()
    EndIf
-Return Nil
+Return Empty( aItems )
 
 *-----------------------------------------------------------------------------*
 METHOD EditItem2( nItem, aItems, aEditControls, aMemVars, cTitle ) CLASS TGrid
@@ -2437,20 +2449,18 @@ Return Nil
 *-----------------------------------------------------------------------------*
 METHOD Events_Enter() CLASS TGrid
 *-----------------------------------------------------------------------------*
-   ::cText := ""
-   If ! ::AllowEdit
-      ::DoEvent( ::OnEnter, "ENTER" )
-   ElseIf ::FullMove
-      ::EditGrid()
-   ElseIf ::InPlace
-      If ! ::lNestedEdit
-         ::lNestedEdit := .T.
-         ::EditAllCells()
-         ::lNestedEdit := .F.
-      EndIf
-   ElseIf ! ::lNestedEdit
+   If ! ::lNestedEdit
       ::lNestedEdit := .T.
-      ::EditItem()
+      ::cText := ""
+      If ! ::AllowEdit
+         ::DoEvent( ::OnEnter, "ENTER" )
+      ElseIf ::FullMove
+         ::EditGrid()
+      ElseIf ::InPlace
+         ::EditAllCells()
+      Else
+         ::EditItem()
+      EndIf
       ::lNestedEdit := .F.
    EndIf
 Return Nil
@@ -3175,10 +3185,22 @@ RETURN ListViewGetMultiSel( ::hWnd )
 *--------------------------------------------------------------------------*
 METHOD AppendItem() CLASS TGridMulti
 *--------------------------------------------------------------------------*
-   ::lAppendMode := .T.
-   ::InsertBlank( ::ItemCount + 1 )
-   ::Value := { ::ItemCount }
-   ::Events_Enter()
+   If ! ::lNestedEdit
+      ::lNestedEdit := .T.
+      ::cText := ""
+      ::lAppendMode := .T.
+      ::InsertBlank( ::ItemCount + 1 )
+      ::Value := { ::ItemCount }
+      If ::FullMove
+         ::EditGrid()
+      ElseIf ::InPlace
+         ::EditAllCells()
+      Else
+         ::EditItem()
+      EndIf
+      ::lAppendMode := .F.
+      ::lNestedEdit := .F.
+   EndIf
 Return Nil
 
 *--------------------------------------------------------------------------*
@@ -3564,10 +3586,16 @@ RETURN { ::nRowPos, ::nColPos }
 *--------------------------------------------------------------------------*
 METHOD AppendItem() CLASS TGridByCell
 *--------------------------------------------------------------------------*
-   ::lAppendMode := .T.
-   ::InsertBlank( ::ItemCount + 1 )
-   ::Value := { ::ItemCount, 1 }
-   ::Events_Enter()
+   If ! ::lNestedEdit
+      ::lNestedEdit := .T.
+      ::cText := ""
+      ::lAppendMode := .T.
+      ::InsertBlank( ::ItemCount + 1 )
+      ::Value := { ::ItemCount, 1 }
+      ::EditGrid()
+      ::lAppendMode := .F.
+      ::lNestedEdit := .F.
+   EndIf
 Return Nil
 
 *--------------------------------------------------------------------------*

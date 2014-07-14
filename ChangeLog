@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.1322 2014-07-14 21:20:24 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1323 2014-07-14 21:35:17 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,9 +7,27 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-07-14 18:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Previous entry corrected.
+   * source/h_grid.prg
+     ! Methods AppendItem of TGrid, TGridMulti and TGridByCell
+       leave a blank row and execute ON ENTER event procedure if
+       ALLOWEDIT is .F.
+     * Methods AppendItem of TGrid, TGridMulti and TGridByCell
+       will now add and edit a new row even if ALLOWEDIT is .F.
+     * Methods AppendItem of TGrid, TGridMulti and TGridByCell
+       will now prevent recursive calls.
+     * Method Events_Enter of TGrid will now prevent recursive
+       calls when ALLOWEDIT is .F. or FULLMOVE is .T.
+     * TGrid:EditGrid() evaluates ON ABORTEDIT event procedure
+       when edition is aborted.
+     * TGrid:EditItem() returns .F. if edition is aborted or .F. if not.
+
 2014-07-14 18:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ide/prgs/intfocop.prg
      ! RTE when changing form's font size.
+     ; Thanks to Ricardo Sassy for this fix.
    * ide/prgs/formedit.prg
      * Format.
      ! NOSIZE clause in DEFINE WINDOW was read as (font) SIZE.
@@ -22,6 +40,8 @@
    * ide/prgs/saveform.prg
      + Comments.
      ! Default VALUE clause when saving an HYPERLINK control.
+   * include/i_window.ch
+     * FONT and SIZE clauses are now independent.
 
 2014-07-12 12:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ide/prgs/formedit.prg
