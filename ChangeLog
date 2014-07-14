@@ -1,11 +1,27 @@
 /*
- * $Id: ChangeLog,v 1.1321 2014-07-12 15:29:21 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1322 2014-07-14 21:20:24 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-07-14 18:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/prgs/intfocop.prg
+     ! RTE when changing form's font size.
+   * ide/prgs/formedit.prg
+     * Format.
+     ! NOSIZE clause in DEFINE WINDOW was read as (font) SIZE.
+       Functions LeaXXXXXX() now search for key words and names
+       surrounded by spaces.
+     + Comments.
+     * Control inspector now shows only whole rows.
+     * Method Clean no longer deletes ' and ".
+     % Some code.
+   * ide/prgs/saveform.prg
+     + Comments.
+     ! Default VALUE clause when saving an HYPERLINK control.
 
 2014-07-12 12:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ide/prgs/formedit.prg

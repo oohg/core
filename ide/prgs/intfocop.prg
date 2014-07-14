@@ -1,5 +1,5 @@
 /*
- * $Id: intfocop.prg,v 1.6 2014-07-09 21:41:05 fyurisich Exp $
+ * $Id: intfocop.prg,v 1.7 2014-07-14 21:20:24 fyurisich Exp $
  */
 
 #include 'oohg.ch'
@@ -100,7 +100,7 @@ LOCAL cName, aFont, nRed, nGreen, nBlue
       ENDIF
       IF aFont[2] > 0
          myForm:nFFontSize := aFont[2]
-         GetFormObject( "Form_1" ):cFontSize := aFont[2]
+         GetFormObject( "Form_1" ):nFontSize := aFont[2]
       ENDIF
       nRed := aFont[5,1]
       nGreen := aFont[5,2]

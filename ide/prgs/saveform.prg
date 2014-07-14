@@ -1,23 +1,19 @@
 /*
- * $Id: saveform.prg,v 1.10 2014-07-09 21:41:05 fyurisich Exp $
+ * $Id: saveform.prg,v 1.11 2014-07-14 21:20:24 fyurisich Exp $
  */
 
 /////#include 'oohg.ch'
-
-/*
-   All keywords, properties and control names must be followed by a space.
-*/
 
 DECLARE WINDOW Form_1
 
 *------------------------------------------------------------------------------*
 METHOD Save( lSaveAs ) CLASS TFORM1
 *------------------------------------------------------------------------------*
-LOCAL i, h, BaseRow, BaseCol, TitleHeight, BorderWidth, BorderHeight, cName, nRow, nCol, nWidth, nHeight, Output, j, p, k, m, jn, npos, mlyform
+LOCAL i, h, BaseRow, BaseCol, TitleHeight, BorderWidth, BorderHeight, cName, nRow, nCol, nWidth, nHeight, Output, j, p, k, m, jn
 LOCAL swpop, lDeleted, archivo, signiv, niv, nnivaux, nSpacing := 3
 
    IF ! IsWindowDefined( Form_1 )
-      RETURN
+      RETURN NIL
    ENDIF
 
    CursorWait()
@@ -25,13 +21,7 @@ LOCAL swpop, lDeleted, archivo, signiv, niv, nnivaux, nSpacing := 3
    DEFINE MAIN MENU OF Form_1
    END MENU
 
-   npos := Rat( '.', myForm:cForm )
-   mlyform := SubStr( myForm:cForm, 1, npos - 1 )
-   nslash := Rat( '\', mlyform )
-   IF nslash > 0
-     mlyform := SubStr( mlyform, nslash + 1 )
-   ENDIF
-   mlyform := Lower( mlyform )
+   mlyform := ::cFname
 
    h := GetFormHandle( myForm:designform )
    BaseRow := GetWindowRow( h )
@@ -42,6 +32,10 @@ LOCAL swpop, lDeleted, archivo, signiv, niv, nnivaux, nSpacing := 3
    BorderWidth := GetBorderWidth()
    BorderHeight := GetBorderHeight()
 
+/*
+   All keywords, properties and control names must be followed by a space.
+*/
+
 //***************************  Header
    Output := '' + CRLF
    Output += '* ooHG IDE Plus form generated code' + CRLF
@@ -50,6 +44,7 @@ LOCAL swpop, lDeleted, archivo, signiv, niv, nnivaux, nSpacing := 3
 
 //***************************  Form start
    Output += 'DEFINE WINDOW TEMPLATE ;' + CRLF
+   // Must be always the second line
    Output += Space( nSpacing ) + 'AT ' + LTrim( Str( BaseRow ) ) + ', ' + LTrim( Str( BaseCol ) ) + ' ;' + CRLF
    Output += IIF( ! Empty( myForm:cfobj ), Space( nSpacing ) + 'OBJ ' + AllTrim( myForm:cfobj ) + " ;" + CRLF, '')
    Output += Space( nSpacing ) + 'WIDTH ' + LTrim( Str( BaseWidth ) ) + ' ;' + CRLF
@@ -1729,6 +1724,7 @@ LOCAL cName, lBlankLine := .F.
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIELD ' + AllTrim( myForm:afield[j] )
       ENDIF
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+      // Do not include HEIGHT
       IF Len( myForm:afontname[j] ) > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + "'" + AllTrim( myForm:afontname[j] ) + "'"
       ENDIF
@@ -1765,7 +1761,6 @@ LOCAL cName, lBlankLine := .F.
 /*
    TODO: Add this properties
 
-   [ HEIGHT <h> ] ;
    [ <bold : BOLD> ] ;
    [ <italic : ITALIC> ] ;
    [ <underline : UNDERLINE> ] ;
@@ -1786,6 +1781,7 @@ LOCAL cName, lBlankLine := .F.
       IF ! Empty( myForm:acobj[j ] )
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( myForm:acobj[j] )
       ENDIF
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
       IF Len( myForm:afield[j] ) > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIELD ' + AllTrim( myForm:afield[j] )
@@ -1808,7 +1804,6 @@ LOCAL cName, lBlankLine := .F.
       IF myForm:areadonly[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'READONLY '
       ENDIF
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
       IF myForm:apassword[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PASSWORD '
       ENDIF
@@ -2124,7 +2119,7 @@ LOCAL cName, lBlankLine := .F.
       IF Len( myForm:avalue[j] ) > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + "'" + AllTrim( myForm:avalue[j] ) + "'"
       ELSE
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + "ooHG Home"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + "'ooHG Home'"
       ENDIF
       IF Len( myForm:aaddress[j] ) > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ADDRESS ' + "'" + AllTrim( myForm:aaddress[j] ) + "'"
@@ -2422,6 +2417,7 @@ LOCAL cName, lBlankLine := .F.
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( myForm:avaluen[j] ) )
       ENDIF
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+      // Do no include HEIGHT
       IF myForm:aspacing[j] > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + "SPACING " + LTrim( Str( myForm:aspacing[j] ) )
       ENDIF
@@ -2460,7 +2456,6 @@ LOCAL cName, lBlankLine := .F.
    [ <horizontal: HORIZONTAL> ] ;
    [ <disabled : DISABLED> ] ;
    [ <rtl : RTL> ] ;
-   [ HEIGHT <height> ] ;
    [ <themed : THEMED> ] ;
    [ BACKGROUND <bkgrnd> ] ;
 */

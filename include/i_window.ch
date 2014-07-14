@@ -1,5 +1,5 @@
 /*
- * $Id: i_window.ch,v 1.53 2014-07-09 02:25:23 fyurisich Exp $
+ * $Id: i_window.ch,v 1.54 2014-07-14 21:20:24 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -243,7 +243,8 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
       [ ON RESTORE <RestoreProcedure> ] ;
       [ ON PAINT <PaintProcedure> ] ;
       [ BACKCOLOR <backcolor> ] ;
-      [ FONT <FontName> SIZE <FontSize> ] ;
+      [ FONT <FontName> ] ;
+      [ SIZE <FontSize> ] ;
       [ FONTCOLOR <FontColor> ] ;
       [ NOTIFYICON <NotifyIcon> ] ;
       [ NOTIFYTOOLTIP <NotifyIconTooltip> ] ;
@@ -413,7 +414,8 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
       [ ON RESTORE <RestoreProcedure> ] ;
       [ ON PAINT <PaintProcedure> ] ;
       [ BACKCOLOR <backcolor> ] ;
-      [ FONT <FontName> SIZE <FontSize> ] ;
+      [ FONT <FontName> ] ;
+      [ SIZE <FontSize> ] ;
       [ FONTCOLOR <FontColor> ] ;
       [ NOTIFYICON <NotifyIcon> ] ;
       [ NOTIFYTOOLTIP <NotifyIconTooltip> ] ;

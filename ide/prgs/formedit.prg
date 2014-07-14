@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.16 2014-07-12 15:29:21 fyurisich Exp $
+ * $Id: formedit.prg,v 1.17 2014-07-14 21:20:24 fyurisich Exp $
  */
 
 /*
@@ -9,6 +9,7 @@
 
 #include "oohg.ch"
 #include "hbclass.ch"
+#include "i_windefs.ch"
 
 #DEFINE CR CHR(13)
 #DEFINE LF CHR(10)
@@ -284,7 +285,7 @@ CLASS TForm1
 ENDCLASS
 
 *------------------------------------------------------------------------------*
-METHOD vd( cItem1, myIde ) CLASS TForm1
+METHOD VD( cItem1, myIde ) CLASS TForm1
 *------------------------------------------------------------------------------*
 local nNumcont:=0
    Public swcursor := 0, myhandle := 0, cFBackcolor := ::cFBackcolor, swkm:=.F., swordenfd:=.F.
@@ -400,7 +401,7 @@ local nNumcont:=0
    form_main:Title := 'ooHG IDE Plus - Form designer'
    form_main:frame_1:Caption := "Form: " + cItem1
    ::myIde:Disable_Button()
-   ::What( citem1 )
+   ::What( cItem1 )
 Return Self
 
 *------------------------------------------------------------------------------*
@@ -435,29 +436,29 @@ METHOD VerifyBar() CLASS TForm1
 RETURN NIL
 
 *------------------------------------------------------------------------------*
-METHOD What( cItem1 ) CLASS TForm1
+METHOD What( cItem ) CLASS TForm1
 *------------------------------------------------------------------------------*
-local npos,npos1,nd
-myform:cForm:=citem1
-npos:=rat(".",myform:cForm)
-npos1:=rat("\",myform:cForm)
-nd:=1
-if npos1=0
-   npos1:=1
-   nd:=0
-endif
-myform:cFname:=substr(myform:cForm,npos1+nd,npos-npos1-nd)
-myform:cFname:=lower(myform:cFname)
-myform:lsstat:=.F.
-cvccontrols.control_30.visible:=.F.
-form_main:butt_status:value:=.F.
-if file(cItem1)
-   myform:open(cItem1)
-else
-   myform:new()
-endif
-cursorarrow()
-return
+LOCAL nPos, cName
+
+   ::cForm := cItem
+   nPos := RAt( '\', cItem )
+   cName := SubStr( cItem, nPos + 1 )
+   nPos := RAt( ".", cName )
+   IF nPos > 0
+      cName := SubStr( cName, 1, nPos - 1 )
+   ENDIF
+   ::cFname := Lower( cName )
+
+   ::lsStat := .F.
+   cvcControls.control_30.Visible := .F.
+   Form_Main:butt_status:Value := .F.
+   IF File( cItem )
+      ::Open( cItem )
+   ELSE
+      ::New()
+   ENDIF
+   CursorArrow()
+RETURN
 
 *------------------------------------------------------------------------------*
 METHOD IniArray( nform, ncontrolwl, controlname, ctypectrl, noanade ) CLASS TForm1
@@ -1324,14 +1325,16 @@ LOCAL i, j, nContlin, cForma, nStart, nEnd
    nContlin := MLCount( cForma )
 
    FOR i := 1 TO nContlin
-      aAdd( myform:aline, MemoLine( cForma, 800, i ) )
+      aAdd( myform:aline, ' ' + MemoLine( cForma, 800, i ) )
       IF myform:aline[i] # NIL
          IF At( "DEFINE WINDOW", myform:aline[i] ) # 0 .OR. ( At( "@ ", myform:aline[i] ) > 0 .AND. At( ",", myform:aline[i] ) > 0 )
             myform:ncontrolw ++
             IF At( "WINDOW", myform:aline[i] ) > 0
+               // Form, after WINDOW should come TEMPLATE, but everything is accepted and ignored
                nStart := At( "WINDOW", myform:aline[i] ) + 7
                nEnd := Len( myform:aline[i] )
             ELSE
+               // Control, skip nCol
                nStart := At( ',', myform:aline[i] ) + 1
                FOR j := nStart TO Len( myform:aline[i] )
                   // Stop at the first letter
@@ -1339,6 +1342,7 @@ LOCAL i, j, nContlin, cForma, nStart, nEnd
                      EXIT
                   ENDIF
                NEXT j
+               // Skip control type
                nStart := j
                FOR j := nStart TO Len( myform:aline[i] )
                   // Stop at the first space
@@ -1348,6 +1352,7 @@ LOCAL i, j, nContlin, cForma, nStart, nEnd
                NEXT j
                nEnd := j
             ENDIF
+            // Get name
             cvcControl := SubStr( myform:aline[i], nEnd + 1 )
             cvcControl := StrTran( cvcControl, ";", "" )
             cvcControl := StrTran( cvcControl, chr(10), "" )
@@ -1420,7 +1425,8 @@ METHOD New() CLASS TForm1
          CHILD ;
          NOMAXIMIZE NOMINIMIZE ;
          NOSIZE ;
-         BACKCOLOR ::myIde:asystemcolor
+         BACKCOLOR ::myIde:asystemcolor ;
+         ON INIT oListaCon:Height := SetHeightForWholeRows( oListaCon, 18 )
 
          @ 20, 10 GRID ListaCon OBJ oListaCon ;
             WIDTH 280 ;
@@ -1562,7 +1568,8 @@ LOCAL nFWidth, nFHeight
          CHILD ;
          NOMAXIMIZE NOMINIMIZE ;
          NOSIZE ;
-         BACKCOLOR ::myIde:asystemcolor
+         BACKCOLOR ::myIde:asystemcolor ;
+         ON INIT oListaCon:Height := SetHeightForWholeRows( oListaCon, 18 )
 
          @ 20, 10 GRID ListaCon OBJ oListaCon ;
             WIDTH 280 ;
@@ -1900,45 +1907,40 @@ RETURN NIL
 *------------------------------------------------------------------------------*
 METHOD LeaTipo( cName ) CLASS TForm1
 *------------------------------------------------------------------------------*
-local q, r, s, nposcorq, nposa, cregresa, zl
-   cregresa := ''
-***************
+Local q, r, s, cRegresa := '', zi, zl, cvc
+
    cvc := aScan( myform:acontrolw, { |c| Lower( c ) == Lower( cName ) } )
    zi  := IIF( cvc > 0, myform:aspeed[cvc], 1)
    zl  := IIF( cvc > 0, myform:anumber[cvc], Len( myform:aline ) )
-**************
-for q:=zi to zl
-     s:=at(upper(cname)+' ',upper(myform:aline[q]))
-     if s>0
-        nposcorq:=s
-        nPosa:=0
-        for r:=1  to nposcorq
-            if asc(substr(myform:aline[q],r,1))>=65
-               cregresa:=alltrim(substr(myform:aline[q],r,nposcorq-r))
-               exit
-            endif
-        next r
-        exit
-     endif
-next q
 
-if upper(cregresa)=='CHECKBUTTON'
-   ctregresa:=myform:LeaDatoLogic(cname,'CAPTION','')
-   if ctregresa='T'
-      cregresa:='CHECKBTN'
-   else
-      cregresa:='PICCHECKBUTT'
-   endif
-endif
-if upper(cregresa)=='BUTTON'
-   ctregresa:=myform:LeaDatoLogic(cname,'CAPTION','')
-   if ctregresa='T'
-      cregresa:='BUTTON'
-   else
-      cregresa:='PICBUTT'
-   endif
-endif
-return cregresa
+   FOR q := zi TO zl
+      s := At( ' ' + Upper( cname ) + ' ', Upper( myform:aline[q] ) )
+      If s > 0
+         FOR r := 1 TO s
+            IF Asc( SubStr( myform:aline[q], r, 1 ) ) >= 65
+               cRegresa := AllTrim( SubStr( myform:aline[q], r, s - r ) )
+               EXIT
+            ENDIF
+         NEXT r
+         EXIT
+      ENDIF
+   NEXT q
+
+   IF Upper( cRegresa ) == 'CHECKBUTTON'
+      IF myform:LeaDatoLogic( cname, 'CAPTION', '' ) ==  'T'
+         cRegresa := 'CHECKBTN'
+      ELSE
+         cRegresa := 'PICCHECKBUTT'
+      ENDIF
+   ENDIF
+   IF Upper( cRegresa ) == 'BUTTON'
+      IF myform:LeaDatoLogic( cname, 'CAPTION', '' ) == 'T'
+         cRegresa := 'BUTTON'
+      ELSE
+         cRegresa := 'PICBUTT'
+      ENDIF
+   ENDIF
+RETURN cRegresa
 
 *------------------------------------------------------------------------------*
 METHOD LeaDato( cName, cPropmet, cDefault ) CLASS TForm1
@@ -1949,17 +1951,17 @@ LOCAL i, sw := 0, zi, cvc, zl, nPos, cFValue
    zi  := IIF( cvc > 0, myform:aspeed[cvc], 1 )
    zl  := IIF( cvc > 0, myform:anumber[cvc], Len( myform:aline ) )
    FOR i := zi TO zl
-      IF At( Upper( cName ) + ' ' , Upper( myform:aline[i] ) ) # 0 .AND. sw == 0  ///// ubica el control en la forma y a partir de ahí busca la propiedad
+      IF At( ' ' + Upper( cName ) + ' ' , Upper( myform:aline[i] ) ) # 0 .AND. sw == 0  ///// ubica el control en la forma y a partir de ahí busca la propiedad
          sw := 1
       ELSE
          IF sw == 1
             IF Len( RTrim( myform:aline[i] ) ) == 0
                RETURN cDefault
             ENDIF
-            nPos := At( Upper( cPropmet ) + ' ', Upper( myform:aline[i] ) )
-            IF nPos > 0 .AND. SubStr( myform:aline[i], nPos - 1, 1) # "."
-               cFValue := SubStr( myform:aline[i], nPos + Len( cPropmet ) )
-               cFValue := RTrim( cFValue )
+            nPos := At( ' ' + Upper( cPropmet ) + ' ', Upper( myform:aline[i] ) )
+            IF nPos > 0
+               cFValue := SubStr( myform:aline[i], nPos + Len( cPropmet ) + 2 )
+               cFValue := RTrim( cFValue)
                IF Right( cFValue, 1 ) == ";"
                   cFValue := SubStr( cFValue, 1, Len( cFValue ) - 1 )
                ENDIF
@@ -1984,16 +1986,16 @@ LOCAL i, sw := 0, zi, cvc, zl, nPos, cFValue
    zi  := IIF( cvc > 0, myform:aspeed[cvc], 1 )
    zl  := IIF( cvc > 0, myform:anumber[cvc], Len( myform:aline ) )
    FOR i := zi TO zl
-      IF At( Upper( cName ) + ' ' , Upper( myform:aline[i] ) ) # 0 .AND. sw == 0
+      IF At( ' ' + Upper( cName ) + ' ' , Upper( myform:aline[i] ) ) # 0 .AND. sw == 0
          sw := 1
       ELSE
          IF sw == 1
             IF Len( RTrim( myform:aline[i] ) ) == 0
                RETURN cDefault
             ENDIF
-            nPos := At( Upper( cPropmet ) + ' ', Upper( myform:aline[i] ) )
+            nPos := At( ' ' + Upper( cPropmet ) + ' ', Upper( myform:aline[i] ) )
             IF nPos > 0
-               cFValue := SubStr( myform:aline[i], nPos + Len( cPropmet ), Len( myform:aline[i] ) )
+               cFValue := SubStr( myform:aline[i], nPos + Len( cPropmet ) + 2 )
                cFValue := RTrim( cFValue)
                IF Right( cFValue, 1 ) == ";"
                   cFValue := SubStr( cFValue, 1, Len( cFValue ) - 1 )
@@ -2015,18 +2017,18 @@ METHOD LeaDatoLogic( cName, cPropmet, cDefault ) CLASS TForm1
 *------------------------------------------------------------------------------*
 LOCAL i, sw := 0, zi, cvc, zl
 
-   cvc := aScan( myform:acontrolw, { |c| Lower( c ) == Lower( cname ) } )
+   cvc := aScan( myform:acontrolw, { |c| Lower( c ) == Lower( cName ) } )
    zi  := IIF( cvc > 0, myform:aspeed[cvc], 1 )
    zl  := IIF( cvc > 0, myform:anumber[cvc], Len( myform:aline ) )
    FOR i := zi TO zl
-      IF At( Upper( cname ) + ' ', Upper( myform:aline[i] ) ) # 0 .AND. sw == 0
+      IF At( ' ' + Upper( cName ) + ' ', Upper( myform:aline[i] ) ) # 0 .AND. sw == 0
          sw := 1
       ELSE
          IF sw == 1
             IF Len( RTrim( myform:aline[i] ) ) == 0
                RETURN cDefault
             ENDIF
-            IF At( Upper( cPropmet ) + ' ', Upper( myform:aline[i] ) ) > 0
+            IF At( ' ' + Upper( cPropmet ) + ' ', Upper( myform:aline[i] ) ) > 0
                RETURN 'T'
             ENDIF
          ENDIF
@@ -2037,102 +2039,117 @@ RETURN cDefault
 *------------------------------------------------------------------------------*
 METHOD LeaRow( cName ) CLASS TForm1
 *------------------------------------------------------------------------------*
-local i,npos,nrow,zi,zl
-cvc:=ascan( myform:acontrolw, { |c| lower( c ) == lower(cname)  } )
-zi:=iif(cvc>0,myform:aspeed[cvc],1)
-zl:=iif(cvc>0,myform:anumber[cvc],len(myform:aline))
-For i:=zi to zl
-    if at(upper(cname)+' ',upper(myform:aline[i]))#0
-       npos:=at(",",myform:aline[i])
-       nrow:=left(myform:aline[i],npos-1)
-       nrow:=strtran(nrow,"@","")
-       return nrow
-    endif
-Next i
-return nrow
+LOCAL i, nPos, nRow := '0', zi, zl, cvc
+
+   cvc := aScan( myform:acontrolw, { |c| Lower( c ) == Lower( cName ) } )
+   zi := IIF( cvc > 0, myform:aspeed[cvc], 1 )
+   zl := IIF( cvc > 0, myform:anumber[cvc], Len( myform:aline ) )
+   FOR i := zi TO zl
+      IF At( ' ' + Upper( cname ) + ' ', Upper( myform:aline[i] ) ) # 0
+         nPos := At( ",", myform:aline[i] )
+         nRow := Left( myform:aline[i], nPos - 1 )
+         nRow := StrTran( nRow, "@", "" )
+         EXIT
+      ENDIF
+   NEXT i
+RETURN nRow
 
 *------------------------------------------------------------------------------*
-METHOD LeaRowF( cname ) CLASS TForm1
+METHOD LeaRowF( cName ) CLASS TForm1
 *------------------------------------------------------------------------------*
-local i,npos1,npos2,nrow,zi,zl
-cvc:=ascan( myform:acontrolw, { |c| lower( c ) == lower(cname)  } )
-zi:=iif(cvc>0,myform:aspeed[cvc],1)
-zl:=iif(cvc>0,myform:anumber[cvc],len(myform:aline))
-For i:=zi to zl
-    if at(upper('WINDOW')+' ',upper(myform:aline[i]))#0
-       npos1:=at("AT",upper(myform:aline[i+1]))
-       npos2:=at(",",myform:aline[i+1])
-       nrow:=substr(myform:aline[i+1],npos1+3,len(myform:aline[i+1])-npos2)
-       return nrow
-    endif
-Next i
-return nrow
+LOCAL i, nPos1, nPos2, nRow := '0', zi, zl, cvc
+
+   cvc := aScan( myform:acontrolw, { |c| Lower( c ) == Lower( cName ) } )
+   zi := IIF( cvc > 0, myform:aspeed[cvc], 1 )
+   zl := IIF( cvc > 0, myform:anumber[cvc], Len( myform:aline ) )
+   FOR i := zi TO zl
+      IF At( ' ' + Upper( 'WINDOW' ) + ' ', Upper( myform:aline[i] ) ) # 0
+         nPos1 := At( "AT", Upper(myform:aline[i + 1] ) )
+         nPos2 := At( ",", myform:aline[i + 1])
+         nRow := SubStr( myform:aline[i + 1], nPos1 + 3, Len( myform:aline[i + 1] ) - nPos2 )
+         EXIT
+      ENDIF
+   NEXT i
+RETURN nRow
 
 *------------------------------------------------------------------------------*
 METHOD LeaCol( cName ) CLASS TForm1
 *------------------------------------------------------------------------------*
-local i,npos,ncol,zi,zl
-cvc:=ascan( myform:acontrolw, { |c| lower( c ) == lower(cname) } )
-zi:=iif(cvc>0,myform:aspeed[cvc],1)
-zl:=iif(cvc>0,myform:anumber[cvc],len(myform:aline))
-For i:=zi to zl
-if at(upper(cname)+' ',upper(myform:aline[i]))#0
-   npos:=at(",",myform:aline[i])
-   ncol:=substr(myform:aline[i],npos+1,4)
-   return ncol
-endif
-Next i
-return ncol
+LOCAL i, nPos, nCol := '0', zi, zl, cvc
+
+   cvc := aScan( myform:acontrolw, { |c| Lower( c ) == Lower( cName ) } )
+   zi := IIF( cvc > 0, myform:aspeed[cvc], 1 )
+   zl := IIF( cvc > 0, myform:anumber[cvc], Len( myform:aline ) )
+   For i := zi TO zl
+      IF At( ' ' + Upper( cName ) + ' ', Upper( myform:aline[i] ) ) # 0
+         nPos := At( ",", myform:aline[i] )
+         nCol := SubStr( myform:aline[i], nPos + 1 )
+         nCol := LTrim( nCol )
+         FOR nPos := 1 TO Len( nCol )
+            // Stop at the first letter
+            IF Asc( SubStr( nCol, nPos, 1 ) ) >= 65
+               EXIT
+            ENDIF
+         NEXT nPos
+         nCol := SubStr( nCol, 1, nPos - 1 )
+         EXIT
+      ENDIF
+   NEXT i
+RETURN nCol
 
 *------------------------------------------------------------------------------*
 METHOD LeaColF( cName ) CLASS TForm1
 *------------------------------------------------------------------------------*
-local i,npos,ncol,zi,zl
-cvc:=ascan( myform:acontrolw, { |c| lower( c ) == lower(cname)  } )
-zi:=iif(cvc>0,myform:aspeed[cvc],1)
-zl:=iif(cvc>0,myform:anumber[cvc],len(myform:aline))
-For i:=zi to zl
-if at(upper('WINDOW')+' ',upper(myform:aline[i]))#0
-   npos:=at(",",myform:aline[i+1])
-   ncol:=substr(myform:aline[i+1],npos+1,4)
-   return ncol
-endif
-Next i
-return ncol
+LOCAL i, nPos, nCol := '0', zi, zl, cvc
+
+   cvc := aScan( myform:acontrolw, { |c| Lower( c ) == Lower( cName ) } )
+   zi := IIF( cvc > 0, myform:aspeed[cvc], 1 )
+   zl := IIF( cvc > 0, myform:anumber[cvc], Len( myform:aline ) )
+   FOR i := zi TO zl
+      IF At( ' ' + Upper( 'WINDOW' ) + ' ', Upper( myform:aline[i] ) ) # 0
+         nPos := At( ",", myform:aline[i + 1] )
+         nCol := RTrim( SubStr( myform:aline[i + 1], nPos + 1 ) )
+         IF Right( nCol, 1 ) == ";"
+            nCol := SubStr( nCol, 1, Len( nCol ) - 1 )
+         ENDIF
+         EXIT
+      ENDIF
+   NEXT i
+RETURN nCol
 
 *------------------------------------------------------------------------------*
-METHOD Clean( cFValue ) CLASS TForm1
+METHOD Clean( cData ) CLASS TForm1
 *------------------------------------------------------------------------------*
-   cFValue := StrTran( cFValue, '"', '')
-   cFValue := StrTran( cFValue, "'", "")
-RETURN cFValue
+LOCAL cIni, cFin
+
+   cIni := Left( cData, 1 )
+   cFin := Right( cData, 1 )
+   IF cIni == "'" .or. cIni == '"'
+      IF cIni == cFin
+         cData := SubStr( cData, 2, Len( cData ) - 2 )
+      ENDIF
+   ENDIF
+RETURN cData
 
 *------------------------------------------------------------------------------*
 METHOD LeaDato_Oop( cName, cPropmet, cDefault ) CLASS TForm1
 *------------------------------------------------------------------------------*
-LOCAL i, mlyform, nposx, zi, zl,npos1, nd, cvc
+LOCAL i, zi, zl, cvc, nPos
 
-   nposx := RAt( '.', myform:cform )
-   npos1 := RAt( '\', myform:cform )
-   nd := 1
-   IF npos1 == 0
-     npos1 := 1
-     nd := 0
-   ENDIF
-   mlyform := SubStr( myform:cForm, npos1 + nd, nposx - npos1 - nd )
-   cvc := aScan( myform:acontrolw, { |c| Lower( c ) == Lower( cName) } )
-   zi := IIF( cvc > 0, myform:aspeed[cvc], 1 )
-   zl := IIF( cvc > 0, myform:anumber[cvc], Len( myform:aline ) )
+   cvc := aScan( ::acontrolw, { |c| Lower( c ) == Lower( cName) } )
+   zi := IIF( cvc > 0, ::aspeed[cvc], 1 )
+   zl := IIF( cvc > 0, ::anumber[cvc], Len( ::aline ) )
    FOR i := zi TO zl
-      IF At( Upper( mlyform ) + '.' + Upper( cname ) + '.' + Upper( cPropmet ), Upper( myform:aline[i] ) ) > 0
-         npos := RAt( '=', myform:aline[i] ) + 1
+      IF At( ' ' + Upper( ::cFname ) + '.' + Upper( cName ) + '.' + Upper( cPropmet ), Upper( ::aline[i] ) ) > 0
+         nPos := RAt( '=', ::aline[i] ) + 1
          IF nPos > 1
-            RETURN RTrim( SubStr( myform:aline[i], npos ) )   
+            RETURN RTrim( SubStr( ::aline[i], nPos ) )
          ENDIF
       ENDIF
    NEXT i
 RETURN cDefault
 
+/*
 *------------------------------------------------------------------------------*
 FUNCTION nTabPages( k )
 *------------------------------------------------------------------------------*
@@ -2142,6 +2159,7 @@ if hb_isNumeric(k)
 endif
 sw:=0
 return nil
+*/
 
 *------------------------------------------------------------------------------*
 FUNCTION MisPuntos()
@@ -2167,6 +2185,7 @@ local i,j
 
 RETURN NIL
 
+// TODO: change all p(Control) functions to methods, change myform: by ::, and myIde by ::myIde
 *------------------------------------------------------------------------------*
 STATIC FUNCTION pTree( i, myIde )
 *------------------------------------------------------------------------------*
@@ -2182,21 +2201,21 @@ LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aFontColor
    cFontName     := myform:Clean( myform:LeaDato( cName, 'FONT', '' ) )
    nFontSize     := Val( myform:LeaDato( cName, 'SIZE', '0' ) )
    aFontColor    := myform:LeaDato( cName, 'FONTCOLOR', 'NIL' )
-   aFontColor    := myform:Clean( myform:LeaDato_Oop( cName, 'FONTCOLOR', aFontColor ) )
+   aFontColor    := myform:LeaDato_Oop( cName, 'FONTCOLOR', aFontColor )
    lBold         := ( myform:LeaDatoLogic( cName, 'BOLD', "F" ) == "T" )
-   lBold         := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lBold         := ( Upper( myform:LeaDato_Oop( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) == '.T.' )
    lItalic       := ( myform:LeaDatoLogic( cName, 'ITALIC', "F" ) == "T" )
-   lItalic       := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTITALIC', IF( lItalic, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lItalic       := ( Upper( myform:LeaDato_Oop( cName, 'FONTITALIC', IF( lItalic, '.T.', '.F.' ) ) ) == '.T.' )
    lUnderline    := ( myform:LeaDatoLogic( cName, 'UNDERLINE', "F" ) == "T" )
-   lUnderline    := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTUNDERLINE', IF( lUnderline, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lUnderline    := ( Upper( myform:LeaDato_Oop( cName, 'FONTUNDERLINE', IF( lUnderline, '.T.', '.F.' ) ) ) == '.T.' )
    lStrikeout    := ( myform:LeaDatoLogic( cName, 'STRIKEOUT', "F" ) == "T" )
-   lStrikeout    := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lStrikeout    := ( Upper( myform:LeaDato_Oop( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) == '.T.' )
    aBackColor    := myform:LeaDato( cName, 'BACKCOLOR', 'NIL' )
-   aBackColor    := myform:Clean( myform:LeaDato_Oop( cName, 'BACKCOLOR', aBackColor ) )
+   aBackColor    := myform:LeaDato_Oop( cName, 'BACKCOLOR', aBackColor )
    lVisible      := ( myform:LeaDatoLogic( cName, 'INVISIBLE', "F" ) == "F" )
-   lVisible      := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lVisible      := ( Upper( myform:LeaDato_Oop( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
    lEnabled      := ( myform:LeaDatoLogic( cName, 'DISABLED', "F" ) == "F" )
-   lEnabled      := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lEnabled      := ( Upper( myform:LeaDato_Oop( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
    cToolTip      := myform:Clean( myform:LeaDato( cName, 'TOOLTIP', '' ) )
    cOnChange     := myform:LeaDato( cName, 'ON CHANGE', '' )
    cOnGotFocus   := myform:LeaDato( cName, 'ON GOTFOCUS', '' )
@@ -2337,23 +2356,23 @@ STATIC FUNCTION pTab(i)
    myform:aimage[i]:=cimage
 
 
-   myform:aenabled[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'ENABLED','.T.')))='.T.',.T.,.F.)
-   myform:avisible[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'VISIBLE','.T.')))='.T.',.T.,.F.)
+   myform:aenabled[i] := iif( upper( myform:LeaDato_Oop( cName, 'ENABLED', '.T.' ) ) == '.T.', .T., .F. )
+   myform:avisible[i] := iif( upper( myform:LeaDato_Oop( cName, 'VISIBLE', '.T.' ) ) == '.T.', .T., .F. )
 
    ocontrol:=GetControlObject( cName,"form_1")
 
-   form_1:&cName:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTITALIC','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontitalic:=myform:afontitalic[i]:=iif(upper( myform:LeaDato_Oop( cName,'FONTITALIC','.F.')) == '.T.',.T.,.F.)
 
 
-   form_1:&cName:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontunderline:=myform:afontunderline[i]:=iif(upper( myform:LeaDato_Oop( cName,'FONTUNDERLINE','.F.')) == '.T.',.T.,.F.)
 
 
-  form_1:&cName:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
+  form_1:&cName:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper( myform:LeaDato_Oop( cName,'FONTSTRIKEOUT','.F.')) == '.T.',.T.,.F.)
 
 
-   form_1:&cName:fontbold:=myform:abold[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTBOLD','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontbold:=myform:abold[i]:=iif(upper( myform:LeaDato_Oop( cName,'FONTBOLD','.F.')) == '.T.',.T.,.F.)
 
-   myform:afontcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName, 'FONTCOLOR', 'NIL'))
+   myform:afontcolor[i]:= myform:LeaDato_Oop( cName, 'FONTCOLOR', 'NIL')
    cfontcolor:=myform:afontcolor[i]
    IF cFontColor # 'NIL'
       Form_1:&cName:Fontcolor := &cFontColor
@@ -2363,7 +2382,7 @@ STATIC FUNCTION pTab(i)
    myform:avalue[i]:=nValue
    myform:aonchange[i]:=conchange
 
-   cuantospage(cName)
+   CuantosPage( cName )
 
 return
 
@@ -2379,30 +2398,30 @@ LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cValue, cFontName, nFontSize, aF
    nCol         := Val( myform:LeaCol( cName ) )
    nWidth       := Val( myform:LeaDato( cName, 'WIDTH', '120' ) )
    nHeight      := Val( myform:LeaDato( cName, 'HEIGHT', '24' ) )
-   cValue       := myform:Clean( myform:LeaDato( cName, 'VALUE', '' ) )
+   cValue       := myform:LeaDato( cName, 'VALUE', '' )
    cFontName    := myform:Clean( myform:LeaDato( cName, 'FONT', '' ) )
    nFontSize    := Val( myform:LeaDato( cName, 'SIZE', '0' ) )
    aFontColor   := myform:LeaDato( cName, 'FONTCOLOR', 'NIL' )
-   aFontColor   := myform:Clean( myform:LeaDato_Oop( cName, 'FONTCOLOR', aFontColor ) )
+   aFontColor   := myform:LeaDato_Oop( cName, 'FONTCOLOR', aFontColor )
    lBold        := ( myform:LeaDatoLogic( cName, 'BOLD', "F" ) == "T" )
-   lBold        := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lBold        := ( Upper( myform:LeaDato_Oop( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) == '.T.' )
    lItalic      := ( myform:LeaDatoLogic( cName, 'ITALIC', "F" ) == "T" )
-   lItalic      := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTITALIC', IF( lItalic, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lItalic      := ( Upper( myform:LeaDato_Oop( cName, 'FONTITALIC', IF( lItalic, '.T.', '.F.' ) ) ) == '.T.' )
    lUnderline   := ( myform:LeaDatoLogic( cName, 'UNDERLINE', "F" ) == "T" )
-   lUnderline   := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTUNDERLINE', IF( lUnderline, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lUnderline   := ( Upper( myform:LeaDato_Oop( cName, 'FONTUNDERLINE', IF( lUnderline, '.T.', '.F.' ) ) ) == '.T.' )
    lStrikeout   := ( myform:LeaDatoLogic( cName, 'STRIKEOUT', "F" ) == "T" )
-   lStrikeout   := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lStrikeout   := ( Upper( myform:LeaDato_Oop( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) == '.T.' )
    aBackColor   := myform:LeaDato( cName, 'BACKCOLOR', 'NIL' )
-   aBackColor   := myform:Clean( myform:LeaDato_Oop( cName, 'BACKCOLOR', aBackColor ) )
+   aBackColor   := myform:LeaDato_Oop( cName, 'BACKCOLOR', aBackColor )
    lVisible     := ( myform:LeaDatoLogic( cName, 'INVISIBLE', "F" ) == "F" )
-   lVisible     := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lVisible     := ( Upper( myform:LeaDato_Oop( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
    lEnabled     := ( myform:LeaDatoLogic( cName, 'DISABLED', "F" ) == "F" )
-   lEnabled     := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lEnabled     := ( Upper( myform:LeaDato_Oop( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
    cToolTip     := myform:Clean( myform:LeaDato( cName, 'TOOLTIP', '' ) )
    cOnChange    := myform:LeaDato( cName, 'ON CHANGE', '' )
    cOnGotfocus  := myform:LeaDato( cName, 'ON GOTFOCUS', '' )
    cOnLostfocus := myform:LeaDato( cName, 'ON LOSTFOCUS', '' )
-   nHelpId      := Val(myform:LeaDato( cName, 'HELPID', '0' ) )
+   nHelpId      := Val( myform:LeaDato( cName, 'HELPID', '0' ) )
    lNoTabStop   := ( myform:LeaDatoLogic( cName, 'NOTABSTOP', 'F' ) == "T" )
 
    // Show control
@@ -2471,7 +2490,7 @@ STATIC FUNCTION pTimer( i, myIde )
    @ nRow,nCol LABEL &cName OF Form_1 WIDTH 100 HEIGHT 20 VALUE cName BORDER ACTION dibuja(this:name)
    myform:avaluen[i]:=ninterval
    myform:aaction[i]:=caction
-   myform:aenabled[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'ENABLED','.T.')))='.T.',.T.,.F.)
+   myform:aenabled[i]:=iif( upper( myform:LeaDato_Oop( cName, 'ENABLED', '.T.' ) ) == '.T.', .T. ,.F. )
 
    ProcessContainersFill( cName, nRow, nCol, myIde )
 return
@@ -2482,59 +2501,59 @@ STATIC FUNCTION pForma(i)
 LOCAL nFWidth, nFHeight
 
    myform:actrltype[i]:='FORM'
-   nfrow:=val(myform:learowf(myform:cfname))
-   nfcol:=val(myform:leacolf(myform:cfname))
-   myform:cftitle:=myform:Clean( myform:LeaDato('DEFINE WINDOW','TITLE',''))
-   nFWidth:=val(myform:LeaDato('DEFINE WINDOW','WIDTH','640'))
-   nFHeight:=val(myform:LeaDato('DEFINE WINDOW','HEIGHT','480'))+gettitleheight()
-   myform:cfobj:=myform:LeaDato('DEFINE WINDOW','OBJ','')
+   nfrow:=val(myform:learowf( myform:cfname ) )
+   nfcol:=val(myform:leacolf( myform:cfname ) )
+   myform:cftitle:=myform:Clean( myform:LeaDato('WINDOW','TITLE',''))
+   nFWidth:=val(myform:LeaDato('WINDOW','WIDTH','640'))
+   nFHeight:=val(myform:LeaDato('WINDOW','HEIGHT','480'))+gettitleheight()
+   myform:cfobj:=myform:LeaDato('WINDOW','OBJ','')
    myform:cficon:=myform:Clean( myform:LeaDato('WINDOW','ICON',''))
-   myform:nfvirtualw:=val(myform:LeaDato('DEFINE WINDOW','VIRTUAL WIDTH','0'))
-   myform:nfvirtualh:=val(myform:LeaDato('DEFINE WINDOW','VIRTUAL HEIGHT','0'))
-   myform:lfmain:=myform:LeaDatoLogic('DEFINE WINDOW',"MAIN","")
-   myform:lfchild:=myform:LeaDatoLogic('DEFINE WINDOW',"CHILD","")
-   myform:lfmodal:=myform:LeaDatoLogic('DEFINE WINDOW',"MODAL","")
-   myform:lfnoshow:=myform:LeaDatoLogic('DEFINE WINDOW',"NOSHOW","")
-   myform:lftopmost:=myform:LeaDatoLogic('DEFINE WINDOW',"TOPMOST","")
-   myform:lfnominimize:=myform:LeaDatoLogic('DEFINE WINDOW',"NOMINIMIZE","")
-   myform:lfnomaximize:=myform:LeaDatoLogic('DEFINE WINDOW',"NOMAXIMIZE","")
-   myform:lfnosize:=myform:LeaDatoLogic('DEFINE WINDOW',"NOSIZE","")
-   myform:lfnosysmenu:=myform:LeaDatoLogic('DEFINE WINDOW',"NOSYSMENU","")
-   myform:lfnocaption:=myform:LeaDatoLogic('DEFINE WINDOW',"NOCAPTION","")
-   myform:lfnoautorelease:=myform:LeaDatoLogic('DEFINE WINDOW',"NOAUTORELEASE","")
-   myform:lfhelpbutton:=myform:LeaDatoLogic('DEFINE WINDOW',"HELPBUTTON","")
-   myform:lffocused:=myform:LeaDatoLogic('DEFINE WINDOW',"FOCUSED","")
-   myform:lfbreak:=myform:LeaDatoLogic('DEFINE WINDOW',"BREAK","")
-   myform:lfsplitchild:=myform:LeaDatoLogic('DEFINE WINDOW',"SPLITCHILD","")
-   myform:lfgrippertext:=myform:LeaDatoLogic('DEFINE WINDOW',"GRIPPERTEXT","")
-   myform:cfoninit:=myform:LeaDato('DEFINE WINDOW','ON INIT','')
-   myform:cfonrelease:=myform:LeaDato('DEFINE WINDOW','ON RELEASE','')
-   myform:cfoninteractiveclose:=myform:LeaDato('DEFINE WINDOW','ON INTERACTIVECLOSE','')
-   myform:cfonmouseclick:=myform:LeaDato('DEFINE WINDOW','ON MOUSECLICK','')
-   myform:cfonmousedrag:=myform:LeaDato('DEFINE WINDOW','ON MOUSEDRAG','')
-   myform:cfonmousemove:=myform:LeaDato('DEFINE WINDOW','ON MOUSEMOVE','')
-   myform:cfonsize:=myform:LeaDato('DEFINE WINDOW','ON SIZE','')
-   myform:cfonpaint:=myform:LeaDato('DEFINE WINDOW','ON PAINT','')
-   myform:cFBackcolor:=myform:LeaDato('DEFINE WINDOW', 'BACKCOLOR', 'NIL')
-   myform:cfcursor:=myform:LeaDato('DEFINE WINDOW','CURSOR','')
+   myform:nfvirtualw:=val(myform:LeaDato('WINDOW','VIRTUAL WIDTH','0'))
+   myform:nfvirtualh:=val(myform:LeaDato('WINDOW','VIRTUAL HEIGHT','0'))
+   myform:lfmain:=myform:LeaDatoLogic('WINDOW',"MAIN","")
+   myform:lfchild:=myform:LeaDatoLogic('WINDOW',"CHILD","")
+   myform:lfmodal:=myform:LeaDatoLogic('WINDOW',"MODAL","")
+   myform:lfnoshow:=myform:LeaDatoLogic('WINDOW',"NOSHOW","")
+   myform:lftopmost:=myform:LeaDatoLogic('WINDOW',"TOPMOST","")
+   myform:lfnominimize:=myform:LeaDatoLogic('WINDOW',"NOMINIMIZE","")
+   myform:lfnomaximize:=myform:LeaDatoLogic('WINDOW',"NOMAXIMIZE","")
+   myform:lfnosize:=myform:LeaDatoLogic('WINDOW',"NOSIZE","")
+   myform:lfnosysmenu:=myform:LeaDatoLogic('WINDOW',"NOSYSMENU","")
+   myform:lfnocaption:=myform:LeaDatoLogic('WINDOW',"NOCAPTION","")
+   myform:lfnoautorelease:=myform:LeaDatoLogic('WINDOW',"NOAUTORELEASE","")
+   myform:lfhelpbutton:=myform:LeaDatoLogic('WINDOW',"HELPBUTTON","")
+   myform:lffocused:=myform:LeaDatoLogic('WINDOW',"FOCUSED","")
+   myform:lfbreak:=myform:LeaDatoLogic('WINDOW',"BREAK","")
+   myform:lfsplitchild:=myform:LeaDatoLogic('WINDOW',"SPLITCHILD","")
+   myform:lfgrippertext:=myform:LeaDatoLogic('WINDOW',"GRIPPERTEXT","")
+   myform:cfoninit:=myform:LeaDato('WINDOW','ON INIT','')
+   myform:cfonrelease:=myform:LeaDato('WINDOW','ON RELEASE','')
+   myform:cfoninteractiveclose:=myform:LeaDato('WINDOW','ON INTERACTIVECLOSE','')
+   myform:cfonmouseclick:=myform:LeaDato('WINDOW','ON MOUSECLICK','')
+   myform:cfonmousedrag:=myform:LeaDato('WINDOW','ON MOUSEDRAG','')
+   myform:cfonmousemove:=myform:LeaDato('WINDOW','ON MOUSEMOVE','')
+   myform:cfonsize:=myform:LeaDato('WINDOW','ON SIZE','')
+   myform:cfonpaint:=myform:LeaDato('WINDOW','ON PAINT','')
+   myform:cFBackcolor:=myform:LeaDato('WINDOW', 'BACKCOLOR', 'NIL')
+   myform:cfcursor:=myform:LeaDato('WINDOW','CURSOR','')
    // Do not force a font when form has none, use OOHG default
-   myform:cFFontName  := myform:Clean( myform:LeaDato( 'DEFINE WINDOW', 'FONT', '' ) )
-   myform:nFFontSize  := Val( myform:LeaDato( 'DEFINE WINDOW', 'SIZE', '0' ) )
-   myform:cFFontColor := myform:LeaDato( 'DEFINE WINDOW', 'FONTCOLOR', 'NIL' )
-   myform:cFFontColor := myform:Clean( myform:LeaDato_Oop( 'DEFINE WINDOW', 'FONTCOLOR', myform:cFFontColor ) )
-   myform:cfnotifyicon:=myform:Clean( myform:LeaDato('DEFINE WINDOW','NOTIFYICON',''))
-   myform:cfnotifytooltip:=myform:Clean( myform:LeaDato('DEFINE WINDOW','NOTIFYTOOLTIP',''))
-   myform:cfonnotifyclick:=myform:LeaDato('DEFINE WINDOW','ON NOTIFYCLICK','')
-   myform:cfongotfocus:=myform:LeaDato('DEFINE WINDOW','ON GOTFOCUS','')
-   myform:cfonlostfocus:=myform:LeaDato('DEFINE WINDOW','ON LOSTFOCUS','')
-   myform:cfonscrollup:=myform:LeaDato('DEFINE WINDOW','ON SCROLLUP','')
-   myform:cfonscrolldown:=myform:LeaDato('DEFINE WINDOW','ON SCROLLDOWN','')
-   myform:cfonscrollright:=myform:LeaDato('DEFINE WINDOW','ON SCROLLRIGHT','')
-   myform:cfonscrollleft:=myform:LeaDato('DEFINE WINDOW','ON SCROLLLEFT','')
-   myform:cfonhscrollbox:=myform:LeaDato('DEFINE WINDOW','ON HSCROLLBOX','')
-   myform:cfonvscrollbox:=myform:LeaDato('DEFINE WINDOW','ON VSCROLLBOX','')
-   myform:cfonmaximize:=myform:LeaDato('DEFINE WINDOW','ON MAXIMIZE','')
-   myform:cfonminimize:=myform:LeaDato('DEFINE WINDOW','ON MINIMIZE','')
+   myform:cFFontName  := myform:Clean( myform:LeaDato( 'WINDOW', 'FONT', '' ) )
+   myform:nFFontSize  := Val( myform:LeaDato( 'WINDOW', 'SIZE', '0' ) )
+   myform:cFFontColor := myform:LeaDato( 'WINDOW', 'FONTCOLOR', 'NIL' )
+   myform:cFFontColor := myform:LeaDato_Oop( 'WINDOW', 'FONTCOLOR', myform:cFFontColor )
+   myform:cfnotifyicon:=myform:Clean( myform:LeaDato('WINDOW','NOTIFYICON',''))
+   myform:cfnotifytooltip:=myform:Clean( myform:LeaDato('WINDOW','NOTIFYTOOLTIP',''))
+   myform:cfonnotifyclick:=myform:LeaDato('WINDOW','ON NOTIFYCLICK','')
+   myform:cfongotfocus:=myform:LeaDato('WINDOW','ON GOTFOCUS','')
+   myform:cfonlostfocus:=myform:LeaDato('WINDOW','ON LOSTFOCUS','')
+   myform:cfonscrollup:=myform:LeaDato('WINDOW','ON SCROLLUP','')
+   myform:cfonscrolldown:=myform:LeaDato('WINDOW','ON SCROLLDOWN','')
+   myform:cfonscrollright:=myform:LeaDato('WINDOW','ON SCROLLRIGHT','')
+   myform:cfonscrollleft:=myform:LeaDato('WINDOW','ON SCROLLLEFT','')
+   myform:cfonhscrollbox:=myform:LeaDato('WINDOW','ON HSCROLLBOX','')
+   myform:cfonvscrollbox:=myform:LeaDato('WINDOW','ON VSCROLLBOX','')
+   myform:cfonmaximize:=myform:LeaDato('WINDOW','ON MAXIMIZE','')
+   myform:cfonminimize:=myform:LeaDato('WINDOW','ON MINIMIZE','')
    myform:lfmain:=iif(myform:lfmain='T',.T.,.F.)
    myform:lfmodal:=iif(myform:lfmodal='T',.T.,.F.)
    myform:lfchild:=iif(myform:lfchild='T',.T.,.F.)
@@ -2580,26 +2599,26 @@ LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cAction, cToolTip, lBorder, lCli
    lBorder      := ( myform:LeaDatoLogic( cName, "BORDER", "F" ) == "T" )
    lClientEdge  := ( myform:LeaDatoLogic( cName, "CLIENTEDGE", "F") == "T" )
    lVisible     := ( myform:LeaDatoLogic( cName, 'INVISIBLE', "F" ) == "F" )
-   lVisible     := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lVisible     := ( Upper(  myform:LeaDato_Oop( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
    lEnabled     := ( myform:LeaDatoLogic( cName, 'DISABLED', "F" ) == "F" )
-   lEnabled     := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lEnabled     := ( Upper(  myform:LeaDato_Oop( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
    lTrans       := ( myform:LeaDatoLogic( cName, "TRANSPARENT", "T" ) == "T" )
    nHelpId      := Val( myform:LeaDato( cName, 'HELPID', '0' ) )
    aBackColor   := myform:LeaDato( cName, 'BACKCOLOR', 'NIL' )
-   aBackColor   := myform:Clean( myform:LeaDato_Oop( cName, 'BACKCOLOR', aBackColor ) )
+   aBackColor   := myform:LeaDato_Oop( cName, 'BACKCOLOR', aBackColor )
    cValue       := myform:Clean( myform:LeaDato( cName, 'VALUE', '' ) )
    cFontName    := myform:Clean( myform:LeaDato( cName, 'FONT', '' ) )
    nFontSize    := Val( myform:LeaDato( cName, 'SIZE', '0' ) )
    aFontColor   := myform:LeaDato( cName, 'FONTCOLOR', 'NIL' )
-   aFontColor   := myform:Clean( myform:LeaDato_Oop( cName, 'FONTCOLOR', aFontColor ) )
+   aFontColor   := myform:LeaDato_Oop( cName, 'FONTCOLOR', aFontColor )
    lBold        := ( myform:LeaDatoLogic( cName, 'BOLD', "F" ) == "T" )
-   lBold        := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lBold        := ( Upper( myform:LeaDato_Oop( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) == '.T.' )
    lItalic      := ( myform:LeaDatoLogic( cName, 'ITALIC', "F" ) == "T" )
-   lItalic      := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTITALIC', IF( lItalic, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lItalic      := ( Upper( myform:LeaDato_Oop( cName, 'FONTITALIC', IF( lItalic, '.T.', '.F.' ) ) ) == '.T.' )
    lUnderline   := ( myform:LeaDatoLogic( cName, 'UNDERLINE', "F" ) == "T" )
-   lUnderline   := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTUNDERLINE', IF( lUnderline, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lUnderline   := ( Upper( myform:LeaDato_Oop( cName, 'FONTUNDERLINE', IF( lUnderline, '.T.', '.F.' ) ) ) == '.T.' )
    lStrikeout   := ( myform:LeaDatoLogic( cName, 'STRIKEOUT', "F" ) == "T" )
-   lStrikeout   := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lStrikeout   := ( Upper( myform:LeaDato_Oop( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) == '.T.' )
    lRightAlign  := ( myform:LeaDatoLogic( cName, "RIGHTALIGN", "F" ) == "T" )
    lCenterAlign := ( myform:LeaDatoLogic( cName, "CENTERALIGN", "F" ) == "T" )
    lAutoSize    := ( myform:LeaDatoLogic( cName, "AUTOSIZE", "F" ) == "T" )
@@ -2699,8 +2718,8 @@ STATIC FUNCTION pPlayer( i, myIde )
       BORDER ;
       ACTION Dibuja( This:Name )
 
-   myform:aenabled[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'ENABLED','.T.')))='.T.',.T.,.F.)
-   myform:avisible[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'VISIBLE','.T.')))='.T.',.T.,.F.)
+   myform:aenabled[i]:=iif(upper( myform:LeaDato_Oop( cName,'ENABLED','.T.')) == '.T.',.T.,.F.)
+   myform:avisible[i]:=iif(upper( myform:LeaDato_Oop( cName,'VISIBLE','.T.')) == '.T.',.T.,.F.)
 
    myform:afile[i]:=cplayfile
    myform:ahelpid[i]:=nhelpid
@@ -2753,19 +2772,19 @@ STATIC FUNCTION pSpinner( i, myIde )
       Form_1:&cName:FontSize   := nFontSize
    ENDIF
 
-   myform:aenabled[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'ENABLED','.T.')))='.T.',.T.,.F.)
-   myform:avisible[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'VISIBLE','.T.')))='.T.',.T.,.F.)
+   myform:aenabled[i]:=iif(upper( myform:LeaDato_Oop( cName,'ENABLED','.T.')) == '.T.',.T.,.F.)
+   myform:avisible[i]:=iif(upper( myform:LeaDato_Oop( cName,'VISIBLE','.T.')) == '.T.',.T.,.F.)
 
-   form_1:&cName:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTITALIC','.F.')))='.T.',.T.,.F.)
-   form_1:&cName:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
-   form_1:&cName:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
-   form_1:&cName:fontbold:=myform:abold[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTBOLD','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontitalic    := myform:afontitalic[i]    := iif( upper( myform:LeaDato_Oop( cName, 'FONTITALIC', '.F.' ) ) == '.T.', .T., .F.)
+   form_1:&cName:fontunderline := myform:afontunderline[i] := iif( upper( myform:LeaDato_Oop( cName, 'FONTUNDERLINE', '.F.' ) ) == '.T.', .T., .F.)
+   form_1:&cName:fontstrikeout := myform:afontstrikeout[i] := iif( upper( myform:LeaDato_Oop( cName, 'FONTSTRIKEOUT', '.F.' ) ) == '.T.', .T., .F.)
+   form_1:&cName:fontbold      := myform:abold[i]          := iif( upper( myform:LeaDato_Oop( cName, 'FONTBOLD', '.F.' ) ) == '.T.', .T., .F.)
 
-   cbackcolor:= myform:abackcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName, 'BACKCOLOR', 'NIL'))
+   cbackcolor:= myform:abackcolor[i] := myform:LeaDato_Oop( cName, 'BACKCOLOR', 'NIL')
    IF cBackColor # 'NIL'
       Form_1:&cName:BackColor := &cBackColor
    ENDIF
-   myform:afontcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName, 'FONTCOLOR', 'NIL'))
+   myform:afontcolor[i]:= myform:LeaDato_Oop( cName, 'FONTCOLOR', 'NIL')
    cfontcolor:=myform:afontcolor[i]
    IF cFontColor # 'NIL'
       Form_1:&cName:Fontcolor := &cFontColor
@@ -2837,12 +2856,12 @@ STATIC FUNCTION pSlider( i, myIde )
          NOTABSTOP
    endif
 
-   myform:aenabled[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'ENABLED','.T.')))='.T.',.T.,.F.)
-   myform:avisible[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'VISIBLE','.T.')))='.T.',.T.,.F.)
+   myform:aenabled[i]:=iif(upper( myform:LeaDato_Oop( cName,'ENABLED','.T.')) == '.T.',.T.,.F.)
+   myform:avisible[i]:=iif(upper( myform:LeaDato_Oop( cName,'VISIBLE','.T.')) == '.T.',.T.,.F.)
 
    form_1:&cName:tooltip:=ctooltip
 
-   myform:abackcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName, 'BACKCOLOR','NIL'))
+   myform:abackcolor[i]:= myform:LeaDato_Oop( cName, 'BACKCOLOR','NIL')
    cbackcolor:=myform:abackcolor[i]
    IF cBackColor # 'NIL'
       Form_1:&cName:BackColor := &cBackColor
@@ -2899,16 +2918,16 @@ STATIC FUNCTION pProgressbar( i, myIde )
       BORDER ;
       ACTION Dibuja( This:Name )
 
-   myform:aenabled[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'ENABLED','.T.')))='.T.',.T.,.F.)
-   myform:avisible[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'VISIBLE','.T.')))='.T.',.T.,.F.)
+   myform:aenabled[i] := iif( upper( myform:LeaDato_Oop( cName, 'ENABLED', '.T.' ) ) == '.T.', .T., .F. )
+   myform:avisible[i] := iif( upper( myform:LeaDato_Oop( cName, 'VISIBLE', '.T.' ) ) == '.T.', .T., .F. )
 
-   myform:afontcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName, 'FONTCOLOR', 'NIL'))
+   myform:afontcolor[i]:= myform:LeaDato_Oop( cName, 'FONTCOLOR', 'NIL')
    cfontcolor:=myform:afontcolor[i]
    IF cFontColor # 'NIL'
       Form_1:&cName:Fontcolor := &cFontColor
    ENDIF
 
-   myform:abackcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName,'BACKCOLOR', 'NIL'))
+   myform:abackcolor[i]:= myform:LeaDato_Oop( cName,'BACKCOLOR', 'NIL')
    cbackcolor:=myform:abackcolor[i]
    IF cBackColor # 'NIL'
       Form_1:&cName:BackColor := &cBackColor
@@ -2980,20 +2999,20 @@ STATIC FUNCTION pRadiogroup( i, myIde )
 
    myform:atransparent[i]:=iif(ltrans='T',.T.,.F.)
 
-   myform:aenabled[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'ENABLED','.T.')))='.T.',.T.,.F.)
-   myform:avisible[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'VISIBLE','.T.')))='.T.',.T.,.F.)
+   myform:aenabled[i]:=iif(upper( myform:LeaDato_Oop( cName,'ENABLED','.T.')) == '.T.',.T.,.F.)
+   myform:avisible[i]:=iif(upper( myform:LeaDato_Oop( cName,'VISIBLE','.T.')) == '.T.',.T.,.F.)
 
-   form_1:&cName:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTITALIC','.F.')))='.T.',.T.,.F.)
-   form_1:&cName:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
-   form_1:&cName:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
-   form_1:&cName:fontbold:=myform:abold[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTBOLD','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontitalic:=myform:afontitalic[i]:=iif(upper( myform:LeaDato_Oop( cName,'FONTITALIC','.F.')) == '.T.',.T.,.F.)
+   form_1:&cName:fontunderline:=myform:afontunderline[i]:=iif(upper( myform:LeaDato_Oop( cName,'FONTUNDERLINE','.F.')) == '.T.',.T.,.F.)
+   form_1:&cName:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper( myform:LeaDato_Oop( cName,'FONTSTRIKEOUT','.F.')) == '.T.',.T.,.F.)
+   form_1:&cName:fontbold:=myform:abold[i]:=iif(upper( myform:LeaDato_Oop( cName,'FONTBOLD','.F.')) == '.T.',.T.,.F.)
 
-   myform:abackcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName, 'BACKCOLOR','NIL'))
+   myform:abackcolor[i]:= myform:LeaDato_Oop( cName, 'BACKCOLOR','NIL')
    cbackcolor:=myform:abackcolor[i]
    IF cBackColor # 'NIL'
       Form_1:&cName:BackColor := &cBackColor
    ENDIF
-   myform:afontcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName, 'FONTCOLOR', 'NIL'))
+   myform:afontcolor[i]:= myform:LeaDato_Oop( cName, 'FONTCOLOR', 'NIL')
    cfontcolor:=myform:afontcolor[i]
    IF cFontColor # 'NIL'
       Form_1:&cName:Fontcolor := &cFontColor
@@ -3065,20 +3084,20 @@ STATIC FUNCTION pEditbox( i, myIde )
       Form_1:&cName:FontSize   := nFontSize
    ENDIF
 
-   myform:aenabled[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'ENABLED','.T.')))='.T.',.T.,.F.)
-   myform:avisible[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'VISIBLE','.T.')))='.T.',.T.,.F.)
+   myform:aenabled[i]:=IIF( Upper( myform:LeaDato_Oop( cName,'ENABLED','.T.')) == '.T.',.T.,.F.)
+   myform:avisible[i]:=iif(upper( myform:LeaDato_Oop( cName,'VISIBLE','.T.')) == '.T.',.T.,.F.)
 
-   form_1:&cName:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTITALIC','.F.')))='.T.',.T.,.F.)
-   form_1:&cName:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
-   form_1:&cName:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
-   form_1:&cName:fontbold:=myform:abold[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTBOLD','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontitalic:=myform:afontitalic[i]:=iif(upper( myform:LeaDato_Oop( cName,'FONTITALIC','.F.')) == '.T.',.T.,.F.)
+   form_1:&cName:fontunderline:=myform:afontunderline[i]:=iif(upper( myform:LeaDato_Oop( cName,'FONTUNDERLINE','.F.')) == '.T.',.T.,.F.)
+   form_1:&cName:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper( myform:LeaDato_Oop( cName,'FONTSTRIKEOUT','.F.')) == '.T.',.T.,.F.)
+   form_1:&cName:fontbold:=myform:abold[i]:=iif(upper( myform:LeaDato_Oop( cName,'FONTBOLD','.F.')) == '.T.',.T.,.F.)
 
-   myform:abackcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName, 'BACKCOLOR', 'NIL'))
+   myform:abackcolor[i]:= myform:LeaDato_Oop( cName, 'BACKCOLOR', 'NIL')
    cbackcolor:=myform:abackcolor[i]
    IF cBackColor # 'NIL'
       Form_1:&cName:BackColor := &cBackColor
    ENDIF
-   myform:afontcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName, 'FONTCOLOR', 'NIL'))
+   myform:afontcolor[i]:= myform:LeaDato_Oop( cName, 'FONTCOLOR', 'NIL')
    cfontcolor:=myform:afontcolor[i]
    IF cFontColor # 'NIL'
       Form_1:&cName:Fontcolor := &cFontColor
@@ -3149,20 +3168,20 @@ STATIC FUNCTION pRichedit( i, myIde )
       Form_1:&cName:FontSize   := nFontSize
    ENDIF
 
-   myform:aenabled[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'ENABLED','.T.')))='.T.',.T.,.F.)
-   myform:avisible[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'VISIBLE','.T.')))='.T.',.T.,.F.)
+   myform:aenabled[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'ENABLED', '.T.' ) ) == '.T.', .T., .F. )
+   myform:avisible[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'VISIBLE', '.T.' ) ) == '.T.', .T., .F. )
 
-   form_1:&cName:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTITALIC','.F.')))='.T.',.T.,.F.)
-   form_1:&cName:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
-   form_1:&cName:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
-   form_1:&cName:fontbold:=myform:abold[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTBOLD','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontitalic:=myform:afontitalic[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'FONTITALIC', '.F.' ) ) == '.T.', .T., .F. )
+   form_1:&cName:fontunderline:=myform:afontunderline[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'FONTUNDERLINE', '.F.' ) ) == '.T.', .T., .F. )
+   form_1:&cName:fontstrikeout:=myform:afontstrikeout[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'FONTSTRIKEOUT', '.F.' ) ) == '.T.', .T., .F. )
+   form_1:&cName:fontbold:=myform:abold[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'FONTBOLD' , '.F.' ) ) == '.T.', .T., .F. )
 
-   myform:abackcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName, 'BACKCOLOR', 'NIL'))
+   myform:abackcolor[i]:=myform:LeaDato_Oop( cName, 'BACKCOLOR', 'NIL')
    cbackcolor:=myform:abackcolor[i]
    IF cBackColor # 'NIL'
       Form_1:&cName:BackColor := &cBackColor
    ENDIF
-   myform:afontcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName, 'FONTCOLOR', 'NIL'))
+   myform:afontcolor[i]:=myform:LeaDato_Oop( cName, 'FONTCOLOR', 'NIL')
    cfontcolor:=myform:afontcolor[i]
    IF cFontColor # 'NIL'
       Form_1:&cName:Fontcolor := &cFontColor
@@ -3199,21 +3218,21 @@ STATIC FUNCTION pFrame( i, myIde )
    cFontName  := myform:Clean( myform:LeaDato( cName, 'FONT', '' ) )
    nFontSize  := Val( myform:LeaDato( cName, 'SIZE', '0' ) )
    aFontColor := myform:LeaDato( cName, 'FONTCOLOR', 'NIL' )
-   aFontColor := myform:Clean( myform:LeaDato_Oop( cName, 'FONTCOLOR', aFontColor ) )
+   aFontColor := myform:LeaDato_Oop( cName, 'FONTCOLOR', aFontColor )
    lBold      := ( myform:LeaDatoLogic( cName, 'BOLD', "F" ) == "T" )
-   lBold      := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lBold      := ( Upper( myform:LeaDato_Oop( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) == '.T.' )
    lItalic    := ( myform:LeaDatoLogic( cName, 'ITALIC', "F" ) == "T" )
-   lItalic    := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTITALIC', IF( lItalic, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lItalic    := ( Upper( myform:LeaDato_Oop( cName, 'FONTITALIC', IF( lItalic, '.T.', '.F.' ) ) ) == '.T.' )
    lUnderline := ( myform:LeaDatoLogic( cName, 'UNDERLINE', "F" ) == "T" )
-   lUnderline := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTUNDERLINE', IF( lUnderline, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lUnderline := ( Upper( myform:LeaDato_Oop( cName, 'FONTUNDERLINE', IF( lUnderline, '.T.', '.F.' ) ) ) == '.T.' )
    lStrikeout := ( myform:LeaDatoLogic( cName, 'STRIKEOUT', "F" ) == "T" )
-   lStrikeout := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lStrikeout := ( Upper( myform:LeaDato_Oop( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) == '.T.' )
    aBackColor := myform:LeaDato( cName, 'BACKCOLOR', 'NIL' )
-   aBackColor := myform:Clean( myform:LeaDato_Oop( cName, 'BACKCOLOR', aBackColor ) )
+   aBackColor := myform:LeaDato_Oop( cName, 'BACKCOLOR', aBackColor )
    lVisible   := ( myform:LeaDatoLogic( cName, 'INVISIBLE', "F" ) == "F" )
-   lVisible   := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lVisible   := ( Upper( myform:LeaDato_Oop( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
    lEnabled   := ( myform:LeaDatoLogic( cName, 'DISABLED', "F" ) == "F" )
-   lEnabled   := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lEnabled   := ( Upper( myform:LeaDato_Oop( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
 
    IF lOpaque
       @ nRow, nCol FRAME &cName OF Form_1 ;
@@ -3350,19 +3369,19 @@ STATIC FUNCTION pBrowse( i, myIde )
       Form_1:&cName:FontSize   := nFontSize
    ENDIF
 
-   myform:aenabled[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'ENABLED','.T.')))='.T.',.T.,.F.)
-   myform:avisible[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'VISIBLE','.T.')))='.T.',.T.,.F.)
+   myform:aenabled[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'ENABLED', '.T.' ) ) == '.T.', .T., .F. )
+   myform:avisible[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'VISIBLE', '.T.' ) ) == '.T.', .T., .F. )
 
-   form_1:&cName:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTITALIC','.F.')))='.T.',.T.,.F.)
-   form_1:&cName:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
-   form_1:&cName:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
-   form_1:&cName:fontbold:=myform:abold[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTBOLD','.F.')))='.T.',.T.,.F.)
-   myform:afontcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName, 'FONTCOLOR', 'NIL'))
+   form_1:&cName:fontitalic:=myform:afontitalic[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'FONTITALIC', '.F.' ) ) == '.T.', .T., .F. )
+   form_1:&cName:fontunderline:=myform:afontunderline[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'FONTUNDERLINE', '.F.' ) ) == '.T.', .T., .F. )
+   form_1:&cName:fontstrikeout:=myform:afontstrikeout[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'FONTSTRIKEOUT', '.F.' ) ) == '.T.', .T., .F. )
+   form_1:&cName:fontbold:=myform:abold[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'FONTBOLD' , '.F.' ) ) == '.T.', .T., .F. )
+   myform:afontcolor[i]:=myform:LeaDato_Oop( cName, 'FONTCOLOR', 'NIL')
    cfontcolor:=myform:afontcolor[i]
    IF cFontColor # 'NIL'
       Form_1:&cName:Fontcolor := &cFontColor
    ENDIF
-   myform:abackcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName, 'BACKCOLOR', 'NIL'))
+   myform:abackcolor[i]:=myform:LeaDato_Oop( cName, 'BACKCOLOR', 'NIL')
    cbackcolor:=myform:abackcolor[i]
    IF cBackColor # 'NIL'
       Form_1:&cName:BackColor := &cBackColor
@@ -3476,20 +3495,20 @@ STATIC FUNCTION pGrid( i, myIde )
       Form_1:&cName:FontSize   := nFontSize
    ENDIF
 
-   myform:aenabled[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'ENABLED','.T.')))='.T.',.T.,.F.)
-   myform:avisible[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'VISIBLE','.T.')))='.T.',.T.,.F.)
+   myform:aenabled[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'ENABLED', '.T.' ) ) == '.T.', .T., .F. )
+   myform:avisible[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'VISIBLE', '.T.' ) ) == '.T.', .T., .F. )
 
-   form_1:&cName:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTITALIC','.F.')))='.T.',.T.,.F.)
-   form_1:&cName:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
-   form_1:&cName:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
-   form_1:&cName:fontbold:=myform:abold[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTBOLD','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontitalic:=myform:afontitalic[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'FONTITALIC', '.F.' ) ) == '.T.', .T., .F. )
+   form_1:&cName:fontunderline:=myform:afontunderline[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'FONTUNDERLINE', '.F.' ) ) == '.T.', .T., .F. )
+   form_1:&cName:fontstrikeout:=myform:afontstrikeout[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'FONTSTRIKEOUT', '.F.' ) ) == '.T.', .T., .F. )
+   form_1:&cName:fontbold:=myform:abold[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'FONTBOLD' , '.F.' ) ) == '.T.', .T., .F. )
 
-   myform:abackcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName, 'BACKCOLOR', 'NIL'))
+   myform:abackcolor[i]:=myform:LeaDato_Oop( cName, 'BACKCOLOR', 'NIL')
    cbackcolor:=myform:abackcolor[i]
    IF cBackColor # 'NIL'
       Form_1:&cName:BackColor := &cBackColor
    ENDIF
-   myform:afontcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName, 'FONTCOLOR', 'NIL'))
+   myform:afontcolor[i]:=myform:LeaDato_Oop( cName, 'FONTCOLOR', 'NIL')
    cfontcolor:=myform:afontcolor[i]
    IF cFontColor # 'NIL'
       Form_1:&cName:Fontcolor := &cFontColor
@@ -3577,20 +3596,20 @@ STATIC FUNCTION pDatepicker( i, myIde )
       Form_1:&cName:FontSize   := nFontSize
    ENDIF
 
-   myform:aenabled[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'ENABLED','.T.')))='.T.',.T.,.F.)
-   myform:avisible[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'VISIBLE','.T.')))='.T.',.T.,.F.)
+   myform:aenabled[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'ENABLED', '.T.' ) ) == '.T.', .T., .F. )
+   myform:avisible[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'VISIBLE', '.T.' ) ) == '.T.', .T., .F. )
 
-   form_1:&cName:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTITALIC','.F.')))='.T.',.T.,.F.)
-   form_1:&cName:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
-   form_1:&cName:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
-   form_1:&cName:fontbold:=myform:abold[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTBOLD','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontitalic:=myform:afontitalic[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'FONTITALIC', '.F.' ) ) == '.T.', .T., .F. )
+   form_1:&cName:fontunderline:=myform:afontunderline[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'FONTUNDERLINE', '.F.' ) ) == '.T.', .T., .F. )
+   form_1:&cName:fontstrikeout:=myform:afontstrikeout[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'FONTSTRIKEOUT', '.F.' ) ) == '.T.', .T., .F. )
+   form_1:&cName:fontbold:=myform:abold[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'FONTBOLD' , '.F.' ) ) == '.T.', .T., .F. )
 
-   myform:abackcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName, 'BACKCOLOR', 'NIL'))
+   myform:abackcolor[i]:=myform:LeaDato_Oop( cName, 'BACKCOLOR', 'NIL')
    cbackcolor:=myform:abackcolor[i]
    IF cBackColor # 'NIL'
       Form_1:&cName:BackColor := &cBackColor
    ENDIF
-   myform:afontcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName, 'FONTCOLOR', 'NIL'))
+   myform:afontcolor[i]:=myform:LeaDato_Oop( cName, 'FONTCOLOR', 'NIL')
    cfontcolor:=myform:afontcolor[i]
    IF cFontColor # 'NIL'
       Form_1:&cName:Fontcolor := &cFontColor
@@ -3617,25 +3636,25 @@ STATIC FUNCTION pMonthcal( i, myIde )
    cObj           := myform:LeaDato( cName, 'OBJ', '' )
    nRow           := Val( myform:LeaRow( cName ) )
    nCol           := Val( myform:LeaCol( cName ) )
-   cValue         := myform:Clean( myform:LeaDato( cName, 'VALUE', '' ) )
+   cValue         :=  myform:LeaDato( cName, 'VALUE', '' )
    cFontName      := myform:Clean( myform:LeaDato( cName, 'FONT', '' ) )
    nFontSize      := Val( myform:LeaDato( cName, 'SIZE', '0' ) )
    aFontColor     := myform:LeaDato( cName, 'FONTCOLOR', 'NIL' )
-   aFontColor     := myform:Clean( myform:LeaDato_Oop( cName, 'FONTCOLOR', aFontColor ) )
+   aFontColor     := myform:LeaDato_Oop( cName, 'FONTCOLOR', aFontColor )
    lBold          := ( myform:LeaDatoLogic( cName, 'BOLD', "F" ) == "T" )
-   lBold          := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lBold          := ( Upper( myform:LeaDato_Oop( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) == '.T.' )
    lItalic        := ( myform:LeaDatoLogic( cName, 'ITALIC', "F" ) == "T" )
-   lItalic        := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTITALIC', IF( lItalic, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lItalic        := ( Upper( myform:LeaDato_Oop( cName, 'FONTITALIC', IF( lItalic, '.T.', '.F.' ) ) ) == '.T.' )
    lUnderline     := ( myform:LeaDatoLogic( cName, 'UNDERLINE', "F" ) == "T" )
-   lUnderline     := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTUNDERLINE', IF( lUnderline, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lUnderline     := ( Upper( myform:LeaDato_Oop( cName, 'FONTUNDERLINE', IF( lUnderline, '.T.', '.F.' ) ) ) == '.T.' )
    lStrikeout     := ( myform:LeaDatoLogic( cName, 'STRIKEOUT', "F" ) == "T" )
-   lStrikeout     := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lStrikeout     := ( Upper( myform:LeaDato_Oop( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) == '.T.' )
    aBackColor     := myform:LeaDato( cName, 'BACKCOLOR', 'NIL' )
-   aBackColor     := myform:Clean( myform:LeaDato_Oop( cName, 'BACKCOLOR', aBackColor ) )
+   aBackColor     := myform:LeaDato_Oop( cName, 'BACKCOLOR', aBackColor )
    lVisible       := ( myform:LeaDatoLogic( cName, 'INVISIBLE', "F" ) == "F" )
-   lVisible       := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lVisible       := ( Upper( myform:LeaDato_Oop( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
    lEnabled       := ( myform:LeaDatoLogic( cName, 'DISABLED', "F" ) == "F" )
-   lEnabled       := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lEnabled       := ( Upper( myform:LeaDato_Oop( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
    cToolTip       := myform:Clean( myform:LeaDato( cName, 'TOOLTIP', '' ) )
    nHelpID        := Val( myform:LeaDato( cName, 'HELPID', '0' ) )
    cOnChange      := myform:LeaDato( cName, 'ON CHANGE', '' )
@@ -3709,21 +3728,21 @@ LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cValue, cAddress, cFontName, nFo
    cFontName    := myform:Clean( myform:LeaDato( cName, 'FONT', '' ) )
    nFontSize    := Val( myform:LeaDato( cName, 'SIZE', '0' ) )
    aFontColor   := myform:LeaDato( cName, 'FONTCOLOR', 'NIL' )
-   aFontColor   := myform:Clean( myform:LeaDato_Oop( cName, 'FONTCOLOR', aFontColor ) )
+   aFontColor   := myform:LeaDato_Oop( cName, 'FONTCOLOR', aFontColor )
    lBold        := ( myform:LeaDatoLogic( cName, 'BOLD', "F" ) == "T" )
-   lBold        := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lBold        := ( Upper( myform:LeaDato_Oop( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) == '.T.' )
    lItalic      := ( myform:LeaDatoLogic( cName, 'ITALIC', "F" ) == "T" )
-   lItalic      := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTITALIC', IF( lItalic, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lItalic      := ( Upper( myform:LeaDato_Oop( cName, 'FONTITALIC', IF( lItalic, '.T.', '.F.' ) ) ) == '.T.' )
    lUnderline   := ( myform:LeaDatoLogic( cName, 'UNDERLINE', "F" ) == "T" )
-   lUnderline   := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTUNDERLINE', IF( lUnderline, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lUnderline   := ( Upper( myform:LeaDato_Oop( cName, 'FONTUNDERLINE', IF( lUnderline, '.T.', '.F.' ) ) ) == '.T.' )
    lStrikeout   := ( myform:LeaDatoLogic( cName, 'STRIKEOUT', "F" ) == "T" )
-   lStrikeout   := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lStrikeout   := ( Upper( myform:LeaDato_Oop( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) == '.T.' )
    aBackColor   := myform:LeaDato( cName, 'BACKCOLOR', 'NIL' )
-   aBackColor   := myform:Clean( myform:LeaDato_Oop( cName, 'BACKCOLOR', aBackColor ) )
+   aBackColor   := myform:LeaDato_Oop( cName, 'BACKCOLOR', aBackColor )
    lVisible     := ( myform:LeaDatoLogic( cName, 'INVISIBLE', "F" ) == "F" )
-   lVisible     := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lVisible     := ( Upper( myform:LeaDato_Oop( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
    lEnabled     := ( myform:LeaDatoLogic( cName, 'DISABLED', "F" ) == "F" )
-   lEnabled     := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lEnabled     := ( Upper( myform:LeaDato_Oop( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
    cToolTip     := myform:Clean( myform:LeaDato( cName, 'TOOLTIP', '' ) )
    nHelpID      := Val( myform:LeaDato( cName, 'HELPID', '0' ) )
    lHandCursor  := ( myform:LeaDatoLogic( cName, 'HANDCURSOR', 'F' ) == 'T' )
@@ -3799,9 +3818,9 @@ LOCAL cName, cObj, nWidth, nHeight, cFile, lAutoplay, lCenter, lTrans, nHelpid, 
    cToolTip  := myform:Clean( myform:LeaDato( cName, 'TOOLTIP', '' ) )
    cToolTip  := myform:Clean( myform:LeaDato_Oop( cName, 'TOOLTIP', cToolTip ) )
    lVisible  := ( myform:LeaDatoLogic( cName, 'INVISIBLE', "F" ) == "F" )
-   lVisible  := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lVisible  := ( Upper( myform:LeaDato_Oop( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
    lEnabled  := ( myform:LeaDatoLogic( cName, 'DISABLED', "F" ) == "F" )
-   lEnabled  := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lEnabled  := ( Upper( myform:LeaDato_Oop( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
 
    // Show control
    @ nRow, nCol LABEL &cName ;
@@ -3842,20 +3861,20 @@ LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cAction, cPicture, lStretch, cTo
    nWidth      := Val( myform:LeaDato( cName, 'WIDTH', '100' ) )
    nHeight     := Val( myform:LeaDato( cName, 'HEIGHT', '100' ) )
    cAction     := myform:LeaDato( cName, 'ACTION', "" )
-   cPicture    := myform:Clean( myform:LeaDato(cName, 'PICTURE', 'IMAGE.BMP' ) )
+   cPicture    := myform:Clean( myform:LeaDato(cName, 'PICTURE', 'IMAGE.BMP' ) )             // TODO: Revisar si es necesario el default
    lStretch    := ( myform:LeaDatoLogic( cName, 'STRETCH', "F") == "T" )
    cToolTip    := myform:Clean( myform:LeaDato( cName, 'TOOLTIP', '' ) )
    cToolTip    := myform:Clean( myform:LeaDato_Oop( cName, 'TOOLTIP', cToolTip ) )
    lBorder     := ( myform:LeaDatoLogic( cName, "BORDER", "F" ) == "T" )
    lClientEdge := ( myform:LeaDatoLogic( cName, "CLIENTEDGE", "F") == "T" )
    lVisible    := ( myform:LeaDatoLogic( cName, 'INVISIBLE', "F" ) == "F" )
-   lVisible    := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lVisible    := ( Upper( myform:LeaDato_Oop( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
    lEnabled    := ( myform:LeaDatoLogic( cName, 'DISABLED', "F" ) == "F" )
-   lEnabled    := ( Upper( myform:Clean( myform:LeaDato_Oop( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) ) == '.T.' )
+   lEnabled    := ( Upper( myform:LeaDato_Oop( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
    lTrans      := ( myform:LeaDatoLogic( cName, "TRANSPARENT", "F" ) == "T" )
    nHelpId     := Val( myform:LeaDato( cName, 'HELPID', '0' ) )
    aBackColor  := myform:LeaDato( cName, 'BACKCOLOR', 'NIL' )
-   aBackColor  := myform:Clean( myform:LeaDato_Oop( cName, 'BACKCOLOR', aBackColor ) )
+   aBackColor  := myform:LeaDato_Oop( cName, 'BACKCOLOR', aBackColor )
 
    // Show control
    @ nRow, nCol LABEL &cName OF Form_1 ;
@@ -3930,8 +3949,8 @@ STATIC FUNCTION pPicButt( i, myIde )
          NOTABSTOP
    ENDIF
 
-   myform:aenabled[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'ENABLED','.T.')))='.T.',.T.,.F.)
-   myform:avisible[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'VISIBLE','.T.')))='.T.',.T.,.F.)
+   myform:aenabled[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'ENABLED', '.T.' ) ) == '.T.', .T., .F. )
+   myform:avisible[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'VISIBLE', '.T.' ) ) == '.T.', .T., .F. )
 
    myform:aPicture[i]:=cPicture
    myform:atooltip[i]:=ctooltip
@@ -3991,8 +4010,8 @@ STATIC FUNCTION pPicCheckButt( i, myIde )
          NOTABSTOP
    endif
 
-   myform:aenabled[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'ENABLED','.T.')))='.T.',.T.,.F.)
-   myform:avisible[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'VISIBLE','.T.')))='.T.',.T.,.F.)
+   myform:aenabled[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'ENABLED', '.T.' ) ) == '.T.', .T., .F. )
+   myform:avisible[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'VISIBLE', '.T.' ) ) == '.T.', .T., .F. )
    myform:atooltip[i]:=ctooltip
     form_1:&cName:tooltip:=ctooltip
 
@@ -4020,7 +4039,7 @@ STATIC FUNCTION pCheckBtn( i, myIde )
    ncol:=val(myform:LeaCol( cName))
    nWidth:=val(myform:LeaDato(cName,'WIDTH','100'))
    nHeight:=val(myform:LeaDato(cName,'HEIGHT','28'))
-   cCaption:=myform:Clean( myform:LeaDato(cName,'CAPTION',cName))
+   cCaption:=myform:Clean( myform:LeaDato(cName,'CAPTION',cName))         // TODO: Revisar si es necesario el default
    cfontname:=myform:Clean( myform:LeaDato(cName,'FONT',''))
    nfontsize:=val(myform:LeaDato(cName,'SIZE','0'))
    ctooltip:=myform:Clean( myform:LeaDato(cName,'TOOLTIP',''))
@@ -4055,20 +4074,20 @@ STATIC FUNCTION pCheckBtn( i, myIde )
       Form_1:&cName:FontSize   := nFontSize
    ENDIF
 
-   myform:aenabled[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'ENABLED','.T.')))='.T.',.T.,.F.)
-   myform:avisible[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'VISIBLE','.T.')))='.T.',.T.,.F.)
+   myform:aenabled[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'ENABLED', '.T.' ) ) == '.T.', .T., .F. )
+   myform:avisible[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'VISIBLE', '.T.' ) ) == '.T.', .T., .F. )
 
-   form_1:&cName:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTITALIC','.F.')))='.T.',.T.,.F.)
-   form_1:&cName:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
-   form_1:&cName:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
-   form_1:&cName:fontbold:=myform:abold[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTBOLD','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontitalic:=myform:afontitalic[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'FONTITALIC', '.F.' ) ) == '.T.', .T., .F. )
+   form_1:&cName:fontunderline:=myform:afontunderline[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'FONTUNDERLINE', '.F.' ) ) == '.T.', .T., .F. )
+   form_1:&cName:fontstrikeout:=myform:afontstrikeout[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'FONTSTRIKEOUT', '.F.' ) ) == '.T.', .T., .F. )
+   form_1:&cName:fontbold:=myform:abold[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'FONTBOLD' , '.F.' ) ) == '.T.', .T., .F. )
 
-   myform:abackcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName, 'BACKCOLOR','NIL'))
+   myform:abackcolor[i]:=myform:LeaDato_Oop( cName, 'BACKCOLOR', 'NIL' )
    cbackcolor:=myform:abackcolor[i]
    IF cBackColor # 'NIL'
       Form_1:&cName:BackColor := &cBackColor
    ENDIF
-   myform:afontcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName, 'FONTCOLOR', 'NIL'))
+   myform:afontcolor[i]:=myform:LeaDato_Oop( cName, 'FONTCOLOR', 'NIL')
    cfontcolor:=myform:afontcolor[i]
    IF cFontColor # 'NIL'
       Form_1:&cName:Fontcolor := &cFontColor
@@ -4140,20 +4159,20 @@ STATIC FUNCTION pComboBox( i, myIde )
       Form_1:&cName:FontSize   := nFontSize
    ENDIF
 
-   myform:aenabled[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'ENABLED','.T.')))='.T.',.T.,.F.)
-   myform:avisible[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'VISIBLE','.T.')))='.T.',.T.,.F.)
+   myform:aenabled[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'ENABLED', '.T.' ) ) == '.T.', .T., .F. )
+   myform:avisible[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'VISIBLE', '.T.' ) ) == '.T.', .T., .F. )
 
-   form_1:&cName:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTITALIC','.F.')))='.T.',.T.,.F.)
-   form_1:&cName:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
-   form_1:&cName:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
-   form_1:&cName:fontbold:=myform:abold[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTBOLD','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontitalic:=myform:afontitalic[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'FONTITALIC', '.F.' ) ) == '.T.', .T., .F. )
+   form_1:&cName:fontunderline:=myform:afontunderline[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'FONTUNDERLINE', '.F.' ) ) == '.T.', .T., .F. )
+   form_1:&cName:fontstrikeout:=myform:afontstrikeout[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'FONTSTRIKEOUT', '.F.' ) ) == '.T.', .T., .F. )
+   form_1:&cName:fontbold:=myform:abold[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'FONTBOLD' , '.F.' ) ) == '.T.', .T., .F. )
 
-   myform:abackcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName, 'BACKCOLOR', 'NIL'))
+   myform:abackcolor[i]:=myform:LeaDato_Oop( cName, 'BACKCOLOR', 'NIL')
    cbackcolor:=myform:abackcolor[i]
    IF cBackColor # 'NIL'
       Form_1:&cName:BackColor := &cBackColor
    ENDIF
-   myform:afontcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName, 'FONTCOLOR', 'NIL'))
+   myform:afontcolor[i]:=myform:LeaDato_Oop( cName, 'FONTCOLOR', 'NIL')
    cfontcolor:=myform:afontcolor[i]
    IF cFontColor # 'NIL'
       Form_1:&cName:Fontcolor := &cFontColor
@@ -4229,20 +4248,20 @@ STATIC FUNCTION pListBox( i, myIde )
       Form_1:&cName:FontSize   := nFontSize
    ENDIF
 
-   myform:aenabled[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'ENABLED','.T.')))='.T.',.T.,.F.)
-   myform:avisible[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'VISIBLE','.T.')))='.T.',.T.,.F.)
+   myform:aenabled[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'ENABLED', '.T.' ) ) == '.T.', .T., .F. )
+   myform:avisible[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'VISIBLE', '.T.' ) ) == '.T.', .T., .F. )
 
 
-  form_1:&cName:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTITALIC','.F.')))='.T.',.T.,.F.)
-  form_1:&cName:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
-  form_1:&cName:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
-  form_1:&cName:fontbold:=myform:abold[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTBOLD','.F.')))='.T.',.T.,.F.)
-   myform:abackcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName, 'BACKCOLOR', 'NIL'))
+  form_1:&cName:fontitalic:=myform:afontitalic[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'FONTITALIC', '.F.' ) ) == '.T.', .T., .F. )
+  form_1:&cName:fontunderline:=myform:afontunderline[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'FONTUNDERLINE', '.F.' ) ) == '.T.', .T., .F. )
+  form_1:&cName:fontstrikeout:=myform:afontstrikeout[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'FONTSTRIKEOUT', '.F.' ) ) == '.T.', .T., .F. )
+  form_1:&cName:fontbold:=myform:abold[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'FONTBOLD' , '.F.' ) ) == '.T.', .T., .F. )
+   myform:abackcolor[i]:=myform:LeaDato_Oop( cName, 'BACKCOLOR', 'NIL')
    cbackcolor:=myform:abackcolor[i]
    IF cBackColor # 'NIL'
       Form_1:&cName:BackColor := &cBackColor
    ENDIF
-   myform:afontcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName, 'FONTCOLOR', 'NIL'))
+   myform:afontcolor[i]:=myform:LeaDato_Oop( cName, 'FONTCOLOR', 'NIL')
    cfontcolor:=myform:afontcolor[i]
    IF cFontColor # 'NIL'
       Form_1:&cName:Fontcolor := &cFontColor
@@ -4282,7 +4301,7 @@ STATIC FUNCTION pCheckBox( i, myIde )
    cfontname:=myform:Clean( myform:LeaDato(cName,'FONT',''))
    nfontsize:=val(myform:LeaDato(cName,'SIZE','0'))
    ctooltip:=myform:Clean( myform:LeaDato(cName,'TOOLTIP',''))
-   cCaption:=myform:Clean( myform:LeaDato(cName,'CAPTION',cName))
+   cCaption:=myform:Clean( myform:LeaDato(cName,'CAPTION',cName))        // TODO: Ver si es necesario el default
    nWidth:=val(myform:LeaDato(cName,'WIDTH','100'))
    nHeight:=val(myform:LeaDato(cName,'HEIGHT','28'))
    cOnchange:=myform:LeaDato(cName,'ON CHANGE','')
@@ -4318,19 +4337,19 @@ STATIC FUNCTION pCheckBox( i, myIde )
 
    myform:atransparent[i]:=iif(ltrans='T',.T.,.F.)
 
-   myform:aenabled[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'ENABLED','.T.')))='.T.',.T.,.F.)
-   myform:avisible[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'VISIBLE','.T.')))='.T.',.T.,.F.)
+   myform:aenabled[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'ENABLED', '.T.' ) ) == '.T.', .T., .F. )
+   myform:avisible[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'VISIBLE', '.T.' ) ) == '.T.', .T., .F. )
 
-   form_1:&cName:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTITALIC','.F.')))='.T.',.T.,.F.)
-   form_1:&cName:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
-   form_1:&cName:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
-   form_1:&cName:fontbold:=myform:abold[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTBOLD','.F.')))='.T.',.T.,.F.)
-   myform:abackcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName, 'BACKCOLOR','NIL'))
+   form_1:&cName:fontitalic:=myform:afontitalic[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'FONTITALIC', '.F.' ) ) == '.T.', .T., .F. )
+   form_1:&cName:fontunderline:=myform:afontunderline[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'FONTUNDERLINE', '.F.' ) ) == '.T.', .T., .F. )
+   form_1:&cName:fontstrikeout:=myform:afontstrikeout[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'FONTSTRIKEOUT', '.F.' ) ) == '.T.', .T., .F. )
+   form_1:&cName:fontbold:=myform:abold[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'FONTBOLD' , '.F.' ) ) == '.T.', .T., .F. )
+   myform:abackcolor[i]:=myform:LeaDato_Oop( cName, 'BACKCOLOR', 'NIL' )
    cbackcolor:=myform:abackcolor[i]
    IF cBackColor # 'NIL'
       Form_1:&cName:BackColor := &cBackColor
    ENDIF
-   myform:afontcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName, 'FONTCOLOR', 'NIL'))
+   myform:afontcolor[i]:=myform:LeaDato_Oop( cName, 'FONTCOLOR', 'NIL')
    cfontcolor:=myform:afontcolor[i]
    IF cFontColor # 'NIL'
       Form_1:&cName:Fontcolor := &cFontColor
@@ -4364,7 +4383,7 @@ STATIC FUNCTION pButton( i, myIde )
    ncol:=val(myform:LeaCol( cName))
 
    ctooltip:=myform:Clean( myform:LeaDato(cName,'TOOLTIP',''))
-   cCaption:=myform:Clean( myform:LeaDato(cName,'CAPTION',cName))
+   cCaption:=myform:Clean( myform:LeaDato(cName,'CAPTION',cName))        // TODO: Ver si es necesario el default
    cPicture:= myform:Clean( myform:LeaDato(cName,'PICTURE',''))
    cAction:=myform:LeaDato(cName,'ACTION',"msginfo('Button pressed')")
    nWidth:=val(myform:LeaDato(cName,'WIDTH','100'))
@@ -4400,22 +4419,22 @@ STATIC FUNCTION pButton( i, myIde )
       Form_1:&cName:FontSize   := nFontSize
    ENDIF
 
-   myform:aenabled[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'ENABLED','.T.')))='.T.',.T.,.F.)
-   myform:avisible[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'VISIBLE','.T.')))='.T.',.T.,.F.)
+   myform:aenabled[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'ENABLED', '.T.' ) ) == '.T.', .T., .F. )
+   myform:avisible[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'VISIBLE', '.T.' ) ) == '.T.', .T., .F. )
 
-   form_1:&cName:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTITALIC','.F.')))='.T.',.T.,.F.)
-   form_1:&cName:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
-   form_1:&cName:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
-   form_1:&cName:fontbold:=myform:abold[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTBOLD','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontitalic:=myform:afontitalic[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'FONTITALIC', '.F.' ) ) == '.T.', .T., .F. )
+   form_1:&cName:fontunderline:=myform:afontunderline[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'FONTUNDERLINE', '.F.' ) ) == '.T.', .T., .F. )
+   form_1:&cName:fontstrikeout:=myform:afontstrikeout[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'FONTSTRIKEOUT', '.F.' ) ) == '.T.', .T., .F. )
+   form_1:&cName:fontbold:=myform:abold[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'FONTBOLD' , '.F.' ) ) == '.T.', .T., .F. )
 
 
-   myform:abackcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName, 'BACKCOLOR','NIL'))
+   myform:abackcolor[i]:=myform:LeaDato_Oop( cName, 'BACKCOLOR', 'NIL' )
 
    cbackcolor:=myform:abackcolor[i]
    IF cBackColor # 'NIL'
       Form_1:&cName:BackColor := &cBackColor
    ENDIF
-   myform:afontcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName, 'FONTCOLOR', 'NIL'))
+   myform:afontcolor[i]:=myform:LeaDato_Oop( cName, 'FONTCOLOR', 'NIL')
    cfontcolor:=myform:afontcolor[i]
    IF cFontColor # 'NIL'
       Form_1:&cName:Fontcolor := &cFontColor
@@ -4539,21 +4558,21 @@ STATIC FUNCTION pTextBox( i, myIde )
 
    myform:anotabstop[i]:=iif(lNoTabStop='T',.T.,.F.)
 
-   myform:aenabled[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'ENABLED','.T.')))='.T.',.T.,.F.)
-   myform:avisible[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'VISIBLE','.T.')))='.T.',.T.,.F.)
+   myform:aenabled[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'ENABLED', '.T.' ) ) == '.T.', .T., .F. )
+   myform:avisible[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'VISIBLE', '.T.' ) ) == '.T.', .T., .F. )
 
-   form_1:&cName:fontitalic:=myform:afontitalic[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTITALIC','.F.')))='.T.',.T.,.F.)
-   form_1:&cName:fontunderline:=myform:afontunderline[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTUNDERLINE','.F.')))='.T.',.T.,.F.)
-   form_1:&cName:fontstrikeout:=myform:afontstrikeout[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTSTRIKEOUT','.F.')))='.T.',.T.,.F.)
-   form_1:&cName:fontbold:=myform:abold[i]:=iif(upper(myform:Clean( myform:LeaDato_Oop( cName,'FONTBOLD','.F.')))='.T.',.T.,.F.)
+   form_1:&cName:fontitalic:=myform:afontitalic[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'FONTITALIC', '.F.' ) ) == '.T.', .T., .F. )
+   form_1:&cName:fontunderline:=myform:afontunderline[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'FONTUNDERLINE', '.F.' ) ) == '.T.', .T., .F. )
+   form_1:&cName:fontstrikeout:=myform:afontstrikeout[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'FONTSTRIKEOUT', '.F.' ) ) == '.T.', .T., .F. )
+   form_1:&cName:fontbold:=myform:abold[i]:=IIF( Upper( myform:LeaDato_Oop( cName, 'FONTBOLD' , '.F.' ) ) == '.T.', .T., .F. )
 
-   myform:abackcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName, 'BACKCOLOR', 'NIL'))
+   myform:abackcolor[i]:=myform:LeaDato_Oop( cName, 'BACKCOLOR', 'NIL')
    cbackcolor:=myform:abackcolor[i]
    IF cBackColor # 'NIL'
       Form_1:&cName:BackColor := &cBackColor
    ENDIF
 
-   myform:afontcolor[i]:=myform:Clean( myform:LeaDato_Oop( cName, 'FONTCOLOR', 'NIL'))
+   myform:afontcolor[i]:=myform:LeaDato_Oop( cName, 'FONTCOLOR', 'NIL')
    cfontcolor:=myform:afontcolor[i]
    IF cFontColor # 'NIL'
       Form_1:&cName:Fontcolor := &cFontColor
@@ -4657,59 +4676,56 @@ Return
 *------------------------------------------------------------------------------*
 STATIC FUNCTION ProcessContainersFill( ControlName, row, col, myIde )
 *------------------------------------------------------------------------------*
-local i , pagecount , z,l,swpagename,pagename,swnoestab
-if .not. myform:swtab
-   return nil
-endif
-controlname:=lower(controlname)
-z:=ascan( myform:acontrolw, { |c| lower( c ) == controlname  } )
-if z=0
-   return nil
-endif
-l:=myform:aspeed[z]
-pagecount:=0
-swpagename:=0
-****  swanadepage:=0
-**** por cada control busca hacia atras a que tab pertenece
-swnoestab:=0
-for i:=l to 1 step -1
+LOCAL i, pagecount, z, l, swpagename, pagename, swnoestab
 
-    if at(upper('END TAB'),upper(myform:aline[i]))#0
-       swnoestab:=1
-       i:=1
-       return nil
-    else
-       if at(upper('DEFINE PAGE '),upper(myform:aline[i]))#0
-          if swpagename=0
-             npos:=at(upper('DEFINE PAGE '),upper(myform:aline[i]))
-             pagename:=alltrim(substr(myform:aline[i],npos+6,len(myform:aline[I])-1))
-             pagename:=myform:Clean( pagename)
-             swpagename:=1
-          endif
-          pagecount++
-       else
-          if at(upper('DEFINE TAB '),upper(myform:aline[i]))#0
-             npos:=at(upper('TAB '),upper(myform:aline[i]))
-             tabname:=alltrim(substr(myform:aline[i],npos+4,len(myform:aline[I])))
-             tabname:=lower(alltrim(substr(tabname,1,len(tabname)-1)))
-             i:=0
-          endif
-
-       endif
-
-
-    endif
-next i
-if pagecount>0 .and. swnoestab=0
-   myform:atabpage[z,1]:= tabname
-   myform:atabpage[z,2]:= pagecount
-   form_1:&tabname:addcontrol(Controlname,pagecount,row,col)
-
-   if myform:abackcolor[z] == 'NIL'
-      alsc := myIde:asystemcoloraux
-      Form_1:&ControlName:BackColor:=alsc
+   if .not. myform:swtab
+      return nil
    endif
-endif
+   controlname:=lower(controlname)
+   z:=ascan( myform:acontrolw, { |c| lower( c ) == controlname  } )
+   if z=0
+      return nil
+   endif
+   l:=myform:aspeed[z]
+   pagecount:=0
+   swpagename:=0
+
+   // por cada control busca hacia atras a que tab pertenece
+   swnoestab:=0
+   for i:=l to 1 step -1
+      if at(upper('END TAB'),upper(myform:aline[i]))#0
+         swnoestab:=1
+         i:=1
+         return nil
+      else
+         if at(upper('DEFINE PAGE '),upper(myform:aline[i]))#0
+            if swpagename=0
+               npos:=at(upper('DEFINE PAGE '),upper(myform:aline[i]))
+               pagename := AllTrim( SubStr( myform:aline[i], npos + 6, Len( myform:aline[I] ) - 1 ) )
+               pagename := myform:Clean( pagename)
+               swpagename:=1
+            endif
+            pagecount++
+         else
+            if at(upper('DEFINE TAB '),upper(myform:aline[i]))#0
+               npos:=at(upper('TAB '),upper(myform:aline[i]))
+               tabname:=alltrim(substr(myform:aline[i],npos+4,len(myform:aline[I])))
+               tabname:=lower(alltrim(substr(tabname,1,len(tabname)-1)))
+               i:=0
+            endif
+         endif
+      endif
+   next i
+
+   if pagecount>0 .and. swnoestab=0
+      myform:atabpage[z,1]:= tabname
+      myform:atabpage[z,2]:= pagecount
+      form_1:&tabname:addcontrol(Controlname,pagecount,row,col)
+      if myform:abackcolor[z] == 'NIL'
+         alsc := myIde:asystemcoloraux
+         Form_1:&ControlName:BackColor:=alsc
+      endif
+   endif
 return nil
 
 *------------------------------------------------------------------------------*
@@ -4720,20 +4736,20 @@ h:=ascan( myform:acontrolw, { |c| lower( c ) == lower(tabname)  } )
 ccaptions:='{'
 cimages:='{'
 for i=1 to len(myform:aline)
-    if at(upper(tabname),upper(myform:aline[i]))#0
+    IF At( ' ' + Upper( tabname ) + ' ', Upper( myform:aline[i] ) ) # 0
        swb:=1
     endif
     if at(upper('DEFINE PAGE '),upper(myform:aline[i]))#0 .and. swb=1
        pagecount++
        npospage:=at('DEFINE PAGE ',upper(myform:aline[i]))
        cpagename:=alltrim(substr(myform:aline[i],npospage+11,len(myform:aline[i])))
-       nrat:=rat(';',cpagename)
-       cpagename:=alltrim(myform:Clean( substr(cpagename,1,nrat-1)))
+       nrat := RAt( ';', cpagename )
+       cpagename := myform:Clean( AllTrim( SubStr( cPageName, 1, nrat - 1 ) ) )
 
        nposimage:=at('IMAGE ',upper(myform:aline[i+1]))
        if nposimage>0
           cimage:=alltrim(substr(myform:aline[i+1],nposimage+6,len(myform:aline[i])))
-          cimage:=myform:Clean( substr(cimage,1,len(myform:aline[i+1])))
+          cimage:=myform:Clean( AllTrim( SubStr( cimage, 1, Len( myform:aline[i + 1] ) ) ) )
        else
           cimage:=''
        endif
@@ -5057,7 +5073,8 @@ wr:=WR+"3) Selecting control with mouse, and press the delete key"+CRLF+CRLF
 endcase
 
 SET INTERACTIVECLOSE ON
-DEFINE WINDOW FAYUDA  obj fayuda  ;
+DEFINE WINDOW FAYUDA ;
+   OBJ FAyuda  ;
    AT 10,10 ;
    WIDTH 620 HEIGHT 460 ;
    TITLE 'Help' ;
@@ -5137,6 +5154,19 @@ RETURN NIL
 FUNCTION cHideControl( x )
 *------------------------------------------------------------------------------*
 RETURN HideWindow( x )
+
+*------------------------------------------------------------------------------*
+FUNCTION SetHeightForWholeRows( oGrid, NumberOfWholeRows )
+*------------------------------------------------------------------------------*
+   LOCAL NeededHeight
+
+   NeededHeight := NumberOfWholeRows * oGrid:ItemHeight() + ;
+                   oGrid:HeaderHeight + ;
+                   IF( IsWindowStyle( oGrid:hWnd, WS_HSCROLL ), ;
+                       GetHScrollBarHeight(), 0 ) + ;
+                   IF( IsWindowExStyle( oGrid:hWnd, WS_EX_CLIENTEDGE ), ;
+                       GetEdgeHeight() * 2, 0 )
+RETURN NeededHeight
 
 #include 'saveform.prg'
 
