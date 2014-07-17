@@ -1,5 +1,5 @@
 /*
- * $Id: propeven.prg,v 1.9 2014-07-11 01:31:50 fyurisich Exp $
+ * $Id: propeven.prg,v 1.10 2014-07-17 02:59:37 fyurisich Exp $
  */
 
 #include 'oohg.ch'
@@ -890,6 +890,7 @@ LOCAL i, cname, j, Title, aLabels, aInitValues, aFormats, aResults, ctipo, jh, n
       ENDIF
 
       :lFsave:=.F.
+      RefreshControlInspector()
    END
 RETURN NIL
 

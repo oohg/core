@@ -1,5 +1,5 @@
 /*
- * $Id: saveform.prg,v 1.11 2014-07-14 21:20:24 fyurisich Exp $
+ * $Id: saveform.prg,v 1.12 2014-07-17 02:59:37 fyurisich Exp $
  */
 
 /////#include 'oohg.ch'
@@ -56,10 +56,10 @@ LOCAL swpop, lDeleted, archivo, signiv, niv, nnivaux, nSpacing := 3
       Output += ' ;' + CRLF + Space( nSpacing ) + 'VIRTUAL HEIGHT ' + LTrim( Str( myForm:nfvirtualh ) )
    ENDIF
    IF Len( myForm:cftitle ) > 0
-      Output += ' ;' + CRLF + Space( nSpacing ) + 'TITLE ' + "'" + AllTrim( myForm:cftitle ) + "'"
+      Output += ' ;' + CRLF + Space( nSpacing ) + 'TITLE ' + StrToStr( myForm:cftitle )
    ENDIF
    IF Len( myForm:cficon ) > 0
-      Output += ' ;' + CRLF + Space( nSpacing ) + 'ICON ' + "'" + AllTrim( myForm:cficon ) + "'"
+      Output += ' ;' + CRLF + Space( nSpacing ) + 'ICON ' + StrToStr( myForm:cficon )
    ENDIF
    Output += IIF( myForm:lfmain, ' ;' + CRLF + Space( nSpacing ) + 'MAIN ', '' )
    Output += IIF( myForm:lfsplitchild, ' ;' + CRLF + Space( nSpacing ) + 'SPLITCHILD ', '' )
@@ -74,7 +74,7 @@ LOCAL swpop, lDeleted, archivo, signiv, niv, nnivaux, nSpacing := 3
    Output += IIF( myForm:lfnosysmenu, ' ;' + CRLF + Space( nSpacing ) + 'NOSYSMENU ', '' )
    Output += IIF( myForm:lfnocaption, ' ;' + CRLF + Space( nSpacing ) + 'NOCAPTION ', '' )
    IF Len( myForm:cfcursor ) > 0
-      Output += ' ;' + CRLF + Space( nSpacing ) + 'CURSOR ' + "'" + AllTrim( myForm:cfcursor ) + "'"
+      Output += ' ;' + CRLF + Space( nSpacing ) + 'CURSOR ' + StrToStr( myForm:cfcursor )
    ENDIF
    IF Len( myForm:cfoninit ) > 0
       Output += ' ;' + CRLF + Space( nSpacing ) + 'ON INIT ' + AllTrim( myForm:cfoninit )
@@ -104,7 +104,7 @@ LOCAL swpop, lDeleted, archivo, signiv, niv, nnivaux, nSpacing := 3
       Output += ' ;' + CRLF + Space( nSpacing ) + 'BACKCOLOR ' + AllTrim( myForm:cfbackcolor )
    ENDIF
    IF Len( myForm:cFFontName ) > 0
-      Output += ' ;' + CRLF + Space( nSpacing ) + 'FONT ' + "'" + AllTrim( myForm:cFFontName ) + "'"
+      Output += ' ;' + CRLF + Space( nSpacing ) + 'FONT ' + StrToStr( myForm:cFFontName )
    ENDIF
    IF myForm:nFFontSize > 0
       Output += ' ;' + CRLF + Space( nSpacing ) + 'SIZE ' + LTrim( Str( myForm:nFFontSize ) )
@@ -114,10 +114,10 @@ LOCAL swpop, lDeleted, archivo, signiv, niv, nnivaux, nSpacing := 3
    ENDIF
    Output += IIF( myForm:lfgrippertext, ' ;' + CRLF + Space( nSpacing ) + 'GRIPPERTEXT ', '' )
    IF Len( myForm:cfnotifyicon ) > 0
-      Output += ' ;' + CRLF + Space( nSpacing ) + 'NOTIFYICON ' + "'" + AllTrim( myForm:cfnotifyicon ) + "'"
+      Output += ' ;' + CRLF + Space( nSpacing ) + 'NOTIFYICON ' + StrToStr( myForm:cfnotifyicon )
    ENDIF
    IF Len( myForm:cfnotifytooltip ) > 0
-      Output += ' ;' + CRLF + Space( nSpacing ) + 'NOTIFYTOOLTIP ' + "'" + AllTrim( myForm:cfnotifytooltip ) + "'"
+      Output += ' ;' + CRLF + Space( nSpacing ) + 'NOTIFYTOOLTIP ' + StrToStr( myForm:cfnotifytooltip )
    ENDIF
    IF Len( myForm:cfonnotifyclick ) > 0
       Output += ' ;' + CRLF + Space( nSpacing ) + 'ON NOTIFYCLICK ' + AllTrim( myForm:cfonnotifyclick )
@@ -195,7 +195,7 @@ LOCAL swpop, lDeleted, archivo, signiv, niv, nnivaux, nSpacing := 3
       Output += CRLF
 
       IF Len( myForm:cscaption ) > 0
-         Output += Space( nSpacing * 2 ) + 'STATUSITEM ' + "'" + AllTrim( myForm:cscaption ) + "'"
+         Output += Space( nSpacing * 2 ) + 'STATUSITEM ' + StrToStr( myForm:cscaption )
       ELSE
          Output += Space( nSpacing * 2 ) + 'STATUSITEM ' + "'" + "'"
       ENDIF
@@ -209,7 +209,7 @@ LOCAL swpop, lDeleted, archivo, signiv, niv, nnivaux, nSpacing := 3
       ENDIF
       IF Len( myForm:csicon ) > 0
          Output += ' ;' + CRLF
-         Output += Space( nSpacing * 3 ) + 'ICON ' + "'" + AllTrim( myForm:csicon ) + "'"
+         Output += Space( nSpacing * 3 ) + 'ICON ' + StrToStr( myForm:csicon )
       ENDIF
       IF myForm:lsflat
          Output += ' ;' + CRLF
@@ -221,7 +221,7 @@ LOCAL swpop, lDeleted, archivo, signiv, niv, nnivaux, nSpacing := 3
       ENDIF
       IF Len( myForm:cstooltip ) > 0
          Output += ' ;' + CRLF
-         Output += Space( nSpacing * 3 ) + 'TOOLTIP ' + "'" + AllTrim( myForm:cstooltip ) + "'"
+         Output += Space( nSpacing * 3 ) + 'TOOLTIP ' + StrToStr( myForm:cstooltip )
       ENDIF
       Output += CRLF
 
@@ -238,7 +238,7 @@ LOCAL swpop, lDeleted, archivo, signiv, niv, nnivaux, nSpacing := 3
          Output += Space( nSpacing * 2 ) + 'ACTION ' + AllTrim( csdateaction ) + ' ;' + CRLF
       ENDIF
       IF Len( csdatetooltip ) > 0
-         Output += Space( nSpacing * 2 ) + 'TOOLTIP ' + '"' + AllTrim( csdatetooltip ) + '" ;' + CRLF
+         Output += Space( nSpacing * 2 ) + 'TOOLTIP ' + StrToStr( csdatetooltip ) + ' ;' + CRLF
       ENDIF
 */
 
@@ -251,7 +251,7 @@ LOCAL swpop, lDeleted, archivo, signiv, niv, nnivaux, nSpacing := 3
          Output += Space( nSpacing * 2 ) + 'ACTION ' + AllTrim( cstimeaction ) + ' ;' + CRLF
       ENDIF
       IF Len( cstimetooltip ) > 0
-         Output += Space( nSpacing * 2 ) + 'TOOLTIP ' + '"' + AllTrim( cstimetooltip ) + '" ;' + CRLF
+         Output += Space( nSpacing * 2 ) + 'TOOLTIP ' + StrToStr( cstimetooltip ) + ' ;' + CRLF
       ENDIF
 */
 
@@ -333,11 +333,11 @@ LOCAL swpop, lDeleted, archivo, signiv, niv, nnivaux, nSpacing := 3
                IF Lower( AllTrim( menues->auxit ) ) == 'separator'
                   Output += Space( nSpacing * ( menues->level + 2 ) ) + 'SEPARATOR ' + CRLF
                ELSE
-                  Output += Space( nSpacing * ( menues->level + 2 ) ) + 'POPUP ' + "'" + AllTrim( menues->auxit ) + "'" + IIF( AllTrim( menues->named ) # '', " NAME " + "'" + AllTrim( menues->named ) + "'", '') + CRLF
+                  Output += Space( nSpacing * ( menues->level + 2 ) ) + 'POPUP ' + StrToStr( menues->auxit ) + IIF( AllTrim( menues->named ) # '', " NAME " + StrToStr( menues->named ), '') + CRLF
                   IF menues->enabled == 'X'
 // This is needed to read DISABLED clause         TODO: Add DISABLE clause to menus
                      Output += Space( nSpacing * ( menues->level + 2 ) ) + "// " + mlyform + '.' + AllTrim( menues->named ) + '.enabled := .F.' + CRLF
-                     Output += Space( nSpacing * ( menues->level + 2 ) ) + "SetProperty('" + mlyform + "', " + "'" + AllTrim( menues->named ) + "', " + "'enabled', .F.)" + CRLF
+                     Output += Space( nSpacing * ( menues->level + 2 ) ) + "SetProperty('" + mlyform + "', " + StrToStr( menues->named ) + ", 'enabled', .F.)" + CRLF
                   ENDIF
                   swpop ++
                ENDIF
@@ -345,19 +345,19 @@ LOCAL swpop, lDeleted, archivo, signiv, niv, nnivaux, nSpacing := 3
                IF Lower( AllTrim( menues->auxit ) ) == 'separator'
                   Output += Space( nSpacing * ( menues->level + 2 ) ) + 'SEPARATOR ' + CRLF
                ELSE
-                  Output += Space( nSpacing * ( menues->level + 2 ) ) + 'ITEM ' + "'" + AllTrim( menues->auxit ) + "'" + ' ACTION ' + IIF( Len( AllTrim( menues->action ) ) # 0, AllTrim( menues->action ), "MsgBox( 'item' )") + ' '
+                  Output += Space( nSpacing * ( menues->level + 2 ) ) + 'ITEM ' + StrToStr( menues->auxit ) + ' ACTION ' + IIF( Len( AllTrim( menues->action ) ) # 0, AllTrim( menues->action ), "MsgBox( 'item' )") + ' '
                   IF AllTrim( menues->named ) == ''
-                     Output += '' + IIF( AllTrim( menues->image ) # '', ' IMAGE ' + "'" + AllTrim( menues->image ) + "'", '') + ' ' + CRLF
+                     Output += '' + IIF( AllTrim( menues->image ) # '', ' IMAGE ' + StrToStr( menues->image ), '') + ' ' + CRLF
                   ELSE
-                     Output += "NAME " + "'" + AllTrim( menues->named ) + "'" + IIF( AllTrim( menues->image ) # '', " IMAGE " + "'" + AllTrim( menues->image ) + "'", '') + CRLF
+                     Output += "NAME " + StrToStr( menues->named ) + IIF( AllTrim( menues->image ) # '', " IMAGE " + StrToStr( menues->image ), '') + CRLF
                      IF menues->checked == 'X'
 // This is needed to read CHECKED clause         TODO: Add CHECKED clause to menus
                         Output += Space( nSpacing * ( menues->level + 2 ) ) + "// " + mlyform + '.' + AllTrim( menues->named ) + '.checked := .F.' + CRLF
-                        Output += Space( nSpacing * ( menues->level + 2 ) ) + "SetProperty('" + mlyform + "', " + "'" + AllTrim( menues->named ) + "', " + "'checked', .F.)" + CRLF
+                        Output += Space( nSpacing * ( menues->level + 2 ) ) + "SetProperty('" + mlyform + "', " + StrToStr( menues->named ) + ", 'checked', .F.)" + CRLF
                      ENDIF
                      IF menues->enabled == 'X'
                         Output += Space( nSpacing * ( menues->level + 2 ) ) + "// " + mlyform + '.' + AllTrim( menues->named ) + '.enabled := .F.' + CRLF
-                        Output += Space( nSpacing * ( menues->level + 2 ) ) + "SetProperty('" + mlyform + "', " + "'" + AllTrim( menues->named ) + "', " + "'enabled', .F.)" + CRLF
+                        Output += Space( nSpacing * ( menues->level + 2 ) ) + "SetProperty('" + mlyform + "', " + StrToStr( menues->named ) + ", 'enabled', .F.)" + CRLF
                      ENDIF
                   ENDIF
                ENDIF
@@ -392,18 +392,18 @@ LOCAL swpop, lDeleted, archivo, signiv, niv, nnivaux, nSpacing := 3
             IF Lower( AllTrim( menues->auxit ) ) == 'separator'
                Output += Space( nSpacing * ( menues->level + 2 ) ) + 'SEPARATOR ' + CRLF
             ELSE
-               Output += Space( nSpacing * ( menues->level + 2 ) ) + 'ITEM ' + "'" + AllTrim( menues->auxit ) + "'" + ' ACTION ' + IIF( Len( AllTrim( menues->action ) ) # 0, AllTrim( menues->action ), "MsgBox( 'item' )")
+               Output += Space( nSpacing * ( menues->level + 2 ) ) + 'ITEM ' + StrToStr( menues->auxit ) + ' ACTION ' + IIF( Len( AllTrim( menues->action ) ) # 0, AllTrim( menues->action ), "MsgBox( 'item' )")
                IF AllTrim( menues->named ) == ''
-                  Output += IIF( Len( AllTrim( menues->image ) ) # 0, ' IMAGE ' + "'" + AllTrim( menues->image ) + "'", '') + CRLF
+                  Output += IIF( Len( AllTrim( menues->image ) ) # 0, ' IMAGE ' + StrToStr( menues->image ), '') + CRLF
                ELSE
-                  Output += " NAME " + "'" + AllTrim( menues->named ) + "'" + IIF( Len( AllTrim( menues->image ) ) # 0, " IMAGE " + "'" + AllTrim( menues->image ) + "'", '') + CRLF
+                  Output += " NAME " + StrToStr( menues->named ) + IIF( Len( AllTrim( menues->image ) ) # 0, " IMAGE " + StrToStr( menues->named ), '') + CRLF
                   IF menues->checked == 'X'
                      Output += Space( nSpacing * ( menues->level + 2 ) ) + "// " + mlyform + '.' + AllTrim( menues->named ) + '.checked := .F.' + CRLF
-                     Output += Space( nSpacing * ( menues->level + 2 ) ) + "SetProperty('" + mlyform + "', " + "'" + AllTrim( menues->named ) + "', " + "'checked', .F.)" + CRLF
+                     Output += Space( nSpacing * ( menues->level + 2 ) ) + "SetProperty('" + mlyform + "', " + StrToStr( menues->named ) + ", 'checked', .F.)" + CRLF
                   ENDIF
                   IF menues->enabled == 'X'
                      Output += Space( nSpacing * ( menues->level + 2 ) ) + "// " + mlyform + '.' + AllTrim( menues->named ) + '.enabled := .F.' + CRLF
-                     Output += Space( nSpacing * ( menues->level + 2 ) ) + "SetProperty('" + mlyform + "', " + "'" + AllTrim( menues->named ) + "', " + "'enabled', .F.)" + CRLF
+                     Output += Space( nSpacing * ( menues->level + 2 ) ) + "SetProperty('" + mlyform + "', " + StrToStr( menues->named ) + ", 'enabled', .F.)" + CRLF
                   ENDIF
                ENDIF
             ENDIF
@@ -426,18 +426,18 @@ LOCAL swpop, lDeleted, archivo, signiv, niv, nnivaux, nSpacing := 3
             IF Lower( AllTrim( menues->auxit ) ) == 'separator'
                   Output += Space( nSpacing * ( menues->level + 2 ) ) + 'SEPARATOR ' + CRLF
             ELSE
-               Output += Space( nSpacing * ( menues->level + 2 ) ) + 'ITEM ' + "'" + AllTrim( menues->auxit ) + "'" + ' ACTION ' + IIF( Len( AllTrim( menues->action ) ) # 0, AllTrim( menues->action ), "MsgBox( 'item' )")
+               Output += Space( nSpacing * ( menues->level + 2 ) ) + 'ITEM ' + StrToStr( menues->auxit ) + ' ACTION ' + IIF( Len( AllTrim( menues->action ) ) # 0, AllTrim( menues->action ), "MsgBox( 'item' )")
                IF AllTrim( menues->named ) == ''
-                  Output += IIF( Len( AllTrim( menues->image ) ) # 0, ' IMAGE ' + "'" + AllTrim( menues->image ) + "'", '') + CRLF
+                  Output += IIF( Len( AllTrim( menues->image ) ) # 0, ' IMAGE ' + StrToStr( menues->image ), '') + CRLF
                ELSE
-                  Output += " NAME " + "'" + AllTrim( menues->named ) + "'" + IIF( Len( AllTrim( menues->image ) ) # 0, " IMAGE " + "'" + AllTrim( menues->image ) + "'", '') + CRLF
+                  Output += " NAME " + StrToStr( menues->named ) + IIF( Len( AllTrim( menues->image ) ) # 0, " IMAGE " + StrToStr( menues->image ), '') + CRLF
                   IF menues->checked == 'X'
                      Output += Space( nSpacing * ( menues->level + 2 ) ) + "// " + mlyform + '.' + AllTrim( menues->named ) + '.checked := .F.' + CRLF
-                     Output += Space( nSpacing * ( menues->level + 2 ) ) + "SetProperty('" + mlyform + "', " + "'" + AllTrim( menues->named ) + "', " + "'checked', .F.)" + CRLF
+                     Output += Space( nSpacing * ( menues->level + 2 ) ) + "SetProperty('" + mlyform + "', " + StrToStr( menues->named ) + ", 'checked', .F.)" + CRLF
                   ENDIF
                   IF menues->enabled == 'X'
                      Output += Space( nSpacing * ( menues->level + 2 ) ) + "// " + mlyform + '.' + AllTrim( menues->named ) + '.enabled := .F.' + CRLF
-                     Output += Space( nSpacing * ( menues->level + 2 ) ) + "SetProperty('" + mlyform + "', " + "'" + AllTrim( menues->named ) + "', " + "'enabled', .F.)" + CRLF
+                     Output += Space( nSpacing * ( menues->level + 2 ) ) + "SetProperty('" + mlyform + "', " + StrToStr( menues->named ) + ", 'enabled', .F.)" + CRLF
                   ENDIF
                ENDIF
             ENDIF
@@ -457,13 +457,13 @@ LOCAL swpop, lDeleted, archivo, signiv, niv, nnivaux, nSpacing := 3
       IF ! Eof()
          Output += Space( nSpacing ) + 'DEFINE TOOLBAR ' + AllTrim( tmytoolb:ctbname ) + ' ;' + CRLF
          Output += Space( nSpacing * 2 ) + 'BUTTONSIZE ' + LTrim( Str( tmytoolb:nwidth ) ) + ', ' + LTrim( Str( tmytoolb:nheight ) )
-         Output += IIF( Len( tmytoolb:cfont ) > 0, ' ;' + CRLF + Space( nSpacing * 2 ) + 'FONT ' + "'" + AllTrim( tmytoolb:cfont ), '' )
+         Output += IIF( Len( tmytoolb:cfont ) > 0, ' ;' + CRLF + Space( nSpacing * 2 ) + 'FONT ' + StrToStr( tmytoolb:cfont ), '' )
          Output += IIF( tmytoolb:nsize > 0, ' ;' + CRLF + Space( nSpacing * 2 ) + 'SIZE ' + LTrim( Str( tmytoolb:nsize ) ), '' )
          Output += IIF( tmytoolb:lbold, ' ;' + CRLF + Space( nSpacing * 2 ) + 'BOLD ', '' )
          Output += IIF( tmytoolb:litalic, ' ;' + CRLF + Space( nSpacing * 2 ) + 'ITALIC ', '' )
          Output += IIF( tmytoolb:lunderline, ' ;' + CRLF + Space( nSpacing * 2 ) + 'UNDERLINE ', '' )
          Output += IIF( tmytoolb:lstrikeout, ' ;' + CRLF + Space( nSpacing * 2 ) + 'STRIKEOUT ', '' )
-         Output += IIF( Len( tmytoolb:ctooltip ) > 0, ' ;' + CRLF + Space( nSpacing * 2 ) + 'TOOLTIP ' + "'" + AllTrim( tmytoolb:ctooltip ) + "'", '' )
+         Output += IIF( Len( tmytoolb:ctooltip ) > 0, ' ;' + CRLF + Space( nSpacing * 2 ) + 'TOOLTIP ' + StrToStr( tmytoolb:ctooltip ), '' )
          Output += IIF( tmytoolb:lflat, ' ;' + CRLF + Space( nSpacing * 2 ) + 'FLAT ', '' )
          Output += IIF( tmytoolb:lbottom, ' ;' + CRLF + Space( nSpacing * 2 ) + 'BOTTOM ', '' )
          Output += IIF( tmytoolb:lrighttext, ' ;' + CRLF + Space( nSpacing * 2 ) + 'RIGHTTEXT ', '' )
@@ -471,9 +471,9 @@ LOCAL swpop, lDeleted, archivo, signiv, niv, nnivaux, nSpacing := 3
          Output += CRLF + CRLF
          DO WHILE ! Eof()
             Output += Space( nSpacing ) + 'BUTTON ' + AllTrim( ddtoolbar->named )
-            Output += ' ;' + CRLF + Space( nSpacing * 2 ) + 'CAPTION ' + "'" + AllTrim( ddtoolbar->item ) + "'"
+            Output += ' ;' + CRLF + Space( nSpacing * 2 ) + 'CAPTION ' + StrToStr( ddtoolbar->item ) 
             IF Len( AllTrim( ddtoolbar->image ) ) > 0
-              Output += ' ;' + CRLF + Space( nSpacing * 2 ) + 'PICTURE ' + "'" + AllTrim( ddtoolbar->image ) + "'"
+              Output += ' ;' + CRLF + Space( nSpacing * 2 ) + 'PICTURE ' + StrToStr( ddtoolbar->image )
             ENDIF
             Output += ' ;' + CRLF + Space( nSpacing * 2 ) + 'ACTION ' + AllTrim( ddtoolbar->ACTION )
             IF ddtoolbar->Separator='X'
@@ -494,7 +494,7 @@ LOCAL swpop, lDeleted, archivo, signiv, niv, nnivaux, nSpacing := 3
                ENDIF
                IF FCount() > 10
                   IF ! Empty( ddtoolbar->tooltip )
-                     Output += ' ;' + CRLF + Space( nSpacing * 2 ) + "TOOLTIP '" + AllTrim( ddtoolbar->tooltip ) + "'"
+                     Output += ' ;' + CRLF + Space( nSpacing * 2 ) + "TOOLTIP " + StrToStr( ddtoolbar->tooltip )
                   ENDIF
                ENDIF
             ENDIF
@@ -537,18 +537,18 @@ LOCAL swpop, lDeleted, archivo, signiv, niv, nnivaux, nSpacing := 3
                   IF Lower( AllTrim( menues->auxit ) ) == 'separator'
                      Output += Space( nSpacing * ( menues->level + 1 ) ) + 'SEPARATOR ' + CRLF
                   ELSE
-                     Output += Space( nSpacing * ( menues->level + 1 ) ) + 'ITEM ' + "'" + AllTrim( menues->auxit ) + "'" + ' ACTION ' + IIF( Len( AllTrim( menues->action ) ) # 0, AllTrim( menues->action ), "MsgBox( 'item' )" )
+                     Output += Space( nSpacing * ( menues->level + 1 ) ) + 'ITEM ' + StrToStr( menues->auxit ) + ' ACTION ' + IIF( Len( AllTrim( menues->action ) ) # 0, AllTrim( menues->action ), "MsgBox( 'item' )" )
                      IF AllTrim( menues->named ) == ''
-                        Output += IIF( Len( AllTrim( menues->image ) ) # 0, ' IMAGE ' + "'" + AllTrim( menues->image ) + "'", '') + CRLF
+                        Output += IIF( Len( AllTrim( menues->image ) ) # 0, ' IMAGE ' + StrToStr( menues->image ), '') + CRLF
                      ELSE
-                        Output += "NAME " + AllTrim( menues->named ) + IIF( Len( AllTrim( menues->image ) ) # 0, ' IMAGE ' + "'" + AllTrim( menues->image ) + "'", '') + CRLF
+                        Output += "NAME " + AllTrim( menues->named ) + IIF( Len( AllTrim( menues->image ) ) # 0, ' IMAGE ' + StrToStr( menues->image ), '') + CRLF
                         IF menues->checked == 'X'
                            Output += Space( nSpacing * ( menues->level + 1 ) ) + "// " + mlyform + '.' + AllTrim(menues->named) + '.checked := .F.' + CRLF
-                           Output += "SetProperty('" + mlyform + "', " + "'" + AllTrim( menues->named ) + "', " + "'checked', .F.)" + CRLF
+                           Output += "SetProperty('" + mlyform + "', " + StrToStr( menues->named ) + ", 'checked', .F.)" + CRLF
                         ENDIF
                         IF menues->enabled == 'X'
                            Output += Space( nSpacing * ( menues->level + 1 ) ) + "// " + mlyform + '.' + AllTrim( menues->named ) + '.enabled := .F.' + CRLF
-                           Output += Space( nSpacing * ( menues->level + 1 ) ) + "SetProperty('" + mlyform + "', " + "'" + AllTrim( menues->named ) + "', " + "'enabled', .F.)" + CRLF
+                           Output += Space( nSpacing * ( menues->level + 1 ) ) + "SetProperty('" + mlyform + "', " + StrToStr( menues->named ) + ", 'enabled', .F.)" + CRLF
                         ENDIF
                      ENDIF
                   ENDIF
@@ -604,13 +604,13 @@ LOCAL swpop, lDeleted, archivo, signiv, niv, nnivaux, nSpacing := 3
             Output += ' ;' + CRLF + Space( nSpacing * 2) + 'VALUE ' + AllTrim( myForm:avalue[j] )
          ENDIF
          IF Len( myForm:afontname[j] ) > 0
-            Output += ' ;' + CRLF + Space( nSpacing * 2) + 'FONT ' + "'" + myForm:afontname[j] + "'"
+            Output += ' ;' + CRLF + Space( nSpacing * 2) + 'FONT ' + StrToStr( myForm:afontname[j] )
          ENDIF
          IF myForm:afontsize[j] > 0
             Output += ' ;' + CRLF + Space( nSpacing * 2) + 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) )
          ENDIF
          IF Len( myForm:atooltip[j] ) > 0
-            Output += ' ;' + CRLF + Space( nSpacing * 2) + 'TOOLTIP ' + "'" + myForm:atooltip[j] + "'"
+            Output += ' ;' + CRLF + Space( nSpacing * 2) + 'TOOLTIP ' + StrToStr( myForm:atooltip[j] )
          ENDIF
          IF myForm:abuttons[j]
             Output += ' ;' + CRLF + Space( nSpacing * 2) + 'BUTTONS '
@@ -648,16 +648,16 @@ LOCAL swpop, lDeleted, archivo, signiv, niv, nnivaux, nSpacing := 3
          acaptions := &cacaptions
          aimage := &caimages
          currentpage := 1
-         Output += Space( nSpacing * 2) + 'DEFINE PAGE ' + "'" + acaptions[currentpage] + "'" + ' ;' + CRLF
-         Output += Space( nSpacing * 3) + 'IMAGE ' + "'" + AllTrim(aimage[currentpage]) + "'" + CRLF
+         Output += Space( nSpacing * 2) + 'DEFINE PAGE ' + StrToStr( acaptions[currentpage] ) + ' ;' + CRLF
+         Output += Space( nSpacing * 3) + 'IMAGE ' + StrToStr( aimage[currentpage] ) + CRLF
          FOR k := 1 TO myForm:ncontrolw
             IF myForm:atabpage[k, 1] # NIL
                IF myForm:atabpage[k, 1] == myForm:acontrolw[j]
                   IF myForm:atabpage[k, 2] # currentpage
                      Output += Space( nSpacing * 2) + 'END PAGE ' + CRLF + CRLF
                      currentpage ++
-                     Output += Space( nSpacing * 2) + 'DEFINE PAGE ' + "'" + acaptions[currentpage] + "'" + ' ;' + CRLF
-                     Output += Space( nSpacing * 3) + 'IMAGE ' + "'" + AllTrim(aimage[currentpage]) + "'" + CRLF
+                     Output += Space( nSpacing * 2) + 'DEFINE PAGE ' + StrToStr( acaptions[currentpage] ) + ' ;' + CRLF
+                     Output += Space( nSpacing * 3) + 'IMAGE ' + StrToStr( aimage[currentpage] ) + CRLF
                   ENDIF
 /*
    TODO: Add this properties
@@ -784,6 +784,22 @@ LOCAL swpop, lDeleted, archivo, signiv, niv, nnivaux, nSpacing := 3
 RETURN NIL
 
 *------------------------------------------------------------------------------*
+STATIC FUNCTION StrToStr( cData )
+*------------------------------------------------------------------------------*
+LOCAL cRet
+
+   IF ! "'" $ cData
+      cRet := "'" + AllTrim( cData ) + "'"
+   ELSEIF ! '"' $ cData
+      cRet := '"' + AllTrim( cData ) + '"'
+   ELSEIF ! '[' $ cData .AND. ! ']' $ cData
+      cRet := '[' + AllTrim( cData ) + ']'
+   ELSE
+      cRet := "'" + AllTrim( cData ) + "'"    // The FMG will throw a compiler error because cRet is malformed !!!
+   ENDIF
+RETURN cRet
+
+*------------------------------------------------------------------------------*
 STATIC FUNCTION MakeControls( j, Output, nRow, nCol, nWidth, nHeight, mlyform, nSpacing, nLevel )
 *------------------------------------------------------------------------------*
 LOCAL cName, lBlankLine := .F.
@@ -795,12 +811,12 @@ LOCAL cName, lBlankLine := .F.
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( myForm:acobj[j] )
       ENDIF
       IF Len( myForm:acaption[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + "'" + AllTrim( myForm:acaption[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + StrToStr( myForm:acaption[j] )
       ELSE
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + "'" + AllTrim( myForm:aname[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + StrToStr( myForm:aname[j] )
       ENDIF
       IF Len( myForm:aPicture[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PICTURE ' + "'" + AllTrim( myForm:apicture[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PICTURE ' + StrToStr( myForm:apicture[j] )
       ENDIF
       IF Len( myForm:aaction[j] ) > 0
         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + AllTrim( myForm:aaction[j] )
@@ -810,13 +826,13 @@ LOCAL cName, lBlankLine := .F.
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
       IF Len( myForm:afontname[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + "'" + AllTrim( myForm:afontname[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( myForm:afontname[j] )
       ENDIF
       IF myForm:afontsize[j] > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) )
       ENDIF
       IF Len( myForm:atooltip[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( myForm:atooltip[j] )
       ENDIF
       IF myForm:aflat[j]
         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FLAT '
@@ -873,9 +889,9 @@ LOCAL cName, lBlankLine := .F.
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( myForm:acobj[j] )
       ENDIF
       IF Len( myForm:acaption[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + "'" + AllTrim( myForm:acaption[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + StrToStr( myForm:acaption[j] )
       ELSE
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + " '" + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + "'" + "'"
       ENDIF
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
@@ -888,13 +904,13 @@ LOCAL cName, lBlankLine := .F.
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIELD ' + AllTrim( myForm:afield[j] )
       ENDIF
       IF Len( myForm:afontname[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + "'" + AllTrim( myForm:afontname[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( myForm:afontname[j] )
       ENDIF
       IF myForm:afontsize[j] > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) )
        ENDIF
       IF Len( myForm:atooltip[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( myForm:atooltip[j] )
       ENDIF
       IF Len( myForm:aonchange[j] ) > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( myForm:aonchange[j] )
@@ -945,7 +961,7 @@ LOCAL cName, lBlankLine := .F.
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
       IF Len( myForm:afontname[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + "'" + AllTrim( myForm:afontname[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( myForm:afontname[j] )
       ENDIF
       IF myForm:afontsize[j] > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) )
@@ -975,7 +991,7 @@ LOCAL cName, lBlankLine := .F.
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
       ENDIF
       IF Len( myForm:atooltip[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( myForm:atooltip[j] )
       ENDIF
       IF Len( myForm:aonchange[j] ) > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( myForm:aonchange[j] )
@@ -1052,13 +1068,13 @@ LOCAL cName, lBlankLine := .F.
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( myForm:avaluen[j] ) )
       ENDIF
       IF Len( myForm:afontname[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + "'" + AllTrim( myForm:afontname[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( myForm:afontname[j] )
       ENDIF
       IF myForm:afontsize[j] > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) )
       ENDIF
       IF Len( myForm:atooltip[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( myForm:atooltip[j] )
       ENDIF
       IF Len( myForm:aonchange[j] ) > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( myForm:aonchange[j] )
@@ -1131,13 +1147,13 @@ LOCAL cName, lBlankLine := .F.
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
       // Do not include HEIGHT
       IF Len( myForm:afontname[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + "'" + AllTrim( myForm:afontname[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( myForm:afontname[j] )
       ENDIF
       IF myForm:afontsize[j] > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) )
       ENDIF
       IF Len( myForm:atooltip[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( myForm:atooltip[j] )
       ENDIF
       IF Len( myForm:aonchange[j] ) > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( myForm:aonchange[j] )
@@ -1207,9 +1223,9 @@ LOCAL cName, lBlankLine := .F.
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( myForm:acobj[j] )
       ENDIF
       IF Len( myForm:acaption[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + "'" + AllTrim( myForm:acaption[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + StrToStr( myForm:acaption[j] )
       ELSE
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + "'" + AllTrim( myForm:aname[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + StrToStr( myForm:aname[j] )
       ENDIF
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
@@ -1219,13 +1235,13 @@ LOCAL cName, lBlankLine := .F.
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE .F.'
       ENDIF
       IF Len( myForm:afontname[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + "'" + AllTrim( myForm:afontname[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( myForm:afontname[j] )
       ENDIF
       IF myForm:afontsize[j] > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) )
       ENDIF
       IF Len( myForm:atooltip[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( myForm:atooltip[j] )
       ENDIF
       IF Len( myForm:aonchange[j] ) > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( myForm:aonchange[j] )
@@ -1291,13 +1307,13 @@ LOCAL cName, lBlankLine := .F.
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'COLUMNCONTROLS ' + AllTrim( myForm:acolumncontrols[j] )
       ENDIF
       IF Len( myForm:afontname[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + "'" + AllTrim( myForm:afontname[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( myForm:afontname[j] )
       ENDIF
       IF myForm:afontsize[j] > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) )
       ENDIF
       IF Len( myForm:atooltip[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( myForm:atooltip[j] )
       ENDIF
       IF Len( myForm:aonchange[j] ) > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( myForm:aonchange[j] )
@@ -1442,13 +1458,13 @@ LOCAL cName, lBlankLine := .F.
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( myForm:avaluen[j] ) )
       ENDIF
       IF Len( myForm:afontname[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + "'" + AllTrim( myForm:afontname[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( myForm:afontname[j] )
       ENDIF
       IF myForm:afontsize[j] > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) )
       ENDIF
       IF Len( myForm:atooltip[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( myForm:atooltip[j] )
       ENDIF
       IF Len( myForm:ainputmask[j] ) > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INPUTMASK ' + AllTrim( myForm:ainputmask[j] )
@@ -1591,7 +1607,7 @@ LOCAL cName, lBlankLine := .F.
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + AllTrim( myForm:aaction[j] )
       ENDIF
       IF Len( myForm:apicture[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + "PICTURE '" + AllTrim( myForm:apicture[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PICTURE ' + StrToStr( myForm:apicture[j] )
       ELSE
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + "PICTURE 'oohg.bmp'"
       ENDIF
@@ -1604,7 +1620,7 @@ LOCAL cName, lBlankLine := .F.
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) )
       ENDIF
       IF Len( myForm:atooltip[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( myForm:atooltip[j] )
       ENDIF
       IF myForm:aborder[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BORDER '
@@ -1679,7 +1695,7 @@ LOCAL cName, lBlankLine := .F.
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
       IF Len( myForm:afile[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + "FILE '" + AllTrim( myForm:afile[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FILE ' + StrToStr( myForm:afile[j] )
       ENDIF
       IF myForm:aautoplay[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AUTOPLAY '
@@ -1694,7 +1710,7 @@ LOCAL cName, lBlankLine := .F.
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) )
       ENDIF
       IF Len( myForm:atooltip[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( myForm:atooltip[j] )
       ENDIF
       IF ! myForm:avisible[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
@@ -1726,13 +1742,13 @@ LOCAL cName, lBlankLine := .F.
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
       // Do not include HEIGHT
       IF Len( myForm:afontname[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + "'" + AllTrim( myForm:afontname[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( myForm:afontname[j] )
       ENDIF
       IF myForm:afontsize[j] > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) )
       ENDIF
       IF Len( myForm:atooltip[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( myForm:atooltip[j] )
       ENDIF
       IF myForm:ashownone[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SHOWNONE '
@@ -1797,7 +1813,7 @@ LOCAL cName, lBlankLine := .F.
             IF myForm:adate[j]
                Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + cValue
             ELSE
-               Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + "'" + cValue + "'"
+               Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + StrToStr( cValue )
             ENDIF
          ENDIF
       ENDIF
@@ -1808,26 +1824,26 @@ LOCAL cName, lBlankLine := .F.
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PASSWORD '
       ENDIF
       IF Len( myForm:aFontname[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + "'" + AllTrim( myForm:afontname[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( myForm:afontname[j] )
       ENDIF
       IF myForm:afontsize[j] > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) )
       ENDIF
       IF Len( myForm:atooltip[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( myForm:atooltip[j] )
       ENDIF
       IF myForm:anumeric[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NUMERIC '
          IF Len( myForm:ainputmask[j] ) > 0
-            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INPUTMASK ' + "'" + myForm:ainputmask[j] + "'"
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INPUTMASK ' + StrToStr( myForm:ainputmask[j] )
          ENDIF
       ELSE
          IF Len( myForm:ainputmask[j] ) > 0
-            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INPUTMASK ' + "'" + myForm:ainputmask[j] + "'"
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INPUTMASK ' + StrToStr( myForm:ainputmask[j] )
          ENDIF
       ENDIF
       IF Len( myForm:afields[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FORMAT ' + "'" + myForm:afields[j] + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FORMAT ' + StrToStr( myForm:afields[j] )
       ENDIF
       IF myForm:adate[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DATE '
@@ -1915,19 +1931,19 @@ LOCAL cName, lBlankLine := .F.
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIELD ' + AllTrim( myForm:afield[j] )
       ENDIF
       IF Len( myForm:avalue[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + "'" + AllTrim( myForm:avalue[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + StrToStr( myForm:avalue[j] )
       ENDIF
       IF myForm:areadonly[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'READONLY '
       ENDIF
       IF Len( myForm:afontname[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + "'" + AllTrim( myForm:afontname[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( myForm:afontname[j] )
       ENDIF
       IF myForm:afontsize[j] > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) )
       ENDIF
       IF Len( myForm:atooltip[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( myForm:atooltip[j] )
       ENDIF
       IF myForm:amaxlength[j] > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'MAXLENGTH ' + LTrim( Str( myForm:amaxlength[j] ) )
@@ -1985,19 +2001,19 @@ LOCAL cName, lBlankLine := .F.
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIELD ' + AllTrim( myForm:afield[j] )
       ENDIF
       IF Len( myForm:avalue[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + "'" + AllTrim( myForm:avalue[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + StrToStr( myForm:avalue[j] )
       ENDIF
       IF myForm:areadonly[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'READONLY '
       ENDIF
       IF Len( myForm:afontname[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + "'" + AllTrim( myForm:afontname[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( myForm:afontname[j] )
       ENDIF
       IF myForm:afontsize[j] > 0
         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) )
       ENDIF
       IF Len( myForm:atooltip[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( myForm:atooltip[j] )
       ENDIF
       IF myForm:amaxlength[j] > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'MAXLENGTH ' + LTrim( Str( myForm:amaxlength[j] ) )
@@ -2053,13 +2069,13 @@ LOCAL cName, lBlankLine := .F.
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + AllTrim( myForm:avalue[j] )
       ENDIF
       IF Len( myForm:afontname[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + "'" + AllTrim( myForm:afontname[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( myForm:afontname[j] )
       ENDIF
       IF myForm:afontsize[j] > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) )
       ENDIF
       IF Len( myForm:atooltip[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( myForm:atooltip[j] )
       ENDIF
       IF Len( myForm:aonchange[j] ) > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( myForm:aonchange[j] )
@@ -2117,23 +2133,23 @@ LOCAL cName, lBlankLine := .F.
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
       IF Len( myForm:avalue[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + "'" + AllTrim( myForm:avalue[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + StrToStr( myForm:avalue[j] ) 
       ELSE
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + "'ooHG Home'"
       ENDIF
       IF Len( myForm:aaddress[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ADDRESS ' + "'" + AllTrim( myForm:aaddress[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ADDRESS ' + StrToStr( myForm:aaddress[j] )
       ELSE
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ADDRESS ' + "'https://sourceforge.net/projects/oohg/'"
       ENDIF
       IF Len( myForm:afontname[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + "'" + AllTrim( myForm:afontname[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( myForm:afontname[j] )
       ENDIF
       IF myForm:afontsize[j] > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) )
       ENDIF
       IF Len( myForm:atooltip[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( myForm:atooltip[j] )
       ENDIF
       IF myForm:ahelpid[j] > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( myForm:ahelpid[j] ) )
@@ -2189,7 +2205,7 @@ LOCAL cName, lBlankLine := .F.
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + AllTrim( myForm:avalue[j] )
       ENDIF
       IF Len( myForm:afontname[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + "'" + AllTrim( myForm:afontname[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( myForm:afontname[j] )
       ENDIF
       IF myForm:afontsize[j] > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) )
@@ -2213,7 +2229,7 @@ LOCAL cName, lBlankLine := .F.
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + AllTrim( myForm:abackcolor[j] )
       ENDIF
       IF Len( myForm:atooltip[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( myForm:atooltip[j] )
       ENDIF
       IF Len( myForm:aonchange[j] ) > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( myForm:aonchange[j] )
@@ -2264,13 +2280,13 @@ LOCAL cName, lBlankLine := .F.
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
       ENDIF
       IF Len( myForm:aValue[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + "'" + AllTrim( myForm:avalue[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + StrToStr( myForm:avalue[j] )
       ENDIF
       IF Len( myForm:aaction[j] ) > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + AllTrim( myForm:aaction[j] )
       ENDIF
       IF Len( myForm:aFontname[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + "'" + AllTrim( myForm:afontname[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( myForm:afontname[j] )
       ENDIF
       IF myForm:afontsize[j] > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) )
@@ -2312,7 +2328,7 @@ LOCAL cName, lBlankLine := .F.
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BORDER '
       ENDIF
       IF Len( myForm:atooltip[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( myForm:atooltip[j] )
       ENDIF
       IF ! myForm:avisible[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
@@ -2343,7 +2359,7 @@ LOCAL cName, lBlankLine := .F.
       ENDIF
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + "FILE '" + AllTrim( myForm:afile[j] ) + "'"
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FILE ' + StrToStr( myForm:afile[j] )
       IF myForm:ahelpid[j] > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ahelpid[j] ) )
       ENDIF
@@ -2380,7 +2396,7 @@ LOCAL cName, lBlankLine := .F.
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
       IF Len( myForm:atooltip[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( myForm:atooltip[j] )
       ENDIF
       IF myForm:avertical[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VERTICAL '
@@ -2422,13 +2438,13 @@ LOCAL cName, lBlankLine := .F.
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + "SPACING " + LTrim( Str( myForm:aspacing[j] ) )
       ENDIF
       IF Len( myForm:afontname[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + "'" + AllTrim( myForm:afontname[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( myForm:afontname[j] )
       ENDIF
       IF myForm:afontsize[j] > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) )
       ENDIF
       IF Len( myForm:atooltip[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( myForm:atooltip[j] )
       ENDIF
       IF Len( myForm:aonchange[j] ) > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( myForm:aonchange[j] )
@@ -2477,7 +2493,7 @@ LOCAL cName, lBlankLine := .F.
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
       IF Len( myForm:atooltip[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( myForm:atooltip[j] )
       ENDIF
       IF Len( myForm:aonchange[j] ) > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( myForm:aonchange[j] )
@@ -2527,13 +2543,13 @@ LOCAL cName, lBlankLine := .F.
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
       IF Len( myForm:afontname[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + "'" + AllTrim( myForm:afontname[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( myForm:afontname[j] )
       ENDIF
       IF myForm:afontsize[j] > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) )
       ENDIF
       IF Len( myForm:atooltip[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( myForm:atooltip[j] )
       ENDIF
       IF Len( myForm:aonchange[j] ) > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( myForm:aonchange[j] )
@@ -2582,9 +2598,9 @@ LOCAL cName, lBlankLine := .F.
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( myForm:acobj[j] )
       ENDIF
       IF Len( myForm:apicture[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PICTURE ' + "'" + AllTrim( myForm:apicture[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PICTURE ' + StrToStr( myForm:apicture[j] )
       ELSE
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PICTURE ' + "'" + '' + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PICTURE ' + "'" + "'"
       ENDIF
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
@@ -2594,7 +2610,7 @@ LOCAL cName, lBlankLine := .F.
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE .F.'
       ENDIF
       IF Len( myForm:atooltip[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( myForm:atooltip[j] )
       ENDIF
       IF myForm:anotabstop[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
@@ -2642,9 +2658,9 @@ LOCAL cName, lBlankLine := .F.
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( myForm:acobj[j] )
       ENDIF
       IF Len( myForm:apicture[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + "PICTURE " + "'" + AllTrim( myForm:apicture[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + "PICTURE " + StrToStr( myForm:apicture[j] )
       ELSE
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + "PICTURE " + "'" + '' + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + "PICTURE " + "'" + "'"
       ENDIF
       IF Len( myForm:aaction[j] ) > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + AllTrim( myForm:aaction[j] )
@@ -2654,7 +2670,7 @@ LOCAL cName, lBlankLine := .F.
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
       IF Len( myForm:atooltip[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + "'" + AllTrim( myForm:atooltip[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( myForm:atooltip[j] )
       ENDIF
       IF myForm:aflat[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FLAT '
@@ -2708,7 +2724,7 @@ LOCAL cName, lBlankLine := .F.
       IF ! Empty( myForm:acobj[j ] )
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( myForm:acobj[j] )
       ENDIF
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + "CAPTION '" + AllTrim( myForm:acaption[j] ) + "'"
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + "CAPTION " + StrToStr( myForm:acaption[j] )
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
       IF myForm:aopaque[j]
@@ -2718,7 +2734,7 @@ LOCAL cName, lBlankLine := .F.
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TRANSPARENT '
       ENDIF
       IF Len( myForm:afontname[j] ) > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + "'" + AllTrim( myForm:afontname[j] ) + "'"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( myForm:afontname[j] )
       ENDIF
       IF myForm:afontsize[j] > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( myForm:afontsize[j] ) )

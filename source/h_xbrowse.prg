@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.112 2014-07-06 15:29:42 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.113 2014-07-17 02:59:37 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -53,6 +53,10 @@
 #include "hbclass.ch"
 #include "i_windefs.ch"
 
+#define REFRESH_FORCE    0
+#define REFRESH_NO       1
+#define REFRESH_DEFAULT -1
+
 STATIC _OOHG_XBrowseFixedBlocks := .T.
 STATIC _OOHG_XBrowseFixedControls := .F.
 
@@ -74,7 +78,7 @@ CLASS TXBROWSE FROM TGrid
    DATA lDescending       INIT .F.
    DATA Eof               INIT .F.
    DATA Bof               INIT .F.
-   DATA RefreshType       INIT nil
+   DATA RefreshType       INIT REFRESH_DEFAULT
    DATA SearchWrap        INIT .F.
    DATA VScrollCopy       INIT nil
    DATA lVscrollVisible   INIT .F.
@@ -1331,8 +1335,8 @@ Return .T.
 *-----------------------------------------------------------------------------*
 METHOD EditItem( lAppend ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
-Local uRet
-   uRet := nil
+Local uRet := .F.
+
    If ! ::lNestedEdit
       ::lNestedEdit := .T.
       If ::lVScrollVisible
@@ -1374,7 +1378,7 @@ Local aItems, aMemVars, aReplaceFields
          ::CurrentRow := ::ItemCount
          oWorkArea:GoTo( 0 )
       EndIf
-      Return ::EditAllCells( , , lAppend )
+      Return ::EditAllCells( , , lAppend, .T. )
    EndIf
 
    If lAppend
@@ -1414,7 +1418,6 @@ Local aItems, aMemVars, aReplaceFields
    If ::Lock .AND. ! lAppend
       If ! oWorkArea:Lock()
          MsgExclamation( _OOHG_Messages( 3, 9 ), _OOHG_Messages( 3, 10 ) )
-         ::SetFocus()
          Return .F.
       EndIf
    EndIf
@@ -1426,13 +1429,11 @@ Local aItems, aMemVars, aReplaceFields
    EndIf
 
    If ! Empty( aItems )
-
       If lAppend
          oWorkArea:Append()
       EndIf
 
       For z := 1 To Len( aItems )
-
          If ::IsColumnReadOnly( z )
             // Readonly field
          ElseIf ASCAN( ::aHiddenCols, z ) > 0
@@ -1440,7 +1441,6 @@ Local aItems, aMemVars, aReplaceFields
          Else
             _OOHG_EVAL( aReplaceFields[ z ], aItems[ z ], oWorkArea )
          EndIf
-
       Next z
 
       If lAppend
@@ -1452,15 +1452,14 @@ Local aItems, aMemVars, aReplaceFields
          EndIf
       EndIf
 
-      If ::RefreshType # 1
-         ::Refresh()
-      Else
+      If ::RefreshType == REFRESH_NO
          ::RefreshRow( ::CurrentRow )
+      Else
+         ::Refresh()
       EndIf
-      _SetThisCellInfo( ::hWnd, 0, 0, nil )
+      _SetThisCellInfo( ::hWnd, ::CurrentRow, 0, Nil )
       _OOHG_Eval( ::OnEditCell, ::CurrentRow, 0 )
       _ClearThisCellInfo()
-
    Else
       If lAppend
          ::lAppendMode := .F.
@@ -1473,9 +1472,7 @@ Local aItems, aMemVars, aReplaceFields
       oWorkArea:Commit()
       oWorkArea:Unlock()
    EndIf
-
-   ::SetFocus()
-Return .T.
+Return ! Empty( aItems )
 
 *-----------------------------------------------------------------------------*
 METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, nOnFocusPos ) CLASS TXBrowse
@@ -1534,8 +1531,10 @@ Local lRet, bReplaceField, oWorkArea
          _SetThisCellInfo( ::hWnd, nRow, nCol, uValue )
          _OOHG_EVAL( ::OnEditCell, nRow, nCol )
          _ClearThisCellInfo()
-      Else
+      ElseIf lAppend
          ::lAppendMode := .F.
+         _OOHG_EVAL( ::OnAbortEdit, 0, 0 )
+      Else
          _OOHG_EVAL( ::OnAbortEdit, nRow, nCol )
       EndIf
       If ::Lock
@@ -1546,10 +1545,11 @@ Local lRet, bReplaceField, oWorkArea
 Return lRet
 
 *-----------------------------------------------------------------------------*
-METHOD EditAllCells( nRow, nCol, lAppend ) CLASS TXBrowse
+METHOD EditAllCells( nRow, nCol, lAppend, lOneRow ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local lRet, lRowEdited, lSomethingEdited
 
+   ASSIGN lOneRow VALUE lOneRow TYPE "L" DEFAULT .F.
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
    ASSIGN nRow    VALUE nRow    TYPE "N" DEFAULT ::CurrentRow
    ASSIGN nCol    VALUE nCol    TYPE "N" DEFAULT 1
@@ -1593,9 +1593,10 @@ Local lRet, lRowEdited, lSomethingEdited
          ListView_Scroll( ::hWnd, - _OOHG_GridArrayWidths( ::hWnd, ::aWidths ), 0 )
       EndIf
 
-      If ! lRet .or. ! ::FullMove
+      If ! lRet .or. ! ::FullMove .or. lOneRow
          // Stop if the last column was not edited
          // or it's not fullmove editing
+         // or caller wants to edit only one row
          Exit
       ElseIf nRow < ::ItemCount()
          // Edit next row

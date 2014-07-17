@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.137 2014-04-11 02:27:46 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.138 2014-07-17 02:59:37 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -95,6 +95,10 @@
 #include "hbclass.ch"
 #include "i_windefs.ch"
 
+#define REFRESH_FORCE    0
+#define REFRESH_NO       1
+#define REFRESH_DEFAULT -1
+
 STATIC _OOHG_BrowseSyncStatus := .F.
 STATIC _OOHG_BrowseFixedBlocks := .T.
 STATIC _OOHG_BrowseFixedControls := .F.
@@ -178,9 +182,13 @@ Local nWidth2, nCol2, oScroll, z
    ASSIGN lFixedCtrls   VALUE lFixedCtrls  TYPE "L" DEFAULT _OOHG_BrowseFixedControls
 
    IF ValType( uRefresh ) == "N"
-      IF uRefresh == 0 .OR. uRefresh == 1
+      IF uRefresh == REFRESH_FORCE .OR. uRefresh == REFRESH_NO .OR. uRefresh == REFRESH_DEFAULT
          ::RefreshType := uRefresh
+      ELSE
+         ::RefreshType := REFRESH_DEFAULT
       ENDIF
+   ELSE
+      ::RefreshType := REFRESH_DEFAULT
    ENDIF
 
    If ValType( columninfo ) == "A" .AND. LEN( columninfo ) > 0
@@ -884,7 +892,7 @@ Return Nil
 *-----------------------------------------------------------------------------*
 METHOD EditItem_B( append ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local nOldRecNo, nItem, cWorkArea, lRet
+Local nOldRecNo, nItem, cWorkArea, lRet, nNewRec
 
    ASSIGN append VALUE append TYPE "L" DEFAULT .F.
 
@@ -902,27 +910,42 @@ Local nOldRecNo, nItem, cWorkArea, lRet
 
    nOldRecNo := ( cWorkArea )->( RecNo() )
 
-   If ! append
+   IF ! append
       ::DbGoTo( ::aRecMap[ nItem ] )
    EndIf
 
-   lRet := ::Super:EditItem_B( append )
+   If ::InPlace
+      If append
+         ::GoBottom( .T. )
+         ::InsertBlank( ::ItemCount + 1 )
+         ::CurrentRow := ::ItemCount
+      EndIf
 
-   If lRet .AND. append
-      nOldRecNo := ( cWorkArea )->( RecNo() )
-      ::Value := nOldRecNo
+      lRet := ::EditAllCells( , , append, .T., ::RefreshType == REFRESH_DEFAULT .OR. ::RefreshType == REFRESH_FORCE )
+
+      ::DbGoTo( nOldRecNo )
+   Else
+      lRet := ::Super:EditItem_B( append )
+
+      If lRet .AND. append
+         nNewRec := ( cWorkArea )->( RecNo() )
+         ::DbGoTo( nOldRecNo )
+         ::Value := nNewRec
+      Else
+         ::DbGoTo( nOldRecNo )
+      EndIf
    EndIf
-
-   ::DbGoTo( nOldRecNo )
 
 Return lRet
 
 *-----------------------------------------------------------------------------*
-METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, nOnFocusPos ) CLASS TOBrowse
+METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, nOnFocusPos, lRefresh ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local lRet, BackRec
-   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
-   ASSIGN nRow    VALUE nRow    TYPE "N" DEFAULT ::CurrentRow
+   ASSIGN lAppend  VALUE lAppend  TYPE "L" DEFAULT .F.
+   ASSIGN nRow     VALUE nRow     TYPE "N" DEFAULT ::CurrentRow
+   ASSIGN lRefresh VALUE lRefresh TYPE "L" DEFAULT ( ::RefreshType == REFRESH_FORCE )
+
    If nRow < 1 .OR. nRow > ::ItemCount()
       // Cell out of range
       lRet := .F.
@@ -932,61 +955,49 @@ Local lRet, BackRec
       lRet := .F.
    Else
       BackRec := ( ::WorkArea )->( RecNo() )
+
       IF lAppend
          ::DbGoTo( 0 )
       Else
          ::DbGoTo( ::aRecMap[ nRow ] )
       EndIf
+
       lRet := ::Super:EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, nOnFocusPos )
+
       If lRet .AND. lAppend
          AADD( ::aRecMap, ( ::WorkArea )->( RecNo() ) )
       EndIf
+
       ::DbGoTo( BackRec )
+
+      If lRet .AND. lRefresh
+        ::Refresh()
+      EndIf
    Endif
 Return lRet
 
 *-----------------------------------------------------------------------------*
-METHOD EditAllCells( nRow, nCol, lAppend ) CLASS TOBrowse
+METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lRefresh ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local lRet, lRowEdited, lSomethingEdited, _RecNo, lRowAppended, lMoreRecs
+Local lRet, lRowEdited, lSomethingEdited, _RecNo, lRowAppended
 
-   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
-   ASSIGN nRow    VALUE nRow    TYPE "N" DEFAULT ::CurrentRow
-   ASSIGN nCol    VALUE nCol    TYPE "N" DEFAULT 1
+   ASSIGN lAppend  VALUE lAppend  TYPE "L" DEFAULT .F.
+   ASSIGN nRow     VALUE nRow     TYPE "N" DEFAULT ::CurrentRow
+   ASSIGN nCol     VALUE nCol     TYPE "N" DEFAULT 1
+   ASSIGN lOneRow  VALUE lOneRow  TYPE "L" DEFAULT .F.
+   ASSIGN lRefresh VALUE lRefresh TYPE "L" DEFAULT ( ::RefreshType == REFRESH_FORCE )
 
-   If nRow < 1 .or. nRow > ::ItemCount() .or. nCol < 1 .or. nCol > Len( ::aHeaders )
+   If nRow < 1 .OR. nRow > ::ItemCount() .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
       // Cell out of range
       Return .F.
    EndIf
 
    lSomethingEdited := .F.
+   lRowAppended := .F.
 
    Do While .t.
       lRet := .T.
       lRowEdited := .F.
-      lRowAppended := .F.
-
-      // This is needed in case the database has an active index
-      // and the record's key is changed during editing
-      If ! ::FullMove .OR. lAppend .OR. nRow > Len( ::aRecMap )
-         lMoreRecs := .F.
-      Else
-         _RecNo := ( ::WorkArea )->( RecNo() )
-         //NOTE: in certain, not so clear, circumstances cancels here
-         //      with "Index out of bounds" error
-         //      Just happened once with a FULLMOVE INPLACE APPEND EDIT DELETE
-         //      browse of an indexed database.
-         //      I can´t undertand why and I can´t replicate the error.
-         ::DbGoTo( ::aRecMap[ nRow ] )
-         ::DbSkip()
-         If ::Eof()
-            lMoreRecs := .F.
-         Else
-            ::DbSkip(-1)
-            lMoreRecs := .T.
-         EndIf
-         ::DbGoTo( _RecNo )
-      EndIf
 
       Do While nCol <= Len( ::aHeaders ) .AND. lRet
          If ::IsColumnReadOnly( nCol )
@@ -996,7 +1007,7 @@ Local lRet, lRowEdited, lSomethingEdited, _RecNo, lRowAppended, lMoreRecs
          ElseIf ASCAN( ::aHiddenCols, nCol ) > 0
            // Is a hidden column, skip
          Else
-            lRet := ::EditCell( nRow, nCol, , , , , lAppend )
+            lRet := ::EditCell( nRow, nCol, , , , , lAppend, , .F. )
 
             If lRet
                lRowEdited := .T.
@@ -1005,7 +1016,14 @@ Local lRet, lRowEdited, lSomethingEdited, _RecNo, lRowAppended, lMoreRecs
                   lRowAppended := .T.
                EndIf
             ElseIf lAppend
-               ::GoBottom()
+               IF lRefresh
+                  ::GoBottom()
+               Else
+                  If Len( ::aRecMap ) > 0
+                     ::FastUpdate( -1, Len( ::aRecMap ) )
+                  EndIf
+                  ::DeleteItem( ::ItemCount )
+               EndIf
             EndIf
 
             lAppend := .F.
@@ -1020,17 +1038,16 @@ Local lRet, lRowEdited, lSomethingEdited, _RecNo, lRowAppended, lMoreRecs
       EndIf
 
       // See what to do next
-      If ! lRet .or. ! ::FullMove
-         If lRowAppended
-            // This is needed in case EditAllCells was called from EditItem_B
-            ::DbGoTo( aTail( ::aRecMap ) )
-         EndIf
-
-         If ::RefreshType == 0
+      If ! lRet .or. ! ::FullMove .or. lOneRow
+         If lRefresh .AND. ( lRowAppended .OR. lRowEdited )
             ::Refresh()
+         ElseIf lRowAppended
+            ::BrowseOnChange()
          EndIf
 
-         // Stop if the last column was not edited or it's not fullmove editing
+         // Stop if the last column was not edited
+         // or it's not fullmove editing
+         // or caller wants to edit only one row
          Exit
       ElseIf lRowAppended
          If ! ::AllowAppend
@@ -1039,7 +1056,12 @@ Local lRet, lRowEdited, lSomethingEdited, _RecNo, lRowAppended, lMoreRecs
          EndIf
 
          // Add new row
-         ::GoBottom( .T. )
+         If lRefresh
+            ::GoBottom( .T. )
+         ElseIf ::ItemCount == ::CountPerPage
+            ::DeleteItem( 1 )
+            _OOHG_DeleteArrayItem( ::aRecMap, 1 )
+         EndIf
          ::InsertBlank( ::ItemCount + 1 )
          nRow := ::CurrentRow := ::ItemCount
          lAppend := .T.
@@ -1047,43 +1069,48 @@ Local lRet, lRowEdited, lSomethingEdited, _RecNo, lRowAppended, lMoreRecs
       ElseIf nRow < ::ItemCount()
          // Edit next row
          nRow ++
-         nCol := 1
          ::FastUpdate( 1, nRow )
          ::BrowseOnChange()
       ElseIf Select( ::WorkArea ) == 0
          // Stop if no database is selected
          ::RecCount := 0
          Exit
-      ElseIf lMoreRecs
-         // Scroll down 1 row
-         _RecNo := ( ::WorkArea )->( RecNo() )
-         ::DbGoTo( ::aRecMap[ 1 ] )
-         ::DbSkip()
-         ::Update()
-         If Len( ::aRecMap ) != 0
-            ::DbGoTo( ATail( ::aRecMap ) )
-         EndIf
-         ::ScrollUpdate()
-         ::DbGoTo( _RecNo )
-
-         ListView_SetCursel( ::hWnd, Len( ::aRecMap ) )
-         ::BrowseOnChange()
-         nCol := 1
-       ElseIf ::AllowAppend
-         // Add new row
-         ::GoBottom( .T. )
-         ::InsertBlank( ::ItemCount + 1 )
-         nRow := ::CurrentRow := ::ItemCount
-         lAppend := .T.
-         ::lAppendMode := .T.
-         nCol := 1
       Else
-         // Stop because last row was edited
-         Exit
+         // The last row was fully edited.
+         If lRefresh
+            _RecNo := ::aRecMap[ nRow ]
+            ::Refresh()
+            nRow := aScan( ::aRecMap, _RecNo )
+            If nRow == 0
+               // The last edited row is not in the map
+               Exit
+            EndIf
+         EndIf
+         If nRow < Len( ::aRecMap )
+            // Continue editing in next row
+            nRow ++
+         ElseIf ::AllowAppend
+            // Add new row
+            If lRefresh
+               ::GoBottom( .T. )
+            ElseIf ::ItemCount == ::CountPerPage
+               ::DeleteItem( 1 )
+               _OOHG_DeleteArrayItem( ::aRecMap, 1 )
+            EndIf
+            ::InsertBlank( ::ItemCount + 1 )
+            nRow := ::CurrentRow := ::ItemCount
+            lAppend := .T.
+            ::lAppendMode := .T.
+         Else
+            // Stop because last row was edited
+            Exit
+         Endif
       EndIf
+      nCol := 1
    EndDo
 
 Return lSomethingEdited
+
 
 #pragma BEGINDUMP
 #define s_Super s_TGrid
@@ -1447,7 +1474,9 @@ METHOD Events_Enter() CLASS TOBrowse
    Endif
 Return nil
 
+
 #pragma BEGINDUMP
+
 // -----------------------------------------------------------------------------
 // METHOD Events_Notify( wParam, lParam ) CLASS TOBrowse
 HB_FUNC_STATIC( TOBROWSE_EVENTS_NOTIFY )

@@ -1,5 +1,5 @@
 /*
- * $Id: mgide.prg,v 1.9 2014-07-08 03:02:41 fyurisich Exp $
+ * $Id: mgide.prg,v 1.10 2014-07-17 02:59:37 fyurisich Exp $
  */
 
 #include "oohg.ch"
@@ -70,7 +70,8 @@ CLASS THMI
    VAR cBCCFolder         INIT ''
    VAR cMinGWFolder       INIT ''
    VAR cPellFolder        INIT ''
-
+   VAR nTextBoxHeight     INIT 0
+   VAR nLabelHeight       INIT 0
    VAR nCompxBase         INIT 1
    VAR nCompilerC         INIT 2
 
@@ -413,43 +414,46 @@ public csyscolor,cvccvar
 
    BEGIN INI FILE 'hmi.ini'
       //****************** PROJECT
-      GET ::cProjFolder       SECTION 'PROJECT'   ENTRY "PROJFOLDER"    DEFAULT ''
-      GET ::cOutFile          SECTION 'PROJECT'   ENTRY "OUTFILE"       DEFAULT ''
+      GET ::cProjFolder       SECTION 'PROJECT'   ENTRY "PROJFOLDER"      DEFAULT ''
+      GET ::cOutFile          SECTION 'PROJECT'   ENTRY "OUTFILE"         DEFAULT ''
       //****************** EDITOR
-      GET ::cExteditor        SECTION 'EDITOR'    ENTRY "EXTERNAL"      DEFAULT ''
+      GET ::cExteditor        SECTION 'EDITOR'    ENTRY "EXTERNAL"        DEFAULT ''
       //****************** FORM'S FONT
-      GET ::cFormDefFontName   SECTION "FORMFONT" ENTRY "FONT"          DEFAULT ::cFormDefFontName
+      GET ::cFormDefFontName   SECTION "FORMFONT" ENTRY "FONT"            DEFAULT ::cFormDefFontName
       IF ::cFormDefFontName == 'NIL'
          ::cFormDefFontName := ''
       ENDIF
-      GET ::nFormDefFontSize   SECTION "FORMFONT" ENTRY "SIZE"          DEFAULT ::nFormDefFontSize
-      GET ::cFormDefFontColor  SECTION "FORMFONT" ENTRY "COLOR"         DEFAULT ::cFormDefFontColor
+      GET ::nFormDefFontSize   SECTION "FORMFONT" ENTRY "SIZE"            DEFAULT ::nFormDefFontSize
+      GET ::cFormDefFontColor  SECTION "FORMFONT" ENTRY "COLOR"           DEFAULT ::cFormDefFontColor
+      // ****************** FORM METRICS
+      GET ::nLabelHeight      SECTION "FORMMETRICS" ENTRY "LABELHEIGHT"   DEFAULT 0
+      GET ::nTextBoxHeight    SECTION "FORMMETRICS" ENTRY "TEXTBOXHEIGHT" DEFAULT 0
       //****************** OOHG
-      GET ::cGuiHbMinGW       SECTION 'GUILIB'    ENTRY "GUIHBMINGW"    DEFAULT 'c:\oohg'
-      GET ::cGuiHbBCC         SECTION 'GUILIB'    ENTRY "GUIHBBCC"      DEFAULT 'c:\oohg'
-      GET ::cGuiHbPelles      SECTION 'GUILIB'    ENTRY "GUIHBPELL"     DEFAULT 'c:\oohg'
-      GET ::cGuixHbMinGW      SECTION 'GUILIB'    ENTRY "GUIXHBMINGW"   DEFAULT 'c:\oohg'
-      GET ::cGuixHbBCC        SECTION 'GUILIB'    ENTRY "GUIXHBBCC"     DEFAULT 'c:\oohg'
-      GET ::cGuixHbPelles     SECTION 'GUILIB'    ENTRY "GUIXHBPELL"    DEFAULT 'c:\oohg'
+      GET ::cGuiHbMinGW       SECTION 'GUILIB'    ENTRY "GUIHBMINGW"      DEFAULT 'c:\oohg'
+      GET ::cGuiHbBCC         SECTION 'GUILIB'    ENTRY "GUIHBBCC"        DEFAULT 'c:\oohg'
+      GET ::cGuiHbPelles      SECTION 'GUILIB'    ENTRY "GUIHBPELL"       DEFAULT 'c:\oohg'
+      GET ::cGuixHbMinGW      SECTION 'GUILIB'    ENTRY "GUIXHBMINGW"     DEFAULT 'c:\oohg'
+      GET ::cGuixHbBCC        SECTION 'GUILIB'    ENTRY "GUIXHBBCC"       DEFAULT 'c:\oohg'
+      GET ::cGuixHbPelles     SECTION 'GUILIB'    ENTRY "GUIXHBPELL"      DEFAULT 'c:\oohg'
       //****************** HARBOUR
-      GET ::cHbMinGWFolder    SECTION 'HARBOUR'   ENTRY "HBMINGW"       DEFAULT 'c:\harbourm'
-      GET ::cHbBCCFolder      SECTION 'HARBOUR'   ENTRY "HBBCC"         DEFAULT 'c:\harbourb'
-      GET ::cHbPellFolder     SECTION 'HARBOUR'   ENTRY "HBPELLES"      DEFAULT 'c:\harbourp'
+      GET ::cHbMinGWFolder    SECTION 'HARBOUR'   ENTRY "HBMINGW"         DEFAULT 'c:\harbourm'
+      GET ::cHbBCCFolder      SECTION 'HARBOUR'   ENTRY "HBBCC"           DEFAULT 'c:\harbourb'
+      GET ::cHbPellFolder     SECTION 'HARBOUR'   ENTRY "HBPELLES"        DEFAULT 'c:\harbourp'
       //****************** XHARBOUR
-      GET ::cxHbMinGWFolder   SECTION 'HARBOUR'   ENTRY "XHBMINGW"      DEFAULT 'c:\xharbourm'
-      GET ::cxHbBCCFolder     SECTION 'HARBOUR'   ENTRY "XHBBCC"        DEFAULT 'c:\xharbourb'
-      GET ::cxHbPellFolder    SECTION 'HARBOUR'   ENTRY "XHBPELLES"     DEFAULT 'c:\xharbourp'
+      GET ::cxHbMinGWFolder   SECTION 'HARBOUR'   ENTRY "XHBMINGW"        DEFAULT 'c:\xharbourm'
+      GET ::cxHbBCCFolder     SECTION 'HARBOUR'   ENTRY "XHBBCC"          DEFAULT 'c:\xharbourb'
+      GET ::cxHbPellFolder    SECTION 'HARBOUR'   ENTRY "XHBPELLES"       DEFAULT 'c:\xharbourp'
       //****************** C COMPILER
-      GET ::cMinGWFolder      SECTION 'COMPILER'  ENTRY "MINGWFOLDER"   DEFAULT 'c:\MinGW'
-      GET ::cBCCFolder        SECTION 'COMPILER'  ENTRY "BCCFOLDER"     DEFAULT 'c:\Borland\BCC55'
-      GET ::cPellFolder       SECTION 'COMPILER'  ENTRY "PELLESFOLDER"  DEFAULT 'c:\PellesC'
+      GET ::cMinGWFolder      SECTION 'COMPILER'  ENTRY "MINGWFOLDER"     DEFAULT 'c:\MinGW'
+      GET ::cBCCFolder        SECTION 'COMPILER'  ENTRY "BCCFOLDER"       DEFAULT 'c:\Borland\BCC55'
+      GET ::cPellFolder       SECTION 'COMPILER'  ENTRY "PELLESFOLDER"    DEFAULT 'c:\PellesC'
       //****************** MODE
-      GET ::nCompxBase        SECTION 'WHATCOMP'  ENTRY "XBASECOMP"     DEFAULT 1  // 1 Harbour  2 xHarbour
-      GET ::nCompilerC        SECTION 'WHATCOMP'  ENTRY "CCOMPILER"     DEFAULT 1  // 1 MinGW    2 BCC   3 Pelles C
+      GET ::nCompxBase        SECTION 'WHATCOMP'  ENTRY "XBASECOMP"       DEFAULT 1  // 1 Harbour  2 xHarbour
+      GET ::nCompilerC        SECTION 'WHATCOMP'  ENTRY "CCOMPILER"       DEFAULT 1  // 1 MinGW    2 BCC   3 Pelles C
       //****************** OTHER
-      GET ::ltbuild           SECTION 'SETTINGS'  ENTRY "BUILD"         DEFAULT 2  // 1 Compile.bat 2 Own Make
-      GET ::lsnap             SECTION 'SETTINGS'  ENTRY "SNAP"          DEFAULT 0
-      GET ::clib              SECTION 'SETTINGS'  ENTRY "LIB"           DEFAULT ''
+      GET ::ltbuild           SECTION 'SETTINGS'  ENTRY "BUILD"           DEFAULT 2  // 1 Compile.bat 2 Own Make
+      GET ::lsnap             SECTION 'SETTINGS'  ENTRY "SNAP"            DEFAULT 0
+      GET ::clib              SECTION 'SETTINGS'  ENTRY "LIB"             DEFAULT ''
    END INI
 
    DEFINE WINDOW waitmess obj waitmess  ;
@@ -906,6 +910,20 @@ else
 endif
 Return Self
 
+*------------------------------------------------------------------------------*
+FUNCTION Minim()
+*------------------------------------------------------------------------------*
+   cvcControls:Minimize()
+   myForm:MinimizeForms()
+RETURN NIL
+
+*------------------------------------------------------------------------------*
+FUNCTION Maxim()
+*------------------------------------------------------------------------------*
+   cvcControls:Restore()
+   myForm:RestoreForms()
+RETURN NIL
+
 Procedure AjustaFrame(oFrame,oTree) // MigSoft
    LOCAL aInfo
    aInfo := ARRAY( 4 )
@@ -991,44 +1009,32 @@ Procedure BorraObj()
 
 Return
 
-Function refrefo()
-
-local nrow:= form_1:row
-local ncol:= form_1:col
-local nwidth:= form_1:width
-local nheight:= form_1:height
-local clabel := "r:"+alltrim(str(nrow,4))+" c:"+alltrim(str(ncol,4))+" w:"+alltrim(str(nwidth,4))+" h:"+alltrim(str(nheight,4))
-form_main:label_1:value :=  clabel
-return nil
-
 *------------------------------------------------------------------------------*
-Function analizar( myIde, cFormx )
+FUNCTION Analizar( myIde, cFormx )
 *------------------------------------------------------------------------------*
-Local cItem,cParent
-cItem:= Form_Tree:Tree_1:Item ( Form_Tree:Tree_1:value )
-cParent= myIde:searchtype(citem)
-if HB_IsString( cFormx )
-   cParent:="Form module"
-   cItem:=Cformx
-endif
-if cParent=='Form module' .and. cItem#cParent .and. cItem#'Project'
-   if .not. myIde:form_activated
-       form_main:frame_2:caption:="Control : "
-       myIde:modifyform(cItem,cParent)
-   else
-       MsgStop( 'Can only edit one form at a time.', 'ooHG IDE+' )
-       return nil
-   endif
-endif
-if ( cParent=='Prg module' .and. cItem#cParent .and. cItem#'Project') .or. ;
-   ( cParent=='CH module' .and. cItem#cParent )  .or. ;
-   ( cParent=='RC module' .and. cItem#cParent )
-   myIde:modifyitem(cItem,cParent)
-endif
-if cParent=='Rpt module' .and. cItem#cParent .and. cItem#'Project'
-   myIde:modifyrpt(cItem,cParent)
-endif
-return nil
+LOCAL cItem, cParent
+
+   cItem := Form_Tree:Tree_1:Item( Form_Tree:Tree_1:value )
+   cParent := myIde:SearchType( cItem )
+   IF HB_IsString( cFormx )
+      cParent := "Form module"
+      cItem := cFormx
+   ENDIF
+   IF cParent == 'Form module' .AND. cItem # cParent .AND. cItem # 'Project'
+      IF HB_IsObject( myForm ) .AND. myIde:form_activated
+         MsgStop( "Sorry, the IDE can't edit more than one form at a time.", 'ooHG IDE+' )
+      ELSE
+         Form_main:frame_2:Caption := "Control : "
+         myIde:Modifyform( cItem, cParent )
+      ENDIF
+   ELSEIF ( cParent == 'Prg module' .AND. cItem # cParent .AND. cItem # 'Project' ) .OR. ;
+          ( cParent == 'CH module' .AND. cItem # cParent )  .OR. ;
+          ( cParent == 'RC module' .AND. cItem # cParent )
+      myIde:ModifyItem( cItem, cParent )
+   ELSEIF cParent == 'Rpt module' .AND. cItem # cParent .AND. cItem # 'Project'
+      myIde:ModifyRpt( cItem, cParent )
+   ENDIF
+RETURN NIL
 
 *------------------------------------------------------------------------------*
 METHOD Exit() CLASS THMI
@@ -1331,6 +1337,8 @@ Local aFont := { ::cFormDefFontName, ;
    Form_prefer:text_6:value       := ::cPellFolder
    Form_prefer:radiogroup_1:value := ::nCompxBase
    Form_prefer:radiogroup_2:value := ::nCompilerC
+   Form_prefer:text_19:value      := ::nLabelHeight
+   Form_prefer:text_21:value      := ::nTextBoxHeight
    Form_prefer:text_1:value       := ::cExteditor
    Form_prefer:text_font:value    := IF( Empty( ::cFormDefFontName ), _OOHG_DefaultFontName, ::cFormDefFontName ) + ' ' + ;
                                      LTrim( Str( IF( ::nFormDefFontSize > 0, ::nFormDefFontSize, _OOHG_DefaultFontSize ), 2, 0 ) ) + ;
@@ -1483,46 +1491,50 @@ METHOD OkPrefer( aFont ) CLASS THMI
                                 '{ ' + LTrim( Str( aFont[5, 1] ) ) + ', ' + ;
                                        LTrim( Str( aFont[5, 2] ) ) + ', ' + ;
                                        LTrim( Str( aFont[5, 3] ) ) + ' }' )
+   ::nLabelHeight       := Form_prefer:text_19:Value
+   ::nTextBoxHeight     := Form_prefer:text_21:Value
 
    Form_prefer:Release()
 
    SetCurrentFolder( ::cProjFolder )
 
    BEGIN INI FILE 'hmi.ini'
-         SET SECTION 'PROJECT'  ENTRY "PROJFOLDER"   TO ::cProjFolder
-         SET SECTION 'PROJECT'  ENTRY "OUTFILE"      TO ::cOutFile
+         SET SECTION 'PROJECT'     ENTRY "PROJFOLDER"    TO ::cProjFolder
+         SET SECTION 'PROJECT'     ENTRY "OUTFILE"       TO ::cOutFile
 
-         SET SECTION "EDITOR"   ENTRY "EXTERNAL"     TO ::cExteditor
+         SET SECTION "EDITOR"      ENTRY "EXTERNAL"      TO ::cExteditor
 
-         SET SECTION "FORMFONT" ENTRY "FONT"         TO IIF( Empty( ::cFormDefFontName ), 'NIL', ::cFormDefFontName )
-         SET SECTION "FORMFONT" ENTRY "SIZE"         TO LTrim( Str( ::nFormDefFontSize, 2, 0 ) )
-         SET SECTION "FORMFONT" ENTRY "COLOR"        TO ::cFormDefFontColor
+         SET SECTION "FORMFONT"    ENTRY "FONT"          TO IIF( Empty( ::cFormDefFontName ), 'NIL', ::cFormDefFontName )
+         SET SECTION "FORMFONT"    ENTRY "SIZE"          TO LTrim( Str( ::nFormDefFontSize, 2, 0 ) )
+         SET SECTION "FORMFONT"    ENTRY "COLOR"         TO ::cFormDefFontColor
+         SET SECTION "FORMMETRICS" ENTRY "LABELHEIGHT"   TO LTrim( Str( ::nLabelHeight, 2, 0 ) )
+         SET SECTION "FORMMETRICS" ENTRY "TEXTBOXHEIGHT" TO LTrim( Str( ::nTextBoxHeight, 2, 0 ) )
 
-         SET SECTION 'GUILIB'   ENTRY "GUIHBMINGW"   TO ::cGuiHbMinGW
-         SET SECTION 'GUILIB'   ENTRY "GUIHBBCC"     TO ::cGuiHbBCC
-         SET SECTION 'GUILIB'   ENTRY "GUIHBPELL"    TO ::cGuiHBPelles
-         SET SECTION 'GUILIB'   ENTRY "GUIXHBMINGW"  TO ::cGuixHbMinGW
-         SET SECTION 'GUILIB'   ENTRY "GUIXHBBCC"    TO ::cGuixHbBCC
-         SET SECTION 'GUILIB'   ENTRY "GUIXHBPELL"   TO ::cGuixHBPelles
+         SET SECTION 'GUILIB'      ENTRY "GUIHBMINGW"    TO ::cGuiHbMinGW
+         SET SECTION 'GUILIB'      ENTRY "GUIHBBCC"      TO ::cGuiHbBCC
+         SET SECTION 'GUILIB'      ENTRY "GUIHBPELL"     TO ::cGuiHBPelles
+         SET SECTION 'GUILIB'      ENTRY "GUIXHBMINGW"   TO ::cGuixHbMinGW
+         SET SECTION 'GUILIB'      ENTRY "GUIXHBBCC"     TO ::cGuixHbBCC
+         SET SECTION 'GUILIB'      ENTRY "GUIXHBPELL"    TO ::cGuixHBPelles
 
-         SET SECTION 'HARBOUR'  ENTRY "HBMINGW"      TO ::cHbMinGWFolder
-         SET SECTION 'HARBOUR'  ENTRY "HBBCC"        TO ::cHbBCCFolder
-         SET SECTION 'HARBOUR'  ENTRY "HBPELLES"     TO ::cHbPellFolder
+         SET SECTION 'HARBOUR'     ENTRY "HBMINGW"       TO ::cHbMinGWFolder
+         SET SECTION 'HARBOUR'     ENTRY "HBBCC"         TO ::cHbBCCFolder
+         SET SECTION 'HARBOUR'     ENTRY "HBPELLES"      TO ::cHbPellFolder
 
-         SET SECTION 'HARBOUR'  ENTRY "XHBMINGW"     TO ::cxHbMinGWFolder
-         SET SECTION 'HARBOUR'  ENTRY "XHBBCC"       TO ::cxHbBCCFolder
-         SET SECTION 'HARBOUR'  ENTRY "XHBPELLES"    TO ::cxHbPellFolder
+         SET SECTION 'HARBOUR'     ENTRY "XHBMINGW"      TO ::cxHbMinGWFolder
+         SET SECTION 'HARBOUR'     ENTRY "XHBBCC"        TO ::cxHbBCCFolder
+         SET SECTION 'HARBOUR'     ENTRY "XHBPELLES"     TO ::cxHbPellFolder
 
-         SET SECTION 'COMPILER' ENTRY "MINGWFOLDER"  TO ::cMinGWFolder
-         SET SECTION 'COMPILER' ENTRY "BCCFOLDER"    TO ::cBCCFolder
-         SET SECTION 'COMPILER' ENTRY "PELLESFOLDER" TO ::cPellFolder
+         SET SECTION 'COMPILER'    ENTRY "MINGWFOLDER"   TO ::cMinGWFolder
+         SET SECTION 'COMPILER'    ENTRY "BCCFOLDER"     TO ::cBCCFolder
+         SET SECTION 'COMPILER'    ENTRY "PELLESFOLDER"  TO ::cPellFolder
 
-         SET SECTION 'WHATCOMP' ENTRY "XBASECOMP"    TO ::nCompxBase
-         SET SECTION 'WHATCOMP' ENTRY "CCOMPILER"    TO ::nCompilerC
+         SET SECTION 'WHATCOMP'    ENTRY "XBASECOMP"     TO LTrim( Str( ::nCompxBase, 1, 0 ) )
+         SET SECTION 'WHATCOMP'    ENTRY "CCOMPILER"     TO LTrim( Str( ::nCompilerC, 1, 0 ) )
 
-         SET SECTION "SETTINGS" ENTRY "BUILD"        to ::ltbuild
-         SET SECTION "SETTINGS" ENTRY "LIB"          to ::clib
-         SET SECTION "SETTINGS" ENTRY "SNAP"         to ::lsnap
+         SET SECTION "SETTINGS"    ENTRY "BUILD"         TO LTrim( Str( ::ltbuild, 1, 0 ) )
+         SET SECTION "SETTINGS"    ENTRY "LIB"           TO ::clib
+         SET SECTION "SETTINGS"    ENTRY "SNAP"          TO LTrim( Str( ::lsnap, 1, 0 ) )
    END INI
 
 Return
@@ -4150,7 +4162,7 @@ IF len(alltrim(::cExteditor))=0
 
    if iswindowdefined(editbcvc)
       waitmess:hide()
-      MsgStop( 'Can only edit one form at a time.', 'ooHG IDE+' )
+      MsgStop( "Sorry, the IDE can't edit more than one file at a time.", 'ooHG IDE+' )
       return nil
    endif
 
@@ -4634,13 +4646,13 @@ nline:=val(inputbox('Go to line:','Question'))
 if nline>long
    nline:=long  &&&& para que no se pase
 endif
-todo:=editbcvc:edit_1:value
+texto:=editbcvc:edit_1:value
 editbcvc:edit_1:setfocus()
 for i:=1 to long
-    npos:=npos+len(rtrim((memoline(todo,500,i))))
+    npos:=npos+len(rtrim((memoline(texto,500,i))))
     if i == nline
        editbcvc:edit_1:setfocus()
-       editbcvc.edit_1.caretpos:=npos+(i*2)-i+1-2-len(trim((memoline(todo,500,i))))
+       editbcvc.edit_1.caretpos:=npos+(i*2)-i+1-2-len(trim((memoline(texto,500,i))))
        exit
     endif
 next i
@@ -4659,20 +4671,20 @@ return
 *-------------------------
 METHOD posxy() CLASS THMI
 *-------------------------
-local i,todo
+local i,texto
 local ncaretpos:=editbcvc.edit_1.caretpos, npos:=0,nposx:=0, nposy:=0
-   todo:=editbcvc:edit_1:value
-   long:=mlcount(todo)
+   texto:=editbcvc:edit_1:value
+   long:=mlcount(texto)
    ::_ncaretpos:=ncaretpos
    nposy:=0
    for i:=1 to long
-       npos:=npos+len(rtrim(( memoline(todo,500,i)   )))
+       npos:=npos+len(rtrim(( memoline(texto,500,i)   )))
        if npos > ( ncaretpos -(i-1) )
-          nposx:=len((rtrim((memoline(todo,500,i)))))-(npos-(ncaretpos-(i-1)))+1
+          nposx:=len((rtrim((memoline(texto,500,i)))))-(npos-(ncaretpos-(i-1)))+1
           nposy:=i
           if nposx=0
              nposy --
-             nposx:=len((rtrim((memoline(todo,500,nposy)))))+1
+             nposx:=len((rtrim((memoline(texto,500,nposy)))))+1
           endif
           exit
        endif
@@ -4696,9 +4708,9 @@ return nil
 *-------------------------
 METHOD nextsearch() CLASS THMI
 *-------------------------
-local todo
-todo:=strtran(editbcvc:edit_1:value,CR,"")
-::npostext:=myat(upper(::ctext),upper(todo),::npostext+len(::ctext))
+local texto
+texto:=strtran(editbcvc:edit_1:value,CR,"")
+::npostext:=myat(upper(::ctext),upper(texto),::npostext+len(::ctext))
 if ::npostext>0
    editbcvc:edit_1:setfocus()
    editbcvc.edit_1.caretpos:=::npostext-1
@@ -4710,12 +4722,12 @@ return nil
 
 
 *-------------------------
-Function myat(cbusca,ctodo,ninicio)
+Function myat(cbusca,ctexto,ninicio)
 *-------------------------
 local i,nposluna
 nposluna:=0
-for i:= ninicio to len(ctodo)
-    if upper(substr(ctodo,i,len(cbusca)))=upper(cbusca)
+for i:= ninicio to len(ctexto)
+    if upper(substr(ctexto,i,len(cbusca)))=upper(cbusca)
        nposluna:=i
        exit
     endif
@@ -4784,34 +4796,26 @@ return
 
 
 *-------------------------
-METHOD exitform() CLASS THMI
+METHOD ExitForm() CLASS THMI
 *-------------------------
-if .not. myform:lFsave
-   if MsgYesNo( 'Form not saved, save it now?', 'ooHG IDE+' )
-      myform:Save( 0 )
-   endif
+   IF ! myForm:lFsave
+      IF MsgYesNo( 'Form not saved, save it now?', 'ooHG IDE+' )
+         myForm:Save( 0 )
+      ENDIF
+   ENDIF
 
-endif
-   if RTL#NIL
-      release window all
-   endif
-if iswindowactive(lista)
-   release window lista
-endif
-if iswindowactive(form_1)
-   release window form_1
-endif
-
-
-cvccontrols:hide()
-
-form_main:hide()
-Form_Tree:button_7:enabled := .T.
-Form_Tree:button_9:enabled := .T.
-Form_Tree:button_10:enabled := .T.
-Form_Tree:button_11:enabled := .T.
-::form_activated:=.F.
-return
+   IF RTL == NIL
+      myForm:ReleaseForms()
+      cvcControls:Hide()
+      Form_main:Hide()
+      Form_Tree:button_7:Enabled := .T.
+      Form_Tree:button_9:Enabled := .T.
+      Form_Tree:button_10:Enabled := .T.
+      Form_Tree:button_11:Enabled := .T.
+   ELSE
+      RELEASE WINDOW ALL      // End App
+   ENDIF
+RETURN NIL
 
 *-------------------------
 static Function databaseview2( myIde )
@@ -5035,7 +5039,7 @@ SET INTERACTIVECLOSE OFF
 Return ( aResult )
 
 *-----------------------------------------------------------------------------*
-Function _myInputWindowOk( oInputWindow, aResult )
+STATIC FUNCTION _myInputWindowOk( oInputWindow, aResult )
 *-----------------------------------------------------------------------------*
 Local i , l
    l := len( aResult )
@@ -5045,24 +5049,23 @@ Local i , l
 Return Nil
 
 *-----------------------------------------------------------------------------*
-Function _myInputWindowCancel( oInputWindow, aResult )
+STATIC FUNCTION _myInputWindowCancel( oInputWindow, aResult )
 *-----------------------------------------------------------------------------*
    afill( aResult, NIL )
 Return Nil
 
+*-----------------------------------------------------------------------------*
+STATIC FUNCTION Sale()
+*-----------------------------------------------------------------------------*
+   RELEASE WINDOW _inputwindow
+   IF HB_IsObject( myForm )
+      MisPuntos()
+   ENDIF
+RETURN NIL
 
-*-------------------------
-Function sale()
-*-------------------------
-release window _inputwindow
-if iswindowdefined("form_1")
-    mispuntos()
-endif
-return nil
-
-//------------------------------------------------------------------------------
+*-----------------------------------------------------------------------------*
 Function DelExt( cFileName )
-//------------------------------------------------------------------------------
+*-----------------------------------------------------------------------------*
    Local nAt
    Local cBase
 
@@ -5074,15 +5077,14 @@ Function DelExt( cFileName )
    EndIf
 Return cBase
 
-
-//------------------------------------------------------------------------------
+*-----------------------------------------------------------------------------*
 Function DelPath( cFileName )
-//------------------------------------------------------------------------------
+*-----------------------------------------------------------------------------*
 Return SubStr( cFileName, RAt( '\', cFileName ) + 1 )
 
-
+*-----------------------------------------------------------------------------*
 Function AddSlash(cInFolder)
-
+*-----------------------------------------------------------------------------*
   LOCAL cOutFolder := ALLTRIM(cInFolder)
 
   IF RIGHT(cOutfolder, 1) != '\'
@@ -5091,10 +5093,9 @@ Function AddSlash(cInFolder)
 
 RETURN cOutFolder
 
-
-//------------------------------------------------------------------------------
+*-----------------------------------------------------------------------------*
 Function DelSlash( cInFolder )
-//------------------------------------------------------------------------------
+*-----------------------------------------------------------------------------*
   LOCAL cOutFolder := AllTrim( cInFolder )
 
   If Right( cOutfolder, 1 ) == '\'
@@ -5103,10 +5104,9 @@ Function DelSlash( cInFolder )
 
 Return cOutFolder
 
-
-*---------------------------------------------------------------*
+*-----------------------------------------------------------------------------*
 Function OnlyFolder(cFile1)
-*---------------------------------------------------------------*
+*-----------------------------------------------------------------------------*
    Local i,nLg,cFolder,nPosFile
    If Len(cFile1) > 0
       i := 1
@@ -5124,9 +5124,9 @@ Function OnlyFolder(cFile1)
    Endif
 Return(cFolder)
 
-//------------------------------------------------------------------------------
+*-----------------------------------------------------------------------------*
 Function IsFileInPath( cFileName )
-//------------------------------------------------------------------------------
+*-----------------------------------------------------------------------------*
    Local cDir
    LOCAL cName
    LOCAL cExt

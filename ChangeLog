@@ -1,11 +1,108 @@
 /*
- * $Id: ChangeLog,v 1.1323 2014-07-14 21:35:17 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1324 2014-07-17 02:59:37 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-07-16 23:59 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/fmgs/form_prefer.fmg
+     + New controls for labels and textboxs default height.
+     * Format.
+   * ide/prgs/toolbed.prg
+     + Method Close.
+   * ide/prgs/saveform.prg
+     + Function StrToStr to convert strings vars to quoted strings
+       constants for writing them into the .fmg file.
+     ; Now string constants (e.g. values, tooltips, caption) can
+       include ' and ". The only restriction is that the strings
+       must not include chars ' and " and ( [ or ] ).
+   * ide/prgs/propeven.prg
+     + Update of "Control Inspector" grid when the properties of a
+       control are modified.
+   * ide/prgs/moside.prg
+     * Format.
+     - Comments.
+     + Update of "Control Inspector" grid when the position or
+       dimensiones of a control are modified, and when a control
+       is deleted.
+     * Function chiffram renamed to CheckIfIsFrame.
+   * ide/prgs/mgide.prg
+     + DATAs nTextBoxHeight and nLabelHeight to THMI class.
+     + The default height of LABEL and TEXTBOX controls can be
+       configurated via Preferences menu. Values are saved to INI.
+       Use 0 to default to OOHG's default values (24).
+       Thanks to Ricardo Sassy for this contribution.
+     + Functions Minim() and Maxim() to minimize and restore forms.
+     - Function RefreFo.
+     * Messages.
+     * Var names to avoid conflict with T*O*D*O notes.
+     * Method ExitForm uses TFORM1:ReleaseForms instead of realeasing
+       the forms manually.
+     * Functions Sale, _myInputWindowOk and _myInputWindowCancel made
+       statics.
+   * ide/prgs/formedit.prg
+     * Comments.
+     * Format.
+     + Methods MinimizeForms, ReleaseForms and RestoreForms.
+     ! Wrong initialitation of TRANSPARENT property.
+       Thanks to Ricardo Sassy for this fix.
+     % Method IniArray.
+     * Function myaDel no longer uses macros.
+     * Call to function chiffram changed by CheckIfIsFrame.
+     * Tooltips.
+     * Function muestrasino() renamed to RefreshControlInspector().
+     ! Height of "Control Inspector" grid is wrong under XP.
+     ! "Control Inspector" grid looses focus after editing.
+     * Some references to myForm: by ::
+     * Use method tMyToolb:Cerrar() instead of just closing the workarea.
+     * Default to 'F' instead of '' in all calls to method LeaDatoLogic.
+     * Method LeaDatoLogic validates default value.
+     * Controls that represent LABEL, RADIOGROUP, ANIMATEBOX, IMAGE and
+       CHECKBOX controls, are created with TRANSPARENT clause if the
+       controls definitions in the .fmg contain this clause.
+     % Function ProcessContainers().
+     - Functions Minim() and Maxim().
+     * Function SetHeightForWholeRows now receives the available height
+       and returns the height needed to show only whole rows.
+   * source/h_xbrowse.prg
+     + Constants for refresh type.
+     * Call to EditAllCells from EditItem_B limits edition to one row.
+       This restores original behaviour of method EditItem.
+     ; To edit multiples rows use methods EditAllCells or EditGrid
+       with FULLMOVE set to .T.
+     * _OOHG_ThisItemRowIndex will be available to ON EDITCELL event
+       procedure when called from methods EditItem and EditItem_B.
+     ! Return value of EditItem when edition is prevented because
+       of recursivity.
+     ! Return value of EditItem_B when edition is aborted.
+     - SetFocus() calls inside EditItem_B.
+     * Method EditCell evaluates ON ABORTEDIT event procedure when
+       the edition of a newly added row is aborted.
+     + Parameter lOneRow to method EditAllCells. When .T., the editing
+       is limited to one row only. Defaults to .F.
+     * Comments.
+     * Format.
+   * source/h_browse.prg
+     + Constants for refresh type.
+     ! Method EditItem_B does not restore the dbf's record pointer
+       when a new row is added in a not synchronized control.
+     + Parameter lRefresh to methods EditCell and EditAllCells.
+       When .T., forces the inmediate refresh of the changed items.
+       Defaults to .F. if ::RefreshType is REFRESH_DEFAULT or REFRESH_NO.
+       Defaults to .T. if ::RefreshType is REFRESH_FORCE.
+     ; Useful when FORCEREFRESH is .F., the dbf has an active index and
+       the edition changes a cell that's part of the index key.
+     + Parameter lOneRow to method EditAllCells. When .T., the editing
+       is limited to one row only. Defaults to .F.
+     * Method EditAllCells no longer changes the dbf's record pointer.
+     ! Dbf's record pointer is not correct while editing a just added row.
+     ! Control is refreshed when refresh type is REFRESH_NO and a new
+       row was added.
+     * Comments.
+     * Format.
 
 2014-07-14 18:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog

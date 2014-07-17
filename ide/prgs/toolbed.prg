@@ -1,5 +1,5 @@
 /*
- * $Id: toolbed.prg,v 1.4 2014-06-25 20:11:58 fyurisich Exp $
+ * $Id: toolbed.prg,v 1.5 2014-07-17 02:59:37 fyurisich Exp $
  */
 
 #include "dbstruct.ch"
@@ -52,6 +52,7 @@ CLASS Tmytoolbared FROM TFORM1
    METHOD cursorup()
    METHOD tbsave()
    METHOD leefont()
+   METHOD Close()
 
 ENDCLASS
 
@@ -347,17 +348,25 @@ local nbuttons:=0,nw,nh,i, lDeleted
 return
 
 *-------------------------
- METHOD discard() CLASS Tmytoolbared
+ METHOD Discard() CLASS Tmytoolbared
 *-------------------------
-myToolbarEd.release()
-select 10
-Use
-mispuntos()
-return
-
+   myToolbarEd.Release()
+   ::Close()
+   MisPuntos()
+RETURN NIL
 
 *-------------------------
-   METHOD abrir() CLASS Tmytoolbared
+ METHOD Close() CLASS Tmytoolbared
+*-------------------------
+   SELECT 10
+   USE
+   IF File( "dtoolbar.dbf" )
+      ERASE dtoolbar.dbf
+   ENDIF
+RETURN NIL
+
+*-------------------------
+METHOD Abrir() CLASS Tmytoolbared
 *-------------------------
    local aDbf[11][4]
    aDbf[1][ DBS_NAME ] := "Auxit"
