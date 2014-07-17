@@ -1,5 +1,5 @@
 /*
- * $Id: h_menu.prg,v 1.35 2013-07-03 01:44:52 migsoft Exp $
+ * $Id: h_menu.prg,v 1.36 2014-07-17 21:24:51 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -156,7 +156,6 @@ Return Nil
 
 
 
-
 CLASS TMenuMain FROM TMenu
    DATA lMain     INIT .T.
 
@@ -289,7 +288,7 @@ CLASS TMenuItem FROM TControl
    METHOD Separator            BLOCK { |Self| TMenuItem():DefineSeparator( , Self ) }
    METHOD Picture              SETGET
    METHOD Stretch              SETGET
-
+   METHOD DoEvent
    METHOD DefaultItem( nItem ) BLOCK { |Self,nItem| SetMenuDefaultItem( ::Container:hWnd, nItem ) }
 ENDCLASS
 
@@ -564,6 +563,31 @@ METHOD SetItemsColor( uColor, lApplyToSubItems ) CLASS TMenuItem
       TMenuItemSetItemsColor( Self, uColor, lApplyToSubItems )
    ENDIF
 Return Nil
+
+*-----------------------------------------------------------------------------*
+METHOD DoEvent( bBlock, cEventType, aParams ) CLASS TMenuItem
+*-----------------------------------------------------------------------------*
+Local aNew
+   IF HB_IsNil( ::Cargo ) .AND. HB_IsNil( ::Container:Cargo ) .AND. HB_IsNil( ::Parent:Cargo )
+      aNew := aParams
+   ELSE
+      IF HB_IsNil( aParams )
+         aNew := {}
+      ELSEIF HB_IsArray( aParams )
+         aNew := aClone( aParams )
+      ELSE
+         aNew := { aParams }
+      ENDIF
+
+      IF ! HB_IsNil( ::Cargo )
+         aAdd( aNew, ::Cargo )
+      ELSEIF ! HB_IsNil( ::Container:Cargo )
+         aAdd( aNew, ::Container:Cargo )
+      ELSE
+         aAdd( aNew, ::Parent:Cargo )
+      ENDIF
+   ENDIF
+Return ::Super:DoEvent( bBlock, cEventType, aNew )
 
 *------------------------------------------------------------------------------*
 Function _EndMenuPopup()

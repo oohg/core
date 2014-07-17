@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.258 2014-07-17 19:20:17 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.259 2014-07-17 21:24:51 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2469,7 +2469,7 @@ Return Nil
 METHOD Events_Notify( wParam, lParam ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nNotify := GetNotifyCode( lParam )
-Local lvc, _ThisQueryTemp, nvkey, uValue, lGo, aItem, aCellData
+Local lvc, _ThisQueryTemp, nvkey, uValue, lGo, aItem
 
    If nNotify == NM_CUSTOMDRAW
       Return TGrid_Notify_CustomDraw( Self, lParam, .F., uValue, 0, ::lCheckBoxes, ::lFocusRect, ::lNoGrid, ::lPLM )
@@ -2626,16 +2626,8 @@ Local lvc, _ThisQueryTemp, nvkey, uValue, lGo, aItem, aCellData
 
       // fire context menu
       If ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. uValue <= 0 )
-         aCellData := _GetGridCellData( Self )
-         _OOHG_ThisItemRowIndex   := aCellData[ 1 ]
-         _OOHG_ThisItemColIndex   := aCellData[ 2 ]
-         _OOHG_ThisItemCellRow    := aCellData[ 3 ]
-         _OOHG_ThisItemCellCol    := aCellData[ 4 ]
-         _OOHG_ThisItemCellWidth  := aCellData[ 5 ]
-         _OOHG_ThisItemCellHeight := aCellData[ 6 ]
-         _OOHG_ThisItemCellValue  := ::Cell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
+         ::ContextMenu:Cargo := _GetGridCellData( Self )
          ::ContextMenu:Activate()
-         _ClearThisCellInfo()
       EndIf
 
      // skip default action
