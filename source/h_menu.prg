@@ -1,5 +1,5 @@
 /*
- * $Id: h_menu.prg,v 1.36 2014-07-17 21:24:51 fyurisich Exp $
+ * $Id: h_menu.prg,v 1.37 2014-07-17 22:25:05 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -567,7 +567,7 @@ Return Nil
 *-----------------------------------------------------------------------------*
 METHOD DoEvent( bBlock, cEventType, aParams ) CLASS TMenuItem
 *-----------------------------------------------------------------------------*
-Local aNew
+Local aNew, uCargo
    IF HB_IsNil( ::Cargo ) .AND. HB_IsNil( ::Container:Cargo ) .AND. HB_IsNil( ::Parent:Cargo )
       aNew := aParams
    ELSE
@@ -580,12 +580,15 @@ Local aNew
       ENDIF
 
       IF ! HB_IsNil( ::Cargo )
-         aAdd( aNew, ::Cargo )
+         uCargo := ::Cargo
       ELSEIF ! HB_IsNil( ::Container:Cargo )
-         aAdd( aNew, ::Container:Cargo )
+         uCargo := ::Container:Cargo
       ELSE
-         aAdd( aNew, ::Parent:Cargo )
+         uCargo := ::Parent:Cargo
       ENDIF
+      aSize( aNew, Len( aNew ) + 1 )
+      aIns( aNew, 1 )
+      aNew[ 1 ] := uCargo
    ENDIF
 Return ::Super:DoEvent( bBlock, cEventType, aNew )
 
