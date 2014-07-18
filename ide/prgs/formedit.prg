@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.19 2014-07-18 02:57:19 fyurisich Exp $
+ * $Id: formedit.prg,v 1.20 2014-07-18 15:19:07 fyurisich Exp $
  */
 
 /*
@@ -915,7 +915,7 @@ LOCAL i
          aAdd( ::aaddress,          ::aaddress[z] )
          aAdd( ::ahandcursor,       ::ahandcursor[z] )
          aAdd( ::atabpage,          ::atabpage[z] )
-         aAdd( ::aname,             ::aname[z] )
+         aAdd( ::aname,             ControlName )
          aAdd( ::anumber,           ::anumber[z] )
          aAdd( ::aflat,             ::aflat[z] )
          aAdd( ::abuttons,          ::abuttons[z] )
@@ -1539,8 +1539,8 @@ METHOD New() CLASS TForm1
       END WINDOW
 
       DEFINE WINDOW Lista OBJ Lista ;
-         AT 120, 665 ;
-         WIDTH 300 ;
+         AT 120, ( GetDeskTopWidth() - 380 ) ;
+         WIDTH 370 ;
          HEIGHT 490 ;
          CLIENTAREA ;
          TITLE 'Control Inspector' ;
@@ -1552,24 +1552,22 @@ METHOD New() CLASS TForm1
          ON INIT oListaCon:Height := SetHeightForWholeRows( oListaCon, 400 )
 
          @ 10, 10 GRID ListaCon OBJ oListaCon ;
-            WIDTH 280 ;
+            WIDTH 350 ;
             HEIGHT 400  ;
-            HEADERS {'Name', 'Row', 'Col', 'Width', 'Height', 'int-name', 'type'} ;
-            WIDTHS {80, 40, 40, 45, 50, 0, 0 } ;
+            HEADERS {'Name', 'Row', 'Col', 'Width', 'Height', 'int-name', 'Type'} ;
+            WIDTHS {80, 40, 40, 45, 50, 0, 70 } ;
             FONT "Arial" ;
             SIZE 10 ;
             INPLACE EDIT ;
             READONLY {.T., .F., .F., .F., .F., .T., .T.}  ;
             JUSTIFY {GRID_JTFY_LEFT, GRID_JTFY_RIGHT, GRID_JTFY_RIGHT, GRID_JTFY_RIGHT, GRID_JTFY_RIGHT, GRID_JTFY_LEFT, GRID_JTFY_LEFT}  ;
-            ON HEADCLICK { {|| oListaCon:SortColumn( 1, .F. ) }, {|| oListaCon:SortColumn( 2, .F. ) }, {|| oListaCon:SortColumn( 3, .F. ) }, {|| oListaCon:SortColumn( 4, .F. ) }, {|| oListaCon:SortColumn( 5, .F. ) } } ;
+            ON HEADCLICK { {|| oListaCon:SortColumn( 1, .F. ) }, {|| oListaCon:SortColumn( 2, .F. ) }, {|| oListaCon:SortColumn( 3, .F. ) }, {|| oListaCon:SortColumn( 4, .F. ) }, {|| oListaCon:SortColumn( 5, .F. ) }, NIL, {|| oListaCon:SortColumn( 7, .F. ) } } ;
             FULLMOVE ;
             MULTISELECT ;
             ON EDITCELL ValCellPos( oListaCon ) ;
             ON CHANGE SelectControl( oListaCon )
+         oListaCon:ColumnHide( 6 )
 
-// TODO: This context should open on the control clicked and not the control selected in the form
-// Each ACTION should call a new function. This function finds the index of the control in
-// getformobject('Form_1'):acontrols, sets nhandlep := index, and calls the old function.
          DEFINE CONTEXT MENU CONTROL ListaCon OF Lista
             ITEM 'Properties'             ACTION {|aParams| Edit_Properties( ::myIde, aParams ) }
             ITEM 'Events    '             ACTION Events_click( ::myIde )
@@ -1587,10 +1585,10 @@ METHOD New() CLASS TForm1
             ITEM 'Delete'                 ACTION DeleteControl()
          END MENU
 
-         @ 420, 10 LABEL lop1 VALUE "Click or enter to modify position or dimension." FONT "Calibri" SIZE 9 AUTOSIZE HEIGHT 15
-         @ 435, 10 LABEL lop2 VALUE "Right click to access properties or events, or" FONT "Calibri" SIZE 9 AUTOSIZE HEIGHT 15
-         @ 450, 10 LABEL lop3 VALUE "to do global align/resize of selected controls." FONT "Calibri" SIZE 9 AUTOSIZE HEIGHT 15
-         @ 465, 10 LABEL lop4 VALUE "Click on headers to change display order." FONT "Calibri" SIZE 9 AUTOSIZE HEIGHT 15
+         @ 420, 10 LABEL lop1 VALUE "Double click or Enter to modify the position or size of a control." FONT "Calibri" SIZE 9 AUTOSIZE HEIGHT 15
+         @ 435, 10 LABEL lop2 VALUE "Right click to access properties or events, or to do global" FONT "Calibri" SIZE 9 AUTOSIZE HEIGHT 15
+         @ 450, 10 LABEL lop3 VALUE "align/resize of selected controls (use Ctrl+Click to select)." FONT "Calibri" SIZE 9 AUTOSIZE HEIGHT 15
+         @ 465, 10 LABEL lop4 VALUE "Click on the headers to change display order." FONT "Calibri" SIZE 9 AUTOSIZE HEIGHT 15
       END WINDOW
 
       form_main:Show()
@@ -1758,8 +1756,8 @@ LOCAL nFWidth, nFHeight
       END WINDOW
 
       DEFINE WINDOW Lista OBJ Lista ;
-         AT 120, 665 ;                                  
-         WIDTH 300 ;
+         AT 120, ( GetDeskTopWidth() - 380 ) ;
+         WIDTH 370 ;
          HEIGHT 490 ;
          CLIENTAREA ;
          TITLE 'Control Inspector' ;
@@ -1771,24 +1769,22 @@ LOCAL nFWidth, nFHeight
          ON INIT oListaCon:Height := SetHeightForWholeRows( oListaCon, 400 )
 
          @ 10, 10 GRID ListaCon OBJ oListaCon ;
-            WIDTH 280 ;
+            WIDTH 350 ;
             HEIGHT 400  ;
-            HEADERS {'Name', 'Row', 'Col', 'Width', 'Height', 'int-name', 'type'} ;
-            WIDTHS {80, 40, 40, 45, 50, 0, 0 } ;
+            HEADERS {'Name', 'Row', 'Col', 'Width', 'Height', 'int-name', 'Type'} ;
+            WIDTHS {80, 40, 40, 45, 50, 0, 70 } ;
             FONT "Arial" ;
             SIZE 10 ;
             INPLACE EDIT ;
             READONLY {.T., .F., .F., .F., .F., .T., .T.}  ;
             JUSTIFY {GRID_JTFY_LEFT, GRID_JTFY_RIGHT, GRID_JTFY_RIGHT, GRID_JTFY_RIGHT, GRID_JTFY_RIGHT, GRID_JTFY_LEFT, GRID_JTFY_LEFT}  ;
-            ON HEADCLICK { {|| oListaCon:SortColumn( 1, .F. ) }, {|| oListaCon:SortColumn( 2, .F. ) }, {|| oListaCon:SortColumn( 3, .F. ) }, {|| oListaCon:SortColumn( 4, .F. ) }, {|| oListaCon:SortColumn( 5, .F. ) } } ;
+            ON HEADCLICK { {|| oListaCon:SortColumn( 1, .F. ) }, {|| oListaCon:SortColumn( 2, .F. ) }, {|| oListaCon:SortColumn( 3, .F. ) }, {|| oListaCon:SortColumn( 4, .F. ) }, {|| oListaCon:SortColumn( 5, .F. ) }, NIL, {|| oListaCon:SortColumn( 7, .F. ) } } ;
             FULLMOVE ;
             MULTISELECT ;
             ON EDITCELL ValCellPos( oListaCon ) ;
             ON CHANGE SelectControl( oListaCon )
+         oListaCon:ColumnHide( 6 )
 
-// TODO: This context should open on the control clicked and not the control selected in the form
-// Each ACTION should call a new function. This function finds the index of the control in
-// getformobject('Form_1'):acontrols, sets nhandlep := index, and calls the old function.
          DEFINE CONTEXT MENU CONTROL ListaCon OF Lista
             ITEM 'Properties'             ACTION {|aParams| Edit_Properties( ::myIde, aParams ) }
             ITEM 'Events    '             ACTION Events_click( ::myIde )
@@ -1806,10 +1802,10 @@ LOCAL nFWidth, nFHeight
             ITEM 'Delete'                 ACTION DeleteControl()
          END MENU
 
-         @ 420, 10 LABEL lop1 VALUE "Click or enter to modify position or dimension." FONT "Calibri" SIZE 9 AUTOSIZE HEIGHT 15
-         @ 435, 10 LABEL lop2 VALUE "Right click to access properties or events, or" FONT "Calibri" SIZE 9 AUTOSIZE HEIGHT 15
-         @ 450, 10 LABEL lop3 VALUE "to do global align/resize of selected controls." FONT "Calibri" SIZE 9 AUTOSIZE HEIGHT 15
-         @ 465, 10 LABEL lop4 VALUE "Click on headers to change display order." FONT "Calibri" SIZE 9 AUTOSIZE HEIGHT 15
+         @ 420, 10 LABEL lop1 VALUE "Double click or Enter to modify the position or size of a control." FONT "Calibri" SIZE 9 AUTOSIZE HEIGHT 15
+         @ 435, 10 LABEL lop2 VALUE "Right click to access properties or events, or to do global" FONT "Calibri" SIZE 9 AUTOSIZE HEIGHT 15
+         @ 450, 10 LABEL lop3 VALUE "align/resize of selected controls (use Ctrl+Click to select)." FONT "Calibri" SIZE 9 AUTOSIZE HEIGHT 15
+         @ 465, 10 LABEL lop4 VALUE "Click on the headers to change display order." FONT "Calibri" SIZE 9 AUTOSIZE HEIGHT 15
       END WINDOW
 
       form_main:Show()
