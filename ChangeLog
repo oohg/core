@@ -1,11 +1,60 @@
 /*
- * $Id: ChangeLog,v 1.1324 2014-07-17 02:59:37 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1325 2014-07-18 02:57:19 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-07-17 23:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/prgs/formedit.prg
+     * Use an array to hold control's counters instead on individual vars.
+     + Methods CopyControl and CreateControl.
+     * Method AddControl.
+     ! "Control inspector" is not refreshed after global changes.
+     * "Control inspector" selected row changes when a control is
+       selected in the form.
+     * The control selected in the form changes when the selected row
+       in the "Control inspector" changes.
+     * When more than on row is selected in the "Control inspector"
+       no control is selected in the form.
+     + Global align/resize options in the context menu.
+       Thanks to Ricardo Sassy for this contribution.
+     ! RTE because method Cerrar is not defined.
+     ! RTE in function pCheckBox.
+     % Function ProcesaControl.
+     * Format.
+     * Comments.
+
+2014-07-17 19:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Previous entry amended.
+   * source/h_menu.prg
+     * The cargo data is appended in the first item instead of the last.
+
+2014-07-17 18:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     ! Cell data is missing when evaluating grid's context menu.
+     ; To access cell data you must define:
+       ITEM 'My context menu item' ACTION {|aParams| MyFun( aParams ) }
+       MyFun receives the cell data in aParams. This array contains:
+       { _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex, ;
+         _OOHG_ThisItemCellRow, _OOHG_ThisItemCellCol, ;
+         _OOHG_ThisItemCellWidth, _OOHG_ThisItemCellHeight, ;
+         _OOHG_ThisItemCellValue }
+   * source/h_menu.prg
+     + Method DoEvent to TMenuItem class.
+       The method will append to parameter aParams the content of
+       ::Cargo (the item's), or if it's NIL the content of
+       ::Container:Cargo (the menu to which the item belongs), or
+       if it's NIL the content of ::Parent:Cargo (the control to
+       which the menu belongs).
+
+2014-07-17 16:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     + Cell data is available when evaluating grid's context menu.
+       This applies to Grid, XBrowse and Browse controls.
 
 2014-07-16 23:59 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ide/fmgs/form_prefer.fmg

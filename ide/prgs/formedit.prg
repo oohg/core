@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.18 2014-07-17 02:59:37 fyurisich Exp $
+ * $Id: formedit.prg,v 1.19 2014-07-18 02:57:19 fyurisich Exp $
  */
 
 /*
@@ -241,6 +241,10 @@ CLASS TForm1
    DATA cscobj               INIT ''    //GCA
 
    // variables de contadores de tipos de controles
+   DATA ControlPrefix        INIT { 'form_', 'button_', 'checkbox_', 'list_', 'combo_', 'checkbtn_', 'grid_', 'frame_', 'tab_', 'image_', 'animate_', 'datepicker_', 'text_', 'edit_', 'label_', 'player_', 'progressbar_', 'radiogroup_', 'slider_', 'spinner_', 'piccheckbutt_', 'picbutt_', 'timer_', 'browse_', 'tree_', 'ipaddress_', 'monthcal_',     'hyperlink_', 'richeditbox_' }
+   DATA ControlType          INIT { 'FORM',  'BUTTON',  'CHECKBOX',  'LIST',  'COMBO',  'CHECKBTN',  'GRID',  'FRAME',  'TAB',  'IMAGE',  'ANIMATE',  'DATEPICKER',  'TEXT',  'EDIT',  'LABEL',  'PLAYER',  'PROGRESSBAR',  'RADIOGROUP',  'SLIDER',  'SPINNER',  'PICCHECKBUTT',  'PICBUTT',  'TIMER',  'BROWSE',  'TREE',  'IPADDRESS',  'MONTHCALENDAR', 'HYPERLINK',  'RICHEDIT' }
+   DATA ControlCount         INIT { 0,       0,         0,           0,       0,        0,           0,       0,        0,      0,        0,          0,             0,       0,       0,        0,         0,              0,             0,         0,          0,               0,          0,        0,         0,       0,            0,               0,            0 }
+/*
    DATA ButtonCount          INIT  0
    DATA CheckBoxCount        INIT  0
    DATA ListBoxCount         INIT  0
@@ -267,10 +271,13 @@ CLASS TForm1
    DATA Monthcalendarcount   INIT  0
    DATA Hyperlinkcount       INIT  0
    DATA Richeditboxcount     INIT  0
+*/
 
    METHOD AddControl()
    METHOD Clean( cFValue )
    METHOD Control_Click( wpar )
+   METHOD CopyControl( nIndex )
+   METHOD CreateControl( nControlType )
    METHOD FillControl()
    METHOD IniArray( nForm, nControlwl, ControlName, cTypeCtrl, noanade )
    METHOD LeaCol( cName )
@@ -322,7 +329,6 @@ RETURN NIL
 *------------------------------------------------------------------------------*
 METHOD VD( cItem1, myIde ) CLASS TForm1
 *------------------------------------------------------------------------------*
-local nNumcont:=0
    Public swcursor := 0, myhandle := 0, cFBackcolor := ::cFBackcolor, swkm:=.F., swordenfd:=.F.
 
    nhandlep := 0
@@ -332,32 +338,6 @@ local nNumcont:=0
    CursorWait()
 
    ::myIde                := myIde
-   ::ButtonCount          := nNumcont
-   ::CheckBoxCount        := nNumcont
-   ::ListBoxCount         := nNumcont
-   ::ComboBoxCount        := nNumcont
-   ::CheckButtonCount     := nNumcont
-   ::GridCount            := nNumcont
-   ::FrameCount           := nNumcont
-   ::TabCount             := nNumcont
-   ::ImageCount           := nNumcont
-   ::AnimateCount         := nNumcont
-   ::DatepickerCount      := nNumcont
-   ::TextBoxCount         := nNumcont
-   ::EditBoxCount         := nNumcont
-   ::LabelCount           := nNumcont
-   ::PlayerCount          := nNumcont
-   ::ProgressBarCount     := nNumcont
-   ::RadioGroupCount      := nNumcont
-   ::SliderCount          := nNumcont
-   ::SpinnerCount         := nNumcont
-   ::Timercount           := nNumcont
-   ::BrowseCount          := nNumcont
-   ::Treecount            := nNumcont
-   ::Ipaddresscount       := nNumcont
-   ::Monthcalendarcount   := nNumcont
-   ::Hyperlinkcount       := nNumcont
-   ::Richeditboxcount     := nNumcont
    ::Aline                := {}
    ::cftitle              := ""
    ::cfname               := ""
@@ -836,559 +816,535 @@ endif
 return nil
 
 *------------------------------------------------------------------------------*
-METHOD AddControl() CLASS TForm1
+METHOD CopyControl( z ) CLASS TForm1
 *------------------------------------------------------------------------------*
-LOCAL aName, x, i
+LOCAL i
 
-// TODO: los controles definidos acá deber ser iguales a los definidos en las function p(Control)
-   WITH OBJECT myform
-      swkm := .F.
-      DO CASE
-      CASE :CurrentControl == 1
-         x := CheckIfIsFrame()
-         IF x > 0
-            Dibuja1( x )
-            RETURN NIL
-         ENDIF
-
-      CASE :CurrentControl == 2
-         :ButtonCount ++
-         ControlName := 'button_' + LTrim( Str( :ButtonCount ) )
+   IF z > 1
+      i := aScan( ::ControlType, ::actrltype[z] )
+      IF i > 0
+         ::ControlCount[i] ++
+         ControlName := ::ControlPrefix[i] + LTrim( Str( ::ControlCount[i] ) )
          Do While IsControlDefined( &ControlName, Form_1 )
-            :ButtonCount ++
-            ControlName := 'button_' + LTrim( Str( :ButtonCount ) )
+            ::ControlCount[i] ++
+            ControlName := ::ControlPrefix[i] + LTrim( Str( ::ControlCount[i] ) )
          ENDDO
-         :nControlW ++
-         :IniArray( :nForm, :nControlW, ControlName, 'BUTTON' )
-         :aAction[:nControlW] := "MsgInfo( 'Button pressed' )"
-         :aBackColor[:nControlW] := cFBackcolor            // TODO: Check is this is needed
-         @ _OOHG_MouseRow, _OOHG_MouseCol BUTTON &ControlName OF Form_1 ;
-            CAPTION ControlName ;
-            ON GOTFOCUS Dibuja( This:Name ) ;
-            ACTION Dibuja( This:Name ) ;
-            NOTABSTOP
-         ProcessContainers( ControlName, ::myIde )
+         ::nControlW ++
 
-      CASE :CurrentControl == 3
-         :CheckBoxCount ++
-         ControlName := 'checkbox_' + LTrim( Str( :CheckBoxCount ) )
-         Do While IsControlDefined( &ControlName, Form_1 )
-            :CheckBoxCount ++
-            ControlName := 'checkbox_' + LTrim( Str( :CheckBoxCount ) )
-         ENDDO
-         :nControlW ++
-         :IniArray( :nForm, :nControlW, ControlName, 'CHECKBOX' )
-         :aBackColor[:nControlW] := cFBackcolor       // Needed to seem transparent TODO: Check
-         IF cFBackcolor # 'NIL' .AND. Len( cFBackcolor ) > 0
-            GetControlObject( ControlName, "Form_1" ):BackColor:= &cFBackcolor
-         ENDIF
-         @ _OOHG_MouseRow, _OOHG_MouseCol CHECKBOX &ControlName OF Form_1 ;
-            CAPTION ControlName ;
-            ON GOTFOCUS Dibuja( This:Name ) ;
-            ON CHANGE Dibuja( This:Name ) ;
-            NOTABSTOP
-         ProcessContainers( ControlName, ::myIde )
+         aAdd( ::acontrolw,         ControlName )
+         aAdd( ::actrltype,         ::actrltype[z] )
+         aAdd( ::aenabled,          ::aenabled[z] )
+         aAdd( ::avisible,          ::avisible[z] )
+         aAdd( ::afontname,         ::afontname[z] )
+         aAdd( ::afontsize,         ::afontsize[z] )
+         aAdd( ::abold,             ::abold[z] )
+         aAdd( ::abackcolor,        ::abackcolor[z] )
+         aAdd( ::afontcolor,        ::afontcolor[z] )
+         aAdd( ::afontitalic,       ::afontitalic[z] )
+         aAdd( ::afontunderline,    ::afontunderline[z] )
+         aAdd( ::afontstrikeout,    ::afontstrikeout[z] )
+         aAdd( ::atransparent,      ::atransparent[z] )
+         aAdd( ::acaption,          ::acaption[z] )
+         aAdd( ::apicture,          ::apicture[z] )
+         aAdd( ::avalue,            ::avalue[z] )
+         aAdd( ::avaluen,           ::avaluen[z] )
+         aAdd( ::avaluel,           ::avaluel[z] )
+         aAdd( ::atooltip,          ::atooltip[z] )
+         aAdd( ::amaxlength,        ::amaxlength[z] )
+         aAdd( ::awrap,             ::awrap[z] )
+         aAdd( ::aincrement,        ::aincrement[z] )
+         aAdd( ::auppercase,        ::auppercase[z] )
+         aAdd( ::apassword,         ::apassword[z] )
+         aAdd( ::anumeric,          ::anumeric[z] )
+         aAdd( ::ainputmask,        ::ainputmasK[z] )
+         aAdd( ::auppercase,        ::auppercase[z] )
+         aAdd( ::alowercase,        ::alowercase[z] )
+         aAdd( ::aaction,           ::aaction[z] )
+         aAdd( ::aopaque,           ::aopaque[z] )
+         aAdd( ::arange,            ::arange[z] )
+         aAdd( ::anotabstop,        ::anotabstop[z] )
+         aAdd( ::asort,             ::asort[z] )
+         aAdd( ::afile,             ::afile[z] )
+         aAdd( ::ainvisible,        ::ainvisible[z] )
+         aAdd( ::aautoplay,         ::aautoplay[z] )
+         aAdd( ::acenter,           ::acenter[z] )
+         aAdd( ::acenteralign,      ::acenteralign[z] )
+         aAdd( ::ashownone,         ::ashownone[z] )
+         aAdd( ::aupdown,           ::aupdown[z] )
+         aAdd( ::areadonly,         ::areadonly[z] )
+         aAdd( ::avertical,         ::avertical[z] )
+         aAdd( ::asmooth,           ::asmooth[z] )
+         aAdd( ::anoticks,          ::anoticks[z] )
+         aAdd( ::aboth,             ::aboth[z] )
+         aAdd( ::atop,              ::atop[z] )
+         aAdd( ::aleft,             ::aleft[z] )
+         aAdd( ::abreak,            ::abreak[z] )
+         aAdd( ::aitems,            ::aitems[z] )
+         aAdd( ::aitemsource,       ::aitemsource[z] )
+         aAdd( ::avaluesource,      ::avaluesource[z] )
+         aAdd( ::amultiselect,      ::amultiselect[z] )
+         aAdd( ::ahelpid,           ::ahelpid[z] )
+         aAdd( ::aspacing,          ::aspacing[z] )
+         aAdd( ::aheaders,          ::aheaders[z] )
+         aAdd( ::awidths,           ::awidths[z] )
+         aAdd( ::aonheadclick,      ::aonheadclick[z] )
+         aAdd( ::anolines,          ::anolines[z] )
+         aAdd( ::aimage,            ::aimage[z] )
+         aAdd( ::astretch,          ::astretch[z] )
+         aAdd( ::aworkarea,         ::aworkarea[z] )
+         aAdd( ::afields,           ::afields[z] )
+         aAdd( ::afield,            ::afield[z] )
+         aAdd( ::avalid,            ::avalid[z] )
+         aAdd( ::awhen,             ::awhen[z] )
+         aAdd( ::avalidmess,        ::avalidmess[z] )
+         aAdd( ::areadonlyb,        ::areadonlyb[z] )
+         aAdd( ::alock,             ::alock[z] )
+         aAdd( ::adelete,           ::adelete[z] )
+         aAdd( ::ajustify,          ::ajustify[z] )
+         aAdd( ::adate,             ::adate[z] )
+         aAdd( ::aongotfocus,       ::aongotfocus[z] )
+         aAdd( ::aonchange,         ::aonchange[z] )
+         aAdd( ::aonlostfocus,      ::aonlostfocus[z] )
+         aAdd( ::aonenter,          ::aonenter[z] )
+         aAdd( ::aondisplaychange,  ::aondisplaychange[z] )
+         aAdd( ::aondblclick,       ::aondblclick[z] )
+         aAdd( ::arightalign,       ::arightalign[z] )
+         aAdd( ::anotoday,          ::anotoday[z] )
+         aAdd( ::anotodaycircle,    ::anotodaycircle[z] )
+         aAdd( ::aweeknumbers,      ::aweeknumbers[z] )
+         aAdd( ::aaddress,          ::aaddress[z] )
+         aAdd( ::ahandcursor,       ::ahandcursor[z] )
+         aAdd( ::atabpage,          ::atabpage[z] )
+         aAdd( ::aname,             ::aname[z] )
+         aAdd( ::anumber,           ::anumber[z] )
+         aAdd( ::aflat,             ::aflat[z] )
+         aAdd( ::abuttons,          ::abuttons[z] )
+         aAdd( ::ahottrack,         ::ahottrack[z] )
+         aAdd( ::adisplayedit,      ::adisplayedit[z] )
+         aAdd( ::Anodeimages,       ::Anodeimages[z] )
+         aAdd( ::Aitemimages,       ::Aitemimages[z] )
+         aAdd( ::ANorootbutton,     ::ANorootbutton[z] )
+         aAdd( ::AItemids,          ::AItemids[z] )
+         aAdd( ::Anovscroll,        ::Anovscroll[z] )
+         aAdd( ::Anohscroll,        ::Anohscroll[z] )
+         aAdd( ::Adynamicbackcolor, ::Adynamicbackcolor[z] )
+         aAdd( ::Adynamicforecolor, ::Adynamicforecolor[z] )
+         aAdd( ::Acolumncontrols,   ::Acolumncontrols[z] )
+         aAdd( ::Aoneditcell,       ::Aoneditcell[z] )
+         aAdd( ::Aonappend,         ::Aonappend[z] )
+         aAdd( ::Ainplace,          ::Ainplace[z] )
+         aAdd( ::Aedit,             ::Aedit[z] )
+         aAdd( ::Aappend,           ::Aappend[z] )
+         aAdd( ::Aclientedge,       ::Aclientedge[z] )
+         aAdd( ::afocusedpos,       ::afocusedpos[z] )
+         aAdd( ::aspeed,            ::aspeed[z] )
+         aAdd( ::acobj,             ::acobj[z] )
+         aAdd( ::aborder,           ::aborder[z] )
+         aAdd( ::aonenter,          ::aonenter[z] )
+         aAdd( ::aAction2,          ::aAction2[z] )
 
-      CASE :CurrentControl == 4
-         :ListBoxCount ++
-         ControlName := 'list_' + LTrim( Str( :ListBoxCount ) )
-         Do While IsControlDefined( &ControlName, Form_1 )
-            :ListBoxCount ++
-            ControlName := 'list_' + LTrim( Str( :ListBoxCount ) )
-         ENDDO
-         :nControlW ++
-         :IniArray( :nForm, :nControlW, ControlName, 'LIST' )
-         @ _OOHG_MouseRow, _OOHG_MouseCol LISTBOX &ControlName OF Form_1 ;
-            WIDTH 100 ;
-            HEIGHT 100 ;
-            ITEMS { ControlName } ;
-            ON GOTFOCUS Dibuja( This:Name ) ;
-            ON CHANGE Dibuja( This:Name ) ;
-            NOTABSTOP
-         ProcessContainers( ControlName, ::myIde )
+         ::CreateControl( i )
+      ENDIF
 
-      CASE :CurrentControl == 5
-         :ComboBoxCount ++
-         ControlName := 'combo_' + LTrim( Str( :ComboBoxCount ) )
-         Do While IsControlDefined( &ControlName, Form_1 )
-            :ComboBoxCount ++
-            ControlName := 'combo_' + LTrim( Str( :ComboboxCount ) )
-         ENDDO
-         :nControlW ++
-         :IniArray( :nForm, :nControlW, ControlName, 'COMBO' )
-         @ _OOHG_MouseRow, _OOHG_MouseCol COMBOBOX &ControlName OF Form_1 ;
-            WIDTH 100 ;
-            HEIGHT 100 ;
-            ITEMS { ControlName, ' ' } ;
-            VALUE 1 ;
-            ON GOTFOCUS Dibuja( This:Name ) ;
-            ON CHANGE Dibuja( This:Name ) ;
-            NOTABSTOP
-         ProcessContainers( ControlName, ::myIde )
-
-      CASE :CurrentControl == 6
-         :CheckButtonCount ++
-         ControlName := 'checkbtn_' + LTrim( Str( :CheckButtonCount ) )
-         Do While IsControlDefined( &ControlName, Form_1 )
-            :CheckButtonCount ++
-            ControlName := 'checkbtn_' + LTrim( Str( :CheckbuttonCount ) )
-         ENDDO
-         :nControlW ++
-         :IniArray( :nForm, :nControlW, ControlName, 'CHECKBTN' )
-         @ _OOHG_MouseRow, _OOHG_MouseCol CHECKBUTTON &ControlName OF Form_1 ;
-            CAPTION ControlName ;
-            ON GOTFOCUS Dibuja( This:Name ) ;
-            ON CHANGE Dibuja( This:Name) ;
-            NOTABSTOP
-         ProcessContainers( ControlName, ::myIde )
-
-      CASE :CurrentControl == 7
-         :GridCount ++
-         ControlName := 'grid_' + LTrim( Str( :GridCount ) )
-         Do While IsControlDefined( &ControlName, Form_1 )
-            :GridCount ++
-            ControlName := 'grid_' + LTrim( Str( :GridCount ) )
-         ENDDO
-         :nControlW ++
-         :IniArray( :nForm, :nControlW, ControlName, 'GRID' )
-         @ _OOHG_MouseRow, _OOHG_MouseCol GRID &ControlName OF Form_1 ;
-            HEADERS { '', '' } ;
-            WIDTHS {100, 60} ;
-            ITEMS { { ControlName, '' } } ;
-            TOOLTIP 'To access Properties and Events right click on header area.' ;
-            NOTABSTOP ;
-            ON CHANGE Dibuja( This:Name ) ;
-            ON GOTFOCUS Dibuja( This:Name )
-         ProcessContainers( ControlName, ::myIde )
-
-      CASE :CurrentControl == 8
-         :FrameCount  ++
-         ControlName := 'frame_' + LTrim( Str( :FrameCount ) )
-         Do While IsControlDefined( &ControlName, Form_1 )
-            :FrameCount ++
-            ControlName := 'frame_' + LTrim( Str( :FrameCount ) )
-         ENDDO
-         :nControlW ++
-         :IniArray( :nForm, :nControlW, ControlName, 'FRAME' )
-         :aBackColor[:nControlW] := cFBackcolor                                    // TODO: Verificar si es necesario
-         IF cFBackcolor # 'NIL' .AND. Len( cFBackcolor ) > 0
-            GetControlObject( ControlName, "Form_1" ):Backcolor := &cFBackcolor
-         ENDIF
-         @ _OOHG_MouseRow, _OOHG_MouseCol FRAME &ControlName OF Form_1 ;
-            CAPTION ControlName ;
-            WIDTH 140 ;
-            HEIGHT 140
-         ProcessContainers( ControlName, ::myIde )
-
-      CASE :CurrentControl == 9
-         :TabCount ++
-         ControlName := 'tab_' + LTrim( Str( :TabCount ) )
-         Do While IsControlDefined( &ControlName, Form_1 )
-            :TabCount ++
-            ControlName := 'tab_' + LTrim( Str( :TabCount ) )
-         ENDDO
-         :nControlW ++
-         :IniArray( :nForm, :nControlW, ControlName, 'TAB' )
-         :aCaption[:nControlW] := "{ 'Page 1', 'Page 2' }"
-         :aImage[:nControlW] := "{ '', '' }"
-         :swTab := .T.
-         DEFINE TAB &ControlName OF Form_1 ;
-            AT _OOHG_MouseRow, _OOHG_MouseCol ;
-            WIDTH 300 ;
-            HEIGHT 250 ;
-            TOOLTIP ControlName ;
-            ON CHANGE Dibuja( This:Name )
-            DEFINE PAGE 'Page 1' IMAGE ''
-            END PAGE
-            DEFINE PAGE 'Page 2' IMAGE ''
-            END PAGE
-         END TAB
-
-      CASE :CurrentControl == 10
-         :ImageCount ++
-         ControlName := 'image_' + LTrim( Str( :ImageCount ) )
-         Do While IsControlDefined( &ControlName, Form_1 )
-            :ImageCount ++
-            ControlName := 'image_' + LTrim( Str( :ImageCount ) )
-         ENDDO
-         :nControlW ++
-         :IniArray( :nForm, :nControlW, ControlName, 'IMAGE' )
-         @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &ControlName OF Form_1 ;
-            WIDTH 100 ;
-            HEIGHT 100 ;
-            VALUE ControlName ;
-            BORDER ;
-            ACTION Dibuja( This:Name )
-         ProcessContainers( ControlName, ::myIde )
-
-      CASE :CurrentControl == 11
-         :AnimateCount ++
-         ControlName := 'animate_' + LTrim( Str( :AnimateCount ) )
-         Do While IsControlDefined( &ControlName, Form_1 )
-            :AnimateCount ++
-            ControlName := 'animate_' + LTrim( Str( :AnimateCount ) )
-         ENDDO
-         :nControlW ++
-         :IniArray( :nForm, :nControlW, ControlName, 'ANIMATE' )
-         @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &ControlName OF Form_1 ;
-            WIDTH 100 ;
-            HEIGHT 50 ;
-            VALUE ControlName ;
-            BORDER ;
-            ACTION Dibuja( This:Name )
-         ProcessContainers( ControlName, ::myIde )
-
-      CASE :CurrentControl == 12
-         :DatePickerCount ++
-         ControlName := 'datepicker_' + LTrim( Str( :DatePickerCount ) )
-         Do While IsControlDefined( &ControlName, Form_1 )
-            :DatePickerCount ++
-            ControlName := 'datepicker_' + LTrim( Str( :DatePickerCount ) )
-         ENDDO
-         :nControlW ++
-         :IniArray( :nForm, :nControlW, ControlName, 'DATEPICKER' )
-         @ _OOHG_MouseRow, _OOHG_MouseCol DATEPICKER &ControlName OF Form_1 ;
-            TOOLTIP ControlName ;
-            ON GOTFOCUS Dibuja( This:Name ) ;
-            ON CHANGE Dibuja( This:Name ) ;
-            NOTABSTOP
-         ProcessContainers( ControlName, ::myIde )
-
-      CASE :CurrentControl == 13
-         :TextBoxCount ++
-         ControlName := 'text_' + LTrim( Str( :TextBoxCount ) )
-         Do While IsControlDefined( &ControlName, Form_1 )
-            :TextBoxCount ++
-            ControlName := 'text_' + LTrim( Str( :TextBoxCount ) )
-         ENDDO
-         :nControlW ++
-         :IniArray( :nForm, :nControlW, ControlName, 'TEXT' )
-         // TODO: add variable for WIDTH
-         IF ::myIde:nTextBoxHeight > 0
-            @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &ControlName OF Form_1 ;
-               HEIGHT ::myIde:nTextBoxHeight ;
-               VALUE ControlName ;
-               BACKCOLOR WHITE ;
-               CLIENTEDGE ;
-               ACTION Dibuja( This:Name )
-         ELSE
-            @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &ControlName OF Form_1 ;
-               VALUE ControlName ;
-               BACKCOLOR WHITE ;
-               CLIENTEDGE ;
-               ACTION Dibuja( This:Name )
-         ENDIF
-         ProcessContainers( ControlName, ::myIde )
-
-      CASE :CurrentControl == 14
-         :EditBoxCount ++
-         ControlName := 'edit_' + LTrim( Str( :EditBoxCount ) )
-         Do While IsControlDefined( &ControlName, Form_1 )
-            :EditBoxCount ++
-            ControlName := 'edit_' + LTrim( Str( :EditBoxCount ) )
-         ENDDO
-         :nControlW ++
-         :IniArray( :nForm, :nControlW, ControlName, 'EDIT' )
-         @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &ControlName OF Form_1 ;
-            WIDTH 120 ;
-            HEIGHT 120 ;
-            VALUE ControlName ;
-            BACKCOLOR WHITE ;
-            CLIENTEDGE ;
-            HSCROLL ;
-            VSCROLL ;
-            ACTION Dibuja( This:Name )
-         ProcessContainers( ControlName, ::myIde )
-
-      CASE :CurrentControl == 15
-         :LabelCount ++
-         ControlName := 'label_' + LTrim( Str( :LabelCount ) )
-         Do While IsControlDefined( &ControlName, Form_1 )
-            :LabelCount ++
-            ControlName := 'label_' + LTrim( Str( :LabelCount ) )
-         ENDDO
-         :nControlW ++
-         :IniArray( :nForm, :nControlW, ControlName, 'LABEL' )
-         :aBackColor[:nControlW] := cFBackcolor                                         // TODO: Verificar si es necesario
-         IF cFBackcolor # 'NIL' .AND. Len( cFBackcolor ) > 0
-            GetControlObject( ControlName, "Form_1" ):BackColor:= &cFBackcolor
-         ENDIF
-         // TODO: add variable for WIDTH
-         IF ::myIde:nLabelHeight > 0
-            @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &ControlName OF Form_1 ;
-               HEIGHT ::myIde:nLabelHeight ;
-               VALUE ControlName ;
-               ACTION Dibuja( This:Name )
-         ELSE
-            @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &ControlName OF Form_1 ;
-               VALUE ControlName ;
-               ACTION Dibuja( This:Name )
-         ENDIF
-         ProcessContainers( ControlName, ::myIde )
-
-      CASE :CurrentControl == 16
-         :PlayerCount ++
-         ControlName := 'player_' + LTrim( Str( :PlayerCount ) )
-         Do While IsControlDefined( &ControlName, Form_1 )
-            :PlayerCount ++
-            ControlName := 'player_' + LTrim( Str( :PlayerCount ) )
-         ENDDO
-         :nControlW ++
-         :IniArray( :nForm, :nControlW, ControlName, 'PLAYER' )
-         @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &ControlName OF Form_1 ;
-            WIDTH 100 ;
-            HEIGHT 100 ;
-            VALUE ControlName ;
-            BORDER ;
-            ACTION Dibuja( This:Name )
-         ProcessContainers( ControlName, ::myIde )
-
-      CASE :CurrentControl == 17
-         :ProgressBarCount ++
-         ControlName := 'progressbar_' + LTrim( Str( :ProgressBarCount ) )
-         Do While IsControlDefined( &ControlName, Form_1 )
-            :ProgressBarCount ++
-            ControlName := 'progressbar_' + LTrim( Str( :ProgressBarCount ) )
-         ENDDO
-         :nControlW ++
-         :IniArray( :nForm, :nControlW, ControlName, 'PROGRESSBAR' )
-         @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &ControlName OF Form_1 ;
-            WIDTH 120 ;
-            HEIGHT 26 ;
-            VALUE ControlName ;
-            BORDER ;
-            ACTION Dibuja( This:Name )
-         ProcessContainers( ControlName, ::myIde )
-
-      CASE :CurrentControl == 18
-         :RadioGroupCount ++
-         ControlName := 'radiogroup_' + LTrim( Str( :RadioGroupCount ) )
-         Do While IsControlDefined( &ControlName, Form_1 )
-            :RadioGroupCount ++
-            ControlName := 'radiogroup_' + LTrim( Str( :RadioGroupCount ) )
-         ENDDO
-         :nControlW ++
-         :IniArray( :nForm, :nControlW, ControlName, 'RADIOGROUP' )
-         :aBackColor[:nControlW] := cFBackcolor                                                       // TODO: Verificar si es necesario
-         IF cFBackcolor # 'NIL' .AND. Len( cFBackcolor ) > 0
-            GetControlObject( ControlName, "Form_1" ):BackColor:= &cFBackcolor
-         ENDIF
-         :aItems[:nControlW] := "{ 'option 1', 'option 2' }"
-         :aSpacing[:nControlW] := 25
-         @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &ControlName OF Form_1 ;
-            WIDTH 100 ;
-            HEIGHT ( 25 * 2 + 8 ) ;
-            VALUE ControlName ;
-            BORDER ;
-            ACTION Dibuja( This:Name )
-         ProcessContainers( ControlName, ::myIde )
-
-      CASE :CurrentControl == 19
-         :SliderCount ++
-         ControlName := 'slider_' + LTrim( Str( :SliderCount ) )
-         Do While IsControlDefined( &ControlName, Form_1 )
-            :SliderCount ++
-            ControlName := 'slider_' + LTrim( Str( :SliderCount ) )
-         ENDDO
-         :nControlW ++
-         :IniArray( :nForm, :nControlW, ControlName, 'SLIDER' )
-         :aBackColor[:nControlW] := cFBackcolor                                                       // TODO: Verificar si es necesario
-         IF cFBackcolor # 'NIL' .AND. Len( cFBackcolor ) > 0
-            GetControlObject( ControlName, "Form_1" ):BackColor:= &cFBackcolor
-         ENDIF
-         @ _OOHG_MouseRow, _OOHG_MouseCol SLIDER &ControlName OF Form_1 ;
-            RANGE 1, 10 ;
-            VALUE 5 ;
-            ON CHANGE Dibuja( This:Name ) ;
-            NOTABSTOP
-         ProcessContainers( ControlName, ::myIde )
-
-      CASE :CurrentControl == 20
-         :SpinnerCount ++
-         ControlName := 'spinner_' + LTrim( Str( :SpinnerCount ) )
-         Do While IsControlDefined( &ControlName, Form_1 )
-            :SpinnerCount ++
-            ControlName := 'spinner_' + LTrim( Str( :SpinnerCount ) )
-         ENDDO
-         :nControlW ++
-         :IniArray( :nForm, :nControlW, ControlName, 'SPINNER' )
-         @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &ControlName OF Form_1 ;
-            WIDTH 120 ;
-            HEIGHT 24 ;
-            VALUE ControlName ;
-            BACKCOLOR WHITE ;
-            CLIENTEDGE ;
-            VSCROLL ;
-            ACTION Dibuja( This:Name )
-         ProcessContainers( ControlName, ::myIde )
-
-      CASE :CurrentControl == 21
-         :CheckButtonCount ++
-         ControlName := 'piccheckbutt_' + LTrim( Str( :CheckButtonCount ) )
-         Do While IsControlDefined( &ControlName, Form_1 )
-            :CheckButtonCount ++
-            ControlName := 'piccheckbutt_' + LTrim( Str( :CheckButtonCount ) )
-         ENDDO
-         :nControlW ++
-         :IniArray( :nForm, :nControlW, ControlName, 'PICCHECKBUTT' )
-         @ _OOHG_MouseRow, _OOHG_MouseCol CHECKBUTTON &ControlName OF Form_1 ;
-            PICTURE 'A4' ;
-            WIDTH 30 ;
-            HEIGHT 30 ;
-            VALUE .F. ;
-            ON GOTFOCUS Dibuja( This:Name ) ;
-            ON CHANGE Dibuja( This:Name ) ;
-            NOTABSTOP
-         ProcessContainers( ControlName, ::myIde )
-
-      CASE :CurrentControl == 22
-         :ButtonCount ++
-         ControlName := 'picbutt_' + LTrim( Str( :ButtonCount ) )
-         Do While IsControlDefined( &ControlName, Form_1 )
-            :ButtonCount ++
-            ControlName := 'picbutt_' + LTrim( Str( :ButtonCount ) )
-         ENDDO
-         :nControlW ++
-         :IniArray( :nForm, :nControlW, ControlName, 'PICBUTT' )
-         :aAction[:nControlW] := "MsgInfo( 'Pic button pressed' )"
-         @ _OOHG_MouseRow, _OOHG_MouseCol BUTTON &ControlName OF Form_1 ;
-            PICTURE 'A4' ;
-            WIDTH 30 ;
-            HEIGHT 30 ;
-            ON GOTFOCUS Dibuja( This:Name ) ;
-            ACTION Dibuja( This:Name ) ;
-            NOTABSTOP
-         ProcessContainers( ControlName, ::myIde )
-
-      CASE :CurrentControl == 23
-         :TimerCount ++
-         ControlName := 'timer_' + LTrim( Str( :TimerCount ) )
-         Do While IsControlDefined( &ControlName, Form_1 )
-            :TimerCount ++
-            ControlName := 'timer_' + LTrim( Str( :TimerCount ) )
-         ENDDO
-         :nControlW ++
-         :IniArray( :nForm, :nControlW, ControlName, 'TIMER' )
-         @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &ControlName OF Form_1 ;
-            WIDTH 100 ;
-            HEIGHT 20 ;
-            VALUE ControlName ;
-            BORDER ;
-            ACTION Dibuja( This:Name )
-         ProcessContainers( ControlName, ::myIde )
-
-      CASE :CurrentControl == 24
-         :BrowseCount ++
-         ControlName := 'browse_' + LTrim( Str( :BrowseCount ) )
-         Do While IsControlDefined( &ControlName, Form_1 )
-            :BrowseCount ++
-            ControlName := 'browse_' + LTrim( Str( :BrowseCount ) )
-         ENDDO
-         :nControlW ++
-         :IniArray( :nForm, :nControlW, ControlName, 'BROWSE' )
-         @ _OOHG_MouseRow, _OOHG_MouseCol GRID &ControlName OF Form_1 ;
-            HEADERS {'one', 'two'} ;
-            WIDTHS {60, 60} ;
-            ITEMS { { ControlName, '' } } ;
-            TOOLTIP 'Click on header area to move/size' ;
-            ON GOTFOCUS Dibuja( This:Name )
-         ProcessContainers( ControlName, ::myIde )
-
-      CASE :CurrentControl == 25
-         :TreeCount ++
-         ControlName := 'tree_' + LTrim( Str( :TreeCount ) )
-         Do While IsControlDefined( &ControlName, Form_1 )
-            :TreeCount ++
-            ControlName := 'tree_' + LTrim( Str( :TreeCount ) )
-         ENDDO
-         :nControlW ++
-         :IniArray( :nForm, :nControlW, ControlName, 'TREE' )
-         DEFINE TREE &ControlName OF Form_1 ;
-            AT _OOHG_MouseRow, _OOHG_MouseCol ;
-            WIDTH 100 ;
-            HEIGHT 100 ;
-            VALUE 1 ;
-            ON GOTFOCUS Dibuja( This:Name ) ;
-            ON CHANGE Dibuja( This:Name )
-            NODE 'Tree'
-            END NODE
-            NODE 'Nodes'
-            END NODE
-         END TREE
-         ProcessContainers( ControlName, ::myIde )
-
-      CASE :CurrentControl == 26
-         :IpAddressCount ++
-         ControlName := 'IpAddress_' + LTrim( Str( :IpAddressCount ) )
-         Do While IsControlDefined( &ControlName, Form_1 )
-            :IpAddressCount ++
-            ControlName := 'IpAddress_' + LTrim( Str( :IpAddressCount ) )
-         ENDDO
-         :nControlW ++
-         :IniArray( :nForm, :nControlW, ControlName, 'IPADDRESS' )
-         @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &ControlName OF Form_1 ;
-            VALUE '   .   .   .   ' ;
-            BACKCOLOR WHITE ;
-            CLIENTEDGE ;
-            ACTION Dibuja( This:Name )
-         ProcessContainers( ControlName, ::myIde )
-
-      CASE :CurrentControl == 27
-         :MonthCalendarCount ++
-         ControlName := 'MonthCal_' + LTrim( Str( :MonthCalendarCount ) )
-         Do While IsControlDefined( &ControlName, Form_1 )
-            :MonthCalendarCount ++
-            ControlName := 'MonthCal_' + LTrim( Str( :MonthCalendarCount ) )
-         ENDDO
-         :nControlW ++
-         :IniArray( :nForm, :nControlW, ControlName, 'MONTHCALENDAR' )
-         @ _OOHG_MouseRow, _OOHG_MouseCol MONTHCALENDAR &ControlName OF Form_1 ;
-            NOTABSTOP ;
-            ON CHANGE Dibuja( This:Name )
-         ProcessContainers( ControlName, ::myIde )
-
-      CASE :CurrentControl == 28
-         :HyperLinkCount ++
-         ControlName := 'HyperLink_' + LTrim( Str( :HyperLinkCount ) )
-         Do While IsControlDefined( &ControlName, Form_1 )
-            :HyperLinkCount ++
-            ControlName := 'Hyperlink_' + LTrim( Str( :HyperlinkCount ) )
-         ENDDO
-         :nControlW ++
-         :IniArray( :nForm, :nControlW, ControlName, 'HYPERLINK' )
-         @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &ControlName OF Form_1 ;
-            VALUE ControlName ;
-            ACTION Dibuja( This:Name ) ;
-            BORDER
-         ProcessContainers( ControlName, ::myIde )
-
-      CASE :CurrentControl == 29
-         :RichEditBoxCount ++
-         ControlName := 'richeditbox_' + LTrim( Str( :RichEditBoxCount ) )
-         Do While IsControlDefined( &ControlName, Form_1 )
-            :RichEditBoxCount ++
-            ControlName := 'richeditbox_' + LTrim( Str( :RichEditBoxCount ) )
-         ENDDO
-         :nControlW ++
-         :IniArray( :nForm, :nControlW, ControlName, 'RICHEDIT' )
-         @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &ControlName OF Form_1 ;
-            WIDTH 120 ;
-            HEIGHT 124 ;
-            VALUE ControlName ;
-            BACKCOLOR WHITE ;
-            CLIENTEDGE ;
-            ACTION Dibuja( This:Name )
-         ProcessContainers( ControlName, ::myIde )
-
-      ENDCASE
-
-      :Control_Click( 1 )
-      :lFsave := .F.
+      ::Control_Click( 1 )
+      ::lFsave := .F.
 
       MisPuntos()
       RefreshControlInspector()
-   END WITH
+   ENDIF
+RETURN NIL
+
+*------------------------------------------------------------------------------*
+METHOD AddControl() CLASS TForm1
+*------------------------------------------------------------------------------*
+LOCAL aName, x
+
+// TODO: los controles definidos acá deber ser iguales a los definidos en las function p(Control)
+   swkm := .F.
+   IF ::CurrentControl == 1
+      x := CheckIfIsFrame()
+      IF x > 0
+         Dibuja1( x )
+         RETURN NIL
+      ENDIF
+   ELSEIF ::CurrentControl >= 2 .and. ::CurrentControl <= 29
+      ::ControlCount[::CurrentControl] ++
+      ControlName := ::ControlPrefix[::CurrentControl] + LTrim( Str( ::ControlCount[::CurrentControl] ) )
+      Do While IsControlDefined( &ControlName, Form_1 )
+         ::ControlCount[::CurrentControl] ++
+         ControlName := ::ControlPrefix[::CurrentControl] + LTrim( Str( ::ControlCount[::CurrentControl] ) )
+      ENDDO
+      ::nControlW ++
+      ::IniArray( ::nForm, ::nControlW, ControlName, ::ControlType[::CurrentControl] )
+
+      DO CASE
+      CASE ::CurrentControl == 2
+         // BUTTON
+         ::aAction[::nControlW] := "MsgInfo( 'Button pressed' )"
+         ::aBackColor[::nControlW] := cFBackcolor            // TODO:: Check is this is needed
+
+      CASE ::CurrentControl == 3
+         // CHECKBOX
+         ::aBackColor[::nControlW] := cFBackcolor            // Needed to seem transparent TODO:: Check
+         IF cFBackcolor # 'NIL' .AND. Len( cFBackcolor ) > 0
+            GetControlObject( ControlName, "Form_1" ):BackColor:= &cFBackcolor
+         ENDIF
+
+      CASE ::CurrentControl == 4
+         // LIST
+      CASE ::CurrentControl == 5
+         // COMBO
+      CASE ::CurrentControl == 6
+         // CHECKBTN
+      CASE ::CurrentControl == 7
+         // GRID
+      CASE ::CurrentControl == 8
+         // FRAME
+         ::aBackColor[::nControlW] := cFBackcolor                                    // TODO:: Verificar si es necesario
+         IF cFBackcolor # 'NIL' .AND. Len( cFBackcolor ) > 0
+            GetControlObject( ControlName, "Form_1" ):Backcolor := &cFBackcolor
+         ENDIF
+
+      CASE ::CurrentControl == 9
+         // TAB
+         ::aCaption[::nControlW] := "{ 'Page 1', 'Page 2' }"
+         ::aImage[::nControlW] := "{ '', '' }"
+
+      CASE ::CurrentControl == 10
+         // IMAGE
+      CASE ::CurrentControl == 11
+         // ANIMATE
+      CASE ::CurrentControl == 12
+         // DATEPICKER
+      CASE ::CurrentControl == 13
+         // TEXT
+      CASE ::CurrentControl == 14
+         // EDIT
+      CASE ::CurrentControl == 15
+         // LABEL
+         ::aBackColor[::nControlW] := cFBackcolor                                         // TODO:: Verificar si es necesario
+         IF cFBackcolor # 'NIL' .AND. Len( cFBackcolor ) > 0
+            GetControlObject( ControlName, "Form_1" ):BackColor:= &cFBackcolor
+         ENDIF
+
+      CASE ::CurrentControl == 16
+         // PLAYER
+      CASE ::CurrentControl == 17
+         // PROGRESSBAR
+      CASE ::CurrentControl == 18
+         // RADIOGROUP
+         ::aBackColor[::nControlW] := cFBackcolor                                                       // TODO:: Verificar si es necesario
+         IF cFBackcolor # 'NIL' .AND. Len( cFBackcolor ) > 0
+            GetControlObject( ControlName, "Form_1" ):BackColor:= &cFBackcolor
+         ENDIF
+         ::aItems[::nControlW] := "{ 'option 1', 'option 2' }"
+         ::aSpacing[::nControlW] := 25
+
+      CASE ::CurrentControl == 19
+         // SLIDER
+         ::aBackColor[::nControlW] := cFBackcolor                                                       // TODO:: Verificar si es necesario
+         IF cFBackcolor # 'NIL' .AND. Len( cFBackcolor ) > 0
+            GetControlObject( ControlName, "Form_1" ):BackColor:= &cFBackcolor
+         ENDIF
+
+      CASE ::CurrentControl == 20
+         // SPINNER
+      CASE ::CurrentControl == 21
+         // PICCHECKBUTT
+      CASE ::CurrentControl == 22
+         // PICBUTT
+         ::aAction[::nControlW] := "MsgInfo( 'Pic button pressed' )"
+
+      CASE ::CurrentControl == 23
+         // TIMER
+      CASE ::CurrentControl == 24
+         // BROWSE
+      CASE ::CurrentControl == 25
+         // TREE
+      CASE ::CurrentControl == 26
+         // IPADDRESS
+      CASE ::CurrentControl == 27
+         // MONTHCALENDAR
+      CASE ::CurrentControl == 28
+         // HYPERLINK
+      CASE ::CurrentControl == 29
+         // RICHEDIT
+      ENDCASE
+
+      ::CreateControl( ::CurrentControl )
+   ENDIF
+
+   ::Control_Click( 1 )
+   ::lFsave := .F.
+
+   MisPuntos()
+   RefreshControlInspector()
 RETURN
+
+*------------------------------------------------------------------------------*
+METHOD CreateControl( nControlType ) CLASS TForm1
+*------------------------------------------------------------------------------*
+LOCAL aName, x
+
+// TODO: los controles definidos acá deber ser iguales a los definidos en las function p(Control)
+   DO CASE
+   CASE nControlType == 2            // BUTTON
+      @ _OOHG_MouseRow, _OOHG_MouseCol BUTTON &ControlName OF Form_1 ;
+         CAPTION ControlName ;
+         ON GOTFOCUS Dibuja( This:Name ) ;
+         ACTION Dibuja( This:Name ) ;
+         NOTABSTOP
+
+   CASE nControlType == 3            // CHECKBOX
+      @ _OOHG_MouseRow, _OOHG_MouseCol CHECKBOX &ControlName OF Form_1 ;
+         CAPTION ControlName ;
+         ON GOTFOCUS Dibuja( This:Name ) ;
+         ON CHANGE Dibuja( This:Name ) ;
+         NOTABSTOP
+
+   CASE nControlType == 4            // LIST
+      @ _OOHG_MouseRow, _OOHG_MouseCol LISTBOX &ControlName OF Form_1 ;
+         WIDTH 100 ;
+         HEIGHT 100 ;
+         ITEMS { ControlName } ;
+         ON GOTFOCUS Dibuja( This:Name ) ;
+         ON CHANGE Dibuja( This:Name ) ;
+         NOTABSTOP
+
+   CASE nControlType == 5            // COMBO
+      @ _OOHG_MouseRow, _OOHG_MouseCol COMBOBOX &ControlName OF Form_1 ;
+         WIDTH 100 ;
+         HEIGHT 100 ;
+         ITEMS { ControlName, ' ' } ;
+         VALUE 1 ;
+         ON GOTFOCUS Dibuja( This:Name ) ;
+         ON CHANGE Dibuja( This:Name ) ;
+         NOTABSTOP
+
+   CASE nControlType == 6            // CHECKBTN
+      @ _OOHG_MouseRow, _OOHG_MouseCol CHECKBUTTON &ControlName OF Form_1 ;
+         CAPTION ControlName ;
+         ON GOTFOCUS Dibuja( This:Name ) ;
+         ON CHANGE Dibuja( This:Name) ;
+         NOTABSTOP
+
+   CASE nControlType == 7            // GRID
+      @ _OOHG_MouseRow, _OOHG_MouseCol GRID &ControlName OF Form_1 ;
+         HEADERS { '', '' } ;
+         WIDTHS {100, 60} ;
+         ITEMS { { ControlName, '' } } ;
+         TOOLTIP 'To access Properties and Events right click on header area.' ;
+         NOTABSTOP ;
+         ON CHANGE Dibuja( This:Name ) ;
+         ON GOTFOCUS Dibuja( This:Name )
+
+   CASE nControlType == 8            // FRAME
+      @ _OOHG_MouseRow, _OOHG_MouseCol FRAME &ControlName OF Form_1 ;
+         CAPTION ControlName ;
+         WIDTH 140 ;
+         HEIGHT 140
+
+   CASE nControlType == 9            // TAB
+      ::swTab := .T.
+
+      DEFINE TAB &ControlName OF Form_1 ;
+         AT _OOHG_MouseRow, _OOHG_MouseCol ;
+         WIDTH 300 ;
+         HEIGHT 250 ;
+         TOOLTIP ControlName ;
+         ON CHANGE Dibuja( This:Name )
+         DEFINE PAGE 'Page 1' IMAGE ''
+         END PAGE
+         DEFINE PAGE 'Page 2' IMAGE ''
+         END PAGE
+      END TAB
+
+   CASE nControlType == 10           // IMAGE
+      @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &ControlName OF Form_1 ;
+         WIDTH 100 ;
+         HEIGHT 100 ;
+         VALUE ControlName ;
+         BORDER ;
+         ACTION Dibuja( This:Name )
+
+   CASE nControlType == 11           // ANIMATE
+      @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &ControlName OF Form_1 ;
+         WIDTH 100 ;
+         HEIGHT 50 ;
+         VALUE ControlName ;
+         BORDER ;
+         ACTION Dibuja( This:Name )
+
+   CASE nControlType == 12           // DATEPICKER
+      @ _OOHG_MouseRow, _OOHG_MouseCol DATEPICKER &ControlName OF Form_1 ;
+         TOOLTIP ControlName ;
+         ON GOTFOCUS Dibuja( This:Name ) ;
+         ON CHANGE Dibuja( This:Name ) ;
+         NOTABSTOP
+
+   CASE nControlType == 13           // TEXT
+      // TODO:: add variable for WIDTH
+      IF ::myIde:nTextBoxHeight > 0
+         @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &ControlName OF Form_1 ;
+            HEIGHT ::myIde:nTextBoxHeight ;
+            VALUE ControlName ;
+            BACKCOLOR WHITE ;
+            CLIENTEDGE ;
+            ACTION Dibuja( This:Name )
+      ELSE
+         @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &ControlName OF Form_1 ;
+            VALUE ControlName ;
+            BACKCOLOR WHITE ;
+            CLIENTEDGE ;
+            ACTION Dibuja( This:Name )
+      ENDIF
+
+   CASE nControlType == 14           // EDIT
+      @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &ControlName OF Form_1 ;
+         WIDTH 120 ;
+         HEIGHT 120 ;
+         VALUE ControlName ;
+         BACKCOLOR WHITE ;
+         CLIENTEDGE ;
+         HSCROLL ;
+         VSCROLL ;
+         ACTION Dibuja( This:Name )
+
+   CASE nControlType == 15           // LABEL
+      // TODO:: add variable for WIDTH
+      IF ::myIde:nLabelHeight > 0
+         @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &ControlName OF Form_1 ;
+            HEIGHT ::myIde:nLabelHeight ;
+            VALUE ControlName ;
+            ACTION Dibuja( This:Name )
+      ELSE
+         @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &ControlName OF Form_1 ;
+            VALUE ControlName ;
+            ACTION Dibuja( This:Name )
+      ENDIF
+
+   CASE nControlType == 16           // PLAYER
+      @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &ControlName OF Form_1 ;
+         WIDTH 100 ;
+         HEIGHT 100 ;
+         VALUE ControlName ;
+         BORDER ;
+         ACTION Dibuja( This:Name )
+
+   CASE nControlType == 17           // PROGRESSBAR
+      @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &ControlName OF Form_1 ;
+         WIDTH 120 ;
+         HEIGHT 26 ;
+         VALUE ControlName ;
+         BORDER ;
+         ACTION Dibuja( This:Name )
+
+   CASE nControlType == 18           // RADIOGROUP
+      @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &ControlName OF Form_1 ;
+         WIDTH 100 ;
+         HEIGHT ( 25 * 2 + 8 ) ;
+         VALUE ControlName ;
+         BORDER ;
+         ACTION Dibuja( This:Name )
+
+   CASE nControlType == 19           // SLIDER
+      @ _OOHG_MouseRow, _OOHG_MouseCol SLIDER &ControlName OF Form_1 ;
+         RANGE 1, 10 ;
+         VALUE 5 ;
+         ON CHANGE Dibuja( This:Name ) ;
+         NOTABSTOP
+
+   CASE nControlType == 20           // SPINNER
+      @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &ControlName OF Form_1 ;
+         WIDTH 120 ;
+         HEIGHT 24 ;
+         VALUE ControlName ;
+         BACKCOLOR WHITE ;
+         CLIENTEDGE ;
+         VSCROLL ;
+         ACTION Dibuja( This:Name )
+
+   CASE nControlType == 21           // PICCHECKBUTT
+      @ _OOHG_MouseRow, _OOHG_MouseCol CHECKBUTTON &ControlName OF Form_1 ;
+         PICTURE 'A4' ;
+         WIDTH 30 ;
+         HEIGHT 30 ;
+         VALUE .F. ;
+         ON GOTFOCUS Dibuja( This:Name ) ;
+         ON CHANGE Dibuja( This:Name ) ;
+         NOTABSTOP
+
+   CASE nControlType == 22           // PICBUTT
+      @ _OOHG_MouseRow, _OOHG_MouseCol BUTTON &ControlName OF Form_1 ;
+         PICTURE 'A4' ;
+         WIDTH 30 ;
+         HEIGHT 30 ;
+         ON GOTFOCUS Dibuja( This:Name ) ;
+         ACTION Dibuja( This:Name ) ;
+         NOTABSTOP
+
+   CASE nControlType == 23           // TIMER
+      @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &ControlName OF Form_1 ;
+         WIDTH 100 ;
+         HEIGHT 20 ;
+         VALUE ControlName ;
+         BORDER ;
+         ACTION Dibuja( This:Name )
+
+   CASE nControlType == 24           // BROWSE
+      @ _OOHG_MouseRow, _OOHG_MouseCol GRID &ControlName OF Form_1 ;
+         HEADERS {'one', 'two'} ;
+         WIDTHS {60, 60} ;
+         ITEMS { { ControlName, '' } } ;
+         TOOLTIP 'Click on header area to move/size' ;
+         ON GOTFOCUS Dibuja( This:Name ) ;
+         ON CHANGE Dibuja( This:Name )
+
+   CASE nControlType == 25           // TREE
+      DEFINE TREE &ControlName OF Form_1 ;
+         AT _OOHG_MouseRow, _OOHG_MouseCol ;
+         WIDTH 100 ;
+         HEIGHT 100 ;
+         VALUE 1 ;
+         ON GOTFOCUS Dibuja( This:Name ) ;
+         ON CHANGE Dibuja( This:Name )
+         NODE 'Tree'
+         END NODE
+         NODE 'Nodes'
+         END NODE
+      END TREE
+
+   CASE nControlType == 26           // IPADDRESS
+      @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &ControlName OF Form_1 ;
+         VALUE '   .   .   .   ' ;
+         BACKCOLOR WHITE ;
+         CLIENTEDGE ;
+         ACTION Dibuja( This:Name )
+
+   CASE nControlType == 27           // MONTHCALENDAR
+      @ _OOHG_MouseRow, _OOHG_MouseCol MONTHCALENDAR &ControlName OF Form_1 ;
+         NOTABSTOP ;
+         ON CHANGE Dibuja( This:Name )
+
+   CASE nControlType == 28           // HYPERLINK
+      @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &ControlName OF Form_1 ;
+         VALUE ControlName ;
+         ACTION Dibuja( This:Name ) ;
+         BORDER
+
+   CASE nControlType == 29           // RICHEDIT
+      @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &ControlName OF Form_1 ;
+         WIDTH 120 ;
+         HEIGHT 124 ;
+         VALUE ControlName ;
+         BACKCOLOR WHITE ;
+         CLIENTEDGE ;
+         ACTION Dibuja( This:Name )
+
+   ENDCASE
+
+   ProcessContainers( ControlName, ::myIde )
+RETURN NIL
 
 *------------------------------------------------------------------------------*
 FUNCTION borracon()    /////// para futuro uso
@@ -1470,6 +1426,7 @@ if l>0
    form_main:label_2:value :=clabel
 //////////
    nhandlep:=z
+   RefreshControlInspector( oControl:Name )
 else
    nhandlep:=0
    myhandle:=0
@@ -1560,26 +1517,31 @@ METHOD New() CLASS TForm1
          NOMAXIMIZE NOMINIMIZE
 
          DEFINE CONTEXT MENU
-            ITEM 'Properties' ACTION Properties_Click( ::myIde )
-            ITEM 'Events    ' NAME events ACTION Events_click( ::myIde )
+            ITEM 'Properties'             ACTION Properties_Click( ::myIde )
+            ITEM 'Events    '             ACTION Events_click( ::myIde )
             ITEM 'Interactive Font/Color' ACTION intfoco( 1, ::myIde )
-            ITEM 'Manual Move/Size' ACTION manualmosi( 1, ::myIde )
-            ITEM 'Interactive Move' ACTION MoveControl( ::myIde )
-            ITEM 'Keyboard Move' ACTION kMove( ::myIde )
-            ITEM 'Interactive Size' ACTION SizeControl()
+            ITEM 'Manual Move/Size'       ACTION manualmosi( 1, ::myIde )
+            ITEM 'Interactive Move'       ACTION MoveControl( ::myIde )
+            ITEM 'Keyboard Move'          ACTION kMove( ::myIde )
+            ITEM 'Interactive Size'       ACTION SizeControl()
             SEPARATOR
-            ITEM 'Delete' ACTION DeleteControl()
+            ITEM 'Global Row Align'       ACTION ValGlobalPos( oListaCon, 'ROW' )
+            ITEM 'Global Col Align'       ACTION ValGlobalPos( oListaCon, 'COL' )
+            ITEM 'Global Width Change'    ACTION ValGlobalPos( oListaCon, 'WID' )
+            ITEM 'Global Height Change'   ACTION ValGlobalPos( oListaCon, 'HEI' )
+            SEPARATOR
+            ITEM 'Delete'                 ACTION DeleteControl()
          END MENU
 
          ON KEY DELETE ACTION DeleteControl()
-         ON KEY F1 ACTION Help_F1( 'FORMEDIT' )
-         ON KEY ALT+D ACTION Debug()
+         ON KEY F1     ACTION Help_F1( 'FORMEDIT' )
+         ON KEY ALT+D  ACTION Debug()
       END WINDOW
 
       DEFINE WINDOW Lista OBJ Lista ;
          AT 120, 665 ;
          WIDTH 300 ;
-         HEIGHT 450 ;
+         HEIGHT 490 ;
          CLIENTAREA ;
          TITLE 'Control Inspector' ;
          ICON 'Edit' ;
@@ -1589,36 +1551,46 @@ METHOD New() CLASS TForm1
          BACKCOLOR ::myIde:asystemcolor ;
          ON INIT oListaCon:Height := SetHeightForWholeRows( oListaCon, 400 )
 
-         @ 20, 10 GRID ListaCon OBJ oListaCon ;
+         @ 10, 10 GRID ListaCon OBJ oListaCon ;
             WIDTH 280 ;
             HEIGHT 400  ;
-            HEADERS {'Name', 'Row', 'Col', 'Width', 'Height', 'int-name'} ;
-            WIDTHS {80, 40, 40, 45, 50, 0 } ;
+            HEADERS {'Name', 'Row', 'Col', 'Width', 'Height', 'int-name', 'type'} ;
+            WIDTHS {80, 40, 40, 45, 50, 0, 0 } ;
             FONT "Arial" ;
             SIZE 10 ;
             INPLACE EDIT ;
-            READONLY {.T., .F., .F., .F., .F., .T.}  ;
-            JUSTIFY {GRID_JTFY_LEFT, GRID_JTFY_RIGHT, GRID_JTFY_RIGHT, GRID_JTFY_RIGHT, GRID_JTFY_RIGHT, GRID_JTFY_LEFT}  ;
+            READONLY {.T., .F., .F., .F., .F., .T., .T.}  ;
+            JUSTIFY {GRID_JTFY_LEFT, GRID_JTFY_RIGHT, GRID_JTFY_RIGHT, GRID_JTFY_RIGHT, GRID_JTFY_RIGHT, GRID_JTFY_LEFT, GRID_JTFY_LEFT}  ;
+            ON HEADCLICK { {|| oListaCon:SortColumn( 1, .F. ) }, {|| oListaCon:SortColumn( 2, .F. ) }, {|| oListaCon:SortColumn( 3, .F. ) }, {|| oListaCon:SortColumn( 4, .F. ) }, {|| oListaCon:SortColumn( 5, .F. ) } } ;
             FULLMOVE ;
-            ON EDITCELL ValidaPos( oListaCon )
+            MULTISELECT ;
+            ON EDITCELL ValCellPos( oListaCon ) ;
+            ON CHANGE SelectControl( oListaCon )
 
 // TODO: This context should open on the control clicked and not the control selected in the form
 // Each ACTION should call a new function. This function finds the index of the control in
 // getformobject('Form_1'):acontrols, sets nhandlep := index, and calls the old function.
          DEFINE CONTEXT MENU CONTROL ListaCon OF Lista
-            ITEM 'Properties' ACTION Properties_Click( ::myIde )
-            ITEM 'Events    ' name events ACTION Events_click( ::myIde )
+            ITEM 'Properties'             ACTION {|aParams| Edit_Properties( ::myIde, aParams ) }
+            ITEM 'Events    '             ACTION Events_click( ::myIde )
             ITEM 'Interactive Font/Color' ACTION intfoco( 1, ::myIde )
-            ITEM 'Manual Move/Size'  ACTION manualmosi( 1, ::myIde )
-            ITEM 'Interactive Move' ACTION MoveControl( ::myIde )
-            ITEM 'Keyboard Move' ACTION kMove( ::myIde )
-            ITEM 'Interactive Size' ACTION SizeControl()
+            ITEM 'Manual Move/Size'       ACTION manualmosi( 1, ::myIde )
+            ITEM 'Interactive Move'       ACTION MoveControl( ::myIde )
+            ITEM 'Keyboard Move'          ACTION kMove( ::myIde )
+            ITEM 'Interactive Size'       ACTION SizeControl()
             SEPARATOR
-            ITEM 'Delete' ACTION DeleteControl()
+            ITEM 'Global Row Align'       ACTION ValGlobalPos( oListaCon, 'ROW' )
+            ITEM 'Global Col Align'       ACTION ValGlobalPos( oListaCon, 'COL' )
+            ITEM 'Global Width Change'    ACTION ValGlobalPos( oListaCon, 'WID' )
+            ITEM 'Global Height Change'   ACTION ValGlobalPos( oListaCon, 'HEI' )
+            SEPARATOR
+            ITEM 'Delete'                 ACTION DeleteControl()
          END MENU
 
-         @ 420, 30 LABEL lop1 VALUE "Click or enter to modify position or dimension." FONT "Calibri" SIZE 9 AUTOSIZE HEIGHT 15
-         @ 435, 30 LABEL lop2 VALUE "Use right click to display more options." FONT "Calibri" SIZE 9 AUTOSIZE HEIGHT 15
+         @ 420, 10 LABEL lop1 VALUE "Click or enter to modify position or dimension." FONT "Calibri" SIZE 9 AUTOSIZE HEIGHT 15
+         @ 435, 10 LABEL lop2 VALUE "Right click to access properties or events, or" FONT "Calibri" SIZE 9 AUTOSIZE HEIGHT 15
+         @ 450, 10 LABEL lop3 VALUE "to do global align/resize of selected controls." FONT "Calibri" SIZE 9 AUTOSIZE HEIGHT 15
+         @ 465, 10 LABEL lop4 VALUE "Click on headers to change display order." FONT "Calibri" SIZE 9 AUTOSIZE HEIGHT 15
       END WINDOW
 
       form_main:Show()
@@ -1636,31 +1608,80 @@ METHOD New() CLASS TForm1
 RETURN
 
 *------------------------------------------------------------------------------*
-STATIC FUNCTION ValidaPos( oListaCon )
+STATIC FUNCTION Edit_Properties( myIde, aParams )
 *------------------------------------------------------------------------------*
-wvalue:=this.cellrowindex
-cname:=olistacon:cell(wvalue,6)
-oname:=GetControlObject( cname,"form_1")
-nrow:=val(olistacon:cell(wvalue,2))
-ncol:=val(olistacon:cell(wvalue,3))
-nwidth:=val(olistacon:cell(wvalue,4))
-nheight:=val(olistacon:cell(wvalue,5))
-if this.cellcolindex=2
-   oname:row:=nrow
-endif
-if this.cellcolindex=3
-   oname:col:=ncol
-endif
-if this.cellcolindex=4
-   oname:width:=nwidth
-endif
-if this.cellcolindex=5
-   oname:height:=nheight
-endif
+   IF aParams[1] > 0
+      Dibuja( oListaCon:Cell( aParams[1], 6 ) )
+      Properties_Click( myIde )
+   ENDIF
+RETURN NIL
 
-procesacontrol()
-dibuja(cname)  
+*------------------------------------------------------------------------------*
+STATIC FUNCTION ValCellPos( oListaCon )
+*------------------------------------------------------------------------------*
+LOCAL wValue, cName, oCtrl
+
+   wValue := This.CellRowIndex
+   cName  := oListaCon:Cell( wValue, 6 )
+   oCtrl  := GetControlObject( cName, "Form_1" )
+
+   DO CASE
+   CASE This.CellColIndex == 2
+      oCtrl:Row := Val( oListaCon:Cell( wValue, 2 ) )
+   CASE This.CellColIndex == 3
+      oCtrl:Col := Val( oListaCon:Cell( wValue, 3 ) )
+   CASE This.CellColIndex == 4
+      oCtrl:Width := Val( oListaCon:Cell( wValue, 4 ) )
+   CASE This.CellColIndex == 5
+      oCtrl:Height := Val( oListaCon:Cell( wValue, 5 ) )
+   ENDCASE
+
+   ProcesaControl( oCtrl )
 return nil
+
+*------------------------------------------------------------------------------*
+STATIC FUNCTION ValGlobalPos( oListaCon, cCual )
+*------------------------------------------------------------------------------*
+LOCAL aItemsSel, aInput, nActRow, nActCol, nActWid, nActHei, i, nFila, cName, oCtrl
+
+   aItemsSel := oListaCon:Value
+
+   IF Len( aItemsSel ) > 0
+      DO CASE
+      CASE cCual == 'ROW'
+         nActRow := Val( oListaCon:Cell( aItemsSel[1], 2 ) )
+         aInput  := myInputWindow( 'Global Row Change', { 'New Row Value' }, { nActRow }, { '9999' } )
+      CASE cCual == 'COL'
+         nActCol := Val( oListaCon:Cell( aItemsSel[1], 3 ) )
+         aInput  := myInputWindow( 'Global Col Change', { 'New Col Value' }, { nActCol }, { '9999' } )
+      CASE cCual == 'WID'
+         nActWid := Val( oListaCon:Cell( aItemsSel[1], 4 ) )
+         aInput  := myInputWindow( 'Global Width Change', { 'New Width Value' }, { nActWid }, { '9999' } )
+      CASE cCual == 'HEI'
+         nActHei := Val( oListaCon:Cell( aItemsSel[1], 5 ) )
+         aInput  := myInputWindow( 'Global Height Change', { 'New Height Value'}, { nActHei }, { '9999' } )
+      ENDCASE
+
+      FOR i := 1 TO Len( aItemsSel )
+         nFila := aItemsSel[i]
+         cName := oListaCon:Cell( nFila, 6 )
+         oCtrl := GetControlObject( cName, "Form_1" )
+
+         DO CASE
+         CASE cCual == 'ROW'
+              oCtrl:Row    := aInput[1]
+         CASE cCual == 'COL'
+              oCtrl:Col    := aInput[1]
+         CASE cCual == 'WID'
+              oCtrl:Width  := aInput[1]
+         CASE cCual == 'HEI'
+              oCtrl:Height := aInput[1]
+         ENDCASE
+
+         ProcesaControl( oCtrl )
+      NEXT
+   ENDIF
+RETURN NIL
 
 *------------------------------------------------------------------------------*
 FUNCTION RefreFo()
@@ -1715,26 +1736,31 @@ LOCAL nFWidth, nFHeight
          NOMAXIMIZE NOMINIMIZE
 
          DEFINE CONTEXT MENU
-            ITEM 'Properties' ACTION Properties_Click( ::myIde )
-            ITEM 'Events    ' NAME events ACTION Events_click( ::myIde )
+            ITEM 'Properties'             ACTION Properties_Click( ::myIde )
+            ITEM 'Events    '             ACTION Events_click( ::myIde )
             ITEM 'Interactive Font/Color' ACTION intfoco( 1, ::myIde )
-            ITEM 'Manual Move/Size' ACTION manualmosi( 1, ::myIde )
-            ITEM 'Interactive Move' ACTION MoveControl( ::myIde )
-            ITEM 'Keyboard Move' ACTION kMove( ::myIde )
-            ITEM 'Interactive Size' ACTION SizeControl()
+            ITEM 'Manual Move/Size'       ACTION manualmosi( 1, ::myIde )
+            ITEM 'Interactive Move'       ACTION MoveControl( ::myIde )
+            ITEM 'Keyboard Move'          ACTION kMove( ::myIde )
+            ITEM 'Interactive Size'       ACTION SizeControl()
             SEPARATOR
-            ITEM 'Delete' ACTION DeleteControl()
+            ITEM 'Global Row Align'       ACTION ValGlobalPos( oListaCon, 'ROW' )
+            ITEM 'Global Col Align'       ACTION ValGlobalPos( oListaCon, 'COL' )
+            ITEM 'Global Width Change'    ACTION ValGlobalPos( oListaCon, 'WID' )
+            ITEM 'Global Height Change'   ACTION ValGlobalPos( oListaCon, 'HEI' )
+            SEPARATOR
+            ITEM 'Delete'                 ACTION DeleteControl()
          END MENU
 
-         ON KEY ALT+D ACTION debug()
+         ON KEY ALT+D  ACTION debug()
          ON KEY DELETE ACTION deletecontrol()
-         ON KEY F1 ACTION help_f1('FORMEDIT')
+         ON KEY F1     ACTION help_f1('FORMEDIT')
       END WINDOW
 
       DEFINE WINDOW Lista OBJ Lista ;
          AT 120, 665 ;                                  
          WIDTH 300 ;
-         HEIGHT 450 ;
+         HEIGHT 490 ;
          CLIENTAREA ;
          TITLE 'Control Inspector' ;
          ICON 'Edit' ;
@@ -1744,33 +1770,46 @@ LOCAL nFWidth, nFHeight
          BACKCOLOR ::myIde:asystemcolor ;
          ON INIT oListaCon:Height := SetHeightForWholeRows( oListaCon, 400 )
 
-         @ 20, 10 GRID ListaCon OBJ oListaCon ;
+         @ 10, 10 GRID ListaCon OBJ oListaCon ;
             WIDTH 280 ;
             HEIGHT 400  ;
-            HEADERS {'Name', 'Row', 'Col', 'Width', 'Height', 'int-name'} ;
-            WIDTHS {80, 40, 40, 45, 50, 0 } ;
+            HEADERS {'Name', 'Row', 'Col', 'Width', 'Height', 'int-name', 'type'} ;
+            WIDTHS {80, 40, 40, 45, 50, 0, 0 } ;
             FONT "Arial" ;
             SIZE 10 ;
             INPLACE EDIT ;
-            READONLY {.T., .F., .F., .F., .F., .T.}  ;
-            JUSTIFY {GRID_JTFY_LEFT, GRID_JTFY_RIGHT, GRID_JTFY_RIGHT, GRID_JTFY_RIGHT, GRID_JTFY_RIGHT, GRID_JTFY_LEFT}  ;
+            READONLY {.T., .F., .F., .F., .F., .T., .T.}  ;
+            JUSTIFY {GRID_JTFY_LEFT, GRID_JTFY_RIGHT, GRID_JTFY_RIGHT, GRID_JTFY_RIGHT, GRID_JTFY_RIGHT, GRID_JTFY_LEFT, GRID_JTFY_LEFT}  ;
+            ON HEADCLICK { {|| oListaCon:SortColumn( 1, .F. ) }, {|| oListaCon:SortColumn( 2, .F. ) }, {|| oListaCon:SortColumn( 3, .F. ) }, {|| oListaCon:SortColumn( 4, .F. ) }, {|| oListaCon:SortColumn( 5, .F. ) } } ;
             FULLMOVE ;
-            ON EDITCELL ValidaPos( oListaCon )
+            MULTISELECT ;
+            ON EDITCELL ValCellPos( oListaCon ) ;
+            ON CHANGE SelectControl( oListaCon )
 
+// TODO: This context should open on the control clicked and not the control selected in the form
+// Each ACTION should call a new function. This function finds the index of the control in
+// getformobject('Form_1'):acontrols, sets nhandlep := index, and calls the old function.
          DEFINE CONTEXT MENU CONTROL ListaCon OF Lista
-            ITEM 'Properties' ACTION Properties_Click( ::myIde )
-            ITEM 'Events    ' NAME events ACTION Events_click( ::myIde )
-            ITEM 'Interactive Font/Color' ACTION IntFoco( 1, ::myIde )
-            ITEM 'Manual Move/Size' ACTION ManualMosi( 1, ::myIde )
-            ITEM 'Interactive Move' ACTION MoveControl( ::myIde )
-            ITEM 'Keyboard Move' ACTION kMove( ::myIde )
-            ITEM 'Interactive Size' ACTION SizeControl()
+            ITEM 'Properties'             ACTION {|aParams| Edit_Properties( ::myIde, aParams ) }
+            ITEM 'Events    '             ACTION Events_click( ::myIde )
+            ITEM 'Interactive Font/Color' ACTION intfoco( 1, ::myIde )
+            ITEM 'Manual Move/Size'       ACTION manualmosi( 1, ::myIde )
+            ITEM 'Interactive Move'       ACTION MoveControl( ::myIde )
+            ITEM 'Keyboard Move'          ACTION kMove( ::myIde )
+            ITEM 'Interactive Size'       ACTION SizeControl()
             SEPARATOR
-            ITEM 'Delete' ACTION DeleteControl()
+            ITEM 'Global Row Align'       ACTION ValGlobalPos( oListaCon, 'ROW' )
+            ITEM 'Global Col Align'       ACTION ValGlobalPos( oListaCon, 'COL' )
+            ITEM 'Global Width Change'    ACTION ValGlobalPos( oListaCon, 'WID' )
+            ITEM 'Global Height Change'   ACTION ValGlobalPos( oListaCon, 'HEI' )
+            SEPARATOR
+            ITEM 'Delete'                 ACTION DeleteControl()
          END MENU
 
-         @ 420, 30 LABEL lop1 VALUE "Click or enter to modify position or dimension." FONT "Calibri" SIZE 9 AUTOSIZE
-         @ 435, 30 LABEL lop2 VALUE "Use right click to display more options." FONT "Calibri" SIZE 9 AUTOSIZE
+         @ 420, 10 LABEL lop1 VALUE "Click or enter to modify position or dimension." FONT "Calibri" SIZE 9 AUTOSIZE HEIGHT 15
+         @ 435, 10 LABEL lop2 VALUE "Right click to access properties or events, or" FONT "Calibri" SIZE 9 AUTOSIZE HEIGHT 15
+         @ 450, 10 LABEL lop3 VALUE "to do global align/resize of selected controls." FONT "Calibri" SIZE 9 AUTOSIZE HEIGHT 15
+         @ 465, 10 LABEL lop4 VALUE "Click on headers to change display order." FONT "Calibri" SIZE 9 AUTOSIZE HEIGHT 15
       END WINDOW
 
       form_main:Show()
@@ -1788,11 +1827,31 @@ LOCAL nFWidth, nFHeight
       ENDIF
 
       tbParsea( tmytoolb )
-      tMyToolb:Cerrar()
+      tMyToolb:Close()
 
       ACTIVATE WINDOW form_1, lista
    ENDIF
 RETURN  NIL
+
+*------------------------------------------------------------------------------*
+STATIC FUNCTION SelectControl( oListaCon )
+*------------------------------------------------------------------------------*
+LOCAL nFocus, aVal
+
+   nFocus := GetFocus()
+   IF nFocus > 0
+      oFocus := GetControlObjectByHandle( nFocus )
+      IF oFocus:Name == "LISTACON"
+         ERASE WINDOW Form_1
+         MisPuntos()
+
+         aVal := oListaCon:Value
+         IF Len( aVal ) == 1
+            Dibuja( oListaCon:Cell( aVal[1], 6 ) )
+         ENDIF
+      ENDIF
+   ENDIF
+RETURN NIL
 
 *------------------------------------------------------------------------------*
 METHOD FillControl() CLASS TForm1
@@ -2061,6 +2120,8 @@ RETURN NIL
 *------------------------------------------------------------------------------*
 METHOD Control_Click( wpar ) CLASS TForm1
 *------------------------------------------------------------------------------*
+MEMVAR lsi
+
    IF lsi
       FOR i := 1 TO 29
          cccontrol := 'Control_' + PadL( LTrim( Str( i, 2 ) ), 2, '0' )
@@ -2662,8 +2723,13 @@ STATIC FUNCTION pTimer( i, myIde )
    ninterval:=val(myform:LeaDato(cName,'INTERVAL','1000'))
    caction:=myform:LeaDato(cName,'ACTION','')
    cobj:=myform:LeaDato(cName,'OBJ','')
-    myform:acobj[i]:=cobj
-   @ nRow,nCol LABEL &cName OF Form_1 WIDTH 100 HEIGHT 20 VALUE cName BORDER ACTION dibuja(this:name)
+   myform:acobj[i]:=cobj
+   @ nRow,nCol LABEL &cName OF Form_1 ;
+      WIDTH 100 ;
+      HEIGHT 20 ;
+      VALUE cName ;
+      BORDER ;
+      ACTION dibuja(this:name)
    myform:avaluen[i]:=ninterval
    myform:aaction[i]:=caction
    myform:aenabled[i]:=iif( upper( myform:LeaDato_Oop( cName, 'ENABLED', '.T.' ) ) == '.T.', .T. ,.F. )
@@ -3111,10 +3177,9 @@ STATIC FUNCTION pProgressbar( i, myIde )
    lsmooth:=myform:LeaDatoLogic(cName,'SMOOTH','F')
    nhelpid:=val(myform:LeaDato(cName,'HELPID','0'))
    cobj:=myform:LeaDato(cName,'OBJ','')
-    myform:acobj[i]:=cobj
+   myform:acobj[i]:=cobj
 
    myform:atooltip[i]:=ctooltip
-
 
    @ nrow,ncol LABEL &cName OF Form_1 ;
       WIDTH nwidth ;
@@ -4529,6 +4594,7 @@ return
 STATIC FUNCTION pCheckBox( i, myIde )
 *------------------------------------------------------------------------------*
 
+   cName        := myform:acontrolw[i]
    nrow         := val(myform:LeaRow( cName))
    ncol         := val(myform:LeaCol( cName))
    cfontname    := myform:Clean( myform:LeaDato(cName,'FONT',''))
@@ -4569,7 +4635,6 @@ STATIC FUNCTION pCheckBox( i, myIde )
          NOTABSTOP
    ENDIF
 
-   cName:=myform:acontrolw[i]
    myform:actrltype[i]:='CHECKBOX'
    myform:aname[i]:=myform:acontrolw[i]
 
@@ -4634,8 +4699,8 @@ STATIC FUNCTION pButton( i, myIde )
    cCaption:=myform:Clean( myform:LeaDato(cName,'CAPTION',cName))        // TODO: Ver si es necesario el default
    cPicture:= myform:Clean( myform:LeaDato(cName,'PICTURE',''))
    cAction:=myform:LeaDato(cName,'ACTION',"msginfo('Button pressed')")
-   nWidth:=val(myform:LeaDato(cName,'WIDTH','100'))
-   nHeight:=val(myform:LeaDato(cName,'HEIGHT','28'))
+   nWidth:=val(myform:LeaDato(cName,'WIDTH','100'))                      // TODO: Use default
+   nHeight:=val(myform:LeaDato(cName,'HEIGHT','28'))                     // TODO: Use default
    nhelpid:=val(myform:LeaDato(cName,'HELPID','0'))
    lNoTabStop:=myform:LeaDatoLogic(cName,'NOTABSTOP',"F")
    lflat:=myform:LeaDatoLogic(cName,'FLAT',"F")
@@ -4650,10 +4715,10 @@ STATIC FUNCTION pButton( i, myIde )
    cOnlostfocus:=myform:LeaDato(cName,'ON LOSTFOCUS','')
    cobj:=myform:LeaDato(cName,'OBJ','')
 
-   @ nrow, ncol Button &cName OF Form_1 ;
+   @ nrow, ncol BUTTON &cName OF Form_1 ;
       CAPTION cCaption ;
-      WIDTH nwidth ;
-      HEIGHT nheight ;
+      WIDTH nwidth ;                                 
+      HEIGHT nheight ;                               
       ON GOTFOCUS Dibuja( This:Name ) ;
       ACTION Dibuja( This:Name ) ;
       NOTABSTOP
@@ -5013,64 +5078,79 @@ myform:aimage[h]:=cimages
 return nil
 
 *------------------------------------------------------------------------------*
-FUNCTION ProcesaControl( oListaCon )
+FUNCTION ProcesaControl( oCtrl )
 *------------------------------------------------------------------------------*
-LOCAL i, j, x, cName, oWindow, nPos
+LOCAL oPage, oTab, nPos
 
-   j := oListaCon:Value + 1
-   cName := myform:aControlW[j]
-   oWindow := getformobject("form_1")
-   x := 0
-   FOR i := 1 TO Len( oWindow:aControls )
-       IF Lower( cName )== Lower( oWindow:aControls[i]:Name )
-          x := i
-          IF oWindow:aControls[i]:Row # oWindow:aControls[i]:ContainerRow .OR. oWindow:aControls[i]:Col # oWindow:aControls[i]:ContainerCol
-             oGenerico := oWindow:aControls[i]
-             oPage := oGenerico:Container
-             nPos := oPage:Position
-             oTab := oPage:Container
-             oTab:Value := nPos
-          ENDIF
-          EXIT
-       ENDIF
-   NEXT i
-   IF x > 0
-      Dibuja1( x )
+   IF oCtrl:Row # oCtrl:ContainerRow .OR. oCtrl:Col # oCtrl:ContainerCol
+      oPage := oCtrl:Container
+      oTab := oPage:Container
+      nPos := oPage:Position
+      oTab:Value := nPos
    ENDIF
-   myform:lFsave := .F.
+
+   Dibuja( oCtrl:Name )
+   myForm:lFsave := .F.
 RETURN NIL
 
 *------------------------------------------------------------------------------*
-FUNCTION RefreshControlInspector()
+FUNCTION RefreshControlInspector( ControlName )
 *------------------------------------------------------------------------------*
-LOCAL i, ccontrol, oocontrol, nrow, ncol, nwidth, nheight, cName, j, nl, nVal
+LOCAL i, aSelCtrl, aVal, cControl, cName, cType, nl, j, oControl, nRow, nCol, nWidth, nHeight
+STATIC lBusy := .F.
 
-   nVal := oListaCon:Value
-   lista.listacon.DeleteAllItems
+   IF lBusy
+      RETURN NIL
+   ENDIF
+   lBusy := .T.
+
+   IF HB_IsString( ControlName ) .AND. ! Empty( ControlName )
+      aSelCtrl := { Lower( ControlName ) }
+   ELSE
+      aSelCtrl := {}
+      aVal := oListaCon:Value
+      FOR i := 1 to Len( aVal )
+        aAdd( aSelCtrl, oListaCon:Cell( aVal[i], 6 ) )
+      NEXT i
+   ENDIF
+
+   oListaCon:DeleteAllItems()
    FOR i := 2 TO Len( myform:aname )
       IF Len( RTrim( myform:acontrolw[i] ) ) > 0
-         ccontrol := myform:acontrolw[i]
+         cControl := Lower( myform:acontrolw[i] )
          cName := myform:aname[i]
+         cType := myform:actrltype[i]
          nl := 0
          FOR j := 1 TO Len( getformobject( 'Form_1' ):aControls )
-            IF Lower( getformobject( 'Form_1' ):aControls[j]:Name ) == Lower( ccontrol )
+            IF Lower( getformobject( 'Form_1' ):aControls[j]:Name ) == cControl
                nl := j
                EXIT
             ENDIF
          NEXT j
          IF nl > 0
-            oocontrol := getformobject( 'Form_1' ):acontrols[nl]
-            nrow := oocontrol:Row
-            ncol := oocontrol:Col
-            nwidth := oocontrol:Width
-            nheight := oocontrol:Height
-            oListaCon:AddItem( { cName, Str( nRow, 4 ), Str( nCol, 4 ), Str( nWidth, 4 ), Str( nHeight, 4 ), ccontrol } )
+            oControl := getformobject( 'Form_1' ):acontrols[nl]
+            nRow := oControl:Row
+            nCol := oControl:Col
+            nWidth := oControl:Width
+            nHeight := oControl:Height
+            oListaCon:AddItem( { cName, Str( nRow, 4 ), Str( nCol, 4 ), Str( nWidth, 4 ), Str( nHeight, 4 ), cControl, cType } )
          ENDIF
       ENDIF
    NEXT i
-   IF nVal <= oListaCon:ItemCount
-      oListaCon:Value := nVal
+
+   aVal := {}
+   IF Len( aSelCtrl ) > 0
+      nl := oListaCon:ItemCount
+      FOR i := 1 TO nl
+         j := aScan( aSelCtrl, oListaCon:Cell( i, 6 ) )
+         IF j > 0
+            aAdd( aVal, i )
+         ENDIF
+      NEXT i
    ENDIF
+   oListaCon:Value := aVal
+
+   lBusy := .F.
 RETURN NIL
 
 *------------------------------------------------------------------------------*
