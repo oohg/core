@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.20 2014-07-18 15:19:07 fyurisich Exp $
+ * $Id: formedit.prg,v 1.21 2014-07-18 16:31:50 fyurisich Exp $
  */
 
 /*
@@ -1549,7 +1549,7 @@ METHOD New() CLASS TForm1
          NOMAXIMIZE NOMINIMIZE ;
          NOSIZE ;
          BACKCOLOR ::myIde:asystemcolor ;
-         ON INIT oListaCon:Height := SetHeightForWholeRows( oListaCon, 400 )
+         ON INIT SetHeightForWholeRows( oListaCon, 400 )
 
          @ 10, 10 GRID ListaCon OBJ oListaCon ;
             WIDTH 350 ;
@@ -1645,6 +1645,8 @@ LOCAL aItemsSel, aInput, nActRow, nActCol, nActWid, nActHei, i, nFila, cName, oC
    aItemsSel := oListaCon:Value
 
    IF Len( aItemsSel ) > 0
+      CursorWait()
+
       DO CASE
       CASE cCual == 'ROW'
          nActRow := Val( oListaCon:Cell( aItemsSel[1], 2 ) )
@@ -1659,6 +1661,11 @@ LOCAL aItemsSel, aInput, nActRow, nActCol, nActWid, nActHei, i, nFila, cName, oC
          nActHei := Val( oListaCon:Cell( aItemsSel[1], 5 ) )
          aInput  := myInputWindow( 'Global Height Change', { 'New Height Value'}, { nActHei }, { '9999' } )
       ENDCASE
+
+      oForm := GetFormObject( 'Form_1' )
+
+      oForm:SetRedraw( .F. )
+      oListaCon:SetRedraw( .F. )
 
       FOR i := 1 TO Len( aItemsSel )
          nFila := aItemsSel[i]
@@ -1678,6 +1685,13 @@ LOCAL aItemsSel, aInput, nActRow, nActCol, nActWid, nActHei, i, nFila, cName, oC
 
          ProcesaControl( oCtrl )
       NEXT
+
+      oListaCon:SetRedraw( .T. )
+      oListaCon:Redraw()
+      oForm:SetRedraw( .T. )
+      oForm:Redraw()
+
+      CursorArrow()
    ENDIF
 RETURN NIL
 
@@ -1766,7 +1780,7 @@ LOCAL nFWidth, nFHeight
          NOMAXIMIZE NOMINIMIZE ;
          NOSIZE ;
          BACKCOLOR ::myIde:asystemcolor ;
-         ON INIT oListaCon:Height := SetHeightForWholeRows( oListaCon, 400 )
+         ON INIT SetHeightForWholeRows( oListaCon, 400 )
 
          @ 10, 10 GRID ListaCon OBJ oListaCon ;
             WIDTH 350 ;
@@ -5110,6 +5124,8 @@ STATIC lBusy := .F.
       NEXT i
    ENDIF
 
+   oListaCon:SetRedraw( .F. )
+
    oListaCon:DeleteAllItems()
    FOR i := 2 TO Len( myform:aname )
       IF Len( RTrim( myform:acontrolw[i] ) ) > 0
@@ -5145,6 +5161,10 @@ STATIC lBusy := .F.
       NEXT i
    ENDIF
    oListaCon:Value := aVal
+
+   SetHeightForWholeRows( oListaCon, 400 )
+
+   oListaCon:SetRedraw( .T. )
 
    lBusy := .F.
 RETURN NIL
@@ -5468,16 +5488,27 @@ RETURN HideWindow( x )
 *------------------------------------------------------------------------------*
 FUNCTION SetHeightForWholeRows( oGrid, nMaxHeight )
 *------------------------------------------------------------------------------*
-LOCAL nAreaUsed
+LOCAL nAreaUsed, nItemHeight, nNewHeight
+STATIC nOldHeight := 0
 
-   nAreaUsed := oGrid:HeaderHeight + ;
-                IF( IsWindowStyle( oGrid:hWnd, WS_HSCROLL ), ;
-                    GetHScrollBarHeight(), ;
-                    0 ) + ;
-                IF( IsWindowExStyle( oGrid:hWnd, WS_EX_CLIENTEDGE ), ;
-                    GetEdgeHeight() * 2, ;
-                    0 )
-RETURN ( Int( ( nMaxHeight - nAreaUsed ) / oGrid:ItemHeight() ) * oGrid:ItemHeight() + nAreaUsed )
+   nItemHeight := oGrid:ItemHeight()
+   IF nItemHeight <= 0
+      nNewHeight := nMaxHeight
+   ELSE
+      nAreaUsed := oGrid:HeaderHeight + ;
+                   IF( IsWindowStyle( oGrid:hWnd, WS_HSCROLL ), ;
+                       GetHScrollBarHeight(), ;
+                       0 ) + ;
+                   IF( IsWindowExStyle( oGrid:hWnd, WS_EX_CLIENTEDGE ), ;
+                       GetEdgeHeight() * 2, ;
+                       0 )
+      nNewHeight := ( Int( ( nMaxHeight - nAreaUsed ) / nItemHeight ) * nItemHeight + nAreaUsed )
+   ENDIF
+   IF nNewHeight # nOldHeight
+      oListaCon:Height := nNewHeight
+      nOldHeight := nNewHeight
+   ENDIF
+RETURN NIL
 
 
 #include 'saveform.prg'

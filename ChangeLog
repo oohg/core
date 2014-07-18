@@ -1,11 +1,17 @@
 /*
- * $Id: ChangeLog,v 1.1326 2014-07-18 15:19:02 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1327 2014-07-18 16:31:50 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-07-18 13:32 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/prgs/formedit.prg
+     ! "Control inspector" shows no rows when form has no controls.
+     * Redraw is disabled while "Control inspector" is updated.
+     * Redraw is disabled while processing global move/resize.
 
 2014-07-18 12:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ide/prgs/formedit.prg
