@@ -1,5 +1,5 @@
 /*
- * $Id: mgide.prg,v 1.10 2014-07-17 02:59:37 fyurisich Exp $
+ * $Id: mgide.prg,v 1.11 2014-07-19 01:45:04 fyurisich Exp $
  */
 
 #include "oohg.ch"
@@ -699,7 +699,7 @@ public csyscolor,cvccvar
 
 public lsi := .T.   ///// variable publica que evita la recursividad del on change en el checkbutton
 DEFINE WINDOW cvcControls obj cvcControls ;
-   AT 120 , 0 ;
+   AT ::mainheight + 46, 0 ;
    WIDTH 65 ;
    HEIGHT 450 + GetTitleHeight() + GetBorderheight() ;
    TITLE 'Controls' ;

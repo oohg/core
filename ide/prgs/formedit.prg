@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.21 2014-07-18 16:31:50 fyurisich Exp $
+ * $Id: formedit.prg,v 1.22 2014-07-19 01:45:04 fyurisich Exp $
  */
 
 /*
@@ -1369,70 +1369,74 @@ next i
 return nil
 
 *------------------------------------------------------------------------------*
-FUNCTION Dibuja( xName )
+FUNCTION Dibuja( xName, lNoRefresh )
 *------------------------------------------------------------------------------*
 LOCAL cValor := Lower( xName )
-   Dibuja1( aScan( GetFormObject( 'Form_1' ):aControls, { |o| Lower( o:Name ) == cValor } ) )
+   Dibuja1( aScan( GetFormObject( 'Form_1' ):aControls, { |o| Lower( o:Name ) == cValor } ), lNoRefresh )
 RETURN NIL
 
 *------------------------------------------------------------------------------*
-FUNCTION Dibuja1( h )
+FUNCTION Dibuja1( h, lNoRefresh )
 *------------------------------------------------------------------------------*
 local l,ocontrol,owindow,nrow,ncol,nwidth,nheight,clabel,y,x,y1,x1
 local z:=h
 
-owindow:=getformobject('Form_1')
-erase window form_1
-mispuntos()                 
-ocontrol:= owindow:acontrols[z]
-y :=  ocontrol:containerrow
-x :=  ocontrol:containercol
-y1:=  ocontrol:containerrow + ocontrol:height
-x1:=  ocontrol:containercol + ocontrol:width
+   DEFAULT lNoRefresh TO .F.
 
-DRAW RECTANGLE IN WINDOW form_1 AT ocontrol:containerrow-10, ocontrol:containercol-10 ;
-     TO ocontrol:containerrow, ocontrol:containercol ;
-     PENCOLOR { 255 ,0 , 0 }  FILLCOLOR {255,0,0}
+   owindow:=getformobject('Form_1')
+   ERASE WINDOW form_1
+   MisPuntos()
+   ocontrol:= owindow:acontrols[z]
+   y :=  ocontrol:containerrow
+   x :=  ocontrol:containercol
+   y1:=  ocontrol:containerrow + ocontrol:height
+   x1:=  ocontrol:containercol + ocontrol:width
 
-DRAW RECTANGLE IN WINDOW form_1 AT ocontrol:containerrow + ocontrol:height+1, ocontrol:containercol + ocontrol:width+1 ;
-     TO ocontrol:containerrow + ocontrol:height+6, ocontrol:containercol + ocontrol:width+6 ;
-     PENCOLOR { 255 ,0 , 0 }  FILLCOLOR {255,0,0}
+   DRAW RECTANGLE IN WINDOW form_1 AT ocontrol:containerrow-10, ocontrol:containercol-10 ;
+        TO ocontrol:containerrow, ocontrol:containercol ;
+        PENCOLOR { 255 ,0 , 0 }  FILLCOLOR {255,0,0}
+
+   DRAW RECTANGLE IN WINDOW form_1 AT ocontrol:containerrow + ocontrol:height+1, ocontrol:containercol + ocontrol:width+1 ;
+        TO ocontrol:containerrow + ocontrol:height+6, ocontrol:containercol + ocontrol:width+6 ;
+        PENCOLOR { 255 ,0 , 0 }  FILLCOLOR {255,0,0}
 
 
-DRAW LINE IN WINDOW form_1 AT y-1 ,x-1  ;
-     TO  y-1  + ocontrol:height +1 ,x -1   PENCOLOR { 255 ,0 , 0 }    /// |
+   DRAW LINE IN WINDOW form_1 AT y-1 ,x-1  ;
+        TO  y-1  + ocontrol:height +1 ,x -1   PENCOLOR { 255 ,0 , 0 }    /// |
 
-DRAW LINE IN WINDOW form_1 AT y-1,x-1 ;
-     TO  y -1  , x-1 + ocontrol:width+1   PENCOLOR { 255 ,0 , 0 }    ///  -
+   DRAW LINE IN WINDOW form_1 AT y-1,x-1 ;
+        TO  y -1  , x-1 + ocontrol:width+1   PENCOLOR { 255 ,0 , 0 }    ///  -
 
-DRAW LINE IN WINDOW form_1 AT y-1 + ocontrol:height+1 , x-1  ;      ////   -
-     TO  y1,x1+1    PENCOLOR { 255 ,0 , 0 }
+   DRAW LINE IN WINDOW form_1 AT y-1 + ocontrol:height+1 , x-1  ;      ////   -
+        TO  y1,x1+1    PENCOLOR { 255 ,0 , 0 }
 
-DRAW LINE IN WINDOW form_1 AT y-1 , x-1+ ocontrol:width+1 ;         ////   |
-     TO  y1+1,x1   PENCOLOR { 255 ,0 , 0 }
+   DRAW LINE IN WINDOW form_1 AT y-1 , x-1+ ocontrol:width+1 ;         ////   |
+        TO  y1+1,x1   PENCOLOR { 255 ,0 , 0 }
 
-l:=ascan( myform:acontrolw, { |c| lower( c ) == lower(ocontrol:name)  } )
+   l:=ascan( myform:acontrolw, { |c| lower( c ) == lower(ocontrol:name)  } )
 
-if l>0
-   form_main:frame_2:caption := "Control : "+  myform:aname[l]    /////+space(20)
-   form_main:frame_2:refresh()
+   if l>0
+      form_main:frame_2:caption := "Control : "+  myform:aname[l]    /////+space(20)
+      form_main:frame_2:refresh()
 
-/////////// Mostrar cordenadas control actual
-   nrow:=ocontrol:row
-   ncol:=ocontrol:col
-   nwidth:=ocontrol:width
-   nheight:=ocontrol:height
-   clabel:="r:"+alltrim(str(nrow,4))+" c:"+alltrim(str(ncol,4))+" w:"+alltrim(str(nwidth,4))+" h:"+alltrim(str(nheight,4))
-   form_main:label_2:value :=clabel
-//////////
-   nhandlep:=z
-   RefreshControlInspector( oControl:Name )
-else
-   nhandlep:=0
-   myhandle:=0
-   form_main:label_2:value:= 'r:    c:    w:    h: '
-endif
-return nil
+   /////////// Mostrar cordenadas control actual
+      nrow:=ocontrol:row
+      ncol:=ocontrol:col
+      nwidth:=ocontrol:width
+      nheight:=ocontrol:height
+      clabel:="r:"+alltrim(str(nrow,4))+" c:"+alltrim(str(ncol,4))+" w:"+alltrim(str(nwidth,4))+" h:"+alltrim(str(nheight,4))
+      form_main:label_2:value :=clabel
+   //////////
+      nhandlep:=z
+      IF ! lNoRefresh
+         RefreshControlInspector( oControl:Name )
+      ENDIF
+   else
+      nhandlep:=0
+      myhandle:=0
+      form_main:label_2:value:= 'r:    c:    w:    h: '
+   endif
+RETURN NIL
 
 *------------------------------------------------------------------------------*
 METHOD Open( cFMG )  CLASS TForm1
@@ -1499,7 +1503,7 @@ METHOD New() CLASS TForm1
       cFBackcolor := myform:cFBackcolor          // TODO: Delete
 
       DEFINE WINDOW Form_1 OBJ Form_1 ;
-         AT ::myIde:mainheight + 46 ,66 ;
+         AT ::myIde:mainheight + 46, 66 ;
          WIDTH 700 ;
          HEIGHT 410 ;
          TITLE 'Form' ICON 'VD' ;
@@ -1508,8 +1512,8 @@ METHOD New() CLASS TForm1
          ON DBLCLICK Properties_Click( ::myIde ) ;
          ON MOUSEMOVE cordenada() ;
          ON MOUSEDRAG ms( ::myIde ) ;
-         ON GOTFOCUS mispuntos() ;
-         ON PAINT {|| refrefo(), mispuntos() } ;
+         ON GOTFOCUS MisPuntos() ;
+         ON PAINT {|| RefreFo(), MisPuntos() } ;
          BACKCOLOR &( myform:cFBackcolor ) ;
          FONT ::cFFontName ;
          SIZE ::nFFontSize ;
@@ -1539,7 +1543,7 @@ METHOD New() CLASS TForm1
       END WINDOW
 
       DEFINE WINDOW Lista OBJ Lista ;
-         AT 120, ( GetDeskTopWidth() - 380 ) ;
+         AT ::myIde:mainheight + 46, ( GetDeskTopWidth() - 380 ) ;
          WIDTH 370 ;
          HEIGHT 490 ;
          CLIENTAREA ;
@@ -1729,7 +1733,7 @@ LOCAL nFWidth, nFHeight
       ::nfvirtualh  := Val( ::LeaDato( 'WINDOW', 'VIRTUAL HEIGHT', '0' ) )
 
       DEFINE WINDOW Form_1 OBJ Form_1 ;
-         AT ::myIde:mainheight + 42, 66 ;
+         AT ::myIde:mainheight + 46, 66 ;
          WIDTH nFWidth ;
          HEIGHT nFHeight ;
          TITLE 'Title' ;
@@ -1770,7 +1774,7 @@ LOCAL nFWidth, nFHeight
       END WINDOW
 
       DEFINE WINDOW Lista OBJ Lista ;
-         AT 120, ( GetDeskTopWidth() - 380 ) ;
+         AT ::myIde:mainheight + 46, ( GetDeskTopWidth() - 380 ) ;
          WIDTH 370 ;
          HEIGHT 490 ;
          CLIENTAREA ;
@@ -1852,12 +1856,12 @@ LOCAL nFocus, aVal
    IF nFocus > 0
       oFocus := GetControlObjectByHandle( nFocus )
       IF oFocus:Name == "LISTACON"
-         ERASE WINDOW Form_1
-         MisPuntos()
-
          aVal := oListaCon:Value
          IF Len( aVal ) == 1
-            Dibuja( oListaCon:Cell( aVal[1], 6 ) )
+            Dibuja( oListaCon:Cell( aVal[1], 6 ), .T. )
+         ELSE
+            ERASE WINDOW Form_1
+            MisPuntos()
          ENDIF
       ENDIF
    ENDIF
@@ -2411,25 +2415,23 @@ return nil
 *------------------------------------------------------------------------------*
 FUNCTION MisPuntos()
 *------------------------------------------------------------------------------*
-local hdc := HB_GetDC( Form_1:Hwnd )
-local h := form_1:height
-local w:=  form_1:width
-local i,j
+LOCAL hDC := HB_GetDC( Form_1:hWnd )
+LOCAL h := Form_1:ClientHeight
+LOCAL w :=  Form_1:ClientWidth
+LOCAL i, j
 
-    FOR  i = 0 TO w STEP 10
-        FOR j= 0 TO h STEP 10
-            SetPixel(hDC, i,j,RGB(0,0,0))
-        NEXT
-    NEXT
+   FOR i := 0 TO w STEP 10
+      FOR j := 0 TO h STEP 10
+         SetPixel( hDC, i, j, RGB( 0, 0, 0 ) )
+      NEXT
+   NEXT
 
-   HB_ReleaseDC( Form_1:Hwnd , hdc )
+   HB_ReleaseDC( Form_1:hWnd, hDC )
 
-
-   DRAW line IN WINDOW form_1 AT 480,1  TO 480,w  PENCOLOR { 255 ,0 , 0 }  penwidth 1  ///FILLCOLOR {255,0,0}
-   DRAW line IN WINDOW form_1 AT 600,1  TO 600,w   PENCOLOR { 255 ,0 , 0 }  penwidth 1  ///FILLCOLOR {255,0,0}
-   DRAW line IN WINDOW form_1 AT 1,640  TO h,640  PENCOLOR { 255 ,0 , 0 }  penwidth 1  /////FILLCOLOR {255,0,0}
-   DRAW line IN WINDOW form_1 AT 1,800  TO h,800   PENCOLOR { 255 ,0 , 0 }  penwidth 1  //// FILLCOLOR {255,0,0}
-
+   DRAW LINE IN WINDOW Form_1 AT 480, 1 TO 480, w PENCOLOR { 255, 0, 0 } PENWIDTH 1
+   DRAW LINE IN WINDOW Form_1 AT 600, 1 TO 600, w PENCOLOR { 255, 0, 0 } PENWIDTH 1
+   DRAW LINE IN WINDOW Form_1 AT 1, 640 TO h, 640 PENCOLOR { 255, 0, 0 } PENWIDTH 1
+   DRAW LINE IN WINDOW Form_1 AT 1, 800 TO h, 800 PENCOLOR { 255, 0, 0 } PENWIDTH 1
 RETURN NIL
 
 // TODO: change all p(Control) functions to methods, change myform: by ::, and myIde by ::myIde
