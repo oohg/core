@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.1331 2014-07-20 12:46:32 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1332 2014-07-20 13:12:22 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,16 +7,35 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-07-20 10:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     ! Typos.
+   * source/h_browse.prg
+     + Constants for method TopBottom.
+     * When appending a new item via Alt-A or methods Down or PageDown,
+       method EditItem will be called with parameter lOneRow set to .T.
+       unless FULLMOVE is .T. and INPLACE is .T.
+     + Parameter lOneRow to methods EditItem and EditItem_B.
+       When .F. and INPLACE is .T., it enables the addition of more
+       rows after editing/adding the first one. In other cases, only
+       one row is edited/added. Defaults to .T.
+     ! Dbf's record pointer is not correct after editing a new row via
+       methods EditItem and EditItem_B when INPLACE is .T. and SYNC is ON.
+     * Changed some hardwired constants by defined constants.
+     * Method Events_Enter will now prevent recursive calls to ON ENTER
+       event procedure.
+     ! Method EditItem does not honor FULLMOVE clause.
+
 2014-07-20 09:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_xbrowse.prg
      + Parameter lOneRow to methods EditItem and EditItem_B.
-       When .F. and INPLACE is .T., it enables de addition of more
+       When .F. and INPLACE is .T., it enables the addition of more
        rows after editing/adding the first one. In other cases, only
        one row is edited/added. Defaults to .T.
      * When appending a new item via Alt-A or methods Down or PageDown,
        method EditItem will be called with parameter lOneRow set to .T.
        unless FULLMOVE is .T. and INPLACE is .T.
-     ! Method EditRow does not honor FULLMOVE clause.
+     ! Method EditItem does not honor FULLMOVE clause.
 
 2014-07-20 09:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog
@@ -1122,7 +1141,7 @@
        Resolution is used to calculate the image's original size, in
        the same ways as OpenOffice Calc calculates it.
        It´s measured in DPI.
-       Parameter aSize: declares de image size. Takes an array
+       Parameter aSize: declares the image size. Takes an array
        {nHorSize, nVerSize} or a number (equivalent to {nSize, nSize}).
        It´s measured in 100/th of MM.
        Resolution takes precedence over size.

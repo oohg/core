@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.138 2014-07-17 02:59:37 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.139 2014-07-20 13:12:22 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -98,6 +98,9 @@
 #define REFRESH_FORCE    0
 #define REFRESH_NO       1
 #define REFRESH_DEFAULT -1
+
+#define GO_TOP    -1
+#define GO_BOTTOM  1
 
 STATIC _OOHG_BrowseSyncStatus := .F.
 STATIC _OOHG_BrowseFixedBlocks := .T.
@@ -490,7 +493,7 @@ Local _RecNo, s
       _RecNo := ( ::WorkArea )->( RecNo() )
 
       If Len( ::aRecMap ) == 0
-         ::TopBottom( 1 )
+         ::TopBottom( GO_BOTTOM )
          ::DbSkip( - ::CountPerPage + 1 )
       Else
          ::DbGoTo( ::aRecMap[ Len( ::aRecMap ) ] )
@@ -499,7 +502,7 @@ Local _RecNo, s
          If ::Eof()
             ::DbGoTo( _RecNo )
             If ::AllowAppend
-               ::EditItem( .T. )
+               ::EditItem( .T., ! ( ::Inplace .AND. ::FullMove ) )
             Endif
             Return nil
          EndIf
@@ -511,7 +514,7 @@ Local _RecNo, s
       Else
          ::DbGoTo( ::aRecMap[ Len( ::aRecMap ) ] )
       EndIf
-      ::scrollUpdate()
+      ::ScrollUpdate()
       ListView_SetCursel ( ::hWnd, Len( ::aRecMap ) )
       ::DbGoTo( _RecNo )
    Else
@@ -534,12 +537,12 @@ Local _RecNo
       EndIf
       _RecNo := ( ::WorkArea )->( RecNo() )
       If Len( ::aRecMap ) == 0
-         ::TopBottom( -1 )
+         ::TopBottom( GO_TOP )
       Else
          ::DbGoTo( ::aRecMap[ 1 ] )
       EndIf
       ::DbSkip( - ::CountPerPage + 1 )
-      ::scrollUpdate()
+      ::ScrollUpdate()
       ::Update()
       ::DbGoTo( _RecNo )
       ListView_SetCursel ( ::hWnd, 1 )
@@ -561,8 +564,8 @@ Local _RecNo
       Return nil
    EndIf
    _RecNo := ( ::WorkArea )->( RecNo() )
-   ::TopBottom( -1 )
-   ::scrollUpdate()
+   ::TopBottom( GO_TOP )
+   ::ScrollUpdate()
    ::Update()
    ::DbGoTo( _RecNo )
    ListView_SetCursel( ::hWnd, 1 )
@@ -582,7 +585,7 @@ Local _RecNo, _BottomRec
       Return nil
    EndIf
    _RecNo := ( ::WorkArea )->( RecNo() )
-   ::TopBottom( 1 )
+   ::TopBottom( GO_BOTTOM )
    _BottomRec := ( ::WorkArea )->( RecNo() )
    ::ScrollUpdate()
 
@@ -612,7 +615,7 @@ Local s, _RecNo, nLen
       _RecNo := ( ::WorkArea )->( RecNo() )
 
       If Len( ::aRecMap ) == 0
-         ::TopBottom( -1 )
+         ::TopBottom( GO_TOP )
          ::DbSkip( -1 )
          ::Update()
       Else
@@ -643,7 +646,7 @@ Local s, _RecNo, nLen
          EndIf
       EndIf
 
-      ::scrollUpdate()
+      ::ScrollUpdate()
       ::DbGoTo( _RecNo )
       If Len( ::aRecMap ) != 0
          ListView_SetCursel( ::hWnd, 1 )
@@ -672,7 +675,7 @@ Local s, _RecNo, nLen
       _RecNo := ( ::WorkArea )->( RecNo() )
 
       If Len( ::aRecMap ) == 0
-         ::TopBottom( -1 )
+         ::TopBottom( GO_TOP )
          ::DbSkip()
          ::Update()
       Else
@@ -682,7 +685,7 @@ Local s, _RecNo, nLen
          If ::Eof()
             ::DbGoTo( _RecNo )
             If ::AllowAppend
-               ::EditItem( .T. )
+               ::EditItem( .T., ! ( ::Inplace .AND. ::FullMove ) )
             Endif
             Return nil
          EndIf
@@ -706,7 +709,7 @@ Local s, _RecNo, nLen
       If Len( ::aRecMap ) != 0
          ::DbGoTo( ATail( ::aRecMap ) )
       EndIf
-      ::scrollUpdate()
+      ::ScrollUpdate()
       ::DbGoTo( _RecNo )
       ListView_SetCursel( ::hWnd, Len( ::aRecMap ) )
    Else
@@ -723,7 +726,7 @@ METHOD TopBottom( nDir ) CLASS TOBrowse
    If ::lDescending
       nDir := - nDir
    EndIf
-   If nDir == 1
+   If nDir == GO_BOTTOM
       ( ::WorkArea )->( DbGoBottom() )
    Else
       ( ::WorkArea )->( DbGoTop() )
@@ -863,7 +866,7 @@ Local Value, nRecNo, lSync
       EndIf
       ::DbSkip()
       If ::Eof()
-         ::TopBottom( 1 )
+         ::TopBottom( GO_BOTTOM )
       EndIf
 
       If Set( _SET_DELETED )
@@ -890,11 +893,12 @@ Local Value, nRecNo, lSync
 Return Nil
 
 *-----------------------------------------------------------------------------*
-METHOD EditItem_B( append ) CLASS TOBrowse
+METHOD EditItem_B( lAppend, lOneRow ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local nOldRecNo, nItem, cWorkArea, lRet, nNewRec
 
-   ASSIGN append VALUE append TYPE "L" DEFAULT .F.
+   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
+   ASSIGN lOneRow VALUE lOneRow TYPE "L" DEFAULT .T.
 
    cWorkArea := ::WorkArea
    If Select( cWorkArea ) == 0
@@ -904,30 +908,37 @@ Local nOldRecNo, nItem, cWorkArea, lRet, nNewRec
 
    nItem := LISTVIEW_GETFIRSTITEM( ::hWnd )
 
-   If nItem == 0 .AND. ! append
+   If nItem == 0 .AND. ! lAppend
       Return .F.
    EndIf
 
    nOldRecNo := ( cWorkArea )->( RecNo() )
 
-   IF ! append
+   IF ! lAppend
       ::DbGoTo( ::aRecMap[ nItem ] )
    EndIf
 
    If ::InPlace
-      If append
+      If lAppend
          ::GoBottom( .T. )
          ::InsertBlank( ::ItemCount + 1 )
          ::CurrentRow := ::ItemCount
+         ::lAppendMode := .T.
       EndIf
 
-      lRet := ::EditAllCells( , , append, .T., ::RefreshType == REFRESH_DEFAULT .OR. ::RefreshType == REFRESH_FORCE )
+      lRet := ::EditAllCells( , , lAppend, lOneRow, ::RefreshType == REFRESH_DEFAULT .OR. ::RefreshType == REFRESH_FORCE )
 
-      ::DbGoTo( nOldRecNo )
+      If lRet .AND. lAppend
+         nNewRec := ::Value
+         ::DbGoTo( nOldRecNo )
+         ::Value := nNewRec
+      Else
+         ::DbGoTo( nOldRecNo )
+      EndIf
    Else
-      lRet := ::Super:EditItem_B( append )
+      lRet := ::Super:EditItem_B( lAppend, .T. )
 
-      If lRet .AND. append
+      If lRet .AND. lAppend
          nNewRec := ( cWorkArea )->( RecNo() )
          ::DbGoTo( nOldRecNo )
          ::Value := nNewRec
@@ -942,6 +953,7 @@ Return lRet
 METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, nOnFocusPos, lRefresh ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local lRet, BackRec
+
    ASSIGN lAppend  VALUE lAppend  TYPE "L" DEFAULT .F.
    ASSIGN nRow     VALUE nRow     TYPE "N" DEFAULT ::CurrentRow
    ASSIGN lRefresh VALUE lRefresh TYPE "L" DEFAULT ( ::RefreshType == REFRESH_FORCE )
@@ -1269,13 +1281,13 @@ Local cWorkArea, hWnd
    If s == 0
       If ( cWorkArea )->( INDEXORD() ) != 0
          If ( cWorkArea )->( ORDKEYVAL() ) == Nil
-            ::TopBottom( -1 )
+            ::TopBottom( GO_TOP )
          EndIf
       EndIf
 
       If Set( _SET_DELETED )
          If ( cWorkArea )->( Deleted() )
-            ::TopBottom( -1 )
+            ::TopBottom( GO_TOP )
          EndIf
       EndIf
    Endif
@@ -1366,7 +1378,7 @@ Local cWorkArea, _RecNo, Value, uGridValue
       Value := ::Value
       If Value == 0
          If Len( ::aRecMap ) == 0
-            ::TopBottom( -1 )
+            ::TopBottom( GO_TOP )
          Else
             ::DbGoTo( ::aRecMap[ 1 ] )
          EndIf
@@ -1399,7 +1411,7 @@ Local cWorkArea, _RecNo, Value, uGridValue
       EndDo
 
       If ::Eof() .AND. ::SearchWrap
-         ::TopBottom( -1 )
+         ::TopBottom( GO_TOP )
          Do While ! ::Eof() .AND. ( cWorkArea )->( RecNo() ) != Value
             If ::FixBlocks()
               uGridValue := Eval( ::aColumnBlocks[ ::SearchCol ], cWorkArea )
@@ -1429,22 +1441,22 @@ Local cWorkArea, _RecNo, Value, uGridValue
       Do Case
       Case Select( ::WorkArea ) == 0
          // No database open
-      Case wParam == 36 // HOME
+      Case wParam == VK_HOME
          ::Home()
          Return 0
-      Case wParam == 35 // END
+      Case wParam == VK_END
          ::End()
          Return 0
-      Case wParam == 33 // PGUP
+      Case wParam == VK_PRIOR
          ::PageUp()
          Return 0
-      Case wParam == 34 // PGDN
+      Case wParam == VK_NEXT
          ::PageDown()
          Return 0
-      Case wParam == 38 // UP
+      Case wParam == VK_UP
          ::Up()
          Return 0
-      Case wParam == 40 // DOWN
+      Case wParam == VK_DOWN
          ::Down()
          Return 0
       EndCase
@@ -1456,24 +1468,21 @@ Return ::Super:Events( hWnd, nMsg, wParam, lParam )
 *-----------------------------------------------------------------------------*
 METHOD Events_Enter() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-   ::cText := ""
-   If Select( ::WorkArea ) != 0
-      If ! ::AllowEdit
-         ::DoEvent( ::OnEnter, "ENTER" )
-      ElseIf ::FullMove .OR. ::InPlace
-         If ! ::lNestedEdit
-            ::lNestedEdit := .T.
+   If ! ::lNestedEdit
+      ::lNestedEdit := .T.
+      ::cText := ""
+      If Select( ::WorkArea ) != 0
+         If ! ::AllowEdit
+            ::DoEvent( ::OnEnter, "ENTER" )
+         ElseIf ::FullMove .OR. ::InPlace
             ::EditAllCells()
-            ::lNestedEdit := .F.
-         EndIf
-      ElseIf ! ::lNestedEdit
-            ::lNestedEdit := .T.
+         ElseIf ! ::lNestedEdit
             ::EditItem()
-            ::lNestedEdit := .F.
-      EndIf
-   Endif
+         EndIf
+      Endif
+      ::lNestedEdit := .F.
+   EndIf
 Return nil
-
 
 #pragma BEGINDUMP
 
@@ -1565,7 +1574,7 @@ Local nvKey, r, DeltaSelect, lGo
             GetAltState() == -128   // ALT
 
             If ::AllowAppend
-               ::EditItem( .T. )
+               ::EditItem( .T., ! ( ::Inplace .AND. ::FullMove ) )
             EndIf
 
          EndIf
