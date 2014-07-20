@@ -1,11 +1,22 @@
 /*
- * $Id: ChangeLog,v 1.1330 2014-07-20 12:41:50 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1331 2014-07-20 12:46:32 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-07-20 09:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_xbrowse.prg
+     + Parameter lOneRow to methods EditItem and EditItem_B.
+       When .F. and INPLACE is .T., it enables de addition of more
+       rows after editing/adding the first one. In other cases, only
+       one row is edited/added. Defaults to .T.
+     * When appending a new item via Alt-A or methods Down or PageDown,
+       method EditItem will be called with parameter lOneRow set to .T.
+       unless FULLMOVE is .T. and INPLACE is .T.
+     ! Method EditRow does not honor FULLMOVE clause.
 
 2014-07-20 09:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog

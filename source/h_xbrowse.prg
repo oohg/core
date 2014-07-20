@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.113 2014-07-17 02:59:37 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.114 2014-07-20 12:46:32 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1080,7 +1080,7 @@ Local nvKey, lGo
       Do Case
          Case GetKeyFlagState() == MOD_ALT .AND. nvKey == VK_A
             If ::AllowAppend .AND. ! ::lLocked
-               ::EditItem( .T. )
+               ::EditItem( .T., ! ( ::Inplace .AND. ::FullMove ) )
             EndIf
 
          Case nvKey == VK_DELETE
@@ -1179,7 +1179,7 @@ Local nValue
       EndIf
       ::DoChange()
    ElseIf ::AllowAppend
-      ::EditItem( .T. )
+      ::EditItem( .T., ! ( ::Inplace .AND. ::FullMove ) )
    EndIf
 Return Self
 
@@ -1205,7 +1205,7 @@ Local nSkip, nCountPerPage
          ::Refresh( nCountPerPage )
          ::DoChange()
          If ::AllowAppend
-            ::EditItem( .T. )
+            ::EditItem( .T., ! ( ::Inplace .AND. ::FullMove ) )
          EndIf
       ElseIf nSkip != 0
          ::Refresh( , .T. )
@@ -1333,7 +1333,7 @@ Local Value
 Return .T.
 
 *-----------------------------------------------------------------------------*
-METHOD EditItem( lAppend ) CLASS TXBrowse
+METHOD EditItem( lAppend, lOneRow ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local uRet := .F.
 
@@ -1344,19 +1344,20 @@ Local uRet := .F.
          ::VScroll:Enabled := .F.
          ::VScroll:Enabled := .T.
       EndIf
-      uRet := ::EditItem_B( lAppend )
+      uRet := ::EditItem_B( lAppend, lOneRow )
       ::lNestedEdit := .F.
    EndIf
 Return uRet
 
 *-----------------------------------------------------------------------------*
-METHOD EditItem_B( lAppend ) CLASS TXBrowse
+METHOD EditItem_B( lAppend, lOneRow ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local oWorkArea, cTitle, z, nOld
 Local uOldValue, oEditControl, cMemVar, bReplaceField
 Local aItems, aMemVars, aReplaceFields
 
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
+   ASSIGN lOneRow VALUE lOneRow TYPE "L" DEFAULT .T.
 
    oWorkArea := ::oWorkArea
    If oWorkArea:Eof()
@@ -1378,7 +1379,7 @@ Local aItems, aMemVars, aReplaceFields
          ::CurrentRow := ::ItemCount
          oWorkArea:GoTo( 0 )
       EndIf
-      Return ::EditAllCells( , , lAppend, .T. )
+      Return ::EditAllCells( , , lAppend, lOneRow )
    EndIf
 
    If lAppend
