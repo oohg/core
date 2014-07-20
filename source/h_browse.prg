@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.139 2014-07-20 13:12:22 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.140 2014-07-20 16:10:53 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -950,13 +950,14 @@ Local nOldRecNo, nItem, cWorkArea, lRet, nNewRec
 Return lRet
 
 *-----------------------------------------------------------------------------*
-METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, nOnFocusPos, lRefresh ) CLASS TOBrowse
+METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, nOnFocusPos, lRefresh, lChange ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local lRet, BackRec
 
    ASSIGN lAppend  VALUE lAppend  TYPE "L" DEFAULT .F.
    ASSIGN nRow     VALUE nRow     TYPE "N" DEFAULT ::CurrentRow
    ASSIGN lRefresh VALUE lRefresh TYPE "L" DEFAULT ( ::RefreshType == REFRESH_FORCE )
+   ASSIGN lChange  VALUE lChange  TYPE "L" DEFAULT .F.
 
    If nRow < 1 .OR. nRow > ::ItemCount()
       // Cell out of range
@@ -977,13 +978,17 @@ Local lRet, BackRec
       lRet := ::Super:EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, nOnFocusPos )
 
       If lRet .AND. lAppend
-         AADD( ::aRecMap, ( ::WorkArea )->( RecNo() ) )
+         aAdd( ::aRecMap, ( ::WorkArea )->( RecNo() ) )
       EndIf
 
       ::DbGoTo( BackRec )
 
-      If lRet .AND. lRefresh
-        ::Refresh()
+      If lRet
+         If lChange
+            ::Value := aTail( ::aRecMap )
+         ElseIf lRefresh
+           ::Refresh()
+         EndIf
       EndIf
    Endif
 Return lRet
@@ -1011,7 +1016,14 @@ Local lRet, lRowEdited, lSomethingEdited, _RecNo, lRowAppended
       lRet := .T.
       lRowEdited := .F.
 
-      Do While nCol <= Len( ::aHeaders ) .AND. lRet
+      Do While nCol <= Len( ::aHeaders ) .AND. lRet .AND. Select( ::WorkArea ) # 0
+         _Recno := ( ::WorkArea )->( RecNo() )
+         IF lAppend
+            ::DbGoTo( 0 )
+         Else
+            ::DbGoTo( ::aRecMap[ nRow ] )
+         EndIf
+
          If ::IsColumnReadOnly( nCol )
            // Read only column, skip
          ElseIf ! ::IsColumnWhen( nCol )
@@ -1019,7 +1031,9 @@ Local lRet, lRowEdited, lSomethingEdited, _RecNo, lRowAppended
          ElseIf ASCAN( ::aHiddenCols, nCol ) > 0
            // Is a hidden column, skip
          Else
-            lRet := ::EditCell( nRow, nCol, , , , , lAppend, , .F. )
+            ::DbGoTo( _Recno )
+
+            lRet := ::EditCell( nRow, nCol, , , , , lAppend, , .F., .F. )
 
             If lRet
                lRowEdited := .T.

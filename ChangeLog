@@ -1,11 +1,19 @@
 /*
- * $Id: ChangeLog,v 1.1332 2014-07-20 13:12:22 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1333 2014-07-20 16:10:53 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-07-20 13:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_browse.prg
+     + Parameter lChange to method EditCell. When .T. and a record
+       is appended, the control's value is changed (and thus a
+       refresh is performed). Defaults to .F.
+     ! Dbf's record pointer is not correct during evaluation of
+       ::Readonly and ::When blocks inside method EditAllCells.
 
 2014-07-20 10:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog
