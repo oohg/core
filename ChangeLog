@@ -1,11 +1,15 @@
 /*
- * $Id: ChangeLog,v 1.1329 2014-07-20 12:34:30 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1330 2014-07-20 12:41:50 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-07-20 09:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Previous entry amended.
 
 2014-07-20 09:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ide/prgs/formedit.prg
@@ -199,8 +203,8 @@
        will now add and edit a new row even if ALLOWEDIT is .F.
      * Methods AppendItem of TGrid, TGridMulti and TGridByCell
        will now prevent recursive calls.
-     * Method Events_Enter of TGrid will now prevent recursive
-       calls when ALLOWEDIT is .F. or FULLMOVE is .T.
+     * Method Events_Enter of TGrid and TXBrowse will now prevent
+       recursive calls when ALLOWEDIT is .F. or FULLMOVE is .T.
      * TGrid:EditGrid() evaluates ON ABORTEDIT event procedure
        when edition is aborted.
      * TGrid:EditItem() returns .F. if edition is aborted or .F. if not.
