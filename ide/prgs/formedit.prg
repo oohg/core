@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.22 2014-07-19 01:45:04 fyurisich Exp $
+ * $Id: formedit.prg,v 1.23 2014-07-20 12:34:30 fyurisich Exp $
  */
 
 /*
@@ -5101,7 +5101,7 @@ LOCAL oPage, oTab, nPos
       oTab:Value := nPos
    ENDIF
 
-   Dibuja( oCtrl:Name )
+   Dibuja( oCtrl:Name, .T. )
    myForm:lFsave := .F.
 RETURN NIL
 
