@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.140 2014-07-20 16:10:53 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.141 2014-07-21 02:20:31 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -996,7 +996,7 @@ Return lRet
 *-----------------------------------------------------------------------------*
 METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lRefresh ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local lRet, lRowEdited, lSomethingEdited, _RecNo, lRowAppended
+Local lRet, lRowEdited, lSomethingEdited, _RecNo, lRowAppended, nNewRec
 
    ASSIGN lAppend  VALUE lAppend  TYPE "L" DEFAULT .F.
    ASSIGN nRow     VALUE nRow     TYPE "N" DEFAULT ::CurrentRow
@@ -1065,22 +1065,25 @@ Local lRet, lRowEdited, lSomethingEdited, _RecNo, lRowAppended
 
       // See what to do next
       If ! lRet .or. ! ::FullMove .or. lOneRow
-         If lRefresh .AND. ( lRowAppended .OR. lRowEdited )
+         If lRowAppended
+            If lRefresh
+               ::Value := aTail( ::aRecMap )
+            Else
+               ::BrowseOnChange()
+            EndIf
+         ElseIf lRowEdited .AND. lRefresh
             ::Refresh()
-         ElseIf lRowAppended
-            ::BrowseOnChange()
          EndIf
-
          // Stop if the last column was not edited
          // or it's not fullmove editing
          // or caller wants to edit only one row
          Exit
       ElseIf lRowAppended
          If ! ::AllowAppend
+            ::Value := aTail( ::aRecMap )
             // Stop
             Exit
          EndIf
-
          // Add new row
          If lRefresh
             ::GoBottom( .T. )
@@ -1094,13 +1097,34 @@ Local lRet, lRowEdited, lSomethingEdited, _RecNo, lRowAppended
          ::lAppendMode := .T.
       ElseIf nRow < ::ItemCount()
          // Edit next row
-         nRow ++
-         ::FastUpdate( 1, nRow )
-         ::BrowseOnChange()
-      ElseIf Select( ::WorkArea ) == 0
-         // Stop if no database is selected
-         ::RecCount := 0
-         Exit
+         If lRefresh
+            _Recno := ( ::WorkArea )->( RecNo() )
+            nNewRec := ::aRecMap[ nRow + 1 ]
+            ::DbGoTo( nNewRec )
+            ::DbSkip( - nRow )
+            ::Update()
+            ::ScrollUpdate()
+            ::DbGoTo( _RecNo )
+            nRow := aScan( ::aRecMap, nNewRec )
+            If nRow > 0
+               ListView_SetCursel ( ::hWnd, nRow )
+               ::BrowseOnChange()
+            ElseIf ::AllowAppend
+               // Add new row
+               ::GoBottom( .T. )
+               ::InsertBlank( ::ItemCount + 1 )
+               nRow := ::CurrentRow := ::ItemCount
+               lAppend := .T.
+               ::lAppendMode := .T.
+            Else
+               // Stop
+               Exit
+            Endif
+         Else
+            nRow ++
+            ::FastUpdate( 1, nRow )
+            ::BrowseOnChange()
+         EndIf
       Else
          // The last row was fully edited.
          If lRefresh
@@ -1116,7 +1140,7 @@ Local lRet, lRowEdited, lSomethingEdited, _RecNo, lRowAppended
             // Continue editing in next row
             nRow ++
          ElseIf ::AllowAppend
-            // Add new row
+            // Add new row because last row was fully edited
             If lRefresh
                ::GoBottom( .T. )
             ElseIf ::ItemCount == ::CountPerPage
@@ -1128,7 +1152,7 @@ Local lRet, lRowEdited, lSomethingEdited, _RecNo, lRowAppended
             lAppend := .T.
             ::lAppendMode := .T.
          Else
-            // Stop because last row was edited
+            // Stop because last row was edited and append is not allowed
             Exit
          Endif
       EndIf
