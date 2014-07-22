@@ -1,5 +1,5 @@
 /*
- * $Id: mgide.prg,v 1.12 2014-07-22 00:53:19 fyurisich Exp $
+ * $Id: mgide.prg,v 1.13 2014-07-22 20:10:21 fyurisich Exp $
  */
 
 #include "oohg.ch"
@@ -858,7 +858,7 @@ CENTER WINDOW waitmess
    ELSEIF rtl # NIL
       // Form
       ::lCloseOnFormExit := .T.
-      ::ReadINI( ::cProjFolder + "hmi.ini" )
+      ::ReadINI( ::cProjFolder + "\hmi.ini" )
       Form_Tree.Hide
       ACTIVATE WINDOW Form_Tree, Form_Main, WaitMess, cvcControls, Form_Splash NOWAIT
       Analizar( Self, ::cFile )
@@ -1070,6 +1070,7 @@ RETURN NIL
 METHOD SaveINI( cFile ) CLASS THMI
 *------------------------------------------------------------------------------*
 
+AutoMsgBox( cFile )
    BEGIN INI FILE cFile
       //****************** PROJECT
          SET SECTION 'PROJECT'     ENTRY "PROJFOLDER"    TO ::cProjFolder
@@ -1581,7 +1582,7 @@ METHOD OkPrefer( aFont ) CLASS THMI
 
    Form_prefer:Release()
 
-   ::SaveINI( ::cProjFolder + 'hmi.ini' )
+   ::SaveINI( ::cProjFolder + '\hmi.ini' )
 
 Return
 
@@ -3607,7 +3608,7 @@ METHOD OpenAuxi() CLASS THMI
 LOCAL aLine[0], nContLin, nFinForm, cProject, sw
 
    // From project folder
-   ::ReadINI( ::cProjFolder + "hmi.ini" )
+   ::ReadINI( ::cProjFolder + "\hmi.ini" )
 
    ::cProjectName := ::cFile
 
@@ -3700,7 +3701,7 @@ METHOD SaveProject() CLASS THMI
       MsgStop( 'Project not saved.', 'ooHG IDE+' )
    Else
       MemoWrit( ::cProjectName, Output )
-      ::SaveINI( ::cProjFolder + 'hmi.ini' )
+      ::SaveINI( ::cProjFolder + '\hmi.ini' )
       ::lPsave := .T.
       MsgInfo( 'Project saved.', 'ooHG IDE+' )
    EndIf
