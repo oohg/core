@@ -1,11 +1,52 @@
 /*
- * $Id: ChangeLog,v 1.1334 2014-07-21 02:20:31 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1335 2014-07-22 00:53:18 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-07-21 21:53 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/prgs/dbucvc.prg
+     * Public variables made static.
+   * ide/prgs/propeven.prg
+     ! RTE when trying to change ANIMATEBOX properties.
+     * Tab properties form now allows exiting with ESC and X button.
+   * ide/prgs/moside.prg
+     * The number of pixels that a control is moved/sized by keyboard
+       move option is now configurable (see THMI:nPxMove).
+   * ide/prgs/formedit.prg
+     + "Global Vert Gap Change" option (see THMI:nStdVertGap).
+   * ide/prgs/mgide.prg
+     * Comments.
+     - Publics exedir, rtl, mgideFolder, pmgFolder, csyscolor and cvccvar.
+     * Format.
+     + VAR lCloseOnFormExit to THMI.
+     + VAR nPxMove to THMI, it's loaded/saved from HMI.INI
+     + VAR nPxSize to THMI, it's loaded/saved from HMI.INI
+     + VAR nStdVertGap to THMI, it's loaded/saved from HMI.INI
+     * VAR _ncaretpos renamed to nCaretPos.
+     * VAR cHelpFolder renamed to cIDE_Folder.
+     * Parameter processing. Now ::cFile holds received data.
+     + Methods ReadINI and SaveINI.
+     * While loading, the IDE will first read HMI.INI from it's startup
+       folder (an empty one is created there if it doesn't exist).
+       This file sets default values for all projects.
+       When a project is opened, the IDE will try to read HMI.INI from
+       the project's folder (an empty one is created there if it doesn't
+       exist). This file sets default values for his project only.
+       When a form is opened directly, the IDE will try to read HMI.INI
+       from the current folder. This file sets default values for this
+       form only.
+     * Project folder is no longer readed from HMI.INI, instead it's
+       deduced from parameter or assumed it's the current folder.
+     * Preference window shows path to HMI.INI
+     - Function OpenAuxi.
+     + Method OpenAuxi.
+     * Some variables names that were equal to VARs names.
+   * ide/fmgs/form_prefer.fmg
+     + New controls for nStdVertGap, nPxMove and nPxSize.
 
 2014-07-20 23:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_browse.prg

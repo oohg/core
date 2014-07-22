@@ -1,6 +1,6 @@
 
 * ooHG IDE Plus form generated code
-* (c)2003-2014 Ciro Vargas Clemow <pcman2010@yahoo.com > 
+* (c)2003-2014 Ciro Vargas Clemow <pcman2010@yahoo.com >
 
 DEFINE WINDOW TEMPLATE ;
    AT 108, 68 ;
@@ -23,7 +23,7 @@ DEFINE WINDOW TEMPLATE ;
       HEIGHT 28 ;
       FONT 'Arial' ;
       SIZE 10 ;
-      FLAT 
+      FLAT
 
    @ 320, 510 BUTTON button_102 ;
       CAPTION '&Cancel' ;
@@ -32,7 +32,7 @@ DEFINE WINDOW TEMPLATE ;
       HEIGHT 28 ;
       FONT 'Arial' ;
       SIZE 10 ;
-      FLAT 
+      FLAT
 
    @ 320, 290 CHECKBOX checkbox_105 ;
       CAPTION 'Snap to Grid' ;
@@ -51,7 +51,7 @@ DEFINE WINDOW TEMPLATE ;
       FONT 'Arial' ;
       SIZE 10 ;
       BUTTONS ;
-      FLAT 
+      FLAT
 
       DEFINE PAGE 'Project' ;
          IMAGE ''
@@ -61,7 +61,7 @@ DEFINE WINDOW TEMPLATE ;
             VALUE 'Project Folder' ;
             FONT 'Arial' ;
             SIZE 10 ;
-            TRANSPARENT 
+            TRANSPARENT
 
          @ 50, 160 TEXTBOX text_3 ;
             WIDTH 250 ;
@@ -70,7 +70,7 @@ DEFINE WINDOW TEMPLATE ;
             FONT 'Arial' ;
             SIZE 10 ;
             MAXLENGTH 30 ;
-            NOTABSTOP 
+            NOTABSTOP
 
          @ 85, 20 LABEL label_2 ;
             WIDTH 100 ;
@@ -78,7 +78,7 @@ DEFINE WINDOW TEMPLATE ;
             VALUE 'Output Name' ;
             FONT 'Arial' ;
             SIZE 10 ;
-            TRANSPARENT 
+            TRANSPARENT
 
          @ 85, 160 TEXTBOX text_4 ;
             WIDTH 250 ;
@@ -126,7 +126,7 @@ DEFINE WINDOW TEMPLATE ;
             FONT 'Arial' ;
             SIZE 10
 
-      END PAGE 
+      END PAGE
 
       DEFINE PAGE '(x)Harbour' ;
          IMAGE ''
@@ -136,7 +136,7 @@ DEFINE WINDOW TEMPLATE ;
             VALUE 'Harbour-Borland C' ;
             FONT 'Arial' ;
             SIZE 10 ;
-            TRANSPARENT 
+            TRANSPARENT
 
          @ 85, 160 TEXTBOX text_2 ;
             WIDTH 250 ;
@@ -166,7 +166,7 @@ DEFINE WINDOW TEMPLATE ;
             VALUE 'Harbour-MinGW' ;
             FONT 'Arial' ;
             SIZE 10 ;
-            TRANSPARENT 
+            TRANSPARENT
 
          @ 47, 420 BUTTON button_11 ;
             CAPTION '...' ;
@@ -182,7 +182,7 @@ DEFINE WINDOW TEMPLATE ;
             VALUE 'Harbour-Pelles C' ;
             FONT 'Arial' ;
             SIZE 10 ;
-            TRANSPARENT 
+            TRANSPARENT
 
          @ 120, 160 TEXTBOX text_7 ;
             WIDTH 250 ;
@@ -205,7 +205,7 @@ DEFINE WINDOW TEMPLATE ;
             VALUE 'xHarbour-MinGW' ;
             FONT 'Arial' ;
             SIZE 10 ;
-            TRANSPARENT 
+            TRANSPARENT
 
          @ 195, 20 LABEL label_15 ;
             WIDTH 120 ;
@@ -213,7 +213,7 @@ DEFINE WINDOW TEMPLATE ;
             VALUE 'xHarbour-Borland C' ;
             FONT 'Arial' ;
             SIZE 10 ;
-            TRANSPARENT 
+            TRANSPARENT
 
          @ 230, 20 LABEL label_16 ;
             WIDTH 120 ;
@@ -221,7 +221,7 @@ DEFINE WINDOW TEMPLATE ;
             VALUE 'xHarbour-Pelles C' ;
             FONT 'Arial' ;
             SIZE 10 ;
-            TRANSPARENT 
+            TRANSPARENT
 
          @ 160, 160 TEXTBOX text_13 ;
             WIDTH 250 ;
@@ -268,7 +268,7 @@ DEFINE WINDOW TEMPLATE ;
             FONT 'Arial' ;
             SIZE 10
 
-      END PAGE 
+      END PAGE
 
       DEFINE PAGE 'C Compiler' ;
          IMAGE ''
@@ -278,7 +278,7 @@ DEFINE WINDOW TEMPLATE ;
             VALUE 'BCC Folder' ;
             FONT 'Arial' ;
             SIZE 10 ;
-            TRANSPARENT 
+            TRANSPARENT
 
          @ 85, 160 TEXTBOX text_5 ;
             WIDTH 250 ;
@@ -301,7 +301,7 @@ DEFINE WINDOW TEMPLATE ;
             VALUE 'Pelles C' ;
             FONT 'Arial' ;
             SIZE 10 ;
-            TRANSPARENT 
+            TRANSPARENT
 
          @ 120, 160 TEXTBOX text_6 ;
             WIDTH 250 ;
@@ -331,7 +331,7 @@ DEFINE WINDOW TEMPLATE ;
             VALUE 'MinGW Folder' ;
             FONT 'Arial' ;
             SIZE 10 ;
-            TRANSPARENT 
+            TRANSPARENT
 
          @ 47, 420 BUTTON button_10 ;
             CAPTION '...' ;
@@ -341,7 +341,7 @@ DEFINE WINDOW TEMPLATE ;
             FONT 'Arial' ;
             SIZE 10
 
-      END PAGE 
+      END PAGE
 
       DEFINE PAGE 'GUI' ;
          IMAGE ''
@@ -351,7 +351,7 @@ DEFINE WINDOW TEMPLATE ;
             VALUE 'ooHG-Hb-MinGW' ;
             FONT 'Arial' ;
             SIZE 10 ;
-            TRANSPARENT 
+            TRANSPARENT
 
          @ 47, 420 BUTTON button_9 ;
             CAPTION '...' ;
@@ -374,7 +374,7 @@ DEFINE WINDOW TEMPLATE ;
             VALUE 'ooHG-Hb-BCC' ;
             FONT 'Arial' ;
             SIZE 10 ;
-            TRANSPARENT 
+            TRANSPARENT
 
          @ 120, 20 LABEL label_9 ;
             WIDTH 120 ;
@@ -382,7 +382,7 @@ DEFINE WINDOW TEMPLATE ;
             VALUE 'ooHG-Hb-Pelles C' ;
             FONT 'Arial' ;
             SIZE 10 ;
-            TRANSPARENT 
+            TRANSPARENT
 
          @ 85, 160 TEXTBOX text_9 ;
             WIDTH 250 ;
@@ -441,7 +441,7 @@ DEFINE WINDOW TEMPLATE ;
             VALUE 'ooHG-xHb-MinGW' ;
             FONT 'Arial' ;
             SIZE 10 ;
-            TRANSPARENT 
+            TRANSPARENT
 
          @ 195, 20 LABEL label_18 ;
             WIDTH 120 ;
@@ -449,7 +449,7 @@ DEFINE WINDOW TEMPLATE ;
             VALUE 'ooHG-xHb-BCC' ;
             FONT 'Arial' ;
             SIZE 10 ;
-            TRANSPARENT 
+            TRANSPARENT
 
          @ 230, 20 LABEL label_19 ;
             WIDTH 120 ;
@@ -457,7 +457,7 @@ DEFINE WINDOW TEMPLATE ;
             VALUE 'ooHG-xHb-Pelles C' ;
             FONT 'Arial' ;
             SIZE 10 ;
-            TRANSPARENT 
+            TRANSPARENT
 
          @ 156, 420 BUTTON button_14 ;
             CAPTION '...' ;
@@ -483,7 +483,7 @@ DEFINE WINDOW TEMPLATE ;
             FONT 'Arial' ;
             SIZE 10
 
-      END PAGE 
+      END PAGE
 
       DEFINE PAGE 'Other' ;
          IMAGE ''
@@ -493,7 +493,7 @@ DEFINE WINDOW TEMPLATE ;
             VALUE 'Additional Libs' ;
             FONT 'Arial' ;
             SIZE 10 ;
-            TRANSPARENT 
+            TRANSPARENT
 
          @ 50, 170 TEXTBOX text_lib ;
             WIDTH 400 ;
@@ -509,7 +509,7 @@ DEFINE WINDOW TEMPLATE ;
             VALUE 'Text Editor' ;
             FONT 'Arial' ;
             SIZE 10 ;
-            TRANSPARENT 
+            TRANSPARENT
 
          @ 85, 170 TEXTBOX text_1 ;
             WIDTH 250 ;
@@ -532,7 +532,7 @@ DEFINE WINDOW TEMPLATE ;
             VALUE "Form's Default Font" ;
             FONT 'Arial' ;
             SIZE 10 ;
-            TRANSPARENT 
+            TRANSPARENT
 
          @ 120, 170 TEXTBOX text_font ;
             WIDTH 250 ;
@@ -586,8 +586,47 @@ DEFINE WINDOW TEMPLATE ;
             NUMERIC ;
             MAXLENGTH 3
 
-      END PAGE
-   END TAB 
+         @ 225, 20 LABEL label_23;
+            WIDTH 140 ;
+            HEIGHT 24 ;
+            VALUE "Standard Vertical Gap" ;
+            TRANSPARENT
 
-END WINDOW 
+         @ 225, 170 TEXTBOX text_22;
+            WIDTH 40 ;
+            HEIGHT 24 ;
+            TOOLTIP "Enter a 0 to use 24 px as default value." ;
+            NUMERIC ;
+            MAXLENGTH 3
+
+         @ 260, 20 LABEL label_24;
+            WIDTH 140 ;
+            HEIGHT 24 ;
+            VALUE "Keyboard Move (Px)" ;
+            TRANSPARENT
+
+         @ 260, 170 TEXTBOX text_23;
+            WIDTH 40 ;
+            HEIGHT 24 ;
+            TOOLTIP "Enter a 0 to use 5 px as default value." ;
+            NUMERIC ;
+            MAXLENGTH 3
+
+         @ 260, 320 LABEL label_25;
+            WIDTH 140 ;
+            HEIGHT 24 ;
+            VALUE "Keyboard Size (Px)" ;
+            TRANSPARENT
+
+         @ 260, 470 TEXTBOX text_24;
+            WIDTH 40 ;
+            HEIGHT 24 ;
+            TOOLTIP "Enter a 0 to use 1 px as default value." ;
+            NUMERIC ;
+            MAXLENGTH 3
+
+      END PAGE
+   END TAB
+
+END WINDOW
 

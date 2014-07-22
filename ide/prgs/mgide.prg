@@ -1,5 +1,5 @@
 /*
- * $Id: mgide.prg,v 1.11 2014-07-19 01:45:04 fyurisich Exp $
+ * $Id: mgide.prg,v 1.12 2014-07-22 00:53:19 fyurisich Exp $
  */
 
 #include "oohg.ch"
@@ -11,21 +11,17 @@
 #DEFINE CR chr(13)
 #DEFINE LF chr(10)
 #DEFINE HTAB chr(9)
-#DEFINE cNameApp "Harbour ooHG IDE Plus"+" v."+substr(__DATE__,3,2)+"."+right(__DATE__,4) // MigSoft
+#DEFINE cNameApp "Harbour ooHG IDE Plus"+" v."+substr(__DATE__,3,2)+"."+right(__DATE__,4) 
 
 #ifdef __HARBOUR__
-   #xtranslate Curdrive() => hb_Curdrive()    // MigSoft
+   #xtranslate Curdrive() => hb_Curdrive()    
 #endif
 
 //------------------------------------------------------------------------------
-Function Main( rtl1 )
+Function Main( rtl )
 //------------------------------------------------------------------------------
-   Public nhandlep    := 0
+   Public nhandlep := 0
    Public myform
-   Public exedir      := ''
-   Public rtl         := rtl1
-   Public mgideFolder := GetStartupFolder()
-   Public pmgFolder   := ''
 
    SetAppHotKey( VK_F10, 0, { || _OOHG_CallDump() } )
    SetAppHotKey( VK_F11, 0, { || AutoMsgBox( &( InputBox( "Variable to inspect:", "ooHG IDE+" ) ) ) } )
@@ -46,15 +42,16 @@ RETURN NIL
 //------------------------------------------------------------------------------
 CLASS THMI
 //------------------------------------------------------------------------------
-   VAR cfile              INIT ''
-   VAR cprojectname       INIT ''
-   VAR cHelpFolder        INIT ''
-   VAR cProjFolder        INIT ''
-   VAR cOutFile           INIT ''
+   VAR aliner             INIT {}
+   VAR alinet             INIT {}
+   VAR asystemcolor       INIT {215,231,244}
+   VAR asystemcoloraux    INIT  {}
+   VAR cBCCFolder         INIT ''
+   VAR cdbackcolor        INIT 'NIL'
    VAR cExteditor         INIT ''
-   VAR cFormDefFontName   INIT 'MS Sans Serif'
-   VAR nFormDefFontSize   INIT 10
+   VAR cfile              INIT ''
    VAR cFormDefFontColor  INIT '{0, 0, 0}'
+   VAR cFormDefFontName   INIT 'MS Sans Serif'
    VAR cGuiHbBCC          INIT ''
    VAR cGuiHbMinGW        INIT ''
    VAR cGuiHbPelles       INIT ''
@@ -64,101 +61,101 @@ CLASS THMI
    VAR cHbBCCFolder       INIT ''
    VAR cHbMinGWFolder     INIT ''
    VAR cHbPellFolder      INIT ''
+   VAR cIDE_Folder        INIT ''
+   VAR clib               INIT ""
+   VAR cMinGWFolder       INIT ''
+   VAR cOutFile           INIT ''
+   VAR cPellFolder        INIT ''
+   VAR cprojectname       INIT ''
+   VAR cProjFolder        INIT ''
+   VAR ctext              INIT ''
    VAR cxHbBCCFolder      INIT ''
    VAR cxHbMinGWFolder    INIT ''
    VAR cxHbPellFolder     INIT ''
-   VAR cBCCFolder         INIT ''
-   VAR cMinGWFolder       INIT ''
-   VAR cPellFolder        INIT ''
-   VAR nTextBoxHeight     INIT 0
-   VAR nLabelHeight       INIT 0
-   VAR nCompxBase         INIT 1
-   VAR nCompilerC         INIT 2
-
-   VAR ltbuild            INIT 1
-   VAR lsnap              INIT 0
-   VAR clib               INIT ""
-
-   VAR asystemcolor       INIT {215,231,244}
-   VAR asystemcoloraux    INIT  {}
-   VAR swvan              INIT .F.
-   VAR swsalir            INIT .F.
-   VAR lPsave             INIT .T.
-   VAR _ncaretpos         INIT  0
-   VAR alinet             INIT {}
-   VAR lsave              INIT .T.
-   VAR npostext           INIT 0
-   VAR ncrlf              INIT 0
-   VAR van                INIT 0
-   VAR ctext              INIT ''
-   VAR ntemp              INIT 0
-   VAR cdbackcolor        INIT 'NIL'
-
-   VAR aliner             INIT {}
-   VAR lvirtual           INIT .T.
-
-   VAR mainheight         INIT 50 + GetTitleHeight() + GetBorderHeight()
    VAR form_activated     INIT .F.
+   VAR lCloseOnFormExit   INIT .F.
+   VAR lPsave             INIT .T.
+   VAR lsave              INIT .T.
+   VAR lsnap              INIT 0
+   VAR ltbuild            INIT 1
+   VAR lvirtual           INIT .T.
+   VAR mainheight         INIT 50 + GetTitleHeight() + GetBorderHeight()
+   VAR nCaretPos          INIT 0
+   VAR nCompilerC         INIT 2
+   VAR nCompxBase         INIT 1
+   VAR ncrlf              INIT 0
+   VAR nFormDefFontSize   INIT 10
+   VAR nLabelHeight       INIT 0
+   VAR npostext           INIT 0
+   VAR nPxMove            INIT 5
+   VAR nPxSize            INIT 1
+   VAR nStdVertGap        INIT 24
+   VAR ntemp              INIT 0
+   VAR nTextBoxHeight     INIT 0
+   VAR swsalir            INIT .F.
+   VAR swvan              INIT .F.
+   VAR van                INIT 0
 
-   METHOD About()
-   METHOD BldMinGW( nOption )
-   METHOD BldPellC( nOption )
-   METHOD BuildBcc( nOption )
-   METHOD databaseview()
-   METHOD dataman()
-   METHOD deleteitemp()
-   METHOD disable_button()
-   METHOD exit()
-   METHOD exitform()
-   METHOD exitview()
-   METHOD goline()
-   METHOD lookchanges()
-   METHOD modifyform()
-   METHOD modifyitem()
-   METHOD modifyRpt()
-   METHOD Newch()
-   METHOD Newchfromar(cPch)
-   METHOD newform()
-   METHOD newformfromar(cPform)
-   METHOD NewIde()
-   METHOD Newprg()
-   METHOD Newprgfromar(cPprg)
-   METHOD newproject()
-   METHOD Newrc()
-   METHOD Newrcfromar(cPrc)
-   METHOD Newrpt()
-   METHOD Newrptfromar(cPrpt)
-   METHOD nextsearch()
-   METHOD OkPrefer( aFont )
-   METHOD Openfile(cdfile)
-   METHOD openproject()
-   METHOD posxy()
-   METHOD preferences()
-   METHOD printit()
-   METHOD runp()
-   METHOD saveandexit(cdfile)
-   METHOD savefile(cdfile)
-   METHOD saveproject()
-   METHOD searchitem(cnameitem,cparent)
-   METHOD searchtext()
-   METHOD searchtype()
-   METHOD searchtypeadd(nvalue)
-   METHOD splashdelay()
-   METHOD txtsearch()
-   METHOD viewerrors( wr )
-   METHOD viewsource( wr )
-   METHOD xBldMinGW( nOption )
-   METHOD xBldPellC( nOption )
-   METHOD xBuildBCC( nOption )
+   METHOD About
+   METHOD BldMinGW
+   METHOD BldPellC
+   METHOD BuildBcc
+   METHOD DatabaseView
+   METHOD DataMan
+   METHOD DeleteItemP
+   METHOD Disable_Button
+   METHOD Exit
+   METHOD ExitForm
+   METHOD ExitView
+   METHOD GoLine
+   METHOD LookChanges
+   METHOD ModifyForm
+   METHOD ModifyItem
+   METHOD ModifyRpt
+   METHOD NewCH
+   METHOD NewCHFromAr
+   METHOD NewForm
+   METHOD NewFormFromAr
+   METHOD NewIde
+   METHOD NewPrg
+   METHOD NewPrgFromAr
+   METHOD NewProject
+   METHOD NewRC
+   METHOD NewRCFromAr
+   METHOD NewRpt
+   METHOD NewRptFromAr
+   METHOD NextSearch
+   METHOD OkPrefer
+   METHOD OpenAuxi
+   METHOD OpenFile
+   METHOD OpenProject
+   METHOD PosXY
+   METHOD Preferences
+   METHOD PrintIt
+   METHOD ReadINI
+   METHOD RunP
+   METHOD SaveAndExit
+   METHOD SaveFile
+   METHOD SaveINI
+   METHOD SaveProject
+   METHOD SearchItem
+   METHOD SearchText
+   METHOD SearchType
+   METHOD SearchTypeAdd
+   METHOD SplashDelay
+   METHOD TxtSearch
+   METHOD ViewErrors
+   METHOD ViewSource
+   METHOD xBldMinGW
+   METHOD xBldPellC
+   METHOD xBuildBCC
 
 ENDCLASS
-RETURN NIL
 
 *-------------------------
-METHOD NewIde( rtl) CLASS THMI
+METHOD NewIde( rtl ) CLASS THMI
 *-------------------------
-local i,npos,capellido,cnombre, nRed, nGreen, nBlue
-public csyscolor,cvccvar
+LOCAL i, nPos, nRed, nGreen, nBlue, lCorre, nEsque, pmgFolder
 
    SET CENTURY ON
    SET EXACT ON
@@ -167,43 +164,38 @@ public csyscolor,cvccvar
    SET BROWSESYNC ON
 
    DECLARE WINDOW Form_Tree
-   DECLARE WINDOW Form_prefer
-   DECLARE WINDOW form_main
-   DECLARE WINDOW _errors
+   DECLARE WINDOW Form_Prefer
+   DECLARE WINDOW Form_Main
    DECLARE WINDOW editbcvc
-   DECLARE WINDOW form_brow
+   DECLARE WINDOW Form_Brow
    DECLARE WINDOW cvcControls
-   DECLARE WINDOW waitmess
-   DECLARE WINDOW form_splash
+   DECLARE WINDOW WaitMess
+   DECLARE WINDOW Form_Splash
 
-   ::cHelpFolder := GetStartupFolder()
-   exedir := mgidefolder                          // MigSoft
-   lCorre := .F.   ///// no es proyecto
+   ::cProjFolder := GetCurrentFolder()
+   ::cIDE_Folder := GetStartupFolder()
 
-   if rtl#NIL .and. rtl#"RTL"
-      rtl:=lower(rtl)
-      npos:=at(".",rtl)
-      if npos>0
-         capellido := substr(rtl,npos+1,3)
-         cnombre   := substr(rtl,1,npos-1)
-         if lower(capellido)="pmg"
-            lcorre := .T.
-         endif
-      endif
-   else
-      if file(exedir)
-         cvccvar:=alltrim(memoread(exedir))
-         dirchange(cvccvar)
-      endif
-   endif
+   lCorre := .F.
+   IF rtl # NIL
+      rtl := Lower( rtl )
+      nPos := At( ".", rtl )
+      IF nPos > 0
+         ::cFile := SubStr( rtl, 1, nPos - 1 )
+         IF Lower( SubStr( rtl, nPos + 1, 3 ) ) == "pmg" .AND. ! Empty( ::cFile )
+            lCorre := .T.
+            ::cFile += ".pmg"
+         ENDIF
+      ELSE
+         ::cFile := rtl + ".fmg"
+      ENDIF
+   ENDIF
 
-   nesquema := 4
-   nRed     := GETRED(GETSYSCOLOR(nesquema))
-   nGreen   := GETGREEN(GETSYSCOLOR(nesquema))
-   nBlue    := GETBLUE(GETSYSCOLOR(nesquema))
+   nEsquema := 4        // COLOR_MENU, Menu background color
+   nRed     := GetRed( GetSysColor( nEsquema ) )
+   nGreen   := GetGreen( GetSysColor( nEsquema ) )
+   nBlue    := GetBlue( GetSysColor( nEsquema ) )
+   ::aSystemColorAux := &( '{' + Str( nRed, 3 ) + ',' + Str( nGreen, 3 ) + ',' + Str( nBlue, 3 ) + '}' )
 
-   csyscolor :='{'+str(nred,3)+','+str(ngreen,3)+','+str(nblue,3)+'}'
-   ::asystemcoloraux := &csyscolor
    cvcx :=getdesktopwidth()
    cvcy :=getdesktopheight()
 
@@ -223,12 +215,12 @@ public csyscolor,cvccvar
       MAIN ;
       FONT "Times new Roman" SIZE 11 ;
       ICON "Edit" ;
-      ON SIZE AjustaFrame(oFrame,oTree) ;     // MigSoft
+      ON SIZE AjustaFrame(oFrame,oTree) ;     
       ON INTERACTIVECLOSE If( MsgYesNo( "Exit program?", 'ooHG IDE+' ), ::exit(), .F. ) ;
       NOSHOW ;
       BACKCOLOR ::asystemcolor
 
-      DEFINE STATUSBAR FONT "Verdana" SIZE 9       // MigSoft
+      DEFINE STATUSBAR FONT "Verdana" SIZE 9       
          STATUSITEM cNameApp+"                                 F1 Help    F5 Build    F6 Build / Run    F7 Run    F8 Debug"
       END STATUSBAR
 
@@ -243,7 +235,7 @@ public csyscolor,cvccvar
             ITEM '&Exit' ACTION ::exit()
          END POPUP
          POPUP 'Pro&ject'
-            POPUP 'Add' NAME 'Add'                    // MigSoft
+            POPUP 'Add' NAME 'Add'                    
                ITEM 'Form ' ACTION ::newform()
                ITEM 'Prg  ' ACTION ::newprg()
                ITEM 'CH   ' ACTION ::newch()
@@ -251,7 +243,7 @@ public csyscolor,cvccvar
                ITEM 'RC   ' ACTION ::newrc()
             END POPUP
             SEPARATOR
-            ITEM "Modify item" Action analizar( Self )
+            ITEM "Modify item" Action Analizar( Self )
             SEPARATOR
             ITEM 'Remove Item' ACTION ::deleteitemp()
             SEPARATOR
@@ -270,23 +262,23 @@ public csyscolor,cvccvar
          END POPUP
 
          POPUP '&Help'
-            ITEM 'ooHG Syntax Help' ACTION _Execute( GetActiveWindow(), Nil, ::cHelpFolder + "\oohg.chm", Nil, Nil, 5 )
+            ITEM 'ooHG Syntax Help' ACTION _Execute( GetActiveWindow(), Nil, ::cIDE_Folder + "\oohg.chm", Nil, Nil, 5 )
             ITEM '&About' ACTION ::about()
             ITEM 'Shell info' ACTION shellabout(cNameApp,"Shell info")
          END POPUP
       END MENU
 
-      ON KEY F1 action help_f1('PROJECT')
-      ON KEY F5 action CompileOptions( Self, 1 )
-      ON KEY F6 action CompileOptions( Self, 2 )
-      ON KEY F7 action CompileOptions( Self, 3 )
-      ON KEY F8 action CompileOptions( Self, 4 )
+      ON KEY F1 ACTION Help_F1( 'PROJECT' )
+      ON KEY F5 ACTION CompileOptions( Self, 1 )
+      ON KEY F6 ACTION CompileOptions( Self, 2 )
+      ON KEY F7 ACTION CompileOptions( Self, 3 )
+      ON KEY F8 ACTION CompileOptions( Self, 4 )
 
-      @ 65,30 frame frame_tree OBJ oFrame width cvcx-30  height cvcy-65
+      @ 65,30 FRAME frame_tree OBJ oFrame WIDTH cvcx-30 HEIGHT cvcy-65
 
-      DEFINE TREE Tree_1 OBJ oTree AT 90,50 WIDTH 200 HEIGHT cvcy-290 VALUE 1 ;   // MigSoft
+      DEFINE TREE Tree_1 OBJ oTree AT 90,50 WIDTH 200 HEIGHT cvcy-290 VALUE 1 ;   
          TOOLTIP 'Double click to modify items'   ;
-         ON DBLCLICK analizar( Self ) ;
+         ON DBLCLICK Analizar( Self ) ;
          NODEIMAGES { "cl_fl", "op_fl"};
          ITEMIMAGES { "doc", "doc_fl" };
 
@@ -379,18 +371,18 @@ public csyscolor,cvccvar
          END MENU
       END SPLITBOX
 
-      @ 135,280 image image_front OBJ image_front ;
-         picture 'hmiq' ;
-         width 420 ;
-         height 219
+      @ 135,280 IMAGE image_front OBJ image_front ;
+         PICTURE 'hmiq' ;
+         WIDTH 420 ;
+         HEIGHT 219
 
       Form_Tree:tree_1:fontitalic:=.T.
 
-      If Empty(rtl)
-         Desactiva(0)  // MigSoft
-      Else
-         Desactiva(1)  // MigSoft
-      Endif
+      IF Empty( rtl )
+         Desactiva(0)  
+      ELSE
+         Desactiva(1)
+      ENDIF
    END WINDOW
 
    DEFINE WINDOW Form_Splash obj Form_splash ;
@@ -408,62 +400,21 @@ public csyscolor,cvccvar
    CENTER WINDOW Form_Splash
    CENTER WINDOW Form_Tree
 
-   IF .NOT. FILE('hmi.ini')
-      a := MemoWrit('hmi.ini','[PROJECT]')
-   ENDIF
+   // Default values from exe startup folder
+   ::ReadINI( ::cIDE_Folder + '\hmi.ini' )
 
-   BEGIN INI FILE 'hmi.ini'
-      //****************** PROJECT
-      GET ::cProjFolder       SECTION 'PROJECT'   ENTRY "PROJFOLDER"      DEFAULT ''
-      GET ::cOutFile          SECTION 'PROJECT'   ENTRY "OUTFILE"         DEFAULT ''
-      //****************** EDITOR
-      GET ::cExteditor        SECTION 'EDITOR'    ENTRY "EXTERNAL"        DEFAULT ''
-      //****************** FORM'S FONT
-      GET ::cFormDefFontName   SECTION "FORMFONT" ENTRY "FONT"            DEFAULT ::cFormDefFontName
-      IF ::cFormDefFontName == 'NIL'
-         ::cFormDefFontName := ''
-      ENDIF
-      GET ::nFormDefFontSize   SECTION "FORMFONT" ENTRY "SIZE"            DEFAULT ::nFormDefFontSize
-      GET ::cFormDefFontColor  SECTION "FORMFONT" ENTRY "COLOR"           DEFAULT ::cFormDefFontColor
-      // ****************** FORM METRICS
-      GET ::nLabelHeight      SECTION "FORMMETRICS" ENTRY "LABELHEIGHT"   DEFAULT 0
-      GET ::nTextBoxHeight    SECTION "FORMMETRICS" ENTRY "TEXTBOXHEIGHT" DEFAULT 0
-      //****************** OOHG
-      GET ::cGuiHbMinGW       SECTION 'GUILIB'    ENTRY "GUIHBMINGW"      DEFAULT 'c:\oohg'
-      GET ::cGuiHbBCC         SECTION 'GUILIB'    ENTRY "GUIHBBCC"        DEFAULT 'c:\oohg'
-      GET ::cGuiHbPelles      SECTION 'GUILIB'    ENTRY "GUIHBPELL"       DEFAULT 'c:\oohg'
-      GET ::cGuixHbMinGW      SECTION 'GUILIB'    ENTRY "GUIXHBMINGW"     DEFAULT 'c:\oohg'
-      GET ::cGuixHbBCC        SECTION 'GUILIB'    ENTRY "GUIXHBBCC"       DEFAULT 'c:\oohg'
-      GET ::cGuixHbPelles     SECTION 'GUILIB'    ENTRY "GUIXHBPELL"      DEFAULT 'c:\oohg'
-      //****************** HARBOUR
-      GET ::cHbMinGWFolder    SECTION 'HARBOUR'   ENTRY "HBMINGW"         DEFAULT 'c:\harbourm'
-      GET ::cHbBCCFolder      SECTION 'HARBOUR'   ENTRY "HBBCC"           DEFAULT 'c:\harbourb'
-      GET ::cHbPellFolder     SECTION 'HARBOUR'   ENTRY "HBPELLES"        DEFAULT 'c:\harbourp'
-      //****************** XHARBOUR
-      GET ::cxHbMinGWFolder   SECTION 'HARBOUR'   ENTRY "XHBMINGW"        DEFAULT 'c:\xharbourm'
-      GET ::cxHbBCCFolder     SECTION 'HARBOUR'   ENTRY "XHBBCC"          DEFAULT 'c:\xharbourb'
-      GET ::cxHbPellFolder    SECTION 'HARBOUR'   ENTRY "XHBPELLES"       DEFAULT 'c:\xharbourp'
-      //****************** C COMPILER
-      GET ::cMinGWFolder      SECTION 'COMPILER'  ENTRY "MINGWFOLDER"     DEFAULT 'c:\MinGW'
-      GET ::cBCCFolder        SECTION 'COMPILER'  ENTRY "BCCFOLDER"       DEFAULT 'c:\Borland\BCC55'
-      GET ::cPellFolder       SECTION 'COMPILER'  ENTRY "PELLESFOLDER"    DEFAULT 'c:\PellesC'
-      //****************** MODE
-      GET ::nCompxBase        SECTION 'WHATCOMP'  ENTRY "XBASECOMP"       DEFAULT 1  // 1 Harbour  2 xHarbour
-      GET ::nCompilerC        SECTION 'WHATCOMP'  ENTRY "CCOMPILER"       DEFAULT 1  // 1 MinGW    2 BCC   3 Pelles C
-      //****************** OTHER
-      GET ::ltbuild           SECTION 'SETTINGS'  ENTRY "BUILD"           DEFAULT 2  // 1 Compile.bat 2 Own Make
-      GET ::lsnap             SECTION 'SETTINGS'  ENTRY "SNAP"            DEFAULT 0
-      GET ::clib              SECTION 'SETTINGS'  ENTRY "LIB"             DEFAULT ''
-   END INI
-
-   DEFINE WINDOW waitmess obj waitmess  ;
-      AT 10,10  ;
+   DEFINE WINDOW WaitMess obj WaitMess  ;
+      AT 10, 10 ;
       WIDTH 150 ;
       HEIGHT 100 ;
-      TITLE "Information"  CHILD NOSYSMENU NOCAPTION NOSHOW  ;
+      TITLE "Information"  ;
+      CHILD ;
+      NOSYSMENU ;
+      NOCAPTION ;
+      NOSHOW  ;
       BACKCOLOR ::asystemcolor
 
-      @ 35,15 label hmi_label_101 value '              '  autosize font 'Times new Roman'  SIZE 14
+      @ 35, 15 LABEL hmi_label_101 VALUE '              '  AUTOSIZE FONT 'Times new Roman' SIZE 14
    END WINDOW
 
 *-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._-._.-._.-._.-._.-._.-._.-._
@@ -895,20 +846,27 @@ END WINDOW
 
 CENTER WINDOW waitmess
 
-   if lcorre
-      openauxi( Self, cnombre )
-      RTL := NIL
-   endif
-
-
-if rtl=NIL
-   ACTIVATE WINDOW Form_Tree,form_main,waitmess,cvccontrols,form_splash
-else
-   Form_Tree.hide
-   ACTIVATE WINDOW Form_Tree,form_main,waitmess,cvccontrols,form_splash nowait
-   analizar( Self, rtl )
-endif
-Return Self
+   IF lCorre
+      // Project
+      pmgFolder := OnlyFolder( ::cFile )
+      IF ! Empty( pmgFolder )
+         ::cProjFolder := pmgFolder
+         DirChange( pmgFolder )
+      ENDIF
+      ::OpenAuxi()
+      ACTIVATE WINDOW Form_Tree, Form_Main, WaitMess, cvcControls, Form_Splash
+   ELSEIF rtl # NIL
+      // Form
+      ::lCloseOnFormExit := .T.
+      ::ReadINI( ::cProjFolder + "hmi.ini" )
+      Form_Tree.Hide
+      ACTIVATE WINDOW Form_Tree, Form_Main, WaitMess, cvcControls, Form_Splash NOWAIT
+      Analizar( Self, ::cFile )
+   ELSE
+      // None
+      ACTIVATE WINDOW Form_Tree, Form_Main, WaitMess, cvcControls, Form_Splash
+   ENDIF
+RETURN Self
 
 *------------------------------------------------------------------------------*
 FUNCTION Minim()
@@ -924,7 +882,7 @@ FUNCTION Maxim()
    myForm:RestoreForms()
 RETURN NIL
 
-Procedure AjustaFrame(oFrame,oTree) // MigSoft
+Procedure AjustaFrame(oFrame,oTree)
    LOCAL aInfo
    aInfo := ARRAY( 4 )
    GetClientRect( Form_Tree:hWnd, aInfo )
@@ -941,7 +899,7 @@ Procedure AjustaFrame(oFrame,oTree) // MigSoft
 
 Return
 
-Function Desactiva(nOp)   // MigSoft
+Function Desactiva(nOp)   
    If nOp = 0
       SetProperty('Form_Tree','Add','enabled',.F.)
       SetProperty('Form_Tree','Button_1','enabled',.F.)
@@ -952,20 +910,20 @@ Function Desactiva(nOp)   // MigSoft
 Return Nil
 
 //------------------------------------------------------------------------------
-Procedure BorraTemp( cProjFolder )
+Procedure BorraTemp( cFolder )
 //------------------------------------------------------------------------------
-   If File( cProjFolder + "\OBJ\nul" )
-      ZapDirectory( cProjFolder + "\OBJ" + Chr(0) )
+   If File( cFolder + "\OBJ\nul" )
+      ZapDirectory( cFolder + "\OBJ" + Chr(0) )
    EndIf
-   FErase( cProjFolder + '_aux.rc' )
-   FErase( cProjFolder + '_build.bat' )
-   FErase( cProjFolder + '_oohg_resconfig.h' )
-   FErase( cProjFolder + '_temp.bc' )
-   FErase( cProjFolder + '_temp.rc' )
-   FErase( cProjFolder + 'b32.bc' )
-   FErase( cProjFolder + 'comp.bat' )
-   FErase( cProjFolder + 'error.lst' )
-   FErase( cProjFolder + 'makefile.gcc' )
+   FErase( cFolder + '_aux.rc' )
+   FErase( cFolder + '_build.bat' )
+   FErase( cFolder + '_oohg_resconfig.h' )
+   FErase( cFolder + '_temp.bc' )
+   FErase( cFolder + '_temp.rc' )
+   FErase( cFolder + 'b32.bc' )
+   FErase( cFolder + 'comp.bat' )
+   FErase( cFolder + 'error.lst' )
+   FErase( cFolder + 'makefile.gcc' )
 Return
 
 //------------------------------------------------------------------------------
@@ -1014,11 +972,12 @@ FUNCTION Analizar( myIde, cFormx )
 *------------------------------------------------------------------------------*
 LOCAL cItem, cParent
 
-   cItem := Form_Tree:Tree_1:Item( Form_Tree:Tree_1:value )
-   cParent := myIde:SearchType( cItem )
    IF HB_IsString( cFormx )
-      cParent := "Form module"
       cItem := cFormx
+      cParent := "Form module"
+   ELSE
+      cItem := Form_Tree:Tree_1:Item( Form_Tree:Tree_1:value )
+      cParent := myIde:SearchType( cItem )
    ENDIF
    IF cParent == 'Form module' .AND. cItem # cParent .AND. cItem # 'Project'
       IF HB_IsObject( myForm ) .AND. myIde:form_activated
@@ -1037,19 +996,137 @@ LOCAL cItem, cParent
 RETURN NIL
 
 *------------------------------------------------------------------------------*
+METHOD ReadINI( cFile ) CLASS THMI
+*------------------------------------------------------------------------------*
+
+   IF ! File( cFile )
+      MemoWrit( cFile, '[PROJECT]' )
+   ENDIF
+
+   BEGIN INI FILE cFile
+      //****************** PROJECT
+      GET ::cOutFile          SECTION 'PROJECT'   ENTRY "OUTFILE"         DEFAULT ''
+      //****************** EDITOR
+      GET ::cExteditor        SECTION 'EDITOR'    ENTRY "EXTERNAL"        DEFAULT ''
+      //****************** FORM'S FONT
+      GET ::cFormDefFontName   SECTION "FORMFONT" ENTRY "FONT"            DEFAULT ::cFormDefFontName
+      IF ::cFormDefFontName == 'NIL'
+         ::cFormDefFontName := ''
+      ENDIF
+      GET ::nFormDefFontSize   SECTION "FORMFONT" ENTRY "SIZE"            DEFAULT ::nFormDefFontSize
+      ::nFormDefFontSize := Int( ::nFormDefFontSize )
+      GET ::cFormDefFontColor  SECTION "FORMFONT" ENTRY "COLOR"           DEFAULT ::cFormDefFontColor
+      // ****************** FORM'S METRICS
+      GET ::nLabelHeight      SECTION "FORMMETRICS" ENTRY "LABELHEIGHT"   DEFAULT 0
+      IF ::nLabelHeight < 0
+         ::nLabelHeight := 0
+      ENDIF
+      GET ::nTextBoxHeight    SECTION "FORMMETRICS" ENTRY "TEXTBOXHEIGHT" DEFAULT 0
+      IF ::nTextBoxHeight < 0
+         ::nTextBoxHeight := 0
+      ENDIF
+      GET ::nStdVertGap       SECTION "FORMMETRICS" ENTRY "STDVERTGAP"    DEFAULT 24
+      IF ::nStdVertGap < 0
+         ::nStdVertGap := 24
+      ENDIF
+      GET ::nPxMove           SECTION "FORMMETRICS" ENTRY "PXMOVE"        DEFAULT 5
+      IF ::nPxMove < 0
+         ::nPxMove := 5
+      ENDIF
+      GET ::nPxSize           SECTION "FORMMETRICS" ENTRY "PXSIZE"        DEFAULT 1
+      IF ::nPxSize < 0
+         ::nPxSize := 1
+      ENDIF
+      //****************** OOHG
+      GET ::cGuiHbMinGW       SECTION 'GUILIB'    ENTRY "GUIHBMINGW"      DEFAULT 'c:\oohg'
+      GET ::cGuiHbBCC         SECTION 'GUILIB'    ENTRY "GUIHBBCC"        DEFAULT 'c:\oohg'
+      GET ::cGuiHbPelles      SECTION 'GUILIB'    ENTRY "GUIHBPELL"       DEFAULT 'c:\oohg'
+      GET ::cGuixHbMinGW      SECTION 'GUILIB'    ENTRY "GUIXHBMINGW"     DEFAULT 'c:\oohg'
+      GET ::cGuixHbBCC        SECTION 'GUILIB'    ENTRY "GUIXHBBCC"       DEFAULT 'c:\oohg'
+      GET ::cGuixHbPelles     SECTION 'GUILIB'    ENTRY "GUIXHBPELL"      DEFAULT 'c:\oohg'
+      //****************** HARBOUR
+      GET ::cHbMinGWFolder    SECTION 'HARBOUR'   ENTRY "HBMINGW"         DEFAULT 'c:\harbourm'
+      GET ::cHbBCCFolder      SECTION 'HARBOUR'   ENTRY "HBBCC"           DEFAULT 'c:\harbourb'
+      GET ::cHbPellFolder     SECTION 'HARBOUR'   ENTRY "HBPELLES"        DEFAULT 'c:\harbourp'
+      //****************** XHARBOUR
+      GET ::cxHbMinGWFolder   SECTION 'HARBOUR'   ENTRY "XHBMINGW"        DEFAULT 'c:\xharbourm'
+      GET ::cxHbBCCFolder     SECTION 'HARBOUR'   ENTRY "XHBBCC"          DEFAULT 'c:\xharbourb'
+      GET ::cxHbPellFolder    SECTION 'HARBOUR'   ENTRY "XHBPELLES"       DEFAULT 'c:\xharbourp'
+      //****************** C COMPILER
+      GET ::cMinGWFolder      SECTION 'COMPILER'  ENTRY "MINGWFOLDER"     DEFAULT 'c:\MinGW'
+      GET ::cBCCFolder        SECTION 'COMPILER'  ENTRY "BCCFOLDER"       DEFAULT 'c:\Borland\BCC55'
+      GET ::cPellFolder       SECTION 'COMPILER'  ENTRY "PELLESFOLDER"    DEFAULT 'c:\PellesC'
+      //****************** MODE
+      GET ::nCompxBase        SECTION 'WHATCOMP'  ENTRY "XBASECOMP"       DEFAULT 1  // 1 Harbour  2 xHarbour
+      GET ::nCompilerC        SECTION 'WHATCOMP'  ENTRY "CCOMPILER"       DEFAULT 1  // 1 MinGW    2 BCC   3 Pelles C
+      //****************** OTHER
+      GET ::ltbuild           SECTION 'SETTINGS'  ENTRY "BUILD"           DEFAULT 2  // 1 Compile.bat 2 Own Make
+      GET ::lsnap             SECTION 'SETTINGS'  ENTRY "SNAP"            DEFAULT 0
+      GET ::clib              SECTION 'SETTINGS'  ENTRY "LIB"             DEFAULT ''
+   END INI
+RETURN NIL
+
+*------------------------------------------------------------------------------*
+METHOD SaveINI( cFile ) CLASS THMI
+*------------------------------------------------------------------------------*
+
+   BEGIN INI FILE cFile
+      //****************** PROJECT
+         SET SECTION 'PROJECT'     ENTRY "PROJFOLDER"    TO ::cProjFolder
+         SET SECTION 'PROJECT'     ENTRY "OUTFILE"       TO ::cOutFile
+      //****************** EDITOR
+         SET SECTION "EDITOR"      ENTRY "EXTERNAL"      TO ::cExteditor
+      //****************** FORM'S FONT
+         SET SECTION "FORMFONT"    ENTRY "FONT"          TO IIF( Empty( ::cFormDefFontName ), 'NIL', ::cFormDefFontName )
+         SET SECTION "FORMFONT"    ENTRY "SIZE"          TO LTrim( Str( ::nFormDefFontSize, 2, 0 ) )
+         SET SECTION "FORMFONT"    ENTRY "COLOR"         TO ::cFormDefFontColor
+      // ****************** FORM'S METRICS
+         SET SECTION "FORMMETRICS" ENTRY "LABELHEIGHT"   TO LTrim( Str( ::nLabelHeight, 2, 0 ) )
+         SET SECTION "FORMMETRICS" ENTRY "TEXTBOXHEIGHT" TO LTrim( Str( ::nTextBoxHeight, 2, 0 ) )
+         SET SECTION "FORMMETRICS" ENTRY "STDVERTGAP"    TO LTrim( Str( ::nStdVertGap, 3, 0 ) )
+         SET SECTION "FORMMETRICS" ENTRY "PXMOVE"        TO LTrim( Str( ::nPxMove, 2, 0 ) )
+         SET SECTION "FORMMETRICS" ENTRY "PXSIZE"        TO LTrim( Str( ::nPxSize, 2, 0 ) )
+      //****************** OOHG
+         SET SECTION 'GUILIB'      ENTRY "GUIHBMINGW"    TO ::cGuiHbMinGW
+         SET SECTION 'GUILIB'      ENTRY "GUIHBBCC"      TO ::cGuiHbBCC
+         SET SECTION 'GUILIB'      ENTRY "GUIHBPELL"     TO ::cGuiHBPelles
+         SET SECTION 'GUILIB'      ENTRY "GUIXHBMINGW"   TO ::cGuixHbMinGW
+         SET SECTION 'GUILIB'      ENTRY "GUIXHBBCC"     TO ::cGuixHbBCC
+         SET SECTION 'GUILIB'      ENTRY "GUIXHBPELL"    TO ::cGuixHBPelles
+      //****************** HARBOUR
+         SET SECTION 'HARBOUR'     ENTRY "HBMINGW"       TO ::cHbMinGWFolder
+         SET SECTION 'HARBOUR'     ENTRY "HBBCC"         TO ::cHbBCCFolder
+         SET SECTION 'HARBOUR'     ENTRY "HBPELLES"      TO ::cHbPellFolder
+      //****************** XHARBOUR
+         SET SECTION 'HARBOUR'     ENTRY "XHBMINGW"      TO ::cxHbMinGWFolder
+         SET SECTION 'HARBOUR'     ENTRY "XHBBCC"        TO ::cxHbBCCFolder
+         SET SECTION 'HARBOUR'     ENTRY "XHBPELLES"     TO ::cxHbPellFolder
+      //****************** C COMPILER
+         SET SECTION 'COMPILER'    ENTRY "MINGWFOLDER"   TO ::cMinGWFolder
+         SET SECTION 'COMPILER'    ENTRY "BCCFOLDER"     TO ::cBCCFolder
+         SET SECTION 'COMPILER'    ENTRY "PELLESFOLDER"  TO ::cPellFolder
+      //****************** MODE
+         SET SECTION 'WHATCOMP'    ENTRY "XBASECOMP"     TO LTrim( Str( ::nCompxBase, 1, 0 ) )
+         SET SECTION 'WHATCOMP'    ENTRY "CCOMPILER"     TO LTrim( Str( ::nCompilerC, 1, 0 ) )
+      //****************** OTHER
+         SET SECTION "SETTINGS"    ENTRY "BUILD"         TO LTrim( Str( ::ltbuild, 1, 0 ) )
+         SET SECTION "SETTINGS"    ENTRY "LIB"           TO ::clib
+         SET SECTION "SETTINGS"    ENTRY "SNAP"          TO LTrim( Str( ::lsnap, 1, 0 ) )
+   END INI
+RETURN NIL
+
+*------------------------------------------------------------------------------*
 METHOD Exit() CLASS THMI
 *------------------------------------------------------------------------------*
-local a
-if .not. ::lPsave
-   If MsgYesNo( 'Project not saved, save it now?', 'ooHG IDE+' )
-      ::saveproject()
+   IF ! ::lPsave
+      IF MsgYesNo( 'Project not saved, save it now?', 'ooHG IDE+' )
+         ::SaveProject()
+      ENDIF
+   ENDIF
+   IF IsWindowActive( Form_Tree )
+      Form_Tree:Release()
    endif
-endif
-a:=MemoWrit( exedir, getcurrentfolder() )
-if iswindowactive(Form_Tree)
-   Form_Tree:release()
-endif
-Return
+RETURN NIL
 
 *-------------------------
 METHOD printit() CLASS THMI
@@ -1223,9 +1300,9 @@ DEFINE WINDOW about_form obj about_form ;
 
    @ 1,1    FRAME FRAME1 WIDTH 437 HEIGHT 190
 
-   @ 15,330 Image Myphoto PICTURE 'cvcbmp' width 97 height 69     // MigSoft
+   @ 15,330 Image Myphoto PICTURE 'cvcbmp' width 97 height 69     
 
-   @ 85,330 Image MYOOHG  PICTURE 'myoohg' WIDTH 97 HEIGHT 97     // MigSoft
+   @ 85,330 Image MYOOHG  PICTURE 'myoohg' WIDTH 97 HEIGHT 97     
 
    @ 20,20  LABEL LB_NORM VALUE cNameApp ;
    FONT "Times new Roman"  SIZE 10  ;
@@ -1316,8 +1393,11 @@ Local aFont := { ::cFormDefFontName, ;
 
    LOAD WINDOW Form_prefer
 
-   Form_prefer                    := GetFormObject( "Form_prefer" )
-   Form_prefer:backcolor          := ::aSystemColor
+   Form_prefer := GetFormObject( "Form_prefer" )
+
+   Form_prefer:Backcolor := ::aSystemColor
+   Form_prefer:Title := "Preferences from " + ::cProjFolder + '\hmi.ini'
+
    Form_prefer:text_3:value       := ::cProjFolder
    Form_prefer:text_4:value       := ::cOutFile
    Form_prefer:text_12:value      := ::cGuiHbMinGW
@@ -1339,6 +1419,9 @@ Local aFont := { ::cFormDefFontName, ;
    Form_prefer:radiogroup_2:value := ::nCompilerC
    Form_prefer:text_19:value      := ::nLabelHeight
    Form_prefer:text_21:value      := ::nTextBoxHeight
+   Form_prefer:text_22:value      := ::nStdVertGap
+   Form_prefer:text_23:value      := ::nPxMove
+   Form_prefer:text_24:value      := ::nPxSize
    Form_prefer:text_1:value       := ::cExteditor
    Form_prefer:text_font:value    := IF( Empty( ::cFormDefFontName ), _OOHG_DefaultFontName, ::cFormDefFontName ) + ' ' + ;
                                      LTrim( Str( IF( ::nFormDefFontSize > 0, ::nFormDefFontSize, _OOHG_DefaultFontSize ), 2, 0 ) ) + ;
@@ -1461,7 +1544,6 @@ return
 METHOD OkPrefer( aFont ) CLASS THMI
 *-------------------------
 
-   ::cProjFolder        := pmgFolder
    ::cOutFile           := Form_prefer:text_4:Value
    ::cExteditor         := AllTrim( Form_prefer:text_1:Value )
    ::cGuiHbMinGW        := Form_prefer:text_12:Value
@@ -1493,49 +1575,13 @@ METHOD OkPrefer( aFont ) CLASS THMI
                                        LTrim( Str( aFont[5, 3] ) ) + ' }' )
    ::nLabelHeight       := Form_prefer:text_19:Value
    ::nTextBoxHeight     := Form_prefer:text_21:Value
+   ::nStdVertGap        := Form_prefer:text_22:Value
+   ::nPxMove            := Form_prefer:text_23:Value
+   ::nPxSize            := Form_prefer:text_24:Value
 
    Form_prefer:Release()
 
-   SetCurrentFolder( ::cProjFolder )
-
-   BEGIN INI FILE 'hmi.ini'
-         SET SECTION 'PROJECT'     ENTRY "PROJFOLDER"    TO ::cProjFolder
-         SET SECTION 'PROJECT'     ENTRY "OUTFILE"       TO ::cOutFile
-
-         SET SECTION "EDITOR"      ENTRY "EXTERNAL"      TO ::cExteditor
-
-         SET SECTION "FORMFONT"    ENTRY "FONT"          TO IIF( Empty( ::cFormDefFontName ), 'NIL', ::cFormDefFontName )
-         SET SECTION "FORMFONT"    ENTRY "SIZE"          TO LTrim( Str( ::nFormDefFontSize, 2, 0 ) )
-         SET SECTION "FORMFONT"    ENTRY "COLOR"         TO ::cFormDefFontColor
-         SET SECTION "FORMMETRICS" ENTRY "LABELHEIGHT"   TO LTrim( Str( ::nLabelHeight, 2, 0 ) )
-         SET SECTION "FORMMETRICS" ENTRY "TEXTBOXHEIGHT" TO LTrim( Str( ::nTextBoxHeight, 2, 0 ) )
-
-         SET SECTION 'GUILIB'      ENTRY "GUIHBMINGW"    TO ::cGuiHbMinGW
-         SET SECTION 'GUILIB'      ENTRY "GUIHBBCC"      TO ::cGuiHbBCC
-         SET SECTION 'GUILIB'      ENTRY "GUIHBPELL"     TO ::cGuiHBPelles
-         SET SECTION 'GUILIB'      ENTRY "GUIXHBMINGW"   TO ::cGuixHbMinGW
-         SET SECTION 'GUILIB'      ENTRY "GUIXHBBCC"     TO ::cGuixHbBCC
-         SET SECTION 'GUILIB'      ENTRY "GUIXHBPELL"    TO ::cGuixHBPelles
-
-         SET SECTION 'HARBOUR'     ENTRY "HBMINGW"       TO ::cHbMinGWFolder
-         SET SECTION 'HARBOUR'     ENTRY "HBBCC"         TO ::cHbBCCFolder
-         SET SECTION 'HARBOUR'     ENTRY "HBPELLES"      TO ::cHbPellFolder
-
-         SET SECTION 'HARBOUR'     ENTRY "XHBMINGW"      TO ::cxHbMinGWFolder
-         SET SECTION 'HARBOUR'     ENTRY "XHBBCC"        TO ::cxHbBCCFolder
-         SET SECTION 'HARBOUR'     ENTRY "XHBPELLES"     TO ::cxHbPellFolder
-
-         SET SECTION 'COMPILER'    ENTRY "MINGWFOLDER"   TO ::cMinGWFolder
-         SET SECTION 'COMPILER'    ENTRY "BCCFOLDER"     TO ::cBCCFolder
-         SET SECTION 'COMPILER'    ENTRY "PELLESFOLDER"  TO ::cPellFolder
-
-         SET SECTION 'WHATCOMP'    ENTRY "XBASECOMP"     TO LTrim( Str( ::nCompxBase, 1, 0 ) )
-         SET SECTION 'WHATCOMP'    ENTRY "CCOMPILER"     TO LTrim( Str( ::nCompilerC, 1, 0 ) )
-
-         SET SECTION "SETTINGS"    ENTRY "BUILD"         TO LTrim( Str( ::ltbuild, 1, 0 ) )
-         SET SECTION "SETTINGS"    ENTRY "LIB"           TO ::clib
-         SET SECTION "SETTINGS"    ENTRY "SNAP"          TO LTrim( Str( ::lsnap, 1, 0 ) )
-   END INI
+   ::SaveINI( ::cProjFolder + 'hmi.ini' )
 
 Return
 
@@ -1558,7 +1604,7 @@ METHOD BldMinGW( nOption ) CLASS THMI
    Local cMiniGuiFolder := ::cGUIHbMinGW + '\'
    Local cOut
    Local cPrgName
-   Local cProjFolder := ::cProjFolder + '\'
+   Local cFolder := ::cProjFolder + '\'
    Local i
    Local nItems
    Local nPrgFiles
@@ -1597,8 +1643,8 @@ METHOD BldMinGW( nOption ) CLASS THMI
       EndIf
 
       // Prepare to build
-      SetCurrentFolder( cProjFolder )
-      BorraTemp( cProjFolder )
+      SetCurrentFolder( cFolder )
+      BorraTemp( cFolder )
       cPrgName := StrTran( AllTrim( DelExt( DelPath( ::cProjectName ) ) ), " ", "_" )
       cExe := cPrgName + '.exe'
       If File( cExe )
@@ -1642,9 +1688,9 @@ METHOD BldMinGW( nOption ) CLASS THMI
          // Variables
          cOut := ''
          cOut += 'PATH          = ' + cCompFolder + 'BIN' + CRLF
-         cOut += 'PROJECTFOLDER = ' + DelSlash( cProjFolder ) + CRLF
+         cOut += 'PROJECTFOLDER = ' + DelSlash( cFolder ) + CRLF
          cOut += 'APP_NAME      = ' + cExe + CRLF
-         cOut += 'OBJ_DIR       = ' + cProjFolder + 'OBJ' + CRLF
+         cOut += 'OBJ_DIR       = ' + cFolder + 'OBJ' + CRLF
          cOut += 'OBJECTS       = '
          For i := 1 To nPrgFiles
             cOut += '\' + CRLF + '$(OBJ_DIR)\' + aPrgFiles[i] + '.o '
@@ -1655,7 +1701,7 @@ METHOD BldMinGW( nOption ) CLASS THMI
          cOut += CRLF
          cOut += 'LINK_EXE      = GCC.EXE' + CRLF
          cOut += 'LINK_FLAGS    = -Wall -mwindows -O3 -Wl,--allow-multiple-definition' + CRLF
-         cOut += 'LINK_SEARCH   = -L' + DelSlash( cProjFolder ) + ;
+         cOut += 'LINK_SEARCH   = -L' + DelSlash( cFolder ) + ;
                                 ' -L' + cCompFolder + 'LIB' + ;
                                 ' -L' + cHarbourFolder + If( File( cHarbourFolder + 'LIB\WIN\MINGW\LIBHBRTL.A' ), 'LIB\WIN\MINGW', 'LIB' ) + ;
                                 ' -L' + cMiniGUIFolder + If( File( cMiniGUIFolder + 'LIB\HB\MINGW\LIBOOHG.A' ), 'LIB\HB\MINGW', 'LIB' ) + CRLF
@@ -1668,13 +1714,13 @@ METHOD BldMinGW( nOption ) CLASS THMI
                                   '-Wl,--end-group' + CRLF
          cOut += 'CC_EXE        = GCC.EXE' + CRLF
          cOut += 'CC_FLAGS      = -Wall -mwindows -O3' + CRLF
-         cOut += 'CC_SEARCH     = -I' + DelSlash( cProjFolder ) + ;
+         cOut += 'CC_SEARCH     = -I' + DelSlash( cFolder ) + ;
                                 ' -I' + cCompFolder + 'INCLUDE' + ;
                                 ' -I' + cHarbourFolder + 'INCLUDE' + ;
                                 ' -I' + cMiniGUIFolder + 'INCLUDE' + CRLF
          cOut += 'HRB_EXE       = ' + cHarbourFolder + 'BIN\HARBOUR.EXE' + CRLF
          cOut += 'HRB_FLAGS     = -n -q ' + If( nOption == 2, "-b ", "" ) + CRLF
-         cOut += 'HRB_SEARCH    = -i' + DelSlash( cProjFolder ) + ;
+         cOut += 'HRB_SEARCH    = -i' + DelSlash( cFolder ) + ;
                                 ' -i' + cHarbourFolder + 'INCLUDE' + ;
                                 ' -i' + cMiniGUIFolder + 'INCLUDE' + CRLF
          cOut += 'RC_COMP       = WINDRES.EXE' + CRLF
@@ -1707,7 +1753,7 @@ METHOD BldMinGW( nOption ) CLASS THMI
          // Build batch to create RC temp file
          cOut := ''
          cOut += '@echo off' + CRLF
-         cOut += 'echo #define oohgpath ' + cMiniGUIFolder + 'resources > ' + cProjFolder + '_oohg_resconfig.h' + CRLF
+         cOut += 'echo #define oohgpath ' + cMiniGUIFolder + 'resources > ' + cFolder + '_oohg_resconfig.h' + CRLF
          cOut += 'copy /b ' + cMiniGUIFolder + 'resources\oohg.rc _temp.rc > NUL' + CRLF
          For i := 1 To Len( aRcFiles )
             If File( aRcFiles[ i ] )
@@ -1721,7 +1767,7 @@ METHOD BldMinGW( nOption ) CLASS THMI
          MemoWrit( '_build.bat', cOut )
 
          // Create temp folder for objects
-         CreateFolder( cProjFolder + 'OBJ' )
+         CreateFolder( cFolder + 'OBJ' )
 
          // Compile and link
          EXECUTE FILE '_build.bat' WAIT HIDE
@@ -1795,7 +1841,7 @@ METHOD BldMinGW( nOption ) CLASS THMI
       EndIf
 
       // Cleanup
-      BorraTemp( cProjFolder )
+      BorraTemp( cFolder )
       waitmess:Hide()
       If nOption == 0
          MsgInfo( 'Project builded.', 'ooHG IDE+' )
@@ -1850,7 +1896,7 @@ METHOD xBldMinGW( nOption ) CLASS THMI
    Local cMiniGuiFolder := ::cGUIxHbMinGW + '\'
    Local cOut
    Local cPrgName
-   Local cProjFolder := ::cProjFolder + '\'
+   Local cFolder := ::cProjFolder + '\'
    Local i
    Local nItems
    Local nPrgFiles
@@ -1889,8 +1935,8 @@ METHOD xBldMinGW( nOption ) CLASS THMI
       EndIf
 
       // Prepare to build
-      SetCurrentFolder( cProjFolder )
-      BorraTemp( cProjFolder )
+      SetCurrentFolder( cFolder )
+      BorraTemp( cFolder )
       cPrgName := StrTran( AllTrim( DelExt( DelPath( ::cProjectName ) ) ), " ", "_" )
       cExe := cPrgName + '.exe'
       If File( cExe )
@@ -1934,9 +1980,9 @@ METHOD xBldMinGW( nOption ) CLASS THMI
          // Variables
          cOut := ''
          cOut += 'PATH          = ' + cCompFolder + 'BIN' + CRLF
-         cOut += 'PROJECTFOLDER = ' + DelSlash( cProjFolder ) + CRLF
+         cOut += 'PROJECTFOLDER = ' + DelSlash( cFolder ) + CRLF
          cOut += 'APP_NAME      = ' + cExe + CRLF
-         cOut += 'OBJ_DIR       = ' + cProjFolder + 'OBJ' + CRLF
+         cOut += 'OBJ_DIR       = ' + cFolder + 'OBJ' + CRLF
          cOut += 'OBJECTS       = '
          For i := 1 To nPrgFiles
             cOut += '\' + CRLF + '$(OBJ_DIR)\' + aPrgFiles[i] + '.o '
@@ -1947,7 +1993,7 @@ METHOD xBldMinGW( nOption ) CLASS THMI
          cOut += CRLF
          cOut += 'LINK_EXE      = GCC.EXE' + CRLF
          cOut += 'LINK_FLAGS    = -Wall -mwindows -O3 -Wl,--allow-multiple-definition' + CRLF
-         cOut += 'LINK_SEARCH   = -L' + DelSlash( cProjFolder ) + ;
+         cOut += 'LINK_SEARCH   = -L' + DelSlash( cFolder ) + ;
                                 ' -L' + cCompFolder + 'LIB' + ;
                                 ' -L' + cHarbourFolder + If( File( cHarbourFolder + 'LIB\WIN\MINGW\LIBHBRTL.A' ), 'LIB\WIN\MINGW', 'LIB' ) + ;
                                 ' -L' + cMiniGUIFolder + If( File( cMiniGUIFolder + 'LIB\XHB\MINGW\LIBOOHG.A' ), 'LIB\XHB\MINGW', 'LIB' ) + CRLF
@@ -1960,13 +2006,13 @@ METHOD xBldMinGW( nOption ) CLASS THMI
                                   '-Wl,--end-group' + CRLF
          cOut += 'CC_EXE        = GCC.EXE' + CRLF
          cOut += 'CC_FLAGS      = -Wall -mwindows -O3' + CRLF
-         cOut += 'CC_SEARCH     = -I' + DelSlash( cProjFolder ) + ;
+         cOut += 'CC_SEARCH     = -I' + DelSlash( cFolder ) + ;
                                 ' -I' + cCompFolder + 'INCLUDE' + ;
                                 ' -I' + cHarbourFolder + 'INCLUDE' + ;
                                 ' -I' + cMiniGUIFolder + 'INCLUDE' + CRLF
          cOut += 'HRB_EXE       = ' + cHarbourFolder + 'BIN\HARBOUR.EXE' + CRLF
          cOut += 'HRB_FLAGS     = -n -q ' + If( nOption == 2, "-b ", "" ) + CRLF
-         cOut += 'HRB_SEARCH    = -i' + DelSlash( cProjFolder ) + ;
+         cOut += 'HRB_SEARCH    = -i' + DelSlash( cFolder ) + ;
                                 ' -i' + cHarbourFolder + 'INCLUDE' + ;
                                 ' -i' + cMiniGUIFolder + 'INCLUDE' + CRLF
          cOut += 'RC_COMP       = WINDRES.EXE' + CRLF
@@ -1999,7 +2045,7 @@ METHOD xBldMinGW( nOption ) CLASS THMI
          // Build batch to create RC temp file
          cOut := ''
          cOut += '@echo off' + CRLF
-         cOut += 'echo #define oohgpath ' + cMiniGUIFolder + 'resources > ' + cProjFolder + '_oohg_resconfig.h' + CRLF
+         cOut += 'echo #define oohgpath ' + cMiniGUIFolder + 'resources > ' + cFolder + '_oohg_resconfig.h' + CRLF
          cOut += 'copy /b ' + cMiniGUIFolder + 'resources\oohg.rc _temp.rc > NUL' + CRLF
          For i := 1 To Len( aRcFiles )
             If File( aRcFiles[ i ] )
@@ -2013,7 +2059,7 @@ METHOD xBldMinGW( nOption ) CLASS THMI
          MemoWrit( '_build.bat', cOut )
 
          // Create temp folder for objects
-         CreateFolder( cProjFolder + 'OBJ' )
+         CreateFolder( cFolder + 'OBJ' )
 
          // Compile and link
          EXECUTE FILE '_build.bat' WAIT HIDE
@@ -2087,7 +2133,7 @@ METHOD xBldMinGW( nOption ) CLASS THMI
       EndIf
 
       // Cleanup
-      BorraTemp( cProjFolder )
+      BorraTemp( cFolder )
       waitmess:Hide()
       If nOption == 0
          MsgInfo( 'Project builded.', 'ooHG IDE+' )
@@ -2121,7 +2167,7 @@ METHOD BuildBCC( nOption ) CLASS THMI
    Local cMiniGuiFolder := ::cGuiHbBCC + '\'
    Local cOut
    Local cPrgName
-   Local cProjFolder := ::cProjFolder + '\'
+   Local cFolder := ::cProjFolder + '\'
    Local i
    Local nItems
    Local nPrgFiles
@@ -2160,8 +2206,8 @@ METHOD BuildBCC( nOption ) CLASS THMI
       EndIf
 
       // Prepare to build
-      SetCurrentFolder( cProjFolder )
-      BorraTemp( cProjFolder )
+      SetCurrentFolder( cFolder )
+      BorraTemp( cFolder )
       cPrgName := StrTran( AllTrim( DelExt( DelPath( ::cProjectName ) ) ), " ", "_" )
       cExe := cPrgName + '.exe'
       If File( cExe )
@@ -2204,9 +2250,9 @@ METHOD BuildBCC( nOption ) CLASS THMI
          // Build make script
          // Variables
          cOut := ''
-         cOut += 'PROJECTFOLDER = ' + DelSlash( cProjFolder ) + CRLF
+         cOut += 'PROJECTFOLDER = ' + DelSlash( cFolder ) + CRLF
          cOut += 'APP_NAME      = ' + cExe + CRLF
-         cOut += 'OBJ_DIR       = ' + cProjFolder + 'OBJ' + CRLF
+         cOut += 'OBJ_DIR       = ' + cFolder + 'OBJ' + CRLF
          cOut += 'OBJECTS       = '
          For i := 1 To nPrgFiles
             cOut += '\' + CRLF + '$(OBJ_DIR)\' + aPrgFiles[i] + '.obj '
@@ -2219,7 +2265,7 @@ METHOD BuildBCC( nOption ) CLASS THMI
          cOut += '\' + CRLF + cMiniGUIFolder + 'RESOURCES\oohg.res' + CRLF
          cOut += 'LINK_EXE      = ' + cCompFolder + 'BIN\ILINK32.EXE' + CRLF
          cOut += 'LINK_FLAGS    = -Gn -Tpe -x' + If( nOption == 2, "-ap", "-aa" ) + CRLF
-         cOut += 'LINK_SEARCH   = -L' + DelSlash( cProjFolder ) + ;
+         cOut += 'LINK_SEARCH   = -L' + DelSlash( cFolder ) + ;
                                 ' -L' + cCompFolder + 'LIB' + ;
                                 ' -L' + cHarbourFolder + If( File( cHarbourFolder + 'LIB\WIN\BCC\rtl.lib' ), 'LIB\WIN\BCC', 'LIB' ) + ;
                                 ' -L' + cMiniGUIFolder + If( File( cMiniGUIFolder + 'LIB\HB\BCC\oohg.lib' ), 'LIB\HB\BCC', 'LIB' ) + CRLF
@@ -2289,14 +2335,14 @@ METHOD BuildBCC( nOption ) CLASS THMI
          cOut += CRLF
          cOut += 'CC_EXE        = ' + cCompFolder + 'BIN\BCC32.EXE' + CRLF
          cOut += 'CC_FLAGS      = -c -O2 -tW -M' + CRLF
-         cOut += 'CC_SEARCH     = -I' + DelSlash( cProjFolder ) + ';' + ;
+         cOut += 'CC_SEARCH     = -I' + DelSlash( cFolder ) + ';' + ;
                                         cCompFolder + 'INCLUDE;' + ;
                                         cHarbourFolder + 'INCLUDE;' + ;
                                         cMiniGUIFolder + 'INCLUDE;' + ;
                                  '-L' + cCompFolder + 'LIB;' + CRLF
          cOut += 'HRB_EXE       = ' + cHarbourFolder + 'BIN\HARBOUR.EXE' + CRLF
          cOut += 'HRB_FLAGS     = -n -q ' + If( nOption == 2, "-b ", "" ) + CRLF
-         cOut += 'HRB_SEARCH    = -i' + DelSlash( cProjFolder ) + ;
+         cOut += 'HRB_SEARCH    = -i' + DelSlash( cFolder ) + ;
                                 ' -i' + cHarbourFolder + 'INCLUDE' + ;
                                 ' -i' + cMiniGUIFolder + 'INCLUDE' + CRLF
          cOut += 'RC_COMP       = ' + cCompFolder + 'BIN\BRC32.EXE' + CRLF
@@ -2335,11 +2381,11 @@ METHOD BuildBCC( nOption ) CLASS THMI
          // Build batch to launch make utility
          cOut := ''
          cOut += '@echo off' + CRLF
-         cOut += cCompFolder + 'BIN\MAKE.EXE /f' + cProjFolder + '_temp.bc > ' + cProjFolder + 'error.lst' + CRLF
+         cOut += cCompFolder + 'BIN\MAKE.EXE /f' + cFolder + '_temp.bc > ' + cFolder + 'error.lst' + CRLF
          MemoWrit( '_build.bat', cOut )
 
          // Create temp folder for objects
-         CreateFolder( cProjFolder + 'OBJ' )
+         CreateFolder( cFolder + 'OBJ' )
 
          // Compile and link
          EXECUTE FILE '_build.bat' WAIT HIDE
@@ -2413,7 +2459,7 @@ METHOD BuildBCC( nOption ) CLASS THMI
       EndIf
 
       // Cleanup
-      BorraTemp( cProjFolder )
+      BorraTemp( cFolder )
       waitmess:Hide()
       If nOption == 0
          MsgInfo( 'Project builded.', 'ooHG IDE+' )
@@ -2447,7 +2493,7 @@ METHOD xBuildBCC( nOption ) CLASS THMI
    Local cMiniGuiFolder := ::cGuixHbBCC + '\'
    Local cOut
    Local cPrgName
-   Local cProjFolder := ::cProjFolder + '\'
+   Local cFolder := ::cProjFolder + '\'
    Local i
    Local nItems
    Local nPrgFiles
@@ -2486,8 +2532,8 @@ METHOD xBuildBCC( nOption ) CLASS THMI
       EndIf
 
       // Prepare to build
-      SetCurrentFolder( cProjFolder )
-      BorraTemp( cProjFolder )
+      SetCurrentFolder( cFolder )
+      BorraTemp( cFolder )
       cPrgName := StrTran( AllTrim( DelExt( DelPath( ::cProjectName ) ) ), " ", "_" )
       cExe := cPrgName + '.exe'
       If File( cExe )
@@ -2530,10 +2576,10 @@ METHOD xBuildBCC( nOption ) CLASS THMI
          // Build make script
          // Variables
          cOut := ''
-         cOut += 'PROJECTFOLDER = ' + DelSlash( cProjFolder ) + CRLF
+         cOut += 'PROJECTFOLDER = ' + DelSlash( cFolder ) + CRLF
          cOut += 'APP_NAME      = ' + cExe + CRLF
          cOut += 'TDS_NAME      = ' + cPrgName + '.tds' + CRLF
-         cOut += 'OBJ_DIR       = ' + cProjFolder + 'OBJ' + CRLF
+         cOut += 'OBJ_DIR       = ' + cFolder + 'OBJ' + CRLF
          cOut += 'OBJECTS       = '
          For i := 1 To nPrgFiles
             cOut += '\' + CRLF + '$(OBJ_DIR)\' + aPrgFiles[i] + '.obj '
@@ -2546,7 +2592,7 @@ METHOD xBuildBCC( nOption ) CLASS THMI
          cOut += '\' + CRLF + cMiniGUIFolder + 'RESOURCES\oohg.res' + CRLF
          cOut += 'LINK_EXE      = ' + cCompFolder + 'BIN\ILINK32.EXE' + CRLF
          cOut += 'LINK_FLAGS    = -Gn -Tpe -x ' + If( nOption == 2, "-ap", "-aa" ) + CRLF
-         cOut += 'LINK_SEARCH   = -L' + DelSlash( cProjFolder ) + ;
+         cOut += 'LINK_SEARCH   = -L' + DelSlash( cFolder ) + ;
                                 ' -L' + cCompFolder + 'LIB' + ;
                                 ' -L' + cHarbourFolder + If( File( cHarbourFolder + 'LIB\WIN\BCC\rtl.lib' ), 'LIB\WIN\BCC', 'LIB' ) + ;
                                 ' -L' + cMiniGUIFolder + If( File( cMiniGUIFolder + 'LIB\XHB\BCC\oohg.lib' ), 'LIB\XHB\BCC', 'LIB' ) + CRLF
@@ -2616,14 +2662,14 @@ METHOD xBuildBCC( nOption ) CLASS THMI
          cOut += CRLF
          cOut += 'CC_EXE        = ' + cCompFolder + 'BIN\BCC32.EXE' + CRLF
          cOut += 'CC_FLAGS      = -c -O2 -tW -M' + CRLF
-         cOut += 'CC_SEARCH     = -I' + DelSlash( cProjFolder ) + ';' + ;
+         cOut += 'CC_SEARCH     = -I' + DelSlash( cFolder ) + ';' + ;
                                         cCompFolder + 'INCLUDE;' + ;
                                         cHarbourFolder + 'INCLUDE;' + ;
                                         cMiniGUIFolder + 'INCLUDE;' + ;
                                  '-L' + cCompFolder + 'LIB;' + CRLF
          cOut += 'HRB_EXE       = ' + cHarbourFolder + 'BIN\HARBOUR.EXE' + CRLF
          cOut += 'HRB_FLAGS     = -n -q ' + If( nOption == 2, "-b ", "" ) + CRLF
-         cOut += 'HRB_SEARCH    = -i' + DelSlash( cProjFolder ) + ;
+         cOut += 'HRB_SEARCH    = -i' + DelSlash( cFolder ) + ;
                                 ' -i' + cHarbourFolder + 'INCLUDE' + ;
                                 ' -i' + cMiniGUIFolder + 'INCLUDE' + CRLF
          cOut += 'RC_COMP       = ' + cCompFolder + 'BIN\BRC32.EXE' + CRLF
@@ -2663,11 +2709,11 @@ METHOD xBuildBCC( nOption ) CLASS THMI
          // Build batch to launch make utility
          cOut := ''
          cOut += '@echo off' + CRLF
-         cOut += cCompFolder + 'BIN\MAKE.EXE /f' + cProjFolder + '_temp.bc > ' + cProjFolder + 'error.lst' + CRLF
+         cOut += cCompFolder + 'BIN\MAKE.EXE /f' + cFolder + '_temp.bc > ' + cFolder + 'error.lst' + CRLF
          MemoWrit( '_build.bat', cOut )
 
          // Create temp folder for objects
-         CreateFolder( cProjFolder + 'OBJ' )
+         CreateFolder( cFolder + 'OBJ' )
 
          // Compile and link
          EXECUTE FILE '_build.bat' WAIT HIDE
@@ -2741,7 +2787,7 @@ METHOD xBuildBCC( nOption ) CLASS THMI
       EndIf
 
       // Cleanup
-      BorraTemp( cProjFolder )
+      BorraTemp( cFolder )
       waitmess:Hide()
       If nOption == 0
          MsgInfo( 'Project builded.', 'ooHG IDE+' )
@@ -2775,7 +2821,7 @@ METHOD XBldPellC( nOption ) CLASS THMI
    Local cMiniGuiFolder := ::cGuixHbPelles + '\'
    Local cOut
    Local cPrgName
-   Local cProjFolder := ::cProjFolder + '\'
+   Local cFolder := ::cProjFolder + '\'
    Local i
    Local nItems
    Local nPrgFiles
@@ -2814,8 +2860,8 @@ METHOD XBldPellC( nOption ) CLASS THMI
       EndIf
 
       // Prepare to build
-      SetCurrentFolder( cProjFolder )
-      BorraTemp( cProjFolder )
+      SetCurrentFolder( cFolder )
+      BorraTemp( cFolder )
       cPrgName := StrTran( AllTrim( DelExt( DelPath( ::cProjectName ) ) ), " ", "_" )
       cExe := cPrgName + '.exe'
       If File( cExe )
@@ -2862,12 +2908,12 @@ METHOD XBldPellC( nOption ) CLASS THMI
          cOut += 'ILINK_EXE = ' + cCompFolder + 'BIN\POLINK.EXE' + CRLF
          cOut += 'BRC_EXE = ' + cCompFolder + 'BIN\PORC.EXE' + CRLF
          cOut += 'APP_NAME = ' + cExe + CRLF
-         cOut += 'INCLUDE_DIR = ' + cHarbourFolder + 'INCLUDE;' + cMiniGuiFolder + 'INCLUDE;' + DelSlash( cProjFolder ) + CRLF
-         cOut += 'INCLUDE_C_DIR = ' + cHarbourFolder + 'INCLUDE -I' + cMiniGuiFolder + 'INCLUDE -I' + DelSlash( cProjFolder ) + ' -I' + cCompFolder + 'INCLUDE -I' + cCompFolder + 'INCLUDE\WIN' + CRLF
+         cOut += 'INCLUDE_DIR = ' + cHarbourFolder + 'INCLUDE;' + cMiniGuiFolder + 'INCLUDE;' + DelSlash( cFolder ) + CRLF
+         cOut += 'INCLUDE_C_DIR = ' + cHarbourFolder + 'INCLUDE -I' + cMiniGuiFolder + 'INCLUDE -I' + DelSlash( cFolder ) + ' -I' + cCompFolder + 'INCLUDE -I' + cCompFolder + 'INCLUDE\WIN' + CRLF
          cOut += 'CC_LIB_DIR = ' + cCompFolder + 'LIB' + CRLF
          cOut += 'HRB_LIB_DIR = ' + cHarbourFolder + 'LIB' + CRLF
-         cOut += 'OBJ_DIR = ' + cProjFolder + 'OBJ' + CRLF
-         cOut += 'C_DIR = ' + cProjFolder + 'OBJ' + CRLF
+         cOut += 'OBJ_DIR = ' + cFolder + 'OBJ' + CRLF
+         cOut += 'C_DIR = ' + cFolder + 'OBJ' + CRLF
          cOut += 'USER_FLAGS =' + CRLF
          cOut += 'HARBOUR_FLAGS = /i$(INCLUDE_DIR) /n /q0 ' + If( nOption == 2, "/b ", "" ) + '$(USER_FLAGS)' + CRLF
          cOut += 'COBJFLAGS = /Ze /Zx /Go /Tx86-coff /D__WIN32__ ' + '-I$(INCLUDE_C_DIR)' + CRLF
@@ -2985,7 +3031,7 @@ METHOD XBldPellC( nOption ) CLASS THMI
          cOut += CRLF
          For i := 1 To nPrgFiles
             cOut += CRLF
-            cOut += '$(C_DIR)\' + aPrgFiles[i] + '.c : ' + cProjFolder + aPrgFiles[i] + '.prg' + CRLF
+            cOut += '$(C_DIR)\' + aPrgFiles[i] + '.c : ' + cFolder + aPrgFiles[i] + '.prg' + CRLF
             cOut += '   $(HARBOUR_EXE) $(HARBOUR_FLAGS) $** -o$@'  + CRLF
             cOut += CRLF
             cOut += '$(OBJ_DIR)\' + aPrgFiles[i] + '.obj : $(C_DIR)\' + aPrgFiles[i] + '.c' + CRLF
@@ -2996,11 +3042,11 @@ METHOD XBldPellC( nOption ) CLASS THMI
          // Build batch
          cOut := ''
          cOut += '@echo off' + CRLF
-         cOut += cCompFolder + 'BIN\POMAKE.EXE /F' + cProjFolder + '_temp.bc > ' + cProjFolder + 'error.lst' + CRLF
+         cOut += cCompFolder + 'BIN\POMAKE.EXE /F' + cFolder + '_temp.bc > ' + cFolder + 'error.lst' + CRLF
          MemoWrit( '_build.bat', cOut )
 
          // Create folder for objects
-         CreateFolder( cProjFolder + 'OBJ' )
+         CreateFolder( cFolder + 'OBJ' )
 
          // Build
          EXECUTE FILE '_build.bat' WAIT HIDE
@@ -3074,7 +3120,7 @@ METHOD XBldPellC( nOption ) CLASS THMI
       EndIf
 
       // Cleanup
-      BorraTemp( cProjFolder )
+      BorraTemp( cFolder )
       waitmess:Hide()
       If nOption == 0
          MsgInfo( 'Project builded.', 'ooHG IDE+' )
@@ -3109,7 +3155,7 @@ METHOD BldPellC(nOption) CLASS THMI
    Local cMiniGuiFolder := ::cGuiHbPelles + '\'
    Local cOut
    Local cPrgName
-   Local cProjFolder := ::cProjFolder + '\'
+   Local cFolder := ::cProjFolder + '\'
    Local i
    Local nItems
    Local nPrgFiles
@@ -3148,8 +3194,8 @@ METHOD BldPellC(nOption) CLASS THMI
       EndIf
 
       // Prepare to build
-      SetCurrentFolder( cProjFolder )
-      BorraTemp( cProjFolder )
+      SetCurrentFolder( cFolder )
+      BorraTemp( cFolder )
       cPrgName := StrTran( AllTrim( DelExt( DelPath( ::cProjectName ) ) ), " ", "_" )
       cExe := cPrgName + '.exe'
       If File( cExe )
@@ -3196,12 +3242,12 @@ METHOD BldPellC(nOption) CLASS THMI
          cOut += 'ILINK_EXE = ' + cCompFolder + 'BIN\POLINK.EXE' + CRLF
          cOut += 'BRC_EXE = ' + cCompFolder + 'BIN\PORC.EXE' + CRLF
          cOut += 'APP_NAME = ' + cExe + CRLF
-         cOut += 'INCLUDE_DIR = ' + cHarbourFolder + 'INCLUDE;' + cMiniGuiFolder + 'INCLUDE;' + DelSlash( cProjFolder ) + CRLF
-         cOut += 'INCLUDE_C_DIR = ' + cHarbourFolder + 'INCLUDE -I' + cMiniGuiFolder + 'INCLUDE -I' + DelSlash( cProjFolder ) + ' -I' + cCompFolder + 'INCLUDE -I' + cCompFolder + 'INCLUDE\WIN' + CRLF
+         cOut += 'INCLUDE_DIR = ' + cHarbourFolder + 'INCLUDE;' + cMiniGuiFolder + 'INCLUDE;' + DelSlash( cFolder ) + CRLF
+         cOut += 'INCLUDE_C_DIR = ' + cHarbourFolder + 'INCLUDE -I' + cMiniGuiFolder + 'INCLUDE -I' + DelSlash( cFolder ) + ' -I' + cCompFolder + 'INCLUDE -I' + cCompFolder + 'INCLUDE\WIN' + CRLF
          cOut += 'CC_LIB_DIR = ' + cCompFolder + 'LIB' + CRLF
          cOut += 'HRB_LIB_DIR = ' + cHarbourFolder + If( File( cHarbourFolder + 'LIB\hbwin.lib' ), 'LIB', 'LIB\WIN\POCC' ) + CRLF
-         cOut += 'OBJ_DIR = ' + cProjFolder + 'OBJ' + CRLF
-         cOut += 'C_DIR = ' + cProjFolder + 'OBJ' + CRLF
+         cOut += 'OBJ_DIR = ' + cFolder + 'OBJ' + CRLF
+         cOut += 'C_DIR = ' + cFolder + 'OBJ' + CRLF
          cOut += 'USER_FLAGS =' + CRLF
          cOut += 'HARBOUR_FLAGS = /i$(INCLUDE_DIR) /n /q0 ' + If( nOption == 2, "/b ", "" ) + '$(USER_FLAGS)' + CRLF
          cOut += 'COBJFLAGS = /Ze /Zx /Go /Tx86-coff /D__WIN32__ ' + '-I$(INCLUDE_C_DIR)' + CRLF
@@ -3325,22 +3371,22 @@ METHOD BldPellC(nOption) CLASS THMI
          cOut += CRLF
          For i := 1 To nPrgFiles
             cOut += CRLF
-            cOut += '$(C_DIR)\' + aPrgFiles[i] + '.c : ' + cProjFolder + aPrgFiles[i] + '.prg' + CRLF
+            cOut += '$(C_DIR)\' + aPrgFiles[i] + '.c : ' + cFolder + aPrgFiles[i] + '.prg' + CRLF
             cOut += '   $(HARBOUR_EXE) $(HARBOUR_FLAGS) $** -o$@'  + CRLF
             cOut += CRLF
             cOut += '$(OBJ_DIR)\' + aPrgFiles[i] + '.obj : $(C_DIR)\' + aPrgFiles[i] + '.c' + CRLF
             cOut += '   $(CC) $(COBJFLAGS) -Fo$@ $**' + CRLF
          Next i
-         MemoWrit( '_temp.bc', cOut )    
+         MemoWrit( '_temp.bc', cOut )
 
          // Build batch
          cOut := ''
          cOut += '@echo off' + CRLF
-         cOut += cCompFolder + 'BIN\POMAKE.EXE /F' + cProjFolder + '_temp.bc > ' + cProjFolder + 'error.lst' + CRLF
+         cOut += cCompFolder + 'BIN\POMAKE.EXE /F' + cFolder + '_temp.bc > ' + cFolder + 'error.lst' + CRLF
          MemoWrit( '_build.bat', cOut )
 
          // Create folder for objects
-         CreateFolder( cProjFolder + 'OBJ' )
+         CreateFolder( cFolder + 'OBJ' )
 
          // Build
          EXECUTE FILE '_build.bat' WAIT HIDE
@@ -3414,7 +3460,7 @@ METHOD BldPellC(nOption) CLASS THMI
       EndIf
 
       // Cleanup
-      BorraTemp( cProjFolder )
+      BorraTemp( cFolder )
       waitmess:Hide()
       If nOption == 0
          MsgInfo( 'Project builded.', 'ooHG IDE+' )
@@ -3534,141 +3580,90 @@ Form_Tree:Tree_1:value := 1
 Form_Tree:title := cNameApp
 ::lPsave:=.F.
 ::cprojectname:=''
-   Desactiva(0)           // MigSoft
+   Desactiva(0)           
 return
 
 
 *-------------------------
-METHOD Openproject() CLASS THMI
+METHOD OpenProject() CLASS THMI
 *-------------------------
-cos=upper(gete('os'))
-if len(cos)=0
-   cos=gete('os_type')
-endif
-******
-if file(exedir)
-   cvccvar:=alltrim(memoread(exedir))
-   dirchange(cvccvar)
-endif
-*****
-   ::cFile := GetFile ( { {'ooHG IDE+ project files *.pmg','*.pmg'} }  , 'Open Project',cvccvar,.F.,.F. )
+LOCAL pmgFolder
 
-If len(::cFile)=0
-   return
-Else                                          // MigSoft
-   pmgFolder := OnlyFolder( ::cFile )     // MigSoft
-   Desactiva(1)                               // MigSoft
-endif
-openauxi( Self )
-return Nil
+   ::cFile := GetFile( { {'ooHG IDE+ project files *.pmg','*.pmg'} }, 'Open Project', "", .F., .F. )
+   IF Len( ::cFile ) > 0
+      pmgFolder := OnlyFolder( ::cFile )
+      IF ! Empty( pmgFolder )
+         ::cProjFolder := pmgFolder
+         DirChange( pmgFolder )
+      ENDIF
+      Desactiva( 1 )
+   ENDIF
+   ::OpenAuxi()
+RETURN NIL
 
-************
 *-------------------------------------------
-Function openauxi( myIde, cvar )
+METHOD OpenAuxi() CLASS THMI
 *-------------------------------------------
-local Aline [0]
-local nContlin,nPosilin,nFinform,nValue
-local cproject, chmi
-nContlin:=0
-nPosilin:=1
-if cvar#NIL
-   myIde:cfile:=cvar+".pmg"
-   pmgFolder := OnlyFolder( myIde:cFile )     // MigSoft
-   dirchange(pmgFolder)
-   rtl:=NIL
-endif
-chmi := "hmi.INI"
-IF .not. file(chmi)
-   a := MemoWrit( chmi, '[PROJECT]' )
-else
+LOCAL aLine[0], nContLin, nFinForm, cProject, sw
 
-ENDIF
-BEGIN INI FILE (chmi)
+   // From project folder
+   ::ReadINI( ::cProjFolder + "hmi.ini" )
 
-   GET myIde:cProjFolder     SECTION 'PROJECT'  ENTRY "PROJFOLDER"    default ''   // MigSoft
-   GET myIde:cOutFile        SECTION 'PROJECT'  ENTRY "OUTFILE"       default ''
+   ::cProjectName := ::cFile
 
-   GET myIde:cExteditor      SECTION "EDITOR"   ENTRY "external"      default ''
+   cProject := MemoRead( ::cFile )
+   nContLin := MLCount( cProject )
 
-   GET myIde:cGuiHbMinGW     SECTION 'GUILIB'   ENTRY "GUIHBMINGW"    default 'c:\oohg'
-   GET myIde:cGuiHbBCC       SECTION 'GUILIB'   ENTRY "GUIHBBCC"      default 'c:\oohg'
-   GET myIde:cGuiHbPelles    SECTION 'GUILIB'   ENTRY "GUIHBPELL"     default 'c:\oohg'
-   GET myIde:cGuixHbMinGW    SECTION 'GUILIB'   ENTRY "GUIXHBMINGW"   default 'c:\oohg'
-   GET myIde:cGuixHbBCC      SECTION 'GUILIB'   ENTRY "GUIXHBBCC"     default 'c:\oohg'
-   GET myIde:cGuixHbPelles   SECTION 'GUILIB'   ENTRY "GUIXHBPELL"    default 'c:\oohg'
+   Form_Tree:Title := cNameApp + ' (' + ::cFile + ')'
+   Form_Tree:Tree_1:DeleteAllItems()
+   Form_Tree:Tree_1:AddItem( 'Project', 0 )
+   Form_Tree:Tree_1:AddItem( 'Form module', 1 )
+   Form_Tree:Tree_1:AddItem( 'Prg module', 1 )
+   Form_Tree:Tree_1:AddItem( 'CH module', 1 )
+   Form_Tree:Tree_1:AddItem( 'Rpt module', 1 )
+   Form_Tree:Tree_1:AddItem( 'RC module', 1 )
 
-   GET myIde:cHbMinGWFolder  SECTION 'HARBOUR'  ENTRY "HBMINGW"       default 'c:\oohg\harbour'
-   GET myIde:cHbBCCFolder    SECTION 'HARBOUR'  ENTRY "HBBCC"         default 'c:\harbourb'
-   GET myIde:cHbPellFolder   SECTION 'HARBOUR'  ENTRY "HBPELLES"      default 'c:\harbourp'
+   sw := 0
+   FOR i := 1 TO nContLin
+      aAdd( aLine, RTrim( MemoLine( cProject, , i ) ) )
+      aLine[i] := StrTran( aLine[i], CHR( 10 ), "" )
+      aLine[i] := StrTran( aLine[i], CHR( 13 ), "" )
+      aLine[i] := RTrim( aLine[i] )
 
-   GET myIde:cxHbMinGWFolder SECTION 'HARBOUR'  ENTRY "XHBMINGW"      default 'c:\xharbourm'
-   GET myIde:cxHbBCCFolder   SECTION 'HARBOUR'  ENTRY "XHBBCC"        default 'c:\xharbourb'
-   GET myIde:cxHbPellFolder  SECTION 'HARBOUR'  ENTRY "XHBPELLES"     default 'c:\xharbourp'
+      DO CASE
+      CASE aLine[i] == 'Project'
+      CASE aLine[i] == 'Form module'
+         sw := 1
+      CASE aLine[i] == 'Prg module'
+         sw := 2
+      CASE aLine[i] == 'CH module'
+         sw := 3
+      CASE aLine[i] == 'Rpt module'
+         sw := 4
+      CASE aLine[i] == 'RC module'
+         sw := 5
+      OTHERWISE
+         IF sw == 1
+            ::NewFormFromAr( aLine[i] )
+         ENDIF
+         IF sw == 2
+            ::NewPrgFromAr( aLine[i] )
+         ENDIF
+         IF sw == 3
+            ::NewCHFromAr( aLine[i] )
+         ENDIF
+         IF sw == 4
+            ::NewRptFromAr( aLine[i] )
+         ENDIF
+         IF sw == 5
+            ::NewRCFromAr( aLine[i] )
+         ENDIF
+      ENDCASE
+   NEXT i
 
-   GET myIde:cMinGWFolder    SECTION 'COMPILER' ENTRY "MINGWFOLDER"   default 'c:\oohg\MinGW'
-   GET myIde:cBCCFolder      SECTION 'COMPILER' ENTRY "BCCFOLDER"     default 'c:\oohg\BCC55'
-   GET myIde:cPellFolder     SECTION 'COMPILER' ENTRY "PELLESFOLDER"  default 'c:\oohg\PellesC'
-
-   GET myIde:nCompxBase      SECTION 'WHATCOMP' ENTRY "XBASECOMP"     default 1
-   GET myIde:nCompilerC      SECTION 'WHATCOMP' ENTRY "CCOMPILER"     default 1
-
-   GET myIde:ltbuild         SECTION 'SETTINGS' ENTRY "BUILD"         default 2
-   GET myIde:lsnap           SECTION 'SETTINGS' ENTRY "SNAP"          default 0
-   GET myIde:clib            SECTION 'SETTINGS' ENTRY "LIB"           default ''
-
-END INI
-
-************
-myIde:cprojectname:=myIde:cFile
-cproject:=memoread(myIde:cFile)
-Form_Tree:title := cNameApp+' ('+myIde:cfile+')'
-Form_Tree:Tree_1:deleteAllitems()
-ncontlin:=mlcount(cproject)
-Form_Tree:Tree_1:AddItem( 'Project'   , 0 )
-Form_Tree:Tree_1:AddItem( 'Form module' , 1 )
-Form_Tree:Tree_1:AddItem( 'Prg module' , 1 )
-Form_Tree:Tree_1:AddItem( 'CH module' , 1 )
-Form_Tree:Tree_1:AddItem( 'Rpt module' , 1 )
-Form_Tree:Tree_1:AddItem( 'RC module' , 1 )
-sw:=0
-For i:=1 to ncontlin
-    aAdd(Aline,trim(memoline(cproject,,i)))
-    aline[i]:=strtran(aline[i],chr(10),"")
-    aline[i]:=strtran(aline[i],chr(13),"")
-    aline[i]:=trim(aline[i])
-    do case
-       case Aline[i] =='Project'
-       case Aline[i]=='Form module'
-          sw:=1
-       case  Aline[i]=='Prg module'
-          sw:=2
-       case Aline[i]=='CH module'
-          sw:=3
-       case Aline[i]=='Rpt module'
-          sw:=4
-       case Aline[i]=='RC module'
-          sw:=5
-       otherwise
-          if sw==1
-             myIde:newformfromar(Aline[i])
-          endif
-          if sw==2
-             myIde:newprgfromar(Aline[i])
-          endif
-          if sw==3
-             myIde:newchfromar(Aline[i])
-          endif
-          if sw==4
-             myIde:newrptfromar(Aline[i])
-          endif
-          if sw==5
-             myIde:newrcfromar(Aline[i])
-          endif
-    endcase
-Next i
-Form_Tree:Tree_1:value := 1
-Form_Tree:tree_1:Expand ( 1 )
-return
+   Form_Tree:Tree_1:Value := 1
+   Form_Tree:Tree_1:Expand( 1 )
+RETURN NIL
 
 //------------------------------------------------------------------------------
 METHOD SaveProject() CLASS THMI
@@ -3695,7 +3690,7 @@ METHOD SaveProject() CLASS THMI
       EndIf
    EndIf
 
-   pmgFolder := OnlyFolder( ::cProjectName )
+   ::cProjFolder := OnlyFolder( ::cProjectName )
    Form_Tree:Title := cNameApp + ' (' + ::cProjectName + ')'
    If ! Empty( ::cProjectName)
       Desactiva( 1 )
@@ -3705,6 +3700,7 @@ METHOD SaveProject() CLASS THMI
       MsgStop( 'Project not saved.', 'ooHG IDE+' )
    Else
       MemoWrit( ::cProjectName, Output )
+      ::SaveINI( ::cProjFolder + 'hmi.ini' )
       ::lPsave := .T.
       MsgInfo( 'Project saved.', 'ooHG IDE+' )
    EndIf
@@ -4007,9 +4003,9 @@ if citem=NIL
    cParent= ::searchtype(::searchitem(cItem,'Form module'))
 endif
 
-if cParent == 'Prg module'                                    // MigSoft
+if cParent == 'Prg module'                                    
    if file(citem+'.prg')
-      ::Openfile(cItem+'.prg')
+      ::OpenFile(cItem+'.prg')
       ::alinet:={}
    else
       output:='/*        IDE: ooHG IDE+'+CRLF
@@ -4020,13 +4016,13 @@ if cParent == 'Prg module'                                    // MigSoft
       output+=' *        Date: '+dtoc(date())+CRLF
       output+=' */'+CRLF+CRLF
 
-      output+="#include 'oohg.ch'"+CRLF                           // MigSoft
+      output+="#include 'oohg.ch'"+CRLF                           
       output+=+CRLF
       output+="*------------------------------------------------------*"+CRLF
       if ::searchitem(cItem,cParent)= (::searchitem(cParent,cParent)+1)
          output += 'Function Main()'+CRLF
       else
-         output += 'Function '+cItem+'()'+CRLF                    // MigSoft
+         output += 'Function '+cItem+'()'+CRLF                    
       endif
       output+="*------------------------------------------------------*"+CRLF+CRLF
       output += 'Return Nil'+CRLF+CRLF
@@ -4169,12 +4165,11 @@ IF len(alltrim(::cExteditor))=0
    nwidth:=GetFormObject("Form_Tree"):width - (GetFormObject("Form_Tree"):width/3.5)
    nheight:=GetFormObject("Form_Tree"):height-160
 
-          // Migsoft , cvc modified
    DEFINE WINDOW editbcvc obj editbcvc AT 109,80 WIDTH nWidth  HEIGHT nHeight TITLE cNameApp+" "+cdfile ICON 'EDIT' CHILD FONT "Courier New" SIZE 10 backcolor ::asystemcolor ON SIZE AjustaEditor()
 
       @ 30,2 RICHEDITBOX edit_1 WIDTH editbcvc:width-15 HEIGHT editbcvc:height-90 VALUE cTextedit ;
              BACKCOLOR {255,255,235} MAXLENGTH 256000 ON CHANGE {|| ::lsave:=.F.  } ;
-             ON GOTFOCUS {|| ::posxy() }                  // MigSoft
+             ON GOTFOCUS {|| ::posxy() }                  
 
       if len(editbcvc:edit_1:value)>100000
          MsgInfo( 'You should use another program editor', 'ooHG IDE+' )
@@ -4196,7 +4191,7 @@ IF len(alltrim(::cExteditor))=0
 
       DEFINE SPLITBOX
 
-      DEFINE TOOLBAR ToolBar_1x BUTTONSIZE 20,20 FLAT FONT 'Calibri' SIZE 9   // MigSoft
+      DEFINE TOOLBAR ToolBar_1x BUTTONSIZE 20,20 FLAT FONT 'Calibri' SIZE 9   
 
          BUTTON button_2 tooltip 'Exit(Esc)'    picture 'Exit'  ACTION ::saveandexit(cdfile)
          BUTTON button_1 tooltip 'Save(F2)'     Picture 'Save'  ACTION ::savefile(cdfile)
@@ -4662,25 +4657,25 @@ return nil
 *-------------------------
 METHOD lookchanges() CLASS THMI
 *-------------------------
-if editbcvc.edit_1.caretpos<>::_ncaretpos
-   ::posxy()
-endif
-return
+   IF editbcvc.edit_1.CaretPos <> ::nCaretPos
+      ::posxy()
+   ENDIF
+RETURN NIL
 
 
 *-------------------------
 METHOD posxy() CLASS THMI
 *-------------------------
 local i,texto
-local ncaretpos:=editbcvc.edit_1.caretpos, npos:=0,nposx:=0, nposy:=0
+local nCP := editbcvc.edit_1.caretpos, npos := 0, nposx := 0, nposy := 0
    texto:=editbcvc:edit_1:value
    long:=mlcount(texto)
-   ::_ncaretpos:=ncaretpos
+   ::nCaretPos := nCP
    nposy:=0
    for i:=1 to long
        npos:=npos+len(rtrim(( memoline(texto,500,i)   )))
-       if npos > ( ncaretpos -(i-1) )
-          nposx:=len((rtrim((memoline(texto,500,i)))))-(npos-(ncaretpos-(i-1)))+1
+       if npos > ( nCP -(i-1) )
+          nposx:=len((rtrim((memoline(texto,500,i)))))-(npos-(nCP-(i-1)))+1
           nposy:=i
           if nposx=0
              nposy --
@@ -4689,7 +4684,7 @@ local ncaretpos:=editbcvc.edit_1.caretpos, npos:=0,nposx:=0, nposy:=0
           exit
        endif
     next i
-    editbcvc.StatusBar.Item(1) := ' Lin'+PADR(str(nposy,4),4)+' Col'+PADR(str(nposx,4),4)+' Car'+PADR(str(ncaretpos,4),4)  // MigSoft
+    editbcvc.StatusBar.Item(1) := ' Lin'+PADR(str(nposy,4),4)+' Col'+PADR(str(nposx,4),4)+' Car'+PADR(str(nCP,4),4)
 return nil
 
 
@@ -4804,7 +4799,9 @@ METHOD ExitForm() CLASS THMI
       ENDIF
    ENDIF
 
-   IF RTL == NIL
+   IF ::lCloseOnFormExit
+      RELEASE WINDOW ALL      // End App
+   ELSE
       myForm:ReleaseForms()
       cvcControls:Hide()
       Form_main:Hide()
@@ -4812,8 +4809,6 @@ METHOD ExitForm() CLASS THMI
       Form_Tree:button_9:Enabled := .T.
       Form_Tree:button_10:Enabled := .T.
       Form_Tree:button_11:Enabled := .T.
-   ELSE
-      RELEASE WINDOW ALL      // End App
    ENDIF
 RETURN NIL
 
@@ -4826,7 +4821,7 @@ if iswindowdefined(Form_brow)
    return nil
 endif
 curfol:=curdir()
-curdrv:=curdrive()+':\'   //MigSoft
+curdrv:=curdrive()+':\'   
 cdFile:=''
 cdFile:=getFile ( { {'dbf files *.dbf','*.dbf'} }  , 'Open Dbf file',,.F.,.F. )
 if len(cdFile)>0

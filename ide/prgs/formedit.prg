@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.23 2014-07-20 12:34:30 fyurisich Exp $
+ * $Id: formedit.prg,v 1.24 2014-07-22 00:53:19 fyurisich Exp $
  */
 
 /*
@@ -1533,6 +1533,7 @@ METHOD New() CLASS TForm1
             ITEM 'Global Col Align'       ACTION ValGlobalPos( oListaCon, 'COL' )
             ITEM 'Global Width Change'    ACTION ValGlobalPos( oListaCon, 'WID' )
             ITEM 'Global Height Change'   ACTION ValGlobalPos( oListaCon, 'HEI' )
+            ITEM 'Global Vert Gap Change' ACTION GlobalVertGapChg( oListaCon, ::myIde )
             SEPARATOR
             ITEM 'Delete'                 ACTION DeleteControl()
          END MENU
@@ -1585,6 +1586,7 @@ METHOD New() CLASS TForm1
             ITEM 'Global Col Align'       ACTION ValGlobalPos( oListaCon, 'COL' )
             ITEM 'Global Width Change'    ACTION ValGlobalPos( oListaCon, 'WID' )
             ITEM 'Global Height Change'   ACTION ValGlobalPos( oListaCon, 'HEI' )
+            ITEM 'Global Vert Gap Change' ACTION GlobalVertGapChg( oListaCon, ::myIde )
             SEPARATOR
             ITEM 'Delete'                 ACTION DeleteControl()
          END MENU
@@ -1615,6 +1617,53 @@ STATIC FUNCTION Edit_Properties( myIde, aParams )
    IF aParams[1] > 0
       Dibuja( oListaCon:Cell( aParams[1], 6 ) )
       Properties_Click( myIde )
+   ENDIF
+RETURN NIL
+
+*------------------------------------------------------------------------------*
+STATIC FUNCTION GlobalVertGapChg( oListaCon, myIde )
+*------------------------------------------------------------------------------*
+LOCAL aItemsSel, aInput, aControls, nActRow, i, nFila, cName, oCtrl, nNewVertPos, nActualCtrlHeight
+
+   aControls := {}
+   aItemsSel := oListaCon:Value
+
+   IF Len( aItemsSel ) > 1
+      CursorWait()
+
+      oForm := GetFormObject( 'Form_1' )
+      oForm:SetRedraw( .F. )
+      oListaCon:SetRedraw( .F. )
+      FOR i := 1 TO Len( aItemsSel )
+         nFila := aItemsSel[i]
+         cName := oListaCon:Cell( nFila, 6 )
+         oCtrl := GetControlObject( cName, "Form_1" )
+         aAdd( aControls, { cName, oCtrl:Row, cName } )
+      NEXT
+      aSort( aControls, , , { |x, y| x[2] < y[2] } )
+      oCtrl       := GetControlObject( aControls[1, 1], "Form_1" )       //RECUPERO LA FILA DEL PRIMER CONTROL EN BASE AL NOMBRE
+      nNewVertPos := oCtrl:Row
+      nNewColPos  := oCtrl:Col
+      aInput      := myInputWindow( 'Global Vert Gap Change', { 'New Gap Value', 'New Col Value' }, { myide:nStdVertGap, nNewColPos }, { '9999', '9999' } )
+
+      FOR i := 1 TO Len( aControls )
+         cName             := aControls[i, 1]
+         oCtrl             := GetControlObject( cName, "Form_1" )
+         nActualCtrlHeight := oCtrl:Height
+         oCtrl:Row         := nNewVertPos
+         IF aInput[2] # 0
+            oCtrl:Col := aInput[2]
+         ENDIF
+         ProcesaControl( oCtrl )
+         nNewVertPos := nNewVertPos + aInput[1] + nActualCtrlHeight
+      NEXT
+
+      oListaCon:SetRedraw( .T. )
+      oListaCon:Redraw()
+      oForm:SetRedraw( .T. )
+      oForm:Redraw()
+
+      CursorArrow()
    ENDIF
 RETURN NIL
 
@@ -1764,6 +1813,7 @@ LOCAL nFWidth, nFHeight
             ITEM 'Global Col Align'       ACTION ValGlobalPos( oListaCon, 'COL' )
             ITEM 'Global Width Change'    ACTION ValGlobalPos( oListaCon, 'WID' )
             ITEM 'Global Height Change'   ACTION ValGlobalPos( oListaCon, 'HEI' )
+            ITEM 'Global Vert Gap Change' ACTION GlobalVertGapChg( oListaCon, ::myIde )
             SEPARATOR
             ITEM 'Delete'                 ACTION DeleteControl()
          END MENU
@@ -1816,6 +1866,7 @@ LOCAL nFWidth, nFHeight
             ITEM 'Global Col Align'       ACTION ValGlobalPos( oListaCon, 'COL' )
             ITEM 'Global Width Change'    ACTION ValGlobalPos( oListaCon, 'WID' )
             ITEM 'Global Height Change'   ACTION ValGlobalPos( oListaCon, 'HEI' )
+            ITEM 'Global Vert Gap Change' ACTION GlobalVertGapChg( oListaCon, ::myIde )
             SEPARATOR
             ITEM 'Delete'                 ACTION DeleteControl()
          END MENU
@@ -4946,7 +4997,7 @@ LOCAL i, ActivePage, z, k, k1, oControl, aControls, cvc, nDesRow, nDesCol, oCN
       FOR i := 1 TO Len( aControls )
          oControl := aControls[i]
          IF oControl:Type == 'TAB'
-            nDesRow := oControl:Row   // cordenada del tab para desplazamiento del mouse
+            nDesRow := oControl:Row   // coordenada del tab para desplazamiento del mouse
             nDesCol := oControl:Col
             IF ( _OOHG_MouseRow > nDesRow ) .AND. (_OOHG_MouseRow < nDesRow + oControl:Height ) .AND. ;
                ( _OOHG_MouseCol > nDesCol ) .AND. ( _OOHG_MouseCol < nDesCol + oControl:Width )
@@ -5041,8 +5092,7 @@ LOCAL i, pagecount, z, l, swpagename, pagename, swnoestab
          myform:atabpage[z,2]:= pagecount
          form_1:&tabname:addcontrol(Controlname,pagecount,row,col)
          if myform:abackcolor[z] == 'NIL'
-            alsc := myIde:asystemcoloraux
-            Form_1:&ControlName:BackColor:=alsc
+            Form_1:&ControlName:BackColor := myIde:aSystemColorAux
          ENDIF
       ENDIF
    ENDIF

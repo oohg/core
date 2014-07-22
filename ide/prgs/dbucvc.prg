@@ -1,5 +1,5 @@
 /*
- * $Id: dbucvc.prg,v 1.4 2014-06-25 20:11:58 fyurisich Exp $
+ * $Id: dbucvc.prg,v 1.5 2014-07-22 00:53:19 fyurisich Exp $
  */
 
 #include "oohg.ch"
@@ -7,11 +7,14 @@
 DECLARE WINDOW _dbubrowse
 DECLARE WINDOW _dbu
 
+STATIC _DBUdbfopened
+STATIC _DBUfname
+
 Function DatabaseView1( myIde )
 LOCAL lDeleted
 
-   PUBLIC _DBUdbfopened := .f.
-   PUBLIC _DBUfname := ""
+   _DBUdbfopened := .f.
+   _DBUfname := ""
 
    SET INTERACTIVECLOSE ON
    lDeleted := SET( _SET_DELETED, .F. )              

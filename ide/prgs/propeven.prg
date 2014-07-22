@@ -1,5 +1,5 @@
 /*
- * $Id: propeven.prg,v 1.10 2014-07-17 02:59:37 fyurisich Exp $
+ * $Id: propeven.prg,v 1.11 2014-07-22 00:53:19 fyurisich Exp $
  */
 
 #include 'oohg.ch'
@@ -689,7 +689,7 @@ LOCAL i, cname, j, Title, aLabels, aInitValues, aFormats, aResults, ctipo, jh, n
                         aLabels     := { 'Value',     'Picture',    'ToolTip',    'HelpId',    'Name',    'Enabled',    'Visible',    "NoTabStop",    'Obj' }
                         aInitValues := { :avaluel[j], :apicture[j], :atooltip[j], :ahelpid[j], :aname[j], :aenabled[j], :avisible[j], :anotabstop[j], :acobj[j] }
                         aFormats    := { .F.,         31,           120,          '999',       30,        .F.,          .F.,          .F.,            31 }
-                         aResults    := myInputWindow( Title, aLabels, aInitValues, aFormats )
+                        aResults    := myInputWindow( Title, aLabels, aInitValues, aFormats )
                         IF aresults[1] == NIL
                            RETURN NIL
                         ENDIF
@@ -790,6 +790,7 @@ LOCAL i, cname, j, Title, aLabels, aInitValues, aFormats, aResults, ctipo, jh, n
                         Title:=cnamew+" properties"
                         aLabels     := { 'File',    'Autoplay',    'Center ',   'Transparent',    'HelpId',    'ToolTip',    'Name',    'Enabled',    'Visible',    'Obj' }
                         aInitValues := { :afile[j], :aautoplay[j], :acenter[j], :atransparent[j], :ahelpid[j], :atooltip[j], :aname[j], :aenabled[j], :avisible[j], :acobj[j] }
+                        aFormats    := { 30,        .F.,           .F.,         .F.,              '999',       120,          30,        .F.,          .F.,          31 }
                         aResults    := myInputWindow( Title, aLabels, aInitValues, aFormats )
                         IF aresults[1] == NIL
                           RETURN NIL
@@ -889,7 +890,7 @@ LOCAL i, cname, j, Title, aLabels, aInitValues, aFormats, aResults, ctipo, jh, n
          ENDIF
       ENDIF
 
-      :lFsave:=.F.
+      :lFsave := .F.
       RefreshControlInspector()
    END
 RETURN NIL
@@ -1420,7 +1421,9 @@ LOCAL ki
       ocontrol:=getformobject("Form_1"):acontrols[i]
       cname:=lower(ocontrol:name)
       ki:= ascan( :acontrolw, { |c| lower( c ) ==  cname  } )
+      SET INTERACTIVECLOSE ON
       LOAD WINDOW tabprop
+      ON KEY ESCAPE OF tabprop ACTION tabprop.Release
       tabprop.title:='Tab properties '+:aname[ki]
       tabprop.text_101.value:=:acaption[ki]
       tabprop.text_1.value:=:avalue[ki]
@@ -1436,6 +1439,7 @@ LOCAL ki
       tabprop.text_3.value:=:acobj[ki]
       CENTER WINDOW tabProp
       ACTIVATE WINDOW TabProp
+      SET INTERACTIVECLOSE OFF
    END
 RETURN NIL
 
