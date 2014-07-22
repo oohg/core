@@ -1,5 +1,5 @@
 /*
- * $Id: mgide.prg,v 1.13 2014-07-22 20:10:21 fyurisich Exp $
+ * $Id: mgide.prg,v 1.14 2014-07-22 20:20:23 fyurisich Exp $
  */
 
 #include "oohg.ch"
@@ -1070,7 +1070,6 @@ RETURN NIL
 METHOD SaveINI( cFile ) CLASS THMI
 *------------------------------------------------------------------------------*
 
-AutoMsgBox( cFile )
    BEGIN INI FILE cFile
       //****************** PROJECT
          SET SECTION 'PROJECT'     ENTRY "PROJFOLDER"    TO ::cProjFolder
