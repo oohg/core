@@ -1,11 +1,33 @@
 /*
- * $Id: ChangeLog,v 1.1340 2014-07-22 20:37:17 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1341 2014-07-24 23:45:24 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-07-24 20:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_browse.prg
+     - Constants for refresh type.
+     + Parameter nRow to method Update(). Defaults to 1.
+     * Method Update() can start the grid's update from any of it's rows.
+       When nRow is 1, the update starts from the current record and
+       proceeds forward. When nRow is equal to ::CountPerPage, the
+       update starts from the current record and proceeds backward.
+       For other values, the update starts from the current record and
+       procceds backward until the first row, then returns to the current
+       record and proceeds forward until the last row.
+     % Method EditItem_B do not need to worry about the dbf's record
+       pointer since method EditAllCells preserves it.
+     * Method EditAllCells behaviour to honor FORCEREFRESH and NOREFRESH
+       clauses when the dbf has an active index.
+     % Method EditAllCells.
+     + Comments.
+   * source/h_xbrowse.prg
+     - Constants for refresh type.
+   * include/i_browse.ch
+     + Constants for refresh type.
 
 2014-07-22 17:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    + ide/.cvsignore

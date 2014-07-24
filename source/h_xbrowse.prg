@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.114 2014-07-20 12:46:32 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.115 2014-07-24 23:45:25 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -52,10 +52,6 @@
 #include "oohg.ch"
 #include "hbclass.ch"
 #include "i_windefs.ch"
-
-#define REFRESH_FORCE    0
-#define REFRESH_NO       1
-#define REFRESH_DEFAULT -1
 
 STATIC _OOHG_XBrowseFixedBlocks := .T.
 STATIC _OOHG_XBrowseFixedControls := .F.

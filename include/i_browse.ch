@@ -1,5 +1,5 @@
 /*
- * $Id: i_browse.ch,v 1.49 2014-07-09 02:25:23 fyurisich Exp $
+ * $Id: i_browse.ch,v 1.50 2014-07-24 23:45:24 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -56,6 +56,10 @@
  * whether to permit this exception to apply to your modifications.
  * If you do not wish that, delete this exception notice.
  */
+
+#define REFRESH_FORCE           0
+#define REFRESH_NO              1
+#define REFRESH_DEFAULT        -1
 
 #define BROWSE_JTFY_LEFT        0
 #define BROWSE_JTFY_RIGHT       1

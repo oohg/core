@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.141 2014-07-21 02:20:31 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.142 2014-07-24 23:45:25 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -94,10 +94,6 @@
 #include "oohg.ch"
 #include "hbclass.ch"
 #include "i_windefs.ch"
-
-#define REFRESH_FORCE    0
-#define REFRESH_NO       1
-#define REFRESH_DEFAULT -1
 
 #define GO_TOP    -1
 #define GO_BOTTOM  1
@@ -335,9 +331,9 @@ Local nWidth2, nCol2, oScroll, z
 Return Self
 
 *-----------------------------------------------------------------------------*
-METHOD UpDate() CLASS TOBrowse
+METHOD UpDate( nRow ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local PageLength, aTemp, _BrowseRecMap := {}, x
+Local PageLength, aTemp, _BrowseRecMap, x, nRecNo
 Local lColor, aFields, cWorkArea, hWnd, nWidth
 
    cWorkArea := ::WorkArea
@@ -366,8 +362,6 @@ Local lColor, aFields, cWorkArea, hWnd, nWidth
 
    lColor := ! ( Empty( ::DynamicForeColor ) .AND. Empty( ::DynamicBackColor ) )
 
-   // update rows
-   x := 0
    aTemp := ARRAY( nWidth )
 
    If ::Visible
@@ -378,21 +372,48 @@ Local lColor, aFields, cWorkArea, hWnd, nWidth
    ::GridForeColor := nil
    ::GridBackColor := nil
 
-   Do While x < PageLength .AND. ! ::Eof()
-      x++
-
-      AEVAL( aFields, { |b,i| aTemp[ i ] := EVAL( b ) } )
-
-      If lColor
-         ( cWorkArea )->( ::SetItemColor( x,,, aTemp ) )
+   If ::Eof()
+      _BrowseRecMap := {}
+   Else
+      If ! HB_IsNumeric( nRow ) .OR. nRow < 1 .OR. nRow > PageLength
+         nRow := 1
       EndIf
 
-      AddListViewItems( hWnd, aTemp )
-
-      aadd( _BrowseRecMap, ( cWorkArea )->( RecNo() ) )
-
+      _BrowseRecMap := ARRAY( nRow )
+      nRecNo := ( cWorkArea )->( RecNo() )
+      x := nRow
+      Do While x > 0
+         _BrowseRecMap[ x ] := ( cWorkArea )->( RecNo() )
+         x --
+         ::DbSkip( -1 )
+         If ::Bof()
+            Exit
+         EndIf
+      EndDo
+      Do While x > 0
+         _OOHG_DeleteArrayItem( _BrowseRecMap, x )
+         x --
+      EndDo
+      ::DbGoTo( nRecNo )
       ::DbSkip()
-   EndDo
+      Do While Len( _BrowseRecMap ) < PageLength .AND. ! ::Eof()
+         AADD( _BrowseRecMap, ( cWorkArea )->( RecNo() ) )
+         ::DbSkip()
+      EndDo
+      For x := 1 To Len( _BrowseRecMap )
+         ::DbGoTo( _BrowseRecMap[ x ] )
+
+         AEVAL( aFields, { |b,i| aTemp[ i ] := EVAL( b ) } )
+
+         If lColor
+            ( cWorkArea )->( ::SetItemColor( x, , , aTemp ) )
+         EndIf
+
+         AddListViewItems( hWnd, aTemp )
+      Next x
+      // Repositions the file as if _BrowseRecMap was builded using successive ::DbSkip() calls
+      ::DbSkip()
+   EndIf
 
    If ::Visible
       ::SetRedraw( .T. )
@@ -912,8 +933,6 @@ Local nOldRecNo, nItem, cWorkArea, lRet, nNewRec
       Return .F.
    EndIf
 
-   nOldRecNo := ( cWorkArea )->( RecNo() )
-
    IF ! lAppend
       ::DbGoTo( ::aRecMap[ nItem ] )
    EndIf
@@ -927,15 +946,9 @@ Local nOldRecNo, nItem, cWorkArea, lRet, nNewRec
       EndIf
 
       lRet := ::EditAllCells( , , lAppend, lOneRow, ::RefreshType == REFRESH_DEFAULT .OR. ::RefreshType == REFRESH_FORCE )
-
-      If lRet .AND. lAppend
-         nNewRec := ::Value
-         ::DbGoTo( nOldRecNo )
-         ::Value := nNewRec
-      Else
-         ::DbGoTo( nOldRecNo )
-      EndIf
    Else
+      nOldRecNo := ( cWorkArea )->( RecNo() )
+
       lRet := ::Super:EditItem_B( lAppend, .T. )
 
       If lRet .AND. lAppend
@@ -996,7 +1009,7 @@ Return lRet
 *-----------------------------------------------------------------------------*
 METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lRefresh ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local lRet, lRowEdited, lSomethingEdited, _RecNo, lRowAppended, nNewRec
+Local lRet, lRowEdited, lSomethingEdited, nRecNo, lRowAppended, nNewRec, nNextRec
 
    ASSIGN lAppend  VALUE lAppend  TYPE "L" DEFAULT .F.
    ASSIGN nRow     VALUE nRow     TYPE "N" DEFAULT ::CurrentRow
@@ -1007,21 +1020,34 @@ Local lRet, lRowEdited, lSomethingEdited, _RecNo, lRowAppended, nNewRec
    If nRow < 1 .OR. nRow > ::ItemCount() .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
       // Cell out of range
       Return .F.
+   ElseIf lAppend .AND. ! ::AllowAppend
+      Return .F.
    EndIf
 
+   // TODO: agregar un evento para validar el registro, y no permitir la edición si retorna .f.
+
    lSomethingEdited := .F.
-   lRowAppended := .F.
 
    Do While .t.
       lRet := .T.
       lRowEdited := .F.
+      lRowAppended := .F.
 
       Do While nCol <= Len( ::aHeaders ) .AND. lRet .AND. Select( ::WorkArea ) # 0
-         _Recno := ( ::WorkArea )->( RecNo() )
+         nRecNo := ( ::WorkArea )->( RecNo() )
          IF lAppend
             ::DbGoTo( 0 )
          Else
             ::DbGoTo( ::aRecMap[ nRow ] )
+            If nRow == ::ItemCount
+               ::DbSkip()
+               IF ::Eof()
+                  nNextRec := 0
+               Else
+                  nNextRec := ( ::WorkArea )->( RecNo() )
+               EndIf
+               ::DbGoTo( ::aRecMap[ nRow ] )
+            EndIf
          EndIf
 
          If ::IsColumnReadOnly( nCol )
@@ -1031,7 +1057,7 @@ Local lRet, lRowEdited, lSomethingEdited, _RecNo, lRowAppended, nNewRec
          ElseIf ASCAN( ::aHiddenCols, nCol ) > 0
            // Is a hidden column, skip
          Else
-            ::DbGoTo( _Recno )
+            ::DbGoTo( nRecNo )
 
             lRet := ::EditCell( nRow, nCol, , , , , lAppend, , .F., .F. )
 
@@ -1040,19 +1066,9 @@ Local lRet, lRowEdited, lSomethingEdited, _RecNo, lRowAppended, nNewRec
                lSomethingEdited := .T.
                If lAppend
                   lRowAppended := .T.
-               EndIf
-            ElseIf lAppend
-               IF lRefresh
-                  ::GoBottom()
-               Else
-                  If Len( ::aRecMap ) > 0
-                     ::FastUpdate( -1, Len( ::aRecMap ) )
-                  EndIf
-                  ::DeleteItem( ::ItemCount )
+                  lAppend := .F.
                EndIf
             EndIf
-
-            lAppend := .F.
          EndIf
 
          nCol++
@@ -1064,32 +1080,44 @@ Local lRet, lRowEdited, lSomethingEdited, _RecNo, lRowAppended, nNewRec
       EndIf
 
       // See what to do next
-      If ! lRet .or. ! ::FullMove .or. lOneRow
+      If ! lRet
+         // Stop if the last column was not edited
          If lRowAppended
-            If lRefresh
-               ::Value := aTail( ::aRecMap )
-            Else
-               ::BrowseOnChange()
-            EndIf
-         ElseIf lRowEdited .AND. lRefresh
+            // A new row was added and partially edited: set as new value and refresh the control
+            ::SetValue( aTail( ::aRecMap ), nRow )
+            ::Refresh()
+         ElseIf lAppend
+            // The user aborted the append of a new row in the first column: refresh and set last record as new value
+            ::GoBottom()
+         ElseIf lSomethingEdited
+            // The user aborted the edition of an existing row: refresh the control without changing it's value
             ::Refresh()
          EndIf
-         // Stop if the last column was not edited
-         // or it's not fullmove editing
-         // or caller wants to edit only one row
+         // TODO: agregar evento AFTEREDIT, parámetros: ultimo registro agregado o editado
+         Exit
+      ElseIf lOneRow .OR. ! ::FullMove .OR. ( lRowAppended .AND. ! ::AllowAppend )
+         // Stop if it's not fullmove editing or
+         // if caller wants to edit only one row or
+         // if, after appending a new row, appends are not allowed anymore
+         If lRowAppended
+            // A new row was added and fully edited: set as new value and refresh the control
+            ::SetValue( aTail( ::aRecMap ), nRow )
+            ::Refresh()
+         ElseIf lRowEdited
+            // An existing row was fully edited: refresh the control without changing it's value
+            ::Refresh()
+         EndIf
+         // TODO: agregar evento AFTEREDIT, parámetros: ultimo registro agregado o editado
          Exit
       ElseIf lRowAppended
-         If ! ::AllowAppend
-            ::Value := aTail( ::aRecMap )
-            // Stop
-            Exit
-         EndIf
-         // Add new row
+         // A row was appended: refresh and/or add a new one
          If lRefresh
             ::GoBottom( .T. )
-         ElseIf ::ItemCount == ::CountPerPage
-            ::DeleteItem( 1 )
-            _OOHG_DeleteArrayItem( ::aRecMap, 1 )
+         Else
+            Do While ::ItemCount >= ::CountPerPage
+               ::DeleteItem( 1 )
+               _OOHG_DeleteArrayItem( ::aRecMap, 1 )
+            EndDo
          EndIf
          ::InsertBlank( ::ItemCount + 1 )
          nRow := ::CurrentRow := ::ItemCount
@@ -1097,21 +1125,60 @@ Local lRet, lRowEdited, lSomethingEdited, _RecNo, lRowAppended, nNewRec
          ::lAppendMode := .T.
       ElseIf nRow < ::ItemCount()
          // Edit next row
-         If lRefresh
-            _Recno := ( ::WorkArea )->( RecNo() )
+         If lRowEdited .AND. lRefresh
+            nRecNo := ( ::WorkArea )->( RecNo() )
             nNewRec := ::aRecMap[ nRow + 1 ]
             ::DbGoTo( nNewRec )
-            ::DbSkip( - nRow )
-            ::Update()
+            ::Update( nRow + 1 )
             ::ScrollUpdate()
-            ::DbGoTo( _RecNo )
+            ::DbGoTo( nRecNo )
             nRow := aScan( ::aRecMap, nNewRec )
-            If nRow > 0
-               ListView_SetCursel ( ::hWnd, nRow )
-               ::BrowseOnChange()
-            ElseIf ::AllowAppend
+            ListView_SetCursel ( ::hWnd, nRow )
+         Else
+            nRow ++
+            ::FastUpdate( 1, nRow )
+         EndIf
+         ::BrowseOnChange()
+      ElseIf nRow < ::CountPerPage
+         // Next visible row is blank, append new record
+         If lRefresh
+            ::GoBottom( .T. )
+         EndIf
+         ::InsertBlank( ::ItemCount + 1 )
+         nRow := ::CurrentRow := ::ItemCount
+         lAppend := .T.
+         ::lAppendMode := .T.
+      Else
+         // The last visible row was fully edited
+         If nNextRec # 0
+            // Find next record
+            nRecNo := ( ::WorkArea )->( RecNo() )
+            ::DbGoTo( nNextRec )
+            ::DbSkip()
+            ::DbSkip(-1)
+            If ( ::WorkArea )->( RecNo() ) # nNextRec
+               ::DbGoTo( nNextRec )
+               ::DbSkip()
+               If ::Eof()
+                  nNextRec := 0
+               Else
+                  nNextRec := ( ::WorkArea )->( RecNo() )
+               EndIf
+            EndIf
+            ::DbGoTo( nRecNo )
+         EndIf
+         If nNextRec == 0
+            // No more records
+            If ::AllowAppend
                // Add new row
-               ::GoBottom( .T. )
+               If lRefresh
+                  ::GoBottom( .T. )
+               Else
+                  Do While ::ItemCount >= ::CountPerPage
+                     ::DeleteItem( 1 )
+                     _OOHG_DeleteArrayItem( ::aRecMap, 1 )
+                  EndDo
+               EndIf
                ::InsertBlank( ::ItemCount + 1 )
                nRow := ::CurrentRow := ::ItemCount
                lAppend := .T.
@@ -1119,42 +1186,26 @@ Local lRet, lRowEdited, lSomethingEdited, _RecNo, lRowAppended, nNewRec
             Else
                // Stop
                Exit
-            Endif
+            EndIf
          Else
-            nRow ++
-            ::FastUpdate( 1, nRow )
+            // Edit next record
+            nRecNo := ( ::WorkArea )->( RecNo() )
+            ::DbGoTo( nNextRec )
+            If lRefresh
+               ::Update( nRow )
+               ::ScrollUpdate()
+            Else
+               Do While ::ItemCount >= ::CountPerPage
+                  ::DeleteItem( 1 )
+                  _OOHG_DeleteArrayItem( ::aRecMap, 1 )
+               EndDo
+               aAdd( ::aRecMap, nNextRec )
+               ::RefreshRow( nRow )
+               ::CurrentRow := nRow
+            EndIf
+            ::DbGoTo( nRecNo )
             ::BrowseOnChange()
          EndIf
-      Else
-         // The last row was fully edited.
-         If lRefresh
-            _RecNo := ::aRecMap[ nRow ]
-            ::Refresh()
-            nRow := aScan( ::aRecMap, _RecNo )
-            If nRow == 0
-               // The last edited row is not in the map
-               Exit
-            EndIf
-         EndIf
-         If nRow < Len( ::aRecMap )
-            // Continue editing in next row
-            nRow ++
-         ElseIf ::AllowAppend
-            // Add new row because last row was fully edited
-            If lRefresh
-               ::GoBottom( .T. )
-            ElseIf ::ItemCount == ::CountPerPage
-               ::DeleteItem( 1 )
-               _OOHG_DeleteArrayItem( ::aRecMap, 1 )
-            EndIf
-            ::InsertBlank( ::ItemCount + 1 )
-            nRow := ::CurrentRow := ::ItemCount
-            lAppend := .T.
-            ::lAppendMode := .T.
-         Else
-            // Stop because last row was edited and append is not allowed
-            Exit
-         Endif
       EndIf
       nCol := 1
    EndDo
@@ -1296,9 +1347,9 @@ Local cWorkArea, hWnd
       Return nil
    EndIf
 
-   v := ::Value
+   v := ::Value         // This is a record number
 
-   s := LISTVIEW_GETFIRSTITEM( hWnd )
+   s := LISTVIEW_GETFIRSTITEM( hWnd )          // This is a row
 
    _RecNo := ( cWorkArea )->( RecNo() )
 
