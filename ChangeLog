@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.1342 2014-07-26 19:30:44 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1343 2014-07-26 20:18:16 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-07-26 17:17 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_form.prg
+     ! Window w already defined RTE when loading a .fmg file containing
+       DEFINE WINDOW w instead of DEFINE WINDOW TEMPLATE.
 
 2014-07-26 16:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_form.prg
