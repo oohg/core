@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.84 2014-07-07 02:08:23 fyurisich Exp $
+ * $Id: classes.txt,v 1.85 2014-07-26 21:58:42 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -808,10 +808,15 @@ CLASS TFORMMDICLIENT FROM TFORMINTERNAL
    DATA NWIDTH                    INIT 0
    DATA TYPE                      INIT "D"                   READONLY
 
+   METHOD ACTIVECHILD
+   METHOD CASCADE
    METHOD DEFINE
    METHOD DEFWINDOWPROC
    METHOD EVENTS_SIZE
+   METHOD ICONARRANGE
    METHOD RELEASE
+   METHOD TILEHORIZONTAL
+   METHOD TILEVERTICAL
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -1482,6 +1487,7 @@ CLASS TMENUITEM FROM TCONTROL
    METHOD DEFINEITEM
    METHOD DEFINEPOPUP
    METHOD DEFINESEPARATOR
+   METHOD DOEVENT
    METHOD ENABLED                 SETGET
    METHOD ENDPOPUP
    METHOD HILITED                 SETGET
