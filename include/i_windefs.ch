@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.59 2014-07-09 02:25:23 fyurisich Exp $
+ * $Id: i_windefs.ch,v 1.60 2014-07-26 19:30:44 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -121,6 +121,11 @@ WINDOWS MESSAGES
 #define WM_MBUTTONUP                  520   // 0x0208
 #define WM_MBUTTONDBLCLK              521   // 0x0209
 #define WM_MOUSEWHEEL                 522   // 0x020a
+#define WM_MDIACTIVATE                546
+#define WM_MDITILE                    550
+#define WM_MDICASCADE                 551
+#define WM_MDIICONARRANGE             552
+#define WM_MDIGETACTIVE               553
 #define WM_MOUSEHOVER                 673   // 0x02a1
 #define WM_SIZING                     532
 #define WM_CAPTURECHANGED             533

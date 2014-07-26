@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.55 2014-07-08 03:02:41 fyurisich Exp $
+ * $Id: h_form.prg,v 1.56 2014-07-26 19:30:45 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -503,8 +503,6 @@ LOCAL nPos
       ::nOldh := ::ClientHeight
       ::nWindowState := ::GetWindowState()   ///obtiene el estado inicial de la ventana
       _OOHG_DeleteArrayItem( _OOHG_ActiveForm, nPos )
-   Else
-      // TODO: Window structure already closed
    EndIf
   _PopEventInfo()
   ::lDefined := .T.
@@ -1375,7 +1373,7 @@ Local oCtrl, lMinim, nOffset,nDesp
    case nMsg == WM_ACTIVATE
    ***********************************************************************
 
-      If LoWord(wparam) == 0
+      If LoWord(wparam) == 0      // WA_INACTIVE
 
          aeval( ::aHotKeys, { |a| ReleaseHotKey( ::hWnd, a[ HOTKEY_ID ] ) } )
 
@@ -2239,9 +2237,14 @@ CLASS TFormMDIClient FROM TFormInternal
    DATA nHeight        INIT 0
 
    METHOD Define
-   METHOD DefWindowProc(nMsg,wParam,lParam)       BLOCK { |Self,nMsg,wParam,lParam| DefMDIChildProc( ::hWnd, nMsg, wParam, lParam ) }
+   METHOD DefWindowProc(nMsg,wParam,lParam) BLOCK { |Self,nMsg,wParam,lParam| DefMDIChildProc( ::hWnd, nMsg, wParam, lParam ) }
    METHOD Events_Size
-   METHOD Release      BLOCK { |Self| _OOHG_RemoveMdi( ::hWnd ) , ::Super:Release() }
+   METHOD Release                           BLOCK { |Self| _OOHG_RemoveMdi( ::hWnd ) , ::Super:Release() }
+   METHOD Cascade
+   METHOD TileHorizontal                    BLOCK { |Self| SendMessage( ::hWnd, WM_MDITILE, 1, 0 ) }
+   METHOD TileVertical                      BLOCK { |Self| SendMessage( ::hWnd, WM_MDITILE, 0, 0 ) }
+   METHOD IconArrange                       BLOCK { |Self| SendMessage( ::hWnd, WM_MDIICONARRANGE, 0, 0 ) }
+   METHOD ActiveChild
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -2314,6 +2317,29 @@ LOCAL aClientRect, nRow, nHeight, I, nTall
    ::DoEvent( ::OnSize, "WINDOW_SIZE" )
 RETURN NIL
 
+METHOD Cascade( lSkipDisabled, lUseZOrder ) CLASS TFormMDIClient
+  LOCAL nFlags := 0
+
+  ASSIGN lSkipDisabled VALUE lSkipDisabled TYPE "L" DEFAULT .T.
+  ASSIGN lUseZOrder    VALUE lUseZOrder    TYPE "L" DEFAULT .T.
+
+  IF lSkipDisabled
+     nFlags += 2
+  ENDIF
+  IF lUseZOrder
+     nFlags += 4
+  ENDIF
+RETURN SendMessage( ::hWnd, WM_MDICASCADE, nFlags, 0 )
+
+METHOD ActiveChild() CLASS TFormMDIClient
+   LOCAL nHandle, oWin
+
+   nHandle := SendMessage( ::hWnd, WM_MDIGETACTIVE, 0, 0 )
+   IF ValidHandler( nHandle )
+      oWin := GetFormObjectByHandle( nHandle )
+   ENDIF
+RETURN oWin
+
 
 
 
@@ -2324,7 +2350,8 @@ CLASS TFormMDIChild FROM TFormInternal
    DATA Type           INIT "L" READONLY
 
    METHOD Define
-   METHOD DefWindowProc(nMsg,wParam,lParam)       BLOCK { |Self,nMsg,wParam,lParam| DefMDIChildProc( ::hWnd, nMsg, wParam, lParam ) }
+   METHOD DefWindowProc(nMsg,wParam,lParam) BLOCK { |Self,nMsg,wParam,lParam| DefMDIChildProc( ::hWnd, nMsg, wParam, lParam ) }
+   METHOD IsActive                          BLOCK { |Self| ::Parent:ActiveChild:hWnd == ::hWnd }
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -2367,6 +2394,7 @@ Local nStyle := 0, nStyleEx := 0
               3, lRtl,,, clientarea, restoreprocedure, RClickProcedure, MClickProcedure, DblClickProcedure, ;
               RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, minheight, maxheight, MoveProcedure, fontcolor )
 
+   ::ProcessInitProcedure()
 Return Self
 
 

@@ -1,11 +1,20 @@
 /*
- * $Id: ChangeLog,v 1.1341 2014-07-24 23:45:24 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1342 2014-07-26 19:30:44 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-07-26 16:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_form.prg
+     - Unneeded code.
+     * Comments.
+     + Methods Cascade, TileHorizontal, TileVertical, IconArrange and
+       ActiveChild to class TFormMDIClient.
+     + Method IsActive to class TFormMDIChild.
+     + ON INIT event procedure to class TFormMDIChild.
 
 2014-07-24 20:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_browse.prg
