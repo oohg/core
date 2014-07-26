@@ -18,6 +18,10 @@
 		<param name="ImageNumber" value="11">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Changelog">
+		<param name="Local" value="Changelog.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Controls">
 		<param name="ImageNumber" value="1">
 		</OBJECT>
