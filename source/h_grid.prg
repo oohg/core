@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.259 2014-07-17 21:24:51 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.260 2014-07-26 23:30:21 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -4303,15 +4303,15 @@ Return HB_IsObject( oEditControl ) .AND. oEditControl:lLikeExcel
 *-----------------------------------------------------------------------------*
 METHOD Events_Enter() CLASS TGridByCell
 *-----------------------------------------------------------------------------*
-   ::cText := ""
-   If ::AllowEdit
-      If ! ::lNestedEdit
-         ::lNestedEdit := .T.
+   If ! ::lNestedEdit
+      ::lNestedEdit := .T.
+      ::cText := ""
+      If ::AllowEdit
          ::EditGrid()
-         ::lNestedEdit := .F.
+      Else
+         ::DoEvent( ::OnEnter, "ENTER" )
       EndIf
-   Else
-      ::DoEvent( ::OnEnter, "ENTER" )
+      ::lNestedEdit := .F.
    EndIf
 Return Nil
 

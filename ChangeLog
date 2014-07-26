@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.1345 2014-07-26 22:30:40 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1346 2014-07-26 23:30:21 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-07-26 20:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     * Method Events_Enter will now prevent recursive calls to ON ENTER
+       event procedure.
 
 2014-07-26 19:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    + manual/Changelog.htm
