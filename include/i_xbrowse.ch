@@ -1,5 +1,5 @@
 /*
- * $Id: i_xbrowse.ch,v 1.34 2014-07-09 02:25:23 fyurisich Exp $
+ * $Id: i_xbrowse.ch,v 1.35 2014-08-03 19:37:51 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -148,22 +148,25 @@
       [ <noshowempty: NOSHOWEMPTYROW> ] ;
       [ <upcol: UPDATECOLORS> ] ;
       [ <dummy14: ONHEADRCLICK, ON HEADRCLICK> <bheadrclick> ] ;
+      [ <nomodal: NOMODALEDIT> ] ;
+      [ <bycell: NAVIGATEBYCELL> ] ;
+      [ <extdbl: EXTDBLCLICK> ] ;
 	=> ;
-      [ <obj> := ] _OOHG_SelectSubClass( TXBrowse(), [ <subclass>() ] ): ;
-            Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, ;
-            <widths>, <Fields>, <(workarea)>, <value>, <.delete.>, <.lock.>, ;
-            <.novscroll.>, <.append.>, <{onappend}>, <replacefields>, ;
-            <fontname>, <fontsize>, <tooltip>, <{change}>, <{dblclick}>, ;
-            <aHeadClick>, <{gotfocus}>, <{lostfocus}>, <.style.>, <aImage>, ;
-            <aJust>, <.break.>, <helpid>, <.bold.>, <.italic.>, <.underline.>, ;
-            <.strikeout.>, <.edit.>, <backcolor>, <fontcolor>, ;
-            <dynamicbackcolor>, <dynamicforecolor>, <Picture>, <.rtl.>, ;
-            <.inplace.>, <editcontrols>, <aReadOnly>, <aValidFields>, ;
-            <aValidMessages>, <{editcell}>, <aWhenFields>, <.reccount.>, ;
-            <columninfo>, ! <.noshowheaders.>, <{enter}>, <.disabled.>, ;
-            <.notabstop.>, <.invisible.>, <.descending.>, <{bWhenDel}>, ;
-            <DelMsg>, <{onDelete}>, <aHeaderImages>, <aImgAlign>, ;
-            <.fullmove.>, <aSelectedColors>, <aEditKeys>, ;
+      [ <obj> := ] _OOHG_SelectSubClass( IIF( <.bycell.>, TXBrowseByCell(), ;
+            TXBrowse() ), [ <subclass>() ] ):Define( <(name)>, <(parent)>, ;
+            <col>, <row>, <w>, <h>, <headers>, <widths>, <Fields>, ;
+            <(workarea)>, <value>, <.delete.>, <.lock.>, <.novscroll.>, ;
+            <.append.>, <{onappend}>, <replacefields>, <fontname>, <fontsize>, ;
+            <tooltip>, <{change}>, <{dblclick}>, <aHeadClick>, <{gotfocus}>, ;
+            <{lostfocus}>, <.style.>, <aImage>, <aJust>, <.break.>, <helpid>, ;
+            <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, <.edit.>, ;
+            <backcolor>, <fontcolor>, <dynamicbackcolor>, <dynamicforecolor>, ;
+            <Picture>, <.rtl.>, <.inplace.>, <editcontrols>, <aReadOnly>, ;
+            <aValidFields>, <aValidMessages>, <{editcell}>, <aWhenFields>, ;
+            <.reccount.>, <columninfo>, ! <.noshowheaders.>, <{enter}>, ;
+            <.disabled.>, <.notabstop.>, <.invisible.>, <.descending.>, ;
+            <{bWhenDel}>, <DelMsg>, <{onDelete}>, <aHeaderImages>, ;
+            <aImgAlign>, <.fullmove.>, <aSelectedColors>, <aEditKeys>, ;
             IIF( upper( #<bffr> ) == "DOUBLEBUFFER", .T., ;
             IIF( upper( #<bffr> ) == "SINGLEBUFFER", .F., .T. ) ), ;
             IIF( upper( #<focus> ) == "NOFOCUSRECT", .F., ;
@@ -175,7 +178,8 @@
             <.excel.>, <.buts.>, <.nodelmsg.>, ;
             IIF( upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., ;
             IIF( upper( #<edtctrls> ) == "DYNAMICCONTROLS", .F., NIL ) ), ;
-            <.noshowempty.>, <.upcol.>, <{bheadrclick}> )
+            <.noshowempty.>, <.upcol.>, <{bheadrclick}>, <.nomodal.>, ;
+            <.extdbl.> )
 
 #command SET XBROWSEFIXEDBLOCKS ON ;
    => ;

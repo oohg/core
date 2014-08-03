@@ -1,5 +1,5 @@
 /*
- * $Id: c_controlmisc.c,v 1.71 2014-06-07 02:08:02 fyurisich Exp $
+ * $Id: c_controlmisc.c,v 1.72 2014-08-03 19:37:52 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -82,13 +82,13 @@
 
  Parts of this project are based upon:
 
-	"Harbour GUI framework for Win32"
- 	Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- 	Copyright 2001 Antonio Linares <alinares@fivetech.com>
-	www - http://www.harbour-project.org
+   "Harbour GUI framework for Win32"
+   Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
+   Copyright 2001 Antonio Linares <alinares@fivetech.com>
+   www - http://www.harbour-project.org
 
-	"Harbour Project"
-	Copyright 1999-2003, http://www.harbour-project.org/
+   "Harbour Project"
+   Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
 #define _WIN32_IE      0x0500
@@ -305,7 +305,6 @@ BOOL _OOHG_DetermineColor( PHB_ITEM pColor, LONG *lColor )
 
    if( pColor )
    {
-
       if( HB_IS_NUMERIC( pColor ) )
       {
          *lColor = hb_itemGetNL( pColor );
@@ -327,7 +326,6 @@ BOOL _OOHG_DetermineColor( PHB_ITEM pColor, LONG *lColor )
                         hb_itemGetCPtr( pColor )[ 2 ] );
          bValid = 1;
       }
-
    }
 
    return bValid;
@@ -398,10 +396,10 @@ HB_FUNC ( GETDLGITEMTEXT )
 
    GetDlgItemText(
         HWNDparam( 2 ),    // handle of dialog box
-	hb_parni(1),		// identifier of control
-	(LPTSTR) cText,       	// address of buffer for text
-	iLen                   	// maximum size of string
-	);
+   hb_parni(1),      // identifier of control
+   (LPTSTR) cText,         // address of buffer for text
+   iLen                    // maximum size of string
+   );
 
    hb_retc( cText );
    hb_xfree( cText );
@@ -415,11 +413,12 @@ HB_FUNC( ISDLGBUTTONCHECKED )
 HB_FUNC( SETSPINNERVALUE )
 {
    SendMessage( HWNDparam( 1 ),
-		(UINT)UDM_SETPOS32 ,
-		(WPARAM)0,
-		(LPARAM) (INT) hb_parni (2)
-		) ;
+      (UINT)UDM_SETPOS32 ,
+      (WPARAM)0,
+      (LPARAM) (INT) hb_parni (2)
+      ) ;
 }
+
 HB_FUNC( GETSPINNERVALUE )
 {
    hb_retnl(
@@ -433,35 +432,35 @@ HB_FUNC( GETSPINNERVALUE )
 HB_FUNC( INSERTTAB )
 {
    keybd_event(
-                VK_TAB,         // virtual-key code
-		0,		// hardware scan code
-		0,		// flags specifying various function options
-		0		// additional data associated with keystroke
-              );
+      VK_TAB,          // virtual-key code
+      0,               // hardware scan code
+      0,               // flags specifying various function options
+      0                // additional data associated with keystroke
+   );
 }
 
 HB_FUNC ( INSERTSHIFTTAB )
 {
    keybd_event(
-		VK_SHIFT,	// virtual-key code
-		0,		// hardware scan code
-		0,		// flags specifying various function options
-		0		// additional data associated with keystroke
-              );
+      VK_SHIFT,        // virtual-key code
+      0,               // hardware scan code
+      0,               // flags specifying various function options
+      0                // additional data associated with keystroke
+   );
 
    keybd_event(
-                VK_TAB,         // virtual-key code
-		0,		// hardware scan code
-		0,		// flags specifying various function options
-		0		// additional data associated with keystroke
-              );
+      VK_TAB,          // virtual-key code
+      0,               // hardware scan code
+      0,               // flags specifying various function options
+      0                // additional data associated with keystroke
+   );
 
    keybd_event(
-		VK_SHIFT,	// virtual-key code
-		0,		// hardware scan code
-		KEYEVENTF_KEYUP,// flags specifying various function options
-		0		// additional data associated with keystroke
-	);
+      VK_SHIFT,        // virtual-key code
+      0,               // hardware scan code
+      KEYEVENTF_KEYUP, // flags specifying various function options
+      0                // additional data associated with keystroke
+   );
 }
 
 HB_FUNC( RELEASECONTROL )
@@ -469,25 +468,24 @@ HB_FUNC( RELEASECONTROL )
    SendMessage( HWNDparam( 1 ), WM_SYSCOMMAND, SC_CLOSE, 0 );
 }
 
-
 HB_FUNC( INSERTBACKSPACE )
 {
    keybd_event(
-		VK_BACK	,	// virtual-key code
-		0,		// hardware scan code
-		0,		// flags specifying various function options
-		0		// additional data associated with keystroke
-              );
+      VK_BACK,         // virtual-key code
+      0,               // hardware scan code
+      0,               // flags specifying various function options
+      0                // additional data associated with keystroke
+   );
 }
 
 HB_FUNC( INSERTPOINT )
 {
    keybd_event(
-		VK_DECIMAL		,	// virtual-key code
-		0,		// hardware scan code
-		0,		// flags specifying various function options
-		0		// additional data associated with keystroke
-              );
+      VK_DECIMAL,      // virtual-key code
+      0,               // hardware scan code
+      0,               // flags specifying various function options
+      0                // additional data associated with keystroke
+   );
 }
 
 HB_FUNC( GETMODULEFILENAME )
@@ -586,43 +584,69 @@ HB_FUNC( GETTEXTHEIGHT )  // returns the width of a string in pixels
 HB_FUNC ( KEYBD_EVENT )
 {
 
-	keybd_event(
-        (BYTE) hb_parni(1),                // virtual-key code
-        (BYTE) MapVirtualKey( hb_parni(1), 0 ),    // hardware scan code
-		hb_parl(2) ? KEYEVENTF_KEYUP: 0,	// flags specifying various function options
-		0					// additional data associated with keystroke
-	);
-
+   keybd_event(
+      (BYTE) hb_parni(1),                     // virtual-key code
+      (BYTE) MapVirtualKey( hb_parni(1), 0 ), // hardware scan code
+      hb_parl(2) ? KEYEVENTF_KEYUP : 0,       // flags specifying various function options
+      0                                       // additional data associated with keystroke
+   );
 }
 
 HB_FUNC ( INSERTRETURN )
 {
 
-	keybd_event(
-		VK_RETURN	, // virtual-key code
-		0,		// hardware scan code
-		0,		// flags specifying various function options
-		0		// additional data associated with keystroke
-	);
+   keybd_event(
+      VK_RETURN,       // virtual-key code
+      0,               // hardware scan code
+      0,               // flags specifying various function options
+      0                // additional data associated with keystroke
+   );
+}
 
+#ifndef VK_A
+   #define VK_A 65
+#endif
+
+HB_FUNC( INSERT_ALT_A )
+{
+   keybd_event(
+      VK_MENU,         // virtual-key code
+      0,               // hardware scan code
+      0,               // flags specifying various function options
+      0                // additional data associated with keystroke
+   );
+
+   keybd_event(
+      VK_A,            // virtual-key code
+      0,               // hardware scan code
+      0,               // flags specifying various function options
+      0                // additional data associated with keystroke
+   );
+
+   keybd_event(
+      VK_MENU,         // virtual-key code
+      0,               // hardware scan code
+      KEYEVENTF_KEYUP, // flags specifying various function options
+      0                // additional data associated with keystroke
+   );
 }
 
 HB_FUNC ( GETSHOWCMD )
 {
 
-	WINDOWPLACEMENT WP;
-	HWND h;
+   WINDOWPLACEMENT WP;
+   HWND h;
         int i;
 
     h = HWNDparam( 1 );
 
-	WP.length = sizeof(WINDOWPLACEMENT) ;
+   WP.length = sizeof(WINDOWPLACEMENT) ;
 
     GetWindowPlacement( h, &WP ) ;
 
         i =  WP.showCmd;
 
-	hb_retni (i);
+   hb_retni (i);
 
 }
 

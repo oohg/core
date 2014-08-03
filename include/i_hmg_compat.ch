@@ -1,5 +1,5 @@
 /*
- * $Id: i_hmg_compat.ch,v 1.34 2014-07-09 02:25:23 fyurisich Exp $
+ * $Id: i_hmg_compat.ch,v 1.35 2014-08-03 19:37:51 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -244,6 +244,7 @@ SPLITBOX VERSION
       [ <upcol: UPDATECOLORS> ] ;
       [ <edtctrls: FIXEDCONTROLS, DYNAMICCONTROLS> ] ;
       [ <dummy14: ONHEADRCLICK, ON HEADRCLICK> <bheadrclick> ] ;
+      [ <extdbl: EXTDBLCLICK> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TOBrowse(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, , , <w>, <h>, <headers>, <widths>, ;
@@ -276,7 +277,7 @@ SPLITBOX VERSION
             <.excel.>, <.buts.>, <.upcol.>, ;
             IIF( Upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., ;
             IIF( Upper( #<blocks> ) == "DYNAMICCONTROLS", .F., NIL ) ), ;
-            <{bheadrclick}> )
+            <{bheadrclick}>, <.extdbl.> )
 
 #xcommand @ <row>, <col> BUTTONEX <name> ;
       [ OBJ <obj> ] ;

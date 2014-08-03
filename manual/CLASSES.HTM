@@ -1,5 +1,5 @@
 <!--
-$Id: CLASSES.HTM,v 1.6 2014-07-26 21:58:43 fyurisich Exp $
+$Id: CLASSES.HTM,v 1.7 2014-08-03 19:37:51 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -142,6 +142,7 @@ CLASSES</div>
 Classes &gt; </div>
 <div id="winchm_template_content">
 <pre>
+*------------------------------------------------------------------------------*
 CLASS TAPPLICATION
    DATA ARGC                      INIT HB_ARGC()
    DATA ARGS                      INIT GETCOMMANDLINEARGS()
@@ -356,14 +357,15 @@ CLASS OOHG_TERRORHTML
    DATA CLANG                     INIT ""
    DATA FILENAME                  INIT "ERRORLOG.HTM"
    DATA PATH                      INIT ""
-   DATA POSTHEADER                INIT '</p>'
-   DATA PREHEADER                 INIT '<HR>' + CHR( 13 ) + CHR( 10 ) + '<p class="updated">'
+   DATA POSTHEADER                INIT '&lt;/p&gt;'
+   DATA PREHEADER                 INIT '&lt;HR&gt;' + CHR( 13 ) + CHR( 10 ) + '&lt;p class="updated"&gt;'
 
    METHOD CREATELOG
    METHOD ERRORHEADER
    METHOD ERRORMESSAGE
    METHOD FILEHEADER
    METHOD NEW
+   METHOD PUTMSG
    METHOD WRITE
    METHOD WRITE2
 ENDCLASS
@@ -1062,9 +1064,9 @@ CLASS TGRID FROM TCONTROL
    DATA LNOMODAL                  INIT .F.
    DATA LPLM                      INIT .F.
    DATA LTRACKING                 INIT .F.
-   DATA NCOLPOS                   INIT 1
+   DATA NCOLPOS                   INIT 0 HIDDEN
    DATA NHEIGHT                   INIT 120
-   DATA NROWPOS                   INIT 1
+   DATA NROWPOS                   INIT 0 HIDDEN
    DATA NVISIBLEITEMS             INIT 0
    DATA NWIDTH                    INIT 240
    DATA ONABORTEDIT               INIT NIL
@@ -1170,19 +1172,15 @@ ENDCLASS
 *------------------------------------------------------------------------------*
 CLASS TGRIDBYCELL FROM TGRID
    DATA TYPE                      INIT "GRIDBYCELL"          READONLY
-   DATA NROWPOS                   INIT 0 HIDDEN
-   DATA NCOLPOS                   INIT 0 HIDDEN
 
    MESSAGE EDITALLCELLS           METHOD EDITGRID
 
    METHOD ADDCOLUMN
-   METHOD ADDCOLUMN2
    METHOD APPENDITEM
    METHOD COLUMNHIDE
    METHOD DEFINE
-   METHOD DEFINE2
    METHOD DELETECOLUMN
-   METHOD DELETECOLUMN2
+   METHOD DELETEITEM
    METHOD DOCHANGE
    METHOD DOWN
    METHOD EDITCELL
@@ -1196,6 +1194,7 @@ CLASS TGRIDBYCELL FROM TGRID
    METHOD GOBOTTOM
    METHOD GOTOP
    METHOD ISCOLUMNWHEN
+   METHOD ISCOLUMNREADONLY
    METHOD LEFT
    METHOD PAGEDOWN
    METHOD PAGEUP
@@ -2794,9 +2793,8 @@ CLASS TXBROWSE FROM TGRID
    DATA LRECCOUNT                 INIT .F.
    DATA LUPDCOLS                  INIT .F.
    DATA LVSCROLLVISIBLE           INIT .F.
-   DATA NVALUE                    INIT 0
    DATA OWORKAREA                 INIT NIL
-   DATA REFRESHTYPE               INIT NIL
+   DATA REFRESHTYPE               INIT REFRESH_DEFAULT
    DATA SCROLLBUTTON              INIT NIL
    DATA SEARCHWRAP                INIT .F.
    DATA SKIPBLOCK                 INIT NIL
@@ -2809,6 +2807,7 @@ CLASS TXBROWSE FROM TGRID
 
    METHOD ADDCOLUMN
    METHOD ADJUSTRIGHTSCROLL
+   METHOD CHECKITEM               BLOCK { || NIL }
    METHOD COLUMNAUTOFIT
    METHOD COLUMNAUTOFITH
    METHOD COLUMNBLOCK
@@ -2820,7 +2819,7 @@ CLASS TXBROWSE FROM TGRID
    METHOD DEFINE
    METHOD DELETE
    METHOD DELETECOLUMN
-   METHOD DOCHANGE
+   METHOD DOCHANGE                BLOCK { | SELF | ::DOEVENT( ::ONCHANGE, "CHANGE" ) }
    METHOD DOWN
    METHOD EDITALLCELLS
    METHOD EDITCELL
@@ -2833,12 +2832,14 @@ CLASS TXBROWSE FROM TGRID
    METHOD GETCELLTYPE
    METHOD GOBOTTOM
    METHOD GOTOP
+   METHOD LEFT                    BLOCK { || NIL }
    METHOD MOVETO
    METHOD PAGEDOWN
    METHOD PAGEUP
    METHOD REFRESH
    METHOD REFRESHDATA
    METHOD REFRESHROW
+   METHOD RIGHT                   BLOCK { || NIL }
    METHOD SETCOLUMN
    METHOD SETSCROLLPOS
    METHOD SIZEPOS
@@ -2849,6 +2850,36 @@ CLASS TXBROWSE FROM TGRID
    METHOD VISIBLE                 SETGET
    METHOD VSCROLLVISIBLE          SETGET
    METHOD WORKAREA                SETGET
+ENDCLASS
+
+*------------------------------------------------------------------------------*
+CLASS TXBROWSEBYCELL FROM TXBrowse
+   DATA TYPE                      INIT "XBROWSEBYCELL" READONLY
+
+   MESSAGE EDITALLCELLS           METHOD EDITGRID
+
+   METHOD ADDCOLUMN
+   METHOD APPENDITEM
+   METHOD CURRENTCOL              SETGET
+   METHOD CURRENTROW              SETGET
+   METHOD DEFINE2
+   METHOD DELETECOLUMN
+   METHOD DELETEITEM
+   METHOD EDITCELL
+   METHOD EDITCELL2
+   METHOD EDITGRID
+   METHOD EVENTS
+   METHOD EVENTS_ENTER
+   METHOD EVENTS_NOTIFY
+   METHOD GOBOTTOM
+   METHOD GOTOP
+   METHOD ISCOLUMNREADONLY
+   METHOD ISCOLUMNWHEN
+   METHOD LEFT
+   METHOD REFRESH
+   METHOD RIGHT
+   METHOD SETSELECTEDCOLORS
+   METHOD VALUE                   SETGET     // it's used for painting the grid, it doesn't trigger on change event
 ENDCLASS
 
 *------------------------------------------------------------------------------*

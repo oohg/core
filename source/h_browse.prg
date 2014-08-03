@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.142 2014-07-24 23:45:25 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.143 2014-08-03 19:37:52 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -165,7 +165,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lNoDelMsg, lUpdateAll, abortedit, click, lFixedWidths, ;
                lFixedBlocks, bBeforeColMove, bAfterColMove, bBeforeColSize, ;
                bAfterColSize, bBeforeAutofit, lLikeExcel, lButtons, lUpdCols, ;
-               lFixedCtrls, bHeadRClick ) CLASS TOBrowse
+               lFixedCtrls, bHeadRClick, lExtDbl ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local nWidth2, nCol2, oScroll, z
 
@@ -251,12 +251,12 @@ Local nWidth2, nCol2, oScroll, z
                    aHeaderImageAlign, FullMove, aSelectedColors, aEditKeys, , , dblbffr, lFocusRect, ;
                    lPLM, lFixedCols, abortedit, click, lFixedWidths, bBeforeColMove, bAfterColMove, ;
                    bBeforeColSize, bAfterColSize, bBeforeAutofit, lLikeExcel, lButtons, ;
-                   AllowDelete, , , DelMsg, lNoDelMsg, AllowAppend, , , lFixedCtrls, bHeadRClick, , )
+                   AllowDelete, , , DelMsg, lNoDelMsg, AllowAppend, , , lFixedCtrls, bHeadRClick, , , lExtDbl )
 
    ::nWidth := w
 
    IF ValType( Value ) == "N"
-      ::nValue := Value
+      ::nRowPos := Value
    ENDIF
 
    ASSIGN ::Lock          VALUE lock          TYPE "L"
@@ -425,9 +425,8 @@ Local lColor, aFields, cWorkArea, hWnd, nWidth
    If ::lUpdateAll
       If Len( ::aWidths ) != nWidth
          ASIZE( ::aWidths, nWidth )
-         AEVAL( ::aWidths, { |x,i| ::aWidths[ i ] := If( ! HB_IsNumeric( x ), 0, x ) } )
       EndIf
-      AEVAL( ::aWidths, { |x,i| ::ColumnWidth( i, x ) } )
+      AEVAL( ::aWidths, { |x,i| ::ColumnWidth( i, If( ! HB_IsNumeric( x ) .OR. x < 0, 0, x ) ) } )
 
       If Len( ::aJust ) != nWidth
          ASIZE( ::aJust, nWidth )
@@ -810,7 +809,7 @@ Local _RecNo, m, hWnd, cWorkArea
    EndIf
 
    If Value > ( cWorkArea )->( RecCount() )
-      ::nValue := 0
+      ::nRowPos := 0
       ::DeleteAllItems()
       ::BrowseOnChange()
       Return nil
@@ -843,7 +842,7 @@ Local _RecNo, m, hWnd, cWorkArea
    EndIf
    ::DbSkip( -m + 1 )
 
-   ::nValue := Value
+   ::nRowPos := Value
    ::Update()
    ::DbGoTo( _RecNo )
    ListView_SetCursel ( hWnd, ASCAN( ::aRecMap, Value ) )
@@ -1280,9 +1279,9 @@ Local ActualRecord, RecordCount
    EndIf
 
    If Len( ::aRecMap ) < nRow .OR. nRow == 0
-      ::nValue := 0
+      ::nRowPos := 0
    Else
-      ::nValue := ::aRecMap[ nRow ]
+      ::nRowPos := ::aRecMap[ nRow ]
    EndIf
 
    ListView_SetCursel( ::hWnd, nRow )
@@ -1314,7 +1313,7 @@ Local cWorkArea
          RecordCount := ( cWorkArea )->( RecCount() )
       EndIf
 
-      ::nValue := ( cWorkArea )->( RecNo() )
+      ::nRowPos := ( cWorkArea )->( RecNo() )
       ::RecCount := RecordCount
 
       If ::lDescending
@@ -1416,7 +1415,7 @@ Local nItem
       If nItem > 0 .AND. nItem <= Len( ::aRecMap )
          uValue := ::aRecMap[ nItem ]
       Else
-         uValue := 0 // ::nValue
+         uValue := 0
       Endif
    EndIf
 RETURN uValue
@@ -1424,10 +1423,10 @@ RETURN uValue
 *-----------------------------------------------------------------------------*
 METHOD RefreshData() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local nValue := ::nValue
+Local nValue := ::nRowPos
    IF ValType( nValue ) != "N" .OR. nValue == 0
       ::Refresh()
-      ::nValue := ::Value
+      ::nRowPos := ::Value
    Else
       ::Refresh()
    EndIf
@@ -1630,7 +1629,7 @@ Local nvKey, r, DeltaSelect, lGo
 
       r := LISTVIEW_GETFIRSTITEM( ::hWnd )
       If r > 0
-         DeltaSelect := r - ASCAN ( ::aRecMap, ::nValue )
+         DeltaSelect := r - ASCAN ( ::aRecMap, ::nRowPos )
          ::FastUpdate( DeltaSelect, r )
          ::BrowseOnChange()
       EndIf
@@ -1639,7 +1638,7 @@ Local nvKey, r, DeltaSelect, lGo
    ElseIf nNotify == LVN_BEGINDRAG .or. nNotify == NM_RCLICK
       r := LISTVIEW_GETFIRSTITEM( ::hWnd )
       If r > 0
-         DeltaSelect := r - ASCAN ( ::aRecMap, ::nValue )
+         DeltaSelect := r - ASCAN ( ::aRecMap, ::nRowPos )
          ::FastUpdate( DeltaSelect, r )
          ::BrowseOnChange()
       EndIf

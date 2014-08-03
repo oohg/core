@@ -1,5 +1,5 @@
 /*
- * $Id: i_grid.ch,v 1.36 2014-07-09 02:25:23 fyurisich Exp $
+ * $Id: i_grid.ch,v 1.37 2014-08-03 19:37:51 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -152,6 +152,7 @@ STANDARD VERSION
       [ <dummy16: ONHEADRCLICK, ON HEADRCLICK> <bheadrclick> ] ;
       [ <noclick: NOCLICKONCHECKBOX> ] ;
       [ <norclick: NORCLICKONCHECKBOX> ] ;
+      [ <extdbl: EXTDBLCLICK> ] ;
    =>;
       [ <obj> := ] _OOHG_SelectSubClass( IIF( <.bycell.>, TGridByCell(), ;
             IIF( <.multiselect.>, TGridMulti(), TGrid() ) ), ;
@@ -177,7 +178,7 @@ STANDARD VERSION
             <DelMsg>, <.nodelmsg.>, <.append.>, <{onappend}>, <.nomodal.>, ;
             IIF( Upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., ;
             IIF( Upper( #<edtctrls> ) == "DYNAMICCONTROLS", .F., NIL ) ), ;
-            <{bheadrclick}>, ! <.noclick.>, ! <.norclick.> )
+            <{bheadrclick}>, ! <.noclick.>, ! <.norclick.>, <.extdbl.> )
 
 /*---------------------------------------------------------------------------
 SPLITBOX VERSION
@@ -267,6 +268,7 @@ SPLITBOX VERSION
       [ <dummy16: ONHEADRCLICK, ON HEADRCLICK> <bheadrclick> ] ;
       [ <noclick: NOCLICKONCHECKBOX> ] ;
       [ <norclick: NORCLICKONCHECKBOX> ] ;
+      [ <extdbl: EXTDBLCLICK> ] ;
    =>;
       [ <obj> := ] _OOHG_SelectSubClass( IIF( <.bycell.>, TGridByCell(), ;
             IIF( <.multiselect.>, TGridMulti(), TGrid() ) ), ;
@@ -292,7 +294,7 @@ SPLITBOX VERSION
             <DelMsg>, <.nodelmsg.>, <.append.>, <{onappend}>, <.nomodal.>, ;
             IIF( Upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., ;
             IIF( Upper( #<edtctrls> ) == "DYNAMICCONTROLS", .F., NIL ) ), ;
-            <{bheadrclick}>, ! <.noclick.>, ! <.norclick.> )
+            <{bheadrclick}>, ! <.noclick.>, ! <.norclick.>, <.extdbl.> )
 
 #command SET GRIDFIXEDCONTROLS ON ;
    => ;

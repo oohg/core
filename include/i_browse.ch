@@ -1,5 +1,5 @@
 /*
- * $Id: i_browse.ch,v 1.50 2014-07-24 23:45:24 fyurisich Exp $
+ * $Id: i_browse.ch,v 1.51 2014-08-03 19:37:51 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -161,6 +161,7 @@ STANDARD VERSION
       [ <upcol: UPDATECOLORS> ] ;
       [ <edtctrls: FIXEDCONTROLS, DYNAMICCONTROLS> ] ;
       [ <dummy14: ONHEADRCLICK, ON HEADRCLICK> <bheadrclick> ] ;
+      [ <extdbl: EXTDBLCLICK> ] ;
    => ;
       [ <oObj> := ] _OOHG_SelectSubClass( TOBrowse(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, ;
@@ -191,7 +192,7 @@ STANDARD VERSION
             <.excel.>, <.buts.>, <.upcol.>, ;
             IIF( Upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., ;
             IIF( Upper( #<edtctrls> ) == "DYNAMICCONTROLS", .F., NIL ) ), ;
-            <{bheadrclick}> )
+            <{bheadrclick}>, <.extdbl.> )
 
 #command SET BROWSESYNC ON ;
    => ;

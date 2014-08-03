@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.115 2014-07-09 02:25:23 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.116 2014-08-03 19:37:51 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -90,6 +90,7 @@ AUXILIARY VARIABLES
 #xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
 #xtranslate _OOHG_ActiveControlBackground             => _OOHG_ActiveControlInfo \[  27 \]
 
+#xtranslate _OOHG_ActiveControlExtDblClick            => _OOHG_ActiveControlInfo \[  91 \]
 #xtranslate _OOHG_ActiveControlExcludeArea            => _OOHG_ActiveControlInfo \[  92 \]
 #xtranslate _OOHG_ActiveControlNoLoadTransparent      => _OOHG_ActiveControlInfo \[  93 \]
 #xtranslate _OOHG_ActiveControlSearchLapse            => _OOHG_ActiveControlInfo \[  94 \]
@@ -2235,7 +2236,8 @@ GRID
       _OOHG_ActiveControlDynamicCtrls     := .F. ;;
       _OOHG_ActiveControlOnHeaderRClick   := NIL ;;
       _OOHG_ActiveControlRClickOnCheckbox := .T. ;;
-      _OOHG_ActiveControlClickOnCheckbox  := .T.
+      _OOHG_ActiveControlClickOnCheckbox  := .T. ;;
+      _OOHG_ActiveControlExtDblClick      := .F.
 
 #xcommand ONAPPEND <onappend> ;
    => ;
@@ -2357,6 +2359,10 @@ GRID
    => ;
       _OOHG_ActiveControlRClickOnCheckbox := ! <norclick>
 
+#xcommand EXTDBLCLICK <extdbl> ;
+   => ;
+      _OOHG_ActiveControlExtDblClick := <extdbl>
+
 #xcommand END GRID ;
    => ;
       _OOHG_SelectSubClass( IIF( _OOHG_ActiveControlByCell, TGridByCell(), IIF( _OOHG_ActiveControlMultiSelect, TGridMulti(), TGrid() ) ), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
@@ -2437,7 +2443,8 @@ GRID
             IIF( _OOHG_ActiveControlFixedCtrls, .T., IIF( _OOHG_ActiveControlDynamicCtrls, .F., NIL ) ), ;
             _OOHG_ActiveControlOnHeaderRClick, ;
             _OOHG_ActiveControlRClickOnCheckbox, ;
-            _OOHG_ActiveControlClickOnCheckbox )
+            _OOHG_ActiveControlClickOnCheckbox, ;
+            _OOHG_ActiveControlExtDblClick )
 
 /*---------------------------------------------------------------------------
 BROWSE
@@ -2511,7 +2518,8 @@ BROWSE
       _OOHG_ActiveControlUpdateColors     := NIL ;;
       _OOHG_ActiveControlFixedCtrls       := .F. ;;
       _OOHG_ActiveControlDynamicCtrls     := .F. ;;
-      _OOHG_ActiveControlOnHeaderRClick   := NIL
+      _OOHG_ActiveControlOnHeaderRClick   := NIL ;;
+      _OOHG_ActiveControlExtDblClick      := .F.
 
 #xcommand DELETEWHEN <delwhen> ;
    => ;
@@ -2667,7 +2675,8 @@ BROWSE
             _OOHG_ActiveControlUseButtons, ;
             _OOHG_ActiveControlUpdateColors, ;
             IIF( _OOHG_ActiveControlFixedCtrls, .T., IIF( _OOHG_ActiveControlDynamicCtrls, .F., NIL ) ), ;
-            _OOHG_ActiveControlOnHeaderRClick )
+            _OOHG_ActiveControlOnHeaderRClick, ;
+            _OOHG_ActiveControlExtDblClick )
 
 /*---------------------------------------------------------------------------
 XBROWSE
@@ -2737,7 +2746,8 @@ XBROWSE
       _OOHG_ActiveControlDynamicCtrls     := .F. ;;
       _OOHG_ActiveControlNoShowEmptyRow   := .F. ;;
       _OOHG_ActiveControlUpdateColors     := .F. ;;
-      _OOHG_ActiveControlOnHeaderRClick   := NIL
+      _OOHG_ActiveControlOnHeaderRClick   := NIL ;;
+      _OOHG_ActiveControlExtDblClick      := .F.
 
 #xcommand END XBROWSE ;
    => ;
@@ -2825,7 +2835,8 @@ XBROWSE
             IIF( _OOHG_ActiveControlFixedCtrls, .T., IIF( _OOHG_ActiveControlDynamicCtrls, .F., NIL ) ), ;
             _OOHG_ActiveControlNoShowEmptyRow, ;
             _OOHG_ActiveControlUpdateColors, ;
-            _OOHG_ActiveControlOnHeaderRClick )
+            _OOHG_ActiveControlOnHeaderRClick, ;
+            _OOHG_ActiveControlExtDblClick )
 
 /*---------------------------------------------------------------------------
 HYPERLINK

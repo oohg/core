@@ -1,5 +1,5 @@
 /*
- * $Id: h_error.prg,v 1.57 2013-10-16 20:29:55 fyurisich Exp $
+ * $Id: h_error.prg,v 1.58 2014-08-03 19:37:52 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -245,6 +245,7 @@ CLASS OOHG_TErrorHtml
    METHOD ErrorMessage
    METHOD ErrorHeader
    METHOD CreateLog
+   METHOD PutMsg
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
@@ -587,6 +588,36 @@ METHOD ErrorMessage( cError, nPosition ) CLASS OOHG_TErrorHtml
    ::CreateLog()
    C_MSGSTOP( ::cBufferScreen, ::aMessages[12] )
    ExitProcess( 0 )
+RETURN Nil
+
+*------------------------------------------------------------------------------*
+METHOD PutMsg( cMsg, nPosition, lEvents ) CLASS OOHG_TErrorHtml
+*------------------------------------------------------------------------------*
+LOCAL aEvents
+
+   ::cBufferFile += ::PreHeader()
+   ::cBufferFile += ::Write2( cMsg )
+   ::cBufferFile += ::PostHeader()
+
+   IF HB_IsNumeric( nPosition )
+      // Called functions
+      nPosition++
+      DO WHILE ! Empty( ProcName( nPosition ) )
+         ::Write( ::aMessages[10] + ProcName( nPosition ) + "(" + AllTrim( Str( ProcLine( nPosition++ ) ) ) + ")" )
+      ENDDO
+   ENDIF
+
+   IF lEvents
+      // Event list
+      aEvents := _ListEventInfo()
+      ::Write( ::aMessages[11] )
+      AEVAL( aEvents, { | c | ::Write( c ) } )
+   ENDIF
+
+   ::CreateLog()
+
+   ::cBufferFile := ""
+   ::cBufferScreen := ""
 RETURN Nil
 
 *------------------------------------------------------------------------------*
