@@ -1,5 +1,5 @@
 <!--
-$Id: BUTTON.HTM,v 1.3 2014-06-17 00:35:28 fyurisich Exp $
+$Id: BUTTON.HTM,v 1.4 2014-08-08 22:27:35 fyurisich Exp $
 -->
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -179,206 +179,114 @@ Controls &gt; </div>
 
 <p class=MsoNormal><span lang=ES style='color:darkgreen;mso-ansi-language:ES'>///////////////////////////////////////////////////////////////////////////////
 <br>
-// BUTTON <br>
+// STANDARD BROWSE <br>
 ///////////////////////////////////////////////////////////////////////////////
 <br>
-</span><span lang=ES style='color:gray;mso-ansi-language:ES'><br>
-</span><span lang=ES style='color:black;mso-ansi-language:ES'>&nbsp;#<span
-class=SpellE>xcommand</span>&nbsp;@&nbsp;&lt;<span class=SpellE>row</span>&gt;,&lt;col&gt;&nbsp;BUTTON&nbsp;&lt;<span
-class=SpellE>name</span>&gt;&nbsp;; <br>
-<span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>[ OBJ &lt;<span class=SpellE>obj</span>&gt; ] ;<o:p></o:p></span></p>
+</span>
 
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>[ &lt;dummy1: OF, PARENT&gt; &lt;<span class=SpellE>parent</span>&gt; ]
-;<o:p></o:p></span></p>
+<p>
+<span lang=ES style="COLOR: black; mso-ansi-language: ES">
+<PRE>
+#xcommand @ &lt;row&gt;, &lt;col&gt; BUTTON &lt;name&gt; ;
+      [ OBJ &lt;obj&gt; ] ;
+      [ &lt;dummy1: OF, PARENT&gt; &lt;parent&gt; ] ;
+      [ &lt;dummy2: ACTION,ON CLICK,ONCLICK&gt; &lt;action&gt; ] ;
+      [ WIDTH &lt;w&gt; ] ;
+      [ HEIGHT &lt;h&gt; ] ;
+      [ FONT &lt;font&gt; ] ;
+      [ SIZE &lt;size&gt; ] ;
+      [ &lt;bold: BOLD&gt; ] ;
+      [ &lt;italic: ITALIC&gt; ] ;
+      [ &lt;underline: UNDERLINE&gt; ] ;
+      [ &lt;strikeout: STRIKEOUT&gt; ] ;
+      [ TOOLTIP &lt;tooltip&gt; ] ;
+      [ &lt;flat: FLAT&gt; ] ;
+      [ &lt;dummy02: ONGOTFOCUS, ON GOTFOCUS&gt; &lt;gotfocus&gt; ] ;
+      [ &lt;dummy04: ONLOSTFOCUS, ON LOSTFOCUS&gt; &lt;lostfocus&gt; ] ;
+      [ ON MOUSEMOVE &lt;onmousemove&gt; ] ;
+      [ &lt;notabstop: NOTABSTOP&gt; ] ;
+      [ HELPID &lt;helpid&gt; ] ;
+      [ &lt;invisible: INVISIBLE&gt; ] ;
+      [ &lt;rtl: RTL&gt; ] ;
+      [ &lt;noprefix: NOPREFIX&gt; ] ;
+      [ SUBCLASS &lt;subclass&gt; ] ;
+      [ &lt;disabled: DISABLED&gt; ] ;
+      [ CAPTION &lt;caption&gt; ] ;
+      [ &lt;dummy3: PICTURE, ICON&gt; &lt;bitmap&gt; ] ;
+      [ BUFFER &lt;buffer&gt; ] ;
+      [ HBITMAP &lt;hbitmap&gt; ] ;
+      [ &lt;notrans: NOLOADTRANSPARENT&gt; ] ;
+      [ &lt;scale: FORCESCALE&gt; ] ;
+      [ &lt;cancel: CANCEL&gt; ] ;
+      [ &lt;alignment:LEFT,RIGHT,TOP,BOTTOM,CENTER&gt; ] ;
+      [ &lt;multiline: MULTILINE&gt; ] ;
+      [ &lt;themed: THEMED&gt; ] ;
+      [ IMAGEMARGIN &lt;aImageMargin&gt; ] ;
+      [ &lt;no3dcolors: NO3DCOLORS&gt; ] ;
+      [ &lt;autofit: AUTOFIT, ADJUST&gt; ] ;
+      [ &lt;lDIB: DIBSECTION&gt; ] ;
+      [ BACKCOLOR &lt;backcolor&gt; ] ;
+   =&gt; ;
+      [ &lt;obj&gt; := ] _OOHG_SelectSubClass( TButton(), [ &lt;subclass&gt;() ] ): ;
+            Define( &lt;(name)&gt;, &lt;(parent)&gt;, &lt;col&gt;, &lt;row&gt;, &lt;caption&gt;, &lt;{action}&gt;, ;
+            &lt;w&gt;, &lt;h&gt;, &lt;font&gt;, &lt;size&gt;, &lt;tooltip&gt;, &lt;{gotfocus}&gt;, &lt;{lostfocus}&gt;, ;
+            &lt;.flat.&gt;, &lt;.notabstop.&gt;, &lt;helpid&gt;, &lt;.invisible.&gt;, &lt;.bold.&gt;, ;
+            &lt;.italic.&gt;, &lt;.underline.&gt;, &lt;.strikeout.&gt;, &lt;.rtl.&gt;, &lt;.noprefix.&gt;, ;
+            &lt;.disabled.&gt;, &lt;buffer&gt;, &lt;hbitmap&gt;, &lt;bitmap&gt;, &lt;.notrans.&gt;, ;
+            &lt;.scale.&gt;, &lt;.cancel.&gt;, &lt;"alignment"&gt;, &lt;.multiline.&gt;, &lt;.themed.&gt;, ;
+            &lt;aImageMargin&gt;, &lt;{onmousemove}&gt;, &lt;.no3dcolors.&gt;, &lt;.autofit.&gt;, ;
+            ! &lt;.lDIB.&gt;, &lt;backcolor&gt; )
 
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>[ &lt;dummy2: <span class=SpellE>ACTION,ON</span> <span class=SpellE>CLICK,ONCLICK</span>&gt;
-&lt;<span class=SpellE>action</span>&gt; ];<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>[ WIDTH &lt;w&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>[ HEIGHT &lt;h&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>[ FONT &lt;<span class=SpellE>font</span>&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>[ SIZE &lt;<span class=SpellE>size</span>&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>[ &lt;<span class=SpellE>bold</span> : BOLD&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span style='mso-spacerun:yes'>&nbsp;</span>[ &lt;<span class=SpellE>italic</span>
-: ITALIC&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>[ &lt;<span class=SpellE>underline</span> : UNDERLINE&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>[ &lt;<span class=SpellE>strikeout</span> : STRIKEOUT&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>[ TOOLTIP &lt;<span class=SpellE>tooltip</span>&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>[ &lt;flat: FLAT&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>[ ON GOTFOCUS &lt;<span class=SpellE>gotfocus</span>&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>[ ON LOSTFOCUS &lt;<span class=SpellE>lostfocus</span>&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>[ ON MOUSEMOVE &lt;<span class=SpellE>onmousemove</span>&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>[ &lt;<span class=SpellE>notabstop</span>: NOTABSTOP&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>[ HELPID &lt;<span class=SpellE>helpid</span>&gt; ]<span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>[ &lt;invisible: INVISIBLE&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>[ &lt;<span class=SpellE>rtl</span>: RTL&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>[ &lt;<span class=SpellE>noprefix</span>: NOPREFIX&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>[ SUBCLASS &lt;<span class=SpellE>subclass</span>&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>[ &lt;<span class=SpellE>disabled</span>: DISABLED&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>[ CAPTION &lt;<span class=SpellE>caption</span>&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>[ &lt;dummy3: PICTURE, ICON&gt; &lt;<span class=SpellE>bitmap</span>&gt;
-] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>[ BUFFER &lt;buffer&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>[ HBITMAP &lt;<span class=SpellE>hbitmap</span>&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>[ &lt;<span class=SpellE>notrans</span>: NOTRANSPARENT&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>[ &lt;<span class=SpellE>scale</span>: FORCESCALE&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>[ &lt;cancel: CANCEL&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>[ &lt;<span class=SpellE>alignment:LEFT,RIGHT,TOP,BOTTOM,CENTER</span>&gt;
-] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>[ &lt;<span class=SpellE>multiline</span>: MULTILINE&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>[ &lt;<span class=SpellE>themed</span> : THEMED&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>[ IMAGEMARGIN &lt;<span class=SpellE>aImageMargin</span>&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp; </span>=&gt;;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>[ &lt;<span class=SpellE>obj</span>&gt; := ] _<span class=SpellE>OOHG_SelectSubClass</span>(
-<span class=SpellE>TButton</span>(), [ &lt;<span class=SpellE>subclass</span>&gt;()
-] ): ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>Define( &lt;(<span class=SpellE>name</span>)&gt;, &lt;(parent)&gt;,
-&lt;col&gt;, &lt;<span class=SpellE>row</span>&gt;, &lt;caption&gt;,
-&lt;{action}&gt;, ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;w&gt;, &lt;h&gt;, &lt;<span class=SpellE>font</span>&gt;,
-&lt;size&gt;, &lt;tooltip&gt;, &lt;{<span class=SpellE>gotfocus</span>}&gt;,&lt;{<span
-class=SpellE>lostfocus</span>}&gt;, &lt;.flat.&gt;, &lt;.notabstop.&gt;, ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;<span class=SpellE>helpid</span>&gt;, &lt;.invisible.&gt;
-,&lt;.bold.&gt;, &lt;.<span class=SpellE>italic</span>.&gt;,
-&lt;.underline.&gt;, &lt;.strikeout.&gt;, &lt;.<span class=SpellE>rtl</span>.&gt;,
-;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;.noprefix.&gt;, &lt;.disabled.&gt;, &lt;buffer&gt;, &lt;<span
-class=SpellE>hbitmap</span>&gt;, &lt;bitmap&gt;, &lt;.notrans.&gt;, &lt;.<span
-class=SpellE>scale</span>.&gt;, ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;</span>&lt;.cancel.&gt;,
-&lt;&quot;alignment&quot;&gt;, &lt;.<span class=SpellE>multiline</span>.&gt;,
-&lt;.themed.&gt;, &lt;aImageMargin&gt;, &lt;{<span class=SpellE>onmousemove</span>}&gt;
-)<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:gray;mso-ansi-language:ES'><o:p>&nbsp;</o:p></span></p>
+#command @ &lt;row&gt;, &lt;col&gt; CHECKBUTTON &lt;name&gt; ;
+      [ OBJ &lt;obj&gt; ] ;
+      [ &lt;dummy1: OF, PARENT&gt; &lt;parent&gt; ] ;
+      [ CAPTION &lt;caption&gt; ] ;
+      [ WIDTH &lt;w&gt; ] ;
+      [ HEIGHT &lt;h&gt; ] ;
+      [ VALUE &lt;value&gt; ] ;
+      [ FONT &lt;f&gt; ] ;
+      [ SIZE &lt;n&gt; ] ;
+      [ &lt;bold: BOLD&gt; ] ;
+      [ &lt;italic: ITALIC&gt; ] ;
+      [ &lt;underline: UNDERLINE&gt; ] ;
+      [ &lt;strikeout: STRIKEOUT&gt; ] ;
+      [ TOOLTIP &lt;tooltip&gt; ] ;
+      [ &lt;dummy02: ONGOTFOCUS, ON GOTFOCUS&gt; &lt;gotfocus&gt; ] ;
+      [ &lt;dummy03: ONCHANGE, ON CHANGE&gt; &lt;change&gt; ] ;
+      [ &lt;dummy04: ONLOSTFOCUS, ON LOSTFOCUS&gt; &lt;lostfocus&gt; ] ;
+      [ HELPID &lt;helpid&gt; ] ;
+      [ &lt;invisible: INVISIBLE&gt; ] ;
+      [ &lt;notabstop: NOTABSTOP&gt; ] ;
+      [ SUBCLASS &lt;subclass&gt; ] ;
+      [ &lt;rtl: RTL&gt; ] ;
+      [ &lt;dummy3: PICTURE, ICON&gt; &lt;bitmap&gt; ] ;
+      [ BUFFER &lt;buffer&gt; ] ;
+      [ HBITMAP &lt;hbitmap&gt; ] ;
+      [ &lt;notrans: NOLOADTRANSPARENT&gt; ] ;
+      [ &lt;scale: FORCESCALE&gt; ] ;
+      [ FIELD &lt;field&gt; ] ;
+      [ &lt;no3dcolors: NO3DCOLORS&gt; ] ;
+      [ &lt;autofit: AUTOFIT, ADJUST&gt; ] ;
+      [ &lt;lDIB: DIBSECTION&gt; ] ;
+      [ BACKCOLOR &lt;backcolor&gt; ] ;
+   =&gt; ;
+      [ &lt;obj&gt; := ] _OOHG_SelectSubClass( TButtonCheck(), [ &lt;subclass&gt;() ] ): ;
+            Define( &lt;(name)&gt;, &lt;(parent)&gt;, &lt;col&gt;, &lt;row&gt;, &lt;caption&gt;, &lt;value&gt;, ;
+            &lt;f&gt;, &lt;n&gt;, &lt;tooltip&gt;, &lt;{change}&gt;, [&lt;w&gt;], [&lt;h&gt;], &lt;{lostfocus}&gt;, ;
+            &lt;{gotfocus}&gt;, &lt;helpid&gt;, &lt;.invisible.&gt;, &lt;.notabstop.&gt;, &lt;.bold.&gt;, ;
+            &lt;.italic.&gt;, &lt;.underline.&gt;, &lt;.strikeout.&gt;, &lt;(field)&gt;, &lt;.rtl.&gt;, ;
+            &lt;bitmap&gt;, &lt;buffer&gt;, &lt;hbitmap&gt;, &lt;.notrans.&gt;, &lt;.scale.&gt;, ;
+            &lt;.no3dcolors.&gt;, &lt;.autofit.&gt;, ! &lt;.lDIB.&gt;, &lt;backcolor&gt; )
+</PRE>
+</span>
 
 </div>
 
 </div>
-<div id="winchm_template_footer"><FONT color=#808080 
-size=1>Copyright © 2013-2014 MigSoft - </FONT><A 
-href="https://sourceforge.net/projects/oohg/" target="_blank"><FONT 
-size=1>https://sourceforge.net/projects/oohg/</FONT></A> 
+<div id="winchm_template_footer"><FONT color=#808080
+size=1>Copyright © 2013-2014 MigSoft - </FONT><A
+href="https://sourceforge.net/projects/oohg/" target="_blank"><FONT
+size=1>https://sourceforge.net/projects/oohg/</FONT></A>
      </div>
 
 </body>

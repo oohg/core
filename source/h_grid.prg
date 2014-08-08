@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.263 2014-08-08 19:39:53 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.264 2014-08-08 22:27:35 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -123,7 +123,6 @@ CLASS TGrid FROM TControl
    DATA Valid                  INIT Nil
    DATA ValidMessages          INIT Nil
    DATA OnEditCell             INIT Nil
-   DATA OnEditEnd              INIT Nil
    DATA OnAbortEdit            INIT Nil
    DATA OnAppend               INIT Nil
    DATA aWhen                  INIT {}
@@ -280,7 +279,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
                bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
-               lExtDbl, editend ) CLASS TGrid
+               lExtDbl ) CLASS TGrid
 *-----------------------------------------------------------------------------*
    ::Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               aRows, value, fontname, fontsize, tooltip, change, dblclick, ;
@@ -297,7 +296,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
               bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
               lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
-              lExtDbl, editend )
+              lExtDbl )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -316,7 +315,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                 bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
                 bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
                 lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
-                lExtDbl, editend ) CLASS TGrid
+                lExtDbl ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local ControlHandle, aImageList, i
 
@@ -501,7 +500,6 @@ Local ControlHandle, aImageList, i
    ASSIGN ::bHeadRClick    VALUE bHeadRClick    TYPE "B"
    ASSIGN ::OnEditCell     VALUE editcell       TYPE "B"
    ASSIGN ::OnAbortEdit    VALUE abortedit      TYPE "B"
-   ASSIGN ::OnEditEnd      VALUE editend        TYPE "B"
 
 Return Self
 
@@ -3218,7 +3216,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
                bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
-               lExtDbl, editend ) CLASS TGridMulti
+               lExtDbl ) CLASS TGridMulti
 *-----------------------------------------------------------------------------*
 Local nStyle := 0
 
@@ -3237,7 +3235,7 @@ Local nStyle := 0
               bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
               bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
               lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
-              lExtDbl, editend )
+              lExtDbl )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -3507,7 +3505,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
                bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
-               lExtDbl, editend ) CLASS TGridByCell
+               lExtDbl ) CLASS TGridByCell
 *-----------------------------------------------------------------------------*
    ASSIGN lFocusRect VALUE lFocusRect TYPE "L" DEFAULT .F.
 
@@ -3526,7 +3524,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
               bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
               lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
-              lExtDbl, editend )
+              lExtDbl )
 
    // By default, search in the current column
    ::SearchCol := -1

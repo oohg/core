@@ -1,5 +1,5 @@
 /*
- * $Id: c_winapimisc.c,v 1.22 2014-03-07 19:23:06 fyurisich Exp $
+ * $Id: c_winapimisc.c,v 1.23 2014-08-08 22:27:35 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -559,6 +559,15 @@ HB_FUNC( WINVERSION )
       switch( osvi.dwPlatformId )
       {
          case VER_PLATFORM_WIN32_NT:
+            if( osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 3 && osvi.wProductType != VER_NT_WORKSTATION )
+            {
+               szVersion = "Windows Server 2012 R2 ";
+            }
+            if( osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 3 && osvi.wProductType == VER_NT_WORKSTATION )
+            {
+               szVersion = "Windows 8.1 ";
+            }
+
             if( osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 2 && osvi.wProductType != VER_NT_WORKSTATION )
             {
                szVersion = "Windows Server 2012 ";

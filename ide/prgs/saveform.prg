@@ -1,5 +1,5 @@
 /*
- * $Id: saveform.prg,v 1.12 2014-07-17 02:59:37 fyurisich Exp $
+ * $Id: saveform.prg,v 1.13 2014-08-08 22:27:35 fyurisich Exp $
  */
 
 /////#include 'oohg.ch'
@@ -1426,6 +1426,7 @@ LOCAL cName, lBlankLine := .F.
    [ <dummy16: ONHEADRCLICK, ON HEADRCLICK> <bheadrclick> ] ;
    [ <noclick: NOCLICKONCHECKBOX> ] ;
    [ <norclick: NORCLICKONCHECKBOX> ] ;
+   [ <extdbl: EXTDBLCLICK> ] ;
 */
       Output += CRLF + CRLF
    ENDIF
@@ -1593,6 +1594,7 @@ LOCAL cName, lBlankLine := .F.
    [ <upcol: UPDATECOLORS> ] ;
    [ <edtctrls: FIXEDCONTROLS, DYNAMICCONTROLS> ] ;
    [ <dummy14: ONHEADRCLICK, ON HEADRCLICK> <bheadrclick> ] ;
+   [ <extdbl: EXTDBLCLICK> ] ;
 */
       Output += CRLF + CRLF
    ENDIF

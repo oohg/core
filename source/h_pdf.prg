@@ -1,5 +1,5 @@
 /*
-* $Id: h_pdf.prg,v 1.12 2014-06-23 22:17:33 fyurisich Exp $
+* $Id: h_pdf.prg,v 1.13 2014-08-08 22:27:35 fyurisich Exp $
 */
 //컴컴컴컴컴컴컴컴컴컴컴컴�\\
 //
@@ -1700,6 +1700,27 @@ LOCAL cBoxColor, cFilColor
       ::aReport[ PAGEBUFFER ] += CRLF + "0 g " + cFilColor + ltrim(str(::M2X( y1 ))) + " " + ltrim(str(::M2Y( x1 ))) + " " + ltrim(str(::M2X( y2 - y1 ))) + " -" + ltrim(str(::M2X( x2 - x1 ))) + " re f 0 g"
    ENDIF
 
+/*
+% Draw a rectangle with a 1-unit red border, filled with light blue.
+1.0 0.0 0.0 RG   % Red for stroke color
+0.5 0.75 1.0 rg  % Light blue for fill color
+200 300 50 75 re % x y w h re adds a rectangular subpath with the lower left corner at (x, y) with width w and height h.
+B
+
+To draw a round rectangle, draw one side, a curve, another side, a curve, another sise, a curve, another side, a curve.
+Set the starting point with
+x0 y0 m
+Then draw a side, with
+x1 y1 l
+Then draw a curve, with
+x2 y2 x3 y3 x4 y4 c         x2 y2 and x3 y3 are the control points
+
+See PDF reference manual at
+http://www.adobe.com/content/dam/Adobe/en/devnet/acrobat/pdfs/pdf_reference_1-7.pdf
+
+The position of the control points must be calculated, see
+http://nacho4d-nacho4d.blogspot.com/2011/05/bezier-paths-rounded-corners-rectangles.html
+*/
    IF nBorder > 0
       ::aReport[ PAGEBUFFER ] += CRLF + "0 g " + cBoxColor + ltrim(str(::M2X( y1 ))) + " " + ltrim(str(::M2Y( x1 ))) + " " + ltrim(str(::M2X( y2 - y1 ))) + " -" + ltrim(str(::M2X( nBorder ))) + " re f"
       ::aReport[ PAGEBUFFER ] += CRLF + "0 g " + cBoxColor + ltrim(str(::M2X( y2 - nBorder ))) + " " + ltrim(str(::M2Y( x1 ))) + " " + ltrim(str(::M2X( nBorder ))) + " -" + ltrim(str(::M2X( x2 - x1 ))) + " re f"
