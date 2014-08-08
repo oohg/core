@@ -1,11 +1,24 @@
 /*
- * $Id: ChangeLog,v 1.1347 2014-08-03 19:37:51 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1348 2014-08-08 01:44:26 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-08-07 22:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     + Parameters nWidht, nHeight and lSize to method
+       TGridControlMemo:New(). They default to 350, 265 and .F. and
+       the minimun for nWidht and nHeight is 230.
+       The first two specify the dimensions of the editing window
+       for memo type cells. The third enables the sizing of the
+       editing window.
+       Now the editcontrol for a memo columns has the following sintax:
+       {'MEMO', cTitle, lCleanCRLF, nWidth, nHeight, lSize}
+     * The editing window for a memo type cell now uses the fontname and
+       fontsize of the grid control (it acts like other editing controls).
 
 2014-08-03 16:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt

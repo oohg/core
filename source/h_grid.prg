@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.261 2014-08-03 19:37:52 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.262 2014-08-08 01:44:26 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -4574,7 +4574,7 @@ Local oGridControl, aEdit2, cControl
       cControl := Upper( AllTrim( aEditControl[ 1 ] ) )
       Do Case
       Case cControl == "MEMO"
-         oGridControl := TGridControlMemo():New( aEdit2[ 2 ], aEdit2[ 3 ], oGrid )
+         oGridControl := TGridControlMemo():New( aEdit2[ 2 ], aEdit2[ 3 ], oGrid, aEdit2[ 4 ], aEdit2[ 5 ], aEdit2[ 6 ] )
       Case cControl == "DATEPICKER"
          oGridControl := TGridControlDatePicker():New( aEdit2[ 2 ], aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ], oGrid, aEdit2[ 6 ] )
       Case cControl == "COMBOBOX"
@@ -5037,6 +5037,9 @@ CLASS TGridControlMemo FROM TGridControl
    DATA nDefHeight INIT 84
    DATA cTitle     INIT _OOHG_Messages( 1, 11 )
    DATA lCleanCRLF INIT .F.
+   DATA nWidth     INIT 350
+   DATA nHeight    INIT 265
+   DATA lSize      INIT .F.
 
    METHOD New
    METHOD CreateWindow
@@ -5046,9 +5049,9 @@ ENDCLASS
 
 /*
 COLUMNCONTROLS syntax:
-{'MEMO', cTitle, lCleanCRLF}
+{'MEMO', cTitle, lCleanCRLF, nWidth, nHeight, lSize}
 */
-METHOD New( cTitle, lCleanCRLF, oGrid ) CLASS TGridControlMemo
+METHOD New( cTitle, lCleanCRLF, oGrid, nWidth, nHeight, lSize ) CLASS TGridControlMemo
    If ValType( cTitle ) $ "CM" .AND. ! Empty( cTitle )
       ::cTitle := cTitle
    EndIf
@@ -5056,18 +5059,49 @@ METHOD New( cTitle, lCleanCRLF, oGrid ) CLASS TGridControlMemo
       ::lCleanCRLF := lCleanCRLF
    EndIf
    ::oGrid := oGrid
+   If HB_IsNumeric( nWidth ) .and. nWidth > 230
+      ::nWidth := nWidth
+   EndIf
+   If HB_IsNumeric( nHeight ) .and. nHeight > 230
+      ::nHeight := nHeight
+   EndIf
+   If HB_IsLogical( lSize )
+      ::lSize := lSize
+   EndIf
 Return Self
 
 METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys ) CLASS TGridControlMemo
-Local lRet := .F., i
+Local lRet := .F., i, oBut1, oBut2
    Empty( nWidth )
    Empty( nHeight )
-   Empty( cFontName )
-   Empty( nFontSize )
 
+   If ::lSize
    DEFINE WINDOW 0 OBJ ::oWindow ;
-      AT nRow, nCol WIDTH 350 HEIGHT GetTitleHeight() + 265 TITLE ::cTitle ;
-      MODAL NOSIZE
+      AT nRow, nCol ;
+      WIDTH ::nWidth ;
+      HEIGHT ::nHeight ;
+      CLIENTAREA ;
+      MINWIDTH 350 ;
+      MINHEIGHT 265 ;
+      TITLE ::cTitle ;
+      MODAL ;
+      ON SIZE ( ::oControl:Width := ::oWindow:ClientWidth - 20, ;
+                ::oControl:Height := ::oWindow:ClientHeight - 90, ;
+                i := Int( Max( ::oWindow:ClientWidth - 200, 0 ) / 3 ), ;
+                oBut1:Row := ::oWindow:ClientHeight - 40, ;
+                oBut1:Col := i, ;
+                oBut2:Row := oBut1:Row, ;
+                oBut2:Col := i + 100 + i )
+   Else
+   DEFINE WINDOW 0 OBJ ::oWindow ;
+      AT nRow, nCol ;
+      WIDTH ::nWidth ;
+      HEIGHT ::nHeight ;
+      CLIENTAREA ;
+      TITLE ::cTitle ;
+      MODAL ;
+      NOSIZE
+   EndIf
 
       ON KEY ESCAPE OF ( ::oWindow ) ACTION ( ::oWindow:Release() )
 
@@ -5081,11 +5115,14 @@ Local lRet := .F., i
 
       @ 07,10 LABEL 0 PARENT ( ::oWindow ) VALUE "" WIDTH 280
 
-      ::CreateControl( uValue, ::oWindow:Name, 30, 10, 320, 176 )
+      ::CreateControl( uValue, ::oWindow:Name, 30, 10, ::oWindow:ClientWidth - 20, ::oWindow:ClientHeight - 90 )
+      ::oControl:SetFont( cFontName, nFontSize )
       ::Value := ::ControlValue
 
-      @ 217,120 BUTTON 0 PARENT ( ::oWindow ) CAPTION _OOHG_Messages( 1, 6 ) ACTION ( lRet := ::Valid() )
-      @ 217,230 BUTTON 0 PARENT ( ::oWindow ) CAPTION _OOHG_Messages( 1, 7 ) ACTION ( ::oWindow:Release() )
+      i := Int( Max( ::oWindow:ClientWidth - 200, 0 ) / 3 )
+
+      @ ::oWindow:ClientHeight - 40,i BUTTON 0 OBJ oBut1 PARENT ( ::oWindow ) CAPTION _OOHG_Messages( 1, 6 ) ACTION ( lRet := ::Valid() )
+      @ oBut1:Row,i + 100 + i BUTTON 0 OBJ oBut2 PARENT ( ::oWindow ) CAPTION _OOHG_Messages( 1, 7 ) ACTION ( ::oWindow:Release() )
    END WINDOW
 
    ::oWindow:Center()
