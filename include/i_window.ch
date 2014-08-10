@@ -1,5 +1,5 @@
 /*
- * $Id: i_window.ch,v 1.54 2014-07-14 21:20:24 fyurisich Exp $
+ * $Id: i_window.ch,v 1.55 2014-08-10 15:35:28 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -77,7 +77,7 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
             Width, Height, Visible, Enabled, Checked, ItemCount, RangeMin, ;
             RangeMax, CaretPos, ForeColor, ScrollCaret, GetEditSel, Stretch, ;
             Indent, SelColor, OnChange, AllowAppend, AllowDelete, AllowEdit, ;
-            Action, OnClick, Length, hWnd, Object, ReadOnly\> ;
+            Action, OnClick, Length, hWnd, Object, ReadOnly, Cargo, TabStop\> ;
             => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ;;
       #xtranslate <w> . \<c\> . \<p: DisplayValue, Position, ForeColor\> ;
             => GetProperty( <(w)>, \<(c)\>, \<(p)\> ) ;;
@@ -88,7 +88,7 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
             Picture, Image, Stretch, ItemReadonly, ItemEnabled, ItemDraggable, ;
             CheckItem, BoldItem\>( \<arg\> ) ;
             => GetProperty( <(w)>, \<(c)>, \<(p)>, \<arg\> ) ;;
-      #xtranslate <w> . \<c\> . \<p: Caption, Header, Item,Icon, ColumnWidth, ;
+      #xtranslate <w> . \<c\> . \<p: Caption, Header, Item, Icon, ColumnWidth, ;
             Picture, Image, Stretch, ItemReadonly, ItemEnabled, ItemDraggable, ;
             CheckItem, BoldItem\>( \<arg\> ) := \<n\> ;
             => SetProperty( <(w)>, \<(c)>, \<(p)>, \<arg\>, \<n\> ) ;;
@@ -111,7 +111,7 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
       #xtranslate <w> . \<c\> . \<p: AddItem, DeleteItem, Open, DeletePage, ;
             DeleteColumn, Expand, Collapse, ColumnAutoFit, ColumnAutoFitH, ;
             ColumnBetterAutoFit, GetParent, GetChildren, HandleToItem, Action, ;
-            OnClick\>( \<a\> ) ;
+            OnClick, TabStop\>( \<a\> ) ;
             => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ( \<a\> ) ;;
       #xtranslate <w> . \<c\> . \<p: AddItem, Item, ItemReadonly, ItemEnabled, ;
             ItemDraggable, CheckItem, BoldItem\>( \<arg1\>, \<arg2\> ) ;
@@ -145,7 +145,6 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
             \<a3\>, \<a4\> ) ;
             => DoMethod( <(w)>, \<(c)>, \<(p)>, \<a1\>, \<a2\>, \<a3\>, ;
             \<a4\> ) ;;
-
       #xtranslate <w> . \<c\> . \<p: AddItem\>( \<a1\>, \<a2\>, \<a3\>, ;
             \<a4\> ) ;
             => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ( \<a1\>, ;
@@ -171,7 +170,7 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
       #xtranslate <w> . \<x\> . \<c\> . \<p: Caption, Enabled\> ;
             => GetProperty( <(w)>, \<(x)>, \<(c)>, \<(p)> ) ;;
       #xtranslate <w> . \<x\> . \<c\> . \<p: Caption, Enabled\> := \<n\> ;
-            => SetProperty ( <(w)>, \<(x)>, \<(c)>, \<(p)>, \<n\> ) ;;
+            => SetProperty( <(w)>, \<(x)>, \<(c)>, \<(p)>, \<n\> ) ;;
       #xtranslate <w> . \<x\>( \<k\> ) . \<c\> . \<p: Value, Name, Address, ;
             BackColor, FontColor, Picture, ToolTip, FontName, FontSize, ;
             FontBold, FontItalic, FontUnderline, FontStrikeOut, Caption, ;
@@ -367,11 +366,11 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
 
 #xtranslate FETCH [ PROPERTY ] [ WINDOW ] <Arg1> <Arg2> TO <Arg3> ;
    => ;
-      <Arg3> := GetProperty ( <(Arg1)>, <(Arg2)> )
+      <Arg3> := GetProperty( <(Arg1)>, <(Arg2)> )
 
 #xtranslate MODIFY [ PROPERTY ] [ WINDOW ] <Arg1> <Arg2> <Arg3> ;
    => ;
-      SetProperty ( <(Arg1)>, <(Arg2)>, <Arg3> )
+      SetProperty( <(Arg1)>, <(Arg2)>, <Arg3> )
 
 #xcommand DEFINE WINDOW TEMPLATE ;
       [ OBJ <obj> ] ;
