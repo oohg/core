@@ -1,5 +1,5 @@
 /*
- * $Id: i_window.ch,v 1.55 2014-08-10 15:35:28 fyurisich Exp $
+ * $Id: i_window.ch,v 1.56 2014-08-13 22:22:11 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -66,7 +66,8 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
       #xtranslate <w> . \<p: Name, Title, Height, Width, ClientHeight, ;
             ClientWidth, VirtualHeight, VirtualWidth, Col, Row, BackColor, ;
             FocusedControl, hWnd, Object, Cursor, NotifyIcon, NotifyToolTip, ;
-            SaveAs, MinWidth, MaxWidth, MinHeight, MaxHeight\> ;
+            SaveAs, MinWidth, MaxWidth, MinHeight, MaxHeight, Topmost, ;
+            HelpButton\> ;
             => GetExistingFormObject( <(w)> ):\<p\> ;;
       #xtranslate <w> . \<p: Activate, Center, Release, Maximize, Minimize, ;
             Restore, Show, Hide, Print, SetFocus\> \[()\] ;
@@ -77,7 +78,8 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
             Width, Height, Visible, Enabled, Checked, ItemCount, RangeMin, ;
             RangeMax, CaretPos, ForeColor, ScrollCaret, GetEditSel, Stretch, ;
             Indent, SelColor, OnChange, AllowAppend, AllowDelete, AllowEdit, ;
-            Action, OnClick, Length, hWnd, Object, ReadOnly, Cargo, TabStop\> ;
+            Action, OnClick, Length, hWnd, Object, ReadOnly, Cargo, TabStop, ;
+            ItemHeight, RichValue, OnGotFocus, OnLostFocus, OnDblClick\> ;
             => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ;;
       #xtranslate <w> . \<c\> . \<p: DisplayValue, Position, ForeColor\> ;
             => GetProperty( <(w)>, \<(c)\>, \<(p)\> ) ;;
@@ -106,15 +108,17 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
             => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\>() ;;
       #xtranslate <w> . \<c\> . \<p: Save\> \[()\] ;
             => DoMethod( <(w)>, \<(c)\>, \<(p)> ) ;;
-      #xtranslate <w> . \<c\> . \<p: Action, OnClick\>() ;
+      #xtranslate <w> . \<c\> . \<p: Action, OnClick, OnGotFocus, OnLostFocus, ;
+            OnDblClick, OnChange\>() ;
             => DoMethod( <(w)>, \<(c)\>, \<(p)> ) ;;
       #xtranslate <w> . \<c\> . \<p: AddItem, DeleteItem, Open, DeletePage, ;
             DeleteColumn, Expand, Collapse, ColumnAutoFit, ColumnAutoFitH, ;
             ColumnBetterAutoFit, GetParent, GetChildren, HandleToItem, Action, ;
-            OnClick, TabStop\>( \<a\> ) ;
+            OnClick, TabStop, HeaderImage\>( \<a\> ) ;
             => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ( \<a\> ) ;;
       #xtranslate <w> . \<c\> . \<p: AddItem, Item, ItemReadonly, ItemEnabled, ;
-            ItemDraggable, CheckItem, BoldItem\>( \<arg1\>, \<arg2\> ) ;
+            ItemDraggable, CheckItem, BoldItem, HeaderImage\>( \<arg1\>, ;
+            \<arg2\> ) ;
             => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\>( \<arg1\>, ;
             \<arg2\> ) ;;
       #xtranslate <w> . \<c\> . \<p: AddPage, SetRange, SetEditSel\>( \<a1\>, ;
@@ -195,7 +199,7 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
             AddPage\>( \<a1\>, \<a2\>, \<a3\> ) ;
             => <w> . \<c\> . \<p\> ( \<a1\>, \<a2\>, \<a3\> ) ;;
       #xtranslate <w> . \<x\>( \<k\> ) . \<c\> . \<p: AddItem, AddColumn, ;
-            AddControl\>( \<a1\>, \<a2\>, \<a3\>, \<a4\> ) ;
+            AddControl, AddPage\>( \<a1\>, \<a2\>, \<a3\>, \<a4\> ) ;
             => <w> . \<c\> . \<p\> ( \<a1\>, \<a2\>, \<a3\>, \<a4\> ) ;;
       #xtranslate <w> . \<x\>( \<k\> ) . \<c\> . \<p: Name, Length, hWnd, ;
             Object, ReadOnly, Speed, Volume, Zoom\> ;

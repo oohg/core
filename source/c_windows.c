@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.79 2014-05-17 21:30:00 fyurisich Exp $
+ * $Id: c_windows.c,v 1.80 2014-08-13 22:22:11 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -936,30 +936,44 @@ HANDLE DDBToDIB(HBITMAP , HPALETTE );
 HB_FUNC( _GETBITMAP )                   // hWnd, bAll
 {
    HWND hWnd = HWNDparam( 1 );
-   HDC  hDC  = GetDC( hWnd );
-   HDC  hMemDC;
+   BOOL bAll = hb_parl( 2 );
+   HDC hDC, hMemDC;
    RECT rct;
    HBITMAP hBitmap, hOldBmp;
+   int iTop, iLeft;
 
-   if( hb_parl( 2 ) )
+   if( bAll )
    {
+      hDC = GetDC( HWND_DESKTOP );
       GetWindowRect( hWnd, &rct );
+      iTop = rct.top;
+      iLeft = rct.left;
    }
    else
    {
+      hDC = GetDC( hWnd );
       GetClientRect( hWnd, &rct );
+      iTop = 0;
+      iLeft = 0;
    }
 
    hMemDC = CreateCompatibleDC( hDC );
    hBitmap = CreateCompatibleBitmap( hDC, rct.right - rct.left, rct.bottom - rct.top );
 
-   hOldBmp = ( HBITMAP ) SelectObject( hMemDC, hBitmap );
-   BitBlt( hMemDC, 0, 0, rct.right-rct.left, rct.bottom-rct.top, hDC, 0, 0, SRCCOPY );
+   hOldBmp = (HBITMAP) SelectObject( hMemDC, hBitmap );
+   BitBlt( hMemDC, 0, 0, rct.right - rct.left, rct.bottom - rct.top, hDC, iTop, iLeft, SRCCOPY );
    SelectObject( hMemDC, hOldBmp );
 
    DeleteDC( hMemDC );
-   ReleaseDC( hWnd, hDC );
-   HWNDret( ( HWND ) hBitmap );
+   if( bAll )
+   {
+      ReleaseDC( HWND_DESKTOP, hDC ) ;
+   }
+   else
+   {
+      ReleaseDC( hWnd, hDC );
+   }
+   HWNDret( (HWND) hBitmap );
 }
 
 HB_FUNC( _SAVEBITMAP )                   // hBitmap, cFile
@@ -975,35 +989,49 @@ HB_FUNC( WNDCOPY  )  //  hWnd, bAll, cFile        Copies any Window to the Clipb
 {
    HWND hWnd = HWNDparam( 1 );
    BOOL bAll = hb_parl( 2 );
-   HDC  hDC  = GetDC( hWnd );
-   HDC  hMemDC;
+   HDC hDC, hMemDC;
    RECT rct;
    HBITMAP hBitmap, hOldBmp;
-   HPALETTE  hPal = NULL;
-   LPSTR myFile = (char * )  hb_parc( 3 ) ;
+   HPALETTE hPal = NULL;
+   LPSTR myFile = (char *) hb_parc( 3 ) ;
    HANDLE hDIB;
+   int iTop, iLeft;
+
    if( bAll )
+   {
+      hDC = GetDC( HWND_DESKTOP );
       GetWindowRect( hWnd, &rct );
+      iTop = rct.top;
+      iLeft = rct.left;
+   }
    else
+   {
+      hDC = GetDC( hWnd );
       GetClientRect( hWnd, &rct );
+      iTop = 0;
+      iLeft = 0;
+   }
 
-      hMemDC  = CreateCompatibleDC( hDC );
-      hBitmap = CreateCompatibleBitmap( hDC, rct.right-rct.left, rct.bottom-rct.top );
-      hOldBmp = ( HBITMAP ) SelectObject( hMemDC, hBitmap );
+   hMemDC = CreateCompatibleDC( hDC );
+   hBitmap = CreateCompatibleBitmap( hDC, rct.right - rct.left, rct.bottom - rct.top );
 
-      BitBlt( hMemDC, 0, 0, rct.right-rct.left, rct.bottom-rct.top, hDC, 0, 0, SRCCOPY );
+   hOldBmp = (HBITMAP) SelectObject( hMemDC, hBitmap );
+   BitBlt( hMemDC, 0, 0, rct.right - rct.left, rct.bottom - rct.top, hDC, iTop, iLeft, SRCCOPY );
+   SelectObject( hMemDC, hOldBmp );
 
+   hDIB = DDBToDIB( hBitmap, hPal );
+   SaveDIB( hDIB, myFile );
 
-      SelectObject( hMemDC, hOldBmp );
-
-      hDIB = DDBToDIB(hBitmap ,hPal);
-
-      SaveDIB(hDIB , myFile);
-
-      DeleteDC( hMemDC );
-
-      GlobalFree (hDIB);
-   ReleaseDC( hWnd, hDC );
+   DeleteDC( hMemDC );
+   GlobalFree( hDIB );
+   if( bAll )
+   {
+      ReleaseDC( HWND_DESKTOP, hDC ) ;
+   }
+   else
+   {
+      ReleaseDC( hWnd, hDC );
+   }
 }
 
 WORD PaletteSize(LPSTR lpDIB)

@@ -1,5 +1,5 @@
 /*
- * $Id: h_editbox.prg,v 1.22 2013-08-22 22:25:07 fyurisich Exp $
+ * $Id: h_editbox.prg,v 1.23 2014-08-13 22:22:11 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -97,12 +97,15 @@
 #include "hbclass.ch"
 
 CLASS TEdit FROM TText
-   DATA Type            INIT "EDIT" READONLY
-   DATA nOnFocusPos     INIT -4
+   DATA Type             INIT "EDIT" READONLY
+   DATA nOnFocusPos      INIT -4
+   DATA OnHScroll        INIT Nil
+   DATA OnVScroll        INIT Nil
 
    METHOD Define
    METHOD LookForKey
-   METHOD Events_Enter  BLOCK { || nil }
+   METHOD Events_Command
+   METHOD Events_Enter   BLOCK { || Nil }
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
@@ -112,7 +115,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
                fontsize, tooltip, maxlenght, gotfocus, change, lostfocus, ;
                readonly, break, HelpId, invisible, notabstop, bold, italic, ;
                underline, strikeout, field, backcolor, fontcolor, novscroll, ;
-               nohscroll, lRtl, lNoBorder, OnFocusPos ) CLASS TEdit
+               nohscroll, lRtl, lNoBorder, OnFocusPos, OnHScroll, OnVScroll ) CLASS TEdit
 *-----------------------------------------------------------------------------*
 Local nStyle := ES_MULTILINE + ES_WANTRETURN, nStyleEx := 0
 
@@ -130,6 +133,9 @@ Local nStyle := ES_MULTILINE + ES_WANTRETURN, nStyleEx := 0
               readonly, bold, italic, underline, strikeout, field, ;
               backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, .F., ;
               nStyleEx, lNoBorder, OnFocusPos )
+
+   ASSIGN ::OnHScroll VALUE OnHScroll TYPE "B"
+   ASSIGN ::OnVScroll VALUE OnVScroll TYPE "B"
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -141,3 +147,19 @@ Local lDone
       lDone := .T.
    EndIf
 Return lDone
+
+*------------------------------------------------------------------------------*
+METHOD Events_Command( wParam ) CLASS TEdit
+*------------------------------------------------------------------------------*
+Local Hi_wParam := HiWord( wParam )
+
+   If Hi_wParam == EN_HSCROLL
+      ::DoEvent( ::OnHScroll, "HSCROLL" )
+      Return Nil
+
+   ElseIf Hi_wParam == EN_VSCROLL
+      ::DoEvent( ::OnVScroll, "VSCROLL" )
+      Return Nil
+   EndIf
+
+Return ::Super:Events_Command( wParam )

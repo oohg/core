@@ -1,5 +1,5 @@
 /*
- * $Id: i_richeditbox.ch,v 1.11 2014-07-09 02:25:23 fyurisich Exp $
+ * $Id: i_richeditbox.ch,v 1.12 2014-08-13 22:22:11 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -66,6 +66,9 @@ STANDARD VERSION
       [ WIDTH <w> ] ;
       [ HEIGHT <h> ] ;
       [ FIELD <field> ] ;
+      [ FILE <file> ] ;
+      [ <plain : PLAINTEXT> ] ;
+		[ FILETYPE <type> ] ;
       [ VALUE <value> ] ;
       [ < readonly: READONLY > ] ;
       [ FONT <f> ] ;
@@ -81,7 +84,7 @@ STANDARD VERSION
       [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
       [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
       [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
-      [ ON SELCHANGE <selchange> ] ;
+      [ <dummy05: ONSELECT, ON SELECT, ONSELCHANGE, ON SELCHANGE> <selchange> ] ;
       [ HELPID <helpid> ] ;
       [ <break: BREAK> ] ;
       [ <invisible: INVISIBLE> ] ;
@@ -93,6 +96,8 @@ STANDARD VERSION
       [ FOCUSEDPOS <focusedpos> ] ;
       [ <novscroll: NOVSCROLL> ] ;
       [ <nohscroll: NOHSCROLL> ] ;
+      [ <dummy06: ONVSCROLL, ON VSCROLL> <vscroll> ] ;
+      [ <dummy07: ONHSCROLL, ON HSCROLL> <hscroll> ] ;
       => ;
       [ <obj> := ] _OOHG_SelectSubClass( TEditRich(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <value>, ;
@@ -101,7 +106,8 @@ STANDARD VERSION
             <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
             <(field)>, <backcolor>, <.rtl.>, <.disabled.>, <{selchange}>, ;
             <fontcolor>, <.nohidesel.>, <focusedpos>, <.novscroll.>, ;
-            <.nohscroll.> )
+            <.nohscroll.>, <file>, iif( <.plain.>, 1, <type> ), <{hscroll}>, ;
+            <{vscroll}> )
 
 /*---------------------------------------------------------------------------
 SPLITBOX VERSION
@@ -113,6 +119,9 @@ SPLITBOX VERSION
       [ WIDTH <w> ] ;
       [ HEIGHT <h> ] ;
       [ FIELD <field> ] ;
+      [ FILE <file> ] ;
+      [ <plain : PLAINTEXT> ] ;
+		[ FILETYPE <type> ] ;
       [ VALUE <value> ] ;
       [ < readonly: READONLY > ] ;
       [ FONT <f> ] ;
@@ -128,7 +137,7 @@ SPLITBOX VERSION
       [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
       [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
       [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
-      [ ON SELCHANGE <selchange> ] ;
+      [ <dummy05: ONSELECT, ON SELECT, ONSELCHANGE, ON SELCHANGE> <selchange> ] ;
       [ HELPID <helpid> ] ;
       [ <break: BREAK> ] ;
       [ <invisible: INVISIBLE> ] ;
@@ -140,11 +149,14 @@ SPLITBOX VERSION
       [ FOCUSEDPOS <focusedpos> ] ;
       [ <novscroll: NOVSCROLL> ] ;
       [ <nohscroll: NOHSCROLL> ] ;
+      [ <dummy06: ONVSCROLL, ON VSCROLL> <vscroll> ] ;
+      [ <dummy07: ONHSCROLL, ON HSCROLL> <hscroll> ] ;
       =>;
       [ <obj> := ] _OOHG_SelectSubClass( TEditRich(), [ <subclass>() ] ): ;
-            Define( <(name)>, <(parent)>,,, <w>, <h>, <value>, <f>, <s>, ;
+            Define( <(name)>, <(parent)>, , , <w>, <h>, <value>, <f>, <s>, ;
             <tooltip>, <maxlenght>, <{gotfocus}>, <{change}>, <{lostfocus}>, ;
             <.readonly.>, <.break.>, <helpid>, <.invisible.>, <.notabstop.>, ;
             <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, <(field)>, ;
             <backcolor>, <.rtl.>, <.disabled.>, <{selchange}>, <fontcolor>, ;
-            <.nohidesel.>, <focusedpos>, <.novscroll.>, <.nohscroll.> )
+            <.nohidesel.>, <focusedpos>, <.novscroll.>, <.nohscroll.>, <file>, ;
+            iif( <.plain.>, 1, <type> ), <{hscroll}>, <{vscroll}>

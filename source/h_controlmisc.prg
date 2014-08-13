@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.146 2014-07-04 20:16:03 fyurisich Exp $
+ * $Id: h_controlmisc.prg,v 1.147 2014-08-13 22:22:11 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1088,6 +1088,14 @@ Local RetVal, aPars, cMethod, oWnd, oCtrl
             RetVal := oCtrl:DoEvent( oCtrl:OnClick, "CLICK" )
          ElseIf cMethod == 'ONCLICK'
             RetVal := oCtrl:DoEvent( oCtrl:OnClick, "CLICK" )
+         ElseIf cMethod == 'ONGOTFOCUS'
+            RetVal := oCtrl:DoEvent( oCtrl:OnGotFocus, "GOTFOCUS" )
+         ElseIf cMethod == 'ONLOSTFOCUS'
+            RetVal := oCtrl:DoEvent( oCtrl:OnLostFocus, "LOSTFOCUS" )
+         ElseIf cMethod == 'ONDBLCLICK'
+            RetVal := oCtrl:DoEvent( oCtrl:OnDblClick, "DBLCLICK" )
+         ElseIf cMethod == 'ONCHANGE'
+            RetVal := oCtrl:DoEvent( oCtrl:OnChange, "CHANGE" )
          ElseIf _OOHG_HasMethod( oCtrl, cMethod )
             RetVal := oCtrl:&( cMethod )()
          EndIf
@@ -1265,7 +1273,7 @@ CLASS TControl FROM TWindow
    METHOD Height             SETGET
    METHOD ToolTip            SETGET
    METHOD SetForm
-   METHOD  INITStyle
+   METHOD InitStyle
    METHOD Register
    METHOD TabIndex           SETGET
    METHOD Refresh            BLOCK { |self| ::ReDraw() }

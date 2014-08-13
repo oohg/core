@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.60 2014-07-26 19:30:44 fyurisich Exp $
+ * $Id: i_windefs.ch,v 1.61 2014-08-13 22:22:11 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -306,6 +306,8 @@ EDIT CONTROL
 #define EN_CHANGE                     768
 #define EN_UPDATE                     1024
 #define EN_SELCHANGE                  0x0702
+#define EN_HSCROLL                    1537
+#define EN_VSCROLL                    1538
 
 /*---------------------------------------------------------------------------
 REBAR CONTROL

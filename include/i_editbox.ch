@@ -1,5 +1,5 @@
 /*
- * $Id: i_editbox.ch,v 1.8 2014-07-09 02:25:23 fyurisich Exp $
+ * $Id: i_editbox.ch,v 1.9 2014-08-13 22:22:11 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -90,13 +90,16 @@ STANDARD VERSION
       [ <rtl: RTL> ] ;
       [ <noborder: NOBORDER> ] ;
       [ FOCUSEDPOS <focusedpos> ] ;
+      [ <dummy06: ONVSCROLL, ON VSCROLL> <vscroll> ] ;
+      [ <dummy07: ONHSCROLL, ON HSCROLL> <hscroll> ] ;
    => ;
       [ <obj> := ] TEdit():Define( <(name)>, <(parent)>, <col>, <row>, <w>, ;
             <h>, <value>, <f>, <s>, <tooltip>, <maxlenght>, <{gotfocus}>, ;
             <{change}>, <{lostfocus}>, <.readonly.>, .f., <helpid>, ;
             <.invisible.>, <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, ;
             <.strikeout.>, <(field)>, <backcolor>, <fontcolor>, <.novscroll.>, ;
-            <.nohscroll.>, <.rtl.>, <.noborder.>, <focusedpos> )
+            <.nohscroll.>, <.rtl.>, <.noborder.>, <focusedpos>, <{hscroll}>, ;
+            <{vscroll} )
 
 /*---------------------------------------------------------------------------
 SPLITBOX VERSION
@@ -132,10 +135,12 @@ SPLITBOX VERSION
       [ <rtl: RTL> ] ;
       [ <noborder: NOBORDER> ] ;
       [ FOCUSEDPOS <focusedpos> ] ;
+      [ <dummy06: ONVSCROLL, ON VSCROLL> <vscroll> ] ;
+      [ <dummy07: ONHSCROLL, ON HSCROLL> <hscroll> ] ;
    => ;
       [ <obj> := ] TEdit():Define( <(name)>, <(parent)>,,, <w>, <h>, <value>, ;
             <f>, <s>, <tooltip>, <maxlenght>, <{gotfocus}>, <{change}>, ;
             <{lostfocus}>, <.readonly.>, <.break.>, <helpid>, <.invisible.>, ;
             <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
             <(field)>, <backcolor>, <fontcolor>, <.novscroll.>, <.nohscroll.>, ;
-            <.rtl.>, <.noborder.>, <focusedpos> )
+            <.rtl.>, <.noborder.>, <focusedpos>, <{hscroll}>, <{vscroll} )

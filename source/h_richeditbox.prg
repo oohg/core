@@ -1,5 +1,5 @@
 /*
- * $Id: h_richeditbox.prg,v 1.33 2014-05-06 22:04:19 fyurisich Exp $
+ * $Id: h_richeditbox.prg,v 1.34 2014-08-13 22:22:11 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -115,6 +115,8 @@ CLASS TEditRich FROM TEdit
    METHOD HideSelection
    METHOD GetSelText
    METHOD MaxLength  SETGET
+   METHOD LoadFile
+   METHOD SaveFile
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
@@ -125,7 +127,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
                readonly, break, HelpId, invisible, notabstop, bold, italic, ;
                underline, strikeout, field, backcolor, lRtl, lDisabled, ;
                selchange, fontcolor, nohidesel, OnFocusPos, novscroll, ;
-               nohscroll ) CLASS TEditRich
+               nohscroll, file, type, OnHScroll, OnVScroll ) CLASS TEditRich
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle
 
@@ -148,18 +150,45 @@ Local ControlHandle, nStyle
    ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
 
-   ::SetVarBlock( Field, Value )
+   If Empty( file )
+      ::SetVarBlock( Field, Value )
+   Else
+      ::LoadFile( file, type )
+   EndIf
 
    ::BackColor := ::BackColor
    ::FontColor := ::FontColor
 
+   ASSIGN ::OnHScroll   VALUE OnHScroll  TYPE "B"
+   ASSIGN ::OnVScroll   VALUE OnVScroll  TYPE "B"
    ASSIGN ::OnLostFocus VALUE lostfocus  TYPE "B"
    ASSIGN ::OnGotFocus  VALUE gotfocus   TYPE "B"
    ASSIGN ::OnChange    VALUE change     TYPE "B"
    ASSIGN ::OnSelChange VALUE selchange  TYPE "B"
    ASSIGN ::nOnFocusPos VALUE OnFocusPos TYPE "N"
-
 Return Self
+
+*-----------------------------------------------------------------------------*
+METHOD LoadFile( cFile, nType ) CLASS TEditRich
+*-----------------------------------------------------------------------------*
+Local lRet := .F.
+   ASSIGN cFile VALUE cFile TYPE "C" DEFAULT ""
+   ASSIGN nType VALUE nType TYPE "N" DEFAULT 2
+   If ! Empty( cFile ) .and. File( cFile )
+      lRet := FileStreamIn( ::hWnd, cFile, nType )
+   EndIf
+Return lRet
+
+*-----------------------------------------------------------------------------*
+METHOD SaveFile( cFile, nType ) CLASS TEditRich
+*-----------------------------------------------------------------------------*
+Local lRet := .F.
+   ASSIGN cFile VALUE cFile TYPE "C" DEFAULT ""
+   ASSIGN nType VALUE nType TYPE "N" DEFAULT 2
+   If ! Empty( cFile )
+      lRet := FileStreamOut( ::hWnd, cFile, nType )
+   EndIf
+Return lRet
 
 *-----------------------------------------------------------------------------*
 METHOD RichValue( cValue ) CLASS TEditRich
@@ -201,7 +230,7 @@ HB_FUNC( INITRICHEDITBOX )
 
    Style = ES_MULTILINE | ES_WANTRETURN | WS_CHILD | hb_parni( 7 );
 
-   Mask = ENM_CHANGE | ENM_SELCHANGE;
+   Mask = ENM_CHANGE | ENM_SELCHANGE | ENM_SCROLL;
 
    InitCommonControls();
    if ( LoadLibrary( "RichEd20.dll" ) )
@@ -402,6 +431,178 @@ HB_FUNC( RICHSTREAMOUT )   // hWnd
       }
       hb_retclen( cBuffer, lSize );
       hb_xfree( cBuffer );
+   }
+}
+
+EDITSTREAMCALLBACK CALLBACK EditStreamCallbackFileIn( DWORD_PTR dwCookie, LPBYTE pbBuff, LONG cb, LONG *pcb )
+{
+   HANDLE hFile = (HANDLE) dwCookie;
+
+   if( ReadFile( hFile, (LPVOID) pbBuff, cb, (LPDWORD) pcb, NULL ) )
+   {
+      return (EDITSTREAMCALLBACK) 0;
+   }
+   else
+   {
+      return (EDITSTREAMCALLBACK) -1;
+   }
+}
+
+EDITSTREAMCALLBACK CALLBACK EditStreamCallbackFileOut( DWORD_PTR dwCookie, LPBYTE pbBuff, LONG cb, LONG *pcb )
+{
+   HANDLE hFile = (HANDLE) dwCookie;
+
+   if( WriteFile( hFile, (LPVOID) pbBuff, cb, (LPDWORD) pcb, NULL ) )
+   {
+      return (EDITSTREAMCALLBACK) 0;
+   }
+   else
+   {
+      return (EDITSTREAMCALLBACK) -1;
+   }
+}
+
+HB_FUNC( FILESTREAMIN )        // hWnd, cFile, nType
+{
+   HWND hwnd = HWNDparam( 1 );
+   HANDLE hFile;
+   EDITSTREAM es;
+   long lFlag, lMode;
+
+   switch( hb_parni( 3 ) )
+   {
+      case 1:
+      {
+         lFlag = SF_TEXT;
+         lMode = TM_PLAINTEXT;
+         break;
+      }
+      case 2:
+      {
+         lFlag = SF_RTF;
+         lMode = TM_RICHTEXT;
+         break;
+      }
+      case 3:
+      {
+         lFlag = SF_TEXT | SF_UNICODE;
+         lMode = TM_PLAINTEXT;
+         break;
+      }
+      case 4:
+      {
+         lFlag = ( CP_UTF8 << 16 ) | SF_USECODEPAGE | SF_TEXT;
+         lMode = TM_PLAINTEXT;
+         break;
+      }
+      case 5:
+      {
+         lFlag = ( CP_UTF8 << 16 ) | SF_USECODEPAGE | SF_RTF; ;
+         lMode = TM_RICHTEXT;
+         break;
+      }
+      case 6:
+      {
+         lFlag = ( CP_UTF7 << 16 ) | SF_USECODEPAGE | SF_TEXT; ;
+         lMode = TM_PLAINTEXT;
+         break;
+      }
+      default:
+      {
+         lFlag = SF_TEXT;
+         lMode = TM_PLAINTEXT;
+      }
+   }
+
+   if( ( hFile = CreateFile( hb_parc( 2 ), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL ) ) == INVALID_HANDLE_VALUE )
+   {
+      hb_retl( FALSE );
+   }
+
+   es.dwCookie = (DWORD) hFile;
+   es.dwError = 0;
+   es.pfnCallback = (EDITSTREAMCALLBACK) EditStreamCallbackFileIn;
+
+   SendMessage( hwnd, (UINT) EM_STREAMIN, (WPARAM) lFlag, (LPARAM) &es );
+   SendMessage( hwnd, (UINT) EM_SETTEXTMODE, (WPARAM) lMode, 0 );
+
+   CloseHandle( hFile );
+
+   if( es.dwError )
+   {
+      hb_retl( FALSE );
+   }
+   else
+   {
+      hb_retl( TRUE );
+   }
+}
+
+HB_FUNC( FILESTREAMOUT )       // hWnd, cFile, nType
+{
+   HWND hwnd = HWNDparam( 1 );
+   HANDLE hFile;
+   EDITSTREAM es;
+   long lFlag;
+
+   switch( hb_parni( 3 ) )
+   {
+      case 1:
+      {
+         lFlag = SF_TEXT;
+         break;
+      }
+      case 2:
+      {
+         lFlag = SF_RTF;
+         break;
+      }
+      case 3:
+      {
+         lFlag = SF_TEXT | SF_UNICODE;
+         break;
+      }
+      case 4:
+      {
+         lFlag = ( CP_UTF8 << 16 ) | SF_USECODEPAGE | SF_TEXT;
+         break;
+      }
+      case 5:
+      {
+         lFlag = ( CP_UTF8 << 16 ) | SF_USECODEPAGE | SF_RTF;
+         break;
+      }
+      case 6:
+      {
+         lFlag = ( CP_UTF7 << 16 ) | SF_USECODEPAGE | SF_TEXT;
+         break;
+      }
+      default:
+      {
+         lFlag = SF_TEXT;
+      }
+   }
+
+   if( ( hFile = CreateFile( hb_parc( 2 ), GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL ) ) == INVALID_HANDLE_VALUE )
+   {
+      hb_retl( FALSE );
+   }
+
+   es.dwCookie = (DWORD) hFile;
+   es.dwError = 0;
+   es.pfnCallback = (EDITSTREAMCALLBACK) EditStreamCallbackFileOut;
+
+   SendMessage( hwnd, EM_STREAMOUT, (WPARAM) lFlag, (LPARAM) &es );
+
+   CloseHandle( hFile );
+
+   if( es.dwError )
+   {
+      hb_retl( FALSE );
+   }
+   else
+   {
+      hb_retl( TRUE );
    }
 }
 

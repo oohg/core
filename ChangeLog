@@ -1,11 +1,43 @@
 /*
- * $Id: ChangeLog,v 1.1351 2014-08-10 15:35:28 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1352 2014-08-13 22:22:11 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-08-13 19:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_editbox.ch
+     + ON VSCROLL and ON HSCROLL clauses.
+   * include/i_richeditbox.ch
+     + ON SELECT, FILE, PLAINTEXT, FILETYPE, ON VSCROLL and ON HSCROLL
+       clauses. Note that FILE takes precedence over FIELD and VALUE.
+   * include/i_windefs.ch
+     + EN_HSCROLL and EN_VSCROLL constants.
+   * include/i_window.ch
+     + TopMost, HelpButton, ItemHeight, RichValue, OnGotFocus,
+       OnLostFocus, OnDblClick, OnChange, HeaderImage and AddPage
+       clauses to semi-oop syntax. These adds more compatibility
+       with HMG Extended.
+   * source/c_windows.c
+     ! Functions _GetBitmap and _SaveBitmap save wrong display area
+       when bAll parameter is .T.
+   * source/h_controlmisc.prg
+     + Evaluation of OnGotFocus, OnLostFocus, OnDblClick and OnChange
+       blocks in DoMethod function.
+   * source/h_editbox.prg
+     + DATAs OnHScroll and OnVScroll.
+     + Support for setting OnHScroll and OnVScroll blocks at define time.
+     + METHOD Events_Command to process EN_HSCROLL and EN_VSCROLL
+       notifications. This notifications trigger the evaluation of
+       OnHScroll and OnVScroll blocks.
+   * source/h_richeditbox.prg
+     + METHODs LoadFile and SaveFile.
+     + Support for setting OnHScroll and OnVScroll blocks at define time.
+     + ENM_SCROLL flag to control's event mask.
+     + Functions EditStreamCallbackFileIn, EditStreamCallbackFileOut,
+       FileStreamIn and FileStreamOut at C level.
 
 2014-08-09 12:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_window.ch
