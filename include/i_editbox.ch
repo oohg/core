@@ -1,5 +1,5 @@
 /*
- * $Id: i_editbox.ch,v 1.9 2014-08-13 22:22:11 fyurisich Exp $
+ * $Id: i_editbox.ch,v 1.10 2014-08-13 22:28:36 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -99,7 +99,7 @@ STANDARD VERSION
             <.invisible.>, <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, ;
             <.strikeout.>, <(field)>, <backcolor>, <fontcolor>, <.novscroll.>, ;
             <.nohscroll.>, <.rtl.>, <.noborder.>, <focusedpos>, <{hscroll}>, ;
-            <{vscroll} )
+            <{vscroll}> )
 
 /*---------------------------------------------------------------------------
 SPLITBOX VERSION
@@ -143,4 +143,4 @@ SPLITBOX VERSION
             <{lostfocus}>, <.readonly.>, <.break.>, <helpid>, <.invisible.>, ;
             <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
             <(field)>, <backcolor>, <fontcolor>, <.novscroll.>, <.nohscroll.>, ;
-            <.rtl.>, <.noborder.>, <focusedpos>, <{hscroll}>, <{vscroll} )
+            <.rtl.>, <.noborder.>, <focusedpos>, <{hscroll}>, <{vscroll}> )
