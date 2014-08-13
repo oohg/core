@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.86 2014-08-03 19:37:51 fyurisich Exp $
+ * $Id: classes.txt,v 1.87 2014-08-13 22:38:28 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -617,10 +617,13 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS TEDIT FROM TTEXT
-   DATA TYPE                      INIT "EDIT"                READONLY
    DATA NONFOCUSPOS               INIT -4
+   DATA ONHSCROLL                 INIT NIL
+   DATA ONVSCROLL                 INIT NIL
+   DATA TYPE                      INIT "EDIT"                READONLY
 
    METHOD DEFINE
+   METHOD EVENTS_COMMAND
    METHOD EVENTS_ENTER
    METHOD LOOKFORKEY
 ENDCLASS
@@ -641,8 +644,10 @@ CLASS TEDITRICH FROM TEDIT
    METHOD FONTCOLOR               SETGET
    METHOD GETSELTEXT
    METHOD HIDESELECTION
+   METHOD LOADFILE
    METHOD MAXLENGTH               SETGET
    METHOD RICHVALUE               SETGET
+   METHOD SAVEFILE
    METHOD SETSELECTIONBACKCOLOR
    METHOD SETSELECTIONTEXTCOLOR
 ENDCLASS

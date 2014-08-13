@@ -1,5 +1,5 @@
 <!--
-$Id: CLASSES.HTM,v 1.7 2014-08-03 19:37:51 fyurisich Exp $
+$Id: CLASSES.HTM,v 1.8 2014-08-13 22:38:28 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -142,7 +142,6 @@ CLASSES</div>
 Classes &gt; </div>
 <div id="winchm_template_content">
 <pre>
-*------------------------------------------------------------------------------*
 CLASS TAPPLICATION
    DATA ARGC                      INIT HB_ARGC()
    DATA ARGS                      INIT GETCOMMANDLINEARGS()
@@ -357,8 +356,8 @@ CLASS OOHG_TERRORHTML
    DATA CLANG                     INIT ""
    DATA FILENAME                  INIT "ERRORLOG.HTM"
    DATA PATH                      INIT ""
-   DATA POSTHEADER                INIT '&lt;/p&gt;'
-   DATA PREHEADER                 INIT '&lt;HR&gt;' + CHR( 13 ) + CHR( 10 ) + '&lt;p class="updated"&gt;'
+   DATA POSTHEADER                INIT '</p>'
+   DATA PREHEADER                 INIT '<HR>' + CHR( 13 ) + CHR( 10 ) + '<p class="updated">'
 
    METHOD CREATELOG
    METHOD ERRORHEADER
@@ -757,10 +756,13 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS TEDIT FROM TTEXT
-   DATA TYPE                      INIT "EDIT"                READONLY
    DATA NONFOCUSPOS               INIT -4
+   DATA ONHSCROLL                 INIT NIL
+   DATA ONVSCROLL                 INIT NIL
+   DATA TYPE                      INIT "EDIT"                READONLY
 
    METHOD DEFINE
+   METHOD EVENTS_COMMAND
    METHOD EVENTS_ENTER
    METHOD LOOKFORKEY
 ENDCLASS
@@ -781,8 +783,10 @@ CLASS TEDITRICH FROM TEDIT
    METHOD FONTCOLOR               SETGET
    METHOD GETSELTEXT
    METHOD HIDESELECTION
+   METHOD LOADFILE
    METHOD MAXLENGTH               SETGET
    METHOD RICHVALUE               SETGET
+   METHOD SAVEFILE
    METHOD SETSELECTIONBACKCOLOR
    METHOD SETSELECTIONTEXTCOLOR
 ENDCLASS

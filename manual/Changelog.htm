@@ -1,5 +1,5 @@
 <!--
-$Id: Changelog.htm,v 1.2 2014-08-03 19:37:52 fyurisich Exp $
+$Id: Changelog.htm,v 1.3 2014-08-13 22:38:28 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -142,6 +142,81 @@ CHANGELOG</div>
 </div>
 <div id="winchm_template_content">
 <pre>
+2014-08-13 19:28 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * include/i_editbox.ch
+     ! Typo.
+
+2014-08-13 19:22 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * include/i_editbox.ch
+     + ON VSCROLL and ON HSCROLL clauses.
+   * include/i_richeditbox.ch
+     + ON SELECT, FILE, PLAINTEXT, FILETYPE, ON VSCROLL and ON HSCROLL
+       clauses. Note that FILE takes precedence over FIELD and VALUE.
+   * include/i_windefs.ch
+     + EN_HSCROLL and EN_VSCROLL constants.
+   * include/i_window.ch
+     + TopMost, HelpButton, ItemHeight, RichValue, OnGotFocus,
+       OnLostFocus, OnDblClick, OnChange, HeaderImage and AddPage
+       clauses to semi-oop syntax. These adds more compatibility
+       with HMG Extended.
+   * source/c_windows.c
+     ! Functions _GetBitmap and _SaveBitmap save wrong display area
+       when bAll parameter is .T.
+   * source/h_controlmisc.prg
+     + Evaluation of OnGotFocus, OnLostFocus, OnDblClick and OnChange
+       blocks in DoMethod function.
+   * source/h_editbox.prg
+     + DATAs OnHScroll and OnVScroll.
+     + Support for setting OnHScroll and OnVScroll blocks at define time.
+     + METHOD Events_Command to process EN_HSCROLL and EN_VSCROLL
+       notifications. This notifications trigger the evaluation of
+       OnHScroll and OnVScroll blocks.
+   * source/h_richeditbox.prg
+     + METHODs LoadFile and SaveFile.
+     + Support for setting OnHScroll and OnVScroll blocks at define time.
+     + ENM_SCROLL flag to control's event mask.
+     + Functions EditStreamCallbackFileIn, EditStreamCallbackFileOut,
+       FileStreamIn and FileStreamOut at C level.
+
+2014-08-09 12:35 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * include/i_window.ch
+     ! Compile time error in Toolbar's semi-oop syntax.
+     + Cargo and TabStop to semi-oop syntax.
+
+2014-08-08 19:26 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_pdf.pdf
+   * ide/prgs/saveform.prg
+     * Comment.
+   * manual/ActiveX.htm
+   * manual/animatebox.htm
+   * manual/button.htm
+   * manual/browse.htm
+     * Updated.
+   * source/c_winapimisc.c
+     + Support for Windows 8.1 and Server 2012 R2.
+   * source/h_grid.prg
+     - Inadvertently commited code.
+
+2014-08-08 16:38 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_grid.prg
+     + Parameter lNoHScroll to method TGridControlMemo:New().
+       Defaults to .F.
+       Now the editcontrol for a memo columns has the following sintax:
+       {'MEMO', cTitle, lCleanCRLF, nWidth, nHeight, lSize, lNoHScroll}
+
+2014-08-07 22:44 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_grid.prg
+     + Parameters nWidht, nHeight and lSize to method
+       TGridControlMemo:New(). They default to 350, 265 and .F. and
+       the minimun for nWidht and nHeight is 230.
+       The first two specify the dimensions of the editing window
+       for memo type cells. The third enables the sizing of the
+       editing window.
+       Now the editcontrol for a memo columns has the following sintax:
+       {'MEMO', cTitle, lCleanCRLF, nWidth, nHeight, lSize}
+     * The editing window for a memo type cell now uses the fontname and
+       fontsize of the grid control (it acts like other editing controls).
+
 2014-08-03 16:37 UTC-0300 Fernando Yurisich &gt;fyurisich@oohg.org&lt;
    * doc/classes.txt
    * manual/classes.htm
