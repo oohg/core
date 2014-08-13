@@ -1,5 +1,5 @@
 /*
- * $Id: i_browse.ch,v 1.51 2014-08-03 19:37:51 fyurisich Exp $
+ * $Id: i_browse.ch,v 1.52 2014-08-13 23:36:13 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -76,7 +76,7 @@ STANDARD VERSION
 
 #command @ <row>, <col> BROWSE <name> ;
       [ <dummy01: OF, PARENT> <parent> ] ;
-      [ OBJ <oObj> ] ;
+      [ OBJ <obj> ] ;
       [ WIDTH <w> ] ;
       [ HEIGHT <h> ] ;
       [ HEADERS <headers> ] ;
@@ -163,7 +163,7 @@ STANDARD VERSION
       [ <dummy14: ONHEADRCLICK, ON HEADRCLICK> <bheadrclick> ] ;
       [ <extdbl: EXTDBLCLICK> ] ;
    => ;
-      [ <oObj> := ] _OOHG_SelectSubClass( TOBrowse(), [ <subclass>() ] ): ;
+      [ <obj> := ] _OOHG_SelectSubClass( TOBrowse(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, ;
             <widths>, <Fields>, <value>, <fontname>, <fontsize>, <tooltip>, ;
             <{change}>, <{dblclick}>, <aHeadClick>, <{gotfocus}>, ;

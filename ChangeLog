@@ -1,11 +1,21 @@
 /*
- * $Id: ChangeLog,v 1.1354 2014-08-13 22:38:28 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1355 2014-08-13 23:36:13 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-08-13 20:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/prgs/formedit.prg
+     + "Print Brief" option to context menu.
+       Thanks to Ricardo Sassy for this contribution.
+     ! Duplicate add to properties arrays.
+     * Method IniArray: some references to myForm: replaced by ::
+   * include/i_browse.ch
+   * include/i_hmg_compat.ch
+     * Some tag's names.
 
 2014-08-13 19:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt

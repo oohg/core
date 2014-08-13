@@ -1,5 +1,5 @@
 /*
- * $Id: i_hmg_compat.ch,v 1.35 2014-08-03 19:37:51 fyurisich Exp $
+ * $Id: i_hmg_compat.ch,v 1.36 2014-08-13 23:36:13 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -164,7 +164,7 @@ SPLITBOX VERSION
       [ HEIGHT <h> ] ;
       [ HEADERS <headers> ] ;
       [ WIDTHS <widths> ] ;
-      [ WORKAREA <WorkArea> ] ;
+      [ WORKAREA <workarea> ] ;
       [ FIELDS <Fields> ] ;
       [ INPUTMASK <Picture> ] ;
       [ VALUE <value> ] ;
@@ -193,7 +193,7 @@ SPLITBOX VERSION
       [ VALIDMESSAGES <aValidMessages> ] ;
       [ READONLY <aReadOnly> ] ;
       [ <lock: LOCK> ] ;
-      [ <Delete: DELETE> ] ;
+      [ <delete: DELETE> ] ;
       [ <style: NOLINES> ] ;
       [ IMAGE <aImage> ] ;
       [ JUSTIFY <aJust> ] ;
@@ -250,7 +250,7 @@ SPLITBOX VERSION
             Define( <(name)>, <(parent)>, , , <w>, <h>, <headers>, <widths>, ;
             <Fields>, <value>, <fontname>, <fontsize>, <tooltip>, <{change}>, ;
             <{dblclick}>, <aHeadClick>, <{gotfocus}>, <{lostfocus}>, ;
-            <(WorkArea)>, <.Delete.>, <.style.>, <aImage>, <aJust>, <helpid>, ;
+            <(workarea)>, <.delete.>, <.style.>, <aImage>, <aJust>, <helpid>, ;
             <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, <.break.>, ;
             <backcolor>, <fontcolor>, <.lock.>, <.inplace.>, <.novscroll.>, ;
             <.append.>, <aReadOnly>, <aValidFields>, <aValidMessages>, ;
@@ -276,7 +276,7 @@ SPLITBOX VERSION
             <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}>, ;
             <.excel.>, <.buts.>, <.upcol.>, ;
             IIF( Upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., ;
-            IIF( Upper( #<blocks> ) == "DYNAMICCONTROLS", .F., NIL ) ), ;
+            IIF( Upper( #<edtctrls> ) == "DYNAMICCONTROLS", .F., NIL ) ), ;
             <{bheadrclick}>, <.extdbl.> )
 
 #xcommand @ <row>, <col> BUTTONEX <name> ;
