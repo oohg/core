@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.87 2014-08-13 22:38:28 fyurisich Exp $
+ * $Id: classes.txt,v 1.88 2014-08-16 13:52:52 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -863,6 +863,7 @@ CLASS TFRAME FROM TCONTROL
    DATA TABHANDLE                 INIT 0
    DATA TYPE                      INIT "FRAME"               READONLY
 
+   METHOD CAPTION                 SETGET
    METHOD DEFINE
    METHOD EVENTS_COLOR
 ENDCLASS

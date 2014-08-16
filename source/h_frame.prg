@@ -1,5 +1,5 @@
 /*
- * $Id: h_frame.prg,v 1.15 2014-07-04 20:16:03 fyurisich Exp $
+ * $Id: h_frame.prg,v 1.16 2014-08-16 13:52:52 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -98,8 +98,9 @@ CLASS TFrame FROM TControl
    DATA Type      INIT "FRAME" READONLY
    DATA nWidth    INIT 140
    DATA nHeight   INIT 140
-   DATA TabHandle  INIT 0
+   DATA TabHandle INIT 0
 
+   METHOD Caption SETGET
    METHOD Define
    METHOD Events_Color
 
@@ -155,9 +156,21 @@ Local oTab
 Return Self
 
 *------------------------------------------------------------------------------*
+METHOD Caption( cCaption ) CLASS TFrame
+*------------------------------------------------------------------------------*
+Local cRet
+
+   // Under XP, when caption is changed, part of the old text remains visible.
+   cRet := ::Super:Caption( cCaption )
+   If ::lVisible
+      ::Visible := .F.
+      ::Visible := .T.
+   EndIf
+Return cRet
+
+*------------------------------------------------------------------------------*
 METHOD Events_Color( wParam, nDefColor ) CLASS TFrame
 *------------------------------------------------------------------------------*
-
 Return Events_Color_InTab( Self, wParam, nDefColor )    // see h_controlmisc.prg
 
 

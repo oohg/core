@@ -1,11 +1,22 @@
 /*
- * $Id: ChangeLog,v 1.1355 2014-08-13 23:36:13 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1356 2014-08-16 13:52:52 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-08-16 10:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * doc/classes.txt
+   * manual/classes.htm
+   * manual/changelog.htm
+     * Updated.
+   * source/h_frame.prg
+     * Format.
+     + Method Caption.
+     ! Under XP, when caption is changed, part of the old text
+       remains visible.
 
 2014-08-13 20:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ide/prgs/formedit.prg
