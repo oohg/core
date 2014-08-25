@@ -1,5 +1,5 @@
 /*
- * $Id: c_image.c,v 1.39 2014-07-01 23:49:50 fyurisich Exp $
+ * $Id: c_image.c,v 1.40 2014-08-25 05:24:54 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -122,6 +122,19 @@
 // Functions for automatic use of Gdi+
 BOOL _OOHG_UseGDIP( void );
 HANDLE _OOHG_GDIPLoadPicture( HGLOBAL, HWND, LONG, long, long );
+
+int _OOHG_StretchBltMode = COLORONCOLOR;
+
+HB_FUNC( _OOHG_STRETCHBLTMODE )
+{
+   int OldStretchBltMode;
+   OldStretchBltMode = _OOHG_StretchBltMode;
+   if( ISNUM( 1 ) )
+   {
+      _OOHG_StretchBltMode = hb_parni( 1 );
+   }
+   hb_retni( OldStretchBltMode );
+}
 
 HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor, long lWidth2, long lHeight2 )
 {
@@ -250,7 +263,11 @@ HBITMAP _OOHG_ScaleImage( HWND hWnd, HBITMAP hImage, int iWidth, int iHeight, in
       FillRect( toDC, &toRECT, hBrush );
       hOldTo = SelectObject( toDC, hpic );
 
-      SetStretchBltMode( toDC, COLORONCOLOR );
+      SetStretchBltMode( toDC, _OOHG_StretchBltMode );
+      if( _OOHG_StretchBltMode == HALFTONE )
+      {
+         SetBrushOrgEx( toDC, 0, 0, NULL );
+      }
       StretchBlt( toDC, 0, 0, iWidth, iHeight, fromDC, 0, 0, lWidth, lHeight, SRCCOPY );
 
       DeleteDC( imgDC );
@@ -344,7 +361,11 @@ HBITMAP _OOHG_RotateImage( HWND hWnd, HBITMAP hImage, LONG BackColor, int iDegre
       SelectObject( toDC, hpic );
       // coordenadas!! angulo!!
 
-      SetStretchBltMode( toDC, COLORONCOLOR );
+      SetStretchBltMode( toDC, _OOHG_StretchBltMode );
+      if( _OOHG_StretchBltMode == HALFTONE )
+      {
+         SetBrushOrgEx( toDC, 0, 0, NULL );
+      }
       PlgBlt( toDC, ( POINT * ) &point, fromDC, 0, 0, iWidth, iHeight, NULL, 0, 0 );
 
       DeleteDC( imgDC );
