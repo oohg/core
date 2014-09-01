@@ -1,11 +1,54 @@
-﻿/*
- * $Id: ChangeLog,v 1.1357 2014-08-25 05:24:53 guerra000 Exp $
+/*
+ * $Id: ChangeLog,v 1.1358 2014-09-01 15:58:49 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-09-01 12:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_browse.ch
+   * include/i_checklist.ch
+   * include/i_grid.ch
+   * include/i_hmg_compat.ch
+   * include/i_internal.ch
+   * include/i_xbrowse.ch
+     + ACTION clause.
+   * include/i_button.ch
+     + DISABLED, THEMED, IMAGEMARGIN, ON MOUSEMOVE, LEFT, RIGHT, TOP,
+       BOTTOM, CENTER, MULTILINE and FLAT clauses to CHECKBUTTON control.
+   * include/i_editbox.ch
+   * include/i_spinner.ch
+     + DISABLED clause.
+   * include/i_tree.ch
+     + ONDBLCLICK clause.
+   * include/oohg.h
+   * source/c_controlmisc.c
+     + Symbol s_CompareItems.
+   * source/c_windows.c
+     + Functions GetDesktopRealHeight and GetDesktopRealWidth.
+   * source/h_button.prg
+     ! Image aligment when caption is empty.
+     + Support for new CHECKBUTTON clauses.
+     * Format.
+   * source/h_editbox.prg
+   * source/h_spinner.prg
+     + Support for DISABLED clause.
+   * source/h_form.prg
+     ! Controls on a virtual form are drawn over the statusbar.
+   * source/h_grid.prg
+     + DATA bCompareItems.
+     + METHOD SortItems( bBlock ). Sorts the grid's items using bBlock
+       as comparison function. This block is evaluated during the sort
+       operation each time the relative order of two list items needs
+       to be compared. The evaluated block must return -1 if the first
+       item precedes the second or 1 if the first follows the second.
+     + METHOD CompareItems. Perfoms the block evaluation.
+     + Functions _OOHG_SortItemsUser and LISTVIEW_SORTITEMSEX_USER
+       at C level.
+   * source/h_status.prg
+     ! Led on image is not shown.
 
 2014-08-24 23:50 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
    * source/c_image.c

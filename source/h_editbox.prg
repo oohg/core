@@ -1,5 +1,5 @@
 /*
- * $Id: h_editbox.prg,v 1.23 2014-08-13 22:22:11 fyurisich Exp $
+ * $Id: h_editbox.prg,v 1.24 2014-09-01 15:58:50 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -115,7 +115,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
                fontsize, tooltip, maxlenght, gotfocus, change, lostfocus, ;
                readonly, break, HelpId, invisible, notabstop, bold, italic, ;
                underline, strikeout, field, backcolor, fontcolor, novscroll, ;
-               nohscroll, lRtl, lNoBorder, OnFocusPos, OnHScroll, OnVScroll ) CLASS TEdit
+               nohscroll, lRtl, lNoBorder, OnFocusPos, OnHScroll, OnVScroll, ;
+               lDisabled ) CLASS TEdit
 *-----------------------------------------------------------------------------*
 Local nStyle := ES_MULTILINE + ES_WANTRETURN, nStyleEx := 0
 
@@ -131,8 +132,8 @@ Local nStyle := ES_MULTILINE + ES_WANTRETURN, nStyleEx := 0
               fontname, fontsize, tooltip, maxlenght, .f., ;
               lostfocus, gotfocus, change, nil, .f., HelpId, ;
               readonly, bold, italic, underline, strikeout, field, ;
-              backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, .F., ;
-              nStyleEx, lNoBorder, OnFocusPos )
+              backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
+              .F., nStyleEx, lNoBorder, OnFocusPos, lDisabled )
 
    ASSIGN ::OnHScroll VALUE OnHScroll TYPE "B"
    ASSIGN ::OnVScroll VALUE OnVScroll TYPE "B"

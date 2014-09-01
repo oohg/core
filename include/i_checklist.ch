@@ -1,5 +1,5 @@
 /*
- * $Id: i_checklist.ch,v 1.7 2014-07-09 02:25:23 fyurisich Exp $
+ * $Id: i_checklist.ch,v 1.8 2014-09-01 15:58:50 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -86,7 +86,7 @@
       [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
       [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
       [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
-      [ <dummy06: ONCLICK, ON CLICK> <click> ] ;
+      [ <dummy06: ACTION, ONCLICK, ON CLICK> <click> ] ;
       [ <break: BREAK> ] ;
       [ HELPID <helpid> ] ;
       [ <disabled: DISABLED> ] ;

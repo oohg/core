@@ -1,5 +1,5 @@
 /*
- * $Id: i_grid.ch,v 1.37 2014-08-03 19:37:51 fyurisich Exp $
+ * $Id: i_grid.ch,v 1.38 2014-09-01 15:58:50 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -93,7 +93,7 @@ STANDARD VERSION
       [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
       [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
       [ <dummy05: ONDBLCLICK, ON DBLCLICK> <dblclick> ] ;
-      [ <dummy06: ONCLICK, ON CLICK> <click> ] ;
+      [ <dummy06: ACTION, ONCLICK, ON CLICK> <click> ] ;
       [ <dummy07: ONHEADCLICK, ON HEADCLICK> <aHeadClick> ] ;
       [ <edit: EDIT> ] ;
       [ <ownerdata: VIRTUAL> ] ;
@@ -209,7 +209,7 @@ SPLITBOX VERSION
       [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
       [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
       [ <dummy05: ONDBLCLICK, ON DBLCLICK> <dblclick> ] ;
-      [ <dummy06: ONCLICK, ON CLICK> <click> ] ;
+      [ <dummy06: ACTION, ONCLICK, ON CLICK> <click> ] ;
       [ <dummy07: ONHEADCLICK, ON HEADCLICK> <aHeadClick> ] ;
       [ <edit: EDIT> ] ;
       [ <ownerdata: VIRTUAL> ] ;

@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.264 2014-08-08 22:27:35 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.265 2014-09-01 15:58:50 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -181,6 +181,7 @@ CLASS TGrid FROM TControl
    DATA ImageListFlags         INIT LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
    DATA ClickOnCheckbox        INIT .T.
    DATA RClickOnCheckbox       INIT .T.
+   DATA bCompareItems          INIT Nil
 
    METHOD Define
    METHOD Define2
@@ -234,6 +235,8 @@ CLASS TGrid FROM TControl
    METHOD ColumnShow
    METHOD ColumnOrder          SETGET
    METHOD SortColumn
+   METHOD SortItems
+   METHOD CompareItems
    METHOD Up
    METHOD Down
    METHOD Left
@@ -3097,6 +3100,22 @@ Return nWidth
 METHOD SortColumn( nColumn, lDescending ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Return ListView_SortItemsEx( ::hWnd, nColumn, lDescending )
+
+*-----------------------------------------------------------------------------*
+METHOD SortItems( bBlock ) CLASS TGrid
+*-----------------------------------------------------------------------------*
+Local lRet := .F.
+   If HB_IsBlock( bBlock )
+      ::bCompareItems := bBlock
+      lRet := ListView_SortItemsEx_User( Self )
+   EndIf
+Return lRet
+
+*---------------------------------------------------------------------------*
+METHOD CompareItems( nItem1, nItem2 ) CLASS TGrid
+*---------------------------------------------------------------------------*
+   // Must return -1 if nItem1 precedes nItem2 or 1 if nItem1 follows nItem2
+Return Eval( ::bCompareItems, Self, nItem1, nItem2 )
 
 *---------------------------------------------------------------------------*
 METHOD ItemHeight() CLASS TGrid
@@ -6578,6 +6597,23 @@ HB_FUNC( LISTVIEW_SORTITEMSEX )   // hWnd, nColumn, lDescending
    hb_retni( SendMessage( si.hWnd, LVM_SORTITEMSEX,
                           ( WPARAM ) ( _OOHG_SortItemsInfo * ) &si,
                           ( LPARAM ) ( PFNLVCOMPARE ) _OOHG_SortItems ) );
+}
+
+PFNLVCOMPARE CALLBACK _OOHG_SortItemsUser( LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort )
+{
+   _OOHG_Send( (PHB_ITEM) lParamSort, s_CompareItems );
+   hb_vmPushLong( (LONG) lParam1 + 1 );
+   hb_vmPushLong( (LONG) lParam2 + 1 );
+   hb_vmSend( 2 );
+   return (PFNLVCOMPARE) hb_parni( -1 );
+}
+
+HB_FUNC( LISTVIEW_SORTITEMSEX_USER )
+{
+   PHB_ITEM pSelf = hb_param( 1, HB_IT_OBJECT );
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+
+   hb_retni( SendMessage( oSelf->hWnd, LVM_SORTITEMSEX, (WPARAM) pSelf, (LPARAM) (PFNLVCOMPARE) _OOHG_SortItemsUser ) );
 }
 
 HB_FUNC( NMHEADER_IITEM )

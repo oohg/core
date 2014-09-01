@@ -1,5 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.45 2014-03-15 20:54:05 fyurisich Exp $
+ * $Id: h_status.prg,v 1.46 2014-09-01 15:58:51 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -438,7 +438,7 @@ local nrItem1, nrItem2, nrItem3
       Action := ''
    EndIf
    If ValType( icon ) $ "CM"
-      ::cLedOn := icon[ 1 ]
+      ::cLedOn := icon
    ElseIf ValType( icon ) == "A" .AND. Len( icon ) > 0
       If ValType( icon[ 1 ] ) $ "CM"
          ::cLedOn := icon[ 1 ]

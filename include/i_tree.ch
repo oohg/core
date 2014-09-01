@@ -1,5 +1,5 @@
 /*
- * $Id: i_tree.ch,v 1.10 2014-07-09 02:25:23 fyurisich Exp $
+ * $Id: i_tree.ch,v 1.11 2014-09-01 15:58:50 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -75,7 +75,7 @@
       [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
       [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
       [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
-      [ ON DBLCLICK <dblclick> ] ;
+      [ <dummy05: ONDBLCLICK, ON DBLCLICK> <dblclick> ] ;
       [ NODEIMAGES <aImgNode> [ ITEMIMAGES <aImgItem> ] ] ;
       [ <itemids: ITEMIDS> ] ;
       [ HELPID <helpid> ] ;
@@ -136,7 +136,7 @@
       [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
       [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
       [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
-      [ ON DBLCLICK <dblclick> ] ;
+      [ <dummy05: ONDBLCLICK, ON DBLCLICK> <dblclick> ] ;
       [ NODEIMAGES <aImgNode> [ ITEMIMAGES <aImgItem> ] [ <noBut: NOROOTBUTTON> ] ] ;
       [ <itemids: ITEMIDS> ] ;
       [ HELPID <helpid> ] ;

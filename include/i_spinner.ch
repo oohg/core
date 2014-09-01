@@ -1,5 +1,5 @@
 /*
- * $Id: i_spinner.ch,v 1.7 2014-07-09 02:25:23 fyurisich Exp $
+ * $Id: i_spinner.ch,v 1.8 2014-09-01 15:58:50 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -84,10 +84,11 @@
       [ INCREMENT <inc> ] ;
       [ <rtl: RTL> ] ;
       [ <noborder: NOBORDER> ] ;
+      [ <disabled: DISABLED> ] ;
    => ;
       [ <obj> := ] TSpinner():Define( <(name)>, <(parent)>, <col>, <row>, <w>, ;
             <value>, <fontname>, <fontsize>, <rl>, <rh>, <tooltip>, <{change}>, ;
             <{lostfocus}>, <{gotfocus}>, <h>, <helpid>, <.invisible.>, ;
             <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
             <.wrap.>, <.readonly.>, <inc>, <backcolor>, <fontcolor>, <.rtl.>, ;
-            <.noborder.> )
+            <.noborder.>, <.disabled.> )

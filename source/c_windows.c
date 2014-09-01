@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.80 2014-08-13 22:22:11 fyurisich Exp $
+ * $Id: c_windows.c,v 1.81 2014-09-01 15:58:50 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -578,6 +578,29 @@ HB_FUNC (GETDESKTOPHEIGHT)
    hb_retni ( GetSystemMetrics(SM_CYSCREEN) ) ;
 }
 
+HB_FUNC( GETDESKTOPREALHEIGHT )
+//  Returns the height of the free part of the desktop
+{
+   RECT rect;
+   int h;
+
+   SystemParametersInfo( SPI_GETWORKAREA, 1, &rect, 0 );
+   h = rect.bottom - rect.top;
+
+   hb_retni( h );
+}
+
+HB_FUNC( GETDESKTOPREALWIDTH )
+//  Returns the width of the free part of the desktop
+{
+   RECT rect;
+   int w;
+
+   SystemParametersInfo( SPI_GETWORKAREA, 1, &rect, 0 );
+   w = rect.right - rect.left;
+
+   hb_retni( w );
+}
 HB_FUNC (GETWINDOWROW)
 {
    RECT rect;

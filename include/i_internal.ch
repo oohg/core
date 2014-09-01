@@ -1,5 +1,5 @@
 /*
- * $Id: i_internal.ch,v 1.4 2014-07-09 02:25:23 fyurisich Exp $
+ * $Id: i_internal.ch,v 1.5 2014-09-01 15:58:50 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -61,7 +61,7 @@
       [ AT <row>, <col> ] ;
       [ OBJ <obj> ] ;
       [ <dummy1: OF, PARENT> <parent> ] ;
-      [ <dummy06: ONCLICK, ON CLICK> <action> ] ;
+      [ <dummy06: ACTION, ONCLICK, ON CLICK> <action> ] ;
       [ WIDTH <width> ] ;
       [ HEIGHT <height> ] ;
       [ BACKCOLOR <backcolor> ] ;

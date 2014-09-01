@@ -1,5 +1,5 @@
 /*
- * $Id: i_button.ch,v 1.23 2014-07-09 02:25:23 fyurisich Exp $
+ * $Id: i_button.ch,v 1.24 2014-09-01 15:58:50 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -139,6 +139,13 @@
       [ <autofit: AUTOFIT, ADJUST> ] ;
       [ <lDIB: DIBSECTION> ] ;
       [ BACKCOLOR <backcolor> ] ;
+      [ <disabled: DISABLED> ] ;
+      [ <themed: THEMED> ] ;
+      [ IMAGEMARGIN <aImageMargin> ] ;
+      [ ON MOUSEMOVE <onmousemove> ] ;
+      [ <alignment:LEFT,RIGHT,TOP,BOTTOM,CENTER> ] ;
+      [ <multiline: MULTILINE> ] ;
+      [ <flat: FLAT> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TButtonCheck(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <caption>, <value>, ;
@@ -146,4 +153,6 @@
             <{gotfocus}>, <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, ;
             <.italic.>, <.underline.>, <.strikeout.>, <(field)>, <.rtl.>, ;
             <bitmap>, <buffer>, <hbitmap>, <.notrans.>, <.scale.>, ;
-            <.no3dcolors.>, <.autofit.>, ! <.lDIB.>, <backcolor> )
+            <.no3dcolors.>, <.autofit.>, ! <.lDIB.>, <backcolor>, ;
+            <.disabled.>, , <.themed.>, <aImageMargin>, <{onmousemove}>, ;
+            <"alignment">, <.multiline.>, <.flat.> )

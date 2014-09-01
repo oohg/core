@@ -1,5 +1,5 @@
 /*
- * $Id: i_hmg_compat.ch,v 1.36 2014-08-13 23:36:13 fyurisich Exp $
+ * $Id: i_hmg_compat.ch,v 1.37 2014-09-01 15:58:50 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -183,7 +183,7 @@ SPLITBOX VERSION
       [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
       [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
       [ <dummy05: ONDBLCLICK, ON DBLCLICK> <dblclick> ] ;
-      [ <dummy06: ONCLICK, ON CLICK> <click> ] ;
+      [ <dummy06: ACTION, ONCLICK, ON CLICK> <click> ] ;
       [ <edit: EDIT> ] ;
       [ <inplace: INPLACE> ] ;
       [ <append: APPEND> ] ;

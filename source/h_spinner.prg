@@ -1,5 +1,5 @@
 /*
- * $Id: h_spinner.prg,v 1.18 2013-08-01 01:27:11 fyurisich Exp $
+ * $Id: h_spinner.prg,v 1.19 2014-09-01 15:58:51 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -123,7 +123,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, value, fontname, fontsize, ;
                rl, rh, tooltip, change, lostfocus, gotfocus, h, HelpId, ;
                invisible, notabstop, bold, italic, underline, strikeout, ;
                wrap, readonly, increment, backcolor, fontcolor, lRtl, ;
-               lNoBorder ) CLASS TSpinner
+               lNoBorder, lDisabled ) CLASS TSpinner
 *-----------------------------------------------------------------------------*
 Local nStyle := ES_NUMBER + ES_AUTOHSCROLL, nStyleEx := 0
 Local ControlHandle
@@ -142,7 +142,7 @@ Local ControlHandle
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .T., lRtl )
 
-   nStyle += ::InitStyle( ,, Invisible, NoTabStop ) + ;
+   nStyle += ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + ;
              if(  HB_IsLogical ( readonly )  .AND.  readonly,  ES_READONLY, 0 )
 
    nStyleEx += IF( !HB_IsLogical( lNoBorder ) .OR. ! lNoBorder, WS_EX_CLIENTEDGE, 0 )

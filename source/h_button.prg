@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.64 2014-07-04 20:16:03 fyurisich Exp $
+ * $Id: h_button.prg,v 1.65 2014-09-01 15:58:50 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -143,9 +143,9 @@ Local ControlHandle, nStyle, lBitMap, i
    ASSIGN ::nWidth  VALUE w TYPE "N"
    ASSIGN ::nHeight VALUE h TYPE "N"
    
-   if !empty(cImage) .and. !empty(Caption)
-      DEFAULT  cAlign to "LEFT"
-   endif
+   If ! Empty( cImage )
+      DEFAULT cAlign TO "LEFT"
+   EndIf
 
    lBitMap := ! ValType( caption ) $ "CM" .AND. ;
               ( ValType( cImage ) $ "CM" .OR. ;
@@ -196,13 +196,13 @@ Local ControlHandle, nStyle, lBitMap, i
       DO CASE
          CASE EMPTY( cAlign )
             cAlign := 2
-         CASE "LEFT" = cAlign
+         CASE "LEFT" == cAlign
             cAlign := 0
-         CASE "RIGHT" = cAlign
+         CASE "RIGHT" == cAlign
             cAlign := 1
-         CASE "BOTTOM" = cAlign
+         CASE "BOTTOM" == cAlign
             cAlign := 3
-         CASE "CENTER" = cAlign
+         CASE "CENTER" == cAlign
             cAlign := 4
          OTHERWISE                         // TOP
             cAlign := 2
@@ -683,22 +683,38 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
                fontsize, tooltip, changeprocedure, w, h, lostfocus, gotfocus, ;
                HelpId, invisible, notabstop, bold, italic, underline, ;
                strikeout, field, lRtl, BitMap, cBuffer, hBitMap, ;
-               lNoTransparent, lScale, lNo3DColors, lAutoFit, lNoDIB, backcolor ) CLASS TButtonCheck
+               lNoTransparent, lScale, lNo3DColors, lAutoFit, lNoDIB, backcolor, ;
+               lDisabled, themed, aImageMargin, OnMouseMove, cAlign, lMultiLine, ;
+               flat ) CLASS TButtonCheck
 *-----------------------------------------------------------------------------*
-Local ControlHandle, nStyle
+Local ControlHandle, nStyle, i
 
-   ASSIGN ::nCol        VALUE x TYPE "N"
-   ASSIGN ::nRow        VALUE y TYPE "N"
-   ASSIGN ::nWidth      VALUE w TYPE "N"
-   ASSIGN ::nHeight     VALUE h TYPE "N"
-   IF VALTYPE( value ) != "L"
-      value := .F.
-   ENDIF
+   ASSIGN ::nCol    VALUE x TYPE "N"
+   ASSIGN ::nRow    VALUE y TYPE "N"
+   ASSIGN ::nWidth  VALUE w TYPE "N"
+   ASSIGN ::nHeight VALUE h TYPE "N"
+
+   If ! Empty( BitMap )
+      DEFAULT cAlign TO "LEFT"
+   EndIf
+
+   If HB_IsArray( aImageMargin )
+      For i := 1 to MIN( 4, LEN( aImageMargin ) )
+         If HB_IsNumeric( aImageMargin[i] )
+            ::aImageMargin[i] := aImageMargin[i]
+         EndIf
+      Next
+   ElseIf HB_IsNumeric( aImageMargin )
+      ::aImageMargin := {aImageMargin, aImageMargin, aImageMargin, aImageMargin}
+   EndIf
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, , backcolor, , lRtl )
 
-   nStyle := ::InitStyle( ,, Invisible, NoTabStop ) + BS_AUTOCHECKBOX + ;
-             BS_PUSHLIKE
+   nStyle := ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + ;
+             BS_AUTOCHECKBOX + ;
+             BS_PUSHLIKE + ;
+             if( ValType( flat ) == "L"      .AND. flat,         BS_FLAT, 0 )     + ;
+             if( ValType( lMultiLine ) == "L" .AND. lMultiLine,  BS_MULTILINE, 0 )
 
    IF VALTYPE( BitMap ) $ "CM" .OR. VALTYPE( cBuffer ) $ "CM" .OR. VALTYPE( hBitMap ) $ "NP"
       nStyle += BS_BITMAP
@@ -709,13 +725,35 @@ Local ControlHandle, nStyle
    ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
 
-   ::Caption     := Caption
+   ::Caption := Caption
 
    ASSIGN ::lNoTransparent VALUE lNoTransparent TYPE "L"
    ASSIGN ::Stretch        VALUE lScale         TYPE "L"
+   ASSIGN ::lThemed        VALUE themed         TYPE "L"
    ASSIGN ::AutoFit        VALUE lAutoFit       TYPE "L"
    ASSIGN ::lNo3DColors    VALUE lNo3DColors    TYPE "L"
    ASSIGN ::lNoDIBSection  VALUE lNoDIB         TYPE "L"
+
+   IF VALTYPE( cAlign ) $ "CM"
+      cAlign := ALLTRIM( UPPER( cAlign ) )
+      DO CASE
+         CASE EMPTY( cAlign )
+            cAlign := 2
+         CASE "LEFT" == cAlign
+            cAlign := 0
+         CASE "RIGHT" == cAlign
+            cAlign := 1
+         CASE "BOTTOM" == cAlign
+            cAlign := 3
+         CASE "CENTER" == cAlign
+            cAlign := 4
+         OTHERWISE                         // TOP
+            cAlign := 2
+      ENDCASE
+   ENDIF
+   IF VALTYPE( cAlign ) == "N"
+      ::nAlign := cAlign
+   ENDIF
 
    ::Picture := BitMap
    If ! ValidHandler( ::hImage )
@@ -725,11 +763,15 @@ Local ControlHandle, nStyle
       EndIf
    EndIf
 
+   If ! HB_IsLogical( Value )
+      Value := .F.
+   EndIf
    ::SetVarBlock( Field, Value )
 
-   ASSIGN ::OnLostFocus VALUE lostfocus TYPE "B"
-   ASSIGN ::OnGotFocus  VALUE gotfocus  TYPE "B"
+   ASSIGN ::OnLostFocus VALUE lostfocus       TYPE "B"
+   ASSIGN ::OnGotFocus  VALUE gotfocus        TYPE "B"
    ASSIGN ::OnChange    VALUE ChangeProcedure TYPE "B"
+   ASSIGN ::OnMouseMove VALUE OnMouseMove     TYPE "B"
 
 Return Self
 
@@ -738,7 +780,8 @@ METHOD DefineImage( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
                     fontsize, tooltip, changeprocedure, w, h, lostfocus, gotfocus, ;
                     HelpId, invisible, notabstop, bold, italic, underline, ;
                     strikeout, field, lRtl, BitMap, cBuffer, hBitMap, ;
-                    lNoTransparent, lScale, lNo3DColors, lAutoFit, lNoDIB ) CLASS TButtonCheck
+                    lNoTransparent, lScale, lNo3DColors, lAutoFit, lNoDIB, ;
+                    themed, aImageMargin, OnMouseMove, cAlign, lMultiLine, flat ) CLASS TButtonCheck
 *-----------------------------------------------------------------------------*
    If Empty( cBuffer )
       cBuffer := ""
@@ -747,7 +790,8 @@ Return ::Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
                  fontsize, tooltip, changeprocedure, w, h, lostfocus, gotfocus, ;
                  HelpId, invisible, notabstop, bold, italic, underline, ;
                  strikeout, field, lRtl, BitMap, cBuffer, hBitMap, ;
-                 lNoTransparent, lScale, lNo3DColors, lAutoFit, lNoDIB )
+                 lNoTransparent, lScale, lNo3DColors, lAutoFit, lNoDIB, ;
+                 themed, aImageMargin, OnMouseMove, cAlign, lMultiLine, flat )
 
 *------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TButtonCheck

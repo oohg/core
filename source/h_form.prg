@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.57 2014-07-26 20:18:16 fyurisich Exp $
+ * $Id: h_form.prg,v 1.58 2014-09-01 15:58:50 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1128,10 +1128,13 @@ Return Nil
 *-----------------------------------------------------------------------------*
 METHOD Events_VScroll( wParam ) CLASS TForm
 *-----------------------------------------------------------------------------*
-Local uRet
+Local uRet, nAt
    uRet := ::VScrollBar:Events_VScroll( wParam )
    ::RowMargin := - ::VScrollBar:Value
    ::ScrollControls()
+   IF ( nAt := aScan( ::aControls, { |c| c:Type == "MESSAGEBAR" .AND. c:Visible } ) ) > 0
+      ::aControls[ nAt ]:Redraw()
+   ENDIF
 Return uRet
 
 *-----------------------------------------------------------------------------*

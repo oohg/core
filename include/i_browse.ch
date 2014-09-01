@@ -1,5 +1,5 @@
 /*
- * $Id: i_browse.ch,v 1.52 2014-08-13 23:36:13 fyurisich Exp $
+ * $Id: i_browse.ch,v 1.53 2014-09-01 15:58:50 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -100,7 +100,7 @@ STANDARD VERSION
       [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
       [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
       [ <dummy05: ONDBLCLICK, ON DBLCLICK> <dblclick> ] ;
-      [ <dummy06: ONCLICK, ON CLICK> <click> ] ;
+      [ <dummy06: ACTION, ONCLICK, ON CLICK> <click> ] ;
       [ <edit: EDIT> ] ;
       [ <inplace: INPLACE> ] ;
       [ <append: APPEND> ] ;
