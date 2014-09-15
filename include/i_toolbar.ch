@@ -1,5 +1,5 @@
 /*
- * $Id: i_toolbar.ch,v 1.9 2014-07-09 02:25:23 fyurisich Exp $
+ * $Id: i_toolbar.ch,v 1.10 2014-09-15 13:49:52 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -60,7 +60,7 @@
 #xcommand DEFINE TOOLBAR  <name> ;
       [ OBJ <obj> ] ;
       [ <dummy1: OF, PARENT> <parent> ] ;
-      [ CAPTION <caption> ] ;
+      [ <dummy2: GRIPPERTEXT, CAPTION> <caption> ] ;
       [ ACTION <action> ] ;
       [ BUTTONSIZE <w>, <h> ] ;
       [ FONT <f> ] ;
@@ -74,7 +74,6 @@
       [ <bottom: BOTTOM> ] ;
       [ <vertical: VERTICAL> ] ;
       [ <righttext: RIGHTTEXT> ] ;
-      [ GRIPPERTEXT <caption> ] ;
       [ <border: BORDER> ] ;
       [ <break: BREAK> ] ;
       [ <rtl: RTL> ] ;

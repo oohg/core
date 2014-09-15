@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.1358 2014-09-01 15:58:49 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1359 2014-09-15 13:49:51 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-09-14 10:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_toolbar.ch
+     * GRIPPERTEXT is no longer a standalone clause but a synonymous
+       of CAPTION clause.
 
 2014-09-01 12:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_browse.ch
