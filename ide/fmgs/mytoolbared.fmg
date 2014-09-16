@@ -1,496 +1,300 @@
-/*
- * $Id: mytoolbared.fmg,v 1.3 2014-06-19 18:53:30 fyurisich Exp $
- */
 
-* Harbour Minigui IDE HMI+ form generated code
-* (c)2004 Ciro Vargas Clemow   sistemascvc@softhome.net
-
-DEFINE WINDOW  TEMPLATE ; 
-AT 108,99 ;
- WIDTH 706 ;
- HEIGHT 479 ; 
- TITLE ' ' ; 
- ICON '' ; 
-MODAL ;
-BACKCOLOR ::Backcolor ;
-FONT 'arial' ;
-SIZE 10 ;
-
-
-@ 53,60 LABEL label_101 ; 
-WIDTH 59 ; 
-HEIGHT 21 ; 
-VALUE 'Caption' ; 
-FONT 'Arial' ; 
-SIZE 10 ;
-BACKCOLOR ::Backcolor ;
-
-
-
-
-MYTOOLBARED.label_101.fontcolor:={0,0,0}
-
-@ 24,62 LABEL label_102 ; 
-WIDTH 45 ; 
-HEIGHT 16 ; 
-VALUE 'Name' ; 
-FONT 'Arial' ; 
-SIZE 10 ;
-BACKCOLOR ::Backcolor ;
-
-
-
-
-MYTOOLBARED.label_102.fontcolor:={0,0,0}
-
-@ 84,62 LABEL label_103 ; 
-WIDTH 55 ; 
-HEIGHT 21 ; 
-VALUE 'Action' ; 
-FONT 'Arial' ; 
-SIZE 10 ;
-BACKCOLOR ::Backcolor ;
-
-
-
-
-MYTOOLBARED.label_103.fontcolor:={0,0,0}
-
-@ 116,63 LABEL label_104 ; 
-WIDTH 47 ; 
-HEIGHT 22 ; 
-VALUE 'Image' ; 
-FONT 'Arial' ; 
-SIZE 10 ;
-BACKCOLOR ::Backcolor ;
-
-
-
-
-MYTOOLBARED.label_104.fontcolor:={0,0,0}
-
-@ 20,137 TEXTBOX text_102 ; 
-HEIGHT 23 ; 
-WIDTH 120 ; 
-Font 'Arial' ; 
-size 10 ; 
-MAXLENGTH 40 ; 
-ON CHANGE TMYtoolb:escribe1() ; 
-
-
-
-MYTOOLBARED.text_102.fontcolor:={0,0,0}
-MYTOOLBARED.text_102.backcolor:={255,255,255}
-
-@ 52,137 TEXTBOX text_101 ; 
-HEIGHT 23 ; 
-WIDTH 120 ; 
-Font 'Arial' ; 
-size 10 ; 
-MAXLENGTH 80 ; 
-ON CHANGE TMYtoolb:escribe() ; 
-
-
-
-MYTOOLBARED.text_101.fontcolor:={0,0,0}
-MYTOOLBARED.text_101.backcolor:={255,255,255}
-
-@ 82,138 TEXTBOX edit_101 ; 
-HEIGHT 23 ; 
-WIDTH 120 ; 
-Font 'Arial' ; 
-size 10 ; 
-MAXLENGTH 250 ; 
-ON CHANGE TMYtoolb:escribe1x() ; 
-
-
-
-MYTOOLBARED.edit_101.fontcolor:={0,0,0}
-MYTOOLBARED.edit_101.backcolor:={255,255,255}
-
-@ 113,137 TEXTBOX text_103 ; 
-HEIGHT 23 ; 
-WIDTH 120 ; 
-Font 'Arial' ; 
-size 10 ; 
-MAXLENGTH 40 ; 
-ON CHANGE TMYtoolb:escribe1a() ; 
-
-
-
-MYTOOLBARED.text_103.fontcolor:={0,0,0}
-MYTOOLBARED.text_103.backcolor:={255,255,255}
-
-@ 172,17 BUTTON button_101 ;
-CAPTION 'Insert item' ; 
-ACTION TMYtoolb:insertar() ;
-WIDTH 100 ;
-HEIGHT 28 ; 
-FONT 'Arial' ;
-SIZE 10 ;
- 
-
-
-MYTOOLBARED.button_101.fontcolor:={0,0,0}
-MYTOOLBARED.button_101.backcolor:=::Backcolor
-
-@ 220,16 BUTTON button_102 ;
-CAPTION 'Delete item' ; 
-ACTION TMYtoolb:borrar() ;
-WIDTH 100 ;
-HEIGHT 28 ; 
-FONT 'Arial' ;
-SIZE 10 ;
- 
-
-
-MYTOOLBARED.button_102.fontcolor:={0,0,0}
-MYTOOLBARED.button_102.backcolor:=::Backcolor
-
-@ 266,16 BUTTON button_103 ;
-CAPTION 'New item' ; 
-ACTION TMYtoolb:nextm() ;
-WIDTH 100 ;
-HEIGHT 28 ; 
-FONT 'Arial' ;
-SIZE 10 ;
- 
-
-
-MYTOOLBARED.button_103.fontcolor:={0,0,0}
-MYTOOLBARED.button_103.backcolor:=::Backcolor
-
-@ 396,577 BUTTON button_tbp ;
-CAPTION 'Font' ; 
-ACTION TMYtoolb:leefont() ;
-WIDTH 100 ;
-HEIGHT 28 ; 
-FONT 'Arial' ;
-SIZE 10 ;
- 
-
-
-MYTOOLBARED.button_tbp.fontcolor:={0,0,0}
-MYTOOLBARED.button_tbp.backcolor:=::Backcolor
-
-@ 353,16 BUTTON button_106 ;
-CAPTION '/\' ; 
-ACTION TMYtoolb:cursorup() ;
-WIDTH 100 ;
-HEIGHT 28 ; 
-FONT 'Arial' ;
-SIZE 10 ;
- 
-
-
-MYTOOLBARED.button_106.fontcolor:={0,0,0}
-MYTOOLBARED.button_106.backcolor:=::Backcolor
-
-@ 396,17 BUTTON button_107 ;
-CAPTION '\/' ; 
-ACTION TMYtoolb:cursordown() ;
-WIDTH 100 ;
-HEIGHT 28 ; 
-FONT 'Arial' ;
-SIZE 10 ;
- 
-
-
-MYTOOLBARED.button_107.fontcolor:={0,0,0}
-MYTOOLBARED.button_107.backcolor:=::Backcolor
-
-@ 353,134 BUTTON button_108 ;
-CAPTION 'Save / Exit' ; 
-ACTION TMYtoolb:exittb() ;
-WIDTH 100 ;
-HEIGHT 28 ; 
-FONT 'Arial' ;
-SIZE 10 ;
- 
-
-
-MYTOOLBARED.button_108.fontcolor:={0,0,0}
-MYTOOLBARED.button_108.backcolor:=::Backcolor
-
-@ 396,133 BUTTON button_109 ;
-CAPTION 'Discard ' ; 
-ACTION TMYtoolb:discard() ;
-WIDTH 100 ;
-HEIGHT 28 ; 
-FONT 'Arial' ;
-SIZE 10 ;
- 
-
-
-MYTOOLBARED.button_109.fontcolor:={0,0,0}
-MYTOOLBARED.button_109.backcolor:=::Backcolor
-
-@ 170,142 CHECKBOX checkbox_101 ;
-CAPTION 'Check' ;
-WIDTH 100 ;
-HEIGHT 28;
-VALUE .F. ; 
-FONT 'Arial' ; 
-SIZE 10 ; 
-ON CHANGE TMYtoolb:escribe1y() ; 
- 
-
-
-MYTOOLBARED.checkbox_101.fontcolor:={0,0,0}
-MYTOOLBARED.checkbox_101.backcolor:=::Backcolor
-
-@ 211,143 CHECKBOX checkbox_102 ;
-CAPTION 'Autosize' ;
-WIDTH 100 ;
-HEIGHT 28;
-VALUE .F. ; 
-FONT 'Arial' ; 
-SIZE 10 ; 
-ON CHANGE TMYtoolb:escribe1z() ; 
- 
-
-
-MYTOOLBARED.checkbox_102.fontcolor:={0,0,0}
-MYTOOLBARED.checkbox_102.backcolor:=::Backcolor
-
-@ 249,144 CHECKBOX checkbox_103 ;
-CAPTION 'Separator' ;
-WIDTH 100 ;
-HEIGHT 28;
-VALUE .F. ; 
-FONT 'Arial' ; 
-SIZE 10 ; 
-ON CHANGE TMYtoolb:escribe3a() ; 
- 
-
-
-MYTOOLBARED.checkbox_103.fontcolor:={0,0,0}
-MYTOOLBARED.checkbox_103.backcolor:=::Backcolor
-
-@ 291,144 CHECKBOX checkbox_104 ;
-CAPTION 'Group' ;
-WIDTH 100 ;
-HEIGHT 28;
-VALUE .F. ; 
-FONT 'Arial' ; 
-SIZE 10 ; 
-ON CHANGE TMYtoolb:escribe3b() ; 
- 
-
-
-MYTOOLBARED.checkbox_104.fontcolor:={0,0,0}
-MYTOOLBARED.checkbox_104.backcolor:=::Backcolor
-
-@ 314,313 CHECKBOX checkbox_1 ;
-CAPTION 'Flat' ;
-WIDTH 69 ;
-HEIGHT 27;
-VALUE .F. ; 
-FONT 'arial' ; 
-SIZE 10 ; 
- 
-
-
-MYTOOLBARED.checkbox_1.fontcolor:={0,0,0}
-MYTOOLBARED.checkbox_1.backcolor:=::Backcolor
-
-@ 316,415 CHECKBOX checkbox_3 ;
-CAPTION 'Righttext' ;
-WIDTH 79 ;
-HEIGHT 30;
-VALUE .F. ; 
-FONT 'arial' ; 
-SIZE 10 ; 
- 
-
-
-MYTOOLBARED.checkbox_3.fontcolor:={0,0,0}
-MYTOOLBARED.checkbox_3.backcolor:=::Backcolor
-
-@ 343,314 CHECKBOX checkbox_2 ;
-CAPTION 'Bottom' ;
-WIDTH 71 ;
-HEIGHT 24;
-VALUE .F. ; 
-FONT 'arial' ; 
-SIZE 10 ; 
- 
-
-
-MYTOOLBARED.checkbox_2.fontcolor:={0,0,0}
-MYTOOLBARED.checkbox_2.backcolor:=::Backcolor
-
-@ 342,416 CHECKBOX checkbox_4 ;
-CAPTION 'Border' ;
-WIDTH 80 ;
-HEIGHT 25;
-VALUE .F. ; 
-FONT 'arial' ; 
-SIZE 10 ; 
- 
-
-
-MYTOOLBARED.checkbox_4.fontcolor:={0,0,0}
-MYTOOLBARED.checkbox_4.backcolor:=::Backcolor
-
-@ 375,318 LABEL label_1 ; 
-WIDTH 82 ; 
-HEIGHT 18 ; 
-VALUE 'Toolbar Name' ; 
-FONT 'arial' ; 
-SIZE 10 ;
-BACKCOLOR ::Backcolor ;
-
-
-
-
-MYTOOLBARED.label_1.fontcolor:={0,0,0}
-
-@ 399,300 TEXTBOX text_1 ; 
-HEIGHT 24 ; 
-WIDTH 120 ; 
-Font 'arial' ; 
-size 10 ; 
-MAXLENGTH 30 ; 
-
-
-
-MYTOOLBARED.text_1.fontcolor:={0,0,0}
-MYTOOLBARED.text_1.backcolor:={255,255,255}
-
-@ 377,477 LABEL label_2 ; 
-WIDTH 56 ; 
-HEIGHT 22 ; 
-VALUE 'Tooltip' ; 
-FONT 'arial' ; 
-SIZE 10 ;
-BACKCOLOR ::Backcolor ;
-
-
-
-
-MYTOOLBARED.label_2.fontcolor:={0,0,0}
-
-@ 399,441 TEXTBOX text_4 ; 
-HEIGHT 24 ; 
-WIDTH 120 ; 
-Font 'arial' ; 
-size 10 ; 
-MAXLENGTH 30 ; 
-
-
-
-MYTOOLBARED.text_4.fontcolor:={0,0,0}
-MYTOOLBARED.text_4.backcolor:={255,255,255}
-
-@ 311,523 LABEL label_3 ; 
-WIDTH 43 ; 
-HEIGHT 53 ; 
-VALUE 'Button Width Height' ; 
-FONT 'arial' ; 
-SIZE 10 ;
-BACKCOLOR ::Backcolor ;
-
-
-
-
-MYTOOLBARED.label_3.fontcolor:={0,0,0}
-
-@ 312,584 TEXTBOX text_2 ; 
-HEIGHT 25 ; 
-WIDTH 65 ; 
-Font 'arial' ; 
-size 10 ; 
-NUMERIC ; 
-MAXLENGTH 4 ; 
-
-
-
-MYTOOLBARED.text_2.fontcolor:={0,0,0}
-MYTOOLBARED.text_2.backcolor:={255,255,255}
-
-@ 342,585 TEXTBOX text_3 ; 
-HEIGHT 24 ; 
-WIDTH 65 ; 
-Font 'arial' ; 
-size 10 ; 
-NUMERIC ; 
-MAXLENGTH 4 ; 
-
-
-
-MYTOOLBARED.text_3.fontcolor:={0,0,0}
-MYTOOLBARED.text_3.backcolor:={255,255,255}
-
-@ 298,277 FRAME frame_1 ; 
-CAPTION "Toolbar Properties" ; 
-WIDTH 417 ; 
-HEIGHT 144 ; 
-
-
-
-MYTOOLBARED.frame_1.fontcolor:={0,0,0}
-MYTOOLBARED.frame_1.backcolor:=::Backcolor
-MYTOOLBARED.frame_1.fontname:='arial'
-MYTOOLBARED.frame_1.fontsize:= 10
-
-@ 312,16 BUTTON button_1 ;
-CAPTION 'Dropdown Menu' ; 
-ACTION tmymenu:menu_ed( 4,dtoolbar->named ) ;
-WIDTH 100 ;
-HEIGHT 28 ; 
-FONT 'Arial' ;
-SIZE 10 ;
- 
-
-
-MYTOOLBARED.button_1.fontcolor:={  0,  0,  0}
-MYTOOLBARED.button_1.backcolor:=::Backcolor
-
-@ 17,277 BROWSE browse_101 ;
-WIDTH 357 ;
-HEIGHT 278 ; 
-HEADERS {'name','caption','action','check','autosize','image','separator','group','Tooltip'} ; 
-WIDTHS  {90,160,250,40,40,160,40,40,160} ; 
-WORKAREA dtoolbar ; 
-FIELDS  {'named','item','action','check','autosize','dtoolbar->image','separator','group','Tooltip'} ; 
-VALUE  1 ; 
-FONT 'courier new' ;
-SIZE 10 ;
-ON CHANGE TMYtoolb:readlevel() ;
-ON GOTFOCUS TMYtoolb:readlevel() ;
-LOCK ;
-
-
-
-MYTOOLBARED.browse_101.fontcolor:={0,0,0}
-MYTOOLBARED.browse_101.backcolor:={255,255,255}
-
-@ 144,137 TEXTBOX text_5 ; 
-HEIGHT 23 ; 
-WIDTH 120 ; 
-Font 'arial' ; 
-size 10 ; 
-MAXLENGTH 30 ; 
-ON CHANGE TMYtoolb:escribet() ; 
-
-
-
-MYTOOLBARED.text_5.fontcolor:={0,0,0}
-MYTOOLBARED.text_5.backcolor:={255,255,255}
-
-@ 146,58 LABEL label_4 ; 
-WIDTH 76 ; 
-HEIGHT 17 ; 
-VALUE 'Tooltip' ; 
-FONT 'arial' ; 
-SIZE 10 ;
-BACKCOLOR ::Backcolor ;
-
-
-
-
-MYTOOLBARED.label_4.fontcolor:={0,0,0}
+* ooHG IDE Plus form generated code
+* (c)2003-2014 Ciro Vargas Clemow <pcman2010@yahoo.com > 
+
+DEFINE WINDOW TEMPLATE ;
+   AT 108, 99 ;
+   WIDTH 778 ;
+   HEIGHT 519 ;
+   TITLE 'ooHG IDE+ Toolbar editor' ;
+   MODAL ;
+   ON RELEASE ::FormEdit := NIL ;
+   BACKCOLOR ::oEditor:cFBackcolor ;
+   FONT 'Arial' ;
+   SIZE 10
+
+   @ 10, 10 FRAME frame_2 ;
+      CAPTION 'Items' ;
+      WIDTH 530 ;
+      HEIGHT 260 ;
+      TRANSPARENT ;
+      BACKCOLOR ::oEditor:cFBackcolor
+
+   @ 30, 15 BROWSE browse_101 ;
+      WIDTH 520 ;
+      HEIGHT 200 ;
+      HEADERS {'name','caption','action','check','autosize','image','separator','group','tooltip','obj','dropdown', 'wholedropdown','subclass'} ;
+      WIDTHS {90,160,250,40,40,160,40,40,160,90,40,90} ;
+      WORKAREA ( ::cID ) ;
+      FIELDS {'named','item','action','check','autosize','image','separator','group','tooltip','obj','drop','whole','subclass'} ;
+      VALUE 1 ;
+      FONT 'courier new' ;
+      SIZE 10 ;
+      ON CHANGE ::ParseItem() ;
+      ON GOTFOCUS ::ParseItem() ;
+      LOCK 
+
+   @ 235, 15 BUTTON button_101 ;
+      WIDTH 100 ;
+      HEIGHT 28 ;
+      CAPTION 'Insert item' ;
+      ACTION ::InsertItem()
+
+   @ 235, 120 BUTTON button_102 ;
+      WIDTH 100 ;
+      HEIGHT 28 ;
+      CAPTION 'Delete item' ;
+      ACTION ::DeleteItem()
+
+   @ 235, 225 BUTTON button_103 ;
+      WIDTH 100 ;
+      HEIGHT 28 ;
+      CAPTION 'New item' ;
+      ACTION ::AddItem()
+
+   @ 235, 330 BUTTON button_106 ;
+      WIDTH 100 ;
+      HEIGHT 28 ;
+      CAPTION '/\' ;
+      ACTION ::MoveUp()
+
+   @ 235, 435 BUTTON button_107 ;
+      WIDTH 100 ;
+      HEIGHT 28 ;
+      CAPTION '\/' ;
+      ACTION ::MoveDown()
+
+   @ 280, 10 FRAME frame_1 ;
+      CAPTION 'Toolbar Properties' ;
+      WIDTH 530 ;
+      HEIGHT 150 ;
+      BACKCOLOR ::oEditor:cFBackcolor
+
+   @ 300, 20 CHECKBOX checkbox_1 ;
+      WIDTH 80 ;
+      HEIGHT 28 ;
+      CAPTION 'Flat' ;
+      VALUE .F. ;
+      ON CHANGE ::lFlat := ::FormEdit:checkbox_1:Value
+
+   @ 300, 110 CHECKBOX checkbox_3 ;
+      WIDTH 80 ;
+      HEIGHT 28 ;
+      CAPTION 'RightText' ;
+      VALUE .F. ;
+      ON CHANGE ::lRightText := ::FormEdit:checkbox_3:Value
+
+   @ 330, 20 CHECKBOX checkbox_2 ;
+      WIDTH 80 ;
+      HEIGHT 24 ;
+      CAPTION 'Bottom' ;
+      VALUE .F. ;
+      ON CHANGE ::lBottom := ::FormEdit:checkbox_2:Value
+
+   @ 330, 110 CHECKBOX checkbox_4 ;
+      WIDTH 80 ;
+      HEIGHT 25 ;
+      CAPTION 'Border' ;
+      VALUE .F. ;
+      ON CHANGE ::lBorder := ::FormEdit:checkbox_4:Value
+
+   @ 298, 390 FRAME frame_4 ;
+      CAPTION 'Button' ;
+      WIDTH 140 ;
+      HEIGHT 80 ;
+      TRANSPARENT ;
+      BACKCOLOR ::oEditor:cFBackcolor
+
+   @ 320, 400 LABEL label_8 ;
+      WIDTH 60 ;
+      HEIGHT 24 ;
+      VALUE 'Height'
+
+   @ 317, 460 TEXTBOX text_3 ;
+      WIDTH 60 ;
+      HEIGHT 24 ;
+      NUMERIC ;
+      MAXLENGTH 4 ;
+      ON CHANGE ::nHeight := ::FormEdit:text_3:Value
+
+   @ 350, 400 LABEL label_7 ;
+      WIDTH 60 ;
+      HEIGHT 24 ;
+      VALUE 'Width'
+
+   @ 347, 460 TEXTBOX text_2 ;
+      WIDTH 60 ;
+      HEIGHT 24 ;
+      NUMERIC ;
+      MAXLENGTH 4 ;
+      ON CHANGE ::nWidth := ::FormEdit:text_2:Value
+
+   @ 370, 20 LABEL label_1 ;
+      WIDTH 120 ;
+      HEIGHT 18 ;
+      VALUE 'Toolbar Name' ;
+      CENTERALIGN 
+
+   @ 390, 20 TEXTBOX text_1 ;
+      WIDTH 120 ;
+      HEIGHT 24 ;
+      MAXLENGTH 30 ;
+      ON CHANGE ::cTbName := ::FormEdit:text_1:Value
+
+   @ 370, 150 LABEL label_2 ;
+      WIDTH 120 ;
+      HEIGHT 18 ;
+      VALUE 'Tooltip' ;
+      CENTERALIGN 
+
+   @ 390, 150 TEXTBOX text_4 ;
+      WIDTH 120 ;
+      HEIGHT 24 ;
+      MAXLENGTH 30 ;
+      ON CHANGE ::cToolTip := ::FormEdit:text_4:Value
+
+   @ 388, 430 BUTTON button_tbp ;
+      WIDTH 100 ;
+      HEIGHT 28 ;
+      CAPTION 'Font' ;
+      ACTION ::SetFont()
+
+   @ 10, 550 FRAME frame_3 ;
+      CAPTION 'Selected Item' ;
+      WIDTH 210 ;
+      HEIGHT 420 ;
+      TRANSPARENT ;
+      BACKCOLOR ::oEditor:cFBackcolor
+
+   @ 40, 560 LABEL label_102 ;
+      WIDTH 45 ;
+      HEIGHT 16 ;
+      VALUE 'Name'
+
+   @ 37, 635 TEXTBOX text_102 ;
+      WIDTH 120 ;
+      HEIGHT 23 ;
+      MAXLENGTH 40 ;
+      ON CHANGE ::WriteName()
+
+   @ 73, 560 LABEL label_101 ;
+      WIDTH 59 ;
+      HEIGHT 21 ;
+      VALUE 'Caption'
+
+   @ 70, 635 TEXTBOX text_101 ;
+      WIDTH 120 ;
+      HEIGHT 23 ;
+      MAXLENGTH 80 ;
+      ON CHANGE ::WriteCaption()
+
+   @ 106, 560 LABEL label_103 ;
+      WIDTH 55 ;
+      HEIGHT 21 ;
+      VALUE 'Action'
+
+   @ 103, 635 TEXTBOX edit_101 ;
+      WIDTH 120 ;
+      HEIGHT 23 ;
+      MAXLENGTH 250 ;
+      ON CHANGE ::WriteAction()
+
+   @ 139, 560 LABEL label_104 ;
+      WIDTH 47 ;
+      HEIGHT 22 ;
+      VALUE 'Image'
+
+   @ 136, 635 TEXTBOX text_103 ;
+      WIDTH 120 ;
+      HEIGHT 23 ;
+      MAXLENGTH 40 ;
+      ON CHANGE ::WriteImage()
+
+   @ 172, 560 LABEL label_4 ;
+      WIDTH 76 ;
+      HEIGHT 17 ;
+      VALUE 'Tooltip'
+
+   @ 169, 635 TEXTBOX text_5 ;
+      WIDTH 120 ;
+      HEIGHT 23 ;
+      MAXLENGTH 80 ;
+      ON CHANGE ::WriteToolTip()
+
+   @ 205, 560 LABEL label_5 ;
+      WIDTH 76 ;
+      HEIGHT 17 ;
+      VALUE 'Obj'
+
+   @ 202, 635 TEXTBOX text_6 ;
+      WIDTH 120 ;
+      HEIGHT 23 ;
+      MAXLENGTH 30 ;
+      ON CHANGE ::WriteObj()
+
+   @ 238, 560 LABEL label_6 ;
+      WIDTH 76 ;
+      HEIGHT 17 ;
+      VALUE 'Subclass'
+
+   @ 235, 635 TEXTBOX text_7 ;
+      WIDTH 120 ;
+      HEIGHT 23 ;
+      MAXLENGTH 30 ;
+      ON CHANGE ::WriteSubclass()
+
+   @ 278, 560 CHECKBOX checkbox_101 ;
+      WIDTH 90 ;
+      HEIGHT 26 ;
+      CAPTION 'Check' ;
+      VALUE .F. ;
+      ON CHANGE ::WriteCheck()
+
+   @ 278, 660 CHECKBOX checkbox_103 ;
+      WIDTH 90 ;
+      HEIGHT 26 ;
+      CAPTION 'Separator' ;
+      VALUE .F. ;
+      ON CHANGE ::WriteSeparator()
+
+   @ 310, 560 CHECKBOX checkbox_104 ;
+      WIDTH 100 ;
+      HEIGHT 26 ;
+      CAPTION 'Group' ;
+      VALUE .F. ;
+      ON CHANGE ::WriteGroup()
+
+   @ 310, 660 CHECKBOX checkbox_102 ;
+      WIDTH 90 ;
+      HEIGHT 26 ;
+      CAPTION 'Autosize' ;
+      VALUE .F. ;
+      ON CHANGE ::WriteAutosize()
+
+   @ 360, 560 BUTTON button_1 ;
+      WIDTH 100 ;
+      HEIGHT 28 ;
+      CAPTION 'Dropdown Menu' ;
+      ACTION ::EditDropDownButton()
+
+   @ 395, 560 CHECKBOX checkbox_105 ;
+      WIDTH 120 ;
+      HEIGHT 26 ;
+      CAPTION 'WholeDropDown' ;
+      VALUE .F. ;
+      ON CHANGE ::WriteWhole()
+
+   @ 448, 550 BUTTON button_108 ;
+      WIDTH 100 ;
+      HEIGHT 28 ;
+      CAPTION 'Save / Exit' ;
+      ACTION ::Exit()
+
+   @ 448, 665 BUTTON button_109 ;
+      WIDTH 100 ;
+      HEIGHT 28 ;
+      CAPTION 'Discard' ;
+      ACTION ::Discard()
 
 END WINDOW 
 

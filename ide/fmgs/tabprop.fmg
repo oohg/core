@@ -1,532 +1,307 @@
 /*
- * $Id: tabprop.fmg,v 1.3 2014-06-25 20:11:58 fyurisich Exp $
+ * $Id: tabprop.fmg,v 1.4 2014-09-16 04:11:20 fyurisich Exp $
  */
 
-* Harbour MiniGUI Two-Way Form Designer Generated Code
-* (c)2004 Roberto Lopez <roblez@ciudad.com.ar>
+* ooHG IDE Plus form generated code
+* (c)2003-2014 Ciro Vargas Clemow <pcman2010@yahoo.com > 
 
-DEFINE WINDOW TEMPLATE AT 132 , 235 WIDTH 445 HEIGHT 451 TITLE "Tab properties" ICON NIL MODAL CURSOR NIL ON INIT Nil ON RELEASE Nil ON INTERACTIVECLOSE Nil ON MOUSECLICK Nil ON MOUSEDRAG Nil ON MOUSEMOVE Nil ON SIZE Nil ON PAINT Nil BACKCOLOR myide:asystemcolor ON GOTFOCUS Nil ON LOSTFOCUS Nil ON SCROLLUP Nil ON SCROLLDOWN Nil ON SCROLLLEFT Nil ON SCROLLRIGHT Nil ON HSCROLLBOX Nil ON VSCROLLBOX Nil
+DEFINE WINDOW TEMPLATE ;
+   AT 132, 235 ;
+   OBJ oTabProp ;
+   WIDTH 428 ;
+   HEIGHT 570 ;
+   TITLE 'Tab properties' ;
+   BACKCOLOR ::myIde:aSystemColor
 
-    DEFINE BUTTON button_1
-        ROW    20
-        COL    10
-        WIDTH  100
-        HEIGHT 28
-        CAPTION "PageCount++"
-        ACTION { || AddTabPageaux(i) }
-        FONTNAME "Arial"
-        FONTSIZE 9
-        TOOLTIP ""
-        FONTBOLD .F.
-        FONTITALIC .F.
-        FONTUNDERLINE .F.
-        FONTSTRIKEOUT .F.
-        ONGOTFOCUS Nil
-        ONLOSTFOCUS Nil
-        HELPID Nil
-        FLAT .T.
-        TABSTOP .T.
-        VISIBLE .T.
-        TRANSPARENT .F.
-        PICTURE Nil
-    END BUTTON
+   @ 20, 20 BUTTON Button_1 ;
+      WIDTH 100 ;
+      HEIGHT 28 ;
+      CAPTION 'PageCount ++' ;
+      ACTION ::AddTabPage( i, oTab, oTabProp ) ;
+      FONT 'Arial' ;
+      SIZE 9
 
-    DEFINE BUTTON button_2
-        ROW    20
-        COL    120
-        WIDTH  100
-        HEIGHT 28
-        CAPTION "PageCount--"
-        ACTION { || DeleteTabpageaux(i) }
-        FONTNAME "Arial"
-        FONTSIZE 9
-        TOOLTIP ""
-        FONTBOLD .F.
-        FONTITALIC .F.
-        FONTUNDERLINE .F.
-        FONTSTRIKEOUT .F.
-        ONGOTFOCUS Nil
-        ONLOSTFOCUS Nil
-        HELPID Nil
-        FLAT .T.
-        TABSTOP .T.
-        VISIBLE .T.
-        TRANSPARENT .F.
-        PICTURE Nil
-    END BUTTON
+   @ 20, 130 BUTTON Button_2 ;
+      WIDTH 100 ;
+      HEIGHT 28 ;
+      CAPTION 'PageCount --' ;
+      ACTION ::DeleteTabpage( i, oTab, oTabProp ) ;
+      FONT 'Arial' ;
+      SIZE 9
 
-    DEFINE LABEL label_101
-        ROW    106
-        COL    10
-        WIDTH  54
-        HEIGHT 28
-        VALUE "Captions"
-        FONTNAME "Arial"
-        FONTSIZE 9
-        TOOLTIP ""
-        FONTBOLD .F.
-        FONTITALIC .F.
-        FONTUNDERLINE .F.
-        FONTSTRIKEOUT .F.
-        HELPID Nil
-        VISIBLE .T.
-        TRANSPARENT .F.
-        ACTION Nil
-        AUTOSIZE .F.
-        BACKCOLOR NIL
-        FONTCOLOR NIL
-        RIGHTALIGN .T. 
-        BACKCOLOR myide:asystemcolor
-    END LABEL
+   @ 20, 300 BUTTON Button_3 ;
+      WIDTH 100 ;
+      HEIGHT 28 ;
+      CAPTION 'Exit' ;
+      ACTION ThisWindow.Release() ;
+      FONT 'Arial' ;
+      SIZE 9
 
-    DEFINE TEXTBOX Text_1
-        ROW    60
-        COL    70
-        WIDTH  120
-        HEIGHT 24
-        FONTNAME "Arial"
-        FONTSIZE 9
-        TOOLTIP ""
-        ONCHANGE {||(myform:avalue[ki]:=tabprop.text_1.value) }
-        ONGOTFOCUS Nil
-        ONLOSTFOCUS Nil
-        FONTBOLD .F.
-        FONTITALIC .F.
-        FONTUNDERLINE .F.
-        FONTSTRIKEOUT .F.
-        ONENTER Nil
-        HELPID Nil
-        TABSTOP .T.
-        VISIBLE .T.
-        READONLY .F.
-        RIGHTALIGN .F.
-        BACKCOLOR NIL
-        FONTCOLOR NIL
-        INPUTMASK Nil
-        FORMAT Nil
-        VALUE myform:avalue[ki]
-    END TEXTBOX
+   @ 63, 20 LABEL Label_3 ;
+      WIDTH 60 ;
+      HEIGHT 20 ;
+      VALUE 'Value:' ;
+      FONT 'Arial' ;
+      SIZE 9 ;
+      BACKCOLOR ::myIde:aSystemColor
 
-    DEFINE TEXTBOX Text_2
-        ROW    60
-        COL    270
-        WIDTH  120
-        HEIGHT 24
-        FONTNAME "Arial"
-        FONTSIZE 9
-        TOOLTIP ""
-        ONCHANGE (myform:aname[ki]:=tabprop.text_2.value)
-        ONGOTFOCUS Nil
-        ONLOSTFOCUS Nil
-        FONTBOLD .F.
-        FONTITALIC .F.
-        FONTUNDERLINE .F.
-        FONTSTRIKEOUT .F.
-        ONENTER Nil
-        HELPID Nil
-        TABSTOP .T.
-        VISIBLE .T.
-        READONLY .F.
-        RIGHTALIGN .F.
-        BACKCOLOR NIL
-        FONTCOLOR NIL
-        INPUTMASK Nil
-        FORMAT Nil
-        VALUE myform:aname[ki]
-    END TEXTBOX
+   @ 60, 80 TEXTBOX Text_1 ;
+      WIDTH 120 ;
+      HEIGHT 24 ;
+      FONT 'Arial' ;
+      SIZE 9 ;
+      ON CHANGE ::aValue[i] := oTabProp:Text_1:Value
 
-    DEFINE EDITBOX text_101
-        ROW    100
-        COL    70
-        WIDTH  120
-        HEIGHT 120
-        VALUE ""
-        FONTNAME "Arial"
-        FONTSIZE 9
-        TOOLTIP ""
-        ONCHANGE {||(myform:acaption[ki]:=tabprop.text_101.value),cambiacap(cname)}
-        ONGOTFOCUS Nil
-        ONLOSTFOCUS Nil
-        FONTBOLD .F.
-        FONTITALIC .F.
-        FONTUNDERLINE .F.
-        FONTSTRIKEOUT .F.
-        HELPID Nil
-        TABSTOP .T.
-        VISIBLE .T.
-        READONLY .F.
-        HSCROLLBAR .T.
-        VSCROLLBAR .T.
-        BACKCOLOR NIL
-        FONTCOLOR NIL
-    END EDITBOX
+   @ 63, 220 LABEL Label_4 ;
+      WIDTH 60 ;
+      HEIGHT 20 ;
+      VALUE 'Name:' ;
+      FONT 'Arial' ;
+      SIZE 9 ;
+      BACKCOLOR ::myIde:aSystemColor
 
-    DEFINE EDITBOX Edit_2
-        ROW    100
-        COL    270
-        WIDTH  120
-        HEIGHT 120
-        VALUE ""
-        FONTNAME "Arial"
-        FONTSIZE 9
-        TOOLTIP ""
-        ONCHANGE (myform:aimage[ki]:=tabprop.edit_2.value)
-        ONGOTFOCUS Nil
-        ONLOSTFOCUS Nil
-        FONTBOLD .F.
-        FONTITALIC .F.
-        FONTUNDERLINE .F.
-        FONTSTRIKEOUT .F.
-        HELPID Nil
-        TABSTOP .T.
-        VISIBLE .T.
-        READONLY .F.
-        HSCROLLBAR .T.
-        VSCROLLBAR .T.
-        BACKCOLOR NIL
-        FONTCOLOR NIL
-    END EDITBOX
+   @ 60, 280 TEXTBOX Text_2 ;
+      WIDTH 120 ;
+      HEIGHT 24 ;
+      FONT 'Arial' ;
+      SIZE 9 ;
+      ON CHANGE ::aName[i] := oTabProp:Text_2:Value
 
-    DEFINE EDITBOX Edit_3
-        ROW    240
-        COL    70
-        WIDTH  120
-        HEIGHT 120
-        VALUE ""
-        FONTNAME "Arial"
-        FONTSIZE 9
-        TOOLTIP ""
-        ONCHANGE (myform:atooltip[ki]:=tabprop.edit_3.value)
-        ONGOTFOCUS Nil
-        ONLOSTFOCUS Nil
-        FONTBOLD .F.
-        FONTITALIC .F.
-        FONTUNDERLINE .F.
-        FONTSTRIKEOUT .F.
-        HELPID Nil
-        TABSTOP .T.
-        VISIBLE .T.
-        READONLY .F.
-        HSCROLLBAR .T.
-        VSCROLLBAR .T.
-        BACKCOLOR NIL
-        FONTCOLOR NIL
-    END EDITBOX
+   @ 103, 20 LABEL Label_2 ;
+      WIDTH 60 ;
+      HEIGHT 20 ;
+      VALUE 'Tooltip:' ;
+      FONT 'Arial' ;
+      SIZE 9 ;
+      BACKCOLOR ::myIde:aSystemColor ;
+      TRANSPARENT 
 
-    DEFINE CHECKBOX Check_2
-        ROW    240
-        COL    220
-        WIDTH  70
-        HEIGHT 30
-        CAPTION "Buttons"
-        VALUE .F.
-        FONTNAME "Arial"
-        FONTSIZE 9
-        TOOLTIP ""
-        ONCHANGE (myform:abuttons[ki]:=tabprop.check_2.value)
-        ONGOTFOCUS Nil
-        ONLOSTFOCUS Nil
-        FONTBOLD .F.
-        FONTITALIC .F.
-        FONTUNDERLINE .F.
-        FONTSTRIKEOUT .F.
-        BACKCOLOR myide:asystemcolor
-        FONTCOLOR NIL
-        HELPID Nil
-        TABSTOP .T.
-        VISIBLE .T.
-        TRANSPARENT .F.
-    END CHECKBOX
+   @ 100, 80 TEXTBOX Edit_3 ;
+      WIDTH 320 ;
+      HEIGHT 24 ;
+      FONT 'Arial' ;
+      SIZE 9 ;
+      ON CHANGE ::aToolTip[i] := oTabProp:Edit_3:Value
 
-    DEFINE CHECKBOX Check_1
-        ROW    270
-        COL    220
-        WIDTH  50
-        HEIGHT 30
-        CAPTION "Flat"
-        VALUE .F.
-        FONTNAME "Arial"
-        FONTSIZE 9
-        TOOLTIP ""
-        ONCHANGE (myform:aflat[ki]:=tabprop.check_1.value)
-        ONGOTFOCUS Nil
-        ONLOSTFOCUS Nil
-        FONTBOLD .F.
-        FONTITALIC .F.
-        FONTUNDERLINE .F.
-        FONTSTRIKEOUT .F.
-        BACKCOLOR myide:asystemcolor
-        FONTCOLOR NIL
-        HELPID Nil
-        TABSTOP .T.
-        VISIBLE .T.
-        TRANSPARENT .F.
-    END CHECKBOX
+   @ 143, 20 LABEL Label_5 ;
+      WIDTH 60 ;
+      HEIGHT 20 ;
+      VALUE 'Obj:' ;
+      FONT 'Arial' ;
+      SIZE 9
 
-    DEFINE CHECKBOX Check_3
-        ROW    300
-        COL    220
-        WIDTH  70
-        HEIGHT 30
-        CAPTION "HotTrack"
-        VALUE .F.
-        FONTNAME "Arial"
-        FONTSIZE 9
-        TOOLTIP ""
-        ONCHANGE (myform:ahottrack[ki]:=tabprop.check_3.value)
-        ONGOTFOCUS Nil
-        ONLOSTFOCUS Nil
-        FONTBOLD .F.
-        FONTITALIC .F.
-        FONTUNDERLINE .F.
-        FONTSTRIKEOUT .F.
-        BACKCOLOR myide:asystemcolor
-        FONTCOLOR NIL
-        HELPID Nil
-        TABSTOP .T.
-        VISIBLE .T.
-        TRANSPARENT .F.
-    END CHECKBOX
+   @ 140, 80 TEXTBOX Text_3 ;
+      WIDTH 120 ;
+      HEIGHT 24 ;
+      FONT 'Arial' ;
+      SIZE 9 ;
+      ON CHANGE ::aCObj[i] := oTabProp:Text_3:Value
 
-    DEFINE CHECKBOX Check_4
-        ROW    330
-        COL    220
-        WIDTH  70
-        HEIGHT 30
-        CAPTION "Vertical"
-        VALUE .F.
-        FONTNAME "Arial"
-        FONTSIZE 9
-        TOOLTIP ""
-        ONCHANGE (myform:avertical[ki]:=tabprop.check_4.value)
-        ONGOTFOCUS Nil
-        ONLOSTFOCUS Nil
-        FONTBOLD .F.
-        FONTITALIC .F.
-        FONTUNDERLINE .F.
-        FONTSTRIKEOUT .F.
-        BACKCOLOR myide:asystemcolor
-        FONTCOLOR NIL
-        HELPID Nil
-        TABSTOP .T.
-        VISIBLE .T.
-        TRANSPARENT .F.
-    END CHECKBOX
+   @ 183, 20 LABEL Label_6 ;
+      WIDTH 60 ;
+      HEIGHT 20 ;
+      VALUE 'SubClass:' ;
+      FONT 'Arial' ;
+      SIZE 9
 
-    DEFINE LABEL Label_1
-        ROW    110
-        COL    210
-        WIDTH  50
-        HEIGHT 30
-        VALUE "Images"
-        FONTNAME "Arial"
-        FONTSIZE 9
-        TOOLTIP ""
-        FONTBOLD .F.
-        FONTITALIC .F.
-        FONTUNDERLINE .F.
-        FONTSTRIKEOUT .F.
-        HELPID Nil
-        VISIBLE .T.
-        TRANSPARENT .F.
-        ACTION Nil
-        AUTOSIZE .F.
-        BACKCOLOR myide:asystemcolor
-        FONTCOLOR NIL
-        RIGHTALIGN .T. 
-    END LABEL
+   @ 180, 80 TEXTBOX Text_4 ;
+      WIDTH 120 ;
+      HEIGHT 24 ;
+      FONT 'Arial' ;
+      SIZE 9 ;
+      ON CHANGE ::aSubClass[i] := oTabProp:Text_4:Value
 
-    DEFINE LABEL Label_2
-        ROW    250
-        COL    20
-        WIDTH  40
-        HEIGHT 20
-        VALUE "Tooltip"
-        FONTNAME "Arial"
-        FONTSIZE 9
-        TOOLTIP ""
-        FONTBOLD .F.
-        FONTITALIC .F.
-        FONTUNDERLINE .F.
-        FONTSTRIKEOUT .F.
-        HELPID Nil
-        VISIBLE .T.
-        TRANSPARENT .F.
-        ACTION Nil
-        AUTOSIZE .T.
-        BACKCOLOR myide:asystemcolor
-        FONTCOLOR NIL
-        RIGHTALIGN .T. 
-    END LABEL
+   @ 140, 230 CHECKBOX Check_2 ;
+      WIDTH 70 ;
+      HEIGHT 30 ;
+      CAPTION 'Buttons' ;
+      VALUE .F. ;
+      FONT 'Arial' ;
+      SIZE 9 ;
+      ON CHANGE ::aButtons[i] := oTabProp:Check_2:Value ;
+      BACKCOLOR ::myIde:aSystemColor
 
-    DEFINE LABEL Label_3
-        ROW    70
-        COL    10
-        WIDTH  50
-        HEIGHT 20
-        VALUE "Value"
-        FONTNAME "Arial"
-        FONTSIZE 9
-        TOOLTIP ""
-        FONTBOLD .F.
-        FONTITALIC .F.
-        FONTUNDERLINE .F.
-        FONTSTRIKEOUT .F.
-        HELPID Nil
-        VISIBLE .T.
-        TRANSPARENT .F.
-        ACTION Nil
-        AUTOSIZE .F.
-        BACKCOLOR myide:asystemcolor
-        FONTCOLOR NIL
-        RIGHTALIGN .T. 
-    END LABEL
+   @ 140, 340 CHECKBOX Check_5 ;
+      WIDTH 70 ;
+      HEIGHT 30 ;
+      CAPTION 'Enabled' ;
+      VALUE .F. ;
+      FONT 'Arial' ;
+      SIZE 9 ;
+      ON CHANGE ::aEnabled[i] := oTabProp:Check_5:Value ;
+      BACKCOLOR ::myIde:aSystemColor
 
-    DEFINE LABEL Label_4
-        ROW    70
-        COL    220
-        WIDTH  40
-        HEIGHT 20
-        VALUE "Name"
-        FONTNAME "Arial"
-        FONTSIZE 9
-        TOOLTIP ""
-        FONTBOLD .F.
-        FONTITALIC .F.
-        FONTUNDERLINE .F.
-        FONTSTRIKEOUT .F.
-        HELPID Nil
-        VISIBLE .T.
-        TRANSPARENT .F.
-        ACTION Nil
-        AUTOSIZE .F.
-        BACKCOLOR myide:asystemcolor
-        FONTCOLOR NIL
-    END LABEL
+   @ 170, 230 CHECKBOX Check_1 ;
+      WIDTH 70 ;
+      HEIGHT 30 ;
+      CAPTION 'Flat' ;
+      VALUE .F. ;
+      FONT 'Arial' ;
+      SIZE 9 ;
+      ON CHANGE ::aFlat[i] := oTabProp:Check_1:Value ;
+      BACKCOLOR ::myIde:aSystemColor
 
-    DEFINE BUTTON button_3
-        ROW    20
-        COL    320
-        WIDTH  100
-        HEIGHT 28
-        CAPTION "Exit"
-        ACTION (tabprop.release)
-        FONTNAME "Arial"
-        FONTSIZE 9
-        TOOLTIP ""
-        FONTBOLD .F.
-        FONTITALIC .F.
-        FONTUNDERLINE .F.
-        FONTSTRIKEOUT .F.
-        ONGOTFOCUS Nil
-        ONLOSTFOCUS Nil
-        HELPID Nil
-        FLAT .T.
-        TABSTOP .T.
-        VISIBLE .T.
-        TRANSPARENT .F.
-        PICTURE Nil
-    END BUTTON
+   @ 170, 340 CHECKBOX Check_6 ;
+      WIDTH 70 ;
+      HEIGHT 30 ;
+      CAPTION 'Visible' ;
+      VALUE .F. ;
+      FONT 'Arial' ;
+      SIZE 9 ;
+      ON CHANGE ::aVisible[i] := oTabProp:Check_6:Value ;
+      BACKCOLOR ::myIde:aSystemColor
 
-    DEFINE CHECKBOX Check_5
-        ROW    260
-        COL    330
-        WIDTH  70
-        HEIGHT 30
-        CAPTION "Enabled"
-        VALUE .F.
-        FONTNAME "Arial"
-        FONTSIZE 9
-        TOOLTIP ""
-        ONCHANGE (myform:aenabled[ki]:=tabprop.check_5.value)
-        ONGOTFOCUS Nil
-        ONLOSTFOCUS Nil
-        FONTBOLD .F.
-        FONTITALIC .F.
-        FONTUNDERLINE .F.
-        FONTSTRIKEOUT .F.
-        BACKCOLOR myide:asystemcolor
-        FONTCOLOR NIL
-        HELPID Nil
-        TABSTOP .T.
-        VISIBLE .T.
-        TRANSPARENT .F.
-    END CHECKBOX
+   @ 200, 230 CHECKBOX Check_3 ;
+      WIDTH 70 ;
+      HEIGHT 30 ;
+      CAPTION 'HotTrack' ;
+      VALUE .F. ;
+      FONT 'Arial' ;
+      SIZE 9 ;
+      ON CHANGE ::aHotTrack[i] := oTabProp:Check_3:Value ;
+      BACKCOLOR ::myIde:aSystemColor
 
-    DEFINE CHECKBOX Check_6
-        ROW    300
-        COL    330
-        WIDTH  80
-        HEIGHT 30
-        CAPTION "Visible"
-        VALUE .F.
-        FONTNAME "Arial"
-        FONTSIZE 9
-        TOOLTIP ""
-        ONCHANGE (myform:avisible[ki]:=tabprop.check_6.value)
-        ONGOTFOCUS Nil
-        ONLOSTFOCUS Nil
-        FONTBOLD .F.
-        FONTITALIC .F.
-        FONTUNDERLINE .F.
-        FONTSTRIKEOUT .F.
-        BACKCOLOR myide:asystemcolor
-        FONTCOLOR NIL
-        HELPID Nil
-        TABSTOP .T.
-        VISIBLE .T.
-        TRANSPARENT .F.
-    END CHECKBOX
+   @ 200, 340 CHECKBOX Check_7 ;
+      WIDTH 80 ;
+      HEIGHT 30 ;
+      CAPTION 'RTL' ;
+      VALUE .F. ;
+      FONT 'Arial' ;
+      SIZE 9 ;
+      ON CHANGE ::aRTL[i] := oTabProp:Check_7:Value ;
+      BACKCOLOR ::myIde:aSystemColor
 
-    DEFINE LABEL Label_5
-        ROW    370
-        COL    20
-        WIDTH  20
-        HEIGHT 20
-        VALUE "Obj"
-        FONTNAME "Arial"
-        FONTSIZE 9
-        TOOLTIP ""
-        FONTBOLD .F.
-        FONTITALIC .F.
-        FONTUNDERLINE .F.
-        FONTSTRIKEOUT .F.
-        HELPID Nil
-        VISIBLE .T.
-        TRANSPARENT .F.
-        ACTION Nil
-        AUTOSIZE .F.
-        BACKCOLOR NIL
-        FONTCOLOR NIL
-    END LABEL
+   @ 230, 20 CHECKBOX Check_4 ;
+      WIDTH 70 ;
+      HEIGHT 30 ;
+      CAPTION 'Vertical' ;
+      VALUE .F. ;
+      FONT 'Arial' ;
+      SIZE 9 ;
+      ON CHANGE ::aVertical[i] := oTabProp:Check_4:Value ;
+      BACKCOLOR ::myIde:aSystemColor
 
-    DEFINE TEXTBOX Text_3
-        ROW    370
-        COL    60
-        WIDTH  150
-        HEIGHT 24
-        FONTNAME "Arial"
-        FONTSIZE 9
-        TOOLTIP ""
-        ONCHANGE (myform:acobj[ki]:=tabprop.text_3.value)
-        ONGOTFOCUS Nil
-        ONLOSTFOCUS Nil
-        FONTBOLD .F.
-        FONTITALIC .F.
-        FONTUNDERLINE .F.
-        FONTSTRIKEOUT .F.
-        ONENTER Nil
-        HELPID Nil
-        TABSTOP .T.
-        VISIBLE .T.
-        READONLY .F.
-        RIGHTALIGN .F.
-        BACKCOLOR NIL
-        FONTCOLOR NIL
-        INPUTMASK Nil
-        FORMAT Nil
-        VALUE ""
-    END TEXTBOX
+   @ 230, 120 CHECKBOX Check_8 ;
+      WIDTH 80 ;
+      HEIGHT 30 ;
+      CAPTION 'NoTabStop' ;
+      VALUE .F. ;
+      FONT 'Arial' ;
+      SIZE 9 ;
+      ON CHANGE ::aNoTabStop[i] := oTabProp:Check_8:Value ;
+      BACKCOLOR ::myIde:aSystemColor
 
-END WINDOW
+   @ 230, 230 CHECKBOX Check_9 ;
+      WIDTH 70 ;
+      HEIGHT 30 ;
+      CAPTION 'MultiLine' ;
+      VALUE .F. ;
+      FONT 'Arial' ;
+      SIZE 9 ;
+      ON CHANGE ::aMultiLine[i] := oTabProp:Check_9:Value ;
+      BACKCOLOR ::myIde:aSystemColor
+
+   @ 230, 340 CHECKBOX Check_10 ;
+      WIDTH 70 ;
+      HEIGHT 30 ;
+      CAPTION 'Internals' ;
+      VALUE .F. ;
+      FONT 'Arial' ;
+      SIZE 9 ;
+      ON CHANGE ::aVirtual[i] := oTabProp:Check_10:Value ;
+      BACKCOLOR ::myIde:aSystemColor
+
+   @ 290, 10 FRAME Frame_1 ;
+      WIDTH 400 ;
+      HEIGHT 240 ;
+      CAPTION 'Pages' ;
+      TRANSPARENT 
+
+   @ 323, 20 LABEL Label_101 ;
+      WIDTH 60 ;
+      HEIGHT 24 ;
+      VALUE 'Caption:' ;
+      FONT 'Arial' ;
+      SIZE 9 ;
+      BACKCOLOR ::myIde:aSystemColor ;
+      TRANSPARENT 
+
+   @ 320, 80 EDITBOX Text_101 ;
+      WIDTH 320 ;
+      HEIGHT 40 ;
+      FONT 'Arial' ;
+      SIZE 9 ;
+      MAXLENGTH 500 ;
+      ON CHANGE IIF( CambiaCap( oTab, oTabProp ), ::aCaption[i] := oTabProp:Text_101:Value, NIL ) ;
+      NOVSCROLL 
+
+   @ 363, 20 LABEL Label_1 ;
+      WIDTH 60 ;
+      HEIGHT 24 ;
+      VALUE 'Image:' ;
+      FONT 'Arial' ;
+      SIZE 9 ;
+      BACKCOLOR ::myIde:aSystemColor
+
+   @ 360, 80 EDITBOX Edit_2 ;
+      WIDTH 320 ;
+      HEIGHT 40 ;
+      FONT 'Arial' ;
+      SIZE 9 ;
+      MAXLENGTH 500 ;
+      ON CHANGE IIF( CambiaImg( oTabProp ), ::aImage[i] := oTabProp:Edit_2:Value, NIL ) ;
+      NOVSCROLL 
+
+   @ 403, 20 LABEL Label_7 ;
+      WIDTH 60 ;
+      HEIGHT 24 ;
+      VALUE 'Name:' ;
+      FONT 'Arial' ;
+      SIZE 9 ;
+      BACKCOLOR ::myIde:aSystemColor
+
+   @ 400, 80 EDITBOX Edit_4 ;
+      WIDTH 320 ;
+      HEIGHT 40 ;
+      FONT 'Arial' ;
+      SIZE 9 ;
+      MAXLENGTH 500 ;
+      ON CHANGE IIF( CambiaNam( oTabProp ), ::aPageNames[i] := oTabProp:Edit_4:Value, NIL ) ;
+      NOVSCROLL 
+
+   @ 443, 20 LABEL Label_8 ;
+      WIDTH 60 ;
+      HEIGHT 24 ;
+      VALUE 'Obj:' ;
+      FONT 'Arial' ;
+      SIZE 9 ;
+      BACKCOLOR ::myIde:aSystemColor
+
+   @ 440, 80 EDITBOX Edit_5 ;
+      WIDTH 320 ;
+      HEIGHT 40 ;
+      FONT 'Arial' ;
+      SIZE 9 ;
+      MAXLENGTH 500 ;
+      ON CHANGE IIF( CambiaObj( oTabProp ), ::aPageObjs[i] := oTabProp:Edit_5:Value, NIL ) ;
+      NOVSCROLL 
+
+   @ 483, 20 LABEL Label_9 ;
+      WIDTH 60 ;
+      HEIGHT 24 ;
+      VALUE 'SubClass:' ;
+      FONT 'Arial' ;
+      SIZE 9 ;
+      BACKCOLOR ::myIde:aSystemColor
+
+   @ 480, 80 EDITBOX Edit_6 ;
+      WIDTH 320 ;
+      HEIGHT 40 ;
+      FONT 'Arial' ;
+      SIZE 9 ;
+      MAXLENGTH 500 ;
+      ON CHANGE IIF( CambiaSub( oTabProp ), ::aPageSubClasses[i] := oTabProp:Edit_6:Value, NIL ) ;
+      NOVSCROLL 
+
+END WINDOW 
 

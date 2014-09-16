@@ -1,204 +1,73 @@
 /*
- * $Id: orderf.fmg,v 1.4 2014-06-24 17:39:24 fyurisich Exp $
+ * $Id: orderf.fmg,v 1.5 2014-09-16 04:11:20 fyurisich Exp $
  */
 
-* Harbour MiniGUI IDE Two-Way Form Designer Generated Code
-* (c)2004-2005 Roberto Lopez <roblez@ciudad.com.ar>
+* ooHG IDE Plus form generated code
+* (c)2003-2014 Ciro Vargas Clemow <pcman2010@yahoo.com > 
 
-DEFINE WINDOW TEMPLATE AT 132 , 235 WIDTH 416 HEIGHT 373 TITLE "Control Order (Tab order)" ICON NIL MODAL CURSOR NIL ON INIT {|| llenatipos()} ON RELEASE actsic() ON INTERACTIVECLOSE Nil ON MOUSECLICK Nil ON MOUSEDRAG Nil ON MOUSEMOVE Nil ON SIZE Nil ON PAINT Nil BACKCOLOR myIde:asystemcolor ON GOTFOCUS Nil ON LOSTFOCUS Nil ON SCROLLUP Nil ON SCROLLDOWN Nil ON SCROLLLEFT Nil ON SCROLLRIGHT Nil ON HSCROLLBOX Nil ON VSCROLLBOX Nil
+DEFINE WINDOW TEMPLATE ;
+   AT 132, 235 ;
+   WIDTH 416 ;
+   HEIGHT 373 ;
+   TITLE 'Control Order (Tab order)' ;
+   MODAL ;
+   ON INIT ::LlenaTipos() ;
+   BACKCOLOR ::myIde:aSystemColor ;
+   FONT 'Arial' ;
+   SIZE 10
 
-    DEFINE LISTBOX LIST_TIPOS
-        ROW    40
-        COL    20
-        WIDTH  130
-        HEIGHT 140
-        ITEMS {""}
-        VALUE 0
-        FONTNAME "Arial"
-        FONTSIZE 10
-        TOOLTIP ""
-        ONCHANGE llenacon()
-        ONGOTFOCUS Nil
-        ONLOSTFOCUS Nil
-        FONTBOLD .F.
-        FONTITALIC .F.
-        FONTUNDERLINE .F.
-        FONTSTRIKEOUT .F.
-        BACKCOLOR NIL
-        FONTCOLOR NIL
-        ONDBLCLICK Nil
-        HELPID Nil
-        TABSTOP .T.
-        VISIBLE .T.
-        SORT .F.
-        MULTISELECT .F.
-    END LISTBOX
+   @ 10, 20 LABEL Label_2 ;
+      WIDTH 120 ;
+      HEIGHT 24 ;
+      VALUE 'Control group' ;
+      SIZE 11 ;
+      CENTERALIGN 
 
-    DEFINE LISTBOX treeorden
-        ROW    40
-        COL    170
-        WIDTH  200
-        HEIGHT 200
-        ITEMS {""}
-        VALUE 1
-        FONTNAME "Arial"
-        FONTSIZE 10
-        TOOLTIP ""
-        ONCHANGE Nil
-        ONGOTFOCUS Nil
-        ONLOSTFOCUS Nil
-        FONTBOLD .F.
-        FONTITALIC .F.
-        FONTUNDERLINE .F.
-        FONTSTRIKEOUT .F.
-        BACKCOLOR NIL
-        FONTCOLOR NIL
-        ONDBLCLICK Nil
-        HELPID Nil
-        TABSTOP .T.
-        VISIBLE .T.
-        SORT .F.
-        MULTISELECT .F.
-    END LISTBOX
+   @ 10, 200 LABEL Label_3 ;
+      WIDTH 120 ;
+      HEIGHT 24 ;
+      VALUE 'Control order' ;
+      SIZE 11 ;
+      CENTERALIGN 
 
-    DEFINE BUTTON button_arriba
-        ROW    200
-        COL    60
-        WIDTH  40
-        HEIGHT 28
-        CAPTION "/\"
-        ACTION ord_arriba()
-        FONTNAME "Arial"
-        FONTSIZE 9
-        TOOLTIP ""
-        FONTBOLD .F.
-        FONTITALIC .F.
-        FONTUNDERLINE .F.
-        FONTSTRIKEOUT .F.
-        ONGOTFOCUS Nil
-        ONLOSTFOCUS Nil
-        HELPID Nil
-        FLAT .T.
-        TABSTOP .T.
-        VISIBLE .T.
-        TRANSPARENT .F.
-        PICTURE Nil
-    END BUTTON
+   @ 40, 20 LISTBOX List_Tipos ;
+      WIDTH 130 ;
+      HEIGHT 140 ;
+      ITEMS {""} ;
+      ON CHANGE ::LlenaCon()
 
-    DEFINE BUTTON button_abajo
-        ROW    240
-        COL    60
-        WIDTH  40
-        HEIGHT 28
-        CAPTION "\/"
-        ACTION ord_abajo()
-        FONTNAME "Arial"
-        FONTSIZE 9
-        TOOLTIP ""
-        FONTBOLD .F.
-        FONTITALIC .F.
-        FONTUNDERLINE .F.
-        FONTSTRIKEOUT .F.
-        ONGOTFOCUS Nil
-        ONLOSTFOCUS Nil
-        HELPID Nil
-        FLAT .T.
-        TABSTOP .T.
-        VISIBLE .T.
-        TRANSPARENT .F.
-        PICTURE Nil
-    END BUTTON
+   @ 40, 170 LISTBOX TreeOrden ;
+      WIDTH 200 ;
+      HEIGHT 200 ;
+      ITEMS {""}
 
-    DEFINE LABEL Label_1
-        ROW    250
-        COL    170
-        WIDTH  200
-        HEIGHT 20
-        VALUE "Use arrows to swap controls"
-        FONTNAME "Arial"
-        FONTSIZE 12
-        TOOLTIP ""
-        FONTBOLD .F.
-        FONTITALIC .F.
-        FONTUNDERLINE .F.
-        FONTSTRIKEOUT .F.
-        HELPID Nil
-        VISIBLE .T.
-        TRANSPARENT .F.
-        ACTION Nil
-        AUTOSIZE .F.
-        BACKCOLOR NIL
-        FONTCOLOR NIL
-    END LABEL
+   @ 200, 60 BUTTON button_arriba ;
+      WIDTH 40 ;
+      HEIGHT 28 ;
+      CAPTION '/\' ;
+      ACTION ::Ord_Arriba() ;
+      SIZE 9
 
-    DEFINE LABEL Label_2
-        ROW    10
-        COL    20
-        WIDTH  120
-        HEIGHT 24
-        VALUE "Control group"
-        FONTNAME "Arial"
-        FONTSIZE 11
-        TOOLTIP ""
-        FONTBOLD .F.
-        FONTITALIC .F.
-        FONTUNDERLINE .F.
-        FONTSTRIKEOUT .F.
-        HELPID Nil
-        VISIBLE .T.
-        TRANSPARENT .F.
-        ACTION Nil
-        AUTOSIZE .F.
-        BACKCOLOR NIL
-        FONTCOLOR NIL
-        CENTERALIGN .T. 
-    END LABEL
+   @ 240, 60 BUTTON button_abajo ;
+      WIDTH 40 ;
+      HEIGHT 28 ;
+      CAPTION '\/' ;
+      ACTION ::Ord_Abajo() ;
+      SIZE 9
 
-    DEFINE LABEL Label_3
-        ROW    10
-        COL    200
-        WIDTH  120
-        HEIGHT 24
-        VALUE "Control order"
-        FONTNAME "Arial"
-        FONTSIZE 11
-        TOOLTIP ""
-        FONTBOLD .F.
-        FONTITALIC .F.
-        FONTUNDERLINE .F.
-        FONTSTRIKEOUT .F.
-        HELPID Nil
-        VISIBLE .T.
-        TRANSPARENT .F.
-        ACTION Nil
-        AUTOSIZE .F.
-        BACKCOLOR NIL
-        FONTCOLOR NIL
-        CENTERALIGN .T. 
-    END LABEL
+   @ 250, 170 LABEL Label_1 ;
+      WIDTH 200 ;
+      HEIGHT 20 ;
+      VALUE 'Use arrows to swap controls' ;
+      SIZE 12
 
-    DEFINE CHECKBUTTON CheckBtn_1
-        ROW    290
-        COL    60
-        WIDTH  290
-        HEIGHT 28
-        CAPTION "Filter Dynamic Controls"
-        VALUE .F.
-        FONTNAME "Arial"
-        FONTSIZE 12
-        TOOLTIP ""
-        ONCHANGE filterdc()
-        ONGOTFOCUS Nil
-        ONLOSTFOCUS Nil
-        FONTBOLD .F.
-        FONTITALIC .F.
-        FONTUNDERLINE .F.
-        FONTSTRIKEOUT .F.
-        HELPID Nil
-        TABSTOP .T.
-        VISIBLE .T.
-        PICTURE Nil
-    END CHECKBUTTON
+   @ 290, 60 CHECKBUTTON CheckBtn_1 ;
+      CAPTION 'Filter Dynamic Controls' ;
+      WIDTH 290 ;
+      HEIGHT 28 ;
+      VALUE .F. ;
+      SIZE 12 ;
+      ON CHANGE ::FilterDC()
 
-END WINDOW
+END WINDOW 
 

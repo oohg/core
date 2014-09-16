@@ -1,11 +1,84 @@
 /*
- * $Id: ChangeLog,v 1.1359 2014-09-15 13:49:51 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1360 2014-09-16 04:11:19 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-09-15 01:11 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Previous entries fixed.
+   + ./ide_up_to_2013-08-13.zip
+     This zip contains all IDE files up to 2013-08-13.
+     It's transitory until IDE is fully debugged.
+   * ide/.cvsignore
+     * Updated.
+   * ide/mgide.hbp
+     * Updated.
+   - ide/fmgs/tboptions.fmg
+   * ide/fmgs/form_prefer.fmg
+     * Changed to IDE's format.
+   * ide/fmgs/intfonco.fmg
+     * Changed to IDE's format.
+   * ide/fmgs/mymenued.fmg
+     * Changed to IDE's format.
+   * ide/fmgs/mytoolbared.fmg
+     * Changed to IDE's format.
+   * ide/fmgs/orderf.fmg
+     * Changed to IDE's format.
+   * ide/fmgs/tabeven.fmg
+     * Changed to IDE's format.
+   * ide/fmgs/tabprop.fmg
+     * Changed to IDE's format.
+   * ide/prgs/dbucvc.prg
+     + Copyright and licence notice.
+     * Compiler warnings fixed when using -w3 switch.
+   * ide/prgs/formedit.prg
+     + Copyright and licence notice.
+     * Compiler warnings fixed when using -w3 switch.
+     * TForm1 class renamed to TFormEditor.
+     * Horizontal (Form_Main) and vertical (cvcControls) "toolbars"
+       moved from THMI class.
+     * TFormEditor class no longer uses public variables. This enables
+       the (no yet implemented) simultaneous edition of 2 or more forms.
+     + More info to "Print Brief" option.
+       Thanks to Ricardo Sassy for this contribution.
+     + Support for XBROWSE and TIMEPICKER controls.
+     * Format.
+   - ide/prgs/intfocop.prg
+   * ide/prgs/menued.prg
+     + Copyright and licence notice.
+     * TmyMenuEd class renamed to TMyMenuEditor.
+     * TMyMenuEditor class no longer uses public variables nor fixed
+       workareas nor fixed filenames.
+     * Some methods added, others renamed.
+     * Compiler warnings fixed when using -w3 switch.
+     * Format.
+   * ide/prgs/mgide.prg
+     + Copyright and licence notice.
+     * TmyMenuEd class renamed to TMyMenuEditor.
+     * TMyMenuEditor class no longer uses public variables nor fixed
+       workareas nor fixed filenames.
+     * Some methods added, others renamed.
+     * Horizontal (Form_Main) and vertical (cvcControls) "toolbars"
+       moved to TFormEditor class.
+     * Compiler warnings fixed when using -w3 switch.
+     * Format.
+   - ide/prgs/moside.prg
+   - ide/prgs/orden.prg
+   - ide/prgs/propeven.prg
+   - ide/prgs/repoedit.prg
+   - ide/prgs/saveform.prg
+   * ide/prgs/toolbed.prg
+     + Copyright and licence notice.
+     * Tmytoolbared class renamed to TMyToolBarEditor.
+     * TMyToolBarEditor class no longer uses public variables nor fixed
+       workareas nor fixed filenames.
+     * Some methods added, others renamed.
+     * Compiler warnings fixed when using -w3 switch.
+     * Format.
 
 2014-09-14 10:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_toolbar.ch
@@ -345,7 +418,7 @@
      + Constants for refresh type.
 
 2014-07-22 17:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   + ide/.cvsignore
+   * ide/.cvsignore
      * Updated.
 
 2014-07-22 17:19 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
@@ -1017,7 +1090,7 @@
 2014-07-04 19:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/miniprint.prg
      ! Printing is aborted with "Printer Configuration Failed" message.
-   + ide/.cvsignore
+   * ide/.cvsignore
      * Updated.
    * include/i_ini.ch
      * Format.

@@ -1,5 +1,5 @@
 #
-# $Id: mgide.hbp,v 1.3 2014-05-22 22:06:25 fyurisich Exp $
+# $Id: mgide.hbp,v 1.4 2014-09-16 04:11:20 fyurisich Exp $
 #
 
 # name of output file
@@ -8,13 +8,15 @@
 # compilation is incremental (hidden .hmk folder is created)
 -inc
 
+# check all errors
+-w3
+
 # path to fmg files
 -ifmgs
 
 #compiler flags
 -trace
 -info
--ldflag=-Wl,--allow-multiple-definition
 -ldflag=-L${HG_ROOT}\lib
 
 #libs
@@ -26,12 +28,7 @@
 prgs\mgide.prg
 prgs\dbucvc.prg
 prgs\formedit.prg
-prgs\intfocop.prg
 prgs\menued.prg
-prgs\moside.prg
-prgs\orden.prg
-prgs\propeven.prg
-prgs\repoedit.prg
 prgs\toolbed.prg
 
 #EOF
