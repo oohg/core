@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.265 2014-09-01 15:58:50 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.266 2014-09-17 00:30:13 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -4761,6 +4761,7 @@ Local lRet := .F., i, nSize
          ::oWindow:Activate()
       EndIf
    EndIf
+   ::oWindow := NIL
 Return lRet
 
 METHOD Valid() CLASS TGridControl
@@ -4966,6 +4967,7 @@ Local lRet := .F., i, aPos, nPos1, nPos2, cText, nPos
       If HB_IsObject( ::oWindow )
          ::oWindow:Activate()
       EndIf
+      ::oWindow := NIL
    EndIf
 Return lRet
 
@@ -5151,6 +5153,7 @@ Local lRet := .F., i, oBut1, oBut2
    ::oWindow:Center()
    ::oControl:SetFocus()
    ::oWindow:Activate()
+   ::oWindow := NIL
 Return lRet
 
 METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGridControlMemo

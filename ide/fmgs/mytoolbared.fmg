@@ -14,11 +14,10 @@ DEFINE WINDOW TEMPLATE ;
    SIZE 10
 
    @ 10, 10 FRAME frame_2 ;
-      CAPTION 'Items' ;
       WIDTH 530 ;
       HEIGHT 260 ;
-      TRANSPARENT ;
-      BACKCOLOR ::oEditor:cFBackcolor
+      CAPTION 'Items' ;
+      TRANSPARENT 
 
    @ 30, 15 BROWSE browse_101 ;
       WIDTH 520 ;
@@ -65,10 +64,10 @@ DEFINE WINDOW TEMPLATE ;
       ACTION ::MoveDown()
 
    @ 280, 10 FRAME frame_1 ;
-      CAPTION 'Toolbar Properties' ;
       WIDTH 530 ;
-      HEIGHT 150 ;
-      BACKCOLOR ::oEditor:cFBackcolor
+      HEIGHT 195 ;
+      CAPTION 'Toolbar Properties' ;
+      TRANSPARENT 
 
    @ 300, 20 CHECKBOX checkbox_1 ;
       WIDTH 80 ;
@@ -84,6 +83,20 @@ DEFINE WINDOW TEMPLATE ;
       VALUE .F. ;
       ON CHANGE ::lRightText := ::FormEdit:checkbox_3:Value
 
+   @ 300, 200 CHECKBOX checkbox_5 ;
+      WIDTH 80 ;
+      HEIGHT 28 ;
+      CAPTION 'Vertical' ;
+      VALUE .F. ;
+      ON CHANGE ::lVertical := ::FormEdit:checkbox_5:Value
+
+   @ 300, 290 CHECKBOX checkbox_6 ;
+      WIDTH 80 ;
+      HEIGHT 28 ;
+      CAPTION 'RTL' ;
+      VALUE .F. ;
+      ON CHANGE ::lRTL := ::FormEdit:checkbox_6:Value
+
    @ 330, 20 CHECKBOX checkbox_2 ;
       WIDTH 80 ;
       HEIGHT 24 ;
@@ -98,12 +111,25 @@ DEFINE WINDOW TEMPLATE ;
       VALUE .F. ;
       ON CHANGE ::lBorder := ::FormEdit:checkbox_4:Value
 
+   @ 330, 200 CHECKBOX checkbox_7 ;
+      WIDTH 80 ;
+      HEIGHT 28 ;
+      CAPTION 'NoTabStop' ;
+      VALUE .F. ;
+      ON CHANGE ::lNoTabStop := ::FormEdit:checkbox_7:Value
+
+   @ 330, 290 CHECKBOX checkbox_8 ;
+      WIDTH 80 ;
+      HEIGHT 28 ;
+      CAPTION 'Break' ;
+      VALUE .F. ;
+      ON CHANGE ::lBreak := ::FormEdit:checkbox_8:Value
+
    @ 298, 390 FRAME frame_4 ;
-      CAPTION 'Button' ;
       WIDTH 140 ;
       HEIGHT 80 ;
-      TRANSPARENT ;
-      BACKCOLOR ::oEditor:cFBackcolor
+      CAPTION 'Button' ;
+      TRANSPARENT 
 
    @ 320, 400 LABEL label_8 ;
       WIDTH 60 ;
@@ -153,18 +179,69 @@ DEFINE WINDOW TEMPLATE ;
       MAXLENGTH 30 ;
       ON CHANGE ::cToolTip := ::FormEdit:text_4:Value
 
-   @ 388, 430 BUTTON button_tbp ;
+   @ 370, 280 LABEL label_3 ;
+      WIDTH 120 ;
+      HEIGHT 24 ;
+      VALUE 'Obj' ;
+      TRANSPARENT ;
+      CENTERALIGN 
+
+   @ 390, 280 TEXTBOX text_8 ;
+      WIDTH 120 ;
+      HEIGHT 24 ;
+      MAXLENGTH 30 ;
+      ON CHANGE ::cObj := ::FormEdit:text_8:Value
+
+   @ 420, 20 LABEL label_9 ;
+      WIDTH 120 ;
+      HEIGHT 24 ;
+      VALUE 'Caption' ;
+      TRANSPARENT ;
+      CENTERALIGN 
+
+   @ 440, 20 TEXTBOX text_9 ;
+      WIDTH 120 ;
+      HEIGHT 24 ;
+      MAXLENGTH 30 ;
+      ON CHANGE ::cCaption := ::FormEdit:text_9:Value
+
+   @ 420, 150 LABEL label_10 ;
+      WIDTH 120 ;
+      HEIGHT 24 ;
+      VALUE 'Action' ;
+      TRANSPARENT ;
+      CENTERALIGN 
+
+   @ 440, 150 TEXTBOX text_10 ;
+      WIDTH 120 ;
+      HEIGHT 24 ;
+      MAXLENGTH 30 ;
+      ON CHANGE ::cAction := ::FormEdit:text_10:Value
+
+   @ 420, 280 LABEL label_11 ;
+      WIDTH 120 ;
+      HEIGHT 24 ;
+      VALUE 'Subclass' ;
+      TRANSPARENT ;
+      CENTERALIGN 
+
+   @ 440, 280 TEXTBOX text_11 ;
+      WIDTH 120 ;
+      HEIGHT 24 ;
+      MAXLENGTH 30 ;
+      ON CHANGE ::cSubclass := ::FormEdit:text_11:Value
+
+   @ 438, 430 BUTTON button_tbp ;
       WIDTH 100 ;
       HEIGHT 28 ;
       CAPTION 'Font' ;
       ACTION ::SetFont()
 
    @ 10, 550 FRAME frame_3 ;
-      CAPTION 'Selected Item' ;
       WIDTH 210 ;
       HEIGHT 420 ;
-      TRANSPARENT ;
-      BACKCOLOR ::oEditor:cFBackcolor
+      CAPTION 'Selected Item' ;
+      TRANSPARENT 
 
    @ 40, 560 LABEL label_102 ;
       WIDTH 45 ;
@@ -284,13 +361,13 @@ DEFINE WINDOW TEMPLATE ;
       VALUE .F. ;
       ON CHANGE ::WriteWhole()
 
-   @ 448, 550 BUTTON button_108 ;
+   @ 438, 550 BUTTON button_108 ;
       WIDTH 100 ;
       HEIGHT 28 ;
       CAPTION 'Save / Exit' ;
       ACTION ::Exit()
 
-   @ 448, 665 BUTTON button_109 ;
+   @ 438, 660 BUTTON button_109 ;
       WIDTH 100 ;
       HEIGHT 28 ;
       CAPTION 'Discard' ;

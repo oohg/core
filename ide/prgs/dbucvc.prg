@@ -1,5 +1,5 @@
 /*
- * $Id: dbucvc.prg,v 1.6 2014-09-16 04:11:20 fyurisich Exp $
+ * $Id: dbucvc.prg,v 1.7 2014-09-17 00:30:12 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -33,7 +33,9 @@ STATIC _DBUfname
 MEMVAR _DBUindexed, _DBUfiltered, _DBUcondition, _DBUcontrolarr, _DBUstructarr
 MEMVAR _DBUdbfsaved, _DBUoriginalarr
 
+//------------------------------------------------------------------------------
 FUNCTION DatabaseView1( myIde )
+//------------------------------------------------------------------------------
 LOCAL lDeleted
 
    _DBUdbfopened := .f.
@@ -92,11 +94,15 @@ LOCAL lDeleted
    SET( _SET_DELETED, lDeleted )
 RETURN NIL
 
+//------------------------------------------------------------------------------
 FUNCTION DBUcreanew
+//------------------------------------------------------------------------------
    creanew1()
 RETURN NIL
 
+//------------------------------------------------------------------------------
 FUNCTION DBUopendbf
+//------------------------------------------------------------------------------
 LOCAL _DBUfname1
 
    _DBUfname1 := getfile({{"Harbour DataBase File  (*.dbf)","*.dbf"}},"Select a dbf to open")
@@ -120,7 +126,9 @@ LOCAL _DBUfname1
    endif
 RETURN NIL
 
+//------------------------------------------------------------------------------
 FUNCTION DBUclosedbf
+//------------------------------------------------------------------------------
    if select( "_DBUalias" ) > 0
       if MsgYesNo( "Close currently opened dbf?", 'OOHG IDE+' )
          _DBUalias->( dbCloseArea() )
@@ -131,7 +139,9 @@ FUNCTION DBUclosedbf
    endif
 RETURN NIL
 
+//------------------------------------------------------------------------------
 FUNCTION DBUmodistruct
+//------------------------------------------------------------------------------
 LOCAL _DBUi, _DBUtype1
 
    if ! select( "_DBUalias" ) > 0
@@ -293,7 +303,9 @@ LOCAL _DBUi, _DBUtype1
    DBUtogglemenu()
 RETURN NIL
 
+//------------------------------------------------------------------------------
 FUNCTION DBUbrowse1
+//------------------------------------------------------------------------------
 LOCAL _DBUanames := {}
 LOCAL _DBUasizes := {}
 LOCAL _DBUajustify := {}
@@ -353,7 +365,9 @@ LOCAL _DBUi, _DBUsize, _DBUsize1
    _dbu.labeldbu.setfocus
 RETURN NIL
 
+//------------------------------------------------------------------------------
 FUNCTION delrec
+//------------------------------------------------------------------------------
    if select( "_DBUalias" ) > 0
       if msgyesno( "Are you sure?", "OOHG IDE+" )
          _DBUalias->( dbGoTo( _DBUbrowse._DBUbrowse1.value ) )
@@ -368,12 +382,16 @@ FUNCTION delrec
    endif
 RETURN NIL
 
+//------------------------------------------------------------------------------
 FUNCTION DBUeditworkarea()
-   ***edit1()
+//------------------------------------------------------------------------------
+// edit1()
    DBUtogglemenu()
 RETURN NIL
 
+//------------------------------------------------------------------------------
 FUNCTION DBUrecallrec
+//------------------------------------------------------------------------------
    if select( "_DBUalias" ) > 0
       IF MsgYesNo( "All deleted records will be recalled. If you want to recall a particular record, try using edit mode. Are you sure you want to recall all?", "OOHG IDE+" )
          _DBUalias->( dbEval( {|| dbRecall()} ) )
@@ -381,7 +399,9 @@ FUNCTION DBUrecallrec
    endif
 RETURN NIL
 
+//------------------------------------------------------------------------------
 FUNCTION DBUpackdbf
+//------------------------------------------------------------------------------
    if select( "_DBUalias" ) > 0
       if msgyesno( "All deleted records will be physically removed from the dbf. Are you sure you want to pack the dbf?", "OOHG IDE+" )
          _DBUalias->( __dbPack() )
@@ -390,7 +410,9 @@ FUNCTION DBUpackdbf
    endif
 RETURN NIL
 
+//------------------------------------------------------------------------------
 FUNCTION DBUzapdbf
+//------------------------------------------------------------------------------
    if select( "_DBUalias" ) > 0
       if msgyesno("Are you sure you want to zap this dbf? You can not undo.", "OOHG IDE+" )
          _DBUalias->( __dbZap() )
@@ -399,7 +421,9 @@ FUNCTION DBUzapdbf
    endif
 RETURN NIL
 
+//------------------------------------------------------------------------------
 FUNCTION DBUtogglemenu
+//------------------------------------------------------------------------------
    if .not. _DBUdbfopened
       _DBU.statusbar.item(2) := "Empty"
       _DBU._DBUcontextclose.enabled := .f.
@@ -429,12 +453,16 @@ FUNCTION DBUtogglemenu
    endif
 RETURN NIL
 
+//------------------------------------------------------------------------------
 FUNCTION DBUclosedbfs()
+//------------------------------------------------------------------------------
    _DBUalias->( dbCloseArea() )
    MsgInfo( "Based upon Rathinagiri's DBU. Comments are welcome at srgiri@vsnl.com", 'OOHG IDE+' )
 RETURN NIL
 
+//------------------------------------------------------------------------------
 FUNCTION DBUmodistructure
+//------------------------------------------------------------------------------
 LOCAL _DBUfname1, _DBUi, _DBUnewname, _DBUbackname, _DBUmodarr, _DBUfieldname
 LOCAL _DBUline
 
@@ -498,7 +526,9 @@ LOCAL _DBUline
    endif
 RETURN NIL
 
+//------------------------------------------------------------------------------
 FUNCTION DBUexitmodidbf
+//------------------------------------------------------------------------------
    if len(_DBUstructarr) == 0 .or. _DBUdbfsaved
       release window _DBUcreadbf
    else
@@ -508,7 +538,9 @@ FUNCTION DBUexitmodidbf
    endif
 RETURN NIL
 
+//------------------------------------------------------------------------------
 FUNCTION creanew1
+//------------------------------------------------------------------------------
    _DBUstructarr := {}
    _DBUdbfsaved := .f.
    define window _DBUcreadbf at 0,0 width 600 height 500 title "Create a New DataBase Table (.dbf)" modal nosize nosysmenu
@@ -640,7 +672,9 @@ FUNCTION creanew1
    activate window _DBUcreadbf
 RETURN NIL
 
+//------------------------------------------------------------------------------
 FUNCTION DBUexitcreatenew
+//------------------------------------------------------------------------------
    if len(_DBUstructarr) == 0 .or. _DBUdbfsaved
       release window _DBUcreadbf
    else
@@ -650,7 +684,9 @@ FUNCTION DBUexitcreatenew
    endif
 RETURN NIL
 
+//------------------------------------------------------------------------------
 FUNCTION DBUaddstruct
+//------------------------------------------------------------------------------
 LOCAL _DBUi, _DBUcurline, _DBUtype1
 
    if _DBUcreadbf._DBUaddline.caption == "Add"
@@ -792,7 +828,9 @@ LOCAL _DBUi, _DBUcurline, _DBUtype1
    endif
 RETURN NIL
 
+//------------------------------------------------------------------------------
 FUNCTION DBUinsstruct
+//------------------------------------------------------------------------------
 LOCAL _DBUi, _DBUpos, _DBUtype1
 
    if len(_DBUstructarr) == 0
@@ -872,7 +910,9 @@ LOCAL _DBUi, _DBUpos, _DBUtype1
    _DBUcreadbf._DBUfieldname.setfocus()
 RETURN NIL
 
+//------------------------------------------------------------------------------
 FUNCTION DBUdelstruct
+//------------------------------------------------------------------------------
 LOCAL _DBUi, _DBUcurline, _DBUtype1
 
    _DBUcurline := _DBUcreadbf._DBUstruct.value
@@ -908,7 +948,9 @@ LOCAL _DBUi, _DBUcurline, _DBUtype1
    endif
 RETURN NIL
 
+//------------------------------------------------------------------------------
 FUNCTION DBUnamecheck
+//------------------------------------------------------------------------------
 LOCAL _DBUname := alltrim(_DBUcreadbf._DBUfieldname.value)
 LOCAL _DBUlegalchars := 'ABCDEFGHIJKLMNOPQRSTUVWXYZ_1234567890'
 LOCAL _DBUi
@@ -933,7 +975,9 @@ LOCAL _DBUi
    endif
 return .t.
 
+//------------------------------------------------------------------------------
 FUNCTION DBUtypelostfocus
+//------------------------------------------------------------------------------
    do case
    case _DBUcreadbf._DBUfieldtype.value == 3
       _DBUcreadbf._DBUfieldsize.value := 8
@@ -947,14 +991,18 @@ FUNCTION DBUtypelostfocus
    endcase
 RETURN NIL
 
+//------------------------------------------------------------------------------
 FUNCTION DBUsizelostfocus
+//------------------------------------------------------------------------------
    DBUtypelostfocus()
    if _DBUcreadbf._DBUfieldtype.value == 1
       _DBUcreadbf._DBUfielddecimals.value := 0
    endif
 RETURN NIL
 
+//------------------------------------------------------------------------------
 FUNCTION DBUdeclostfocus
+//------------------------------------------------------------------------------
    DBUtypelostfocus()
    DBUsizelostfocus()
    if _DBUcreadbf._DBUfieldtype.value <> 2
@@ -962,7 +1010,9 @@ FUNCTION DBUdeclostfocus
    endif
 RETURN NIL
 
+//------------------------------------------------------------------------------
 FUNCTION DBUlineselected
+//------------------------------------------------------------------------------
 LOCAL _DBUcurline := _DBUcreadbf._DBUstruct.value
 
    if _DBUcurline > 0
@@ -988,7 +1038,9 @@ LOCAL _DBUcurline := _DBUcreadbf._DBUstruct.value
    endif
 RETURN NIL
 
+//------------------------------------------------------------------------------
 FUNCTION DBUsavestructure
+//------------------------------------------------------------------------------
 LOCAL _DBUfname1
 
    if len(_DBUstructarr) > 0
@@ -1011,7 +1063,9 @@ LOCAL _DBUfname1
    endif
 RETURN NIL
 
+//------------------------------------------------------------------------------
 FUNCTION edit1()
+//------------------------------------------------------------------------------
 LOCAL lDeleted, _DBUi, _DBUfieldnames, _DBUJ, _DBUpages, _DBUheader1, _DBUcol
 LOCAL _DBUhspace, _DBUfieldsize, _DBUsize, _DBUrow, _DBUmaxrow, _DBUvspace
 LOCAL _DBUmaxcol, _DBUfieldnamesize, _DBUspecifysize
@@ -1270,31 +1324,41 @@ LOCAL _DBUmaxcol, _DBUfieldnamesize, _DBUspecifysize
    SET( _SET_DELETED, lDeleted )
 RETURN NIL
 
+//------------------------------------------------------------------------------
 FUNCTION DBUfirstclick
+//------------------------------------------------------------------------------
    _DBUalias->( dbGoTop() )
    DBUrefreshdbf()
 RETURN NIL
 
+//------------------------------------------------------------------------------
 FUNCTION DBUpreviousclick
+//------------------------------------------------------------------------------
    if _DBUalias->(recno()) > 1
       _DBUalias->( dbSkip( -1 ) )
       DBUrefreshdbf()
    endif
 RETURN NIL
 
+//------------------------------------------------------------------------------
 FUNCTION DBUnextclick
+//------------------------------------------------------------------------------
    if .not. _DBUalias->(eof()) .and. _DBUalias->(recno()) <> _DBUalias->(reccount())
       _DBUalias->( dbSkip() )
       DBUrefreshdbf()
    endif
 RETURN NIL
 
+//------------------------------------------------------------------------------
 FUNCTION DBUlastclick
+//------------------------------------------------------------------------------
    _DBUalias->( dbGoBottom() )
    DBUrefreshdbf()
 RETURN NIL
 
+//------------------------------------------------------------------------------
 FUNCTION DBUnewrecclick
+//------------------------------------------------------------------------------
    if msgyesno("A new record will be appended to the dbf. You can edit the record and it will be saved only after you click 'Save'. Are you sure you want to append a blank record?", "OOHG IDE+" )
       _DBUalias->( dbAppend() )
       if _DBUalias->(reccount()) <= 65535
@@ -1308,7 +1372,9 @@ FUNCTION DBUnewrecclick
    endif
 RETURN NIL
 
+//------------------------------------------------------------------------------
 FUNCTION DBUsaveclick
+//------------------------------------------------------------------------------
 LOCAL _DBUi, _DBUpos1
 
    if .not. _DBUalias->(eof())
@@ -1336,21 +1402,27 @@ LOCAL _DBUi, _DBUpos1
    endif
 RETURN NIL
 
+//------------------------------------------------------------------------------
 FUNCTION DBUdelrecclick
+//------------------------------------------------------------------------------
    if .not. _DBUalias->(eof())
       _DBUalias->( dbDelete() )
       DBUrefreshdbf()
    endif
 RETURN NIL
 
+//------------------------------------------------------------------------------
 FUNCTION DBUrecallclick
+//------------------------------------------------------------------------------
    if _DBUalias->( Deleted() )
       _DBUalias->( dbRecall() )
       DBUrefreshdbf()
    endif
 RETURN NIL
 
+//------------------------------------------------------------------------------
 FUNCTION DBUgotoclick
+//------------------------------------------------------------------------------
    if _DBUeditdbf._DBUrecgoto.value > 0
       if _DBUeditdbf._DBUrecgoto.value <= _DBUalias->(reccount())
          _DBUalias->( dbgoto(_DBUeditdbf._DBUrecgoto.value) )
@@ -1365,7 +1437,9 @@ FUNCTION DBUgotoclick
    endif
 RETURN NIL
 
+//------------------------------------------------------------------------------
 FUNCTION DBUsearchclick
+//------------------------------------------------------------------------------
 LOCAL _DBUdbffunctions, _DBUfieldsarr, _DBUi
 
    _DBUstructarr := _DBUalias->( dbstruct() )
@@ -1481,12 +1555,16 @@ LOCAL _DBUdbffunctions, _DBUfieldsarr, _DBUi
    activate window _DBUfilterbox
 RETURN NIL
 
+//------------------------------------------------------------------------------
 FUNCTION DBUcloseedit1
+//------------------------------------------------------------------------------
    _DBUalias->( dbClearFilter(NIL) )
    release window _DBUeditdbf
 RETURN NIL
 
+//------------------------------------------------------------------------------
 FUNCTION DBUrefreshdbf
+//------------------------------------------------------------------------------
 LOCAL _DBUtotdeleted, _DBUcurrec, _DBUi, _DBUpos1
 
    if .not. _DBUalias->(eof())
@@ -1538,8 +1616,11 @@ LOCAL _DBUtotdeleted, _DBUcurrec, _DBUi, _DBUpos1
    _DBUeditdbf.statusbar.item(4) := iif(_DBUindexed,"Indexed","")
 RETURN NIL
 
+//------------------------------------------------------------------------------
 FUNCTION DBUfilterset
+//------------------------------------------------------------------------------
 LOCAL _DBUcondition1
+
    _DBUcondition1 := alltrim(_DBUfilterbox._DBUfiltercondition.value)
    if len(_DBUcondition1) == 0
       _DBUalias->( dbClearFilter(NIL) )
@@ -1559,7 +1640,9 @@ LOCAL _DBUcondition1
    endif
 RETURN NIL
 
+//------------------------------------------------------------------------------
 FUNCTION DBUfilterclear
+//------------------------------------------------------------------------------
    _DBUcondition := ""
    _DBUfiltered := .f.
    _DBUalias->( dbClearFilter(NIL) )
@@ -1569,8 +1652,11 @@ FUNCTION DBUfilterclear
    DBUfirstclick()
 RETURN NIL
 
+//------------------------------------------------------------------------------
 FUNCTION DBUindexchange
+//------------------------------------------------------------------------------
 LOCAL _DBUindexfieldname
+
    if _DBUeditdbf._DBUindexfield.value > 0
       if _DBUeditdbf._DBUindexfield.value == 1
          _DBUalias->(dbClearIndex())
@@ -1588,3 +1674,7 @@ LOCAL _DBUindexfieldname
       _DBUindexed := .f.
    endif
 RETURN NIL
+
+/*
+ * EOF
+ */

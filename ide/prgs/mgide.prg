@@ -1,5 +1,5 @@
 /*
- * $Id: mgide.prg,v 1.15 2014-09-16 04:11:20 fyurisich Exp $
+ * $Id: mgide.prg,v 1.16 2014-09-17 00:30:13 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -37,7 +37,7 @@
 #endif
 
 //------------------------------------------------------------------------------
-Function Main( rtl )
+FUNCTION Main( rtl )
 //------------------------------------------------------------------------------
 LOCAL myIde
 
@@ -3592,9 +3592,9 @@ LOCAL Output
          Output += "#include 'oohg.ch'" + CRLF + CRLF
          Output += "*------------------------------------------------------*" + CRLF
          IF ::SearchItem( cItem, cParent )== ( ::SearchItem( cParent, cParent ) + 1 )
-            Output += 'Function Main()' + CRLF
+            Output += 'FUNCTION Main()' + CRLF
          ELSE
-            Output += 'Function ' + cItem + '()' + CRLF
+            Output += 'FUNCTION ' + cItem + '()' + CRLF
          ENDIF
          Output += "*------------------------------------------------------*" + CRLF + CRLF
          Output += 'RETURN Nil' + CRLF + CRLF
@@ -4289,7 +4289,7 @@ endif
 RETURN nil
 
 //------------------------------------------------------------------------------
-Function myat(cbusca,ctexto,ninicio)
+FUNCTION myat(cbusca,ctexto,ninicio)
 //------------------------------------------------------------------------------
 LOCAL i,nposluna
 nposluna:=0
@@ -4313,30 +4313,30 @@ METHOD SaveAndExit( cdfile ) CLASS THMI
 RETURN NIL
 
 //------------------------------------------------------------------------------
-METHOD databaseview() CLASS THMI
+METHOD DatabaseView() CLASS THMI
 //------------------------------------------------------------------------------
-LOCAL curfol, curdrv, cdfile, npos, i, j
+LOCAL curfol, curdrv, cdFile, nPos, i, j
 
-   curfol:=curdir()
-   curdrv:=curdrive()+':\'
-   cdFile := GetFile ( { {'dbf files *.dbf','*.dbf'} }  , 'Open Dbf file',,.F.,.F. )
-   if len(cdFile)>0
-      npos:=at(".",cdfile)
-      cdfile:=left(cdfile,npos-1)
-      j:=0
-      for i:=1 to len(cdfile)
-          if substr(cdfile,i,1)=='\'
-             j:=i
-          endif
+   curfol := CurDir()
+   curdrv := CurDrive() + ':\'
+   cdFile := GetFile ( { { 'dbf files *.dbf', '*.dbf' } } , 'Open Dbf file', , .F., .F. )
+   IF Len( cdFile ) > 0
+      nPos := at( ".", cdFile )
+      cdFile := Left( cdFile, nPos - 1 )
+      j := 0
+      FOR i := 1 TO Len( cdFile )
+          IF SubStr( cdFile, i, 1 ) == '\'
+             j := i
+          ENDIF
       NEXT i
-      cdfile:=substr(cdfile,j+1,len(cdfile))
-      USE ( cdfile ) NEW
+      cdFile := SubStr( cdFile, j + 1, Len( cdFile ) )
+      USE ( cdFile ) NEW
       SET INTERACTIVECLOSE ON
-      EDIT EXTENDED WORKAREA ( cdfile ) TITLE 'Browsing of ... ' + cdfile
+      EDIT EXTENDED WORKAREA ( cdFile ) TITLE 'Browsing of ... ' + cdFile
       SET INTERACTIVECLOSE OFF
-      ( cdfile )->( dbCloseArea() )
-   endif
-   DIRCHANGE( curdrv + curfol )
+      ( cdFile )->( dbCloseArea() )
+   ENDIF
+   DirChange( curdrv + curfol )
 RETURN NIL
 
 //------------------------------------------------------------------------------
@@ -4427,7 +4427,7 @@ METHOD myInputWindow( cTitle, aLabels, aValues, aFormats, bFunc ) CLASS THMI
 LOCAL l, aResult, wyw, i, wHeight, _iw, ControlRow, cLblName, cCtrlName
 
    SET INTERACTIVECLOSE ON
-   l := Len ( aLabels )
+   l := Len( aLabels )
    aResult := Array( l )
 
    wyw := ( GetTitleHeight() + GetBorderHeight() ) * 2 + 10
@@ -4554,8 +4554,8 @@ STATIC FUNCTION _myInputWindowOk( oInputWindow, aResult )
 //------------------------------------------------------------------------------
 LOCAL i, l
 
-   l := len( aResult )
-   For i := 1 to l
+   l := Len( aResult )
+   FOR i := 1 TO l
       aResult[ i ] := oInputWindow:Control( 'Control_' + Alltrim( Str( i ) ) ):Value
    NEXT i
    oInputWindow:Release()
@@ -4569,25 +4569,25 @@ STATIC FUNCTION _myInputWindowCancel( oInputWindow, aResult )
 RETURN Nil
 
 //------------------------------------------------------------------------------
-Function DelExt( cFileName )
+FUNCTION DelExt( cFileName )
 //------------------------------------------------------------------------------
 LOCAL nAt, cBase
 
    nAt := RAt( ".", cFileName )
-   If nAt > 0
+   IF nAt > 0
       cBase := Left( cFileName, nAt - 1 )
-   Else
+   ELSE
       cBase := cFileName
-   EndIf
+   ENDIF
 RETURN cBase
 
 //------------------------------------------------------------------------------
-Function DelPath( cFileName )
+FUNCTION DelPath( cFileName )
 //------------------------------------------------------------------------------
 RETURN SubStr( cFileName, RAt( '\', cFileName ) + 1 )
 
 //------------------------------------------------------------------------------
-Function AddSlash(cInFolder)
+FUNCTION AddSlash(cInFolder)
 //------------------------------------------------------------------------------
   LOCAL cOutFolder := ALLTRIM(cInFolder)
 
@@ -4598,7 +4598,7 @@ Function AddSlash(cInFolder)
 RETURN cOutFolder
 
 //------------------------------------------------------------------------------
-Function DelSlash( cInFolder )
+FUNCTION DelSlash( cInFolder )
 //------------------------------------------------------------------------------
   LOCAL cOutFolder := AllTrim( cInFolder )
 
@@ -4609,27 +4609,28 @@ Function DelSlash( cInFolder )
 RETURN cOutFolder
 
 //------------------------------------------------------------------------------
-Function OnlyFolder(cFile1)
+FUNCTION OnlyFolder( cFile )
 //------------------------------------------------------------------------------
-LOCAL i, nLg, cFolder, nPosFile
-   If Len(cFile1) > 0
+LOCAL i, nLen, cFolder, nPosFile
+
+   IF Len( cFile ) > 0
       i := 1
-      nLg :=  LEN(cFile1)
-      do while ( nLg > i )
-         if '\' $ Right(cFile1,i-1)
-            nPosFile := i-1
-            i := LEN(cFile1)
-         endif
-         i++
-      enddo
-      cFolder := Left(cFile1,nLg-nPosfile)
-   Else
-      cFolder := Nil
-   Endif
-RETURN(cFolder)
+      nLen := Len( cFile )
+      DO WHILE ( nLen > i )
+         if '\' $ Right( cFile, i - 1 )
+            nPosFile := i - 1
+            i := Len( cFile )
+         ENDIF
+         i ++
+      ENDDO
+      cFolder := Left( cFile,nLen - nPosfile )
+   ELSE
+      cFolder := NIL
+   ENDIF
+RETURN( cFolder )
 
 //------------------------------------------------------------------------------
-Function IsFileInPath( cFileName )
+FUNCTION IsFileInPath( cFileName )
 //------------------------------------------------------------------------------
 LOCAL cDir, cName, cExt
 
@@ -5026,3 +5027,7 @@ HB_FUNC ( ZAPDIRECTORY )
 
 
 #pragma ENDDUMP
+
+/*
+ * EOF
+ */

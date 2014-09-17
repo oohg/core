@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.26 2014-09-16 04:11:20 fyurisich Exp $
+ * $Id: formedit.prg,v 1.27 2014-09-17 00:30:12 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -1425,6 +1425,7 @@ LOCAL cName
    SET INTERACTIVECLOSE ON
    LOAD WINDOW orderf AS ( cName )
    ::FormCtrlOrder := GetFormObject( cName )
+   ON KEY ESCAPE OF ( ::FormCtrlOrder:Name ) ACTION ::FormCtrlOrder:Release()
    CENTER WINDOW ( cName )
    ACTIVATE WINDOW ( cName )
    SET INTERACTIVECLOSE OFF
@@ -2152,9 +2153,9 @@ METHOD StatPropEvents() CLASS TFormEditor
 LOCAL cTitle, aLabels, aInitValues, aFormats, aResults
 
    cTitle      := "Statusbar properties"
-   aLabels     := { '**** STATUSBAR clauses', 'Obj',   'Top',  'NoAutoAdjust',  'SubClass',  '**** STATUSITEM clauses', 'Caption',  'Width',  'Action',  'Icon',  'Style',  'ToolTip',  'Align',  '**** DATE clauses', 'Date',  'Width',   'Action',   'ToolTip',   'Style',                                                           'Align',                                                                                           '**** CLOCK clauses', 'Clock', 'Width',   'Action',   'ToolTip',   'Icon',    'AmPm',   'Style',                                                           'Align',                                                                                           '**** KEYBOARD clauses', 'Keyboard',  'Width',   'Action',   'ToolTip',   'Icon',    'Style',                                                           'Align' }
+   aLabels     := { '**** STATUSBAR clauses', 'Obj',    'Top',   'NoAutoAdjust',   'SubClass',   '**** STATUSITEM clauses', 'Caption',  'Width',    'Action',   'Icon',   'Style',   'ToolTip',   'Align',   '**** DATE clauses', 'Date',   'Width',    'Action',    'ToolTip',    'Style',                                                             'Align',                                                                                              '**** CLOCK clauses', 'Clock',  'Width',    'Action',    'ToolTip',    'Icon',     'AmPm',    'Style',                                                             'Align',                                                                                              '**** KEYBOARD clauses', 'Keyboard',   'Width',    'Action',    'ToolTip',    'Icon',     'Style',                                                             'Align' }
    aInitValues := { NIL,                      ::cSCObj, ::lSTop, ::lSNoAutoAdjust, ::cSSubClass, NIL,                       ::cSCaption, ::cSWidth, ::cSAction, ::cSIcon, ::cSStyle, ::cSToolTip, ::cSAlign, NIL,                 ::lSDate, ::nSDWidth, ::cSDAction, ::cSDToolTip, IIF( ::cSDStyle == 'FLAT', 1, IIF( ::cSDStyle == 'RAISED', 2, 3 ) ), IIF( ::cSDAlign == 'CENTER', 1, IIF( ::cSDAlign == 'LEFT', 2, IIF( ::cSDAlign == 'RIGHT', 3, 4 ) ) ), NIL,                  ::lSTime, ::nSCWidth, ::cSCAction, ::cSCToolTip, ::cSCImage, ::lSCAmPm, IIF( ::cSCStyle == 'FLAT', 1, IIF( ::cSCStyle == 'RAISED', 2, 3 ) ), IIF( ::cSCAlign == 'CENTER', 1, IIF( ::cSCAlign == 'LEFT', 2, IIF( ::cSCAlign == 'RIGHT', 3, 4 ) ) ), NIL,                     ::lSKeyboard, ::nSKWidth, ::cSKAction, ::cSKToolTip, ::cSKImage, IIF( ::cSKStyle == 'FLAT', 1, IIF( ::cSKStyle == 'RAISED', 2, 3 ) ), IIF( ::cSKAlign == 'CENTER', 1, IIF( ::cSKAlign == 'LEFT', 2, IIF( ::cSKAlign == 'RIGHT', 3, 4 ) ) ) }
-   aFormats    := { NIL,                      31,      .F.,    .F.,             250,         NIL,                       250,        250,      250,       250,     250,      250,        250,      NIL,                 .F.,     '9999',    250,        250,         { 'FLAT', 'RAISED', 'NONE' },                                      { 'CENTER', 'LEFT', 'RIGHT', 'NONE' },                                                             NIL,                  .F.,     '9999',    250,        250,         250,       .F.,      { 'FLAT', 'RAISED', 'NONE' },                                      { 'CENTER', 'LEFT', 'RIGHT', 'NONE' },                                                             NIL,                     .T.,         '9999',    250,        250,         250,       { 'FLAT', 'RAISED', 'NONE' },                                      { 'CENTER', 'LEFT', 'RIGHT', 'NONE' } }
+   aFormats    := { NIL,                      31,      .F.,    .F.,             250,             NIL,                       250,         250,       250,        250,      250,       250,         250,       NIL,                 .F.,      '9999',     250,         250,          { 'FLAT', 'RAISED', 'NONE' },                                        { 'CENTER', 'LEFT', 'RIGHT', 'NONE' },                                                                NIL,                  .F.,      '9999',     250,         250,          250,        .F.,       { 'FLAT', 'RAISED', 'NONE' },                                        { 'CENTER', 'LEFT', 'RIGHT', 'NONE' },                                                                NIL,                     .T.,          '9999',     250,         250,          250,        { 'FLAT', 'RAISED', 'NONE' },                                        { 'CENTER', 'LEFT', 'RIGHT', 'NONE' } }
    aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats, {|| ::SetFontType( -1 ) } )
    IF aResults[1] == NIL
       ::Control_Click( 1 )
@@ -2206,7 +2207,7 @@ METHOD IniArray( z, controlname, ctypectrl, noanade ) CLASS TFormEditor
 //------------------------------------------------------------------------------
    // inicia array de controles para la forma actual
    IF noanade == NIL
-      aAdd( ::a3State, "" )
+      aAdd( ::a3State, .F. )
       aAdd( ::aAction, "" )
       aAdd( ::aAction2, "" )
       aAdd( ::aAddress, "" )
@@ -3154,7 +3155,8 @@ LOCAL x, ControlName, oNewCtrl
          // GRID
       CASE ::CurrentControl == 8
          // FRAME
-         ::aBackColor[::nControlW] := ::cFBackcolor                                    // TODO:: Verificar si es necesario
+         ::aTransparent[::nControlW] := .T.
+//         ::aBackColor[::nControlW] := ::cFBackcolor                                    // TODO:: Verificar si es necesario
 
       CASE ::CurrentControl == 9
          // TAB
@@ -3462,10 +3464,16 @@ LOCAL ControlName, oCtrl
          ON GOTFOCUS ::Dibuja( This:Name )
 
    CASE nControlType == 8            // FRAME
-      @ _OOHG_MouseRow, _OOHG_MouseCol FRAME &ControlName OF ( ::oDesignForm:Name ) ;
-         CAPTION ControlName
+      IF ::aTransparent[::nControlW]
+         @ _OOHG_MouseRow, _OOHG_MouseCol FRAME &ControlName OF ( ::oDesignForm:Name ) ;
+            CAPTION ControlName ;
+            TRANSPARENT
+      ELSE
+         @ _OOHG_MouseRow, _OOHG_MouseCol FRAME &ControlName OF ( ::oDesignForm:Name ) ;
+            CAPTION ControlName
+      ENDIF
       oCtrl := ::oDesignForm:&ControlName:Object()
-      IF IsValidArray( ::aBackColor[i] )
+     IF IsValidArray( ::aBackColor[i] )
          oCtrl:BackColor := &( ::aBackColor[i] )
       ENDIF
 
@@ -13641,15 +13649,16 @@ LOCAL aFormats, aResults, nStyle, uTemp, nRow, nCol, nWidth, nHeight, cItems
 
    IF ::aCtrlType[j] == 'CHECKBOX'
       cTitle      := cNameW + " properties"
-      aLabels     := { 'Value',     'Caption',     'ToolTip',     'HelpID',     'Field',     'Transparent',     'Enabled',     'Visible',     'Name',     "NoTabStop",     'Obj',      'AutoSize',     "RTL",     "ThreeState",  "Themed",     "LeftAlign" }
-      aInitValues := { ::aValue[j], ::acaption[j], ::atooltip[j], ::aHelpID[j], ::afield[j], ::atransparent[j], ::aenabled[j], ::avisible[j], ::aname[j], ::anotabstop[j], ::acobj[j], ::aautoplay[j], ::aRTL[j], ::a3State[j],   ::aThemed[j], ::aLeft[j] }
-      aFormats    := { 50,          31,            120,           '999',        250,         .F.,               .F.,           .F.,           30,         .F.,             31,         .F.,            .F.,       .F.,           .F.,          .F. }
+      aLabels     := { 'Value',                                                           'Caption',     'ToolTip',     'HelpID',     'Field',     'Transparent',     'Enabled',     'Visible',     'Name',     "NoTabStop",     'Obj',      'AutoSize',     "RTL",     "ThreeState",  "Themed",     "LeftAlign" }
+      aInitValues := { IIF( ::aValue[j] == '.T.', 1, IIF( ::aValue[j] == '.F.', 2, 3 ) ), ::acaption[j], ::atooltip[j], ::aHelpID[j], ::afield[j], ::atransparent[j], ::aenabled[j], ::avisible[j], ::aname[j], ::anotabstop[j], ::acobj[j], ::aautoplay[j], ::aRTL[j], ::a3State[j],  ::aThemed[j], ::aLeft[j] }
+      aFormats    := { { '.T.', '.F.', 'NIL' },                                           31,            120,           '999',        250,         .F.,               .F.,           .F.,           30,         .F.,             31,         .F.,            .F.,       .F.,           .F.,          .F. }
       aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
       IF aResults[1] == NIL
          RETURN NIL
       ENDIF
-      ::aValue[j]            := aResults[1]
-      oControl:Value         := aResults[1]
+      ::a3State[j]           := aResults[14]
+      ::aValue[j]            := IIF( aResults[1] == 1, '.T.', IIF( aResults[1] == 2 .OR. ! ::a3State[j], '.F.', 'NIL' ) )
+      oControl:Value         := &( ::aValue[j] )
       ::aCaption[j]          := aResults[2]
       oControl:Caption       := aResults[2]
       ::aToolTip[j]          := aResults[3]
@@ -13664,7 +13673,6 @@ LOCAL aFormats, aResults, nStyle, uTemp, nRow, nCol, nWidth, nHeight, cItems
       ::aCObj[j]             := aResults[11]
       ::aAutoPlay[j]         := aResults[12]
       ::aRTL[j]              := aResults[13]
-      ::a3State[j]           := aResults[14]
       ::aThemed[j]           := aResults[15]
       ::aLeft[j]             := aResults[16]
    ENDIF
@@ -15038,3 +15046,7 @@ HB_FUNC ( INTERACTIVEMOVEHANDLE )
 }
 
 #pragma ENDDUMP
+
+/*
+ * EOF
+ */

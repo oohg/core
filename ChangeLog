@@ -1,11 +1,30 @@
 /*
- * $Id: ChangeLog,v 1.1360 2014-09-16 04:11:19 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1361 2014-09-17 00:30:12 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-09-16 21:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/fmgs/mytoolbared.fmg
+     + Support for missing properties.
+   * ide/prgs/dbucvc.prg
+     * Format.
+   * ide/prgs/formedit.prg
+     * Format.
+     ! RTE in CHECKBOX with THREESTATE clause.
+     * Do not force backcolor on FRAME and CHECKBOX.
+     * Use combo instead of textbox for editing CHECKBOX's value.
+   * ide/prgs/menued.prg
+     * Format.
+   * ide/prgs/mgide.prg
+     * Format.
+   * ide/prgs/toolbed.prg
+     + Support for missing properties.
+   * source/h_grid.prg
+     ! RTE: _oohg_gridwn registration failure.
 
 2014-09-15 01:11 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog
