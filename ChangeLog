@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.1361 2014-09-17 00:30:12 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1362 2014-09-18 01:16:37 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-09-17 22:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/prgs/toolbed.prg
+     - Unneeded code.
+     * Toolbar control is shown using the defined properties.
 
 2014-09-16 21:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ide/fmgs/mytoolbared.fmg

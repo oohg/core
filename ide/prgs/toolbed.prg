@@ -1,5 +1,5 @@
 /*
- * $Id: toolbed.prg,v 1.7 2014-09-17 00:30:13 fyurisich Exp $
+ * $Id: toolbed.prg,v 1.8 2014-09-18 01:16:38 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -128,21 +128,23 @@ LOCAL i := 1, oBut
       ::oToolbar := NIL
    ENDIF
 
-   DEFINE TOOLBAR ( ::cID ) OF ( ::oEditor:oDesignForm ) ;
-      BUTTONSIZE ::nWidth, ::nHeight ;
-      OBJ ::oToolbar
-      /*
-         TODO: Add toolbar´s properties
-      */
+   // DEFINE TOOLBAR
+   ::oToolbar := TToolBar():Define( ::cID, ::oEditor:oDesignForm, 0, 0, ;
+                    ::nWidth, ::nHeight, ::cCaption, NIL, ::cFont, ::nSize, ;
+                    ::cToolTip, ::lFlat, ::lBottom, ::lRightText, ::lBreak, ;
+                    ::lBold, ::lItalic, ::lUnderline, ::lStrikeout, ::lBorder, ;
+                    ::lRTL, ::lNoTabStop, ::lVertical )
 
       ( ::cID )->( dbGoTop() )
       DO WHILE ! ( ::cID )->( Eof() )
-         BUTTON &( "hmi_cvc_tb_button_" + AllTrim( Str( i, 2 ) ) ) ;
-            CAPTION AllTrim( ( ::cID )->item ) ;
-            ACTION NIL ;
-            OBJ oBut
+         oBut := TToolButton():Define( "hmi_cvc_tb_button_" + AllTrim( Str( i, 2 ) ), ;
+                    0, 0, AllTrim( ( ::cID )->item ), NIL, NIL, NIL, ;
+                    ( ::cID )->image, ( ::cID )->tooltip, NIL, NIL, .F., ;
+                    ( ::cID )->separator == 'X', ( ::cID )->autosize == 'X', ;
+                    ( ::cID )->check == 'X', ( ::cID )->group == 'X', ;
+                    ( ::cID )->drop == 'X', ( ::cID )->whole == "X" )
 
-            aAdd( ::aButtons, oBut )
+         aAdd( ::aButtons, oBut )
 
          ( ::cID )->( dbSkip() )
          i ++
@@ -313,18 +315,18 @@ LOCAL cOutput := "", cButton, cFile, oMenu
          IF ( ::cID )->group == 'X'
             cOutput += ' ;' + CRLF + Space( nSpacing * 3 ) + 'GROUP '
          ENDIF
-         IF ( ::cID )->( FCount() ) > 12 .AND. ( ::cID )->whole == "X"
+         IF ( ::cID )->whole == "X"
             cOutput += ' ;' + CRLF + Space( nSpacing * 3 ) + "WHOLEDROPDOWN "
-         ELSEIF ( ::cID )->( FCount() ) > 9 .AND. ( ::cID )->drop == 'X'
+         ELSEIF ( ::cID )->drop == 'X'
             cOutput += ' ;' + CRLF + Space( nSpacing * 3 ) + 'DROPDOWN '
          ENDIF
-         IF ( ::cID )->( FCount() ) > 10 .AND. ! Empty( ( ::cID )->tooltip )
+         IF ! Empty( ( ::cID )->tooltip )
             cOutput += ' ;' + CRLF + Space( nSpacing * 3 ) + "TOOLTIP " + StrToStr( ( ::cID )->tooltip )
          ENDIF
-         IF ( ::cID )->( FCount() ) > 11 .AND. ! Empty( ( ::cID )->obj )
+         IF ! Empty( ( ::cID )->obj )
             cOutput += ' ;' + CRLF + Space( nSpacing * 3 ) + "OBJ " + AllTrim( ( ::cID )->obj )
          ENDIF
-         IF ( ::cID )->( FCount() ) > 13 .AND. ! Empty( ( ::cID )->subclass )
+         IF ! Empty( ( ::cID )->subclass )
             cOutput += ' ;' + CRLF + Space( nSpacing * 3 ) + "SUBCLASS " + AllTrim( ( ::cID )->subclass )
          ENDIF
          cOutput += CRLF + CRLF
