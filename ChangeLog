@@ -1,11 +1,20 @@
 /*
- * $Id: ChangeLog,v 1.1370 2014-09-19 21:25:22 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1371 2014-09-19 23:07:10 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-09-19 20:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/prgs/menued.prg
+     ! An empty menu is created in the design form when no
+       menu is defined.
+     + Context and Notify menus creation.
+   * ide/prgs/formedit.prg
+     + Context and Notify menus of the designed form are simulated
+       through new options in the context menu of the IDE.
 
 2014-09-19 18:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog

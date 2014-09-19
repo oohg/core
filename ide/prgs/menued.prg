@@ -1,5 +1,5 @@
 /*
- * $Id: menued.prg,v 1.9 2014-09-19 20:24:08 fyurisich Exp $
+ * $Id: menued.prg,v 1.10 2014-09-19 23:07:10 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -106,37 +106,81 @@ LOCAL nNxtLvl, nLvl, nPopupCount := 0, oItem
       ENDIF
 
       ( ::cID )->( dbGoTop() )
+      IF ! ( ::cID )->( Eof() )
+         DEFINE MAIN MENU OF ( ::oEditor:oDesignForm ) ;
+            OBJ ::oEditor:myMMCtrl
 
-      DEFINE MAIN MENU OF ( ::oEditor:oDesignForm ) ;
-         OBJ ::oEditor:myMMCtrl
-
-         DO WHILE ! ( ::cID )->( Eof() )
-            ( ::cID )->( dbSkip() )
-            IF ( ::cID )->( Eof() )
-               nNxtLvl := 0
-            ELSE
-               nNxtLvl := ( ::cID )->level
-            ENDIF
-
-            ( ::cID )->( dbSkip( -1 ) )
-            nLvl := ( ::cID )->level
-            IF nNxtLvl > nLvl
-               IF Lower( AllTrim( ( ::cID )->item ) ) == 'separator'
-                  SEPARATOR
+            DO WHILE ! ( ::cID )->( Eof() )
+               ( ::cID )->( dbSkip() )
+               IF ( ::cID )->( Eof() )
+                  nNxtLvl := 0
                ELSE
-                  oItem := TMenuItem():DefinePopUp( AllTrim( ( ::cID )->item ), ;
-                              NIL, ;
-                              ( ::cID )->checked == 'X', ;
-                              ( ::cID )->enabled == 'X', ;
-                              NIL, ;
-                              ( ::cID )->hilited == 'X', ;
-                              AllTrim( ( ::cID )->image ), ;
-                              ( ::cID )->right == 'X', ;
-                              ( ::cID )->stretch == 'X', ;
-                              IIF( ( ::cID )->breakmenu == 'X', 1, NIL ) )
-                  nPopupCount ++
+                  nNxtLvl := ( ::cID )->level
                ENDIF
-            ELSE
+
+               ( ::cID )->( dbSkip( -1 ) )
+               nLvl := ( ::cID )->level
+               IF nNxtLvl > nLvl
+                  IF Lower( AllTrim( ( ::cID )->item ) ) == 'separator'
+                     SEPARATOR
+                  ELSE
+                     oItem := TMenuItem():DefinePopUp( AllTrim( ( ::cID )->item ), ;
+                                 NIL, ;
+                                 ( ::cID )->checked == 'X', ;
+                                 ( ::cID )->enabled == 'X', ;
+                                 NIL, ;
+                                 ( ::cID )->hilited == 'X', ;
+                                 AllTrim( ( ::cID )->image ), ;
+                                 ( ::cID )->right == 'X', ;
+                                 ( ::cID )->stretch == 'X', ;
+                                 IIF( ( ::cID )->breakmenu == 'X', 1, NIL ) )
+                     nPopupCount ++
+                  ENDIF
+               ELSE
+                  IF Lower( AllTrim( ( ::cID )->item ) ) == 'separator'
+                     oItem := TMenuItem():DefineSeparator( NIL, NIL, ( ::cID )->right == 'X' )
+                  ELSE
+                     oItem := TMenuItem():DefineItem( AllTrim( ( ::cID )->item ), ;
+                                 NIL, ;
+                                 NIL, ;
+                                 AllTrim( ( ::cID )->image ), ;
+                                 ( ::cID )->checked == 'X', ;
+                                 ( ::cID )->enabled == 'X', ;
+                                 NIL, ;
+                                 ( ::cID )->hilited == 'X', ;
+                                 ( ::cID )->right == 'X', ;
+                                 ( ::cID )->stretch == 'X', ;
+                                 IIF( ( ::cID )->breakmenu == 'X', 1, NIL ) )
+                  ENDIF
+
+                  DO WHILE nNxtLvl < nLvl
+                     END POPUP
+                     nPopupCount --
+                     nLvl --
+                  ENDDO
+               ENDIF
+
+               ( ::cID )->( dbSkip() )
+            ENDDO
+
+            DO WHILE nPopupCount > 0
+               END POPUP
+               nPopupCount --
+            ENDDO
+         END MENU
+      ENDIF
+   CASE ::nType == 2
+      IF HB_IsObject( ::oEditor:myCMCtrl )
+         ::oEditor:myCMCtrl:Release()
+         ::oEditor:myCMCtrl := NIL
+      ENDIF
+
+      ( ::cID )->( dbGoTop() )
+      IF ! ( ::cID )->( Eof() )
+         DEFINE MENU DYNAMIC OF ( ::oEditor:oDesignForm ) ;
+            OBJ ::oEditor:myCMCtrl
+
+            DO WHILE ! ( ::cID )->( Eof() )
                IF Lower( AllTrim( ( ::cID )->item ) ) == 'separator'
                   oItem := TMenuItem():DefineSeparator( NIL, NIL, ( ::cID )->right == 'X' )
                ELSE
@@ -153,51 +197,42 @@ LOCAL nNxtLvl, nLvl, nPopupCount := 0, oItem
                               IIF( ( ::cID )->breakmenu == 'X', 1, NIL ) )
                ENDIF
 
-               DO WHILE nNxtLvl < nLvl
-                  END POPUP
-                  nPopupCount --
-                  nLvl --
-               ENDDO
-            ENDIF
-
-            ( ::cID )->( dbSkip() )
-         ENDDO
-
-         DO WHILE nPopupCount > 0
-            END POPUP
-            nPopupCount --
-         ENDDO
-      END MENU
-
-   CASE ::nType == 2
-      IF HB_IsObject( ::oEditor:myCMCtrl )
-         ::oEditor:myCMCtrl:Release()
-         ::oEditor:myCMCtrl := NIL
+               ( ::cID )->( dbSkip() )
+            ENDDO
+         END MENU
       ENDIF
-
-      DEFINE MENU DYNAMIC OF ( ::oEditor:oDesignForm ) ;
-         OBJ ::oEditor:myCMCtrl
-
-         /*
-            TODO: Add items
-            ITEM 'RClick on Column ' + ltrim(str(nColumn)) ACTION NIL
-         */
-      END MENU
-
    CASE ::nType == 3
       IF HB_IsObject( ::oEditor:myNMCtrl )
          ::oEditor:myNMCtrl:Release()
          ::oEditor:myNMCtrl := NIL
       ENDIF
 
-      DEFINE MENU DYNAMIC OF ( ::oEditor:oDesignForm ) ;
-         OBJ ::oEditor:myNMCtrl
+      ( ::cID )->( dbGoTop() )
+      IF ! ( ::cID )->( Eof() )
+         DEFINE MENU DYNAMIC OF ( ::oEditor:oDesignForm ) ;
+            OBJ ::oEditor:myNMCtrl
 
-         /*
-            TODO: Add items
-            ITEM 'RClick on Column ' + ltrim(str(nColumn)) ACTION NIL
-         */
-      END MENU
+            DO WHILE ! ( ::cID )->( Eof() )
+               IF Lower( AllTrim( ( ::cID )->item ) ) == 'separator'
+                  oItem := TMenuItem():DefineSeparator( NIL, NIL, ( ::cID )->right == 'X' )
+               ELSE
+                  oItem := TMenuItem():DefineItem( AllTrim( ( ::cID )->item ), ;
+                              NIL, ;
+                              NIL, ;
+                              AllTrim( ( ::cID )->image ), ;
+                              ( ::cID )->checked == 'X', ;
+                              ( ::cID )->enabled == 'X', ;
+                              NIL, ;
+                              ( ::cID )->hilited == 'X', ;
+                              ( ::cID )->right == 'X', ;
+                              ( ::cID )->stretch == 'X', ;
+                              IIF( ( ::cID )->breakmenu == 'X', 1, NIL ) )
+               ENDIF
+
+               ( ::cID )->( dbSkip() )
+            ENDDO
+         END MENU
+      ENDIF
 
    CASE ::nType == 4
       IF HB_IsObject( ::oEditor:myDMCtrl )
@@ -205,29 +240,32 @@ LOCAL nNxtLvl, nLvl, nPopupCount := 0, oItem
          ::oEditor:myDMCtrl := NIL
       ENDIF
 
-      DEFINE DROPDOWN MENU BUTTON ( oButton ) ;
-         OBJ ::oEditor:myDMCtrl
+      ( ::cID )->( dbGoTop() )
+      IF ! ( ::cID )->( Eof() )
+         DEFINE DROPDOWN MENU BUTTON ( oButton ) ;
+            OBJ ::oEditor:myDMCtrl
 
-         DO WHILE ! ( ::cID )->( Eof() )
-            IF Lower( AllTrim( ( ::cID )->item ) ) == 'separator'
-               oItem := TMenuItem():DefineSeparator( NIL, NIL, ( ::cID )->right == 'X' )
-            ELSE
-               oItem := TMenuItem():DefineItem( AllTrim( ( ::cID )->item ), ;
-                           NIL, ;
-                           NIL, ;
-                           AllTrim( ( ::cID )->image ), ;
-                           ( ::cID )->checked == 'X', ;
-                           ( ::cID )->enabled == 'X', ;
-                           NIL, ;
-                           ( ::cID )->hilited == 'X', ;
-                           ( ::cID )->right == 'X', ;
-                           ( ::cID )->stretch == 'X', ;
-                           IIF( ( ::cID )->breakmenu == 'X', 1, NIL ) )
-            ENDIF
+            DO WHILE ! ( ::cID )->( Eof() )
+               IF Lower( AllTrim( ( ::cID )->item ) ) == 'separator'
+                  oItem := TMenuItem():DefineSeparator( NIL, NIL, ( ::cID )->right == 'X' )
+               ELSE
+                  oItem := TMenuItem():DefineItem( AllTrim( ( ::cID )->item ), ;
+                              NIL, ;
+                              NIL, ;
+                              AllTrim( ( ::cID )->image ), ;
+                              ( ::cID )->checked == 'X', ;
+                              ( ::cID )->enabled == 'X', ;
+                              NIL, ;
+                              ( ::cID )->hilited == 'X', ;
+                              ( ::cID )->right == 'X', ;
+                              ( ::cID )->stretch == 'X', ;
+                              IIF( ( ::cID )->breakmenu == 'X', 1, NIL ) )
+               ENDIF
 
-            ( ::cID )->( dbSkip() )
-         ENDDO
-      END MENU
+               ( ::cID )->( dbSkip() )
+            ENDDO
+         END MENU
+      ENDIF
    ENDCASE
 RETURN NIL
 
@@ -303,7 +341,7 @@ LOCAL cFile
    ( ::cID )->( dbGoTop() )
    IF ! ( ::cID )->( Eof() )
       ::Save()
-      IF ::nType == 1
+      IF ::nType >= 1 .and. ::nType <= 3
          ::CreateMenuCtrl()
       ENDIF
       ::FormEdit:Release()

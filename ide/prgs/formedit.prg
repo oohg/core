@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.31 2014-09-19 21:13:11 fyurisich Exp $
+ * $Id: formedit.prg,v 1.32 2014-09-19 23:07:10 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -1116,8 +1116,8 @@ LOCAL i, j, nContLin, cForma, nStart, nEnd, nFWidth, nFHeight, cName, aColor
          SEPARATOR
          ITEM 'Print Brief'            ACTION ::PrintBrief()
          SEPARATOR
-         ITEM "Form's context menu"    ACTION IIF( HB_IsObject( ::myCMCtrl ), ::myCMCtrl:Activate(), MsgInfo( "Context menu is not defined !!!" ) )
-         ITEM "Form' notify menu"      ACTION IIF( HB_IsObject( ::myNMCtrl ), ::myNMCtrl:Activate(), MsgInfo( "Notify menu is not defined !!!" ) )
+         ITEM "Form's context menu"    ACTION IIF( HB_IsObject( ::myCMCtrl ), ::myCMCtrl:Activate(), MsgInfo( "Context menu is not defined !!!", 'OOHG IDE+' ) )
+         ITEM "Form' notify menu"      ACTION IIF( HB_IsObject( ::myNMCtrl ), ::myNMCtrl:Activate(), MsgInfo( "Notify menu is not defined !!!", 'OOHG IDE+' ) )
       END MENU
 
       @ 420, 10 LABEL lop1 VALUE "Double click or Enter to modify the position or size of a control." FONT "Calibri" SIZE 9 AUTOSIZE HEIGHT 15
@@ -1229,8 +1229,8 @@ LOCAL i, j, nContLin, cForma, nStart, nEnd, nFWidth, nFHeight, cName, aColor
          SEPARATOR
          ITEM 'Print Brief'            ACTION ::PrintBrief()
          SEPARATOR
-         ITEM "Form's context menu"    ACTION IIF( HB_IsObject( ::myCMCtrl ), ::myCMCtrl:Activate(), MsgInfo( "Context menu is not defined !!!" ) )
-         ITEM "Form' notify menu"      ACTION IIF( HB_IsObject( ::myNMCtrl ), ::myNMCtrl:Activate(), MsgInfo( "Notify menu is not defined !!!" ) )
+         ITEM "Form's context menu"    ACTION IIF( HB_IsObject( ::myCMCtrl ), ::myCMCtrl:Activate(), MsgInfo( "Context menu is not defined !!!", 'OOHG IDE+' ) )
+         ITEM "Form' notify menu"      ACTION IIF( HB_IsObject( ::myNMCtrl ), ::myNMCtrl:Activate(), MsgInfo( "Notify menu is not defined !!!", 'OOHG IDE+' ) )
       END MENU
 
       ON KEY ALT+D  ACTION ::Debug()
@@ -1301,8 +1301,8 @@ LOCAL cName
          SEPARATOR
          ITEM 'Print Brief'            ACTION ::PrintBrief()
          SEPARATOR
-         ITEM "Form's context menu"    ACTION IIF( HB_IsObject( ::myCMCtrl ), ::myCMCtrl:Activate(), MsgInfo( "Context menu is not defined !!!" ) )
-         ITEM "Form' notify menu"      ACTION IIF( HB_IsObject( ::myNMCtrl ), ::myNMCtrl:Activate(), MsgInfo( "Notify menu is not defined !!!" ) )
+         ITEM "Form's context menu"    ACTION IIF( HB_IsObject( ::myCMCtrl ), ::myCMCtrl:Activate(), MsgInfo( "Context menu is not defined !!!", 'OOHG IDE+' ) )
+         ITEM "Form' notify menu"      ACTION IIF( HB_IsObject( ::myNMCtrl ), ::myNMCtrl:Activate(), MsgInfo( "Notify menu is not defined !!!", 'OOHG IDE+' ) )
       END MENU
 
       ON KEY DELETE ACTION ::DeleteControl()
@@ -1363,8 +1363,8 @@ LOCAL cName
          SEPARATOR
          ITEM 'Print Brief'            ACTION ::PrintBrief()
          SEPARATOR
-         ITEM "Form's context menu"    ACTION IIF( HB_IsObject( ::myCMCtrl ), ::myCMCtrl:Activate(), MsgInfo( "Context menu is not defined !!!" ) )
-         ITEM "Form' notify menu"      ACTION IIF( HB_IsObject( ::myNMCtrl ), ::myNMCtrl:Activate(), MsgInfo( "Notify menu is not defined !!!" ) )
+         ITEM "Form's context menu"    ACTION IIF( HB_IsObject( ::myCMCtrl ), ::myCMCtrl:Activate(), MsgInfo( "Context menu is not defined !!!", 'OOHG IDE+' ) )
+         ITEM "Form' notify menu"      ACTION IIF( HB_IsObject( ::myNMCtrl ), ::myNMCtrl:Activate(), MsgInfo( "Notify menu is not defined !!!", 'OOHG IDE+' ) )
       END MENU
       END MENU
 
@@ -3131,7 +3131,7 @@ METHOD AddControl() CLASS TFormEditor
 //------------------------------------------------------------------------------
 LOCAL x, ControlName, oNewCtrl
 
-// TODO: los controles definidos acá deber ser del mismo tipo que los definidos en los métodos p(Control)
+// TODO: control defined here must be equal to control defined in p(Control) methods
 
    IF ::CurrentControl == 1
       IF ! Empty( x := ::CheckIfIsFrame() )
@@ -3153,7 +3153,7 @@ LOCAL x, ControlName, oNewCtrl
          // BUTTON
          ::aCaption[::nControlW]   := ControlName
          ::aAction[::nControlW]    := "MsgInfo( 'Button pressed' )"
-         ::aBackColor[::nControlW] := ::cFBackcolor            // TODO:: Check is this is needed
+         ::aBackColor[::nControlW] := ::cFBackcolor            // TODO:: Check if this is needed
 
       CASE ::CurrentControl == 3
          // CHECKBOX
@@ -3168,7 +3168,6 @@ LOCAL x, ControlName, oNewCtrl
       CASE ::CurrentControl == 8
          // FRAME
          ::aTransparent[::nControlW] := .T.
-//         ::aBackColor[::nControlW] := ::cFBackcolor                                    // TODO:: Verificar si es necesario
 
       CASE ::CurrentControl == 9
          // TAB
@@ -3197,11 +3196,11 @@ LOCAL x, ControlName, oNewCtrl
          // RADIOGROUP
          ::aItems[::nControlW]     := "{ 'option 1', 'option 2' }"
          ::aSpacing[::nControlW]   := 25
-         ::aBackColor[::nControlW] := ::cFBackcolor                                                       // TODO:: Verificar si es necesario
+         ::aBackColor[::nControlW] := ::cFBackcolor                                                       // TODO:: Check if this is needed
 
       CASE ::CurrentControl == 19
          // SLIDER
-         ::aBackColor[::nControlW] := ::cFBackcolor                                                       // TODO:: Verificar si es necesario
+         ::aBackColor[::nControlW] := ::cFBackcolor                                                       // TODO:: Check if this is needed
 
       CASE ::CurrentControl == 20
          // SPINNER
@@ -3246,7 +3245,7 @@ METHOD CreateControl( nControlType, i ) CLASS TFormEditor
 LOCAL ControlName, oCtrl
 
    ControlName := ::aControlW[i]
-// TODO: ver que los controles definidos acá sean los mismos que los definidos en los métodos p(Control)
+// TODO: control defined here must be equal to the controls defined in p(Control) methods
 
    DO CASE
    CASE nControlType == 2            // BUTTON
@@ -4817,13 +4816,13 @@ LOCAL cToolTip, lCenter, lLeft, lRight, cCaption, nProcess
    // Main menu
    TMyMenuEditor():CreateMenuFromFile( Self, 1 )
 
-   /*
-      TODO: Create CONTEXT MENU and NOTIFY MENU, and link to FORM's current context menu
-      See METHOD Open
-   */
+   // Context menu
+   TMyMenuEditor():CreateMenuFromFile( Self, 2 )
+
+   // Notify menu
+   TMyMenuEditor():CreateMenuFromFile( Self, 3 )
 
    // Show statusbar
-//   ::oDesignForm:Show()
    IF ::lSStat
       ::CreateStatusBar()
    ENDIF
