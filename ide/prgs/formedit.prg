@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.29 2014-09-19 20:24:08 fyurisich Exp $
+ * $Id: formedit.prg,v 1.30 2014-09-19 20:52:20 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -1827,7 +1827,7 @@ LOCAL cName, si := 0, FormFontColor
 
    cName := _OOHG_GetNullName( "0" )
    SET INTERACTIVECLOSE ON
-   LOAD WINDOW intfonco AS ( cName )
+   LOAD WINDOW fontclrs AS ( cName )
    FormFontColor := GetFormObject( cName )
    FormFontColor:label_1:Value := 'Form: ' + ::cFName
    ACTIVATE WINDOW ( cName )
@@ -1849,7 +1849,7 @@ LOCAL si, cName, FormFontColor
       IF si > 0
          cName := _OOHG_GetNullName( "0" )
          SET INTERACTIVECLOSE ON
-         LOAD WINDOW intfonco AS ( cName )
+         LOAD WINDOW fontclrs AS ( cName )
          FormFontColor := GetFormObject( cName )
          FormFontColor:label_1:Value := 'Control: ' + ::aName[si]
          IF ::aCtrlType[si] == 'PROGRESSBAR'
