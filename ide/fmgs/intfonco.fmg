@@ -1,5 +1,5 @@
 /*
- * $Id$
+ * $Id: tabeven.fmg,v 1.3 2014/04/11 02:27:46 fyurisich Exp $
  */
 
 * ooHG IDE Plus form generated code
@@ -99,5 +99,3 @@ DEFINE WINDOW TEMPLATE ;
       INVISIBLE 
 
 END WINDOW 
-
-
