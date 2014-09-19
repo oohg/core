@@ -1,11 +1,20 @@
 /*
- * $Id: ChangeLog,v 1.1369 2014-09-19 21:13:11 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1370 2014-09-19 21:25:22 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-09-19 18:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     ; Remember to check "Format" column when committing changes.
+       Do not commit a change if the "Format" shown is binary for a
+       file intended to be text only (*.prg, *.c, *.ch, *.fmg, *.rc)
+       If a change is detected, abort the commit, delete all chars
+       not considered text (like EOF) and try to commit again.
+       The current file format can be checked using History dialog.
 
 2014-09-19 18:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ide/prgs/formedit.prg
