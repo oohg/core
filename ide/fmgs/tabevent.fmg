@@ -1,78 +1,38 @@
 /*
- * $Id: tabevent.fmg,v 1.2 2014-09-19 21:07:19 fyurisich Exp $
+ * $Id: tabevent.fmg,v 1.3 2014-09-19 21:08:54 fyurisich Exp $
  */
 
-* Harbour MiniGUI Two-Way Form Designer Generated Code
-* (c)2004 Roberto Lopez <roblez@ciudad.com.ar>
+* ooHG IDE Plus form generated code
+* (c)2003-2014 Ciro Vargas Clemow <pcman2010@yahoo.com > 
 
-DEFINE WINDOW TEMPLATE AT 132 , 235 WIDTH 279 HEIGHT 262 TITLE "Tab events" ICON NIL MODAL CURSOR NIL ON INIT Nil ON RELEASE Nil ON INTERACTIVECLOSE Nil ON MOUSECLICK Nil ON MOUSEDRAG Nil ON MOUSEMOVE Nil ON SIZE Nil ON PAINT Nil BACKCOLOR Nil ON GOTFOCUS Nil ON LOSTFOCUS Nil ON SCROLLUP Nil ON SCROLLDOWN Nil ON SCROLLLEFT Nil ON SCROLLRIGHT Nil ON HSCROLLBOX Nil ON VSCROLLBOX Nil
+DEFINE WINDOW TEMPLATE ;
+   AT 162, 310 ;
+   WIDTH 279 ;
+   HEIGHT 262 ;
+   MODAL 
 
+   @ 50, 10 LABEL label_102 ;
+      WIDTH 70 ;
+      HEIGHT 30 ;
+      VALUE 'On Change' ;
+      FONT 'Arial' ;
+      SIZE 9 ;
+      RIGHTALIGN 
 
-    DEFINE LABEL label_102
-        ROW    50
-        COL    10
-        WIDTH  70
-        HEIGHT 30
-        VALUE "ON Change"
-        FONTNAME "Arial"
-        FONTSIZE 9
-        TOOLTIP ""
-        FONTBOLD .F.
-        FONTITALIC .F.
-        FONTUNDERLINE .F.
-        FONTSTRIKEOUT .F.
-        HELPID Nil
-        VISIBLE .T.
-        TRANSPARENT .F.
-        ACTION Nil
-        AUTOSIZE .F.
-        BACKCOLOR NIL
-        FONTCOLOR NIL
-        RIGHTALIGN .T. 
-    END LABEL
+   @ 40, 100 EDITBOX text_101 ;
+      WIDTH 120 ;
+      HEIGHT 120 ;
+      FONT 'Arial' ;
+      SIZE 9 ;
+      MAXLENGTH 500 ;
+      ON CHANGE ::aOnChange[i] := This.Value
 
-    DEFINE EDITBOX text_101
-        ROW    40
-        COL    100
-        WIDTH  120
-        HEIGHT 120
-        VALUE ""
-        MAXLENGTH 500
-        FONTNAME "Arial"
-        FONTSIZE 9
-        TOOLTIP ""
-        ONCHANGE (myform:aonchange[ki]:=tabprop.text_101.value)
-        FONTBOLD .F.
-        FONTITALIC .F.
-        FONTUNDERLINE .F.
-        FONTSTRIKEOUT .F.
-        HELPID Nil
-        TABSTOP .T.
-        VISIBLE .T.
-    END EDITBOX
+   @ 180, 110 BUTTON button_3 ;
+      WIDTH 100 ;
+      HEIGHT 28 ;
+      CAPTION 'Exit' ;
+      ACTION ThisWindow.Release() ;
+      FONT 'Arial' ;
+      SIZE 9
 
-    DEFINE BUTTON button_3
-        ROW    180
-        COL    110
-        WIDTH  100
-        HEIGHT 28
-        CAPTION "Exit"
-        ACTION (tabprop.release)
-        FONTNAME "Arial"
-        FONTSIZE 9
-        TOOLTIP ""
-        FONTBOLD .F.
-        FONTITALIC .F.
-        FONTUNDERLINE .F.
-        FONTSTRIKEOUT .F.
-        ONGOTFOCUS Nil
-        ONLOSTFOCUS Nil
-        HELPID Nil
-        FLAT .T.
-        TABSTOP .T.
-        VISIBLE .T.
-        TRANSPARENT .F.
-        PICTURE Nil
-    END BUTTON
-
-END WINDOW
+END WINDOW 
