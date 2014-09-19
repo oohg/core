@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.30 2014-09-19 20:52:20 fyurisich Exp $
+ * $Id: formedit.prg,v 1.31 2014-09-19 21:13:11 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -14282,7 +14282,7 @@ LOCAL cName
 
    cName := _OOHG_GetNullName( "0" )
    SET INTERACTIVECLOSE ON
-   LOAD WINDOW tabeven AS ( cName )
+   LOAD WINDOW tabevent AS ( cName )
    &cName:Title := "Tab events " + ::aName[i]
    &cName:text_101:Value := ::aOnChange[i]
    CENTER WINDOW ( cName )

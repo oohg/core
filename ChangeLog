@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.1368 2014-09-19 20:35:13 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1369 2014-09-19 21:13:11 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,19 +7,77 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2014-09-18 17:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2014-09-19 18:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/prgs/formedit.prg
+     * References to tabeven.fmg changed by tabevent.fmg
+
+2014-09-19 18:11 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   + ide/fmgs/tabevent.fmg
+     Note: it's tabeven.fmg, revision 1.5, renamed.
+
+2014-09-19 18:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   + ide/fmgs/tabevent.fmg
+     Note: it's tabeven.fmg, revision 1.4, renamed.
+
+2014-09-19 18:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   + ide/fmgs/tabevent.fmg
+     Note: it's tabeven.fmg, revision 1.3, renamed.
+
+2014-09-19 18:06 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   + ide/fmgs/tabevent.fmg
+     Note: it's tabeven.fmg, revision 1.2, renamed.
+
+2014-09-19 18:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   + ide/fmgs/tabevent.fmg
+     Note: it's tabeven.fmg, revision 1.1, renamed.
+
+2014-09-19 18:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   - ide/fmgs/tabeven.fmg
+     Note: wrong CVS Id.
+
+2014-09-19 17:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/prgs/formedit.prg
+     * References to intfonco.fmg changed by fontclrs.fmg
+
+2014-09-19 17:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   + ide/fmgs/fontclrs.fmg
+     Note: it's intfonco.fmg, revision 1.6, renamed.
+
+2014-09-19 17:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   + ide/fmgs/fontclrs.fmg
+     Note: it's intfonco.fmg, revision 1.5, renamed.
+
+2014-09-19 17:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   + ide/fmgs/fontclrs.fmg
+     Note: it's intfonco.fmg, revision 1.4, renamed.
+
+2014-09-19 17:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   + ide/fmgs/fontclrs.fmg
+     Note: it's intfonco.fmg, revision 1.3, renamed.
+
+2014-09-19 17:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   + ide/fmgs/fontclrs.fmg
+     Note: it's intfonco.fmg, revision 1.2, renamed.
+   * ./Changelog
+     * Previous entries with wrong date corrected.
+
+2014-09-19 17:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   + ide/fmgs/fontclrs.fmg
+     Note: it's intfonco.fmg, revision 1.1, renamed.
+
+2014-09-19 17:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    - ide/fmgs/intfonco.fmg
      Note: still wrong CVS Id.
 
-2014-09-18 17:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2014-09-19 17:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    + ide/fmgs/intfonco.fmg
      Revision number 1.1
 
-2014-09-18 17:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2014-09-19 17:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    - ide/fmgs/intfonco.fmg
      Note: only way to correct wrong CVS Id.
 
-2014-09-18 17:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2014-09-19 17:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ide/prgs/menued.prg
      ! Wrong spacing in DROPDOWN MENU structure.
      + Support for missing properties in DROPDOWN and MAIN menus.
