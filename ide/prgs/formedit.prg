@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.27 2014-09-17 00:30:12 fyurisich Exp $
+ * $Id: formedit.prg,v 1.28 2014-09-19 02:05:59 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -1817,17 +1817,22 @@ RETURN NIL
 //------------------------------------------------------------------------------
 METHOD FrmFontColors() CLASS TFormEditor
 //------------------------------------------------------------------------------
-LOCAL cName, si := 0
+LOCAL cName, si := 0, FormFontColor
+
    cName := _OOHG_GetNullName( "0" )
+   SET INTERACTIVECLOSE ON
    LOAD WINDOW intfonco AS ( cName )
-   &cName:label_1:Value := 'Form: ' + ::cFName
+   FormFontColor := GetFormObject( cName )
+   FormFontColor:label_1:Value := 'Form: ' + ::cFName
    ACTIVATE WINDOW ( cName )
+   SET INTERACTIVECLOSE OFF
+   ::oDesignForm:SetFocus()
 RETURN NIL
 
 //------------------------------------------------------------------------------
 METHOD CtrlFontColors() CLASS TFormEditor
 //------------------------------------------------------------------------------
-LOCAL si, cName
+LOCAL si, cName, FormFontColor
 
    IF ::nHandleP > 0
       IF ::SiEsDEste( ::nHandleP, 'TIMER' ) .OR. ::SiEsDEste( ::nHandleP, 'PLAYER' ) .OR. ::SiEsDEste( ::nHandleP, 'ANIMATE' )
@@ -1837,32 +1842,35 @@ LOCAL si, cName
       si := aScan( ::aControlW, { |c| Lower( c ) == Lower( ::oDesignForm:aControls[::nHandleP]:Name ) } )
       IF si > 0
          cName := _OOHG_GetNullName( "0" )
+         SET INTERACTIVECLOSE ON
          LOAD WINDOW intfonco AS ( cName )
-         &cName:label_1:Value := 'Control: ' + ::aName[si]
+         FormFontColor := GetFormObject( cName )
+         FormFontColor:label_1:Value := 'Control: ' + ::aName[si]
          IF ::aCtrlType[si] == 'PROGRESSBAR'
-            &cName:label_2:Visible := .T.
+            FormFontColor:label_2:Visible := .T.
          ELSEIF ::aCtrlType[si] == 'IMAGE'
-            &cName:button_101:Visible := .F.
+            FormFontColor:button_101:Visible := .F.
          ELSEIF ::aCtrlType[si] == 'PICCHECKBUTT'
-            &cName:button_101:Visible := .F.
+            FormFontColor:button_101:Visible := .F.
          ELSEIF ::aCtrlType[si] == 'PICBUTT'
-            &cName:button_101:Visible := .F.
+            FormFontColor:button_101:Visible := .F.
          ELSEIF ::aCtrlType[si] == 'MONTHCALENDAR'
-            &cName:button_103:Visible := .T.
-            &cName:button_104:Visible := .T.
-            &cName:button_105:Visible := .T.
-            &cName:button_106:Visible := .T.
+            FormFontColor:button_103:Visible := .T.
+            FormFontColor:button_104:Visible := .T.
+            FormFontColor:button_105:Visible := .T.
+            FormFontColor:button_106:Visible := .T.
          ELSEIF ::aCtrlType[si] == 'DATEPICKER'
-            &cName:button_102:Visible := .F.
-            &cName:button_107:Visible := .F.
+            FormFontColor:button_102:Visible := .F.
+            FormFontColor:button_107:Visible := .F.
          ELSEIF ::aCtrlType[si] == 'TIMEPICKER'
-            &cName:button_102:Visible := .F.
-            &cName:button_107:Visible := .F.
+            FormFontColor:button_102:Visible := .F.
+            FormFontColor:button_107:Visible := .F.
          ENDIF
          ACTIVATE WINDOW ( cName )
-
+         SET INTERACTIVECLOSE OFF
          CHideControl( ::oDesignForm:aControls[::nHandleP] )
          CShowControl( ::oDesignForm:aControls[::nHandleP] )
+         ::oDesignForm:SetFocus()
       ENDIF
    ENDIF
 RETURN NIL
@@ -3143,8 +3151,6 @@ LOCAL x, ControlName, oNewCtrl
 
       CASE ::CurrentControl == 3
          // CHECKBOX
-         ::aBackColor[::nControlW] := ::cFBackcolor            // Needed to seem transparent TODO:: Check
-
       CASE ::CurrentControl == 4
          // LIST
       CASE ::CurrentControl == 5
@@ -8602,6 +8608,8 @@ LOCAL cSubClass
          cValue := ".F."
       ENDIF
    ENDIF
+
+// TODO: Use OOP syntax
 
    // Show control
    IF lRTL

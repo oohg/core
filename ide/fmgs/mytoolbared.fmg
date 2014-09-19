@@ -1,3 +1,6 @@
+/*
+ * $Id: mytoolbared.fmg,v 1.6 2014-09-19 02:05:59 fyurisich Exp $
+ */
 
 * ooHG IDE Plus form generated code
 * (c)2003-2014 Ciro Vargas Clemow <pcman2010@yahoo.com > 
@@ -9,7 +12,7 @@ DEFINE WINDOW TEMPLATE ;
    TITLE 'ooHG IDE+ Toolbar editor' ;
    MODAL ;
    ON RELEASE ::FormEdit := NIL ;
-   BACKCOLOR ::oEditor:cFBackcolor ;
+   BACKCOLOR ::oEditor:myIde:aSystemColor ;
    FONT 'Arial' ;
    SIZE 10
 
@@ -192,6 +195,13 @@ DEFINE WINDOW TEMPLATE ;
       MAXLENGTH 30 ;
       ON CHANGE ::cObj := ::FormEdit:text_8:Value
 
+   @ 388, 430 CHECKBOX checkbox_9 ;
+      WIDTH 100 ;
+      HEIGHT 28 ;
+      CAPTION 'End NoBreak' ;
+      VALUE .F. ;
+      ON CHANGE ::lNoBorder := ::FormEdit:checkbox_9:Value
+
    @ 420, 20 LABEL label_9 ;
       WIDTH 120 ;
       HEIGHT 24 ;
@@ -243,27 +253,27 @@ DEFINE WINDOW TEMPLATE ;
       CAPTION 'Selected Item' ;
       TRANSPARENT 
 
-   @ 40, 560 LABEL label_102 ;
-      WIDTH 45 ;
-      HEIGHT 16 ;
-      VALUE 'Name'
-
-   @ 37, 635 TEXTBOX text_102 ;
-      WIDTH 120 ;
-      HEIGHT 23 ;
-      MAXLENGTH 40 ;
-      ON CHANGE ::WriteName()
-
-   @ 73, 560 LABEL label_101 ;
+   @ 40, 560 LABEL label_101 ;
       WIDTH 59 ;
       HEIGHT 21 ;
       VALUE 'Caption'
 
-   @ 70, 635 TEXTBOX text_101 ;
+   @ 37, 635 TEXTBOX text_101 ;
       WIDTH 120 ;
       HEIGHT 23 ;
       MAXLENGTH 80 ;
       ON CHANGE ::WriteCaption()
+
+   @ 73, 560 LABEL label_102 ;
+      WIDTH 45 ;
+      HEIGHT 16 ;
+      VALUE 'Name'
+
+   @ 70, 635 TEXTBOX text_102 ;
+      WIDTH 120 ;
+      HEIGHT 23 ;
+      MAXLENGTH 40 ;
+      ON CHANGE ::WriteName()
 
    @ 106, 560 LABEL label_103 ;
       WIDTH 55 ;

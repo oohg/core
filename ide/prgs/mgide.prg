@@ -1,5 +1,5 @@
 /*
- * $Id: mgide.prg,v 1.16 2014-09-17 00:30:13 fyurisich Exp $
+ * $Id: mgide.prg,v 1.17 2014-09-19 02:05:59 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -1005,7 +1005,7 @@ LOCAL aFont := { ::cFormDefFontName, ;
    ::Form_Prefer:text_lib:value     := ::cLib
    ::Form_Prefer:checkbox_105:value := ::lSnap
 
-   ::Form_Prefer:checkbox_105:Backcolor := ::Form_Prefer.BackColor
+   ::Form_Prefer:checkbox_105:Backcolor := ::Form_Prefer:BackColor
 
    ACTIVATE WINDOW Form_Prefer
 

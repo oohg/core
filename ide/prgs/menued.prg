@@ -1,5 +1,5 @@
 /*
- * $Id: menued.prg,v 1.7 2014-09-17 00:30:13 fyurisich Exp $
+ * $Id: menued.prg,v 1.8 2014-09-19 02:05:59 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -29,6 +29,7 @@
 #define CRLF Chr(13) + Chr(10)
 
 CLASS TMyMenuEditor
+   DATA aItems    INIT {}
    DATA cID       INIT ''
    DATA cMnFile   INIT ''
    DATA FormEdit  INIT NIL
@@ -64,8 +65,9 @@ ENDCLASS
 METHOD AddItem() CLASS TMyMenuEditor
 //------------------------------------------------------------------------------
    ( ::cID )->( dbAppend() )
-   ::FormEdit:browse_101:Value := ( ::cID )->( RecCount() )
    ::FormEdit:browse_101:Refresh()
+   ::FormEdit:browse_101:Value := ( ::cID )->( RecCount() )
+   ::FormEdit:browse_101:SetFocus()
 RETURN NIL
 
 //------------------------------------------------------------------------------
@@ -82,13 +84,15 @@ LOCAL cFile
 RETURN NIL
 
 //------------------------------------------------------------------------------
-METHOD CreateMenuCtrl() CLASS TMyMenuEditor
+METHOD CreateMenuCtrl( oButton ) CLASS TMyMenuEditor
 //------------------------------------------------------------------------------
-LOCAL nNxtLvl, nLvl, nPopupCount := 0
+LOCAL nNxtLvl, nLvl, nPopupCount := 0, oItem
 
    DO CASE
    CASE ::nType == 1
       IF HB_IsObject( ::oEditor:myMMCtrl )
+         aEval( ::aItems, { |oItem, i| oItem:Release(), ::aItems[i] := NIL } )
+         ::aItems := {}
          ::oEditor:myMMCtrl:Release()
       ENDIF
 
@@ -110,39 +114,37 @@ LOCAL nNxtLvl, nLvl, nPopupCount := 0
                IF Lower( AllTrim( ( ::cID )->auxit ) ) == 'separator'
                   SEPARATOR
                ELSE
-                  IF ( ::cID )->checked == 'X'
-                     IF ( ::cID )->enabled == 'X'
-                        POPUP AllTrim( ( ::cID )->auxit ) CHECKED DISABLED
-                     ELSE
-                        POPUP AllTrim( ( ::cID )->auxit ) CHECKED
-                     ENDIF
-                  ELSE
-                     IF ( ::cID )->enabled == 'X'
-                        POPUP AllTrim( ( ::cID )->auxit ) DISABLED
-                     ELSE
-                        POPUP AllTrim( ( ::cID )->auxit )
-                     ENDIF
-                  ENDIF
+                  oItem := TMenuItem():DefinePopUp( AllTrim( ( ::cID )->auxit ), ;
+                              NIL, ( ::cID )->checked == 'X', ;
+                              ( ::cID )->enabled == 'X', NIL, .F., ;
+                              ( ::cID )->image, .F., .F., NIL )
+                  /*
+                     TODO: Add this properties
+                        [ IMAGE <image> [ <stretch:STRETCH> ] ] ;
+                        [ <hilited:HILITED> ] ;
+                        [ <right:RIGHT> ] ;
+                        [ <breakmenu :BREAKMENU> ;
+                  */
                   nPopupCount ++
                ENDIF
             ELSE
                IF Lower( AllTrim( ( ::cID )->auxit ) ) == 'separator'
-                  SEPARATOR
+                  oItem := TMenuItem():DefineSeparator( NIL, NIL, .F. )
+                  /*
+                     TODO: Add this properties
+                        [ <right:RIGHT> ] ;
+                  */
                ELSE
-                  // TODO: Add IMAGE
-                  IF ( ::cID )->checked == 'X'
-                     IF ( ::cID )->enabled == 'X'
-                        ITEM AllTrim( ( ::cID )->auxit ) ACTION NIL CHECKED DISABLED
-                     ELSE
-                        ITEM AllTrim( ( ::cID )->auxit ) ACTION NIL CHECKED
-                     ENDIF
-                  ELSE
-                     IF ( ::cID )->enabled == 'X'
-                        ITEM AllTrim( ( ::cID )->auxit ) ACTION NIL DISABLED
-                     ELSE
-                        ITEM AllTrim( ( ::cID )->auxit ) ACTION NIL
-                     ENDIF
-                  ENDIF
+                  oItem := TMenuItem():DefineItem( ( ::cID )->auxit, NIL, NIL, ;
+                              ( ::cID )->image, ( ::cID )->checked == 'X', ;
+                              ( ::cID )->enabled == 'X', NIL, .F., .F., .F., NIL )
+                  /*
+                     TODO: Add this properties
+                        [ IMAGE <image> [ <stretch:STRETCH> ] ] ;
+                        [ <hilited:HILITED> ] ;
+                        [ <right:RIGHT> ] ;
+                        [ <breakmenu :BREAKMENU> ;
+                  */
                ENDIF
 
                DO WHILE nNxtLvl < nLvl
@@ -151,6 +153,7 @@ LOCAL nNxtLvl, nLvl, nPopupCount := 0
                   nLvl --
                ENDDO
             ENDIF
+            aAdd( ::aItems, oItem )
 
             ( ::cID )->( dbSkip() )
          ENDDO
@@ -178,17 +181,42 @@ LOCAL nNxtLvl, nLvl, nPopupCount := 0
       */
    CASE ::nType == 4
       IF HB_IsObject( ::oEditor:myDMCtrl )
+         aEval( ::aItems, { |oItem, i| oItem:Release(), ::aItems[i] := NIL } )
+         ::aItems := {}
          ::oEditor:myDMCtrl:Release()
       ENDIF
-      /*
-         TODO: Create control
-         See METHOD CreateToolBarCtrl in toolbed.prg
-      */
+
+      // DEFINE DROPDOWN MENU BUTTON
+      ::oEditor:myDMCtrl := TMenuDropDown():Define( oButton, NIL, NIL )
+         DO WHILE ! ( ::cID )->( Eof() )
+            IF Lower( AllTrim( ( ::cID )->auxit ) ) == 'separator'
+               oItem := TMenuItem():DefineSeparator( NIL, NIL, .F. )
+               /*
+                  TODO: Add this properties
+                     [ <right:RIGHT> ] ;
+               */
+            ELSE
+               oItem := TMenuItem():DefineItem( ( ::cID )->auxit, NIL, NIL, ;
+                           ( ::cID )->image, ( ::cID )->checked == 'X', ;
+                           ( ::cID )->enabled == 'X', NIL, .F., .F., .F., NIL )
+               /*
+                  TODO: Add this properties
+                     [ IMAGE <image> [ <stretch:STRETCH> ] ] ;
+                     [ <hilited:HILITED> ] ;
+                     [ <right:RIGHT> ] ;
+                     [ <breakmenu :BREAKMENU> ;
+               */
+            ENDIF
+            aAdd( ::aItems, oItem )
+
+            ( ::cID )->( dbSkip() )
+         ENDDO
+      END MENU
    ENDCASE
 RETURN NIL
 
 //------------------------------------------------------------------------------
-METHOD CreateMenuFromFile( oEditor, nType, cButton ) CLASS TMyMenuEditor
+METHOD CreateMenuFromFile( oEditor, nType, cButton, oButton ) CLASS TMyMenuEditor
 //------------------------------------------------------------------------------
    IF HB_IsObject( oEditor )
       ::oEditor := oEditor
@@ -198,7 +226,7 @@ METHOD CreateMenuFromFile( oEditor, nType, cButton ) CLASS TMyMenuEditor
    ENDIF
 
    ::OpenWorkArea( cButton )
-   ::CreateMenuCtrl()
+   ::CreateMenuCtrl( oButton )
    ::CloseWorkArea()
 RETURN NIL
 
@@ -208,8 +236,8 @@ METHOD DeleteItem() CLASS TMyMenuEditor
    ( ::cID )->( dbGoTo( ::FormEdit:browse_101:Value ) )
    ( ::cID )->( dbDelete() )
    ( ::cID )->( __dbPack() )
-   ::FormEdit:browse_101:Value := 1
    ::FormEdit:browse_101:Refresh()
+   ::FormEdit:browse_101:Value := 1
    ::FormEdit:browse_101:SetFocus()
 RETURN NIL
 
@@ -238,6 +266,9 @@ Local cTitulo := {'Main', 'Context', 'Notify', 'Drop Down'}
          ::FormEdit:button_105:Enabled := .F.
       ENDIF
       ::FormEdit:Title := 'ooHG IDE+ ' + cTitulo[nType] + ' menu editor'
+      IF ( ::cID )->( RecCount() ) > 0
+         ::FormEdit:browse_101:Value := 1
+      ENDIF
       ON KEY ESCAPE OF ( ::cID ) ACTION ::FormEdit:Release()
       ACTIVATE WINDOW ( ::cID )
       ::oEditor:MisPuntos()
@@ -340,10 +371,11 @@ LOCAL Output := "", nNxtLvl, nLvl, nPopupCount := 0
                   /*
                      TODO: Add this properties
                         [ OBJ <obj> ] ;
+                        [ SUBCLASS <subclass> ] ;
+
                         [ <hilited:HILITED> ] ;
                         [ IMAGE <image> [ <stretch:STRETCH> ] ] ;
                         [ <right:RIGHT> ] ;
-                        [ SUBCLASS <subclass> ] ;
                         [ <breakmenu :BREAKMENU> ] ;
                   */
                   Output += CRLF
@@ -528,7 +560,7 @@ LOCAL Output := "", nNxtLvl, nLvl, nPopupCount := 0
 
          Output += Space( nSpacing ) + 'END MENU ' + CRLF + CRLF
       CASE ::nType == 4
-         Output += Space( nSpacing ) + 'DEFINE DROPDOWN MENU BUTTON ' + cbutton
+         Output += Space( nSpacing ) + 'DEFINE DROPDOWN MENU BUTTON ' + cButton
          /*
             TODO: Add this properties
                [ OBJ <obj> ] ;
@@ -552,19 +584,19 @@ LOCAL Output := "", nNxtLvl, nLvl, nPopupCount := 0
                Output += CRLF
             ELSE
 
-               Output += Space( nSpacing * ( ( ::cID )->level + 1 ) ) + 'ITEM ' + StrToStr( ( ::cID )->auxit )
-               Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 2 ) ) + 'ACTION ' + IIF( Len( AllTrim( ( ::cID )->action ) ) # 0, AllTrim( ( ::cID )->action ), "MsgBox( 'item' )" )
+               Output += Space( nSpacing * ( ( ::cID )->level + 2 ) ) + 'ITEM ' + StrToStr( ( ::cID )->auxit )
+               Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'ACTION ' + IIF( Len( AllTrim( ( ::cID )->action ) ) # 0, AllTrim( ( ::cID )->action ), "MsgBox( 'item' )" )
                IF ! Empty( ( ::cID )->named )
-                  Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 2 ) ) + 'NAME ' + AllTrim( ( ::cID )->named )
+                  Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'NAME ' + AllTrim( ( ::cID )->named )
                ENDIF
                IF ! Empty( ( ::cID )->image )
-                  Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 2 ) ) + 'IMAGE ' + StrToStr( ( ::cID )->image )
+                  Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'IMAGE ' + StrToStr( ( ::cID )->image )
                ENDIF
                IF ( ::cID )->checked == 'X'
-                  Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 2 ) ) + 'CHECKED '
+                  Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'CHECKED '
                ENDIF
                IF ( ::cID )->enabled == 'X'
-                  Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 2 ) ) + 'DISABLED '
+                  Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'DISABLED '
                ENDIF
                /*
                   TODO: Add this properties
@@ -591,7 +623,7 @@ RETURN Output
 //------------------------------------------------------------------------------
 METHOD InsertItem() CLASS TMyMenuEditor
 //------------------------------------------------------------------------------
-LOCAL nRegAux, witem, wname, waction, wauxit, wimage, wlevel, wlev
+LOCAL nRegAux, witem, wname, waction, wauxit, wimage, wlevel
 
    ( ::cID )->( dbGoTo( ::FormEdit:browse_101:Value ) )
    nRegAux := ( ::cID )->( RecNo() )
@@ -606,7 +638,6 @@ LOCAL nRegAux, witem, wname, waction, wauxit, wimage, wlevel, wlev
       wauxit     := ( ::cID )->auxit
       wlevel     := ( ::cID )->level
       wimage     := ( ::cID )->image
-      wlev       := ( ::cID )->lev
 
       ( ::cID )->( dbSkip() )
       ( ::cID )->item      := witem
@@ -615,7 +646,6 @@ LOCAL nRegAux, witem, wname, waction, wauxit, wimage, wlevel, wlev
       ( ::cID )->auxit     := wauxit
       ( ::cID )->level     := wlevel
       ( ::cID )->image     := wimage
-      ( ::cID )->lev       := wlev
 
       ( ::cID )->( dbSkip( -1 ) )
    ENDDO
@@ -624,9 +654,8 @@ LOCAL nRegAux, witem, wname, waction, wauxit, wimage, wlevel, wlev
    ( ::cID )->named     := ""
    ( ::cID )->action    := ""
    ( ::cID )->auxit     := ""
-   ( ::cID )->level     := ""
+   ( ::cID )->level     := 0
    ( ::cID )->image     := ""
-   ( ::cID )->lev       := ""
 
    ::FormEdit:browse_101:Refresh()
    ::FormEdit:browse_101:SetFocus()
@@ -643,8 +672,7 @@ RETURN NIL
 METHOD MoveDown() CLASS TMyMenuEditor
 //------------------------------------------------------------------------------
 LOCAL nRegAux, xitem, xname, xaction, xauxit, xlevel, ximage, xenabled, xchecked
-LOCAL xlev, witem, wname, waction, wauxit, wlevel, wimage, wenabled, wchecked
-LOCAL wlev
+LOCAL witem, wname, waction, wauxit, wlevel, wimage, wenabled, wchecked
 
    nRegAux := ::FormEdit:browse_101:Value
    IF nRegAux == ( ::cID )->( RecCount() )
@@ -661,7 +689,6 @@ LOCAL wlev
    ximage     := ( ::cID )->image
    xenabled   := ( ::cID )->enabled
    xchecked   := ( ::cID )->checked
-   xlev       := ( ::cID )->lev
 
    ( ::cID )->( dbSkip() )
    witem      := ( ::cID )->item
@@ -672,7 +699,6 @@ LOCAL wlev
    wimage     := ( ::cID )->image
    wenabled   := ( ::cID )->enabled
    wchecked   := ( ::cID )->checked
-   wlev       := ( ::cID )->lev
 
    ( ::cID )->item      := xitem
    ( ::cID )->named     := xname
@@ -682,7 +708,6 @@ LOCAL wlev
    ( ::cID )->image     := ximage
    ( ::cID )->enabled   := xenabled
    ( ::cID )->checked   := xchecked
-   ( ::cID )->lev       := xlev
 
    ( ::cID )->( dbSkip( -1 ) )
    ( ::cID )->item      := witem
@@ -693,10 +718,9 @@ LOCAL wlev
    ( ::cID )->image     := wimage
    ( ::cID )->enabled   := wenabled
    ( ::cID )->checked   := wchecked
-   ( ::cID )->lev       := wlev
 
-   ::FormEdit:browse_101:Value := nRegAux + 1
    ::FormEdit:browse_101:Refresh()
+   ::FormEdit:browse_101:Value := nRegAux + 1
    ::FormEdit:browse_101:SetFocus()
 RETURN NIL
 
@@ -704,8 +728,7 @@ RETURN NIL
 METHOD MoveUp() CLASS TMyMenuEditor
 //------------------------------------------------------------------------------
 LOCAL nRegAux, xitem, xname, xaction, xauxit, xlevel, ximage, xenabled, xchecked
-LOCAL xlev, witem, wname, waction, wauxit, wlevel, wimage, wenabled, wchecked
-LOCAL wlev
+LOCAL witem, wname, waction, wauxit, wlevel, wimage, wenabled, wchecked
 
    nRegAux := ::FormEdit:browse_101:Value
    IF nRegAux == 1
@@ -722,7 +745,6 @@ LOCAL wlev
    ximage     := ( ::cID )->image
    xenabled   := ( ::cID )->enabled
    xchecked   := ( ::cID )->checked
-   xlev       := ( ::cID )->lev
 
    ( ::cID )->( dbSkip( -1 ) )
    witem      := ( ::cID )->item
@@ -733,7 +755,6 @@ LOCAL wlev
    wimage     := ( ::cID )->image
    wenabled   := ( ::cID )->enabled
    wchecked   := ( ::cID )->checked
-   wlev       := ( ::cID )->lev
 
    ( ::cID )->item      := xitem
    ( ::cID )->named     := xname
@@ -743,7 +764,6 @@ LOCAL wlev
    ( ::cID )->image     := ximage
    ( ::cID )->enabled   := xenabled
    ( ::cID )->checked   := xchecked
-   ( ::cID )->lev       := xlev
 
    ( ::cID )->( dbSkip() )
    ( ::cID )->item      := witem
@@ -754,17 +774,16 @@ LOCAL wlev
    ( ::cID )->image     := wimage
    ( ::cID )->enabled   := wenabled
    ( ::cID )->checked   := wchecked
-   ( ::cID )->lev       := wlev
 
-   ::FormEdit:browse_101:Value := nRegAux - 1
    ::FormEdit:browse_101:Refresh()
+   ::FormEdit:browse_101:Value := nRegAux - 1
    ::FormEdit:browse_101:SetFocus()
 RETURN NIL
 
 //------------------------------------------------------------------------------
 METHOD OpenWorkArea( cButton ) CLASS TMyMenuEditor
 //------------------------------------------------------------------------------
-LOCAL aDbf[9][4]
+LOCAL aDbf[8][4]
 
    aDbf[1][ DBS_NAME ] := "Auxit"
    aDbf[1][ DBS_TYPE ] := "Character"
@@ -801,15 +820,10 @@ LOCAL aDbf[9][4]
    aDbf[7][ DBS_LEN ]  := 1
    aDbf[7][ DBS_DEC ]  := 0
 
-   aDbf[8][ DBS_NAME ] := "Lev"
+   aDbf[8][ DBS_NAME ] := "Image"
    aDbf[8][ DBS_TYPE ] := "Character"
-   aDbf[8][ DBS_LEN ]  := 1
+   aDbf[8][ DBS_LEN ]  := 40
    aDbf[8][ DBS_DEC ]  := 0
-
-   aDbf[9][ DBS_NAME ] := "Image"
-   aDbf[9][ DBS_TYPE ] := "Character"
-   aDbf[9][ DBS_LEN ]  := 40
-   aDbf[9][ DBS_DEC ]  := 0
 
    ::cID := _OOHG_GetNullName( "0" )
 

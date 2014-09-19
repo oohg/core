@@ -1,11 +1,37 @@
 /*
- * $Id: ChangeLog,v 1.1362 2014-09-18 01:16:37 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1363 2014-09-19 02:05:59 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-09-18 23:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/fmgs/mymenued.fmg
+     ! RTE in TMyMenuEditor:Edit().
+     ! Data from first item not loaded at startup.
+     ! Items are missing.
+     + Support for missing properties.
+   * ide/fmgs/mytoolbared.fmg
+     ! RTE in TMyToolBarEditor:Edit().
+   * ide/fmgs/tabeven.fmg
+     + BACKCOLOR clause to DEFINE WINDOW.
+   * ide/prgs/mgide.prg
+     ! RTE in THMI:Preferences().
+   * ide/prgs/toolbed.prg
+     + Support for missing property.
+   * ide/prgs/formedit.prg
+     * Do not force backcolor on CHECKBOX control.
+     ! RTE when editing form's font.
+     ! RTE when editing control's font.
+   * ide/prgs/menued.prg
+     ! Item's list is not being updated.
+     + Support for creating a dropdown menu on the fly.
+     + Support for showing menu properties in the designed form.
+     + Support for missing properties.
+     ! Spacing in fmg output.
+     - Unused lev field.
 
 2014-09-17 22:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ide/prgs/toolbed.prg

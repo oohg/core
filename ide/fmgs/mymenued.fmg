@@ -1,183 +1,261 @@
 /*
- * $Id: mymenued.fmg,v 1.5 2014-09-16 04:11:20 fyurisich Exp $
+ * $Id: mymenued.fmg,v 1.6 2014-09-19 02:05:59 fyurisich Exp $
  */
 
 * ooHG IDE Plus form generated code
 * (c)2003-2014 Ciro Vargas Clemow <pcman2010@yahoo.com > 
 
 DEFINE WINDOW TEMPLATE ;
-   AT 120, 88 ;
-   WIDTH 668 ;
-   HEIGHT 354 ;
+   AT 108, 99 ;
+   WIDTH 778 ;
+   HEIGHT 440 ;
    MODAL ;
-   BACKCOLOR ::oEditor:cFBackcolor ;
+   BACKCOLOR ::oEditor:myIde:aSystemColor ;
    FONT 'arial' ;
    SIZE 10
 
-   @ 18, 55 LABEL label_101 ;
-      WIDTH 71 ;
-      HEIGHT 21 ;
-      VALUE 'Caption' ;
-      FONT 'Arial' ;
-      SIZE 10
+   @ 10, 10 FRAME frame_2 ;
+      WIDTH 530 ;
+      HEIGHT 290 ;
+      CAPTION 'Items' ;
+      TRANSPARENT 
 
-   @ 16, 136 TEXTBOX text_101 ;
-      WIDTH 120 ;
-      HEIGHT 24 ;
-      FONT 'Arial' ;
+   @ 30, 15 BROWSE browse_101 ;
+      WIDTH 520 ;
+      HEIGHT 230 ;
+      HEADERS {'level','item','name','action','checked','disabled','image'} ;
+      WIDTHS {60,210,120,250,30,30,170} ;
+      WORKAREA ( ::cID ) ;
+      FIELDS {'level','item','named','action','checked','enabled','image'} ;
+      FONT 'courier new' ;
       SIZE 10 ;
-      TOOLTIP 'For separator add SEPARATOR caption' ;
-      MAXLENGTH 80 ;
-      ON CHANGE ::WriteCaption()
+      ON CHANGE ::ReadLevel() ;
+      ON GOTFOCUS ::ReadLevel() ;
+      LOCK 
 
-   @ 47, 63 LABEL label_102 ;
-      WIDTH 67 ;
-      HEIGHT 18 ;
-      VALUE 'Name' ;
-      FONT 'Arial' ;
-      SIZE 10
-
-   @ 43, 136 TEXTBOX text_102 ;
-      WIDTH 120 ;
-      HEIGHT 24 ;
-      FONT 'Arial' ;
-      SIZE 10 ;
-      MAXLENGTH 40 ;
-      ON CHANGE ::WriteName()
-
-   @ 74, 60 LABEL label_103 ;
-      WIDTH 69 ;
-      HEIGHT 21 ;
-      VALUE 'Action' ;
-      FONT 'Arial' ;
-      SIZE 10
-
-   @ 73, 136 TEXTBOX edit_101 ;
-      WIDTH 120 ;
-      HEIGHT 24 ;
-      FONT 'Arial' ;
-      SIZE 10 ;
-      MAXLENGTH 250 ;
-      ON CHANGE ::WriteAction()
-
-   @ 101, 60 LABEL label_104 ;
-      WIDTH 69 ;
-      HEIGHT 21 ;
-      VALUE 'Image' ;
-      FONT 'Arial' ;
-      SIZE 10
-
-   @ 100, 136 TEXTBOX text_103 ;
-      WIDTH 120 ;
-      HEIGHT 24 ;
-      FONT 'Arial' ;
-      SIZE 10 ;
-      MAXLENGTH 40 ;
-      ON CHANGE ::WriteImage()
-
-   @ 119, 16 BUTTON button_101 ;
+   @ 265, 15 BUTTON button_101 ;
       WIDTH 100 ;
       HEIGHT 28 ;
       CAPTION 'Insert item' ;
-      ACTION ::InsertItem() ;
-      FONT 'Arial' ;
-      SIZE 10
+      ACTION ::InsertItem()
 
-   @ 155, 16 BUTTON button_102 ;
+   @ 265, 120 BUTTON button_102 ;
       WIDTH 100 ;
       HEIGHT 28 ;
       CAPTION 'Delete item' ;
-      ACTION ::DeleteItem() ;
-      FONT 'Arial' ;
-      SIZE 10
+      ACTION ::DeleteItem()
 
-   @ 191, 15 BUTTON button_103 ;
+   @ 265, 225 BUTTON button_103 ;
       WIDTH 100 ;
       HEIGHT 28 ;
       CAPTION 'New item' ;
-      ACTION ::AddItem() ;
-      FONT 'Arial' ;
-      SIZE 10
+      ACTION ::AddItem()
 
-   @ 230, 134 BUTTON button_104 ;
+   @ 265, 330 BUTTON button_106 ;
       WIDTH 100 ;
+      HEIGHT 28 ;
+      CAPTION '/\' ;
+      ACTION ::MoveUp()
+
+   @ 265, 435 BUTTON button_107 ;
+      WIDTH 100 ;
+      HEIGHT 28 ;
+      CAPTION '\/' ;
+      ACTION ::MoveDown()
+
+   @ 310, 10 FRAME frame_1 ;
+      WIDTH 400 ;
+      HEIGHT 90 ;
+      CAPTION 'Menu Properties' ;
+      TRANSPARENT 
+
+   @ 342, 20 LABEL label_1 ;
+      WIDTH 120 ;
+      HEIGHT 18 ;
+      VALUE 'Name' ;
+      CENTERALIGN 
+
+   @ 362, 20 TEXTBOX text_1 ;
+      WIDTH 120 ;
+      HEIGHT 24 ;
+      MAXLENGTH 30 ;
+      ON CHANGE ::cTbName := ::FormEdit:text_1:Value
+
+   @ 342, 150 LABEL label_2 ;
+      WIDTH 120 ;
+      HEIGHT 24 ;
+      VALUE 'Obj' ;
+      TRANSPARENT ;
+      CENTERALIGN 
+
+   @ 362, 150 TEXTBOX text_2 ;
+      WIDTH 120 ;
+      HEIGHT 24 ;
+      MAXLENGTH 30 ;
+      ON CHANGE ::cObj := ::FormEdit:text_8:Value
+
+   @ 342, 280 LABEL label_3 ;
+      WIDTH 120 ;
+      HEIGHT 24 ;
+      VALUE 'Subclass' ;
+      TRANSPARENT ;
+      CENTERALIGN 
+
+   @ 362, 280 TEXTBOX text_3 ;
+      WIDTH 120 ;
+      HEIGHT 24 ;
+      MAXLENGTH 30 ;
+      ON CHANGE ::cObj := ::FormEdit:text_8:Value
+
+   @ 325, 430 BUTTON button_108 ;
+      WIDTH 100 ;
+      HEIGHT 28 ;
+      CAPTION 'Save / Exit' ;
+      ACTION ::Exit()
+
+   @ 360, 430 BUTTON button_109 ;
+      WIDTH 100 ;
+      HEIGHT 28 ;
+      CAPTION 'Discard' ;
+      ACTION ::Discard()
+
+   @ 10, 550 FRAME frame_3 ;
+      WIDTH 210 ;
+      HEIGHT 390 ;
+      CAPTION 'Selected Item' ;
+      TRANSPARENT 
+
+   @ 40, 560 LABEL label_101 ;
+      WIDTH 59 ;
+      HEIGHT 21 ;
+      VALUE 'Caption'
+
+   @ 37, 635 TEXTBOX text_101 ;
+      WIDTH 120 ;
+      HEIGHT 23 ;
+      MAXLENGTH 80 ;
+      ON CHANGE ::WriteCaption()
+
+   @ 73, 560 LABEL label_102 ;
+      WIDTH 45 ;
+      HEIGHT 16 ;
+      VALUE 'Name'
+
+   @ 70, 635 TEXTBOX text_102 ;
+      WIDTH 120 ;
+      HEIGHT 23 ;
+      TOOLTIP 'For separator add SEPARATOR caption.' ;
+      MAXLENGTH 40 ;
+      ON CHANGE ::WriteName()
+
+   @ 106, 560 LABEL label_103 ;
+      WIDTH 55 ;
+      HEIGHT 21 ;
+      VALUE 'Action'
+
+   @ 103, 635 TEXTBOX edit_101 ;
+      WIDTH 120 ;
+      HEIGHT 23 ;
+      MAXLENGTH 250 ;
+      ON CHANGE ::WriteAction()
+
+   @ 139, 560 LABEL label_104 ;
+      WIDTH 47 ;
+      HEIGHT 22 ;
+      VALUE 'Image'
+
+   @ 136, 635 TEXTBOX text_103 ;
+      WIDTH 120 ;
+      HEIGHT 23 ;
+      MAXLENGTH 40 ;
+      ON CHANGE ::WriteImage()
+
+   @ 172, 560 LABEL label_4 ;
+      WIDTH 76 ;
+      HEIGHT 17 ;
+      VALUE 'Obj'
+
+   @ 169, 635 TEXTBOX text_5 ;
+      WIDTH 120 ;
+      HEIGHT 23 ;
+      MAXLENGTH 80 ;
+      ON CHANGE ::WriteObj()
+
+   @ 205, 560 LABEL label_5 ;
+      WIDTH 76 ;
+      HEIGHT 17 ;
+      VALUE 'Subclass'
+
+   @ 202, 635 TEXTBOX text_6 ;
+      WIDTH 120 ;
+      HEIGHT 23 ;
+      MAXLENGTH 30 ;
+      ON CHANGE ::WriteSubclass()
+
+   @ 245, 560 CHECKBOX checkbox_105 ;
+      WIDTH 90 ;
+      HEIGHT 26 ;
+      CAPTION 'Stretch' ;
+      VALUE .F. ;
+      ON CHANGE ::WriteStretch()
+
+   @ 245, 660 CHECKBOX checkbox_106 ;
+      WIDTH 90 ;
+      HEIGHT 26 ;
+      CAPTION 'Hilited' ;
+      VALUE .F. ;
+      ON CHANGE ::WriteHilited()
+
+   @ 277, 560 CHECKBOX checkbox_103 ;
+      WIDTH 90 ;
+      HEIGHT 26 ;
+      CAPTION 'Right' ;
+      VALUE .F. ;
+      ON CHANGE ::WriteRight()
+
+   @ 277, 660 CHECKBOX checkbox_104 ;
+      WIDTH 90 ;
+      HEIGHT 26 ;
+      CAPTION 'BreakMenu' ;
+      VALUE .F. ;
+      ON CHANGE ::WriteBreakMenu()
+
+   @ 309, 560 CHECKBOX checkbox_101 ;
+      WIDTH 90 ;
+      HEIGHT 28 ;
+      CAPTION 'Checked' ;
+      VALUE .F. ;
+      ON CHANGE ::WriteChecked()
+
+   @ 309, 660 CHECKBOX checkbox_102 ;
+      WIDTH 90 ;
+      HEIGHT 28 ;
+      CAPTION 'Disabled' ;
+      VALUE .F. ;
+      ON CHANGE ::WriteDisabled()
+
+   @ 340, 560 LABEL label_6 ;
+      WIDTH 190 ;
+      HEIGHT 24 ;
+      VALUE 'Level:' ;
+      TRANSPARENT ;
+      CENTERALIGN 
+
+   @ 360, 560 BUTTON button_104 ;
+      WIDTH 90 ;
       HEIGHT 28 ;
       CAPTION '<--' ;
       ACTION {|| IIF( ::nLevel > 0 , ::nLevel -- , NIL ), ::SetLevel() } ;
       FONT 'Arial' ;
       SIZE 10
 
-   @ 273, 136 BUTTON button_105 ;
-      WIDTH 97 ;
+   @ 360, 660 BUTTON button_105 ;
+      WIDTH 90 ;
       HEIGHT 28 ;
       CAPTION '-->' ;
       ACTION {|| ::nLevel ++, ::SetLevel() } ;
       FONT 'Arial' ;
       SIZE 10
-
-   @ 230, 13 BUTTON button_106 ;
-      WIDTH 100 ;
-      HEIGHT 28 ;
-      CAPTION '/\' ;
-      ACTION ::MoveUp() ;
-      FONT 'Arial' ;
-      SIZE 10
-
-   @ 273, 13 BUTTON button_107 ;
-      WIDTH 100 ;
-      HEIGHT 28 ;
-      CAPTION '\/' ;
-      ACTION ::MoveDown() ;
-      FONT 'Arial' ;
-      SIZE 10
-
-   @ 273, 281 BUTTON button_108 ;
-      WIDTH 100 ;
-      HEIGHT 28 ;
-      CAPTION 'Save / Exit' ;
-      ACTION ::Exit() ;
-      FONT 'Arial' ;
-      SIZE 10
-
-   @ 273, 404 BUTTON button_109 ;
-      WIDTH 100 ;
-      HEIGHT 28 ;
-      CAPTION 'Discard' ;
-      ACTION ::Discard() ;
-      FONT 'Arial' ;
-      SIZE 10
-
-   @ 165, 142 CHECKBOX checkbox_101 ;
-      WIDTH 100 ;
-      HEIGHT 28 ;
-      CAPTION 'Checked' ;
-      VALUE .F. ;
-      FONT 'Arial' ;
-      SIZE 10 ;
-      ON CHANGE ::WriteChecked()
-
-   @ 200, 142 CHECKBOX checkbox_102 ;
-      WIDTH 100 ;
-      HEIGHT 28 ;
-      CAPTION 'Disabled' ;
-      VALUE .F. ;
-      FONT 'Arial' ;
-      SIZE 10 ;
-      ON CHANGE ::WriteDisabled()
-
-   @ 17, 277 BROWSE browse_101 ;
-      WIDTH 361 ;
-      HEIGHT 239 ;
-      HEADERS {'level','item','name','action','checked','disabled','image'} ;
-      WIDTHS {60,210,120,250,30,30,170} ;
-      WORKAREA menues ;
-      FIELDS {'level','item','named','action','checked','enabled','menues->image'} ;
-      VALUE 1 ;
-      FONT 'courier new' ;
-      SIZE 10 ;
-      ON CHANGE ::ReadLevel() ;
-      ON GOTFOCUS ::ReadLevel() ;
-      LOCK 
 
 END WINDOW 
 

@@ -1,5 +1,5 @@
 /*
- * $Id: toolbed.prg,v 1.8 2014-09-18 01:16:38 fyurisich Exp $
+ * $Id: toolbed.prg,v 1.9 2014-09-19 02:05:59 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -50,6 +50,7 @@ CLASS TMyToolBarEditor
    DATA lBreak     INIT .F.
    DATA lFlat      INIT .F.
    DATA lItalic    INIT .F.
+   DATA lNoBreak   INIT .F.
    DATA lNoTabStop INIT .F.
    DATA lRightText INIT .F.
    DATA lRTL       INIT .F.
@@ -100,8 +101,9 @@ ENDCLASS
 METHOD AddItem() CLASS TMyToolBarEditor
 //------------------------------------------------------------------------------
    ( ::cID )->( dbAppend() )
-   ::FormEdit:browse_101:Value := ( ::cID )->( RecCount() )
    ::FormEdit:browse_101:Refresh()
+   ::FormEdit:browse_101:Value := ( ::cID )->( RecCount() )
+   ::FormEdit:browse_101:SetFocus()
 RETURN NIL
 
 //------------------------------------------------------------------------------
@@ -119,10 +121,10 @@ RETURN NIL
 //------------------------------------------------------------------------------
 METHOD CreateToolBarCtrl() CLASS TMyToolBarEditor
 //------------------------------------------------------------------------------
-LOCAL i := 1, oBut
+LOCAL i := 1, oBut, cName
 
    IF HB_IsObject( ::oToolbar )
-      aEval( ::aButtons, { |oBut| oBut:Release(), ::aButtons[i] := NIL } )
+      aEval( ::aButtons, { |oBut, i| oBut:Release(), ::aButtons[i] := NIL } )
       ::aButtons := {}
       ::oToolbar:Release()
       ::oToolbar := NIL
@@ -134,27 +136,28 @@ LOCAL i := 1, oBut
                     ::cToolTip, ::lFlat, ::lBottom, ::lRightText, ::lBreak, ;
                     ::lBold, ::lItalic, ::lUnderline, ::lStrikeout, ::lBorder, ;
                     ::lRTL, ::lNoTabStop, ::lVertical )
-
       ( ::cID )->( dbGoTop() )
       DO WHILE ! ( ::cID )->( Eof() )
-         oBut := TToolButton():Define( "hmi_cvc_tb_button_" + AllTrim( Str( i, 2 ) ), ;
-                    0, 0, AllTrim( ( ::cID )->item ), NIL, NIL, NIL, ;
-                    ( ::cID )->image, ( ::cID )->tooltip, NIL, NIL, .F., ;
-                    ( ::cID )->separator == 'X', ( ::cID )->autosize == 'X', ;
-                    ( ::cID )->check == 'X', ( ::cID )->group == 'X', ;
-                    ( ::cID )->drop == 'X', ( ::cID )->whole == "X" )
+         cName := "hmi_cvc_tb_button_" + AllTrim( Str( i, 2 ) )
+         oBut := TToolButton():Define( cName, 0, 0, AllTrim( ( ::cID )->item ), ;
+                    NIL, NIL, NIL, ( ::cID )->image, ( ::cID )->tooltip, NIL, ;
+                    NIL, .F., ( ::cID )->separator == 'X', ;
+                    ( ::cID )->autosize == 'X', ( ::cID )->check == 'X', ;
+                    ( ::cID )->group == 'X', ( ::cID )->drop == 'X', ;
+                    ( ::cID )->whole == "X" )
 
          aAdd( ::aButtons, oBut )
+
+         IF ( ::cID )->drop == 'X' .OR. ( ::cID )->whole == "X"
+            // DROPDOWN MENU
+            TMyMenuEditor():CreateMenuFromFile( ::oEditor, 4, AllTrim( ( ::cID )->named ), oBut )
+         ENDIF
 
          ( ::cID )->( dbSkip() )
          i ++
       ENDDO
-
-      /*
-         TODO: Add drop down menu
-         See METHOD CreateMenuCtrl in menued.prg
-      */
-   END TOOLBAR
+   // END TOOLBAR
+   _EndToolBar( ! ::lNoBreak )
 RETURN NIL
 
 //------------------------------------------------------------------------------
@@ -178,8 +181,8 @@ LOCAL cName
    ENDIF
    ( ::cID )->( dbDelete() )
    ( ::cID )->( __dbPack() )
-   ::FormEdit:browse_101:Value := 1
    ::FormEdit:browse_101:Refresh()
+   ::FormEdit:browse_101:Value := 1
    ::FormEdit:browse_101:SetFocus()
 RETURN NIL
 
@@ -209,8 +212,8 @@ RETURN NIL
 METHOD EditDropDownButton() CLASS TMyToolBarEditor
 //------------------------------------------------------------------------------
    ( ::cID )->( dbGoTo( ::FormEdit:browse_101:Value ) )
-   TMyMenuEditor():Edit( ::oEditor, 4, ( ::cID )->named )
-   IF File( ::oEditor:cFName + '.' + alltrim( ( ::cID )->named ) + '.mnd' )
+   TMyMenuEditor():Edit( ::oEditor, 4, AllTrim( ( ::cID )->named ) )
+   IF File( ::oEditor:cFName + '.' + AllTrim( ( ::cID )->named ) + '.mnd' )
       ( ::cID )->drop := 'X'
    ELSE
       ( ::cID )->drop := ' '
@@ -334,7 +337,9 @@ LOCAL cOutput := "", cButton, cFile, oMenu
          ( ::cID )->( dbSkip() )
       ENDDO
 
-      cOutput += Space( nSpacing ) + 'END TOOLBAR ' + CRLF + CRLF
+      cOutput += Space( nSpacing ) + 'END TOOLBAR '
+      cOutput += IIF( ::lNoBreak, ' ;' + CRLF + Space( nSpacing * 2 ) + 'NOBREAK ', '' )
+      cOutput += CRLF + CRLF
 
       oMenu := TMyMenuEditor()
       oMenu:oEditor := ::oEditor
@@ -495,8 +500,8 @@ LOCAL wimage, wtooltip, wcheck, wdrop, wautosize, wseparator, wgroup, wwhole
    ( ::cID )->whole     := wwhole
    ( ::cID )->drop      := wdrop
 
-   ::FormEdit:browse_101:Value := nRegAux + 1
    ::FormEdit:browse_101:Refresh()
+   ::FormEdit:browse_101:Value := nRegAux + 1
    ::FormEdit:browse_101:SetFocus()
 RETURN NIL
 
@@ -568,8 +573,8 @@ LOCAL wimage, wtooltip, wcheck, wdrop, wautosize, wseparator, wgroup, wwhole
    ( ::cID )->whole     := wwhole
    ( ::cID )->drop      := wdrop
 
-   ::FormEdit:browse_101:Value := nRegAux - 1
    ::FormEdit:browse_101:Refresh()
+   ::FormEdit:browse_101:Value := nRegAux - 1
    ::FormEdit:browse_101:SetFocus()
 RETURN NIL
 
@@ -677,13 +682,13 @@ RETURN NIL
 //------------------------------------------------------------------------------
 METHOD ParseData() CLASS TMyToolBarEditor
 //------------------------------------------------------------------------------
-LOCAL i, aPar := array( 25 ), wVar, nStart, nIndex
+LOCAL i, nProps := 26, aPar := array( nProps ), wVar, nStart, nIndex
 
    ( ::cID )->( dbGoTop() )
    wVar  := AllTrim( ( ::cID )->auxit + ( ::cID )->auxit2 )
    IF Empty( wVar )
-      wVar := 'toolbar_1,65,65,,.F.,.F.,.F.,.T.,Arial,10,.F.,.F.,.F.,.F.,0,0,0,.F.,.F.,.F.,.F.,,,,'
-      // name,width,height,tooltip,flat,bottom,righttext,border,font,size,italic,bold,strikeout,underline,red,green,blue,vertical,break,rtl,notabstop,obj,caption,action,subclass
+      wVar := 'toolbar_1,65,65,,.F.,.F.,.F.,.T.,Arial,10,.F.,.F.,.F.,.F.,0,0,0,.F.,.F.,.F.,.F.,,,,,.F.'
+      // name,width,height,tooltip,flat,bottom,righttext,border,font,size,italic,bold,strikeout,underline,red,green,blue,vertical,break,rtl,notabstop,obj,caption,action,subclass,nobreak
    ENDIF
    nStart := 1
    nIndex := 1
@@ -693,12 +698,12 @@ LOCAL i, aPar := array( 25 ), wVar, nStart, nIndex
          aPar[nIndex] := AllTrim( SubStr( wVar, nStart, i - nStart ) )
          nStart := i + 1
          nIndex ++
-         IF nIndex > 25
+         IF nIndex > nProps
             EXIT
          ENDIF
       ENDIF
    NEXT i
-   IF nIndex <= 25
+   IF nIndex <= nProps
       aPar[nIndex] := AllTrim( SubStr( wVar, nStart ) )
    ENDIF
 
@@ -727,6 +732,7 @@ LOCAL i, aPar := array( 25 ), wVar, nStart, nIndex
    ::cCaption   := aPar[23]
    ::cAction    := aPar[24]
    ::cSubclass  := aPar[25]
+   ::lNoBreak   := ( aPar[26] == '.T.' )
 
    IF ::FormEdit # NIL
       ::FormEdit:text_1:Value     := ::cTbName
@@ -741,6 +747,7 @@ LOCAL i, aPar := array( 25 ), wVar, nStart, nIndex
       ::FormEdit:checkbox_6:Value := ::lRTL
       ::FormEdit:checkbox_7:Value := ::lNoTabStop
       ::FormEdit:checkbox_8:Value := ::lBreak
+      ::FormEdit:checkbox_9:Value := ::lNoBreak
       ::FormEdit:browse_101:Value := 1
       ::FormEdit:text_8:Value     := ::cObj
       ::FormEdit:text_9:Value     := ::cCaption
@@ -796,8 +803,9 @@ LOCAL wVar
            ::cObj + ',' + ;                              //  30 + 1
            ::cCaption + ',' + ;                          //  30 + 1
            ::cAction + ',' + ;                           //  30 + 1
-           ::cSubclass                                   //  30
-                                                         // 267 + 24
+           ::cSubclass + ',' + ;                         //  30 + 1
+           IIF( ::lNoBreak, '.T.', '.F.' )               //   3
+                                                         // 270 + 25
    ( ::cID )->( dbGoTop() )
    ( ::cID )->auxit  := SubStr(wVar, 1, Len( ( ::cID )->auxit ) )
    ( ::cID )->auxit2 := SubStr(wVar, Len( ( ::cID )->auxit ) + 1 )
@@ -942,7 +950,7 @@ METHOD WriteWhole() CLASS TMyToolBarEditor
    ENDIF
    IF ::FormEdit:checkbox_105:Value
       ( ::cID )->( dbGoTo( ::FormEdit:browse_101:Value ) )
-      IF ! File( ::oEditor:cFName + '.' + alltrim( ( ::cID )->named ) + '.mnd' )
+      IF ! File( ::oEditor:cFName + '.' + AllTrim( ( ::cID )->named ) + '.mnd' )
          ::FormEdit:checkbox_105:Value := .F.
          MsgStop( 'You must first define a dropdown menu for this item.', 'OOHG IDE+' )
          RETURN NIL
