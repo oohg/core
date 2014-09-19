@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.28 2014-09-19 02:05:59 fyurisich Exp $
+ * $Id: formedit.prg,v 1.29 2014-09-19 20:24:08 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -1115,6 +1115,9 @@ LOCAL i, j, nContLin, cForma, nStart, nEnd, nFWidth, nFHeight, cName, aColor
          ITEM 'Delete'                 ACTION ::DeleteControl()
          SEPARATOR
          ITEM 'Print Brief'            ACTION ::PrintBrief()
+         SEPARATOR
+         ITEM "Form's context menu"    ACTION IIF( HB_IsObject( ::myCMCtrl ), ::myCMCtrl:Activate(), MsgInfo( "Context menu is not defined !!!" ) )
+         ITEM "Form' notify menu"      ACTION IIF( HB_IsObject( ::myNMCtrl ), ::myNMCtrl:Activate(), MsgInfo( "Notify menu is not defined !!!" ) )
       END MENU
 
       @ 420, 10 LABEL lop1 VALUE "Double click or Enter to modify the position or size of a control." FONT "Calibri" SIZE 9 AUTOSIZE HEIGHT 15
@@ -1225,12 +1228,9 @@ LOCAL i, j, nContLin, cForma, nStart, nEnd, nFWidth, nFHeight, cName, aColor
          ITEM 'Delete'                 ACTION ::DeleteControl()
          SEPARATOR
          ITEM 'Print Brief'            ACTION ::PrintBrief()
-         /*
-            TODO: Add this
-            SEPARATOR
-            ITEM "Form's context menu" ACTION ::ShowContextMenu()
-            ITEM "Form' notify menu"   ACTION ::ShowNotifyMenu()
-         */
+         SEPARATOR
+         ITEM "Form's context menu"    ACTION IIF( HB_IsObject( ::myCMCtrl ), ::myCMCtrl:Activate(), MsgInfo( "Context menu is not defined !!!" ) )
+         ITEM "Form' notify menu"      ACTION IIF( HB_IsObject( ::myNMCtrl ), ::myNMCtrl:Activate(), MsgInfo( "Notify menu is not defined !!!" ) )
       END MENU
 
       ON KEY ALT+D  ACTION ::Debug()
@@ -1300,6 +1300,9 @@ LOCAL cName
          ITEM 'Delete'                 ACTION ::DeleteControl()
          SEPARATOR
          ITEM 'Print Brief'            ACTION ::PrintBrief()
+         SEPARATOR
+         ITEM "Form's context menu"    ACTION IIF( HB_IsObject( ::myCMCtrl ), ::myCMCtrl:Activate(), MsgInfo( "Context menu is not defined !!!" ) )
+         ITEM "Form' notify menu"      ACTION IIF( HB_IsObject( ::myNMCtrl ), ::myNMCtrl:Activate(), MsgInfo( "Notify menu is not defined !!!" ) )
       END MENU
 
       ON KEY DELETE ACTION ::DeleteControl()
@@ -1359,6 +1362,9 @@ LOCAL cName
          ITEM 'Delete'                 ACTION ::DeleteControl()
          SEPARATOR
          ITEM 'Print Brief'            ACTION ::PrintBrief()
+         SEPARATOR
+         ITEM "Form's context menu"    ACTION IIF( HB_IsObject( ::myCMCtrl ), ::myCMCtrl:Activate(), MsgInfo( "Context menu is not defined !!!" ) )
+         ITEM "Form' notify menu"      ACTION IIF( HB_IsObject( ::myNMCtrl ), ::myNMCtrl:Activate(), MsgInfo( "Notify menu is not defined !!!" ) )
       END MENU
       END MENU
 
@@ -10013,12 +10019,12 @@ LOCAL caPageSubClasses, aImages, aPageNames, aPageObjs, aPageSubClasses
 
    //***************************  Save FMG
    IF lSaveAs == 1
-      IF ! MemoWrit( PutFile( { { 'Form files *.fmg', '*.fmg' } }, 'Save Form As', , .T. ), Output )
+      IF ! HB_MemoWrit( PutFile( { { 'Form files *.fmg', '*.fmg' } }, 'Save Form As', , .T. ), Output )
          MsgStop( 'Error writing FMG file.', 'OOHG IDE+' )
          RETURN NIL
       ENDIF
    ELSE
-      IF ! MemoWrit( ::cForm, Output )
+      IF ! HB_MemoWrit( ::cForm, Output )
          MsgStop( 'Error writing ' + ::cForm + ".", 'OOHG IDE+' )
          RETURN NIL
       ENDIF

@@ -1,11 +1,23 @@
 /*
- * $Id: ChangeLog,v 1.1364 2014-09-19 02:50:31 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1365 2014-09-19 20:24:08 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-09-18 17:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/prgs/menued.prg
+     ! Wrong spacing in DROPDOWN MENU structure.
+     + Support for missing properties in DROPDOWN and MAIN menus.
+   * ide/prgs/toolbed.prg
+     ! Data from first item not loaded at startup.
+   * ide/fmgs/mytoolbared.fmg
+     * Text values are alltrimed before asigning them to DATAs.
+   * ide/prgs/mgide.prg
+   * ide/prgs/formedit.prg
+     * Use HB_MemoWrit to get rid of EOF char.
 
 2014-09-18 23:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ide/fmgs/intfonco.fmg

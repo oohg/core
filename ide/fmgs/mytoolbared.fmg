@@ -1,5 +1,5 @@
 /*
- * $Id: mytoolbared.fmg,v 1.6 2014-09-19 02:05:59 fyurisich Exp $
+ * $Id: mytoolbared.fmg,v 1.7 2014-09-19 20:24:08 fyurisich Exp $
  */
 
 * ooHG IDE Plus form generated code
@@ -168,7 +168,7 @@ DEFINE WINDOW TEMPLATE ;
       WIDTH 120 ;
       HEIGHT 24 ;
       MAXLENGTH 30 ;
-      ON CHANGE ::cTbName := ::FormEdit:text_1:Value
+      ON CHANGE ::cTbName := AllTrim( ::FormEdit:text_1:Value )
 
    @ 370, 150 LABEL label_2 ;
       WIDTH 120 ;
@@ -180,7 +180,7 @@ DEFINE WINDOW TEMPLATE ;
       WIDTH 120 ;
       HEIGHT 24 ;
       MAXLENGTH 30 ;
-      ON CHANGE ::cToolTip := ::FormEdit:text_4:Value
+      ON CHANGE ::cToolTip := AllTrim( ::FormEdit:text_4:Value )
 
    @ 370, 280 LABEL label_3 ;
       WIDTH 120 ;
@@ -193,7 +193,7 @@ DEFINE WINDOW TEMPLATE ;
       WIDTH 120 ;
       HEIGHT 24 ;
       MAXLENGTH 30 ;
-      ON CHANGE ::cObj := ::FormEdit:text_8:Value
+      ON CHANGE ::cObj := AllTrim( ::FormEdit:text_8:Value )
 
    @ 388, 430 CHECKBOX checkbox_9 ;
       WIDTH 100 ;
@@ -213,7 +213,7 @@ DEFINE WINDOW TEMPLATE ;
       WIDTH 120 ;
       HEIGHT 24 ;
       MAXLENGTH 30 ;
-      ON CHANGE ::cCaption := ::FormEdit:text_9:Value
+      ON CHANGE ::cCaption := AllTrim( ::FormEdit:text_9:Value )
 
    @ 420, 150 LABEL label_10 ;
       WIDTH 120 ;
@@ -226,7 +226,7 @@ DEFINE WINDOW TEMPLATE ;
       WIDTH 120 ;
       HEIGHT 24 ;
       MAXLENGTH 30 ;
-      ON CHANGE ::cAction := ::FormEdit:text_10:Value
+      ON CHANGE ::cAction := AllTrim( ::FormEdit:text_10:Value )
 
    @ 420, 280 LABEL label_11 ;
       WIDTH 120 ;
@@ -239,7 +239,7 @@ DEFINE WINDOW TEMPLATE ;
       WIDTH 120 ;
       HEIGHT 24 ;
       MAXLENGTH 30 ;
-      ON CHANGE ::cSubclass := ::FormEdit:text_11:Value
+      ON CHANGE ::cSubclass := AllTrim( ::FormEdit:text_11:Value )
 
    @ 438, 430 BUTTON button_tbp ;
       WIDTH 100 ;

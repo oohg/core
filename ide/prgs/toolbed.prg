@@ -1,5 +1,5 @@
 /*
- * $Id: toolbed.prg,v 1.9 2014-09-19 02:05:59 fyurisich Exp $
+ * $Id: toolbed.prg,v 1.10 2014-09-19 20:24:08 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -30,7 +30,6 @@
 
 CLASS TMyToolBarEditor
 
-   DATA aButtons   INIT {}
    DATA cAction    INIT ''
    DATA cCaption   INIT ''
    DATA cColorB    INIT 0
@@ -124,40 +123,38 @@ METHOD CreateToolBarCtrl() CLASS TMyToolBarEditor
 LOCAL i := 1, oBut, cName
 
    IF HB_IsObject( ::oToolbar )
-      aEval( ::aButtons, { |oBut, i| oBut:Release(), ::aButtons[i] := NIL } )
-      ::aButtons := {}
       ::oToolbar:Release()
       ::oToolbar := NIL
    ENDIF
 
-   // DEFINE TOOLBAR
-   ::oToolbar := TToolBar():Define( ::cID, ::oEditor:oDesignForm, 0, 0, ;
-                    ::nWidth, ::nHeight, ::cCaption, NIL, ::cFont, ::nSize, ;
-                    ::cToolTip, ::lFlat, ::lBottom, ::lRightText, ::lBreak, ;
-                    ::lBold, ::lItalic, ::lUnderline, ::lStrikeout, ::lBorder, ;
-                    ::lRTL, ::lNoTabStop, ::lVertical )
-      ( ::cID )->( dbGoTop() )
-      DO WHILE ! ( ::cID )->( Eof() )
-         cName := "hmi_cvc_tb_button_" + AllTrim( Str( i, 2 ) )
-         oBut := TToolButton():Define( cName, 0, 0, AllTrim( ( ::cID )->item ), ;
-                    NIL, NIL, NIL, ( ::cID )->image, ( ::cID )->tooltip, NIL, ;
-                    NIL, .F., ( ::cID )->separator == 'X', ;
-                    ( ::cID )->autosize == 'X', ( ::cID )->check == 'X', ;
-                    ( ::cID )->group == 'X', ( ::cID )->drop == 'X', ;
-                    ( ::cID )->whole == "X" )
+   ( ::cID )->( dbGoTop() )
+   IF ! ( ::cID )->( Eof() )
+      // DEFINE TOOLBAR
+      ::oToolbar := TToolBar():Define( ::cID, ::oEditor:oDesignForm, 0, 0, ;
+                       ::nWidth, ::nHeight, ::cCaption, NIL, ::cFont, ::nSize, ;
+                       ::cToolTip, ::lFlat, ::lBottom, ::lRightText, ::lBreak, ;
+                       ::lBold, ::lItalic, ::lUnderline, ::lStrikeout, ::lBorder, ;
+                       ::lRTL, ::lNoTabStop, ::lVertical )
+         DO WHILE ! ( ::cID )->( Eof() )
+            cName := "hmi_cvc_tb_button_" + AllTrim( Str( i, 2 ) )
+            oBut := TToolButton():Define( cName, 0, 0, AllTrim( ( ::cID )->item ), ;
+                       NIL, NIL, NIL, ( ::cID )->image, ( ::cID )->tooltip, NIL, ;
+                       NIL, .F., ( ::cID )->separator == 'X', ;
+                       ( ::cID )->autosize == 'X', ( ::cID )->check == 'X', ;
+                       ( ::cID )->group == 'X', ( ::cID )->drop == 'X', ;
+                       ( ::cID )->whole == "X" )
 
-         aAdd( ::aButtons, oBut )
+            IF ( ::cID )->drop == 'X' .OR. ( ::cID )->whole == "X"
+               // DROPDOWN MENU
+               TMyMenuEditor():CreateMenuFromFile( ::oEditor, 4, AllTrim( ( ::cID )->named ), oBut )
+            ENDIF
 
-         IF ( ::cID )->drop == 'X' .OR. ( ::cID )->whole == "X"
-            // DROPDOWN MENU
-            TMyMenuEditor():CreateMenuFromFile( ::oEditor, 4, AllTrim( ( ::cID )->named ), oBut )
-         ENDIF
-
-         ( ::cID )->( dbSkip() )
-         i ++
-      ENDDO
-   // END TOOLBAR
-   _EndToolBar( ! ::lNoBreak )
+            ( ::cID )->( dbSkip() )
+            i ++
+         ENDDO
+      // END TOOLBAR
+      _EndToolBar( ! ::lNoBreak )
+   ENDIF
 RETURN NIL
 
 //------------------------------------------------------------------------------
@@ -201,10 +198,14 @@ METHOD Edit() CLASS TMyToolBarEditor
    SET INTERACTIVECLOSE ON
    LOAD WINDOW myToolBarEd AS ( ::cID )
    ::FormEdit := GetFormObject( ::cID )
+   IF ( ::cID )->( RecCount() ) > 0
+      ::FormEdit:browse_101:Value := 1
+   ENDIF
    ON KEY ESCAPE OF ( ::cID ) ACTION ::FormEdit:Release()
    ::ParseData()
    ACTIVATE WINDOW ( ::cID )
    SET INTERACTIVECLOSE OFF
+   ::FormEdit := NIL
    ::oEditor:MisPuntos()
 RETURN NIL
 
@@ -250,8 +251,6 @@ LOCAL cFile
       ERASE ( cFile )
    ELSE
       IF HB_IsObject( ::oToolbar )
-         aEval( ::aButtons, { |oBut, i| oBut:Release(), ::aButtons[i] := NIL } )
-         ::aButtons := {}
          ::oToolbar:Release()
          ::oToolbar := NIL
       ENDIF

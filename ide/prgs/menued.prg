@@ -1,5 +1,5 @@
 /*
- * $Id: menued.prg,v 1.8 2014-09-19 02:05:59 fyurisich Exp $
+ * $Id: menued.prg,v 1.9 2014-09-19 20:24:08 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -29,13 +29,15 @@
 #define CRLF Chr(13) + Chr(10)
 
 CLASS TMyMenuEditor
-   DATA aItems    INIT {}
    DATA cID       INIT ''
    DATA cMnFile   INIT ''
+   DATA cMnName   INIT ''
+   DATA cObj      INIT ''
+   DATA cSubclass INIT ''
    DATA FormEdit  INIT NIL
-   DATA oEditor   INIT NIL
    DATA nLevel    INIT 0
    DATA nType     INIT 0
+   DATA oEditor   INIT NIL
 
    METHOD AddItem
    METHOD CloseWorkArea
@@ -50,14 +52,22 @@ CLASS TMyMenuEditor
    METHOD MoveDown
    METHOD MoveUp
    METHOD OpenWorkArea
-   METHOD ReadLevel
-   METHOD SetLevel
+   METHOD ParseData
+   METHOD ParseItem
+   METHOD Save
    METHOD WriteAction
+   METHOD WriteBreakMenu
    METHOD WriteCaption
    METHOD WriteChecked
    METHOD WriteDisabled
+   METHOD WriteHilited
    METHOD WriteImage
+   METHOD WriteLevel
    METHOD WriteName
+   METHOD WriteObj
+   METHOD WriteRight
+   METHOD WriteStretch
+   METHOD WriteSubclass
 
 ENDCLASS
 
@@ -91,15 +101,15 @@ LOCAL nNxtLvl, nLvl, nPopupCount := 0, oItem
    DO CASE
    CASE ::nType == 1
       IF HB_IsObject( ::oEditor:myMMCtrl )
-         aEval( ::aItems, { |oItem, i| oItem:Release(), ::aItems[i] := NIL } )
-         ::aItems := {}
          ::oEditor:myMMCtrl:Release()
+         ::oEditor:myMMCtrl := NIL
       ENDIF
+
+      ( ::cID )->( dbGoTop() )
 
       DEFINE MAIN MENU OF ( ::oEditor:oDesignForm ) ;
          OBJ ::oEditor:myMMCtrl
 
-         ( ::cID )->( dbGoTop() )
          DO WHILE ! ( ::cID )->( Eof() )
             ( ::cID )->( dbSkip() )
             IF ( ::cID )->( Eof() )
@@ -111,40 +121,36 @@ LOCAL nNxtLvl, nLvl, nPopupCount := 0, oItem
             ( ::cID )->( dbSkip( -1 ) )
             nLvl := ( ::cID )->level
             IF nNxtLvl > nLvl
-               IF Lower( AllTrim( ( ::cID )->auxit ) ) == 'separator'
+               IF Lower( AllTrim( ( ::cID )->item ) ) == 'separator'
                   SEPARATOR
                ELSE
-                  oItem := TMenuItem():DefinePopUp( AllTrim( ( ::cID )->auxit ), ;
-                              NIL, ( ::cID )->checked == 'X', ;
-                              ( ::cID )->enabled == 'X', NIL, .F., ;
-                              ( ::cID )->image, .F., .F., NIL )
-                  /*
-                     TODO: Add this properties
-                        [ IMAGE <image> [ <stretch:STRETCH> ] ] ;
-                        [ <hilited:HILITED> ] ;
-                        [ <right:RIGHT> ] ;
-                        [ <breakmenu :BREAKMENU> ;
-                  */
+                  oItem := TMenuItem():DefinePopUp( AllTrim( ( ::cID )->item ), ;
+                              NIL, ;
+                              ( ::cID )->checked == 'X', ;
+                              ( ::cID )->enabled == 'X', ;
+                              NIL, ;
+                              ( ::cID )->hilited == 'X', ;
+                              AllTrim( ( ::cID )->image ), ;
+                              ( ::cID )->right == 'X', ;
+                              ( ::cID )->stretch == 'X', ;
+                              IIF( ( ::cID )->breakmenu == 'X', 1, NIL ) )
                   nPopupCount ++
                ENDIF
             ELSE
-               IF Lower( AllTrim( ( ::cID )->auxit ) ) == 'separator'
-                  oItem := TMenuItem():DefineSeparator( NIL, NIL, .F. )
-                  /*
-                     TODO: Add this properties
-                        [ <right:RIGHT> ] ;
-                  */
+               IF Lower( AllTrim( ( ::cID )->item ) ) == 'separator'
+                  oItem := TMenuItem():DefineSeparator( NIL, NIL, ( ::cID )->right == 'X' )
                ELSE
-                  oItem := TMenuItem():DefineItem( ( ::cID )->auxit, NIL, NIL, ;
-                              ( ::cID )->image, ( ::cID )->checked == 'X', ;
-                              ( ::cID )->enabled == 'X', NIL, .F., .F., .F., NIL )
-                  /*
-                     TODO: Add this properties
-                        [ IMAGE <image> [ <stretch:STRETCH> ] ] ;
-                        [ <hilited:HILITED> ] ;
-                        [ <right:RIGHT> ] ;
-                        [ <breakmenu :BREAKMENU> ;
-                  */
+                  oItem := TMenuItem():DefineItem( AllTrim( ( ::cID )->item ), ;
+                              NIL, ;
+                              NIL, ;
+                              AllTrim( ( ::cID )->image ), ;
+                              ( ::cID )->checked == 'X', ;
+                              ( ::cID )->enabled == 'X', ;
+                              NIL, ;
+                              ( ::cID )->hilited == 'X', ;
+                              ( ::cID )->right == 'X', ;
+                              ( ::cID )->stretch == 'X', ;
+                              IIF( ( ::cID )->breakmenu == 'X', 1, NIL ) )
                ENDIF
 
                DO WHILE nNxtLvl < nLvl
@@ -153,7 +159,6 @@ LOCAL nNxtLvl, nLvl, nPopupCount := 0, oItem
                   nLvl --
                ENDDO
             ENDIF
-            aAdd( ::aItems, oItem )
 
             ( ::cID )->( dbSkip() )
          ENDDO
@@ -163,51 +168,62 @@ LOCAL nNxtLvl, nLvl, nPopupCount := 0, oItem
             nPopupCount --
          ENDDO
       END MENU
+
    CASE ::nType == 2
       IF HB_IsObject( ::oEditor:myCMCtrl )
          ::oEditor:myCMCtrl:Release()
+         ::oEditor:myCMCtrl := NIL
       ENDIF
-      /*
-         TODO: Create item in context menu to show it
-         See TODO in METHOD TForm1:Open.
-      */
+
+      DEFINE MENU DYNAMIC OF ( ::oEditor:oDesignForm ) ;
+         OBJ ::oEditor:myCMCtrl
+
+         /*
+            TODO: Add items
+            ITEM 'RClick on Column ' + ltrim(str(nColumn)) ACTION NIL
+         */
+      END MENU
+
    CASE ::nType == 3
       IF HB_IsObject( ::oEditor:myNMCtrl )
          ::oEditor:myNMCtrl:Release()
-      ENDIF
-      /*
-         TODO: Create item in context menu to show it
-         See TODO in METHOD TForm1:Open.
-      */
-   CASE ::nType == 4
-      IF HB_IsObject( ::oEditor:myDMCtrl )
-         aEval( ::aItems, { |oItem, i| oItem:Release(), ::aItems[i] := NIL } )
-         ::aItems := {}
-         ::oEditor:myDMCtrl:Release()
+         ::oEditor:myNMCtrl := NIL
       ENDIF
 
-      // DEFINE DROPDOWN MENU BUTTON
-      ::oEditor:myDMCtrl := TMenuDropDown():Define( oButton, NIL, NIL )
+      DEFINE MENU DYNAMIC OF ( ::oEditor:oDesignForm ) ;
+         OBJ ::oEditor:myNMCtrl
+
+         /*
+            TODO: Add items
+            ITEM 'RClick on Column ' + ltrim(str(nColumn)) ACTION NIL
+         */
+      END MENU
+
+   CASE ::nType == 4
+      IF HB_IsObject( ::oEditor:myDMCtrl )
+         ::oEditor:myDMCtrl:Release()
+         ::oEditor:myDMCtrl := NIL
+      ENDIF
+
+      DEFINE DROPDOWN MENU BUTTON ( oButton ) ;
+         OBJ ::oEditor:myDMCtrl
+
          DO WHILE ! ( ::cID )->( Eof() )
-            IF Lower( AllTrim( ( ::cID )->auxit ) ) == 'separator'
-               oItem := TMenuItem():DefineSeparator( NIL, NIL, .F. )
-               /*
-                  TODO: Add this properties
-                     [ <right:RIGHT> ] ;
-               */
+            IF Lower( AllTrim( ( ::cID )->item ) ) == 'separator'
+               oItem := TMenuItem():DefineSeparator( NIL, NIL, ( ::cID )->right == 'X' )
             ELSE
-               oItem := TMenuItem():DefineItem( ( ::cID )->auxit, NIL, NIL, ;
-                           ( ::cID )->image, ( ::cID )->checked == 'X', ;
-                           ( ::cID )->enabled == 'X', NIL, .F., .F., .F., NIL )
-               /*
-                  TODO: Add this properties
-                     [ IMAGE <image> [ <stretch:STRETCH> ] ] ;
-                     [ <hilited:HILITED> ] ;
-                     [ <right:RIGHT> ] ;
-                     [ <breakmenu :BREAKMENU> ;
-               */
+               oItem := TMenuItem():DefineItem( AllTrim( ( ::cID )->item ), ;
+                           NIL, ;
+                           NIL, ;
+                           AllTrim( ( ::cID )->image ), ;
+                           ( ::cID )->checked == 'X', ;
+                           ( ::cID )->enabled == 'X', ;
+                           NIL, ;
+                           ( ::cID )->hilited == 'X', ;
+                           ( ::cID )->right == 'X', ;
+                           ( ::cID )->stretch == 'X', ;
+                           IIF( ( ::cID )->breakmenu == 'X', 1, NIL ) )
             ENDIF
-            aAdd( ::aItems, oItem )
 
             ( ::cID )->( dbSkip() )
          ENDDO
@@ -226,6 +242,7 @@ METHOD CreateMenuFromFile( oEditor, nType, cButton, oButton ) CLASS TMyMenuEdito
    ENDIF
 
    ::OpenWorkArea( cButton )
+   ::ParseData()
    ::CreateMenuCtrl( oButton )
    ::CloseWorkArea()
 RETURN NIL
@@ -245,6 +262,7 @@ RETURN NIL
 METHOD Discard() CLASS TMyMenuEditor
 //------------------------------------------------------------------------------
    ::FormEdit:Release()
+   ::FormEdit := NIL
    ::CloseWorkArea()
 RETURN NIL
 
@@ -270,7 +288,9 @@ Local cTitulo := {'Main', 'Context', 'Notify', 'Drop Down'}
          ::FormEdit:browse_101:Value := 1
       ENDIF
       ON KEY ESCAPE OF ( ::cID ) ACTION ::FormEdit:Release()
+      ::ParseData()
       ACTIVATE WINDOW ( ::cID )
+      ::FormEdit := NIL
       ::oEditor:MisPuntos()
    ENDIF
 RETURN NIL
@@ -282,10 +302,12 @@ LOCAL cFile
 
    ( ::cID )->( dbGoTop() )
    IF ! ( ::cID )->( Eof() )
+      ::Save()
       IF ::nType == 1
          ::CreateMenuCtrl()
       ENDIF
       ::FormEdit:Release()
+      ::FormEdit := NIL
       ( ::cID )->( dbCloseArea() )
       cFile := ::cID + ".dbf"
       COPY FILE ( cFile ) TO ( ::cMnFile )
@@ -293,8 +315,10 @@ LOCAL cFile
    ELSE
       IF HB_IsObject( ::oEditor:myMMCtrl )
          ::oEditor:myMMCtrl:Release()
+         ::oEditor:myMMCtrl := NIL
       ENDIF
       ::FormEdit:Release()
+      ::FormEdit := NIL
       ( ::cID )->( dbCloseArea() )
       IF File( ::cMnFile )
          ERASE ( ::cMnFile )
@@ -317,19 +341,23 @@ LOCAL Output := "", nNxtLvl, nLvl, nPopupCount := 0
    ENDIF
 
    ::OpenWorkArea( cButton )
+   ::ParseData()
 
    ( ::cID )->( dbGoTop() )
    IF ! ( ::cID )->( Eof() )
       DO CASE
       CASE ::nType == 1
          Output += Space( nSpacing ) + 'DEFINE MAIN MENU '
-         /*
-            TODO: Add this properties
-               [ OBJ <obj> ] ;
-               [ SUBCLASS <subclass> ] ;
-               [ NAME <name> ] ;
-         */
-         Output += CRLF
+         IF ! Empty( ::cMnName )
+            Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 2 ) ) + 'NAME ' + AllTrim( ::cMnName )
+         ENDIF
+         IF ! Empty( ::cObj )
+            Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 2 ) ) + 'OBJ ' + AllTrim( ::cObj )
+         ENDIF
+         IF ! Empty( ::cSubclass )
+            Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 2 ) ) + 'SUBCLASS ' + AllTrim( ::cSubclass )
+         ENDIF
+         Output += CRLF + CRLF
 
          DO WHILE ! ( ::cID )->( Eof() )
             ( ::cID )->( dbSkip() )
@@ -342,25 +370,37 @@ LOCAL Output := "", nNxtLvl, nLvl, nPopupCount := 0
             ( ::cID )->( dbSkip( -1 ) )
             nLvl := ( ::cID )->level
             IF nNxtLvl > nLvl
-               IF Lower( AllTrim( ( ::cID )->auxit ) ) == 'separator'
+               IF Lower( AllTrim( ( ::cID )->item ) ) == 'separator'
                   Output += Space( nSpacing * ( ( ::cID )->level + 2 ) ) + 'SEPARATOR '
                   IF ! Empty( ( ::cID )->named )
                      Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'NAME ' + StrToStr( ( ::cID )->named )
                   ENDIF
-                  /*
-                     TODO: Add this properties
-                        [ OBJ <obj> ] ;
-                        [ <right:RIGHT> ] ;
-                        [ SUBCLASS <subclass> ] ;
-                  */
-                  Output += CRLF
+                  IF ! Empty( ( ::cID )->obj )
+                     Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'OBJ ' + AllTrim( ( ::cID )->obj )
+                  ENDIF
+                  IF ! Empty( ( ::cID )->subclass )
+                     Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'SUBCLASS ' + AllTrim( ( ::cID )->subclass )
+                  ENDIF
+                  IF ( ::cID )->right == "X"
+                     Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'RIGHT '
+                  ENDIF
+                  Output += CRLF + CRLF
                ELSE
-                  Output += Space( nSpacing * ( ( ::cID )->level + 2 ) ) + 'POPUP ' + StrToStr( ( ::cID )->auxit )
+                  Output += Space( nSpacing * ( ( ::cID )->level + 2 ) ) + 'POPUP ' + StrToStr( ( ::cID )->item )
                   IF ! Empty( ( ::cID )->named )
                      Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'NAME ' + StrToStr( ( ::cID )->named )
                   ENDIF
+                  IF ! Empty( ( ::cID )->obj )
+                     Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'OBJ ' + AllTrim( ( ::cID )->obj )
+                  ENDIF
+                  IF ! Empty( ( ::cID )->subclass )
+                     Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'SUBCLASS ' + AllTrim( ( ::cID )->subclass )
+                  ENDIF
                   IF ! Empty( ( ::cID )->image )
                      Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'IMAGE ' + StrToStr( ( ::cID )->image )
+                     IF ( ::cID )->stretch == 'X'
+                        Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'STRETCH '
+                     ENDIF
                   ENDIF
                   IF ( ::cID )->enabled == 'X'
                      Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'DISABLED '
@@ -368,44 +408,56 @@ LOCAL Output := "", nNxtLvl, nLvl, nPopupCount := 0
                   IF ( ::cID )->checked == 'X'
                      Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'CHECKED '
                   ENDIF
-                  /*
-                     TODO: Add this properties
-                        [ OBJ <obj> ] ;
-                        [ SUBCLASS <subclass> ] ;
+                  IF ( ::cID )->hilited == 'X'
+                     Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'HILITED '
+                  ENDIF
+                  IF ( ::cID )->right == "X"
+                     Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'RIGHT '
+                  ENDIF
+                  IF ( ::cID )->breakmenu == "X"
+                     Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'BREAKMENU '
+                  ENDIF
+                  Output += CRLF + CRLF
 
-                        [ <hilited:HILITED> ] ;
-                        [ IMAGE <image> [ <stretch:STRETCH> ] ] ;
-                        [ <right:RIGHT> ] ;
-                        [ <breakmenu :BREAKMENU> ] ;
-                  */
-                  Output += CRLF
                   nPopupCount ++
                ENDIF
             ELSE
-               IF Lower( AllTrim( ( ::cID )->auxit ) ) == 'separator'
+               IF Lower( AllTrim( ( ::cID )->item ) ) == 'separator'
                   Output += Space( nSpacing * ( ( ::cID )->level + 2 ) ) + 'SEPARATOR '
                   IF ! Empty( ( ::cID )->named )
                      Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'NAME ' + StrToStr( ( ::cID )->named )
                   ENDIF
-                  /*
-                     TODO: Add this properties
-                        [ OBJ <obj> ] ;
-                        [ <right:RIGHT> ] ;
-                        [ SUBCLASS <subclass> ] ;
-                  */
-                  Output += CRLF
+                  IF ! Empty( ( ::cID )->obj )
+                     Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'OBJ ' + AllTrim( ( ::cID )->obj )
+                  ENDIF
+                  IF ! Empty( ( ::cID )->subclass )
+                     Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'SUBCLASS ' + AllTrim( ( ::cID )->subclass )
+                  ENDIF
+                  IF ( ::cID )->right == "X"
+                     Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'RIGHT '
+                  ENDIF
+                  Output += CRLF + CRLF
                ELSE
-                  Output += Space( nSpacing * ( ( ::cID )->level + 2 ) ) + 'ITEM ' + StrToStr( ( ::cID )->auxit )
+                  Output += Space( nSpacing * ( ( ::cID )->level + 2 ) ) + 'ITEM ' + StrToStr( ( ::cID )->item )
+                  IF ! Empty( ( ::cID )->named )
+                     Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'NAME ' + StrToStr( ( ::cID )->named )
+                  ENDIF
+                  IF ! Empty( ( ::cID )->obj )
+                     Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'OBJ ' + AllTrim( ( ::cID )->obj )
+                  ENDIF
+                  IF ! Empty( ( ::cID )->subclass )
+                     Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'SUBCLASS ' + AllTrim( ( ::cID )->subclass )
+                  ENDIF
                   IF Empty( ( ::cID )->action )
                      Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'ACTION ' + "MsgBox( 'item' )"
                   ELSE
                      Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'ACTION ' + AllTrim( ( ::cID )->action )
                   ENDIF
-                  IF ! Empty( ( ::cID )->named )
-                     Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'NAME ' + StrToStr( ( ::cID )->named )
-                  ENDIF
                   IF ! Empty( ( ::cID )->image )
                      Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'IMAGE ' + StrToStr( ( ::cID )->image )
+                     IF ( ::cID )->stretch == 'X'
+                        Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'STRETCH '
+                     ENDIF
                   ENDIF
                   IF ( ::cID )->enabled == 'X'
                      Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'DISABLED '
@@ -413,20 +465,21 @@ LOCAL Output := "", nNxtLvl, nLvl, nPopupCount := 0
                   IF ( ::cID )->checked == 'X'
                      Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'CHECKED '
                   ENDIF
-                  /*
-                     TODO: Add this properties
-                        [ IMAGE <image> [ <stretch:STRETCH> ] ] ;
-                        [ OBJ <obj> ] ;
-                        [ <hilited:HILITED> ] ;
-                        [ <right:RIGHT> ] ;
-                        [ SUBCLASS <subclass> ] ;
-                        [ <breakmenu :BREAKMENU> ;
-                  */
-                  Output += CRLF
+                  IF ( ::cID )->hilited == 'X'
+                     Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'HILITED '
+                  ENDIF
+                  IF ( ::cID )->right == "X"
+                     Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'RIGHT '
+                  ENDIF
+                  IF ( ::cID )->breakmenu == "X"
+                     Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'BREAKMENU '
+                  ENDIF
+                  Output += CRLF + CRLF
                ENDIF
 
                DO WHILE nNxtLvl < nLvl
-                  Output += Space( nSpacing * ( nLvl + 1 ) ) + 'END POPUP ' + CRLF
+                  Output += Space( nSpacing * ( nLvl + 1 ) ) + 'END POPUP '
+                  Output += CRLF + CRLF
                   nPopupCount --
                   nLvl --
                ENDDO
@@ -445,39 +498,54 @@ LOCAL Output := "", nNxtLvl, nLvl, nPopupCount := 0
          Output += Space( nSpacing ) + 'END MENU ' + CRLF + CRLF
       CASE ::nType == 2
          Output += Space( nSpacing ) + 'DEFINE CONTEXT MENU '
-         /*
-            TODO: Add this properties
-               [ OBJ <obj> ] ;
-               [ SUBCLASS <subclass> ] ;
-               [ NAME <name> ] ;
-         */
-         Output += CRLF
+         IF ! Empty( ::cMnName )
+            Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 2 ) ) + 'NAME ' + AllTrim( ::cMnName )
+         ENDIF
+         IF ! Empty( ::cObj )
+            Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 2 ) ) + 'OBJ ' + AllTrim( ::cObj )
+         ENDIF
+         IF ! Empty( ::cSubclass )
+            Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 2 ) ) + 'SUBCLASS ' + AllTrim( ::cSubclass )
+         ENDIF
+         Output += CRLF + CRLF
 
          DO WHILE ! ( ::cID )->( Eof() )
-            IF Lower( AllTrim( ( ::cID )->auxit ) ) == 'separator'
+            IF Lower( AllTrim( ( ::cID )->item ) ) == 'separator'
                Output += Space( nSpacing * ( ( ::cID )->level + 2 ) ) + 'SEPARATOR '
                IF ! Empty( ( ::cID )->named )
                   Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'NAME ' + StrToStr( ( ::cID )->named )
                ENDIF
-               /*
-                  TODO: Add this properties
-                     [ OBJ <obj> ] ;
-                     [ <right:RIGHT> ] ;
-                     [ SUBCLASS <subclass> ] ;
-               */
-               Output += CRLF
+               IF ! Empty( ( ::cID )->obj )
+                  Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'OBJ ' + AllTrim( ( ::cID )->obj )
+               ENDIF
+               IF ! Empty( ( ::cID )->subclass )
+                  Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'SUBCLASS ' + AllTrim( ( ::cID )->subclass )
+               ENDIF
+               IF ( ::cID )->right == "X"
+                  Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'RIGHT '
+               ENDIF
+               Output += CRLF + CRLF
             ELSE
-               Output += Space( nSpacing * ( ( ::cID )->level + 2 ) ) + 'ITEM ' + StrToStr( ( ::cID )->auxit )
+               Output += Space( nSpacing * ( ( ::cID )->level + 2 ) ) + 'ITEM ' + StrToStr( ( ::cID )->item )
+               IF ! Empty( ( ::cID )->named )
+                  Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'NAME ' + StrToStr( ( ::cID )->named )
+               ENDIF
+               IF ! Empty( ( ::cID )->obj )
+                  Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'OBJ ' + AllTrim( ( ::cID )->obj )
+               ENDIF
+               IF ! Empty( ( ::cID )->subclass )
+                  Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'SUBCLASS ' + AllTrim( ( ::cID )->subclass )
+               ENDIF
                IF Empty( ( ::cID )->action )
                   Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'ACTION ' + "MsgBox( 'item' )"
                ELSE
                   Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'ACTION ' + AllTrim( ( ::cID )->action )
                ENDIF
-               IF ! Empty( ( ::cID )->named )
-                  Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'NAME ' + StrToStr( ( ::cID )->named )
-               ENDIF
                IF ! Empty( ( ::cID )->image )
                   Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'IMAGE ' + StrToStr( ( ::cID )->image )
+                  IF ( ::cID )->stretch == 'X'
+                     Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'STRETCH '
+                  ENDIF
                ENDIF
                IF ( ::cID )->enabled == 'X'
                   Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'DISABLED '
@@ -485,16 +553,16 @@ LOCAL Output := "", nNxtLvl, nLvl, nPopupCount := 0
                IF ( ::cID )->checked == 'X'
                   Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'CHECKED '
                ENDIF
-               /*
-                  TODO: Add this properties
-                     [ IMAGE <image> [ <stretch:STRETCH> ] ] ;
-                     [ OBJ <obj> ] ;
-                     [ <hilited:HILITED> ] ;
-                     [ <right:RIGHT> ] ;
-                     [ SUBCLASS <subclass> ] ;
-                     [ <breakmenu :BREAKMENU> ;
-               */
-               Output += CRLF
+               IF ( ::cID )->hilited == 'X'
+                  Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'HILITED '
+               ENDIF
+               IF ( ::cID )->right == "X"
+                  Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'RIGHT '
+               ENDIF
+               IF ( ::cID )->breakmenu == "X"
+                  Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'BREAKMENU '
+               ENDIF
+               Output += CRLF + CRLF
             ENDIF
 
             ( ::cID )->( dbSkip() )
@@ -503,39 +571,54 @@ LOCAL Output := "", nNxtLvl, nLvl, nPopupCount := 0
          Output += Space( nSpacing ) + 'END MENU ' + CRLF + CRLF
       CASE ::nType == 3
          Output += Space( nSpacing ) + 'DEFINE NOTIFY MENU '
-         /*
-            TODO: Add this properties
-               [ OBJ <obj> ] ;
-               [ SUBCLASS <subclass> ] ;
-               [ NAME <name> ] ;
-         */
-         Output += CRLF
+         IF ! Empty( ::cMnName )
+            Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 2 ) ) + 'NAME ' + AllTrim( ::cMnName )
+         ENDIF
+         IF ! Empty( ::cObj )
+            Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 2 ) ) + 'OBJ ' + AllTrim( ::cObj )
+         ENDIF
+         IF ! Empty( ::cSubclass )
+            Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 2 ) ) + 'SUBCLASS ' + AllTrim( ::cSubclass )
+         ENDIF
+         Output += CRLF + CRLF
 
          DO WHILE ! ( ::cID )->( Eof() )
-            IF Lower( AllTrim( ( ::cID )->auxit ) ) == 'separator'
+            IF Lower( AllTrim( ( ::cID )->item ) ) == 'separator'
                Output += Space( nSpacing * ( ( ::cID )->level + 2 ) ) + 'SEPARATOR '
                IF ! Empty( ( ::cID )->named )
                   Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'NAME ' + StrToStr( ( ::cID )->named )
                ENDIF
-               /*
-                  TODO: Add this properties
-                     [ OBJ <obj> ] ;
-                     [ <right:RIGHT> ] ;
-                     [ SUBCLASS <subclass> ] ;
-               */
-               Output += CRLF
+               IF ! Empty( ( ::cID )->obj )
+                  Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'OBJ ' + AllTrim( ( ::cID )->obj )
+               ENDIF
+               IF ! Empty( ( ::cID )->subclass )
+                  Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'SUBCLASS ' + AllTrim( ( ::cID )->subclass )
+               ENDIF
+               IF ( ::cID )->right == "X"
+                  Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'RIGHT '
+               ENDIF
+               Output += CRLF + CRLF
             ELSE
-               Output += Space( nSpacing * ( ( ::cID )->level + 2 ) ) + 'ITEM ' + StrToStr( ( ::cID )->auxit )
+               Output += Space( nSpacing * ( ( ::cID )->level + 2 ) ) + 'ITEM ' + StrToStr( ( ::cID )->item )
+               IF ! Empty( ( ::cID )->named )
+                  Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'NAME ' + StrToStr( ( ::cID )->named )
+               ENDIF
+               IF ! Empty( ( ::cID )->obj )
+                  Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'OBJ ' + AllTrim( ( ::cID )->obj )
+               ENDIF
+               IF ! Empty( ( ::cID )->subclass )
+                  Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'SUBCLASS ' + AllTrim( ( ::cID )->subclass )
+               ENDIF
                IF Empty( ( ::cID )->action )
                   Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'ACTION ' + "MsgBox( 'item' )"
                ELSE
                   Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'ACTION ' + AllTrim( ( ::cID )->action )
                ENDIF
-               IF ! Empty( ( ::cID )->named )
-                  Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'NAME ' + StrToStr( ( ::cID )->named )
-               ENDIF
                IF ! Empty( ( ::cID )->image )
                   Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'IMAGE ' + StrToStr( ( ::cID )->image )
+                  IF ( ::cID )->stretch == 'X'
+                     Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'STRETCH '
+                  ENDIF
                ENDIF
                IF ( ::cID )->enabled == 'X'
                   Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'DISABLED '
@@ -543,16 +626,16 @@ LOCAL Output := "", nNxtLvl, nLvl, nPopupCount := 0
                IF ( ::cID )->checked == 'X'
                   Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'CHECKED '
                ENDIF
-               /*
-                  TODO: Add this properties
-                     [ IMAGE <image> [ <stretch:STRETCH> ] ] ;
-                     [ OBJ <obj> ] ;
-                     [ <hilited:HILITED> ] ;
-                     [ <right:RIGHT> ] ;
-                     [ SUBCLASS <subclass> ] ;
-                     [ <breakmenu :BREAKMENU> ;
-               */
-               Output += CRLF
+               IF ( ::cID )->hilited == 'X'
+                  Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'HILITED '
+               ENDIF
+               IF ( ::cID )->right == "X"
+                  Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'RIGHT '
+               ENDIF
+               IF ( ::cID )->breakmenu == "X"
+                  Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'BREAKMENU '
+               ENDIF
+               Output += CRLF + CRLF
             ENDIF
 
             ( ::cID )->( dbSkip() )
@@ -561,53 +644,71 @@ LOCAL Output := "", nNxtLvl, nLvl, nPopupCount := 0
          Output += Space( nSpacing ) + 'END MENU ' + CRLF + CRLF
       CASE ::nType == 4
          Output += Space( nSpacing ) + 'DEFINE DROPDOWN MENU BUTTON ' + cButton
-         /*
-            TODO: Add this properties
-               [ OBJ <obj> ] ;
-               [ SUBCLASS <subclass> ] ;
-               [ NAME <name> ] ;
-         */
-         Output += CRLF
+         IF ! Empty( ::cMnName )
+            Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 2 ) ) + 'NAME ' + AllTrim( ::cMnName )
+         ENDIF
+         IF ! Empty( ::cObj )
+            Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 2 ) ) + 'OBJ ' + AllTrim( ::cObj )
+         ENDIF
+         IF ! Empty( ::cSubclass )
+            Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 2 ) ) + 'SUBCLASS ' + AllTrim( ::cSubclass )
+         ENDIF
+         Output += CRLF + CRLF
 
          DO WHILE ! ( ::cID )->( Eof() )
-            IF Lower( AllTrim( ( ::cID )->auxit ) ) == 'separator'
+            IF Lower( AllTrim( ( ::cID )->item ) ) == 'separator'
                Output += Space( nSpacing * ( ( ::cID )->level + 2 ) ) + 'SEPARATOR '
                IF ! Empty( ( ::cID )->named )
                   Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'NAME ' + StrToStr( ( ::cID )->named )
                ENDIF
-               /*
-                  TODO: Add this properties
-                     [ OBJ <obj> ] ;
-                     [ <right:RIGHT> ] ;
-                     [ SUBCLASS <subclass> ] ;
-               */
-               Output += CRLF
+               IF ! Empty( ( ::cID )->obj )
+                  Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'OBJ ' + AllTrim( ( ::cID )->obj )
+               ENDIF
+               IF ! Empty( ( ::cID )->subclass )
+                  Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'SUBCLASS ' + AllTrim( ( ::cID )->subclass )
+               ENDIF
+               IF ( ::cID )->right == "X"
+                  Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'RIGHT '
+               ENDIF
+               Output += CRLF + CRLF
             ELSE
-
-               Output += Space( nSpacing * ( ( ::cID )->level + 2 ) ) + 'ITEM ' + StrToStr( ( ::cID )->auxit )
-               Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'ACTION ' + IIF( Len( AllTrim( ( ::cID )->action ) ) # 0, AllTrim( ( ::cID )->action ), "MsgBox( 'item' )" )
+               Output += Space( nSpacing * ( ( ::cID )->level + 2 ) ) + 'ITEM ' + StrToStr( ( ::cID )->item )
                IF ! Empty( ( ::cID )->named )
-                  Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'NAME ' + AllTrim( ( ::cID )->named )
+                  Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'NAME ' + StrToStr( ( ::cID )->named )
+               ENDIF
+               IF ! Empty( ( ::cID )->obj )
+                  Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'OBJ ' + AllTrim( ( ::cID )->obj )
+               ENDIF
+               IF ! Empty( ( ::cID )->subclass )
+                  Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'SUBCLASS ' + AllTrim( ( ::cID )->subclass )
+               ENDIF
+               IF Empty( ( ::cID )->action )
+                  Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'ACTION ' + "MsgBox( 'item' )"
+               ELSE
+                  Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'ACTION ' + AllTrim( ( ::cID )->action )
                ENDIF
                IF ! Empty( ( ::cID )->image )
                   Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'IMAGE ' + StrToStr( ( ::cID )->image )
-               ENDIF
-               IF ( ::cID )->checked == 'X'
-                  Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'CHECKED '
+                  IF ( ::cID )->stretch == 'X'
+                     Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'STRETCH '
+                  ENDIF
                ENDIF
                IF ( ::cID )->enabled == 'X'
                   Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'DISABLED '
                ENDIF
-               /*
-                  TODO: Add this properties
-                     [ IMAGE <image> [ <stretch:STRETCH> ] ] ;
-                     [ OBJ <obj> ] ;
-                     [ <hilited:HILITED> ] ;
-                     [ <right:RIGHT> ] ;
-                     [ SUBCLASS <subclass> ] ;
-                     [ <breakmenu :BREAKMENU> ;
-               */
-               Output += CRLF
+               IF ( ::cID )->checked == 'X'
+                  Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'CHECKED '
+               ENDIF
+               IF ( ::cID )->hilited == 'X'
+                  Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'HILITED '
+               ENDIF
+               IF ( ::cID )->right == "X"
+                  Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'RIGHT '
+               ENDIF
+               IF ( ::cID )->breakmenu == "X"
+                  Output += ' ;' + CRLF + Space( nSpacing * ( ( ::cID )->level + 3 ) ) + 'BREAKMENU '
+               ENDIF
+               Output += CRLF + CRLF
             ENDIF
 
             ( ::cID )->( dbSkip() )
@@ -623,7 +724,8 @@ RETURN Output
 //------------------------------------------------------------------------------
 METHOD InsertItem() CLASS TMyMenuEditor
 //------------------------------------------------------------------------------
-LOCAL nRegAux, witem, wname, waction, wauxit, wimage, wlevel
+LOCAL nRegAux, wauxit, witem, wname, waction, wlevel, wchecked, wenabled
+LOCAL wimage, wobj, wstretch, whilited, wright, wbreakmenu, wsubclass
 
    ( ::cID )->( dbGoTo( ::FormEdit:browse_101:Value ) )
    nRegAux := ( ::cID )->( RecNo() )
@@ -632,47 +734,79 @@ LOCAL nRegAux, witem, wname, waction, wauxit, wimage, wlevel
 
    DO WHILE ( ::cID )->( RecNo() ) > nRegAux
       ( ::cID )->( dbSkip( -1 ) )
+      wauxit     := ( ::cID )->auxit
       witem      := ( ::cID )->item
       wname      := ( ::cID )->named
       waction    := ( ::cID )->action
-      wauxit     := ( ::cID )->auxit
       wlevel     := ( ::cID )->level
+      wchecked   := ( ::cID )->checked
+      wenabled   := ( ::cID )->enabled
       wimage     := ( ::cID )->image
+      wobj       := ( ::cID )->obj
+      wstretch   := ( ::cID )->stretch
+      whilited   := ( ::cID )->hilited
+      wright     := ( ::cID )->right
+      wbreakmenu := ( ::cID )->breakmenu
+      wsubclass  := ( ::cID )->subclass
 
       ( ::cID )->( dbSkip() )
+      ( ::cID )->auxit     := wauxit
       ( ::cID )->item      := witem
       ( ::cID )->named     := wname
       ( ::cID )->action    := waction
-      ( ::cID )->auxit     := wauxit
       ( ::cID )->level     := wlevel
+      ( ::cID )->checked   := wchecked
+      ( ::cID )->enabled   := wenabled
       ( ::cID )->image     := wimage
+      ( ::cID )->obj       := wobj
+      ( ::cID )->stretch   := wstretch
+      ( ::cID )->hilited   := whilited
+      ( ::cID )->right     := wright
+      ( ::cID )->breakmenu := wbreakmenu
+      ( ::cID )->subclass  := wsubclass
 
       ( ::cID )->( dbSkip( -1 ) )
    ENDDO
 
+   ( ::cID )->auxit     := ""
    ( ::cID )->item      := ""
    ( ::cID )->named     := ""
    ( ::cID )->action    := ""
-   ( ::cID )->auxit     := ""
    ( ::cID )->level     := 0
+   ( ::cID )->checked   := ""
+   ( ::cID )->enabled   := ""
    ( ::cID )->image     := ""
+   ( ::cID )->obj       := ""
+   ( ::cID )->stretch   := ""
+   ( ::cID )->hilited   := ""
+   ( ::cID )->right     := ""
+   ( ::cID )->breakmenu := ""
+   ( ::cID )->subclass  := ""
 
    ::FormEdit:browse_101:Refresh()
    ::FormEdit:browse_101:SetFocus()
 
    ::FormEdit:text_101:Value     := ""
    ::FormEdit:text_102:Value     := ""
-   ::FormEdit:text_103:Value     := ""
    ::FormEdit:edit_101:Value     := ""
+   ::FormEdit:text_103:Value     := ""
+   ::FormEdit:text_5:Value       := ""
+   ::FormEdit:text_6:Value       := ""
    ::FormEdit:checkbox_101:Value := .F.
    ::FormEdit:checkbox_102:Value := .F.
+   ::FormEdit:checkbox_103:Value := .F.
+   ::FormEdit:checkbox_104:Value := .F.
+   ::FormEdit:checkbox_105:Value := .F.
+   ::FormEdit:checkbox_106:Value := .F.
 RETURN NIL
 
 //------------------------------------------------------------------------------
 METHOD MoveDown() CLASS TMyMenuEditor
 //------------------------------------------------------------------------------
-LOCAL nRegAux, xitem, xname, xaction, xauxit, xlevel, ximage, xenabled, xchecked
-LOCAL witem, wname, waction, wauxit, wlevel, wimage, wenabled, wchecked
+LOCAL nRegAux, xauxit, xitem, xname, xaction, xlevel, xchecked, xenabled
+LOCAL ximage, xobj, xstretch, xhilited, xright, xbreakmenu, xsubclass
+LOCAL wauxit, witem, wname, waction, wlevel, wchecked, wenabled, wimage
+LOCAL wobj, wstretch, whilited, wright, wbreakmenu, wsubclass
 
    nRegAux := ::FormEdit:browse_101:Value
    IF nRegAux == ( ::cID )->( RecCount() )
@@ -681,43 +815,67 @@ LOCAL witem, wname, waction, wauxit, wlevel, wimage, wenabled, wchecked
    ENDIF
 
    ( ::cID )->( dbGoTo( nRegAux ) )
+   xauxit     := ( ::cID )->auxit
    xitem      := ( ::cID )->item
    xname      := ( ::cID )->named
    xaction    := ( ::cID )->action
-   xauxit     := ( ::cID )->auxit
    xlevel     := ( ::cID )->level
-   ximage     := ( ::cID )->image
-   xenabled   := ( ::cID )->enabled
    xchecked   := ( ::cID )->checked
+   xenabled   := ( ::cID )->enabled
+   ximage     := ( ::cID )->image
+   xobj       := ( ::cID )->obj
+   xstretch   := ( ::cID )->stretch
+   xhilited   := ( ::cID )->hilited
+   xright     := ( ::cID )->right
+   xbreakmenu := ( ::cID )->breakmenu
+   xsubclass  := ( ::cID )->subclass
 
    ( ::cID )->( dbSkip() )
+   wauxit     := ( ::cID )->auxit
    witem      := ( ::cID )->item
    wname      := ( ::cID )->named
    waction    := ( ::cID )->action
-   wauxit     := ( ::cID )->auxit
    wlevel     := ( ::cID )->level
-   wimage     := ( ::cID )->image
-   wenabled   := ( ::cID )->enabled
    wchecked   := ( ::cID )->checked
+   wenabled   := ( ::cID )->enabled
+   wimage     := ( ::cID )->image
+   wobj       := ( ::cID )->obj
+   wstretch   := ( ::cID )->stretch
+   whilited   := ( ::cID )->hilited
+   wright     := ( ::cID )->right
+   wbreakmenu := ( ::cID )->breakmenu
+   wsubclass  := ( ::cID )->subclass
 
+   ( ::cID )->auxit     := xauxit
    ( ::cID )->item      := xitem
    ( ::cID )->named     := xname
    ( ::cID )->action    := xaction
-   ( ::cID )->auxit     := xauxit
    ( ::cID )->level     := xlevel
-   ( ::cID )->image     := ximage
-   ( ::cID )->enabled   := xenabled
    ( ::cID )->checked   := xchecked
+   ( ::cID )->enabled   := xenabled
+   ( ::cID )->image     := ximage
+   ( ::cID )->obj       := xobj
+   ( ::cID )->stretch   := xstretch
+   ( ::cID )->hilited   := xhilited
+   ( ::cID )->right     := xright
+   ( ::cID )->breakmenu := xbreakmenu
+   ( ::cID )->subclass  := xsubclass
 
    ( ::cID )->( dbSkip( -1 ) )
+   ( ::cID )->auxit     := wauxit
    ( ::cID )->item      := witem
    ( ::cID )->named     := wname
    ( ::cID )->action    := waction
-   ( ::cID )->auxit     := wauxit
    ( ::cID )->level     := wlevel
-   ( ::cID )->image     := wimage
-   ( ::cID )->enabled   := wenabled
    ( ::cID )->checked   := wchecked
+   ( ::cID )->enabled   := wenabled
+   ( ::cID )->image     := wimage
+   ( ::cID )->obj       := wobj
+   ( ::cID )->stretch   := wstretch
+   ( ::cID )->hilited   := whilited
+   ( ::cID )->right     := wright
+   ( ::cID )->breakmenu := wbreakmenu
+   ( ::cID )->subclass  := wsubclass
 
    ::FormEdit:browse_101:Refresh()
    ::FormEdit:browse_101:Value := nRegAux + 1
@@ -727,8 +885,10 @@ RETURN NIL
 //------------------------------------------------------------------------------
 METHOD MoveUp() CLASS TMyMenuEditor
 //------------------------------------------------------------------------------
-LOCAL nRegAux, xitem, xname, xaction, xauxit, xlevel, ximage, xenabled, xchecked
-LOCAL witem, wname, waction, wauxit, wlevel, wimage, wenabled, wchecked
+LOCAL nRegAux, xauxit, xitem, xname, xaction, xlevel, xchecked, xenabled
+LOCAL ximage, xobj, xstretch, xhilited, xright, xbreakmenu, xsubclass
+LOCAL wauxit, witem, wname, waction, wlevel, wchecked, wenabled, wimage
+LOCAL wobj, wstretch, whilited, wright, wbreakmenu, wsubclass
 
    nRegAux := ::FormEdit:browse_101:Value
    IF nRegAux == 1
@@ -737,43 +897,67 @@ LOCAL witem, wname, waction, wauxit, wlevel, wimage, wenabled, wchecked
    ENDIF
 
    ( ::cID )->( dbGoTo( nRegAux ) )
+   xauxit     := ( ::cID )->auxit
    xitem      := ( ::cID )->item
    xname      := ( ::cID )->named
    xaction    := ( ::cID )->action
-   xauxit     := ( ::cID )->auxit
    xlevel     := ( ::cID )->level
-   ximage     := ( ::cID )->image
-   xenabled   := ( ::cID )->enabled
    xchecked   := ( ::cID )->checked
+   xenabled   := ( ::cID )->enabled
+   ximage     := ( ::cID )->image
+   xobj       := ( ::cID )->obj
+   xstretch   := ( ::cID )->stretch
+   xhilited   := ( ::cID )->hilited
+   xright     := ( ::cID )->right
+   xbreakmenu := ( ::cID )->breakmenu
+   xsubclass  := ( ::cID )->subclass
 
    ( ::cID )->( dbSkip( -1 ) )
+   wauxit     := ( ::cID )->auxit
    witem      := ( ::cID )->item
    wname      := ( ::cID )->named
    waction    := ( ::cID )->action
-   wauxit     := ( ::cID )->auxit
    wlevel     := ( ::cID )->level
-   wimage     := ( ::cID )->image
-   wenabled   := ( ::cID )->enabled
    wchecked   := ( ::cID )->checked
+   wenabled   := ( ::cID )->enabled
+   wimage     := ( ::cID )->image
+   wobj       := ( ::cID )->obj
+   wstretch   := ( ::cID )->stretch
+   whilited   := ( ::cID )->hilited
+   wright     := ( ::cID )->right
+   wbreakmenu := ( ::cID )->breakmenu
+   wsubclass  := ( ::cID )->subclass
 
+   ( ::cID )->auxit     := xauxit
    ( ::cID )->item      := xitem
    ( ::cID )->named     := xname
    ( ::cID )->action    := xaction
-   ( ::cID )->auxit     := xauxit
    ( ::cID )->level     := xlevel
-   ( ::cID )->image     := ximage
-   ( ::cID )->enabled   := xenabled
    ( ::cID )->checked   := xchecked
+   ( ::cID )->enabled   := xenabled
+   ( ::cID )->image     := ximage
+   ( ::cID )->obj       := xobj
+   ( ::cID )->stretch   := xstretch
+   ( ::cID )->hilited   := xhilited
+   ( ::cID )->right     := xright
+   ( ::cID )->breakmenu := xbreakmenu
+   ( ::cID )->subclass  := xsubclass
 
    ( ::cID )->( dbSkip() )
+   ( ::cID )->auxit     := wauxit
    ( ::cID )->item      := witem
    ( ::cID )->named     := wname
    ( ::cID )->action    := waction
-   ( ::cID )->auxit     := wauxit
    ( ::cID )->level     := wlevel
-   ( ::cID )->image     := wimage
-   ( ::cID )->enabled   := wenabled
    ( ::cID )->checked   := wchecked
+   ( ::cID )->enabled   := wenabled
+   ( ::cID )->image     := wimage
+   ( ::cID )->obj       := wobj
+   ( ::cID )->stretch   := wstretch
+   ( ::cID )->hilited   := whilited
+   ( ::cID )->right     := wright
+   ( ::cID )->breakmenu := wbreakmenu
+   ( ::cID )->subclass  := wsubclass
 
    ::FormEdit:browse_101:Refresh()
    ::FormEdit:browse_101:Value := nRegAux - 1
@@ -783,47 +967,77 @@ RETURN NIL
 //------------------------------------------------------------------------------
 METHOD OpenWorkArea( cButton ) CLASS TMyMenuEditor
 //------------------------------------------------------------------------------
-LOCAL aDbf[8][4]
+LOCAL aDbf[14][4]
 
-   aDbf[1][ DBS_NAME ] := "Auxit"
-   aDbf[1][ DBS_TYPE ] := "Character"
-   aDbf[1][ DBS_LEN ]  := 200
-   aDbf[1][ DBS_DEC ]  := 0
+   aDbf[01][ DBS_NAME ] := "Auxit"
+   aDbf[01][ DBS_TYPE ] := "Character"
+   aDbf[01][ DBS_LEN ]  := 200
+   aDbf[01][ DBS_DEC ]  := 0
 
-   aDbf[2][ DBS_NAME ] := "Item"
-   aDbf[2][ DBS_TYPE ] := "Character"
-   aDbf[2][ DBS_LEN ]  := 80
-   aDbf[2][ DBS_DEC ]  := 0
+   aDbf[02][ DBS_NAME ] := "Item"
+   aDbf[02][ DBS_TYPE ] := "Character"
+   aDbf[02][ DBS_LEN ]  := 80
+   aDbf[02][ DBS_DEC ]  := 0
 
-   aDbf[3][ DBS_NAME ] := "Named"
-   aDbf[3][ DBS_TYPE ] := "Character"
-   aDbf[3][ DBS_LEN ]  := 40
-   aDbf[3][ DBS_DEC ]  := 0
+   aDbf[03][ DBS_NAME ] := "Named"
+   aDbf[03][ DBS_TYPE ] := "Character"
+   aDbf[03][ DBS_LEN ]  := 40
+   aDbf[03][ DBS_DEC ]  := 0
 
-   aDbf[4][ DBS_NAME ] := "Action"
-   aDbf[4][ DBS_TYPE ] := "Character"
-   aDbf[4][ DBS_LEN ]  := 250
-   aDbf[4][ DBS_DEC ]  := 0
+   aDbf[04][ DBS_NAME ] := "Action"
+   aDbf[04][ DBS_TYPE ] := "Character"
+   aDbf[04][ DBS_LEN ]  := 250
+   aDbf[04][ DBS_DEC ]  := 0
 
-   aDbf[5][ DBS_NAME ] := "Level"
-   aDbf[5][ DBS_TYPE ] := "numeric"
-   aDbf[5][ DBS_LEN ]  := 1
-   aDbf[5][ DBS_DEC ]  := 0
+   aDbf[05][ DBS_NAME ] := "Level"
+   aDbf[05][ DBS_TYPE ] := "numeric"
+   aDbf[05][ DBS_LEN ]  := 1
+   aDbf[05][ DBS_DEC ]  := 0
 
-   aDbf[6][ DBS_NAME ] := "Checked"
-   aDbf[6][ DBS_TYPE ] := "Character"
-   aDbf[6][ DBS_LEN ]  := 1
-   aDbf[6][ DBS_DEC ]  := 0
+   aDbf[06][ DBS_NAME ] := "Checked"
+   aDbf[06][ DBS_TYPE ] := "Character"
+   aDbf[06][ DBS_LEN ]  := 1
+   aDbf[06][ DBS_DEC ]  := 0
 
-   aDbf[7][ DBS_NAME ] := "Enabled"
-   aDbf[7][ DBS_TYPE ] := "Character"
-   aDbf[7][ DBS_LEN ]  := 1
-   aDbf[7][ DBS_DEC ]  := 0
+   aDbf[07][ DBS_NAME ] := "Enabled"
+   aDbf[07][ DBS_TYPE ] := "Character"
+   aDbf[07][ DBS_LEN ]  := 1
+   aDbf[07][ DBS_DEC ]  := 0
 
-   aDbf[8][ DBS_NAME ] := "Image"
-   aDbf[8][ DBS_TYPE ] := "Character"
-   aDbf[8][ DBS_LEN ]  := 40
-   aDbf[8][ DBS_DEC ]  := 0
+   aDbf[08][ DBS_NAME ] := "Image"
+   aDbf[08][ DBS_TYPE ] := "Character"
+   aDbf[08][ DBS_LEN ]  := 40
+   aDbf[08][ DBS_DEC ]  := 0
+
+   aDbf[09][ DBS_NAME ] := "Obj"
+   aDbf[09][ DBS_TYPE ] := "Character"
+   aDbf[09][ DBS_LEN ]  := 40
+   aDbf[09][ DBS_DEC ]  := 0
+
+   aDbf[10][ DBS_NAME ] := "Stretch"
+   aDbf[10][ DBS_TYPE ] := "Character"
+   aDbf[10][ DBS_LEN ]  := 1
+   aDbf[10][ DBS_DEC ]  := 0
+
+   aDbf[11][ DBS_NAME ] := "Hilited"
+   aDbf[11][ DBS_TYPE ] := "Character"
+   aDbf[11][ DBS_LEN ]  := 1
+   aDbf[11][ DBS_DEC ]  := 0
+
+   aDbf[12][ DBS_NAME ] := "Right"
+   aDbf[12][ DBS_TYPE ] := "Character"
+   aDbf[12][ DBS_LEN ]  := 1
+   aDbf[12][ DBS_DEC ]  := 0
+
+   aDbf[13][ DBS_NAME ] := "BreakMenu"
+   aDbf[13][ DBS_TYPE ] := "Character"
+   aDbf[13][ DBS_LEN ]  := 1
+   aDbf[13][ DBS_DEC ]  := 0
+
+   aDbf[14][ DBS_NAME ] := "Subclass"
+   aDbf[14][ DBS_TYPE ] := "Character"
+   aDbf[14][ DBS_LEN ]  := 40
+   aDbf[14][ DBS_DEC ]  := 0
 
    ::cID := _OOHG_GetNullName( "0" )
 
@@ -853,25 +1067,78 @@ LOCAL aDbf[8][4]
 RETURN NIL
 
 //------------------------------------------------------------------------------
-METHOD ReadLevel() CLASS TMyMenuEditor
+METHOD ParseData() CLASS TMyMenuEditor
+//------------------------------------------------------------------------------
+LOCAL i, nProps := 3, aPar := array( nProps ), wVar, nStart, nIndex
+
+   ( ::cID )->( dbGoTop() )
+   wVar  := AllTrim( ( ::cID )->auxit )
+   IF Empty( wVar )
+      wVar := ',,'
+      // name,obj,subclass
+   ELSEIF ! ',' $ wVar
+      // this is a hack to correctly process old version files which
+      // store the item name in auxit field and in item field
+      wVar := ',,'
+   ENDIF
+   nStart := 1
+   nIndex := 1
+   aFill( aPar, "" )
+   FOR i := 1 TO Len( wVar )
+      IF SubStr( wVar, i, 1 ) == ','
+         aPar[nIndex] := AllTrim( SubStr( wVar, nStart, i - nStart ) )
+         nStart := i + 1
+         nIndex ++
+         IF nIndex > nProps
+            EXIT
+         ENDIF
+      ENDIF
+   NEXT i
+   IF nIndex <= nProps
+      aPar[nIndex] := AllTrim( SubStr( wVar, nStart ) )
+   ENDIF
+
+   ::cMnName    := aPar[01]
+   ::cObj       := aPar[02]
+   ::cSubclass  := aPar[03]
+
+   IF ::FormEdit # NIL
+      ::FormEdit:text_1:Value     := ::cMnName
+      ::FormEdit:text_2:Value     := ::cObj
+      ::FormEdit:text_3:Value     := ::cSubclass
+   ENDIF
+RETURN NIL
+
+//------------------------------------------------------------------------------
+METHOD ParseItem() CLASS TMyMenuEditor
 //------------------------------------------------------------------------------
    ( ::cID )->( dbGoTo( ::FormEdit:browse_101:Value ) )
+   ::nLevel                      := ( ::cID )->level
    ::FormEdit:text_101:Value     := AllTrim( ( ::cID )->item )
    ::FormEdit:text_102:Value     := ( ::cID )->named
    ::FormEdit:edit_101:Value     := ( ::cID )->action
    ::FormEdit:text_103:Value     := ( ::cID )->image
+   ::FormEdit:text_5:Value       := ( ::cID )->obj
+   ::FormEdit:text_6:Value       := ( ::cID )->subclass
    ::FormEdit:checkbox_101:Value := ( ( ::cID )->checked == 'X' )
    ::FormEdit:checkbox_102:Value := ( ( ::cID )->enabled == 'X' )
-   ::nLevel                      := ( ::cID )->level
+   ::FormEdit:checkbox_103:Value := ( ( ::cID )->right == 'X' )
+   ::FormEdit:checkbox_104:Value := ( ( ::cID )->breakmenu == 'X' )
+   ::FormEdit:checkbox_105:Value := ( ( ::cID )->stretch == 'X' )
+   ::FormEdit:checkbox_106:Value := ( ( ::cID )->hilited == 'X' )
 RETURN NIL
 
 //------------------------------------------------------------------------------
-METHOD SetLevel() CLASS TMyMenuEditor
+METHOD Save() CLASS TMyMenuEditor
 //------------------------------------------------------------------------------
-   ( ::cID )->( dbGoTo( ::FormEdit:browse_101:Value ) )
-   ( ::cID )->item := Space( ::nLevel * 3 ) + AllTrim( ( ::cID )->item )
-   ( ::cID )->level := ::nLevel
-   ::FormEdit:browse_101:Refresh()
+LOCAL wVar
+                                                         // Length
+   wVar := ::cMnName + ',' + ;                           //  30 + 1
+           ::cObj + ',' + ;                              //  30 + 1
+           ::cSubclass                                   //  30
+                                                         //  90 + 2
+   ( ::cID )->( dbGoTop() )
+   ( ::cID )->auxit  := SubStr(wVar, 1, Len( ( ::cID )->auxit ) )
 RETURN NIL
 
 //------------------------------------------------------------------------------
@@ -883,11 +1150,18 @@ METHOD WriteAction() CLASS TMyMenuEditor
 RETURN NIL
 
 //------------------------------------------------------------------------------
+METHOD WriteBreakMenu() CLASS TMyMenuEditor
+//------------------------------------------------------------------------------
+   ( ::cID )->( dbGoTo( ::FormEdit:browse_101:Value ) )
+   ( ::cID )->breakmenu := IIF( ::FormEdit:checkbox_104:Value, 'X', ' ' )
+   ::FormEdit:browse_101:Refresh()
+RETURN NIL
+
+//------------------------------------------------------------------------------
 METHOD WriteCaption() CLASS TMyMenuEditor
 //------------------------------------------------------------------------------
    ( ::cID )->( dbGoTo( ::FormEdit:browse_101:Value ) )
    ( ::cID )->item := Space( ::nLevel * 3 ) + AllTrim( ::FormEdit:text_101:Value )
-   ( ::cID )->auxit := AllTrim( ::FormEdit:text_101:Value )
    ::FormEdit:browse_101:Refresh()
 RETURN NIL
 
@@ -918,6 +1192,14 @@ METHOD WriteDisabled() CLASS TMyMenuEditor
 RETURN NIL
 
 //------------------------------------------------------------------------------
+METHOD WriteHilited() CLASS TMyMenuEditor
+//------------------------------------------------------------------------------
+   ( ::cID )->( dbGoTo( ::FormEdit:browse_101:Value ) )
+   ( ::cID )->hilited := IIF( ::FormEdit:checkbox_106:Value, 'X', ' ' )
+   ::FormEdit:browse_101:Refresh()
+RETURN NIL
+
+//------------------------------------------------------------------------------
 METHOD WriteImage() CLASS TMyMenuEditor
 //------------------------------------------------------------------------------
    ( ::cID )->( dbGoTo( ::FormEdit:browse_101:Value ) )
@@ -926,10 +1208,56 @@ METHOD WriteImage() CLASS TMyMenuEditor
 RETURN NIL
 
 //------------------------------------------------------------------------------
+METHOD WriteLevel() CLASS TMyMenuEditor
+//------------------------------------------------------------------------------
+   ( ::cID )->( dbGoTo( ::FormEdit:browse_101:Value ) )
+   ( ::cID )->item := Space( ::nLevel * 3 ) + AllTrim( ( ::cID )->item )
+   ( ::cID )->level := ::nLevel
+   ::FormEdit:browse_101:Refresh()
+RETURN NIL
+
+//------------------------------------------------------------------------------
 METHOD WriteName() CLASS TMyMenuEditor
 //------------------------------------------------------------------------------
    ( ::cID )->( dbGoTo( ::FormEdit:browse_101:Value ) )
    ( ::cID )->named := AllTrim( ::FormEdit:text_102:Value )
+   ::FormEdit:browse_101:Refresh()
+RETURN NIL
+
+//------------------------------------------------------------------------------
+METHOD WriteObj() CLASS TMyMenuEditor
+//------------------------------------------------------------------------------
+   ( ::cID )->( dbGoTo( ::FormEdit:browse_101:Value ) )
+   ( ::cID )->obj := AllTrim( ::FormEdit:text_5:Value )
+   ::FormEdit:browse_101:Refresh()
+RETURN NIL
+
+//------------------------------------------------------------------------------
+METHOD WriteRight() CLASS TMyMenuEditor
+//------------------------------------------------------------------------------
+   ( ::cID )->( dbGoTo( ::FormEdit:browse_101:Value ) )
+   ( ::cID )->right := IIF( ::FormEdit:checkbox_103:Value, 'X', ' ' )
+   ::FormEdit:browse_101:Refresh()
+RETURN NIL
+
+//------------------------------------------------------------------------------
+METHOD WriteSubclass() CLASS TMyMenuEditor
+//------------------------------------------------------------------------------
+   ( ::cID )->( dbGoTo( ::FormEdit:browse_101:Value ) )
+   ( ::cID )->subclass := AllTrim( ::FormEdit:text_6:Value )
+   ::FormEdit:browse_101:Refresh()
+RETURN NIL
+
+//------------------------------------------------------------------------------
+METHOD WriteStretch() CLASS TMyMenuEditor
+//------------------------------------------------------------------------------
+   IF Empty( ::FormEdit:text_103:Value ) .AND. ::FormEdit:checkbox_105:Value
+      ::FormEdit:checkbox_105:Value := .F.
+      MsgStop( 'You must first define an image for this item.', 'OOHG IDE+' )
+      RETURN NIL
+   ENDIF
+   ( ::cID )->( dbGoTo( ::FormEdit:browse_101:Value ) )
+   ( ::cID )->stretch := IIF( ::FormEdit:checkbox_105:Value, 'X', ' ' )
    ::FormEdit:browse_101:Refresh()
 RETURN NIL
 

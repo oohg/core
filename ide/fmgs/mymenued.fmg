@@ -1,5 +1,5 @@
 /*
- * $Id: mymenued.fmg,v 1.6 2014-09-19 02:05:59 fyurisich Exp $
+ * $Id: mymenued.fmg,v 1.7 2014-09-19 20:24:08 fyurisich Exp $
  */
 
 * ooHG IDE Plus form generated code
@@ -23,14 +23,14 @@ DEFINE WINDOW TEMPLATE ;
    @ 30, 15 BROWSE browse_101 ;
       WIDTH 520 ;
       HEIGHT 230 ;
-      HEADERS {'level','item','name','action','checked','disabled','image'} ;
-      WIDTHS {60,210,120,250,30,30,170} ;
+      HEADERS {'level','item','name','obj','action','image','stretch','checked','disabled','hilited','right','breakmenu','subclass'} ;
+      WIDTHS {60,210,120,50,250,30,10,10,10,10,10,10,50} ;
       WORKAREA ( ::cID ) ;
-      FIELDS {'level','item','named','action','checked','enabled','image'} ;
+      FIELDS {'level','item','named','obj','action','image','stretch','checked','enabled','hilited','right','breakmenu','subclass'} ;
       FONT 'courier new' ;
       SIZE 10 ;
-      ON CHANGE ::ReadLevel() ;
-      ON GOTFOCUS ::ReadLevel() ;
+      ON CHANGE ::ParseItem() ;
+      ON GOTFOCUS ::ParseItem() ;
       LOCK 
 
    @ 265, 15 BUTTON button_101 ;
@@ -79,7 +79,7 @@ DEFINE WINDOW TEMPLATE ;
       WIDTH 120 ;
       HEIGHT 24 ;
       MAXLENGTH 30 ;
-      ON CHANGE ::cTbName := ::FormEdit:text_1:Value
+      ON CHANGE ::cMnName := AllTrim( ::FormEdit:text_1:Value )
 
    @ 342, 150 LABEL label_2 ;
       WIDTH 120 ;
@@ -92,7 +92,7 @@ DEFINE WINDOW TEMPLATE ;
       WIDTH 120 ;
       HEIGHT 24 ;
       MAXLENGTH 30 ;
-      ON CHANGE ::cObj := ::FormEdit:text_8:Value
+      ON CHANGE ::cObj := AllTrim( ::FormEdit:text_2:Value )
 
    @ 342, 280 LABEL label_3 ;
       WIDTH 120 ;
@@ -105,7 +105,7 @@ DEFINE WINDOW TEMPLATE ;
       WIDTH 120 ;
       HEIGHT 24 ;
       MAXLENGTH 30 ;
-      ON CHANGE ::cObj := ::FormEdit:text_8:Value
+      ON CHANGE ::cSubclass := AllTrim( ::FormEdit:text_3:Value )
 
    @ 325, 430 BUTTON button_108 ;
       WIDTH 100 ;
@@ -245,7 +245,7 @@ DEFINE WINDOW TEMPLATE ;
       WIDTH 90 ;
       HEIGHT 28 ;
       CAPTION '<--' ;
-      ACTION {|| IIF( ::nLevel > 0 , ::nLevel -- , NIL ), ::SetLevel() } ;
+      ACTION {|| IIF( ::nLevel > 0 , ::nLevel -- , NIL ), ::WriteLevel() } ;
       FONT 'Arial' ;
       SIZE 10
 
@@ -253,7 +253,7 @@ DEFINE WINDOW TEMPLATE ;
       WIDTH 90 ;
       HEIGHT 28 ;
       CAPTION '-->' ;
-      ACTION {|| ::nLevel ++, ::SetLevel() } ;
+      ACTION {|| ::nLevel ++, ::WriteLevel() } ;
       FONT 'Arial' ;
       SIZE 10
 

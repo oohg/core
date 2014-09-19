@@ -1,5 +1,5 @@
 /*
- * $Id: mgide.prg,v 1.17 2014-09-19 02:05:59 fyurisich Exp $
+ * $Id: mgide.prg,v 1.18 2014-09-19 20:24:08 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -573,7 +573,7 @@ METHOD ReadINI( cFile ) CLASS THMI
 LOCAL lSnap
 
    IF ! File( cFile )
-      MemoWrit( cFile, '[PROJECT]' )
+      HB_MemoWrit( cFile, '[PROJECT]' )
    ENDIF
 
    BEGIN INI FILE cFile
@@ -1323,7 +1323,7 @@ METHOD BldMinGW( nOption ) CLASS THMI
          cOut += '$(OBJ_DIR)\_temp.o : $(PROJECTFOLDER)\_temp.rc' + CRLF
          cOut += HTAB + '$(RC_COMP) -i $^ -o $@' + CRLF
          cOut += HTAB + '@echo #' + CRLF
-         MemoWrit( 'Makefile.Gcc', cOut )
+         HB_MemoWrit( 'Makefile.Gcc', cOut )
 
          // Build batch to create RC temp file
          cOut := ''
@@ -1339,7 +1339,7 @@ METHOD BldMinGW( nOption ) CLASS THMI
 
          // Build batch to launch make utility
          cOut += cCompFolder + 'BIN\mingw32-make.exe -f makefile.gcc 1>error.lst 2>&1 3>&2' + CRLF
-         MemoWrit( '_build.bat', cOut )
+         HB_MemoWrit( '_build.bat', cOut )
 
          // Create temp folder for objects
          CreateFolder( cFolder + 'OBJ' )
@@ -1378,7 +1378,7 @@ METHOD BldMinGW( nOption ) CLASS THMI
          For i := 1 To nPrgFiles
             cOut += "# include '" + aPrgFiles[i] + "'" + CRLF + CRLF
          NEXT i
-         MemoWrit( cPrgName + '.prg', cOut )
+         HB_MemoWrit( cPrgName + '.prg', cOut )
 
          // Compile and link
          cDosComm := '/c compile ' + cPrgName + ' /nr /l' + If( nOption == 2, " /d", "" )
@@ -1615,7 +1615,7 @@ METHOD xBldMinGW( nOption ) CLASS THMI
          cOut += '$(OBJ_DIR)\_temp.o : $(PROJECTFOLDER)\_temp.rc' + CRLF
          cOut += HTAB + '$(RC_COMP) -i $^ -o $@' + CRLF
          cOut += HTAB + '@echo #' + CRLF
-         MemoWrit( 'Makefile.Gcc', cOut )
+         HB_MemoWrit( 'Makefile.Gcc', cOut )
 
          // Build batch to create RC temp file
          cOut := ''
@@ -1631,7 +1631,7 @@ METHOD xBldMinGW( nOption ) CLASS THMI
 
          // Build batch to launch make utility
          cOut += cCompFolder + 'BIN\mingw32-make.exe -f makefile.gcc 1>error.lst 2>&1 3>&2' + CRLF
-         MemoWrit( '_build.bat', cOut )
+         HB_MemoWrit( '_build.bat', cOut )
 
          // Create temp folder for objects
          CreateFolder( cFolder + 'OBJ' )
@@ -1670,7 +1670,7 @@ METHOD xBldMinGW( nOption ) CLASS THMI
          For i := 1 To nPrgFiles
             cOut += "# include '" + aPrgFiles[i] + "'" + CRLF + CRLF
          NEXT i
-         MemoWrit( cPrgName + '.prg', cOut )
+         HB_MemoWrit( cPrgName + '.prg', cOut )
 
          // Compile and link
          cDosComm := '/c compile ' + cPrgName + ' /nr /l' + If( nOption == 2, " /d", "" )
@@ -1951,13 +1951,13 @@ METHOD BuildBCC( nOption ) CLASS THMI
          cOut += HTAB + '$(RC_COMP) -r -fo$@ $**' + CRLF
          cOut += HTAB + '@echo.' + CRLF
          // Write make script
-         MemoWrit( '_temp.bc', cOut )
+         HB_MemoWrit( '_temp.bc', cOut )
 
          // Build batch to launch make utility
          cOut := ''
          cOut += '@echo off' + CRLF
          cOut += cCompFolder + 'BIN\MAKE.EXE /f' + cFolder + '_temp.bc > ' + cFolder + 'error.lst' + CRLF
-         MemoWrit( '_build.bat', cOut )
+         HB_MemoWrit( '_build.bat', cOut )
 
          // Create temp folder for objects
          CreateFolder( cFolder + 'OBJ' )
@@ -1996,7 +1996,7 @@ METHOD BuildBCC( nOption ) CLASS THMI
          For i := 1 To nPrgFiles
             cOut += "# include '" + aPrgFiles[i] + "'" + CRLF + CRLF
          NEXT i
-         MemoWrit( cPrgName + '.prg', cOut )
+         HB_MemoWrit( cPrgName + '.prg', cOut )
 
          // Compile and link
          cDosComm := '/c compile ' + cPrgName + ' /nr /l' + If( nOption == 2, " /d", "" )
@@ -2279,13 +2279,13 @@ METHOD xBuildBCC( nOption ) CLASS THMI
          cOut += HTAB + '$(RC_COMP) -r -fo$@ $**' + CRLF
          cOut += HTAB + '@echo.' + CRLF
          // Write make script
-         MemoWrit( '_temp.bc', cOut )
+         HB_MemoWrit( '_temp.bc', cOut )
 
          // Build batch to launch make utility
          cOut := ''
          cOut += '@echo off' + CRLF
          cOut += cCompFolder + 'BIN\MAKE.EXE /f' + cFolder + '_temp.bc > ' + cFolder + 'error.lst' + CRLF
-         MemoWrit( '_build.bat', cOut )
+         HB_MemoWrit( '_build.bat', cOut )
 
          // Create temp folder for objects
          CreateFolder( cFolder + 'OBJ' )
@@ -2324,7 +2324,7 @@ METHOD xBuildBCC( nOption ) CLASS THMI
          For i := 1 To nPrgFiles
             cOut += "# include '" + aPrgFiles[i] + "'" + CRLF + CRLF
          NEXT i
-         MemoWrit( cPrgName + '.prg', cOut )
+         HB_MemoWrit( cPrgName + '.prg', cOut )
 
          // Compile and link
          cDosComm := '/c compile ' + cPrgName + ' /nr /l' + If( nOption == 2, " /d", "" )
@@ -2612,13 +2612,13 @@ METHOD XBldPellC( nOption ) CLASS THMI
             cOut += '$(OBJ_DIR)\' + aPrgFiles[i] + '.obj : $(C_DIR)\' + aPrgFiles[i] + '.c' + CRLF
             cOut += '   $(CC) $(COBJFLAGS) -Fo$@ $**' + CRLF
          NEXT i
-         MemoWrit( '_temp.bc', cOut )
+         HB_MemoWrit( '_temp.bc', cOut )
 
          // Build batch
          cOut := ''
          cOut += '@echo off' + CRLF
          cOut += cCompFolder + 'BIN\POMAKE.EXE /F' + cFolder + '_temp.bc > ' + cFolder + 'error.lst' + CRLF
-         MemoWrit( '_build.bat', cOut )
+         HB_MemoWrit( '_build.bat', cOut )
 
          // Create folder for objects
          CreateFolder( cFolder + 'OBJ' )
@@ -2657,7 +2657,7 @@ METHOD XBldPellC( nOption ) CLASS THMI
          For i := 1 To nPrgFiles
             cOut += "# include '" + aPrgFiles[i] + "'" + CRLF + CRLF
          NEXT i
-         MemoWrit( cPrgName + '.prg', cOut )
+         HB_MemoWrit( cPrgName + '.prg', cOut )
 
          // Compile and link
          cDosComm := '/c compile ' + cPrgName + ' /nr /l' + If( nOption == 2, " /d", "" )
@@ -2952,13 +2952,13 @@ METHOD BldPellC(nOption) CLASS THMI
             cOut += '$(OBJ_DIR)\' + aPrgFiles[i] + '.obj : $(C_DIR)\' + aPrgFiles[i] + '.c' + CRLF
             cOut += '   $(CC) $(COBJFLAGS) -Fo$@ $**' + CRLF
          NEXT i
-         MemoWrit( '_temp.bc', cOut )
+         HB_MemoWrit( '_temp.bc', cOut )
 
          // Build batch
          cOut := ''
          cOut += '@echo off' + CRLF
          cOut += cCompFolder + 'BIN\POMAKE.EXE /F' + cFolder + '_temp.bc > ' + cFolder + 'error.lst' + CRLF
-         MemoWrit( '_build.bat', cOut )
+         HB_MemoWrit( '_build.bat', cOut )
 
          // Create folder for objects
          CreateFolder( cFolder + 'OBJ' )
@@ -2997,7 +2997,7 @@ METHOD BldPellC(nOption) CLASS THMI
          For i := 1 To nPrgFiles
             cOut += "# include '" + aPrgFiles[i] + "'" + CRLF + CRLF
          NEXT i
-         MemoWrit( cPrgName + '.prg', cOut )
+         HB_MemoWrit( cPrgName + '.prg', cOut )
 
          // Compile and link
          cDosComm := '/c compile ' + cPrgName + ' /nr /l' + If( nOption == 2, " /d", "" )
@@ -3280,7 +3280,7 @@ LOCAL Output, nItems, i, cItem
    IF Empty( ::cProjectName )
       MsgStop( 'Project not saved.', 'ooHG IDE+' )
    ELSE
-      MemoWrit( ::cProjectName, Output )
+      HB_MemoWrit( ::cProjectName, Output )
       ::SaveINI( ::cProjFolder + '\hmi.ini' )
       ::lPsave := .T.
       MsgInfo( 'Project saved.', 'ooHG IDE+' )
@@ -3598,7 +3598,7 @@ LOCAL Output
          ENDIF
          Output += "*------------------------------------------------------*" + CRLF + CRLF
          Output += 'RETURN Nil' + CRLF + CRLF
-         MemoWrit( cItem + '.prg', Output )
+         HB_MemoWrit( cItem + '.prg', Output )
          ::Openfile( cItem + '.prg' )
       ENDIF
    ENDIF
@@ -3614,7 +3614,7 @@ LOCAL Output
          Output += ' *        Date: ' + DtoC( Date() ) + CRLF
          Output += ' */' + CRLF + CRLF
          Output += '#' + CRLF
-         MemoWrit( cItem + '.ch', Output )
+         HB_MemoWrit( cItem + '.ch', Output )
          ::Openfile( cItem + '.ch' )
       ENDIF
    ENDIF
@@ -3633,7 +3633,7 @@ LOCAL Output
          Output+='// Last line of this file must end with a CRLF'+CRLF
 
          Output += MemoRead( 'auxi.rc' )
-         MemoWrit( cItem + '.rc', Output )
+         HB_MemoWrit( cItem + '.rc', Output )
          ::Openfile( cItem + '.rc' )
       ENDIF
    ENDIF
@@ -3696,7 +3696,7 @@ METHOD SaveFile( cdfile ) CLASS THMI
       EndIf
       ::lSave := .T.
    Else
-      If MemoWrit( cdfile, AllTrim( ::Form_Edit:edit_1:Value ) )
+      If HB_MemoWrit( cdfile, AllTrim( ::Form_Edit:edit_1:Value ) )
          ::lSave := .T.
       Else
          MsgStop( 'Error writing ' + cdfile + '.', 'ooHG IDE+' )
@@ -4893,7 +4893,7 @@ LOCAL cReport
       Output += "LANDSCAPE " + ' ;' + CRLF
    ENDIF
    Output += CRLF + CRLF
-   IF MemoWrit( cFileRep, Output )
+   IF HB_MemoWrit( cFileRep, Output )
       MsgInfo( 'Report saved.', 'ooHG IDE+' )
    ELSE
       MsgInfo( 'Error saving report.', 'ooHG IDE+' )
