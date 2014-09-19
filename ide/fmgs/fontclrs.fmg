@@ -1,128 +1,101 @@
 /*
- * $Id: fontclrs.fmg,v 1.3 2014-09-19 20:46:16 fyurisich Exp $
+ * $Id: fontclrs.fmg,v 1.4 2014-09-19 20:47:48 fyurisich Exp $
  */
 
-* Harbour MiniGUI IDE Two-Way Form Designer Generated Code
-* (c)2004-2005 Roberto Lopez <roblez@ciudad.com.ar>
+* ooHG IDE Plus form generated code
+* (c)2003-2014 Ciro Vargas Clemow <pcman2010@yahoo.com > 
 
-DEFINE WINDOW TEMPLATE AT 132 , 235 WIDTH 308 HEIGHT 244 TITLE "Interactive Font and Colors" ICON NIL MODAL CURSOR NIL ON INIT Nil ON RELEASE Nil ON INTERACTIVECLOSE Nil ON MOUSECLICK Nil ON MOUSEDRAG Nil ON MOUSEMOVE Nil ON SIZE Nil ON PAINT Nil BACKCOLOR myide:asystemcolor ON GOTFOCUS Nil ON LOSTFOCUS Nil ON SCROLLUP Nil ON SCROLLDOWN Nil ON SCROLLLEFT Nil ON SCROLLRIGHT Nil ON HSCROLLBOX Nil ON VSCROLLBOX Nil
+DEFINE WINDOW TEMPLATE ;
+   AT 132, 235 ;
+   WIDTH 298 ;
+   HEIGHT 264 ;
+   TITLE 'Font/Colors' ;
+   MODAL ;
+   BACKCOLOR ::myIde:aSystemColor
 
-    DEFINE BUTTON button_101
-        ROW    40
-        COL    60
-        WIDTH  100
-        HEIGHT 28
-        CAPTION "Font Type"
-        ACTION GFontT( si )
-        FONTNAME "Arial"
-        FONTSIZE 9
-        TOOLTIP ""
-        FONTBOLD .F.
-        FONTITALIC .F.
-        FONTUNDERLINE .F.
-        FONTSTRIKEOUT .F.
-        ONGOTFOCUS Nil
-        ONLOSTFOCUS Nil
-        HELPID Nil
-        FLAT .T.
-        TABSTOP .T.
-        VISIBLE .T.
-        TRANSPARENT .F.
-        PICTURE Nil
-    END BUTTON
+   DEFINE STATUSBAR 
 
-    DEFINE BUTTON button_102
-        ROW    80
-        COL    60
-        WIDTH  100
-        HEIGHT 28
-        CAPTION "Backcolor"
-        ACTION GBackC( si )
-        FONTNAME "Arial"
-        FONTSIZE 9
-        TOOLTIP ""
-        FONTBOLD .F.
-        FONTITALIC .F.
-        FONTUNDERLINE .F.
-        FONTSTRIKEOUT .F.
-        ONGOTFOCUS Nil
-        ONLOSTFOCUS Nil
-        HELPID Nil
-        FLAT .T.
-        TABSTOP .T.
-        VISIBLE .T.
-        TRANSPARENT .F.
-        PICTURE Nil
-    END BUTTON
+      STATUSITEM ' '
 
-    DEFINE BUTTON button_103
-        ROW    120
-        COL    60
-        WIDTH  100
-        HEIGHT 28
-        CAPTION "Exit"
-        ACTION {|| intfonco.release }
-        FONTNAME "Arial"
-        FONTSIZE 9
-        TOOLTIP ""
-        FONTBOLD .F.
-        FONTITALIC .F.
-        FONTUNDERLINE .F.
-        FONTSTRIKEOUT .F.
-        ONGOTFOCUS Nil
-        ONLOSTFOCUS Nil
-        HELPID Nil
-        FLAT .T.
-        TABSTOP .T.
-        VISIBLE .T.
-        TRANSPARENT .F.
-        PICTURE Nil
-    END BUTTON
+      STATUSITEM 'Exit' ;
+         WIDTH 90 ;
+         ACTION ThisWindow.Release()
 
-    DEFINE LABEL Label_1
-        ROW    10
-        COL    20
-        WIDTH  195
-        HEIGHT 20
-        VALUE ""
-        FONTNAME "Arial"
-        FONTSIZE 9
-        TOOLTIP ""
-        FONTBOLD .F.
-        FONTITALIC .F.
-        FONTUNDERLINE .F.
-        FONTSTRIKEOUT .F.
-        HELPID Nil
-        VISIBLE .T.
-        TRANSPARENT .F.
-        ACTION Nil
-        AUTOSIZE .F.
-        BACKCOLOR NIL
-        FONTCOLOR NIL
-    END LABEL
+   END STATUSBAR 
 
-    DEFINE BUTTON Button_1
-        ROW    80
-        COL    180
-        WIDTH  110
-        HEIGHT 28
-        CAPTION "Default BackColor"
-        ACTION SDefCol( si, myIde )
-        FONTNAME "Arial"
-        FONTSIZE 9
-        TOOLTIP ""
-        FONTBOLD .F.
-        FONTITALIC .F.
-        FONTUNDERLINE .F.
-        FONTSTRIKEOUT .F.
-        ONGOTFOCUS Nil
-        ONLOSTFOCUS Nil
-        HELPID Nil
-        FLAT .T.
-        TABSTOP .T.
-        VISIBLE .T.
-        TRANSPARENT .F.
-        PICTURE Nil
-    END BUTTON
+   @ 10, 20 LABEL Label_1 ;
+      WIDTH 260 ;
+      HEIGHT 20 ;
+      FONT 'Arial' ;
+      SIZE 9 ;
+      TRANSPARENT 
 
-END WINDOW
+   @ 40, 20 BUTTON button_101 ;
+      WIDTH 110 ;
+      HEIGHT 28 ;
+      CAPTION 'Font Type' ;
+      ACTION ::SetFontType( si ) ;
+      FONT 'Arial' ;
+      SIZE 9
+
+   @ 80, 20 BUTTON button_102 ;
+      WIDTH 110 ;
+      HEIGHT 28 ;
+      CAPTION 'Backcolor' ;
+      ACTION ::SetBackColor( si ) ;
+      FONT 'Arial' ;
+      SIZE 9
+
+   @ 80, 160 BUTTON button_107 ;
+      WIDTH 110 ;
+      HEIGHT 28 ;
+      CAPTION 'Default BackColor' ;
+      ACTION ::SetDefaultBackColor( si) ;
+      FONT 'Arial' ;
+      SIZE 9
+
+   @ 120, 20 LABEL Label_2 ;
+      WIDTH 260 ;
+      HEIGHT 20 ;
+      VALUE 'FontColor will be used in FORECOLOR clause.' ;
+      FONT 'Arial' ;
+      SIZE 9 ;
+      INVISIBLE 
+
+   @ 120, 20 BUTTON button_103 ;
+      WIDTH 110 ;
+      HEIGHT 28 ;
+      CAPTION 'Title FontColor' ;
+      ACTION ::GOtherColors( si, 1 ) ;
+      FONT 'Arial' ;
+      SIZE 9 ;
+      INVISIBLE 
+
+   @ 120, 160 BUTTON button_104 ;
+      WIDTH 110 ;
+      HEIGHT 28 ;
+      CAPTION 'Title BackColor' ;
+      ACTION ::GOtherColors( si, 2 ) ;
+      FONT 'Arial' ;
+      SIZE 9 ;
+      INVISIBLE 
+
+   @ 160, 20 BUTTON button_105 ;
+      WIDTH 110 ;
+      HEIGHT 28 ;
+      CAPTION 'Trailing FontColor' ;
+      ACTION ::GOtherColors( si, 3 ) ;
+      FONT 'Arial' ;
+      SIZE 9 ;
+      INVISIBLE 
+
+   @ 160, 160 BUTTON button_106 ;
+      WIDTH 110 ;
+      HEIGHT 28 ;
+      CAPTION 'Background Color' ;
+      ACTION ::GOtherColors( si, 4 ) ;
+      FONT 'Arial' ;
+      SIZE 9 ;
+      INVISIBLE 
+
+END WINDOW 
