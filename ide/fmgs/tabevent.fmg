@@ -1,5 +1,5 @@
 /*
- * $Id: tabevent.fmg,v 1.3 2014-09-19 21:08:54 fyurisich Exp $
+ * $Id: tabevent.fmg,v 1.4 2014-09-19 21:09:57 fyurisich Exp $
  */
 
 * ooHG IDE Plus form generated code
@@ -9,7 +9,8 @@ DEFINE WINDOW TEMPLATE ;
    AT 162, 310 ;
    WIDTH 279 ;
    HEIGHT 262 ;
-   MODAL 
+   MODAL ;
+   BACKCOLOR ::myIde:aSystemColor
 
    @ 50, 10 LABEL label_102 ;
       WIDTH 70 ;
