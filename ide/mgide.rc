@@ -1,5 +1,5 @@
 //
-// $Id: mgide.rc,v 1.2 2014-04-15 00:46:19 fyurisich Exp $
+// $Id: mgide.rc,v 1.3 2014-09-22 02:35:41 fyurisich Exp $
 //
 
 EDIT              ICON         imgs\edit.ico
@@ -23,6 +23,13 @@ REMOV             BITMAP       imgs\remov.bmp
 Bmprin            BITMAP       imgs\BPrinter.bmp
 BUS               BITMAP       imgs\bus.bmp
 WD                BITMAP       imgs\wd.bmp
+XBROWSE           BITMAP       imgs\xbrowse.bmp
+ACTIVEX           BITMAP       imgs\activex.bmp
+METER             BITMAP       imgs\meter.bmp
+PICTURE           BITMAP       imgs\picture.bmp
+SCRLLBR           BITMAP       imgs\scrollbar.bmp
+TIMEP             BITMAP       imgs\timep.bmp
+CHECKLIST         BITMAP       imgs\checklist.bmp
 BROWSE            BITMAP       imgs\browse.bmp
 CHECKBOX1         BITMAP       imgs\checkbox.bmp
 LISTBOX1          BITMAP       imgs\listbox.bmp
@@ -34,6 +41,8 @@ SPINNER           BITMAP       imgs\spinner.bmp
 IMAGE             BITMAP       imgs\image.bmp
 LABEL             BITMAP       imgs\label.bmp
 TEXTBOX           BITMAP       imgs\textbox.bmp
+HKB               BITMAP       imgs\hkb.bmp
+ATEXT             BITMAP       imgs\atext.bmp
 EDITBOX           BITMAP       imgs\editbox.bmp
 RADIOGROUP        BITMAP       imgs\radiogroup.bmp
 SLIDER            BITMAP       imgs\slider.bmp

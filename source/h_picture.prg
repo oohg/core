@@ -1,5 +1,5 @@
 /*
- * $Id: h_picture.prg,v 1.16 2014-07-01 23:49:50 fyurisich Exp $
+ * $Id: h_picture.prg,v 1.17 2014-09-22 02:35:42 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -97,7 +97,7 @@ ENDCLASS
 METHOD Define( ControlName, ParentForm, x, y, FileName, w, h, cBuffer, hBitMap, ;
                stretch, autofit, imagesize, BORDER, CLIENTEDGE, BackColor, ;
                ProcedureName, ToolTip, HelpId, lRtl, invisible, lNoTransparent, ;
-               lNo3DColors, lNoDIB, lStyleTransp, aArea ) CLASS TPicture
+               lNo3DColors, lNoDIB, lStyleTransp, aArea, lDisabled ) CLASS TPicture
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle, nStyleEx
 
@@ -112,6 +112,7 @@ Local ControlHandle, nStyle, nStyleEx
    ASSIGN ::lNo3DColors    VALUE lNo3DColors    TYPE "L"
    ASSIGN ::lNoDIBSection  VALUE lNoDIB         TYPE "L"
    ASSIGN ::aExcludeArea   VALUE aArea          TYPE "A"
+   ASSIGN lDisabled        VALUE lDisabled      TYPE "L" DEFAULT .F.
 
    IF BackColor == NIL
       BackColor := GetSysColor( COLOR_3DFACE )
@@ -119,7 +120,7 @@ Local ControlHandle, nStyle, nStyleEx
 
    ::SetForm( ControlName, ParentForm,,,, BackColor, , lRtl )
 
-   nStyle := ::InitStyle( ,, Invisible, .T.,  ) + ;
+   nStyle := ::InitStyle( ,, Invisible, .T., lDisabled  ) + ;
              if( ValType( BORDER ) == "L" .AND. BORDER, WS_BORDER, 0 )
 
    nStyleEx := if( ValType( CLIENTEDGE ) == "L" .AND. CLIENTEDGE, WS_EX_CLIENTEDGE, 0 )

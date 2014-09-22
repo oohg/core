@@ -1,5 +1,5 @@
 /*
- * $Id: h_activex.prg,v 1.10 2011-09-07 19:06:17 fyurisich Exp $
+ * $Id: h_activex.prg,v 1.11 2014-09-22 02:35:42 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -52,7 +52,7 @@ ENDCLASS
 
 *-----------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, w, h, cProgId, ;
-               NoTabStop, lDisabled ) CLASS TActiveX
+               NoTabStop, lDisabled, lInvisible ) CLASS TActiveX
 *-----------------------------------------------------------------------------*
 LOCAL nStyle, oError, nControlHandle, bErrorBlock, hSink
 
@@ -67,7 +67,7 @@ LOCAL nStyle, oError, nControlHandle, bErrorBlock, hSink
    ASSIGN ::nHeight VALUE ::nHeight TYPE "N" DEFAULT ::Parent:Height
    ASSIGN ::cProgId VALUE cProgId   TYPE "CM"
 
-   nStyle := ::InitStyle( ,,, NoTabStop, lDisabled )
+   nStyle := ::InitStyle( ,, lInvisible, NoTabStop, lDisabled )
 
    nControlHandle := InitActiveX( ::ContainerhWnd, ::cProgId, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle )
    ::hAtl := AtlAxGetDisp( nControlHandle )

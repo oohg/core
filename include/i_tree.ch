@@ -1,5 +1,5 @@
 /*
- * $Id: i_tree.ch,v 1.11 2014-09-01 15:58:50 fyurisich Exp $
+ * $Id: i_tree.ch,v 1.12 2014-09-22 02:35:41 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -112,7 +112,7 @@
             <{change}>, <tooltip>, <fontname>, <fontsize>, <{gotfocus}>, ;
             <{lostfocus}>, <{dblclick}>, <.break.>, <value>, <helpid>, ;
             <aImgNode>, <aImgItem>, .T., <.bold.>, <.italic.>, <.underline.>, ;
-            <.strikeout.>, <.itemids.>, <.rtl.>, <{enter}>, <{disabled}>, ;
+            <.strikeout.>, <.itemids.>, <.rtl.>, <{enter}>, <.disabled.>, ;
             <.invisible.>, <.notabstop.>, <fontcolor>, <backcolor>, .T., ;
             <.checkboxes.>, <.editlabels.>, <.noHScr.>, <.noScr.>, <.hott.>, ;
             .F., <.nobuts.>, <.drag.>, <.single.>, <.noborder.>, <selcolor>, ;
@@ -175,7 +175,7 @@
             <{lostfocus}>, <{dblclick}>, <.break.>, <value>, <helpid>, ;
             <aImgNode>, <aImgItem>, <.noBut.>, <.bold.>, <.italic.>, ;
             <.underline.>, <.strikeout.>, <.itemids.>, <.rtl.>, <{enter}>, ;
-            <{disabled}>, <.invisible.>, <.notabstop.>, <fontcolor>, ;
+            <.disabled.>, <.invisible.>, <.notabstop.>, <fontcolor>, ;
             <backcolor>, .F., <.checkboxes.>, <.editlabels.>, <.noHScr.>, ;
             <.noScr.>, <.hott.>, <.nolines.>, <.nobuts.>, <.drag.>, ;
             <.single.>, <.noborder.>, <selcolor>, <{labeledit}>, <{valid}>, ;

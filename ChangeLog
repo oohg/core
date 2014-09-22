@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.1371 2014-09-19 23:07:10 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1372 2014-09-22 02:35:41 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,14 +7,48 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2014-09-19 20:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2014-09-21 23:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/mgide.hbp
+     + Compile switch -es2
+   * ide/mgide.rc
+     + Bitmaps for new controls.
+   + ide/imgs/activex.bmp
+   + ide/imgs/atext.bmp
+   + ide/imgs/checklist.bmp
+   + ide/imgs/hkb.bmp
+   + ide/imgs/meter.bmp
+   + ide/imgs/picture.bmp
+   + ide/imgs/scrollbar.bmp
+   + ide/imgs/timep.bmp
+   + ide/imgs/xbrowse.bmp
+   * ide/prgs/formedit.prg
+     + Context and Notify menus of the designed form are simulated
+       through new options in the context menu of the IDE.
+     + Support for ACTIVEX, CHECKLIST, HOTKEYBOX, PICTURE and
+      PROGRESSMETER controls.
+     + Copy control to context menu.
    * ide/prgs/menued.prg
      ! An empty menu is created in the design form when no
        menu is defined.
      + Context and Notify menus creation.
-   * ide/prgs/formedit.prg
-     + Context and Notify menus of the designed form are simulated
-       through new options in the context menu of the IDE.
+   * include/i_activex.prg
+     + INVISIBLE clause.
+   * include/i_picture.prg
+     + DISABLED clause.
+   * include/i_progressmeter.prg
+     + DISABLED clause.
+   * include/i_tree.prg
+     ! DISABLED clause not working.
+   * source/h_activex.prg
+     + INVISIBLE clause.
+   * source/h_picture.prg
+     + DISABLED clause.
+   * source/h_progressbar.prg
+     * DATA nRangeMax is now initialized to 100 instead of 0.
+   * source/h_progressmeter.prg
+     + DISABLED clause.
+   * source/h_slider.prg
+     * DATA nRangeMax is now initialized to 10 instead of 0.
 
 2014-09-19 18:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog

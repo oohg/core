@@ -1,5 +1,5 @@
 /*
- * $Id: i_picture.ch,v 1.6 2014-07-09 02:25:23 fyurisich Exp $
+ * $Id: i_picture.ch,v 1.7 2014-09-22 02:35:41 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -82,10 +82,11 @@
       [ <nodib: NODIBSECTION> ] ;
       [ <style: TRANSPARENT> ] ;
       [ EXCLUDEAREA <area> ] ;
+      [ <disabled: DISABLED> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TPicture(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <filename>, <w>, <h>, ;
             <buffer>, <hbitmap>, <.stretch.>, <.scale.>, <.imagesize.>, ;
             <.border.>, <.clientedge.>, <backcolor>, <{action}>, <tooltip>, ;
             <helpid>, <.rtl.>, <.invisible.>, <.notrans.>, <.no3dcolors.>, ;
-            <.nodib.>, <.style.>, <area> )
+            <.nodib.>, <.style.>, <area>, <.disabled.> )

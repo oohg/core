@@ -1,5 +1,5 @@
 /*
- * $Id: i_progressmeter.ch,v 1.5 2014-07-09 02:25:23 fyurisich Exp $
+ * $Id: i_progressmeter.ch,v 1.6 2014-09-22 02:35:41 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -78,12 +78,12 @@
       [ ACTION <action> ] ;
       [ <rtl: RTL> ] ;
       [ <clientedge: CLIENTEDGE> ] ;
-      [ HELPID <helpid> ] ;
-      [ <invisible: INVISIBLE> ] ;
+      [ <disabled: DISABLED> ] ;
       [ SUBCLASS <subclass> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TProgressMeter(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <lo>, <hi>, ;
             <v>, <tooltip>, <fontname>, <fontsize>, <.bold.>, <.italic.>, ;
             <.underline.>, <.strikeout.>, <forecolor>, <backcolor>, ;
-            <{action}>, <helpid>, <.invisible.>, <.rtl.>, <.clientedge.> )
+            <{action}>, <helpid>, <.invisible.>, <.rtl.>, <.clientedge.>, ;
+            <.disabled.> )

@@ -1,5 +1,5 @@
 /*
- * $Id: h_slider.prg,v 1.19 2009-02-16 01:45:43 guerra000 Exp $
+ * $Id: h_slider.prg,v 1.20 2014-09-22 02:35:42 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -98,9 +98,9 @@
 
 
 CLASS TSlider FROM TControl
-   DATA Type      INIT "SLIDER" READONLY
+   DATA Type        INIT "SLIDER" READONLY
    DATA nRangeMin   INIT 0
-   DATA nRangeMax   INIT 0
+   DATA nRangeMax   INIT 10
 
    METHOD Define
    METHOD Value               SETGET

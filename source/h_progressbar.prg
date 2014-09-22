@@ -1,5 +1,5 @@
 /*
- * $Id: h_progressbar.prg,v 1.13 2013-08-01 01:27:11 fyurisich Exp $
+ * $Id: h_progressbar.prg,v 1.14 2014-09-22 02:35:42 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -99,7 +99,7 @@
 CLASS TProgressBar FROM TControl
    DATA Type        INIT "PROGRESSBAR" READONLY
    DATA nRangeMin   INIT 0
-   DATA nRangeMax   INIT 0
+   DATA nRangeMax   INIT 100
    DATA nVelocity   INIT 30
    DATA lRunning    INIT .F.
 

@@ -1,5 +1,5 @@
 /*
- * $Id: h_progressmeter.prg,v 1.19 2013-07-03 01:44:52 migsoft Exp $
+ * $Id: h_progressmeter.prg,v 1.20 2014-09-22 02:35:42 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -80,7 +80,7 @@ ENDCLASS
 METHOD Define( ControlName, ParentForm, x, y, w, h, lo, hi, value, tooltip, ;
                fontname, fontsize, bold, italic, underline, strikeout, ;
                FontColor, BackColor, ProcedureName, HelpId, invisible, lRtl, ;
-               CLIENTEDGE ) CLASS TProgressMeter
+               CLIENTEDGE, lDisabled ) CLASS TProgressMeter
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle, nStyleEx
 
@@ -107,7 +107,7 @@ Local ControlHandle, nStyle, nStyleEx
 
    ::Align := 6 // TA_CENTER
 
-   nStyle := ::InitStyle( ,, Invisible, .T. )
+   nStyle := ::InitStyle( ,, Invisible, .T., lDisabled )
 
    nStyleEx := if( ValType( CLIENTEDGE ) == "L"   .AND. CLIENTEDGE,   WS_EX_CLIENTEDGE,  0 )
 
