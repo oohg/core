@@ -1,5 +1,5 @@
 /*
- * $Id: h_editbox.prg,v 1.24 2014-09-01 15:58:50 fyurisich Exp $
+ * $Id: h_editbox.prg,v 1.25 2014-09-23 02:52:39 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -101,6 +101,8 @@ CLASS TEdit FROM TText
    DATA nOnFocusPos      INIT -4
    DATA OnHScroll        INIT Nil
    DATA OnVScroll        INIT Nil
+   DATA nWidth           INIT 120
+   DATA nHeight          INIT 240
 
    METHOD Define
    METHOD LookForKey
@@ -120,15 +122,15 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
 *-----------------------------------------------------------------------------*
 Local nStyle := ES_MULTILINE + ES_WANTRETURN, nStyleEx := 0
 
-   DEFAULT h   TO 240
-//   DEFAULT Maxlenght TO 64738
+   ASSIGN ::nWidth  VALUE w TYPE "N"
+   ASSIGN ::nHeight VALUE h TYPE "N"
 
    nStyle += IF( HB_IsLogical( novscroll ) .AND. novscroll, ES_AUTOVSCROLL, WS_VSCROLL ) + ;
              IF( HB_IsLogical( nohscroll ) .AND. nohscroll, 0,              WS_HSCROLL )
 
    ::SetSplitBoxInfo( Break )
 
-   ::Define2( ControlName, ParentForm, x, y, w, h, value, ;
+   ::Define2( ControlName, ParentForm, x, y, ::nWidth, ::nHeight, value, ;
               fontname, fontsize, tooltip, maxlenght, .f., ;
               lostfocus, gotfocus, change, nil, .f., HelpId, ;
               readonly, bold, italic, underline, strikeout, field, ;

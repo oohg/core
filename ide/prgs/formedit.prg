@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.33 2014-09-22 02:35:41 fyurisich Exp $
+ * $Id: formedit.prg,v 1.34 2014-09-23 02:52:39 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -50,7 +50,7 @@ CLASS TFormEditor
    DATA myCMCtrl             INIT NIL
    DATA myNMCtrl             INIT NIL
    DATA myDMCtrl             INIT {}
-   DATA nControlW            INIT 0
+   DATA nControlW            INIT 0           // number of controls in the form under design
    DATA nEditorIndex         INIT 0
    DATA nHandleP             INIT 0           // index of the selected control into :aControls array
    DATA oContextMenu         INIT NIL
@@ -523,7 +523,6 @@ CLASS TFormEditor
    METHOD Snap
    METHOD StatPropEvents
    METHOD Swapea
-   METHOD TabEvents
    METHOD TabProperties
    METHOD ValCellPos
    METHOD VerifyBar
@@ -1517,7 +1516,7 @@ LOCAL i
 
    ::FormCtrlOrder:list_tipos:DeleteAllItems()
    ::FormCtrlOrder:list_tipos:Additem( 'Form' )
-   FOR i := 1 TO ::nControlW
+   FOR i := 2 TO ::nControlW
       IF ::aCtrlType[i] == 'TAB'
          ::FormCtrlOrder:list_tipos:AddItem( ::aControlW[i] )
       ENDIF
@@ -3221,93 +3220,96 @@ LOCAL x, ControlName, oNewCtrl := NIL
 
       DO CASE
       CASE ::CurrentControl == 2
-         // BUTTON
+         // 'BUTTON'
          ::aCaption[::nControlW]   := ControlName
          ::aAction[::nControlW]    := "MsgInfo( 'Button pressed' )"
          ::aBackColor[::nControlW] := ::cFBackcolor            // TODO:: Check if this is needed
 
       CASE ::CurrentControl == 3
-         // CHECKBOX
+         // 'CHECKBOX'
       CASE ::CurrentControl == 4
-         // LIST
+         // 'LIST'
       CASE ::CurrentControl == 5
-         // COMBO
+         // 'COMBO'
       CASE ::CurrentControl == 6
-         // CHECKBTN
+         // 'CHECKBTN'
       CASE ::CurrentControl == 7
-         // GRID
+         // 'GRID'
       CASE ::CurrentControl == 8
-         // FRAME
+         // 'FRAME'
       CASE ::CurrentControl == 9
-         // TAB
-         ::aCaption[::nControlW] := "{ 'Page 1', 'Page 2' }"
-         ::aImage[::nControlW]   := "{ '', '' }"
+         // 'TAB'
+         ::aCaption[::nControlW]        := "{ 'Page 1', 'Page 2' }"
+         ::aImage[::nControlW]          := "{ '', '' }"
+         ::aPageNames[::nControlW]      := "{ '', '' }"
+         ::aPageObjs[::nControlW]       := "{ '', '' }"
+         ::aPageSubClasses[::nControlW] := "{ '', '' }"
 
       CASE ::CurrentControl == 10
-         // IMAGE
+         // 'IMAGE'
       CASE ::CurrentControl == 11
-         // ANIMATE
+         // 'ANIMATE'
       CASE ::CurrentControl == 12
-         // DATEPICKER
+         // 'DATEPICKER'
       CASE ::CurrentControl == 13
-         // TEXT
+         // 'TEXT'
       CASE ::CurrentControl == 14
-         // EDIT
+         // 'EDIT'
       CASE ::CurrentControl == 15
-         // LABEL
+         // 'LABEL'
       CASE ::CurrentControl == 16
-         // PLAYER
+         // 'PLAYER'
       CASE ::CurrentControl == 17
-         // PROGRESSBAR
+         // 'PROGRESSBAR'
       CASE ::CurrentControl == 18
-         // RADIOGROUP
+         // 'RADIOGROUP'
          ::aItems[::nControlW]     := "{ 'option 1', 'option 2' }"
          ::aBackColor[::nControlW] := ::cFBackcolor     // TODO:: Check if this is needed
 
       CASE ::CurrentControl == 19
-         // SLIDER
+         // 'SLIDER'
          ::aBackColor[::nControlW] := ::cFBackcolor     // TODO:: Check if this is needed
 
       CASE ::CurrentControl == 20
-         // SPINNER
+         // 'SPINNER'
       CASE ::CurrentControl == 21
-         // PICCHECKBUTT
+         // 'PICCHECKBUTT'
       CASE ::CurrentControl == 22
-         // PICBUTT
+         // 'PICBUTT'
          ::aAction[::nControlW] := "MsgInfo( 'Pic button pressed.' )"
 
       CASE ::CurrentControl == 23
-         // TIMER
+         // 'TIMER'
       CASE ::CurrentControl == 24
-         // BROWSE
+         // 'BROWSE'
       CASE ::CurrentControl == 25
-         // TREE
+         // 'TREE'
       CASE ::CurrentControl == 26
-         // IPADDRESS
+         // 'IPADDRESS'
       CASE ::CurrentControl == 27
-         // MONTHCALENDAR
+         // 'MONTHCALENDAR'
       CASE ::CurrentControl == 28
-         // HYPERLINK
+         // 'HYPERLINK'
       CASE ::CurrentControl == 29
-         // RICHEDIT
+         // 'RICHEDIT'
       CASE ::CurrentControl == 30
-         // TIMEPICKER
+         // 'TIMEPICKER'
       CASE ::CurrentControl == 31
-         // XBROWSE
+         // 'XBROWSE'
       CASE ::CurrentControl == 32
-         // ACTIVEX
+         // 'ACTIVEX'
       CASE ::CurrentControl == 33
-         // CHECKLIST
+         // 'CHECKLIST'
       CASE ::CurrentControl == 34
-         // HOTKEYBOX
+         // 'HOTKEYBOX'
       CASE ::CurrentControl == 35
-         // PICTURE
+         // 'PICTURE'
       CASE ::CurrentControl == 36
-         // PROGRESSMETER
+         // 'PROGRESSMETER'
       CASE ::CurrentControl == 37
-         // SCROLLBAR
+         // 'SCROLLBAR'
       CASE ::CurrentControl == 38
-         // TEXTARRAY
+         // 'TEXTARRAY'
       ENDCASE
 
       oNewCtrl := ::CreateControl( ::CurrentControl, ::nControlW )
@@ -3328,18 +3330,18 @@ LOCAL x, ControlName, oNewCtrl := NIL
 RETURN oNewCtrl
 
 //------------------------------------------------------------------------------
-METHOD CreateControl( nControlType, i ) CLASS TFormEditor
+METHOD CreateControl( nControlType, i, aCtrls ) CLASS TFormEditor
 //------------------------------------------------------------------------------
-LOCAL ControlName, oCtrl, aImages, aItems, nMin, nMax, j
+LOCAL cName, oCtrl, aImages, aItems, nMin, nMax, j, aCaptions, nCnt, oPage
 
 // TODO: Validate parameters before creating controls
 
-   ControlName := ::aControlW[i]
-// TODO: control defined here must be equal to the controls defined in p(Control) methods
+   cName := ::aControlW[i]
+// TODO: controls defined here must be equal to the controls defined in p(Control) methods
 
    DO CASE
    CASE nControlType == 2            // 'BUTTON'
-      oCtrl := TButton(): Define( ControlName, ::oDesignForm:Name, ;
+      oCtrl := TButton(): Define( cName, ::oDesignForm:Name, ;
                   _OOHG_MouseCol, _OOHG_MouseRow, ;
                   ::aCaption[i], { || ::Dibuja( This:Name ) }, NIL, NIL, NIL, ;
                   NIL, ::aToolTip[i], { || ::Dibuja( This:Name ) }, NIL, ;
@@ -3361,46 +3363,46 @@ LOCAL ControlName, oCtrl, aImages, aItems, nMin, nMax, j
       ENDIF
 
    CASE nControlType == 3            // 'CHECKBOX'
-      @ _OOHG_MouseRow, _OOHG_MouseCol CHECKBOX &ControlName OF ( ::oDesignForm:Name ) ;
-         CAPTION ControlName ;
+      @ _OOHG_MouseRow, _OOHG_MouseCol CHECKBOX &cName OF ( ::oDesignForm:Name ) ;
+         CAPTION cName ;
          ON GOTFOCUS ::Dibuja( This:Name ) ;
          ON CHANGE ::Dibuja( This:Name )
-      oCtrl := ::oDesignForm:&ControlName:Object()
+      oCtrl := ::oDesignForm:&cName:Object()
       IF IsValidArray( ::aBackColor[i] )
          oCtrl:BackColor := &( ::aBackColor[i] )
       ENDIF
 
    CASE nControlType == 4            // 'LIST'
-      @ _OOHG_MouseRow, _OOHG_MouseCol LISTBOX &ControlName OF ( ::oDesignForm:Name ) ;
-         ITEMS { ControlName } ;
+      @ _OOHG_MouseRow, _OOHG_MouseCol LISTBOX &cName OF ( ::oDesignForm:Name ) ;
+         ITEMS { cName } ;
          ON GOTFOCUS ::Dibuja( This:Name ) ;
          ON CHANGE ::Dibuja( This:Name )
 
    CASE nControlType == 5            // 'COMBO'
-      @ _OOHG_MouseRow, _OOHG_MouseCol COMBOBOX &ControlName OF ( ::oDesignForm:Name ) ;
-         ITEMS { ControlName, ' ' } ;
+      @ _OOHG_MouseRow, _OOHG_MouseCol COMBOBOX &cName OF ( ::oDesignForm:Name ) ;
+         ITEMS { cName, ' ' } ;
          VALUE 1 ;
          ON GOTFOCUS ::Dibuja( This:Name ) ;
          ON CHANGE ::Dibuja( This:Name )
 
    CASE nControlType == 6            // 'CHECKBTN'
-      @ _OOHG_MouseRow, _OOHG_MouseCol CHECKBUTTON &ControlName OF ( ::oDesignForm:Name ) ;
-         CAPTION ControlName ;
+      @ _OOHG_MouseRow, _OOHG_MouseCol CHECKBUTTON &cName OF ( ::oDesignForm:Name ) ;
+         CAPTION cName ;
          ON GOTFOCUS ::Dibuja( This:Name ) ;
          ON CHANGE ::Dibuja( This:Name)
 
    CASE nControlType == 7            // 'GRID'
-      @ _OOHG_MouseRow, _OOHG_MouseCol GRID &ControlName OF ( ::oDesignForm:Name ) ;
+      @ _OOHG_MouseRow, _OOHG_MouseCol GRID &cName OF ( ::oDesignForm:Name ) ;
          HEADERS { '', '' } ;
          WIDTHS { 100, 60 } ;
-         ITEMS { { ControlName, '' } } ;
+         ITEMS { { cName, '' } } ;
          TOOLTIP 'To access Properties and Events right click on header area.' ;
          ON CHANGE ::Dibuja( This:Name ) ;
          ON GOTFOCUS ::Dibuja( This:Name )
 
    CASE nControlType == 8            // 'FRAME'
-      oCtrl := TFrame():Define( ControlName, ::oDesignForm:Name, _OOHG_MouseRow, ;
-                  _OOHG_MouseCol, NIL, NIL, ControlName, NIL, NIL, ::aOpaque[i], ;
+      oCtrl := TFrame():Define( cName, ::oDesignForm:Name, _OOHG_MouseRow, ;
+                  _OOHG_MouseCol, NIL, NIL, cName, NIL, NIL, ::aOpaque[i], ;
                   ::aBold[i], ::aFontItalic[i], ::aFontUnderline[i], ;
                   ::aFontStrikeout[i], NIL, NIL, ::aTransparent[i], ;
                   ::aRTL[i], .F., .F. )
@@ -3418,22 +3420,39 @@ LOCAL ControlName, oCtrl, aImages, aItems, nMin, nMax, j
       ENDIF
 
    CASE nControlType == 9            // 'TAB'
+      oCtrl := TTab():Define( cName, ::oDesignForm:Name, ;
+                  _OOHG_MouseCol, _OOHG_MouseRow, 300, 250, {}, {}, NIL, NIL, NIL, ;
+                  IIF( Empty( ::aToolTip[i] ), 'To access Properties and Events right click on header area.', ::aToolTip[i] ), ;
+                  { || ::Dibuja( This:Name ) }, ::aButtons[i], ::aFlat[i], ;
+                  ::aHotTrack[i], ::aVertical[i], .F., NIL, ::aBold[i], ;
+                  ::aFontItalic[i], ::aFontUnderline[i], ::aFontStrikeout[i], ;
+                  {}, ::aRTL[i], ::aVirtual[i], .F., .F., ::aMultiLine[i] )
+         // Add pages and controls
+         aCaptions := &( ::aCaption[i] )
+         nCnt      := Len( aCaptions )
+         aImages   := &( ::aImage[i] )
+         aSize( aImages, nCnt )
+         FOR j := 1 TO nCnt
+            // DEFINE PAGE
+            oPage := _BeginTabPage( aCaptions[j], aImages[j] )
+            END PAGE
+            aEval( aCtrls[j], { |c| oPage:AddControl( c, c:Row, c:Col ) } )
+         NEXT j
+      END TAB
+      IF ! Empty( ::aFontName[i] )
+         oCtrl:FontName := ::aFontName[i]
+      ENDIF
+      IF ::aFontSize[i] > 0
+         oCtrl:FontSize := ::aFontSize[i]
+      ENDIF
+      IF IsValidArray( ::aFontColor[i] )
+         oCtrl:FontColor := &( ::aFontColor[i] )
+      ENDIF
+      oCtrl:Value := ::aValue[i]
       ::swTab := .T.
 
-      DEFINE TAB &ControlName OF ( ::oDesignForm:Name ) ;
-         AT _OOHG_MouseRow, _OOHG_MouseCol ;
-         WIDTH 300 ;
-         HEIGHT 250 ;
-         TOOLTIP ControlName ;
-         ON CHANGE ::Dibuja( This:Name )
-         DEFINE PAGE 'Page 1' IMAGE ''
-         END PAGE
-         DEFINE PAGE 'Page 2' IMAGE ''
-         END PAGE
-      END TAB
-
    CASE nControlType == 10           // 'IMAGE'
-      oCtrl := TImage():Define( ControlName, ::oDesignForm:Name, ;
+      oCtrl := TImage():Define( cName, ::oDesignForm:Name, ;
                   _OOHG_MouseCol, _OOHG_MouseRow, ::aPicture[i], NIL, NIL, ;
                   { || ::Dibuja( This:Name ) }, NIL, .F., ::aStretch[i], ;
                   ::aWhiteBack[i], ::aRTL[i], NIL, NIL, NIL, ! ::aFit[i], ;
@@ -3446,16 +3465,16 @@ LOCAL ControlName, oCtrl, aImages, aItems, nMin, nMax, j
 
    CASE nControlType == 11           // 'ANIMATE'
       // TODO: use ANIMATE control
-      @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &ControlName OF ( ::oDesignForm:Name ) ;
+      @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &cName OF ( ::oDesignForm:Name ) ;
          WIDTH 100 ;
          HEIGHT 50 ;
-         VALUE ControlName ;
+         VALUE cName ;
          BORDER ;
          BACKCOLOR WHITE ;
          ACTION ::Dibuja( This:Name )
 
    CASE nControlType == 12           // 'DATEPICKER'
-      oCtrl := TDatePick():Define( ControlName, ::oDesignForm:Name, ;
+      oCtrl := TDatePick():Define( cName, ::oDesignForm:Name, ;
                   _OOHG_MouseCol, _OOHG_MouseRow, NIL, NIL, ::aValue[i], ;
                   NIL, NIL, ::aToolTip[i], { || ::Dibuja( This:Name ) }, NIL, ;
                   { || ::Dibuja( This:Name ) }, ::aShowNone[i], ::aUpDown[i], ;
@@ -3470,7 +3489,7 @@ LOCAL ControlName, oCtrl, aImages, aItems, nMin, nMax, j
       ENDIF
 
    CASE nControlType == 13           // 'TEXT'
-      oCtrl := DefineTextBox( ControlName, ::oDesignForm:Name, ;
+      oCtrl := DefineTextBox( cName, ::oDesignForm:Name, ;
                   _OOHG_MouseCol, _OOHG_MouseRow, NIL, NIL, ::aValue[i], ;
                   NIL, NIL, ::aToolTip[i], ::aMaxLength[i], ::aUpperCase[i], ;
                   ::aLowerCase[i], ::aPassWord[i], { || oCtrl:ContextMenu := NIL }, ;
@@ -3498,10 +3517,10 @@ LOCAL ControlName, oCtrl, aImages, aItems, nMin, nMax, j
 
    CASE nControlType == 14           // 'EDIT'
       // TODO: use EDITBOX control
-      @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &ControlName OF ( ::oDesignForm:Name ) ;
+      @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &cName OF ( ::oDesignForm:Name ) ;
          WIDTH 120 ;
          HEIGHT 120 ;
-         VALUE ControlName ;
+         VALUE cName ;
          CLIENTEDGE ;
          HSCROLL ;
          VSCROLL ;
@@ -3512,59 +3531,59 @@ LOCAL ControlName, oCtrl, aImages, aItems, nMin, nMax, j
       // TODO:: add variable for WIDTH
       IF ::aTransparent[i]
          IF ::myIde:nLabelHeight > 0
-            @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &ControlName OF ( ::oDesignForm:Name ) ;
+            @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &cName OF ( ::oDesignForm:Name ) ;
                HEIGHT ::myIde:nLabelHeight ;
-               VALUE ControlName ;
+               VALUE cName ;
                TRANSPARENT ;
                ACTION ::Dibuja( This:Name )
          ELSE
-            @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &ControlName OF ( ::oDesignForm:Name ) ;
-               VALUE ControlName ;
+            @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &cName OF ( ::oDesignForm:Name ) ;
+               VALUE cName ;
                TRANSPARENT ;
                ACTION ::Dibuja( This:Name )
          ENDIF
       ELSE
          IF ::myIde:nLabelHeight > 0
-            @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &ControlName OF ( ::oDesignForm:Name ) ;
+            @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &cName OF ( ::oDesignForm:Name ) ;
                HEIGHT ::myIde:nLabelHeight ;
-               VALUE ControlName ;
+               VALUE cName ;
                ACTION ::Dibuja( This:Name )
          ELSE
-            @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &ControlName OF ( ::oDesignForm:Name ) ;
-               VALUE ControlName ;
+            @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &cName OF ( ::oDesignForm:Name ) ;
+               VALUE cName ;
                ACTION ::Dibuja( This:Name )
          ENDIF
       ENDIF
 
    CASE nControlType == 16           // 'PLAYER'
       // TODO: use PLAYER control
-      @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &ControlName OF ( ::oDesignForm:Name ) ;
+      @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &cName OF ( ::oDesignForm:Name ) ;
          WIDTH 100 ;
          HEIGHT 100 ;
-         VALUE ControlName ;
+         VALUE cName ;
          BORDER ;
          BACKCOLOR WHITE ;
          ACTION ::Dibuja( This:Name )
 
    CASE nControlType == 17           // 'PROGRESSBAR'
       // TODO: use PROGRESSBAR control
-      @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &ControlName OF ( ::oDesignForm:Name ) ;
+      @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &cName OF ( ::oDesignForm:Name ) ;
          WIDTH 120 ;
          HEIGHT 26 ;
-         VALUE ControlName ;
+         VALUE cName ;
          BORDER ;
          BACKCOLOR WHITE ;
          ACTION ::Dibuja( This:Name )
 
    CASE nControlType == 18           // 'RADIOGROUP'
       // TODO: use RADIOGROUP control
-      @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &ControlName OF ( ::oDesignForm:Name ) ;
+      @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &cName OF ( ::oDesignForm:Name ) ;
          WIDTH 100 ;
          HEIGHT ( 25 * 2 + 8 ) ;
-         VALUE ControlName ;
+         VALUE cName ;
          BORDER ;
          ACTION ::Dibuja( This:Name )
-      oCtrl := ::oDesignForm:&ControlName:Object()
+      oCtrl := ::oDesignForm:&cName:Object()
       IF IsValidArray( ::aBackColor[i] )
          oCtrl:BackColor := &( ::aBackColor[i] )
       ELSE
@@ -3572,28 +3591,28 @@ LOCAL ControlName, oCtrl, aImages, aItems, nMin, nMax, j
       ENDIF
 
    CASE nControlType == 19           // 'SLIDER'
-      @ _OOHG_MouseRow, _OOHG_MouseCol SLIDER &ControlName OF ( ::oDesignForm:Name ) ;
+      @ _OOHG_MouseRow, _OOHG_MouseCol SLIDER &cName OF ( ::oDesignForm:Name ) ;
          RANGE 1, 10 ;
          VALUE 5 ;
          ON CHANGE ::Dibuja( This:Name )
-      oCtrl := ::oDesignForm:&ControlName:Object()
+      oCtrl := ::oDesignForm:&cName:Object()
       IF IsValidArray( ::aBackColor[i] )
          oCtrl:BackColor := &( ::aBackColor[i] )
       ENDIF
 
    CASE nControlType == 20           // 'SPINNER'
       // TODO: use SPINNER control
-      @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &ControlName OF ( ::oDesignForm:Name ) ;
+      @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &cName OF ( ::oDesignForm:Name ) ;
          WIDTH 120 ;
          HEIGHT 24 ;
-         VALUE ControlName ;
+         VALUE cName ;
          CLIENTEDGE ;
          VSCROLL ;
          BACKCOLOR WHITE ;
          ACTION ::Dibuja( This:Name )
 
    CASE nControlType == 21           // 'PICCHECKBUTT'
-      @ _OOHG_MouseRow, _OOHG_MouseCol CHECKBUTTON &ControlName OF ( ::oDesignForm:Name ) ;
+      @ _OOHG_MouseRow, _OOHG_MouseCol CHECKBUTTON &cName OF ( ::oDesignForm:Name ) ;
          PICTURE 'A4' ;
          WIDTH 30 ;
          HEIGHT 30 ;
@@ -3602,7 +3621,7 @@ LOCAL ControlName, oCtrl, aImages, aItems, nMin, nMax, j
          ON CHANGE ::Dibuja( This:Name )
 
    CASE nControlType == 22           // 'PICBUTT'
-      @ _OOHG_MouseRow, _OOHG_MouseCol BUTTON &ControlName OF ( ::oDesignForm:Name ) ;
+      @ _OOHG_MouseRow, _OOHG_MouseCol BUTTON &cName OF ( ::oDesignForm:Name ) ;
          PICTURE 'A4' ;
          WIDTH 30 ;
          HEIGHT 30 ;
@@ -3610,25 +3629,25 @@ LOCAL ControlName, oCtrl, aImages, aItems, nMin, nMax, j
          ACTION ::Dibuja( This:Name )
 
    CASE nControlType == 23           // 'TIMER'
-      @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &ControlName OF ( ::oDesignForm:Name ) ;
+      @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &cName OF ( ::oDesignForm:Name ) ;
          WIDTH 100 ;
          HEIGHT 20 ;
-         VALUE ControlName ;
+         VALUE cName ;
          BORDER ;
          BACKCOLOR WHITE ;
          ACTION ::Dibuja( This:Name )
 
    CASE nControlType == 24           // 'BROWSE'
-      @ _OOHG_MouseRow, _OOHG_MouseCol GRID &ControlName OF ( ::oDesignForm:Name ) ;
+      @ _OOHG_MouseRow, _OOHG_MouseCol GRID &cName OF ( ::oDesignForm:Name ) ;
          HEADERS { 'one', 'two' } ;
          WIDTHS { 60, 60 } ;
-         ITEMS { { ControlName, '' } } ;
+         ITEMS { { cName, '' } } ;
          TOOLTIP 'Click on header area to move/size' ;
          ON GOTFOCUS ::Dibuja( This:Name ) ;
          ON CHANGE ::Dibuja( This:Name )
 
    CASE nControlType == 25           // 'TREE'
-      oCtrl := TTree():Define( ControlName, ::oDesignForm:Name, ;
+      oCtrl := TTree():Define( cName, ::oDesignForm:Name, ;
                   _OOHG_MouseRow, _OOHG_MouseCol, NIL, NIL, ;
                   { || ::Dibuja( This:Name ) }, ::aToolTip[i], NIL, NIL, ;
                   { || ::Dibuja( This:Name ) }, NIL, NIL, .F., NIL, NIL, ;
@@ -3662,9 +3681,9 @@ LOCAL ControlName, oCtrl, aImages, aItems, nMin, nMax, j
       ENDIF
 
    CASE nControlType == 26           // 'IPADDRESS'
-      oCtrl := TLabel():Define( ControlName, ::oDesignForm:Name, ;
+      oCtrl := TLabel():Define( cName, ::oDesignForm:Name, ;
                   _OOHG_MouseCol, _OOHG_MouseRow, ;
-                  IIF( Empty( ::aValue[i] ), ControlName, ::aValue[i] ), ;
+                  IIF( Empty( ::aValue[i] ), cName, ::aValue[i] ), ;
                   NIL, NIL, NIL, NIL, ::aBold[i], .F., .T., .F., .F., .F., ;
                   WHITE, NIL, { || ::Dibuja( This:Name ) }, ::aToolTip[i], ;
                   NIL, .F., ::aFontItalic[i], ::aFontUnderline[i], ;
@@ -3684,7 +3703,7 @@ LOCAL ControlName, oCtrl, aImages, aItems, nMin, nMax, j
       ENDIF
 
    CASE nControlType == 27           // 'MONTHCALENDAR'
-      oCtrl := TMonthCal():Define( ControlName, ::oDesignForm:Name, ;
+      oCtrl := TMonthCal():Define( cName, ::oDesignForm:Name, ;
                   _OOHG_MouseCol, _OOHG_MouseRow, 0, 0, ::aValue[i], NIL, NIL, ;
                   ::aToolTip[i], ::aNoToday[i], ::aNoTodayCircle[i], ;
                   ::aWeekNumbers[i], { || ::Dibuja( This:Name ) }, ;
@@ -3718,18 +3737,18 @@ LOCAL ControlName, oCtrl, aImages, aItems, nMin, nMax, j
 
    CASE nControlType == 28           // 'HYPERLINK'
       // TODO: use HYPERLINK control
-      @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &ControlName OF ( ::oDesignForm:Name ) ;
-         VALUE ControlName ;
+      @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &cName OF ( ::oDesignForm:Name ) ;
+         VALUE cName ;
          ACTION ::Dibuja( This:Name ) ;
          BACKCOLOR WHITE ;
          BORDER
 
    CASE nControlType == 29           // 'RICHEDIT'
       // TODO: use RICHEDIT control
-      @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &ControlName OF ( ::oDesignForm:Name ) ;
+      @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &cName OF ( ::oDesignForm:Name ) ;
          WIDTH 120 ;
          HEIGHT 124 ;
-         VALUE ControlName ;
+         VALUE cName ;
          CLIENTEDGE ;
          BACKCOLOR WHITE ;
          HSCROLL ;
@@ -3737,25 +3756,25 @@ LOCAL ControlName, oCtrl, aImages, aItems, nMin, nMax, j
          ACTION ::Dibuja( This:Name )
 
    CASE nControlType == 30           // 'TIMEPICKER'
-      @ _OOHG_MouseRow, _OOHG_MouseCol TIMEPICKER &ControlName OF ( ::oDesignForm:Name ) ;
-         TOOLTIP ControlName ;
+      @ _OOHG_MouseRow, _OOHG_MouseCol TIMEPICKER &cName OF ( ::oDesignForm:Name ) ;
+         TOOLTIP cName ;
          ON GOTFOCUS ::Dibuja( This:Name ) ;
          ON CHANGE ::Dibuja( This:Name )
 
    CASE nControlType == 31           // 'XBROWSE'
-      @ _OOHG_MouseRow, _OOHG_MouseCol GRID &ControlName OF ( ::oDesignForm:Name ) ;
+      @ _OOHG_MouseRow, _OOHG_MouseCol GRID &cName OF ( ::oDesignForm:Name ) ;
          HEADERS { 'one', 'two' } ;
          WIDTHS { 60, 60 } ;
-         ITEMS { { ControlName, '' } } ;
+         ITEMS { { cName, '' } } ;
          TOOLTIP 'Click on header area to move/size' ;
          ON GOTFOCUS ::Dibuja( This:Name ) ;
          ON CHANGE ::Dibuja( This:Name )
 
    CASE nControlType == 32           // 'ACTIVEX'
-      @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &ControlName OF ( ::oDesignForm:Name ) ;
+      @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &cName OF ( ::oDesignForm:Name ) ;
          WIDTH 100 ;
          HEIGHT 50 ;
-         VALUE ControlName ;
+         VALUE cName ;
          BORDER ;
          BACKCOLOR WHITE ;
          ACTION ::Dibuja( This:Name )
@@ -3785,7 +3804,7 @@ LOCAL ControlName, oCtrl, aImages, aItems, nMin, nMax, j
             aItems := {}
          EndIf
       EndIf
-      oCtrl := TCheckList():Define( ControlName, ::oDesignForm:Name, ;
+      oCtrl := TCheckList():Define( cName, ::oDesignForm:Name, ;
                   _OOHG_MouseCol, _OOHG_MouseRow, NIL, NIL, aItems, ;
                   ::aValueN[i], NIL, NIL, ::aToolTip[i], ;
                   { || ::Dibuja( This:Name ) }, { || ::Dibuja( This:Name ) }, ;
@@ -3808,7 +3827,7 @@ LOCAL ControlName, oCtrl, aImages, aItems, nMin, nMax, j
       ENDIF
 
    CASE nControlType == 34           // 'HOTKEYBOX'
-      @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &ControlName OF ( ::oDesignForm:Name ) ;
+      @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &cName OF ( ::oDesignForm:Name ) ;
          WIDTH 120 ;
          HEIGHT 40 ;
          VALUE 'ALT + key' ;
@@ -3817,7 +3836,7 @@ LOCAL ControlName, oCtrl, aImages, aItems, nMin, nMax, j
          ACTION ::Dibuja( This:Name )
 
    CASE nControlType == 35           // 'PICTURE'
-      oCtrl := TPicture():Define( ControlName, ::oDesignForm:Name, ;
+      oCtrl := TPicture():Define( cName, ::oDesignForm:Name, ;
                   _OOHG_MouseCol, _OOHG_MouseRow, ::aPicture[i], NIL, NIL, ;
                   NIL, NIL, ::aStretch[i], ::aForceScale[i], ::aImageSize[i], ;
                   ::aBorder[i], ::aClientEdge[i], NIL, ;
@@ -3841,7 +3860,7 @@ LOCAL ControlName, oCtrl, aImages, aItems, nMin, nMax, j
          nMin := NIL
          nMax := NIL
       ENDIF
-      oCtrl := TProgressMeter():Define( ControlName, ::oDesignForm:Name, ;
+      oCtrl := TProgressMeter():Define( cName, ::oDesignForm:Name, ;
                   _OOHG_MouseCol, _OOHG_MouseRow, NIL, NIL, nMin, nMax, ;
                   ::aValueN[i], ::aToolTip[i], NIL, NIL, ::aBold[i], ;
                   ::aFontItalic[i], ::aFontUnderline[i], ::aFontStrikeout[i], ;
@@ -3861,7 +3880,7 @@ LOCAL ControlName, oCtrl, aImages, aItems, nMin, nMax, j
       ENDIF
 
    CASE nControlType == 37           // 'SCROLLBAR'
-      @ _OOHG_MouseRow, _OOHG_MouseCol SCROLLBAR &ControlName OF ( ::oDesignForm:Name ) ;
+      @ _OOHG_MouseRow, _OOHG_MouseCol SCROLLBAR &cName OF ( ::oDesignForm:Name ) ;
          HEIGHT 100 ;
          ON LINEUP ::Dibuja( This:Name ) ;
          ON LINEDOWN ::Dibuja( This:Name ) ;
@@ -3875,14 +3894,17 @@ LOCAL ControlName, oCtrl, aImages, aItems, nMin, nMax, j
          ON CHANGE ::Dibuja( This:Name )
 
    CASE nControlType == 38           // 'TEXTARRAY'
-      @ _OOHG_MouseRow, _OOHG_MouseCol TEXTARRAY &ControlName OF ( ::oDesignForm:Name ) ;
+      @ _OOHG_MouseRow, _OOHG_MouseCol TEXTARRAY &cName OF ( ::oDesignForm:Name ) ;
          WIDTH 240 ;
          HEIGHT 120 ;
          BORDER ;
          ACTION ::Dibuja( This:Name )
 
+   OTHERWISE
+      RETURN NIL
+
    ENDCASE
-RETURN ::oDesignForm:&ControlName:Object
+RETURN ::oDesignForm:&cName:Object
 
 //------------------------------------------------------------------------------
 METHOD Dibuja( xName, lNoRefresh, lNoErase ) CLASS TFormEditor
@@ -5470,7 +5492,7 @@ LOCAL lDIBSection, cBuffer, cHBitmap, cImgMargin, cSubClass, oCtrl
    cObj          := ::LeaDato( cName, 'OBJ', '' )
    nRow          := Val( ::LeaRow( cName ) )
    nCol          := Val( ::LeaCol( cName ) )
-   nWidth        := Val( ::LeaDato( cName, 'WIDTH', LTrim( Str( TButton():nWidth ) ) ) )    // TODO: use in all controls
+   nWidth        := Val( ::LeaDato( cName, 'WIDTH', LTrim( Str( TButton():nWidth ) ) ) )    
    nHeight       := Val( ::LeaDato( cName, 'HEIGHT', LTrim( Str( TButton():nHeight ) ) ) )
    cFontName     := ::Clean( ::LeaDato( cName, 'FONT', '' ) )
    nFontSize     := Val( ::LeaDato( cName, 'SIZE', '0' ) )
@@ -6234,18 +6256,98 @@ RETURN NIL
 //------------------------------------------------------------------------------
 METHOD pScrollBar( i ) CLASS TFormEditor
 //------------------------------------------------------------------------------
-Empty( i )
-// TODO
+LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cToolTip, nValue, cRange, lRTL
+LOCAL cOnChange, cOnLineUp, cOnLineDown, cOnPageUp, cOnPageDown, cOnTop, oCtrl
+LOCAL cOnBottom, cOnThumb, cOnTrack, cOnEndTrack, lAutoMove, lAttached, lVisible
+LOCAL lVertical, lHorizontal, nLineSkip, nPageSkip, nHelpId, cSubClass, lEnabled
+
+   // Load properties
+   cName       := ::aControlW[i]
+   cObj        := ::LeaDato( cName, 'OBJ', '' )
+   nRow        := Val( ::LeaRow( cName ) )
+   nCol        := Val( ::LeaCol( cName ) )
+   nWidth      := Val( ::LeaDato( cName, 'WIDTH', LTrim( Str( TProgressMeter():nWidth ) ) ) )
+   nHeight     := Val( ::LeaDato( cName, 'HEIGHT', LTrim( Str( TProgressMeter():nHeight ) ) ) )
+   cToolTip    := ::Clean( ::LeaDato( cName, 'TOOLTIP', '' ) )
+   nValue      := Val( ::LeaDato( cName, 'VALUE', '0') )
+   cRange      := ::LeaDato( cName, 'RANGE', '' )
+   cOnChange   := ::LeaDato( cName, 'ON CHANGE', '' )
+   cOnLineUp   := ::LeaDato( cName, 'ON LINEUP', '' )
+   cOnLineUp   := ::LeaDato( cName, 'ON LINELEFT', cOnLineUp )
+   cOnLineDown := ::LeaDato( cName, 'ON LINEDOWN', '' )
+   cOnLineDown := ::LeaDato( cName, 'ON LINERIGHT', cOnLineDown )
+   cOnPageUp   := ::LeaDato( cName, 'ON PAGEUP', '' )
+   cOnPageUp   := ::LeaDato( cName, 'ON PAGELEFT', cOnPageUp )
+   cOnPageDown := ::LeaDato( cName, 'ON PAGEDOWN', '' )
+   cOnPageDown := ::LeaDato( cName, 'ON PAGERIGHT', cOnPageDown )
+   cOnTop      := ::LeaDato( cName, 'ON TOP', '' )
+   cOnTop      := ::LeaDato( cName, 'ON LEFT', cOnTop )
+   cOnBottom   := ::LeaDato( cName, 'ON BOTTOM', '' )
+   cOnBottom   := ::LeaDato( cName, 'ON RIGHT', cOnBottom )
+   cOnThumb    := ::LeaDato( cName, 'ON THUMB', '' )
+   cOnTrack    := ::LeaDato( cName, 'ON TRACK', '' )
+   cOnEndTrack := ::LeaDato( cName, 'ON ENDTRACK', '' )
+   lAutoMove   := ( ::LeaDatoLogic( cName, 'AUTOMOVE', "F" ) == "T" )
+   lAttached   := ( ::LeaDatoLogic( cName, 'ATTACHED', "F" ) == "T" )
+   lVertical   := ( ::LeaDatoLogic( cName, 'VERTICAL', "F" ) == "T" )
+   lHorizontal := ( ::LeaDatoLogic( cName, 'HORIZONTAL', "F" ) == "T" )
+   nLineSkip   := Val( ::LeaDato( cName, 'LINESKIP', '0') )
+   nPageSkip   := Val( ::LeaDato( cName, 'PAGESKIP', '0') )
+   nHelpId     := Val( ::LeaDato( cName, 'HELPID', '0' ) )
+   lRTL        := ( ::LeaDatoLogic( cName, 'RTL', "F" ) == "T" )
+   cSubClass   := ::LeaDato( cName, 'SUBCLASS', '' )
+   lVisible    := ( ::LeaDatoLogic( cName, 'INVISIBLE', "F" ) == "F" )
+   lVisible    := ( Upper( ::LeaDato_Oop( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
+   lEnabled    := ( ::LeaDatoLogic( cName, 'DISABLED', "F" ) == "F" )
+   lEnabled    := ( Upper( ::LeaDato_Oop( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
+
+   // Save properties
+   ::aCtrlType[i]    := 'SCROLLBAR'
+   ::aName[i]        := cName
+   ::aCObj[i]        := cObj
+   ::aToolTip[i]     := cToolTip
+   ::aValueN[i]      := nValue
+   ::aRange[i]       := cRange
+   ::aOnChange[i]    := cOnChange
+   ::aOnDblClick[i]  := cOnLineUp
+   ::aOnDelete[i]    := cOnLineDown
+   ::aOnDrop[i]      := cOnPageUp
+   ::aOnEditCell[i]  := cOnPageDown
+   ::aOnEnter[i]     := cOnTop
+   ::aOnGotFocus[i]  := cOnBottom
+   ::aOnHScroll[i]   := cOnThumb
+   ::aOnLabelEdit[i] := cOnTrack
+   ::aOnListClose[i] := cOnEndTrack
+   ::aFlat[i]        := lHorizontal
+   ::aVertical[i]    := lVertical
+   ::aAutoPlay[i]    := lAutoMove
+   ::aAppend[i]      := lAttached
+   ::aIncrement[i]   := nLineSkip
+   ::aIndent[i]      := nPageSkip
+   ::aHelpID[i]      := nHelpid
+   ::aRTL[i]         := lRTL
+   ::aSubClass[i]    := cSubClass
+   ::aVisible[i]     := lVisible
+   ::aEnabled[i]     := lEnabled
+
+   // Create control
+   oCtrl        := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i )
+   oCtrl:Row    := nRow
+   oCtrl:Col    := nCol
+   oCtrl:Width  := nWidth
+   oCtrl:Height := nHeight
+
+   ::AddCtrlToTabPage( i, cName, nRow, nCol )
 RETURN NIL
 
 //------------------------------------------------------------------------------
 METHOD pTab( i ) CLASS TFormEditor
 //------------------------------------------------------------------------------
 LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, nValue
-LOCAL cToolTip, cImage, cOnChange, lFlat, lVertical, lButtons, lHotTrack, lBold
+LOCAL cToolTip, cOnChange, lFlat, lVertical, lButtons, lHotTrack, lBold
 LOCAL lItalic, lUnderline, lStrikeout, aFontColor, lVisible, lEnabled
 LOCAL lNoTabStop, lRTL, lMultiLine, cSubClass, lInternals, cPObj, nPosSub, cPSub
-LOCAL cPCaptions, cPImages, cPNames, cPObjs, cPSubs, nPageCount, j
+LOCAL cPCaptions, cPImages, cPNames, cPObjs, cPSubs, nPageCount, j, oCtrl
 LOCAL nPosPage, cPCaption, cPName, nPosImage, cPImage, nPosName, nPosObj
 
    // Load properties
@@ -6257,9 +6359,8 @@ LOCAL nPosPage, cPCaption, cPName, nPosImage, cPImage, nPosName, nPosObj
    nHeight       := Val( ::LeaDato( cName, 'HEIGHT', '0' ) )
    cFontName     := ::Clean( ::LeaDato( cName, 'FONT', '' ) )
    nFontSize     := Val( ::LeaDato( cName, 'SIZE', '0' ) )
-   nValue        := ::LeaDato( cName, 'VALUE', '0' )
+   nValue        := Val( ::LeaDato( cName, 'VALUE', '0' ) )
    cToolTip      := ::Clean( ::LeaDato( cName, 'TOOLTIP', '' ) )
-   cImage        := ::Clean( ::LeaDato( cName, 'IMAGE', '' ) )
    cOnChange     := ::LeaDato( cName, 'ON CHANGE', '' )
    lFlat         := ( ::LeaDatoLogic( cName, 'FLAT', "F" ) == "T" )
    lVertical     := ( ::LeaDatoLogic( cName, 'VERTICAL', "F" ) == "T" )
@@ -6285,55 +6386,43 @@ LOCAL nPosPage, cPCaption, cPName, nPosImage, cPImage, nPosName, nPosObj
    cSubClass     := ::LeaDato( cName, 'SUBCLASS', '' )
    lInternals    := ( ::LeaDatoLogic( cName, 'INTERNALS', "F" ) == "T" )
 
-   // Show control
-   DEFINE TAB &cName OF ( ::oDesignForm:Name ) ;
-      AT nRow, nCol ;
-      WIDTH nWidth ;
-      HEIGHT nHeight ;
-      TOOLTIP 'To access Properties and Events right click on header area.' ;
-      ON CHANGE ::Dibuja( This:Name )
-   END TAB
-   IF ! Empty( cFontName )
-      ::oDesignForm:&cName:FontName := cFontName
-   ENDIF
-   IF nFontSize > 0
-      ::oDesignForm:&cName:FontSize := nFontSize
-   ENDIF
-   ::oDesignForm:&cName:FontBold      := lBold
-   ::oDesignForm:&cName:FontItalic    := lItalic
-   ::oDesignForm:&cName:FontUnderline := lUnderline
-   ::oDesignForm:&cName:FontStrikeout := lStrikeout
-   IF IsValidArray( aFontColor )
-      ::oDesignForm:&cName:FontColor := &aFontColor
-   ENDIF
-   ::oDesignForm:&cName:ToolTip := cToolTip
-
    // Save properties
-   ::aCtrlType[i]      := 'TAB'
-   ::aName[i]          := cName
-   ::aCObj[i]          := cObj
-   ::aFontName[i]      := cFontName
-   ::aFontSize[i]      := nFontSize
-   ::aValue[i]         := nValue
-   ::aToolTip[i]       := cToolTip
-   ::aImage[i]         := cImage
-   ::aOnChange[i]      := cOnChange
-   ::aFlat[i]          := lFlat
-   ::aVertical[i]      := lVertical
-   ::aButtons[i]       := lButtons
-   ::aHotTrack[i]      := lHotTrack
-   ::aBold[i]          := lBold
-   ::aFontItalic[i]    := lItalic
-   ::aFontUnderline[i] := lUnderline
-   ::aFontStrikeout[i] := lStrikeout
-   ::aFontColor[i]     := aFontColor
-   ::aVisible[i]       := lVisible
-   ::aEnabled[i]       := lEnabled
-   ::aNoTabStop[i]     := lNoTabStop
-   ::aRTL[i]           := lRTL
-   ::aMultiLine[i]     := lMultiLine
-   ::aSubClass[i]      := cSubClass
-   ::aVirtual[i]       := lInternals
+   ::aCtrlType[i]       := 'TAB'
+   ::aName[i]           := cName
+   ::aCObj[i]           := cObj
+   ::aFontName[i]       := cFontName
+   ::aFontSize[i]       := nFontSize
+   ::aValue[i]          := nValue
+   ::aToolTip[i]        := cToolTip
+   ::aOnChange[i]       := cOnChange
+   ::aFlat[i]           := lFlat
+   ::aVertical[i]       := lVertical
+   ::aButtons[i]        := lButtons
+   ::aHotTrack[i]       := lHotTrack
+   ::aBold[i]           := lBold
+   ::aFontItalic[i]     := lItalic
+   ::aFontUnderline[i]  := lUnderline
+   ::aFontStrikeout[i]  := lStrikeout
+   ::aFontColor[i]      := aFontColor
+   ::aVisible[i]        := lVisible
+   ::aEnabled[i]        := lEnabled
+   ::aNoTabStop[i]      := lNoTabStop
+   ::aRTL[i]            := lRTL
+   ::aMultiLine[i]      := lMultiLine
+   ::aSubClass[i]       := cSubClass
+   ::aVirtual[i]        := lInternals
+   ::aCaption[i]        := "{}"
+   ::aImage[i]          := "{}"
+   ::aPageNames[i]      := "{}"
+   ::aPageObjs[i]       := "{}"
+   ::aPageSubClasses[i] := "{}"
+
+   // Create control
+   oCtrl        := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i )
+   oCtrl:Row    := nRow
+   oCtrl:Col    := nCol
+   oCtrl:Width  := nWidth
+   oCtrl:Height := nHeight
 
    // Load pages
    cPCaptions := '{ '
@@ -6384,7 +6473,7 @@ LOCAL nPosPage, cPCaption, cPName, nPosImage, cPImage, nPosName, nPosObj
          ENDDO
 
          IF ! Empty( cPCaption )
-            ::oDesignForm:&cName:AddPage( nPageCount, cPCaption, cPImage, NIL, NIL, cPName )
+            oCtrl:AddPage( nPageCount, cPCaption, cPImage )
 
             cPCaptions := cPCaptions + "'" + cPCaption + "', "
             cPImages   := cPImages + "'" + cPImage + "', "
@@ -6408,6 +6497,8 @@ LOCAL nPosPage, cPCaption, cPName, nPosImage, cPImage, nPosName, nPosObj
    ::aPageNames[i]      := cPNames
    ::aPageObjs[i]       := cPObjs
    ::aPageSubClasses[i] := cPSubs
+
+   oCtrl:Value := ::aValue[i]
 RETURN NIL
 
 //------------------------------------------------------------------------------
@@ -6737,8 +6828,8 @@ LOCAL lRTL, lNoWrap, lNoPrefix, cSubClass
    cObj         := ::LeaDato( cName, 'OBJ', '' )
    nRow         := Val( ::LeaRow( cName ) )
    nCol         := Val( ::LeaCol( cName ) )
-   nWidth       := Val( ::LeaDato( cName, 'WIDTH', '120' ) )
-   nHeight      := Val( ::LeaDato( cName, 'HEIGHT', '24' ) )
+   nWidth       := Val( ::LeaDato( cName, 'WIDTH', LTrim( Str( TLabel():nWidth ) ) ) )
+   nHeight      := Val( ::LeaDato( cName, 'HEIGHT', LTrim( Str( TLabel():nHeight ) ) ) )
    cAction      := ::LeaDato( cName, 'ACTION', "" )
    cAction      := ::LeaDato( cName, 'ON CLICK',cAction )
    cAction      := ::LeaDato( cName, 'ONCLICK', cAction )
@@ -6964,8 +7055,8 @@ LOCAL aBackColor, aFontColor, lBold, lItalic, lUnderline, lStrikeout, lNoBorder
    cObj         := ::LeaDato( cName, 'OBJ', '' )
    nRow         := Val( ::LeaRow( cName ) )
    nCol         := Val( ::LeaCol( cName ) )
-   nWidth       := Val( ::LeaDato( cName, 'WIDTH', '120' ) )
-   nHeight      := Val( ::LeaDato( cName, 'HEIGHT', '24' ) )
+   nWidth       := Val( ::LeaDato( cName, 'WIDTH', LTrim( Str( TSpinner():nWidth ) ) ) )
+   nHeight      := Val( ::LeaDato( cName, 'HEIGHT', LTrim( Str( TSpinner():nHeight ) ) ) )
    cRange       := ::LeaDato( cName, 'RANGE', '' )
    nValue       := Val( ::LeaDato( cName, 'VALUE', '0' ) )
    cFontName    := ::Clean( ::LeaDato( cName, 'FONT', '' ) )
@@ -7150,7 +7241,7 @@ LOCAL lRTL, nMarquee
    nCol       := Val( ::LeaCol( cName ) )
    lVertical  := ( ::LeaDatoLogic( cName, 'VERTICAL', 'F' ) == "T" )
    IF lVertical
-      nWidth  := Val( ::LeaDato( cName, 'WIDTH', '25' ) )
+      nWidth  := Val( ::LeaDato( cName, 'WIDTH', '25' ) )                       // TODO: Check
       nHeight := Val( ::LeaDato( cName, 'HEIGHT', '120' ) )
    ELSE
       nWidth  := Val( ::LeaDato( cName, 'WIDTH', '120' ) )
@@ -7221,7 +7312,7 @@ LOCAL cSubClass
    cObj        := ::LeaDato( cName, 'OBJ', '' )
    nRow        := Val( ::LeaRow( cName ) )
    nCol        := Val( ::LeaCol( cName ) )
-   nWidth      := Val( ::LeaDato( cName, 'WIDTH', '120' ) )
+   nWidth      := Val( ::LeaDato( cName, 'WIDTH', '120' ) )                     // TODO: Check
    nValue      := Val( ::LeaDato( cName, 'VALUE', '0' ) )
    nSpacing    := Val( ::LeaDato( cName, 'SPACING', "25" ) )
    cFontName   := ::Clean( ::LeaDato( cName, 'FONT', '' ) )
@@ -7349,8 +7440,8 @@ LOCAL lBreak, nHelpID, lNoTabStop, lNoVScroll, lNoHScroll
    cObj         := ::LeaDato( cName, 'OBJ', '' )
    nRow         := Val( ::LeaRow( cName ) )
    nCol         := Val( ::LeaCol( cName ) )
-   nWidth       := Val( ::LeaDato( cName, 'WIDTH', '120' ) )
-   nHeight      := Val( ::LeaDato( cName, 'HEIGHT', '240' ) )
+   nWidth       := Val( ::LeaDato( cName, 'WIDTH', LTrim( Str( TEdit():nWidth ) ) ) )
+   nHeight      := Val( ::LeaDato( cName, 'HEIGHT', LTrim( Str( TEdit():nHeight ) ) ) )
    cFontName    := ::Clean( ::LeaDato( cName, 'FONT', '' ) )
    nFontSize    := Val( ::LeaDato( cName, 'SIZE', '0' ) )
    aFontColor   := ::LeaDato( cName, 'FONTCOLOR', 'NIL' )
@@ -7467,8 +7558,8 @@ LOCAL lNoHideSel, lPlainText, nFileType, lNoHScroll
    cObj         := ::LeaDato( cName, 'OBJ', '' )
    nRow         := Val( ::LeaRow( cName ) )
    nCol         := Val( ::LeaCol( cName ) )
-   nWidth       := Val( ::LeaDato( cName, 'WIDTH', '120' ) )
-   nHeight      := Val( ::LeaDato( cName, 'HEIGHT', '240' ) )
+   nWidth       := Val( ::LeaDato( cName, 'WIDTH', LTrim( Str( TEditRich():nWidth ) ) ) )
+   nHeight      := Val( ::LeaDato( cName, 'HEIGHT', LTrim( Str( TEditRich():nHeight ) ) ) )
    cFontName    := ::Clean( ::LeaDato( cName, 'FONT', '' ) )
    nFontSize    := Val( ::LeaDato( cName, 'SIZE', '0' ) )
    cValue       := ::Clean( ::LeaDato( cName, 'VALUE', '' ) )
@@ -7593,8 +7684,8 @@ LOCAL aBackColor, lVisible, lEnabled, lRTL, cSubClass
    cObj       := ::LeaDato( cName, 'OBJ', '' )
    nRow       := Val( ::LeaRow( cName ) )
    nCol       := Val( ::LeaCol( cName ) )
-   nWidth     := Val( ::LeaDato( cName, 'WIDTH', '140' ) )
-   nHeight    := Val( ::LeaDato( cName, 'HEIGHT', '140' ) )
+   nWidth     := Val( ::LeaDato( cName, 'WIDTH', LTrim( Str( TFrame():nWidth ) ) ) )
+   nHeight    := Val( ::LeaDato( cName, 'HEIGHT', LTrim( Str( TFrame():nHeight ) ) ) )
    cCaption   := ::Clean( ::LeaDato( cName, 'CAPTION', cName ) )
    lOpaque    := ( ::LeaDatoLogic( cName, "OPAQUE", "F") == "T" )
    lTrans     := ( ::LeaDatoLogic( cName, "TRANSPARENT", "F" ) == "T" )
@@ -7696,8 +7787,8 @@ LOCAL lUpdateColors
    cObj           := ::LeaDato( cName, 'OBJ', '' )
    nRow           := Val( ::LeaRow( cName ) )
    nCol           := Val( ::LeaCol( cName ) )
-   nWidth         := Val( ::LeaDato( cName, 'WIDTH', '240' ) )              // use control's default value
-   nHeight        := Val( ::LeaDato( cName, 'HEIGHT', '120' ) )              // use control's default value
+   nWidth         := Val( ::LeaDato( cName, 'WIDTH', LTrim( Str( TOBrowse():nWidth ) ) ) )
+   nHeight        := Val( ::LeaDato( cName, 'HEIGHT', LTrim( Str( TOBrowse():nHeight ) ) ) )
    cHeaders       := ::LeaDato( cName, 'HEADERS', "{ '','' } ")
    cWidths        := ::LeaDato( cName, 'WIDTHS', "{ 100, 60 }")
    cWorkArea      := ::LeaDato( cName, 'WORKAREA', "ALIAS()" )
@@ -7946,8 +8037,8 @@ LOCAL cOnHeadRClick, lNoModalEdit, lByCell, lExtDblClick
    cObj           := ::LeaDato( cName, 'OBJ', '' )
    nRow           := Val( ::LeaRow( cName ) )
    nCol           := Val( ::LeaCol( cName ) )
-   nWidth         := Val( ::LeaDato( cName, 'WIDTH', '240' ) )              // use control's default value
-   nHeight        := Val( ::LeaDato( cName, 'HEIGHT', '120' ) )              // use control's default value
+   nWidth         := Val( ::LeaDato( cName, 'WIDTH', LTrim( Str( TXBrowse():nWidth ) ) ) )
+   nHeight        := Val( ::LeaDato( cName, 'HEIGHT', LTrim( Str( TXBrowse():nHeight ) ) ) )
    cHeaders       := ::LeaDato( cName, 'HEADERS', "{ '','' } ")
    cWidths        := ::LeaDato( cName, 'WIDTHS', "{ 100, 60 }")
    cWorkArea      := ::LeaDato( cName, 'WORKAREA', "ALIAS()" )
@@ -8191,8 +8282,8 @@ LOCAL cOnHeadRClick, lNoClickOnChk, lNoRClickOnChk, lExtDblClick, cSubClass
    cObj           := ::LeaDato( cName, 'OBJ', '' )
    nRow           := Val( ::LeaRow( cName ) )
    nCol           := Val( ::LeaCol( cName ) )
-   nWidth         := Val( ::LeaDato( cName, 'WIDTH', '240' ) )
-   nHeight        := Val( ::LeaDato( cName, 'HEIGHT', '120' ) )
+   nWidth         := Val( ::LeaDato( cName, 'WIDTH', LTrim( Str( TGrid():nWidth ) ) ) )
+   nHeight        := Val( ::LeaDato( cName, 'HEIGHT', LTrim( Str( TGrid():nHeight ) ) ) )
    cFontName      := ::Clean( ::LeaDato( cName, 'FONT', '' ) )
    nFontSize      := Val( ::LeaDato( cName, 'SIZE', '0' ) )
    aFontColor     := ::LeaDato( cName, 'FONTCOLOR', 'NIL' )
@@ -8417,8 +8508,8 @@ LOCAL lVisible, lEnabled, lRTL, lNoTabStop, lNoBorder, cSubClass, nHeight
    cName        := ::aControlW[i]
    nRow         := Val( ::LeaRow( cName ) )
    nCol         := Val( ::LeaCol( cName ) )
-   nWidth       := Val( ::LeaDato( cName, 'WIDTH', '120' ) )
-   nHeight      := Val( ::LeaDato( cName, 'HEIGHT', '24' ) )
+   nWidth       := Val( ::LeaDato( cName, 'WIDTH', LTrim( Str( TDatePick():nWidth ) ) ) )
+   nHeight      := Val( ::LeaDato( cName, 'HEIGHT', LTrim( Str( TDatePick():nHeight ) ) ) )
    cFontName    := ::Clean( ::LeaDato(cName,'FONT',''))
    nFontSize    := Val( ::LeaDato( cName, 'SIZE', '0' ) )
    cToolTip     := ::Clean( ::LeaDato( cName, 'TOOLTIP', '' ) )
@@ -8510,8 +8601,8 @@ LOCAL lClientEdge, lHScroll, lVScroll, lTrans, lRTL
    cObj         := ::LeaDato( cName, 'OBJ', '' )
    nRow         := Val( ::LeaRow( cName ) )
    nCol         := Val( ::LeaCol( cName ) )
-   nWidth       := Val( ::LeaDato( cName, 'WIDTH', '100' ) )
-   nHeight      := Val( ::LeaDato( cName, 'HEIGHT', '24' ) )
+   nWidth       := Val( ::LeaDato( cName, 'WIDTH', LTrim( Str( THyperLink():nWidth ) ) ) )
+   nHeight      := Val( ::LeaDato( cName, 'HEIGHT', LTrim( Str( THyperLink():nHeight ) ) ) )
    cValue       := ::Clean( ::LeaDato( cName, 'VALUE', 'ooHG Home' ) )
    cAddress     := ::Clean( ::LeaDato( cName, 'ADDRESS', 'https://sourceforge.net/projects/oohg/' ) )
    cFontName    := ::Clean( ::LeaDato( cName, 'FONT', '' ) )
@@ -8682,8 +8773,8 @@ LOCAL lBottom, lLeft, lRight, lCenter, lCancel, cSubClass, cAuxFile
    cObj          := ::LeaDato( cName, 'OBJ', '' )
    nRow          := Val( ::LeaRow( cName ) )
    nCol          := Val( ::LeaCol( cName ) )
-   nWidth        := Val( ::LeaDato( cName, 'WIDTH', '100' ) )
-   nHeight       := Val( ::LeaDato( cName, 'HEIGHT', '28' ) )
+   nWidth        := Val( ::LeaDato( cName, 'WIDTH', LTrim( Str( TButton():nWidth ) ) ) )
+   nHeight       := Val( ::LeaDato( cName, 'HEIGHT', LTrim( Str( TButton():nHeight ) ) ) )
    aBackColor    := ::LeaDato( cName, 'BACKCOLOR', 'NIL' )
    aBackColor    := UpperNIL( ::LeaDato_Oop( cName, 'BACKCOLOR', aBackColor ) )
    lVisible      := ( ::LeaDatoLogic( cName, 'INVISIBLE', "F" ) == "F" )
@@ -8784,8 +8875,8 @@ LOCAL cImgMargin, lFlat, lTop, lBottom, lLeft, lRight, lCenter, cSubClass
    cObj          := ::LeaDato( cName, 'OBJ', '' )
    nRow          := Val( ::LeaRow( cName ) )
    nCol          := Val( ::LeaCol( cName ) )
-   nWidth        := Val( ::LeaDato( cName, 'WIDTH', '100' ) )
-   nHeight       := Val( ::LeaDato( cName, 'HEIGHT', '28' ) )
+   nWidth        := Val( ::LeaDato( cName, 'WIDTH', LTrim( Str( TButtonCheck():nWidth ) ) ) )
+   nHeight       := Val( ::LeaDato( cName, 'HEIGHT', LTrim( Str( TButtonCheck():nHeight ) ) ) )
    cPicture      := ::Clean( ::LeaDato( cName, 'PICTURE', '' ) )
    lValue        := ( ::LeaDatoLogic( cName, 'VALUE', 'F' ) == "T" )
    cToolTip      := ::Clean( ::LeaDato( cName, 'TOOLTIP', '' ) )
@@ -8891,8 +8982,8 @@ local lDIBSection, lNoTabStop, cOnChange, lValue
    cObj         := ::LeaDato( cName, 'OBJ', '' )
    nRow         := Val( ::LeaRow( cName ) )
    nCol         := Val( ::LeaCol( cName ) )
-   nWidth       := Val( ::LeaDato( cName, 'WIDTH', '100' ) )
-   nHeight      := Val( ::LeaDato( cName, 'HEIGHT', '28' ) )
+   nWidth       := Val( ::LeaDato( cName, 'WIDTH', LTrim( Str( TButtonCheck():nWidth ) ) ) )
+   nHeight      := Val( ::LeaDato( cName, 'HEIGHT', LTrim( Str( TButtonCheck():nHeight ) ) ) )
    cCaption     := ::Clean( ::LeaDato( cName, 'CAPTION', cName ) )
    cFontName    := ::Clean( ::LeaDato( cName, 'FONT', '' ) )
    nFontSize    := Val( ::LeaDato( cName, 'SIZE', '0' ) )
@@ -8994,7 +9085,7 @@ LOCAL cName, cObj, nRow, nCol, nWidth, cFontName, nFontSize, aFontColor, lBold
 LOCAL lItalic, lUnderline, lStrikeout, aBackColor, lVisible, lEnabled, cToolTip
 LOCAL cOnChange, cOnGotFocus, cOnLostFocus, cOnEnter, cOnDisplayChange, cItems
 LOCAL cItemSource, nValue, cValueSource, nHelpId, lNoTabStop, lSort, lBreak
-LOCAL lDisplayEdit, lRTL, cImage, lFit, nTextHeight, cItemImageNumber
+LOCAL lDisplayEdit, lRTL, cImage, lFit, nTextHeight, cItemImageNumber, nHeight
 LOCAL cImageSource, lFirstItem, nListWidth, cOnListDisplay, cOnListClose
 LOCAL lDelayedLoad, lIncremental, lIntegralHeight, lRefresh, lNoRefresh
 LOCAL cSourceOrder, cOnRefresh, nSearchLapse, cGripperText, cSubClass
@@ -9004,7 +9095,8 @@ LOCAL cSourceOrder, cOnRefresh, nSearchLapse, cGripperText, cSubClass
    cObj              := ::LeaDato( cName, 'OBJ', '' )
    nRow              := Val( ::LeaRow( cName ) )
    nCol              := Val( ::LeaCol( cName ) )
-   nWidth            := Val( ::LeaDato( cName, 'WIDTH', '120' ) )              // use control's default value
+   nWidth            := Val( ::LeaDato( cName, 'WIDTH', LTrim( Str( TCombo():nWidth ) ) ) )
+   nHeight           := Val( ::LeaDato( cName, 'HEIGHT', LTrim( Str( TCombo():nHeight ) ) ) )
    cFontName         := ::Clean( ::LeaDato( cName, 'FONT', '' ) )
    nFontSize         := Val( ::LeaDato( cName, 'SIZE', '0' ) )
    aFontColor        := ::LeaDato( cName, 'FONTCOLOR', 'NIL' )
@@ -9061,7 +9153,8 @@ LOCAL cSourceOrder, cOnRefresh, nSearchLapse, cGripperText, cSubClass
 
    // Show control
    @ nRow, nCol COMBOBOX &cName OF ( ::oDesignForm:Name ) ;
-      WIDTH nwidth ;
+      WIDTH nWidth ;
+      HEIGHT nHeight ;
       ITEMS { cName, ' ' } ;
       VALUE 1 ;
       ON GOTFOCUS ::Dibuja( This:Name ) ;
@@ -9151,8 +9244,8 @@ LOCAL lMultiSelect, lNoTabStop, lBreak, lSort, cSubClass
    cObj         := ::LeaDato( cName, 'OBJ', '' )
    nRow         := Val( ::LeaRow( cName ) )
    nCol         := Val( ::LeaCol( cName ) )
-   nWidth       := Val( ::LeaDato( cName, 'WIDTH', '100' ) )
-   nHeight      := Val( ::LeaDato( cName, 'HEIGHT', '100' ) )
+   nWidth       := Val( ::LeaDato( cName, 'WIDTH', LTrim( Str( TList():nWidth ) ) ) )
+   nHeight      := Val( ::LeaDato( cName, 'HEIGHT', LTrim( Str( TList():nHeight ) ) ) )
    cToolTip     := ::Clean( ::LeaDato( cName, 'TOOLTIP', '' ) )
    nHelpId      := Val( ::LeaDato( cName, 'HELPID', '0' ) )
    cFontName    := ::Clean( ::LeaDato( cName, 'FONT', '' ) )
@@ -9266,8 +9359,8 @@ LOCAL cSubClass
    cObj         := ::LeaDato( cName, 'OBJ', '' )
    nRow         := Val( ::LeaRow( cName ) )
    nCol         := Val( ::LeaCol( cName ) )
-   nWidth       := Val( ::LeaDato( cName, 'WIDTH', '100' ) )
-   nHeight      := Val( ::LeaDato( cName, 'HEIGHT', '28' ) )
+   nWidth       := Val( ::LeaDato( cName, 'WIDTH', LTrim( Str( TCheckBox():nWidth ) ) ) )
+   nHeight      := Val( ::LeaDato( cName, 'HEIGHT', LTrim( Str( TCheckBox():nHeight ) ) ) )
    cFontName    := ::Clean( ::LeaDato( cName, 'FONT', '' ) )
    nFontSize    := Val( ::LeaDato( cName, 'SIZE', '0' ) )
    cToolTip     := ::Clean( ::LeaDato( cName, 'TOOLTIP', '' ) )
@@ -9570,7 +9663,6 @@ LOCAL cSubClass
    ::AddCtrlToTabPage( i, cName, nRow, nCol )
 RETURN NIL
 
-// llena los TABS, previo cargado de los controles en la forma
 //------------------------------------------------------------------------------
 METHOD AddCtrlToTabPage( z, cName, nRow, nCol ) CLASS TFormEditor
 //------------------------------------------------------------------------------
@@ -9749,99 +9841,97 @@ RETURN NIL
 //------------------------------------------------------------------------------
 METHOD Cordenada() CLASS TFormEditor
 //------------------------------------------------------------------------------
-local iRow, iCol, iMin, w_OOHG_MouseRow, w_OOHG_MouseCol, i, cName, oControl
+LOCAL iMin := 0, w_OOHG_MouseRow, w_OOHG_MouseCol, i, cName, oControl
 
-   iRow := _ooHG_mouserow
-   iCol := _ooHG_mousecol
-   ::Form_Main:labelyx:Value := StrZero( iRow, 4 ) + ',' + StrZero( iCol, 4 )
+   w_OOHG_MouseRow := _ooHG_MouseRow
+   w_OOHG_MouseCol := _ooHG_MouseCol
+   ::Form_Main:labelyx:Value := StrZero( w_OOHG_MouseRow, 4 ) + ',' + StrZero( w_OOHG_MouseCol, 4 )
 
-   iMin := 0
+   w_OOHG_MouseRow -= GetBorderHeight()
+   w_OOHG_MouseCol -= GetBorderWidth()
 
-   w_OOHG_MouseRow = _OOHG_MouseRow  - GetBorderHeight()
-   w_OOHG_MouseCol = _OOHG_MouseCol  - GetBorderWidth()
-
-   For i := 2 To Len( ::aName )
+   FOR i := 2 TO Len( ::aName )
       cName := ::aName[i]
       IF ValType( cName ) == 'C' .AND. ! Empty( cName ) .AND. ::aCtrlType[i] != 'STATUSBAR' .AND. aScan( ::oDesignForm:aControls, { |c| Lower( c:Name ) == Lower( cName ) } ) > 0
          oControl := ::oDesignForm:&cName:Object()
-         if ocontrol:hWnd > 0
-            if ocontrol:row=ocontrol:containerrow .AND. ocontrol:col=ocontrol:containercol
-               if ( w_ooHG_mouserow >= ocontrol:Row - 10 ) .AND. ;
-                  ( w_ooHG_mouserow <= ocontrol:Row ) .AND. ;
-                  ( w_ooHG_mousecol >= ocontrol:Col - 10 ) .AND. ;
-                  ( w_ooHG_mousecol <= ocontrol:Col ) .AND. ;
-                  ( .not. lower(ocontrol:Name) $ 'dummymenuname events keyb statusbar statusitem timernum timercaps timerinsert statuskeybrd timerbar statustimer timer_cvctt' ) .AND. ;
-                  ( .not. lower(ocontrol:type) $ 'hotkey' )
+         if oControl:hWnd > 0
+            IF oControl:row == oControl:ContainerRow .AND. oControl:Col == oControl:ContainerCol
+               IF ( w_OOHG_MouseRow >= oControl:Row - 10 ) .AND. ;
+                  ( w_OOHG_MouseRow <= oControl:Row ) .AND. ;
+                  ( w_OOHG_MouseCol >= oControl:Col - 10 ) .AND. ;
+                  ( w_OOHG_MouseCol <= oControl:Col ) .AND. ;
+                  ( ! Lower( oControl:Name ) $ 'dummymenuname events keyb statusbar statusitem timernum timercaps timerinsert statuskeybrd timerbar statustimer timer_cvctt' ) .AND. ;
+                  ( ! Lower( oControl:Type ) $ 'hotkey' )
                   iMin := i
-               EndIf
-            else
-               if ( w_ooHG_mouserow >= ocontrol:containerRow - 10 ) .AND. ;
-                  ( w_ooHG_mouserow <= ocontrol:containerRow   )  .AND. ;
-                  ( w_ooHG_mousecol >= ocontrol:containerCol - 10 ) .AND. ;
-                  ( w_ooHG_mousecol <= ocontrol:containerCol ) .AND. ;
-                  ( .not. lower(ocontrol:Name) $ 'dummymenuname events keyb statusbar statusitem timernum timercaps timerinsert statuskeybrd timerbar statustimer timer_cvctt' ) .AND. ;
-                  (  .not. lower(ocontrol:type) $ 'hotkey' )
+               ENDIF
+            ELSE
+               IF ( w_OOHG_MouseRow >= oControl:ContainerRow - 10 ) .AND. ;
+                  ( w_OOHG_MouseRow <= oControl:ContainerRow )  .AND. ;
+                  ( w_OOHG_MouseCol >= oControl:ContainerCol - 10 ) .AND. ;
+                  ( w_OOHG_MouseCol <= oControl:ContainerCol ) .AND. ;
+                  ( ! Lower( oControl:Name ) $ 'dummymenuname events keyb statusbar statusitem timernum timercaps timerinsert statuskeybrd timerbar statustimer timer_cvctt' ) .AND. ;
+                  (  ! Lower( oControl:Type ) $ 'hotkey' )
                   iMin := i
                ENDIF
             ENDIF
          ENDIF
       ENDIF
-   Next i
+   NEXT i
 
-   if iMin > 0
+   IF iMin > 0
       CursorHand()
       ::swCursor := 1
       ::myHandle := iMin
-   else
-      if ::swCursor # 2
+   ELSE
+      IF ::swCursor # 2
          CursorArrow()
          ::swCursor := 0
-      endif
-   endif
+      ENDIF
+   ENDIF
 
    Imin := 0
-   For i := 2 To Len( ::aName )
+   FOR i := 2 TO Len( ::aName )
       cName := ::aName[i]
-      if valtype(cName) = 'C' .AND. cName # '' .AND. ! ::aCtrlType[i] $ 'STATUSBAR'
+      IF ValType( cName ) == 'C' .AND. cName # '' .AND. ! ::aCtrlType[i] $ 'STATUSBAR'.AND. aScan( ::oDesignForm:aControls, { |c| Lower( c:Name ) == Lower( cName ) } ) > 0
          oControl := ::oDesignForm:&cName:Object()
-         if ocontrol:hWnd > 0
-            if ! oControl:Type == 'TOOLBAR'
-               if ocontrol:row=ocontrol:containerrow .AND. ocontrol:col=ocontrol:containercol
-                  if ( w_ooHG_mouserow >= ocontrol:Row  + ocontrol:height ) .AND. ;
-                     ( w_ooHG_mouserow <= ocontrol:Row + ocontrol:height+5 ) .AND. ;
-                     ( w_ooHG_mousecol >= ocontrol:Col  + ocontrol:width ) .AND. ;
-                     ( w_ooHG_mousecol <= ocontrol:Col + ocontrol:width+5 ) .AND. ;
-                     ( .not. lower(ocontrol:Name) $ 'dummymenuname events keyb statusbar statusitem timernum timercaps timerinsert statuskeybrd timerbar statustimer timer_cvctt' ) .AND. ;
-                     ( .not. lower(ocontrol:type) $ 'hotkey' ) .AND. ;
+         IF oControl:hWnd > 0
+            IF ! oControl:Type == 'TOOLBAR'
+               IF oControl:Row == oControl:ContainerRow .AND. oControl:Col == oControl:ContainerCol
+                  IF ( w_OOHG_MouseRow >= oControl:Row + oControl:Height ) .AND. ;
+                     ( w_OOHG_MouseRow <= oControl:Row + oControl:Height + 5 ) .AND. ;
+                     ( w_OOHG_MouseCol >= oControl:Col + oControl:Width ) .AND. ;
+                     ( w_OOHG_MouseCol <= oControl:Col + oControl:Width + 5 ) .AND. ;
+                     ( ! Lower(oControl:Name) $ 'dummymenuname events keyb statusbar statusitem timernum timercaps timerinsert statuskeybrd timerbar statustimer timer_cvctt' ) .AND. ;
+                     ( ! Lower(oControl:type) $ 'hotkey' ) .AND. ;
                      ! ::aCtrlType[i] $ 'MONTHCALENDAR TIMER'
                      iMin := i
-                  EndIf
-               else
-                  if ( w_ooHG_mouserow >= ocontrol:containerRow  + ocontrol:height ) .AND. ;
-                     ( w_ooHG_mouserow <= ocontrol:containerRow + ocontrol:height+5 ) .AND. ;
-                     ( w_ooHG_mousecol >= ocontrol:containerCol  + ocontrol:width ) .AND. ;
-                     ( w_ooHG_mousecol <= ocontrol:containerCol + ocontrol:width+5 ) .AND. ;
-                     ( .not. lower(ocontrol:Name) $ 'dummymenuname events keyb statusbar statusitem timernum timercaps timerinsert statuskeybrd timerbar statustimer timer_cvctt' ) .AND. ;
-                     ( .not. lower(ocontrol:type) $ 'hotkey' ) .AND. ;
+                  ENDIF
+               ELSE
+                  IF ( w_OOHG_MouseRow >= oControl:ContainerRow + oControl:Height ) .AND. ;
+                     ( w_OOHG_MouseRow <= oControl:ContainerRow + oControl:Height + 5 ) .AND. ;
+                     ( w_OOHG_MouseCol >= oControl:ContainerCol + oControl:Width ) .AND. ;
+                     ( w_OOHG_MouseCol <= oControl:ContainerCol + oControl:Width + 5 ) .AND. ;
+                     ( ! Lower( oControl:Name ) $ 'dummymenuname events keyb statusbar statusitem timernum timercaps timerinsert statuskeybrd timerbar statustimer timer_cvctt' ) .AND. ;
+                     ( ! Lower( oControl:Type ) $ 'hotkey' ) .AND. ;
                      ! ::aCtrlType[i] $ 'MONTHCALENDAR TIMER'
                      iMin := i
-                  EndIf
-               endif
-            endif
-         endif
-      endif
-   Next i
+                  ENDIF
+               ENDIF
+            ENDIF
+         ENDIF
+      ENDIF
+   NEXT i
 
-   if iMin > 0
+   IF iMin > 0
       CursorSizeNWSE()
       ::swCursor := 2
       ::myHandle := iMin
-   else
-      if ::swCursor # 1
+   ELSE
+      IF ::swCursor # 1
          CursorArrow()
          ::swCursor := 0
-      endif
-   endif
+      ENDIF
+   ENDIF
 RETURN NIL
 
 //------------------------------------------------------------------------------
@@ -9902,7 +9992,7 @@ METHOD Save( lSaveAs ) CLASS TFormEditor
 LOCAL BaseRow, BaseCol, Output, nSpacing := 3, aCaptions, aWidths, CurrentPage
 LOCAL aActions, aIcons, aStyles, aToolTips, aAligns, i, j, cName, nCtrlPos, k
 LOCAL nRow, nCol, nWidth, nHeight, caCaptions, caImages, caPageNames, caPageObjs
-LOCAL caPageSubClasses, aImages, aPageNames, aPageObjs, aPageSubClasses
+LOCAL caPageSubClasses, aImages, aPageNames, aPageObjs, aPageSubClasses, nCount
 
    CursorWait()
    ::oWaitMsg:label_1:Value := 'Saving form ...'
@@ -10301,8 +10391,8 @@ LOCAL caPageSubClasses, aImages, aPageNames, aPageObjs, aPageSubClasses
          Output += Space( nSpacing * 2 ) + 'AT ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' ;' + CRLF
          Output += Space( nSpacing * 2 ) + 'WIDTH ' + LTrim( Str( nWidth ) ) + ' ;' + CRLF
          Output += Space( nSpacing * 2 ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
-         IF ! Empty( ::avalue[j] )
-            Output += ' ;' + CRLF + Space( nSpacing * 2 ) + 'VALUE ' + AllTrim( ::avalue[j] )
+         IF ::aValue[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * 2 ) + 'VALUE ' + LTrim( Str( ::aValue[j] ) )
          ENDIF
          IF ! Empty( ::aFontName[j] )
             Output += ' ;' + CRLF + Space( nSpacing * 2 ) + 'FONT ' + StrToStr( ::aFontName[j] )
@@ -10369,65 +10459,75 @@ LOCAL caPageSubClasses, aImages, aPageNames, aPageObjs, aPageSubClasses
          caPageNames      := ::aPageNames[j]
          caPageObjs       := ::aPageObjs[j]
          caPageSubClasses := ::aPageSubClasses[j]
-         aCaptions        := &caCaptions
-         aImages          := &caImages
-         aPageNames       := &caPageNames
-         aPageObjs        := &caPageObjs
-         aPageSubClasses  := &caPageSubClasses
 
-         CurrentPage := 1
-         Output += Space( nSpacing * 2) + 'DEFINE PAGE ' + StrToStr( aCaptions[currentpage] )
-         IF ! Empty( aImages[CurrentPage] )
-            Output += ' ;' + CRLF + Space( nSpacing * 3) + 'IMAGE ' + StrToStr( aImages[currentpage] )
-         ENDIF
-         IF ! Empty( aPageNames[CurrentPage] )
-            Output += ' ;' + CRLF + Space( nSpacing * 3) + 'NAME ' + AllTrim( aPageNames[CurrentPage] )
-         ENDIF
-         IF ! Empty( aPageObjs[CurrentPage] )
-            Output += ' ;' + CRLF + Space( nSpacing * 3) + 'OBJ ' + AllTrim( aPageObjs[CurrentPage] )
-         ENDIF
-         IF ! Empty( aPageSubClasses[CurrentPage] )
-            Output += ' ;' + CRLF + Space( nSpacing * 3) + 'SUBCLASS ' + AllTrim( aPageSubClasses[CurrentPage] )
-         ENDIF
-         Output += CRLF + CRLF
+         IF IsValidArray( caCaptions )
+            aCaptions := &caCaptions
+            nCount := Len( aCaptions )
 
-         FOR k := 1 TO ::nControlW
-            IF ::aTabPage[k, 1] # NIL
-               IF ::aTabPage[k, 1] == ::aControlW[j]
-                  IF ::aTabPage[k, 2] # CurrentPage
-                     Output += Space( nSpacing * 2) + 'END PAGE ' + CRLF + CRLF
-                     CurrentPage ++
-
-                     Output += Space( nSpacing * 2) + 'DEFINE PAGE ' + StrToStr( aCaptions[CurrentPage] )
-                     IF ! Empty( aImages[CurrentPage] )
-                        Output += ' ;' + CRLF + Space( nSpacing * 3) + 'IMAGE ' + StrToStr( aImages[currentpage] )
-                     ENDIF
-                     IF ! Empty( aPageNames[CurrentPage] )
-                        Output += ' ;' + CRLF + Space( nSpacing * 3) + 'NAME ' + AllTrim( aPageNames[CurrentPage] )
-                     ENDIF
-                     IF ! Empty( aPageObjs[CurrentPage] )
-                        Output += ' ;' + CRLF + Space( nSpacing * 3) + 'OBJ ' + AllTrim( aPageObjs[CurrentPage] )
-                     ENDIF
-                     IF ! Empty( aPageSubClasses[CurrentPage] )
-                        Output += ' ;' + CRLF + Space( nSpacing * 3) + 'SUBCLASS ' + AllTrim( aPageSubClasses[CurrentPage] )
-                     ENDIF
-                     Output += CRLF + CRLF
-                  ENDIF
-
-                  //***************************  Tab page controls
-                  nCtrlPos := aScan( ::oDesignForm:aControls, { |c| Lower( c:Name ) == Lower( ::aControlW[k] ) } )
-                  IF nCtrlPos > 0
-                     nRow    := ::oDesignForm:aControls[nCtrlPos]:Row
-                     nCol    := ::oDesignForm:aControls[nCtrlPos]:Col
-                     nWidth  := ::oDesignForm:aControls[nCtrlPos]:Width
-                     nHeight := ::oDesignForm:aControls[nCtrlPos]:Height
-                     Output  := ::MakeControls( k, Output, nRow, nCol, nWidth, nHeight, nSpacing, 3)
-                  ENDIF
-               ENDIF
+            IF IsValidArray( caImages )
+               aImages := &caImages
+               aSize( aImages, nCount )
+            Else
+               aImages := Array( nCount )
             ENDIF
-         NEXT k
+            IF IsValidArray( caPageNames )
+               aPageNames := &caPageNames
+               aSize( aPageNames, nCount )
+            Else
+               aPageNames := Array( nCount )
+            ENDIF
+            IF IsValidArray( caPageObjs )
+               aPageObjs := &caPageObjs
+               aSize( aPageObjs, nCount )
+            Else
+               aPageObjs := Array( nCount )
+            ENDIF
+            IF IsValidArray( caPageSubClasses )
+               aPageSubClasses := &caPageSubClasses
+               aSize( aPageSubClasses, nCount )
+            Else
+               aPageSubClasses := Array( nCount )
+            ENDIF
 
-         Output += Space( nSpacing * 2) + 'END PAGE ' + CRLF + CRLF
+            FOR CurrentPage := 1 TO nCount
+               Output += Space( nSpacing * 2) + 'DEFINE PAGE ' + StrToStr( aCaptions[CurrentPage] )
+               IF ! Empty( aImages[CurrentPage] ) .AND. HB_IsString( aImages[CurrentPage] )
+                  Output += ' ;' + CRLF + Space( nSpacing * 3) + 'IMAGE ' + AllTrim( aImages[CurrentPage] )
+               ENDIF
+               IF ! Empty( aPageNames[CurrentPage] ) .AND. HB_IsString( aPageNames[CurrentPage] )
+                  Output += ' ;' + CRLF + Space( nSpacing * 3) + 'NAME ' + AllTrim( aPageNames[CurrentPage] )
+               ENDIF
+               IF ! Empty( aPageObjs[CurrentPage] ) .AND. HB_IsString( aPageObjs[CurrentPage] )
+                  Output += ' ;' + CRLF + Space( nSpacing * 3) + 'OBJ ' + AllTrim( aPageObjs[CurrentPage] )
+               ENDIF
+               IF ! Empty( aPageSubClasses[CurrentPage] ) .AND. HB_IsString( aPageSubClasses[CurrentPage] )
+                  Output += ' ;' + CRLF + Space( nSpacing * 3) + 'SUBCLASS ' + AllTrim( aPageSubClasses[CurrentPage] )
+               ENDIF
+               Output += CRLF + CRLF
+
+               FOR k := 1 TO ::nControlW
+                  IF ::aTabPage[k, 1] # NIL
+                     IF ::aTabPage[k, 1] == ::aControlW[j]
+                        IF ::aTabPage[k, 2] # CurrentPage
+                           EXIT
+                        ENDIF
+
+                        //***************************  Tab page controls
+                        nCtrlPos := aScan( ::oDesignForm:aControls, { |c| Lower( c:Name ) == Lower( ::aControlW[k] ) } )
+                        IF nCtrlPos > 0
+                           nRow    := ::oDesignForm:aControls[nCtrlPos]:Row
+                           nCol    := ::oDesignForm:aControls[nCtrlPos]:Col
+                           nWidth  := ::oDesignForm:aControls[nCtrlPos]:Width
+                           nHeight := ::oDesignForm:aControls[nCtrlPos]:Height
+                           Output  := ::MakeControls( k, Output, nRow, nCol, nWidth, nHeight, nSpacing, 3)
+                        ENDIF
+                     ENDIF
+                  ENDIF
+               NEXT k
+
+               Output += Space( nSpacing * 2) + 'END PAGE ' + CRLF + CRLF
+            NEXT i
+         ENDIF
 
          //***************************  Tab end
          Output += Space( nSpacing ) + "END TAB " + CRLF + CRLF
@@ -13100,7 +13200,7 @@ LOCAL cValue
       Output += Space( nSpacing ) + '*****@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' TIMER ' + AllTrim( ::aName[j] ) + ' ;' + CRLF
       Output += Space( nSpacing ) + '*****' + Space( nSpacing ) + 'ROW ' + LTrim( Str( nRow ) ) + ' ;' + CRLF
       Output += Space( nSpacing ) + '*****' + Space( nSpacing ) + 'COL ' + LTrim( Str( nCol ) ) + CRLF
-      Output += Space( nSpacing * ( nLevel + 1 ) ) + 'DEFINE TIMER ' + AllTrim( ::aName[j] )
+      Output += Space( nSpacing * nLevel ) + 'DEFINE TIMER ' + AllTrim( ::aName[j] )
       IF ! Empty( ::aCObj[j ] )
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
       ENDIF
@@ -13861,7 +13961,7 @@ LOCAL cValue
       IF ! Empty( ::aRange[j] )
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RANGE ' + AllTrim( ::aRange[j] )
       ENDIF
-      IF ! Empty( ::aValueN[j] )
+      IF ::aValueN[j] > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( ::aValueN[j] ) )
       ENDIF
       IF ! Empty( ::aFontName[j] )
@@ -13916,9 +14016,109 @@ LOCAL cValue
    ENDIF
 
    IF ::aCtrlType[j] == 'SCROLLBAR'
-   /*
-      TODO:
-   */
+      // Must end with a space
+      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' SCROLLBAR ' + AllTrim( ::aName[j] ) + ' '
+      IF ! Empty( ::aCObj[j ] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
+      ENDIF
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+      IF ! Empty( ::aRange[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RANGE ' + AllTrim( ::aRange[j] )
+      ENDIF
+      IF ::aValueN[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( ::aValueN[j] ) )
+      ENDIF
+      IF ::aHelpID[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
+      ENDIF
+      IF ! Empty( ::aToolTip[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j] )
+      ENDIF
+      IF ::aRTL[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
+      ENDIF
+      IF ! ::aEnabled[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
+      ENDIF
+      IF ! ::aVisible[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
+      ENDIF
+      IF ! Empty( ::aSubClass[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
+      ENDIF
+      IF ::aFlat[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HORIZONTAL '
+      ELSEIF ::aVertical[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VERTICAL '
+      ENDIF
+      IF ::aAutoPlay[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AUTOMOVE '
+      ENDIF
+      IF ::aAppend[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ATTACHED '
+      ENDIF
+      IF ::aIncrement[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'LINESKIP ' + LTrim( Str( ::aIncrement[j] ) )
+      ENDIF
+      IF ::aIndent[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PAGESKIP ' + LTrim( Str( ::aIndent[j] ) )
+      ENDIF
+      IF ! Empty( ::aOnChange[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
+      ENDIF
+      IF ! Empty( ::aOnDblClick[j] )
+         IF ::aFlat[j]   // HORIZONTAL
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LINELEFT ' + AllTrim( ::aOnDblClick[j] )
+         ELSE
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LINEUP ' + AllTrim( ::aOnDblClick[j] )
+         ENDIF
+      ENDIF
+      IF ! Empty( ::aOnDelete[j] )
+         IF ::aFlat[j]   // HORIZONTAL
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LINERIGHT ' + AllTrim( ::aOnDelete[j] )
+         ELSE
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LINEDOWN ' + AllTrim( ::aOnDelete[j] )
+         ENDIF
+      ENDIF
+      IF ! Empty( ::aOnDrop[j] )
+         IF ::aFlat[j]   // HORIZONTAL
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON PAGELEFT ' + AllTrim( ::aOnDrop[j] )
+         ELSE
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON PAGEUP ' + AllTrim( ::aOnDrop[j] )
+         ENDIF
+      ENDIF
+      IF ! Empty( ::aOnEditCell[j] )
+         IF ::aFlat[j]   // HORIZONTAL
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON PAGERIGHT ' + AllTrim( ::aOnEditCell[j] )
+         ELSE
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON PAGEDOWN ' + AllTrim( ::aOnEditCell[j] )
+         ENDIF
+      ENDIF
+      IF ! Empty( ::aOnEnter[j] )
+         IF ::aFlat[j]   // HORIZONTAL
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LEFT ' + AllTrim( ::aOnEnter[j] )
+         ELSE
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON TOP ' + AllTrim( ::aOnEnter[j] )
+         ENDIF
+      ENDIF
+      IF ! Empty( ::aOnGotFocus[j] )
+         IF ::aFlat[j]   // HORIZONTAL
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON RIGHT ' + AllTrim( ::aOnGotFocus[j] )
+         ELSE
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON BOTTOM ' + AllTrim( ::aOnGotFocus[j] )
+         ENDIF
+      ENDIF
+      IF ! Empty( ::aOnHScroll[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON THUMB ' + AllTrim( ::aOnHScroll[j] )
+      ENDIF
+      IF ! Empty( ::aOnLabelEdit[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON TRACK ' + AllTrim( ::aOnLabelEdit[j] )
+      ENDIF
+      IF ! Empty( ::aOnListClose[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON ENDTRACK ' + AllTrim( ::aOnListClose[j] )
+      ENDIF
+      Output += CRLF + CRLF
    ENDIF
 
    IF ::aCtrlType[j] == 'TEXTARRAY'
@@ -13938,8 +14138,9 @@ RETURN Output
 //------------------------------------------------------------------------------
 METHOD Properties_Click() CLASS TFormEditor
 //------------------------------------------------------------------------------
-LOCAL oControl, cName, j, kp, cArray, cTitle, aLabels, aInitValues, cNameW, ia
+LOCAL oControl, cName, j, kp, cTitle, aLabels, aInitValues, cNameW, ia
 LOCAL aFormats, aResults, nStyle, uTemp, nRow, nCol, nWidth, nHeight, cItems
+LOCAL nPageCount, aCaptions, aImages, aCtrls
 
    ia := ::nHandleP
    IF ia <= 0
@@ -13953,20 +14154,39 @@ LOCAL aFormats, aResults, nStyle, uTemp, nRow, nCol, nWidth, nHeight, cItems
       RETURN NIL
    ENDIF
 
-   IF oControl:Type == 'TAB'
+   IF ::aCtrlType[j] == 'TAB'
       ::TabProperties( j, oControl )
-      IF IsValidArray( ::aCaption[j] )
-         cArray := &( ::aCaption[j] )
-         FOR kp := 1 TO Len( cArray )
+      DO CASE
+      CASE ! IsValidArray( ::aCaption[j] )
+         MsgInfo( "Pages' Caption is not a valid array !!!", 'OOHG IDE+' )
+      CASE ! IsValidArray( ::aImage[j] )
+         MsgInfo( "Pages' Image is not a valid array !!!", 'OOHG IDE+' )
+      CASE ! IsValidArray( ::aPageNames[j] )
+         MsgInfo( "Pages' Name is not a valid array !!!", 'OOHG IDE+' )
+      CASE ! IsValidArray( ::aPageObjs[j] )
+         MsgInfo( "Pages' Obj is not a valid array !!!", 'OOHG IDE+' )
+      CASE ! IsValidArray( ::aPageSubClasses[j] )
+         MsgInfo( "Pages' Subclass is not a valid array !!!", 'OOHG IDE+' )
+      OTHERWISE
+         aCaptions  := &( ::aCaption[j] )
+         nPageCount := Len( aCaptions )
+         aImages    := &( ::aImage[j] )
+         aSize( aImages, nPageCount )
+         FOR kp := 1 TO nPageCount
             oControl:Value := kp
-            oControl:Caption := cArray[kp]
+            oControl:Caption( kp, aCaptions[kp] )
+            IF HB_IsString( aImages[kp] )
+               oControl:Picture( kp, aImages[kp] )
+            ELSE
+               oControl:Picture := NIL
+            ENDIF
          NEXT kp
          oControl:Visible := .F.
          oControl:Visible := .T.
+         oControl:Value   := ::aValue[j]
          ::lFsave := .F.
          ::RefreshControlInspector()
-      ENDIF
-      RETURN NIL
+      ENDCASE
    ENDIF
 
    cNameW := ::aName[j]
@@ -14005,7 +14225,6 @@ LOCAL aFormats, aResults, nStyle, uTemp, nRow, nCol, nWidth, nHeight, cItems
          RETURN NIL
       ENDIF
       ::aToolTip[j]          := aResults[01]
-      oControl:ToolTip       := aResults[01]
       ::aMaxLength[j]        := IIF( ! Empty( aResults[09] ) .OR. aResults[16], 0, Max( aResults[02], 0 ) )
       ::aUpperCase[j]        := aResults[03]
       ::aRightAlign[j]       := IIF( aResults[26], .F., aResults[04] )
@@ -14050,9 +14269,7 @@ LOCAL aFormats, aResults, nStyle, uTemp, nRow, nCol, nWidth, nHeight, cItems
          RETURN NIL
       ENDIF
       ::aTooltip[j]          := aResults[01]
-      oControl:tooltip       := aResults[01]
       ::avalue[j]            := aResults[02]
-      oControl:value         := IIF( Empty( aResults[02] ), "   .   .   .   ", aResults[02] )
       ::aHelpID[j]           := aResults[03]
       ::aenabled[j]          := aResults[04]
       ::avisible[j]          := aResults[05]
@@ -14102,7 +14319,6 @@ LOCAL aFormats, aResults, nStyle, uTemp, nRow, nCol, nWidth, nHeight, cItems
          RETURN NIL
       ENDIF
       ::atooltip[j]          := aResults[01]
-      oControl:tooltip       := aResults[01]
       ::aenabled[j]          := aResults[02]
       ::avisible[j]          := aResults[03]
       ::aName[j]             := IIF( Empty( aResults[04] ), ::aName[j], aResults[04] )
@@ -14397,9 +14613,7 @@ LOCAL aFormats, aResults, nStyle, uTemp, nRow, nCol, nWidth, nHeight, cItems
          RETURN NIL
       ENDIF
       ::acaption[j]          := aResults[1]
-      oControl:Caption       := IIF( Empty( aResults[1] ), cName, aResults[1] )
       ::atooltip[j]          := aResults[2]
-      oControl:ToolTip       := aResults[2]
       ::aHelpID[j]           := aResults[3]
       ::anotabstop[j]        := aResults[4]
       ::aenabled[j]          := aResults[5]
@@ -14841,7 +15055,6 @@ LOCAL aFormats, aResults, nStyle, uTemp, nRow, nCol, nWidth, nHeight, cItems
       ::aHelpID[j]           := aResults[3]
       ::astretch[j]          := aResults[4]
       ::aName[j]             := IIF( Empty( aResults[5] ), ::aName[j], aResults[5] )
-      oControl:Value         := ::aName[j]
       ::aenabled[j]          := aResults[6]
       ::avisible[j]          := aResults[7]
       ::acobj[j]             := aResults[8]
@@ -14872,7 +15085,6 @@ LOCAL aFormats, aResults, nStyle, uTemp, nRow, nCol, nWidth, nHeight, cItems
       ENDIF
       ::aValueN[j]           := IIF( aResults[1] > 0, aResults[01], ::aValueN[j] )
       ::aName[j]             := IIF( Empty( aResults[02] ), ::aName[j], aResults[02] )
-      oControl:Value         := ::aName[j]
       ::aEnabled[j]          := aResults[03]
       ::aCObj[j]             := aResults[04]
       ::aSubClass[j]         := aResults[05]
@@ -14944,7 +15156,6 @@ LOCAL aFormats, aResults, nStyle, uTemp, nRow, nCol, nWidth, nHeight, cItems
       ENDIF
       ::aValue[j]            := aResults[01]
       ::aToolTip[j]          := aResults[02]
-      oControl:ToolTip       := aResults[02]
       ::aShowNone[j]         := aResults[03]
       ::aUpDown[j]           := aResults[04]
       ::aRightAlign[j]       := aResults[05]
@@ -14999,7 +15210,6 @@ LOCAL aFormats, aResults, nStyle, uTemp, nRow, nCol, nWidth, nHeight, cItems
       ENDIF
       ::aValue[j]            := aResults[01]
       ::aToolTip[j]          := aResults[02]
-      oControl:ToolTip       := aResults[02]
       ::aNoToday[j]          := aResults[03]
       ::aNoTodayCircle[j]    := aResults[04]
       ::aWeekNumbers[j]      := aResults[05]
@@ -15134,15 +15344,36 @@ LOCAL aFormats, aResults, nStyle, uTemp, nRow, nCol, nWidth, nHeight, cItems
       ::aEnabled[j]          := aResults[06]
       ::aVisible[j]          := aResults[07]
       ::aCObj[j]             := aResults[08]
-      ::aSubClass[j]         := aResults[08]
+      ::aSubClass[j]         := aResults[09]
       ::aRTL[j]              := aResults[10]
       ::aClientEdge[j]       := aResults[11]
    ENDIF
 
    IF ::aCtrlType[j] == 'SCROLLBAR'
-   /*
-      TODO
-   */
+      cTitle      := cNameW + " properties"
+      aLabels     := { 'Name',     'Range',     'Value',      'ToolTip',     'HelpID',     'Enabled',     'Visible',     'Obj',      'SubClass',     'RTL',     'Horizontal', 'Vertical',     'AutoMove',     'Attached',   'LineSkip',      'PageSkip' }
+      aInitValues := { ::aName[j], ::aRange[j], ::aValueN[j], ::aToolTip[j], ::aHelpID[j], ::aEnabled[j], ::aVisible[j], ::aCObj[j], ::aSubClass[j], ::aRTL[j], ::aFlat[j],   ::aVertical[j], ::aAutoPlay[j], ::aAppend[j], ::aIncrement[j], ::aIndent[j] }
+      aFormats    := { 30,         20,         "999999",     250,           '999',        .F.,           .F.,           31,         .F.,            .F.,       .F.,           .F.,            .F.,            .F.,          '999999',        '999999' }
+      aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
+      IF aResults[1] == NIL
+         RETURN NIL
+      ENDIF
+      ::aName[j]             := IIF( Empty( aResults[01] ), ::aName[j], aResults[01] )
+      ::aRange[j]            := aResults[02]
+      ::aValueN[j]           := aResults[03]
+      ::aToolTip[j]          := aResults[04]
+      ::aHelpID[j]           := aResults[05]
+      ::aEnabled[j]          := aResults[06]
+      ::aVisible[j]          := aResults[07]
+      ::aCObj[j]             := aResults[08]
+      ::aSubClass[j]         := aResults[09]
+      ::aRTL[j]              := aResults[10]
+      ::aFlat[j]             := aResults[11]
+      ::aVertical[j]         := aResults[12]
+      ::aAutoPlay[j]         := aResults[13]
+      ::aAppend[j]           := aResults[14]
+      ::aIncrement[j]        := aResults[15]
+      ::aIndent[j]           := aResults[16]
    ENDIF
 
    IF ::aCtrlType[j] == 'TEXTARRAY'
@@ -15154,38 +15385,32 @@ LOCAL aFormats, aResults, nStyle, uTemp, nRow, nCol, nWidth, nHeight, cItems
    ::lFsave := .F.
    ::RefreshControlInspector()
 
-   IF ::aCtrlType[j] $ 'ACTIVEX BUTTON CHECKLIST DATEPICKER HOTKEYBOX IMAGE IPADDRESS MONTHCALENDAR PICTURE PROGRESSMETER TEXT TIMER TREE'
+   // TODO: add other controls
+   IF ::aCtrlType[j] $ 'ACTIVEX BUTTON CHECKLIST DATEPICKER HOTKEYBOX IMAGE IPADDRESS MONTHCALENDAR PICTURE PROGRESSMETER TEXT TIMER TREE TAB'
       nRow    := oControl:Row
       nCol    := oControl:Col
       nWidth  := oControl:Width
       nHeight := oControl:Height
+      IF ::aCtrlType[j] == 'TAB'
+         aCtrls := Array( oControl:ItemCount )
+         FOR kp := 1 TO Len( aCtrls )
+            aCtrls[kp] := aClone( oControl:aPages[kp]:aControls )
+            aEval( aCtrls[kp], { |c| oControl:aPages[kp]:DeleteControl( c ) } )
+         NEXT kp
+      ELSE
+         aCtrls := NIL
+      ENDIF
       oControl:Release()
 
-      oControl        := ::CreateControl( aScan( ::ControlType, ::aCtrlType[j] ),  j )
+      oControl        := ::CreateControl( aScan( ::ControlType, ::aCtrlType[j] ),  j, aCtrls )
       oControl:Row    := nRow
       oControl:Col    := nCol
       oControl:Width  := nWidth
       oControl:Height := nHeight
       ::Dibuja( oControl:Name )
    ENDIF
-   // TODO: destroy and recreate control
 
    ::MisPuntos()
-RETURN NIL
-
-//------------------------------------------------------------------------------
-METHOD TabEvents( i ) CLASS TFormEditor
-//------------------------------------------------------------------------------
-LOCAL cName
-
-   cName := _OOHG_GetNullName( "0" )
-   SET INTERACTIVECLOSE ON
-   LOAD WINDOW tabevent AS ( cName )
-   &cName:Title := "Tab events " + ::aName[i]
-   &cName:text_101:Value := ::aOnChange[i]
-   CENTER WINDOW ( cName )
-   ACTIVATE WINDOW ( cName )
-   SET INTERACTIVECLOSE OFF
 RETURN NIL
 
 //------------------------------------------------------------------------------
@@ -15197,7 +15422,7 @@ LOCAL cName, oTabProp
    SET INTERACTIVECLOSE ON
    LOAD WINDOW tabprop AS ( cName )
    ON KEY ESCAPE OF ( oTabProp:Name ) ACTION oTabProp:Release()
-   oTabProp:Title          := 'Tab properties ' + ::aName[i]
+   oTabProp:Title          := ::aName[i] + ' properties '
    oTabProp:Text_1:Value   := ::aValue[i]
    oTabProp:Text_2:Value   := ::aName[i]
    oTabProp:Edit_3:Value   := ::aToolTip[i]
@@ -15242,7 +15467,7 @@ LOCAL nPages
    oTabProp:Edit_5:Value   := ::aPageObjs[i]
    oTabProp:Edit_6:Value   := ::aPageSubClasses[i]
 
-   oTab:Addpage( nPages + 1, 'Page ' + AllTrim( Str( nPages + 1 ) ), '' )
+   oTab:Addpage( nPages + 1, 'Page ' + AllTrim( Str( nPages + 1 ) ) )
 RETURN NIL
 
 *-----------------------------------------------------------------------------*
@@ -15289,47 +15514,90 @@ LOCAL i, aCaptions
    IF IsValidArray( oTabProp:text_101:Value )
       aCaptions := &( oTabProp:text_101:Value )
       FOR i := 1 TO Len( aCaptions )
-         oTab:Caption( i, aCaptions[i] )
+         IF HB_IsString( aCaptions[i] )
+            oTab:Caption( i, aCaptions[i] )
+         ELSE
+            MsgStop( "Caption for Page" + LTrim( Str( i ) ) + " must be a valid string !!!", 'ooHG IDE+' )
+            RETURN .F.
+         ENDIF
       NEXT i
       RETURN .T.
    ENDIF
-   MsgStop( "Caption for pages must be a valid array !!!", 'ooHG IDE+' )
+   MsgStop( "Pages' Caption must be a valid array of strings !!!", 'ooHG IDE+' )
 RETURN .F.
 
 //------------------------------------------------------------------------------
-FUNCTION CambiaImg( oTabProp )
+FUNCTION CambiaImg( oTab, oTabProp )
 //------------------------------------------------------------------------------
+LOCAL i, aImages
+
    IF IsValidArray( oTabProp:Edit_2:Value )
+      aImages := &( oTabProp:Edit_2:Value )
+      FOR i := 1 TO Len( aImages )
+         IF HB_IsString( aImages[i] )
+            oTab:Picture( i, aImages[i] )
+         ELSE
+            MsgStop( "Image for Page" + LTrim( Str( i ) ) + " must be a valid string !!!", 'ooHG IDE+' )
+            RETURN .F.
+         ENDIF
+      NEXT i
       RETURN .T.
    ENDIF
-   MsgStop( "Image for pages must be a valid array !!!", 'ooHG IDE+' )
+   MsgStop( "Pages' Image must be a valid array of strings !!!", 'ooHG IDE+' )
 RETURN .F.
 
 //------------------------------------------------------------------------------
 FUNCTION CambiaNam( oTabProp )
 //------------------------------------------------------------------------------
+LOCAL i, aNames
+
    IF IsValidArray( oTabProp:Edit_4:Value )
+      aNames := &( oTabProp:Edit_4:Value )
+      FOR i := 1 TO Len( aNames )
+         IF ! HB_IsString( aNames[i] )
+            MsgStop( "Name for Page" + LTrim( Str( i ) ) + " must be a valid string !!!", 'ooHG IDE+' )
+            RETURN .F.
+         ENDIF
+      NEXT i
       RETURN .T.
    ENDIF
-   MsgStop( "Names for pages must be a valid array !!!", 'ooHG IDE+' )
+   MsgStop( "Pages' Name must be a valid array of strings !!!", 'ooHG IDE+' )
 RETURN .F.
 
 //------------------------------------------------------------------------------
 FUNCTION CambiaObj( oTabProp )
 //------------------------------------------------------------------------------
+LOCAL i, aObjs
+
    IF IsValidArray( oTabProp:Edit_5:Value )
+      aObjs := &( oTabProp:Edit_4:Value )
+      FOR i := 1 TO Len( aObjs )
+         IF ! HB_IsString( aObjs[i] )
+            MsgStop( "Obj for Page" + LTrim( Str( i ) ) + " must be a valid string !!!", 'ooHG IDE+' )
+            RETURN .F.
+         ENDIF
+      NEXT i
       RETURN .T.
    ENDIF
-   MsgStop( "Names for pages must be a valid array !!!", 'ooHG IDE+' )
+   MsgStop( "Pages' Obj must be a valid array of strings !!!", 'ooHG IDE+' )
 RETURN .F.
 
 //------------------------------------------------------------------------------
 FUNCTION CambiaSub( oTabProp )
 //------------------------------------------------------------------------------
+LOCAL i, aSubs
+
    IF IsValidArray( oTabProp:Edit_6:Value )
+      aSubs := &( oTabProp:Edit_4:Value )
+      FOR i := 1 TO Len( aSubs )
+         IF ! HB_IsString( aSubs[i] )
+            MsgStop( "Subclass for Page" + LTrim( Str( i ) ) + " must be a valid string !!!", 'ooHG IDE+' )
+            RETURN .F.
+         ENDIF
+      NEXT i
       RETURN .T.
    ENDIF
-   MsgStop( "Names for pages must be a valid array !!!", 'ooHG IDE+' )
+   MsgStop( "Pages' Subclass must be a valid array of strings!!!", 'ooHG IDE+' )
 RETURN .F.
 
 //------------------------------------------------------------------------------
@@ -15354,468 +15622,489 @@ RETURN Type( cArray ) == "A"
 //------------------------------------------------------------------------------
 METHOD Events_Click() CLASS TFormEditor
 //------------------------------------------------------------------------------
-LOCAL oControl, cName, x, j, cNameW, cTitle, aLabels, aInitValues, aFormats
+LOCAL oControl, cName, j, cNameW, cTitle, aLabels, aInitValues, aFormats
 LOCAL ia, aResults
 
    ia := ::nHandleP
-   IF ia > 0
-      oControl := ::oDesignForm:acontrols[ia]
-      cName := Lower( oControl:Name )
-      x := aScan( ::aControlW, { |c| Lower( c ) == cName } )
-      IF oControl:Type == 'TAB'
-         ::TabEvent( x )
-         ::lFSave := .F.
+   IF ia <= 0
+      RETURN NIL
+   ENDIF
+
+   oControl := ::oDesignForm:aControls[ia]
+   cName := Lower( oControl:Name )
+   j := aScan( ::aControlW, { |c| Lower( c ) == cName } )
+   IF j <= 0
+      RETURN NIL
+   ENDIF
+
+   cNameW := ::aName[j]
+
+   IF ::aCtrlType[j] == 'TAB'
+      cTitle      := cNameW + " events"
+      aLabels     := { 'On Change' }
+      aInitValues := { ::aOnChange[j] }
+      aFormats    := { 250 }
+      aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
+      IF aResults[1] == NIL
          RETURN NIL
-      ELSE
-         cName := Lower( oControl:Name )
-         FOR j := 1 TO ::ncontrolw
-            IF Lower( ::aControlW[j]) == cName
-               cNameW := ::aName[j]
-
-               IF ::aCtrlType[j] == 'TEXT'
-                  cTitle      := cNameW + " events"
-                  aLabels     := { 'On Enter',    'On Change',    'On GotFocus',    'On LostFocus',    'On TextFilled' }
-                  aInitValues := { ::aonenter[j], ::aonchange[j], ::aongotfocus[j], ::aonlostfocus[j], ::aOnTextFilled[j] }
-                  aFormats    := { 250,           250,            250,              250,               250 }
-                  aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
-                  IF aResults[1] == NIL
-                     RETURN NIL
-                  ENDIF
-                  ::aonenter[j]         := aResults[1]
-                  ::aonchange[j]        := aResults[2]
-                  ::aongotfocus[j]      := aResults[3]
-                  ::aonlostfocus[j]     := aResults[4]
-                  ::aOnTextFilled[j]    := aResults[5]
-               ENDIF
-
-               IF ::aCtrlType[j] == 'BUTTON'
-                  cTitle      := cNameW + " events"
-                  aLabels     := { 'On GotFocus',    'On LostFocus',    'Action',     'On MouseMove' }
-                  aInitValues := { ::aongotfocus[j], ::aonlostfocus[j], ::aaction[j], ::aOnMouseMove[j] }
-                  aFormats    := { 250,              250,               250,          250 }
-                  aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
-                  IF aResults[1] == NIL
-                     RETURN NIL
-                  ENDIF
-                  ::aongotfocus[j]      := aResults[1]
-                  ::aonlostfocus[j]     := aResults[2]
-                  ::aaction[j]          := aResults[3]
-                  ::aOnMouseMove[j]     := aResults[4]
-               ENDIF
-
-               IF ::aCtrlType[j] == 'CHECKBOX'
-                  cTitle      := cNameW + " events"
-                  aLabels     := { 'On Change',    'On GotFocus',    'On LostFocus' }
-                  aInitValues := { ::aonchange[j], ::aongotfocus[j], ::aonlostfocus[j] }
-                  aFormats    := { 250,           250,              250 }
-                  aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
-                  IF aResults[1] == NIL
-                     RETURN NIL
-                  ENDIF
-                  ::aonchange[j]        := aResults[1]
-                  ::aongotfocus[j]      := aResults[2]
-                  ::aonlostfocus[j]     := aResults[3]
-               ENDIF
-
-               IF ::aCtrlType[j] == 'IPADDRESS'
-                  cTitle      := cNameW + " events"
-                  aLabels     := { 'On Change',  'On GotFocus',  'On LostFocus' }
-                  aInitValues := { ::aonchange[j], ::aongotfocus[j], ::aonlostfocus[j]}
-                  aFormats    := { 250,           250,              250 }
-                  aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
-                  IF aResults[1] == NIL
-                     RETURN NIL
-                  ENDIF
-                  ::aonchange[j]        := aResults[1]
-                  ::aongotfocus[j]      := aResults[2]
-                  ::aonlostfocus[j]     := aResults[3]
-               ENDIF
-
-               IF ::aCtrlType[j] == 'GRID'
-                  cTitle      := cNameW + " events"
-                  aLabels     := { 'On Change',    'On GotFocus',    'On LostFocus',    'On DblClick',    'On Enter',    'On Headclcik',    "On EditCell",    "On QueryData",    "On AborEdit",    "On Delete",    "On HeadRClick" }
-                  aInitValues := { ::aonchange[j], ::aongotfocus[j], ::aonlostfocus[j], ::aondblclick[j], ::aOnEnter[j], ::aonheadclick[j], ::aoneditcell[j], ::aOnQueryData[j], ::aOnAborEdit[j], ::aOnDelete[j], ::aOnHeadRClick[j] }
-                  aFormats    := { 250,            250,              250,               250,              250,           250,               250,              250,               250,              250,            250 }
-                  aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
-                  IF aResults[1] == NIL
-                     RETURN NIL
-                  ENDIF
-                  ::aonchange[j]        := aResults[1]
-                  ::aongotfocus[j]      := aResults[2]
-                  ::aonlostfocus[j]     := aResults[3]
-                  ::aondblclick[j]      := aResults[4]
-                  ::aonenter[j]         := aResults[5]
-                  ::aonheadclick[j]     := aResults[6]
-                  ::aoneditcell[j]      := aResults[7]
-                  ::aOnQueryData[j]     := aResults[8]
-                  ::aOnAbortEdit[j]     := aResults[9]
-                  ::aOnDelete[j]        := aResults[10]
-                  ::aOnHeadRClick[j]    := aResults[11]
-               ENDIF
-
-               IF ::aCtrlType[j] == 'TREE'
-                  cTitle      := cNameW + " events"
-                  aLabels     := { 'On Change',    'On GotFocus',    'On LostFocus',    'On DblClick',    'On Enter',    'On LabelEdit',    'On CheckChange',  'On Drop' }
-                  aInitValues := { ::aonchange[j], ::aongotfocus[j], ::aonlostfocus[j], ::aondblclick[j], ::aOnEnter[j], ::aOnLabelEdit[j], ::aOnCheckChg[j],   ::aOnDrop[j] }
-                  aFormats    := { 250,            250,              250,               250,              250,           250,               250 }
-                  aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
-                  IF aResults[1] == NIL
-                     RETURN NIL
-                  ENDIF
-                  ::aonchange[j]        := aResults[01]
-                  ::aongotfocus[j]      := aResults[02]
-                  ::aonlostfocus[j]     := aResults[03]
-                  ::aondblclick[j]      := aResults[04]
-                  ::aOnEnter[j]         := aResults[05]
-                  ::aOnLabelEdit[j]     := aResults[06]
-                  ::aOnCheckChg[j]      := aResults[07]
-                  ::aOnDrop[j]          := aResults[08]
-               ENDIF
-
-               IF ::aCtrlType[j] == 'BROWSE'
-                  cTitle      := cNameW + " events"
-                  aLabels     := { 'On Change',    'On GotFocus',    'On LostFocus',    'On DblClick',    'On HeadClick',    'On EditCell',    'On Append',    'On Enter',    'Action',     'On AbortEdit',    'On Delete',    'On HeadRClick' }
-                  aInitValues := { ::aonchange[j], ::aongotfocus[j], ::aonlostfocus[j], ::aondblclick[j], ::aonheadclick[j], ::aoneditcell[j], ::aonappend[j], ::aonenter[j], ::aAction[j], ::aOnAbortEdit[j], ::aOnDelete[j], ::aOnHeadRClick[j] }
-                  aFormats    := { 250,            250,              250,               250,              250,               250,              250,            250,           250,          250,               250,            250 }
-                  aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
-                  IF aResults[1] == NIL
-                     RETURN NIL
-                  ENDIF
-                  ::aonchange[j]        := aResults[01]
-                  ::aongotfocus[j]      := aResults[02]
-                  ::aonlostfocus[j]     := aResults[03]
-                  ::aondblclick[j]      := aResults[04]
-                  ::aonheadclick[j]     := aResults[05]
-                  ::aoneditcell[j]      := aResults[06]
-                  ::aonappend[j]        := aResults[07]
-                  ::aonenter[j]         := aResults[08]
-                  ::aAction[j]          := aResults[09]
-                  ::aOnAbortEdit[j]     := aResults[10]
-                  ::aOnDelete[j]        := aResults[11]
-                  ::aOnHeadRClick[j]    := aResults[12]
-               ENDIF
-
-               IF ::aCtrlType[j] == 'XBROWSE'
-                  cTitle      := cNameW + " events"
-                  aLabels     := { 'On Change',    'On GotFocus',    'On LostFocus',    'On DblClick',    'On HeadClick',    'On EditCell',    'On Append',    'On Enter',    'Action',     'On AbortEdit',    'On Delete',    'On HeadRClick' }
-                  aInitValues := { ::aonchange[j], ::aongotfocus[j], ::aonlostfocus[j], ::aondblclick[j], ::aonheadclick[j], ::aoneditcell[j], ::aonappend[j], ::aonenter[j], ::aAction[j], ::aOnAbortEdit[j], ::aOnDelete[j], ::aOnHeadRClick[j] }
-                  aFormats    := { 250,            250,              250,               250,              250,               250,              250,            250,           250,          250,               250,            250 }
-                  aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
-                  IF aResults[1] == NIL
-                     RETURN NIL
-                  ENDIF
-                  ::aonchange[j]        := aResults[01]
-                  ::aongotfocus[j]      := aResults[02]
-                  ::aonlostfocus[j]     := aResults[03]
-                  ::aondblclick[j]      := aResults[04]
-                  ::aonheadclick[j]     := aResults[05]
-                  ::aoneditcell[j]      := aResults[06]
-                  ::aonappend[j]        := aResults[07]
-                  ::aonenter[j]         := aResults[08]
-                  ::aAction[j]          := aResults[09]
-                  ::aOnAbortEdit[j]     := aResults[10]
-                  ::aOnDelete[j]        := aResults[11]
-                  ::aOnHeadRClick[j]    := aResults[12]
-               ENDIF
-
-               IF ::aCtrlType[j] == 'SPINNER'
-                  cTitle      := cNameW + " events"
-                  aLabels     := { 'On Change',    'On GotFocus',    'On LostFocus' }
-                  aInitValues := { ::aonchange[j], ::aongotfocus[j], ::aonlostfocus[j] }
-                  aFormats    := { 250,            250,              250 }
-                  aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
-                  IF aResults[1] == NIL
-                     RETURN NIL
-                  ENDIF
-                  ::aonchange[j]        := aResults[1]
-                  ::aongotfocus[j]      := aResults[2]
-                  ::aonlostfocus[j]     := aResults[3]
-               ENDIF
-
-               IF ::aCtrlType[j] == 'LIST'
-                  cTitle      := cNameW + " events"
-                  aLabels     := { 'On Change',    'On GotFocus',    'On LostFocus',    'On DblClick',    'On Enter' }
-                  aInitValues := { ::aonchange[j], ::aongotfocus[j], ::aonlostfocus[j], ::aOndblclick[j], ::aOnEnter[j] }
-                  aFormats    := { 250,            250,              250,               250,              250 }
-                  aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
-                  IF aResults[1] == NIL
-                     RETURN NIL
-                  ENDIF
-                  ::aonchange[j]        := aResults[1]
-                  ::aongotfocus[j]      := aResults[2]
-                  ::aonlostfocus[j]     := aResults[3]
-                  ::aondblclick[j]      := aResults[4]
-               ENDIF
-
-               IF ::aCtrlType[j] == 'COMBO'
-                  cTitle      := cNameW + " events"
-                  aLabels     := { 'On Change',    'On GotFocus',    'On LostFocus',    'On Enter',    'On DisplayChange',    'On ListDisplay',    'On ListClose',    'On Refresh' }
-                  aInitValues := { ::aonchange[j], ::aongotfocus[j], ::aonlostfocus[j], ::aonenter[j], ::aondisplaychange[j], ::aOnListDisplay[j], ::aOnListClose[j], ::aOnRefresh[j] }
-                  aFormats    := { 250,            250,              250,               250,           250,                   250,                 250,               250 }
-                  aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
-                  IF aResults[1] == NIL
-                     RETURN NIL
-                  ENDIF
-                  ::aonchange[j]        := aResults[1]
-                  ::aongotfocus[j]      := aResults[2]
-                  ::aonlostfocus[j]     := aResults[3]
-                  ::aonenter[j]         := aResults[4]
-                  ::aondisplaychange[j] := aResults[5]
-                  ::aOnListDisplay[j]   := aResults[6]
-                  ::aOnListClose[j]     := aResults[7]
-                  ::aOnRefresh[j]       := aResults[8]
-               ENDIF
-
-               IF ::aCtrlType[j] == 'CHECKBTN'
-                  cTitle      := cNameW + " events"
-                  aLabels     := { 'On Change',    'On GotFocus',    'On LostFocus' }
-                  aInitValues := { ::aonchange[j], ::aongotfocus[j], ::aonlostfocus[j] }
-                  aFormats    := { 250,            250,              250 }
-                  aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
-                  IF aResults[1] == NIL
-                     RETURN NIL
-                  ENDIF
-                  ::aonchange[j]        := aResults[1]
-                  ::aongotfocus[j]      := aResults[2]
-                  ::aonlostfocus[j]     := aResults[3]
-               ENDIF
-
-               IF ::aCtrlType[j] == 'PICCHECKBUTT'
-                  cTitle      := cNameW + " events"
-                  aLabels     := { 'On Change',    'On GotFocus',    'On LostFocus',    'On MouseMove' }
-                  aInitValues := { ::aonchange[j], ::aongotfocus[j], ::aonlostfocus[j], ::aOnMouseMove[j] }
-                  aFormats    := { 250,            250,              250,               250 }
-                  aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
-                  IF aResults[1] == NIL
-                     RETURN NIL
-                  ENDIF
-                  ::aOnChange[j]        := aResults[01]
-                  ::aOnGotFocus[j]      := aResults[02]
-                  ::aOnLostFocus[j]     := aResults[03]
-                  ::aOnMouseMove[j]     := aResults[04]
-               ENDIF
-
-               IF ::aCtrlType[j] == 'PICBUTT'
-                  cTitle      := cNameW + " events"
-                  aLabels     := { 'On GotFocus',    'On LostFocus',    'Action',     'On MouseMove'}
-                  aInitValues := { ::aongotfocus[j], ::aonlostfocus[j], ::aaction[j], ::aOnMouseMove[j] }
-                  aFormats    := { 250,              250,               250,          250 }
-                  aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
-                  IF aResults[1] == NIL
-                     RETURN NIL
-                  ENDIF
-                  ::aongotfocus[j]      := aResults[01]
-                  ::aonlostfocus[j]     := aResults[02]
-                  ::aaction[j]          := aResults[03]
-                  ::aOnMouseMove[j]     := aResults[04]
-               ENDIF
-
-               IF ::aCtrlType[j] == 'IMAGE'
-                  cTitle      := cNameW + " events"
-                  aLabels     := { 'Action' }
-                  aInitValues := { ::aaction[j] }
-                  aFormats    := { 250 }
-                  aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
-                  IF aResults[1] == NIL
-                     RETURN NIL
-                  ENDIF
-                  ::aaction[j]          := aResults[1]
-               ENDIF
-
-               IF ::aCtrlType[j] == 'MONTHCALENDAR'
-                  cTitle      := cNameW + " events"
-                  aLabels     := { 'On Change' }
-                  aInitValues := { ::aonchange[j] }
-                  aFormats    := { 250 }
-                  aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
-                  IF aResults[1] == NIL
-                     RETURN NIL
-                  ENDIF
-                  ::aonchange[j]        := aResults[1]
-               ENDIF
-
-               IF ::aCtrlType[j] == 'TIMER'
-                  cTitle      := cNameW + " events"
-                  aLabels     := { 'Action' }
-                  aInitValues := { ::aaction[j] }
-                  aFormats    := { 250 }
-                  aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
-                  IF aResults[1] == NIL
-                     RETURN NIL
-                  ENDIF
-                  ::aaction[j]         := aResults[1]
-               ENDIF
-
-               IF ::aCtrlType[j] == 'LABEL'
-                  cTitle      := cNameW + " events"
-                  aLabels     := { 'Action' }
-                  aInitValues := { ::aaction[j] }
-                  aFormats    := { 250 }
-                  aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
-                  IF aResults[1] == NIL
-                     RETURN NIL
-                  ENDIF
-                  ::aaction[j]          := aResults[1]
-               ENDIF
-
-               IF ::aCtrlType[j] == 'RADIOGROUP'
-                  cTitle      := cNameW + " events"
-                  aLabels     := { 'On Change' }
-                  aInitValues := { ::aonchange[j] }
-                  aFormats    := { 250 }
-                  aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
-                  IF aResults[1] == NIL
-                     RETURN NIL
-                  ENDIF
-                  ::aonchange[j]        := aResults[1]
-               ENDIF
-
-               IF ::aCtrlType[j] == 'SLIDER'
-                  cTitle      := cNameW + " events"
-                  aLabels     := { 'On Change' }
-                  aInitValues := { ::aonchange[j] }
-                  aFormats    := { 250 }
-                  aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
-                  IF aResults[1] == NIL
-                     RETURN NIL
-                  ENDIF
-                  ::aonchange[j]        := aResults[1]
-               ENDIF
-
-               IF ::aCtrlType[j] == 'DATEPICKER'
-                  cTitle      := cNameW + " events"
-                  aLabels     := { 'On Change',    'On GotFocus',    'On LostFocus',    'On Enter'  }
-                  aInitValues := { ::aonchange[j], ::aongotfocus[j], ::aonlostfocus[j], ::aonenter[j] }
-                  aFormats    := { 250,            250,              250,               250 }
-                  aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
-                  IF aResults[1] == NIL
-                     RETURN NIL
-                  ENDIF
-                  ::aonchange[j]        := aResults[1]
-                  ::aongotfocus[j]      := aResults[2]
-                  ::aonlostfocus[j]     := aResults[3]
-                  ::aonenter[j]         := aResults[4]
-               ENDIF
-
-               IF ::aCtrlType[j] == 'TIMEPICKER'
-                  cTitle      := cNameW + " events"
-                  aLabels     := { 'On Change',    'On GotFocus',    'On LostFocus',    'On Enter'  }
-                  aInitValues := { ::aonchange[j], ::aongotfocus[j], ::aonlostfocus[j], ::aonenter[j] }
-                  aFormats    := { 250,            250,              250,               250 }
-                  aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
-                  IF aResults[1] == NIL
-                     RETURN NIL
-                  ENDIF
-                  ::aonchange[j]        := aResults[1]
-                  ::aongotfocus[j]      := aResults[2]
-                  ::aonlostfocus[j]     := aResults[3]
-                  ::aonenter[j]         := aResults[4]
-               ENDIF
-
-               IF ::aCtrlType[j] == 'EDIT'
-                  cTitle      := cNameW + " events"
-                  aLabels     := { 'On Change',    'On GotFocus',    'On LostFocus',    'On HScroll',    'On VScroll' }
-                  aInitValues := { ::aonchange[j], ::aongotfocus[j], ::aonlostfocus[j], ::aOnHScroll[j], ::aOnVScroll[j] }
-                  aFormats    := { 250,            250,              250,               250,              250 }
-                  aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
-                  IF aResults[1] == NIL
-                     RETURN NIL
-                  ENDIF
-                  ::aonchange[j]        := aResults[1]
-                  ::aongotfocus[j]      := aResults[2]
-                  ::aonlostfocus[j]     := aResults[3]
-               ENDIF
-
-               IF ::aCtrlType[j] == 'RICHEDIT'
-                  cTitle      := cNameW + " events"
-                  aLabels     := { 'On Change',    'On GotFocus',    'On LostFocus',    'On SelChange',    'On HScroll',    'On VScroll' }
-                  aInitValues := { ::aonchange[j], ::aongotfocus[j], ::aonlostfocus[j], ::aOnSelChange[j], ::aOnHScroll[j], ::aOnVScroll[j] }
-                  aFormats    := { 250,            250,              250,               250,               250,              250 }
-                  aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
-                  IF aResults[1] == NIL
-                     RETURN NIL
-                  ENDIF
-                  ::aOnChange[j]        := aResults[01]
-                  ::aOnGotFocus[j]      := aResults[02]
-                  ::aOnLostFocus[j]     := aResults[03]
-                  ::aOnSelChange[j]     := aResults[04]
-                  ::aOnHScroll[j]       := aResults[05]
-                  ::aOnVScroll[j]       := aResults[06]
-               ENDIF
-
-               IF ::aCtrlType[j] == 'ACTIVEX'
-                  // Control has no events
-               ENDIF
-
-               IF ::aCtrlType[j] == 'CHECKLIST'
-                  cTitle      := cNameW + " events"
-                  aLabels     := { 'On Change',    'On GotFocus',    'On LostFocus',    'Action' }
-                  aInitValues := { ::aOnChange[j], ::aOnGotFocus[j], ::aOnLostFocus[j], ::aAction[j] }
-                  aFormats    := { 250,            250,              250,               250 }
-                  aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
-                  IF aResults[1] == NIL
-                     RETURN NIL
-                  ENDIF
-                  ::aOnChange[j]        := aResults[01]
-                  ::aOnGotFocus[j]      := aResults[02]
-                  ::aOnLostFocus[j]     := aResults[03]
-                  ::aAction[j]          := aResults[04]
-               ENDIF
-
-               IF ::aCtrlType[j] == 'HOTKEYBOX'
-                  cTitle      := cNameW + " events"
-                  aLabels     := { 'On Change',    'On GotFocus',    'On LostFocus',    'On Enter' }
-                  aInitValues := { ::aOnChange[j], ::aOnGotFocus[j], ::aOnLostFocus[j], ::aOnEnter[j] }
-                  aFormats    := { 250,            250,              250,               250 }
-                  aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
-                  IF aResults[1] == NIL
-                     RETURN NIL
-                  ENDIF
-                  ::aOnChange[j]        := aResults[01]
-                  ::aOnGotFocus[j]      := aResults[02]
-                  ::aOnLostFocus[j]     := aResults[03]
-                  ::aOnEnter[j]         := aResults[04]
-               ENDIF
-
-               IF ::aCtrlType[j] == 'PICTURE'
-                  cTitle      := cNameW + " events"
-                  aLabels     := { 'Action' }
-                  aInitValues := { ::aAction[j] }
-                  aFormats    := { 250 }
-                  aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
-                  IF aResults[1] == NIL
-                     RETURN NIL
-                  ENDIF
-                  ::aAction[j]          := aResults[01]
-               ENDIF
-
-               IF ::aCtrlType[j] == 'PROGRESSMETER'
-                  cTitle      := cNameW + " events"
-                  aLabels     := { 'Action' }
-                  aInitValues := { ::aAction[j] }
-                  aFormats    := { 250 }
-                  aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
-                  IF aResults[1] == NIL
-                     RETURN NIL
-                  ENDIF
-                  ::aAction[j]          := aResults[01]
-               ENDIF
-
-               IF ::aCtrlType[j] == 'SCROLLBAR'
-               /*
-                  TODO
-               */
-               ENDIF
-
-               IF ::aCtrlType[j] == 'TEXTARRAY'
-               /*
-                  TODO
-               */
-               ENDIF
-
-            ENDIF
-         NEXT j
       ENDIF
+      ::aOnChange[j]        := aResults[1]
+   ENDIF
+
+   IF ::aCtrlType[j] == 'TEXT'
+      cTitle      := cNameW + " events"
+      aLabels     := { 'On Enter',    'On Change',    'On GotFocus',    'On LostFocus',    'On TextFilled' }
+      aInitValues := { ::aonenter[j], ::aonchange[j], ::aongotfocus[j], ::aonlostfocus[j], ::aOnTextFilled[j] }
+      aFormats    := { 250,           250,            250,              250,               250 }
+      aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
+      IF aResults[1] == NIL
+         RETURN NIL
+      ENDIF
+      ::aonenter[j]         := aResults[1]
+      ::aonchange[j]        := aResults[2]
+      ::aongotfocus[j]      := aResults[3]
+      ::aonlostfocus[j]     := aResults[4]
+      ::aOnTextFilled[j]    := aResults[5]
+   ENDIF
+
+   IF ::aCtrlType[j] == 'BUTTON'
+      cTitle      := cNameW + " events"
+      aLabels     := { 'On GotFocus',    'On LostFocus',    'Action',     'On MouseMove' }
+      aInitValues := { ::aongotfocus[j], ::aonlostfocus[j], ::aaction[j], ::aOnMouseMove[j] }
+      aFormats    := { 250,              250,               250,          250 }
+      aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
+      IF aResults[1] == NIL
+         RETURN NIL
+      ENDIF
+      ::aongotfocus[j]      := aResults[1]
+      ::aonlostfocus[j]     := aResults[2]
+      ::aaction[j]          := aResults[3]
+      ::aOnMouseMove[j]     := aResults[4]
+   ENDIF
+
+   IF ::aCtrlType[j] == 'CHECKBOX'
+      cTitle      := cNameW + " events"
+      aLabels     := { 'On Change',    'On GotFocus',    'On LostFocus' }
+      aInitValues := { ::aonchange[j], ::aongotfocus[j], ::aonlostfocus[j] }
+      aFormats    := { 250,           250,              250 }
+      aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
+      IF aResults[1] == NIL
+         RETURN NIL
+      ENDIF
+      ::aonchange[j]        := aResults[1]
+      ::aongotfocus[j]      := aResults[2]
+      ::aonlostfocus[j]     := aResults[3]
+   ENDIF
+
+   IF ::aCtrlType[j] == 'IPADDRESS'
+      cTitle      := cNameW + " events"
+      aLabels     := { 'On Change',  'On GotFocus',  'On LostFocus' }
+      aInitValues := { ::aonchange[j], ::aongotfocus[j], ::aonlostfocus[j]}
+      aFormats    := { 250,           250,              250 }
+      aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
+      IF aResults[1] == NIL
+         RETURN NIL
+      ENDIF
+      ::aonchange[j]        := aResults[1]
+      ::aongotfocus[j]      := aResults[2]
+      ::aonlostfocus[j]     := aResults[3]
+   ENDIF
+
+   IF ::aCtrlType[j] == 'GRID'
+      cTitle      := cNameW + " events"
+      aLabels     := { 'On Change',    'On GotFocus',    'On LostFocus',    'On DblClick',    'On Enter',    'On Headclcik',    "On EditCell",    "On QueryData",    "On AborEdit",    "On Delete",    "On HeadRClick" }
+      aInitValues := { ::aonchange[j], ::aongotfocus[j], ::aonlostfocus[j], ::aondblclick[j], ::aOnEnter[j], ::aonheadclick[j], ::aoneditcell[j], ::aOnQueryData[j], ::aOnAborEdit[j], ::aOnDelete[j], ::aOnHeadRClick[j] }
+      aFormats    := { 250,            250,              250,               250,              250,           250,               250,              250,               250,              250,            250 }
+      aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
+      IF aResults[1] == NIL
+         RETURN NIL
+      ENDIF
+      ::aonchange[j]        := aResults[1]
+      ::aongotfocus[j]      := aResults[2]
+      ::aonlostfocus[j]     := aResults[3]
+      ::aondblclick[j]      := aResults[4]
+      ::aonenter[j]         := aResults[5]
+      ::aonheadclick[j]     := aResults[6]
+      ::aoneditcell[j]      := aResults[7]
+      ::aOnQueryData[j]     := aResults[8]
+      ::aOnAbortEdit[j]     := aResults[9]
+      ::aOnDelete[j]        := aResults[10]
+      ::aOnHeadRClick[j]    := aResults[11]
+   ENDIF
+
+   IF ::aCtrlType[j] == 'TREE'
+      cTitle      := cNameW + " events"
+      aLabels     := { 'On Change',    'On GotFocus',    'On LostFocus',    'On DblClick',    'On Enter',    'On LabelEdit',    'On CheckChange',  'On Drop' }
+      aInitValues := { ::aonchange[j], ::aongotfocus[j], ::aonlostfocus[j], ::aondblclick[j], ::aOnEnter[j], ::aOnLabelEdit[j], ::aOnCheckChg[j],   ::aOnDrop[j] }
+      aFormats    := { 250,            250,              250,               250,              250,           250,               250 }
+      aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
+      IF aResults[1] == NIL
+         RETURN NIL
+      ENDIF
+      ::aonchange[j]        := aResults[01]
+      ::aongotfocus[j]      := aResults[02]
+      ::aonlostfocus[j]     := aResults[03]
+      ::aondblclick[j]      := aResults[04]
+      ::aOnEnter[j]         := aResults[05]
+      ::aOnLabelEdit[j]     := aResults[06]
+      ::aOnCheckChg[j]      := aResults[07]
+      ::aOnDrop[j]          := aResults[08]
+   ENDIF
+
+   IF ::aCtrlType[j] == 'BROWSE'
+      cTitle      := cNameW + " events"
+      aLabels     := { 'On Change',    'On GotFocus',    'On LostFocus',    'On DblClick',    'On HeadClick',    'On EditCell',    'On Append',    'On Enter',    'Action',     'On AbortEdit',    'On Delete',    'On HeadRClick' }
+      aInitValues := { ::aonchange[j], ::aongotfocus[j], ::aonlostfocus[j], ::aondblclick[j], ::aonheadclick[j], ::aoneditcell[j], ::aonappend[j], ::aonenter[j], ::aAction[j], ::aOnAbortEdit[j], ::aOnDelete[j], ::aOnHeadRClick[j] }
+      aFormats    := { 250,            250,              250,               250,              250,               250,              250,            250,           250,          250,               250,            250 }
+      aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
+      IF aResults[1] == NIL
+         RETURN NIL
+      ENDIF
+      ::aonchange[j]        := aResults[01]
+      ::aongotfocus[j]      := aResults[02]
+      ::aonlostfocus[j]     := aResults[03]
+      ::aondblclick[j]      := aResults[04]
+      ::aonheadclick[j]     := aResults[05]
+      ::aoneditcell[j]      := aResults[06]
+      ::aonappend[j]        := aResults[07]
+      ::aonenter[j]         := aResults[08]
+      ::aAction[j]          := aResults[09]
+      ::aOnAbortEdit[j]     := aResults[10]
+      ::aOnDelete[j]        := aResults[11]
+      ::aOnHeadRClick[j]    := aResults[12]
+   ENDIF
+
+   IF ::aCtrlType[j] == 'XBROWSE'
+      cTitle      := cNameW + " events"
+      aLabels     := { 'On Change',    'On GotFocus',    'On LostFocus',    'On DblClick',    'On HeadClick',    'On EditCell',    'On Append',    'On Enter',    'Action',     'On AbortEdit',    'On Delete',    'On HeadRClick' }
+      aInitValues := { ::aonchange[j], ::aongotfocus[j], ::aonlostfocus[j], ::aondblclick[j], ::aonheadclick[j], ::aoneditcell[j], ::aonappend[j], ::aonenter[j], ::aAction[j], ::aOnAbortEdit[j], ::aOnDelete[j], ::aOnHeadRClick[j] }
+      aFormats    := { 250,            250,              250,               250,              250,               250,              250,            250,           250,          250,               250,            250 }
+      aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
+      IF aResults[1] == NIL
+         RETURN NIL
+      ENDIF
+      ::aonchange[j]        := aResults[01]
+      ::aongotfocus[j]      := aResults[02]
+      ::aonlostfocus[j]     := aResults[03]
+      ::aondblclick[j]      := aResults[04]
+      ::aonheadclick[j]     := aResults[05]
+      ::aoneditcell[j]      := aResults[06]
+      ::aonappend[j]        := aResults[07]
+      ::aonenter[j]         := aResults[08]
+      ::aAction[j]          := aResults[09]
+      ::aOnAbortEdit[j]     := aResults[10]
+      ::aOnDelete[j]        := aResults[11]
+      ::aOnHeadRClick[j]    := aResults[12]
+   ENDIF
+
+   IF ::aCtrlType[j] == 'SPINNER'
+      cTitle      := cNameW + " events"
+      aLabels     := { 'On Change',    'On GotFocus',    'On LostFocus' }
+      aInitValues := { ::aonchange[j], ::aongotfocus[j], ::aonlostfocus[j] }
+      aFormats    := { 250,            250,              250 }
+      aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
+      IF aResults[1] == NIL
+         RETURN NIL
+      ENDIF
+      ::aonchange[j]        := aResults[1]
+      ::aongotfocus[j]      := aResults[2]
+      ::aonlostfocus[j]     := aResults[3]
+   ENDIF
+
+   IF ::aCtrlType[j] == 'LIST'
+      cTitle      := cNameW + " events"
+      aLabels     := { 'On Change',    'On GotFocus',    'On LostFocus',    'On DblClick',    'On Enter' }
+      aInitValues := { ::aonchange[j], ::aongotfocus[j], ::aonlostfocus[j], ::aOndblclick[j], ::aOnEnter[j] }
+      aFormats    := { 250,            250,              250,               250,              250 }
+      aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
+      IF aResults[1] == NIL
+         RETURN NIL
+      ENDIF
+      ::aonchange[j]        := aResults[1]
+      ::aongotfocus[j]      := aResults[2]
+      ::aonlostfocus[j]     := aResults[3]
+      ::aondblclick[j]      := aResults[4]
+   ENDIF
+
+   IF ::aCtrlType[j] == 'COMBO'
+      cTitle      := cNameW + " events"
+      aLabels     := { 'On Change',    'On GotFocus',    'On LostFocus',    'On Enter',    'On DisplayChange',    'On ListDisplay',    'On ListClose',    'On Refresh' }
+      aInitValues := { ::aonchange[j], ::aongotfocus[j], ::aonlostfocus[j], ::aonenter[j], ::aondisplaychange[j], ::aOnListDisplay[j], ::aOnListClose[j], ::aOnRefresh[j] }
+      aFormats    := { 250,            250,              250,               250,           250,                   250,                 250,               250 }
+      aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
+      IF aResults[1] == NIL
+         RETURN NIL
+      ENDIF
+      ::aonchange[j]        := aResults[1]
+      ::aongotfocus[j]      := aResults[2]
+      ::aonlostfocus[j]     := aResults[3]
+      ::aonenter[j]         := aResults[4]
+      ::aondisplaychange[j] := aResults[5]
+      ::aOnListDisplay[j]   := aResults[6]
+      ::aOnListClose[j]     := aResults[7]
+      ::aOnRefresh[j]       := aResults[8]
+   ENDIF
+
+   IF ::aCtrlType[j] == 'CHECKBTN'
+      cTitle      := cNameW + " events"
+      aLabels     := { 'On Change',    'On GotFocus',    'On LostFocus' }
+      aInitValues := { ::aonchange[j], ::aongotfocus[j], ::aonlostfocus[j] }
+      aFormats    := { 250,            250,              250 }
+      aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
+      IF aResults[1] == NIL
+         RETURN NIL
+      ENDIF
+      ::aonchange[j]        := aResults[1]
+      ::aongotfocus[j]      := aResults[2]
+      ::aonlostfocus[j]     := aResults[3]
+   ENDIF
+
+   IF ::aCtrlType[j] == 'PICCHECKBUTT'
+      cTitle      := cNameW + " events"
+      aLabels     := { 'On Change',    'On GotFocus',    'On LostFocus',    'On MouseMove' }
+      aInitValues := { ::aonchange[j], ::aongotfocus[j], ::aonlostfocus[j], ::aOnMouseMove[j] }
+      aFormats    := { 250,            250,              250,               250 }
+      aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
+      IF aResults[1] == NIL
+         RETURN NIL
+      ENDIF
+      ::aOnChange[j]        := aResults[01]
+      ::aOnGotFocus[j]      := aResults[02]
+      ::aOnLostFocus[j]     := aResults[03]
+      ::aOnMouseMove[j]     := aResults[04]
+   ENDIF
+
+   IF ::aCtrlType[j] == 'PICBUTT'
+      cTitle      := cNameW + " events"
+      aLabels     := { 'On GotFocus',    'On LostFocus',    'Action',     'On MouseMove'}
+      aInitValues := { ::aongotfocus[j], ::aonlostfocus[j], ::aaction[j], ::aOnMouseMove[j] }
+      aFormats    := { 250,              250,               250,          250 }
+      aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
+      IF aResults[1] == NIL
+         RETURN NIL
+      ENDIF
+      ::aongotfocus[j]      := aResults[01]
+      ::aonlostfocus[j]     := aResults[02]
+      ::aaction[j]          := aResults[03]
+      ::aOnMouseMove[j]     := aResults[04]
+   ENDIF
+
+   IF ::aCtrlType[j] == 'IMAGE'
+      cTitle      := cNameW + " events"
+      aLabels     := { 'Action' }
+      aInitValues := { ::aaction[j] }
+      aFormats    := { 250 }
+      aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
+      IF aResults[1] == NIL
+         RETURN NIL
+      ENDIF
+      ::aaction[j]          := aResults[1]
+   ENDIF
+
+   IF ::aCtrlType[j] == 'MONTHCALENDAR'
+      cTitle      := cNameW + " events"
+      aLabels     := { 'On Change' }
+      aInitValues := { ::aonchange[j] }
+      aFormats    := { 250 }
+      aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
+      IF aResults[1] == NIL
+         RETURN NIL
+      ENDIF
+      ::aonchange[j]        := aResults[1]
+   ENDIF
+
+   IF ::aCtrlType[j] == 'TIMER'
+      cTitle      := cNameW + " events"
+      aLabels     := { 'Action' }
+      aInitValues := { ::aaction[j] }
+      aFormats    := { 250 }
+      aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
+      IF aResults[1] == NIL
+         RETURN NIL
+      ENDIF
+      ::aaction[j]         := aResults[1]
+   ENDIF
+
+   IF ::aCtrlType[j] == 'LABEL'
+      cTitle      := cNameW + " events"
+      aLabels     := { 'Action' }
+      aInitValues := { ::aaction[j] }
+      aFormats    := { 250 }
+      aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
+      IF aResults[1] == NIL
+         RETURN NIL
+      ENDIF
+      ::aaction[j]          := aResults[1]
+   ENDIF
+
+   IF ::aCtrlType[j] == 'RADIOGROUP'
+      cTitle      := cNameW + " events"
+      aLabels     := { 'On Change' }
+      aInitValues := { ::aonchange[j] }
+      aFormats    := { 250 }
+      aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
+      IF aResults[1] == NIL
+         RETURN NIL
+      ENDIF
+      ::aonchange[j]        := aResults[1]
+   ENDIF
+
+   IF ::aCtrlType[j] == 'SLIDER'
+      cTitle      := cNameW + " events"
+      aLabels     := { 'On Change' }
+      aInitValues := { ::aonchange[j] }
+      aFormats    := { 250 }
+      aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
+      IF aResults[1] == NIL
+         RETURN NIL
+      ENDIF
+      ::aonchange[j]        := aResults[1]
+   ENDIF
+
+   IF ::aCtrlType[j] == 'DATEPICKER'
+      cTitle      := cNameW + " events"
+      aLabels     := { 'On Change',    'On GotFocus',    'On LostFocus',    'On Enter'  }
+      aInitValues := { ::aonchange[j], ::aongotfocus[j], ::aonlostfocus[j], ::aonenter[j] }
+      aFormats    := { 250,            250,              250,               250 }
+      aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
+      IF aResults[1] == NIL
+         RETURN NIL
+      ENDIF
+      ::aonchange[j]        := aResults[1]
+      ::aongotfocus[j]      := aResults[2]
+      ::aonlostfocus[j]     := aResults[3]
+      ::aonenter[j]         := aResults[4]
+   ENDIF
+
+   IF ::aCtrlType[j] == 'TIMEPICKER'
+      cTitle      := cNameW + " events"
+      aLabels     := { 'On Change',    'On GotFocus',    'On LostFocus',    'On Enter'  }
+      aInitValues := { ::aonchange[j], ::aongotfocus[j], ::aonlostfocus[j], ::aonenter[j] }
+      aFormats    := { 250,            250,              250,               250 }
+      aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
+      IF aResults[1] == NIL
+         RETURN NIL
+      ENDIF
+      ::aonchange[j]        := aResults[1]
+      ::aongotfocus[j]      := aResults[2]
+      ::aonlostfocus[j]     := aResults[3]
+      ::aonenter[j]         := aResults[4]
+   ENDIF
+
+   IF ::aCtrlType[j] == 'EDIT'
+      cTitle      := cNameW + " events"
+      aLabels     := { 'On Change',    'On GotFocus',    'On LostFocus',    'On HScroll',    'On VScroll' }
+      aInitValues := { ::aonchange[j], ::aongotfocus[j], ::aonlostfocus[j], ::aOnHScroll[j], ::aOnVScroll[j] }
+      aFormats    := { 250,            250,              250,               250,              250 }
+      aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
+      IF aResults[1] == NIL
+         RETURN NIL
+      ENDIF
+      ::aonchange[j]        := aResults[1]
+      ::aongotfocus[j]      := aResults[2]
+      ::aonlostfocus[j]     := aResults[3]
+   ENDIF
+
+   IF ::aCtrlType[j] == 'RICHEDIT'
+      cTitle      := cNameW + " events"
+      aLabels     := { 'On Change',    'On GotFocus',    'On LostFocus',    'On SelChange',    'On HScroll',    'On VScroll' }
+      aInitValues := { ::aonchange[j], ::aongotfocus[j], ::aonlostfocus[j], ::aOnSelChange[j], ::aOnHScroll[j], ::aOnVScroll[j] }
+      aFormats    := { 250,            250,              250,               250,               250,              250 }
+      aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
+      IF aResults[1] == NIL
+         RETURN NIL
+      ENDIF
+      ::aOnChange[j]        := aResults[01]
+      ::aOnGotFocus[j]      := aResults[02]
+      ::aOnLostFocus[j]     := aResults[03]
+      ::aOnSelChange[j]     := aResults[04]
+      ::aOnHScroll[j]       := aResults[05]
+      ::aOnVScroll[j]       := aResults[06]
+   ENDIF
+
+   IF ::aCtrlType[j] == 'ACTIVEX'
+      // Control has no events
+   ENDIF
+
+   IF ::aCtrlType[j] == 'CHECKLIST'
+      cTitle      := cNameW + " events"
+      aLabels     := { 'On Change',    'On GotFocus',    'On LostFocus',    'Action' }
+      aInitValues := { ::aOnChange[j], ::aOnGotFocus[j], ::aOnLostFocus[j], ::aAction[j] }
+      aFormats    := { 250,            250,              250,               250 }
+      aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
+      IF aResults[1] == NIL
+         RETURN NIL
+      ENDIF
+      ::aOnChange[j]        := aResults[01]
+      ::aOnGotFocus[j]      := aResults[02]
+      ::aOnLostFocus[j]     := aResults[03]
+      ::aAction[j]          := aResults[04]
+   ENDIF
+
+   IF ::aCtrlType[j] == 'HOTKEYBOX'
+      cTitle      := cNameW + " events"
+      aLabels     := { 'On Change',    'On GotFocus',    'On LostFocus',    'On Enter' }
+      aInitValues := { ::aOnChange[j], ::aOnGotFocus[j], ::aOnLostFocus[j], ::aOnEnter[j] }
+      aFormats    := { 250,            250,              250,               250 }
+      aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
+      IF aResults[1] == NIL
+         RETURN NIL
+      ENDIF
+      ::aOnChange[j]        := aResults[01]
+      ::aOnGotFocus[j]      := aResults[02]
+      ::aOnLostFocus[j]     := aResults[03]
+      ::aOnEnter[j]         := aResults[04]
+   ENDIF
+
+   IF ::aCtrlType[j] == 'PICTURE'
+      cTitle      := cNameW + " events"
+      aLabels     := { 'Action' }
+      aInitValues := { ::aAction[j] }
+      aFormats    := { 250 }
+      aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
+      IF aResults[1] == NIL
+         RETURN NIL
+      ENDIF
+      ::aAction[j]          := aResults[01]
+   ENDIF
+
+   IF ::aCtrlType[j] == 'PROGRESSMETER'
+      cTitle      := cNameW + " events"
+      aLabels     := { 'Action' }
+      aInitValues := { ::aAction[j] }
+      aFormats    := { 250 }
+      aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
+      IF aResults[1] == NIL
+         RETURN NIL
+      ENDIF
+      ::aAction[j]          := aResults[01]
+   ENDIF
+
+   IF ::aCtrlType[j] == 'SCROLLBAR'
+      cTitle      := cNameW + " events"
+      aLabels     := { 'On Change',    'On LineLeft/LineUp', 'On LineRight/LineDown', 'On PageLeft/PageUp', 'On PageRight/PageDown', 'On Left/Top', 'On Right/Bottom', 'On Thumb',      'On Track',        'On EndTrack' }
+      aInitValues := { ::aOnChange[j], ::aOnDblClick[j],     ::aOnDelete[j],          ::aOnDrop[j],         ::aOnEditCell[j],        ::aOnEnter[j], ::aOnGotFocus[j],  ::aOnHScroll[j], ::aOnLabelEdit[j], ::aOnListClose[j] }
+      aFormats    := { 250,            250,                  250,                     250,                  250,                     250,           250,               250,             250,               250 }
+      aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
+      IF aResults[1] == NIL
+         RETURN NIL
+      ENDIF
+      ::aOnChange[j]        := aResults[01]
+      ::aOnDblClick[j]      := aResults[02]
+      ::aOnDelete[j]        := aResults[03]
+      ::aOnDrop[j]          := aResults[04]
+      ::aOnEditCell[j]      := aResults[05]
+      ::aOnEnter[j]         := aResults[06]
+      ::aOnGotFocus[j]      := aResults[07]
+      ::aOnHScroll[j]       := aResults[08]
+      ::aOnLabelEdit[j]     := aResults[08]
+      ::aOnListClose[j]     := aResults[08]
+   ENDIF
+
+   IF ::aCtrlType[j] == 'TEXTARRAY'
+   /*
+      TODO
+   */
    ENDIF
 
    ::lFSave := .F.

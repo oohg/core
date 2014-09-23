@@ -1,5 +1,5 @@
 /*
- * $Id: tabprop.fmg,v 1.4 2014-09-16 04:11:20 fyurisich Exp $
+ * $Id: tabprop.fmg,v 1.5 2014-09-23 02:52:38 fyurisich Exp $
  */
 
 * ooHG IDE Plus form generated code
@@ -11,6 +11,7 @@ DEFINE WINDOW TEMPLATE ;
    WIDTH 428 ;
    HEIGHT 570 ;
    TITLE 'Tab properties' ;
+   MODAL ;
    BACKCOLOR ::myIde:aSystemColor
 
    @ 20, 20 BUTTON Button_1 ;
@@ -49,7 +50,8 @@ DEFINE WINDOW TEMPLATE ;
       WIDTH 120 ;
       HEIGHT 24 ;
       FONT 'Arial' ;
-      SIZE 9 ;
+      NUMERIC ;
+      INPUTMASK "999999" ;
       ON CHANGE ::aValue[i] := oTabProp:Text_1:Value
 
    @ 63, 220 LABEL Label_4 ;
@@ -249,7 +251,7 @@ DEFINE WINDOW TEMPLATE ;
       FONT 'Arial' ;
       SIZE 9 ;
       MAXLENGTH 500 ;
-      ON CHANGE IIF( CambiaImg( oTabProp ), ::aImage[i] := oTabProp:Edit_2:Value, NIL ) ;
+      ON CHANGE IIF( CambiaImg( oTab, oTabProp ), ::aImage[i] := oTabProp:Edit_2:Value, NIL ) ;
       NOVSCROLL 
 
    @ 403, 20 LABEL Label_7 ;
