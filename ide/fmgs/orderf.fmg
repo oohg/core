@@ -1,5 +1,5 @@
 /*
- * $Id: orderf.fmg,v 1.5 2014-09-16 04:11:20 fyurisich Exp $
+ * $Id: orderf.fmg,v 1.6 2014-09-25 02:59:10 fyurisich Exp $
  */
 
 * ooHG IDE Plus form generated code
@@ -7,67 +7,70 @@
 
 DEFINE WINDOW TEMPLATE ;
    AT 132, 235 ;
-   WIDTH 416 ;
-   HEIGHT 373 ;
-   TITLE 'Control Order (Tab order)' ;
+   WIDTH 390 ;
+   HEIGHT 340 ;
+   TITLE "Control's TabStop Order" ;
    MODAL ;
-   ON INIT ::LlenaTipos() ;
+   ON INIT ::FillListOfGroups() ;
    BACKCOLOR ::myIde:aSystemColor ;
    FONT 'Arial' ;
-   SIZE 10
+   SIZE 10 ;
+   CLIENTAREA 
 
    @ 10, 20 LABEL Label_2 ;
-      WIDTH 120 ;
+      WIDTH 130 ;
       HEIGHT 24 ;
       VALUE 'Control group' ;
       SIZE 11 ;
       CENTERALIGN 
 
-   @ 10, 200 LABEL Label_3 ;
-      WIDTH 120 ;
+   @ 40, 20 LISTBOX List_Groups ;
+      WIDTH 130 ;
+      HEIGHT 220 ;
+      ITEMS {""} ;
+      ON CHANGE ::FillListOfCtrls()
+
+   @ 10, 170 LABEL Label_3 ;
+      WIDTH 200 ;
       HEIGHT 24 ;
       VALUE 'Control order' ;
       SIZE 11 ;
       CENTERALIGN 
 
-   @ 40, 20 LISTBOX List_Tipos ;
-      WIDTH 130 ;
-      HEIGHT 140 ;
-      ITEMS {""} ;
-      ON CHANGE ::LlenaCon()
-
-   @ 40, 170 LISTBOX TreeOrden ;
+   @ 40, 170 LISTBOX List_Ctrls ;
       WIDTH 200 ;
-      HEIGHT 200 ;
+      HEIGHT 220 ;
       ITEMS {""}
 
-   @ 200, 60 BUTTON button_arriba ;
+   @ 290, 40 BUTTON Button_Up ;
       WIDTH 40 ;
       HEIGHT 28 ;
       CAPTION '/\' ;
-      ACTION ::Ord_Arriba() ;
-      SIZE 9
+      ACTION ::Order_Up() ;
+      SIZE 9 ;
+      TOOLTIP 'Move up.'
 
-   @ 240, 60 BUTTON button_abajo ;
+   @ 290, 90 BUTTON Button_Down ;
       WIDTH 40 ;
       HEIGHT 28 ;
       CAPTION '\/' ;
-      ACTION ::Ord_Abajo() ;
-      SIZE 9
+      ACTION ::Order_Down() ;
+      SIZE 9 ;
+      TOOLTIP 'Move down.'
 
-   @ 250, 170 LABEL Label_1 ;
-      WIDTH 200 ;
-      HEIGHT 20 ;
-      VALUE 'Use arrows to swap controls' ;
-      SIZE 12
-
-   @ 290, 60 CHECKBUTTON CheckBtn_1 ;
+   @ 290, 170 CHECKBUTTON CheckBtn_Filter ;
       CAPTION 'Filter Dynamic Controls' ;
-      WIDTH 290 ;
+      WIDTH 200 ;
       HEIGHT 28 ;
       VALUE .F. ;
       SIZE 12 ;
-      ON CHANGE ::FilterDC()
+      ON CHANGE ::FillListOfCtrls()
+
+   @ 270, 20 FRAME frame_1 ;
+      WIDTH 130 ;
+      HEIGHT 60 ;
+      CAPTION 'Move control' ;
+      TRANSPARENT 
 
 END WINDOW 
 

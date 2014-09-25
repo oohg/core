@@ -1,5 +1,5 @@
 /*
- * $Id: menued.prg,v 1.11 2014-09-22 02:35:41 fyurisich Exp $
+ * $Id: menued.prg,v 1.12 2014-09-25 02:59:10 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -330,7 +330,7 @@ Local cTitulo := {'Main', 'Context', 'Notify', 'Drop Down'}
       ::ParseData()
       ACTIVATE WINDOW ( ::cID )
       ::FormEdit := NIL
-      ::oEditor:MisPuntos()
+      ::oEditor:oDesignForm:SetFocus()
    ENDIF
 RETURN NIL
 

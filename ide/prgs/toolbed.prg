@@ -1,5 +1,5 @@
 /*
- * $Id: toolbed.prg,v 1.10 2014-09-19 20:24:08 fyurisich Exp $
+ * $Id: toolbed.prg,v 1.11 2014-09-25 02:59:10 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -138,11 +138,11 @@ LOCAL i := 1, oBut, cName
          DO WHILE ! ( ::cID )->( Eof() )
             cName := "hmi_cvc_tb_button_" + AllTrim( Str( i, 2 ) )
             oBut := TToolButton():Define( cName, 0, 0, AllTrim( ( ::cID )->item ), ;
-                       NIL, NIL, NIL, ( ::cID )->image, ( ::cID )->tooltip, NIL, ;
-                       NIL, .F., ( ::cID )->separator == 'X', ;
-                       ( ::cID )->autosize == 'X', ( ::cID )->check == 'X', ;
-                       ( ::cID )->group == 'X', ( ::cID )->drop == 'X', ;
-                       ( ::cID )->whole == "X" )
+                       NIL, NIL, NIL, AllTrim( ( ::cID )->image ), ;
+                       AllTrim( ( ::cID )->tooltip ), NIL, NIL, .F., ;
+                       ( ::cID )->separator == 'X', ( ::cID )->autosize == 'X', ;
+                       ( ::cID )->check == 'X', ( ::cID )->group == 'X', ;
+                       ( ::cID )->drop == 'X', ( ::cID )->whole == "X" )
 
             IF ( ::cID )->drop == 'X' .OR. ( ::cID )->whole == "X"
                // DROPDOWN MENU
@@ -206,7 +206,7 @@ METHOD Edit() CLASS TMyToolBarEditor
    ACTIVATE WINDOW ( ::cID )
    SET INTERACTIVECLOSE OFF
    ::FormEdit := NIL
-   ::oEditor:MisPuntos()
+   ::oEditor:oDesignForm:SetFocus()
 RETURN NIL
 
 //------------------------------------------------------------------------------
@@ -301,7 +301,7 @@ LOCAL cOutput := "", cButton, cFile, oMenu
       DO WHILE ! ( ::cID )->( Eof() )
          cOutput += Space( nSpacing * 2 ) + 'BUTTON ' + AllTrim( ( ::cID )->named )
          cOutput += ' ;' + CRLF + Space( nSpacing * 3 ) + 'CAPTION ' + StrToStr( ( ::cID )->item )
-         IF Len( AllTrim( ( ::cID )->image ) ) > 0
+         IF ! Empty( ( ::cID )->image )
            cOutput += ' ;' + CRLF + Space( nSpacing * 3 ) + 'PICTURE ' + StrToStr( ( ::cID )->image )
          ENDIF
          cOutput += ' ;' + CRLF + Space( nSpacing * 3 ) + 'ACTION ' + AllTrim( ( ::cID )->action )

@@ -1,11 +1,37 @@
 /*
- * $Id: ChangeLog,v 1.1373 2014-09-23 02:52:38 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1374 2014-09-25 02:59:10 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-09-24 23:59 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/fmgs/orderf.fmg
+     * Name of dymamic controls and called methods.
+     * Design.
+   * ide/fmgs/tabprop.fmg
+     + Validation to avoid duplicated control's name.
+   * ide/prgs/formedit.prg
+     ! RTE when 2 controls in the loaded form have the same name.
+     % Access to controls.
+     * Some methods and vars renamed.
+     ! Deletion of tabpage.
+     ! Keyboard size commands.
+     ! Control move and size using the mouse.
+     * Do not draw points over toolbar if one exists.
+     ! RTE when changing form's properties.
+     ! Some form's events are not saved.
+     ! CLIENTAREA clause in designed form.
+     - METHOD LeaDatoStatus.
+     ! Keywords inside properties' values are detected as clauses.
+     ! Return focus to designed form after save.
+   * ide/prgs/menued.prg
+     * Set focus on designed form after exit.
+   * ide/prgs/toolbed.prg
+     ! Empty button tooltip.
+     * Set focus on designed form after exit.
 
 2014-09-22 23:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    - ide/fmgs/tabevent.fmg

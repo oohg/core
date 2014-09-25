@@ -1,5 +1,5 @@
 /*
- * $Id: tabprop.fmg,v 1.5 2014-09-23 02:52:38 fyurisich Exp $
+ * $Id: tabprop.fmg,v 1.6 2014-09-25 02:59:10 fyurisich Exp $
  */
 
 * ooHG IDE Plus form generated code
@@ -67,7 +67,7 @@ DEFINE WINDOW TEMPLATE ;
       HEIGHT 24 ;
       FONT 'Arial' ;
       SIZE 9 ;
-      ON CHANGE ::aName[i] := oTabProp:Text_2:Value
+      ON CHANGE IIF( ::IsUnique( oTabProp:Text_2:Value, 0 ), ::aName[i] := AllTrim( oTabProp:Text_2:Value ),  { || MsgStop( 'Another control has the same name !!!', 'ooHG IDE+' ), oTabProp:Text_2:Value := ::aName[i] } )
 
    @ 103, 20 LABEL Label_2 ;
       WIDTH 60 ;
