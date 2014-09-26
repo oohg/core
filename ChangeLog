@@ -1,11 +1,28 @@
 /*
- * $Id: ChangeLog,v 1.1374 2014-09-25 02:59:10 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1375 2014-09-26 02:09:47 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-09-25 23:09 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/prgs/formedit.prg
+     * All methods names changed to English.
+     * All comments changed to English.
+     ! CLIENTAREA clause in designed form.
+     + T*O*D*O notes.
+     ! Just added control is not outlined.
+     ! The context menu of some controls is not working.
+     ! Picture controls are not saved properly.
+     ! Frame is not selected if it's the first clicked control after
+       loading the fmg.
+     ! RTE when adding a control after a HOTKEYBOX was added.
+     ! RTE when clicking on form after deleting a control.
+   * ide/prgs/mgide.prg
+     - DECLARE WINDOW sentences.
+     + T*O*D*O notes.
 
 2014-09-24 23:59 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ide/fmgs/orderf.fmg

@@ -1,5 +1,5 @@
 /*
- * $Id: mgide.prg,v 1.18 2014-09-19 20:24:08 fyurisich Exp $
+ * $Id: mgide.prg,v 1.19 2014-09-26 02:09:48 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -189,12 +189,6 @@ LOCAL nPos, nRed, nGreen, nBlue, lCorre, pmgFolder, nEsquema, cvcx, cvcy
    SET INTERACTIVECLOSE OFF
    SET NAVIGATION EXTENDED
    SET BROWSESYNC ON
-
-   DECLARE WINDOW Form_Edit
-   DECLARE WINDOW Form_Prefer
-   DECLARE WINDOW Form_Splash
-   DECLARE WINDOW Form_Tree
-   DECLARE WINDOW Form_Wait
 
    ::cProjFolder := GetCurrentFolder()
    ::cIDE_Folder := GetStartupFolder()
@@ -454,7 +448,7 @@ LOCAL nPos, nRed, nGreen, nBlue, lCorre, pmgFolder, nEsquema, cvcx, cvcy
       // Form
       ::lCloseOnFormExit := .T.
       ::ReadINI( ::cProjFolder + "\hmi.ini" )
-      ::Form_Tree.Hide
+      ::Form_Tree:Hide()
       ACTIVATE WINDOW Form_Tree, Form_Wait, Form_Splash NOWAIT
       ::Analizar( ::cFile )
    ELSE
@@ -3715,7 +3709,7 @@ LOCAL cOutput, nwidth, nheight, wq, nrat, cRun, ll, i, cTextedit, nInterval
    ::cText := ''
    ::nTemp := 0
    ::Form_Wait:Show()
-   ::Form_Wait.hmi_label_101.Value := 'Loading File ...'
+   ::Form_Wait:hmi_label_101:Value := 'Loading File ...'
    IF Len( AllTrim( ::cExtEditor ) ) == 0
       cTextEdit := MemoRead( cdFile )
       cTextEdit := StrTran( cTextEdit, Chr( 9 ), Space( 8 ) )
@@ -3753,7 +3747,7 @@ LOCAL cOutput, nwidth, nheight, wq, nrat, cRun, ll, i, cTextedit, nInterval
          FONT "Courier New" ;
          SIZE 10 ;
          BACKCOLOR ::aSystemColor ;
-         ON SIZE { || ::Form_Edit.Edit_1.Width := ::Form_Edit:Width - 15, ::Form_Edit.Edit_1.Height := ::Form_Edit:Height - 90 }
+         ON SIZE { || ::Form_Edit:Edit_1:Width := ::Form_Edit:Width - 15, ::Form_Edit:Edit_1:Height := ::Form_Edit:Height - 90 }
 
          @ 30, 2 RICHEDITBOX edit_1 ;
             WIDTH ::Form_Edit:Width - 15 ;
