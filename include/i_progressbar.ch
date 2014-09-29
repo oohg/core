@@ -1,5 +1,5 @@
 /*
- * $Id: i_progressbar.ch,v 1.5 2014-07-09 02:25:23 fyurisich Exp $
+ * $Id: i_progressbar.ch,v 1.6 2014-09-29 02:17:18 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -73,9 +73,8 @@
       [ FORECOLOR <barcolor> ] ;
       [ <rtl: RTL> ] ;
       [ MARQUEE <nVelocity> ] ;
-   =>;
-        [ <obj> := ] TProgressBar():Define( <(name)>, <(parent)>, <col>, ;
-              <row>, <w>, <h>, <lo>, <hi>, <tooltip>, <.vertical.>, ;
-              <.smooth.>, <helpid>, <.invisible.>, <v>, [ <backcolor> ], ;
-              [ <barcolor> ], <.rtl.>, <nVelocity> )
-                        
+   => ;
+      [ <obj> := ] TProgressBar():Define( <(name)>, <(parent)>, <col>, ;
+            <row>, <w>, <h>, <lo>, <hi>, <tooltip>, <.vertical.>, ;
+            <.smooth.>, <helpid>, <.invisible.>, <v>, [ <backcolor> ], ;
+            [ <barcolor> ], <.rtl.>, <nVelocity> )

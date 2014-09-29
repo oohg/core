@@ -1,11 +1,47 @@
 /*
- * $Id: ChangeLog,v 1.1375 2014-09-26 02:09:47 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1376 2014-09-29 02:17:18 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-09-28 23:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * doc/classes.txt
+     * Updated.
+   * ide/fmgs/tabprop.fmg
+     * All function names changed to English.
+   * ide/prgs/formedit.prg
+     * Displayed controls are recreated after modifying a property.
+     ! The context menu of some controls is not working.
+     * All function names changed to English.
+     ! Controls are always placed outside tabs.
+     ! Not all tab pages are shown in "Control's TabStop Order" window.
+     ! Error message displayed when editing tab's properties.
+     ! Page's images names not save/loaded properly.
+     ! RTE when creating a new tab control.
+     ! Not all controls in tab pages are saved.
+     ! Wrong value property of IPADDRESS control.
+     ! HORIZONTAL clause in RADIOGROUP control.
+     ! VALUE clause in IPADDRESS control.
+     ! Default values of property FOCUSEDPOS.
+   * ide/prgs/mgide.prg
+     + myTProgressBar class.
+   * include/i_button.ch
+     ! CHECKBUTTON command is not working properly.
+   * include/i_progressbar.ch
+   * include/i_richeditbox.ch
+     * Format.
+   * include/i_windefs.ch
+     + PBS_VERTICAL constant.
+   * source/h_hyperlink.prg
+     + Support for https.
+   * source/h_radio.prg
+     + Methods GroupHeight and GropWidth. They return the height and
+       width of the whole radiogroup control.
+   * source/h_spinner.prg
+     ! Spinner window still visible after releasing TSpinner() control.
 
 2014-09-25 23:09 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ide/prgs/formedit.prg

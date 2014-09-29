@@ -1,5 +1,5 @@
 /*
- * $Id: h_spinner.prg,v 1.19 2014-09-01 15:58:51 fyurisich Exp $
+ * $Id: h_spinner.prg,v 1.20 2014-09-29 02:17:19 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -110,7 +110,7 @@ CLASS TSpinner FROM TControl
    METHOD Value               SETGET
    METHOD Enabled             SETGET
    METHOD ForceHide           BLOCK { |Self| HideWindow( ::AuxHandle ) , ::Super:ForceHide() }
-
+   METHOD Release
    METHOD RangeMin            SETGET
    METHOD RangeMax            SETGET
    METHOD Increment           SETGET
@@ -165,6 +165,12 @@ Local ControlHandle
    ASSIGN ::OnChange    VALUE Change    TYPE "B"
 
 Return Self
+
+*-----------------------------------------------------------------------------*
+METHOD Release CLASS TSpinner
+*-----------------------------------------------------------------------------*
+   DestroyWindow( ::AuxHandle )
+Return ::Super:Release()
 
 *-----------------------------------------------------------------------------*
 METHOD SizePos( Row, Col, Width, Height ) CLASS TSpinner

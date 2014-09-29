@@ -1,5 +1,5 @@
 /*
- * $Id: mgide.prg,v 1.19 2014-09-26 02:09:48 fyurisich Exp $
+ * $Id: mgide.prg,v 1.20 2014-09-29 02:17:18 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -25,6 +25,7 @@
 #include "oohg.ch"
 #include "hbclass.ch"
 #include "common.ch"
+#include "i_windefs.ch"
 
 #DEFINE CRLF hb_OSNewLine()
 #DEFINE CR chr(13)
@@ -5021,6 +5022,20 @@ HB_FUNC ( ZAPDIRECTORY )
 
 
 #pragma ENDDUMP
+
+CLASS myTProgressBar FROM TProgressBar
+   METHOD Events
+ENDCLASS
+
+*------------------------------------------------------------------------------*
+METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS myTProgressBar
+*------------------------------------------------------------------------------*
+
+   IF nMsg == WM_LBUTTONDOWN
+      ::DoEventMouseCoords( ::OnClick, "CLICK" )
+   ENDIF
+
+RETURN ::Super:Events( hWnd, nMsg, wParam, lParam )
 
 /*
  * EOF

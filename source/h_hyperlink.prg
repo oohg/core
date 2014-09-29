@@ -1,5 +1,5 @@
 /*
- * $Id: h_hyperlink.prg,v 1.9 2012-04-03 22:51:14 fyurisich Exp $
+ * $Id: h_hyperlink.prg,v 1.10 2014-09-29 02:17:19 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -136,6 +136,9 @@ METHOD Address( cUrl ) CLASS THyperLink
 *------------------------------------------------------------------------------*
    If HB_IsString( cUrl )
       If Left( cUrl, 5 ) == "http:"
+         ::OnClick := {|| ShellExecute( 0, "open", "rundll32.exe", "url.dll,FileProtocolHandler " + cUrl, , 1 ) }
+         ::URL := cUrl
+      ElseIf Left( cUrl, 6 ) == "https:"
          ::OnClick := {|| ShellExecute( 0, "open", "rundll32.exe", "url.dll,FileProtocolHandler " + cUrl, , 1 ) }
          ::URL := cUrl
       ElseIf Left( cUrl, 5 ) == "file:"

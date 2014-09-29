@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.36 2014-09-26 02:09:47 fyurisich Exp $
+ * $Id: formedit.prg,v 1.37 2014-09-29 02:17:18 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -491,7 +491,6 @@ CLASS TFormEditor
    METHOD pRichedit
    METHOD PrintBrief
    METHOD ProcesaControl
-   METHOD ProcessContainers
    METHOD Properties_Click
    METHOD pScrollBar
    METHOD pSlider
@@ -512,11 +511,13 @@ CLASS TFormEditor
    METHOD ReadOopData                         // LeaDato_Oop
    METHOD ReadStringData                      // LeaDato
    METHOD RefreshControlInspector
+   METHOD ReorderTabs
    METHOD RestoreForms
    METHOD Save
    METHOD SelectControl
    METHOD SetBackColor
    METHOD SetDefaultBackColor
+   METHOD SetDefaultFontType
    METHOD SetFontType
    METHOD ShowFormData
    METHOD SizeControl
@@ -1293,7 +1294,8 @@ LOCAL i, j, nContLin, cForma, nStart, nEnd, nFWidth, nFHeight, cName, aColor
       ON INIT { || IIF( ::lFClientArea, ClientAreaResize( ::oDesignForm ), NIL ), ;
                    ::RefreshControlInspector(), ;
                    ::oCtrlList:SetFocus(), ;
-                   IIF( ::oCtrlList:ItemCount > 0, ::oCtrlList:Value := { 1 }, NIL ) }
+                   IIF( ::oCtrlList:ItemCount > 0, ::oCtrlList:Value := { 1 }, NIL ), ;
+                   ::oDesignForm:SetFocus() }
 
       DEFINE CONTEXT MENU
          ITEM 'Properties'             ACTION ::Properties_Click()
@@ -1364,6 +1366,7 @@ LOCAL cName
       ICON 'VD' ;
       CHILD ;
       NOSHOW ;
+      ON RCLICK ::AddControl() ;
       ON MOUSECLICK ::AddControl() ;
       ON DBLCLICK ::Properties_Click() ;
       ON MOUSEMOVE ::MouseTrack() ;
@@ -1581,15 +1584,21 @@ LOCAL cName, CurrentPage, j, aCaptions, i
       ::FormCtrlOrder:List_Ctrls:AddItem( 'page ' + aCaptions[CurrentPage] )
       FOR i := 2 TO ::nControlW
          IF ::aTabPage[i, 1] == cName
-            IF ::aTabPage[i, 2] # CurrentPage
-               CurrentPage := ::aTabPage[i, 2]
-               ::FormCtrlOrder:List_Ctrls:AddItem( 'page ' + aCaptions[CurrentPage] )
+            IF ::aTabPage[i, 2] > CurrentPage
+               DO WHILE CurrentPage < ::aTabPage[i, 2]
+                 CurrentPage ++
+                 ::FormCtrlOrder:List_Ctrls:AddItem( 'page ' + aCaptions[CurrentPage] )
+               ENDDO
             ENDIF
             IF ! ::FormCtrlOrder:CheckBtn_Filter:Value .OR. ! ::aCtrlType[i] $ "LABEL FRAME TIMER IMAGE PICTURE ACTIVEX PROGRESSBAR PROGRESSMETER ANIMATE"
                ::FormCtrlOrder:List_Ctrls:AddItem( '      ' + ::aName[i] )
             ENDIF
          ENDIF
       NEXT i
+      DO WHILE CurrentPage < Len( aCaptions )
+        CurrentPage ++
+        ::FormCtrlOrder:List_Ctrls:AddItem( 'page ' + aCaptions[CurrentPage] )
+      ENDDO
       ::FormCtrlOrder:List_Ctrls:Value := 2
    ENDIF
    CursorArrow()
@@ -1660,231 +1669,231 @@ METHOD SwapArray( x1, x2 ) CLASS TFormEditor
 //------------------------------------------------------------------------------
 LOCAL t83, t84
 
-   Cambia( ::a3State, x1, x2 )
-   Cambia( ::aAction, x1, x2 )
-   Cambia( ::aAction2, x1, x2 )
-   Cambia( ::aAddress, x1, x2 )
-   Cambia( ::aAfterColMove, x1, x2 )
-   Cambia( ::aAfterColSize, x1, x2 )
-   Cambia( ::aAppend, x1, x2 )
-   Cambia( ::aAutoPlay, x1, x2 )
-   Cambia( ::aBackColor, x1, x2 )
-   Cambia( ::aBackground, x1, x2 )
-   Cambia( ::aBeforeAutoFit, x1, x2 )
-   Cambia( ::aBeforeColMove, x1, x2 )
-   Cambia( ::aBeforeColSize, x1, x2 )
-   Cambia( ::aBold, x1, x2 )
-   Cambia( ::aBorder, x1, x2 )
-   Cambia( ::aBoth, x1, x2 )
-   Cambia( ::aBreak, x1, x2 )
-   Cambia( ::aBuffer, x1, x2 )
-   Cambia( ::aButtons, x1, x2 )
-   Cambia( ::aButtonWidth, x1, x2 )
-   Cambia( ::aByCell, x1, x2 )
-   Cambia( ::aCancel, x1, x2 )
-   Cambia( ::aCaption, x1, x2 )
-   Cambia( ::aCenter, x1, x2 )
-   Cambia( ::aCenterAlign, x1, x2 )
-   Cambia( ::aCheckBoxes, x1, x2 )
-   Cambia( ::aClientEdge, x1, x2 )
-   Cambia( ::aCObj, x1, x2 )
-   Cambia( ::aColumnControls, x1, x2 )
-   Cambia( ::aColumnInfo, x1, x2 )
-   Cambia( ::aControlW, x1, x2 )
-   Cambia( ::aCtrlType, x1, x2 )
-   Cambia( ::aDate, x1, x2 )
-   Cambia( ::aDefaultYear, x1, x2 )
-   Cambia( ::aDelayedLoad, x1, x2 )
-   Cambia( ::aDelete, x1, x2 )
-   Cambia( ::aDeleteMsg, x1, x2 )
-   Cambia( ::aDeleteWhen, x1, x2 )
-   Cambia( ::aDescend, x1, x2 )
-   Cambia( ::aDIBSection, x1, x2 )
-   Cambia( ::aDisplayEdit, x1, x2 )
-   Cambia( ::aDoubleBuffer, x1, x2 )
-   Cambia( ::aDrag, x1, x2 )
-   Cambia( ::aDrop, x1, x2 )
-   Cambia( ::aDynamicBackColor, x1, x2 )
-   Cambia( ::aDynamicCtrls, x1, x2 )
-   Cambia( ::aDynamicForeColor, x1, x2 )
-   Cambia( ::aDynBlocks, x1, x2 )
-   Cambia( ::aEdit, x1, x2 )
-   Cambia( ::aEditKeys, x1, x2 )
-   Cambia( ::aEditLabels, x1, x2 )
-   Cambia( ::aEnabled, x1, x2 )
-   Cambia( ::aExclude, x1, x2 )
-   Cambia( ::aExtDblClick, x1, x2 )
-   Cambia( ::aField, x1, x2 )
-   Cambia( ::aFields, x1, x2 )
-   Cambia( ::aFile, x1, x2 )
-   Cambia( ::aFileType, x1, x2 )
-   Cambia( ::aFirstItem, x1, x2 )
-   Cambia( ::aFit, x1, x2 )
-   Cambia( ::aFixBlocks, x1, x2 )
-   Cambia( ::aFixedCols, x1, x2 )
-   Cambia( ::aFixedCtrls, x1, x2 )
-   Cambia( ::aFixedWidths, x1, x2 )
-   Cambia( ::aFlat, x1, x2 )
-   Cambia( ::aFocusedPos, x1, x2 )
-   Cambia( ::aFocusRect, x1, x2 )
-   Cambia( ::aFontColor, x1, x2 )
-   Cambia( ::aFontItalic, x1, x2 )
-   Cambia( ::aFontName, x1, x2 )
-   Cambia( ::aFontSize, x1, x2 )
-   Cambia( ::aFontStrikeout, x1, x2 )
-   Cambia( ::aFontUnderline, x1, x2 )
-   Cambia( ::aForceRefresh, x1, x2 )
-   Cambia( ::aForceScale, x1, x2 )
-   Cambia( ::aFull, x1, x2 )
-   Cambia( ::aGripperText, x1, x2 )
-   Cambia( ::aHandCursor, x1, x2 )
-   Cambia( ::aHBitmap, x1, x2 )
-   Cambia( ::aHeaderImages, x1, x2 )
-   Cambia( ::aHeaders, x1, x2 )
-   Cambia( ::aHelpID, x1, x2 )
-   Cambia( ::aHotTrack, x1, x2 )
-   Cambia( ::aImage, x1, x2 )
-   Cambia( ::aImageMargin, x1, x2 )
-   Cambia( ::aImagesAlign, x1, x2 )
-   Cambia( ::aImageSize, x1, x2 )
-   Cambia( ::aImageSource, x1, x2 )
-   Cambia( ::aIncrement, x1, x2 )
-   Cambia( ::aIncremental, x1, x2 )
-   Cambia( ::aIndent, x1, x2 )
-   Cambia( ::aInPlace, x1, x2 )
-   Cambia( ::aInputMask, x1, x2 )
-   Cambia( ::aInsertType, x1, x2 )
-   Cambia( ::aIntegralHeight, x1, x2 )
-   Cambia( ::aInvisible, x1, x2 )
-   Cambia( ::aItemCount, x1, x2 )
-   Cambia( ::aItemIDs, x1, x2 )
-   Cambia( ::aItemImageNumber, x1, x2 )
-   Cambia( ::aItemImages, x1, x2 )
-   Cambia( ::aItems, x1, x2 )
-   Cambia( ::aItemSource, x1, x2 )
-   Cambia( ::aJustify, x1, x2 )
-   Cambia( ::aLeft, x1, x2 )
-   Cambia( ::aLikeExcel, x1, x2 )
-   Cambia( ::aListWidth, x1, x2 )
-   Cambia( ::aLock, x1, x2 )
-   Cambia( ::aLowerCase, x1, x2 )
-   Cambia( ::aMarquee, x1, x2 )
-   Cambia( ::aMaxLength, x1, x2 )
-   Cambia( ::aMultiLine, x1, x2 )
-   Cambia( ::aMultiSelect, x1, x2 )
-   Cambia( ::aName, x1, x2 )
-   Cambia( ::aNo3DColors, x1, x2 )
-   Cambia( ::aNoAutoSizeMovie, x1, x2 )
-   Cambia( ::aNoAutoSizeWindow, x1, x2 )
-   Cambia( ::aNoClickOnCheck, x1, x2 )
-   Cambia( ::aNodeImages, x1, x2 )
-   Cambia( ::aNoDelMsg, x1, x2 )
-   Cambia( ::aNoErrorDlg, x1, x2 )
-   Cambia( ::aNoFocusRect, x1, x2 )
-   Cambia( ::aNoHeaders, x1, x2 )
-   Cambia( ::aNoHideSel, x1, x2 )
-   Cambia( ::aNoHScroll, x1, x2 )
-   Cambia( ::aNoLines, x1, x2 )
-   Cambia( ::aNoLoadTrans, x1, x2 )
-   Cambia( ::aNoMenu, x1, x2 )
-   Cambia( ::aNoModalEdit, x1, x2 )
-   Cambia( ::aNoOpen, x1, x2 )
-   Cambia( ::aNoPlayBar, x1, x2 )
-   Cambia( ::aNoPrefix, x1, x2 )
-   Cambia( ::aNoRClickOnCheck, x1, x2 )
-   Cambia( ::aNoRefresh, x1, x2 )
-   Cambia( ::aNoRootButton, x1, x2 )
-   Cambia( ::aNoTabStop, x1, x2 )
-   Cambia( ::aNoTicks, x1, x2 )
-   Cambia( ::aNoToday, x1, x2 )
-   Cambia( ::aNoTodayCircle, x1, x2 )
-   Cambia( ::aNoVScroll, x1, x2 )
-   Cambia( ::aNumber, x1, x2 )
-   Cambia( ::aNumeric, x1, x2 )
-   Cambia( ::aOnAbortEdit, x1, x2 )
-   Cambia( ::aOnAppend, x1, x2 )
-   Cambia( ::aOnChange, x1, x2 )
-   Cambia( ::aOnCheckChg, x1, x2 )
-   Cambia( ::aOnDblClick, x1, x2 )
-   Cambia( ::aOnDelete, x1, x2 )
-   Cambia( ::aOnDisplayChange, x1, x2 )
-   Cambia( ::aOnDrop, x1, x2 )
-   Cambia( ::aOnEditCell, x1, x2 )
-   Cambia( ::aOnEnter, x1, x2 )
-   Cambia( ::aOnGotFocus, x1, x2 )
-   Cambia( ::aOnHeadClick, x1, x2 )
-   Cambia( ::aOnHeadRClick, x1, x2 )
-   Cambia( ::aOnHScroll, x1, x2 )
-   Cambia( ::aOnLabelEdit, x1, x2 )
-   Cambia( ::aOnListClose, x1, x2 )
-   Cambia( ::aOnListDisplay, x1, x2 )
-   Cambia( ::aOnLostFocus, x1, x2 )
-   Cambia( ::aOnMouseMove, x1, x2 )
-   Cambia( ::aOnQueryData, x1, x2 )
-   Cambia( ::aOnRefresh, x1, x2 )
-   Cambia( ::aOnSelChange, x1, x2 )
-   Cambia( ::aOnTextFilled, x1, x2 )
-   Cambia( ::aOnVScroll, x1, x2 )
-   Cambia( ::aOpaque, x1, x2 )
-   Cambia( ::aPageNames, x1, x2 )
-   Cambia( ::aPageObjs, x1, x2 )
-   Cambia( ::aPageSubClasses, x1, x2 )
-   Cambia( ::aPassWord, x1, x2 )
-   Cambia( ::aPicture, x1, x2 )
-   Cambia( ::aPlainText, x1, x2 )
-   Cambia( ::aPLM, x1, x2 )
-   Cambia( ::aRange, x1, x2 )
-   Cambia( ::aReadOnly, x1, x2 )
-   Cambia( ::aReadOnlyB, x1, x2 )
-   Cambia( ::aRecCount, x1, x2 )
-   Cambia( ::aRefresh, x1, x2 )
-   Cambia( ::aReplaceField, x1, x2 )
-   Cambia( ::aRightAlign, x1, x2 )
-   Cambia( ::aRTL, x1, x2 )
-   Cambia( ::aSearchLapse, x1, x2 )
-   Cambia( ::aSelBold, x1, x2 )
-   Cambia( ::aSelColor, x1, x2 )
-   Cambia( ::aShowAll, x1, x2 )
-   Cambia( ::aShowMode, x1, x2 )
-   Cambia( ::aShowName, x1, x2 )
-   Cambia( ::aShowNone, x1, x2 )
-   Cambia( ::aShowPosition, x1, x2 )
-   Cambia( ::aSingleBuffer, x1, x2 )
-   Cambia( ::aSingleExpand, x1, x2 )
-   Cambia( ::aSmooth, x1, x2 )
-   Cambia( ::aSort, x1, x2 )
-   Cambia( ::aSourceOrder, x1, x2 )
-   Cambia( ::aSpacing, x1, x2 )
-   Cambia( ::aSpeed, x1, x2 )
-   Cambia( ::aStretch, x1, x2 )
-   Cambia( ::aSubClass, x1, x2 )
-   Cambia( ::aSync, x1, x2 )
-   Cambia( ::aTarget, x1, x2 )
-   Cambia( ::aTextHeight, x1, x2 )
-   Cambia( ::aThemed, x1, x2 )
-   Cambia( ::aToolTip, x1, x2 )
-   Cambia( ::aTop, x1, x2 )
-   Cambia( ::aTransparent, x1, x2 )
-   Cambia( ::aUnSync, x1, x2 )
-   Cambia( ::aUpdate, x1, x2 )
-   Cambia( ::aUpdateColors, x1, x2 )
-   Cambia( ::aUpDown, x1, x2 )
-   Cambia( ::aUpperCase, x1, x2 )
-   Cambia( ::aValid, x1, x2 )
-   Cambia( ::aValidMess, x1, x2 )
-   Cambia( ::aValue, x1, x2 )
-   Cambia( ::aValueL, x1, x2 )
-   Cambia( ::aValueN, x1, x2 )
-   Cambia( ::aValueSource, x1, x2 )
-   Cambia( ::aVertical, x1, x2 )
-   Cambia( ::aVirtual, x1, x2 )
-   Cambia( ::aVisible, x1, x2 )
-   Cambia( ::aWeekNumbers, x1, x2 )
-   Cambia( ::aWhen, x1, x2 )
-   Cambia( ::aWhiteBack, x1, x2 )
-   Cambia( ::aWidths, x1, x2 )
-   Cambia( ::aWorkArea, x1, x2 )
-   Cambia( ::aWrap, x1, x2 )
+   my_aSwap( ::a3State, x1, x2 )
+   my_aSwap( ::aAction, x1, x2 )
+   my_aSwap( ::aAction2, x1, x2 )
+   my_aSwap( ::aAddress, x1, x2 )
+   my_aSwap( ::aAfterColMove, x1, x2 )
+   my_aSwap( ::aAfterColSize, x1, x2 )
+   my_aSwap( ::aAppend, x1, x2 )
+   my_aSwap( ::aAutoPlay, x1, x2 )
+   my_aSwap( ::aBackColor, x1, x2 )
+   my_aSwap( ::aBackground, x1, x2 )
+   my_aSwap( ::aBeforeAutoFit, x1, x2 )
+   my_aSwap( ::aBeforeColMove, x1, x2 )
+   my_aSwap( ::aBeforeColSize, x1, x2 )
+   my_aSwap( ::aBold, x1, x2 )
+   my_aSwap( ::aBorder, x1, x2 )
+   my_aSwap( ::aBoth, x1, x2 )
+   my_aSwap( ::aBreak, x1, x2 )
+   my_aSwap( ::aBuffer, x1, x2 )
+   my_aSwap( ::aButtons, x1, x2 )
+   my_aSwap( ::aButtonWidth, x1, x2 )
+   my_aSwap( ::aByCell, x1, x2 )
+   my_aSwap( ::aCancel, x1, x2 )
+   my_aSwap( ::aCaption, x1, x2 )
+   my_aSwap( ::aCenter, x1, x2 )
+   my_aSwap( ::aCenterAlign, x1, x2 )
+   my_aSwap( ::aCheckBoxes, x1, x2 )
+   my_aSwap( ::aClientEdge, x1, x2 )
+   my_aSwap( ::aCObj, x1, x2 )
+   my_aSwap( ::aColumnControls, x1, x2 )
+   my_aSwap( ::aColumnInfo, x1, x2 )
+   my_aSwap( ::aControlW, x1, x2 )
+   my_aSwap( ::aCtrlType, x1, x2 )
+   my_aSwap( ::aDate, x1, x2 )
+   my_aSwap( ::aDefaultYear, x1, x2 )
+   my_aSwap( ::aDelayedLoad, x1, x2 )
+   my_aSwap( ::aDelete, x1, x2 )
+   my_aSwap( ::aDeleteMsg, x1, x2 )
+   my_aSwap( ::aDeleteWhen, x1, x2 )
+   my_aSwap( ::aDescend, x1, x2 )
+   my_aSwap( ::aDIBSection, x1, x2 )
+   my_aSwap( ::aDisplayEdit, x1, x2 )
+   my_aSwap( ::aDoubleBuffer, x1, x2 )
+   my_aSwap( ::aDrag, x1, x2 )
+   my_aSwap( ::aDrop, x1, x2 )
+   my_aSwap( ::aDynamicBackColor, x1, x2 )
+   my_aSwap( ::aDynamicCtrls, x1, x2 )
+   my_aSwap( ::aDynamicForeColor, x1, x2 )
+   my_aSwap( ::aDynBlocks, x1, x2 )
+   my_aSwap( ::aEdit, x1, x2 )
+   my_aSwap( ::aEditKeys, x1, x2 )
+   my_aSwap( ::aEditLabels, x1, x2 )
+   my_aSwap( ::aEnabled, x1, x2 )
+   my_aSwap( ::aExclude, x1, x2 )
+   my_aSwap( ::aExtDblClick, x1, x2 )
+   my_aSwap( ::aField, x1, x2 )
+   my_aSwap( ::aFields, x1, x2 )
+   my_aSwap( ::aFile, x1, x2 )
+   my_aSwap( ::aFileType, x1, x2 )
+   my_aSwap( ::aFirstItem, x1, x2 )
+   my_aSwap( ::aFit, x1, x2 )
+   my_aSwap( ::aFixBlocks, x1, x2 )
+   my_aSwap( ::aFixedCols, x1, x2 )
+   my_aSwap( ::aFixedCtrls, x1, x2 )
+   my_aSwap( ::aFixedWidths, x1, x2 )
+   my_aSwap( ::aFlat, x1, x2 )
+   my_aSwap( ::aFocusedPos, x1, x2 )
+   my_aSwap( ::aFocusRect, x1, x2 )
+   my_aSwap( ::aFontColor, x1, x2 )
+   my_aSwap( ::aFontItalic, x1, x2 )
+   my_aSwap( ::aFontName, x1, x2 )
+   my_aSwap( ::aFontSize, x1, x2 )
+   my_aSwap( ::aFontStrikeout, x1, x2 )
+   my_aSwap( ::aFontUnderline, x1, x2 )
+   my_aSwap( ::aForceRefresh, x1, x2 )
+   my_aSwap( ::aForceScale, x1, x2 )
+   my_aSwap( ::aFull, x1, x2 )
+   my_aSwap( ::aGripperText, x1, x2 )
+   my_aSwap( ::aHandCursor, x1, x2 )
+   my_aSwap( ::aHBitmap, x1, x2 )
+   my_aSwap( ::aHeaderImages, x1, x2 )
+   my_aSwap( ::aHeaders, x1, x2 )
+   my_aSwap( ::aHelpID, x1, x2 )
+   my_aSwap( ::aHotTrack, x1, x2 )
+   my_aSwap( ::aImage, x1, x2 )
+   my_aSwap( ::aImageMargin, x1, x2 )
+   my_aSwap( ::aImagesAlign, x1, x2 )
+   my_aSwap( ::aImageSize, x1, x2 )
+   my_aSwap( ::aImageSource, x1, x2 )
+   my_aSwap( ::aIncrement, x1, x2 )
+   my_aSwap( ::aIncremental, x1, x2 )
+   my_aSwap( ::aIndent, x1, x2 )
+   my_aSwap( ::aInPlace, x1, x2 )
+   my_aSwap( ::aInputMask, x1, x2 )
+   my_aSwap( ::aInsertType, x1, x2 )
+   my_aSwap( ::aIntegralHeight, x1, x2 )
+   my_aSwap( ::aInvisible, x1, x2 )
+   my_aSwap( ::aItemCount, x1, x2 )
+   my_aSwap( ::aItemIDs, x1, x2 )
+   my_aSwap( ::aItemImageNumber, x1, x2 )
+   my_aSwap( ::aItemImages, x1, x2 )
+   my_aSwap( ::aItems, x1, x2 )
+   my_aSwap( ::aItemSource, x1, x2 )
+   my_aSwap( ::aJustify, x1, x2 )
+   my_aSwap( ::aLeft, x1, x2 )
+   my_aSwap( ::aLikeExcel, x1, x2 )
+   my_aSwap( ::aListWidth, x1, x2 )
+   my_aSwap( ::aLock, x1, x2 )
+   my_aSwap( ::aLowerCase, x1, x2 )
+   my_aSwap( ::aMarquee, x1, x2 )
+   my_aSwap( ::aMaxLength, x1, x2 )
+   my_aSwap( ::aMultiLine, x1, x2 )
+   my_aSwap( ::aMultiSelect, x1, x2 )
+   my_aSwap( ::aName, x1, x2 )
+   my_aSwap( ::aNo3DColors, x1, x2 )
+   my_aSwap( ::aNoAutoSizeMovie, x1, x2 )
+   my_aSwap( ::aNoAutoSizeWindow, x1, x2 )
+   my_aSwap( ::aNoClickOnCheck, x1, x2 )
+   my_aSwap( ::aNodeImages, x1, x2 )
+   my_aSwap( ::aNoDelMsg, x1, x2 )
+   my_aSwap( ::aNoErrorDlg, x1, x2 )
+   my_aSwap( ::aNoFocusRect, x1, x2 )
+   my_aSwap( ::aNoHeaders, x1, x2 )
+   my_aSwap( ::aNoHideSel, x1, x2 )
+   my_aSwap( ::aNoHScroll, x1, x2 )
+   my_aSwap( ::aNoLines, x1, x2 )
+   my_aSwap( ::aNoLoadTrans, x1, x2 )
+   my_aSwap( ::aNoMenu, x1, x2 )
+   my_aSwap( ::aNoModalEdit, x1, x2 )
+   my_aSwap( ::aNoOpen, x1, x2 )
+   my_aSwap( ::aNoPlayBar, x1, x2 )
+   my_aSwap( ::aNoPrefix, x1, x2 )
+   my_aSwap( ::aNoRClickOnCheck, x1, x2 )
+   my_aSwap( ::aNoRefresh, x1, x2 )
+   my_aSwap( ::aNoRootButton, x1, x2 )
+   my_aSwap( ::aNoTabStop, x1, x2 )
+   my_aSwap( ::aNoTicks, x1, x2 )
+   my_aSwap( ::aNoToday, x1, x2 )
+   my_aSwap( ::aNoTodayCircle, x1, x2 )
+   my_aSwap( ::aNoVScroll, x1, x2 )
+   my_aSwap( ::aNumber, x1, x2 )
+   my_aSwap( ::aNumeric, x1, x2 )
+   my_aSwap( ::aOnAbortEdit, x1, x2 )
+   my_aSwap( ::aOnAppend, x1, x2 )
+   my_aSwap( ::aOnChange, x1, x2 )
+   my_aSwap( ::aOnCheckChg, x1, x2 )
+   my_aSwap( ::aOnDblClick, x1, x2 )
+   my_aSwap( ::aOnDelete, x1, x2 )
+   my_aSwap( ::aOnDisplayChange, x1, x2 )
+   my_aSwap( ::aOnDrop, x1, x2 )
+   my_aSwap( ::aOnEditCell, x1, x2 )
+   my_aSwap( ::aOnEnter, x1, x2 )
+   my_aSwap( ::aOnGotFocus, x1, x2 )
+   my_aSwap( ::aOnHeadClick, x1, x2 )
+   my_aSwap( ::aOnHeadRClick, x1, x2 )
+   my_aSwap( ::aOnHScroll, x1, x2 )
+   my_aSwap( ::aOnLabelEdit, x1, x2 )
+   my_aSwap( ::aOnListClose, x1, x2 )
+   my_aSwap( ::aOnListDisplay, x1, x2 )
+   my_aSwap( ::aOnLostFocus, x1, x2 )
+   my_aSwap( ::aOnMouseMove, x1, x2 )
+   my_aSwap( ::aOnQueryData, x1, x2 )
+   my_aSwap( ::aOnRefresh, x1, x2 )
+   my_aSwap( ::aOnSelChange, x1, x2 )
+   my_aSwap( ::aOnTextFilled, x1, x2 )
+   my_aSwap( ::aOnVScroll, x1, x2 )
+   my_aSwap( ::aOpaque, x1, x2 )
+   my_aSwap( ::aPageNames, x1, x2 )
+   my_aSwap( ::aPageObjs, x1, x2 )
+   my_aSwap( ::aPageSubClasses, x1, x2 )
+   my_aSwap( ::aPassWord, x1, x2 )
+   my_aSwap( ::aPicture, x1, x2 )
+   my_aSwap( ::aPlainText, x1, x2 )
+   my_aSwap( ::aPLM, x1, x2 )
+   my_aSwap( ::aRange, x1, x2 )
+   my_aSwap( ::aReadOnly, x1, x2 )
+   my_aSwap( ::aReadOnlyB, x1, x2 )
+   my_aSwap( ::aRecCount, x1, x2 )
+   my_aSwap( ::aRefresh, x1, x2 )
+   my_aSwap( ::aReplaceField, x1, x2 )
+   my_aSwap( ::aRightAlign, x1, x2 )
+   my_aSwap( ::aRTL, x1, x2 )
+   my_aSwap( ::aSearchLapse, x1, x2 )
+   my_aSwap( ::aSelBold, x1, x2 )
+   my_aSwap( ::aSelColor, x1, x2 )
+   my_aSwap( ::aShowAll, x1, x2 )
+   my_aSwap( ::aShowMode, x1, x2 )
+   my_aSwap( ::aShowName, x1, x2 )
+   my_aSwap( ::aShowNone, x1, x2 )
+   my_aSwap( ::aShowPosition, x1, x2 )
+   my_aSwap( ::aSingleBuffer, x1, x2 )
+   my_aSwap( ::aSingleExpand, x1, x2 )
+   my_aSwap( ::aSmooth, x1, x2 )
+   my_aSwap( ::aSort, x1, x2 )
+   my_aSwap( ::aSourceOrder, x1, x2 )
+   my_aSwap( ::aSpacing, x1, x2 )
+   my_aSwap( ::aSpeed, x1, x2 )
+   my_aSwap( ::aStretch, x1, x2 )
+   my_aSwap( ::aSubClass, x1, x2 )
+   my_aSwap( ::aSync, x1, x2 )
+   my_aSwap( ::aTarget, x1, x2 )
+   my_aSwap( ::aTextHeight, x1, x2 )
+   my_aSwap( ::aThemed, x1, x2 )
+   my_aSwap( ::aToolTip, x1, x2 )
+   my_aSwap( ::aTop, x1, x2 )
+   my_aSwap( ::aTransparent, x1, x2 )
+   my_aSwap( ::aUnSync, x1, x2 )
+   my_aSwap( ::aUpdate, x1, x2 )
+   my_aSwap( ::aUpdateColors, x1, x2 )
+   my_aSwap( ::aUpDown, x1, x2 )
+   my_aSwap( ::aUpperCase, x1, x2 )
+   my_aSwap( ::aValid, x1, x2 )
+   my_aSwap( ::aValidMess, x1, x2 )
+   my_aSwap( ::aValue, x1, x2 )
+   my_aSwap( ::aValueL, x1, x2 )
+   my_aSwap( ::aValueN, x1, x2 )
+   my_aSwap( ::aValueSource, x1, x2 )
+   my_aSwap( ::aVertical, x1, x2 )
+   my_aSwap( ::aVirtual, x1, x2 )
+   my_aSwap( ::aVisible, x1, x2 )
+   my_aSwap( ::aWeekNumbers, x1, x2 )
+   my_aSwap( ::aWhen, x1, x2 )
+   my_aSwap( ::aWhiteBack, x1, x2 )
+   my_aSwap( ::aWidths, x1, x2 )
+   my_aSwap( ::aWorkArea, x1, x2 )
+   my_aSwap( ::aWrap, x1, x2 )
 
    t83               := ::aTabPage[x1, 1]  // Name of the TAB where the control resides.
    t84               := ::aTabPage[x1, 2]  // Page number where the control resides.
@@ -1895,7 +1904,7 @@ LOCAL t83, t84
 RETURN NIL
 
 //------------------------------------------------------------------------------
-STATIC FUNCTION Cambia( arreglo, x1, x2 )
+STATIC FUNCTION my_aSwap( arreglo, x1, x2 )
 //------------------------------------------------------------------------------
 LOCAL t
    t           := arreglo[x1]
@@ -1951,7 +1960,7 @@ LOCAL ia, si, cName, FormFontColor
          ENDIF
          ACTIVATE WINDOW ( cName )
          SET INTERACTIVECLOSE OFF
-         CHideControl( ::oDesignForm:aControls[ia] )
+         CHideControl( ::oDesignForm:aControls[ia] )    // TODO: Check if this changes statusbar's font
          CShowControl( ::oDesignForm:aControls[ia] )
          ::oDesignForm:SetFocus()
       ENDIF
@@ -1969,6 +1978,55 @@ METHOD SetDefaultBackColor( si ) CLASS TFormEditor
    ELSE
       ::aBackColor[si] := 'NIL'
       ::oDesignForm:aControlW[si]:BackColor := NIL
+   ENDIF
+   ::lFSave := .F.
+RETURN NIL
+
+//------------------------------------------------------------------------------
+METHOD SetDefaultFontType( si ) CLASS TFormEditor
+//------------------------------------------------------------------------------
+LOCAL cName
+
+   IF si == 0
+      ::cFFontName  := ::myIde:cFormDefFontName
+      ::nFFontSize  := ::myIde:nFormDefFontSize
+      ::cFFontColor := ::myIde:cFormDefFontColor
+
+      ::oDesignForm:cFontName := ::cFFontName
+      ::oDesignForm:nFontSize := ::nFFontSize
+      ::oDesignForm:FontColor := &( ::cFFontColor )
+   ELSEIF si == -1
+      cName := 'statusbar'
+
+      ::cSFontName  := ''
+      ::nSFontSize  := 0
+      ::lSBold      := .F.
+      ::lSItalic    := .F.
+      ::lSUnderline := .F.
+      ::lSStrikeout := .F.
+
+      ::oDesignForm:&cName:FontName      := ''
+      ::oDesignForm:&cName:FontSize      := 0
+      ::oDesignForm:&cName:FontBold      := .F.
+      ::oDesignForm:&cName:FontItalic    := .F.
+      ::oDesignForm:&cName:FontUnderline := .F.
+      ::oDesignForm:&cName:FontStrikeout := .F.
+   ELSE
+      ::aFontName[si]      := ''
+      ::aFontSize[si]      := 0
+      ::aFontColor[si]     := 'NIL'
+      ::aBold[si]          := .F.
+      ::aFontItalic[si]    := .F.
+      ::aFontUnderline[si] := .F.
+      ::aFontStrikeout[si] := .F.
+
+      ::oDesignForm:&cName:FontName      := ''
+      ::oDesignForm:&cName:FontSize      := 0
+      ::oDesignForm:&cName:FontColor     := NIL
+      ::oDesignForm:&cName:FontBold      := .F.
+      ::oDesignForm:&cName:FontItalic    := .F.
+      ::oDesignForm:&cName:FontUnderline := .F.
+      ::oDesignForm:&cName:FontStrikeout := .F.
    ENDIF
    ::lFSave := .F.
 RETURN NIL
@@ -2208,7 +2266,7 @@ LOCAL aCaptions, aWidths, aActions, aIcons, aStyles, aToolTips, aAligns, nCant, 
          NIL, .F., .F., .F., NIL, NIL, ::lSBold, ::lSItalic, ::lSUnderline, ::lSStrikeout, ;
          ::lSTop, ::lSNoAutoAdjust, NIL, NIL, NIL, NIL )
 
-      aCaptions := IIF( Empty( ::cSCaption ), {}, &( ::cSCaption ) )
+      aCaptions := IF( Empty( ::cSCaption ), {}, &( ::cSCaption ) )
       aWidths   := IF( Empty( ::cSWidth ), {}, &( ::cSWidth ) )
       aActions  := IF( Empty( ::cSAction ), {}, &( ::cSAction ) )
       aIcons    := IF( Empty( ::cSIcon ), {}, &( ::cSIcon ) )
@@ -2377,7 +2435,7 @@ METHOD IniArray( cControlName, cCtrlType ) CLASS TFormEditor
    aAdd( ::aFixedCtrls, .F. )
    aAdd( ::aFixedWidths, .F. )
    aAdd( ::aFlat, .F. )
-   aAdd( ::aFocusedPos, -2 )
+   aAdd( ::aFocusedPos, 0 )
    aAdd( ::aFocusRect, .F. )
    aAdd( ::aFontColor, 'NIL' )
    aAdd( ::aFontItalic, .F. )
@@ -2548,236 +2606,236 @@ RETURN NIL
 //------------------------------------------------------------------------------
 METHOD DelArray( z ) CLASS TFormEditor
 //------------------------------------------------------------------------------
-   myAdel( ::a3State, z )
-   myAdel( ::aAction, z )
-   myAdel( ::aAction2, z )
-   myAdel( ::aAddress, z )
-   myAdel( ::aAfterColMove, z )
-   myAdel( ::aAfterColSize, z )
-   myAdel( ::aAppend, z )
-   myAdel( ::aAutoPlay, z )
-   myAdel( ::aBackColor, z )
-   myAdel( ::aBackground, z )
-   myAdel( ::aBackgroundColor, z )
-   myAdel( ::aBeforeAutoFit, z )
-   myAdel( ::aBeforeColMove, z )
-   myAdel( ::aBeforeColSize, z )
-   myAdel( ::aBold, z )
-   myAdel( ::aBorder, z )
-   myAdel( ::aBoth, z )
-   myAdel( ::aBreak, z )
-   myAdel( ::aBuffer, z )
-   myAdel( ::aButtons, z )
-   myAdel( ::aButtonWidth, z )
-   myAdel( ::aByCell, z )
-   myAdel( ::aCancel, z )
-   myAdel( ::aCaption, z )
-   myAdel( ::aCenter, z )
-   myAdel( ::aCenterAlign, z )
-   myAdel( ::aCheckBoxes, z )
-   myAdel( ::aClientEdge, z )
-   myAdel( ::aCObj, z)
-   myAdel( ::aColumnControls, z )
-   myAdel( ::aColumnInfo, z )
-   myAdel( ::aControlW, z )
-   myAdel( ::aCtrlType, z )
-   myAdel( ::aDate, z )
-   myAdel( ::aDefaultYear, z )
-   myAdel( ::aDelayedLoad, z )
-   myAdel( ::aDelete, z )
-   myAdel( ::aDeleteMsg, z )
-   myAdel( ::aDeleteWhen, z )
-   myAdel( ::aDescend, z )
-   myAdel( ::aDIBSection, z )
-   myAdel( ::aDisplayEdit, z )
-   myAdel( ::aDoubleBuffer, z )
-   myAdel( ::aDrag, z )
-   myAdel( ::aDrop, z )
-   myAdel( ::aDynamicBackColor, z )
-   myAdel( ::aDynamicCtrls, z )
-   myAdel( ::aDynamicForeColor, z )
-   myAdel( ::aDynBlocks, z )
-   myAdel( ::aEdit, z )
-   myAdel( ::aEditKeys, z )
-   myAdel( ::aEditLabels, z )
-   myAdel( ::aEnabled, z )
-   myAdel( ::aExclude, z )
-   myAdel( ::aExtDblClick, z )
-   myAdel( ::aField, z )
-   myAdel( ::aFields, z )
-   myAdel( ::aFile, z )
-   myAdel( ::aFileType, z )
-   myAdel( ::aFirstItem, z )
-   myAdel( ::aFit, z )
-   myAdel( ::aFixBlocks, z )
-   myAdel( ::aFixedCols, z )
-   myAdel( ::aFixedCtrls, z )
-   myAdel( ::aFixedWidths, z )
-   myAdel( ::aFlat, z )
-   myAdel( ::aFocusedPos, z )
-   myAdel( ::aFocusRect, z )
-   myAdel( ::aFontColor, z )
-   myAdel( ::aFontItalic, z )
-   myAdel( ::aFontName, z )
-   myAdel( ::aFontSize, z )
-   myAdel( ::aFontStrikeout, z )
-   myAdel( ::aFontUnderline, z )
-   myAdel( ::aForceRefresh, z )
-   myAdel( ::aForceScale, z )
-   myAdel( ::aFull, z )
-   myAdel( ::aGripperText, z )
-   myAdel( ::aHandCursor, z )
-   myAdel( ::aHBitmap, z )
-   myAdel( ::aHeaderImages, z )
-   myAdel( ::aHeaders, z )
-   myAdel( ::aHelpID, z )
-   myAdel( ::aHotTrack, z )
-   myAdel( ::aImage, z )
-   myAdel( ::aImageMargin, z )
-   myAdel( ::aImagesAlign, z )
-   myAdel( ::aImageSize, z )
-   myAdel( ::aImageSource, z )
-   myAdel( ::aIncrement, z )
-   myAdel( ::aIncremental, z )
-   myAdel( ::aIndent, z )
-   myAdel( ::aInPlace, z )
-   myAdel( ::aInputMask, z )
-   myAdel( ::aInsertType, z )
-   myAdel( ::aIntegralHeight, z )
-   myAdel( ::aInvisible, z )
-   myAdel( ::aItemCount, z )
-   myAdel( ::aItemIDs, z )
-   myAdel( ::aItemImageNumber, z )
-   myAdel( ::aItemImages, z  )
-   myAdel( ::aItems,  z )
-   myAdel( ::aItemSource, z )
-   myAdel( ::aJustify, z )
-   myAdel( ::aLeft, z )
-   myAdel( ::aLikeExcel, z )
-   myAdel( ::aListWidth, z )
-   myAdel( ::aLock, z )
-   myAdel( ::aLowerCase, z )
-   myAdel( ::aMarquee, z )
-   myAdel( ::aMaxLength, z )
-   myAdel( ::aMultiLine, z )
-   myAdel( ::aMultiSelect, z )
-   myAdel( ::aName, z )
-   myAdel( ::aNo3DColors, z )
-   myAdel( ::aNoAutoSizeMovie, z )
-   myAdel( ::aNoAutoSizeWindow, z )
-   myAdel( ::aNoClickOnCheck, z )
-   myAdel( ::aNodeImages, z )
-   myAdel( ::aNoDelMsg, z )
-   myAdel( ::aNoErrorDlg, z )
-   myAdel( ::aNoFocusRect, z )
-   myAdel( ::aNoHeaders, z )
-   myAdel( ::aNoHideSel, z )
-   myAdel( ::aNoHScroll, z )
-   myAdel( ::aNoLines, z )
-   myAdel( ::aNoLoadTrans, z )
-   myAdel( ::aNoMenu, z )
-   myAdel( ::aNoModalEdit, z )
-   myAdel( ::aNoOpen, z )
-   myAdel( ::aNoPlayBar, z )
-   myAdel( ::aNoPrefix, z )
-   myAdel( ::aNoRClickOnCheck, z )
-   myAdel( ::aNoRefresh, z )
-   myAdel( ::aNoRootButton, z )
-   myAdel( ::aNoTabStop, z )
-   myAdel( ::aNoTicks, z )
-   myAdel( ::aNoToday, z )
-   myAdel( ::aNoTodayCircle, z )
-   myAdel( ::aNoVScroll, z )
-   myAdel( ::aNumber, z )
-   myAdel( ::aNumeric, z )
-   myAdel( ::aOnAbortEdit, z )
-   myAdel( ::aOnAppend, z )
-   myAdel( ::aOnChange, z )
-   myAdel( ::aOnCheckChg, z )
-   myAdel( ::aOnDblClick, z )
-   myAdel( ::aOnDelete, z )
-   myAdel( ::aOnDisplayChange, z )
-   myAdel( ::aOnDrop, z )
-   myAdel( ::aOnEditCell, z )
-   myAdel( ::aOnEnter, z )
-   myAdel( ::aOnGotFocus, z )
-   myAdel( ::aOnHeadClick, z )
-   myAdel( ::aOnHeadRClick, z )
-   myAdel( ::aOnHScroll, z )
-   myAdel( ::aOnLabelEdit, z )
-   myAdel( ::aOnListClose, z )
-   myAdel( ::aOnListDisplay, z )
-   myAdel( ::aOnLostFocus, z )
-   myAdel( ::aOnMouseMove, z )
-   myAdel( ::aOnQueryData, z )
-   myAdel( ::aOnRefresh, z )
-   myAdel( ::aOnSelChange, z )
-   myAdel( ::aOnTextFilled, z )
-   myAdel( ::aOnVScroll, z )
-   myAdel( ::aOpaque, z )
-   myAdel( ::aPageNames, z )
-   myAdel( ::aPageObjs, z )
-   myAdel( ::aPageSubClasses, z )
-   myAdel( ::aPassWord, z )
-   myAdel( ::aPicture, z )
-   myAdel( ::aPlainText, z )
-   myAdel( ::aPLM, z )
-   myAdel( ::aRange, z )
-   myAdel( ::aReadOnly, z )
-   myAdel( ::aReadOnlyB, z )
-   myAdel( ::aRecCount, z )
-   myAdel( ::aRefresh, z )
-   myAdel( ::aReplaceField, z )
-   myAdel( ::aRightAlign, z )
-   myAdel( ::aRTL, z )
-   myAdel( ::aSearchLapse, z )
-   myAdel( ::aSelBold, z )
-   myAdel( ::aSelColor, z )
-   myAdel( ::aShowAll, z )
-   myAdel( ::aShowMode, z )
-   myAdel( ::aShowName, z )
-   myAdel( ::aShowNone, z )
-   myAdel( ::aShowPosition, z )
-   myAdel( ::aSingleBuffer, z )
-   myAdel( ::aSingleExpand, z )
-   myAdel( ::aSmooth, z )
-   myAdel( ::aSort, z )
-   myAdel( ::aSourceOrder, z )
-   myAdel( ::aSpacing, z )
-   myAdel( ::aSpeed, z )
-   myAdel( ::aStretch, z )
-   myAdel( ::aSubClass, z )
-   myAdel( ::aSync, z )
-   myAdel( ::aTabPage, z )
-   myAdel( ::aTarget, z )
-   myAdel( ::aTextHeight, z )
-   myAdel( ::aThemed, z )
-   myAdel( ::aTitleBackColor, z )
-   myAdel( ::aTitleFontColor, z )
-   myAdel( ::aToolTip, z )
-   myAdel( ::aTop, z )
-   myAdel( ::aTrailingFontColor, z )
-   myAdel( ::aTransparent, z )
-   myAdel( ::aUnSync, z )
-   myAdel( ::aUpdate, z )
-   myAdel( ::aUpdateColors, z )
-   myAdel( ::aUpDown, z )
-   myAdel( ::aUpperCase, z )
-   myAdel( ::aValid, z )
-   myAdel( ::aValidMess, z )
-   myAdel( ::aValue, z )
-   myAdel( ::aValueL, z )
-   myAdel( ::aValueN, z )
-   myAdel( ::aValueSource, z )
-   myAdel( ::aVertical, z )
-   myAdel( ::aVirtual, z )
-   myAdel( ::aVisible, z )
-   myAdel( ::aWeekNumbers, z )
-   myAdel( ::aWhen, z )
-   myAdel( ::aWhiteBack, z )
-   myAdel( ::aWidths, z )
-   myAdel( ::aWorkArea, z )
-   myAdel( ::aWrap, z )
+   my_aDel( ::a3State, z )
+   my_aDel( ::aAction, z )
+   my_aDel( ::aAction2, z )
+   my_aDel( ::aAddress, z )
+   my_aDel( ::aAfterColMove, z )
+   my_aDel( ::aAfterColSize, z )
+   my_aDel( ::aAppend, z )
+   my_aDel( ::aAutoPlay, z )
+   my_aDel( ::aBackColor, z )
+   my_aDel( ::aBackground, z )
+   my_aDel( ::aBackgroundColor, z )
+   my_aDel( ::aBeforeAutoFit, z )
+   my_aDel( ::aBeforeColMove, z )
+   my_aDel( ::aBeforeColSize, z )
+   my_aDel( ::aBold, z )
+   my_aDel( ::aBorder, z )
+   my_aDel( ::aBoth, z )
+   my_aDel( ::aBreak, z )
+   my_aDel( ::aBuffer, z )
+   my_aDel( ::aButtons, z )
+   my_aDel( ::aButtonWidth, z )
+   my_aDel( ::aByCell, z )
+   my_aDel( ::aCancel, z )
+   my_aDel( ::aCaption, z )
+   my_aDel( ::aCenter, z )
+   my_aDel( ::aCenterAlign, z )
+   my_aDel( ::aCheckBoxes, z )
+   my_aDel( ::aClientEdge, z )
+   my_aDel( ::aCObj, z)
+   my_aDel( ::aColumnControls, z )
+   my_aDel( ::aColumnInfo, z )
+   my_aDel( ::aControlW, z )
+   my_aDel( ::aCtrlType, z )
+   my_aDel( ::aDate, z )
+   my_aDel( ::aDefaultYear, z )
+   my_aDel( ::aDelayedLoad, z )
+   my_aDel( ::aDelete, z )
+   my_aDel( ::aDeleteMsg, z )
+   my_aDel( ::aDeleteWhen, z )
+   my_aDel( ::aDescend, z )
+   my_aDel( ::aDIBSection, z )
+   my_aDel( ::aDisplayEdit, z )
+   my_aDel( ::aDoubleBuffer, z )
+   my_aDel( ::aDrag, z )
+   my_aDel( ::aDrop, z )
+   my_aDel( ::aDynamicBackColor, z )
+   my_aDel( ::aDynamicCtrls, z )
+   my_aDel( ::aDynamicForeColor, z )
+   my_aDel( ::aDynBlocks, z )
+   my_aDel( ::aEdit, z )
+   my_aDel( ::aEditKeys, z )
+   my_aDel( ::aEditLabels, z )
+   my_aDel( ::aEnabled, z )
+   my_aDel( ::aExclude, z )
+   my_aDel( ::aExtDblClick, z )
+   my_aDel( ::aField, z )
+   my_aDel( ::aFields, z )
+   my_aDel( ::aFile, z )
+   my_aDel( ::aFileType, z )
+   my_aDel( ::aFirstItem, z )
+   my_aDel( ::aFit, z )
+   my_aDel( ::aFixBlocks, z )
+   my_aDel( ::aFixedCols, z )
+   my_aDel( ::aFixedCtrls, z )
+   my_aDel( ::aFixedWidths, z )
+   my_aDel( ::aFlat, z )
+   my_aDel( ::aFocusedPos, z )
+   my_aDel( ::aFocusRect, z )
+   my_aDel( ::aFontColor, z )
+   my_aDel( ::aFontItalic, z )
+   my_aDel( ::aFontName, z )
+   my_aDel( ::aFontSize, z )
+   my_aDel( ::aFontStrikeout, z )
+   my_aDel( ::aFontUnderline, z )
+   my_aDel( ::aForceRefresh, z )
+   my_aDel( ::aForceScale, z )
+   my_aDel( ::aFull, z )
+   my_aDel( ::aGripperText, z )
+   my_aDel( ::aHandCursor, z )
+   my_aDel( ::aHBitmap, z )
+   my_aDel( ::aHeaderImages, z )
+   my_aDel( ::aHeaders, z )
+   my_aDel( ::aHelpID, z )
+   my_aDel( ::aHotTrack, z )
+   my_aDel( ::aImage, z )
+   my_aDel( ::aImageMargin, z )
+   my_aDel( ::aImagesAlign, z )
+   my_aDel( ::aImageSize, z )
+   my_aDel( ::aImageSource, z )
+   my_aDel( ::aIncrement, z )
+   my_aDel( ::aIncremental, z )
+   my_aDel( ::aIndent, z )
+   my_aDel( ::aInPlace, z )
+   my_aDel( ::aInputMask, z )
+   my_aDel( ::aInsertType, z )
+   my_aDel( ::aIntegralHeight, z )
+   my_aDel( ::aInvisible, z )
+   my_aDel( ::aItemCount, z )
+   my_aDel( ::aItemIDs, z )
+   my_aDel( ::aItemImageNumber, z )
+   my_aDel( ::aItemImages, z  )
+   my_aDel( ::aItems,  z )
+   my_aDel( ::aItemSource, z )
+   my_aDel( ::aJustify, z )
+   my_aDel( ::aLeft, z )
+   my_aDel( ::aLikeExcel, z )
+   my_aDel( ::aListWidth, z )
+   my_aDel( ::aLock, z )
+   my_aDel( ::aLowerCase, z )
+   my_aDel( ::aMarquee, z )
+   my_aDel( ::aMaxLength, z )
+   my_aDel( ::aMultiLine, z )
+   my_aDel( ::aMultiSelect, z )
+   my_aDel( ::aName, z )
+   my_aDel( ::aNo3DColors, z )
+   my_aDel( ::aNoAutoSizeMovie, z )
+   my_aDel( ::aNoAutoSizeWindow, z )
+   my_aDel( ::aNoClickOnCheck, z )
+   my_aDel( ::aNodeImages, z )
+   my_aDel( ::aNoDelMsg, z )
+   my_aDel( ::aNoErrorDlg, z )
+   my_aDel( ::aNoFocusRect, z )
+   my_aDel( ::aNoHeaders, z )
+   my_aDel( ::aNoHideSel, z )
+   my_aDel( ::aNoHScroll, z )
+   my_aDel( ::aNoLines, z )
+   my_aDel( ::aNoLoadTrans, z )
+   my_aDel( ::aNoMenu, z )
+   my_aDel( ::aNoModalEdit, z )
+   my_aDel( ::aNoOpen, z )
+   my_aDel( ::aNoPlayBar, z )
+   my_aDel( ::aNoPrefix, z )
+   my_aDel( ::aNoRClickOnCheck, z )
+   my_aDel( ::aNoRefresh, z )
+   my_aDel( ::aNoRootButton, z )
+   my_aDel( ::aNoTabStop, z )
+   my_aDel( ::aNoTicks, z )
+   my_aDel( ::aNoToday, z )
+   my_aDel( ::aNoTodayCircle, z )
+   my_aDel( ::aNoVScroll, z )
+   my_aDel( ::aNumber, z )
+   my_aDel( ::aNumeric, z )
+   my_aDel( ::aOnAbortEdit, z )
+   my_aDel( ::aOnAppend, z )
+   my_aDel( ::aOnChange, z )
+   my_aDel( ::aOnCheckChg, z )
+   my_aDel( ::aOnDblClick, z )
+   my_aDel( ::aOnDelete, z )
+   my_aDel( ::aOnDisplayChange, z )
+   my_aDel( ::aOnDrop, z )
+   my_aDel( ::aOnEditCell, z )
+   my_aDel( ::aOnEnter, z )
+   my_aDel( ::aOnGotFocus, z )
+   my_aDel( ::aOnHeadClick, z )
+   my_aDel( ::aOnHeadRClick, z )
+   my_aDel( ::aOnHScroll, z )
+   my_aDel( ::aOnLabelEdit, z )
+   my_aDel( ::aOnListClose, z )
+   my_aDel( ::aOnListDisplay, z )
+   my_aDel( ::aOnLostFocus, z )
+   my_aDel( ::aOnMouseMove, z )
+   my_aDel( ::aOnQueryData, z )
+   my_aDel( ::aOnRefresh, z )
+   my_aDel( ::aOnSelChange, z )
+   my_aDel( ::aOnTextFilled, z )
+   my_aDel( ::aOnVScroll, z )
+   my_aDel( ::aOpaque, z )
+   my_aDel( ::aPageNames, z )
+   my_aDel( ::aPageObjs, z )
+   my_aDel( ::aPageSubClasses, z )
+   my_aDel( ::aPassWord, z )
+   my_aDel( ::aPicture, z )
+   my_aDel( ::aPlainText, z )
+   my_aDel( ::aPLM, z )
+   my_aDel( ::aRange, z )
+   my_aDel( ::aReadOnly, z )
+   my_aDel( ::aReadOnlyB, z )
+   my_aDel( ::aRecCount, z )
+   my_aDel( ::aRefresh, z )
+   my_aDel( ::aReplaceField, z )
+   my_aDel( ::aRightAlign, z )
+   my_aDel( ::aRTL, z )
+   my_aDel( ::aSearchLapse, z )
+   my_aDel( ::aSelBold, z )
+   my_aDel( ::aSelColor, z )
+   my_aDel( ::aShowAll, z )
+   my_aDel( ::aShowMode, z )
+   my_aDel( ::aShowName, z )
+   my_aDel( ::aShowNone, z )
+   my_aDel( ::aShowPosition, z )
+   my_aDel( ::aSingleBuffer, z )
+   my_aDel( ::aSingleExpand, z )
+   my_aDel( ::aSmooth, z )
+   my_aDel( ::aSort, z )
+   my_aDel( ::aSourceOrder, z )
+   my_aDel( ::aSpacing, z )
+   my_aDel( ::aSpeed, z )
+   my_aDel( ::aStretch, z )
+   my_aDel( ::aSubClass, z )
+   my_aDel( ::aSync, z )
+   my_aDel( ::aTabPage, z )
+   my_aDel( ::aTarget, z )
+   my_aDel( ::aTextHeight, z )
+   my_aDel( ::aThemed, z )
+   my_aDel( ::aTitleBackColor, z )
+   my_aDel( ::aTitleFontColor, z )
+   my_aDel( ::aToolTip, z )
+   my_aDel( ::aTop, z )
+   my_aDel( ::aTrailingFontColor, z )
+   my_aDel( ::aTransparent, z )
+   my_aDel( ::aUnSync, z )
+   my_aDel( ::aUpdate, z )
+   my_aDel( ::aUpdateColors, z )
+   my_aDel( ::aUpDown, z )
+   my_aDel( ::aUpperCase, z )
+   my_aDel( ::aValid, z )
+   my_aDel( ::aValidMess, z )
+   my_aDel( ::aValue, z )
+   my_aDel( ::aValueL, z )
+   my_aDel( ::aValueN, z )
+   my_aDel( ::aValueSource, z )
+   my_aDel( ::aVertical, z )
+   my_aDel( ::aVirtual, z )
+   my_aDel( ::aVisible, z )
+   my_aDel( ::aWeekNumbers, z )
+   my_aDel( ::aWhen, z )
+   my_aDel( ::aWhiteBack, z )
+   my_aDel( ::aWidths, z )
+   my_aDel( ::aWorkArea, z )
+   my_aDel( ::aWrap, z )
 
    ::nControlW --
    IF ::nControlW == 1
@@ -2787,7 +2845,7 @@ METHOD DelArray( z ) CLASS TFormEditor
 RETURN NIL
 
 //------------------------------------------------------------------------------
-STATIC FUNCTION myaDel( arreglo, z )
+STATIC FUNCTION my_aDel( arreglo, z )
 //------------------------------------------------------------------------------
    aDel( arreglo, z )
    aSize( arreglo, Len( arreglo ) - 1 )
@@ -2805,25 +2863,29 @@ LOCAL nNewHeight, nOldHeight
             RETURN NIL
          ENDIF
          oControl := ::oDesignForm:aControls[ia]
-         nOldRow  := GetWindowRow( oControl:hWnd )
-         nOldCol  := GetWindowCol( oControl:hWnd )
-         EraseWindow( ::oDesignForm:Name )
-         ::DrawPoints()
-         InteractiveMoveHandle( oControl:hWnd )
-         // the assignment of ::Row changes ::Col and viceversa, so
-         // we need to calculate before assigning
-         nNewRow := oControl:Row + GetWindowRow( oControl:hWnd ) - nOldRow
-         nNewCol := oControl:Col + GetWindowCol( oControl:hWnd ) - nOldCol
-         oControl:Row := nNewRow
-         oControl:Col := nNewCol
-         ::Snap( oControl )
-         ::lFSave := .F.
-         ::swCursor := 0
-         IF ::aTabPage[::nIndexW, 2] > 0
-            cName := ::aTabPage[::nIndexW, 1]
-            ::oDesignForm:&cName:Show()
+         IF ValidHandler( oControl:hWnd )
+            nOldRow  := GetWindowRow( oControl:hWnd )
+            nOldCol  := GetWindowCol( oControl:hWnd )
+            EraseWindow( ::oDesignForm:Name )
+            ::DrawPoints()
+            InteractiveMoveHandle( oControl:hWnd )
+            // the assignment of ::Row changes ::Col and viceversa, so
+            // we need to calculate before assigning
+            nNewRow := oControl:Row + GetWindowRow( oControl:hWnd ) - nOldRow
+            nNewCol := oControl:Col + GetWindowCol( oControl:hWnd ) - nOldCol
+            oControl:Row := nNewRow
+            oControl:Col := nNewCol
+            ::Snap( oControl )
+            ::lFSave := .F.
+            IF ::aTabPage[::nIndexW, 2] > 0
+               cName := ::aTabPage[::nIndexW, 1]
+               ::oDesignForm:&cName:Show()
+            ENDIF
+            ::DrawOutline( oControl )
+         ELSE
+            MsgStop( "This control can't be moved interactively.", "OOHG IDE+" )
          ENDIF
-         ::DrawOutline( oControl )
+         ::swCursor := 0
       ENDIF
    ELSEIF ::swCursor == 2              // size
       IF ::nIndexW > 0
@@ -2831,26 +2893,30 @@ LOCAL nNewHeight, nOldHeight
             RETURN NIL
          ENDIF
          oControl   := ::oDesignForm:aControls[ia]
-         nOldHeight := oControl:Height
-         InteractiveSizeHandle( oControl:hWnd )
-         IF ::CrtlIsOfType( ia, 'RADIOGROUP COMBO' )
-            oControl:Width  := GetWindowWidth ( oControl:hWnd )
-            oControl:Height := nOldHeight
+         IF ValidHandler( oControl:hWnd )
+            nOldHeight := oControl:Height
+            InteractiveSizeHandle( oControl:hWnd )
+            IF ::CrtlIsOfType( ia, 'RADIOGROUP COMBO' )
+               oControl:Width  := GetWindowWidth ( oControl:hWnd )
+               oControl:Height := nOldHeight
+            ELSE
+               // the assignment of ::Width changes ::Height and viceversa, so
+               // we need to calculate before assigning
+               nNewWidth       := GetWindowWidth( oControl:hWnd )
+               nNewHeight      := GetWindowHeight( oControl:hWnd )
+               oControl:Width  := nNewWidth
+               oControl:Height := nNewHeight
+            ENDIF
+            ::lFSave := .F.
+            IF ::aTabPage[::nIndexW, 2] > 0
+               cName := ::aTabPage[::nIndexW, 1]
+               ::oDesignForm:&cName:Show()
+            ENDIF
+            ::DrawOutline( oControl )
          ELSE
-            // the assignment of ::Width changes ::Height and viceversa, so
-            // we need to calculate before assigning
-            nNewWidth       := GetWindowWidth( oControl:hWnd )
-            nNewHeight      := GetWindowHeight( oControl:hWnd )
-            oControl:Width  := nNewWidth
-            oControl:Height := nNewHeight
+            MsgStop( "This control can't be sized interactively.", "OOHG IDE+" )
          ENDIF
-         ::lFSave := .F.
          ::swCursor := 0
-         IF ::aTabPage[::nIndexW, 2] > 0
-            cName := ::aTabPage[::nIndexW, 1]
-            ::oDesignForm:&cName:Show()
-         ENDIF
-         ::DrawOutline( oControl )
       ENDIF
    ENDIF
 RETURN NIL
@@ -2858,7 +2924,7 @@ RETURN NIL
 //------------------------------------------------------------------------------
 METHOD CopyControl() CLASS TFormEditor
 //------------------------------------------------------------------------------
-LOCAL ia, oControl, z, i, ControlName, oNewCtrl := NIL
+LOCAL ia, oControl, z, i, ControlName, oNewCtrl := NIL, cTab, oTab
 
    ia := ::nHandleA
    IF ia > 0
@@ -3093,9 +3159,9 @@ LOCAL ia, oControl, z, i, ControlName, oNewCtrl := NIL
          aAdd( ::avalid,             ::avalid[z] )
          aAdd( ::aValidMess,         ::aValidMess[z] )
          aAdd( ::aValue,             ::aValue[z] )
-         aAdd( ::aValuel,            ::aValuel[z] )
-         aAdd( ::aValuen,            ::aValuen[z] )
-         aAdd( ::aValuesource,       ::aValuesource[z] )
+         aAdd( ::aValueL,            ::aValueL[z] )
+         aAdd( ::aValueN,            ::aValueN[z] )
+         aAdd( ::aValueSource,       ::aValueSource[z] )
          aAdd( ::aVertical,          ::aVertical[z] )
          aAdd( ::aVirtual,           ::aVirtual[z] )
          aAdd( ::aVisible,           ::aVisible[z] )
@@ -3106,76 +3172,61 @@ LOCAL ia, oControl, z, i, ControlName, oNewCtrl := NIL
          aAdd( ::aWorkArea,          ::aWorkArea[z] )
          aAdd( ::aWrap,              ::aWrap[z] )
 
-         oNewCtrl := ::CreateControl( i, ::nControlW )
-
+         oNewCtrl := ::CreateControl( i, ::nControlW, oControl:Width, oControl:Height, NIL )
          oNewCtrl:Row := oControl:Row + 10
          oNewCtrl:Col := oControl:Col + 10
 
-         ::ProcessContainers( ControlName )
-         ::lFSave := .F.
+         IF ::aTabPage[::nControlW, 1] # '' .AND. ::aTabPage[::nControlW, 2] > 0
+            IF ( i := aScan( ::aName, { |c| Lower( c ) == ::aTabPage[::nControlW, 1] } ) ) > 0
+               cTab := ::aControlW[i]
+               IF ( i := aScan( ::oDesignForm:aControls, { |c| Lower( c ) == cTab } ) ) > 0
+                  oTab := ::oDesignForm:aControls[i]
+                  oTab:AddControl( ControlName, ::aTabPage[::nControlW, 2], oNewCtrl:Row, oNewCtrl:Col )
+                  ::ReorderTabs()
+               ELSE
+                  ::aTabPage[::nControlW, 1] := ''
+                  ::aTabPage[::nControlW, 2] := 0
+               ENDIF
+            ELSE
+               ::aTabPage[::nControlW, 1] := ''
+               ::aTabPage[::nControlW, 2] := 0
+            ENDIF
+         ENDIF
+
          ::RefreshControlInspector()
          ::DrawOutline( oNewCtrl )
+         ::lFSave := .F.
       ENDIF
    ENDIF
 RETURN oNewCtrl
 
 //------------------------------------------------------------------------------
-METHOD ProcessContainers( ControlName ) CLASS TFormEditor
+METHOD ReorderTabs CLASS TFormEditor
 //------------------------------------------------------------------------------
-LOCAL i, ActivePage, k, k1, oControl, nLen, cvc, nDesRow, nDesCol, oCN
+LOCAL k, k1
 
-   IF ::swTab
-      nLen := Len( ::oDesignForm:aControls )
-      FOR i := 1 TO nLen
-         oControl := ::oDesignForm:aControls[i]
-         IF oControl:Type == 'TAB'
-            nDesRow := oControl:Row
-            nDesCol := oControl:Col
-            IF ( _OOHG_MouseRow > nDesRow ) .AND. (_OOHG_MouseRow < nDesRow + oControl:Height ) .AND. ;
-               ( _OOHG_MouseCol > nDesCol ) .AND. ( _OOHG_MouseCol < nDesCol + oControl:Width )
-               ActivePage := oControl:Value
-               oCN := ::oDesignForm:&ControlName:Object()
-               aAdd( oControl:aPages[ActivePage], oCN )
-               oControl:AddControl( ControlName, ActivePage, _OOHG_MouseRow - nDesRow, _OOHG_MouseCol - nDesCol )
-               oCN:BackColor := ::myIde:aSystemColorAux         // TODO: Check
-
-               cvc := aScan( ::aControlW, Lower( ControlName ) )
-               IF cvc > 0
-                  ::aBackColor[cvc] := 'NIL'
-                  ::aTabPage[cvc, 1] := Lower( oControl:Name )
-                  ::aTabPage[cvc, 2] := Activepage
-               ENDIF
-               // Order controls in TABs by TAB name
-               FOR k := 2 TO ::nControlW
-                  FOR k1 := k + 1 TO ::nControlW
-                     IF ::aTabPage[k, 1] # '' .AND. ::aTabPage[k1, 1] # ''
-                        IF ::aTabPage[k, 1] > ::aTabPage[k1, 1]
-                           ::SwapArray( k, k1 )
-                        ENDIF
-                     ENDIF
-                  NEXT k1
-               NEXT k
-               // Order controls in each TAB by page
-               FOR k := 2 TO ::nControlW
-                  FOR k1 := k + 1 TO ::nControlW
-                     IF ::aTabPage[k, 1] # '' .AND. ::aTabPage[k1, 1] # ''
-                        IF ::aTabPage[k, 1] == ::aTabPage[k1, 1]
-                           IF ::aTabPage[k, 2] > ::aTabPage[k1, 2]
-                              ::SwapArray( k, k1 )
-                           ENDIF
-                        ENDIF
-                     ENDIF
-                  NEXT k1
-               NEXT k
-
-               CHideControl( oCN:hWnd )
-               CShowControl( oCN:hWnd )
+   // Order controls in TABs by TAB name
+   FOR k := 2 TO ::nControlW
+      FOR k1 := k + 1 TO ::nControlW
+         IF ::aTabPage[k, 1] # '' .AND. ::aTabPage[k1, 1] # ''
+            IF ::aTabPage[k, 1] > ::aTabPage[k1, 1]
+               ::SwapArray( k, k1 )
             ENDIF
-
-            EXIT
          ENDIF
-      NEXT i
-   ENDIF
+      NEXT k1
+   NEXT k
+   // Order controls in each TAB by page
+   FOR k := 2 TO ::nControlW
+      FOR k1 := k + 1 TO ::nControlW
+         IF ::aTabPage[k, 1] # '' .AND. ::aTabPage[k1, 1] # ''
+            IF ::aTabPage[k, 1] == ::aTabPage[k1, 1]
+               IF ::aTabPage[k, 2] > ::aTabPage[k1, 2]
+                  ::SwapArray( k, k1 )
+               ENDIF
+            ENDIF
+         ENDIF
+      NEXT k1
+   NEXT k
 RETURN NIL
 
 //------------------------------------------------------------------------------
@@ -3215,7 +3266,8 @@ RETURN oCtrl
 //------------------------------------------------------------------------------
 METHOD AddControl() CLASS TFormEditor
 //------------------------------------------------------------------------------
-LOCAL oFrame, ControlName, oNewCtrl := NIL
+LOCAL oFrame, cName, oNewCtrl := NIL, i, j, oTab, nTabRow, nTabCol, nTabpage
+LOCAL nWidth := NIL, nHeight := NIL
 
    IF ::CurrentControl == 1
       IF ( oFrame := ::CheckForFrame() ) # NIL
@@ -3224,32 +3276,38 @@ LOCAL oFrame, ControlName, oNewCtrl := NIL
       RETURN NIL
    ELSEIF ::CurrentControl >= 2 .AND. ::CurrentControl <= IDE_LAST_CTRL
       ::ControlCount[::CurrentControl] ++
-      ControlName := ::ControlPrefix[::CurrentControl] + LTrim( Str( ::ControlCount[::CurrentControl] ) )
-      Do While _IsControlDefined( ControlName, ::oDesignForm:Name )
+      cName := ::ControlPrefix[::CurrentControl] + LTrim( Str( ::ControlCount[::CurrentControl] ) )
+      Do While _IsControlDefined( cName, ::oDesignForm:Name )
          ::ControlCount[::CurrentControl] ++
-         ControlName := ::ControlPrefix[::CurrentControl] + LTrim( Str( ::ControlCount[::CurrentControl] ) )
+         cName := ::ControlPrefix[::CurrentControl] + LTrim( Str( ::ControlCount[::CurrentControl] ) )
       ENDDO
-      ::IniArray( ControlName, ::ControlType[::CurrentControl] )
+      ::IniArray( cName, ::ControlType[::CurrentControl] )
 
       DO CASE
       CASE ::CurrentControl == 2
          // 'BUTTON'
-         ::aCaption[::nControlW]   := ControlName
+         ::aCaption[::nControlW]   := cName
          ::aAction[::nControlW]    := "MsgInfo( 'Button pressed' )"
          ::aBackColor[::nControlW] := ::cFBackcolor            // TODO:: Check if this is needed
 
       CASE ::CurrentControl == 3
          // 'CHECKBOX'
+
       CASE ::CurrentControl == 4
          // 'LIST'
+
       CASE ::CurrentControl == 5
          // 'COMBO'
+
       CASE ::CurrentControl == 6
          // 'CHECKBTN'
+
       CASE ::CurrentControl == 7
          // 'GRID'
+
       CASE ::CurrentControl == 8
          // 'FRAME'
+
       CASE ::CurrentControl == 9
          // 'TAB'
          ::aCaption[::nControlW]        := "{ 'Page 1', 'Page 2' }"
@@ -3260,23 +3318,42 @@ LOCAL oFrame, ControlName, oNewCtrl := NIL
 
       CASE ::CurrentControl == 10
          // 'IMAGE'
+
       CASE ::CurrentControl == 11
          // 'ANIMATE'
+         nWidth  := 100
+         nHeight := 100
+
       CASE ::CurrentControl == 12
          // 'DATEPICKER'
+
       CASE ::CurrentControl == 13
          // 'TEXT'
+         ::aFocusedPos[::nControlW] := -2
+
       CASE ::CurrentControl == 14
          // 'EDIT'
+         nWidth  := 120
+         nHeight := 240
+         ::aFocusedPos[::nControlW] := -4
+
       CASE ::CurrentControl == 15
          // 'LABEL'
+
       CASE ::CurrentControl == 16
          // 'PLAYER'
+         nWidth  := 100
+         nHeight := 100
+
       CASE ::CurrentControl == 17
          // 'PROGRESSBAR'
+         nWidth  := NIL
+         nHeight := NIL
+
       CASE ::CurrentControl == 18
          // 'RADIOGROUP'
          ::aItems[::nControlW]     := "{ 'option 1', 'option 2' }"
+         ::aSpacing[::nControlW]   := 25
          ::aBackColor[::nControlW] := ::cFBackcolor     // TODO:: Check if this is needed
 
       CASE ::CurrentControl == 19
@@ -3285,47 +3362,87 @@ LOCAL oFrame, ControlName, oNewCtrl := NIL
 
       CASE ::CurrentControl == 20
          // 'SPINNER'
+
       CASE ::CurrentControl == 21
          // 'PICCHECKBUTT'
+         ::aPicture[::nControlW] := 'A4'
+         nWidth                  := 30
+         nHeight                 := 30
+
       CASE ::CurrentControl == 22
          // 'PICBUTT'
-         ::aAction[::nControlW] := "MsgInfo( 'Pic button pressed.' )"
+         ::aAction[::nControlW]  := "MsgInfo( 'Pic button pressed.' )"
+         nWidth                  := 30
+         nHeight                 := 30
+         ::aPicture[::nControlW] := 'A4'
 
       CASE ::CurrentControl == 23
          // 'TIMER'
+         nWidth  := 100
+         nHeight := 20
+
       CASE ::CurrentControl == 24
          // 'BROWSE'
+
       CASE ::CurrentControl == 25
          // 'TREE'
+
       CASE ::CurrentControl == 26
          // 'IPADDRESS'
+         nWidth  := 100
+         nHeight := 24
+
       CASE ::CurrentControl == 27
          // 'MONTHCALENDAR'
+
       CASE ::CurrentControl == 28
          // 'HYPERLINK'
+
       CASE ::CurrentControl == 29
          // 'RICHEDIT'
+         nWidth  := 120
+         nHeight := 240
+         ::aFocusedPos[::nControlW] := -4
+         ::aMaxLength[::nControlW]  := 0
+
       CASE ::CurrentControl == 30
          // 'TIMEPICKER'
+
       CASE ::CurrentControl == 31
          // 'XBROWSE'
+
       CASE ::CurrentControl == 32
          // 'ACTIVEX'
+         nWidth  := 100
+         nHeight := 100
+
       CASE ::CurrentControl == 33
          // 'CHECKLIST'
+
       CASE ::CurrentControl == 34
          // 'HOTKEYBOX'
+         nWidth  := 120
+         nHeight := 40
+
       CASE ::CurrentControl == 35
          // 'PICTURE'
+
       CASE ::CurrentControl == 36
          // 'PROGRESSMETER'
+         ::aValueN[::nControlW] := 30
+
       CASE ::CurrentControl == 37
          // 'SCROLLBAR'
+         nHeight := 100
+
       CASE ::CurrentControl == 38
          // 'TEXTARRAY'
+         nWidth  := 100
+         nHeight := 100
+
       ENDCASE
 
-      oNewCtrl := ::CreateControl( ::CurrentControl, ::nControlW )
+      oNewCtrl := ::CreateControl( ::CurrentControl, ::nControlW, nWidth, nHeight, NIL )
 
       IF ::CurrentControl == 13
          // TEXT
@@ -3334,7 +3451,34 @@ LOCAL oFrame, ControlName, oNewCtrl := NIL
          ENDIF
       ENDIF
 
-      ::ProcessContainers( ControlName )
+      // TODO: add a tab inside another tab
+      IF ::CurrentControl # 9
+         // Add to container
+         i := 2
+         DO WHILE i < ::nControlW
+            IF ::aCtrlType[i] == 'TAB'
+               IF ( j := aScan( ::oDesignForm:aControls, { |c| Lower( c:Name ) == ::aControlW[i] } ) ) > 0
+                  oTab := ::oDesignForm:aControls[j]
+                  nTabRow := oTab:Row
+                  nTabCol := oTab:Col
+                  IF ( oNewCtrl:Row > nTabRow ) .AND. ( oNewCtrl:Row < nTabRow + oTab:Height ) .AND. ;
+                     ( oNewCtrl:Col > nTabCol ) .AND. ( oNewCtrl:Col < nTabCol + oTab:Width )
+                     nTabpage := oTab:Value
+                     oTab:AddControl( oNewCtrl:Name, nTabpage, oNewCtrl:Row - nTabRow, oNewCtrl:Col - nTabCol )
+   //                oCN:BackColor := ::myIde:aSystemColorAux         // TODO: Check
+                     ::aTabPage[::nControlW, 1] := Lower( oTab:Name )
+                     ::aTabPage[::nControlW, 2] := nTabpage
+                     ::ReorderTabs()
+                   CHideControl( oTab:hWnd )
+                   CShowControl( oTab:hWnd )
+                     EXIT
+                  ENDIF
+               ENDIF
+            ENDIF
+            i ++
+         ENDDO
+      ENDIF
+
       ::RefreshControlInspector()
       ::Control_Click( 1 )
       ::oCtrlList:SetFocus()
@@ -3346,16 +3490,11 @@ LOCAL oFrame, ControlName, oNewCtrl := NIL
 RETURN oNewCtrl
 
 //------------------------------------------------------------------------------
-METHOD CreateControl( nControlType, i, aCtrls ) CLASS TFormEditor
+METHOD CreateControl( nControlType, i, nWidth, nHeight, aCtrls ) CLASS TFormEditor
 //------------------------------------------------------------------------------
-LOCAL cName, oCtrl, aImages, aItems, nMin, nMax, j, aCaptions, nCnt, oPage
+LOCAL cName, oCtrl, aImages, aItems, nMin, nMax, j, aCaptions, nCnt, oPage, cItems
 
 // TODO: Validate parameters before creating controls
-// TODO: Create controls using OOP syntax for CHECKBOX, LIST, COMBO, CHECKBTN,
-//       GRID, EDIT, LABEL, PLAYER, PROGRESSBAR, RADIOGROUP, SLIDER,
-//       SPINNER, PICCHECKBUTT, PICBUTT, BROWSE, HYPERLINK, RICHEDIT,
-//       TIMEPICKER, XBROWSE, ACTIVEX, HOTKEYBOX
-// TODO: Analize use of real control or simulated one.
 
    cName := ::aControlW[i]
 
@@ -3363,15 +3502,15 @@ LOCAL cName, oCtrl, aImages, aItems, nMin, nMax, j, aCaptions, nCnt, oPage
    CASE nControlType == 2            // 'BUTTON'
       oCtrl := TButton(): Define( cName, ::oDesignForm:Name, ;
                   _OOHG_MouseCol, _OOHG_MouseRow, ;
-                  ::aCaption[i], { || ::DrawOutline( oCtrl ) }, NIL, NIL, NIL, ;
-                  NIL, ::aToolTip[i], { || ::DrawOutline( oCtrl ) }, NIL, ;
+                  ::aCaption[i], { || ::DrawOutline( oCtrl ) }, nWidth, nHeight, ;
+                  NIL, NIL, ::aToolTip[i], { || ::DrawOutline( oCtrl ) }, NIL, ;
                   ::aFlat[i], .F., NIL, NIL, ::aBold[i], ::aFontItalic[i], ;
                   ::aFontUnderline[i], ::aFontStrikeout[i], ::aRTL[i], ;
                   ::aNoPrefix[i], NIL, NIL, NIL, ::aPicture[i], ;
                   ::aNoLoadTrans[i], ::aForceScale[i], .F., ::aJustify[i], ;
                   ::aMultiLine[i], ::aThemed[i], ;
-                  IIF( IsValidArray( ::aImageMargin[i] ), &( ::aImageMargin[i] ), NIL ), NIL, ;
-                  ::aNo3DColors[i], ::aFit[i], ! ::aDIBSection[i], NIL )
+                  IIF( IsValidArray( ::aImageMargin[i] ), &( ::aImageMargin[i] ), NIL ), ;
+                  NIL, ::aNo3DColors[i], ::aFit[i], ! ::aDIBSection[i], NIL )
       IF ! Empty( ::aFontName[i] )
          oCtrl:FontName := ::aFontName[i]
       ENDIF
@@ -3383,50 +3522,149 @@ LOCAL cName, oCtrl, aImages, aItems, nMin, nMax, j, aCaptions, nCnt, oPage
       ENDIF
 
    CASE nControlType == 3            // 'CHECKBOX'
-      @ _OOHG_MouseRow, _OOHG_MouseCol CHECKBOX &cName OF ( ::oDesignForm:Name ) ;
-         OBJ oCtrl ;
-         CAPTION cName ;
-         ON GOTFOCUS ::DrawOutline( _OOHG_ThisObject ) ;
-         ON CHANGE ::DrawOutline( _OOHG_ThisObject )
+      oCtrl := TCheckBox():Define( cName, ::oDesignForm:Name, ;
+                  _OOHG_MouseCol, _OOHG_MouseRow, ;
+                  IIF( Empty( ::aCaption[i] ), cName, ::aCaption[i] ), ;
+                  &( ::aValue[i] ), NIL, NIL, ::aToolTip[i], ;
+                  { || ::DrawOutline( oCtrl ) }, nWidth, nHeight, NIL, ;
+                  { || ::DrawOutline( oCtrl ) }, NIL, .F., .F., ::aBold[i], ;
+                  ::aFontItalic[i], ::aFontUnderline[i], ::aFontStrikeout[i], ;
+                  NIL, NIL, NIL, ::aTransparent[i], ::aAutoPlay[i], ::aRTL[i], ;
+                  .F., ::a3State[i], ::aLeft[i], ::aThemed[i] )
+      IF ! Empty( ::aFontName[i] )
+         oCtrl:FontName := ::aFontName[i]
+      ENDIF
+      IF ::aFontSize[i] > 0
+         oCtrl:FontSize := ::aFontSize[i]
+      ENDIF
+      IF IsValidArray( ::aFontColor[i] )
+         oCtrl:FontColor := &( ::aFontColor[i] )
+      ENDIF
       IF IsValidArray( ::aBackColor[i] )
          oCtrl:BackColor := &( ::aBackColor[i] )
       ENDIF
 
    CASE nControlType == 4            // 'LIST'
-      @ _OOHG_MouseRow, _OOHG_MouseCol LISTBOX &cName OF ( ::oDesignForm:Name ) ;
-         OBJ oCtrl ;
-         ITEMS { cName } ;
-         ON GOTFOCUS ::DrawOutline( _OOHG_ThisObject ) ;
-         ON CHANGE ::DrawOutline( _OOHG_ThisObject )
+      IF ::aMultiSelect[i]
+         oCtrl := TListMulti():Define( cName, ::oDesignForm:Name, ;
+                     _OOHG_MouseCol, _OOHG_MouseRow, nWidth, nHeight, ;
+                     IIF( IsValidArray( ::aItems[i] ), ::aItems[i], { cName } ), ;
+                     ::aValueN[i], NIL, NIL, ::aToolTip[i], ;
+                     { || ::DrawOutline( oCtrl ) }, NIL, ;
+                     { || ::DrawOutline( oCtrl ) }, NIL, .F., ;
+                     NIL, .F., .F., ::aSort[i], ::aBold[i], ::aFontItalic[i], ;
+                     ::aFontUnderline[i], ::aFontStrikeout[i], NIL, NIL, ;
+                     ::aRTL[i], .F., NIL, ::aImage[i], ::aTextHeight[i], ;
+                     ::aFit[i], ::aNoVScroll[i] )
+      ELSE
+         oCtrl := TList():Define( cName, ::oDesignForm:Name, ;
+                     _OOHG_MouseCol, _OOHG_MouseRow, nWidth, nHeight, ;
+                     IIF( IsValidArray( ::aItems[i] ), ::aItems[i], { cName } ), ;
+                     ::aValueN[i], NIL, NIL, ::aToolTip[i], ;
+                     { || ::DrawOutline( oCtrl ) }, NIL, ;
+                     { || ::DrawOutline( oCtrl ) }, NIL, .F., ;
+                     NIL, .F., .F., ::aSort[i], ::aBold[i], ::aFontItalic[i], ;
+                     ::aFontUnderline[i], ::aFontStrikeout[i], NIL, NIL, ;
+                     ::aRTL[i], .F., NIL, ::aImage[i], ::aTextHeight[i], ;
+                     ::aFit[i], ::aNoVScroll[i] )
+      ENDIF
+      IF ! Empty( ::aFontName[i] )
+         oCtrl:FontName := ::aFontName[i]
+      ENDIF
+      IF ::aFontSize[i] > 0
+         oCtrl:FontSize := ::aFontSize[i]
+      ENDIF
+      IF IsValidArray( ::aFontColor[i] )
+         oCtrl:FontColor := &( ::aFontColor[i] )
+      ENDIF
+      IF IsValidArray( ::aBackColor[i] )
+         oCtrl:BackColor := &( ::aBackColor[i] )
+      ENDIF
+      oCtrl:OnRClick := { || ::DrawOutline( oCtrl ) }
 
    CASE nControlType == 5            // 'COMBO'
-      @ _OOHG_MouseRow, _OOHG_MouseCol COMBOBOX &cName OF ( ::oDesignForm:Name ) ;
-         OBJ oCtrl ;
-         ITEMS { cName, ' ' } ;
-         VALUE 1 ;
-         ON GOTFOCUS ::DrawOutline( _OOHG_ThisObject ) ;
-         ON CHANGE ::DrawOutline( _OOHG_ThisObject )
+      oCtrl := TCombo():Define( cName, ::oDesignForm:Name, ;
+                  _OOHG_MouseCol, _OOHG_MouseRow, nWidth, ;
+                  IIF( IsValidArray( ::aItems[i] ), ::aItems[i], { cName, 'combo' } ), ;
+                  ::aValueN[i], NIL, NIL, ::aToolTip[i], ;
+                  { || ::DrawOutline( oCtrl ) }, nHeight, ;
+                  { || ::DrawOutline( oCtrl ) }, NIL, NIL, NIL, ;
+                  .F., .F., ::aSort[i], ::aBold[i], ::aFontItalic[i], ;
+                  ::aFontUnderline[i], ::aFontStrikeout[i], NIL, NIL, ;
+                  .F., NIL, .F., ::aGripperText[i], ::aImage[i], ::aRTL[i], ;
+                  ::aTextHeight[i], .F., ::aFirstItem[i], ::aFit[i], NIL, NIL, ;
+                  ::aListWidth[i], NIL, NIL, NIL, NIL, .F., ::aIncremental[i], ;
+                  ::aIntegralHeight[i], .F., NIL, NIL, ::aSearchLapse[i] )
+      IF ! Empty( ::aFontName[i] )
+         oCtrl:FontName := ::aFontName[i]
+      ENDIF
+      IF ::aFontSize[i] > 0
+         oCtrl:FontSize := ::aFontSize[i]
+      ENDIF
+      IF IsValidArray( ::aFontColor[i] )
+         oCtrl:FontColor := &( ::aFontColor[i] )
+      ENDIF
+      IF IsValidArray( ::aBackColor[i] )
+         oCtrl:BackColor := &( ::aBackColor[i] )
+      ENDIF
+      oCtrl:OnRClick := { || ::DrawOutline( oCtrl ) }
 
    CASE nControlType == 6            // 'CHECKBTN'
-      @ _OOHG_MouseRow, _OOHG_MouseCol CHECKBUTTON &cName OF ( ::oDesignForm:Name ) ;
-         OBJ oCtrl ;
-         CAPTION cName ;
-         ON GOTFOCUS ::DrawOutline( _OOHG_ThisObject ) ;
-         ON CHANGE ::DrawOutline( _OOHG_ThisObject)
+      oCtrl := TButtonCheck():Define( cName, ::oDesignForm:Name, ;
+                  _OOHG_MouseCol, _OOHG_MouseRow, ;
+                  IIF( Empty( ::aCaption[i] ), cName, ::aCaption[i] ), ;
+                  ::aValueL[i], NIL, NIL, ::aToolTip[i], ;
+                  { || ::DrawOutline( oCtrl ) }, ;
+                  nWidth, nHeight, NIL, { || ::DrawOutline( oCtrl ) }, NIL, ;
+                  .F., .F., ::aBold[i], ::aFontItalic[i], ::aFontUnderline[i], ;
+                  ::aFontStrikeout[i], NIL, ::aRTL[i], ::aPicture[i], ;
+                  NIL, NIL, ::aNoLoadTrans[i], ::aForceScale[i], ;
+                  ::aNo3DColors[i], ::aFit[i], ! ::aDIBSection[i], NIL, ;
+                  .F., ::aThemed[i], ::aImageMargin[i], NIL, ::aJustify[i], ;
+                  ::aMultiLine[i], ::aFlat[i] )
+      IF ! Empty( ::aFontName[i] )
+         oCtrl:FontName := ::aFontName[i]
+      ENDIF
+      IF ::aFontSize[i] > 0
+         oCtrl:FontSize := ::aFontSize[i]
+      ENDIF
+      IF IsValidArray( ::aBackColor[i] )
+         oCtrl:BackColor := &( ::aBackColor[i] )
+      ENDIF
+      oCtrl:OnRClick := { || ::DrawOutline( oCtrl ) }
 
    CASE nControlType == 7            // 'GRID'
-      @ _OOHG_MouseRow, _OOHG_MouseCol GRID &cName OF ( ::oDesignForm:Name ) ;
-         OBJ oCtrl ;
-         HEADERS { '', '' } ;
-         WIDTHS { 100, 60 } ;
-         ITEMS { { cName, '' } } ;
-         TOOLTIP 'To access Properties and Events right click on header area.' ;
-         ON CHANGE ::DrawOutline( _OOHG_ThisObject ) ;
-         ON GOTFOCUS ::DrawOutline( _OOHG_ThisObject )
+      oCtrl := TGrid():Define( cName, ::oDesignForm:Name, ;
+                  _OOHG_MouseCol, _OOHG_MouseRow, nWidth, nHeight, ;
+                  { 'one', 'two' }, { 140, 60 }, { { cName, '' } }, 1, NIL, NIL, ;
+                  IIF( Empty( ::aToolTip[i] ), 'Right click on header area to change properties and events or to move/size.', ::aToolTip[i] ), ;
+                  { || ::DrawOutline( oCtrl ) }, NIL, NIL, ;
+                  { || ::DrawOutline( oCtrl ) }, NIL, ::aNoLines[i], NIL, NIL, ;
+                  .F., NIL, ::aBold[i], ::aFontItalic[i], ::aFontUnderline[i], ;
+                  ::aFontStrikeout[i], .F., NIL, NIL, .F., NIL, NIL, NIL, NIL, ;
+                  NIL, ::aRTL[i], .F., NIL, .T., NIL, NIL, NIL, NIL, .F., .F., ;
+                  .F., ! ::aNoHeaders[i], NIL, NIL, NIL, .F., NIL,  NIL, .F., ;
+                  NIL, .T., .T., ::aPLM[i], .T., NIL, ;
+                  { || ::DrawOutline( oCtrl ) }, .T., NIL, NIL, NIL, NIL, NIL, ;
+                  .F., .F., .F., NIL, NIL, NIL, .F., .F., NIL, .F., .T., ;
+                  NIL, .F., .F., .F. )
+      IF ! Empty( ::aFontName[i] )
+         oCtrl:FontName := ::aFontName[i]
+      ENDIF
+      IF ::aFontSize[i] > 0
+         oCtrl:FontSize := ::aFontSize[i]
+      ENDIF
+      IF IsValidArray( ::aFontColor[i] )
+         oCtrl:FontColor := &( ::aFontColor[i] )
+      ENDIF
+      IF IsValidArray( ::aBackColor[i] )
+         oCtrl:BackColor := &( ::aBackColor[i] )
+      ENDIF
+      oCtrl:OnRClick := { || ::DrawOutline( oCtrl ) }
 
    CASE nControlType == 8            // 'FRAME'
-      oCtrl := TFrame():Define( cName, ::oDesignForm:Name, _OOHG_MouseRow, ;
-                  _OOHG_MouseCol, NIL, NIL, ;
+      oCtrl := TFrame():Define( cName, ::oDesignForm:Name, ;
+                  _OOHG_MouseRow, _OOHG_MouseCol, nWidth, nHeight, ;
                   IIF( Empty( ::aCaption[i] ), cName, ::aCaption[i] ), NIL, ;
                   NIL, ::aOpaque[i], ::aBold[i], ::aFontItalic[i], ;
                   ::aFontUnderline[i], ::aFontStrikeout[i], NIL, NIL, ;
@@ -3446,12 +3684,14 @@ LOCAL cName, oCtrl, aImages, aItems, nMin, nMax, j, aCaptions, nCnt, oPage
 
    CASE nControlType == 9            // 'TAB'
       oCtrl := TTab():Define( cName, ::oDesignForm:Name, ;
-                  _OOHG_MouseCol, _OOHG_MouseRow, 300, 250, {}, {}, NIL, NIL, NIL, ;
+                  _OOHG_MouseCol, _OOHG_MouseRow, nWidth, nHeight, ;
+                  {}, {}, NIL, NIL, NIL, ;
                   IIF( Empty( ::aToolTip[i] ), 'To access Properties and Events right click on header area.', ::aToolTip[i] ), ;
-                  { || ::DrawOutline( oCtrl ) }, ::aButtons[i], ::aFlat[i], ;
-                  ::aHotTrack[i], ::aVertical[i], .F., NIL, ::aBold[i], ;
-                  ::aFontItalic[i], ::aFontUnderline[i], ::aFontStrikeout[i], ;
-                  {}, ::aRTL[i], ::aVirtual[i], .F., .F., ::aMultiLine[i] )
+                  { || oCtrl:SetFocus(), ::DrawOutline( oCtrl ) }, ;
+                  ::aButtons[i], ::aFlat[i], ::aHotTrack[i], ::aVertical[i], ;
+                  .F., NIL, ::aBold[i], ::aFontItalic[i], ::aFontUnderline[i], ;
+                  ::aFontStrikeout[i], {}, ::aRTL[i], ::aVirtual[i], .F., .F., ;
+                  ::aMultiLine[i] )
          // Add pages and controls
          aCaptions := &( ::aCaption[i] )
          nCnt      := Len( aCaptions )
@@ -3461,7 +3701,9 @@ LOCAL cName, oCtrl, aImages, aItems, nMin, nMax, j, aCaptions, nCnt, oPage
             // DEFINE PAGE
             oPage := _BeginTabPage( aCaptions[j], aImages[j] )
             END PAGE
-            aEval( aCtrls[j], { |c| oPage:AddControl( c, c:Row, c:Col ) } )
+            IF aCtrls # NIL
+               aEval( aCtrls[j], { |c| oPage:AddControl( c, c:Row, c:Col ) } )
+            ENDIF
          NEXT j
       END TAB
       IF ! Empty( ::aFontName[i] )
@@ -3473,13 +3715,14 @@ LOCAL cName, oCtrl, aImages, aItems, nMin, nMax, j, aCaptions, nCnt, oPage
       IF IsValidArray( ::aFontColor[i] )
          oCtrl:FontColor := &( ::aFontColor[i] )
       ENDIF
-      oCtrl:Value := ::aValue[i]
-      ::swTab := .T.
+      oCtrl:Value := ::aValueN[i]
 
    CASE nControlType == 10           // 'IMAGE'
       oCtrl := TImage():Define( cName, ::oDesignForm:Name, ;
-                  _OOHG_MouseCol, _OOHG_MouseRow, ::aPicture[i], NIL, NIL, ;
-                  { || ::DrawOutline( oCtrl ) }, NIL, .F., ::aStretch[i], ;
+                  _OOHG_MouseCol, _OOHG_MouseRow, ;
+                  IIF( Empty( ::aPicture[i] ), 'ZZZ_AAAOOHG', ::aPicture[i] ), ;
+                  nWidth, nHeight, { || ::DrawOutline( oCtrl ) }, NIL, .F., ;
+                  IIF( Empty( ::aPicture[i] ), .T., ::aStretch[i] ), ;
                   ::aWhiteBack[i], ::aRTL[i], NIL, NIL, NIL, ! ::aFit[i], ;
                   ::aImageSize[i], ::aToolTip[i], ::aBorder[i], ;
                   ::aClientEdge[i], ::aNoLoadTrans[i], ::aNo3DColors[i], ;
@@ -3487,19 +3730,21 @@ LOCAL cName, oCtrl, aImages, aItems, nMin, nMax, j, aCaptions, nCnt, oPage
       IF IsValidArray( ::aBackColor[i] )
          oCtrl:BackColor := &( ::aBackColor[i] )
       ENDIF
+      oCtrl:OnRClick := { || ::DrawOutline( oCtrl ) }
 
    CASE nControlType == 11           // 'ANIMATE'
       oCtrl := TLabel():Define( cName, ::oDesignForm:Name, ;
-                  _OOHG_MouseCol, _OOHG_MouseRow, cName, 100, 100, ;
+                  _OOHG_MouseCol, _OOHG_MouseRow, cName, nWidth, nHeight, ;
                   NIL, NIL, .F., .T., .F., .F., .F., .F., WHITE, NIL, ;
                   { || ::DrawOutline( oCtrl ) }, ::aToolTip[i], ;
                   NIL, .F., .F., .F., .F., .F., .F., ::aCenter[i], ;
                   ::aRTL[i], .F., .F., NIL, .F. )
       oCtrl:OnRClick := { || ::DrawOutline( oCtrl ) }
 
+
    CASE nControlType == 12           // 'DATEPICKER'
       oCtrl := TDatePick():Define( cName, ::oDesignForm:Name, ;
-                  _OOHG_MouseCol, _OOHG_MouseRow, NIL, NIL, ::aValue[i], ;
+                  _OOHG_MouseCol, _OOHG_MouseRow, nWidth, nHeight, ::aValue[i], ;
                   NIL, NIL, ::aToolTip[i], { || ::DrawOutline( oCtrl ) }, NIL, ;
                   { || ::DrawOutline( oCtrl ) }, ::aShowNone[i], ::aUpDown[i], ;
                   ::aRightAlign[i], NIL, .F., .F., ::aBold[i], ;
@@ -3515,7 +3760,7 @@ LOCAL cName, oCtrl, aImages, aItems, nMin, nMax, j, aCaptions, nCnt, oPage
    CASE nControlType == 13           // 'TEXT'
       oCtrl := DefineTextBox( cName, ::oDesignForm:Name, ;
                   _OOHG_MouseCol, _OOHG_MouseRow, NIL, NIL, ::aValue[i], ;
-                  NIL, NIL, ::aToolTip[i], ::aMaxLength[i], ::aUpperCase[i], ;
+                  nWidth, nHeight, ::aToolTip[i], ::aMaxLength[i], ::aUpperCase[i], ;
                   ::aLowerCase[i], ::aPassWord[i], { || oCtrl:ContextMenu := NIL }, ;
                   { || oCtrl:ContextMenu := ::oContextMenu, ::DrawOutline( oCtrl ) }, ;
                   NIL, NIL, ::aRightAlign[i], ;
@@ -3540,158 +3785,250 @@ LOCAL cName, oCtrl, aImages, aItems, nMin, nMax, j, aCaptions, nCnt, oPage
       ENDIF
 
    CASE nControlType == 14           // 'EDIT'
-      // TODO: use EDITBOX control
-      @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &cName OF ( ::oDesignForm:Name ) ;
-         OBJ oCtrl ;
-         WIDTH 120 ;
-         HEIGHT 120 ;
-         VALUE cName ;
-         CLIENTEDGE ;
-         HSCROLL ;
-         VSCROLL ;
-         BACKCOLOR WHITE ;
-         ACTION ::DrawOutline( _OOHG_ThisObject )
+      oCtrl := TEdit():Define( cName, ::oDesignForm:Name, ;
+                  _OOHG_MouseCol, _OOHG_MouseRow, nWidth, nHeight, ;
+                  IIF( Empty( ::aValue[i] ), cName, ::aValue[i] ), NIL, NIL, ;
+                  ::aToolTip[i], ::aMaxLength[i], { || ::DrawOutline( oCtrl ) }, ;
+                  { || ::DrawOutline( oCtrl ) }, NIL, .F., .F., NIL, ;
+                  .F., .F., ::aBold[i], ::aFontItalic[i], ::aFontUnderline[i], ;
+                  ::aFontStrikeout[i], NIL, NIL, NIL, ::aNoVScroll[i], ;
+                  ::aNoHScroll[i], ::aRTL[i], ::aBorder[i], ::aFocusedPos[i], ;
+                  NIL, NIL, .F. )
+      IF ! Empty( ::aFontName[i] )
+         oCtrl:FontName := ::aFontName[i]
+      ENDIF
+      IF ::aFontSize[i] > 0
+         oCtrl:FontSize := ::aFontSize[i]
+      ENDIF
+      IF IsValidArray( ::aFontColor[i] )
+         oCtrl:FontColor := &( ::aFontColor[i] )
+      ENDIF
+      IF IsValidArray( ::aBackColor[i] )
+         oCtrl:BackColor := &( ::aBackColor[i] )
+      ENDIF
       oCtrl:OnRClick := { || ::DrawOutline( oCtrl ) }
 
    CASE nControlType == 15           // 'LABEL'
-      // TODO:: add variable for WIDTH
-      IF ::aTransparent[i]
-         IF ::myIde:nLabelHeight > 0
-            @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &cName OF ( ::oDesignForm:Name ) ;
-               OBJ oCtrl ;
-               HEIGHT ::myIde:nLabelHeight ;
-               VALUE cName ;
-               TRANSPARENT ;
-               ACTION ::DrawOutline( _OOHG_ThisObject )
-         ELSE
-            @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &cName OF ( ::oDesignForm:Name ) ;
-               OBJ oCtrl ;
-               VALUE cName ;
-               TRANSPARENT ;
-               ACTION ::DrawOutline( _OOHG_ThisObject )
-         ENDIF
-      ELSE
-         IF ::myIde:nLabelHeight > 0
-            @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &cName OF ( ::oDesignForm:Name ) ;
-               OBJ oCtrl ;
-               HEIGHT ::myIde:nLabelHeight ;
-               VALUE cName ;
-               ACTION ::DrawOutline( _OOHG_ThisObject )
-         ELSE
-            @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &cName OF ( ::oDesignForm:Name ) ;
-               OBJ oCtrl ;
-               VALUE cName ;
-               ACTION ::DrawOutline( _OOHG_ThisObject )
-         ENDIF
+      oCtrl := TLabel():Define( cName, ::oDesignForm:Name, ;
+                  _OOHG_MouseCol, _OOHG_MouseRow, ;
+                  IIF( Empty( ::aValue[i] ), cName, ::aValue[i] ), nWidth, nHeight, ;
+                  NIL, NIL, ::aBold[i], ::aBorder[i], ::aClientEdge[i], ;
+                  ::aNoHScroll[i], ::aNoVScroll[i], ::aTransparent[i], NIL, ;
+                  NIL, { || ::DrawOutline( oCtrl ) }, ::aToolTip[i], NIL, .F., ;
+                  ::aFontItalic[i], ::aFontUnderline[i], ::aFontStrikeout[i], ::aAutoPlay[i], ;
+                  ::aRightAlign[i], ::aCenterAlign[i], ::aRTL[i], ::aWrap[i], ;
+                  ::aNoPrefix[i], ::aInputMask[i], .F. )
+      IF ! Empty( ::aFontName[i] )
+         oCtrl:FontName := ::aFontName[i]
+      ENDIF
+      IF ::aFontSize[i] > 0
+         oCtrl:FontSize := ::aFontSize[i]
+      ENDIF
+      IF IsValidArray( ::aFontColor[i] )
+         oCtrl:FontColor := &( ::aFontColor[i] )
+      ENDIF
+      IF IsValidArray( ::aBackColor[i] )
+         oCtrl:BackColor := &( ::aBackColor[i] )
       ENDIF
       oCtrl:OnRClick := { || ::DrawOutline( oCtrl ) }
 
    CASE nControlType == 16           // 'PLAYER'
-      // TODO: use PLAYER control
-      @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &cName OF ( ::oDesignForm:Name ) ;
-         OBJ oCtrl ;
-         WIDTH 100 ;
-         HEIGHT 100 ;
-         VALUE cName ;
-         BORDER ;
-         BACKCOLOR WHITE ;
-         ACTION ::DrawOutline( _OOHG_ThisObject )
+      oCtrl := TLabel():Define( cName, ::oDesignForm:Name, ;
+                  _OOHG_MouseCol, _OOHG_MouseRow, cName, nWidth, nHeight, NIL, ;
+                  NIL, .F., .T., .F., .F., .F., .F., WHITE, NIL, ;
+                  { || ::DrawOutline( oCtrl ) }, NIL, NIL, .F., .F., .F., ;
+                  .F., .F., .F., .F., ::aRTL[i], .F., .F., .F., .F. )
       oCtrl:OnRClick := { || ::DrawOutline( oCtrl ) }
 
    CASE nControlType == 17           // 'PROGRESSBAR'
-      // TODO: use PROGRESSBAR control
-      @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &cName OF ( ::oDesignForm:Name ) ;
-         OBJ oCtrl ;
-         WIDTH 120 ;
-         HEIGHT 26 ;
-         VALUE cName ;
-         BORDER ;
-         BACKCOLOR WHITE ;
-         ACTION ::DrawOutline( _OOHG_ThisObject )
-      oCtrl:OnRClick := { || ::DrawOutline( oCtrl ) }
-
-   CASE nControlType == 18           // 'RADIOGROUP'
-      // TODO: use RADIOGROUP control
-      @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &cName OF ( ::oDesignForm:Name ) ;
-         OBJ oCtrl ;
-         WIDTH 100 ;
-         HEIGHT ( 25 * 2 + 8 ) ;
-         VALUE cName ;
-         BORDER ;
-         ACTION ::DrawOutline( _OOHG_ThisObject )
+      IF ( j := At( ",", ::aRange[i] ) ) > 0
+         nMin := Val( SubStr( ::aRange[i], 1, j - 1 ) )
+         nMax := Val( SubStr( ::aRange[i], j + 1 ) )
+         IF nMin == nMax
+            // Avoid RTE, use defaults
+            nMin := NIL
+            nMax := NIL
+         ENDIF
+      ELSE
+         nMin := NIL
+         nMax := NIL
+      ENDIF
+      oCtrl := myTProgressBar():Define( cName, ::oDesignForm:Name, ;
+                  _OOHG_MouseCol, _OOHG_MouseRow, nWidth, nHeight, nMin, nMax, ;
+                  ::aToolTip[i], ::aVertical[i], ::aSmooth[i], NIL, .F., ;
+                  ::aValueN[i], NIL, NIL, ::aRTL[i], ::aMarquee[i] )
+      IF IsValidArray( ::aFontColor[i] )
+         oCtrl:FontColor := &( ::aFontColor[i] )
+      ENDIF
       IF IsValidArray( ::aBackColor[i] )
          oCtrl:BackColor := &( ::aBackColor[i] )
+      ENDIF
+      oCtrl:OnClick  := { || ::DrawOutline( oCtrl ) }
+      oCtrl:OnRClick := { || ::DrawOutline( oCtrl ) }
+      oCtrl:Value    := ::aName[i]
+
+   CASE nControlType == 18           // 'RADIOGROUP'
+      IF IsValidArray( ::aItems[i] )
+         cItems := &( ::aItems[i] )
       ELSE
-         oCtrl:BackColor := WHITE
+         cItems := { 'option 1', 'option 2' }
+      ENDIF
+      oCtrl := TRadioGroup():Define( cName, ::oDesignForm:Name, ;
+                  _OOHG_MouseCol, _OOHG_MouseRow, cItems, ::aValueN[i], NIL, ;
+                  NIL, ::aToolTip[i], { || ::DrawOutline( oCtrl ) }, nWidth, ;
+                  ::aSpacing[i], NIL, .F., .F., ::aBold[i], ;
+                  ::aFontItalic[i], ::aFontUnderline[i], ::aFontStrikeout[i], NIL, ;
+                  NIL, ::aTransparent[i], ::aAutoPlay[i], ::aFlat[i], ;
+                  .F., ::aRTL[i], nHeight, ::aThemed[i], ::aBackground[i] )
+      IF ! Empty( ::aFontName[i] )
+         oCtrl:FontName := ::aFontName[i]
+      ENDIF
+      IF ::aFontSize[i] > 0
+         oCtrl:FontSize := ::aFontSize[i]
+      ENDIF
+      IF IsValidArray( ::aFontColor[i] )
+         oCtrl:FontColor := &( ::aFontColor[i] )
+      ENDIF
+      IF IsValidArray( ::aBackColor[i] )
+         oCtrl:BackColor := &( ::aBackColor[i] )
       ENDIF
       oCtrl:OnRClick := { || ::DrawOutline( oCtrl ) }
 
    CASE nControlType == 19           // 'SLIDER'
-      @ _OOHG_MouseRow, _OOHG_MouseCol SLIDER &cName OF ( ::oDesignForm:Name ) ;
-         OBJ oCtrl ;
-         RANGE 1, 10 ;
-         VALUE 5 ;
-         ON CHANGE ::DrawOutline( _OOHG_ThisObject )
+      IF ( j := At( ",", ::aRange[i] ) ) > 0
+         nMin := Val( SubStr( ::aRange[i], 1, j - 1 ) )
+         nMax := Val( SubStr( ::aRange[i], j + 1 ) )
+         IF nMin == nMax
+            // Avoid RTE, use defaults
+            nMin := NIL
+            nMax := NIL
+         ENDIF
+      ELSE
+         nMin := NIL
+         nMax := NIL
+      ENDIF
+      oCtrl := TSlider():Define( cName, ::oDesignForm:Name, ;
+                  _OOHG_MouseCol, _OOHG_MouseRow, nWidth, nHeight, nMin, nMax, ;
+                  ::aValueN[i], ::aToolTip[i], { || ::DrawOutline( oCtrl ) }, ;
+                  ::aVertical[i], ::aNoTicks[i], ::aBoth[i], ::aTop[i], ;
+                  ::aLeft[i], NIL, .F., .F., NIL, ::aRTL[i], .F. )
+      IF IsValidArray( ::aBackColor[i] )
+         oCtrl:BackColor := &( ::aBackColor[i] )
+      ENDIF
+      oCtrl:OnRClick := { || ::DrawOutline( oCtrl ) }
+
+   CASE nControlType == 20           // 'SPINNER'
+      IF ( j := At( ",", ::aRange[i] ) ) > 0
+         nMin := Val( SubStr( ::aRange[i], 1, j - 1 ) )
+         nMax := Val( SubStr( ::aRange[i], j + 1 ) )
+         IF nMin == nMax
+            // Avoid RTE, use defaults
+            nMin := NIL
+            nMax := NIL
+         ENDIF
+      ELSE
+         nMin := NIL
+         nMax := NIL
+      ENDIF
+      oCtrl := TSpinner():Define( cName, ::oDesignForm:Name, ;
+                  _OOHG_MouseCol, _OOHG_MouseRow, nWidth, ::aValueN[i], NIL, NIL, ;
+                  nMin, nMax, ::aToolTip[i], { || ::DrawOutline( oCtrl ) }, ;
+                  NIL, { || ::DrawOutline( oCtrl ) }, nHeight, NIL, .F., .F., ;
+                  ::aBold[i], ::aFontItalic[i], ::aFontUnderline[i], ;
+                  ::aFontStrikeout[i], ::aWrap[i], ::aReadOnly[i], ;
+                  ::aIncrement[i], NIL, NIL, ::aRTL[i], ::aBorder[i], .F. )
+      IF ! Empty( ::aFontName[i] )
+         oCtrl:FontName := ::aFontName[i]
+      ENDIF
+      IF ::aFontSize[i] > 0
+         oCtrl:FontSize := ::aFontSize[i]
+      ENDIF
+      IF IsValidArray( ::aFontColor[i] )
+         oCtrl:FontColor := &( ::aFontColor[i] )
+      ENDIF
+      IF IsValidArray( ::aBackColor[i] )
+         oCtrl:BackColor := &( ::aBackColor[i] )
+      ENDIF
+      oCtrl:OnRClick := { || ::DrawOutline( oCtrl ) }
+      oCtrl:ContextMenu := ::oContextMenu
+
+   CASE nControlType == 21           // 'PICCHECKBUTT'
+      oCtrl := TButtonCheck():Define( cName, ::oDesignForm:Name, ;
+                  _OOHG_MouseCol, _OOHG_MouseRow, NIL, ::aValueL[i], ;
+                  NIL, NIL, ::aToolTip[i], { || ::DrawOutline( oCtrl ) }, ;
+                  nWidth, nHeight, NIL, { || ::DrawOutline( oCtrl ) }, NIL, ;
+                  .F., .F., .F., .F., .F., .F., NIL, .F., ::aPicture[i], ;
+                  NIL, NIL, ::aNoLoadTrans[i], ::aForceScale[i], ;
+                  ::aNo3DColors[i], ::aFit[i], ! ::aDIBSection[i], NIL, ;
+                  .F., ::aThemed[i], ::aImageMargin[i], NIL, ::aJustify[i], ;
+                  .F., ::aFlat[i] )
+      IF IsValidArray( ::aBackColor[i] )
+         oCtrl:BackColor := &( ::aBackColor[i] )
+      ENDIF
+      oCtrl:OnRClick := { || ::DrawOutline( oCtrl ) }
+
+   CASE nControlType == 22           // 'PICBUTT'
+      oCtrl := TButton(): Define( cName, ::oDesignForm:Name, ;
+                  _OOHG_MouseCol, _OOHG_MouseRow, ;
+                  NIL, { || ::DrawOutline( oCtrl ) }, nWidth, nHeight, ;
+                  NIL, NIL, ::aToolTip[i], { || ::DrawOutline( oCtrl ) }, ;
+                  NIL, ::aFlat[i], .F., NIL, NIL, NIL, NIL, NIL, NIL, NIL, ;
+                  NIL, NIL, NIL, NIL, ::aPicture[i], ::aNoLoadTrans[i], ;
+                  ::aForceScale[i], .F., ::aJustify[i], .F., ::aThemed[i], ;
+                  IIF( IsValidArray( ::aImageMargin[i] ), &( ::aImageMargin[i] ), NIL ), ;
+                  NIL, ::aNo3DColors[i], ::aFit[i], ! ::aDIBSection[i], NIL )
+      IF ! Empty( ::aFontName[i] )
+         oCtrl:FontName := ::aFontName[i]
+      ENDIF
+      IF ::aFontSize[i] > 0
+         oCtrl:FontSize := ::aFontSize[i]
+      ENDIF
       IF IsValidArray( ::aBackColor[i] )
          oCtrl:BackColor := &( ::aBackColor[i] )
       ENDIF
 
-   CASE nControlType == 20           // 'SPINNER'
-      // TODO: use SPINNER control
-      @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &cName OF ( ::oDesignForm:Name ) ;
-         OBJ oCtrl ;
-         WIDTH 120 ;
-         HEIGHT 24 ;
-         VALUE cName ;
-         CLIENTEDGE ;
-         VSCROLL ;
-         BACKCOLOR WHITE ;
-         ACTION ::DrawOutline( _OOHG_ThisObject )
-      oCtrl:OnRClick := { || ::DrawOutline( oCtrl ) }
-
-   CASE nControlType == 21           // 'PICCHECKBUTT'
-      @ _OOHG_MouseRow, _OOHG_MouseCol CHECKBUTTON &cName OF ( ::oDesignForm:Name ) ;
-         OBJ oCtrl ;
-         PICTURE 'A4' ;
-         WIDTH 30 ;
-         HEIGHT 30 ;
-         VALUE .F. ;
-         ON GOTFOCUS ::DrawOutline( _OOHG_ThisObject ) ;
-         ON CHANGE ::DrawOutline( _OOHG_ThisObject )
-
-   CASE nControlType == 22           // 'PICBUTT'
-      @ _OOHG_MouseRow, _OOHG_MouseCol BUTTON &cName OF ( ::oDesignForm:Name ) ;
-         OBJ oCtrl ;
-         PICTURE 'A4' ;
-         WIDTH 30 ;
-         HEIGHT 30 ;
-         ON GOTFOCUS ::DrawOutline( _OOHG_ThisObject ) ;
-         ACTION ::DrawOutline( _OOHG_ThisObject )
-
    CASE nControlType == 23           // 'TIMER'
       @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &cName OF ( ::oDesignForm:Name ) ;
          OBJ oCtrl ;
-         WIDTH 100 ;
-         HEIGHT 20 ;
+         WIDTH nWidth ;
+         HEIGHT nHeight ;
          VALUE cName ;
          BORDER ;
          BACKCOLOR WHITE ;
-         ACTION ::DrawOutline( _OOHG_ThisObject )
+         ACTION ::DrawOutline( oCtrl )
       oCtrl:OnRClick := { || ::DrawOutline( oCtrl ) }
 
    CASE nControlType == 24           // 'BROWSE'
-      @ _OOHG_MouseRow, _OOHG_MouseCol GRID &cName OF ( ::oDesignForm:Name ) ;
-         OBJ oCtrl ;
-         HEADERS { 'one', 'two' } ;
-         WIDTHS { 60, 60 } ;
-         ITEMS { { cName, '' } } ;
-         TOOLTIP 'Click on header area to move/size' ;
-         ON GOTFOCUS ::DrawOutline( _OOHG_ThisObject ) ;
-         ON CHANGE ::DrawOutline( _OOHG_ThisObject )
+      oCtrl := TGrid():Define( cName, ::oDesignForm:Name, ;
+                  _OOHG_MouseCol, _OOHG_MouseRow, nWidth, nHeight, ;
+                  { 'one', 'two' }, { 140, 60 }, { { cName, '' } }, 1, NIL, NIL, ;
+                  ::aToolTip[i], { || ::DrawOutline( oCtrl ) }, NIL, NIL, ;
+                  { || ::DrawOutline( oCtrl ) }, NIL, ::aNoLines[i], NIL, NIL, ;
+                  .F., NIL, ::aBold[i], ::aFontItalic[i], ::aFontUnderline[i], ;
+                  ::aFontStrikeout[i], .F., NIL, NIL, .F., NIL, NIL, NIL, NIL, ;
+                  NIL, ::aRTL[i], .F., NIL, .T., NIL, NIL, NIL, NIL, .F., .F., ;
+                  .F., ! ::aNoHeaders[i], NIL, NIL, NIL, .F., NIL,  NIL, .F., ;
+                  NIL, .T., .T., ::aPLM[i], .T., NIL, ;
+                  { || ::DrawOutline( oCtrl ) }, .T., NIL, NIL, NIL, NIL, NIL, ;
+                  .F., .F., .F., NIL, NIL, NIL, .F., .F., NIL, .F., .T., ;
+                  NIL, .F., .F., .F. )
+      IF ! Empty( ::aFontName[i] )
+         oCtrl:FontName := ::aFontName[i]
+      ENDIF
+      IF ::aFontSize[i] > 0
+         oCtrl:FontSize := ::aFontSize[i]
+      ENDIF
+      IF IsValidArray( ::aFontColor[i] )
+         oCtrl:FontColor := &( ::aFontColor[i] )
+      ENDIF
+      IF IsValidArray( ::aBackColor[i] )
+         oCtrl:BackColor := &( ::aBackColor[i] )
+      ENDIF
+      oCtrl:OnRClick := { || ::DrawOutline( oCtrl ) }
 
    CASE nControlType == 25           // 'TREE'
       oCtrl := TTree():Define( cName, ::oDesignForm:Name, ;
-                  _OOHG_MouseRow, _OOHG_MouseCol, NIL, NIL, ;
+                  _OOHG_MouseRow, _OOHG_MouseCol, nWidth, nHeight, ;
                   { || ::DrawOutline( oCtrl ) }, ::aToolTip[i], NIL, NIL, ;
                   { || ::DrawOutline( oCtrl ) }, NIL, NIL, .F., NIL, NIL, ;
                   IIF( IsValidArray( ::aNodeImages[i] ), &( ::aNodeImages[i] ), NIL ), ;
@@ -3726,7 +4063,7 @@ LOCAL cName, oCtrl, aImages, aItems, nMin, nMax, j, aCaptions, nCnt, oPage
       oCtrl := TLabel():Define( cName, ::oDesignForm:Name, ;
                   _OOHG_MouseCol, _OOHG_MouseRow, ;
                   IIF( Empty( ::aValue[i] ), cName, ::aValue[i] ), ;
-                  NIL, NIL, NIL, NIL, ::aBold[i], .F., .T., .F., .F., .F., ;
+                  nWidth, nHeight, NIL, NIL, ::aBold[i], .F., .T., .F., .F., .F., ;
                   WHITE, NIL, { || ::DrawOutline( oCtrl ) }, ::aToolTip[i], ;
                   NIL, .F., ::aFontItalic[i], ::aFontUnderline[i], ;
                   ::aFontStrikeout[i], .F., .F., .F., ::aRTL[i], .F., .F., ;
@@ -3746,8 +4083,8 @@ LOCAL cName, oCtrl, aImages, aItems, nMin, nMax, j, aCaptions, nCnt, oPage
 
    CASE nControlType == 27           // 'MONTHCALENDAR'
       oCtrl := TMonthCal():Define( cName, ::oDesignForm:Name, ;
-                  _OOHG_MouseCol, _OOHG_MouseRow, 0, 0, ::aValue[i], NIL, NIL, ;
-                  ::aToolTip[i], ::aNoToday[i], ::aNoTodayCircle[i], ;
+                  _OOHG_MouseCol, _OOHG_MouseRow, nWidth, nHeight, ::aValue[i], ;
+                  NIL, NIL, ::aToolTip[i], ::aNoToday[i], ::aNoTodayCircle[i], ;
                   ::aWeekNumbers[i], { || ::DrawOutline( oCtrl ) }, ;
                   NIL, .F., .F., ::aBold[i], ::aFontItalic[i], ;
                   ::aFontUnderline[i], ::aFontStrikeout[i], ::aRTL[i], .F., ;
@@ -3778,55 +4115,116 @@ LOCAL cName, oCtrl, aImages, aItems, nMin, nMax, j, aCaptions, nCnt, oPage
       ENDIF
 
    CASE nControlType == 28           // 'HYPERLINK'
-      // TODO: use HYPERLINK control
-      @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &cName OF ( ::oDesignForm:Name ) ;
-         OBJ oCtrl ;
-         VALUE cName ;
-         ACTION ::DrawOutline( _OOHG_ThisObject ) ;
-         BACKCOLOR WHITE ;
-         BORDER
+      oCtrl := THyperLink():Define( cName, ::oDesignForm:Name, ;
+                  _OOHG_MouseCol, _OOHG_MouseRow, ;
+                  IIF( Empty( ::aValue[i] ), cName, ::aValue[i] ), ;
+                  ::aAddress[i], nWidth, nHeight, NIL, NIL, ::aBold[i], ;
+                  ::aBorder[i], ::aClientEdge[i], ::aNoHScroll[i], ;
+                  ::aNoVScroll[i], ::aTransparent[i], NIL, NIL, ;
+                  IIF( Empty( ::aToolTip[i] ), ::aAddress[i], ::aToolTip[i] ), ;
+                  NIL, .F., ::aFontItalic[i], ::aAutoPlay[i], ;
+                  ::aHandCursor[i], ::aRTL[i] )
+      IF ! Empty( ::aFontName[i] )
+         oCtrl:FontName := ::aFontName[i]
+      ENDIF
+      IF ::aFontSize[i] > 0
+         oCtrl:FontSize := ::aFontSize[i]
+      ENDIF
+      IF IsValidArray( ::aFontColor[i] )
+         oCtrl:FontColor := &( ::aFontColor[i] )
+      ENDIF
+      IF IsValidArray( ::aBackColor[i] )
+         oCtrl:BackColor := &( ::aBackColor[i] )
+      ENDIF
+      oCtrl:OnClick  := { || ::DrawOutline( oCtrl ) }
       oCtrl:OnRClick := { || ::DrawOutline( oCtrl ) }
 
    CASE nControlType == 29           // 'RICHEDIT'
-      // TODO: use RICHEDIT control
-      @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &cName OF ( ::oDesignForm:Name ) ;
-         OBJ oCtrl ;
-         WIDTH 120 ;
-         HEIGHT 124 ;
-         VALUE cName ;
-         CLIENTEDGE ;
-         BACKCOLOR WHITE ;
-         HSCROLL ;
-         VSCROLL ;
-         ACTION ::DrawOutline( _OOHG_ThisObject )
+      oCtrl := TEditRich():Define( cName, ::oDesignForm:Name, ;
+                  _OOHG_MouseCol, _OOHG_MouseRow, nWidth, nHeight, ;
+                  IIF( Empty( ::aValue[i] ), cName, ::aValue[i] ), NIL, NIL, ;
+                  ::aToolTip[i], ::aMaxLength[i], { || ::DrawOutline( oCtrl ) }, ;
+                  { || ::DrawOutline( oCtrl ) }, NIL, .F., .F., NIL, .F., ;
+                  .F., ::aBold[i], ::aFontItalic[i], ::aFontUnderline[i], ;
+                  ::aFontStrikeout[i], NIL, NIL, ::aRTL[i], .F., NIL, ;
+                  NIL, ::aNoHideSel[i], ::aFocusedPos[i], ::aNoVScroll[i], ;
+                  ::aNoHScroll[i], NIL, iif( ::aPlainText[i], 1, ;
+                  ::aFileType[i] ), NIL, NIL )
+      IF ! Empty( ::aFontName[i] )
+         oCtrl:FontName := ::aFontName[i]
+      ENDIF
+      IF ::aFontSize[i] > 0
+         oCtrl:FontSize := ::aFontSize[i]
+      ENDIF
+      IF IsValidArray( ::aFontColor[i] )
+         oCtrl:FontColor := &( ::aFontColor[i] )
+      ENDIF
+      IF IsValidArray( ::aBackColor[i] )
+         oCtrl:BackColor := &( ::aBackColor[i] )
+      ENDIF
       oCtrl:OnRClick := { || ::DrawOutline( oCtrl ) }
 
    CASE nControlType == 30           // 'TIMEPICKER'
-      @ _OOHG_MouseRow, _OOHG_MouseCol TIMEPICKER &cName OF ( ::oDesignForm:Name ) ;
-         OBJ oCtrl ;
-         TOOLTIP cName ;
-         ON GOTFOCUS ::DrawOutline( _OOHG_ThisObject ) ;
-         ON CHANGE ::DrawOutline( _OOHG_ThisObject )
+      oCtrl := TTimePick():Define( cName, ::oDesignForm:Name, ;
+                  _OOHG_MouseCol, _OOHG_MouseRow, nWidth, nHeight, ::aValue[i], ;
+                  NIL, NIL, IIF( Empty( ::aToolTip[i] ), cName, ::aToolTip[i] ), ;
+                  { || ::DrawOutline( oCtrl ) }, NIL, ;
+                  { || ::DrawOutline( oCtrl ) }, ::aShowNone[i], ::aUpDown[i], ;
+                  ::aRightAlign[i], NIL, .F., .F., ::aBold[i], ::aFontItalic[i], ;
+                  ::aFontUnderline[i], ::aFontStrikeout[i], NIL, NIL, ::aRTL[i], ;
+                  .F., ::aBorder[i] )
+      IF ! Empty( ::aFontName[i] )
+         oCtrl:FontName := ::aFontName[i]
+      ENDIF
+      IF ::aFontSize[i] > 0
+         oCtrl:FontSize := ::aFontSize[i]
+      ENDIF
+      IF IsValidArray( ::aFontColor[i] )
+         oCtrl:FontColor := &( ::aFontColor[i] )
+      ENDIF
+      IF IsValidArray( ::aBackColor[i] )
+         oCtrl:BackColor := &( ::aBackColor[i] )
+      ENDIF
+      oCtrl:OnRClick := { || ::DrawOutline( oCtrl ) }
 
    CASE nControlType == 31           // 'XBROWSE'
-      @ _OOHG_MouseRow, _OOHG_MouseCol GRID &cName OF ( ::oDesignForm:Name ) ;
-         OBJ oCtrl ;
-         HEADERS { 'one', 'two' } ;
-         WIDTHS { 60, 60 } ;
-         ITEMS { { cName, '' } } ;
-         TOOLTIP 'Click on header area to move/size' ;
-         ON GOTFOCUS ::DrawOutline( _OOHG_ThisObject ) ;
-         ON CHANGE ::DrawOutline( _OOHG_ThisObject )
+      oCtrl := TGrid():Define( cName, ::oDesignForm:Name, ;
+                  _OOHG_MouseCol, _OOHG_MouseRow, nWidth, nHeight, ;
+                  { 'one', 'two' }, { 140, 60 }, { { cName, '' } }, 1, NIL, NIL, ;
+                  IIF( Empty( ::aToolTip[i] ), 'Right click on header area to change properties and events or to move/size.', ::aToolTip[i] ), ;
+                  { || ::DrawOutline( oCtrl ) }, NIL, NIL, ;
+                  { || ::DrawOutline( oCtrl ) }, NIL, ::aNoLines[i], NIL, NIL, ;
+                  .F., NIL, ::aBold[i], ::aFontItalic[i], ::aFontUnderline[i], ;
+                  ::aFontStrikeout[i], .F., NIL, NIL, .F., NIL, NIL, NIL, NIL, ;
+                  NIL, ::aRTL[i], .F., NIL, .T., NIL, NIL, NIL, NIL, .F., .F., ;
+                  .F., ! ::aNoHeaders[i], NIL, NIL, NIL, .F., NIL,  NIL, .F., ;
+                  NIL, .T., .T., ::aPLM[i], .T., NIL, ;
+                  { || ::DrawOutline( oCtrl ) }, .T., NIL, NIL, NIL, NIL, NIL, ;
+                  .F., .F., .F., NIL, NIL, NIL, .F., .F., NIL, .F., .T., ;
+                  NIL, .F., .F., .F. )
+      IF ! Empty( ::aFontName[i] )
+         oCtrl:FontName := ::aFontName[i]
+      ENDIF
+      IF ::aFontSize[i] > 0
+         oCtrl:FontSize := ::aFontSize[i]
+      ENDIF
+      IF IsValidArray( ::aFontColor[i] )
+         oCtrl:FontColor := &( ::aFontColor[i] )
+      ENDIF
+      IF IsValidArray( ::aBackColor[i] )
+         oCtrl:BackColor := &( ::aBackColor[i] )
+      ENDIF
+      oCtrl:OnRClick := { || ::DrawOutline( oCtrl ) }
 
    CASE nControlType == 32           // 'ACTIVEX'
       @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &cName OF ( ::oDesignForm:Name ) ;
          OBJ oCtrl ;
-         WIDTH 100 ;
-         HEIGHT 50 ;
+         WIDTH nWidth ;
+         HEIGHT nHeight ;
          VALUE cName ;
          BORDER ;
          BACKCOLOR WHITE ;
-         ACTION ::DrawOutline( _OOHG_ThisObject )
+         ACTION ::DrawOutline( oCtrl )
       oCtrl:OnRClick := { || ::DrawOutline( oCtrl ) }
 
    CASE nControlType == 33           // 'CHECKLIST'
@@ -3855,7 +4253,7 @@ LOCAL cName, oCtrl, aImages, aItems, nMin, nMax, j, aCaptions, nCnt, oPage
          EndIf
       EndIf
       oCtrl := TCheckList():Define( cName, ::oDesignForm:Name, ;
-                  _OOHG_MouseCol, _OOHG_MouseRow, NIL, NIL, aItems, ;
+                  _OOHG_MouseCol, _OOHG_MouseRow, nWidth, nHeight, aItems, ;
                   ::aValueN[i], NIL, NIL, ::aToolTip[i], ;
                   { || ::DrawOutline( oCtrl ) }, { || ::DrawOutline( oCtrl ) }, ;
                   NIL, aImages, ::aJustify[i], .F., NIL, ::aBold[i], ;
@@ -3879,19 +4277,19 @@ LOCAL cName, oCtrl, aImages, aItems, nMin, nMax, j, aCaptions, nCnt, oPage
    CASE nControlType == 34           // 'HOTKEYBOX'
       @ _OOHG_MouseRow, _OOHG_MouseCol LABEL &cName OF ( ::oDesignForm:Name ) ;
          OBJ oCtrl ;
-         WIDTH 120 ;
-         HEIGHT 40 ;
+         WIDTH nWidth ;
+         HEIGHT nHeight ;
          VALUE 'ALT + key' ;
          BORDER ;
          BACKCOLOR WHITE ;
-         ACTION ::DrawOutline( _OOHG_ThisObject )
+         ACTION ::DrawOutline( oCtrl )
       oCtrl:OnRClick := { || ::DrawOutline( oCtrl ) }
 
    CASE nControlType == 35           // 'PICTURE'
       oCtrl := TPicture():Define( cName, ::oDesignForm:Name, ;
                   _OOHG_MouseCol, _OOHG_MouseRow, ;
                   IIF( Empty( ::aPicture[i] ), 'ZZZ_AAAOOHG', ::aPicture[i] ), ;
-                  NIL, NIL, NIL, NIL, ;
+                  nWidth, nHeight, NIL, NIL, ;
                   IIF( Empty( ::aPicture[i] ), .T., ::aStretch[i] ), ;
                   ::aForceScale[i], ::aImageSize[i], ::aBorder[i], ;
                   ::aClientEdge[i], NIL, { || ::DrawOutline( oCtrl ) }, ;
@@ -3916,7 +4314,7 @@ LOCAL cName, oCtrl, aImages, aItems, nMin, nMax, j, aCaptions, nCnt, oPage
          nMax := NIL
       ENDIF
       oCtrl := TProgressMeter():Define( cName, ::oDesignForm:Name, ;
-                  _OOHG_MouseCol, _OOHG_MouseRow, NIL, NIL, nMin, nMax, ;
+                  _OOHG_MouseCol, _OOHG_MouseRow, nWidth, nHeight, nMin, nMax, ;
                   ::aValueN[i], ::aToolTip[i], NIL, NIL, ::aBold[i], ;
                   ::aFontItalic[i], ::aFontUnderline[i], ::aFontStrikeout[i], ;
                   NIL, NIL, { || ::DrawOutline( oCtrl ) }, NIL, .F., ::aRTL[i], ;
@@ -3936,7 +4334,7 @@ LOCAL cName, oCtrl, aImages, aItems, nMin, nMax, j, aCaptions, nCnt, oPage
 
    CASE nControlType == 37           // 'SCROLLBAR'
       oCtrl := TScrollBar():Define( cName, ::oDesignForm:Name, ;
-                  _OOHG_MouseCol, _OOHG_MouseRow, NIL, NIL, NIL, NIL, ;
+                  _OOHG_MouseCol, _OOHG_MouseRow, nWidth, nHeight, NIL, NIL, ;
                   { || ::DrawOutline( oCtrl ) }, { || ::DrawOutline( oCtrl ) }, ;
                   { || ::DrawOutline( oCtrl ) }, { || ::DrawOutline( oCtrl ) }, ;
                   { || ::DrawOutline( oCtrl ) }, { || ::DrawOutline( oCtrl ) }, ;
@@ -3951,7 +4349,7 @@ LOCAL cName, oCtrl, aImages, aItems, nMin, nMax, j, aCaptions, nCnt, oPage
    CASE nControlType == 38           // 'TEXTARRAY'
       oCtrl := TLabel():Define( cName, ::oDesignForm:Name, ;
                   _OOHG_MouseCol, _OOHG_MouseRow, ;
-                  IIF( Empty( ::aValue[i] ), cName, ::aValue[i] ), 100, 100, ;
+                  IIF( Empty( ::aValue[i] ), cName, ::aValue[i] ), nWidth, nHeight, ;
                   NIL, NIL, ::aBold[i], ::aBorder[i] .OR. ! ::aClientEdge[i], ;
                   ::aClientEdge[i], NIL, NIL, .F., NIL, NIL, ;
                   { || ::DrawOutline( oCtrl ) }, ::aToolTip[i], NIL, .F., ;
@@ -3977,12 +4375,12 @@ LOCAL cName, oCtrl, aImages, aItems, nMin, nMax, j, aCaptions, nCnt, oPage
       RETURN NIL
 
    ENDCASE
-RETURN ::oDesignForm:&cName:Object
+RETURN oCtrl
 
 //------------------------------------------------------------------------------
 METHOD DrawOutline( oControl, lNoRefresh, lNoErase ) CLASS TFormEditor
 //------------------------------------------------------------------------------
-LOCAL l, nRow, nCol, nWidth, nHeight, cLabel, y, x, y1, x1
+LOCAL l, nRow, nCol, cLabel, y, x, y1, x1, cTab, bAux, w, h
 
    IF ::lAddingNewControl
       RETURN NIL
@@ -3997,8 +4395,15 @@ LOCAL l, nRow, nCol, nWidth, nHeight, cLabel, y, x, y1, x1
 
    y :=  oControl:ContainerRow
    x :=  oControl:ContainerCol
-   y1:=  oControl:ContainerRow + oControl:Height
-   x1:=  oControl:ContainerCol + oControl:Width
+   IF oControl:Type == 'RADIOGROUP'
+      h :=  oControl:GroupHeight
+      w :=  oControl:GroupWidth
+   ELSE
+      h :=  oControl:Height
+      w :=  oControl:Width
+   ENDIF
+   y1 :=  oControl:ContainerRow + h
+   x1 :=  oControl:ContainerCol + w
 
    DRAW RECTANGLE IN WINDOW ( ::oDesignForm:Name ) ;
       AT oControl:ContainerRow - 10, oControl:ContainerCol - 10 ;
@@ -4007,28 +4412,28 @@ LOCAL l, nRow, nCol, nWidth, nHeight, cLabel, y, x, y1, x1
       FILLCOLOR { 255, 0, 0 }
 
    DRAW RECTANGLE IN WINDOW ( ::oDesignForm:Name ) ;
-      AT oControl:ContainerRow + oControl:Height + 1, oControl:ContainerCol + oControl:Width + 1 ;
-      TO oControl:ContainerRow + oControl:Height + 6, oControl:ContainerCol + oControl:Width + 6 ;
+      AT y1 + 1, x1 + 1 ;
+      TO y1 + 6, x1 + 6 ;
       PENCOLOR { 255, 0, 0 } ;
       FILLCOLOR { 255, 0, 0 }
 
    DRAW LINE IN WINDOW ( ::oDesignForm:Name ) ;
       AT y - 1, x - 1 ;
-      TO y - 1 + oControl:Height + 1, x - 1 ;
+      TO y - 1 + h + 1, x - 1 ;
       PENCOLOR { 255, 0, 0 }
 
    DRAW LINE IN WINDOW ( ::oDesignForm:Name ) ;
       AT y - 1, x - 1 ;
-      TO y - 1, x - 1 + oControl:Width + 1 ;
+      TO y - 1, x - 1 + w + 1 ;
       PENCOLOR { 255, 0, 0 }
 
    DRAW LINE IN WINDOW ( ::oDesignForm:Name ) ;
-      AT y - 1 + oControl:Height + 1, x - 1 ;
+      AT y - 1 + h + 1, x - 1 ;
       TO y1, x1 + 1 ;
       PENCOLOR { 255, 0, 0 }
 
    DRAW LINE IN WINDOW ( ::oDesignForm:Name ) ;
-      AT y - 1, x - 1 + oControl:Width + 1 ;
+      AT y - 1, x - 1 + w + 1 ;
       TO y1 + 1, x1 ;
       PENCOLOR { 255, 0, 0 }
 
@@ -4040,12 +4445,18 @@ LOCAL l, nRow, nCol, nWidth, nHeight, cLabel, y, x, y1, x1
 
       nRow    := oControl:Row
       nCol    := oControl:Col
-      nWidth  := oControl:Width
-      nHeight := oControl:Height
-      cLabel  := " r:" + Alltrim( Str( nRow, 4 ) ) + " c:" + AllTrim( Str( nCol, 4 ) ) + " w:" + AllTrim( Str( nWidth, 4 ) ) + " h:" + AllTrim( Str( nHeight, 4 ) )
+      cLabel  := " r:" + Alltrim( Str( nRow, 4 ) ) + " c:" + AllTrim( Str( nCol, 4 ) ) + " w:" + AllTrim( Str( w, 4 ) ) + " h:" + AllTrim( Str( h, 4 ) )
       ::Form_Main:label_2:Value := cLabel
 
       ::nHandleA := aScan( ::oDesignForm:aControls, { |c| c:Name == oControl:Name } )
+
+      IF ::aTabPage[l, 2] > 0
+         cTab := ::aTabPage[l, 1]
+         bAux := ::oDesignForm:&cTab:OnChange
+         ::oDesignForm:&cTab:OnChange := NIL
+         ::oDesignForm:&cTab:Value := ::aTabPage[l, 2]
+         ::oDesignForm:&cTab:OnChange := bAux
+      ENDIF
 
       IF ! lNoRefresh
          ::RefreshControlInspector( oControl:Name )
@@ -4709,8 +5120,6 @@ METHOD LoadControls() CLASS TFormEditor
 LOCAL i, lItem, cType, cLine, nAt, nWidth, cAction, cIcon, lFlat, lRaised, lAmPm
 LOCAL cToolTip, lCenter, lLeft, lRight, cCaption, nProcess
 
-   ::swTab := .F.
-
    // Load statusbar data
    FOR i := 1 TO Len( ::aLine )
       IF At( 'DEFINE STATUSBAR', Upper( ::aLine[i] ) ) # 0
@@ -5004,6 +5413,8 @@ LOCAL cToolTip, lCenter, lLeft, lRight, cCaption, nProcess
    NEXT i
 
    // Controls
+   ::swTab := .F.
+
    FOR i := 1 TO ::nControlW
       IF i == 1
         cType := 'FORM'
@@ -5512,18 +5923,16 @@ RETURN NIL
 //------------------------------------------------------------------------------
 METHOD pActiveX( i ) CLASS TFormEditor
 //------------------------------------------------------------------------------
-LOCAL cName, nRow, nCol, cObj, cWidth, cHeight, cProgID, lNoTabStop, lVisible
-LOCAL lEnabled, cSubClass, oCtrl, nWidth, nHeight
+LOCAL cName, nRow, nCol, cObj, nWidth, nHeight, cProgID, lNoTabStop, lVisible
+LOCAL lEnabled, cSubClass, oCtrl
 
    // Load properties
    cName      := ::aControlW[i]
    nRow       := Val( ::ReadCtrlRow( cName ) )
    nCol       := Val( ::ReadCtrlCol( cName ) )
    cObj       := ::ReadStringData( cName, 'OBJ', '' )
-   cWidth     := ::ReadStringData( cName, 'WIDTH', 'NIL' )
-   nWidth     := IIF( cWidth # 'NIL' .AND. Val( cWidth ) > 0, Val( cWidth ), 100 )
-   cHeight    := ::ReadStringData( cName, 'HEIGHT', 'NIL' )
-   nHeight    := IIF( cHeight # 'NIL' .AND. Val( cHeight ) > 0, Val( cHeight ), 50 )
+   nWidth     := Val( ::ReadStringData( cName, 'WIDTH', '100' ) )
+   nHeight    := Val( ::ReadStringData( cName, 'HEIGHT', '100' ) )
    cProgID    := ::ReadStringData( cName, 'PROGID', '' )
    lNoTabStop := ( ::ReadLogicalData( cName, 'NOTABSTOP', 'F' ) == "T" )
    lVisible   := ( ::ReadLogicalData( cName, 'INVISIBLE', "F" ) == "F" )
@@ -5535,8 +5944,6 @@ LOCAL lEnabled, cSubClass, oCtrl, nWidth, nHeight
    // Save properties
    ::aCtrlType[i]    := 'ACTIVEX'
    ::aCObj[i]        := cObj
-   ::aButtonWidth[i] := IIF( cWidth == 'NIL', 1, IIF( Val( cWidth ) <= 0, 2, 3 ) )      // Parent's, 0, Current
-   ::aTextHeight[i]  := IIF( cHeight == 'NIL', 1, IIF( Val( cHeight ) <= 0, 2, 3 ) )    // Parent's, 0, Current
    ::aAction[i]      := cProgID
    ::aNoTabStop[i]   := lNoTabStop
    ::aVisible[i]     := lVisible
@@ -5544,11 +5951,286 @@ LOCAL lEnabled, cSubClass, oCtrl, nWidth, nHeight
    ::aSubClass[i]    := cSubClass
 
    // Create control
-   oCtrl        := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i )
-   oCtrl:Row    := nRow
-   oCtrl:Col    := nCol
-   oCtrl:Width  := nWidth
-   oCtrl:Height := nHeight
+   oCtrl     := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i, nWidth, nHeight, NIL )
+   oCtrl:Row := nRow
+   oCtrl:Col := nCol
+
+   ::AddCtrlToTabPage( i, cName, nRow, nCol )
+RETURN NIL
+
+//------------------------------------------------------------------------------
+METHOD pAnimatebox( i ) CLASS TFormEditor
+//------------------------------------------------------------------------------
+LOCAL cName, cObj, nWidth, nHeight, cFile, lAutoplay, lCenter, lTrans, cSubClass
+LOCAL cToolTip, lVisible, lEnabled, nHelpid, nRow, nCol, lRTL, lNoTabStop, oCtrl
+
+   // Load properties
+   cName      := ::aControlW[i]
+   cObj       := ::ReadStringData( cName, 'OBJ', '' )
+   nRow       := Val( ::ReadCtrlRow( cName ) )
+   nCol       := Val( ::ReadCtrlCol( cName ) )
+   nWidth     := Val( ::ReadStringData( cName, 'WIDTH', '100' ) )
+   nHeight    := Val( ::ReadStringData( cName, 'HEIGHT', '100' ) )
+   cFile      := ::Clean( ::ReadStringData( cName, 'FILE', '' ) )
+   lAutoplay  := ( ::ReadLogicalData( cName, 'AUTOPLAY', 'F') == "T" )
+   lCenter    := ( ::ReadLogicalData( cName, 'CENTER', 'F' ) == "T" )
+   lTrans     := ( ::ReadLogicalData( cName, 'TRANSPARENT', 'F' ) == "T" )
+   nHelpid    := Val( ::ReadStringData( cName, 'HELPID', '0' ) )
+   cToolTip   := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
+   lVisible   := ( ::ReadLogicalData( cName, 'INVISIBLE', "F" ) == "F" )
+   lVisible   := ( Upper( ::ReadOopData( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
+   lEnabled   := ( ::ReadLogicalData( cName, 'DISABLED', "F" ) == "F" )
+   lEnabled   := ( Upper( ::ReadOopData( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
+   lRTL       := ( ::ReadLogicalData( cName, 'RTL', "F" ) == "T" )
+   lNoTabStop := ( ::ReadLogicalData( cName, 'NOTABSTOP', 'F' ) == 'T' )
+   cSubClass  := ::ReadStringData( cName, 'SUBCLASS', '' )
+
+   // Save properties
+   ::aCtrlType[i]    := 'ANIMATE'
+   ::aCObj[i]        := cObj
+   ::aFile[i]        := cFile
+   ::aAutoPlay[i]    := lAutoplay
+   ::aCenter[i]      := lCenter
+   ::aTransparent[i] := lTrans
+   ::aHelpID[i]      := nHelpId
+   ::aToolTip[i]     := cToolTip
+   ::aVisible[i]     := lVisible
+   ::aEnabled[i]     := lEnabled
+   ::aRTL[i]         := lRTL
+   ::aNoTabStop[i]   := lNoTabStop
+   ::aSubClass[i]    := cSubClass
+
+   // Create control
+   oCtrl     := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i, nWidth, nHeight, NIL )
+   oCtrl:Row := nRow
+   oCtrl:Col := nCol
+
+   ::AddCtrlToTabPage( i, cName, nRow, nCol )
+RETURN NIL
+
+//------------------------------------------------------------------------------
+METHOD pBrowse( i ) CLASS TFormEditor
+//------------------------------------------------------------------------------
+LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cHeaders, cWidths, cWorkArea
+LOCAL cFields, nValue, cFontName, nFontSize, cToolTip, cInputMask, cDynBackColor
+LOCAL cDynForecolor, cColControls, cOnChange, cOnGotFocus, cOnLostFocus
+LOCAL cOnDblClick, cOnEnter, cOnHeadClick, cOnEditCell, cOnAppend, cWhen, cValid
+LOCAL cValidMess, cReadOnly, lLock, lDelete, lAppend, lInPlace, lEdit, lNoLines
+LOCAL cImage, cJustify, nHelpId, lBold, lItalic, lUnderline, lStrikeout
+LOCAL aBackColor, aFontColor, cAction, lBreak, lRTL, lNoTabStop, lVisible
+LOCAL lEnabled, lFull, lButtons, lNoHeaders, cHeaderImages, cImagesAlign
+LOCAL aSelColor, cEditKeys, lDoubleBuffer, lSingleBuffer, lFocusRect
+LOCAL lNoFocusRect, lPLM, lFixedCols, cOnAbortEdit, lFixedWidths, cBeforeColMove
+LOCAL cAfterColMove, cBeforeColSize, cAfterColSize, cBeforeAutoFit, lLikeExcel
+LOCAL cDeleteWhen, cDeleteMsg, cOnDelete, lNoDeleteMsg, lFixedCtrls
+LOCAL lDynamicCtrls, cOnHeadRClick, lExtDblClick, lNoVScroll, lNoRefresh
+LOCAL cReplaceField, cSubClass, lRecCount, cColumnInfo, lDescending
+LOCAL lForceRefresh, lSync, lUnSync, lUpdateAll, lFixedBlocks, lDynamicBlocks
+LOCAL lUpdateColors, oCtrl
+
+   // Load properties
+   cName          := ::aControlW[i]
+   cObj           := ::ReadStringData( cName, 'OBJ', '' )
+   nRow           := Val( ::ReadCtrlRow( cName ) )
+   nCol           := Val( ::ReadCtrlCol( cName ) )
+   nWidth         := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( TOBrowse():nWidth ) ) ) )
+   nHeight        := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TOBrowse():nHeight ) ) ) )
+   cHeaders       := ::ReadStringData( cName, 'HEADERS', "{ '','' } ")
+   cWidths        := ::ReadStringData( cName, 'WIDTHS', "{ 100, 60 }")
+   cWorkArea      := ::ReadStringData( cName, 'WORKAREA', "ALIAS()" )
+   cFields        := ::ReadStringData( cName, 'FIELDS', "{ 'field1', 'field2' }" )
+   nValue         := Val( ::ReadStringData( cName, 'VALUE', '' ) )
+   cFontName      := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
+   nFontSize      := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
+   cToolTip       := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
+   cInputMask     := ::ReadStringData( cName, 'INPUTMASK', "")
+   cDynBackColor  := ::ReadStringData( cName, "DYNAMICBACKCOLOR", '' )
+   cDynForecolor  := ::ReadStringData( cName, "DYNAMICFORECOLOR", '' )
+   cColControls   := ::ReadStringData( cName, "COLUMNCONTROLS", "" )
+   cOnChange      := ::ReadStringData( cName, 'ON CHANGE', '' )
+   cOnGotFocus    := ::ReadStringData( cName, 'ON GOTFOCUS', '' )
+   cOnLostFocus   := ::ReadStringData( cName, 'ON LOSTFOCUS', '' )
+   cOnDblClick    := ::ReadStringData( cName, 'ON DBLCLICK', '' )
+   cOnEnter       := ::ReadStringData( cName, 'ON ENTER', '' )
+   cOnHeadClick   := ::ReadStringData( cName, 'ON HEADCLICK', '' )
+   cOnEditCell    := ::ReadStringData( cName, 'ON EDITCELL', '' )
+   cOnAppend      := ::ReadStringData( cName, 'ON APPEND', '' )
+   cWhen          := ::ReadStringData( cName, 'WHEN', "" )
+   cWhen          := ::ReadStringData( cName, 'COLUMNWHEN', cWhen )
+   cValid         := ::ReadStringData( cName, 'VALID', "" )
+   cValidMess     := ::ReadStringData( cName, 'VALIDMESSAGES', "" )
+   cReadOnly      := ::ReadStringData( cName, 'READONLY', "")
+   lLock          := ( ::ReadLogicalData( cName, 'LOCK', "F" ) == "T" )
+   lDelete        := ( ::ReadLogicalData( cName, 'DELETE', "F" ) == "T" )
+   lAppend        := ( ::ReadLogicalData( cName, 'APPEND', "F" ) == "T" )
+   lInPlace       := ( ::ReadLogicalData( cName, 'INPLACE', "F" ) == "T" )
+   lEdit          := ( ::ReadLogicalData( cName, 'EDIT', "F" ) == "T" )
+   lNoLines       := ( ::ReadLogicalData( cName, 'NOLINES', "F" ) == "T" )
+   cImage         := ::ReadStringData( cName, 'IMAGE', "" )
+   cJustify       := ::ReadStringData( cName, 'JUSTIFY', "" )
+   nHelpId        := Val( ::ReadStringData( cName, 'HELPID', '0' ) )
+   lBold          := ( ::ReadLogicalData( cName, 'BOLD', "F" ) == "T" )
+   lBold          := ( Upper( ::ReadOopData( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) == '.T.' )
+   lItalic        := ( ::ReadLogicalData( cName, 'ITALIC', "F" ) == "T" )
+   lItalic        := ( Upper( ::ReadOopData( cName, 'FONTITALIC', IF( lItalic, '.T.', '.F.' ) ) ) == '.T.' )
+   lUnderline     := ( ::ReadLogicalData( cName, 'UNDERLINE', "F" ) == "T" )
+   lUnderline     := ( Upper( ::ReadOopData( cName, 'FONTUNDERLINE', IF( lUnderline, '.T.', '.F.' ) ) ) == '.T.' )
+   lStrikeout     := ( ::ReadLogicalData( cName, 'STRIKEOUT', "F" ) == "T" )
+   lStrikeout     := ( Upper( ::ReadOopData( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) == '.T.' )
+   aBackColor     := ::ReadStringData( cName, 'BACKCOLOR', 'NIL' )
+   aBackColor     := UpperNIL( ::ReadOopData( cName, 'BACKCOLOR', aBackColor ) )
+   aFontColor     := ::ReadStringData( cName, 'FONTCOLOR', 'NIL' )
+   aFontColor     := UpperNIL( ::ReadOopData( cName, 'FONTCOLOR', aFontColor ) )
+   cAction        := ::ReadStringData( cName, 'ACTION', "" )
+   cAction        := ::ReadStringData( cName, 'ON CLICK',cAction )
+   cAction        := ::ReadStringData( cName, 'ONCLICK', cAction )
+   lBreak         := ( ::ReadLogicalData( cName, "BREAK", "F" ) == "T" )
+   lRTL           := ( ::ReadLogicalData( cName, 'RTL', "F" ) == "T" )
+   lNoTabStop     := ( ::ReadLogicalData( cName, 'NOTABSTOP', 'F' ) == "T" )
+   lVisible       := ( ::ReadLogicalData( cName, 'INVISIBLE', "F" ) == "F" )
+   lVisible       := ( Upper( ::ReadOopData( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
+   lEnabled       := ( ::ReadLogicalData( cName, 'DISABLED', "F" ) == "F" )
+   lEnabled       := ( Upper( ::ReadOopData( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
+   lFull          := ( ::ReadLogicalData( cName, 'FULLMOVE', "F" ) == "T" )
+   lButtons       := ( ::ReadLogicalData( cName, 'USEBUTTONS', "F" ) == "T" )
+   lNoHeaders     := ( ::ReadLogicalData( cName, 'NOHEADERS', "F" ) == "T" )
+   cHeaderImages  := ::ReadStringData( cName, 'HEADERIMAGES', '' )
+   cImagesAlign   := ::ReadStringData( cName, 'IMAGESALIGN', '' )
+   aSelColor      := UpperNIL( ::ReadStringData( cName, 'SELECTEDCOLORS', '' ) )
+   cEditKeys      := ::ReadStringData( cName, 'EDITKEYS', '' )
+   lDoubleBuffer  := ( ::ReadLogicalData( cName, 'DOUBLEBUFFER', "F" ) == "T" )
+   lSingleBuffer  := ( ::ReadLogicalData( cName, 'SINGLEBUFFER', "F" ) == "T" )
+   lFocusRect     := ( ::ReadLogicalData( cName, 'FOCUSRECT', "F" ) == "T" )
+   lNoFocusRect   := ( ::ReadLogicalData( cName, 'NOFOCUSRECT', "F" ) == "T" )
+   lPLM           := ( ::ReadLogicalData( cName, 'PAINTLEFTMARGIN', "F" ) == "T" )
+   lFixedCols     := ( ::ReadLogicalData( cName, 'FIXEDCOLS', "F" ) == "T" )
+   cOnAbortEdit   := ::ReadStringData( cName, 'ON ABORTEDIT', '' )
+   lFixedWidths   := ( ::ReadLogicalData( cName, 'FIXEDWIDTHS', "F" ) == "T" )
+   cBeforeColMove := ::ReadStringData( cName, 'BEFORECOLMOVE', '' )
+   cAfterColMove  := ::ReadStringData( cName, 'AFTERCOLMOVE', '' )
+   cBeforeColSize := ::ReadStringData( cName, 'BEFORECOLSIZE', '' )
+   cAfterColSize  := ::ReadStringData( cName, 'AFTERCOLSIZE', '' )
+   cBeforeAutoFit := ::ReadStringData( cName, 'BEFOREAUTOFIT', '' )
+   lLikeExcel     := ( ::ReadLogicalData( cName, 'EDITLIKEEXCEL', "F" ) == "T" )
+   cDeleteWhen    := ::ReadStringData( cName, 'DELETEWHEN', '' )
+   cDeleteMsg     := ::ReadStringData( cName, 'DELETEMSG', '' )
+   cOnDelete      := ::ReadStringData( cName, 'ON DELETE', '' )
+   lNoDeleteMsg   := ( ::ReadLogicalData( cName, 'NODELETEMSG', "F" ) == "T" )
+   lFixedCtrls    := ( ::ReadLogicalData( cName, 'FIXEDCONTROLS', "F" ) == "T" )
+   lDynamicCtrls  := ( ::ReadLogicalData( cName, 'DYNAMICCONTROLS', "F" ) == "T" )
+   cOnHeadRClick  := ::ReadStringData( cName, 'ON HEADRCLICK', '' )
+   lExtDblClick   := ( ::ReadLogicalData( cName, 'EXTDBLCLICK', "F" ) == "T" )
+   lNoVScroll     := ( ::ReadLogicalData( cName, "NOVSCROLL", "F" ) == "T" )
+   lNoRefresh     := ( ::ReadLogicalData( cName, "NOREFRESH", "F" ) == "T" )
+   cReplaceField  := ::ReadStringData( cName, 'REPLACEFIELD', '' )
+   cSubClass      := ::ReadStringData( cName, 'SUBCLASS', '' )
+   lRecCount      := ( ::ReadLogicalData( cName, "RECCOUNT", "F" ) == "T" )
+   cColumnInfo    := ::ReadStringData( cName, 'COLUMNINFO', '' )
+   lDescending    := ( ::ReadLogicalData( cName, "DESCENDING", "F" ) == "T" )
+   lForceRefresh  := ( ::ReadLogicalData( cName, "FORCEREFRESH", "F" ) == "T" )
+   lSync          := ( ::ReadLogicalData( cName, "SYNCHRONIZED", "F" ) == "T" )
+   lUnSync        := ( ::ReadLogicalData( cName, "UNSYNCHRONIZED", "F" ) == "T" )
+   lUpdateAll     := ( ::ReadLogicalData( cName, "UPDATEALL", "F" ) == "T" )
+   lFixedBlocks   := ( ::ReadLogicalData( cName, "FIXEDBLOCKS", "F" ) == "T" )
+   lDynamicBlocks := ( ::ReadLogicalData( cName, "DYNAMICBLOCKS", "F" ) == "T" )
+   lUpdateColors  := ( ::ReadLogicalData( cName, "UPDATECOLORS", "F" ) == "T" )
+
+   // Save properties
+   ::aCtrlType[i]         := 'BROWSE'
+   ::aCObj[i]             := cObj
+   ::aHeaders[i]          := cHeaders
+   ::aWidths[i]           := cWidths
+   ::aWorkArea[i]         := cWorkArea
+   ::aFields[i]           := cFields
+   ::aValueN[i]           := nValue
+   ::aFontName[i]         := cFontName
+   ::aFontSize[i]         := nFontSize
+   ::aToolTip[i]          := cToolTip
+   ::aInputMask[i]        := cInputMask
+   ::aDynamicBackColor[i] := cDynBackColor
+   ::aDynamicForeColor[i] := cDynForecolor
+   ::aColumnControls[i]   := cColControls
+   ::aOnChange[i]         := cOnChange
+   ::aOnGotFocus[i]       := cOnGotFocus
+   ::aOnLostFocus[i]      := cOnLostFocus
+   ::aOnDblClick[i]       := cOnDblClick
+   ::aOnEnter[i]          := cOnEnter
+   ::aOnHeadClick[i]      := cOnHeadClick
+   ::aOnEditCell[i]       := cOnEditCell
+   ::aOnAppend[i]         := cOnAppend
+   ::aWhen[i]             := cWhen
+   ::aValid[i]            := cValid
+   ::aValidMess[i]        := cValidMess
+   ::aReadOnlyB[i]        := cReadOnly
+   ::aLock[i]             := lLock
+   ::aDelete[i]           := lDelete
+   ::aAppend[i]           := lAppend
+   ::aInPlace[i]          := lInPlace
+   ::aEdit[i]             := lEdit
+   ::aNoLines[i]          := lNoLines
+   ::aImage[i]            := cImage
+   ::aJustify[i]          := cJustify
+   ::aHelpID[i]           := nHelpId
+   ::aBold[i]             := lBold
+   ::aFontItalic[i]       := lItalic
+   ::aFontUnderline[i]    := lUnderline
+   ::aFontStrikeout[i]    := lStrikeout
+   ::aBackColor[i]        := aBackColor
+   ::aFontColor[i]        := aFontColor
+   ::aAction[i]           := cAction
+   ::aBreak[i]            := lBreak
+   ::aRTL[i]              := lRTL
+   ::aNoTabStop[i]        := lNoTabStop
+   ::aVisible[i]          := lVisible
+   ::aEnabled[i]          := lEnabled
+   ::aFull[i]             := lFull
+   ::aButtons[i]          := lButtons
+   ::aNoHeaders[i]        := lNoHeaders
+   ::aHeaderImages[i]     := cHeaderImages
+   ::aImagesAlign[i]      := cImagesAlign
+   ::aSelColor[i]         := aSelColor
+   ::aEditKeys[i]         := cEditKeys
+   ::aDoubleBuffer[i]     := lDoubleBuffer
+   ::aSingleBuffer[i]     := lSingleBuffer
+   ::aFocusRect[i]        := lFocusRect
+   ::aNoFocusRect[i]      := lNoFocusRect
+   ::aPLM[i]              := lPLM
+   ::aFixedCols[i]        := lFixedCols
+   ::aOnAbortEdit[i]      := cOnAbortEdit
+   ::aFixedWidths[i]      := lFixedWidths
+   ::aBeforeColMove[i]    := cBeforeColMove
+   ::aAfterColMove[i]     := cAfterColMove
+   ::aBeforeColSize[i]    := cBeforeColSize
+   ::aAfterColSize[i]     := cAfterColSize
+   ::aBeforeAutoFit[i]    := cBeforeAutoFit
+   ::aLikeExcel[i]        := lLikeExcel
+   ::aDeleteWhen[i]       := cDeleteWhen
+   ::aDeleteMsg[i]        := cDeleteMsg
+   ::aOnDelete[i]         := cOnDelete
+   ::aNoDelMsg[i]         := lNoDeleteMsg
+   ::aFixedCtrls[i]       := lFixedCtrls
+   ::aDynamicCtrls[i]     := lDynamicCtrls
+   ::aOnHeadRClick[i]     := cOnHeadRClick
+   ::aExtDblClick[i]      := lExtDblClick
+   ::aNoVScroll[i]        := lNoVScroll
+   ::aNoRefresh[i]        := lNoRefresh
+   ::aReplaceField[i]     := cReplaceField
+   ::aSubClass[i]         := cSubClass
+   ::aRecCount[i]         := lRecCount
+   ::aColumnInfo[i]       := cColumnInfo
+   ::aDescend[i]          := lDescending
+   ::aForceRefresh[i]     := lForceRefresh
+   ::aSync[i]             := lSync
+   ::aUnSync[i]           := lUnSync
+   ::aUpdate[i]           := lUpdateAll
+   ::aFixBlocks[i]        := lFixedBlocks
+   ::aDynBlocks[i]        := lDynamicBlocks
+   ::aUpdateColors[i]     := lUpdateColors
+
+   // Create control
+   oCtrl     := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i, nWidth, nHeight, NIL )
+   oCtrl:Row := nRow
+   oCtrl:Col := nCol
 
    ::AddCtrlToTabPage( i, cName, nRow, nCol )
 RETURN NIL
@@ -5658,11 +6340,208 @@ LOCAL lDIBSection, cBuffer, cHBitmap, cImgMargin, cSubClass, oCtrl
    ::aSubClass[i]      := cSubClass
 
    // Create control
-   oCtrl        := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i )
-   oCtrl:Row    := nRow
-   oCtrl:Col    := nCol
-   oCtrl:Width  := nWidth
-   oCtrl:Height := nHeight
+   oCtrl     := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i, nWidth, nHeight, NIL )
+   oCtrl:Row := nRow
+   oCtrl:Col := nCol
+
+   ::AddCtrlToTabPage( i, cName, nRow, nCol )
+RETURN NIL
+
+//------------------------------------------------------------------------------
+METHOD pCheckBox( i ) CLASS TFormEditor
+//------------------------------------------------------------------------------
+LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, cToolTip
+LOCAL cCaption, cOnChange, cField, cOnGotFocus, cOnLostFocus, nHelpID, lTrans
+LOCAL lNoTabStop, cValue, lBold, lItalic, lUnderline, lStrikeout, aBackColor
+LOCAL aFontColor, lVisible, lEnabled, lRTL, lThemed, lAutoSize, lLeft, l3State
+LOCAL cSubClass, oCtrl
+
+   // Load properties
+   cName        := ::aControlW[i]
+   cObj         := ::ReadStringData( cName, 'OBJ', '' )
+   nRow         := Val( ::ReadCtrlRow( cName ) )
+   nCol         := Val( ::ReadCtrlCol( cName ) )
+   nWidth       := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( TCheckBox():nWidth ) ) ) )
+   nHeight      := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TCheckBox():nHeight ) ) ) )
+   cFontName    := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
+   nFontSize    := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
+   cToolTip     := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
+   cCaption     := ::Clean( ::ReadStringData( cName, 'CAPTION', '' ) )
+   cOnChange    := ::ReadStringData( cName, 'ON CHANGE', '' )
+   cField       := ::ReadStringData( cName, 'FIELD', '' )
+   cOnGotFocus  := ::ReadStringData( cName, 'ON GOTFOCUS', '' )
+   cOnLostFocus := ::ReadStringData( cName, 'ON LOSTFOCUS', '' )
+   nHelpID      := Val( ::ReadStringData( cName, 'HELPID', '0' ) )
+   lTrans       := ( ::ReadLogicalData( cName, "TRANSPARENT", "F" ) == "T" )
+   lNoTabStop   := ( ::ReadLogicalData( cName, 'NOTABSTOP', "F" ) == "T" )
+   lBold        := ( ::ReadLogicalData( cName, 'BOLD', "F" ) == "T" )
+   lBold        := ( Upper( ::ReadOopData( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) == '.T.' )
+   lItalic      := ( ::ReadLogicalData( cName, 'ITALIC', "F" ) == "T" )
+   lItalic      := ( Upper( ::ReadOopData( cName, 'FONTITALIC', IF( lItalic, '.T.', '.F.' ) ) ) == '.T.' )
+   lUnderline   := ( ::ReadLogicalData( cName, 'UNDERLINE', "F" ) == "T" )
+   lUnderline   := ( Upper( ::ReadOopData( cName, 'FONTUNDERLINE', IF( lUnderline, '.T.', '.F.' ) ) ) == '.T.' )
+   lStrikeout   := ( ::ReadLogicalData( cName, 'STRIKEOUT', "F" ) == "T" )
+   lStrikeout   := ( Upper( ::ReadOopData( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) == '.T.' )
+   aBackColor   := ::ReadStringData( cName, 'BACKCOLOR', 'NIL' )
+   aBackColor   := UpperNIL( ::ReadOopData( cName, 'BACKCOLOR', aBackColor ) )
+   aFontColor   := ::ReadStringData( cName, 'FONTCOLOR', 'NIL' )
+   aFontColor   := UpperNIL( ::ReadOopData( cName, 'FONTCOLOR', aFontColor ) )
+   lVisible     := ( ::ReadLogicalData( cName, 'INVISIBLE', "F" ) == "F" )
+   lVisible     := ( Upper( ::ReadOopData( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
+   lEnabled     := ( ::ReadLogicalData( cName, 'DISABLED', "F" ) == "F" )
+   lEnabled     := ( Upper( ::ReadOopData( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
+   lRTL         := ( ::ReadLogicalData( cName, 'RTL', "F" ) == "T" )
+   lThemed      := ( ::ReadLogicalData( cName, 'THEMED', "F" ) == "T" )
+   lAutoSize    := ( ::ReadLogicalData( cName, "AUTOSIZE", "F" ) == "T" )
+   lLeft        := ( ::ReadLogicalData( cName, 'LEFTALIGN', "F" ) == "T" )
+   l3State      := ( ::ReadLogicalData( cName, 'THREESTATE', "F" ) == "T" )
+   cValue       := ::ReadStringData( cName, 'VALUE', "" )
+   cSubClass    := ::ReadStringData( cName, 'SUBCLASS', '' )
+
+   // Save properties
+   ::aCtrlType[i]      := 'CHECKBOX'
+   ::aCObj[i]          := cObj
+   ::aFontName[i]      := cFontName
+   ::aFontSize[i]      := nFontSize
+   ::aToolTip[i]       := cToolTip
+   ::aCaption[i]       := cCaption
+   ::aOnChange[i]      := cOnChange
+   ::aField[i]         := cField
+   ::aOnGotFocus[i]    := cOnGotFocus
+   ::aOnLostFocus[i]   := cOnLostFocus
+   ::aHelpID[i]        := nHelpID
+   ::aTransparent[i]   := lTrans
+   ::aNoTabStop[i]     := lNoTabStop
+   ::aValue[i]         := cValue
+   ::aBold[i]          := lBold
+   ::aFontItalic[i]    := lItalic
+   ::aFontUnderline[i] := lUnderline
+   ::aFontStrikeout[i] := lStrikeout
+   ::aBackColor[i]     := aBackColor
+   ::aFontColor[i]     := aFontColor
+   ::aVisible[i]       := lVisible
+   ::aEnabled[i]       := lEnabled
+   ::aRTL[i]           := lRTL
+   ::aThemed[i]        := lThemed
+   ::aAutoPlay[i]      := lAutoSize
+   ::aLeft[i]          := lLeft
+   ::a3State[i]        := l3State
+   ::aSubClass[i]      := cSubClass
+
+   // Create control
+   oCtrl     := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i, nWidth, nHeight, NIL )
+   oCtrl:Row := nRow
+   oCtrl:Col := nCol
+
+   ::AddCtrlToTabPage( i, cName, nRow, nCol )
+RETURN NIL
+
+//------------------------------------------------------------------------------
+METHOD pCheckBtn( i ) CLASS TFormEditor
+//------------------------------------------------------------------------------
+LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cCaption, cFontName, nFontSize
+LOCAL lBold, lItalic, lUnderline, lStrikeout, aBackColor, lVisible, lEnabled
+LOCAL cToolTip, cOnGotFocus, cOnLostFocus, nHelpId, lRTL, cPicture, cBuffer
+LOCAL cHBitmap, lNoLoadTrans, lForceScale, cField, lNo3DColors, lFit, lMultiLine
+LOCAL lDIBSection, lNoTabStop, cOnChange, lValue, oCtrl, cSubClass, lThemed
+LOCAL cImgMargin, cOnMouseMove, lTop, lBottom, lLeft, lRight, lCenter, lFlat
+
+   // Load properties
+   cName        := ::aControlW[i]
+   cObj         := ::ReadStringData( cName, 'OBJ', '' )
+   nRow         := Val( ::ReadCtrlRow( cName ) )
+   nCol         := Val( ::ReadCtrlCol( cName ) )
+   nWidth       := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( TButtonCheck():nWidth ) ) ) )
+   nHeight      := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TButtonCheck():nHeight ) ) ) )
+   cCaption     := ::Clean( ::ReadStringData( cName, 'CAPTION', cName ) )
+   cFontName    := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
+   nFontSize    := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
+   lBold        := ( ::ReadLogicalData( cName, 'BOLD', "F" ) == "T" )
+   lBold        := ( Upper( ::ReadOopData( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) == '.T.' )
+   lItalic      := ( ::ReadLogicalData( cName, 'ITALIC', "F" ) == "T" )
+   lItalic      := ( Upper( ::ReadOopData( cName, 'FONTITALIC', IF( lItalic, '.T.', '.F.' ) ) ) == '.T.' )
+   lUnderline   := ( ::ReadLogicalData( cName, 'UNDERLINE', "F" ) == "T" )
+   lUnderline   := ( Upper( ::ReadOopData( cName, 'FONTUNDERLINE', IF( lUnderline, '.T.', '.F.' ) ) ) == '.T.' )
+   lStrikeout   := ( ::ReadLogicalData( cName, 'STRIKEOUT', "F" ) == "T" )
+   lStrikeout   := ( Upper( ::ReadOopData( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) == '.T.' )
+   aBackColor   := ::ReadStringData( cName, 'BACKCOLOR', 'NIL' )
+   aBackColor   := UpperNIL( ::ReadOopData( cName, 'BACKCOLOR', aBackColor ) )
+   lVisible     := ( ::ReadLogicalData( cName, 'INVISIBLE', "F" ) == "F" )
+   lVisible     := ( Upper( ::ReadOopData( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
+   lEnabled     := ( ::ReadLogicalData( cName, 'DISABLED', "F" ) == "F" )
+   lEnabled     := ( Upper( ::ReadOopData( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
+   cToolTip     := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
+   cOnGotFocus  := ::ReadStringData( cName, 'ON GOTFOCUS', '' )
+   cOnLostFocus := ::ReadStringData( cName, 'ON LOSTFOCUS', '' )
+   nHelpId      := Val( ::ReadStringData( cName, 'HELPID', '0' ) )
+   lRTL         := ( ::ReadLogicalData( cName, 'RTL', "F" ) == "T" )
+   cPicture     := ::Clean( ::ReadStringData( cName, 'PICTURE', '' ) )
+   cBuffer      := ::ReadStringData( cName, 'BUFFER', "" )
+   cHBitmap     := ::ReadStringData( cName, 'HBITMAP', "" )
+   lNoLoadTrans := ( ::ReadLogicalData( cName, 'NOLOADTRANSPARENT', "F" ) == "T" )
+   lForceScale  := ( ::ReadLogicalData( cName, 'FORCESCALE', "F" ) == "T" )
+   cField       := ::ReadStringData( cName, 'FIELD', '' )
+   lNo3DColors  := ( ::ReadLogicalData( cName, 'NO3DCOLORS', "F" ) == "T" )
+   lFit         := ::ReadLogicalData( cName, 'AUTOFIT', "F" )
+   lFit         := ( ::ReadLogicalData( cName, 'ADJUST', lFit ) == "T" )
+   lDIBSection  := ( ::ReadLogicalData( cName, 'DIBSECTION', "F" ) == "T" )
+   lNoTabStop   := ( ::ReadLogicalData( cName, 'NOTABSTOP', "F" ) == "T" )
+   cOnChange    := ::ReadStringData( cName, 'ON CHANGE', '' )
+   lValue       := ( ::ReadStringData( cName, 'VALUE', ".F." ) == ".T." )
+   cSubClass    := ::ReadStringData( cName, 'SUBCLASS', '' )
+   lThemed      := ( ::ReadLogicalData( cName, 'THEMED', "F" ) == "T" )
+   cImgMargin   := ::ReadStringData( cName, 'IMAGEMARGIN', "" )
+   cOnMouseMove := ::ReadStringData( cName, 'ON MOUSEMOVE', '' )
+   lTop         := ( ::ReadLogicalData( cName, 'TOP', "F" ) == "T" )
+   lBottom      := ( ::ReadLogicalData( cName, 'BOTTOM', "F" ) == "T" )
+   lLeft        := ( ::ReadLogicalData( cName, 'LEFT', "F" ) == "T" )
+   lRight       := ( ::ReadLogicalData( cName, 'RIGHT', "F" ) == "T" )
+   lCenter      := ( ::ReadLogicalData( cName, 'CENTER', "F" ) == "T" )
+   lMultiLine   := ( ::ReadLogicalData( cName, 'MULTILINE', "F" ) == "T" )
+   lFlat        := ( ::ReadLogicalData( cName, 'FLAT', "F" ) == "T" )
+
+   // Save properties
+   ::aCtrlType[i]      := 'CHECKBTN'
+   ::aCObj[i]          := cObj
+   ::aCaption[i]       := cCaption
+   ::aFontName[i]      := cFontName
+   ::aFontSize[i]      := nFontSize
+   ::aBold[i]          := lBold
+   ::aFontItalic[i]    := lItalic
+   ::aFontUnderline[i] := lUnderline
+   ::aFontStrikeout[i] := lStrikeout
+   ::aBackColor[i]     := aBackColor
+   ::aVisible[i]       := lVisible
+   ::aEnabled[i]       := lEnabled
+   ::aToolTip[i]       := cToolTip
+   ::aOnGotFocus[i]    := cOnGotFocus
+   ::aOnLostFocus[i]   := cOnLostFocus
+   ::aHelpID[i]        := nHelpId
+   ::aRTL[i]           := lRTL
+   ::aPicture[i]       := cPicture
+   ::aBuffer[i]        := cBuffer
+   ::aHBitmap[i]       := cHBitmap
+   ::aNoLoadTrans[i]   := lNoLoadTrans
+   ::aForceScale[i]    := lForceScale
+   ::aField[i]         := cField
+   ::aNo3DColors[i]    := lNo3DColors
+   ::aFit[i]           := lFit
+   ::aDIBSection[i]    := lDIBSection
+   ::aNoTabStop[i]     := lNoTabStop
+   ::aOnChange[i]      := cOnChange
+   ::aValueL[i]        := lValue
+   ::aSubClass[i]      := cSubClass
+   ::aThemed[i]        := lThemed
+   ::aImageMargin[i]   := cImgMargin
+   ::aOnMouseMove[i]   := cOnMouseMove
+   ::aJustify[i]       := IIF( lTop, "TOP", IIF( lBottom, "BOTTOM", IIF( lLeft, "LEFT", IIF( lRight, "RIGHT", IIF( lCenter, "CENTER", "" ) ) ) ) )
+   ::aMultiLine[i]     := lMultiLine
+   ::aFlat[i]          := lFlat
+
+   // Create control
+   oCtrl     := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i, nWidth, nHeight, NIL )
+   oCtrl:Row := nRow
+   oCtrl:Col := nCol
 
    ::AddCtrlToTabPage( i, cName, nRow, nCol )
 RETURN NIL
@@ -5757,11 +6636,139 @@ LOCAL lNoTabStop, lSort, lDescending, lDoubleBuffer, lSingleBuffer, oCtrl
    ::aSingleBuffer[i]  := lSingleBuffer
 
    // Create control
-   oCtrl        := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i )
-   oCtrl:Row    := nRow
-   oCtrl:Col    := nCol
-   oCtrl:Width  := nWidth
-   oCtrl:Height := nHeight
+   oCtrl     := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i, nWidth, nHeight, NIL )
+   oCtrl:Row := nRow
+   oCtrl:Col := nCol
+
+   ::AddCtrlToTabPage( i, cName, nRow, nCol )
+RETURN NIL
+
+//------------------------------------------------------------------------------
+METHOD pComboBox( i ) CLASS TFormEditor
+//------------------------------------------------------------------------------
+LOCAL cName, cObj, nRow, nCol, nWidth, cFontName, nFontSize, aFontColor, lBold
+LOCAL lItalic, lUnderline, lStrikeout, aBackColor, lVisible, lEnabled, cToolTip
+LOCAL cOnChange, cOnGotFocus, cOnLostFocus, cOnEnter, cOnDisplayChange, cItems
+LOCAL cItemSource, nValue, cValueSource, nHelpId, lNoTabStop, lSort, lBreak
+LOCAL lDisplayEdit, lRTL, cImage, lFit, nTextHeight, cItemImageNumber, nHeight
+LOCAL cImageSource, lFirstItem, nListWidth, cOnListDisplay, cOnListClose
+LOCAL lDelayedLoad, lIncremental, lIntegralHeight, lRefresh, lNoRefresh
+LOCAL cSourceOrder, cOnRefresh, nSearchLapse, cGripperText, cSubClass, oCtrl
+
+   // Load properties
+   cName            := ::aControlW[i]
+   cObj             := ::ReadStringData( cName, 'OBJ', '' )
+   nRow             := Val( ::ReadCtrlRow( cName ) )
+   nCol             := Val( ::ReadCtrlCol( cName ) )
+   nWidth           := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( TCombo():nWidth ) ) ) )
+   nHeight          := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TCombo():nHeight ) ) ) )
+   cFontName        := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
+   nFontSize        := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
+   aFontColor       := ::ReadStringData( cName, 'FONTCOLOR', 'NIL' )
+   aFontColor       := UpperNIL( ::ReadOopData( cName, 'FONTCOLOR', aFontColor ) )
+   lBold            := ( ::ReadLogicalData( cName, 'BOLD', "F" ) == "T" )
+   lBold            := ( Upper( ::ReadOopData( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) == '.T.' )
+   lItalic          := ( ::ReadLogicalData( cName, 'ITALIC', "F" ) == "T" )
+   lItalic          := ( Upper( ::ReadOopData( cName, 'FONTITALIC', IF( lItalic, '.T.', '.F.' ) ) ) == '.T.' )
+   lUnderline       := ( ::ReadLogicalData( cName, 'UNDERLINE', "F" ) == "T" )
+   lUnderline       := ( Upper( ::ReadOopData( cName, 'FONTUNDERLINE', IF( lUnderline, '.T.', '.F.' ) ) ) == '.T.' )
+   lStrikeout       := ( ::ReadLogicalData( cName, 'STRIKEOUT', "F" ) == "T" )
+   lStrikeout       := ( Upper( ::ReadOopData( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) == '.T.' )
+   aBackColor       := ::ReadStringData( cName, 'BACKCOLOR', 'NIL' )
+   aBackColor       := UpperNIL( ::ReadOopData( cName, 'BACKCOLOR', aBackColor ) )
+   lVisible         := ( ::ReadLogicalData( cName, 'INVISIBLE', "F" ) == "F" )
+   lVisible         := ( Upper( ::ReadOopData( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
+   lEnabled         := ( ::ReadLogicalData( cName, 'DISABLED', "F" ) == "F" )
+   lEnabled         := ( Upper( ::ReadOopData( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
+   cToolTip         := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
+   cOnChange        := ::ReadStringData( cName, 'ON CHANGE', '' )
+   cOnGotFocus      := ::ReadStringData( cName, 'ON GOTFOCUS', '' )
+   cOnLostFocus     := ::ReadStringData( cName, 'ON LOSTFOCUS', '' )
+   cOnEnter         := ::ReadStringData( cName, 'ON ENTER', '' )
+   cOnDisplayChange := ::ReadStringData( cName, 'ON DISPLAYCHANGE', '' )
+   cItems           := ::ReadStringData( cName, 'ITEMS', '' )
+   cItemSource      := ::ReadStringData( cName, 'ITEMSOURCE', '' )
+   nValue           := Val( ::ReadStringData( cName, 'VALUE', '0' ) )
+   cValueSource     := ::ReadStringData( cName, 'VALUESOURCE', '' )
+   nHelpId          := Val( ::ReadStringData( cName, 'HELPID', '0' ) )
+   lNoTabStop       := ( ::ReadLogicalData( cName, 'NOTABSTOP', "F" ) == "T" )
+   lSort            := ( ::ReadLogicalData( cName, 'SORT', "F" ) == "T" )
+   lBreak           := ( ::ReadLogicalData( cName, 'BREAK', "F" ) == "T" )
+   lDisplayEdit     := ( ::ReadLogicalData( cName, 'DISPLAYEDIT', "F" ) == "T" )
+   lRTL             := ( ::ReadLogicalData( cName, 'RTL', "F" ) == "T" )
+   cImage           := ::Clean( ::ReadStringData( cName, 'IMAGE', '' ) )
+   lFit             := ( ::ReadLogicalData( cName, 'FIT', "F" ) == "T" )
+   nTextHeight      := Val( ::ReadStringData( cName, 'TEXTHEIGHT', '0' ) )
+   cItemImageNumber := ::ReadStringData( cName, 'ITEMIMAGENUMBER', '' )
+   cImageSource     := ::ReadStringData( cName, 'IMAGESOURCE', '' )
+   lFirstItem       := ( ::ReadLogicalData( cName, 'FIRSTITEM', "F" ) == "T" )
+   nListWidth       := Val( ::ReadStringData( cName, 'LISTWIDTH', '0' ) )
+   cOnListDisplay   := ::ReadStringData( cName, 'ON LISTDISPLAY', '' )
+   cOnListClose     := ::ReadStringData( cName, 'ON LISTCLOSE', '' )
+   lDelayedLoad     := ( ::ReadLogicalData( cName, 'DELAYEDLOAD', "F" ) == "T" )
+   lIncremental     := ( ::ReadLogicalData( cName, 'INCREMENTAL', "F" ) == "T" )
+   lIntegralHeight  := ( ::ReadLogicalData( cName, 'INTEGRALHEIGHT', "F" ) == "T" )
+   lRefresh         := ( ::ReadLogicalData( cName, 'REFRESH', "F" ) == "T" )
+   lNoRefresh       := ( ::ReadLogicalData( cName, 'NOREFRESH', "F" ) == "T" )
+   cSourceOrder     := ::ReadStringData( cName, 'SOURCEORDER', '' )
+   cOnRefresh       := ::ReadStringData( cName, 'ON REFRESH', '' )
+   nSearchLapse     := Val( ::ReadStringData( cName, 'SEARCHLAPSE', '0' ) )
+   cGripperText     := ::ReadStringData( cName, 'GRIPPERTEXT', '' )
+   cSubClass        := ::ReadStringData( cName, 'SUBCLASS', '' )
+
+   // Save properties
+   ::aCtrlType[i]        := 'COMBO'
+   ::aCObj[i]            := cObj
+   ::aFontName[i]        := cFontName
+   ::aFontSize[i]        := nFontSize
+   ::aFontColor[i]       := aFontColor
+   ::aBold[i]            := lBold
+   ::aFontItalic[i]      := lItalic
+   ::aFontUnderline[i]   := lUnderline
+   ::aFontStrikeout[i]   := lStrikeout
+   ::aBackColor[i]       := aBackColor
+   ::aVisible[i]         := lVisible
+   ::aEnabled[i]         := lEnabled
+   ::aToolTip[i]         := cToolTip
+   ::aOnChange[i]        := cOnChange
+   ::aOnGotFocus[i]      := cOnGotFocus
+   ::aOnLostFocus[i]     := cOnLostFocus
+   ::aOnEnter[i]         := cOnEnter
+   ::aOnDisplayChange[i] := cOnDisplayChange
+   ::aItems[i]           := cItems
+   ::aItemSource[i]      := cItemSource
+   ::aValueN[i]          := nValue
+   ::aValueSource[i]     := cValueSource
+   ::aHelpID[i]          := nHelpId
+   ::aNoTabStop[i]       := lNoTabStop
+   ::aSort[i]            := lSort
+   ::aBreak[i]           := lBreak
+   ::aDisplayEdit[i]     := lDisplayEdit
+   ::aRTL[i]             := lRTL
+   ::aImage[i]           := cImage
+   ::aFit[i]             := lFit
+   ::aTextHeight[i]      := nTextHeight
+   ::aItemImageNumber[i] := cItemImageNumber
+   ::aImageSource[i]     := cImageSource
+   ::aFirstItem[i]       := lFirstItem
+   ::aListWidth[i]       := nListWidth
+   ::aOnListDisplay[i]   := cOnListDisplay
+   ::aOnListClose[i]     := cOnListClose
+   ::aDelayedLoad[i]     := lDelayedLoad
+   ::aIncremental[i]     := lIncremental
+   ::aIntegralHeight[i]  := lIntegralHeight
+   ::aRefresh[i]         := lRefresh
+   ::aNoRefresh[i]       := lNoRefresh
+   ::aSourceOrder[i]     := cSourceOrder
+   ::aOnRefresh[i]       := cOnRefresh
+   ::aSearchLapse[i]     := nSearchLapse
+   ::aGripperText[i]     := cGripperText
+   ::aSubClass[i]        := cSubClass
+
+   // Create control
+   oCtrl     := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i, nWidth, nHeight, NIL )
+   oCtrl:Row := nRow
+   oCtrl:Col := nCol
 
    ::AddCtrlToTabPage( i, cName, nRow, nCol )
 RETURN NIL
@@ -5780,7 +6787,7 @@ LOCAL lVisible, lEnabled, lRTL, lNoTabStop, lNoBorder, cSubClass, nHeight, oCtrl
    nCol         := Val( ::ReadCtrlCol( cName ) )
    nWidth       := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( TDatePick():nWidth ) ) ) )
    nHeight      := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TDatePick():nHeight ) ) ) )
-   cFontName    := ::Clean( ::ReadStringData(cName,'FONT',''))
+   cFontName    := ::Clean( ::ReadStringData(cName, 'FONT', '' ) )
    nFontSize    := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
    cToolTip     := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
    cOnGotFocus  := ::ReadStringData( cName, 'ON GOTFOCUS', '')
@@ -5841,11 +6848,102 @@ LOCAL lVisible, lEnabled, lRTL, lNoTabStop, lNoBorder, cSubClass, nHeight, oCtrl
    ::aSubClass[i]      := cSubClass
 
    // Create control
-   oCtrl        := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i )
-   oCtrl:Row    := nRow
-   oCtrl:Col    := nCol
-   oCtrl:Width  := nWidth
-   oCtrl:Height := nHeight
+   oCtrl     := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i, nWidth, nHeight, NIL )
+   oCtrl:Row := nRow
+   oCtrl:Col := nCol
+
+   ::AddCtrlToTabPage( i, cName, nRow, nCol )
+RETURN NIL
+
+//------------------------------------------------------------------------------
+METHOD pEditbox( i ) CLASS TFormEditor
+//------------------------------------------------------------------------------
+LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aFontColor
+LOCAL lBold, lItalic, lUnderline, lStrikeout, aBackColor, lVisible, lEnabled
+LOCAL cToolTip, cOnChange, cOnGotFocus, cOnLostFocus, cOnVScroll, cOnHScroll
+LOCAL nFocusedPos, lNoBorder, lRTL, cValue, cField, nMaxLength, lReadonly
+LOCAL lBreak, nHelpID, lNoTabStop, lNoVScroll, lNoHScroll, oCtrl
+
+   // Load properties
+   cName        := ::aControlW[i]
+   cObj         := ::ReadStringData( cName, 'OBJ', '' )
+   nRow         := Val( ::ReadCtrlRow( cName ) )
+   nCol         := Val( ::ReadCtrlCol( cName ) )
+   nWidth       := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( TEdit():nWidth ) ) ) )
+   nHeight      := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TEdit():nHeight ) ) ) )
+   cFontName    := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
+   nFontSize    := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
+   aFontColor   := ::ReadStringData( cName, 'FONTCOLOR', 'NIL' )
+   aFontColor   := UpperNIL( ::ReadOopData( cName, 'FONTCOLOR', aFontColor ) )
+   lBold        := ( ::ReadLogicalData( cName, 'BOLD', "F" ) == "T" )
+   lBold        := ( Upper( ::ReadOopData( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) == '.T.' )
+   lItalic      := ( ::ReadLogicalData( cName, 'ITALIC', "F" ) == "T" )
+   lItalic      := ( Upper( ::ReadOopData( cName, 'FONTITALIC', IF( lItalic, '.T.', '.F.' ) ) ) == '.T.' )
+   lUnderline   := ( ::ReadLogicalData( cName, 'UNDERLINE', "F" ) == "T" )
+   lUnderline   := ( Upper( ::ReadOopData( cName, 'FONTUNDERLINE', IF( lUnderline, '.T.', '.F.' ) ) ) == '.T.' )
+   lStrikeout   := ( ::ReadLogicalData( cName, 'STRIKEOUT', "F" ) == "T" )
+   lStrikeout   := ( Upper( ::ReadOopData( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) == '.T.' )
+   aBackColor   := ::ReadStringData( cName, 'BACKCOLOR', 'NIL' )
+   aBackColor   := UpperNIL( ::ReadOopData( cName, 'BACKCOLOR', aBackColor ) )
+   lVisible     := ( ::ReadLogicalData( cName, 'INVISIBLE', "F" ) == "F" )
+   lVisible     := ( Upper( ::ReadOopData( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
+   lEnabled     := ( ::ReadLogicalData( cName, 'DISABLED', "F" ) == "F" )
+   lEnabled     := ( Upper( ::ReadOopData( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
+   cToolTip     := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
+   cOnChange    := ::ReadStringData( cName, 'ON CHANGE', '' )
+   cOnGotFocus  := ::ReadStringData( cName, 'ON GOTFOCUS', '' )
+   cOnLostFocus := ::ReadStringData( cName, 'ON LOSTFOCUS', '' )
+   cOnVScroll   := ::ReadStringData( cName, 'ON VSCROLL', '' )
+   cOnHScroll   := ::ReadStringData( cName, 'ON HSCROLL', '' )
+   nFocusedPos  := Val( ::ReadStringData( cName, 'FOCUSEDPOS', '-4' ) )
+   lNoBorder    := ( ::ReadLogicalData( cName, "NOBORDER", "F" ) == "T" )
+   lRTL         := ( ::ReadLogicalData( cName, 'RTL', "F" ) == "T" )
+   cValue       := ::Clean( ::ReadStringData( cName, 'VALUE', '' ) )
+   cField       := ::ReadStringData( cName, 'FIELD', '' )
+   nMaxLength   := Val( ::ReadStringData( cName, 'MAXLENGTH', '0' ) )
+   lReadonly    := ( ::ReadLogicalData( cName, "READONLY", "F" ) == "T" )
+   lBreak       := ( ::ReadLogicalData( cName, "BREAK", "F" ) == "T" )
+   nHelpID      := Val( ::ReadStringData( cName, 'HELPID', '0' ) )
+   lNoTabStop   := ( ::ReadLogicalData( cName, "NOTABSTOP", "F" ) == "T" )
+   lNoVScroll   := ( ::ReadLogicalData( cName, "NOVSCROLL", "F" ) == "T" )
+   lNoHScroll   := ( ::ReadLogicalData( cName, "NOHSCROLL", "F" ) == "T" )
+
+   // Save properties
+   ::aCtrlType[i]      := 'EDIT'
+   ::aCObj[i]          := cObj
+   ::aFontName[i]      := cFontName
+   ::aFontSize[i]      := nFontSize
+   ::aFontColor[i]     := aFontColor
+   ::aBold[i]          := lBold
+   ::aFontItalic[i]    := lItalic
+   ::aFontUnderline[i] := lUnderline
+   ::aFontStrikeout[i] := lStrikeout
+   ::aBackColor[i]     := aBackColor
+   ::aVisible[i]       := lVisible
+   ::aEnabled[i]       := lEnabled
+   ::aToolTip[i]       := cTooltip
+   ::aOnChange[i]      := cOnChange
+   ::aOnGotFocus[i]    := cOnGotFocus
+   ::aOnLostFocus[i]   := cOnLostFocus
+   ::aOnVScroll[i]     := cOnVScroll
+   ::aOnHScroll[i]     := cOnHScroll
+   ::aFocusedPos[i]    := nFocusedPos
+   ::aBorder[i]        := lNoBorder
+   ::aRTL[i]           := lRTL
+   ::aValue[i]         := cValue
+   ::aField[i]         := cField
+   ::aMaxLength[i]     := nMaxLength
+   ::aReadOnly[i]      := lReadonly
+   ::aBreak[i]         := lBreak
+   ::aHelpID[i]        := nHelpID
+   ::aNoTabStop[i]     := lNoTabStop
+   ::aNoVScroll[i]     := lNoVScroll
+   ::aNoHScroll[i]     := lNoHScroll
+
+   // Create control
+   oCtrl     := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i, nWidth, nHeight, NIL )
+   oCtrl:Row := nRow
+   oCtrl:Col := nCol
 
    ::AddCtrlToTabPage( i, cName, nRow, nCol )
 RETURN NIL
@@ -5908,11 +7006,223 @@ LOCAL aBackColor, lVisible, lEnabled, lRTL, cSubClass, oCtrl
    ::aSubClass[i]      := cSubClass
 
    // Create control
-   oCtrl        := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i )
-   oCtrl:Row    := nRow
-   oCtrl:Col    := nCol
-   oCtrl:Width  := nWidth
-   oCtrl:Height := nHeight
+   oCtrl     := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i, nWidth, nHeight, NIL )
+   oCtrl:Row := nRow
+   oCtrl:Col := nCol
+
+   ::AddCtrlToTabPage( i, cName, nRow, nCol )
+RETURN NIL
+
+//------------------------------------------------------------------------------
+METHOD pGrid( i ) CLASS TFormEditor
+//------------------------------------------------------------------------------
+LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aFontColor
+LOCAL lBold, lItalic, lUnderline, lStrikeout, aBackColor, lVisible, lEnabled
+LOCAL cToolTip, cOnChange, cOnGotFocus, cOnLostFocus, cOnDblClick, cOnEnter
+LOCAL cOnHeadClick, cOnEditCell, cOnCheckChg, nHelpId, cHeaders, cWidths, cItems
+LOCAL nValue, cDynBackColor, cDynForecolor, cColControls, cReadOnly, cInputMask
+LOCAL lMultiSelect, lNoLines, lInPlace, cImage, cJustify, lBreak, lEdit, cValid
+LOCAL cWhen, cValidMess, lRTL, lNoTabStop, lFull, lCheckBoxes, aSelColor
+LOCAL cAction, lButtons, lDelete, lAppend, cOnAppend, lVirtual, nItemCount
+LOCAL cOnQueryData, lNoHeaders, cHeaderImages, cImagesAlign, lByCell, cEditKeys
+LOCAL lDoubleBuffer, lSingleBuffer, lFocusRect, lNoFocusRect, lPLM, lFixedCols
+LOCAL cOnAbortEdit, lFixedWidths, cBeforeColMove, cAfterColMove, cBeforeColSize
+LOCAL cAfterColSize, cBeforeAutoFit, lLikeExcel, cDeleteWhen, cDeleteMsg
+LOCAL cOnDelete, lNoDeleteMsg, lNoModalEdit, lFixedCtrls, lDynamicCtrls, oCtrl
+LOCAL cOnHeadRClick, lNoClickOnChk, lNoRClickOnChk, lExtDblClick, cSubClass
+
+   // Load properties
+   cName          := ::aControlW[i]
+   cObj           := ::ReadStringData( cName, 'OBJ', '' )
+   nRow           := Val( ::ReadCtrlRow( cName ) )
+   nCol           := Val( ::ReadCtrlCol( cName ) )
+   nWidth         := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( TGrid():nWidth ) ) ) )
+   nHeight        := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TGrid():nHeight ) ) ) )
+   cFontName      := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
+   nFontSize      := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
+   aFontColor     := ::ReadStringData( cName, 'FONTCOLOR', 'NIL' )
+   aFontColor     := UpperNIL( ::ReadOopData( cName, 'FONTCOLOR', aFontColor ) )
+   lBold          := ( ::ReadLogicalData( cName, 'BOLD', "F" ) == "T" )
+   lBold          := ( Upper( ::ReadOopData( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) == '.T.' )
+   lItalic        := ( ::ReadLogicalData( cName, 'ITALIC', "F" ) == "T" )
+   lItalic        := ( Upper( ::ReadOopData( cName, 'FONTITALIC', IF( lItalic, '.T.', '.F.' ) ) ) == '.T.' )
+   lUnderline     := ( ::ReadLogicalData( cName, 'UNDERLINE', "F" ) == "T" )
+   lUnderline     := ( Upper( ::ReadOopData( cName, 'FONTUNDERLINE', IF( lUnderline, '.T.', '.F.' ) ) ) == '.T.' )
+   lStrikeout     := ( ::ReadLogicalData( cName, 'STRIKEOUT', "F" ) == "T" )
+   lStrikeout     := ( Upper( ::ReadOopData( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) == '.T.' )
+   aBackColor     := ::ReadStringData( cName, 'BACKCOLOR', 'NIL' )
+   aBackColor     := UpperNIL( ::ReadOopData( cName, 'BACKCOLOR', aBackColor ) )
+   lVisible       := ( ::ReadLogicalData( cName, 'INVISIBLE', "F" ) == "F" )
+   lVisible       := ( Upper( ::ReadOopData( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
+   lEnabled       := ( ::ReadLogicalData( cName, 'DISABLED', "F" ) == "F" )
+   lEnabled       := ( Upper( ::ReadOopData( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
+   cToolTip       := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
+   cOnChange      := ::ReadStringData( cName, 'ON CHANGE', '' )
+   cOnGotFocus    := ::ReadStringData( cName, 'ON GOTFOCUS', '' )
+   cOnLostFocus   := ::ReadStringData( cName, 'ON LOSTFOCUS', '' )
+   cOnDblClick    := ::ReadStringData( cName, 'ON DBLCLICK', '' )
+   cOnEnter       := ::ReadStringData( cName, 'ON ENTER', '' )
+   cOnHeadClick   := ::ReadStringData( cName, 'ON HEADCLICK', '' )
+   cOnEditCell    := ::ReadStringData( cName, 'ON EDITCELL', '' )
+   cOnCheckChg    := ::ReadStringData( cName, 'ON CHECKCHANGE', '' )
+   nHelpId        := Val( ::ReadStringData( cName, 'HELPID', '0' ) )
+   cHeaders       := ::ReadStringData( cName, 'HEADERS', "{ 'one', 'two' }")
+   cWidths        := ::ReadStringData( cName, 'WIDTHS', "{ 80, 60 }")
+   cItems         := ::ReadStringData( cName, 'ITEMS', "")
+   nValue         := Val( ::ReadStringData( cName, 'VALUE', '') )
+   cDynBackColor  := ::ReadStringData( cName, "DYNAMICBACKCOLOR", '' )
+   cDynForecolor  := ::ReadStringData( cName, "DYNAMICFORECOLOR", '' )
+   cColControls   := ::ReadStringData( cName, "COLUMNCONTROLS", "" )
+   cReadOnly      := ::ReadStringData( cName, 'READONLY', "")
+   cInputMask     := ::ReadStringData( cName, 'INPUTMASK', "")
+   lMultiSelect   := ( ::ReadLogicalData( cName, 'MULTISELECT', "F" ) == "T" )
+   lNoLines       := ( ::ReadLogicalData( cName, 'NOLINES', "F" ) == "T" )
+   lInPlace       := ( ::ReadLogicalData( cName, 'INPLACE', "F" ) == "T" )
+   cImage         := ::ReadStringData( cName, 'IMAGE', "" )
+   cJustify       := ::ReadStringData( cName, 'JUSTIFY', "" )
+   lBreak         := ( ::ReadLogicalData( cName, "BREAK", "F" ) == "T" )
+   lEdit          := ( ::ReadLogicalData( cName, 'EDIT', "F" ) == "T" )
+   cValid         := ::ReadStringData( cName, 'VALID', "" )
+   cWhen          := ::ReadStringData( cName, 'WHEN', "" )
+   cValidMess     := ::ReadStringData( cName, 'VALIDMESSAGES', "" )
+   lRTL           := ( ::ReadLogicalData( cName, 'RTL', "F" ) == "T" )
+   lNoTabStop     := ( ::ReadLogicalData( cName, 'NOTABSTOP', 'F' ) == "T" )
+   lFull          := ( ::ReadLogicalData( cName, 'FULLMOVE', "F" ) == "T" )
+   lCheckBoxes    := ( ::ReadLogicalData( cName, 'CHECKBOXES', "F" ) == "T" )
+   aSelColor      := UpperNIL( ::ReadStringData( cName, 'SELECTEDCOLORS', '' ) )
+   cAction        := ::ReadStringData( cName, 'ACTION', "" )
+   cAction        := ::ReadStringData( cName, 'ON CLICK',cAction )
+   cAction        := ::ReadStringData( cName, 'ONCLICK', cAction )
+   lButtons       := ( ::ReadLogicalData( cName, 'USEBUTTONS', "F" ) == "T" )
+   lDelete        := ( ::ReadLogicalData( cName, 'DELETE', "F" ) == "T" )
+   lAppend        := ( ::ReadLogicalData( cName, 'APPEND', "F" ) == "T" )
+   cOnAppend      := ::ReadStringData( cName, 'ON APPEND', '' )
+   lVirtual       := ( ::ReadLogicalData( cName, 'VIRTUAL', "F" ) == "T" )
+   nItemCount     := Val( ::ReadStringData( cName, 'ITEMCOUNT', '0' ) )
+   cOnQueryData   := ::ReadStringData( cName, 'ON QUERYDATA', '' )
+   lNoHeaders     := ( ::ReadLogicalData( cName, 'NOHEADERS', "F" ) == "T" )
+   cHeaderImages  := ::ReadStringData( cName, 'HEADERIMAGES', '' )
+   cImagesAlign   := ::ReadStringData( cName, 'IMAGESALIGN', '' )
+   lByCell        := ( ::ReadLogicalData( cName, 'NAVIGATEBYCELL', "F" ) == "T" )
+   cEditKeys      := ::ReadStringData( cName, 'EDITKEYS', '' )
+   lDoubleBuffer  := ( ::ReadLogicalData( cName, 'DOUBLEBUFFER', "F" ) == "T" )
+   lSingleBuffer  := ( ::ReadLogicalData( cName, 'SINGLEBUFFER', "F" ) == "T" )
+   lFocusRect     := ( ::ReadLogicalData( cName, 'FOCUSRECT', "F" ) == "T" )
+   lNoFocusRect   := ( ::ReadLogicalData( cName, 'NOFOCUSRECT', "F" ) == "T" )
+   lPLM           := ( ::ReadLogicalData( cName, 'PAINTLEFTMARGIN', "F" ) == "T" )
+   lFixedCols     := ( ::ReadLogicalData( cName, 'FIXEDCOLS', "F" ) == "T" )
+   cOnAbortEdit   := ::ReadStringData( cName, 'ON ABORTEDIT', '' )
+   lFixedWidths   := ( ::ReadLogicalData( cName, 'FIXEDWIDTHS', "F" ) == "T" )
+   cBeforeColMove := ::ReadStringData( cName, 'BEFORECOLMOVE', '' )
+   cAfterColMove  := ::ReadStringData( cName, 'AFTERCOLMOVE', '' )
+   cBeforeColSize := ::ReadStringData( cName, 'BEFORECOLSIZE', '' )
+   cAfterColSize  := ::ReadStringData( cName, 'AFTERCOLSIZE', '' )
+   cBeforeAutoFit := ::ReadStringData( cName, 'BEFOREAUTOFIT', '' )
+   lLikeExcel     := ( ::ReadLogicalData( cName, 'EDITLIKEEXCEL', "F" ) == "T" )
+   cDeleteWhen    := ::ReadStringData( cName, 'DELETEWHEN', '' )
+   cDeleteMsg     := ::ReadStringData( cName, 'DELETEMSG', '' )
+   cOnDelete      := ::ReadStringData( cName, 'ON DELETE', '' )
+   lNoDeleteMsg   := ( ::ReadLogicalData( cName, 'NODELETEMSG', "F" ) == "T" )
+   lNoModalEdit   := ( ::ReadLogicalData( cName, 'NOMODALEDIT', "F" ) == "T" )
+   lFixedCtrls    := ( ::ReadLogicalData( cName, 'FIXEDCONTROLS', "F" ) == "T" )
+   lDynamicCtrls  := ( ::ReadLogicalData( cName, 'DYNAMICCONTROLS', "F" ) == "T" )
+   cOnHeadRClick  := ::ReadStringData( cName, 'ON HEADRCLICK', '' )
+   lNoClickOnChk  := ( ::ReadLogicalData( cName, 'NOCLICKONCHECKBOX', "F" ) == "T" )
+   lNoRClickOnChk := ( ::ReadLogicalData( cName, 'NORCLICKONCHECKBOX', "F" ) == "T" )
+   lExtDblClick   := ( ::ReadLogicalData( cName, 'EXTDBLCLICK', "F" ) == "T" )
+   cSubClass      := ::ReadStringData( cName, 'SUBCLASS', '' )
+
+   // Save properties
+   ::aCtrlType[i]         := 'GRID'
+   ::aCObj[i]             := cObj
+   ::aFontName[i]         := cFontName
+   ::aFontSize[i]         := nFontSize
+   ::aFontColor[i]        := aFontColor
+   ::aBold[i]             := lBold
+   ::aFontItalic[i]       := lItalic
+   ::aFontUnderline[i]    := lUnderline
+   ::aFontStrikeout[i]    := lStrikeout
+   ::aBackColor[i]        := aBackColor
+   ::aVisible[i]          := lVisible
+   ::aEnabled[i]          := lEnabled
+   ::aToolTip[i]          := cToolTip
+   ::aOnChange[i]         := cOnChange
+   ::aOnGotFocus[i]       := cOnGotFocus
+   ::aOnLostFocus[i]      := cOnLostFocus
+   ::aOnDblClick[i]       := cOnDblClick
+   ::aOnEnter[i]          := cOnEnter
+   ::aOnHeadClick[i]      := cOnHeadClick
+   ::aOnEditCell[i]       := cOnEditCell
+   ::aOnCheckChg[i]       := cOnCheckChg
+   ::aHelpID[i]           := nHelpId
+   ::aHeaders[i]          := cHeaders
+   ::aWidths[i]           := cWidths
+   ::aItems[i]            := cItems
+   ::aValueN[i]           := nValue
+   ::aDynamicBackColor[i] := cDynBackColor
+   ::aDynamicForeColor[i] := cDynForecolor
+   ::aColumnControls[i]   := cColControls
+   ::aReadOnlyB[i]        := cReadOnly
+   ::aInputMask[i]        := cInputMask
+   ::aMultiSelect[i]      := lMultiSelect
+   ::aNoLines[i]          := lNoLines
+   ::aInPlace[i]          := lInPlace
+   ::aImage[i]            := cImage
+   ::aJustify[i]          := cJustify
+   ::aBreak[i]            := lBreak
+   ::aEdit[i]             := lEdit
+   ::aValid[i]            := cValid
+   ::aWhen[i]             := cWhen
+   ::aValidMess[i]        := cValidMess
+   ::aRTL[i]              := lRTL
+   ::aNoTabStop[i]        := lNoTabStop
+   ::aFull[i]             := lFull
+   ::aCheckBoxes[i]       := lCheckBoxes
+   ::aSelColor[i]         := aSelColor
+   ::aAction[i]           := cAction
+   ::aButtons[i]          := lButtons
+   ::aDelete[i]           := lDelete
+   ::aAppend[i]           := lAppend
+   ::aOnAppend[i]         := cOnAppend
+   ::aVirtual[i]          := lVirtual
+   ::aItemCount[i]        := nItemCount
+   ::aOnQueryData[i]      := cOnQueryData
+   ::aNoHeaders[i]        := lNoHeaders
+   ::aHeaderImages[i]     := cHeaderImages
+   ::aImagesAlign[i]      := cImagesAlign
+   ::aByCell[i]           := lByCell
+   ::aEditKeys[i]         := cEditKeys
+   ::aDoubleBuffer[i]     := lDoubleBuffer
+   ::aSingleBuffer[i]     := lSingleBuffer
+   ::aFocusRect[i]        := lFocusRect
+   ::aNoFocusRect[i]      := lNoFocusRect
+   ::aPLM[i]              := lPLM
+   ::aFixedCols[i]        := lFixedCols
+   ::aOnAbortEdit[i]      := cOnAbortEdit
+   ::aFixedWidths[i]      := lFixedWidths
+   ::aBeforeColMove[i]    := cBeforeColMove
+   ::aAfterColMove[i]     := cAfterColMove
+   ::aBeforeColSize[i]    := cBeforeColSize
+   ::aAfterColSize[i]     := cAfterColSize
+   ::aBeforeAutoFit[i]    := cBeforeAutoFit
+   ::aLikeExcel[i]        := lLikeExcel
+   ::aDeleteWhen[i]       := cDeleteWhen
+   ::aDeleteMsg[i]        := cDeleteMsg
+   ::aOnDelete[i]         := cOnDelete
+   ::aNoDelMsg[i]         := lNoDeleteMsg
+   ::aNoModalEdit[i]      := lNoModalEdit
+   ::aFixedCtrls[i]       := lFixedCtrls
+   ::aDynamicCtrls[i]     := lDynamicCtrls
+   ::aOnHeadRClick[i]     := cOnHeadRClick
+   ::aNoClickOnCheck[i]   := lNoClickOnChk
+   ::aNoRClickOnCheck[i]  := lNoRClickOnChk
+   ::aExtDblClick[i]      := lExtDblClick
+   ::aSubClass[i]         := cSubClass
+
+   // Create control
+   oCtrl     := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i, nWidth, nHeight, NIL )
+   oCtrl:Row := nRow
+   oCtrl:Col := nCol
 
    ::AddCtrlToTabPage( i, cName, nRow, nCol )
 RETURN NIL
@@ -5988,11 +7298,83 @@ LOCAL nHelpId, lEnabled, lVisible, lNoTabStop, lNoAlt, oCtrl
    ::aNoPrefix[i]      := lNoAlt
 
    // Create control
-   oCtrl        := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i )
-   oCtrl:Row    := nRow
-   oCtrl:Col    := nCol
-   oCtrl:Width  := nWidth
-   oCtrl:Height := nHeight
+   oCtrl     := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i, nWidth, nHeight, NIL )
+   oCtrl:Row := nRow
+   oCtrl:Col := nCol
+
+   ::AddCtrlToTabPage( i, cName, nRow, nCol )
+RETURN NIL
+
+//------------------------------------------------------------------------------
+METHOD pHyplink( i ) CLASS TFormEditor
+//------------------------------------------------------------------------------
+LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cValue, cAddress, cFontName
+LOCAL nFontSize, aFontColor, lBold, lItalic, aBackColor
+LOCAL lVisible, lEnabled, cToolTip, nHelpID, lHandCursor, lAutoSize, lBorder
+LOCAL lClientEdge, lHScroll, lVScroll, lTrans, lRTL, oCtrl
+
+   // Load properties
+   cName        := ::aControlW[i]
+   cObj         := ::ReadStringData( cName, 'OBJ', '' )
+   nRow         := Val( ::ReadCtrlRow( cName ) )
+   nCol         := Val( ::ReadCtrlCol( cName ) )
+   nWidth       := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( THyperLink():nWidth ) ) ) )
+   nHeight      := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( THyperLink():nHeight ) ) ) )
+   cValue       := ::Clean( ::ReadStringData( cName, 'VALUE', 'ooHG Home' ) )
+   cAddress     := ::Clean( ::ReadStringData( cName, 'ADDRESS', 'https://sourceforge.net/projects/oohg/' ) )
+   cFontName    := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
+   nFontSize    := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
+   aFontColor   := ::ReadStringData( cName, 'FONTCOLOR', 'NIL' )
+   aFontColor   := UpperNIL( ::ReadOopData( cName, 'FONTCOLOR', aFontColor ) )
+   lBold        := ( ::ReadLogicalData( cName, 'BOLD', "F" ) == "T" )
+   lBold        := ( Upper( ::ReadOopData( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) == '.T.' )
+   lItalic      := ( ::ReadLogicalData( cName, 'ITALIC', "F" ) == "T" )
+   lItalic      := ( Upper( ::ReadOopData( cName, 'FONTITALIC', IF( lItalic, '.T.', '.F.' ) ) ) == '.T.' )
+   aBackColor   := ::ReadStringData( cName, 'BACKCOLOR', 'NIL' )
+   aBackColor   := UpperNIL( ::ReadOopData( cName, 'BACKCOLOR', aBackColor ) )
+   lVisible     := ( ::ReadLogicalData( cName, 'INVISIBLE', "F" ) == "F" )
+   lVisible     := ( Upper( ::ReadOopData( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
+   lEnabled     := ( ::ReadLogicalData( cName, 'DISABLED', "F" ) == "F" )
+   lEnabled     := ( Upper( ::ReadOopData( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
+   cToolTip     := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
+   nHelpID      := Val( ::ReadStringData( cName, 'HELPID', '0' ) )
+   lHandCursor  := ( ::ReadLogicalData( cName, 'HANDCURSOR', 'F' ) == 'T' )
+   lAutoSize    := ( ::ReadLogicalData( cName, "AUTOSIZE", "F" ) == "T" )
+   lBorder      := ( ::ReadLogicalData( cName, "BORDER", "F" ) == "T" )
+   lClientEdge  := ( ::ReadLogicalData( cName, "CLIENTEDGE", "F") == "T" )
+   lHScroll     := ( ::ReadLogicalData( cName, "HSCROLL", "F" ) == "T" )
+   lVScroll     := ( ::ReadLogicalData( cName, "VSCROLL", "F" ) == "T" )
+   lTrans       := ( ::ReadLogicalData( cName, "TRANSPARENT", "F" ) == "T" )
+   lRTL         := ( ::ReadLogicalData( cName, 'RTL', "F" ) == "T" )
+
+   // Save properties
+   ::aCtrlType[i]      := 'HYPERLINK'
+   ::aCObj[i]          := cObj
+   ::aValue[i]         := cValue
+   ::aAddress[i]       := cAddress
+   ::aFontName[i]      := cFontName
+   ::aFontSize[i]      := nFontSize
+   ::aFontColor[i]     := aFontColor
+   ::aBold[i]          := lBold
+   ::aFontItalic[i]    := lItalic
+   ::aBackColor[i]     := aBackColor
+   ::aVisible[i]       := lVisible
+   ::aEnabled[i]       := lEnabled
+   ::aToolTip[i]       := cToolTip
+   ::aHelpID[i]        := nHelpId
+   ::aHandCursor[i]    := lHandCursor
+   ::aAutoPlay[i]      := lAutoSize
+   ::aBorder[i]        := lBorder
+   ::aClientEdge[i]    := lClientEdge
+   ::aNoHScroll[i]     := lHScroll
+   ::aNoVScroll[i]     := lVScroll
+   ::aTransparent[i]   := lTrans
+   ::aRTL[i]           := lRTL
+
+   // Create control
+   oCtrl     := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i, nWidth, nHeight, NIL )
+   oCtrl:Row := nRow
+   oCtrl:Col := nCol
 
    ::AddCtrlToTabPage( i, cName, nRow, nCol )
 RETURN NIL
@@ -6067,11 +7449,9 @@ LOCAL lNo3DColors, lFit, lWhiteBack, lImageSize, cExclude, cSubClass, oCtrl
    ::aSubClass[i]    := cSubClass
 
    // Create control
-   oCtrl        := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i )
-   oCtrl:Row    := nRow
-   oCtrl:Col    := nCol
-   oCtrl:Width  := nWidth
-   oCtrl:Height := nHeight
+   oCtrl     := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i, nWidth, nHeight, NIL )
+   oCtrl:Row := nRow
+   oCtrl:Col := nCol
 
    ::AddCtrlToTabPage( i, cName, nRow, nCol )
 RETURN NIL
@@ -6091,7 +7471,7 @@ LOCAL lNoTabStop, lRTL, cSubClass, oCtrl
    nCol         := Val( ::ReadCtrlCol( cName ) )
    nWidth       := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( TIpAddress():nWidth ) ) ) )
    nHeight      := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TIpAddress():nHeight ) ) ) )
-   cValue       := ::ReadStringData( cName, 'VALUE', '   .   .   .   ' )
+   cValue       := ::Clean( ::ReadStringData( cName, 'VALUE', '' ) )
    cFontName    := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
    nFontSize    := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
    aFontColor   := ::ReadStringData( cName, 'FONTCOLOR', 'NIL' )
@@ -6143,11 +7523,197 @@ LOCAL lNoTabStop, lRTL, cSubClass, oCtrl
    ::aSubClass[i]      := cSubClass
 
    // Create control
-   oCtrl        := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i )
-   oCtrl:Row    := nRow
-   oCtrl:Col    := nCol
-   oCtrl:Width  := nWidth
-   oCtrl:Height := nHeight
+   oCtrl     := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i, nWidth, nHeight, NIL )
+   oCtrl:Row := nRow
+   oCtrl:Col := nCol
+
+   ::AddCtrlToTabPage( i, cName, nRow, nCol )
+RETURN NIL
+
+//------------------------------------------------------------------------------
+METHOD pLabel( i ) CLASS TFormEditor
+//------------------------------------------------------------------------------
+LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cAction, cToolTip, lBorder
+LOCAL lClientEdge, lVisible, lEnabled, lTrans, nHelpId, aBackColor, cValue
+LOCAL cFontName, nFontSize, aFontColor, lBold, lItalic, lUnderline, lStrikeout
+LOCAL lRightAlign, lCenterAlign, lAutoSize, cInputMask, lHScroll, lVScroll
+LOCAL lRTL, lNoWrap, lNoPrefix, cSubClass, oCtrl
+
+   // Load properties
+   cName        := ::aControlW[i]
+   cObj         := ::ReadStringData( cName, 'OBJ', '' )
+   nRow         := Val( ::ReadCtrlRow( cName ) )
+   nCol         := Val( ::ReadCtrlCol( cName ) )
+   nWidth       := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( TLabel():nWidth ) ) ) )
+   nHeight      := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TLabel():nHeight ) ) ) )
+   cAction      := ::ReadStringData( cName, 'ACTION', "" )
+   cAction      := ::ReadStringData( cName, 'ON CLICK',cAction )
+   cAction      := ::ReadStringData( cName, 'ONCLICK', cAction )
+   cToolTip     := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
+   lBorder      := ( ::ReadLogicalData( cName, "BORDER", "F" ) == "T" )
+   lClientEdge  := ( ::ReadLogicalData( cName, "CLIENTEDGE", "F") == "T" )
+   lVisible     := ( ::ReadLogicalData( cName, 'INVISIBLE', "F" ) == "F" )
+   lVisible     := ( Upper(  ::ReadOopData( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
+   lEnabled     := ( ::ReadLogicalData( cName, 'DISABLED', "F" ) == "F" )
+   lEnabled     := ( Upper(  ::ReadOopData( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
+   lTrans       := ( ::ReadLogicalData( cName, "TRANSPARENT", "F" ) == "T" )
+   nHelpId      := Val( ::ReadStringData( cName, 'HELPID', '0' ) )
+   aBackColor   := ::ReadStringData( cName, 'BACKCOLOR', 'NIL' )
+   aBackColor   := UpperNIL( ::ReadOopData( cName, 'BACKCOLOR', aBackColor ) )
+   cValue       := ::Clean( ::ReadStringData( cName, 'VALUE', '' ) )
+   cFontName    := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
+   nFontSize    := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
+   aFontColor   := ::ReadStringData( cName, 'FONTCOLOR', 'NIL' )
+   aFontColor   := UpperNIL( ::ReadOopData( cName, 'FONTCOLOR', aFontColor ) )
+   lBold        := ( ::ReadLogicalData( cName, 'BOLD', "F" ) == "T" )
+   lBold        := ( Upper( ::ReadOopData( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) == '.T.' )
+   lItalic      := ( ::ReadLogicalData( cName, 'ITALIC', "F" ) == "T" )
+   lItalic      := ( Upper( ::ReadOopData( cName, 'FONTITALIC', IF( lItalic, '.T.', '.F.' ) ) ) == '.T.' )
+   lUnderline   := ( ::ReadLogicalData( cName, 'UNDERLINE', "F" ) == "T" )
+   lUnderline   := ( Upper( ::ReadOopData( cName, 'FONTUNDERLINE', IF( lUnderline, '.T.', '.F.' ) ) ) == '.T.' )
+   lStrikeout   := ( ::ReadLogicalData( cName, 'STRIKEOUT', "F" ) == "T" )
+   lStrikeout   := ( Upper( ::ReadOopData( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) == '.T.' )
+   lRightAlign  := ( ::ReadLogicalData( cName, "RIGHTALIGN", "F" ) == "T" )
+   lCenterAlign := ( ::ReadLogicalData( cName, "CENTERALIGN", "F" ) == "T" )
+   lAutoSize    := ( ::ReadLogicalData( cName, "AUTOSIZE", "F" ) == "T" )
+   cInputMask   := ::ReadStringData( cName, 'INPUTMASK', "" )
+   lHScroll     := ( ::ReadLogicalData( cName, "HSCROLL", "F" ) == "T" )
+   lVScroll     := ( ::ReadLogicalData( cName, "VSCROLL", "F" ) == "T" )
+   lRTL         := ( ::ReadLogicalData( cName, 'RTL', "F" ) == "T" )
+   lNoWrap      := ( ::ReadLogicalData( cName, 'NOWORDWRAP', "F" ) == "T" )
+   lNoPrefix    := ( ::ReadLogicalData( cName, 'NOPREFIX', "F" ) == "T" )
+   cSubClass    := ::ReadStringData( cName, 'SUBCLASS', '' )
+
+   // Save properties
+   ::aCtrlType[i]      := 'LABEL'
+   ::aCObj[i]          := cObj
+   ::aAction[i]        := cAction
+   ::aToolTip[i]       := cToolTip
+   ::aBorder[i]        := lBorder
+   ::aClientEdge[i]    := lClientEdge
+   ::aVisible[i]       := lVisible
+   ::aEnabled[i]       := lEnabled
+   ::aTransparent[i]   := lTrans
+   ::aHelpID[i]        := nHelpid
+   ::aBackColor[i]     := aBackColor
+   ::aValue[i]         := cValue
+   ::aFontName[i]      := cFontName
+   ::aFontSize[i]      := nFontSize
+   ::aFontColor[i]     := aFontColor
+   ::aBold[i]          := lBold
+   ::aFontItalic[i]    := lItalic
+   ::aFontUnderline[i] := lUnderline
+   ::aFontStrikeout[i] := lStrikeout
+   ::aRightAlign[i]    := lRightAlign
+   ::aCenterAlign[i]   := lCenterAlign
+   ::aAutoPlay[i]      := lAutoSize
+   ::aInputMask[i]     := cInputMask
+   ::aNoHScroll[i]     := lHScroll
+   ::aNoVScroll[i]     := lVScroll
+   ::aRTL[i]           := lRTL
+   ::aWrap[i]          := lNoWrap
+   ::aNoPrefix[i]      := lNoPrefix
+   ::aSubClass[i]      := cSubClass
+
+   // Create control
+   oCtrl     := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i, nWidth, nHeight, NIL )
+   oCtrl:Row := nRow
+   oCtrl:Col := nCol
+
+   ::AddCtrlToTabPage( i, cName, nRow, nCol )
+RETURN NIL
+
+//------------------------------------------------------------------------------
+METHOD pListBox( i ) CLASS TFormEditor
+//------------------------------------------------------------------------------
+LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cToolTip, nHelpId, cFontName
+LOCAL nFontSize, lBold, lItalic, lUnderline, lStrikeout, aBackColor, aFontColor
+LOCAL lVisible, lEnabled, lRTL, cOnEnter, lNoVScroll, cImage, lFit, nTextHeight
+LOCAL cOnGotFocus, cOnLostFocus, cOnChange, cOnDblClick, cItems, nValue
+LOCAL lMultiSelect, lNoTabStop, lBreak, lSort, cSubClass, oCtrl
+
+   // Load properties
+   cName        := ::aControlW[i]
+   cObj         := ::ReadStringData( cName, 'OBJ', '' )
+   nRow         := Val( ::ReadCtrlRow( cName ) )
+   nCol         := Val( ::ReadCtrlCol( cName ) )
+   nWidth       := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( TList():nWidth ) ) ) )
+   nHeight      := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TList():nHeight ) ) ) )
+   cToolTip     := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
+   nHelpId      := Val( ::ReadStringData( cName, 'HELPID', '0' ) )
+   cFontName    := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
+   nFontSize    := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
+   lBold        := ( ::ReadLogicalData( cName, 'BOLD', "F" ) == "T" )
+   lBold        := ( Upper( ::ReadOopData( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) == '.T.' )
+   lItalic      := ( ::ReadLogicalData( cName, 'ITALIC', "F" ) == "T" )
+   lItalic      := ( Upper( ::ReadOopData( cName, 'FONTITALIC', IF( lItalic, '.T.', '.F.' ) ) ) == '.T.' )
+   lUnderline   := ( ::ReadLogicalData( cName, 'UNDERLINE', "F" ) == "T" )
+   lUnderline   := ( Upper( ::ReadOopData( cName, 'FONTUNDERLINE', IF( lUnderline, '.T.', '.F.' ) ) ) == '.T.' )
+   lStrikeout   := ( ::ReadLogicalData( cName, 'STRIKEOUT', "F" ) == "T" )
+   lStrikeout   := ( Upper( ::ReadOopData( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) == '.T.' )
+   aBackColor   := ::ReadStringData( cName, 'BACKCOLOR', 'NIL' )
+   aBackColor   := UpperNIL( ::ReadOopData( cName, 'BACKCOLOR', aBackColor ) )
+   aFontColor   := ::ReadStringData( cName, 'FONTCOLOR', 'NIL' )
+   aFontColor   := UpperNIL( ::ReadOopData( cName, 'FONTCOLOR', aFontColor ) )
+   lVisible     := ( ::ReadLogicalData( cName, 'INVISIBLE', "F" ) == "F" )
+   lVisible     := ( Upper( ::ReadOopData( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
+   lEnabled     := ( ::ReadLogicalData( cName, 'DISABLED', "F" ) == "F" )
+   lEnabled     := ( Upper( ::ReadOopData( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
+   lRTL         := ( ::ReadLogicalData( cName, 'RTL', "F" ) == "T" )
+   cOnEnter     := ::ReadStringData( cName, 'ON ENTER', '' )
+   lNoVScroll   := ( ::ReadLogicalData( cName, "NOVSCROLL", "F" ) == "T" )
+   cImage       := ::Clean( ::ReadStringData( cName, 'IMAGE', '' ) )
+   lFit         := ( ::ReadLogicalData( cName, 'FIT', "F" ) == "T" )
+   nTextHeight  := Val( ::ReadStringData( cName, 'TEXTHEIGHT', '0' ) )
+   cOnGotFocus  := ::ReadStringData( cName, 'ON GOTFOCUS', '' )
+   cOnLostFocus := ::ReadStringData( cName, 'ON LOSTFOCUS', '' )
+   cOnChange    := ::ReadStringData( cName, 'ON CHANGE', '' )
+   cOnDblClick  := ::ReadStringData( cName, 'ON DBLCLICK', '' )
+   cItems       := ::ReadStringData( cName, 'ITEMS', '' )
+   nValue       := Val( ::ReadStringData( cName, 'VALUE', '0' ) )
+   lMultiSelect := ( ::ReadLogicalData( cName, 'MULTISELECT', "F" ) == "T" )
+   lNoTabStop   := ( ::ReadLogicalData( cName, 'NOTABSTOP', "F" ) == "T" )
+   lBreak       := ( ::ReadLogicalData( cName, 'BREAK', "F" ) == "T" )
+   lSort        := ( ::ReadLogicalData( cName, 'SORT', "F" ) == "T" )
+   cSubClass    := ::ReadStringData( cName, 'SUBCLASS', '' )
+
+   // Save properties
+   ::aCtrlType[i]      := 'LIST'
+   ::aCObj[i]          := cObj
+   ::aToolTip[i]       := cToolTip
+   ::aHelpID[i]        := nHelpid
+   ::aFontName[i]      := cFontName
+   ::aFontSize[i]      := nFontSize
+   ::aBold[i]          := lBold
+   ::aFontItalic[i]    := lItalic
+   ::aFontUnderline[i] := lUnderline
+   ::aFontStrikeout[i] := lStrikeout
+   ::aBackColor[i]     := aBackColor
+   ::aFontColor[i]     := aFontColor
+   ::aVisible[i]       := lVisible
+   ::aEnabled[i]       := lEnabled
+   ::aRTL[i]           := lRTL
+   ::aOnEnter[i]       := cOnEnter
+   ::aNoVScroll[i]     := lNoVScroll
+   ::aImage[i]         := cImage
+   ::aFit[i]           := lFit
+   ::aTextHeight[i]    := nTextHeight
+   ::aOnGotFocus[i]    := cOnGotFocus
+   ::aOnLostFocus[i]   := cOnLostFocus
+   ::aOnChange[i]      := cOnChange
+   ::aOnDblClick[i]    := cOnDblClick
+   ::aItems[i]         := cItems
+   ::aValueN[i]        := nValue
+   ::aMultiSelect[i]   := lMultiSelect
+   ::aNoTabStop[i]     := lNoTabStop
+   ::aBreak[i]         := lBreak
+   ::aSort[i]          := lSort
+   ::aSubClass[i]      := cSubClass
+
+   // Create control
+   oCtrl     := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i, nWidth, nHeight, NIL )
+   oCtrl:Row := nRow
+   oCtrl:Col := nCol
 
    ::AddCtrlToTabPage( i, cName, nRow, nCol )
 RETURN NIL
@@ -6227,7 +7793,181 @@ LOCAL lRTL, lNoToday, aTitleFntClr, aTitleBckClr, aTrlngFntClr, cSubClass, oCtrl
    ::aBackgroundColor[i]   := aBckgrndClr
 
    // Create control
-   oCtrl     := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i )
+   oCtrl     := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i, 0, 0, NIL )
+   oCtrl:Row := nRow
+   oCtrl:Col := nCol
+
+   ::AddCtrlToTabPage( i, cName, nRow, nCol )
+RETURN NIL
+
+//------------------------------------------------------------------------------
+METHOD pPicButt( i ) CLASS TFormEditor
+//------------------------------------------------------------------------------
+LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, aBackColor, lVisible, lEnabled
+LOCAL cToolTip, cOnGotFocus, cOnLostFocus, nHelpId, cPicture, cAction
+LOCAL lNoTabStop, lFlat, cBuffer, cHBitmap, lNoLoadTrans, lForceScale
+LOCAL lNo3DColors, lFit, lDIBSection, cOnMouseMove, lThemed, cImgMargin, lTop
+LOCAL lBottom, lLeft, lRight, lCenter, lCancel, cSubClass, oCtrl
+
+   // Load properties
+   cName         := ::aControlW[i]
+   cObj          := ::ReadStringData( cName, 'OBJ', '' )
+   nRow          := Val( ::ReadCtrlRow( cName ) )
+   nCol          := Val( ::ReadCtrlCol( cName ) )
+   nWidth        := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( TButton():nWidth ) ) ) )
+   nHeight       := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TButton():nHeight ) ) ) )
+   aBackColor    := ::ReadStringData( cName, 'BACKCOLOR', 'NIL' )
+   aBackColor    := UpperNIL( ::ReadOopData( cName, 'BACKCOLOR', aBackColor ) )
+   lVisible      := ( ::ReadLogicalData( cName, 'INVISIBLE', "F" ) == "F" )
+   lVisible      := ( Upper( ::ReadOopData( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
+   lEnabled      := ( ::ReadLogicalData( cName, 'DISABLED', "F" ) == "F" )
+   lEnabled      := ( Upper( ::ReadOopData( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
+   cToolTip      := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
+   cOnGotFocus   := ::ReadStringData( cName, 'ON GOTFOCUS', '' )
+   cOnLostFocus  := ::ReadStringData( cName, 'ON LOSTFOCUS', '' )
+   nHelpId       := Val( ::ReadStringData( cName, 'HELPID', '0' ) )
+   cPicture      := ::Clean( ::ReadStringData( cName, 'PICTURE', '' ) )
+   cAction       := ::ReadStringData( cName, 'ACTION', "MsgInfo( 'Button pressed' )" )
+   cAction       := ::ReadStringData( cName, 'ON CLICK',cAction )
+   cAction       := ::ReadStringData( cName, 'ONCLICK', cAction )
+   lNoTabStop    := ( ::ReadLogicalData( cName, 'NOTABSTOP', "F" ) == "T" )
+   lFlat         := ( ::ReadLogicalData( cName, 'FLAT', "F" ) == "T" )
+   cBuffer       := ::ReadStringData( cName, 'BUFFER', "" )
+   cHBitmap      := ::ReadStringData( cName, 'HBITMAP', "" )
+   lNoLoadTrans  := ( ::ReadLogicalData( cName, 'NOLOADTRANSPARENT', "F" ) == "T" )
+   lForceScale   := ( ::ReadLogicalData( cName, 'FORCESCALE', "F" ) == "T" )
+   lNo3DColors   := ( ::ReadLogicalData( cName, 'NO3DCOLORS', "F" ) == "T" )
+   lFit          := ::ReadLogicalData( cName, 'AUTOFIT', "F" )
+   lFit          := ( ::ReadLogicalData( cName, 'ADJUST', lFit ) == "T" )
+   lDIBSection   := ( ::ReadLogicalData( cName, 'DIBSECTION', "F" ) == "T" )
+   cOnMouseMove  := ::ReadStringData( cName, 'ON MOUSEMOVE', '' )
+   lThemed       := ( ::ReadLogicalData( cName, 'THEMED', "F" ) == "T" )
+   cImgMargin    := ::ReadStringData( cName, 'IMAGEMARGIN', "" )
+   lTop          := ( ::ReadLogicalData( cName, 'TOP', "F" ) == "T" )
+   lBottom       := ( ::ReadLogicalData( cName, 'BOTTOM', "F" ) == "T" )
+   lLeft         := ( ::ReadLogicalData( cName, 'LEFT', "F" ) == "T" )
+   lRight        := ( ::ReadLogicalData( cName, 'RIGHT', "F" ) == "T" )
+   lCenter       := ( ::ReadLogicalData( cName, 'CENTER', "F" ) == "T" )
+   lCancel       := ( ::ReadLogicalData( cName, 'CANCEL', "F" ) == "T" )
+   cSubClass     := ::ReadStringData( cName, 'SUBCLASS', '' )
+
+   // Save properties
+   ::aCtrlType[i]      := 'PICBUTT'
+   ::aCObj[i]          := cObj
+   ::aBackColor[i]     := aBackColor
+   ::aVisible[i]       := lVisible
+   ::aEnabled[i]       := lEnabled
+   ::aToolTip[i]       := cToolTip
+   ::aOnGotFocus[i]    := cOnGotFocus
+   ::aOnLostFocus[i]   := cOnLostFocus
+   ::aHelpID[i]        := nHelpId
+   ::aPicture[i]       := cPicture
+   ::aAction[i]        := cAction
+   ::aNoTabStop[i]     := lNoTabStop
+   ::aFlat[i]          := lFlat
+   ::aBuffer[i]        := cBuffer
+   ::aHBitmap[i]       := cHBitmap
+   ::aNoLoadTrans[i]   := lNoLoadTrans
+   ::aForceScale[i]    := lForceScale
+   ::aNo3DColors[i]    := lNo3DColors
+   ::aFit[i]           := lFit
+   ::aDIBSection[i]    := lDIBSection
+   ::aOnMouseMove[i]   := cOnMouseMove
+   ::aThemed[i]        := lThemed
+   ::aImageMargin[i]   := cImgMargin
+   ::aJustify[i]       := IIF( lTop, "TOP", IIF( lBottom, "BOTTOM", IIF( lLeft, "LEFT", IIF( lRight, "RIGHT", IIF( lCenter, "CENTER", "" ) ) ) ) )
+   ::aCancel[i]        := lCancel
+   ::aSubClass[i]      := cSubClass
+
+   // Create control
+   oCtrl     := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i, nWidth, nHeight, NIL )
+   oCtrl:Row := nRow
+   oCtrl:Col := nCol
+
+   ::AddCtrlToTabPage( i, cName, nRow, nCol )
+RETURN NIL
+
+//------------------------------------------------------------------------------
+METHOD pPicCheckButt( i ) CLASS TFormEditor
+//------------------------------------------------------------------------------
+LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cPicture, lValue, cToolTip
+LOCAL lNoTabStop, cOnChange, cOnGotFocus, cOnLostFocus, nHelpId, lEnabled
+LOCAL lVisible, cBuffer, cHBitmap, lNoLoadTrans, lForceScale, cField, oCtrl
+LOCAL lNo3DColors, lFit, lDIBSection, lThemed, aBackColor, cOnMouseMove
+LOCAL cImgMargin, lFlat, lTop, lBottom, lLeft, lRight, lCenter, cSubClass
+
+   // Load properties
+   cName        := ::aControlW[i]
+   cObj         := ::ReadStringData( cName, 'OBJ', '' )
+   nRow         := Val( ::ReadCtrlRow( cName ) )
+   nCol         := Val( ::ReadCtrlCol( cName ) )
+   nWidth       := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( TButtonCheck():nWidth ) ) ) )
+   nHeight      := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TButtonCheck():nHeight ) ) ) )
+   cPicture     := ::Clean( ::ReadStringData( cName, 'PICTURE', '' ) )
+   lValue       := ( ::ReadLogicalData( cName, 'VALUE', 'F' ) == "T" )
+   cToolTip     := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
+   lNoTabStop   := ( ::ReadLogicalData( cName, 'NOTABSTOP', "F" ) == "T" )
+   cOnChange    := ::ReadStringData( cName, 'ON CHANGE', '' )
+   cOnGotFocus  := ::ReadStringData( cName, 'ON GOTFOCUS', '' )
+   cOnLostFocus := ::ReadStringData( cName, 'ON LOSTFOCUS', '' )
+   nHelpId      := Val( ::ReadStringData( cName, 'HELPID', '0' ) )
+   lEnabled     := ( ::ReadLogicalData( cName, 'DISABLED', "F" ) == "F" )
+   lEnabled     := ( Upper( ::ReadOopData( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
+   lVisible     := ( ::ReadLogicalData( cName, 'INVISIBLE', "F" ) == "F" )
+   lVisible     := ( Upper( ::ReadOopData( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
+   cBuffer      := ::ReadStringData( cName, 'BUFFER', "" )
+   cHBitmap     := ::ReadStringData( cName, 'HBITMAP', "" )
+   lNoLoadTrans := ( ::ReadLogicalData( cName, 'NOLOADTRANSPARENT', "F" ) == "T" )
+   lForceScale  := ( ::ReadLogicalData( cName, 'FORCESCALE', "F" ) == "T" )
+   cField       := ::ReadStringData( cName, 'FIELD', '' )
+   lNo3DColors  := ( ::ReadLogicalData( cName, 'NO3DCOLORS', "F" ) == "T" )
+   lFit         := ::ReadLogicalData( cName, 'AUTOFIT', "F" )
+   lFit         := ( ::ReadLogicalData( cName, 'ADJUST', lFit ) == "T" )
+   lDIBSection  := ( ::ReadLogicalData( cName, 'DIBSECTION', "F" ) == "T" )
+   cSubClass    := ::ReadStringData( cName, 'SUBCLASS', '' )
+   lThemed      := ( ::ReadLogicalData( cName, 'THEMED', "F" ) == "T" )
+   cImgMargin   := ::ReadStringData( cName, 'IMAGEMARGIN', "" )
+   aBackColor   := ::ReadStringData( cName, 'BACKCOLOR', 'NIL' )
+   aBackColor   := UpperNIL( ::ReadOopData( cName, 'BACKCOLOR', aBackColor ) )
+   cOnMouseMove := ::ReadStringData( cName, 'ON MOUSEMOVE', '' )
+   lFlat        := ( ::ReadLogicalData( cName, 'FLAT', "F" ) == "T" )
+   lTop         := ( ::ReadLogicalData( cName, 'TOP', "F" ) == "T" )
+   lBottom      := ( ::ReadLogicalData( cName, 'BOTTOM', "F" ) == "T" )
+   lLeft        := ( ::ReadLogicalData( cName, 'LEFT', "F" ) == "T" )
+   lRight       := ( ::ReadLogicalData( cName, 'RIGHT', "F" ) == "T" )
+   lCenter      := ( ::ReadLogicalData( cName, 'CENTER', "F" ) == "T" )
+
+   // Save properties
+   ::aCtrlType[i]      := 'PICCHECKBUTT'
+   ::aCObj[i]          := cObj
+   ::aPicture[i]       := cPicture
+   ::aValueL[i]        := lValue
+   ::aToolTip[i]       := cToolTip
+   ::aNoTabStop[i]     := lNoTabStop
+   ::aOnChange[i]      := cOnChange
+   ::aOnGotFocus[i]    := cOnGotFocus
+   ::aOnLostFocus[i]   := cOnLostFocus
+   ::aHelpID[i]        := nHelpId
+   ::aEnabled[i]       := lEnabled
+   ::aVisible[i]       := lVisible
+   ::aBuffer[i]        := cBuffer
+   ::aHBitmap[i]       := cHBitmap
+   ::aNoLoadTrans[i]   := lNoLoadTrans
+   ::aForceScale[i]    := lForceScale
+   ::aField[i]         := cField
+   ::aNo3DColors[i]    := lNo3DColors
+   ::aFit[i]           := lFit
+   ::aDIBSection[i]    := lDIBSection
+   ::aThemed[i]        := lThemed
+   ::aBackColor[i]     := aBackColor
+   ::aOnMouseMove[i]   := cOnMouseMove
+   ::aImageMargin[i]   := cImgMargin
+   ::aFlat[i]          := lFlat
+   ::aJustify[i]       := IIF( lTop, "TOP", IIF( lBottom, "BOTTOM", IIF( lLeft, "LEFT", IIF( lRight, "RIGHT", IIF( lCenter, "CENTER", "" ) ) ) ) )
+   ::aSubClass[i]      := cSubClass
+
+   // Create control
+   oCtrl     := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i, nWidth, nHeight, NIL )
    oCtrl:Row := nRow
    oCtrl:Col := nCol
 
@@ -6302,11 +8042,133 @@ LOCAL lNo3DColors, lForceScale, lImageSize, cExclude, cSubClass, oCtrl
    ::aSubClass[i]    := cSubClass
 
    // Create control
-   oCtrl        := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i )
-   oCtrl:Row    := nRow
-   oCtrl:Col    := nCol
-   oCtrl:Width  := nWidth
-   oCtrl:Height := nHeight
+   oCtrl     := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i, nWidth, nHeight, NIL )
+   oCtrl:Row := nRow
+   oCtrl:Col := nCol
+
+   ::AddCtrlToTabPage( i, cName, nRow, nCol )
+RETURN NIL
+
+//------------------------------------------------------------------------------
+METHOD pPlayer( i ) CLASS TFormEditor
+//------------------------------------------------------------------------------
+LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, nHelpId, cFile, lNoTabStop
+LOCAL lVisible, lEnabled, lRTL, lNoAutoSizeW, lNoAutoSizeM, lNoErrorDlg, lNoMenu
+LOCAL lNoOpen, lNoPlayBar, lShowAll, lShowMode, lShowName, lShowPosition
+LOCAL cSubClass, oCtrl
+
+   // Load properties
+   cName         := ::aControlW[i]
+   cObj          := ::ReadStringData( cName, 'OBJ', '' )
+   nRow          := Val( ::ReadCtrlRow( cName ) )
+   nCol          := Val( ::ReadCtrlCol( cName ) )
+   nWidth        := Val( ::ReadStringData( cName, 'WIDTH', '100' ) )
+   nHeight       := Val( ::ReadStringData( cName, 'HEIGHT', '100' ) )
+   nHelpId       := Val( ::ReadStringData( cName, 'HELPID', '0' ) )
+   cFile         := ::Clean( ::ReadStringData( cName, 'FILE', '' ) )
+   lNoTabStop    := ( ::ReadLogicalData( cName, 'NOTABSTOP', 'F' ) == "T" )
+   lVisible      := ( ::ReadLogicalData( cName, 'INVISIBLE', "F" ) == "F" )
+   lVisible      := ( Upper(  ::ReadOopData( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
+   lEnabled      := ( ::ReadLogicalData( cName, 'DISABLED', "F" ) == "F" )
+   lEnabled      := ( Upper(  ::ReadOopData( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
+   lRTL          := ( ::ReadLogicalData( cName, 'RTL', "F" ) == "T" )
+   lNoAutoSizeW  := ( ::ReadLogicalData( cName, 'NOAUTOSIZEWINDOW', "F" ) == "T" )
+   lNoAutoSizeM  := ( ::ReadLogicalData( cName, 'NOAUTOSIZEMOVIE', "F" ) == "T" )
+   lNoErrorDlg   := ( ::ReadLogicalData( cName, 'NOERRORDLG', "F" ) == "T" )
+   lNoMenu       := ( ::ReadLogicalData( cName, 'NOMENU', "F" ) == "T" )
+   lNoOpen       := ( ::ReadLogicalData( cName, 'NOOPEN', "F" ) == "T" )
+   lNoPlayBar    := ( ::ReadLogicalData( cName, 'NOPLAYBAR', "F" ) == "T" )
+   lShowAll      := ( ::ReadLogicalData( cName, 'SHOWALL', "F" ) == "T" )
+   lShowMode     := ( ::ReadLogicalData( cName, 'SHOWMODE', "F" ) == "T" )
+   lShowName     := ( ::ReadLogicalData( cName, 'SHOWNAME', "F" ) == "T" )
+   lShowPosition := ( ::ReadLogicalData( cName, 'SHOWPOSITION', "F" ) == "T" )
+   cSubClass     := ::ReadStringData( cName, 'SUBCLASS', '' )
+
+   // Save properties
+   ::aCtrlType[i]         := 'PLAYER'
+   ::aCObj[i]             := cObj
+   ::aHelpID[i]           := nHelpid
+   ::aFile[i]             := cFile
+   ::aNoTabStop[i]        := lNoTabStop
+   ::aVisible[i]          := lVisible
+   ::aEnabled[i]          := lEnabled
+   ::aRTL[i]              := lRTL
+   ::aNoAutoSizeWindow[i] := lNoAutoSizeW
+   ::aNoAutoSizeMovie[i]  := lNoAutoSizeM
+   ::aNoErrorDlg[i]       := lNoErrorDlg
+   ::aNoMenu[i]           := lNoMenu
+   ::aNoOpen[i]           := lNoOpen
+   ::aNoPlayBar[i]        := lNoPlayBar
+   ::aShowAll[i]          := lShowAll
+   ::aShowMode[i]         := lShowMode
+   ::aShowName[i]         := lShowName
+   ::aShowPosition[i]     := lShowPosition
+   ::aSubClass[i]         := cSubClass
+
+   // Create control
+   oCtrl     := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i, nWidth, nHeight, NIL )
+   oCtrl:Row := nRow
+   oCtrl:Col := nCol
+
+   ::AddCtrlToTabPage( i, cName, nRow, nCol )
+RETURN NIL
+
+//------------------------------------------------------------------------------
+METHOD pProgressbar( i ) CLASS TFormEditor
+//------------------------------------------------------------------------------
+LOCAL cName, cObj, nRow, nCol, lVertical, nWidth, nHeight, cRange, cToolTip
+LOCAL lSmooth, nHelpId, lVisible, lEnabled, aBackColor, aFontColor, nValue
+LOCAL lRTL, nMarquee, oCtrl
+
+   // Load properties
+   cName      := ::aControlW[i]
+   cObj       := ::ReadStringData( cName, 'OBJ', '' )
+   nRow       := Val( ::ReadCtrlRow( cName ) )
+   nCol       := Val( ::ReadCtrlCol( cName ) )
+   lVertical  := ( ::ReadLogicalData( cName, 'VERTICAL', 'F' ) == "T" )
+   IF lVertical
+      nWidth  := Val( ::ReadStringData( cName, 'WIDTH', '25' ) )
+      nHeight := Val( ::ReadStringData( cName, 'HEIGHT', '120' ) )
+   ELSE
+      nWidth  := Val( ::ReadStringData( cName, 'WIDTH', '120' ) )
+      nHeight := Val( ::ReadStringData( cName, 'HEIGHT', '25' ) )
+   ENDIF
+   cRange     := ::ReadStringData( cName, 'RANGE', '' )
+   cToolTip   := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
+   lSmooth    := ( ::ReadLogicalData( cName, 'SMOOTH', 'F' ) == "T" )
+   nHelpId    := Val( ::ReadStringData( cName, 'HELPID', '0' ) )
+   lVisible   := ( ::ReadLogicalData( cName, 'INVISIBLE', "F" ) == "F" )
+   lVisible   := ( Upper(  ::ReadOopData( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
+   lEnabled   := ( ::ReadLogicalData( cName, 'DISABLED', "F" ) == "F" )
+   lEnabled   := ( Upper(  ::ReadOopData( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
+   aBackColor := ::ReadStringData( cName, 'BACKCOLOR', 'NIL' )
+   aBackColor := UpperNIL( ::ReadOopData( cName, 'BACKCOLOR', aBackColor ) )
+   aFontColor := ::ReadStringData( cName, 'FORECOLOR', 'NIL' )
+   aFontColor := UpperNIL( ::ReadOopData( cName, 'FORECOLOR', aFontColor ) )
+   nValue     := Val( ::ReadStringData( cName, 'VALUE', '0' ) )
+   lRTL       := ( ::ReadLogicalData( cName, 'RTL', 'F' ) == "T" )
+   nMarquee   := Val( ::ReadStringData( cName, 'MARQUEE', '0' ) )
+
+   // Save properties
+   ::aCtrlType[i]    := 'PROGRESSBAR'
+   ::aCObj[i]        := cObj
+   ::aVertical[i]    := lVertical
+   ::aRange[i]       := cRange
+   ::aToolTip[i]     := cToolTip
+   ::aSmooth[i]      := lSmooth
+   ::aHelpID[i]      := nHelpID
+   ::aVisible[i]     := lVisible
+   ::aEnabled[i]     := lEnabled
+   ::aBackColor[i]   := aBackColor
+   ::aFontColor[i]   := aFontColor
+   ::aValueN[i]      := nValue
+   ::aRTL[i]         := lRTL
+   ::aMarquee[i]     := nMarquee
+
+   // Create control
+   oCtrl     := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i, nWidth, nHeight, NIL )
+   oCtrl:Row := nRow
+   oCtrl:Col := nCol
 
    ::AddCtrlToTabPage( i, cName, nRow, nCol )
 RETURN NIL
@@ -6378,11 +8240,197 @@ LOCAL cRange, oCtrl
    ::aRange[i]         := cRange
 
    // Create control
-   oCtrl        := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i )
-   oCtrl:Row    := nRow
-   oCtrl:Col    := nCol
-   oCtrl:Width  := nWidth
-   oCtrl:Height := nHeight
+   oCtrl     := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i, nWidth, nHeight, NIL )
+   oCtrl:Row := nRow
+   oCtrl:Col := nCol
+
+   ::AddCtrlToTabPage( i, cName, nRow, nCol )
+RETURN NIL
+
+//------------------------------------------------------------------------------
+METHOD pRadiogroup( i ) CLASS TFormEditor
+//------------------------------------------------------------------------------
+LOCAL cName, cObj, nRow, nCol, nWidth, nValue, nSpacing, cFontName, nFontSize
+LOCAL cToolTip, cOnChange, lTrans, nHelpid, cItems, lVisible, lEnabled, lBold
+LOCAL lItalic, lUnderline, lStrikeout, aBackColor, aFontColor, lRTL, lNoTabStop
+LOCAL lAutoSize, lHorizontal, lThemed, cBackground, cSubClass, oCtrl, nHeight
+
+   // Load properties
+   cName       := ::aControlW[i]
+   cObj        := ::ReadStringData( cName, 'OBJ', '' )
+   nRow        := Val( ::ReadCtrlRow( cName ) )
+   nCol        := Val( ::ReadCtrlCol( cName ) )
+   nWidth      := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( TRadioGroup():nWidth ) ) ) )
+   nHeight     := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TRadioGroup():nHeight ) ) ) )
+   nValue      := Val( ::ReadStringData( cName, 'VALUE', '0' ) )
+   nSpacing    := Val( ::ReadStringData( cName, 'SPACING', '0' ) )
+   cFontName   := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
+   nFontSize   := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
+   cToolTip    := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
+   cOnChange   := ::ReadStringData( cName, 'ON CHANGE', '' )
+   lTrans      := ( ::ReadLogicalData( cName, "TRANSPARENT", "F" ) == "T" )
+   nHelpid     := Val( ::ReadStringData(cName, 'HELPID', "0" ) )
+   cItems      := ::ReadStringData( cName, 'OPTIONS', "{ 'option 1', 'option 2' }" )
+   lVisible    := ( ::ReadLogicalData( cName, 'INVISIBLE', "F" ) == "F" )
+   lVisible    := ( Upper(  ::ReadOopData( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
+   lEnabled    := ( ::ReadLogicalData( cName, 'DISABLED', "F" ) == "F" )
+   lEnabled    := ( Upper(  ::ReadOopData( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
+   lBold       := ( ::ReadLogicalData( cName, 'BOLD', "F" ) == "T" )
+   lBold       := ( Upper( ::ReadOopData( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) == '.T.' )
+   lItalic     := ( ::ReadLogicalData( cName, 'ITALIC', "F" ) == "T" )
+   lItalic     := ( Upper( ::ReadOopData( cName, 'FONTITALIC', IF( lItalic, '.T.', '.F.' ) ) ) == '.T.' )
+   lUnderline  := ( ::ReadLogicalData( cName, 'UNDERLINE', "F" ) == "T" )
+   lUnderline  := ( Upper( ::ReadOopData( cName, 'FONTUNDERLINE', IF( lUnderline, '.T.', '.F.' ) ) ) == '.T.' )
+   lStrikeout  := ( ::ReadLogicalData( cName, 'STRIKEOUT', "F" ) == "T" )
+   lStrikeout  := ( Upper( ::ReadOopData( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) == '.T.' )
+   aBackColor  := ::ReadStringData( cName, 'BACKCOLOR', 'NIL' )
+   aBackColor  := UpperNIL( ::ReadOopData( cName, 'BACKCOLOR', aBackColor ) )
+   aFontColor  := ::ReadStringData( cName, 'FORECOLOR', 'NIL' )
+   aFontColor  := UpperNIL( ::ReadOopData( cName, 'FORECOLOR', aFontColor ) )
+   lRTL        := ( ::ReadLogicalData( cName, 'RTL', 'F' ) == "T" )
+   lNoTabStop  := ( ::ReadLogicalData( cName, "NOTABSTOP", "F" ) == "T" )
+   lAutoSize   := ( ::ReadLogicalData( cName, "AUTOSIZE", "F" ) == "T" )
+   lHorizontal := ( ::ReadLogicalData( cName, 'HORIZONTAL', "F" ) == "T" )
+   lThemed     := ( ::ReadLogicalData( cName, 'THEMED', "F" ) == "T" )
+   cBackground := ::ReadStringData( cName, 'BACKGROUND', '' )
+   cSubClass   := ::ReadStringData( cName, 'SUBCLASS', '' )
+
+   // Save properties
+   ::aCtrlType[i]      := 'RADIOGROUP'
+   ::aCObj[i]          := cObj
+   ::aValueN[i]        := nValue
+   ::aSpacing[i]       := nSpacing
+   ::aFontName[i]      := cFontName
+   ::aFontSize[i]      := nFontSize
+   ::aToolTip[i]       := cToolTip
+   ::aOnChange[i]      := cOnChange
+   ::aTransparent[i]   := lTrans
+   ::aHelpID[i]        := nHelpID
+   ::aItems[i]         := cItems
+   ::aVisible[i]       := lVisible
+   ::aEnabled[i]       := lEnabled
+   ::aBold[i]          := lBold
+   ::aFontItalic[i]    := lItalic
+   ::aFontUnderline[i] := lUnderLine
+   ::aFontStrikeout[i] := lStrikeout
+   ::aBackColor[i]     := aBackColor
+   ::aFontColor[i]     := aFontColor
+   ::aRTL[i]           := lRTL
+   ::aNoTabStop[i]     := lNoTabStop
+   ::aAutoPlay[i]      := lAutoSize
+   ::aFlat[i]          := lHorizontal
+   ::aThemed[i]        := lThemed
+   ::aBackground[i]    := cBackground
+   ::aSubClass[i]      := cSubClass
+
+   // Create control
+   oCtrl     := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i, nWidth, nHeight, NIL )
+   oCtrl:Row := nRow
+   oCtrl:Col := nCol
+
+   ::AddCtrlToTabPage( i, cName, nRow, nCol )
+RETURN NIL
+
+//------------------------------------------------------------------------------
+METHOD pRichedit( i ) CLASS TFormEditor
+//------------------------------------------------------------------------------
+LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, cValue
+LOCAL cField, cToolTip, nMaxLength, lReadonly, lBreak, lNoTabStop, nHelpID
+LOCAL cOnChange, cOnGotFocus, cOnLostFocus, lVisible, lEnabled, lBold, lItalic
+LOCAL lUnderline, lStrikeout, aFontColor, aBackColor, lRTL, nFocusedPos
+LOCAL lNoVScroll, cOnVScroll, cOnHScroll, cFile, cSubClass, cOnSelChange
+LOCAL lNoHideSel, lPlainText, nFileType, lNoHScroll, oCtrl
+
+   // Load properties
+   cName        := ::aControlW[i]
+   cObj         := ::ReadStringData( cName, 'OBJ', '' )
+   nRow         := Val( ::ReadCtrlRow( cName ) )
+   nCol         := Val( ::ReadCtrlCol( cName ) )
+   nWidth       := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( TEditRich():nWidth ) ) ) )
+   nHeight      := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TEditRich():nHeight ) ) ) )
+   cFontName    := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
+   nFontSize    := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
+   cValue       := ::Clean( ::ReadStringData( cName, 'VALUE', '' ) )
+   cField       := ::ReadStringData( cName, 'FIELD', '' )
+   cToolTip     := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
+   nMaxLength   := Val( ::ReadStringData( cName, 'MAXLENGTH', '0' ) )
+   lReadonly    := ( ::ReadLogicalData( cName, "READONLY", "F" ) == "T" )
+   lBreak       := ( ::ReadLogicalData( cName, "BREAK", "F" ) == "T" )
+   lNoTabStop   := ( ::ReadLogicalData( cName, "NOTABSTOP", "F" ) == "T" )
+   nHelpID      := Val( ::ReadStringData( cName, 'HELPID', '0' ) )
+   cOnChange    := ::ReadStringData( cName, 'ON CHANGE', '' )
+   cOnGotFocus  := ::ReadStringData( cName, 'ON GOTFOCUS', '' )
+   cOnLostFocus := ::ReadStringData( cName, 'ON LOSTFOCUS', '' )
+   lVisible     := ( ::ReadLogicalData( cName, 'INVISIBLE', "F" ) == "F" )
+   lVisible     := ( Upper( ::ReadOopData( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
+   lEnabled     := ( ::ReadLogicalData( cName, 'DISABLED', "F" ) == "F" )
+   lEnabled     := ( Upper( ::ReadOopData( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
+   lBold        := ( ::ReadLogicalData( cName, 'BOLD', "F" ) == "T" )
+   lBold        := ( Upper( ::ReadOopData( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) == '.T.' )
+   lItalic      := ( ::ReadLogicalData( cName, 'ITALIC', "F" ) == "T" )
+   lItalic      := ( Upper( ::ReadOopData( cName, 'FONTITALIC', IF( lItalic, '.T.', '.F.' ) ) ) == '.T.' )
+   lUnderline   := ( ::ReadLogicalData( cName, 'UNDERLINE', "F" ) == "T" )
+   lUnderline   := ( Upper( ::ReadOopData( cName, 'FONTUNDERLINE', IF( lUnderline, '.T.', '.F.' ) ) ) == '.T.' )
+   lStrikeout   := ( ::ReadLogicalData( cName, 'STRIKEOUT', "F" ) == "T" )
+   lStrikeout   := ( Upper( ::ReadOopData( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) == '.T.' )
+   aFontColor   := ::ReadStringData( cName, 'FONTCOLOR', 'NIL' )
+   aFontColor   := UpperNIL( ::ReadOopData( cName, 'FONTCOLOR', aFontColor ) )
+   aBackColor   := ::ReadStringData( cName, 'BACKCOLOR', 'NIL' )
+   aBackColor   := UpperNIL( ::ReadOopData( cName, 'BACKCOLOR', aBackColor ) )
+   lRTL         := ( ::ReadLogicalData( cName, 'RTL', "F" ) == "T" )
+   nFocusedPos  := Val( ::ReadStringData( cName, 'FOCUSEDPOS', '-4' ) )
+   lNoVScroll   := ( ::ReadLogicalData( cName, "NOVSCROLL", "F" ) == "T" )
+   lNoHScroll   := ( ::ReadLogicalData( cName, "NOHSCROLL", "F" ) == "T" )
+   cOnVScroll   := ::ReadStringData( cName, 'ON VSCROLL', '' )
+   cOnHScroll   := ::ReadStringData( cName, 'ON HSCROLL', '' )
+   cFile        := ::Clean( ::ReadStringData( cName, 'FILE', '' ) )
+   cSubClass    := ::ReadStringData( cName, 'SUBCLASS', '' )
+   cOnSelChange := ::ReadStringData( cName, 'ON SELCHANGE', '' )
+   lNoHideSel   := ( ::ReadLogicalData( cName, "NOHIDESEL", "F" ) == "T" )
+   lPlainText   := ( ::ReadLogicalData( cName, "PLAINTEXT", "F" ) == "T" )
+   nFileType    := Val( ::ReadLogicalData( cName, "FILETYPE", "0" ) )
+
+   // Save properties
+   ::aCtrlType[i]      := 'RICHEDIT'
+   ::aCObj[i]          := cObj
+   ::aFontName[i]      := cFontName
+   ::aFontSize[i]      := nFontSize
+   ::aValue[i]         := cValue
+   ::aField[i]         := cField
+   ::aToolTip[i]       := cTooltip
+   ::aMaxLength[i]     := nMaxLength
+   ::aReadOnly[i]      := lReadonly
+   ::aBreak[i]         := lBreak
+   ::aNoTabStop[i]     := lNoTabStop
+   ::aHelpID[i]        := nHelpID
+   ::aOnChange[i]      := cOnChange
+   ::aOnGotFocus[i]    := cOnGotFocus
+   ::aOnLostFocus[i]   := cOnLostFocus
+   ::aVisible[i]       := lVisible
+   ::aEnabled[i]       := lEnabled
+   ::aBold[i]          := lBold
+   ::aFontItalic[i]    := lItalic
+   ::aFontUnderline[i] := lUnderline
+   ::aFontStrikeout[i] := lStrikeout
+   ::aFontColor[i]     := aFontColor
+   ::aBackColor[i]     := aBackColor
+   ::aRTL[i]           := lRTL
+   ::aFocusedPos[i]    := nFocusedPos
+   ::aNoVScroll[i]     := lNoVScroll
+   ::aNoHScroll[i]     := lNoHScroll
+   ::aOnVScroll[i]     := cOnVScroll
+   ::aOnHScroll[i]     := cOnHScroll
+   ::aFile[i]          := cFile
+   ::aSubClass[i]      := cSubClass
+   ::aOnSelChange[i]   := cOnSelChange
+   ::aNoHideSel[i]     := lNoHideSel
+   ::aPlainText[i]     := lPlainText
+   ::aFileType[i]      := nFileType
+
+   // Create control
+   oCtrl     := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i, nWidth, nHeight, NIL )
+   oCtrl:Row := nRow
+   oCtrl:Col := nCol
 
    ::AddCtrlToTabPage( i, cName, nRow, nCol )
 RETURN NIL
@@ -6433,11 +8481,11 @@ LOCAL lVertical, lHorizontal, nLineSkip, nPageSkip, nHelpId, cSubClass, lEnabled
    lEnabled    := ( ::ReadLogicalData( cName, 'DISABLED', "F" ) == "F" )
    lEnabled    := ( Upper( ::ReadOopData( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
    IF lHorizontal
-      nWidth   := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( GetVScrollBarWidth() ) ) ) )
+      nWidth   := Val( ::ReadStringData( cName, 'WIDTH', '100' ) )
       nHeight  := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( GetHScrollBarHeight() ) ) ) )
    ELSE
       nWidth   := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( GetVScrollBarWidth() ) ) ) )
-      nHeight  := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( GetHScrollBarHeight() ) ) ) )
+      nHeight  := Val( ::ReadStringData( cName, 'HEIGHT', '100' ) )
    ENDIF
 
    // Save properties
@@ -6469,11 +8517,153 @@ LOCAL lVertical, lHorizontal, nLineSkip, nPageSkip, nHelpId, cSubClass, lEnabled
    ::aEnabled[i]     := lEnabled
 
    // Create control
-   oCtrl        := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i )
-   oCtrl:Row    := nRow
-   oCtrl:Col    := nCol
-   oCtrl:Width  := nWidth
-   oCtrl:Height := nHeight
+   oCtrl     := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i, nWidth, nHeight, NIL )
+   oCtrl:Row := nRow
+   oCtrl:Col := nCol
+
+   ::AddCtrlToTabPage( i, cName, nRow, nCol )
+RETURN NIL
+
+//------------------------------------------------------------------------------
+METHOD pSlider( i ) CLASS TFormEditor
+//------------------------------------------------------------------------------
+LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cRange, nValue, cToolTip
+LOCAL cOnChange, lVertical, lNoTicks, lBoth, lTop, lLeft, nHelpId, aBackColor
+LOCAL lVisible, lEnabled, lNoTabStop, lRTL, cSubClass, oCtrl
+
+   // Load properties
+   cName      := ::aControlW[i]
+   cObj       := ::ReadStringData( cName, 'OBJ', '' )
+   nRow       := Val( ::ReadCtrlRow( cName ) )
+   nCol       := Val( ::ReadCtrlCol( cName ) )
+   nWidth     := Val( ::ReadStringData( cName, 'WIDTH', '0' ) )
+   nHeight    := Val( ::ReadStringData( cName, 'HEIGHT', '0' ) )
+   cRange     := ::ReadStringData( cName, 'RANGE', '' )
+   nValue     := Val( ::ReadStringData( cName, 'VALUE', '0' ) )
+   cToolTip   := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
+   cOnChange  := ::ReadStringData( cName, 'ON CHANGE', '' )
+   lVertical  := ( ::ReadLogicalData( cName, 'VERTICAL', 'F' ) == "T" )
+   lNoTicks   := ( ::ReadLogicalData( cName, 'NOTICKS', 'F' ) == "T" )
+   lBoth      := ( ::ReadLogicalData( cName, 'BOTH', 'F' ) == "T" )
+   lTop       := ( ::ReadLogicalData( cName, 'TOP', 'F' ) == "T" )
+   lLeft      := ( ::ReadLogicalData( cName, 'LEFT', 'F' ) == "T" )
+   nHelpId    := Val( ::ReadStringData( cName, 'HELPID', '0' ) )
+   aBackColor := ::ReadStringData( cName, 'BACKCOLOR', 'NIL' )
+   aBackColor := UpperNIL( ::ReadOopData( cName, 'BACKCOLOR', aBackColor ) )
+   lVisible   := ( ::ReadLogicalData( cName, 'INVISIBLE', "F" ) == "F" )
+   lVisible   := ( Upper(  ::ReadOopData( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
+   lEnabled   := ( ::ReadLogicalData( cName, 'DISABLED', "F" ) == "F" )
+   lEnabled   := ( Upper(  ::ReadOopData( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
+   lNoTabStop := ( ::ReadLogicalData( cName, 'NOTABSTOP', 'F' ) == "T" )
+   lRTL       := ( ::ReadLogicalData( cName, 'RTL', 'F' ) == "T" )
+   cSubClass  := ::ReadStringData( cName, 'SUBCLASS', '' )
+
+   // Save properties
+   ::aCtrlType[i]  := 'SLIDER'
+   ::aCObj[i]      := cObj
+   ::aRange[i]     := cRange
+   ::aValueN[i]    := nValue
+   ::aToolTip[i]   := cToolTip
+   ::aOnChange[i]  := cOnChange
+   ::aVertical[i]  := lVertical
+   ::aNoTicks[i]   := lNoTicks
+   ::aBoth[i]      := lBoth
+   ::aTop[i]       := lTop
+   ::aLeft[i]      := lLeft
+   ::aHelpID[i]    := nHelpID
+   ::aBackColor[i] := aBackColor
+   ::aVisible[i]   := lVisible
+   ::aEnabled[i]   := lEnabled
+   ::aNoTabStop[i] := lNoTabStop
+   ::aRTL[i]       := lRTL
+   ::aSubClass[i]  := cSubClass
+
+   // Create control
+   oCtrl     := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i, nWidth, nHeight, NIL )
+   oCtrl:Row := nRow
+   oCtrl:Col := nCol
+
+   ::AddCtrlToTabPage( i, cName, nRow, nCol )
+RETURN NIL
+
+//------------------------------------------------------------------------------
+METHOD pSpinner( i ) CLASS TFormEditor
+//------------------------------------------------------------------------------
+LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cRange, nValue, cFontName
+LOCAL nFontSize, cToolTip, cOnChange, cOnGotfocus, cOnLostfocus, nHelpId, oCtrl
+LOCAL lNoTabStop, lRTL, lWrap, lReadOnly, nIncrement, lVisible, lEnabled
+LOCAL aBackColor, aFontColor, lBold, lItalic, lUnderline, lStrikeout, lNoBorder
+
+   // Load properties
+   cName        := ::aControlW[i]
+   cObj         := ::ReadStringData( cName, 'OBJ', '' )
+   nRow         := Val( ::ReadCtrlRow( cName ) )
+   nCol         := Val( ::ReadCtrlCol( cName ) )
+   nWidth       := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( TSpinner():nWidth ) ) ) )
+   nHeight      := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TSpinner():nHeight ) ) ) )
+   cRange       := ::ReadStringData( cName, 'RANGE', '' )
+   nValue       := Val( ::ReadStringData( cName, 'VALUE', '0' ) )
+   cFontName    := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
+   nFontSize    := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
+   cToolTip     := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
+   cOnChange    := ::ReadStringData( cName, 'ON CHANGE', '' )
+   cOnGotfocus  := ::ReadStringData( cName, 'ON GOTFOCUS', '' )
+   cOnLostfocus := ::ReadStringData( cName, 'ON LOSTFOCUS', '' )
+   nHelpId      := Val( ::ReadStringData( cName, 'HELPID', '0' ) )
+   lNoTabStop   := ( ::ReadLogicalData( cName, 'NOTABSTOP', 'F' ) == "T" )
+   lRTL         := ( ::ReadLogicalData( cName, 'RTL', "F" ) == "T" )
+   lWrap        := ( ::ReadLogicalData( cName, 'WRAP', "F" ) == "T" )
+   lReadOnly    := ( ::ReadLogicalData( cName, 'READONLY', "F" ) == "T" )
+   nIncrement   := Val( ::ReadStringData( cName, 'INCREMENT', '0' ) )
+   lVisible     := ( ::ReadLogicalData( cName, 'INVISIBLE', "F" ) == "F" )
+   lVisible     := ( Upper(  ::ReadOopData( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
+   lEnabled     := ( ::ReadLogicalData( cName, 'DISABLED', "F" ) == "F" )
+   lEnabled     := ( Upper(  ::ReadOopData( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
+   aBackColor   := ::ReadStringData( cName, 'BACKCOLOR', 'NIL' )
+   aBackColor   := UpperNIL( ::ReadOopData( cName, 'BACKCOLOR', aBackColor ) )
+   aFontColor   := ::ReadStringData( cName, 'FONTCOLOR', 'NIL' )
+   aFontColor   := UpperNIL( ::ReadOopData( cName, 'FONTCOLOR', aFontColor ) )
+   lBold        := ( ::ReadLogicalData( cName, 'BOLD', "F" ) == "T" )
+   lBold        := ( Upper( ::ReadOopData( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) == '.T.' )
+   lItalic      := ( ::ReadLogicalData( cName, 'ITALIC', "F" ) == "T" )
+   lItalic      := ( Upper( ::ReadOopData( cName, 'FONTITALIC', IF( lItalic, '.T.', '.F.' ) ) ) == '.T.' )
+   lUnderline   := ( ::ReadLogicalData( cName, 'UNDERLINE', "F" ) == "T" )
+   lUnderline   := ( Upper( ::ReadOopData( cName, 'FONTUNDERLINE', IF( lUnderline, '.T.', '.F.' ) ) ) == '.T.' )
+   lStrikeout   := ( ::ReadLogicalData( cName, 'STRIKEOUT', "F" ) == "T" )
+   lStrikeout   := ( Upper( ::ReadOopData( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) == '.T.' )
+   lNoBorder    := ( ::ReadLogicalData( cName, "NOBORDER", "F" ) == "T" )
+
+   // Save properties
+   ::aCtrlType[i]      := 'SPINNER'
+   ::aCObj[i]          := cObj
+   ::aRange[i]         := cRange
+   ::aValueN[i]        := nValue
+   ::aFontName[i]      := cFontName
+   ::aFontSize[i]      := nFontSize
+   ::aToolTip[i]       := cToolTip
+   ::aOnChange[i]      := cOnChange
+   ::aOnGotFocus[i]    := cOnGotfocus
+   ::aOnLostFocus[i]   := cOnLostfocus
+   ::aHelpID[i]        := nHelpId
+   ::aNoTabStop[i]     := lNoTabStop
+   ::aRTL[i]           := lRTL
+   ::aWrap[i]          := lWrap
+   ::aReadOnly[i]      := lReadOnly
+   ::aIncrement[i]     := nIncrement
+   ::aEnabled[i]       := lEnabled
+   ::aVisible[i]       := lVisible
+   ::aBackColor[i]     := aBackColor
+   ::aFontColor[i]     := aFontColor
+   ::aBold[i]          := lBold
+   ::aFontItalic[i]    := lItalic
+   ::aFontUnderline[i] := lUnderLine
+   ::aFontStrikeout[i] := lStrikeout
+   ::aBorder[i]        := lNoBorder
+
+   // Create control
+   oCtrl     := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i, nWidth, nHeight, NIL )
+   oCtrl:Row := nRow
+   oCtrl:Col := nCol
 
    ::AddCtrlToTabPage( i, cName, nRow, nCol )
 RETURN NIL
@@ -6529,7 +8719,7 @@ LOCAL nPosPage, cPCaption, cPName, nPosImage, cPImage, nPosName, nPosObj
    ::aCObj[i]           := cObj
    ::aFontName[i]       := cFontName
    ::aFontSize[i]       := nFontSize
-   ::aValue[i]          := nValue
+   ::aValueN[i]         := nValue
    ::aToolTip[i]        := cToolTip
    ::aOnChange[i]       := cOnChange
    ::aFlat[i]           := lFlat
@@ -6555,11 +8745,9 @@ LOCAL nPosPage, cPCaption, cPName, nPosImage, cPImage, nPosName, nPosObj
    ::aPageSubClasses[i] := "{}"
 
    // Create control
-   oCtrl        := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i )
-   oCtrl:Row    := nRow
-   oCtrl:Col    := nCol
-   oCtrl:Width  := nWidth
-   oCtrl:Height := nHeight
+   oCtrl     := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i, nWidth, nHeight, NIL )
+   oCtrl:Row := nRow
+   oCtrl:Col := nCol
 
    // Load pages
    cPCaptions := '{ '
@@ -6594,15 +8782,27 @@ LOCAL nPosPage, cPCaption, cPName, nPosImage, cPImage, nPosName, nPosObj
             DO CASE
             CASE ( nPosImage := At( 'IMAGE ', Upper( ::aLine[j] ) ) ) > 0
                cPImage := AllTrim( SubStr( ::aLine[j], nPosImage + 6, Len( ::aLine[j] ) ) )
+               IF Right( cPImage, 1 ) == ";"
+                  cPImage := AllTrim( SubStr( cPImage, 1, Len( cPImage ) - 1 ) )
+               ENDIF
                cPImage := ::Clean( AllTrim( SubStr( cPImage, 1, Len( ::aLine[j] ) ) ) )
             CASE ( nPosName := At( 'NAME ', Upper( ::aLine[j] ) ) ) > 0
                cPName := AllTrim( SubStr( ::aLine[j], nPosName + 5, Len( ::aLine[j] ) ) )
+               IF Right( cPName, 1 ) == ";"
+                  cPName := AllTrim( SubStr( cPName, 1, Len( cPName ) - 1 ) )
+               ENDIF
                cPName := ::Clean( AllTrim( SubStr( cPName, 1, Len( ::aLine[j] ) ) ) )
             CASE ( nPosObj := At( 'OBJ ', Upper( ::aLine[j] ) ) ) > 0
                cPObj := AllTrim( SubStr( ::aLine[j], nPosObj + 4, Len( ::aLine[j] ) ) )
+               IF Right( cPObj, 1 ) == ";"
+                  cPObj := AllTrim( SubStr( cPObj, 1, Len( cPObj ) - 1 ) )
+               ENDIF
                cPObj := ::Clean( AllTrim( SubStr( cPObj, 1, Len( ::aLine[j] ) ) ) )
             CASE ( nPosSub := At( 'SUBCLASS ', Upper( ::aLine[j] ) ) ) > 0
                cPSub := AllTrim( SubStr( ::aLine[j], nPosSub + 9, Len( ::aLine[j] ) ) )
+               IF Right( cPSub, 1 ) == ";"
+                  cPSub := AllTrim( SubStr( cPSub, 1, Len( cPSub ) - 1 ) )
+               ENDIF
                cPSub := ::Clean( AllTrim( SubStr( cPSub, 1, Len( ::aLine[j] ) ) ) )
             ENDCASE
 
@@ -6635,7 +8835,85 @@ LOCAL nPosPage, cPCaption, cPName, nPosImage, cPImage, nPosName, nPosObj
    ::aPageObjs[i]       := cPObjs
    ::aPageSubClasses[i] := cPSubs
 
-   oCtrl:Value := ::aValue[i]
+   oCtrl:Value := ::aValueN[i]
+RETURN NIL
+
+//------------------------------------------------------------------------------
+METHOD pTextArray( i ) CLASS TFormEditor
+//------------------------------------------------------------------------------
+LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, cValue
+LOCAL cToolTip, nHelpID, lNoTabStop, cAction, cSubClass, lBold, lItalic
+LOCAL lUnderline, lStrikeout, aBackColor, lVisible, lEnabled, aFontColor, lRTL
+LOCAL lClientEdge, lBorder, nRowCount, nColCount, oCtrl
+
+   // Load properties
+   cName       := ::aControlW[i]
+   cObj        := ::ReadStringData( cName, 'OBJ', '' )
+   nRow        := Val( ::ReadCtrlRow( cName ) )
+   nCol        := Val( ::ReadCtrlCol( cName ) )
+   nWidth      := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( TText():nWidth ) ) ) )
+   nHeight     := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TText():nHeight ) ) ) )
+   cFontName   := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
+   nFontSize   := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
+   cValue      := ::Clean( ::ReadStringData( cName, 'VALUE', '' ) )
+   cToolTip    := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
+   nHelpID     := Val( ::ReadStringData( cName, 'HELPID', '0' ) )
+   lNoTabStop  := ( ::ReadLogicalData( cName, 'NOTABSTOP', "F" ) == "T" )
+   cAction     := ::ReadStringData( cName, 'ACTION', '' )
+   cSubClass   := ::ReadStringData( cName, 'SUBCLASS', '' )
+   lBold       := ( ::ReadLogicalData( cName, 'BOLD', "F" ) == "T" )
+   lBold       := ( Upper( ::ReadOopData( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) == '.T.' )
+   lItalic     := ( ::ReadLogicalData( cName, 'ITALIC', "F" ) == "T" )
+   lItalic     := ( Upper( ::ReadOopData( cName, 'FONTITALIC', IF( lItalic, '.T.', '.F.' ) ) ) == '.T.' )
+   lUnderline  := ( ::ReadLogicalData( cName, 'UNDERLINE', "F" ) == "T" )
+   lUnderline  := ( Upper( ::ReadOopData( cName, 'FONTUNDERLINE', IF( lUnderline, '.T.', '.F.' ) ) ) == '.T.' )
+   lStrikeout  := ( ::ReadLogicalData( cName, 'STRIKEOUT', "F" ) == "T" )
+   lStrikeout  := ( Upper( ::ReadOopData( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) == '.T.' )
+   aBackColor  := ::ReadStringData( cName, 'BACKCOLOR', 'NIL' )
+   aBackColor  := UpperNIL( ::ReadOopData( cName, 'BACKCOLOR', aBackColor ) )
+   lVisible    := ( ::ReadLogicalData( cName, 'INVISIBLE', "F" ) == "F" )
+   lVisible    := ( Upper( ::ReadOopData( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
+   lEnabled    := ( ::ReadLogicalData( cName, 'DISABLED', "F" ) == "F" )
+   lEnabled    := ( Upper( ::ReadOopData( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
+   aFontColor  := ::ReadStringData( cName, 'FONTCOLOR', 'NIL' )
+   aFontColor  := UpperNIL( ::ReadOopData( cName, 'FONTCOLOR', aFontColor ) )
+   lRTL        := ( ::ReadLogicalData( cName, 'RTL', "F" ) == "T" )
+   lClientEdge := ( ::ReadLogicalData( cName, "CLIENTEDGE", "F") == "T" )
+   lBorder     := ( ::ReadLogicalData( cName, "BORDER", "F" ) == "T" )
+   nRowCount   := Val( ::ReadStringData( cName, 'ROWCOUNT', '0' ) )
+   nColCount   := Val( ::ReadStringData( cName, 'COLCOUNT', '0' ) )
+
+   // Save properties
+   ::aCtrlType[i]      := 'TEXTARRAY'
+   ::aCObj[i]          := cObj
+   ::aFontName[i]      := cFontName
+   ::aFontSize[i]      := nFontSize
+   ::aValue[i]         := cValue
+   ::aToolTip[i]       := cToolTip
+   ::aHelpID[i]        := nHelpId
+   ::aNoTabStop[i]     := lNoTabStop
+   ::aAction[i]        := cAction
+   ::aSubClass[i]      := cSubClass
+   ::aBold[i]          := lBold
+   ::aFontItalic[i]    := lItalic
+   ::aFontUnderline[i] := lUnderline
+   ::aFontStrikeout[i] := lStrikeout
+   ::aBackColor[i]     := aBackColor
+   ::aVisible[i]       := lVisible
+   ::aEnabled[i]       := lEnabled
+   ::aFontColor[i]     := aFontColor
+   ::aRTL[i]           := lRTL
+   ::aClientEdge[i]    := lClientEdge
+   ::aBorder[i]        := lBorder
+   ::aItemCount[i]     := nRowCount
+   ::aIncrement[i]     := nColCount
+
+   // Create control
+   oCtrl     := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i, nWidth, nHeight, NIL )
+   oCtrl:Row := nRow
+   oCtrl:Col := nCol
+
+   ::AddCtrlToTabPage( i, cName, nRow, nCol )
 RETURN NIL
 
 //------------------------------------------------------------------------------
@@ -6768,91 +9046,87 @@ LOCAL nInsertType, oCtrl
    ::aInsertType[i]    := nInsertType
 
    // Create control
-   oCtrl        := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i )
-   oCtrl:Row    := nRow
-   oCtrl:Col    := nCol
-   oCtrl:Width  := nWidth
-   oCtrl:Height := nHeight
+   oCtrl     := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i, nWidth, nHeight, NIL )
+   oCtrl:Row := nRow
+   oCtrl:Col := nCol
 
    ::AddCtrlToTabPage( i, cName, nRow, nCol )
 RETURN NIL
 
 //------------------------------------------------------------------------------
-METHOD pTextArray( i ) CLASS TFormEditor
+METHOD pTimePicker( i ) CLASS TFormEditor
 //------------------------------------------------------------------------------
-LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, cValue
-LOCAL cToolTip, nHelpID, lNoTabStop, cAction, cSubClass, lBold, lItalic
-LOCAL lUnderline, lStrikeout, aBackColor, lVisible, lEnabled, aFontColor, lRTL
-LOCAL lClientEdge, lBorder, nRowCount, nColCount, oCtrl
+LOCAL cName, nRow, nCol, nWidth, cFontName, nFontSize, cToolTip, cOnGotFocus
+LOCAL cField, cValue, cOnLostFocus, cOnChange, cOnEnter, lShowNone, lUpDown
+LOCAL lRightAlign, nHelpID, cObj, lBold, lItalic, lUnderline, lStrikeout, oCtrl
+LOCAL lVisible, lEnabled, lRTL, lNoTabStop, lNoBorder, cSubClass, nHeight
 
-   // Load properties
-   cName       := ::aControlW[i]
-   cObj        := ::ReadStringData( cName, 'OBJ', '' )
-   nRow        := Val( ::ReadCtrlRow( cName ) )
-   nCol        := Val( ::ReadCtrlCol( cName ) )
-   nWidth      := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( TText():nWidth ) ) ) )
-   nHeight     := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TText():nHeight ) ) ) )
-   cFontName   := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
-   nFontSize   := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
-   cValue      := ::Clean( ::ReadStringData( cName, 'VALUE', '' ) )
-   cToolTip    := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
-   nHelpID     := Val( ::ReadStringData( cName, 'HELPID', '0' ) )
-   lNoTabStop  := ( ::ReadLogicalData( cName, 'NOTABSTOP', "F" ) == "T" )
-   cAction     := ::ReadStringData( cName, 'ACTION', '' )
-   cSubClass   := ::ReadStringData( cName, 'SUBCLASS', '' )
-   lBold       := ( ::ReadLogicalData( cName, 'BOLD', "F" ) == "T" )
-   lBold       := ( Upper( ::ReadOopData( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) == '.T.' )
-   lItalic     := ( ::ReadLogicalData( cName, 'ITALIC', "F" ) == "T" )
-   lItalic     := ( Upper( ::ReadOopData( cName, 'FONTITALIC', IF( lItalic, '.T.', '.F.' ) ) ) == '.T.' )
-   lUnderline  := ( ::ReadLogicalData( cName, 'UNDERLINE', "F" ) == "T" )
-   lUnderline  := ( Upper( ::ReadOopData( cName, 'FONTUNDERLINE', IF( lUnderline, '.T.', '.F.' ) ) ) == '.T.' )
-   lStrikeout  := ( ::ReadLogicalData( cName, 'STRIKEOUT', "F" ) == "T" )
-   lStrikeout  := ( Upper( ::ReadOopData( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) == '.T.' )
-   aBackColor  := ::ReadStringData( cName, 'BACKCOLOR', 'NIL' )
-   aBackColor  := UpperNIL( ::ReadOopData( cName, 'BACKCOLOR', aBackColor ) )
-   lVisible    := ( ::ReadLogicalData( cName, 'INVISIBLE', "F" ) == "F" )
-   lVisible    := ( Upper( ::ReadOopData( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
-   lEnabled    := ( ::ReadLogicalData( cName, 'DISABLED', "F" ) == "F" )
-   lEnabled    := ( Upper( ::ReadOopData( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
-   aFontColor  := ::ReadStringData( cName, 'FONTCOLOR', 'NIL' )
-   aFontColor  := UpperNIL( ::ReadOopData( cName, 'FONTCOLOR', aFontColor ) )
-   lRTL        := ( ::ReadLogicalData( cName, 'RTL', "F" ) == "T" )
-   lClientEdge := ( ::ReadLogicalData( cName, "CLIENTEDGE", "F") == "T" )
-   lBorder     := ( ::ReadLogicalData( cName, "BORDER", "F" ) == "T" )
-   nRowCount   := Val( ::ReadStringData( cName, 'ROWCOUNT', '0' ) )
-   nColCount   := Val( ::ReadStringData( cName, 'COLCOUNT', '0' ) )
+   cName        := ::aControlW[i]
+   nRow         := Val( ::ReadCtrlRow( cName ) )
+   nCol         := Val( ::ReadCtrlCol( cName ) )
+   nWidth       := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( TDatePick():nWidth ) ) ) )
+   nHeight      := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TDatePick():nHeight ) ) ) )
+   cFontName    := ::Clean( ::ReadStringData(cName,'FONT',''))
+   nFontSize    := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
+   cToolTip     := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
+   cOnGotFocus  := ::ReadStringData( cName, 'ON GOTFOCUS', '')
+   cField       := ::Clean( ::ReadStringData( cName, 'FIELD', '' ) )
+   cValue       := ::ReadStringData( cName, 'VALUE', '' )
+   cOnLostFocus := ::ReadStringData( cName, 'ON LOSTFOCUS', '' )
+   cOnChange    := ::ReadStringData( cName, 'ON CHANGE', '' )
+   cOnEnter     := ::ReadStringData( cName, 'ON ENTER', '' )
+   lShowNone    := ( ::ReadLogicalData( cName, 'SHOWNONE', "F" ) == "T" )
+   lUpDown      := ( ::ReadLogicalData( cName, 'UPDOWN', "F" ) == "T" )
+   lRightAlign  := ( ::ReadLogicalData( cName, 'RIGHTALIGN', "F" ) == "T" )
+   nHelpID      := Val( ::ReadStringData( cName, 'HELPID', '0' ) )
+   cObj         := ::ReadStringData( cName, 'OBJ', '' )
+   lBold        := ( ::ReadLogicalData( cName, 'BOLD', "F" ) == "T" )
+   lBold        := ( Upper( ::ReadOopData( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) == '.T.' )
+   lItalic      := ( ::ReadLogicalData( cName, 'ITALIC', "F" ) == "T" )
+   lItalic      := ( Upper( ::ReadOopData( cName, 'FONTITALIC', IF( lItalic, '.T.', '.F.' ) ) ) == '.T.' )
+   lUnderline   := ( ::ReadLogicalData( cName, 'UNDERLINE', "F" ) == "T" )
+   lUnderline   := ( Upper( ::ReadOopData( cName, 'FONTUNDERLINE', IF( lUnderline, '.T.', '.F.' ) ) ) == '.T.' )
+   lStrikeout   := ( ::ReadLogicalData( cName, 'STRIKEOUT', "F" ) == "T" )
+   lStrikeout   := ( Upper( ::ReadOopData( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) == '.T.' )
+   lVisible     := ( ::ReadLogicalData( cName, 'INVISIBLE', "F" ) == "F" )
+   lVisible     := ( Upper( ::ReadOopData( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
+   lEnabled     := ( ::ReadLogicalData( cName, 'DISABLED', "F" ) == "F" )
+   lEnabled     := ( Upper( ::ReadOopData( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
+   lRTL         := ( ::ReadLogicalData( cName, 'RTL', "F" ) == "T" )
+   lNoTabStop   := ( ::ReadLogicalData( cName, 'NOTABSTOP', 'F' ) == 'T' )
+   lNoBorder    := ( ::ReadLogicalData( cName, "NOBORDER", "F" ) == "T" )
+   cSubClass    := ::ReadStringData( cName, 'SUBCLASS', '' )
 
-   // Save properties
-   ::aCtrlType[i]      := 'TEXTARRAY'
-   ::aCObj[i]          := cObj
+   ::aCtrlType[i]      := 'TIMEPICKER'
    ::aFontName[i]      := cFontName
    ::aFontSize[i]      := nFontSize
-   ::aValue[i]         := cValue
    ::aToolTip[i]       := cToolTip
-   ::aHelpID[i]        := nHelpId
-   ::aNoTabStop[i]     := lNoTabStop
-   ::aAction[i]        := cAction
-   ::aSubClass[i]      := cSubClass
+   ::aOnGotFocus[i]    := cOnGotFocus
+   ::aField[i]         := cField
+   ::aValue[i]         := cValue
+   ::aOnLostFocus[i]   := cOnLostFocus
+   ::aOnChange[i]      := cOnChange
+   ::aonenter[i]       := cOnEnter
+   ::aShowNone[i]      := lShowNone
+   ::aUpDown[i]        := lUpDown
+   ::aRightAlign[i]    := lRightAlign
+   ::aHelpID[i]        := nHelpID
+   ::aCObj[i]          := cObj
    ::aBold[i]          := lBold
    ::aFontItalic[i]    := lItalic
    ::aFontUnderline[i] := lUnderline
    ::aFontStrikeout[i] := lStrikeout
-   ::aBackColor[i]     := aBackColor
    ::aVisible[i]       := lVisible
    ::aEnabled[i]       := lEnabled
-   ::aFontColor[i]     := aFontColor
    ::aRTL[i]           := lRTL
-   ::aClientEdge[i]    := lClientEdge
-   ::aBorder[i]        := lBorder
-   ::aItemCount[i]     := nRowCount
-   ::aIncrement[i]     := nColCount
+   ::aNoTabStop[i]     := lNoTabStop
+   ::aBorder[i]        := lNoBorder
+   ::aSubClass[i]      := cSubClass
 
    // Create control
-   oCtrl        := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i )
-   oCtrl:Row    := nRow
-   oCtrl:Col    := nCol
-   oCtrl:Width  := nWidth
-   oCtrl:Height := nHeight
+   oCtrl     := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i, nWidth, nHeight, NIL )
+   oCtrl:Row := nRow
+   oCtrl:Col := nCol
 
    ::AddCtrlToTabPage( i, cName, nRow, nCol )
 RETURN NIL
@@ -6882,9 +9156,9 @@ LOCAL cName, cObj, nRow, nCol, lEnabled, nInterval, cAction, cSubClass, oCtrl
    ::aSubClass[i] := cSubClass
 
    // Create control
-   oCtrl        := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i )
-   oCtrl:Row    := nRow
-   oCtrl:Col    := nCol
+   oCtrl     := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i, NIL, NIL, NIL )
+   oCtrl:Row := nRow
+   oCtrl:Col := nCol
 
    ::AddCtrlToTabPage( i, cName, nRow, nCol )
 RETURN NIL
@@ -6986,7 +9260,7 @@ LOCAL cOnCheckChg, nIndent, cOnDrop, lNoLines, oCtrl
    ::aItemIDs[i]       := lItemIds
    ::aHelpID[i]        := nHelpId
    ::aFull[i]          := lFull
-   ::aValue[i]         := nValue
+   ::aValueN[i]        := nValue
    ::aRTL[i]           := lRTL
    ::aOnEnter[i]       := cOnEnter
    ::aBreak[i]         := lBreak
@@ -7012,1130 +9286,9 @@ LOCAL cOnCheckChg, nIndent, cOnDrop, lNoLines, oCtrl
    ::aNoLines[i]       := lNoLines
 
    // Create control
-   oCtrl        := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i )
-   oCtrl:Row    := nRow
-   oCtrl:Col    := nCol
-   oCtrl:Width  := nWidth
-   oCtrl:Height := nHeight
-
-   ::AddCtrlToTabPage( i, cName, nRow, nCol )
-RETURN NIL
-
-//------------------------------------------------------------------------------
-METHOD pLabel( i ) CLASS TFormEditor
-//------------------------------------------------------------------------------
-LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cAction, cToolTip, lBorder
-LOCAL lClientEdge, lVisible, lEnabled, lTrans, nHelpId, aBackColor, cValue
-LOCAL cFontName, nFontSize, aFontColor, lBold, lItalic, lUnderline, lStrikeout
-LOCAL lRightAlign, lCenterAlign, lAutoSize, cInputMask, lHScroll, lVScroll
-LOCAL lRTL, lNoWrap, lNoPrefix, cSubClass
-
-   // Load properties
-   cName        := ::aControlW[i]
-   cObj         := ::ReadStringData( cName, 'OBJ', '' )
-   nRow         := Val( ::ReadCtrlRow( cName ) )
-   nCol         := Val( ::ReadCtrlCol( cName ) )
-   nWidth       := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( TLabel():nWidth ) ) ) )
-   nHeight      := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TLabel():nHeight ) ) ) )
-   cAction      := ::ReadStringData( cName, 'ACTION', "" )
-   cAction      := ::ReadStringData( cName, 'ON CLICK',cAction )
-   cAction      := ::ReadStringData( cName, 'ONCLICK', cAction )
-   cToolTip     := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
-   lBorder      := ( ::ReadLogicalData( cName, "BORDER", "F" ) == "T" )
-   lClientEdge  := ( ::ReadLogicalData( cName, "CLIENTEDGE", "F") == "T" )
-   lVisible     := ( ::ReadLogicalData( cName, 'INVISIBLE', "F" ) == "F" )
-   lVisible     := ( Upper(  ::ReadOopData( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
-   lEnabled     := ( ::ReadLogicalData( cName, 'DISABLED', "F" ) == "F" )
-   lEnabled     := ( Upper(  ::ReadOopData( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
-   lTrans       := ( ::ReadLogicalData( cName, "TRANSPARENT", "F" ) == "T" )
-   nHelpId      := Val( ::ReadStringData( cName, 'HELPID', '0' ) )
-   aBackColor   := ::ReadStringData( cName, 'BACKCOLOR', 'NIL' )
-   aBackColor   := UpperNIL( ::ReadOopData( cName, 'BACKCOLOR', aBackColor ) )
-   cValue       := ::Clean( ::ReadStringData( cName, 'VALUE', '' ) )
-   cFontName    := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
-   nFontSize    := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
-   aFontColor   := ::ReadStringData( cName, 'FONTCOLOR', 'NIL' )
-   aFontColor   := UpperNIL( ::ReadOopData( cName, 'FONTCOLOR', aFontColor ) )
-   lBold        := ( ::ReadLogicalData( cName, 'BOLD', "F" ) == "T" )
-   lBold        := ( Upper( ::ReadOopData( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) == '.T.' )
-   lItalic      := ( ::ReadLogicalData( cName, 'ITALIC', "F" ) == "T" )
-   lItalic      := ( Upper( ::ReadOopData( cName, 'FONTITALIC', IF( lItalic, '.T.', '.F.' ) ) ) == '.T.' )
-   lUnderline   := ( ::ReadLogicalData( cName, 'UNDERLINE', "F" ) == "T" )
-   lUnderline   := ( Upper( ::ReadOopData( cName, 'FONTUNDERLINE', IF( lUnderline, '.T.', '.F.' ) ) ) == '.T.' )
-   lStrikeout   := ( ::ReadLogicalData( cName, 'STRIKEOUT', "F" ) == "T" )
-   lStrikeout   := ( Upper( ::ReadOopData( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) == '.T.' )
-   lRightAlign  := ( ::ReadLogicalData( cName, "RIGHTALIGN", "F" ) == "T" )
-   lCenterAlign := ( ::ReadLogicalData( cName, "CENTERALIGN", "F" ) == "T" )
-   lAutoSize    := ( ::ReadLogicalData( cName, "AUTOSIZE", "F" ) == "T" )
-   cInputMask   := ::ReadStringData( cName, 'INPUTMASK', "" )
-   lHScroll     := ( ::ReadLogicalData( cName, "HSCROLL", "F" ) == "T" )
-   lVScroll     := ( ::ReadLogicalData( cName, "VSCROLL", "F" ) == "T" )
-   lRTL         := ( ::ReadLogicalData( cName, 'RTL', "F" ) == "T" )
-   lNoWrap      := ( ::ReadLogicalData( cName, 'NOWORDWRAP', "F" ) == "T" )
-   lNoPrefix    := ( ::ReadLogicalData( cName, 'NOPREFIX', "F" ) == "T" )
-   cSubClass    := ::ReadStringData( cName, 'SUBCLASS', '' )
-
-   // Show control
-   IF lTrans
-      IF lRightAlign
-         @ nRow, nCol LABEL &cName OF ( ::oDesignForm:Name ) ;
-            WIDTH nWidth ;
-            HEIGHT nHeight ;
-            VALUE cValue ;
-            RIGHTALIGN ;
-            TRANSPARENT ;
-            ACTION ::DrawOutline( _OOHG_ThisObject )
-      ELSE
-         IF lCenterAlign
-            @ nRow, nCol LABEL &cName OF ( ::oDesignForm:Name ) ;
-               WIDTH nWidth ;
-               HEIGHT nHeight ;
-               VALUE cValue ;
-               CENTERALIGN ;
-               TRANSPARENT ;
-               ACTION ::DrawOutline( _OOHG_ThisObject )
-         ELSE
-            @ nRow, nCol LABEL &cName OF ( ::oDesignForm:Name ) ;
-               WIDTH nWidth ;
-               HEIGHT nHeight ;
-               VALUE cValue ;
-               TRANSPARENT ;
-               ACTION ::DrawOutline( _OOHG_ThisObject )
-         ENDIF
-      ENDIF
-   ELSE
-      IF lRightAlign
-         @ nRow, nCol LABEL &cName OF ( ::oDesignForm:Name ) ;
-            WIDTH nWidth ;
-            HEIGHT nHeight ;
-            VALUE cValue ;
-            RIGHTALIGN ;
-            ACTION ::DrawOutline( _OOHG_ThisObject )
-      ELSE
-         IF lCenterAlign
-            @ nRow, nCol LABEL &cName OF ( ::oDesignForm:Name ) ;
-               WIDTH nWidth ;
-               HEIGHT nHeight ;
-               VALUE cValue ;
-               CENTERALIGN ;
-               ACTION ::DrawOutline( _OOHG_ThisObject )
-         ELSE
-            @ nRow, nCol LABEL &cName OF ( ::oDesignForm:Name ) ;
-               WIDTH nWidth ;
-               HEIGHT nHeight ;
-               VALUE cValue ;
-               ACTION ::DrawOutline( _OOHG_ThisObject )
-         ENDIF
-      ENDIF
-   ENDIF
-   IF ! Empty( cFontName )
-      ::oDesignForm:&cName:FontName := cFontName
-   ENDIF
-   IF nFontSize > 0
-      ::oDesignForm:&cName:FontSize := nFontSize
-   ENDIF
-   IF IsValidArray( aFontColor )
-      ::oDesignForm:&cName:FontColor := &aFontColor
-   ENDIF
-   ::oDesignForm:&cName:FontBold      := lBold
-   ::oDesignForm:&cName:FontItalic    := lItalic
-   ::oDesignForm:&cName:FontUnderline := lUnderline
-   ::oDesignForm:&cName:FontStrikeout := lStrikeout
-   IF IsValidArray( aBackColor )
-      ::oDesignForm:&cName:BackColor := &aBackColor
-   ENDIF
-   ::oDesignForm:&cName:ToolTip := cToolTip
-
-   // Save properties
-   ::aCtrlType[i]      := 'LABEL'
-   ::aCObj[i]          := cObj
-   ::aAction[i]        := cAction
-   ::aToolTip[i]       := cToolTip
-   ::aBorder[i]        := lBorder
-   ::aClientEdge[i]    := lClientEdge
-   ::aVisible[i]       := lVisible
-   ::aEnabled[i]       := lEnabled
-   ::aTransparent[i]   := lTrans
-   ::aHelpID[i]        := nHelpid
-   ::aBackColor[i]     := aBackColor
-   ::aValue[i]         := cValue
-   ::aFontName[i]      := cFontName
-   ::aFontSize[i]      := nFontSize
-   ::aFontColor[i]     := aFontColor
-   ::aBold[i]          := lBold
-   ::aFontItalic[i]    := lItalic
-   ::aFontUnderline[i] := lUnderline
-   ::aFontStrikeout[i] := lStrikeout
-   ::aRightAlign[i]    := lRightAlign
-   ::aCenterAlign[i]   := lCenterAlign
-   ::aAutoPlay[i]      := lAutoSize
-   ::aInputMask[i]     := cInputMask
-   ::aNoHScroll[i]     := lHScroll
-   ::aNoVScroll[i]     := lVScroll
-   ::aRTL[i]           := lRTL
-   ::aWrap[i]          := lNoWrap
-   ::aNoPrefix[i]      := lNoPrefix
-   ::aSubClass[i]      := cSubClass
-
-   // TODO: Create control
-
-   ::AddCtrlToTabPage( i, cName, nRow, nCol )
-RETURN NIL
-
-//------------------------------------------------------------------------------
-METHOD pPlayer( i ) CLASS TFormEditor
-//------------------------------------------------------------------------------
-LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, nHelpId, cFile, lNoTabStop
-LOCAL lVisible, lEnabled, lRTL, lNoAutoSizeW, lNoAutoSizeM, lNoErrorDlg, lNoMenu
-LOCAL lNoOpen, lNoPlayBar, lShowAll, lShowMode, lShowName, lShowPosition
-LOCAL cSubClass
-
-   // Load properties
-   cName         := ::aControlW[i]
-   cObj          := ::ReadStringData( cName, 'OBJ', '' )
-   nRow          := Val( ::ReadCtrlRow( cName ) )
-   nCol          := Val( ::ReadCtrlCol( cName ) )
-   nWidth        := Val( ::ReadStringData( cName, 'WIDTH', '0' ) )
-   nHeight       := Val( ::ReadStringData( cName, 'HEIGHT', '0' ) )
-   nHelpId       := Val( ::ReadStringData( cName, 'HELPID', '0' ) )
-   cFile         := ::Clean( ::ReadStringData( cName, 'FILE', '' ) )
-   lNoTabStop    := ( ::ReadLogicalData( cName, 'NOTABSTOP', 'F' ) == "T" )
-   lVisible      := ( ::ReadLogicalData( cName, 'INVISIBLE', "F" ) == "F" )
-   lVisible      := ( Upper(  ::ReadOopData( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
-   lEnabled      := ( ::ReadLogicalData( cName, 'DISABLED', "F" ) == "F" )
-   lEnabled      := ( Upper(  ::ReadOopData( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
-   lRTL          := ( ::ReadLogicalData( cName, 'RTL', "F" ) == "T" )
-   lNoAutoSizeW  := ( ::ReadLogicalData( cName, 'NOAUTOSIZEWINDOW', "F" ) == "T" )
-   lNoAutoSizeM  := ( ::ReadLogicalData( cName, 'NOAUTOSIZEMOVIE', "F" ) == "T" )
-   lNoErrorDlg   := ( ::ReadLogicalData( cName, 'NOERRORDLG', "F" ) == "T" )
-   lNoMenu       := ( ::ReadLogicalData( cName, 'NOMENU', "F" ) == "T" )
-   lNoOpen       := ( ::ReadLogicalData( cName, 'NOOPEN', "F" ) == "T" )
-   lNoPlayBar    := ( ::ReadLogicalData( cName, 'NOPLAYBAR', "F" ) == "T" )
-   lShowAll      := ( ::ReadLogicalData( cName, 'SHOWALL', "F" ) == "T" )
-   lShowMode     := ( ::ReadLogicalData( cName, 'SHOWMODE', "F" ) == "T" )
-   lShowName     := ( ::ReadLogicalData( cName, 'SHOWNAME', "F" ) == "T" )
-   lShowPosition := ( ::ReadLogicalData( cName, 'SHOWPOSITION', "F" ) == "T" )
-   cSubClass     := ::ReadStringData( cName, 'SUBCLASS', '' )
-
-   // Save properties
-   ::aCtrlType[i]         := 'PLAYER'
-   ::aCObj[i]             := cObj
-   ::aHelpID[i]           := nHelpid
-   ::aFile[i]             := cFile
-   ::aNoTabStop[i]        := lNoTabStop
-   ::aVisible[i]          := lVisible
-   ::aEnabled[i]          := lEnabled
-   ::aRTL[i]              := lRTL
-   ::aNoAutoSizeWindow[i] := lNoAutoSizeW
-   ::aNoAutoSizeMovie[i]  := lNoAutoSizeM
-   ::aNoErrorDlg[i]       := lNoErrorDlg
-   ::aNoMenu[i]           := lNoMenu
-   ::aNoOpen[i]           := lNoOpen
-   ::aNoPlayBar[i]        := lNoPlayBar
-   ::aShowAll[i]          := lShowAll
-   ::aShowMode[i]         := lShowMode
-   ::aShowName[i]         := lShowName
-   ::aShowPosition[i]     := lShowPosition
-   ::aSubClass[i]         := cSubClass
-
-   // Show control
-   @ nRow, nCol LABEL &cName OF ( ::oDesignForm:Name ) ;
-      WIDTH nwidth ;
-      HEIGHT nheight ;
-      VALUE cName ;
-      BORDER ;
-      BACKCOLOR WHITE ;
-      ACTION ::DrawOutline( _OOHG_ThisObject )
-
-   // TODO: Create control
-
-   ::AddCtrlToTabPage( i, cName, nRow, nCol )
-RETURN NIL
-
-//------------------------------------------------------------------------------
-METHOD pSpinner( i ) CLASS TFormEditor
-//------------------------------------------------------------------------------
-LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cRange, nValue, cFontName
-LOCAL nFontSize, cToolTip, cOnChange, cOnGotfocus, cOnLostfocus, nHelpId
-LOCAL lNoTabStop, lRTL, lWrap, lReadOnly, nIncrement, lVisible, lEnabled
-LOCAL aBackColor, aFontColor, lBold, lItalic, lUnderline, lStrikeout, lNoBorder
-
-   // Load properties
-   cName        := ::aControlW[i]
-   cObj         := ::ReadStringData( cName, 'OBJ', '' )
-   nRow         := Val( ::ReadCtrlRow( cName ) )
-   nCol         := Val( ::ReadCtrlCol( cName ) )
-   nWidth       := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( TSpinner():nWidth ) ) ) )
-   nHeight      := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TSpinner():nHeight ) ) ) )
-   cRange       := ::ReadStringData( cName, 'RANGE', '' )
-   nValue       := Val( ::ReadStringData( cName, 'VALUE', '0' ) )
-   cFontName    := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
-   nFontSize    := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
-   cToolTip     := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
-   cOnChange    := ::ReadStringData( cName, 'ON CHANGE', '' )
-   cOnGotfocus  := ::ReadStringData( cName, 'ON GOTFOCUS', '' )
-   cOnLostfocus := ::ReadStringData( cName, 'ON LOSTFOCUS', '' )
-   nHelpId      := Val( ::ReadStringData( cName, 'HELPID', '0' ) )
-   lNoTabStop   := ( ::ReadLogicalData( cName, 'NOTABSTOP', 'F' ) == "T" )
-   lRTL         := ( ::ReadLogicalData( cName, 'RTL', "F" ) == "T" )
-   lWrap        := ( ::ReadLogicalData( cName, 'WRAP', "F" ) == "T" )
-   lReadOnly    := ( ::ReadLogicalData( cName, 'READONLY', "F" ) == "T" )
-   nIncrement   := Val( ::ReadStringData( cName, 'INCREMENT', '0' ) )
-   lVisible     := ( ::ReadLogicalData( cName, 'INVISIBLE', "F" ) == "F" )
-   lVisible     := ( Upper(  ::ReadOopData( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
-   lEnabled     := ( ::ReadLogicalData( cName, 'DISABLED', "F" ) == "F" )
-   lEnabled     := ( Upper(  ::ReadOopData( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
-   aBackColor   := ::ReadStringData( cName, 'BACKCOLOR', 'NIL' )
-   aBackColor   := UpperNIL( ::ReadOopData( cName, 'BACKCOLOR', aBackColor ) )
-   aFontColor   := ::ReadStringData( cName, 'FONTCOLOR', 'NIL' )
-   aFontColor   := UpperNIL( ::ReadOopData( cName, 'FONTCOLOR', aFontColor ) )
-   lBold        := ( ::ReadLogicalData( cName, 'BOLD', "F" ) == "T" )
-   lBold        := ( Upper( ::ReadOopData( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) == '.T.' )
-   lItalic      := ( ::ReadLogicalData( cName, 'ITALIC', "F" ) == "T" )
-   lItalic      := ( Upper( ::ReadOopData( cName, 'FONTITALIC', IF( lItalic, '.T.', '.F.' ) ) ) == '.T.' )
-   lUnderline   := ( ::ReadLogicalData( cName, 'UNDERLINE', "F" ) == "T" )
-   lUnderline   := ( Upper( ::ReadOopData( cName, 'FONTUNDERLINE', IF( lUnderline, '.T.', '.F.' ) ) ) == '.T.' )
-   lStrikeout   := ( ::ReadLogicalData( cName, 'STRIKEOUT', "F" ) == "T" )
-   lStrikeout   := ( Upper( ::ReadOopData( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) == '.T.' )
-   lNoBorder    := ( ::ReadLogicalData( cName, "NOBORDER", "F" ) == "T" )
-
-   // Save properties
-   ::aCtrlType[i]      := 'SPINNER'
-   ::aCObj[i]          := cObj
-   ::aRange[i]         := cRange
-   ::aValueN[i]        := nValue
-   ::aFontName[i]      := cFontName
-   ::aFontSize[i]      := nFontSize
-   ::aToolTip[i]       := cToolTip
-   ::aOnChange[i]      := cOnChange
-   ::aOnGotFocus[i]    := cOnGotfocus
-   ::aOnLostFocus[i]   := cOnLostfocus
-   ::aHelpID[i]        := nHelpId
-   ::aNoTabStop[i]     := lNoTabStop
-   ::aRTL[i]           := lRTL
-   ::aWrap[i]          := lWrap
-   ::aReadOnly[i]      := lReadOnly
-   ::aIncrement[i]     := nIncrement
-   ::aEnabled[i]       := lEnabled
-   ::aVisible[i]       := lVisible
-   ::aBackColor[i]     := aBackColor
-   ::aFontColor[i]     := aFontColor
-   ::aBold[i]          := lBold
-   ::aFontItalic[i]    := lItalic
-   ::aFontUnderline[i] := lUnderLine
-   ::aFontStrikeout[i] := lStrikeout
-   ::aBorder[i]        := lNoBorder
-
-   // Show control
-   @ nRow, nCol LABEL &cName OF ( ::oDesignForm:Name ) ;
-      WIDTH nWidth ;
-      HEIGHT nHeight ;
-      VALUE cName ;
-      ACTION ::DrawOutline( _OOHG_ThisObject ) ;
-      BACKCOLOR WHITE ;
-      CLIENTEDGE ;
-      VSCROLL
-   IF ! Empty( cFontName )
-      ::oDesignForm:&cName:FontName := cFontName
-   ENDIF
-   IF nFontSize > 0
-      ::oDesignForm:&cName:FontSize := nFontSize
-   ENDIF
-   ::oDesignForm:&cName:FontBold      := lBold
-   ::oDesignForm:&cName:FontItalic    := lItalic
-   ::oDesignForm:&cName:FontUnderline := lUnderLine
-   ::oDesignForm:&cName:FontStrikeout := lStrikeout
-   IF IsValidArray( aBackColor )
-      ::oDesignForm:&cName:BackColor := &aBackColor
-   ENDIF
-   IF IsValidArray( aFontColor )
-      ::oDesignForm:&cName:FontColor := &aFontColor
-   ENDIF
-   ::oDesignForm:&cName:ToolTip := cToolTip
-
-   // TODO: Create control
-
-   ::AddCtrlToTabPage( i, cName, nRow, nCol )
-RETURN NIL
-
-//------------------------------------------------------------------------------
-METHOD pSlider( i ) CLASS TFormEditor
-//------------------------------------------------------------------------------
-LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cRange, nValue, cToolTip
-LOCAL cOnChange, lVertical, lNoTicks, lBoth, lTop, lLeft, nHelpId, aBackColor
-LOCAL lVisible, lEnabled, lNoTabStop, lRTL, cSubClass
-
-   // Load properties
-   cName      := ::aControlW[i]
-   cObj       := ::ReadStringData( cName, 'OBJ', '' )
-   nRow       := Val( ::ReadCtrlRow( cName ) )
-   nCol       := Val( ::ReadCtrlCol( cName ) )
-   nWidth     := Val( ::ReadStringData( cName, 'WIDTH', '0' ) )
-   nHeight    := Val( ::ReadStringData( cName, 'HEIGHT', '0' ) )
-   cRange     := ::ReadStringData( cName, 'RANGE', '' )
-   nValue     := Val( ::ReadStringData( cName, 'VALUE', '0' ) )
-   cToolTip   := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
-   cOnChange  := ::ReadStringData( cName, 'ON CHANGE', '' )
-   lVertical  := ( ::ReadLogicalData( cName, 'VERTICAL', 'F' ) == "T" )
-   lNoTicks   := ( ::ReadLogicalData( cName, 'NOTICKS', 'F' ) == "T" )
-   lBoth      := ( ::ReadLogicalData( cName, 'BOTH', 'F' ) == "T" )
-   lTop       := ( ::ReadLogicalData( cName, 'TOP', 'F' ) == "T" )
-   lLeft      := ( ::ReadLogicalData( cName, 'LEFT', 'F' ) == "T" )
-   nHelpId    := Val( ::ReadStringData( cName, 'HELPID', '0' ) )
-   aBackColor := ::ReadStringData( cName, 'BACKCOLOR', 'NIL' )
-   aBackColor := UpperNIL( ::ReadOopData( cName, 'BACKCOLOR', aBackColor ) )
-   lVisible   := ( ::ReadLogicalData( cName, 'INVISIBLE', "F" ) == "F" )
-   lVisible   := ( Upper(  ::ReadOopData( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
-   lEnabled   := ( ::ReadLogicalData( cName, 'DISABLED', "F" ) == "F" )
-   lEnabled   := ( Upper(  ::ReadOopData( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
-   lNoTabStop := ( ::ReadLogicalData( cName, 'NOTABSTOP', 'F' ) == "T" )
-   lRTL       := ( ::ReadLogicalData( cName, 'RTL', 'F' ) == "T" )
-   cSubClass  := ::ReadStringData( cName, 'SUBCLASS', '' )
-
-   // Show control
-   IF lVertical
-      @ nRow, nCol SLIDER &cName OF ( ::oDesignForm:Name ) ;
-         RANGE 1, 10 ;
-         VALUE 5 ;
-         WIDTH nWidth ;
-         HEIGHT nHeight ;
-         ON CHANGE ::DrawOutline( _OOHG_ThisObject ) ;
-         VERTICAL
-   ELSE
-      @ nRow, nCol SLIDER &cName OF ( ::oDesignForm:Name ) ;
-         RANGE 1, 10 ;
-         VALUE 5 ;
-         WIDTH nWidth ;
-         HEIGHT nHeight ;
-         ON CHANGE ::DrawOutline( _OOHG_ThisObject )
-   ENDIF
-   IF IsValidArray( aBackColor )
-      ::oDesignForm:&cName:BackColor := &aBackColor
-   ENDIF
-   ::oDesignForm:&cName:ToolTip := cToolTip
-
-   // Save properties
-   ::aCtrlType[i]  := 'SLIDER'
-   ::aCObj[i]      := cObj
-   ::aRange[i]     := cRange
-   ::aValueN[i]    := nValue
-   ::aToolTip[i]   := cToolTip
-   ::aOnChange[i]  := cOnChange
-   ::aVertical[i]  := lVertical
-   ::aNoTicks[i]   := lNoTicks
-   ::aBoth[i]      := lBoth
-   ::aTop[i]       := lTop
-   ::aLeft[i]      := lLeft
-   ::aHelpID[i]    := nHelpID
-   ::aBackColor[i] := aBackColor
-   ::aVisible[i]   := lVisible
-   ::aEnabled[i]   := lEnabled
-   ::aNoTabStop[i] := lNoTabStop
-   ::aRTL[i]       := lRTL
-   ::aSubClass[i]  := cSubClass
-
-   // TODO: Create control
-
-   ::AddCtrlToTabPage( i, cName, nRow, nCol )
-RETURN NIL
-
-//------------------------------------------------------------------------------
-METHOD pProgressbar( i ) CLASS TFormEditor
-//------------------------------------------------------------------------------
-LOCAL cName, cObj, nRow, nCol, lVertical, nWidth, nHeight, cRange, cToolTip
-LOCAL lSmooth, nHelpId, lVisible, lEnabled, aBackColor, aFontColor, nValue
-LOCAL lRTL, nMarquee
-
-   // Load properties
-   cName      := ::aControlW[i]
-   cObj       := ::ReadStringData( cName, 'OBJ', '' )
-   nRow       := Val( ::ReadCtrlRow( cName ) )
-   nCol       := Val( ::ReadCtrlCol( cName ) )
-   lVertical  := ( ::ReadLogicalData( cName, 'VERTICAL', 'F' ) == "T" )
-   IF lVertical
-      nWidth  := Val( ::ReadStringData( cName, 'WIDTH', '25' ) )                       // TODO: Check
-      nHeight := Val( ::ReadStringData( cName, 'HEIGHT', '120' ) )
-   ELSE
-      nWidth  := Val( ::ReadStringData( cName, 'WIDTH', '120' ) )
-      nHeight := Val( ::ReadStringData( cName, 'HEIGHT', '25' ) )
-   ENDIF
-   cRange     := ::ReadStringData( cName, 'RANGE', '' )
-   cToolTip   := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
-   lSmooth    := ( ::ReadLogicalData( cName, 'SMOOTH', 'F' ) == "T" )
-   nHelpId    := Val( ::ReadStringData( cName, 'HELPID', '0' ) )
-   lVisible   := ( ::ReadLogicalData( cName, 'INVISIBLE', "F" ) == "F" )
-   lVisible   := ( Upper(  ::ReadOopData( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
-   lEnabled   := ( ::ReadLogicalData( cName, 'DISABLED', "F" ) == "F" )
-   lEnabled   := ( Upper(  ::ReadOopData( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
-   aBackColor := ::ReadStringData( cName, 'BACKCOLOR', 'NIL' )
-   aBackColor := UpperNIL( ::ReadOopData( cName, 'BACKCOLOR', aBackColor ) )
-   aFontColor := ::ReadStringData( cName, 'FORECOLOR', 'NIL' )
-   aFontColor := UpperNIL( ::ReadOopData( cName, 'FORECOLOR', aFontColor ) )
-   nValue     := Val( ::ReadStringData( cName, 'VALUE', '0' ) )
-   lRTL       := ( ::ReadLogicalData( cName, 'RTL', 'F' ) == "T" )
-   nMarquee   := Val( ::ReadStringData( cName, 'MARQUEE', '0' ) )
-
-   // Show control
-   @ nrow,ncol LABEL &cName OF ( ::oDesignForm:Name ) ;
-      WIDTH nwidth ;
-      HEIGHT nheight ;
-      VALUE cName ;
-      BORDER ;
-      ACTION ::DrawOutline( _OOHG_ThisObject )
-   IF IsValidArray( aFontColor )
-      ::oDesignForm:&cName:FontColor := &aFontColor
-   ENDIF
-   IF IsValidArray( aBackColor )
-      ::oDesignForm:&cName:BackColor := &aBackColor
-   ENDIF
-   ::oDesignForm:&cName:ToolTip := cToolTip
-
-   // Save properties
-   ::aCtrlType[i]  := 'PROGRESSBAR'
-   ::aCObj[i]      := cObj
-   ::aVertical[i]  := lVertical
-   ::aRange[i]     := cRange
-   ::aToolTip[i]   := cToolTip
-   ::aSmooth[i]    := lSmooth
-   ::aHelpID[i]    := nHelpID
-   ::aVisible[i]   := lVisible
-   ::aEnabled[i]   := lEnabled
-   ::aBackColor[i] := aBackColor
-   ::aFontColor[i] := aFontColor
-   ::aValueN[i]    := nValue
-   ::aRTL[i]       := lRTL
-   ::aMarquee[i]   := nMarquee
-
-   // TODO: Create control
-
-   ::AddCtrlToTabPage( i, cName, nRow, nCol )
-RETURN NIL
-
-//------------------------------------------------------------------------------
-METHOD pRadiogroup( i ) CLASS TFormEditor
-//------------------------------------------------------------------------------
-LOCAL cName, cObj, nRow, nCol, nWidth, nValue, nSpacing, cFontName, nFontSize
-LOCAL cToolTip, cOnChange, lTrans, nHelpid, cItems, lVisible, lEnabled, lBold
-LOCAL lItalic, lUnderline, lStrikeout, aBackColor, aFontColor, lRTL, lNoTabStop
-LOCAL lAutoSize, lVertical, lThemed, cBackground, nOpen, nClose, ki, nItems
-LOCAL cSubClass
-
-   // Load properties
-   cName       := ::aControlW[i]
-   cObj        := ::ReadStringData( cName, 'OBJ', '' )
-   nRow        := Val( ::ReadCtrlRow( cName ) )
-   nCol        := Val( ::ReadCtrlCol( cName ) )
-   nWidth      := Val( ::ReadStringData( cName, 'WIDTH', '120' ) )                     // TODO: Check
-   nValue      := Val( ::ReadStringData( cName, 'VALUE', '0' ) )
-   nSpacing    := Val( ::ReadStringData( cName, 'SPACING', "25" ) )
-   cFontName   := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
-   nFontSize   := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
-   cToolTip    := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
-   cOnChange   := ::ReadStringData( cName, 'ON CHANGE', '' )
-   lTrans      := ( ::ReadLogicalData( cName, "TRANSPARENT", "F" ) == "T" )
-   nHelpid     := Val( ::ReadStringData(cName, 'HELPID', "0" ) )
-   cItems      := ::ReadStringData( cName, 'OPTIONS', "{ 'option 1', 'option 2' }" )
-   lVisible    := ( ::ReadLogicalData( cName, 'INVISIBLE', "F" ) == "F" )
-   lVisible    := ( Upper(  ::ReadOopData( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
-   lEnabled    := ( ::ReadLogicalData( cName, 'DISABLED', "F" ) == "F" )
-   lEnabled    := ( Upper(  ::ReadOopData( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
-   lBold       := ( ::ReadLogicalData( cName, 'BOLD', "F" ) == "T" )
-   lBold       := ( Upper( ::ReadOopData( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) == '.T.' )
-   lItalic     := ( ::ReadLogicalData( cName, 'ITALIC', "F" ) == "T" )
-   lItalic     := ( Upper( ::ReadOopData( cName, 'FONTITALIC', IF( lItalic, '.T.', '.F.' ) ) ) == '.T.' )
-   lUnderline  := ( ::ReadLogicalData( cName, 'UNDERLINE', "F" ) == "T" )
-   lUnderline  := ( Upper( ::ReadOopData( cName, 'FONTUNDERLINE', IF( lUnderline, '.T.', '.F.' ) ) ) == '.T.' )
-   lStrikeout  := ( ::ReadLogicalData( cName, 'STRIKEOUT', "F" ) == "T" )
-   lStrikeout  := ( Upper( ::ReadOopData( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) == '.T.' )
-   aBackColor  := ::ReadStringData( cName, 'BACKCOLOR', 'NIL' )
-   aBackColor  := UpperNIL( ::ReadOopData( cName, 'BACKCOLOR', aBackColor ) )
-   aFontColor  := ::ReadStringData( cName, 'FORECOLOR', 'NIL' )
-   aFontColor  := UpperNIL( ::ReadOopData( cName, 'FORECOLOR', aFontColor ) )
-   lRTL        := ( ::ReadLogicalData( cName, 'RTL', 'F' ) == "T" )
-   lNoTabStop  := ( ::ReadLogicalData( cName, "NOTABSTOP", "F" ) == "T" )
-   lAutoSize   := ( ::ReadLogicalData( cName, "AUTOSIZE", "F" ) == "T" )
-   lVertical   := ( ::ReadLogicalData( cName, 'VERTICAL', "F" ) == "T" )
-   lThemed     := ( ::ReadLogicalData( cName, 'THEMED', "F" ) == "T" )
-   cBackground := ::ReadStringData( cName, 'BACKGROUND', '' )
-   cSubClass   := ::ReadStringData( cName, 'SUBCLASS', '' )
-
-   nOpen := nClose := 0
-   FOR ki := 1 TO Len( cItems )
-      IF SubStr( cItems, ki, 1 ) == '{'
-         nOpen ++
-      ELSEIF SubStr( cItems, ki, 1) == '}'
-         nClose ++
-      ENDIF
-   NEXT ki
-   IF nOpen # 1 .OR. nClose # 1 .OR. Len( &cItems ) < 2
-      cItems := "{ 'option 1', 'option 2' }"
-   ENDIF
-   nItems := Len( &cItems )
-
-   // Show control
-   IF lTrans
-      @ nRow, nCol LABEL &cName OF ( ::oDesignForm:Name ) ;
-         WIDTH nWidth ;
-         HEIGHT nSpacing * nItems + 8 ;
-         VALUE cName ;
-         BORDER ;
-         TRANSPARENT ;
-         ACTION ::DrawOutline( _OOHG_ThisObject )
-   ELSE
-      @ nRow, nCol LABEL &cName OF ( ::oDesignForm:Name ) ;
-         WIDTH nWidth ;
-         HEIGHT nSpacing * nItems + 8 ;
-         VALUE cName ;
-         BORDER ;
-         ACTION ::DrawOutline( _OOHG_ThisObject )
-   ENDIF
-   IF ! Empty( cFontName )
-      ::oDesignForm:&cName:FontName := cFontName
-   ENDIF
-   IF nFontSize > 0
-      ::oDesignForm:&cName:FontSize := nFontSize
-   ENDIF
-   ::oDesignForm:&cName:FontBold      := lBold
-   ::oDesignForm:&cName:FontItalic    := lItalic
-   ::oDesignForm:&cName:FontUnderline := lUnderLine
-   ::oDesignForm:&cName:FontStrikeout := lStrikeout
-   ::oDesignForm:&cName:ToolTip := cToolTip
-   IF IsValidArray( aBackColor )
-      ::oDesignForm:&cName:BackColor := &aBackColor
-   ENDIF
-   IF IsValidArray( aFontColor )
-      ::oDesignForm:&cName:FontColor := &aFontColor
-   ENDIF
-
-   // Save properties
-   ::aCtrlType[i]      := 'RADIOGROUP'
-   ::aCObj[i]          := cObj
-   ::aValueN[i]        := nValue
-   ::aSpacing[i]       := nSpacing
-   ::aFontName[i]      := cFontName
-   ::aFontSize[i]      := nFontSize
-   ::aToolTip[i]       := cToolTip
-   ::aOnChange[i]      := cOnChange
-   ::aTransparent[i]   := lTrans
-   ::aHelpID[i]        := nHelpID
-   ::aItems[i]         := cItems
-   ::aVisible[i]       := lVisible
-   ::aEnabled[i]       := lEnabled
-   ::aBold[i]          := lBold
-   ::aFontItalic[i]    := lItalic
-   ::aFontUnderline[i] := lUnderLine
-   ::aFontStrikeout[i] := lStrikeout
-   ::aBackColor[i]     := aBackColor
-   ::aFontColor[i]     := aFontColor
-   ::aRTL[i]           := lRTL
-   ::aNoTabStop[i]     := lNoTabStop
-   ::aAutoPlay[i]      := lAutoSize
-   ::aVertical[i]      := lVertical
-   ::aThemed[i]        := lThemed
-   ::aBackground[i]    := cBackground
-   ::aSubClass[i]      := cSubClass
-
-   // TODO: Create control
-
-   ::AddCtrlToTabPage( i, cName, nRow, nCol )
-RETURN NIL
-
-//------------------------------------------------------------------------------
-METHOD pEditbox( i ) CLASS TFormEditor
-//------------------------------------------------------------------------------
-LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aFontColor
-LOCAL lBold, lItalic, lUnderline, lStrikeout, aBackColor, lVisible, lEnabled
-LOCAL cToolTip, cOnChange, cOnGotFocus, cOnLostFocus, cOnVScroll, cOnHScroll
-LOCAL nFocusedPos, lNoBorder, lRTL, cValue, cField, nMaxLength, lReadonly
-LOCAL lBreak, nHelpID, lNoTabStop, lNoVScroll, lNoHScroll
-
-   // Load properties
-   cName        := ::aControlW[i]
-   cObj         := ::ReadStringData( cName, 'OBJ', '' )
-   nRow         := Val( ::ReadCtrlRow( cName ) )
-   nCol         := Val( ::ReadCtrlCol( cName ) )
-   nWidth       := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( TEdit():nWidth ) ) ) )
-   nHeight      := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TEdit():nHeight ) ) ) )
-   cFontName    := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
-   nFontSize    := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
-   aFontColor   := ::ReadStringData( cName, 'FONTCOLOR', 'NIL' )
-   aFontColor   := UpperNIL( ::ReadOopData( cName, 'FONTCOLOR', aFontColor ) )
-   lBold        := ( ::ReadLogicalData( cName, 'BOLD', "F" ) == "T" )
-   lBold        := ( Upper( ::ReadOopData( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) == '.T.' )
-   lItalic      := ( ::ReadLogicalData( cName, 'ITALIC', "F" ) == "T" )
-   lItalic      := ( Upper( ::ReadOopData( cName, 'FONTITALIC', IF( lItalic, '.T.', '.F.' ) ) ) == '.T.' )
-   lUnderline   := ( ::ReadLogicalData( cName, 'UNDERLINE', "F" ) == "T" )
-   lUnderline   := ( Upper( ::ReadOopData( cName, 'FONTUNDERLINE', IF( lUnderline, '.T.', '.F.' ) ) ) == '.T.' )
-   lStrikeout   := ( ::ReadLogicalData( cName, 'STRIKEOUT', "F" ) == "T" )
-   lStrikeout   := ( Upper( ::ReadOopData( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) == '.T.' )
-   aBackColor   := ::ReadStringData( cName, 'BACKCOLOR', 'NIL' )
-   aBackColor   := UpperNIL( ::ReadOopData( cName, 'BACKCOLOR', aBackColor ) )
-   lVisible     := ( ::ReadLogicalData( cName, 'INVISIBLE', "F" ) == "F" )
-   lVisible     := ( Upper( ::ReadOopData( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
-   lEnabled     := ( ::ReadLogicalData( cName, 'DISABLED', "F" ) == "F" )
-   lEnabled     := ( Upper( ::ReadOopData( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
-   cToolTip     := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
-   cOnChange    := ::ReadStringData( cName, 'ON CHANGE', '' )
-   cOnGotFocus  := ::ReadStringData( cName, 'ON GOTFOCUS', '' )
-   cOnLostFocus := ::ReadStringData( cName, 'ON LOSTFOCUS', '' )
-   cOnVScroll   := ::ReadStringData( cName, 'ON VSCROLL', '' )
-   cOnHScroll   := ::ReadStringData( cName, 'ON HSCROLL', '' )
-   nFocusedPos  := Val( ::ReadStringData( cName, 'FOCUSEDPOS', '-4' ) )
-   lNoBorder    := ( ::ReadLogicalData( cName, "NOBORDER", "F" ) == "T" )
-   lRTL         := ( ::ReadLogicalData( cName, 'RTL', "F" ) == "T" )
-   cValue       := ::Clean( ::ReadStringData( cName, 'VALUE', '' ) )
-   cField       := ::ReadStringData( cName, 'FIELD', '' )
-   nMaxLength   := Val( ::ReadStringData( cName, 'MAXLENGTH', '0' ) )
-   lReadonly    := ( ::ReadLogicalData( cName, "READONLY", "F" ) == "T" )
-   lBreak       := ( ::ReadLogicalData( cName, "BREAK", "F" ) == "T" )
-   nHelpID      := Val( ::ReadStringData( cName, 'HELPID', '0' ) )
-   lNoTabStop   := ( ::ReadLogicalData( cName, "NOTABSTOP", "F" ) == "T" )
-   lNoVScroll   := ( ::ReadLogicalData( cName, "NOVSCROLL", "F" ) == "T" )
-   lNoHScroll   := ( ::ReadLogicalData( cName, "NOHSCROLL", "F" ) == "T" )
-
-   // Show control
-   @ nRow, nCol LABEL &cName OF ( ::oDesignForm:Name ) ;
-      WIDTH nwidth ;
-      HEIGHT nheight ;
-      VALUE cName ;
-      CLIENTEDGE ;
-      HSCROLL ;
-      VSCROLL ;
-      ACTION ::DrawOutline( _OOHG_ThisObject )
-   IF ! Empty( cFontName )
-      ::oDesignForm:&cName:FontName := cFontName
-   ENDIF
-   IF nFontSize > 0
-      ::oDesignForm:&cName:FontSize := nFontSize
-   ENDIF
-   IF IsValidArray( aFontColor )
-      ::oDesignForm:&cName:FontColor := &aFontColor
-   ENDIF
-   ::oDesignForm:&cName:FontBold      := lBold
-   ::oDesignForm:&cName:FontItalic    := lItalic
-   ::oDesignForm:&cName:FontUnderline := lUnderline
-   ::oDesignForm:&cName:FontStrikeout := lStrikeout
-   IF IsValidArray( aBackColor )
-      ::oDesignForm:&cName:BackColor := &aBackColor
-   ENDIF
-   ::oDesignForm:&cName:ToolTip := cToolTip
-   ::oDesignForm:&cName:Value := cValue
-
-   // Save properties
-   ::aCtrlType[i]      := 'EDIT'
-   ::aCObj[i]          := cObj
-   ::aFontName[i]      := cFontName
-   ::aFontSize[i]      := nFontSize
-   ::aFontColor[i]     := aFontColor
-   ::aBold[i]          := lBold
-   ::aFontItalic[i]    := lItalic
-   ::aFontUnderline[i] := lUnderline
-   ::aFontStrikeout[i] := lStrikeout
-   ::aBackColor[i]     := aBackColor
-   ::aVisible[i]       := lVisible
-   ::aEnabled[i]       := lEnabled
-   ::aToolTip[i]       := cTooltip
-   ::aOnChange[i]      := cOnChange
-   ::aOnGotFocus[i]    := cOnGotFocus
-   ::aOnLostFocus[i]   := cOnLostFocus
-   ::aOnVScroll[i]     := cOnVScroll
-   ::aOnHScroll[i]     := cOnHScroll
-   ::aFocusedPos[i]    := nFocusedPos
-   ::aBorder[i]        := lNoBorder
-   ::aRTL[i]           := lRTL
-   ::aValue[i]         := cValue
-   ::aField[i]         := cField
-   ::aMaxLength[i]     := nMaxLength
-   ::aReadOnly[i]      := lReadonly
-   ::aBreak[i]         := lBreak
-   ::aHelpID[i]        := nHelpID
-   ::aNoTabStop[i]     := lNoTabStop
-   ::aNoVScroll[i]     := lNoVScroll
-   ::aNoHScroll[i]     := lNoHScroll
-
-   // TODO: Create control
-
-   ::AddCtrlToTabPage( i, cName, nRow, nCol )
-RETURN NIL
-
-//------------------------------------------------------------------------------
-METHOD pRichedit( i ) CLASS TFormEditor
-//------------------------------------------------------------------------------
-LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, cValue
-LOCAL cField, cToolTip, nMaxLength, lReadonly, lBreak, lNoTabStop, nHelpID
-LOCAL cOnChange, cOnGotFocus, cOnLostFocus, lVisible, lEnabled, lBold, lItalic
-LOCAL lUnderline, lStrikeout, aFontColor, aBackColor, lRTL, nFocusedPos
-LOCAL lNoVScroll, cOnVScroll, cOnHScroll, cFile, cSubClass, cOnSelChange
-LOCAL lNoHideSel, lPlainText, nFileType, lNoHScroll
-
-   // Load properties
-   cName        := ::aControlW[i]
-   cObj         := ::ReadStringData( cName, 'OBJ', '' )
-   nRow         := Val( ::ReadCtrlRow( cName ) )
-   nCol         := Val( ::ReadCtrlCol( cName ) )
-   nWidth       := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( TEditRich():nWidth ) ) ) )
-   nHeight      := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TEditRich():nHeight ) ) ) )
-   cFontName    := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
-   nFontSize    := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
-   cValue       := ::Clean( ::ReadStringData( cName, 'VALUE', '' ) )
-   cField       := ::ReadStringData( cName, 'FIELD', '' )
-   cToolTip     := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
-   nMaxLength   := Val( ::ReadStringData( cName, 'MAXLENGTH', '0' ) )
-   lReadonly    := ( ::ReadLogicalData( cName, "READONLY", "F" ) == "T" )
-   lBreak       := ( ::ReadLogicalData( cName, "BREAK", "F" ) == "T" )
-   lNoTabStop   := ( ::ReadLogicalData( cName, "NOTABSTOP", "F" ) == "T" )
-   nHelpID      := Val( ::ReadStringData( cName, 'HELPID', '0' ) )
-   cOnChange    := ::ReadStringData( cName, 'ON CHANGE', '' )
-   cOnGotFocus  := ::ReadStringData( cName, 'ON GOTFOCUS', '' )
-   cOnLostFocus := ::ReadStringData( cName, 'ON LOSTFOCUS', '' )
-   lVisible     := ( ::ReadLogicalData( cName, 'INVISIBLE', "F" ) == "F" )
-   lVisible     := ( Upper( ::ReadOopData( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
-   lEnabled     := ( ::ReadLogicalData( cName, 'DISABLED', "F" ) == "F" )
-   lEnabled     := ( Upper( ::ReadOopData( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
-   lBold        := ( ::ReadLogicalData( cName, 'BOLD', "F" ) == "T" )
-   lBold        := ( Upper( ::ReadOopData( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) == '.T.' )
-   lItalic      := ( ::ReadLogicalData( cName, 'ITALIC', "F" ) == "T" )
-   lItalic      := ( Upper( ::ReadOopData( cName, 'FONTITALIC', IF( lItalic, '.T.', '.F.' ) ) ) == '.T.' )
-   lUnderline   := ( ::ReadLogicalData( cName, 'UNDERLINE', "F" ) == "T" )
-   lUnderline   := ( Upper( ::ReadOopData( cName, 'FONTUNDERLINE', IF( lUnderline, '.T.', '.F.' ) ) ) == '.T.' )
-   lStrikeout   := ( ::ReadLogicalData( cName, 'STRIKEOUT', "F" ) == "T" )
-   lStrikeout   := ( Upper( ::ReadOopData( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) == '.T.' )
-   aFontColor   := ::ReadStringData( cName, 'FONTCOLOR', 'NIL' )
-   aFontColor   := UpperNIL( ::ReadOopData( cName, 'FONTCOLOR', aFontColor ) )
-   aBackColor   := ::ReadStringData( cName, 'BACKCOLOR', 'NIL' )
-   aBackColor   := UpperNIL( ::ReadOopData( cName, 'BACKCOLOR', aBackColor ) )
-   lRTL         := ( ::ReadLogicalData( cName, 'RTL', "F" ) == "T" )
-   nFocusedPos  := Val( ::ReadStringData( cName, 'FOCUSEDPOS', '-4' ) )
-   lNoVScroll   := ( ::ReadLogicalData( cName, "NOVSCROLL", "F" ) == "T" )
-   lNoHScroll   := ( ::ReadLogicalData( cName, "NOHSCROLL", "F" ) == "T" )
-   cOnVScroll   := ::ReadStringData( cName, 'ON VSCROLL', '' )
-   cOnHScroll   := ::ReadStringData( cName, 'ON HSCROLL', '' )
-   cFile        := ::Clean( ::ReadStringData( cName, 'FILE', '' ) )
-   cSubClass    := ::ReadStringData( cName, 'SUBCLASS', '' )
-   cOnSelChange := ::ReadStringData( cName, 'ON SELCHANGE', '' )
-   lNoHideSel   := ( ::ReadLogicalData( cName, "NOHIDESEL", "F" ) == "T" )
-   lPlainText   := ( ::ReadLogicalData( cName, "PLAINTEXT", "F" ) == "T" )
-   nFileType    := Val( ::ReadLogicalData( cName, "FILETYPE", "0" ) )
-
-   // Show control
-   @ nRow, nCol LABEL &cName OF ( ::oDesignForm:Name ) ;
-      WIDTH nWidth ;
-      HEIGHT nHeight ;
-      VALUE cName ;
-      BACKCOLOR WHITE ;
-      CLIENTEDGE ;
-      HSCROLL ;
-      VSCROLL ;
-      ACTION ::DrawOutline( _OOHG_ThisObject )
-   IF ! Empty( cFontName )
-      ::oDesignForm:&cName:FontName := cFontName
-   ENDIF
-   IF nFontSize > 0
-      ::oDesignForm:&cName:FontSize := nFontSize
-   ENDIF
-   IF IsValidArray( aFontColor )
-      ::oDesignForm:&cName:FontColor := &aFontColor
-   ENDIF
-   ::oDesignForm:&cName:FontBold      := lBold
-   ::oDesignForm:&cName:FontItalic    := lItalic
-   ::oDesignForm:&cName:FontUnderline := lUnderline
-   ::oDesignForm:&cName:FontStrikeout := lStrikeout
-   IF IsValidArray( aBackColor )
-      ::oDesignForm:&cName:BackColor := &aBackColor
-   ENDIF
-   ::oDesignForm:&cName:ToolTip := cToolTip
-   ::oDesignForm:&cName:Value := cValue
-
-   // Save properties
-   ::aCtrlType[i]      := 'RICHEDIT'
-   ::aCObj[i]          := cObj
-   ::aFontName[i]      := cFontName
-   ::aFontSize[i]      := nFontSize
-   ::aValue[i]         := cValue
-   ::aField[i]         := cField
-   ::aToolTip[i]       := cTooltip
-   ::aMaxLength[i]     := nMaxLength
-   ::aReadOnly[i]      := lReadonly
-   ::aBreak[i]         := lBreak
-   ::aNoTabStop[i]     := lNoTabStop
-   ::aHelpID[i]        := nHelpID
-   ::aOnChange[i]      := cOnChange
-   ::aOnGotFocus[i]    := cOnGotFocus
-   ::aOnLostFocus[i]   := cOnLostFocus
-   ::aVisible[i]       := lVisible
-   ::aEnabled[i]       := lEnabled
-   ::aBold[i]          := lBold
-   ::aFontItalic[i]    := lItalic
-   ::aFontUnderline[i] := lUnderline
-   ::aFontStrikeout[i] := lStrikeout
-   ::aFontColor[i]     := aFontColor
-   ::aBackColor[i]     := aBackColor
-   ::aRTL[i]           := lRTL
-   ::aFocusedPos[i]    := nFocusedPos
-   ::aNoVScroll[i]     := lNoVScroll
-   ::aNoHScroll[i]     := lNoHScroll
-   ::aOnVScroll[i]     := cOnVScroll
-   ::aOnHScroll[i]     := cOnHScroll
-   ::aFile[i]          := cFile
-   ::aSubClass[i]      := cSubClass
-   ::aOnSelChange[i]   := cOnSelChange
-   ::aNoHideSel[i]     := lNoHideSel
-   ::aPlainText[i]     := lPlainText
-   ::aFileType[i]      := nFileType
-
-   // TODO: Create control
-
-   ::AddCtrlToTabPage( i, cName, nRow, nCol )
-RETURN NIL
-
-//------------------------------------------------------------------------------
-METHOD pBrowse( i ) CLASS TFormEditor
-//------------------------------------------------------------------------------
-LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cHeaders, cWidths, cWorkArea
-LOCAL cFields, nValue, cFontName, nFontSize, cToolTip, cInputMask, cDynBackColor
-LOCAL cDynForecolor, cColControls, cOnChange, cOnGotFocus, cOnLostFocus
-LOCAL cOnDblClick, cOnEnter, cOnHeadClick, cOnEditCell, cOnAppend, cWhen, cValid
-LOCAL cValidMess, cReadOnly, lLock, lDelete, lAppend, lInPlace, lEdit, lNoLines
-LOCAL cImage, cJustify, nHelpId, lBold, lItalic, lUnderline, lStrikeout
-LOCAL aBackColor, aFontColor, cAction, lBreak, lRTL, lNoTabStop, lVisible
-LOCAL lEnabled, lFull, lButtons, lNoHeaders, cHeaderImages, cImagesAlign
-LOCAL aSelColor, cEditKeys, lDoubleBuffer, lSingleBuffer, lFocusRect
-LOCAL lNoFocusRect, lPLM, lFixedCols, cOnAbortEdit, lFixedWidths, cBeforeColMove
-LOCAL cAfterColMove, cBeforeColSize, cAfterColSize, cBeforeAutoFit, lLikeExcel
-LOCAL cDeleteWhen, cDeleteMsg, cOnDelete, lNoDeleteMsg, lFixedCtrls
-LOCAL lDynamicCtrls, cOnHeadRClick, lExtDblClick, lNoVScroll, lNoRefresh
-LOCAL cReplaceField, cSubClass, lRecCount, cColumnInfo, lDescending
-LOCAL lForceRefresh, lSync, lUnSync, lUpdateAll, lFixedBlocks, lDynamicBlocks
-LOCAL lUpdateColors
-
-   // Load properties
-   cName          := ::aControlW[i]
-   cObj           := ::ReadStringData( cName, 'OBJ', '' )
-   nRow           := Val( ::ReadCtrlRow( cName ) )
-   nCol           := Val( ::ReadCtrlCol( cName ) )
-   nWidth         := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( TOBrowse():nWidth ) ) ) )
-   nHeight        := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TOBrowse():nHeight ) ) ) )
-   cHeaders       := ::ReadStringData( cName, 'HEADERS', "{ '','' } ")
-   cWidths        := ::ReadStringData( cName, 'WIDTHS', "{ 100, 60 }")
-   cWorkArea      := ::ReadStringData( cName, 'WORKAREA', "ALIAS()" )
-   cFields        := ::ReadStringData( cName, 'FIELDS', "{ 'field1', 'field2' }" )
-   nValue         := Val( ::ReadStringData( cName, 'VALUE', '' ) )
-   cFontName      := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
-   nFontSize      := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
-   cToolTip       := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
-   cInputMask     := ::ReadStringData( cName, 'INPUTMASK', "")
-   cDynBackColor  := ::ReadStringData( cName, "DYNAMICBACKCOLOR", '' )
-   cDynForecolor  := ::ReadStringData( cName, "DYNAMICFORECOLOR", '' )
-   cColControls   := ::ReadStringData( cName, "COLUMNCONTROLS", "" )
-   cOnChange      := ::ReadStringData( cName, 'ON CHANGE', '' )
-   cOnGotFocus    := ::ReadStringData( cName, 'ON GOTFOCUS', '' )
-   cOnLostFocus   := ::ReadStringData( cName, 'ON LOSTFOCUS', '' )
-   cOnDblClick    := ::ReadStringData( cName, 'ON DBLCLICK', '' )
-   cOnEnter       := ::ReadStringData( cName, 'ON ENTER', '' )
-   cOnHeadClick   := ::ReadStringData( cName, 'ON HEADCLICK', '' )
-   cOnEditCell    := ::ReadStringData( cName, 'ON EDITCELL', '' )
-   cOnAppend      := ::ReadStringData( cName, 'ON APPEND', '' )
-   cWhen          := ::ReadStringData( cName, 'WHEN', "" )
-   cWhen          := ::ReadStringData( cName, 'COLUMNWHEN', cWhen )
-   cValid         := ::ReadStringData( cName, 'VALID', "" )
-   cValidMess     := ::ReadStringData( cName, 'VALIDMESSAGES', "" )
-   cReadOnly      := ::ReadStringData( cName, 'READONLY', "")
-   lLock          := ( ::ReadLogicalData( cName, 'LOCK', "F" ) == "T" )
-   lDelete        := ( ::ReadLogicalData( cName, 'DELETE', "F" ) == "T" )
-   lAppend        := ( ::ReadLogicalData( cName, 'APPEND', "F" ) == "T" )
-   lInPlace       := ( ::ReadLogicalData( cName, 'INPLACE', "F" ) == "T" )
-   lEdit          := ( ::ReadLogicalData( cName, 'EDIT', "F" ) == "T" )
-   lNoLines       := ( ::ReadLogicalData( cName, 'NOLINES', "F" ) == "T" )
-   cImage         := ::ReadStringData( cName, 'IMAGE', "" )
-   cJustify       := ::ReadStringData( cName, 'JUSTIFY', "" )
-   nHelpId        := Val( ::ReadStringData( cName, 'HELPID', '0' ) )
-   lBold          := ( ::ReadLogicalData( cName, 'BOLD', "F" ) == "T" )
-   lBold          := ( Upper( ::ReadOopData( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) == '.T.' )
-   lItalic        := ( ::ReadLogicalData( cName, 'ITALIC', "F" ) == "T" )
-   lItalic        := ( Upper( ::ReadOopData( cName, 'FONTITALIC', IF( lItalic, '.T.', '.F.' ) ) ) == '.T.' )
-   lUnderline     := ( ::ReadLogicalData( cName, 'UNDERLINE', "F" ) == "T" )
-   lUnderline     := ( Upper( ::ReadOopData( cName, 'FONTUNDERLINE', IF( lUnderline, '.T.', '.F.' ) ) ) == '.T.' )
-   lStrikeout     := ( ::ReadLogicalData( cName, 'STRIKEOUT', "F" ) == "T" )
-   lStrikeout     := ( Upper( ::ReadOopData( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) == '.T.' )
-   aBackColor     := ::ReadStringData( cName, 'BACKCOLOR', 'NIL' )
-   aBackColor     := UpperNIL( ::ReadOopData( cName, 'BACKCOLOR', aBackColor ) )
-   aFontColor     := ::ReadStringData( cName, 'FONTCOLOR', 'NIL' )
-   aFontColor     := UpperNIL( ::ReadOopData( cName, 'FONTCOLOR', aFontColor ) )
-   cAction        := ::ReadStringData( cName, 'ACTION', "" )
-   cAction        := ::ReadStringData( cName, 'ON CLICK',cAction )
-   cAction        := ::ReadStringData( cName, 'ONCLICK', cAction )
-   lBreak         := ( ::ReadLogicalData( cName, "BREAK", "F" ) == "T" )
-   lRTL           := ( ::ReadLogicalData( cName, 'RTL', "F" ) == "T" )
-   lNoTabStop     := ( ::ReadLogicalData( cName, 'NOTABSTOP', 'F' ) == "T" )
-   lVisible       := ( ::ReadLogicalData( cName, 'INVISIBLE', "F" ) == "F" )
-   lVisible       := ( Upper( ::ReadOopData( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
-   lEnabled       := ( ::ReadLogicalData( cName, 'DISABLED', "F" ) == "F" )
-   lEnabled       := ( Upper( ::ReadOopData( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
-   lFull          := ( ::ReadLogicalData( cName, 'FULLMOVE', "F" ) == "T" )
-   lButtons       := ( ::ReadLogicalData( cName, 'USEBUTTONS', "F" ) == "T" )
-   lNoHeaders     := ( ::ReadLogicalData( cName, 'NOHEADERS', "F" ) == "T" )
-   cHeaderImages  := ::ReadStringData( cName, 'HEADERIMAGES', '' )
-   cImagesAlign   := ::ReadStringData( cName, 'IMAGESALIGN', '' )
-   aSelColor      := UpperNIL( ::ReadStringData( cName, 'SELECTEDCOLORS', '' ) )
-   cEditKeys      := ::ReadStringData( cName, 'EDITKEYS', '' )
-   lDoubleBuffer  := ( ::ReadLogicalData( cName, 'DOUBLEBUFFER', "F" ) == "T" )
-   lSingleBuffer  := ( ::ReadLogicalData( cName, 'SINGLEBUFFER', "F" ) == "T" )
-   lFocusRect     := ( ::ReadLogicalData( cName, 'FOCUSRECT', "F" ) == "T" )
-   lNoFocusRect   := ( ::ReadLogicalData( cName, 'NOFOCUSRECT', "F" ) == "T" )
-   lPLM           := ( ::ReadLogicalData( cName, 'PAINTLEFTMARGIN', "F" ) == "T" )
-   lFixedCols     := ( ::ReadLogicalData( cName, 'FIXEDCOLS', "F" ) == "T" )
-   cOnAbortEdit   := ::ReadStringData( cName, 'ON ABORTEDIT', '' )
-   lFixedWidths   := ( ::ReadLogicalData( cName, 'FIXEDWIDTHS', "F" ) == "T" )
-   cBeforeColMove := ::ReadStringData( cName, 'BEFORECOLMOVE', '' )
-   cAfterColMove  := ::ReadStringData( cName, 'AFTERCOLMOVE', '' )
-   cBeforeColSize := ::ReadStringData( cName, 'BEFORECOLSIZE', '' )
-   cAfterColSize  := ::ReadStringData( cName, 'AFTERCOLSIZE', '' )
-   cBeforeAutoFit := ::ReadStringData( cName, 'BEFOREAUTOFIT', '' )
-   lLikeExcel     := ( ::ReadLogicalData( cName, 'EDITLIKEEXCEL', "F" ) == "T" )
-   cDeleteWhen    := ::ReadStringData( cName, 'DELETEWHEN', '' )
-   cDeleteMsg     := ::ReadStringData( cName, 'DELETEMSG', '' )
-   cOnDelete      := ::ReadStringData( cName, 'ON DELETE', '' )
-   lNoDeleteMsg   := ( ::ReadLogicalData( cName, 'NODELETEMSG', "F" ) == "T" )
-   lFixedCtrls    := ( ::ReadLogicalData( cName, 'FIXEDCONTROLS', "F" ) == "T" )
-   lDynamicCtrls  := ( ::ReadLogicalData( cName, 'DYNAMICCONTROLS', "F" ) == "T" )
-   cOnHeadRClick  := ::ReadStringData( cName, 'ON HEADRCLICK', '' )
-   lExtDblClick   := ( ::ReadLogicalData( cName, 'EXTDBLCLICK', "F" ) == "T" )
-   lNoVScroll     := ( ::ReadLogicalData( cName, "NOVSCROLL", "F" ) == "T" )
-   lNoRefresh     := ( ::ReadLogicalData( cName, "NOREFRESH", "F" ) == "T" )
-   cReplaceField  := ::ReadStringData( cName, 'REPLACEFIELD', '' )
-   cSubClass      := ::ReadStringData( cName, 'SUBCLASS', '' )
-   lRecCount      := ( ::ReadLogicalData( cName, "RECCOUNT", "F" ) == "T" )
-   cColumnInfo    := ::ReadStringData( cName, 'COLUMNINFO', '' )
-   lDescending    := ( ::ReadLogicalData( cName, "DESCENDING", "F" ) == "T" )
-   lForceRefresh  := ( ::ReadLogicalData( cName, "FORCEREFRESH", "F" ) == "T" )
-   lSync          := ( ::ReadLogicalData( cName, "SYNCHRONIZED", "F" ) == "T" )
-   lUnSync        := ( ::ReadLogicalData( cName, "UNSYNCHRONIZED", "F" ) == "T" )
-   lUpdateAll     := ( ::ReadLogicalData( cName, "UPDATEALL", "F" ) == "T" )
-   lFixedBlocks   := ( ::ReadLogicalData( cName, "FIXEDBLOCKS", "F" ) == "T" )
-   lDynamicBlocks := ( ::ReadLogicalData( cName, "DYNAMICBLOCKS", "F" ) == "T" )
-   lUpdateColors  := ( ::ReadLogicalData( cName, "UPDATECOLORS", "F" ) == "T" )
-
-   // Show control
-   @ nRow, nCol GRID &cName OF ( ::oDesignForm:Name ) ;
-      WIDTH nWidth ;
-      HEIGHT nHeight ;
-      HEADERS { cName, '' } ;
-      WIDTHS { 100, 60 } ;
-      ITEMS { { "", "" } } ;
-      TOOLTIP 'To change properties and events right click on header area' ;
-      ON GOTFOCUS ::DrawOutline( _OOHG_ThisObject ) ;
-      ON CHANGE ::DrawOutline( _OOHG_ThisObject )
-   IF ! Empty( cFontName )
-      ::oDesignForm:&cName:FontName := cFontName
-   ENDIF
-   IF nFontSize > 0
-      ::oDesignForm:&cName:FontSize := nFontSize
-   ENDIF
-   IF IsValidArray( aFontColor )
-      ::oDesignForm:&cName:FontColor := &aFontColor
-   ENDIF
-   ::oDesignForm:&cName:FontBold      := lBold
-   ::oDesignForm:&cName:FontItalic    := lItalic
-   ::oDesignForm:&cName:FontUnderline := lUnderline
-   ::oDesignForm:&cName:FontStrikeout := lStrikeout
-   IF IsValidArray( aBackColor )
-      ::oDesignForm:&cName:BackColor := &aBackColor
-   ENDIF
-   ::oDesignForm:&cName:ToolTip := cToolTip
-
-   // Save properties
-   ::aCtrlType[i]         := 'BROWSE'
-   ::aCObj[i]             := cObj
-   ::aHeaders[i]          := cHeaders
-   ::aWidths[i]           := cWidths
-   ::aWorkArea[i]         := cWorkArea
-   ::aFields[i]           := cFields
-   ::aValueN[i]           := nValue
-   ::aFontName[i]         := cFontName
-   ::aFontSize[i]         := nFontSize
-   ::aToolTip[i]          := cToolTip
-   ::aInputMask[i]        := cInputMask
-   ::aDynamicBackColor[i] := cDynBackColor
-   ::aDynamicForeColor[i] := cDynForecolor
-   ::aColumnControls[i]   := cColControls
-   ::aOnChange[i]         := cOnChange
-   ::aOnGotFocus[i]       := cOnGotFocus
-   ::aOnLostFocus[i]      := cOnLostFocus
-   ::aOnDblClick[i]       := cOnDblClick
-   ::aOnEnter[i]          := cOnEnter
-   ::aOnHeadClick[i]      := cOnHeadClick
-   ::aOnEditCell[i]       := cOnEditCell
-   ::aOnAppend[i]         := cOnAppend
-   ::aWhen[i]             := cWhen
-   ::aValid[i]            := cValid
-   ::aValidMess[i]        := cValidMess
-   ::aReadOnlyB[i]        := cReadOnly
-   ::aLock[i]             := lLock
-   ::aDelete[i]           := lDelete
-   ::aAppend[i]           := lAppend
-   ::aInPlace[i]          := lInPlace
-   ::aEdit[i]             := lEdit
-   ::aNoLines[i]          := lNoLines
-   ::aImage[i]            := cImage
-   ::aJustify[i]          := cJustify
-   ::aHelpID[i]           := nHelpId
-   ::aBold[i]             := lBold
-   ::aFontItalic[i]       := lItalic
-   ::aFontUnderline[i]    := lUnderline
-   ::aFontStrikeout[i]    := lStrikeout
-   ::aBackColor[i]        := aBackColor
-   ::aFontColor[i]        := aFontColor
-   ::aAction[i]           := cAction
-   ::aBreak[i]            := lBreak
-   ::aRTL[i]              := lRTL
-   ::aNoTabStop[i]        := lNoTabStop
-   ::aVisible[i]          := lVisible
-   ::aEnabled[i]          := lEnabled
-   ::aFull[i]             := lFull
-   ::aButtons[i]          := lButtons
-   ::aNoHeaders[i]        := lNoHeaders
-   ::aHeaderImages[i]     := cHeaderImages
-   ::aImagesAlign[i]      := cImagesAlign
-   ::aSelColor[i]         := aSelColor
-   ::aEditKeys[i]         := cEditKeys
-   ::aDoubleBuffer[i]     := lDoubleBuffer
-   ::aSingleBuffer[i]     := lSingleBuffer
-   ::aFocusRect[i]        := lFocusRect
-   ::aNoFocusRect[i]      := lNoFocusRect
-   ::aPLM[i]              := lPLM
-   ::aFixedCols[i]        := lFixedCols
-   ::aOnAbortEdit[i]      := cOnAbortEdit
-   ::aFixedWidths[i]      := lFixedWidths
-   ::aBeforeColMove[i]    := cBeforeColMove
-   ::aAfterColMove[i]     := cAfterColMove
-   ::aBeforeColSize[i]    := cBeforeColSize
-   ::aAfterColSize[i]     := cAfterColSize
-   ::aBeforeAutoFit[i]    := cBeforeAutoFit
-   ::aLikeExcel[i]        := lLikeExcel
-   ::aDeleteWhen[i]       := cDeleteWhen
-   ::aDeleteMsg[i]        := cDeleteMsg
-   ::aOnDelete[i]         := cOnDelete
-   ::aNoDelMsg[i]         := lNoDeleteMsg
-   ::aFixedCtrls[i]       := lFixedCtrls
-   ::aDynamicCtrls[i]     := lDynamicCtrls
-   ::aOnHeadRClick[i]     := cOnHeadRClick
-   ::aExtDblClick[i]      := lExtDblClick
-   ::aNoVScroll[i]        := lNoVScroll
-   ::aNoRefresh[i]        := lNoRefresh
-   ::aReplaceField[i]     := cReplaceField
-   ::aSubClass[i]         := cSubClass
-   ::aRecCount[i]         := lRecCount
-   ::aColumnInfo[i]       := cColumnInfo
-   ::aDescend[i]          := lDescending
-   ::aForceRefresh[i]     := lForceRefresh
-   ::aSync[i]             := lSync
-   ::aUnSync[i]           := lUnSync
-   ::aUpdate[i]           := lUpdateAll
-   ::aFixBlocks[i]        := lFixedBlocks
-   ::aDynBlocks[i]        := lDynamicBlocks
-   ::aUpdateColors[i]     := lUpdateColors
-
-   // TODO: Create control
+   oCtrl     := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i, nWidth, nHeight, NIL )
+   oCtrl:Row := nRow
+   oCtrl:Col := nCol
 
    ::AddCtrlToTabPage( i, cName, nRow, nCol )
 RETURN NIL
@@ -8157,7 +9310,7 @@ LOCAL lSingleBuffer, lFocusRect, lNoFocusRect, lPLM, lFixedCols, cOnAbortEdit
 LOCAL lFixedWidths, lFixedBlocks, lDynamicBlocks, cBeforeColMove, cAfterColMove
 LOCAL cBeforeColSize, cAfterColSize, cBeforeAutoFit, lLikeExcel, lButtons
 LOCAL lNoDeleteMsg, lFixedCtrls, lDynamicCtrls, lNoShowEmpty, lUpdateColors
-LOCAL cOnHeadRClick, lNoModalEdit, lByCell, lExtDblClick
+LOCAL cOnHeadRClick, lNoModalEdit, lByCell, lExtDblClick, oCtrl
 
    // Load properties
    cName          := ::aControlW[i]
@@ -8264,34 +9417,6 @@ LOCAL cOnHeadRClick, lNoModalEdit, lByCell, lExtDblClick
    lByCell        := ( ::ReadLogicalData( cName, 'NAVIGATEBYCELL', "F" ) == "T" )
    lExtDblClick   := ( ::ReadLogicalData( cName, 'EXTDBLCLICK', "F" ) == "T" )
 
-   // Show control
-   @ nRow, nCol GRID &cName OF ( ::oDesignForm:Name ) ;
-      WIDTH nWidth ;
-      HEIGHT nHeight ;
-      HEADERS { cName, '' } ;
-      WIDTHS { 100, 60 } ;
-      ITEMS { { "", "" } } ;
-      TOOLTIP 'To change properties and events right click on header area' ;
-      ON GOTFOCUS ::DrawOutline( _OOHG_ThisObject ) ;
-      ON CHANGE ::DrawOutline( _OOHG_ThisObject )
-   IF ! Empty( cFontName )
-      ::oDesignForm:&cName:FontName := cFontName
-   ENDIF
-   IF nFontSize > 0
-      ::oDesignForm:&cName:FontSize := nFontSize
-   ENDIF
-   IF IsValidArray( aFontColor )
-      ::oDesignForm:&cName:FontColor := &aFontColor
-   ENDIF
-   ::oDesignForm:&cName:FontBold      := lBold
-   ::oDesignForm:&cName:FontItalic    := lItalic
-   ::oDesignForm:&cName:FontUnderline := lUnderline
-   ::oDesignForm:&cName:FontStrikeout := lStrikeout
-   IF IsValidArray( aBackColor )
-      ::oDesignForm:&cName:BackColor := &aBackColor
-   ENDIF
-   ::oDesignForm:&cName:ToolTip := cToolTip
-
    // Save properties
    ::aCtrlType[i]         := 'XBROWSE'
    ::aCObj[i]             := cObj
@@ -8382,1404 +9507,10 @@ LOCAL cOnHeadRClick, lNoModalEdit, lByCell, lExtDblClick
    ::aByCell[i]           := lByCell
    ::aExtDblClick[i]      := lExtDblClick
 
-   // TODO: Create control
-
-   ::AddCtrlToTabPage( i, cName, nRow, nCol )
-RETURN NIL
-
-//------------------------------------------------------------------------------
-METHOD pGrid( i ) CLASS TFormEditor
-//------------------------------------------------------------------------------
-LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aFontColor
-LOCAL lBold, lItalic, lUnderline, lStrikeout, aBackColor, lVisible, lEnabled
-LOCAL cToolTip, cOnChange, cOnGotFocus, cOnLostFocus, cOnDblClick, cOnEnter
-LOCAL cOnHeadClick, cOnEditCell, cOnCheckChg, nHelpId, cHeaders, cWidths, cItems
-LOCAL nValue, cDynBackColor, cDynForecolor, cColControls, cReadOnly, cInputMask
-LOCAL lMultiSelect, lNoLines, lInPlace, cImage, cJustify, lBreak, lEdit, cValid
-LOCAL cWhen, cValidMess, lRTL, lNoTabStop, lFull, lCheckBoxes, aSelColor
-LOCAL cAction, lButtons, lDelete, lAppend, cOnAppend, lVirtual, nItemCount
-LOCAL cOnQueryData, lNoHeaders, cHeaderImages, cImagesAlign, lByCell, cEditKeys
-LOCAL lDoubleBuffer, lSingleBuffer, lFocusRect, lNoFocusRect, lPLM, lFixedCols
-LOCAL cOnAbortEdit, lFixedWidths, cBeforeColMove, cAfterColMove, cBeforeColSize
-LOCAL cAfterColSize, cBeforeAutoFit, lLikeExcel, cDeleteWhen, cDeleteMsg
-LOCAL cOnDelete, lNoDeleteMsg, lNoModalEdit, lFixedCtrls, lDynamicCtrls
-LOCAL cOnHeadRClick, lNoClickOnChk, lNoRClickOnChk, lExtDblClick, cSubClass
-
-   // Load properties
-   cName          := ::aControlW[i]
-   cObj           := ::ReadStringData( cName, 'OBJ', '' )
-   nRow           := Val( ::ReadCtrlRow( cName ) )
-   nCol           := Val( ::ReadCtrlCol( cName ) )
-   nWidth         := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( TGrid():nWidth ) ) ) )
-   nHeight        := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TGrid():nHeight ) ) ) )
-   cFontName      := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
-   nFontSize      := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
-   aFontColor     := ::ReadStringData( cName, 'FONTCOLOR', 'NIL' )
-   aFontColor     := UpperNIL( ::ReadOopData( cName, 'FONTCOLOR', aFontColor ) )
-   lBold          := ( ::ReadLogicalData( cName, 'BOLD', "F" ) == "T" )
-   lBold          := ( Upper( ::ReadOopData( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) == '.T.' )
-   lItalic        := ( ::ReadLogicalData( cName, 'ITALIC', "F" ) == "T" )
-   lItalic        := ( Upper( ::ReadOopData( cName, 'FONTITALIC', IF( lItalic, '.T.', '.F.' ) ) ) == '.T.' )
-   lUnderline     := ( ::ReadLogicalData( cName, 'UNDERLINE', "F" ) == "T" )
-   lUnderline     := ( Upper( ::ReadOopData( cName, 'FONTUNDERLINE', IF( lUnderline, '.T.', '.F.' ) ) ) == '.T.' )
-   lStrikeout     := ( ::ReadLogicalData( cName, 'STRIKEOUT', "F" ) == "T" )
-   lStrikeout     := ( Upper( ::ReadOopData( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) == '.T.' )
-   aBackColor     := ::ReadStringData( cName, 'BACKCOLOR', 'NIL' )
-   aBackColor     := UpperNIL( ::ReadOopData( cName, 'BACKCOLOR', aBackColor ) )
-   lVisible       := ( ::ReadLogicalData( cName, 'INVISIBLE', "F" ) == "F" )
-   lVisible       := ( Upper( ::ReadOopData( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
-   lEnabled       := ( ::ReadLogicalData( cName, 'DISABLED', "F" ) == "F" )
-   lEnabled       := ( Upper( ::ReadOopData( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
-   cToolTip       := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
-   cOnChange      := ::ReadStringData( cName, 'ON CHANGE', '' )
-   cOnGotFocus    := ::ReadStringData( cName, 'ON GOTFOCUS', '' )
-   cOnLostFocus   := ::ReadStringData( cName, 'ON LOSTFOCUS', '' )
-   cOnDblClick    := ::ReadStringData( cName, 'ON DBLCLICK', '' )
-   cOnEnter       := ::ReadStringData( cName, 'ON ENTER', '' )
-   cOnHeadClick   := ::ReadStringData( cName, 'ON HEADCLICK', '' )
-   cOnEditCell    := ::ReadStringData( cName, 'ON EDITCELL', '' )
-   cOnCheckChg    := ::ReadStringData( cName, 'ON CHECKCHANGE', '' )
-   nHelpId        := Val( ::ReadStringData( cName, 'HELPID', '0' ) )
-   cHeaders       := ::ReadStringData( cName, 'HEADERS', "{ 'one', 'two' }")
-   cWidths        := ::ReadStringData( cName, 'WIDTHS', "{ 80, 60 }")
-   cItems         := ::ReadStringData( cName, 'ITEMS', "")
-   nValue         := Val( ::ReadStringData( cName, 'VALUE', '') )
-   cDynBackColor  := ::ReadStringData( cName, "DYNAMICBACKCOLOR", '' )
-   cDynForecolor  := ::ReadStringData( cName, "DYNAMICFORECOLOR", '' )
-   cColControls   := ::ReadStringData( cName, "COLUMNCONTROLS", "" )
-   cReadOnly      := ::ReadStringData( cName, 'READONLY', "")
-   cInputMask     := ::ReadStringData( cName, 'INPUTMASK', "")
-   lMultiSelect   := ( ::ReadLogicalData( cName, 'MULTISELECT', "F" ) == "T" )
-   lNoLines       := ( ::ReadLogicalData( cName, 'NOLINES', "F" ) == "T" )
-   lInPlace       := ( ::ReadLogicalData( cName, 'INPLACE', "F" ) == "T" )
-   cImage         := ::ReadStringData( cName, 'IMAGE', "" )
-   cJustify       := ::ReadStringData( cName, 'JUSTIFY', "" )
-   lBreak         := ( ::ReadLogicalData( cName, "BREAK", "F" ) == "T" )
-   lEdit          := ( ::ReadLogicalData( cName, 'EDIT', "F" ) == "T" )
-   cValid         := ::ReadStringData( cName, 'VALID', "" )
-   cWhen          := ::ReadStringData( cName, 'WHEN', "" )
-   cValidMess     := ::ReadStringData( cName, 'VALIDMESSAGES', "" )
-   lRTL           := ( ::ReadLogicalData( cName, 'RTL', "F" ) == "T" )
-   lNoTabStop     := ( ::ReadLogicalData( cName, 'NOTABSTOP', 'F' ) == "T" )
-   lFull          := ( ::ReadLogicalData( cName, 'FULLMOVE', "F" ) == "T" )
-   lCheckBoxes    := ( ::ReadLogicalData( cName, 'CHECKBOXES', "F" ) == "T" )
-   aSelColor      := UpperNIL( ::ReadStringData( cName, 'SELECTEDCOLORS', '' ) )
-   cAction        := ::ReadStringData( cName, 'ACTION', "" )
-   cAction        := ::ReadStringData( cName, 'ON CLICK',cAction )
-   cAction        := ::ReadStringData( cName, 'ONCLICK', cAction )
-   lButtons       := ( ::ReadLogicalData( cName, 'USEBUTTONS', "F" ) == "T" )
-   lDelete        := ( ::ReadLogicalData( cName, 'DELETE', "F" ) == "T" )
-   lAppend        := ( ::ReadLogicalData( cName, 'APPEND', "F" ) == "T" )
-   cOnAppend      := ::ReadStringData( cName, 'ON APPEND', '' )
-   lVirtual       := ( ::ReadLogicalData( cName, 'VIRTUAL', "F" ) == "T" )
-   nItemCount     := Val( ::ReadStringData( cName, 'ITEMCOUNT', '0' ) )
-   cOnQueryData   := ::ReadStringData( cName, 'ON QUERYDATA', '' )
-   lNoHeaders     := ( ::ReadLogicalData( cName, 'NOHEADERS', "F" ) == "T" )
-   cHeaderImages  := ::ReadStringData( cName, 'HEADERIMAGES', '' )
-   cImagesAlign   := ::ReadStringData( cName, 'IMAGESALIGN', '' )
-   lByCell        := ( ::ReadLogicalData( cName, 'NAVIGATEBYCELL', "F" ) == "T" )
-   cEditKeys      := ::ReadStringData( cName, 'EDITKEYS', '' )
-   lDoubleBuffer  := ( ::ReadLogicalData( cName, 'DOUBLEBUFFER', "F" ) == "T" )
-   lSingleBuffer  := ( ::ReadLogicalData( cName, 'SINGLEBUFFER', "F" ) == "T" )
-   lFocusRect     := ( ::ReadLogicalData( cName, 'FOCUSRECT', "F" ) == "T" )
-   lNoFocusRect   := ( ::ReadLogicalData( cName, 'NOFOCUSRECT', "F" ) == "T" )
-   lPLM           := ( ::ReadLogicalData( cName, 'PAINTLEFTMARGIN', "F" ) == "T" )
-   lFixedCols     := ( ::ReadLogicalData( cName, 'FIXEDCOLS', "F" ) == "T" )
-   cOnAbortEdit   := ::ReadStringData( cName, 'ON ABORTEDIT', '' )
-   lFixedWidths   := ( ::ReadLogicalData( cName, 'FIXEDWIDTHS', "F" ) == "T" )
-   cBeforeColMove := ::ReadStringData( cName, 'BEFORECOLMOVE', '' )
-   cAfterColMove  := ::ReadStringData( cName, 'AFTERCOLMOVE', '' )
-   cBeforeColSize := ::ReadStringData( cName, 'BEFORECOLSIZE', '' )
-   cAfterColSize  := ::ReadStringData( cName, 'AFTERCOLSIZE', '' )
-   cBeforeAutoFit := ::ReadStringData( cName, 'BEFOREAUTOFIT', '' )
-   lLikeExcel     := ( ::ReadLogicalData( cName, 'EDITLIKEEXCEL', "F" ) == "T" )
-   cDeleteWhen    := ::ReadStringData( cName, 'DELETEWHEN', '' )
-   cDeleteMsg     := ::ReadStringData( cName, 'DELETEMSG', '' )
-   cOnDelete      := ::ReadStringData( cName, 'ON DELETE', '' )
-   lNoDeleteMsg   := ( ::ReadLogicalData( cName, 'NODELETEMSG', "F" ) == "T" )
-   lNoModalEdit   := ( ::ReadLogicalData( cName, 'NOMODALEDIT', "F" ) == "T" )
-   lFixedCtrls    := ( ::ReadLogicalData( cName, 'FIXEDCONTROLS', "F" ) == "T" )
-   lDynamicCtrls  := ( ::ReadLogicalData( cName, 'DYNAMICCONTROLS', "F" ) == "T" )
-   cOnHeadRClick  := ::ReadStringData( cName, 'ON HEADRCLICK', '' )
-   lNoClickOnChk  := ( ::ReadLogicalData( cName, 'NOCLICKONCHECKBOX', "F" ) == "T" )
-   lNoRClickOnChk := ( ::ReadLogicalData( cName, 'NORCLICKONCHECKBOX', "F" ) == "T" )
-   lExtDblClick   := ( ::ReadLogicalData( cName, 'EXTDBLCLICK', "F" ) == "T" )
-   cSubClass      := ::ReadStringData( cName, 'SUBCLASS', '' )
-
-   // Show control
-   @ nRow, nCol GRID &cName OF ( ::oDesignForm:Name ) ;
-      WIDTH nWidth ;
-      HEIGHT nHeight ;
-      HEADERS { cName, '' } ;
-      WIDTHS { 100, 60 } ;
-      ITEMS { { "", "" } } ;
-      TOOLTIP 'To change properties and events right click on header area' ;
-      ON GOTFOCUS ::DrawOutline( _OOHG_ThisObject ) ;
-      ON CHANGE ::DrawOutline( _OOHG_ThisObject )
-   IF ! Empty( cFontName )
-      ::oDesignForm:&cName:FontName := cFontName
-   ENDIF
-   IF nFontSize > 0
-      ::oDesignForm:&cName:FontSize := nFontSize
-   ENDIF
-   IF IsValidArray( aFontColor )
-      ::oDesignForm:&cName:FontColor := &aFontColor
-   ENDIF
-   ::oDesignForm:&cName:FontBold      := lBold
-   ::oDesignForm:&cName:FontItalic    := lItalic
-   ::oDesignForm:&cName:FontUnderline := lUnderline
-   ::oDesignForm:&cName:FontStrikeout := lStrikeout
-   IF IsValidArray( aBackColor )
-      ::oDesignForm:&cName:BackColor := &aBackColor
-   ENDIF
-   ::oDesignForm:&cName:ToolTip := cToolTip
-
-   // Save properties
-   ::aCtrlType[i]         := 'GRID'
-   ::aCObj[i]             := cObj
-   ::aFontName[i]         := cFontName
-   ::aFontSize[i]         := nFontSize
-   ::aFontColor[i]        := aFontColor
-   ::aBold[i]             := lBold
-   ::aFontItalic[i]       := lItalic
-   ::aFontUnderline[i]    := lUnderline
-   ::aFontStrikeout[i]    := lStrikeout
-   ::aBackColor[i]        := aBackColor
-   ::aVisible[i]          := lVisible
-   ::aEnabled[i]          := lEnabled
-   ::aToolTip[i]          := cToolTip
-   ::aOnChange[i]         := cOnChange
-   ::aOnGotFocus[i]       := cOnGotFocus
-   ::aOnLostFocus[i]      := cOnLostFocus
-   ::aOnDblClick[i]       := cOnDblClick
-   ::aOnEnter[i]          := cOnEnter
-   ::aOnHeadClick[i]      := cOnHeadClick
-   ::aOnEditCell[i]       := cOnEditCell
-   ::aOnCheckChg[i]       := cOnCheckChg
-   ::aHelpID[i]           := nHelpId
-   ::aHeaders[i]          := cHeaders
-   ::aWidths[i]           := cWidths
-   ::aItems[i]            := cItems
-   ::aValue[i]            := nValue
-   ::aDynamicBackColor[i] := cDynBackColor
-   ::aDynamicForeColor[i] := cDynForecolor
-   ::aColumnControls[i]   := cColControls
-   ::aReadOnlyB[i]        := cReadOnly
-   ::aInputMask[i]        := cInputMask
-   ::aMultiSelect[i]      := lMultiSelect
-   ::aNoLines[i]          := lNoLines
-   ::aInPlace[i]          := lInPlace
-   ::aImage[i]            := cImage
-   ::aJustify[i]          := cJustify
-   ::aBreak[i]            := lBreak
-   ::aEdit[i]             := lEdit
-   ::aValid[i]            := cValid
-   ::aWhen[i]             := cWhen
-   ::aValidMess[i]        := cValidMess
-   ::aRTL[i]              := lRTL
-   ::aNoTabStop[i]        := lNoTabStop
-   ::aFull[i]             := lFull
-   ::aCheckBoxes[i]       := lCheckBoxes
-   ::aSelColor[i]         := aSelColor
-   ::aAction[i]           := cAction
-   ::aButtons[i]          := lButtons
-   ::aDelete[i]           := lDelete
-   ::aAppend[i]           := lAppend
-   ::aOnAppend[i]         := cOnAppend
-   ::aVirtual[i]          := lVirtual
-   ::aItemCount[i]        := nItemCount
-   ::aOnQueryData[i]      := cOnQueryData
-   ::aNoHeaders[i]        := lNoHeaders
-   ::aHeaderImages[i]     := cHeaderImages
-   ::aImagesAlign[i]      := cImagesAlign
-   ::aByCell[i]           := lByCell
-   ::aEditKeys[i]         := cEditKeys
-   ::aDoubleBuffer[i]     := lDoubleBuffer
-   ::aSingleBuffer[i]     := lSingleBuffer
-   ::aFocusRect[i]        := lFocusRect
-   ::aNoFocusRect[i]      := lNoFocusRect
-   ::aPLM[i]              := lPLM
-   ::aFixedCols[i]        := lFixedCols
-   ::aOnAbortEdit[i]      := cOnAbortEdit
-   ::aFixedWidths[i]      := lFixedWidths
-   ::aBeforeColMove[i]    := cBeforeColMove
-   ::aAfterColMove[i]     := cAfterColMove
-   ::aBeforeColSize[i]    := cBeforeColSize
-   ::aAfterColSize[i]     := cAfterColSize
-   ::aBeforeAutoFit[i]    := cBeforeAutoFit
-   ::aLikeExcel[i]        := lLikeExcel
-   ::aDeleteWhen[i]       := cDeleteWhen
-   ::aDeleteMsg[i]        := cDeleteMsg
-   ::aOnDelete[i]         := cOnDelete
-   ::aNoDelMsg[i]         := lNoDeleteMsg
-   ::aNoModalEdit[i]      := lNoModalEdit
-   ::aFixedCtrls[i]       := lFixedCtrls
-   ::aDynamicCtrls[i]     := lDynamicCtrls
-   ::aOnHeadRClick[i]     := cOnHeadRClick
-   ::aNoClickOnCheck[i]   := lNoClickOnChk
-   ::aNoRClickOnCheck[i]  := lNoRClickOnChk
-   ::aExtDblClick[i]      := lExtDblClick
-   ::aSubClass[i]         := cSubClass
-
-   // TODO: Create control
-
-   ::AddCtrlToTabPage( i, cName, nRow, nCol )
-RETURN NIL
-
-//------------------------------------------------------------------------------
-METHOD pTimePicker( i ) CLASS TFormEditor
-//------------------------------------------------------------------------------
-LOCAL cName, nRow, nCol, nWidth, cFontName, nFontSize, cToolTip, cOnGotFocus
-LOCAL cField, cValue, cOnLostFocus, cOnChange, cOnEnter, lShowNone, lUpDown
-LOCAL lRightAlign, nHelpID, cObj, lBold, lItalic, lUnderline, lStrikeout
-LOCAL lVisible, lEnabled, lRTL, lNoTabStop, lNoBorder, cSubClass, nHeight
-
-   cName        := ::aControlW[i]
-   nRow         := Val( ::ReadCtrlRow( cName ) )
-   nCol         := Val( ::ReadCtrlCol( cName ) )
-   nWidth       := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( TDatePick():nWidth ) ) ) )
-   nHeight      := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TDatePick():nHeight ) ) ) )
-   cFontName    := ::Clean( ::ReadStringData(cName,'FONT',''))
-   nFontSize    := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
-   cToolTip     := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
-   cOnGotFocus  := ::ReadStringData( cName, 'ON GOTFOCUS', '')
-   cField       := ::Clean( ::ReadStringData( cName, 'FIELD', '' ) )
-   cValue       := ::ReadStringData( cName, 'VALUE', '' )
-   cOnLostFocus := ::ReadStringData( cName, 'ON LOSTFOCUS', '' )
-   cOnChange    := ::ReadStringData( cName, 'ON CHANGE', '' )
-   cOnEnter     := ::ReadStringData( cName, 'ON ENTER', '' )
-   lShowNone    := ( ::ReadLogicalData( cName, 'SHOWNONE', "F" ) == "T" )
-   lUpDown      := ( ::ReadLogicalData( cName, 'UPDOWN', "F" ) == "T" )
-   lRightAlign  := ( ::ReadLogicalData( cName, 'RIGHTALIGN', "F" ) == "T" )
-   nHelpID      := Val( ::ReadStringData( cName, 'HELPID', '0' ) )
-   cObj         := ::ReadStringData( cName, 'OBJ', '' )
-   lBold        := ( ::ReadLogicalData( cName, 'BOLD', "F" ) == "T" )
-   lBold        := ( Upper( ::ReadOopData( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) == '.T.' )
-   lItalic      := ( ::ReadLogicalData( cName, 'ITALIC', "F" ) == "T" )
-   lItalic      := ( Upper( ::ReadOopData( cName, 'FONTITALIC', IF( lItalic, '.T.', '.F.' ) ) ) == '.T.' )
-   lUnderline   := ( ::ReadLogicalData( cName, 'UNDERLINE', "F" ) == "T" )
-   lUnderline   := ( Upper( ::ReadOopData( cName, 'FONTUNDERLINE', IF( lUnderline, '.T.', '.F.' ) ) ) == '.T.' )
-   lStrikeout   := ( ::ReadLogicalData( cName, 'STRIKEOUT', "F" ) == "T" )
-   lStrikeout   := ( Upper( ::ReadOopData( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) == '.T.' )
-   lVisible     := ( ::ReadLogicalData( cName, 'INVISIBLE', "F" ) == "F" )
-   lVisible     := ( Upper( ::ReadOopData( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
-   lEnabled     := ( ::ReadLogicalData( cName, 'DISABLED', "F" ) == "F" )
-   lEnabled     := ( Upper( ::ReadOopData( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
-   lRTL         := ( ::ReadLogicalData( cName, 'RTL', "F" ) == "T" )
-   lNoTabStop   := ( ::ReadLogicalData( cName, 'NOTABSTOP', 'F' ) == 'T' )
-   lNoBorder    := ( ::ReadLogicalData( cName, "NOBORDER", "F" ) == "T" )
-   cSubClass    := ::ReadStringData( cName, 'SUBCLASS', '' )
-
-   ::aCtrlType[i]      := 'TIMEPICKER'
-   ::aFontName[i]      := cFontName
-   ::aFontSize[i]      := nFontSize
-   ::aToolTip[i]       := cToolTip
-   ::aOnGotFocus[i]    := cOnGotFocus
-   ::aField[i]         := cField
-   ::aValue[i]         := cValue
-   ::aOnLostFocus[i]   := cOnLostFocus
-   ::aOnChange[i]      := cOnChange
-   ::aonenter[i]       := cOnEnter
-   ::aShowNone[i]      := lShowNone
-   ::aUpDown[i]        := lUpDown
-   ::aRightAlign[i]    := lRightAlign
-   ::aHelpID[i]        := nHelpID
-   ::aCObj[i]          := cObj
-   ::aBold[i]          := lBold
-   ::aFontItalic[i]    := lItalic
-   ::aFontUnderline[i] := lUnderline
-   ::aFontStrikeout[i] := lStrikeout
-   ::aVisible[i]       := lVisible
-   ::aEnabled[i]       := lEnabled
-   ::aRTL[i]           := lRTL
-   ::aNoTabStop[i]     := lNoTabStop
-   ::aBorder[i]        := lNoBorder
-   ::aSubClass[i]      := cSubClass
-
-   @ nRow, nCol TIMEPICKER &cName OF ( ::oDesignForm:Name ) ;
-      WIDTH nWidth ;
-      HEIGHT nHeight ;
-      ON GOTFOCUS ::DrawOutline( _OOHG_ThisObject ) ;
-      ON CHANGE ::DrawOutline( _OOHG_ThisObject )
-   IF ! Empty( cFontName )
-      ::oDesignForm:&cName:FontName := cFontName
-   ENDIF
-   IF nFontSize > 0
-      ::oDesignForm:&cName:FontSize := nFontSize
-   ENDIF
-   ::oDesignForm:&cName:FontBold      := lBold
-   ::oDesignForm:&cName:FontItalic    := lItalic
-   ::oDesignForm:&cName:FontUnderline := lUnderline
-   ::oDesignForm:&cName:FontStrikeout := lStrikeout
-   ::oDesignForm:&cName:ToolTip := cToolTip
-
-   // TODO: Create control
-
-   ::AddCtrlToTabPage( i, cName, nRow, nCol )
-RETURN NIL
-
-//------------------------------------------------------------------------------
-METHOD pHyplink( i ) CLASS TFormEditor
-//------------------------------------------------------------------------------
-LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cValue, cAddress, cFontName
-LOCAL nFontSize, aFontColor, lBold, lItalic, lUnderline, lStrikeout, aBackColor
-LOCAL lVisible, lEnabled, cToolTip, nHelpID, lHandCursor, lAutoSize, lBorder
-LOCAL lClientEdge, lHScroll, lVScroll, lTrans, lRTL
-
-   // Load properties
-   cName        := ::aControlW[i]
-   cObj         := ::ReadStringData( cName, 'OBJ', '' )
-   nRow         := Val( ::ReadCtrlRow( cName ) )
-   nCol         := Val( ::ReadCtrlCol( cName ) )
-   nWidth       := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( THyperLink():nWidth ) ) ) )
-   nHeight      := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( THyperLink():nHeight ) ) ) )
-   cValue       := ::Clean( ::ReadStringData( cName, 'VALUE', 'ooHG Home' ) )
-   cAddress     := ::Clean( ::ReadStringData( cName, 'ADDRESS', 'https://sourceforge.net/projects/oohg/' ) )
-   cFontName    := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
-   nFontSize    := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
-   aFontColor   := ::ReadStringData( cName, 'FONTCOLOR', 'NIL' )
-   aFontColor   := UpperNIL( ::ReadOopData( cName, 'FONTCOLOR', aFontColor ) )
-   lBold        := ( ::ReadLogicalData( cName, 'BOLD', "F" ) == "T" )
-   lBold        := ( Upper( ::ReadOopData( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) == '.T.' )
-   lItalic      := ( ::ReadLogicalData( cName, 'ITALIC', "F" ) == "T" )
-   lItalic      := ( Upper( ::ReadOopData( cName, 'FONTITALIC', IF( lItalic, '.T.', '.F.' ) ) ) == '.T.' )
-   lUnderline   := ( ::ReadLogicalData( cName, 'UNDERLINE', "F" ) == "T" )
-   lUnderline   := ( Upper( ::ReadOopData( cName, 'FONTUNDERLINE', IF( lUnderline, '.T.', '.F.' ) ) ) == '.T.' )
-   lStrikeout   := ( ::ReadLogicalData( cName, 'STRIKEOUT', "F" ) == "T" )
-   lStrikeout   := ( Upper( ::ReadOopData( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) == '.T.' )
-   aBackColor   := ::ReadStringData( cName, 'BACKCOLOR', 'NIL' )
-   aBackColor   := UpperNIL( ::ReadOopData( cName, 'BACKCOLOR', aBackColor ) )
-   lVisible     := ( ::ReadLogicalData( cName, 'INVISIBLE', "F" ) == "F" )
-   lVisible     := ( Upper( ::ReadOopData( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
-   lEnabled     := ( ::ReadLogicalData( cName, 'DISABLED', "F" ) == "F" )
-   lEnabled     := ( Upper( ::ReadOopData( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
-   cToolTip     := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
-   nHelpID      := Val( ::ReadStringData( cName, 'HELPID', '0' ) )
-   lHandCursor  := ( ::ReadLogicalData( cName, 'HANDCURSOR', 'F' ) == 'T' )
-   lAutoSize    := ( ::ReadLogicalData( cName, "AUTOSIZE", "F" ) == "T" )
-   lBorder      := ( ::ReadLogicalData( cName, "BORDER", "F" ) == "T" )
-   lClientEdge  := ( ::ReadLogicalData( cName, "CLIENTEDGE", "F") == "T" )
-   lHScroll     := ( ::ReadLogicalData( cName, "HSCROLL", "F" ) == "T" )
-   lVScroll     := ( ::ReadLogicalData( cName, "VSCROLL", "F" ) == "T" )
-   lTrans       := ( ::ReadLogicalData( cName, "TRANSPARENT", "F" ) == "T" )
-   lRTL         := ( ::ReadLogicalData( cName, 'RTL', "F" ) == "T" )
-
-   // Show control
-   @ nRow, nCol LABEL &cName OF ( ::oDesignForm:Name ) ;
-      WIDTH nWidth ;
-      HEIGHT nHeight ;
-      BORDER ;
-      VALUE cValue ;
-      ACTION ::DrawOutline( _OOHG_ThisObject )
-   IF ! Empty( cFontName )
-      ::oDesignForm:&cName:FontName := cFontName
-   ENDIF
-   IF nFontSize > 0
-      ::oDesignForm:&cName:FontSize := nFontSize
-   ENDIF
-   IF IsValidArray( aFontColor )
-      ::oDesignForm:&cName:FontColor := &aFontColor
-   ENDIF
-   ::oDesignForm:&cName:FontBold      := lBold
-   ::oDesignForm:&cName:FontItalic    := lItalic
-   ::oDesignForm:&cName:FontUnderline := lUnderline
-   ::oDesignForm:&cName:FontStrikeout := lStrikeout
-   IF IsValidArray( aBackColor )
-      ::oDesignForm:&cName:BackColor := &aBackColor
-   ENDIF
-   ::oDesignForm:&cName:ToolTip := cToolTip
-   IF lHandCursor
-      ::oDesignForm:&cName:Cursor := IDC_HAND
-   ENDIF
-
-   // Save properties
-   ::aCtrlType[i]      := 'HYPERLINK'
-   ::aCObj[i]          := cObj
-   ::aValue[i]         := cValue
-   ::aAddress[i]       := cAddress
-   ::aFontName[i]      := cFontName
-   ::aFontSize[i]      := nFontSize
-   ::aFontColor[i]     := aFontColor
-   ::aBold[i]          := lBold
-   ::aFontItalic[i]    := lItalic
-   ::aFontUnderline[i] := lUnderline
-   ::aFontStrikeout[i] := lStrikeout
-   ::aBackColor[i]     := aBackColor
-   ::aVisible[i]       := lVisible
-   ::aEnabled[i]       := lEnabled
-   ::aToolTip[i]       := cToolTip
-   ::aHelpID[i]        := nHelpId
-   ::aHandCursor[i]    := lHandCursor
-   ::aAutoPlay[i]      := lAutoSize
-   ::aBorder[i]        := lBorder
-   ::aClientEdge[i]    := lClientEdge
-   ::aNoHScroll[i]     := lHScroll
-   ::aNoVScroll[i]     := lVScroll
-   ::aTransparent[i]   := lTrans
-   ::aRTL[i]           := lRTL
-
-   // TODO: Create control
-
-   ::AddCtrlToTabPage( i, cName, nRow, nCol )
-RETURN NIL
-
-//------------------------------------------------------------------------------
-METHOD pAnimatebox( i ) CLASS TFormEditor
-//------------------------------------------------------------------------------
-LOCAL cName, cObj, nWidth, nHeight, cFile, lAutoplay, lCenter, lTrans, cSubClass
-LOCAL cToolTip, lVisible, lEnabled, nHelpid, nRow, nCol, lRTL, lNoTabStop, oCtrl
-
-   // Load properties
-   cName      := ::aControlW[i]
-   cObj       := ::ReadStringData( cName, 'OBJ', '' )
-   nRow       := Val( ::ReadCtrlRow( cName ) )
-   nCol       := Val( ::ReadCtrlCol( cName ) )
-   nWidth     := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( TControl():nWidth ) ) ) )
-   nHeight    := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TControl():nHeight ) ) ) )
-   cFile      := ::Clean( ::ReadStringData( cName, 'FILE', '' ) )
-   lAutoplay  := ( ::ReadLogicalData( cName, 'AUTOPLAY', 'F') == "T" )
-   lCenter    := ( ::ReadLogicalData( cName, 'CENTER', 'F' ) == "T" )
-   lTrans     := ( ::ReadLogicalData( cName, 'TRANSPARENT', 'F' ) == "T" )
-   nHelpid    := Val( ::ReadStringData( cName, 'HELPID', '0' ) )
-   cToolTip   := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
-   lVisible   := ( ::ReadLogicalData( cName, 'INVISIBLE', "F" ) == "F" )
-   lVisible   := ( Upper( ::ReadOopData( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
-   lEnabled   := ( ::ReadLogicalData( cName, 'DISABLED', "F" ) == "F" )
-   lEnabled   := ( Upper( ::ReadOopData( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
-   lRTL       := ( ::ReadLogicalData( cName, 'RTL', "F" ) == "T" )
-   lNoTabStop := ( ::ReadLogicalData( cName, 'NOTABSTOP', 'F' ) == 'T' )
-   cSubClass  := ::ReadStringData( cName, 'SUBCLASS', '' )
-
-   // Save properties
-   ::aCtrlType[i]    := 'ANIMATE'
-   ::aCObj[i]        := cObj
-   ::aFile[i]        := cFile
-   ::aAutoPlay[i]    := lAutoplay
-   ::aCenter[i]      := lCenter
-   ::aTransparent[i] := lTrans
-   ::aHelpID[i]      := nHelpId
-   ::aToolTip[i]     := cToolTip
-   ::aVisible[i]     := lVisible
-   ::aEnabled[i]     := lEnabled
-   ::aRTL[i]         := lRTL
-   ::aNoTabStop[i]   := lNoTabStop
-   ::aSubClass[i]    := cSubClass
-
    // Create control
-   oCtrl        := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i )
-   oCtrl:Row    := nRow
-   oCtrl:Col    := nCol
-   oCtrl:Width  := nWidth
-   oCtrl:Height := nHeight
-
-   ::AddCtrlToTabPage( i, cName, nRow, nCol )
-RETURN NIL
-
-//------------------------------------------------------------------------------
-METHOD pPicButt( i ) CLASS TFormEditor
-//------------------------------------------------------------------------------
-LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, aBackColor, lVisible, lEnabled
-LOCAL cToolTip, cOnGotFocus, cOnLostFocus, nHelpId, cPicture, cAction
-LOCAL lNoTabStop, lFlat, cBuffer, cHBitmap, lNoLoadTrans, lForceScale
-LOCAL lNo3DColors, lFit, lDIBSection, cOnMouseMove, lThemed, cImgMargin, lTop
-LOCAL lBottom, lLeft, lRight, lCenter, lCancel, cSubClass, cAuxFile
-
-   // Load properties
-   cName         := ::aControlW[i]
-   cObj          := ::ReadStringData( cName, 'OBJ', '' )
-   nRow          := Val( ::ReadCtrlRow( cName ) )
-   nCol          := Val( ::ReadCtrlCol( cName ) )
-   nWidth        := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( TButton():nWidth ) ) ) )
-   nHeight       := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TButton():nHeight ) ) ) )
-   aBackColor    := ::ReadStringData( cName, 'BACKCOLOR', 'NIL' )
-   aBackColor    := UpperNIL( ::ReadOopData( cName, 'BACKCOLOR', aBackColor ) )
-   lVisible      := ( ::ReadLogicalData( cName, 'INVISIBLE', "F" ) == "F" )
-   lVisible      := ( Upper( ::ReadOopData( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
-   lEnabled      := ( ::ReadLogicalData( cName, 'DISABLED', "F" ) == "F" )
-   lEnabled      := ( Upper( ::ReadOopData( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
-   cToolTip      := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
-   cOnGotFocus   := ::ReadStringData( cName, 'ON GOTFOCUS', '' )
-   cOnLostFocus  := ::ReadStringData( cName, 'ON LOSTFOCUS', '' )
-   nHelpId       := Val( ::ReadStringData( cName, 'HELPID', '0' ) )
-   cPicture      := ::Clean( ::ReadStringData( cName, 'PICTURE', '' ) )
-   cAction       := ::ReadStringData( cName, 'ACTION', "MsgInfo( 'Button pressed' )" )
-   cAction       := ::ReadStringData( cName, 'ON CLICK',cAction )
-   cAction       := ::ReadStringData( cName, 'ONCLICK', cAction )
-   lNoTabStop    := ( ::ReadLogicalData( cName, 'NOTABSTOP', "F" ) == "T" )
-   lFlat         := ( ::ReadLogicalData( cName, 'FLAT', "F" ) == "T" )
-   cBuffer       := ::ReadStringData( cName, 'BUFFER', "" )
-   cHBitmap      := ::ReadStringData( cName, 'HBITMAP', "" )
-   lNoLoadTrans  := ( ::ReadLogicalData( cName, 'NOLOADTRANSPARENT', "F" ) == "T" )
-   lForceScale   := ( ::ReadLogicalData( cName, 'FORCESCALE', "F" ) == "T" )
-   lNo3DColors   := ( ::ReadLogicalData( cName, 'NO3DCOLORS', "F" ) == "T" )
-   lFit          := ::ReadLogicalData( cName, 'AUTOFIT', "F" )
-   lFit          := ( ::ReadLogicalData( cName, 'ADJUST', lFit ) == "T" )
-   lDIBSection   := ( ::ReadLogicalData( cName, 'DIBSECTION', "F" ) == "T" )
-   cOnMouseMove  := ::ReadStringData( cName, 'ON MOUSEMOVE', '' )
-   lThemed       := ( ::ReadLogicalData( cName, 'THEMED', "F" ) == "T" )
-   cImgMargin    := ::ReadStringData( cName, 'IMAGEMARGIN', "" )
-   lTop          := ( ::ReadLogicalData( cName, 'TOP', "F" ) == "T" )
-   lBottom       := ( ::ReadLogicalData( cName, 'BOTTOM', "F" ) == "T" )
-   lLeft         := ( ::ReadLogicalData( cName, 'LEFT', "F" ) == "T" )
-   lRight        := ( ::ReadLogicalData( cName, 'RIGHT', "F" ) == "T" )
-   lCenter       := ( ::ReadLogicalData( cName, 'CENTER', "F" ) == "T" )
-   lCancel       := ( ::ReadLogicalData( cName, 'CANCEL', "F" ) == "T" )
-   cSubClass     := ::ReadStringData( cName, 'SUBCLASS', '' )
-
-   // Save properties
-   ::aCtrlType[i]      := 'PICBUTT'
-   ::aCObj[i]          := cObj
-   ::aBackColor[i]     := aBackColor
-   ::aVisible[i]       := lVisible
-   ::aEnabled[i]       := lEnabled
-   ::aToolTip[i]       := cToolTip
-   ::aOnGotFocus[i]    := cOnGotFocus
-   ::aOnLostFocus[i]   := cOnLostFocus
-   ::aHelpID[i]        := nHelpId
-   ::aPicture[i]       := cPicture
-   ::aAction[i]        := cAction
-   ::aNoTabStop[i]     := lNoTabStop
-   ::aFlat[i]          := lFlat
-   ::aBuffer[i]        := cBuffer
-   ::aHBitmap[i]       := cHBitmap
-   ::aNoLoadTrans[i]   := lNoLoadTrans
-   ::aForceScale[i]    := lForceScale
-   ::aNo3DColors[i]    := lNo3DColors
-   ::aFit[i]           := lFit
-   ::aDIBSection[i]    := lDIBSection
-   ::aOnMouseMove[i]   := cOnMouseMove
-   ::aThemed[i]        := lThemed
-   ::aImageMargin[i]   := cImgMargin
-   ::aJustify[i]       := IIF( lTop, "TOP", IIF( lBottom, "BOTTOM", IIF( lLeft, "LEFT", IIF( lRight, "RIGHT", IIF( lCenter, "CENTER", "" ) ) ) ) )
-   ::aCancel[i]        := lCancel
-   ::aSubClass[i]      := cSubClass
-
-   // Create control
-   cAuxFile := cPicture + '.BMP'
-   IF File( cAuxFile )
-      @ nRow, nCol BUTTON &cName OF ( ::oDesignForm:Name ) ;
-         PICTURE cAuxFile ;
-         WIDTH nWidth ;
-         HEIGHT nHeight ;
-         ON GOTFOCUS ::DrawOutline( _OOHG_ThisObject ) ;
-         ACTION ::DrawOutline( _OOHG_ThisObject )
-   ELSE
-      @ nRow, nCol BUTTON &cName OF ( ::oDesignForm:Name ) ;
-         PICTURE 'A4' ;
-         WIDTH nWidth ;
-         HEIGHT nHeight ;
-         ON GOTFOCUS ::DrawOutline( _OOHG_ThisObject ) ;
-         ACTION ::DrawOutline( _OOHG_ThisObject )
-   ENDIF
-   ::oDesignForm:&cName:ToolTip := cToolTip
-
-   // TODO: Create control
-
-   ::AddCtrlToTabPage( i, cName, nRow, nCol )
-RETURN NIL
-
-//------------------------------------------------------------------------------
-METHOD pPicCheckButt( i ) CLASS TFormEditor
-//------------------------------------------------------------------------------
-LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cPicture, lValue, cToolTip
-LOCAL lNoTabStop, cOnChange, cOnGotFocus, cOnLostFocus, nHelpId, lEnabled
-LOCAL lVisible, cBuffer, cHBitmap, lNoLoadTrans, lForceScale, cField, cAuxFile
-LOCAL lNo3DColors, lFit, lDIBSection, lThemed, aBackColor, cOnMouseMove
-LOCAL cImgMargin, lFlat, lTop, lBottom, lLeft, lRight, lCenter, cSubClass
-
-   // Load properties
-   cName         := ::aControlW[i]
-   cObj          := ::ReadStringData( cName, 'OBJ', '' )
-   nRow          := Val( ::ReadCtrlRow( cName ) )
-   nCol          := Val( ::ReadCtrlCol( cName ) )
-   nWidth        := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( TButtonCheck():nWidth ) ) ) )
-   nHeight       := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TButtonCheck():nHeight ) ) ) )
-   cPicture      := ::Clean( ::ReadStringData( cName, 'PICTURE', '' ) )
-   lValue        := ( ::ReadLogicalData( cName, 'VALUE', 'F' ) == "T" )
-   cToolTip      := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
-   lNoTabStop    := ( ::ReadLogicalData( cName, 'NOTABSTOP', "F" ) == "T" )
-   cOnChange     := ::ReadStringData( cName, 'ON CHANGE', '' )
-   cOnGotFocus   := ::ReadStringData( cName, 'ON GOTFOCUS', '' )
-   cOnLostFocus  := ::ReadStringData( cName, 'ON LOSTFOCUS', '' )
-   nHelpId       := Val( ::ReadStringData( cName, 'HELPID', '0' ) )
-   lEnabled      := ( ::ReadLogicalData( cName, 'DISABLED', "F" ) == "F" )
-   lEnabled      := ( Upper( ::ReadOopData( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
-   lVisible      := ( ::ReadLogicalData( cName, 'INVISIBLE', "F" ) == "F" )
-   lVisible      := ( Upper( ::ReadOopData( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
-   cBuffer       := ::ReadStringData( cName, 'BUFFER', "" )
-   cHBitmap      := ::ReadStringData( cName, 'HBITMAP', "" )
-   lNoLoadTrans  := ( ::ReadLogicalData( cName, 'NOLOADTRANSPARENT', "F" ) == "T" )
-   lForceScale   := ( ::ReadLogicalData( cName, 'FORCESCALE', "F" ) == "T" )
-   cField        := ::ReadStringData( cName, 'FIELD', '' )
-   lNo3DColors   := ( ::ReadLogicalData( cName, 'NO3DCOLORS', "F" ) == "T" )
-   lFit          := ::ReadLogicalData( cName, 'AUTOFIT', "F" )
-   lFit          := ( ::ReadLogicalData( cName, 'ADJUST', lFit ) == "T" )
-   lDIBSection   := ( ::ReadLogicalData( cName, 'DIBSECTION', "F" ) == "T" )
-   lThemed       := ( ::ReadLogicalData( cName, 'THEMED', "F" ) == "T" )
-   aBackColor    := ::ReadStringData( cName, 'BACKCOLOR', 'NIL' )
-   aBackColor    := UpperNIL( ::ReadOopData( cName, 'BACKCOLOR', aBackColor ) )
-   cOnMouseMove  := ::ReadStringData( cName, 'ON MOUSEMOVE', '' )
-   cImgMargin    := ::ReadStringData( cName, 'IMAGEMARGIN', "" )
-   lFlat         := ( ::ReadLogicalData( cName, 'FLAT', "F" ) == "T" )
-   lTop          := ( ::ReadLogicalData( cName, 'TOP', "F" ) == "T" )
-   lBottom       := ( ::ReadLogicalData( cName, 'BOTTOM', "F" ) == "T" )
-   lLeft         := ( ::ReadLogicalData( cName, 'LEFT', "F" ) == "T" )
-   lRight        := ( ::ReadLogicalData( cName, 'RIGHT', "F" ) == "T" )
-   lCenter       := ( ::ReadLogicalData( cName, 'CENTER', "F" ) == "T" )
-   cSubClass     := ::ReadStringData( cName, 'SUBCLASS', '' )
-
-   // Save properties
-   ::aCtrlType[i]      := 'PICCHECKBUTT'
-   ::aCObj[i]          := cObj
-   ::aPicture[i]       := cPicture
-   ::aValueL[i]        := lValue
-   ::aToolTip[i]       := cToolTip
-   ::aNoTabStop[i]     := lNoTabStop
-   ::aOnChange[i]      := cOnChange
-   ::aOnGotFocus[i]    := cOnGotFocus
-   ::aOnLostFocus[i]   := cOnLostFocus
-   ::aHelpID[i]        := nHelpId
-   ::aEnabled[i]       := lEnabled
-   ::aVisible[i]       := lVisible
-   ::aBuffer[i]        := cBuffer
-   ::aHBitmap[i]       := cHBitmap
-   ::aNoLoadTrans[i]   := lNoLoadTrans
-   ::aForceScale[i]    := lForceScale
-   ::aField[i]         := cField
-   ::aNo3DColors[i]    := lNo3DColors
-   ::aFit[i]           := lFit
-   ::aDIBSection[i]    := lDIBSection
-   ::aThemed[i]        := lThemed
-   ::aBackColor[i]     := aBackColor
-   ::aOnMouseMove[i]   := cOnMouseMove
-   ::aImageMargin[i]   := cImgMargin
-   ::aFlat[i]          := lFlat
-   ::aJustify[i]       := IIF( lTop, "TOP", IIF( lBottom, "BOTTOM", IIF( lLeft, "LEFT", IIF( lRight, "RIGHT", IIF( lCenter, "CENTER", "" ) ) ) ) )
-   ::aSubClass[i]      := cSubClass
-
-   // Create control
-   cAuxFile := cPicture + '.BMP'          
-   IF File( cAuxFile )
-      @ nRow, nCol CHECKBUTTON &cName OF ( ::oDesignForm:Name ) ;
-         PICTURE cAuxFile ;
-         WIDTH nWidth ;
-         HEIGHT nHeight ;
-         ON GOTFOCUS ::DrawOutline( _OOHG_ThisObject ) ;
-         ON CHANGE ::DrawOutline( _OOHG_ThisObject )
-   ELSE
-      @ nRow, nCol CHECKBUTTON &cName OF ( ::oDesignForm:Name ) ;
-         PICTURE 'A4' ;
-         WIDTH nWidth ;
-         HEIGHT nHeight ;
-         ON GOTFOCUS ::DrawOutline( _OOHG_ThisObject ) ;
-         ON CHANGE ::DrawOutline( _OOHG_ThisObject )
-   ENDIF
-   IF IsValidArray( aBackColor )
-      ::oDesignForm:&cName:BackColor := &aBackColor
-   ENDIF
-   ::oDesignForm:&cName:ToolTip := cToolTip
-   ::oDesignForm:&cName:Value := lValue
-
-   // TODO: Create control
-
-   ::AddCtrlToTabPage( i, cName, nRow, nCol )
-RETURN NIL
-
-//------------------------------------------------------------------------------
-METHOD pCheckBtn( i ) CLASS TFormEditor
-//------------------------------------------------------------------------------
-LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cCaption, cFontName, nFontSize
-LOCAL lBold, lItalic, lUnderline, lStrikeout, aBackColor, lVisible, lEnabled
-LOCAL cToolTip, cOnGotFocus, cOnLostFocus, nHelpId, lRTL, cPicture, cBuffer
-LOCAL cHBitmap, lNoLoadTrans, lForceScale, cField, lNo3DColors, lFit
-local lDIBSection, lNoTabStop, cOnChange, lValue
-
-   // Load properties
-   cName        := ::aControlW[i]
-   cObj         := ::ReadStringData( cName, 'OBJ', '' )
-   nRow         := Val( ::ReadCtrlRow( cName ) )
-   nCol         := Val( ::ReadCtrlCol( cName ) )
-   nWidth       := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( TButtonCheck():nWidth ) ) ) )
-   nHeight      := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TButtonCheck():nHeight ) ) ) )
-   cCaption     := ::Clean( ::ReadStringData( cName, 'CAPTION', cName ) )
-   cFontName    := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
-   nFontSize    := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
-   lBold        := ( ::ReadLogicalData( cName, 'BOLD', "F" ) == "T" )
-   lBold        := ( Upper( ::ReadOopData( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) == '.T.' )
-   lItalic      := ( ::ReadLogicalData( cName, 'ITALIC', "F" ) == "T" )
-   lItalic      := ( Upper( ::ReadOopData( cName, 'FONTITALIC', IF( lItalic, '.T.', '.F.' ) ) ) == '.T.' )
-   lUnderline   := ( ::ReadLogicalData( cName, 'UNDERLINE', "F" ) == "T" )
-   lUnderline   := ( Upper( ::ReadOopData( cName, 'FONTUNDERLINE', IF( lUnderline, '.T.', '.F.' ) ) ) == '.T.' )
-   lStrikeout   := ( ::ReadLogicalData( cName, 'STRIKEOUT', "F" ) == "T" )
-   lStrikeout   := ( Upper( ::ReadOopData( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) == '.T.' )
-   aBackColor   := ::ReadStringData( cName, 'BACKCOLOR', 'NIL' )
-   aBackColor   := UpperNIL( ::ReadOopData( cName, 'BACKCOLOR', aBackColor ) )
-   lVisible     := ( ::ReadLogicalData( cName, 'INVISIBLE', "F" ) == "F" )
-   lVisible     := ( Upper( ::ReadOopData( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
-   lEnabled     := ( ::ReadLogicalData( cName, 'DISABLED', "F" ) == "F" )
-   lEnabled     := ( Upper( ::ReadOopData( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
-   cToolTip     := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
-   cOnGotFocus  := ::ReadStringData( cName, 'ON GOTFOCUS', '' )
-   cOnLostFocus := ::ReadStringData( cName, 'ON LOSTFOCUS', '' )
-   nHelpId      := Val( ::ReadStringData( cName, 'HELPID', '0' ) )
-   lRTL         := ( ::ReadLogicalData( cName, 'RTL', "F" ) == "T" )
-   cPicture     := ::Clean( ::ReadStringData( cName, 'PICTURE', '' ) )
-   cBuffer      := ::ReadStringData( cName, 'BUFFER', "" )
-   cHBitmap     := ::ReadStringData( cName, 'HBITMAP', "" )
-   lNoLoadTrans := ( ::ReadLogicalData( cName, 'NOLOADTRANSPARENT', "F" ) == "T" )
-   lForceScale  := ( ::ReadLogicalData( cName, 'FORCESCALE', "F" ) == "T" )
-   cField       := ::ReadStringData( cName, 'FIELD', '' )
-   lNo3DColors  := ( ::ReadLogicalData( cName, 'NO3DCOLORS', "F" ) == "T" )
-   lFit         := ::ReadLogicalData( cName, 'AUTOFIT', "F" )
-   lFit         := ( ::ReadLogicalData( cName, 'ADJUST', lFit ) == "T" )
-   lDIBSection  := ( ::ReadLogicalData( cName, 'DIBSECTION', "F" ) == "T" )
-   lNoTabStop   := ( ::ReadLogicalData( cName, 'NOTABSTOP', "F" ) == "T" )
-   cOnChange    := ::ReadStringData( cName, 'ON CHANGE', '' )
-   lValue       := ( ::ReadStringData( cName, 'VALUE', ".F." ) == ".T." )
-
-   // Save properties
-   ::aCtrlType[i]      := 'CHECKBTN'
-   ::aCObj[i]          := cObj
-   ::aCaption[i]       := cCaption
-   ::aFontName[i]      := cFontName
-   ::aFontSize[i]      := nFontSize
-   ::aBold[i]          := lBold
-   ::aFontItalic[i]    := lItalic
-   ::aFontUnderline[i] := lUnderline
-   ::aFontStrikeout[i] := lStrikeout
-   ::aBackColor[i]     := aBackColor
-   ::aVisible[i]       := lVisible
-   ::aEnabled[i]       := lEnabled
-   ::aToolTip[i]       := cToolTip
-   ::aOnGotFocus[i]    := cOnGotFocus
-   ::aOnLostFocus[i]   := cOnLostFocus
-   ::aHelpID[i]        := nHelpId
-   ::aRTL[i]           := lRTL
-   ::aPicture[i]       := cPicture
-   ::aBuffer[i]        := cBuffer
-   ::aHBitmap[i]       := cHBitmap
-   ::aNoLoadTrans[i]   := lNoLoadTrans
-   ::aForceScale[i]    := lForceScale
-   ::aField[i]         := cField
-   ::aNo3DColors[i]    := lNo3DColors
-   ::aFit[i]           := lFit
-   ::aDIBSection[i]    := lDIBSection
-   ::aNoTabStop[i]     := lNoTabStop
-   ::aOnChange[i]      := cOnChange
-   ::aValueL[i]        := lValue
-
-   // Create control
-   @ nRow, nCol CHECKBUTTON &cName OF ( ::oDesignForm:Name ) ;
-      CAPTION Ccaption ;
-      WIDTH nwidth ;
-      HEIGHT nheight ;
-      VALUE lValue ;
-      ON GOTFOCUS ::DrawOutline( _OOHG_ThisObject ) ;
-      ON CHANGE ::DrawOutline( _OOHG_ThisObject )
-   IF ! Empty( cFontName )
-      ::oDesignForm:&cName:FontName := cFontName
-   ENDIF
-   IF nFontSize > 0
-      ::oDesignForm:&cName:FontSize := nFontSize
-   ENDIF
-   ::oDesignForm:&cName:FontBold      := lBold
-   ::oDesignForm:&cName:FontItalic    := lItalic
-   ::oDesignForm:&cName:FontUnderline := lUnderline
-   ::oDesignForm:&cName:FontStrikeout := lStrikeout
-   IF IsValidArray( aBackColor )
-      ::oDesignForm:&cName:BackColor := &aBackColor
-   ENDIF
-   ::oDesignForm:&cName:ToolTip := cToolTip
-
-   // TODO: Create control
-
-   ::AddCtrlToTabPage( i, cName, nRow, nCol )
-RETURN NIL
-
-//------------------------------------------------------------------------------
-METHOD pComboBox( i ) CLASS TFormEditor
-//------------------------------------------------------------------------------
-LOCAL cName, cObj, nRow, nCol, nWidth, cFontName, nFontSize, aFontColor, lBold
-LOCAL lItalic, lUnderline, lStrikeout, aBackColor, lVisible, lEnabled, cToolTip
-LOCAL cOnChange, cOnGotFocus, cOnLostFocus, cOnEnter, cOnDisplayChange, cItems
-LOCAL cItemSource, nValue, cValueSource, nHelpId, lNoTabStop, lSort, lBreak
-LOCAL lDisplayEdit, lRTL, cImage, lFit, nTextHeight, cItemImageNumber, nHeight
-LOCAL cImageSource, lFirstItem, nListWidth, cOnListDisplay, cOnListClose
-LOCAL lDelayedLoad, lIncremental, lIntegralHeight, lRefresh, lNoRefresh
-LOCAL cSourceOrder, cOnRefresh, nSearchLapse, cGripperText, cSubClass
-
-   // Load properties
-   cName             := ::aControlW[i]
-   cObj              := ::ReadStringData( cName, 'OBJ', '' )
-   nRow              := Val( ::ReadCtrlRow( cName ) )
-   nCol              := Val( ::ReadCtrlCol( cName ) )
-   nWidth            := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( TCombo():nWidth ) ) ) )
-   nHeight           := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TCombo():nHeight ) ) ) )
-   cFontName         := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
-   nFontSize         := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
-   aFontColor        := ::ReadStringData( cName, 'FONTCOLOR', 'NIL' )
-   aFontColor        := UpperNIL( ::ReadOopData( cName, 'FONTCOLOR', aFontColor ) )
-   lBold             := ( ::ReadLogicalData( cName, 'BOLD', "F" ) == "T" )
-   lBold             := ( Upper( ::ReadOopData( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) == '.T.' )
-   lItalic           := ( ::ReadLogicalData( cName, 'ITALIC', "F" ) == "T" )
-   lItalic           := ( Upper( ::ReadOopData( cName, 'FONTITALIC', IF( lItalic, '.T.', '.F.' ) ) ) == '.T.' )
-   lUnderline        := ( ::ReadLogicalData( cName, 'UNDERLINE', "F" ) == "T" )
-   lUnderline        := ( Upper( ::ReadOopData( cName, 'FONTUNDERLINE', IF( lUnderline, '.T.', '.F.' ) ) ) == '.T.' )
-   lStrikeout        := ( ::ReadLogicalData( cName, 'STRIKEOUT', "F" ) == "T" )
-   lStrikeout        := ( Upper( ::ReadOopData( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) == '.T.' )
-   aBackColor        := ::ReadStringData( cName, 'BACKCOLOR', 'NIL' )
-   aBackColor        := UpperNIL( ::ReadOopData( cName, 'BACKCOLOR', aBackColor ) )
-   lVisible          := ( ::ReadLogicalData( cName, 'INVISIBLE', "F" ) == "F" )
-   lVisible          := ( Upper( ::ReadOopData( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
-   lEnabled          := ( ::ReadLogicalData( cName, 'DISABLED', "F" ) == "F" )
-   lEnabled          := ( Upper( ::ReadOopData( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
-   cToolTip          := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
-   cOnChange         := ::ReadStringData( cName, 'ON CHANGE', '' )
-   cOnGotFocus       := ::ReadStringData( cName, 'ON GOTFOCUS', '' )
-   cOnLostFocus      := ::ReadStringData( cName, 'ON LOSTFOCUS', '' )
-   cOnEnter          := ::ReadStringData( cName, 'ON ENTER', '' )
-   cOnDisplayChange  := ::ReadStringData( cName, 'ON DISPLAYCHANGE', '' )
-   cItems            := ::ReadStringData( cName, 'ITEMS', '' )
-   cItemSource       := ::ReadStringData( cName, 'ITEMSOURCE', '' )
-   nValue            := Val( ::ReadStringData( cName, 'VALUE', '0' ) )
-   cValueSource      := ::ReadStringData( cName, 'VALUESOURCE', '' )
-   nHelpId           := Val( ::ReadStringData( cName, 'HELPID', '0' ) )
-   lNoTabStop        := ( ::ReadLogicalData( cName, 'NOTABSTOP', "F" ) == "T" )
-   lSort             := ( ::ReadLogicalData( cName, 'SORT', "F" ) == "T" )
-   lBreak            := ( ::ReadLogicalData( cName, 'BREAK', "F" ) == "T" )
-   lDisplayEdit      := ( ::ReadLogicalData( cName, 'DISPLAYEDIT', "F" ) == "T" )
-   lRTL              := ( ::ReadLogicalData( cName, 'RTL', "F" ) == "T" )
-   cImage            := ::Clean( ::ReadStringData( cName, 'IMAGE', '' ) )
-   lFit              := ( ::ReadLogicalData( cName, 'FIT', "F" ) == "T" )
-   nTextHeight       := Val( ::ReadStringData( cName, 'TEXTHEIGHT', '0' ) )
-   cItemImageNumber  := ::ReadStringData( cName, 'ITEMIMAGENUMBER', '' )
-   cImageSource      := ::ReadStringData( cName, 'IMAGESOURCE', '' )
-   lFirstItem        := ( ::ReadLogicalData( cName, 'FIRSTITEM', "F" ) == "T" )
-   nListWidth        := Val( ::ReadStringData( cName, 'LISTWIDTH', '0' ) )
-   cOnListDisplay    := ::ReadStringData( cName, 'ON LISTDISPLAY', '' )
-   cOnListClose      := ::ReadStringData( cName, 'ON LISTCLOSE', '' )
-   lDelayedLoad      := ( ::ReadLogicalData( cName, 'DELAYEDLOAD', "F" ) == "T" )
-   lIncremental      := ( ::ReadLogicalData( cName, 'INCREMENTAL', "F" ) == "T" )
-   lIntegralHeight   := ( ::ReadLogicalData( cName, 'INTEGRALHEIGHT', "F" ) == "T" )
-   lRefresh          := ( ::ReadLogicalData( cName, 'REFRESH', "F" ) == "T" )
-   lNoRefresh        := ( ::ReadLogicalData( cName, 'NOREFRESH', "F" ) == "T" )
-   cSourceOrder      := ::ReadStringData( cName, 'SOURCEORDER', '' )
-   cOnRefresh        := ::ReadStringData( cName, 'ON REFRESH', '' )
-   nSearchLapse      := Val( ::ReadStringData( cName, 'SEARCHLAPSE', '0' ) )
-   cGripperText      := ::ReadStringData( cName, 'GRIPPERTEXT', '' )
-   cSubClass         := ::ReadStringData( cName, 'SUBCLASS', '' )
-
-   // Show control
-   @ nRow, nCol COMBOBOX &cName OF ( ::oDesignForm:Name ) ;
-      WIDTH nWidth ;
-      HEIGHT nHeight ;
-      ITEMS { cName, ' ' } ;
-      VALUE 1 ;
-      ON GOTFOCUS ::DrawOutline( _OOHG_ThisObject ) ;
-      ON CHANGE ::DrawOutline( _OOHG_ThisObject )
-   IF ! Empty( cFontName )
-      ::oDesignForm:&cName:FontName := cFontName
-   ENDIF
-   IF nFontSize > 0
-      ::oDesignForm:&cName:FontSize := nFontSize
-   ENDIF
-   IF IsValidArray( aFontColor )
-      ::oDesignForm:&cName:FontColor := &aFontColor
-   ENDIF
-   ::oDesignForm:&cName:FontBold      := lBold
-   ::oDesignForm:&cName:FontItalic    := lItalic
-   ::oDesignForm:&cName:FontUnderline := lUnderline
-   ::oDesignForm:&cName:FontStrikeout := lStrikeout
-   IF IsValidArray( aBackColor )
-      ::oDesignForm:&cName:BackColor := &aBackColor
-   ENDIF
-   ::oDesignForm:&cName:ToolTip := cToolTip
-
-   // Save properties
-   ::aCtrlType[i]        := 'COMBO'
-   ::aCObj[i]            := cObj
-   ::aFontName[i]        := cFontName
-   ::aFontSize[i]        := nFontSize
-   ::aFontColor[i]       := aFontColor
-   ::aBold[i]            := lBold
-   ::aFontItalic[i]      := lItalic
-   ::aFontUnderline[i]   := lUnderline
-   ::aFontStrikeout[i]   := lStrikeout
-   ::aBackColor[i]       := aBackColor
-   ::aVisible[i]         := lVisible
-   ::aEnabled[i]         := lEnabled
-   ::aToolTip[i]         := cToolTip
-   ::aOnChange[i]        := cOnChange
-   ::aOnGotFocus[i]      := cOnGotFocus
-   ::aOnLostFocus[i]     := cOnLostFocus
-   ::aOnEnter[i]         := cOnEnter
-   ::aOnDisplayChange[i] := cOnDisplayChange
-   ::aItems[i]           := cItems
-   ::aItemSource[i]      := cItemSource
-   ::aValueN[i]          := nValue
-   ::aValueSource[i]     := cValueSource
-   ::aHelpID[i]          := nHelpId
-   ::aNoTabStop[i]       := lNoTabStop
-   ::aSort[i]            := lSort
-   ::aBreak[i]           := lBreak
-   ::aDisplayEdit[i]     := lDisplayEdit
-   ::aRTL[i]             := lRTL
-   ::aImage[i]           := cImage
-   ::aFit[i]             := lFit
-   ::aTextHeight[i]      := nTextHeight
-   ::aItemImageNumber[i] := cItemImageNumber
-   ::aImageSource[i]     := cImageSource
-   ::aFirstItem[i]       := lFirstItem
-   ::aListWidth[i]       := nListWidth
-   ::aOnListDisplay[i]   := cOnListDisplay
-   ::aOnListClose[i]     := cOnListClose
-   ::aDelayedLoad[i]     := lDelayedLoad
-   ::aIncremental[i]     := lIncremental
-   ::aIntegralHeight[i]  := lIntegralHeight
-   ::aRefresh[i]         := lRefresh
-   ::aNoRefresh[i]       := lNoRefresh
-   ::aSourceOrder[i]     := cSourceOrder
-   ::aOnRefresh[i]       := cOnRefresh
-   ::aSearchLapse[i]     := nSearchLapse
-   ::aGripperText[i]     := cGripperText
-   ::aSubClass[i]        := cSubClass
-
-   // TODO: Create control
-
-   ::AddCtrlToTabPage( i, cName, nRow, nCol )
-RETURN NIL
-
-//------------------------------------------------------------------------------
-METHOD pListBox( i ) CLASS TFormEditor
-//------------------------------------------------------------------------------
-LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cToolTip, nHelpId, cFontName
-LOCAL nFontSize, lBold, lItalic, lUnderline, lStrikeout, aBackColor, aFontColor
-LOCAL lVisible, lEnabled, lRTL, cOnEnter, lNoVScroll, cImage, lFit, nTextHeight
-LOCAL cOnGotFocus, cOnLostFocus, cOnChange, cOnDblClick, cItems, nValue
-LOCAL lMultiSelect, lNoTabStop, lBreak, lSort, cSubClass
-
-   // Load properties
-   cName        := ::aControlW[i]
-   cObj         := ::ReadStringData( cName, 'OBJ', '' )
-   nRow         := Val( ::ReadCtrlRow( cName ) )
-   nCol         := Val( ::ReadCtrlCol( cName ) )
-   nWidth       := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( TList():nWidth ) ) ) )
-   nHeight      := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TList():nHeight ) ) ) )
-   cToolTip     := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
-   nHelpId      := Val( ::ReadStringData( cName, 'HELPID', '0' ) )
-   cFontName    := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
-   nFontSize    := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
-   lBold        := ( ::ReadLogicalData( cName, 'BOLD', "F" ) == "T" )
-   lBold        := ( Upper( ::ReadOopData( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) == '.T.' )
-   lItalic      := ( ::ReadLogicalData( cName, 'ITALIC', "F" ) == "T" )
-   lItalic      := ( Upper( ::ReadOopData( cName, 'FONTITALIC', IF( lItalic, '.T.', '.F.' ) ) ) == '.T.' )
-   lUnderline   := ( ::ReadLogicalData( cName, 'UNDERLINE', "F" ) == "T" )
-   lUnderline   := ( Upper( ::ReadOopData( cName, 'FONTUNDERLINE', IF( lUnderline, '.T.', '.F.' ) ) ) == '.T.' )
-   lStrikeout   := ( ::ReadLogicalData( cName, 'STRIKEOUT', "F" ) == "T" )
-   lStrikeout   := ( Upper( ::ReadOopData( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) == '.T.' )
-   aBackColor   := ::ReadStringData( cName, 'BACKCOLOR', 'NIL' )
-   aBackColor   := UpperNIL( ::ReadOopData( cName, 'BACKCOLOR', aBackColor ) )
-   aFontColor   := ::ReadStringData( cName, 'FONTCOLOR', 'NIL' )
-   aFontColor   := UpperNIL( ::ReadOopData( cName, 'FONTCOLOR', aFontColor ) )
-   lVisible     := ( ::ReadLogicalData( cName, 'INVISIBLE', "F" ) == "F" )
-   lVisible     := ( Upper( ::ReadOopData( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
-   lEnabled     := ( ::ReadLogicalData( cName, 'DISABLED', "F" ) == "F" )
-   lEnabled     := ( Upper( ::ReadOopData( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
-   lRTL         := ( ::ReadLogicalData( cName, 'RTL', "F" ) == "T" )
-   cOnEnter     := ::ReadStringData( cName, 'ON ENTER', '' )
-   lNoVScroll   := ( ::ReadLogicalData( cName, "NOVSCROLL", "F" ) == "T" )
-   cImage       := ::Clean( ::ReadStringData( cName, 'IMAGE', '' ) )
-   lFit         := ( ::ReadLogicalData( cName, 'FIT', "F" ) == "T" )
-   nTextHeight  := Val( ::ReadStringData( cName, 'TEXTHEIGHT', '0' ) )
-   cOnGotFocus  := ::ReadStringData( cName, 'ON GOTFOCUS', '' )
-   cOnLostFocus := ::ReadStringData( cName, 'ON LOSTFOCUS', '' )
-   cOnChange    := ::ReadStringData( cName, 'ON CHANGE', '' )
-   cOnDblClick  := ::ReadStringData( cName, 'ON DBLCLICK', '' )
-   cItems       := ::ReadStringData( cName, 'ITEMS', '' )
-   nValue       := Val( ::ReadStringData( cName, 'VALUE', '0' ) )
-   lMultiSelect := ( ::ReadLogicalData( cName, 'MULTISELECT', "F" ) == "T" )
-   lNoTabStop   := ( ::ReadLogicalData( cName, 'NOTABSTOP', "F" ) == "T" )
-   lBreak       := ( ::ReadLogicalData( cName, 'BREAK', "F" ) == "T" )
-   lSort        := ( ::ReadLogicalData( cName, 'SORT', "F" ) == "T" )
-   cSubClass    := ::ReadStringData( cName, 'SUBCLASS', '' )
-
-   // Show control
-   @ nRow, nCol LISTBOX &cName OF ( ::oDesignForm:Name ) ;
-      WIDTH nwidth ;
-      HEIGHT nheight ;
-      ITEMS { cName } ;
-      ON GOTFOCUS ::DrawOutline( _OOHG_ThisObject ) ;
-      ON CHANGE ::DrawOutline( _OOHG_ThisObject )
-   IF ! Empty( cFontName )
-      ::oDesignForm:&cName:FontName := cFontName
-   ENDIF
-   IF nFontSize > 0
-      ::oDesignForm:&cName:FontSize := nFontSize
-   ENDIF
-   IF IsValidArray( aFontColor )
-      ::oDesignForm:&cName:FontColor := &aFontColor
-   ENDIF
-   ::oDesignForm:&cName:FontBold      := lBold
-   ::oDesignForm:&cName:FontItalic    := lItalic
-   ::oDesignForm:&cName:FontUnderline := lUnderline
-   ::oDesignForm:&cName:FontStrikeout := lStrikeout
-   IF IsValidArray( aBackColor )
-      ::oDesignForm:&cName:BackColor := &aBackColor
-   ENDIF
-   ::oDesignForm:&cName:ToolTip := cToolTip
-
-   // Save properties
-   ::aCtrlType[i]      := 'LIST'
-   ::aCObj[i]          := cObj
-   ::aToolTip[i]       := cToolTip
-   ::aHelpID[i]        := nHelpid
-   ::aFontName[i]      := cFontName
-   ::aFontSize[i]      := nFontSize
-   ::aBold[i]          := lBold
-   ::aFontItalic[i]    := lItalic
-   ::aFontUnderline[i] := lUnderline
-   ::aFontStrikeout[i] := lStrikeout
-   ::aBackColor[i]     := aBackColor
-   ::aFontColor[i]     := aFontColor
-   ::aVisible[i]       := lVisible
-   ::aEnabled[i]       := lEnabled
-   ::aRTL[i]           := lRTL
-   ::aOnEnter[i]       := cOnEnter
-   ::aNoVScroll[i]     := lNoVScroll
-   ::aImage[i]         := cImage
-   ::aFit[i]           := lFit
-   ::aTextHeight[i]    := nTextHeight
-   ::aOnGotFocus[i]    := cOnGotFocus
-   ::aOnLostFocus[i]   := cOnLostFocus
-   ::aOnChange[i]      := cOnChange
-   ::aOnDblClick[i]    := cOnDblClick
-   ::aItems[i]         := cItems
-   ::aValuen[i]        := nValue
-   ::aMultiSelect[i]   := lMultiSelect
-   ::aNoTabStop[i]     := lNoTabStop
-   ::aBreak[i]         := lBreak
-   ::aSort[i]          := lSort
-   ::aSubClass[i]      := cSubClass
-
-   // TODO: Create control
-
-   ::AddCtrlToTabPage( i, cName, nRow, nCol )
-RETURN NIL
-
-//------------------------------------------------------------------------------
-METHOD pCheckBox( i ) CLASS TFormEditor
-//------------------------------------------------------------------------------
-LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, cToolTip
-LOCAL cCaption, cOnChange, cField, cOnGotFocus, cOnLostFocus, nHelpID, lTrans
-LOCAL lNoTabStop, cValue, lBold, lItalic, lUnderline, lStrikeout, aBackColor
-LOCAL aFontColor, lVisible, lEnabled, lRTL, lThemed, lAutoSize, lLeft, l3State
-LOCAL cSubClass
-
-   cName        := ::aControlW[i]
-   cObj         := ::ReadStringData( cName, 'OBJ', '' )
-   nRow         := Val( ::ReadCtrlRow( cName ) )
-   nCol         := Val( ::ReadCtrlCol( cName ) )
-   nWidth       := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( TCheckBox():nWidth ) ) ) )
-   nHeight      := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TCheckBox():nHeight ) ) ) )
-   cFontName    := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
-   nFontSize    := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
-   cToolTip     := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
-   cCaption     := ::Clean( ::ReadStringData( cName, 'CAPTION', '' ) )
-   cOnChange    := ::ReadStringData( cName, 'ON CHANGE', '' )
-   cField       := ::ReadStringData( cName, 'FIELD', '' )
-   cOnGotFocus  := ::ReadStringData( cName, 'ON GOTFOCUS', '' )
-   cOnLostFocus := ::ReadStringData( cName, 'ON LOSTFOCUS', '' )
-   nHelpID      := Val( ::ReadStringData( cName, 'HELPID', '0' ) )
-   lTrans       := ( ::ReadLogicalData( cName, "TRANSPARENT", "F" ) == "T" )
-   lNoTabStop   := ( ::ReadLogicalData( cName, 'NOTABSTOP', "F" ) == "T" )
-   lBold        := ( ::ReadLogicalData( cName, 'BOLD', "F" ) == "T" )
-   lBold        := ( Upper( ::ReadOopData( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) == '.T.' )
-   lItalic      := ( ::ReadLogicalData( cName, 'ITALIC', "F" ) == "T" )
-   lItalic      := ( Upper( ::ReadOopData( cName, 'FONTITALIC', IF( lItalic, '.T.', '.F.' ) ) ) == '.T.' )
-   lUnderline   := ( ::ReadLogicalData( cName, 'UNDERLINE', "F" ) == "T" )
-   lUnderline   := ( Upper( ::ReadOopData( cName, 'FONTUNDERLINE', IF( lUnderline, '.T.', '.F.' ) ) ) == '.T.' )
-   lStrikeout   := ( ::ReadLogicalData( cName, 'STRIKEOUT', "F" ) == "T" )
-   lStrikeout   := ( Upper( ::ReadOopData( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) == '.T.' )
-   aBackColor   := ::ReadStringData( cName, 'BACKCOLOR', 'NIL' )
-   aBackColor   := UpperNIL( ::ReadOopData( cName, 'BACKCOLOR', aBackColor ) )
-   aFontColor   := ::ReadStringData( cName, 'FONTCOLOR', 'NIL' )
-   aFontColor   := UpperNIL( ::ReadOopData( cName, 'FONTCOLOR', aFontColor ) )
-   lVisible     := ( ::ReadLogicalData( cName, 'INVISIBLE', "F" ) == "F" )
-   lVisible     := ( Upper( ::ReadOopData( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
-   lEnabled     := ( ::ReadLogicalData( cName, 'DISABLED', "F" ) == "F" )
-   lEnabled     := ( Upper( ::ReadOopData( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
-   lRTL         := ( ::ReadLogicalData( cName, 'RTL', "F" ) == "T" )
-   lThemed      := ( ::ReadLogicalData( cName, 'THEMED', "F" ) == "T" )
-   lAutoSize    := ( ::ReadLogicalData( cName, "AUTOSIZE", "F" ) == "T" )
-   lLeft        := ( ::ReadLogicalData( cName, 'LEFTALIGN', "F" ) == "T" )
-   l3State      := ( ::ReadLogicalData( cName, 'THREESTATE', "F" ) == "T" )
-   cValue       := ::ReadStringData( cName, 'VALUE', "" )
-   cSubClass    := ::ReadStringData( cName, 'SUBCLASS', '' )
-
-   IF l3State
-      IF cValue == ".T."
-         // OK
-      ELSEIF cValue == ".F."
-         // OK
-      ELSE
-         cValue := 'NIL'
-      ENDIF
-   ELSE
-      IF cValue == ".T."
-         // OK
-      ELSE
-         cValue := ".F."
-      ENDIF
-   ENDIF
-
-// TODO: Use OOP syntax
-
-   // Show control
-   IF lRTL
-      IF lLeft
-         IF l3State
-            IF lTrans
-               @ nRow, nCol CHECKBOX &cName OF ( ::oDesignForm:Name ) ;
-                  CAPTION IIF( Empty( cCaption ), cName, cCaption ) ;
-                  WIDTH nwidth ;
-                  HEIGHT nheight ;
-                  RTL ;
-                  LEFTALIGN ;
-                  THREESTATE ;
-                  TRANSPARENT ;
-                  VALUE &cValue ;
-                  ON GOTFOCUS ::DrawOutline( _OOHG_ThisObject ) ;
-                  ON CHANGE ::DrawOutline( _OOHG_ThisObject )
-            ELSE  // ! lTrans
-               @ nRow, nCol CHECKBOX &cName OF ( ::oDesignForm:Name ) ;
-                  CAPTION IIF( Empty( cCaption ), cName, cCaption ) ;
-                  WIDTH nwidth ;
-                  HEIGHT nheight ;
-                  RTL ;
-                  LEFTALIGN ;
-                  THREESTATE ;
-                  VALUE &cValue ;
-                  ON GOTFOCUS ::DrawOutline( _OOHG_ThisObject ) ;
-                  ON CHANGE ::DrawOutline( _OOHG_ThisObject )
-            ENDIF
-         ELSE   // ! l3State
-            IF lTrans
-               @ nRow, nCol CHECKBOX &cName OF ( ::oDesignForm:Name ) ;
-                  CAPTION IIF( Empty( cCaption ), cName, cCaption ) ;
-                  WIDTH nwidth ;
-                  HEIGHT nheight ;
-                  RTL ;
-                  LEFTALIGN ;
-                  TRANSPARENT ;
-                  VALUE &cValue ;
-                  ON GOTFOCUS ::DrawOutline( _OOHG_ThisObject ) ;
-                  ON CHANGE ::DrawOutline( _OOHG_ThisObject )
-            ELSE   // ! lTrans
-               @ nRow, nCol CHECKBOX &cName OF ( ::oDesignForm:Name ) ;
-                  CAPTION IIF( Empty( cCaption ), cName, cCaption ) ;
-                  WIDTH nwidth ;
-                  HEIGHT nheight ;
-                  RTL ;
-                  LEFTALIGN ;
-                  VALUE &cValue ;
-                  ON GOTFOCUS ::DrawOutline( _OOHG_ThisObject ) ;
-                  ON CHANGE ::DrawOutline( _OOHG_ThisObject )
-            ENDIF
-         ENDIF
-      ELSE   // ! lLeft
-         IF l3State
-            IF lTrans
-               @ nRow, nCol CHECKBOX &cName OF ( ::oDesignForm:Name ) ;
-                  CAPTION IIF( Empty( cCaption ), cName, cCaption ) ;
-                  WIDTH nwidth ;
-                  HEIGHT nheight ;
-                  RTL ;
-                  THREESTATE ;
-                  TRANSPARENT ;
-                  VALUE &cValue ;
-                  ON GOTFOCUS ::DrawOutline( _OOHG_ThisObject ) ;
-                  ON CHANGE ::DrawOutline( _OOHG_ThisObject )
-            ELSE
-               @ nRow, nCol CHECKBOX &cName OF ( ::oDesignForm:Name ) ;
-                  CAPTION IIF( Empty( cCaption ), cName, cCaption ) ;
-                  WIDTH nwidth ;
-                  HEIGHT nheight ;
-                  RTL ;
-                  THREESTATE ;
-                  VALUE &cValue ;
-                  ON GOTFOCUS ::DrawOutline( _OOHG_ThisObject ) ;
-                  ON CHANGE ::DrawOutline( _OOHG_ThisObject )
-            ENDIF
-         ELSE   // ! l3State
-            IF lTrans
-               @ nRow, nCol CHECKBOX &cName OF ( ::oDesignForm:Name ) ;
-                  CAPTION IIF( Empty( cCaption ), cName, cCaption ) ;
-                  WIDTH nwidth ;
-                  HEIGHT nheight ;
-                  RTL ;
-                  TRANSPARENT ;
-                  VALUE &cValue ;
-                  ON GOTFOCUS ::DrawOutline( _OOHG_ThisObject ) ;
-                  ON CHANGE ::DrawOutline( _OOHG_ThisObject )
-            ELSE   // ! lTrans
-               @ nRow, nCol CHECKBOX &cName OF ( ::oDesignForm:Name ) ;
-                  CAPTION IIF( Empty( cCaption ), cName, cCaption ) ;
-                  WIDTH nwidth ;
-                  HEIGHT nheight ;
-                  RTL ;
-                  VALUE &cValue ;
-                  ON GOTFOCUS ::DrawOutline( _OOHG_ThisObject ) ;
-                  ON CHANGE ::DrawOutline( _OOHG_ThisObject )
-            ENDIF
-         ENDIF
-      ENDIF
-   ELSE   // ! lRTL
-      IF lLeft
-         IF l3State
-            IF lTrans
-               @ nRow, nCol CHECKBOX &cName OF ( ::oDesignForm:Name ) ;
-                  CAPTION IIF( Empty( cCaption ), cName, cCaption ) ;
-                  WIDTH nwidth ;
-                  HEIGHT nheight ;
-                  LEFTALIGN ;
-                  THREESTATE ;
-                  TRANSPARENT ;
-                  VALUE &cValue ;
-                  ON GOTFOCUS ::DrawOutline( _OOHG_ThisObject ) ;
-                  ON CHANGE ::DrawOutline( _OOHG_ThisObject )
-            ELSE  // ! lTrans
-               @ nRow, nCol CHECKBOX &cName OF ( ::oDesignForm:Name ) ;
-                  CAPTION IIF( Empty( cCaption ), cName, cCaption ) ;
-                  WIDTH nwidth ;
-                  HEIGHT nheight ;
-                  LEFTALIGN ;
-                  THREESTATE ;
-                  VALUE &cValue ;
-                  ON GOTFOCUS ::DrawOutline( _OOHG_ThisObject ) ;
-                  ON CHANGE ::DrawOutline( _OOHG_ThisObject )
-            ENDIF
-         ELSE   // ! l3State
-            IF lTrans
-               @ nRow, nCol CHECKBOX &cName OF ( ::oDesignForm:Name ) ;
-                  CAPTION IIF( Empty( cCaption ), cName, cCaption ) ;
-                  WIDTH nwidth ;
-                  HEIGHT nheight ;
-                  LEFTALIGN ;
-                  TRANSPARENT ;
-                  VALUE &cValue ;
-                  ON GOTFOCUS ::DrawOutline( _OOHG_ThisObject ) ;
-                  ON CHANGE ::DrawOutline( _OOHG_ThisObject )
-            ELSE   // ! lTrans
-               @ nRow, nCol CHECKBOX &cName OF ( ::oDesignForm:Name ) ;
-                  CAPTION IIF( Empty( cCaption ), cName, cCaption ) ;
-                  WIDTH nwidth ;
-                  HEIGHT nheight ;
-                  LEFTALIGN ;
-                  VALUE &cValue ;
-                  ON GOTFOCUS ::DrawOutline( _OOHG_ThisObject ) ;
-                  ON CHANGE ::DrawOutline( _OOHG_ThisObject )
-            ENDIF
-         ENDIF
-      ELSE   // ! lLeft
-         IF l3State
-            IF lTrans
-               @ nRow, nCol CHECKBOX &cName OF ( ::oDesignForm:Name ) ;
-                  CAPTION IIF( Empty( cCaption ), cName, cCaption ) ;
-                  WIDTH nwidth ;
-                  HEIGHT nheight ;
-                  THREESTATE ;
-                  TRANSPARENT ;
-                  VALUE &cValue ;
-                  ON GOTFOCUS ::DrawOutline( _OOHG_ThisObject ) ;
-                  ON CHANGE ::DrawOutline( _OOHG_ThisObject )
-            ELSE
-               @ nRow, nCol CHECKBOX &cName OF ( ::oDesignForm:Name ) ;
-                  CAPTION IIF( Empty( cCaption ), cName, cCaption ) ;
-                  WIDTH nwidth ;
-                  HEIGHT nheight ;
-                  THREESTATE ;
-                  VALUE &cValue ;
-                  ON GOTFOCUS ::DrawOutline( _OOHG_ThisObject ) ;
-                  ON CHANGE ::DrawOutline( _OOHG_ThisObject )
-            ENDIF
-         ELSE   // ! l3State
-            IF lTrans
-               @ nRow, nCol CHECKBOX &cName OF ( ::oDesignForm:Name ) ;
-                  CAPTION IIF( Empty( cCaption ), cName, cCaption ) ;
-                  WIDTH nwidth ;
-                  HEIGHT nheight ;
-                  TRANSPARENT ;
-                  VALUE &cValue ;
-                  ON GOTFOCUS ::DrawOutline( _OOHG_ThisObject ) ;
-                  ON CHANGE ::DrawOutline( _OOHG_ThisObject )
-            ELSE   // ! lTrans
-               @ nRow, nCol CHECKBOX &cName OF ( ::oDesignForm:Name ) ;
-                  CAPTION IIF( Empty( cCaption ), cName, cCaption ) ;
-                  WIDTH nwidth ;
-                  HEIGHT nheight ;
-                  VALUE &cValue ;
-                  ON GOTFOCUS ::DrawOutline( _OOHG_ThisObject ) ;
-                  ON CHANGE ::DrawOutline( _OOHG_ThisObject )
-            ENDIF
-         ENDIF
-      ENDIF
-   ENDIF
-   IF ! Empty( cFontName )
-      ::oDesignForm:&cName:FontName := cFontName
-   ENDIF
-   IF nFontSize > 0
-      ::oDesignForm:&cName:FontSize := nFontSize
-   ENDIF
-   IF IsValidArray( aFontColor )
-      ::oDesignForm:&cName:FontColor := &aFontColor
-   ENDIF
-   ::oDesignForm:&cName:FontBold      := lBold
-   ::oDesignForm:&cName:FontItalic    := lItalic
-   ::oDesignForm:&cName:FontUnderline := lUnderline
-   ::oDesignForm:&cName:FontStrikeout := lStrikeout
-   IF IsValidArray( aBackColor )
-      ::oDesignForm:&cName:BackColor := &aBackColor
-   ENDIF
-   ::oDesignForm:&cName:ToolTip := cToolTip
-   IF lAutoSize
-      ::oDesignForm:&cName:Autosize := .T.
-   ENDIF
-   IF lThemed
-      ::oDesignForm:&cName:lThemed := .T.
-      ::oDesignForm:&cName:Redraw()
-   ENDIF
-
-   // Save properties
-   ::aCtrlType[i]      := 'CHECKBOX'
-   ::aCObj[i]          := cObj
-   ::aFontName[i]      := cFontName
-   ::aFontSize[i]      := nFontSize
-   ::aToolTip[i]       := cToolTip
-   ::aCaption[i]       := cCaption
-   ::aOnChange[i]      := cOnChange
-   ::aField[i]         := cField
-   ::aOnGotFocus[i]    := cOnGotFocus
-   ::aOnLostFocus[i]   := cOnLostFocus
-   ::aHelpID[i]        := nHelpID
-   ::aTransparent[i]   := lTrans
-   ::aNoTabStop[i]     := lNoTabStop
-   ::aValue[i]         := cValue
-   ::aBold[i]          := lBold
-   ::aFontItalic[i]    := lItalic
-   ::aFontUnderline[i] := lUnderline
-   ::aFontStrikeout[i] := lStrikeout
-   ::aBackColor[i]     := aBackColor
-   ::aFontColor[i]     := aFontColor
-   ::aVisible[i]       := lVisible
-   ::aEnabled[i]       := lEnabled
-   ::aRTL[i]           := lRTL
-   ::aThemed[i]        := lThemed
-   ::aAutoPlay[i]      := lAutoSize
-   ::aLeft[i]          := lLeft
-   ::a3State[i]        := l3State
-   ::aSubClass[i]      := cSubClass
-
-   // TODO: Create control
+   oCtrl     := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i, nWidth, nHeight, NIL )
+   oCtrl:Row := nRow
+   oCtrl:Col := nCol
 
    ::AddCtrlToTabPage( i, cName, nRow, nCol )
 RETURN NIL
@@ -9789,6 +9520,7 @@ METHOD AddCtrlToTabPage( z, cName, nRow, nCol ) CLASS TFormEditor
 //------------------------------------------------------------------------------
 LOCAL nStartLine, nPageCount, i, nPos, cTabName
 
+Empty(cName)      // TODO
    IF ::swTab
       nStartLine := ::aSpeed[z]
       nPageCount := 0
@@ -9817,7 +9549,7 @@ LOCAL nStartLine, nPageCount, i, nPos, cTabName
          ::aTabPage[z, 2] := nPageCount
          ::oDesignForm:&cTabName:AddControl( ::aControlW[z], nPageCount, nRow, nCol )
          IF ::aBackColor[z] == 'NIL'
-            ::oDesignForm:&cName:BackColor := ::myIde:aSystemColorAux         // TODO: Check
+//            ::oDesignForm:&cName:BackColor := ::myIde:aSystemColorAux         // TODO: Check
          ENDIF
       ENDIF
    ENDIF
@@ -9902,6 +9634,12 @@ METHOD DeleteControl() CLASS TFormEditor
 //------------------------------------------------------------------------------
 LOCAL ia, j, jk, oControl, cName
 
+   IF Len( ::oCtrlList:Value ) > 1
+      MsgStop( "Can't delete more than one control at a time.", "OOHG IDE+" )
+      RETURN NIL
+      // TODO: Add support for deleting multiple controls
+   ENDIF
+
    ia := ::nHandleA
    IF ia > 0
       oControl := ::oDesignForm:aControls[ia]
@@ -9923,6 +9661,7 @@ LOCAL ia, j, jk, oControl, cName
          ::nIndexW  := 0
          oControl:Release()
          ::lFsave := .F.
+         ::oCtrlList:Value := {}
          EraseWindow( ::oDesignForm:Name )
          ::DrawPoints()
          ::RefreshControlInspector()
@@ -10038,12 +9777,12 @@ LOCAL i, cs
 RETURN NIL
 
 //------------------------------------------------------------------------------
-FUNCTION cHideControl( x )
+STATIC FUNCTION cHideControl( x )
 //------------------------------------------------------------------------------
-RETURN HideWindow( x )
+RETURN HideWindow( x )        // TODO: Check
 
 //------------------------------------------------------------------------------
-FUNCTION SetHeightForWholeRows( oGrid, nMaxHeight )
+STATIC FUNCTION SetHeightForWholeRows( oGrid, nMaxHeight )
 //------------------------------------------------------------------------------
 LOCAL nAreaUsed, nItemHeight, nNewHeight
 STATIC nOldHeight := 0
@@ -10070,15 +9809,16 @@ RETURN NIL
 //------------------------------------------------------------------------------
 METHOD Save( lSaveAs ) CLASS TFormEditor
 //------------------------------------------------------------------------------
-LOCAL BaseRow, BaseCol, Output, nSpacing := 3, aCaptions, aWidths, CurrentPage
-LOCAL aActions, aIcons, aStyles, aToolTips, aAligns, i, j, nCtrlPos, k
-LOCAL nRow, nCol, nWidth, nHeight, caCaptions, caImages, caPageNames, caPageObjs
-LOCAL caPageSubClasses, aImages, aPageNames, aPageObjs, aPageSubClasses, nCount
+LOCAL BaseRow, BaseCol, Output, nSpacing := 3, aCaptions, aWidths
+LOCAL CurrentPage, aActions, aIcons, aStyles, aToolTips, aAligns
+LOCAL i, j, nCtrlPos, k, nRow, nCol, nWidth, nHeight
+LOCAL caCaptions, caImages, caPageNames, caPageObjs, caPageSubClasses
+LOCAL aImages, aPageNames, aPageObjs, aPageSubClasses, nCount
 
    CursorWait()
    ::oWaitMsg:label_1:Value := 'Saving form ...'
 
-   BaseRow := GetWindowRow( ::oDesignForm:hWnd )
+   BaseRow := GetWindowRow( ::oDesignForm:hWnd )   // screen coordinates
    BaseCol := GetWindowCol( ::oDesignForm:hWnd )
 
 /*
@@ -10458,10 +10198,10 @@ LOCAL caPageSubClasses, aImages, aPageNames, aPageObjs, aPageSubClasses, nCount
          LOOP
       ENDIF
 
-      nRow    := GetWindowRow( ::oDesignForm:acontrols[nCtrlPos]:hWnd ) - BaseRow - GetTitleHeight() - GetBorderHeight()
-      nCol    := GetWindowCol( ::oDesignForm:acontrols[nCtrlPos]:hWnd ) - BaseCol - GetBorderWidth()
-      nWidth  := GetWindowWidth( ::oDesignForm:acontrols[nCtrlPos]:hWnd )
-      nHeight := GetWindowHeight( ::oDesignForm:acontrols[nCtrlPos]:hWnd )
+      nRow    := ( ::oDesignForm:aControls[nCtrlPos] ):Row
+      nCol    := ( ::oDesignForm:aControls[nCtrlPos] ):Col
+      nWidth  := ( ::oDesignForm:aControls[nCtrlPos] ):Width
+      nHeight := ( ::oDesignForm:aControls[nCtrlPos] ):Height
 
       //***************************  Tab start
       IF ::aCtrlType[j] == 'TAB'
@@ -10474,8 +10214,8 @@ LOCAL caPageSubClasses, aImages, aPageNames, aPageObjs, aPageSubClasses, nCount
          Output += Space( nSpacing * 2 ) + 'AT ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' ;' + CRLF
          Output += Space( nSpacing * 2 ) + 'WIDTH ' + LTrim( Str( nWidth ) ) + ' ;' + CRLF
          Output += Space( nSpacing * 2 ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
-         IF ::aValue[j] > 0
-            Output += ' ;' + CRLF + Space( nSpacing * 2 ) + 'VALUE ' + LTrim( Str( ::aValue[j] ) )
+         IF ::aValueN[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * 2 ) + 'VALUE ' + LTrim( Str( ::aValueN[j] ) )
          ENDIF
          IF ! Empty( ::aFontName[j] )
             Output += ' ;' + CRLF + Space( nSpacing * 2 ) + 'FONT ' + StrToStr( ::aFontName[j] )
@@ -10526,7 +10266,7 @@ LOCAL caPageSubClasses, aImages, aPageNames, aPageObjs, aPageSubClasses, nCount
             Output += ' ;' + CRLF + Space( nSpacing * 2 ) + 'INVISIBLE '
          ENDIF
          IF ::aMultiLine[j]
-           Output += ' ;' + CRLF + Space( nSpacing * 2 ) + 'MULTILINE '
+            Output += ' ;' + CRLF + Space( nSpacing * 2 ) + 'MULTILINE '
          ENDIF
          IF ! Empty( ::aSubClass[j] )
             Output += ' ;' + CRLF + Space( nSpacing * 2 ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
@@ -10550,32 +10290,32 @@ LOCAL caPageSubClasses, aImages, aPageNames, aPageObjs, aPageSubClasses, nCount
             IF IsValidArray( caImages )
                aImages := &caImages
                aSize( aImages, nCount )
-            Else
+            ELSE
                aImages := Array( nCount )
             ENDIF
             IF IsValidArray( caPageNames )
                aPageNames := &caPageNames
                aSize( aPageNames, nCount )
-            Else
+            ELSE
                aPageNames := Array( nCount )
             ENDIF
             IF IsValidArray( caPageObjs )
                aPageObjs := &caPageObjs
                aSize( aPageObjs, nCount )
-            Else
+            ELSE
                aPageObjs := Array( nCount )
             ENDIF
             IF IsValidArray( caPageSubClasses )
                aPageSubClasses := &caPageSubClasses
                aSize( aPageSubClasses, nCount )
-            Else
+            ELSE
                aPageSubClasses := Array( nCount )
             ENDIF
 
             FOR CurrentPage := 1 TO nCount
                Output += Space( nSpacing * 2) + 'DEFINE PAGE ' + StrToStr( aCaptions[CurrentPage] )
                IF ! Empty( aImages[CurrentPage] ) .AND. HB_IsString( aImages[CurrentPage] )
-                  Output += ' ;' + CRLF + Space( nSpacing * 3) + 'IMAGE ' + AllTrim( aImages[CurrentPage] )
+                  Output += ' ;' + CRLF + Space( nSpacing * 3) + 'IMAGE ' + StrToStr( aImages[CurrentPage] )
                ENDIF
                IF ! Empty( aPageNames[CurrentPage] ) .AND. HB_IsString( aPageNames[CurrentPage] )
                   Output += ' ;' + CRLF + Space( nSpacing * 3) + 'NAME ' + AllTrim( aPageNames[CurrentPage] )
@@ -10588,20 +10328,20 @@ LOCAL caPageSubClasses, aImages, aPageNames, aPageObjs, aPageSubClasses, nCount
                ENDIF
                Output += CRLF + CRLF
 
-               FOR k := 1 TO ::nControlW
+               FOR k := 2 TO ::nControlW
                   IF ::aTabPage[k, 1] == ::aControlW[j]
-                     IF ::aTabPage[k, 2] # CurrentPage
+                     IF ::aTabPage[k, 2] == CurrentPage
+                        //***************************  Tab page controls
+                        nCtrlPos := aScan( ::oDesignForm:aControls, { |c| Lower( c:Name ) == ::aControlW[k] } )
+                        IF nCtrlPos > 0
+                           nRow    := ::oDesignForm:aControls[nCtrlPos]:Row
+                           nCol    := ::oDesignForm:aControls[nCtrlPos]:Col
+                           nWidth  := ::oDesignForm:aControls[nCtrlPos]:Width
+                           nHeight := ::oDesignForm:aControls[nCtrlPos]:Height
+                           Output  := ::MakeControls( k, Output, nRow, nCol, nWidth, nHeight, nSpacing, 3)
+                        ENDIF
+                     ELSEIF ::aTabPage[k, 2] > CurrentPage
                         EXIT
-                     ENDIF
-
-                     //***************************  Tab page controls
-                     nCtrlPos := aScan( ::oDesignForm:aControls, { |c| Lower( c:Name ) == ::aControlW[k] } )
-                     IF nCtrlPos > 0
-                        nRow    := ::oDesignForm:aControls[nCtrlPos]:Row
-                        nCol    := ::oDesignForm:aControls[nCtrlPos]:Col
-                        nWidth  := ::oDesignForm:aControls[nCtrlPos]:Width
-                        nHeight := ::oDesignForm:aControls[nCtrlPos]:Height
-                        Output  := ::MakeControls( k, Output, nRow, nCol, nWidth, nHeight, nSpacing, 3)
                      ENDIF
                   ENDIF
                NEXT k
@@ -10661,7 +10401,9 @@ LOCAL cRet
    ELSEIF ! '[' $ cData .AND. ! ']' $ cData
       cRet := '[' + AllTrim( cData ) + ']'
    ELSE
-      cRet := "'" + AllTrim( cData ) + "'"    // The FMG will throw a compiler error because cRet is malformed !!!
+      cRet := "'" + AllTrim( cData ) + "'"
+      // We can't assure that cRet is properly formed
+      // This may cause a compiler error
    ENDIF
 RETURN cRet
 
@@ -10964,9 +10706,9 @@ LOCAL cValue
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PICTURE ' + StrToStr( ::aPicture[j] )
       ENDIF
       IF ! Empty( ::aAction[j] )
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + AllTrim( ::aAction[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + AllTrim( ::aAction[j] )
       ELSE
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + "MsgInfo( 'Button Pressed' )"
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + "MsgInfo( 'Button Pressed' )"
       ENDIF
       IF ! Empty( ::aFontName[j] )
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
@@ -10999,65 +10741,65 @@ LOCAL cValue
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j] )
       ENDIF
       IF ::aFlat[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FLAT '
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FLAT '
       ENDIF
       IF ! Empty( ::aJustify[j] ) .AND. ! Empty( ::aPicture[j] ) .AND. ! Empty( ::aCaption[j] )
-          // Must end with a space
-          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + Upper( AllTrim( ::aJustify[j] ) ) + " "
+         // Must end with a space
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + Upper( AllTrim( ::aJustify[j] ) ) + " "
       ENDIF
       IF ! Empty( ::aOnGotFocus[j] )
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( ::aOnGotFocus[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( ::aOnGotFocus[j] )
       ENDIF
       IF ! Empty( ::aOnLostFocus[j] )
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
       ENDIF
       IF ! Empty( ::aOnMouseMove[j] )
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON MOUSEMOVE ' + AllTrim( ::aOnMouseMove[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON MOUSEMOVE ' + AllTrim( ::aOnMouseMove[j] )
       ENDIF
       IF ::aNoTabStop[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
       ENDIF
       IF ::aHelpID[j] > 0
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
       ENDIF
       IF ! Empty( ::aBuffer[j] )
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BUFFER ' + AllTrim( ::aBuffer[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BUFFER ' + AllTrim( ::aBuffer[j] )
       ENDIF
       IF ! Empty( ::aHBitmap[j] )
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HBITMAP ' + AllTrim( ::aHBitmap[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HBITMAP ' + AllTrim( ::aHBitmap[j] )
       ENDIF
       IF ! Empty( ::aImageMargin[j] )
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'IMAGEMARGIN ' + AllTrim( ::aImageMargin[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'IMAGEMARGIN ' + AllTrim( ::aImageMargin[j] )
       ENDIF
       IF ::aRTL[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
       ENDIF
       IF ::aNoPrefix[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOPREFIX '
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOPREFIX '
       ENDIF
       IF ::aNoLoadTrans[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOLOADTRANSPARENT '
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOLOADTRANSPARENT '
       ENDIF
       IF ::aForceScale[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FORCESCALE '
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FORCESCALE '
       ENDIF
       IF ::aCancel[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CANCEL '
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CANCEL '
       ENDIF
       IF ::aMultiLine[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'MULTILINE '
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'MULTILINE '
       ENDIF
       IF ::aThemed[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'THEMED '
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'THEMED '
       ENDIF
       IF ::aNo3DColors[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NO3DCOLORS '
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NO3DCOLORS '
       ENDIF
       IF ::aFit[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AUTOFIT '
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AUTOFIT '
       ENDIF
       IF ::aDIBSection[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DIBSECTION '
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DIBSECTION '
       ENDIF
       IF ! Empty( ::aSubClass[j] )
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
@@ -11078,7 +10820,7 @@ LOCAL cValue
       ENDIF
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
-      IF ::aValuel[j]
+      IF ::aValueL[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE .T.'
       ELSE
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE .F.'
@@ -11100,6 +10842,9 @@ LOCAL cValue
       ENDIF
       IF ! Empty( ::aOnLostFocus[j] )
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
+      ENDIF
+      IF ! Empty( ::aOnMouseMove[j] )
+        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON MOUSEMOVE ' + AllTrim( ::aOnMouseMove[j] )
       ENDIF
       IF ::aHelpID[j] > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
@@ -11135,28 +10880,47 @@ LOCAL cValue
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PICTURE ' + StrToStr( ::aPicture[j] )
       ENDIF
       IF ! Empty( ::aBuffer[j] )
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BUFFER ' + AllTrim( ::aBuffer[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BUFFER ' + AllTrim( ::aBuffer[j] )
       ENDIF
       IF ! Empty( ::aHBitmap[j] )
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HBITMAP ' + AllTrim( ::aHBitmap[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HBITMAP ' + AllTrim( ::aHBitmap[j] )
       ENDIF
       IF ::aNoLoadTrans[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOLOADTRANSPARENT '
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOLOADTRANSPARENT '
       ENDIF
       IF ::aForceScale[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FORCESCALE '
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FORCESCALE '
       ENDIF
       IF ! Empty( ::aField[j] )
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIELD ' + AllTrim( ::aField[j] )
       ENDIF
       IF ::aNo3DColors[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NO3DCOLORS '
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NO3DCOLORS '
       ENDIF
       IF ::aFit[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AUTOFIT '
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AUTOFIT '
       ENDIF
       IF ::aDIBSection[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DIBSECTION '
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DIBSECTION '
+      ENDIF
+      IF ::aThemed[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'THEMED '
+      ENDIF
+      IF ! Empty( ::aImageMargin[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'IMAGEMARGIN ' + AllTrim( ::aImageMargin[j] )
+      ENDIF
+      IF ! Empty( ::aJustify[j] )
+         // Must end with a space
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + Upper( AllTrim( ::aJustify[j] ) ) + " "
+      ENDIF
+      IF ::aMultiLine[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'MULTILINE '
+      ENDIF
+      IF ::aFlat[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FLAT '
+      ENDIF
+      IF ! Empty( ::aSubClass[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
       ENDIF
       Output += CRLF + CRLF
    ENDIF
@@ -11174,9 +10938,9 @@ LOCAL cValue
       ELSE
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + "'" + "'"
       ENDIF
-      IF ::aValuel[j]
+      IF ::aValue[j] == ".T."
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE .T.'
-      ELSE
+      ELSEIF ::aValue[j] == ".F."
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE .F.'
       ENDIF
       IF ! Empty( ::aField[j] )
@@ -11268,11 +11032,11 @@ LOCAL cValue
       IF ! Empty( ::aItemSource[j] )
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITEMSOURCE ' + AllTrim( ::aItemSource[j] )
       ENDIF
-      IF ::aValuen[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( ::aValuen[j] ) )
+      IF ::aValueN[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( ::aValueN[j] ) )
       ENDIF
-      IF ! Empty( ::aValuesource[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUESOURCE ' + AllTrim( ::aValuesource[j] )
+      IF ! Empty( ::aValueSource[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUESOURCE ' + AllTrim( ::aValueSource[j] )
       ENDIF
       IF ::aDisplayEdit[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISPLAYEDIT '
@@ -12300,8 +12064,8 @@ LOCAL cValue
       IF ! Empty( ::aItems[j] )
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITEMS ' + AllTrim( ::aItems[j] )
       ENDIF
-      IF ::aValuen[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( ::aValuen[j] ) )
+      IF ::aValueN[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( ::aValueN[j] ) )
       ENDIF
       IF ! Empty( ::aFontName[j] )
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
@@ -12673,7 +12437,7 @@ LOCAL cValue
       ENDIF
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
-      IF ::aValuel[j]
+      IF ::aValueL[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE .T.'
       ELSE
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE .F.'
@@ -12692,6 +12456,9 @@ LOCAL cValue
       ENDIF
       IF ! Empty( ::aOnLostFocus[j] )
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
+      ENDIF
+      IF ! Empty( ::aOnMouseMove[j] )
+        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON MOUSEMOVE ' + AllTrim( ::aOnMouseMove[j] )
       ENDIF
       IF ::aHelpID[j] > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
@@ -12735,11 +12502,11 @@ LOCAL cValue
       IF ::aThemed[j]
         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'THEMED '
       ENDIF
+      IF ::aFlat[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FLAT '
+      ENDIF
       IF ! Empty( ::aImageMargin[j] )
         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'IMAGEMARGIN ' + AllTrim( ::aImageMargin[j] )
-      ENDIF
-      IF ! Empty( ::aOnMouseMove[j] )
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON MOUSEMOVE ' + AllTrim( ::aOnMouseMove[j] )
       ENDIF
       IF ! Empty( ::aJustify[j] )
          // Must end with a space
@@ -12801,8 +12568,8 @@ LOCAL cValue
       IF ! Empty( ::aItems[j] )
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + "OPTIONS " + AllTrim( ::aItems[j] )
       ENDIF
-      IF ::aValuen[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( ::aValuen[j] ) )
+      IF ::aValueN[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( ::aValueN[j] ) )
       ENDIF
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
       // Do no include HEIGHT
@@ -12854,8 +12621,8 @@ LOCAL cValue
       IF ::aAutoPlay[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AUTOSIZE '
       ENDIF
-      IF ::aVertical[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VERTICAL '
+      IF ::aFlat[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HORIZONTAL '
       ENDIF
       IF ! ::aEnabled[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
@@ -12996,8 +12763,8 @@ LOCAL cValue
       ELSE
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RANGE 1, 100'
       ENDIF
-      IF ::aValuen[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( ::aValuen[j] ) )
+      IF ::aValueN[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( ::aValueN[j] ) )
       ENDIF
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
@@ -13055,8 +12822,8 @@ LOCAL cValue
       IF ! Empty( ::aRange[j] )
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RANGE ' + AllTrim( ::aRange[j] )
       ENDIF
-      IF ::aValuen[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( ::aValuen[j] ) )
+      IF ::aValueN[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( ::aValueN[j] ) )
       ENDIF
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
@@ -13293,8 +13060,8 @@ LOCAL cValue
       IF ! Empty( ::aCObj[j ] )
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
       ENDIF
-      IF ::aValuen[j] > 999
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INTERVAL ' + LTrim( Str( ::aValuen[j] ) )
+      IF ::aValueN[j] > 999
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INTERVAL ' + LTrim( Str( ::aValueN[j] ) )
       ELSE
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INTERVAL ' + LTrim( Str( 1000 ) )
       ENDIF
@@ -13385,8 +13152,8 @@ LOCAL cValue
       IF ::aFull[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FULLROWSELECT '
       ENDIF
-      IF ::aValue[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( ::aValue[j] ) )
+      IF ::aValueN[j] > 0
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( ::aValueN[j] ) )
       ENDIF
       IF ::aRTL[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
@@ -13765,16 +13532,8 @@ LOCAL cValue
       IF ! Empty( ::aCObj[j ] )
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
       ENDIF
-      IF ::aButtonWidth[j] == 2
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + '0'
-      ELSEIF ::aButtonWidth[j] == 3
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
-      ENDIF
-      IF ::aTextHeight[j] == 2
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + '0'
-      ELSEIF ::aTextHeight[j] == 3
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
-      ENDIF
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
       IF ! Empty( ::aAction[j] )
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PROGID ' + AllTrim( ::aAction[j] )
       ENDIF
@@ -14296,8 +14055,7 @@ RETURN Output
 METHOD Properties_Click() CLASS TFormEditor
 //------------------------------------------------------------------------------
 LOCAL oControl, cName, j, kp, cTitle, aLabels, aInitValues, cNameW, ia
-LOCAL aFormats, aResults, nStyle, uTemp, nRow, nCol, nWidth, nHeight, cItems
-LOCAL nPageCount, aCaptions, aImages, aCtrls
+LOCAL aFormats, aResults, nRow, nCol, nWidth, nHeight, aCtrls := NIL, nStyle
 
    ia := ::nHandleA
    IF ia <= 0
@@ -14314,38 +14072,29 @@ LOCAL nPageCount, aCaptions, aImages, aCtrls
    cNameW := ::aName[j]
 
    IF ::aCtrlType[j] == 'TAB'
-      ::TabProperties( j, oControl )
-      DO CASE
-      CASE ! IsValidArray( ::aCaption[j] )
-         MsgStop( "Pages' Caption is not a valid array !!!", 'OOHG IDE+' )
-      CASE ! IsValidArray( ::aImage[j] )
-         MsgStop( "Pages' Image is not a valid array !!!", 'OOHG IDE+' )
-      CASE ! IsValidArray( ::aPageNames[j] )
-         MsgStop( "Pages' Name is not a valid array !!!", 'OOHG IDE+' )
-      CASE ! IsValidArray( ::aPageObjs[j] )
-         MsgStop( "Pages' Obj is not a valid array !!!", 'OOHG IDE+' )
-      CASE ! IsValidArray( ::aPageSubClasses[j] )
-         MsgStop( "Pages' Subclass is not a valid array !!!", 'OOHG IDE+' )
-      OTHERWISE
-         aCaptions  := &( ::aCaption[j] )
-         nPageCount := Len( aCaptions )
-         aImages    := &( ::aImage[j] )
-         aSize( aImages, nPageCount )
-         FOR kp := 1 TO nPageCount
-            oControl:Value := kp
-            oControl:Caption( kp, aCaptions[kp] )
-            IF HB_IsString( aImages[kp] )
-               oControl:Picture( kp, aImages[kp] )
-            ELSE
-               oControl:Picture := NIL
-            ENDIF
-         NEXT kp
-         oControl:Visible := .F.
-         oControl:Visible := .T.
-         oControl:Value   := ::aValue[j]
-         ::lFsave := .F.
-         ::RefreshControlInspector()
-      ENDCASE
+      DO WHILE .T.
+         ::TabProperties( j, oControl )
+         DO CASE
+         CASE ! IsValidArray( ::aCaption[j] )
+            MsgStop( "Pages' Caption is not a valid array !!!", 'OOHG IDE+' )
+         CASE ! IsValidArray( ::aImage[j] )
+            MsgStop( "Pages' Image is not a valid array !!!", 'OOHG IDE+' )
+         CASE ! IsValidArray( ::aPageNames[j] )
+            MsgStop( "Pages' Name is not a valid array !!!", 'OOHG IDE+' )
+         CASE ! IsValidArray( ::aPageObjs[j] )
+            MsgStop( "Pages' Obj is not a valid array !!!", 'OOHG IDE+' )
+         CASE ! IsValidArray( ::aPageSubClasses[j] )
+            MsgStop( "Pages' Subclass is not a valid array !!!", 'OOHG IDE+' )
+         OTHERWISE
+            EXIT
+         ENDCASE
+      ENDDO
+
+      aCtrls := Array( oControl:ItemCount )
+      FOR kp := 1 TO Len( aCtrls )
+         aCtrls[kp] := aClone( oControl:aPages[kp]:aControls )
+         aEval( aCtrls[kp], { |c| oControl:aPages[kp]:DeleteControl( c ) } )
+      NEXT kp
    ENDIF
 
    IF ::aCtrlType[j] == 'FRAME'
@@ -14436,7 +14185,6 @@ LOCAL nPageCount, aCaptions, aImages, aCtrls
       ::aSubClass[j]         := aResults[10]
    ENDIF
 
-// TODO: All oControl:xxxx assigns must be moved to ::CreateControl
    IF ::aCtrlType[j] == 'HYPERLINK'
       cTitle      := cNameW + " properties"
       aLabels     := { 'Name',     'ToolTip',     'Value',     'HelpID',     'Enabled',     'Visible',     'Address',     'HandCursor',     'Obj',      'AutoSize',     'Border',     'ClientEdge',     'HScroll',       'VScroll',       'Transparent',     'RTL' }
@@ -14449,9 +14197,7 @@ LOCAL nPageCount, aCaptions, aImages, aCtrls
       ENDIF
       ::aName[j]             := IIF( ! ::IsUnique( aResults[01], j ), ::aName[j], AllTrim( aResults[01] ) )
       ::aToolTip[j]          := aResults[02]
-      oControl:ToolTip       := ::aToolTip[j]
       ::aValue[j]            := IIF( Empty( aResults[03] ), ::aValue[j], aResults[03] )
-      oControl:Value         := ::aValue[j]
       ::aHelpID[j]           := aResults[04]
       ::aEnabled[j]          := aResults[05]
       ::aVisible[j]          := aResults[06]
@@ -14469,9 +14215,9 @@ LOCAL nPageCount, aCaptions, aImages, aCtrls
 
    IF ::aCtrlType[j] == 'TREE'
       cTitle      := cNameW + " properties"
-      aLabels     := { 'Name',     'ToolTip',     'Enabled',     'Visible',     'NodeImages',     'ItemImages',     'NoRootButton',     'ItemIDs',     'HelpID',     'Obj',      'FullRowSelect', 'Value',     'RTL',     'Break',     'NoTabStop',     'SelColor',     'SelBold',     'CheckBoxes',     'EditLabels',     'NoHScroll',     'NoScroll',      'HotTracking',  'NoButtons',   'EnableDrag', 'EnableDrop', 'TargeT',     'SingleExpand',     'BorderLess', 'Valid',     'Indent',     'NoLines',     'SubClass' }
-      aInitValues := { ::aName[j], ::atooltip[j], ::aenabled[j], ::avisible[j], ::Anodeimages[j], ::aitemimages[j], ::anorootbutton[j], ::aitemids[j], ::aHelpID[j], ::acobj[j], ::aFull[j],      ::aValue[j], ::aRTL[j], ::aBreak[j], ::aNoTabStop[j], ::aSelColor[j], ::aSelBold[j], ::aCheckBoxes[j], ::aEditLabels[j], ::aNoHScroll[j], ::aNoVScroll[j], ::aHotTrack[j], ::aButtons[j], ::aDrag[j],   ::aDrop[j],   ::aTarget[j], ::aSingleExpand[j], ::aBorder[j], ::aValid[j], ::aIndent[j], ::aNoLines[j], ::aSubClass[j] }
-      aFormats    := { 60,         120,           .T.,           .T.,           60,               60,               .F.,                .F.,           '999',        31,         .F.,             '999999',    .F.,       .F.,         .F.,             250,            .F.,           .F.,              .F.,              .F.,             .F.,             .F.,            .F.,           .F.,          .F.,          250,          .F.,                .F.,          250,         '999',        .F.,           250 }
+      aLabels     := { 'Name',     'ToolTip',     'Enabled',     'Visible',     'NodeImages',     'ItemImages',     'NoRootButton',     'ItemIDs',     'HelpID',     'Obj',      'FullRowSelect', 'Value',      'RTL',     'Break',     'NoTabStop',     'SelColor',     'SelBold',     'CheckBoxes',     'EditLabels',     'NoHScroll',     'NoScroll',      'HotTracking',  'NoButtons',   'EnableDrag', 'EnableDrop', 'TargeT',     'SingleExpand',     'BorderLess', 'Valid',     'Indent',     'NoLines',     'SubClass' }
+      aInitValues := { ::aName[j], ::atooltip[j], ::aenabled[j], ::avisible[j], ::Anodeimages[j], ::aitemimages[j], ::anorootbutton[j], ::aitemids[j], ::aHelpID[j], ::acobj[j], ::aFull[j],      ::aValueN[j], ::aRTL[j], ::aBreak[j], ::aNoTabStop[j], ::aSelColor[j], ::aSelBold[j], ::aCheckBoxes[j], ::aEditLabels[j], ::aNoHScroll[j], ::aNoVScroll[j], ::aHotTrack[j], ::aButtons[j], ::aDrag[j],   ::aDrop[j],   ::aTarget[j], ::aSingleExpand[j], ::aBorder[j], ::aValid[j], ::aIndent[j], ::aNoLines[j], ::aSubClass[j] }
+      aFormats    := { 60,         120,           .T.,           .T.,           60,               60,               .F.,                .F.,           '999',        31,         .F.,             '999999',     .F.,       .F.,         .F.,             250,            .F.,           .F.,              .F.,              .F.,             .F.,             .F.,            .F.,           .F.,          .F.,          250,          .F.,                .F.,          250,         '999',        .F.,           250 }
       aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
       IF aResults[1] == NIL
          ::oDesignForm:SetFocus()
@@ -14488,7 +14234,7 @@ LOCAL nPageCount, aCaptions, aImages, aCtrls
       ::aHelpID[j]           := aResults[09]
       ::acobj[j]             := aResults[10]
       ::aFull[j]             := aResults[11]           // FULLROWSELECT
-      ::aValue[j]            := aResults[12]
+      ::aValueN[j]           := aResults[12]
       ::aRTL[j]              := aResults[13]
       ::aBreak[j]            := aResults[14]
       ::aNoTabStop[j]        := aResults[15]
@@ -14523,11 +14269,9 @@ LOCAL nPageCount, aCaptions, aImages, aCtrls
       ENDIF
       ::aName[j]             := IIF( ! ::IsUnique( aResults[01], j ), ::aName[j], AllTrim( aResults[01] ) )
       ::atooltip[j]          := aResults[02]
-      oControl:tooltip       := ::atooltip[j]
       ::amaxlength[j]        := Max( aResults[03],  0 )
       ::areadonly[j]         := aResults[04]
       ::aValue[j]            := aResults[05]
-      oControl:value         := ::aValue[j]
       ::aHelpID[j]           := aResults[06]
       ::abreak[j]            := aResults[07]
       ::afield[j]            := aResults[08]
@@ -14554,11 +14298,9 @@ LOCAL nPageCount, aCaptions, aImages, aCtrls
       ENDIF
       ::aName[j]             := IIF( ! ::IsUnique( aResults[01], j ), ::aName[j], AllTrim( aResults[01] ) )
       ::aToolTip[j]          := aResults[02]
-      oControl:tooltip       := ::aToolTip[j]
       ::aMaxLength[j]        := Max( aResults[03], 0 )
       ::aReadonly[j]         := aResults[04]
       ::aValue[j]            := IIF( Empty( aResults[05] ), "", aResults[05] )
-      oControl:Value         := ::aValue[j]
       ::aHelpID[j]           := aResults[06]
       ::aBreak[j]            := aResults[07]
       ::aField[j]            := aResults[08]
@@ -14657,12 +14399,10 @@ LOCAL nPageCount, aCaptions, aImages, aCtrls
       ENDIF
       ::aName[j]             := IIF( ! ::IsUnique( aResults[01], j ), ::aName[j], AllTrim( aResults[01] ) )
       ::aValue[j]            := aResults[02]
-      oControl:Value         := IIF( Empty( ::aValue[j] ), cName, ::aValue[j] )
       ::aHelpID[j]           := aResults[03]
       ::aTransparent[j]      := aResults[04]
       ::aCenterAlign[j]      := aResults[05]
       ::aRightAlign[j]       := aResults[06]
-      oControl:Align         := IIF( ::aCenterAlign[j], SS_CENTER, IIF( ::aRightAlign[j], SS_RIGHT, SS_LEFT ) )
       ::aToolTip[j]          := aResults[07]
       ::aAutoPlay[j]         := aResults[08]           // AUTOSIZE
       ::aEnabled[j]          := aResults[09]
@@ -14679,22 +14419,19 @@ LOCAL nPageCount, aCaptions, aImages, aCtrls
       ::aSubClass[j]         := aResults[20]
    ENDIF
 
-// TODO: Add comment with property name if varname is different
    IF ::aCtrlType[j] == 'PROGRESSBAR'
       cTitle      := cNameW + " properties"
-      aLabels     := { 'Name',     'Range',     'ToolTip',     'Vertical',     'Smooth',     'HelpID',     'Enabled',     'Visible',     'Obj',      'Value',     'RTL',      'Marquee' }
-      aInitValues := { ::aName[j], ::aRange[j], ::atooltip[j], ::avertical[j], ::asmooth[j], ::aHelpID[j], ::aenabled[j], ::avisible[j], ::acobj[j], ::aValueN[j], ::aRTL[j],   ::aMarquee[j] }
-      aFormats    := { 30,         20,          120,           .F.,            .F.,          '999',        .F.,           .F.,           31,         '9999',       .F.,        '9999' }
+      aLabels     := { 'Name',     'Range',     'ToolTip',     'Vertical',     'Smooth',     'HelpID',     'Enabled',     'Visible',     'Obj',      'Value',      'RTL',     'Marquee' }
+      aInitValues := { ::aName[j], ::aRange[j], ::atooltip[j], ::avertical[j], ::asmooth[j], ::aHelpID[j], ::aenabled[j], ::avisible[j], ::acobj[j], ::aValueN[j], ::aRTL[j], ::aMarquee[j] }
+      aFormats    := { 30,         20,          120,           .F.,            .F.,          '999',        .F.,           .F.,           31,         '9999',       .F.,       '9999' }
       aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
       IF aResults[1] == NIL
          ::oDesignForm:SetFocus()
          RETURN NIL
       ENDIF
       ::aName[j]             := IIF( ! ::IsUnique( aResults[01], j ), ::aName[j], AllTrim( aResults[01] ) )
-      oControl:Value         := ::aName[j]
       ::aRange[j]            := aResults[02]
       ::aToolTip[j]          := aResults[03]
-      oControl:ToolTip       := ::aToolTip[j]
       ::aVertical[j]         := aResults[04]
       ::aSmooth[j]           := aResults[05]
       ::aHelpID[j]           := aResults[06]
@@ -14709,7 +14446,7 @@ LOCAL nPageCount, aCaptions, aImages, aCtrls
    IF ::aCtrlType[j] == 'SLIDER'
       cTitle      := cNameW + " properties"
       aLabels     := { 'Name',     'Range',     'Value ',     'ToolTip',     'Vertical',     'Both',     'Top',     'Left',     'HelpID',     'Enabled',     'Visible',     'Obj',      'NoTicks',     'NoTabStop',     'RTL',     'SubClass' }
-      aInitValues := { ::aName[j], ::aRange[j], ::aValuen[j], ::atooltip[j], ::avertical[j], ::aboth[j], ::atop[j], ::aleft[j], ::aHelpID[j], ::aenabled[j], ::avisible[j], ::acobj[j], ::anoticks[j], ::aNoTabStop[j], ::aRTL[j], ::aSubClass[j] }
+      aInitValues := { ::aName[j], ::aRange[j], ::aValueN[j], ::atooltip[j], ::avertical[j], ::aboth[j], ::atop[j], ::aleft[j], ::aHelpID[j], ::aenabled[j], ::avisible[j], ::acobj[j], ::anoticks[j], ::aNoTabStop[j], ::aRTL[j], ::aSubClass[j] }
       aFormats    := { 30,         20,          '999',        120,           .F.,            .F.,        .F.,       .F.,        '999',        .F.,           .F.,           31,         .F.,           .F.,             .F.,       250  }
       aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
       IF aResults[1] == NIL
@@ -14720,7 +14457,6 @@ LOCAL nPageCount, aCaptions, aImages, aCtrls
       ::aRange[j]            := aResults[02]
       ::aValueN[j]           := aResults[03]
       ::aToolTip[j]          := aResults[04]
-      oControl:ToolTip       := ::aToolTip[j]
       ::aVertical[j]         := aResults[05]
       ::aBoth[j]             := aResults[06]
       ::aTop[j]              := aResults[07]
@@ -14733,19 +14469,12 @@ LOCAL nPageCount, aCaptions, aImages, aCtrls
       ::aNoTabStop[j]        := aResults[14]
       ::aRTL[j]              := aResults[15]
       ::aSubClass[j]         := aResults[16]
-      nStyle := WindowStyleFlag( oControl:hWnd,  TBS_VERT )
-      IF ( nStyle == TBS_HORZ .AND. ::aVertical[j] ) .OR. ( nStyle == TBS_VERT .AND. ! ::aVertical[j] )
-          WindowStyleFlag( oControl:hWnd,  TBS_VERT,  TBS_VERT - nStyle )
-          uTemp := oControl:Width
-          oControl:Width  := oControl:Height
-          oControl:Height := uTemp
-      ENDIF
    ENDIF
 
    IF ::aCtrlType[j] == 'SPINNER'
       cTitle      := cNameW + " properties"
       aLabels     := { 'Name',     'Range',     'Value ',     'ToolTip',     'HelpID',     'NoTabStop',     'Wrap',     'ReadOnly',     'Increment',     'Enabled',     'Visible',     'Obj',      'RTL',     'NoBorder' }
-      aInitValues := { ::aName[j], ::aRange[j], ::aValuen[j], ::atooltip[j], ::aHelpID[j], ::aNoTabStop[j], ::awrap[j], ::areadonly[j], ::aincrement[j], ::aenabled[j], ::avisible[j], ::acobj[j], ::aRTL[j], ::aBorder[j] }
+      aInitValues := { ::aName[j], ::aRange[j], ::aValueN[j], ::atooltip[j], ::aHelpID[j], ::aNoTabStop[j], ::awrap[j], ::areadonly[j], ::aincrement[j], ::aenabled[j], ::avisible[j], ::acobj[j], ::aRTL[j], ::aBorder[j] }
       aFormats    := { 30,         30,          '99999',      120,           '999',        .F.,             .F.,        .F.,            '999999',        .F.,           .F.,           31,         .F.,       .F. }
       aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
       IF aResults[1] == NIL
@@ -14754,9 +14483,8 @@ LOCAL nPageCount, aCaptions, aImages, aCtrls
       ENDIF
       ::aName[j]             := IIF( ! ::IsUnique( aResults[01], j ), ::aName[j], AllTrim( aResults[01] ) )
       ::aRange[j]            := aResults[02]
-      ::aValuen[j]           := aResults[03]
+      ::aValueN[j]           := aResults[03]
       ::atooltip[j]          := aResults[04]
-      oControl:tooltip       := ::atooltip[j]
       ::aHelpID[j]           := aResults[05]
       ::aNoTabStop[j]        := aResults[06]
       ::awrap[j]             := aResults[07]
@@ -14766,7 +14494,7 @@ LOCAL nPageCount, aCaptions, aImages, aCtrls
       ::avisible[j]          := aResults[11]
       ::acobj[j]             := aResults[12]
       ::aRTL[j]              := aResults[13]
-      ::aBorder[j]           := aResults[14]
+      ::aBorder[j]           := aResults[14]           // NOBORDER
    ENDIF
 
    IF ::aCtrlType[j] == 'BUTTON'
@@ -14788,7 +14516,7 @@ LOCAL nPageCount, aCaptions, aImages, aCtrls
       ::avisible[j]          := aResults[07]
       ::aflat[j]             := aResults[08]
       ::apicture[j]          := aResults[09]
-      ::ajustify[j]          := aResults[10]
+      ::ajustify[j]          := aResults[10]           // ALIGNMENT
       ::acobj[j]             := aResults[11]
       ::aRTL[j]              := aResults[12]
       ::aNoPrefix[j]         := aResults[13]
@@ -14798,7 +14526,7 @@ LOCAL nPageCount, aCaptions, aImages, aCtrls
       ::aMultiLine[j]        := aResults[17]
       ::aThemed[j]           := aResults[18]
       ::aNo3DColors[j]       := aResults[19]
-      ::aFit[j]              := aResults[20]
+      ::aFit[j]              := aResults[20]           // AUTOFIT
       ::aDIBSection[j]       := aResults[21]
       ::aBuffer[j]           := aResults[22]
       ::aHBitmap[j]          := aResults[23]
@@ -14818,11 +14546,8 @@ LOCAL nPageCount, aCaptions, aImages, aCtrls
       ENDIF
       ::aName[j]             := IIF( ! ::IsUnique( aResults[01], j ), ::aName[j], AllTrim( aResults[01] ) )
       ::aValue[j]            := IIF( aResults[02] == 1, '.T.', IIF( aResults[02] == 2 .OR. ! aResults[14], '.F.', 'NIL' ) )
-      oControl:Value         := &( ::aValue[j] )
       ::aCaption[j]          := aResults[03]
-      oControl:Caption       := IIF( Empty( aResults[03] ), cName, aResults[03] )
       ::aToolTip[j]          := aResults[04]
-      oControl:ToolTip       := aResults[04]
       ::aHelpID[j]           := aResults[05]
       ::aField[j]            := aResults[06]
       ::aTransparent[j]      := aResults[07]
@@ -14830,17 +14555,17 @@ LOCAL nPageCount, aCaptions, aImages, aCtrls
       ::aVisible[j]          := aResults[09]
       ::aNoTabStop[j]        := aResults[10]
       ::aCObj[j]             := aResults[11]
-      ::aAutoPlay[j]         := aResults[12]
+      ::aAutoPlay[j]         := aResults[12]           // AUTOSIZE
       ::aRTL[j]              := aResults[13]
       ::a3State[j]           := aResults[14]
       ::aThemed[j]           := aResults[15]
-      ::aLeft[j]             := aResults[16]
+      ::aLeft[j]             := aResults[16]           // LEFTALIGN
    ENDIF
 
    IF ::aCtrlType[j] == 'LIST'
       cTitle      := cNameW + " properties"
       aLabels     := { 'Name',     'Value',      'Items',     'ToolTip',     'MultiSelect',     'HelpID',     'Break',     'NoTabStop',     'Sort',     'Enabled',     'Visible',     'Obj',      'RTL',     'NoVScroll',     'Image',     'Fit',     'TextHeight',     'SubClass' }
-      aInitValues := { ::aName[j], ::aValuen[j], ::aitems[j], ::atooltip[j], ::amultiselect[j], ::aHelpID[j], ::abreak[j], ::aNoTabStop[j], ::asort[j], ::aenabled[j], ::avisible[j], ::acobj[j], ::aRTL[j], ::aNoVScroll[j], ::aImage[j], ::aFit[j], ::aTextHeight[j], ::aSubClass[j] }
+      aInitValues := { ::aName[j], ::aValueN[j], ::aitems[j], ::atooltip[j], ::amultiselect[j], ::aHelpID[j], ::abreak[j], ::aNoTabStop[j], ::asort[j], ::aenabled[j], ::avisible[j], ::acobj[j], ::aRTL[j], ::aNoVScroll[j], ::aImage[j], ::aFit[j], ::aTextHeight[j], ::aSubClass[j] }
       aFormats    := { 30,         '999',        800,         120,           .F.,               '999',        .F.,         .F.,             .F.,        .F.,           .F.,           31,         .F.,       .F.,             250,         .F.,       '999',            250 }
       aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
       IF aResults[1] == NIL
@@ -14848,11 +14573,9 @@ LOCAL nPageCount, aCaptions, aImages, aCtrls
          RETURN NIL
       ENDIF
       ::aName[j]             := IIF( ! ::IsUnique( aResults[01], j ), ::aName[j], AllTrim( aResults[01] ) )
-      ::aValuen[j]           := aResults[02]
-      oControl:value         := aResults[02]
+      ::aValueN[j]           := aResults[02]
       ::aitems[j]            := aResults[03]
       ::atooltip[j]          := aResults[04]
-      oControl:tooltip       := aResults[04]
       ::amultiselect[j]      := aResults[05]
       ::aHelpID[j]           := aResults[06]
       ::abreak[j]            := aResults[07]
@@ -14909,7 +14632,7 @@ LOCAL nPageCount, aCaptions, aImages, aCtrls
       ::aBreak[j]            := aResults[28]
       ::aRTL[j]              := aResults[29]
       ::aNoTabStop[j]        := aResults[30]
-      ::aFull[j]             := aResults[31]
+      ::aFull[j]             := aResults[31]           // FULLMOVE
       ::aButtons[j]          := aResults[32]
       ::aNoHeaders[j]        := aResults[33]
       ::aHeaderImages[j]     := aResults[34]
@@ -14948,7 +14671,7 @@ LOCAL nPageCount, aCaptions, aImages, aCtrls
       ::aSync[j]             := aResults[67]
       ::aUnSync[j]           := aResults[68]
       ::aUpdateColors[j]     := aResults[69]
-      ::aUpdate[j]           := aResults[70]
+      ::aUpdate[j]           := aResults[70]           // UPDATEALL
    ENDIF
 
    IF ::aCtrlType[j] == 'XBROWSE'
@@ -14991,7 +14714,7 @@ LOCAL nPageCount, aCaptions, aImages, aCtrls
       ::aBreak[j]            := aResults[28]
       ::aRTL[j]              := aResults[29]
       ::aNoTabStop[j]        := aResults[30]
-      ::aFull[j]             := aResults[31]
+      ::aFull[j]             := aResults[31]           // FULLMOVE
       ::aButtons[j]          := aResults[32]
       ::aNoHeaders[j]        := aResults[33]
       ::aHeaderImages[j]     := aResults[34]
@@ -15031,35 +14754,21 @@ LOCAL nPageCount, aCaptions, aImages, aCtrls
       ::aByCell[j]           := aResults[68]
    ENDIF
 
-// TODO: Add array validation like RADIOGROUP
    IF ::aCtrlType[j] == 'RADIOGROUP'
       cTitle      := cNameW + " properties"
-      aLabels     := { 'Name',     'Value',      'Options',   'ToolTip',     'Spacing',     'HelpID',     'Transparent',     'Enabled',     'Visible',     'Obj',      'RTL',     'NoTabStop',     'AutoSize',     'Vertical',     'Themed',     'Background',     'SubClass' }
-      aInitValues := { ::aName[j], ::aValuen[j], ::aitems[j], ::atooltip[j], ::aspacing[j], ::aHelpID[j], ::atransparent[j], ::aenabled[j], ::avisible[j], ::acobj[j], ::aRTL[j], ::aNoTabStop[j], ::aAutoPlay[j], ::aVertical[j], ::aThemed[j], ::aBackground[j], ::aSubClass[j] }
-      aFormats    := { 30,         '999',        250,         120,           '999',         '999',        .F.,               .F.,           .F.,           31,         .F.,       .F.,             .F.,            .F.,            .F.,          250,              250 }
+      aLabels     := { 'Name',     'Value',      'Options',   'ToolTip',     'Spacing',     'HelpID',     'Transparent',     'Enabled',     'Visible',     'Obj',      'RTL',     'NoTabStop',     'AutoSize',     'Horizontal', 'Themed',     'Background',     'SubClass' }
+      aInitValues := { ::aName[j], ::aValueN[j], ::aitems[j], ::atooltip[j], ::aspacing[j], ::aHelpID[j], ::atransparent[j], ::aenabled[j], ::avisible[j], ::acobj[j], ::aRTL[j], ::aNoTabStop[j], ::aAutoPlay[j], ::aFlat[j],   ::aThemed[j], ::aBackground[j], ::aSubClass[j] }
+      aFormats    := { 30,         '999',        250,         120,           '999',         '999',        .F.,               .F.,           .F.,           31,         .F.,       .F.,             .F.,            .F.,          .F.,          250,              250 }
       aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
       IF aResults[1] == NIL
          ::oDesignForm:SetFocus()
          RETURN NIL
       ENDIF
-      IF ! IsValidArray( aResults[03] )
-         MsgStop( 'Options must be a valid array with 2 or more items.',  'ooHG IDE+' )
-         ::oDesignForm:SetFocus()
-         RETURN NIL
-      ENDIF
-      cItems := &( aResults[03] )
-      IF Len( cItems ) < 2
-         MsgStop( 'Options must be a valid array with 2 or more items.',  'ooHG IDE+' )
-         ::oDesignForm:SetFocus()
-         RETURN NIL
-      ENDIF
       ::aName[j]             := IIF( ! ::IsUnique( aResults[01], j ), ::aName[j], AllTrim( aResults[01] ) )
       ::aValueN[j]           := aResults[02]
-      ::aItems[j]            := aResults[03]
+      ::aItems[j]            := aResults[03]           // OPTIONS
       ::aToolTip[j]          := aResults[04]
-      oControl:ToolTip       := aResults[04]
       ::aSpacing[j]          := aResults[05]
-      oControl:Height        := aResults[05] * Len( cItems ) + 8
       ::aHelpID[j]           := aResults[06]
       ::aTransparent[j]      := aResults[07]
       ::aEnabled[j]          := aResults[08]
@@ -15067,8 +14776,8 @@ LOCAL nPageCount, aCaptions, aImages, aCtrls
       ::aCObj[j]             := aResults[10]
       ::aRTL[j]              := aResults[11]
       ::aNoTabStop[j]        := aResults[12]
-      ::aAutoPlay[j]         := aResults[13]
-      ::aVertical[j]         := aResults[14]
+      ::aAutoPlay[j]         := aResults[13]           // AUTOSIZE
+      ::aFlat[j]             := aResults[14]           // HORIZONTAL
       ::aThemed[j]           := aResults[15]
       ::aBackground[j]       := aResults[16]
       ::aSubClass[j]         := aResults[17]
@@ -15077,7 +14786,7 @@ LOCAL nPageCount, aCaptions, aImages, aCtrls
    IF ::aCtrlType[j] == 'COMBO'
       cTitle      := cNameW + " properties"
       aLabels     := { 'Name',     'Value',      'Items',     'ToolTip',     'HelpID',     'NoTabStop',     'Sort',     'ItemSource',     'Enabled',     'Visible',     'Valuesource',     "DisplayEdit",     'Obj',      'ItemImageNumber',     'ImageSource',     'FirstItem',     'ListWidth',     'DelayedLoad',     'Incremental',     'IntegralHeight',     'Refresh',     'NoRefresh',     'SourceOrder',     'SearchLapse',     'SubClass',     'Break',     'GripperText' }
-      aInitValues := { ::aName[j], ::aValuen[j], ::aitems[j], ::atooltip[j], ::aHelpID[j], ::aNoTabStop[j], ::asort[j], ::aitemsource[j], ::aenabled[j], ::avisible[j], ::aValuesource[j], ::adisplayedit[j], ::acobj[j], ::aItemImageNumber[j], ::aImageSource[j], ::aFirstItem[j], ::aListWidth[j], ::aDelayedLoad[j], ::aIncremental[j], ::aIntegralHeight[j], ::aRefresh[j], ::aNoRefresh[j], ::aSourceOrder[j], ::aSearchLapse[j], ::aSubClass[j], ::aBreak[j], ::aGripperText[j] }
+      aInitValues := { ::aName[j], ::aValueN[j], ::aitems[j], ::atooltip[j], ::aHelpID[j], ::aNoTabStop[j], ::asort[j], ::aitemsource[j], ::aenabled[j], ::avisible[j], ::aValueSource[j], ::adisplayedit[j], ::acobj[j], ::aItemImageNumber[j], ::aImageSource[j], ::aFirstItem[j], ::aListWidth[j], ::aDelayedLoad[j], ::aIncremental[j], ::aIntegralHeight[j], ::aRefresh[j], ::aNoRefresh[j], ::aSourceOrder[j], ::aSearchLapse[j], ::aSubClass[j], ::aBreak[j], ::aGripperText[j] }
       aFormats    := { 30,         '999',        250,         120,           '999',        .F.,             .F.,        100,              .T.,           .T.,           100,               .F.,               31,         250,                   250,               .F.,             '999999',        .F.,               .F.,               .F.,                  .F.,           .F.,             250,               '999999',          250,            .F.,         250 }
       aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
       IF aResults[1] == NIL
@@ -15085,17 +14794,16 @@ LOCAL nPageCount, aCaptions, aImages, aCtrls
          RETURN NIL
       ENDIF
       ::aName[j]             := IIF( ! ::IsUnique( aResults[01], j ), ::aName[j], AllTrim( aResults[01] ) )
-      ::aValuen[j]           := aResults[02]
+      ::aValueN[j]           := aResults[02]
       ::aItems[j]            := IIF( Empty( aResults[08] ), '', aResults[03] )
       ::atooltip[j]          := aResults[04]
-      oControl:Tooltip       := aResults[04]
       ::aHelpID[j]           := aResults[05]
       ::aNoTabStop[j]        := aResults[06]
       ::asort[j]             := aResults[07]
       ::aitemsource[j]       := aResults[08]
       ::aenabled[j]          := aResults[09]
       ::avisible[j]          := aResults[10]
-      ::aValuesource[j]      := aResults[11]
+      ::aValueSource[j]      := aResults[11]
       ::adisplayedit[j]      := aResults[12]
       ::acobj[j]             := aResults[13]
       ::aItemImageNumber[j]  := aResults[14]
@@ -15116,9 +14824,9 @@ LOCAL nPageCount, aCaptions, aImages, aCtrls
 
    IF ::aCtrlType[j] == 'CHECKBTN'
       cTitle      := cNameW + " properties"
-      aLabels     := { 'Name',     'Value',      'Caption',     'ToolTip',     'HelpID',     'Enabled',     'Visible',     "NoTabStop",     'Obj',      'RTL',     'Picture',     'Buffer',     'HBitmap',     'NoLoadTransparent',  'ForceScale',     'Field',     'No3DColors',     'Fit',     'DIBSection' }
-      aInitValues := { ::aName[j], ::aValueL[j], ::aCaption[j], ::atooltip[j], ::aHelpID[j], ::aEnabled[j], ::aVisible[j], ::aNoTabStop[j], ::aCObj[j], ::aRTL[j], ::aPicture[j], ::aBuffer[j], ::aHBitmap[j], ::aNoLoadTrans[j],     ::aForceScale[j], ::aField[j], ::aNo3DColors[j], ::aFit[j], ::aDIBSection[j] }
-      aFormats    := { 30,         .F.,          31,            120,           '999',        .F.,           .F.,           .F.,             31,         .F.,       250,           250,          250,           .F.,                  .F.,              250,         .F.,              .F.,       .F. }
+      aLabels     := { 'Name',     'Value',      'Caption',     'ToolTip',     'HelpID',     'Enabled',     'Visible',     "NoTabStop",     'Obj',      'RTL',     'Picture',     'Buffer',     'HBitmap',     'NoLoadTransparent', 'ForceScale',     'Field',     'No3DColors',     'Fit',     'DIBSection',     'Themed',     "MultiLine",     'Flat',     'SubClass',     'ImageMargin',     'Align'                                                                                                                                                                                        }
+      aInitValues := { ::aName[j], ::aValueL[j], ::aCaption[j], ::atooltip[j], ::aHelpID[j], ::aEnabled[j], ::aVisible[j], ::aNoTabStop[j], ::aCObj[j], ::aRTL[j], ::aPicture[j], ::aBuffer[j], ::aHBitmap[j], ::aNoLoadTrans[j],   ::aForceScale[j], ::aField[j], ::aNo3DColors[j], ::aFit[j], ::aDIBSection[j], ::aThemed[j], ::aMultiLine[j], ::aFlat[j], ::aSubClass[j], ::aImageMargin[j], IIF( ::aJustify[j] == "BOTTOM",  1,  IIF( ::aJustify[j] == "CENTER",  2,  IIF( ::aJustify[j] == "LEFT",  3,  IIF( ::aJustify[j] == "RIGHT",  4,  IIF( ::aJustify[j] == "TOP",  5,  6 ) ) ) ) ) }
+      aFormats    := { 30,         .F.,          31,            120,           '999',        .F.,           .F.,           .F.,             31,         .F.,       250,           250,          250,           .F.,                 .F.,              250,         .F.,              .F.,       .F.,              .F.,          .F.,             .F.,        250,            250,               { 'BOTTOM',  'CENTER',  'LEFT',  'RIGHT',  'TOP',  'NONE' }                                                                                                                                    }
       aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
       IF aResults[1] == NIL
          ::oDesignForm:SetFocus()
@@ -15126,11 +14834,8 @@ LOCAL nPageCount, aCaptions, aImages, aCtrls
       ENDIF
       ::aName[j]             := IIF( ! ::IsUnique( aResults[01], j ), ::aName[j], AllTrim( aResults[01] ) )
       ::aValueL[j]           := aResults[02]
-      oControl:Value         := aResults[02]
       ::aCaption[j]          := aResults[03]
-      oControl:Caption       := IIF( Empty( aResults[03] ), cName, aResults[03] )
       ::aToolTip[j]          := aResults[04]
-      oControl:ToolTip       := aResults[04]
       ::aHelpID[j]           := aResults[05]
       ::aEnabled[j]          := aResults[06]
       ::aVisible[j]          := aResults[07]
@@ -15146,13 +14851,23 @@ LOCAL nPageCount, aCaptions, aImages, aCtrls
       ::aNo3DColors[j]       := aResults[17]
       ::aFit[j]              := aResults[18]
       ::aDIBSection[j]       := aResults[19]
+      ::aThemed[j]           := aResults[20]
+      ::aMultiLine[j]        := aResults[21]
+      ::aFlat[j]             := aResults[22]
+      ::aSubClass[j]         := aResults[23]
+      ::aImageMargin[j]      := aResults[24]
+      ::aJustify[j]          := IIF( aResults[25] == 1, 'BOTTOM', ;
+                                IIF( aResults[25] == 2, 'CENTER', ;
+                                IIF( aResults[25] == 3, 'LEFT', ;
+                                IIF( aResults[25] == 4, 'RIGHT', ;
+                                IIF( aResults[25] == 5, 'TOP', '' ) ) ) ) )    // ALIGN
    ENDIF
 
    IF ::aCtrlType[j] == 'PICCHECKBUTT'
       cTitle      := cNameW + " properties"
-      aLabels     := { 'Name',     'Value',      'Picture',     'ToolTip',     'HelpID',     'Enabled',     'Visible',     "NoTabStop",     'Obj',      'SubClass',     'Buffer',     'HBitmap',     'NoLoadTransparent',  'ForceScale',     'Field',     'No3DColors',     'AutoFit',  'DIBSection',     'Themed',     'ImageMargin',     'Align' }
-      aInitValues := { ::aName[j], ::aValuel[j], ::apicture[j], ::atooltip[j], ::aHelpID[j], ::aenabled[j], ::avisible[j], ::aNoTabStop[j], ::acobj[j], ::aSubClass[j], ::aBuffer[j], ::aHBitmap[j], ::aNoLoadTrans[j],     ::aForceScale[j], ::aField[j], ::aNo3DColors[j], ::aFit[j],   ::aDIBSection[j], ::aThemed[j], ::aImageMargin[j],  IIF( ::aJustify[j] == "BOTTOM",  1,  IIF( ::aJustify[j] == "CENTER",  2,  IIF( ::aJustify[j] == "LEFT",  3,  IIF( ::aJustify[j] == "RIGHT",  4,  IIF( ::aJustify[j] == "TOP",  5,  6 ) ) ) ) ) }
-      aFormats    := { 30,         .F.,          31,            250,           '999',        .F.,           .F.,           .F.,             31,         250,            250,          250,            .F.,                 .F.,              250,         .F.,              .F.,        .F.,              .F.,          250,               { 'BOTTOM',  'CENTER',  'LEFT',  'RIGHT',  'TOP',  'NONE' } }
+      aLabels     := { 'Name',     'Value',      'Picture',     'ToolTip',     'HelpID',     'Enabled',     'Visible',     "NoTabStop",     'Obj',      'SubClass',     'Buffer',     'HBitmap',     'NoLoadTransparent', 'ForceScale',     'Field',     'No3DColors',     'AutoFit', 'DIBSection',     'Themed',     'Flat',     'ImageMargin',     'Align' }
+      aInitValues := { ::aName[j], ::aValueL[j], ::apicture[j], ::atooltip[j], ::aHelpID[j], ::aenabled[j], ::avisible[j], ::aNoTabStop[j], ::acobj[j], ::aSubClass[j], ::aBuffer[j], ::aHBitmap[j], ::aNoLoadTrans[j],   ::aForceScale[j], ::aField[j], ::aNo3DColors[j], ::aFit[j], ::aDIBSection[j], ::aThemed[j], ::aFlat[j], ::aImageMargin[j],  IIF( ::aJustify[j] == "BOTTOM",  1,  IIF( ::aJustify[j] == "CENTER",  2,  IIF( ::aJustify[j] == "LEFT",  3,  IIF( ::aJustify[j] == "RIGHT",  4,  IIF( ::aJustify[j] == "TOP",  5,  6 ) ) ) ) ) }
+      aFormats    := { 30,         .F.,          31,            250,           '999',        .F.,           .F.,           .F.,             31,         250,            250,          250,            .F.,                .F.,              250,         .F.,              .F.,       .F.,              .F.,          .F.,        250,               { 'BOTTOM',  'CENTER',  'LEFT',  'RIGHT',  'TOP',  'NONE' } }
       aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
       IF aResults[1] == NIL
          ::oDesignForm:SetFocus()
@@ -15160,10 +14875,8 @@ LOCAL nPageCount, aCaptions, aImages, aCtrls
       ENDIF
       ::aName[j]             := IIF( ! ::IsUnique( aResults[01], j ), ::aName[j], AllTrim( aResults[01] ) )
       ::aValueL[j]           := aResults[02]
-      oControl:value         := aResults[02]
       ::aPicture[j]          := aResults[03]
       ::aToolTip[j]          := aResults[04]
-      oControl:ToolTip       := aResults[04]
       ::aHelpID[j]           := aResults[05]
       ::aEnabled[j]          := aResults[06]
       ::aVisible[j]          := aResults[07]
@@ -15176,11 +14889,16 @@ LOCAL nPageCount, aCaptions, aImages, aCtrls
       ::aForceScale[j]       := aResults[14]
       ::aField[j]            := aResults[15]
       ::aNo3DColors[j]       := aResults[16]
-      ::aFit[j]              := aResults[17]
+      ::aFit[j]              := aResults[17]           // AUTOFIT
       ::aDIBSection[j]       := aResults[18]
       ::aThemed[j]           := aResults[19]
-      ::aImageMargin[j]      := aResults[20]
-      ::aJustify[j]          := IIF( aResults[21] == 1,  'BOTTOM',  IIF( aResults[21] == 2,  'CENTER',  IIF( aResults[21] == 3,  'LEFT',  IIF( aResults[21] == 4,  'RIGHT',  IIF( aResults[21] == 5,  'TOP',  '' ) ) ) ) )
+      ::aFlat[j]             := aResults[20]
+      ::aImageMargin[j]      := aResults[21]
+      ::aJustify[j]          := IIF( aResults[22] == 1, 'BOTTOM', ;
+                                IIF( aResults[22] == 2, 'CENTER', ;
+                                IIF( aResults[22] == 3, 'LEFT', ;
+                                IIF( aResults[22] == 4, 'RIGHT', ;
+                                IIF( aResults[22] == 5, 'TOP', '' ) ) ) ) )    // ALIGN
    ENDIF
 
    IF ::aCtrlType[j] == 'PICBUTT'
@@ -15196,7 +14914,6 @@ LOCAL nPageCount, aCaptions, aImages, aCtrls
       ::aName[j]             := IIF( ! ::IsUnique( aResults[01], j ), ::aName[j], AllTrim( aResults[01] ) )
       ::aPicture[j]          := aResults[02]
       ::aToolTip[j]          := aResults[03]
-      oControl:ToolTip       := aResults[03]
       ::aHelpID[j]           := aResults[04]
       ::aNoTabStop[j]        := aResults[05]
       ::aEnabled[j]          := aResults[06]
@@ -15208,20 +14925,24 @@ LOCAL nPageCount, aCaptions, aImages, aCtrls
       ::aNoLoadTrans[j]      := aResults[12]
       ::aForceScale[j]       := aResults[13]
       ::aNo3DColors[j]       := aResults[14]
-      ::aFit[j]              := aResults[15]
+      ::aFit[j]              := aResults[15]           // AUTOFIT
       ::aDIBSection[j]       := aResults[16]
       ::aThemed[j]           := aResults[17]
       ::aImageMargin[j]      := aResults[18]
-      ::aJustify[j]          := IIF( aResults[19] == 1,  'BOTTOM',  IIF( aResults[19] == 2,  'CENTER',  IIF( aResults[19] == 3,  'LEFT',  IIF( aResults[19] == 4,  'RIGHT',  IIF( aResults[19] == 5,  'TOP',  '' ) ) ) ) )
+      ::aJustify[j]          := IIF( aResults[19] == 1, 'BOTTOM', ;
+                                IIF( aResults[19] == 2, 'CENTER', ;
+                                IIF( aResults[19] == 3, 'LEFT', ;
+                                IIF( aResults[19] == 4, 'RIGHT', ;
+                                IIF( aResults[19] == 5, 'TOP', '' ) ) ) ) )    // ALIGN
       ::aCancel[j]           := aResults[20]
       ::aSubClass[j]         := aResults[21]
    ENDIF
 
    IF ::aCtrlType[j] == 'IMAGE'
       cTitle      := cNameW + " properties"
-      aLabels     := { 'Name',     'Picture',     'ToolTip',     'HelpID',     'Stretch',     'Enabled',     'Visible',     'Obj',      "ClientEdge",     "Border",     'Transparent',     'SubClass',     'RTL',     'Buffer',     'HBitmap',     'DIBSection',     'No3DColors',     'NoLoadTransparent',  'NoResize',  'WhiteBackground',  'ImageSize',     'ExcludeArea' }
-      aInitValues := { ::aName[j], ::apicture[j], ::atooltip[j], ::aHelpID[j], ::astretch[j], ::aenabled[j], ::avisible[j], ::acobj[j], ::aclientedge[j], ::aborder[j], ::atransparent[j], ::aSubClass[j], ::aRTL[j], ::aBuffer[j], ::aHBitmap[j], ::aDIBSection[j], ::aNo3DColors[j], ::aNoLoadTrans[j],     ::aFit[j],    ::aWhiteBack[j],     ::aImageSize[j], ::aExclude[j] }
-      aFormats    := { 30,         30,            120,           '999',        .F.,           .F.,           .F.,           31,         .F.,              .F.,          .F.,               250,            .F.,       250,          250,           .F.,              .F.,              .F.,                  .F.,         .F.,                .F.,             250 }
+      aLabels     := { 'Name',     'Picture',     'ToolTip',     'HelpID',     'Stretch',     'Enabled',     'Visible',     'Obj',      "ClientEdge",     "Border",     'Transparent',     'SubClass',     'RTL',     'Buffer',     'HBitmap',     'DIBSection',     'No3DColors',     'NoLoadTransparent', 'NoResize', 'WhiteBackground', 'ImageSize',     'ExcludeArea' }
+      aInitValues := { ::aName[j], ::apicture[j], ::atooltip[j], ::aHelpID[j], ::astretch[j], ::aenabled[j], ::avisible[j], ::acobj[j], ::aclientedge[j], ::aborder[j], ::atransparent[j], ::aSubClass[j], ::aRTL[j], ::aBuffer[j], ::aHBitmap[j], ::aDIBSection[j], ::aNo3DColors[j], ::aNoLoadTrans[j],   ::aFit[j],  ::aWhiteBack[j],   ::aImageSize[j], ::aExclude[j] }
+      aFormats    := { 30,         30,            120,           '999',        .F.,           .F.,           .F.,           31,         .F.,              .F.,          .F.,               250,            .F.,       250,          250,           .F.,              .F.,              .F.,                 .F.,        .F.,               .F.,             250 }
       aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
       IF aResults[1] == NIL
          ::oDesignForm:SetFocus()
@@ -15245,7 +14966,7 @@ LOCAL nPageCount, aCaptions, aImages, aCtrls
       ::aDIBSection[j]       := aResults[16]
       ::aNo3DColors[j]       := aResults[17]
       ::aNoLoadTrans[j]      := aResults[18]
-      ::aFit[j]              := aResults[19]
+      ::aFit[j]              := aResults[19]           // NORESIZE
       ::aWhiteBack[j]        := aResults[20]
       ::aImageSize[j]        := aResults[21]
       ::aExclude[j]          := aResults[22]
@@ -15254,7 +14975,7 @@ LOCAL nPageCount, aCaptions, aImages, aCtrls
    IF ::aCtrlType[j] == 'TIMER'
       cTitle      := cNameW + " properties"
       aLabels     := { 'Name',     'Interval',   'Enabled',     'Obj',      'SubClass' }
-      aInitValues := { ::aName[j], ::aValuen[j], ::aenabled[j], ::acobj[j], ::aSubClass[j] }
+      aInitValues := { ::aName[j], ::aValueN[j], ::aenabled[j], ::acobj[j], ::aSubClass[j] }
       aFormats    := { 30,         '9999999',    .F.,           31,         250 }
       aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
       IF aResults[1] == NIL
@@ -15262,7 +14983,7 @@ LOCAL nPageCount, aCaptions, aImages, aCtrls
          RETURN NIL
       ENDIF
       ::aName[j]             := IIF( ! ::IsUnique( aResults[01], j ), ::aName[j], AllTrim( aResults[01] ) )
-      ::aValueN[j]           := IIF( aResults[02] > 0, aResults[02], ::aValueN[j] )
+      ::aValueN[j]           := IIF( aResults[02] > 0, aResults[02], ::aValueN[j] )     // INTERVAL
       ::aEnabled[j]          := aResults[03]
       ::aCObj[j]             := aResults[04]
       ::aSubClass[j]         := aResults[05]
@@ -15285,7 +15006,6 @@ LOCAL nPageCount, aCaptions, aImages, aCtrls
       ::aTransparent[j]      := aResults[05]
       ::aHelpID[j]           := aResults[06]
       ::aToolTip[j]          := aResults[07]
-      oControl:tooltip       := aResults[07]
       ::aEnabled[j]          := aResults[08]
       ::aVisible[j]          := aResults[09]
       ::aCObj[j]             := aResults[10]
@@ -15366,7 +15086,6 @@ LOCAL nPageCount, aCaptions, aImages, aCtrls
       ::aName[j]             := IIF( ! ::IsUnique( aResults[01], j ), ::aName[j], AllTrim( aResults[01] ) )
       ::aValue[j]            := aResults[02]
       ::aToolTip[j]          := aResults[03]
-      oControl:ToolTip       := aResults[03]
       ::aShowNone[j]         := aResults[04]
       ::aUpDown[j]           := aResults[05]
       ::aRightAlign[j]       := aResults[06]
@@ -15377,7 +15096,7 @@ LOCAL nPageCount, aCaptions, aImages, aCtrls
       ::aCObj[j]             := aResults[11]
       ::aRTL[j]              := aResults[12]
       ::aNoTabStop[j]        := aResults[13]
-      ::aBorder[j]           := aResults[14]
+      ::aBorder[j]           := aResults[14]           // NOBORDER
       ::aSubClass[j]         := aResults[15]
    ENDIF
 
@@ -15408,23 +15127,21 @@ LOCAL nPageCount, aCaptions, aImages, aCtrls
 
    IF ::aCtrlType[j] == 'ACTIVEX'
       cTitle      := cNameW + " properties"
-      aLabels     := { 'Name',     "Control's width",              "Control's height",             'ProgID',     'Visible',     'Enabled',     'Obj',      'NoTabStop',     'SubClass' }
-      aInitValues := { ::aName[j], ::aButtonWidth[j],              ::aTextHeight[j],               ::aAction[j], ::avisible[j], ::aenabled[j], ::acobj[j], ::aNoTabStop[j], ::aSubClass[j] }
-      aFormats    := { 30,         { "Parent's", "0", "Current" }, { "Parent's", "0", "Current" }, 250,          .T.,           .T.,           31,         .F.,             250 }
+      aLabels     := { 'Name',     'ProgID',     'Visible',     'Enabled',     'Obj',      'NoTabStop',     'SubClass' }
+      aInitValues := { ::aName[j], ::aAction[j], ::avisible[j], ::aenabled[j], ::acobj[j], ::aNoTabStop[j], ::aSubClass[j] }
+      aFormats    := { 30,         250,          .T.,           .T.,           31,         .F.,             250 }
       aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
       IF aResults[1] == NIL
          ::oDesignForm:SetFocus()
          RETURN NIL
       ENDIF
       ::aName[j]             := IIF( ! ::IsUnique( aResults[01], j ), ::aName[j], AllTrim( aResults[01] ) )
-      ::aButtonWidth[j]      := aResults[02]
-      ::aTextHeight[j]       := aResults[03]
-      ::aAction[j]           := aResults[04]
-      ::aVisible[j]          := aResults[05]
-      ::aEnabled[j]          := aResults[06]
-      ::aCObj[j]             := aResults[07]
-      ::aNoTabStop[j]        := aResults[08]
-      ::aSubClass[j]         := aResults[09]
+      ::aAction[j]           := aResults[02]           // PROGID
+      ::aVisible[j]          := aResults[03]
+      ::aEnabled[j]          := aResults[04]
+      ::aCObj[j]             := aResults[05]
+      ::aNoTabStop[j]        := aResults[06]
+      ::aSubClass[j]         := aResults[07]
    ENDIF
 
    IF ::aCtrlType[j] == 'CHECKLIST'
@@ -15478,7 +15195,7 @@ LOCAL nPageCount, aCaptions, aImages, aCtrls
       ::aSubClass[j]         := aResults[08]
       ::aRTL[j]              := aResults[09]
       ::aNoTabStop[j]        := aResults[10]
-      ::aNoPrefix[j]         := aResults[11]
+      ::aNoPrefix[j]         := aResults[11]           // NOALT
    ENDIF
 
    IF ::aCtrlType[j] == 'PICTURE'
@@ -15557,12 +15274,12 @@ LOCAL nPageCount, aCaptions, aImages, aCtrls
       ::aCObj[j]             := aResults[08]
       ::aSubClass[j]         := aResults[09]
       ::aRTL[j]              := aResults[10]
-      ::aFlat[j]             := aResults[11]
-      ::aVertical[j]         := aResults[12]
+      ::aFlat[j]             := aResults[11]           // HORIZONTAL
+      ::aVertical[j]         := aResults[12]           // AUTOMOVE
       ::aAutoPlay[j]         := aResults[13]
-      ::aAppend[j]           := aResults[14]
-      ::aIncrement[j]        := aResults[15]
-      ::aIndent[j]           := aResults[16]
+      ::aAppend[j]           := aResults[14]           // ATTACHED
+      ::aIncrement[j]        := aResults[15]           // LINESKIP
+      ::aIndent[j]           := aResults[16]           // PAGESKIP
    ENDIF
 
    IF ::aCtrlType[j] == 'TEXTARRAY'
@@ -15587,39 +15304,46 @@ LOCAL nPageCount, aCaptions, aImages, aCtrls
       ::aNoTabStop[j]        := aResults[10]
       ::aClientEdge[j]       := aResults[11]
       ::aBorder[j]           := aResults[12]
-      ::aItemCount[j]        := aResults[13]
-      ::aIncrement[j]        := aResults[14]
+      ::aItemCount[j]        := aResults[13]           // ROWCOUNT
+      ::aIncrement[j]        := aResults[14]           // COLCOUNT
    ENDIF
 
    ::lFsave := .F.
    ::RefreshControlInspector()
 
-   // TODO: add other controls XXX
-   IF ::aCtrlType[j] $ 'ACTIVEX ANIMATE BUTTON CHECKLIST DATEPICKER FRAME HOTKEYBOX IMAGE IPADDRESS MONTHCALENDAR PICTURE PROGRESSMETER SCROLLBAR TEXT TIMER TREE TAB'
-      nRow    := oControl:Row
-      nCol    := oControl:Col
+   // Position and Size
+   nRow := oControl:Row
+   nCol := oControl:Col
+   IF ::aCtrlType[j] == 'SLIDER'
+      nStyle := WindowStyleFlag( oControl:hWnd,  TBS_VERT )
+      IF ( nStyle == TBS_HORZ .AND. ::aVertical[j] ) .OR. ( nStyle == TBS_VERT .AND. ! ::aVertical[j] )
+         nWidth  := oControl:Height
+         nHeight := oControl:Width
+      ELSE
+         nWidth  := oControl:Width
+         nHeight := oControl:Height
+      ENDIF
+   ELSEIF ::aCtrlType[j] == 'PROGRESSBAR'
+      nStyle := WindowStyleFlag( oControl:hWnd,  PBS_VERTICAL )
+      IF ( nStyle # PBS_VERTICAL .AND. ::aVertical[j] ) .OR. ( nStyle == PBS_VERTICAL .AND. ! ::aVertical[j] )
+         nWidth  := oControl:Height
+         nHeight := oControl:Width
+      ELSE
+         nWidth  := oControl:Width
+         nHeight := oControl:Height
+      ENDIF
+   ELSE
       nWidth  := oControl:Width
       nHeight := oControl:Height
-      IF ::aCtrlType[j] == 'TAB'
-         aCtrls := Array( oControl:ItemCount )
-         FOR kp := 1 TO Len( aCtrls )
-            aCtrls[kp] := aClone( oControl:aPages[kp]:aControls )
-            aEval( aCtrls[kp], { |c| oControl:aPages[kp]:DeleteControl( c ) } )
-         NEXT kp
-      ELSE
-         aCtrls := NIL
-      ENDIF
-      oControl:Release()
-
-      oControl        := ::CreateControl( aScan( ::ControlType, ::aCtrlType[j] ), j, aCtrls )
-      oControl:Row    := nRow
-      oControl:Col    := nCol
-      oControl:Width  := nWidth
-      oControl:Height := nHeight
-
-      ::DrawOutline( oControl )
    ENDIF
 
+   oControl:Release()
+
+   oControl        := ::CreateControl( aScan( ::ControlType, ::aCtrlType[j] ), j, nWidth, nHeight, aCtrls )
+   oControl:Row    := nRow
+   oControl:Col    := nCol
+
+   ::DrawOutline( oControl )
    ::DrawPoints()
    ::oDesignForm:SetFocus()
 RETURN NIL
@@ -15716,7 +15440,7 @@ LOCAL nPages, cName, j
 RETURN NIL
 
 //------------------------------------------------------------------------------
-FUNCTION CambiaCap( oTab, oTabProp )
+STATIC FUNCTION ChgTabpageCaption( oTab, oTabProp )
 //------------------------------------------------------------------------------
 LOCAL i, aCaptions
 
@@ -15736,7 +15460,7 @@ LOCAL i, aCaptions
 RETURN .F.
 
 //------------------------------------------------------------------------------
-FUNCTION CambiaImg( oTab, oTabProp )
+STATIC FUNCTION ChgTabpageImage( oTab, oTabProp )
 //------------------------------------------------------------------------------
 LOCAL i, aImages
 
@@ -15756,7 +15480,7 @@ LOCAL i, aImages
 RETURN .F.
 
 //------------------------------------------------------------------------------
-FUNCTION CambiaNam( oTabProp )
+STATIC FUNCTION ChgTabpageName( oTabProp )
 //------------------------------------------------------------------------------
 LOCAL i, aNames
 
@@ -15774,7 +15498,7 @@ LOCAL i, aNames
 RETURN .F.
 
 //------------------------------------------------------------------------------
-FUNCTION CambiaObj( oTabProp )
+STATIC FUNCTION ChgTabpageObject( oTabProp )
 //------------------------------------------------------------------------------
 LOCAL i, aObjs
 
@@ -15792,7 +15516,7 @@ LOCAL i, aObjs
 RETURN .F.
 
 //------------------------------------------------------------------------------
-FUNCTION CambiaSub( oTabProp )
+STATIC FUNCTION ChgTabpageSubclass( oTabProp )
 //------------------------------------------------------------------------------
 LOCAL i, aSubs
 
@@ -15810,7 +15534,7 @@ LOCAL i, aSubs
 RETURN .F.
 
 //------------------------------------------------------------------------------
-FUNCTION IsValidArray( cArray )
+STATIC FUNCTION IsValidArray( cArray )
 //------------------------------------------------------------------------------
 LOCAL nOpen, nClose, i
 
@@ -16068,17 +15792,18 @@ LOCAL ia, aResults
 
    IF ::aCtrlType[j] == 'CHECKBTN'
       cTitle      := cNameW + " events"
-      aLabels     := { 'On Change',    'On GotFocus',    'On LostFocus' }
-      aInitValues := { ::aonchange[j], ::aongotfocus[j], ::aonlostfocus[j] }
-      aFormats    := { 250,            250,              250 }
+      aLabels     := { 'On Change',    'On GotFocus',    'On LostFocus',    'On MouseMove' }
+      aInitValues := { ::aonchange[j], ::aongotfocus[j], ::aonlostfocus[j], ::aOnMouseMove[j] }
+      aFormats    := { 250,            250,              250,               250 }
       aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
       IF aResults[1] == NIL
          ::oDesignForm:SetFocus()
          RETURN NIL
       ENDIF
-      ::aonchange[j]        := aResults[1]
-      ::aongotfocus[j]      := aResults[2]
-      ::aonlostfocus[j]     := aResults[3]
+      ::aOnChange[j]        := aResults[01]
+      ::aOnGotFocus[j]      := aResults[02]
+      ::aOnLostFocus[j]     := aResults[03]
+      ::aOnMouseMove[j]     := aResults[04]
    ENDIF
 
    IF ::aCtrlType[j] == 'PICCHECKBUTT'

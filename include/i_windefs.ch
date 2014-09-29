@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.61 2014-08-13 22:22:11 fyurisich Exp $
+ * $Id: i_windefs.ch,v 1.62 2014-09-29 02:17:19 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -843,6 +843,7 @@ SPLITBOX CONTROL
 PROGRESSBAR CONTROL
 ---------------------------------------------------------------------------*/
 
+#define PBS_VERTICAL                  0x04
 #define PBS_MARQUEE                   0x08
 #define PBM_SETMARQUEE                ( WM_USER + 10 )
 #define PBM_SETPOS                    1026

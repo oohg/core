@@ -1,5 +1,5 @@
 /*
- * $Id: i_button.ch,v 1.24 2014-09-01 15:58:50 fyurisich Exp $
+ * $Id: i_button.ch,v 1.25 2014-09-29 02:17:18 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -154,5 +154,5 @@
             <.italic.>, <.underline.>, <.strikeout.>, <(field)>, <.rtl.>, ;
             <bitmap>, <buffer>, <hbitmap>, <.notrans.>, <.scale.>, ;
             <.no3dcolors.>, <.autofit.>, ! <.lDIB.>, <backcolor>, ;
-            <.disabled.>, , <.themed.>, <aImageMargin>, <{onmousemove}>, ;
+            <.disabled.>, <.themed.>, <aImageMargin>, <{onmousemove}>, ;
             <"alignment">, <.multiline.>, <.flat.> )

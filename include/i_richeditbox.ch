@@ -1,5 +1,5 @@
 /*
- * $Id: i_richeditbox.ch,v 1.12 2014-08-13 22:22:11 fyurisich Exp $
+ * $Id: i_richeditbox.ch,v 1.13 2014-09-29 02:17:18 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -98,7 +98,7 @@ STANDARD VERSION
       [ <nohscroll: NOHSCROLL> ] ;
       [ <dummy06: ONVSCROLL, ON VSCROLL> <vscroll> ] ;
       [ <dummy07: ONHSCROLL, ON HSCROLL> <hscroll> ] ;
-      => ;
+   => ;
       [ <obj> := ] _OOHG_SelectSubClass( TEditRich(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <value>, ;
             <f>, <s>, <tooltip>, <maxlenght>, <{gotfocus}>, <{change}>, ;
@@ -151,7 +151,7 @@ SPLITBOX VERSION
       [ <nohscroll: NOHSCROLL> ] ;
       [ <dummy06: ONVSCROLL, ON VSCROLL> <vscroll> ] ;
       [ <dummy07: ONHSCROLL, ON HSCROLL> <hscroll> ] ;
-      =>;
+   =>;
       [ <obj> := ] _OOHG_SelectSubClass( TEditRich(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, , , <w>, <h>, <value>, <f>, <s>, ;
             <tooltip>, <maxlenght>, <{gotfocus}>, <{change}>, <{lostfocus}>, ;

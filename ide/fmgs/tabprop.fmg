@@ -1,5 +1,5 @@
 /*
- * $Id: tabprop.fmg,v 1.6 2014-09-25 02:59:10 fyurisich Exp $
+ * $Id: tabprop.fmg,v 1.7 2014-09-29 02:17:18 fyurisich Exp $
  */
 
 * ooHG IDE Plus form generated code
@@ -67,7 +67,7 @@ DEFINE WINDOW TEMPLATE ;
       HEIGHT 24 ;
       FONT 'Arial' ;
       SIZE 9 ;
-      ON CHANGE IIF( ::IsUnique( oTabProp:Text_2:Value, 0 ), ::aName[i] := AllTrim( oTabProp:Text_2:Value ),  { || MsgStop( 'Another control has the same name !!!', 'ooHG IDE+' ), oTabProp:Text_2:Value := ::aName[i] } )
+      ON CHANGE IIF( ::IsUnique( oTabProp:Text_2:Value, i ), ::aName[i] := AllTrim( oTabProp:Text_2:Value ), MsgStop( 'Another control has the same name !!!', 'ooHG IDE+' ) )
 
    @ 103, 20 LABEL Label_2 ;
       WIDTH 60 ;
@@ -234,7 +234,7 @@ DEFINE WINDOW TEMPLATE ;
       FONT 'Arial' ;
       SIZE 9 ;
       MAXLENGTH 500 ;
-      ON CHANGE IIF( CambiaCap( oTab, oTabProp ), ::aCaption[i] := oTabProp:Text_101:Value, NIL ) ;
+      ON CHANGE IIF( ChgTabpageCaption( oTab, oTabProp ), ::aCaption[i] := oTabProp:Text_101:Value, NIL ) ;
       NOVSCROLL 
 
    @ 363, 20 LABEL Label_1 ;
@@ -251,7 +251,7 @@ DEFINE WINDOW TEMPLATE ;
       FONT 'Arial' ;
       SIZE 9 ;
       MAXLENGTH 500 ;
-      ON CHANGE IIF( CambiaImg( oTab, oTabProp ), ::aImage[i] := oTabProp:Edit_2:Value, NIL ) ;
+      ON CHANGE IIF( ChgTabpageName( oTab, oTabProp ), ::aImage[i] := oTabProp:Edit_2:Value, NIL ) ;
       NOVSCROLL 
 
    @ 403, 20 LABEL Label_7 ;
@@ -268,7 +268,7 @@ DEFINE WINDOW TEMPLATE ;
       FONT 'Arial' ;
       SIZE 9 ;
       MAXLENGTH 500 ;
-      ON CHANGE IIF( CambiaNam( oTabProp ), ::aPageNames[i] := oTabProp:Edit_4:Value, NIL ) ;
+      ON CHANGE IIF( ChgTabpageName( oTabProp ), ::aPageNames[i] := oTabProp:Edit_4:Value, NIL ) ;
       NOVSCROLL 
 
    @ 443, 20 LABEL Label_8 ;
@@ -285,7 +285,7 @@ DEFINE WINDOW TEMPLATE ;
       FONT 'Arial' ;
       SIZE 9 ;
       MAXLENGTH 500 ;
-      ON CHANGE IIF( CambiaObj( oTabProp ), ::aPageObjs[i] := oTabProp:Edit_5:Value, NIL ) ;
+      ON CHANGE IIF( ChgTabpageObject( oTabProp ), ::aPageObjs[i] := oTabProp:Edit_5:Value, NIL ) ;
       NOVSCROLL 
 
    @ 483, 20 LABEL Label_9 ;
@@ -302,7 +302,7 @@ DEFINE WINDOW TEMPLATE ;
       FONT 'Arial' ;
       SIZE 9 ;
       MAXLENGTH 500 ;
-      ON CHANGE IIF( CambiaSub( oTabProp ), ::aPageSubClasses[i] := oTabProp:Edit_6:Value, NIL ) ;
+      ON CHANGE IIF( ChgTabpageSubclass( oTabProp ), ::aPageSubClasses[i] := oTabProp:Edit_6:Value, NIL ) ;
       NOVSCROLL 
 
 END WINDOW 

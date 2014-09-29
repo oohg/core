@@ -1,5 +1,5 @@
 /*
- * $Id: h_radio.prg,v 1.37 2014-04-30 02:36:23 fyurisich Exp $
+ * $Id: h_radio.prg,v 1.38 2014-09-29 02:17:19 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -119,7 +119,8 @@ CLASS TRadioGroup FROM TLabel
    METHOD Enabled             SETGET
    METHOD SetFocus
    METHOD Visible             SETGET
-
+   METHOD GroupHeight
+   METHOD GroupWidth
    METHOD ItemCount           BLOCK { |Self| LEN( ::aOptions ) }
    METHOD AddItem
    METHOD InsertItem
@@ -205,6 +206,42 @@ Local i, oItem, uToolTip
    ASSIGN ::OnChange    VALUE Change    TYPE "B"
 
 Return Self
+
+*-----------------------------------------------------------------------------*
+METHOD GroupHeight() CLASS TRadioGroup
+*-----------------------------------------------------------------------------*
+Local nRet, oFirst, oLast
+
+   IF ::lHorizontal
+      nRet := ::Height
+   ELSE
+      IF Len( ::aOptions ) > 0
+         oFirst := ::aOptions[1]
+         oLast  := aTail( ::aOptions )
+         nRet   := oLast:Row + oLast:Height - oFirst:Row
+      ELSE
+         nRet := 0
+      ENDIF
+   ENDIF
+RETURN nRet
+
+*-----------------------------------------------------------------------------*
+METHOD GroupWidth() CLASS TRadioGroup
+*-----------------------------------------------------------------------------*
+Local nRet, oFirst, oLast
+
+   IF ::lHorizontal
+      IF Len( ::aOptions ) > 0
+         oFirst := ::aOptions[1]
+         oLast  := aTail( ::aOptions )
+         nRet   := oLast:Col + oLast:Width - oFirst:Col
+      ELSE
+         nRet := 0
+      ENDIF
+   ELSE
+      nRet := ::Width
+   ENDIF
+RETURN nRet
 
 *-----------------------------------------------------------------------------*
 METHOD SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout ) CLASS TRadioGroup
