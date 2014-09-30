@@ -1,5 +1,5 @@
 /*
- * $Id: mgide.prg,v 1.20 2014-09-29 02:17:18 fyurisich Exp $
+ * $Id: mgide.prg,v 1.21 2014-09-30 01:53:26 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -241,9 +241,9 @@ LOCAL nPos, nRed, nGreen, nBlue, lCorre, pmgFolder, nEsquema, cvcx, cvcy
 
       DEFINE MAIN MENU
          POPUP '&File'
-            ITEM '&New project ' ACTION ::newproject()
-            ITEM '&Open Project' ACTION ::openproject()
-            ITEM '&Save Project' ACTION ::saveproject()
+            ITEM '&New project ' ACTION ::NewProject()
+            ITEM '&Open Project' ACTION ::OpenProject()
+            ITEM '&Save Project' ACTION ::SaveProject()
             SEPARATOR
             ITEM '&Preferences' ACTION ::preferences()
             SEPARATOR
@@ -324,12 +324,12 @@ LOCAL nPos, nRed, nGreen, nBlue, lCorre, pmgFolder, nEsquema, cvcx, cvcy
             BUTTON Button_1b ;
             TOOLTIP 'Open...' ;
             PICTURE 'M3';
-            ACTION ::openproject() AUTOSIZE
+            ACTION ::OpenProject() AUTOSIZE
 
             BUTTON Button_01 ;
             TOOLTIP 'Save...' ;
             PICTURE 'M4';
-            ACTION ::saveproject() AUTOSIZE
+            ACTION ::SaveProject() AUTOSIZE
 
             BUTTON Button_7 ;
             TOOLTIP 'Remove Item' ;
@@ -3139,7 +3139,12 @@ RETURN NIL
 //------------------------------------------------------------------------------
 METHOD NewProject() CLASS THMI
 //------------------------------------------------------------------------------
-   IF .NOT. ::lPsave
+   IF Len( ::aEditors ) > 0
+      MsgStop( 'You can´t open a new project until the form being edited is closed.', 'ooHG IDE+' )
+      RETURN NIL
+   ENDIF
+
+   IF ! ::lPsave
       IF MsgYesNo( 'Current project not saved, save it now?', 'ooHG IDE+' )
          ::SaveProject()
       ENDIF
@@ -3154,7 +3159,7 @@ METHOD NewProject() CLASS THMI
    ::Form_Tree:Tree_1:AddItem( 'RC module', 1 )
    ::Form_Tree:Tree_1:Value := 1
    ::Form_Tree:title := cNameApp
-   ::lPsave := .F.
+   ::lPsave := .T.
    ::cProjectName := ''
    ::Form_Tree:Add:Enabled := .F.
    ::Form_Tree:Button_1:Enabled := .F.
@@ -3164,6 +3169,11 @@ RETURN NIL
 METHOD OpenProject() CLASS THMI
 //------------------------------------------------------------------------------
 LOCAL pmgFolder
+
+   IF Len( ::aEditors ) > 0
+      MsgStop( 'You can´t open another project until the form being edited is closed.', 'ooHG IDE+' )
+      RETURN NIL
+   ENDIF
 
    ::cFile := GetFile( { {'ooHG IDE+ project files *.pmg','*.pmg'} }, 'Open Project', "", .F., .F. )
    IF Len( ::cFile ) > 0
@@ -4417,9 +4427,9 @@ LOCAL aWidths, aDecimals, Form_Brow
 RETURN NIL
 
 //------------------------------------------------------------------------------
-METHOD myInputWindow( cTitle, aLabels, aValues, aFormats, bFunc ) CLASS THMI
+METHOD myInputWindow( cTitle, aLabels, aValues, aFormats, bFunc1, bFunc2 ) CLASS THMI
 //------------------------------------------------------------------------------
-LOCAL l, aResult, wyw, i, wHeight, _iw, ControlRow, cLblName, cCtrlName
+LOCAL l, aResult, wyw, i, wHeight, _iw, ControlRow, cLblName, cCtrlName, oWin
 
    SET INTERACTIVECLOSE ON
    l := Len( aLabels )
@@ -4466,7 +4476,6 @@ LOCAL l, aResult, wyw, i, wHeight, _iw, ControlRow, cLblName, cCtrlName
    DEFINE WINDOW _inputwindow OBJ _iw ;
       WIDTH 720 ;
       HEIGHT wHeight ;
-      VIRTUAL HEIGHT wyw ;
       TITLE cTitle ;
       MODAL ;
       NOSIZE ;
@@ -4474,67 +4483,81 @@ LOCAL l, aResult, wyw, i, wHeight, _iw, ControlRow, cLblName, cCtrlName
       FONT 'Courier new' SIZE 9 ;
       BACKCOLOR ::aSystemColor
 
-      ON KEY ESCAPE OF _inputwindow ACTION _myInputWindowCancel( _iw, aResult )
-
-      ControlRow := 10
-
-      FOR i := 1 TO l
-         cLblName  := 'Label_' + Alltrim(Str(i))
-         cCtrlName := 'Control_' + Alltrim(Str(i))
-
-         @ ControlRow + 3, 10 LABEL &cLblName OF _inputwindow VALUE aLabels[i] AUTOSIZE
-
-         DO CASE
-         CASE ValType ( aValues[i] ) == 'L'
-            @ ControlRow, 180 CHECKBOX &cCtrlName OF _inputwindow CAPTION '' VALUE aValues[i]
-            ControlRow := ControlRow + 30
-         CASE ValType ( aValues[i] ) == 'D'
-            @ ControlRow, 180 DATEPICKER &cCtrlName OF _inputwindow VALUE aValues[i] WIDTH 420
-            ControlRow := ControlRow + 26
-         CASE ValType ( aValues[i] ) == 'N'
-            If ValType ( aFormats[i] ) == 'A'
-               @ ControlRow, 180 COMBOBOX &cCtrlName OF _inputwindow ITEMS aFormats[i] VALUE aValues[i] WIDTH 420  FONT 'Arial' SIZE 9
-               ControlRow := ControlRow + 26
-            ElseIf  ValType ( aFormats[i] ) == 'C'
-               If AT ( '.', aFormats[i] ) > 0
-                  @ ControlRow, 180 TEXTBOX &cCtrlName OF _inputwindow VALUE aValues[i] WIDTH 120 FONT 'Courier new' SIZE 9 NUMERIC INPUTMASK aFormats[i] RIGHTALIGN
-                  ControlRow := ControlRow + 26
-               Else
-                  @ ControlRow, 180 TEXTBOX &cCtrlName OF _inputwindow VALUE aValues[i] WIDTH 120 FONT 'Courier new' SIZE 9 NUMERIC INPUTMASK aFormats[i] RIGHTALIGN
-                  ControlRow := ControlRow + 26
-               EndIf
-            Else
-               ControlRow := ControlRow + 26
-            Endif
-         CASE ValType ( aValues[i] ) == 'C'
-            If ValType ( aFormats[i] ) == 'N'
-               If  aFormats[i] <= 32
-                  @ ControlRow, 180 TEXTBOX &cCtrlName OF _inputwindow VALUE aValues[i] WIDTH 270 FONT 'Courier new' SIZE 9 MAXLENGTH aFormats[i]
-                  ControlRow := ControlRow + 26
-               Else
-                  @ ControlRow, 180 EDITBOX &cCtrlName OF _inputwindow WIDTH 420 HEIGHT 40 VALUE aValues[i] FONT 'Courier new' SIZE 9 MAXLENGTH aFormats[i] NOVSCROLL
-                  ControlRow := ControlRow + 42
-               EndIf
-            Else
-               ControlRow := ControlRow + 26
-            EndIf
-         CASE ValType ( aValues[i] ) == 'M'
-            @ ControlRow, 180 EDITBOX &cCtrlName OF _inputwindow WIDTH 420 HEIGHT 90 VALUE aValues[i] FONT 'Courier new' SIZE 9
-            ControlRow := ControlRow + 92
-         OTHERWISE
-            @ ControlRow, 180 TEXTBOX &cCtrlName OF _inputwindow NOBORDER BACKCOLOR ::aSystemColor NOTABSTOP READONLY WIDTH 270 FONT 'Courier new' SIZE 9 MAXLENGTH 10
-            ControlRow := ControlRow + 26
-         ENDCASE
-      NEXT i
-
       DEFINE STATUSBAR
          STATUSITEM " "
-         IF HB_IsBlock( bFunc )
-         STATUSITEM "Font/Colors ." WIDTH 90 ACTION Eval( bFunc ) TOOLTIP "Change font and colors"
+         IF HB_IsBlock( bFunc1 )
+         STATUSITEM "Set Font/Colors ." WIDTH 115 ACTION Eval( bFunc1 ) TOOLTIP "Change font and colors"
          ENDIF
-         STATUSITEM "Ok          ." WIDTH 90 ACTION _myInputWindowOk( _iw, aResult )     TOOLTIP "Save changes"
-         STATUSITEM "Cancel      ." WIDTH 90 ACTION _myInputWindowCancel( _iw, aResult ) TOOLTIP "Discard changes"
+         IF HB_IsBlock( bFunc2 )
+         STATUSITEM "Use Defaults    ." WIDTH 115 ACTION Eval( bFunc2 ) TOOLTIP "Use default font and default colors"
+         ENDIF
+         STATUSITEM "Ok              ." WIDTH 115 ACTION _myInputWindowOk( _iw, aResult, oWin ) TOOLTIP "Save changes"
+         STATUSITEM "Cancel          ." WIDTH 115 ACTION _myInputWindowCancel( _iw, aResult ) TOOLTIP "Discard changes"
       END STATUSBAR
+
+      DEFINE WINDOW Int_1 OBJ oWin ;
+         AT 0, 0 ;
+         WIDTH _iw:ClientWidth ;
+         HEIGHT _iw:ClientHeight + _iw:StatusBar:ClientHeightUsed() ;
+         INTERNAL ;
+         VIRTUAL HEIGHT wyw ;
+         FONT 'Courier new' SIZE 9 ;
+         BACKCOLOR ::aSystemColor
+
+         ControlRow := 10
+
+         FOR i := 1 TO l
+            cLblName  := 'Label_' + Alltrim(Str(i))
+            cCtrlName := 'Control_' + Alltrim(Str(i))
+
+            @ ControlRow + 3, 10 LABEL &cLblName VALUE aLabels[i] AUTOSIZE
+
+            DO CASE
+            CASE ValType ( aValues[i] ) == 'L'
+               @ ControlRow, 180 CHECKBOX &cCtrlName CAPTION '' VALUE aValues[i]
+               ControlRow := ControlRow + 30
+            CASE ValType ( aValues[i] ) == 'D'
+               @ ControlRow, 180 DATEPICKER &cCtrlName VALUE aValues[i] WIDTH 420
+               ControlRow := ControlRow + 26
+            CASE ValType ( aValues[i] ) == 'N'
+               If ValType ( aFormats[i] ) == 'A'
+                  @ ControlRow, 180 COMBOBOX &cCtrlName ITEMS aFormats[i] VALUE aValues[i] WIDTH 420  FONT 'Arial' SIZE 9
+                  ControlRow := ControlRow + 26
+               ElseIf  ValType ( aFormats[i] ) == 'C'
+                  If AT ( '.', aFormats[i] ) > 0
+                     @ ControlRow, 180 TEXTBOX &cCtrlName VALUE aValues[i] WIDTH 120 FONT 'Courier new' SIZE 9 NUMERIC INPUTMASK aFormats[i] RIGHTALIGN
+                     ControlRow := ControlRow + 26
+                  Else
+                     @ ControlRow, 180 TEXTBOX &cCtrlName VALUE aValues[i] WIDTH 120 FONT 'Courier new' SIZE 9 NUMERIC INPUTMASK aFormats[i] RIGHTALIGN
+                     ControlRow := ControlRow + 26
+                  EndIf
+               Else
+                  ControlRow := ControlRow + 26
+               Endif
+            CASE ValType ( aValues[i] ) == 'C'
+               If ValType ( aFormats[i] ) == 'N'
+                  If  aFormats[i] <= 32
+                     @ ControlRow, 180 TEXTBOX &cCtrlName VALUE aValues[i] WIDTH 270 FONT 'Courier new' SIZE 9 MAXLENGTH aFormats[i]
+                     ControlRow := ControlRow + 26
+                  Else
+                     @ ControlRow, 180 EDITBOX &cCtrlName WIDTH 420 HEIGHT 40 VALUE aValues[i] FONT 'Courier new' SIZE 9 MAXLENGTH aFormats[i] NOVSCROLL
+                     ControlRow := ControlRow + 42
+                  EndIf
+               Else
+                  ControlRow := ControlRow + 26
+               EndIf
+            CASE ValType ( aValues[i] ) == 'M'
+               @ ControlRow, 180 EDITBOX &cCtrlName WIDTH 420 HEIGHT 90 VALUE aValues[i] FONT 'Courier new' SIZE 9
+               ControlRow := ControlRow + 92
+            OTHERWISE
+               @ ControlRow, 180 TEXTBOX &cCtrlName NOBORDER BACKCOLOR ::aSystemColor NOTABSTOP READONLY WIDTH 270 FONT 'Courier new' SIZE 9 MAXLENGTH 10
+               ControlRow := ControlRow + 26
+            ENDCASE
+         NEXT i
+
+      END WINDOW
+
+      ON KEY ESCAPE OF _inputwindow ACTION _myInputWindowCancel( _iw, aResult )
 
    END WINDOW
 
@@ -4545,13 +4568,13 @@ LOCAL l, aResult, wyw, i, wHeight, _iw, ControlRow, cLblName, cCtrlName
 RETURN aResult
 
 //------------------------------------------------------------------------------
-STATIC FUNCTION _myInputWindowOk( oInputWindow, aResult )
+STATIC FUNCTION _myInputWindowOk( oInputWindow, aResult, oWin )
 //------------------------------------------------------------------------------
 LOCAL i, l
 
    l := Len( aResult )
    FOR i := 1 TO l
-      aResult[ i ] := oInputWindow:Control( 'Control_' + Alltrim( Str( i ) ) ):Value
+      aResult[ i ] := oWin:Control( 'Control_' + Alltrim( Str( i ) ) ):Value
    NEXT i
    oInputWindow:Release()
 RETURN Nil
@@ -4971,8 +4994,7 @@ HB_FUNC( SEND_SELECTALL )
    keybd_event(VK_CONTROL, MapVirtualKey(VK_CONTROL, 0), 0, 0);
    keybd_event(VK1_A, MapVirtualKey(VK1_A, 0), 0, 0);
    keybd_event(VK1_A, MapVirtualKey(VK1_A, 0), KEYEVENTF_KEYUP, 0);
-   keybd_event(VK_CONTROL, MapVirtualKey(VK_CONTROL, 0), KEYEVENTF_KEYUP,
-0);
+   keybd_event(VK_CONTROL, MapVirtualKey(VK_CONTROL, 0), KEYEVENTF_KEYUP, 0);
 }
 
 /* copy - ctrl-c */
@@ -4981,8 +5003,7 @@ HB_FUNC( SEND_COPY )
    keybd_event(VK_CONTROL, MapVirtualKey(VK_CONTROL, 0), 0, 0);
    keybd_event(VK1_C, MapVirtualKey(VK1_C, 0), 0, 0);
    keybd_event(VK1_C, MapVirtualKey(VK1_C, 0), KEYEVENTF_KEYUP, 0);
-   keybd_event(VK_CONTROL, MapVirtualKey(VK_CONTROL, 0), KEYEVENTF_KEYUP,
-0);
+   keybd_event(VK_CONTROL, MapVirtualKey(VK_CONTROL, 0), KEYEVENTF_KEYUP, 0);
 }
 
 /* paste - ctrl-v */
@@ -4991,8 +5012,7 @@ HB_FUNC( SEND_PASTE )
    keybd_event(VK_CONTROL, MapVirtualKey(VK_CONTROL, 0), 0, 0);
    keybd_event(VK1_V, MapVirtualKey(VK1_V, 0), 0, 0);
    keybd_event(VK1_V, MapVirtualKey(VK1_V, 0), KEYEVENTF_KEYUP, 0);
-   keybd_event(VK_CONTROL, MapVirtualKey(VK_CONTROL, 0), KEYEVENTF_KEYUP,
-0);
+   keybd_event(VK_CONTROL, MapVirtualKey(VK_CONTROL, 0), KEYEVENTF_KEYUP, 0);
 }
 
 /* cut - ctrl-x */
@@ -5001,8 +5021,7 @@ HB_FUNC( SEND_CUT )
    keybd_event(VK_CONTROL, MapVirtualKey(VK_CONTROL, 0), 0, 0);
    keybd_event(VK1_X, MapVirtualKey(VK1_X, 0), 0, 0);
    keybd_event(VK1_X, MapVirtualKey(VK1_X, 0), KEYEVENTF_KEYUP, 0);
-   keybd_event(VK_CONTROL, MapVirtualKey(VK_CONTROL, 0), KEYEVENTF_KEYUP,
-0);
+   keybd_event(VK_CONTROL, MapVirtualKey(VK_CONTROL, 0), KEYEVENTF_KEYUP, 0);
 }
 
 HB_FUNC ( ZAPDIRECTORY )
@@ -5020,8 +5039,8 @@ HB_FUNC ( ZAPDIRECTORY )
    SHFileOperation( &sh );
 }
 
-
 #pragma ENDDUMP
+
 
 CLASS myTProgressBar FROM TProgressBar
    METHOD Events
@@ -5030,12 +5049,22 @@ ENDCLASS
 *------------------------------------------------------------------------------*
 METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS myTProgressBar
 *------------------------------------------------------------------------------*
-
-   IF nMsg == WM_LBUTTONDOWN
+   IF nMsg == WM_LBUTTONUP
       ::DoEventMouseCoords( ::OnClick, "CLICK" )
    ENDIF
-
 RETURN ::Super:Events( hWnd, nMsg, wParam, lParam )
+
+
+CLASS myTRadioGroup FROM TRadioGroup
+   METHOD DoChange
+ENDCLASS
+
+*------------------------------------------------------------------------------*
+METHOD DoChange() CLASS myTRadioGroup
+*------------------------------------------------------------------------------*
+   ::DoEventMouseCoords( ::OnClick, "CLICK" )
+RETURN ::Super:DoChange()
+
 
 /*
  * EOF

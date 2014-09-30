@@ -1,11 +1,24 @@
 /*
- * $Id: ChangeLog,v 1.1376 2014-09-29 02:17:18 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1377 2014-09-30 01:53:26 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-09-29 22:53 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/fmgs/fontclrs.fmg
+   * ide/prgs/formedit.prg
+     ! Control's font and color change.
+     + "Font Type reset to default" option.
+     + Method RecrateControl.
+     ! Controls inside TAB repainted at wrong place.
+     * Comments.
+     - Unneeded functions HB_GetDC and HB_ReleaseDC.
+     ! RadioGroup's click selection.
+   * ide/prgs/mgide.prg
+     ! Controls in myInputWindow overlap statusbar.
 
 2014-09-28 23:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt

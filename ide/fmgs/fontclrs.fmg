@@ -1,5 +1,5 @@
 /*
- * $Id: fontclrs.fmg,v 1.6 2014-09-19 20:50:17 fyurisich Exp $
+ * $Id: fontclrs.fmg,v 1.7 2014-09-30 01:53:26 fyurisich Exp $
  */
 
 * ooHG IDE Plus form generated code
@@ -38,11 +38,19 @@ DEFINE WINDOW TEMPLATE ;
       FONT 'Arial' ;
       SIZE 9
 
+   @ 40, 160 BUTTON button_108 ;
+      WIDTH 110 ;
+      HEIGHT 28 ;
+      CAPTION 'Default Font Type' ;
+      ACTION ::SetDefaultFontType( si ) ;
+      FONT 'Arial' ;
+      SIZE 9
+
    @ 80, 20 BUTTON button_102 ;
       WIDTH 110 ;
       HEIGHT 28 ;
       CAPTION 'Backcolor' ;
-      ACTION ::SetBackColor( si ) ;
+      ACTION ( ::SetBackColor( si ), ThisWindow.SetFocus() ) ;
       FONT 'Arial' ;
       SIZE 9
 
@@ -50,7 +58,7 @@ DEFINE WINDOW TEMPLATE ;
       WIDTH 110 ;
       HEIGHT 28 ;
       CAPTION 'Default BackColor' ;
-      ACTION ::SetDefaultBackColor( si) ;
+      ACTION ( ::SetDefaultBackColor( si ), ThisWindow.SetFocus() ) ;
       FONT 'Arial' ;
       SIZE 9
 
