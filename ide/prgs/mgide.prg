@@ -1,5 +1,5 @@
 /*
- * $Id: mgide.prg,v 1.21 2014-09-30 01:53:26 fyurisich Exp $
+ * $Id: mgide.prg,v 1.22 2014-09-30 20:42:15 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -5062,7 +5062,7 @@ ENDCLASS
 *------------------------------------------------------------------------------*
 METHOD DoChange() CLASS myTRadioGroup
 *------------------------------------------------------------------------------*
-   ::DoEventMouseCoords( ::OnClick, "CLICK" )
+   _OOHG_Eval( ::OnRClick )
 RETURN ::Super:DoChange()
 
 

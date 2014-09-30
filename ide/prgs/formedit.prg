@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.38 2014-09-30 01:53:26 fyurisich Exp $
+ * $Id: formedit.prg,v 1.39 2014-09-30 20:42:15 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -1270,6 +1270,8 @@ LOCAL i, j, nContLin, cForma, nStart, nEnd, nFWidth, nFHeight, cName, aColor
    cName := _OOHG_GetNullName( "0" )
    aColor := IIF( IsValidArray( ::cFBackcolor ), &( ::cFBackcolor ), NIL )
 
+//      ON PAINT ::ShowFormData() ;
+
    DEFINE WINDOW ( cName ) OBJ ::oDesignForm ;
       AT ::myIde:MainHeight + 46, 66 ;
       WIDTH nFWidth ;
@@ -1284,7 +1286,7 @@ LOCAL i, j, nContLin, cForma, nStart, nEnd, nFWidth, nFHeight, cName, aColor
       ON MOUSEMOVE ::MouseTrack() ;
       ON MOUSEDRAG ::MouseMoveSize() ;
       ON GOTFOCUS ::DrawPoints() ;
-      ON PAINT ::ShowFormData() ;
+      ON RESTORE ::DrawPoints() ;
       ON SIZE ::DrawPoints() ;
       BACKCOLOR aColor ;
       FONT ::cFFontName ;
@@ -1292,11 +1294,12 @@ LOCAL i, j, nContLin, cForma, nStart, nEnd, nFWidth, nFHeight, cName, aColor
       FONTCOLOR &( ::cFFontColor ) ;
       NOMAXIMIZE ;
       NOMINIMIZE ;
-      ON INIT { || IIF( ::lFClientArea, ClientAreaResize( ::oDesignForm ), NIL ), ;
-                   ::RefreshControlInspector(), ;
-                   ::oCtrlList:SetFocus(), ;
-                   IIF( ::oCtrlList:ItemCount > 0, ::oCtrlList:Value := { 1 }, NIL ), ;
-                   ::oDesignForm:SetFocus() }
+      ON INIT { || ::RefreshControlInspector(), ;
+                   IIF( ::oCtrlList:ItemCount > 0, ::oCtrlList:Value := { 1 }, NIL ) }
+
+      IF ::lFClientArea
+         ClientAreaResize( ::oDesignForm )
+      ENDIF
 
       DEFINE CONTEXT MENU
          ITEM 'Properties'             ACTION ::Properties_Click()
@@ -1360,6 +1363,8 @@ LOCAL cName
 
    cName := _OOHG_GetNullName( "0" )
 
+//    ON PAINT ::ShowFormData() ;
+
    DEFINE WINDOW ( cName ) OBJ ::oDesignForm ;
       AT ::myIde:MainHeight + 46, 66 ;
       WIDTH 700 ;
@@ -1373,7 +1378,7 @@ LOCAL cName
       ON MOUSEMOVE ::MouseTrack() ;
       ON MOUSEDRAG ::MouseMoveSize() ;
       ON GOTFOCUS ::DrawPoints() ;
-      ON PAINT ::ShowFormData() ;
+      ON RESTORE ::DrawPoints() ;
       FONT ::cFFontName ;
       SIZE ::nFFontSize ;
       FONTCOLOR &( ::cFFontColor ) ;
@@ -2870,15 +2875,56 @@ RETURN NIL
 METHOD MouseMoveSize() CLASS TFormEditor
 //------------------------------------------------------------------------------
 LOCAL oControl, ia, cName, nOldRow, nOldCol, nNewRow, nNewCol, nNewWidth
-LOCAL nNewHeight, nOldHeight
+LOCAL nNewHeight, nOldHeight, iw, oLabel
+STATIC lBusy := .F.
+
+   IF lBusy
+      RETURN NIL
+   ENDIF
+   lBusy := .T.
 
    IF ::swCursor == 1                  // drag
-      IF ::nIndexW > 0
-         IF ( ia := aScan( ::oDesignForm:aControls, { |c| Lower( c:Name ) == ::aControlW[::nIndexW] } ) ) == 0
+      iw := ::nIndexW
+      IF iw > 0
+         IF ( ia := aScan( ::oDesignForm:aControls, { |c| Lower( c:Name ) == ::aControlW[iw] } ) ) == 0
+            lBusy := .F.
             RETURN NIL
          ENDIF
          oControl := ::oDesignForm:aControls[ia]
-         IF ValidHandler( oControl:hWnd )
+         IF oControl:Type == 'RADIOGROUP'
+            MsgStop( "RadioGroups can't be moved interactively.", "OOHG IDE+" )
+/*
+            nOldRow := GetWindowRow( oControl:hWnd )
+            nOldCol := GetWindowCol( oControl:hWnd )
+            nNewRow := oControl:Row
+            nNewCol := oControl:Col
+            oControl:Hide()
+            EraseWindow( ::oDesignForm:Name )
+            ::DrawPoints()
+            @ oControl:Row, oControl:Col LABEL 0 ;
+               OBJ oLabel ;
+               PARENT ( ::oDesignForm:Name ) ;
+               WIDTH oControl:GroupWidth ;
+               HEIGHT oControl:GroupHeight ;
+               BORDER
+            InteractiveMoveHandle( oLabel:hWnd )
+            // the assignment of ::Row changes ::Col and viceversa, so
+            // we need to calculate before assigning
+            nNewRow := nNewRow + GetWindowRow( oLabel:hWnd ) - nOldRow
+            nNewCol := nNewCol + GetWindowCol( oLabel:hWnd ) - nOldCol
+            oLabel:Release()
+            oControl:Show()
+            oControl:Row := nNewRow
+            oControl:Col := nNewCol
+            ::Snap( oControl )
+            ::lFSave := .F.
+            IF ::aTabPage[iw, 2] > 0
+               cName := ::aTabPage[iw, 1]
+               ::oDesignForm:&cName:Show()
+            ENDIF
+            ::DrawOutline( oControl )
+*/
+         ELSEIF ValidHandler( oControl:hWnd )
             nOldRow  := GetWindowRow( oControl:hWnd )
             nOldCol  := GetWindowCol( oControl:hWnd )
             EraseWindow( ::oDesignForm:Name )
@@ -2892,23 +2938,27 @@ LOCAL nNewHeight, nOldHeight
             oControl:Col := nNewCol
             ::Snap( oControl )
             ::lFSave := .F.
-            IF ::aTabPage[::nIndexW, 2] > 0
-               cName := ::aTabPage[::nIndexW, 1]
+            IF ::aTabPage[iw, 2] > 0
+               cName := ::aTabPage[iw, 1]
                ::oDesignForm:&cName:Show()
             ENDIF
             ::DrawOutline( oControl )
          ELSE
             MsgStop( "This control can't be moved interactively.", "OOHG IDE+" )
          ENDIF
-         ::swCursor := 0
       ENDIF
+      ::swCursor := 0
    ELSEIF ::swCursor == 2              // size
-      IF ::nIndexW > 0
-         IF ( ia := aScan( ::oDesignForm:aControls, { |c| Lower( c:Name ) == ::aControlW[::nIndexW] } ) ) == 0
+      iw := ::nIndexW
+      IF iw > 0
+         IF ( ia := aScan( ::oDesignForm:aControls, { |c| Lower( c:Name ) == ::aControlW[iw] } ) ) == 0
+            lBusy := .F.
             RETURN NIL
          ENDIF
          oControl   := ::oDesignForm:aControls[ia]
-         IF ValidHandler( oControl:hWnd )
+         IF oControl:Type == 'RADIOGROUP'
+            MsgStop( "RadioGroups can't be sized interactively.", "OOHG IDE+" )
+         ELSEIF ValidHandler( oControl:hWnd )
             nOldHeight := oControl:Height
             InteractiveSizeHandle( oControl:hWnd )
             IF ::CrtlIsOfType( ia, 'RADIOGROUP COMBO' )
@@ -2923,17 +2973,19 @@ LOCAL nNewHeight, nOldHeight
                oControl:Height := nNewHeight
             ENDIF
             ::lFSave := .F.
-            IF ::aTabPage[::nIndexW, 2] > 0
-               cName := ::aTabPage[::nIndexW, 1]
+            IF ::aTabPage[iw, 2] > 0
+               cName := ::aTabPage[iw, 1]
                ::oDesignForm:&cName:Show()
             ENDIF
             ::DrawOutline( oControl )
          ELSE
             MsgStop( "This control can't be sized interactively.", "OOHG IDE+" )
          ENDIF
-         ::swCursor := 0
       ENDIF
+      ::swCursor := 0
    ENDIF
+
+   lBusy := .F.
 RETURN NIL
 
 //------------------------------------------------------------------------------
@@ -3505,9 +3557,13 @@ RETURN oNewCtrl
 //------------------------------------------------------------------------------
 METHOD CreateControl( nControlType, i, nWidth, nHeight, aCtrls ) CLASS TFormEditor
 //------------------------------------------------------------------------------
-LOCAL cName, oCtrl, aImages, aItems, nMin, nMax, j, aCaptions, nCnt, oPage, cItems
+LOCAL cName, oCtrl, aImages, aItems, nMin, nMax, j, aCaptions, nCnt, oPage, lRed
 
    cName := ::aControlW[i]
+   oCtrl := NIL
+   IF ( lRed := ::oDesignForm:SetRedraw() )
+      ::oDesignForm:SetRedraw( .F. )
+   ENDIF
 
    DO CASE
    CASE nControlType == 2            // 'BUTTON'
@@ -3596,7 +3652,7 @@ LOCAL cName, oCtrl, aImages, aItems, nMin, nMax, j, aCaptions, nCnt, oPage, cIte
    CASE nControlType == 5            // 'COMBO'
       oCtrl := TCombo():Define( cName, ::oDesignForm:Name, ;
                   _OOHG_MouseCol, _OOHG_MouseRow, nWidth, ;
-                  IIF( IsValidArray( ::aItems[i] ), ::aItems[i], { cName, 'combo' } ), ;
+                  IIF( IsValidArray( ::aItems[i] ), &( ::aItems[i] ), { cName, 'combo' } ), ;
                   Max( ::aValueN[i], 1 ), NIL, NIL, ::aToolTip[i], ;
                   { || ::DrawOutline( oCtrl ) }, nHeight, ;
                   { || ::DrawOutline( oCtrl ) }, NIL, NIL, NIL, ;
@@ -3770,8 +3826,8 @@ LOCAL cName, oCtrl, aImages, aItems, nMin, nMax, j, aCaptions, nCnt, oPage, cIte
 
    CASE nControlType == 13           // 'TEXT'
       oCtrl := DefineTextBox( cName, ::oDesignForm:Name, ;
-                  _OOHG_MouseCol, _OOHG_MouseRow, NIL, NIL, ::aValue[i], ;
-                  nWidth, nHeight, ::aToolTip[i], ::aMaxLength[i], ::aUpperCase[i], ;
+                  _OOHG_MouseCol, _OOHG_MouseRow, nWidth, nHeight, ::aValue[i], ;
+                  NIL, NIL, ::aToolTip[i], ::aMaxLength[i], ::aUpperCase[i], ;
                   ::aLowerCase[i], ::aPassWord[i], { || oCtrl:ContextMenu := NIL }, ;
                   { || oCtrl:ContextMenu := ::oContextMenu, ::DrawOutline( oCtrl ) }, ;
                   NIL, NIL, ::aRightAlign[i], ;
@@ -3878,13 +3934,10 @@ LOCAL cName, oCtrl, aImages, aItems, nMin, nMax, j, aCaptions, nCnt, oPage, cIte
       oCtrl:Value    := ::aName[i]
 
    CASE nControlType == 18           // 'RADIOGROUP'
-      IF IsValidArray( ::aItems[i] )
-         cItems := &( ::aItems[i] )
-      ELSE
-         cItems := { 'option 1', 'option 2' }
-      ENDIF
       oCtrl := myTRadioGroup():Define( cName, ::oDesignForm:Name, ;
-                  _OOHG_MouseCol, _OOHG_MouseRow, cItems, ::aValueN[i], NIL, NIL, ;
+                  _OOHG_MouseCol, _OOHG_MouseRow, ;
+                  IIF( IsValidArray( ::aItems[i] ), &( ::aItems[i] ), { cName, 'radiogroup' } ), ;
+                  ::aValueN[i], NIL, NIL, ;
                   IIF( Empty( ::aToolTip[i] ), "Click on an unselected item to select control.", ::aToolTip[i] ), ;
                   { || ::DrawOutline( oCtrl ) }, nWidth, ::aSpacing[i], NIL, ;
                   .F., .F., ::aBold[i], ::aFontItalic[i], ::aFontUnderline[i], ;
@@ -4381,10 +4434,11 @@ LOCAL cName, oCtrl, aImages, aItems, nMin, nMax, j, aCaptions, nCnt, oPage, cIte
       ENDIF
       oCtrl:OnRClick := { || ::DrawOutline( oCtrl ) }
 
-   OTHERWISE
-      RETURN NIL
-
    ENDCASE
+
+   IF lRed
+      ::oDesignForm:SetRedraw( .T. )
+   ENDIF
 RETURN oCtrl
 
 //------------------------------------------------------------------------------
@@ -4452,7 +4506,7 @@ STATIC lBusy := .F.
          PENCOLOR { 255, 0, 0 }
 
       ::Form_Main:frame_2:Caption := "Control : "+  ::aName[l]
-      ::Form_Main:frame_2:Refresh()
+//      ::Form_Main:frame_2:Refresh()
 
       nRow    := oControl:Row
       nCol    := oControl:Col
@@ -5139,6 +5193,8 @@ METHOD LoadControls() CLASS TFormEditor
 LOCAL i, lItem, cType, cLine, nAt, nWidth, cAction, cIcon, lFlat, lRaised, lAmPm
 LOCAL cToolTip, lCenter, lLeft, lRight, cCaption, nProcess
 
+   ::oDesignForm:SetRedraw( .F. )
+
    // Load statusbar data
    FOR i := 1 TO Len( ::aLine )
       IF At( 'DEFINE STATUSBAR', Upper( ::aLine[i] ) ) # 0
@@ -5551,6 +5607,8 @@ LOCAL cToolTip, lCenter, lLeft, lRight, cCaption, nProcess
       ::nIndexW := 0
       ::nHandleA := 0
    ENDIF
+
+   ::oDesignForm:SetRedraw( .T. )
 RETURN NIL
 
 //------------------------------------------------------------------------------
@@ -5617,6 +5675,31 @@ Local q, r, s, cRegresa := '', zi, zl, cName
       ENDIF
    ENDIF
 RETURN cRegresa
+
+//------------------------------------------------------------------------------
+METHOD ReadOopData( cName, cPropmet, cDefault ) CLASS TFormEditor
+//------------------------------------------------------------------------------
+LOCAL i, zi, zl, cvc, nPos, cValue
+
+   cvc := aScan( ::aControlW, cName )
+   zi := IIF( cvc > 0, ::aSpeed[cvc], 1 )
+   zl := IIF( cvc > 0, ::aNumber[cvc], Len( ::aLine ) )
+   FOR i := zi TO zl
+      IF At( ' ' + Upper( ::cFName ) + '.' + Upper( cName ) + '.' + Upper( cPropmet ), Upper( ::aLine[i] ) ) > 0
+         nPos := RAt( '=', ::aLine[i] ) + 1
+         IF nPos > 1
+            cValue := AllTrim( SubStr( ::aLine[i], nPos ) )
+            IF Empty( cValue )
+               RETURN cDefault
+            ELSEIF Upper( cValue ) == 'NIL'
+               RETURN 'NIL'
+            ELSE
+               RETURN cValue
+            ENDIF
+         ENDIF
+      ENDIF
+   NEXT i
+RETURN cDefault
 
 //------------------------------------------------------------------------------
 METHOD ReadStringData( cName, cProp, cDefault ) CLASS TFormEditor
@@ -5784,31 +5867,6 @@ LOCAL cIni, cFin
       ENDIF
    ENDIF
 RETURN cData
-
-//------------------------------------------------------------------------------
-METHOD ReadOopData( cName, cPropmet, cDefault ) CLASS TFormEditor
-//------------------------------------------------------------------------------
-LOCAL i, zi, zl, cvc, nPos, cValue
-
-   cvc := aScan( ::aControlW, cName )
-   zi := IIF( cvc > 0, ::aSpeed[cvc], 1 )
-   zl := IIF( cvc > 0, ::aNumber[cvc], Len( ::aLine ) )
-   FOR i := zi TO zl
-      IF At( ' ' + Upper( ::cFName ) + '.' + Upper( cName ) + '.' + Upper( cPropmet ), Upper( ::aLine[i] ) ) > 0
-         nPos := RAt( '=', ::aLine[i] ) + 1
-         IF nPos > 1
-            cValue := RTrim( SubStr( ::aLine[i], nPos ) )
-            IF Empty( cValue )
-               RETURN cDefault
-            ELSEIF Upper( cValue ) == 'NIL'
-               RETURN 'NIL'
-            ELSE
-               RETURN cValue
-            ENDIF
-         ENDIF
-      ENDIF
-   NEXT i
-RETURN cDefault
 
 //------------------------------------------------------------------------------
 METHOD DrawPoints() CLASS TFormEditor
@@ -6980,7 +7038,7 @@ LOCAL aBackColor, lVisible, lEnabled, lRTL, cSubClass, oCtrl
    nCol       := Val( ::ReadCtrlCol( cName ) )
    nWidth     := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( TFrame():nWidth ) ) ) )
    nHeight    := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TFrame():nHeight ) ) ) )
-   cCaption   := ::Clean( ::ReadStringData( cName, 'CAPTION', cName ) )
+   cCaption   := ::Clean( ::ReadStringData( cName, 'CAPTION', '' ) )
    lOpaque    := ( ::ReadLogicalData( cName, "OPAQUE", "F") == "T" )
    lTrans     := ( ::ReadLogicalData( cName, "TRANSPARENT", "F" ) == "T" )
    cFontName  := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
@@ -8798,7 +8856,7 @@ LOCAL nPosPage, cPCaption, cPName, nPosImage, cPImage, nPosName, nPosObj
          cPObj   := ''
          cPSub   := ''
 
-         DO WHILE j <= Len( ::aLine ) .AND. At( 'END TAB', Upper( ::aLine[j] ) ) == 0 .AND. At( 'END PAGE ', Upper( ::aLine[j] ) ) == 0
+         DO WHILE j <= Len( ::aLine ) .AND. At( 'END TAB', Upper( ::aLine[j] ) ) == 0 .AND. At( 'END PAGE ', Upper( ::aLine[j] ) ) == 0 .AND. ! ( At( "@ ", ::aLine[j] ) > 0 .AND. At( ",", ::aLine[j] ) > 0 )
             DO CASE
             CASE ( nPosImage := At( 'IMAGE ', Upper( ::aLine[j] ) ) ) > 0
                cPImage := AllTrim( SubStr( ::aLine[j], nPosImage + 6, Len( ::aLine[j] ) ) )
@@ -9746,15 +9804,22 @@ LOCAL iMin, w_OOHG_MouseRow, w_OOHG_MouseCol, i, cControl, oControl, ia
       cControl := Lower( ::aControlW[i] )
       IF ::aCtrlType[i] # 'STATUSBAR'.AND. ( ia := aScan( ::oDesignForm:aControls, { |c| Lower( c:Name ) == cControl } ) ) > 0
          oControl := ::oDesignForm:aControls[ia]
-         IF ! oControl:Type == 'TOOLBAR'
+         IF ::aCtrlType[i] == "RADIOGROUP"
+            IF ( w_OOHG_MouseRow >= oControl:Row + oControl:GroupHeight ) .AND. ;
+               ( w_OOHG_MouseRow <= oControl:Row + oControl:GroupHeight + 5 ) .AND. ;
+               ( w_OOHG_MouseCol >= oControl:Col + oControl:GroupWidth ) .AND. ;
+               ( w_OOHG_MouseCol <= oControl:Col + oControl:GroupWidth + 5 )
+               iMin := i
+               EXIT
+            ENDIF
+         ELSEIF ! oControl:Type $ 'TOOLBAR MONTHCALENDAR TIMER'
             IF oControl:Row == oControl:ContainerRow .AND. oControl:Col == oControl:ContainerCol
                IF ( w_OOHG_MouseRow >= oControl:Row + oControl:Height ) .AND. ;
                   ( w_OOHG_MouseRow <= oControl:Row + oControl:Height + 5 ) .AND. ;
                   ( w_OOHG_MouseCol >= oControl:Col + oControl:Width ) .AND. ;
                   ( w_OOHG_MouseCol <= oControl:Col + oControl:Width + 5 ) .AND. ;
                   ( ! Lower( oControl:Name ) $ 'dummymenuname events keyb statusbar statusitem timernum timercaps timerinsert statuskeybrd timerbar statustimer timer_cvctt' ) .AND. ;
-                  ( ! Lower( oControl:Type ) $ 'hotkey' ) .AND. ;
-                  ! ::aCtrlType[i] $ 'MONTHCALENDAR TIMER'
+                  ( oControl:Type # 'HOTKEY' )
                   iMin := i
                   EXIT
                ENDIF
@@ -9764,8 +9829,7 @@ LOCAL iMin, w_OOHG_MouseRow, w_OOHG_MouseCol, i, cControl, oControl, ia
                   ( w_OOHG_MouseCol >= oControl:ContainerCol + oControl:Width ) .AND. ;
                   ( w_OOHG_MouseCol <= oControl:ContainerCol + oControl:Width + 5 ) .AND. ;
                   ( ! Lower( oControl:Name ) $ 'dummymenuname events keyb statusbar statusitem timernum timercaps timerinsert statuskeybrd timerbar statustimer timer_cvctt' ) .AND. ;
-                  ( ! Lower( oControl:Type ) $ 'hotkey' ) .AND. ;
-                  ! ::aCtrlType[i] $ 'MONTHCALENDAR TIMER'
+                  ( oControl:Type # 'HOTKEY' )
                   iMin := i
                   EXIT
                ENDIF
