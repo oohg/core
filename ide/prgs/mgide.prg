@@ -1,5 +1,5 @@
 /*
- * $Id: mgide.prg,v 1.22 2014-09-30 20:42:15 fyurisich Exp $
+ * $Id: mgide.prg,v 1.23 2014-10-01 23:51:31 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -62,6 +62,7 @@ CLASS THMI
 //------------------------------------------------------------------------------
    DATA aEditors           INIT {}
    DATA aliner             INIT {}
+   DATA aPositions         INIT { {0, 0}, {120, 0}, {120, GetDeskTopWidth() - 380} }
    DATA aSystemColor       INIT {215, 231, 244}
    DATA aSystemColorAux    INIT  {}
    DATA cBCCFolder         INIT ''
@@ -565,7 +566,7 @@ RETURN NIL
 //------------------------------------------------------------------------------
 METHOD ReadINI( cFile ) CLASS THMI
 //------------------------------------------------------------------------------
-LOCAL lSnap
+LOCAL lSnap := 0, nPos := 0
 
    IF ! File( cFile )
       HB_MemoWrit( cFile, '[PROJECT]' )
@@ -627,6 +628,31 @@ LOCAL lSnap
       //****************** MODE
       GET ::nCompxBase        SECTION 'WHATCOMP'  ENTRY "XBASECOMP"       DEFAULT 1  // 1 Harbour  2 xHarbour
       GET ::nCompilerC        SECTION 'WHATCOMP'  ENTRY "CCOMPILER"       DEFAULT 1  // 1 MinGW    2 BCC   3 Pelles C
+      //****************** POSITION
+      GET nPos                SECTION 'POSITION'  ENTRY "FORM_MAIN_ROW"   DEFAULT ::aPositions[1, 1]
+      IF HB_IsNumeric( nPos ) .AND. nPos >= 0
+         ::aPositions[1, 1] := nPos
+      ENDIF
+      GET nPos                SECTION 'POSITION'  ENTRY "FORM_MAIN_COL"   DEFAULT ::aPositions[1, 2]
+      IF HB_IsNumeric( nPos ) .AND. nPos >= 0
+         ::aPositions[1, 2] := nPos
+      ENDIF
+      GET nPos                SECTION 'POSITION'  ENTRY "CVCCNTRLS_ROW"   DEFAULT ::aPositions[2, 1]
+      IF HB_IsNumeric( nPos ) .AND. nPos >= 0
+         ::aPositions[2, 1] := nPos
+      ENDIF
+      GET nPos                SECTION 'POSITION'  ENTRY "CVCCNTRLS_COL"   DEFAULT ::aPositions[2, 2]
+      IF HB_IsNumeric( nPos ) .AND. nPos >= 0
+         ::aPositions[2, 2] := nPos
+      ENDIF
+      GET nPos                SECTION 'POSITION'  ENTRY "FORM_LIST_ROW"   DEFAULT ::aPositions[3, 1]
+      IF HB_IsNumeric( nPos ) .AND. nPos >= 0
+         ::aPositions[3, 1] := nPos
+      ENDIF
+      GET nPos                SECTION 'POSITION'  ENTRY "FORM_LIST_COL"   DEFAULT ::aPositions[3, 2]
+      IF HB_IsNumeric( nPos ) .AND. nPos >= 0
+         ::aPositions[3, 2] := nPos
+      ENDIF
       //****************** OTHER
       GET ::lTBuild           SECTION 'SETTINGS'  ENTRY "BUILD"           DEFAULT 2  // 1 Compile.bat 2 Own Make
       GET lSnap               SECTION 'SETTINGS'  ENTRY "SNAP"            DEFAULT 0
@@ -677,6 +703,13 @@ METHOD SaveINI( cFile ) CLASS THMI
       //****************** MODE
       SET SECTION 'WHATCOMP'    ENTRY "XBASECOMP"     TO LTrim( Str( ::nCompxBase, 1, 0 ) )
       SET SECTION 'WHATCOMP'    ENTRY "CCOMPILER"     TO LTrim( Str( ::nCompilerC, 1, 0 ) )
+      //****************** POSITION
+      SET SECTION 'POSITION'    ENTRY "FORM_MAIN_ROW" TO LTrim( Str( ::aPositions[1, 1], 6, 0 ) )
+      SET SECTION 'POSITION'    ENTRY "FORM_MAIN_COL" TO LTrim( Str( ::aPositions[1, 2], 6, 0 ) )
+      SET SECTION 'POSITION'    ENTRY "CVCCNTRLS_ROW" TO LTrim( Str( ::aPositions[2, 1], 6, 0 ) )
+      SET SECTION 'POSITION'    ENTRY "CVCCNTRLS_COL" TO LTrim( Str( ::aPositions[2, 2], 6, 0 ) )
+      SET SECTION 'POSITION'    ENTRY "FORM_LIST_ROW" TO LTrim( Str( ::aPositions[3, 1], 6, 0 ) )
+      SET SECTION 'POSITION'    ENTRY "FORM_LIST_COL" TO LTrim( Str( ::aPositions[3, 2], 6, 0 ) )
       //****************** OTHER
       SET SECTION "SETTINGS"    ENTRY "BUILD"         TO LTrim( Str( ::ltbuild, 1, 0 ) )
       SET SECTION "SETTINGS"    ENTRY "LIB"           TO ::clib
@@ -3679,8 +3712,11 @@ LOCAL nPos, oEditor
 RETURN NIL
 
 //------------------------------------------------------------------------------
-METHOD EditorExit() CLASS THMI
+METHOD EditorExit( aPositions ) CLASS THMI
 //------------------------------------------------------------------------------
+   ::aPositions := aClone( aPositions )
+   ::SaveINI( ::cProjFolder + '\hmi.ini' )
+   ::SaveINI( ::cIDE_Folder + '\hmi.ini' )
    IF ::lCloseOnFormExit .AND. Len( ::aEditors ) == 0
       RELEASE WINDOW ALL
    ELSE

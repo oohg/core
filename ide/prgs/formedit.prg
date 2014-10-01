@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.40 2014-10-01 01:15:50 fyurisich Exp $
+ * $Id: formedit.prg,v 1.41 2014-10-01 23:51:31 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -41,7 +41,7 @@ CLASS TFormEditor
    DATA FormCtrlOrder        INIT NIL
    DATA lAddingNewControl    INIT .F.
    DATA lFSave               INIT .T.
-   DATA FormList             INIT NIL
+   DATA Form_List            INIT NIL
    DATA nIndexW              INIT 0           // Index in control's arrays of the control being dragged or sized
    DATA myIde                INIT NIL
    DATA myTbEditor           INIT NIL
@@ -568,9 +568,10 @@ LOCAL nPos, cName
    END WINDOW
 
    DEFINE WINDOW 0 OBJ ::Form_Main ;
-      AT 0,0 ;
-      WIDTH 689 ;
-      HEIGHT 104 ;
+      AT ::myIde:aPositions[1, 1], ::myIde:aPositions[1, 2] ;
+      WIDTH 684 ;
+      HEIGHT 75 ;
+      CLIENTAREA ;
       TITLE 'ooHG IDE Plus - Form designer' ;
       CHILD ;
       NOSHOW ;
@@ -584,190 +585,190 @@ LOCAL nPos, cName
       ON MAXIMIZE ::RestoreForms() ;
       ON RESTORE ::RestoreForms()
 
+      @ 0,4 FRAME frame_1 ;
+         CAPTION "Action" ;
+         WIDTH 106 ;
+         HEIGHT 65 ;
+         SIZE 9
+
       @ 17,10 BUTTON exit ;
          PICTURE 'A1';
          ACTION ::Exit() ;
-         WIDTH 28 ;
+         WIDTH 30 ;
          HEIGHT 28 ;
          TOOLTIP 'Exit'
 
-      @ 17,41 BUTTON save ;
+      @ 17,42 BUTTON save ;
          PICTURE 'A2';
          ACTION ::Save( 0 ) ;
          WIDTH 30 ;
          HEIGHT 28 ;
          TOOLTIP 'Save'
 
-      @ 17,73 BUTTON save_as ;
+      @ 17,74 BUTTON save_as ;
          PICTURE 'A3';
          ACTION ::Save( 1 ) ;
          WIDTH 30 ;
          HEIGHT 28 ;
          TOOLTIP 'Save as'
 
-      @ 17,112 BUTTON form_prop ;
+      @ 0,112 FRAME frame_2 ;
+         CAPTION "Form : " + cFullName ;
+         WIDTH 330 ;
+         HEIGHT 65 ;
+         SIZE 9
+
+      @ 17,118 BUTTON form_prop ;
          PICTURE 'A4';
          ACTION ::FrmProperties() ;
          WIDTH 30 ;
          HEIGHT 28 ;
          TOOLTIP 'Properties'
 
-      @ 17,144 BUTTON events_prop ;
+      @ 17,150 BUTTON events_prop ;
          PICTURE 'A5';
          ACTION ::FrmEvents() ;
          WIDTH 30 ;
          HEIGHT 28 ;
          TOOLTIP 'Events'
 
-      @ 17,176 BUTTON form_mc ;
+      @ 17,182 BUTTON form_mc ;
          PICTURE 'A6';
          ACTION ::FrmFontColors() ;
          WIDTH 30 ;
          HEIGHT 28 ;
          TOOLTIP 'Fonts and Colors'
 
-      @ 17,209 BUTTON tbc_fmms ;
+      @ 17,214 BUTTON tbc_fmms ;
          PICTURE 'A7';
          ACTION ::ManualMoveSize( 0 ) ;
          WIDTH 30 ;
          HEIGHT 28 ;
          TOOLTIP 'Manual Move/Size'
 
-      @ 17,240 BUTTON mmenu1 ;
+      @ 17,246 BUTTON mmenu1 ;
          PICTURE 'A8';
          ACTION TMyMenuEditor():Edit( Self, 1 ) ;
          WIDTH 30 ;
          HEIGHT 28 ;
          TOOLTIP 'Main Menu'
 
-      @ 17,273 BUTTON mmenu2 ;
+      @ 17,278 BUTTON mmenu2 ;
          PICTURE 'A9';
          ACTION TMyMenuEditor():Edit( Self, 2 ) ;
          WIDTH 30 ;
          HEIGHT 28 ;
          TOOLTIP 'Context Menu'
 
-      @ 17,303 BUTTON mmenu3 ;
+      @ 17,310 BUTTON mmenu3 ;
          PICTURE 'A10';
          ACTION TMyMenuEditor():Edit( Self, 3 ) ;
          WIDTH 30 ;
          HEIGHT 28 ;
          TOOLTIP 'Notify Menu'
 
-      @ 17,337 BUTTON toolb ;
+      @ 17,342 BUTTON toolb ;
          PICTURE 'A11';
          ACTION ::myTbEditor:Edit() ;
          WIDTH 30 ;
          HEIGHT 28 ;
          TOOLTIP 'Toolbar'
 
-      @ 17,368 BUTTON form_co ;
+      @ 17,374 BUTTON form_co ;
          PICTURE 'A12';
          ACTION ::OrderControls() ;
          WIDTH 30 ;
          HEIGHT 28 ;
          TOOLTIP 'Order'
 
-      @ 17,400 BUTTON  butt_status ;
+      @ 17,406 BUTTON  butt_status ;
          PICTURE 'A13';
          ACTION ::VerifyBar() ;
          WIDTH 30 ;
          HEIGHT 28 ;
          TOOLTIP 'Statusbar On/Off'
 
-      @ 17,444 BUTTON tbc_prop ;
-         PICTURE 'A4';
-         ACTION ::Properties_Click() ;
-         WIDTH 30 ;
-         HEIGHT 28 ;
-         TOOLTIP 'Properties'
-
-      @ 17,477 BUTTON tbc_events ;
-         PICTURE 'A5';
-         ACTION ::Events_Click() ;
-         WIDTH 30 ;
-         HEIGHT 28 ;
-         TOOLTIP 'Events'
-
-      @ 17,510 BUTTON tbc_ifc ;
-         PICTURE 'A6';
-         ACTION ::CtrlFontColors() ;
-         WIDTH 30 ;
-         HEIGHT 28 ;
-         TOOLTIP 'Font and Colors'
-
-      @ 17,540 BUTTON tbc_mms ;
-         PICTURE 'A7';
-         ACTION ::ManualMoveSize( 1 ) ;
-         WIDTH 30 ;
-         HEIGHT 28 ;
-         TOOLTIP 'Manual Move/Size'
-
-      @ 17,572 BUTTON tbc_im ;
-         PICTURE 'A17';
-         ACTION ::MoveControl() ;
-         WIDTH 30 ;
-         HEIGHT 28 ;
-         TOOLTIP 'Interactive Move'
-
-      @ 17,604 BUTTON tbc_is ;
-         PICTURE 'A14';
-         ACTION ::SizeControl() ;
-         WIDTH 30 ;
-         HEIGHT 28 ;
-         TOOLTIP 'Interactive Size'
-
-      @ 17,634 BUTTON tbc_del ;
-         PICTURE 'A16';
-         ACTION ::DeleteControl() ;
-         WIDTH 30 ;
-         HEIGHT 28 ;
-         TOOLTIP 'Delete'
-
-      @ 0,105 FRAME frame_1 ;
-         CAPTION "Form : " + cFullName ;
-         WIDTH 332 ;
-         HEIGHT 65 ;
-         SIZE 9
-
-      @ 0,436 FRAME frame_2 ;
+      @ 0,444 FRAME frame_3 ;
          CAPTION "Control : " ;
          WIDTH 236 ;
          HEIGHT 65 ;
          OPAQUE ;
          SIZE 9
 
-      @ 0,4 FRAME frame_3 ;
-         CAPTION "Action" ;
-         WIDTH 105 ;
-         HEIGHT 65 ;
-         SIZE 9
+      @ 17,450 BUTTON tbc_prop ;
+         PICTURE 'A4';
+         ACTION ::Properties_Click() ;
+         WIDTH 30 ;
+         HEIGHT 28 ;
+         TOOLTIP 'Properties'
 
-      @ 48,115 LABEL label_1 ;
+      @ 17,482 BUTTON tbc_events ;
+         PICTURE 'A5';
+         ACTION ::Events_Click() ;
+         WIDTH 30 ;
+         HEIGHT 28 ;
+         TOOLTIP 'Events'
+
+      @ 17,514 BUTTON tbc_ifc ;
+         PICTURE 'A6';
+         ACTION ::CtrlFontColors() ;
+         WIDTH 30 ;
+         HEIGHT 28 ;
+         TOOLTIP 'Font and Colors'
+
+      @ 17,546 BUTTON tbc_mms ;
+         PICTURE 'A7';
+         ACTION ::ManualMoveSize( 1 ) ;
+         WIDTH 30 ;
+         HEIGHT 28 ;
+         TOOLTIP 'Manual Move/Size'
+
+      @ 17,578 BUTTON tbc_im ;
+         PICTURE 'A17';
+         ACTION ::MoveControl() ;
+         WIDTH 30 ;
+         HEIGHT 28 ;
+         TOOLTIP 'Interactive Move'
+
+      @ 17,610 BUTTON tbc_is ;
+         PICTURE 'A14';
+         ACTION ::SizeControl() ;
+         WIDTH 30 ;
+         HEIGHT 28 ;
+         TOOLTIP 'Interactive Size'
+
+      @ 17,642 BUTTON tbc_del ;
+         PICTURE 'A16';
+         ACTION ::DeleteControl() ;
+         WIDTH 30 ;
+         HEIGHT 28 ;
+         TOOLTIP 'Delete'
+
+      @ 48,118 LABEL label_1 ;
          WIDTH 120 ;
          HEIGHT 24 ;
          VALUE '' ;
          SIZE 9 ;
          AUTOSIZE
 
-      @ 48,446 LABEL label_2 ;
-         WIDTH 120 ;
-         HEIGHT 24 ;
-         VALUE 'r:    c:    w:    h: ' ;
-         SIZE 9 ;
-         AUTOSIZE
-
-      @ 48,300 LABEL labelyx ;
+      @ 48,310 LABEL labelyx ;
          WIDTH 98 ;
          HEIGHT 24 ;
          VALUE '0000,0000' ;
          SIZE 9 ;
          AUTOSIZE
 
+      @ 48,450 LABEL label_2 ;
+         WIDTH 120 ;
+         HEIGHT 24 ;
+         VALUE 'r:    c:    w:    h: ' ;
+         SIZE 9 ;
+         AUTOSIZE
+
    END WINDOW
 
    DEFINE WINDOW 0 OBJ ::cvcControls ;
-      AT ::myIde:MainHeight + 46, 0 ;
+      AT ::myIde:aPositions[2, 1], ::myIde:aPositions[2, 2] ;
       WIDTH 86 ;
       HEIGHT 377 ;
       CLIENTAREA ;
@@ -1128,8 +1129,8 @@ LOCAL i, j, nContLin, cForma, nStart, nEnd, nFWidth, nFHeight, cName, aColor
    ::oWaitMsg:label_1:Value := 'Loading form ...'
    ::oWaitMsg:Show()
 
-   DEFINE WINDOW 0 OBJ ::FormList ;
-      AT ::myIde:MainHeight + 46, ( GetDeskTopWidth() - 380 ) ;
+   DEFINE WINDOW 0 OBJ ::Form_List ;
+      AT ::myIde:aPositions[3, 1], ::myIde:aPositions[3, 2] ;
       WIDTH 370 ;
       HEIGHT 490 ;
       CLIENTAREA ;
@@ -1161,7 +1162,7 @@ LOCAL i, j, nContLin, cForma, nStart, nEnd, nFWidth, nFHeight, cName, aColor
          ON CHANGE ::SelectControl()
       ::oCtrlList:ColumnHide( 6 )
 
-      DEFINE CONTEXT MENU CONTROL ( ::oCtrlList:Name ) OF ( ::FormList:Name ) OBJ ::oContextMenu
+      DEFINE CONTEXT MENU CONTROL ( ::oCtrlList:Name ) OF ( ::Form_List:Name ) OBJ ::oContextMenu
          ITEM 'Properties'             ACTION { |aParams| ::Edit_Properties( aParams ) }
          ITEM 'Events    '             ACTION ::Events_Click()
          ITEM 'Font/Colors'            ACTION ::CtrlFontColors()
@@ -1273,7 +1274,7 @@ LOCAL i, j, nContLin, cForma, nStart, nEnd, nFWidth, nFHeight, cName, aColor
 //      ON PAINT ::ShowFormData() ;
 
    DEFINE WINDOW ( cName ) OBJ ::oDesignForm ;
-      AT ::myIde:MainHeight + 46, 66 ;
+      AT 120, 120 ;
       WIDTH nFWidth ;
       HEIGHT nFHeight ;
       TITLE 'Title' ;
@@ -1339,9 +1340,9 @@ LOCAL i, j, nContLin, cForma, nStart, nEnd, nFWidth, nFHeight, cName, aColor
 
    ::Form_Main:Show()
    ::cvcControls:Show()
-   ::FormList:Show()
+   ::Form_List:Show()
    ::oDesignForm:Show()
-   ::FormList:Activate( .T. )
+   ::Form_List:Activate( .T. )
    ::oDesignForm:Activate( ! lWait )
 RETURN NIL
 
@@ -1366,7 +1367,7 @@ LOCAL cName
 //    ON PAINT ::ShowFormData() ;
 
    DEFINE WINDOW ( cName ) OBJ ::oDesignForm ;
-      AT ::myIde:MainHeight + 46, 66 ;
+      AT 120, 120 ;
       WIDTH 700 ;
       HEIGHT 410 ;
       ICON 'VD' ;
@@ -1416,8 +1417,8 @@ LOCAL cName
       ON KEY ALT+D  ACTION ::Debug()
    END WINDOW
 
-   DEFINE WINDOW 0 OBJ ::FormList ;
-      AT ::myIde:MainHeight + 46, ( GetDeskTopWidth() - 380 ) ;
+   DEFINE WINDOW 0 OBJ ::Form_List ;
+      AT ::myIde:aPositions[3, 1], ::myIde:aPositions[3, 2] ;
       WIDTH 370 ;
       HEIGHT 490 ;
       CLIENTAREA ;
@@ -1449,7 +1450,7 @@ LOCAL cName
          ON CHANGE ::SelectControl()
       ::oCtrlList:ColumnHide( 6 )
 
-      DEFINE CONTEXT MENU CONTROL ( ::oCtrlList:Name ) OF ( ::FormList:Name ) OBJ ::oContextMenu
+      DEFINE CONTEXT MENU CONTROL ( ::oCtrlList:Name ) OF ( ::Form_List:Name ) OBJ ::oContextMenu
          ITEM 'Properties'             ACTION { |aParams| ::Edit_Properties( aParams ) }
          ITEM 'Events    '             ACTION ::Events_Click()
          ITEM 'Font/Colors'            ACTION ::CtrlFontColors()
@@ -1489,27 +1490,31 @@ LOCAL cName
 
    ::Form_Main:Show()
    ::cvcControls:Show()
-   ::FormList:Show()
+   ::Form_List:Show()
    ::oDesignForm:Show()
-   ::FormList:Activate( .T. )
+   ::Form_List:Activate( .T. )
    ::oDesignForm:Activate( ! lWait )
 RETURN NIL
 
 //------------------------------------------------------------------------------
 METHOD Exit() CLASS TFormEditor
 //------------------------------------------------------------------------------
+LOCAL aPositions[3]
+
    IF ! ::lFsave
       IF MsgYesNo( 'Form not saved, save it now?', 'ooHG IDE+' )
          ::Save( 0 )
       ENDIF
    ENDIF
-   // TODO: save windows' positions and restore next time they're opened
-   ::Form_Main:Release()
-   ::cvcControls:Release()
-   ::FormList:Release()
    ::oDesignForm:Release()
+   aPositions[3] := { ::Form_List:Row, ::Form_List:Col }
+   ::Form_List:Release()
+   aPositions[2] := { ::cvcControls:Row, ::cvcControls:Col }
+   ::cvcControls:Release()
+   aPositions[1] := { ::Form_Main:Row, ::Form_Main:Col }
+   ::Form_Main:Release()
    _OOHG_DeleteArrayItem( ::myIde:aEditors, ::nEditorIndex )
-   ::myIde:EditorExit()
+   ::myIde:EditorExit( aPositions )
 RETURN NIL
 
 //------------------------------------------------------------------------------
@@ -1517,7 +1522,7 @@ METHOD MinimizeForms() CLASS TFormEditor
 //------------------------------------------------------------------------------
    ::Form_Main:Minimize()
    ::cvcControls:Minimize()
-   ::FormList:Minimize()
+   ::Form_List:Minimize()
 RETURN NIL
 
 //------------------------------------------------------------------------------
@@ -1525,7 +1530,7 @@ METHOD RestoreForms() CLASS TFormEditor
 //------------------------------------------------------------------------------
    ::Form_Main:Restore()
    ::cvcControls:Restore()
-   ::FormList:Restore()
+   ::Form_List:Restore()
 RETURN NIL
 
 //------------------------------------------------------------------------------
@@ -3411,6 +3416,8 @@ LOCAL nWidth := NIL, nHeight := NIL
          ::aPageNames[::nControlW]      := "{ '', '' }"
          ::aPageObjs[::nControlW]       := "{ '', '' }"
          ::aPageSubClasses[::nControlW] := "{ '', '' }"
+         nWidth                         := 240
+         nHeight                        := 200
 
       CASE ::CurrentControl == 10
          // 'IMAGE'
@@ -3492,6 +3499,7 @@ LOCAL nWidth := NIL, nHeight := NIL
 
       CASE ::CurrentControl == 28
          // 'HYPERLINK'
+         ::aAddress[::nControlW] := 'https://sourceforge.net/projects/oohg/'
 
       CASE ::CurrentControl == 29
          // 'RICHEDIT'
@@ -4024,8 +4032,11 @@ LOCAL cName, oCtrl, aImages, aItems, nMin, nMax, j, aCaptions, nCnt, oPage, lRed
       ENDIF
       oCtrl := TSpinner():Define( cName, ::oDesignForm:Name, ;
                   _OOHG_MouseCol, _OOHG_MouseRow, nWidth, ::aValueN[i], NIL, NIL, ;
-                  nMin, nMax, ::aToolTip[i], { || ::DrawOutline( oCtrl ) }, ;
-                  NIL, { || ::DrawOutline( oCtrl ) }, nHeight, NIL, .F., .F., ;
+                  nMin, nMax, ::aToolTip[i], ;
+                  { || oCtrl:ContextMenu := ::oContextMenu, ::DrawOutline( oCtrl ) }, ;
+                  { || oCtrl:ContextMenu := NIL }, ;
+                  { || oCtrl:ContextMenu := ::oContextMenu, ::DrawOutline( oCtrl ) }, ;
+                  nHeight, NIL, .F., .F., ;
                   ::aBold[i], ::aFontItalic[i], ::aFontUnderline[i], ;
                   ::aFontStrikeout[i], ::aWrap[i], ::aReadOnly[i], ;
                   ::aIncrement[i], NIL, NIL, ::aRTL[i], ::aBorder[i], .F. )
@@ -4042,7 +4053,6 @@ LOCAL cName, oCtrl, aImages, aItems, nMin, nMax, j, aCaptions, nCnt, oPage, lRed
          oCtrl:BackColor := &( ::aBackColor[i] )
       ENDIF
       oCtrl:OnRClick := { || ::DrawOutline( oCtrl ) }
-      oCtrl:ContextMenu := ::oContextMenu
 
    CASE nControlType == 21           // 'PICCHECKBUTT'
       oCtrl := TButtonCheck():Define( cName, ::oDesignForm:Name, ;
@@ -4534,8 +4544,7 @@ STATIC lBusy := .F.
          TO y1 + 1, x1 ;
          PENCOLOR { 255, 0, 0 }
 
-      ::Form_Main:frame_2:Caption := "Control : "+  ::aName[l]
-//      ::Form_Main:frame_2:Refresh()
+      ::Form_Main:frame_3:Caption := "Control : "+  ::aName[l]
 
       nRow    := oControl:Row
       nCol    := oControl:Col

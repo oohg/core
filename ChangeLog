@@ -1,11 +1,21 @@
 /*
- * $Id: ChangeLog,v 1.1379 2014-10-01 01:15:50 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1380 2014-10-01 23:51:31 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-10-01 22:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/prgs/formedit.prg
+     ! TAB control is created with zero width.
+     ! RTE when creating new HYPERLINK control.
+     ! Control inspector looses it's context menu after deleting
+       a SPINNER control.
+     * Windows initial positions.
+   * ide/prgs/mgide.prg
+     * Save/Load editor's windows positions from HMI.INI file.
 
 2014-09-30 22:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ide/prgs/formedit.prg
