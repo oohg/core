@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.1378 2014-09-30 20:42:15 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1379 2014-10-01 01:15:50 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-09-30 22:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/prgs/formedit.prg
+     ! GRIPPERTEXT clause in DEFINE WINDOW.
+     ! Mouse move/size of RADIOGROUP control.
 
 2014-09-30 17:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ide/prgs/formedit.prg

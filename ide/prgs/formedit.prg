@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.39 2014-09-30 20:42:15 fyurisich Exp $
+ * $Id: formedit.prg,v 1.40 2014-10-01 01:15:50 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -302,6 +302,7 @@ CLASS TFormEditor
    DATA cFDblClickProcedure  INIT ""
    DATA cFFontColor          INIT 'NIL'
    DATA cFFontName           INIT ''
+   DATA cFGripperText        INIT ""
    DATA cFIcon               INIT ""
    DATA cFMClickProcedure    INIT ""
    DATA cFMDblClickProcedure INIT ""
@@ -323,7 +324,6 @@ CLASS TFormEditor
    DATA lFChild              INIT .F.
    DATA lFClientArea         INIT .F.
    DATA lFFocused            INIT .F.
-   DATA lFGripperText        INIT .F.
    DATA lFHelpButton         INIT .F.
    DATA lFInternal           INIT .F.
    DATA lFMain               INIT .F.
@@ -2891,27 +2891,25 @@ STATIC lBusy := .F.
             RETURN NIL
          ENDIF
          oControl := ::oDesignForm:aControls[ia]
+
          IF oControl:Type == 'RADIOGROUP'
-            MsgStop( "RadioGroups can't be moved interactively.", "OOHG IDE+" )
-/*
-            nOldRow := GetWindowRow( oControl:hWnd )
-            nOldCol := GetWindowCol( oControl:hWnd )
-            nNewRow := oControl:Row
-            nNewCol := oControl:Col
             oControl:Hide()
             EraseWindow( ::oDesignForm:Name )
             ::DrawPoints()
             @ oControl:Row, oControl:Col LABEL 0 ;
                OBJ oLabel ;
+               VALUE oControl:Name ;
                PARENT ( ::oDesignForm:Name ) ;
                WIDTH oControl:GroupWidth ;
                HEIGHT oControl:GroupHeight ;
                BORDER
+            nOldRow := GetWindowRow( oLabel:hWnd )
+            nOldCol := GetWindowCol( oLabel:hWnd )
             InteractiveMoveHandle( oLabel:hWnd )
             // the assignment of ::Row changes ::Col and viceversa, so
             // we need to calculate before assigning
-            nNewRow := nNewRow + GetWindowRow( oLabel:hWnd ) - nOldRow
-            nNewCol := nNewCol + GetWindowCol( oLabel:hWnd ) - nOldCol
+            nNewRow := oControl:Row + GetWindowRow( oLabel:hWnd ) - nOldRow
+            nNewCol := oControl:Col + GetWindowCol( oLabel:hWnd ) - nOldCol
             oLabel:Release()
             oControl:Show()
             oControl:Row := nNewRow
@@ -2923,7 +2921,7 @@ STATIC lBusy := .F.
                ::oDesignForm:&cName:Show()
             ENDIF
             ::DrawOutline( oControl )
-*/
+
          ELSEIF ValidHandler( oControl:hWnd )
             nOldRow  := GetWindowRow( oControl:hWnd )
             nOldCol  := GetWindowCol( oControl:hWnd )
@@ -2943,6 +2941,7 @@ STATIC lBusy := .F.
                ::oDesignForm:&cName:Show()
             ENDIF
             ::DrawOutline( oControl )
+
          ELSE
             MsgStop( "This control can't be moved interactively.", "OOHG IDE+" )
          ENDIF
@@ -2955,9 +2954,38 @@ STATIC lBusy := .F.
             lBusy := .F.
             RETURN NIL
          ENDIF
-         oControl   := ::oDesignForm:aControls[ia]
+         oControl := ::oDesignForm:aControls[ia]
+
          IF oControl:Type == 'RADIOGROUP'
-            MsgStop( "RadioGroups can't be sized interactively.", "OOHG IDE+" )
+            oControl:Hide()
+            EraseWindow( ::oDesignForm:Name )
+            ::DrawPoints()
+            @ oControl:Row, oControl:Col LABEL 0 ;
+               OBJ oLabel ;
+               VALUE oControl:Name ;
+               PARENT ( ::oDesignForm:Name ) ;
+               WIDTH oControl:GroupWidth ;
+               HEIGHT oControl:GroupHeight ;
+               BORDER
+            InteractiveSizeHandle( oLabel:hWnd )
+            // the assignment of ::Width changes ::Height and viceversa, so
+            // we need to calculate before assigning
+            IF oControl:lHorizontal
+               nNewHeight      := GetWindowHeight( oLabel:hWnd )
+               oControl:Height := nNewHeight
+            ELSE
+               nNewWidth       := GetWindowWidth( oLabel:hWnd )
+               oControl:Width  := nNewWidth
+            ENDIF
+            oLabel:Release()
+            oControl:Show()
+            ::lFSave := .F.
+            IF ::aTabPage[iw, 2] > 0
+               cName := ::aTabPage[iw, 1]
+               ::oDesignForm:&cName:Show()
+            ENDIF
+            ::DrawOutline( oControl )
+
          ELSEIF ValidHandler( oControl:hWnd )
             nOldHeight := oControl:Height
             InteractiveSizeHandle( oControl:hWnd )
@@ -2978,6 +3006,7 @@ STATIC lBusy := .F.
                ::oDesignForm:&cName:Show()
             ENDIF
             ::DrawOutline( oControl )
+
          ELSE
             MsgStop( "This control can't be sized interactively.", "OOHG IDE+" )
          ENDIF
@@ -3358,6 +3387,7 @@ LOCAL nWidth := NIL, nHeight := NIL
 
       CASE ::CurrentControl == 3
          // 'CHECKBOX'
+         ::aValue[::nControlW] := 'NIL'
 
       CASE ::CurrentControl == 4
          // 'LIST'
@@ -3937,8 +3967,7 @@ LOCAL cName, oCtrl, aImages, aItems, nMin, nMax, j, aCaptions, nCnt, oPage, lRed
       oCtrl := myTRadioGroup():Define( cName, ::oDesignForm:Name, ;
                   _OOHG_MouseCol, _OOHG_MouseRow, ;
                   IIF( IsValidArray( ::aItems[i] ), &( ::aItems[i] ), { cName, 'radiogroup' } ), ;
-                  ::aValueN[i], NIL, NIL, ;
-                  IIF( Empty( ::aToolTip[i] ), "Click on an unselected item to select control.", ::aToolTip[i] ), ;
+                  ::aValueN[i], NIL, NIL, ::aToolTip[i], ;
                   { || ::DrawOutline( oCtrl ) }, nWidth, ::aSpacing[i], NIL, ;
                   .F., .F., ::aBold[i], ::aFontItalic[i], ::aFontUnderline[i], ;
                   ::aFontStrikeout[i], NIL, NIL, ::aTransparent[i], ;
@@ -5931,7 +5960,7 @@ LOCAL nFRow, nFCol, nFWidth, nFHeight
    ::lFFocused            := ( ::ReadLogicalData( 'WINDOW', "FOCUSED", "F" ) == 'T' )
    ::lFBreak              := ( ::ReadLogicalData( 'WINDOW', "BREAK", "F" ) == 'T' )
    ::lFSplitchild         := ( ::ReadLogicalData( 'WINDOW', "SPLITCHILD", "F" ) == 'T' )
-   ::lFGripperText        := ( ::ReadLogicalData( 'WINDOW', "GRIPPERTEXT", "F" ) == 'T' )
+   ::cFGripperText        := ::ReadStringData( 'WINDOW', "GRIPPERTEXT", '' )
    ::cFOnInit             := ::ReadStringData( 'WINDOW', 'ON INIT', '' )
    ::cFOnRelease          := ::ReadStringData( 'WINDOW', 'ON RELEASE', '' )
    ::cFOnInteractiveClose := ::ReadStringData( 'WINDOW', 'ON INTERACTIVECLOSE', '' )
@@ -6471,7 +6500,7 @@ LOCAL cSubClass, oCtrl
    lAutoSize    := ( ::ReadLogicalData( cName, "AUTOSIZE", "F" ) == "T" )
    lLeft        := ( ::ReadLogicalData( cName, 'LEFTALIGN', "F" ) == "T" )
    l3State      := ( ::ReadLogicalData( cName, 'THREESTATE', "F" ) == "T" )
-   cValue       := ::ReadStringData( cName, 'VALUE', "" )
+   cValue       := ::ReadStringData( cName, 'VALUE', "NIL" )
    cSubClass    := ::ReadStringData( cName, 'SUBCLASS', '' )
 
    // Save properties
@@ -9998,18 +10027,20 @@ LOCAL aImages, aPageNames, aPageObjs, aPageSubClasses, nCount
    IF ::cFFontColor # 'NIL'
       Output += ' ;' + CRLF + Space( nSpacing ) + 'FONTCOLOR ' + ::cFFontColor
    ENDIF
-   Output += IIF( ::lfgrippertext, ' ;' + CRLF + Space( nSpacing ) + 'GRIPPERTEXT ', '' )
-   IF ! Empty( ::cfnotifyicon )
-      Output += ' ;' + CRLF + Space( nSpacing ) + 'NOTIFYICON ' + StrToStr( ::cfnotifyicon )
+   IF ! Empty( ::cFGripperText )
+      Output += ' ;' + CRLF + Space( nSpacing ) + 'GRIPPERTEXT ' + StrToStr( ::cFGripperText )
    ENDIF
-   IF ! Empty( ::cfnotifytooltip )
-      Output += ' ;' + CRLF + Space( nSpacing ) + 'NOTIFYTOOLTIP ' + StrToStr( ::cfnotifytooltip )
+   IF ! Empty( ::cFNotifyIcon )
+      Output += ' ;' + CRLF + Space( nSpacing ) + 'NOTIFYICON ' + StrToStr( ::cFNotifyIcon )
+   ENDIF
+   IF ! Empty( ::cFNotifyToolTip )
+      Output += ' ;' + CRLF + Space( nSpacing ) + 'NOTIFYTOOLTIP ' + StrToStr( ::cFNotifyToolTip )
    ENDIF
    IF ! Empty( ::cFOnNotifyClick )
       Output += ' ;' + CRLF + Space( nSpacing ) + 'ON NOTIFYCLICK ' + AllTrim( ::cFOnNotifyClick )
    ENDIF
-   Output += IIF( ::lfbreak, ' ;' + CRLF + Space( nSpacing ) + 'BREAK ', '')
-   Output += IIF( ::lffocused, ' ;' + CRLF + Space( nSpacing ) + 'FOCUSED ', '')
+   Output += IIF( ::lFBreak, ' ;' + CRLF + Space( nSpacing ) + 'BREAK ', '')
+   Output += IIF( ::lFFocused, ' ;' + CRLF + Space( nSpacing ) + 'FOCUSED ', '')
    IF ! Empty( ::cFOnGotFocus )
       Output += ' ;' + CRLF + Space( nSpacing ) + 'ON GOTFOCUS ' + AllTrim( ::cFOnGotFocus )
    ENDIF
@@ -16161,8 +16192,8 @@ LOCAL cTitle, aLabels, aInitValues, aFormats, aResults
 
    cTitle      := 'Properties of Form ' + ::cFName
    aLabels     := { 'Title',   'Icon',   'Main',   'Child',   'NoShow',   'Topmost',   'NoMinimize',   'NoMaximize',   'NoSize',   'NoSysMenu',   'NoCaption',   'Modal',   'NotifyIcon',   'NotifyToolTip',   'NoAutoRelease',   'HelpButton',   'Focused',   'Break',   'SplitChild',   'GripperText',   'Cursor',   'VirtualHeight',  'VirtualWidth',  'Obj',   'ModalSize',   'MDI',   'MDIClient',   'MDIChild',   'Internal',   'RTL',   'ClientArea',   'MinWidth',   'MaxWidth',   'MinHeight',   'MaxHeight',   'BackImage',   'Stretch',   'Parent',   'SubClass' }
-   aInitValues := { ::cFTitle, ::cficon, ::lfmain, ::lfchild, ::lfnoshow, ::lftopmost, ::lfnominimize, ::lfnomaximize, ::lfnosize, ::lfnosysmenu, ::lfnocaption, ::lfmodal, ::cfnotifyicon, ::cfnotifytooltip, ::lfnoautorelease, ::lfhelpbutton, ::lffocused, ::lfbreak, ::lfsplitchild, ::lfgrippertext, ::cFCursor, ::nfvirtualh,     ::nfvirtualw,    ::cfobj, ::lFModalSize, ::lFMDI, ::lFMDIClient, ::lFMDIChild, ::lFInternal, ::lFRTL, ::lFClientArea, ::nFMinWidth, ::nFMaxWidth, ::nFMinHeight, ::nFMaxHeight, ::cFBackImage, ::lFStretch, ::cFParent, ::cFSubClass }
-   aFormats    := { 200,       31,       .F.,      .F.,       .F.,        .F.,         .F.,            .F.,            .F.,        .F.,           .F.,           .F.,       120,            120,               .F.,               .F.,            .F.,         .F.,       .F.,            .F.,             31,         '9999',           '9999',          120,     .F.,           .F.,     .F.,           .F.,          .F.,          .F.,     .F.,            '99999',      '99999',      '99999',       '99999',       250,           .F.,         250,        250 }
+   aInitValues := { ::cFTitle, ::cficon, ::lfmain, ::lfchild, ::lfnoshow, ::lftopmost, ::lfnominimize, ::lfnomaximize, ::lfnosize, ::lfnosysmenu, ::lfnocaption, ::lfmodal, ::cfnotifyicon, ::cfnotifytooltip, ::lfnoautorelease, ::lfhelpbutton, ::lffocused, ::lfbreak, ::lfsplitchild, ::cFGripperText, ::cFCursor, ::nfvirtualh,     ::nfvirtualw,    ::cfobj, ::lFModalSize, ::lFMDI, ::lFMDIClient, ::lFMDIChild, ::lFInternal, ::lFRTL, ::lFClientArea, ::nFMinWidth, ::nFMaxWidth, ::nFMinHeight, ::nFMaxHeight, ::cFBackImage, ::lFStretch, ::cFParent, ::cFSubClass }
+   aFormats    := { 200,       31,       .F.,      .F.,       .F.,        .F.,         .F.,            .F.,            .F.,        .F.,           .F.,           .F.,       120,            120,               .F.,               .F.,            .F.,         .F.,       .F.,            250,             31,         '9999',           '9999',          120,     .F.,           .F.,     .F.,           .F.,          .F.,          .F.,     .F.,            '99999',      '99999',      '99999',       '99999',       250,           .F.,         250,        250 }
    aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
    IF aResults[1] == NIL
       ::oDesignForm:SetFocus()
@@ -16188,7 +16219,7 @@ LOCAL cTitle, aLabels, aInitValues, aFormats, aResults
    ::lFFocused            := IIF( HB_IsLogical( aResults[17] ), aResults[17], .F. )
    ::lFBreak              := IIF( HB_IsLogical( aResults[18] ), aResults[18], .F. )
    ::lFSplitchild         := IIF( HB_IsLogical( aResults[19] ), aResults[19], .F. )
-   ::lFGripperText        := IIF( HB_IsLogical( aResults[20] ), aResults[20], .F. )
+   ::cFGripperText        := IIF( HB_IsString(  aResults[20] ), aResults[20], "" )
    ::cFCursor             := IIF( HB_IsString(  aResults[21] ), aResults[21], "" )
    ::nfvirtualh           := IIF( HB_IsNumeric( aResults[22] ), aResults[22], 0 )
    ::nfvirtualw           := IIF( HB_IsNumeric( aResults[23] ), aResults[23], 0 )
