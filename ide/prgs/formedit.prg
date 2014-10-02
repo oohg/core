@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.41 2014-10-01 23:51:31 fyurisich Exp $
+ * $Id: formedit.prg,v 1.42 2014-10-02 22:23:45 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -15762,9 +15762,9 @@ LOCAL ia, aResults
 
    IF ::aCtrlType[j] == 'GRID'
       cTitle      := cNameW + " events"
-      aLabels     := { 'On Change',    'On GotFocus',    'On LostFocus',    'On DblClick',    'On Enter',    'On Headclcik',    "On EditCell",    "On QueryData",    "On AborEdit",    "On Delete",    "On HeadRClick" }
-      aInitValues := { ::aonchange[j], ::aongotfocus[j], ::aonlostfocus[j], ::aondblclick[j], ::aOnEnter[j], ::aonheadclick[j], ::aoneditcell[j], ::aOnQueryData[j], ::aOnAborEdit[j], ::aOnDelete[j], ::aOnHeadRClick[j] }
-      aFormats    := { 250,            250,              250,               250,              250,           250,               250,              250,               250,              250,            250 }
+      aLabels     := { 'On Change',    'On GotFocus',    'On LostFocus',    'On DblClick',    'On Enter',    'On Headclcik',    "On EditCell",    "On QueryData",    "On AborEdit",     "On Delete",    "On HeadRClick" }
+      aInitValues := { ::aonchange[j], ::aongotfocus[j], ::aonlostfocus[j], ::aondblclick[j], ::aOnEnter[j], ::aonheadclick[j], ::aoneditcell[j], ::aOnQueryData[j], ::aOnAbortEdit[j], ::aOnDelete[j], ::aOnHeadRClick[j] }
+      aFormats    := { 250,            250,              250,               250,              250,           250,               250,              250,               250,               250,            250 }
       aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
       IF aResults[1] == NIL
          ::oDesignForm:SetFocus()
