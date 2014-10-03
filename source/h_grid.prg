@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.266 2014-09-17 00:30:13 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.267 2014-10-03 02:40:22 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2826,7 +2826,7 @@ Local aTemp, nColumn, xValue, oEditControl
 Return aTemp
 
 *-----------------------------------------------------------------------------*
-METHOD SetItemColor( nItem, uForeColor, uBackColor, uExtra ) CLASS TGrid
+METHOD SetItemColor( nItem, uForeColor, uBackColor, uExtra, lSetThisCellInfo ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nWidth
    nWidth := Len( ::aHeaders )
@@ -2835,12 +2835,12 @@ Local nWidth
    ElseIf Len( uExtra ) < nWidth
       aSize( uExtra, nWidth )
    EndIf
-   ::GridForeColor := TGrid_CreateColorArray( ::GridForeColor, nItem, uForeColor, ::DynamicForeColor, nWidth, uExtra, ::hWnd )
-   ::GridBackColor := TGrid_CreateColorArray( ::GridBackColor, nItem, uBackColor, ::DynamicBackColor, nWidth, uExtra, ::hWnd )
+   ::GridForeColor := TGrid_CreateColorArray( ::GridForeColor, nItem, uForeColor, ::DynamicForeColor, nWidth, uExtra, ::hWnd, lSetThisCellInfo )
+   ::GridBackColor := TGrid_CreateColorArray( ::GridBackColor, nItem, uBackColor, ::DynamicBackColor, nWidth, uExtra, ::hWnd, lSetThisCellInfo )
 Return Nil
 
 *-----------------------------------------------------------------------------*
-STATIC FUNCTION TGrid_CreateColorArray( aGrid, nItem, uColor, uDynamicColor, nWidth, uExtra, hWnd )
+STATIC FUNCTION TGrid_CreateColorArray( aGrid, nItem, uColor, uDynamicColor, nWidth, uExtra, hWnd, lSetThisCellInfo )
 *-----------------------------------------------------------------------------*
 Local aTemp, nLen
    If ! ValType( uColor ) $ "ANB" .AND. ValType( uDynamicColor ) $ "ANB"
@@ -2866,8 +2866,13 @@ Local aTemp, nLen
             aEval( uColor, { |x,i| uColor[ i ] := uDynamicColor[ i ], x }, nLen + 1 )
          EndIf
       EndIf
-      aEval( aTemp, { |x,i| _SetThisCellInfo( hWnd, nItem, i, uExtra[ i ] ), aTemp[ i ] := _OOHG_GetArrayItem( uColor, i, nItem, uExtra ), x } )
-      _ClearThisCellInfo()
+      If HB_IsLogical( lSetThisCellInfo ) .AND. ! lSetThisCellInfo
+         // Set lSetThisCellInfo to .F. to avoid endless loop when calling this function inside the ON QUERYDATA block.
+         aEval( aTemp, { |x,i| aTemp[ i ] := _OOHG_GetArrayItem( uColor, i, nItem, uExtra ), x } )
+      Else
+         aEval( aTemp, { |x,i| _SetThisCellInfo( hWnd, nItem, i, uExtra[ i ] ), aTemp[ i ] := _OOHG_GetArrayItem( uColor, i, nItem, uExtra ), x } )
+         _ClearThisCellInfo()
+      EndIf
       aGrid[ nItem ] := aTemp
    EndIf
 Return aGrid

@@ -1,11 +1,17 @@
 /*
- * $Id: ChangeLog,v 1.1381 2014-10-02 22:23:45 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1382 2014-10-03 02:40:22 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-10-02 23:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     + New parameter lSetThisCellInfo to method SetItemColor.
+       Set it to .F. to avoid infinite loop when method is called
+       from the ON QUERYDATA codeblock.
 
 2014-10-02 19:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ide/prgs/formedit.prg
