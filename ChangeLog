@@ -1,11 +1,18 @@
 /*
- * $Id: ChangeLog,v 1.1382 2014-10-03 02:40:22 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1383 2014-10-07 00:38:43 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-10-06 22:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/prgs/formedit.prg
+     ! Missing GRID's CHECKBOXES property and ONCHECKCHANGE,
+       ACTION and ONAPPEND events.
+     ! FORM's GRIPPERTEXT property.
+     ! TREE's ONDROP events.
 
 2014-10-02 23:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
