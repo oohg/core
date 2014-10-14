@@ -1,11 +1,25 @@
 /*
- * $Id: ChangeLog,v 1.1383 2014-10-07 00:38:43 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1384 2014-10-14 22:04:23 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-10-14 20:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_spinner.ch
+     + BOUNDTEXT clause. By default, when a value out of range is typed
+       in the textbox part of the spinner control, the control's value
+       is set to the lower/upper limit automatically but this value is
+       not shown in the textbox. Use this clause to force the control
+       to display it's real value when typed valued is out of range.
+   * source/h_spinner.prg
+     + Data lBoundText and method Events_Command.
+   * ide/prgs/formedit.prg
+     + Support for BOUNDTEXT clause.
+   * doc/classes.txt
+     * Updated.
 
 2014-10-06 22:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ide/prgs/formedit.prg

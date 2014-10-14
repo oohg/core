@@ -1,5 +1,5 @@
 /*
- * $Id: h_spinner.prg,v 1.20 2014-09-29 02:17:19 fyurisich Exp $
+ * $Id: h_spinner.prg,v 1.21 2014-10-14 22:04:30 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -103,6 +103,7 @@ CLASS TSpinner FROM TControl
    DATA nWidth      INIT 120
    DATA nHeight     INIT 24
    DATA nIncrement  INIT 1
+   DATA lBoundText  INIT .F.
 
    METHOD Define
    METHOD SizePos
@@ -114,6 +115,7 @@ CLASS TSpinner FROM TControl
    METHOD RangeMin            SETGET
    METHOD RangeMax            SETGET
    METHOD Increment           SETGET
+   METHOD Events_Command
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
@@ -123,7 +125,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, value, fontname, fontsize, ;
                rl, rh, tooltip, change, lostfocus, gotfocus, h, HelpId, ;
                invisible, notabstop, bold, italic, underline, strikeout, ;
                wrap, readonly, increment, backcolor, fontcolor, lRtl, ;
-               lNoBorder, lDisabled ) CLASS TSpinner
+               lNoBorder, lDisabled, lBndTxt ) CLASS TSpinner
 *-----------------------------------------------------------------------------*
 Local nStyle := ES_NUMBER + ES_AUTOHSCROLL, nStyleEx := 0
 Local ControlHandle
@@ -135,6 +137,7 @@ Local ControlHandle
    ASSIGN ::nRangeMin    VALUE rl        TYPE "N"
    ASSIGN ::nRangeMax    VALUE rh        TYPE "N"
    ASSIGN ::nIncrement   VALUE increment TYPE "N"
+   ASSIGN ::lBoundText   VALUE lBndTxt   TYPE "L"
    ASSIGN wrap           VALUE wrap      TYPE "L" DEFAULT .F.
    ASSIGN readonly       VALUE readonly  TYPE "L" DEFAULT .F.
    ASSIGN invisible      VALUE invisible TYPE "L" DEFAULT .F.
@@ -202,6 +205,22 @@ METHOD Value( uValue ) CLASS TSpinner
       ::DoChange()
    ENDIF
 Return GetSpinnerValue( ::AuxHandle )
+
+*-----------------------------------------------------------------------------*
+METHOD Events_Command( wParam ) CLASS TSpinner
+*-----------------------------------------------------------------------------*
+Local Hi_wParam := HIWORD( wParam ), cValue
+
+   IF Hi_wParam == EN_CHANGE
+      IF ::lBoundText .AND. Val( ::Caption ) # ::Value
+         cValue := LTrim( Str( ::Value ) )
+         ::Caption := cValue
+         SendMessage( ::hWnd, EM_SETSEL, Len( cValue ), Len( cValue ) )
+      ENDIF
+      ::DoChange()
+      Return Nil
+   ENDIF
+Return ::Super:Events_Command( wParam )
 
 *-----------------------------------------------------------------------------*
 METHOD Enabled( lEnabled ) CLASS TSpinner

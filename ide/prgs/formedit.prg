@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.43 2014-10-07 00:38:44 fyurisich Exp $
+ * $Id: formedit.prg,v 1.44 2014-10-14 22:04:28 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -4039,7 +4039,7 @@ LOCAL cName, oCtrl, aImages, aItems, nMin, nMax, j, aCaptions, nCnt, oPage, lRed
                   nHeight, NIL, .F., .F., ;
                   ::aBold[i], ::aFontItalic[i], ::aFontUnderline[i], ;
                   ::aFontStrikeout[i], ::aWrap[i], ::aReadOnly[i], ;
-                  ::aIncrement[i], NIL, NIL, ::aRTL[i], ::aBorder[i], .F. )
+                  ::aIncrement[i], NIL, NIL, ::aRTL[i], ::aBorder[i], .F., ::aDisplayEdit[i] )
       IF ! Empty( ::aFontName[i] )
          oCtrl:FontName := ::aFontName[i]
       ENDIF
@@ -8709,6 +8709,7 @@ LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cRange, nValue, cFontName
 LOCAL nFontSize, cToolTip, cOnChange, cOnGotfocus, cOnLostfocus, nHelpId, oCtrl
 LOCAL lNoTabStop, lRTL, lWrap, lReadOnly, nIncrement, lVisible, lEnabled
 LOCAL aBackColor, aFontColor, lBold, lItalic, lUnderline, lStrikeout, lNoBorder
+LOCAL lBoundText
 
    // Load properties
    cName        := ::aControlW[i]
@@ -8748,6 +8749,7 @@ LOCAL aBackColor, aFontColor, lBold, lItalic, lUnderline, lStrikeout, lNoBorder
    lStrikeout   := ( ::ReadLogicalData( cName, 'STRIKEOUT', "F" ) == "T" )
    lStrikeout   := ( Upper( ::ReadOopData( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) == '.T.' )
    lNoBorder    := ( ::ReadLogicalData( cName, "NOBORDER", "F" ) == "T" )
+   lBoundText   := ( ::ReadLogicalData( cName, 'BOUNDTEXT', "F" ) == "T" )
 
    // Save properties
    ::aCtrlType[i]      := 'SPINNER'
@@ -8775,6 +8777,7 @@ LOCAL aBackColor, aFontColor, lBold, lItalic, lUnderline, lStrikeout, lNoBorder
    ::aFontUnderline[i] := lUnderLine
    ::aFontStrikeout[i] := lStrikeout
    ::aBorder[i]        := lNoBorder
+   ::aDisplayEdit[i]   := lBoundText
 
    // Create control
    oCtrl     := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i, nWidth, nHeight, NIL )
@@ -12989,6 +12992,9 @@ LOCAL cValue
       IF ::aBorder[j]
         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOBORDER '
       ENDIF
+      IF ::aDisplayEdit[j]
+        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOUNDTEXT '
+      ENDIF
       Output += CRLF + CRLF
    ENDIF
 
@@ -14558,9 +14564,9 @@ LOCAL aFormats, aResults
 
    IF ::aCtrlType[j] == 'SPINNER'
       cTitle      := cNameW + " properties"
-      aLabels     := { 'Name',     'Range',     'Value ',     'ToolTip',     'HelpID',     'NoTabStop',     'Wrap',     'ReadOnly',     'Increment',     'Enabled',     'Visible',     'Obj',      'RTL',     'NoBorder' }
-      aInitValues := { ::aName[j], ::aRange[j], ::aValueN[j], ::atooltip[j], ::aHelpID[j], ::aNoTabStop[j], ::awrap[j], ::areadonly[j], ::aincrement[j], ::aenabled[j], ::avisible[j], ::acobj[j], ::aRTL[j], ::aBorder[j] }
-      aFormats    := { 30,         30,          '99999',      120,           '999',        .F.,             .F.,        .F.,            '999999',        .F.,           .F.,           31,         .F.,       .F. }
+      aLabels     := { 'Name',     'Range',     'Value ',     'ToolTip',     'HelpID',     'NoTabStop',     'Wrap',     'ReadOnly',     'Increment',     'Enabled',     'Visible',     'Obj',      'RTL',     'NoBorder',   'BoundText' }
+      aInitValues := { ::aName[j], ::aRange[j], ::aValueN[j], ::atooltip[j], ::aHelpID[j], ::aNoTabStop[j], ::awrap[j], ::areadonly[j], ::aincrement[j], ::aenabled[j], ::avisible[j], ::acobj[j], ::aRTL[j], ::aBorder[j], ::aDisplayEdit[j] }
+      aFormats    := { 30,         30,          '99999',      120,           '999',        .F.,             .F.,        .F.,            '999999',        .F.,           .F.,           31,         .F.,       .F.,          .F. }
       aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
       IF aResults[1] == NIL
          ::oDesignForm:SetFocus()
@@ -14580,6 +14586,7 @@ LOCAL aFormats, aResults
       ::acobj[j]             := aResults[12]
       ::aRTL[j]              := aResults[13]
       ::aBorder[j]           := aResults[14]           // NOBORDER
+      ::aDisplayEdit[j]      := aResults[15]           // BOUNDTEXT
    ENDIF
 
    IF ::aCtrlType[j] == 'BUTTON'
