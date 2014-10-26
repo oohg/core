@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: compile_bcc.bat,v 1.13 2014-07-01 23:49:50 fyurisich Exp $
+rem $Id: compile_bcc.bat,v 1.14 2014-10-26 18:50:33 guerra000 Exp $
 rem
 cls
 
@@ -180,14 +180,14 @@ for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/d" GOTO DEBUG_LINK
 for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/D" GOTO DEBUG_LINK
 
 rem *** Link ***
-%HG_BCC%\bin\ilink32 -Gn -Tpe -aa -L%HG_BCC%\lib; @b32.bc %C_LOG%
+%HG_BCC%\bin\ilink32 -Gn -Tpe -aa -L%HG_BCC%\lib;%HG_BCC%\lib\psdk; @b32.bc %C_LOG%
 
 goto CLEANUP
 
 
 :DEBUG_LINK
 rem *** Link ***
-%HG_BCC%\bin\ilink32 -Gn -Tpe -ap -L%HG_BCC%\lib; @b32.bc %C_LOG%
+%HG_BCC%\bin\ilink32 -Gn -Tpe -ap -L%HG_BCC%\lib;%HG_BCC%\lib\psdk; @b32.bc %C_LOG%
 
 goto CLEANUP
 
