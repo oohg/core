@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.116 2014-08-03 19:37:52 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.117 2014-10-26 23:40:54 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -321,13 +321,9 @@ Local nWidth2, nCol2, lLocked, oScroll, z
    // non-visible TAB page.
    ::Visible := ::Visible
 
+   ::lVScrollVisible := .T.
    If novscroll
-      ::lVScrollVisible := .F.
-      ::ScrollButton:Visible := .F.
-      ::VScroll := Nil
-      ::SizePos()
-   Else
-      ::lVScrollVisible := .T.
+      ::VScrollVisible( .F. )
    EndIf
 
    ASSIGN lLocked VALUE ::lLocked TYPE "L" DEFAULT .F.
@@ -1557,7 +1553,6 @@ Local lRet, bReplaceField, oWorkArea
       lRet := .F.
    ElseIf aScan( ::aHiddenCols, nCol ) > 0
      // Hidden column
-      PlayHand()
       lRet := .F.
    ElseIf ::oWorkArea:EOF() .AND. ! lAppend .AND. ! ::AllowAppend
       // "fake" record, and don't allows append
@@ -2170,7 +2165,7 @@ Return Nil
 
 
 
-CLASS TXBROWSEBYCELL FROM TXBrowse
+CLASS TXBROWSEBYCELL FROM TXBrowse, TGridByCell
    DATA Type                INIT "XBROWSEBYCELL" READONLY
 
    METHOD AddColumn
@@ -2300,7 +2295,7 @@ Return nColIndex
 *-----------------------------------------------------------------------------*
 METHOD AppendItem() CLASS TXBrowseByCell
 *-----------------------------------------------------------------------------*
-Return TGridByCell():AppendItem()
+Return ::TGridByCell:AppendItem()
 
 *-----------------------------------------------------------------------------*
 METHOD CurrentCol( nValue ) CLASS TXBrowseByCell
@@ -2339,22 +2334,33 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                 lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
                 lExtDbl ) CLASS TXBrowseByCell
 *-----------------------------------------------------------------------------*
-Return TGridByCell():Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
-                             aRows, value, fontname, fontsize, tooltip, change, dblclick, ;
-                             aHeadClick, gotfocus, lostfocus, nogrid, aImage, aJust, ;
-                             break, HelpId, bold, italic, underline, strikeout, ownerdata, ;
-                             ondispinfo, itemcount, editable, backcolor, fontcolor, ;
-                             dynamicbackcolor, dynamicforecolor, aPicture, lRtl, nStyle, ;
-                             inplace, editcontrols, readonly, valid, validmessages, ;
-                             editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
-                             lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
-                             aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
-                             lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
-                             bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
-                             bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
-                             bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
-                             lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
-                             lExtDbl )
+   Empty( nStyle )
+   ASSIGN lFocusRect VALUE lFocusRect TYPE "L" DEFAULT .F.
+
+   ::Super:Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
+                    aRows, value, fontname, fontsize, tooltip, change, dblclick, ;
+                    aHeadClick, gotfocus, lostfocus, nogrid, aImage, aJust, ;
+                    break, HelpId, bold, italic, underline, strikeout, ownerdata, ;
+                    ondispinfo, itemcount, editable, backcolor, fontcolor, ;
+                    dynamicbackcolor, dynamicforecolor, aPicture, lRtl, LVS_SINGLESEL, ;
+                    InPlace, editcontrols, readonly, valid, validmessages, ;
+                    editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
+                    lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
+                    aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
+                    lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
+                    bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
+                    bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
+                    bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
+                    lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
+                    lExtDbl )
+
+   // By default, search in the current column
+   ::SearchCol := -1
+
+   // This is not really needed because TGridByCell ignores it
+   ::InPlace := .T.
+
+Return Self
 
 *-----------------------------------------------------------------------------*
 METHOD DeleteColumn( nColIndex, lNoDelete ) CLASS TXBrowseByCell
@@ -2454,7 +2460,7 @@ METHOD EditCell2( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusP
 Return ::Super:EditCell2( @nRow, @nCol, EditControl, uOldValue, @uValue, cMemVar, nOnFocusPos )
 
 *-----------------------------------------------------------------------------*
-METHOD EditGrid( nRow, nCol, lAppend, lOneRow, uOldValue ) CLASS TXBrowseByCell
+METHOD EditGrid( nRow, nCol, lAppend, lOneRow ) CLASS TXBrowseByCell
 *-----------------------------------------------------------------------------*
 Local lSomethingEdited := .F.
 
@@ -2484,7 +2490,7 @@ Local lSomethingEdited := .F.
       Else
          // Edit one cell
          ::bPosition := 0
-         If ! ::Super:EditCell( nRow, nCol, Nil, uOldValue, Nil, Nil, lAppend, Nil )
+         If ! ::Super:EditCell( nRow, nCol, Nil, Nil, Nil, Nil, lAppend, Nil )
             If lAppend
                ::lAppendMode := .F.
                ::GoBottom()
@@ -2583,6 +2589,7 @@ Local lSomethingEdited := .F.
       nCol := ::CurrentCol
    EndDo
    ::bPosition := 0
+
 Return lSomethingEdited
 
 *-----------------------------------------------------------------------------*
@@ -2767,7 +2774,7 @@ Return Nil
 *-----------------------------------------------------------------------------*
 METHOD Events_Enter() CLASS TXBrowseByCell
 *-----------------------------------------------------------------------------*
-Return TGridByCell():Events_Enter()
+Return ::TGridByCell:Events_Enter()
 
 *-----------------------------------------------------------------------------*
 METHOD Events_Notify( wParam, lParam ) CLASS TXBrowseByCell
@@ -2869,7 +2876,7 @@ Local nvKey, lGo, uRet
       Return uRet
 
    EndIf
-Return ::TGridByCell():Events_Notify( wParam, lParam )
+Return ::TGridByCell:Events_Notify( wParam, lParam )
 
 *---------------------------------------------------------------------------*
 METHOD GoBottom( lAppend ) CLASS TXBrowseByCell
@@ -2963,7 +2970,7 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD SetSelectedColors( aSelectedColors, lRedraw ) CLASS TXBrowseByCell
 *-----------------------------------------------------------------------------*
-Return TGridByCell():SetSelectedColors( aSelectedColors, lRedraw )
+Return ::TGridByCell:SetSelectedColors( aSelectedColors, lRedraw )
 
 *-----------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TXBrowseByCell

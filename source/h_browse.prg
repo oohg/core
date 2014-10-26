@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.143 2014-08-03 19:37:52 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.144 2014-10-26 23:40:54 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -308,12 +308,9 @@ Local nWidth2, nCol2, oScroll, z
    // non-visible TAB page.
    ::Visible := ::Visible
 
+   ::lVScrollVisible := .T.
    If novscroll
-      ::lVScrollVisible := .F.
-      ::ScrollButton:Visible := .F.
-      ::VScroll := nil
-   Else
-      ::lVScrollVisible := .T.
+      ::VScrollVisible( .F. )
    EndIf
 
    ::SizePos()
@@ -333,7 +330,7 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD UpDate( nRow ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local PageLength, aTemp, _BrowseRecMap, x, nRecNo
+Local PageLength, aTemp, _BrowseRecMap, x, nRecNo, nCurrentLength
 Local lColor, aFields, cWorkArea, hWnd, nWidth
 
    cWorkArea := ::WorkArea
@@ -368,7 +365,7 @@ Local lColor, aFields, cWorkArea, hWnd, nWidth
       ::SetRedraw( .F. )
    EndIf
 
-   ListViewReset( ::hWnd )
+   nCurrentLength  := ::ItemCount()
    ::GridForeColor := nil
    ::GridBackColor := nil
 
@@ -409,11 +406,21 @@ Local lColor, aFields, cWorkArea, hWnd, nWidth
             ( cWorkArea )->( ::SetItemColor( x, , , aTemp ) )
          EndIf
 
-         AddListViewItems( hWnd, aTemp )
+         If nCurrentLength < x
+            AddListViewItems( hWnd, aTemp )
+            nCurrentLength ++
+         Else
+            ListViewSetItem( hWnd, aTemp, x )
+         EndIf
       Next x
       // Repositions the file as if _BrowseRecMap was builded using successive ::DbSkip() calls
       ::DbSkip()
    EndIf
+
+   Do While nCurrentLength > Len( _BrowseRecMap )
+      ::DeleteItem( nCurrentLength )
+      nCurrentLength--
+   EndDo
 
    If ::Visible
       ::SetRedraw( .T. )

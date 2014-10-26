@@ -1,11 +1,28 @@
-﻿/*
- * $Id: ChangeLog,v 1.1385 2014-10-26 18:50:33 guerra000 Exp $
+/*
+ * $Id: ChangeLog,v 1.1386 2014-10-26 23:40:53 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-10-26 21:40 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Previous entries amended.
+   * source/h_xbrowse.prg
+     ! NOVSCROLL clause not honored.
+     * Do not beep if a cell in a hidden column is edited.
+     ! TXBrowseByCell:AppendItem is not working.
+     ! TXBrowseByCell:Define2 is not working.
+     ! TXBrowseByCell:Events_Enter is not working.
+     ! TXBrowseByCell:SetSelectedColors is not working.
+     - uOldValue parameter in method TXBrowseByCell:EditGrid.
+   * source/h_browse.prg
+     ! NOVSCROLL clause not honored.
+     ! After browsing with PageUp/PageDown/Home/End first visible
+       column is reseted to 1.
+       Thanks to Vicente Guerra for the solution.
 
 2014-10-26 12:40 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
    * ./compile_bcc.bat
