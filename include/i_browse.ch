@@ -1,5 +1,5 @@
 /*
- * $Id: i_browse.ch,v 1.53 2014-09-01 15:58:50 fyurisich Exp $
+ * $Id: i_browse.ch,v 1.54 2014-10-27 00:26:19 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -161,9 +161,11 @@ STANDARD VERSION
       [ <upcol: UPDATECOLORS> ] ;
       [ <edtctrls: FIXEDCONTROLS, DYNAMICCONTROLS> ] ;
       [ <dummy14: ONHEADRCLICK, ON HEADRCLICK> <bheadrclick> ] ;
+      [ <nomodal: NOMODALEDIT> ] ;
+      [ <bycell: NAVIGATEBYCELL> ] ;
       [ <extdbl: EXTDBLCLICK> ] ;
    => ;
-      [ <obj> := ] _OOHG_SelectSubClass( TOBrowse(), [ <subclass>() ] ): ;
+      [ <obj> := ] _OOHG_SelectSubClass( IIF( <.bycell.>, TOBrowseByCell(), TOBrowse() ), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, ;
             <widths>, <Fields>, <value>, <fontname>, <fontsize>, <tooltip>, ;
             <{change}>, <{dblclick}>, <aHeadClick>, <{gotfocus}>, ;
@@ -192,7 +194,7 @@ STANDARD VERSION
             <.excel.>, <.buts.>, <.upcol.>, ;
             IIF( Upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., ;
             IIF( Upper( #<edtctrls> ) == "DYNAMICCONTROLS", .F., NIL ) ), ;
-            <{bheadrclick}>, <.extdbl.> )
+            <{bheadrclick}>, <.extdbl.>, <.nomodal.> )
 
 #command SET BROWSESYNC ON ;
    => ;

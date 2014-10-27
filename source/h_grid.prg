@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.267 2014-10-03 02:40:22 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.268 2014-10-27 00:26:20 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -249,7 +249,7 @@ CLASS TGrid FROM TControl
    METHOD HeaderImageAlign
    METHOD Release
    METHOD LoadHeaderImages
-   METHOD SetSelectedColors    SETGET
+   METHOD SetSelectedColors
    METHOD CheckItem            SETGET
    METHOD Justify
    METHOD HeaderHeight
@@ -3505,7 +3505,7 @@ CLASS TGridByCell FROM TGrid
    METHOD Events_Enter
    METHOD Events_Notify
    METHOD DoChange
-   METHOD SetSelectedColors SETGET
+   METHOD SetSelectedColors
    METHOD DeleteItem
    METHOD EditItem          BLOCK {|| Nil }
    METHOD EditItem2         BLOCK {|| Nil }

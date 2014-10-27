@@ -1,5 +1,5 @@
 /*
- * $Id: c_controlmisc.c,v 1.73 2014-09-01 15:58:50 fyurisich Exp $
+ * $Id: c_controlmisc.c,v 1.74 2014-10-27 00:26:20 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -629,6 +629,54 @@ HB_FUNC( INSERT_ALT_A )
       0,               // hardware scan code
       KEYEVENTF_KEYUP, // flags specifying various function options
       0                // additional data associated with keystroke
+   );
+}
+
+// -----------------------------------------------------------------------------
+HB_FUNC( INSERTUP )
+// -----------------------------------------------------------------------------
+{
+   keybd_event(
+      VK_UP,          // virtual-key code
+      0,              // hardware scan code
+      0,              // flags specifying various function options
+      0               // additional data associated with keystroke
+   );
+}
+
+// -----------------------------------------------------------------------------
+HB_FUNC( INSERTDOWN )
+// -----------------------------------------------------------------------------
+{
+   keybd_event(
+      VK_DOWN,        // virtual-key code
+      0,              // hardware scan code
+      0,              // flags specifying various function options
+      0               // additional data associated with keystroke
+   );
+}
+
+// -----------------------------------------------------------------------------
+HB_FUNC( INSERTPRIOR )
+// -----------------------------------------------------------------------------
+{
+   keybd_event(
+      VK_PRIOR,       // virtual-key code
+      0,              // hardware scan code
+      0,              // flags specifying various function options
+      0               // additional data associated with keystroke
+   );
+}
+
+// -----------------------------------------------------------------------------
+HB_FUNC( INSERTNEXT )
+// -----------------------------------------------------------------------------
+{
+   keybd_event(
+      VK_NEXT,        // virtual-key code
+      0,              // hardware scan code
+      0,              // flags specifying various function options
+      0               // additional data associated with keystroke
    );
 }
 
