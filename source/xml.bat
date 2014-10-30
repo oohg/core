@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: xml.bat,v 1.7 2014-06-17 00:35:47 fyurisich Exp $
+rem $Id: xml.bat,v 1.8 2014-10-30 20:59:43 fyurisich Exp $
 rem
 cls
 
@@ -31,7 +31,7 @@ if errorlevel 1 goto EXIT1
 echo. >> resul.txt
 
 echo Compiling c files ...
-set OOHG_X_FLAGS=-c -O2 -tW -tWM -d -a8 -OS -5 -6 -I%hg_hrb%\include;%hg_bcc%\include;%hg_root%\include; -L%hg_hrb%\%LIB_HRB%;%hg_bcc%\lib; -D__XHARBOUR__
+set OOHG_X_FLAGS=-c -O2 -tW -tWM -d -a8 -OS -5 -6 -w -I%hg_hrb%\include;%hg_bcc%\include;%hg_root%\include; -L%hg_hrb%\%LIB_HRB%;%hg_bcc%\lib; -D__XHARBOUR__
 for %%a in (%HG_FILES1_PRG%) do if not errorlevel 1 %hg_bcc%\bin\bcc32 %OOHG_X_FLAGS% %%a.c >> resul.txt
 if errorlevel 1 goto EXIT2
 for %%a in (%HG_FILES2_PRG%) do if not errorlevel 1 %hg_bcc%\bin\bcc32 %OOHG_X_FLAGS% %%a.c >> resul.txt

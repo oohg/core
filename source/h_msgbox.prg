@@ -1,5 +1,5 @@
 /*
- * $Id: h_msgbox.prg,v 1.17 2014-07-01 23:49:50 fyurisich Exp $
+ * $Id: h_msgbox.prg,v 1.18 2014-10-30 20:59:43 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -100,6 +100,10 @@ static _OOHG_MsgDefaultTitle := ''
 static _OOHG_MsgDefaultMode := Nil
 // Nil = MB_SYSTEMMODAL, other values MB_APPLMODAL and MB_TASKMODAL
 
+*-----------------------------------------------------------------------------*
+Static Function _Dummy()
+*-----------------------------------------------------------------------------*
+Return EMPTY( _OOHG_AllVars )
 
 *-----------------------------------------------------------------------------*
 Function SetOneArrayItemPerLine( lSet )

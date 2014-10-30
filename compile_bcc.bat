@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: compile_bcc.bat,v 1.14 2014-10-26 18:50:33 guerra000 Exp $
+rem $Id: compile_bcc.bat,v 1.15 2014-10-30 20:59:43 fyurisich Exp $
 rem
 cls
 
@@ -110,7 +110,7 @@ rem *** Check for Errors in Harbour Compilation ***
 if errorlevel 1 goto EXIT1
 
 rem *** Compile with BCC and Check for Errors ***
-%HG_BCC%\bin\bcc32 -c -O2 -tW -M -I%HG_HRB%\include;%HG_BCC%\include;%HG_ROOT%\include; -L%HG_BCC%\lib; %TFILE%.c %C_LOG%
+%HG_BCC%\bin\bcc32 -c -O2 -tW -M -w -I%HG_HRB%\include;%HG_BCC%\include;%HG_ROOT%\include; -L%HG_BCC%\lib; %TFILE%.c %C_LOG%
 if errorlevel 1 goto EXIT2
 
 rem *** Process Resource File and Check for Errors ***

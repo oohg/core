@@ -1,5 +1,5 @@
 /*
- * $Id: c_image.c,v 1.40 2014-08-25 05:24:54 guerra000 Exp $
+ * $Id: c_image.c,v 1.41 2014-10-30 20:59:43 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -129,7 +129,7 @@ HB_FUNC( _OOHG_STRETCHBLTMODE )
 {
    int OldStretchBltMode;
    OldStretchBltMode = _OOHG_StretchBltMode;
-   if( ISNUM( 1 ) )
+   if( HB_ISNUM( 1 ) )
    {
       _OOHG_StretchBltMode = hb_parni( 1 );
    }

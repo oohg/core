@@ -1,11 +1,21 @@
 /*
- * $Id: ChangeLog,v 1.1387 2014-10-27 00:26:19 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1388 2014-10-30 20:59:43 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-10-30 19:00 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * source/c_image.c
+     ! BCC warning on ISNUM macro.
+   * source/h_msgbox.prg
+     ! BCC warning on _OOHG_AllVars variable.
+   * source/makelib_bcc.bat
+   * source/xml.bat
+   * ./compile_bcc.bat
+     * Added -w switch to BCC call, so all warnings are displayed.
 
 2014-10-26 22:25 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_browse.prg

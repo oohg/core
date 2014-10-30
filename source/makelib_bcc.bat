@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: makelib_bcc.bat,v 1.18 2013-11-04 21:15:22 fyurisich Exp $
+rem $Id: makelib_bcc.bat,v 1.19 2014-10-30 20:59:43 fyurisich Exp $
 rem
 cls
 
@@ -27,7 +27,7 @@ call common_make "%HG_HRB%\%LIB_HRB%\tip.lib"
 if errorlevel 1 goto EXIT1
 
 rem *** Compile with BCC ***
-set OOHG_X_FLAGS=-c -O2 -tW -tWM -d -a8 -OS -5 -6 -I%HG_HRB%\include;%HG_BCC%\include;%HG_ROOT%\include; -L%HG_HRB%\%LIB_HRB%;%HG_BCC%\lib;
+set OOHG_X_FLAGS=-c -O2 -tW -tWM -d -a8 -OS -5 -6 -w -I%HG_HRB%\include;%HG_BCC%\include;%HG_ROOT%\include; -L%HG_HRB%\%LIB_HRB%;%HG_BCC%\lib;
 for %%a in (%HG_FILES1_PRG%) do if not errorlevel 1 %HG_BCC%\bin\bcc32 %OOHG_X_FLAGS% %%a.c
 if errorlevel 1 goto EXIT2
 for %%a in (%HG_FILES2_PRG%) do if not errorlevel 1 %HG_BCC%\bin\bcc32 %OOHG_X_FLAGS% %%a.c
