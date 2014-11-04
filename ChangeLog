@@ -1,11 +1,32 @@
 /*
- * $Id: ChangeLog,v 1.1388 2014-10-30 20:59:43 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1389 2014-11-04 01:56:37 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-11-03 23:56 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * samples/dbview/dbview.hbp
+     ! Compiling using buildapp.bat
+   * source/h_xbrowse.prg
+     + Reset ::bPosition to 0 before editing just to be sure.
+     - Unneeded reset of ::bPosition.
+   * source/h_browse.prg
+     * Methods Up and Down of TOBrowse now return .T. if they are
+       successful, or .F. if they are not.
+     + Parameter lAppend to TOBrowse:Down(). Defaults to .T.
+       .T. will trigger a record append if the control is at
+       the last record when the method is called.
+     + Methods Left and Right of TOBrowseByCell.
+     ! Left/right click does not select cell.
+     ! Double click does not select cell before editing.
+     ! Wrong record is selected after left click.
+     ! Can't add new row.
+     ! Edition not working properly.
+     ! Methods Home, End, Left and Right not working properly.
+     ! Cell at is not fully visible after horizontal scrolling.
 
 2014-10-30 19:00 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/c_image.c

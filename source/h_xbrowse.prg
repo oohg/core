@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.117 2014-10-26 23:40:54 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.118 2014-11-04 01:56:39 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2410,6 +2410,7 @@ Local lRet := .F.
    ASSIGN nRow VALUE nRow TYPE "N" DEFAULT ::CurrentRow
    ASSIGN nCol VALUE nCol TYPE "N" DEFAULT ::CurrentCol
    If aScan( ::aHiddenCols, nCol ) == 0
+      ::bPosition := 0
       If ::Super:EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, nOnFocusPos )
          lRet := .T.
          // ::bPosition is set by TGridControl()
@@ -2489,7 +2490,6 @@ Local lSomethingEdited := .F.
          // Hidden column
       Else
          // Edit one cell
-         ::bPosition := 0
          If ! ::Super:EditCell( nRow, nCol, Nil, Nil, Nil, Nil, lAppend, Nil )
             If lAppend
                ::lAppendMode := .F.

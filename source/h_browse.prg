@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.145 2014-10-27 00:26:20 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.146 2014-11-04 01:56:39 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -664,14 +664,14 @@ Return Nil
 *-----------------------------------------------------------------------------*
 METHOD Up() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local s, _RecNo, nLen
+Local s, _RecNo, nLen, lDone := .F.
 
    s := LISTVIEW_GETFIRSTITEM ( ::hWnd )
 
    If s <= 1
       If Select( ::WorkArea ) == 0
          ::RecCount := 0
-         Return Nil
+         Return lDone
       EndIf
 
       _RecNo := ( ::WorkArea )->( RecNo() )
@@ -686,7 +686,7 @@ Local s, _RecNo, nLen
          ::DbSkip( -1 )
          If ::Bof()
             ::DbGoTo( _RecNo )
-            Return Nil
+            Return lDone
          EndIf
          // Add one record at the top
          AADD( ::aRecMap, nil )
@@ -712,26 +712,30 @@ Local s, _RecNo, nLen
       ::DbGoTo( _RecNo )
       If Len( ::aRecMap ) != 0
          ListView_SetCursel( ::hWnd, 1 )
+         lDone := .T.
       EndIf
    Else
       ::FastUpdate( -1, s - 1 )
+      lDone := .T.
    EndIf
 
    ::BrowseOnChange()
 
-Return Nil
+Return lDone
 
 *-----------------------------------------------------------------------------*
-METHOD Down() CLASS TOBrowse
+METHOD Down( lAppend ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local s, _RecNo, nLen
+Local s, _RecNo, nLen, lDone := .F.
+
+   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .T.
 
    s := LISTVIEW_GETFIRSTITEM( ::hWnd )
 
    If s >= Len( ::aRecMap )
       If Select( ::WorkArea ) == 0
          ::RecCount := 0
-         Return Nil
+         Return lDone
       EndIf
 
       _RecNo := ( ::WorkArea )->( RecNo() )
@@ -746,10 +750,10 @@ Local s, _RecNo, nLen
          ::DbSkip()
          If ::Eof()
             ::DbGoTo( _RecNo )
-            If ::AllowAppend
-               ::EditItem( .T., ! ( ::Inplace .AND. ::FullMove ) )
+            If ::AllowAppend .AND. lAppend
+               lDone := ::EditItem( .T., ! ( ::Inplace .AND. ::FullMove ) )
             Endif
-            Return Nil
+            Return lDone
          EndIf
          // Add one record at the bottom
          AADD( ::aRecMap, ( ::WorkArea )->( RecNo() ) )
@@ -770,17 +774,19 @@ Local s, _RecNo, nLen
 
       If Len( ::aRecMap ) != 0
          ::DbGoTo( ATail( ::aRecMap ) )
+         lDone := .T.
       EndIf
       ::ScrollUpdate()
       ::DbGoTo( _RecNo )
       ListView_SetCursel( ::hWnd, Len( ::aRecMap ) )
    Else
       ::FastUpdate( 1, s + 1 )
+      lDone := .T.
    EndIf
 
    ::BrowseOnChange()
 
-Return Nil
+Return lDone
 
 *-----------------------------------------------------------------------------*
 METHOD TopBottom( nDir ) CLASS TOBrowse
@@ -1792,6 +1798,8 @@ CLASS TOBrowseByCell FROM TXBrowseByCell, TOBrowse
    METHOD SetScrollPos
    METHOD CurrentRow    SETGET
    METHOD CurrentCol    SETGET
+   METHOD Left
+   METHOD Right
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -1955,10 +1963,15 @@ Local nItem
    If HB_IsArray( uValue ) .AND. Len( uValue ) > 1
       If HB_IsNumeric( uValue[ 1 ] ) .AND. uValue[ 1 ] >= 0
          If HB_IsNumeric( uValue[ 2 ] ) .AND. uValue[ 2 ] >= 0 .AND. uValue[ 2 ] <= Len( ::aHeaders )
-            ::SetValue( uValue )
+            If ( nItem := ASCAN( ::aRecMap, uValue[ 1 ] ) ) > 0
+               ::SetValue( uValue, nItem )
+            Else
+               ::SetValue( uValue )
+            EndIf
          EndIf
       EndIf
    EndIf
+
    If Select( ::WorkArea ) == 0
       ::RecCount := 0
       uValue := { 0, 0 }
@@ -1981,7 +1994,7 @@ Return ::TOBrowse:RefreshData()
 *-----------------------------------------------------------------------------*
 METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TOBrowseByCell
 *-----------------------------------------------------------------------------*
-Local cWorkArea, _RecNo, Value, uGridValue, nRow
+Local cWorkArea, _RecNo, Value, uGridValue, nRow, aCellData
 
    If nMsg == WM_CHAR
       If wParam < 32
@@ -2098,6 +2111,15 @@ Local cWorkArea, _RecNo, Value, uGridValue, nRow
          ::Down()
          Return 0
       EndCase
+
+   ElseIf nMsg == WM_LBUTTONDOWN .OR. nMsg == WM_RBUTTONDOWN
+      If ListView_HitOnCheckBox( hWnd, GetCursorRow() - GetWindowRow( hWnd ), GetCursorCol() - GetWindowCol( hWnd ) ) <= 0
+         aCellData := _GetGridCellData( Self )
+         nRow := aCellData[ 1 ]
+         If  nRow >= 1 .AND.  nRow <= Len( ::aRecMap )
+            ::Value := { ::aRecMap[ nRow ], aCellData[ 2 ] }
+         EndIf
+      EndIf
 
    EndIf
 
@@ -2288,7 +2310,7 @@ Return lRet
 *-----------------------------------------------------------------------------*
 METHOD EditItem_B( lAppend, lOneRow ) CLASS TOBrowseByCell
 *-----------------------------------------------------------------------------*
-Local nItem, cWorkArea
+Local nItem, cWorkArea //, nCol
 
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
    ASSIGN lOneRow VALUE lOneRow TYPE "L" DEFAULT .T.
@@ -2309,19 +2331,21 @@ Local nItem, cWorkArea
       ::DbGoTo( ::aRecMap[ nItem ] )
    EndIf
 
-    If lAppend
-       ::GoBottom( .T. )
-       ::InsertBlank( ::ItemCount + 1 )
-       ::CurrentRow := ::ItemCount
-       ::lAppendMode := .T.
-    EndIf
+   If lAppend
+      ::CurrentCol := 1
+      // Insert new row
+      ::GoBottom( .T. )
+      ::InsertBlank( ::ItemCount + 1 )
+      ::CurrentRow := ::ItemCount
+      ::lAppendMode := .T.
+   EndIf
 
 Return ::EditGrid( , , lAppend, lOneRow, ::RefreshType == REFRESH_DEFAULT .OR. ::RefreshType == REFRESH_FORCE )
 
 *-----------------------------------------------------------------------------*
 METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lRefresh ) CLASS TOBrowseByCell
 *-----------------------------------------------------------------------------*
-Local lSomethingEdited, nRecNo
+Local lSomethingEdited, nRecNo, nNextRec
 
    Empty( lOneRow )
    Empty( lRefresh )
@@ -2344,26 +2368,35 @@ Local lSomethingEdited, nRecNo
 
    lSomethingEdited := .F.
 
-   Do While nCol <= Len( ::aHeaders ) .AND. Select( ::WorkArea ) # 0
+   Do While nCol <= Len( ::aHeaders ) .AND. nRow <= ::ItemCount .AND. Select( ::WorkArea ) # 0
       nRecNo := ( ::WorkArea )->( RecNo() )
       IF lAppend
          ::DbGoTo( 0 )
       Else
          ::DbGoTo( ::aRecMap[ nRow ] )
+         If nRow == ::ItemCount
+            ::DbSkip()
+            IF ::Eof()
+               nNextRec := 0
+            Else
+               nNextRec := ( ::WorkArea )->( RecNo() )
+            EndIf
+            ::DbGoTo( ::aRecMap[ nRow ] )
+         EndIf
       EndIf
 
+Empty(nNextRec)
       If ::IsColumnReadOnly( nCol )
-         // Read only column, skip
+         // Read only column
       ElseIf ! ::IsColumnWhen( nCol )
-         // Not a valid WHEN, skip column and continue editing
-      ElseIf ASCAN( ::aHiddenCols, nCol ) > 0
-         // Is a hidden column, skip
+         // Not a valid WHEN
+      ElseIf aScan( ::aHiddenCols, nCol ) > 0
+         // Hidden column
       Else
          ::DbGoTo( nRecNo )
 
          // Edit one cell
-         ::bPosition := 0
-         If ! ::EditCell( nRow, nCol, , , , , lAppend, , .F., .F. )
+         If ! ::TXBrowse:EditCell( nRow, nCol, Nil, Nil, Nil, Nil, lAppend, Nil, .F., .F. )
             If lAppend
                ::lAppendMode := .F.
                lAppend := .F.
@@ -2450,13 +2483,12 @@ Local lSomethingEdited, nRecNo
       EndIf
 
       If lAppend
+         ::CurrentCol := 1
          // Insert new row
          ::GoBottom( .T. )
          ::InsertBlank( ::ItemCount + 1 )
          ::CurrentRow := ::ItemCount
-         ::CurrentCol := 1
          ::lAppendMode := .T.
-         ::oWorkArea:GoTo( 0 )
       EndIf
 
       nRow := ::CurrentRow
@@ -2524,8 +2556,8 @@ Local nRow, nCol
       nRow := Value[ 1 ]
       nCol := Value[ 2 ]
       If HB_IsNumeric( nRow ) .AND. nRow > 0 .AND. HB_IsNumeric( nCol ) .AND. nCol >= 1 .AND. nCol <= Len( ::aHeaders )
-         ::nColPos := nCol
-         Return ::TOBrowse:SetValue( nRow, mp )
+         ::CurrentCol := nCol
+         ::TOBrowse:SetValue( nRow, mp )
       EndIf
    EndIf
 
@@ -2604,22 +2636,30 @@ Return ::TOBrowse:UpDateColors()
 *-----------------------------------------------------------------------------*
 METHOD Home() CLASS TOBrowseByCell
 *-----------------------------------------------------------------------------*
-   ::CurrentCol := 1
+   ::TOBrowse:Home()
 
-Return ::TOBrowse:Home()
+   ::Value := { ::Value[ 1 ], 1 }
+
+Return Nil
 
 *-----------------------------------------------------------------------------*
 METHOD End( lAppend ) CLASS TOBrowseByCell
 *-----------------------------------------------------------------------------*
+Local nCol
+
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
 
    If lAppend
-      ::CurrentCol := 1
+      nCol := ::CurrentCol
    Else
-      ::CurrentCol := Len( ::aHeaders )
+      nCol := Len( ::aHeaders )
    EndIf
 
-Return ::TOBrowse:End( lAppend )
+   ::TOBrowse:End( lAppend )
+
+   ::Value := { ::Value[ 1 ], nCol }
+
+Return Nil
 
 *-----------------------------------------------------------------------------*
 METHOD PageUp() CLASS TOBrowseByCell
@@ -2637,9 +2677,9 @@ METHOD Up() CLASS TOBrowseByCell
 Return ::TOBrowse:Up()
 
 *-----------------------------------------------------------------------------*
-METHOD Down() CLASS TOBrowseByCell
+METHOD Down( lAppend ) CLASS TOBrowseByCell
 *-----------------------------------------------------------------------------*
-Return ::TOBrowse:Down()
+Return ::TOBrowse:Down( lAppend )
 
 *-----------------------------------------------------------------------------*
 METHOD TopBottom( nDir ) CLASS TOBrowseByCell
@@ -2680,21 +2720,79 @@ Return Nil
 *-----------------------------------------------------------------------------*
 METHOD CurrentCol( nCol ) CLASS TOBrowseByCell
 *-----------------------------------------------------------------------------*
+Local nItem, r, nClientWidth, nScrollWidth
+
    If HB_IsNumeric( nCol ) .AND. nCol >= 0 .AND. nCol <= Len( ::aHeaders )
       ::nColPos := nCol
-      ::Value := { ::Value[ 1 ], nCol }
+
+      nItem := LISTVIEW_GETFIRSTITEM( ::hWnd )
+      If nItem > 0 .AND. nItem <= Len( ::aRecMap )
+         // Ensure cell is visible
+         r := { 0, 0, 0, 0 }                                        // left, top, right, bottom
+         GetClientRect( ::hWnd, r )
+         nClientWidth := r[ 3 ] - r[ 1 ]
+         r := ListView_GetSubitemRect( ::hWnd, nItem - 1, ::CurrentCol - 1 ) // top, left, width, height
+         If ListViewGetItemCount( ::hWnd ) >  ListViewGetCountPerPage( ::hWnd )
+            nScrollWidth := GetVScrollBarWidth()
+         Else
+            nScrollWidth := 0
+         EndIf
+         If r[ 2 ] + r[ 3 ] + nScrollWidth > nClientWidth
+            ListView_Scroll( ::hWnd, ( r[ 2 ] + r[ 3 ] + nScrollWidth - nClientWidth ), 0 )
+         EndIf
+         If r[ 2 ] < 0
+            ListView_Scroll( ::hWnd, r[ 2 ], 0 )
+         EndIf
+         ListView_RedrawItems( ::hWnd, nItem, nItem )
+      EndIf
    EndIf
 Return ::nColPos
 
 *-----------------------------------------------------------------------------*
 METHOD CurrentRow( nRow ) CLASS TOBrowseByCell
 *-----------------------------------------------------------------------------*
-   If HB_IsNumeric( nRow ) .AND. nRow >= 0 .AND. nRow <= ::ItemCount
-      ::TXBrowse:CurrentRow( nRow )
-      If nRow > 0 .AND. nRow <= Len( ::aRecMap )
-         ::Value := { ::aRecMap[ nRow ], ::CurrentCol }
-      Else
-         ::Value := { 0, ::CurrentCol }
-      Endif
+Return ::TXBrowse:CurrentRow( nRow )
+
+*--------------------------------------------------------------------------*
+METHOD Left() CLASS TOBrowseByCell
+*--------------------------------------------------------------------------*
+Local aValue, nRec, nCol
+
+   aValue := ::Value
+   nRec := aValue[ 1 ]
+   nCol := aValue[ 2 ]
+   If nRec > 0 .AND. nCol >= 1 .AND. nCol <= Len( ::aHeaders )
+      If nCol > 1
+         ::Value := { nRec, nCol - 1 }
+      ElseIf ::FullMove
+         If ::Up()
+            ::Value := { ::Value[ 1 ], Len( ::aHeaders ) }
+         EndIf
+      EndIf
    EndIf
-Return ::TXBrowse:CurrentRow()
+Return Self
+
+*--------------------------------------------------------------------------*
+METHOD Right( lAppend ) CLASS TOBrowseByCell
+*--------------------------------------------------------------------------*
+Local aValue, nRec, nCol
+
+   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT ::AllowAppend
+
+   aValue := ::Value
+   nRec := aValue[ 1 ]
+   nCol := aValue[ 2 ]
+   If nRec > 0 .AND. nCol >= 1 .AND. nCol <= Len( ::aHeaders )
+      If nCol < Len( ::aHeaders )
+         ::Value := { nRec, nCol + 1 }
+      ElseIf ::FullMove
+         If ::Down( .F. )
+            ::Value := { ::Value[ 1 ], 1 }
+         Else
+            If lAppend
+               ::EditItem( .T., ! ::FullMove )
+            EndIf
+         EndIf
+      EndIf
+   EndIf
+Return Self
