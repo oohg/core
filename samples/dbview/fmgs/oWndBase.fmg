@@ -1,5 +1,5 @@
 /*
- * $Id: oWndBase.fmg,v 1.1 2013-11-19 19:15:41 migsoft Exp $
+ * $Id: oWndBase.fmg,v 1.2 2014-11-04 16:46:41 migsoft Exp $
  */
 
 /*
@@ -9,13 +9,13 @@
  * http://harbourminigui.googlepages.com/
  *
  * Program to view DBF files using standard Browse control
- * Miguel Angel Juárez A. - 2009-2012 MigSoft <mig2soft/at/yahoo.com>
+ * Miguel Angel Juárez A. - 2009-2014 MigSoft <mig2soft/at/yahoo.com>
  * Includes the code of Grigory Filatov <gfilatov@freemail.ru>
  * and Rathinagiri <srathinagiri@gmail.com>
  *
  */
 
-DEFINE WINDOW TEMPLATE AT nRow , nCol WIDTH nWidth HEIGHT nHeight TITLE PROGRAM+VERSION+COPYRIGHT ICON "main1" MAIN ON INIT Iniciando() // ON SIZE Adjust() ON MAXIMIZE Adjust()
+DEFINE WINDOW TEMPLATE AT nRow , nCol WIDTH nWidth HEIGHT nHeight TITLE PROGRAM+VERSION+COPYRIGHT ICON "main1" MAIN ON INIT Iniciando()
 
       DEFINE STATUSBAR FONT "Arial" SIZE 9
         STATUSITEM "Record:"           WIDTH 300
@@ -118,12 +118,12 @@ DEFINE WINDOW TEMPLATE AT nRow , nCol WIDTH nWidth HEIGHT nHeight TITLE PROGRAM+
          ITEM 'Close All' ACTION CierraAll()
       END MENU
 
-      oWndBase  := GetExistingFormObject( "oWndBase" )
+      ooWndBase  := GetExistingFormObject( "oWndBase" )
 
       @ 31 , 0 IMAGE Image_1 OF oWndBase  ;
                   PICTURE "dbback"                   ;
-                  WIDTH   oWndBase:Clientwidth       ;
-                  HEIGHT  oWndBase:Clientheight - 56
+                  WIDTH   ooWndBase:Clientwidth       ;
+                  HEIGHT  ooWndBase:Clientheight - 56
 
       oImage := GetControlObject("Image_1","oWndBase")
       oImage:Anchor := "TOPLEFTBOTTOMRIGHT"
@@ -146,11 +146,15 @@ DEFINE WINDOW TEMPLATE AT nRow , nCol WIDTH nWidth HEIGHT nHeight TITLE PROGRAM+
         BUTTON filter1   TOOLTIP "Set filter"           PICTURE "filter1"    ACTION DBQuery()
         BUTTON filter2   TOOLTIP "Remove filter"        PICTURE "filter2"    ACTION LimpiaFiltro()
         BUTTON record1   TOOLTIP "Record view"          PICTURE "record1"    ACTION VerRegistro()
-        BUTTON index1    TOOLTIP "Index"                PICTURE "index1"     ACTION IndexManager() SEPARATOR //DROPDOWN SEPARATOR
-        BUTTON first1    TOOLTIP "First Record"         PICTURE "first1"     ACTION Primero()
-        BUTTON previous1 TOOLTIP "Previous Record"      PICTURE "previous1"  ACTION Anterior()
-        BUTTON next1     TOOLTIP "Next Record"          PICTURE "next1"      ACTION Siguiente()
-        BUTTON last1     TOOLTIP "Last Record"          PICTURE "last1"      ACTION Ultimo() SEPARATOR
+        BUTTON index1    TOOLTIP "Index"                PICTURE "index1"     ACTION IndexManager() SEPARATOR
+        BUTTON first1    TOOLTIP "First Column"         PICTURE "first1"     ACTION PrimeraC()
+        BUTTON previous1 TOOLTIP "Left Column"          PICTURE "previous1"  ACTION IzquierdaC()
+        BUTTON next1     TOOLTIP "Right Column"         PICTURE "next1"      ACTION DerechaC()
+        BUTTON last1     TOOLTIP "Last Column"          PICTURE "last1"      ACTION UltimaC() SEPARATOR
+        BUTTON first2    TOOLTIP "First Record"         PICTURE "primo1"     ACTION Primero()
+        BUTTON previous2 TOOLTIP "Previous Record"      PICTURE "up1"        ACTION Anterior()
+        BUTTON next2     TOOLTIP "Next Record"          PICTURE "down2"      ACTION Siguiente()
+        BUTTON last2     TOOLTIP "Last Record"          PICTURE "ultim1"     ACTION Ultimo() SEPARATOR
         BUTTON textcol1  TOOLTIP "Text color"           PICTURE "paint1"     ACTION FontColorBrowse()
         BUTTON Backcol1  TOOLTIP "Background color"     PICTURE "back1"      ACTION BackColorBrowse()
         BUTTON font1     TOOLTIP "Font"                 PICTURE "font1"      ACTION FontNameBrowse(1)

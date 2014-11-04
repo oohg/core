@@ -1,11 +1,25 @@
 /*
- * $Id: ChangeLog,v 1.1389 2014-11-04 01:56:37 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1390 2014-11-04 16:46:41 migsoft Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-11-04 13:21 UTC-0400 Miguel Juárez <migsoft@oohg.org>
+   * samples/dbview/prgs/dbview.prg
+   * samples/dbview/prgs/import.prg
+   * samples/dbview/prgs/indadmin.prg
+   * samples/dbview/prgs/Showprop.prg
+   * samples/dbview/dbview.rc
+   + samples/dbview/res/arriba.bmp
+   + samples/dbview/res/abajo.bmp
+   + samples/dbview/res/ultimoend.bmp
+   + samples/dbview/res/primerotop.bmp
+   * samples/dbview/fmgs/dbuvar.ch
+   * samples/dbview/fmgs/oWndBase.fmg
+     ! Adapted for support NAVIGATEBYCELL
 
 2014-11-03 23:56 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * samples/dbview/dbview.hbp

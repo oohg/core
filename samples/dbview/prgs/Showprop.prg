@@ -1,5 +1,5 @@
 /*
- * $Id: Showprop.prg,v 1.1 2013-11-19 19:15:41 migsoft Exp $
+ * $Id: Showprop.prg,v 1.2 2014-11-04 16:46:42 migsoft Exp $
  */
 
 /*
@@ -17,7 +17,6 @@
 
 #include "oohg.ch"
 #include "dbuvar.ch"
-#include "hbcompat.ch"
 
 *--------------------------------------------------------*
 Procedure ShowProperties()

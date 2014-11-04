@@ -1,15 +1,23 @@
 /*
- * $Id: dbuvar.ch,v 1.1 2013-11-19 19:15:41 migsoft Exp $
+ * $Id: dbuvar.ch,v 1.2 2014-11-04 16:46:41 migsoft Exp $
  */
 
 #define PROGRAM        'DBF Viewer 2020 '
-#define COPYRIGHT      ' (c)2009-2013 MigSoft  '
+#define COPYRIGHT      ' (c)2009-2014 MigSoft  '
 #define CRLF           HB_OsNewLine()
 #define _DBUreddish    {255,200,200}
 #define _DBUgreenish   {200,255,200}
 #define _DBUblueish    {200,200,255}
 #define _DBUyellowish  {255,255,200}
 #define _DBUblack      {  0,  0,  0}
+
+#ifndef __XHARBOUR__
+   #xcommand TRY                => bError := errorBlock( {|oError| break( oError ) } ) ;;
+                                   BEGIN SEQUENCE
+   #xcommand CATCH [<!oError!>] => errorBlock( bError ) ;;
+                                   RECOVER [USING <oError>] <-oError-> ;;
+                                   errorBlock( bError )
+#endif
 
 memvar _DBUdbfopened, _DBUfname, _DBUindexed, _DBUfiltered, _DBUcondition, _DBUmaxrow, _DBUcontrolarr
 memvar _DBUeditmode, _DBUindexfieldname, _DBUbuttonsdefined, _DBUscrwidth, _DBUscrheight, _DBUwindowwidth

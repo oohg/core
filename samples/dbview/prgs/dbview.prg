@@ -1,5 +1,5 @@
 /*
- * $Id: dbview.prg,v 1.2 2014-06-12 14:10:27 migsoft Exp $
+ * $Id: dbview.prg,v 1.3 2014-11-04 16:46:42 migsoft Exp $
  */
 
 /*
@@ -9,7 +9,7 @@
  * http://harbourminigui.googlepages.com/
  *
  * Program to view DBF files using standard Browse control
- * Miguel Angel Juárez A. - 2009-2012 MigSoft <mig2soft/at/yahoo.com>
+ * Miguel Angel Juárez A. - 2009-2014 MigSoft <mig2soft/at/yahoo.com>
  * Includes the code of Grigory Filatov <gfilatov@freemail.ru>
  * and Rathinagiri <srathinagiri@gmail.com>
  *
@@ -19,7 +19,6 @@
 #include "dbstruct.ch"
 #include "fileio.ch"
 #include "dbuvar.ch"
-#include "hbcompat.ch"
 
 *------------------------------------------------------------------------------*
 Function Main( cDBF )
@@ -113,8 +112,6 @@ Procedure OpenBase( cDBF )
       AAdd( aNewFile, cDBF )
    Endif
 
-   //aEval( aNewFile, {|x,i| MsgInfo ( x, ltrim( str ( i ) ) )} )
-
    IF !Empty(aNewFile)
        For nn := 1 to Len(aNewFile)
            If !Empty(aNewFile[nn]) .AND. Upper(Right(aNewFile[nn],3))="DBF"
@@ -130,9 +127,10 @@ Procedure OpenBase( cDBF )
 
                         cAreaPos  := AllTrim( Str( ( Alias() )->( Select( oWndBase.Tab_1.caption( oWndBase.Tab_1.value ) ) ) ) )
                         cBrowse_n := "Browse_"+cAreaPos
+
                         oWndBase.&(cBrowse_n).ColumnsAutoFitH
-                        MuestraRec()
                         oWndBase.&(cBrowse_n).SetFocus             // Ilumina barra en primer registro
+                        oWndBase.&(cBrowse_n).GoTop
                      Endif
 
                   Endif
@@ -214,7 +212,6 @@ FUNCTION DelExt(cFileName)
                   cTrim, LEFT(cTrim, nDot - 1))
 RETURN( cNamew )
 
-
 *------------------------------------------------------------------------------*
 Function CreaBrowse( cBase, aNomb, aLong, aJust, aFtype, aCtrl )
 *------------------------------------------------------------------------------*
@@ -229,8 +226,7 @@ Function CreaBrowse( cBase, aNomb, aLong, aJust, aFtype, aCtrl )
     If IsControlDefined(Tab_1,oWndBase)
        NuevoTab()
     Else
-       oWndBase  := GetExistingFormObject( "oWndBase" )
-       DEFINE TAB Tab_1 OF oWndBase AT 40,15 WIDTH oWndBase:Clientwidth  - 30 HEIGHT oWndBase:Clientheight - 70 ;
+       DEFINE TAB Tab_1 OF oWndBase AT 40,15 WIDTH ooWndBase:Clientwidth  - 30 HEIGHT ooWndBase:Clientheight - 70 ;
        VALUE 1 FONT "Arial" SIZE 9 FLAT ON CHANGE SeleArea()
            PAGE cBase IMAGE "Main1"
                 MakeBrowse()
@@ -251,14 +247,13 @@ Procedure MakeBrowse()
 *------------------------------------------------------*
    cAreaPos  := AllTrim( Str( ( Alias() )->( Select() ) ) )
    cBrowse_n := "Browse_"+cAreaPos
-   oWndBase  := GetExistingFormObject( "oWndBase" )
 
            If !IsControlDefined(&cBrowse_n,oWndBase)
 
                   @ 26,0 BROWSE &cBrowse_n              ;
                      OF oWndBase                        ;
-                     WIDTH  oWndBase:Clientwidth  - 32  ;
-                     HEIGHT oWndBase:Clientheight - 100 ;
+                     WIDTH  ooWndBase:Clientwidth  - 32  ;
+                     HEIGHT ooWndBase:Clientheight - 100 ;
                      HEADERS aHdr                       ;
                      WIDTHS aLong                       ;
                      WORKAREA &( Alias() )              ;
@@ -266,7 +261,7 @@ Procedure MakeBrowse()
                      VALUE 0                            ;
                      FONT "MS Sans Serif" SIZE 8        ;
                      TOOLTIP ""                         ;
-                     ON CHANGE MuestraRec()             ;
+                     ON CHANGE { || MuestraRec() }      ;
                      IMAGE { "br_no", "br_ok" }         ;
                      JUSTIFY aJst                       ;
                      COLUMNCONTROLS aCtrl               ;
@@ -276,8 +271,12 @@ Procedure MakeBrowse()
                      DELETE                             ;
                      ON HEADCLICK Nil                   ;
                      HEADERIMAGES aCabImg               ;
-                     FULLMOVE                           ;
-                     DOUBLEBUFFER
+                     DOUBLEBUFFER                       ;
+                     NAVIGATEBYCELL                     ;
+                     SELECTEDCOLORS { WHITE, {65,105,225},           ;           // Cursor Fuente/Fondo
+                                      WHITE, {128,128,128},          ;           // Cursor ventana sin foco Fuente/Fondo
+                                      {106,90,205}, {135,206,250},   ;           // Fila resaltada  Fuente/Fondo
+                                      {105,105,105},{220,220,220} }              // Fila resaltada click en columna  Fuente/Fondo
 
            Endif
 
@@ -287,6 +286,7 @@ Procedure MakeBrowse()
    nBrow++
 
 Return
+
 
 *------------------------------------------------------*
 Procedure NuevoTab() // Cortesía: Ciro Vargas Clemow
@@ -311,14 +311,11 @@ Procedure SeleArea()
 *------------------------------------------------------*
    If !Empty( Alias() )
 
-      cAreaPos  := AllTrim( Str( ( Alias() )->( Select( oWndBase.Tab_1.caption( oWndBase.Tab_1.value ) ) ) ) )
-      cBrowse_n := "Browse_"+cAreaPos
       DBSelectArea( ( Alias() )->( Select( oWndBase.Tab_1.caption( oWndBase.Tab_1.value ) ) ) )
       cBase := Alias()
 
-      If IsControlDefine(&(cbrowse_n),oWndBase)
-         oWndBase.&(cBrowse_n).SetFocus          // Ilumina barra en primer registro
-         MuestraRec()
+      If IsControlDefine(&(Browse_n()),oWndBase)
+         oWndBase.&(Browse_n()).SetFocus
       Endif
 
    Endif
@@ -329,15 +326,14 @@ Return
 Procedure CierraBase()
 *------------------------------------------------------------------------------*
    If !Empty( Alias() )
+
       oTab      := GetControlObject("Tab_1","oWndBase")
       nPos      := ( ( Alias() )->( Select( oWndBase.Tab_1.caption( oWndBase.Tab_1.value ) ) ) )
-      cAreaPos  := AllTrim( Str( ( ( Alias() )->( Select( oWndBase.Tab_1.caption( oWndBase.Tab_1.value ) ) ) ) ))
-      cBrowse_n := "Browse_"+cAreaPos
 
       Set Index To
 
-      If IsControlDefine( &(cBrowse_n), oWndBase )
-         oWndBase.&(cBrowse_n).release
+      If IsControlDefine( &(Browse_n()), oWndBase )
+         oWndBase.&(Browse_n()).release
          Close ( oWndBase.Tab_1.caption( oWndBase.Tab_1.value ) )
          oTab:DeletePage ( oTab:value, oTab:caption( oTab:value ) )
          If oWndBase.Tab_1.ItemCount > 0
@@ -379,9 +375,8 @@ Return
 *------------------------------------------------------*
 Function Iniciando()     // Cortesía: Fernando Yurisich
 *------------------------------------------------------*
-   oWndBase := GetExistingFormObject( "oWndBase" )
-   oWndBase:AcceptFiles := .T.
-   oWndBase:OnDropFiles := { |f| AEval( f, { |c| OpenBase( c ) } ) }
+   ooWndBase:AcceptFiles := .T.
+   ooWndBase:OnDropFiles := { |f| AEval( f, { |c| OpenBase( c ) } ) }
 Return Nil
 
 *------------------------------------------------------*
@@ -414,31 +409,6 @@ Function AssiCtrlBrw( cTypeField, nlongTot, nLongDec, cFieldName )
    Endif
 
 Return( cCtrlBrw )
-
-*------------------------------------------------------------------------------*
-Procedure Adjust()
-*------------------------------------------------------------------------------*
-   Local na
-   If IsControlDefine(Tab_1,oWndBase)
-      cAreaPos  := AllTrim( Str( ( Alias() )->( Select( oWndBase.Tab_1.caption( oWndBase.Tab_1.value ) ) ) ) )
-      cBrowse_n := "Browse_"+cAreaPos
-      If IsControlDefine(&(cbrowse_n),oWndBase)
-         For na := 1 to 255
-             cBrowse_n := "Browse_"+AllTrim( Str(na) )
-             If IsControlDefine(&(cbrowse_n),oWndBase)
-                SetProperty( "oWndBase", cbrowse_n, "Width", oWndBase.width  - 40 )
-                SetProperty( "oWndBase", cbrowse_n, "Height", oWndBase.height  - 152 )
-             Endif
-         Next
-         oWndBase.Tab_1.width     := oWndBase.width  - 38
-         oWndBase.Tab_1.Height    := oWndBase.height - 122
-      Endif
-   Endif
-   If IsControlDefine(Image_1,oWndBase)
-      oWndBase.Image_1.width   := oWndBase.width
-      oWndBase.Image_1.height  := oWndBase.height - 122
-   Endif
-Return
 
 *------------------------------------------------------------------------------*
 Function VerHeadIcon( aTip )
@@ -486,8 +456,6 @@ Return( aHeadIcon )
 Function SetHeaderImages()
 *------------------------------------------------------------------------------*
    Local nc
-//   atemp := Array( FCount()+1 )
-//   Aeval( atemp, {|x,i| oWndBase.Browse_1.HeaderImages(i) := {i,(aJust[i]==1)}} )
 
    If !Empty( Alias() )
 
@@ -551,10 +519,7 @@ Return
 *------------------------------------------------------------------------------*
 Procedure CopyRec(nOp)  // Copiar
 *------------------------------------------------------------------------------*
-
    If !Empty( Alias() )
-      cAreaPos  := AllTrim( Str( ( Alias() )->( Select( oWndBase.Tab_1.caption( oWndBase.Tab_1.value ) ) ) ) )
-      cBrowse_n := "Browse_"+cAreaPos
 
        If nOp = 1   // Selecciona registro
           RecReply()
@@ -584,11 +549,11 @@ Return(nRet)
 *------------------------------------------------------------------------------*
 Function RecReply()
 *------------------------------------------------------------------------------*
-   cAreaPos  := AllTrim( Str( ( Alias() )->( Select( oWndBase.Tab_1.caption( oWndBase.Tab_1.value ) ) ) ) )
-   cBrowse_n := "Browse_"+cAreaPos
+
+   aRec := oWndBase.&( Browse_n() ).Value
 
    If Empty(nRecCopy)
-      Aadd( nRecCopy, { ( Alias() )->( Select( oWndBase.Tab_1.caption( oWndBase.Tab_1.value ) ) ), oWndBase.&(cBrowse_n).Value } )
+      Aadd( nRecCopy, { ( Alias() )->( Select( oWndBase.Tab_1.caption( oWndBase.Tab_1.value ) ) ), aRec[1] } )
    Endif
 
 Return Nil
@@ -600,19 +565,17 @@ procedure PasteRec() // Pegar
    local aDatos := {}
 
    If !Empty( Alias() )
-      cAreaPos  := AllTrim( Str( ( Alias() )->( Select( oWndBase.Tab_1.caption( oWndBase.Tab_1.value ) ) ) ) )
-      cBrowse_n := "Browse_"+cAreaPos
       If Empty(nRecCopy)
          Msginfo('No Selected Record',PROGRAM)
       Else
         If ( Alias() )->( Select() ) = nRecCopy[ 1, 1 ]
            If MsgYesNo("This action will replace the current record"+Hb_OsNewLine()+"with the data of the selected record"+Hb_OsNewLine()+"Are you sure?",PROGRAM)
-              nPos := oWndBase.&(cBrowse_n).Value
+              nPos := oWndBase.&( Browse_n() ).Value
               ( Alias() )->( DBGoTo( nRecCopy[ 1, 2 ] ) )
               For i = 1 to ( Alias() )->( FCount() )
                   Aadd( aDatos, ( Alias() )->( Fieldget(i) ) )
               Next
-              ( Alias() )->( DbGoTo( nPos) )
+              ( Alias() )->( DbGoTo( nPos[1]) )
               ( Alias() )->( flock() )
               For i = 1 to ( Alias() )->( Fcount() )
                   ( Alias() )->( Fieldput( i, adatos[i] ) )
@@ -673,9 +636,9 @@ Return(aIndiceCampo)
 Procedure DeleteRecall()
 *------------------------------------------------------------------------------*
    If !Empty( Alias() )
-      cAreaPos  := AllTrim( Str( ( Alias() )->( Select( oWndBase.Tab_1.caption( oWndBase.Tab_1.value ) ) ) ) )
-      cBrowse_n := "Browse_"+cAreaPos
-      ( Alias() )->( DbGoto(oWndBase.&(cBrowse_n).Value) )
+
+      aRec := oWndBase.&(Browse_n()).Value
+      ( Alias() )->( DbGoto( aRec[1] ) )
 
       if ( Alias() )->( Rlock() )
          iif( ( Alias() )->( Deleted() ), ( Alias() )->( DbRecall() ), ( Alias() )->( DbDelete() ) )
@@ -692,8 +655,6 @@ Procedure MuestraRec()
 *------------------------------------------------------------------------------*
    If !Empty( Alias() )
       nPos      := ( Alias() )->( Select( oWndBase.Tab_1.caption( oWndBase.Tab_1.value ) ) )
-      cAreaPos  := AllTrim( Str( ( ( Alias() )->( Select( oWndBase.Tab_1.caption( oWndBase.Tab_1.value ) ) ) ) ))
-      cBrowse_n := "Browse_"+cAreaPos
 
       If !Empty(nRecCopy)
          nRecSel := Iif(nPos==nRecCopy[1,1],RecToMost(),0)
@@ -701,9 +662,11 @@ Procedure MuestraRec()
 
       Titulo()
 
+      aRec := oWndBase.&( Browse_n() ).Value
+
       oWndBase.StatusBar.Item(1) := ' Record: '      ;
-      +padl(Alltrim(Str(oWndBase.&(cBrowse_n).Value)),7) ;
-      +'/'+padl(Alltrim(Str(( Alias() )->(LastRec()))),7)
+      +padl(Alltrim(Str(aRec[1])),7) ;
+      +'/'+padl(Alltrim(Str(( Alias() )->(LastRec()))),7)+'         Row: '+padl(Alltrim(Str(aRec[1])),7)+'   Col:'+padl(Alltrim(Str(aRec[2])),7)
       oWndBase.StatusBar.Item(2) := 'Selected Record: '+ Alltrim(Str( nRecSel ,7))
       oWndBase.StatusBar.Item(3) := 'Index Tag: ' + ( Alias() )->( OrdName() )
       oWndBase.StatusBar.Item(4) := 'Order Key: ' + ( Alias() )->( OrdKey() )
@@ -727,8 +690,13 @@ Return
 Procedure primero()
 *------------------------------------------------------------------------------*
    If !Empty( Alias() )
-      ( Alias() )->( DbGotop() )
-      keybd_event(VK_HOME)
+      //( Alias() )->( DbGotop() )
+      //keybd_event(VK_HOME)
+      oBrowse := GetControlObject(Browse_n(),"oWndBase")
+      oBrowse:value := { 1, 1 }
+      oBrowse:setfocus()
+      oBrowse:GoTop()
+
    Endif
 return
 
@@ -736,8 +704,12 @@ return
 Procedure anterior()
 *------------------------------------------------------------------------------*
    If !Empty( Alias() )
-      ( Alias() )->( dBSkip ( -1 ) )
-      keybd_event(VK_UP)
+      //( Alias() )->( dBSkip ( -1 ) )
+      //keybd_event(VK_UP)
+      oBrowse := GetControlObject(Browse_n(),"oWndBase")
+      oBrowse:setfocus()
+      oBrowse:Up()
+
    Endif
 return
 
@@ -745,12 +717,17 @@ return
 Procedure siguiente()
 *------------------------------------------------------------------------------*
    If !Empty( Alias() )
-      ( Alias() )->( dBSkip (1) )
-      if  ( Alias() )->( recno() ) = ( Alias() )->( LastRec()+1 )
-          ( Alias() )->( DbGoBottom() )
-          keybd_event(VK_END)
-      endif
-      keybd_event(VK_DOWN)
+      //( Alias() )->( dBSkip (1) )
+      //if  ( Alias() )->( recno() ) = ( Alias() )->( LastRec()+1 )
+      //    ( Alias() )->( DbGoBottom() )
+      //    keybd_event(VK_END)
+      //endif
+      //keybd_event(VK_DOWN)
+
+      oBrowse := GetControlObject(Browse_n(),"oWndBase")
+      oBrowse:setfocus()
+      oBrowse:Down()
+
    Endif
 return
 
@@ -758,8 +735,63 @@ return
 Procedure ultimo()
 *------------------------------------------------------------------------------*
    If !Empty( Alias() )
-      ( Alias() )->( dbgobottom() )
-      keybd_event(VK_END)
+      ( Alias() )->( DbGoBottom() )
+      oBrowse := GetControlObject( Browse_n(), "oWndBase" )
+      oBrowse:value := { ( Alias() )->( LastRec() ) , 1 }
+   Endif
+return
+
+*------------------------------------------------------------------------------*
+Function Browse_n()
+*------------------------------------------------------------------------------*
+Local cAreaPos, cBrowse_n
+   cAreaPos  := AllTrim( Str( ( Alias() )->( Select( oWndBase.Tab_1.caption( oWndBase.Tab_1.value ) ) ) ) )
+   cBrowse_n := "Browse_"+cAreaPos
+Return( cBrowse_n )
+
+*------------------------------------------------------------------------------*
+Procedure primeraC()
+*------------------------------------------------------------------------------*
+   If !Empty( Alias() )
+      oBrowse := GetControlObject(Browse_n(),"oWndBase")
+      ( Alias() )->( DbGoto( oBrowse:value[1] ) )
+      oBrowse:value := { ( Alias() )->( recno() ), 1 }
+      oBrowse:setfocus()
+   Endif
+return
+
+*------------------------------------------------------------------------------*
+Procedure IzquierdaC()
+*------------------------------------------------------------------------------*
+   If !Empty( Alias() )
+      // keybd_event(VK_LEFT)
+      oBrowse := GetControlObject(Browse_n(),"oWndBase")
+      ( Alias() )->( DbGoto( oBrowse:value[1] ) )
+      oBrowse:setfocus()
+      oBrowse:Left()
+   Endif
+return
+
+*------------------------------------------------------------------------------*
+Procedure DerechaC()
+*------------------------------------------------------------------------------*
+   If !Empty( Alias() )
+      //keybd_event(VK_RIGHT)
+      oBrowse := GetControlObject(Browse_n(),"oWndBase")
+      ( Alias() )->( DbGoto( oBrowse:value[1] ) )
+      oBrowse:setfocus()
+      oBrowse:Right()
+   Endif
+return
+
+*------------------------------------------------------------------------------*
+Procedure ultimaC()
+*------------------------------------------------------------------------------*
+   If !Empty( Alias() )
+      oBrowse := GetControlObject( Browse_n(),"oWndBase" )
+      ( Alias() )->( DbGoto( oBrowse:value[1] ) )
+      oBrowse:value := { ( Alias() )->( recno() ), ( Alias() )->( Fcount() )+1 }
+      oBrowse:setfocus()
    Endif
 return
 
@@ -767,11 +799,9 @@ return
 Procedure Append()
 *------------------------------------------------------------------------------*
    If !Empty( Alias() )
-      cAreaPos  := AllTrim( Str( ( Alias() )->( Select( oWndBase.Tab_1.caption( oWndBase.Tab_1.value ) ) ) ) )
-      cBrowse_n := "Browse_"+cAreaPos
-      If IsControlDefine(&(cbrowse_n),oWndBase)
+      If IsControlDefine(&(Browse_n()),oWndBase)
          Nuevo := .T.
-         Administradbf( oWndBase.&(cBrowse_n).Value )
+         Administradbf( oWndBase.&(Browse_n()).Value[1] )
          Siguiente()
       Endif
    Endif
@@ -780,11 +810,10 @@ return
 Procedure Edit()
 *------------------------------------------------------------------------------*
    If !Empty( Alias() )
-      cAreaPos  := AllTrim( Str( ( Alias() )->( Select( oWndBase.Tab_1.caption( oWndBase.Tab_1.value ) ) ) ) )
-      cBrowse_n := "Browse_"+cAreaPos
-      ( Alias() )->( DbGoto(oWndBase.&(cBrowse_n).Value) )
-      oWndBase.&(cBrowse_n).Value := ( Alias() )->( RecNo() )
-      oWndBase.&(cBrowse_n).SetFocus
+      aRec := oWndBase.&(Browse_n()).Value
+      ( Alias() )->( DbGoto( aRec[1] ) )
+      oWndBase.&(Browse_n()).Value := ( Alias() )->( RecNo() )
+      oWndBase.&(Browse_n()).SetFocus
    Endif
 Return
 *------------------------------------------------------------------------------*
@@ -808,23 +837,19 @@ Return
 Procedure Actualizar()
 *------------------------------------------------------------------------------*
    If !Empty( Alias() )
-      cAreaPos  := AllTrim( Str( ( Alias() )->( Select( oWndBase.Tab_1.caption( oWndBase.Tab_1.value ) ) ) ) )
-      cBrowse_n := "Browse_"+cAreaPos
-
-      oWndBase.&(cBrowse_n).SetFocus
-      oWndBase.&(cBrowse_n).Refresh
+      oWndBase.&(Browse_n()).SetFocus
+      oWndBase.&(Browse_n()).Refresh
    Endif
 Return
 *------------------------------------------------------------------------------*
 Procedure MueveRec()
 *------------------------------------------------------------------------------*
    If !Empty( Alias() )
-      cAreaPos  := AllTrim( Str( ( Alias() )->( Select( oWndBase.Tab_1.caption( oWndBase.Tab_1.value ) ) ) ) )
-      cBrowse_n := "Browse_"+cAreaPos
-
-      oWndBase.&(cBrowse_n).value := ( Alias() )->( Recno() )
+      oBrowse := GetControlObject( Browse_n(),"oWndBase" )
+      oBrowse:value := { ( Alias() )->( Recno() ) , 1 }
    Endif
 Return
+
 *------------------------------------------------------------------------------*
 Procedure PackBase()
 *------------------------------------------------------------------------------*
@@ -868,11 +893,9 @@ Return
 Procedure InsertRecord()
 *--------------------------------------------------------*
    If !Empty( Alias() )
-      cAreaPos  := AllTrim( Str( ( Alias() )->( Select( oWndBase.Tab_1.caption( oWndBase.Tab_1.value ) ) ) ) )
-      cBrowse_n := "Browse_"+cAreaPos
-
       If MsgYesNo( "A blank record will be inserted before the current record!!!" + Hb_OSNewLine() + "Are You sure ?", "Insert Record")
-         ( Alias() )->( DbGoTo( oWndBase.&(cBrowse_n).value ) )
+         aRec := oWndBase.&(Browse_n()).Value
+         ( Alias() )->( DbGoTo( aRec[1] ) )
          DbInsert(.T.)
          Actualizar()
       Endif
@@ -884,15 +907,12 @@ Procedure BackColorBrowse()
 *--------------------------------------------------------*
    Local nc
    If !Empty( Alias() )
-      cAreaPos  := AllTrim( Str( ( Alias() )->( Select( oWndBase.Tab_1.caption( oWndBase.Tab_1.value ) ) ) ) )
-      cBrowse_n := "Browse_"+cAreaPos
-
-   If IsControlDefine(&(cbrowse_n),oWndBase)
+   If IsControlDefine(&(Browse_n()),oWndBase)
       aBackClr := GetColor()
       For nc := 1 to oWndBase.Tab_1.ItemCount
           cAreaPos  := AllTrim( Str( ( Alias() )->( Select( oWndBase.Tab_1.caption( nc ) ) ) ) )
           cBrowse_n := "Browse_"+cAreaPos
-          oWndBase.&(cbrowse_n).Backcolor := aBackClr
+          oWndBase.&(cBrowse_n).Backcolor := aBackClr
       Next
       SaveArchIni(cBaseFolder+'\')
       Actualizar()
@@ -904,10 +924,7 @@ Procedure FontColorBrowse()
 *--------------------------------------------------------*
    Local nc
    If !Empty( Alias() )
-      cAreaPos  := AllTrim( Str( ( Alias() )->( Select( oWndBase.Tab_1.caption( oWndBase.Tab_1.value ) ) ) ) )
-      cBrowse_n := "Browse_"+cAreaPos
-
-   If IsControlDefine(&(cbrowse_n),oWndBase)
+   If IsControlDefine(&(Browse_n()),oWndBase)
       aBackClr := GetColor()
       For nc := 1 to oWndBase.Tab_1.ItemCount
           cAreaPos  := AllTrim( Str( ( Alias() )->( Select( oWndBase.Tab_1.caption( nc ) ) ) ) )
@@ -919,15 +936,13 @@ Procedure FontColorBrowse()
    Endif
    Endif
 Return
+
 *--------------------------------------------------------*
 Procedure FontNameBrowse(nOpt)
 *--------------------------------------------------------*
    Local nc
    If !Empty( Alias() )
-      cAreaPos  := AllTrim( Str( ( Alias() )->( Select( oWndBase.Tab_1.caption( oWndBase.Tab_1.value ) ) ) ) )
-      cBrowse_n := "Browse_"+cAreaPos
-
-   If IsControlDefine(&(cbrowse_n),oWndBase)
+   If IsControlDefine(&(Browse_n()),oWndBase)
       if nOpt == 1
          aFont := GetFont()
          If !Empty(aFont[1])
@@ -953,30 +968,36 @@ Procedure FontNameBrowse(nOpt)
    Endif
    Endif
 Return
+
 *--------------------------------------------------------*
 Procedure ExportData()
 *--------------------------------------------------------*
-   Local cExt, cSaveFile, cAlias, nRecno ,nIndex := 1
+
+   Local aFiltro := {}, cExt, cSaveFile, cAlias, nRecno ,nIndex := 1
 
    If !Empty( Alias() )
 
-        aFiles :={ {"DBF FoxPro files (*.dbf)", "*.dbf"} , ;
-                   {"Text files (*.txt)"      , "*.txt"} , ;
-                   {"CSV files (*.csv)"       , "*.csv"} , ;
-                   {"SQL files (*.sql)"       , "*.sql"} , ;
-                   {"Data files (*.dat)"      , "*.dat"} , ;
-                   {"HTML files (*.html)"     , "*.html"}, ;
-                   {"XML files (*.xml)"       , "*.xml"} , ;
-                   {"Excel files (*.xls)"     , "*.xls"} , ;
-                   {"Dbase III files (*.prg)" , "*.prg"} , ;
-                   {"All files (*.*)"         , "*.*"  }  }
+        aFiltro :={ {"DBF FoxPro files (*.dbf)", "*.dbf" } , ;
+                    {"Text files (*.txt)"      , "*.txt" } , ;
+                    {"CSV files (*.csv)"       , "*.csv" } , ;
+                    {"SQL files (*.sql)"       , "*.sql" } , ;
+                    {"Data files (*.dat)"      , "*.dat" } , ;
+                    {"HTML files (*.html)"     , "*.html"} , ;
+                    {"XML files (*.xml)"       , "*.xml" } , ;
+                    {"Excel files (*.xls)"     , "*.xls" } , ;
+                    {"Dbase III files (*.prg)" , "*.prg" } , ;
+                    {"All files (*.*)"         , "*.*"   }  }
 
-	cSaveFile := PutFile( aFiles , , , , Lower( Alias() ), .T. )
-                  // Putfile( aFilter, title, cIniFolder, nochangedir, cDefaultFileName, lForceExt )
+        BEGIN SEQUENCE WITH {| oError | Break( oError ) }
+              cSaveFile := PutFile( aFiltro,"Save As",,,TokenUpper( Lower( Alias() ) ), .T. )
+              // Putfile( aFilter, title, cIniFolder, nochangedir, cDefaultFileName, lForceExt )
+        RECOVER USING oError
+              MsgInfo( dbv_ErrorMessage( oError ), PROGRAM+" Error !!!" )
+        END /* SEQUENCE */
 
-	IF !Empty( cSaveFile )
+        IF !Empty( cSaveFile )
 
-	        If right(cSaveFile,3)=='dbf'
+                If right(cSaveFile,3)=='dbf'
                    nIndex := 1
                    cExt :='dbf'
                 ElseIf right(cSaveFile,3)=='txt'
@@ -1015,8 +1036,10 @@ Procedure ExportData()
 				Return
 			ENDIF
  		ENDIF
+
 		nRecno := ( Alias() )->( Recno() )
 		( Alias() )->( DBGoTop() )
+
 		IF nIndex = 2 .OR. nIndex = 3
 			( Alias() )->( __dbSDF(.T.,(cSaveFile),{ },,,,,.F. ) )
 		ELSEIF nIndex = 4
@@ -1034,12 +1057,40 @@ Procedure ExportData()
 		ELSE
 			( Alias() )->( __dbCopy((cSaveFile),{ },,,,,.F.,) )
 		ENDIF
+
 		( Alias() )->( DBGoto(nRecno) )
+
 	ENDIF
 
    Endif
 
 Return
+
+STATIC FUNCTION dbv_ErrorMessage( oError )
+
+   /* start error message */
+   LOCAL cMessage := iif( oError:severity > 1, "Error", "Warning" ) + " "
+
+   /* add subsystem name if available */
+   cMessage += iif( HB_ISSTRING( oError:subsystem ), oError:subsystem(), "???" )
+
+   /* add subsystem's error code if available */
+   cMessage += "/" + iif( HB_ISNUMERIC( oError:subCode ), hb_ntos( oError:subCode ), "???" )
+
+   /* add error description if available */
+   IF HB_ISSTRING( oError:description )
+      cMessage += "  " + oError:description
+   ENDIF
+
+   /* add either filename or operation */
+   DO CASE
+   CASE ! Empty( oError:filename )
+      cMessage += ": " + oError:filename
+   CASE ! Empty( oError:operation )
+      cMessage += ": " + oError:operation
+   ENDCASE
+
+RETURN( cMessage )
 
 *--------------------------------------------------------*
 Procedure SaveToXls( cAlias, cFile )
@@ -1167,21 +1218,7 @@ Procedure PrintList()
     Endif
 
 Return
-/*
-	DO REPORT ;
-		TITLE    cBase                    ;
-		HEADERS  aHdr1, aHdr              ;
-		FIELDS   aHdr                     ;
-		WIDTHS   aLen                     ;
-		TOTALS   aTot                     ;
-		NFORMATS aFmt                     ;
-		WORKAREA &cBase                   ;
-                LPP 60                            ;
-                CPL 120                           ;
-                LMARGIN  5                        ;
-		PAPERSIZE DMPAPER_LETTER          ;
-		PREVIEW
-*/
+
 *--------------------------------------------------------*
 Procedure Salida()
 *--------------------------------------------------------*
@@ -1195,10 +1232,10 @@ Procedure OnlyDel(nOpt)
 *--------------------------------------------------------*
 
    If !Empty( Alias() )
-      cAreaPos  := AllTrim( Str( ( Alias() )->( Select( oWndBase.Tab_1.caption( oWndBase.Tab_1.value ) ) ) ) )
-      cBrowse_n := "Browse_"+cAreaPos
 
-      ( Alias() )->( DbGoto(oWndBase.&(cBrowse_n).Value) )
+      aReg := oWndBase.&(Browse_n()).Value
+
+      ( Alias() )->( DbGoto( aReg[1] ) )
 
       If nOpt = 1
          Set Filter to Deleted()
@@ -1247,14 +1284,12 @@ Return
 *------------------------------------------------------------*
 Procedure SaveArchIni(cPath)
 *------------------------------------------------------------*
-      cAreaPos  := AllTrim( Str( ( Alias() )->( Select( oWndBase.Tab_1.caption( oWndBase.Tab_1.value ) ) ) ) )
-      cBrowse_n := "Browse_"+cAreaPos
 
    BEGIN INI FILE cpath+'dbview.ini'
-         SET SECTION "Font"      ENTRY "Name"  TO oWndBase.&(cBrowse_n).Fontname
-         SET SECTION "Font"      ENTRY "Size"  TO oWndBase.&(cBrowse_n).Fontsize
-         SET SECTION "Font"      ENTRY "Color" TO oWndBase.&(cBrowse_n).fontcolor
-         SET SECTION "Interface" ENTRY "Color" TO oWndBase.&(cBrowse_n).Backcolor
+         SET SECTION "Font"      ENTRY "Name"  TO oWndBase.&(Browse_n()).Fontname
+         SET SECTION "Font"      ENTRY "Size"  TO oWndBase.&(Browse_n()).Fontsize
+         SET SECTION "Font"      ENTRY "Color" TO oWndBase.&(Browse_n()).fontcolor
+         SET SECTION "Interface" ENTRY "Color" TO oWndBase.&(Browse_n()).Backcolor
    END INI
 
 Return
@@ -1263,10 +1298,9 @@ Procedure VerRegistro()
 *------------------------------------------------------------*
    If !Empty( Alias() )
       If IsControlDefine(Tab_1,oWndBase)
-         cAreaPos  := AllTrim( Str( ( Alias() )->( Select( oWndBase.Tab_1.caption( oWndBase.Tab_1.value ) ) ) ) )
-         cBrowse_n := "Browse_"+cAreaPos
-         If IsControlDefine(&(cbrowse_n),oWndBase)
-            Administradbf( oWndBase.&(cbrowse_n).Value )
+         If IsControlDefine(&(Browse_n()),oWndBase)
+            aRec :=  oWndBase.&(Browse_n()).Value
+            Administradbf( aRec[1] )
             Actualizar()
          Endif
       Endif
@@ -2086,11 +2120,7 @@ Static Procedure FindNext( cString, nField, lCase, lWhole )
 		ENDIF
 	ENDIF
 
-        cAreaPos  := AllTrim( Str( ( Alias() )->( Select( oWndBase.Tab_1.caption( oWndBase.Tab_1.value ) ) ) ) )
-        cBrowse_n := "Browse_"+cAreaPos
-
-	SetProperty( "oWndBase", cBrowse_n, "Value", (cAlias)->( RecNo() ) )
-	DoMethod( "oWndBase", cBrowse_n, 'Refresh' )
+	MueveRec()
 
 Return
 
@@ -2342,11 +2372,7 @@ Static Procedure DoReplace(cString, cReplace, nField, lCase, lWhole, lAll)
 		ENDIF
 	ENDIF
 
-        cAreaPos  := AllTrim( Str( ( Alias() )->( Select( oWndBase.Tab_1.caption( oWndBase.Tab_1.value ) ) ) ) )
-        cBrowse_n := "Browse_"+cAreaPos
-
-	SetProperty( "oWndBase", cBrowse_n, "Value", (cAlias)->( RecNo() ) )
-	DoMethod( "oWndBase", cBrowse_n, 'Refresh' )
+	MueveRec()
 
 Return
 
@@ -2356,10 +2382,8 @@ Static Procedure AppendCopy()
    Local aCurrent
 
    IF !Empty(( Alias() ))
-      cAreaPos  := AllTrim( Str( ( Alias() )->( Select( oWndBase.Tab_1.caption( oWndBase.Tab_1.value ) ) ) ) )
-      cBrowse_n := "Browse_"+cAreaPos
-
-        go oWndBase.&(cBrowse_n).Value
+        aRec := oWndBase.&(Browse_n()).Value
+        go aRec[1]
 	aCurrent := (( Alias() ))->( Scatter() )
 	IF (( Alias() ))->( Rlock() )
 		(( Alias() ))->( DBappend() )
@@ -2386,9 +2410,6 @@ Static Procedure DeleteAll()
 		(( Alias() ))->( DBskip() )
 	ENDDO
 	(( Alias() ))->( DBunlock() )
-	//SetProperty( "oWndBase", "Browse_1", "Value", nRecNo )
-	//DoMethod( "oWndBase", "Browse_1", 'Refresh' )
-        //Go top
         Primero()
    ENDIF
 
@@ -2396,17 +2417,15 @@ Return
 
 Function AdjustColumn(nOpt)
    IF !Empty(( Alias() ))
-      cAreaPos  := AllTrim( Str( ( Alias() )->( Select( oWndBase.Tab_1.caption( oWndBase.Tab_1.value ) ) ) ) )
-      cBrowse_n := "Browse_"+cAreaPos
 
       Do Case
          Case nOpt = 1
-              oWndBase.&(cBrowse_n).ColumnsAutoFitH
+              oWndBase.&(Browse_n()).ColumnsAutoFitH
          Case nOpt = 2
-              oWndBase.&(cBrowse_n).ColumnsAutoFit
+              oWndBase.&(Browse_n()).ColumnsAutoFit
          Case nOpt = 3
 *             oWndBase.&(cBrowse_n).ColumnsBetterAutoFit
-	      DoMethod( "oWndBase", cBrowse_n, 'ColumnsBetterAutoFit' )
+	      DoMethod( "oWndBase", Browse_n(), 'ColumnsBetterAutoFit' )
        Endcase
    Endif
 Return Nil
@@ -2426,9 +2445,6 @@ Static Procedure UnDeleteAll()
 		(( Alias() ))->( DBskip() )
 	ENDDO
 	(( Alias() ))->( DBunlock() )
-	//SetProperty( "oWndBase", "Browse_1", "Value", nRecNo )
-	//DoMethod( "oWndBase", "Browse_1", 'Refresh' )
-        //Go top
         Primero()
    ENDIF
 
@@ -2484,15 +2500,15 @@ Author
 
 Notes
 
-  This function is an original work and is placed into the Public Domain by 
+  This function is an original work and is placed into the Public Domain by
   the author.
 
 History
 
   05/19/92 TCM Created
-  05/20/92 TCM Bug fix: Added code to carry each record's deleted status 
-               forward when the record is "moved".  
-  05/21/92 TCM Bug fix: Fixed the aeval responsible for blanking out the 
+  05/20/92 TCM Bug fix: Added code to carry each record's deleted status
+               forward when the record is "moved".
+  05/21/92 TCM Bug fix: Fixed the aeval responsible for blanking out the
                "inserted" record so that it really *does* blank it out.
 
 */
@@ -2565,19 +2581,6 @@ dbsetorder( nSavOrd )
 SET( _SET_DELETED, lSavDel )
 
 RETURN nil
-
-*-----------------------------------------------------------------------------*
-Function Putfile2 ( aFilter, title, cIniFolder, nochangecurdir, cFileName )
-*-----------------------------------------------------------------------------*
-   local c := '' , n
-
-   Default aFilter := {}, cFileName := ""
-
-   FOR n := 1 TO Len( aFilter )
-      c += aFilter[n][1] + Chr(0) + aFilter[n][2] + Chr(0)
-   NEXT
-
-Return C_PutFile ( c, title, cIniFolder, nochangecurdir, cFileName )
 
 *-----------------------------------------------------------------------------*
 Function Convert2Sql( cAlias, cSaveFile )
@@ -2665,7 +2668,7 @@ Function Convert2Sql( cAlias, cSaveFile )
       FWrite(nHandle, CRLF)
       FWrite(nHandle, cSqlDatos)
       FClose(nHandle)
-      
+
       If File( cSaveFile )
          MsgInfo( "File created: " + cSaveFile )
       Else
@@ -2871,8 +2874,8 @@ If !Empty( cSavefile )
       MsgInfo( "Error: ", FError() )
    ENDIF
 
+   TIP_HTMLTOSTR( oDoc:body:getText() )
    //HtmlToOem( oDoc:body:getText() )
-   HtmlToOem( oDoc:body:getText() )
 
 Endif
 

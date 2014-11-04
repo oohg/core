@@ -1,5 +1,5 @@
 /*
- * $Id: Import.prg,v 1.1 2013-11-19 19:15:41 migsoft Exp $
+ * $Id: Import.prg,v 1.2 2014-11-04 16:46:42 migsoft Exp $
  */
 
 /*
@@ -15,7 +15,6 @@
 
 #include "oohg.ch"
 #include "dbuvar.ch"
-#include "hbcompat.ch"
 
 Procedure ImportFile()
 
@@ -31,8 +30,8 @@ Procedure ImportFile()
          Center Window Import
          Activate Window Import
       Endif
-      
-      Ultimo()
+
+      //Ultimo()
 
    Endif
 
@@ -194,9 +193,9 @@ Function DBF_ANSI2OEM(lOem)
               Aadd( aDatos, ( Alias() )->( Fieldget(i) ) )
              ( Alias() )->( flock() )
               If lOem == .T.
-                 ( Alias() )->( Fieldput( i, iif("CM"$ValType(adatos[i]),HB_AnsiToOEM(adatos[i]),adatos[i] ) ) )
+                 ( Alias() )->( Fieldput( i, iif("CM"$ValType(adatos[i]),WIN_AnsiToOEM(adatos[i]),adatos[i] ) ) )
               Else
-                 ( Alias() )->( Fieldput( i, iif("CM"$ValType(adatos[i]),HB_OEMToAnsi(adatos[i]),adatos[i] ) ) )
+                 ( Alias() )->( Fieldput( i, iif("CM"$ValType(adatos[i]),WIN_OEMToAnsi(adatos[i]),adatos[i] ) ) )
               Endif
              ( Alias() )->( DbUnLock() )
           Next
