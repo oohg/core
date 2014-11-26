@@ -1,11 +1,15 @@
 /*
- * $Id: ChangeLog,v 1.1390 2014-11-04 16:46:41 migsoft Exp $
+ * $Id: ChangeLog,v 1.1391 2014-11-26 21:30:00 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-11-26 19:30 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/prgs/formedit.prg
+     ! GRID's DELETE clause.
 
 2014-11-04 13:21 UTC-0400 Miguel Juárez <migsoft@oohg.org>
    * samples/dbview/prgs/dbview.prg
