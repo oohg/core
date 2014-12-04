@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.45 2014-11-26 21:30:14 fyurisich Exp $
+ * $Id: formedit.prg,v 1.46 2014-12-04 22:14:24 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -14888,7 +14888,7 @@ LOCAL aFormats, aResults
       ENDIF
       ::aName[j]             := IIF( ! ::IsUnique( aResults[01], j ), ::aName[j], AllTrim( aResults[01] ) )
       ::aValueN[j]           := aResults[02]
-      ::aItems[j]            := IIF( Empty( aResults[08] ), '', aResults[03] )
+      ::aItems[j]            := IIF( Empty( aResults[08] ), aResults[03], '' )
       ::atooltip[j]          := aResults[04]
       ::aHelpID[j]           := aResults[05]
       ::aNoTabStop[j]        := aResults[06]
