@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.46 2014-12-04 22:14:24 fyurisich Exp $
+ * $Id: formedit.prg,v 1.47 2015-01-14 20:48:59 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -1979,7 +1979,7 @@ RETURN NIL
 //------------------------------------------------------------------------------
 METHOD SetDefaultFontType( si ) CLASS TFormEditor
 //------------------------------------------------------------------------------
-LOCAL cName
+LOCAL cName, ia, oControl
 
    IF si == 0
       ::cFFontName  := ::myIde:cFormDefFontName
@@ -2007,6 +2007,10 @@ LOCAL cName
       ::oDesignForm:&cName:FontStrikeout := .F.
    ELSE
       cName := ::aControlW[si]
+      IF ( ia := aScan( ::oDesignForm:aControls, { |c| Lower( c:Name ) == cName } ) ) == 0
+         RETURN NIL
+      ENDIF
+      oControl := ::oDesignForm:aControls[ia]
 
       ::aFontName[si]      := ''
       ::aFontSize[si]      := 0
@@ -2016,15 +2020,8 @@ LOCAL cName
       ::aFontUnderline[si] := .F.
       ::aFontStrikeout[si] := .F.
 
-      ::oDesignForm:&cName:Hide()
-      ::oDesignForm:&cName:FontName      := ''
-      ::oDesignForm:&cName:FontSize      := 0
-      ::oDesignForm:&cName:FontColor     := NIL
-      ::oDesignForm:&cName:FontBold      := .F.
-      ::oDesignForm:&cName:FontItalic    := .F.
-      ::oDesignForm:&cName:FontUnderline := .F.
-      ::oDesignForm:&cName:FontStrikeout := .F.
-      ::oDesignForm:&cName:Show()
+      oControl := ::RecreateControl( oControl, si )
+      ::DrawOutline( oControl )
    ENDIF
    ::lFSave := .F.
 RETURN NIL
@@ -3316,12 +3313,13 @@ LOCAL k, k1
       NEXT k1
    NEXT k
    // Order controls in each TAB by page
-   FOR k := 2 TO ::nControlW
-      FOR k1 := k + 1 TO ::nControlW
+   FOR k := ::nControlW TO 2 STEP -1
+      FOR k1 := k - 1 TO 2 STEP -1
          IF ::aTabPage[k, 1] # '' .AND. ::aTabPage[k1, 1] # ''
             IF ::aTabPage[k, 1] == ::aTabPage[k1, 1]
-               IF ::aTabPage[k, 2] > ::aTabPage[k1, 2]
+               IF ::aTabPage[k, 2] < ::aTabPage[k1, 2]
                   ::SwapArray( k, k1 )
+                  EXIT
                ENDIF
             ENDIF
          ENDIF
@@ -3572,8 +3570,7 @@ LOCAL nWidth := NIL, nHeight := NIL
                      ::aTabPage[::nControlW, 1] := Lower( oTab:Name )
                      ::aTabPage[::nControlW, 2] := nTabpage
                      ::ReorderTabs()
-                   CHideControl( oTab:hWnd )      // TODO: Check
-                   CShowControl( oTab:hWnd )
+                     oTab:Redraw()
                      EXIT
                   ENDIF
                ENDIF
@@ -5981,7 +5978,9 @@ LOCAL nFRow, nFCol, nFWidth, nFHeight
    ::cFBackcolor          := UpperNIL( ::ReadStringData( 'WINDOW', 'BACKCOLOR', 'NIL' ) )
    ::cFCursor             := ::Clean( ::ReadStringData( 'WINDOW', 'CURSOR', '' ) )
    ::cFFontName           := ::Clean( ::ReadStringData( 'WINDOW', 'FONT', '' ) )           // Do not force a font when form has none, use OOHG default
+   ::cFFontName           := ::Clean( ::ReadOopData( 'WINDOW', 'FONTNAME', ::cFFontName ) )
    ::nFFontSize           := Val( ::ReadStringData( 'WINDOW', 'SIZE', '0' ) )
+   ::nFFontSize           := Val( ::ReadOopData( 'WINDOW', 'FONTSIZE', LTrim( Str( ::nFFontSize ) ) ) )
    ::cFFontColor          := ::ReadStringData( 'WINDOW', 'FONTCOLOR', 'NIL' )
    ::cFFontColor          := UpperNIL( ::ReadOopData( 'WINDOW', 'FONTCOLOR', ::cFFontColor ) )
    ::cFNotifyIcon         := ::Clean( ::ReadStringData( 'WINDOW', 'NOTIFYICON', '' ) )
@@ -6155,7 +6154,9 @@ LOCAL lUpdateColors, oCtrl
    cFields        := ::ReadStringData( cName, 'FIELDS', "{ 'field1', 'field2' }" )
    nValue         := Val( ::ReadStringData( cName, 'VALUE', '' ) )
    cFontName      := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
+   cFontName      := ::Clean( ::ReadOopData( cName, 'FONTNAME', cFontName ) )
    nFontSize      := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
+   nFontSize      := Val( ::ReadOopData( cName, 'FONTSIZE', LTrim( Str( nFontSize ) ) ) )
    cToolTip       := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
    cInputMask     := ::ReadStringData( cName, 'INPUTMASK', "")
    cDynBackColor  := ::ReadStringData( cName, "DYNAMICBACKCOLOR", '' )
@@ -6367,7 +6368,9 @@ LOCAL lDIBSection, cBuffer, cHBitmap, cImgMargin, cSubClass, oCtrl
    nWidth        := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( TButton():nWidth ) ) ) )
    nHeight       := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TButton():nHeight ) ) ) )
    cFontName     := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
+   cFontName     := ::Clean( ::ReadOopData( cName, 'FONTNAME', cFontName ) )
    nFontSize     := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
+   nFontSize     := Val( ::ReadOopData( cName, 'FONTSIZE', LTrim( Str( nFontSize ) ) ) )
    lBold         := ( ::ReadLogicalData( cName, 'BOLD', "F" ) == "T" )
    lBold         := ( Upper( ::ReadOopData( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) == '.T.' )
    lItalic       := ( ::ReadLogicalData( cName, 'ITALIC', "F" ) == "T" )
@@ -6478,7 +6481,9 @@ LOCAL cSubClass, oCtrl
    nWidth       := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( TCheckBox():nWidth ) ) ) )
    nHeight      := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TCheckBox():nHeight ) ) ) )
    cFontName    := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
+   cFontName    := ::Clean( ::ReadOopData( cName, 'FONTNAME', cFontName ) )
    nFontSize    := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
+   nFontSize    := Val( ::ReadOopData( cName, 'FONTSIZE', LTrim( Str( nFontSize ) ) ) )
    cToolTip     := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
    cCaption     := ::Clean( ::ReadStringData( cName, 'CAPTION', '' ) )
    cOnChange    := ::ReadStringData( cName, 'ON CHANGE', '' )
@@ -6569,7 +6574,9 @@ LOCAL cImgMargin, cOnMouseMove, lTop, lBottom, lLeft, lRight, lCenter, lFlat
    nHeight      := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TButtonCheck():nHeight ) ) ) )
    cCaption     := ::Clean( ::ReadStringData( cName, 'CAPTION', cName ) )
    cFontName    := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
+   cFontName    := ::Clean( ::ReadOopData( cName, 'FONTNAME', cFontName ) )
    nFontSize    := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
+   nFontSize    := Val( ::ReadOopData( cName, 'FONTSIZE', LTrim( Str( nFontSize ) ) ) )
    lBold        := ( ::ReadLogicalData( cName, 'BOLD', "F" ) == "T" )
    lBold        := ( Upper( ::ReadOopData( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) == '.T.' )
    lItalic      := ( ::ReadLogicalData( cName, 'ITALIC', "F" ) == "T" )
@@ -6681,7 +6688,9 @@ LOCAL lNoTabStop, lSort, lDescending, lDoubleBuffer, lSingleBuffer, oCtrl
    cImage        := ::ReadStringData( cName, 'IMAGE', "" )
    nValue        := Val( ::ReadStringData( cName, 'VALUE', '') )
    cFontName     := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
+   cFontName     := ::Clean( ::ReadOopData( cName, 'FONTNAME', cFontName ) )
    nFontSize     := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
+   nFontSize     := Val( ::ReadOopData( cName, 'FONTSIZE', LTrim( Str( nFontSize ) ) ) )
    lBold         := ( ::ReadLogicalData( cName, 'BOLD', "F" ) == "T" )
    lBold         := ( Upper( ::ReadOopData( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) == '.T.' )
    lItalic       := ( ::ReadLogicalData( cName, 'ITALIC', "F" ) == "T" )
@@ -6777,7 +6786,9 @@ LOCAL cSourceOrder, cOnRefresh, nSearchLapse, cGripperText, cSubClass, oCtrl
    nWidth           := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( TCombo():nWidth ) ) ) )
    nHeight          := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TCombo():nHeight ) ) ) )
    cFontName        := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
+   cFontName        := ::Clean( ::ReadOopData( cName, 'FONTNAME', cFontName ) )
    nFontSize        := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
+   nFontSize        := Val( ::ReadOopData( cName, 'FONTSIZE', LTrim( Str( nFontSize ) ) ) )
    aFontColor       := ::ReadStringData( cName, 'FONTCOLOR', 'NIL' )
    aFontColor       := UpperNIL( ::ReadOopData( cName, 'FONTCOLOR', aFontColor ) )
    lBold            := ( ::ReadLogicalData( cName, 'BOLD', "F" ) == "T" )
@@ -6901,8 +6912,10 @@ LOCAL lVisible, lEnabled, lRTL, lNoTabStop, lNoBorder, cSubClass, nHeight, oCtrl
    nCol         := Val( ::ReadCtrlCol( cName ) )
    nWidth       := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( TDatePick():nWidth ) ) ) )
    nHeight      := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TDatePick():nHeight ) ) ) )
-   cFontName    := ::Clean( ::ReadStringData(cName, 'FONT', '' ) )
+   cFontName    := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
+   cFontName    := ::Clean( ::ReadOopData( cName, 'FONTNAME', cFontName ) )
    nFontSize    := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
+   nFontSize    := Val( ::ReadOopData( cName, 'FONTSIZE', LTrim( Str( nFontSize ) ) ) )
    cToolTip     := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
    cOnGotFocus  := ::ReadStringData( cName, 'ON GOTFOCUS', '')
    cField       := ::Clean( ::ReadStringData( cName, 'FIELD', '' ) )
@@ -6986,7 +6999,9 @@ LOCAL lBreak, nHelpID, lNoTabStop, lNoVScroll, lNoHScroll, oCtrl
    nWidth       := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( TEdit():nWidth ) ) ) )
    nHeight      := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TEdit():nHeight ) ) ) )
    cFontName    := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
+   cFontName    := ::Clean( ::ReadOopData( cName, 'FONTNAME', cFontName ) )
    nFontSize    := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
+   nFontSize    := Val( ::ReadOopData( cName, 'FONTSIZE', LTrim( Str( nFontSize ) ) ) )
    aFontColor   := ::ReadStringData( cName, 'FONTCOLOR', 'NIL' )
    aFontColor   := UpperNIL( ::ReadOopData( cName, 'FONTCOLOR', aFontColor ) )
    lBold        := ( ::ReadLogicalData( cName, 'BOLD', "F" ) == "T" )
@@ -7080,7 +7095,9 @@ LOCAL aBackColor, lVisible, lEnabled, lRTL, cSubClass, oCtrl
    lOpaque    := ( ::ReadLogicalData( cName, "OPAQUE", "F") == "T" )
    lTrans     := ( ::ReadLogicalData( cName, "TRANSPARENT", "F" ) == "T" )
    cFontName  := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
+   cFontName  := ::Clean( ::ReadOopData( cName, 'FONTNAME', cFontName ) )
    nFontSize  := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
+   nFontSize  := Val( ::ReadOopData( cName, 'FONTSIZE', LTrim( Str( nFontSize ) ) ) )
    aFontColor := ::ReadStringData( cName, 'FONTCOLOR', 'NIL' )
    aFontColor := UpperNIL( ::ReadOopData( cName, 'FONTCOLOR', aFontColor ) )
    lBold      := ( ::ReadLogicalData( cName, 'BOLD', "F" ) == "T" )
@@ -7153,7 +7170,9 @@ LOCAL cOnHeadRClick, lNoClickOnChk, lNoRClickOnChk, lExtDblClick, cSubClass
    nWidth         := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( TGrid():nWidth ) ) ) )
    nHeight        := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TGrid():nHeight ) ) ) )
    cFontName      := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
+   cFontName      := ::Clean( ::ReadOopData( cName, 'FONTNAME', cFontName ) )
    nFontSize      := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
+   nFontSize      := Val( ::ReadOopData( cName, 'FONTSIZE', LTrim( Str( nFontSize ) ) ) )
    aFontColor     := ::ReadStringData( cName, 'FONTCOLOR', 'NIL' )
    aFontColor     := UpperNIL( ::ReadOopData( cName, 'FONTCOLOR', aFontColor ) )
    lBold          := ( ::ReadLogicalData( cName, 'BOLD', "F" ) == "T" )
@@ -7359,7 +7378,9 @@ LOCAL nHelpId, lEnabled, lVisible, lNoTabStop, lNoAlt, oCtrl
    cSubClass    := ::ReadStringData( cName, 'SUBCLASS', '' )
    cValue       := ::ReadStringData( cName, 'VALUE', '')
    cFontName    := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
+   cFontName    := ::Clean( ::ReadOopData( cName, 'FONTNAME', cFontName ) )
    nFontSize    := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
+   nFontSize    := Val( ::ReadOopData( cName, 'FONTSIZE', LTrim( Str( nFontSize ) ) ) )
    lBold        := ( ::ReadLogicalData( cName, 'BOLD', "F" ) == "T" )
    lBold        := ( Upper( ::ReadOopData( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) == '.T.' )
    lItalic      := ( ::ReadLogicalData( cName, 'ITALIC', "F" ) == "T" )
@@ -7437,7 +7458,9 @@ LOCAL lClientEdge, lHScroll, lVScroll, lTrans, lRTL, oCtrl
    cValue       := ::Clean( ::ReadStringData( cName, 'VALUE', 'ooHG Home' ) )
    cAddress     := ::Clean( ::ReadStringData( cName, 'ADDRESS', 'https://sourceforge.net/projects/oohg/' ) )
    cFontName    := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
+   cFontName    := ::Clean( ::ReadOopData( cName, 'FONTNAME', cFontName ) )
    nFontSize    := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
+   nFontSize    := Val( ::ReadOopData( cName, 'FONTSIZE', LTrim( Str( nFontSize ) ) ) )
    aFontColor   := ::ReadStringData( cName, 'FONTCOLOR', 'NIL' )
    aFontColor   := UpperNIL( ::ReadOopData( cName, 'FONTCOLOR', aFontColor ) )
    lBold        := ( ::ReadLogicalData( cName, 'BOLD', "F" ) == "T" )
@@ -7587,7 +7610,9 @@ LOCAL lNoTabStop, lRTL, cSubClass, oCtrl
    nHeight      := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TIpAddress():nHeight ) ) ) )
    cValue       := ::Clean( ::ReadStringData( cName, 'VALUE', '' ) )
    cFontName    := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
+   cFontName    := ::Clean( ::ReadOopData( cName, 'FONTNAME', cFontName ) )
    nFontSize    := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
+   nFontSize    := Val( ::ReadOopData( cName, 'FONTSIZE', LTrim( Str( nFontSize ) ) ) )
    aFontColor   := ::ReadStringData( cName, 'FONTCOLOR', 'NIL' )
    aFontColor   := UpperNIL( ::ReadOopData( cName, 'FONTCOLOR', aFontColor ) )
    lBold        := ( ::ReadLogicalData( cName, 'BOLD', "F" ) == "T" )
@@ -7676,7 +7701,9 @@ LOCAL lRTL, lNoWrap, lNoPrefix, cSubClass, oCtrl
    aBackColor   := UpperNIL( ::ReadOopData( cName, 'BACKCOLOR', aBackColor ) )
    cValue       := ::Clean( ::ReadStringData( cName, 'VALUE', '' ) )
    cFontName    := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
+   cFontName    := ::Clean( ::ReadOopData( cName, 'FONTNAME', cFontName ) )
    nFontSize    := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
+   nFontSize    := Val( ::ReadOopData( cName, 'FONTSIZE', LTrim( Str( nFontSize ) ) ) )
    aFontColor   := ::ReadStringData( cName, 'FONTCOLOR', 'NIL' )
    aFontColor   := UpperNIL( ::ReadOopData( cName, 'FONTCOLOR', aFontColor ) )
    lBold        := ( ::ReadLogicalData( cName, 'BOLD', "F" ) == "T" )
@@ -7756,7 +7783,9 @@ LOCAL lMultiSelect, lNoTabStop, lBreak, lSort, cSubClass, oCtrl
    cToolTip     := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
    nHelpId      := Val( ::ReadStringData( cName, 'HELPID', '0' ) )
    cFontName    := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
+   cFontName    := ::Clean( ::ReadOopData( cName, 'FONTNAME', cFontName ) )
    nFontSize    := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
+   nFontSize    := Val( ::ReadOopData( cName, 'FONTSIZE', LTrim( Str( nFontSize ) ) ) )
    lBold        := ( ::ReadLogicalData( cName, 'BOLD', "F" ) == "T" )
    lBold        := ( Upper( ::ReadOopData( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) == '.T.' )
    lItalic      := ( ::ReadLogicalData( cName, 'ITALIC', "F" ) == "T" )
@@ -7847,7 +7876,9 @@ LOCAL lRTL, lNoToday, aTitleFntClr, aTitleBckClr, aTrlngFntClr, cSubClass, oCtrl
    nCol           := Val( ::ReadCtrlCol( cName ) )
    cValue         :=  ::ReadStringData( cName, 'VALUE', '' )
    cFontName      := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
+   cFontName      := ::Clean( ::ReadOopData( cName, 'FONTNAME', cFontName ) )
    nFontSize      := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
+   nFontSize      := Val( ::ReadOopData( cName, 'FONTSIZE', LTrim( Str( nFontSize ) ) ) )
    aFontColor     := ::ReadStringData( cName, 'FONTCOLOR', 'NIL' )
    aFontColor     := UpperNIL( ::ReadOopData( cName, 'FONTCOLOR', aFontColor ) )
    lBold          := ( ::ReadLogicalData( cName, 'BOLD', "F" ) == "T" )
@@ -8320,7 +8351,9 @@ LOCAL cRange, oCtrl
    cSubClass   := ::ReadStringData( cName, 'SUBCLASS', '' )
    nValue      := Val( ::ReadStringData( cName, 'VALUE', '0') )
    cFontName   := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
+   cFontName   := ::Clean( ::ReadOopData( cName, 'FONTNAME', cFontName ) )
    nFontSize   := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
+   nFontSize   := Val( ::ReadOopData( cName, 'FONTSIZE', LTrim( Str( nFontSize ) ) ) )
    aFontColor  := ::ReadStringData( cName, 'FORECOLOR', 'NIL' )
    aFontColor  := UpperNIL( ::ReadOopData( cName, 'FORECOLOR', aFontColor ) )
    lBold       := ( ::ReadLogicalData( cName, 'BOLD', "F" ) == "T" )
@@ -8381,7 +8414,9 @@ LOCAL lAutoSize, lHorizontal, lThemed, cBackground, cSubClass, oCtrl, nHeight
    nValue      := Val( ::ReadStringData( cName, 'VALUE', '0' ) )
    nSpacing    := Val( ::ReadStringData( cName, 'SPACING', '0' ) )
    cFontName   := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
+   cFontName   := ::Clean( ::ReadOopData( cName, 'FONTNAME', cFontName ) )
    nFontSize   := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
+   nFontSize   := Val( ::ReadOopData( cName, 'FONTSIZE', LTrim( Str( nFontSize ) ) ) )
    cToolTip    := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
    cOnChange   := ::ReadStringData( cName, 'ON CHANGE', '' )
    lTrans      := ( ::ReadLogicalData( cName, "TRANSPARENT", "F" ) == "T" )
@@ -8465,7 +8500,9 @@ LOCAL lNoHideSel, lPlainText, nFileType, lNoHScroll, oCtrl
    nWidth       := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( TEditRich():nWidth ) ) ) )
    nHeight      := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TEditRich():nHeight ) ) ) )
    cFontName    := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
+   cFontName    := ::Clean( ::ReadOopData( cName, 'FONTNAME', cFontName ) )
    nFontSize    := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
+   nFontSize    := Val( ::ReadOopData( cName, 'FONTSIZE', LTrim( Str( nFontSize ) ) ) )
    cValue       := ::Clean( ::ReadStringData( cName, 'VALUE', '' ) )
    cField       := ::ReadStringData( cName, 'FIELD', '' )
    cToolTip     := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
@@ -8721,7 +8758,9 @@ LOCAL lBoundText
    cRange       := ::ReadStringData( cName, 'RANGE', '' )
    nValue       := Val( ::ReadStringData( cName, 'VALUE', '0' ) )
    cFontName    := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
+   cFontName    := ::Clean( ::ReadOopData( cName, 'FONTNAME', cFontName ) )
    nFontSize    := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
+   nFontSize    := Val( ::ReadOopData( cName, 'FONTSIZE', LTrim( Str( nFontSize ) ) ) )
    cToolTip     := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
    cOnChange    := ::ReadStringData( cName, 'ON CHANGE', '' )
    cOnGotfocus  := ::ReadStringData( cName, 'ON GOTFOCUS', '' )
@@ -8805,7 +8844,9 @@ LOCAL nPosPage, cPCaption, cPName, nPosImage, cPImage, nPosName, nPosObj
    nWidth        := Val( ::ReadStringData( cName, 'WIDTH', '0' ) )
    nHeight       := Val( ::ReadStringData( cName, 'HEIGHT', '0' ) )
    cFontName     := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
+   cFontName     := ::Clean( ::ReadOopData( cName, 'FONTNAME', cFontName ) )
    nFontSize     := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
+   nFontSize     := Val( ::ReadOopData( cName, 'FONTSIZE', LTrim( Str( nFontSize ) ) ) )
    nValue        := Val( ::ReadStringData( cName, 'VALUE', '0' ) )
    cToolTip      := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
    cOnChange     := ::ReadStringData( cName, 'ON CHANGE', '' )
@@ -8973,7 +9014,9 @@ LOCAL lClientEdge, lBorder, nRowCount, nColCount, oCtrl
    nWidth      := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( TText():nWidth ) ) ) )
    nHeight     := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TText():nHeight ) ) ) )
    cFontName   := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
+   cFontName   := ::Clean( ::ReadOopData( cName, 'FONTNAME', cFontName ) )
    nFontSize   := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
+   nFontSize   := Val( ::ReadOopData( cName, 'FONTSIZE', LTrim( Str( nFontSize ) ) ) )
    cValue      := ::Clean( ::ReadStringData( cName, 'VALUE', '' ) )
    cToolTip    := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
    nHelpID     := Val( ::ReadStringData( cName, 'HELPID', '0' ) )
@@ -9055,7 +9098,9 @@ LOCAL nInsertType, oCtrl
    nWidth       := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( TText():nWidth ) ) ) )
    nHeight      := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TText():nHeight ) ) ) )
    cFontName    := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
+   cFontName    := ::Clean( ::ReadOopData( cName, 'FONTNAME', cFontName ) )
    nFontSize    := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
+   nFontSize    := Val( ::ReadOopData( cName, 'FONTSIZE', LTrim( Str( nFontSize ) ) ) )
    cValue       := ::Clean( ::ReadStringData( cName, 'VALUE', '' ) )
    cField       := ::ReadStringData( cName, 'FIELD', '' )
    cToolTip     := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
@@ -9185,8 +9230,10 @@ LOCAL lVisible, lEnabled, lRTL, lNoTabStop, lNoBorder, cSubClass, nHeight
    nCol         := Val( ::ReadCtrlCol( cName ) )
    nWidth       := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( TDatePick():nWidth ) ) ) )
    nHeight      := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TDatePick():nHeight ) ) ) )
-   cFontName    := ::Clean( ::ReadStringData(cName,'FONT',''))
+   cFontName    := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
+   cFontName    := ::Clean( ::ReadOopData( cName, 'FONTNAME', cFontName ) )
    nFontSize    := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
+   nFontSize    := Val( ::ReadOopData( cName, 'FONTSIZE', LTrim( Str( nFontSize ) ) ) )
    cToolTip     := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
    cOnGotFocus  := ::ReadStringData( cName, 'ON GOTFOCUS', '')
    cField       := ::Clean( ::ReadStringData( cName, 'FIELD', '' ) )
@@ -9302,7 +9349,9 @@ LOCAL cOnCheckChg, nIndent, cOnDrop, lNoLines, oCtrl
    nWidth        := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( TTree():nWidth ) ) ) )
    nHeight       := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TTree():nHeight ) ) ) )
    cFontName     := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
+   cFontName     := ::Clean( ::ReadOopData( cName, 'FONTNAME', cFontName ) )
    nFontSize     := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
+   nFontSize     := Val( ::ReadOopData( cName, 'FONTSIZE', LTrim( Str( nFontSize ) ) ) )
    aFontColor    := ::ReadStringData( cName, 'FONTCOLOR', 'NIL' )
    aFontColor    := UpperNIL( ::ReadOopData( cName, 'FONTCOLOR', aFontColor ) )
    lBold         := ( ::ReadLogicalData( cName, 'BOLD', "F" ) == "T" )
@@ -9445,7 +9494,9 @@ LOCAL cOnHeadRClick, lNoModalEdit, lByCell, lExtDblClick, oCtrl
    cInputMask     := ::ReadStringData( cName, 'INPUTMASK', "")
    nValue         := Val( ::ReadStringData( cName, 'VALUE', '' ) )
    cFontName      := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
+   cFontName      := ::Clean( ::ReadOopData( cName, 'FONTNAME', cFontName ) )
    nFontSize      := Val( ::ReadStringData( cName, 'SIZE', '0' ) )
+   nFontSize      := Val( ::ReadOopData( cName, 'FONTSIZE', LTrim( Str( nFontSize ) ) ) )
    lBold          := ( ::ReadLogicalData( cName, 'BOLD', "F" ) == "T" )
    lBold          := ( Upper( ::ReadOopData( cName, 'FONTBOLD', IF( lBold, '.T.', '.F.' ) ) ) == '.T.' )
    lItalic        := ( ::ReadLogicalData( cName, 'ITALIC', "F" ) == "T" )
@@ -9907,11 +9958,6 @@ LOCAL i, cs
 RETURN NIL
 
 //------------------------------------------------------------------------------
-STATIC FUNCTION cHideControl( x )
-//------------------------------------------------------------------------------
-RETURN HideWindow( x )        // TODO: Check
-
-//------------------------------------------------------------------------------
 STATIC FUNCTION SetHeightForWholeRows( oGrid, nMaxHeight )
 //------------------------------------------------------------------------------
 LOCAL nAreaUsed, nItemHeight, nNewHeight
@@ -9983,7 +10029,7 @@ LOCAL aImages, aPageNames, aPageObjs, aPageSubClasses, nCount
       Output += ' ;' + CRLF + Space( nSpacing ) + 'VIRTUAL HEIGHT ' + LTrim( Str( ::nfvirtualh ) )
    ENDIF
    IF ! Empty( ::cFTitle )
-      Output += ' ;' + CRLF + Space( nSpacing ) + 'TITLE ' + StrToStr( ::cFTitle )
+      Output += ' ;' + CRLF + Space( nSpacing ) + 'TITLE ' + StrToStr( ::cFTitle, .T. )
    ENDIF
    IF ! Empty( ::cFIcon )
       Output += ' ;' + CRLF + Space( nSpacing ) + 'ICON ' + StrToStr( ::cFIcon )
@@ -10040,13 +10086,13 @@ LOCAL aImages, aPageNames, aPageObjs, aPageSubClasses, nCount
       Output += ' ;' + CRLF + Space( nSpacing ) + 'FONTCOLOR ' + ::cFFontColor
    ENDIF
    IF ! Empty( ::cFGripperText )
-      Output += ' ;' + CRLF + Space( nSpacing ) + 'GRIPPERTEXT ' + StrToStr( ::cFGripperText )
+      Output += ' ;' + CRLF + Space( nSpacing ) + 'GRIPPERTEXT ' + StrToStr( ::cFGripperText, .T. )
    ENDIF
    IF ! Empty( ::cFNotifyIcon )
       Output += ' ;' + CRLF + Space( nSpacing ) + 'NOTIFYICON ' + StrToStr( ::cFNotifyIcon )
    ENDIF
    IF ! Empty( ::cFNotifyToolTip )
-      Output += ' ;' + CRLF + Space( nSpacing ) + 'NOTIFYTOOLTIP ' + StrToStr( ::cFNotifyToolTip )
+      Output += ' ;' + CRLF + Space( nSpacing ) + 'NOTIFYTOOLTIP ' + StrToStr( ::cFNotifyToolTip, .T. )
    ENDIF
    IF ! Empty( ::cFOnNotifyClick )
       Output += ' ;' + CRLF + Space( nSpacing ) + 'ON NOTIFYCLICK ' + AllTrim( ::cFOnNotifyClick )
@@ -10179,7 +10225,7 @@ LOCAL aImages, aPageNames, aPageObjs, aPageSubClasses, nCount
          IF ! HB_IsString( aCaptions[i] ) .OR. Empty( aCaptions[i] )
             Output += Space( nSpacing * 2 ) + 'STATUSITEM ' + "' '"
          ELSE
-            Output += Space( nSpacing * 2 ) + 'STATUSITEM ' + StrToStr( aCaptions[i] )
+            Output += Space( nSpacing * 2 ) + 'STATUSITEM ' + StrToStr( aCaptions[i], .T. )
          ENDIF
          IF HB_IsNumeric( aWidths[i] ) .AND. aWidths[i] > 0
             Output += ' ;' + CRLF + Space( nSpacing * 3 ) + 'WIDTH ' + LTrim( Str( aWidths[i] ) )
@@ -10198,7 +10244,7 @@ LOCAL aImages, aPageNames, aPageObjs, aPageSubClasses, nCount
             ENDIF
          ENDIF
          IF HB_IsString( aToolTips[i] ) .AND. ! Empty( aToolTips[i] )
-            Output += ' ;' + CRLF + Space( nSpacing * 3 ) + 'TOOLTIP ' + StrToStr( aToolTips[i] )
+            Output += ' ;' + CRLF + Space( nSpacing * 3 ) + 'TOOLTIP ' + StrToStr( aToolTips[i], .T. )
          ENDIF
          IF HB_IsString( aAligns[i] )
             IF aAligns[i] == 'LEFT'
@@ -10221,7 +10267,7 @@ LOCAL aImages, aPageNames, aPageObjs, aPageSubClasses, nCount
             Output += ' ;' + CRLF + Space( nSpacing * 3 ) + 'ACTION ' + AllTrim( ::cSKAction )
          ENDIF
          IF ! Empty( ::cSKToolTip )
-            Output += ' ;' + CRLF + Space( nSpacing * 3 ) + 'TOOLTIP ' + StrToStr( ::cSKToolTip )
+            Output += ' ;' + CRLF + Space( nSpacing * 3 ) + 'TOOLTIP ' + StrToStr( ::cSKToolTip, .T. )
          ENDIF
          IF ! Empty( ::cSKImage )
             Output += ' ;' + CRLF + Space( nSpacing * 3 ) + 'ICON ' + StrToStr( ::cSKImage )
@@ -10250,7 +10296,7 @@ LOCAL aImages, aPageNames, aPageObjs, aPageSubClasses, nCount
             Output += ' ;' + CRLF + Space( nSpacing * 3 ) + 'ACTION ' + AllTrim( ::cSDAction )
          ENDIF
          IF ! Empty( ::cSDToolTip )
-            Output += ' ;' + CRLF + Space( nSpacing * 3 ) + 'TOOLTIP ' + StrToStr( ::cSDToolTip )
+            Output += ' ;' + CRLF + Space( nSpacing * 3 ) + 'TOOLTIP ' + StrToStr( ::cSDToolTip, .T. )
          ENDIF
          IF ::cSDStyle == 'FLAT'
             Output += ' ;' + CRLF + Space( nSpacing * 3 ) + 'FLAT '
@@ -10276,7 +10322,7 @@ LOCAL aImages, aPageNames, aPageObjs, aPageSubClasses, nCount
             Output += ' ;' + CRLF + Space( nSpacing * 3 ) + 'ACTION ' + AllTrim( ::cSCAction )
          ENDIF
          IF ! Empty( ::cSCToolTip )
-            Output += ' ;' + CRLF + Space( nSpacing * 3 ) + 'TOOLTIP ' + StrToStr( ::cSCToolTip )
+            Output += ' ;' + CRLF + Space( nSpacing * 3 ) + 'TOOLTIP ' + StrToStr( ::cSCToolTip, .T. )
          ENDIF
          IF ! Empty( ::cSCImage )
             Output += ' ;' + CRLF + Space( nSpacing * 3 ) + 'ICON ' + StrToStr( ::cSCImage )
@@ -10355,7 +10401,7 @@ LOCAL aImages, aPageNames, aPageObjs, aPageSubClasses, nCount
             Output += ' ;' + CRLF + Space( nSpacing * 2 ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
          ENDIF
          IF ! Empty( ::aToolTip[j] )
-            Output += ' ;' + CRLF + Space( nSpacing * 2 ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * 2 ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
          ENDIF
          IF ::aButtons[j]
             Output += ' ;' + CRLF + Space( nSpacing * 2 ) + 'BUTTONS '
@@ -10444,7 +10490,7 @@ LOCAL aImages, aPageNames, aPageObjs, aPageSubClasses, nCount
             ENDIF
 
             FOR CurrentPage := 1 TO nCount
-               Output += Space( nSpacing * 2) + 'DEFINE PAGE ' + StrToStr( aCaptions[CurrentPage] )
+               Output += Space( nSpacing * 2) + 'DEFINE PAGE ' + StrToStr( aCaptions[CurrentPage], .T. )
                IF ! Empty( aImages[CurrentPage] ) .AND. HB_IsString( aImages[CurrentPage] )
                   Output += ' ;' + CRLF + Space( nSpacing * 3) + 'IMAGE ' + StrToStr( aImages[CurrentPage] )
                ENDIF
@@ -10521,21 +10567,39 @@ LOCAL aImages, aPageNames, aPageObjs, aPageSubClasses, nCount
 RETURN NIL
 
 //------------------------------------------------------------------------------
-FUNCTION StrToStr( cData )
+FUNCTION StrToStr( cData, lNoTrim )
 //------------------------------------------------------------------------------
 LOCAL cRet
 
-   IF ! "'" $ cData
-      cRet := "'" + AllTrim( cData ) + "'"
-   ELSEIF ! '"' $ cData
-      cRet := '"' + AllTrim( cData ) + '"'
-   ELSEIF ! '[' $ cData .AND. ! ']' $ cData
-      cRet := '[' + AllTrim( cData ) + ']'
-   ELSE
-      cRet := "'" + AllTrim( cData ) + "'"
-      // We can't assure that cRet is properly formed
-      // This may cause a compiler error
-   ENDIF
+	IF ! HB_IsLogical( lNoTrim )
+		lNoTrim := .F.
+	ENDIF
+
+	IF lNoTrim
+	   IF ! "'" $ cData
+	      cRet := "'" + cData + "'"
+	   ELSEIF ! '"' $ cData
+	      cRet := '"' + cData + '"'
+	   ELSEIF ! '[' $ cData .AND. ! ']' $ cData
+	      cRet := '[' + cData + ']'
+	   ELSE
+	      cRet := "'" + cData + "'"
+	      // We can't assure that cRet is properly formed
+	      // This may cause a runtime error
+	   ENDIF
+	ELSE
+	   IF ! "'" $ cData
+	      cRet := "'" + AllTrim( cData ) + "'"
+	   ELSEIF ! '"' $ cData
+	      cRet := '"' + AllTrim( cData ) + '"'
+	   ELSEIF ! '[' $ cData .AND. ! ']' $ cData
+	      cRet := '[' + AllTrim( cData ) + ']'
+	   ELSE
+	      cRet := "'" + AllTrim( cData ) + "'"
+	      // We can't assure that cRet is properly formed
+	      // This may cause a runtime error
+	   ENDIF
+	ENDIF
 RETURN cRet
 
 //------------------------------------------------------------------------------
@@ -10576,7 +10640,7 @@ LOCAL cValue
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
       ENDIF
       IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
       ENDIF
       IF ! Empty( ::aInputMask[j] )
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INPUTMASK ' + AllTrim( ::aInputMask[j] )
@@ -10827,9 +10891,9 @@ LOCAL cValue
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
       IF ! Empty( ::aCaption[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + StrToStr( ::aCaption[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + StrToStr( ::aCaption[j], .T. )
       ELSE
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + StrToStr( ::aName[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + StrToStr( ::aName[j], .T. )
       ENDIF
       IF ! Empty( ::aPicture[j] )
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PICTURE ' + StrToStr( ::aPicture[j] )
@@ -10867,7 +10931,7 @@ LOCAL cValue
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
       ENDIF
       IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
       ENDIF
       IF ::aFlat[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FLAT '
@@ -10941,9 +11005,9 @@ LOCAL cValue
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
       ENDIF
       IF ! Empty( ::aCaption[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + StrToStr( ::aCaption[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + StrToStr( ::aCaption[j], .T. )
       ELSE
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + StrToStr( ::aName[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + StrToStr( ::aName[j], .T. )
       ENDIF
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
@@ -10959,7 +11023,7 @@ LOCAL cValue
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
       ENDIF
       IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
       ENDIF
       IF ! Empty( ::aOnChange[j] )
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
@@ -11059,7 +11123,7 @@ LOCAL cValue
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
       IF ! Empty( ::aCaption[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + StrToStr( ::aCaption[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + StrToStr( ::aCaption[j], .T. )
       ELSE
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + "'" + "'"
       ENDIF
@@ -11078,7 +11142,7 @@ LOCAL cValue
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
        ENDIF
       IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
       ENDIF
       IF ! Empty( ::aOnChange[j] )
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
@@ -11172,7 +11236,7 @@ LOCAL cValue
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
       ENDIF
       IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
       ENDIF
       IF ! Empty( ::aOnChange[j] )
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
@@ -11308,7 +11372,7 @@ LOCAL cValue
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
       ENDIF
       IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
       ENDIF
       IF ::aShowNone[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SHOWNONE '
@@ -11390,7 +11454,7 @@ LOCAL cValue
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
       ENDIF
       IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
       ENDIF
       IF ::aShowNone[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SHOWNONE '
@@ -11460,7 +11524,7 @@ LOCAL cValue
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIELD ' + AllTrim( ::aField[j] )
       ENDIF
       IF ! Empty( ::aValue[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + StrToStr( ::aValue[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + StrToStr( ::aValue[j], .T. )
       ENDIF
       IF ::aReadOnly[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'READONLY '
@@ -11472,7 +11536,7 @@ LOCAL cValue
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
       ENDIF
       IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
       ENDIF
       IF ::aMaxLength[j] > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'MAXLENGTH ' + LTrim( Str( ::aMaxLength[j] ) )
@@ -11551,7 +11615,7 @@ LOCAL cValue
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
       IF ! Empty( ::aCaption[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + "CAPTION " + StrToStr( ::aCaption[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + "CAPTION " + StrToStr( ::aCaption[j], .T. )
       ENDIF
       IF ::aOpaque[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OPAQUE '
@@ -11629,7 +11693,7 @@ LOCAL cValue
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
       ENDIF
       IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
       ENDIF
       IF ! Empty( ::aOnChange[j] )
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
@@ -11861,7 +11925,7 @@ LOCAL cValue
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
       IF ! Empty( ::aValue[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + StrToStr( ::aValue[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + StrToStr( ::aValue[j], .T. )
       ELSE
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + "'ooHG Home'"
       ENDIF
@@ -11877,7 +11941,7 @@ LOCAL cValue
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
       ENDIF
       IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
       ENDIF
       IF ::aHelpID[j] > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
@@ -11953,7 +12017,7 @@ LOCAL cValue
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
       ENDIF
       IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
       ENDIF
       IF ::aBorder[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BORDER '
@@ -12026,7 +12090,7 @@ LOCAL cValue
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
       ENDIF
       IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
       ENDIF
       IF ! Empty( ::aOnChange[j] )
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
@@ -12088,7 +12152,7 @@ LOCAL cValue
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
       ENDIF
       IF ! Empty( ::aValue[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + StrToStr( ::aValue[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + StrToStr( ::aValue[j], .T. )
       ENDIF
       IF ! Empty( ::aAction[j] )
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + AllTrim( ::aAction[j] )
@@ -12136,7 +12200,7 @@ LOCAL cValue
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BORDER '
       ENDIF
       IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
       ENDIF
       IF ! ::aVisible[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
@@ -12188,7 +12252,7 @@ LOCAL cValue
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
       ENDIF
       IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
       ENDIF
       IF ! Empty( ::aOnChange[j] )
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
@@ -12288,7 +12352,7 @@ LOCAL cValue
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
       ENDIF
       IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
       ENDIF
       IF ! ::aVisible[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
@@ -12400,7 +12464,7 @@ LOCAL cValue
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
       ENDIF
       IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
       ENDIF
       IF ! Empty( ::aOnChange[j] )
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
@@ -12465,7 +12529,7 @@ LOCAL cValue
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
       IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
       ENDIF
       IF ::aFlat[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FLAT '
@@ -12551,7 +12615,7 @@ LOCAL cValue
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE .F.'
       ENDIF
       IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
       ENDIF
       IF ::aNoTabStop[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
@@ -12633,7 +12697,7 @@ LOCAL cValue
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
       IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
       ENDIF
       IF ::aVertical[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VERTICAL '
@@ -12688,7 +12752,7 @@ LOCAL cValue
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
       ENDIF
       IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
       ENDIF
       IF ! Empty( ::aOnChange[j] )
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
@@ -12758,7 +12822,7 @@ LOCAL cValue
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIELD ' + AllTrim( ::aField[j] )
       ENDIF
       IF ! Empty( ::aValue[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + StrToStr( ::aValue[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + StrToStr( ::aValue[j], .T. )
       ENDIF
       IF ::aReadOnly[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'READONLY '
@@ -12770,7 +12834,7 @@ LOCAL cValue
         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
       ENDIF
       IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
       ENDIF
       IF ::aMaxLength[j] > 0
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'MAXLENGTH ' + LTrim( Str( ::aMaxLength[j] ) )
@@ -12872,7 +12936,7 @@ LOCAL cValue
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
       Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
       IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
       ENDIF
       IF ! Empty( ::aOnChange[j] )
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
@@ -12936,7 +13000,7 @@ LOCAL cValue
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
       ENDIF
       IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
       ENDIF
       IF ! Empty( ::aOnChange[j] )
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
@@ -13020,7 +13084,7 @@ LOCAL cValue
             IF ::aDate[j]
                Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + cValue
             ELSE
-               Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + StrToStr( cValue )
+               Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + StrToStr( cValue, .T. )
             ENDIF
          ENDIF
       ENDIF
@@ -13037,20 +13101,20 @@ LOCAL cValue
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
       ENDIF
       IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
       ENDIF
       IF ::aNumeric[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NUMERIC '
          IF ! Empty( ::aInputMask[j] )
-            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INPUTMASK ' + StrToStr( ::aInputMask[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INPUTMASK ' + StrToStr( ::aInputMask[j], .T. )
          ENDIF
       ELSE
          IF ! Empty( ::aInputMask[j] )
-            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INPUTMASK ' + StrToStr( ::aInputMask[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INPUTMASK ' + StrToStr( ::aInputMask[j], .T. )
          ENDIF
       ENDIF
       IF ! Empty( ::aFields[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FORMAT ' + StrToStr( ::aFields[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FORMAT ' + StrToStr( ::aFields[j], .T. )
       ENDIF
       IF ::aDate[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DATE '
@@ -13224,7 +13288,7 @@ LOCAL cValue
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
       ENDIF
       IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
       ENDIF
       IF ! Empty( ::aOnChange[j] )
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
@@ -13391,7 +13455,7 @@ LOCAL cValue
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
       ENDIF
       IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
       ENDIF
       IF ! Empty( ::aInputMask[j] )
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INPUTMASK ' + AllTrim( ::aInputMask[j] )
@@ -13698,7 +13762,7 @@ LOCAL cValue
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'JUSTIFY ' + AllTrim( ::aJustify[j] )
       ENDIF
       IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
       ENDIF
       IF ::aRTL[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
@@ -13786,7 +13850,7 @@ LOCAL cValue
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
       ENDIF
       IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
       ENDIF
       IF ::aRTL[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
@@ -13844,7 +13908,7 @@ LOCAL cValue
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
       ENDIF
       IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
       ENDIF
       IF ::aBorder[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BORDER '
@@ -13935,7 +13999,7 @@ LOCAL cValue
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
       ENDIF
       IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
       ENDIF
       IF ::aRTL[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
@@ -13978,7 +14042,7 @@ LOCAL cValue
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
       ENDIF
       IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
       ENDIF
       IF ::aRTL[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
@@ -14080,7 +14144,7 @@ LOCAL cValue
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'COLCOUNT ' + LTrim( Str( ::aIncrement[j] ) )
       ENDIF
       IF ! Empty( ::aValue[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + StrToStr( ::aValue[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + StrToStr( ::aValue[j], .T. )
       ENDIF
       IF ! Empty( ::aAction[j] )
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + AllTrim( ::aAction[j] )
@@ -14113,7 +14177,7 @@ LOCAL cValue
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
       ENDIF
       IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
       ENDIF
       IF ::aRTL[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '

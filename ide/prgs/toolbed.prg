@@ -1,5 +1,5 @@
 /*
- * $Id: toolbed.prg,v 1.11 2014-09-25 02:59:10 fyurisich Exp $
+ * $Id: toolbed.prg,v 1.12 2015-01-14 20:48:59 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -284,7 +284,7 @@ LOCAL cOutput := "", cButton, cFile, oMenu
       cOutput += IIF( ::lItalic, ' ;' + CRLF + Space( nSpacing * 2 ) + 'ITALIC ', '' )
       cOutput += IIF( ::lUnderline, ' ;' + CRLF + Space( nSpacing * 2 ) + 'UNDERLINE ', '' )
       cOutput += IIF( ::lStrikeout, ' ;' + CRLF + Space( nSpacing * 2 ) + 'STRIKEOUT ', '' )
-      cOutput += IIF( Empty( ::cToolTip ), '', ' ;' + CRLF + Space( nSpacing * 2 ) + 'TOOLTIP ' + StrToStr( ::cToolTip ) )
+      cOutput += IIF( Empty( ::cToolTip ), '', ' ;' + CRLF + Space( nSpacing * 2 ) + 'TOOLTIP ' + StrToStr( ::cToolTip, .T. ) )
       cOutput += IIF( ::lFlat, ' ;' + CRLF + Space( nSpacing * 2 ) + 'FLAT ', '' )
       cOutput += IIF( ::lBottom, ' ;' + CRLF + Space( nSpacing * 2 ) + 'BOTTOM ', '' )
       cOutput += IIF( ::lRightText, ' ;' + CRLF + Space( nSpacing * 2 ) + 'RIGHTTEXT ', '' )
@@ -293,7 +293,7 @@ LOCAL cOutput := "", cButton, cFile, oMenu
       cOutput += IIF( ::lBreak, ' ;' + CRLF + Space( nSpacing * 2 ) + 'BREAK ', '' )
       cOutput += IIF( ::lRTL, ' ;' + CRLF + Space( nSpacing * 2 ) + 'RTL ', '' )
       cOutput += IIF( ::lNoTabStop, ' ;' + CRLF + Space( nSpacing * 2 ) + 'NOTABSTOP ', '' )
-      cOutput += IIF( Empty( ::cCaption ), '', ' ;' + CRLF + Space( nSpacing * 2 ) + 'CAPTION ' + StrToStr( ::cCaption ) )
+      cOutput += IIF( Empty( ::cCaption ), '', ' ;' + CRLF + Space( nSpacing * 2 ) + 'CAPTION ' + StrToStr( ::cCaption, .T. ) )
       cOutput += IIF( Empty( ::cAction ), '', ' ;' + CRLF + Space( nSpacing * 2 ) + 'ACTION ' + AllTrim( ::cAction ) )
       cOutput += IIF( Empty( ::cSubclass ), '', ' ;' + CRLF + Space( nSpacing * 2 ) + 'SUBCLASS ' + AllTrim( ::cSubclass ) )
       cOutput += CRLF + CRLF
