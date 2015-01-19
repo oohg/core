@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.82 2014-05-13 21:33:32 fyurisich Exp $
+ * $Id: h_combo.prg,v 1.83 2015-01-19 23:14:45 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -604,7 +604,7 @@ Local nArea, BackRec, nMax, i, nStart, bField, bValueSource, lNoEval, BackOrd :=
             ::nLastFound := ComboBoxFindString( ::oListBox:hWnd, nStart - 1, ::cText )
             If ::nLastFound > 0 .AND. ::nLastFound >= nStart
                // item was found in the rest of the list, select
-               ComboSetCurSel( ::hWnd, ::nLastFound )
+               ::Value := ::nLastFound
             Else
                // if there are more items not already loaded, load them and search again
                If OSisWinXPorLater() .AND. ::lDelayLoad
@@ -652,7 +652,7 @@ Local nArea, BackRec, nMax, i, nStart, bField, bValueSource, lNoEval, BackOrd :=
                EndIf
 
                If ::nLastFound > 0
-                  ComboSetCurSel( ::hWnd, ::nLastFound )
+                  ::Value := ::nLastFound
                Else
                   ::cText := ""
                EndIf
