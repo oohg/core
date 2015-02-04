@@ -1,5 +1,5 @@
 /*
- * $Id: h_tree.prg,v 1.39 2013-08-01 01:27:11 fyurisich Exp $
+ * $Id: h_tree.prg,v 1.40 2015-02-04 22:22:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -196,7 +196,7 @@ Local Controlhandle, nStyle, ImgDefNode, ImgDefItem, aBitmaps := array(4)
    ASSIGN ::DropEnabled VALUE lDrop    TYPE "L"
    ASSIGN ::ItemIds     VALUE itemids  TYPE "L"
 
-   ::SetForm( ControlName, ParentForm, FontName, FontSize, , BackColor, .t., lRtl )
+   ::SetForm( ControlName, ParentForm, FontName, FontSize, , , .t., lRtl )
 
    nStyle := ::InitStyle( nStyle, , invisible, notabstop, lDisabled )
    If HB_IsLogical( lFullRowSel ) .AND. lFullRowSel
@@ -276,6 +276,8 @@ Local Controlhandle, nStyle, ImgDefNode, ImgDefItem, aBitmaps := array(4)
    Else
       ASSIGN ::InitValue VALUE Value TYPE "N" DEFAULT 0
    EndIf
+
+   ::BackColor := BackColor
 
    ASSIGN ::OnDrop        VALUE ondrop      TYPE "B"
    ASSIGN ::OnLostFocus   VALUE lostfocus   TYPE "B"
