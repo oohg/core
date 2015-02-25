@@ -1,11 +1,21 @@
 /*
- * $Id: ChangeLog,v 1.1396 2015-02-16 03:01:22 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1397 2015-02-25 21:07:47 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-02-25 19:07 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_print.prg
+     + Support for MAXROW and MAXCOL methods in TMINIPRINT,
+       THBPRINTER, TEXCELPRINT and TCALCPRINT. For other classes
+       they return 0.
+   * source/miniprint.prg
+     + _HMG_PRINTER_GETMAXCOL and _HMG_PRINTER_GETMAXROW functions.
+   * source/winprint.prg
+   ! RR_GETDEVICECAPS function is wrongly calculating rows and cols.
 
 2015-02-16 01:00 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * ide/prgs/formedit.prg

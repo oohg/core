@@ -1,5 +1,5 @@
 /*
- * $Id: h_print.prg,v 1.143 2014-07-11 01:52:14 fyurisich Exp $
+ * $Id: h_print.prg,v 1.144 2015-02-25 21:07:48 fyurisich Exp $
  */
 
 #include 'hbclass.ch'
@@ -152,6 +152,8 @@ CLASS TPRINTBASE
    DATA nhFij                     INIT ( 12 / 3.70 )         READONLY
    DATA nLinPag                   INIT 0                     READONLY
    DATA nLMargin                  INIT 0                     READONLY
+   DATA nMaxCol                   INIT 0                     READONLY
+   DATA nMaxRow                   INIT 0                     READONLY
    DATA nmHor                     INIT ( 10 / 4.75 )         READONLY
    DATA nmVer                     INIT ( 10 / 2.35 )         READONLY
    DATA nTMargin                  INIT 0                     READONLY
@@ -182,6 +184,8 @@ CLASS TPRINTBASE
    METHOD InitX                   BLOCK { || NIL }
    METHOD Int25
    METHOD Mat25
+   METHOD MaxCol                  INLINE ::nMaxCol
+   METHOD MaxRow                  INLINE ::nMaxRow
    METHOD NormalDos               BLOCK { || NIL }
    METHOD NormalDosX              BLOCK { || NIL }
    METHOD PrintBarcode
@@ -1042,6 +1046,8 @@ CLASS TMINIPRINT FROM TPRINTBASE
    METHOD EndPageX
    METHOD GetDefPrinterX
    METHOD InitX
+   METHOD MaxCol
+   METHOD MaxRow
    METHOD PrintBarcodeX
    METHOD PrintDataX
    METHOD PrintImageX
@@ -1053,6 +1059,34 @@ CLASS TMINIPRINT FROM TPRINTBASE
    METHOD SetPreviewSizeX
 
 ENDCLASS
+
+*-----------------------------------------------------------------------------*
+METHOD MaxCol() CLASS TMINIPRINT
+*-----------------------------------------------------------------------------*
+LOCAL nCol
+
+   IF _HMG_PRINTER_hDC == 0
+      nCol := 0
+   ELSEIF ::cUnits == "MM"
+      nCol := _HMG_PRINTER_GETPAGEWIDTH() - 1
+   ELSE
+      nCol := _HMG_PRINTER_GETMAXCOL( _HMG_PRINTER_hDC, ::cFontName, ::nFontSize, ::nFontWidth, ::nFontAngle, ::lFontBold, ::lFontItalic, ::lFontUnderline, ::lFontStrikeout )
+   ENDIF
+RETURN nCol
+
+*-----------------------------------------------------------------------------*
+METHOD MaxRow() CLASS TMINIPRINT
+*-----------------------------------------------------------------------------*
+LOCAL nRow
+
+   IF _HMG_PRINTER_hDC == 0
+      nRow := 0
+   ELSEIF ::cUnits == "MM"
+      nRow := _HMG_PRINTER_GETPAGEHEIGHT() - 1
+   ELSE
+      nRow := _HMG_PRINTER_GETMAXROW( _HMG_PRINTER_hDC, ::cFontName, ::nFontSize, ::nFontWidth, ::nFontAngle, ::lFontBold, ::lFontItalic, ::lFontUnderline, ::lFontStrikeout )
+   ENDIF
+RETURN nRow
 
 *-----------------------------------------------------------------------------*
 METHOD SetPreviewSizeX( nSize ) CLASS TMINIPRINT
@@ -1703,6 +1737,8 @@ CLASS THBPRINTER FROM TPRINTBASE
    METHOD EndPageX
    METHOD GetDefPrinterX
    METHOD InitX
+   METHOD MaxCol
+   METHOD MaxRow
    METHOD PrintBarcodeX
    METHOD PrintDataX
    METHOD PrintImageX
@@ -1715,6 +1751,42 @@ CLASS THBPRINTER FROM TPRINTBASE
    METHOD SetPreviewSizeX
 
 ENDCLASS
+
+*-----------------------------------------------------------------------------*
+METHOD MaxCol() CLASS THBPRINTER
+*-----------------------------------------------------------------------------*
+LOCAL nCol
+
+   IF HB_IsObject( ::oHBPrn )
+      IF ::cUnits == "MM"
+         nCol := ::oHBPrn:MaxCol
+      ELSE
+         SET UNITS ROWCOL
+         nCol := ::oHBPrn:MaxCol
+         SET UNITS MM
+      ENDIF
+   ELSE
+      nCol := 0
+   ENDIF
+RETURN nCol
+
+*-----------------------------------------------------------------------------*
+METHOD MaxRow() CLASS THBPRINTER
+*-----------------------------------------------------------------------------*
+LOCAL nRow
+
+   IF HB_IsObject( ::oHBPrn )
+      IF ::cUnits == "MM"
+         nRow := ::oHBPrn:MaxRow
+      ELSE
+         SET UNITS ROWCOL
+         nRow := ::oHBPrn:MaxRow
+         SET UNITS MM
+      ENDIF
+   ELSE
+      nRow := 0
+   ENDIF
+RETURN nRow
 
 *-----------------------------------------------------------------------------*
 METHOD InitX() CLASS THBPRINTER
@@ -2439,6 +2511,8 @@ CLASS TEXCELPRINT FROM TPRINTBASE
    METHOD EndDocX
    METHOD EndPageX
    METHOD InitX
+   METHOD MaxCol                  INLINE IIF( HB_IsObject( ::oHoja ), ::oHoja:Columns:Count, 0 )
+   METHOD MaxRow                  INLINE IIF( HB_IsObject( ::oHoja ), ::oHoja:Rows:Count, 0 )
    METHOD PrintDataX
    METHOD PrintImageX
    METHOD ReleaseX
@@ -3935,6 +4009,8 @@ CLASS TCALCPRINT FROM TPRINTBASE
    METHOD EndDocX
    METHOD EndPageX
    METHOD InitX
+   METHOD MaxCol                  INLINE IIF( HB_IsObject( ::oSheet ), ::oSheet:Columns:Count, 0 )
+   METHOD MaxRow                  INLINE IIF( HB_IsObject( ::oSheet ), ::oSheet:Rows:Count, 0 )
    METHOD PrintDataX
    METHOD PrintImageX
    METHOD ReleaseX

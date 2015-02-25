@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.56 2014-07-02 23:14:22 fyurisich Exp $
+ * $Id: winprint.prg,v 1.57 2015-02-25 21:07:48 fyurisich Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -2289,8 +2289,8 @@ HB_FUNC (RR_GETDEVICECAPS)
    devcaps[ 9] = GetDeviceCaps( hDCRef, PHYSICALOFFSETX );
    devcaps[10] = tm.tmHeight;
    devcaps[11] = tm.tmAveCharWidth;
-   devcaps[12] = (int) ( ( devcaps[3] - tm.tmAscent ) / tm.tmHeight );
-   devcaps[13] = (int) ( devcaps[4] / tm.tmAveCharWidth );
+   devcaps[12] = (int) ( ( devcaps[2] - tm.tmAscent ) / tm.tmHeight );
+   devcaps[13] = (int) ( devcaps[3] / tm.tmAveCharWidth );
    devcaps[14] = pi2->pDevMode->dmOrientation;
    devcaps[15] = (int) tm.tmAscent;
    devcaps[16] = (int) pi2->pDevMode->dmPaperSize;

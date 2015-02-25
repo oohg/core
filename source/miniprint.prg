@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.prg,v 1.49 2014-07-05 18:46:25 fyurisich Exp $
+ * $Id: miniprint.prg,v 1.50 2015-02-25 21:07:48 fyurisich Exp $
  */
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
@@ -4209,6 +4209,232 @@ HB_FUNC( _HMG_PRINTER_C_PIE )
       DeleteObject( hpen );
       DeleteObject( hbr );
    }
+}
+
+//----------------------------------------------------------------------------//
+HB_FUNC( _HMG_PRINTER_GETMAXCOL )       // hdcPrint, FontName, FontSize, nWidth, nAngle, lBold, lItalic, lUnderLine, lStrikeOut
+{
+   HDC hdcPrint;
+   char FontName [32];
+   int FontSize;
+   int nWidth;
+   int nAngle;
+   int fnWeight;
+   DWORD fdwItalic;
+   DWORD fdwUnderline;
+   DWORD fdwStrikeOut;
+   int FontHeight;
+   HFONT hfont;
+   HGDIOBJ hgdiobj;
+   TEXTMETRIC tm;
+
+   hdcPrint = (HDC) hb_parnl( 1 );
+
+   // FontName
+   if( hb_parclen( 2 ) )
+   {
+      strcpy( FontName, hb_parc( 2 ) );
+   }
+   else
+   {
+      strcpy( FontName, "Arial" );
+   }
+
+   // FontSize
+   if( hb_parni( 3 ) > 0 )
+   {
+      FontSize = hb_parni( 3 );
+   }
+   else
+   {
+      FontSize = 10;
+   }
+
+   // Width
+   nWidth = hb_parni( 4 );
+
+   // Angle
+   nAngle = hb_parni( 5 );
+
+   // Bold
+   if( hb_parl( 6 ) )
+   {
+      fnWeight = FW_BOLD;
+   }
+   else
+   {
+      fnWeight = FW_NORMAL;
+   }
+
+   // Italic
+   if( hb_parl( 7 ) )
+   {
+      fdwItalic = TRUE;
+   }
+   else
+   {
+      fdwItalic = FALSE;
+   }
+
+   // UnderLine
+   if( hb_parl( 8 ) )
+   {
+      fdwUnderline = TRUE;
+   }
+   else
+   {
+      fdwUnderline = FALSE;
+   }
+
+   // StrikeOut
+   if( hb_parl( 9 ) )
+   {
+      fdwStrikeOut = TRUE;
+   }
+   else
+   {
+      fdwStrikeOut = FALSE;
+   }
+
+   FontHeight = -MulDiv( FontSize, GetDeviceCaps( hdcPrint, LOGPIXELSY ), 72 );
+
+   hfont = CreateFont( FontHeight,
+                       nWidth,
+                       nAngle,
+                       nAngle,
+                       fnWeight,
+                       fdwItalic,
+                       fdwUnderline,
+                       fdwStrikeOut,
+                       DEFAULT_CHARSET,
+                       OUT_TT_PRECIS,
+                       CLIP_DEFAULT_PRECIS,
+                       DEFAULT_QUALITY,
+                       FF_DONTCARE,
+                       (LPCTSTR) FontName );
+
+   hgdiobj = SelectObject( hdcPrint, hfont );
+
+   GetTextMetrics( hdcPrint, &tm );
+
+   hb_retni( (int) ( GetDeviceCaps( hdcPrint, HORZRES ) / tm.tmAveCharWidth - 1 ) );
+
+   SelectObject( hdcPrint, hgdiobj );
+
+   DeleteObject( hfont );
+}
+
+//----------------------------------------------------------------------------//
+HB_FUNC( _HMG_PRINTER_GETMAXROW )       // hdcPrint, FontName, FontSize, nWidth, nAngle, lBold, lItalic, lUnderLine, lStrikeOut
+{
+   HDC hdcPrint;
+   char FontName [32];
+   int FontSize;
+   int nWidth;
+   int nAngle;
+   int fnWeight;
+   DWORD fdwItalic;
+   DWORD fdwUnderline;
+   DWORD fdwStrikeOut;
+   int FontHeight;
+   HFONT hfont;
+   HGDIOBJ hgdiobj;
+   TEXTMETRIC tm;
+
+   hdcPrint = (HDC) hb_parnl( 1 );
+
+   // FontName
+   if( hb_parclen( 2 ) )
+   {
+      strcpy( FontName, hb_parc( 2 ) );
+   }
+   else
+   {
+      strcpy( FontName, "Arial" );
+   }
+
+   // FontSize
+   if( hb_parni( 3 ) > 0 )
+   {
+      FontSize = hb_parni( 3 );
+   }
+   else
+   {
+      FontSize = 10;
+   }
+
+   // Width
+   nWidth = hb_parni( 4 );
+
+   // Angle
+   nAngle = hb_parni( 5 );
+
+   // Bold
+   if( hb_parl( 6 ) )
+   {
+      fnWeight = FW_BOLD;
+   }
+   else
+   {
+      fnWeight = FW_NORMAL;
+   }
+
+   // Italic
+   if( hb_parl( 7 ) )
+   {
+      fdwItalic = TRUE;
+   }
+   else
+   {
+      fdwItalic = FALSE;
+   }
+
+   // UnderLine
+   if( hb_parl( 8 ) )
+   {
+      fdwUnderline = TRUE;
+   }
+   else
+   {
+      fdwUnderline = FALSE;
+   }
+
+   // StrikeOut
+   if( hb_parl( 9 ) )
+   {
+      fdwStrikeOut = TRUE;
+   }
+   else
+   {
+      fdwStrikeOut = FALSE;
+   }
+
+   FontHeight = -MulDiv( FontSize, GetDeviceCaps( hdcPrint, LOGPIXELSY ), 72 );
+
+   hfont = CreateFont( FontHeight,
+                       nWidth,
+                       nAngle,
+                       nAngle,
+                       fnWeight,
+                       fdwItalic,
+                       fdwUnderline,
+                       fdwStrikeOut,
+                       DEFAULT_CHARSET,
+                       OUT_TT_PRECIS,
+                       CLIP_DEFAULT_PRECIS,
+                       DEFAULT_QUALITY,
+                       FF_DONTCARE,
+                       (LPCTSTR) FontName );
+
+   hgdiobj = SelectObject( hdcPrint, hfont );
+
+   GetTextMetrics( hdcPrint, &tm );
+
+   hb_retni( (int) ( ( GetDeviceCaps( (HDC) hb_parnl( 1 ), VERTRES ) - tm.tmAscent ) / tm.tmHeight - 1 ) );
+
+   SelectObject( hdcPrint, hgdiobj );
+
+   DeleteObject( hfont );
 }
 
 #pragma ENDDUMP
