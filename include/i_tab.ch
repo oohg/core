@@ -1,5 +1,5 @@
 /*
- * $Id: i_tab.ch,v 1.9 2014-07-09 02:25:23 fyurisich Exp $
+ * $Id: i_tab.ch,v 1.10 2015-02-28 23:34:50 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -83,13 +83,14 @@
       [ <invisible: INVISIBLE> ] ;
       [ <disabled: DISABLED> ] ;
       [ <multiline: MULTILINE> ] ;
+      [ <noproc: DELAYMSGS> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TTab(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, {}, {}, ;
             <value>, <f>, <s>, <tooltip>, <{change}>, <.buttons.>, <.flat.>, ;
             <.hottrack.>, <.vertical.>, <.notabstop.>,, <.bold.>, <.italic.>, ;
             <.underline.>, <.strikeout.>, {}, <.rtl.>, <.internals.>, ;
-            <.invisible.>, <.disabled.>, <.multiline.> )
+            <.invisible.>, <.disabled.>, <.multiline.>, <.noproc.> )
 
 #command PAGE <caption> ;
       [ IMAGE <image> ] ;

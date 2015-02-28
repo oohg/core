@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.147 2014-08-13 22:22:11 fyurisich Exp $
+ * $Id: h_controlmisc.prg,v 1.148 2015-02-28 23:34:50 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1394,13 +1394,13 @@ RETURN cName
 
 *------------------------------------------------------------------------------*
 METHOD SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, ;
-                BkColor, lEditBox, lRtl, xAnchor ) CLASS TControl
+                BkColor, lEditBox, lRtl, xAnchor, lNoProc ) CLASS TControl
 *------------------------------------------------------------------------------*
 
    ::StartInfo( -1 )
    ::SearchParent( ParentForm )
 
-   ::ParentDefaults( FontName, FontSize, FontColor )
+   ::ParentDefaults( FontName, FontSize, FontColor, lNoProc )
 
    If HB_IsLogical( lEditBox ) .AND. lEditBox
       // Background Color (edit or listbox):

@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.118 2014-11-04 01:56:39 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.119 2015-02-28 23:34:50 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -971,7 +971,6 @@ METHOD Visible( lVisible ) CLASS TXBrowse
    IF ValType( lVisible ) == "L"
       ::Super:Visible := lVisible
       aEval( ::aControls, { |o| o:Visible := lVisible } )
-      ProcessMessages()
    EndIf
 Return ::lVisible
 

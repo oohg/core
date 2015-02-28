@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.58 2014-09-01 15:58:50 fyurisich Exp $
+ * $Id: h_form.prg,v 1.59 2015-02-28 23:34:50 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -549,12 +549,11 @@ METHOD Visible( lVisible, nFlags, nTime ) CLASS TForm
             ::lShowed := .T.
             ::SetActivationFocus()
          ENDIF
-         ProcessMessages()    //// ojo con esto
+         IF ::lProcMsgsOnVisible
+            ProcessMessages()
+         ENDIF
       ENDIF
-
-      //CGR
       ::CheckClientsPos()
-
    ENDIF
 Return ::lVisible
 
@@ -725,7 +724,6 @@ Return nil
 METHOD ProcessInitProcedure() CLASS TForm
 *-----------------------------------------------------------------------------*
    if HB_IsBlock( ::OnInit )
-     ///  ProcessMessages()
       ::DoEvent( ::OnInit, "WINDOW_INIT" )
    EndIf
    AEVAL( ::SplitChildList, { |o| o:ProcessInitProcedure() } )
@@ -1985,10 +1983,10 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD Visible( lVisible ) CLASS TFormModal
 *-----------------------------------------------------------------------------*
-   IF HB_IsLogical( lVisible )
-      IF lVisible
+   If HB_IsLogical( lVisible )
+      If lVisible
          // Find Previous window
-         If     aScan( _OOHG_aFormhWnd, GetActiveWindow() ) > 0
+         If aScan( _OOHG_aFormhWnd, GetActiveWindow() ) > 0
             ::oPrevWindow := GetFormObjectByHandle( GetActiveWindow() )
          ElseIf _OOHG_UserWindow != NIL .AND. ascan( _OOHG_aFormhWnd, _OOHG_UserWindow:hWnd ) > 0
             ::oPrevWindow := _OOHG_UserWindow
@@ -2010,8 +2008,8 @@ METHOD Visible( lVisible ) CLASS TFormModal
            AADD( _OOHG_ActiveModal, Self )
          EndIf
          EnableWindow( ::hWnd )
-      ENDIF
-   ENDIF
+      EndIf
+   EndIf
 RETURN ( ::Super:Visible := lVisible )
 
 *-----------------------------------------------------------------------------*

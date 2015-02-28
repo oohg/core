@@ -1,11 +1,46 @@
 /*
- * $Id: ChangeLog,v 1.1397 2015-02-25 21:07:47 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1398 2015-02-28 23:34:50 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-02-28 21:34 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_xbrowse.prg
+     * Removed unnecessary call to ProcessMessage() at the end of ::Visible.
+   * source/h_textbox.prg
+     * Use ::lVisible as return value of ::Visible instead of
+       ::Super:Visible.
+   * source/h_windows.prg
+     + DATA TWindow:lProcMsgsOnVisible.
+     * TWindow:Visible checks TWindow:lProcMsgsOnVisible before calling
+       ProcessMessage() after changing object's visibility.
+     + Parameter lNoProc to method ParentDefaults of Twindow.
+       The method now sets ::lProcMsgsOnVisible using the passed value or
+       to the container's value or to the parent's value.
+   * source/h_form.prg
+     * TForm:Visible checks TWindow:lProcMsgsOnVisible before calling
+       ProcessMessage() after changing object's visibility.
+   * source/h_controlmisc.prg
+     + Parameter lNoProc to method SetForm of TForm. This parameter
+       changes ::lProcMsgsOnVisible via Twindow:ParentDefaults.
+   * include/i_tab.ch
+     + DELAYMSGS clause to indicate that TAB's pages and its controls
+       must be defined with ::lProcMsgsOnVisible set to .F.
+   * source/h_tab.prg
+     + Parameter lNoProc to method Define of TTabDirect, TTabCombo,
+       TTabRadio, TTabMulti and TMultiPage classes.
+       TTabDirect:lProcMsgsOnVisible will be set to .F.
+     * Methods Refresh, Visible and HidePage of TTabDirect class now
+       call ProcessMessage() when TTabDirect:lProcMsgsOnVisible is .F.
+     * TTabDirect:AddControl will set control's ::lProcMsgsOnVisible
+       to match TTabDirect:lProcMsgsOnVisible.
+     * Methods Refresh, Visible and HidePage of TMultiPage class now
+       call ProcessMessage() when TTabDirect:lProcMsgsOnVisible is .F.
+     * TMultiPage:AddControl will set control's ::lProcMsgsOnVisible
+       to match TMultiPage:lProcMsgsOnVisible.
 
 2015-02-25 19:07 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_print.prg

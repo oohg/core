@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.65 2013-07-13 02:51:56 fyurisich Exp $
+ * $Id: h_tab.prg,v 1.66 2015-02-28 23:34:50 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -137,7 +137,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aCaptions, aPageMap, ;
                value, fontname, fontsize, tooltip, change, Buttons, Flat, ;
                HotTrack, Vertical, notabstop, aMnemonic, bold, italic, ;
                underline, strikeout, Images, lRtl, lInternals, Invisible, ;
-               lDisabled, multiline ) CLASS TTabDirect
+               lDisabled, multiline, lNoProc ) CLASS TTabDirect
 *-----------------------------------------------------------------------------*
 LOCAL z, Caption, Image, aControls, Mnemonic
 
@@ -146,6 +146,10 @@ LOCAL z, Caption, Image, aControls, Mnemonic
                    HotTrack, Vertical, notabstop, bold, italic, ;
                    underline, strikeout, , lRtl, Invisible, ;
                    lDisabled, multiline )
+
+   IF HB_IsLogical( lNoProc )
+      ::lProcMsgsOnVisible := ! lNoProc
+   ENDIF
 
    ASSIGN ::lInternals VALUE lInternals TYPE "L"
 
@@ -232,6 +236,9 @@ LOCAL nPage, nFocused
    AEVAL( ::aPages, { |p,i| p:Position := i , p:ForceHide() } )
    IF nPage >= 1 .AND. nPage <= LEN( ::aPages )
       ::aPages[ nPage ]:Show()
+      IF ! ::lProcMsgsOnVisible
+         ProcessMessages()
+      ENDIF
    ENDIF
 
    IF ValidHandler( nFocused )
@@ -309,6 +316,9 @@ LOCAL nPos, aPages
          ELSE
             aPages[ nPos ]:ForceHide()
          ENDIF
+      ENDIF
+      IF ! ::lProcMsgsOnVisible
+         ProcessMessages()
       ENDIF
    ENDIF
 RETURN ::lVisible
@@ -433,14 +443,13 @@ Function _EndTab()
 RETURN nil
 
 *-----------------------------------------------------------------------------*
-METHOD AddControl( oCtrl , PageNumber , Row , Col ) CLASS TTabDirect
+METHOD AddControl( oCtrl, PageNumber, Row, Col ) CLASS TTabDirect
 *-----------------------------------------------------------------------------*
-
    IF ValType( oCtrl ) $ "CM"
       oCtrl := ::Parent:Control( oCtrl )
    ENDIF
 
-   IF !HB_IsNumeric( PageNumber ) .OR. PageNumber > LEN( ::aPages )
+   IF ! HB_IsNumeric( PageNumber ) .OR. PageNumber > LEN( ::aPages )
       PageNumber := LEN( ::aPages )
    ENDIF
 
@@ -448,17 +457,18 @@ METHOD AddControl( oCtrl , PageNumber , Row , Col ) CLASS TTabDirect
       PageNumber := 1
    ENDIF
 
-   IF !HB_IsNumeric( Row )
+   IF ! HB_IsNumeric( Row )
       Row := oCtrl:ContainerRow - ::ContainerRow
    ENDIF
 
-   IF !HB_IsNumeric( Col )
+   IF ! HB_IsNumeric( Col )
       Col := oCtrl:ContainerCol - ::ContainerCol
    ENDIF
 
-   ::aPages[ PageNumber ]:AddControl( oCtrl, Row, Col )
+   oCtrl:lProcMsgsOnVisible := ::lProcMsgsOnVisible
 
-RETURN nil
+   ::aPages[ PageNumber ]:AddControl( oCtrl, Row, Col )
+RETURN Nil
 
 *-----------------------------------------------------------------------------*
 METHOD DeletePage( Position ) CLASS TTabDirect
@@ -517,6 +527,9 @@ LOCAL nPos
       IF nPos > 0
          ::Value := nPos
          ::aPages[ nPos ]:Show()
+         IF ! ::lProcMsgsOnVisible
+            ProcessMessages()
+         ENDIF
       ENDIF
    ENDIF
 RETURN nil
@@ -585,12 +598,12 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aCaptions, aPageMap, ;
                value, fontname, fontsize, tooltip, change, Buttons, Flat, ;
                HotTrack, Vertical, notabstop, aMnemonic, bold, italic, ;
                underline, strikeout, Images, lRtl, lInternals, Invisible, ;
-               lDisabled, multiline ) CLASS TTabCombo
+               lDisabled, multiline, lNoProc ) CLASS TTabCombo
 *-----------------------------------------------------------------------------*
 
    ::Super:Define( ControlName, ParentForm, x, y, w, h, , , ;
                    FontName, FontSize, bold, italic, underline, strikeout, ;
-                   Invisible, lDisabled, lRtl, change, value )
+                   Invisible, lDisabled, lRtl, change, value, lNoProc )
 
    // Unused...
    EMPTY( Buttons )
@@ -630,12 +643,12 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aCaptions, aPageMap, ;
                value, fontname, fontsize, tooltip, change, Buttons, Flat, ;
                HotTrack, Vertical, notabstop, aMnemonic, bold, italic, ;
                underline, strikeout, Images, lRtl, lInternals, Invisible, ;
-               lDisabled, multiline ) CLASS TTabRadio
+               lDisabled, multiline, lNoProc ) CLASS TTabRadio
 *-----------------------------------------------------------------------------*
 
    ::Super:Define( ControlName, ParentForm, x, y, w, h, , , ;
                    FontName, FontSize, bold, italic, underline, strikeout, ;
-                   Invisible, lDisabled, lRtl, change, value )
+                   Invisible, lDisabled, lRtl, change, value, lNoProc )
 
    // Unused...
    EMPTY( Buttons )
@@ -678,12 +691,12 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aCaptions, aPageMap, ;
                value, fontname, fontsize, tooltip, change, Buttons, Flat, ;
                HotTrack, Vertical, notabstop, aMnemonic, bold, italic, ;
                underline, strikeout, Images, lRtl, lInternals, Invisible, ;
-               lDisabled, multiline ) CLASS TTabMulti
+               lDisabled, multiline, lNoProc ) CLASS TTabMulti
 *-----------------------------------------------------------------------------*
 
    ::Super:Define( ControlName, ParentForm, x, y, w, h, , , ;
                    FontName, FontSize, bold, italic, underline, strikeout, ;
-                   Invisible, lDisabled, lRtl, change, value )
+                   Invisible, lDisabled, lRtl, change, value, lNoProc )
 
    ::oContainerBase := TTabRaw()
    ::oContainerBase:Define( , Self, 0, 0, w, h, , ;
@@ -771,7 +784,7 @@ ENDCLASS
 *-----------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, w, h, FontColor, BackColor, ;
                FontName, FontSize, bold, italic, underline, strikeout, ;
-               Invisible, lDisabled, lRtl, change, value ) CLASS TMultiPage
+               Invisible, lDisabled, lRtl, change, value, lNoProc ) CLASS TMultiPage
 *-----------------------------------------------------------------------------*
 
    ASSIGN ::nWidth  VALUE w TYPE "N"
@@ -779,7 +792,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, FontColor, BackColor, ;
    ASSIGN ::nRow    VALUE y TYPE "N"
    ASSIGN ::nCol    VALUE x TYPE "N"
 
-   ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor,, lRtl )
+   ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, , lRtl, , lNoProc )
    ::InitStyle( ,, Invisible, , lDisabled )
    ::Register( 0 )
    ::SetFont( ,, bold, italic, underline, strikeout )
@@ -850,7 +863,10 @@ LOCAL nPage, nFocused
    nPage := IF( ::Visible, ::Value, 0 )
    AEVAL( ::aPages, { |p,i| p:Position := i , p:ForceHide() } )
    IF nPage >= 1 .AND. nPage <= LEN( ::aPages )
-      ::aPages[ nPage ]:Show()
+      ::aPages[ nPage ]:Show()   
+      IF ! ::lProcMsgsOnVisible
+         ProcessMessages()
+      ENDIF
    ENDIF
 
    IF ValidHandler( nFocused )
@@ -929,6 +945,9 @@ LOCAL nPos, aPages
          ELSE
             aPages[ nPos ]:ForceHide()
          ENDIF
+      ENDIF
+      IF ! ::lProcMsgsOnVisible
+         ProcessMessages()
       ENDIF
    ENDIF
 RETURN ::lVisible
@@ -1019,9 +1038,8 @@ LOCAL oPage, nPos
 RETURN oPage
 
 *-----------------------------------------------------------------------------*
-METHOD AddControl( oCtrl , PageNumber , Row , Col ) CLASS TMultiPage
+METHOD AddControl( oCtrl, PageNumber, Row, Col ) CLASS TMultiPage
 *-----------------------------------------------------------------------------*
-
    IF ValType( oCtrl ) $ "CM"
       oCtrl := ::Parent:Control( oCtrl )
    ENDIF
@@ -1030,7 +1048,7 @@ METHOD AddControl( oCtrl , PageNumber , Row , Col ) CLASS TMultiPage
       RETURN ::Super:AddControl( oCtrl )
    ENDIF
 
-   IF !HB_IsNumeric( PageNumber ) .OR. PageNumber > LEN( ::aPages )
+   IF ! HB_IsNumeric( PageNumber ) .OR. PageNumber > LEN( ::aPages )
       PageNumber := LEN( ::aPages )
    ENDIF
 
@@ -1038,16 +1056,17 @@ METHOD AddControl( oCtrl , PageNumber , Row , Col ) CLASS TMultiPage
       PageNumber := 1
    ENDIF
 
-   IF !HB_IsNumeric( Row )
+   IF ! HB_IsNumeric( Row )
       Row := oCtrl:ContainerRow - ::ContainerRow
    ENDIF
 
-   IF !HB_IsNumeric( Col )
+   IF ! HB_IsNumeric( Col )
       Col := oCtrl:ContainerCol - ::ContainerCol
    ENDIF
 
-   ::aPages[ PageNumber ]:AddControl( oCtrl, Row, Col )
+   oCtrl:lProcMsgsOnVisible := ::lProcMsgsOnVisible
 
+   ::aPages[ PageNumber ]:AddControl( oCtrl, Row, Col )
 RETURN nil
 
 *-----------------------------------------------------------------------------*
@@ -1107,7 +1126,10 @@ LOCAL nPos
       ENDIF
       IF nPos > 0
          ::Value := nPos
-         ::aPages[ nPos ]:Show()
+         ::aPages[ nPos ]:Show()            
+         IF ! ::lProcMsgsOnVisible
+            ProcessMessages()
+         ENDIF
       ENDIF
    ENDIF
 RETURN nil
@@ -1428,7 +1450,7 @@ CLASS TTabPageInternal FROM TFormInternal
    METHOD EndPage             BLOCK { |Self| _OOHG_DeleteFrame( ::Type ) }
    METHOD Events_Size
    METHOD AdjustResize
-
+   
    METHOD SetFocus            BLOCK { |Self| ::Container:SetFocus() , ::Container:Value := ::Position , ::Super:SetFocus() , Self }
 ENDCLASS
 

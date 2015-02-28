@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.251 2014-07-09 02:25:23 fyurisich Exp $
+ * $Id: h_windows.prg,v 1.252 2015-02-28 23:34:50 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -267,7 +267,7 @@ CLASS TWindow
    DATA nAnchor             INIT nil
    DATA nDefAnchor          INIT 3
 
-   ///////
+   DATA lProcMsgsOnVisible  INIT .T.
 
    DATA DefBkColorEdit      INIT nil
 
@@ -1237,7 +1237,7 @@ Local nPos
 Return uParent
 
 *-----------------------------------------------------------------------------*
-METHOD ParentDefaults( cFontName, nFontSize, uFontColor ) CLASS TWindow
+METHOD ParentDefaults( cFontName, nFontSize, uFontColor, lNoProc ) CLASS TWindow
 *-----------------------------------------------------------------------------*
    // Font Name:
    If ValType( cFontName ) == "C" .AND. ! EMPTY( cFontName )
@@ -1245,16 +1245,16 @@ METHOD ParentDefaults( cFontName, nFontSize, uFontColor ) CLASS TWindow
       ::cFontName := cFontName
    ElseIf ValType( ::cFontName ) == "C" .AND. ! Empty( ::cFontName )
       // Pre-registered
-   elseif ::Container != nil .AND. ValType( ::Container:cFontName ) == "C" .AND. ! Empty( ::Container:cFontName )
+   ElseIf ::Container != Nil .AND. ValType( ::Container:cFontName ) == "C" .AND. ! Empty( ::Container:cFontName )
       // Container
       ::cFontName := ::Container:cFontName
-   elseif ::Parent != nil .AND. ValType( ::Parent:cFontName ) == "C" .AND. ! Empty( ::Parent:cFontName )
+   ElseIf ::Parent != Nil .AND. ValType( ::Parent:cFontName ) == "C" .AND. ! Empty( ::Parent:cFontName )
       // Parent form
       ::cFontName := ::Parent:cFontName
-   else
+   Else
        // Default
       ::cFontName := _OOHG_DefaultFontName
-   endif
+   EndIf
 
    // Font Size:
    If HB_IsNumeric( nFontSize ) .AND. nFontSize != 0
@@ -1262,16 +1262,16 @@ METHOD ParentDefaults( cFontName, nFontSize, uFontColor ) CLASS TWindow
       ::nFontSize := nFontSize
    ElseIf HB_IsNumeric( ::nFontSize ) .AND. ::nFontSize != 0
       // Pre-registered
-   elseif ::Container != nil .AND. HB_IsNumeric( ::Container:nFontSize ) .AND. ::Container:nFontSize != 0
+   ElseIf ::Container != Nil .AND. HB_IsNumeric( ::Container:nFontSize ) .AND. ::Container:nFontSize != 0
       // Container
       ::nFontSize := ::Container:nFontSize
-   elseif ::Parent != nil .AND. HB_IsNumeric( ::Parent:nFontSize ) .AND. ::Parent:nFontSize != 0
+   ElseIf ::Parent != Nil .AND. HB_IsNumeric( ::Parent:nFontSize ) .AND. ::Parent:nFontSize != 0
       // Parent form
       ::nFontSize := ::Parent:nFontSize
-   else
+   Else
        // Default
       ::nFontSize := _OOHG_DefaultFontSize
-   endif
+   EndIf
 
    // Font Color:
    If ValType( uFontColor ) $ "ANCM"
@@ -1280,17 +1280,24 @@ METHOD ParentDefaults( cFontName, nFontSize, uFontColor ) CLASS TWindow
    ElseIf ValType( ::FontColor ) $ "ANCM"
       // Pre-registered
       * To detect about "-1" !!!
-   elseif ::Container != nil .AND. ValType( ::Container:FontColor ) $ "ANCM"
+   ElseIf ::Container != Nil .AND. ValType( ::Container:FontColor ) $ "ANCM"
       // Container
       ::FontColor := ::Container:FontColor
-   elseif ::Parent != nil .AND. ValType( ::Parent:FontColor ) $ "ANCM"
+   ElseIf ::Parent != Nil .AND. ValType( ::Parent:FontColor ) $ "ANCM"
       // Parent form
       ::FontColor := ::Parent:FontColor
-   else
+   Else
        // Default
        ::FontColor := _OOHG_DefaultFontColor
-   endif
+   EndIf
 
+   If HB_IsLogical( lNoProc )
+      ::lProcMsgsOnVisible := ! lNoProc
+   ElseIf ::Container != Nil
+      ::lProcMsgsOnVisible := ::Container:lProcMsgsOnVisible
+   ElseIf ::Parent != Nil
+      ::lProcMsgsOnVisible := ::Parent:lProcMsgsOnVisible
+   EndIf
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -1502,11 +1509,11 @@ METHOD Visible( lVisible ) CLASS TWindow
          HideWindow( ::hWnd )
       EndIf
 
-      ProcessMessages()    //// ojo con esto
+      If ::lProcMsgsOnVisible
+         ProcessMessages()
+      EndIf
 
-      //CGR
       ::CheckClientsPos()
-  
    EndIf
 Return ::lVisible
 

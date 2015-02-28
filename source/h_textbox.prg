@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.96 2014-07-09 21:54:50 fyurisich Exp $
+ * $Id: h_textbox.prg,v 1.97 2015-02-28 23:34:50 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -312,7 +312,7 @@ METHOD Visible( lVisible ) CLASS TText
          aEval( ::aControls, { |o| o:ForceHide() } )
       EndIf
    EndIf
-Return ::Super:Visible
+Return ::lVisible
 
 *------------------------------------------------------------------------------*
 METHOD AddControl( oCtrl ) CLASS TText
