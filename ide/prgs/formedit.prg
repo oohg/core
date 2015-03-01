@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.48 2015-02-16 03:01:24 fyurisich Exp $
+ * $Id: formedit.prg,v 1.49 2015-03-01 00:18:07 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -8831,7 +8831,7 @@ METHOD pTab( i ) CLASS TFormEditor
 //------------------------------------------------------------------------------
 LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, nValue
 LOCAL cToolTip, cOnChange, lFlat, lVertical, lButtons, lHotTrack, lBold
-LOCAL lItalic, lUnderline, lStrikeout, aFontColor, lVisible, lEnabled
+LOCAL lItalic, lUnderline, lStrikeout, aFontColor, lVisible, lEnabled, lDelay
 LOCAL lNoTabStop, lRTL, lMultiLine, cSubClass, lInternals, cPObj, nPosSub, cPSub
 LOCAL cPCaptions, cPImages, cPNames, cPObjs, cPSubs, nPageCount, j, oCtrl
 LOCAL nPosPage, cPCaption, cPName, nPosImage, cPImage, nPosName, nPosObj
@@ -8873,6 +8873,7 @@ LOCAL nPosPage, cPCaption, cPName, nPosImage, cPImage, nPosName, nPosObj
    lMultiLine    := ( ::ReadLogicalData( cName, 'MULTILINE', "F" ) == "T" )
    cSubClass     := ::ReadStringData( cName, 'SUBCLASS', '' )
    lInternals    := ( ::ReadLogicalData( cName, 'INTERNALS', "F" ) == "T" )
+   lDelay        := ( ::ReadLogicalData( cName, 'DELAYMSGS', 'F' ) == "T" )
 
    // Save properties
    ::aCtrlType[i]       := 'TAB'
@@ -8903,6 +8904,7 @@ LOCAL nPosPage, cPCaption, cPName, nPosImage, cPImage, nPosName, nPosObj
    ::aPageNames[i]      := "{}"
    ::aPageObjs[i]       := "{}"
    ::aPageSubClasses[i] := "{}"
+   ::aDelayedLoad[i]    := lDelay
 
    // Create control
    oCtrl     := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i, nWidth, nHeight, NIL )
@@ -10451,6 +10453,10 @@ LOCAL aImages, aPageNames, aPageObjs, aPageSubClasses, nCount
          IF ::aVirtual[j]
             Output += ' ;' + CRLF + Space( nSpacing * 2 ) + 'INTERNALS '
          ENDIF
+         IF ::aDelayedLoad[j]
+            Output += ' ;' + CRLF + Space( nSpacing * 2 ) + 'DELAYMSGS '
+         ENDIF
+
          Output += CRLF + CRLF
 
          //***************************  Tab pages
@@ -15558,6 +15564,7 @@ LOCAL cName, oTabProp
    oTabProp:Check_8:Value  := ::aNoTabStop[i]
    oTabProp:Check_9:Value  := ::aMultiLine[i]
    oTabProp:Check_10:Value := ::aVirtual[i]
+   oTabProp:Check_11:Value := ::aDelayedLoad[i]
    oTabProp:Text_101:Value := ::aCaption[i]
    oTabProp:Edit_2:Value   := ::aImage[i]
    oTabProp:Edit_4:Value   := ::aPageNames[i]

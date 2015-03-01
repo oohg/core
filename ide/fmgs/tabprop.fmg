@@ -1,5 +1,5 @@
 /*
- * $Id: tabprop.fmg,v 1.7 2014-09-29 02:17:18 fyurisich Exp $
+ * $Id: tabprop.fmg,v 1.8 2015-03-01 00:18:06 fyurisich Exp $
  */
 
 * ooHG IDE Plus form generated code
@@ -133,7 +133,7 @@ DEFINE WINDOW TEMPLATE ;
       ON CHANGE ::aEnabled[i] := oTabProp:Check_5:Value ;
       BACKCOLOR ::myIde:aSystemColor
 
-   @ 170, 230 CHECKBOX Check_1 ;
+   @ 175, 230 CHECKBOX Check_1 ;
       WIDTH 70 ;
       HEIGHT 30 ;
       CAPTION 'Flat' ;
@@ -143,7 +143,7 @@ DEFINE WINDOW TEMPLATE ;
       ON CHANGE ::aFlat[i] := oTabProp:Check_1:Value ;
       BACKCOLOR ::myIde:aSystemColor
 
-   @ 170, 340 CHECKBOX Check_6 ;
+   @ 175, 340 CHECKBOX Check_6 ;
       WIDTH 70 ;
       HEIGHT 30 ;
       CAPTION 'Visible' ;
@@ -153,7 +153,17 @@ DEFINE WINDOW TEMPLATE ;
       ON CHANGE ::aVisible[i] := oTabProp:Check_6:Value ;
       BACKCOLOR ::myIde:aSystemColor
 
-   @ 200, 230 CHECKBOX Check_3 ;
+   @ 210, 120 CHECKBOX Check_11 ;
+      WIDTH 80 ;
+      HEIGHT 30 ;
+      CAPTION 'DelayMsgs' ;
+      VALUE .F. ;
+      FONT 'Arial' ;
+      SIZE 9 ;
+      ON CHANGE ::aDelayedLoad[i] := oTabProp:Check_11:Value ;
+      BACKCOLOR ::myIde:aSystemColor
+
+   @ 210, 230 CHECKBOX Check_3 ;
       WIDTH 70 ;
       HEIGHT 30 ;
       CAPTION 'HotTrack' ;
@@ -163,7 +173,7 @@ DEFINE WINDOW TEMPLATE ;
       ON CHANGE ::aHotTrack[i] := oTabProp:Check_3:Value ;
       BACKCOLOR ::myIde:aSystemColor
 
-   @ 200, 340 CHECKBOX Check_7 ;
+   @ 210, 340 CHECKBOX Check_7 ;
       WIDTH 80 ;
       HEIGHT 30 ;
       CAPTION 'RTL' ;
@@ -173,7 +183,7 @@ DEFINE WINDOW TEMPLATE ;
       ON CHANGE ::aRTL[i] := oTabProp:Check_7:Value ;
       BACKCOLOR ::myIde:aSystemColor
 
-   @ 230, 20 CHECKBOX Check_4 ;
+   @ 245, 20 CHECKBOX Check_4 ;
       WIDTH 70 ;
       HEIGHT 30 ;
       CAPTION 'Vertical' ;
@@ -183,7 +193,7 @@ DEFINE WINDOW TEMPLATE ;
       ON CHANGE ::aVertical[i] := oTabProp:Check_4:Value ;
       BACKCOLOR ::myIde:aSystemColor
 
-   @ 230, 120 CHECKBOX Check_8 ;
+   @ 245, 120 CHECKBOX Check_8 ;
       WIDTH 80 ;
       HEIGHT 30 ;
       CAPTION 'NoTabStop' ;
@@ -193,7 +203,7 @@ DEFINE WINDOW TEMPLATE ;
       ON CHANGE ::aNoTabStop[i] := oTabProp:Check_8:Value ;
       BACKCOLOR ::myIde:aSystemColor
 
-   @ 230, 230 CHECKBOX Check_9 ;
+   @ 245, 230 CHECKBOX Check_9 ;
       WIDTH 70 ;
       HEIGHT 30 ;
       CAPTION 'MultiLine' ;
@@ -203,7 +213,7 @@ DEFINE WINDOW TEMPLATE ;
       ON CHANGE ::aMultiLine[i] := oTabProp:Check_9:Value ;
       BACKCOLOR ::myIde:aSystemColor
 
-   @ 230, 340 CHECKBOX Check_10 ;
+   @ 245, 340 CHECKBOX Check_10 ;
       WIDTH 70 ;
       HEIGHT 30 ;
       CAPTION 'Internals' ;
