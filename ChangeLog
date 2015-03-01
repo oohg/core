@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.1402 2015-03-01 18:30:38 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1403 2015-03-01 18:33:10 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,9 +7,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-03-01 16:32 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Previous entry.
+
 2015-03-01 16:30 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_textbox.prg
-     * Removed line length limit (1024).
+     * Removed line length limit (1024) in TText:GetLine().
 
 2015-03-01 14:21 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_msgbox.prg
