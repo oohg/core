@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.98 2015-03-01 16:04:45 fyurisich Exp $
+ * $Id: h_textbox.prg,v 1.99 2015-03-01 18:30:38 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -694,22 +694,41 @@ HB_FUNC_STATIC( TTEXT_GETLINE )           // METHOD GetLine( nLine ) CLASS TText
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   LONG nChar;
+   WORD LenBuff;
+   LPTSTR strBuffer;
+   LPWORD pBuffer;
    LRESULT lResult;
-   LPCTSTR strBuffer[1024];
-   LPWORD pBuffer = ( LPWORD ) strBuffer;
-   WORD LenBuff ;
 
-   LenBuff = sizeof( strBuffer );
-   pBuffer[0] = LenBuff;
-
-   lResult = SendMessage( oSelf->hWnd, EM_GETLINE, (WPARAM) hb_parnl( 1 ), (LPARAM) &strBuffer );
-   if( lResult )
+   nChar = SendMessage( oSelf->hWnd, EM_LINEINDEX, (WPARAM) hb_parnl( 1 ), 0 );
+   if( nChar < 0 )
    {
-      hb_retc( (char *) strBuffer );
+      hb_retc( "" );
    }
    else
    {
-      hb_retc( "" );
+      LenBuff = SendMessage( oSelf->hWnd, EM_LINELENGTH, nChar, 0 );
+      if( LenBuff )
+      {
+         strBuffer = (LPTSTR) hb_xgrab( ( LenBuff + 1 ) * sizeof( TCHAR ) );
+         pBuffer = (LPWORD) strBuffer;
+         pBuffer[0] = LenBuff;
+         strBuffer[LenBuff] = (TCHAR) 0;
+         lResult = SendMessage( oSelf->hWnd, EM_GETLINE, (WPARAM) hb_parnl( 1 ), (LPARAM) strBuffer );
+         if( lResult )
+         {
+            hb_retc( strBuffer );
+         }
+         else
+         {
+            hb_retc( "" );
+         }
+         hb_xfree( strBuffer );
+      }
+      else
+      {
+         hb_retc( "" );
+      }
    }
 }
 

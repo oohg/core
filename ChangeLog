@@ -1,11 +1,15 @@
 /*
- * $Id: ChangeLog,v 1.1401 2015-03-01 16:22:26 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1402 2015-03-01 18:30:38 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-03-01 16:30 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_textbox.prg
+     * Removed line length limit (1024).
 
 2015-03-01 14:21 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_msgbox.prg
