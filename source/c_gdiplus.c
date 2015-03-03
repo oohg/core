@@ -1,5 +1,5 @@
 /*
- * $Id: c_gdiplus.c,v 1.13 2014-03-02 12:24:54 fyurisich Exp $
+ * $Id: c_gdiplus.c,v 1.14 2015-03-03 21:21:38 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -141,7 +141,7 @@ typedef struct
 typedef struct
 {
    unsigned int Count;
-   ENCODER_PARAMETER Parameter[1];
+   ENCODER_PARAMETER Parameter[];
 } ENCODER_PARAMETERS;
 
 enum EncoderValue
@@ -183,6 +183,7 @@ typedef LONG(__stdcall* GDIPGETIMAGEENCODERSSIZE) ( unsigned int*, unsigned int*
 typedef LONG(__stdcall* GDIPGETIMAGEENCODERS) ( UINT, UINT, IMAGE_CODEC_INFO* );
 typedef LONG(__stdcall* GDIPSAVEIMAGETOFILE) ( void*, const unsigned short*, const CLSID*, const ENCODER_PARAMETERS* );
 typedef LONG(__stdcall* GDIPLOADIMAGEFROMSTREAM) ( IStream*, void** );
+typedef LONG(__stdcall* GDIPCREATEBITMAPFROMSTREAM) ( IStream*, void** );
 typedef LONG(__stdcall* GDIPCREATEHBITMAPFROMBITMAP) ( void*, void*, ULONG );
 typedef LONG(__stdcall* GDIPDISPOSEIMAGE) ( void* );
 typedef LONG(__stdcall* GDIPGETIMAGETHUMBNAIL) ( void*, UINT, UINT, void**, GET_THUMBNAIL_IMAGE_ABORT, void* );
@@ -209,6 +210,7 @@ GDIPGETIMAGEENCODERSSIZE GdipGetImageEncodersSize;
 GDIPGETIMAGEENCODERS GdipGetImageEncoders;
 GDIPSAVEIMAGETOFILE GdipSaveImageToFile;
 GDIPLOADIMAGEFROMSTREAM GdipLoadImageFromStream;
+GDIPCREATEBITMAPFROMSTREAM GdipCreateBitmapFromStream;
 GDIPCREATEHBITMAPFROMBITMAP GdipCreateHBITMAPFromBitmap;
 GDIPDISPOSEIMAGE GdipDisposeImage;
 GDIPGETIMAGETHUMBNAIL GdipGetImageThumbnail;
@@ -361,6 +363,12 @@ BOOL LoadGdiPlusDll( void )
    }
 
    if( ( GdipLoadImageFromStream = (GDIPLOADIMAGEFROMSTREAM) GetProcAddress( GdiPlusHandle_pre, "GdipLoadImageFromStream" ) ) == NULL )
+   {
+      FreeLibrary( GdiPlusHandle_pre );
+      return FALSE;
+   }
+
+   if( ( GdipCreateBitmapFromStream = (GDIPCREATEBITMAPFROMSTREAM) GetProcAddress( GdiPlusHandle_pre, "GdipCreateBitmapFromStream" ) ) == NULL )
    {
       FreeLibrary( GdiPlusHandle_pre );
       return FALSE;
@@ -536,7 +544,7 @@ BOOL SaveHBitmapToFile( void *HBitmap, const char *FileName, unsigned int Width,
    void *GBitmapThumbnail;
    LPWSTR WFileName;
    static CLSID Clsid;
-   ENCODER_PARAMETERS EncoderParameters;
+   ENCODER_PARAMETERS *EncoderParameters;
    ULONG quality;
 
    if( ( HBitmap == NULL ) || ( FileName == NULL ) || ( MimeType == NULL ) || ( GdiPlusHandle == NULL ) )
@@ -619,55 +627,59 @@ BOOL SaveHBitmapToFile( void *HBitmap, const char *FileName, unsigned int Width,
    // Build parameters and save
    if( strcmp( MimeType, "image/jpeg" ) == 0 )
    {
-      ZeroMemory( &EncoderParameters, sizeof( EncoderParameters ) );
-      EncoderParameters.Count = 1;
+      EncoderParameters = (ENCODER_PARAMETERS *) hb_xgrab( sizeof( ENCODER_PARAMETERS ) + 1 * sizeof( ENCODER_PARAMETER ) );
+      ZeroMemory( EncoderParameters, sizeof( ENCODER_PARAMETERS ) + 1 * sizeof( ENCODER_PARAMETER ) );
+      EncoderParameters->Count = 1;
 
       // Quality: TGUID = 1d5be4b5-fa4a-452d-9cdd-5db35105e7eb
-      EncoderParameters.Parameter[0].Guid.Data1 = 0x1d5be4b5;
-      EncoderParameters.Parameter[0].Guid.Data2 = 0xfa4a;
-      EncoderParameters.Parameter[0].Guid.Data3 = 0x452d;
-      EncoderParameters.Parameter[0].Guid.Data4[0] = 0x9c;
-      EncoderParameters.Parameter[0].Guid.Data4[1] = 0xdd;
-      EncoderParameters.Parameter[0].Guid.Data4[2] = 0x5d;
-      EncoderParameters.Parameter[0].Guid.Data4[3] = 0xb3;
-      EncoderParameters.Parameter[0].Guid.Data4[4] = 0x51;
-      EncoderParameters.Parameter[0].Guid.Data4[5] = 0x05;
-      EncoderParameters.Parameter[0].Guid.Data4[6] = 0xe7;
-      EncoderParameters.Parameter[0].Guid.Data4[7] = 0xeb;
-      EncoderParameters.Parameter[0].NumberOfValues = 1;
-      EncoderParameters.Parameter[0].Type = 4;
-      EncoderParameters.Parameter[0].Value = (void*) &JpgQuality;
+      EncoderParameters->Parameter[0].Guid.Data1 = 0x1d5be4b5;
+      EncoderParameters->Parameter[0].Guid.Data2 = 0xfa4a;
+      EncoderParameters->Parameter[0].Guid.Data3 = 0x452d;
+      EncoderParameters->Parameter[0].Guid.Data4[0] = 0x9c;
+      EncoderParameters->Parameter[0].Guid.Data4[1] = 0xdd;
+      EncoderParameters->Parameter[0].Guid.Data4[2] = 0x5d;
+      EncoderParameters->Parameter[0].Guid.Data4[3] = 0xb3;
+      EncoderParameters->Parameter[0].Guid.Data4[4] = 0x51;
+      EncoderParameters->Parameter[0].Guid.Data4[5] = 0x05;
+      EncoderParameters->Parameter[0].Guid.Data4[6] = 0xe7;
+      EncoderParameters->Parameter[0].Guid.Data4[7] = 0xeb;
+      EncoderParameters->Parameter[0].NumberOfValues = 1;
+      EncoderParameters->Parameter[0].Type = 4;
+      EncoderParameters->Parameter[0].Value = (void*) &JpgQuality;
 
       // Colordepth for JPEG images is always 24 bpp
 
       // Save
-      if( GdipSaveImageToFile( GBitmap, WFileName, &Clsid, &EncoderParameters ) != 0 )
+      if( GdipSaveImageToFile( GBitmap, WFileName, &Clsid, EncoderParameters ) != 0 )
       {
          GdipDisposeImage( GBitmap );
          LocalFree( WFileName );
+         hb_xfree( EncoderParameters );
          // Save Operation Error
          return FALSE;
       }
+      hb_xfree( EncoderParameters );
    }
    else if( strcmp( MimeType, "image/tiff" ) == 0 )
    {
-      ZeroMemory( &EncoderParameters, sizeof( EncoderParameters ) );
-      EncoderParameters.Count = 2;
+      EncoderParameters = (ENCODER_PARAMETERS *) hb_xgrab( sizeof( ENCODER_PARAMETERS ) + 2 * sizeof( ENCODER_PARAMETER ) );
+      ZeroMemory( EncoderParameters, sizeof( ENCODER_PARAMETERS ) + 2 * sizeof( ENCODER_PARAMETER ) );
+      EncoderParameters->Count = 2;
 
       // Compression: e09d739d-ccd4-44ee-8eba-3fbf8be4fc58
-      EncoderParameters.Parameter[0].Guid.Data1 = 0xe09d739d;
-      EncoderParameters.Parameter[0].Guid.Data2 = 0xccd4;
-      EncoderParameters.Parameter[0].Guid.Data3 = 0x44ee;
-      EncoderParameters.Parameter[0].Guid.Data4[0] = 0x8e;
-      EncoderParameters.Parameter[0].Guid.Data4[1] = 0xba;
-      EncoderParameters.Parameter[0].Guid.Data4[2] = 0x3f;
-      EncoderParameters.Parameter[0].Guid.Data4[3] = 0xbf;
-      EncoderParameters.Parameter[0].Guid.Data4[4] = 0x8b;
-      EncoderParameters.Parameter[0].Guid.Data4[5] = 0xe4;
-      EncoderParameters.Parameter[0].Guid.Data4[6] = 0xfc;
-      EncoderParameters.Parameter[0].Guid.Data4[7] = 0x58;
-      EncoderParameters.Parameter[0].NumberOfValues = 1;
-      EncoderParameters.Parameter[0].Type = 4;
+      EncoderParameters->Parameter[0].Guid.Data1 = 0xe09d739d;
+      EncoderParameters->Parameter[0].Guid.Data2 = 0xccd4;
+      EncoderParameters->Parameter[0].Guid.Data3 = 0x44ee;
+      EncoderParameters->Parameter[0].Guid.Data4[0] = 0x8e;
+      EncoderParameters->Parameter[0].Guid.Data4[1] = 0xba;
+      EncoderParameters->Parameter[0].Guid.Data4[2] = 0x3f;
+      EncoderParameters->Parameter[0].Guid.Data4[3] = 0xbf;
+      EncoderParameters->Parameter[0].Guid.Data4[4] = 0x8b;
+      EncoderParameters->Parameter[0].Guid.Data4[5] = 0xe4;
+      EncoderParameters->Parameter[0].Guid.Data4[6] = 0xfc;
+      EncoderParameters->Parameter[0].Guid.Data4[7] = 0x58;
+      EncoderParameters->Parameter[0].NumberOfValues = 1;
+      EncoderParameters->Parameter[0].Type = 4;
       if( JpgQuality == 0 )
       {
          quality = EncoderValueCompressionNone;
@@ -676,34 +688,36 @@ BOOL SaveHBitmapToFile( void *HBitmap, const char *FileName, unsigned int Width,
       {
          quality = EncoderValueCompressionLZW;
       }
-      EncoderParameters.Parameter[0].Value = (void*) &quality;
+      EncoderParameters->Parameter[0].Value = (void*) &quality;
 
       // ColorDepth: 66087055-ad66-4c7c-9a18-38a2310b8337
       // Valid values for TIFF images are 1, 4, 8, 24, 32 bpp
       // Use 24 bpp if you want to include the image in a PDF file using TPDF class
-      EncoderParameters.Parameter[1].Guid.Data1 = 0x66087055;
-      EncoderParameters.Parameter[1].Guid.Data2 = 0xad66;
-      EncoderParameters.Parameter[1].Guid.Data3 = 0x4c7c;
-      EncoderParameters.Parameter[1].Guid.Data4[0] = 0x9a;
-      EncoderParameters.Parameter[1].Guid.Data4[1] = 0x18;
-      EncoderParameters.Parameter[1].Guid.Data4[2] = 0x38;
-      EncoderParameters.Parameter[1].Guid.Data4[3] = 0xa2;
-      EncoderParameters.Parameter[1].Guid.Data4[4] = 0x31;
-      EncoderParameters.Parameter[1].Guid.Data4[5] = 0x0b;
-      EncoderParameters.Parameter[1].Guid.Data4[6] = 0x83;
-      EncoderParameters.Parameter[1].Guid.Data4[7] = 0x37;
-      EncoderParameters.Parameter[1].NumberOfValues = 1;
-      EncoderParameters.Parameter[1].Type = 4;
-      EncoderParameters.Parameter[1].Value = (void*) &ColorDepth;
+      EncoderParameters->Parameter[1].Guid.Data1 = 0x66087055;
+      EncoderParameters->Parameter[1].Guid.Data2 = 0xad66;
+      EncoderParameters->Parameter[1].Guid.Data3 = 0x4c7c;
+      EncoderParameters->Parameter[1].Guid.Data4[0] = 0x9a;
+      EncoderParameters->Parameter[1].Guid.Data4[1] = 0x18;
+      EncoderParameters->Parameter[1].Guid.Data4[2] = 0x38;
+      EncoderParameters->Parameter[1].Guid.Data4[3] = 0xa2;
+      EncoderParameters->Parameter[1].Guid.Data4[4] = 0x31;
+      EncoderParameters->Parameter[1].Guid.Data4[5] = 0x0b;
+      EncoderParameters->Parameter[1].Guid.Data4[6] = 0x83;
+      EncoderParameters->Parameter[1].Guid.Data4[7] = 0x37;
+      EncoderParameters->Parameter[1].NumberOfValues = 1;
+      EncoderParameters->Parameter[1].Type = 4;
+      EncoderParameters->Parameter[1].Value = (void*) &ColorDepth;
 
       // Save
-      if( GdipSaveImageToFile( GBitmap, WFileName, &Clsid, &EncoderParameters ) != 0 )
+      if( GdipSaveImageToFile( GBitmap, WFileName, &Clsid, EncoderParameters ) != 0 )
       {
          GdipDisposeImage( GBitmap );
          LocalFree( WFileName );
+         hb_xfree( EncoderParameters );
          // Save Operation Error
          return FALSE;
       }
+      hb_xfree( EncoderParameters );
    }
    else
    {
@@ -959,7 +973,7 @@ HANDLE _OOHG_GDIPLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor, long 
    CreateStreamOnHGlobal( hGlobal, FALSE, &iStream );
 
    // Creates Gdi+ image
-   if( GdipLoadImageFromStream( iStream, &gImage ) != 0 )
+   if( GdipCreateBitmapFromStream( iStream, &gImage ) != 0 )
    {
       iStream->lpVtbl->Release( iStream );
       return 0;

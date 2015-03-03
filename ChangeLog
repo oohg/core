@@ -1,11 +1,19 @@
 /*
- * $Id: ChangeLog,v 1.1403 2015-03-01 18:33:10 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1404 2015-03-03 21:21:37 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-03-03 19:21 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_picture.prg
+   * source/h_image.prg
+     * Hack to avoid using GDI+ when loading an EMF file was removed.
+   * source/c_gdiplus.c
+     ! Crash at GdipCreateHBITMAPFromBitmap call in _OOHG_GDIPLoadPicture().
+     ! MinGW compiler warning in SaveHBitmapToFile().
 
 2015-03-01 16:32 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog
