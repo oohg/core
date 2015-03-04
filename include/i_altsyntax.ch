@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.116 2014-08-03 19:37:51 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.117 2015-03-04 22:30:09 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1407,7 +1407,7 @@ BUTTON
    => ;
       _OOHG_ActiveControlAutoFit := <autofit>
 
-#xcommand ADJUST <autofit> ;
+#xcommand ADJUST <autofit: .T., .F.> ;
    => ;
       _OOHG_ActiveControlAutoFit := <autofit>
 
