@@ -1,11 +1,17 @@
 /*
- * $Id: ChangeLog,v 1.1405 2015-03-04 22:30:09 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1406 2015-03-06 21:42:12 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-03-06 19:41 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_hmg_compat.ch
+     + STYLE clause: cosmetic, has no effect in Extended.
+     + DEFAULT clause: it's ignored, in Extendex this clause if linked to
+       menu item´s with MESSAGE clause shows. TODO: implement.
 
 2015-03-04 20:30 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_altsyntax.ch

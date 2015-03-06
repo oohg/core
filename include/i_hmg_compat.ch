@@ -1,5 +1,5 @@
 /*
- * $Id: i_hmg_compat.ch,v 1.37 2014-09-01 15:58:50 fyurisich Exp $
+ * $Id: i_hmg_compat.ch,v 1.38 2015-03-06 21:42:13 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -491,5 +491,35 @@ TODO: Try to implement this BUTTONEX clauses
 #xtranslate DISABLEEDIT ;
    => ;
       READONLY
+
+#xtranslate STATUSITEM [ <cMsg> ] ;
+      [ WIDTH <nSize> ] ;
+      [ ACTION <uAction> ] ;
+      [ ICON <cBitmap> ] ;
+      STYLE [ <style: FLAT, RAISED> ] ;
+      [ TOOLTIP <cToolTip> ] ;
+      [ DEFAULT ] ;
+   => ;
+      STATUSITEM [ <cMsg> ] ;
+            [ WIDTH <nSize> ] ;
+            [ ACTION <uAction> ] ;
+            [ ICON <cBitmap> ] ;
+            [ <style> ] ;
+            [ TOOLTIP <cToolTip> ]
+
+#xtranslate STATUSITEM [ <cMsg> ] ;
+      [ WIDTH <nSize> ] ;
+      [ ACTION <uAction> ] ;
+      [ ICON <cBitmap> ] ;
+      [ STYLE ] [ <style: FLAT, RAISED> ] ;
+      [ TOOLTIP <cToolTip> ] ;
+      DEFAULT ;
+   => ;
+      STATUSITEM [ <cMsg> ] ;
+            [ WIDTH <nSize> ] ;
+            [ ACTION <uAction> ] ;
+            [ ICON <cBitmap> ] ;
+            [ <style> ] ;
+            [ TOOLTIP <cToolTip> ]
 
 #endif
