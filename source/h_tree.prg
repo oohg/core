@@ -1,5 +1,5 @@
 /*
- * $Id: h_tree.prg,v 1.40 2015-02-04 22:22:23 fyurisich Exp $
+ * $Id: h_tree.prg,v 1.41 2015-03-06 21:47:13 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -146,19 +146,19 @@ CLASS TTree FROM TControl
    METHOD Events
    METHOD Events_Notify
    METHOD EditLabel
-   METHOD ItemReadonly       SETGET
+   METHOD ItemReadonly
    METHOD SelColor           SETGET
-   METHOD CheckItem          SETGET
+   METHOD CheckItem
    METHOD GetParent
    METHOD GetChildren
    METHOD LookForKey
    METHOD Release
-   METHOD BoldItem           SETGET
-   METHOD ItemEnabled        SETGET
+   METHOD BoldItem
+   METHOD ItemEnabled
    METHOD CopyItem
    METHOD MoveItem
    METHOD ItemImages
-   METHOD ItemDraggable      SETGET
+   METHOD ItemDraggable
    METHOD IsItemCollapsed
    METHOD HandleToItem
    METHOD ItemToHandle
