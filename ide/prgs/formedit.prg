@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.51 2015-03-07 22:22:32 fyurisich Exp $
+ * $Id: formedit.prg,v 1.52 2015-03-07 22:39:36 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -3990,8 +3990,8 @@ LOCAL cName, oCtrl, aImages, aItems, nMin, nMax, j, aCaptions, nCnt, oPage, lRed
       IF IsValidArray( ::aBackColor[i] )
          oCtrl:BackColor := &( ::aBackColor[i] )
       ENDIF
-      IF IsValidArray( ::aReadOnly[i] )
-         oCtrl:ReadOnly := &( ::aReadOnly[i] )
+      IF IsValidArray( ::aReadOnlyB[i] )
+         oCtrl:ReadOnly := &( ::aReadOnlyB[i] )
       ENDIF
       oCtrl:OnClick  := { || ::DrawOutline( oCtrl ) }
       oCtrl:OnRClick := { || ::DrawOutline( oCtrl ) }
@@ -8461,7 +8461,7 @@ LOCAL cReadOnly, lLeftJust
    ::aThemed[i]        := lThemed
    ::aBackground[i]    := cBackground
    ::aSubClass[i]      := cSubClass
-   ::aReadOnly[i]      := cReadOnly
+   ::aReadOnlyB[i]     := cReadOnly
    ::aLeft[i]          := lLeftJust
 
    // Create control
@@ -12798,8 +12798,8 @@ LOCAL cValue
       IF ::aLeft[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'LEFTJUSTIFY '
       ENDIF
-      IF ! Empty( ::aReadOnly[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + "READONLY " + AllTrim( ::aReadOnly[j] )
+      IF ! Empty( ::aReadOnlyB[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + "READONLY " + AllTrim( ::aReadOnlyB[j] )
       ENDIF
       IF ! ::aEnabled[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
@@ -14924,7 +14924,7 @@ LOCAL aFormats, aResults
    IF ::aCtrlType[j] == 'RADIOGROUP'
       cTitle      := cNameW + " properties"
       aLabels     := { 'Name',     'Value',      'Options',   'ToolTip',     'Spacing',     'HelpID',     'Transparent',     'Enabled',     'Visible',     'Obj',      'RTL',     'NoTabStop',     'AutoSize',     'Horizontal', 'Themed',     'Background',     'SubClass',     'LeftJustify', 'ReadOnly' }
-      aInitValues := { ::aName[j], ::aValueN[j], ::aitems[j], ::atooltip[j], ::aspacing[j], ::aHelpID[j], ::atransparent[j], ::aenabled[j], ::avisible[j], ::acobj[j], ::aRTL[j], ::aNoTabStop[j], ::aAutoPlay[j], ::aFlat[j],   ::aThemed[j], ::aBackground[j], ::aSubClass[j], ::aLeft[j],    ::aReadOnly[j] }
+      aInitValues := { ::aName[j], ::aValueN[j], ::aitems[j], ::atooltip[j], ::aspacing[j], ::aHelpID[j], ::atransparent[j], ::aenabled[j], ::avisible[j], ::acobj[j], ::aRTL[j], ::aNoTabStop[j], ::aAutoPlay[j], ::aFlat[j],   ::aThemed[j], ::aBackground[j], ::aSubClass[j], ::aLeft[j],    ::aReadOnlyB[j] }
       aFormats    := { 30,         '999',        250,         120,           '999',         '999',        .F.,               .F.,           .F.,           31,         .F.,       .F.,             .F.,            .F.,          .F.,          250,              250,            .F.,           250}
       aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
       IF aResults[1] == NIL
@@ -14949,7 +14949,7 @@ LOCAL aFormats, aResults
       ::aBackground[j]       := aResults[16]
       ::aSubClass[j]         := aResults[17]
       ::aLeft[j]             := aResults[18]           // LEFTJUSTIFY
-      ::aReadOnly[j]         := aResults[19]
+      ::aReadOnlyB[j]        := aResults[19]
    ENDIF
 
    IF ::aCtrlType[j] == 'COMBO'
