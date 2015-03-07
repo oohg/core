@@ -1,11 +1,19 @@
 /*
- * $Id: ChangeLog,v 1.1409 2015-03-07 20:52:57 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1410 2015-03-07 22:22:31 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-03-07 20:21 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Previous entry.
+   * doc/classes.txt
+     * Updated.
+   * ide/prgs/formedit.prg
+     + Browse's NoModalEdit and NavigateByCell clauses.
 
 2015-03-07 15:52 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog
@@ -133,7 +141,7 @@
    * source/miniprint.prg
      + _HMG_PRINTER_GETMAXCOL and _HMG_PRINTER_GETMAXROW functions.
    * source/winprint.prg
-   ! RR_GETDEVICECAPS function is wrongly calculating rows and cols.
+     ! RR_GETDEVICECAPS function is wrongly calculating rows and cols.
 
 2015-02-16 01:00 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * ide/prgs/formedit.prg
@@ -147,7 +155,7 @@
 
 2015-01-19 21:12 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_combo.prg
-     ! Change event is not fired during incremental search.
+     ! ON CHANGE event is not fired during incremental search.
 
 2015-01-14 18:47 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * ide/prgs/formedit.prg
