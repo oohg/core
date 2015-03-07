@@ -1,5 +1,5 @@
 /*
- * $Id: i_radiogroup.ch,v 1.10 2014-07-09 02:25:23 fyurisich Exp $
+ * $Id: i_radiogroup.ch,v 1.11 2015-03-07 02:49:44 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -86,6 +86,8 @@
       [ SUBCLASS <subclass> ] ;
       [ <themed: THEMED> ] ;
       [ BACKGROUND <bkgrnd> ] ;
+		[ <left: LEFTJUSTIFY> ] ;
+		[ READONLY <aReadOnly> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TRadioGroup(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <aOptions>, <value>, ;
@@ -93,4 +95,5 @@
             <spacing>, <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, ;
             <.italic.>, <.underline.>, <.strikeout.>, <backcolor>, ;
             <fontcolor>, <.transparent.>, <.autosize.>, <.horizontal.>, ;
-            <.disabled.>, <.rtl.>, <height>, <.themed.>, <bkgrnd> )
+            <.disabled.>, <.rtl.>, <height>, <.themed.>, <bkgrnd>, <.left.>, ;
+            <aReadOnly> )

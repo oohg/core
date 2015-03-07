@@ -1,5 +1,5 @@
 /*
- * $Id: i_window.ch,v 1.56 2014-08-13 22:22:11 fyurisich Exp $
+ * $Id: i_window.ch,v 1.57 2015-03-07 02:49:44 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -72,6 +72,8 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
       #xtranslate <w> . \<p: Activate, Center, Release, Maximize, Minimize, ;
             Restore, Show, Hide, Print, SetFocus\> \[()\] ;
             => GetExistingFormObject( <(w)> ):\<p\> () ;;
+      #xtranslate <w> . \<c\> . DisableEdit ;
+            => GetExistingControlObject( \<(c)\>, <(w)> ):ReadOnly ;;
       #xtranslate <w> . \<c\> . \<p: Value, Name, Address, BackColor, ;
             FontColor, Picture, ToolTip, FontName, FontSize, FontBold, ;
             FontUnderline, FontItalic, FontStrikeOut, Caption, Row, Col, ;
@@ -81,6 +83,14 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
             Action, OnClick, Length, hWnd, Object, ReadOnly, Cargo, TabStop, ;
             ItemHeight, RichValue, OnGotFocus, OnLostFocus, OnDblClick\> ;
             => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ;;
+      #xtranslate <w> . \<c\> . Enabled( \<arg\> ) ;
+            => GetExistingControlObject( \<(c)\>, ;
+            <(w)> ):ItemEnabled( \<arg\> ) ;;
+      #xtranslate <w> . \<c\> . \<p: Enabled\>( \<arg: .T., .F.\> ) ;
+            => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> := \<arg\> ;;
+      #xtranslate <w> . \<c\> . Enabled( \<arg\> ) := \<n\> ;
+            => GetExistingControlObject( \<(c)\>, ;
+            <(w)> ):ItemEnabled( \<arg\>, \<n\> ) ;;
       #xtranslate <w> . \<c\> . \<p: DisplayValue, Position, ForeColor\> ;
             => GetProperty( <(w)>, \<(c)\>, \<(p)\> ) ;;
       #xtranslate <w> . \<c\> . \<p: DisplayValue, Position, ForeColor, ;
@@ -202,7 +212,7 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
             AddControl, AddPage\>( \<a1\>, \<a2\>, \<a3\>, \<a4\> ) ;
             => <w> . \<c\> . \<p\> ( \<a1\>, \<a2\>, \<a3\>, \<a4\> ) ;;
       #xtranslate <w> . \<x\>( \<k\> ) . \<c\> . \<p: Name, Length, hWnd, ;
-            Object, ReadOnly, Speed, Volume, Zoom\> ;
+            Object, ReadOnly, DisableEdit, Speed, Volume, Zoom\> ;
             => <w> . \<c\> . \<p\>
 
 #xcommand DEFINE WINDOW <w> ;

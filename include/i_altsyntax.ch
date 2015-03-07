@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.117 2015-03-04 22:30:09 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.118 2015-03-07 02:49:44 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -956,7 +956,13 @@ RADIO GROUP
       _OOHG_ActiveControlAutoSize    := .F.    ;;
       _OOHG_ActiveControlThemed      := .F.    ;;
       _OOHG_ActiveControlHorizontal  := .F.    ;;
-      _OOHG_ActiveControlBackground  := NIL
+      _OOHG_ActiveControlBackground  := NIL    ;;
+      _OOHG_ActiveControlLeft        := .F.    ;;
+      _OOHG_ActiveControlReadOnly    := NIL
+
+#xcommand LEFTJUSTIFY <left> ;
+   => ;
+      _OOHG_ActiveControlLeft := <left>
 
 #xcommand OPTIONS <aOptions> ;
    => ;
@@ -1005,7 +1011,9 @@ RADIO GROUP
             _OOHG_ActiveControlRtl, ;
             _OOHG_ActiveControlHeight, ;
             _OOHG_ActiveControlThemed, ;
-            _OOHG_ActiveControlBackground )
+            _OOHG_ActiveControlBackground, ;
+            _OOHG_ActiveControlLeft, ;
+            _OOHG_ActiveControlReadOnly )
 
 /*---------------------------------------------------------------------------
 SLIDER

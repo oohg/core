@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.1407 2015-03-06 21:47:13 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1408 2015-03-07 02:49:43 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,8 +7,32 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-03-07 00:49 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Previous entry.
+   * include/i_altsyntax.ch
+   * include/i_radiogroup.ch
+     + LEFTJUSTIFY and READONLY clauses.
+   * source/h_radio.prg
+     + DATA LeftAlign to TRadioGroup().
+     + Methods ReadOnly, ItemEnabled and ItemReadOnly.
+     + New parameters to methods Define and InsertItem of TRadioGroup().
+     ! Control is not painted properly after changing position/dimension.
+     + DATA LeftAlign to TRadioItem().
+     + New parameter to method Define of TRadioItem().
+     + Support for BS_LEFTTEXT style in InitRadioGroup() and
+       InitRadioButton().
+   * include/i_window.ch
+     + DisableEdit property to semi-oop syntax. It's equivalent to ReadOnly.
+     + Enabled( nItem ) property to semi-oop syntax.
+     ; This adds support for syntax used by HMG Extended.
+   * source/h_controlmisc.prg
+     + DisableEdit and Enabled properties to SetProperty().
+     + ReadOnly, DisableEdit and Enabled properties to GetProperty().
+   ; This commit synchronizes OOHG's RadioGroup control with HMG Extended's.
+
 2015-03-06 19:47 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
-   * source/h_tree.ch
+   * source/h_tree.prg
      * Removed SETGET attribute from methods ItemReadonly, CheckItem,
        BoldItem, ItemEnabled and Itemdraggable.
 

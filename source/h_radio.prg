@@ -1,5 +1,5 @@
 /*
- * $Id: h_radio.prg,v 1.38 2014-09-29 02:17:19 fyurisich Exp $
+ * $Id: h_radio.prg,v 1.39 2015-03-07 02:49:44 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -108,10 +108,11 @@ CLASS TRadioGroup FROM TLabel
    DATA nSpacing      INIT nil
    DATA lThemed       INIT .F.
    DATA oBkGrnd       INIT nil
+   DATA LeftAlign     INIT .F.
 
    METHOD RowMargin           BLOCK { |Self| - ::Row }
    METHOD ColMargin           BLOCK { |Self| - ::Col }
-
+   METHOD ReadOnly            SETGET
    METHOD Define
    METHOD SetFont
    METHOD SizePos
@@ -127,6 +128,8 @@ CLASS TRadioGroup FROM TLabel
    METHOD DeleteItem
    METHOD Caption
    METHOD AdjustResize
+   METHOD ItemEnabled
+   METHOD ItemReadOnly
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
@@ -136,9 +139,9 @@ METHOD Define( ControlName, ParentForm, x, y, aOptions, Value, fontname, ;
                fontsize, tooltip, change, width, spacing, HelpId, invisible, ;
                notabstop, bold, italic, underline, strikeout, backcolor, ;
                fontcolor, transparent, autosize, horizontal, lDisabled, lRtl, ;
-               height, themed, bkgrnd ) CLASS TRadioGroup
+               height, themed, bkgrnd, left, readonly ) CLASS TRadioGroup
 *-----------------------------------------------------------------------------*
-Local i, oItem, uToolTip
+Local i, oItem, uToolTip, uReadOnly
 
    ASSIGN ::nCol        VALUE x           TYPE "N"
    ASSIGN ::nRow        VALUE y           TYPE "N"
@@ -149,6 +152,7 @@ Local i, oItem, uToolTip
    ASSIGN ::lHorizontal VALUE horizontal  TYPE "L"
    ASSIGN ::Transparent VALUE transparent TYPE "L"
    ASSIGN ::oBkGrnd     VALUE bkgrnd      TYPE "O"
+   ASSIGN ::LeftAlign   VALUE left        TYPE "L"
 
    ASSIGN ::nSpacing     VALUE Spacing    TYPE "N"
    If HB_IsNumeric( ::nSpacing )
@@ -179,17 +183,24 @@ Local i, oItem, uToolTip
    x := ::Col
    y := ::Row
    For i = 1 to len( aOptions )
-      If HB_IsArray( ToolTip ) .AND. LEN( ToolTip ) >= i
-         uToolTip := ToolTip[ i ]
+      If HB_IsArray( tooltip ) .AND. LEN( tooltip ) >= i
+         uToolTip := tooltip[ i ]
       Else
          uToolTip := ::ToolTip
+      EndIf
+      If HB_IsArray( readonly ) .AND. LEN( readonly ) >= i
+         uReadOnly := readonly[ i ]
+      Else
+         uReadOnly := readonly
       EndIf
 
       oItem := TRadioItem():Define( , Self, x, y, ::Width, ::Height, ;
                aOptions[ i ], .F., ( i == 1 ), ;
                ::AutoSize, ::Transparent, , , ;
                , , , , , , ;
-               uToolTip, ::HelpId, , .T., , , bkgrnd )
+               uToolTip, ::HelpId, , .T., uReadOnly, , ;
+               bkgrnd, ::LeftAlign )
+
       AADD( ::aOptions, oItem )
       If ::lHorizontal
          x += Spacing
@@ -216,7 +227,7 @@ Local nRet, oFirst, oLast
       nRet := ::Height
    ELSE
       IF Len( ::aOptions ) > 0
-         oFirst := ::aOptions[1]
+         oFirst := ::aOptions[ 1 ]
          oLast  := aTail( ::aOptions )
          nRet   := oLast:Row + oLast:Height - oFirst:Row
       ELSE
@@ -232,7 +243,7 @@ Local nRet, oFirst, oLast
 
    IF ::lHorizontal
       IF Len( ::aOptions ) > 0
-         oFirst := ::aOptions[1]
+         oFirst := ::aOptions[ 1 ]
          oLast  := aTail( ::aOptions )
          nRet   := oLast:Col + oLast:Width - oFirst:Col
       ELSE
@@ -258,22 +269,22 @@ Local nDeltaRow, nDeltaCol, uRet
    uRet := ::Super:SizePos( Row, Col, Width, Height )
    nDeltaRow := ::Row - nDeltaRow
    nDeltaCol := ::Col - nDeltaCol
-   AEVAL( ::aControls, { |o| o:SizePos( o:Row + nDeltaRow, o:Col + nDeltaCol ) } )
+   AEVAL( ::aControls, { |o| o:Visible := .F., o:SizePos( o:Row + nDeltaRow, o:Col + nDeltaCol ), o:Visible := .T. } )
 Return uRet
 
 *-----------------------------------------------------------------------------*
 METHOD Value( nValue ) CLASS TRadioGroup
 *-----------------------------------------------------------------------------*
-LOCAL I, lSetFocus
+LOCAL i, lSetFocus
    If HB_IsNumeric( nValue )
       nValue := INT( nValue )
       lSetFocus := ( ASCAN( ::aOptions, { |o| o:hWnd == GetFocus() } ) > 0 )
-      For I := 1 TO LEN( ::aOptions )
-         ::aOptions[ I ]:Value := ( I == nValue )
+      For i := 1 TO LEN( ::aOptions )
+         ::aOptions[ i ]:Value := ( i == nValue )
       Next
       nValue := ::Value
-      For I := 1 TO LEN( ::aOptions )
-         ::aOptions[ I ]:TabStop := ( ::TabStop .AND. I == MAX( nValue, 1 ) )
+      For i := 1 TO LEN( ::aOptions )
+         ::aOptions[ i ]:TabStop := ( ::TabStop .AND. i == MAX( nValue, 1 ) )
       Next
       If lSetFocus
          If nValue > 0
@@ -331,7 +342,7 @@ Note that TMultiPage control expects an Image as third parameter.
 */
 
 *-----------------------------------------------------------------------------*
-METHOD InsertItem( nPosition, cCaption, nImage, uToolTip, bkgrnd ) CLASS TRadioGroup
+METHOD InsertItem( nPosition, cCaption, nImage, uToolTip, bkgrnd, uLeftAlign, uReadOnly ) CLASS TRadioGroup
 *-----------------------------------------------------------------------------*
 Local nPos2, Spacing, oItem, x, y, nValue, hWnd
    EMPTY( nImage )
@@ -384,7 +395,8 @@ Local nPos2, Spacing, oItem, x, y, nValue, hWnd
             cCaption, .F., ( nPosition == 1 ), ;
             ::AutoSize, ::Transparent, , , ;
             , , , , , , ;
-            uToolTip, ::HelpId, , .T., , , bkgrnd )
+            uToolTip, ::HelpId, , .T., uReadOnly, , ;
+            bkgrnd, uLeftAlign )
    ::aOptions[ nPosition ] := oItem
 
    If nPosition > 1
@@ -436,8 +448,56 @@ METHOD AdjustResize( nDivh, nDivw, lSelfOnly ) CLASS TRadioGroup
          ::nSpacing := ::nSpacing * nDivh
       EndIf
    EndIf
-
 Return ::Super:AdjustResize( nDivh, nDivw, lSelfOnly )
+
+*------------------------------------------------------------------------------*
+METHOD ItemEnabled( nItem, lEnabled ) CLASS TRadioGroup
+*------------------------------------------------------------------------------*
+   If HB_IsLogical( lEnabled )
+      ::aOptions[ nItem ]:Enabled := lEnabled
+   EndIf
+Return ::aOptions[ nItem ]:Enabled
+
+*------------------------------------------------------------------------------*
+METHOD ItemReadonly( nItem, lReadOnly ) CLASS TRadioGroup
+*------------------------------------------------------------------------------*
+   If HB_IsLogical( lReadOnly )
+      ::aOptions[ nItem ]:Enabled := ! lReadOnly
+   EndIf
+Return ! ::aOptions[ nItem ]:Enabled
+
+*-----------------------------------------------------------------------------*
+METHOD ReadOnly( uReadOnly ) CLASS TRadioGroup
+*-----------------------------------------------------------------------------*
+Local i, aReadOnly
+
+   If HB_IsLogical( uReadOnly )
+      aReadOnly := ARRAY( Len( ::aOptions ) )
+      AFILL( aReadOnly, uReadOnly )
+   ElseIf HB_IsArray( uReadOnly )
+      aReadOnly := ARRAY( Len( ::aOptions ) )
+      For i := 1 TO Len( uReadOnly )
+         If HB_IsLogical( uReadOnly[ i ] )
+            aReadOnly[ i ] := uReadOnly[ i ]
+         EndIf
+      Next i
+   EndIf
+
+   If HB_IsArray( aReadOnly )
+      For i := 1 TO Len( ::aOptions )
+         If HB_IsLogical( aReadOnly[ i ] )
+            ::aOptions[ i ]:Enabled := ! aReadOnly[ i ]
+         EndIf
+      Next i
+   Else
+      aReadOnly := ARRAY( Len( ::aOptions ) )
+   EndIf
+
+   For i := 1 TO Len( ::aOptions )
+      aReadOnly[ i ] := ! ::aOptions[ i ]:Enabled
+   Next i
+
+Return aReadOnly
 
 
 
@@ -450,6 +510,7 @@ CLASS TRadioItem FROM TLabel
    DATA IconWidth     INIT 19
    DATA TabHandle     INIT 0
    DATA oBkGrnd       INIT 0
+   DATA LeftAlign     INIT .F.
 
    METHOD Define
    METHOD Value             SETGET
@@ -464,14 +525,16 @@ METHOD Define( ControlName, ParentForm, x, y, width, height, ;
                caption, value, lFirst, ;
                autosize, transparent, fontcolor, backcolor, ;
                fontname, fontsize, bold, italic, underline, strikeout, ;
-               tooltip, HelpId, invisible, notabstop, lDisabled, lRtl, bkgrnd ) CLASS TRadioItem
+               tooltip, HelpId, invisible, notabstop, lDisabled, lRtl, ;
+               bkgrnd, left ) CLASS TRadioItem
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle, oContainer
 
-   ASSIGN ::nCol    VALUE x      TYPE "N"
-   ASSIGN ::nRow    VALUE y      TYPE "N"
-   ASSIGN ::nWidth  VALUE width  TYPE "N"
-   ASSIGN ::nHeight VALUE height TYPE "N"
+   ASSIGN ::nCol      VALUE x      TYPE "N"
+   ASSIGN ::nRow      VALUE y      TYPE "N"
+   ASSIGN ::nWidth    VALUE width  TYPE "N"
+   ASSIGN ::nHeight   VALUE height TYPE "N"
+   ASSIGN ::LeftAlign VALUE left   TYPE "L"
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor,, lRtl )
 
@@ -484,9 +547,9 @@ Local ControlHandle, nStyle, oContainer
    nStyle := ::InitStyle( ,, Invisible, notabstop, lDisabled )
 
    If HB_IsLogical( lFirst ) .AND. lFirst
-      ControlHandle := InitRadioGroup( ::ContainerhWnd, ::ContainerCol, ::ContainerRow, nStyle, ::lRtl, ::Width, ::Height )
+      ControlHandle := InitRadioGroup( ::ContainerhWnd, ::ContainerCol, ::ContainerRow, nStyle, ::lRtl, ::Width, ::Height, ::LeftAlign )
    Else
-      ControlHandle := InitRadioButton( ::ContainerhWnd, ::ContainerCol, ::ContainerRow, nStyle, ::lRtl, ::Width, ::Height )
+      ControlHandle := InitRadioButton( ::ContainerhWnd, ::ContainerCol, ::ContainerRow, nStyle, ::lRtl, ::Width, ::Height, ::LeftAlign )
    EndIf
 
    ::Register( ControlHandle,, HelpId,, ToolTip )
@@ -666,6 +729,9 @@ HB_FUNC( INITRADIOGROUP )
    int Style   = hb_parni( 4 ) | BS_NOTIFY | WS_CHILD | BS_AUTORADIOBUTTON | WS_GROUP;
    int StyleEx = _OOHG_RTL_Status( hb_parl( 5 ) );
 
+   if( hb_parl( 8 ) )
+      Style = Style | BS_LEFTTEXT;
+
    hbutton = CreateWindowEx( StyleEx, "button", "", Style,
                              hb_parni( 2 ), hb_parni( 3 ), hb_parni( 6 ), hb_parni( 7 ),
                              HWNDparam( 1 ), ( HMENU ) NULL, GetModuleHandle( NULL ), NULL );
@@ -680,6 +746,9 @@ HB_FUNC( INITRADIOBUTTON )
    HWND hbutton;
    int Style   = hb_parni( 4 ) | BS_NOTIFY | WS_CHILD | BS_AUTORADIOBUTTON;
    int StyleEx = _OOHG_RTL_Status( hb_parl( 5 ) );
+
+   if( hb_parl( 8 ) )
+      Style = Style | BS_LEFTTEXT;
 
    hbutton = CreateWindowEx( StyleEx, "button", "", Style,
                              hb_parni( 2 ), hb_parni( 3 ), hb_parni( 6 ), hb_parni( 7 ),

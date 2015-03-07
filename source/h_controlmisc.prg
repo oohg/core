@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.148 2015-02-28 23:34:50 fyurisich Exp $
+ * $Id: h_controlmisc.prg,v 1.149 2015-03-07 02:49:44 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -687,7 +687,7 @@ Local oWnd, oCtrl, nPos
       ElseIf Arg3 == "ADDRESS"
          oCtrl:Address := Arg4
 
-      ElseIf Arg3 == "READONLY"
+      ElseIf Arg3 == "READONLY" .OR. Arg3 == "DISABLEEDIT"
          oCtrl:ReadOnly := Arg4
 
       ElseIf Arg3 == "ITEMCOUNT"
@@ -722,7 +722,7 @@ Local oWnd, oCtrl, nPos
       oCtrl := GetExistingControlObject( Arg2, Arg1 )
       Arg3 := Upper( Arg3 )
 
-      If     Arg3 == "CAPTION"
+      If Arg3 == "CAPTION"
          oCtrl:Caption( Arg4, Arg5 )
 
       ElseIf Arg3 == "HEADER"
@@ -741,6 +741,9 @@ Local oWnd, oCtrl, nPos
          oCtrl:ItemReadonly( Arg4, Arg5 )
 
       ElseIf Arg3 == "ITEMENABLED"
+         oCtrl:ItemEnabled( Arg4, Arg5 )
+
+      ElseIf Arg3 == "ENABLED"
          oCtrl:ItemEnabled( Arg4, Arg5 )
 
       ElseIf Arg3 == "ITEMDRAGGABLE"
@@ -957,6 +960,9 @@ Local RetVal, oWnd, oCtrl, nPos
       ElseIf Arg3 == "SELCOLOR"
          RetVal := oCtrl:SelColor()
 
+      ElseIf Arg3 == "READONLY" .OR. Arg3 == "DISABLEEDIT"
+         RetVal := oCtrl:ReadOnly()
+
       Else
          // Pseudo-property
          nPos := ASCAN( oCtrl:aProperties, { |a| a[ 1 ] == Arg3 } )
@@ -1005,6 +1011,9 @@ Local RetVal, oWnd, oCtrl, nPos
          RetVal := oCtrl:ItemReadonly( Arg4 )
 
       ElseIf Arg3 == "ITEMENABLED"
+         RetVal := oCtrl:ItemEnabled( Arg4 )
+
+      ElseIf Arg3 == "ENABLED"
          RetVal := oCtrl:ItemEnabled( Arg4 )
 
       ElseIf Arg3 == "ITEMDRAGGABLE"
