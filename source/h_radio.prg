@@ -1,5 +1,5 @@
 /*
- * $Id: h_radio.prg,v 1.39 2015-03-07 02:49:44 fyurisich Exp $
+ * $Id: h_radio.prg,v 1.40 2015-03-07 20:52:57 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -97,32 +97,32 @@
 #include "i_windefs.ch"
 
 CLASS TRadioGroup FROM TLabel
-   DATA Type          INIT "RADIOGROUP" READONLY
-   DATA TabStop       INIT .T.
-   DATA IconWidth     INIT 19
-   DATA nWidth        INIT 120
-   DATA nHeight       INIT 25
-   DATA aOptions      INIT {}
-   DATA TabHandle     INIT 0
-   DATA lHorizontal   INIT .F.
-   DATA nSpacing      INIT nil
-   DATA lThemed       INIT .F.
-   DATA oBkGrnd       INIT nil
-   DATA LeftAlign     INIT .F.
+   DATA Type                   INIT "RADIOGROUP" READONLY
+   DATA TabStop                INIT .T.
+   DATA IconWidth              INIT 19
+   DATA nWidth                 INIT 120
+   DATA nHeight                INIT 25
+   DATA aOptions               INIT {}
+   DATA TabHandle              INIT 0
+   DATA lHorizontal            INIT .F.
+   DATA nSpacing               INIT nil
+   DATA lThemed                INIT .F.
+   DATA oBkGrnd                INIT nil
+   DATA LeftAlign              INIT .F.
 
-   METHOD RowMargin           BLOCK { |Self| - ::Row }
-   METHOD ColMargin           BLOCK { |Self| - ::Col }
-   METHOD ReadOnly            SETGET
+   METHOD RowMargin            BLOCK { |Self| - ::Row }
+   METHOD ColMargin            BLOCK { |Self| - ::Col }
+   METHOD ReadOnly             SETGET
    METHOD Define
    METHOD SetFont
    METHOD SizePos
-   METHOD Value               SETGET
-   METHOD Enabled             SETGET
+   METHOD Value                SETGET
+   METHOD Enabled              SETGET
    METHOD SetFocus
-   METHOD Visible             SETGET
+   METHOD Visible              SETGET
    METHOD GroupHeight
    METHOD GroupWidth
-   METHOD ItemCount           BLOCK { |Self| LEN( ::aOptions ) }
+   METHOD ItemCount            BLOCK { |Self| LEN( ::aOptions ) }
    METHOD AddItem
    METHOD InsertItem
    METHOD DeleteItem
@@ -130,6 +130,7 @@ CLASS TRadioGroup FROM TLabel
    METHOD AdjustResize
    METHOD ItemEnabled
    METHOD ItemReadOnly
+   METHOD Spacing              SETGET
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
@@ -153,27 +154,12 @@ Local i, oItem, uToolTip, uReadOnly
    ASSIGN ::Transparent VALUE transparent TYPE "L"
    ASSIGN ::oBkGrnd     VALUE bkgrnd      TYPE "O"
    ASSIGN ::LeftAlign   VALUE left        TYPE "L"
+   ASSIGN ::nSpacing    VALUE spacing     TYPE "N" DEFAULT Iif( ::lHorizontal, ::nWidth, ::nHeight )
+   ASSIGN ::TabStop     VALUE ! NoTabStop TYPE "L"
 
-   ASSIGN ::nSpacing     VALUE Spacing    TYPE "N"
-   If HB_IsNumeric( ::nSpacing )
-      Spacing := ::nSpacing
-   Else
-      Spacing := IF( ::lHorizontal, ::nWidth, ::nHeight )
-   EndIf
-
-   If VALTYPE( NoTabStop ) == "L"
-      ::TabStop := ! NoTabStop
-   EndIf
-
-   If HB_IsArray( tooltip )
-     uToolTip := nil
-   Else
-     uToolTip := tooltip
-   EndIf
-
-   ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor,, lRtl )
-   ::InitStyle( ,, Invisible, ! ::TabStop, lDisabled )
-   ::Register( 0, , HelpId,, uToolTip )
+   ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, , lRtl )
+   ::InitStyle( , , Invisible, ! ::TabStop, lDisabled )
+   ::Register( 0, , HelpId, , tooltip )
    ::SetFont( , , bold, italic, underline, strikeout )
 
    ::AutoSize := autosize
@@ -182,7 +168,7 @@ Local i, oItem, uToolTip, uReadOnly
 
    x := ::Col
    y := ::Row
-   For i = 1 to len( aOptions )
+   For i = 1 to LEN( aOptions )
       If HB_IsArray( tooltip ) .AND. LEN( tooltip ) >= i
          uToolTip := tooltip[ i ]
       Else
@@ -194,7 +180,7 @@ Local i, oItem, uToolTip, uReadOnly
          uReadOnly := readonly
       EndIf
 
-      oItem := TRadioItem():Define( , Self, x, y, ::Width, ::Height, ;
+      oItem := TRadioItem():Define( , Self, x, y, ::nWidth, ::nHeight, ;
                aOptions[ i ], .F., ( i == 1 ), ;
                ::AutoSize, ::Transparent, , , ;
                , , , , , , ;
@@ -203,9 +189,9 @@ Local i, oItem, uToolTip, uReadOnly
 
       AADD( ::aOptions, oItem )
       If ::lHorizontal
-         x += Spacing
+         x += ::nSpacing
       Else
-         y += Spacing
+         y += ::nSpacing
       EndIf
    Next
 
@@ -214,7 +200,7 @@ Local i, oItem, uToolTip, uReadOnly
       ::aOptions[ 1 ]:TabStop := .T.
    EndIf
 
-   ASSIGN ::OnChange    VALUE Change    TYPE "B"
+   ASSIGN ::OnChange VALUE Change TYPE "B"
 
 Return Self
 
@@ -226,7 +212,7 @@ Local nRet, oFirst, oLast
    IF ::lHorizontal
       nRet := ::Height
    ELSE
-      IF Len( ::aOptions ) > 0
+      IF LEN( ::aOptions ) > 0
          oFirst := ::aOptions[ 1 ]
          oLast  := aTail( ::aOptions )
          nRet   := oLast:Row + oLast:Height - oFirst:Row
@@ -242,7 +228,7 @@ METHOD GroupWidth() CLASS TRadioGroup
 Local nRet, oFirst, oLast
 
    IF ::lHorizontal
-      IF Len( ::aOptions ) > 0
+      IF LEN( ::aOptions ) > 0
          oFirst := ::aOptions[ 1 ]
          oLast  := aTail( ::aOptions )
          nRet   := oLast:Col + oLast:Width - oFirst:Col
@@ -269,7 +255,7 @@ Local nDeltaRow, nDeltaCol, uRet
    uRet := ::Super:SizePos( Row, Col, Width, Height )
    nDeltaRow := ::Row - nDeltaRow
    nDeltaCol := ::Col - nDeltaCol
-   AEVAL( ::aControls, { |o| o:Visible := .F., o:SizePos( o:Row + nDeltaRow, o:Col + nDeltaCol ), o:Visible := .T. } )
+   AEVAL( ::aControls, { |o| o:Visible := .F., o:SizePos( o:Row + nDeltaRow, o:Col + nDeltaCol, ::Width, ::Height ), o:Visible := .T. } )
 Return uRet
 
 *-----------------------------------------------------------------------------*
@@ -309,7 +295,7 @@ METHOD SetFocus() CLASS TRadioGroup
 *-----------------------------------------------------------------------------*
 Local nValue
    nValue := ::Value
-   If nValue >= 1 .AND. nValue <= Len( ::aOptions )
+   If nValue >= 1 .AND. nValue <= LEN( ::aOptions )
       ::aOptions[ nValue ]:SetFocus()
    Else
       ::aOptions[ 1 ]:SetFocus()
@@ -451,6 +437,28 @@ METHOD AdjustResize( nDivh, nDivw, lSelfOnly ) CLASS TRadioGroup
 Return ::Super:AdjustResize( nDivh, nDivw, lSelfOnly )
 
 *------------------------------------------------------------------------------*
+METHOD Spacing( nSpacing ) CLASS TRadioGroup
+*------------------------------------------------------------------------------*
+Local x, y, i, oCtrl
+   If HB_IsNumeric( nSpacing )
+      x := ::Col
+      y := ::Row
+      For i = 1 to LEN( ::aOptions )
+         oCtrl := ::aOptions[ i ]
+         oCtrl:Visible := .F.
+         oCtrl:SizePos( y, x )
+         oCtrl:Visible := .T.
+         If ::lHorizontal
+            x += nSpacing
+         Else
+            y += nSpacing
+         EndIf
+      Next
+      ::nSpacing := nSpacing
+   EndIf
+Return ::nSpacing
+
+*------------------------------------------------------------------------------*
 METHOD ItemEnabled( nItem, lEnabled ) CLASS TRadioGroup
 *------------------------------------------------------------------------------*
    If HB_IsLogical( lEnabled )
@@ -472,11 +480,11 @@ METHOD ReadOnly( uReadOnly ) CLASS TRadioGroup
 Local i, aReadOnly
 
    If HB_IsLogical( uReadOnly )
-      aReadOnly := ARRAY( Len( ::aOptions ) )
+      aReadOnly := ARRAY( LEN( ::aOptions ) )
       AFILL( aReadOnly, uReadOnly )
    ElseIf HB_IsArray( uReadOnly )
-      aReadOnly := ARRAY( Len( ::aOptions ) )
-      For i := 1 TO Len( uReadOnly )
+      aReadOnly := ARRAY( LEN( ::aOptions ) )
+      For i := 1 TO LEN( uReadOnly )
          If HB_IsLogical( uReadOnly[ i ] )
             aReadOnly[ i ] := uReadOnly[ i ]
          EndIf
@@ -484,16 +492,16 @@ Local i, aReadOnly
    EndIf
 
    If HB_IsArray( aReadOnly )
-      For i := 1 TO Len( ::aOptions )
+      For i := 1 TO LEN( ::aOptions )
          If HB_IsLogical( aReadOnly[ i ] )
             ::aOptions[ i ]:Enabled := ! aReadOnly[ i ]
          EndIf
       Next i
    Else
-      aReadOnly := ARRAY( Len( ::aOptions ) )
+      aReadOnly := ARRAY( LEN( ::aOptions ) )
    EndIf
 
-   For i := 1 TO Len( ::aOptions )
+   For i := 1 TO LEN( ::aOptions )
       aReadOnly[ i ] := ! ::aOptions[ i ]:Enabled
    Next i
 

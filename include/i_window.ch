@@ -1,5 +1,5 @@
 /*
- * $Id: i_window.ch,v 1.57 2015-03-07 02:49:44 fyurisich Exp $
+ * $Id: i_window.ch,v 1.58 2015-03-07 20:52:57 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -74,7 +74,7 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
             => GetExistingFormObject( <(w)> ):\<p\> () ;;
       #xtranslate <w> . \<c\> . DisableEdit ;
             => GetExistingControlObject( \<(c)\>, <(w)> ):ReadOnly ;;
-      #xtranslate <w> . \<c\> . \<p: Value, Name, Address, BackColor, ;
+      #xtranslate <w> . \<c\> . \<p: Value, Name, Address, BackColor, Spacing, ;
             FontColor, Picture, ToolTip, FontName, FontSize, FontBold, ;
             FontUnderline, FontItalic, FontStrikeOut, Caption, Row, Col, ;
             Width, Height, Visible, Enabled, Checked, ItemCount, RangeMin, ;

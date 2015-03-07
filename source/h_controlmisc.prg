@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.149 2015-03-07 02:49:44 fyurisich Exp $
+ * $Id: h_controlmisc.prg,v 1.150 2015-03-07 20:52:57 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1377,7 +1377,7 @@ RETURN ::nHeight
 METHOD ToolTip( cToolTip ) CLASS TControl
 *------------------------------------------------------------------------------*
    IF PCOUNT() > 0
-      IF valtype( cToolTip ) $ "CM" .OR. HB_IsBlock( cToolTip )
+      IF valtype( cToolTip ) $ "CMB"
          ::cToolTip := cToolTip
       ELSE
          ::cToolTip := ""

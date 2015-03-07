@@ -1,11 +1,26 @@
 /*
- * $Id: ChangeLog,v 1.1408 2015-03-07 02:49:43 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1409 2015-03-07 20:52:57 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-03-07 15:52 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Previous entry.
+   * ide/prgs/formedit.prg
+     + RadioGroup's LeftJustify and ReadOnly clauses.
+     + RadioGroup's Width to Manual Move/Size option.
+   * include/i_window.ch
+     + Spacing property to semi-oop syntax.
+   * source/h_controlmisc.prg
+     * Condition simplified in method TControl:ToolTip().
+   * source/h_radio.prg
+     + Method Spacing to class TRadioGroup.
+     * Some cleaning up in Method Define of class TRadioGroup.
+     ! Control is not painted properly after changing dimension.
 
 2015-03-07 00:49 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog
@@ -17,7 +32,7 @@
      + DATA LeftAlign to TRadioGroup().
      + Methods ReadOnly, ItemEnabled and ItemReadOnly.
      + New parameters to methods Define and InsertItem of TRadioGroup().
-     ! Control is not painted properly after changing position/dimension.
+     ! Control is not painted properly after changing position.
      + DATA LeftAlign to TRadioItem().
      + New parameter to method Define of TRadioItem().
      + Support for BS_LEFTTEXT style in InitRadioGroup() and

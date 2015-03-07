@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.49 2015-03-01 00:18:07 fyurisich Exp $
+ * $Id: formedit.prg,v 1.50 2015-03-07 20:52:57 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -3977,7 +3977,7 @@ LOCAL cName, oCtrl, aImages, aItems, nMin, nMax, j, aCaptions, nCnt, oPage, lRed
                   .F., .F., ::aBold[i], ::aFontItalic[i], ::aFontUnderline[i], ;
                   ::aFontStrikeout[i], NIL, NIL, ::aTransparent[i], ;
                   ::aAutoPlay[i], ::aFlat[i], .F., ::aRTL[i], nHeight, ;
-                  ::aThemed[i], ::aBackground[i] )
+                  ::aThemed[i], ::aBackground[i], ::aLeft[i], )
       IF ! Empty( ::aFontName[i] )
          oCtrl:FontName := ::aFontName[i]
       ENDIF
@@ -3989,6 +3989,9 @@ LOCAL cName, oCtrl, aImages, aItems, nMin, nMax, j, aCaptions, nCnt, oPage, lRed
       ENDIF
       IF IsValidArray( ::aBackColor[i] )
          oCtrl:BackColor := &( ::aBackColor[i] )
+      ENDIF
+      IF IsValidArray( ::aReadOnly[i] )
+         oCtrl:ReadOnly := &( ::aReadOnly[i] )
       ENDIF
       oCtrl:OnClick  := { || ::DrawOutline( oCtrl ) }
       oCtrl:OnRClick := { || ::DrawOutline( oCtrl ) }
@@ -4614,55 +4617,33 @@ LOCAL ia, aInitValues, aFormats, aResults, lChanged
          nHeight  := oControl:Height
          cTitle   := Lower( oControl:Name ) + " Move/Size properties"
 
-         IF ::CrtlIsOfType( ia, 'RADIOGROUP' )
-            aLabels     := { 'Row', 'Col', 'Width' }
-            aInitValues := { nRow, nCol, nWidth }
-            aFormats    := { '9999', '9999', '9999' }
-            aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
-            IF aResults[1] == NIL
-               ::oDesignForm:SetFocus()
-               RETURN NIL
-            ENDIF
-            IF aResults[1] >= 0
-               lChanged := .T.
-               oControl:Row := aResults[1]
-            ENDIF
-            IF aResults[2] >= 0
-               lChanged := .T.
-               oControl:Col := aResults[2]
-            ENDIF
+         aLabels     := { 'Row', 'Col', 'Width', 'Height' }
+         aInitValues := { nRow, nCol, nWidth, nHeight }
+         aFormats    := { '9999', '9999', '9999', '9999' }
+         aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
+         IF aResults[1] == NIL
+            ::oDesignForm:SetFocus()
+            RETURN NIL
+         ENDIF
+         IF aResults[1] >= 0
+            lChanged := .T.
+            oControl:Row := aResults[1]
+         ENDIF
+         IF aResults[2] >= 0
+            lChanged := .T.
+            oControl:Col := aResults[2]
+         ENDIF
+         IF ! ::CrtlIsOfType( ia, 'MONTHCALENDAR TIMER' )
             IF aResults[3] >= 0
                lChanged := .T.
-               oControl:Width := aResults[3]
+               oControl:Width  := aResults[3]
             ENDIF
-         ELSE
-            aLabels     := { 'Row', 'Col', 'Width', 'Height' }
-            aInitValues := { nRow, nCol, nWidth, nHeight }
-            aFormats    := { '9999', '9999', '9999', '9999' }
-            aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
-            IF aResults[1] == NIL
-               ::oDesignForm:SetFocus()
-               RETURN NIL
-            ENDIF
-            IF aResults[1] >= 0
+            IF aResults[4] >= 0
                lChanged := .T.
-               oControl:Row := aResults[1]
-            ENDIF
-            IF aResults[2] >= 0
-               lChanged := .T.
-               oControl:Col := aResults[2]
-            ENDIF
-            IF ! ::CrtlIsOfType( ia, 'MONTHCALENDAR TIMER' )
-               IF aResults[3] >= 0
-                  lChanged := .T.
-                  oControl:Width  := aResults[3]
-               ENDIF
-               IF aResults[4] >= 0
-                  lChanged := .T.
-                  oControl:Height := aResults[4]
-               ENDIF
+               oControl:Height := aResults[4]
             ENDIF
          ENDIF
+
          IF lChanged
             ::Snap( oControl )
             ::DrawOutline( oControl )
@@ -8403,6 +8384,7 @@ LOCAL cName, cObj, nRow, nCol, nWidth, nValue, nSpacing, cFontName, nFontSize
 LOCAL cToolTip, cOnChange, lTrans, nHelpid, cItems, lVisible, lEnabled, lBold
 LOCAL lItalic, lUnderline, lStrikeout, aBackColor, aFontColor, lRTL, lNoTabStop
 LOCAL lAutoSize, lHorizontal, lThemed, cBackground, cSubClass, oCtrl, nHeight
+LOCAL cReadOnly, lLeftJust
 
    // Load properties
    cName       := ::aControlW[i]
@@ -8445,6 +8427,8 @@ LOCAL lAutoSize, lHorizontal, lThemed, cBackground, cSubClass, oCtrl, nHeight
    lThemed     := ( ::ReadLogicalData( cName, 'THEMED', "F" ) == "T" )
    cBackground := ::ReadStringData( cName, 'BACKGROUND', '' )
    cSubClass   := ::ReadStringData( cName, 'SUBCLASS', '' )
+   cReadOnly   := ::ReadStringData( cName, 'READONLY', '' )
+   lLeftJust   := ( ::ReadLogicalData( cName, 'LEFTJUSTIFY', "F" ) == "T" )
 
    // Save properties
    ::aCtrlType[i]      := 'RADIOGROUP'
@@ -8473,6 +8457,8 @@ LOCAL lAutoSize, lHorizontal, lThemed, cBackground, cSubClass, oCtrl, nHeight
    ::aThemed[i]        := lThemed
    ::aBackground[i]    := cBackground
    ::aSubClass[i]      := cSubClass
+   ::aReadOnly[i]      := cReadOnly
+   ::aLeft[i]          := lLeftJust
 
    // Create control
    oCtrl     := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i, nWidth, nHeight, NIL )
@@ -12799,6 +12785,12 @@ LOCAL cValue
       IF ::aFlat[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HORIZONTAL '
       ENDIF
+      IF ::aLeft[j]
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'LEFTJUSTIFY '
+      ENDIF
+      IF ! Empty( ::aReadOnly[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + "READONLY " + AllTrim( ::aReadOnly[j] )
+      ENDIF
       IF ! ::aEnabled[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
       ENDIF
@@ -14919,9 +14911,9 @@ LOCAL aFormats, aResults
 
    IF ::aCtrlType[j] == 'RADIOGROUP'
       cTitle      := cNameW + " properties"
-      aLabels     := { 'Name',     'Value',      'Options',   'ToolTip',     'Spacing',     'HelpID',     'Transparent',     'Enabled',     'Visible',     'Obj',      'RTL',     'NoTabStop',     'AutoSize',     'Horizontal', 'Themed',     'Background',     'SubClass' }
-      aInitValues := { ::aName[j], ::aValueN[j], ::aitems[j], ::atooltip[j], ::aspacing[j], ::aHelpID[j], ::atransparent[j], ::aenabled[j], ::avisible[j], ::acobj[j], ::aRTL[j], ::aNoTabStop[j], ::aAutoPlay[j], ::aFlat[j],   ::aThemed[j], ::aBackground[j], ::aSubClass[j] }
-      aFormats    := { 30,         '999',        250,         120,           '999',         '999',        .F.,               .F.,           .F.,           31,         .F.,       .F.,             .F.,            .F.,          .F.,          250,              250 }
+      aLabels     := { 'Name',     'Value',      'Options',   'ToolTip',     'Spacing',     'HelpID',     'Transparent',     'Enabled',     'Visible',     'Obj',      'RTL',     'NoTabStop',     'AutoSize',     'Horizontal', 'Themed',     'Background',     'SubClass',     'LeftJustify', 'ReadOnly' }
+      aInitValues := { ::aName[j], ::aValueN[j], ::aitems[j], ::atooltip[j], ::aspacing[j], ::aHelpID[j], ::atransparent[j], ::aenabled[j], ::avisible[j], ::acobj[j], ::aRTL[j], ::aNoTabStop[j], ::aAutoPlay[j], ::aFlat[j],   ::aThemed[j], ::aBackground[j], ::aSubClass[j], ::aLeft[j],    ::aReadOnly[j] }
+      aFormats    := { 30,         '999',        250,         120,           '999',         '999',        .F.,               .F.,           .F.,           31,         .F.,       .F.,             .F.,            .F.,          .F.,          250,              250,            .F.,           250}
       aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
       IF aResults[1] == NIL
          ::oDesignForm:SetFocus()
@@ -14944,6 +14936,8 @@ LOCAL aFormats, aResults
       ::aThemed[j]           := aResults[15]
       ::aBackground[j]       := aResults[16]
       ::aSubClass[j]         := aResults[17]
+      ::aLeft[j]             := aResults[18]           // LEFTJUSTIFY
+      ::aReadOnly[j]         := aResults[19]
    ENDIF
 
    IF ::aCtrlType[j] == 'COMBO'
