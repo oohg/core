@@ -1,25 +1,33 @@
 #
-# $Id: oohg.hbc,v 1.3 2013-10-27 15:37:27 fyurisich Exp $
+# $Id: oohg.hbc,v 1.4 2015-03-08 15:25:35 fyurisich Exp $
 #
 
 # oohg paths
 {win}incpaths=include
-# c compiler
-{win}libpaths=lib\hb\mingw lib
-# c compiler x64
-#{win}libpaths=lib\hb\mingw64
+
+# c compiler will search this dir for OOHG's libs
+{win}libpaths=${HG_ROOT}\${LIB_GUI}
+
+# add app dir to search for additional include files
 {win}incpaths=${hb_curdir}
-# oohg resources
+
+# app + oohg resources
 {win}sources=${hb_curdir}_temp.o
 
 # gui mode
 {win}gt=gtgui
 
-# core
+# core lib
 {win}libs=oohg
-# core (binary)
+
+# printing libs
 libs=hbprinter miniprint
-# Harbour contribs
+
+# harbour contribs
 {win}libs=hbct hbmisc hbtip hbziparc hbmzip minizip hbwin xhb
+
+# optional libs for HB 3.0
+#{win}libs=socket mysqldll dll hbmysql rddleto
+
 # system
 {win}libs=msvfw32 vfw32

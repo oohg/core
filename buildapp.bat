@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: buildapp.bat,v 1.9 2014-04-15 00:46:16 fyurisich Exp $
+rem $Id: buildapp.bat,v 1.10 2015-03-08 15:25:35 fyurisich Exp $
 rem
 
 REM *** Check for .prg ***
@@ -18,14 +18,14 @@ if exist output.log del output.log
 rem *** Set Paths ***
 if "%HG_ROOT%"==""  set HG_ROOT=c:\oohg
 if "%HG_HRB%"==""   set HG_HRB=%HG_ROOT%\harbour
-if "%HG_MINGW%"=="" set HG_MINGW=%HG_ROOT%\mingw
+if "%HG_CCOMP%"=="" set HG_CCOMP=%HG_ROOT%\mingw
 
 rem *** To Build with Nightly Harbour ***
-rem set HG_HRB=c:\hb32
+rem set HG_HRB=%HG_ROOT%\hb32
 rem *** For 32 bits MinGW ***
-rem set HG_MINGW=%HG_HRB%\comp\mingw
+rem set HG_CCOMP=%HG_HRB%\comp\mingw
 rem *** For 64 bits MinGW ***
-rem set HG_MINGW=%HG_HRB%\comp\mingw64
+rem set HG_CCOMP=%HG_HRB%\comp\mingw64
 
 rem *** Set EnvVars ***
 if "%LIB_GUI%"=="" set LIB_GUI=lib
@@ -80,7 +80,7 @@ goto LOOP_START
 
 rem *** Set PATH ***
 set TPATH=%PATH%
-set PATH=%HG_MINGW%\bin;%HG_HRB%\%BIN_HRB%
+set PATH=%HG_CCOMP%\bin;%HG_HRB%\%BIN_HRB%
 
 rem *** Process Resource File ***
 echo Compiling %TFILE% ...
@@ -91,6 +91,7 @@ windres -i _temp.rc -o _temp.o
 rem *** Compile and Link ***
 if "%NO_LOG%"=="YES" hbmk2 %TFILE% %EXTRA% %HG_ROOT%\oohg.hbc %RUNEXE%
 if not "%NO_LOG%"=="YES" hbmk2 %TFILE% %EXTRA% %HG_ROOT%\oohg.hbc >> output.log 2>&1 %RUNEXE% -prgflag=-q
+if exist output.log type output.log
 
 rem *** Cleanup ***
 if exist _oohg_resconfig.h del _oohg_resconfig.h
