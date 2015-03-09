@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: mymakelib.bat,v 1.2 2015-03-09 22:29:21 fyurisich Exp $
+rem $Id: Build32.bat,v 1.1 2015-03-09 22:50:09 fyurisich Exp $
 rem
 cls
 
