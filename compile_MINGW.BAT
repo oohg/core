@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: compile_MINGW.BAT,v 1.35 2014-07-01 23:49:50 fyurisich Exp $
+rem $Id: compile_MINGW.BAT,v 1.36 2015-03-09 22:29:20 fyurisich Exp $
 rem
 cls
 
@@ -14,8 +14,8 @@ if exist %1.exe goto ERREXIT2
 
 rem *** Set Paths ***
 if "%HG_ROOT%"==""  set HG_ROOT=c:\oohg
-if "%HG_HRB%"==""   set HG_HRB=%HG_ROOT%\harbour
-if "%HG_MINGW%"=="" set HG_MINGW=%HG_ROOT%\mingw
+if "%HG_HRB%"==""   set HG_HRB=c:\oohg\harbour
+if "%HG_MINGW%"=="" set HG_MINGW=c:\oohg\mingw
 
 rem *** To Build with Nightly Harbour ***
 rem set HG_HRB=c:\hb32

@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: BuildLib.bat,v 1.5 2013-11-01 20:36:56 fyurisich Exp $
+rem $Id: BuildLib.bat,v 1.6 2015-03-09 22:29:21 fyurisich Exp $
 rem
 rem Build ooHG libraries from official distro
 rem
@@ -14,8 +14,8 @@ cls
 
 rem *** Set Paths ***
 if "%HG_ROOT%"==""  set HG_ROOT=c:\oohg
-if "%HG_HRB%"==""   set HG_HRB=%HG_ROOT%\harbour
-if "%HG_MINGW%"=="" set HG_MINGW=%HG_ROOT%\mingw
+if "%HG_HRB%"==""   set HG_HRB=c:\oohg\harbour
+if "%HG_MINGW%"=="" set HG_MINGW=c:\oohg\mingw
 
 rem *** To Build with Nightly Harbour ***
 rem set HG_HRB=c:\hb32

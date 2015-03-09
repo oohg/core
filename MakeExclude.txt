@@ -1,0 +1,11 @@
+\cvs\
+ide_up_to_2013-08-13.zip
+makedistro.bat
+makeexclude.txt
+.cvsignore
+\workinprogress\
+thumbs.db
+oohg.log
+\.hbmk\
+hmi.ini
+output.log
