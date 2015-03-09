@@ -1,5 +1,5 @@
 /*
-* $Id: h_pdf.prg,v 1.14 2015-03-09 02:52:08 fyurisich Exp $
+* $Id: h_pdf.prg,v 1.15 2015-03-09 05:55:30 guerra000 Exp $
 */
 /*
  * ooHG source code:
@@ -103,8 +103,8 @@
 #define BOOKPAGE      9
 #define BOOKCOORD    10
 
-#define FONTNAME      1  // font name
-#define FONTSIZE      2  // font size
+* #define FONTNAME      1  // font name
+* #define FONTSIZE      2  // font size
 #define LPI           3  // lines per inch
 #define PAGESIZE      4  // page size
 #define PAGEORIENT    5  // page orientation
@@ -113,30 +113,30 @@
 #define REPORTWIDTH   8  // report width
 #define REPORTPAGE    9  // report page
 #define REPORTLINE   10  // report line
-#define FONTNAMEPREV 11  // prev font name
-#define FONTSIZEPREV 12  // prev font size
+* #define FONTNAMEPREV 11  // prev font name
+* #define FONTSIZEPREV 12  // prev font size
 #define PAGEBUFFER   13  // page buffer
 #define REPORTOBJ    14  // current obj
 * #define DOCLEN       15  // document length
 #define TYPE1        16  // array of type 1 fonts
 #define MARGINS      17  // recalc margins ?
 #define HEADEREDIT   18  // edit header ?
-#define NEXTOBJ      19  // next obj
+* #define NEXTOBJ      19  // next obj
 #define PDFTOP       20  // top row
 #define PDFLEFT      21  // left & right margin in mm
 #define PDFBOTTOM    22  // bottom row
 * #define HANDLE       23  // handle
 #define PAGES        24  // array of pages
 #define REFS         25  // array of references
-#define BOOKMARK     26  // array of bookmarks
+* #define BOOKMARK     26  // array of bookmarks
 #define HEADER       27  // array of headers
 #define FONTS        28  // array of report fonts
-#define IMAGES       29  // array of report images
-#define PAGEIMAGES   30  // array of current page images
-#define PAGEFONTS    31  // array of current page fonts
-#define FONTWIDTH    32  // array of fonts width's
-#define OPTIMIZE     33  // optimized ?
-#define PARAMLEN     33  // number of report elements
+* #define IMAGES       29  // array of report images
+* #define PAGEIMAGES   30  // array of current page images
+* #define PAGEFONTS    31  // array of current page fonts
+* #define FONTWIDTH    32  // array of fonts width's
+* #define OPTIMIZE     33  // optimized ?
+#define PARAMLEN     28  // number of report elements
 
 #define ALIGN_LEFT    1
 #define ALIGN_CENTER  2
@@ -495,920 +495,123 @@ CREATE CLASS tPdf
              0,    0,    0,    0,    0,    0,    0,    0,    0,    0, ;
              0,    0,    0,    0,    0,    0  }
 
-DATA afo3 INIT ;
- { 600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600, ;
-   600  }
-
+   DATA afo3 INIT ;
+        {  600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
+           600,  600,  600,  600,  600,  600  }
 
    DATA lIsPageActive    INIT .F.
-   DATA nHandle
-   DATA nDocLen
+   DATA nFontName                         //  1   font name
+   DATA nFontSize                         //  2   font size
+   DATA nFontNamePrev                     // 11   prev font name
+   DATA nFontSizePrev                     // 12   prev font size
+   DATA nHandle                           // 15   document length
+   DATA nNextObj                          // 19   next obj
+   DATA nDocLen                           // 23   handle
+   DATA aBookMarks                        // 26   array of bookmarks
+   DATA aImages                           // 29   array of report images
+   DATA aPageImages                       // 30   array of current page images
+   DATA aPageFonts                        // 31   array of current page fonts
+   DATA aFontWidth                        // 32   array of fonts width's
+   DATA lOptimize                         // 33   optimized ?
 
    METHOD Init( cFile, nLen, lOptimize ) CONSTRUCTOR
 
-METHOD AtSay
-METHOD Normal
-METHOD Bold
-METHOD Italic
-METHOD UnderLine
-METHOD BoldItalic
-METHOD BookAdd
-METHOD BookClose
-METHOD BookOpen
+   METHOD AtSay
+   METHOD Normal
+   METHOD Bold
+   METHOD Italic
+   METHOD UnderLine
+   METHOD BoldItalic
+   METHOD BookAdd
+   METHOD BookClose
+   METHOD BookOpen
 METHOD _OOHG_Box
 METHOD _OOHG_Line
 METHOD Box
@@ -1441,19 +644,19 @@ METHOD Header
 METHOD DrawHeader
 METHOD Margins
 METHOD CreateHeader
-METHOD ImageInfo
-METHOD TIFFInfo
-METHOD JPEGInfo
+   METHOD ImageInfo
+   METHOD TIFFInfo
+   METHOD JPEGInfo
    METHOD WriteToFile
-METHOD FilePrint
-METHOD BookCount
-METHOD BookFirst
-METHOD BookLast
-METHOD BookNext
-METHOD BookParent
-METHOD BookPrev
+   METHOD BookCount
+   METHOD BookFirst
+   METHOD BookLast
+   METHOD BookNext
+   METHOD BookParent
+   METHOD BookPrev
 METHOD CheckLine
-METHOD ClosePage
+   METHOD ClosePage
+   METHOD FilePrint
 METHOD GetFontInfo
 METHOD M2R
 METHOD M2X
@@ -1462,7 +665,7 @@ METHOD R2D
 METHOD R2M
 METHOD X2M
 METHOD TextPrint
-METHOD TextNextPara
+   METHOD TextNextPara
 METHOD Execute
 
 ENDCLASS
@@ -1477,18 +680,18 @@ METHOD Init( cFile, nLen, lOptimize )
 
 ::aReport := array( PARAMLEN )
 
-::aReport[ FONTNAME ] := 9
-::aReport[ FONTSIZE ] := 10
+   ::nFontName    := 9
+   ::nFontSize    := 10
 ::aReport[ LPI  ] := 6
 ::aReport[ PAGESIZE ] := "LETTER"
 ::aReport[ PAGEORIENT   ] := "P"
 ::aReport[ PAGEX] := 8.5 * 72
 ::aReport[ PAGEY] := 11.0 * 72
-::aReport[ REPORTWIDTH  ] := nLen// 200 // should be as parameter
+::aReport[ REPORTWIDTH  ] := nLen // 200 // should be as parameter
 ::aReport[ REPORTPAGE   ] := 0
 ::aReport[ REPORTLINE   ] := 0   // 5
-::aReport[ FONTNAMEPREV ] := 0
-::aReport[ FONTSIZEPREV ] := 0
+   ::nFontNamePrev  := 0
+   ::nFontSizePrev  := 0
 ::aReport[ PAGEBUFFER   ] := ""
    ::lIsPageActive := .F.
    ::nDocLen := 0
@@ -1498,23 +701,23 @@ METHOD Init( cFile, nLen, lOptimize )
    "Courier", "Courier-Bold", "Courier-Oblique", "Courier-BoldOblique" }
 ::aReport[ MARGINS  ] := .t.
 ::aReport[ HEADEREDIT   ] := .f.
-::aReport[ NEXTOBJ  ] := 0
+   ::nNextObj    := 0
 ::aReport[ PDFTOP   ] := 1  // top
 ::aReport[ PDFLEFT  ] := 10 // left & right
 ::aReport[ PDFBOTTOM] := ::aReport[ PAGEY ] / 72 * ::aReport[ LPI ] - 1 // bottom, default "LETTER", "P", 6
    ::nHandle := fcreate( cFile )
 ::aReport[ PAGES] := {}
 ::aReport[ REFS ] := { 0, 0 }
-::aReport[ BOOKMARK ] := {}
+   ::aBookMarks  := {}
 ::aReport[ HEADER   ] := {}
 ::aReport[ FONTS] := {}
-::aReport[ IMAGES   ] := {}
-::aReport[ PAGEIMAGES   ] := {}
-::aReport[ PAGEFONTS] := {}
+   ::aImages     := {}
+   ::aPageImages := {}
+   ::aPageFonts  := {}
 
-::aReport[ OPTIMIZE ] := lOptimize
-::aReport[ NEXTOBJ  ] := ::aReport[ REPORTOBJ ] + 4
-::aReport[ FONTWIDTH ] := { ::afo1, ::afo2, ::afo3 }
+   ::lOptimize   := lOptimize
+   ::nNextObj := ::aReport[ REPORTOBJ ] + 4
+   ::aFontWidth  := { ::afo1, ::afo2, ::afo3 }
    ::WriteToFile( "%PDF-1.3" + CRLF )
 
 RETURN self
@@ -1522,25 +725,24 @@ RETURN self
 //컴컴컴컴컴컴컴컴컴컴컴컴�\\
 
 METHOD AtSay( cString, nRow, nCol, cUnits, lExact, cId )
-
 local _nFont, lReverse, nAt
 
-DEFAULT nRow   TO ::aReport[ REPORTLINE ]
-DEFAULT cUnits TO "R"
-DEFAULT lExact TO .f.
-DEFAULT cId TO  ""
+   DEFAULT nRow   TO ::aReport[ REPORTLINE ]
+   DEFAULT cUnits TO "R"
+   DEFAULT lExact TO .f.
+   DEFAULT cId TO  ""
 
    IF ! ::lIsPageActive
       ::NewPage()
    ENDIF
 
    IF ::aReport[ HEADEREDIT ]
-  return ::Header( "PDFATSAY", cId, { cString, nRow, nCol, cUnits, lExact } )
+      RETURN ::Header( "PDFATSAY", cId, { cString, nRow, nCol, cUnits, lExact } )
    ENDIF
 
    /*
    IF ( nAt := at( "#pagenumber#", cString ) ) > 0
-  cString := left( cString, nAt - 1 ) + ltrim(str( ::PageNumber())) + substr( cString, nAt + 12 )
+      cString := left( cString, nAt - 1 ) + ltrim(str( ::PageNumber())) + substr( cString, nAt + 12 )
    ENDIF
    */
 
@@ -1549,50 +751,50 @@ DEFAULT cId TO  ""
       nRow := ::M2Y( nRow )
       nCol := ::M2X( nCol )
    ELSEIF cUnits == "R"
-      IF .not. lExact
+      IF ! lExact
          ::CheckLine( nRow )
-         nRow := nRow + ::aReport[ PDFTOP]
+         nRow := nRow + ::aReport[ PDFTOP ]
       ENDIF
       nRow := ::R2D( nRow )
       nCol := ::M2X( ::aReport[ PDFLEFT ] ) + ;
-      nCol * 100.00 / ::aReport[ REPORTWIDTH ] * ;
-      ( ::aReport[ PAGEX ] - ::M2X( ::aReport[ PDFLEFT ] ) * 2 - 9.0 ) / 100.00
+              nCol * 100.00 / ::aReport[ REPORTWIDTH ] * ;
+              ( ::aReport[ PAGEX ] - ::M2X( ::aReport[ PDFLEFT ] ) * 2 - 9.0 ) / 100.00
    ENDIF
-   IF !empty( cString )
-  cString := ::StringB( cString )
-  IF right( cString, 1 ) == chr(255) //reverse
- cString := left( cString, len( cString ) - 1 )
- ::Box( ::aReport[ PAGEY ] - nRow - ::aReport[ FONTSIZE ] + 2.0 , nCol, ::aReport[ PAGEY ] - nRow + 2.0, nCol + ::M2X( ::length( cString )) + 1,,100, "D")
- ::aReport[ PAGEBUFFER ] += " 1 g "
- lReverse = .t.
-  ELSEIF right( cString, 1 ) == chr(254) //underline
- cString := left( cString, len( cString ) - 1 )
- ::Box( ::aReport[ PAGEY ] - nRow + 0.5,  nCol, ::aReport[ PAGEY ] - nRow + 1, nCol + ::M2X( ::length( cString )) + 1,,100, "D")
-  ENDIF
+   IF ! empty( cString )
+      cString := ::StringB( cString )
+      IF right( cString, 1 ) == chr( 255 ) //reverse
+         cString := left( cString, len( cString ) - 1 )
+         ::Box( ::aReport[ PAGEY ] - nRow - ::nFontSize + 2.0 , nCol, ::aReport[ PAGEY ] - nRow + 2.0, nCol + ::M2X( ::length( cString ) ) + 1,,100, "D" )
+         ::aReport[ PAGEBUFFER ] += " 1 g "
+         lReverse = .t.
+      ELSEIF right( cString, 1 ) == chr( 254 ) //underline
+         cString := left( cString, len( cString ) - 1 )
+         ::Box( ::aReport[ PAGEY ] - nRow + 0.5,  nCol, ::aReport[ PAGEY ] - nRow + 1, nCol + ::M2X( ::length( cString )) + 1,,100, "D")
+      ENDIF
 
-  // version 0.01
-  IF ( nAt := at( chr(253), cString )) > 0 // some color text inside
- ::aReport[ PAGEBUFFER ] += CRLF + ;
- Chr_RGB( substr( cString, nAt + 1, 1 )) + " " + ;
- Chr_RGB( substr( cString, nAt + 2, 1 )) + " " + ;
- Chr_RGB( substr( cString, nAt + 3, 1 )) + " rg "
- cString := stuff( cString, nAt, 4, "")
-  ENDIF
-  // version 0.01
+      // version 0.01
+      IF ( nAt := at( chr( 253 ), cString ) ) > 0 // some color text inside
+         ::aReport[ PAGEBUFFER ] += CRLF + ;
+                                    Chr_RGB( substr( cString, nAt + 1, 1 )) + " " + ;
+                                    Chr_RGB( substr( cString, nAt + 2, 1 )) + " " + ;
+                                    Chr_RGB( substr( cString, nAt + 3, 1 )) + " rg "
+         cString := stuff( cString, nAt, 4, "")
+      ENDIF
+      // version 0.01
 
-  _nFont := ascan( ::aReport[ FONTS ], {|arr| arr[1] == ::aReport[ FONTNAME ]} )
-  IF ::aReport[ FONTNAME ] <> ::aReport[ FONTNAMEPREV ]
- ::aReport[ FONTNAMEPREV ] := ::aReport[ FONTNAME ]
- ::aReport[ PAGEBUFFER ] += CRLF + "BT /Fo" + ltrim(str( _nFont )) + " " + ltrim(transform( ::aReport[ FONTSIZE ], "999.99")) + " Tf " + ltrim(transform( nCol, "9999.99" )) + " " + ltrim(transform( nRow, "9999.99" )) + " Td (" + cString + ") Tj ET"
-  ELSEIF ::aReport[ FONTSIZE ] <> ::aReport[ FONTSIZEPREV ]
- ::aReport[ FONTSIZEPREV ] := ::aReport[ FONTSIZE ]
- ::aReport[ PAGEBUFFER ] += CRLF + "BT /Fo" + ltrim(str( _nFont )) + " " + ltrim(transform( ::aReport[ FONTSIZE ], "999.99")) + " Tf " + ltrim(transform( nCol, "9999.99" )) + " " + ltrim(transform( nRow, "9999.99" )) + " Td (" + cString + ") Tj ET"
-  ELSE
- ::aReport[ PAGEBUFFER ] += CRLF + "BT " + ltrim(transform( nCol, "9999.99" )) + " " + ltrim(transform( nRow, "9999.99" )) + " Td (" + cString + ") Tj ET"
-  ENDIF
-  IF lReverse
- ::aReport[ PAGEBUFFER ] += " 0 g "
-  ENDIF
+      _nFont := ascan( ::aReport[ FONTS ], {|arr| arr[ 1 ] == ::nFontName } )
+      IF ::nFontName <> ::nFontNamePrev
+         ::nFontNamePrev := ::nFontName
+         ::aReport[ PAGEBUFFER ] += CRLF + "BT /Fo" + ltrim( str( _nFont ) ) + " " + ltrim( transform( ::nFontSize, "999.99" ) ) + " Tf " + ltrim( transform( nCol, "9999.99" ) ) + " " + ltrim( transform( nRow, "9999.99" ) ) + " Td (" + cString + ") Tj ET"
+      ELSEIF ::nFontSize <> ::nFontSizePrev
+         ::nFontSizePrev := ::nFontSize
+         ::aReport[ PAGEBUFFER ] += CRLF + "BT /Fo" + ltrim( str( _nFont ) ) + " " + ltrim( transform( ::nFontSize, "999.99" ) ) + " Tf " + ltrim( transform( nCol, "9999.99" ) ) + " " + ltrim( transform( nRow, "9999.99" ) ) + " Td (" + cString + ") Tj ET"
+      ELSE
+         ::aReport[ PAGEBUFFER ] += CRLF + "BT " + ltrim( transform( nCol, "9999.99" ) ) + " " + ltrim(transform( nRow, "9999.99" ) ) + " Td (" + cString + ") Tj ET"
+      ENDIF
+      IF lReverse
+         ::aReport[ PAGEBUFFER ] += " 0 g "
+      ENDIF
    ENDIF
 
 RETURN self
@@ -1600,105 +802,91 @@ RETURN self
 //컴컴컴컴컴컴컴컴컴컴컴컴�\\
 
 METHOD Normal()
-
 local cName := ::GetFontInfo( "NAME" )
 
    IF cName = "Times"
-  ::aReport[ FONTNAME ] := 1
+      ::nFontName := 1
    ELSEIF cName = "Helvetica"
-      ::aReport[ FONTNAME ] := 5
+      ::nFontName := 5
    ELSE
-  ::aReport[ FONTNAME ] := 9
+      ::nFontName := 9
    ENDIF
-   aadd( ::aReport[ PAGEFONTS ], ::aReport[ FONTNAME ] )
-   IF ascan( ::aReport[ FONTS ], { |arr| arr[1] == ::aReport[ FONTNAME ] } ) == 0
-  aadd( ::aReport[ FONTS ], { ::aReport[ FONTNAME ], ++::aReport[ NEXTOBJ ] } )
+   aadd( ::aPageFonts, ::nFontName )
+   IF ascan( ::aReport[ FONTS ], { |arr| arr[ 1 ] == ::nFontName } ) == 0
+      aadd( ::aReport[ FONTS ], { ::nFontName, ++::nNextObj } )
    ENDIF
 RETURN self
 
 //컴컴컴컴컴컴컴컴컴컴컴컴�\\
 
 METHOD Italic()
-
 local cName := ::GetFontInfo( "NAME" )
 
    IF cName = "Times"
-  ::aReport[ FONTNAME ] := 3
+      ::nFontName := 3
    ELSEIF cName = "Helvetica"
-  ::aReport[ FONTNAME ] := 7
+      ::nFontName := 7
    ELSE
-      ::aReport[ FONTNAME ] := 11
+      ::nFontName := 11
    ENDIF
-   aadd( ::aReport[ PAGEFONTS ], ::aReport[ FONTNAME ] )
-   IF ascan( ::aReport[ FONTS ], { |arr| arr[1] == ::aReport[ FONTNAME ] } ) == 0
-  aadd( ::aReport[ FONTS ], { ::aReport[ FONTNAME ], ++::aReport[ NEXTOBJ ] } )
+   aadd( ::aPageFonts, ::nFontName )
+   IF ascan( ::aReport[ FONTS ], { |arr| arr[ 1 ] == ::nFontName } ) == 0
+      aadd( ::aReport[ FONTS ], { ::nFontName, ++::nNextObj } )
    ENDIF
 RETURN self
 
 //컴컴컴컴컴컴컴컴컴컴컴컴�\\
 
 METHOD Bold()
-
 local cName := ::GetFontInfo( "NAME" )
 
    IF cName == "Times"
-  ::aReport[ FONTNAME ] := 2
+      ::nFontName := 2
    ELSEIF cName == "Helvetica"
-  ::aReport[ FONTNAME ] := 6
+      ::nFontName := 6
    ELSEIF cName == 'Courier'
-  ::aReport[ FONTNAME ] := 10// Courier // 0.04
+      ::nFontName := 10// Courier // 0.04
    ENDIF
-
-   aadd( ::aReport[ PAGEFONTS ], ::aReport[ FONTNAME ] )
-   IF ascan( ::aReport[ FONTS ], { |arr| arr[1] == ::aReport[ FONTNAME ] } ) == 0
-  aadd( ::aReport[ FONTS ], { ::aReport[ FONTNAME ], ++::aReport[ NEXTOBJ ] } )
+   aadd( ::aPageFonts, ::nFontName )
+   IF ascan( ::aReport[ FONTS ], { |arr| arr[ 1 ] == ::nFontName } ) == 0
+      aadd( ::aReport[ FONTS ], { ::nFontName, ++::nNextObj } )
    ENDIF
-
 RETURN self
 
 //컴컴컴컴컴컴컴컴컴컴컴컴�\\
 
 METHOD BoldItalic()
-
 local cName := ::GetFontInfo( "NAME" )
 
-IF cName == "Times"
-   ::aReport[ FONTNAME ] := 4
-ELSEIF cName == "Helvetica"
-   ::aReport[ FONTNAME ] := 8
-ELSEIF cName == 'Courier'
-   ::aReport[ FONTNAME ] := 12 // 0.04
-ENDIF
-
-aadd( ::aReport[ PAGEFONTS ], ::aReport[ FONTNAME ] )
-IF ascan( ::aReport[ FONTS ], { |arr| arr[1] == ::aReport[ FONTNAME ] } ) == 0
-   aadd( ::aReport[ FONTS ], { ::aReport[ FONTNAME ], ++::aReport[ NEXTOBJ ] } )
-ENDIF
-
+   IF cName == "Times"
+      ::nFontName := 4
+   ELSEIF cName == "Helvetica"
+      ::nFontName := 8
+   ELSEIF cName == 'Courier'
+      ::nFontName := 12 // 0.04
+   ENDIF
+   aadd( ::aPageFonts, ::nFontName )
+   IF ascan( ::aReport[ FONTS ], { |arr| arr[ 1 ] == ::nFontName } ) == 0
+      aadd( ::aReport[ FONTS ], { ::nFontName, ++::nNextObj } )
+   ENDIF
 RETURN self
 
 //컴컴컴컴컴컴컴컴컴컴컴컴�\\
 
 METHOD BookAdd( cTitle, nLevel, nPage, nLine )
-
-aadd( ::aReport[ BOOKMARK ], { nLevel, alltrim( cTitle ), 0, 0, 0, 0, 0, 0, nPage, IIF( nLevel == 1, ::aReport[ PAGEY ], ::aReport[ PAGEY ] - nLine * 72 / ::aReport[ LPI ] ) })
-
+   aadd( ::aBookMarks, { nLevel, alltrim( cTitle ), 0, 0, 0, 0, 0, 0, nPage, IIF( nLevel == 1, ::aReport[ PAGEY ], ::aReport[ PAGEY ] - nLine * 72 / ::aReport[ LPI ] ) })
 RETURN self
 
 //컴컴컴컴컴컴컴컴컴컴컴컴�\\
 
 METHOD BookClose( )
-
-::aReport[ BOOKMARK ] := nil
-
+   ::aBookMarks := nil
 RETURN self
 
 //컴컴컴컴컴컴컴컴컴컴컴컴�\\
 
 METHOD BookOpen( )
-
-::aReport[ BOOKMARK ] := {}
-
+   ::aBookMarks := {}
 RETURN self
 
 //컴컴컴컴컴컴컴컴컴컴컴컴�\\
@@ -1993,8 +1181,8 @@ local nI, cTemp, nCurLevel, nObj1, nLast, nCount, nFirst, nRecno, nBooklen
    // root
    ++::aReport[ REPORTOBJ ]
    aadd( ::aReport[ REFS ], ::nDocLen )
-   cTemp := ltrim(str( ::aReport[ REPORTOBJ ] )) + " 0 obj" + CRLF + ;
-   "<< /Type /Catalog /Pages 1 0 R /Outlines " + ltrim(str( ::aReport[ REPORTOBJ ] + 1 )) + " 0 R" + IIF( ( nBookLen := len( ::aReport[ BOOKMARK ] )) > 0, " /PageMode /UseOutlines", "") + " >>" + CRLF + "endobj" + CRLF
+   cTemp := ltrim( str( ::aReport[ REPORTOBJ ] ) ) + " 0 obj" + CRLF + ;
+            "<< /Type /Catalog /Pages 1 0 R /Outlines " + ltrim(str( ::aReport[ REPORTOBJ ] + 1 ) ) + " 0 R" + IIF( ( nBookLen := len( ::aBookMarks ) ) > 0, " /PageMode /UseOutlines", "" ) + " >>" + CRLF + "endobj" + CRLF
    ::WriteToFile( cTemp )
 
    ++::aReport[ REPORTOBJ ]
@@ -2002,48 +1190,48 @@ local nI, cTemp, nCurLevel, nObj1, nLast, nCount, nFirst, nRecno, nBooklen
 
    IF nBookLen > 0
 
-  nRecno := 1
-  nFirst := ::aReport[ REPORTOBJ ] + 1
-  nLast  := 0
-  nCount := 0
-  while nRecno <= nBookLen
- nCurLevel := ::aReport[ BOOKMARK ][ nRecno ][ BOOKLEVEL ]
- ::aReport[ BOOKMARK ][ nRecno ][ BOOKPARENT ] := ::BookParent( nRecno, nCurLevel, ::aReport[ REPORTOBJ ] )
- ::aReport[ BOOKMARK ][ nRecno ][ BOOKPREV ]   := ::BookPrev( nRecno, nCurLevel, ::aReport[ REPORTOBJ ] )
- ::aReport[ BOOKMARK ][ nRecno ][ BOOKNEXT ]   := ::BookNext( nRecno, nCurLevel, ::aReport[ REPORTOBJ ] )
- ::aReport[ BOOKMARK ][ nRecno ][ BOOKFIRST ]  := ::BookFirst( nRecno, nCurLevel, ::aReport[ REPORTOBJ ] )
- ::aReport[ BOOKMARK ][ nRecno ][ BOOKLAST ]   := ::BookLast( nRecno, nCurLevel, ::aReport[ REPORTOBJ ] )
- ::aReport[ BOOKMARK ][ nRecno ][ BOOKCOUNT ]  := ::BookCount( nRecno, nCurLevel )
- IF nCurLevel == 1
-nLast := nRecno
-++nCount
- ENDIF
- ++nRecno
-  enddo
+      nRecno := 1
+      nFirst := ::aReport[ REPORTOBJ ] + 1
+      nLast  := 0
+      nCount := 0
+      DO WHILE nRecno <= nBookLen
+         nCurLevel := ::aBookMarks[ nRecno ][ BOOKLEVEL ]
+         ::aBookMarks[ nRecno ][ BOOKPARENT ] := ::BookParent( nRecno, nCurLevel, ::aReport[ REPORTOBJ ] )
+         ::aBookMarks[ nRecno ][ BOOKPREV ]   := ::BookPrev( nRecno, nCurLevel, ::aReport[ REPORTOBJ ] )
+         ::aBookMarks[ nRecno ][ BOOKNEXT ]   := ::BookNext( nRecno, nCurLevel, ::aReport[ REPORTOBJ ] )
+         ::aBookMarks[ nRecno ][ BOOKFIRST ]  := ::BookFirst( nRecno, nCurLevel, ::aReport[ REPORTOBJ ] )
+         ::aBookMarks[ nRecno ][ BOOKLAST ]   := ::BookLast( nRecno, nCurLevel, ::aReport[ REPORTOBJ ] )
+         ::aBookMarks[ nRecno ][ BOOKCOUNT ]  := ::BookCount( nRecno, nCurLevel )
+         IF nCurLevel == 1
+            nLast := nRecno
+            ++nCount
+         ENDIF
+         ++nRecno
+      ENDDO
 
-  nLast += ::aReport[ REPORTOBJ ]
+      nLast += ::aReport[ REPORTOBJ ]
 
-  cTemp := ltrim(str( ::aReport[ REPORTOBJ ] )) + " 0 obj" + CRLF + "<< /Type /Outlines /Count " + ltrim(str( nCount )) + " /First " + ltrim(str( nFirst )) + " 0 R /Last " + ltrim(str( nLast )) + " 0 R >>" + CRLF + "endobj" //+ CRLF
-  aadd( ::aReport[ REFS ], ::nDocLen )
-   ::WriteToFile( cTemp )
+      cTemp := ltrim( str( ::aReport[ REPORTOBJ ] ) ) + " 0 obj" + CRLF + "<< /Type /Outlines /Count " + ltrim( str( nCount ) ) + " /First " + ltrim( str( nFirst ) ) + " 0 R /Last " + ltrim(str( nLast ) ) + " 0 R >>" + CRLF + "endobj" //+ CRLF
+      aadd( ::aReport[ REFS ], ::nDocLen )
+      ::WriteToFile( cTemp )
 
-  ++::aReport[ REPORTOBJ ]
-  nRecno := 1
+      ++::aReport[ REPORTOBJ ]
+      nRecno := 1
   FOR nI := 1 to nBookLen
  //cTemp := IIF ( nI > 1, CRLF, "") + ltrim(str( ::aReport[ REPORTOBJ ] + nI - 1)) + " 0 obj" + CRLF + ;
- cTemp := CRLF + ltrim(str( ::aReport[ REPORTOBJ ] + nI - 1)) + " 0 obj" + CRLF + ;
+ cTemp := CRLF + ltrim( str( ::aReport[ REPORTOBJ ] + nI - 1 ) ) + " 0 obj" + CRLF + ;
  "<<" + CRLF + ;
- "/Parent " + ltrim(str( ::aReport[ BOOKMARK ][ nRecno ][ BOOKPARENT ])) + " 0 R" + CRLF + ;
- "/Dest [" + ltrim(str( ::aReport[ PAGES ][ ::aReport[ BOOKMARK ][ nRecno ][ BOOKPAGE ] ] )) + " 0 R /XYZ 0 " + ltrim( str( ::aReport[ BOOKMARK ][ nRecno ][ BOOKCOORD ])) + " 0]" + CRLF + ;
- "/Title (" + alltrim( ::aReport[ BOOKMARK ][ nRecno ][ BOOKTITLE ]) + ")" + CRLF + ;
- IIF( ::aReport[ BOOKMARK ][ nRecno ][ BOOKPREV ] > 0, "/Prev " + ltrim(str( ::aReport[ BOOKMARK ][ nRecno ][ BOOKPREV ])) + " 0 R" + CRLF, "") + ;
- IIF( ::aReport[ BOOKMARK ][ nRecno ][ BOOKNEXT ] > 0, "/Next " + ltrim(str( ::aReport[ BOOKMARK ][ nRecno ][ BOOKNEXT ])) + " 0 R" + CRLF, "") + ;
- IIF( ::aReport[ BOOKMARK ][ nRecno ][ BOOKFIRST ] > 0, "/First " + ltrim(str( ::aReport[ BOOKMARK ][ nRecno ][ BOOKFIRST ])) + " 0 R" + CRLF, "") + ;
- IIF( ::aReport[ BOOKMARK ][ nRecno ][ BOOKLAST ] > 0, "/Last " + ltrim(str( ::aReport[ BOOKMARK ][ nRecno ][ BOOKLAST ])) + " 0 R" + CRLF, "") + ;
- IIF( ::aReport[ BOOKMARK ][ nRecno ][ BOOKCOUNT ] <> 0, "/Count " + ltrim(str( ::aReport[ BOOKMARK ][ nRecno ][ BOOKCOUNT ])) + CRLF, "") + ;
+ "/Parent " + ltrim( str( ::aBookMarks[ nRecno ][ BOOKPARENT ] ) ) + " 0 R" + CRLF + ;
+ "/Dest [" + ltrim( str( ::aReport[ PAGES ][ ::aBookMarks[ nRecno ][ BOOKPAGE ] ] ) ) + " 0 R /XYZ 0 " + ltrim( str( ::aBookMarks[ nRecno ][ BOOKCOORD ] ) ) + " 0]" + CRLF + ;
+ "/Title (" + alltrim( ::aBookMarks[ nRecno ][ BOOKTITLE ]) + ")" + CRLF + ;
+ IIF( ::aBookMarks[ nRecno ][ BOOKPREV ] > 0, "/Prev " + ltrim(str( ::aBookMarks[ nRecno ][ BOOKPREV ])) + " 0 R" + CRLF, "") + ;
+ IIF( ::aBookMarks[ nRecno ][ BOOKNEXT ] > 0, "/Next " + ltrim(str( ::aBookMarks[ nRecno ][ BOOKNEXT ])) + " 0 R" + CRLF, "") + ;
+ IIF( ::aBookMarks[ nRecno ][ BOOKFIRST ] > 0, "/First " + ltrim(str( ::aBookMarks[ nRecno ][ BOOKFIRST ])) + " 0 R" + CRLF, "") + ;
+ IIF( ::aBookMarks[ nRecno ][ BOOKLAST ] > 0, "/Last " + ltrim(str( ::aBookMarks[ nRecno ][ BOOKLAST ])) + " 0 R" + CRLF, "") + ;
+ IIF( ::aBookMarks[ nRecno ][ BOOKCOUNT ] <> 0, "/Count " + ltrim(str( ::aBookMarks[ nRecno ][ BOOKCOUNT ])) + CRLF, "") + ;
  ">>" + CRLF + "endobj" + CRLF
-// "/Dest [" + ltrim(str( ::aReport[ BOOKMARK ][ nRecno ][ BOOKPAGE ] * 3 )) + " 0 R /XYZ 0 " + ltrim( str( ::aReport[ BOOKMARK ][ nRecno ][ BOOKCOORD ])) + " 0]" + CRLF + ;
-// "/Dest [" + ltrim(str( ::aReport[ PAGES ][ nRecno ] )) + " 0 R /XYZ 0 " + ltrim( str( ::aReport[ BOOKMARK ][ nRecno ][ BOOKCOORD ])) + " 0]" + CRLF + ;
+// "/Dest [" + ltrim(str( ::aBookMarks[ nRecno ][ BOOKPAGE ] * 3 )) + " 0 R /XYZ 0 " + ltrim( str( ::aBookMarks[ nRecno ][ BOOKCOORD ])) + " 0]" + CRLF + ;
+// "/Dest [" + ltrim(str( ::aReport[ PAGES ][ nRecno ] )) + " 0 R /XYZ 0 " + ltrim( str( ::aBookMarks[ nRecno ][ BOOKCOORD ])) + " 0]" + CRLF + ;
 
  aadd( ::aReport[ REFS ], ::nDocLen + 2 )
    ::WriteToFile( cTemp )
@@ -2122,30 +1310,29 @@ DEFAULT cId TO  ""
    ELSEIF cUnits == "D"
    ENDIF
 
-   aadd( ::aReport[ PAGEIMAGES ], { cFile, nRow, nCol, nHeight, nWidth } )
+   aadd( ::aPageImages, { cFile, nRow, nCol, nHeight, nWidth } )
 
 RETURN self
 
 //컴컴컴컴컴컴컴컴컴컴컴컴�\\
 
 METHOD Length( cString )
-
-local nWidth := 0.00, nI, nLen, nArr, nAdd := ( ::aReport[ FONTNAME ] - 1 ) % 4
+local nWidth := 0.00, nI, nLen, nArr, nAdd := ( ::nFontName - 1 ) % 4
 
    nLen := len( cString )
    IF right( cString, 1 ) == chr( 255 ) .or. right( cString, 1 ) == chr( 254 )
-  --nLen
+      --nLen
    ENDIF
    IF ::GetFontInfo("NAME") = "Times"
-  nArr := 1
+      nArr := 1
    ELSEIF ::GetFontInfo("NAME") = "Helvetica"
       nArr := 2
    ELSE
-  nArr := 3
+      nArr := 3
    ENDIF
 
    For nI:= 1 To nLen
-  nWidth += ::aReport[ FONTWIDTH ][ nArr ][ ( asc( substr( cString, nI, 1 )) - 32 ) * 4 + 1 + nAdd ] * 25.4 * ::aReport[ FONTSIZE ] / 720.00 / 100.00
+      nWidth += ::aFontWidth[ nArr ][ ( asc( substr( cString, nI, 1 ) ) - 32 ) * 4 + 1 + nAdd ] * 25.4 * ::nFontSize / 720.00 / 100.00
    Next
 RETURN nWidth
 
@@ -2172,7 +1359,7 @@ METHOD NewPage( _cPageSize, _cPageOrient, _nLpi, _cFontName, _nFontType, _nFontS
    DEFAULT _nLpi        TO ::aReport[ LPI ]
    DEFAULT _cFontName   TO ::GetFontInfo( "NAME" )
    DEFAULT _nFontType   TO ::GetFontInfo( "TYPE" )
-   DEFAULT _nFontSize   TO ::aReport[ FONTSIZE ]
+   DEFAULT _nFontSize   TO ::nFontSize
 
    IF ::lIsPageActive
       ::ClosePage()
@@ -2180,8 +1367,8 @@ METHOD NewPage( _cPageSize, _cPageOrient, _nLpi, _cFontName, _nFontType, _nFontS
 
    ::lIsPageActive := .T.
 
-   ::aReport[ PAGEFONTS  ] := {}
-   ::aReport[ PAGEIMAGES ] := {}
+   ::aPageFonts  := {}
+   ::aPageImages := {}
 
    ++::aReport[ REPORTPAGE ]
 
@@ -2194,8 +1381,8 @@ METHOD NewPage( _cPageSize, _cPageOrient, _nLpi, _cFontName, _nFontType, _nFontS
    ::DrawHeader()
 
    ::aReport[ REPORTLINE   ] := 0
-   ::aReport[ FONTNAMEPREV ] := 0
-   ::aReport[ FONTSIZEPREV ] := 0
+   ::nFontNamePrev := 0
+   ::nFontSizePrev := 0
 
 RETURN self
 
@@ -2305,24 +1492,24 @@ DEFAULT _nType TO 0
 DEFAULT _nSize TO 10
 
    IF ::aReport[ HEADEREDIT ]
-  return ::Header( "PDFSETFONT", cId, { _cFont, _nType, _nSize } )
+      return ::Header( "PDFSETFONT", cId, { _cFont, _nType, _nSize } )
    ENDIF
 
    _cFont := upper( _cFont )
-   ::aReport[ FONTSIZE ] := _nSize
+   ::nFontSize := _nSize
 
    IF _cFont == "TIMES"
-  ::aReport[ FONTNAME ] := _nType + 1
+      ::nFontName := _nType + 1
    ELSEIF _cFont == "HELVETICA"
-  ::aReport[ FONTNAME ] := _nType + 5
+      ::nFontName := _nType + 5
    ELSE
-  ::aReport[ FONTNAME ] := _nType + 9 // 0.04
+      ::nFontName := _nType + 9 // 0.04
    ENDIF
 
-   aadd( ::aReport[ PAGEFONTS ], ::aReport[ FONTNAME ] )
+   aadd( ::aPageFonts, ::nFontName )
 
-   IF ascan( ::aReport[ FONTS ], { |arr| arr[1] == ::aReport[ FONTNAME ] } ) == 0
-  aadd( ::aReport[ FONTS ], { ::aReport[ FONTNAME ], ++::aReport[ NEXTOBJ ] } )
+   IF ascan( ::aReport[ FONTS ], { |arr| arr[1] == ::nFontName } ) == 0
+      aadd( ::aReport[ FONTS ], { ::nFontName, ++::nNextObj } )
    ENDIF
 RETURN self
 
@@ -2630,8 +1817,8 @@ local nI, _nFont, _nSize, nLen := len( ::aReport[ HEADER ] )
    IF nLen > 0
 
   // save font
-  _nFont := ::aReport[ FONTNAME ]
-  _nSize := ::aReport[ FONTSIZE ]
+  _nFont := ::nFontName
+  _nSize := ::nFontSize
 
   for nI := 1 to nLen
  IF ::aReport[ HEADER ][ nI ][ 1 ] // enabled
@@ -2657,11 +1844,11 @@ case ::aReport[ HEADER ][ nI ][ 2 ] == "PDFIMAGE"
 endcase
  ENDIF
   next
-  ::aReport[ FONTNAME ] := _nFont
-  ::aReport[ FONTSIZE ] := _nSize
+  ::nFontName := _nFont
+  ::nFontSize := _nSize
 
   IF ::aReport[ MARGINS ]
- ::Margins()
+     ::Margins()
   ENDIF
 
    ELSE
@@ -2952,26 +2139,24 @@ RETURN self
 //컴컴컴컴컴컴컴컴컴컴컴컴�\\
 
 METHOD ImageInfo( cFile )
-
-local cTemp := upper(substr( cFile, rat('.', cFile) + 1 )), aTemp := {}
+local cTemp := upper( substr( cFile, rat( ".", cFile ) + 1 ) ), aTemp := {}
 
 * TODO: Check for resource
 
    do case
-   case ! file( cFile )
-  aTemp := {}
-   case cTemp == "TIF" .or. cTemp == "TIFF"
-  aTemp := ::TIFFInfo( cFile )
-   case cTemp == "JPG" .or. cTemp == "JPEG"
-  aTemp := ::JPEGInfo( cFile )
+      case ! file( cFile )
+         aTemp := {}
+      case cTemp == "TIF" .or. cTemp == "TIFF"
+         aTemp := ::TIFFInfo( cFile )
+      case cTemp == "JPG" .or. cTemp == "JPEG"
+         aTemp := ::JPEGInfo( cFile )
    endcase
 RETURN aTemp
 
 //컴컴컴컴컴컴컴컴컴컴컴컴�\\
 
 METHOD TIFFInfo( cFile )
-
-local c40:= chr(0)+chr(0)+chr(0)+chr(0)
+local c40 := chr( 0 ) + chr( 0 ) + chr( 0 ) + chr( 0 )
 // local aType  := {"BYTE","ASCII","SHORT","LONG","RATIONAL","SBYTE","UNDEFINED","SSHORT","SLONG","SRATIONAL","FLOAT","DOUBLE"}
 local aCount := { 1, 1, 2, 4, 8, 1, 1, 2, 4, 8, 4, 8 }
 local nHandle, cValues, c2, nFieldType, nCount, nPos, nTag, nValues
@@ -2981,16 +2166,16 @@ local nWidth := 0, nHeight := 0, nBits := 1, nFrom := 0, nLength := 0, xRes := 0
 
    nHandle := fopen( cFile )
 
-   c2 := space(2)
+   c2 := space( 2 )
    fread( nHandle, @c2, 2 )
    fread( nHandle, @c2, 2 )
 
-   cIFDNext := space(4)
+   cIFDNext := space( 4 )
    fread( nHandle, @cIFDNext, 4 )
 
-   cTemp := space(12)
+   cTemp := space( 12 )
 
-   while ! ( cIFDNext == c40 )               //read IFD's
+   DO WHILE ! ( cIFDNext == c40 )               //read IFD's
 
       nIFD := bin2l( cIFDNext )
 
@@ -3141,24 +2326,21 @@ return aTemp
 //컴컴컴컴컴컴컴컴컴컴컴컴�\\
 
 METHOD JPEGInfo( cFile )
-
-local c255, nAt, nHandle
+local cBuffer, nAt, nHandle
 local nWidth, nHeight, nBits := 8, nFrom := 0
 local nLength, xRes, yRes, aTemp := {}
 
    nHandle := fopen( cFile )
-
-   c255 := space(1024)
-   fread( nHandle, @c255, 1024 )
-
-   xRes := asc(substr( c255, 15, 1 )) * 256 + asc(substr( c255, 16, 1 ))
-   yRes := asc( substr( c255, 17, 1 )) * 256 + asc(substr( c255, 18, 1 ))
-
-   nAt := at( chr(255) + chr(192), c255 ) + 5
-   nHeight := asc(substr( c255, nAt, 1 )) * 256 + asc(substr( c255, nAt + 1, 1 ))
-   nWidth := asc( substr( c255, nAt + 2, 1 )) * 256 + asc(substr( c255, nAt + 3, 1 ))
-
+   cBuffer := space( 1024 )
+   fread( nHandle, @cBuffer, 1024 )
    fclose( nHandle )
+
+   xRes := asc( substr( cBuffer, 15, 1 ) ) * 256 + asc( substr( cBuffer, 16, 1 ) )
+   yRes := asc( substr( cBuffer, 17, 1 ) ) * 256 + asc( substr( cBuffer, 18, 1 ) )
+
+   nAt := at( chr( 255 ) + chr( 192 ), cBuffer ) + 5
+   nHeight := asc( substr( cBuffer, nAt,     1 ) ) * 256 + asc( substr( cBuffer, nAt + 1, 1 ) )
+   nWidth  := asc( substr( cBuffer, nAt + 2, 1 ) ) * 256 + asc( substr( cBuffer, nAt + 3, 1 ) )
 
    nLength := filesize( cFile )
 
@@ -3184,108 +2366,102 @@ RETURN nCount
 //컴컴컴컴컴컴컴컴컴컴컴컴�\\
 
 METHOD BookCount( nRecno, nCurLevel )
-
-local nTempLevel, nCount := 0, nLen := len( ::aReport[ BOOKMARK ] )
+local nTempLevel, nCount := 0, nLen := len( ::aBookMarks )
    ++nRecno
-   while nRecno <= nLen
-  nTempLevel := ::aReport[ BOOKMARK ][ nRecno ][ BOOKLEVEL ]
-  IF nTempLevel <= nCurLevel
- exit
-  ELSE
- IF nCurLevel + 1 == nTempLevel
-++nCount
- ENDIF
-  ENDIF
-  ++nRecno
-   enddo
+   DO WHILE nRecno <= nLen
+      nTempLevel := ::aBookMarks[ nRecno ][ BOOKLEVEL ]
+      IF nTempLevel <= nCurLevel
+         exit
+      ELSE
+         IF nCurLevel + 1 == nTempLevel
+            ++nCount
+         ENDIF
+      ENDIF
+      ++nRecno
+   ENDDO
 return -1 * nCount
 
 //컴컴컴컴컴컴컴컴컴컴컴컴�\\
 
 METHOD BookFirst( nRecno, nCurLevel, nObj )
-
-local nFirst := 0, nLen := len( ::aReport[ BOOKMARK ] )
+local nFirst := 0, nLen := len( ::aBookMarks )
    ++nRecno
    IF nRecno <= nLen
-  IF nCurLevel + 1 == ::aReport[ BOOKMARK ][ nRecno ][ BOOKLEVEL ]
- nFirst := nRecno
-  ENDIF
+      IF nCurLevel + 1 == ::aBookMarks[ nRecno ][ BOOKLEVEL ]
+         nFirst := nRecno
+      ENDIF
    ENDIF
 return IIF( nFirst == 0, nFirst, nObj + nFirst )
 
 //컴컴컴컴컴컴컴컴컴컴컴컴�\\
 
 METHOD BookLast( nRecno, nCurLevel, nObj )
-
-local nLast := 0, nLen := len( ::aReport[ BOOKMARK ] )
+local nLast := 0, nLen := len( ::aBookMarks )
    ++nRecno
    IF nRecno <= nLen
-  IF nCurLevel + 1 == ::aReport[ BOOKMARK ][ nRecno ][ BOOKLEVEL ]
- while nRecno <= nLen .and. nCurLevel + 1 <= ::aReport[ BOOKMARK ][ nRecno ][ BOOKLEVEL ]
-IF nCurLevel + 1 == ::aReport[ BOOKMARK ][ nRecno ][ BOOKLEVEL ]
-   nLast := nRecno
-ENDIF
-++nRecno
- enddo
-  ENDIF
+      IF nCurLevel + 1 == ::aBookMarks[ nRecno ][ BOOKLEVEL ]
+         DO WHILE nRecno <= nLen .and. nCurLevel + 1 <= ::aBookMarks[ nRecno ][ BOOKLEVEL ]
+            IF nCurLevel + 1 == ::aBookMarks[ nRecno ][ BOOKLEVEL ]
+               nLast := nRecno
+            ENDIF
+            ++nRecno
+         enddo
+      ENDIF
    ENDIF
 return IIF( nLast == 0, nLast, nObj + nLast )
 
 //컴컴컴컴컴컴컴컴컴컴컴컴�\\
 
 METHOD BookNext( nRecno, nCurLevel, nObj )
-
-local nTempLevel, nNext := 0, nLen := len( ::aReport[ BOOKMARK ] )
+local nTempLevel, nNext := 0, nLen := len( ::aBookMarks )
    ++nRecno
-   while nRecno <= nLen
-  nTempLevel := ::aReport[ BOOKMARK ][ nRecno ][ BOOKLEVEL ]
-  IF nCurLevel > nTempLevel
- exit
-  ELSEIF nCurLevel == nTempLevel
- nNext := nRecno
- exit
-  ELSE
- // keep going
-  ENDIF
-  ++nRecno
+   DO WHILE nRecno <= nLen
+      nTempLevel := ::aBookMarks[ nRecno ][ BOOKLEVEL ]
+      IF nCurLevel > nTempLevel
+         exit
+      ELSEIF nCurLevel == nTempLevel
+         nNext := nRecno
+         exit
+      ELSE
+         // keep going
+      ENDIF
+      ++nRecno
    enddo
 return IIF( nNext == 0, nNext, nObj + nNext )
 
 //컴컴컴컴컴컴컴컴컴컴컴컴�\\
 
 METHOD BookParent( nRecno, nCurLevel, nObj )
-
 local nTempLevel
 local nParent := 0
    --nRecno
-   while nRecno > 0
-  nTempLevel := ::aReport[ BOOKMARK ][ nRecno ][ BOOKLEVEL ]
-  IF nTempLevel < nCurLevel
- nParent := nRecno
- exit
-  ENDIF
-  --nRecno
+   DO WHILE nRecno > 0
+      nTempLevel := ::aBookMarks[ nRecno ][ BOOKLEVEL ]
+      IF nTempLevel < nCurLevel
+         nParent := nRecno
+         exit
+      ENDIF
+      --nRecno
    enddo
 return IIF( nParent == 0, nObj - 1, nObj + nParent )
 
 //컴컴컴컴컴컴컴컴컴컴컴컴�\\
 
 METHOD BookPrev( nRecno, nCurLevel, nObj )
-
 local nTempLevel
 local nPrev := 0
    --nRecno
-   while nRecno > 0
-  nTempLevel := ::aReport[ BOOKMARK ][ nRecno ][ BOOKLEVEL ]
-  IF nCurLevel > nTempLevel
- exit
-  ELSEIF nCurLevel == nTempLevel
- nPrev := nRecno
- exit
-  ELSE
- // keep going
-  ENDIF
-  --nRecno
+   DO WHILE nRecno > 0
+      nTempLevel := ::aBookMarks[ nRecno ][ BOOKLEVEL ]
+      IF nCurLevel > nTempLevel
+         exit
+      ELSEIF nCurLevel == nTempLevel
+         nPrev := nRecno
+         exit
+      ELSE
+         // keep going
+      ENDIF
+      --nRecno
    enddo
 return IIF( nPrev == 0, nPrev, nObj + nPrev )
 
@@ -3303,18 +2479,18 @@ RETURN self
 //컴컴컴컴컴컴컴컴컴컴컴컴�\\
 
 METHOD GetFontInfo( cParam )
-
 local cRet
+
    IF cParam == "NAME"
-  IF left( ::aReport[ TYPE1 ][ ::aReport[ FONTNAME ] ], 5 ) == "Times"
- cRet := "Times"
-  ELSEIF left( ::aReport[ TYPE1 ][ ::aReport[ FONTNAME ] ], 9 ) == "Helvetica"
- cRet := "Helvetica"
-  ELSE
- cRet := "Courier" // 0.04
-  ENDIF
+      IF left( ::aReport[ TYPE1 ][ ::nFontName ], 5 ) == "Times"
+          cRet := "Times"
+      ELSEIF left( ::aReport[ TYPE1 ][ ::nFontName ], 9 ) == "Helvetica"
+         cRet := "Helvetica"
+      ELSE
+         cRet := "Courier" // 0.04
+      ENDIF
    ELSE // size
-  cRet := int(( ::aReport[ FONTNAME ] - 1 ) % 4)
+      cRet := INT( ( ::nFontName - 1 ) % 4 )
    ENDIF
 
 return cRet
@@ -3405,23 +2581,21 @@ RETURN self
 //컴컴컴컴컴컴컴컴컴컴컴컴�\\
 
 METHOD TextNextPara( cString, cDelim, nI )
-
 local nAt, cAt, nCRLF, nNew, nRat, nRet := 0
    // check if next spaces paragraph(s)
    nAt := attoken( cString, cDelim, nI ) + len( token( cString, cDelim, nI ) )
    cAt := substr( cString, nAt, attoken( cString, cDelim, nI + 1 ) - nAt )
-   nCRLF := numat( chr(13) + chr(10), cAt )
-   nRat := rat( chr(13) + chr(10), cAt )
+   nCRLF := numat( chr( 13 ) + chr( 10 ), cAt )
+   nRat := rat( chr( 13 ) + chr( 10 ), cAt )
    nNew := len( cAt ) - nRat - IIF( nRat > 0, 1, 0 )
    IF nCRLF > 1 .or. ( nCRLF == 1 .and. nNew > 0 )
-  nRet := nCRLF
+      nRet := nCRLF
    ENDIF
-return nRet
+RETURN nRet
 
 //컴컴컴컴컴컴컴컴컴컴컴컴�\\
 
 METHOD ClosePage()
-
 local cTemp, cBuffer, nBuffer, nRead, nI, k, nImage, nFont, nImageHandle, aImageInfo
 
    aadd( ::aReport[ REFS  ], ::nDocLen )
@@ -3429,55 +2603,55 @@ local cTemp, cBuffer, nBuffer, nRead, nI, k, nImage, nFont, nImageHandle, aImage
    aadd( ::aReport[ PAGES ], ::aReport[ REPORTOBJ ] + 1 )
 
    cTemp := ;
-      ltrim(str( ++::aReport[ REPORTOBJ ] )) + " 0 obj" + CRLF + ;
-      "<<" + CRLF + ;
-      "/Type /Page /Parent 1 0 R" + CRLF + ;
-      "/Resources " + ltrim(str( ++::aReport[ REPORTOBJ ] )) + " 0 R" + CRLF + ;
-      "/MediaBox [ 0 0 " + ltrim(transform( ::aReport[ PAGEX ], "9999.99")) + " " + ;
-      ltrim(transform(::aReport[ PAGEY ], "9999.99")) + " ]" + CRLF + ;
-      "/Contents " + ltrim(str( ++::aReport[ REPORTOBJ ] )) + " 0 R" + CRLF + ;
-      ">>" + CRLF + ;
-      "endobj" + CRLF
+            ltrim( str( ++::aReport[ REPORTOBJ ] ) ) + " 0 obj" + CRLF + ;
+            "<<" + CRLF + ;
+            "/Type /Page /Parent 1 0 R" + CRLF + ;
+            "/Resources " + ltrim( str( ++::aReport[ REPORTOBJ ] ) ) + " 0 R" + CRLF + ;
+            "/MediaBox [ 0 0 " + ltrim( transform( ::aReport[ PAGEX ], "9999.99" ) ) + " " + ;
+            ltrim( transform( ::aReport[ PAGEY ], "9999.99" ) ) + " ]" + CRLF + ;
+            "/Contents " + ltrim( str( ++::aReport[ REPORTOBJ ] ) ) + " 0 R" + CRLF + ;
+            ">>" + CRLF + ;
+            "endobj" + CRLF
 
 
    ::WriteToFile( cTemp )
 
    aadd( ::aReport[ REFS ], ::nDocLen )
    cTemp := ;
-   ltrim(str(::aReport[ REPORTOBJ ] - 1)) + " 0 obj" + CRLF + ;
-   "<<"+CRLF+;
-   "/ColorSpace << /DeviceRGB /DeviceGray >>" + CRLF + ; //version 0.01
-   "/ProcSet [ /PDF /Text /ImageB /ImageC ]"
+            ltrim( str( ::aReport[ REPORTOBJ ] - 1 ) ) + " 0 obj" + CRLF + ;
+            "<<" + CRLF + ;
+            "/ColorSpace << /DeviceRGB /DeviceGray >>" + CRLF + ; //version 0.01
+            "/ProcSet [ /PDF /Text /ImageB /ImageC ]"
 
-   IF len( ::aReport[ PAGEFONTS ] ) > 0
-  cTemp += CRLF + ;
-  "/Font" + CRLF + ;
-  "<<"
+   IF len( ::aPageFonts ) > 0
+      cTemp += CRLF + ;
+               "/Font" + CRLF + ;
+               "<<"
 
-  for nI := 1 to len( ::aReport[ PAGEFONTS ] )
- nFont := ascan( ::aReport[ FONTS ], { |arr| arr[1] == ::aReport[ PAGEFONTS ][ nI ] } )
- cTemp += CRLF + "/Fo" + ltrim(str( nFont )) + " " + ltrim(str( ::aReport[ FONTS ][ nFont ][ 2 ])) + " 0 R"
-  next
+      FOR nI := 1 to len( ::aPageFonts )
+         nFont := ascan( ::aReport[ FONTS ], { |arr| arr[ 1 ] == ::aPageFonts[ nI ] } )
+         cTemp += CRLF + "/Fo" + ltrim( str( nFont ) ) + " " + ltrim( str( ::aReport[ FONTS ][ nFont ][ 2 ] ) ) + " 0 R"
+      NEXT
 
-  cTemp += CRLF + ">>"
+      cTemp += CRLF + ">>"
    ENDIF
 
-   IF len( ::aReport[ PAGEIMAGES ] ) > 0
-  cTemp += CRLF + "/XObject" + CRLF + "<<"
-  for nI := 1 to len( ::aReport[ PAGEIMAGES ] )
- nImage := ascan( ::aReport[ IMAGES ], { |arr| arr[1] == ::aReport[ PAGEIMAGES ][ nI ][ 1 ] } )
-   IF nImage == 0
-      aImageInfo := ::ImageInfo( ::aReport[ PAGEIMAGES ][ nI ][ 1 ] )
-      IF LEN( aImageInfo ) != 0
-         aadd( ::aReport[ IMAGES ], { ::aReport[ PAGEIMAGES ][ nI ][ 1 ], ++::aReport[ NEXTOBJ ], aImageInfo } )
-         nImage := len( ::aReport[ IMAGES ] )
-      ENDIF
-   ENDIF
-   IF nImage != 0
-      cTemp += CRLF + "/Image" + ltrim(str( nImage )) + " " + ltrim(str( ::aReport[ IMAGES ][ nImage ][ 2 ])) + " 0 R"
-   ENDIF
-  next
-  cTemp += CRLF + ">>"
+   IF len( ::aPageImages ) > 0
+      cTemp += CRLF + "/XObject" + CRLF + "<<"
+      FOR nI := 1 to len( ::aPageImages )
+         nImage := ascan( ::aImages, { |arr| arr[1] == ::aPageImages[ nI ][ 1 ] } )
+         IF nImage == 0
+            aImageInfo := ::ImageInfo( ::aPageImages[ nI ][ 1 ] )
+            IF LEN( aImageInfo ) != 0
+               aadd( ::aImages, { ::aPageImages[ nI ][ 1 ], ++::nNextObj, aImageInfo } )
+               nImage := len( ::aImages )
+            ENDIF
+         ENDIF
+         IF nImage != 0
+            cTemp += CRLF + "/Image" + ltrim( str( nImage ) ) + " " + ltrim( str( ::aImages[ nImage ][ 2 ] ) ) + " 0 R"
+         ENDIF
+      NEXT
+      cTemp += CRLF + ">>"
    ENDIF
 
    cTemp += CRLF + ">>" + CRLF + "endobj" + CRLF
@@ -3485,24 +2659,24 @@ local cTemp, cBuffer, nBuffer, nRead, nI, k, nImage, nFont, nImageHandle, aImage
    ::WriteToFile( cTemp )
 
    aadd( ::aReport[ REFS ], ::nDocLen )
-   cTemp := ltrim(str( ::aReport[ REPORTOBJ ] )) + " 0 obj << /Length " + ;
-   ltrim(str( ::aReport[ REPORTOBJ ] + 1 )) + " 0 R >>" + CRLF +;
-   "stream"
+   cTemp := ltrim( str( ::aReport[ REPORTOBJ ] ) ) + " 0 obj << /Length " + ;
+            ltrim( str( ::aReport[ REPORTOBJ ] + 1 ) ) + " 0 R >>" + CRLF +;
+            "stream"
 
    ::WriteToFile( cTemp )
 
-   IF len( ::aReport[ PAGEIMAGES ] ) > 0
+   IF len( ::aPageImages ) > 0
       cTemp := ""
-      for nI := 1 to len( ::aReport[ PAGEIMAGES ] )
-         nImage := ascan( ::aReport[ IMAGES ], { |arr| arr[1] == ::aReport[ PAGEIMAGES ][ nI ][ 1 ] } )
+      for nI := 1 to len( ::aPageImages )
+         nImage := ascan( ::aImages, { |arr| arr[1] == ::aPageImages[ nI ][ 1 ] } )
          IF nImage != 0
             cTemp += CRLF + "q"
-            cTemp += CRLF + ltrim(str( IIF( ::aReport[ PAGEIMAGES ][ nI ][ 5 ] == 0, ::M2X( ::aReport[ IMAGES ][ nImage ][ 3 ][ IMAGE_WIDTH ] / ::aReport[ IMAGES ][ nImage ][ 3 ][ IMAGE_XRES ] * 25.4 ), ::aReport[ PAGEIMAGES ][ nI ][ 5 ]))) + ;
+            cTemp += CRLF + ltrim(str( IIF( ::aPageImages[ nI ][ 5 ] == 0, ::M2X( ::aImages[ nImage ][ 3 ][ IMAGE_WIDTH ] / ::aImages[ nImage ][ 3 ][ IMAGE_XRES ] * 25.4 ), ::aPageImages[ nI ][ 5 ]))) + ;
                      " 0 0 " + ;
-                     ltrim(str( IIF( ::aReport[ PAGEIMAGES ][ nI ][ 4 ] == 0, ::M2X( ::aReport[ IMAGES ][ nImage ][ 3 ][ IMAGE_HEIGHT ] / ::aReport[ IMAGES ][ nImage ][ 3 ][ IMAGE_YRES ] * 25.4 ), ::aReport[ PAGEIMAGES ][ nI ][ 4 ]))) + ;
-                     " " + ltrim(str( ::aReport[ PAGEIMAGES ][ nI ][ 3 ] )) + ;
-                     " " + ltrim(str( ::aReport[ PAGEY ] - ::aReport[ PAGEIMAGES ][ nI ][ 2 ] - ;
-                     IIF( ::aReport[ PAGEIMAGES ][ nI ][ 4 ] == 0, ::M2X( ::aReport[ IMAGES ][ nImage ][ 3 ][ IMAGE_HEIGHT ] / ::aReport[ IMAGES ][ nImage ][ 3 ][ IMAGE_YRES ] * 25.4 ), ::aReport[ PAGEIMAGES ][ nI ][ 4 ]))) + " cm"
+                     ltrim(str( IIF( ::aPageImages[ nI ][ 4 ] == 0, ::M2X( ::aImages[ nImage ][ 3 ][ IMAGE_HEIGHT ] / ::aImages[ nImage ][ 3 ][ IMAGE_YRES ] * 25.4 ), ::aPageImages[ nI ][ 4 ]))) + ;
+                     " " + ltrim(str( ::aPageImages[ nI ][ 3 ] )) + ;
+                     " " + ltrim(str( ::aReport[ PAGEY ] - ::aPageImages[ nI ][ 2 ] - ;
+                     IIF( ::aPageImages[ nI ][ 4 ] == 0, ::M2X( ::aImages[ nImage ][ 3 ][ IMAGE_HEIGHT ] / ::aImages[ nImage ][ 3 ][ IMAGE_YRES ] * 25.4 ), ::aPageImages[ nI ][ 4 ]))) + " cm"
             cTemp += CRLF + "/Image" + ltrim(str( nImage )) + " Do"
             cTemp += CRLF + "Q"
          ENDIF
@@ -3513,89 +2687,84 @@ local cTemp, cBuffer, nBuffer, nRead, nI, k, nImage, nFont, nImageHandle, aImage
    cTemp := ::aReport[ PAGEBUFFER ]
 
    cTemp += CRLF + "endstream" + CRLF + ;
-   "endobj" + CRLF
+            "endobj" + CRLF
 
    ::WriteToFile( cTemp )
 
    aadd( ::aReport[ REFS ], ::nDocLen )
-   cTemp := ltrim(str( ++::aReport[ REPORTOBJ ] )) + " 0 obj" + CRLF + ;
-   ltrim(str(len( ::aReport[ PAGEBUFFER ] ))) + CRLF + ;
-   "endobj" + CRLF
+   cTemp := ltrim( str( ++::aReport[ REPORTOBJ ] ) ) + " 0 obj" + CRLF + ;
+            ltrim( str( len( ::aReport[ PAGEBUFFER ] ) ) ) + CRLF + ;
+            "endobj" + CRLF
 
    ::WriteToFile( cTemp )
 
-   for nI := 1 to len( ::aReport[ FONTS ] )
-  IF ::aReport[ FONTS ][ nI ][ 2 ] > ::aReport[ REPORTOBJ ]
+   FOR nI := 1 to len( ::aReport[ FONTS ] )
+      IF ::aReport[ FONTS ][ nI ][ 2 ] > ::aReport[ REPORTOBJ ]
+         aadd( ::aReport[ REFS ], ::nDocLen )
+         cTemp := ;
+                  ltrim( str( ::aReport[ FONTS ][ nI ][ 2 ] ) ) + " 0 obj" + CRLF + ;
+                  "<<" + CRLF + ;
+                  "/Type /Font" + CRLF + ;
+                  "/Subtype /Type1" + CRLF + ;
+                  "/Name /Fo" + ltrim( str( nI ) ) + CRLF + ;
+                  "/BaseFont /" + ::aReport[ TYPE1 ][ ::aReport[ FONTS ][ nI ][ 1 ] ] + CRLF + ;
+                  "/Encoding /WinAnsiEncoding" + CRLF + ;
+                  ">>" + CRLF + ;
+                  "endobj" + CRLF
+         ::WriteToFile( cTemp )
+      ENDIF
+   NEXT
 
- aadd( ::aReport[ REFS ], ::nDocLen )
+   FOR nI := 1 to len( ::aImages )
+      IF ::aImages[ nI ][ 2 ] > ::aReport[ REPORTOBJ ]
+         aadd( ::aReport[ REFS ], ::nDocLen )
 
- cTemp := ;
- ltrim(str( ::aReport[ FONTS ][ nI ][ 2 ] )) + " 0 obj" + CRLF + ;
- "<<" + CRLF + ;
- "/Type /Font" + CRLF + ;
- "/Subtype /Type1" + CRLF + ;
- "/Name /Fo" + ltrim(str( nI )) + CRLF + ;
- "/BaseFont /" + ::aReport[ TYPE1 ][ ::aReport[ FONTS ][ nI ][ 1 ] ] + CRLF + ;
- "/Encoding /WinAnsiEncoding" + CRLF + ;
- ">>" + CRLF + ;
- "endobj" + CRLF
+         cTemp := ;
+                  ltrim( str( ::aImages[ nI ][ 2 ] ) ) + " 0 obj" + CRLF + ;
+                  "<<" + CRLF + ;
+                  "/Type /XObject" + CRLF + ;
+                  "/Subtype /Image" + CRLF + ;
+                  "/Name /Image" + ltrim(str(nI)) + CRLF + ;
+                  "/Filter [" + IIF( at( ".JPG", upper( ::aImages[ nI ][ 1 ] ) ) > 0, " /DCTDecode", "" ) + " ]" + CRLF + ;
+                  "/Width " + ltrim( str( ::aImages[ nI ][ 3 ][ IMAGE_WIDTH ] ) ) + CRLF + ;
+                  "/Height " + ltrim( str( ::aImages[ nI ][ 3 ][ IMAGE_HEIGHT ] ) ) + CRLF + ;
+                  "/BitsPerComponent " + ltrim( str( ::aImages[ nI ][ 3 ][ IMAGE_BITS ] ) ) + CRLF + ;
+                  "/ColorSpace /" + IIF( ::aImages[ nI ][ 3 ][ IMAGE_BITS ] == 1, "DeviceGray", "DeviceRGB" ) + CRLF + ;
+                  "/Length " + ltrim( str( ::aImages[ nI ][ 3 ][ IMAGE_LENGTH ] ) ) + CRLF + ;
+                  ">>" + CRLF + ;
+                  "stream" + CRLF
 
-   ::WriteToFile( cTemp )
+         ::WriteToFile( cTemp )
 
-  ENDIF
-   next
+         nImageHandle := fopen( ::aImages[ nI ][ 1 ] )
+         fseek( nImageHandle, ::aImages[ nI ][ 3 ][ IMAGE_FROM ] )
 
-   for nI := 1 to len( ::aReport[ IMAGES ] )
-  IF ::aReport[ IMAGES ][ nI ][ 2 ] > ::aReport[ REPORTOBJ ]
+         nBuffer := 8192
+         cBuffer := space( nBuffer )
+         k := 0
+         DO WHILE k < ::aImages[ nI ][ 3 ][ IMAGE_LENGTH ]
+            IF k + nBuffer <= ::aImages[ nI ][ 3 ][ IMAGE_LENGTH ]
+               nRead := nBuffer
+            ELSE
+               nRead := ::aImages[ nI ][ 3 ][ IMAGE_LENGTH ] - k
+            ENDIF
+            fread( nImageHandle, @cBuffer, nRead )
 
- aadd( ::aReport[ REFS ], ::nDocLen )
+            ::WriteToFile( LEFT( cBuffer, nRead ) )
+            k += nRead
+         ENDDO
 
- cTemp :=  ;
-    ltrim(str( ::aReport[ IMAGES ][ nI ][ 2 ] )) + " 0 obj" + CRLF + ;
-        "<<" + CRLF + ;
-        "/Type /XObject" + CRLF + ;
-    "/Subtype /Image" + CRLF + ;
-    "/Name /Image" + ltrim(str(nI)) + CRLF + ;
-        "/Filter [" + IIF( at( ".JPG", upper( ::aReport[ IMAGES ][ nI ][ 1 ]) ) > 0, " /DCTDecode", "" ) + " ]" + CRLF + ;
-        "/Width " + ltrim(str( ::aReport[ IMAGES ][ nI ][ 3 ][ IMAGE_WIDTH ] )) + CRLF + ;
-    "/Height " + ltrim(str( ::aReport[ IMAGES ][ nI ][ 3 ][ IMAGE_HEIGHT ] )) + CRLF + ;
-    "/BitsPerComponent " + ltrim(str( ::aReport[ IMAGES ][ nI ][ 3 ][ IMAGE_BITS ] )) + CRLF + ;
-        "/ColorSpace /" + IIF( ::aReport[ IMAGES ][ nI ][ 3 ][ IMAGE_BITS ] == 1, "DeviceGray", "DeviceRGB") + CRLF + ;
-        "/Length " + ltrim(str( ::aReport[ IMAGES ][ nI ][ 3 ][ IMAGE_LENGTH ])) + CRLF + ;
-    ">>" + CRLF + ;
-    "stream" + CRLF
+         cTemp := CRLF + "endstream" + CRLF + "endobj" + CRLF
 
-   ::WriteToFile( cTemp )
-
- nImageHandle := fopen( ::aReport[ IMAGES ][ nI ][ 1 ] )
- fseek( nImageHandle, ::aReport[ IMAGES ][ nI ][ 3 ][ IMAGE_FROM ] )
-
- nBuffer := 8192
- cBuffer := space( nBuffer )
- k := 0
- while k < ::aReport[ IMAGES ][ nI ][ 3 ][ IMAGE_LENGTH ]
-IF k + nBuffer <= ::aReport[ IMAGES ][ nI ][ 3 ][ IMAGE_LENGTH ]
-   nRead := nBuffer
-ELSE
-   nRead := ::aReport[ IMAGES ][ nI ][ 3 ][ IMAGE_LENGTH ] - k
-ENDIF
-fread( nImageHandle, @cBuffer, nRead )
-
-   ::WriteToFile( LEFT( cBuffer, nRead ) )
-k += nRead
- enddo
-
- cTemp := CRLF + "endstream" + CRLF + "endobj" + CRLF
-
-   ::WriteToFile( cTemp )
+         ::WriteToFile( cTemp )
 
          fClose( nImageHandle )
-  ENDIF
-   next
+      ENDIF
+   NEXT
 
-   ::aReport[ REPORTOBJ  ] := ::aReport[ NEXTOBJ ]
+   ::aReport[ REPORTOBJ  ] := ::nNextObj
 
-   ::aReport[ NEXTOBJ] := ::aReport[ REPORTOBJ ] + 4
+   ::nNextObj := ::aReport[ REPORTOBJ ] + 4
 
    ::aReport[ PAGEBUFFER ] := ""
 
@@ -3606,17 +2775,16 @@ RETURN self
 //컴컴컴컴컴컴컴컴컴컴컴컴�\\
 
 METHOD FilePrint( /* cFile */ )
-
 /*
 local cPathAcro := "c:\progra~1\Adobe\Acroba~1.0\Reader"
 local cRun := cPathAcro + "\AcroRd32.exe /t " + cFile + " " + ;
-chr(34) + "HP LaserJet 5/5M PostScript" + chr(34) + " " + ;
-chr(34) + "LPT1" + chr(34)
+              chr( 34 ) + "HP LaserJet 5/5M PostScript" + chr( 34 ) + " " + ;
+              chr( 34 ) + "LPT1" + chr( 34 )
 
-IF ( ! RunExternal( cRun, 'print' ) )
-   alert( "Error printing to Acrobat Reader." )
-   break
-ENDIF
+   IF ( ! RunExternal( cRun, 'print' ) )
+      alert( "Error printing to Acrobat Reader." )
+      break
+   ENDIF
 */
 
 RETURN self
@@ -3671,9 +2839,7 @@ return cTime
 //컴컴컴컴컴컴컴컴컴컴컴컴�\\
 
 static function FileSize( cFile )
-
-   LOCAL nLength
-   LOCAL nHandle
+LOCAL nLength, nHandle
 
    nHandle := fOpen( cFile )
    nLength := fSeek( nHandle, 0, FS_END )
