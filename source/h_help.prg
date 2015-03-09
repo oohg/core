@@ -1,11 +1,11 @@
 /*
- * $Id: h_help.prg,v 1.5 2008-01-14 02:12:54 guerra000 Exp $
+ * $Id: h_help.prg,v 1.6 2015-03-09 02:52:08 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * PRG help files functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.guerra.com.mx
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

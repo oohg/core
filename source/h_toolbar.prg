@@ -1,11 +1,11 @@
 /*
- * $Id: h_toolbar.prg,v 1.40 2014-02-17 22:07:35 fyurisich Exp $
+ * $Id: h_toolbar.prg,v 1.41 2015-03-09 02:52:08 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * PRG toolbar functions
  *
- * Copyright 2005-2011 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

@@ -1,11 +1,11 @@
 /*
- * $Id: h_controlmisc.prg,v 1.150 2015-03-07 20:52:57 fyurisich Exp $
+ * $Id: h_controlmisc.prg,v 1.151 2015-03-09 02:52:07 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * Miscelaneous PRG controls functions
  *
- * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

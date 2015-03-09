@@ -1,15 +1,11 @@
 /*
- * $Id: dbview.prg,v 1.3 2014-11-04 16:46:42 migsoft Exp $
+ * $Id: dbview.prg,v 1.4 2015-03-09 02:52:05 fyurisich Exp $
  */
 
 /*
  *
- * MINIGUI - Harbour Win32 GUI library
- * Copyright 2002-2012 Roberto Lopez <harbourminigui@gmail.com>
- * http://harbourminigui.googlepages.com/
- *
  * Program to view DBF files using standard Browse control
- * Miguel Angel Juárez A. - 2009-2014 MigSoft <mig2soft/at/yahoo.com>
+ * Miguel Angel Juárez A. - 2009-2015 MigSoft <mig2soft/at/yahoo.com>
  * Includes the code of Grigory Filatov <gfilatov@freemail.ru>
  * and Rathinagiri <srathinagiri@gmail.com>
  *

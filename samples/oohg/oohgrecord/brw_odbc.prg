@@ -1,8 +1,8 @@
 /*
- * $Id: brw_odbc.prg,v 1.4 2013-03-04 23:38:21 guerra000 Exp $
+ * $Id: brw_odbc.prg,v 1.5 2015-03-09 02:52:06 fyurisich Exp $
  */
 /*
- * ooHG XBrowse ODBC demo. (c) 2008 Vic
+ * ooHG XBrowse ODBC demo. (c) 2008-2015 Vic
  * This demo shows how to use XBrowse for show an ODBC query.
  * It includes an "ODBC-as-ooHGRecord" object.
  */

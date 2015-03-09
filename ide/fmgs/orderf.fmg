@@ -1,9 +1,9 @@
 /*
- * $Id: orderf.fmg,v 1.6 2014-09-25 02:59:10 fyurisich Exp $
+ * $Id: orderf.fmg,v 1.7 2015-03-09 02:51:06 fyurisich Exp $
  */
 
 * ooHG IDE Plus form generated code
-* (c)2003-2014 Ciro Vargas Clemow <pcman2010@yahoo.com > 
+* (c)2003-2015 Ciro Vargas Clemow <pcman2010@yahoo.com >
 
 DEFINE WINDOW TEMPLATE ;
    AT 132, 235 ;

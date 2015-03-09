@@ -1,9 +1,9 @@
 /*
- * $Id: h_report.prg,v 1.49 2011-09-05 23:37:33 fyurisich Exp $
+ * $Id: h_report.prg,v 1.50 2015-03-09 02:52:08 fyurisich Exp $
  */
 /*
  * DO REPORT Command support procedures FOR MiniGUI Library.
- * (c) Ciro vargas Clemow [sistemascvc@softhome.net]
+ * Copyright 2005-2015 Ciro vargas Clemow [sistemascvc@softhome.net]
 
  This program is free software; you can redistribute it and/or modify it under
  the terms of the GNU General Public License as published by the Free Software

@@ -1,11 +1,11 @@
 /*
- * $Id: c_graph.c,v 1.7 2011-10-18 01:08:04 fyurisich Exp $
+ * $Id: c_graph.c,v 1.8 2015-03-09 02:52:06 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * C graphic functions
  *
- * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

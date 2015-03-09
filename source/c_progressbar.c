@@ -1,11 +1,11 @@
 /*
- * $Id: c_progressbar.c,v 1.6 2011-08-20 20:49:07 fyurisich Exp $
+ * $Id: c_progressbar.c,v 1.7 2015-03-09 02:52:07 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * C progressbar functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.guerra.com.mx
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

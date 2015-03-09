@@ -1,11 +1,11 @@
 /*
- * $Id: h_media.prg,v 1.8 2014-06-27 22:24:39 fyurisich Exp $
+ * $Id: h_media.prg,v 1.9 2015-03-09 02:52:08 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * PRG multimedia functions
  *
- * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

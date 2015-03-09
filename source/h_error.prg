@@ -1,11 +1,11 @@
 /*
- * $Id: h_error.prg,v 1.58 2014-08-03 19:37:52 fyurisich Exp $
+ * $Id: h_error.prg,v 1.59 2015-03-09 02:52:07 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * Error handling system
  *
- * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

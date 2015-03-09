@@ -1,11 +1,11 @@
 /*
- * $Id: h_tab.prg,v 1.66 2015-02-28 23:34:50 fyurisich Exp $
+ * $Id: h_tab.prg,v 1.67 2015-03-09 02:52:08 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * Tab functions
  *
- * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

@@ -1,11 +1,11 @@
 /*
- * $Id: h_ipaddress.prg,v 1.13 2014-07-07 01:51:43 fyurisich Exp $
+ * $Id: h_ipaddress.prg,v 1.14 2015-03-09 02:52:08 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * PRG IP address functions
  *
- * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

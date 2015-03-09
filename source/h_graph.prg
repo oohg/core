@@ -1,11 +1,11 @@
 /*
- * $Id: h_graph.prg,v 1.11 2013-09-12 23:09:33 fyurisich Exp $
+ * $Id: h_graph.prg,v 1.12 2015-03-09 02:52:07 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * PRG graphic functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.guerra.com.mx
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

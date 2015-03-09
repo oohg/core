@@ -1,8 +1,8 @@
 /*
- * $Id: recordmerge.prg,v 1.3 2012-06-24 15:41:56 fyurisich Exp $
+ * $Id: recordmerge.prg,v 1.4 2015-03-09 02:52:06 fyurisich Exp $
  */
 /*
- * ooHG XBrowse multiple database in one browse. (c) 2008 Vic
+ * ooHG XBrowse multiple database in one browse. (c) 2008-2015 Vic
  * This demo shows multiple databases on a single browse.
  *
  * NOTES: You can't use XBROWSE's scrollbar or edit capabilities.

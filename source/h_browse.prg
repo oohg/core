@@ -1,11 +1,11 @@
 /*
- * $Id: h_browse.prg,v 1.146 2014-11-04 01:56:39 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.147 2015-03-09 02:52:07 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * PRG browse functions
  *
- * Copyright 2005-2011 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

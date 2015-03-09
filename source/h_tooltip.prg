@@ -1,11 +1,11 @@
 /*
- * $Id: h_tooltip.prg,v 1.9 2014-03-30 19:39:42 fyurisich Exp $
+ * $Id: h_tooltip.prg,v 1.10 2015-03-09 02:52:08 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * Tooltip functions
  *
- * Copyright 2005-2011 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

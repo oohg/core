@@ -1,11 +1,11 @@
 /*
- * $Id: h_status.prg,v 1.46 2014-09-01 15:58:51 fyurisich Exp $
+ * $Id: h_status.prg,v 1.47 2015-03-09 02:52:08 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * PRG statusbar functions
  *
- * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

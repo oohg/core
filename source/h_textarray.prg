@@ -1,11 +1,11 @@
 /*
- * $Id: h_textarray.prg,v 1.21 2013-07-03 01:44:52 migsoft Exp $
+ * $Id: h_textarray.prg,v 1.22 2015-03-09 02:52:08 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * TTextArray control source code
  *
- * Copyright 2006-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2006-2015 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * This program is free software; you can redistribute it and/or modify

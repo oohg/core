@@ -1,5 +1,5 @@
 <!--
-$Id: Changelog.htm,v 1.4 2014-08-16 13:52:52 fyurisich Exp $
+$Id: Changelog.htm,v 1.5 2015-03-09 02:51:32 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -142,7 +142,769 @@ CHANGELOG</div>
 </div>
 <div id="winchm_template_content">
 <pre>
-2014-08-16 10:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2015-03-08 21:26 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ./Changelog
+     * Previous entry.
+   * ./compile.bat
+     + Added /c switch to set environment vars to its default values
+       for compiling with Harbour 3.0 and MinGW.
+   + ./compile32.bat
+     * Use this file to compile using Harbour 3.2 and MinGW.
+     ; Use /c switch to set environment vars to its default values.
+
+2015-03-08 12:25 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ./2buildapp.bat
+   * ./buildapp.bat
+     * Changed default path to Harbour compiler.
+     * Changed HG_MINGW by HG_CCOMP.
+   * ./oohg.hbc
+     * Use environment vars to set search path for OOHG's libs.
+     * Comments.
+   * manual/HowToBuild.txt
+     * Added info about where to install oohg.ch
+
+2015-03-07 20:40 UTC-0200 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ide/prgs/formedit.prg
+     ! RTE when inserting new RadioGroup.
+
+2015-03-07 20:21 UTC-0200 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ./Changelog
+     * Previous entry.
+   * doc/classes.txt
+     * Updated.
+   * ide/prgs/formedit.prg
+     + Browse's NoModalEdit and NavigateByCell clauses.
+
+2015-03-07 15:52 UTC-0200 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ./Changelog
+     * Previous entry.
+   * ide/prgs/formedit.prg
+     + RadioGroup's LeftJustify and ReadOnly clauses.
+     + RadioGroup's Width to Manual Move/Size option.
+   * include/i_window.ch
+     + Spacing property to semi-oop syntax.
+   * source/h_controlmisc.prg
+     * Condition simplified in method TControl:ToolTip().
+   * source/h_radio.prg
+     + Method Spacing to class TRadioGroup.
+     * Some cleaning up in Method Define of class TRadioGroup.
+     ! Control is not painted properly after changing dimension.
+
+2015-03-07 00:49 UTC-0200 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ./Changelog
+     * Previous entry.
+   * include/i_altsyntax.ch
+   * include/i_radiogroup.ch
+     + LEFTJUSTIFY and READONLY clauses.
+   * source/h_radio.prg
+     + DATA LeftAlign to TRadioGroup().
+     + Methods ReadOnly, ItemEnabled and ItemReadOnly.
+     + New parameters to methods Define and InsertItem of TRadioGroup().
+     ! Control is not painted properly after changing position.
+     + DATA LeftAlign to TRadioItem().
+     + New parameter to method Define of TRadioItem().
+     + Support for BS_LEFTTEXT style in InitRadioGroup() and
+       InitRadioButton().
+   * include/i_window.ch
+     + DisableEdit property to semi-oop syntax. It's equivalent to ReadOnly.
+     + Enabled( nItem ) property to semi-oop syntax.
+     ; This adds support for syntax used by HMG Extended.
+   * source/h_controlmisc.prg
+     + DisableEdit and Enabled properties to SetProperty().
+     + ReadOnly, DisableEdit and Enabled properties to GetProperty().
+   ; This commit synchronizes OOHG's RadioGroup control with HMG Extended's.
+
+2015-03-06 19:47 UTC-0200 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_tree.prg
+     * Removed SETGET attribute from methods ItemReadonly, CheckItem,
+       BoldItem, ItemEnabled and Itemdraggable.
+
+2015-03-06 19:41 UTC-0200 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * include/i_hmg_compat.ch
+     + STYLE clause: cosmetic, has no effect in Extended.
+     + DEFAULT clause: it's ignored, in Extendex this clause if linked to
+       menu item´s with MESSAGE clause shows. TODO: implement.
+
+2015-03-04 20:30 UTC-0200 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * include/i_altsyntax.ch
+     * Changed ADJUST xcommand so adjust() is not translated.
+
+2015-03-03 19:21 UTC-0200 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_picture.prg
+   * source/h_image.prg
+     * Hack to avoid using GDI+ when loading an EMF file was removed.
+   * source/c_gdiplus.c
+     ! Crash at GdipCreateHBITMAPFromBitmap call in _OOHG_GDIPLoadPicture().
+     ! MinGW compiler warning in SaveHBitmapToFile().
+
+2015-03-01 16:32 UTC-0200 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ./Changelog
+     * Previous entry.
+
+2015-03-01 16:30 UTC-0200 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_textbox.prg
+     * Removed line length limit (1024) in TText:GetLine().
+
+2015-03-01 14:21 UTC-0200 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_msgbox.prg
+     ! Harbour 3.2 compiler warning in _Dummy().
+
+2015-03-01 14:04 UTC-0200 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_textbox.prg
+     ! MinGW compiler warning in TTEXT_GETLINE.
+
+2015-02-28 22:17 UTC-0200 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ide/fmgs/tabprop.fmg
+   * ide/prgs/formedit.prg
+     + TAB's DELAYMSGS clause.
+
+2015-02-28 21:34 UTC-0200 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_xbrowse.prg
+     * Removed unnecessary call to ProcessMessage() at the end of ::Visible.
+   * source/h_textbox.prg
+     * Use ::lVisible as return value of ::Visible instead of
+       ::Super:Visible.
+   * source/h_windows.prg
+     + DATA TWindow:lProcMsgsOnVisible.
+     * TWindow:Visible checks TWindow:lProcMsgsOnVisible before calling
+       ProcessMessage() after changing object's visibility.
+     + Parameter lNoProc to method ParentDefaults of Twindow.
+       The method now sets ::lProcMsgsOnVisible using the passed value or
+       to the container's value or to the parent's value.
+   * source/h_form.prg
+     * TForm:Visible checks TWindow:lProcMsgsOnVisible before calling
+       ProcessMessage() after changing object's visibility.
+   * source/h_controlmisc.prg
+     + Parameter lNoProc to method SetForm of TForm. This parameter
+       changes ::lProcMsgsOnVisible via Twindow:ParentDefaults.
+   * include/i_tab.ch
+     + DELAYMSGS clause to indicate that TAB's pages and its controls
+       must be defined with ::lProcMsgsOnVisible set to .F.
+   * source/h_tab.prg
+     + Parameter lNoProc to method Define of TTabDirect, TTabCombo,
+       TTabRadio, TTabMulti and TMultiPage classes.
+       TTabDirect:lProcMsgsOnVisible will be set to .F.
+     * Methods Refresh, Visible and HidePage of TTabDirect class now
+       call ProcessMessage() when TTabDirect:lProcMsgsOnVisible is .F.
+     * TTabDirect:AddControl will set control's ::lProcMsgsOnVisible
+       to match TTabDirect:lProcMsgsOnVisible.
+     * Methods Refresh, Visible and HidePage of TMultiPage class now
+       call ProcessMessage() when TTabDirect:lProcMsgsOnVisible is .F.
+     * TMultiPage:AddControl will set control's ::lProcMsgsOnVisible
+       to match TMultiPage:lProcMsgsOnVisible.
+
+2015-02-25 19:07 UTC-0200 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_print.prg
+     + Support for MAXROW and MAXCOL methods in TMINIPRINT,
+       THBPRINTER, TEXCELPRINT and TCALCPRINT. For other classes
+       they return 0.
+   * source/miniprint.prg
+     + _HMG_PRINTER_GETMAXCOL and _HMG_PRINTER_GETMAXROW functions.
+   * source/winprint.prg
+     ! RR_GETDEVICECAPS function is wrongly calculating rows and cols.
+
+2015-02-16 01:00 UTC-0200 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ide/prgs/formedit.prg
+     ! RTE when saving new form with empty statusbar.
+     ! Blank line in GRID.
+     * Line's max length.
+
+2015-02-04 20:20 UTC-0200 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_tree.prg
+     ! BACKCOLOR clause not working on Win 7.
+
+2015-01-19 21:12 UTC-0200 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_combo.prg
+     ! ON CHANGE event is not fired during incremental search.
+
+2015-01-14 18:47 UTC-0200 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ide/prgs/formedit.prg
+     ! Default fonttype is not immediately applied to control after
+       closing the dialog.
+     ! Control's order in TAB is changed after adding a new control.
+     ! Control's in TAB are not painted after adding a new control.
+     ! Trailing and leading spaces are being removed from TOOLTIP and
+       CAPTION values of several controls.
+     ! FONTNAME and FONTSIZE oop clauses not always honored.
+     - No longer used CHideControl().
+     + Parameter lNoTrim to StrToStr().
+   * ide/prgs/toolbed.prg
+     ! Trailing and leading spaces are being removed from TOOLTIP and
+       CAPTION values of TOOLBAR controls.
+
+2014-12-04 20:13 UTC-0200 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ide/prgs/formedit.prg
+     ! COMBOBOX's ITEMS clause.
+
+2014-11-26 19:30 UTC-0200 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ide/prgs/formedit.prg
+     ! GRID's DELETE clause.
+
+2014-11-04 13:21 UTC-0400 Miguel Juárez &lt;migsoft@oohg.org&gt;
+   * samples/dbview/prgs/dbview.prg
+   * samples/dbview/prgs/import.prg
+   * samples/dbview/prgs/indadmin.prg
+   * samples/dbview/prgs/Showprop.prg
+   * samples/dbview/dbview.rc
+   + samples/dbview/res/arriba.bmp
+   + samples/dbview/res/abajo.bmp
+   + samples/dbview/res/ultimoend.bmp
+   + samples/dbview/res/primerotop.bmp
+   * samples/dbview/fmgs/dbuvar.ch
+   * samples/dbview/fmgs/oWndBase.fmg
+     ! Adapted for support NAVIGATEBYCELL
+
+2014-11-03 23:56 UTC-0200 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * samples/dbview/dbview.hbp
+     ! Compiling using buildapp.bat
+   * source/h_xbrowse.prg
+     + Reset ::bPosition to 0 before editing just to be sure.
+     - Unneeded reset of ::bPosition.
+   * source/h_browse.prg
+     * Methods Up and Down of TOBrowse now return .T. if they are
+       successful, or .F. if they are not.
+     + Parameter lAppend to TOBrowse:Down(). Defaults to .T.
+       .T. will trigger a record append if the control is at
+       the last record when the method is called.
+     + Methods Left and Right of TOBrowseByCell.
+     ! Left/right click does not select cell.
+     ! Double click does not select cell before editing.
+     ! Wrong record is selected after left click.
+     ! Can't add new row.
+     ! Edition not working properly.
+     ! Methods Home, End, Left and Right not working properly.
+     ! Cell at is not fully visible after horizontal scrolling.
+
+2014-10-30 19:00 UTC-0200 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/c_image.c
+     ! BCC warning on ISNUM macro.
+   * source/h_msgbox.prg
+     ! BCC warning on _OOHG_AllVars variable.
+   * source/makelib_bcc.bat
+   * source/xml.bat
+   * ./compile_bcc.bat
+     * Added -w switch to BCC call, so all warnings are displayed.
+
+2014-10-26 22:25 UTC-0200 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * include/i_browse.prg
+     + NAVIGATEBYCELL and NOMODALEDIT clauses.
+   * source/c_controlmisc.c
+     + InsertUp, InsertDown, InsertPrior and InsertNext functions.
+   * source/h_browse.prg
+     + DATA nRecLastValue to replace DATA nRowPos.
+       nRowPos is a row in the grid and nRecLastValue is a record number.
+     + METHOD TOBrowse:Define3.
+     * METHOD DoChange sets DATA nRecLastValue.
+       This ensures nRecLastValues is always updated.
+     * Parameter lNoHeaders renamed to lHasHeaders.
+     + Parameter lNoModal to METHOD TOBrowse:Define.
+     * METHOD TOBrowse:Define calls TOBrowse:Define3 instead of
+       calling TGrid:Define directly.
+     * METHOD TOBrowse:EditItem_B validates ::AllowAppend before
+       executing and append.
+     * METHOD Events_Notify moved to PRG level.
+     - InsertUp, InsertDown, InsertPrior and InsertNext functions.
+     + TOBrowseByCell class.
+   * source/h_grid.prg
+     * METHOD SetSelectedColors is no longer of SETGET type.
+
+2014-10-26 21:40 UTC-0200 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ./Changelog
+     * Previous entries amended.
+   * source/h_xbrowse.prg
+     ! NOVSCROLL clause not honored.
+     * Do not beep if a cell in a hidden column is edited.
+     ! TXBrowseByCell:AppendItem is not working.
+     ! TXBrowseByCell:Define2 is not working.
+     ! TXBrowseByCell:Events_Enter is not working.
+     ! TXBrowseByCell:SetSelectedColors is not working.
+     - uOldValue parameter in method TXBrowseByCell:EditGrid.
+   * source/h_browse.prg
+     ! NOVSCROLL clause not honored.
+     ! After browsing with PageUp/PageDown/Home/End first visible
+       column is reseted to 1.
+       Thanks to Vicente Guerra for the solution.
+
+2014-10-26 12:40 UTC-0600 Vicente Guerra &lt;vicente@guerra.com.mx&gt;
+   * ./compile_bcc.bat
+     ! Added missing %HG_BCC%\lib\psdk path.
+
+2014-10-14 20:03 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * include/i_spinner.ch
+     + BOUNDTEXT clause. By default, when a value out of range is typed
+       in the textbox part of the spinner control, the control's value
+       is set to the lower/upper limit automatically but this value is
+       not shown in the textbox. Use this clause to force the control
+       to display it's real value when typed valued is out of range.
+   * source/h_spinner.prg
+     + Data lBoundText and method Events_Command.
+   * ide/prgs/formedit.prg
+     + Support for BOUNDTEXT clause.
+   * doc/classes.txt
+     * Updated.
+
+2014-10-06 22:38 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ide/prgs/formedit.prg
+     ! Missing GRID's CHECKBOXES property and ONCHECKCHANGE,
+       ACTION and ONAPPEND events.
+     ! FORM's GRIPPERTEXT property.
+     ! TREE's ONDROP events.
+
+2014-10-02 23:40 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_grid.prg
+     + New parameter lSetThisCellInfo to method SetItemColor.
+       Set it to .F. to avoid infinite loop when method is called
+       from the ON QUERYDATA codeblock.
+
+2014-10-02 19:22 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ide/prgs/formedit.prg
+     ! RTE when accessing Events option.
+
+2014-10-01 22:16 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ide/prgs/formedit.prg
+     ! TAB control is created with zero width.
+     ! RTE when creating new HYPERLINK control.
+     ! Control inspector looses it's context menu after deleting
+       a SPINNER control.
+     * Windows initial positions.
+   * ide/prgs/mgide.prg
+     * Save/Load editor's windows positions from HMI.INI file.
+
+2014-09-30 22:16 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ide/prgs/formedit.prg
+     ! GRIPPERTEXT clause in DEFINE WINDOW.
+     ! Mouse move/size of RADIOGROUP control.
+
+2014-09-30 17:42 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ide/prgs/formedit.prg
+   * ide/prgs/mgide.prg
+     ! RTE when loading COMBO control.
+     ! TEXTBOX width and height not loaded properly.
+     * Some changes to reduce repainting.
+
+2014-09-29 22:53 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ide/fmgs/fontclrs.fmg
+   * ide/prgs/formedit.prg
+     ! Control's font and color change.
+     + "Font Type reset to default" option.
+     + Method RecrateControl.
+     ! Controls inside TAB repainted at wrong place.
+     * Comments.
+     - Unneeded functions HB_GetDC and HB_ReleaseDC.
+     ! RadioGroup's click selection.
+   * ide/prgs/mgide.prg
+     ! Controls in myInputWindow overlap statusbar.
+
+2014-09-28 23:16 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * doc/classes.txt
+     * Updated.
+   * ide/fmgs/tabprop.fmg
+     * All function names changed to English.
+   * ide/prgs/formedit.prg
+     * Displayed controls are recreated after modifying a property.
+     ! The context menu of some controls is not working.
+     * All function names changed to English.
+     ! Controls are always placed outside tabs.
+     ! Not all tab pages are shown in "Control's TabStop Order" window.
+     ! Error message displayed when editing tab's properties.
+     ! Page's images names not save/loaded properly.
+     ! RTE when creating a new tab control.
+     ! Not all controls in tab pages are saved.
+     ! Wrong value property of IPADDRESS control.
+     ! HORIZONTAL clause in RADIOGROUP control.
+     ! VALUE clause in IPADDRESS control.
+     ! Default values of property FOCUSEDPOS.
+   * ide/prgs/mgide.prg
+     + myTProgressBar class.
+   * include/i_button.ch
+     ! CHECKBUTTON command is not working properly.
+   * include/i_progressbar.ch
+   * include/i_richeditbox.ch
+     * Format.
+   * include/i_windefs.ch
+     + PBS_VERTICAL constant.
+   * source/h_hyperlink.prg
+     + Support for https.
+   * source/h_radio.prg
+     + Methods GroupHeight and GropWidth. They return the height and
+       width of the whole radiogroup control.
+   * source/h_spinner.prg
+     ! Spinner window still visible after releasing TSpinner() control.
+
+2014-09-25 23:09 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ide/prgs/formedit.prg
+     * All methods names changed to English.
+     * All comments changed to English.
+     ! CLIENTAREA clause in designed form.
+     + T*O*D*O notes.
+     ! Just added control is not outlined.
+     ! The context menu of some controls is not working.
+     ! Picture controls are not saved properly.
+     ! Frame is not selected if it's the first clicked control after
+       loading the fmg.
+     ! RTE when adding a control after a HOTKEYBOX was added.
+     ! RTE when clicking on form after deleting a control.
+   * ide/prgs/mgide.prg
+     - DECLARE WINDOW sentences.
+     + T*O*D*O notes.
+
+2014-09-24 23:59 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ide/fmgs/orderf.fmg
+     * Name of dymamic controls and called methods.
+     * Design.
+   * ide/fmgs/tabprop.fmg
+     + Validation to avoid duplicated control's name.
+   * ide/prgs/formedit.prg
+     ! RTE when 2 controls in the loaded form have the same name.
+     % Access to controls.
+     * Some methods and vars renamed.
+     ! Deletion of tabpage.
+     ! Keyboard size commands.
+     ! Control move and size using the mouse.
+     * Do not draw points over toolbar if one exists.
+     ! RTE when changing form's properties.
+     ! Some form's events are not saved.
+     ! CLIENTAREA clause in designed form.
+     - METHOD LeaDatoStatus.
+     ! Keywords inside properties' values are detected as clauses.
+     ! Return focus to designed form after save.
+   * ide/prgs/menued.prg
+     * Set focus on designed form after exit.
+   * ide/prgs/toolbed.prg
+     ! Empty button tooltip.
+     * Set focus on designed form after exit.
+
+2014-09-22 23:52 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   - ide/fmgs/tabevent.fmg
+   * ide/fmgs/tabprop.fmg
+     * MODAL clause.
+   * ide/prgs/formedit.prg
+     % Method Events_Click.
+     - Method TabEvents().
+     ! RTE when saving form with 2 TAB controls.
+     * Validation of TAB pages' properties.
+     ! Empty TAB page is not saved.
+     + Support for SCROLLBAR controls.
+   * source/h_editbox.prg
+     + DATAs nWidth and nHeight.
+
+2014-09-21 23:35 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ide/mgide.hbp
+     + Compile switch -es2
+   * ide/mgide.rc
+     + Bitmaps for new controls.
+   + ide/imgs/activex.bmp
+   + ide/imgs/atext.bmp
+   + ide/imgs/checklist.bmp
+   + ide/imgs/hkb.bmp
+   + ide/imgs/meter.bmp
+   + ide/imgs/picture.bmp
+   + ide/imgs/scrollbar.bmp
+   + ide/imgs/timep.bmp
+   + ide/imgs/xbrowse.bmp
+   * ide/prgs/formedit.prg
+     + Context and Notify menus of the designed form are simulated
+       through new options in the context menu of the IDE.
+     + Support for ACTIVEX, CHECKLIST, HOTKEYBOX, PICTURE and
+      PROGRESSMETER controls.
+     + Copy control to context menu.
+   * ide/prgs/menued.prg
+     ! An empty menu is created in the design form when no
+       menu is defined.
+     + Context and Notify menus creation.
+   * include/i_activex.prg
+     + INVISIBLE clause.
+   * include/i_picture.prg
+     + DISABLED clause.
+   * include/i_progressmeter.prg
+     + DISABLED clause.
+   * include/i_tree.prg
+     ! DISABLED clause not working.
+   * source/h_activex.prg
+     + INVISIBLE clause.
+   * source/h_picture.prg
+     + DISABLED clause.
+   * source/h_progressbar.prg
+     * DATA nRangeMax is now initialized to 100 instead of 0.
+   * source/h_progressmeter.prg
+     + DISABLED clause.
+   * source/h_slider.prg
+     * DATA nRangeMax is now initialized to 10 instead of 0.
+
+2014-09-19 18:24 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ./Changelog
+     ; Remember to check "Format" column when committing changes.
+       Do not commit a change if the "Format" shown is binary for a
+       file intended to be text only (*.prg, *.c, *.ch, *.fmg, *.rc)
+       If a change is detected, abort the commit, delete all chars
+       not considered text (like EOF) and try to commit again.
+       The current file format can be checked using History dialog.
+
+2014-09-19 18:12 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ide/prgs/formedit.prg
+     * References to tabeven.fmg changed by tabevent.fmg
+
+2014-09-19 18:11 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   + ide/fmgs/tabevent.fmg
+     Note: it's tabeven.fmg, revision 1.5, renamed.
+
+2014-09-19 18:10 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   + ide/fmgs/tabevent.fmg
+     Note: it's tabeven.fmg, revision 1.4, renamed.
+
+2014-09-19 18:08 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   + ide/fmgs/tabevent.fmg
+     Note: it's tabeven.fmg, revision 1.3, renamed.
+
+2014-09-19 18:06 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   + ide/fmgs/tabevent.fmg
+     Note: it's tabeven.fmg, revision 1.2, renamed.
+
+2014-09-19 18:04 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   + ide/fmgs/tabevent.fmg
+     Note: it's tabeven.fmg, revision 1.1, renamed.
+
+2014-09-19 18:02 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   - ide/fmgs/tabeven.fmg
+     Note: wrong CVS Id.
+
+2014-09-19 17:50 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ide/prgs/formedit.prg
+     * References to intfonco.fmg changed by fontclrs.fmg
+
+2014-09-19 17:50 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   + ide/fmgs/fontclrs.fmg
+     Note: it's intfonco.fmg, revision 1.6, renamed.
+
+2014-09-19 17:49 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   + ide/fmgs/fontclrs.fmg
+     Note: it's intfonco.fmg, revision 1.5, renamed.
+
+2014-09-19 17:47 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   + ide/fmgs/fontclrs.fmg
+     Note: it's intfonco.fmg, revision 1.4, renamed.
+
+2014-09-19 17:46 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   + ide/fmgs/fontclrs.fmg
+     Note: it's intfonco.fmg, revision 1.3, renamed.
+
+2014-09-19 17:44 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   + ide/fmgs/fontclrs.fmg
+     Note: it's intfonco.fmg, revision 1.2, renamed.
+   * ./Changelog
+     * Previous entries with wrong date corrected.
+
+2014-09-19 17:40 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   + ide/fmgs/fontclrs.fmg
+     Note: it's intfonco.fmg, revision 1.1, renamed.
+
+2014-09-19 17:34 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   - ide/fmgs/intfonco.fmg
+     Note: still wrong CVS Id.
+
+2014-09-19 17:30 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   + ide/fmgs/intfonco.fmg
+     Revision number 1.1
+
+2014-09-19 17:25 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   - ide/fmgs/intfonco.fmg
+     Note: only way to correct wrong CVS Id.
+
+2014-09-19 17:23 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ide/prgs/menued.prg
+     ! Wrong spacing in DROPDOWN MENU structure.
+     + Support for missing properties in DROPDOWN and MAIN menus.
+   * ide/prgs/toolbed.prg
+     ! Data from first item not loaded at startup.
+   * ide/fmgs/mytoolbared.fmg
+     * Text values are alltrimed before asigning them to DATAs.
+   * ide/prgs/mgide.prg
+   * ide/prgs/formedit.prg
+     * Use HB_MemoWrit to get rid of EOF char.
+
+2014-09-18 23:50 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ide/fmgs/intfonco.fmg
+   * ide/fmgs/tabeven.fmg
+     ! Wrong CVS Id.
+
+2014-09-18 23:05 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ide/fmgs/mymenued.fmg
+     ! RTE in TMyMenuEditor:Edit().
+     ! Data from first item not loaded at startup.
+     ! Items are missing.
+     + Support for missing properties.
+   * ide/fmgs/mytoolbared.fmg
+     ! RTE in TMyToolBarEditor:Edit().
+   * ide/fmgs/tabeven.fmg
+     + BACKCOLOR clause to DEFINE WINDOW.
+   * ide/prgs/mgide.prg
+     ! RTE in THMI:Preferences().
+   * ide/prgs/toolbed.prg
+     + Support for missing property.
+   * ide/prgs/formedit.prg
+     * Do not force backcolor on CHECKBOX control.
+     ! RTE when editing form's font.
+     ! RTE when editing control's font.
+   * ide/prgs/menued.prg
+     ! Item's list is not being updated.
+     + Support for creating a dropdown menu on the fly.
+     + Support for showing menu properties in the designed form.
+     + Support for missing properties.
+     ! Spacing in fmg output.
+     - Unused lev field.
+
+2014-09-17 22:16 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ide/prgs/toolbed.prg
+     - Unneeded code.
+     * Toolbar control is shown using the defined properties.
+
+2014-09-16 21:30 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ide/fmgs/mytoolbared.fmg
+     + Support for missing properties.
+   * ide/prgs/dbucvc.prg
+     * Format.
+   * ide/prgs/formedit.prg
+     * Format.
+     ! RTE in CHECKBOX with THREESTATE clause.
+     * Do not force backcolor on FRAME and CHECKBOX.
+     * Use combo instead of textbox for editing CHECKBOX's value.
+   * ide/prgs/menued.prg
+     * Format.
+   * ide/prgs/mgide.prg
+     * Format.
+   * ide/prgs/toolbed.prg
+     + Support for missing properties.
+   * source/h_grid.prg
+     ! RTE: _oohg_gridwn registration failure.
+
+2014-09-15 01:11 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ./Changelog
+     * Previous entries fixed.
+   + ./ide_up_to_2013-08-13.zip
+     This zip contains all IDE files up to 2013-08-13.
+     It's transitory until IDE is fully debugged.
+   * ide/.cvsignore
+     * Updated.
+   * ide/mgide.hbp
+     * Updated.
+   - ide/fmgs/tboptions.fmg
+   * ide/fmgs/form_prefer.fmg
+     * Changed to IDE's format.
+   * ide/fmgs/intfonco.fmg
+     * Changed to IDE's format.
+   * ide/fmgs/mymenued.fmg
+     * Changed to IDE's format.
+   * ide/fmgs/mytoolbared.fmg
+     * Changed to IDE's format.
+   * ide/fmgs/orderf.fmg
+     * Changed to IDE's format.
+   * ide/fmgs/tabeven.fmg
+     * Changed to IDE's format.
+   * ide/fmgs/tabprop.fmg
+     * Changed to IDE's format.
+   * ide/prgs/dbucvc.prg
+     + Copyright and licence notice.
+     * Compiler warnings fixed when using -w3 switch.
+   * ide/prgs/formedit.prg
+     + Copyright and licence notice.
+     * Compiler warnings fixed when using -w3 switch.
+     * TForm1 class renamed to TFormEditor.
+     * Horizontal (Form_Main) and vertical (cvcControls) "toolbars"
+       moved from THMI class.
+     * TFormEditor class no longer uses public variables. This enables
+       the (no yet implemented) simultaneous edition of 2 or more forms.
+     + More info to "Print Brief" option.
+       Thanks to Ricardo Sassy for this contribution.
+     + Support for XBROWSE and TIMEPICKER controls.
+     * Format.
+   - ide/prgs/intfocop.prg
+   * ide/prgs/menued.prg
+     + Copyright and licence notice.
+     * TmyMenuEd class renamed to TMyMenuEditor.
+     * TMyMenuEditor class no longer uses public variables nor fixed
+       workareas nor fixed filenames.
+     * Some methods added, others renamed.
+     * Compiler warnings fixed when using -w3 switch.
+     * Format.
+   * ide/prgs/mgide.prg
+     + Copyright and licence notice.
+     * TmyMenuEd class renamed to TMyMenuEditor.
+     * TMyMenuEditor class no longer uses public variables nor fixed
+       workareas nor fixed filenames.
+     * Some methods added, others renamed.
+     * Horizontal (Form_Main) and vertical (cvcControls) "toolbars"
+       moved to TFormEditor class.
+     * Compiler warnings fixed when using -w3 switch.
+     * Format.
+   - ide/prgs/moside.prg
+   - ide/prgs/orden.prg
+   - ide/prgs/propeven.prg
+   - ide/prgs/repoedit.prg
+   - ide/prgs/saveform.prg
+   * ide/prgs/toolbed.prg
+     + Copyright and licence notice.
+     * Tmytoolbared class renamed to TMyToolBarEditor.
+     * TMyToolBarEditor class no longer uses public variables nor fixed
+       workareas nor fixed filenames.
+     * Some methods added, others renamed.
+     * Compiler warnings fixed when using -w3 switch.
+     * Format.
+
+2014-09-14 10:48 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * include/i_toolbar.ch
+     * GRIPPERTEXT is no longer a standalone clause but a synonymous
+       of CAPTION clause.
+
+2014-09-01 12:58 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * include/i_browse.ch
+   * include/i_checklist.ch
+   * include/i_grid.ch
+   * include/i_hmg_compat.ch
+   * include/i_internal.ch
+   * include/i_xbrowse.ch
+     + ACTION clause.
+   * include/i_button.ch
+     + DISABLED, THEMED, IMAGEMARGIN, ON MOUSEMOVE, LEFT, RIGHT, TOP,
+       BOTTOM, CENTER, MULTILINE and FLAT clauses to CHECKBUTTON control.
+   * include/i_editbox.ch
+   * include/i_spinner.ch
+     + DISABLED clause.
+   * include/i_tree.ch
+     + ONDBLCLICK clause.
+   * include/oohg.h
+   * source/c_controlmisc.c
+     + Symbol s_CompareItems.
+   * source/c_windows.c
+     + Functions GetDesktopRealHeight and GetDesktopRealWidth.
+   * source/h_button.prg
+     ! Image aligment when caption is empty.
+     + Support for new CHECKBUTTON clauses.
+     * Format.
+   * source/h_editbox.prg
+   * source/h_spinner.prg
+     + Support for DISABLED clause.
+   * source/h_form.prg
+     ! Controls on a virtual form are drawn over the statusbar.
+   * source/h_grid.prg
+     + DATA bCompareItems.
+     + METHOD SortItems( bBlock ). Sorts the grid's items using bBlock
+       as comparison function. This block is evaluated during the sort
+       operation each time the relative order of two list items needs
+       to be compared. The evaluated block must return -1 if the first
+       item precedes the second or 1 if the first follows the second.
+     + METHOD CompareItems. Perfoms the block evaluation.
+     + Functions _OOHG_SortItemsUser and LISTVIEW_SORTITEMSEX_USER
+       at C level.
+   * source/h_status.prg
+     ! Led on image is not shown.
+
+2014-08-24 23:50 UTC-0500 Vicente Guerra &lt;vicente@guerra.com.mx&gt;
+   * source/c_image.c
+     + _OOHG_StretchBltMode() function added.
+     ; Use _OOHG_StretchBltMode( 4 ) /* HALFTONE */ for better
+       quatily when reducing images (slower but quality).
+
+2014-08-16 10:52 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * doc/classes.txt
    * manual/classes.htm
    * manual/changelog.htm
@@ -153,7 +915,7 @@ CHANGELOG</div>
      ! Under XP, when caption is changed, part of the old text
        remains visible.
 
-2014-08-13 20:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2014-08-13 20:35 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * ide/prgs/formedit.prg
      + "Print Brief" option to context menu.
        Thanks to Ricardo Sassy for this contribution.
@@ -163,7 +925,7 @@ CHANGELOG</div>
    * include/i_hmg_compat.ch
      * Some tag's names.
 
-2014-08-13 19:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2014-08-13 19:37 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * doc/classes.txt
    * manual/classes.htm
    * manual/changelog.htm
@@ -244,7 +1006,7 @@ CHANGELOG</div>
      * The editing window for a memo type cell now uses the fontname and
        fontsize of the grid control (it acts like other editing controls).
 
-2014-08-03 16:37 UTC-0300 Fernando Yurisich &gt;fyurisich@oohg.org&lt;
+2014-08-03 16:37 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * doc/classes.txt
    * manual/classes.htm
    * manual/changelog.htm
@@ -13455,7 +14217,7 @@ CHANGELOG</div>
 </pre>
 </div>
 <div id="winchm_template_footer"><FONT color=#808080
-size=1>Copyright © 2013-2014 MigSoft - </FONT><A
+size=1>Copyright © 2013-2015 MigSoft - </FONT><A
 href="https://sourceforge.net/projects/oohg/" target="_blank"><FONT
 size=1>https://sourceforge.net/projects/oohg/</FONT></A>
      </div>

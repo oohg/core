@@ -1,11 +1,11 @@
 /*
- * $Id: h_hotkeybox.prg,v 1.9 2013-03-23 19:50:45 fyurisich Exp $
+ * $Id: h_hotkeybox.prg,v 1.10 2015-03-09 02:52:08 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * HotKeyBox functions
  *
- * Copyright 2006-2010 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2006-2015 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * This program is free software; you can redistribute it and/or modify

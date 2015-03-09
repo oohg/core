@@ -1,11 +1,11 @@
 /*
- * $Id: h_richeditbox.prg,v 1.34 2014-08-13 22:22:11 fyurisich Exp $
+ * $Id: h_richeditbox.prg,v 1.35 2015-03-09 02:52:08 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * PRG rich edit functions
  *
- * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

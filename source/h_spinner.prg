@@ -1,11 +1,11 @@
 /*
- * $Id: h_spinner.prg,v 1.21 2014-10-14 22:04:30 fyurisich Exp $
+ * $Id: h_spinner.prg,v 1.22 2015-03-09 02:52:08 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * PRG spinner functions
  *
- * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

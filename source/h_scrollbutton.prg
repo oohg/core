@@ -1,11 +1,11 @@
 /*
- * $Id: h_scrollbutton.prg,v 1.3 2010-01-21 09:13:08 guerra000 Exp $
+ * $Id: h_scrollbutton.prg,v 1.4 2015-03-09 02:52:08 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * Browse's ScrollButton functions
  *
- * Copyright 2006-2010 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2006-2015 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

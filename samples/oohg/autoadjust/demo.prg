@@ -1,9 +1,9 @@
 /*
- * $Id: demo.prg,v 1.1 2013-07-31 14:06:58 migsoft Exp $
+ * $Id: demo.prg,v 1.2 2015-03-09 02:52:05 fyurisich Exp $
  */
 /*
  * This demo shows how to use Autoadjust.
- * Copyright (c)2007-2013 MigSoft <migsoft/at/oohg.org>
+ * Copyright (c)2007-2015 MigSoft <migsoft/at/oohg.org>
  *
  */
 

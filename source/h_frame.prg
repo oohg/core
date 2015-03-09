@@ -1,11 +1,11 @@
 /*
- * $Id: h_frame.prg,v 1.16 2014-08-16 13:52:52 fyurisich Exp $
+ * $Id: h_frame.prg,v 1.17 2015-03-09 02:52:07 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * PRG frame functions
  *
- * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

@@ -1,11 +1,11 @@
 /*
- * $Id: h_winapimisc.prg,v 1.1 2005-08-07 00:11:28 guerra000 Exp $
+ * $Id: h_winapimisc.prg,v 1.2 2015-03-09 02:52:08 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * PRG Windows API functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.guerra.com.mx
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

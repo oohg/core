@@ -1,9 +1,9 @@
 /*
- * $Id: hello.prg,v 1.24 2007-05-09 23:04:37 declan2005 Exp $
+ * $Id: hello.prg,v 1.25 2015-03-09 02:52:06 fyurisich Exp $
  */
 /*
  * ooHG Hello World Demo
- * (c) 2005 Vic
+ * (c) 2005-2015 Vic
  */
 #include "oohg.ch"
 #include "i_windefs.ch"

@@ -1,9 +1,15 @@
 /*
- * $Id: h_checklist.prg,v 1.15 2014-02-15 01:17:23 guerra000 Exp $
+ * $Id: h_checklist.prg,v 1.16 2015-03-09 02:52:07 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * CheckList control
+ *
+ * Copyright 2012-2015 Fernando Yurisich <fyurisich@oohg.org>
+ * www - http://www.oohg.org
+ *
+ * Portions of this code are copyrighted by the Harbour MiniGUI library.
+ * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

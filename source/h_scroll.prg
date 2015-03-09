@@ -1,11 +1,11 @@
 /*
- * $Id: h_scroll.prg,v 1.23 2013-07-13 02:51:56 fyurisich Exp $
+ * $Id: h_scroll.prg,v 1.24 2015-03-09 02:52:08 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * Scrollbar functions
  *
- * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * This program is free software; you can redistribute it and/or modify

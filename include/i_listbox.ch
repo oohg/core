@@ -1,11 +1,11 @@
 /*
- * $Id: i_listbox.ch,v 1.10 2014-07-09 02:25:23 fyurisich Exp $
+ * $Id: i_listbox.ch,v 1.11 2015-03-09 02:51:07 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * Listbox definitions
  *
- * Copyright 2007-2014 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2007-2015 Vicente Guerra <vicente@guerra.com.mx>
  *
  * Portions of this project are based upon Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -15,7 +15,7 @@
  * Copyright 2001 Antonio Linares <alinares@fivetech.com>
  *
  * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2014, http://www.harbour-project.org/
+ * Copyright 1999-2015, http://www.harbour-project.org/
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

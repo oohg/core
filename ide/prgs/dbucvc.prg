@@ -1,10 +1,10 @@
 /*
- * $Id: dbucvc.prg,v 1.7 2014-09-17 00:30:12 fyurisich Exp $
+ * $Id: dbucvc.prg,v 1.8 2015-03-09 02:51:06 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
  *
- * Copyright 2002-2014 Ciro Vargas Clemov <cvc@oohg.org>
+ * Copyright 2002-2015 Ciro Vargas Clemov <cvc@oohg.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

@@ -1,11 +1,11 @@
 /*
- * $Id: c_controlmisc.c,v 1.74 2014-10-27 00:26:20 fyurisich Exp $
+ * $Id: c_controlmisc.c,v 1.75 2015-03-09 02:52:06 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * Miscelaneus C controls functions
  *
- * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

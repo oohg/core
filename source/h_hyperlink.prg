@@ -1,11 +1,11 @@
 /*
- * $Id: h_hyperlink.prg,v 1.10 2014-09-29 02:17:19 fyurisich Exp $
+ * $Id: h_hyperlink.prg,v 1.11 2015-03-09 02:52:08 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * PRG hyperlink functions
  *
- * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

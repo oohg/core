@@ -1,11 +1,11 @@
 /*
- * $Id: c_windows.c,v 1.81 2014-09-01 15:58:50 fyurisich Exp $
+ * $Id: c_windows.c,v 1.82 2015-03-09 02:52:07 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * Windows handling functions
  *
- * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

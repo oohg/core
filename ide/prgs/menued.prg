@@ -1,10 +1,10 @@
 /*
- * $Id: menued.prg,v 1.12 2014-09-25 02:59:10 fyurisich Exp $
+ * $Id: menued.prg,v 1.13 2015-03-09 02:51:06 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
  *
- * Copyright 2002-2014 Ciro Vargas Clemov <cvc@oohg.org>
+ * Copyright 2002-2015 Ciro Vargas Clemov <cvc@oohg.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

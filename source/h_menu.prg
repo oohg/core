@@ -1,11 +1,11 @@
 /*
- * $Id: h_menu.prg,v 1.37 2014-07-17 22:25:05 fyurisich Exp $
+ * $Id: h_menu.prg,v 1.38 2015-03-09 02:52:08 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * PRG menu functions
  *
- * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

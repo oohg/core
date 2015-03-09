@@ -1,11 +1,11 @@
 /*
- * $Id: h_progressbar.prg,v 1.14 2014-09-22 02:35:42 fyurisich Exp $
+ * $Id: h_progressbar.prg,v 1.15 2015-03-09 02:52:08 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * PRG progress bar functions
  *
- * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

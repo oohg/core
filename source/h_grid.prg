@@ -1,11 +1,11 @@
 /*
- * $Id: h_grid.prg,v 1.268 2014-10-27 00:26:20 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.269 2015-03-09 02:52:07 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * PRG grid functions
  *
- * Copyright 2005-2011 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

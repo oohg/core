@@ -1,10 +1,10 @@
 /*
- * $Id: maindemooop.prg,v 1.2 2014-06-17 00:35:46 fyurisich Exp $
+ * $Id: maindemooop.prg,v 1.3 2015-03-09 02:52:06 fyurisich Exp $
  */
 
 /*
  * ooHG Main Demo oop
- * (c) 2005 Vic
+ * (c) 2005-2015 Vic
  * Taken from samples distributed in OOHG distro
  * by Ciro Vargas
  */

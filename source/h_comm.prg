@@ -1,11 +1,11 @@
 /*
- * $Id: h_comm.prg,v 1.5 2014-01-25 01:23:21 guerra000 Exp $
+ * $Id: h_comm.prg,v 1.6 2015-03-09 02:52:07 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * HMG Intercommunications PRG functions
  *
- * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

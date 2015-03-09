@@ -1,11 +1,11 @@
 /*
- * $Id: c_dialogs.c,v 1.14 2014-04-28 00:44:27 fyurisich Exp $
+ * $Id: c_dialogs.c,v 1.15 2015-03-09 02:52:06 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * C dialogs functions
  *
- * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

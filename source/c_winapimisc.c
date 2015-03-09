@@ -1,11 +1,11 @@
 /*
- * $Id: c_winapimisc.c,v 1.23 2014-08-08 22:27:35 fyurisich Exp $
+ * $Id: c_winapimisc.c,v 1.24 2015-03-09 02:52:07 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * Windows API calls
  *
- * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

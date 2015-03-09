@@ -1,11 +1,11 @@
 /*
- * $Id: h_button.prg,v 1.65 2014-09-01 15:58:50 fyurisich Exp $
+ * $Id: h_button.prg,v 1.66 2015-03-09 02:52:07 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * Button controls
  *
- * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

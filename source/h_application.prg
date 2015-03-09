@@ -1,11 +1,14 @@
 /*
- * $Id: h_application.prg,v 1.1 2014-05-17 21:30:00 fyurisich Exp $
+ * $Id: h_application.prg,v 1.2 2015-03-09 02:52:07 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * Application object
  *
- * Portions of this project are based upon Harbour MiniGUI library.
+ * Copyright 2014-2015 Fernando Yurisich <fyurisich@oohg.org>
+ * www - http://www.oohg.org
+ *
+ * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
  *
  * Portions of this project are based upon Harbour GUI framework for Win32.
@@ -13,7 +16,7 @@
  * Copyright 2001 Antonio Linares <alinares@fivetech.com>
  *
  * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2014, http://www.harbour-project.org/
+ * Copyright 1999-2015, http://www.harbour-project.org/
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

@@ -1,9 +1,9 @@
 /*
- * $Id: mytoolbared.fmg,v 1.7 2014-09-19 20:24:08 fyurisich Exp $
+ * $Id: mytoolbared.fmg,v 1.8 2015-03-09 02:51:06 fyurisich Exp $
  */
 
 * ooHG IDE Plus form generated code
-* (c)2003-2014 Ciro Vargas Clemow <pcman2010@yahoo.com > 
+* (c)2003-2015 Ciro Vargas Clemow <pcman2010@yahoo.com >
 
 DEFINE WINDOW TEMPLATE ;
    AT 108, 99 ;

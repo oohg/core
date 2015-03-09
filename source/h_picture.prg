@@ -1,11 +1,11 @@
 /*
- * $Id: h_picture.prg,v 1.18 2015-03-03 21:21:38 fyurisich Exp $
+ * $Id: h_picture.prg,v 1.19 2015-03-09 02:52:08 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * TPicture control source code
  *
- * Copyright 2009-2010 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2009-2015 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * This program is free software; you can redistribute it and/or modify

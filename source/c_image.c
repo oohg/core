@@ -1,11 +1,11 @@
 /*
- * $Id: c_image.c,v 1.41 2014-10-30 20:59:43 fyurisich Exp $
+ * $Id: c_image.c,v 1.42 2015-03-09 02:52:07 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * C image functions
  *
- * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

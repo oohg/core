@@ -1,11 +1,11 @@
 /*
- * $Id: h_datepicker.prg,v 1.21 2013-07-02 21:47:51 migsoft Exp $
+ * $Id: h_datepicker.prg,v 1.22 2015-03-09 02:52:07 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * PRG date picker functions
  *
- * Copyright 2005-2011 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

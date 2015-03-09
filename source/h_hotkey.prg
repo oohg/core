@@ -1,11 +1,11 @@
 /*
- * $Id: h_hotkey.prg,v 1.14 2012-08-30 01:24:46 guerra000 Exp $
+ * $Id: h_hotkey.prg,v 1.15 2015-03-09 02:52:08 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * Hot keys functions
  *
- * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

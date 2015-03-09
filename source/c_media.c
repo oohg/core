@@ -1,11 +1,11 @@
 /*
- * $Id: c_media.c,v 1.3 2007-06-25 04:35:57 guerra000 Exp $
+ * $Id: c_media.c,v 1.4 2015-03-09 02:52:07 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * C multimedia functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.guerra.com.mx
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

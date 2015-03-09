@@ -1,11 +1,11 @@
 /*
- * $Id: c_resource.c,v 1.3 2013-07-03 01:44:52 migsoft Exp $
+ * $Id: c_resource.c,v 1.4 2015-03-09 02:52:07 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * C resource functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.guerra.com.mx
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

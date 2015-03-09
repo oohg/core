@@ -1,11 +1,11 @@
 /*
- * $Id: c_cursor.c,v 1.7 2013-07-03 01:44:51 migsoft Exp $
+ * $Id: c_cursor.c,v 1.8 2015-03-09 02:52:06 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * C cursor functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.guerra.com.mx
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

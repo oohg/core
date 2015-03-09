@@ -1,11 +1,11 @@
 /*
- * $Id: h_cursor.prg,v 1.1 2005-08-07 00:06:08 guerra000 Exp $
+ * $Id: h_cursor.prg,v 1.2 2015-03-09 02:52:07 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * PRG cursor functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.guerra.com.mx
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

@@ -1,11 +1,11 @@
 /*
- * $Id: h_scrsaver.prg,v 1.5 2011-09-05 23:37:33 fyurisich Exp $
+ * $Id: h_scrsaver.prg,v 1.6 2015-03-09 02:52:08 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * PRG screen saver functions
  *
- * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

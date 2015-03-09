@@ -1,10 +1,10 @@
 /*
- * $Id: formedit.prg,v 1.52 2015-03-07 22:39:36 fyurisich Exp $
+ * $Id: formedit.prg,v 1.53 2015-03-09 02:51:06 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
  *
- * Copyright 2002-2014 Ciro Vargas Clemov <cvc@oohg.org>
+ * Copyright 2002-2015 Ciro Vargas Clemov <cvc@oohg.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -9996,7 +9996,7 @@ LOCAL aImages, aPageNames, aPageObjs, aPageSubClasses, nCount
    //***************************  Header
    Output := '' + CRLF
    Output += '* ooHG IDE Plus form generated code' + CRLF
-   Output += '* (c)2003-2014 Ciro Vargas Clemow <pcman2010@yahoo.com > ' + CRLF
+   Output += '* (c)2003-' + LTrim( Str( Year( Date() ) ) ) + ' Ciro Vargas Clemow <pcman2010@yahoo.com > ' + CRLF
    Output += CRLF
 
    //***************************  Form start

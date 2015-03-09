@@ -1,11 +1,11 @@
 /*
- * $Id: c_font.c,v 1.4 2011-08-14 00:08:54 nulcrc Exp $
+ * $Id: c_font.c,v 1.5 2015-03-09 02:52:06 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * C font functions
  *
- * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

@@ -1,11 +1,11 @@
 /*
- * $Id: h_label.prg,v 1.29 2014-07-04 20:16:03 fyurisich Exp $
+ * $Id: h_label.prg,v 1.30 2015-03-09 02:52:08 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * PRG label functions
  *
- * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
