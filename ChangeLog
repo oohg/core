@@ -1,11 +1,21 @@
 /*
- * $Id: ChangeLog,v 1.1417 2015-03-09 22:50:09 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1418 2015-03-09 23:27:01 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-03-09 20:26 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Previous entry.
+   * ./source/Build32.bat
+   + ./source/Build30.bat
+     * Use this files to build OOHG's libraries using Harbour 3.0 or
+       Harbour 3.2 and MinGW.
+     ; Use /c switch to set environment vars to its default values.
+     ; Syntax: BuildXX /c
 
 2015-03-09 19:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    - ./source/mymakelib.bat
@@ -291,6 +301,7 @@
    + ./compile32.bat
      * Use this file to compile using Harbour 3.2 and MinGW.
      ; Use /c switch to set environment vars to its default values.
+     ; Syntax: CompileXX /c prgfile
 
 2015-03-08 12:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./2buildapp.bat
