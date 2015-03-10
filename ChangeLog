@@ -1,11 +1,27 @@
 /*
- * $Id: ChangeLog,v 1.1419 2015-03-10 01:58:12 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1420 2015-03-10 23:58:19 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-03-10 20:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./MakeExclude.txt
+     + More files.
+   * doc/classes.txt
+   * manual/changelog.htm
+   * manual/classes.htm
+     * Updated.
+   * doc/treeofclasses.prg
+     + Support for classes that inherit from more tha one class.
+   * ./source/Build32.bat
+   * ./source/Build30.bat
+   * ./source/BuildLib.bat
+     + Support for different compiler's work folders depending on
+       Harbours version to avoid mixing objects files when using
+       incremental compiling.
 
 2015-03-09 22:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./MakeDistro.bat

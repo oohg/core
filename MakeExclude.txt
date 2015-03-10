@@ -11,3 +11,6 @@ hmi.ini
 output.log
 xml.bat
 xhbcc.bat
+compile_pc.bat
+compile_vc.bat
+compile_bcc.bat

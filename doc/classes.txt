@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.91 2015-03-07 22:22:31 fyurisich Exp $
+ * $Id: classes.txt,v 1.92 2015-03-10 23:58:19 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -261,9 +261,6 @@ CLASS TACTIVEX FROM TCONTROL
    METHOD EVENTMAP
    METHOD RELEASE
 ENDCLASS
-
-*------------------------------------------------------------------------------*
-CLASS TACTIVEX FROM TCONTROL
 
 *------------------------------------------------------------------------------*
 CLASS TANIMATEBOX FROM TCONTROL
@@ -1693,7 +1690,7 @@ CLASS TOBROWSE FROM TXBROWSE
 ENDCLASS
 
 *------------------------------------------------------------------------------*
-CLASS TOBrowseByCell FROM TXBrowseByCell, TOBrowse
+CLASS TOBROWSEBYCELL FROM TXBROWSEBYCELL, TOBROWSE
    DATA aRecMap                   INIT {}
    DATA lUpdateAll                INIT .F.
    DATA RecCount                  INIT 0
@@ -2795,7 +2792,7 @@ CLASS TXBROWSE FROM TGRID
 ENDCLASS
 
 *------------------------------------------------------------------------------*
-CLASS TXBROWSEBYCELL FROM TXBrowse
+CLASS TXBROWSEBYCELL FROM TXBROWSE
    DATA TYPE                      INIT "XBROWSEBYCELL" READONLY
 
    MESSAGE EDITALLCELLS           METHOD EDITGRID
