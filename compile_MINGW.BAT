@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: compile_MINGW.BAT,v 1.36 2015-03-09 22:29:20 fyurisich Exp $
+rem $Id: compile_MINGW.BAT,v 1.37 2015-03-10 01:58:12 fyurisich Exp $
 rem
 cls
 
@@ -33,11 +33,11 @@ rem *** To Build with Nightly Harbour ***
 rem *** For 32 bits MinGW ***
 rem set LIB_GUI=lib\hb\mingw
 rem set LIB_HRB=lib\win\mingw
-rem set BIN_HRB=bin\win\mingw
+rem set BIN_HRB=bin or bin\win\mingw
 rem *** For 64 bits MinGW ***
 rem set LIB_GUI=lib\hb\mingw64
 rem set LIB_HRB=lib\win\mingw64
-rem set BIN_HRB=bin\win\mingw64
+rem set BIN_HRB=bin or bin\win\mingw64
 
 rem *** Third Party Libraries ***
 rem set THR_LIB=-lsocket -lmysqldll -ldll -lhbmysql -lrddleto

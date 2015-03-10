@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: compile_bcc.bat,v 1.15 2014-10-30 20:59:43 fyurisich Exp $
+rem $Id: compile_bcc.bat,v 1.16 2015-03-10 01:58:12 fyurisich Exp $
 rem
 cls
 
@@ -26,7 +26,7 @@ rem *** To Build with Nightly Harbour ***
 rem *** For 32 bits BCC ***
 rem set LIB_GUI=lib\hb\bcc
 rem set LIB_HRB=lib\win\bcc
-rem set BIN_HRB=bin\win\bcc
+rem set BIN_HRB=bin or bin\win\bcc
 
 rem *** Parse Switches ***
 set TFILE=%1

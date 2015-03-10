@@ -1,11 +1,12 @@
 @echo off
 rem
-rem $Id: MakeDistro.bat,v 1.1 2015-03-09 22:29:20 fyurisich Exp $
+rem $Id: MakeDistro.bat,v 1.2 2015-03-10 01:58:12 fyurisich Exp $
 rem
 cls
 
-if /I "%1" == "HB30" goto CONTINUE
-if /I "%1" == "HB32" goto CONTINUE
+:PARAMS
+if /I "%1"=="HB30" goto CONTINUE
+if /I "%1"=="HB32" goto CONTINUE
 echo.
 echo Usage: MakeDistro HarbourVersion [ /C ]
 echo where HarbourVersion = HB30 or HB32
@@ -20,11 +21,40 @@ echo Can't create folder %BASE_DISTRO_DIR%
 echo.
 goto END
 
+:ERROR2
+echo.
+echo %HG_ROOT%\MakeExclude.txt is missing
+echo.
+goto END
+
+:ERROR3
+echo.
+echo Can't create subfolder %BASE_DISTRO_SUBDIR%
+echo.
+goto END
+
+:ERROR4
+echo.
+echo Can't delete folder %BASE_DISTRO_DIR%
+echo.
+goto END
+
+:ERROR5
+echo.
+echo Can't find subfolder %BASE_DISTRO_SUBDIR%
+echo.
+goto END
+
 :CONTINUE
+set HG_ROOT=C:\OOHG
+if not exist %HG_ROOT%\MakeExclude.txt goto ERROR2
 set BASE_DISTRO_DIR=C:\OOHG_DISTRO
+echo Preparing folder %BASE_DISTRO_DIR% ...
 if not exist %BASE_DISTRO_DIR%\nul goto CREATE
-if /I "%2" == "/C" rd %BASE_DISTRO_DIR% /s /q
-pause
+if /I "%2"=="/C" attrib -s -h %BASE_DISTRO_DIR% /s /d
+if /I "%2"=="/C" del %BASE_DISTRO_DIR%\*.* /s /f /q >nul
+if /I "%2"=="/C" rd %BASE_DISTRO_DIR% /s /q
+if /I "%2"=="/C" if exist %BASE_DISTRO_DIR%\nul goto ERROR4
 
 :CREATE
 md %BASE_DISTRO_DIR%
@@ -32,103 +62,187 @@ if not exist %BASE_DISTRO_DIR%\nul goto ERROR1
 
 :FOLDERS
 pushd %BASE_DISTRO_DIR%
+set BASE_DISTRO_SUBDIR=doc
 md doc
-if /I "%1" == "HB30" md harbour
-if /I "%1" == "HB32" md hb32
+if not exist doc\nul goto ERROR3
+if /I "%1"=="HB30" set BASE_DISTRO_SUBDIR=harbour
+if /I "%1"=="HB30" md harbour
+if /I "%1"=="HB30" if not exist harbour\nul goto ERROR3
+if /I "%1"=="HB32" set BASE_DISTRO_SUBDIR=hb32
+if /I "%1"=="HB32" md hb32
+if /I "%1"=="HB32" if not exist hb32\nul goto ERROR3
+set BASE_DISTRO_SUBDIR=ide
 md ide
+if not exist ide\nul goto ERROR3
+set BASE_DISTRO_SUBDIR=include
 md include
+if not exist include\nul goto ERROR3
+set BASE_DISTRO_SUBDIR=lib
 md lib
+if not exist lib\nul goto ERROR3
+set BASE_DISTRO_SUBDIR=manual
 md manual
-if /I "%1" == "HB30" md MinGW
+if not exist manual\nul goto ERROR3
+if /I "%1"=="HB30" set BASE_DISTRO_SUBDIR=mingw
+if /I "%1"=="HB30" md mingw
+if /I "%1"=="HB30" if not exist mingw\nul goto ERROR3
+set BASE_DISTRO_SUBDIR=resources
 md resources
+if not exist resources\nul goto ERROR3
+set BASE_DISTRO_SUBDIR=samples
 md samples
+if not exist samples\nul goto ERROR3
+set BASE_DISTRO_SUBDIR=source
 md source
+if not exist source\nul goto ERROR3
+echo.
 
 :FILES
-echo Copy start.
+echo Copying files ...
 :ROOT
-xcopy c:\oohg\*.* /c /q /y /exclude:C:\OOHG\MakeExclude.txt
-if /I NOT "%1" == "HB30" del compile32.bat
-if /I NOT "%1" == "HB32" del compile.bat
+echo Copying %HG_ROOT% ...
+xcopy %HG_ROOT%\*.* /c /q /y /exclude:%HG_ROOT%\MakeExclude.txt
+if /I not "%1"=="HB30" del compile.bat
+if /I not "%1"=="HB32" del compile32.bat
 :DOC
 echo Copying DOC ...
+set BASE_DISTRO_SUBDIR=doc
+if not exist doc\nul goto ERROR5
 cd doc
-xcopy c:\oohg\doc\*.* /s /e /c /q /y /exclude:C:\OOHG\MakeExclude.txt
+xcopy %HG_ROOT%\doc\*.* /s /e /c /q /y /exclude:%HG_ROOT%\MakeExclude.txt
 cd ..
 :HB30
-if /I NOT "%1" == "HB30" goto :HB32
+if /I not "%1"=="HB30" goto :HB32
 echo Copying HB30 ...
+set BASE_DISTRO_SUBDIR=harbour
+if not exist harbour\nul goto ERROR5
 cd harbour
-xcopy c:\oohg\harbour\*.* /s /e /c /q /y /exclude:C:\OOHG\MakeExclude.txt
+xcopy %HG_ROOT%\harbour\*.* /s /e /c /q /y /exclude:%HG_ROOT%\MakeExclude.txt
 cd ..
 :HB32
-if /I NOT "%1" == "HB32" goto :IDE
+if /I not "%1"=="HB32" goto :IDE
 echo Copying HB32 ...
+set BASE_DISTRO_SUBDIR=hb32
+if not exist hb32\nul goto ERROR5
 cd hb32
-xcopy c:\oohg\hb32\*.* /s /e /c /q /y /exclude:C:\OOHG\MakeExclude.txt
+xcopy %HG_ROOT%\hb32\*.* /s /e /c /q /y /exclude:%HG_ROOT%\MakeExclude.txt
 cd ..
 :IDE
 echo Copying IDE ...
+set BASE_DISTRO_SUBDIR=ide
+if not exist ide\nul goto ERROR5
 cd ide
-xcopy c:\oohg\ide\*.* /s /e /c /q /y /exclude:C:\OOHG\MakeExclude.txt
+xcopy %HG_ROOT%\ide\*.* /s /e /c /q /y /exclude:%HG_ROOT%\MakeExclude.txt
 cd ..
 :INCLUDE
 echo Copying INCLUDE ...
+set BASE_DISTRO_SUBDIR=include
+if not exist include\nul goto ERROR5
 cd include
-xcopy c:\oohg\include\*.* /s /e /c /q /y /exclude:C:\OOHG\MakeExclude.txt
+xcopy %HG_ROOT%\include\*.* /s /e /c /q /y /exclude:%HG_ROOT%\MakeExclude.txt
 cd ..
 :LIB
 echo Copying LIB ...
+set BASE_DISTRO_SUBDIR=lib
+if not exist lib\nul goto ERROR5
 cd lib
-xcopy c:\oohg\lib\*.* /s /e /c /q /y /exclude:C:\OOHG\MakeExclude.txt
+if /I "%1"=="HB32" md hb
+if /I "%1"=="HB32" md hb\mingw
 cd ..
+:MANUAL
 echo Copying MANUAL ...
+set BASE_DISTRO_SUBDIR=manual
+if not exist manual\nul goto ERROR5
 cd manual
-xcopy c:\oohg\manual\*.* /s /e /c /q /y /exclude:C:\OOHG\MakeExclude.txt
+xcopy %HG_ROOT%\manual\*.* /s /e /c /q /y /exclude:%HG_ROOT%\MakeExclude.txt
 cd ..
-if /I NOT "%1" == "HB30" goto :RESOURCES
+if /I not "%1"=="HB30" goto :RESOURCES
+:MINGW
 echo Copying MINGW ...
-cd MinGW
-xcopy c:\oohg\MinGW\*.* /s /e /c /q /y /exclude:C:\OOHG\MakeExclude.txt
+set BASE_DISTRO_SUBDIR=mingw
+if not exist mingw\nul goto ERROR5
+cd mingw
+xcopy %HG_ROOT%\mingw\*.* /s /e /c /q /y /exclude:%HG_ROOT%\MakeExclude.txt
 cd ..
 :RESOURCES
 echo Copying RESOURCES ...
+set BASE_DISTRO_SUBDIR=resources
+if not exist resources\nul goto ERROR5
 cd resources
-xcopy c:\oohg\resources\*.* /s /e /c /q /y /exclude:C:\OOHG\MakeExclude.txt
+xcopy %HG_ROOT%\resources\*.* /s /e /c /q /y /exclude:%HG_ROOT%\MakeExclude.txt
 cd ..
+:SAMPLES
 echo Copying SAMPLES folder ...
+set BASE_DISTRO_SUBDIR=samples
+if not exist samples\nul goto ERROR5
 cd samples
-xcopy c:\oohg\samples\*.* /s /e /c /q /y /exclude:C:\OOHG\MakeExclude.txt
+xcopy %HG_ROOT%\samples\*.* /s /e /c /q /y /exclude:%HG_ROOT%\MakeExclude.txt
 cd ..
+:SOURCE
 echo Copying SOURCE folder ...
+set BASE_DISTRO_SUBDIR=source
+if not exist source\nul goto ERROR5
 cd source
-xcopy c:\oohg\source\*.* /s /e /c /q /y /exclude:C:\OOHG\MakeExclude.txt
-popd
-echo Copy end.
+xcopy %HG_ROOT%\source\*.* /s /e /c /q /y /exclude:%HG_ROOT%\MakeExclude.txt
+if /I not "%1"=="HB30" del build30.bat
+if /I not "%1"=="HB32" del build32.bat
+cd ..
+echo.
 
-if /I "%1" == "HB30" goto LIBSHB30
-if /I "%1" == "HB32" goto LIBSHB32
+:BUILDLIBS
+if /I "%1"=="HB30" goto LIBSHB30
+if /I "%1"=="HB32" goto LIBSHB32
+popd
 goto END
 
 :LIBSHB30
+echo Building libs ...
+cd source
 set HG_ROOT=%BASE_DISTRO_DIR%
 set HG_HRB=%BASE_DISTRO_DIR%\harbour
 set HG_MINGW=%BASE_DISTRO_DIR%\mingw
 set LIB_GUI=lib
 set BIN_HRB=bin
-pushd source
-call BuildLib.bat f
+set TPATH=%PATH%
+set PATH=%HG_MINGW%\bin;%HG_HRB%\%BIN_HRB%
+hbmk2 oohg.hbp
+hbmk2 miniprint.hbp
+hbmk2 hbprinter.hbp
+set PATH=%TPATH%
+set TPATH=
+attrib -s -h %BASE_DISTRO_DIR%\%LIB_GUI%\.hbmk /s /d
+rd %BASE_DISTRO_DIR%\%LIB_GUI%\.hbmk /s /q
+echo.
+popd
 goto END
 
 :LIBSHB32
+echo Building libs ...
+cd source
 set HG_ROOT=%BASE_DISTRO_DIR%
 set HG_HRB=%BASE_DISTRO_DIR%\hb32
 set HG_MINGW=%BASE_DISTRO_DIR%\hb32\comp\mingw
 set LIB_GUI=lib\hb\mingw
-set BIN_HRB=bin\win\mingw
-pushd source
-call BuildLib.bat f
+set BIN_HRB=bin
+set TPATH=%PATH%
+set PATH=%HG_MINGW%\bin;%HG_HRB%\%BIN_HRB%
+hbmk2 oohg.hbp
+hbmk2 miniprint.hbp
+hbmk2 hbprinter.hbp
+set PATH=%TPATH%
+set TPATH=
+attrib -s -h %BASE_DISTRO_DIR%\%LIB_GUI%\.hbmk /s /d
+rd %BASE_DISTRO_DIR%\%LIB_GUI%\.hbmk /s /q
+echo.
+popd
 goto END
 
 :END
+set BASE_DISTRO_SUBDIR=
 set BASE_DISTRO_DIR=
+set HG_ROOT=
+set HG_HRB=
+set HG_MINGW=
+set LIB_GUI=
+set BIN_HRB=
+echo End reached.

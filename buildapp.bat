@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: buildapp.bat,v 1.10 2015-03-08 15:25:35 fyurisich Exp $
+rem $Id: buildapp.bat,v 1.11 2015-03-10 01:58:12 fyurisich Exp $
 rem
 
 REM *** Check for .prg ***
@@ -36,11 +36,11 @@ rem *** To Build with Nightly Harbour ***
 rem *** For 32 bits MinGW ***
 rem set LIB_GUI=lib\hb\mingw
 rem set LIB_HRB=lib\win\mingw
-rem set BIN_HRB=bin\win\mingw
+rem set BIN_HRB=bin or bin\win\mingw
 rem *** For 64 bits MinGW ***
 rem set LIB_GUI=lib\hb\mingw64
 rem set LIB_HRB=lib\win\mingw64
-rem set BIN_HRB=bin\win\mingw64
+rem set BIN_HRB=bin or bin\win\mingw64
 
 rem *** Parse Switches ***
 set TFILE=%1

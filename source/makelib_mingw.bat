@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: makelib_mingw.bat,v 1.36 2014-06-17 00:35:47 fyurisich Exp $
+rem $Id: makelib_mingw.bat,v 1.37 2015-03-10 01:58:13 fyurisich Exp $
 rem
 cls
 
@@ -25,11 +25,11 @@ rem *** To Build with Nightly Harbour ***
 rem *** For 32 bits MinGW ***
 rem set LIB_GUI=lib\hb\mingw
 rem set LIB_HRB=lib\win\mingw
-rem set BIN_HRB=bin\win\mingw
+rem set BIN_HRB=bin or bin\win\mingw
 rem *** For 64 bits MinGW ***
 rem set LIB_GUI=lib\hb\mingw64
 rem set LIB_HRB=lib\win\mingw64
-rem set BIN_HRB=bin\win\mingw64
+rem set BIN_HRB=bin or bin\win\mingw64
 
 rem *** Create Lib Folder ***
 if not exist %HG_ROOT%\%LIB_GUI%\nul md %HG_ROOT%\%LIB_GUI% >nul

@@ -9,3 +9,5 @@ oohg.log
 \.hbmk\
 hmi.ini
 output.log
+xml.bat
+xhbcc.bat

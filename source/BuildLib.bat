@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: BuildLib.bat,v 1.6 2015-03-09 22:29:21 fyurisich Exp $
+rem $Id: BuildLib.bat,v 1.7 2015-03-10 01:58:13 fyurisich Exp $
 rem
 rem Build ooHG libraries from official distro
 rem
@@ -31,10 +31,10 @@ if "%BIN_HRB%"=="" set BIN_HRB=bin
 rem *** To Build with Nightly Harbour ***
 rem *** For 32 bits MinGW ***
 rem set LIB_GUI=lib\hb\mingw
-rem set BIN_HRB=bin\win\mingw
+rem set BIN_HRB=bin or bin\win\mingw
 rem *** For 64 bits MinGW ***
 rem set LIB_GUI=lib\hb\mingw64
-rem set BIN_HRB=bin\win\mingw64
+rem set BIN_HRB=bin or bin\win\mingw64
 
 rem *** Set PATH ***
 set TPATH=%PATH%

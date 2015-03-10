@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: compile_pc.bat,v 1.8 2013-08-22 22:25:02 fyurisich Exp $
+rem $Id: compile_pc.bat,v 1.9 2015-03-10 01:58:12 fyurisich Exp $
 rem
 cls
 
@@ -26,7 +26,7 @@ rem *** To Build with Nightly Harbour ***
 rem *** For 32 bits MSVC ***
 rem set LIB_GUI=lib\hb\pocc
 rem set LIB_HRB=lib\win\pocc
-rem set BIN_HRB=bin\win\pocc
+rem set BIN_HRB=bin or bin\win\pocc
 
 rem *** Set GT and Check for Debug Switch ***
 set HG_USE_GT=gtwin
