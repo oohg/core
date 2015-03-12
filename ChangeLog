@@ -1,11 +1,29 @@
 /*
- * $Id: ChangeLog,v 1.1420 2015-03-10 23:58:19 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1421 2015-03-12 00:58:16 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-03-11 21:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   + Agregar even-prop.txt
+     * Notes on how to update the IDE.
+   * ./2buildapp.bat
+   * ./buildapp.bat
+   * ./compile_bcc.bat
+   * ./compile_pc.bat
+   * ./compile_vc.bat
+   * source/makelib_bcc.bat
+   * source/makelib_mingw.bat
+   * source/makelib_pc.bat
+   * source/makelib_vc.bat
+     * Changed paths so they are independent from each other.
+   * source/makedistro.bat
+     * Changed MinGW folder for Harbour 3.0; now its inside "harbour".
+   * manual/changelog.htm
+     * Updated.
 
 2015-03-10 20:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./MakeExclude.txt

@@ -1,12 +1,12 @@
 @echo off
 rem
-rem $Id: makelib_bcc.bat,v 1.19 2014-10-30 20:59:43 fyurisich Exp $
+rem $Id: makelib_bcc.bat,v 1.20 2015-03-12 00:58:16 fyurisich Exp $
 rem
 cls
 
 rem *** Set Paths ***
 if "%HG_ROOT%"=="" set HG_ROOT=c:\oohg
-if "%HG_HRB%"==""  set HG_HRB=%HG_ROOT%\harbour
+if "%HG_HRB%"==""  set HG_HRB=c:\oohg\harbour
 if "%HG_BCC%"==""  set HG_BCC=c:\borland\bcc55
 
 rem *** Set EnvVars ***

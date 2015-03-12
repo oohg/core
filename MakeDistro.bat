@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: MakeDistro.bat,v 1.2 2015-03-10 01:58:12 fyurisich Exp $
+rem $Id: MakeDistro.bat,v 1.3 2015-03-12 00:58:16 fyurisich Exp $
 rem
 cls
 
@@ -46,8 +46,13 @@ echo.
 goto END
 
 :CONTINUE
+rem Change this sets to use different sources for OOHG, Harbour and MinGW
 set HG_ROOT=C:\OOHG
 if not exist %HG_ROOT%\MakeExclude.txt goto ERROR2
+if /I "%1"=="HB30" set HG_HRB=C:\HB30
+if /I "%1"=="HB30" set HG_MINGW=C:\HB30\COMP\MINGW
+if /I "%1"=="HB32" set HG_HRB=C:\HB32
+if /I "%1"=="HB32" set HG_MINGW=C:\HB32\COMP\MINGW
 set BASE_DISTRO_DIR=C:\OOHG_DISTRO
 echo Preparing folder %BASE_DISTRO_DIR% ...
 if not exist %BASE_DISTRO_DIR%\nul goto CREATE
@@ -83,9 +88,6 @@ if not exist lib\nul goto ERROR3
 set BASE_DISTRO_SUBDIR=manual
 md manual
 if not exist manual\nul goto ERROR3
-if /I "%1"=="HB30" set BASE_DISTRO_SUBDIR=mingw
-if /I "%1"=="HB30" md mingw
-if /I "%1"=="HB30" if not exist mingw\nul goto ERROR3
 set BASE_DISTRO_SUBDIR=resources
 md resources
 if not exist resources\nul goto ERROR3
@@ -117,7 +119,7 @@ echo Copying HB30 ...
 set BASE_DISTRO_SUBDIR=harbour
 if not exist harbour\nul goto ERROR5
 cd harbour
-xcopy %HG_ROOT%\harbour\*.* /s /e /c /q /y /exclude:%HG_ROOT%\MakeExclude.txt
+xcopy %HG_HRB%\*.* /s /e /c /q /y
 cd ..
 :HB32
 if /I not "%1"=="HB32" goto :IDE
@@ -125,7 +127,7 @@ echo Copying HB32 ...
 set BASE_DISTRO_SUBDIR=hb32
 if not exist hb32\nul goto ERROR5
 cd hb32
-xcopy %HG_ROOT%\hb32\*.* /s /e /c /q /y /exclude:%HG_ROOT%\MakeExclude.txt
+xcopy %HG_HRB%\*.* /s /e /c /q /y
 cd ..
 :IDE
 echo Copying IDE ...
@@ -157,13 +159,6 @@ cd manual
 xcopy %HG_ROOT%\manual\*.* /s /e /c /q /y /exclude:%HG_ROOT%\MakeExclude.txt
 cd ..
 if /I not "%1"=="HB30" goto :RESOURCES
-:MINGW
-echo Copying MINGW ...
-set BASE_DISTRO_SUBDIR=mingw
-if not exist mingw\nul goto ERROR5
-cd mingw
-xcopy %HG_ROOT%\mingw\*.* /s /e /c /q /y /exclude:%HG_ROOT%\MakeExclude.txt
-cd ..
 :RESOURCES
 echo Copying RESOURCES ...
 set BASE_DISTRO_SUBDIR=resources
@@ -200,7 +195,7 @@ echo Building libs ...
 cd source
 set HG_ROOT=%BASE_DISTRO_DIR%
 set HG_HRB=%BASE_DISTRO_DIR%\harbour
-set HG_MINGW=%BASE_DISTRO_DIR%\mingw
+set HG_MINGW=%BASE_DISTRO_DIR%\harbour\comp\mingw
 set LIB_GUI=lib
 set BIN_HRB=bin
 set TPATH=%PATH%

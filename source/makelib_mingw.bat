@@ -1,20 +1,20 @@
 @echo off
 rem
-rem $Id: makelib_mingw.bat,v 1.37 2015-03-10 01:58:13 fyurisich Exp $
+rem $Id: makelib_mingw.bat,v 1.38 2015-03-12 00:58:16 fyurisich Exp $
 rem
 cls
 
 rem *** Set Paths ***
 if "%HG_ROOT%"==""  set HG_ROOT=c:\oohg
-if "%HG_HRB%"==""   set HG_HRB=%HG_ROOT%\harbour
-if "%HG_MINGW%"=="" set HG_MINGW=%HG_ROOT%\mingw
+if "%HG_HRB%"==""   set HG_HRB=c:\oohg\harbour
+if "%HG_MINGW%"=="" set HG_MINGW=c:\oohg\mingw
 
 rem *** To Build with Nightly Harbour ***
 rem set HG_HRB=c:\hb32
 rem *** For 32 bits MinGW ***
-rem set HG_MINGW=%HG_HRB%\comp\mingw
+rem set HG_MINGW=c:\hb32\comp\mingw
 rem *** For 64 bits MinGW ***
-rem set HG_MINGW=%HG_HRB%\comp\mingw64
+rem set HG_MINGW=c:\hb32\comp\mingw64
 
 rem *** Set EnvVars ***
 if "%LIB_GUI%"=="" set LIB_GUI=lib

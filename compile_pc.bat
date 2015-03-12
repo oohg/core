@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: compile_pc.bat,v 1.9 2015-03-10 01:58:12 fyurisich Exp $
+rem $Id: compile_pc.bat,v 1.10 2015-03-12 00:58:16 fyurisich Exp $
 rem
 cls
 
@@ -14,7 +14,7 @@ if exist %1.exe goto ERREXIT2
 
 rem *** Set Paths ***
 if "%HG_ROOT%"=="" set HG_ROOT=c:\oohg
-if "%HG_HRB%"==""  set HG_HRB=%HG_ROOT%\harbour
+if "%HG_HRB%"==""  set HG_HRB=c:\oohg\harbour
 if "%HG_PC%"==""   set HG_PC=c:\pellesc
 
 rem *** Set EnvVars ***

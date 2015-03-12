@@ -1,12 +1,12 @@
 @echo off
 rem
-rem $Id: makelib_pc.bat,v 1.4 2013-08-22 22:29:32 fyurisich Exp $
+rem $Id: makelib_pc.bat,v 1.5 2015-03-12 00:58:16 fyurisich Exp $
 rem
 cls
 
 rem *** Set Paths ***
 if "%HG_ROOT%"=="" set HG_ROOT=c:\oohg
-if "%HG_HRB%"==""  set HG_HRB=%HG_ROOT%\harbour
+if "%HG_HRB%"==""  set HG_HRB=c:\oohg\harbour
 IF "%HG_PC%"==""   set HG_PC=c:\pellesc
 
 rem *** Set EnvVars ***

@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: buildapp.bat,v 1.11 2015-03-10 01:58:12 fyurisich Exp $
+rem $Id: buildapp.bat,v 1.12 2015-03-12 00:58:16 fyurisich Exp $
 rem
 
 REM *** Check for .prg ***
@@ -17,15 +17,15 @@ if exist output.log del output.log
 
 rem *** Set Paths ***
 if "%HG_ROOT%"==""  set HG_ROOT=c:\oohg
-if "%HG_HRB%"==""   set HG_HRB=%HG_ROOT%\harbour
-if "%HG_CCOMP%"=="" set HG_CCOMP=%HG_ROOT%\mingw
+if "%HG_HRB%"==""   set HG_HRB=c:\oohg\harbour
+if "%HG_CCOMP%"=="" set HG_CCOMP=c:\oohg\mingw
 
 rem *** To Build with Nightly Harbour ***
-rem set HG_HRB=%HG_ROOT%\hb32
+rem set HG_HRB=c:\hb32
 rem *** For 32 bits MinGW ***
-rem set HG_CCOMP=%HG_HRB%\comp\mingw
+rem set HG_CCOMP=c:\hb32\comp\mingw
 rem *** For 64 bits MinGW ***
-rem set HG_CCOMP=%HG_HRB%\comp\mingw64
+rem set HG_CCOMP=c:\hb32\comp\mingw64
 
 rem *** Set EnvVars ***
 if "%LIB_GUI%"=="" set LIB_GUI=lib
