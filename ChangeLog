@@ -1,11 +1,17 @@
 /*
- * $Id: ChangeLog,v 1.1423 2015-03-12 22:35:09 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1424 2015-03-12 23:06:41 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-03-12 20:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   + ./compile30.bat
+     * Same as old compile.bat (compiles using Harbour 3.0 and MinGW).
+   * ./Changelog
+     * Previous entry.
 
 2015-03-12 19:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog
@@ -36,8 +42,6 @@
           MAKEDISTRO HB32
    * ./MakeExclude.txt
      + More files.
-   + ./compile30.bat
-     * Same as old compile.bat (compiles using Harbour 3.0 and MinGW).
    * ./compile.bat
      * Now calls compile30.bat or compile32.bat depending on the harbour
        compiler installed. If both versions are installed you must use
