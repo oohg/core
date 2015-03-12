@@ -1,11 +1,47 @@
 /*
- * $Id: ChangeLog,v 1.1421 2015-03-12 00:58:16 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1422 2015-03-12 22:21:57 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-03-12 19:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Previous entry.
+   * ./MakeDistro.bat
+     * Changed "harbour" by "hb30".
+     * Now can install to an exiting folder (coincident file will be
+       overwritten even if they are readonly).
+     * Now can build a "mixed" distro (both hb30 and hb32 versions in
+       the same folder. Usage:
+          SET BASE_DISTRO_DIR=C:\OOHG_DISTRO
+          MAKEDISTRO HB30 /C
+          MAKEDISTRO HB32
+   * ./MakeExclude.txt
+     + More files.
+   * manual/changelog.htm
+     * Updated.
+   + ./compile30.bat
+     * Same as old compile.bat (compiles using Harbour 3.0 and MinGW).
+   * ./compile.bat
+     * Now calls compile30.bat or compile32.bat depending on the harbour
+       compiler installed. If both versions are installed you must use
+          compile [/C] HB30 file [options]
+          compile [/C] HB32 file [options]
+   - buildapp.bat
+   + BuildApp_hbmk2.bat
+     * Renamed.
+     * Changed paths.
+   - 2buildapp.bat
+   + BuildApp32.bat
+     * Renamed.
+     + /C switch.
+     ; Compiles using hbmk2 via BuildApp_hbmk2.bat
+   + BuildApp30.bat
+     + /C switch.
+     ; Compiles using hbmk2 via BuildApp_hbmk2.bat
 
 2015-03-11 21:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    + Agregar even-prop.txt
@@ -20,7 +56,7 @@
    * source/makelib_pc.bat
    * source/makelib_vc.bat
      * Changed paths so they are independent from each other.
-   * source/makedistro.bat
+   * ./MakeDistro.bat
      * Changed MinGW folder for Harbour 3.0; now its inside "harbour".
    * manual/changelog.htm
      * Updated.
