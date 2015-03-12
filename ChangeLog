@@ -1,11 +1,19 @@
 /*
- * $Id: ChangeLog,v 1.1424 2015-03-12 23:06:41 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1425 2015-03-12 23:28:37 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-03-12 20:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./MakeDistro.bat
+     ! Awful error when BASE_DISTRO_DIR is not defined ends up
+       wiping out entire drive. Be extremely careful when settting
+       this var.
+   * manual/changelog.htm
+     * Updated.
 
 2015-03-12 20:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    + ./compile30.bat

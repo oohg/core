@@ -1,11 +1,12 @@
 @echo off
 rem
-rem $Id: MakeDistro.bat,v 1.5 2015-03-12 22:35:09 fyurisich Exp $
+rem $Id: MakeDistro.bat,v 1.6 2015-03-12 23:28:37 fyurisich Exp $
 rem
 cls
 
 :PARAMS
 setlocal enableextensions
+if errorlevel 1 goto ERROR7
 if /I "%1"=="HB30" goto CONTINUE
 if /I "%1"=="HB32" goto CONTINUE
 echo.
@@ -46,6 +47,18 @@ echo Can't find subfolder %BASE_DISTRO_SUBDIR%
 echo.
 goto END
 
+:ERROR6
+echo.
+echo Folder %BASE_DISTRO_DIR% is not valid !!!
+echo.
+goto END
+
+:ERROR7
+echo.
+echo Can't run because CMD extensions are not enabled !!!
+echo.
+goto END
+
 :CONTINUE
 rem Change this sets to use different sources for OOHG, Harbour and MinGW
 if "%HG_ROOT%" == "" set HG_ROOT=C:\OOHG
@@ -56,7 +69,7 @@ if /I "%1"=="HB32" set HG_HRB=C:\HB32
 if /I "%1"=="HB32" set HG_MINGW=C:\HB32\COMP\MINGW
 
 :DISTRO_FOLDER
-if not "BASE_DISTRO_DIR"=="" goto PREPARE
+if not "%BASE_DISTRO_DIR%"=="" goto PREPARE
 if /I "%1"=="HB30" set BASE_DISTRO_DIR=C:\OOHG_HB30
 if /I "%1"=="HB32" set BASE_DISTRO_DIR=C:\OOHG_HB32
 
@@ -65,6 +78,30 @@ echo Preparing folder %BASE_DISTRO_DIR% ...
 echo.
 
 :CLEAN
+if /I "%BASE_DISTRO_DIR%"=="C:" goto ERROR6
+if /I "%BASE_DISTRO_DIR%"=="D:" goto ERROR6
+if /I "%BASE_DISTRO_DIR%"=="E:" goto ERROR6
+if /I "%BASE_DISTRO_DIR%"=="F:" goto ERROR6
+if /I "%BASE_DISTRO_DIR%"=="G:" goto ERROR6
+if /I "%BASE_DISTRO_DIR%"=="H:" goto ERROR6
+if /I "%BASE_DISTRO_DIR%"=="I:" goto ERROR6
+if /I "%BASE_DISTRO_DIR%"=="J:" goto ERROR6
+if /I "%BASE_DISTRO_DIR%"=="K:" goto ERROR6
+if /I "%BASE_DISTRO_DIR%"=="L:" goto ERROR6
+if /I "%BASE_DISTRO_DIR%"=="M:" goto ERROR6
+if /I "%BASE_DISTRO_DIR%"=="N:" goto ERROR6
+if /I "%BASE_DISTRO_DIR%"=="O:" goto ERROR6
+if /I "%BASE_DISTRO_DIR%"=="P:" goto ERROR6
+if /I "%BASE_DISTRO_DIR%"=="Q:" goto ERROR6
+if /I "%BASE_DISTRO_DIR%"=="R:" goto ERROR6
+if /I "%BASE_DISTRO_DIR%"=="S:" goto ERROR6
+if /I "%BASE_DISTRO_DIR%"=="T:" goto ERROR6
+if /I "%BASE_DISTRO_DIR%"=="U:" goto ERROR6
+if /I "%BASE_DISTRO_DIR%"=="V:" goto ERROR6
+if /I "%BASE_DISTRO_DIR%"=="W:" goto ERROR6
+if /I "%BASE_DISTRO_DIR%"=="X:" goto ERROR6
+if /I "%BASE_DISTRO_DIR%"=="Y:" goto ERROR6
+if /I "%BASE_DISTRO_DIR%"=="Z:" goto ERROR6
 if not exist %BASE_DISTRO_DIR%\nul goto CREATE
 if /I "%2"=="/C" del /f /s /q %BASE_DISTRO_DIR%\*.* >nul
 if /I "%2"=="/C" attrib -s -h %BASE_DISTRO_DIR%\*.* /s /d
