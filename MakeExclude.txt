@@ -16,5 +16,7 @@ compile_vc.bat
 compile_bcc.bat
 compile30.bat
 compile32.bat
+buildapp30.bat
+buildapp32.bat
 build30.bat
 build32.bat

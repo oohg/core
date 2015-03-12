@@ -1,5 +1,5 @@
 <!--
-$Id: Changelog.htm,v 1.7 2015-03-12 00:58:16 fyurisich Exp $
+$Id: Changelog.htm,v 1.8 2015-03-12 22:35:09 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -142,6 +142,53 @@ CHANGELOG</div>
 </div>
 <div id="winchm_template_content">
 <pre>
+2015-03-12 19:33 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ./Changelog
+     * Previous entry.
+   * manual/changelog.htm
+     * Updated.
+   * ./MakeExclude.txt
+     + More files.
+   + buildapp.bat
+     * Calls buildapp30.bat or buildapp32.bat depending on the harbour
+       compiler installed. If both versions are installed you must use
+          buildapp [/C] HB30 file [options]
+          buildapp [/C] HB32 file [options]
+
+2015-03-12 19:21 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ./Changelog
+     * Previous entry.
+   * ./MakeDistro.bat
+     * Changed "harbour" by "hb30".
+     * Now can install to an exiting folder (coincident file will be
+       overwritten even if they are readonly).
+     * Now can build a "mixed" distro (both hb30 and hb32 versions in
+       the same folder. Usage:
+          SET BASE_DISTRO_DIR=C:\OOHG_DISTRO
+          MAKEDISTRO HB30 /C
+          MAKEDISTRO HB32
+   * ./MakeExclude.txt
+     + More files.
+   + ./compile30.bat
+     * Same as old compile.bat (compiles using Harbour 3.0 and MinGW).
+   * ./compile.bat
+     * Now calls compile30.bat or compile32.bat depending on the harbour
+       compiler installed. If both versions are installed you must use
+          compile [/C] HB30 file [options]
+          compile [/C] HB32 file [options]
+   - buildapp.bat
+   + BuildApp_hbmk2.bat
+     * Renamed.
+     * Changed paths.
+   - 2buildapp.bat
+   + BuildApp32.bat
+     * Renamed.
+     + /C switch.
+     ; Compiles using hbmk2 via BuildApp_hbmk2.bat
+   + BuildApp30.bat
+     + /C switch.
+     ; Compiles using hbmk2 via BuildApp_hbmk2.bat
+
 2015-03-11 21:58 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    + Agregar even-prop.txt
      * Notes on how to update the IDE.
