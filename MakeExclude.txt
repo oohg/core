@@ -20,3 +20,8 @@ buildapp30.bat
 buildapp32.bat
 build30.bat
 build32.bat
+makelib_bcc.bat
+makelib_pc.bat
+makelib_vc.bat
+makelib30.bat
+makelib32.bat

@@ -1,11 +1,30 @@
 /*
- * $Id: ChangeLog,v 1.1425 2015-03-12 23:28:37 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1426 2015-03-13 23:04:03 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-03-13 20:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Previous entry.
+   * ./MakeDistro.bat
+   * ./MakeExclude.txt
+     + More files.
+   * manual/changelog.htm
+     * Updated.
+   * source/Build30.bat
+     * Paths changed.
+   * source/makelib.bat
+     * Calls makelib30.bat
+   + source/makelib30.bat
+     * Builds OOHG's libraries for Harbour 3.0 and MinGW
+       via makelib_mingw.bat
+   + source/makelib32.bat
+     * Builds OOHG's libraries for Harbour 3.2 and MinGW
+       via makelib_mingw.bat
 
 2015-03-12 20:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./MakeDistro.bat
@@ -122,7 +141,7 @@
    * ./source/Build32.bat
    + ./source/Build30.bat
      * Use this files to build OOHG's libraries using Harbour 3.0 or
-       Harbour 3.2 and MinGW.
+       Harbour 3.2 and MinGW, via HBMK2 tool.
      ; Use /c switch to set environment vars to its default values.
      ; Syntax: BuildXX /c
 
@@ -2663,10 +2682,10 @@
        {nHorRes, nVerRes} or a number (equivalent to {nRes, nRes}).
        Resolution is used to calculate the image's original size, in
        the same ways as OpenOffice Calc calculates it.
-       ItÂ´s measured in DPI.
+       It´s measured in DPI.
        Parameter aSize: declares the image size. Takes an array
        {nHorSize, nVerSize} or a number (equivalent to {nSize, nSize}).
-       ItÂ´s measured in 100/th of MM.
+       It´s measured in 100/th of MM.
        Resolution takes precedence over size.
      + Public function OO_ConvertToURL( cFile ).
      + C-functions PixelsPerInchX() and PixelsPerInchY(). They return

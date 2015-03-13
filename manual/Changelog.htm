@@ -1,5 +1,5 @@
 <!--
-$Id: Changelog.htm,v 1.9 2015-03-12 23:28:37 fyurisich Exp $
+$Id: Changelog.htm,v 1.10 2015-03-13 23:04:04 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -142,6 +142,25 @@ CHANGELOG</div>
 </div>
 <div id="winchm_template_content">
 <pre>
+2015-03-13 20:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Previous entry.
+   * ./MakeDistro.bat
+   * ./MakeExclude.txt
+     + More files.
+   * manual/changelog.htm
+     * Updated.
+   * source/Build30.bat
+     * Paths changed.
+   * source/makelib.bat
+     * Calls makelib30.bat
+   + source/makelib30.bat
+     * Builds OOHG's libraries for Harbour 3.0 and MinGW
+       via makelib_mingw.bat
+   + source/makelib32.bat
+     * Builds OOHG's libraries for Harbour 3.2 and MinGW
+       via makelib_mingw.bat
+
 2015-03-12 20:28 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * ./MakeDistro.bat
      ! Awful error when BASE_DISTRO_DIR is not defined ends up
@@ -161,6 +180,8 @@ CHANGELOG</div>
      * Previous entry.
    * manual/changelog.htm
      * Updated.
+   * ./MakeDistro.bat
+     + buildapp30.bat and buildapp32.bat
    * ./MakeExclude.txt
      + More files.
    + buildapp.bat
@@ -183,8 +204,6 @@ CHANGELOG</div>
           MAKEDISTRO HB32
    * ./MakeExclude.txt
      + More files.
-   + ./compile30.bat
-     * Same as old compile.bat (compiles using Harbour 3.0 and MinGW).
    * ./compile.bat
      * Now calls compile30.bat or compile32.bat depending on the harbour
        compiler installed. If both versions are installed you must use
@@ -216,8 +235,10 @@ CHANGELOG</div>
    * source/makelib_pc.bat
    * source/makelib_vc.bat
      * Changed paths so they are independent from each other.
-   * source/makedistro.bat
+   * ./makedistro.bat
      * Changed MinGW folder for Harbour 3.0; now its inside "harbour".
+   * manual/changelog.htm
+     * Updated.
 
 2015-03-10 20:58 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * ./MakeExclude.txt
@@ -255,7 +276,7 @@ CHANGELOG</div>
    * ./source/Build32.bat
    + ./source/Build30.bat
      * Use this files to build OOHG's libraries using Harbour 3.0 or
-       Harbour 3.2 and MinGW.
+       Harbour 3.2 and MinGW, via HBMK2 tool.
      ; Use /c switch to set environment vars to its default values.
      ; Syntax: BuildXX /c
 
@@ -543,6 +564,7 @@ CHANGELOG</div>
    + ./compile32.bat
      * Use this file to compile using Harbour 3.2 and MinGW.
      ; Use /c switch to set environment vars to its default values.
+     ; Syntax: CompileXX /c prgfile
 
 2015-03-08 12:25 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * ./2buildapp.bat
@@ -2252,7 +2274,7 @@ CHANGELOG</div>
 2014-07-04 19:33 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * source/miniprint.prg
      ! Printing is aborted with "Printer Configuration Failed" message.
-   + ide/.cvsignore
+   * ide/.cvsignore
      * Updated.
    * include/i_ini.ch
      * Format.
