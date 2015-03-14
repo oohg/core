@@ -1,11 +1,37 @@
 /*
- * $Id: ChangeLog,v 1.1426 2015-03-13 23:04:03 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1427 2015-03-14 01:11:45 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-03-13 22:11 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./BuildApp30.bat
+     * Now calls BuildApp_hbmk2.bat
+   * ./BuildApp32.bat
+     * Now calls BuildApp_hbmk2.bat
+   * source/BuildLib.bat
+     * Calls BuildLib30.bat or BuildLib32.bat depending on the harbour
+       compiler installed. If both versions are installed you must use
+          BuildLib HB30 [options]
+          BuildLib HB32 [options]
+   - source/Build30.bat
+   + source/BuildLib30.bat
+     * Former Build30.bat
+   - source/Build32.bat
+   + source/BuildLib32.bat
+     * Former Build32.bat
+   + source/BuildLib_hbmk2.bat
+     * Former BuildLib.bat
+   * source/makelib.bat
+     * Calls makelib30.bat or makelib32.bat depending on the harbour
+       compiler installed. If both versions are installed you must use
+          MakeLib HB30 [options]
+          MakeLib HB32 [options]
+   * manual/changelog.htm
+     * Updated.
 
 2015-03-13 20:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog

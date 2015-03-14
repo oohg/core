@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: BuildApp30.bat,v 1.1 2015-03-12 22:21:58 fyurisich Exp $
+rem $Id: BuildApp30.bat,v 1.2 2015-03-14 01:11:45 fyurisich Exp $
 rem
 cls
 
@@ -27,4 +27,5 @@ shift
 :COMPILE
 
 rem *** Call Compiler Specific Batch File ***
-call %HG_ROOT%\BuildApp.bat %1 %2 %3 %4 %5 %6 %7 %8 %9
+set HG_CCOMP=%HG_MINGW%
+call %HG_ROOT%\BuildApp_hbmk2.bat %1 %2 %3 %4 %5 %6 %7 %8 %9

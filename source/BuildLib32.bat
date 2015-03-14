@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: Build32.bat,v 1.3 2015-03-10 23:58:20 fyurisich Exp $
+rem $Id: BuildLib32.bat,v 1.1 2015-03-14 01:11:45 fyurisich Exp $
 rem
 cls
 
@@ -25,5 +25,6 @@ set BIN_HRB=bin
 shift
 
 :BUILD
+set HG_CCOMP=%HG_MINGW%
 set HBMK2_WORDIR=
-call BuildLib.bat %1 %2 %3 %4 %5 %6 %7 %8 %9
+call BuildLib_hbmk2.bat %1 %2 %3 %4 %5 %6 %7 %8 %9

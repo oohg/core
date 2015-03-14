@@ -1,5 +1,5 @@
 <!--
-$Id: Changelog.htm,v 1.10 2015-03-13 23:04:04 fyurisich Exp $
+$Id: Changelog.htm,v 1.11 2015-03-14 01:11:45 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -142,7 +142,33 @@ CHANGELOG</div>
 </div>
 <div id="winchm_template_content">
 <pre>
-2015-03-13 20:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2015-03-13 22:11 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ./BuildApp30.bat
+     * Now calls BuildApp_hbmk2.bat
+   * ./BuildApp32.bat
+     * Now calls BuildApp_hbmk2.bat
+   * source/BuildLib.bat
+     * Calls BuildLib30.bat or BuildLib32.bat depending on the harbour
+       compiler installed. If both versions are installed you must use
+          BuildLib HB30 [options]
+          BuildLib HB32 [options]
+   - source/Build30.bat
+   + source/BuildLib30.bat
+     * Former Build30.bat
+   - source/Build32.bat
+   + source/BuildLib32.bat
+     * Former Build32.bat
+   + source/BuildLib_hbmk2.bat
+     * Former BuildLib.bat
+   * source/makelib.bat
+     * Calls makelib30.bat or makelib32.bat depending on the harbour
+       compiler installed. If both versions are installed you must use
+          MakeLib HB30 [options]
+          MakeLib HB32 [options]
+   * manual/changelog.htm
+     * Updated.
+
+2015-03-13 20:04 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * ./Changelog
      * Previous entry.
    * ./MakeDistro.bat
