@@ -18,8 +18,8 @@ compile30.bat
 compile32.bat
 buildapp30.bat
 buildapp32.bat
-build30.bat
-build32.bat
+buildlib30.bat
+buildlib32.bat
 makelib_bcc.bat
 makelib_pc.bat
 makelib_vc.bat

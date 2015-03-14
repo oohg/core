@@ -1,5 +1,5 @@
 /*
- * $Id: tabprop.fmg,v 1.9 2015-03-09 02:51:06 fyurisich Exp $
+ * $Id: tabprop.fmg,v 1.10 2015-03-14 03:32:22 fyurisich Exp $
  */
 
 * ooHG IDE Plus form generated code
@@ -261,7 +261,7 @@ DEFINE WINDOW TEMPLATE ;
       FONT 'Arial' ;
       SIZE 9 ;
       MAXLENGTH 500 ;
-      ON CHANGE IIF( ChgTabpageName( oTab, oTabProp ), ::aImage[i] := oTabProp:Edit_2:Value, NIL ) ;
+      ON CHANGE IIF( ChgTabpageImage( oTab, oTabProp ), ::aImage[i] := oTabProp:Edit_2:Value, NIL ) ;
       NOVSCROLL 
 
    @ 403, 20 LABEL Label_7 ;

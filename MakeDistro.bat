@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: MakeDistro.bat,v 1.8 2015-03-14 02:05:39 fyurisich Exp $
+rem $Id: MakeDistro.bat,v 1.9 2015-03-14 03:32:22 fyurisich Exp $
 rem
 cls
 
@@ -234,8 +234,8 @@ if not exist source\nul goto ERROR5
 cd source
 xcopy %HG_ROOT%\source\*.* /r /s /e /c /q /y /exclude:%HG_ROOT%\MakeExclude.txt
 echo +
-if /I "%1"=="HB30" xcopy %HG_ROOT%\source\build30.bat /r /y /q
-if /I "%1"=="HB32" xcopy %HG_ROOT%\source\build32.bat /r /y /q
+if /I "%1"=="HB30" xcopy %HG_ROOT%\source\buildlib30.bat /r /y /q
+if /I "%1"=="HB32" xcopy %HG_ROOT%\source\buildlib32.bat /r /y /q
 echo +
 if /I "%1"=="HB30" xcopy %HG_ROOT%\source\makelib30.bat /r /y /q
 if /I "%1"=="HB32" xcopy %HG_ROOT%\source\makelib32.bat /r /y /q
@@ -267,8 +267,8 @@ set TPATH=
 attrib -s -h %BASE_DISTRO_DIR%\%LIB_GUI%\.hbmk /s /d
 rd %BASE_DISTRO_DIR%\%LIB_GUI%\.hbmk /s /q
 echo.
-popd
-goto END
+cd ..
+goto OIDE
 
 :LIBSHB32
 echo Building libs ...
@@ -289,8 +289,30 @@ set TPATH=
 attrib -s -h %BASE_DISTRO_DIR%\%LIB_GUI%\.hbmk /s /d
 rd %BASE_DISTRO_DIR%\%LIB_GUI%\.hbmk /s /q
 echo.
+cd ..
+goto OIDE
+
+:OIDE
+echo Building oIDE ...
+echo.
+cd ide
+set TPATH=%PATH%
+set PATH=%HG_MINGW%\bin;%HG_HRB%\%BIN_HRB%
+
+echo #define oohgpath %HG_ROOT%\RESOURCES > _oohg_resconfig.h
+copy /b %HG_ROOT%\resources\oohg.rc + mgide.rc _temp.rc > nul
+windres -i _temp.rc -o _temp.o
+hbmk2 mgide.hbp %HG_ROOT%\oohg.hbc
+if exist _oohg_resconfig.h del _oohg_resconfig.h
+if exist _temp.* del _temp.*
+
+rem if exist output.log del output.log /f /q
+set PATH=%TPATH%
+set TPATH=
+attrib -s -h .hbmk /s /d
+rd .hbmk /s /q
+echo.
 popd
-goto END
 
 :END
 echo End reached.

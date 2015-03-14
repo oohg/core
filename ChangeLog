@@ -1,11 +1,27 @@
 /*
- * $Id: ChangeLog,v 1.1428 2015-03-14 02:05:39 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1429 2015-03-14 03:32:22 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-03-14 00:32 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./MakeDistro.bat
+     * Update to use new build files.
+     + IDE building.
+   * ./MakeExclude.txt
+     * Updated files.
+   * ide/mgide.prg
+     + Some Harbour flags.
+     * Some flags commented out.
+   * ide/fmgs/tabprop.fmg
+     ! TABPAGE's images are not changed after editing them.
+   * ide/prgs/mgide.prg
+     - Unused STATIC FUNCTION DatabaseView2.
+   * manual/changelog.htm
+     * Updated.
 
 2015-03-13 23:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./MakeDistro.bat

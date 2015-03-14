@@ -1,5 +1,5 @@
 #
-# $Id: mgide.hbp,v 1.5 2014-09-22 02:35:41 fyurisich Exp $
+# $Id: mgide.hbp,v 1.6 2015-03-14 03:32:22 fyurisich Exp $
 #
 
 # name of output file
@@ -12,12 +12,15 @@
 -w3
 -es2
 
+# other harbour´s flags
+-n -q0 -ko
+
 # path to fmg files
 -ifmgs
 
-#compiler flags
--trace
--info
+# linker flags
+#-trace
+#-info
 -ldflag=-L${HG_ROOT}\lib
 
 #libs

@@ -1,5 +1,5 @@
 /*
- * $Id: mgide.prg,v 1.24 2015-03-09 02:51:06 fyurisich Exp $
+ * $Id: mgide.prg,v 1.25 2015-03-14 03:32:22 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -4387,79 +4387,6 @@ METHOD Disable_Button() CLASS THMI
    ::Form_Tree:button_9:enabled := .F.
    ::Form_Tree:button_10:enabled := .F.
    ::Form_Tree:button_11:enabled := .F.
-RETURN NIL
-
-//------------------------------------------------------------------------------
-STATIC FUNCTION DatabaseView2( myIde )
-//------------------------------------------------------------------------------
-LOCAL curfol, curdrv, cdfile, npos, i, j, lDeleted, oBrow, AfieldNames, aTypes
-LOCAL aWidths, aDecimals, Form_Brow
-
-   curfol := curdir()
-   curdrv := curdrive()+':\'
-   cdFile := GetFile ( { {'dbf files *.dbf','*.dbf'} }  , 'Open Dbf file',,.F.,.F. )
-   IF Len( cdFile ) > 0
-      npos := At( ".", cdfile )
-      cdfile := Left( cdfile, npos - 1 )
-      j := 0
-      FOR i := 1 TO Len( cdfile )
-          IF SubStr( cdfile, i, 1 ) == '\'
-             j := i
-          ENDIF
-      NEXT i
-      lDeleted := Set( _SET_DELETED, .F. )                  // make deleted records visible
-      cdfile := SubStr( cdfile, j + 1, Len( cdfile ) )
-      USE ( cdfile ) NEW
-      aFieldNames := ( cdfile )->( Array( FCount() ) )
-      aTypes      := ( cdfile )->( Array( FCount() ) )
-      aWidths     := ( cdfile )->( Array( FCount() ) )
-      aDecimals   := ( cdfile )->( Array( FCount() ) )
-      ( cdfile )->( aFields( aFieldNames, aTypes, aWidths, aDecimals ) )
-
-      aEval( aWidths, { |n, i| IIF( n <= 3, aWidths[i] := 30, aWidths[i] := n * 10 ) } )
-
-      DEFINE WINDOW Form_Brow OBJ Form_Brow ;
-         AT 0, 0 ;
-         WIDTH 640 HEIGHT 480 ;
-         TITLE 'Quick Browsing of ... ' + cdfile ;
-         ICON 'Edit' ;
-         CHILD NOMAXIMIZE   ;
-         ON INIT Form_Brow:Maximize() ;
-         BACKCOLOR myIde:aSystemColor
-
-         @ 25,80 BROWSE Browse_1 ;
-            OF form_brow OBJ oBrow ;
-            WIDTH 640 ;
-            HEIGHT 460 ;
-            HEADERS aFieldNames ;
-            WIDTHS awidths ;
-            WORKAREA &cdfile ;
-            FIELDS aFieldnames ;
-            VALUE 0 ;
-            TOOLTIP 'Dbl Click to modify' ;
-            EDIT APPEND DELETE ;
-            LOCK
-         oBrow:BetterColumnsAutofit()
-
-         @ 40,730 BUTTON button_sal ;
-            CAPTION 'Exit'  ;
-            ACTION oBrow:Release() ;
-            WIDTH 60
-
-         @ 490, 150 LABEL label_qb ;
-            VALUE "ALT-A (Add record) - Delete (Delete record) - Dbl_click (Modify record)" ;
-            WIDTH 500
-
-      END WINDOW
-
-      Form_Brow:Browse_1:SetFocus()
-
-      CENTER WINDOW Form_Brow
-      ACTIVATE WINDOW Form_Brow
-      ( cdfile )->( dbCloseArea() )
-      Set( _SET_DELETED, lDeleted )
-   ENDIF
-   DirChange( curdrv + curfol )
 RETURN NIL
 
 //------------------------------------------------------------------------------
