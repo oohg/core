@@ -1,5 +1,5 @@
 /*
- * $Id: How_to_Configure_and_Use.txt,v 1.3 2013-10-27 21:07:56 fyurisich Exp $
+ * $Id: How_to_Configure_and_Use.txt,v 1.4 2015-03-14 02:05:39 fyurisich Exp $
  */
 
 
@@ -9,8 +9,8 @@ English
 If OOHG package was installed in C:\OOHG, and MinGW is going to be used to
 compile projects, there's no need to change the default configuration. Simply
 add C:\OOHG to the system's PATH and use DOS commands "COMPILE prg_name" or
-"COMPILE_MINGW prg_name" to build executable files. If you don´t want to change
-the PATH, use "C:\OOHG\COMPILE prg_name" or "C:\OOHG\COMPILE_MINGW prg_name"
+BUILDAPP prg_name" to build executable files. If you don´t want to change
+the PATH, use "C:\OOHG\COMPILE prg_name" or "C:\OOHG\BUILDAPP prg_name"
 instead.
 
 If OOHG package was installed in another folder (e.g. D:\XYZ), you must set
@@ -18,11 +18,12 @@ the following environment variable, before using the compilation commands:
 
 set HG_ROOT=D:\XYZ
 
-By default OOHG package uses the folder "LIB" to store it's libraries.
-To use a different folder (e.g. C:\OOHG\LIB\WIN\MINGW), set the following
+By default OOHG package build with Harbour 3.0 uses the folder "LIB" to store
+it's libraries. For OOHG package build with Harbour 3.2, "LIB\HB\WIN" is used.
+To use a different folder (e.g. C:\OOHG\LIB\MYLIBS), set the following
 environment variable, before using the compilation commands:
 
-set LIB_GUI=LIB\WIN\MINGW
+set LIB_GUI=LIB\MYLIBS
 
 By default OOHG package uses a bundled version of Harbour to compile projects.
 To use a different version of Harbour (e.g. installed in D:\MYHRB), set the
@@ -31,10 +32,10 @@ following environment variable, before using the compilation commands:
 set HG_HRB=D:\MYHRB
 
 If the new version stores it's libraries in a folder different than
-"D:\MYHRB\LIB" (e.g. at D:\MYHRB\LIB\WIN\MINGW), set the following environment
+"D:\MYHRB\LIB" (e.g. at D:\MYHRB\LIB\MYLIBS), set the following environment
 variable, before using the compilation commands:
 
-set LIB_HRB=D:\MYHRB\LIB\WIN\MINGW
+set LIB_HRB=D:\MYHRB\LIB\MYLIBS
 
 If the new version stores it's binaries in a folder different than
 "D:\MYHRB\BIN" (e.g. at D:\MYHRB\BIN\WIN\MINGW), set the following environment
@@ -48,30 +49,55 @@ following environment variable, before using the compilation commands:
 
 set HG_MINGW=D:\MYMINGW
 
-To use Borland C++ 5.5 compiler instead of MinGW, edit C:\OOHG\COMPILE.BAT,
-locate the line "call %HG_ROOT%\compile_mingw.bat %1 %2 %3 %4 %5 %6 %7 %8 %9"
-and replace "compile_mingw" with "compile_bcc". If the compiler is not installed
-at C:\BORLAND\BCC55 (e.g. at D:\MYBCC), set the following environment variable,
-before using the compilation commands:
+To use Borland C++ 5.5 compiler instead of MinGW, edit C:\OOHG\COMPILE.BAT
+and replace its content with:
+
+   @echo off
+   cls
+   rem *** Set Paths ***
+   if "%HG_ROOT%"=="" set HG_ROOT=c:\oohg
+   rem *** Call Compiler Specific Batch File ***
+   call %HG_ROOT%\compile_bcc.bat %1 %2 %3 %4 %5 %6 %7 %8 %9
+
+If the compiler is not installed at C:\BORLAND\BCC55 (e.g. at D:\MYBCC),
+set the following environment variable before using the compilation commands:
 
 set HG_BCC=D:\MYBCC
 
-To use Pelles C compiler instead of MinGW, edit C:\OOHG\COMPILE.BAT,
-locate the line "call %HG_ROOT%\compile_mingw.bat %1 %2 %3 %4 %5 %6 %7 %8 %9"
-and replace "compile_mingw" with "compile_pc". If the compiler is not installed
-at C:\PELLESC (e.g. at D:\PCC), set the following environment variable,
-before using the compilation commands:
+To use Pelles C compiler instead of MinGW, edit C:\OOHG\COMPILE.BAT and
+replace its content with:
+
+   @echo off
+   cls
+   rem *** Set Paths ***
+   if "%HG_ROOT%"=="" set HG_ROOT=c:\oohg
+   rem *** Call Compiler Specific Batch File ***
+   call %HG_ROOT%\compile_pc.bat %1 %2 %3 %4 %5 %6 %7 %8 %9
+
+If the compiler is not installed at C:\PELLESC (e.g. at D:\PCC), set the
+following environment variable before using the compilation commands:
 
 set HG_PC=D:\PCC
 
 To use Microsoft Visual Studio 9.0 compiler instead of MinGW, edit
-C:\OOHG\COMPILE.BAT, locate the line
-"call %HG_ROOT%\compile_mingw.bat %1 %2 %3 %4 %5 %6 %7 %8 %9"
-and replace "compile_mingw" with "compile_vc". If the compiler is not installed
-at %PROGRAMFILES%\MICROSOFT VISUAL STUDIO 9.0\vc (e.g. at D:\VS9), set the
-following environment variable, before using the compilation commands:
+C:\OOHG\COMPILE.BAT and replace its content with:
+
+   @echo off
+   cls
+   rem *** Set Paths ***
+   if "%HG_ROOT%"=="" set HG_ROOT=c:\oohg
+   rem *** Call Compiler Specific Batch File ***
+   call %HG_ROOT%\compile_vc.bat %1 %2 %3 %4 %5 %6 %7 %8 %9
+
+If the compiler is not installed at
+%PROGRAMFILES%\MICROSOFT VISUAL STUDIO 9.0\vc (e.g. at D:\VS9), set the
+following environment variable before using the compilation commands:
 
 set HG_VC=D:\VS9
+
+To rebuild OOGH's libraries: switch to SOURCE folder and launch MAKELIB.BAT
+(build is done using C compiler's tools) or BUILDLIB.BAT (build is done using
+Harbour's HBMK2 tool).
 
 
 Español
@@ -80,9 +106,9 @@ Español
 Si el paquete OOHG se instala en C:\OOHG y MinGW va a ser utilizado para
 compilar los proyectos, no hay necesidad de cambiar la configuración por
 defecto. Simplemente añada C:\OOHG al PATH del sistema y utilice los comandos
-de DOS "Compilar prg_name" o "COMPILE_MINGW prg_name" para crear los archivos
+de DOS "Compilar prg_name" o "BUILDAPP prg_name" para crear los archivos
 ejecutables. Si no desea cambiar el PATH, utilice "C:\OOHG\COMPILE prg_name" o
-"C:\OOHG\COMPILE_MINGW prg_name" en su lugar.
+"C:\OOHG\BUILDAPP prg_name" en su lugar.
 
 Si el paquete OOHG se instaló en otra carpeta (por ejemplo D:\XYZ), deberá
 setear la siguiente variable de ambiente, antes de usar los comandos de
@@ -90,11 +116,13 @@ compilación:
 
 set HG_ROOT=D:\XYZ
 
-Por defecto, OOHG utiliza la carpeta "LIB" para guardar sus librerías.
-Para utilizar otra carpeta (por ej. C:\OOHG\LIB\WIN\MINGW), deberá setear la
+Por defecto, el paquete OOHG construido con Harbour 3.0 utiliza la carpeta
+"LIB" para guardar sus librerías. Para el paquete OOHG construido con Harbour
+3.2, se utiliza la carpeta "LIB\HB\WIN".
+Para utilizar otra carpeta (por ej. C:\OOHG\LIB\MYLIBS), deberá setear la
 siguiente variable de ambiente, antes de usar los comandos de compilación:
 
-set LIB_GUI=LIB\WIN\MINGW
+set LIB_GUI=LIB\MYLIBS
 
 Por defecto el paquete OOHG utiliza la versión incluida de Harbour para
 compilar los proyectos. Para utilizar una versión diferente (por ej. la
@@ -104,10 +132,10 @@ antes de usar los comandos de compilación:
 set HG_HRB=D:\MYHRB
 
 Si la nueva versión guarda sus librerías en una carpeta distinta a
-"D:\MYHRB\LIB" (por ej. en D:\MYHRB\LIB\WIN\MINGW), deberá setear la siguiente
+"D:\MYHRB\LIB" (por ej. en D:\MYHRB\LIB\MYLIBS), deberá setear la siguiente
 variable de ambiente, antes de usar los comandos de compilación:
 
-set LIB_HRB=D:\MYHRB\LIB\WIN\MINGW
+set LIB_HRB=D:\MYHRB\LIB\MYLIBS
 
 Si la nueva versión guarda sus binarios en una carpeta distinta a
 "D:\MYHRB\BIN" (por ej. en D:\MYHRB\BIN\WIN\MINGW), deberá setear la siguiente
@@ -123,29 +151,55 @@ comandos de compilación:
 set HG_MINGW=D:\MYMINGW
 
 Para utilizar el compilador Borland C++ 5.5 en lugar de MinGW, edite
-C:\OOHG\COMPILE.BAT, localice la línea
-"call %HG_ROOT%\compile_mingw.bat %1 %2 %3 %4 %5 %6 %7 %8 %9" y reemplace
-"compile_mingw" con "compile_bcc". Si el compilador no está instalado en 
-C:\BORLAND\BCC55 (por ejemplo, está en D:\MYBCC), deberá setear la siguiente
-variable de ambiente antes de usar los comandos de compilación:
+C:\OOHG\COMPILE.BAT y reemplace su contenido con:
+
+   @echo off
+   cls
+   rem *** Set Paths ***
+   if "%HG_ROOT%"=="" set HG_ROOT=c:\oohg
+   rem *** Call Compiler Specific Batch File ***
+   call %HG_ROOT%\compile_bcc.bat %1 %2 %3 %4 %5 %6 %7 %8 %9
+
+Si el compilador no está instalado en C:\BORLAND\BCC55 (por ejemplo, está en
+D:\MYBCC), deberá setear la siguiente variable de ambiente antes de usar los
+comandos de compilación:
 
 set HG_BCC=D:\MYBCC
 
 Para utilizar el compilador Pelles C en lugar de MinGW, edite
-C:\OOHG\COMPILE.BAT, localice la línea
-"call %HG_ROOT%\compile_mingw.bat %1 %2 %3 %4 %5 %6 %7 %8 %9" y reemplace
-"compile_mingw" con "compile_pc". Si el compilador no está instalado en
-C:\PELLESC (por ejemplo, está en D:\PCC), deberá setear la siguiente
-variable de ambiente antes de usar los comandos de compilación:
+C:\OOHG\COMPILE.BAT y reemplace su contenido con:
+
+   @echo off
+   cls
+   rem *** Set Paths ***
+   if "%HG_ROOT%"=="" set HG_ROOT=c:\oohg
+   rem *** Call Compiler Specific Batch File ***
+   call %HG_ROOT%\compile_pc.bat %1 %2 %3 %4 %5 %6 %7 %8 %9
+
+Si el compilador no está instalado en C:\PELLESC (por ejemplo, está en D:\PCC),
+deberá setear la siguiente variable de ambiente antes de usar los comandos de
+compilación:
 
 set HG_PC=D:\PCC
 
-Para utilizar el compilador Microsoft Visual Studio 9.0 en lugar de MinGW, edite
-C:\OOHG\COMPILE.BAT, localicela línea
-"call %HG_ROOT%\compile_mingw.bat %1 %2 %3 %4 %5 %6 %7 %8 %9" y reemplace
-"compile_mingw" con "compile_vc". Si el compilador no está instalado en
+Para utilizar el compilador Microsoft Visual Studio 9.0 en lugar de MinGW,
+edite C:\OOHG\COMPILE.BAT y reemplace su contenido con:
+
+   @echo off
+   cls
+   rem *** Set Paths ***
+   if "%HG_ROOT%"=="" set HG_ROOT=c:\oohg
+   rem *** Call Compiler Specific Batch File ***
+   call %HG_ROOT%\compile_vc.bat %1 %2 %3 %4 %5 %6 %7 %8 %9
+
+Si el compilador no está instalado en
 %PROGRAM FILES%\MICROSOFT VISUAL STUDIO 9.0\vc (por ejemplo, está en D:\VS9),
 deberá setear la siguiente variable de ambiente antes de usar los comandos de
 compilación:
 
 set HG_VC=D:\VS9
+
+Para reconstruir las librerías de OOHG: cambie a la carpeta SOURCE y ejecute
+MAKELIB.BAT (la reconstrucción se realiza utilizando las herramientas del
+compilador C) o BUILDLIB.BAT (la reconstrucción se realiza utilizando la
+herramienta HBMK2 de Harbour).

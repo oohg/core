@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: MakeDistro.bat,v 1.7 2015-03-13 23:04:04 fyurisich Exp $
+rem $Id: MakeDistro.bat,v 1.8 2015-03-14 02:05:39 fyurisich Exp $
 rem
 cls
 
@@ -156,6 +156,7 @@ xcopy %HG_ROOT%\*.* /r /c /q /y /exclude:%HG_ROOT%\MakeExclude.txt
 echo +
 if /I "%1"=="HB30" xcopy %HG_ROOT%\compile30.bat /r /y /q
 if /I "%1"=="HB32" xcopy %HG_ROOT%\compile32.bat /r /y /q
+echo +
 if /I "%1"=="HB30" xcopy %HG_ROOT%\buildapp30.bat /r /y /q
 if /I "%1"=="HB32" xcopy %HG_ROOT%\buildapp32.bat /r /y /q
 echo.
@@ -235,6 +236,7 @@ xcopy %HG_ROOT%\source\*.* /r /s /e /c /q /y /exclude:%HG_ROOT%\MakeExclude.txt
 echo +
 if /I "%1"=="HB30" xcopy %HG_ROOT%\source\build30.bat /r /y /q
 if /I "%1"=="HB32" xcopy %HG_ROOT%\source\build32.bat /r /y /q
+echo +
 if /I "%1"=="HB30" xcopy %HG_ROOT%\source\makelib30.bat /r /y /q
 if /I "%1"=="HB32" xcopy %HG_ROOT%\source\makelib32.bat /r /y /q
 cd ..
