@@ -1,11 +1,8 @@
 @echo off
 rem
-rem $Id: MakeDistro.bat,v 1.11 2015-03-18 20:49:41 fyurisich Exp $
+rem $Id: MakeDistro.bat,v 1.1 2015-03-18 23:58:18 fyurisich Exp $
 rem
 cls
-
-setlocal enableextensions
-if errorlevel 1 goto ERROR7
 
 :PARAMS
 if /I "%1"=="HB30" goto CONTINUE
@@ -30,7 +27,7 @@ goto END
 
 :ERROR2
 echo.
-echo %HG_ROOT%\MakeExclude.txt is missing
+echo %HG_ROOT%\distros\MakeExclude.txt is missing
 echo.
 goto END
 
@@ -70,12 +67,12 @@ goto END
 rem Change this sets to use different sources for OOHG, Harbour and MinGW
 if "%HG_ROOT%" == "" set HG_ROOT=C:\OOHG
 
-if not exist %HG_ROOT%\MakeExclude.txt goto ERROR2
+if not exist %HG_ROOT%\distros\MakeExclude.txt goto ERROR2
 if /I "%1"=="HB30" set HG_HRB=C:\HB30
 if /I "%1"=="HB30" set HG_MINGW=C:\HB30\COMP\MINGW
 if /I "%1"=="HB32" set HG_HRB=C:\HB32
 if /I "%1"=="HB32" set HG_MINGW=C:\HB32\COMP\MINGW
-if /I "%1"=="XB"   set HG_HRB=C:\XHB32BCC
+if /I "%1"=="XB"   set HG_HRB=C:\XHBCC
 if /I "%1"=="XB"   set HG_BCC=C:\BORLAND\BCC55
 
 :DISTRO_FOLDER
@@ -135,9 +132,9 @@ if /I "%1"=="HB30" if not exist hb30\nul goto ERROR3
 if /I "%1"=="HB32" set BASE_DISTRO_SUBDIR=hb32
 if /I "%1"=="HB32" if not exist hb32\nul md hb32
 if /I "%1"=="HB32" if not exist hb32\nul goto ERROR3
-if /I "%1"=="XB"   set BASE_DISTRO_SUBDIR=xhb32bcc
-if /I "%1"=="XB"   if not exist xhb32bcc\nul md xhb32bcc
-if /I "%1"=="XB"   if not exist xhb32bcc\nul goto ERROR3
+if /I "%1"=="XB"   set BASE_DISTRO_SUBDIR=xhbcc
+if /I "%1"=="XB"   if not exist xhbcc\nul md xhbcc
+if /I "%1"=="XB"   if not exist xhbcc\nul goto ERROR3
 set BASE_DISTRO_SUBDIR=ide
 if not exist ide\nul md ide
 if not exist ide\nul goto ERROR3
@@ -164,7 +161,7 @@ if not exist source\nul goto ERROR3
 
 :FILES
 echo Copying %HG_ROOT%...
-xcopy %HG_ROOT%\*.* /r /c /q /y /exclude:%HG_ROOT%\MakeExclude.txt
+xcopy %HG_ROOT%\*.* /r /c /q /y /exclude:%HG_ROOT%\distros\MakeExclude.txt
 xcopy %HG_ROOT%\compile.bat /r /y /q
 if /I "%1"=="HB30" xcopy %HG_ROOT%\compile30.bat /r /y /q
 if /I "%1"=="HB32" xcopy %HG_ROOT%\compile32.bat /r /y /q
@@ -186,7 +183,7 @@ echo Copying DOC...
 set BASE_DISTRO_SUBDIR=doc
 if not exist doc\nul goto ERROR5
 cd doc
-xcopy %HG_ROOT%\doc\*.* /r /s /e /c /q /y /exclude:%HG_ROOT%\MakeExclude.txt
+xcopy %HG_ROOT%\doc\*.* /r /s /e /c /q /y /exclude:%HG_ROOT%\distros\MakeExclude.txt
 cd ..
 echo.
 :HB30
@@ -210,9 +207,9 @@ echo.
 :XB
 if /I not "%1"=="XB" goto :IDE
 echo Copying xHarbour...
-set BASE_DISTRO_SUBDIR=xhb32bcc
-if not exist xhb32bcc\nul goto ERROR5
-cd xhb32bcc
+set BASE_DISTRO_SUBDIR=xhbcc
+if not exist xhbcc\nul goto ERROR5
+cd xhbcc
 xcopy %HG_HRB%\*.* /r /s /e /c /q /y
 cd ..
 echo.
@@ -221,7 +218,7 @@ echo Copying IDE...
 set BASE_DISTRO_SUBDIR=ide
 if not exist ide\nul goto ERROR5
 cd ide
-xcopy %HG_ROOT%\ide\*.* /r /s /e /c /q /y /exclude:%HG_ROOT%\MakeExclude.txt
+xcopy %HG_ROOT%\ide\*.* /r /s /e /c /q /y /exclude:%HG_ROOT%\distros\MakeExclude.txt
 if /I "%1"=="HB30" xcopy %HG_ROOT%\ide\build.bat /r /y /q
 if /I "%1"=="HB30" xcopy %HG_ROOT%\ide\mgide.hbp /r /y /q
 if /I "%1"=="HB32" xcopy %HG_ROOT%\ide\build.bat /r /y /q
@@ -234,7 +231,7 @@ echo Copying INCLUDE...
 set BASE_DISTRO_SUBDIR=include
 if not exist include\nul goto ERROR5
 cd include
-xcopy %HG_ROOT%\include\*.* /r /s /e /c /q /y /exclude:%HG_ROOT%\MakeExclude.txt
+xcopy %HG_ROOT%\include\*.* /r /s /e /c /q /y /exclude:%HG_ROOT%\distros\MakeExclude.txt
 cd ..
 echo.
 :MANUAL
@@ -242,7 +239,7 @@ echo Copying MANUAL...
 set BASE_DISTRO_SUBDIR=manual
 if not exist manual\nul goto ERROR5
 cd manual
-xcopy %HG_ROOT%\manual\*.* /r /s /e /c /q /y /exclude:%HG_ROOT%\MakeExclude.txt
+xcopy %HG_ROOT%\manual\*.* /r /s /e /c /q /y /exclude:%HG_ROOT%\distros\MakeExclude.txt
 cd ..
 echo.
 if /I not "%1"=="HB30" goto :RESOURCES
@@ -251,7 +248,7 @@ echo Copying RESOURCES...
 set BASE_DISTRO_SUBDIR=resources
 if not exist resources\nul goto ERROR5
 cd resources
-xcopy %HG_ROOT%\resources\*.* /r /s /e /c /q /y /exclude:%HG_ROOT%\MakeExclude.txt
+xcopy %HG_ROOT%\resources\*.* /r /s /e /c /q /y /exclude:%HG_ROOT%\distros\MakeExclude.txt
 if /I "%1"=="HB30" xcopy %HG_ROOT%\resources\compileres_mingw.bat /r /y /q
 if /I "%1"=="HB32" xcopy %HG_ROOT%\resources\compileres_mingw.bat /r /y /q
 if /I "%1"=="XB"   xcopy %HG_ROOT%\resources\compileres_bcc.bat /r /y /q
@@ -265,7 +262,7 @@ echo Copying SAMPLES...
 set BASE_DISTRO_SUBDIR=samples
 if not exist samples\nul goto ERROR5
 cd samples
-xcopy %HG_ROOT%\samples\*.* /r /s /e /c /q /y /exclude:%HG_ROOT%\MakeExclude.txt
+xcopy %HG_ROOT%\samples\*.* /r /s /e /c /q /y /exclude:%HG_ROOT%\distros\MakeExclude.txt
 cd ..
 echo.
 :SOURCE
@@ -273,7 +270,7 @@ echo Copying SOURCE...
 set BASE_DISTRO_SUBDIR=source
 if not exist source\nul goto ERROR5
 cd source
-xcopy %HG_ROOT%\source\*.* /r /s /e /c /q /y /exclude:%HG_ROOT%\MakeExclude.txt
+xcopy %HG_ROOT%\source\*.* /r /s /e /c /q /y /exclude:%HG_ROOT%\distros\MakeExclude.txt
 if /I "%1"=="HB30" xcopy %HG_ROOT%\source\buildlib30.bat /r /y /q
 if /I "%1"=="HB32" xcopy %HG_ROOT%\source\buildlib32.bat /r /y /q
 if /I "%1"=="HB30" xcopy %HG_ROOT%\source\buildlib.bat /r /y /q
@@ -356,7 +353,7 @@ goto OIDE_HBMK2
 echo Building libs...
 cd source
 set HG_ROOT=%BASE_DISTRO_DIR%
-set HG_HRB=%BASE_DISTRO_DIR%\xhb32bcc
+set HG_HRB=%BASE_DISTRO_DIR%\xhbcc
 set HG_BCC=C:\BORLAND\BCC55
 set LIB_GUI=lib\xhb\bcc
 set LIB_HRB=lib

@@ -1,11 +1,33 @@
 /*
- * $Id: ChangeLog,v 1.1432 2015-03-18 20:49:41 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1433 2015-03-18 23:58:17 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-03-18 20:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   - ./MakeDistro.bat
+   - ./MakeExclude.txt
+     ; Moved to "distros" folder.
+   + distros/.cvsignore
+   + distros/MakeDistro.bat
+     ! Predefined environment vars are not honored.
+   + distros/MakeExclude.txt
+   + distros/hb30mingw.iss
+   + distros/hb32mingw.iss
+   + distros/xhbbcc.iss
+     ; To create installer exes using INNO Setup 5.5.5
+   + distros/infoafter_bcc.txt
+   + distros/infoafter_mingw.txt
+   + distros/infobefore.txt
+   + distros/license.txt
+     ; To customize installer exes using INNO Setup 5.5.5
+   * ./compileXB.bat
+   * ide/compile.bat
+   * source/makelibXB.bat
+     * Folder for xHarbour to "xhbcc".
 
 2015-03-18 17:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ide/prgs/mgide.prg

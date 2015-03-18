@@ -1,0 +1,12 @@
+
+Before start using OOHG you will need Borland C/C++ 5.5 compiler (BCC) installed in your hard disk. You can download a copy from http://www.whosaway.com/
+
+Note that the settings in the batch files are defaults and that they will work if you installed OOHG at C:\OOHG and BCC at C:\BORLAND\BCC55.
+
+If you installed OOHG f.e.to F:\OOHG, you must set this environment variable:
+set HG_ROOT=F:\OOHG
+
+If you installed BCC f.e.to F:\BCC, you must set this environment variable:
+set HG_BCC=F:\BCC
+
+For more information, please read the batch files or ask questions in the user's support group.

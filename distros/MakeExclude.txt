@@ -2,6 +2,7 @@
 \.hbmk\
 \cvs\
 \workinprogress\
+\distros\
 buildapp.bat
 buildapp_hbmk2.bat
 buildapp30.bat
@@ -20,8 +21,6 @@ compileXB.bat
 hbprinter.hbp
 hmi.ini
 ide_up_to_2013-08-13.zip
-makedistro.bat
-makeexclude.txt
 makelib_bcc.bat
 makelib_mingw.bat
 makelib_pc.bat

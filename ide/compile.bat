@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: compile.bat,v 1.1 2015-03-18 01:22:30 fyurisich Exp $
+rem $Id: compile.bat,v 1.2 2015-03-18 23:58:18 fyurisich Exp $
 rem
 
 if /I not "%1%"=="/NOCLS" cls
@@ -14,7 +14,7 @@ goto EXIT
 :PATH
 if /I "%1"=="/C" goto CLEAN_PATH
 if "%HG_ROOT%"=="" set HG_ROOT=c:\oohg
-if "%HG_HRB%"==""  set HG_HRB=c:\xhb32bcc
+if "%HG_HRB%"==""  set HG_HRB=c:\xhbcc
 if "%HG_BCC%"==""  set HG_BCC=c:\Borland\BCC55
 if "%LIB_GUI%"=="" set LIB_GUI=lib\xhb\bcc
 if "%LIB_HRB%"=="" set LIB_HRB=lib
@@ -27,7 +27,7 @@ goto EXIT
 
 :CLEAN_PATH
 set HG_ROOT=c:\oohg
-set HG_HRB=c:\xhb32bcc
+set HG_HRB=c:\xhbcc
 set HG_BCC=c:\Borland\BCC55
 set LIB_GUI=lib\xhb\bcc
 set LIB_HRB=lib

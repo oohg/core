@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: makelibXB.bat,v 1.1 2015-03-18 01:22:30 fyurisich Exp $
+rem $Id: makelibXB.bat,v 1.2 2015-03-18 23:58:18 fyurisich Exp $
 rem
 cls
 
@@ -8,7 +8,7 @@ rem *** Set Paths ***
 if "%1"=="/C" goto CLEAN_PATH
 if "%1"=="/c" goto CLEAN_PATH
 if "%HG_ROOT%"=="" set HG_ROOT=c:\oohg
-if "%HG_HRB%"==""  set HG_HRB=c:\oohg\xhb32bcc
+if "%HG_HRB%"==""  set HG_HRB=c:\oohg\xhbcc
 if "%HG_BCC%"==""  set HG_BCC=c:\Borland\BCC55
 if "%LIB_GUI%"=="" set LIB_GUI=lib\xhb\bcc
 if "%LIB_HRB%"=="" set LIB_HRB=lib
@@ -17,7 +17,7 @@ goto BUILD
 
 :CLEAN_PATH
 set HG_ROOT=c:\oohg
-set HG_HRB=c:\oohg\xhb32bcc
+set HG_HRB=c:\oohg\xhbcc
 set HG_MINGW=c:\Borland\BCC55
 set LIB_GUI=lib\xhb\bcc
 set LIB_HRB=lib

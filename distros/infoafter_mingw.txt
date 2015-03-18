@@ -1,0 +1,7 @@
+
+Note that the settings in the batch files are defaults and that they will work if you installed OOHG at C:\OOHG.
+
+If you installed OOHG f.e.to F:\OOHG, you must set this environment variable:
+set HG_ROOT=F:\OOHG
+
+For more information, please read the batch files or ask questions in the user's support group.
