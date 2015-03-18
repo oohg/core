@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: MakeDistro.bat,v 1.10 2015-03-18 01:22:29 fyurisich Exp $
+rem $Id: MakeDistro.bat,v 1.11 2015-03-18 20:49:41 fyurisich Exp $
 rem
 cls
 
@@ -70,9 +70,6 @@ goto END
 rem Change this sets to use different sources for OOHG, Harbour and MinGW
 if "%HG_ROOT%" == "" set HG_ROOT=C:\OOHG
 
-rem BORRAR
-set HG_ROOT=C:\OOHG
-
 if not exist %HG_ROOT%\MakeExclude.txt goto ERROR2
 if /I "%1"=="HB30" set HG_HRB=C:\HB30
 if /I "%1"=="HB30" set HG_MINGW=C:\HB30\COMP\MINGW
@@ -82,12 +79,6 @@ if /I "%1"=="XB"   set HG_HRB=C:\XHB32BCC
 if /I "%1"=="XB"   set HG_BCC=C:\BORLAND\BCC55
 
 :DISTRO_FOLDER
-
-rem BORRAR
-if /I "%1"=="HB30" set BASE_DISTRO_DIR=W:\OOHG_HB30
-if /I "%1"=="HB32" set BASE_DISTRO_DIR=W:\OOHG_HB32
-if /I "%1"=="XB"   set BASE_DISTRO_DIR=W:\OOHG_XB
-
 if not "%BASE_DISTRO_DIR%"=="" goto PREPARE
 if /I "%1"=="HB30" set BASE_DISTRO_DIR=C:\OOHG_HB30
 if /I "%1"=="HB32" set BASE_DISTRO_DIR=C:\OOHG_HB32

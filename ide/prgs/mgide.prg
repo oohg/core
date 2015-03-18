@@ -1,5 +1,5 @@
 /*
- * $Id: mgide.prg,v 1.26 2015-03-18 01:22:29 fyurisich Exp $
+ * $Id: mgide.prg,v 1.27 2015-03-18 20:49:41 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -4262,25 +4262,25 @@ LOCAL i, nCount, nPos, nLine, cText
        nPos := nPos + Len( RTrim( ( MemoLine( cText, 500, i ) ) ) )
        IF i == nLine
           ::Form_Edit:edit_1:SetFocus()
-          ::Form_Edit.edit_1.CaretPos := nPos + ( i * 2 ) - i + 1 - 2 - Len( Trim( ( MemoLine( cText, 500, i ) ) ) )
+          ::Form_Edit:edit_1:CaretPos := nPos + ( i * 2 ) - i + 1 - 2 - Len( Trim( ( MemoLine( cText, 500, i ) ) ) )
           EXIT
        ENDIF
    NEXT i
 RETURN NIL
 
 //------------------------------------------------------------------------------
-METHOD lookchanges() CLASS THMI
+METHOD LookChanges() CLASS THMI
 //------------------------------------------------------------------------------
-   IF ::Form_Edit.edit_1.CaretPos <> ::nCaretPos
+   IF ::Form_Edit:edit_1:CaretPos <> ::nCaretPos
       ::posxy()
    ENDIF
 RETURN NIL
 
 //------------------------------------------------------------------------------
-METHOD posxy() CLASS THMI
+METHOD PosXY() CLASS THMI
 //------------------------------------------------------------------------------
 LOCAL i, texto, long
-LOCAL nCP := ::Form_Edit.edit_1.caretpos, npos := 0, nposx := 0, nposy
+LOCAL nCP := ::Form_Edit:edit_1:CaretPos, npos := 0, nposx := 0, nposy
    texto:=::Form_Edit:edit_1:value
    long:=mlcount(texto)
    ::nCaretPos := nCP
@@ -4297,7 +4297,7 @@ LOCAL nCP := ::Form_Edit.edit_1.caretpos, npos := 0, nposx := 0, nposy
           exit
        endif
     NEXT i
-    ::Form_Edit.StatusBar.Item(1) := ' Lin'+PADR(str(nposy,4),4)+' Col'+PADR(str(nposx,4),4)+' Car'+PADR(str(nCP,4),4)
+    ::Form_Edit:StatusBar:Item(1, ' Lin' + padr( str( nposy, 4), 4) + ' Col' + PADR( str( nposx, 4), 4) + ' Car' + padr( str( nCP, 4), 4) )
 RETURN NIL
 
 //------------------------------------------------------------------------------
@@ -4311,14 +4311,14 @@ METHOD txtsearch() CLASS THMI
 RETURN NIL
 
 //------------------------------------------------------------------------------
-METHOD nextsearch() CLASS THMI
+METHOD NextSearch() CLASS THMI
 //------------------------------------------------------------------------------
 LOCAL texto
 texto:=StrTran(::Form_Edit:edit_1:value,CR,"")
 ::npostext:=myat(upper(::ctext),upper(texto),::npostext+len(::ctext))
 if ::npostext>0
    ::Form_Edit:edit_1:setfocus()
-   ::Form_Edit.edit_1.caretpos:=::npostext-1
+   ::Form_Edit:edit_1:CaretPos := ::npostext-1
 else
    ::Form_Edit:edit_1:setfocus()
    MsgInfo( 'No more matches found.', 'ooHG IDE+' )

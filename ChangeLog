@@ -1,11 +1,18 @@
 /*
- * $Id: ChangeLog,v 1.1431 2015-03-18 01:22:29 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1432 2015-03-18 20:49:41 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-03-18 17:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/prgs/mgide.prg
+     ! RTE at methods GoLine, LookChanges, PosXY and NextSearch
+       of THMI class.
+   * ./MakeDistro.bat
+     ! Predefined environment vars are not honored.
 
 2015-03-17 22:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog.004
