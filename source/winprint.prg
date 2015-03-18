@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.58 2015-03-09 02:52:08 fyurisich Exp $
+ * $Id: winprint.prg,v 1.59 2015-03-18 01:22:30 fyurisich Exp $
  */
 /*----------------------------------------------------------------------------
  * ooHG source code:
@@ -2081,10 +2081,31 @@ Return OKPrint
 
 #pragma BEGINDUMP
 
-#define _WIN32_IE      0x0500
 #define HB_OS_WIN_32_USED
-#define _WIN32_WINNT   0x0400
-#define WINVER   0x0400
+
+#ifndef WINVER
+   #define WINVER 0x0400
+#endif
+#if ( WINVER < 0x0400 )
+   #undef WINVER
+   #define WINVER 0x0400
+#endif
+
+#ifndef _WIN32_IE
+   #define _WIN32_IE 0x0500
+#endif
+#if ( _WIN32_IE < 0x0500 )
+   #undef _WIN32_IE
+   #define _WIN32_IE 0x0500
+#endif
+
+#ifndef _WIN32_WINNT
+   #define _WIN32_WINNT 0x0400
+#endif
+#if ( _WIN32_WINNT < 0x0400 )
+   #undef _WIN32_WINNT
+   #define _WIN32_WINNT 0x0400
+#endif
 
 #include <windows.h>
 #include <winuser.h>

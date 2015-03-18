@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog.004,v 1.1 2015-03-14 15:04:48 fyurisich Exp $
+ * $Id: ChangeLog.004,v 1.2 2015-03-18 01:22:29 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -481,7 +481,7 @@
    + ./compile32.bat
      * Use this file to compile using Harbour 3.2 and MinGW.
      ; Use /c switch to set environment vars to its default values.
-     ; Syntax: CompileXX /c prgfile
+     ; Syntax: Compile32 /c prgfile
 
 2015-03-08 12:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./2buildapp.bat

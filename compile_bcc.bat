@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: compile_bcc.bat,v 1.17 2015-03-12 00:58:16 fyurisich Exp $
+rem $Id: compile_bcc.bat,v 1.18 2015-03-18 01:22:29 fyurisich Exp $
 rem
 cls
 
@@ -169,7 +169,7 @@ for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/M" echo %HG_HRB%\%LIB_HRB%
 rem *** BCC-dependant Libraries ***
 echo cw32.lib + >> b32.bc
 echo msimg32.lib + >> b32.bc
-echo import32.lib, >> b32.bc
+echo import32.lib, , + >> b32.bc
 
 rem *** Resource Files ***
 if exist %TFILE%.res echo %TFILE%.res + >> b32.bc

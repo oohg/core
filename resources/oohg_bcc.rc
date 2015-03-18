@@ -1,11 +1,15 @@
 //
-// $Id: oohg_bcc.rc,v 1.3 2014-05-20 01:08:47 fyurisich Exp $
+// $Id: oohg_bcc.rc,v 1.4 2015-03-18 01:22:30 fyurisich Exp $
 //
 // Use CompileRes.bat to build oohg.res from this file using Borland Compiler
 
 // MANIFEST FOR CREATE 'XP-STYLE' APPLICATIONS
 
-1 24 WindowsXP.Manifest
+#if defined( HB_ARCH_64BIT )
+    1 24 WindowsXP64.Manifest
+#else
+    1 24 WindowsXP.Manifest
+#endif
 
 MINIGUI_FINGER          CURSOR          FINGER.CUR
 

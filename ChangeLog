@@ -1,11 +1,63 @@
 /*
- * $Id: ChangeLog,v 1.1430 2015-03-14 15:04:48 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1431 2015-03-18 01:22:29 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-03-17 22:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog.004
+     * Previous entry.
+   * ./MakeDistro.bat
+     + Support for xHarbour with BCC.
+   * ./MakeExclude.txt
+     + More files.
+   * ./compile.bat
+     + Support for xHarbour with BCC.
+   + ./compileXB.bat
+     * Use this file to compile using xHarbour and BCC.
+     ; Use /c switch to set environment vars to its default values.
+     ; Syntax: CompileXB /c prgfile
+   * ./compile_bcc.bat
+     ! Response file.
+   * ./compile_MINGW.BAT
+     + libmsimg32.a to all builds.
+     + libiphlpapi.a to optional libraries (use with libsocket.a).
+   + ide/compile.bat
+     * To compile the IDE using xHarbour and BCC.
+   + ide/prgs/mgide.prg
+     ! Compilation under xHarbour.
+     + (x)Harbour and C Compiler versions to About window.
+   * manual/changelog.htm
+     * Updated.
+   + resources/CompileRes_mingw.bat
+     * Compiles OOHG's resource file for MinGW.
+   + resources/CompileRes_bcc.bat
+     * Compiles OOHG's resource file for BCC.
+   * resources/CompileRes.bat
+     * Now calls CompileRes_mingw.bat and CompileRes_bcc.bat.
+   * resources/WindowsXP64.Manifest
+     + requestedExecutionLevel.
+   * resources/oohg.rc
+     ! Manifest selection for 64 bits MinGW.
+   * resources/oohg_bcc.rc
+     + Manifest selection for 64 bits MinGW.
+   * source/h_msgbox.prg
+     ! BCC warning at _Dummy().
+   * source/h_print.prg
+     ! BCC warning at some defines.
+   * source/h_tree.prg
+     ! BCC warning at TTREE_FONTCOLOR()
+   * source/makelib.bat
+     + Support for xHarbour with BCC.
+   + source/makelibXB.bat
+     * Builds OOHG's libraries for xHarbour and BCC via makelib_bcc.bat
+   * source/makelib_bcc.bat
+     * Output is captured to resul.txt and showed at the end.
+   * source/winprint.prg
+     ! BCC warning at some defines.
 
 2015-03-14 12:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    + ./ChangeLog.004

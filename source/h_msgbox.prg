@@ -1,5 +1,5 @@
 /*
- * $Id: h_msgbox.prg,v 1.20 2015-03-09 02:52:08 fyurisich Exp $
+ * $Id: h_msgbox.prg,v 1.21 2015-03-18 01:22:30 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -100,14 +100,6 @@ static _OOHG_MsgDefaultTitle := ''
 static _OOHG_MsgDefaultMode := Nil
 // Nil = MB_SYSTEMMODAL, other values MB_APPLMODAL and MB_TASKMODAL
 
-#ifdef __XHARBOUR__
-
-*-----------------------------------------------------------------------------*
-Static Function _Dummy()
-*-----------------------------------------------------------------------------*
-Return EMPTY( _OOHG_AllVars )
-
-#endif
 
 *-----------------------------------------------------------------------------*
 Function SetOneArrayItemPerLine( lSet )
@@ -123,27 +115,33 @@ Return _OOHG_OneItemPerLine
 *-----------------------------------------------------------------------------*
 Function SetMsgDefaultMessage( cMessage )
 *-----------------------------------------------------------------------------*
+
    IF valtype( cMessage ) == "C"
       _OOHG_MsgDefaultMessage := cMessage
    ENDIF
+
 Return _OOHG_MsgDefaultMessage
 
 
 *-----------------------------------------------------------------------------*
 Function SetMsgDefaultTitle( cTitle )
 *-----------------------------------------------------------------------------*
+
    IF valtype( cTitle ) == "C"
       _OOHG_MsgDefaultTitle := cTitle
    ENDIF
+
 Return _OOHG_MsgDefaultTitle
 
 
 *-----------------------------------------------------------------------------*
 Function SetMsgDefaultMode( nMode )
 *-----------------------------------------------------------------------------*
+
    IF valtype( nMode ) == "N"
       _OOHG_MsgDefaultMode := nMode
    ENDIF
+
 Return _OOHG_MsgDefaultMode
 
 
@@ -302,8 +300,8 @@ Local nWidth, nHeight
       MINHEIGHT 115 + nHeight ;
       MAXHEIGHT 115 + nHeight
 
-      ON KEY ESCAPE ACTION _Win_1.Release
-      ON KEY RETURN ACTION _Win_1.Release
+      ON KEY ESCAPE ACTION ThisWindow:Release()
+      ON KEY RETURN ACTION ThisWindow:Release()
 
       IF nSecs >= 1
          DEFINE TIMER _timer__x ;

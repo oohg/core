@@ -1,5 +1,5 @@
 //
-// $Id: oohg.rc,v 1.8 2014-05-20 01:08:47 fyurisich Exp $
+// $Id: oohg.rc,v 1.9 2015-03-18 01:22:30 fyurisich Exp $
 //
 // Use this file with MinGW Compiler
 
@@ -8,9 +8,9 @@
 // MANIFEST FOR CREATE 'XP-STYLE' APPLICATIONS
 
 #if defined( HB_ARCH_64BIT )
-    1 24 oohgpath\WindowsXP.Manifest
-#else
     1 24 oohgpath\WindowsXP64.Manifest
+#else
+    1 24 oohgpath\WindowsXP.Manifest
 #endif
 
 MINIGUI_FINGER          CURSOR          oohgpath\FINGER.CUR

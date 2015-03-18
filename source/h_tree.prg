@@ -1,5 +1,5 @@
 /*
- * $Id: h_tree.prg,v 1.42 2015-03-09 02:52:08 fyurisich Exp $
+ * $Id: h_tree.prg,v 1.43 2015-03-18 01:22:30 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2823,32 +2823,6 @@ HB_FUNC( TREEVIEW_ENDEDITLABELNOW )
 {
    hb_retl( TreeView_EndEditLabelNow( HWNDparam( 1 ), (WPARAM) hb_parl( 2 ) ) );
 }
-
-#if 0
-HB_FUNC_STATIC( TTREE_FONTCOLOR )
-{
-   PHB_ITEM pSelf = hb_stackSelfItem();
-   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
-
-   if( _OOHG_DetermineColorReturn( hb_param( 1, HB_IT_ANY ), &oSelf->lFontColor, ( hb_pcount() >= 1 ) ) )
-   {
-      if( ValidHandler( oSelf->hWnd ) )
-      {
-         if( oSelf->lFontColor != -1 )
-         {
-            (void) TreeView_SetTextColor( oSelf->hWnd, oSelf->lFontColor );
-         }
-         else
-         {
-            (void) TreeView_SetTextColor( oSelf->hWnd, GetSysColor( COLOR_WINDOWTEXT ) );
-         }
-         RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
-      }
-   }
-
-   /* return value was set in _OOHG_DetermineColorReturn() */
-}
-#endif
 
 HB_FUNC( TREEVIEW_GETBOLDSTATE )
 {

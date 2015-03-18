@@ -1,5 +1,5 @@
 /*
- * $Id: mgide.prg,v 1.25 2015-03-14 03:32:22 fyurisich Exp $
+ * $Id: mgide.prg,v 1.26 2015-03-18 01:22:29 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -32,10 +32,6 @@
 #DEFINE LF chr(10)
 #DEFINE HTAB chr(9)
 #DEFINE cNameApp "Harbour ooHG IDE Plus"+" v."+substr(__DATE__,3,2)+"."+right(__DATE__,4) 
-
-#ifdef __HARBOUR__
-   #xtranslate Curdrive() => hb_Curdrive()    
-#endif
 
 //------------------------------------------------------------------------------
 FUNCTION Main( rtl )
@@ -911,7 +907,7 @@ LOCAL about_form
       AUTOSIZE
 
       @ 40,20 HYPERLINK LB_MAIL ;
-      VALUE "(c) 2002-2012 Ciro Vargas Clemow" ;
+      VALUE "(c) 2002-" + LTrim( Str( Year( Date() ) ) ) + " Ciro Vargas Clemow" ;
       ADDRESS 'pcman2010@yahoo.com' ;
       WIDTH 120 ;
       HEIGHT 24 ;
@@ -919,15 +915,15 @@ LOCAL about_form
       FONT "Times new Roman" SIZE 10  ;
       TOOLTIP 'Click to email-me' HANDCURSOR ;
 
-      @ 60,20  LABEL LB_NORM1 VALUE 'Original idea Roberto Lopez. (MiniGUI creator)' ;
+      @ 60,20  LABEL LB_NORM1 VALUE 'Original idea by Roberto López. (MiniGUI creator)' ;
       FONT "Times new Roman" SIZE 10  ;
       AUTOSIZE
 
-      @ 80,20  LABEL LB_NORM2 VALUE 'Version '+miniguiversion() ;
-      FONT "Times new Roman" SIZE 10  ;
+      @ 80,20  LABEL LB_NORM2 VALUE MiniguiVersion() + " " + HB_COMPILER() + " " + Version() ;
+      FONT "Times new Roman" SIZE 9  ;
       AUTOSIZE
 
-      @ 100,20  LABEL LB_NORMooHG VALUE 'ooHG Creator  Vicente Guerra' ;
+      @ 100,20  LABEL LB_NORMooHG VALUE 'ooHG creator: Vicente Guerra' ;
       FONT "Times new Roman" SIZE 10  ;
       AUTOSIZE
 
@@ -941,7 +937,7 @@ LOCAL about_form
       TOOLTIP 'Click to go'  ;
       HANDCURSOR
 
-      @ 140,20  LABEL LB_NORM3 VALUE 'Dedicated to my dear sons, Ciro Andres , Santiago and Esteban.' ;
+      @ 140,20  LABEL LB_NORM3 VALUE 'Dedicated to my dear sons, Ciro Andrés, Santiago and Esteban.' ;
       FONT "Times new Roman" SIZE 9  ;
       AUTOSIZE
 
@@ -5027,7 +5023,6 @@ METHOD DoChange() CLASS myTRadioGroup
 *------------------------------------------------------------------------------*
    _OOHG_Eval( ::OnRClick )
 RETURN ::Super:DoChange()
-
 
 /*
  * EOF
