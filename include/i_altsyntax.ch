@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.119 2015-03-09 02:51:06 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.120 2015-03-20 00:00:42 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -565,7 +565,6 @@ FRAME
             _OOHG_ActiveControlInvisible, ;
             _OOHG_ActiveControlDisabled )
 
-
 #xcommand HEADERS <headers> ;
    => ;
       _OOHG_ActiveControlHeaders := <headers>
@@ -1079,29 +1078,29 @@ TEXT BOX
 #xcommand DEFINE TEXTBOX <name> ;
    => ;
       _OOHG_ClearActiveControlInfo( <(name)> ) ;;
-      _OOHG_ActiveControlField        := NIL    ;;
-      _OOHG_ActiveControlMaxLength    := NIL    ;;
-      _OOHG_ActiveControlUpperCase    := .F.    ;;
-      _OOHG_ActiveControlLowerCase    := .F.    ;;
-      _OOHG_ActiveControlNumeric      := .F.    ;;
-      _OOHG_ActiveControlPassword     := .F.    ;;
-      _OOHG_ActiveControlRightAlign   := .F.    ;;
-      _OOHG_ActiveControlReadonly     := .F.    ;;
-      _OOHG_ActiveControlDateType     := .F.    ;;
-      _OOHG_ActiveControlInputMask    := NIL    ;;
-      _OOHG_ActiveControlPicture      := NIL    ;;
-      _OOHG_ActiveControlFormat       := NIL    ;;
-      _OOHG_ActiveControlNoBorder     := .F.    ;;
-      _OOHG_ActiveControlAutoSkip     := .F.    ;;
-      _OOHG_ActiveControlFocusedPos   := NIL    ;;
-      _OOHG_ActiveControlValid        := NIL    ;;
-      _OOHG_ActiveControlImage        := NIL    ;;
-      _OOHG_ActiveControlWhen         := NIL    ;;
-      _OOHG_ActiveControlAction       := NIL    ;;
-      _OOHG_ActiveControlAction2      := NIL    ;;
-      _OOHG_ActiveControlCenterAlign  := NIL    ;;
-      _OOHG_ActiveControlDefaultYear  := NIL    ;;
-      _OOHG_ActiveControlOnTextFilled := NIL    ;;
+      _OOHG_ActiveControlField        := NIL   ;;
+      _OOHG_ActiveControlMaxLength    := NIL   ;;
+      _OOHG_ActiveControlUpperCase    := .F.   ;;
+      _OOHG_ActiveControlLowerCase    := .F.   ;;
+      _OOHG_ActiveControlNumeric      := .F.   ;;
+      _OOHG_ActiveControlPassword     := .F.   ;;
+      _OOHG_ActiveControlRightAlign   := .F.   ;;
+      _OOHG_ActiveControlReadonly     := .F.   ;;
+      _OOHG_ActiveControlDateType     := .F.   ;;
+      _OOHG_ActiveControlInputMask    := NIL   ;;
+      _OOHG_ActiveControlPicture      := NIL   ;;
+      _OOHG_ActiveControlFormat       := NIL   ;;
+      _OOHG_ActiveControlNoBorder     := .F.   ;;
+      _OOHG_ActiveControlAutoSkip     := .F.   ;;
+      _OOHG_ActiveControlFocusedPos   := NIL   ;;
+      _OOHG_ActiveControlValid        := NIL   ;;
+      _OOHG_ActiveControlImage        := NIL   ;;
+      _OOHG_ActiveControlWhen         := NIL   ;;
+      _OOHG_ActiveControlAction       := NIL   ;;
+      _OOHG_ActiveControlAction2      := NIL   ;;
+      _OOHG_ActiveControlCenterAlign  := NIL   ;;
+      _OOHG_ActiveControlDefaultYear  := NIL   ;;
+      _OOHG_ActiveControlOnTextFilled := NIL   ;;
       _OOHG_ActiveControlInsertType   := NIL
 
 #xcommand INSERTTYPE <inserttype> ;
@@ -1463,7 +1462,8 @@ BUTTON
             _OOHG_ActiveControlOnMouseMove, ;
             _OOHG_ActiveControlNo3DColors, ;
             _OOHG_ActiveControlAutoFit, ;
-            _OOHG_ActiveControlNoDIBSection )
+            _OOHG_ActiveControlNoDIBSection, ;
+            _OOHG_ActiveControlBackColor )
 
 /*---------------------------------------------------------------------------
 IMAGE
@@ -1544,7 +1544,8 @@ IMAGE
             _OOHG_ActiveControlNo3DColors, ;
             _OOHG_ActiveControlNoDIBSection, ;
             _OOHG_ActiveControlTransparent, ;
-            _OOHG_ActiveControlExcludeArea )
+            _OOHG_ActiveControlExcludeArea, ;
+            _OOHG_ActiveControlDisabled )
 
 /*---------------------------------------------------------------------------
 CHECK BOX/BUTTON
@@ -1572,16 +1573,22 @@ CHECK BOX/BUTTON
 #xcommand DEFINE CHECKBUTTON <name> ;
    => ;
       _OOHG_ClearActiveControlInfo( <(name)> ) ;;
-      _OOHG_ActiveControlCaption      := NIL    ;;
-      _OOHG_ActiveControlPicture      := NIL    ;;
-      _OOHG_ActiveControlField        := NIL    ;;
-      _OOHG_ActiveControlBuffer       := NIL    ;;
-      _OOHG_ActiveControlHBitmap      := NIL    ;;
-      _OOHG_ActiveControlTransparent  := .T.    ;;
-      _OOHG_ActiveControlScale        := .F.    ;;
-      _OOHG_ActiveControlNo3DColors   := .F.    ;;
-      _OOHG_ActiveControlAutoFit      := .F.    ;;
-      _OOHG_ActiveControlNoDIBSection := .T.
+      _OOHG_ActiveControlCaption      := NIL   ;;
+      _OOHG_ActiveControlPicture      := NIL   ;;
+      _OOHG_ActiveControlField        := NIL   ;;
+      _OOHG_ActiveControlBuffer       := NIL   ;;
+      _OOHG_ActiveControlHBitmap      := NIL   ;;
+      _OOHG_ActiveControlTransparent  := .T.   ;;
+      _OOHG_ActiveControlScale        := .F.   ;;
+      _OOHG_ActiveControlNo3DColors   := .F.   ;;
+      _OOHG_ActiveControlAutoFit      := .F.   ;;
+      _OOHG_ActiveControlNoDIBSection := .T.   ;;
+      _OOHG_ActiveControlThemed       := .F.   ;;
+      _OOHG_ActiveControlImageMargin  := NIL   ;;
+      _OOHG_ActiveControlOnMouseMove  := NIL   ;;
+      _OOHG_ActiveControlAlignment    := NIL   ;;
+      _OOHG_ActiveControlMultiLine    := .F.   ;;
+      _OOHG_ActiveControlFlat         := .F.
 
 #xcommand ONCHANGE <onchange> ;
    => ;
@@ -1667,7 +1674,15 @@ CHECK BOX/BUTTON
             _OOHG_ActiveControlScale, ;
             _OOHG_ActiveControlNo3DColors, ;
             _OOHG_ActiveControlAutoFit, ;
-            _OOHG_ActiveControlNoDIBSection )
+            _OOHG_ActiveControlNoDIBSection, ;
+            _OOHG_ActiveControlBackColor, ;
+            _OOHG_ActiveControlDisabled, ;
+            _OOHG_ActiveControlThemed, ;
+            _OOHG_ActiveControlImageMargin, ;
+            _OOHG_ActiveControlOnMouseMove, ;
+            _OOHG_ActiveControlAlignment, ;
+            _OOHG_ActiveControlMultiLine, ;
+            _OOHG_ActiveControlFlat )
 
 /*---------------------------------------------------------------------------
 COMBOBOX
@@ -1948,7 +1963,9 @@ EDIT BOX
       _OOHG_ActiveControlNoVScroll  := .F.     ;;
       _OOHG_ActiveControlNoHScroll  := .F.     ;;
       _OOHG_ActiveControlNoBorder   := .F.     ;;
-      _OOHG_ActiveControlFocusedPos := NIL
+      _OOHG_ActiveControlFocusedPos := NIL     ;;
+      _OOHG_ActiveControlHScroll    := NIL     ;;
+      _OOHG_ActiveControlVScroll    := NIL
 
 #xcommand READONLYFIELDS <readonly> ;
    => ;
@@ -1961,6 +1978,22 @@ EDIT BOX
 #xcommand SETBREAK <break> ;
    => ;
       _OOHG_ActiveControlBreak := <break>
+
+#xcommand ON HSCROLL <hscroll> ;
+   => ;
+      _OOHG_ActiveControlHScroll := <hscroll>
+
+#xcommand ONHSCROLL <hscroll> ;
+   => ;
+      _OOHG_ActiveControlHScroll := <hscroll>
+
+#xcommand ON VSCROLL <vscroll> ;
+   => ;
+      _OOHG_ActiveControlVScroll := <vscroll>
+
+#xcommand ONVSCROLL <vscroll> ;
+   => ;
+      _OOHG_ActiveControlVScroll := <vscroll>
 
 #xcommand END EDITBOX ;
    => ;
@@ -1995,7 +2028,10 @@ EDIT BOX
             _OOHG_ActiveControlNoHScroll, ;
             _OOHG_ActiveControlRtl, ;
             _OOHG_ActiveControlNoBorder, ;
-            _OOHG_ActiveControlFocusedPos )
+            _OOHG_ActiveControlFocusedPos, ;
+            _OOHG_ActiveControlHScroll, ;
+            _OOHG_ActiveControlVScroll, ;
+            _OOHG_ActiveControlDisabled )
 
 /*---------------------------------------------------------------------------
 RICH EDIT BOX
@@ -2012,7 +2048,12 @@ RICH EDIT BOX
       _OOHG_ActiveControlNoHideSel   := NIL    ;;
       _OOHG_ActiveControlNoVScroll   := .F.    ;;
       _OOHG_ActiveControlNoHScroll   := .F.    ;;
-      _OOHG_ActiveControlFocusedPos  := NIL
+      _OOHG_ActiveControlFocusedPos  := NIL    ;;
+      _OOHG_ActiveControlFile        := NIL    ;;
+      _OOHG_ActiveControlFormat      := .F.    ;;
+      _OOHG_ActiveControlInsertType  := NIL    ;;
+      _OOHG_ActiveControlHScroll     := NIL    ;;
+      _OOHG_ActiveControlVScroll     := NIL
 
 #xcommand NOHIDESEL <nohidesel> ;
    => ;
@@ -2025,6 +2066,14 @@ RICH EDIT BOX
 #xcommand ON SELCHANGE <onselchange> ;
    => ;
       _OOHG_ActiveControlOnSelChange := <{onselchange}>
+
+#xcommand PLAINTEXT <plain> ;
+   => ;
+      _OOHG_ActiveControlFormat := <plain>
+
+#xcommand FILETYPE <type> ;
+   => ;
+      _OOHG_ActiveControlInsertType := <type>
 
 #xcommand END RICHEDITBOX ;
    => ;
@@ -2061,7 +2110,11 @@ RICH EDIT BOX
             _OOHG_ActiveControlNoHideSel, ;
             _OOHG_ActiveControlFocusedPos, ;
             _OOHG_ActiveControlNoVScroll, ;
-            _OOHG_ActiveControlNoHScroll )
+            _OOHG_ActiveControlNoHScroll, ;
+            _OOHG_ActiveControlFile, ;
+            iif( _OOHG_ActiveControlFormat, 1, _OOHG_ActiveControlInsertType ), ;
+            _OOHG_ActiveControlHScroll, ;
+            _OOHG_ActiveControlVScroll )
 
 /*---------------------------------------------------------------------------
 LABEL
@@ -2148,7 +2201,8 @@ LABEL
             _OOHG_ActiveControlRtl, ;
             _OOHG_ActiveControlNoWordWrap, ;
             _OOHG_ActiveControlNoPrefix, ;
-            _OOHG_ActiveControlInputMask )
+            _OOHG_ActiveControlInputMask, ;
+            _OOHG_ActiveControlDisabled )
 
 #xcommand DEFINE IPADDRESS <name> ;
    => ;
@@ -2178,7 +2232,9 @@ LABEL
             _OOHG_ActiveControlFontUnderLine, ;
             _OOHG_ActiveControlFontStrikeOut, ;
             _OOHG_ActiveControlRtl, ;
-            _OOHG_ActiveControlDisabled )
+            _OOHG_ActiveControlDisabled, ;
+            _OOHG_ActiveControlFontColor, ;
+            _OOHG_ActiveControlBackColor )
 
 /*---------------------------------------------------------------------------
 GRID
@@ -2245,7 +2301,11 @@ GRID
       _OOHG_ActiveControlOnHeaderRClick   := NIL ;;
       _OOHG_ActiveControlRClickOnCheckbox := .T. ;;
       _OOHG_ActiveControlClickOnCheckbox  := .T. ;;
-      _OOHG_ActiveControlExtDblClick      := .F.
+      _OOHG_ActiveControlExtDblClick      := .F. ;;
+      _OOHG_ActiveControlDelete           := .F. ;;
+      _OOHG_ActiveControlOnDelete         := NIL ;;
+      _OOHG_ActiveControlDeleteWhen       := NIL ;;
+      _OOHG_ActiveControlDeleteMsg        := NIL
 
 #xcommand ONAPPEND <onappend> ;
    => ;
@@ -2444,14 +2504,18 @@ GRID
             _OOHG_ActiveControlBeforeAutoFit, ;
             _OOHG_ActiveControlEditLikeExcel, ;
             _OOHG_ActiveControlUseButtons, ;
+            _OOHG_ActiveControlDelete, ;
+            _OOHG_ActiveControlOnDelete, ;
+            _OOHG_ActiveControlDeleteWhen, ;
+            _OOHG_ActiveControlDeleteMsg, ;
             _OOHG_ActiveControlNoDeleteMsg, ;
             _OOHG_ActiveControlAppendable, ;
             _OOHG_ActiveControlOnAppend, ;
             _OOHG_ActiveControlNoModalEdit, ;
             IIF( _OOHG_ActiveControlFixedCtrls, .T., IIF( _OOHG_ActiveControlDynamicCtrls, .F., NIL ) ), ;
             _OOHG_ActiveControlOnHeaderRClick, ;
-            _OOHG_ActiveControlRClickOnCheckbox, ;
             _OOHG_ActiveControlClickOnCheckbox, ;
+            _OOHG_ActiveControlRClickOnCheckbox, ;
             _OOHG_ActiveControlExtDblClick )
 
 /*---------------------------------------------------------------------------
@@ -2527,7 +2591,9 @@ BROWSE
       _OOHG_ActiveControlFixedCtrls       := .F. ;;
       _OOHG_ActiveControlDynamicCtrls     := .F. ;;
       _OOHG_ActiveControlOnHeaderRClick   := NIL ;;
-      _OOHG_ActiveControlExtDblClick      := .F.
+      _OOHG_ActiveControlExtDblClick      := .F. ;;
+      _OOHG_ActiveControlNoModalEdit      := .F. ;;
+      _OOHG_ActiveControlByCell           := .F.
 
 #xcommand DELETEWHEN <delwhen> ;
    => ;
@@ -2595,7 +2661,7 @@ BROWSE
 
 #xcommand END BROWSE ;
    => ;
-      _OOHG_SelectSubClass( TOBrowse(), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
+      _OOHG_SelectSubClass( IIF( _OOHG_ActiveControlByCell, TOBrowseByCell(), TOBrowse() ), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
             _OOHG_ActiveControlName, ;
             _OOHG_ActiveControlOf, ;
             _OOHG_ActiveControlCol, ;
@@ -2684,7 +2750,8 @@ BROWSE
             _OOHG_ActiveControlUpdateColors, ;
             IIF( _OOHG_ActiveControlFixedCtrls, .T., IIF( _OOHG_ActiveControlDynamicCtrls, .F., NIL ) ), ;
             _OOHG_ActiveControlOnHeaderRClick, ;
-            _OOHG_ActiveControlExtDblClick )
+            _OOHG_ActiveControlExtDblClick, ;
+            _OOHG_ActiveControlNoModalEdit )
 
 /*---------------------------------------------------------------------------
 XBROWSE
@@ -2755,11 +2822,12 @@ XBROWSE
       _OOHG_ActiveControlNoShowEmptyRow   := .F. ;;
       _OOHG_ActiveControlUpdateColors     := .F. ;;
       _OOHG_ActiveControlOnHeaderRClick   := NIL ;;
-      _OOHG_ActiveControlExtDblClick      := .F.
+      _OOHG_ActiveControlExtDblClick      := .F. ;;
+      _OOHG_ActiveControlNoModalEdit      := .F.
 
 #xcommand END XBROWSE ;
    => ;
-      _OOHG_SelectSubClass( TXBrowse(), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
+      _OOHG_SelectSubClass( IIF( _OOHG_ActiveControlByCell, TXBrowseByCell(), TXBrowse() ), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
             _OOHG_ActiveControlName, ;
             _OOHG_ActiveControlOf, ;
             _OOHG_ActiveControlCol, ;
@@ -2844,6 +2912,7 @@ XBROWSE
             _OOHG_ActiveControlNoShowEmptyRow, ;
             _OOHG_ActiveControlUpdateColors, ;
             _OOHG_ActiveControlOnHeaderRClick, ;
+            _OOHG_ActiveControlNoModalEdit, ;
             _OOHG_ActiveControlExtDblClick )
 
 /*---------------------------------------------------------------------------
@@ -2903,6 +2972,17 @@ HYPERLINK
 SPINNER
 ---------------------------------------------------------------------------*/
 
+#xcommand DEFINE SPINNER <name> ;
+   => ;
+      _OOHG_ClearActiveControlInfo( <(name)> ) ;;
+      _OOHG_ActiveControlRangeLow     := NIL   ;;
+      _OOHG_ActiveControlRangeHigh    := NIL   ;;
+      _OOHG_ActiveControlWrap         := .F.   ;;
+      _OOHG_ActiveControlReadOnly     := .F.   ;;
+      _OOHG_ActiveControlIncrement    := NIL   ;;
+      _OOHG_ActiveControlNoBorder     := .F.   ;;
+      _OOHG_ActiveControlOnTextFilled := .F.
+
 #xcommand WRAP <wrap> ;
    => ;
       _OOHG_ActiveControlWrap := <wrap>
@@ -2911,15 +2991,9 @@ SPINNER
    => ;
       _OOHG_ActiveControlIncrement := <increment>
 
-#xcommand DEFINE SPINNER <name> ;
+#xcommand BOUNDTEXT <bound> ;
    => ;
-      _OOHG_ClearActiveControlInfo( <(name)> ) ;;
-      _OOHG_ActiveControlRangeLow  := NIL      ;;
-      _OOHG_ActiveControlRangeHigh := NIL      ;;
-      _OOHG_ActiveControlWrap      := .F.      ;;
-      _OOHG_ActiveControlReadOnly  := .F.      ;;
-      _OOHG_ActiveControlIncrement := NIL      ;;
-      _OOHG_ActiveControlNoBorder  := .F.
+      _OOHG_ActiveControlOnTextFilled := <bound>
 
 #xcommand END SPINNER;
    => ;
@@ -2952,7 +3026,9 @@ SPINNER
             _OOHG_ActiveControlBackColor, ;
             _OOHG_ActiveControlFontColor, ;
             _OOHG_ActiveControlRtl, ;
-            _OOHG_ActiveControlNoBorder )
+            _OOHG_ActiveControlNoBorder, ;
+            _OOHG_ActiveControlDisabled, ;
+            _OOHG_ActiveControlOnTextFilled )
 
 /*---------------------------------------------------------------------------
 ACTIVEX
@@ -2977,7 +3053,8 @@ ACTIVEX
             _OOHG_ActiveControlHeight, ;
             _OOHG_ActiveControlValue, ;
             _OOHG_ActiveControlNoTabStop, ;
-            _OOHG_ActiveControlDisabled )
+            _OOHG_ActiveControlDisabled, ;
+            _OOHG_ActiveControlInvisible )
 
 /*---------------------------------------------------------------------------
 HOTKEYBOX
@@ -3080,7 +3157,8 @@ PICTURE
             _OOHG_ActiveControlNo3DColors, ;
             _OOHG_ActiveControlNoDIBSection, ;
             _OOHG_ActiveControlTransparent, ;
-            _OOHG_ActiveControlExcludeArea )
+            _OOHG_ActiveControlExcludeArea, ;
+            _OOHG_ActiveControlDisabled )
 
 /*---------------------------------------------------------------------------
 PROGRESSMETER
@@ -3120,7 +3198,8 @@ PROGRESSMETER
             _OOHG_ActiveControlHelpId, ;
             _OOHG_ActiveControlInvisible, ;
             _OOHG_ActiveControlRtl, ;
-            _OOHG_ActiveControlClientEdge )
+            _OOHG_ActiveControlClientEdge, ;
+            _OOHG_ActiveControlDisabled )
 
 /*---------------------------------------------------------------------------
 SCROLLBAR

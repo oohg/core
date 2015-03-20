@@ -1,6 +1,6 @@
 [OPTIONS]
 Compatibility=1.1 or later
-Compiled file=ooHG.chm
+Compiled file=..\ide\ooHG.chm
 Contents file=ooHG.hhc
 Default Window=main
 Default topic=OVERVIEW.HTM
@@ -8,7 +8,7 @@ Display compile progress=No
 Error log file=ooHG.log
 Full-text search=Yes
 Index file=ooHG.hhk
-Language=0xc0a Español (alfabetización internacional)
+Language=0xc0a Español (España, internacional)
 Title=ooHG Reference 2014 by MigSoft
 
 [WINDOWS]

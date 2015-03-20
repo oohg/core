@@ -1,5 +1,5 @@
 <!--
-$Id: Changelog.htm,v 1.14 2015-03-18 01:22:30 fyurisich Exp $
+$Id: Changelog.htm,v 1.15 2015-03-20 00:00:42 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -142,6 +142,63 @@ CHANGELOG</div>
 </div>
 <div id="winchm_template_content">
 <pre>
+2015-03-19 21:00 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * manual/changelog.htm
+     * Updated.
+   * distros/hb32mingw.iss
+     + Support for multiple paths to files.
+     ! Wrong name in Windows Start Menu.
+     ! File's CVS Id.
+     ! Missing OOHG icon.
+     ! Missing license, before and after files.
+   * distros/hb30mingw.iss
+   * distros/xhbbcc.iss
+     + Support for multiple paths to files.
+     ! Wrong name in Windows Start Menu.
+   * distros/infoafter_bcc.txt
+   * distros/infoafter_mingw.txt
+     * Improved messages.
+   * manual/ooHG.hhp
+     * ooHG.chm is now builded into ide folder directly.
+   * include/i_altsyntax.ch
+     + Missing parameters in ACTIVEX, BUTTON, IMAGE, CHECKBUTTON, EDITBOX,
+       PICTURE, PROGRESSMETER, RICHEDITBOX, LABEL, IPADDRESS, GRID, ;
+       SPINNER, BROWSE and XBROWSE.
+     ! Wrong values set to some parameters due to missing parameters
+       in GRID and XBROWSE.
+     + Support for NAVIGATEBYCELL clause in BROWSE and XBROWSE.
+   * include/i_window.ch
+     + RePaint to semi-oop syntax.
+
+2015-03-18 20:57 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   - ./MakeDistro.bat
+   - ./MakeExclude.txt
+     ; Moved to "distros" folder.
+   + distros/.cvsignore
+   + distros/MakeDistro.bat
+     ! Predefined environment vars are not honored.
+   + distros/MakeExclude.txt
+   + distros/hb30mingw.iss
+   + distros/hb32mingw.iss
+   + distros/xhbbcc.iss
+     ; To create installer exes using INNO Setup 5.5.5
+   + distros/infoafter_bcc.txt
+   + distros/infoafter_mingw.txt
+   + distros/infobefore.txt
+   + distros/license.txt
+     ; To customize installer exes using INNO Setup 5.5.5
+   * ./compileXB.bat
+   * ide/compile.bat
+   * source/makelibXB.bat
+     * Folder for xHarbour to "xhbcc".
+
+2015-03-18 17:50 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ide/prgs/mgide.prg
+     ! RTE at methods GoLine, LookChanges, PosXY and NextSearch
+       of THMI class.
+   * ./MakeDistro.bat
+     ! Predefined environment vars are not honored.
+
 2015-03-17 22:22 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * ./Changelog.004
      * Previous entry.

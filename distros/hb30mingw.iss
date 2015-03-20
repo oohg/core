@@ -1,4 +1,4 @@
-; $Id: hb30mingw.iss,v 1.1 2015-03-18 23:58:18 fyurisich Exp $
+; $Id: hb30mingw.iss,v 1.2 2015-03-20 00:00:42 fyurisich Exp $
 
 #define MyAppName "Object Oriented Harbour GUI"
 #define MyAppVerH "HB30"
@@ -7,7 +7,13 @@
 #define MyDateOBF GetDateTimeString('yyyy/mm/dd', '_', ':');
 #define MyAppPublisher "The OOHG Team"
 #define MyAppURL "https://sourceforge.net/projects/oohg/"
-#define MySource "W:\OOHG_HB30\*"
+#if DirExists('W:\OOHG_HB30')
+   #define MySource "W:\OOHG_HB30\*"
+#elif DirExists('D:\OOHG_HB30')
+   #define MySource "D:\OOHG_HB30\*"
+#else
+   #error Input folder not found !!!
+#endif
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -21,7 +27,7 @@ AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 DefaultDirName=C:\OOHG
-DefaultGroupName={#MyAppVerH} {#MyAppVerC} {#MyAppVerDate}
+DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
 OutputBaseFilename=oohg_{#MyAppVerH}_{#MyAppVerC}_{#MyDateOBF}
 SetupIconFile=..\resources\OOHG.ico

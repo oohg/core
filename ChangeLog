@@ -1,11 +1,39 @@
 /*
- * $Id: ChangeLog,v 1.1433 2015-03-18 23:58:17 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1434 2015-03-20 00:00:41 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-03-19 21:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/changelog.htm
+     * Updated.
+   * distros/hb32mingw.iss
+     + Support for multiple paths to files.
+     ! Wrong name in Windows Start Menu.
+     ! File's CVS Id.
+     ! Missing OOHG icon.
+     ! Missing license, before and after files.
+   * distros/hb30mingw.iss
+   * distros/xhbbcc.iss
+     + Support for multiple paths to files.
+     ! Wrong name in Windows Start Menu.
+   * distros/infoafter_bcc.txt
+   * distros/infoafter_mingw.txt
+     * Improved messages.
+   * manual/ooHG.hhp
+     * ooHG.chm is now builded into ide folder directly.
+   * include/i_altsyntax.ch
+     + Missing parameters in ACTIVEX, BUTTON, IMAGE, CHECKBUTTON, EDITBOX,
+       PICTURE, PROGRESSMETER, RICHEDITBOX, LABEL, IPADDRESS, GRID, ;
+       SPINNER, BROWSE and XBROWSE.
+     ! Wrong values set to some parameters due to missing parameters
+       in GRID and XBROWSE.
+     + Support for NAVIGATEBYCELL clause in BROWSE and XBROWSE.
+   * include/i_window.ch
+     + RePaint to semi-oop syntax.
 
 2015-03-18 20:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    - ./MakeDistro.bat
