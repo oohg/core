@@ -1,11 +1,21 @@
 /*
- * $Id: ChangeLog,v 1.1434 2015-03-20 00:00:41 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1435 2015-03-21 01:33:16 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-03-20 22:32 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/changelog.htm
+     * Updated.
+   * source/h_radio.prg
+     ! RadioGroup inside Tab disapears after setting height of Tab.
+     ! Spacing is not automatically changed when SET AUTOADJUST is ON
+       and form's width is changed.
+   * doc/how_to_configure_and_use.txt
+     * Updated (not finished yet).
 
 2015-03-19 21:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * manual/changelog.htm

@@ -1,5 +1,5 @@
 /*
- * $Id: h_radio.prg,v 1.41 2015-03-09 02:52:08 fyurisich Exp $
+ * $Id: h_radio.prg,v 1.42 2015-03-21 01:33:17 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -255,7 +255,7 @@ Local nDeltaRow, nDeltaCol, uRet
    uRet := ::Super:SizePos( Row, Col, Width, Height )
    nDeltaRow := ::Row - nDeltaRow
    nDeltaCol := ::Col - nDeltaCol
-   AEVAL( ::aControls, { |o| o:Visible := .F., o:SizePos( o:Row + nDeltaRow, o:Col + nDeltaCol, ::Width, ::Height ), o:Visible := .T. } )
+   AEVAL( ::aControls, { |o| o:Visible := .F., o:SizePos( o:Row + nDeltaRow, o:Col + nDeltaCol, Width, Height ), o:Visible := .T. } )
 Return uRet
 
 *-----------------------------------------------------------------------------*
@@ -429,9 +429,9 @@ METHOD AdjustResize( nDivh, nDivw, lSelfOnly ) CLASS TRadioGroup
 *------------------------------------------------------------------------------*
    If HB_IsNumeric( ::nSpacing )
       If ::lHorizontal
-         ::nSpacing := ::nSpacing * nDivw
+         ::Spacing := ::nSpacing * nDivw
       Else
-         ::nSpacing := ::nSpacing * nDivh
+         ::Spacing := ::nSpacing * nDivh
       EndIf
    EndIf
 Return ::Super:AdjustResize( nDivh, nDivw, lSelfOnly )

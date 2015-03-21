@@ -1,5 +1,5 @@
 /*
- * $Id: How_to_Configure_and_Use.txt,v 1.4 2015-03-14 02:05:39 fyurisich Exp $
+ * $Id: How_to_Configure_and_Use.txt,v 1.5 2015-03-21 01:33:17 fyurisich Exp $
  */
 
 
@@ -12,6 +12,11 @@ add C:\OOHG to the system's PATH and use DOS commands "COMPILE prg_name" or
 BUILDAPP prg_name" to build executable files. If you don´t want to change
 the PATH, use "C:\OOHG\COMPILE prg_name" or "C:\OOHG\BUILDAPP prg_name"
 instead.
+
+If you have more than one OOHG version installed in the same folder, yo must
+specify which one has to be used. For that, use "COMPILE version prg_name" or
+"BUILDAPP version prg_name". For more details execute this commans without
+arguments or read their content.
 
 If OOHG package was installed in another folder (e.g. D:\XYZ), you must set
 the following environment variable, before using the compilation commands:
@@ -106,9 +111,14 @@ Español
 Si el paquete OOHG se instala en C:\OOHG y MinGW va a ser utilizado para
 compilar los proyectos, no hay necesidad de cambiar la configuración por
 defecto. Simplemente añada C:\OOHG al PATH del sistema y utilice los comandos
-de DOS "Compilar prg_name" o "BUILDAPP prg_name" para crear los archivos
+de DOS "COMPILE nombre_prg" o "BUILDAPP nombre_prg" para crear los archivos
 ejecutables. Si no desea cambiar el PATH, utilice "C:\OOHG\COMPILE prg_name" o
 "C:\OOHG\BUILDAPP prg_name" en su lugar.
+
+Si tiene más de una versión de OOHG instalada en la misma carpeta, deberá
+especificar cual desea usar. Para ello utilice "COMPILE versión nombre_prg" o
+"BUILDAPP versión nombre_prg". Para más detalles ejecute estos comandos sin
+argumentos o lea su contenido.
 
 Si el paquete OOHG se instaló en otra carpeta (por ejemplo D:\XYZ), deberá
 setear la siguiente variable de ambiente, antes de usar los comandos de
@@ -149,6 +159,8 @@ D:\MYMINGW), deberá setear la siguiente variable de ambiente antes de usar los
 comandos de compilación:
 
 set HG_MINGW=D:\MYMINGW
+
+
 
 Para utilizar el compilador Borland C++ 5.5 en lugar de MinGW, edite
 C:\OOHG\COMPILE.BAT y reemplace su contenido con:
