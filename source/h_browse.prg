@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.147 2015-03-09 02:52:07 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.148 2015-03-24 22:06:49 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2534,7 +2534,7 @@ Return Nil
 METHOD DoChange() CLASS TOBrowseByCell
 *-----------------------------------------------------------------------------*
    ::nRecLastValue := ::Value[ 1 ]
-   ::TGrid:DoChange()
+   ::TGridByCell:DoChange()
 Return Nil
 
 *-----------------------------------------------------------------------------*

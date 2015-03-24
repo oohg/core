@@ -1,5 +1,5 @@
 /*
- * $Id: h_init.prg,v 1.37 2015-03-09 02:52:08 fyurisich Exp $
+ * $Id: h_init.prg,v 1.38 2015-03-24 22:06:49 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -154,7 +154,7 @@ Return
 *------------------------------------------------------------------------------*
 Procedure InitMessages( cLang )
 *------------------------------------------------------------------------------*
-Local aLang, aLangDefault
+Local aLang, aLangDefault, nAt
 
    IF VALTYPE( cLang ) $ "CM" .AND. ! EMPTY( cLang )
       // Language specified via parameter
@@ -162,6 +162,9 @@ Local aLang, aLangDefault
    ELSE
       // [x]Harbour's default language
       cLang := Set( _SET_LANGUAGE )
+   ENDIF
+   IF ( nAt := At( ".", cLang ) ) > 0
+      cLang := LEFT( cLang, nAt - 1 )
    ENDIF
 
    aLang := _OOHG_MacroCall( "ooHG_Messages_" + cLang + "()" )
