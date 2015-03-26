@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.148 2015-03-24 22:06:49 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.149 2015-03-26 23:59:39 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -106,47 +106,48 @@ CLASS TOBrowse FROM TXBrowse
    DATA Type            INIT "BROWSE" READONLY
    DATA aRecMap         INIT {}
    DATA RecCount        INIT 0
+   DATA lUpdateAll      INIT .F.
+   DATA nRecLastValue   INIT 0 PROTECTED
    DATA SyncStatus      INIT nil
    /*
     * When .T. the browse behaves as if SET BROWSESYNC is ON.
     * When .F. the browse behaves as if SET BROWSESYNC if OFF.
     * When NIL the browse behaves according to SET BROWESYNC value.
     */
-   DATA lUpdateAll      INIT .F.
-   DATA nRecLastValue   INIT 0 PROTECTED
 
+   METHOD BrowseOnChange
+   METHOD DbGoTo
+   METHOD DbSkip
    METHOD Define
    METHOD Define3
-   METHOD Refresh
-   METHOD Value         SETGET
-   METHOD RefreshData
-   METHOD DoChange      
+   METHOD Delete
+   METHOD DoChange
+   METHOD Down
+   METHOD EditAllCells
+   METHOD EditCell
+   METHOD EditItem_B
+   METHOD End
    METHOD Events
    METHOD Events_Enter
    METHOD Events_Notify
-   METHOD EditCell
-   METHOD EditItem_B
-   METHOD EditAllCells
-   METHOD BrowseOnChange
    METHOD FastUpdate
+   METHOD Home
+   METHOD PageDown
+   METHOD PageUp
+   METHOD Refresh
+   METHOD RefreshData
    METHOD ScrollUpdate
+   METHOD SetScrollPos
    METHOD SetValue
-   METHOD Delete
+   METHOD TopBottom
+   METHOD Up
    METHOD UpDate
    METHOD UpdateColors
-   METHOD Home
-   METHOD End
-   METHOD PageUp
-   METHOD PageDown
-   METHOD Up
-   METHOD Down
-   METHOD TopBottom
-   METHOD DbSkip
-   METHOD DbGoTo
-   MESSAGE GoTop        METHOD Home
-   MESSAGE GoBottom     METHOD End
-   METHOD SetScrollPos
+   METHOD Value         SETGET
+
    MESSAGE EditGrid     METHOD EditAllCells
+   MESSAGE GoBottom     METHOD End
+   MESSAGE GoTop        METHOD Home
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -228,7 +229,7 @@ Local nWidth2, nCol2, oScroll, z
    EndIf
 
    aSize( ::aHeaders, len( ::aFields ) )
-   aEval( ::aHeaders, { |x,i| ::aHeaders[ i ] := iif( ! ValType( x ) $ "CM", if( valtype( ::aFields[ i ] ) $ "CM", ::aFields[ i ], "" ), x ) } )
+   aEval( ::aHeaders, { |x,i| ::aHeaders[ i ] := iif( ! ValType( x ) $ "CM", iif( valtype( ::aFields[ i ] ) $ "CM", ::aFields[ i ], "" ), x ) } )
 
    aSize( ::aWidths, len( ::aFields ) )
    aEval( ::aWidths, { |x,i| ::aWidths[ i ] := iif( ! ValType( x ) == "N", 100, x ) } )
@@ -241,7 +242,7 @@ Local nWidth2, nCol2, oScroll, z
    endif
 
    ASSIGN w VALUE w TYPE "N" DEFAULT ::nWidth
-   nWidth2 := if( novscroll, w, w - GETVSCROLLBARWIDTH() )
+   nWidth2 := iif( novscroll, w, w - GETVSCROLLBARWIDTH() )
 
    ::Define3( ControlName, ParentForm, x, y, nWidth2, h, fontname, fontsize, ;
               tooltip, aHeadClick, nogrid, aImage, break, HelpId, bold, ;
@@ -468,17 +469,17 @@ Local lColor, aFields, cWorkArea, hWnd, nWidth
       If Len( ::aWidths ) != nWidth
          ASIZE( ::aWidths, nWidth )
       EndIf
-      AEVAL( ::aWidths, { |x,i| ::ColumnWidth( i, If( ! HB_IsNumeric( x ) .OR. x < 0, 0, x ) ) } )
+      AEVAL( ::aWidths, { |x,i| ::ColumnWidth( i, iif( ! HB_IsNumeric( x ) .OR. x < 0, 0, x ) ) } )
 
       If Len( ::aJust ) != nWidth
          ASIZE( ::aJust, nWidth )
-         AEVAL( ::aJust, { |x,i| ::aJust[ i ] := If( ! HB_IsNumeric( x ), 0, x ) } )
+         AEVAL( ::aJust, { |x,i| ::aJust[ i ] := iif( ! HB_IsNumeric( x ), 0, x ) } )
       EndIf
       AEVAL( ::aJust, { |x,i| ::Justify( i, x ) } )
 
       If Len( ::aHeaders ) != nWidth
          ASIZE( ::aHeaders, nWidth )
-         AEVAL( ::aHeaders, { |x,i| ::aHeaders[ i ] := If( ! ValType( x ) $ "CM", "", x ) } )
+         AEVAL( ::aHeaders, { |x,i| ::aHeaders[ i ] := iif( ! ValType( x ) $ "CM", "", x ) } )
       EndIf
       AEVAL( ::aHeaders, { |x,i| ::Header( i, x ) } )
 
@@ -617,7 +618,7 @@ Local _RecNo
 Return Nil
 
 *-----------------------------------------------------------------------------*
-METHOD Home() CLASS TOBrowse
+METHOD Home() CLASS TOBrowse                         // METHOD GoTop
 *-----------------------------------------------------------------------------*
 Local _RecNo
 
@@ -637,7 +638,7 @@ Local _RecNo
 Return Nil
 
 *-----------------------------------------------------------------------------*
-METHOD End( lAppend ) CLASS TOBrowse
+METHOD End( lAppend ) CLASS TOBrowse                 // METHOD GoBottom
 *-----------------------------------------------------------------------------*
 Local _RecNo, _BottomRec
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
@@ -1756,50 +1757,51 @@ CLASS TOBrowseByCell FROM TXBrowseByCell, TOBrowse
    DATA Type            INIT "BROWSEBYCELL" READONLY
    DATA aRecMap         INIT {}
    DATA RecCount        INIT 0
+   DATA lUpdateAll      INIT .F.
    DATA SyncStatus      INIT nil
    /*
     * When .T. the browse behaves as if SET BROWSESYNC is ON.
     * When .F. the browse behaves as if SET BROWSESYNC if OFF.
     * When NIL the browse behaves according to SET BROWESYNC value.
     */
-   DATA lUpdateAll      INIT .F.
 
+   METHOD BrowseOnChange
+   METHOD CurrentCol    SETGET
+   METHOD CurrentRow    SETGET
+   METHOD DbGoTo
+   METHOD DbSkip
    METHOD Define
    METHOD Define3
-   METHOD Refresh
-   METHOD Value         SETGET
-   METHOD RefreshData
+   METHOD Delete
    METHOD DoChange
-   METHOD Events              
+   METHOD Down
+   METHOD EditCell
+   METHOD EditGrid
+   METHOD EditItem_B
+   METHOD End
+   METHOD Events
    METHOD Events_Enter
    METHOD Events_Notify
-   METHOD EditCell                             
-   METHOD EditItem_B
-   METHOD EditGrid
-   MESSAGE EditAllCells METHOD EditGrid
-   METHOD BrowseOnChange
    METHOD FastUpdate
+   METHOD Home
+   METHOD Left
+   METHOD PageDown
+   METHOD PageUp
+   METHOD Refresh
+   METHOD RefreshData
+   METHOD Right
    METHOD ScrollUpdate
+   METHOD SetScrollPos
    METHOD SetValue
-   METHOD Delete
+   METHOD TopBottom
+   METHOD Up
    METHOD UpDate
    METHOD UpdateColors
-   METHOD Home
-   METHOD End
-   METHOD PageUp
-   METHOD PageDown
-   METHOD Up
-   METHOD Down
-   METHOD TopBottom
-   METHOD DbSkip
-   METHOD DbGoTo
-   MESSAGE GoTop        METHOD Home
+   METHOD Value         SETGET
+
+   MESSAGE EditAllCells METHOD EditGrid
    MESSAGE GoBottom     METHOD End
-   METHOD SetScrollPos
-   METHOD CurrentRow    SETGET
-   METHOD CurrentCol    SETGET
-   METHOD Left
-   METHOD Right
+   MESSAGE GoTop        METHOD Home
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -2332,7 +2334,7 @@ Local nItem, cWorkArea //, nCol
    EndIf
 
    If lAppend
-      ::CurrentCol := 1
+      ::CurrentCol := 1       // TODO: Agregar un flag para omitir esto
       // Insert new row
       ::GoBottom( .T. )
       ::InsertBlank( ::ItemCount + 1 )
@@ -2347,8 +2349,7 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lRefresh ) CLASS TOBrowseByCell
 *-----------------------------------------------------------------------------*
 Local lSomethingEdited, nRecNo, nNextRec
 
-   Empty( lOneRow )
-   Empty( lRefresh )
+   Empty( lRefresh )          // TODO: implement
 
    If ::FirstVisibleColumn == 0
       Return .F.
@@ -2385,7 +2386,7 @@ Local lSomethingEdited, nRecNo, nNextRec
          EndIf
       EndIf
 
-Empty(nNextRec)
+Empty(nNextRec)                                         // TODO: check
       If ::IsColumnReadOnly( nCol )
          // Read only column
       ElseIf ! ::IsColumnWhen( nCol )
@@ -2396,7 +2397,7 @@ Empty(nNextRec)
          ::DbGoTo( nRecNo )
 
          // Edit one cell
-         If ! ::TXBrowse:EditCell( nRow, nCol, Nil, Nil, Nil, Nil, lAppend, Nil, .F., .F. )
+         If ! ::EditCell( nRow, nCol, Nil, Nil, Nil, Nil, lAppend, Nil, .F., .F. )
             If lAppend
                ::lAppendMode := .F.
                lAppend := .F.
@@ -2421,53 +2422,61 @@ Empty(nNextRec)
 
       // ::bPosition is set by TGridControl()
       If ::bPosition == 1                            // UP
-         ::Up()
-         If ! ::FullMove
+         If ! ::Up() .OR. ! ::FullMove .OR. lOneRow
             Exit
          EndIf
       ElseIf ::bPosition == 2                        // RIGHT
-         If ::FullMove
-            ::Right( .F. )
-            lAppend := ::Eof() .AND. ::AllowAppend
-         ElseIf ::CurrentCol < Len( ::aHeaders )
-            ::Right( .F. )
+         If ::Right( .F. )
+            If lOneRow .AND. ::Value[ 1 ] # ::aRecMap[ nRow ]
+               Exit
+            EndIf
          Else
-            Exit
+           If ::FullMove .AND. ::AllowAppend .AND. ! lOneRow
+              lAppend := .T.
+           Else
+              Exit
+           EndIf
          EndIf
       ElseIf ::bPosition == 3                        // LEFT
-         If ::FullMove .OR. ::CurrentCol > 1
-            ::Left()
-         Else
+         If ! ::Left() .OR. ( lOneRow .AND. ::Value[ 1 ] # ::aRecMap[ nRow ] )
             Exit
          EndIf
       ElseIf ::bPosition == 4                        // HOME
-         ::GoTop()
-         If ! ::FullMove
+         If ! ::GoTop() .OR. ! ::FullMove .OR. ( lOneRow .AND. ::Value[ 1 ] # ::aRecMap[ nRow ] )
             Exit
          EndIf
       ElseIf ::bPosition == 5                        // END
-         ::GoBottom( .F. )
-         If ! ::FullMove
+         ::GoBottom()
+         If ! ::FullMove .OR. ( lOneRow .AND. ::Value[ 1 ] # ::aRecMap[ nRow ] )
             Exit
          EndIf
       ElseIf ::bPosition == 6                        // DOWN
-         ::Down( .F. )
-         If ::FullMove
-            lAppend := ::Eof() .AND. ::AllowAppend
+         If ::Down( .F. )
+            If ! ::FullMove .OR. ( lOneRow .AND. ::Value[ 1 ] # ::aRecMap[ nRow ] )
+               Exit
+            EndIf
          Else
-            Exit
+            If ::FullMove .AND. ::AllowAppend .AND. ! lOneRow
+               lAppend := .T.
+           Else
+              Exit
+           EndIf
          EndIf
       ElseIf ::bPosition == 7                        // PRIOR
-         ::PageUp()
-         If ! ::FullMove
+         IF ! ::PageUp() .OR. ! ::FullMove .OR. lOneRow
             Exit
          EndIf
       ElseIf ::bPosition == 8                        // NEXT
-         ::PageDown( .F. )
-         If ::FullMove
-            lAppend := ::Eof() .AND. ::AllowAppend
+         If ::PageDown( .F. )
+            If ! ::FullMove .OR. ( lOneRow .AND. ::Value[ 1 ] # ::aRecMap[ nRow ] )
+               Exit
+            EndIf
          Else
-            Exit
+            If ::FullMove .AND. ::AllowAppend .AND. ! lOneRow
+               lAppend := .T.
+           Else
+              Exit
+           EndIf
          EndIf
       ElseIf ::bPosition == 9                        // MOUSE EXIT
          Exit
@@ -2483,7 +2492,7 @@ Empty(nNextRec)
       EndIf
 
       If lAppend
-         ::CurrentCol := 1
+         ::CurrentCol := 1       // TODO: Agregar un flag para omitir esto
          // Insert new row
          ::GoBottom( .T. )
          ::InsertBlank( ::ItemCount + 1 )
@@ -2634,52 +2643,270 @@ METHOD UpDateColors() CLASS TOBrowseByCell
 Return ::TOBrowse:UpDateColors()
 
 *-----------------------------------------------------------------------------*
-METHOD Home() CLASS TOBrowseByCell
+METHOD Home() CLASS TOBrowseByCell                   // METHOD GoTop
 *-----------------------------------------------------------------------------*
-   ::TOBrowse:Home()
+Local _RecNo, aBefore, lDone := .F.
 
-   ::Value := { ::Value[ 1 ], 1 }
-
-Return Nil
-
-*-----------------------------------------------------------------------------*
-METHOD End( lAppend ) CLASS TOBrowseByCell
-*-----------------------------------------------------------------------------*
-Local nCol
-
-   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
-
-   If lAppend
-      nCol := ::CurrentCol
-   Else
-      nCol := Len( ::aHeaders )
+   If Select( ::WorkArea ) == 0
+      ::RecCount := 0
+      Return lDone
    EndIf
+   aBefore := ::Value
+   _RecNo := ( ::WorkArea )->( RecNo() )
+   ::TopBottom( GO_TOP )
+   ::ScrollUpdate()
+   ::Update()
+   ::DbGoTo( _RecNo )
+   ListView_SetCursel( ::hWnd, 1 )
+   ::CurrentCol := 1
+   lDone := ( aBefore[ 1 ] # ::Value[ 1 ] .OR. aBefore[ 2 ] # ::Value[ 2 ] )
+   ::BrowseOnChange()
 
-   ::TOBrowse:End( lAppend )
+Return lDone
 
-   ::Value := { ::Value[ 1 ], nCol }
+*-----------------------------------------------------------------------------*
+METHOD End( lAppend ) CLASS TOBrowseByCell     // METHOD GoBottom
+*-----------------------------------------------------------------------------*
+Local lDone := .F., aBefore, _Recno
 
-Return Nil
+   If Select( ::WorkArea ) == 0
+      ::RecCount := 0
+      Return lDone
+   EndIf
+   aBefore := ::Value
+   _RecNo := ( ::WorkArea )->( RecNo() )
+   ::TopBottom( GO_BOTTOM )
+   ::ScrollUpdate()
+   // If it's for APPEND, leaves a blank line ;)
+   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
+   ::DbSkip( - ::CountPerPage + IIf( lAppend, 2, 1 ) )
+   ::Update()
+   ::DbGoTo( _RecNo )
+   ListView_SetCursel( ::hWnd, Len( ::aRecMap ) )
+   ::CurrentCol := IIf( lAppend, 1, Len( ::aHeaders ) )
+   lDone := ( aBefore[ 1 ] # ::Value[ 1 ] .OR. aBefore[ 2 ] # ::Value[ 2 ] )
+   ::BrowseOnChange()
+
+Return lDone
 
 *-----------------------------------------------------------------------------*
 METHOD PageUp() CLASS TOBrowseByCell
 *-----------------------------------------------------------------------------*
-Return ::TOBrowse:PageUp()
+Local _RecNo, aBefore, lDone := .F.
+
+   If LISTVIEW_GETFIRSTITEM( ::hWnd ) == 1
+      If Select( ::WorkArea ) == 0
+         ::RecCount := 0
+         Return lDone
+      EndIf
+      aBefore := ::Value
+      _RecNo := ( ::WorkArea )->( RecNo() )
+      If Len( ::aRecMap ) == 0
+         ::TopBottom( GO_TOP )
+      Else
+         ::DbGoTo( ::aRecMap[ 1 ] )
+      EndIf
+      ::DbSkip( - ::CountPerPage + 1 )
+      ::ScrollUpdate()
+      ::Update()
+      ::DbGoTo( _RecNo )
+      ListView_SetCursel ( ::hWnd, 1 )
+      lDone := ( aBefore[ 1 ] # ::Value[ 1 ] .OR. aBefore[ 2 ] # ::Value[ 2 ] )
+   Else
+      ::FastUpdate( 1 - LISTVIEW_GETFIRSTITEM ( ::hWnd ), 1 )
+      lDone := .T.
+   EndIf
+
+   ::BrowseOnChange()
+
+Return lDone
 
 *-----------------------------------------------------------------------------*
-METHOD PageDown() CLASS TOBrowseByCell
+METHOD PageDown( lAppend ) CLASS TOBrowseByCell
 *-----------------------------------------------------------------------------*
-Return ::TOBrowse:PageDown()
+Local _RecNo, s, lDone := .F.
+
+   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .T.
+
+   s := LISTVIEW_GETFIRSTITEM( ::hWnd )
+
+   If  s >= Len( ::aRecMap )
+      If Select( ::WorkArea ) == 0
+         ::RecCount := 0
+         Return lDone
+      EndIf
+
+      _RecNo := ( ::WorkArea )->( RecNo() )
+
+      If Len( ::aRecMap ) == 0
+         ::TopBottom( GO_BOTTOM )
+         ::DbSkip( - ::CountPerPage + 1 )
+      Else
+         ::DbGoTo( ::aRecMap[ Len( ::aRecMap ) ] )
+         // Check for more records
+         ::DbSkip()
+         If ::Eof()
+            ::DbGoTo( _RecNo )
+            If ::AllowAppend .AND. lAppend
+               lDone := ::EditItem( .T., ! ( ::Inplace .AND. ::FullMove ) )
+            Endif
+            Return lDone
+         EndIf
+         ::DbSkip( -1 )
+      EndIf
+      ::Update()
+      If Len( ::aRecMap ) == 0
+         ::DbGoTo( 0 )
+      Else
+         ::DbGoTo( ::aRecMap[ Len( ::aRecMap ) ] )
+         lDone := .T.
+      EndIf
+      ::ScrollUpdate()
+      ::DbGoTo( _RecNo )
+      ListView_SetCursel ( ::hWnd, Len( ::aRecMap ) )
+   Else
+      ::FastUpdate( ::CountPerPage - s, Len( ::aRecMap ) )
+      lDone := .T.
+   EndIf
+
+   ::BrowseOnChange()
+
+Return lDone
 
 *-----------------------------------------------------------------------------*
-METHOD Up() CLASS TOBrowseByCell
+METHOD Up( lLast ) CLASS TOBrowseByCell
 *-----------------------------------------------------------------------------*
-Return ::TOBrowse:Up()
+Local s, _RecNo, nLen, lDone := .F.
+
+   s := LISTVIEW_GETFIRSTITEM ( ::hWnd )
+
+   If s <= 1
+      If Select( ::WorkArea ) == 0
+         ::RecCount := 0
+         Return lDone
+      EndIf
+
+      _RecNo := ( ::WorkArea )->( RecNo() )
+
+      If Len( ::aRecMap ) == 0
+         ::TopBottom( GO_TOP )
+         ::DbSkip( -1 )
+         ::Update()
+      Else
+         // Check for more records
+         ::DbGoTo( ::aRecMap[ 1 ] )
+         ::DbSkip( -1 )
+         If ::Bof()
+            ::DbGoTo( _RecNo )
+            Return lDone
+         EndIf
+         // Add one record at the top
+         AADD( ::aRecMap, nil )
+         AINS( ::aRecMap, 1 )
+         ::aRecMap[ 1 ] := ( ::WorkArea )->( RecNo() )
+         If ::Visible
+            ::SetRedraw( .F. )
+         EndIf
+         ::InsertBlank( 1 )
+         ::RefreshRow( 1 )
+         nLen := Len( ::aRecMap )
+         // Resize record map
+         If nLen > ::CountPerPage
+            ::DeleteItem( nLen )
+            ASIZE( ::aRecMap, nLen - 1 )
+         EndIf
+         If ::Visible
+            ::SetRedraw( .T. )
+         EndIf
+      EndIf
+
+      ::ScrollUpdate()
+      ::DbGoTo( _RecNo )
+      If Len( ::aRecMap ) != 0
+         ListView_SetCursel( ::hWnd, 1 )
+         If HB_IsLogical( lLast ) .and. lLast
+            ::CurrentCol := Len( ::aHeaders )
+         EndIf
+         lDone := .T.
+      EndIf
+   Else
+      ::FastUpdate( -1, s - 1 )
+      lDone := .T.
+   EndIf
+
+   ::BrowseOnChange()
+
+Return lDone
 
 *-----------------------------------------------------------------------------*
-METHOD Down( lAppend ) CLASS TOBrowseByCell
+METHOD Down( lAppend, lFirst ) CLASS TOBrowseByCell
 *-----------------------------------------------------------------------------*
-Return ::TOBrowse:Down( lAppend )
+Local s, _RecNo, nLen, lDone := .F.
+
+   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .T.
+
+   s := LISTVIEW_GETFIRSTITEM( ::hWnd )
+
+   If s >= Len( ::aRecMap )
+      If Select( ::WorkArea ) == 0
+         ::RecCount := 0
+         Return lDone
+      EndIf
+
+      _RecNo := ( ::WorkArea )->( RecNo() )
+
+      If Len( ::aRecMap ) == 0
+         ::TopBottom( GO_TOP )
+         ::DbSkip()
+         ::Update()
+      Else
+         // Check for more records
+         ::DbGoTo( ::aRecMap[ Len( ::aRecMap ) ] )
+         ::DbSkip()
+         If ::Eof()
+            ::DbGoTo( _RecNo )
+            If ::AllowAppend .AND. lAppend
+               lDone := ::EditItem( .T., ! ::FullMove )
+            Endif
+            Return lDone
+         EndIf
+         // Add one record at the bottom
+         AADD( ::aRecMap, ( ::WorkArea )->( RecNo() ) )
+         nLen := Len( ::aRecMap )
+         If ::Visible
+            ::SetRedraw( .F. )
+         EndIf
+         ::RefreshRow( nLen )
+         // Resize record map
+         If nLen > ::CountPerPage
+            ::DeleteItem( 1 )
+             _OOHG_DeleteArrayItem( ::aRecMap, 1 )
+         EndIf
+         If ::Visible
+            ::SetRedraw( .T. )
+         EndIf
+      EndIf
+
+      If Len( ::aRecMap ) == 0
+         ::DbGoTo( 0 )
+      Else
+         ::DbGoTo( ATail( ::aRecMap ) )
+         lDone := .T.
+      EndIf
+      ::ScrollUpdate()
+      ::DbGoTo( _RecNo )
+      ListView_SetCursel( ::hWnd, Len( ::aRecMap ) )
+      If HB_IsLogical( lFirst ) .and. lFirst
+         ::CurrentCol := 1
+      EndIf
+   Else
+      ::FastUpdate( 1, s + 1 )
+      lDone := .T.
+   EndIf
+
+   ::BrowseOnChange()
+
+Return lDone
 
 *-----------------------------------------------------------------------------*
 METHOD TopBottom( nDir ) CLASS TOBrowseByCell
@@ -2731,7 +2958,7 @@ Local nItem, r, nClientWidth, nScrollWidth
          r := { 0, 0, 0, 0 }                                        // left, top, right, bottom
          GetClientRect( ::hWnd, r )
          nClientWidth := r[ 3 ] - r[ 1 ]
-         r := ListView_GetSubitemRect( ::hWnd, nItem - 1, ::CurrentCol - 1 ) // top, left, width, height
+         r := ListView_GetSubitemRect( ::hWnd, nItem - 1, nCol - 1 ) // top, left, width, height
          If ListViewGetItemCount( ::hWnd ) >  ListViewGetCountPerPage( ::hWnd )
             nScrollWidth := GetVScrollBarWidth()
          Else
@@ -2756,7 +2983,7 @@ Return ::TXBrowse:CurrentRow( nRow )
 *--------------------------------------------------------------------------*
 METHOD Left() CLASS TOBrowseByCell
 *--------------------------------------------------------------------------*
-Local aValue, nRec, nCol
+Local aValue, nRec, nCol, lDone := .F.
 
    aValue := ::Value
    nRec := aValue[ 1 ]
@@ -2764,18 +2991,17 @@ Local aValue, nRec, nCol
    If nRec > 0 .AND. nCol >= 1 .AND. nCol <= Len( ::aHeaders )
       If nCol > 1
          ::Value := { nRec, nCol - 1 }
+         lDone := .T.
       ElseIf ::FullMove
-         If ::Up()
-            ::Value := { ::Value[ 1 ], Len( ::aHeaders ) }
-         EndIf
+         lDone := ::Up( .T. )
       EndIf
    EndIf
-Return Self
+Return lDone
 
 *--------------------------------------------------------------------------*
 METHOD Right( lAppend ) CLASS TOBrowseByCell
 *--------------------------------------------------------------------------*
-Local aValue, nRec, nCol
+Local aValue, nRec, nCol, lDone := .F.
 
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT ::AllowAppend
 
@@ -2785,14 +3011,21 @@ Local aValue, nRec, nCol
    If nRec > 0 .AND. nCol >= 1 .AND. nCol <= Len( ::aHeaders )
       If nCol < Len( ::aHeaders )
          ::Value := { nRec, nCol + 1 }
+         lDone := .T.
       ElseIf ::FullMove
-         If ::Down( .F. )
-            ::Value := { ::Value[ 1 ], 1 }
+         If ::Down( .F., .T. )
+            lDone := .T.
          Else
-            If lAppend
-               ::EditItem( .T., ! ::FullMove )
+            If ::AllowAppend .AND. lAppend
+               lDone := ::EditItem( .T., ! ::FullMove )
             EndIf
          EndIf
       EndIf
    EndIf
-Return Self
+Return lDone
+
+/*
+TODO: CONTROLAR QUE LAS COLUMNAS NO ESTEN OCULTAS
+TODO: VER TAMBIÉN EN XBROWSE Y GRID
+
+*/

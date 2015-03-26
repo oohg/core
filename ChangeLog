@@ -1,11 +1,25 @@
 /*
- * $Id: ChangeLog,v 1.1436 2015-03-24 22:06:49 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1437 2015-03-26 23:59:39 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-03-26 19:06 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/changelog.htm
+     * Updated.
+   * source/h_browse.prg
+     * Some format.
+     + T*O*D*O notes.
+     + Support for lOneRow to TOBrowseByCell:EditGrid.
+     ! New rows in TOBrowseByCell are edited with the values of the
+       previous last row in grid instead of empty values.
+     * Methods Right, Left, Home, End, PageUp, PageDown, Up and Down of
+       TOBrowseByCell now return .T. of .F. indicating that the requested
+       action was or was not performed.
+     ! Wrong scroll in TOBrowseByCell:CurrentCol.
 
 2015-03-24 19:06 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_browse.prg
