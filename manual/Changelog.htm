@@ -1,5 +1,5 @@
 <!--
-$Id: Changelog.htm,v 1.16 2015-03-21 01:33:17 fyurisich Exp $
+$Id: Changelog.htm,v 1.17 2015-03-27 00:04:39 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -142,6 +142,29 @@ CHANGELOG</div>
 </div>
 <div id="winchm_template_content">
 <pre>
+2015-03-26 19:06 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * manual/changelog.htm
+     * Updated.
+   * source/h_browse.prg
+     * Some format.
+     + T*O*D*O notes.
+     + Support for lOneRow to TOBrowseByCell:EditGrid.
+     ! New rows in TOBrowseByCell are edited with the values of the
+       previous last row in grid instead of empty values.
+     * Methods Right, Left, Home, End, PageUp, PageDown, Up and Down of
+       TOBrowseByCell now return .T. of .F. indicating that the requested
+       action was or was not performed.
+     ! Wrong scroll in TOBrowseByCell:CurrentCol.
+
+2015-03-24 19:06 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_browse.prg
+     ! ::DoChange() calls ON CHANGE event when workarea is closed,
+       causing RTE if a field is referenced.
+   * source/miniprint.prg
+   * source/h_ini.prg
+     ! OOHG messages do not honor SET LANGUAGE.
+     * Added support for new return value of hb_langSelect() in Harbour 3.2
+
 2015-03-20 22:32 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * manual/changelog.htm
      * Updated.
