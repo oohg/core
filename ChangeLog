@@ -1,11 +1,18 @@
 /*
- * $Id: ChangeLog,v 1.1438 2015-03-27 00:04:39 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1439 2015-03-28 02:34:43 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-03-27 20:30 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+   * source/h_pdf.prg
+     ! Minimal source code alignment.
+     ! Few ::aReport[] items converted to object's properties.
+     + Support for 2-bit and 24-bit .BMP files.
+     ! Note: 24-bit BMP files does change image color :( .
 
 2015-03-26 21:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./changelog.htm
