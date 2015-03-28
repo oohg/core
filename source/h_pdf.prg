@@ -1,5 +1,5 @@
 /*
-* $Id: h_pdf.prg,v 1.16 2015-03-28 02:34:43 guerra000 Exp $
+* $Id: h_pdf.prg,v 1.17 2015-03-28 15:54:41 guerra000 Exp $
 */
 /*
  * ooHG source code:
@@ -2365,7 +2365,7 @@ return aTemp
 //컴컴컴컴컴컴컴컴컴컴컴컴�\\
 
 METHOD BMPInfo( cFile )
-local cBuffer, nAt, nHandle
+local cBuffer, nHandle
 local nWidth, nHeight, nBits, nFrom
 local nLength, xRes, yRes, aTemp := {}
 
