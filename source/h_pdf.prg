@@ -1,5 +1,5 @@
 /*
-* $Id: h_pdf.prg,v 1.17 2015-03-28 15:54:41 guerra000 Exp $
+* $Id: h_pdf.prg,v 1.18 2015-03-31 01:38:25 guerra000 Exp $
 */
 /*
  * ooHG source code:
@@ -122,11 +122,11 @@
 #define MARGINS      17  // recalc margins ?
 #define HEADEREDIT   18  // edit header ?
 * #define NEXTOBJ      19  // next obj
-#define PDFTOP       20  // top row
-#define PDFLEFT      21  // left & right margin in mm
-#define PDFBOTTOM    22  // bottom row
+* #define PDFTOP       20  // top row
+* #define PDFLEFT      21  // left & right margin in mm
+* #define PDFBOTTOM    22  // bottom row
 * #define HANDLE       23  // handle
-#define PAGES        24  // array of pages
+* #define PAGES        24  // array of pages
 * #define REFS         25  // array of references
 * #define BOOKMARK     26  // array of bookmarks
 * #define HEADER       27  // array of headers
@@ -136,21 +136,22 @@
 * #define PAGEFONTS    31  // array of current page fonts
 * #define FONTWIDTH    32  // array of fonts width's
 * #define OPTIMIZE     33  // optimized ?
-#define PARAMLEN     24  // number of report elements
+#define PARAMLEN     18  // number of report elements
 
 #define ALIGN_LEFT    1
 #define ALIGN_CENTER  2
 #define ALIGN_RIGHT   3
 #define ALIGN_JUSTIFY 4
 
-#define IMAGE_WIDTH   1
-#define IMAGE_HEIGHT  2
-#define IMAGE_XRES    3
-#define IMAGE_YRES    4
-#define IMAGE_BITS    5
-#define IMAGE_FROM    6
-#define IMAGE_LENGTH  7
-#define IMAGE_TYPE    8   // 0.JPG, 1.TIFF, 2.BMP
+#define IMAGE_WIDTH     1
+#define IMAGE_HEIGHT    2
+#define IMAGE_XRES      3
+#define IMAGE_YRES      4
+#define IMAGE_BITS      5
+#define IMAGE_FROM      6
+#define IMAGE_LENGTH    7
+#define IMAGE_TYPE      8   // 0.JPG, 1.TIFF, 2.BMP
+#define IMAGE_PALETTE   9
 
 #define BYTE          1
 #define ASCII         2
@@ -593,7 +594,11 @@ CREATE CLASS tPdf
    DATA nFontSizePrev                     // 12   prev font size
    DATA nHandle                           // 15   document length
    DATA nNextObj                          // 19   next obj
+   DATA nPdfTop                           // 20   top row
+   DATA nPdfLeft                          // 21   left & right margin in mm
+   DATA nPdfBottom                        // 22   bottom row
    DATA nDocLen                           // 23   handle
+   DATA aPages                            // 24   array of pages
    DATA aRefs                             // 25   array of references
    DATA aBookMarks                        // 26   array of bookmarks
    DATA aHeader                           // 27   array of headers
@@ -619,17 +624,17 @@ METHOD _OOHG_Box
 METHOD _OOHG_Line
 METHOD Box
 METHOD Box1
-METHOD Center
+   METHOD Center
 METHOD Close
 METHOD Image
 METHOD Length
-METHOD NewLine
+   METHOD NewLine
 METHOD NewPage
 METHOD PageSize
 METHOD PageOrient
 METHOD PageNumber
 METHOD Reverse
-METHOD RJust
+   METHOD RJust
 METHOD SetFont
 METHOD SetLPI
 METHOD StringB
@@ -658,7 +663,7 @@ METHOD CreateHeader
    METHOD BookNext
    METHOD BookParent
    METHOD BookPrev
-METHOD CheckLine
+   METHOD CheckLine
    METHOD ClosePage
    METHOD FilePrint
 METHOD GetFontInfo
@@ -706,11 +711,11 @@ METHOD Init( cFile, nLen, lOptimize )
 ::aReport[ MARGINS  ] := .t.
 ::aReport[ HEADEREDIT   ] := .f.
    ::nNextObj    := 0
-::aReport[ PDFTOP   ] := 1  // top
-::aReport[ PDFLEFT  ] := 10 // left & right
-::aReport[ PDFBOTTOM] := ::aReport[ PAGEY ] / 72 * ::aReport[ LPI ] - 1 // bottom, default "LETTER", "P", 6
-   ::nHandle := fcreate( cFile )
-::aReport[ PAGES] := {}
+   ::nPdfTop     := 1  // top
+   ::nPdfLeft    := 10 // left & right
+   ::nPdfBottom  := ::aReport[ PAGEY ] / 72 * ::aReport[ LPI ] - 1 // bottom, default "LETTER", "P", 6
+   ::nHandle     := fcreate( cFile )
+   ::aPages      := {}
    ::aRefs       := { 0, 0 }
    ::aBookMarks  := {}
    ::aHeader     := {}
@@ -757,12 +762,12 @@ local _nFont, lReverse, nAt
    ELSEIF cUnits == "R"
       IF ! lExact
          ::CheckLine( nRow )
-         nRow := nRow + ::aReport[ PDFTOP ]
+         nRow := nRow + ::nPdfTop
       ENDIF
       nRow := ::R2D( nRow )
-      nCol := ::M2X( ::aReport[ PDFLEFT ] ) + ;
+      nCol := ::M2X( ::nPdfLeft ) + ;
               nCol * 100.00 / ::aReport[ REPORTWIDTH ] * ;
-              ( ::aReport[ PAGEX ] - ::M2X( ::aReport[ PDFLEFT ] ) * 2 - 9.0 ) / 100.00
+              ( ::aReport[ PAGEX ] - ::M2X( ::nPdfLeft ) * 2 - 9.0 ) / 100.00
    ENDIF
    IF ! empty( cString )
       cString := ::StringB( cString )
@@ -1121,21 +1126,21 @@ DEFAULT lExact TO .f.
 DEFAULT nCol TO IIF( cUnits == "R", ::aReport[ REPORTWIDTH ] / 2, ::aReport[ PAGEX ] / 72 * 25.4 / 2 )
 
    IF ::aReport[ HEADEREDIT ]
-  return ::Header( "PDFCENTER", cId, { cString, nRow, nCol, cUnits, lExact } )
+      return ::Header( "PDFCENTER", cId, { cString, nRow, nCol, cUnits, lExact } )
    ENDIF
 
    IF ( nAt := at( "#pagenumber#", cString ) ) > 0
-  cString := left( cString, nAt - 1 ) + ltrim(str( ::PageNumber())) + substr( cString, nAt + 12 )
+      cString := left( cString, nAt - 1 ) + ltrim( str( ::PageNumber() ) ) + substr( cString, nAt + 12 )
    ENDIF
 
    nLen := ::length( cString ) / 2
    IF cUnits == "R"
-  IF .not. lExact
- ::CheckLine( nRow )
- nRow := nRow + ::aReport[ PDFTOP]
-  ENDIF
+      IF .not. lExact
+         ::CheckLine( nRow )
+         nRow := nRow + ::nPdfTop
+      ENDIF
    ENDIF
-   ::AtSay( cString, ::R2M( nRow ), IIF( cUnits == "R", ::aReport[ PDFLEFT ] + ( ::aReport[ PAGEX ] / 72 * 25.4 - 2 * ::aReport[ PDFLEFT ] ) * nCol / ::aReport[ REPORTWIDTH ], nCol ) - nLen, "M", lExact )
+   ::AtSay( cString, ::R2M( nRow ), IIF( cUnits == "R", ::nPdfLeft + ( ::aReport[ PAGEX ] / 72 * 25.4 - 2 * ::nPdfLeft ) * nCol / ::aReport[ REPORTWIDTH ], nCol ) - nLen, "M", lExact )
 RETURN self
 
 //컴컴컴컴컴컴컴컴컴컴컴컴�\\
@@ -1157,7 +1162,7 @@ local nI, cTemp, nCurLevel, nObj1, nLast, nCount, nFirst, nRecno, nBooklen
    "/Kids ["
 
    for nI := 1 to ::aReport[ REPORTPAGE ]
-  cTemp += " " + ltrim(str( ::aReport[ PAGES ][ nI ] )) + " 0 R"
+      cTemp += " " + ltrim( str( ::aPages[ nI ] ) ) + " 0 R"
    next
 
    cTemp += " ]" + CRLF + ;
@@ -1226,7 +1231,7 @@ local nI, cTemp, nCurLevel, nObj1, nLast, nCount, nFirst, nRecno, nBooklen
  cTemp := CRLF + ltrim( str( ::aReport[ REPORTOBJ ] + nI - 1 ) ) + " 0 obj" + CRLF + ;
  "<<" + CRLF + ;
  "/Parent " + ltrim( str( ::aBookMarks[ nRecno ][ BOOKPARENT ] ) ) + " 0 R" + CRLF + ;
- "/Dest [" + ltrim( str( ::aReport[ PAGES ][ ::aBookMarks[ nRecno ][ BOOKPAGE ] ] ) ) + " 0 R /XYZ 0 " + ltrim( str( ::aBookMarks[ nRecno ][ BOOKCOORD ] ) ) + " 0]" + CRLF + ;
+ "/Dest [" + ltrim( str( ::aPages[ ::aBookMarks[ nRecno ][ BOOKPAGE ] ] ) ) + " 0 R /XYZ 0 " + ltrim( str( ::aBookMarks[ nRecno ][ BOOKCOORD ] ) ) + " 0]" + CRLF + ;
  "/Title (" + alltrim( ::aBookMarks[ nRecno ][ BOOKTITLE ]) + ")" + CRLF + ;
  IIF( ::aBookMarks[ nRecno ][ BOOKPREV ] > 0, "/Prev " + ltrim(str( ::aBookMarks[ nRecno ][ BOOKPREV ])) + " 0 R" + CRLF, "") + ;
  IIF( ::aBookMarks[ nRecno ][ BOOKNEXT ] > 0, "/Next " + ltrim(str( ::aBookMarks[ nRecno ][ BOOKNEXT ])) + " 0 R" + CRLF, "") + ;
@@ -1235,7 +1240,7 @@ local nI, cTemp, nCurLevel, nObj1, nLast, nCount, nFirst, nRecno, nBooklen
  IIF( ::aBookMarks[ nRecno ][ BOOKCOUNT ] <> 0, "/Count " + ltrim(str( ::aBookMarks[ nRecno ][ BOOKCOUNT ])) + CRLF, "") + ;
  ">>" + CRLF + "endobj" + CRLF
 // "/Dest [" + ltrim(str( ::aBookMarks[ nRecno ][ BOOKPAGE ] * 3 )) + " 0 R /XYZ 0 " + ltrim( str( ::aBookMarks[ nRecno ][ BOOKCOORD ])) + " 0]" + CRLF + ;
-// "/Dest [" + ltrim(str( ::aReport[ PAGES ][ nRecno ] )) + " 0 R /XYZ 0 " + ltrim( str( ::aBookMarks[ nRecno ][ BOOKCOORD ])) + " 0]" + CRLF + ;
+// "/Dest [" + ltrim(str( ::aPages[ nRecno ] )) + " 0 R /XYZ 0 " + ltrim( str( ::aBookMarks[ nRecno ][ BOOKCOORD ])) + " 0]" + CRLF + ;
 
  aadd( ::aRefs, ::nDocLen + 2 )
    ::WriteToFile( cTemp )
@@ -1304,13 +1309,13 @@ DEFAULT cId TO  ""
   //   nRow := nRow + ::aReportStyle[ PDFTOP]
   //ENDIF
   nRow := ::aReport[ PAGEY ] - ::R2D( nRow )
-  nCol := ::M2X( ::aReport[ PDFLEFT ] ) + ;
+  nCol := ::M2X( ::nPdfLeft ) + ;
   nCol * 100.00 / ::aReport[ REPORTWIDTH ] * ;
-  ( ::aReport[ PAGEX ] - ::M2X( ::aReport[ PDFLEFT ] ) * 2 - 9.0 ) / 100.00
+  ( ::aReport[ PAGEX ] - ::M2X( ::nPdfLeft ) * 2 - 9.0 ) / 100.00
   nHeight := ::aReport[ PAGEY ] - ::R2D( nHeight )
-  nWidth := ::M2X( ::aReport[ PDFLEFT ] ) + ;
+  nWidth := ::M2X( ::nPdfLeft ) + ;
   nWidth * 100.00 / ::aReport[ REPORTWIDTH ] * ;
-  ( ::aReport[ PAGEX ] - ::M2X( ::aReport[ PDFLEFT ] ) * 2 - 9.0 ) / 100.00
+  ( ::aReport[ PAGEX ] - ::M2X( ::nPdfLeft ) * 2 - 9.0 ) / 100.00
    ELSEIF cUnits == "D"
    ENDIF
 
@@ -1344,12 +1349,12 @@ RETURN nWidth
 
 METHOD NewLine( n )
 
-DEFAULT n TO 1
-   IF ::aReport[ REPORTLINE ] + n + ::aReport[ PDFTOP] > ::aReport[ PDFBOTTOM ]
-  ::NewPage()
-  ::aReport[ REPORTLINE ] += 1
+   DEFAULT n TO 1
+   IF ::aReport[ REPORTLINE ] + n + ::nPdfTop > ::nPdfBottom
+      ::NewPage()
+      ::aReport[ REPORTLINE ] += 1
    ELSE
-  ::aReport[ REPORTLINE ] += n
+      ::aReport[ REPORTLINE ] += n
    ENDIF
 
 RETURN ::aReport[ REPORTLINE ]
@@ -1469,22 +1474,22 @@ DEFAULT cUnits TO "R"
 DEFAULT lExact TO .f.
 
    IF ::aReport[ HEADEREDIT ]
-  return ::Header( "PDFRJUST", cId, { cString, nRow, nCol, cUnits, lExact } )
+      return ::Header( "PDFRJUST", cId, { cString, nRow, nCol, cUnits, lExact } )
    ENDIF
 
    IF ( nAt := at( "#pagenumber#", cString ) ) > 0
-  cString := left( cString, nAt - 1 ) + ltrim(str( ::PageNumber())) + substr( cString, nAt + 12 )
+      cString := left( cString, nAt - 1 ) + ltrim( str( ::PageNumber() ) ) + substr( cString, nAt + 12 )
    ENDIF
 
    nLen := ::length( cString )
 
    IF cUnits == "R"
-  IF .not. lExact
- ::CheckLine( nRow )
- nRow := nRow + ::aReport[ PDFTOP]
-  ENDIF
+      IF .not. lExact
+         ::CheckLine( nRow )
+         nRow := nRow + ::nPdfTop
+      ENDIF
    ENDIF
-   ::AtSay( cString, ::R2M( nRow ), IIF( cUnits == "R", ::aReport[ PDFLEFT ] + ( ::aReport[ PAGEX ] / 72 * 25.4 - 2 * ::aReport[ PDFLEFT ] ) * nCol / ::aReport[ REPORTWIDTH ] - nAdj, nCol ) - nLen, "M", lExact )
+   ::AtSay( cString, ::R2M( nRow ), IIF( cUnits == "R", ::nPdfLeft + ( ::aReport[ PAGEX ] / 72 * 25.4 - 2 * ::nPdfLeft ) * nCol / ::aReport[ REPORTWIDTH ] - nAdj, nCol ) - nLen, "M", lExact )
 RETURN self
 
 //컴컴컴컴컴컴컴컴컴컴컴컴�\\
@@ -1562,9 +1567,9 @@ DEFAULT cColor   TO ""
    IF cUnits == "M"
       nTop := ::M2R( nTop )
    ELSEIF cUnits == "R"
-      nLeft := ::X2M( ::M2X( ::aReport[ PDFLEFT ] ) + ;
+      nLeft := ::X2M( ::M2X( ::nPdfLeft ) + ;
                nLeft * 100.00 / ::aReport[ REPORTWIDTH ] * ;
-               ( ::aReport[ PAGEX ] - ::M2X( ::aReport[ PDFLEFT ] ) * 2 - 9.0 ) / 100.00 )
+               ( ::aReport[ PAGEX ] - ::M2X( ::nPdfLeft ) * 2 - 9.0 ) / 100.00 )
    ENDIF
 
    ::aReport[ REPORTLINE ] := nTop - 1
@@ -1628,7 +1633,7 @@ DEFAULT cColor   TO ""
                ++nLines
                IF lPrint
                   nRow := ::NewLine( 1 )
-                  ::AtSay( cColor + cTemp, ::R2M( nRow + ::aReport[ PDFTOP] ), nL, "M" )
+                  ::AtSay( cColor + cTemp, ::R2M( nRow + ::nPdfTop ), nL, "M" )
                ENDIF
             enddo
             ++nI
@@ -1848,21 +1853,21 @@ case ::aHeader[ nI ][ 2 ] == "PDFIMAGE"
 endcase
  ENDIF
   next
-  ::nFontName := _nFont
-  ::nFontSize := _nSize
+      ::nFontName := _nFont
+      ::nFontSize := _nSize
 
-  IF ::aReport[ MARGINS ]
-     ::Margins()
-  ENDIF
+      IF ::aReport[ MARGINS ]
+         ::Margins()
+      ENDIF
 
    ELSE
-  IF ::aReport[ MARGINS ]
- ::aReport[ PDFTOP] := 1 // top
- ::aReport[ PDFLEFT ] := 10 // left & right
- ::aReport[ PDFBOTTOM ] := ::aReport[ PAGEY ] / 72 * ::aReport[ LPI ] - 1 // bottom, default "LETTER", "P", 6
+      IF ::aReport[ MARGINS ]
+         ::nPdfTop := 1 // top
+         ::nPdfLeft := 10 // left & right
+         ::nPdfBottom := ::aReport[ PAGEY ] / 72 * ::aReport[ LPI ] - 1 // bottom, default "LETTER", "P", 6
 
- ::aReport[ MARGINS ] := .f.
-  ENDIF
+         ::aReport[ MARGINS ] := .f.
+      ENDIF
    ENDIF
 RETURN self
 
@@ -1898,13 +1903,13 @@ IF ::aHeader[ nI ][ 7 ] == "M"
 
    IF ::aHeader[ nI ][ 5 ] < nTemp
   nTemp := ( ::aHeader[ nI ][ 5 ] + nHeight ) * ::aReport[ LPI ] / 25.4 // top
-  IF nTemp > ::aReport[ PDFTOP]
- ::aReport[ PDFTOP] := nTemp
+  IF nTemp > ::nPdfTop
+  ::nPdfTop := nTemp
   ENDIF
    ELSE
   nTemp := ::aHeader[ nI ][ 5 ] * ::aReport[ LPI ] / 25.4 // top
-  IF nTemp < ::aReport[ PDFBOTTOM ]
- ::aReport[ PDFBOTTOM ] := nTemp
+  IF nTemp < ::nPdfBottom
+ ::nPdfBottom := nTemp
   ENDIF
    ENDIF
 
@@ -1913,13 +1918,13 @@ ELSEIF ::aHeader[ nI ][ 7 ] == "D"
 
    IF ::aHeader[ nI ][ 5 ] < nTemp
   nTemp := ( ::aHeader[ nI ][ 5 ] + nHeight ) * ::aReport[ LPI ] / 72 // top
-  IF nTemp > ::aReport[ PDFTOP]
- ::aReport[ PDFTOP] := nTemp
+  IF nTemp > ::nPdfTop
+ ::nPdfTop := nTemp
   ENDIF
    ELSE
   nTemp := ::aHeader[ nI ][ 5 ] * ::aReport[ LPI ] / 72 // top
-  IF nTemp < ::aReport[ PDFBOTTOM ]
- ::aReport[ PDFBOTTOM ] := nTemp
+  IF nTemp < ::nPdfBottom
+ ::nPdfBottom := nTemp
   ENDIF
 
    ENDIF
@@ -1935,27 +1940,27 @@ IF ::aHeader[ nI ][ 10 ] == "M"
    IF ::aHeader[ nI ][ 4 ] < nTemp .and. ;
   ::aHeader[ nI ][ 6 ] < nTemp
   nTemp := ::aHeader[ nI ][ 6 ] * ::aReport[ LPI ] / 25.4 // top
-  IF nTemp > ::aReport[ PDFTOP]
- ::aReport[ PDFTOP] := nTemp
+  IF nTemp > ::nPdfTop
+ ::nPdfTop := nTemp
   ENDIF
    ELSEIF ::aHeader[ nI ][ 4 ] < nTemp .and. ;
   ::aHeader[ nI ][ 6 ] > nTemp
 
   nTemp := ( ::aHeader[ nI ][ 4 ] + ::aHeader[ nI ][ 8 ] ) * ::aReport[ LPI ] / 25.4 // top
-  IF nTemp > ::aReport[ PDFTOP]
- ::aReport[ PDFTOP] := nTemp
+  IF nTemp > ::nPdfTop
+ ::nPdfTop := nTemp
   ENDIF
 
   nTemp := ( ::aHeader[ nI ][ 6 ] - ::aHeader[ nI ][ 8 ] ) * ::aReport[ LPI ] / 25.4 // top
-  IF nTemp < ::aReport[ PDFBOTTOM ]
- ::aReport[ PDFBOTTOM ] := nTemp
+  IF nTemp < ::nPdfBottom
+ ::nPdfBottom := nTemp
   ENDIF
 
    ELSEIF ::aHeader[ nI ][ 4 ] > nTemp .and. ;
   ::aHeader[ nI ][ 6 ] > nTemp
   nTemp := ::aHeader[ nI ][ 4 ] * ::aReport[ LPI ] / 25.4 // top
-  IF nTemp < ::aReport[ PDFBOTTOM ]
- ::aReport[ PDFBOTTOM ] := nTemp
+  IF nTemp < ::nPdfBottom
+ ::nPdfBottom := nTemp
   ENDIF
    ENDIF
 
@@ -1965,27 +1970,27 @@ ELSEIF ::aHeader[ nI ][ 10 ] == "D"
    IF ::aHeader[ nI ][ 4 ] < nTemp .and. ;
   ::aHeader[ nI ][ 6 ] < nTemp
   nTemp := ::aHeader[ nI ][ 6 ] / ::aReport[ LPI ] // top
-  IF nTemp > ::aReport[ PDFTOP]
- ::aReport[ PDFTOP] := nTemp
+  IF nTemp > ::nPdfTop
+ ::nPdfTop := nTemp
   ENDIF
    ELSEIF ::aHeader[ nI ][ 4 ] < nTemp .and. ;
   ::aHeader[ nI ][ 6 ] > nTemp
 
   nTemp := ( ::aHeader[ nI ][ 4 ] + ::aHeader[ nI ][ 8 ] ) / ::aReport[ LPI ] // top
-  IF nTemp > ::aReport[ PDFTOP]
- ::aReport[ PDFTOP] := nTemp
+  IF nTemp > ::nPdfTop
+ ::nPdfTop := nTemp
   ENDIF
 
   nTemp := ( ::aHeader[ nI ][ 6 ] - ::aHeader[ nI ][ 8 ] ) / ::aReport[ LPI ] // top
-  IF nTemp < ::aReport[ PDFBOTTOM ]
- ::aReport[ PDFBOTTOM ] := nTemp
+  IF nTemp < ::nPdfBottom
+ ::nPdfBottom := nTemp
   ENDIF
 
    ELSEIF ::aHeader[ nI ][ 4 ] > nTemp .and. ;
   ::aHeader[ nI ][ 6 ] > nTemp
   nTemp := ::aHeader[ nI ][ 4 ] / ::aReport[ LPI ] // top
-  IF nTemp < ::aReport[ PDFBOTTOM ]
- ::aReport[ PDFBOTTOM ] := nTemp
+  IF nTemp < ::nPdfBottom
+ ::nPdfBottom := nTemp
   ENDIF
    ENDIF
 
@@ -1995,34 +2000,34 @@ ENDIF
 IF ::aHeader[ nI ][ 7 ] == "R"
    nTemp := ::aHeader[ nI ][ 5 ] // top
    IF ::aHeader[ nI ][ 5 ] > ::aReport[ PAGEY ] / 72 * ::aReport[ LPI ] / 2
-  IF nTemp < ::aReport[ PDFBOTTOM ]
- ::aReport[ PDFBOTTOM ] := nTemp
+  IF nTemp < ::nPdfBottom
+ ::nPdfBottom := nTemp
   ENDIF
    ELSE
-  IF nTemp > ::aReport[ PDFTOP]
- ::aReport[ PDFTOP] := nTemp
+  IF nTemp > ::nPdfTop
+ ::nPdfTop := nTemp
   ENDIF
    ENDIF
 ELSEIF ::aHeader[ nI ][ 7 ] == "M"
    nTemp := ::aHeader[ nI ][ 5 ] * ::aReport[ LPI ] / 25.4 // top
    IF ::aHeader[ nI ][ 5 ] > ::aReport[ PAGEY ] / 72 * 25.4 / 2
-  IF nTemp < ::aReport[ PDFBOTTOM ]
- ::aReport[ PDFBOTTOM ] := nTemp
+  IF nTemp < ::nPdfBottom
+ ::nPdfBottom := nTemp
   ENDIF
    ELSE
-  IF nTemp > ::aReport[ PDFTOP]
- ::aReport[ PDFTOP] := nTemp
+  IF nTemp > ::nPdfTop
+ ::nPdfTop := nTemp
   ENDIF
    ENDIF
 ELSEIF ::aHeader[ nI ][ 7 ] == "D"
    nTemp := ::aHeader[ nI ][ 5 ] / ::aReport[ LPI ] // top
    IF ::aHeader[ nI ][ 5 ] > ::aReport[ PAGEY ] / 2
-  IF nTemp < ::aReport[ PDFBOTTOM ]
- ::aReport[ PDFBOTTOM ] := nTemp
+  IF nTemp < ::nPdfBottom
+ ::nPdfBottom := nTemp
   ENDIF
    ELSE
-  IF nTemp > ::aReport[ PDFTOP]
- ::aReport[ PDFTOP] := nTemp
+  IF nTemp > ::nPdfTop
+ ::nPdfTop := nTemp
   ENDIF
    ENDIF
 ENDIF
@@ -2031,13 +2036,13 @@ ENDIF
    next
 
    IF nTop <> NIL
-  ::aReport[ PDFTOP] := nTop
+  ::nPdfTop := nTop
    ENDIF
    IF nLeft <> NIL
-  ::aReport[ PDFLEFT ] := nLeft
+      ::nPdfLeft := nLeft
    ENDIF
    IF nBottom <> NIL
-  ::aReport[ PDFBOTTOM ] := nBottom
+      ::nPdfBottom := nBottom
    ENDIF
 
    ::aReport[ MARGINS ] := .f.
@@ -2327,6 +2332,7 @@ local nWidth := 0, nHeight := 0, nBits := 1, nFrom := 0, nLength := 0, xRes := 0
    aadd( aTemp, nFrom )
    aadd( aTemp, nLength )
    aadd( aTemp, 1 )
+   aadd( aTemp, NIL )
 
 return aTemp
 
@@ -2359,6 +2365,7 @@ local nLength, xRes, yRes, aTemp := {}
    aadd( aTemp, nFrom )
    aadd( aTemp, nLength )
    aadd( aTemp, 0 )
+   aadd( aTemp, NIL )
 
 return aTemp
 
@@ -2379,18 +2386,18 @@ local nLength, xRes, yRes, aTemp := {}
 
    xRes := ( asc( substr( cBuffer, 41, 1 ) ) * 65536 ) + ( asc( substr( cBuffer, 40, 1 ) ) * 256 ) + asc( substr( cBuffer, 39, 1 ) )
    yRes := ( asc( substr( cBuffer, 45, 1 ) ) * 65536 ) + ( asc( substr( cBuffer, 44, 1 ) ) * 256 ) + asc( substr( cBuffer, 43, 1 ) )
-* CHECAR POR VALOR CERO !!!!!
+   IF xRes == 0
+      xRes := 96
+   ENDIF
+   IF yRes == 0
+      yRes := 96
+   ENDIF
 
    nHeight := ( asc( substr( cBuffer, 25, 1 ) ) * 65536 ) + ( asc( substr( cBuffer, 24, 1 ) ) * 256 ) + asc( substr( cBuffer, 23, 1 ) )
    nWidth  := ( asc( substr( cBuffer, 21, 1 ) ) * 65536 ) + ( asc( substr( cBuffer, 20, 1 ) ) * 256 ) + asc( substr( cBuffer, 19, 1 ) )
 
    // nLength := ( asc( substr( cBuffer, 37, 1 ) ) * 65536 ) + ( asc( substr( cBuffer, 36, 1 ) ) * 256 ) + asc( substr( cBuffer, 35, 1 ) )
    nLength := INT( ( ( nWidth * IF( nBits == 24, 32, nBits ) ) + 7 ) / 8 ) * nHeight
-
-   IF nBits != 2 .AND. nBits != 24
-      // Supports only 2-bit and 24-bit BMP files
-      *RETURN {}
-   ENDIF
 
    aadd( aTemp, nWidth )
    aadd( aTemp, nHeight )
@@ -2400,6 +2407,11 @@ local nLength, xRes, yRes, aTemp := {}
    aadd( aTemp, nFrom )
    aadd( aTemp, nLength )
    aadd( aTemp, 2 )
+   IF nBits == 1 .OR. nBits == 24
+      aadd( aTemp, NIL )
+   ELSE
+      aadd( aTemp, 54 )
+   ENDIF
 
 return aTemp
 
@@ -2518,9 +2530,9 @@ return IIF( nPrev == 0, nPrev, nObj + nPrev )
 
 METHOD CheckLine( nRow )
 
-   IF nRow + ::aReport[ PDFTOP] > ::aReport[ PDFBOTTOM ]
-  ::NewPage()
-  nRow := ::aReport[ REPORTLINE ]
+   IF nRow + ::nPdfTop > ::nPdfBottom
+      ::NewPage()
+      nRow := ::aReport[ REPORTLINE ]
    ENDIF
    ::aReport[ REPORTLINE ] := nRow
 RETURN self
@@ -2613,7 +2625,7 @@ local nFinish, nL, nB, nJ, cToken, nRow
   cToken := token( cString, cDelim, nJ )
   IF lPrint
  // version 0.02
- ::AtSay( cColor + cToken, ::R2M( nRow + ::aReport[ PDFTOP ] ), nL, "M" )
+ ::AtSay( cColor + cToken, ::R2M( nRow + ::nPdfTop ), nL, "M" )
   ENDIF
   nL += ::Length( cToken ) + nB
    next
@@ -2649,7 +2661,7 @@ local cTemp, cBuffer, nBuffer, nRead, nI, k, nImage, nFont, nImageHandle, aImage
 
    aadd( ::aRefs, ::nDocLen )
 
-   aadd( ::aReport[ PAGES ], ::aReport[ REPORTOBJ ] + 1 )
+   aadd( ::aPages, ::aReport[ REPORTOBJ ] + 1 )
 
    cTemp := ;
             ltrim( str( ++::aReport[ REPORTOBJ ] ) ) + " 0 obj" + CRLF + ;
@@ -2768,6 +2780,8 @@ local cTemp, cBuffer, nBuffer, nRead, nI, k, nImage, nFont, nImageHandle, aImage
       IF ::aImages[ nI ][ 2 ] > ::aReport[ REPORTOBJ ]
          aadd( ::aRefs, ::nDocLen )
 
+         nImageHandle := fopen( ::aImages[ nI ][ 1 ] )
+
          cTemp := ;
                   ltrim( str( ::aImages[ nI ][ 2 ] ) ) + " 0 obj" + CRLF + ;
                   "<<" + CRLF + ;
@@ -2777,15 +2791,31 @@ local cTemp, cBuffer, nBuffer, nRead, nI, k, nImage, nFont, nImageHandle, aImage
                   "/Filter [" + IIF( ::aImages[ nI ][ 3 ][ IMAGE_TYPE ] == 0, " /DCTDecode", "" ) + " ]" + CRLF + ;     // 0.JPG
                   "/Width " + ltrim( str( ::aImages[ nI ][ 3 ][ IMAGE_WIDTH ] ) ) + CRLF + ;
                   "/Height " + ltrim( str( ::aImages[ nI ][ 3 ][ IMAGE_HEIGHT ] ) ) + CRLF + ;
-                  "/BitsPerComponent " + ltrim( str( MIN( ::aImages[ nI ][ 3 ][ IMAGE_BITS ], 8 ) ) ) + CRLF + ;
-                  "/ColorSpace /" + IIF( ::aImages[ nI ][ 3 ][ IMAGE_BITS ] == 1, "DeviceGray", IIF( ::aImages[ nI ][ 3 ][ IMAGE_BITS ] >= 24, "DeviceCMYK", "DeviceRGB" ) ) + CRLF + ;
+                  "/BitsPerComponent " + ltrim( str( MIN( ::aImages[ nI ][ 3 ][ IMAGE_BITS ], 8 ) ) ) + CRLF
+         IF     ::aImages[ nI ][ 3 ][ IMAGE_PALETTE ] == NIL
+             cTemp += ;
+                  "/ColorSpace /" + IIF( ::aImages[ nI ][ 3 ][ IMAGE_BITS ] == 1, "DeviceGray", IIF( ::aImages[ nI ][ 3 ][ IMAGE_BITS ] >= 24, "DeviceCMYK", "DeviceRGB" ) ) + CRLF
+         ELSE
+             nBuffer := 2 ^ ::aImages[ nI ][ 3 ][ IMAGE_BITS ]
+             cTemp += ;
+                  "/ColorSpace [ /Indexed /DeviceRGB " + LTRIM( STR( nBuffer - 1, 3, 0 ) ) + " <"
+             cBuffer := SPACE( nBuffer * 4 )
+             fseek( nImageHandle, ::aImages[ nI ][ 3 ][ IMAGE_PALETTE ] )
+             fread( nImageHandle, @cBuffer, nBuffer * 4 )
+             FOR k := 1 TO nBuffer
+                 cTemp += IIF( k == 1, "", " " ) + PDF_HEX( ASC( SUBSTR( cBuffer, ( k * 4 ) - 1, 1 ) ), 2 ) + PDF_HEX( ASC( SUBSTR( cBuffer, ( k * 4 ) - 2, 1 ) ), 2 ) + PDF_HEX( ASC( SUBSTR( cBuffer, ( k * 4 ) - 3, 1 ) ), 2 )
+             NEXT
+             cTemp += ;
+                  "> ]" + CRLF
+         ENDIF
+
+         cTemp += ;
                   "/Length " + ltrim( str( ::aImages[ nI ][ 3 ][ IMAGE_LENGTH ] ) ) + CRLF + ;
                   ">>" + CRLF + ;
                   "stream" + CRLF
 
          ::WriteToFile( cTemp )
 
-         nImageHandle := fopen( ::aImages[ nI ][ 1 ] )
          fseek( nImageHandle, ::aImages[ nI ][ 3 ][ IMAGE_FROM ] )
 
          IF    ::aImages[ nI ][ 3 ][ IMAGE_TYPE ] == 2     // 2.BMP
@@ -2811,17 +2841,24 @@ local cTemp, cBuffer, nBuffer, nRead, nI, k, nImage, nFont, nImageHandle, aImage
                      while( lHeight )
                      {
                         char *cFromCopy, *cToCopy;
-                        int lCopyPixels;
+                        long lCopyPixels;
+                        float fR, fG, fB, fK;
 
                         cFromCopy = cFrom;
                         cToCopy = cTo;
                         lCopyPixels = lWidth;
                         while( lCopyPixels )
                         {
-                           *cToCopy++ = cFromCopy[ 2 ] ^ 0xFF;
-                           *cToCopy++ = cFromCopy[ 1 ] ^ 0xFF;
-                           *cToCopy++ = cFromCopy[ 0 ] ^ 0xFF;
-                           *cToCopy++ = 0;
+                           fR = ( ( float ) ( unsigned char ) cFromCopy[ 2 ] ) / 255;
+                           fG = ( ( float ) ( unsigned char ) cFromCopy[ 1 ] ) / 255;
+                           fB = ( ( float ) ( unsigned char ) cFromCopy[ 0 ] ) / 255;
+                           fK = ( fR > fG ) ? fR : fG;
+                           fK = ( fK > fB ) ? fK : fB;
+                           fK = 1 - fK;
+                           *cToCopy++ = ( char ) ( unsigned char ) ( ( ( 1 - fR - fK ) / ( 1 - fK ) ) * 255 );
+                           *cToCopy++ = ( char ) ( unsigned char ) ( ( ( 1 - fG - fK ) / ( 1 - fK ) ) * 255 );
+                           *cToCopy++ = ( char ) ( unsigned char ) ( ( ( 1 - fB - fK ) / ( 1 - fK ) ) * 255 );
+                           *cToCopy++ = ( char ) ( unsigned char ) (                           fK     * 255 );
                            cFromCopy = cFromCopy + 3;
                            lCopyPixels--;
                         }
@@ -3129,6 +3166,19 @@ local lOpen  := ( hFile <> nil )
    endif
 
 return ( aRay )
+
+//컴컴컴컴컴컴컴컴컴컴컴컴�\\
+
+static FUNCTION PDF_HEX( nNum, nLen )
+LOCAL cHex, nDigit
+   cHex := ""
+   DO WHILE nLen > 0
+      nDigit := nNum % 16
+      nNum := INT( nNum / 16 )
+      cHex := IF( nDigit > 9, CHR( nDigit + 55 ), CHR( nDigit + 48 ) ) + cHex
+      nLen--
+   ENDDO
+RETURN cHex
 
 //컴컴컴컴컴컴컴컴컴컴컴컴�\\
 

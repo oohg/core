@@ -1,11 +1,22 @@
 /*
- * $Id: ChangeLog,v 1.1440 2015-03-28 15:54:41 guerra000 Exp $
+ * $Id: ChangeLog,v 1.1441 2015-03-31 01:38:25 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-03-30 19:36 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+   * source/h_windows.prg
+     ! Casting.
+   * source/h_pdf.prg
+     ! Minimal source code alignment.
+     ! Few ::aReport[] items converted to object's properties.
+     + Added support for 2-bit, 4-bit and 8-bit BMP files.
+     ! Previous commit was support for 1-bit.
+     ! Note: 24-bit BMP files are converted from RGB to CYMK but
+       it changes image color :( .
 
 2015-03-28 09:54 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
    * source/h_pdf.prg

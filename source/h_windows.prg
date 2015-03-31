@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.253 2015-03-09 02:52:08 fyurisich Exp $
+ * $Id: h_windows.prg,v 1.254 2015-03-31 01:38:25 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -2219,7 +2219,7 @@ HB_FUNC( _OOHG_HEX )   // nNum, nDigits
       {
          iDigit += 7;
       }
-      cBuffer[ iCount++ ] = '0' + iDigit;
+      cBuffer[ iCount++ ] = ( char ) ( '0' + iDigit );
       iNum = iNum >> 4;
    }
    if( ! iCount )
@@ -2696,7 +2696,7 @@ HB_FUNC( _OOHG_EVAL_ARRAY )
             iCount++;
          }
       }
-      hb_vmDo( iCount );
+      hb_vmDo( ( short ) iCount );
    }
    else
    {
