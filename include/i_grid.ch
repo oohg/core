@@ -1,5 +1,5 @@
 /*
- * $Id: i_grid.ch,v 1.39 2015-03-09 02:51:07 fyurisich Exp $
+ * $Id: i_grid.ch,v 1.40 2015-04-07 02:13:14 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -153,6 +153,10 @@ STANDARD VERSION
       [ <noclick: NOCLICKONCHECKBOX> ] ;
       [ <norclick: NORCLICKONCHECKBOX> ] ;
       [ <extdbl: EXTDBLCLICK> ] ;
+      [ <silent: SILENT> ] ;
+      [ <alta: ENABLEALTA, DISABLEALTA> ] ;
+      [ <noshow: NOSHOWALWAYS> ] ;
+      [ <none: NONEUNSELS, IGNORENONE> ] ;
    =>;
       [ <obj> := ] _OOHG_SelectSubClass( IIF( <.bycell.>, TGridByCell(), ;
             IIF( <.multiselect.>, TGridMulti(), TGrid() ) ), ;
@@ -178,7 +182,9 @@ STANDARD VERSION
             <DelMsg>, <.nodelmsg.>, <.append.>, <{onappend}>, <.nomodal.>, ;
             IIF( Upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., ;
             IIF( Upper( #<edtctrls> ) == "DYNAMICCONTROLS", .F., NIL ) ), ;
-            <{bheadrclick}>, ! <.noclick.>, ! <.norclick.>, <.extdbl.> )
+            <{bheadrclick}>, ! <.noclick.>, ! <.norclick.>, <.extdbl.>, ;
+            <.silent.>, Upper( #<alta> ) == "ENABLEALTA", <.noshow.>, ;
+            Upper( #<none> ) == "NONEUNSELS" )
 
 /*---------------------------------------------------------------------------
 SPLITBOX VERSION
@@ -269,6 +275,10 @@ SPLITBOX VERSION
       [ <noclick: NOCLICKONCHECKBOX> ] ;
       [ <norclick: NORCLICKONCHECKBOX> ] ;
       [ <extdbl: EXTDBLCLICK> ] ;
+      [ <silent: SILENT> ] ;
+      [ <alta: ENABLEALTA, DISABLEALTA> ] ;
+      [ <noshow: NOSHOWALWAYS> ] ;
+      [ <none: NONEUNSELS, IGNORENONE> ] ;
    =>;
       [ <obj> := ] _OOHG_SelectSubClass( IIF( <.bycell.>, TGridByCell(), ;
             IIF( <.multiselect.>, TGridMulti(), TGrid() ) ), ;
@@ -294,7 +304,9 @@ SPLITBOX VERSION
             <DelMsg>, <.nodelmsg.>, <.append.>, <{onappend}>, <.nomodal.>, ;
             IIF( Upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., ;
             IIF( Upper( #<edtctrls> ) == "DYNAMICCONTROLS", .F., NIL ) ), ;
-            <{bheadrclick}>, ! <.noclick.>, ! <.norclick.>, <.extdbl.> )
+            <{bheadrclick}>, ! <.noclick.>, ! <.norclick.>, <.extdbl.>, ;
+            <.silent.>, Upper( #<alta> ) == "ENABLEALTA", <.noshow.>, ;
+            Upper( #<none> ) == "NONEUNSELS" )
 
 #command SET GRIDFIXEDCONTROLS ON ;
    => ;

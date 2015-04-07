@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.269 2015-03-09 02:52:07 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.270 2015-04-07 02:13:14 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -182,6 +182,9 @@ CLASS TGrid FROM TControl
    DATA ClickOnCheckbox        INIT .T.
    DATA RClickOnCheckbox       INIT .T.
    DATA bCompareItems          INIT Nil
+   DATA lSilent                INIT .F.
+   DATA lAppendOnAltA          INIT .F.
+   DATA lNoneUnsels            INIT .F.
 
    METHOD Define
    METHOD Define2
@@ -282,7 +285,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
                bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
-               lExtDbl ) CLASS TGrid
+               lExtDbl, lSilent, lAltA, lNoShowAlways, lNone ) CLASS TGrid
 *-----------------------------------------------------------------------------*
    ::Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               aRows, value, fontname, fontsize, tooltip, change, dblclick, ;
@@ -299,7 +302,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
               bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
               lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
-              lExtDbl )
+              lExtDbl, lSilent, lAltA, lNoShowAlways, lNone )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -318,7 +321,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                 bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
                 bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
                 lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
-                lExtDbl ) CLASS TGrid
+                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local ControlHandle, aImageList, i
 
@@ -377,6 +380,9 @@ Local ControlHandle, aImageList, i
    ASSIGN ::ClickOnCheckbox  VALUE lClickOnCheckbox  TYPE "L"
    ASSIGN ::RClickOnCheckbox VALUE lRClickOnCheckbox TYPE "L"
    ASSIGN ::lExtendDblClick  VALUE lExtDbl           TYPE "L"
+   ASSIGN ::lSilent          VALUE lSilent           TYPE "L"
+   ASSIGN ::lAppendOnAltA    VALUE lAltA             TYPE "L"
+   ASSIGN ::lNoneUnsels      VALUE lNone             TYPE "L"
 
    /*
     * This must be placed before calling ::Register because when the
@@ -390,7 +396,8 @@ Local ControlHandle, aImageList, i
    EndIf
 
    nStyle := ::InitStyle( nStyle,, lInvisible, lNoTabStop, lDisabled ) + ;
-             If( HB_IsLogical( lHasHeaders ) .AND. ! lHasHeaders, LVS_NOCOLUMNHEADER, 0 )
+             If( HB_IsLogical( lHasHeaders ) .AND. ! lHasHeaders, LVS_NOCOLUMNHEADER, 0 ) + ;
+             If( HB_IsLogical( lNoShowAlways ) .AND. ! lNoShowAlways, LVS_SHOWSELALWAYS, 0 )
 
    If ! HB_IsArray( ::aJust )
       ::aJust := aFill( Array( Len( ::aHeaders ) ), 0 )
@@ -1937,8 +1944,13 @@ Return nColIndex
 METHOD Value( uValue ) CLASS TGrid
 *-----------------------------------------------------------------------------*
    If HB_IsNumeric( uValue )
-      ListView_SetCursel( ::hWnd, uValue )
-      ListView_EnsureVisible( ::hWnd, uValue )
+      If ::lNoneUnsels .AND. ( uValue < 1 .OR. uValue > ::ItemCount() )
+         ListView_ClearCursel( ::hWnd, 0 )
+         ::DoChange()
+      Else
+         ListView_SetCursel( ::hWnd, uValue )
+         ListView_EnsureVisible( ::hWnd, uValue )
+      EndIf
    EndIf
 Return ::FirstSelectedItem
 
@@ -2037,7 +2049,9 @@ Local r, r2, lRet := .F., nClientWidth, uAux, nScrollWidth
 
    ElseIf ::IsColumnReadOnly( nCol )
       // Read only column
-      PlayHand()
+      If ! ::lSilent
+         PlayHand()
+      EndIf
 
    ElseIf ! ::IsColumnWhen( nCol )
       // Not a valid WHEN
@@ -2587,6 +2601,16 @@ Local lvc, _ThisQueryTemp, nvkey, uValue, lGo, aItem
                MsgExclamation( ::DelMsg, _OOHG_Messages(4, 3) )
             EndIf
          Endif
+      ElseIf nvKey == VK_A
+         If GetAltState() == -127 ;
+            .OR.;
+            GetAltState() == -128   // ALT
+
+            If ::lAppendOnAltA .AND. ! ::lEditMode .AND. ::AllowAppend
+               ::AppendItem()
+               Return Nil
+            EndIf
+         EndIf
       EndIf
 
    ElseIf nNotify == LVN_GETDISPINFO
@@ -3222,6 +3246,7 @@ CLASS TGridMulti FROM TGrid
    METHOD PageDown
    METHOD GoTop
    METHOD GoBottom
+   METHOD DoChange
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -3240,9 +3265,11 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
                bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
-               lExtDbl ) CLASS TGridMulti
+               lExtDbl, lSilent, lAltA, lNoShowAlways, lNone ) CLASS TGridMulti
 *-----------------------------------------------------------------------------*
 Local nStyle := 0
+
+   Empty( lNone )
 
    ::Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               aRows, value, fontname, fontsize, tooltip, change, dblclick, ;
@@ -3259,19 +3286,60 @@ Local nStyle := 0
               bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
               bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
               lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
-              lExtDbl )
+              lExtDbl, lSilent, lAltA, lNoShowAlways, .T. )
 Return Self
 
 *-----------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TGridMulti
 *-----------------------------------------------------------------------------*
+Local aRet, aNew
    If HB_IsArray( uValue )
-      ListViewSetMultiSel( ::hWnd, uValue )
-      If Len( uValue ) > 0
-         ListView_EnsureVisible( ::hWnd, uValue[ 1 ] )
+      aRet := ListViewGetMultiSel( ::hWnd )
+      aNew := aSort( aClone( uValue ), Nil, Nil, {|x, y| x < y } )
+      If ! aEqual( aNew, aRet )
+         ListViewSetMultiSel( ::hWnd, uValue )
+         If Len( uValue ) > 0
+            ListView_EnsureVisible( ::hWnd, uValue[ 1 ] )
+         EndIf
+         aRet := ListViewGetMultiSel( ::hWnd )
       EndIf
+   Else
+      aRet := ListViewGetMultiSel( ::hWnd )
    EndIf
-RETURN ListViewGetMultiSel( ::hWnd )
+RETURN aRet
+
+Function aEqual( array1, array2 )
+Local i, nLen
+   nLen := Len( array1 )
+   If ! nLen == Len( array2 )
+      Return .F.
+   EndIf
+   For i := 1 to nLen
+      If ! ValType( array1[ i ] ) == ValType( array2[ i ] )
+         Return .F.
+      ElseIf ! array1[ i ] == array2[ i ]
+         Return .F.
+      EndIf
+   Next i
+Return .T.
+
+*-----------------------------------------------------------------------------*
+METHOD DoChange() CLASS TGridMulti
+*-----------------------------------------------------------------------------*
+Local xValue, cType, cOldType
+   xValue   := ::Value
+   cType    := ValType( xValue )
+   cOldType := ValType( ::xOldValue )
+   cType    := If( cType    == "M", "C", cType )
+   cOldType := If( cOldType == "M", "C", cOldType )
+   If ( cOldType == "U" .OR. ! cType == cOldType .OR. ;
+        ( HB_IsArray( xValue ) .AND. ! HB_IsArray( ::xOldValue ) ) .OR. ;
+        ( ! HB_IsArray( xValue ) .AND. HB_IsArray( ::xOldValue ) ) .OR. ;
+        ! aEqual( xValue, ::xOldValue ) )
+      ::xOldValue := xValue
+      ::DoEvent( ::OnChange, "CHANGE" )
+   EndIf
+Return Nil
 
 *--------------------------------------------------------------------------*
 METHOD AppendItem() CLASS TGridMulti
@@ -3529,9 +3597,11 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
                bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
-               lExtDbl ) CLASS TGridByCell
+               lExtDbl, lSilent, lAltA, lNoShowAlways, lNone ) CLASS TGridByCell
 *-----------------------------------------------------------------------------*
    ASSIGN lFocusRect VALUE lFocusRect TYPE "L" DEFAULT .F.
+
+   Empty( lNone )
 
    ::Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               aRows, value, fontname, fontsize, tooltip, change, dblclick, ;
@@ -3548,7 +3618,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
               bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
               lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
-              lExtDbl )
+              lExtDbl, lSilent, lAltA, lNoShowAlways, .T. )
 
    // By default, search in the current column
    ::SearchCol := -1
@@ -3627,31 +3697,30 @@ Local r, nClientWidth, nScrollWidth
       If uValue[ 1 ] < 1 .OR. uValue[ 1 ] > ::ItemCount .OR. uValue[ 2 ] < 1 .OR. uValue[ 2 ] > Len( ::aHeaders )
          ::nRowPos := 0
          ::nColPos := 0
+         ListView_ClearCursel( ::hWnd, 0 )
       Else
          ::nRowPos := uValue[ 1 ]
          ::nColPos := uValue[ 2 ]
-      EndIf
-
-      // Ensure cell is visible
-      ListView_SetCursel( ::hWnd, ::nRowPos )
-      ListView_EnsureVisible( ::hWnd, ::nRowPos )
-      r := { 0, 0, 0, 0 }                                        // left, top, right, bottom
-      GetClientRect( ::hWnd, r )
-      nClientWidth := r[ 3 ] - r[ 1 ]
-      r := ListView_GetSubitemRect( ::hWnd, ::nRowPos - 1, ::nColPos - 1 ) // top, left, width, height
-      If ListViewGetItemCount( ::hWnd ) >  ListViewGetCountPerPage( ::hWnd )
-         nScrollWidth := GetVScrollBarWidth()
-      Else
-         nScrollWidth := 0
-      EndIf
-      If r[ 2 ] + r[ 3 ] + nScrollWidth > nClientWidth
-         ListView_Scroll( ::hWnd, ( r[ 2 ] + r[ 3 ] + nScrollWidth - nClientWidth ), 0 )
-      EndIf
-      If r[ 2 ] < 0
-         ListView_Scroll( ::hWnd, r[ 2 ], 0 )
+         // Ensure cell is visible
+         ListView_SetCursel( ::hWnd, ::nRowPos )
+         ListView_EnsureVisible( ::hWnd, ::nRowPos )
+         r := { 0, 0, 0, 0 }                                        // left, top, right, bottom
+         GetClientRect( ::hWnd, r )
+         nClientWidth := r[ 3 ] - r[ 1 ]
+         r := ListView_GetSubitemRect( ::hWnd, ::nRowPos - 1, ::nColPos - 1 ) // top, left, width, height
+         If ListViewGetItemCount( ::hWnd ) >  ListViewGetCountPerPage( ::hWnd )
+            nScrollWidth := GetVScrollBarWidth()
+         Else
+            nScrollWidth := 0
+         EndIf
+         If r[ 2 ] + r[ 3 ] + nScrollWidth > nClientWidth
+            ListView_Scroll( ::hWnd, ( r[ 2 ] + r[ 3 ] + nScrollWidth - nClientWidth ), 0 )
+         EndIf
+         If r[ 2 ] < 0
+            ListView_Scroll( ::hWnd, r[ 2 ], 0 )
+         EndIf
       EndIf
       ListView_RedrawItems( ::hWnd, ::nRowPos, ::nRowPos )
-
       ::DoChange()
    EndIf
 RETURN { ::nRowPos, ::nColPos }
@@ -3708,6 +3777,7 @@ Local lSomethingEdited, uValue
 
    Do While uValue[ 2 ] <= Len( ::aHeaders ) .AND. uValue[ 1 ] <= ::ItemCount
       _OOHG_ThisItemCellValue := ::Cell( uValue[ 1 ], uValue[ 2 ] )
+      ::bPosition := 0
 
       If ::IsColumnReadOnly( uValue[ 2 ] )
          // Read only column
@@ -3739,7 +3809,6 @@ Local lSomethingEdited, uValue
 
       // ::bPosition is set by TGridControl()
       If ::bPosition == 1                            // UP
-         ::bPosition := 0
          uValue := ::Value
          If uValue[ 1 ] < 1 .OR. uValue[ 1 ] > ::ItemCount + 1 .OR. uValue[ 2 ] < 1 .or. uValue[ 2 ] > Len( ::aHeaders )
             Exit
@@ -3751,7 +3820,6 @@ Local lSomethingEdited, uValue
             Exit
          EndIf
       ElseIf ::bPosition == 2                        // RIGHT
-         ::bPosition := 0
          uValue := ::Value
          If uValue[ 1 ] < 1 .OR. uValue[ 1 ] > ::ItemCount .OR. uValue[ 2 ] < 1 .or. uValue[ 2 ] > Len( ::aHeaders )
             Exit
@@ -3776,7 +3844,6 @@ Local lSomethingEdited, uValue
             Exit
          EndIf
       ElseIf ::bPosition == 3                        // LEFT
-         ::bPosition := 0
          uValue := ::Value
          If uValue[ 1 ] < 1 .OR. uValue[ 1 ] > ::ItemCount .OR. uValue[ 2 ] < 1 .or. uValue[ 2 ] > Len( ::aHeaders )
             Exit
@@ -3792,19 +3859,16 @@ Local lSomethingEdited, uValue
             Exit
          EndIf
       ElseIf ::bPosition == 4                        // HOME
-         ::bPosition := 0
          ::Value := { 1, 1 }
          IF ! ::FullMove
             Exit
          EndIf
       ElseIf ::bPosition == 5                        // END
-         ::bPosition := 0
          ::Value := { ::Itemcount, Len( ::aHeaders ) }
          IF ! ::FullMove
             Exit
          EndIf
       ElseIf ::bPosition == 6                        // DOWN
-         ::bPosition := 0
          uValue := ::Value
          If uValue[ 1 ] < 1 .OR. uValue[ 1 ] > ::ItemCount .OR. uValue[ 2 ] < 1 .or. uValue[ 2 ] > Len( ::aHeaders )
             ::Value := { 1, 1 }
@@ -3823,7 +3887,6 @@ Local lSomethingEdited, uValue
             Exit
          EndIf
       ElseIf ::bPosition == 7                        // PRIOR
-         ::bPosition := 0
          uValue := ::Value
          If uValue[ 1 ] < 1 .OR. uValue[ 1 ] > ::ItemCount .OR. uValue[ 2 ] < 1 .or. uValue[ 2 ] > Len( ::aHeaders )
             ::Value := { 1, 1 }
@@ -3836,7 +3899,6 @@ Local lSomethingEdited, uValue
             Exit
          EndIf
       ElseIf ::bPosition == 8                        // NEXT
-         ::bPosition := 0
          uValue := ::Value
          If uValue[ 1 ] < 1 .OR. uValue[ 1 ] > ::ItemCount .OR. uValue[ 2 ] < 1 .or. uValue[ 2 ] > Len( ::aHeaders )
             If ::CountPerPage <= ::ItemCount
@@ -3853,10 +3915,8 @@ Local lSomethingEdited, uValue
             Exit
          EndIf
       ElseIf ::bPosition == 9                        // MOUSE EXIT
-         ::bPosition := 0
          Exit
       Else
-         ::bPosition := 0
          uValue := ::Value
          If uValue[ 2 ] < Len( ::aHeaders )
             ::Value := { uValue[ 1 ], uValue[ 2 ] + 1 }
@@ -3878,6 +3938,8 @@ Local lSomethingEdited, uValue
 
       uValue := ::Value
    EndDo
+
+   ::bPosition := 0
 Return lSomethingEdited
 
 *--------------------------------------------------------------------------*
@@ -4113,19 +4175,18 @@ Local aValue, lRet
    EndIf
    aValue := ::Value := { nRow, nCol }
 
+   ::bPosition := 0
    lRet := ::Super:EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPos )
 
    If lRet
       // ::bPosition is set by TGridControl()
       If ::bPosition == 1                            // UP
-         ::bPosition := 0
          If aValue[ 1 ] > 1
             ::Value := { aValue[ 1 ] - 1, aValue[ 2 ] }
          ElseIf ::FullMove
             ::Value := { ::ItemCount, aValue[ 2 ] }
          EndIf
       ElseIf ::bPosition == 2                        // RIGHT
-         ::bPosition := 0
          If aValue[ 2 ] < Len( ::aHeaders )
             ::Value := { aValue[ 1 ], aValue[ 2 ] + 1 }
          ElseIf aValue[ 1 ] < ::ItemCount
@@ -4136,7 +4197,6 @@ Local aValue, lRet
             ::Value := { 1, 1 }
          EndIf
       ElseIf ::bPosition == 3                        // LEFT
-         ::bPosition := 0
          If aValue[ 2 ] > 1
             ::Value := { aValue[ 1 ], aValue[ 2 ] - 1 }
          ElseIf ::FullMove
@@ -4147,38 +4207,33 @@ Local aValue, lRet
             EndIf
          EndIf
       ElseIf ::bPosition == 4                        // HOME
-         ::bPosition := 0
          ::Value := { 1, 1 }
       ElseIf ::bPosition == 5                        // END
-         ::bPosition := 0
          ::Value := { ::Itemcount, Len( ::aHeaders ) }
       ElseIf ::bPosition == 6                        // DOWN
-         ::bPosition := 0
          If aValue[ 1 ] < ::ItemCount
             ::Value := { aValue[ 1 ] + 1, aValue[ 2 ] }
          ElseIf ::FullMove
             ::Value := { 1, aValue[ 2 ] }
          EndIf
       ElseIf ::bPosition == 7                        // PRIOR
-         ::bPosition := 0
          If aValue[ 1 ] > ::CountPerPage
             ::Value := { aValue[ 1 ] - ::CountPerPage, aValue[ 2 ] }
          Else
             ::Value := { 1, aValue[ 2 ] }
          EndIf
       ElseIf ::bPosition == 8                        // NEXT
-         ::bPosition := 0
          If aValue[ 1 ] < ::ItemCount - ::CountPerPage
             ::Value := { aValue[ 1 ] + ::CountPerPage, aValue[ 2 ] }
          Else
             ::Value := { ::Itemcount, aValue[ 2 ] }
          EndIf
       ElseIf ::bPosition == 9                        // MOUSE EXIT
-         ::bPosition := 0
-      Else
-         ::bPosition := 0
+      Else                                           // OK
       EndIf
    EndIf
+
+   ::bPosition := 0
 Return lRet
 
 // nRow, nCol and uValue may be passed by reference
@@ -6152,7 +6207,7 @@ HB_FUNC( INITLISTVIEW )
 
    StyleEx = WS_EX_CLIENTEDGE | _OOHG_RTL_Status( hb_parl( 13 ) );
 
-   style = LVS_SHOWSELALWAYS | WS_CHILD | LVS_REPORT | hb_parni( 12 );
+   style = WS_CHILD | LVS_REPORT | hb_parni( 12 );
    if ( hb_parl( 10 ) )
    {
       style = style | LVS_OWNERDATA;
@@ -7215,10 +7270,15 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
                   lplvcd->clrText   = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 1 );
                   lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 2 );
                }
-               else
+               else if( GetWindowLong( lplvcd->nmcd.hdr.hwndFrom, GWL_STYLE ) & LVS_SHOWSELALWAYS )
                {
                   lplvcd->clrText   = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 3 );
                   lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 4 );
+               }
+               else
+               {
+                  lplvcd->clrText   = TGrid_Notify_CustomDraw_GetColor( pSelf, x, y, s_GridForeColor, s_FontColor, COLOR_WINDOWTEXT );
+                  lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetColor( pSelf, x, y, s_GridBackColor, s_BackColor, COLOR_WINDOW );
                }
             }
             else
@@ -7228,10 +7288,15 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
                   lplvcd->clrText   = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 5 );
                   lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 6 );
                }
-               else
+               else if( GetWindowLong( lplvcd->nmcd.hdr.hwndFrom, GWL_STYLE ) & LVS_SHOWSELALWAYS )
                {
                   lplvcd->clrText   = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 7 );
                   lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 8 );
+               }
+               else
+               {
+                  lplvcd->clrText   = TGrid_Notify_CustomDraw_GetColor( pSelf, x, y, s_GridForeColor, s_FontColor, COLOR_WINDOWTEXT );
+                  lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetColor( pSelf, x, y, s_GridBackColor, s_BackColor, COLOR_WINDOW );
                }
                if( lplvcd->clrText == (COLORREF) -1 )
                {
@@ -7250,10 +7315,15 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
                lplvcd->clrText   = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 1 );
                lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 2 );
             }
-            else
+            else if( GetWindowLong( lplvcd->nmcd.hdr.hwndFrom, GWL_STYLE ) & LVS_SHOWSELALWAYS )
             {
                lplvcd->clrText   = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 3 );
                lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 4 );
+            }
+            else
+            {
+               lplvcd->clrText   = TGrid_Notify_CustomDraw_GetColor( pSelf, x, y, s_GridForeColor, s_FontColor, COLOR_WINDOWTEXT );
+               lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetColor( pSelf, x, y, s_GridBackColor, s_BackColor, COLOR_WINDOW );
             }
          }
       }
@@ -7261,11 +7331,6 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
       {
          lplvcd->clrText   = TGrid_Notify_CustomDraw_GetColor( pSelf, x, y, s_GridForeColor, s_FontColor, COLOR_WINDOWTEXT );
          lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetColor( pSelf, x, y, s_GridBackColor, s_BackColor, COLOR_WINDOW );
-      }
-
-      if( LI.state & LVIS_SELECTED )
-      {
-         lplvcd->nmcd.uItemState -= CDIS_SELECTED;
       }
 
       if( GetFocus() == lplvcd->nmcd.hdr.hwndFrom )
@@ -7276,6 +7341,17 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
             {
                lplvcd->nmcd.uItemState -= CDIS_FOCUS;
             }
+         }
+         if( LI.state & LVIS_SELECTED )
+         {
+            lplvcd->nmcd.uItemState -= CDIS_SELECTED;
+         }
+      }
+      else if( GetWindowLong( lplvcd->nmcd.hdr.hwndFrom, GWL_STYLE ) & LVS_SHOWSELALWAYS )
+      {
+         if( LI.state & LVIS_SELECTED )
+         {
+            lplvcd->nmcd.uItemState -= CDIS_SELECTED;
          }
       }
 
@@ -7317,9 +7393,13 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
                {
                   lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 2 );
                }
-               else
+               else if( GetWindowLong( lplvcd->nmcd.hdr.hwndFrom, GWL_STYLE ) & LVS_SHOWSELALWAYS )
                {
                   lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 4 );
+               }
+               else
+               {
+                  lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetColor( pSelf, x, y, s_GridBackColor, s_BackColor, COLOR_WINDOW );
                }
             }
             else
@@ -7328,9 +7408,13 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
                {
                   lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 6 );
                }
-               else
+               else if( GetWindowLong( lplvcd->nmcd.hdr.hwndFrom, GWL_STYLE ) & LVS_SHOWSELALWAYS )
                {
                   lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 8 );
+               }
+               else
+               {
+                  lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetColor( pSelf, x, y, s_GridBackColor, s_BackColor, COLOR_WINDOW );
                }
                if( lplvcd->clrTextBk == (COLORREF) -1 )
                {
@@ -7344,9 +7428,13 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
             {
                lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 2 );
             }
-            else
+            else if( GetWindowLong( lplvcd->nmcd.hdr.hwndFrom, GWL_STYLE ) & LVS_SHOWSELALWAYS )
             {
                lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 4 );
+            }
+            else
+            {
+               lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetColor( pSelf, x, y, s_GridBackColor, s_BackColor, COLOR_WINDOW );
             }
          }
       }

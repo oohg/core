@@ -1,11 +1,62 @@
 /*
- * $Id: ChangeLog,v 1.1442 2015-04-06 21:14:10 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1443 2015-04-07 02:13:14 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-04-06 23:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_grid.ch
+     + NOSHOWALWAYS, SILENT, ENABLEALTA, DISABLEALTA, NONEUNSELS
+       and IGNORENONE clauses.
+   * source/h_grid.prg
+     + DATAs lSilent, lAppendOnAltA and lNoneUnsels.
+     + New parameters to methods TGrid():Define and TGrid():Define2.
+     * Assignment of LVS_SHOWSELALWAYS style moved to PRG level.
+     * TGrid():Value honors ::lNoneUnsels.
+     * TGrid():EditCell2 honors ::lSilent.
+     + Alt-A to add new items in TGrid():Events_Notify.
+     + Method TGridMulti():DoChange.
+     + New parameters to method TGridMulti():Define.
+     ! TGridMulti():Value does not fires ON CHANGE event when selection
+       is cleared.
+     ! TGridMulti():Value fires ON CHANGE event when new value is equal
+       to current value.
+     + Function aEqual( array1, array2 ): returns .T. if the two arrays
+       have the same length and corresponding items are equal.
+     ! TGridMulti():DoChange fires ON CHANGE event when new value is
+       equal to current value.
+     + Function aEqual( array1, array2 ): returns .T. if the two arrays
+       have the same length and corresponding items are equal.
+     + New parameters to method TGridByCell():Define.
+     ! TGridByCell():Value scrolls window's content when new value is
+       not valid.
+     * TGridByCell():EditGrid and TGridByCell():EditCell now reset
+       ::bPosition before and after cell edition.
+     * InitListvie() does not sets LVS_SHOWSELALWAYS style by default.
+     * TGrid_Notify_CustomDraw() honors ::lNoneUnsels.
+
+   ; NOSHOWALWAYS: hides selected items when control loses focus.
+     Defaults to .F.
+     This a style, so to change an existing control you must use function
+     WindowStyleFlag with LVS_SHOWSELALWAYS.
+   ; SILENT: mutes warning sound when trying to edit a readonly column.
+     Defaults to .F.
+     You can change this setting using DATA lSilent.
+   ; NONEUNSELS: the GRID control will clear the selected item and fire
+     ON CHANGE event when an invalid value is set.
+     Defauls to .F.
+     You can change this setting using DATA lNoneUnsels.
+     This clause is forced to .T. by GRID controls with MULTISELECT or
+     NAVIGATEBYCELL clauses, and any change in DATA lNoneUnsels is ignored.
+   ; IGNORENONE: the GRID control ignores invalid values and the current
+     value is not changed. This is the default behaviour.
+   ; ENABLEALTA: enables use of Alt-A for appending new items.
+     Defaults to .F.
+   ; DISABLEALTA: disables use of Alt-A for appending new items.
+     This is the default behaviour.
 
 2015-04-06 18:13 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./ChangeLog.004
