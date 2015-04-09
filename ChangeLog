@@ -1,11 +1,15 @@
 /*
- * $Id: ChangeLog,v 1.1443 2015-04-07 02:13:14 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1444 2015-04-09 20:16:51 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-04-09 17:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     * GetAltState() by GetKeyFlagState() for recognizing Alt-A.
 
 2015-04-06 23:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_grid.ch

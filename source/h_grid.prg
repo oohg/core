@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.270 2015-04-07 02:13:14 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.271 2015-04-09 20:16:51 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2601,15 +2601,10 @@ Local lvc, _ThisQueryTemp, nvkey, uValue, lGo, aItem
                MsgExclamation( ::DelMsg, _OOHG_Messages(4, 3) )
             EndIf
          Endif
-      ElseIf nvKey == VK_A
-         If GetAltState() == -127 ;
-            .OR.;
-            GetAltState() == -128   // ALT
-
-            If ::lAppendOnAltA .AND. ! ::lEditMode .AND. ::AllowAppend
-               ::AppendItem()
-               Return Nil
-            EndIf
+      ElseIf nvKey == VK_A .AND. GetKeyFlagState() == MOD_ALT
+         If ::lAppendOnAltA .AND. ! ::lEditMode .AND. ::AllowAppend
+            ::AppendItem()
+            Return Nil
          EndIf
       EndIf
 
