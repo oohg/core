@@ -1,5 +1,5 @@
 <!--
-$Id: Changelog.htm,v 1.17 2015-03-27 00:04:39 fyurisich Exp $
+$Id: Changelog.htm,v 1.18 2015-04-13 22:28:53 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -142,6 +142,128 @@ CHANGELOG</div>
 </div>
 <div id="winchm_template_content">
 <pre>
+2015-04-13 19:28 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ./changelog
+     * Previous entry.
+   * manual/changelog.htm
+     * Updated.
+
+2015-04-13 18:45 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ./ChangeLog.004
+     * Fixed entry.
+
+2015-04-13 18:35 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_checklist.prg
+     ! Missing parameters in call to TGrid:Define.
+     + New parameters in call to TGrid:Define.
+
+2015-04-13 18:24 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_msgbox.prg
+     ! Minimun width of MsgInfoExt's window is too small.
+
+2015-04-13 18:15 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ./changelog
+     * Previous entry.
+   * distros/MakeDistro.bat
+     * Copy only newer files if working folder is not empty.
+   * source/h_grid.prg
+     * Methods AppendItem in TGrid, TGridMulti and TGridByCell classes
+       now return .T. if a new item was appended.
+     * TGrid():Value does nothing when new value is 0 and there's no
+       item selected.
+     * Changed prefix of numeric vars from l* to n* in
+       TGrid():HeaderSetFont.
+     ! lAppend parameter in TGridMulti():Down, TGridByCell():Right and
+       TGridByCell():Down was wrongly checked against numeric type.
+     ! TGridByCell():Right and TGridByCell():Left do not ignore hidden
+       columns.
+     * TGridByCell():Right no longer sets value to {1,1} when current
+       value is not valid, instead the command is ignored.
+     * Methods Right, Left, Up and Down of TGridByCell class now return
+       .T. if selected cell was changed.
+
+2015-04-09 17:16 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_grid.prg
+     * GetAltState() by GetKeyFlagState() for recognizing Alt-A.
+
+2015-04-06 23:12 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * include/i_grid.ch
+     + NOSHOWALWAYS, SILENT, ENABLEALTA, DISABLEALTA, NONEUNSELS
+       and IGNORENONE clauses.
+   * source/h_grid.prg
+     + DATAs lSilent, lAppendOnAltA and lNoneUnsels.
+     + New parameters to methods TGrid():Define and TGrid():Define2.
+     * Assignment of LVS_SHOWSELALWAYS style moved to PRG level.
+     * TGrid():Value honors ::lNoneUnsels.
+     * TGrid():EditCell2 honors ::lSilent.
+     + Alt-A to add new items in TGrid():Events_Notify.
+     + Method TGridMulti():DoChange.
+     + New parameters to method TGridMulti():Define.
+     ! TGridMulti():Value does not fires ON CHANGE event when selection
+       is cleared.
+     ! TGridMulti():Value fires ON CHANGE event when new value is equal
+       to current value.
+     + Function aEqual( array1, array2 ): returns .T. if the two arrays
+       have the same length and corresponding items are equal.
+     ! TGridMulti():DoChange fires ON CHANGE event when new value is
+       equal to current value.
+     + Function aEqual( array1, array2 ): returns .T. if the two arrays
+       have the same length and corresponding items are equal.
+     + New parameters to method TGridByCell():Define.
+     ! TGridByCell():Value scrolls window's content when new value is
+       not valid.
+     * TGridByCell():EditGrid and TGridByCell():EditCell now reset
+       ::bPosition before and after cell edition.
+     * InitListvie() does not sets LVS_SHOWSELALWAYS style by default.
+     * TGrid_Notify_CustomDraw() honors ::lNoneUnsels.
+
+   ; NOSHOWALWAYS: hides selected items when control loses focus.
+     Defaults to .F.
+     This a style, so to change an existing control you must use function
+     WindowStyleFlag with LVS_SHOWSELALWAYS.
+   ; SILENT: mutes warning sound when trying to edit a readonly column.
+     Defaults to .F.
+     You can change this setting using DATA lSilent.
+   ; NONEUNSELS: the GRID control will clear the selected item and fire
+     ON CHANGE event when an invalid value is set.
+     Defauls to .F.
+     You can change this setting using DATA lNoneUnsels.
+     This clause is forced to .T. by GRID controls with MULTISELECT or
+     NAVIGATEBYCELL clauses, and any change in DATA lNoneUnsels is ignored.
+   ; IGNORENONE: the GRID control ignores invalid values and the current
+     value is not changed. This is the default behaviour.
+   ; ENABLEALTA: enables use of Alt-A for appending new items.
+     Defaults to .F.
+     You can change this setting using DATA lAppendOnAltA.
+   ; DISABLEALTA: disables use of Alt-A for appending new items.
+     This is the default behaviour.
+
+2015-04-06 18:13 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ./ChangeLog.004
+     * Fixed entry.
+
+2015-03-30 19:36 UTC-0600 Vicente Guerra &lt;vicente@guerra.com.mx&gt;
+   * source/h_windows.prg
+     ! Casting.
+   * source/h_pdf.prg
+     ! Minimal source code alignment.
+     ! Few ::aReport[] items converted to object's properties.
+     + Added support for 2-bit, 4-bit and 8-bit BMP files.
+     ! Previous commit was support for 1-bit.
+     ! Note: 24-bit BMP files are converted from RGB to CYMK but
+       it changes image color :( .
+
+2015-03-28 09:54 UTC-0600 Vicente Guerra &lt;vicente@guerra.com.mx&gt;
+   * source/h_pdf.prg
+     ! Removed unused variable.
+
+2015-03-27 20:30 UTC-0600 Vicente Guerra &lt;vicente@guerra.com.mx&gt;
+   * source/h_pdf.prg
+     ! Minimal source code alignment.
+     ! Few ::aReport[] items converted to object's properties.
+     + Support for 2-bit and 24-bit .BMP files.
+     ! Note: 24-bit BMP files does change image color :( .
+
 2015-03-26 19:06 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * manual/changelog.htm
      * Updated.
@@ -294,7 +416,7 @@ CHANGELOG</div>
      + IDE building.
    * ./MakeExclude.txt
      * Updated files.
-   * ide/mgide.prg
+   * ide/mgide.hbp
      + Some Harbour flags.
      * Some flags commented out.
    * ide/fmgs/tabprop.fmg
@@ -421,7 +543,7 @@ CHANGELOG</div>
      ; Compiles using hbmk2 via BuildApp_hbmk2.bat
 
 2015-03-11 21:58 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
-   + Agregar even-prop.txt
+   + ./ide/txts/Agregar even-prop.txt
      * Notes on how to update the IDE.
    * ./2buildapp.bat
    * ./buildapp.bat
@@ -762,7 +884,7 @@ CHANGELOG</div>
    + ./compile32.bat
      * Use this file to compile using Harbour 3.2 and MinGW.
      ; Use /c switch to set environment vars to its default values.
-     ; Syntax: CompileXX /c prgfile
+     ; Syntax: Compile32 /c prgfile
 
 2015-03-08 12:25 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * ./2buildapp.bat

@@ -1,11 +1,17 @@
 /*
- * $Id: ChangeLog,v 1.1448 2015-04-13 21:45:40 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1449 2015-04-13 22:28:52 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-04-13 19:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./changelog
+     * Previous entry.
+   * manual/changelog.htm
+     * Updated.
 
 2015-04-13 18:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./ChangeLog.004
@@ -124,7 +130,7 @@
      ! Note: 24-bit BMP files does change image color :( .
 
 2015-03-26 21:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * ./changelog.htm
+   * ./changelog
      * Previous entry.
    * manual/changelog.htm
      * Updated.
