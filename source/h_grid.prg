@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.271 2015-04-09 20:16:51 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.272 2015-04-13 21:16:08 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -810,6 +810,7 @@ Return bRet
 *--------------------------------------------------------------------------*
 METHOD AppendItem() CLASS TGrid
 *--------------------------------------------------------------------------*
+Local lRet := .F.
    IF ! ::lNestedEdit
       ::lNestedEdit := .T.
       ::cText := ""
@@ -818,17 +819,17 @@ METHOD AppendItem() CLASS TGrid
          ::InsertBlank( ::ItemCount + 1 )
          ::Value := ::ItemCount
          If ::FullMove
-            ::EditGrid()
+            lRet := ::EditGrid()
          ElseIf ::InPlace
-            ::EditAllCells()
+            lRet := ::EditAllCells()
          Else
-            ::EditItem()
+            lRet := ::EditItem()
          EndIf
          ::lAppendMode := .F.
       EndIf
       ::lNestedEdit := .F.
    EndIf
-Return Nil
+Return lRet
 
 *--------------------------------------------------------------------------*
 METHOD EditGrid( nRow, nCol ) CLASS TGrid
@@ -1945,8 +1946,10 @@ METHOD Value( uValue ) CLASS TGrid
 *-----------------------------------------------------------------------------*
    If HB_IsNumeric( uValue )
       If ::lNoneUnsels .AND. ( uValue < 1 .OR. uValue > ::ItemCount() )
-         ListView_ClearCursel( ::hWnd, 0 )
-         ::DoChange()
+         If ::FirstSelectedItem # 0
+            ListView_ClearCursel( ::hWnd, 0 )
+            ::DoChange()
+         EndIf
       Else
          ListView_SetCursel( ::hWnd, uValue )
          ListView_EnsureVisible( ::hWnd, uValue )
@@ -2951,7 +2954,7 @@ METHOD HeaderImageAlign( nColumn, nPlace ) CLASS TGrid
 Return ::aHeaderImageAlign[ nColumn ]
 
 *-----------------------------------------------------------------------------*
-METHOD HeaderSetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, lFntAngle, lFntwidth ) CLASS TGrid
+METHOD HeaderSetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nFntAngle, nFntwidth ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local HeaderHandle
    If ValidHandler( ::HeaderFontHandle )
@@ -2963,11 +2966,11 @@ Local HeaderHandle
    ASSIGN lItalic    VALUE lItalic    TYPE "L"  DEFAULT .F.
    ASSIGN lUnderline VALUE lUnderline TYPE "L"  DEFAULT .F.
    ASSIGN lStrikeout VALUE lStrikeout TYPE "L"  DEFAULT .F.
-   ASSIGN lFntAngle  VALUE lFntAngle  TYPE "N"  DEFAULT 0
-   ASSIGN lFntWidth  VALUE lFntWidth  TYPE "N"  DEFAULT 0
+   ASSIGN nFntAngle  VALUE nFntAngle  TYPE "N"  DEFAULT 0
+   ASSIGN nFntWidth  VALUE nFntWidth  TYPE "N"  DEFAULT 0
    HeaderHandle := GetHeader( ::hWnd )
    If ValidHandler( HeaderHandle )
-      ::HeaderFontHandle := _SetFont( HeaderHandle, cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, lFntAngle, lFntWidth )
+      ::HeaderFontHandle := _SetFont( HeaderHandle, cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nFntAngle, nFntWidth )
    EndIf
 Return Nil
 
@@ -3339,6 +3342,7 @@ Return Nil
 *--------------------------------------------------------------------------*
 METHOD AppendItem() CLASS TGridMulti
 *--------------------------------------------------------------------------*
+Local lRet := .F.
    If ! ::lNestedEdit
       ::lNestedEdit := .T.
       ::cText := ""
@@ -3347,17 +3351,17 @@ METHOD AppendItem() CLASS TGridMulti
          ::InsertBlank( ::ItemCount + 1 )
          ::Value := { ::ItemCount }
          If ::FullMove
-            ::EditGrid()
+            lRet := ::EditGrid()
          ElseIf ::InPlace
-            ::EditAllCells()
+            lRet := ::EditAllCells()
          Else
-            ::EditItem()
+            lRet := ::EditItem()
          EndIf
          ::lAppendMode := .F.
       EndIf
       ::lNestedEdit := .F.
    EndIf
-Return Nil
+Return lRet
 
 *--------------------------------------------------------------------------*
 METHOD EditGrid( nRow, nCol ) CLASS TGridMulti
@@ -3450,7 +3454,7 @@ Return lRet
 *--------------------------------------------------------------------------*
 METHOD Down( lAppend ) CLASS TGridMulti
 *--------------------------------------------------------------------------*
-   ASSIGN lAppend VALUE lAppend TYPE "N" DEFAULT ::AllowAppend
+   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT ::AllowAppend
    If ::lEditMode
       If ::nRowPos < ::ItemCount
          ::nRowPos ++
@@ -3718,11 +3722,12 @@ Local r, nClientWidth, nScrollWidth
       ListView_RedrawItems( ::hWnd, ::nRowPos, ::nRowPos )
       ::DoChange()
    EndIf
-RETURN { ::nRowPos, ::nColPos }
+Return { ::nRowPos, ::nColPos }
 
 *--------------------------------------------------------------------------*
 METHOD AppendItem() CLASS TGridByCell
 *--------------------------------------------------------------------------*
+Local lRet := .F.
    If ! ::lNestedEdit
       ::lNestedEdit := .T.
       ::cText := ""
@@ -3730,12 +3735,12 @@ METHOD AppendItem() CLASS TGridByCell
          ::lAppendMode := .T.
          ::InsertBlank( ::ItemCount + 1 )
          ::Value := { ::ItemCount, 1 }
-         ::EditGrid()
+         lRet := ::EditGrid()
          ::lAppendMode := .F.
       EndIf
       ::lNestedEdit := .F.
    EndIf
-Return Nil
+Return lRet
 
 *--------------------------------------------------------------------------*
 METHOD EditGrid( nRow, nCol ) CLASS TGridByCell
@@ -3940,82 +3945,128 @@ Return lSomethingEdited
 *--------------------------------------------------------------------------*
 METHOD Right( lAppend ) CLASS TGridByCell
 *--------------------------------------------------------------------------*
-Local uValue
-   ASSIGN lAppend VALUE lAppend TYPE "N" DEFAULT ::AllowAppend
+Local uValue, i, lRet := .F.
+   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT ::AllowAppend
    uValue := ::Value
    If uValue[ 1 ] < 1 .OR. uValue[ 1 ] > ::ItemCount .OR. uValue[ 2 ] < 1 .or. uValue[ 2 ] > Len( ::aHeaders )
-      ::Value := { 1, 1 }
-   ElseIf uValue[ 2 ] < Len( ::aHeaders )
-      ::Value := { uValue[ 1 ], uValue[ 2 ] + 1 }
-   ElseIf uValue[ 1 ] < ::ItemCount
-      If ::FullMove
-         ::Value := { uValue[ 1 ] + 1, 1 }
+      lRet := .F.
+   Else
+      For i := ( uValue[ 2 ] + 1 ) To Len( ::aHeaders )
+         If aScan( ::aHiddenCols, i ) == 0
+            Exit
+         EndIf
+      Next i
+      If i > Len( ::aHeaders )
+         If uValue[ 1 ] < ::ItemCount
+            If ::FullMove
+               For i := 1 To ( uValue[ 2 ] - 1 )
+                  If aScan( ::aHiddenCols, i ) == 0
+                     Exit
+                  EndIf
+               Next i
+               If i < uValue[ 2 ]
+                  ::Value := { uValue[ 1 ] + 1, i }
+                  lRet := .T.
+               EndIf
+            Endif
+         ElseIf ::lNestedEdit
+            lRet := .F.
+         ElseIf lAppend
+            lRet := ::AppendItem()
+         ElseIf ::FullMove
+            For i := 1 To ( uValue[ 2 ] - 1 )
+               If aScan( ::aHiddenCols, i ) == 0
+                  Exit
+               EndIf
+            Next i
+            If i < uValue[ 2 ]
+               ::Value := { 1, i }
+               lRet := .T.
+            EndIf
+         EndIf
       Else
-         // ignore
+         ::Value := { uValue[ 1 ], i }
+         lRet := .T.
       EndIf
-   ElseIf ::lNestedEdit
-      // EditGrid is active, ignore de command
-   ElseIf lAppend
-      ::AppendItem()
-   ElseIf ::FullMove
-      ::Value := { 1, 1 }
    EndIf
-Return Self
+Return lRet
 
 *--------------------------------------------------------------------------*
 METHOD Left() CLASS TGridByCell
 *--------------------------------------------------------------------------*
-Local uValue
+Local uValue, i, lRet := .F.
    uValue := ::Value
    If uValue[ 1 ] < 1 .OR. uValue[ 1 ] > ::ItemCount .OR. uValue[ 2 ] < 1 .or. uValue[ 2 ] > Len( ::aHeaders )
-      // ignore
-   ElseIf uValue[ 2 ] > 1
-      ::Value := { uValue[ 1 ], uValue[ 2 ] - 1 }
-   ElseIf ::FullMove
-      If uValue[ 1 ] > 1
-         ::Value := { uValue[ 1 ] - 1, Len( ::aHeaders ) }
-      Else
-         ::Value := { ::ItemCount, Len( ::aHeaders ) }
-      EndIf
+      lRet := .F.
    Else
-      // ignore
+      For i := ( uValue[ 2 ] - 1 ) To 1 Step -1
+         If aScan( ::aHiddenCols, i ) == 0
+            Exit
+         EndIf
+      Next i
+      If i < 1
+         If ::FullMove
+            For i := Len( ::aHeaders ) To ( uValue[ 2 ] + 1 ) Step -1
+               If aScan( ::aHiddenCols, i ) == 0
+                  Exit
+               EndIf
+            Next i
+            If i > uValue[ 2 ]
+               If uValue[ 1 ] > 1
+                  ::Value := { uValue[ 1 ] - 1, i }
+               Else
+                  ::Value := { ::ItemCount, i }
+               EndIf
+               lRet := .T.
+            EndIf
+         Endif
+      Else
+         ::Value := { uValue[ 1 ], i }
+         lRet := .T.
+      EndIf
    EndIf
-Return Self
+Return lRet
 
 *--------------------------------------------------------------------------*
 METHOD Up() CLASS TGridByCell
 *--------------------------------------------------------------------------*
-Local uValue
+Local uValue, lRet
    uValue := ::Value
    If uValue[ 1 ] < 1 .OR. uValue[ 1 ] > ::ItemCount .OR. uValue[ 2 ] < 1 .or. uValue[ 2 ] > Len( ::aHeaders )
-      // ignore
+      lRet := .F.
    ElseIf uValue[ 1 ] > 1
       ::Value := { uValue[ 1 ] - 1, uValue[ 2 ] }
+      lRet := .T.
    ElseIf ::FullMove
       ::Value := { ::ItemCount, uValue[ 2 ] }
+      lRet := .T.
    Else
-      // ignore
+      lRet := .F.
    EndIf
-Return Self
+Return lRet
 
 *--------------------------------------------------------------------------*
 METHOD Down( lAppend ) CLASS TGridByCell
 *--------------------------------------------------------------------------*
-Local uValue
-   ASSIGN lAppend VALUE lAppend TYPE "N" DEFAULT ::AllowAppend
+Local uValue, lRet
+   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT ::AllowAppend
    uValue := ::Value
    If uValue[ 1 ] < 1 .OR. uValue[ 1 ] > ::ItemCount .OR. uValue[ 2 ] < 1 .or. uValue[ 2 ] > Len( ::aHeaders )
       ::Value := { 1, 1 }
+      lRet := .T.
    ElseIf uValue[ 1 ] < ::ItemCount
       ::Value := { uValue[ 1 ] + 1, uValue[ 2 ] }
+      lRet := .T.
    ElseIf ::lNestedEdit
       // EditGrid is active, ignore
+      lRet := .F.
    ElseIf lAppend
-      ::AppendItem()
+      lRet := ::AppendItem()
    ElseIf ::FullMove
       ::Value := { 1, uValue[ 2 ] }
+      lRet := .T.
    EndIf
-Return Self
+Return lRet
 
 *--------------------------------------------------------------------------*
 METHOD PageUp() CLASS TGridByCell

@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: MakeDistro.bat,v 1.1 2015-03-18 23:58:18 fyurisich Exp $
+rem $Id: MakeDistro.bat,v 1.2 2015-04-13 21:16:08 fyurisich Exp $
 rem
 cls
 
@@ -161,29 +161,29 @@ if not exist source\nul goto ERROR3
 
 :FILES
 echo Copying %HG_ROOT%...
-xcopy %HG_ROOT%\*.* /r /c /q /y /exclude:%HG_ROOT%\distros\MakeExclude.txt
-xcopy %HG_ROOT%\compile.bat /r /y /q
-if /I "%1"=="HB30" xcopy %HG_ROOT%\compile30.bat /r /y /q
-if /I "%1"=="HB32" xcopy %HG_ROOT%\compile32.bat /r /y /q
-if /I "%1"=="XB"   xcopy %HG_ROOT%\compileXB.bat /r /y /q
-if /I "%1"=="HB30" xcopy %HG_ROOT%\compile_mingw.bat /r /y /q
-if /I "%1"=="HB32" xcopy %HG_ROOT%\compile_mingw.bat /r /y /q
-if /I "%1"=="XB"   xcopy %HG_ROOT%\compile_bcc.bat /r /y /q
-if /I "%1"=="HB30" xcopy %HG_ROOT%\buildapp30.bat /r /y /q
-if /I "%1"=="HB32" xcopy %HG_ROOT%\buildapp32.bat /r /y /q
-if /I "%1"=="HB30" xcopy %HG_ROOT%\buildapp.bat /r /y /q
-if /I "%1"=="HB32" xcopy %HG_ROOT%\buildapp.bat /r /y /q
-if /I "%1"=="HB30" xcopy %HG_ROOT%\buildapp_hbmk2.bat /r /y /q
-if /I "%1"=="HB32" xcopy %HG_ROOT%\buildapp_hbmk2.bat /r /y /q
-if /I "%1"=="HB30" xcopy %HG_ROOT%\oohg.hbc /r /y /q
-if /I "%1"=="HB32" xcopy %HG_ROOT%\oohg.hbc /r /y /q
+xcopy %HG_ROOT%\*.* /r /c /q /y /d /exclude:%HG_ROOT%\distros\MakeExclude.txt
+xcopy %HG_ROOT%\compile.bat /r /y /d /q
+if /I "%1"=="HB30" xcopy %HG_ROOT%\compile30.bat /r /y /d /q
+if /I "%1"=="HB32" xcopy %HG_ROOT%\compile32.bat /r /y /d /q
+if /I "%1"=="XB"   xcopy %HG_ROOT%\compileXB.bat /r /y /d /q
+if /I "%1"=="HB30" xcopy %HG_ROOT%\compile_mingw.bat /r /y /d /q
+if /I "%1"=="HB32" xcopy %HG_ROOT%\compile_mingw.bat /r /y /d /q
+if /I "%1"=="XB"   xcopy %HG_ROOT%\compile_bcc.bat /r /y /d /q
+if /I "%1"=="HB30" xcopy %HG_ROOT%\buildapp30.bat /r /y /d /q
+if /I "%1"=="HB32" xcopy %HG_ROOT%\buildapp32.bat /r /y /d /q
+if /I "%1"=="HB30" xcopy %HG_ROOT%\buildapp.bat /r /y /d /q
+if /I "%1"=="HB32" xcopy %HG_ROOT%\buildapp.bat /r /y /d /q
+if /I "%1"=="HB30" xcopy %HG_ROOT%\buildapp_hbmk2.bat /r /y /d /q
+if /I "%1"=="HB32" xcopy %HG_ROOT%\buildapp_hbmk2.bat /r /y /d /q
+if /I "%1"=="HB30" xcopy %HG_ROOT%\oohg.hbc /r /y /d /q
+if /I "%1"=="HB32" xcopy %HG_ROOT%\oohg.hbc /r /y /d /q
 echo.
 :DOC
 echo Copying DOC...
 set BASE_DISTRO_SUBDIR=doc
 if not exist doc\nul goto ERROR5
 cd doc
-xcopy %HG_ROOT%\doc\*.* /r /s /e /c /q /y /exclude:%HG_ROOT%\distros\MakeExclude.txt
+xcopy %HG_ROOT%\doc\*.* /r /s /e /c /q /y /d /exclude:%HG_ROOT%\distros\MakeExclude.txt
 cd ..
 echo.
 :HB30
@@ -218,12 +218,12 @@ echo Copying IDE...
 set BASE_DISTRO_SUBDIR=ide
 if not exist ide\nul goto ERROR5
 cd ide
-xcopy %HG_ROOT%\ide\*.* /r /s /e /c /q /y /exclude:%HG_ROOT%\distros\MakeExclude.txt
-if /I "%1"=="HB30" xcopy %HG_ROOT%\ide\build.bat /r /y /q
-if /I "%1"=="HB30" xcopy %HG_ROOT%\ide\mgide.hbp /r /y /q
-if /I "%1"=="HB32" xcopy %HG_ROOT%\ide\build.bat /r /y /q
-if /I "%1"=="HB32" xcopy %HG_ROOT%\ide\mgide.hbp /r /y /q
-if /I "%1"=="XB"   xcopy %HG_ROOT%\ide\compile.bat /r /y /q
+xcopy %HG_ROOT%\ide\*.* /r /s /e /c /q /y /d /exclude:%HG_ROOT%\distros\MakeExclude.txt
+if /I "%1"=="HB30" xcopy %HG_ROOT%\ide\build.bat /r /y /d /q
+if /I "%1"=="HB30" xcopy %HG_ROOT%\ide\mgide.hbp /r /y /d /q
+if /I "%1"=="HB32" xcopy %HG_ROOT%\ide\build.bat /r /y /d /q
+if /I "%1"=="HB32" xcopy %HG_ROOT%\ide\mgide.hbp /r /y /d /q
+if /I "%1"=="XB"   xcopy %HG_ROOT%\ide\compile.bat /r /y /d /q
 cd ..
 echo.
 :INCLUDE
@@ -231,7 +231,7 @@ echo Copying INCLUDE...
 set BASE_DISTRO_SUBDIR=include
 if not exist include\nul goto ERROR5
 cd include
-xcopy %HG_ROOT%\include\*.* /r /s /e /c /q /y /exclude:%HG_ROOT%\distros\MakeExclude.txt
+xcopy %HG_ROOT%\include\*.* /r /s /e /c /q /y /d /exclude:%HG_ROOT%\distros\MakeExclude.txt
 cd ..
 echo.
 :MANUAL
@@ -239,7 +239,7 @@ echo Copying MANUAL...
 set BASE_DISTRO_SUBDIR=manual
 if not exist manual\nul goto ERROR5
 cd manual
-xcopy %HG_ROOT%\manual\*.* /r /s /e /c /q /y /exclude:%HG_ROOT%\distros\MakeExclude.txt
+xcopy %HG_ROOT%\manual\*.* /r /s /e /c /q /y /d /exclude:%HG_ROOT%\distros\MakeExclude.txt
 cd ..
 echo.
 if /I not "%1"=="HB30" goto :RESOURCES
@@ -248,13 +248,13 @@ echo Copying RESOURCES...
 set BASE_DISTRO_SUBDIR=resources
 if not exist resources\nul goto ERROR5
 cd resources
-xcopy %HG_ROOT%\resources\*.* /r /s /e /c /q /y /exclude:%HG_ROOT%\distros\MakeExclude.txt
-if /I "%1"=="HB30" xcopy %HG_ROOT%\resources\compileres_mingw.bat /r /y /q
-if /I "%1"=="HB32" xcopy %HG_ROOT%\resources\compileres_mingw.bat /r /y /q
-if /I "%1"=="XB"   xcopy %HG_ROOT%\resources\compileres_bcc.bat /r /y /q
-if /I "%1"=="HB30" xcopy %HG_ROOT%\resources\oohg.rc /r /y /q
-if /I "%1"=="HB32" xcopy %HG_ROOT%\resources\oohg.rc /r /y /q
-if /I "%1"=="XB"   xcopy %HG_ROOT%\resources\oohg_bcc.rc /r /y /q
+xcopy %HG_ROOT%\resources\*.* /r /s /e /c /q /y /d /exclude:%HG_ROOT%\distros\MakeExclude.txt
+if /I "%1"=="HB30" xcopy %HG_ROOT%\resources\compileres_mingw.bat /r /y /d /q
+if /I "%1"=="HB32" xcopy %HG_ROOT%\resources\compileres_mingw.bat /r /y /d /q
+if /I "%1"=="XB"   xcopy %HG_ROOT%\resources\compileres_bcc.bat /r /y /d /q
+if /I "%1"=="HB30" xcopy %HG_ROOT%\resources\oohg.rc /r /y /d /q
+if /I "%1"=="HB32" xcopy %HG_ROOT%\resources\oohg.rc /r /y /d /q
+if /I "%1"=="XB"   xcopy %HG_ROOT%\resources\oohg_bcc.rc /r /y /d /q
 cd ..
 echo.
 :SAMPLES
@@ -262,7 +262,7 @@ echo Copying SAMPLES...
 set BASE_DISTRO_SUBDIR=samples
 if not exist samples\nul goto ERROR5
 cd samples
-xcopy %HG_ROOT%\samples\*.* /r /s /e /c /q /y /exclude:%HG_ROOT%\distros\MakeExclude.txt
+xcopy %HG_ROOT%\samples\*.* /r /s /e /c /q /y /d /exclude:%HG_ROOT%\distros\MakeExclude.txt
 cd ..
 echo.
 :SOURCE
@@ -270,25 +270,25 @@ echo Copying SOURCE...
 set BASE_DISTRO_SUBDIR=source
 if not exist source\nul goto ERROR5
 cd source
-xcopy %HG_ROOT%\source\*.* /r /s /e /c /q /y /exclude:%HG_ROOT%\distros\MakeExclude.txt
-if /I "%1"=="HB30" xcopy %HG_ROOT%\source\buildlib30.bat /r /y /q
-if /I "%1"=="HB32" xcopy %HG_ROOT%\source\buildlib32.bat /r /y /q
-if /I "%1"=="HB30" xcopy %HG_ROOT%\source\buildlib.bat /r /y /q
-if /I "%1"=="HB32" xcopy %HG_ROOT%\source\buildlib.bat /r /y /q
-if /I "%1"=="HB30" xcopy %HG_ROOT%\source\buildlib_hbmk2.bat /r /y /q
-if /I "%1"=="HB32" xcopy %HG_ROOT%\source\buildlib_hbmk2.bat /r /y /q
-if /I "%1"=="HB32" xcopy %HG_ROOT%\source\oohg.hbp /r /y /q
-if /I "%1"=="HB30" xcopy %HG_ROOT%\source\oohg.hbp /r /y /q
-if /I "%1"=="HB32" xcopy %HG_ROOT%\source\miniprint.hbp /r /y /q
-if /I "%1"=="HB30" xcopy %HG_ROOT%\source\miniprint.hbp /r /y /q
-if /I "%1"=="HB32" xcopy %HG_ROOT%\source\hbprinter.hbp /r /y /q
-if /I "%1"=="HB30" xcopy %HG_ROOT%\source\hbprinter.hbp /r /y /q
-if /I "%1"=="HB30" xcopy %HG_ROOT%\source\makelib30.bat /r /y /q
-if /I "%1"=="HB32" xcopy %HG_ROOT%\source\makelib32.bat /r /y /q
-if /I "%1"=="HB30" xcopy %HG_ROOT%\source\makelib_mingw.bat /r /y /q
-if /I "%1"=="HB32" xcopy %HG_ROOT%\source\makelib_mingw.bat /r /y /q
-if /I "%1"=="XB"   xcopy %HG_ROOT%\source\makelibXB.bat /r /y /q
-if /I "%1"=="XB"   xcopy %HG_ROOT%\source\makelib_bcc.bat /r /y /q
+xcopy %HG_ROOT%\source\*.* /r /s /e /c /q /y /d /exclude:%HG_ROOT%\distros\MakeExclude.txt
+if /I "%1"=="HB30" xcopy %HG_ROOT%\source\buildlib30.bat /r /y /d /q
+if /I "%1"=="HB32" xcopy %HG_ROOT%\source\buildlib32.bat /r /y /d /q
+if /I "%1"=="HB30" xcopy %HG_ROOT%\source\buildlib.bat /r /y /d /q
+if /I "%1"=="HB32" xcopy %HG_ROOT%\source\buildlib.bat /r /y /d /q
+if /I "%1"=="HB30" xcopy %HG_ROOT%\source\buildlib_hbmk2.bat /r /y /d /q
+if /I "%1"=="HB32" xcopy %HG_ROOT%\source\buildlib_hbmk2.bat /r /y /d /q
+if /I "%1"=="HB32" xcopy %HG_ROOT%\source\oohg.hbp /r /y /d /q
+if /I "%1"=="HB30" xcopy %HG_ROOT%\source\oohg.hbp /r /y /d /q
+if /I "%1"=="HB32" xcopy %HG_ROOT%\source\miniprint.hbp /r /y /d /q
+if /I "%1"=="HB30" xcopy %HG_ROOT%\source\miniprint.hbp /r /y /d /q
+if /I "%1"=="HB32" xcopy %HG_ROOT%\source\hbprinter.hbp /r /y /d /q
+if /I "%1"=="HB30" xcopy %HG_ROOT%\source\hbprinter.hbp /r /y /d /q
+if /I "%1"=="HB30" xcopy %HG_ROOT%\source\makelib30.bat /r /y /d /q
+if /I "%1"=="HB32" xcopy %HG_ROOT%\source\makelib32.bat /r /y /d /q
+if /I "%1"=="HB30" xcopy %HG_ROOT%\source\makelib_mingw.bat /r /y /d /q
+if /I "%1"=="HB32" xcopy %HG_ROOT%\source\makelib_mingw.bat /r /y /d /q
+if /I "%1"=="XB"   xcopy %HG_ROOT%\source\makelibXB.bat /r /y /d /q
+if /I "%1"=="XB"   xcopy %HG_ROOT%\source\makelib_bcc.bat /r /y /d /q
 cd ..
 echo.
 
