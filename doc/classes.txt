@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.92 2015-03-10 23:58:19 fyurisich Exp $
+ * $Id: classes.txt,v 1.93 2015-04-13 23:09:26 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -917,6 +917,7 @@ CLASS TGRID FROM TCONTROL
    DATA IMAGELISTFLAGS            INIT LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
    DATA INPLACE                   INIT .F.
    DATA LAPPENDMODE               INIT .F.
+   DATA LAPPENDONALTA             INIT .F.
    DATA LBEGINTRACK               INIT .F.
    DATA LBUTTONS                  INIT .F.
    DATA LCHECKBOXES               INIT .F.
@@ -932,7 +933,9 @@ CLASS TGRID FROM TCONTROL
    DATA LNODELMSG                 INIT .F.
    DATA LNOGRID                   INIT .F.
    DATA LNOMODAL                  INIT .F.
+   DATA LNONEUNSELS               INIT .F.
    DATA LPLM                      INIT .F.
+   DATA LSILENT                   INIT .F.
    DATA LTRACKING                 INIT .F.
    DATA NCOLPOS                   INIT 0 HIDDEN
    DATA NHEIGHT                   INIT 120
@@ -1243,6 +1246,7 @@ CLASS TGRIDMULTI FROM TGRID
 
    METHOD APPENDITEM
    METHOD DEFINE
+   METHOD DOCHANGE
    METHOD DOWN
    METHOD EDITGRID
    METHOD GOBOTTOM
@@ -1738,14 +1742,36 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS TPDF
+   DATA ABOOKMARKS
    DATA AFO1                      INIT {...}
    DATA AFO2                      INIT {...}
    DATA AFO3                      INIT {...}
+   DATA AFONTS
+   DATA AFONTWIDTH
+   DATA AHEADER
+   DATA AIMAGES
+   DATA APAGEFONTS
+   DATA APAGEIMAGES
+   DATA APAGES
+   DATA AREFS
    DATA AREPORT
+   DATA LISPAGEACTIVE             INIT .F.
+   DATA LOPTIMIZE
+   DATA NDOCLEN
+   DATA NFONTNAME
+   DATA NFONTNAMEPREV
+   DATA NFONTSIZE
+   DATA NFONTSIZEPREV
+   DATA NHANDLE
+   DATA NNEXTOBJ
+   DATA NPDFBOTTOM
+   DATA NPDFLEFT
+   DATA NPDFTOP
 
    METHOD _OOHG_BOX
    METHOD _OOHG_LINE
    METHOD ATSAY
+   METHOD BMPINFO
    METHOD BOLD
    METHOD BOLDITALIC
    METHOD BOOKADD
@@ -1806,6 +1832,7 @@ CLASS TPDF
    METHOD TEXTPRINT
    METHOD TIFFINFO
    METHOD UNDERLINE
+   METHOD WRITETOFILE
    METHOD X2M
 ENDCLASS
 
