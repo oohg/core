@@ -1,5 +1,5 @@
 /*
- * $Id: h_checklist.prg,v 1.16 2015-03-09 02:52:07 fyurisich Exp $
+ * $Id: h_checklist.prg,v 1.17 2015-04-13 21:35:24 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -205,7 +205,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
                bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
                bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
-               lFixedCtrls, bHeadRClick ) CLASS TGrid
+               lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
+               lExtDbl, lSilent, lAltA, lNoShowAlways, lNone ) CLASS TGrid
 */
    ::Super:Define( ControlName, ParentForm, x, y, w, h, aHdr, aWidth, ;
                    {}, Nil, fontname, fontsize, tooltip, change, Nil, ;
@@ -217,11 +218,12 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                    Nil, lDisabled, lNoTabStop, lInvisible, .F., ;
                    Nil, Nil, Nil, .F., ;
                    aSelectedColors, Nil, .T., Nil, dblbffr, ;
-                   .F., .F., .T., nil, click, .T., ;
+                   .F., .F., .T., Nil, click, .T., ;
                    Nil, Nil, Nil, Nil, ;
                    Nil, Nil, Nil, Nil, Nil, ;
                    Nil, Nil, Nil, Nil, Nil, Nil, ;
-                   .T., Nil )
+                   .T., Nil, Nil, Nil, ;
+                   Nil, Nil, .F., .F., .F. )
 
    aEval( aRows, { |u| ::AddItem( u ) } )
 
