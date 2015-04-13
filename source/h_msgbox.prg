@@ -1,5 +1,5 @@
 /*
- * $Id: h_msgbox.prg,v 1.21 2015-03-18 01:22:30 fyurisich Exp $
+ * $Id: h_msgbox.prg,v 1.22 2015-04-13 21:24:19 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -285,7 +285,7 @@ Local nWidth, nHeight
    DEFAULT aBackColor TO {204, 216, 124}
 
    cInfo   := StrTran( StrTran(cInfo, Chr( 13 ), CRLF), CRLF + Chr( 10 ), CRLF )
-   nWidth  := Max( MaxLine( cInfo ), Len( cTitulo ) ) * 12
+   nWidth  := Max( 100, Max( MaxLine( cInfo ), Len( cTitulo ) ) * 12 )
    nHeight := MLCount( cInfo ) * 20
 
    DEFINE WINDOW _Win_1 ;
