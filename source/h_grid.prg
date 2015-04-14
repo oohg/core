@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.272 2015-04-13 21:16:08 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.273 2015-04-14 22:30:18 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1375,7 +1375,7 @@ Local aReturn, lHidden
    nRow := 10
 
    For i := 1 To l
-      // Test for hidden column
+      // Do not create label for hidden column
       lHidden := ( ASCAN( ::aHiddenCols, i ) > 0 )
       If ! lHidden
         @ nRow + 3, 10 LABEL 0 PARENT ( oWnd ) VALUE AllTrim( ::aHeaders[ i ] ) + ":" WIDTH 110 NOWORDWRAP
@@ -1384,25 +1384,43 @@ Local aReturn, lHidden
       nRow += aEditControls2[ i ]:nDefHeight + 6
       If HB_IsArray( aMemVars ) .AND. Len( aMemVars ) >= i
          aEditControls2[ i ]:cMemVar := aMemVars[ i ]
-         // "Creates" memvars
+         // Create memvars
          If ValType( aMemVars[ i ] ) $ "CM" .AND. ! Empty( aMemVars[ i ] )
             &( aMemVars[ i ] ) := Nil
          EndIf
       EndIf
+      // Set Valid block
       If lHidden
          aEditControls2[ i ]:bValid := { || .T. }
          aEditControls2[ i ]:Visible := .F.
       ElseIf HB_IsArray( ::Valid ) .AND. Len( ::Valid ) >= i
          aEditControls2[ i ]:bValid := ::Valid[ i ]
       EndIf
+      // Set message for invalid values
       If HB_IsArray( ::ValidMessages ) .AND. Len( ::ValidMessages ) >= i
          aEditControls2[ i ]:cValidMessage := ::ValidMessages[ i ]
       EndIf
-
+      // Set When block
       If HB_IsArray( ::aWhen ) .AND. Len( ::aWhen ) >= i
-         aEditControls2[ i ]:bWhen := ::aWhen[ i ]
+         If HB_IsBlock( ::aWhen[ i ] )
+            aEditControls2[ i ]:bWhen := ::aWhen[ i ]
+         ElseIf ::IsColumnWhen( i )
+            aEditControls2[ i ]:Enabled := .F.
+            aEditControls2[ i ]:bWhen := { || .F. }
+         EndIf
+      ElseIf ::IsColumnWhen( i )
+         aEditControls2[ i ]:Enabled := .F.
+         aEditControls2[ i ]:bWhen := { || .F. }
       EndIf
-      If ::IsColumnReadOnly( i )
+      // Set Readonly block
+      If HB_IsArray( ::ReadOnly ) .AND. Len( ::ReadOnly ) >= i
+         If HB_IsBlock( ::ReadOnly[ i ] )
+            aEditControls2[ i ]:bWhen := ::ReadOnly[ i ]
+         ElseIf ::IsColumnReadOnly( i )
+            aEditControls2[ i ]:Enabled := .F.
+            aEditControls2[ i ]:bWhen := { || .F. }
+         EndIf
+      ElseIf ::IsColumnReadOnly( i )
          aEditControls2[ i ]:Enabled := .F.
          aEditControls2[ i ]:bWhen := { || .F. }
       EndIf
