@@ -1,5 +1,5 @@
 <!--
-$Id: Changelog.htm,v 1.20 2015-04-14 22:30:18 fyurisich Exp $
+$Id: Changelog.htm,v 1.21 2015-04-16 23:06:42 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -142,6 +142,20 @@ CHANGELOG</div>
 </div>
 <div id="winchm_template_content">
 <pre>
+2015-04-16 20:04 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * manual/changelog.htm
+     * Updated.
+   * include/oohg.ch
+     - Comment.
+   * include/i_window.ch
+   * include/i_controlmisc.ch
+     * All FETCH and MODIFY clauses now use xcommand instead of translate.
+     ! Compiler error at MODIFY clause because is not translated properly.
+   * source/h_grid.prg
+     + CTRL+LEFT ARROW to move TGridByCell to leftmost column.
+     + CTRL+RIGHT ARROW to move TGridByCell to rightmost column.
+     ! TGridControlMemo does not set ::bPosition on exit.
+
 2015-04-14 19:30 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * source/h_grid.prg
      * TGrid():EditItem2 now fully supports fixed values and blocks in

@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.273 2015-04-14 22:30:18 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.274 2015-04-16 23:06:42 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -4514,9 +4514,23 @@ Local nvkey, uRet, aValue, lGo, aItem
       ElseIf nvkey == VK_END
          ::GoBottom()
       ElseIf nvkey == VK_LEFT
-         ::Left()
+         If GetKeyFlagState() == MOD_CONTROL
+            aValue := ::Value
+            If aValue[ 2 ] > 1
+               ::Value := { aValue[ 1 ], 1 }
+            EndIf
+         Else
+            ::Left()
+         EndIf
       ElseIf nvkey == VK_RIGHT
-         ::Right()
+         If GetKeyFlagState() == MOD_CONTROL
+            aValue := ::Value
+            If aValue[ 2 ] < Len( ::aHeaders )
+               ::Value := { aValue[ 1 ], Len( ::aHeaders ) }
+            EndIf
+         Else
+            ::Right()
+         EndIf
       ElseIf nvkey == VK_SPACE .AND. ::lCheckBoxes
          // detect item
          aValue := ::Value
@@ -5252,6 +5266,12 @@ Local lRet := .F., i, oBut1, oBut2
       NOSIZE
    EndIf
 
+      If HB_IsObject( ::oGrid ) .AND. ::oGrid:InPlace .AND. ( ::lNoModal .OR. ::oGrid:lNoModal )
+         ::bOk := { |nPos| ::oGrid:bPosition := nPos, lRet := ::Valid() }
+      Else
+         ::bOk := { || lRet := ::Valid() }
+      EndIf
+
       ON KEY ESCAPE OF ( ::oWindow ) ACTION ( ::oWindow:Release() )
 
       If HB_IsArray( aKeys )
@@ -5270,7 +5290,7 @@ Local lRet := .F., i, oBut1, oBut2
 
       i := Int( Max( ::oWindow:ClientWidth - 200, 0 ) / 3 )
 
-      @ ::oWindow:ClientHeight - 40,i BUTTON 0 OBJ oBut1 PARENT ( ::oWindow ) CAPTION _OOHG_Messages( 1, 6 ) ACTION ( lRet := ::Valid() )
+      @ ::oWindow:ClientHeight - 40,i BUTTON 0 OBJ oBut1 PARENT ( ::oWindow ) CAPTION _OOHG_Messages( 1, 6 ) ACTION EVAL( ::bOk, -1 )
       @ oBut1:Row,i + 100 + i BUTTON 0 OBJ oBut2 PARENT ( ::oWindow ) CAPTION _OOHG_Messages( 1, 7 ) ACTION ( ::oWindow:Release() )
    END WINDOW
 

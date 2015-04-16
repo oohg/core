@@ -1,5 +1,5 @@
 /*
- * $Id: i_window.ch,v 1.60 2015-03-20 00:00:42 fyurisich Exp $
+ * $Id: i_window.ch,v 1.61 2015-04-16 23:06:41 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -378,11 +378,11 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
    => ;
       ProcessMessages()
 
-#xtranslate FETCH [ PROPERTY ] [ WINDOW ] <Arg1> <Arg2> TO <Arg3> ;
+#xcommand FETCH [ PROPERTY ] [ WINDOW ] <Arg1> <Arg2> TO <Arg3> ;
    => ;
       <Arg3> := GetProperty( <(Arg1)>, <(Arg2)> )
 
-#xtranslate MODIFY [ PROPERTY ] [ WINDOW ] <Arg1> <Arg2> <Arg3> ;
+#xcommand MODIFY [ PROPERTY ] [ WINDOW ] <Arg1> <Arg2> <Arg3> ;
    => ;
       SetProperty( <(Arg1)>, <(Arg2)>, <Arg3> )
 

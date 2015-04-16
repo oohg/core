@@ -1,5 +1,5 @@
 /*
- * $Id: i_controlmisc.ch,v 1.10 2015-03-09 02:51:07 fyurisich Exp $
+ * $Id: i_controlmisc.ch,v 1.11 2015-04-16 23:06:41 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -137,35 +137,35 @@ STANDARD CURSORS
       _OOHG_DefaultFontSize := <fontsize> ;;
       _OOHG_DefaultFontColor := <fontcolor>
 
-#command DEFINE PROPERTY <property> TO [ CONTROL ] [ <control> OF ] <form> VALUE <value> ;
+#xcommand DEFINE PROPERTY <property> TO [ CONTROL ] [ <control> OF ] <form> VALUE <value> ;
    => ;
       DefineProperty( <(property)>, <(control)>, <(form)>, <value> )
 
-#translate MODIFY [ PROPERTY ] [ CONTROL ] <Arg2> OF <Arg1> <Arg3> <Arg4> ;
+#xcommand MODIFY [ PROPERTY ] [ CONTROL ] <Arg2> OF <Arg1> <Arg3> <Arg4> ;
    => ;
       SetProperty ( <(Arg1)>, <(Arg2)>, <(Arg3)>, <Arg4> )
 
-#xtranslate MODIFY [ PROPERTY ] [ CONTROL ] <Arg2> OF <Arg1> <Arg3> ( <Arg4> ) <Arg5> ;
+#xcommand MODIFY [ PROPERTY ] [ CONTROL ] <Arg2> OF <Arg1> <Arg3> ( <Arg4> ) <Arg5> ;
    => ;
       SetProperty ( <(Arg1)>, <(Arg2)>, <(Arg3)>, <Arg4>, <Arg5> )
 
-#xtranslate FETCH [ PROPERTY ] [ CONTROL ] <Arg2> OF <Arg1> <Arg3> TO <Arg4> ;
+#xcommand FETCH [ PROPERTY ] [ CONTROL ] <Arg2> OF <Arg1> <Arg3> TO <Arg4> ;
    => ;
       <Arg4> := GetProperty ( <(Arg1)>, <(Arg2)>, <(Arg3)> )
 
-#xtranslate FETCH [ PROPERTY ] [ CONTROL ] <Arg2> OF <Arg1> <Arg3> (<Arg4>) TO <Arg5> ;
+#xcommand FETCH [ PROPERTY ] [ CONTROL ] <Arg2> OF <Arg1> <Arg3> (<Arg4>) TO <Arg5> ;
    => ;
       <Arg5> := GetProperty ( <(Arg1)>, <(Arg2)>, <(Arg3)>, <Arg4> )
 
-#xtranslate MODIFY [ PROPERTY ] [ CONTROL ] <Arg2> OF <Arg1> <Arg3> .T. ;
+#xcommand MODIFY [ PROPERTY ] [ CONTROL ] <Arg2> OF <Arg1> <Arg3> .T. ;
    => ;
       SetProperty ( <(Arg1)>, <(Arg2)>, <(Arg3)>, .T. )
 
-#xtranslate MODIFY [ PROPERTY ] [ CONTROL ] <Arg2> OF <Arg1> <Arg3> .F. ;
+#xcommand MODIFY [ PROPERTY ] [ CONTROL ] <Arg2> OF <Arg1> <Arg3> .F. ;
    => ;
       SetProperty ( <(Arg1)>, <(Arg2)>, <(Arg3)>, .F. )
 
-#xtranslate MODIFY [ PROPERTY ] [ CONTROL ] <Arg2> OF <Arg1> <Arg3> { <Arg4, ...> } ;
+#xcommand MODIFY [ PROPERTY ] [ CONTROL ] <Arg2> OF <Arg1> <Arg3> { <Arg4, ...> } ;
    => ;
       SetProperty ( <(Arg1)>, <(Arg2)>, <(Arg3)>, \{<Arg4>\} )
 

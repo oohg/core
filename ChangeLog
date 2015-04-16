@@ -1,11 +1,25 @@
 /*
- * $Id: ChangeLog,v 1.1451 2015-04-14 22:30:17 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1452 2015-04-16 23:06:41 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-04-16 20:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/changelog.htm
+     * Updated.
+   * include/oohg.ch
+     - Comment.
+   * include/i_window.ch
+   * include/i_controlmisc.ch
+     * All FETCH and MODIFY clauses now use xcommand instead of translate.
+     ! Compiler error at MODIFY clause because is not translated properly.
+   * source/h_grid.prg
+     + CTRL+LEFT ARROW to move TGridByCell to leftmost column.
+     + CTRL+RIGHT ARROW to move TGridByCell to rightmost column.
+     ! TGridControlMemo does not set ::bPosition on exit.
 
 2015-04-14 19:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
