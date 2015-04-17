@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.121 2015-04-17 00:58:39 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.122 2015-04-17 23:48:06 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -193,7 +193,7 @@ ENDCLASS
 
 *-----------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
-               aFields, WorkArea, nValue, AllowDelete, lock, novscroll, ;
+               aFields, WorkArea, uValue, AllowDelete, lock, novscroll, ;
                AllowAppend, OnAppend, ReplaceFields, fontname, fontsize, ;
                tooltip, change, dblclick, aHeadClick, gotfocus, lostfocus, ;
                nogrid, aImage, aJust, break, HelpId, bold, italic, underline, ;
@@ -210,48 +210,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lNoShowEmptyRow, lUpdCols, bHeadRClick, lNoModal, lExtDbl, ;
                lSilent, lAltA, lNoShowAlways ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
-   ASSIGN nValue VALUE nValue TYPE "N" DEFAULT 1
-
-   ::Define3( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
-              aFields, WorkArea, nValue, AllowDelete, lock, novscroll, ;
-              AllowAppend, OnAppend, ReplaceFields, fontname, fontsize, ;
-              tooltip, change, dblclick, aHeadClick, gotfocus, lostfocus, ;
-              nogrid, aImage, aJust, break, HelpId, bold, italic, underline, ;
-              strikeout, editable, backcolor, fontcolor, dynamicbackcolor, ;
-              dynamicforecolor, aPicture, lRtl, inplace, editcontrols, ;
-              readonly, valid, validmessages, editcell, aWhenFields, ;
-              lRecCount, columninfo, lHasHeaders, onenter, lDisabled, ;
-              lNoTabStop, lInvisible, lDescending, bDelWhen, DelMsg, ;
-              onDelete, aHeaderImage, aHeaderImageAlign, FullMove, ;
-              aSelectedColors, aEditKeys, lDblBffr, lFocusRect, lPLM, ;
-              lFixedCols, abortedit, click, lFixedWidths, lFixedBlocks, ;
-              bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
-              bBeforeAutofit, lLikeExcel, lButtons, lNoDelMsg, lFixedCtrls, ;
-              lNoShowEmptyRow, lUpdCols, bHeadRClick, lNoModal, lExtDbl, ;
-              lSilent, lAltA, lNoShowAlways )
-
-Return Self
-
-*-----------------------------------------------------------------------------*
-METHOD Define3( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
-                aFields, WorkArea, nValue, AllowDelete, lock, novscroll, ;
-                AllowAppend, OnAppend, ReplaceFields, fontname, fontsize, ;
-                tooltip, change, dblclick, aHeadClick, gotfocus, lostfocus, ;
-                nogrid, aImage, aJust, break, HelpId, bold, italic, underline, ;
-                strikeout, editable, backcolor, fontcolor, dynamicbackcolor, ;
-                dynamicforecolor, aPicture, lRtl, inplace, editcontrols, ;
-                readonly, valid, validmessages, editcell, aWhenFields, ;
-                lRecCount, columninfo, lHasHeaders, onenter, lDisabled, ;
-                lNoTabStop, lInvisible, lDescending, bDelWhen, DelMsg, ;
-                onDelete, aHeaderImage, aHeaderImageAlign, FullMove, ;
-                aSelectedColors, aEditKeys, lDblBffr, lFocusRect, lPLM, ;
-                lFixedCols, abortedit, click, lFixedWidths, lFixedBlocks, ;
-                bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
-                bBeforeAutofit, lLikeExcel, lButtons, lNoDelMsg, lFixedCtrls, ;
-                lNoShowEmptyRow, lUpdCols, bHeadRClick, lNoModal, lExtDbl, ;
-                lSilent, lAltA, lNoShowAlways ) CLASS TXBrowse
-*-----------------------------------------------------------------------------*
-Local nWidth2, nCol2, lLocked, oScroll, z
+Local nWidth2, nCol2, oScroll, z
 
    ASSIGN ::aFields         VALUE aFields         TYPE "A"
    ASSIGN ::aHeaders        VALUE aHeaders        TYPE "A" DEFAULT {}
@@ -376,11 +335,8 @@ Local nWidth2, nCol2, lLocked, oScroll, z
       ::VScrollVisible( .F. )
    EndIf
 
-   ASSIGN lLocked VALUE ::lLocked TYPE "L" DEFAULT .F.
-   ::lLocked := .F.
-   ::Refresh()
-   ::Value := nValue
-   ::lLocked := lLocked
+   // Value
+   ::Define3( uValue )
 
    // Must be set after control is initialized
    ASSIGN ::OnLostFocus VALUE lostfocus   TYPE "B"
@@ -391,6 +347,20 @@ Local nWidth2, nCol2, lLocked, oScroll, z
    ASSIGN ::OnEnter     VALUE onenter     TYPE "B"
    ASSIGN ::bDelWhen    VALUE bDelWhen    TYPE "B"
    ASSIGN ::OnDelete    VALUE onDelete    TYPE "B"
+
+Return Self
+
+*-----------------------------------------------------------------------------*
+METHOD Define3( nValue ) CLASS TXBrowse
+*-----------------------------------------------------------------------------*
+Local lLocked
+
+   ASSIGN nValue VALUE nValue TYPE "N" DEFAULT 1
+   ASSIGN lLocked VALUE ::lLocked TYPE "L" DEFAULT .F.
+   ::lLocked := .F.
+   ::Refresh()
+   ::Value := nValue
+   ::lLocked := lLocked
 
 Return Self
 
@@ -1997,6 +1967,9 @@ LOCAL nRet, nColumns := Len( ::aHeaders ) + 1
    nRet := ::Super:AddColumn( nColIndex, cHeader, nWidth, nJustify, uForeColor, ;
                               uBackColor, lNoDelete, uPicture, uEditControl, uHeadClick, ;
                               uValid, uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign )
+   If nRet # nColIndex
+      MsgOOHGError( "XBrowse: Column added in another place. Program Terminated." )
+   EndIf
 
    If ! HB_IsLogical( lRefresh ) .OR. lRefresh
       ::Refresh()
@@ -2280,8 +2253,8 @@ CLASS TXBROWSEBYCELL FROM TXBrowse, TGridByCell
 
    METHOD AddColumn
    METHOD CurrentCol              SETGET
-   METHOD Define
    METHOD Define2
+   METHOD Define3
    METHOD DeleteColumn
    METHOD Down
    METHOD EditCell
@@ -2356,7 +2329,7 @@ CLASS TXBROWSEBYCELL FROM TXBrowse, TGridByCell
       ColumnWidth
       CurrentRow
       DbSkip
-      Define3
+      Define
       Delete
       DoChange
       EditItem
@@ -2384,24 +2357,10 @@ CLASS TXBROWSEBYCELL FROM TXBrowse, TGridByCell
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
-METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
-               aFields, WorkArea, aValue, AllowDelete, lock, novscroll, ;
-               AllowAppend, OnAppend, ReplaceFields, fontname, fontsize, ;
-               tooltip, change, dblclick, aHeadClick, gotfocus, lostfocus, ;
-               nogrid, aImage, aJust, break, HelpId, bold, italic, underline, ;
-               strikeout, editable, backcolor, fontcolor, dynamicbackcolor, ;
-               dynamicforecolor, aPicture, lRtl, inplace, editcontrols, ;
-               readonly, valid, validmessages, editcell, aWhenFields, ;
-               lRecCount, columninfo, lHasHeaders, onenter, lDisabled, ;
-               lNoTabStop, lInvisible, lDescending, bDelWhen, DelMsg, ;
-               onDelete, aHeaderImage, aHeaderImageAlign, FullMove, ;
-               aSelectedColors, aEditKeys, lDblBffr, lFocusRect, lPLM, ;
-               lFixedCols, abortedit, click, lFixedWidths, lFixedBlocks, ;
-               bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
-               bBeforeAutofit, lLikeExcel, lButtons, lNoDelMsg, lFixedCtrls, ;
-               lNoShowEmptyRow, lUpdCols, bHeadRClick, lNoModal, lExtDbl, ;
-               lSilent, lAltA, lNoShowAlways ) CLASS TXBrowseByCell
+METHOD Define3( aValue ) CLASS TXBrowseByCell
 *-----------------------------------------------------------------------------*
+Local lLocked
+
    If ! HB_IsArray( aValue ) .OR. ;
       Len( aValue ) < 2 .OR. ;
       ! HB_IsNumeric( aValue[ 1 ] ) .OR. ! HB_IsNumeric( aValue[ 2 ] ) .OR.  ;
@@ -2409,46 +2368,37 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
       aValue[ 2 ] < 1 .OR. aValue[ 2 ] > Len( ::aFields )
       aValue := {1, 1}
    EndIf
-
-   ::Define3( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
-              aFields, WorkArea, aValue, AllowDelete, lock, novscroll, ;
-              AllowAppend, OnAppend, ReplaceFields, fontname, fontsize, ;
-              tooltip, change, dblclick, aHeadClick, gotfocus, lostfocus, ;
-              nogrid, aImage, aJust, break, HelpId, bold, italic, underline, ;
-              strikeout, editable, backcolor, fontcolor, dynamicbackcolor, ;
-              dynamicforecolor, aPicture, lRtl, inplace, editcontrols, ;
-              readonly, valid, validmessages, editcell, aWhenFields, ;
-              lRecCount, columninfo, lHasHeaders, onenter, lDisabled, ;
-              lNoTabStop, lInvisible, lDescending, bDelWhen, DelMsg, ;
-              onDelete, aHeaderImage, aHeaderImageAlign, FullMove, ;
-              aSelectedColors, aEditKeys, lDblBffr, lFocusRect, lPLM, ;
-              lFixedCols, abortedit, click, lFixedWidths, lFixedBlocks, ;
-              bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
-              bBeforeAutofit, lLikeExcel, lButtons, lNoDelMsg, lFixedCtrls, ;
-              lNoShowEmptyRow, lUpdCols, bHeadRClick, lNoModal, lExtDbl, ;
-              lSilent, lAltA, lNoShowAlways )
+   ASSIGN lLocked VALUE ::lLocked TYPE "L" DEFAULT .F.
+   ::lLocked := .F.
+   ::Refresh()
+   ::Value := aValue
+   ::lLocked := lLocked
 
 Return Self
 
 *-----------------------------------------------------------------------------*
-METHOD AddColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor, ;
-                  lNoDelete, uPicture, uEditControl, uHeadClick, uValid, ;
-                  uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign ) CLASS TXBrowseByCell
+METHOD AddColumn( nColIndex, xField, cHeader, nWidth, nJustify, uForeColor, ;
+                  uBackColor, lNoDelete, uPicture, uEditControl, uHeadClick, ;
+                  uValid, uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign, ;
+                  uReplaceField, lRefresh ) CLASS TXBrowseByCell
 *-----------------------------------------------------------------------------*
-Local nCol
+LOCAL nCol
 
    nCol := ::nColPos
-   nColIndex := ::Super:AddColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor, ;
-                                   lNoDelete, uPicture, uEditControl, uHeadClick, uValid, ;
-                                   uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign )
-   If nColIndex > 0
-      If nCol == 0
-         ::CurrentCol := nColIndex
-         ::DoChange()
-      ElseIf nColIndex < nCol
-         ::CurrentCol := nCol + 1
-         ::DoChange()
-      EndIf
+
+   ::Super:AddColumn( nColIndex, xField, cHeader, nWidth, nJustify, uForeColor, ;
+                      uBackColor, lNoDelete, uPicture, uEditControl, uHeadClick, ;
+                      uValid, uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign, ;
+                      uReplaceField, lRefresh )
+
+   If nCol == 0
+      ::CurrentCol := nColIndex
+      ::DoChange()
+   ElseIf nColIndex < nCol
+      ::CurrentCol := nCol + 1
+      ::DoChange()
+   Else
+      ::CurrentCol := nCol
    EndIf
 
 Return nColIndex
@@ -2566,7 +2516,6 @@ Local lRet := .F.
       Else                                           // OK
       EndIf
    EndIf
-   ::bPosition := 0
 
 Return lRet
 
@@ -2608,7 +2557,7 @@ Local lSomethingEdited := .F.
          // Hidden column
       Else
          // Edit one cell
-         If ! ::EditCell( ::nRowPos, ::nColPos, Nil, Nil, Nil, Nil, lAppend, Nil )
+         If ! ::Super:EditCell( ::nRowPos, ::nColPos, Nil, Nil, Nil, Nil, lAppend, Nil )
             If lAppend
                ::lAppendMode := .F.
                ::GoBottom()
@@ -2883,6 +2832,8 @@ Local aCellData, cWorkArea, uGridValue, nSearchCol, nCol
          If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick )
             ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
          EndIf
+      ElseIf ::FullMove
+         ::EditGrid( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex, .F., .F. )
       Else
          ::EditCell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex, Nil, Nil, Nil, Nil, .F., Nil )
       EndIf

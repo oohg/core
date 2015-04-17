@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.274 2015-04-16 23:06:42 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.275 2015-04-17 23:48:06 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2148,6 +2148,8 @@ Local r, r2, lRet := .F., nClientWidth, uAux, nScrollWidth
          If ValType( uValue ) $ "CM"
             uValue := Trim( uValue )
          EndIf
+
+         ::bPosition := 0
          _SetThisCellInfo( ::hWnd, nRow, nCol, uValue )
          lRet := EditControl:CreateWindow( uValue, r[ 1 ], r[ 2 ], r[ 3 ], r[ 4 ], ::FontName, ::FontSize, ::aEditKeys )
          If lRet
@@ -4296,8 +4298,6 @@ Local aValue, lRet
       Else                                           // OK
       EndIf
    EndIf
-
-   ::bPosition := 0
 Return lRet
 
 // nRow, nCol and uValue may be passed by reference
@@ -4849,45 +4849,49 @@ METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, 
 Local lRet := .F., i, nSize
 
    If ! IsWindowDefined( _oohg_gridwn )
-       If HB_IsObject( ::oGrid ) .AND. ::oGrid:InPlace .AND. ( ::lNoModal .OR. ::oGrid:lNoModal )
-          DEFINE WINDOW _oohg_gridwn OBJ ::oWindow ;
-             AT nRow, nCol WIDTH nWidth HEIGHT nHeight ;
-             CHILD NOSIZE NOCAPTION ;
-             FONT cFontName SIZE nFontSize ;
-             ON INIT ( ::onLostFocus := { |bAux| ::oGrid:bPosition := 9, bAux := ::onLostFocus, ::onLostFocus := Nil, lRet := ::Valid(), ::onLostFocus := bAux } )
+      If HB_IsObject( ::oGrid ) .AND. ::oGrid:InPlace .AND. ( ::lNoModal .OR. ::oGrid:lNoModal )
 
-          ::bOk := { |nPos, bAux| ::oGrid:bPosition := nPos, bAux := ::onLostFocus, ::onLostFocus := Nil, lRet := ::Valid(), ::onLostFocus := bAux }
-       Else
-          DEFINE WINDOW _oohg_gridwn OBJ ::oWindow ;
-             AT nRow, nCol WIDTH nWidth HEIGHT nHeight ;
-             MODAL NOSIZE NOCAPTION ;
-             FONT cFontName SIZE nFontSize
+      DEFINE WINDOW _oohg_gridwn OBJ ::oWindow ;
+         AT nRow, nCol WIDTH nWidth HEIGHT nHeight ;
+         CHILD NOSIZE NOCAPTION ;
+         FONT cFontName SIZE nFontSize ;
+         ON INIT ( ::onLostFocus := { |bAux| ::oGrid:bPosition := 9, bAux := ::onLostFocus, ::onLostFocus := Nil, lRet := ::Valid(), ::onLostFocus := bAux } )
 
-          ::bOk := { || lRet := ::Valid() }
-       EndIf
+         ::bOk := { |nPos, bAux| ::oGrid:bPosition := nPos, bAux := ::onLostFocus, ::onLostFocus := Nil, lRet := ::Valid(), ::onLostFocus := bAux }
 
-          ::bCancel := { || ::oWindow:Release() }
+      Else
 
-          ON KEY RETURN OF ( ::oWindow ) ACTION EVAL( ::bOk, -1 )
-          ON KEY ESCAPE OF ( ::oWindow ) ACTION EVAL( ::bCancel )
+      DEFINE WINDOW _oohg_gridwn OBJ ::oWindow ;
+         AT nRow, nCol WIDTH nWidth HEIGHT nHeight ;
+         MODAL NOSIZE NOCAPTION ;
+         FONT cFontName SIZE nFontSize
 
-          If HB_IsArray( aKeys )
-             For i := 1 To Len( aKeys )
-                If HB_IsArray( aKeys[ i ] ) .AND. Len( aKeys[ i ] ) > 1 .AND. ValType( aKeys[ i, 1 ] ) $ "CM" .AND. HB_IsBlock( aKeys[ i, 2 ] ) .AND. ! ( aKeys[ i, 1 ] == "RETURN" .OR. aKeys[ i, 1 ] == "ESCAPE" )
-                   _DefineAnyKey( ::oWindow, aKeys[ i, 1 ], aKeys[ i, 2 ] )
-                EndIf
-             Next
-          EndIf
+         ::bOk := { |nPos| ::oGrid:bPosition := nPos, lRet := ::Valid() }
 
-          If ::lButtons .OR. ( HB_IsObject( ::oGrid ) .AND. ::oGrid:lButtons )
-             nSize := nHeight - 4
-             ::CreateControl( uValue, ::oWindow, 0, 0, nWidth - nSize * 2 - 6, nHeight )
-             @ 2, nWidth - nSize * 2 - 6 + 2 BUTTON 0 WIDTH nSize HEIGHT nSize ACTION EVAL( ::bOk, -1 ) OF ( ::oWindow ) PICTURE ::cImageOk
-             @ 2, nWidth - nSize - 2 BUTTON 0 WIDTH nSize HEIGHT nSize ACTION EVAL( ::bCancel ) OF ( ::oWindow ) PICTURE ::cImageCancel
-          Else
-             ::CreateControl( uValue, ::oWindow, 0, 0, nWidth, nHeight )
-          EndIf
-          ::Value := ::ControlValue
+      EndIf
+
+         ::bCancel := { || ::oWindow:Release() }
+
+         ON KEY RETURN OF ( ::oWindow ) ACTION EVAL( ::bOk, -1 )
+         ON KEY ESCAPE OF ( ::oWindow ) ACTION EVAL( ::bCancel )
+
+         If HB_IsArray( aKeys )
+            For i := 1 To Len( aKeys )
+               If HB_IsArray( aKeys[ i ] ) .AND. Len( aKeys[ i ] ) > 1 .AND. ValType( aKeys[ i, 1 ] ) $ "CM" .AND. HB_IsBlock( aKeys[ i, 2 ] ) .AND. ! ( aKeys[ i, 1 ] == "RETURN" .OR. aKeys[ i, 1 ] == "ESCAPE" )
+                  _DefineAnyKey( ::oWindow, aKeys[ i, 1 ], aKeys[ i, 2 ] )
+               EndIf
+            Next
+         EndIf
+
+         If ::lButtons .OR. ( HB_IsObject( ::oGrid ) .AND. ::oGrid:lButtons )
+            nSize := nHeight - 4
+            ::CreateControl( uValue, ::oWindow, 0, 0, nWidth - nSize * 2 - 6, nHeight )
+            @ 2, nWidth - nSize * 2 - 6 + 2 BUTTON 0 WIDTH nSize HEIGHT nSize ACTION EVAL( ::bOk, -1 ) OF ( ::oWindow ) PICTURE ::cImageOk
+            @ 2, nWidth - nSize - 2 BUTTON 0 WIDTH nSize HEIGHT nSize ACTION EVAL( ::bCancel ) OF ( ::oWindow ) PICTURE ::cImageCancel
+         Else
+            ::CreateControl( uValue, ::oWindow, 0, 0, nWidth, nHeight )
+         EndIf
+         ::Value := ::ControlValue
       END WINDOW
    EndIf
 
@@ -5023,20 +5027,24 @@ Local lRet := .F., i, aPos, nPos1, nPos2, cText, nPos
 
    If ! IsWindowDefined( _oohg_gridwn )
       If HB_IsObject( ::oGrid ) .AND. ::oGrid:InPlace .AND. ( ::lNoModal .OR. ::oGrid:lNoModal )
-         DEFINE WINDOW _oohg_gridwn OBJ ::oWindow ;
-            AT nRow - 3, nCol - 3 WIDTH nWidth + 6 HEIGHT nHeight + 6 ;
-            CHILD NOSIZE NOCAPTION ;
-            FONT cFontName SIZE nFontSize ;
-            ON INIT ( ::onLostFocus := { |bAux| ::oGrid:bPosition := 9, bAux := ::onLostFocus, ::onLostFocus := Nil, lRet := ::Valid(), ::onLostFocus := bAux } )
+
+      DEFINE WINDOW _oohg_gridwn OBJ ::oWindow ;
+         AT nRow - 3, nCol - 3 WIDTH nWidth + 6 HEIGHT nHeight + 6 ;
+         CHILD NOSIZE NOCAPTION ;
+         FONT cFontName SIZE nFontSize ;
+         ON INIT ( ::onLostFocus := { |bAux| ::oGrid:bPosition := 9, bAux := ::onLostFocus, ::onLostFocus := Nil, lRet := ::Valid(), ::onLostFocus := bAux } )
 
          ::bOk := { |nPos, bAux| ::oGrid:bPosition := nPos, bAux := ::onLostFocus, ::onLostFocus := Nil, lRet := ::Valid(), ::onLostFocus := bAux }
-      Else
-         DEFINE WINDOW _oohg_gridwn OBJ ::oWindow ;
-            AT nRow - 3, nCol - 3 WIDTH nWidth + 6 HEIGHT nHeight + 6 ;
-            MODAL NOSIZE NOCAPTION ;
-            FONT cFontName SIZE nFontSize
 
-         ::bOk := { || lRet := ::Valid() }
+      Else
+
+      DEFINE WINDOW _oohg_gridwn OBJ ::oWindow ;
+         AT nRow - 3, nCol - 3 WIDTH nWidth + 6 HEIGHT nHeight + 6 ;
+         MODAL NOSIZE NOCAPTION ;
+         FONT cFontName SIZE nFontSize
+
+         ::bOk := { |nPos| ::oGrid:bPosition := nPos, lRet := ::Valid() }
+
       EndIf
 
          ::bCancel := { || ::oWindow:Release() }
@@ -5239,6 +5247,7 @@ Local lRet := .F., i, oBut1, oBut2
    Empty( nHeight )
 
    If ::lSize
+
    DEFINE WINDOW 0 OBJ ::oWindow ;
       AT nRow, nCol ;
       WIDTH ::nWidth ;
@@ -5255,7 +5264,9 @@ Local lRet := .F., i, oBut1, oBut2
                 oBut1:Col := i, ;
                 oBut2:Row := oBut1:Row, ;
                 oBut2:Col := i + 100 + i )
+
    Else
+
    DEFINE WINDOW 0 OBJ ::oWindow ;
       AT nRow, nCol ;
       WIDTH ::nWidth ;
@@ -5264,15 +5275,13 @@ Local lRet := .F., i, oBut1, oBut2
       TITLE ::cTitle ;
       MODAL ;
       NOSIZE
+
    EndIf
 
-      If HB_IsObject( ::oGrid ) .AND. ::oGrid:InPlace .AND. ( ::lNoModal .OR. ::oGrid:lNoModal )
-         ::bOk := { |nPos| ::oGrid:bPosition := nPos, lRet := ::Valid() }
-      Else
-         ::bOk := { || lRet := ::Valid() }
-      EndIf
+      ::bOk := { |nPos| ::oGrid:bPosition := nPos, lRet := ::Valid() }
+      ::bCancel := { || ::oWindow:Release() }
 
-      ON KEY ESCAPE OF ( ::oWindow ) ACTION ( ::oWindow:Release() )
+      ON KEY ESCAPE OF ( ::oWindow ) ACTION EVAL( ::bCancel )
 
       If HB_IsArray( aKeys )
          For i := 1 To Len( aKeys )
@@ -5291,7 +5300,7 @@ Local lRet := .F., i, oBut1, oBut2
       i := Int( Max( ::oWindow:ClientWidth - 200, 0 ) / 3 )
 
       @ ::oWindow:ClientHeight - 40,i BUTTON 0 OBJ oBut1 PARENT ( ::oWindow ) CAPTION _OOHG_Messages( 1, 6 ) ACTION EVAL( ::bOk, -1 )
-      @ oBut1:Row,i + 100 + i BUTTON 0 OBJ oBut2 PARENT ( ::oWindow ) CAPTION _OOHG_Messages( 1, 7 ) ACTION ( ::oWindow:Release() )
+      @ oBut1:Row,i + 100 + i BUTTON 0 OBJ oBut2 PARENT ( ::oWindow ) CAPTION _OOHG_Messages( 1, 7 ) ACTION EVAL( ::bCancel )
    END WINDOW
 
    ::oWindow:Center()
