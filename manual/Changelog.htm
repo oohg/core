@@ -1,5 +1,5 @@
 <!--
-$Id: Changelog.htm,v 1.21 2015-04-16 23:06:42 fyurisich Exp $
+$Id: Changelog.htm,v 1.22 2015-04-17 00:58:39 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -142,6 +142,141 @@ CHANGELOG</div>
 </div>
 <div id="winchm_template_content">
 <pre>
+2015-04-16 21:57 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * include/i_xbrowse.ch
+     + NOSHOWALWAYS, SILENT, ENABLEALTA and DISABLEALTA clauses.
+   * source/h_xbrowse.prg
+     * Comments.
+     + DATA nHelpId.
+     + TXBrowse():AppendItem.
+     + TXBrowse():Define3.
+     + TXBrowse():HelpId to change scrollbar's HelpId.
+     + TXBrowse():ToolTip to change scrollbar's ToolTip.
+     + TXBrowse():Value, uses TXBRowse():MoveTo.
+     + New parameters to TXBrowse():Define.
+     * Parameter "value" renamed to "nValue" in TXBrowse():Define because
+       ASSIGN value VALUE value TYPE "N" DEFAULT 1 it's not preprocessed.
+     * Most of TXBrowse():Define's processing moved to TXBrowse():Define3.
+     ! VALUE clause at define time is not honored.
+     ! TXBrowse:MoveTo fires ON CHANGE event when To and From items are
+       the same.
+     ! TXBrowse():CurrentRow may set incorrect values into ::nRowPos.
+     + Support for ::lAppendOnAltA in TXBrowse():Events_Notify.
+     * ::EditItem changed by ::AppendItem in TXBrowse():Events_Notify.
+     * ::EditItem changed by ::AppendItem in TXBrowse():Down.
+     * ::EditItem changed by ::AppendItem in TXBrowse():PageDown.
+     % TXBrowse:GoBottom.
+     ! TXBrowse():EditItem_B does not check WHEN clause before editing.
+     ! TXBrowse():EditCell shows wrong data when editing a row that's not
+       the current one. Now, ::Value is set to the row to edit before start
+       (this also ensures that the row is refreshed before start).
+     + _OOHG_ThisItemCellValue is set to cell's value before evaluating
+       READONLY and WHEN clauses in TXBrowse():EditCell.
+     + Support for ::lSilent in TXBrowse():EditCell.
+     ! TXBrowse():EditCell does not check WHEN clause before editing.
+     ! TXBrowse():EditAllCells shows wrong data when editing a row that's
+       not the current one. Now, ::Value is set to the row to edit before
+       start (this also ensures that the row is refreshed before start).
+     + _OOHG_ThisItemCellValue is set with cell's value before evaluating
+       READONLY and WHEN clauses in TXBrowse():EditAllCells.
+     - TXBrowseByCell():AppendItem.
+     - TXBrowseByCell():CurrentRow.
+     + TXBrowseByCell():Define.
+     - TXBrowseByCell():DeleteItem.
+     + TXBrowseByCell():Down.
+     + TXBrowseByCell():MoveTo.
+     + TXBrowseByCell():Up.
+     * TXBrowseByCell():AddColumn calls ::DoChange if necessary.
+     % TXBrowseByCell():AddColumn uses ::nColPos instead of ::CurrentCol.
+     + New parameters to method TXBrowseByCell():Define2.
+     * Do not set current column to 0 in TXBrowseByCell():DeleteColumn.
+     * TXBrowseByCell():DeleteColumn calls ::DoChange if necessary.
+     * TXBrowseByCell():EditCell now honors ::FirstVisibleColumn and
+       ::lLocked, and checks that the cell is into bounds.
+     ! TXBrowseByCell():EditCell shows wrong data when editing a cell
+       that's not at the current row. Now, ::Value is set to the cell
+       to edit before start (this also ensures that the row is
+       refreshed before start).
+     * TXBrowseByCell():EditCell now resets ::bPosition before and after
+       cell edition.
+     % TXBrowseByCell():EditCell when processing left and right exits.
+     % TXBrowseByCell():EditCell now uses ::nRowCol and ::nColPos for
+       reference.
+     % TXBrowseByCell():EditCell2 now uses ::nRowCol and ::nColPos for
+       reference.
+     ! TXBrowseByCell():EditGrid shows wrong data when editing a cell
+       that's not at the current row. Now, ::Value is set to the cell
+       to edit before start (this also ensures that the row is
+       refreshed before start).
+     * TXBrowseByCell():EditGrid now stops processing if row or column
+       are not equal to or greater than 1.
+     ! TXBrowseByCell():EditGrid falls into a continous loop if none
+       of the columns is editable.
+     ! TXBrowseByCell():EditGrid shows wrong data after cell edition
+       has ended.
+     + _OOHG_ThisItemCellValue is set to cell's value before evaluating
+       READONLY and WHEN clauses in TXBrowseByCell():EditGrid.
+     * TXBrowseByCell():EditGrid now resets ::bPosition before and after
+       cell edition.
+     % TXBrowseByCell():EditGrid now uses ::nRowCol and ::nColPos for
+       reference.
+     + Support for lOneRow parameter in TXBrowseByCell():EditGrid.
+     % Function _OOHG_TXBrowseByCell_Events2 now uses ::nRowCol and
+       ::nColPos for reference.
+     * _OOHG_ThisItemCellValue is set with cell's value before evaluating
+       READONLY and WHEN in function _OOHG_TXBrowseByCell_Events2.
+     ! _OOHG_TXBrowseByCell_Events2 do not check WHEN clause before
+       starting cell's edition.
+     + CTRL+LEFT ARROW to move TGridByCell to leftmost column in
+       _OOHG_TXBrowseByCell_Events2.
+     + CTRL+RIGHT ARROW to move TGridByCell to rightmost column in
+       _OOHG_TXBrowseByCell_Events2.
+     * TXBrowseByCell():Events_Notify uses ::ColumnRow and ::ColumnCol
+       instead of ::Value to avoid triggering ON CHANGE event.
+     + Support for ::lAppendOnAltA in TXBrowseByCell():Events_Notify.
+     * ::EditItem changed by ::AppendItem in TXBrowseByCell():Events_Notify.
+     % TXBrowseByCell():Events_Notify uses ::nRowPos and ::nColPos instead
+       of ::CurrentRow and ::CurrentCol.
+     * TXBrowseByCell():GoBottom uses ::TopBottom instead of
+       ::Super:GoBottom to avoid firing ON CHANGE event twice.
+     * TXBrowseByCell():GoTop uses ::TopBottom instead of
+       ::Super:GoTop to avoid firing ON CHANGE event twice.
+     % TXBrowseByCell():IsColumnReadonly and TXBrowseByCell():IsColumWhen
+       use ::nRowPos instead of ::CurrentRow.
+     % TXBrowseByCell():Left uses ::nRowPos and ::nColPos instead
+       of ::CurrentRow and ::CurrentCol.
+     ! TXBrowseByCell():Left does not ignore hidden columns.
+     * TXBrowseByCell():Left now returns .T. on success.
+     * TXBrowseByCell():Refresh now expects an array as first parameter.
+     * TXBrowseByCell():Refresh uses ::ColumnRow and ::ColumnCol
+       instead of ::Value to avoid triggering ON CHANGE event.
+     % TXBrowseByCell():Refresh uses ::nRowPos and ::nColPos instead
+       of ::CurrentRow and ::CurrentCol.
+     % TXBrowseByCell():Right uses ::nRowPos and ::nColPos instead
+       of ::CurrentRow and ::CurrentCol.
+     ! TXBrowseByCell():Right does not ignore hidden columns.
+     * TXBrowseByCell():Right now returns .T. on success.
+     * TXBrowseByCell():Right now uses ::DbSkip() instead of ::Down to
+       avoid triggering ON CHANGE event twice.
+     * TXBrowseByCell():Value now uses ::MoveTo instead of painting.
+     * TXBrowseByCell():CurrentCol now does the painting.
+
+   ; NOSHOWALWAYS: hides selected items when control loses focus.
+     Defaults to .F.
+     This a style, so to change an existing control you must use function
+     WindowStyleFlag with LVS_SHOWSELALWAYS.
+   ; SILENT: mutes warning sound when trying to edit a readonly column.
+     Defaults to .F.
+     You can change this setting using DATA lSilent.
+   ; ENABLEALTA: enables use of Alt-A for appending new items.
+     This is the default behaviour.
+   ; DISABLEALTA: disables use of Alt-A for appending new items.
+     Defaults to .F.
+   ; XBROWSE controls, because of their design, must always have one
+     item or cell selected. That's the reason why NONEUNSELS and
+     IGNORENONE clauses can't be implemented.
+     Any change in DATA lNoneUnsels is ignored.
+
 2015-04-16 20:04 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * manual/changelog.htm
      * Updated.
