@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.122 2015-04-17 23:48:06 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.123 2015-04-20 02:40:44 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -127,6 +127,7 @@ CLASS TXBROWSE FROM TGrid
    METHOD SetColumn
    METHOD SetScrollPos
    METHOD SizePos
+   METHOD SyncData
    METHOD ToExcel
    METHOD ToolTip                 SETGET
    METHOD ToOpenOffice
@@ -1609,6 +1610,12 @@ Local aItems, aMemVars, aReplaceFields
 Return ! Empty( aItems )
 
 *-----------------------------------------------------------------------------*
+METHOD SyncData( nRow ) CLASS TXBrowse
+*-----------------------------------------------------------------------------*
+   ::Value := nRow
+Return Nil
+
+*-----------------------------------------------------------------------------*
 METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, nOnFocusPos ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local lRet, bReplaceField, oWorkArea
@@ -1616,11 +1623,21 @@ Local lRet, bReplaceField, oWorkArea
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
    ASSIGN nRow    VALUE nRow    TYPE "N" DEFAULT ::CurrentRow
    ASSIGN nCol    VALUE nCol    TYPE "N" DEFAULT 1
-   If nRow < 1 .OR. nRow > ::ItemCount() .OR. nCol < 1 .OR. nCol > Len( ::aHeaders ) .OR. ::lLocked
+
+   If ::lLocked
+      Return .F.
+   ElseIf nRow < 1 .OR. nRow > ::ItemCount() .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
       // Cell out of range
       Return .F.
+   ElseIf aScan( ::aHiddenCols, nCol ) > 0
+     // Hidden column
+      Return .F.
+   ElseIf ::oWorkArea:EOF() .AND. ! lAppend .AND. ! ::AllowAppend
+      // "fake" record, and don't allow appends
+      Return .F.
    EndIf
-   ::Value := nRow
+
+   ::SyncData( nRow )
 
    _OOHG_ThisItemCellValue := ::Cell( nRow, nCol )
 
@@ -1632,12 +1649,6 @@ Local lRet, bReplaceField, oWorkArea
       lRet := .F.
    ElseIf ! ::IsColumnWhen( nCol )
      // Not a valid WHEN, skip column
-      lRet := .F.
-   ElseIf aScan( ::aHiddenCols, nCol ) > 0
-     // Hidden column
-      lRet := .F.
-   ElseIf ::oWorkArea:EOF() .AND. ! lAppend .AND. ! ::AllowAppend
-      // "fake" record, and don't allow appends
       lRet := .F.
    Else
       oWorkArea := ::oWorkArea
@@ -1697,7 +1708,8 @@ Local lRet, lRowEdited, lSomethingEdited
    ASSIGN nRow    VALUE nRow    TYPE "N" DEFAULT ::CurrentRow
    ASSIGN nCol    VALUE nCol    TYPE "N" DEFAULT 1
    If nRow < 1 .OR. nRow > ::ItemCount() .OR. nCol < 1 .OR. nCol > Len( ::aHeaders ) .OR. ::lLocked .OR. ::FirstVisibleColumn == 0
-      // Cell out of range
+      Return .F.
+   ElseIf lAppend .AND. ! ::AllowAppend
       Return .F.
    EndIf
    ::Value := nRow
@@ -2492,7 +2504,6 @@ Local lRet := .F.
    EndIf
    ::Value := { nRow, nCol }
 
-   ::bPosition := 0
    If ::Super:EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, nOnFocusPos )
       lRet := .T.
       // ::bPosition is set by TGridControl()
@@ -2540,7 +2551,8 @@ Local lSomethingEdited := .F.
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
    ASSIGN lOneRow VALUE lOneRow TYPE "L" DEFAULT .F.
    If nRow < 1 .OR. nRow > ::ItemCount .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
-      // Cell out of range
+      Return .F.
+   ElseIf lAppend .AND. ! ::AllowAppend
       Return .F.
    EndIf
    ::Value := { nRow, nCol }

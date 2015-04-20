@@ -1,5 +1,5 @@
 /*
- * $Id: i_browse.ch,v 1.55 2015-03-09 02:51:07 fyurisich Exp $
+ * $Id: i_browse.ch,v 1.56 2015-04-20 02:40:43 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -164,6 +164,10 @@ STANDARD VERSION
       [ <nomodal: NOMODALEDIT> ] ;
       [ <bycell: NAVIGATEBYCELL> ] ;
       [ <extdbl: EXTDBLCLICK> ] ;
+      [ <silent: SILENT> ] ;
+      [ <alta: ENABLEALTA, DISABLEALTA> ] ;
+      [ <noshow: NOSHOWALWAYS> ] ;
+      [ <none: NONEUNSELS, IGNORENONE> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( IIF( <.bycell.>, TOBrowseByCell(), TOBrowse() ), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, ;
@@ -194,7 +198,9 @@ STANDARD VERSION
             <.excel.>, <.buts.>, <.upcol.>, ;
             IIF( Upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., ;
             IIF( Upper( #<edtctrls> ) == "DYNAMICCONTROLS", .F., NIL ) ), ;
-            <{bheadrclick}>, <.extdbl.>, <.nomodal.> )
+            <{bheadrclick}>, <.extdbl.>, <.nomodal.>, <.silent.>, ;
+            ! Upper( #<alta> ) == "DISABLEALTA", <.noshow.>, ;
+            Upper( #<none> ) == "NONEUNSELS" )
 
 #command SET BROWSESYNC ON ;
    => ;

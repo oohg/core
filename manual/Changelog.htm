@@ -1,5 +1,5 @@
 <!--
-$Id: Changelog.htm,v 1.23 2015-04-17 23:48:05 fyurisich Exp $
+$Id: Changelog.htm,v 1.24 2015-04-20 02:40:43 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -142,6 +142,94 @@ CHANGELOG</div>
 </div>
 <div id="winchm_template_content">
 <pre>
+2015-04-19 23:40 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * manual/changelog.htm
+     * Updated.
+   * source/h_xbrowse.prg
+     + TXBrowse():SyncData, to allow reuse of ::EditCell in TOBrowse class.
+     * Some validations in TXBrowse():EditCell are now done before
+       changing the control's value.
+     + TXBrowse():EditAllCells now checks ::AllowAppend when lAppend
+       parameter is .T.
+     % Deleted innecesary sentence in TXBrowseByCell():EditCell.
+     + TXBrowse():EditGrid now checks ::AllowAppend when lAppend
+       parameter is .T.
+     - Some comments.
+   * source/h_browse.prg
+     + TBrowse():SyncData, to allow reuse of TXBrowse():EditCell.
+     + New parameters to TBrowse():Define.
+     + Support for SILENT, ENABLEALTA, DISABLEALTA, NOSHOWALWAYS,
+       NONEUNSELS and IGNORENONE clauses.
+     + Scrollbar's HelpId and ToolTip are changed when the control's
+       ones are changed.
+     * LISTVIEW_GETFIRSTITEM changed by ::FirstSelectedItem.
+     + Parameter lAppend to TOBrowse():PageDown.
+     * ::EditItem changed by ::AppendItem in TOBrowse():PageDown,
+       TOBrowse():Down and TOBrowse():Events_Notify.
+     % TOBrowse():Down.
+     * TOBrowse():EditAllCells now honors ::FirstVisibleColumn.
+     + _OOHG_ThisItemCellValue is set to cell's value before evaluating
+       READONLY and WHEN clauses in TOBrowse():EditAllCells.
+     * GetAltState() by GetKeyFlagState() for recognizing Alt-A.
+     - TOBrowseByCell:CurrentRow.
+     * Some comments.
+     + New parameters to TOBrowseByCell():Define.
+     + New parameters to TOBrowseByCell():Define3.
+     % TOBrowseByCell() now uses ::nRowPos and ::nColPos instead
+       of ::CurrentRow (or LISTVIEW_GETFIRSTITEM) and ::CurrentCol.
+     * Parameter Value renamed to aValue in TOBrowseByCell():Events.
+     ! Search wrap in TOBrowseByCell():Events.
+     % TOBrowseByCell():Events uses ::nColPos instead of ::CurrentCol.
+     + CTRL+LEFT ARROW to move TOBrowseByCell to leftmost column in
+       TOBrowseByCell():Events.
+     + CTRL+RIGHT ARROW to move TOBrowseByCell to rightmost column in
+       TOBrowseByCell():Events.
+     % TOBrowseByCell():Events_Enter.
+     + Support for ::lAppendOnAltA in TOBrowseByCell():Events_Notify.
+     * ::EditItem changed by ::AppendItem in TOBrowseByCell():Events_Notify.
+     + Support for parameters lRefresh and lChange in
+       TOBrowseByCell():EditCell.
+     * TOBrowseByCell():EditCell now checks for invalid column and for
+       hidden column before edition.
+     * TOBrowseByCell():EditCell no longer resets ::bPosition after
+       testing it's value.
+     ! Infinite loop in TOBrowseByCell():EditGrid caused by the reset of
+       ::bPosition in TOBrowseByCell():EditCell.
+     * TOBrowseByCell():EditItem_B now honors ::AllowAppend.
+     + Support for parameter lRefresh in TOBrowseByCell():EditGrid.
+     - Unneeded code in TOBrowseByCell():EditGrid
+     % TOBrowseByCell():PageDown.
+     * ::EditItem changed by ::AppendItem in TOBrowseByCell():PageDown.
+     % TOBrowseByCell():Down.
+     * TOBrowseByCell():Down now honors ::AllowAppend.
+     * ::EditItem changed by ::AppendItem in TOBrowseByCell():Down.
+     * TOBrowseByCell():Right now parameter lAppend defaults to .F.
+     ; Some T*O*D*O*s pending.
+   * include/i_browse.ch
+     + SILENT, ENABLEALTA, DISABLEALTA, NOSHOWALWAYS, NONEUNSELS and
+       IGNORENONE clauses.
+
+   ; NOSHOWALWAYS: hides selected items when control loses focus.
+     Defaults to .F.
+     This a style, so to change an existing control you must use function
+     WindowStyleFlag with LVS_SHOWSELALWAYS.
+   ; SILENT: mutes warning sound when trying to edit a readonly column.
+     Defaults to .F.
+     You can change this setting using DATA lSilent.
+   ; NONEUNSELS: the GRID control will clear the selected item and fire
+     ON CHANGE event when an invalid value is set.
+     Defauls to .F.
+     You can change this setting using DATA lNoneUnsels.
+     This clause is forced to .T. by BROWSE controls with NAVIGATEBYCELL
+     clause, and any change in DATA lNoneUnsels is ignored.
+   ; IGNORENONE: the GRID control ignores invalid values and the current
+     value is not changed. This is the default behaviour.
+   ; ENABLEALTA: enables use of Alt-A for appending new items.
+     This is the default behaviour.
+     You can change this setting using DATA lAppendOnAltA.
+   ; DISABLEALTA: disables use of Alt-A for appending new items.
+     Defaults to .F.
+
 2015-04-17 20:47 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * doc/classes.txt
      * Updated.
