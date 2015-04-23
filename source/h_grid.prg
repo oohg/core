@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.275 2015-04-17 23:48:06 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.276 2015-04-23 04:36:42 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -237,6 +237,10 @@ CLASS TGrid FROM TControl
    METHOD ColumnHide
    METHOD ColumnShow
    METHOD ColumnOrder          SETGET
+   METHOD PriorColInOrder
+   METHOD NextColInOrder
+   METHOD FirstColInOrder
+   METHOD LastColInOrder
    METHOD SortColumn
    METHOD SortItems
    METHOD CompareItems
@@ -287,6 +291,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone ) CLASS TGrid
 *-----------------------------------------------------------------------------*
+
    ::Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               aRows, value, fontname, fontsize, tooltip, change, dblclick, ;
               aHeadClick, gotfocus, lostfocus, nogrid, aImage, aJust, ;
@@ -303,6 +308,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
               lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
               lExtDbl, lSilent, lAltA, lNoShowAlways, lNone )
+
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -349,7 +355,7 @@ Local ControlHandle, aImageList, i
    If HB_IsArray( aHeadClick )
       ::aHeadClick := aHeadClick
    ElseIf HB_IsBlock( aHeadClick )
-      ::aHeadClick := Array( Len(  ::aHeaders ) )
+      ::aHeadClick := Array( Len( ::aHeaders ) )
       aFill( ::aHeadClick, aHeadClick )
    Else
       ::aHeadClick := {}
@@ -517,7 +523,20 @@ Return Self
 METHOD AddBitMap( uImage ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local aImageList, nPos, nCount
-   If ! ValidHandler( ::ImageList )
+
+   If ValidHandler( ::ImageList )
+      nCount := ImageList_GetImageCount( ::ImageList )
+      If HB_IsArray( uImage )
+         nPos := ImageList_Add( ::ImageList, uImage[ 1 ], ::ImageListFlags, ::ImageListColor )
+         AEVAL( uImage, { |c| ImageList_Add( ::ImageList, c, ::ImageListFlags, ::ImageListColor ) }, 2 )
+      Else
+         nPos := ImageList_Add( ::ImageList, uImage, ::ImageListFlags, ::ImageListColor )
+      EndIf
+      If nCount == ImageList_GetImageCount( ::ImageList )
+         nPos := 0
+      EndIf
+      SendMessage( ::hWnd, ::SetImageListCommand, ::SetImageListWParam, ::ImageList )
+   Else
       If HB_IsArray( uImage )
          aImageList := ImageList_Init( uImage, ::ImageListColor, ::ImageListFlags )
       Else
@@ -534,25 +553,15 @@ Local aImageList, nPos, nCount
       Else
          nPos := 0
       EndIf
-   Else
-      nCount := ImageList_GetImageCount( ::ImageList )
-      If HB_IsArray( uImage )
-         nPos := ImageList_Add( ::ImageList, uImage[ 1 ], ::ImageListFlags, ::ImageListColor )
-         AEVAL( uImage, { |c| ImageList_Add( ::ImageList, c, ::ImageListFlags, ::ImageListColor ) }, 2 )
-      Else
-         nPos := ImageList_Add( ::ImageList, uImage, ::ImageListFlags, ::ImageListColor )
-      EndIf
-      If nCount == ImageList_GetImageCount( ::ImageList )
-         nPos := 0
-      EndIf
-      SendMessage( ::hWnd, ::SetImageListCommand, ::SetImageListWParam, ::ImageList )
    Endif
+
 Return nPos
 
 *-----------------------------------------------------------------------------*
 METHOD FirstVisibleItem CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nRet
+
    If ::ItemCount > 0
       nRet := ListView_GetTopIndex( ::hWnd )
       If nRet < 1 .OR. nRet > ::ItemCount
@@ -561,12 +570,14 @@ Local nRet
    Else
       nRet := 0
    EndIf
+
 Return nRet
 
 *-----------------------------------------------------------------------------*
 METHOD FirstVisibleColumn( lStart ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local aColumnOrder, nLen, i, r, nRet := 0, lEmpty := .F., nClientWidth, nScrollWidth
+
    ASSIGN lStart VALUE lStart TYPE "L" DEFAULT .F.
 
    If ::ItemCount < 1
@@ -597,13 +608,13 @@ Local aColumnOrder, nLen, i, r, nRet := 0, lEmpty := .F., nClientWidth, nScrollW
          If lStart
             // check if the left side is inside the client area
             If r[ 2 ] >= 0 .AND. r[ 2 ] < nClientWidth - nScrollWidth
-              nRet := i
+              nRet := aColumnOrder[ i ]
               Exit
             EndIf
          Else
             // We are looking for the leftmost column
             If r[ 2 ] + r[ 3 ] - 1 >= 0
-               nRet := i
+               nRet := aColumnOrder[ i ]
                Exit
             EndIf
          EndIf
@@ -614,12 +625,14 @@ Local aColumnOrder, nLen, i, r, nRet := 0, lEmpty := .F., nClientWidth, nScrollW
    If lEmpty
       ListViewDeleteString( ::hWnd, 1 )
    EndIf
+
 Return nRet
 
 *-----------------------------------------------------------------------------*
 METHOD FixControls( lFix ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local i
+
    If HB_IsLogical( lFix )
       If lFix
          ::aEditControls := Array( Len( ::aHeaders ) )
@@ -631,14 +644,17 @@ Local i
          ::lFixedControls := .F.
       Endif
    EndIf
+
 Return ::lFixedControls
 
 *-----------------------------------------------------------------------------*
 METHOD Append( lAppend ) CLASS TGrid
 *-----------------------------------------------------------------------------*
+
    If HB_IsLogical( lAppend )
       ::AllowAppend := lAppend
    EndIf
+
 Return ::AllowAppend
 
 *-----------------------------------------------------------------------------*
@@ -789,12 +805,13 @@ Local i, nPos, nCount, aImageList, nImagesWidth, aHeaderImage, aImageName := {}
       SetHeaderImageList( ::hWnd, 0 )
    EndIf
 
-Return Nil
+Return Self
 
 *-----------------------------------------------------------------------------*
 METHOD OnEnter( bEnter ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local bRet
+
    If HB_IsBlock( bEnter )
       If _OOHG_SameEnterDblClick
          ::OnDblClick := bEnter
@@ -805,13 +822,16 @@ Local bRet
    Else
       bRet := If( _OOHG_SameEnterDblClick, ::OnDblClick, ::bOnEnter )
    EndIf
+
 Return bRet
 
 *--------------------------------------------------------------------------*
-METHOD AppendItem() CLASS TGrid
+METHOD AppendItem( lAppend ) CLASS TGrid
 *--------------------------------------------------------------------------*
 Local lRet := .F.
-   IF ! ::lNestedEdit
+
+   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
+   IF ! ::lNestedEdit .AND. ! ::lEditMode .AND. ( ::AllowAppend .OR. lAppend )
       ::lNestedEdit := .T.
       ::cText := ""
       If ::FirstVisibleColumn # 0
@@ -819,7 +839,7 @@ Local lRet := .F.
          ::InsertBlank( ::ItemCount + 1 )
          ::Value := ::ItemCount
          If ::FullMove
-            lRet := ::EditGrid()
+            lRet := ::EditGrid( , , lAppend)
          ElseIf ::InPlace
             lRet := ::EditAllCells()
          Else
@@ -829,59 +849,62 @@ Local lRet := .F.
       EndIf
       ::lNestedEdit := .F.
    EndIf
+
 Return lRet
 
 *--------------------------------------------------------------------------*
-METHOD EditGrid( nRow, nCol ) CLASS TGrid
+METHOD EditGrid( nRow, nCol, lAppend ) CLASS TGrid
 *--------------------------------------------------------------------------*
-Local lRet
+Local lRet, lSomethingEdited, nNextCol
+
    If ::FirstVisibleColumn == 0
-      // No visible column to edit
       Return .F.
    EndIf
    If ! HB_IsNumeric( nRow )
       nRow := ::FirstSelectedItem
    EndIf
    If ! HB_IsNumeric( nCol )
-      nCol := 1
+      nCol := ::FirstColInOrder
    EndIf
    If nRow < 1 .OR. nRow > ::ItemCount .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
-      // Cell out of range
       Return .F.
    EndIf
    ::nRowPos := nRow
    ::nColPos := nCol
 
-   lRet := .T.
+   lSomethingEdited := .F.
+   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
 
-   Do While ::nColPos <= Len( ::aHeaders ) .AND. ::nRowPos <= ::ItemCount .AND. lRet
+   Do While ::nColPos >= 1 .AND. ::nColPos <= Len( ::aHeaders )
       _OOHG_ThisItemCellValue := ::Cell( ::nRowPos, ::nColPos )
 
       If ::IsColumnReadOnly( ::nColPos )
          // Read only column
       ElseIf ! ::IsColumnWhen( ::nColPos )
-         // Not a valid WHEN
+         // WHEN returned .F.
       ElseIf ASCAN( ::aHiddenCols, ::nColPos ) > 0
         // Hidden column
       Else
 
-         ::leditmode := .T.
+         ::lEditMode := .T.
          lRet := ::EditCell( ::nRowPos, ::nColPos )
-         ::leditmode := .F.
+         ::lEditMode := .F.
 
          If ::lAppendMode
             ::lAppendMode := .F.
             If lRet
                ::DoEvent( ::OnAppend, "APPEND" )
+               lSomethingEdited := .T.
             Else
                ::DeleteItem( ::ItemCount )
                ::Value := ::ItemCount
-               ::nRowPos := ::FirstSelectedItem
+               _OOHG_Eval( ::OnAbortEdit, 0, 0 )
+               Exit
             EndIf
-         EndIf
-
-         If ! lRet
-            _OOHG_Eval( ::OnAbortEdit, 0, 0 )
+         ElseIf lRet
+            lSomethingEdited := .T.
+         Else
+            _OOHG_Eval( ::OnAbortEdit, nRow, nCol )
             Exit
          EndIf
       EndIf
@@ -890,13 +913,11 @@ Local lRet
          ::OnEditCell() may change ::nRowPos and/or ::nColPos using ::Up(), ::PageUp(),
          ::Down(), ::PageDown(), ::GoTop(), ::GoBottom(), ::Left() and/or ::Right()
       */
-      If ::nColPos < Len( ::aHeaders )
-         ::nColPos ++
-      Else
+      nNextCol := ::NextColInOrder( ::nColPos )
+      If nNextCol == 0
          If ::FullMove
             If ::nRowPos == ::ItemCount
-               If ::AllowAppend
-                  // Add a new item
+               If ::AllowAppend .OR. lAppend
                   ::lAppendMode := .T.
                   ::InsertBlank( ::ItemCount + 1 )
                Else
@@ -905,51 +926,51 @@ Local lRet
             EndIf
 
             ::nRowPos ++
-            ::nColPos := 1
+            ::nColPos := ::FirstColInOrder
          Else
             Exit
          EndIf
+      Else
+         ::nColPos := nNextCol
       EndIf
 
       ::Value := ::nRowPos
    EndDo
 
-   If lRet
-      ListView_Scroll( ::hWnd, - _OOHG_GridArrayWidths( ::hWnd, ::aWidths ), 0 )
-   EndIf
-Return lRet
+   ListView_Scroll( ::hWnd, - _OOHG_GridArrayWidths( ::hWnd, ::aWidths ), 0 )
+
+Return lSomethingEdited
 
 *--------------------------------------------------------------------------*
 METHOD Right() CLASS TGrid
 *--------------------------------------------------------------------------*
+Local nNextCol
+
    If ::lEditMode .AND. ::FullMove
-      If ::nColPos < Len( ::aHeaders )
-         ::nColPos ++
-      ElseIf ::nRowPos < ::ItemCount
-         ::nRowPos ++
-         ::nColPos := 1
+      nNextCol := ::NextColInOrder( ::nColPos )
+      If nNextCol # 0
+         ::nColPos := nNextCol
       EndIf
    EndIf
+
 Return Self
 
 *--------------------------------------------------------------------------*
 METHOD Left() CLASS TGrid
 *--------------------------------------------------------------------------*
+
    If ::lEditMode .AND. ::FullMove
-      If ::nColPos > 1
-         ::nColPos --
-         ::nColPos --
-      ElseIf ::nRowPos > 1
-         ::nRowPos --
-         ::nColPos := Len( ::aHeaders ) - 1
+      If ::nColPos # ::FirstColInOrder
+         ::nColPos := ::PriorColInOrder( ::PriorColInOrder( ::nColPos ) )
       EndIf
    EndIf
+
 Return Self
 
 *--------------------------------------------------------------------------*
 METHOD Down( lAppend ) CLASS TGrid
 *--------------------------------------------------------------------------*
-   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT ::AllowAppend
+
    If ::lEditMode
       If ::nRowPos < ::ItemCount
          ::nRowPos ++
@@ -957,15 +978,20 @@ METHOD Down( lAppend ) CLASS TGrid
    Else
       If ::FirstSelectedItem < ::ItemCount
          ::Value := ::FirstSelectedItem + 1
-      ElseIf lAppend
-         ::AppendItem()
+      Else
+         ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT ::AllowAppend
+         If lAppend
+            ::AppendItem()
+         EndIf
       EndIf
    EndIf
+
 Return Self
 
 *--------------------------------------------------------------------------*
 METHOD Up() CLASS TGrid
 *--------------------------------------------------------------------------*
+
    If ::lEditMode
       If ::nRowPos > 1
          ::nRowPos --
@@ -975,11 +1001,13 @@ METHOD Up() CLASS TGrid
          ::Value := ::FirstSelectedItem - 1
       EndIf
    EndIf
+
 Return Self
 
 *--------------------------------------------------------------------------*
 METHOD PageUp() CLASS TGrid
 *--------------------------------------------------------------------------*
+
    If ::lEditMode
       If ::nRowPos > ::CountPerPage
          ::nRowPos -= ::CountPerPage
@@ -993,11 +1021,13 @@ METHOD PageUp() CLASS TGrid
          ::GoTop()
       EndIf
    EndIf
+
 Return Self
 
 *-------------------------------------------------------------------------*
 METHOD PageDown() CLASS TGrid
 *-------------------------------------------------------------------------*
+
    If ::lEditMode
       If ::nRowPos < ::ItemCount - ::CountPerPage
          ::nRowPos += ::CountPerPage
@@ -1011,11 +1041,13 @@ METHOD PageDown() CLASS TGrid
         ::GoBottom()
       EndIf
    EndIf
+
 Return Self
 
 *---------------------------------------------------------------------------*
 METHOD GoTop() CLASS TGrid
 *---------------------------------------------------------------------------*
+
    If ::lEditMode
       ::nRowPos := 1
    Else
@@ -1023,11 +1055,13 @@ METHOD GoTop() CLASS TGrid
          ::Value := 1
       EndIf
    EndIf
+
 Return Self
 
 *---------------------------------------------------------------------------*
 METHOD GoBottom() CLASS TGrid
 *---------------------------------------------------------------------------*
+
    If ::lEditMode
       ::nRowPos := ::ItemCount
    Else
@@ -1035,39 +1069,40 @@ METHOD GoBottom() CLASS TGrid
          ::Value := ::ItemCount
       EndIf
    EndIf
+
 Return Self
 
 *-----------------------------------------------------------------------------*
 METHOD ToExcel( cTitle, nItemFrom, nItemTo, nColFrom, nColTo ) CLASS TGrid
 *-----------------------------------------------------------------------------*
-Local oExcel, oSheet, nLin, i, j, uValue
+Local oExcel, oSheet, nLin, i, j, uValue, aColumnOrder
 
    If ! ValType( cTitle ) $ "CM"
       cTitle := ""
    EndIf
-   If ! ValType( nItemFrom ) == "N" .OR. nItemFrom < 1
+   If ! ValType( nItemFrom ) == "N" .OR. nItemFrom < 1 .OR. nItemFrom > ::ItemCount
       nItemFrom := Max( ::FirstSelectedItem, 1 )
    EndIf
-   If ! ValType( nItemTo ) == "N" .OR. nItemTo > ::ItemCount
+   If ! ValType( nItemTo ) == "N" .OR. nItemTo < 1 .OR. nItemTo > ::ItemCount .OR. nItemTo < nItemFrom
       nItemTo := ::ItemCount
    EndIf
-   If ! ValType( nColFrom ) == "N" .OR. nColFrom < 1
+   If ! ValType( nColFrom ) == "N" .OR. nColFrom < 1 .OR. nColFrom > Len( ::aHeaders )
       nColFrom := 1
    EndIf
-   If ! ValType( nColTo ) == "N" .OR. nColTo > Len( ::aHeaders )
+   If ! ValType( nColTo ) == "N" .OR. nColTo < 1 .OR. nColTo > Len( ::aHeaders ) .OR. nColTo < nColFrom
       nColTo := Len( ::aHeaders )
    EndIf
 
    #ifndef __XHARBOUR__
       If ( oExcel := win_oleCreateObject( "Excel.Application" ) ) == Nil
          MsgStop( "Error: MS Excel not available. [" + win_oleErrorText()+ "]" )
-         Return Nil
+         Return Self
       EndIf
    #else
       oExcel := TOleAuto():New( "Excel.Application" )
       If Ole2TxtError() != "S_OK"
          MsgStop( "Excel not found", "Error" )
-         Return Nil
+         Return Self
       EndIf
    #EndIf
 
@@ -1076,18 +1111,19 @@ Local oExcel, oSheet, nLin, i, j, uValue
    oSheet:Cells:Font:Name := "Arial"
    oSheet:Cells:Font:Size := 10
 
+   aColumnOrder := ::ColumnOrder
    nLin := 4
 
    For i := nColFrom To nColTo
-      oSheet:Cells( nLin, i - nColFrom + 1 ):Value := ::aHeaders[ i ]
+      oSheet:Cells( nLin, i - nColFrom + 1 ):Value := ::aHeaders[ aColumnOrder[ i ] ]
       oSheet:Cells( nLin, i - nColFrom + 1 ):Font:Bold := .T.
    Next i
    nLin += 2
 
    For j := nItemFrom To nItemTo
       For i := nColFrom To nColTo
-         uValue := ::Cell( j, i )
-         If ! HB_IsDate( uValue ) .or. ! Empty( uValue )
+         uValue := ::Cell( j, aColumnOrder[ i ] )
+         If ! HB_IsDate( uValue ) .OR. ! Empty( uValue )
             oSheet:Cells( nLin, i - nColFrom + 1 ):Value := uValue
          EndIf
       Next i
@@ -1106,26 +1142,26 @@ Local oExcel, oSheet, nLin, i, j, uValue
    oSheet := Nil
    oExcel := Nil
 
-Return Nil
+Return Self
 
 *-----------------------------------------------------------------------------*
 METHOD ToOpenOffice( cTitle, nItemFrom, nItemTo, nColFrom, nColTo ) CLASS TGrid
 *-----------------------------------------------------------------------------*
-Local oSerMan, oDesk, oPropVals, oBook, oSheet, nLin, i, j, uValue
+Local oSerMan, oDesk, oPropVals, oBook, oSheet, nLin, i, j, uValue, aColumnOrder
 
    If ! ValType( cTitle ) $ "CM"
       cTitle := ""
    EndIf
-   If ! ValType( nItemFrom ) == "N" .OR. nItemFrom < 1
+   If ! ValType( nItemFrom ) == "N" .OR. nItemFrom < 1 .OR. nItemFrom > ::ItemCount
       nItemFrom := Max( ::FirstSelectedItem, 1 )
    EndIf
-   If ! ValType( nItemTo ) == "N" .OR. nItemTo > ::ItemCount
+   If ! ValType( nItemTo ) == "N" .OR. nItemTo < 1 .OR. nItemTo > ::ItemCount .OR. nItemTo < nItemFrom
       nItemTo := ::ItemCount
    EndIf
-   If ! ValType( nColFrom ) == "N" .OR. nColFrom < 1
+   If ! ValType( nColFrom ) == "N" .OR. nColFrom < 1 .OR. nColFrom > Len( ::aHeaders )
       nColFrom := 1
    EndIf
-   If ! ValType( nColTo ) == "N" .OR. nColTo > Len( ::aHeaders )
+   If ! ValType( nColTo ) == "N" .OR. nColTo < 1 .OR. nColTo > Len( ::aHeaders ) .OR. nColTo < nColFrom
       nColTo := Len( ::aHeaders )
    EndIf
 
@@ -1133,20 +1169,20 @@ Local oSerMan, oDesk, oPropVals, oBook, oSheet, nLin, i, j, uValue
    #ifndef __XHARBOUR__
       If ( oSerMan := win_oleCreateObject( "com.sun.star.ServiceManager" ) ) == Nil
          MsgStop( "Error: OpenOffice not available. [" + win_oleErrorText()+ "]" )
-         Return Nil
+         Return Self
       EndIf
    #else
       oSerMan := TOleAuto():New( "com.sun.star.ServiceManager" )
       If Ole2TxtError() != "S_OK"
          MsgStop( "OpenOffice not found", "Error" )
-         Return Nil
+         Return Self
       EndIf
    #EndIf
 
    // open desktop service
    If ( oDesk := oSerMan:CreateInstance( "com.sun.star.frame.Desktop" ) ) == Nil
       MsgStop( "Error: OpenOffice Desktop not available." )
-      Return Nil
+      Return Self
    EndIf
 
    // set properties for new book
@@ -1158,7 +1194,7 @@ Local oSerMan, oDesk, oPropVals, oBook, oSheet, nLin, i, j, uValue
    If ( oBook := oDesk:LoadComponentFromURL( "private:factory/scalc", "_blank", 0, {oPropVals} ) ) == Nil
       MsgStop( "Error: OpenOffice Calc not available." )
       oDesk := Nil
-      Return Nil
+      Return Self
    EndIf
 
    // keep only one sheet
@@ -1175,11 +1211,12 @@ Local oSerMan, oDesk, oPropVals, oBook, oSheet, nLin, i, j, uValue
    oSheet:CharFontName := "Arial"
    oSheet:CharHeight := 10
 
+   aColumnOrder := ::ColumnOrder
    nLin := 4
 
    // put headers using bold style
    For i := nColFrom To nColTo
-      oSheet:GetCellByPosition( i - nColFrom, nLin - 1 ):SetString( ::aHeaders[ i ] )
+      oSheet:GetCellByPosition( i - nColFrom, nLin - 1 ):SetString( ::aHeaders[ aColumnOrder[ i ] ] )
       oSheet:GetCellByPosition( i - nColFrom, nLin - 1 ):SetPropertyValue( "CharWeight", 150 )
    Next i
    nLin += 2
@@ -1187,7 +1224,7 @@ Local oSerMan, oDesk, oPropVals, oBook, oSheet, nLin, i, j, uValue
    // put rows
    For j := nItemFrom To nItemTo
       For i := nColFrom To nColTo
-         uValue := ::Cell( j, i )
+         uValue := ::Cell( j, aColumnOrder[ i ] )
          Do Case
          Case uValue == Nil
          Case ValType( uValue ) == "C"
@@ -1234,12 +1271,13 @@ Local oSerMan, oDesk, oPropVals, oBook, oSheet, nLin, i, j, uValue
    oDesk     := Nil
    oSerMan   := Nil
 
-Return Nil
+Return Self
 
 *-----------------------------------------------------------------------------*
 METHOD EditItem() CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nItem, aItems, nColumn
+
    If ::FirstVisibleColumn == 0
       Return .F.
    EndIf
@@ -1277,6 +1315,7 @@ Local nItem, aItems, nColumn
       _OOHG_Eval( ::OnEditCell, nItem, 0 )
       _ClearThisCellInfo()
    EndIf
+
 Return Empty( aItems )
 
 *-----------------------------------------------------------------------------*
@@ -1292,7 +1331,6 @@ Local aReturn, lHidden
    ::lNested := .T.
 
    If ::FirstVisibleColumn == 0
-      // No visible column to edit
       Return {}
    EndIf
 
@@ -1394,7 +1432,15 @@ Local aReturn, lHidden
          aEditControls2[ i ]:bValid := { || .T. }
          aEditControls2[ i ]:Visible := .F.
       ElseIf HB_IsArray( ::Valid ) .AND. Len( ::Valid ) >= i
-         aEditControls2[ i ]:bValid := ::Valid[ i ]
+         If HB_IsBlock( ::Valid[ i ] )
+            aEditControls2[ i ]:bValid := ::Valid[ i ]
+         Else
+            aEditControls2[ i ]:bValid := { || .T. }
+         EndIf
+      ElseIf HB_IsBlock( ::Valid )
+         aEditControls2[ i ]:bValid := ::Valid
+      Else
+         aEditControls2[ i ]:bValid := { || .T. }
       EndIf
       // Set message for invalid values
       If HB_IsArray( ::ValidMessages ) .AND. Len( ::ValidMessages ) >= i
@@ -1480,6 +1526,7 @@ Return aReturn
 STATIC FUNCTION TGrid_EditItem_When( aEditControls )
 *-----------------------------------------------------------------------------*
 Local nItem, lEnabled, aValues
+
    // Save values
    aValues := Array( Len( aEditControls ) )
    For nItem := 1 To Len( aEditControls )
@@ -1502,12 +1549,14 @@ Local nItem, lEnabled, aValues
          aEditControls[ nItem ]:Enabled := .T.
       EndIf
    Next
+
 Return aValues
 
 *-----------------------------------------------------------------------------*
 STATIC PROCEDURE TGrid_EditItem_Check( aEditControls, aItems, oWnd, aReturn )
 *-----------------------------------------------------------------------------*
 Local lRet, nItem, aValues, lValid, cValidMessage
+
    // Save values
    aValues := TGrid_EditItem_When( aEditControls )
 
@@ -1540,26 +1589,32 @@ Local lRet, nItem, aValues, lValid, cValidMessage
       aEval( aValues, { |u,i| aItems[ i ] := aReturn[ i ] := u } )
       oWnd:Release()
    EndIf
+
 Return
 
 *-----------------------------------------------------------------------------*
 METHOD IsColumnReadOnly( nCol ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local uReadOnly
+
    uReadOnly := _OOHG_GetArrayItem( ::ReadOnly, nCol, ::Item( ::Value ) )
+
 Return ( HB_IsLogical( uReadOnly ) .AND. uReadOnly )
 
 *-----------------------------------------------------------------------------*
 METHOD IsColumnWhen( nCol ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local uWhen
+
    uWhen := _OOHG_GetArrayItem( ::aWhen, nCol, ::Item( ::Value ) )
+
 Return ( ! HB_IsLogical( uWhen ) .OR. uWhen )
 
 *-----------------------------------------------------------------------------*
 METHOD AddColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor, ;
                   lNoDelete, uPicture, uEditControl, uHeadClick, uValid, ;
-                  uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign ) CLASS TGrid
+                  uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign, ;
+                  uReadOnly ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nColumns, uGridColor, uDynamicColor, i
 
@@ -1632,6 +1687,9 @@ Local nColumns, uGridColor, uDynamicColor, i
       EndIf
       aIns( ::EditControls, nColIndex )
       ::EditControls[ nColIndex ] := uEditControl
+      If ::FixControls()
+         ::FixControls( .T. )
+      EndIf
    EndIf
 
    // Update justification
@@ -1674,6 +1732,16 @@ Local nColumns, uGridColor, uDynamicColor, i
       ::aWhen[ nColIndex ] := uWhen
    EndIf
 
+   // Update readonly
+   If HB_IsArray( ::Readonly )
+      aSize( ::Readonly, nColumns )
+      aIns( ::Readonly, nColIndex )
+      ::Readonly[ nColIndex ] := uReadOnly
+   ElseIf uReadOnly != Nil
+      ::Readonly := Array( nColumns )
+      ::Readonly[ nColIndex ] := uReadOnly
+   EndIf
+
    // Update header image
    aSize( ::aHeaderImage, nColumns )
    aIns( ::aHeaderImage, nColIndex )
@@ -1700,6 +1768,7 @@ Return nColIndex
 STATIC FUNCTION TGrid_AddColumnColor( aGrid, nColumn, uColor, uDynamicColor, nWidth, nItemCount, lNoDelete, hWnd )
 *-----------------------------------------------------------------------------*
 Local uTemp, x
+
    If ValType( uDynamicColor ) == "A"
       If Len( uDynamicColor ) < nWidth
          aSize( uDynamicColor, nWidth )
@@ -1712,6 +1781,7 @@ Local uTemp, x
       aFill( uDynamicColor, uTemp )
       uDynamicColor[ nColumn ] := uColor
    EndIf
+
    If ! lNoDelete
       uDynamicColor := Nil
    ElseIf HB_IsArray( aGrid ) .OR. ValType( uColor ) $ "ANB" .OR. ValType( uDynamicColor ) $ "ANB"
@@ -1738,12 +1808,14 @@ Local uTemp, x
          _ClearThisCellInfo()
       Next
    EndIf
+
 Return Nil
 
 *-----------------------------------------------------------------------------*
 METHOD SetColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor, ;
                   lNoDelete, uPicture, uEditControl, uHeadClick, uValid, ;
-                  uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign ) CLASS TGrid
+                  uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign, ;
+                  uReadonly ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nColumns, uGridColor, uDynamicColor
 
@@ -1803,6 +1875,9 @@ Local nColumns, uGridColor, uDynamicColor
          aSize( ::EditControls, nColumns )
       EndIf
       ::EditControls[ nColIndex ] := uEditControl
+      If ::FixControls()
+         ::FixControls( .T. )
+      EndIf
    EndIf
 
    // Update justification
@@ -1835,6 +1910,14 @@ Local nColumns, uGridColor, uDynamicColor
       ::aWhen[ nColIndex ] := uWhen
    EndIf
 
+   // Update readonly
+   If HB_IsArray( ::Readonly )
+      ::Readonly[ nColIndex ] := uReadOnly
+   ElseIf uReadOnly != Nil
+      ::Readonly := Array( nColumns )
+      ::Readonly[ nColIndex ] := uReadOnly
+   EndIf
+
    // Update header image
    If ! HB_IsNumeric( nHeaderImage ) .OR. nHeaderImage < 0
       nHeaderImage := 0
@@ -1856,6 +1939,7 @@ Return nColIndex
 METHOD ColumnBetterAutoFit( nColIndex ) CLASS Tgrid
 *----------------------------------------------------------------------------*
 Local n, nh
+
    If HB_IsNumeric( nColIndex )
       If nColindex > 0
          nh := ::ColumnAutoFitH( nColIndex )
@@ -1865,22 +1949,26 @@ Local n, nh
          EndIf
       EndIf
    EndIf
-Return Nil
+
+Return Self
 
 *-----------------------------------------------------------------------------*
 METHOD ColumnHide( nColIndex ) CLASS TGrid
 *-----------------------------------------------------------------------------*
+
    If HB_IsNumeric( nColIndex )
       If nColIndex > 0 .AND. nColIndex <= Len( ::aHeaders ) .AND. ASCAN( ::aHiddenCols, nColIndex ) == 0
          ::ColumnWidth( nColIndex, 0 )
       EndIf
    EndIf
-Return Nil
+
+Return Self
 
 *-----------------------------------------------------------------------------*
 METHOD ColumnShow( nColIndex ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local i
+
    If HB_IsNumeric( nColIndex )
       If nColindex > 0
          i := ASCAN( ::aHiddenCols, nColIndex )
@@ -1890,15 +1978,18 @@ Local i
          EndIf
       EndIf
    EndIf
-Return Nil
+
+Return Self
 
 *-----------------------------------------------------------------------------*
 METHOD ColumnOrder( aOrder ) CLASS TGrid
 *-----------------------------------------------------------------------------*
+
    If HB_IsArray( aOrder )
       ListView_SetColumnOrder( ::hWnd, aOrder )
       ::Refresh()
    EndIf
+
 Return ListView_GetColumnOrder( ::hWnd )
 
 *-----------------------------------------------------------------------------*
@@ -1906,7 +1997,6 @@ METHOD DeleteColumn( nColIndex, lNoDelete ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nColumns, i
 
-   // Update Headers
    nColumns := Len( ::aHeaders )
    If nColumns == 0
       Return 0
@@ -1934,6 +2024,9 @@ Local nColumns, i
    _OOHG_DeleteArrayItem( ::aHeaderImageAlign, nColIndex )
    _OOHG_DeleteArrayItem( ::DynamicForeColor, nColIndex )
    _OOHG_DeleteArrayItem( ::DynamicBackColor, nColIndex )
+   _OOHG_DeleteArrayItem( ::Readonly, nColIndex )
+   _OOHG_DeleteArrayItem( ::EditControls, nColIndex )
+   _OOHG_DeleteArrayItem( ::aEditControls, nColIndex )
 
    If HB_IsLogical( lNoDelete ) .AND. lNoDelete
       If HB_IsArray( ::GridForeColor )
@@ -1947,13 +2040,6 @@ Local nColumns, i
       ::GridBackColor := Nil
    EndIf
 
-   // Update edit control
-   If HB_IsArray( ::EditControls )
-      If Len( ::EditControls ) >= nColIndex
-         aDel( ::EditControls, nColIndex )
-      EndIf
-   EndIf
-
    // Call C-Level Routine
    ListView_DeleteColumn( ::hWnd, nColIndex, lNoDelete )
 
@@ -1962,6 +2048,7 @@ Return nColIndex
 *-----------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TGrid
 *-----------------------------------------------------------------------------*
+
    If HB_IsNumeric( uValue )
       If ::lNoneUnsels .AND. ( uValue < 1 .OR. uValue > ::ItemCount() )
          If ::FirstSelectedItem # 0
@@ -1973,12 +2060,14 @@ METHOD Value( uValue ) CLASS TGrid
          ListView_EnsureVisible( ::hWnd, uValue )
       EndIf
    EndIf
+
 Return ::FirstSelectedItem
 
 *-----------------------------------------------------------------------------*
 METHOD Cell( nRow, nCol, uValue ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local aItem, uValue2 := Nil
+
    If nRow >= 1 .AND. nRow <= ::ItemCount
       aItem := ::Item( nRow )
       If nCol >= 1 .AND. nCol <= Len( aItem )
@@ -1989,17 +2078,19 @@ Local aItem, uValue2 := Nil
          uValue2 := aItem[ nCol ]
       EndIf
    EndIf
+
 Return uValue2
 
 *-----------------------------------------------------------------------------*
 METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPos ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local lRet
+
    If ! HB_IsNumeric( nRow )
       nRow := ::FirstSelectedItem
    EndIf
    If ! HB_IsNumeric( nCol )
-      nCol := 1
+      nCol := ::FirstColInOrder
    EndIf
    If nRow < 1 .OR. nRow > ::ItemCount .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
       // Cell out of range
@@ -2040,6 +2131,7 @@ Local lRet
    Else
       _OOHG_Eval( ::OnAbortEdit, nRow, nCol )
    EndIf
+
 Return lRet
 
 // nRow, nCol and uValue may be passed by reference
@@ -2059,7 +2151,7 @@ Local r, r2, lRet := .F., nClientWidth, uAux, nScrollWidth
       nRow := ::FirstSelectedItem
    EndIf
    If ! HB_IsNumeric( nCol )
-      nCol := 1
+      nCol := ::FirstColInOrder
    EndIf
 
    // This var may be used in When codeblock
@@ -2067,19 +2159,15 @@ Local r, r2, lRet := .F., nClientWidth, uAux, nScrollWidth
 
    If nRow < 1 .OR. nRow > ::ItemCount .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
       // Cell out of range
-
    ElseIf ::IsColumnReadOnly( nCol )
       // Read only column
       If ! ::lSilent
          PlayHand()
       EndIf
-
    ElseIf ! ::IsColumnWhen( nCol )
-      // Not a valid WHEN
-
+      // WHEN Returned .F.
    ElseIf ASCAN( ::aHiddenCols, nCol ) > 0
      // Hidden column
-
    Else
       // Cell value
       If ValType( uOldValue ) == "U"
@@ -2111,7 +2199,7 @@ Local r, r2, lRet := .F., nClientWidth, uAux, nScrollWidth
          nClientWidth := r[ 3 ] - r[ 1 ]
          r2 := { 0, 0, 0, 0 }                                       // left, top, right, bottom
          GetWindowRect( ::hWnd, r2 )
-         If ! OSisWinXPorLater() .or. ! ListView_IsItemVisible( ::hWnd, nRow )
+         If ! OSisWinXPorLater() .OR. ! ListView_IsItemVisible( ::hWnd, nRow )
             ListView_EnsureVisible( ::hWnd, nRow )
          EndIf
          r := ListView_GetSubitemRect( ::hWnd, nRow - 1, nCol - 1 ) // top, left, width, height
@@ -2137,7 +2225,15 @@ Local r, r2, lRet := .F., nClientWidth, uAux, nScrollWidth
 
          EditControl:cMemVar := cMemVar
          If HB_IsArray( ::Valid ) .AND. Len( ::Valid ) >= nCol
-            EditControl:bValid := ::Valid[ nCol ]
+            If HB_IsBlock( ::Valid[ nCol ] )
+               EditControl:bValid := ::Valid[ nCol ]
+            Else
+               EditControl:bValid := { || .T. }
+            EndIf
+         ElseIf HB_IsBlock( ::Valid )
+            EditControl:bValid := ::Valid
+         Else
+            EditControl:bValid := { || .T. }
          EndIf
          If HB_IsArray( ::ValidMessages ) .AND. Len( ::ValidMessages ) >= nCol
             EditControl:cValidMessage := ::ValidMessages[ nCol ]
@@ -2163,70 +2259,78 @@ Local r, r2, lRet := .F., nClientWidth, uAux, nScrollWidth
 
       EndIf
    EndIf
+
    ::lNested := .F.
+
 Return lRet
 
 *-----------------------------------------------------------------------------*
 METHOD EditAllCells( nRow, nCol ) CLASS TGrid
 *-----------------------------------------------------------------------------*
-Local lRet
+Local lRet, lSomethingEdited
+
    If ::FullMove
       Return ::EditGrid( nRow, nCol )
    EndIf
-
    If ::FirstVisibleColumn == 0
-      // No visible column to edit
       Return .F.
    EndIf
-
    If ! HB_IsNumeric( nRow )
       nRow := ::FirstSelectedItem
    EndIf
    If ! HB_IsNumeric( nCol )
-      nCol := 1
+      nCol := ::FirstColInOrder
    EndIf
    If nRow < 1 .OR. nRow > ::ItemCount .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
-      // Cell out of range
       Return .F.
    EndIf
 
-   lRet := .T.
+   lSomethingEdited := .F.
 
-   Do While nCol <= Len( ::aHeaders ) .AND. lRet
+   Do While nCol >= 1 .AND. nCol <= Len( ::aHeaders )
       _OOHG_ThisItemCellValue := ::Cell( nRow, nCol )
 
       If ::IsColumnReadOnly( nCol )
          // Read only column
       ElseIf ! ::IsColumnWhen( nCol )
-         // Not a valid WHEN
+         // WHEN Returned .F.
       ElseIf ASCAN( ::aHiddenCols, nCol ) > 0
         // Hidden column
       Else
+
          lRet := ::EditCell( nRow, nCol )
 
          If ::lAppendMode
             ::lAppendMode := .F.
             If lRet
                ::DoEvent( ::OnAppend, "APPEND" )
+               lSomethingEdited := .T.
             Else
                ::DeleteItem( ::ItemCount )
                ::Value := ::ItemCount
+               _OOHG_Eval( ::OnAbortEdit, 0, 0 )
+               Exit
             EndIf
+         ElseIf lRet
+            lSomethingEdited := .T.
+         Else
+            _OOHG_Eval( ::OnAbortEdit, nRow, nCol )
+            Exit
          EndIf
       EndIf
 
-      nCol++
+      nCol := ::NextColInOrder( nCol )
    EndDo
 
-   If lRet
-      ListView_Scroll( ::hWnd, - _OOHG_GridArrayWidths( ::hWnd, ::aWidths ), 0 )
-   EndIf
-Return lRet
+   ListView_Scroll( ::hWnd, - _OOHG_GridArrayWidths( ::hWnd, ::aWidths ), 0 )
+
+Return lSomethingEdited
 
 *-----------------------------------------------------------------------------*
 FUNCTION _OOHG_TGrid_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local aCellData, nItem, i
+
    Empty( lParam )
 
    If nMsg == WM_LBUTTONDBLCLK
@@ -2257,7 +2361,7 @@ Local aCellData, nItem, i
                   ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
                EndIf
             ElseIf ! ::IsColumnWhen( _OOHG_ThisItemColIndex )
-               // Not a valid WHEN
+               // WHEN returned .F.
                If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick )
                   ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
                EndIf
@@ -2277,7 +2381,7 @@ Local aCellData, nItem, i
                   ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
                EndIf
             ElseIf ! ::IsColumnWhen( _OOHG_ThisItemColIndex )
-               // Not a valid WHEN
+               // WHEN returned .F.
                If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick )
                   ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
                EndIf
@@ -2374,7 +2478,7 @@ Local nNotify, nColumn, lGo, nNewWidth, nResul, aRect
    ElseIf nNotify == HDN_ENDDRAG
       // The user has finished dragging a column
       If HB_IsBlock( ::bAfterColMove )
-         // HDITEM_iOrder() returns the destination position in the header
+         // HDITEM_iOrder() Returns the destination position in the header
          lGo := Eval( ::bAfterColMove, nColumn, HDITEM_iOrder( lParam ) )
          If HB_IsLogical( lGo ) .and. ! lGo
             // Deny the action so the column remains in it's original place
@@ -2442,7 +2546,7 @@ Local nNotify, nColumn, lGo, nNewWidth, nResul, aRect
          // HDITEM_cxy() gets the user's selected width from lParam
          nNewWidth := Eval( ::bAfterColSize, nColumn, HDITEM_cxy( lParam ) )
          If HB_IsNumeric( nNewWidth ) .and. nNewWidth >= 0
-            // Set_HDITEM_cxy() sets the returned width into lParam
+            // Set_HDITEM_cxy() sets the Returned width into lParam
             Set_HDITEM_cxy( lParam, nNewWidth )
          EndIf
       EndIf
@@ -2550,6 +2654,7 @@ Return Nil
 *-----------------------------------------------------------------------------*
 METHOD Events_Enter() CLASS TGrid
 *-----------------------------------------------------------------------------*
+
    If ! ::lNestedEdit
       ::lNestedEdit := .T.
       ::cText := ""
@@ -2564,7 +2669,8 @@ METHOD Events_Enter() CLASS TGrid
       EndIf
       ::lNestedEdit := .F.
    EndIf
-Return Nil
+
+Return Self
 
 *-----------------------------------------------------------------------------*
 METHOD Events_Notify( wParam, lParam ) CLASS TGrid
@@ -2583,11 +2689,9 @@ Local lvc, _ThisQueryTemp, nvkey, uValue, lGo, aItem
       nvKey := GetGridvKey( lParam )
 
       If nvkey == VK_DOWN
-         If ::FirstSelectedItem == ::ItemCount .AND. ! ::lEditMode
-            If ::AllowAppend
-               ::AppendItem()
-               Return Nil
-            EndIf
+         If ::FirstSelectedItem == ::ItemCount
+            ::AppendItem()
+            Return Nil
          EndIf
       ElseIf nvkey == VK_SPACE .AND. ::lCheckBoxes
          // detect item
@@ -2609,12 +2713,7 @@ Local lvc, _ThisQueryTemp, nvkey, uValue, lGo, aItem
             EndIf
 
             If lGo
-               If ::lNoDelMsg
-                  aItem := ::Item( uValue )
-                  ::DeleteItem( uValue )
-                  ::Value := Min( uValue, ::ItemCount )
-                  ::DoEvent( ::OnDelete, "DELETE", { aItem } )
-               ElseIf MsgYesNo( _OOHG_Messages(4, 1), _OOHG_Messages(4, 3) )
+               If ::lNoDelMsg .OR. MsgYesNo( _OOHG_Messages(4, 1), _OOHG_Messages(4, 3) )
                   aItem := ::Item( uValue )
                   ::DeleteItem( uValue )
                   ::Value := Min( uValue, ::ItemCount )
@@ -2625,7 +2724,7 @@ Local lvc, _ThisQueryTemp, nvkey, uValue, lGo, aItem
             EndIf
          Endif
       ElseIf nvKey == VK_A .AND. GetKeyFlagState() == MOD_ALT
-         If ::lAppendOnAltA .AND. ! ::lEditMode .AND. ::AllowAppend
+         If ::lAppendOnAltA
             ::AppendItem()
             Return Nil
          EndIf
@@ -2747,18 +2846,21 @@ Return ::Super:Events_Notify( wParam, lParam )
 METHOD AddItem( aRow, uForeColor, uBackColor ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local aText
+
    If Len( ::aHeaders ) != Len( aRow )
       MsgOOHGError( "Grid.AddItem: Item size mismatch. Program Terminated." )
    EndIf
 
    aText := TGrid_SetArray( Self, aRow )
    ::SetItemColor( ::ItemCount + 1, uForeColor, uBackColor, aRow )
+
 Return AddListViewItems( ::hWnd, aText )
 
 *-----------------------------------------------------------------------------*
 METHOD InsertItem( nItem, aRow, uForeColor, uBackColor ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local aText
+
    If Len( ::aHeaders ) != Len( aRow )
       MsgOOHGError( "Grid.InsertItem: Item size mismatch. Program Terminated." )
    EndIf
@@ -2769,12 +2871,14 @@ Local aText
       ::SetItemColor( nItem, uForeColor, uBackColor, aRow )
       ListViewSetItem( ::hWnd, aText, nItem )
    EndIf
+
 Return nItem
 
 *-----------------------------------------------------------------------------*
 METHOD InsertBlank( nItem ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local aGrid
+
    aGrid := ::GridForeColor
    If HB_IsArray( aGrid ) .AND. Len( aGrid ) >= nItem
       aAdd( aGrid, Nil )
@@ -2785,19 +2889,23 @@ Local aGrid
       aAdd( aGrid, Nil )
       aIns( aGrid, nItem )
    EndIf
+
 Return InsertListViewItem( ::hWnd, Array( Len( ::aHeaders ) ), nItem )
 
 *-----------------------------------------------------------------------------*
 METHOD DeleteItem( nItem ) CLASS TGrid
 *-----------------------------------------------------------------------------*
+
    _OOHG_DeleteArrayItem( ::GridForeColor, nItem )
    _OOHG_DeleteArrayItem( ::GridBackColor, nItem )
+
 Return ListViewDeleteString( ::hWnd, nItem )
 
 *-----------------------------------------------------------------------------*
 METHOD Item( nItem, uValue, uForeColor, uBackColor ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nColumn, aTemp, oEditControl
+
    If PCount() > 1
       aTemp := TGrid_SetArray( Self, uValue )
       ::SetItemColor( nItem, uForeColor, uBackColor, uValue )
@@ -2809,7 +2917,7 @@ Local nColumn, aTemp, oEditControl
          oEditControl := ::aEditControls[ nColumn ]
          If HB_IsObject( oEditControl )
             If oEditControl:Type == "TGRIDCONTROLIMAGEDATA"
-               // when the column has images, ListViewGetItem returns only the image's index number
+               // when the column has images, ListViewGetItem Returns only the image's index number
                uValue[ nColumn ] := { ::CellCaption( nItem, nColumn ), ::CellImage( nItem, nColumn ) }
             EndIf
             uValue[ nColumn ] := oEditControl:Str2Val( uValue[ nColumn ] )
@@ -2823,7 +2931,7 @@ Local nColumn, aTemp, oEditControl
             ::aEditControls[ nColumn ] := oEditControl
             If HB_IsObject( oEditControl )
                If oEditControl:Type == "TGRIDCONTROLIMAGEDATA"
-                  // when the column has images, ListViewGetItem returns only the image's index number
+                  // when the column has images, ListViewGetItem Returns only the image's index number
                   uValue[ nColumn ] := { ::CellCaption( nItem, nColumn ), ::CellImage( nItem, nColumn ) }
                EndIf
                uValue[ nColumn ] := oEditControl:Str2Val( uValue[ nColumn ] )
@@ -2831,12 +2939,14 @@ Local nColumn, aTemp, oEditControl
          Next
       EndIf
    EndIf
+
 Return uValue
 
 *-----------------------------------------------------------------------------*
 FUNCTION TGrid_SetArray( Self, uValue )
 *-----------------------------------------------------------------------------*
 Local aTemp, nColumn, xValue, oEditControl
+
    aTemp := Array( Len( uValue ) )
    If ::FixControls()
       For nColumn := 1 To Len( uValue )
@@ -2865,12 +2975,14 @@ Local aTemp, nColumn, xValue, oEditControl
          EndIf
       Next
    EndIf
+
 Return aTemp
 
 *-----------------------------------------------------------------------------*
 METHOD SetItemColor( nItem, uForeColor, uBackColor, uExtra, lSetThisCellInfo ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nWidth
+
    nWidth := Len( ::aHeaders )
    If ! HB_IsArray( uExtra )
       uExtra := Array( nWidth )
@@ -2879,12 +2991,14 @@ Local nWidth
    EndIf
    ::GridForeColor := TGrid_CreateColorArray( ::GridForeColor, nItem, uForeColor, ::DynamicForeColor, nWidth, uExtra, ::hWnd, lSetThisCellInfo )
    ::GridBackColor := TGrid_CreateColorArray( ::GridBackColor, nItem, uBackColor, ::DynamicBackColor, nWidth, uExtra, ::hWnd, lSetThisCellInfo )
-Return Nil
+
+Return Self
 
 *-----------------------------------------------------------------------------*
 STATIC FUNCTION TGrid_CreateColorArray( aGrid, nItem, uColor, uDynamicColor, nWidth, uExtra, hWnd, lSetThisCellInfo )
 *-----------------------------------------------------------------------------*
 Local aTemp, nLen
+
    If ! ValType( uColor ) $ "ANB" .AND. ValType( uDynamicColor ) $ "ANB"
       uColor := uDynamicColor
    EndIf
@@ -2917,29 +3031,35 @@ Local aTemp, nLen
       EndIf
       aGrid[ nItem ] := aTemp
    EndIf
+
 Return aGrid
 
 *-----------------------------------------------------------------------------*
 METHOD Justify( nColumn, uValue ) CLASS TGrid
 *-----------------------------------------------------------------------------*
+
    If HB_IsNumeric( uValue )
       ::aJust[ nColumn ] := uValue
       SetGridColumnJustify( ::hWnd, nColumn, uValue )
    EndIf
+
 Return ::aJust[ nColumn ]
 
 *-----------------------------------------------------------------------------*
 METHOD Header( nColumn, uValue ) CLASS TGrid
 *-----------------------------------------------------------------------------*
+
    If ValType( uValue ) $ "CM"
       ::aHeaders[ nColumn ] := uValue
       SetGridColumnHeader( ::hWnd, nColumn, uValue )
    EndIf
+
 Return ::aHeaders[ nColumn ]
 
 *-----------------------------------------------------------------------------*
 METHOD HeaderImage( nColumn, nImg ) CLASS TGrid
 *-----------------------------------------------------------------------------*
+
    If HB_IsNumeric( nImg ) .AND. nImg >= 0 .AND. nImg # ::aHeaderImage[ nColumn ]
       ::aHeaderImage[ nColumn ] := nImg
 
@@ -2949,11 +3069,13 @@ METHOD HeaderImage( nColumn, nImg ) CLASS TGrid
         SetGridColumnImage( ::hWnd, nColumn, nImg, .F. )
       EndIf
    EndIf
+
 Return ::aHeaderImage[ nColumn ]
 
 *-----------------------------------------------------------------------------*
 METHOD HeaderImageAlign( nColumn, nPlace ) CLASS TGrid
 *-----------------------------------------------------------------------------*
+
    If ::aHeaderImage[ nColumn ] != 0
       If HB_IsNumeric( nPlace )
          If nPlace == HEADER_IMG_AT_RIGHT
@@ -2971,12 +3093,14 @@ METHOD HeaderImageAlign( nColumn, nPlace ) CLASS TGrid
          EndIf
       EndIf
    EndIf
+
 Return ::aHeaderImageAlign[ nColumn ]
 
 *-----------------------------------------------------------------------------*
 METHOD HeaderSetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nFntAngle, nFntwidth ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local HeaderHandle
+
    If ValidHandler( ::HeaderFontHandle )
       DeleteObject( ::HeaderFontHandle )
    EndIf
@@ -2992,7 +3116,8 @@ Local HeaderHandle
    If ValidHandler( HeaderHandle )
       ::HeaderFontHandle := _SetFont( HeaderHandle, cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nFntAngle, nFntWidth )
    EndIf
-Return Nil
+
+Return Self
 
 *------------------------------------------------------------------------------*
 METHOD Release() CLASS TGrid
@@ -3014,6 +3139,7 @@ Return ::Super:Release()
 METHOD SetRangeColor( uForeColor, uBackColor, nTop, nLeft, nBottom, nRight ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nAux, nLong := ::ItemCount
+
    If ! HB_IsNumeric( nBottom )
       nBottom := nTop
    EndIf
@@ -3040,12 +3166,14 @@ Local nAux, nLong := ::ItemCount
       ::GridForeColor := TGrid_FillColorArea( ::GridForeColor, uForeColor, nTop, nLeft, nBottom, nRight, ::hWnd )
       ::GridBackColor := TGrid_FillColorArea( ::GridBackColor, uBackColor, nTop, nLeft, nBottom, nRight, ::hWnd )
    EndIf
-Return Nil
+
+Return Self
 
 *-----------------------------------------------------------------------------*
 STATIC FUNCTION TGrid_FillColorArea( aGrid, uColor, nTop, nLeft, nBottom, nRight, hWnd )
 *-----------------------------------------------------------------------------*
 Local nAux
+
    If ValType( uColor ) $ "ANB"
       If ! HB_IsArray( aGrid )
          aGrid := Array( nBottom )
@@ -3062,11 +3190,13 @@ Local nAux
          _ClearThisCellInfo()
       Next
    EndIf
+
 Return aGrid
 
 *-----------------------------------------------------------------------------*
 METHOD ColumnWidth( nColumn, nWidth ) CLASS TGrid
 *-----------------------------------------------------------------------------*
+
    If HB_IsNumeric( nColumn ) .AND. nColumn >= 1 .AND. nColumn <= Len( ::aHeaders )
       If HB_IsNumeric( nWidth ) .AND. nWidth >= 0
          If nWidth == 0 .AND. aScan( ::aHiddenCols, nColumn ) == 0
@@ -3080,15 +3210,17 @@ METHOD ColumnWidth( nColumn, nWidth ) CLASS TGrid
    Else
       nWidth := 0
    EndIf
+
 Return nWidth
 
 *-----------------------------------------------------------------------------*
 METHOD ColumnAutoFit( nColumn ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nWidth
+
    If HB_IsNumeric( nColumn ) .AND. nColumn >= 1 .AND. nColumn <= Len( ::aHeaders )
       nWidth := ListView_SetColumnWidth( ::hWnd, nColumn - 1, LVSCW_AUTOSIZE )
-      If nColumn == 1
+      If nColumn == ::FirstColInOrder
          nWidth := nWidth + 6
          nWidth := ListView_SetColumnWidth( ::hWnd, nColumn - 1, nWidth )
       EndIf
@@ -3096,15 +3228,17 @@ Local nWidth
    Else
       nWidth := 0
    EndIf
+
 Return nWidth
 
 *-----------------------------------------------------------------------------*
 METHOD ColumnAutoFitH( nColumn ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nWidth
+
    If HB_IsNumeric( nColumn ) .AND. nColumn >= 1 .AND. nColumn <= Len( ::aHeaders )
       nWidth := ListView_SetColumnWidth( ::hWnd, nColumn - 1, LVSCW_AUTOSIZE_USEHEADER )
-      If nColumn == 1
+      If nColumn == ::FirstColInOrder
          nWidth := nWidth + 6
          nWidth := ListView_SetColumnWidth( ::hWnd, nColumn - 1, nWidth )
       EndIf
@@ -3112,139 +3246,223 @@ Local nWidth
    Else
       nWidth := 0
    EndIf
+
 Return nWidth
 
 *-----------------------------------------------------------------------------*
 METHOD ColumnsBetterAutoFit() CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nColumn
+
    For nColumn := 1 To Len( ::aHeaders )
        ::ColumnBetterAutoFit ( nColumn )
    Next nColumn
-Return Nil
+
+Return Self
 
 *-----------------------------------------------------------------------------*
 METHOD ColumnsAutoFit() CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nColumn, nWidth
+
    For nColumn := 1 To Len( ::aHeaders )
       nWidth := ListView_SetColumnWidth( ::hWnd, nColumn - 1, LVSCW_AUTOSIZE )
       ::aWidths[ nColumn ] := nWidth
    Next
+
 Return nWidth
 
 *-----------------------------------------------------------------------------*
 METHOD ColumnsAutoFitH() CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nColumn, nWidth
+
    For nColumn := 1 To Len( ::aHeaders )
       nWidth := ListView_SetColumnWidth( ::hWnd, nColumn - 1, LVSCW_AUTOSIZE_USEHEADER )
       ::aWidths[ nColumn ] := nWidth
    Next
+
 Return nWidth
 
 *-----------------------------------------------------------------------------*
 METHOD SortColumn( nColumn, lDescending ) CLASS TGrid
 *-----------------------------------------------------------------------------*
+
 Return ListView_SortItemsEx( ::hWnd, nColumn, lDescending )
 
 *-----------------------------------------------------------------------------*
 METHOD SortItems( bBlock ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local lRet := .F.
+
    If HB_IsBlock( bBlock )
       ::bCompareItems := bBlock
       lRet := ListView_SortItemsEx_User( Self )
    EndIf
+
 Return lRet
 
 *---------------------------------------------------------------------------*
 METHOD CompareItems( nItem1, nItem2 ) CLASS TGrid
 *---------------------------------------------------------------------------*
-   // Must return -1 if nItem1 precedes nItem2 or 1 if nItem1 follows nItem2
+
+   // Must Return -1 if nItem1 precedes nItem2 or 1 if nItem1 follows nItem2
+
 Return Eval( ::bCompareItems, Self, nItem1, nItem2 )
 
 *---------------------------------------------------------------------------*
 METHOD ItemHeight() CLASS TGrid
 *---------------------------------------------------------------------------*
 Local aCellRect
+
    If ::ItemCount == 0
      Return 0
    EndIf
    aCellRect := ListView_GetSubitemRect( ::hWnd, 0, 0 )
+
 Return aCellRect[ 4 ]
 
 *-----------------------------------------------------------------------------*
 METHOD ScrollToLeft CLASS TGrid
 *-----------------------------------------------------------------------------*
+
    ListView_Scroll( ::hWnd, - _OOHG_GridArrayWidths( ::hWnd, ::aWidths ), 0 )
-Return Nil
+
+Return Self
 
 *-----------------------------------------------------------------------------*
 METHOD ScrollToRight CLASS TGrid
 *-----------------------------------------------------------------------------*
+
    ListView_Scroll( ::hWnd, _OOHG_GridArrayWidths( ::hWnd, ::aWidths ), 0 )
-Return Nil
+
+Return Self
 
 *-----------------------------------------------------------------------------*
 METHOD ScrollToCol( nCol ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local r
+
    r := ListView_GetSubitemRect( ::hWnd, 0, nCol - 1 ) // top, left, width, height
    If r[ 2 ] # 0
       ListView_Scroll( ::hWnd, r[ 2 ], 0 )
    EndIf
-Return Nil
+
+Return Self
 
 *-----------------------------------------------------------------------------*
 METHOD ScrollToPrior CLASS TGrid
 *-----------------------------------------------------------------------------*
-Local nColF, nColT, aColumnOrder, i
+Local nColF, nColT, nColN
+
    nColF := ::FirstVisibleColumn( .F. )
    If nColF > 0
       nColT := ::FirstVisibleColumn( .T. )
-      If nColT > nColF
+      If nColT # nColF
         ::ScrollToCol( nColF )
       Else
-         aColumnOrder := ::ColumnOrder
-         i := aScan( aColumnOrder, nColF )
-         Do While i > 1
-            If aScan( ::aHiddenCols, aColumnOrder[ i - 1 ] ) == 0
-               ::ScrollToCol( aColumnOrder[ i - 1 ] )
-               Exit
-            EndIf
-            i --
-         EndDo
+         nColN := ::PriorColInOrder( nColF )
+         If nColN # 0
+            ::ScrollToCol( nColN )
+         EndIf
       EndIf
    EndIf
-Return Nil
+
+Return Self
 
 *-----------------------------------------------------------------------------*
 METHOD ScrollToNext CLASS TGrid
 *-----------------------------------------------------------------------------*
-Local nColF, aColumnOrder, i
+Local nColF, nColN
+
    nColF := ::FirstVisibleColumn( .F. )
    If nColF > 0
-      aColumnOrder := ::ColumnOrder
-      i := aScan( aColumnOrder, nColF )
-      Do While i < Len( aColumnOrder )
-         If aScan( ::aHiddenCols, aColumnOrder[ i + 1 ] ) == 0
-            ::ScrollToCol( aColumnOrder[ i + 1 ] )
-            Exit
-         EndIf
-         i ++
-      EndDo
+      nColN := ::NextColInOrder( nColF )
+      If nColN # 0
+         ::ScrollToCol( nColN )
+      EndIf
    EndIf
-Return Nil
+
+Return Self
+
+*------------------------------------------------------------------------------*
+METHOD PriorColInOrder( nCol ) CLASS TGrid
+*------------------------------------------------------------------------------*
+Local nRet, aColumnOrder, i
+
+   nRet := 0
+   aColumnOrder := ::ColumnOrder
+   i := aScan( aColumnOrder, nCol )
+   Do While i > 1
+      If aScan( ::aHiddenCols, aColumnOrder[ i - 1 ] ) == 0
+         nRet := aColumnOrder[ i - 1 ]
+         Exit
+      EndIf
+      i --
+   EndDo
+
+Return nRet
+
+*------------------------------------------------------------------------------*
+METHOD NextColInOrder( nCol ) CLASS TGrid
+*------------------------------------------------------------------------------*
+Local nRet, aColumnOrder, i
+
+   nRet := 0
+   aColumnOrder := ::ColumnOrder
+   i := aScan( aColumnOrder, nCol )
+   Do While i < Len( aColumnOrder )
+      If aScan( ::aHiddenCols, aColumnOrder[ i + 1 ] ) == 0
+         nRet := aColumnOrder[ i + 1 ]
+         Exit
+      EndIf
+      i ++
+   EndDo
+
+Return nRet
+
+*------------------------------------------------------------------------------*
+METHOD FirstColInOrder() CLASS TGrid
+*------------------------------------------------------------------------------*
+Local nRet, aColumnOrder, i
+
+   nRet := 0
+   aColumnOrder := ::ColumnOrder
+   For i := 1 To Len( aColumnOrder )
+      If aScan( ::aHiddenCols, aColumnOrder[ i ] ) == 0
+         nRet := aColumnOrder[ i ]
+         Exit
+      EndIf
+   Next i
+
+Return nRet
+
+*------------------------------------------------------------------------------*
+METHOD LastColInOrder() CLASS TGrid
+*------------------------------------------------------------------------------*
+Local nRet, aColumnOrder, i
+
+   nRet := 0
+   aColumnOrder := ::ColumnOrder
+   For i := Len( aColumnOrder ) To 1 Step -1
+      If aScan( ::aHiddenCols, aColumnOrder[ i ] ) == 0
+         nRet := aColumnOrder[ i ]
+         Exit
+      EndIf
+   Next i
+
+Return nRet
 
 *------------------------------------------------------------------------------*
 METHOD AdjustResize( nDivh, nDivw, lSelfOnly ) CLASS TGrid
 *------------------------------------------------------------------------------*
 Local nCols, i
+
    nCols := ::ColumnCount
    For i := 1 To nCols
       ::ColumnWidth( i, ::ColumnWidth( i ) * nDivw )
    Next i
+
 Return ::Super:AdjustResize( nDivh, nDivw, lSelfOnly )
 
 
@@ -3305,12 +3523,14 @@ Local nStyle := 0
               bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
               lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
               lExtDbl, lSilent, lAltA, lNoShowAlways, .T. )
+
 Return Self
 
 *-----------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TGridMulti
 *-----------------------------------------------------------------------------*
 Local aRet, aNew
+
    If HB_IsArray( uValue )
       aRet := ListViewGetMultiSel( ::hWnd )
       aNew := aSort( aClone( uValue ), Nil, Nil, {|x, y| x < y } )
@@ -3324,10 +3544,14 @@ Local aRet, aNew
    Else
       aRet := ListViewGetMultiSel( ::hWnd )
    EndIf
-RETURN aRet
 
-Function aEqual( array1, array2 )
+Return aRet
+
+*-----------------------------------------------------------------------------*
+FUNCTION aEqual( array1, array2 )
+*-----------------------------------------------------------------------------*
 Local i, nLen
+
    nLen := Len( array1 )
    If ! nLen == Len( array2 )
       Return .F.
@@ -3339,12 +3563,14 @@ Local i, nLen
          Return .F.
       EndIf
    Next i
+
 Return .T.
 
 *-----------------------------------------------------------------------------*
 METHOD DoChange() CLASS TGridMulti
 *-----------------------------------------------------------------------------*
 Local xValue, cType, cOldType
+
    xValue   := ::Value
    cType    := ValType( xValue )
    cOldType := ValType( ::xOldValue )
@@ -3357,13 +3583,16 @@ Local xValue, cType, cOldType
       ::xOldValue := xValue
       ::DoEvent( ::OnChange, "CHANGE" )
    EndIf
-Return Nil
+
+Return Self
 
 *--------------------------------------------------------------------------*
-METHOD AppendItem() CLASS TGridMulti
+METHOD AppendItem( lAppend ) CLASS TGridMulti
 *--------------------------------------------------------------------------*
 Local lRet := .F.
-   If ! ::lNestedEdit
+
+   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
+   IF ! ::lNestedEdit .AND. ! ::lEditMode .AND. ( ::AllowAppend .OR. lAppend )
       ::lNestedEdit := .T.
       ::cText := ""
       If ::FirstVisibleColumn # 0
@@ -3371,7 +3600,7 @@ Local lRet := .F.
          ::InsertBlank( ::ItemCount + 1 )
          ::Value := { ::ItemCount }
          If ::FullMove
-            lRet := ::EditGrid()
+            lRet := ::EditGrid( , , lAppend)
          ElseIf ::InPlace
             lRet := ::EditAllCells()
          Else
@@ -3381,59 +3610,62 @@ Local lRet := .F.
       EndIf
       ::lNestedEdit := .F.
    EndIf
+
 Return lRet
 
 *--------------------------------------------------------------------------*
-METHOD EditGrid( nRow, nCol ) CLASS TGridMulti
+METHOD EditGrid( nRow, nCol, lAppend ) CLASS TGridMulti
 *--------------------------------------------------------------------------*
-Local lRet
+Local lRet, lSomethingEdited, nNextCol
+
    If ::FirstVisibleColumn == 0
-      // No visible column to edit
       Return .F.
    EndIf
-
    If ! HB_IsNumeric( nRow )
       nRow := ::FirstSelectedItem
    EndIf
    If ! HB_IsNumeric( nCol )
-      nCol := 1
+      nCol := ::FirstColInOrder
    EndIf
    If nRow < 1 .OR. nRow > ::ItemCount .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
-      // Cell out of range
       Return .F.
    EndIf
    ::nRowPos := nRow
    ::nColPos := nCol
 
-   lRet := .T.
+   lSomethingEdited := .F.
+   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
 
-   Do While ::nColPos <= Len( ::aHeaders ) .AND. ::nRowPos <= ::ItemCount .AND. lRet
+   Do While ::nColPos >= 1 .AND. ::nColPos <= Len( ::aHeaders )
       _OOHG_ThisItemCellValue := ::Cell( ::nRowPos, ::nColPos )
 
       If ::IsColumnReadOnly( ::nColPos )
          // Read only column
       ElseIf ! ::IsColumnWhen( ::nColPos )
-         // Not a valid WHEN
+         // WHEN returned .F.
       ElseIf ASCAN( ::aHiddenCols, ::nColPos ) > 0
          // Hidden column
       Else
 
-         ::leditmode:=.T.
+         ::lEditMode := .T.
          lRet := ::EditCell( ::nRowPos, ::nColPos )
-         ::leditmode:=.F.
+         ::lEditMode := .F.
 
          If ::lAppendMode
             ::lAppendMode := .F.
             If lRet
                ::DoEvent( ::OnAppend, "APPEND" )
+               lSomethingEdited := .T.
             Else
                ::DeleteItem( ::ItemCount )
                ::Value := { ::ItemCount }
-               ::nRowPos := ::FirstSelectedItem
+               _OOHG_Eval( ::OnAbortEdit, 0, 0 )
+               Exit
             EndIf
-         EndIf
-
-         If ! lRet
+         ElseIf lRet
+            lSomethingEdited := .T.
+         Else
+            _OOHG_Eval( ::OnAbortEdit, nRow, nCol )
             Exit
          EndIf
       EndIf
@@ -3442,13 +3674,11 @@ Local lRet
          ::OnEditCell() may change ::nRowPos and/or ::nColPos using ::Up(), ::PageUp(),
          ::Down(), ::PageDown(), ::GoTop(), ::GoBottom(), ::Left() and/or ::Right()
       */
-      If ::nColPos < Len( ::aHeaders )
-         ::nColPos ++
-      Else
+      nNextCol := ::NextColInOrder( ::nColPos )
+      If nNextCol == 0
          If ::FullMove
             If ::nRowPos == ::ItemCount
-               If ::AllowAppend
-                  // Add a new item
+               If ::AllowAppend .OR. lAppend
                   ::lAppendMode := .T.
                   ::InsertBlank( ::ItemCount + 1 )
                Else
@@ -3457,24 +3687,25 @@ Local lRet
             EndIf
 
             ::nRowPos ++
-            ::nColPos := 1
+            ::nColPos := ::FirstColInOrder
          Else
             Exit
          EndIf
+      Else
+         ::nColPos := nNextCol
       EndIf
 
       ::Value := { ::nRowPos }
    EndDo
 
-   If lRet
-      ListView_Scroll( ::hWnd, - _OOHG_GridArrayWidths( ::hWnd, ::aWidths ), 0 )
-   EndIf
-Return lRet
+   ListView_Scroll( ::hWnd, - _OOHG_GridArrayWidths( ::hWnd, ::aWidths ), 0 )
+
+Return lSomethingEdited
 
 *--------------------------------------------------------------------------*
 METHOD Down( lAppend ) CLASS TGridMulti
 *--------------------------------------------------------------------------*
-   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT ::AllowAppend
+
    If ::lEditMode
       If ::nRowPos < ::ItemCount
          ::nRowPos ++
@@ -3482,15 +3713,20 @@ METHOD Down( lAppend ) CLASS TGridMulti
    Else
       If ::FirstSelectedItem < ::ItemCount
          ::Value := { ::FirstSelectedItem + 1 }
-      ElseIf lAppend
-         ::AppendItem()
+      Else
+         ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT ::AllowAppend
+         If lAppend
+            ::AppendItem()
+         EndIf
       EndIf
    EndIf
+
 Return Self
 
 *--------------------------------------------------------------------------*
 METHOD Up() CLASS TGridMulti
 *--------------------------------------------------------------------------*
+
    If ::lEditMode
       If ::nRowPos > 1
          ::nRowPos --
@@ -3500,11 +3736,13 @@ METHOD Up() CLASS TGridMulti
          ::Value := { ::FirstSelectedItem - 1 }
       EndIf
    EndIf
+
 Return Self
 
 *--------------------------------------------------------------------------*
 METHOD PageUp() CLASS TGridMulti
 *--------------------------------------------------------------------------*
+
    If ::lEditMode
       If ::nRowPos > ::CountPerPage
          ::nRowPos -= ::CountPerPage
@@ -3518,11 +3756,13 @@ METHOD PageUp() CLASS TGridMulti
          ::GoTop()
       EndIf
    EndIf
+
 Return Self
 
 *-------------------------------------------------------------------------*
 METHOD PageDown() CLASS TGridMulti
 *-------------------------------------------------------------------------*
+
    If ::lEditMode
       If ::nRowPos < ::ItemCount - ::CountPerPage
          ::nRowPos += ::CountPerPage
@@ -3536,11 +3776,13 @@ METHOD PageDown() CLASS TGridMulti
          ::GoBottom()
       EndIf
    EndIf
+
 Return Self
 
 *---------------------------------------------------------------------------*
 METHOD GoTop() CLASS TGridMulti
 *---------------------------------------------------------------------------*
+
    If ::lEditMode
       ::nRowPos := 1
    Else
@@ -3548,18 +3790,21 @@ METHOD GoTop() CLASS TGridMulti
          ::Value := { 1 }
       EndIf
    EndIf
+
 Return Self
 
 *---------------------------------------------------------------------------*
 METHOD GoBottom() CLASS TGridMulti
 *---------------------------------------------------------------------------*
+
    If ::lEditMode
-      ::nRowPos := ::Itemcount
+      ::nRowPos := ::ItemCount
    Else
       If ::ItemCount > 0
-         ::Value := { ::Itemcount }
+         ::Value := { ::ItemCount }
       EndIf
    EndIf
+
 Return Self
 
 
@@ -3583,7 +3828,6 @@ CLASS TGridByCell FROM TGrid
    METHOD GoBottom
    METHOD IsColumnReadonly
    METHOD IsColumnWhen
-   METHOD AddColumn
    METHOD ColumnHide
    METHOD DeleteColumn
    METHOD EditCell
@@ -3618,6 +3862,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone ) CLASS TGridByCell
 *-----------------------------------------------------------------------------*
+
    ASSIGN lFocusRect VALUE lFocusRect TYPE "L" DEFAULT .F.
 
    Empty( lNone )
@@ -3742,557 +3987,646 @@ Local r, nClientWidth, nScrollWidth
       ListView_RedrawItems( ::hWnd, ::nRowPos, ::nRowPos )
       ::DoChange()
    EndIf
+
 Return { ::nRowPos, ::nColPos }
 
 *--------------------------------------------------------------------------*
-METHOD AppendItem() CLASS TGridByCell
+METHOD AppendItem( lAppend ) CLASS TGridByCell
 *--------------------------------------------------------------------------*
 Local lRet := .F.
-   If ! ::lNestedEdit
+
+   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
+   IF ! ::lNestedEdit .AND. ( ::AllowAppend .OR. lAppend )
       ::lNestedEdit := .T.
       ::cText := ""
       If ::FirstVisibleColumn # 0
          ::lAppendMode := .T.
          ::InsertBlank( ::ItemCount + 1 )
          ::Value := { ::ItemCount, 1 }
-         lRet := ::EditGrid()
+         lRet := ::EditGrid( , , lAppend )
          ::lAppendMode := .F.
       EndIf
       ::lNestedEdit := .F.
    EndIf
+
 Return lRet
 
 *--------------------------------------------------------------------------*
-METHOD EditGrid( nRow, nCol ) CLASS TGridByCell
+METHOD EditGrid( nRow, nCol, lAppend ) CLASS TGridByCell
 *--------------------------------------------------------------------------*
-Local lSomethingEdited, uValue
+Local lRet, lSomethingEdited
+
    If ::FirstVisibleColumn == 0
-      // No visible column to edit
       Return .F.
    EndIf
-
-   uValue := ::Value
-
    If ! HB_IsNumeric( nRow )
-      If uValue[ 1 ] > 0
-         nRow := uValue[ 1 ]
-      Else
-         nRow := 1
-      EndIf
+      nRow := Max( ::nRowPos, 1 )
    EndIf
    If ! HB_IsNumeric( nCol )
-      If uValue[ 2 ] > 0
-         nCol := uValue[ 2 ]
+      If ::nColPos >= 1
+         nCol := ::nColPos
       Else
-         nCol := 1
+         nCol := ::FirstColInOrder
       EndIf
    EndIf
    If nRow < 1 .OR. nRow > ::ItemCount .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
-      // Cell out of range
       Return .F.
    EndIf
-   uValue := ::Value := { nRow, nCol }
+   ::Value := { nRow, nCol }
 
    lSomethingEdited := .F.
+   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
 
-   Do While uValue[ 2 ] <= Len( ::aHeaders ) .AND. uValue[ 1 ] <= ::ItemCount
-      _OOHG_ThisItemCellValue := ::Cell( uValue[ 1 ], uValue[ 2 ] )
+   Do While ::nRowPos >= 1 .AND. ::nRowPos <= ::ItemCount .AND. ::nColPos >= 1 .AND. ::nColPos <= Len( ::aHeaders )
+      _OOHG_ThisItemCellValue := ::Cell( ::nRowPos, ::nColPos )
       ::bPosition := 0
 
-      If ::IsColumnReadOnly( uValue[ 2 ] )
+      If ::IsColumnReadOnly( ::nColPos )
          // Read only column
-      ElseIf ! ::IsColumnWhen( uValue[ 2 ] )
-         // Not a valid WHEN
-      ElseIf ASCAN( ::aHiddenCols, uValue[ 2 ] ) > 0
+      ElseIf ! ::IsColumnWhen( ::nColPos )
+         // WHEN returned .F.
+      ElseIf ASCAN( ::aHiddenCols, ::nColPos ) > 0
          // Hidden column
       Else
-         // Edit one cell
-         If ! ::Super:EditCell( uValue[ 1 ], uValue[ 2 ] )
-            If ::lAppendMode
-               ::lAppendMode := .F.
-               ::DeleteItem( ::ItemCount )
-               ::Value := { ::ItemCount, Len( ::aHeaders ) }
-            EndIf
-            Exit
-         EndIf
-         lSomethingEdited := .T.
+
+         lRet := ::Super:EditCell( ::nRowPos, ::nColPos )
+
          If ::lAppendMode
             ::lAppendMode := .F.
-            ::DoEvent( ::OnAppend, "APPEND" )
+            If lRet
+               ::DoEvent( ::OnAppend, "APPEND" )
+               lSomethingEdited := .T.
+            Else
+               ::DeleteItem( ::ItemCount )
+               ::Value := { ::ItemCount, ::LastColInOrder }
+               _OOHG_Eval( ::OnAbortEdit, 0, 0 )
+               Exit
+            EndIf
+         ElseIf lRet
+            lSomethingEdited := .T.
+         Else
+            _OOHG_Eval( ::OnAbortEdit, ::nRowPos, ::nColPos )
+            Exit
          EndIf
       EndIf
 
       /*
-       * ::OnEditCell() may change ::Value using ::Up(), ::Down(), ::Left(),
+       * ::OnEditCell() may change ::nRowPos or ::nColPos using ::Up(), ::Down(), ::Left(),
        * ::Right(), ::PageUp(), ::PageDown(), ::GoTop() and/or ::GoBottom()
        */
 
       // ::bPosition is set by TGridControl()
       If ::bPosition == 1                            // UP
-         uValue := ::Value
-         If uValue[ 1 ] < 1 .OR. uValue[ 1 ] > ::ItemCount + 1 .OR. uValue[ 2 ] < 1 .or. uValue[ 2 ] > Len( ::aHeaders )
+         If ::nRowPos < 1 .OR. ::nRowPos > ::ItemCount + 1 .OR. ::nColPos < 1 .OR. ::nColPos > Len( ::aHeaders )
             Exit
-         ElseIf uValue[ 1 ] > 1
-            ::Value := { uValue[ 1 ] - 1, uValue[ 2 ] }
+         ElseIf ::nRowPos > 1
+            ::Value := { ::nRowPos - 1, ::nColPos }
          ElseIf ::FullMove
-            ::Value := { ::ItemCount, uValue[ 2 ] }
+            ::Value := { ::ItemCount, ::nColPos }
          Else
             Exit
          EndIf
       ElseIf ::bPosition == 2                        // RIGHT
-         uValue := ::Value
-         If uValue[ 1 ] < 1 .OR. uValue[ 1 ] > ::ItemCount .OR. uValue[ 2 ] < 1 .or. uValue[ 2 ] > Len( ::aHeaders )
+         If ::nRowPos < 1 .OR. ::nRowPos > ::ItemCount .OR. ::nColPos < 1 .OR. ::nColPos > Len( ::aHeaders )
             Exit
-         ElseIf uValue[ 2 ] < Len( ::aHeaders )
-            ::Value := { uValue[ 1 ], uValue[ 2 ] + 1 }
-         ElseIf uValue[ 1 ] < ::ItemCount
-            If ::FullMove
-               ::Value := { uValue[ 1 ] + 1, 1 }
-            Else
-               Exit
-            EndIf
-         ElseIf ::FullMove
-            If ::AllowAppend
-               // Add a new item
-               ::lAppendMode := .T.
-               ::InsertBlank( ::ItemCount + 1 )
-               ::Value := { ::ItemCount, 1 }
-            Else
-               ::Value := { 1, 1 }
-            EndIf
          Else
-            Exit
+            nCol := ::NextColInOrder( ::nColPos )
+            If nCol == 0
+               If ! ::FullMove
+                  Exit
+               EndIf
+               nCol := ::FirstColInOrder
+               If nCol == 0
+                  Exit
+               ElseIf ::nRowPos < ::ItemCount
+                  ::Value := { ::nRowPos + 1, nCol }
+               ElseIf ::AllowAppend .OR. lAppend
+                  ::lAppendMode := .T.
+                  ::InsertBlank( ::ItemCount + 1 )
+                  ::Value := { ::ItemCount, nCol }
+               Else
+                  ::Value := { 1, nCol }
+               EndIf
+            Else
+               ::Value := { ::nRowPos, nCol }
+            EndIf
          EndIf
       ElseIf ::bPosition == 3                        // LEFT
-         uValue := ::Value
-         If uValue[ 1 ] < 1 .OR. uValue[ 1 ] > ::ItemCount .OR. uValue[ 2 ] < 1 .or. uValue[ 2 ] > Len( ::aHeaders )
+         If ::nRowPos < 1 .OR. ::nRowPos > ::ItemCount .OR. ::nColPos < 1 .OR. ::nColPos > Len( ::aHeaders )
             Exit
-         ElseIf uValue[ 2 ] > 1
-            ::Value := { uValue[ 1 ], uValue[ 2 ] - 1 }
-         ElseIf ::FullMove
-            If uValue[ 1 ] > 1
-               ::Value := { uValue[ 1 ] - 1, Len( ::aHeaders ) }
-            Else
-               ::Value := { ::ItemCount, Len( ::aHeaders ) }
-            EndIf
          Else
-            Exit
+            nCol := ::PriorColInOrder( ::nColPos )
+            If nCol == 0
+               If ! ::FullMove
+                  Exit
+               EndIf
+               nCol := ::LastColInOrder
+               If nCol == 0
+                  Exit
+               ElseIf ::nRowPos > 1
+                  ::Value := { ::nRowPos - 1, nCol }
+               Else
+                  ::Value := { ::ItemCount, nCol }
+               EndIf
+            Else
+               ::Value := { ::nRowPos, nCol }
+            EndIf
          EndIf
       ElseIf ::bPosition == 4                        // HOME
-         ::Value := { 1, 1 }
-         IF ! ::FullMove
+         If ::nRowPos < 1 .OR. ::nRowPos > ::ItemCount .OR. ::nColPos < 1 .OR. ::nColPos > Len( ::aHeaders )
             Exit
+         Else
+            ::Value := { 1, 1 }
+            IF ! ::FullMove
+               Exit
+            EndIf
          EndIf
       ElseIf ::bPosition == 5                        // END
-         ::Value := { ::Itemcount, Len( ::aHeaders ) }
-         IF ! ::FullMove
+         If ::nRowPos < 1 .OR. ::nRowPos > ::ItemCount .OR. ::nColPos < 1 .OR. ::nColPos > Len( ::aHeaders )
             Exit
+         Else
+            ::Value := { ::ItemCount, Len( ::aHeaders ) }
+            IF ! ::FullMove
+               Exit
+            EndIf
          EndIf
       ElseIf ::bPosition == 6                        // DOWN
-         uValue := ::Value
-         If uValue[ 1 ] < 1 .OR. uValue[ 1 ] > ::ItemCount .OR. uValue[ 2 ] < 1 .or. uValue[ 2 ] > Len( ::aHeaders )
-            ::Value := { 1, 1 }
-         ElseIf uValue[ 1 ] < ::ItemCount
-            ::Value := { uValue[ 1 ] + 1, uValue[ 2 ] }
-         ElseIf ::FullMove
-            If ::AllowAppend
-               // Add a new item
-               ::lAppendMode := .T.
-               ::InsertBlank( ::ItemCount + 1 )
-               ::Value := { ::ItemCount, 1 }
-            Else
-               ::Value := { 1, uValue[ 2 ] }
-            EndIf
-         Else
+         If ::nRowPos < 1 .OR. ::nRowPos > ::ItemCount .OR. ::nColPos < 1 .OR. ::nColPos > Len( ::aHeaders )
             Exit
+         ElseIf ::nRowPos < ::ItemCount
+            ::Value := { ::nRowPos + 1, ::nColPos }
+         ElseIf ! ::FullMove
+            Exit
+         ElseIf ::AllowAppend .OR. lAppend
+            ::lAppendMode := .T.
+            ::InsertBlank( ::ItemCount + 1 )
+            ::Value := { ::ItemCount, ::nColPos }
+         Else
+            ::Value := { 1, ::nColPos }
          EndIf
       ElseIf ::bPosition == 7                        // PRIOR
-         uValue := ::Value
-         If uValue[ 1 ] < 1 .OR. uValue[ 1 ] > ::ItemCount .OR. uValue[ 2 ] < 1 .or. uValue[ 2 ] > Len( ::aHeaders )
-            ::Value := { 1, 1 }
-         ElseIf uValue[ 1 ] > ::CountPerPage
-            ::Value := { uValue[ 1 ] - ::CountPerPage, uValue[ 2 ] }
+         If ::nRowPos < 1 .OR. ::nRowPos > ::ItemCount .OR. ::nColPos < 1 .OR. ::nColPos > Len( ::aHeaders )
+            Exit
+         ElseIf ::nRowPos > ::CountPerPage
+            ::Value := { ::nRowPos - ::CountPerPage, ::nColPos }
          Else
-            ::Value := { 1, uValue[ 2 ] }
+            ::Value := { 1, ::nColPos }
          EndIf
          IF ! ::FullMove
             Exit
          EndIf
       ElseIf ::bPosition == 8                        // NEXT
-         uValue := ::Value
-         If uValue[ 1 ] < 1 .OR. uValue[ 1 ] > ::ItemCount .OR. uValue[ 2 ] < 1 .or. uValue[ 2 ] > Len( ::aHeaders )
-            If ::CountPerPage <= ::ItemCount
-               ::Value := { ::CountPerPage, 1 }
-            Else
-               ::Value := { ::ItemCount, 1 }
-            EndIf
-         ElseIf uValue[ 1 ] < ::ItemCount - ::CountPerPage
-            ::Value := { uValue[ 1 ] + ::CountPerPage, uValue[ 2 ] }
+         If ::nRowPos < 1 .OR. ::nRowPos > ::ItemCount .OR. ::nColPos < 1 .OR. ::nColPos > Len( ::aHeaders )
+            Exit
+         ElseIf ::nRowPos < ::ItemCount - ::CountPerPage
+            ::Value := { ::nRowPos + ::CountPerPage, ::nColPos }
          Else
-            ::Value := { ::Itemcount, uValue[ 2 ] }
+            ::Value := { ::ItemCount, ::nColPos }
          EndIf
          IF ! ::FullMove
             Exit
          EndIf
       ElseIf ::bPosition == 9                        // MOUSE EXIT
          Exit
-      Else
-         uValue := ::Value
-         If uValue[ 2 ] < Len( ::aHeaders )
-            ::Value := { uValue[ 1 ], uValue[ 2 ] + 1 }
-         ElseIf ::FullMove
-            If uValue[ 1 ] < ::ItemCount
-               ::Value := { uValue[ 1 ] + 1, 1 }
-            ElseIf ::AllowAppend
-               // Add a new item
-               ::lAppendMode := .T.
-               ::InsertBlank( ::ItemCount + 1 )
-               ::Value := { ::ItemCount, 1 }
-            Else
-               ::Value := { 1, 1 }
-            EndIf
-         Else
+      Else                                           // OK
+         If ::nRowPos < 1 .OR. ::nRowPos > ::ItemCount .OR. ::nColPos < 1 .OR. ::nColPos > Len( ::aHeaders )
             Exit
+         Else
+            nCol := ::NextColInOrder( ::nColPos )
+            If nCol == 0
+               If ! ::FullMove
+                  Exit
+               EndIf
+               nCol := ::FirstColInOrder
+               If nCol == 0
+                  Exit
+               ElseIf ::nRowPos < ::ItemCount
+                  ::Value := { ::nRowPos + 1, nCol }
+               ElseIf ::AllowAppend .OR. lAppend
+                  ::lAppendMode := .T.
+                  ::InsertBlank( ::ItemCount + 1 )
+                  ::Value := { ::ItemCount, nCol }
+               Else
+                  ::Value := { 1, nCol }
+               EndIf
+            Else
+               ::Value := { ::nRowPos, nCol }
+            EndIf
          EndIf
       EndIf
-
-      uValue := ::Value
    EndDo
 
    ::bPosition := 0
+
 Return lSomethingEdited
 
 *--------------------------------------------------------------------------*
 METHOD Right( lAppend ) CLASS TGridByCell
 *--------------------------------------------------------------------------*
-Local uValue, i, lRet := .F.
-   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT ::AllowAppend
-   uValue := ::Value
-   If uValue[ 1 ] < 1 .OR. uValue[ 1 ] > ::ItemCount .OR. uValue[ 2 ] < 1 .or. uValue[ 2 ] > Len( ::aHeaders )
-      lRet := .F.
-   Else
-      For i := ( uValue[ 2 ] + 1 ) To Len( ::aHeaders )
-         If aScan( ::aHiddenCols, i ) == 0
-            Exit
+Local nCol, lRet := .F.
+
+   If ::nRowPos < 1 .OR. ::nRowPos > ::ItemCount .OR. ::nColPos < 1 .OR. ::nColPos > Len( ::aHeaders )
+      If ::ItemCount > 0
+         nCol := ::FirstColInOrder
+         If nCol == 0
+            ::Value := { 0, 0 }
+         Else
+            ::Value := { 1, nCol }
          EndIf
-      Next i
-      If i > Len( ::aHeaders )
-         If uValue[ 1 ] < ::ItemCount
+      Else
+         ::Value := { 0, 0 }
+      EndIf
+      lRet := .T.
+   Else
+      nCol := ::NextColInOrder( ::nColPos )
+      If nCol == 0
+         If ::nRowPos < ::ItemCount
             If ::FullMove
-               For i := 1 To ( uValue[ 2 ] - 1 )
-                  If aScan( ::aHiddenCols, i ) == 0
-                     Exit
-                  EndIf
-               Next i
-               If i < uValue[ 2 ]
-                  ::Value := { uValue[ 1 ] + 1, i }
+               nCol := ::FirstColInOrder
+               If nCol # 0
+                  ::Value := { ::nRowPos + 1, nCol }
                   lRet := .T.
                EndIf
             Endif
-         ElseIf ::lNestedEdit
-            lRet := .F.
-         ElseIf lAppend
-            lRet := ::AppendItem()
-         ElseIf ::FullMove
-            For i := 1 To ( uValue[ 2 ] - 1 )
-               If aScan( ::aHiddenCols, i ) == 0
-                  Exit
+         ElseIf ! ::lNestedEdit
+            ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT ::AllowAppend
+            If lAppend
+               lRet := ::AppendItem()
+            ElseIf ::FullMove
+               nCol := ::FirstColInOrder
+               If nCol # 0
+                  ::Value := { 1, nCol }
+                  lRet := .T.
                EndIf
-            Next i
-            If i < uValue[ 2 ]
-               ::Value := { 1, i }
-               lRet := .T.
             EndIf
          EndIf
       Else
-         ::Value := { uValue[ 1 ], i }
+         ::Value := { ::nRowPos, nCol }
          lRet := .T.
       EndIf
    EndIf
+
 Return lRet
 
 *--------------------------------------------------------------------------*
 METHOD Left() CLASS TGridByCell
 *--------------------------------------------------------------------------*
-Local uValue, i, lRet := .F.
-   uValue := ::Value
-   If uValue[ 1 ] < 1 .OR. uValue[ 1 ] > ::ItemCount .OR. uValue[ 2 ] < 1 .or. uValue[ 2 ] > Len( ::aHeaders )
-      lRet := .F.
-   Else
-      For i := ( uValue[ 2 ] - 1 ) To 1 Step -1
-         If aScan( ::aHiddenCols, i ) == 0
-            Exit
+Local nCol, lRet := .F.
+
+   If ::nRowPos < 1 .OR. ::nRowPos > ::ItemCount .OR. ::nColPos < 1 .OR. ::nColPos > Len( ::aHeaders )
+      If ::ItemCount > 0
+         nCol := ::FirstColInOrder
+         If nCol == 0
+            ::Value := { 0, 0 }
+         Else
+            ::Value := { 1, nCol }
          EndIf
-      Next i
-      If i < 1
+      Else
+         ::Value := { 0, 0 }
+      EndIf
+      lRet := .T.
+   Else
+      nCol := ::PriorColInOrder( ::nColPos )
+      If nCol == 0
          If ::FullMove
-            For i := Len( ::aHeaders ) To ( uValue[ 2 ] + 1 ) Step -1
-               If aScan( ::aHiddenCols, i ) == 0
-                  Exit
-               EndIf
-            Next i
-            If i > uValue[ 2 ]
-               If uValue[ 1 ] > 1
-                  ::Value := { uValue[ 1 ] - 1, i }
+            nCol := ::LastColInOrder
+            If nCol # 0
+               If ::nRowPos > 1
+                  ::Value := { ::nRowPos - 1, nCol }
                Else
-                  ::Value := { ::ItemCount, i }
+                  ::Value := { ::ItemCount, nCol }
                EndIf
                lRet := .T.
             EndIf
          Endif
       Else
-         ::Value := { uValue[ 1 ], i }
+         ::Value := { ::nRowPos, nCol }
          lRet := .T.
       EndIf
    EndIf
+
 Return lRet
 
 *--------------------------------------------------------------------------*
 METHOD Up() CLASS TGridByCell
 *--------------------------------------------------------------------------*
-Local uValue, lRet
-   uValue := ::Value
-   If uValue[ 1 ] < 1 .OR. uValue[ 1 ] > ::ItemCount .OR. uValue[ 2 ] < 1 .or. uValue[ 2 ] > Len( ::aHeaders )
-      lRet := .F.
-   ElseIf uValue[ 1 ] > 1
-      ::Value := { uValue[ 1 ] - 1, uValue[ 2 ] }
+Local nCol, lRet
+
+   If ::nRowPos < 1 .OR. ::nRowPos > ::ItemCount .OR. ::nColPos < 1 .OR. ::nColPos > Len( ::aHeaders )
+      If ::ItemCount > 0
+         nCol := ::FirstColInOrder
+         If nCol == 0
+            ::Value := { 0, 0 }
+         Else
+            ::Value := { 1, nCol }
+         EndIf
+      Else
+         ::Value := { 0, 0 }
+      EndIf
+      lRet := .T.
+   ElseIf ::nRowPos > 1
+      ::Value := { ::nRowPos - 1, ::nColPos }
       lRet := .T.
    ElseIf ::FullMove
-      ::Value := { ::ItemCount, uValue[ 2 ] }
+      ::Value := { ::ItemCount, ::nColPos }
       lRet := .T.
    Else
       lRet := .F.
    EndIf
+
 Return lRet
 
 *--------------------------------------------------------------------------*
 METHOD Down( lAppend ) CLASS TGridByCell
 *--------------------------------------------------------------------------*
-Local uValue, lRet
-   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT ::AllowAppend
-   uValue := ::Value
-   If uValue[ 1 ] < 1 .OR. uValue[ 1 ] > ::ItemCount .OR. uValue[ 2 ] < 1 .or. uValue[ 2 ] > Len( ::aHeaders )
-      ::Value := { 1, 1 }
+Local nCol, lRet
+
+   If ::nRowPos < 1 .OR. ::nRowPos > ::ItemCount .OR. ::nColPos < 1 .OR. ::nColPos > Len( ::aHeaders )
+      If ::ItemCount > 0
+         nCol := ::FirstColInOrder
+         If nCol == 0
+            ::Value := { 0, 0 }
+         Else
+            ::Value := { 1, nCol }
+         EndIf
+      Else
+         ::Value := { 0, 0 }
+      EndIf
       lRet := .T.
-   ElseIf uValue[ 1 ] < ::ItemCount
-      ::Value := { uValue[ 1 ] + 1, uValue[ 2 ] }
+   ElseIf ::nRowPos < ::ItemCount
+      ::Value := { ::nRowPos + 1, ::nColPos }
       lRet := .T.
    ElseIf ::lNestedEdit
-      // EditGrid is active, ignore
       lRet := .F.
-   ElseIf lAppend
-      lRet := ::AppendItem()
-   ElseIf ::FullMove
-      ::Value := { 1, uValue[ 2 ] }
-      lRet := .T.
+   Else
+      ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT ::AllowAppend
+      If lAppend
+         lRet := ::AppendItem()
+      ElseIf ::FullMove
+         ::Value := { 1, ::nColPos }
+         lRet := .T.
+      EndIf
    EndIf
+
 Return lRet
 
 *--------------------------------------------------------------------------*
 METHOD PageUp() CLASS TGridByCell
 *--------------------------------------------------------------------------*
-Local uValue
-   uValue := ::Value
-   If uValue[ 1 ] < 1 .OR. uValue[ 1 ] > ::ItemCount .OR. uValue[ 2 ] < 1 .or. uValue[ 2 ] > Len( ::aHeaders )
-      ::Value := { 1, 1 }
-   ElseIf uValue[ 1 ] > ::CountPerPage
-      ::Value := { uValue[ 1 ] - ::CountPerPage, uValue[ 2 ] }
+Local nCol, lRet
+
+   If ::nRowPos < 1 .OR. ::nRowPos > ::ItemCount .OR. ::nColPos < 1 .OR. ::nColPos > Len( ::aHeaders )
+      If ::ItemCount > 0
+         nCol := ::FirstColInOrder
+         If nCol == 0
+            ::Value := { 0, 0 }
+         Else
+            ::Value := { 1, nCol }
+         EndIf
+      Else
+         ::Value := { 0, 0 }
+      EndIf
+      lRet := .T.
+   ElseIf ::nRowPos > ::CountPerPage
+      ::Value := { ::nRowPos - ::CountPerPage, ::nColPos }
+      lRet := .T.
+   ElseIf ::nRowPos # 1
+      ::Value := { 1, ::nColPos }
+      lRet := .T.
    Else
-      ::Value := { 1, uValue[ 2 ] }
+      lRet := .F.
    EndIf
-Return Self
+
+Return lRet
 
 *-------------------------------------------------------------------------*
 METHOD PageDown() CLASS TGridByCell
 *-------------------------------------------------------------------------*
-Local uValue
-   uValue := ::Value
-   If uValue[ 1 ] < 1 .OR. uValue[ 1 ] > ::ItemCount .OR. uValue[ 2 ] < 1 .or. uValue[ 2 ] > Len( ::aHeaders )
-      If ::CountPerPage <= ::ItemCount
-         ::Value := { ::CountPerPage, 1 }
+Local nCol, lRet
+
+   If ::nRowPos < 1 .OR. ::nRowPos > ::ItemCount .OR. ::nColPos < 1 .OR. ::nColPos > Len( ::aHeaders )
+      If ::ItemCount > 0
+         nCol := ::FirstColInOrder
+         If nCol == 0
+            ::Value := { 0, 0 }
+         Else
+            ::Value := { 1, nCol }
+         EndIf
       Else
-         ::Value := { ::ItemCount, 1 }
+         ::Value := { 0, 0 }
       EndIf
-   ElseIf uValue[ 1 ] < ::ItemCount - ::CountPerPage
-      ::Value := { uValue[ 1 ] + ::CountPerPage, uValue[ 2 ] }
+      lRet := .T.
+   ElseIf ::nRowPos < ::ItemCount - ::CountPerPage
+      ::Value := { ::nRowPos + ::CountPerPage, ::nColPos }
+      lRet := .T.
+   ElseIf ::nRowPos # ::ItemCount
+      ::Value := { ::ItemCount, ::nColPos }
+      lRet := .T.
    Else
-      ::Value := { ::Itemcount, uValue[ 2 ] }
+      lRet := .F.
    EndIf
-Return Self
+
+Return lRet
 
 *---------------------------------------------------------------------------*
 METHOD GoTop() CLASS TGridByCell
 *---------------------------------------------------------------------------*
+Local nCol, lRet := .F.
+
    If ::ItemCount > 0
-      ::Value := { 1, 1 }
+      nCol := ::FirstColInOrder
+      If nCol # 0
+         If ::nRowPos # 1 .OR. ::nColPos # nCol
+            ::Value := { 1, nCol }
+            lRet := .T.
+         EndIf
+      EndIf
    EndIf
-Return Self
+
+Return lRet
 
 *---------------------------------------------------------------------------*
 METHOD GoBottom() CLASS TGridByCell
 *---------------------------------------------------------------------------*
+Local nCol, lRet := .F.
+
    If ::ItemCount > 0
-      ::Value := { ::Itemcount, Len( ::aHeaders ) }
+      nCol := ::LastColInOrder
+      If nCol # 0
+         If ::nRowPos # ::ItemCount .OR. ::nColPos # nCol
+            ::Value := { ::ItemCount, nCol }
+            lRet := .T.
+         EndIf
+      EndIf
    EndIf
-Return Self
+
+Return lRet
 
 *-----------------------------------------------------------------------------*
 METHOD IsColumnReadOnly( nCol ) CLASS TGridByCell
 *-----------------------------------------------------------------------------*
 Local uReadOnly
+
    uReadOnly := _OOHG_GetArrayItem( ::ReadOnly, nCol, ::Item( ::Value[ 1 ] ) )
+
 Return ( HB_IsLogical( uReadOnly ) .AND. uReadOnly )
 
 *-----------------------------------------------------------------------------*
 METHOD IsColumnWhen( nCol ) CLASS TGridByCell
 *-----------------------------------------------------------------------------*
 Local uWhen
-   uWhen := _OOHG_GetArrayItem( ::aWhen, nCol, ::Item( ::Value[ 1 ] ) )
-Return ( ! HB_IsLogical( uWhen ) .OR. uWhen )
 
-*-----------------------------------------------------------------------------*
-METHOD AddColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor, ;
-                  lNoDelete, uPicture, uEditControl, uHeadClick, uValid, ;
-                  uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign ) CLASS TGridByCell
-*-----------------------------------------------------------------------------*
-Local aValue
-   aValue := ::Value
-   nColIndex := ::Super:AddColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor, ;
-                                   lNoDelete, uPicture, uEditControl, uHeadClick, uValid, ;
-                                   uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign )
-   If nColIndex < aValue[ 2 ]
-      ::Value := { aValue[ 1 ], aValue[ 2 ] + 1 }
-   EndIf
-Return nColIndex
+   uWhen := _OOHG_GetArrayItem( ::aWhen, nCol, ::Item( ::Value[ 1 ] ) )
+
+Return ( ! HB_IsLogical( uWhen ) .OR. uWhen )
 
 *-----------------------------------------------------------------------------*
 METHOD ColumnHide( nColIndex ) CLASS TGridByCell
 *-----------------------------------------------------------------------------*
-Local aValue
-   aValue := ::Value
 
    If HB_IsNumeric( nColIndex )
       If nColindex > 0
-         If aValue[ 2 ] == nColIndex
+         ::Super:ColumnHide( nColIndex )
+         If nColIndex == ::nColPos
             ::Value := { 0, 0 }
          EndIf
-         ::Super:ColumnHide( nColIndex )
       EndIf
    EndIf
-Return Nil
+
+Return Self
 
 *-----------------------------------------------------------------------------*
 METHOD DeleteItem( nItem )  CLASS TGridByCell
 *-----------------------------------------------------------------------------*
-Local aValue, lRet
-   aValue := ::Value
+Local lRet
 
    lRet := ::Super:DeleteItem( nItem )
-
    If lRet
-      If aValue[ 1 ] == nItem
+      If ::nRowPos == nItem
          ::Value := { 0, 0 }
       EndIf
    EndIf
+
 Return lRet
 
 *-----------------------------------------------------------------------------*
 METHOD DeleteColumn( nColIndex, lNoDelete ) CLASS TGridByCell
 *-----------------------------------------------------------------------------*
-Local aValue, nLen
-   aValue := ::Value
+
    nColIndex := ::Super:DeleteColumn( nColIndex, lNoDelete )
    If nColIndex > 0
-      If aValue[ 2 ] > nColIndex
-         ::Value := { aValue[ 1 ], aValue[ 2 ] - 1 }
-      ElseIf aValue[ 2 ] == nColIndex
-         nLen := Len( ::aHeaders )
-         If nColIndex <= nLen
-            ::Value := aValue
-         ElseIf nLen == 0
-            ::Value := { 0, 0 }
-         Else
-            ::Value := { aValue[ 1 ], nLen }
-         EndIf
-      Else
-         ::Value := aValue
+      If nColIndex == ::nColPos
+         ::Value := { 0, 0 }
+      ElseIf nColIndex < ::nColPos
+         ::Value := { ::nRowPos, ::nColPos - 1 }
       EndIf
    EndIf
+
 Return nColIndex
 
 *-----------------------------------------------------------------------------*
 METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPos ) CLASS TGridByCell
 *-----------------------------------------------------------------------------*
-Local aValue, lRet
+Local lRet
+
    If ::FirstVisibleColumn == 0
       Return .F.
    EndIf
-
-   aValue := ::Value
    If ! HB_IsNumeric( nRow )
-      nRow := aValue[ 1 ]
+      nRow := Max( ::nRowPos, 1 )
    EndIf
    If ! HB_IsNumeric( nCol )
-      nCol := aValue[ 2 ]
+      If ::nColPos >= 1
+         nCol := ::nColPos
+      Else
+         nCol := ::FirstColInOrder
+      EndIf
    EndIf
    If nRow < 1 .OR. nRow > ::ItemCount .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
-      // Cell out of range
       Return .F.
    EndIf
-   aValue := ::Value := { nRow, nCol }
+   ::Value := { nRow, nCol }
 
    ::bPosition := 0
-   lRet := ::Super:EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPos )
+   lRet := ::Super:EditCell( ::nRowPos, ::nColPos, EditControl, uOldValue, uValue, cMemVar, nOnFocusPos )
 
    If lRet
       // ::bPosition is set by TGridControl()
       If ::bPosition == 1                            // UP
-         If aValue[ 1 ] > 1
-            ::Value := { aValue[ 1 ] - 1, aValue[ 2 ] }
-         ElseIf ::FullMove
-            ::Value := { ::ItemCount, aValue[ 2 ] }
+         If ::nRowPos >= 1 .AND. ::nRowPos <= ::ItemCount + 1 .AND. ::nColPos >= 1 .AND. ::nColPos <= Len( ::aHeaders )
+            If ::nRowPos > 1
+               ::Value := { ::nRowPos - 1, ::nColPos }
+            ElseIf ::FullMove
+               ::Value := { ::ItemCount, ::nColPos }
+            EndIf
          EndIf
       ElseIf ::bPosition == 2                        // RIGHT
-         If aValue[ 2 ] < Len( ::aHeaders )
-            ::Value := { aValue[ 1 ], aValue[ 2 ] + 1 }
-         ElseIf aValue[ 1 ] < ::ItemCount
-            If ::FullMove
-               ::Value := { aValue[ 1 ] + 1, 1 }
+         If ::nRowPos >= 1 .AND. ::nRowPos <= ::ItemCount .AND. ::nColPos >= 1 .AND. ::nColPos <= Len( ::aHeaders )
+            nCol := ::NextColInOrder( ::nColPos )
+            If nCol == 0
+               If ::FullMove
+                  nCol := ::FirstColInOrder
+                  If nCol # 0
+                     If ::nRowPos < ::ItemCount
+                        ::Value := { ::nRowPos + 1, nCol }
+                     Else
+                        ::Value := { 1, nCol }
+                     EndIf
+                  EndIf
+               EndIf
+            Else
+               ::Value := { ::nRowPos, nCol }
             EndIf
-         ElseIf ::FullMove
-            ::Value := { 1, 1 }
          EndIf
       ElseIf ::bPosition == 3                        // LEFT
-         If aValue[ 2 ] > 1
-            ::Value := { aValue[ 1 ], aValue[ 2 ] - 1 }
-         ElseIf ::FullMove
-            If aValue[ 1 ] > 1
-               ::Value := { aValue[ 1 ] - 1, Len( ::aHeaders ) }
+         If ::nRowPos >= 1 .AND. ::nRowPos <= ::ItemCount .AND. ::nColPos >= 1 .AND. ::nColPos <= Len( ::aHeaders )
+            nCol := ::PriorColInOrder( ::nColPos )
+            If nCol == 0
+               If ::FullMove
+                  nCol := ::LastColInOrder
+                  If nCol # 0
+                     If ::nRowPos > 1
+                        ::Value := { ::nRowPos - 1, nCol }
+                     Else
+                        ::Value := { ::ItemCount, nCol }
+                     EndIf
+                  EndIf
+               EndIf
             Else
-               ::Value := { ::ItemCount, Len( ::aHeaders ) }
+               ::Value := { ::nRowPos, nCol }
             EndIf
          EndIf
       ElseIf ::bPosition == 4                        // HOME
-         ::Value := { 1, 1 }
+         If ::nRowPos >= 1 .AND. ::nRowPos <= ::ItemCount .AND. ::nColPos >= 1 .AND. ::nColPos <= Len( ::aHeaders )
+            ::Value := { 1, ::FirstColInOrder }
+         EndIf
       ElseIf ::bPosition == 5                        // END
-         ::Value := { ::Itemcount, Len( ::aHeaders ) }
+         If ::nRowPos >= 1 .AND. ::nRowPos <= ::ItemCount .AND. ::nColPos >= 1 .AND. ::nColPos <= Len( ::aHeaders )
+            ::Value := { ::ItemCount, ::LastColInOrder }
+         EndIf
       ElseIf ::bPosition == 6                        // DOWN
-         If aValue[ 1 ] < ::ItemCount
-            ::Value := { aValue[ 1 ] + 1, aValue[ 2 ] }
-         ElseIf ::FullMove
-            ::Value := { 1, aValue[ 2 ] }
+         If ::nRowPos >= 1 .AND. ::nRowPos <= ::ItemCount .AND. ::nColPos >= 1 .AND. ::nColPos <= Len( ::aHeaders )
+            If ::nRowPos < ::ItemCount
+               ::Value := { ::nRowPos + 1, ::nColPos }
+            ElseIf ::FullMove
+               ::Value := { 1, ::nColPos }
+            EndIf
          EndIf
       ElseIf ::bPosition == 7                        // PRIOR
-         If aValue[ 1 ] > ::CountPerPage
-            ::Value := { aValue[ 1 ] - ::CountPerPage, aValue[ 2 ] }
-         Else
-            ::Value := { 1, aValue[ 2 ] }
+         If ::nRowPos >= 1 .AND. ::nRowPos <= ::ItemCount .AND. ::nColPos >= 1 .AND. ::nColPos <= Len( ::aHeaders )
+            If ::nRowPos > ::CountPerPage
+               ::Value := { ::nRowPos - ::CountPerPage, ::nColPos }
+            Else
+               ::Value := { 1, ::nColPos }
+            EndIf
          EndIf
       ElseIf ::bPosition == 8                        // NEXT
-         If aValue[ 1 ] < ::ItemCount - ::CountPerPage
-            ::Value := { aValue[ 1 ] + ::CountPerPage, aValue[ 2 ] }
-         Else
-            ::Value := { ::Itemcount, aValue[ 2 ] }
+         If ::nRowPos >= 1 .AND. ::nRowPos <= ::ItemCount .AND. ::nColPos >= 1 .AND. ::nColPos <= Len( ::aHeaders )
+            If ::nRowPos < ::ItemCount - ::CountPerPage
+               ::Value := { ::nRowPos + ::CountPerPage, ::nColPos }
+            Else
+               ::Value := { ::ItemCount, ::nColPos }
+            EndIf
          EndIf
       ElseIf ::bPosition == 9                        // MOUSE EXIT
       Else                                           // OK
@@ -4304,21 +4638,25 @@ Return lRet
 *-----------------------------------------------------------------------------*
 METHOD EditCell2( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPos ) CLASS TGridByCell
 *-----------------------------------------------------------------------------*
-Local aValue
-   aValue := ::Value
 
    If ! HB_IsNumeric( nRow )
-      nRow := aValue[ 1 ]
+      nRow := Max( ::nRowPos, 1 )
    EndIf
    If ! HB_IsNumeric( nCol )
-      nCol := aValue[ 2 ]
+      If ::nColPos >= 1
+         nCol := ::nColPos
+      Else
+         nCol := ::FirstColInOrder
+      EndIf
    EndIf
+
 Return ::Super:EditCell2( @nRow, @nCol, EditControl, uOldValue, @uValue, cMemVar, nOnFocusPos )
 
 *-----------------------------------------------------------------------------*
 FUNCTION _OOHG_TGridByCell_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TGridByCell
 *-----------------------------------------------------------------------------*
 Local aCellData, nItem, i, nSearchCol
+
    Empty( lParam )
 
    If nMsg == WM_LBUTTONDBLCLK
@@ -4347,7 +4685,7 @@ Local aCellData, nItem, i, nSearchCol
                ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
             EndIf
          ElseIf ! ::IsColumnWhen( _OOHG_ThisItemColIndex )
-            // Not a valid WHEN
+            // WHEN returned .F.
             If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick )
                ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
             EndIf
@@ -4458,6 +4796,7 @@ Return Nil
 FUNCTION EditControlLikeExcel( oGrid, nColumn )
 *-----------------------------------------------------------------------------*
 Local oEditControl
+
    If nColumn < 1
       Return .F.
    EndIf
@@ -4465,11 +4804,13 @@ Local oEditControl
       oEditControl := oGrid:aEditControls[ nColumn ]
    EndIf
    oEditControl := GetEditControlFromArray( oEditControl, oGrid:EditControls, nColumn, oGrid )
+
 Return HB_IsObject( oEditControl ) .AND. oEditControl:lLikeExcel
 
 *-----------------------------------------------------------------------------*
 METHOD Events_Enter() CLASS TGridByCell
 *-----------------------------------------------------------------------------*
+
    If ! ::lNestedEdit
       ::lNestedEdit := .T.
       ::cText := ""
@@ -4480,18 +4821,18 @@ METHOD Events_Enter() CLASS TGridByCell
       EndIf
       ::lNestedEdit := .F.
    EndIf
-Return Nil
+
+Return Self
 
 *-----------------------------------------------------------------------------*
 METHOD Events_Notify( wParam, lParam ) CLASS TGridByCell
 *-----------------------------------------------------------------------------*
 Local nNotify := GetNotifyCode( lParam )
-Local nvkey, uRet, aValue, lGo, aItem
+Local nvkey, uRet, lGo, aItem, nRow, nCol
 
    If nNotify == NM_CUSTOMDRAW
-      aValue := ::Value
-      uRet := TGrid_Notify_CustomDraw( Self, lParam, .T., aValue[ 1 ], aValue[ 2 ], ::lCheckBoxes, ::lFocusRect, ::lNoGrid, ::lPLM )
-      ListView_SetCursel( ::hWnd, aValue[ 1 ] )
+      uRet := TGrid_Notify_CustomDraw( Self, lParam, .T., ::nRowPos, ::nColPos, ::lCheckBoxes, ::lFocusRect, ::lNoGrid, ::lPLM )
+//      ListView_SetCursel( ::hWnd, ::nRowPos )         // TODO: check
       Return uRet
 
    ElseIf nNotify == LVN_KEYDOWN
@@ -4515,33 +4856,31 @@ Local nvkey, uRet, aValue, lGo, aItem
          ::GoBottom()
       ElseIf nvkey == VK_LEFT
          If GetKeyFlagState() == MOD_CONTROL
-            aValue := ::Value
-            If aValue[ 2 ] > 1
-               ::Value := { aValue[ 1 ], 1 }
+            nCol := ::FirstColInOrder
+            If nCol # 0
+               ::Value := { ::nRowPos, nCol }
             EndIf
          Else
             ::Left()
          EndIf
       ElseIf nvkey == VK_RIGHT
          If GetKeyFlagState() == MOD_CONTROL
-            aValue := ::Value
-            If aValue[ 2 ] < Len( ::aHeaders )
-               ::Value := { aValue[ 1 ], Len( ::aHeaders ) }
+            nCol := ::LastColInOrder
+            If nCol # 0
+               ::Value := { ::nRowPos, nCol }
             EndIf
          Else
             ::Right()
          EndIf
       ElseIf nvkey == VK_SPACE .AND. ::lCheckBoxes
          // detect item
-         aValue := ::Value
-         If aValue[ 1 ] > 0
+         If ::nRowPos > 0
             // change check mark
-            ::CheckItem( aValue[ 1 ], ! ::CheckItem( aValue[ 1 ] ) )
+            ::CheckItem( ::nRowPos, ! ::CheckItem( ::nRowPos ) )
          EndIf
       ElseIf nvKey == VK_DELETE .AND. ::AllowDelete
          // detect item
-         aValue := ::Value
-         If aValue[ 1 ] > 0
+         If ::nRowPos > 0
             If ValType( ::bDelWhen ) == "B"
                lGo := _OOHG_EVAL( ::bDelWhen )
             Else
@@ -4549,20 +4888,25 @@ Local nvkey, uRet, aValue, lGo, aItem
             EndIf
 
             If lGo
-               If ::lNoDelMsg
-                  aItem := ::Item( aValue[ 1 ] )
-                  ::DeleteItem( aValue[ 1 ] )
-                  ::Value := { Min( aValue[ 1 ], ::ItemCount ), aValue[ 2 ] }
-                  ::DoEvent( ::OnDelete, "DELETE", { aItem } )
-               ElseIf MsgYesNo( _OOHG_Messages(4, 1), _OOHG_Messages(4, 3) )
-                  aItem := ::Item( aValue[ 1 ] )
-                  ::DeleteItem( aValue[ 1 ] )
-                  ::Value := { Min( aValue[ 1 ], ::ItemCount ), aValue[ 2 ] }
+               If ::lNoDelMsg .OR. MsgYesNo( _OOHG_Messages(4, 1), _OOHG_Messages(4, 3) )
+                  nRow := ::nRowPos
+                  nCol := ::nColPos
+                  aItem := ::Item( nRow )
+                  ::DeleteItem( nRow )
+                  If ::ItemCount > 0
+                     ::Value := { Min( nRow, ::ItemCount ), nCol }
+                  Else
+                     ::Value := { 0, 0 }
+                  Endif
                   ::DoEvent( ::OnDelete, "DELETE", { aItem } )
                EndIf
             ElseIf ! Empty( ::DelMsg )
                MsgExclamation( ::DelMsg, _OOHG_Messages(4, 3) )
             EndIf
+         EndIf
+      ElseIf nvKey == VK_A .AND. GetKeyFlagState() == MOD_ALT
+         If ::lAppendOnAltA
+            ::AppendItem()
          EndIf
       EndIf
       // skip default action
@@ -4597,7 +4941,7 @@ Local xValue, cType, cOldType
       ::xOldValue := xValue
       ::DoEvent( ::OnChange, "CHANGE" )
    EndIf
-Return Nil
+Return Self
 
 
 
@@ -4666,6 +5010,7 @@ Return aCellData
 PROCEDURE _SetThisCellInfo( hWnd, nRow, nCol, uValue )
 *------------------------------------------------------------------------------*
 Local aControlRect, aCellRect
+
    aControlRect := { 0, 0, 0, 0 }                                               // left, top, right, bottom
    GetWindowRect( hWnd, aControlRect )
    aCellRect := ListView_GetSubitemRect( hWnd, nRow - 1, nCol - 1 )             // top, left, width, height
@@ -4677,23 +5022,26 @@ Local aControlRect, aCellRect
    _OOHG_ThisItemCellWidth  := aCellRect[ 3 ]
    _OOHG_ThisItemCellHeight := aCellRect[ 4 ]
    _OOHG_ThisItemCellValue  := uValue
+
 Return
 
 *------------------------------------------------------------------------------*
 PROCEDURE _ClearThisCellInfo()
 *------------------------------------------------------------------------------*
+
    _OOHG_ThisItemRowIndex   := 0
    _OOHG_ThisItemColIndex   := 0
    _OOHG_ThisItemCellRow    := 0
    _OOHG_ThisItemCellCol    := 0
    _OOHG_ThisItemCellWidth  := 0
    _OOHG_ThisItemCellHeight := 0
+
 Return
 
 *------------------------------------------------------------------------------*
 FUNCTION _CheckCellNewValue()
 *------------------------------------------------------------------------------*
-Return .F.
+
 /*
 // uValue may be passed by reference
 *------------------------------------------------------------------------------*
@@ -4720,10 +5068,13 @@ Local lChange, uValue2
 Return lChange
 */
 
+Return .F.
+
 *-----------------------------------------------------------------------------*
 FUNCTION GridControlObject( aEditControl, oGrid )
 *-----------------------------------------------------------------------------*
 Local oGridControl, aEdit2, cControl
+
    oGridControl := Nil
    If HB_IsArray( aEditControl ) .AND. Len( aEditControl ) >= 1 .AND. ValType( aEditControl[ 1 ] ) $ "CM"
       aEdit2 := aClone( aEditControl )
@@ -4752,12 +5103,14 @@ Local oGridControl, aEdit2, cControl
          oGridControl := TGridControlLComboBox():New( aEdit2[ 2 ], aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ], oGrid, aEdit2[ 6 ] )
       EndCase
    EndIf
+
 Return oGridControl
 
 *-----------------------------------------------------------------------------*
 FUNCTION GridControlObjectByType( uValue, oGrid )
 *-----------------------------------------------------------------------------*
 Local oGridControl := Nil, cMask, nPos
+
    Do Case
    Case HB_IsNumeric( uValue )
       cMask := Str( uValue )
@@ -4780,11 +5133,13 @@ Local oGridControl := Nil, cMask, nPos
    OtherWise
       // Non-implemented data type!!!
    EndCase
+
 Return oGridControl
 
 *------------------------------------------------------------------------------*
 FUNCTION GetEditControlFromArray( oEditControl, aEditControls, nColumn, oGrid )
 *------------------------------------------------------------------------------*
+
    If HB_IsArray( oEditControl )
       oEditControl := GridControlObject( oEditControl, oGrid )
    EndIf
@@ -4797,6 +5152,7 @@ FUNCTION GetEditControlFromArray( oEditControl, aEditControls, nColumn, oGrid )
    If ! HB_IsObject( oEditControl )
       oEditControl := Nil
    EndIf
+
 Return oEditControl
 
 *------------------------------------------------------------------------------*
@@ -4829,7 +5185,7 @@ CLASS TGridControl
    DATA cImageOk              INIT 'EDIT_OK_16'
    DATA cImageCancel          INIT 'EDIT_CANCEL_16'
    DATA lLikeExcel            INIT .F.
-   DATA nOnFocusPos           INIT NIL
+   DATA nOnFocusPos           INIT Nil
    DATA lNoModal              INIT .F.
 
    METHOD New                 BLOCK { |Self| Self }
@@ -4903,7 +5259,7 @@ Local lRet := .F., i, nSize
          ::oWindow:Activate()
       EndIf
    EndIf
-   ::oWindow := NIL
+   ::oWindow := Nil
 Return lRet
 
 METHOD Valid() CLASS TGridControl
@@ -5113,7 +5469,7 @@ Local lRet := .F., i, aPos, nPos1, nPos2, cText, nPos
       If HB_IsObject( ::oWindow )
          ::oWindow:Activate()
       EndIf
-      ::oWindow := NIL
+      ::oWindow := Nil
    EndIf
 Return lRet
 
@@ -5127,7 +5483,7 @@ FUNCTION TGridControlTextBox_ReleaseKeys( oControl, cEditKey )
    RELEASE KEY PRIOR        OF ( oControl )
    RELEASE KEY DOWN         OF ( oControl )
    RELEASE KEY ( cEditKey ) OF ( oControl )
-RETURN NIL
+Return Nil
 
 METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGridControlTextBox
    If ValType( uValue ) == "C" .AND. ::cType $ "DNL"
@@ -5306,7 +5662,7 @@ Local lRet := .F., i, oBut1, oBut2
    ::oWindow:Center()
    ::oControl:SetFocus()
    ::oWindow:Activate()
-   ::oWindow := NIL
+   ::oWindow := Nil
 Return lRet
 
 METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGridControlMemo
@@ -5484,7 +5840,7 @@ Local cValueSource, cWorkArea, cField, nRecno, aIt, aVa, uValue
       ::aItems := aIt
       ::aValues := aVa
    EndIf
-Return Nil
+Return Self
 
 METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys ) CLASS TGridControlComboBox
 Return ::Super:CreateWindow( uValue, nRow - 3, nCol - 3, nWidth + 6, nHeight + 6, cFontName, nFontSize, aKeys )
@@ -7647,8 +8003,12 @@ HB_FUNC( HB_MILLISECONDS )
 
 #pragma ENDDUMP
 
-Function SetGridFixedControls( lValue )
-   IF valtype( lValue ) == "L"
+*-----------------------------------------------------------------------------*
+FUNCTION SetGridFixedControls( lValue )
+*-----------------------------------------------------------------------------*
+
+   If ValType( lValue ) == "L"
       _OOHG_GridFixedControls := lValue
-   ENDIF
+   EndIF
+
 Return _OOHG_GridFixedControls

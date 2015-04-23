@@ -1,5 +1,5 @@
 <!--
-$Id: Changelog.htm,v 1.24 2015-04-20 02:40:43 fyurisich Exp $
+$Id: Changelog.htm,v 1.25 2015-04-23 04:36:42 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -142,6 +142,70 @@ CHANGELOG</div>
 </div>
 <div id="winchm_template_content">
 <pre>
+2015-04-23 01:35 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * manual/changelog.htm
+     * Updated.
+   * source/h_grid.prg
+     * Format.
+     * Comments.
+     + TGrid:PriorColInOrder( nCol ), returns the number of the first
+       visible column to the left of nCol.
+     + TGrid:NextConInOrder( nCol ), returns the number of the first
+       visible column to the right of nCol.
+     + TGrid:FirstColInOrder(), returns the number of the leftmost visible
+       column.
+     + TGrid:LastColInOrder(), returns the number of the rightmost visible
+       column.
+     % Various methods now use newly added methods, in others some logical
+       conditions were changed, in others vars are initialized just before
+       referenced instead of at the top of the method.
+     ! All methods of TGrid, TGridMulti and TGridByCell that change the
+       current column now fully honor the column order set by the user and
+       skip hidden columns.
+     * All method os TGrid, TGridMulti and TGridByCell that returned Nil
+       now return Self.
+     + Added parameter lAppend to TGrid:AppendItem(),
+       TGridMulti:AppendItem() and TGridByCell:AppendItem().
+       Defaults to .F.
+       When .T. an item is appended even if ::AllowAppend is .F.
+     * TGrid:AppendItem() and TGrid:AppendItem() do nothing when
+       ::lEditMode is .T. or when ::AllowAppend and lAppend are both .F.
+     + Added parameter lAppend to TGrid:EditGrid(), TGridMulti:EditGrid()
+       and TGridByCell:EditGrid().
+       Defaults to .F.
+       When .T. and ::FullMove is .T., after editing last row an item is
+       appended even if ::AllowAppend is .F.
+     + TGrid:EditGrid() and TGridMulti:EditGrid() now call ON ABORTEDIT
+       if an append is aborted.
+     + Support for single block in VALID clause to TGrid:EditItem2() and
+       TGrid:EditCell2().
+     + Parameter uReadOnly to TGrid:AddColumn() and TGrid:SetColumn().
+     ! TGrid:AddColumn() and TGrid:SetColumn() don't set edit control for
+       newly added column when FIXEDCONTROLS is .T.
+     ! TGrid:DeleteColumn() was not deleting item from ::Readonly and
+       ::aEditControls arrays.
+     + TGrid:EditAllCells() and TGridByCell:EditGrid() now call
+       ON ABORTEDIT if an append or an edit is aborted.
+     - TGridByCell:AddColumn()
+     * TGridByCell:AppendItem() does nothing when ::AllowAppend and
+       lAppend are both .F.
+     * Use ::nRowCol and ::nColPos in all methods of TGridByCell, instead
+       of using ::Value[1] and ::Value[2].
+     * TGridByCell():Right(), TGridByCell():Left(), TGridByCell:Up(),
+       TGridByCell:Down(), TGridByCell:PageUp(), TGridByCell:PageDown(),
+       TGridByCell:GoTop() and TGridByCell:GoBottom(), when current
+       ::Value is not valid or it's {0,0}, these methods try to set the
+       ::Value to something in row 1. If there are no items, the ::Value
+       is set to {0,0}.
+     * TGridByCell:PageUp(), TGridByCell:PageDown(), TGridByCell:GoTop()
+       and TGridByCell:GoBottom() now return .T. on success.
+     * TGridByCell:EditCell() ignores exit key is ::Value is not valid or
+       it's {0,0}.
+     * Default values for nRow and nCol in TGridByCell:EditCell2().
+     * Commented out the sentence after calling custom draw routine.
+       This needs more testing.
+     + Support for ALT+A in TGridByCell.
+
 2015-04-19 23:40 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * manual/changelog.htm
      * Updated.
