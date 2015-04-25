@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.1458 2015-04-25 19:16:57 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1459 2015-04-25 19:20:16 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,7 +7,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-04-25 16:19 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Previous entry.
+   * manual/changelog.htm
+     * Updated.
+
 2015-04-25 16:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/changelog.htm
+     * Updated.
    * source/h_xbrowse.prg
      * Comments.
      ! TXBrowseByCell:EditGrid() does not work properly when :FullMove is
