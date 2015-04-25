@@ -1,5 +1,5 @@
 <!--
-$Id: Changelog.htm,v 1.25 2015-04-23 04:36:42 fyurisich Exp $
+$Id: Changelog.htm,v 1.26 2015-04-25 02:35:42 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -142,6 +142,49 @@ CHANGELOG</div>
 </div>
 <div id="winchm_template_content">
 <pre>
+2015-04-24 23:35 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ./Changelog
+     * Previous entry.
+   * doc/classes.txt
+     * Updated.
+   * manual/changelog.htm
+     * Updated.
+   * source/h_grid.prg
+     + Comments.
+   * source/h_xbrowse.prg
+     * Comments.
+     * Format.
+     % Code simplification.
+     * All methods of TXBrowse, ooHGRecord and TXBrowseByCell that returned
+       Nil to user now return Self.
+     * All methods of TXBrowse and TXBrowseByCell now fully honor the
+       column order set by the user.
+     * Validations of parameters nColTo and nColFrom in TXBrowse:ToExcel()
+       and TXBrowse:ToOpenOffice().
+     ! TXBrowse:ToOpenOffice() generates a RTE when a field is defined
+       using a string.
+     ! TXBrowse:Events() generates a RTE when a char key is pressed to
+       start searching for some value in a column.
+     + Added parameter lAppend to TGrid:AppendItem().
+       Defaults to .F.
+       When .T. an item is appended even if ::AllowAppend is .F.
+     * TXBrowse():EditCell() and TXBrowse:EditAllCells() now honor
+       ::FirstVisibleColumn.
+     * TXBrowse:EditAllCells() now uses ::SyncData().
+     + Parameter uReadOnly to TXBrowse:AddColumn(), TXBrowse:SetColumn()
+       and TXBrowseByCell:AddColumn().
+     ! TXBrowse:AddColumn() and TXBrowse:SetColumn() don't set edit control
+       for newly added column when FIXEDCONTROLS is .T.
+     - TXBrowseByCell:AddColumn()
+     ! TXBrowseByCell:EditGrid() don't update readonly columns in just
+       added row when edition is aborted before fully editing the row.
+     * Function _OOHG_TXBrowseByCell_Events2 no longer places the
+       selected cell at { ::ItemCount, ::ColumnCount } when a column
+       search ends without a match, instead the selected cell is set to
+       { ::ItemCount, ::SearchCol }.
+     * Function _OOHG_TXBrowseByCell_Events2 used by TXBrowseByCell:Events()
+       now fully honors the column order set by the user.
+
 2015-04-23 01:35 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * manual/changelog.htm
      * Updated.

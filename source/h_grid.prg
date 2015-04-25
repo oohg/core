@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.276 2015-04-23 04:36:42 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.277 2015-04-25 02:35:42 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1087,9 +1087,11 @@ Local oExcel, oSheet, nLin, i, j, uValue, aColumnOrder
       nItemTo := ::ItemCount
    EndIf
    If ! ValType( nColFrom ) == "N" .OR. nColFrom < 1 .OR. nColFrom > Len( ::aHeaders )
+      // nColFrom is an index in ::ColumnOrder
       nColFrom := 1
    EndIf
    If ! ValType( nColTo ) == "N" .OR. nColTo < 1 .OR. nColTo > Len( ::aHeaders ) .OR. nColTo < nColFrom
+      // nColTo is an index in ::ColumnOrder
       nColTo := Len( ::aHeaders )
    EndIf
 
@@ -1159,9 +1161,11 @@ Local oSerMan, oDesk, oPropVals, oBook, oSheet, nLin, i, j, uValue, aColumnOrder
       nItemTo := ::ItemCount
    EndIf
    If ! ValType( nColFrom ) == "N" .OR. nColFrom < 1 .OR. nColFrom > Len( ::aHeaders )
+      // nColFrom is an index in ::ColumnOrder
       nColFrom := 1
    EndIf
    If ! ValType( nColTo ) == "N" .OR. nColTo < 1 .OR. nColTo > Len( ::aHeaders ) .OR. nColTo < nColFrom
+      // nColTo is an index in ::ColumnOrder
       nColTo := Len( ::aHeaders )
    EndIf
 
