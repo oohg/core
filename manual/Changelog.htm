@@ -1,5 +1,5 @@
 <!--
-$Id: Changelog.htm,v 1.26 2015-04-25 02:35:42 fyurisich Exp $
+$Id: Changelog.htm,v 1.27 2015-04-25 19:16:57 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -142,6 +142,29 @@ CHANGELOG</div>
 </div>
 <div id="winchm_template_content">
 <pre>
+2015-04-25 16:16 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_xbrowse.prg
+     * Comments.
+     ! TXBrowseByCell:EditGrid() does not work properly when :FullMove is
+       .F., the edition is exited with Left Right key or with Enter key,
+       and columns has been rearranged by the user.
+     ! TXBrowseByCell:EditGrid() does not work properly when adding a
+       new row after editing the last row.
+     ! TXBrowseByCell:GoBottom() does not honor the column order set by
+       the user.
+     % Code simplification.
+   * source/h_browse.prg
+     * Comments.
+     * Format.
+     % Code simplification.
+     * All methods of TOBrowse and TOBrowseByCell that returned
+       Nil to user now return Self.
+     * LISTVIEW_GETFIRSTITEM changed by ::FirstSelectedItem.
+     * All methods of TOBrowse and TOBrowseByCell now fully honor the
+       column order set by the user.
+     ! TOBrowse:EditItem_B() do not restore pointer in an unsynchronized
+       database when editing an existing row if ::InPlace is .F.
+
 2015-04-24 23:35 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * ./Changelog
      * Previous entry.

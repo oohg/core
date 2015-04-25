@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.124 2015-04-25 02:35:45 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.125 2015-04-25 19:16:57 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -924,9 +924,11 @@ Local oSerMan, oDesk, oPropVals, oBook, oSheet, nLin, i, uValue, cWorkArea, aCol
       cTitle := ""
    EndIf
    If ! ValType( nColFrom ) == "N" .OR. nColFrom < 1 .OR. nColTo > Len( ::aHeaders )
+      // nColFrom is an index in ::ColumnOrder
       nColFrom := 1
    EndIf
    If ! ValType( nColTo ) == "N" .OR. nColTo > Len( ::aHeaders ) .OR. nColTo < nColFrom
+      // nColTo is an index in ::ColumnOrder
       nColTo := Len( ::aHeaders )
    EndIf
 
@@ -1592,13 +1594,19 @@ Local aItems, aMemVars, aReplaceFields
       EndIf
    EndIf
 
-   If ! EMPTY( oWorkArea:cAlias__ )
-      aItems := ( oWorkArea:cAlias__ )->( ::EditItem2( ::CurrentRow, aItems, ::aEditControls, aMemVars, cTitle ) )
-   Else
+   If EMPTY( oWorkArea:cAlias__ )
       aItems := ::EditItem2( ::CurrentRow, aItems, ::aEditControls, aMemVars, cTitle )
+   Else
+      aItems := ( oWorkArea:cAlias__ )->( ::EditItem2( ::CurrentRow, aItems, ::aEditControls, aMemVars, cTitle ) )
    EndIf
 
-   If ! Empty( aItems )
+   If Empty( aItems )
+      If lAppend
+         ::lAppendMode := .F.
+         oWorkArea:GoTo( nOld )
+      EndIf
+      _OOHG_Eval( ::OnAbortEdit, ::CurrentRow, 0 )
+   Else
       If lAppend
          oWorkArea:Append()
       EndIf
@@ -1632,12 +1640,6 @@ Local aItems, aMemVars, aReplaceFields
       _SetThisCellInfo( ::hWnd, ::CurrentRow, 0, Nil )
       _OOHG_Eval( ::OnEditCell, ::CurrentRow, 0 )
       _ClearThisCellInfo()
-   Else
-      If lAppend
-         ::lAppendMode := .F.
-         oWorkArea:GoTo( nOld )
-      EndIf
-      _OOHG_Eval( ::OnAbortEdit, ::CurrentRow, 0 )
    EndIf
 
    If ::Lock
@@ -2625,7 +2627,7 @@ Local lSomethingEdited := .F.
          If ::FullMove .AND. ! lOneRow
             ::Right( .F. )
             lAppend := ::Eof() .AND. ::AllowAppend
-         ElseIf ::nColPos < Len( ::aHeaders )
+         ElseIf ::nColPos # ::LastColInOrder
             ::Right( .F. )
          Else
             Exit
@@ -2671,7 +2673,7 @@ Local lSomethingEdited := .F.
          If ::FullMove .AND. ! lOneRow .AND. lSomethingEdited
             ::Right( .F. )
             lAppend := ::Eof() .AND. ::AllowAppend
-         ElseIf ::nColPos < Len( ::aHeaders )
+         ElseIf ::nColPos # ::LastColInOrder
             ::Right( .F. )
          Else
             Exit
@@ -2683,7 +2685,7 @@ Local lSomethingEdited := .F.
          ::GoBottom( .T. )
          ::InsertBlank( ::ItemCount + 1 )
          ::CurrentRow := ::ItemCount
-         ::CurrentCol := 1
+         ::CurrentCol := ::FirstColInOrder
          ::lAppendMode := .T.
          ::oWorkArea:GoTo( 0 )
       EndIf
@@ -3057,7 +3059,7 @@ METHOD GoBottom( lAppend ) CLASS TXBrowseByCell
       ::TopBottom( GO_BOTTOM )
       ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
       // If it's for APPEND, leaves a blank line ;)
-      ::Refresh( { ::CountPerPage - IIf( lAppend, 1, 0 ), IIf( lAppend, 1, Len( ::aHeaders ) ) } )
+      ::Refresh( { ::CountPerPage - IIf( lAppend, 1, 0 ), IIf( lAppend, ::FirstColInOrder, ::LastColInOrder ) } )
       ::DoChange()
    EndIf
 
