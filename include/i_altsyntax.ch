@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.120 2015-03-20 00:00:42 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.121 2015-04-25 23:25:10 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -960,7 +960,7 @@ RADIO GROUP
       _OOHG_ActiveControlReadOnly    := NIL
 
 #xcommand LEFTJUSTIFY <left> ;
-   => ;
+ÿ  =?Ó;
       _OOHG_ActiveControlLeft := <left>
 
 #xcommand OPTIONS <aOptions> ;
@@ -2305,7 +2305,35 @@ GRID
       _OOHG_ActiveControlDelete           := .F. ;;
       _OOHG_ActiveControlOnDelete         := NIL ;;
       _OOHG_ActiveControlDeleteWhen       := NIL ;;
-      _OOHG_ActiveControlDeleteMsg        := NIL
+      _OOHG_ActiveControlDeleteMsg        := NIL ;;
+      _OOHG_ActiveControlAutoPlay         := .F. ;;
+      _OOHG_ActiveControlAddress          := .F. ;;
+      _OOHG_ActiveControlShowAll          := .F. ;;
+      _OOHG_ActiveControlAutoSkip         := .F.
+
+#xcommand SILENT <silent> ;
+   => ;
+      _OOHG_ActiveControlAutoPlay := <silent>
+
+#xcommand ENABLEALTA <alta> ;
+   => ;
+      _OOHG_ActiveControlAddress := <alta>
+
+#xcommand DISABLEALTA <alta> ;
+   => ;
+      _OOHG_ActiveControlAddress := ! <alta>
+
+#xcommand NOSHOWALWAYS <show> ;
+   => ;
+      _OOHG_ActiveControlShowAll := <show>
+
+#xcommand NONEUNSELS <noneunsels> ;
+   => ;
+      _OOHG_ActiveControlAutoSkip := <noneunsels>
+
+#xcommand IGNORENONE <ignorenone> ;
+   => ;
+      _OOHG_ActiveControlAutoSkip := ! <ignorenone>
 
 #xcommand ONAPPEND <onappend> ;
    => ;
@@ -2516,7 +2544,11 @@ GRID
             _OOHG_ActiveControlOnHeaderRClick, ;
             _OOHG_ActiveControlClickOnCheckbox, ;
             _OOHG_ActiveControlRClickOnCheckbox, ;
-            _OOHG_ActiveControlExtDblClick )
+            _OOHG_ActiveControlExtDblClick, ;
+            _OOHG_ActiveControlAutoPlay, ;
+            _OOHG_ActiveControlAddress, ;
+            _OOHG_ActiveControlShowAll, ;
+            _OOHG_ActiveControlAutoSkip )
 
 /*---------------------------------------------------------------------------
 BROWSE
@@ -2593,7 +2625,11 @@ BROWSE
       _OOHG_ActiveControlOnHeaderRClick   := NIL ;;
       _OOHG_ActiveControlExtDblClick      := .F. ;;
       _OOHG_ActiveControlNoModalEdit      := .F. ;;
-      _OOHG_ActiveControlByCell           := .F.
+      _OOHG_ActiveControlByCell           := .F. ;;
+      _OOHG_ActiveControlAutoPlay         := .F. ;;
+      _OOHG_ActiveControlAddress          := .T. ;;
+      _OOHG_ActiveControlShowAll          := .F. ;;
+      _OOHG_ActiveControlAutoSkip         := .F.
 
 #xcommand DELETEWHEN <delwhen> ;
    => ;
@@ -2751,7 +2787,11 @@ BROWSE
             IIF( _OOHG_ActiveControlFixedCtrls, .T., IIF( _OOHG_ActiveControlDynamicCtrls, .F., NIL ) ), ;
             _OOHG_ActiveControlOnHeaderRClick, ;
             _OOHG_ActiveControlExtDblClick, ;
-            _OOHG_ActiveControlNoModalEdit )
+            _OOHG_ActiveControlNoModalEdit, ;
+            _OOHG_ActiveControlAutoPlay, ;
+            _OOHG_ActiveControlAddress, ;
+            _OOHG_ActiveControlShowAll, ;
+            _OOHG_ActiveControlAutoSkip )
 
 /*---------------------------------------------------------------------------
 XBROWSE
@@ -2823,7 +2863,10 @@ XBROWSE
       _OOHG_ActiveControlUpdateColors     := .F. ;;
       _OOHG_ActiveControlOnHeaderRClick   := NIL ;;
       _OOHG_ActiveControlExtDblClick      := .F. ;;
-      _OOHG_ActiveControlNoModalEdit      := .F.
+      _OOHG_ActiveControlNoModalEdit      := .F. ;;
+      _OOHG_ActiveControlAutoPlay         := .F. ;;
+      _OOHG_ActiveControlAddress          := .T. ;;
+      _OOHG_ActiveControlShowAll          := .F.
 
 #xcommand END XBROWSE ;
    => ;
@@ -2913,7 +2956,10 @@ XBROWSE
             _OOHG_ActiveControlUpdateColors, ;
             _OOHG_ActiveControlOnHeaderRClick, ;
             _OOHG_ActiveControlNoModalEdit, ;
-            _OOHG_ActiveControlExtDblClick )
+            _OOHG_ActiveControlExtDblClick, ;
+            _OOHG_ActiveControlAutoPlay, ;
+            _OOHG_ActiveControlAddress, ;
+            _OOHG_ActiveControlShowAll )
 
 /*---------------------------------------------------------------------------
 HYPERLINK

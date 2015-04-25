@@ -1,5 +1,5 @@
 /*
- * $Id: i_hmg_compat.ch,v 1.39 2015-03-09 02:51:07 fyurisich Exp $
+ * $Id: i_hmg_compat.ch,v 1.40 2015-04-25 23:25:11 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -245,6 +245,10 @@ SPLITBOX VERSION
       [ <edtctrls: FIXEDCONTROLS, DYNAMICCONTROLS> ] ;
       [ <dummy14: ONHEADRCLICK, ON HEADRCLICK> <bheadrclick> ] ;
       [ <extdbl: EXTDBLCLICK> ] ;
+      [ <silent: SILENT> ] ;
+      [ <alta: ENABLEALTA, DISABLEALTA> ] ;
+      [ <noshow: NOSHOWALWAYS> ] ;
+      [ <none: NONEUNSELS, IGNORENONE> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TOBrowse(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, , , <w>, <h>, <headers>, <widths>, ;
@@ -277,7 +281,9 @@ SPLITBOX VERSION
             <.excel.>, <.buts.>, <.upcol.>, ;
             IIF( Upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., ;
             IIF( Upper( #<edtctrls> ) == "DYNAMICCONTROLS", .F., NIL ) ), ;
-            <{bheadrclick}>, <.extdbl.> )
+            <{bheadrclick}>, <.extdbl.>, <.silent.>, ;
+            ! Upper( #<alta> ) == "DISABLEALTA", <.noshow.>, ;
+            Upper( #<none> ) == "NONEUNSELS" )
 
 #xcommand @ <row>, <col> BUTTONEX <name> ;
       [ OBJ <obj> ] ;
@@ -296,12 +302,12 @@ SPLITBOX VERSION
       [ <uptext: UPPERTEXT> ] ;
       [ <ladjust: AUTOFIT, ADJUST> ] ;
       [ TOOLTIP <tooltip> ] ;
-      [ BACKCOLOR <backcolor> ] ;                                
-      [ FONTCOLOR <fontcolor> ] ;                                
+      [ BACKCOLOR <backcolor> ] ;
+      [ FONTCOLOR <fontcolor> ] ;
       [ <nohotlight: NOHOTLIGHT> ] ;
       [ <flat: FLAT> ] ;
       [ <notrans: NOLOADTRANSPARENT > ] ;
-      [ <noxpstyle: NOXPSTYLE > ] ;                              
+      [ <noxpstyle: NOXPSTYLE > ] ;
       [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
       [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
       [ <notabstop: NOTABSTOP> ] ;
@@ -521,5 +527,118 @@ TODO: Try to implement this BUTTONEX clauses
             [ ICON <cBitmap> ] ;
             [ <style> ] ;
             [ TOOLTIP <cToolTip> ]
+
+/*
+ * GRID's unsupported clauses:
+ * [ ON SAVE <onsave> ] ;
+ * [ DYNAMICDISPLAY <dynamicdisplay> ] ;
+ *    Use EDITCONTROLS instead.
+ */
+
+#command @ <row>, <col> GRID <name> ;
+      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ WIDTH <w> ] ;
+      [ HEIGHT <h> ] ;
+      [ HEADERS <headers> ] ;
+      [ WIDTHS <widths> ] ;
+      ROWSOURCE <recordsource> ;
+      COLUMNFIELDS <columnfields> ;
+      [ ITEMS <rows> ] ;
+      [ VALUE <value> ] ;
+      [ FONT <fontname> ] ;
+      [ SIZE <fontsize> ] ;
+      [ <bold: BOLD> ] ;
+      [ <italic: ITALIC> ] ;
+      [ <underline: UNDERLINE> ] ;
+      [ <strikeout: STRIKEOUT> ] ;
+      [ TOOLTIP <tooltip> ] ;
+      [ BACKCOLOR <backcolor> ] ;
+      [ FONTCOLOR <fontcolor> ] ;
+      [ DYNAMICBACKCOLOR <dynamicbackcolor> ] ;
+      [ DYNAMICFORECOLOR <dynamicforecolor> ] ;
+      [ ON GOTFOCUS <gotfocus> ] ;
+      [ ON CHANGE <change> ] ;
+      [ ON LOSTFOCUS <lostfocus> ] ;
+      [ ON DBLCLICK <dblclick> ] ;
+      [ ON HEADCLICK <aHeadClick> ] ;
+      [ <edit : EDIT> ] ;
+      [ COLUMNCONTROLS <editcontrols> ] ;
+      [ COLUMNVALID <columnvalid> ] ;
+      [ COLUMNWHEN <columnwhen> ] ;
+      [ <ownerdata: VIRTUAL> ] ;
+      [ ITEMCOUNT <itemcount> ] ;
+      [ ON QUERYDATA <dispinfo> ] ;
+      [ <multiselect: MULTISELECT> ] ;
+      [ <style: NOLINES> ] ;
+      [ <noshowheaders: NOHEADERS> ] ;
+      [ IMAGE <aImage> ] ;
+      [ JUSTIFY <aJust> ] ;
+      [ HELPID <helpid> ] ;
+      [ <break: BREAK> ] ;
+      [ HEADERIMAGES <headerimages> ] ;
+      [ <bycell: NAVIGATEBYCELL> ] ;
+      [ <append : APPEND> ] ;
+      [ <delete : DELETE> ] ;
+      [ <fixedcols: FIXEDCOLS> ] ;
+   => ;
+      @ <row>, <col> BROWSE <name> ;
+            [ PARENT <parent> ] ;
+            [ WIDTH <w> ] ;
+            [ HEIGHT <h> ] ;
+            [ HEADERS <headers> ] ;
+            [ WIDTHS <widths> ] ;
+            WORKAREA <recordsource> ;
+            FIELDS <columnfields> ;
+            [ VALUE <value> ] ;
+            [ FONT <fontname> ] ;
+            [ SIZE <fontsize> ] ;
+            [ <bold> ] ;
+            [ <italic> ] ;
+            [ <underline> ] ;
+            [ <strikeout> ] ;
+            [ TOOLTIP <tooltip> ] ;
+            [ BACKCOLOR <backcolor> ] ;
+            [ FONTCOLOR <fontcolor> ] ;
+            [ DYNAMICBACKCOLOR <dynamicbackcolor> ] ;
+            [ DYNAMICFORECOLOR <dynamicforecolor> ] ;
+            [ ON GOTFOCUS <gotfocus> ] ;
+            [ ON CHANGE <change> ] ;
+            [ ON LOSTFOCUS <lostfocus> ] ;
+            [ ON DBLCLICK <dblclick> ] ;
+            [ ON HEADCLICK <aHeadClick> ] ;
+            [ <edit> INPLACE ] ;
+            [ COLUMNCONTROLS <editcontrols> ] ;
+            [ VALID <columnvalid> ] ;
+            [ COLUMNWHEN <columnwhen> ] ;
+            [ ITEMCOUNT <itemcount> ] ;
+            [ ON QUERYDATA <dispinfo> ] ;
+            [ <style> ] ;
+            [ <noshowheaders> ] ;
+            [ IMAGE <aImage> ] ;
+            [ JUSTIFY <aJust> ] ;
+            [ HELPID <helpid> ] ;
+            [ <break> ] ;
+            [ HEADERIMAGES <headerimages> ] ;
+            [ <bycell> ] ;
+            [ <append> ] ;
+            [ <delete> ]
+
+#xtranslate GRID [ <x> ] LOCKCOLUMNS <lockcolumns> ;
+   => GRID [ <x> ] FIXEDCOLS
+
+#xtranslate GRID [ <x> ] LOCKCOLUMNS 0 ;
+   => GRID [ <x> ]
+
+#xtranslate GRID [ <x> ] CELLNAVIGATION ;
+   => GRID [ <x> ] NAVIGATEBYCELL
+
+#xtranslate GRID [ <x> ] BUFFERED ;
+   => GRID [ <x> ]
+
+#xtranslate GRID [ <x> ] ALLOWAPPEND ;
+   => GRID [ <x> ] APPEND
+
+#xtranslate GRID [ <x> ] ALLOWDELETE ;
+   => GRID [ <x> ] DELETE
 
 #endif

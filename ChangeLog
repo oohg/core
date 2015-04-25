@@ -1,11 +1,24 @@
 /*
- * $Id: ChangeLog,v 1.1459 2015-04-25 19:20:16 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1460 2015-04-25 23:25:10 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-04-25 20:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_altsyntax.htm
+     + Support for SILENT, ENABLEALTA, DISABLEALTA, NOSHOWALWAYS,
+       NONEUNSELS and IGNORENONE clauses.
+   * include/i_hmg_compat.htm
+     + Support for SILENT, ENABLEALTA, DISABLEALTA, NOSHOWALWAYS,
+       NONEUNSELS and IGNORENONE clauses.
+     + Support for GRID with ROWSOURCE and COLUMNFIELDS clauses.
+       ; ON SAVE clause is not supported.
+       ; DYNAMICDISPLAY clauses is not suported, use EDITCONTROLS instead.
+   * manual/changelog.htm
+     * Updated.
 
 2015-04-25 16:19 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog
