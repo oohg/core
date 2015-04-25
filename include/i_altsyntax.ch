@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.121 2015-04-25 23:25:10 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.122 2015-04-25 23:40:26 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -960,7 +960,7 @@ RADIO GROUP
       _OOHG_ActiveControlReadOnly    := NIL
 
 #xcommand LEFTJUSTIFY <left> ;
-ÿ  =?Ó;
+   => ;
       _OOHG_ActiveControlLeft := <left>
 
 #xcommand OPTIONS <aOptions> ;
