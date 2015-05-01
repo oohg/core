@@ -1,5 +1,5 @@
 /*
- * $Id: h_ipaddress.prg,v 1.14 2015-03-09 02:52:08 fyurisich Exp $
+ * $Id: h_ipaddress.prg,v 1.15 2015-05-01 01:08:51 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -247,13 +247,13 @@ HB_FUNC( GETIPADDRESS )
 
    SendMessage( HWNDparam( 1 ), IPM_GETADDRESS, 0, ( LPARAM )( LPDWORD ) &pdwAddr );
 
-   v1 = FIRST_IPADDRESS( pdwAddr );
-   v2 = SECOND_IPADDRESS( pdwAddr );
-   v3 = THIRD_IPADDRESS( pdwAddr );
-   v4 = FOURTH_IPADDRESS( pdwAddr );
+   v1 = ( BYTE ) ( unsigned int ) FIRST_IPADDRESS( pdwAddr );
+   v2 = ( BYTE ) ( unsigned int ) SECOND_IPADDRESS( pdwAddr );
+   v3 = ( BYTE ) ( unsigned int ) THIRD_IPADDRESS( pdwAddr );
+   v4 = ( BYTE ) ( unsigned int ) FOURTH_IPADDRESS( pdwAddr );
 
    hb_reta( 4 );
-    HB_STORNI( ( INT ) v1, -1, 1 );
+   HB_STORNI( ( INT ) v1, -1, 1 );
    HB_STORNI( ( INT ) v2, -1, 2 );
    HB_STORNI( ( INT ) v3, -1, 3 );
    HB_STORNI( ( INT ) v4, -1, 4 );
@@ -266,10 +266,10 @@ HB_FUNC( GETIPADDRESSSTRING )
 
    SendMessage( HWNDparam( 1 ), IPM_GETADDRESS, 0, ( LPARAM )( LPDWORD ) &pdwAddr );
 
-   v[ 0 ] = FIRST_IPADDRESS( pdwAddr );
-   v[ 1 ] = SECOND_IPADDRESS( pdwAddr );
-   v[ 2 ] = THIRD_IPADDRESS( pdwAddr );
-   v[ 3 ] = FOURTH_IPADDRESS( pdwAddr );
+   v[ 0 ] = ( BYTE ) ( unsigned int ) FIRST_IPADDRESS( pdwAddr );
+   v[ 1 ] = ( BYTE ) ( unsigned int ) SECOND_IPADDRESS( pdwAddr );
+   v[ 2 ] = ( BYTE ) ( unsigned int ) THIRD_IPADDRESS( pdwAddr );
+   v[ 3 ] = ( BYTE ) ( unsigned int ) FOURTH_IPADDRESS( pdwAddr );
 
    hb_retclen( ( char * ) &v[ 0 ], 4 );
 }

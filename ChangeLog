@@ -1,11 +1,28 @@
 /*
- * $Id: ChangeLog,v 1.1461 2015-04-25 23:40:26 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1462 2015-05-01 01:08:50 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-04-30 20:08 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+   * source/h_ipaddress.prg
+     ! Casting.
+   * source/h_windows.prg
+     + TWindow:lControlsAsProperties property added.
+       Controls accessed via WINDOW:CONTROL syntax returns direct
+       control's value instead control's object.
+       i.e.       oWnd:TextBox1 := UPPER( oWnd:TextBox2 )
+       instead of oWnd:TextBox1:Value := UPPER( oWnd:TextBox2:Value )
+     + TDynamicValues() class added.
+     + TWindow:DynamicValues method added.
+       Returns an object which allows access to controls' values
+       as properties.
+       i.e.    x := oWnd:DynamicValues() ; x:TextBox1 := UPPER( x:TextBox2 )
+   * source/h_xbrowse.prg
+     + TVirtualField class added.
 
 2015-04-25 20:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_altsyntax.htm

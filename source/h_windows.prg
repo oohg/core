@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.254 2015-03-31 01:38:25 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.255 2015-05-01 01:08:51 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -228,6 +228,8 @@ CLASS TWindow
    DATA lDestroyed          INIT .F.
    DATA Block               INIT nil
    DATA VarName             INIT ""
+   DATA lControlsAsProperties   INIT .F.
+   DATA hDynamicValues      INIT nil
 
    DATA lAdjust             INIT .T.
    DATA lFixFont            INIT .F.
@@ -350,6 +352,7 @@ CLASS TWindow
    METHOD SetRedraw
    METHOD Anchor              SETGET
    METHOD AdjustAnchor
+   METHOD DynamicValues       BLOCK { |Self| IF( ::hDynamicValues == NIL, ::hDynamicValues := TDynamicValues():New( Self ) , ::hDynamicValues ) }
 
    //CGR
    METHOD CheckClientsPos
@@ -1306,9 +1309,21 @@ METHOD Error( xParam ) CLASS TWindow
 Local nPos, cMessage
    cMessage := __GetMessage()
 
-   nPos := aScan( ::aControlsNames, UPPER( ALLTRIM( cMessage ) ) + CHR( 255 ) )
+   * nPos := aScan( ::aControlsNames, UPPER( ALLTRIM( cMessage ) ) + CHR( 255 ) )
+   nPos := aScan( ::aControlsNames, cMessage + CHR( 255 ) )
    If nPos > 0
-      Return ::aControls[ nPos ]
+      If ::lControlsAsProperties
+         Return ::aControls[ nPos ]:Value
+      Else
+         Return ::aControls[ nPos ]
+      EndIf
+   EndIf
+
+   If PCOUNT() >= 1 .AND. ::lControlsAsProperties .AND. LEFT( cMessage, 1 ) == "_"
+      nPos := aScan( ::aControlsNames, SUBSTR( cMessage, 2 ) + CHR( 255 ) )
+      If nPos > 0
+         Return ( ::aControls[ nPos ]:Value := xParam )
+      EndIf
    EndIf
 
    If PCOUNT() >= 1
@@ -1323,6 +1338,7 @@ Local nPos, cMessage
          Return ::aProperties[ nPos ][ 2 ]
       EndIf
    EndIf
+
 Return ::MsgNotFound( cMessage )
 
 *-----------------------------------------------------------------------------*
@@ -2830,6 +2846,56 @@ STATIC lState := .T.
       lState := lNewState
    EndIf
 RETURN lState
+
+*-----------------------------------------------------------------------------*
+CLASS TDynamicValues
+*-----------------------------------------------------------------------------*
+   DATA   oWnd
+   METHOD New
+   ERROR HANDLER Error
+ENDCLASS
+
+*-----------------------------------------------------------------------------*
+METHOD New( oWnd ) CLASS TDynamicValues
+*-----------------------------------------------------------------------------*
+   ::oWnd := oWnd
+Return Self
+
+*-----------------------------------------------------------------------------*
+METHOD Error( xParam ) CLASS TDynamicValues
+*-----------------------------------------------------------------------------*
+Local nPos, cMessage
+   cMessage := __GetMessage()
+
+   If PCOUNT() >= 1 .AND. LEFT( cMessage, 1 ) == "_"
+
+      nPos := aScan( ::oWnd:aControlsNames, SUBSTR( cMessage, 2 ) + CHR( 255 ) )
+      If nPos > 0
+         Return ( ::oWnd:aControls[ nPos ]:Value := xParam )
+      EndIf
+
+      nPos := ASCAN( ::oWnd:aProperties, { |a| "_" + a[ 1 ] == cMessage } )
+      If nPos > 0
+         ::oWnd:aProperties[ nPos ][ 2 ] := xParam
+         Return ::oWnd:aProperties[ nPos ][ 2 ]
+      EndIf
+
+   Else
+
+      nPos := aScan( ::oWnd:aControlsNames, cMessage + CHR( 255 ) )
+      If nPos > 0
+         Return ::oWnd:aControls[ nPos ]:Value
+      EndIf
+
+      nPos := ASCAN( ::oWnd:aProperties, { |a| a[ 1 ] == cMessage } )
+      If nPos > 0
+         Return ::oWnd:aProperties[ nPos ][ 2 ]
+      EndIf
+
+   EndIf
+
+Return ::MsgNotFound( cMessage )
+
 
 
 #pragma BEGINDUMP

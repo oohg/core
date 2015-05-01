@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.125 2015-04-25 19:16:57 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.126 2015-05-01 01:08:51 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -2313,6 +2313,63 @@ METHOD Filter( cFilter ) CLASS ooHGRecord
    EndIf
 
 Return Self
+
+
+
+
+
+#ifdef __XHARBOUR__
+*-----------------------------------------------------------------------------*
+CLASS TVirtualField
+*-----------------------------------------------------------------------------*
+   DATA bRecordId     INIT nil
+   DATA hValues       INIT nil
+   DATA xArea         INIT nil
+   DATA xDefault      INIT nil
+   METHOD New
+   METHOD Value       SETGET
+   METHOD RecordId
+ENDCLASS
+
+METHOD New( xSource, xDefault ) CLASS TVirtualField
+   ::hValues := { => }
+   If     HB_IsBlock( xSource )
+      ::bRecordId := xSource
+   ElseIf HB_IsObject( xSource ) .OR. HB_IsString( xSource )
+      ::xArea := xSource
+   EndIf
+   If PCOUNT() >= 2
+      ::xDefault := xDefault
+   EndIf
+Return Self
+
+METHOD Value( xValue ) CLASS TVirtualField
+LOCAL xRecordId
+   xRecordId := ::RecordId()
+   If     PCOUNT() >= 1
+      ::hValues[ xRecordId ] := xValue
+   ElseIf ! xRecordId $ ::hValues
+      If HB_IsBlock( ::xDefault )
+         ::hValues[ xRecordId ] := EVAL( ::xDefault )
+      Else
+         ::hValues[ xRecordId ] := ::xDefault
+      EndIf
+   EndIf
+Return ::hValues[ xRecordId ]
+
+METHOD RecordId() CLASS TVirtualField
+LOCAL xId
+   If     HB_IsBlock( ::bRecordId )
+      xId := EVAL( ::bRecordId )
+   ElseIf HB_IsObject( ::xArea )
+      xId := ::xArea:RecNo()
+   ElseIf HB_IsString( ::xArea )
+      xId := ( ::xArea )->( RecNo() )
+   Else
+      xId := RecNo()
+   EndIf
+Return xId
+#endif
 
 
 
