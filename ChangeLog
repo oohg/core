@@ -1,11 +1,129 @@
 /*
- * $Id: ChangeLog,v 1.1462 2015-05-01 01:08:50 guerra000 Exp $
+ * $Id: ChangeLog,v 1.1463 2015-05-02 04:20:45 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-05-02 01:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Previous entries.
+   * ./ChangeLog.004
+     + Additional info to a previous entry.
+   * doc/classes.txt
+     * Updated.
+   * manual/changelog.htm
+     * Updated.
+   * include/i_windefs.ch
+       + LVM_GETHEADER.
+   + samples/oohg/TVirtual/TVirtualField.prg
+     * Shows how to use TVirtualField class.
+   * source/h_grid.prg
+     * Format.
+     * Comments.
+     + Some T*O*D*O*S.
+     % Some code.
+     - Unneeded code.
+     + Data TGrid:lChangeBeforeEdit. When .T. the control's value is set
+       to nRow parameter before editing. Defaults to .F. for TGrid and
+       TGridMulti classes, and is forced to .T. for TGridMulti.
+     + Data TGrid:lScrollBarUsesClientArea, .F. for TGrid, TGridMulti and
+       TGridByCell classes. Scrollbars in Grid controls do no use space
+       in the control's cliente area while scrollbars in XBrowse and Browse
+       controls do. This behaviour must be taken into account to not
+       affect the location of the control's columns at the screen.
+     + Parameters lOneRow and to TGrid:EditGrid(), TGridMulti:EditGrid()
+       and TGridByCell:EditGrid().
+     + Parameter lChange to editing methods.
+       Defaults to ::lChangeBeforeEdit for TGrid and TGridMulti classes.
+       This parameters is ignored and forced to .T. in TGridByCell methods.
+     * nRow/nItem parameters in editing methods now default to
+       Max( 1, ::FirstSelectedItem ).
+     + Parameter nRow to TGrid:IsColumnReadonly() and TGrid:IsColumnWhen().
+       This parameter allows the selection of the item passed to the
+       codeblock. Previously selected row was always used.
+       Defaults to ::FirstSelectedItem.
+       If no row is selected, an empty array {} is passed.
+       All calls to this methods in TGrid, TGridMulti and TGridByCell
+       classes now use this parameter.
+     * All editing methods now check ::FirstVisibleColumn.
+     * Calls to Listview_Scroll changed by ::ScrollToLeft().
+     + Parameters nItem, nCol, lAppend, lOneRow and lChange to
+       TGrid:EditItem().
+     * Function _GetGridCellData now uses parameter lParam to obtain the
+       row and col of the just clicked cell.
+     ! Cell is wrongly positioned before entering inline edition.
+     ! Function _OOHG_TGrid_Notify2 does not detect the right column
+       when user rightclicks in a header near its upper border.
+     ! TGrid:Events_Notify() does not detect the right cell when user
+       clicks near its borders.
+     * TGrid:DeleteItem() now triggers ::DoChange() when ::lNoneUnsels is
+       .T. and ::FirstSelectedItem is 0.
+     ! TGrid:ColumnWidth() does not remove a column from ::aHiddenCols
+       when its size is changed to a non zero value.
+     ! Some methods inherited from TGrid class do not work properly with
+       MULTISELECT grids.
+     + Methods EditAllCells, EditCell, EditItem, Events and Events_Notify
+       to TGridMulti class.
+     ! Some methods inherited from TGrid class do not work properly with
+       NAVIGATEBYCELL grids.
+     + Methods AddColumn, DeleteAllItems and InsertBlank to
+       TGridByCell class.
+     - Methods ColumnHide, Events_Enter, IsColumnReadonly and IsColumnWhen
+       from TGridByCell class.
+     * TGridByCell:EditItem() now calls TGridByCell:EditGrid()
+       instead of doing nothing.
+     ! TGridByCell:Value() positions the column in the wrong place.
+     ! TGridByCell:Value() scrolls to column 1 after setting new value.
+     * When TGridByCell:Value() is called without or with an invalid
+       parameter, ::nRowPos is forced to ::FirstSelectedItem and, if
+       there's no item selected, ::nColPos is set to 0.
+     ! TGridByCell:DeleteItem() does not change control's value when
+       deleting a row that precedes the selected one.
+     - TGridByCell's handler for WM_LBUTTONDOWN and WM_RBUTTONDOWN.
+     + Ctrl+UpArrow and Ctrl+DownArrow to move the current cell of a
+       TGridByCell control to the first row and the last row in the
+       same column.
+     + TGridByCell's handler for NM_CLICK and NM_RCLICK.
+     * TGridByCell:DoChange() now uses AEqual().
+     + Function LISTVIEW_HITTEDCELL at C level.
+     + Function HEADER_HITTEST at C level.
+   * source/h_xbrowse.prg
+     * Comments.
+     % Some code.
+     + Data TXBrowse:lScrollBarUsesClientArea, .T. for TXBrowse,
+       TXBrowseByCell, TOBrowse an TOBrowseByCell.
+     + TXBrowse:AddItem() as a NIL codeblock.
+     + TXBrowse:InserItem() as a NIL codeblock.
+     * TXBrowse:Define() sets ::lChangeBeforeEdit to .T.
+     * TXBrowse:Events_Notify() now handles NM_CLICK, NM_RCLICk and
+       NM_CUSTOMDRAW directly instead of calling ::Super.
+     * TXBrowse:AppendItem() uses new parameters in ::EditItem() call.
+     + Parameter lChange to editing methods.
+     + Parameters nItem, nCol and lChange to TXBrowse:EditItem().
+       INCOMPATIBLE: the order of the parameters was changed.
+     + All calls to methods IsColumnReadonly and IsColumnWhen in TXBrowse
+       and TXBrowseByCell classes now use nRow parameter.
+     * Calls to Listview_Scroll changed by ::ScrollToLeft().
+     * Class TVirtualField now available to Harbour builds.
+     * Class TXBrowseByCell no longer inherits from class TGridByCell.
+     + TXBrowseByCell:AddColumn().
+     + TXBrowseByCell:DeleteAllItems().
+     + TXBrowseByCell:EditItem2() as a NIL codeblock.
+     - TXBrowseByCell:IsColumnReadonly()
+     - TXBrowseByCell:IsColumnWhen()
+     - TXBrowseByCell:Events_Enter()
+     + Ctrl+UpArrow and Ctrl+DownArrow to move the current cell of a
+       TXBrowseByCell control to the first row and the last row in the
+       same column.
+     + Parameter lParam in calls to function _GetGridCellData.
+     + Validation over column parameter in TXBrowseByCell:Refresh().
+     ! TXBrowseByCell:CurrentCol() positions the column in the wrong place.
+     - TXBrowseByCell's handler for WM_LBUTTONDOWN and WM_RBUTTONDOWN.
+   * source/winprint.prg
+     ! Typo in option text.
 
 2015-04-30 20:08 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
    * source/h_ipaddress.prg
@@ -100,7 +218,7 @@
      + Added parameter lAppend to TGrid:AppendItem().
        Defaults to .F.
        When .T. an item is appended even if ::AllowAppend is .F.
-     * TXBrowse():EditCell() and TXBrowse:EditAllCells() now honor
+     * TXBrowse():EditCell() and TXBrowse:EditAllCells() now check
        ::FirstVisibleColumn.
      * TXBrowse:EditAllCells() now uses ::SyncData().
      + Parameter uReadOnly to TXBrowse:AddColumn(), TXBrowse:SetColumn()
@@ -206,7 +324,7 @@
      * ::EditItem changed by ::AppendItem in TOBrowse():PageDown,
        TOBrowse():Down and TOBrowse():Events_Notify.
      % TOBrowse():Down.
-     * TOBrowse():EditAllCells now honors ::FirstVisibleColumn.
+     * TOBrowse():EditAllCells now checks ::FirstVisibleColumn.
      + _OOHG_ThisItemCellValue is set to cell's value before evaluating
        READONLY and WHEN clauses in TOBrowse():EditAllCells.
      * GetAltState() by GetKeyFlagState() for recognizing Alt-A.
@@ -234,13 +352,13 @@
        testing it's value.
      ! Infinite loop in TOBrowseByCell():EditGrid caused by the reset of
        ::bPosition in TOBrowseByCell():EditCell.
-     * TOBrowseByCell():EditItem_B now honors ::AllowAppend.
+     * TOBrowseByCell():EditItem_B now checks ::AllowAppend.
      + Support for parameter lRefresh in TOBrowseByCell():EditGrid.
      - Unneeded code in TOBrowseByCell():EditGrid
      % TOBrowseByCell():PageDown.
      * ::EditItem changed by ::AppendItem in TOBrowseByCell():PageDown.
      % TOBrowseByCell():Down.
-     * TOBrowseByCell():Down now honors ::AllowAppend.
+     * TOBrowseByCell():Down now checks ::AllowAppend.
      * ::EditItem changed by ::AppendItem in TOBrowseByCell():Down.
      * TOBrowseByCell():Right now parameter lAppend defaults to .F.
      ; Some T*O*D*O*s pending.
@@ -361,7 +479,7 @@
      + New parameters to method TXBrowseByCell():Define2.
      * Do not set current column to 0 in TXBrowseByCell():DeleteColumn.
      * TXBrowseByCell():DeleteColumn calls ::DoChange if necessary.
-     * TXBrowseByCell():EditCell now honors ::FirstVisibleColumn and
+     * TXBrowseByCell():EditCell now checks ::FirstVisibleColumn and
        ::lLocked, and checks that the cell is into bounds.
      ! TXBrowseByCell():EditCell shows wrong data when editing a cell
        that's not at the current row. Now, ::Value is set to the cell

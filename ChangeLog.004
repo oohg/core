@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog.004,v 1.4 2015-04-13 21:45:40 fyurisich Exp $
+ * $Id: ChangeLog.004,v 1.5 2015-05-02 04:20:45 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -4106,6 +4106,8 @@
        the column number as parameter).
      ; Column number 0 means that the user clicked on an unused
        part of the header.
+     ; When bHeadRClick codeblock returns .F. the control is not scrolled
+       to the leftmost column.
      ; Thanks to David Field for his idea and code sample.
    * source/h_browse.prg
    * source/h_xbrowse.prg

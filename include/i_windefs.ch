@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.63 2015-03-09 02:51:07 fyurisich Exp $
+ * $Id: i_windefs.ch,v 1.64 2015-05-02 04:20:45 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -379,6 +379,7 @@ LISTVIEW CONTROL
 #define LVM_GETIMAGELIST              ( LVM_FIRST + 2 )
 #define LVM_SETIMAGELIST              ( LVM_FIRST + 3 )
 #define LVM_GETITEMCOUNT              ( LVM_FIRST + 4 )
+#define LVM_GETHEADER                 ( LVM_FIRST + 31 )
 #define LVSIL_NORMAL                  0
 #define LVSIL_SMALL                   1
 #define LVSIL_STATE                   2

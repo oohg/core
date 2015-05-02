@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.126 2015-05-01 01:08:51 guerra000 Exp $
+ * $Id: h_xbrowse.prg,v 1.127 2015-05-02 04:20:46 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -85,8 +85,10 @@ CLASS TXBROWSE FROM TGrid
    DATA lNoShowEmptyRow           INIT .F.
    DATA lUpdCols                  INIT .F.
    DATA nHelpId                   INIT 0
+   DATA lScrollBarUsesClientArea  INIT .T.
 
    METHOD AddColumn
+   METHOD AddItem                 BLOCK { || Nil }
    METHOD AdjustRightScroll
    METHOD AppendItem
    METHOD CheckItem               BLOCK { || Nil }
@@ -116,6 +118,7 @@ CLASS TXBROWSE FROM TGrid
    METHOD GoBottom
    METHOD GoTop
    METHOD HelpId                  SETGET
+   METHOD InsertItem              BLOCK { || Nil }
    METHOD Left                    BLOCK { || Nil }
    METHOD MoveTo
    METHOD PageDown
@@ -141,21 +144,30 @@ CLASS TXBROWSE FROM TGrid
    MESSAGE EditGrid               METHOD EditAllCells
 
 /*
-   Available methods from TGrid:
-      AddItem
+   Available methods from TGrid:         TODO: Check if they are all safe to use
+      AddBitMap
+      AdjustResize
+      Append
+      BackColor
+      Cell
+      CellCaption
+      CellImage
       ColumnBetterAutoFit
       ColumnCount
       ColumnHide
       ColumnOrder
       ColumnsBetterAutoFit
       ColumnShow
+      CompareItems
       CountPerPage
       Define2
       DeleteAllItems
       DeleteItem
-      ItemCount
       EditCell2
+      EditGrid
+      EditItem2
       Events_Enter
+      FirstColInOrder
       FirstSelectedItem
       FirstVisibleColumn
       FirstVisibleItem
@@ -167,15 +179,17 @@ CLASS TXBROWSE FROM TGrid
       HeaderImageAlign
       HeaderSetFont
       InsertBlank
-      InsertItem
       IsColumnReadOnly
       IsColumnWhen
       Item
       ItemCount
       ItemHeight
       Justify
+      LastColInOrder
       LoadHeaderImages
+      NextColInOrder
       OnEnter
+      PriorColInOrder
       Release
       ScrollToCol
       ScrollToLeft
@@ -186,6 +200,7 @@ CLASS TXBROWSE FROM TGrid
       SetRangeColor
       SetSelectedColors
       SortColumn
+      SortItems
       Value                       it's used for painting the grid, it doesn't trigger on change event
 */
 
@@ -335,6 +350,8 @@ Local nWidth2, nCol2, oScroll, z
    If novscroll
       ::VScrollVisible( .F. )
    EndIf
+
+   ::lChangeBeforeEdit := .T.
 
    // Value
    ::Define3( uValue )
@@ -660,7 +677,7 @@ FUNCTION TXBrowse_UpDate_PerType( uValue )
 *-----------------------------------------------------------------------------*
 Local cType := ValType( uValue )
 
-   If     cType == "C"
+   If cType == "C"
       uValue := rTrim( uValue )
    ElseIf cType == "N"
       uValue := lTrim( Str( uValue ) )
@@ -1183,7 +1200,17 @@ Local nvKey, lGo, nNotify := GetNotifyCode( lParam )
       Else
          ::Super:Value := ::nRowPos
       EndIf
-      // Continue in ::Super
+
+      If HB_IsBlock( ::OnClick )
+         If ! ::NestedClick
+            ::NestedClick := ! _OOHG_NestedSameEvent()
+            ::DoEventMouseCoords( ::OnClick, "CLICK" )
+            ::NestedClick := .F.
+         EndIf
+      EndIf
+
+     // skip default action
+      Return 1
 
    ElseIf nNotify == NM_RCLICK
       If ! ::lLocked .AND. ::FirstVisibleColumn # 0
@@ -1191,7 +1218,19 @@ Local nvKey, lGo, nNotify := GetNotifyCode( lParam )
       Else
          ::Super:Value := ::nRowPos
       EndIf
-      // Continue in ::Super
+
+      If HB_IsBlock( ::OnRClick )
+         ::DoEventMouseCoords( ::OnRClick, "RCLICK" )
+      EndIf
+
+      // fire context menu
+      If ::ContextMenu != Nil
+         ::ContextMenu:Cargo := _GetGridCellData( Self, lParam )
+         ::ContextMenu:Activate()
+      EndIf
+
+     // skip default action
+      Return 1
 
    ElseIf nNotify == LVN_BEGINDRAG
       If ! ::lLocked .AND. ::FirstVisibleColumn # 0
@@ -1242,7 +1281,7 @@ Local nvKey, lGo, nNotify := GetNotifyCode( lParam )
 
    ElseIf nNotify == NM_CUSTOMDRAW
       ::AdjustRightScroll()
-      // Continue in ::Super
+      Return TGrid_Notify_CustomDraw( Self, lParam, .F., , , .F., ::lFocusRect, ::lNoGrid, ::lPLM )
 
    EndIf
 
@@ -1332,7 +1371,7 @@ Local lRet := .F.
 
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
    If ( lAppend .OR. ::AllowAppend ) .AND. ! ::lLocked
-      lRet := ::EditItem( .T., ! ( ::Inplace .AND. ::FullMove ) )
+      lRet := ::EditItem( , , .T., ! ( ::Inplace .AND. ::FullMove ) )
    EndIf
 
 Return lRet
@@ -1505,9 +1544,13 @@ Local Value
 Return .T.
 
 *-----------------------------------------------------------------------------*
-METHOD EditItem( lAppend, lOneRow ) CLASS TXBrowse
+METHOD EditItem( nItem, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local uRet := .F.
+
+   Empty( nItem )
+   Empty( nCol )
+   Empty( lChange )
 
    If ! ::lNestedEdit .AND. ! ::lLocked
       ::lNestedEdit := .T.
@@ -1525,7 +1568,7 @@ Return uRet
 *-----------------------------------------------------------------------------*
 METHOD EditItem_B( lAppend, lOneRow ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
-Local oWorkArea, cTitle, z, nOld
+Local oWorkArea, cTitle, z, nOld, nRow
 Local uOldValue, oEditControl, cMemVar, bReplaceField
 Local aItems, aMemVars, aReplaceFields
 
@@ -1594,10 +1637,12 @@ Local aItems, aMemVars, aReplaceFields
       EndIf
    EndIf
 
+   nRow := ::CurrentRow
+
    If EMPTY( oWorkArea:cAlias__ )
-      aItems := ::EditItem2( ::CurrentRow, aItems, ::aEditControls, aMemVars, cTitle )
+      aItems := ::EditItem2( nRow, aItems, ::aEditControls, aMemVars, cTitle )
    Else
-      aItems := ( oWorkArea:cAlias__ )->( ::EditItem2( ::CurrentRow, aItems, ::aEditControls, aMemVars, cTitle ) )
+      aItems := ( oWorkArea:cAlias__ )->( ::EditItem2( nRow, aItems, ::aEditControls, aMemVars, cTitle ) )
    EndIf
 
    If Empty( aItems )
@@ -1605,16 +1650,16 @@ Local aItems, aMemVars, aReplaceFields
          ::lAppendMode := .F.
          oWorkArea:GoTo( nOld )
       EndIf
-      _OOHG_Eval( ::OnAbortEdit, ::CurrentRow, 0 )
+      _OOHG_Eval( ::OnAbortEdit, nRow, 0 )
    Else
       If lAppend
          oWorkArea:Append()
       EndIf
 
       For z := 1 To Len( aItems )
-         If ::IsColumnReadOnly( z )
+         If ::IsColumnReadOnly( z, nRow )
             // Readonly field
-         ElseIf ! ::IsColumnWhen( z )
+         ElseIf ! ::IsColumnWhen( z, nRow )
             // Not a valid when
          ElseIf aScan( ::aHiddenCols, z ) > 0
            // Hidden column
@@ -1633,12 +1678,12 @@ Local aItems, aMemVars, aReplaceFields
       EndIf
 
       If ::RefreshType == REFRESH_NO
-         ::RefreshRow( ::CurrentRow )
+         ::RefreshRow( nRow )
       Else
          ::Refresh()
       EndIf
-      _SetThisCellInfo( ::hWnd, ::CurrentRow, 0, Nil )
-      _OOHG_Eval( ::OnEditCell, ::CurrentRow, 0 )
+      _SetThisCellInfo( ::hWnd, nRow, 0, Nil )
+      _OOHG_Eval( ::OnEditCell, nRow, 0 )
       _ClearThisCellInfo()
    EndIf
 
@@ -1658,10 +1703,11 @@ METHOD SyncData( nRow ) CLASS TXBrowse
 Return Self
 
 *-----------------------------------------------------------------------------*
-METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, nOnFocusPos ) CLASS TXBrowse
+METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, nOnFocusPos, lChange ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local lRet, bReplaceField, oWorkArea
 
+   Empty( lChange )
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
    ASSIGN nRow    VALUE nRow    TYPE "N" DEFAULT ::CurrentRow
    ASSIGN nCol    VALUE nCol    TYPE "N" DEFAULT ::FirstColInOrder
@@ -1680,12 +1726,12 @@ Local lRet, bReplaceField, oWorkArea
 
    _OOHG_ThisItemCellValue := ::Cell( nRow, nCol )
 
-   If ::IsColumnReadOnly( nCol )
+   If ::IsColumnReadOnly( nCol, nRow )
       If ! ::lSilent
          PlayHand()
       EndIf
       lRet := .F.
-   ElseIf ! ::IsColumnWhen( nCol )
+   ElseIf ! ::IsColumnWhen( nCol, nRow )
       lRet := .F.
    Else
       oWorkArea := ::oWorkArea
@@ -1734,7 +1780,7 @@ Local lRet, bReplaceField, oWorkArea
 Return lRet
 
 *-----------------------------------------------------------------------------*
-METHOD EditAllCells( nRow, nCol, lAppend, lOneRow ) CLASS TXBrowse
+METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local lRet, lSomethingEdited
 
@@ -1751,6 +1797,7 @@ Local lRet, lSomethingEdited
       Return .F.
    EndIf
 
+   Empty( lChange)
    ::SyncData( nRow )
 
    lSomethingEdited := .F.
@@ -1758,15 +1805,15 @@ Local lRet, lSomethingEdited
    Do While nCol >= 1 .AND. nCol <= Len( ::aHeaders )
       _OOHG_ThisItemCellValue := ::Cell( nRow, nCol )
 
-      If ::IsColumnReadOnly( nCol )
+      If ::IsColumnReadOnly( nCol, nRow )
         // Read only column, skip
-      ElseIf ! ::IsColumnWhen( nCol )
+      ElseIf ! ::IsColumnWhen( nCol, nRow )
         // Not a valid WHEN, skip column and continue editing
       ElseIf aScan( ::aHiddenCols, nCol ) > 0
         // Hidden column, skip
       Else
 
-         lRet := ::EditCell( nRow, nCol, , , , , lAppend )
+         lRet := ::EditCell( nRow, nCol, , , , , lAppend, lOneRow, .F. )
 
          If lRet
             lSomethingEdited := .T.
@@ -1802,7 +1849,7 @@ Local lRet, lSomethingEdited
       EndIf
    EndDo
 
-   ListView_Scroll( ::hWnd, - _OOHG_GridArrayWidths( ::hWnd, ::aWidths ), 0 )
+   ::ScrollToLeft()
 
 Return lSomethingEdited
 
@@ -1869,26 +1916,26 @@ Local cField, cArea, nPos, aStruct
          EndIf
       EndIf
       If ValType( EditControl ) != "O" .AND. nPos != 0
-         // Checks according to field type
+         // Use field type
          Do Case
-            Case aStruct[ nPos ][ 2 ] == "N"
-               If aStruct[ nPos ][ 4 ] == 0
-                  EditControl := TGridControlTextBox():New( Replicate( "9", aStruct[ nPos ][ 3 ] ), , "N", , , , Self )
-               Else
-                  EditControl := TGridControlTextBox():New( Replicate( "9", aStruct[ nPos ][ 3 ] - aStruct[ nPos ][ 4 ] - 1 ) + "." + Replicate( "9", aStruct[ nPos ][ 4 ] ), , "N", , , , Self )
-               EndIf
-            Case aStruct[ nPos ][ 2 ] == "L"
-               // EditControl := TGridControlCheckBox():New( , , , , Self)
-               EditControl := TGridControlLComboBox():New( , , , , Self )
-            Case aStruct[ nPos ][ 2 ] == "M"
-               EditControl := TGridControlMemo():New( , , Self )
-            Case aStruct[ nPos ][ 2 ] == "D"
-               // EditControl := TGridControlDatePicker():New( .T., , , , Self )
-               EditControl := TGridControlTextBox():New( "@D", , "D", , , , Self )
-            Case aStruct[ nPos ][ 2 ] == "C"
-               EditControl := TGridControlTextBox():New( "@S" + Ltrim( Str( aStruct[ nPos ][ 3 ] ) ), , "C", , , , Self )
-            OtherWise
-               // Non-implemented field type!!!
+         Case aStruct[ nPos ][ 2 ] == "N"
+            If aStruct[ nPos ][ 4 ] == 0
+               EditControl := TGridControlTextBox():New( Replicate( "9", aStruct[ nPos ][ 3 ] ), , "N", , , , Self )
+            Else
+               EditControl := TGridControlTextBox():New( Replicate( "9", aStruct[ nPos ][ 3 ] - aStruct[ nPos ][ 4 ] - 1 ) + "." + Replicate( "9", aStruct[ nPos ][ 4 ] ), , "N", , , , Self )
+            EndIf
+         Case aStruct[ nPos ][ 2 ] == "L"
+            // EditControl := TGridControlCheckBox():New( , , , , Self)
+            EditControl := TGridControlLComboBox():New( , , , , Self )
+         Case aStruct[ nPos ][ 2 ] == "M"
+            EditControl := TGridControlMemo():New( , , Self )
+         Case aStruct[ nPos ][ 2 ] == "D"
+            // EditControl := TGridControlDatePicker():New( .T., , , , Self )
+            EditControl := TGridControlTextBox():New( "@D", , "D", , , , Self )
+         Case aStruct[ nPos ][ 2 ] == "C"
+            EditControl := TGridControlTextBox():New( "@S" + Ltrim( Str( aStruct[ nPos ][ 3 ] ) ), , "C", , , , Self )
+         OtherWise
+            // Non-implemented field type!!!
          EndCase
       EndIf
       If ValType( EditControl ) != "O"
@@ -2318,17 +2365,17 @@ Return Self
 
 
 
-#ifdef __XHARBOUR__
 *-----------------------------------------------------------------------------*
 CLASS TVirtualField
 *-----------------------------------------------------------------------------*
-   DATA bRecordId     INIT nil
-   DATA hValues       INIT nil
-   DATA xArea         INIT nil
-   DATA xDefault      INIT nil
+   DATA bRecordId                 INIT Nil
+   DATA hValues                   INIT Nil
+   DATA xArea                     INIT Nil
+   DATA xDefault                  INIT Nil
+
    METHOD New
-   METHOD Value       SETGET
    METHOD RecordId
+   METHOD Value                   SETGET
 ENDCLASS
 
 METHOD New( xSource, xDefault ) CLASS TVirtualField
@@ -2369,30 +2416,29 @@ LOCAL xId
       xId := RecNo()
    EndIf
 Return xId
-#endif
 
 
 
 
 
-CLASS TXBROWSEBYCELL FROM TXBrowse, TGridByCell
+CLASS TXBROWSEBYCELL FROM TXBrowse
    DATA Type                      INIT "XBROWSEBYCELL" READONLY
 
+   METHOD AddColumn
    METHOD CurrentCol              SETGET
    METHOD Define2
    METHOD Define3
+   METHOD DeleteAllItems
    METHOD DeleteColumn
    METHOD Down
    METHOD EditCell
    METHOD EditCell2
-   METHOD EditGrid                                   
+   METHOD EditGrid
+   METHOD EditItem2               BLOCK { || Nil }
    METHOD Events
-   METHOD Events_Enter
    METHOD Events_Notify
    METHOD GoBottom
    METHOD GoTop
-   METHOD IsColumnReadonly
-   METHOD IsColumnWhen
    METHOD Left
    METHOD MoveTo
    METHOD Refresh
@@ -2404,46 +2450,8 @@ CLASS TXBROWSEBYCELL FROM TXBrowse, TGridByCell
    MESSAGE EditAllCells           METHOD EditGrid
 
 /*
-   Available methods from TGrid:
+   Available methods from TXBrowse:              TODO: Check if they are all safe to use
       AddItem
-      ColumnBetterAutoFit
-      ColumnCount
-      ColumnOrder
-      ColumnsBetterAutoFit
-      ColumnShow
-      CountPerPage
-      DeleteAllItems
-      DeleteItem
-      ItemCount
-      FirstSelectedItem
-      FirstVisibleColumn
-      FirstVisibleItem
-      FixControls
-      FontColor
-      Header
-      HeaderHeight
-      HeaderImage
-      HeaderImageAlign
-      HeaderSetFont
-      InsertBlank
-      InsertItem
-      Item
-      ItemCount
-      ItemHeight
-      Justify
-      LoadHeaderImages
-      OnEnter
-      Release
-      ScrollToCol
-      ScrollToLeft
-      ScrollToNext
-      ScrollToPrior
-      ScrollToRight
-      SetItemColor
-      SetRangeColor
-      SortColumn
-
-   Available methods from TXBrowse:
       AdjustRightScroll
       AppendItem
       CheckItem
@@ -2460,10 +2468,11 @@ CLASS TXBROWSEBYCELL FROM TXBrowse, TGridByCell
       DoChange
       EditItem
       EditItem_B
-      EditItem2
       Enabled
       FixBlocks
       GetCellType
+      HelpId
+      InsertItem
       PageDown
       PageUp
       RefreshData
@@ -2471,12 +2480,65 @@ CLASS TXBROWSEBYCELL FROM TXBrowse, TGridByCell
       SetColumn
       SetScrollPos
       SizePos
+      SyncData
       ToExcel
+      ToolTip
       ToOpenOffice
       TopBottom
       Visible
       VScrollVisible
       WorkArea
+
+   Available methods from TGrid:                 TODO: Check if they are all safe to use
+      AddBitMap
+      AdjustResize
+      Append
+      BackColor
+      Cell
+      CellCaption
+      CellImage
+      ColumnBetterAutoFit
+      ColumnCount
+      ColumnOrder
+      ColumnsBetterAutoFit
+      ColumnShow
+      CompareItems
+      CountPerPage
+      DeleteItem               
+      Events_Enter
+      FirstColInOrder
+      FirstSelectedItem
+      FirstVisibleColumn
+      FirstVisibleItem
+      FixControls
+      FontColor
+      Header
+      HeaderHeight
+      HeaderImage
+      HeaderImageAlign
+      HeaderSetFont
+      InsertBlank
+      IsColumnReadOnly
+      IsColumnWhen
+      Item
+      ItemCount
+      ItemHeight
+      Justify
+      LastColInOrder
+      LoadHeaderImages
+      NextColInOrder
+      OnEnter
+      PriorColInOrder
+      Release
+      ScrollToCol
+      ScrollToLeft
+      ScrollToNext
+      ScrollToPrior
+      ScrollToRight
+      SetItemColor
+      SetRangeColor
+      SortColumn
+      SortItems
 */
 
    EMPTY( _OOHG_AllVars )
@@ -2545,10 +2607,29 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
    // By default, search in the current column
    ::SearchCol := -1
 
-   // This is not really needed because TGridByCell ignores it
+   // This is needed for edit controls to work properly
    ::InPlace := .T.
 
 Return Self
+
+*-----------------------------------------------------------------------------*
+METHOD AddColumn( nColIndex, xField, cHeader, nWidth, nJustify, uForeColor, ;
+                  uBackColor, lNoDelete, uPicture, uEditControl, uHeadClick, ;
+                  uValid, uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign, ;
+                  uReplaceField, lRefresh, uReadOnly ) CLASS TXBrowseByCell
+*-----------------------------------------------------------------------------*
+
+   nColIndex := ::Super:AddColumn( nColIndex, xField, cHeader, nWidth, nJustify, uForeColor, ;
+                                   uBackColor, lNoDelete, uPicture, uEditControl, uHeadClick, ;
+                                   uValid, uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign, ;
+                                   uReplaceField, lRefresh, uReadOnly )
+
+   If nColIndex <= ::nColPos
+      ::CurrentCol := ::nColPos + 1
+      ::DoChange()
+   EndIf
+
+Return nColIndex
 
 *-----------------------------------------------------------------------------*
 METHOD DeleteColumn( nColIndex, lNoDelete ) CLASS TXBrowseByCell
@@ -2568,7 +2649,16 @@ METHOD DeleteColumn( nColIndex, lNoDelete ) CLASS TXBrowseByCell
 Return nColIndex
 
 *-----------------------------------------------------------------------------*
-METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, nOnFocusPos ) CLASS TXBrowseByCell
+METHOD DeleteAllItems() CLASS TXBrowseByCell
+*-----------------------------------------------------------------------------*
+
+   ::nRowPos := 0
+   ::nColPos := 0
+
+Return ::Super:DeleteAllItems()
+
+*-----------------------------------------------------------------------------*
+METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, nOnFocusPos, lChange ) CLASS TXBrowseByCell
 *-----------------------------------------------------------------------------*
 Local lRet := .F.
 
@@ -2581,9 +2671,11 @@ Local lRet := .F.
    If nRow < 1 .OR. nRow > ::ItemCount .OR. nCol < 1 .OR. nCol > Len( ::aHeaders ) .OR. aScan( ::aHiddenCols, nCol ) # 0
       Return .F.
    EndIf
+
+   Empty( lChange )
    ::Value := { nRow, nCol }
 
-   If ::Super:EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, nOnFocusPos )
+   If ::Super:EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, nOnFocusPos, .F. )
       lRet := .T.
       // ::bPosition is set by TGridControl()
       If ::bPosition == 1                            // UP
@@ -2619,7 +2711,7 @@ METHOD EditCell2( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusP
 Return ::Super:EditCell2( @nRow, @nCol, EditControl, uOldValue, @uValue, cMemVar, nOnFocusPos )
 
 *-----------------------------------------------------------------------------*
-METHOD EditGrid( nRow, nCol, lAppend, lOneRow ) CLASS TXBrowseByCell
+METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowseByCell
 *-----------------------------------------------------------------------------*
 Local lSomethingEdited := .F.
 
@@ -2636,6 +2728,7 @@ Local lSomethingEdited := .F.
    ElseIf lAppend .AND. ! ::AllowAppend
       Return .F.
    EndIf
+   Empty( lChange )
    ::Value := { nRow, nCol }
 
    Do While ::nRowPos >= 1 .AND. ::nRowPos <= ::ItemCount .AND. ::nColPos >= 1 .AND. ::nColPos <= Len( ::aHeaders )
@@ -2650,7 +2743,7 @@ Local lSomethingEdited := .F.
          // Hidden column
       Else
          // Edit one cell
-         If ! ::Super:EditCell( ::nRowPos, ::nColPos, Nil, Nil, Nil, Nil, lAppend, Nil )
+         If ! ::Super:EditCell( ::nRowPos, ::nColPos, , , , , lAppend )
             If lAppend
                ::lAppendMode := .F.
                ::GoBottom()
@@ -2757,14 +2850,13 @@ FUNCTION _OOHG_TXBrowseByCell_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLA
 Local aCellData, cWorkArea, uGridValue, nSearchCol, nCol
 
    Empty( hWnd )
-   Empty( lParam )
 
    If nMsg == WM_CHAR
       _OOHG_ThisItemCellValue := ::Cell( ::CurrentRow, ( nCol := ::CurrentCol ) )
 
       If ( ! ::lLocked .AND. ::AllowEdit .AND. ( ::lLikeExcel .OR. EditControlLikeExcel( Self, nCol ) ) .AND. ;
            ! ::IsColumnReadOnly( nCol ) .AND. ::IsColumnWhen( nCol ) .AND. aScan( ::aHiddenCols, nCol ) == 0 )
-         ::EditCell( Nil, Nil, Nil, Chr( wParam ), Nil, Nil, .F., Nil )
+         ::EditCell( , , , Chr( wParam ), , , .F. )
 
       Else
          If wParam < 32
@@ -2867,10 +2959,26 @@ Local aCellData, cWorkArea, uGridValue, nSearchCol, nCol
          ::PageDown()
          Return 0
       Case wParam == VK_UP
-         ::Up()
+         If GetKeyFlagState() == MOD_CONTROL
+            If ! ::lLocked
+               ::TopBottom( GO_BOTTOM )
+               ::Refresh( { ::CountPerPage, ::nColPos } )
+               ::DoChange()
+            EndIf
+         Else
+            ::Up()
+         EndIf
          Return 0
       Case wParam == VK_DOWN
-         ::Down()
+         If GetKeyFlagState() == MOD_CONTROL
+            If ! ::lLocked
+               ::TopBottom( GO_TOP )
+               ::Refresh( { 1, ::nColPos } )
+               ::DoChange()
+            EndIf
+         Else
+            ::Down()
+         EndIf
          Return 0
       Case wParam == VK_LEFT
          If GetKeyFlagState() == MOD_CONTROL
@@ -2902,7 +3010,7 @@ Local aCellData, cWorkArea, uGridValue, nSearchCol, nCol
       _OOHG_ThisType := 'C'
       _OOHG_ThisControl := Self
 
-      aCellData := _GetGridCellData( Self )
+      aCellData := _GetGridCellData( Self, lParam )
       _OOHG_ThisItemRowIndex   := aCellData[ 1 ]
       _OOHG_ThisItemColIndex   := aCellData[ 2 ]
       _OOHG_ThisItemCellRow    := aCellData[ 3 ]
@@ -2931,9 +3039,9 @@ Local aCellData, cWorkArea, uGridValue, nSearchCol, nCol
             ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
          EndIf
       ElseIf ::FullMove
-         ::EditGrid( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex, .F., .F. )
+         ::EditGrid( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
       Else
-         ::EditCell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex, Nil, Nil, Nil, Nil, .F., Nil )
+         ::EditCell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex, , , , , .F. )
       EndIf
 
       _ClearThisCellInfo()
@@ -2951,12 +3059,6 @@ Local aCellData, cWorkArea, uGridValue, nSearchCol, nCol
    EndIf
 
 Return Nil
-
-*-----------------------------------------------------------------------------*
-METHOD Events_Enter() CLASS TXBrowseByCell
-*-----------------------------------------------------------------------------*
-
-Return ::TGridByCell:Events_Enter()
 
 *-----------------------------------------------------------------------------*
 METHOD MoveTo( nTo, nFrom ) CLASS TXBrowseByCell
@@ -3005,11 +3107,11 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD Events_Notify( wParam, lParam ) CLASS TXBrowseByCell
 *-----------------------------------------------------------------------------*
-Local nNotify := GetNotifyCode( lParam ), aCellData, nvKey, lGo, uRet
+Local nNotify := GetNotifyCode( lParam ), aCellData, nvKey, lGo
 
    If nNotify == NM_CLICK
       If ! ::lLocked .AND. ::FirstVisibleColumn # 0
-         aCellData := _GetGridCellData( Self )
+         aCellData := _GetGridCellData( Self, lParam )
          ::MoveTo( { aCellData[ 1 ], aCellData[ 2 ] }, { ::nRowPos, ::nColPos } )
       Else
          ::CurrentRow := ::nRowPos
@@ -3029,7 +3131,7 @@ Local nNotify := GetNotifyCode( lParam ), aCellData, nvKey, lGo, uRet
 
    ElseIf nNotify == NM_RCLICK
       If ! ::lLocked .AND. ::FirstVisibleColumn # 0
-         aCellData := _GetGridCellData( Self )
+         aCellData := _GetGridCellData( Self, lParam )
          ::MoveTo( { aCellData[ 1 ], aCellData[ 2 ] }, { ::nRowPos, ::nColPos } )
       Else
          ::CurrentRow := ::nRowPos
@@ -3042,7 +3144,7 @@ Local nNotify := GetNotifyCode( lParam ), aCellData, nvKey, lGo, uRet
 
       // Fire context menu
       If ::ContextMenu != Nil
-         ::ContextMenu:Cargo := _GetGridCellData( Self )
+         ::ContextMenu:Cargo := _GetGridCellData( Self, lParam )
          ::ContextMenu:Activate()
       EndIf
 
@@ -3051,7 +3153,7 @@ Local nNotify := GetNotifyCode( lParam ), aCellData, nvKey, lGo, uRet
 
    ElseIf nNotify == LVN_BEGINDRAG
       If ! ::lLocked .AND. ::FirstVisibleColumn # 0
-         aCellData := _GetGridCellData( Self )
+         aCellData := _GetGridCellData( Self, lParam )
          ::MoveTo( { aCellData[ 1 ], aCellData[ 2 ] }, { ::nRowPos, ::nColPos } )
       Else
          ::CurrentRow := ::nRowPos
@@ -3081,9 +3183,7 @@ Local nNotify := GetNotifyCode( lParam ), aCellData, nvKey, lGo, uRet
                EndIf
 
                If lGo
-                  If ::lNoDelMsg
-                     ::Delete()
-                  ElseIf MsgYesNo( _OOHG_Messages(4, 1), _OOHG_Messages(4, 2) )
+                  If ::lNoDelMsg .OR. MsgYesNo( _OOHG_Messages(4, 1), _OOHG_Messages(4, 2) )
                      ::Delete()
                   EndIf
                ElseIf ! Empty( ::DelMsg )
@@ -3096,17 +3196,17 @@ Local nNotify := GetNotifyCode( lParam ), aCellData, nvKey, lGo, uRet
       Return Nil
 
    ElseIf nNotify == LVN_ITEMCHANGED
-      Return Nil
+      If GetGridOldState( lParam ) == 0 .and. GetGridNewState( lParam ) != 0
+         Return Nil
+      EndIf
 
    ElseIf nNotify == NM_CUSTOMDRAW
       ::AdjustRightScroll()
-      uRet := TGrid_Notify_CustomDraw( Self, lParam, .T., ::nRowPos, ::nColPos, .F., ::lFocusRect, ::lNoGrid, ::lPLM )
- //     ListView_SetCursel( ::hWnd, ::nRowPos )
-      Return uRet
+      Return TGrid_Notify_CustomDraw( Self, lParam, .T., ::nRowPos, ::nColPos, .F., ::lFocusRect, ::lNoGrid, ::lPLM )
 
    EndIf
 
-Return ::TGridByCell:Events_Notify( wParam, lParam )
+Return ::TGrid:Events_Notify( wParam, lParam )
 
 *---------------------------------------------------------------------------*
 METHOD GoBottom( lAppend ) CLASS TXBrowseByCell
@@ -3133,24 +3233,6 @@ METHOD GoTop() CLASS TXBrowseByCell
    EndIf
 
 Return Self
-
-*-----------------------------------------------------------------------------*
-METHOD IsColumnReadOnly( nCol ) CLASS TXBrowseByCell
-*-----------------------------------------------------------------------------*
-Local uReadOnly
-
-   uReadOnly := _OOHG_GetArrayItem( ::ReadOnly, nCol, ::Item( ::nRowPos ) )
-
-Return ( HB_IsLogical( uReadOnly ) .AND. uReadOnly )
-
-*-----------------------------------------------------------------------------*
-METHOD IsColumnWhen( nCol ) CLASS TXBrowseByCell
-*-----------------------------------------------------------------------------*
-Local uWhen
-
-   uWhen := _OOHG_GetArrayItem( ::aWhen, nCol, ::Item( ::nRowPos ) )
-
-Return ( ! HB_IsLogical( uWhen ) .OR. uWhen )
 
 *--------------------------------------------------------------------------*
 METHOD Left() CLASS TXBrowseByCell
@@ -3205,6 +3287,9 @@ Local nRow, nCol
       If Len( aCurrent ) > 1
          nCol := aCurrent[ 2 ]
       EndIf
+   EndIf
+   If ! HB_IsNumeric( nCol ) .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
+      nCol := ::nColPos
    EndIf
    ::Super:Refresh( nRow, lNoEmptyBottom )
    ::CurrentRow := ::nRowPos
@@ -3316,8 +3401,62 @@ Return lRet
 *-----------------------------------------------------------------------------*
 METHOD SetSelectedColors( aSelectedColors, lRedraw ) CLASS TXBrowseByCell
 *-----------------------------------------------------------------------------*
+Local i, aColors[ 8 ]
 
-Return ::TGridByCell:SetSelectedColors( aSelectedColors, lRedraw )
+   If HB_IsArray( aSelectedColors )
+      aSelectedColors := AClone( aSelectedColors )
+      ASize( aSelectedColors, 8 )
+
+      // For text of selected cell when grid has the focus
+      If ! ValType( aSelectedColors[ 1 ] ) $ "ANB"
+         aSelectedColors[ 1 ] := GetSysColor( COLOR_HIGHLIGHTTEXT )
+      EndIf
+      // For background of selected cell when grid has the focus
+      If ! ValType( aSelectedColors[ 2 ] ) $ "ANB"
+         aSelectedColors[ 2 ] := GetSysColor( COLOR_HIGHLIGHT )
+      EndIf
+      // For text of selected cell when grid doesn't has the focus
+      If ! ValType( aSelectedColors[ 3 ] ) $ "ANB"
+         aSelectedColors[ 3 ] := GetSysColor( COLOR_WINDOWTEXT )
+      EndIf
+      // For background of selected cell when grid doesn't has the focus
+      If ! ValType( aSelectedColors[ 4 ] ) $ "ANB"
+         aSelectedColors[ 4 ] := GetSysColor( COLOR_3DFACE )
+      EndIf
+
+      // For text of other cells in the selected row when grid has the focus
+      If ! ValType( aSelectedColors[ 5 ] ) $ "ANB"
+         aSelectedColors[ 5 ] := -1                    // defaults to DYNAMICFORECOLOR, or FONTCOLOR or COLOR_WINDOWTEXT
+      EndIf
+      // For background of other cells in the selected row when grid has the focus
+      If ! ValType( aSelectedColors[ 6 ] ) $ "ANB"
+         aSelectedColors[ 6 ] := -1                    // defaults to DYNAMICBACKCOLOR, or BACKCOLOR or COLOR_WINDOW
+      EndIf
+      // For text of other cells in the selected row when grid doesn't has the focus
+      If ! ValType( aSelectedColors[ 7 ] ) $ "ANB"
+         aSelectedColors[ 7 ] := -1                    // defaults to DYNAMICFORECOLOR, or FONTCOLOR or COLOR_WINDOWTEXT
+      EndIf
+      // For background of other cells in the selected row when grid doesn't has the focus
+      If ! ValType( aSelectedColors[ 8 ] ) $ "ANB"
+         aSelectedColors[ 8 ] := -1                    // defaults to DYNAMICBACKCOLOR, or BACKCOLOR or COLOR_WINDOW
+      EndIf
+
+      ::aSelectedColors := aSelectedColors
+
+      For i := 1 To 8
+         aColors[ i ] := _OOHG_GetArrayItem( aSelectedColors, i )
+      Next i
+
+      ::GridSelectedColors := aColors
+
+      If lRedraw
+         RedrawWindow( ::hWnd )
+      EndIf
+   Else
+      aSelectedColors := AClone( ::aSelectedColors )
+   EndIf
+
+Return aSelectedColors
 
 *-----------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TXBrowseByCell
@@ -3340,27 +3479,34 @@ Return { ::nRowPos, ::nColPos }
 *-----------------------------------------------------------------------------*
 METHOD CurrentCol( nValue ) CLASS TXBrowseByCell
 *-----------------------------------------------------------------------------*
-Local r, nClientWidth, nScrollWidth
+Local r, nClientWidth, nScrollWidth, lColChanged
 
    If HB_IsNumeric( nValue ) .AND. nValue >= 1 .AND. nValue <= Len( ::aHeaders )
+      lColChanged := ( ::nColPos # nValue )
       ::nColPos := nValue
-      // Ensure cell is visible
-      r := { 0, 0, 0, 0 }                                                  // left, top, right, bottom
+      // Ensure that the column is inside the client area
+      r := { 0, 0, 0, 0 }                                                              // left, top, right, bottom
       GetClientRect( ::hWnd, r )
       nClientWidth := r[ 3 ] - r[ 1 ]
-      r := ListView_GetSubitemRect( ::hWnd, ::nRowPos - 1, ::nColPos - 1 ) // top, left, width, height
-      If ListViewGetItemCount( ::hWnd ) >  ListViewGetCountPerPage( ::hWnd )
+      r := ListView_GetSubitemRect( ::hWnd, ::nRowPos - 1, ::nColPos - 1 )             // top, left, width, height
+      If ::lScrollBarUsesClientArea .AND. ListViewGetItemCount( ::hWnd ) >  ListViewGetCountPerPage( ::hWnd )
          nScrollWidth := GetVScrollBarWidth()
       Else
          nScrollWidth := 0
       EndIf
       If r[ 2 ] + r[ 3 ] + nScrollWidth > nClientWidth
+         // Move right side into client area
          ListView_Scroll( ::hWnd, ( r[ 2 ] + r[ 3 ] + nScrollWidth - nClientWidth ), 0 )
+         // Get new position
+         r := ListView_GetSubitemRect( ::hWnd, ::nRowPos - 1, ::nColPos - 1 )          // top, left, width, height
       EndIf
       If r[ 2 ] < 0
+         // Move left side into client area
          ListView_Scroll( ::hWnd, r[ 2 ], 0 )
       EndIf
-      ListView_RedrawItems( ::hWnd, ::nRowPos, ::nRowPos ) 
+      If lColChanged
+         ListView_RedrawItems( ::hWnd, ::nRowPos, ::nRowPos )
+      EndIf
    EndIf
 
 Return ::nColPos
@@ -3486,8 +3632,6 @@ HB_FUNC_STATIC( TXBROWSEBYCELL_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, 
    {
       case WM_CHAR:
       case WM_KEYDOWN:
-      case WM_LBUTTONDOWN:
-      case WM_RBUTTONDOWN:
       case WM_LBUTTONDBLCLK:
       case WM_MOUSEWHEEL:
          if( ! s_Events2 )

@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.59 2015-03-18 01:22:30 fyurisich Exp $
+ * $Id: winprint.prg,v 1.60 2015-05-02 04:20:46 fyurisich Exp $
  */
 /*----------------------------------------------------------------------------
  * ooHG source code:
@@ -1710,7 +1710,7 @@ local i, pi, wl, oHBPreview
 ,"a";
 ,"Copias";
 ,"Imprimir rango";
-,"Todo a partir de desde";
+,"Todo a partir de";
 ,"Solo impares";
 ,"Solo pares";
 ,"Todo (impares primero)";
