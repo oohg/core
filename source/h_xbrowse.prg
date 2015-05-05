@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.127 2015-05-02 04:20:46 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.128 2015-05-05 02:14:33 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -130,6 +130,8 @@ CLASS TXBROWSE FROM TGrid
    METHOD SetColumn
    METHOD SetScrollPos
    METHOD SizePos
+   METHOD SortColumn              BLOCK { || Nil }
+   METHOD SortItems               BLOCK { || Nil }
    METHOD SyncData
    METHOD ToExcel
    METHOD ToolTip                 SETGET
@@ -144,7 +146,7 @@ CLASS TXBROWSE FROM TGrid
    MESSAGE EditGrid               METHOD EditAllCells
 
 /*
-   Available methods from TGrid:         TODO: Check if they are all safe to use
+   Available methods from TGrid:
       AddBitMap
       AdjustResize
       Append
@@ -199,9 +201,8 @@ CLASS TXBROWSE FROM TGrid
       SetItemColor
       SetRangeColor
       SetSelectedColors
-      SortColumn
       SortItems
-      Value                       it's used for painting the grid, it doesn't trigger on change event
+      Value                       it's used by ::CurrentRow() for painting the grid, triggers on change event only if ::lNoneUnsels is .T.
 */
 
    EMPTY( _OOHG_AllVars )
@@ -1225,7 +1226,7 @@ Local nvKey, lGo, nNotify := GetNotifyCode( lParam )
 
       // fire context menu
       If ::ContextMenu != Nil
-         ::ContextMenu:Cargo := _GetGridCellData( Self, lParam )
+         ::ContextMenu:Cargo := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
          ::ContextMenu:Activate()
       EndIf
 
@@ -1269,7 +1270,6 @@ Local nvKey, lGo, nNotify := GetNotifyCode( lParam )
                   MsgExclamation( ::DelMsg, _OOHG_Messages( 4, 2 ) )
                EndIf
             EndIf
-
          EndCase
       EndIf
       Return Nil
@@ -2571,7 +2571,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                 break, HelpId, bold, italic, underline, strikeout, ownerdata, ;
                 ondispinfo, itemcount, editable, backcolor, fontcolor, ;
                 dynamicbackcolor, dynamicforecolor, aPicture, lRtl, nStyle, ;
-                inplace, editcontrols, readonly, valid, validmessages, ;
+                InPlace, editcontrols, readonly, valid, validmessages, ;
                 editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
                 lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
                 aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
@@ -2584,6 +2584,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
 *-----------------------------------------------------------------------------*
 
    Empty( nStyle )
+   Empty( InPlace )          // Forced to .T., it's needed for edit controls to work properly
    ASSIGN lFocusRect VALUE lFocusRect TYPE "L" DEFAULT .F.
    Empty( lNone )
 
@@ -2593,7 +2594,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                     break, HelpId, bold, italic, underline, strikeout, ownerdata, ;
                     ondispinfo, itemcount, editable, backcolor, fontcolor, ;
                     dynamicbackcolor, dynamicforecolor, aPicture, lRtl, LVS_SINGLESEL, ;
-                    InPlace, editcontrols, readonly, valid, validmessages, ;
+                    .T., editcontrols, readonly, valid, validmessages, ;
                     editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
                     lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
                     aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
@@ -2606,9 +2607,6 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
 
    // By default, search in the current column
    ::SearchCol := -1
-
-   // This is needed for edit controls to work properly
-   ::InPlace := .T.
 
 Return Self
 
@@ -2847,7 +2845,7 @@ Return lSomethingEdited
 *-----------------------------------------------------------------------------*
 FUNCTION _OOHG_TXBrowseByCell_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TXBrowseByCell
 *-----------------------------------------------------------------------------*
-Local aCellData, cWorkArea, uGridValue, nSearchCol, nCol
+Local aCellData, cWorkArea, uGridValue, nSearchCol, nCol, aPos
 
    Empty( hWnd )
 
@@ -3010,7 +3008,11 @@ Local aCellData, cWorkArea, uGridValue, nSearchCol, nCol
       _OOHG_ThisType := 'C'
       _OOHG_ThisControl := Self
 
-      aCellData := _GetGridCellData( Self, lParam )
+      // Identify item & subitem hitted
+      aPos := Get_XY_LPARAM( lParam )
+      aPos := ListView_HitTest( ::hWnd, aPos[ 1 ], aPos[ 2 ] )
+
+      aCellData := _GetGridCellData( Self, aPos )
       _OOHG_ThisItemRowIndex   := aCellData[ 1 ]
       _OOHG_ThisItemColIndex   := aCellData[ 2 ]
       _OOHG_ThisItemCellRow    := aCellData[ 3 ]
@@ -3111,7 +3113,7 @@ Local nNotify := GetNotifyCode( lParam ), aCellData, nvKey, lGo
 
    If nNotify == NM_CLICK
       If ! ::lLocked .AND. ::FirstVisibleColumn # 0
-         aCellData := _GetGridCellData( Self, lParam )
+         aCellData := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
          ::MoveTo( { aCellData[ 1 ], aCellData[ 2 ] }, { ::nRowPos, ::nColPos } )
       Else
          ::CurrentRow := ::nRowPos
@@ -3131,7 +3133,7 @@ Local nNotify := GetNotifyCode( lParam ), aCellData, nvKey, lGo
 
    ElseIf nNotify == NM_RCLICK
       If ! ::lLocked .AND. ::FirstVisibleColumn # 0
-         aCellData := _GetGridCellData( Self, lParam )
+         aCellData := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
          ::MoveTo( { aCellData[ 1 ], aCellData[ 2 ] }, { ::nRowPos, ::nColPos } )
       Else
          ::CurrentRow := ::nRowPos
@@ -3144,7 +3146,7 @@ Local nNotify := GetNotifyCode( lParam ), aCellData, nvKey, lGo
 
       // Fire context menu
       If ::ContextMenu != Nil
-         ::ContextMenu:Cargo := _GetGridCellData( Self, lParam )
+         ::ContextMenu:Cargo := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
          ::ContextMenu:Activate()
       EndIf
 
@@ -3153,7 +3155,7 @@ Local nNotify := GetNotifyCode( lParam ), aCellData, nvKey, lGo
 
    ElseIf nNotify == LVN_BEGINDRAG
       If ! ::lLocked .AND. ::FirstVisibleColumn # 0
-         aCellData := _GetGridCellData( Self, lParam )
+         aCellData := _GetGridCellData( Self, ListView_ListView( lParam ) )
          ::MoveTo( { aCellData[ 1 ], aCellData[ 2 ] }, { ::nRowPos, ::nColPos } )
       Else
          ::CurrentRow := ::nRowPos

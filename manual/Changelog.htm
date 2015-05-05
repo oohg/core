@@ -1,5 +1,5 @@
 <!--
-$Id: Changelog.htm,v 1.32 2015-05-02 14:49:23 fyurisich Exp $
+$Id: Changelog.htm,v 1.33 2015-05-05 02:14:33 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -142,6 +142,105 @@ CHANGELOG</div>
 </div>
 <div id="winchm_template_content">
 <pre>
+2015-05-04 23:14 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * manual/changelog.htm
+     * Updated.
+   * ./Compile_MINGW.BAT
+     + -lrddado -lhbusrrdd to THR_LIB.
+   * source/h_grid.prg
+     * Comments.
+     + DATA lShowItemAtTop. When .T. TGridByCell:Value() tries to place
+       the selected row at the top.
+     ! Dlbclicking the grid causes the program to stop working.
+     ! Right clicking on a header brings up the Grid's context menu.
+     * TGridByCell:Define(), ::InPlace is setted to .T. in ::Define2().
+     ! TGridByCell:Value() changes column placement when column is not
+       changed.
+     ! TGridByCell:Value() does not show the new selected row when its
+       number is less than the number of the currently selected one.
+       Beware that ListView_Scroll() does no vertical scrolling when
+       the parameter is negative (scrolling towards the top).
+     * Methods Right(), Left(), Up() and Down() if TGridByCell no longer
+       change ::Value in "circular" way (last cell to first, first cell
+       to last, first row to last, last row to first). To restore this
+       features, please subclass this methods.
+     * TGridByCell:PageDown() now tries to place the next selected row
+       at the top.
+     - Function _OOHG_TGRIDBYCELL_EVENTS2.
+     % TGridByCell:Events() moved to PRG level. Now it uses ::Super:Events()
+       to process WM_NOTIFY message.
+     * LVN_KEYDOWN handler in TGridByCell:Events_Notify() now checks
+       ::FirstVisibleColumn.
+     * Function _GetGridCellData now uses tan array holding item and
+       subitem number (derived from lParam) instead of lParam.
+     ! ListView_IsItemVisible() returns .T. for an item placed under the
+       grid's header.
+     * Function LISTVIEW_HITTEDCELL renamed to LISTVIEW_ITEMACTIVATE.
+       INCOMPATIBLE.
+     + Function LISTVIEW_LISTVIEW at C level.
+     + Function GET_XY_LPARAM at C level.
+     + T*O*D*O.
+   * source/h_xbrowse.prg
+     * Comments.
+     + TXBrowse:SortColumn() as a NIL codeblock.
+     + TXBrowse:SortItems() as a NIL codeblock.
+     * Calls to _GetGridCellData adapted to new syntax.
+     * TXBrowseByCell:Define()2, ::InPlace is setted to .T. in ::Define2().
+   * source/h_browse.prg
+     * Comments.
+     * Format.
+     - TOBrowse:Events_Enter().
+     + TOBrowse:MoveTo() as a NIL codeblock.
+     * TXBrowse:Define() sets ::lChangeBeforeEdit to .T.
+     * TOBrowse:DbGoTo() set ::EOF when record number is greater than
+       the record count.
+     * TOBrowse:EditCell(). When lChange is .T. and lAppend is .F., the
+       control's value is changed to the forthcoming record to edit before
+       the edition's start. When lchange is .T. and lAppend is .T., the
+       control's value is changed to the new record after the edition's end.
+     + Parameter lChange to TOBrowse:EditAllCells()
+       INCOMPATIBLE: the order of the parameters was changed.
+     + TOBrowse:EditAllCells() now checks for workarea after editing a row.
+     * Calls to Listview_Scroll changed by ::ScrollToLeft().
+     * TOBrowse:FastUpdate(). When nRow is not valid the grid's current
+       selected item is cleared using Listview_ClearCursel.
+     * TOBrowse:Refresh() now uses ::nRecLastValue instead of ::Value.
+     * Calls to _GetGridCellData adapted to new syntax.
+     + WM_LBUTTONDBLCLK handler to TOBrowse:Events().
+     * TOBrowse:Events_Notify() now moves to new record before firing
+       OnClick event.
+     ! TOBrowse:Events_Notify() does not fire OnRClick event.
+     ! TOBrowse:Events_Notify() does not open context menu.
+     * TOBrowse:Events_Notify() now handles NM_CUSTOMDRAW directly
+       instead of calling ::Super.
+     * TOBrowse:Events_Notify() now calls ::Super instead of ::TGrid
+       to process unhandled messages.
+     * Class TOBrowseByCell no longer inherits from class TXBrowseByCell.
+     + TOBrowseByCell:AddColumn().
+     - TOBrowseByCell:DbGoTo().
+     - TOBrowseByCell:DbSkip().
+     - TOBrowseByCell:Define().
+     + TOBrowseByCell:Define2().
+     + TOBrowseByCell:DeleteAllItems().
+     + TOBrowseByCell:DeleteColumn().
+     + TOBrowseByCell:EditCell2().
+     - TOBrowseByCell:Events_Enter().
+     - TOBrowseByCell:FastUpdate().
+     + TOBrowseByCell:MoveTo() as a NIL codeblock.
+     - TOBrowseByCell:Refresh().
+     - TOBrowseByCell:RefreshData().
+     - TOBrowseByCell:ScrollUpdate().
+     + TOBrowseByCell:SetSelectedColors().
+     - TOBrowseByCell:TopBottom().
+     - TOBrowseByCell:Update().
+     - TOBrowseByCell:UpdateColors().
+     - TOBrowseByCell's handler for WM_LBUTTONDOWN and WM_RBUTTONDOWN.
+     ! TOBrowseByCell:Value() does not reset ::CurrentCol nor
+       ::nRecLastValue when new value is {0,0}.
+     + NM_CUSTOMDRAW handler to TOBrowseByCell:Events_Notify().
+     * TOBrowseByCell:DoChange() does things directly.
+     * TOBrowseByCell:SetValue() does things directly.
+
 2015-05-02 11:49 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * manual/changelog.htm
      * Updated.

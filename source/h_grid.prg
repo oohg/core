@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.278 2015-05-02 04:20:46 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.279 2015-05-05 02:14:33 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -187,6 +187,7 @@ CLASS TGrid FROM TControl
    DATA uIniTime                  INIT 0
    DATA Valid                     INIT Nil
    DATA ValidMessages             INIT Nil
+   DATA lShowItemAtTop            INIT .F.
 
    METHOD AddBitMap
    METHOD AddColumn
@@ -2380,7 +2381,7 @@ Return lSomethingEdited
 *-----------------------------------------------------------------------------*
 FUNCTION _OOHG_TGrid_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TGrid
 *-----------------------------------------------------------------------------*
-Local aCellData, nItem, i
+Local aCellData, nItem, i, aPos
 
    If nMsg == WM_LBUTTONDBLCLK
       If ! ::lCheckBoxes .OR. ListView_HitOnCheckBox( hWnd, GetCursorRow() - GetWindowRow( hWnd ), GetCursorCol() - GetWindowCol( hWnd ) ) <= 0
@@ -2389,7 +2390,11 @@ Local aCellData, nItem, i
          _OOHG_ThisType := 'C'
          _OOHG_ThisControl := Self
 
-         aCellData := _GetGridCellData( Self, lParam )
+         // Identify item & subitem hitted
+         aPos := Get_XY_LPARAM( lParam )
+         aPos := ListView_HitTest( ::hWnd, aPos[ 1 ], aPos[ 2 ] )
+
+         aCellData := _GetGridCellData( Self, aPos )
          _OOHG_ThisItemRowIndex   := aCellData[ 1 ]
          _OOHG_ThisItemColIndex   := aCellData[ 2 ]
          _OOHG_ThisItemCellRow    := aCellData[ 3 ]
@@ -2525,7 +2530,7 @@ Local nNotify, nColumn, lGo, nNewWidth, nResul, aRect
          // HDITEM_iOrder() Returns the destination position in the header
          lGo := Eval( ::bAfterColMove, nColumn, HDITEM_iOrder( lParam ) )
          If HB_IsLogical( lGo ) .and. ! lGo
-            // Deny the action so the column remains in it's original place
+            // Prevent the action so the column remains in it's original place
             Return 1
          EndIf
       EndIf
@@ -2683,13 +2688,10 @@ Local nNotify, nColumn, lGo, nNewWidth, nResul, aRect
    ElseIf nNotify == NM_RCLICK
       If HB_IsBlock( ::bHeadRClick )
          nColumn := Header_HitTest( SendMessage( ::hWnd, LVM_GETHEADER, 0, 0 ) )
-
-         lGo := Eval( ::bHeadRClick, nColumn, Self )
-         If HB_IsLogical( lGo ) .and. ! lGo
-            // Prevent the action
-            Return 1
-         EndIf
+         Eval( ::bHeadRClick, nColumn, Self )
       EndIf
+      // Prevent propagation to ::Events_Notify()
+      Return 1
 
    EndIf
 
@@ -2876,7 +2878,7 @@ Local lvc, _ThisQueryTemp, nvkey, uValue, lGo, aItem
 
       // fire context menu
       If ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. uValue <= 0 )
-         ::ContextMenu:Cargo := _GetGridCellData( Self, lParam )
+         ::ContextMenu:Cargo := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
          ::ContextMenu:Activate()
       EndIf
 
@@ -4116,7 +4118,7 @@ Local nvkey, uValue, lGo, aItem, nNotify := GetNotifyCode( lParam )
 
       // fire context menu
       If ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. uValue <= 0 )
-         ::ContextMenu:Cargo := _GetGridCellData( Self, lParam )
+         ::ContextMenu:Cargo := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
          ::ContextMenu:Activate()
       EndIf
 
@@ -4221,7 +4223,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                aHeadClick, gotfocus, lostfocus, nogrid, aImage, aJust, ;
                break, HelpId, bold, italic, underline, strikeout, ownerdata, ;
                ondispinfo, itemcount, editable, backcolor, fontcolor, ;
-               dynamicbackcolor, dynamicforecolor, aPicture, lRtl, inplace, ;
+               dynamicbackcolor, dynamicforecolor, aPicture, lRtl, InPlace, ;
                editcontrols, readonly, valid, validmessages, editcell, ;
                aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
                onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
@@ -4234,8 +4236,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone ) CLASS TGridByCell
 *-----------------------------------------------------------------------------*
 
+   Empty( InPlace )          // Forced to .T., it's needed for edit controls to work properly
    ASSIGN lFocusRect VALUE lFocusRect TYPE "L" DEFAULT .F.
-
    Empty( lNone )
 
    ::Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
@@ -4244,7 +4246,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               break, HelpId, bold, italic, underline, strikeout, ownerdata, ;
               ondispinfo, itemcount, editable, backcolor, fontcolor, ;
               dynamicbackcolor, dynamicforecolor, aPicture, lRtl, LVS_SINGLESEL, ;
-              InPlace, editcontrols, readonly, valid, validmessages, ;
+              .T., editcontrols, readonly, valid, validmessages, ;
               editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
               lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
               aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
@@ -4257,9 +4259,6 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
 
    // By default, search in the current column
    ::SearchCol := -1
-
-   // This is needed for edit controls to work properly
-   ::InPlace := .T.
 
    // This is not really needed because TGridByCell ignores it
    ::lChangeBeforeEdit := .T.
@@ -4370,37 +4369,42 @@ Local r, nClientWidth, nScrollWidth, lRowChanged, lColChanged
          ::nColPos := uValue[ 2 ]
 
          // Ensure that the column is inside the client area
-         r := { 0, 0, 0, 0 }                                                              // left, top, right, bottom
-         GetClientRect( ::hWnd, r )
-         nClientWidth := r[ 3 ] - r[ 1 ]
-         r := ListView_GetSubitemRect( ::hWnd, ::nRowPos - 1, ::nColPos - 1 )             // top, left, width, height
-         If ::lScrollBarUsesClientArea .AND. ListViewGetItemCount( ::hWnd ) >  ListViewGetCountPerPage( ::hWnd )
-            nScrollWidth := GetVScrollBarWidth()
-         Else
-            nScrollWidth := 0
-         EndIf
-         If r[ 2 ] + r[ 3 ] + nScrollWidth > nClientWidth
-            // Move right side into client area
-            ListView_Scroll( ::hWnd, ( r[ 2 ] + r[ 3 ] + nScrollWidth - nClientWidth ), 0 )
-            // Get new position
-            r := ListView_GetSubitemRect( ::hWnd, ::nRowPos - 1, ::nColPos - 1 )          // top, left, width, height
-         EndIf
-         If r[ 2 ] < 0
-            // Move left side into client area
-            ListView_Scroll( ::hWnd, r[ 2 ], 0 )
+         If lColChanged
+            r := { 0, 0, 0, 0 }                                                              // left, top, right, bottom
+            GetClientRect( ::hWnd, r )
+            nClientWidth := r[ 3 ] - r[ 1 ]
+            r := ListView_GetSubitemRect( ::hWnd, ::nRowPos - 1, ::nColPos - 1 )             // top, left, width, height
+            If ::lScrollBarUsesClientArea .AND. ListViewGetItemCount( ::hWnd ) >  ListViewGetCountPerPage( ::hWnd )
+               nScrollWidth := GetVScrollBarWidth()
+            Else
+               nScrollWidth := 0
+            EndIf
+            If r[ 2 ] + r[ 3 ] + nScrollWidth > nClientWidth
+               // Move right side into client area
+               ListView_Scroll( ::hWnd, ( r[ 2 ] + r[ 3 ] + nScrollWidth - nClientWidth ), 0 )
+               // Get new position
+               r := ListView_GetSubitemRect( ::hWnd, ::nRowPos - 1, ::nColPos - 1 )          // top, left, width, height
+            EndIf
+            If r[ 2 ] < 0
+               // Move left side into client area
+               ListView_Scroll( ::hWnd, r[ 2 ], 0 )
+            EndIf
          EndIf
 
-         // Ensure row is visible
+         // Ensure cell is visible
          If lRowChanged
+            If ::lShowItemAtTop
+               ListView_SetCursel( ::hWnd, ::ItemCount )
+               If ! ListView_IsItemVisible( ::hWnd, ::ItemCount )
+                  ListView_EnsureVisible( ::hWnd, ::ItemCount )
+               EndIf
+            EndIf
             ListView_SetCursel( ::hWnd, ::nRowPos )
          EndIf
          If ! ListView_IsItemVisible( ::hWnd, ::nRowPos )
-            ListView_Scroll( ::hWnd, 0, ::ItemHeight * ( ::FirstSelectedItem - ::FirstVisibleItem ) )
+            ListView_EnsureVisible( ::hWnd, ::nRowPos )
          EndIf
-
-         If lColChanged
-            ListView_RedrawItems( ::hWnd, ::nRowPos, ::nRowPos )
-         EndIf
+         ListView_RedrawItems( ::hWnd, ::nRowPos, ::ItemCount )
       EndIf
       ::DoChange()
    Else
@@ -4692,12 +4696,6 @@ Local nCol, lRet := .F.
             ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT ::AllowAppend
             If lAppend
                lRet := ::AppendItem()
-            ElseIf ::FullMove
-               nCol := ::FirstColInOrder
-               If nCol # 0
-                  ::Value := { 1, nCol }
-                  lRet := .T.
-               EndIf
             EndIf
          EndIf
       Else
@@ -4728,15 +4726,13 @@ Local nCol, lRet := .F.
    Else
       nCol := ::PriorColInOrder( ::nColPos )
       If nCol == 0
-         If ::FullMove
-            nCol := ::LastColInOrder
-            If nCol # 0
-               If ::nRowPos > 1
+         If ::nRowPos > 1
+            If ::FullMove
+               nCol := ::LastColInOrder
+               If nCol # 0
                   ::Value := { ::nRowPos - 1, nCol }
-               Else
-                  ::Value := { ::ItemCount, nCol }
+                  lRet := .T.
                EndIf
-               lRet := .T.
             EndIf
          Endif
       Else
@@ -4766,9 +4762,6 @@ Local nCol, lRet
       lRet := .T.
    ElseIf ::nRowPos > 1
       ::Value := { ::nRowPos - 1, ::nColPos }
-      lRet := .T.
-   ElseIf ::FullMove
-      ::Value := { ::ItemCount, ::nColPos }
       lRet := .T.
    Else
       lRet := .F.
@@ -4802,9 +4795,6 @@ Local nCol, lRet
       ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT ::AllowAppend
       If lAppend
          lRet := ::AppendItem()
-      ElseIf ::FullMove
-         ::Value := { 1, ::nColPos }
-         lRet := .T.
       EndIf
    EndIf
 
@@ -4857,7 +4847,9 @@ Local nCol, lRet
       EndIf
       lRet := .T.
    ElseIf ::nRowPos < ::ItemCount - ::CountPerPage
+      ::lShowItemAtTop := .T.
       ::Value := { ::nRowPos + ::CountPerPage, ::nColPos }
+      ::lShowItemAtTop := .F.
       lRet := .T.
    ElseIf ::nRowPos # ::ItemCount
       ::Value := { ::ItemCount, ::nColPos }
@@ -5076,9 +5068,9 @@ METHOD EditCell2( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusP
 Return ::Super:EditCell2( @nRow, @nCol, EditControl, uOldValue, @uValue, cMemVar, nOnFocusPos )
 
 *-----------------------------------------------------------------------------*
-FUNCTION _OOHG_TGridByCell_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TGridByCell
+METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TGridByCell
 *-----------------------------------------------------------------------------*
-Local aCellData, nItem, i, nSearchCol
+Local aCellData, nItem, i, nSearchCol, aPos
 
    If nMsg == WM_LBUTTONDBLCLK
       If ! ::lCheckBoxes .OR. ListView_HitOnCheckBox( hWnd, GetCursorRow() - GetWindowRow( hWnd ), GetCursorCol() - GetWindowCol( hWnd ) ) <= 0
@@ -5087,7 +5079,11 @@ Local aCellData, nItem, i, nSearchCol
          _OOHG_ThisType := 'C'
          _OOHG_ThisControl := Self
 
-         aCellData := _GetGridCellData( Self, lParam )
+         // Identify item & subitem hitted
+         aPos := Get_XY_LPARAM( lParam )
+         aPos := ListView_HitTest( ::hWnd, aPos[ 1 ], aPos[ 2 ] )
+
+         aCellData := _GetGridCellData( Self, aPos )
          _OOHG_ThisItemRowIndex   := aCellData[ 1 ]
          _OOHG_ThisItemColIndex   := aCellData[ 2 ]
          _OOHG_ThisItemCellRow    := aCellData[ 3 ]
@@ -5205,7 +5201,7 @@ Local aCellData, nItem, i, nSearchCol
 
    EndIf
 
-Return Nil
+Return ::Super:Events( hWnd, nMsg, wParam, lParam )
 
 *-----------------------------------------------------------------------------*
 FUNCTION EditControlLikeExcel( oGrid, nColumn )
@@ -5238,7 +5234,9 @@ Local nvkey, lGo, aItem, nRow, nCol, uValue, aCellData
 
       nvKey := GetGridvKey( lParam )
 
-      If nvkey == VK_DOWN
+      If ::FirstVisibleColumn == 0
+         // Do nothing
+      ElseIf nvkey == VK_DOWN
          If GetKeyFlagState() == MOD_CONTROL
             ::Value := { ::ItemCount, ::nColPos }
          Else
@@ -5344,7 +5342,7 @@ Local nvkey, lGo, aItem, nRow, nCol, uValue, aCellData
          ::CheckItem( uValue, ! ::CheckItem( uValue ) )
       Else
          // select cell
-         aCellData := _GetGridCellData( Self, lParam )
+         aCellData := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
          ::Value := { aCellData[ 1 ], aCellData[ 2 ] }
       EndIf
 
@@ -5370,13 +5368,13 @@ Local nvkey, lGo, aItem, nRow, nCol, uValue, aCellData
          ::CheckItem( uValue, ! ::CheckItem( uValue ) )
       Else
          // select cell
-         aCellData := _GetGridCellData( Self, lParam )
+         aCellData := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
          ::Value := { aCellData[ 1 ], aCellData[ 2 ] }
       EndIf
 
       // fire context menu
       If ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. uValue <= 0 )
-         ::ContextMenu:Cargo := _GetGridCellData( Self, lParam )
+         ::ContextMenu:Cargo := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
          ::ContextMenu:Activate()
       EndIf
 
@@ -5413,7 +5411,7 @@ Return Self
 
 
 *------------------------------------------------------------------------------*
-FUNCTION _GetGridCellData( Self, lParam )
+FUNCTION _GetGridCellData( Self, aPos )
 *------------------------------------------------------------------------------*
 Local ThisItemRowIndex
 Local ThisItemColIndex
@@ -5427,19 +5425,12 @@ Local aCellData
 Local nClientWidth
 Local aControlRect
 
-   // Identify item & subitem hitted
-   /*
-    * This is the old way
-    * r := ListView_HitTest( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ) - 2, GetCursorCol() - GetWindowCol( ::hWnd ) - 2 )
-    */
-   r := ListView_HittedCell( lParam )
-
-   If r[ 1 ] == 0 .AND. r[ 2 ] == 0     // item & subitem (column)
+   If aPos[ 1 ] == 0 .AND. aPos[ 2 ] == 0     // item & subitem (column)
       // Hit on an empty row
       Return { 0, 0, 0, 0, 0, 0 }
    EndIf
-   ThisItemRowIndex := r[ 1 ]
-   ThisItemColIndex := r[ 2 ]
+   ThisItemRowIndex := aPos[ 1 ]
+   ThisItemColIndex := aPos[ 2 ]
 
    // Ensure that the column is inside the client area
    aControlRect := { 0, 0, 0, 0 }                                                         // left, top, right, bottom
@@ -6788,10 +6779,10 @@ EXTERN GetGridVKey, TGrid_Notify_CustomDraw
 HB_FUNC_STATIC( TGRID_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TGrid
 // -----------------------------------------------------------------------------
 {
-   HWND hWnd      = HWNDparam( 1 );
-   UINT message   = ( UINT )   hb_parni( 2 );
-   WPARAM wParam  = ( WPARAM ) hb_parni( 3 );
-   LPARAM lParam  = ( LPARAM ) hb_parnl( 4 );
+   HWND hWnd = HWNDparam( 1 );
+   UINT message = (UINT ) hb_parni( 2 );
+   WPARAM wParam = (WPARAM) hb_parni( 3 );
+   LPARAM lParam = (LPARAM) hb_parnl( 4 );
    PHB_ITEM pSelf = hb_stackSelfItem();
    static PHB_SYMB s_Events2 = 0;
    static PHB_SYMB s_Notify2 = 0;
@@ -6799,6 +6790,9 @@ HB_FUNC_STATIC( TGRID_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
 
    switch( message )
    {
+/* TODO: do this without keybd_event
+   Try SendMessage( hwnd, WM_VSCROLL, SB_LINEDOWN / SB_LINEUP, 0 )
+*/
       case WM_MOUSEWHEEL:
          if ( ( short ) HIWORD ( wParam ) > 0 )
          {
@@ -7028,76 +7022,6 @@ HB_FUNC_STATIC( LISTVIEW_SETCOLUMNORDER )
    }
 
    hb_retl( bRet );
-}
-
-// -----------------------------------------------------------------------------
-HB_FUNC_STATIC( TGRIDBYCELL_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TGridByCell
-// -----------------------------------------------------------------------------
-{
-   HWND hWnd      = HWNDparam( 1 );
-   UINT message   = ( UINT )   hb_parni( 2 );
-   WPARAM wParam  = ( WPARAM ) hb_parni( 3 );
-   LPARAM lParam  = ( LPARAM ) hb_parnl( 4 );
-   PHB_ITEM pSelf = hb_stackSelfItem();
-   static PHB_SYMB s_Events2 = 0;
-   static PHB_SYMB s_Notify2 = 0;
-   BOOL bDefault = TRUE;
-
-   switch( message )
-   {
-      case WM_CHAR:
-      case WM_MOUSEWHEEL:
-      case WM_LBUTTONDBLCLK:
-         if( ! s_Events2 )
-         {
-            s_Events2 = hb_dynsymSymbol( hb_dynsymFind( "_OOHG_TGRIDBYCELL_EVENTS2" ) );
-         }
-         hb_vmPushSymbol( s_Events2 );
-         hb_vmPushNil();
-         hb_vmPush( pSelf );
-         HWNDpush( hWnd );
-         hb_vmPushLong( message );
-         hb_vmPushLong( wParam );
-         hb_vmPushLong( lParam );
-         hb_vmDo( 5 );
-         if( HB_ISNUM( -1 ) )
-         {
-            bDefault = FALSE;
-         }
-         break;
-
-      case WM_NOTIFY:
-         if( ( ( NMHDR FAR * ) lParam )->hwndFrom == ( HWND ) SendMessage( hWnd, LVM_GETHEADER, 0, 0 ) )
-         {
-            if( ! s_Notify2 )
-            {
-               s_Notify2 = hb_dynsymSymbol( hb_dynsymFind( "_OOHG_TGRID_NOTIFY2" ) );
-            }
-            hb_vmPushSymbol( s_Notify2 );
-            hb_vmPushNil();
-            hb_vmPush( pSelf );
-            hb_vmPushLong( wParam );
-            hb_vmPushLong( lParam );
-            hb_vmDo( 3 );
-            if( HB_ISNUM( -1 ) )
-            {
-               bDefault = FALSE;
-            }
-         }
-         break;
-   }
-
-   if( bDefault )
-   {
-      _OOHG_Send( pSelf, s_Super );
-      hb_vmSend( 0 );
-      _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_Events );
-      HWNDpush( hWnd );
-      hb_vmPushLong( message );
-      hb_vmPushLong( wParam );
-      hb_vmPushLong( lParam );
-      hb_vmSend( 4 );
-   }
 }
 
 static WNDPROC lpfnOldWndProc = 0;
@@ -7731,7 +7655,11 @@ HB_FUNC( LISTVIEW_ENSUREVISIBLE )
 
 HB_FUNC( LISTVIEW_ISITEMVISIBLE )
 {
-   hb_retl( ListView_IsItemVisible( HWNDparam( 1 ), hb_parni( 2 ) - 1 ) );
+   HWND hwnd = HWNDparam( 1 );
+   int iItem = hb_parni( 2 ) - 1;
+   int iTop = ListView_GetTopIndex( hwnd );
+
+   hb_retl( iItem >= iTop && iItem <= iTop + ListView_GetCountPerPage( hwnd ) - 1 );
 }
 
 HB_FUNC( LISTVIEW_GETTOPINDEX )
@@ -7744,9 +7672,18 @@ HB_FUNC( LISTVIEW_REDRAWITEMS )
    hb_retnl( ListView_RedrawItems( HWNDparam( 1 ), hb_parni( 2 ) - 1, hb_parni( 3 ) - 1 ) );
 }
 
-HB_FUNC( LISTVIEW_HITTEDCELL )
+HB_FUNC( LISTVIEW_ITEMACTIVATE )
 {
    LPNMITEMACTIVATE pData = ( NMITEMACTIVATE * ) hb_parnl( 1 );
+
+   hb_reta( 2 );
+   HB_STORNI( pData->iItem + 1, -1, 1 );
+   HB_STORNI( pData->iSubItem + 1, -1, 2 );
+}
+
+HB_FUNC( LISTVIEW_LISTVIEW )
+{
+   LPNMLISTVIEW pData = ( NMLISTVIEW * ) hb_parnl( 1 );
 
    hb_reta( 2 );
    HB_STORNI( pData->iItem + 1, -1, 1 );
@@ -7777,6 +7714,18 @@ HB_FUNC( LISTVIEW_HITTEST )
       HB_STORNI( 0, -1, 1 );
       HB_STORNI( 0, -1, 2 );
    }
+}
+
+HB_FUNC( GET_XY_LPARAM )
+{
+   POINT point;
+
+   point.x = GET_X_LPARAM( hb_parnl( 1 ) );
+   point.y = GET_Y_LPARAM( hb_parnl( 1 ) );
+
+   hb_reta( 2 );
+   HB_STORNI( point.y, -1, 1 );
+   HB_STORNI( point.x, -1, 2 );
 }
 
 HB_FUNC( HEADER_HITTEST )
