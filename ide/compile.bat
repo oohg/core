@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: compile.bat,v 1.2 2015-03-18 23:58:18 fyurisich Exp $
+rem $Id: compile.bat,v 1.3 2015-05-06 04:24:14 fyurisich Exp $
 rem
 
 if /I not "%1%"=="/NOCLS" cls
@@ -84,13 +84,20 @@ echo msimg32.lib + >> b32.bc
 echo import32.lib, , + >> b32.bc
 echo oide.res + >> b32.bc
 %HG_BCC%\bin\ilink32 -Gn -Tpe -aa -L%HG_BCC%\lib;%HG_BCC%\lib\psdk; @b32.bc > nul
+if exist oide.exe goto OK
+echo Build finished with ERROR !!!
+goto CLEAN
+
+:OK
+echo Build finished OK !!!
 
 :CLEAN
-del *.tds
-del *.c
-del *.map
-del *.obj
-del b32.bc
-del *.res
+for %%a in (*.tds)  do del %%a
+for %%a in (*.c)    do del %%a
+for %%a in (*.map)  do del %%a
+for %%a in (*.obj)  do del %%a
+for %%a in (b32.bc) do del %%a
+for %%a in (*.res)  do del %%a
 
 :EXIT
+echo.

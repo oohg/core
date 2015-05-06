@@ -1,9 +1,9 @@
 /*
- * $Id: h_grid.prg,v 1.279 2015-05-05 02:14:33 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.280 2015-05-06 04:24:14 fyurisich Exp $
  */
 /*
  * ooHG source code:
- * PRG grid functions
+ * Grid controls
  *
  * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
@@ -188,6 +188,8 @@ CLASS TGrid FROM TControl
    DATA Valid                     INIT Nil
    DATA ValidMessages             INIT Nil
    DATA lShowItemAtTop            INIT .F.
+   DATA nDelayedClick             INIT 0 PROTECTED
+   DATA lFromEditAllCells         INIT .F. PROTECTED
 
    METHOD AddBitMap
    METHOD AddColumn
@@ -896,7 +898,6 @@ Local lRet, lSomethingEdited, nNextCol
       Else
          ::lEditMode := .T.
          lRet := ::EditCell( ::nRowPos, ::nColPos, , , , , , lChange )
-
          ::lEditMode := .F.
 
          If ::lAppendMode
@@ -922,6 +923,10 @@ Local lRet, lSomethingEdited, nNextCol
          ::OnEditCell() may change ::nRowPos and/or ::nColPos using ::Up(), ::PageUp(),
          ::Down(), ::PageDown(), ::GoTop(), ::GoBottom(), ::Left() and/or ::Right()
       */
+      If ::bPosition == 9                     // MOUSE EXIT
+         Exit
+      EndIf
+
       nNextCol := ::NextColInOrder( ::nColPos )
       If nNextCol == 0
          If ::FullMove
@@ -2292,7 +2297,8 @@ Local r, r2, lRet := .F., nClientWidth, uAux, nScrollWidth
             uValue := Trim( uValue )
          EndIf
 
-         ::bPosition := 0
+         ::nDelayedClick := 0
+         ::bPosition := -2
          _SetThisCellInfo( ::hWnd, nRow, nCol, uValue )
          lRet := EditControl:CreateWindow( uValue, r[ 1 ], r[ 2 ], r[ 3 ], r[ 4 ], ::FontName, ::FontSize, ::aEditKeys )
          If lRet
@@ -2349,7 +2355,6 @@ Local lRet, lSomethingEdited
       ElseIf AScan( ::aHiddenCols, nCol ) > 0
         // Hidden column
       Else
-
          lRet := ::EditCell( nRow, nCol, , , , , , lChange )
 
          If ::lAppendMode
@@ -2371,6 +2376,10 @@ Local lRet, lSomethingEdited
          EndIf
       EndIf
 
+      If ::bPosition == 9                     // MOUSE EXIT
+        Exit
+      EndIf
+
       nCol := ::NextColInOrder( nCol )
    EndDo
 
@@ -2384,7 +2393,7 @@ FUNCTION _OOHG_TGrid_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TGrid
 Local aCellData, nItem, i, aPos
 
    If nMsg == WM_LBUTTONDBLCLK
-      If ! ::lCheckBoxes .OR. ListView_HitOnCheckBox( hWnd, GetCursorRow() - GetWindowRow( hWnd ), GetCursorCol() - GetWindowCol( hWnd ) ) <= 0
+      If  ! ::lCheckBoxes .OR. ListView_HitOnCheckBox( hWnd, GetCursorRow() - GetWindowRow( hWnd ), GetCursorCol() - GetWindowCol( hWnd ) ) <= 0
          _PushEventInfo()
          _OOHG_ThisForm := ::Parent
          _OOHG_ThisType := 'C'
@@ -3752,7 +3761,6 @@ Local lRet, lSomethingEdited, nNextCol
       Else
          ::lEditMode := .T.
          lRet := ::EditCell( ::nRowPos, ::nColPos, , , , , , lChange )
-
          ::lEditMode := .F.
 
          If ::lAppendMode
@@ -3778,6 +3786,10 @@ Local lRet, lSomethingEdited, nNextCol
          ::OnEditCell() may change ::nRowPos and/or ::nColPos using ::Up(), ::PageUp(),
          ::Down(), ::PageDown(), ::GoTop(), ::GoBottom(), ::Left() and/or ::Right()
       */
+      If ::bPosition == 9                     // MOUSE EXIT
+         Exit
+      EndIf
+
       nNextCol := ::NextColInOrder( ::nColPos )
       If nNextCol == 0
          If ::FullMove
@@ -4017,6 +4029,10 @@ Local lRet, lSomethingEdited
             _OOHG_Eval( ::OnAbortEdit, nRow, nCol )
             Exit
          EndIf
+      EndIf
+
+      If ::bPosition == 9                     // MOUSE EXIT
+         Exit
       EndIf
 
       nCol := ::NextColInOrder( nCol )
@@ -4484,7 +4500,6 @@ Local lRet, lSomethingEdited
 
    Do While ::nRowPos >= 1 .AND. ::nRowPos <= ::ItemCount .AND. ::nColPos >= 1 .AND. ::nColPos <= Len( ::aHeaders )
       _OOHG_ThisItemCellValue := ::Cell( ::nRowPos, ::nColPos )
-      ::bPosition := 0
 
       If ::IsColumnReadOnly( ::nColPos, ::nRowPos )
          // Read only column
@@ -4660,8 +4675,6 @@ Local lRet, lSomethingEdited
       EndIf
    EndDo
 
-   ::bPosition := 0
-
 Return lSomethingEdited
 
 *--------------------------------------------------------------------------*
@@ -4692,7 +4705,7 @@ Local nCol, lRet := .F.
                   lRet := .T.
                EndIf
             Endif
-         ElseIf ! ::lNestedEdit
+         Else
             ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT ::AllowAppend
             If lAppend
                lRet := ::AppendItem()
@@ -4789,8 +4802,6 @@ Local nCol, lRet
    ElseIf ::nRowPos < ::ItemCount
       ::Value := { ::nRowPos + 1, ::nColPos }
       lRet := .T.
-   ElseIf ::lNestedEdit
-      lRet := .F.
    Else
       ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT ::AllowAppend
       If lAppend
@@ -4962,7 +4973,6 @@ Local lRet
 
    ::Value := { nRow, nCol }
 
-   ::bPosition := 0
    lRet := ::Super:EditCell( ::nRowPos, ::nColPos, EditControl, uOldValue, uValue, cMemVar, nOnFocusPos, .F. )
 
    If lRet
@@ -5047,6 +5057,7 @@ Local lRet
       Else                                           // OK
       EndIf
    EndIf
+
 Return lRet
 
 // nRow, nCol and uValue may be passed by reference

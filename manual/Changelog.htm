@@ -1,5 +1,5 @@
 <!--
-$Id: Changelog.htm,v 1.33 2015-05-05 02:14:33 fyurisich Exp $
+$Id: Changelog.htm,v 1.34 2015-05-06 04:24:14 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -142,6 +142,54 @@ CHANGELOG</div>
 </div>
 <div id="winchm_template_content">
 <pre>
+2015-05-06 01:22 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * doc/classes.txt
+     * Updated.
+   * ide/compile.bat
+     + Message OK/ERROR at end of process.
+   * manual/changelog.htm
+     * Updated.
+   * manual/Classes.htm
+     * Updated.
+   * source/h_grid.prg
+     * Comments.
+     - Unneeded code.
+     + DATA nDelayedClick.
+     + DATA lFromEditAllCells.
+     ! Grid with NOMODALEDIT clause: when clicking outside the edition
+       window, the edition is not ended.
+     * TGrid:EditCell2() sets ::bPosition to -2 (means "editing") and
+       :: nDelayedClick to 0.
+   * source/h_xbrowse.prg
+     * Comments.
+     - Unneeded code.
+     ! XBrowse with NOMODALEDIT clause: when clicking outside the edition
+       window, the edition is not ended.
+     ! RTE caused by accessing ::nColPos in a function.
+     * NM_CLICK, NM_RCLICK and LVN_BEGINDRAG handlers do not process the
+       message when a cell is being edited. Instead they store the row
+       clicked in ::nDelayedClick.
+     * TXBrowse:EditCell() selectes row ::nDelayedClick after storing
+       cell value into data provider, when called  with ::lFromEditAllCells
+       setted to .F.
+     * TXBrowse:EditAllCells() selectes row ::nDelayedClick after edition's
+       end (TXBrowse:EditCell() is called with ::lFromEditAllCells
+       setted to .T.)
+   * source/h_browse.prg
+     * Comments.
+     - Unneeded code.
+     ! Browse with NOMODALEDIT clause: when clicking outside the edition
+       window, the edition is not ended.
+     * TOBrowse:EditCell() selectes row ::nDelayedClick after storing
+       cell value into dbf, when called  with ::lFromEditAllCells
+       setted to .F.
+     * TOBrowse:EditAllCells() selectes row ::nDelayedClick after edition's
+       end (TOBrowse:EditCell() is called with ::lFromEditAllCells
+       setted to .T.)
+     * NM_CLICK, NM_RCLICK and LVN_BEGINDRAG handlers do not process the
+       message when a cell is being edited. Instead they store the row
+       clicked in ::nDelayedClick.
+
 2015-05-04 23:14 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * manual/changelog.htm
      * Updated.

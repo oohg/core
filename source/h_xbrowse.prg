@@ -1,9 +1,9 @@
 /*
- * $Id: h_xbrowse.prg,v 1.128 2015-05-05 02:14:33 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.129 2015-05-06 04:24:14 fyurisich Exp $
  */
 /*
  * ooHG source code:
- * eXtended Browse code
+ * eXtended Browse controls
  *
  * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
@@ -1196,48 +1196,75 @@ METHOD Events_Notify( wParam, lParam ) CLASS TXBrowse
 Local nvKey, lGo, nNotify := GetNotifyCode( lParam )
 
    If nNotify == NM_CLICK
-      If ! ::lLocked .AND. ::FirstVisibleColumn # 0
-         ::MoveTo( ::CurrentRow, ::nRowPos )
-      Else
-         ::Super:Value := ::nRowPos
-      EndIf
-
-      If HB_IsBlock( ::OnClick )
-         If ! ::NestedClick
-            ::NestedClick := ! _OOHG_NestedSameEvent()
-            ::DoEventMouseCoords( ::OnClick, "CLICK" )
-            ::NestedClick := .F.
+      If ::bPosition == -2 .OR. ::bPosition == 9
+         ::nDelayedClick := ::FirstSelectedItem
+         If ::nRowPos > 0
+            ListView_SetCursel( ::hWnd, ::nRowPos )
+         Else
+            LIstView_ClearCursel( ::hWnd )
          EndIf
-      EndIf
+      Else
+         If ! ::lLocked .AND. ::FirstVisibleColumn # 0
+            ::MoveTo( ::CurrentRow, ::nRowPos )
+         Else
+            ::Super:Value := ::nRowPos
+         EndIf
 
-     // skip default action
+         If HB_IsBlock( ::OnClick )
+            If ! ::NestedClick
+               ::NestedClick := ! _OOHG_NestedSameEvent()
+               ::DoEventMouseCoords( ::OnClick, "CLICK" )
+               ::NestedClick := .F.
+            EndIf
+         EndIf
+      Endif
+
+      // skip default action
       Return 1
 
    ElseIf nNotify == NM_RCLICK
-      If ! ::lLocked .AND. ::FirstVisibleColumn # 0
-         ::MoveTo( ::CurrentRow, ::nRowPos )
+      If ::bPosition == -2 .OR. ::bPosition == 9
+         ::nDelayedClick := ::FirstSelectedItem
+         If ::nRowPos > 0
+            ListView_SetCursel( ::hWnd, ::nRowPos )
+         Else
+            LIstView_ClearCursel( ::hWnd )
+         EndIf
       Else
-         ::Super:Value := ::nRowPos
+         If ! ::lLocked .AND. ::FirstVisibleColumn # 0
+            ::MoveTo( ::CurrentRow, ::nRowPos )
+         Else
+            ::Super:Value := ::nRowPos
+         EndIf
+
+         If HB_IsBlock( ::OnRClick )
+            ::DoEventMouseCoords( ::OnRClick, "RCLICK" )
+         EndIf
+
+         // fire context menu
+         If ::ContextMenu != Nil
+            ::ContextMenu:Cargo := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
+            ::ContextMenu:Activate()
+         EndIf
       EndIf
 
-      If HB_IsBlock( ::OnRClick )
-         ::DoEventMouseCoords( ::OnRClick, "RCLICK" )
-      EndIf
-
-      // fire context menu
-      If ::ContextMenu != Nil
-         ::ContextMenu:Cargo := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
-         ::ContextMenu:Activate()
-      EndIf
-
-     // skip default action
+      // skip default action
       Return 1
 
    ElseIf nNotify == LVN_BEGINDRAG
-      If ! ::lLocked .AND. ::FirstVisibleColumn # 0
-         ::MoveTo( ::CurrentRow, ::nRowPos )
+      If ::bPosition == -2 .OR. ::bPosition == 9
+         ::nDelayedClick := ::FirstSelectedItem
+         If ::nRowPos > 0
+            ListView_SetCursel( ::hWnd, ::nRowPos )
+         Else
+            LIstView_ClearCursel( ::hWnd )
+         EndIf
       Else
-         ::Super:Value := ::nRowPos
+         If ! ::lLocked .AND. ::FirstVisibleColumn # 0
+            ::MoveTo( ::CurrentRow, ::nRowPos )
+         Else
+            ::Super:Value := ::nRowPos
+         EndIf
       EndIf
       Return Nil
 
@@ -1765,6 +1792,14 @@ Local lRet, bReplaceField, oWorkArea
          _SetThisCellInfo( ::hWnd, nRow, nCol, uValue )
          _OOHG_Eval( ::OnEditCell, nRow, nCol )
          _ClearThisCellInfo()
+         If ! ::lFromEditAllCells .AND. ::bPosition == 9
+            // Edition window lost focus
+            ::bPosition := 0                   // This restores click messages processing
+            If ::nDelayedClick > 0
+               // A click message was delayed, set the clicked row as new value
+               ::MoveTo( ::nDelayedClick, ::nRowPos )
+            EndIf
+         EndIf
       ElseIf lAppend
          ::lAppendMode := .F.
          _OOHG_Eval( ::OnAbortEdit, 0, 0 )
@@ -1812,8 +1847,9 @@ Local lRet, lSomethingEdited
       ElseIf aScan( ::aHiddenCols, nCol ) > 0
         // Hidden column, skip
       Else
-
+         ::lFromEditAllCells := .T.
          lRet := ::EditCell( nRow, nCol, , , , , lAppend, lOneRow, .F. )
+         ::lFromEditAllCells := .F.
 
          If lRet
             lSomethingEdited := .T.
@@ -1822,6 +1858,15 @@ Local lRet, lSomethingEdited
          EndIf
 
          lAppend := .F.
+      EndIf
+
+      If ::bPosition == 9                     // MOUSE EXIT
+         ::bPosition := 0                     // This restores click messages processing
+         If ::nDelayedClick > 0
+            // A click message was delayed, set the clicked row as new current row
+            ::MoveTo( ::nDelayedClick, ::nRowPos )
+         EndIf
+         Exit
       EndIf
 
       nCol := ::NextColInOrder( nCol )
@@ -2731,7 +2776,6 @@ Local lSomethingEdited := .F.
 
    Do While ::nRowPos >= 1 .AND. ::nRowPos <= ::ItemCount .AND. ::nColPos >= 1 .AND. ::nColPos <= Len( ::aHeaders )
       _OOHG_ThisItemCellValue := ::Cell( ::nRowPos, ::nColPos )
-      ::bPosition := 0
 
       If ::IsColumnReadOnly( ::nColPos )
          // Read only column
@@ -2838,7 +2882,6 @@ Local lSomethingEdited := .F.
          ::oWorkArea:GoTo( 0 )
       EndIf
    EndDo
-   ::bPosition := 0
 
 Return lSomethingEdited
 
@@ -2960,7 +3003,7 @@ Local aCellData, cWorkArea, uGridValue, nSearchCol, nCol, aPos
          If GetKeyFlagState() == MOD_CONTROL
             If ! ::lLocked
                ::TopBottom( GO_BOTTOM )
-               ::Refresh( { ::CountPerPage, ::nColPos } )
+               ::Refresh( { ::CountPerPage, ::CurrentCol } )
                ::DoChange()
             EndIf
          Else
@@ -2971,7 +3014,7 @@ Local aCellData, cWorkArea, uGridValue, nSearchCol, nCol, aPos
          If GetKeyFlagState() == MOD_CONTROL
             If ! ::lLocked
                ::TopBottom( GO_TOP )
-               ::Refresh( { 1, ::nColPos } )
+               ::Refresh( { 1, ::CurrentCol } )
                ::DoChange()
             EndIf
          Else

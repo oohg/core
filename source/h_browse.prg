@@ -1,9 +1,9 @@
 /*
- * $Id: h_browse.prg,v 1.152 2015-05-05 02:14:33 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.153 2015-05-06 04:24:14 fyurisich Exp $
  */
 /*
  * ooHG source code:
- * PRG browse functions
+ * Browse controls
  *
  * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
@@ -1144,8 +1144,18 @@ Local lRet, BackRec
       If lRet
          If lAppend .AND. lChange
             ::Value := aTail( ::aRecMap )
-         ElseIf lRefresh
-           ::Refresh()
+         Else
+            If ! ::lFromEditAllCells .AND. ::bPosition == 9
+               // Edition window lost focus
+               ::bPosition := 0                   // This restores click messages processing
+               If ::nDelayedClick > 0
+                  // A click message was delayed, set the clicked row as new value
+                  ::SetValue( ::aRecMap[ ::nDelayedClick ], ::nDelayedClick )
+               EndIf
+            EndIf
+            If lRefresh
+               ::Refresh()
+            EndIf
          EndIf
       EndIf
    EndIf
@@ -1205,7 +1215,9 @@ Local lRet, lRowEdited, lSomethingEdited, nRecNo, lRowAppended, nNewRec, nNextRe
          Else
             ::DbGoTo( nRecNo )
 
+            ::lFromEditAllCells := .T.
             lRet := ::EditCell( nRow, nCol, , , , , lAppend, , .F., .F. )
+            ::lFromEditAllCells := .F.
 
             If lRet
                lRowEdited := .T.
@@ -1217,6 +1229,10 @@ Local lRet, lRowEdited, lSomethingEdited, nRecNo, lRowAppended, nNewRec, nNextRe
             EndIf
          EndIf
 
+         If ::bPosition == 9                     // MOUSE EXIT
+            Exit
+         EndIf
+
          nCol := ::NextColInOrder( nCol )
       EndDo
 
@@ -1225,19 +1241,33 @@ Local lRet, lRowEdited, lSomethingEdited, nRecNo, lRowAppended, nNewRec, nNextRe
          ::RecCount := 0
          Exit
       ElseIf ! lRet
-         // Stop If the last column was not edited
+         // The last column was not edited
          If lRowAppended
             // A new row was added and partially edited: set as new value and refresh the control
             ::SetValue( aTail( ::aRecMap ), nRow )
             ::Refresh()
-            // TODO: agregar evento AFTEREDIT, parámetros: ultimo registro agregado o editado
          ElseIf lAppend
             // The user aborted the append of a new row in the first column: refresh and set last record as new value
             ::GoBottom()
          ElseIf lSomethingEdited
             // The user aborted the edition of an existing row: refresh the control without changing it's value
             ::Refresh()
-            // TODO: agregar evento AFTEREDIT, parámetros: ultimo registro agregado o editado
+         EndIf
+         Exit
+      ElseIf ::bPosition == 9
+         // Edition window lost focus
+         ::bPosition := 0                   // This restores click messages processing
+         If ::nDelayedClick > 0
+            // A click message was delayed, set the clicked row as new value and refresh the control
+            ::SetValue( ::aRecMap[ ::nDelayedClick ], ::nDelayedClick )
+            ::Refresh()
+         ElseIf lRowAppended
+            // A new row was added and partially edited: set as new value and refresh the control
+            ::SetValue( aTail( ::aRecMap ), nRow )
+            ::Refresh()
+         Else
+            // The user aborted the edition of an existing row: refresh the control without changing it's value
+            ::Refresh()
          EndIf
          Exit
       ElseIf lOneRow .OR. ! ::FullMove .OR. ( lRowAppended .AND. ! ::AllowAppend )
@@ -1248,15 +1278,12 @@ Local lRet, lRowEdited, lSomethingEdited, nRecNo, lRowAppended, nNewRec, nNextRe
             // A new row was added and fully edited: set as new value and refresh the control
             ::SetValue( aTail( ::aRecMap ), nRow )
             ::Refresh()
-             // TODO: agregar evento AFTEREDIT, parámetros: ultimo registro agregado o editado
         ElseIf lRowEdited
             // An existing row was fully edited: refresh the control without changing it's value
             ::Refresh()
-            // TODO: agregar evento AFTEREDIT, parámetros: ultimo registro agregado o editado
          EndIf
          Exit
       ElseIf lRowAppended
-         // TODO: agregar evento AFTEREDIT, parámetros: ultimo registro agregado o editado
          // A row was appended: refresh and/or add a new one
          If lRefresh
             ::GoBottom( .T. )
@@ -1271,9 +1298,6 @@ Local lRet, lRowEdited, lSomethingEdited, nRecNo, lRowAppended, nNewRec, nNextRe
          lAppend := .T.
          ::lAppendMode := .T.
       ElseIf nRow < ::ItemCount()
-         If lRowEdited
-            // TODO: agregar evento AFTEREDIT, parámetros: ultimo registro agregado o editado
-         EndIf
          // Edit next row
          If lRowEdited .AND. lRefresh
             nRecNo := ( ::WorkArea )->( RecNo() )
@@ -1300,7 +1324,6 @@ Local lRet, lRowEdited, lSomethingEdited, nRecNo, lRowAppended, nNewRec, nNextRe
          ::lAppendMode := .T.
       Else
          // The last visible row was fully edited
-         // TODO: agregar evento AFTEREDIT, parámetros: ultimo registro agregado o editado
          If nNextRec # 0
             // Find next record
             nRecNo := ( ::WorkArea )->( RecNo() )
@@ -1750,51 +1773,78 @@ METHOD Events_Notify( wParam, lParam ) CLASS TOBrowse
 Local nvKey, r, DeltaSelect, lGo, nNotify := GetNotifyCode( lParam )
 
    If nNotify == NM_CLICK
-      r := ::FirstSelectedItem
-      If r > 0
-         DeltaSelect := r - aScan ( ::aRecMap, ::nRecLastValue )
-         ::FastUpdate( DeltaSelect, r )
-         ::BrowseOnChange()
-      EndIf
+      If ::bPosition == -2 .OR. ::bPosition == 9
+         ::nDelayedClick := ::FirstSelectedItem
+         If ::nRecLastValue > 0
+            ListView_SetCursel( ::hWnd, aScan ( ::aRecMap, ::nRecLastValue ) )
+         Else
+            LIstView_ClearCursel( ::hWnd )
+         EndIf
+      Else
+         r := ::FirstSelectedItem
+         If r > 0
+            DeltaSelect := r - aScan ( ::aRecMap, ::nRecLastValue )
+            ::FastUpdate( DeltaSelect, r )
+            ::BrowseOnChange()
+         EndIf
 
-      If HB_IsBlock( ::OnClick )
-         If ! ::NestedClick
-            ::NestedClick := ! _OOHG_NestedSameEvent()
-            ::DoEventMouseCoords( ::OnClick, "CLICK" )
-            ::NestedClick := .F.
+         If HB_IsBlock( ::OnClick )
+            If ! ::NestedClick
+               ::NestedClick := ! _OOHG_NestedSameEvent()
+               ::DoEventMouseCoords( ::OnClick, "CLICK" )
+               ::NestedClick := .F.
+            EndIf
          EndIf
       EndIf
 
-     // skip default action
+      // skip default action
       Return 1
 
    ElseIf nNotify == NM_RCLICK
-      r := ::FirstSelectedItem
-      If r > 0
-         DeltaSelect := r - aScan ( ::aRecMap, ::nRecLastValue )
-         ::FastUpdate( DeltaSelect, r )
-         ::BrowseOnChange()
+      If ::bPosition == -2 .OR. ::bPosition == 9
+         ::nDelayedClick := ::FirstSelectedItem
+         If ::nRecLastValue > 0
+            ListView_SetCursel( ::hWnd, aScan ( ::aRecMap, ::nRecLastValue ) )
+         Else
+            LIstView_ClearCursel( ::hWnd )
+         EndIf
+      Else
+         r := ::FirstSelectedItem
+         If r > 0
+            DeltaSelect := r - aScan ( ::aRecMap, ::nRecLastValue )
+            ::FastUpdate( DeltaSelect, r )
+            ::BrowseOnChange()
+         EndIf
+
+         If HB_IsBlock( ::OnRClick )
+            ::DoEventMouseCoords( ::OnRClick, "RCLICK" )
+         EndIf
+
+         // fire context menu
+         If ::ContextMenu != Nil
+            ::ContextMenu:Cargo := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
+            ::ContextMenu:Activate()
+         EndIf
       EndIf
 
-      If HB_IsBlock( ::OnRClick )
-         ::DoEventMouseCoords( ::OnRClick, "RCLICK" )
-      EndIf
-
-      // fire context menu
-      If ::ContextMenu != Nil
-         ::ContextMenu:Cargo := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
-         ::ContextMenu:Activate()
-      EndIf
-
-     // skip default action
+      // skip default action
       Return 1
 
    ElseIf nNotify == LVN_BEGINDRAG
-      r := ::FirstSelectedItem
-      If r > 0
-         DeltaSelect := r - aScan ( ::aRecMap, ::nRecLastValue )
-         ::FastUpdate( DeltaSelect, r )
-         ::BrowseOnChange()
+      If ::bPosition == -2 .OR. ::bPosition == 9
+         ::nDelayedClick := ::FirstSelectedItem
+         If ::nRecLastValue > 0
+            ListView_SetCursel( ::hWnd, aScan ( ::aRecMap, ::nRecLastValue ) )
+         Else
+            LIstView_ClearCursel( ::hWnd )
+         EndIf
+      Else
+         r := ::FirstSelectedItem
+         If r > 0
+            DeltaSelect := r - aScan ( ::aRecMap, ::nRecLastValue )
+            ::FastUpdate( DeltaSelect, r )
+            ::BrowseOnChange()
+         EndIf
       EndIf
       Return Nil
 
@@ -2472,6 +2522,7 @@ Local lRet, BackRec
          EndIf
       EndIf
    EndIf
+
 Return lRet
 
 *-----------------------------------------------------------------------------*
@@ -2553,7 +2604,6 @@ Local lSomethingEdited, nRecNo
       EndIf
 
       _OOHG_ThisItemCellValue := ::Cell( ::nRowPos, ::nColPos )
-      ::bPosition := 0
 
       If ::IsColumnReadOnly( nCol )
          // Read only column
@@ -2671,7 +2721,6 @@ Local lSomethingEdited, nRecNo
       nRow := ::nRowPos
       nCol := ::nColPos
    EndDo
-   ::bPosition := 0
 
 Return lSomethingEdited
 
