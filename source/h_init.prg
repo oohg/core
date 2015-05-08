@@ -1,5 +1,5 @@
 /*
- * $Id: h_init.prg,v 1.38 2015-03-24 22:06:49 fyurisich Exp $
+ * $Id: h_init.prg,v 1.39 2015-05-08 22:11:47 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2436,5 +2436,237 @@ Local acButton, acLabel, acUser, acPrint
 
    // PRINT MESSAGES
    acPrint          := {}
+
+RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
+
+
+/////////////////////////////////////////////////////////////
+// TURKISH
+////////////////////////////////////////////////////////////
+FUNCTION ooHG_Messages_TR
+Local acMisc
+Local acBrowseButton, acBrowseError, acBrowseMessages
+Local acABMUser, acABMLabel, acABMButton, acABMError
+Local acButton, acLabel, acUser, acPrint
+
+   // MISC MESSAGES
+   acMisc           := { 'Eminmisiniz ?', ;
+                         'Pencereyi kapat', ;
+                         'Kapatma izni yok', ;
+                         'Program halen çalýþýyor', ;
+                         'Düzelt', ;
+                         'Tamam', ;
+                         'Ýptal', ;
+                         'Sayf.', ;
+                         'Hata', ;
+                         'Dikkat', ;
+                         'Not düzelt', ;
+                         "Hücre tipi düzenlemek için uygun deðil." }
+
+   // BROWSE MESSAGES
+   acBrowseButton   := { "Yeni Giriþ", ;
+                         "Düzelt", ;
+                         "&Ýptal", ;
+                         "&Tamam" }
+   acBrowseError    := { "Pencere: ", ;
+                         " Tanýmlanmamýþ. Program sonlandý.", ;
+                         "Hata ", ;
+                         "Control: ", ;
+                         "   ", ;
+                         " Önceden tanýmlý. Program sonlandý.", ;
+                         "Browse: Tip tanýmlý deðil. Program sonlandý.", ;
+                         "Browse: Giriþ modunda gözatma iþlemi uygun deðil. Program sonlandý.", ;
+                         "Kaydý diðer kullanýcý düzenliyor", ;
+                         "Dikkat", ;
+                         "Giriþ tanýmlanmamýþ" }
+   acBrowseMessages := { 'Eminmisiniz ?', ;
+                         'Kayýt Sil', ;
+                         'Öðeyi Sil' }
+
+   // EDIT MESSAGES
+   acABMUser        := { Chr(13)+"Kayýt sil"+Chr(13)+"Eminmisiniz ?"+Chr(13), ;
+                         Chr(13)+"Index dosyasý kayýp"+Chr(13)+"Arama iþlemi yapýlamýyor"+Chr(13), ;
+                         Chr(13)+"Index dosyasý bulunamadý"+Chr(13)+"Arama iþlemi yapýlamýyor"+Chr(13), ;
+                         Chr(13)+"Arama yapýlamaz"+Chr(13)+"Not ve mantýksal alanlarda"+Chr(13), ;
+                         Chr(13)+"Kayýt bulunamadý"+Chr(13), ;
+                         Chr(13)+"kolon sayýsý fazla"+Chr(13)+" Rapor sayfasýna sýðmýyor"+Chr(13) }
+   acABMLabel       := { "Kayýt", ;
+                         "Kayýt sayýsý", ;
+                         "       Yeni", ;
+                         "      Düzelt", ;
+                         "Kayýt numarasý gir", ;
+                         "Bul", ;
+                         "Text ara", ;
+                         "Tarih ara", ;
+                         "Sayý ara", ;
+                         "Rapor tanýmlarý", ;
+                         "Rapor kolonlarý", ;
+                         "Kullanýlabilir kolonlar", ;
+                         "Tanýmlý kayýt", ;
+                         "Son kayýt", ;
+                         "Rapor ", ;
+                         "Tarih.", ;
+                         "Tanýmlý kayýt", ;
+                         "Son kayýt", ;
+                         "Sýralama:", ;
+                         "Evet", ;
+                         "Hayýr", ;
+                         "Sayfa ", ;
+                         "  " }
+   acABMButton      := { "Kapat", ;
+                         "Yeni", ;
+                         "Düzelt", ;
+                         "Sil", ;
+                         "Bul", ;
+                         "Git", ;
+                         "Rapor", ;
+                         "Ýlk", ;
+                         "Önceki", ;
+                         "Sonraki", ;
+                         "Son", ;
+                         "Kaydet", ;
+                         "Ýptal", ;
+                         "Ekle", ;
+                         "Sil", ;
+                         "Yazdýr", ;
+                         "Kapat" }
+   acABMError       := { "Düzelt, Dosya adý tanýmlanmamýþ veya kayýp", ;
+                         "Düzelt, Bu dosyanýn alan sayýsý 16 dan fazla ", ;
+                         "Düzelt, Aralýðý aþmýþ durumdasýnýz", ;
+                         "Düzelt, Numara aralýðý aþmýþ", ;
+                         "Düzelt, Listelemede numara aþýlmýþ" }
+
+   // EDIT EXTENDED MESSAGES
+   acButton         := { "&Kapat", ;                                                                                                         // 1
+                         "&Yeni", ;                                                                                                          // 2
+                         "&Düzelt", ;                                                                                                        // 3
+                         "&Sil", ;                                                                                                           // 4
+                         "&Bul", ;                                                                                                           // 5
+                         "&Yazdýr", ;                                                                                                        // 6
+                         "&Ýptal", ;                                                                                                         // 7
+                         "&Tamam", ;                                                                                                         // 8
+                         "&Kopya", ;                                                                                                         // 9
+                         "&Filtre Aktif", ;                                                                                                  // 10
+                         "&Filtre Pasif" }                                                                                                   // 11
+   acLabel          := { "Boþ", ;                                                                                                            // 1
+                         "Kayýt", ;                                                                                                          // 2
+                         "Toplam", ;                                                                                                         // 3
+                         "Aktif sýralama", ;                                                                                                 // 4
+                         "iþlemler", ;                                                                                                       // 5
+                         "Yeni Kayýt", ;                                                                                                     // 6
+                         "Kayýt düzelt", ;                                                                                                   // 7
+                         "Kayýt seç", ;                                                                                                      // 8
+                         "Kayýt bul", ;                                                                                                      // 9
+                         "Yazýcý iþlemleri", ;                                                                                               // 10
+                         "Kullanýlbilir alanlar", ;                                                                                          // 11
+                         "Yazýcýda alanlarý", ;                                                                                              // 12
+                         "Kullanýlabilir Yazýcýlar", ;                                                                                       // 13
+                         "Yazýlacak ilk kayýt", ;                                                                                            // 14
+                         "Yazýlacak son kayýt", ;                                                                                            // 15
+                         "Kayýt sil", ;                                                                                                      // 16
+                         "Ön izleme", ;                                                                                                      // 17
+                         "Sayfa görüntücük", ;                                                                                               // 18
+                         "Filtre ifadesi: ", ;                                                                                               // 19
+                         "Filtrelendi: ", ;                                                                                                  // 20
+                         "Filtre Ýþlemleri", ;                                                                                               // 21
+                         "Database alanlarý", ;                                                                                              // 22
+                         "Karþýlaþtýrma iþareleri", ;                                                                                        // 23
+                         "Filtre deðiþkeni", ;                                                                                               // 24
+                         "Filtre alan seçimi", ;                                                                                             // 25
+                         "Karþýlaþtýrma Ýþlem seçimi", ;                                                                                     // 26
+                         "Eþit", ;                                                                                                           // 27
+                         "Eþit deðil", ;                                                                                                     // 28
+                         "den Büyük", ;                                                                                                      // 29
+                         "den Küçük", ;                                                                                                      // 30
+                         "Büyük veya eþit", ;                                                                                                // 31
+                         "Küçük veya eþit" }                                                                                                 // 32
+   acUser           := { ABM_CRLF + "Aktif database bulunamadý.   "  + ABM_CRLF + "Lütfen seçiminizi düzeltin   " + ABM_CRLF, ;              // 1
+                         "alan text tanýmlý", ;                                                                                              // 2
+                         "alan sayýsal tanýmlý", ;                                                                                           // 3
+                         "Tarih seç", ;                                                                                                      // 4
+                         "Doðru deðiþkeni iþaretleyin", ;                                                                                    // 5
+                         "Alan deðiþkeni girin", ;                                                                                           // 6
+                         "Kayýt seçimi yaparak onaylayýn", ;                                                                                 // 7
+                         ABM_CRLF + "Aktif kaydý siliyorsunuz.  " + ABM_CRLF + "Eminmisiniz ?    " + ABM_CRLF, ;                             // 8
+                         ABM_CRLF + "Aktif sýralama yok   " + ABM_CRLF + "Lütfen seçim yapýn " + ABM_CRLF, ;                                 // 9
+                         ABM_CRLF + "Not alanlarý ve mantýksal alanlarda arama yapýlamaz " + ABM_CRLF, ;                                     // 10
+                         ABM_CRLF + "Kayýt yok  " + ABM_CRLF, ;                                                                              // 11
+                         "Tanýmlý alan listesi Seçimi", ;                                                                                    // 12
+                         "Listeden alanlarý seçiniz", ;                                                                                      // 13
+                         "Yazýcý Seçimi", ;                                                                                                  // 14
+                         "Tanýmlý alanlarý seç", ;                                                                                           // 15
+                         "Seçilmiþ alanlar", ;                                                                                               // 16
+                         "Yazdýrýlacak ilk kayýt seçimi", ;                                                                                  // 17
+                         "Yazdýrýlacak son kayýt seçimi", ;                                                                                  // 18
+                         ABM_CRLF + "Seçilmiþ alan çok fazla  " + ABM_CRLF, ;                                                                // 19
+                         ABM_CRLF + "Ýlk alanlarý tanýmlayýn  " + ABM_CRLF, ;                                                                // 20
+                         ABM_CRLF + "Alanlar tanýmlanmamýþ   " + ABM_CRLF, ;                                                                 // 21
+                         ABM_CRLF + "Önce alan tanýmlanmalý " + ABM_CRLF, ;                                                                  // 22
+                         ABM_CRLF + "Hiç alan seçmediniz  " + ABM_CRLF + "Yazdýrmadan önce alanlar tanýmlanmýþ olmalý " + ABM_CRLF, ;        // 23
+                         ABM_CRLF + "Çok fazla alan var " + ABM_CRLF + "Alan sayýsýný uygun hale getirin " + ABM_CRLF, ;                     // 24
+                         ABM_CRLF + "Yazýcý hazýr deðil " + ABM_CRLF, ;                                                                      // 25
+                         "Sýralama ", ;                                                                                                      // 26
+                         "ilk kayýt ", ;                                                                                                     // 27
+                         "son kayýt", ;                                                                                                      // 28
+                         "Evet", ;                                                                                                           // 29
+                         "Hayýr", ;                                                                                                          // 30
+                         "Sayfa:", ;                                                                                                         // 31
+                         ABM_CRLF + "Lütfen yazýcý seçin  " + ABM_CRLF, ;                                                                    // 32
+                         "Filtreleme ", ;                                                                                                    // 33
+                         ABM_CRLF + "Aktif filtre " + ABM_CRLF, ;                                                                            // 34
+                         ABM_CRLF + "Not alanlarýnda filtreleme yapýlamaz " + ABM_CRLF, ;                                                    // 35
+                         ABM_CRLF + "Filtre için alan seç " + ABM_CRLF, ;                                                                    // 36
+                         ABM_CRLF + "Filtre için Ýþlem seç  " + ABM_CRLF, ;                                                                  // 37
+                         ABM_CRLF + "Alan tipi filtrelemeye uymuyor " + ABM_CRLF, ;                                                          // 38
+                         ABM_CRLF + "Aktif hiç filtre yok  " + ABM_CRLF, ;                                                                   // 39
+                         ABM_CRLF + "Filtre Ýptali ?   " + ABM_CRLF, ;                                                                       // 40
+                         ABM_CRLF + "Diðer kullanýcýlar kaydý kullanýyor " + ABM_CRLF }                                                      // 41
+
+   // PRINT MESSAGES
+   acPrint          := { "Yazýcý önizlemesi oluþturuluyor , bekleyin", ;
+                         "Yazdýrýlýyor ", ;
+                         "Yazýcýya aktarýlýyor", ;
+                         " Yazdýrýldý !!!", ;
+                         "Tanýmsýz parametre veya iþlem var !!!", ;
+                         "Yazýcý çaðrýlamadý !!!", ;
+                         "Yazdýrmaya baþlanamadý !!!", ;
+                         "Sayfalar yazdýrýlamýyor !!!", ;
+                         "Ýþleminiz gerçekleþtirilemiyor !!!", ;
+                         " BULUNAMADI !!!", ;
+                         "Yazýcý bulunmýyor !!!", ;
+                         "HATA", ;
+                         "Yazýcý baðlantýsý kullanýlamýyor !!!", ;
+                         "Yazýcý Seç ", ;
+                         "Tamam", ;
+                         "Ýptal", ;
+                         'Önizleme --> ', ;
+                         "Kapat", ;
+                         "Kapat", ;
+                         "Büyült", ;
+                         "Küçült", ;
+                         "Küçült", ;
+                         "Küçült", ;
+                         "Yazdýr", ;
+                         "Yazdýrma Modu ", ;
+                         "Ara ", ;
+                         "Ara ", ;
+                         "Sonraki arama ", ;
+                         "Sonraki arama ", ;
+                         'Sözcük: ', ;
+                         'Aranacak cümle ', ;
+                         "Arama sonlandý.", ;
+                         "Bilgilendirme ", ;
+                         'Excel bulunamadý !!!', ;
+                         "XLS uzantýsý deðil !!!", ;
+                         "Kaydedilecek dosya : ", ;
+                         "HTML uzantýlý deðil !!!", ;
+                         "RTF uzantýlý deðil !!!", ;
+                         "CSV uzantýlý deðil !!!", ;
+                         "PDF uzantýlý deðil !!!", ;
+                         "ODT uzantýlý deðil !!!", ;
+                         'Barcode gerekli bir karakter deðiþkeni !!!', ;
+                         'Code 128 modunda A, B veya C karakter deðiþkeni !!!', ;
+                         "Hesap bulunamadý !!!", ;
+                         "Dosya kaydýnda hata: " }
 
 RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
