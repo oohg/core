@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.130 2015-05-10 06:08:56 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.131 2015-05-10 07:08:57 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1221,12 +1221,6 @@ Local nvKey, lGo, uValue, nNotify := GetNotifyCode( lParam )
             ListView_ClearCursel( ::hWnd )
          EndIf
       Else
-         If ! ::lLocked .AND. ::FirstVisibleColumn # 0
-            ::MoveTo( ::CurrentRow, ::nRowPos )
-         Else
-            ::Super:Value := ::nRowPos
-         EndIf
-
          If HB_IsBlock( ::OnClick )
             If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. uValue <= 0
                If ! ::NestedClick
@@ -1242,8 +1236,11 @@ Local nvKey, lGo, uValue, nNotify := GetNotifyCode( lParam )
             ::CheckItem( uValue, ! ::CheckItem( uValue ) )
          ElseIf uValue < 0
             // select item
-            ::MoveTo( ::CurrentRow, ::nRowPos )
-//            ::SetControlValue( ListView_ItemActivate( lParam )[ 1 ] )             // TODO: Check
+            If ! ::lLocked .AND. ::FirstVisibleColumn # 0
+               ::MoveTo( ::CurrentRow, ::nRowPos )
+            Else
+               ::Super:Value := ::nRowPos
+            EndIf
          EndIf
       EndIf
 
@@ -1266,12 +1263,6 @@ Local nvKey, lGo, uValue, nNotify := GetNotifyCode( lParam )
             ListView_ClearCursel( ::hWnd )
          EndIf
       Else
-         If ! ::lLocked .AND. ::FirstVisibleColumn # 0
-            ::MoveTo( ::CurrentRow, ::nRowPos )
-         Else
-            ::Super:Value := ::nRowPos
-         EndIf
-
          If HB_IsBlock( ::OnRClick )
             If ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. uValue <= 0
                ::DoEventMouseCoords( ::OnRClick, "RCLICK" )
@@ -1283,8 +1274,11 @@ Local nvKey, lGo, uValue, nNotify := GetNotifyCode( lParam )
             ::CheckItem( uValue, ! ::CheckItem( uValue ) )
          ElseIf uValue < 0
             // select item
-            ::MoveTo( ::CurrentRow, ::nRowPos )
-//            ::SetControlValue( ListView_ItemActivate( lParam )[ 1 ] )             // TODO: Check
+            If ! ::lLocked .AND. ::FirstVisibleColumn # 0
+               ::MoveTo( ::CurrentRow, ::nRowPos )
+            Else
+               ::Super:Value := ::nRowPos
+            EndIf
          EndIf
 
          // fire context menu
@@ -1299,7 +1293,7 @@ Local nvKey, lGo, uValue, nNotify := GetNotifyCode( lParam )
 
    ElseIf nNotify == LVN_BEGINDRAG
       If ::bPosition == -2 .OR. ::bPosition == 9
-         ::nDelayedClick := { ::FirstSelectedItem, 0, uValue, Nil }
+         ::nDelayedClick := { ::FirstSelectedItem, 0, 0, Nil }
          If ::nRowPos > 0
             ListView_SetCursel( ::hWnd, ::nRowPos )
          Else

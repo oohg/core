@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.1470 2015-05-10 06:08:56 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1471 2015-05-10 07:08:56 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,7 +7,63 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2015-05-10 03:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2015-05-10 04:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Previous entry.
+   * manual/changelog.htm
+     * Updated.
+   * source/h_browse.prg
+     - Unneeded code.
+     * Comments.
+     + T*O*D*O notes.
+     * TXBrowse:EditGrid is now an independent method and behaves like
+       old TXBrowse:EditAllCells. After editing the initial row, the edition
+       continues in the next row or a new one is appended.
+     * TXBrowse:SyncData() was renamed ::SetControlValue.
+     + Support for CHANGEBEFOREEDIT and ON RCLICK clauses.
+     ! CHANGEBEFOREEDIT defaults to .F. to keep previous behavior.
+     ! ::OnClick, ::bBeforeColMove, ::bAfterColMove, ::bBeforeColSize,
+       ::bAfterColSize, ::bBeforeAutofit, ::bHeadRClick, ::OnEditCell,
+       ::OnAbortEdit and ::OnRClick are not setted at define time.
+     ! Support for NONEUNSELS clause.
+     ! TOBrowse:EditItem_B() does not honor ::RefreshType.
+     ! TOBrowse:EditCell(), exit clicks are being processed by ::Super.
+     + Parameter nRow to ::IsColumnReadonly() and ::IsColumnWhen() calls.
+     ! Support for lChange parameter in TOBrowse:EditAllCells().
+     ! Handling of NOMODAL clause in TXBrowse and TOBrowseByCell classes
+       (when clicking outside the edition window, the edition is not ended).
+     - Data TOBrowseByCell:aRecMap.
+     - Data TOBrowseByCell:RecCount.
+     - Data TOBrowseByCell:lUpdateAll.
+     - Data TOBrowseByCell:SyncStatus.
+     - TOBrowseByCell:MoveTo().
+     * TOBrowseByCell:EditAllCells() is now an independent method and
+       behaves TXBrowse:EditAllCells().
+     * TOBrowseByCell:Value() now resets ::nRowPos, ::nColPos and
+       ::nRecLastValue to 0 when there are no records or no items or
+       ::nRowPos is 0 or ::nColPos is 0.
+     * Handling of NOMODAL clause in TXBrowseByCell:Evens_Notify().
+     ! TOBrowseByCell:EditCell(), exit clicks are being processed by ::Super.
+     ! TOBrowseByCell:EditCell() was calling TOBrowse:EditCell() instead
+       of calling TXBrowse:EditCell().
+     * TOBrowseByCell:Edit_ItemB() now calls ::EditAllCells().
+     * Added lChange parameter to TOBrowseByCell:EditGrid().
+       INCOMPATIBLE.
+     + Parameter nRow to ::IsColumnReadonly() and :IsColumnWhen() in
+       TOBrowseByCell:EditGrid() and _OOHG_TXBrowseByCell_Events2().
+     ! TOBrowseByCell:EditGrid(), exit clicks are being processed by ::Super.
+     ! Clicks are not recognized after a row edition was aborted.
+     ! Methods :EditGrid(), ::Left() and ::Right() of TOBrowseByCell do not
+       honor the column order set by the user.
+     ! Painting in TOBrowseByCell:CurrentCol().
+     * TOBrowseByCell:CurrentCol() now paints only when the column changes.
+   * source/h_xbrowse.prg
+     ! Order of events in NM_CLICK and NM_RCLICK handlers.
+     ! ::lLocked was not honored in NM_CLICK and NM_RCLICK handlers.
+     ! Wrong value was set into ::nDelayedClick for LVN_BEGINDRAG
+       notification.
+
+2015-05-10 03:09 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * manual/changelog.htm
      * Updated.
    * source/h_xbrowse.prg
@@ -297,7 +353,7 @@
 2015-05-02 01:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog
      * Previous entries.
-   * ./ChangeLog.004
+* ./ChangeLog.004
      + Additional info to a previous entry.
    * doc/classes.txt
      * Updated.
