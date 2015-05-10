@@ -1,11 +1,56 @@
 /*
- * $Id: ChangeLog,v 1.1469 2015-05-10 05:03:06 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1470 2015-05-10 06:08:56 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-05-10 03:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/changelog.htm
+     * Updated.
+   * source/h_xbrowse.prg
+     - Unneeded code.
+     * Comments.
+     + T*O*D*O notes.
+     + TXBrowse:DeleteAllItems().
+     * TXBrowse:SyncData() is now a BLOCK and was renamed ::SetControlValue.
+     * TXBrowse:EditGrid() is now an independent method and behaves like
+       old TGrid:EditAllCells(). After editing the initial row, the edition
+       continues in the next row or a new one is appended.
+     + Support for ON RCLICK clause.
+     ! ::OnClick, ::bBeforeColMove, ::bAfterColMove, ::bBeforeColSize,
+       ::bAfterColSize, ::bBeforeAutofit, ::bHeadRClick, ::OnEditCell,
+       ::OnAbortEdit and ::OnRClick are not setted at define time.
+     ! Handling of NOMODAL clause in TXBrowse and TXBrowseByCell classes
+       (when clicking outside the edition window, the edition is not ended).
+     * TXBrowse:AppendItem() now behaves like TGrid:AppendItem().
+     * ::OnAppend, ::OnEditCell and ::OnAbortEdit codeblocks are evaluated
+       using ::DoEvent() instead of _OOHG_Eval().
+     * Placement of parameter lAppend in TXBrowse:EditCell().
+       INCOMPATIBLE.
+     * Parameters validations in TXBrowse:EditCell().
+     ! TXBrowse:EditCell() does not honor ::RefreshType.
+     * Handling of NOMODAL clause in TXBrowse:EditCell().
+     * TXBrowse:EditAllCells() now behaves like TGrid:EditAllCells().
+       When ::FullMove is .F., it edits only one row.
+       When ::Fullmove is .T., it calls ::EditGrid().
+     * TXBrowseByCell:DeleteAllItems() is now a BLOCK.
+     - TXBrowseByCell:EditAllCells().
+     - TXBrowseByCell:EditCell2().
+     + TXBrowseByCell:SetControlValue().
+     * TXBrowseByCell no longer forces ::InPlace to .T.
+     * Placement of parameter lAppend in TXBrowseByCell:EditCell().
+       INCOMPATIBLE.
+     ! TXBrowseByCell:EditCell(), exit clicks are being processed by ::Super.
+     * Parameters validations in TXBrowseByCell:EditGrid().
+     + Parameter nRow to ::IsColumnReadonly() and :IsColumnWhen() in
+       TXBrowseByCell:EditGrid() and _OOHG_TXBrowseByCell_Events2().
+     ! TXBrowseByCell:EditGrid(), exit clicks are being processed by ::Super.
+     ! Ctrl+VK_UP and Ctrl+VK_DOWN behaviour.
+     * Handling of NOMODAL clause in TXBrowseByCell:Evens_Notify().
+     * TXBrowseByCell:CurrentCol() now paints only when the column changes.
 
 2015-05-10 02:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * manual/changelog.htm
