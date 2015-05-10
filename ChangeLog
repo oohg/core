@@ -1,11 +1,33 @@
 /*
- * $Id: ChangeLog,v 1.1467 2015-05-08 22:11:46 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1468 2015-05-10 04:37:47 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-05-10 01:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/changelog.htm
+     * Updated.
+   * include/i_grid.ch
+   * include/i_browse.ch
+   * include/i_hmg_compat.ch
+     + CHANGEBEFOREEDIT clause.
+     + ON RCLICK clause.
+   * include/i_xbrowse.ch
+     + ON RCLICK clause.
+   * include/i_lang.ch
+     * Format.
+   * source/h_error.prg
+     * Copyright notice.
+     * Format.
+     * Comments.
+     ! RTE when PutMsg is called without lEvents parameter.
+     + OOHG_TErrorHtml:CopyLog().
+     + OOHG_TErrorHtml:DeleteLog().
+     + Support for Turkish language.
+     ; TODO: Translate messages.
 
 2015-05-08 19:11 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_lang.ch

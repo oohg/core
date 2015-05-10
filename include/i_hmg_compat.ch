@@ -1,5 +1,5 @@
 /*
- * $Id: i_hmg_compat.ch,v 1.40 2015-04-25 23:25:11 fyurisich Exp $
+ * $Id: i_hmg_compat.ch,v 1.41 2015-05-10 04:37:47 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -249,6 +249,8 @@ SPLITBOX VERSION
       [ <alta: ENABLEALTA, DISABLEALTA> ] ;
       [ <noshow: NOSHOWALWAYS> ] ;
       [ <none: NONEUNSELS, IGNORENONE> ] ;
+      [ <cbe: CHANGEBEFOREEDIT> ] ;
+      [ <dummy15: ONRCLICK, ON RCLICK> <rclick> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TOBrowse(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, , , <w>, <h>, <headers>, <widths>, ;
@@ -283,7 +285,7 @@ SPLITBOX VERSION
             IIF( Upper( #<edtctrls> ) == "DYNAMICCONTROLS", .F., NIL ) ), ;
             <{bheadrclick}>, <.extdbl.>, <.silent.>, ;
             ! Upper( #<alta> ) == "DISABLEALTA", <.noshow.>, ;
-            Upper( #<none> ) == "NONEUNSELS" )
+            Upper( #<none> ) == "NONEUNSELS", <.cbe.>, <{rclick}> )
 
 #xcommand @ <row>, <col> BUTTONEX <name> ;
       [ OBJ <obj> ] ;

@@ -1,5 +1,5 @@
 /*
- * $Id: i_lang.ch,v 1.7 2015-05-08 22:11:47 fyurisich Exp $
+ * $Id: i_lang.ch,v 1.8 2015-05-10 04:37:47 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -57,13 +57,6 @@
  * If you do not wish that, delete this exception notice.
  */
 
- #translate SET LANGUAGE TO TURKISH ;
-   => ;
-      REQUEST HB_LANG_TR ;;
-      HB_LANGSELECT( "TR" ) ;;
-      InitMessages()
- 
- 
 #translate SET LANGUAGE TO SPANISH ;
    => ;
       REQUEST HB_LANG_ES ;;
@@ -128,6 +121,12 @@
    => ;
       REQUEST HB_LANG_SLWIN ;;
       HB_LANGSELECT( "SLWIN" ) ;;
+      InitMessages()
+
+#translate SET LANGUAGE TO TURKISH ;
+   => ;
+      REQUEST HB_LANG_TR ;;
+      HB_LANGSELECT( "TR" ) ;;
       InitMessages()
 
 /*---------------------------------------------------------------------------

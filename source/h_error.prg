@@ -1,9 +1,11 @@
 /*
- * $Id: h_error.prg,v 1.60 2015-03-14 02:05:39 fyurisich Exp $
+ * $Id: h_error.prg,v 1.61 2015-05-10 04:37:48 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * Error handling system
+ * Author: Antonio Novo <novoantonio@hotmail.com>
+ * Created: 01-01-2003
  *
  * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
@@ -82,22 +84,14 @@
 
  Parts of this project are based upon:
 
- "Harbour GUI framework for Win32"
-  Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
-  Copyright 2001 Antonio Linares <alinares@fivetech.com>
- www - http://www.harbour-project.org
+	"Harbour GUI framework for Win32"
+ 	Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
+ 	Copyright 2001 Antonio Linares <alinares@fivetech.com>
+	www - http://www.harbour-project.org
 
- "Harbour Project"
- Copyright 1999-2003, http://www.harbour-project.org/
+	"Harbour Project"
+	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
-
-*------------------------------------------------------------------------------*
-*-Module: h_error.prg
-*-Target: Colect MiniGui Errors
-*-Date Created: 01-01-2003
-*-Author: Antonio Novo  novoantonio@hotmail.com
-*-Compile with: -w -n
-*------------------------------------------------------------------------------*
 
 #include "oohg.ch"
 #include "error.ch"
@@ -229,23 +223,25 @@ RETURN oErrorLog
 
 
 CLASS OOHG_TErrorHtml
+   DATA aMessages     INIT Nil
    DATA cBufferFile   INIT ""
    DATA cBufferScreen INIT ""
-   DATA PreHeader     INIT '<HR>' + CHR( 13 ) + CHR( 10 ) + '<p class="updated">'
-   DATA PostHeader    INIT '</p>'
-   DATA Path          INIT ""
-   DATA FileName      INIT "ErrorLog.htm"
-   DATA aMessages     INIT Nil
    DATA cLang         INIT ""
+   DATA FileName      INIT "ErrorLog.htm"
+   DATA Path          INIT ""
+   DATA PostHeader    INIT '</p>'
+   DATA PreHeader     INIT '<HR>' + CHR( 13 ) + CHR( 10 ) + '<p class="updated">'
 
+   METHOD CopyLog
+   METHOD CreateLog
+   METHOD DeleteLog
+   METHOD ErrorHeader
+   METHOD ErrorMessage
+   METHOD FileHeader
    METHOD New
+   METHOD PutMsg
    METHOD Write
    METHOD Write2
-   METHOD FileHeader
-   METHOD ErrorMessage
-   METHOD ErrorHeader
-   METHOD CreateLog
-   METHOD PutMsg
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
@@ -440,6 +436,20 @@ METHOD New( cLang ) CLASS OOHG_TErrorHtml
                        "Events:", ;
                        "Program Error" }
 
+   CASE ::cLang == "TR"                            // Turkish
+      ::aMessages := { "ooHG Errors Log", ;
+                       "Application: ", ;
+                       "Date: ", ;
+                       "Time: ", ;
+                       "Version: ", ;
+                       "Alias in use: ", ;
+                       "Computer Name: ", ;
+                       "User Name: ", ;
+                       "Error: ", ;
+                       "Called from ", ;
+                       "Events:", ;
+                       "Program Error" }
+
    OTHERWISE                                          // Default to English
       ::aMessages := { "ooHG Errors Log", ;
                        "Application: ", ;
@@ -473,10 +483,6 @@ METHOD Write2( cTxt ) CLASS OOHG_TErrorHtml
 RETURN RTRIM( cTxt ) + "<br>" + CHR( 13 ) + CHR( 10 )
 
 
-/*-30-12-2002
- *-AUTHOR: Antonio Novo
- *-HTML Page Head
- */
 *------------------------------------------------------------------------------*
 METHOD FileHeader( cTitle ) CLASS OOHG_TErrorHtml
 *------------------------------------------------------------------------------*
@@ -550,6 +556,70 @@ LOCAL nHdl, cFile, cTop, cBottom, nPos
 RETURN Nil
 
 *------------------------------------------------------------------------------*
+METHOD DeleteLog() CLASS OOHG_TErrorHtml
+*------------------------------------------------------------------------------*
+LOCAL cFile
+
+   IF EMPTY( ::Path )
+      IF EMPTY( CurDir() )
+        cFile := '\'
+      ELSE
+        cFile := '\' + CurDir() + '\'
+      ENDIF
+   ELSE
+      IF RIGHT( ::Path, 1 ) == '\'
+         cFile := ::Path
+      ELSE
+         cFile := ::Path + '\'
+      ENDIF
+   ENDIF
+   cFile += ::FileName
+
+   IF FILE( cFile )
+      ERASE ( cFile )
+   ENDIF
+
+RETURN ! FILE( cFile )
+
+*------------------------------------------------------------------------------*
+METHOD CopyLog( cTo ) CLASS OOHG_TErrorHtml
+*------------------------------------------------------------------------------*
+LOCAL cFile
+
+   IF ! VALTYPE( cTo ) $ "CM"
+      RETURN .F.
+   ENDIF
+   IF FILE( cTo )
+      ERASE ( cTo )
+      IF FILE( cTo )
+         RETURN .F.
+      ENDIF
+   ENDIF
+
+   IF EMPTY( ::Path )
+      IF EMPTY( CurDir() )
+        cFile := '\'
+      ELSE
+        cFile := '\' + CurDir() + '\'
+      ENDIF
+   ELSE
+      IF RIGHT( ::Path, 1 ) == '\'
+         cFile := ::Path
+      ELSE
+         cFile := ::Path + '\'
+      ENDIF
+   ENDIF
+   cFile += ::FileName
+
+   IF ! FILE( cFile )
+      RETURN .F.
+   ENDIF
+
+   COPY FILE ( cFile ) TO ( cTo )
+
+RETURN FILE( cTo )
+
+*------------------------------------------------------------------------------*
 METHOD ErrorMessage( cError, nPosition ) CLASS OOHG_TErrorHtml
 *------------------------------------------------------------------------------*
 
@@ -607,7 +677,7 @@ LOCAL aEvents
       ENDDO
    ENDIF
 
-   IF lEvents
+   IF HB_IsLogical( lEvents ) .and. lEvents
       // Event list
       aEvents := _ListEventInfo()
       ::Write( ::aMessages[11] )
