@@ -1,11 +1,67 @@
 /*
- * $Id: ChangeLog,v 1.1468 2015-05-10 04:37:47 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1469 2015-05-10 05:03:06 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-05-10 02:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/changelog.htm
+     * Updated.
+   * source/h_grid.prg
+     * Format.
+     * Comments.
+     - Unneeded code.
+     + T*O*D*O notes.
+     * Use methods instead of api.
+     * Data nDelayedClick type and initial value.
+     + Data nEditRow.
+     * Data lFromEditAllCells renamed to lCalledFromClass.
+     + TGrid:SetControlValue(). It's like ::Value. It enables that
+       methods can be used by TGridMulti and TGridByCell classes.
+     + Support for CHANGEBEFOREEDIT and ON RCLICK clauses.
+     ! Grid shows an imagelist in column 1 when another column has
+       an IMAGELIST columncontrol.
+     ! TGrid:EditGrid() and TGrid:EditAllCells() call ::OnAbortEdit twice.
+     * ::OnAppend codeblock now receives the number of the new row.
+     ! TGrid:EditGrid() throws a RTE on ::lOneRow.
+     ! TGrid:EditItem() and TGrid:EditCell() do not fire ::OnAppend event.
+     * TGrid:EditCell() is now responsible for deleting the blank item,
+       for setting the control's value and for calling ::OnAbortEdit when
+       an append is cancelled.
+     * ::OnAppend, ::OnEditCell and ::OnAbortEdit codeblocks are evaluated
+       using ::DoEvent() instead of _OOHG_Eval().
+     + Data lDeleteAll to TGridMulti class. When .T., DELETE key will
+       delete all selected items. When .F., only ::FirstSelectedItem is
+       deleted. Defaults to .F.
+     - TGridMulti:AppendItem().
+     - TGridMulti:Down().
+     - TGridMulti:EditAllCells().
+     - TGridMulti:EditCell().
+     - TGridMulti:EditGrid().
+     - TGridMulti:EditItem().
+     - TGridMulti:Events().
+     - TGridMulti:GoBottom().
+     - TGridMulti:GoTop().
+     - TGridMulti:PageDown().
+     - TGridMulti:PageUp().
+     - TGridMulti:Up().
+     + TGridMulti:SetControlValue().
+     - NM_CLICK and NM_RCLICK handlers from TGridMulti:Events_Notify().
+     - TGridByCell:AppendItem().
+     - TGridByCell:EditAllCells().
+     - TGridByCell:EditItem().
+     - TGridByCell:EditItem2().
+     + TGridByCell:SetControlValue().
+     * TGridByCell no longer forces ::InPlace nor ::lChangeBeforeEdit to .T.
+     ! TGridByCell:EditGrid() and TGridByCell:EditAllCells() call
+       ::OnAbortEdit twice.
+     ! Mouse clicks are no longer recognized after cancelling an edition.
+     ! RTE "No exported variable: BPOSITION" when an edit control is
+       defined using the syntax TGridControl():New() without a reference
+       to the Grid control.
 
 2015-05-10 01:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * manual/changelog.htm
