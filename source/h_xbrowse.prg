@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.131 2015-05-10 07:08:57 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.132 2015-05-11 23:58:44 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -103,7 +103,7 @@ CLASS TXBrowse FROM TGrid
    METHOD Define
    METHOD Define3
    METHOD Delete
-   METHOD DeleteAllItems           BLOCK { | Self | ::nRowPos := 0, ::Super:DeleteAllItem() }
+   METHOD DeleteAllItems          BLOCK { | Self | ::nRowPos := 0, ::Super:DeleteAllItem() }
    METHOD DeleteColumn
    METHOD DoChange                BLOCK { | Self | ::DoEvent( ::OnChange, "CHANGE" ) }
    METHOD Down
@@ -116,6 +116,7 @@ CLASS TXBrowse FROM TGrid
    METHOD Events
    METHOD Events_Notify
    METHOD FixBlocks               SETGET
+   METHOD FixControls             SETGET
    METHOD GetCellType
    METHOD GoBottom
    METHOD GoTop
@@ -443,6 +444,28 @@ METHOD FixBlocks( lFix ) CLASS TXBrowse
    EndIf
 
 Return ::lFixedBlocks
+
+*-----------------------------------------------------------------------------*
+METHOD FixControls( lFix ) CLASS TXBrowse
+*-----------------------------------------------------------------------------*
+Local i, oEditControl
+
+   If HB_IsLogical( lFix )
+      If lFix
+         ::lFixedControls := .F.                           // Necessary for ::GetCellType to work properly
+         ::aEditControls := Array( Len( ::aHeaders ) )
+         For i := 1 To Len( ::aHeaders )
+            oEditControl := Nil
+            ::GetCellType( i, @oEditControl )
+            ::aEditControls[ i ] := oEditControl
+         Next i
+         ::lFixedControls := .T.
+      Else
+         ::lFixedControls := .F.
+      Endif
+   EndIf
+
+Return ::lFixedControls
 
 *-----------------------------------------------------------------------------*
 METHOD Refresh( nCurrent, lNoEmptyBottom ) CLASS TXBrowse
@@ -1234,7 +1257,7 @@ Local nvKey, lGo, uValue, nNotify := GetNotifyCode( lParam )
          If uValue > 0
             // change check mark
             ::CheckItem( uValue, ! ::CheckItem( uValue ) )
-         ElseIf uValue < 0
+         Else
             // select item
             If ! ::lLocked .AND. ::FirstVisibleColumn # 0
                ::MoveTo( ::CurrentRow, ::nRowPos )
@@ -1272,7 +1295,7 @@ Local nvKey, lGo, uValue, nNotify := GetNotifyCode( lParam )
          If uValue > 0
             // change check mark
             ::CheckItem( uValue, ! ::CheckItem( uValue ) )
-         ElseIf uValue < 0
+         Else
             // select item
             If ! ::lLocked .AND. ::FirstVisibleColumn # 0
                ::MoveTo( ::CurrentRow, ::nRowPos )
@@ -1446,7 +1469,7 @@ Local lRet := .F.
          ElseIf ::InPlace
             lRet := ::EditAllCells( , , .T. )
          Else
-            lRet := ::EditItem( , , .T., ! ( ::Inplace .AND. ::FullMove ) )        // TODO: Check
+            lRet := ::EditItem( , .T., ! ( ::Inplace .AND. ::FullMove ) )
          EndIf
       EndIf
       ::lNestedEdit := .F.
@@ -1622,33 +1645,40 @@ Local Value
 Return .T.
 
 *-----------------------------------------------------------------------------*
-METHOD EditItem( nItem, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowse              // TODO: Check
+METHOD EditItem( nItem, lAppend, lOneRow, lChange ) CLASS TXBrowse            
 *-----------------------------------------------------------------------------*
 Local uRet := .F.
 
-   Empty( nItem )
-   Empty( nCol )      // TODO: Check
+   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
+   // to work properly, nRow and the data source record must be synchronized
    Empty( lChange )
 
-   If ! ::lNestedEdit .AND. ! ::lLocked
-      ::lNestedEdit := .T.
+   If ! ::lLocked
+      If ! lAppend
+         If ! HB_IsNumeric( nItem )
+            nItem := Max( ::FirstSelectedItem, 1 )
+         EndIf
+         If nItem < 1 .OR. nItem > ::ItemCount
+            Return .F.
+         EndIf
+         ::Value := nItem
+      EndIf
       If ::lVScrollVisible
          // Kills scrollbar's events...
          ::VScroll:Enabled := .F.
          ::VScroll:Enabled := .T.
       EndIf
       uRet := ::EditItem_B( lAppend, lOneRow )
-      ::lNestedEdit := .F.
    EndIf
 
 Return uRet
 
 *-----------------------------------------------------------------------------*
-METHOD EditItem_B( lAppend, lOneRow ) CLASS TXBrowse                                     // TODO: Check
+METHOD EditItem_B( lAppend, lOneRow ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local oWorkArea, cTitle, z, nOld, nRow
 Local uOldValue, oEditControl, cMemVar, bReplaceField
-Local aItems, aMemVars, aReplaceFields
+Local aItems, aMemVars, aReplaceFields, aEditControls, l
 
    If ::lLocked .OR. ::FirstVisibleColumn == 0
       Return .F.
@@ -1667,17 +1697,24 @@ Local aItems, aMemVars, aReplaceFields
    EndIf
 
    If lAppend
+      If ::lAppendMode
+         Return .F.
+      EndIf
       ::lAppendMode := .T.
    EndIf
 
-   If ::InPlace
+   If ::FullMove .OR. ::InPlace
       If lAppend
          ::GoBottom( .T. )
          ::InsertBlank( ::ItemCount + 1 )
          ::CurrentRow := ::ItemCount
          oWorkArea:GoTo( 0 )
       EndIf
-      Return ::EditAllCells( , , lAppend, lOneRow )
+      If ::FullMove
+         Return ::EditGrid( , , lAppend, lOneRow )
+      Else
+         Return ::EditAllCells( , , lAppend, lOneRow )
+      EndIf
    EndIf
 
    If lAppend
@@ -1688,20 +1725,23 @@ Local aItems, aMemVars, aReplaceFields
       cTitle := if( ValType( ::cRowEditTitle ) $ "CM", ::cRowEditTitle, _OOHG_Messages( 2, 2 ) )
    EndIf
 
-   aItems := ARRAY( Len( ::aHeaders ) )
-   If ! ::FixControls()
-      ::aEditControls := ARRAY( Len( aItems ) )
+   l := Len( ::aHeaders )
+   aItems := ARRAY( l )
+   If ::FixControls()
+      aEditControls := AClone( ::aEditControls )
+   Else
+      aEditControls := ARRAY( l )
    EndIf
-   aMemVars := ARRAY( Len( aItems ) )
-   aReplaceFields := ARRAY( Len( aItems ) )
-   For z := 1 To Len( aItems )
-      oEditControl := uOldValue := cMemVar := bReplaceField := Nil
+   aMemVars := ARRAY( l )
+   aReplaceFields := ARRAY( l )
+
+   For z := 1 To l
+      oEditControl := aEditControls[ z ]
+      uOldValue := cMemVar := bReplaceField := Nil
       ::GetCellType( z, @oEditControl, @uOldValue, @cMemVar, @bReplaceField )
+      aEditControls[ z ] := oEditControl
       If ValType( uOldValue ) $ "CM"
          uOldValue := AllTrim( uOldValue )
-      EndIf
-      If ! ::FixControls()
-         ::aEditControls[ z ] := oEditControl
       EndIf
       aItems[ z ] := uOldValue
       aMemVars[ z ] := cMemVar
@@ -1718,9 +1758,9 @@ Local aItems, aMemVars, aReplaceFields
    nRow := ::CurrentRow
 
    If EMPTY( oWorkArea:cAlias__ )
-      aItems := ::EditItem2( nRow, aItems, ::aEditControls, aMemVars, cTitle )
+      aItems := ::EditItem2( nRow, aItems, aEditControls, aMemVars, cTitle )
    Else
-      aItems := ( oWorkArea:cAlias__ )->( ::EditItem2( nRow, aItems, ::aEditControls, aMemVars, cTitle ) )
+      aItems := ( oWorkArea:cAlias__ )->( ::EditItem2( nRow, aItems, aEditControls, aMemVars, cTitle ) )
    EndIf
 
    If Empty( aItems )
@@ -1805,7 +1845,7 @@ Local lRet, bReplaceField, oWorkArea
    Empty( lChange )
    ::SetControlValue( nRow )
 
-   _OOHG_ThisItemCellValue := ::Cell( nRow, nCol )          // TODO: Check, see ::GetCellType
+   _OOHG_ThisItemCellValue := ::Cell( nRow, nCol )
 
    If ::IsColumnReadOnly( nCol, nRow )
       If ! ::lSilent
@@ -2054,6 +2094,8 @@ Local lRet, lSomethingEdited
       ElseIf aScan( ::aHiddenCols, nCol ) > 0
         // Hidden column, skip
       Else
+         ::ScrollToLeft()
+
          ::lCalledFromClass := .T.
          lRet := ::EditCell( nRow, nCol, , , , , , , lAppend )
          ::lCalledFromClass := .F.
@@ -2118,20 +2160,23 @@ Local lRet, lSomethingEdited
       nCol := ::NextColInOrder( nCol )
 
       If nCol == 0
-         If ::FullMove
-            If ::nRowPos < ::ItemCount()
-              ::Down()
-              nCol := ::FirstColInOrder
-            ElseIf ! lOneRow .AND. ( ::AllowAppend .OR. lAppend )
-               ::GoBottom( .T. )
-               ::InsertBlank( ::ItemCount + 1 )
-               nRow := ::CurrentRow := ::ItemCount
-               nCol := ::FirstColInOrder
-               lAppend := .T.
-               ::lAppendMode := .T.
-               ::oWorkArea:GoTo( 0 )
+         If ::FullMove .AND. ! lOneRow
+            ::Down( .F. )
+            If ::Eof()
+               If ::AllowAppend .OR. lAppend
+                  ::GoBottom( .T. )
+                  ::InsertBlank( ::ItemCount + 1 )
+                  nRow := ::CurrentRow := ::ItemCount
+                  nCol := ::FirstColInOrder
+                  lAppend := .T.
+                  ::lAppendMode := .T.
+                  ::oWorkArea:GoTo( 0 )
+               Else
+                  Exit
+               EndIf
             Else
-               Exit
+               nRow := ::nRowPos
+               nCol := ::FirstColInOrder
             EndIf
          Else
             Exit
@@ -2197,38 +2242,34 @@ Local cField, cArea, nPos, aStruct
       EditControl := ::aEditControls[ nCol ]
    EndIf
    EditControl := GetEditControlFromArray( EditControl, ::EditControls, nCol, Self )
-   If ValType( EditControl ) != "O"
-      If ValType( ::Picture[ nCol ] ) $ "CM"
-         EditControl := TGridControlTextBox():New( ::Picture[ nCol ], , ValType( uOldValue ), , , , Self )
-      ElseIf ValType( ::Picture[ nCol ] ) == "L" .AND. ::Picture[ nCol ]
-         EditControl := TGridControlImageList():New( Self )
+   If HB_IsObject( EditControl )
+      // EditControl specified
+   ElseIf ValType( ::Picture[ nCol ] ) $ "CM"
+      // Picture-based
+      EditControl := TGridControlTextBox():New( ::Picture[ nCol ], , ValType( uOldValue ), , , , Self )
+   ElseIf ValType( ::Picture[ nCol ] ) == "L" .AND. ::Picture[ nCol ]
+      EditControl := TGridControlImageList():New( Self )
+   ElseIf nPos == 0
+      EditControl := GridControlObjectByType( uOldValue, Self )
+   ElseIf aStruct[ nPos ][ 2 ] == "N"                                         // Use field type
+      If aStruct[ nPos ][ 4 ] == 0
+         EditControl := TGridControlTextBox():New( Replicate( "9", aStruct[ nPos ][ 3 ] ), , "N", , , , Self )
+      Else
+         EditControl := TGridControlTextBox():New( Replicate( "9", aStruct[ nPos ][ 3 ] - aStruct[ nPos ][ 4 ] - 1 ) + "." + Replicate( "9", aStruct[ nPos ][ 4 ] ), , "N", , , , Self )
       EndIf
-      If ValType( EditControl ) != "O" .AND. nPos != 0
-         // Use field type
-         Do Case
-         Case aStruct[ nPos ][ 2 ] == "N"
-            If aStruct[ nPos ][ 4 ] == 0
-               EditControl := TGridControlTextBox():New( Replicate( "9", aStruct[ nPos ][ 3 ] ), , "N", , , , Self )
-            Else
-               EditControl := TGridControlTextBox():New( Replicate( "9", aStruct[ nPos ][ 3 ] - aStruct[ nPos ][ 4 ] - 1 ) + "." + Replicate( "9", aStruct[ nPos ][ 4 ] ), , "N", , , , Self )
-            EndIf
-         Case aStruct[ nPos ][ 2 ] == "L"
-            // EditControl := TGridControlCheckBox():New( , , , , Self)
-            EditControl := TGridControlLComboBox():New( , , , , Self )
-         Case aStruct[ nPos ][ 2 ] == "M"
-            EditControl := TGridControlMemo():New( , , Self )
-         Case aStruct[ nPos ][ 2 ] == "D"
-            // EditControl := TGridControlDatePicker():New( .T., , , , Self )
-            EditControl := TGridControlTextBox():New( "@D", , "D", , , , Self )
-         Case aStruct[ nPos ][ 2 ] == "C"
-            EditControl := TGridControlTextBox():New( "@S" + Ltrim( Str( aStruct[ nPos ][ 3 ] ) ), , "C", , , , Self )
-         OtherWise
-            // Non-implemented field type!!!
-         EndCase
-      EndIf
-      If ValType( EditControl ) != "O"
-         EditControl := GridControlObjectByType( uOldValue, Self )
-      EndIf
+   ElseIf aStruct[ nPos ][ 2 ] == "L"
+      // EditControl := TGridControlCheckBox():New( , , , , Self)
+      EditControl := TGridControlLComboBox():New( , , , , Self )
+   ElseIf aStruct[ nPos ][ 2 ] == "M"
+      EditControl := TGridControlMemo():New( , , Self )
+   ElseIf aStruct[ nPos ][ 2 ] == "D"
+      // EditControl := TGridControlDatePicker():New( .T., , , , Self )
+      EditControl := TGridControlTextBox():New( "@D", , "D", , , , Self )
+   ElseIf aStruct[ nPos ][ 2 ] == "C"
+      EditControl := TGridControlTextBox():New( "@S" + Ltrim( Str( aStruct[ nPos ][ 3 ] ) ), , "C", , , , Self )
+   Else
+      // Unimplemented field type !!!
+      EditControl := GridControlObjectByType( uOldValue, Self )
    EndIf
 
 Return .T.
@@ -2716,7 +2757,7 @@ CLASS TXBrowseByCell FROM TXBrowse
    METHOD CurrentCol              SETGET
    METHOD Define2
    METHOD Define3
-   METHOD DeleteAllItems           BLOCK { | Self | ::nColPos := 0, ::Super:DeleteAllItem() }
+   METHOD DeleteAllItems          BLOCK { | Self | ::nColPos := 0, ::Super:DeleteAllItem() }
    METHOD DeleteColumn
    METHOD Down
    METHOD EditCell
@@ -3470,7 +3511,7 @@ Local nNotify := GetNotifyCode( lParam ), aCellData, nvKey, lGo, uValue
       If uValue > 0
          // change check mark
          ::CheckItem( uValue, ! ::CheckItem( uValue ) )
-      ElseIf uValue < 0
+      Else
          // select item
          ::MoveTo( ::CurrentRow, ::nRowPos )
 //       ::SetControlValue( ListView_ItemActivate( lParam )[ 1 ] )             // TODO: Check
@@ -3514,7 +3555,7 @@ Local nNotify := GetNotifyCode( lParam ), aCellData, nvKey, lGo, uValue
       If uValue > 0
          // change check mark
          ::CheckItem( uValue, ! ::CheckItem( uValue ) )
-      ElseIf uValue < 0
+      Else
          // select item
          ::MoveTo( ::CurrentRow, ::nRowPos )
 //       ::SetControlValue( ListView_ItemActivate( lParam )[ 1 ] )             // TODO: Check

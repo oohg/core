@@ -1,5 +1,5 @@
 <!--
-$Id: Changelog.htm,v 1.39 2015-05-10 07:08:57 fyurisich Exp $
+$Id: Changelog.htm,v 1.40 2015-05-11 23:58:44 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -142,6 +142,56 @@ CHANGELOG</div>
 </div>
 <div id="winchm_template_content">
 <pre>
+2015-05-11 20:58 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * doc/classes.txt
+   * manual/Classes.htm
+   * manual/changelog.htm
+     * Updated.
+   * source/h_grid.prg
+     * Comments.
+     - Unneeded code.
+     * TGrid:AppendItem() no longer tests ::lEditMode.
+     * TGrid:EditGrid() sets ::lEditMode to .T. only when ::FullMove is .T.
+     * TGrid:Left() and TGrid:Right no longer test for ::FullMove.
+     - Parameter nCol in TGrid:EditItem() because is meaningless.
+       INCOMPATIBLE.
+     + Support for parameters lAppend and lOneRow in TGrid:EditItem().
+     - Determination of edit control before editing in TGrid:EditItem().
+     + Support for IMAGELIST edit control in TGrid:EditItem2().
+     - Determination of edit control before editing in TGrid:EditCell().
+     ! ON ABORTEDIT event is fired after deleting the blank line instead
+       of before.
+     + Support for IMAGELIST edit control in TGrid:EditCell2().
+     ! TGrid:EditCell2() shows an editing window that goes beyond the
+       right side of the Grid's parent.
+     + WM_MOUSEWHEEL handler to function _OOHG_TGrid_Events2().
+     - WM_MOUSEWHEEL handler from TGridByCell:Events().
+     + Data Type to all classes derived from TGridControl class.
+       Usefull for debugging.
+     * WM_MOUSEWHEEL message is passed by TGrid_Events() at C level to
+       function _OOHG_TGrid_Events2() at PRG level.
+     ; All T*O*D*O notes were cleared.
+   * source/h_xbrowse.prg
+     + TXBrowse:FixControls().
+     ! TXBrowse:Events_Notify() and TXBrowseByCell:Events_Notify(), row is
+       not changed when mouse is clicked on it.
+     - Parameter nCol in TXBrowse:EditItem() because is meaningless.
+       INCOMPATIBLE.
+     + Support for parameter nItem TXBrowse:EditItem().
+     ! TXBrowse:AppendItem is not working when ::FullMove and ::InPlace
+       are both .F.
+     + Test for ::lAppenItem when parameter lAppend is .T. in
+       TXBrowse:EditItem_B().
+     * TXBrowse:EditItem_B now calls ::EditGrid() when ::FullMove is .T.
+     ! RTE in TXBrowse:EditItem_B() when editing a logical column.
+     ! TXBrowse:EditGrid() does not append a new row when ::FullMove is .T.
+       and last row is fully edited.
+     ! TXBrowse:EditGrid() does not move to the next row when ::FullMove is
+       .T. and the current row is fully edited.
+     ! TXBrowse:EditGrid() does not scroll to left before starting the
+       edition of a row.
+     % TXBrowse:GetCellType().
+
 2015-05-10 04:08 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * ./Changelog
      * Previous entry.
