@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.132 2015-05-11 23:58:44 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.133 2015-05-12 04:13:22 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1469,7 +1469,7 @@ Local lRet := .F.
          ElseIf ::InPlace
             lRet := ::EditAllCells( , , .T. )
          Else
-            lRet := ::EditItem( , .T., ! ( ::Inplace .AND. ::FullMove ) )
+            lRet := ::EditItem( , .T., .T. )
          EndIf
       EndIf
       ::lNestedEdit := .F.
@@ -1957,22 +1957,35 @@ Local lRet, lSomethingEdited
    If ::FirstVisibleColumn == 0
       Return .F.
    EndIf
-   If ! HB_IsNumeric( nRow )
-      nRow := Max( ::FirstSelectedItem, 1 )
-   EndIf
-   If ! HB_IsNumeric( nCol )
+   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
+   If lAppend
+      If ::lAppendMode
+         Return .F.
+      EndIf
+      ::lAppendMode := .T.
+      ::GoBottom( .T. )
+      ::InsertBlank( ::ItemCount + 1 )
+      ::CurrentRow := ::ItemCount
+      ::oWorkArea:GoTo( 0 )
+      nRow := ::nRowPos
       nCol := ::FirstColInOrder
-   EndIf
-   If nRow < 1 .OR. nRow > ::ItemCount .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
-      Return .F.
+   Else
+      If ! HB_IsNumeric( nRow )
+         nRow := Max( ::FirstSelectedItem, 1 )
+      EndIf
+      If ! HB_IsNumeric( nCol )
+         nCol := ::FirstColInOrder
+      EndIf
+      If nRow < 1 .OR. nRow > ::ItemCount .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
+         Return .F.
+      EndIf
+
+      // to work properly, nRow and the data source record must be synchronized
+      Empty( lChange)
+      ::SetControlValue( nRow, nCol )
    EndIf
 
    ASSIGN lOneRow VALUE lOneRow TYPE "L" DEFAULT .T.
-   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
-
-   // to work properly, nRow and the data source record must be synchronized
-   Empty( lChange)
-   ::SetControlValue( nRow, nCol )
 
    lSomethingEdited := .F.
 
@@ -1987,7 +2000,7 @@ Local lRet, lSomethingEdited
         // Hidden column
       Else
          ::lCalledFromClass := .T.
-         lRet := ::EditCell( nRow, nCol, , , , , , , lAppend )
+         lRet := ::EditCell( nRow, nCol, , , , , , , .F. )
          ::lCalledFromClass := .F.
 
          If ! lRet
@@ -2005,6 +2018,13 @@ Local lRet, lSomethingEdited
             ::lAppendMode := .F.
             lAppend := .F.
          EndIf
+
+         /*
+            ::OnEditCell() may change ::nRowPos using ::Up(), ::PageUp(),
+            ::Down(), ::PageDown(), ::GoTop() and/or ::GoBottom().
+            Changes can't be ignored because, to work properly, nRow and
+            the data source record must be synchronized.
+         */
 
          If ::bPosition == 9                     // MOUSE EXIT
             // Edition window lost focus
@@ -2049,6 +2069,21 @@ Local lRet, lSomethingEdited
       EndIf
 
       nCol := ::NextColInOrder( nCol )
+      If nCol == 0
+         If lOneRow .OR. ::nRowPos # ::ItemCount .OR. ( ! ::AllowAppend .AND. ! lAppend )
+            Exit
+         EndIf
+
+         ::lAppendMode := .T.
+         ::GoBottom( .T. )
+         ::InsertBlank( ::ItemCount + 1 )
+         ::CurrentRow := ::ItemCount
+         ::oWorkArea:GoTo( 0 )
+         nCol := ::FirstColInOrder
+      EndIf
+      nRow := ::nRowPos
+
+      ::ScrollToLeft()
    Enddo
 
    ::ScrollToLeft()
@@ -3009,43 +3044,41 @@ Local lRet
       ElseIf ::bPosition == 8                        // NEXT
          ::PageDown( .F. )
       ElseIf ::bPosition == 9                        // MOUSE EXIT
-         If ! ::lCalledFromClass
-            // Edition window lost focus
-            ::bPosition := 0                   // This restores click messages processing
-            If ::nDelayedClick[ 1 ] > 0
-               // A click message was delayed
-               If ::nDelayedClick[ 3 ] <= 0
-                  ::MoveTo( ::nDelayedClick, { ::nRowPos, ::nColPos } )
-               EndIf
+         // Edition window lost focus
+         ::bPosition := 0                   // This restores click messages processing
+         If ::nDelayedClick[ 1 ] > 0
+            // A click message was delayed
+            If ::nDelayedClick[ 3 ] <= 0
+               ::MoveTo( { ::nDelayedClick[ 1 ], ::nDelayedClick[ 2 ] }, { ::nRowPos, ::nColPos } )
+            EndIf
 
-               If HB_IsNil( ::nDelayedClick[ 4 ] )
-                  If HB_IsBlock( ::OnClick )
-                     If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
-                        If ! ::NestedClick
-                           ::NestedClick := ! _OOHG_NestedSameEvent()
-                           ::DoEventMouseCoords( ::OnClick, "CLICK" )
-                           ::NestedClick := .F.
-                        EndIf
-                     EndIf
-                  EndIf
-               Else
-                  If HB_IsBlock( ::OnRClick )
-                     If ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
-                        ::DoEventMouseCoords( ::OnRClick, "RCLICK" )
+            If HB_IsNil( ::nDelayedClick[ 4 ] )
+               If HB_IsBlock( ::OnClick )
+                  If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
+                     If ! ::NestedClick
+                        ::NestedClick := ! _OOHG_NestedSameEvent()
+                        ::DoEventMouseCoords( ::OnClick, "CLICK" )
+                        ::NestedClick := .F.
                      EndIf
                   EndIf
                EndIf
-
-               If ::nDelayedClick[ 3 ] > 0
-                  // change check mark
-                  ::CheckItem( ::nDelayedClick[ 3 ], ! ::CheckItem( ::nDelayedClick[ 3 ] ) )
+            Else
+               If HB_IsBlock( ::OnRClick )
+                  If ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
+                     ::DoEventMouseCoords( ::OnRClick, "RCLICK" )
+                  EndIf
                EndIf
+            EndIf
 
-               // fire context menu
-               If ! HB_IsNil( ::nDelayedClick[ 4 ] ) .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
-                  ::ContextMenu:Cargo := ::nDelayedClick[ 4 ]
-                  ::ContextMenu:Activate()
-               EndIf
+            If ::nDelayedClick[ 3 ] > 0
+               // change check mark
+               ::CheckItem( ::nDelayedClick[ 3 ], ! ::CheckItem( ::nDelayedClick[ 3 ] ) )
+            EndIf
+
+            // fire context menu
+            If ! HB_IsNil( ::nDelayedClick[ 4 ] ) .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
+               ::ContextMenu:Cargo := ::nDelayedClick[ 4 ]
+               ::ContextMenu:Activate()
             EndIf
          EndIf
       EndIf
@@ -3054,7 +3087,7 @@ Local lRet
 Return lRet
 
 *-----------------------------------------------------------------------------*
-METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowseByCell          // TODO: Check
+METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowseByCell          // TODO: Check, reuse ::super ?
 *-----------------------------------------------------------------------------*
 Local lRet, lSomethingEdited := .F.
 
@@ -3174,8 +3207,39 @@ Local lRet, lSomethingEdited := .F.
          // Edition window lost focus
          ::bPosition := 0                   // This restores click messages processing
          If ::nDelayedClick[ 1 ] > 0
-            // A click message was delayed, set the clicked row as new value
-            ::MoveTo( ::nDelayedClick, { ::nRowPos, ::nColPos } )
+            // A click message was delayed
+            If ::nDelayedClick[ 3 ] <= 0
+               ::MoveTo( { ::nDelayedClick[ 1 ], ::nDelayedClick[ 2 ] }, { ::nRowPos, ::nColPos } )
+            EndIf
+
+            If HB_IsNil( ::nDelayedClick[ 4 ] )
+               If HB_IsBlock( ::OnClick )
+                  If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
+                     If ! ::NestedClick
+                        ::NestedClick := ! _OOHG_NestedSameEvent()
+                        ::DoEventMouseCoords( ::OnClick, "CLICK" )
+                        ::NestedClick := .F.
+                     EndIf
+                  EndIf
+               EndIf
+            Else
+               If HB_IsBlock( ::OnRClick )
+                  If ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
+                     ::DoEventMouseCoords( ::OnRClick, "RCLICK" )
+                  EndIf
+               EndIf
+            EndIf
+
+            If ::nDelayedClick[ 3 ] > 0
+               // change check mark
+               ::CheckItem( ::nDelayedClick[ 3 ], ! ::CheckItem( ::nDelayedClick[ 3 ] ) )
+            EndIf
+
+            // fire context menu
+            If ! HB_IsNil( ::nDelayedClick[ 4 ] ) .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
+               ::ContextMenu:Cargo := ::nDelayedClick[ 4 ]
+               ::ContextMenu:Activate()
+            EndIf
          EndIf
          Exit
       Else                                           // OK or nothing done
@@ -3514,7 +3578,6 @@ Local nNotify := GetNotifyCode( lParam ), aCellData, nvKey, lGo, uValue
       Else
          // select item
          ::MoveTo( ::CurrentRow, ::nRowPos )
-//       ::SetControlValue( ListView_ItemActivate( lParam )[ 1 ] )             // TODO: Check
       EndIf
 
       // Skip default action
@@ -3558,7 +3621,6 @@ Local nNotify := GetNotifyCode( lParam ), aCellData, nvKey, lGo, uValue
       Else
          // select item
          ::MoveTo( ::CurrentRow, ::nRowPos )
-//       ::SetControlValue( ListView_ItemActivate( lParam )[ 1 ] )             // TODO: Check
       EndIf
 
       // Fire context menu

@@ -1,5 +1,5 @@
 <!--
-$Id: Changelog.htm,v 1.40 2015-05-11 23:58:44 fyurisich Exp $
+$Id: Changelog.htm,v 1.41 2015-05-12 04:13:22 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -142,6 +142,26 @@ CHANGELOG</div>
 </div>
 <div id="winchm_template_content">
 <pre>
+2015-05-12 01:13 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ./Changelog
+     * Previous entries.
+   * manual/changelog.htm
+     * Updated.
+   * source/h_grid.prg
+     + Support for parameters lAppend and lOneRow in TGrid:EditAllCells().
+     ! TGridByCell:EditGrid(), control with NOMODAL clause, when clicking
+       outside the edition window, the edition is not ended.
+     * TGridByCell:EdtiCell() check ::HiddenCols before changing ::Value.
+     * NM_CLICK and NM_RCLICK handlers of TGridByCell do not process the
+       message when a cell is being edited. Instead they store the cell
+       clicked in ::nDelayedClick.
+   * source/h_xbrowse.prg
+     * Comments.
+     - Unneeded code.
+     + Support for parameters lAppend and lOneRow in TXBrowse:EditAllCells().
+     * Parameters passed to ::MoveTo by TXBrowseByCell:EditCell().
+     * Handling of NOMODAL clause in TXBrowseByCell:EditGrid().
+
 2015-05-11 20:58 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * doc/classes.txt
    * manual/Classes.htm
@@ -215,7 +235,7 @@ CHANGELOG</div>
      ! TOBrowse:EditCell(), exit clicks are being processed by ::Super.
      + Parameter nRow to ::IsColumnReadonly() and ::IsColumnWhen() calls.
      ! Support for lChange parameter in TOBrowse:EditAllCells().
-     ! Handling of NOMODAL clause in TXBrowse and TOBrowseByCell classes
+     ! Handling of NOMODAL clause in TOBrowse and TOBrowseByCell classes
        (when clicking outside the edition window, the edition is not ended).
      - Data TOBrowseByCell:aRecMap.
      - Data TOBrowseByCell:RecCount.
@@ -227,7 +247,7 @@ CHANGELOG</div>
      * TOBrowseByCell:Value() now resets ::nRowPos, ::nColPos and
        ::nRecLastValue to 0 when there are no records or no items or
        ::nRowPos is 0 or ::nColPos is 0.
-     * Handling of NOMODAL clause in TXBrowseByCell:Evens_Notify().
+     * Handling of NOMODAL clause in TXBrowseByCell:Events_Notify().
      ! TOBrowseByCell:EditCell(), exit clicks are being processed by ::Super.
      ! TOBrowseByCell:EditCell() was calling TOBrowse:EditCell() instead
        of calling TXBrowse:EditCell().
@@ -290,7 +310,7 @@ CHANGELOG</div>
        TXBrowseByCell:EditGrid() and _OOHG_TXBrowseByCell_Events2().
      ! TXBrowseByCell:EditGrid(), exit clicks are being processed by ::Super.
      ! Ctrl+VK_UP and Ctrl+VK_DOWN behaviour.
-     * Handling of NOMODAL clause in TXBrowseByCell:Evens_Notify().
+     * Handling of NOMODAL clause in TXBrowseByCell:Events_Notify().
      * TXBrowseByCell:CurrentCol() now paints only when the column changes.
 
 2015-05-10 02:02 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;

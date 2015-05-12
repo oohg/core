@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.282 2015-05-11 23:58:44 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.283 2015-05-12 04:13:22 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -908,7 +908,7 @@ Local lRet, lSomethingEdited, nNextCol
       Else
          ::lEditMode := ::FullMove
          ::lCalledFromClass := .T.
-         lRet := ::EditCell( ::nRowPos, ::nColPos, , , , , , lChange )
+         lRet := ::EditCell( ::nRowPos, ::nColPos, , , , , , .F. )
          ::lCalledFromClass := .F.
          ::lEditMode := .F.
 
@@ -2425,20 +2425,33 @@ Local lRet, lSomethingEdited
    If ::FirstVisibleColumn == 0
       Return .F.
    EndIf
-   If ! HB_IsNumeric( nRow )
-      nRow := Max( ::FirstSelectedItem, 1 )
-   EndIf
-   If ! HB_IsNumeric( nCol )
-      nCol := ::FirstColInOrder
-   EndIf
-   If nRow < 1 .OR. nRow > ::ItemCount .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
-      Return .F.
+   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
+   If lAppend
+      If ::lAppendMode
+         Return .F.
+      EndIf
+      ::lAppendMode := .T.
+      ::InsertBlank( ::ItemCount + 1 )
+      ::SetControlValue( ::ItemCount )
+      nRow := ::ItemCount
+   Else
+      If ! HB_IsNumeric( nRow )
+         nRow := Max( ::FirstSelectedItem, 1 )
+      EndIf
+      If ! HB_IsNumeric( nCol )
+         nCol := ::FirstColInOrder
+      EndIf
+      If nRow < 1 .OR. nRow > ::ItemCount .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
+         Return .F.
+      EndIf
+
+      ASSIGN lChange VALUE lChange TYPE "L" DEFAULT ::lChangeBeforeEdit
+      If lChange
+         ::SetControlValue( nRow, nCol )
+      EndIf
    EndIf
 
-   ASSIGN lChange VALUE lChange TYPE "L" DEFAULT ::lChangeBeforeEdit
-   If lChange
-      ::SetControlValue( nRow, nCol )
-   EndIf
+   ASSIGN lOneRow VALUE lOneRow TYPE "L" DEFAULT .T.
 
    lSomethingEdited := .F.
 
@@ -2453,7 +2466,7 @@ Local lRet, lSomethingEdited
         // Hidden column
       Else
          ::lCalledFromClass := .T.
-         lRet := ::EditCell( nRow, nCol, , , , , , lChange )
+         lRet := ::EditCell( nRow, nCol, , , , , , .F. )
          ::lCalledFromClass := .T.
 
          If ::lAppendMode
@@ -2513,6 +2526,19 @@ Local lRet, lSomethingEdited
       EndIf
 
       nCol := ::NextColInOrder( nCol )
+      If nCol == 0
+         If lOneRow .OR. nRow # ::ItemCount .OR. ( ! ::AllowAppend .AND. ! lAppend )
+            Exit
+         EndIf
+
+         ::lAppendMode := .T.
+         ::InsertBlank( ::ItemCount + 1 )
+         ::SetControlValue( ::ItemCount )
+         nRow := ::ItemCount
+         nCol := ::FirstColInOrder
+      EndIf
+
+      ::ScrollToLeft()
    EndDo
 
    ::ScrollToLeft()
@@ -4160,7 +4186,9 @@ Local lRet, lSomethingEdited
       ElseIf AScan( ::aHiddenCols, ::nColPos ) > 0
          // Hidden column
       Else
+         ::lCalledFromClass := .T.
          lRet := ::Super:EditCell( ::nRowPos, ::nColPos, , , , , , .F. )
+         ::lCalledFromClass := .F.
 
          If ::lAppendMode
             ::lAppendMode := .F.
@@ -4294,6 +4322,43 @@ Local lRet, lSomethingEdited
             Exit
          EndIf
       ElseIf ::bPosition == 9                        // MOUSE EXIT
+         // Edition window lost focus
+         ::bPosition := 0                   // This restores click messages processing
+         If ::nDelayedClick[ 1 ] > 0
+            // A click message was delayed
+            If ::nDelayedClick[ 3 ] <= 0
+               ::SetControlValue( ::nDelayedClick[ 1 ], ::nDelayedClick[ 2 ] )
+            EndIf
+
+            If HB_IsNil( ::nDelayedClick[ 4 ] )
+               If HB_IsBlock( ::OnClick )
+                  If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
+                     If ! ::NestedClick
+                        ::NestedClick := ! _OOHG_NestedSameEvent()
+                        ::DoEventMouseCoords( ::OnClick, "CLICK" )
+                        ::NestedClick := .F.
+                     EndIf
+                  EndIf
+               EndIf
+            Else
+               If HB_IsBlock( ::OnRClick )
+                  If ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
+                     ::DoEventMouseCoords( ::OnRClick, "RCLICK" )
+                  EndIf
+               EndIf
+            EndIf
+
+            If ::nDelayedClick[ 3 ] > 0
+               // change check mark
+               ::CheckItem( ::nDelayedClick[ 3 ], ! ::CheckItem( ::nDelayedClick[ 3 ] ) )
+            EndIf
+
+            // fire context menu
+            If ! HB_IsNil( ::nDelayedClick[ 4 ] ) .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
+               ::ContextMenu:Cargo := ::nDelayedClick[ 4 ]
+               ::ContextMenu:Activate()
+            EndIf
+         EndIf
          Exit
       Else                                           // OK
          If ::nRowPos < 1 .OR. ::nRowPos > ::ItemCount .OR. ::nColPos < 1 .OR. ::nColPos > Len( ::aHeaders )
@@ -4615,6 +4680,9 @@ Local lRet
       EndIf
    EndIf
    If nRow < 1 .OR. nRow > ::ItemCount .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
+      Return .F.
+   EndIf
+   If AScan( ::aHiddenCols, nCol ) > 0
       Return .F.
    EndIf
 
@@ -4972,23 +5040,33 @@ Local nvkey, lGo, aItem, nRow, nCol, uValue, aCellData
          uValue := 0
       EndIf
 
-      If HB_IsBlock( ::OnClick )
-         If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. uValue <= 0
-            If ! ::NestedClick
-               ::NestedClick := ! _OOHG_NestedSameEvent()
-               ::DoEventMouseCoords( ::OnClick, "CLICK" )
-               ::NestedClick := .F.
+      If ::bPosition == -2 .OR. ::bPosition == 9
+         aCellData := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
+         ::nDelayedClick := { aCellData[ 1 ], aCellData[ 2 ], uValue, Nil }
+         If ::nEditRow > 0
+            ListView_SetCursel( ::hWnd, ::nEditRow )
+         Else
+            ListView_ClearCursel( ::hWnd )
+         EndIf
+      Else
+         If HB_IsBlock( ::OnClick )
+            If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. uValue <= 0
+               If ! ::NestedClick
+                  ::NestedClick := ! _OOHG_NestedSameEvent()
+                  ::DoEventMouseCoords( ::OnClick, "CLICK" )
+                  ::NestedClick := .F.
+               EndIf
             EndIf
          EndIf
-      EndIf
 
-      If uValue > 0
-         // change check mark
-         ::CheckItem( uValue, ! ::CheckItem( uValue ) )
-      Else
-         // select cell
-         aCellData := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
-         ::Value := { aCellData[ 1 ], aCellData[ 2 ] }
+         If uValue > 0
+            // change check mark
+            ::CheckItem( uValue, ! ::CheckItem( uValue ) )
+         Else
+            // select cell
+            aCellData := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
+            ::SetControlValue := { aCellData[ 1 ], aCellData[ 2 ] }
+         EndIf
       EndIf
 
       // skip default action
@@ -5002,28 +5080,38 @@ Local nvkey, lGo, aItem, nRow, nCol, uValue, aCellData
          uValue := 0
       EndIf
 
-      If HB_IsBlock( ::OnRClick )
-         If ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. uValue <= 0
-            ::DoEventMouseCoords( ::OnRClick, "RCLICK" )
+      If ::bPosition == -2 .OR. ::bPosition == 9
+         aCellData := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
+         ::nDelayedClick := { aCellData[ 1 ], aCellData[ 2 ], uValue, aCellData }
+         If ::nEditRow > 0
+            ListView_SetCursel( ::hWnd, ::nEditRow )
+         Else
+            ListView_ClearCursel( ::hWnd )
+         EndIf
+      Else
+         If HB_IsBlock( ::OnRClick )
+            If ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. uValue <= 0
+               ::DoEventMouseCoords( ::OnRClick, "RCLICK" )
+            EndIf
+         EndIf
+
+         If uValue > 0
+            // change check mark
+            ::CheckItem( uValue, ! ::CheckItem( uValue ) )
+         Else
+            // select cell
+            aCellData := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
+            ::SetControlValue := { aCellData[ 1 ], aCellData[ 2 ] }
+         EndIf
+
+         // fire context menu
+         If ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. uValue <= 0 )
+            ::ContextMenu:Cargo := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
+            ::ContextMenu:Activate()
          EndIf
       EndIf
 
-      If uValue > 0
-         // change check mark
-         ::CheckItem( uValue, ! ::CheckItem( uValue ) )
-      Else
-         // select cell
-         aCellData := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
-         ::Value := { aCellData[ 1 ], aCellData[ 2 ] }
-      EndIf
-
-      // fire context menu
-      If ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. uValue <= 0 )
-         ::ContextMenu:Cargo := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
-         ::ContextMenu:Activate()
-      EndIf
-
-     // skip default action
+      // skip default action
       Return 1
 
    EndIf
