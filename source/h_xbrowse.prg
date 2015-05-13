@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.134 2015-05-13 02:19:05 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.135 2015-05-13 22:26:20 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -103,7 +103,7 @@ CLASS TXBrowse FROM TGrid
    METHOD Define
    METHOD Define3
    METHOD Delete
-   METHOD DeleteAllItems          BLOCK { | Self | ::nRowPos := 0, ::Super:DeleteAllItem() }
+   METHOD DeleteAllItems          BLOCK { | Self | ::nRowPos := 0, ::Super:DeleteAllItems() }
    METHOD DeleteColumn
    METHOD DoChange                BLOCK { | Self | ::DoEvent( ::OnChange, "CHANGE" ) }
    METHOD Down
@@ -2788,7 +2788,7 @@ CLASS TXBrowseByCell FROM TXBrowse
    METHOD CurrentCol              SETGET
    METHOD Define2
    METHOD Define3
-   METHOD DeleteAllItems          BLOCK { | Self | ::nColPos := 0, ::Super:DeleteAllItem() }
+   METHOD DeleteAllItems          BLOCK { | Self | ::nColPos := 0, ::Super:DeleteAllItems() }
    METHOD DeleteColumn
    METHOD Down
    METHOD EditAllCells

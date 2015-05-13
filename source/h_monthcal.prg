@@ -1,5 +1,5 @@
 /*
- * $Id: h_monthcal.prg,v 1.15 2015-03-09 02:52:08 fyurisich Exp $
+ * $Id: h_monthcal.prg,v 1.16 2015-05-13 22:26:20 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -260,11 +260,11 @@ HB_FUNC( SETMONTHCAL )
       if( ! ( cDate[ 0 ] == ' ' ) )
       {
          memset( &sysTime, 0, sizeof( sysTime ) );
-         sysTime.wYear  = ( ( cDate[ 0 ] - '0' ) * 1000 ) +
-                          ( ( cDate[ 1 ] - '0' ) * 100 )  +
-                          ( ( cDate[ 2 ] - '0' ) * 10 ) + ( cDate[ 3 ] - '0' );
-         sysTime.wMonth = ( ( cDate[ 4 ] - '0' ) * 10 ) + ( cDate[ 5 ] - '0' );
-         sysTime.wDay   = ( ( cDate[ 6 ] - '0' ) * 10 ) + ( cDate[ 7 ] - '0' );
+         sysTime.wYear  = ( WORD ) ( ( ( ( int ) cDate[ 0 ] - '0' ) * 1000 ) +
+                                     ( ( ( int ) cDate[ 1 ] - '0' ) * 100 )  +
+                                     ( ( ( int ) cDate[ 2 ] - '0' ) * 10 ) + ( ( int ) cDate[ 3 ] - '0' ) );
+         sysTime.wMonth = ( WORD ) ( ( ( ( int ) cDate[ 4 ] - '0' ) * 10 ) + ( ( int ) cDate[ 5 ] - '0' ) );
+         sysTime.wDay   = ( WORD ) ( ( ( ( int ) cDate[ 6 ] - '0' ) * 10 ) + ( ( int ) cDate[ 7 ] - '0' ) );
 
          MonthCal_SetCurSel( HWNDparam( 1 ), &sysTime );
       }
@@ -479,22 +479,22 @@ HB_FUNC_STATIC( TMONTHCAL_SETRANGE )
       cDate = ( char * ) hb_pards( 1 );
       if( ! ( cDate[ 0 ] == ' ' ) )
       {
-         sysTime[ 0 ].wYear  = ( ( cDate[ 0 ] - '0' ) * 1000 ) +
-                               ( ( cDate[ 1 ] - '0' ) * 100 )  +
-                               ( ( cDate[ 2 ] - '0' ) * 10 ) + ( cDate[ 3 ] - '0' );
-         sysTime[ 0 ].wMonth = ( ( cDate[ 4 ] - '0' ) * 10 ) + ( cDate[ 5 ] - '0' );
-         sysTime[ 0 ].wDay   = ( ( cDate[ 6 ] - '0' ) * 10 ) + ( cDate[ 7 ] - '0' );
+         sysTime[ 0 ].wYear  = ( WORD ) ( ( ( ( int ) cDate[ 0 ] - '0' ) * 1000 ) +
+                                          ( ( ( int ) cDate[ 1 ] - '0' ) * 100 )  +
+                                          ( ( ( int ) cDate[ 2 ] - '0' ) * 10 ) + ( ( int ) cDate[ 3 ] - '0' ) );
+         sysTime[ 0 ].wMonth = ( WORD ) ( ( ( ( int ) cDate[ 4 ] - '0' ) * 10 ) + ( ( int ) cDate[ 5 ] - '0' ) );
+         sysTime[ 0 ].wDay   = ( WORD ) ( ( ( ( int ) cDate[ 6 ] - '0' ) * 10 ) + ( ( int ) cDate[ 7 ] - '0' ) );
          wLimit |= GDTR_MIN;
       }
 
       cDate = ( char * ) hb_pards( 2 );
       if( ! ( cDate[ 0 ] == ' ' ) )
       {
-         sysTime[ 1 ].wYear  = ( ( cDate[ 0 ] - '0' ) * 1000 ) +
-                               ( ( cDate[ 1 ] - '0' ) * 100 )  +
-                               ( ( cDate[ 2 ] - '0' ) * 10 ) + ( cDate[ 3 ] - '0' );
-         sysTime[ 1 ].wMonth = ( ( cDate[ 4 ] - '0' ) * 10 ) + ( cDate[ 5 ] - '0' );
-         sysTime[ 1 ].wDay   = ( ( cDate[ 6 ] - '0' ) * 10 ) + ( cDate[ 7 ] - '0' );
+         sysTime[ 1 ].wYear  = ( WORD ) ( ( ( ( int ) cDate[ 0 ] - '0' ) * 1000 ) +
+                                          ( ( ( int ) cDate[ 1 ] - '0' ) * 100 )  +
+                                          ( ( ( int ) cDate[ 2 ] - '0' ) * 10 ) + ( ( int ) cDate[ 3 ] - '0' ) );
+         sysTime[ 1 ].wMonth = ( WORD ) ( ( ( ( int ) cDate[ 4 ] - '0' ) * 10 ) + ( ( int ) cDate[ 5 ] - '0' ) );
+         sysTime[ 1 ].wDay   = ( WORD ) ( ( ( ( int ) cDate[ 6 ] - '0' ) * 10 ) + ( ( int ) cDate[ 7 ] - '0' ) );
          wLimit |= GDTR_MAX;
       }
 
