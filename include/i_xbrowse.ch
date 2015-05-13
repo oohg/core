@@ -1,5 +1,5 @@
 /*
- * $Id: i_xbrowse.ch,v 1.39 2015-05-10 04:37:47 fyurisich Exp $
+ * $Id: i_xbrowse.ch,v 1.40 2015-05-13 02:19:04 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -154,7 +154,10 @@
       [ <silent: SILENT> ] ;
       [ <alta: ENABLEALTA, DISABLEALTA> ] ;
       [ <noshow: NOSHOWALWAYS> ] ;
-      [ <dummy17: ONRCLICK, ON RCLICK> <rclick> ] ;
+      [ <dummy15: ONRCLICK, ON RCLICK> <rclick> ] ;
+      [ <checkboxes: CHECKBOXES> ] ;
+      [ <dummy16: ONCHECKCHANGE, ON CHECKCHANGE> <checkchange> ] ;
+      [ <dummy17: ONROWREFRESH, ON ROWREFRESH> <rowrefresh> ] ;
 	=> ;
       [ <obj> := ] _OOHG_SelectSubClass( IIF( <.bycell.>, TXBrowseByCell(), ;
             TXBrowse() ), [ <subclass>() ] ):Define( <(name)>, <(parent)>, ;
@@ -184,7 +187,8 @@
             IIF( upper( #<edtctrls> ) == "DYNAMICCONTROLS", .F., NIL ) ), ;
             <.noshowempty.>, <.upcol.>, <{bheadrclick}>, <.nomodal.>, ;
             <.extdbl.>, <.silent.>, ! Upper( #<alta> ) == "DISABLEALTA", ;
-            <.noshow.>, <{rclick}> )
+            <.noshow.>, <{rclick}>, <.checkboxes.>, <{checkchange}>, ;
+            <{rowrefresh}> )
 
 #command SET XBROWSEFIXEDBLOCKS ON ;
    => ;

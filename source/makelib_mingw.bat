@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: makelib_mingw.bat,v 1.38 2015-03-12 00:58:16 fyurisich Exp $
+rem $Id: makelib_mingw.bat,v 1.39 2015-05-13 02:19:05 fyurisich Exp $
 rem
 cls
 
@@ -50,7 +50,7 @@ PATH %HG_MINGW%\bin
 
 rem *** Compile with GCC ***
 echo Compiling C sources ...
-set OOHG_X_FLAGS=-W -Wall -mno-cygwin -O3 -c -I%HG_HRB%\include -I%HG_MINGW%\include -I%HG_ROOT%\include -L%HG_HRB%\%LIB_HRB% -L%HG_MINGW%\lib
+set OOHG_X_FLAGS=-W -Wall -O3 -c -I%HG_HRB%\include -I%HG_MINGW%\include -I%HG_ROOT%\include -L%HG_HRB%\%LIB_HRB% -L%HG_MINGW%\lib
 for %%a in (%HG_FILES1_PRG%) do if not errorlevel 1 gcc %OOHG_X_FLAGS% %%a.c
 if errorlevel 1 goto EXIT2
 for %%a in (%HG_FILES2_PRG%) do if not errorlevel 1 gcc %OOHG_X_FLAGS% %%a.c

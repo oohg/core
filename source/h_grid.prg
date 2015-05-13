@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.283 2015-05-12 04:13:22 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.284 2015-05-13 02:19:04 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -969,7 +969,7 @@ Local lRet, lSomethingEdited, nNextCol
       EndIf
 
       /*
-         ::OnEditCell() may change ::nRowPos and/or ::nColPos using ::Up(), ::PageUp(),
+         ::OnEditCell may change ::nRowPos and/or ::nColPos using ::Up(), ::PageUp(),
          ::Down(), ::PageDown(), ::GoTop(), ::GoBottom(), ::Left() and/or ::Right()
       */
       nNextCol := ::NextColInOrder( ::nColPos )
@@ -2212,10 +2212,6 @@ Local lRet
       ::SetControlValue( nRow )
    EndIf
 
-   If ValType( uOldValue ) == "U"
-      uOldValue := ::Cell( nRow, nCol )
-   EndIf
-
    lRet := ::EditCell2( @nRow, @nCol, EditControl, uOldValue, @uValue, cMemVar, nOnFocusPos )
    If lRet
       If ValType( uValue ) $ "CM"
@@ -2234,7 +2230,7 @@ Local lRet
          If ::nDelayedClick[ 1 ] > 0
             // A click message was delayed
             If ::nDelayedClick[ 3 ] <= 0
-               ::SetControlValue( ::nDelayedClick[ 1 ] )
+               ::SetControlValue( ::nDelayedClick[ 1 ], ::nDelayedClick[ 2 ] )             // Second parameter is needed by TGridByCell:EditCell
             EndIf
 
             If HB_IsNil( ::nDelayedClick[ 4 ] )
@@ -4206,7 +4202,7 @@ Local lRet, lSomethingEdited
       EndIf
 
       /*
-       * ::OnEditCell() may change ::nRowPos or ::nColPos using ::Up(), ::Down(), ::Left(),
+       * ::OnEditCell may change ::nRowPos or ::nColPos using ::Up(), ::Down(), ::Left(),
        * ::Right(), ::PageUp(), ::PageDown(), ::GoTop() and/or ::GoBottom()
        */
 
@@ -4327,7 +4323,7 @@ Local lRet, lSomethingEdited
          If ::nDelayedClick[ 1 ] > 0
             // A click message was delayed
             If ::nDelayedClick[ 3 ] <= 0
-               ::SetControlValue( ::nDelayedClick[ 1 ], ::nDelayedClick[ 2 ] )
+               ::Value := { ::nDelayedClick[ 1 ], ::nDelayedClick[ 2 ] }
             EndIf
 
             If HB_IsNil( ::nDelayedClick[ 4 ] )
@@ -4770,6 +4766,7 @@ Local lRet
             EndIf
          EndIf
       ElseIf ::bPosition == 9                        // MOUSE EXIT
+         // Mouse exit was already processed by ::Super:EditCell
       Else                                           // OK
       EndIf
    EndIf
@@ -5065,7 +5062,7 @@ Local nvkey, lGo, aItem, nRow, nCol, uValue, aCellData
          Else
             // select cell
             aCellData := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
-            ::SetControlValue := { aCellData[ 1 ], aCellData[ 2 ] }
+            ::Value := { aCellData[ 1 ], aCellData[ 2 ] }
          EndIf
       EndIf
 
@@ -5101,7 +5098,7 @@ Local nvkey, lGo, aItem, nRow, nCol, uValue, aCellData
          Else
             // select cell
             aCellData := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
-            ::SetControlValue := { aCellData[ 1 ], aCellData[ 2 ] }
+            ::Value := { aCellData[ 1 ], aCellData[ 2 ] }
          EndIf
 
          // fire context menu
@@ -5273,7 +5270,7 @@ Local oGridControl, aEdit2, cControl
    oGridControl := Nil
    If HB_IsArray( aEditControl ) .AND. Len( aEditControl ) >= 1 .AND. ValType( aEditControl[ 1 ] ) $ "CM"
       aEdit2 := AClone( aEditControl )
-      ASize( aEdit2, 10 )
+      ASize( aEdit2, 11 )
       cControl := Upper( AllTrim( aEditControl[ 1 ] ) )
       Do Case
       Case cControl == "MEMO"
@@ -5290,6 +5287,8 @@ Local oGridControl, aEdit2, cControl
          oGridControl := TGridControlCheckBox():New( aEdit2[ 2 ], aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ], oGrid, aEdit2[ 6 ] )
       Case cControl == "TEXTBOX"
          oGridControl := TGridControlTextBox():New( aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 2 ], aEdit2[ 5 ], aEdit2[ 6 ], aEdit2[ 7 ], oGrid, aEdit2[ 8 ], aEdit2[ 9 ], aEdit2[ 10 ] )
+      Case cControl == "TEXTBOXACTION"
+         oGridControl := TGridControlTextBoxAction():New( aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 2 ], aEdit2[ 5 ], aEdit2[ 6 ], aEdit2[ 7 ], oGrid, aEdit2[ 8 ], aEdit2[ 9 ], aEdit2[ 10 ], aEdit2[ 11 ] )
       Case cControl == "IMAGELIST"
          oGridControl := TGridControlImageList():New( oGrid, aEdit2[ 2 ], aEdit2[ 3 ], aEdit2[ 4 ] )
       Case cControl == "IMAGEDATA"
@@ -5528,6 +5527,7 @@ CLASS TGridControlTextBox FROM TGridControl
    DATA cMask                     INIT ""
    DATA cType                     INIT ""
    DATA cEditKey                  INIT "F2"
+   DATA lForceModal               INIT .F.
    DATA Type                      INIT "TGRIDCONTROLTEXTBOX" READONLY
 
    METHOD New
@@ -5571,8 +5571,8 @@ METHOD New( cPicture, cFunction, cType, nOnFocusPos, lButtons, aImages, oGrid, l
      If Len( aImages ) < 2
        ASize( aImages, 2 )
      EndIf
-     DEFAULT ::cImageCancel TO aImages[ 1 ]
-     DEFAULT ::cImageOk     TO aImages[ 2 ]
+     ASSIGN ::cImageCancel VALUE aImages[ 1 ] TYPE "CM"
+     ASSIGN ::cImageOk     VALUE aImages[ 2 ] TYPE "CM"
    EndIf
 
    ::oGrid := oGrid
@@ -5586,6 +5586,11 @@ METHOD New( cPicture, cFunction, cType, nOnFocusPos, lButtons, aImages, oGrid, l
    EndIf
 
    ASSIGN ::lNoModal VALUE lNoModal TYPE "L"
+
+   // TODO: use buttons with NOMODAL state
+   If ::lButtons
+      ::lForceModal := .T.
+   EndIf
 Return Self
 
 METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys, oGrid ) CLASS TGridControlTextBox
@@ -5596,7 +5601,7 @@ Local lRet := .F., i, aPos, nPos1, nPos2, cText, nPos
          ::oGrid := oGrid
       EndIf
 
-      If HB_IsObject( ::oGrid ) .AND. ::oGrid:InPlace .AND. ( ::lNoModal .OR. ::oGrid:lNoModal )
+      If HB_IsObject( ::oGrid ) .AND. ::oGrid:InPlace .AND. ( ::lNoModal .OR. ::oGrid:lNoModal ) .AND. ! ::lForceModal
 
       DEFINE WINDOW _oohg_gridwn OBJ ::oWindow ;
          AT nRow - 3, nCol - 3 WIDTH nWidth + 6 HEIGHT nHeight + 6 ;
@@ -5779,6 +5784,136 @@ METHOD GridValue( uValue ) CLASS TGridControlTextBox
 Return uValue
 
 *-----------------------------------------------------------------------------*
+CLASS TGridControlTextBoxAction FROM TGridControlTextBox
+*-----------------------------------------------------------------------------*
+   DATA bAction                   INIT Nil
+   DATA bAction2                  INIT Nil
+   DATA Type                      INIT "TGRIDCONTROLTEXTBOXACTION" READONLY
+
+   METHOD New
+   METHOD CreateControl
+ENDCLASS
+
+/*
+COLUMNCONTROLS syntax:
+{'TEXTBOXACTION', cType, cPicture, cFunction, nOnFocusPos, aImages, lLikeExcel, cEditKey, lNoModal, bAction, bAction2}
+*/
+METHOD New( cPicture, cFunction, cType, nOnFocusPos, aImages, oGrid, lLikeExcel, cEditKey, lNoModal, bAction, bAction2 ) CLASS TGridControlTextBoxAction
+   ::cMask := ""
+   If ValType( cPicture ) $ "CM" .AND. ! Empty( cPicture )
+      ::cMask := cPicture
+   EndIf
+   If ValType( cFunction ) $ "CM" .AND. ! Empty( cFunction )
+      ::cMask := "@" + cFunction + " " + ::cMask
+   EndIf
+
+   If ValType( cType ) $ "CM" .AND. ! Empty( cType )
+      cType := Upper( Left( AllTrim( cType ), 1 ) )
+      ::cType := If( ( ! cType $ "CDNL" ), "C", cType )
+   Else
+      ::cType := "C"
+   EndIf
+   If ::cType == "D" .AND. Empty( ::cMask )
+      ::cMask := "@D"
+   ElseIf ::cType == "N" .AND. Empty( ::cMask )
+//    ::cMask := "@D"
+   ElseIf ::cType == "L" .AND. Empty( ::cMask )
+      ::cMask := "L"
+   EndIf
+
+   ASSIGN ::nOnFocusPos VALUE nOnFocusPos TYPE "N"
+
+   If HB_IsArray( aImages )
+     If Len( aImages ) < 2
+       ASize( aImages, 2 )
+     EndIf
+     ASSIGN ::cImageCancel VALUE aImages[ 1 ] TYPE "CM"
+     ASSIGN ::cImageOk     VALUE aImages[ 2 ] TYPE "CM"
+   EndIf
+
+   ::oGrid := oGrid
+
+   ASSIGN ::lLikeExcel VALUE lLikeExcel TYPE "L"
+
+   If ValType( cEditKey ) $ "CM"
+      ::cEditKey := cEditKey
+   ElseIf HB_IsObject( ::oGrid )
+      ::cEditKey := ::oGrid:cEditKey
+   EndIf
+
+   ASSIGN ::lNoModal VALUE lNoModal TYPE "L"
+   ASSIGN ::bAction  VALUE bAction  TYPE "B"
+   ASSIGN ::bAction2 VALUE bAction2 TYPE "B"
+
+   // TODO: use actions with NOMODAL state
+   If HB_IsBlock( ::bAction ) .OR. HB_IsBlock( ::bAction2 )
+      ::lForceModal := .T.
+   EndIf
+Return Self
+
+METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGridControlTextBoxAction
+   If ValType( uValue ) == "C" .AND. ::cType $ "DNL"
+      uValue := ::Str2Val( uValue )
+   EndIf
+   If ! Empty( ::cMask )
+      If HB_IsBlock( ::bAction ) .AND. HB_IsBlock( ::bAction2 )
+        @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue INPUTMASK ::cMask FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bAction ) ACTION2 EVAL( ::bAction2 ) IMAGE {::cImageCancel, ::cImageOk}
+      ElseIf HB_IsBlock( ::bAction )
+        @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue INPUTMASK ::cMask FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bAction ) IMAGE {::cImageCancel, }
+      ElseIf HB_IsBlock( ::bAction2 )
+        @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue INPUTMASK ::cMask FOCUSEDPOS ::nOnFocusPos ACTION2 EVAL( ::bAction2 ) IMAGE { , ::cImageOk}
+      ElseIf HB_IsObject( ::oGrid ) .AND. ::oGrid:lButtons
+        @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue INPUTMASK ::cMask FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bCancel ) ACTION2 EVAL( ::bOK, -1 ) IMAGE {::cImageCancel, ::cImageOk}
+      Else
+        @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue INPUTMASK ::cMask FOCUSEDPOS ::nOnFocusPos
+      EndIf
+   ElseIf ::cType == "N"
+      If HB_IsBlock( ::bAction ) .AND. HB_IsBlock( ::bAction2 )
+        @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue NUMERIC FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bAction ) ACTION2 EVAL( ::bAction2 ) IMAGE {::cImageCancel, ::cImageOk}
+      ElseIf HB_IsBlock( ::bAction )
+        @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue NUMERIC FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bAction ) IMAGE {::cImageCancel, }
+      ElseIf HB_IsBlock( ::bAction2 )
+        @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue NUMERIC FOCUSEDPOS ::nOnFocusPos ACTION2 EVAL( ::bAction2 ) IMAGE { , ::cImageOk}
+      ElseIf HB_IsObject( ::oGrid ) .AND. ::oGrid:lButtons
+        @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue NUMERIC FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bCancel ) ACTION2 EVAL( ::bOK, -1 ) IMAGE {::cImageCancel, ::cImageOk}
+      Else
+        @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue NUMERIC FOCUSEDPOS ::nOnFocusPos
+      EndIf
+   ElseIf ::cType == "D"
+      If HB_IsBlock( ::bAction ) .AND. HB_IsBlock( ::bAction2 )
+        @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue DATE FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bAction ) ACTION2 EVAL( ::bAction2 ) IMAGE {::cImageCancel, ::cImageOk}
+      ElseIf HB_IsBlock( ::bAction )
+        @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue DATE FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bAction ) IMAGE {::cImageCancel, }
+      ElseIf HB_IsBlock( ::bAction2 )
+        @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue DATE FOCUSEDPOS ::nOnFocusPos ACTION2 EVAL( ::bAction2 ) IMAGE { , ::cImageOk}
+      ElseIf HB_IsObject( ::oGrid ) .AND. ::oGrid:lButtons
+        @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue DATE FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bCancel ) ACTION2 EVAL( ::bOK, -1 ) IMAGE {::cImageCancel, ::cImageOk}
+      Else
+        @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue DATE FOCUSEDPOS ::nOnFocusPos
+      EndIf
+   Else
+      If HB_IsBlock( ::bAction ) .AND. HB_IsBlock( ::bAction2 )
+        @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bAction ) ACTION2 EVAL( ::bAction2 ) IMAGE {::cImageCancel, ::cImageOk}
+      ElseIf HB_IsBlock( ::bAction )
+        @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bAction ) IMAGE {::cImageCancel, }
+      ElseIf HB_IsBlock( ::bAction2 )
+        @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue FOCUSEDPOS ::nOnFocusPos ACTION2 EVAL( ::bAction2 ) IMAGE { , ::cImageOk}
+      ElseIf HB_IsObject( ::oGrid ) .AND. ::oGrid:lButtons
+        @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bCancel ) ACTION2 EVAL( ::bOK, -1 ) IMAGE {::cImageCancel, ::cImageOk}
+      Else
+        @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue FOCUSEDPOS ::nOnFocusPos
+      EndIf
+   EndIf
+   If HB_IsBlock( ::bAction )
+      ::oControl:oButton1:TabIndex := 2
+   ElseIf HB_IsBlock( ::bAction2 )
+      ::oControl:oButton1:TabIndex := 2
+   ElseIf HB_IsObject( ::oGrid ) .AND. ::oGrid:lButtons
+      ::oControl:oButton1:TabIndex := 2
+   EndIf
+Return ::oControl
+
+*-----------------------------------------------------------------------------*
 CLASS TGridControlMemo FROM TGridControl
 *-----------------------------------------------------------------------------*
    DATA nDefHeight                INIT 84
@@ -5953,8 +6088,8 @@ METHOD New( lUpDown, lShowNone, lButtons, aImages, oGrid, lNoModal ) CLASS TGrid
      If Len( aImages ) < 2
        ASize( aImages, 2 )
      EndIf
-     DEFAULT ::cImageCancel TO aImages[ 1 ]
-     DEFAULT ::cImageOk     TO aImages[ 2 ]
+     ASSIGN ::cImageCancel VALUE aImages[ 1 ] TYPE "CM"
+     ASSIGN ::cImageOk     VALUE aImages[ 2 ] TYPE "CM"
    EndIf
 
    ::oGrid := oGrid
@@ -6039,8 +6174,8 @@ METHOD New( aItems, oGrid, aValues, cRetValType, lButtons, aImages, lNoModal ) C
      If Len( aImages ) < 2
        ASize( aImages, 2 )
      EndIf
-     DEFAULT ::cImageCancel TO aImages[ 1 ]
-     DEFAULT ::cImageOk     TO aImages[ 2 ]
+     ASSIGN ::cImageCancel VALUE aImages[ 1 ] TYPE "CM"
+     ASSIGN ::cImageOk     VALUE aImages[ 2 ] TYPE "CM"
    EndIf
 
    ASSIGN ::lNoModal VALUE lNoModal TYPE "L"
@@ -6145,8 +6280,8 @@ METHOD New( aItems, oGrid, lIncremental, lWinSize, lButtons, aImages, lNoModal )
      If Len( aImages ) < 2
        ASize( aImages, 2 )
      EndIf
-     DEFAULT ::cImageCancel TO aImages[ 1 ]
-     DEFAULT ::cImageOk     TO aImages[ 2 ]
+     ASSIGN ::cImageCancel VALUE aImages[ 1 ] TYPE "CM"
+     ASSIGN ::cImageOk     VALUE aImages[ 2 ] TYPE "CM"
    EndIf
 
    ASSIGN ::lNoModal VALUE lNoModal TYPE "L"
@@ -6220,8 +6355,8 @@ METHOD New( nRangeMin, nRangeMax, lButtons, aImages, oGrid, lNoModal ) CLASS TGr
      If Len( aImages ) < 2
        ASize( aImages, 2 )
      EndIf
-     DEFAULT ::cImageCancel TO aImages[ 1 ]
-     DEFAULT ::cImageOk     TO aImages[ 2 ]
+     ASSIGN ::cImageCancel VALUE aImages[ 1 ] TYPE "CM"
+     ASSIGN ::cImageOk     VALUE aImages[ 2 ] TYPE "CM"
    EndIf
 
    ::oGrid := oGrid
@@ -6270,8 +6405,8 @@ METHOD New( cTrue, cFalse, lButtons, aImages, oGrid, lNoModal ) CLASS TGridContr
      If Len( aImages ) < 2
        ASize( aImages, 2 )
      EndIf
-     DEFAULT ::cImageCancel TO aImages[ 1 ]
-     DEFAULT ::cImageOk     TO aImages[ 2 ]
+     ASSIGN ::cImageCancel VALUE aImages[ 1 ] TYPE "CM"
+     ASSIGN ::cImageOk     VALUE aImages[ 2 ] TYPE "CM"
    EndIf
 
    ::oGrid := oGrid
@@ -6317,8 +6452,8 @@ METHOD New( oGrid, lButtons, aImages, lNoModal ) CLASS TGridControlImageList
      If Len( aImages ) < 2
        ASize( aImages, 2 )
      EndIf
-     DEFAULT ::cImageCancel TO aImages[ 1 ]
-     DEFAULT ::cImageOk     TO aImages[ 2 ]
+     ASSIGN ::cImageCancel VALUE aImages[ 1 ] TYPE "CM"
+     ASSIGN ::cImageOk     VALUE aImages[ 2 ] TYPE "CM"
    EndIf
 
    ASSIGN ::lNoModal VALUE lNoModal TYPE "L"
@@ -6378,8 +6513,8 @@ METHOD New( oGrid, oData, lButtons, aImages, lNoModal ) CLASS TGridControlImageD
      If Len( aImages ) < 2
        ASize( aImages, 2 )
      EndIf
-     DEFAULT ::cImageCancel TO aImages[ 1 ]
-     DEFAULT ::cImageOk     TO aImages[ 2 ]
+     ASSIGN ::cImageCancel VALUE aImages[ 1 ] TYPE "CM"
+     ASSIGN ::cImageOk     VALUE aImages[ 2 ] TYPE "CM"
    EndIf
 
    ASSIGN ::lNoModal VALUE lNoModal TYPE "L"
@@ -6464,8 +6599,8 @@ METHOD New( cTrue, cFalse, lButtons, aImages, oGrid, lNoModal ) CLASS TGridContr
      If Len( aImages ) < 2
        ASize( aImages, 2 )
      EndIf
-     DEFAULT ::cImageCancel TO aImages[ 1 ]
-     DEFAULT ::cImageOk     TO aImages[ 2 ]
+     ASSIGN ::cImageCancel VALUE aImages[ 1 ] TYPE "CM"
+     ASSIGN ::cImageOk     VALUE aImages[ 2 ] TYPE "CM"
    EndIf
 
    ::oGrid := oGrid

@@ -1,5 +1,5 @@
 <!--
-$Id: Changelog.htm,v 1.41 2015-05-12 04:13:22 fyurisich Exp $
+$Id: Changelog.htm,v 1.42 2015-05-13 02:19:04 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -142,6 +142,59 @@ CHANGELOG</div>
 </div>
 <div id="winchm_template_content">
 <pre>
+2015-05-12 23:18 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * include/i_xbrowse.ch
+     + CHECKBOXES, ON CHECKCHANGE and ON REFRESHROW clauses.
+   * manual/changelog.htm
+     * Updated.
+   * source/h_grid.prg
+     * Comments.
+     - Unneeded code.
+     ! TGridByCell:EditCell() with NOMODAL clause sets column to 1 when user
+       exits cell edition with a mouse click.
+     ! RTE in NM_CLICK and NM_RCLICK handlers of TGridByCell class.
+     + TGridControlTextAction class for editing a cell using a textbox
+       control with ACTION and/or ACTION2 clauses.
+     ! TGridControlTextBox with lButton parameter set to .T. in a Grid with
+       NOMODAL edit clause, hangs the app when a button is clicked. Until
+       a solution is found, edit control es forced to MODAL behaviour.
+       This means that you cant exit the editing windows with the mouse.
+   * source/h_xbrowse.prg
+     * Comments.
+     *- Unneeded code.
+     + Data TXBrowse:OnRefreshRow.
+     - TXBrowse:CheckItem().
+     + Support for ON REFRESHROW clause. TXBrowse:RefreshRow() evaluates
+       OnRefreshRow codeblock after refreshing the row, with parameters
+       nRow and aItem.
+     ! TXBrowse:EditAllCells() scrolls to the left before editing each
+       cell in the row.
+     ! TXBrowseByCell:EditItem() ignores indicated row and always edit
+       the current one.
+     ! TXBrowse:EditCell() does not set ::Value when called from
+       TXBrowseByCell class.
+     ! TXBrowse:EditCell() no longer scrolls to left before starting the
+       edition of a row.
+     ! TXBrowse:EditGrid() no longer scrolls to left before starting the
+       edition of a row.
+     ! ON EDITCELL events is not fired inmediatly after the end of the
+       cell edition.
+     + TXBrowseByCell:EditAllCells().
+     + TXBrowseByCell:EditItem_B().
+     - TXBrowseByCell:EditItem2().
+     - Function _OOHG_TXBrowseByCell_Events2.
+     * TXBrowseByCell:Events() moved to PRG level.
+     + Support for CHECKBOXES and ON CHECKCHANGE clauses.
+       ; Checkboxes are not tied to data source records but to the rows
+         in the supporting grid. When a checked row is scrolled out and
+         later scrolled in, the checkmark is lost. To link the checkmarks
+         with the records, additional logic is needed: you can use
+         ON CHECKCHANGE to save the checkmark status to the data source
+         and ON REFRESHROW event to read the saved status and set the
+         checkmark.
+   * source/makelib_mingw.prg
+     ! Flag -mno-cygwin prevents the building of the libraries.
+
 2015-05-12 01:13 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * ./Changelog
      * Previous entries.
