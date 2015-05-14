@@ -1,11 +1,36 @@
 /*
- * $Id: ChangeLog,v 1.1475 2015-05-13 22:26:20 guerra000 Exp $
+ * $Id: ChangeLog,v 1.1476 2015-05-14 02:25:25 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-05-13 23:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/changelog.htm
+     * Updated.
+   * source/h_grid.prg
+     * Comments.
+     - Unneeded code.
+     ! TGrid:EditGrid() does not fully honor parameter lOneRow.
+     * TGrid:EditGrid(), lAppend .T. now adds a new row before editing.
+     ! TGrid:EditGrid() behaviour when ::nColPos is 0 or there are no
+       visible columns.
+     ! TGrid:EditItem() does not honor ::AllowAppend.
+     ! TGrid:EditItem() always adds a new row after editing another.
+     ! TGrid:EditItem() does not scroll to left after editing.
+     ! TGrid:EditAllCells() does not set proper column when called from
+       TGridByCell class.
+     ! TGrid:EditAllCells() behaviour when ::nColPos is 0 or there are no
+       visible columns.
+     * TGridByCell:EditGrid(), lAppend .T. now adds a new row before
+       editing.
+     ! TGridByCell:EditGrid() does not honor the column order set by the
+       user.
+     ! TGridByCell:EditGrid() behaviour when ::nColPos is 0 or there are no
+       visible columns.
+     * TGridByCell:EditCell() now process mouse clicks.
 
 2015-05-13 17:19 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
    * source/h_monthcal.prg

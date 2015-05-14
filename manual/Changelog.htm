@@ -1,5 +1,5 @@
 <!--
-$Id: Changelog.htm,v 1.42 2015-05-13 02:19:04 fyurisich Exp $
+$Id: Changelog.htm,v 1.43 2015-05-14 02:25:25 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -142,6 +142,37 @@ CHANGELOG</div>
 </div>
 <div id="winchm_template_content">
 <pre>
+2015-05-13 23:25 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * manual/changelog.htm
+     * Updated.
+   * source/h_grid.prg
+     * Comments.
+     - Unneeded code.
+     ! TGrid:EditGrid() does not fully honor parameter lOneRow.
+     * TGrid:EditGrid(), lAppend .T. now adds a new row before editing.
+     ! TGrid:EditGrid() behaviour when ::nColPos is 0 or there are no
+       visible columns.
+     ! TGrid:EditItem() does not honor ::AllowAppend.
+     ! TGrid:EditItem() always adds a new row after editing another.
+     ! TGrid:EditItem() does not scroll to left after editing.
+     ! TGrid:EditAllCells() does not set proper column when called from
+       TGridByCell class.
+     ! TGrid:EditAllCells() behaviour when ::nColPos is 0 or there are no
+       visible columns.
+     * TGridByCell:EditGrid(), lAppend .T. now adds a new row before
+       editing.
+     ! TGridByCell:EditGrid() does not honor the column order set by the
+       user.
+     ! TGridByCell:EditGrid() behaviour when ::nColPos is 0 or there are no
+       visible columns.
+     * TGridByCell:EditCell() now process mouse clicks.
+
+2015-05-13 17:19 UTC-0500 Vicente Guerra &lt;vicente@guerra.com.mx&gt;
+   * source/h_monthcal.prg
+     ! Casting.
+   * source/h_xbrowse.prg
+     ! Fixed typo.
+
 2015-05-12 23:18 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * include/i_xbrowse.ch
      + CHECKBOXES, ON CHECKCHANGE and ON REFRESHROW clauses.

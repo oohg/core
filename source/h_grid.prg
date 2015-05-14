@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.284 2015-05-13 02:19:04 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.285 2015-05-14 02:25:25 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -881,20 +881,41 @@ Local lRet, lSomethingEdited, nNextCol
    If ! HB_IsNumeric( nCol )
       nCol := ::FirstColInOrder
    EndIf
-   If nRow < 1 .OR. nRow > ::ItemCount .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
+   If nCol < 1 .OR. nCol > Len( ::aHeaders )
       Return .F.
    EndIf
+
+   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
+
+   If ::lAppendMode
+      // Before calling ::EditGrid an empty item was added at ::ItemCount
+      nRow := ::ItemCount
+   ElseIf lAppend
+      // Add new item, ignore ::AllowAppend
+      ::lAppendMode := .T.
+      ::InsertBlank( ::ItemCount + 1 )
+      ::SetControlValue( ::ItemCount )
+      nRow := ::ItemCount
+   Else
+      // Edit item nRow
+      If ! HB_IsNumeric( nRow )
+         nRow := Max( ::FirstSelectedItem, 1 )
+      EndIf
+      If nRow < 1 .OR. nRow > ::ItemCount
+         Return .F.
+      EndIf
+      ASSIGN lChange VALUE lChange TYPE "L" DEFAULT ::lChangeBeforeEdit
+      If lChange
+         ::SetControlValue( nRow )
+      EndIf
+   EndIf
+
    ::nRowPos := nRow
    ::nColPos := nCol
 
-   ASSIGN lChange VALUE lChange TYPE "L" DEFAULT ::lChangeBeforeEdit
-   If lChange
-      ::SetControlValue( nRow )
-   EndIf
+   ASSIGN lOneRow VALUE lOneRow TYPE "L" DEFAULT .F.
 
    lSomethingEdited := .F.
-   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
-   ASSIGN lOneRow VALUE lOneRow TYPE "L" DEFAULT .F.
 
    Do While ::nColPos >= 1 .AND. ::nColPos <= Len( ::aHeaders )
       _OOHG_ThisItemCellValue := ::Cell( ::nRowPos, ::nColPos )
@@ -927,8 +948,8 @@ Local lRet, lSomethingEdited, nNextCol
          EndIf
 
          If ::bPosition == 9                     // MOUSE EXIT
-            // Edition window lost focus
-            ::bPosition := 0                     // This restores click messages processing
+            // Edition window lost focus, resume clic processing and process delayed click
+            ::bPosition := 0                     
             If ::nDelayedClick[ 1 ] > 0
                // A click message was delayed
                If ::nDelayedClick[ 3 ] <= 0
@@ -972,28 +993,35 @@ Local lRet, lSomethingEdited, nNextCol
          ::OnEditCell may change ::nRowPos and/or ::nColPos using ::Up(), ::PageUp(),
          ::Down(), ::PageDown(), ::GoTop(), ::GoBottom(), ::Left() and/or ::Right()
       */
-      nNextCol := ::NextColInOrder( ::nColPos )
-      If nNextCol == 0
-         If ::FullMove
-            If ::nRowPos == ::ItemCount
-               If ! lOneRow .AND. ( ::AllowAppend .OR. lAppend )
-                  ::lAppendMode := .T.
-                  ::InsertBlank( ::ItemCount + 1 )
-               Else
-                  Exit
-               EndIf
-            EndIf
-
-            ::nRowPos ++
-            ::nColPos := ::FirstColInOrder
-         Else
-            Exit
-         EndIf
+      If ::nColPos == 0
+         nNextCol := ::FirstColInOrder
       Else
-         ::nColPos := nNextCol
+         nNextCol := ::NextColInOrder( ::nColPos )
       EndIf
 
-      ::SetControlValue( ::nRowPos )
+      If nNextCol > 0
+         ::nColPos := nNextCol
+      ElseIf lOneRow .OR. ! ::FullMove
+         Exit
+      ElseIf ::nRowPos < ::ItemCount
+         ::nColPos := ::FirstColInOrder
+         If ::nColPos == 0
+            Exit
+         EndIf
+         ::nRowPos ++
+         ::SetControlValue( ::nRowPos )
+      ElseIf lAppend .OR. ::AllowAppend
+         ::nColPos := ::FirstColInOrder
+         If ::nColPos == 0
+            Exit
+         EndIf
+         ::lAppendMode := .T.
+         ::InsertBlank( ::ItemCount + 1 )
+         ::nRowPos := ::ItemCount
+         ::SetControlValue( ::nRowPos )
+      Else
+         Exit
+      EndIf
    EndDo
 
    ::ScrollToLeft()
@@ -1344,23 +1372,26 @@ Local aItems, lSomethingEdited := .F.
    If ::FirstVisibleColumn == 0
       Return .F.
    EndIf
+
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
-   If lAppend
-      If ::lAppendMode
-         Return .F.
-      EndIf
+
+   If ::lAppendMode
+      // Before calling ::EditItem an empty item was added at ::ItemCount
+      nItem := ::ItemCount
+   ElseIf lAppend
+      // Add new item, ignore ::AllowAppend
       ::lAppendMode := .T.
       ::InsertBlank( ::ItemCount + 1 )
       ::SetControlValue( ::ItemCount )
       nItem := ::ItemCount
    Else
+      // Edit item nItem
       If ! HB_IsNumeric( nItem )
          nItem := Max( ::FirstSelectedItem, 1 )
       EndIf
       If nItem < 1 .OR. nItem > ::ItemCount
          Return .F.
       EndIf
-
       ASSIGN lChange VALUE lChange TYPE "L" DEFAULT ::lChangeBeforeEdit
       If lChange
          ::SetControlValue( nItem )
@@ -1376,7 +1407,7 @@ Local aItems, lSomethingEdited := .F.
 
       If Empty( aItems )
          ::DoEvent( ::OnAbortEdit, "ABORTEDIT", { nItem, 0 } )
-         If lAppend .OR. ::lAppendMode
+         If ::lAppendMode
             ::DeleteItem( ::ItemCount )
             ::SetControlValue( ::ItemCount )
          EndIf
@@ -1395,16 +1426,17 @@ Local aItems, lSomethingEdited := .F.
 
       If lOneRow
          Exit
+      ElseIf nItem < ::ItemCount
+         nItem ++
+      ElseIf lAppend .OR. ::AllowAppend
+         ::lAppendMode := .T.
+         ::InsertBlank( ::ItemCount + 1 )
+         ::SetControlValue( ::ItemCount )
+         nItem := ::ItemCount
       EndIf
-
-      ::InsertBlank( ::ItemCount + 1 )
-      ::SetControlValue( ::ItemCount )
-      nItem := ::ItemCount
    EndDo
 
-   If lAppend
-      ::lAppendMode := .F.
-   EndIf
+   ::ScrollToLeft()
 
 Return lSomethingEdited
 
@@ -2225,12 +2257,12 @@ Local lRet
       EndIf
       _ClearThisCellInfo()
       If ! ::lCalledFromClass .AND. ::bPosition == 9
-         // Edition window lost focus
-         ::bPosition := 0                   // This restores click messages processing
+         // Edition window lost focus, resume clic processing and process delayed click
+         ::bPosition := 0
          If ::nDelayedClick[ 1 ] > 0
             // A click message was delayed
             If ::nDelayedClick[ 3 ] <= 0
-               ::SetControlValue( ::nDelayedClick[ 1 ], ::nDelayedClick[ 2 ] )             // Second parameter is needed by TGridByCell:EditCell
+               ::SetControlValue( ::nDelayedClick[ 1 ] )
             EndIf
 
             If HB_IsNil( ::nDelayedClick[ 4 ] )
@@ -2421,29 +2453,35 @@ Local lRet, lSomethingEdited
    If ::FirstVisibleColumn == 0
       Return .F.
    EndIf
+   If ! HB_IsNumeric( nCol )
+      nCol := ::FirstColInOrder
+   EndIf
+   If nCol < 1 .OR. nCol > Len( ::aHeaders )
+      Return .F.
+   EndIf
+
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
-   If lAppend
-      If ::lAppendMode
-         Return .F.
-      EndIf
+
+   If ::lAppendMode
+      // Before calling ::EditAllCells an empty item was added at ::ItemCount
+      nRow := ::ItemCount
+   ElseIf lAppend
+      // Add new item, ignore ::AllowAppend
       ::lAppendMode := .T.
       ::InsertBlank( ::ItemCount + 1 )
-      ::SetControlValue( ::ItemCount )
+      ::SetControlValue( ::ItemCount, nCol )       // Needed by TGridByCell:EditAllCells
       nRow := ::ItemCount
    Else
+      // Edit item nRow
       If ! HB_IsNumeric( nRow )
          nRow := Max( ::FirstSelectedItem, 1 )
       EndIf
-      If ! HB_IsNumeric( nCol )
-         nCol := ::FirstColInOrder
-      EndIf
-      If nRow < 1 .OR. nRow > ::ItemCount .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
+      If nRow < 1 .OR. nRow > ::ItemCount
          Return .F.
       EndIf
-
       ASSIGN lChange VALUE lChange TYPE "L" DEFAULT ::lChangeBeforeEdit
       If lChange
-         ::SetControlValue( nRow, nCol )
+         ::SetControlValue( nRow, nCol )           // Needed by TGridByCell:EditAllCells
       EndIf
    EndIf
 
@@ -2480,12 +2518,12 @@ Local lRet, lSomethingEdited
          EndIf
 
          If ::bPosition == 9                     // MOUSE EXIT
-            // Edition window lost focus
-            ::bPosition := 0                     // This restores click messages processing
+            // Edition window lost focus, resume clic processing and process delayed click
+            ::bPosition := 0
             If ::nDelayedClick[ 1 ] > 0
                // A click message was delayed
                If ::nDelayedClick[ 3 ] <= 0
-                  ::SetControlValue( ::nDelayedClick[ 1 ] )
+                  ::SetControlValue( ::nDelayedClick[ 1 ], ::nDelayedClick[ 2 ] )           // Second parameter is needed by TGridByCell:EditAllCells
                EndIf
 
                If HB_IsNil( ::nDelayedClick[ 4 ] )
@@ -2522,16 +2560,28 @@ Local lRet, lSomethingEdited
       EndIf
 
       nCol := ::NextColInOrder( nCol )
-      If nCol == 0
-         If lOneRow .OR. nRow # ::ItemCount .OR. ( ! ::AllowAppend .AND. ! lAppend )
+      If nCol > 0
+         ::SetControlValue( nRow, nCol )           // Needed by TGridByCell:EditAllCells
+      ElseIf lOneRow
+         Exit
+      ElseIf nRow < ::ItemCount
+         nRow ++
+         nCol := ::FirstColInOrder
+         If nCol == 0
             Exit
          EndIf
-
+         ::SetControlValue( nRow, nCol )           // Needed by TGridByCell:EditAllCells
+      ElseIf lAppend .OR. ::AllowAppend
+         nCol := ::FirstColInOrder
+         If nCol == 0
+            Exit
+         EndIf
          ::lAppendMode := .T.
          ::InsertBlank( ::ItemCount + 1 )
-         ::SetControlValue( ::ItemCount )
          nRow := ::ItemCount
-         nCol := ::FirstColInOrder
+         ::SetControlValue( nRow, nCol )           // Needed by TGridByCell:EditAllCells
+      Else
+         Exit
       EndIf
 
       ::ScrollToLeft()
@@ -4161,16 +4211,34 @@ Local lRet, lSomethingEdited
          nCol := ::FirstColInOrder
       EndIf
    EndIf
-   If nRow < 1 .OR. nRow > ::ItemCount .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
+   If nCol < 1 .OR. nCol > Len( ::aHeaders )
       Return .F.
    EndIf
 
-   Empty( lChange )      
-   ::Value := { nRow, nCol }
+   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
+
+   If ::lAppendMode
+      // Before calling ::EditGrid an empty item was added at ::ItemCount
+   ElseIf lAppend
+      // Add new item, ignore ::AllowAppend
+      ::lAppendMode := .T.
+      ::InsertBlank( ::ItemCount + 1 )
+      ::Value := { ::ItemCount, nCol }
+   Else
+      // Edit item nRow
+      If ! HB_IsNumeric( nRow )
+         nRow := Max( ::FirstSelectedItem, 1 )
+      EndIf
+      If nRow < 1 .OR. nRow > ::ItemCount
+         Return .F.
+      EndIf
+      Empty( lChange )
+      ::Value := { nRow, nCol }
+   EndIf
+
+   ASSIGN lOneRow VALUE lOneRow TYPE "L" DEFAULT .F.
 
    lSomethingEdited := .F.
-   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
-   ASSIGN lOneRow VALUE lOneRow TYPE "L" DEFAULT .F.
 
    Do While ::nRowPos >= 1 .AND. ::nRowPos <= ::ItemCount .AND. ::nColPos >= 1 .AND. ::nColPos <= Len( ::aHeaders )
       _OOHG_ThisItemCellValue := ::Cell( ::nRowPos, ::nColPos )
@@ -4267,7 +4335,7 @@ Local lRet, lSomethingEdited
          If ::nRowPos < 1 .OR. ::nRowPos > ::ItemCount .OR. ::nColPos < 1 .OR. ::nColPos > Len( ::aHeaders )
             Exit
          Else
-            ::Value := { 1, 1 }
+            ::Value := { 1, ::FirstColInOrder }
             IF ! ::FullMove
                Exit
             EndIf
@@ -4276,7 +4344,7 @@ Local lRet, lSomethingEdited
          If ::nRowPos < 1 .OR. ::nRowPos > ::ItemCount .OR. ::nColPos < 1 .OR. ::nColPos > Len( ::aHeaders )
             Exit
          Else
-            ::Value := { ::ItemCount, Len( ::aHeaders ) }
+            ::Value := { ::ItemCount, ::LastColInOrder }
             IF ! ::FullMove
                Exit
             EndIf
@@ -4318,8 +4386,8 @@ Local lRet, lSomethingEdited
             Exit
          EndIf
       ElseIf ::bPosition == 9                        // MOUSE EXIT
-         // Edition window lost focus
-         ::bPosition := 0                   // This restores click messages processing
+         // Edition window lost focus, resume clic processing and process delayed click
+         ::bPosition := 0
          If ::nDelayedClick[ 1 ] > 0
             // A click message was delayed
             If ::nDelayedClick[ 3 ] <= 0
@@ -4361,10 +4429,11 @@ Local lRet, lSomethingEdited
             Exit
          Else
             nCol := ::NextColInOrder( ::nColPos )
-            If nCol == 0
-               If ! ::FullMove
-                  Exit
-               EndIf
+            If nCol # 0
+               ::Value := { ::nRowPos, nCol }
+            ElseIf ! ::FullMove
+               Exit
+            Else
                nCol := ::FirstColInOrder
                If nCol == 0
                   Exit
@@ -4377,8 +4446,6 @@ Local lRet, lSomethingEdited
                Else
                   ::Value := { 1, nCol }
                EndIf
-            Else
-               ::Value := { ::nRowPos, nCol }
             EndIf
          EndIf
       EndIf
@@ -4685,7 +4752,9 @@ Local lRet
    Empty( lChange )
    ::Value := { nRow, nCol }
 
+   ::lCalledFromClass := .T.
    lRet := ::Super:EditCell( ::nRowPos, ::nColPos, EditControl, uOldValue, uValue, cMemVar, nOnFocusPos, .F. )
+   ::lCalledFromClass := .F.
 
    If lRet
       // ::bPosition is set by TGridControl()
@@ -4766,8 +4835,61 @@ Local lRet
             EndIf
          EndIf
       ElseIf ::bPosition == 9                        // MOUSE EXIT
-         // Mouse exit was already processed by ::Super:EditCell
+         // Edition window lost focus, resume clic processing and process delayed click
+         ::bPosition := 0
+         If ::nDelayedClick[ 1 ] > 0
+            // A click message was delayed
+            If ::nDelayedClick[ 3 ] <= 0
+               ::Value := { ::nDelayedClick[ 1 ], ::nDelayedClick[ 2 ] }
+            EndIf
+
+            If HB_IsNil( ::nDelayedClick[ 4 ] )
+               If HB_IsBlock( ::OnClick )
+                  If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
+                     If ! ::NestedClick
+                        ::NestedClick := ! _OOHG_NestedSameEvent()
+                        ::DoEventMouseCoords( ::OnClick, "CLICK" )
+                        ::NestedClick := .F.
+                     EndIf
+                  EndIf
+               EndIf
+            Else
+               If HB_IsBlock( ::OnRClick )
+                  If ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
+                     ::DoEventMouseCoords( ::OnRClick, "RCLICK" )
+                  EndIf
+               EndIf
+            EndIf
+
+            If ::nDelayedClick[ 3 ] > 0
+               // change check mark
+               ::CheckItem( ::nDelayedClick[ 3 ], ! ::CheckItem( ::nDelayedClick[ 3 ] ) )
+            EndIf
+
+            // fire context menu
+            If ! HB_IsNil( ::nDelayedClick[ 4 ] ) .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
+               ::ContextMenu:Cargo := ::nDelayedClick[ 4 ]
+               ::ContextMenu:Activate()
+            EndIf
+         EndIf
       Else                                           // OK
+         If ::nRowPos >= 1 .AND. ::nRowPos <= ::ItemCount .AND. ::nColPos >= 1 .AND. ::nColPos <= Len( ::aHeaders )
+            nCol := ::NextColInOrder( ::nColPos )
+            If nCol == 0
+               If ::FullMove
+                  nCol := ::FirstColInOrder
+                  If nCol > 0
+                     If ::nRowPos < ::ItemCount
+                        ::Value := { ::nRowPos + 1, nCol }
+                     Else
+                        ::Value := { 1, nCol }
+                     EndIf
+                  EndIf
+               EndIf
+            Else
+               ::Value := { ::nRowPos, nCol }
+            EndIf
+         EndIf
       EndIf
    EndIf
 
