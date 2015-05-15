@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.135 2015-05-13 22:26:20 guerra000 Exp $
+ * $Id: h_xbrowse.prg,v 1.136 2015-05-15 02:16:59 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -745,8 +745,8 @@ METHOD MoveTo( nTo, nFrom ) CLASS TXBrowse
 Local lMoved := .F.
 
    If ! ::lLocked .AND. ! ( ::lNoShowEmptyRow .AND. ::oWorkArea:IsTableEmpty() )
-      ASSIGN nTo   VALUE nTo   TYPE "N" DEFAULT ::CurrentRow
-      ASSIGN nFrom VALUE nFrom TYPE "N" DEFAULT ::nRowPos
+      ASSIGN nTo   VALUE INT( nTo )   TYPE "N" DEFAULT ::CurrentRow
+      ASSIGN nFrom VALUE INT( nFrom ) TYPE "N" DEFAULT ::nRowPos
       nFrom := Max( Min( nFrom, ::ItemCount ), 1 )
       nTo   := Max( Min( nTo,   ::CountPerPage ), 1 )
       ::RefreshRow( nFrom )
@@ -1467,14 +1467,12 @@ Local lRet := .F.
    If ( lAppend .OR. ::AllowAppend ) .AND. ! ::lLocked .AND. ! ::lNestedEdit
       ::lNestedEdit := .T.
       ::cText := ""
-      If ::FirstVisibleColumn # 0
-         If ::FullMove
-            lRet := ::EditGrid( , , .T.)
-         ElseIf ::InPlace
-            lRet := ::EditAllCells( , , .T. )
-         Else
-            lRet := ::EditItem( , .T., .T. )
-         EndIf
+      If ::FullMove
+         lRet := ::EditGrid( , , .T.)
+      ElseIf ::InPlace
+         lRet := ::EditAllCells( , , .T. )
+      Else
+         lRet := ::EditItem( , .T., .T. )
       EndIf
       ::lNestedEdit := .F.
    EndIf
