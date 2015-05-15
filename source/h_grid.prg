@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.285 2015-05-14 02:25:25 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.286 2015-05-15 01:46:37 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -854,7 +854,7 @@ Local lRet := .F.
          ::InsertBlank( ::ItemCount + 1 )
          ::SetControlValue( ::ItemCount )
          If ::FullMove
-            lRet := ::EditGrid( , , lAppend)
+            lRet := ::EditGrid()
          ElseIf ::InPlace
             lRet := ::EditAllCells()
          Else
@@ -1428,11 +1428,14 @@ Local aItems, lSomethingEdited := .F.
          Exit
       ElseIf nItem < ::ItemCount
          nItem ++
+         ::SetControlValue( nItem )
       ElseIf lAppend .OR. ::AllowAppend
          ::lAppendMode := .T.
          ::InsertBlank( ::ItemCount + 1 )
-         ::SetControlValue( ::ItemCount )
          nItem := ::ItemCount
+         ::SetControlValue( nItem )
+      Else
+         Exit
       EndIf
    EndDo
 
