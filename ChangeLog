@@ -1,11 +1,30 @@
 /*
- * $Id: ChangeLog,v 1.1478 2015-05-15 02:16:59 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1479 2015-05-17 15:22:51 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-05-17 12:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/changelog.htm
+     * Updated.
+   * source/h_xbrowse.prg
+     * TXBrowse:Value() renamed as TXBrowse:SetControlValue().
+     * TXBrowse:Value() now calls ::Super:Value() to change the selected
+       row in the grid, and uses ::Refresh() to repaint the grid with
+       the current data source record placed at the selected row.
+     * TXBrowse:Down() now returns .T. when successful.
+     * TXBrowse:EditItem() now fully supports lOneRow.
+     - Parameter lOneRow from TXBrowse:EditItem_B().
+     * TXBrowse:EditItem_B() now longer calls ::EditAllCells() nor
+       ::EditGrid() when ::InPlace or ::FullMove are .T.
+     * TXBrowseByCell:Value renamed as TXBrowseByCell:SetControlValue.
+     * TXBrowseByCell:Value() now calls ::Super:Value() to change the selected
+       row in the grid, and uses ::Refresh() to repaint the grid with
+       the current data source record placed at the selected row.
+     * All references to ::FirstSelectedItem changed by ::CurrentRow.
 
 2015-05-14 23:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * manual/changelog.htm

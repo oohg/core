@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.136 2015-05-15 02:16:59 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.137 2015-05-17 15:22:51 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -131,11 +131,11 @@ CLASS TXBrowse FROM TGrid
    METHOD RefreshRow
    METHOD Right                   BLOCK { || Nil }
    METHOD SetColumn
+   METHOD SetControlValue         SETGET
    METHOD SetScrollPos
    METHOD SizePos
    METHOD SortColumn              BLOCK { || Nil }
    METHOD SortItems               BLOCK { || Nil }
-   METHOD SetControlValue         BLOCK { |Self, nRow| ::Value := nRow }
    METHOD ToExcel
    METHOD ToolTip                 SETGET
    METHOD ToOpenOffice
@@ -812,6 +812,17 @@ Return ::Super:Value
 METHOD Value( uValue ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 
+   If ::FirstVisibleColumn # 0 .AND. HB_IsNumeric( uValue ) .AND. uValue >= 1 .AND. uValue <= ::ItemCount
+      ::Super:Value( uValue )
+      ::Refresh()
+   EndIf
+
+Return ::CurrentRow
+
+*-----------------------------------------------------------------------------*
+METHOD SetControlValue( uValue ) CLASS TXBrowse
+*-----------------------------------------------------------------------------*
+
    If HB_IsNumeric( uValue )
       If ! ::lLocked .AND. ::FirstVisibleColumn # 0 .AND. uValue >= 1
          ::MoveTo( uValue, ::nRowPos )
@@ -1433,7 +1444,7 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD Down( lAppend ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
-Local nValue
+Local nValue, lRet := .F.
 
    If ! ::lLocked .AND. ::DbSkip( 1 ) == 1
       nValue := ::CurrentRow
@@ -1449,14 +1460,15 @@ Local nValue
          ::CurrentRow := nValue
       EndIf
       ::DoChange()
+      lRet := .T.
    Else
       ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT ::AllowAppend
       If lAppend
-         ::AppendItem()
+         lRet := ::AppendItem()
       EndIf
    EndIf
 
-Return Self
+Return lRet
 
 *--------------------------------------------------------------------------*
 METHOD AppendItem( lAppend ) CLASS TXBrowse
@@ -1649,7 +1661,7 @@ Return .T.
 *-----------------------------------------------------------------------------*
 METHOD EditItem( nItem, lAppend, lOneRow, lChange ) CLASS TXBrowse            
 *-----------------------------------------------------------------------------*
-Local uRet := .F.
+Local lRet lSomethingEdited := .F.
 
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
    // to work properly, nRow and the data source record must be synchronized
@@ -1658,7 +1670,7 @@ Local uRet := .F.
    If ! ::lLocked
       If ! lAppend
          If ! HB_IsNumeric( nItem )
-            nItem := Max( ::FirstSelectedItem, 1 )
+            nItem := Max( ::CurrentRow, 1 )
          EndIf
          If nItem < 1 .OR. nItem > ::ItemCount
             Return .F.
@@ -1670,13 +1682,40 @@ Local uRet := .F.
          ::VScroll:Enabled := .F.
          ::VScroll:Enabled := .T.
       EndIf
-      uRet := ::EditItem_B( lAppend, lOneRow )
+
+/*
+      If ::FullMove .OR. ::InPlace
+         If lAppend
+            ::GoBottom( .T. )
+            ::InsertBlank( ::ItemCount + 1 )
+            ::CurrentRow := ::ItemCount
+            ::oWorkArea:GoTo( 0 )
+         EndIf
+         If ::FullMove
+            Return ::EditGrid( , , lAppend, lOneRow )
+         Else
+            Return ::EditAllCells( , , lAppend, lOneRow )
+         EndIf
+      EndIf
+*/
+      Do While .T.
+         If ! ::EditItem_B( lAppend, lOneRow )
+            Exit
+         EndIf
+         if lAppend
+            :DoChange()
+         EndIf
+         lSomethingEdited := .T.
+         If lOneRow
+            Exit
+         EndIf
+      EndDo
    EndIf
 
-Return uRet
+Return lSomethingEdited
 
 *-----------------------------------------------------------------------------*
-METHOD EditItem_B( lAppend, lOneRow ) CLASS TXBrowse
+METHOD EditItem_B( lAppend ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local oWorkArea, cTitle, z, nOld, nRow
 Local uOldValue, oEditControl, cMemVar, bReplaceField
@@ -1687,7 +1726,6 @@ Local aItems, aMemVars, aReplaceFields, aEditControls, l
    EndIf
 
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
-   ASSIGN lOneRow VALUE lOneRow TYPE "L" DEFAULT .T.
 
    oWorkArea := ::oWorkArea
    If oWorkArea:Eof()
@@ -1703,23 +1741,6 @@ Local aItems, aMemVars, aReplaceFields, aEditControls, l
          Return .F.
       EndIf
       ::lAppendMode := .T.
-   EndIf
-
-   If ::FullMove .OR. ::InPlace
-      If lAppend
-         ::GoBottom( .T. )
-         ::InsertBlank( ::ItemCount + 1 )
-         ::CurrentRow := ::ItemCount
-         oWorkArea:GoTo( 0 )
-      EndIf
-      If ::FullMove
-         Return ::EditGrid( , , lAppend, lOneRow )
-      Else
-         Return ::EditAllCells( , , lAppend, lOneRow )
-      EndIf
-   EndIf
-
-   If lAppend
       cTitle := _OOHG_Messages( 2, 1 )
       nOld := oWorkArea:RecNo()
       oWorkArea:GoTo( 0 )
@@ -1802,6 +1823,7 @@ Local aItems, aMemVars, aReplaceFields, aEditControls, l
       Else
          ::Refresh()
       EndIf
+
       _SetThisCellInfo( ::hWnd, nRow, 0, Nil )
       ::DoEvent( ::OnEditCell, "EDITCELL", { nRow, 0 } )
       _ClearThisCellInfo()
@@ -1826,7 +1848,7 @@ Local lRet, bReplaceField, oWorkArea
       Return .F.
    EndIf
    If ! HB_IsNumeric( nRow )
-      nRow := Max( ::FirstSelectedItem, 1 )
+      nRow := Max( ::CurrentRow, 1 )
    EndIf
    If ! HB_IsNumeric( nCol )
       nCol := ::FirstColInOrder
@@ -1969,7 +1991,7 @@ Local lRet, lSomethingEdited
       nCol := ::FirstColInOrder
    Else
       If ! HB_IsNumeric( nRow )
-         nRow := Max( ::FirstSelectedItem, 1 )
+         nRow := Max( ::CurrentRow, 1 )
       EndIf
       If ! HB_IsNumeric( nCol )
          nCol := ::FirstColInOrder
@@ -2099,7 +2121,7 @@ Local lRet, lSomethingEdited
       Return .F.
    EndIf
    If ! HB_IsNumeric( nRow )
-      nRow := Max( ::FirstSelectedItem, 1 )
+      nRow := Max( ::CurrentRow, 1 )
    EndIf
    If ! HB_IsNumeric( nCol )
       nCol := ::FirstColInOrder
@@ -2800,7 +2822,7 @@ CLASS TXBrowseByCell FROM TXBrowse
    METHOD MoveTo
    METHOD Refresh
    METHOD Right
-   METHOD SetControlValue         BLOCK { |Self, nRow, nCol| If( HB_IsNil( nCol ), nCol := 1, ), ::Value := { nRow, nCol } }
+   METHOD SetControlValue         SETGET
    METHOD SetSelectedColors
    METHOD Up
    METHOD Value                   SETGET
@@ -3109,7 +3131,7 @@ Local lRet, lSomethingEdited
 
    // to work properly, nRow and the data source record must be synchronized
    Empty( lChange )
-   ::Value := { nRow, nCol }
+   ::SetControlValue( nRow, nCol )
 
    lSomethingEdited := .F.
 
@@ -3289,7 +3311,7 @@ Local lRet, lSomethingEdited
       ::oWorkArea:GoTo( 0 )
    Else
       If ! HB_IsNumeric( nRow )
-         nRow := Max( ::FirstSelectedItem, 1 )
+         nRow := Max( ::CurrentRow, 1 )
       EndIf
       If ! HB_IsNumeric( nCol )
          nCol := ::FirstColInOrder
@@ -4087,19 +4109,50 @@ Local i, aColors[ 8 ]
 Return aSelectedColors
 
 *-----------------------------------------------------------------------------*
+METHOD SetControlValue( uValue ) CLASS TXBrowseByCell
+*-----------------------------------------------------------------------------*
+Local nRow := 0, nCol := 0
+
+   If ! ::lLocked .AND. ::FirstVisibleColumn # 0
+      If HB_IsArray( uValue )
+         If Len( uValue ) == 1
+            If HB_IsNumeric( uValue[ 1 ] ) .AND. uValue[ 1 ] >= 1 .AND. uValue[ 1 ] <= ::ItemCount
+               nRow := uValue[ 1 ]
+               nCol := 1
+            EndIf
+         ElseIf Len( uValue ) >= 2
+            If ( HB_IsNumeric( uValue[ 1 ] ) .AND. HB_IsNumeric( uValue[ 2 ] ) .AND. ;
+                 uValue[ 1 ] >= 1 .AND. uValue[ 1 ] <= ::ItemCount .AND. ;
+                 uValue[ 2 ] >= 1 .AND. uValue[ 2 ] <= Len( ::aHeaders ) )
+               nRow := uValue[ 1 ]
+               nCol := uValue[ 2 ]
+            EndIf
+         EndIf
+      ElseIf HB_IsNumeric( uValue ) .AND. uValue >= 1 .AND. uValue <= ::ItemCount
+         nRow := uValue
+         nCol := 1
+      EndIf
+   EndIf
+
+   If nRow # 0 .AND. nCol # 0
+      ::MoveTo( { nRow, nCol }, { ::nRowPos, ::nColPos } )
+   Else
+      ::CurrentRow := ::nRowPos
+      ::CurrentCol := ::nColPos
+   EndIf
+
+Return { ::nRowPos, ::nColPos }
+
+*-----------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TXBrowseByCell
 *-----------------------------------------------------------------------------*
 
-   If ( HB_IsArray( uValue ) .AND. Len( uValue ) > 1 .AND. ;
-        HB_IsNumeric( uValue[ 1 ] ) .AND. HB_IsNumeric( uValue[ 2 ] ) )
-      If ( ! ::lLocked .AND. ::FirstVisibleColumn # 0 .AND. ;
-           uValue[ 1 ] >= 1 .AND. uValue[ 1 ] <= ::ItemCount .AND. ;
-           uValue[ 2 ] >= 1 .AND. uValue[ 2 ] <= Len( ::aHeaders ) )
-         ::MoveTo( uValue, { ::nRowPos, ::nColPos } )
-      Else
-         ::CurrentRow( uValue[ 1 ] )
-         ::CurrentCol( uValue[ 2 ] )
-      EndIf
+   If ( ::FirstVisibleColumn # 0 .AND. ;
+        HB_IsArray( uValue ) .AND. Len( uValue ) > 1 .AND. ;
+        HB_IsNumeric( uValue[ 1 ] ) .AND. uValue[ 1 ] >= 1 .AND. uValue[ 1 ] <= ::ItemCount .AND. ;
+        HB_IsNumeric( uValue[ 2 ] ) .AND. uValue[ 2 ] >= 1 .AND. uValue[ 2 ] <= Len( ::aHeaders ) )
+      ::Super:Value( uValue[ 1 ] )
+      ::CurrentCol := uValue[ 2 ]
    EndIf
 
 Return { ::nRowPos, ::nColPos }
