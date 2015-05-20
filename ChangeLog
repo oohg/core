@@ -1,11 +1,71 @@
 /*
- * $Id: ChangeLog,v 1.1479 2015-05-17 15:22:51 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1480 2015-05-20 02:05:44 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-05-19 23:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/changelog.htm
+     * Updated.
+   * include/i_browse.ch
+     + CHECKBOXES, ON CHECKCHANGE and ON REFRESHROW clauses.
+   * source/h_grid.prg
+     - Unneeded code.
+     ! Support for lOneRow in TGrid:EditGrid().
+     ! TGrid:EditGrid() does not scroll to left after editing.
+     ! TGrid:EditAllCells() scrolls to left before editing the next column.
+     + Support for lOneRow in TGridByCell:EditGrid().
+   * source/h_xbrowse.prg
+     * Comments.
+     - Unneeded code.
+     + Data lRefreshAfterValue. When .T. TXBrowse:Value() and
+       TXBrowseByCell:Value() will call ::Refresh() after changing
+       the selected row in the grid. Defaults to .F.
+     ! TXBrowse:Down() appends a new item when ::lLocked and ::AllowAppend
+       are .T.
+     ! Typos in TXBrowse:EditItem().
+     ! Missing lOneRow initialization in TXBrowse:EditItem().
+     ! TXBrowse:EditItem() does not scroll to a new row after editing
+       the last row in the grid.
+     * TXBrowse:EditAllCells() initializations and validations placement.
+     * TXBrowse:EditAllCells() now uses ::nRowPos directly.
+     ! Support for lAppend and lOneRow in TXBrowse:EditAllCells().
+     ! TXBrowse:EditAllCells() does not scroll to a new row after editing
+       the last row in the grid.
+     ! Support for lAppend and lOneRow in TXBrowse:EditGrid().
+     * TXBrowse:EditGrid() now uses ::nRowPos directly.
+     ! TXBrowseByCell:EditGrid() does not scroll to left after editing.
+     ! Support for lAppend and lOneRow in TXBrowseByCell:EditGrid().
+     * TXBrowseByCell:EditGrid() initializations and validations placement.
+     * TXBrowseByCell:EditAllCells() initializations and validations
+       placement.
+     ! Support for lAppend and lOneRow in TXBrowseByCell:EditAllCells().
+     ! Handling of end of edition events in TXBrowseByCell:EditAllCells().
+   * source/h_browse.prg
+     * Comments.
+     + Support for CHECKBOXES and ON CHECKCHANGE clauses.
+       ; Checkboxes are not tied to data source records but to the rows
+         in the supporting grid. When a checked row is scrolled out and
+         later scrolled in, the checkmark is lost. To link the checkmarks
+         with the records, additional logic is needed: you can use
+         ON CHECKCHANGE to save the checkmark status to the data source
+         and ON REFRESHROW event to read the saved status and set the
+         checkmark.
+     % ::WorkArea replaced by local var.
+     - lOneRow parameter from TOBrowse:EditItem_B().
+     * TOBrowse:EditItem_B() no longer calls ::EditAllCells() when
+       ::InPlace is .T.
+       ; This change enabled de row edition using a modal window, just like
+         TGrid and TOBrowse classes.
+     ! Support for mouse click exit from NOMODAL edition.
+     + Support for lAppend parameter in TOBrowse:EditAllCells().
+     ! RTE in TOBrowse:EditAllCells() because lOneRow is not logical.
+     ! TOBrowse:Refresh() does not work properly after clicking a row.
+     ! RTE in TOBrowseByCell:EditAllCells() because lOneRow is not logical.
+     ! Infinite loop in TOBrowseByCell:EditAllCells().
 
 2015-05-17 12:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * manual/changelog.htm

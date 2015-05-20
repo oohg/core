@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.286 2015-05-15 01:46:37 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.287 2015-05-20 02:05:45 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -875,9 +875,6 @@ Local lRet, lSomethingEdited, nNextCol
    If ::FirstVisibleColumn == 0
       Return .F.
    EndIf
-   If ! HB_IsNumeric( nRow )
-      nRow := Max( ::FirstSelectedItem, 1 )
-   EndIf
    If ! HB_IsNumeric( nCol )
       nCol := ::FirstColInOrder
    EndIf
@@ -912,8 +909,6 @@ Local lRet, lSomethingEdited, nNextCol
 
    ::nRowPos := nRow
    ::nColPos := nCol
-
-   ASSIGN lOneRow VALUE lOneRow TYPE "L" DEFAULT .F.
 
    lSomethingEdited := .F.
 
@@ -1001,7 +996,9 @@ Local lRet, lSomethingEdited, nNextCol
 
       If nNextCol > 0
          ::nColPos := nNextCol
-      ElseIf lOneRow .OR. ! ::FullMove
+      ElseIf HB_IsLogical( lOneRow ) .AND. lOneRow
+         Exit
+      ElseIf ! HB_IsLogical( lOneRow ) .AND. ! ::FullMove
          Exit
       ElseIf ::nRowPos < ::ItemCount
          ::nColPos := ::FirstColInOrder
@@ -1010,6 +1007,7 @@ Local lRet, lSomethingEdited, nNextCol
          EndIf
          ::nRowPos ++
          ::SetControlValue( ::nRowPos )
+         ::ScrollToLeft()
       ElseIf lAppend .OR. ::AllowAppend
          ::nColPos := ::FirstColInOrder
          If ::nColPos == 0
@@ -1019,6 +1017,7 @@ Local lRet, lSomethingEdited, nNextCol
          ::InsertBlank( ::ItemCount + 1 )
          ::nRowPos := ::ItemCount
          ::SetControlValue( ::nRowPos )
+         ::ScrollToLeft()
       Else
          Exit
       EndIf
@@ -2574,6 +2573,7 @@ Local lRet, lSomethingEdited
             Exit
          EndIf
          ::SetControlValue( nRow, nCol )           // Needed by TGridByCell:EditAllCells
+         ::ScrollToLeft()
       ElseIf lAppend .OR. ::AllowAppend
          nCol := ::FirstColInOrder
          If nCol == 0
@@ -2583,11 +2583,10 @@ Local lRet, lSomethingEdited
          ::InsertBlank( ::ItemCount + 1 )
          nRow := ::ItemCount
          ::SetControlValue( nRow, nCol )           // Needed by TGridByCell:EditAllCells
+         ::ScrollToLeft()
       Else
          Exit
       EndIf
-
-      ::ScrollToLeft()
    EndDo
 
    ::ScrollToLeft()
@@ -4239,8 +4238,6 @@ Local lRet, lSomethingEdited
       ::Value := { nRow, nCol }
    EndIf
 
-   ASSIGN lOneRow VALUE lOneRow TYPE "L" DEFAULT .F.
-
    lSomethingEdited := .F.
 
    Do While ::nRowPos >= 1 .AND. ::nRowPos <= ::ItemCount .AND. ::nColPos >= 1 .AND. ::nColPos <= Len( ::aHeaders )
@@ -4281,6 +4278,8 @@ Local lRet, lSomethingEdited
       If ::bPosition == 1                            // UP
          If ::nRowPos < 1 .OR. ::nRowPos > ::ItemCount + 1 .OR. ::nColPos < 1 .OR. ::nColPos > Len( ::aHeaders )
             Exit
+         ElseIf HB_IsLogical( lOneRow ) .AND. lOneRow
+            Exit
          ElseIf ::nRowPos > 1
             ::Value := { ::nRowPos - 1, ::nColPos }
          ElseIf ::FullMove
@@ -4294,7 +4293,9 @@ Local lRet, lSomethingEdited
          Else
             nCol := ::NextColInOrder( ::nColPos )
             If nCol == 0
-               If ! ::FullMove
+               If HB_IsLogical( lOneRow ) .AND. lOneRow
+                  Exit
+               ElseIf ! HB_IsLogical( lOneRow ) .AND. ! ::FullMove
                   Exit
                EndIf
                nCol := ::FirstColInOrder
@@ -4302,11 +4303,11 @@ Local lRet, lSomethingEdited
                   Exit
                ElseIf ::nRowPos < ::ItemCount
                   ::Value := { ::nRowPos + 1, nCol }
-               ElseIf ! lOneRow .AND. ( ::AllowAppend .OR. lAppend )
+               ElseIf ::AllowAppend .OR. lAppend
                   ::lAppendMode := .T.
                   ::InsertBlank( ::ItemCount + 1 )
                   ::Value := { ::ItemCount, nCol }
-               Else
+               ElseIf ::FullMove
                   ::Value := { 1, nCol }
                EndIf
             Else
@@ -4319,7 +4320,9 @@ Local lRet, lSomethingEdited
          Else
             nCol := ::PriorColInOrder( ::nColPos )
             If nCol == 0
-               If ! ::FullMove
+               If HB_IsLogical( lOneRow ) .AND. lOneRow
+                  Exit
+               ElseIf ! HB_IsLogical( lOneRow ) .AND. ! ::FullMove
                   Exit
                EndIf
                nCol := ::LastColInOrder
@@ -4327,7 +4330,7 @@ Local lRet, lSomethingEdited
                   Exit
                ElseIf ::nRowPos > 1
                   ::Value := { ::nRowPos - 1, nCol }
-               Else
+               ElseIf ::FullMove
                   ::Value := { ::ItemCount, nCol }
                EndIf
             Else
@@ -4337,55 +4340,65 @@ Local lRet, lSomethingEdited
       ElseIf ::bPosition == 4                        // HOME
          If ::nRowPos < 1 .OR. ::nRowPos > ::ItemCount .OR. ::nColPos < 1 .OR. ::nColPos > Len( ::aHeaders )
             Exit
+         ElseIf HB_IsLogical( lOneRow ) .AND. lOneRow
+            Exit
          Else
             ::Value := { 1, ::FirstColInOrder }
-            IF ! ::FullMove
+            If ! HB_IsLogical( lOneRow ) .AND. ! ::FullMove
                Exit
             EndIf
          EndIf
       ElseIf ::bPosition == 5                        // END
          If ::nRowPos < 1 .OR. ::nRowPos > ::ItemCount .OR. ::nColPos < 1 .OR. ::nColPos > Len( ::aHeaders )
             Exit
+         ElseIf HB_IsLogical( lOneRow ) .AND. lOneRow
+            Exit
          Else
             ::Value := { ::ItemCount, ::LastColInOrder }
-            IF ! ::FullMove
+            If ! HB_IsLogical( lOneRow ) .AND. ! ::FullMove
                Exit
             EndIf
          EndIf
       ElseIf ::bPosition == 6                        // DOWN
          If ::nRowPos < 1 .OR. ::nRowPos > ::ItemCount .OR. ::nColPos < 1 .OR. ::nColPos > Len( ::aHeaders )
             Exit
+         ElseIf HB_IsLogical( lOneRow ) .AND. lOneRow
+            Exit
          ElseIf ::nRowPos < ::ItemCount
             ::Value := { ::nRowPos + 1, ::nColPos }
-         ElseIf ! ::FullMove
+         ElseIf ! HB_IsLogical( lOneRow ) .AND. ! ::FullMove
             Exit
-         ElseIf ! lOneRow .AND. ( ::AllowAppend .OR. lAppend )
+         ElseIf ::AllowAppend .OR. lAppend
             ::lAppendMode := .T.
             ::InsertBlank( ::ItemCount + 1 )
             ::Value := { ::ItemCount, ::nColPos }
-         Else
+         ElseIf ::FullMove
             ::Value := { 1, ::nColPos }
          EndIf
       ElseIf ::bPosition == 7                        // PRIOR
          If ::nRowPos < 1 .OR. ::nRowPos > ::ItemCount .OR. ::nColPos < 1 .OR. ::nColPos > Len( ::aHeaders )
+            Exit
+         ElseIf HB_IsLogical( lOneRow ) .AND. lOneRow
             Exit
          ElseIf ::nRowPos > ::CountPerPage
             ::Value := { ::nRowPos - ::CountPerPage, ::nColPos }
          Else
             ::Value := { 1, ::nColPos }
          EndIf
-         IF ! ::FullMove
+         If ! HB_IsLogical( lOneRow ) .AND. ! ::FullMove
             Exit
          EndIf
       ElseIf ::bPosition == 8                        // NEXT
          If ::nRowPos < 1 .OR. ::nRowPos > ::ItemCount .OR. ::nColPos < 1 .OR. ::nColPos > Len( ::aHeaders )
+            Exit
+         ElseIf HB_IsLogical( lOneRow ) .AND. lOneRow
             Exit
          ElseIf ::nRowPos < ::ItemCount - ::CountPerPage
             ::Value := { ::nRowPos + ::CountPerPage, ::nColPos }
          Else
             ::Value := { ::ItemCount, ::nColPos }
          EndIf
-         IF ! ::FullMove
+         If ! HB_IsLogical( lOneRow ) .AND. ! ::FullMove
             Exit
          EndIf
       ElseIf ::bPosition == 9                        // MOUSE EXIT
@@ -4432,23 +4445,26 @@ Local lRet, lSomethingEdited
             Exit
          Else
             nCol := ::NextColInOrder( ::nColPos )
-            If nCol # 0
-               ::Value := { ::nRowPos, nCol }
-            ElseIf ! ::FullMove
-               Exit
-            Else
+            If nCol == 0
+               If HB_IsLogical( lOneRow ) .AND. lOneRow
+                  Exit
+               ElseIf ! HB_IsLogical( lOneRow ) .AND. ! ::FullMove
+                  Exit
+               EndIf
                nCol := ::FirstColInOrder
                If nCol == 0
                   Exit
                ElseIf ::nRowPos < ::ItemCount
                   ::Value := { ::nRowPos + 1, nCol }
-               ElseIf ! lOneRow .AND. ( ::AllowAppend .OR. lAppend )
+               ElseIf ::AllowAppend .OR. lAppend
                   ::lAppendMode := .T.
                   ::InsertBlank( ::ItemCount + 1 )
                   ::Value := { ::ItemCount, nCol }
-               Else
+               ElseIf ::FullMove
                   ::Value := { 1, nCol }
                EndIf
+            Else
+               ::Value := { ::nRowPos, nCol }
             EndIf
          EndIf
       EndIf

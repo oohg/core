@@ -1,5 +1,5 @@
 /*
- * $Id: i_browse.ch,v 1.57 2015-05-10 04:37:47 fyurisich Exp $
+ * $Id: i_browse.ch,v 1.58 2015-05-20 02:05:44 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -170,6 +170,9 @@ STANDARD VERSION
       [ <none: NONEUNSELS, IGNORENONE> ] ;
       [ <cbe: CHANGEBEFOREEDIT> ] ;
       [ <dummy15: ONRCLICK, ON RCLICK> <rclick> ] ;
+      [ <checkboxes: CHECKBOXES> ] ;
+      [ <dummy16: ONCHECKCHANGE, ON CHECKCHANGE> <checkchange> ] ;
+      [ <dummy17: ONROWREFRESH, ON ROWREFRESH> <rowrefresh> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( IIF( <.bycell.>, TOBrowseByCell(), TOBrowse() ), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, ;
@@ -202,7 +205,8 @@ STANDARD VERSION
             IIF( Upper( #<edtctrls> ) == "DYNAMICCONTROLS", .F., NIL ) ), ;
             <{bheadrclick}>, <.extdbl.>, <.nomodal.>, <.silent.>, ;
             ! Upper( #<alta> ) == "DISABLEALTA", <.noshow.>, ;
-            Upper( #<none> ) == "NONEUNSELS", <.cbe.>, <{rclick}> )
+            Upper( #<none> ) == "NONEUNSELS", <.cbe.>, <{rclick}>, ;
+            <.checkboxes.>, <{checkchange}>, <{rowrefresh}> )
 
 #command SET BROWSESYNC ON ;
    => ;

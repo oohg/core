@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.154 2015-05-10 07:08:57 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.155 2015-05-20 02:05:45 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -232,7 +232,7 @@ CLASS TOBrowse FROM TXBrowse
       SetItemColor
       SetRangeColor
       SetSelectedColors
-      Value                       it's used by ::CurrentRow() for painting the grid, triggers on change event only if ::lNoneUnsels is .T.
+      Value                       it's used by ::CurrentRow() for painting the grid
 */
 ENDCLASS
 
@@ -254,7 +254,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lFixedBlocks, bBeforeColMove, bAfterColMove, bBeforeColSize, ;
                bAfterColSize, bBeforeAutofit, lLikeExcel, lButtons, lUpdCols, ;
                lFixedCtrls, bHeadRClick, lExtDbl, lNoModal, lSilent, lAltA, ;
-               lNoShowAlways, lNone, lCBE, onrclick ) CLASS TOBrowse
+               lNoShowAlways, lNone, lCBE, onrclick, lCheckBoxes, oncheck, ;
+               rowrefresh ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local nWidth2, nCol2, oScroll, z
 
@@ -344,7 +345,7 @@ Local nWidth2, nCol2, oScroll, z
               bBeforeColSize, bAfterColSize, bBeforeAutofit, lLikeExcel, ;
               lButtons, AllowDelete, DelMsg, lNoDelMsg, AllowAppend, ;
               lNoModal, lFixedCtrls, bHeadRClick, lExtDbl, Value, lSilent, ;
-              lAltA, lNoShowAlways, lNone, lCBE, onrclick )
+              lAltA, lNoShowAlways, lNone, lCBE, onrclick, lCheckBoxes )
 
    ::nWidth := w
 
@@ -412,7 +413,7 @@ Local nWidth2, nCol2, oScroll, z
    ASSIGN ::OnDblClick     VALUE dblclick       TYPE "B"
    ASSIGN ::OnClick        VALUE click          TYPE "B"
    ASSIGN ::OnEnter        VALUE onenter        TYPE "B"
-// ASSIGN ::OnCheckChange  VALUE oncheck        TYPE "B"       // TODO: Check
+   ASSIGN ::OnCheckChange  VALUE oncheck        TYPE "B"
    ASSIGN ::bBeforeColMove VALUE bBeforeColMove TYPE "B"
    ASSIGN ::bAfterColMove  VALUE bAfterColMove  TYPE "B"
    ASSIGN ::bBeforeColSize VALUE bBeforeColSize TYPE "B"
@@ -425,6 +426,7 @@ Local nWidth2, nCol2, oScroll, z
    ASSIGN ::OnEditCell     VALUE editcell       TYPE "B"
    ASSIGN ::OnAbortEdit    VALUE abortedit      TYPE "B"
    ASSIGN ::OnRClick       VALUE onrclick       TYPE "B"
+   ASSIGN ::OnRefreshRow   VALUE rowrefresh     TYPE "B"
 
 Return Self
 
@@ -441,7 +443,7 @@ METHOD Define3( ControlName, ParentForm, x, y, w, h, fontname, fontsize, ;
                 bBeforeColSize, bAfterColSize, bBeforeAutofit, lLikeExcel, ;
                 lButtons, AllowDelete, DelMsg, lNoDelMsg, AllowAppend, ;
                 lNoModal, lFixedCtrls, bHeadRClick, lExtDbl, Value, lSilent, ;
-                lAltA, lNoShowAlways, lNone, lCBE, onrclick ) CLASS TOBrowse
+                lAltA, lNoShowAlways, lNone, lCBE, onrclick, lCheckBoxes ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 
    ::TGrid:Define( ControlName, ParentForm, x, y, w, h, ::aHeaders, ::aWidths, ;
@@ -453,7 +455,7 @@ METHOD Define3( ControlName, ParentForm, x, y, w, h, fontname, fontsize, ;
                    validmessages, editcell, aWhenFields, lDisabled, ;
                    lNoTabStop, lInvisible, lHasHeaders, Nil, aHeaderImage, ;
                    aHeaderImageAlign, FullMove, aSelectedColors, aEditKeys, ;
-                   Nil, Nil, dblbffr, lFocusRect, lPLM, lFixedCols, abortedit, ;
+                   lCheckBoxes, Nil, dblbffr, lFocusRect, lPLM, lFixedCols, abortedit, ;
                    click, lFixedWidths, bBeforeColMove, bAfterColMove, ;
                    bBeforeColSize, bAfterColSize, bBeforeAutofit, lLikeExcel, ;
                    lButtons, AllowDelete, Nil, Nil, DelMsg, lNoDelMsg, ;
@@ -624,7 +626,7 @@ Local aTemp, x, aFields, cWorkArea, nWidth, nLen, _RecNo
      aEval( ::aFields, { |c,i| aFields[ i ] := ::ColumnBlock( i ), c } )
    EndIf
 
-   _RecNo := ( ::WorkArea )->( RecNo() )
+   _RecNo := ( cWorkArea )->( RecNo() )
 
    If ::Visible
       ::SetRedraw( .F. )
@@ -647,17 +649,19 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD PageDown( lAppend ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local _RecNo, s
+Local _RecNo, s, cWorkArea
 
    s := ::FirstSelectedItem
 
    If s >= Len( ::aRecMap )
-      If Select( ::WorkArea ) == 0
+      cWorkArea := ::WorkArea
+
+      If Select( cWorkArea ) == 0
          ::RecCount := 0
          Return Self
       EndIf
 
-      _RecNo := ( ::WorkArea )->( RecNo() )
+      _RecNo := ( cWorkArea )->( RecNo() )
 
       If Len( ::aRecMap ) == 0
          ::TopBottom( GO_BOTTOM )
@@ -696,14 +700,15 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD PageUp() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local _RecNo
+Local _RecNo, cWorkArea
 
    If ::FirstSelectedItem == 1
-      If Select( ::WorkArea ) == 0
+      cWorkArea := ::WorkArea
+      If Select( cWorkArea ) == 0
          ::RecCount := 0
          Return Self
       EndIf
-      _RecNo := ( ::WorkArea )->( RecNo() )
+      _RecNo := ( cWorkArea )->( RecNo() )
       If Len( ::aRecMap ) == 0
          ::TopBottom( GO_TOP )
       Else
@@ -717,7 +722,6 @@ Local _RecNo
    Else
       ::FastUpdate( 1 - ::FirstSelectedItem, 1 )
    EndIf
-
    ::BrowseOnChange()
 
 Return Self
@@ -725,13 +729,14 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD Home() CLASS TOBrowse                         // METHOD GoTop
 *-----------------------------------------------------------------------------*
-Local _RecNo
+Local _RecNo, cWorkArea
 
-   If Select( ::WorkArea ) == 0
+   cWorkArea := ::WorkArea
+   If Select( cWorkArea ) == 0
       ::RecCount := 0
       Return Self
    EndIf
-   _RecNo := ( ::WorkArea )->( RecNo() )
+   _RecNo := ( cWorkArea )->( RecNo() )
    ::TopBottom( GO_TOP )
    ::ScrollUpdate()
    ::Update()
@@ -745,15 +750,16 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD End( lAppend ) CLASS TOBrowse                 // METHOD GoBottom
 *-----------------------------------------------------------------------------*
-Local _RecNo, _BottomRec
+Local _RecNo, _BottomRec, cWorkArea
 
-   If Select( ::WorkArea ) == 0
+   cWorkArea := ::WorkArea
+   If Select( cWorkArea ) == 0
       ::RecCount := 0
       Return Self
    EndIf
-   _RecNo := ( ::WorkArea )->( RecNo() )
+   _RecNo := ( cWorkArea )->( RecNo() )
    ::TopBottom( GO_BOTTOM )
-   _BottomRec := ( ::WorkArea )->( RecNo() )
+   _BottomRec := ( cWorkArea )->( RecNo() )
    ::ScrollUpdate()
 
    // If it's for APPEND, leaves a blank line ;)
@@ -770,17 +776,18 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD Up() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local s, _RecNo, nLen, lDone := .F.
+Local s, _RecNo, nLen, lDone := .F., cWorkArea
 
    s := ::FirstSelectedItem
 
    If s <= 1
-      If Select( ::WorkArea ) == 0
+      cWorkArea := ::WorkArea
+      If Select( cWorkArea ) == 0
          ::RecCount := 0
          Return lDone
       EndIf
 
-      _RecNo := ( ::WorkArea )->( RecNo() )
+      _RecNo := ( cWorkArea )->( RecNo() )
 
       If Len( ::aRecMap ) == 0
          ::TopBottom( GO_TOP )
@@ -797,7 +804,7 @@ Local s, _RecNo, nLen, lDone := .F.
          // Add one record at the top
          aAdd( ::aRecMap, Nil )
          aIns( ::aRecMap, 1 )
-         ::aRecMap[ 1 ] := ( ::WorkArea )->( RecNo() )
+         ::aRecMap[ 1 ] := ( cWorkArea )->( RecNo() )
          If ::Visible
             ::SetRedraw( .F. )
          EndIf
@@ -832,17 +839,18 @@ Return lDone
 *-----------------------------------------------------------------------------*
 METHOD Down( lAppend ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local s, _RecNo, nLen, lDone := .F.
+Local s, _RecNo, nLen, lDone := .F., cWorkArea
 
    s := ::FirstSelectedItem
 
    If s >= Len( ::aRecMap )
-      If Select( ::WorkArea ) == 0
+      cWorkArea := ::WorkArea
+      If Select( cWorkArea ) == 0
          ::RecCount := 0
          Return lDone
       EndIf
 
-      _RecNo := ( ::WorkArea )->( RecNo() )
+      _RecNo := ( cWorkArea )->( RecNo() )
 
       If Len( ::aRecMap ) == 0
          ::TopBottom( GO_TOP )
@@ -861,7 +869,7 @@ Local s, _RecNo, nLen, lDone := .F.
             Return lDone
          EndIf
          // Add one record at the bottom
-         aAdd( ::aRecMap, ( ::WorkArea )->( RecNo() ) )
+         aAdd( ::aRecMap, ( cWorkArea )->( RecNo() ) )
          nLen := Len( ::aRecMap )
          If ::Visible
             ::SetRedraw( .F. )
@@ -896,36 +904,38 @@ Return lDone
 *-----------------------------------------------------------------------------*
 METHOD TopBottom( nDir ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
+Local cWorkArea := ::WorkArea
 
    If ::lDescending
       nDir := - nDir
    EndIf
    If nDir == GO_BOTTOM
-      ( ::WorkArea )->( DbGoBottom() )
+      ( cWorkArea )->( DbGoBottom() )
    Else
-      ( ::WorkArea )->( DbGoTop() )
+      ( cWorkArea )->( DbGoTop() )
    EndIf
    ::Bof := .F.
-   ::Eof := ( ::WorkArea )->( Eof() )
+   ::Eof := ( cWorkArea )->( Eof() )
 
 Return Self
 
 *-----------------------------------------------------------------------------*
 METHOD DbSkip( nRows ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
+Local cWorkArea := ::WorkArea
 
    ASSIGN nRows VALUE nRows TYPE "N" DEFAULT 1
    If ! ::lDescending
-      ( ::WorkArea )->( DbSkip(   nRows ) )
-      ::Bof := ( ::WorkArea )->( Bof() )
-      ::Eof := ( ::WorkArea )->( Eof() ) .OR. ( ( ::WorkArea )->( Recno() ) > ( ::WorkArea )->( RecCount() ) )
+      ( cWorkArea )->( DbSkip(   nRows ) )
+      ::Bof := ( cWorkArea )->( Bof() )
+      ::Eof := ( cWorkArea )->( Eof() ) .OR. ( ( cWorkArea )->( Recno() ) > ( cWorkArea )->( RecCount() ) )
    Else
-      ( ::WorkArea )->( DbSkip( - nRows ) )
-      If ( ::WorkArea )->( Eof() )
-         ( ::WorkArea )->( DbGoBottom() )
+      ( cWorkArea )->( DbSkip( - nRows ) )
+      If ( cWorkArea )->( Eof() )
+         ( cWorkArea )->( DbGoBottom() )
          ::Bof := .T.
-         ::Eof := ( ::WorkArea )->( Eof() )
-      ElseIf ( ::WorkArea )->( Bof() )
+         ::Eof := ( cWorkArea )->( Eof() )
+      ElseIf ( cWorkArea )->( Bof() )
          ::Eof := .T.
          ::DbGoTo( 0 )
       EndIf
@@ -936,10 +946,11 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD DbGoTo( nRecNo ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
+Local cWorkArea := ::WorkArea
 
-   ( ::WorkArea )->( DbGoTo( nRecNo ) )
+   ( cWorkArea )->( DbGoTo( nRecNo ) )
    ::Bof := .F.
-   ::Eof := ( ::WorkArea )->( Eof() ) .OR. ( ( ::WorkArea )->( Recno() ) > ( ::WorkArea )->( RecCount() ) )
+   ::Eof := ( cWorkArea )->( Eof() ) .OR. ( ( cWorkArea )->( Recno() ) > ( cWorkArea )->( RecCount() ) )
 
 Return Self
 
@@ -1018,7 +1029,7 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD Delete() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local Value, nRecNo, lSync
+Local Value, nRecNo, lSync, cWorkArea
 
    Value := ::Value
 
@@ -1026,14 +1037,15 @@ Local Value, nRecNo, lSync
       Return Self
    EndIf
 
-   nRecNo := ( ::WorkArea )->( RecNo() )
+   cWorkArea := ::WorkArea
+   nRecNo := ( cWorkArea )->( RecNo() )
 
    ::DbGoTo( Value )
 
-   If ::Lock .AND. ! ( ::WorkArea )->( Rlock() )
+   If ::Lock .AND. ! ( cWorkArea )->( Rlock() )
       MsgExclamation( _OOHG_Messages( 3, 9 ), _OOHG_Messages( 4, 2 ) )
    Else
-      ( ::WorkArea )->( DbDelete() )
+      ( cWorkArea )->( DbDelete() )
 
       // Do before unlocking record or moving record pointer
       // so block can operate on deleted record (e.g. to copy to a log).
@@ -1042,8 +1054,8 @@ Local Value, nRecNo, lSync
       EndIf
 
       If ::Lock
-         ( ::WorkArea )->( DbCommit() )
-         ( ::WorkArea )->( DbUnlock() )
+         ( cWorkArea )->( DbCommit() )
+         ( cWorkArea )->( DbUnlock() )
       EndIf
       ::DbSkip()
       If ::Eof()
@@ -1051,7 +1063,7 @@ Local Value, nRecNo, lSync
       EndIf
 
       If Set( _SET_DELETED )
-         ::SetValue( ( ::WorkArea )->( RecNo() ), ::FirstSelectedItem )
+         ::SetValue( ( cWorkArea )->( RecNo() ), ::FirstSelectedItem )
       EndIf
    EndIf
 
@@ -1062,7 +1074,7 @@ Local Value, nRecNo, lSync
    EndIf
 
    If lSync
-      If ( ::WorkArea )->( RecNo() ) != ::Value
+      If ( cWorkArea )->( RecNo() ) != ::Value
          ::DbGoTo( ::Value )
       EndIf
    Else
@@ -1072,7 +1084,7 @@ Local Value, nRecNo, lSync
 Return Self
 
 *-----------------------------------------------------------------------------*
-METHOD EditItem_B( lAppend, lOneRow ) CLASS TOBrowse
+METHOD EditItem_B( lAppend ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local nOldRecNo, nItem, cWorkArea, lRet, nNewRec
 
@@ -1087,37 +1099,26 @@ Local nOldRecNo, nItem, cWorkArea, lRet, nNewRec
    EndIf
 
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
+
    nItem := ::FirstSelectedItem
    If nItem == 0 .AND. ! lAppend
       Return .F.
    EndIf
 
-   If ::InPlace
-      If lAppend
-         ::GoBottom( .T. )
-         ::InsertBlank( ::ItemCount + 1 )
-         ::CurrentRow := ::ItemCount
-         ::lAppendMode := .T.
-      EndIf
+   nOldRecNo := ( cWorkArea )->( RecNo() )
 
-      ASSIGN lOneRow VALUE lOneRow TYPE "L" DEFAULT .T.
-      lRet := ::EditAllCells( , , lAppend, lOneRow, .F., ::RefreshType == REFRESH_DEFAULT .OR. ::RefreshType == REFRESH_FORCE )
+   If ! lAppend
+      ::DbGoTo( ::aRecMap[ nItem ] )
+   EndIf
+
+   lRet := ::Super:EditItem_B( lAppend )
+
+   If lRet .AND. lAppend
+      nNewRec := ( cWorkArea )->( RecNo() )
+      ::DbGoTo( nOldRecNo )
+      ::Value := nNewRec
    Else
-      nOldRecNo := ( cWorkArea )->( RecNo() )
-
-      If ! lAppend
-         ::DbGoTo( ::aRecMap[ nItem ] )
-      EndIf
-
-      lRet := ::Super:EditItem_B( lAppend, .T. )
-
-      If lRet .AND. lAppend
-         nNewRec := ( cWorkArea )->( RecNo() )
-         ::DbGoTo( nOldRecNo )
-         ::Value := nNewRec
-      Else
-         ::DbGoTo( nOldRecNo )
-      EndIf
+      ::DbGoTo( nOldRecNo )
    EndIf
 
 Return lRet
@@ -1125,7 +1126,7 @@ Return lRet
 *-----------------------------------------------------------------------------*
 METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, nOnFocusPos, lRefresh, lChange ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local lRet, BackRec
+Local lRet, BackRec, cWorkArea, lBefore
 
    ASSIGN lAppend  VALUE lAppend  TYPE "L" DEFAULT .F.
    ASSIGN nRow     VALUE nRow     TYPE "N" DEFAULT ::CurrentRow
@@ -1133,47 +1134,82 @@ Local lRet, BackRec
    ASSIGN lChange  VALUE lChange  TYPE "L" DEFAULT ::lChangeBeforeEdit
 
    If nRow < 1 .OR. nRow > ::ItemCount()
-      lRet := .F.
-   ElseIf Select( ::WorkArea ) == 0
+      Return .F.
+   EndIf
+
+   cWorkArea := ::WorkArea
+   If Select( cWorkArea ) == 0
       ::RecCount := 0
-      lRet := .F.
+      Return .F.
+   EndIf
+
+   If lAppend
+      BackRec := ( cWorkArea )->( RecNo() )
+      ::DbGoTo( 0 )
    Else
-      If lAppend
-         BackRec := ( ::WorkArea )->( RecNo() )
-         ::DbGoTo( 0 )
+      If lChange
+         ::Value := ::aRecMap[ nRow ]
+      EndIf
+      BackRec := ( cWorkArea )->( RecNo() )
+      ::DbGoTo( ::aRecMap[ nRow ] )
+   EndIf
+
+   lBefore := ::lCalledFromClass
+   ::lCalledFromClass := .T.
+   lRet := ::Super:EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, nOnFocusPos, .F. )
+   ::lCalledFromClass := lBefore
+
+   If lRet .AND. lAppend
+      aAdd( ::aRecMap, ( cWorkArea )->( RecNo() ) )
+   EndIf
+
+   ::DbGoTo( BackRec )
+
+   If lRet
+      If lAppend .AND. lChange
+         ::Value := aTail( ::aRecMap )
       Else
-         If lChange
-            ::Value := ::aRecMap[ nRow ]
-         EndIf
-         BackRec := ( ::WorkArea )->( RecNo() )
-         ::DbGoTo( ::aRecMap[ nRow ] )
-      EndIf
-
-      ::lCalledFromClass := .T.
-      lRet := ::Super:EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, nOnFocusPos, .F. )
-      ::lCalledFromClass := .F.
-
-      If lRet .AND. lAppend
-         aAdd( ::aRecMap, ( ::WorkArea )->( RecNo() ) )
-      EndIf
-
-      ::DbGoTo( BackRec )
-
-      If lRet
-         If lAppend .AND. lChange
-            ::Value := aTail( ::aRecMap )
-         Else
-            If ! ::lCalledFromClass .AND. ::bPosition == 9          // TODO: Add events
-               // Edition window lost focus
-               ::bPosition := 0                   // This restores click messages processing
-               If ::nDelayedClick[ 1 ] > 0
-                  // A click message was delayed, set the clicked row as new value
+         If ! ::lCalledFromClass .AND. ::bPosition == 9                  // MOUSE EXIT
+            // Edition window lost focus
+            ::bPosition := 0                   // This restores the processing of click messages
+            If ::nDelayedClick[ 1 ] > 0
+               // A click message was delayed
+               If ::nDelayedClick[ 3 ] <= 0
                   ::SetValue( ::aRecMap[ ::nDelayedClick[ 1 ] ], ::nDelayedClick[ 1 ] )
                EndIf
+
+               If HB_IsNil( ::nDelayedClick[ 4 ] )
+                  If HB_IsBlock( ::OnClick )
+                     If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
+                        If ! ::NestedClick
+                           ::NestedClick := ! _OOHG_NestedSameEvent()
+                           ::DoEventMouseCoords( ::OnClick, "CLICK" )
+                           ::NestedClick := .F.
+                        EndIf
+                     EndIf
+                  EndIf
+               Else
+                  If HB_IsBlock( ::OnRClick )
+                     If ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
+                        ::DoEventMouseCoords( ::OnRClick, "RCLICK" )
+                     EndIf
+                  EndIf
+               EndIf
+
+               If ::nDelayedClick[ 3 ] > 0
+                  // change check mark
+                  ::CheckItem( ::nDelayedClick[ 3 ], ! ::CheckItem( ::nDelayedClick[ 3 ] ) )
+               EndIf
+
+               // fire context menu
+               If ! HB_IsNil( ::nDelayedClick[ 4 ] ) .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
+                  ::ContextMenu:Cargo := ::nDelayedClick[ 4 ]
+                  ::ContextMenu:Activate()
+               EndIf
             EndIf
-            If lRefresh
-               ::Refresh()
-            EndIf
+         EndIf
+         If lRefresh
+            ::Refresh()
          EndIf
       EndIf
    EndIf
@@ -1183,55 +1219,69 @@ Return lRet
 *-----------------------------------------------------------------------------*
 METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local lRet, lSomethingEdited, lRowAppended, nRecNo
+Local lRet, lSomethingEdited, lRowAppended, nRecNo, cWorkArea
 
+   ASSIGN lOneRow VALUE lOneRow TYPE "L" DEFAULT .T.
    If ::FullMove .OR. ! lOneRow
       Return ::EditGrid( nRow, nCol, lAppend, lOneRow, lChange, lRefresh )
    EndIf
    If ::FirstVisibleColumn == 0
       Return .F.
    EndIf
-   If ! HB_IsNumeric( nRow )
-      nRow := ::FirstSelectedItem
-   EndIf
    If ! HB_IsNumeric( nCol )
       nCol := ::FirstColInOrder
    EndIf
-   If nRow < 1 .OR. nRow > ::ItemCount .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
+   If nCol < 1 .OR. nCol > Len( ::aHeaders )
       Return .F.
    EndIf
 
-   ASSIGN lAppend  VALUE lAppend  TYPE "L" DEFAULT .F.
-   ASSIGN lChange  VALUE lChange  TYPE "L" DEFAULT ::lChangeBeforeEdit
-   ASSIGN lRefresh VALUE lRefresh TYPE "L" DEFAULT ( ::RefreshType == REFRESH_FORCE )
+   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
+   If lAppend
+      ::GoBottom( .T. )
+      ::InsertBlank( ::ItemCount + 1 )
+      ::CurrentRow := ::ItemCount
+      ::lAppendMode := .T.
+   Else
+      If ! HB_IsNumeric( nRow )
+         nRow := Max( ::CurrentRow, 1 )
+      EndIf
+      If nRow < 1 .OR. nRow > ::ItemCount
+         Return .F.
+      EndIf
 
-   If lChange
-      ::Value := ::aRecMap[ nRow ]
+      ASSIGN lChange VALUE lChange TYPE "L" DEFAULT ::lChangeBeforeEdit
+      If lChange
+         ::Value := { ::aRecMap[ nRow ], nCol }
+      EndIf
    EndIf
+
+   ASSIGN lRefresh VALUE lRefresh TYPE "L" DEFAULT ( ::RefreshType == REFRESH_DEFAULT .OR. ::RefreshType == REFRESH_FORCE )
+
+   cWorkArea := ::WorkArea
 
    lSomethingEdited := .F.
 
-   Do While nCol >= 1 .AND. nCol <= Len( ::aHeaders ) .AND. Select( ::WorkArea ) # 0
-      nRecNo := ( ::WorkArea )->( RecNo() )
+   Do While nCol >= 1 .AND. nCol <= Len( ::aHeaders ) .AND. Select( cWorkArea ) # 0
+      nRecNo := ( cWorkArea )->( RecNo() )
       If lAppend
          ::DbGoTo( 0 )
       Else
-         ::DbGoTo( ::aRecMap[ nRow ] )
+         ::DbGoTo( ::aRecMap[ ::nRowPos ] )
       EndIf
 
-      _OOHG_ThisItemCellValue := ::Cell( nRow, nCol )
+      _OOHG_ThisItemCellValue := ::Cell( ::nRowPos, nCol )
 
-      If ::IsColumnReadOnly( nCol, nRow )
+      If ::IsColumnReadOnly( nCol, ::nRowPos )
         // Read only column
-      ElseIf ! ::IsColumnWhen( nCol, nRow )
+      ElseIf ! ::IsColumnWhen( nCol, ::nRowPos )
         // WHEN returned .F.
-      ElseIf aScan( ::aHiddenCols, nCol, nRow ) > 0
+      ElseIf aScan( ::aHiddenCols, nCol, ::nRowPos ) > 0
         // Hidden column
       Else
          ::DbGoTo( nRecNo )
 
          ::lCalledFromClass := .T.
-         lRet := ::EditCell( nRow, nCol, , , , , lAppend, , .F., .F. )
+         lRet := ::EditCell( ::nRowPos, nCol, , , , , lAppend, , .F., .F. )
          ::lCalledFromClass := .F.
 
          If ! lRet
@@ -1248,19 +1298,50 @@ Local lRet, lSomethingEdited, lRowAppended, nRecNo
             lAppend := .F.
          EndIf
 
-         If ::bPosition == 9                     // MOUSE EXIT
+         If ::bPosition == 9                  // MOUSE EXIT
             // Edition window lost focus
-            ::bPosition := 0                   // This restores click messages processing
+            ::bPosition := 0                   // This restores the processing of click messages
             If ::nDelayedClick[ 1 ] > 0
-               // A click message was delayed, set the clicked row as new value and refresh the control
-               ::SetValue( ::aRecMap[ ::nDelayedClick[ 1 ] ], ::nDelayedClick[ 1 ] )
-               ::Refresh()      // TODO: lrefresh
+               // A click message was delayed
+               If ::nDelayedClick[ 3 ] <= 0
+                  ::SetValue( ::aRecMap[ ::nDelayedClick[ 1 ] ], ::nDelayedClick[ 1 ] )
+               EndIf
+
+               If HB_IsNil( ::nDelayedClick[ 4 ] )
+                  If HB_IsBlock( ::OnClick )
+                     If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
+                        If ! ::NestedClick
+                           ::NestedClick := ! _OOHG_NestedSameEvent()
+                           ::DoEventMouseCoords( ::OnClick, "CLICK" )
+                           ::NestedClick := .F.
+                        EndIf
+                     EndIf
+                  EndIf
+               Else
+                  If HB_IsBlock( ::OnRClick )
+                     If ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
+                        ::DoEventMouseCoords( ::OnRClick, "RCLICK" )
+                     EndIf
+                  EndIf
+               EndIf
+
+               If ::nDelayedClick[ 3 ] > 0
+                  // change check mark
+                  ::CheckItem( ::nDelayedClick[ 3 ], ! ::CheckItem( ::nDelayedClick[ 3 ] ) )
+               EndIf
+
+               // fire context menu
+               If ! HB_IsNil( ::nDelayedClick[ 4 ] ) .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
+                  ::ContextMenu:Cargo := ::nDelayedClick[ 4 ]
+                  ::ContextMenu:Activate()
+               EndIf
             ElseIf lRowAppended
                // A new row was added and partially edited: set as new value and refresh the control
-               ::SetValue( aTail( ::aRecMap ), nRow )
-               ::Refresh()
+               ::SetValue( aTail( ::aRecMap ), ::nRowPos )
             Else
                // The user aborted the edition of an existing row: refresh the control without changing it's value
+            EndIf
+            If lRefresh
                ::Refresh()
             EndIf
             Exit
@@ -1277,7 +1358,7 @@ Return lSomethingEdited
 *-----------------------------------------------------------------------------*
 METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local lRet, lRowEdited, lSomethingEdited, nRecNo, lRowAppended, nNewRec, nNextRec
+Local lRet, lRowEdited, lSomethingEdited, nRecNo, lRowAppended, nNewRec, nNextRec, cWorkArea
 
    If ::FirstVisibleColumn == 0
       Return .F.
@@ -1291,6 +1372,8 @@ Local lRet, lRowEdited, lSomethingEdited, nRecNo, lRowAppended, nNewRec, nNextRe
    If nRow < 1 .OR. nRow > ::ItemCount .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
       Return .F.
    EndIf
+
+   cWorkArea := ::WorkArea
 
    ASSIGN lAppend  VALUE lAppend  TYPE "L" DEFAULT .F.
    ASSIGN lOneRow  VALUE lOneRow  TYPE "L" DEFAULT .F.
@@ -1307,8 +1390,8 @@ Local lRet, lRowEdited, lSomethingEdited, nRecNo, lRowAppended, nNewRec, nNextRe
       lRowEdited := .F.
       lRowAppended := .F.
 
-      Do While nCol >= 1 .AND. nCol <= Len( ::aHeaders ) .AND. Select( ::WorkArea ) # 0
-         nRecNo := ( ::WorkArea )->( RecNo() )
+      Do While nCol >= 1 .AND. nCol <= Len( ::aHeaders ) .AND. Select( cWorkArea ) # 0
+         nRecNo := ( cWorkArea )->( RecNo() )
          If lAppend
             ::DbGoTo( 0 )
          Else
@@ -1318,7 +1401,7 @@ Local lRet, lRowEdited, lSomethingEdited, nRecNo, lRowAppended, nNewRec, nNextRe
                If ::Eof()
                   nNextRec := 0
                Else
-                  nNextRec := ( ::WorkArea )->( RecNo() )
+                  nNextRec := ( cWorkArea )->( RecNo() )
                EndIf
                ::DbGoTo( ::aRecMap[ nRow ] )
             EndIf
@@ -1359,7 +1442,7 @@ Local lRet, lRowEdited, lSomethingEdited, nRecNo, lRowAppended, nNewRec, nNextRe
       EndDo
 
       // See what to do next
-      If Select( ::WorkArea ) == 0
+      If Select( cWorkArea ) == 0
          ::RecCount := 0
          Exit
       ElseIf ! lRet
@@ -1378,17 +1461,48 @@ Local lRet, lRowEdited, lSomethingEdited, nRecNo, lRowAppended, nNewRec, nNextRe
          Exit
       ElseIf ::bPosition == 9
          // Edition window lost focus
-         ::bPosition := 0                   // This restores click messages processing
-         If ::nDelayedClick[ 1 ] > 0                                                                  // TODO: Add events
-            // A click message was delayed, set the clicked row as new value and refresh the control
-            ::SetValue( ::aRecMap[ ::nDelayedClick[ 1 ] ], ::nDelayedClick[ 1 ] )
-            ::Refresh()
+         ::bPosition := 0                   // This restores the processing of click messages
+         If ::nDelayedClick[ 1 ] > 0
+            // A click message was delayed
+            If ::nDelayedClick[ 3 ] <= 0
+               ::SetValue( ::aRecMap[ ::nDelayedClick[ 1 ] ], ::nDelayedClick[ 1 ] )
+            EndIf
+
+            If HB_IsNil( ::nDelayedClick[ 4 ] )
+               If HB_IsBlock( ::OnClick )
+                  If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
+                     If ! ::NestedClick
+                        ::NestedClick := ! _OOHG_NestedSameEvent()
+                        ::DoEventMouseCoords( ::OnClick, "CLICK" )
+                        ::NestedClick := .F.
+                     EndIf
+                  EndIf
+               EndIf
+            Else
+               If HB_IsBlock( ::OnRClick )
+                  If ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
+                     ::DoEventMouseCoords( ::OnRClick, "RCLICK" )
+                  EndIf
+               EndIf
+            EndIf
+
+            If ::nDelayedClick[ 3 ] > 0
+               // change check mark
+               ::CheckItem( ::nDelayedClick[ 3 ], ! ::CheckItem( ::nDelayedClick[ 3 ] ) )
+            EndIf
+
+            // fire context menu
+            If ! HB_IsNil( ::nDelayedClick[ 4 ] ) .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
+               ::ContextMenu:Cargo := ::nDelayedClick[ 4 ]
+               ::ContextMenu:Activate()
+            EndIf
          ElseIf lRowAppended
             // A new row was added and partially edited: set as new value and refresh the control
             ::SetValue( aTail( ::aRecMap ), nRow )
-            ::Refresh()
          Else
             // The user aborted the edition of an existing row: refresh the control without changing it's value
+         EndIf
+         If lRefresh
             ::Refresh()
          EndIf
          Exit
@@ -1422,7 +1536,7 @@ Local lRet, lRowEdited, lSomethingEdited, nRecNo, lRowAppended, nNewRec, nNextRe
       ElseIf nRow < ::ItemCount()
          // Edit next row
          If lRowEdited .AND. lRefresh
-            nRecNo := ( ::WorkArea )->( RecNo() )
+            nRecNo := ( cWorkArea )->( RecNo() )
             nNewRec := ::aRecMap[ nRow + 1 ]
             ::DbGoTo( nNewRec )
             ::Update( nRow + 1 )
@@ -1448,17 +1562,17 @@ Local lRet, lRowEdited, lSomethingEdited, nRecNo, lRowAppended, nNewRec, nNextRe
          // The last visible row was fully edited
          If nNextRec # 0
             // Find next record
-            nRecNo := ( ::WorkArea )->( RecNo() )
+            nRecNo := ( cWorkArea )->( RecNo() )
             ::DbGoTo( nNextRec )
             ::DbSkip()
             ::DbSkip(-1)
-            If ( ::WorkArea )->( RecNo() ) # nNextRec
+            If ( cWorkArea )->( RecNo() ) # nNextRec
                ::DbGoTo( nNextRec )
                ::DbSkip()
                If ::Eof()
                   nNextRec := 0
                Else
-                  nNextRec := ( ::WorkArea )->( RecNo() )
+                  nNextRec := ( cWorkArea )->( RecNo() )
                EndIf
             EndIf
             ::DbGoTo( nRecNo )
@@ -1485,7 +1599,7 @@ Local lRet, lRowEdited, lSomethingEdited, nRecNo, lRowAppended, nNewRec, nNextRe
             EndIf
          Else
             // Edit next record
-            nRecNo := ( ::WorkArea )->( RecNo() )
+            nRecNo := ( cWorkArea )->( RecNo() )
             ::DbGoTo( nNextRec )
             If lRefresh
                ::Update( nRow )
@@ -1923,7 +2037,7 @@ Local nvKey, r, DeltaSelect, lGo, uValue, nNotify := GetNotifyCode( lParam )
          If uValue > 0
             // change check mark
             ::CheckItem( uValue, ! ::CheckItem( uValue ) )
-         ElseIf uValue < 0
+         Else
             // select item
             r := ::FirstSelectedItem
             If r > 0
@@ -1967,7 +2081,7 @@ Local nvKey, r, DeltaSelect, lGo, uValue, nNotify := GetNotifyCode( lParam )
          If uValue > 0
             // change check mark
             ::CheckItem( uValue, ! ::CheckItem( uValue ) )
-         ElseIf uValue < 0
+         Else
             // select item
             r := ::FirstSelectedItem
             If r > 0
@@ -2066,18 +2180,18 @@ Return ::Super:Events_Notify( wParam, lParam )
 *-----------------------------------------------------------------------------*
 METHOD SetScrollPos( nPos, VScroll ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local BackRec
+Local BackRec, cWorkArea := ::WorkArea
 
-   If Select( ::WorkArea ) == 0
+   If Select( cWorkArea ) == 0
       // Not workarea selected
    ElseIf nPos <= VScroll:RangeMin
       ::GoTop()
    ElseIf nPos >= VScroll:RangeMax
       ::GoBottom()
    Else
-      BackRec := ( ::WorkArea )->( RecNo() )
+      BackRec := ( cWorkArea )->( RecNo() )
       ::Super:SetScrollPos( nPos, VScroll )
-      ::Value := ( ::WorkArea )->( RecNo() )
+      ::Value := ( cWorkArea )->( RecNo() )
       ::DbGoTo( BackRec )
       ::BrowseOnChange()
    EndIf
@@ -2669,7 +2783,7 @@ Local nvKey, r, DeltaSelect, lGo, aCellData, uValue, nNotify := GetNotifyCode( l
          If uValue > 0
             // change check mark
             ::CheckItem( uValue, ! ::CheckItem( uValue ) )
-         ElseIf uValue < 0
+         Else
             // select item
             r := ::nRowPos
             If r > 0
@@ -2714,7 +2828,7 @@ Local nvKey, r, DeltaSelect, lGo, aCellData, uValue, nNotify := GetNotifyCode( l
          If uValue > 0
             // change check mark
             ::CheckItem( uValue, ! ::CheckItem( uValue ) )
-         ElseIf uValue < 0
+         Else
             // select item
             r := ::nRowPos
             If r > 0
@@ -2810,7 +2924,7 @@ Return ::Super:Events_Notify( wParam, lParam )
 *-----------------------------------------------------------------------------*
 METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, nOnFocusPos, lRefresh, lChange ) CLASS TOBrowseByCell
 *-----------------------------------------------------------------------------*
-Local lRet, BackRec
+Local lRet, BackRec, cWorkArea
 
    ASSIGN lAppend  VALUE lAppend  TYPE "L" DEFAULT .F.
    ASSIGN nRow     VALUE nRow     TYPE "N" DEFAULT ::nRowPos
@@ -2819,69 +2933,103 @@ Local lRet, BackRec
    ASSIGN lChange  VALUE lChange  TYPE "L" DEFAULT ::lChangeBeforeEdit
 
    If nRow < 1 .OR. nRow > ::ItemCount .OR. nCol < 1 .OR. nCol > Len( ::aHeaders ) .OR. aScan( ::aHiddenCols, nCol ) # 0
-      lRet := .F.
-   ElseIf Select( ::WorkArea ) == 0
+      Return .F.
+   EndIf
+
+   cWorkArea := ::WorkArea
+   If Select( cWorkArea ) == 0
       ::RecCount := 0
-      lRet := .F.
+      Return .F.
+   EndIf
+
+   If lAppend
+      BackRec := ( cWorkArea )->( RecNo() )
+      ::DbGoTo( 0 )
    Else
-      If lAppend
-         BackRec := ( ::WorkArea )->( RecNo() )
-         ::DbGoTo( 0 )
+      If lChange
+         ::Value := { ::aRecMap[ nRow ], nCol }
+      EndIf
+      BackRec := ( cWorkArea )->( RecNo() )
+      ::DbGoTo( ::aRecMap[ nRow ] )
+   EndIf
+
+   ::lCalledFromClass := .T.
+   lRet := ::TXBrowse:EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, nOnFocusPos )
+   ::lCalledFromClass := .F.
+
+   If lRet .AND. lAppend
+      aAdd( ::aRecMap, ( cWorkArea )->( RecNo() ) )
+   EndIf
+
+   ::DbGoTo( BackRec )
+
+   If lRet
+      If lAppend .AND. lChange
+         ::Value := { aTail( ::aRecMap ), nCol }
       Else
-         If lChange
-            ::Value := { ::aRecMap[ nRow ], nCol }
-         EndIf
-         BackRec := ( ::WorkArea )->( RecNo() )
-         ::DbGoTo( ::aRecMap[ nRow ] )
-      EndIf
-
-      ::lCalledFromClass := .T.
-      lRet := ::TXBrowse:EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, nOnFocusPos )
-      ::lCalledFromClass := .F.
-
-      If lRet .AND. lAppend
-         aAdd( ::aRecMap, ( ::WorkArea )->( RecNo() ) )
-      EndIf
-
-      ::DbGoTo( BackRec )
-
-      If lRet
-         If lAppend .AND. lChange
-            ::Value := { aTail( ::aRecMap ), nCol }
-         Else
-            If ! ::lCalledFromClass .AND. ::bPosition == 9                // TODO: add events
-               // Edition window lost focus
-               ::bPosition := 0                   // This restores click messages processing
-               If ::nDelayedClick[ 1 ] > 0
-                  // A click message was delayed, set the clicked row as new value
+         If ! ::lCalledFromClass .AND. ::bPosition == 9                  // MOUSE EXIT
+            // Edition window lost focus
+            ::bPosition := 0                   // This restores the processing of click messages
+            If ::nDelayedClick[ 1 ] > 0
+               // A click message was delayed
+               If ::nDelayedClick[ 3 ] <= 0
                   ::SetValue( { ::aRecMap[ ::nDelayedClick[ 1 ] ], ::nDelayedClick[ 2 ] }, ::nDelayedClick[ 1 ] )
                EndIf
-            EndIf
-            If lRefresh
-              ::Refresh()
-            EndIf
-         EndIf
 
-         // ::bPosition is set by TGridControl()
-         If ::bPosition == 1                            // UP
-            ::Up()
-         ElseIf ::bPosition == 2                        // RIGHT
-            ::Right( .F. )
-         ElseIf ::bPosition == 3                        // LEFT
-            ::Left()
-         ElseIf ::bPosition == 4                        // HOME
-            ::GoTop()
-         ElseIf ::bPosition == 5                        // END
-            ::GoBottom( .F. )
-         ElseIf ::bPosition == 6                        // DOWN
-            ::Down( .F. )
-         ElseIf ::bPosition == 7                        // PRIOR
-            ::PageUp()
-         ElseIf ::bPosition == 8                        // NEXT
-            ::PageDown( .F. )
-         ElseIf ::bPosition == 9                        // MOUSE EXIT
-         Else                                           // OK
+               If HB_IsNil( ::nDelayedClick[ 4 ] )
+                  If HB_IsBlock( ::OnClick )
+                     If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
+                        If ! ::NestedClick
+                           ::NestedClick := ! _OOHG_NestedSameEvent()
+                           ::DoEventMouseCoords( ::OnClick, "CLICK" )
+                           ::NestedClick := .F.
+                        EndIf
+                     EndIf
+                  EndIf
+               Else
+                  If HB_IsBlock( ::OnRClick )
+                     If ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
+                        ::DoEventMouseCoords( ::OnRClick, "RCLICK" )
+                     EndIf
+                  EndIf
+               EndIf
+
+               If ::nDelayedClick[ 3 ] > 0
+                  // change check mark
+                  ::CheckItem( ::nDelayedClick[ 3 ], ! ::CheckItem( ::nDelayedClick[ 3 ] ) )
+               EndIf
+
+               // fire context menu
+               If ! HB_IsNil( ::nDelayedClick[ 4 ] ) .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
+                  ::ContextMenu:Cargo := ::nDelayedClick[ 4 ]
+                  ::ContextMenu:Activate()
+               EndIf
+            EndIf
          EndIf
+         If lRefresh
+            ::Refresh()
+         EndIf
+      EndIf
+
+      // ::bPosition is set by TGridControl()
+      If ::bPosition == 1                            // UP
+         ::Up()
+      ElseIf ::bPosition == 2                        // RIGHT
+         ::Right( .F. )
+      ElseIf ::bPosition == 3                        // LEFT
+         ::Left()
+      ElseIf ::bPosition == 4                        // HOME
+         ::GoTop()
+      ElseIf ::bPosition == 5                        // END
+         ::GoBottom( .F. )
+      ElseIf ::bPosition == 6                        // DOWN
+         ::Down( .F. )
+      ElseIf ::bPosition == 7                        // PRIOR
+         ::PageUp()
+      ElseIf ::bPosition == 8                        // NEXT
+         ::PageDown( .F. )
+      ElseIf ::bPosition == 9                        // MOUSE EXIT
+      Else                                           // OK
       EndIf
    EndIf
 
@@ -2899,8 +3047,6 @@ Return ::Super:EditCell2( @nRow, @nCol, EditControl, uOldValue, @uValue, cMemVar
 *-----------------------------------------------------------------------------*
 METHOD EditItem_B( lAppend, lOneRow ) CLASS TOBrowseByCell
 *-----------------------------------------------------------------------------*
-Local cWorkArea
-
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
    ASSIGN lOneRow VALUE lOneRow TYPE "L" DEFAULT .T.
 
@@ -2908,8 +3054,7 @@ Local cWorkArea
       Return .F.
    EndIf
 
-   cWorkArea := ::WorkArea
-   If Select( cWorkArea ) == 0
+   If Select( ::WorkArea ) == 0
       ::RecCount := 0
       Return .F.
    EndIf
@@ -2918,68 +3063,75 @@ Local cWorkArea
       Return .F.
    EndIf
 
-   If lAppend
-      ::GoBottom( .T. )
-      ::InsertBlank( ::ItemCount + 1 )
-      ::CurrentRow := ::ItemCount
-      ::CurrentCol := ::FirstColInOrder
-      ::lAppendMode := .T.
-   EndIf
-
 Return ::EditAllCells( , , lAppend, lOneRow, .T., ::RefreshType == REFRESH_DEFAULT .OR. ::RefreshType == REFRESH_FORCE )
 
 *-----------------------------------------------------------------------------*
 METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOBrowseByCell
 *-----------------------------------------------------------------------------*
-Local lRet, lSomethingEdited, lRowAppended, nRecNo
+Local lRet, lSomethingEdited, lRowAppended, nRecNo, cWorkArea, nNextCol
 
+   ASSIGN lOneRow VALUE lOneRow TYPE "L" DEFAULT .T.
    If ::FullMove .OR. ! lOneRow
       Return ::EditGrid( nRow, nCol, lAppend, lOneRow, lChange, lRefresh )
    EndIf
    If ::FirstVisibleColumn == 0
       Return .F.
    EndIf
-   If ! HB_IsNumeric( nRow )
-      nRow := ::nRowPos
-   EndIf
    If ! HB_IsNumeric( nCol )
-      nCol := ::nColPos
+      nCol := ::FirstColInOrder
    EndIf
-   If nRow < 1 .OR. nRow > ::ItemCount .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
+   If nCol < 1 .OR. nCol > Len( ::aHeaders )
       Return .F.
    EndIf
 
-   ASSIGN lAppend  VALUE lAppend  TYPE "L" DEFAULT .F.
-   ASSIGN lChange  VALUE lChange  TYPE "L" DEFAULT ::lChangeBeforeEdit
-   ASSIGN lRefresh VALUE lRefresh TYPE "L" DEFAULT ( ::RefreshType == REFRESH_FORCE )
+   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
+   If lAppend
+      ::GoBottom( .T. )
+      ::InsertBlank( ::ItemCount + 1 )
+      ::CurrentRow := ::ItemCount
+      ::CurrentCol := nCol
+      ::lAppendMode := .T.
+   Else
+      If ! HB_IsNumeric( nRow )
+         nRow := Max( ::nRowPos, 1 )
+      EndIf
+      If nRow < 1 .OR. nRow > ::ItemCount
+         Return .F.
+      EndIf
 
-   If lChange
-      ::Value := { ::aRecMap[ nRow ], nCol }
+      ASSIGN lChange VALUE lChange TYPE "L" DEFAULT ::lChangeBeforeEdit
+      If lChange
+         ::Value := { ::aRecMap[ nRow ], nCol }
+      EndIf
    EndIf
+
+   ASSIGN lRefresh VALUE lRefresh TYPE "L" DEFAULT ( ::RefreshType == REFRESH_DEFAULT .OR. ::RefreshType == REFRESH_FORCE )
+
+   cWorkArea := ::WorkArea
 
    lSomethingEdited := .F.
 
-   Do While nCol >= 1 .AND. nCol <= Len( ::aHeaders ) .AND. Select( ::WorkArea ) # 0
-      nRecNo := ( ::WorkArea )->( RecNo() )
+   Do While ::nRowPos >= 1 .AND. ::nRowPos <= ::ItemCount .AND. ::nColPos >= 1 .AND. ::nColPos <= Len( ::aHeaders ) .AND. Select( cWorkArea ) # 0
+      nRecNo := ( cWorkArea )->( RecNo() )
       If lAppend
          ::DbGoTo( 0 )
       Else
-         ::DbGoTo( ::aRecMap[ nRow ] )
+         ::DbGoTo( ::aRecMap[ ::nRowPos ] )
       EndIf
 
-      _OOHG_ThisItemCellValue := ::Cell( nRow, nCol )
+      _OOHG_ThisItemCellValue := ::Cell( ::nRowPos, ::nColPos )
 
-      If ::IsColumnReadOnly( nCol, nRow )
+      If ::IsColumnReadOnly( ::nColPos, ::nRowPos )
         // Read only column
-      ElseIf ! ::IsColumnWhen( nCol, nRow )
+      ElseIf ! ::IsColumnWhen( ::nColPos, ::nRowPos )
         // WHEN returned .F.
-      ElseIf aScan( ::aHiddenCols, nCol, nRow ) > 0
+      ElseIf aScan( ::aHiddenCols, ::nColPos, ::nRowPos ) > 0
         // Hidden column
       Else
          ::DbGoTo( nRecNo )
 
          ::lCalledFromClass := .T.
-         lRet := ::EditCell( nRow, nCol, , , , , lAppend, , .F., .F. )
+         lRet := ::EditCell( ::nRowPos, ::nColPos, , , , , lAppend, , .F., .F. )
          ::lCalledFromClass := .F.
 
          If ! lRet
@@ -3000,22 +3152,57 @@ Local lRet, lSomethingEdited, lRowAppended, nRecNo
             // Edition window lost focus
             ::bPosition := 0                   // This restores click messages processing
             If ::nDelayedClick[ 1 ] > 0
-               // A click message was delayed, set the clicked row as new value and refresh the control
-               ::SetValue( { ::aRecMap[ ::nDelayedClick[ 1 ] ], ::nDelayedClick[ 2 ] }, ::nDelayedClick[ 1 ] )
-               ::Refresh()      // TODO: lrefresh
+               // A click message was delayed
+               If ::nDelayedClick[ 3 ] <= 0
+                  ::SetValue( { ::aRecMap[ ::nDelayedClick[ 1 ] ], ::nDelayedClick[ 2 ] }, ::nDelayedClick[ 1 ] )
+               EndIf
+
+               If HB_IsNil( ::nDelayedClick[ 4 ] )
+                  If HB_IsBlock( ::OnClick )
+                     If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
+                        If ! ::NestedClick
+                           ::NestedClick := ! _OOHG_NestedSameEvent()
+                           ::DoEventMouseCoords( ::OnClick, "CLICK" )
+                           ::NestedClick := .F.
+                        EndIf
+                     EndIf
+                  EndIf
+               Else
+                  If HB_IsBlock( ::OnRClick )
+                     If ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
+                        ::DoEventMouseCoords( ::OnRClick, "RCLICK" )
+                     EndIf
+                  EndIf
+               EndIf
+
+               If ::nDelayedClick[ 3 ] > 0
+                  // change check mark
+                  ::CheckItem( ::nDelayedClick[ 3 ], ! ::CheckItem( ::nDelayedClick[ 3 ] ) )
+               EndIf
+
+               // fire context menu
+               If ! HB_IsNil( ::nDelayedClick[ 4 ] ) .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
+                  ::ContextMenu:Cargo := ::nDelayedClick[ 4 ]
+                  ::ContextMenu:Activate()
+               EndIf
             ElseIf lRowAppended
                // A new row was added and partially edited: set as new value and refresh the control
-               ::SetValue( { aTail( ::aRecMap ), nCol }, nRow )
-               ::Refresh()
+               ::SetValue( { aTail( ::aRecMap ), ::nColPos }, ::nRowPos )
             Else
                // The user aborted the edition of an existing row: refresh the control without changing it's value
+            EndIf
+            If lRefresh
                ::Refresh()
             EndIf
             Exit
          EndIf
       EndIf
 
-      nCol := ::NextColInOrder( nCol )
+      nNextCol := ::NextColInOrder( ::nColPos )
+      If nNextCol == 0
+         Exit
+      EndIf
+      ::CurrentCol := nNextCol
    EndDo
 
    ::ScrollToLeft()
@@ -3026,7 +3213,7 @@ Return lSomethingEdited
 *-----------------------------------------------------------------------------*
 METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOBrowseByCell
 *-----------------------------------------------------------------------------*
-Local lSomethingEdited, nRecNo, lRet, lRowAppended
+Local lSomethingEdited, nRecNo, lRet, lRowAppended, cWorkArea
 
    If ::FirstVisibleColumn == 0
       Return .F.
@@ -3043,14 +3230,16 @@ Local lSomethingEdited, nRecNo, lRet, lRowAppended
       Return .F.
    EndIf
 
+   cWorkArea := ::WorkArea
+
    If lChange
       ::Value := { ::aRecMap[ nRow ], nCol }
    EndIf
 
    lSomethingEdited := .F.
 
-   Do While nCol >= 1 .AND. nCol <= Len( ::aHeaders ) .AND. nRow >= 1 .AND. nRow <= ::ItemCount .AND. Select( ::WorkArea ) # 0
-      nRecNo := ( ::WorkArea )->( RecNo() )
+   Do While nCol >= 1 .AND. nCol <= Len( ::aHeaders ) .AND. nRow >= 1 .AND. nRow <= ::ItemCount .AND. Select( cWorkArea ) # 0
+      nRecNo := ( cWorkArea )->( RecNo() )
       If lAppend
          ::DbGoTo( 0 )
       Else
@@ -3156,18 +3345,49 @@ Local lSomethingEdited, nRecNo, lRet, lRowAppended
            EndIf
          EndIf
       ElseIf ::bPosition == 9                        // MOUSE EXIT
-         // Edition window lost focus                                           // TODO: Add events
+         // Edition window lost focus
          ::bPosition := 0                   // This restores click messages processing
          If ::nDelayedClick[ 1 ] > 0
-            // A click message was delayed, set the clicked row as new value
-            ::SetValue( { ::aRecMap[ ::nDelayedClick[ 1 ] ], ::nDelayedClick[ 2 ] }, ::nDelayedClick[ 1 ] )
-            ::Refresh()
+            // A click message was delayed
+            If ::nDelayedClick[ 3 ] <= 0
+               ::SetValue( { ::aRecMap[ ::nDelayedClick[ 1 ] ], ::nDelayedClick[ 2 ] }, ::nDelayedClick[ 1 ] )
+            EndIf
+
+            If HB_IsNil( ::nDelayedClick[ 4 ] )
+               If HB_IsBlock( ::OnClick )
+                  If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
+                     If ! ::NestedClick
+                        ::NestedClick := ! _OOHG_NestedSameEvent()
+                        ::DoEventMouseCoords( ::OnClick, "CLICK" )
+                        ::NestedClick := .F.
+                     EndIf
+                  EndIf
+               EndIf
+            Else
+               If HB_IsBlock( ::OnRClick )
+                  If ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
+                     ::DoEventMouseCoords( ::OnRClick, "RCLICK" )
+                  EndIf
+               EndIf
+            EndIf
+
+            If ::nDelayedClick[ 3 ] > 0
+               // change check mark
+               ::CheckItem( ::nDelayedClick[ 3 ], ! ::CheckItem( ::nDelayedClick[ 3 ] ) )
+            EndIf
+
+            // fire context menu
+            If ! HB_IsNil( ::nDelayedClick[ 4 ] ) .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
+               ::ContextMenu:Cargo := ::nDelayedClick[ 4 ]
+               ::ContextMenu:Activate()
+            EndIf
          ElseIf lRowAppended
             // A new row was added and partially edited: set as new value and refresh the control
             ::SetValue( { aTail( ::aRecMap ), nCol }, nRow )
-            ::Refresh()
          Else
             // The user aborted the edition of an existing row: refresh the control without changing it's value
+         EndIf
+         If lRefresh
             ::Refresh()
          EndIf
          Exit
@@ -3329,7 +3549,7 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD Delete() CLASS TOBrowseByCell
 *-----------------------------------------------------------------------------*
-Local Value, nRow, nRecNo, lSync
+Local Value, nRow, nRecNo, lSync, cWorkArea
 
    Value := ::Value
    nRow  := Value[ 1 ]
@@ -3338,14 +3558,15 @@ Local Value, nRow, nRecNo, lSync
       Return Self
    EndIf
 
-   nRecNo := ( ::WorkArea )->( RecNo() )
+   cWorkArea := ::WorkArea
+   nRecNo := ( cWorkArea )->( RecNo() )
 
    ::DbGoTo( nRow )
 
-   If ::Lock .AND. ! ( ::WorkArea )->( Rlock() )
+   If ::Lock .AND. ! ( cWorkArea )->( Rlock() )
       MsgExclamation( _OOHG_Messages( 3, 9 ), _OOHG_Messages( 4, 2 ) )
    Else
-      ( ::WorkArea )->( DbDelete() )
+      ( cWorkArea )->( DbDelete() )
 
       // Do before unlocking record or moving record pointer
       // so block can operate on deleted record (e.g. to copy to a log).
@@ -3354,8 +3575,8 @@ Local Value, nRow, nRecNo, lSync
       EndIf
 
       If ::Lock
-         ( ::WorkArea )->( DbCommit() )
-         ( ::WorkArea )->( DbUnlock() )
+         ( cWorkArea )->( DbCommit() )
+         ( cWorkArea )->( DbUnlock() )
       EndIf
       ::DbSkip()
       If ::Eof()
@@ -3363,7 +3584,7 @@ Local Value, nRow, nRecNo, lSync
       EndIf
 
       If Set( _SET_DELETED )
-         ::SetValue( { ( ::WorkArea )->( RecNo() ), 1 }, ::nRowPos )
+         ::SetValue( { ( cWorkArea )->( RecNo() ), 1 }, ::nRowPos )
       EndIf
    EndIf
 
@@ -3377,7 +3598,7 @@ Local Value, nRow, nRecNo, lSync
       Value := ::Value
       nRow  := Value[ 1 ]
 
-      If ( ::WorkArea )->( RecNo() ) != nRow
+      If ( cWorkArea )->( RecNo() ) != nRow
          ::DbGoTo( nRow )
       EndIf
    Else
@@ -3389,14 +3610,15 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD Home() CLASS TOBrowseByCell                   // METHOD GoTop
 *-----------------------------------------------------------------------------*
-Local _RecNo, aBefore, aAfter, lDone := .F.
+Local _RecNo, aBefore, aAfter, lDone := .F., cWorkArea
 
-   If Select( ::WorkArea ) == 0
+   cWorkArea := ::WorkArea
+   If Select( cWorkArea ) == 0
       ::RecCount := 0
       Return lDone
    EndIf
    aBefore := ::Value
-   _RecNo := ( ::WorkArea )->( RecNo() )
+   _RecNo := ( cWorkArea )->( RecNo() )
    ::TopBottom( GO_TOP )
    ::ScrollUpdate()
    ::Update()
@@ -3412,14 +3634,15 @@ Return lDone
 *-----------------------------------------------------------------------------*
 METHOD End( lAppend ) CLASS TOBrowseByCell     // METHOD GoBottom
 *-----------------------------------------------------------------------------*
-Local lDone := .F., aBefore, _Recno
+Local lDone := .F., aBefore, _Recno, cWorkArea
 
-   If Select( ::WorkArea ) == 0
+   cWorkArea := ::WorkArea
+   If Select( cWorkArea ) == 0
       ::RecCount := 0
       Return lDone
    EndIf
    aBefore := ::Value
-   _RecNo := ( ::WorkArea )->( RecNo() )
+   _RecNo := ( cWorkArea )->( RecNo() )
    ::TopBottom( GO_BOTTOM )
    ::ScrollUpdate()
    // If it's for APPEND, leaves a blank line ;)
@@ -3438,15 +3661,16 @@ Return lDone
 *-----------------------------------------------------------------------------*
 METHOD PageUp() CLASS TOBrowseByCell
 *-----------------------------------------------------------------------------*
-Local _RecNo, aBefore, lDone := .F.
+Local _RecNo, aBefore, lDone := .F., cWorkArea
 
+   cWorkArea := ::WorkArea
    If ::nRowPos == 1
-      If Select( ::WorkArea ) == 0
+      If Select( cWorkArea ) == 0
          ::RecCount := 0
          Return lDone
       EndIf
       aBefore := ::Value
-      _RecNo := ( ::WorkArea )->( RecNo() )
+      _RecNo := ( cWorkArea )->( RecNo() )
       If Len( ::aRecMap ) == 0
          ::TopBottom( GO_TOP )
       Else
@@ -3470,17 +3694,18 @@ Return lDone
 *-----------------------------------------------------------------------------*
 METHOD PageDown( lAppend ) CLASS TOBrowseByCell
 *-----------------------------------------------------------------------------*
-Local _RecNo, s, lDone := .F.
+Local _RecNo, s, lDone := .F., cWorkArea
 
    s := ::nRowPos
 
    If  s >= Len( ::aRecMap )
-      If Select( ::WorkArea ) == 0
+      cWorkArea := ::WorkArea
+      If Select( cWorkArea ) == 0
          ::RecCount := 0
          Return lDone
       EndIf
 
-      _RecNo := ( ::WorkArea )->( RecNo() )
+      _RecNo := ( cWorkArea )->( RecNo() )
 
       If Len( ::aRecMap ) == 0
          ::TopBottom( GO_BOTTOM )
@@ -3521,17 +3746,18 @@ Return lDone
 *-----------------------------------------------------------------------------*
 METHOD Up( lLast ) CLASS TOBrowseByCell
 *-----------------------------------------------------------------------------*
-Local s, _RecNo, nLen, lDone := .F.
+Local s, _RecNo, nLen, lDone := .F., cWorkArea
 
    s := ::nRowPos
 
    If s <= 1
-      If Select( ::WorkArea ) == 0
+      cWorkArea := ::WorkArea
+      If Select( cWorkArea ) == 0
          ::RecCount := 0
          Return lDone
       EndIf
 
-      _RecNo := ( ::WorkArea )->( RecNo() )
+      _RecNo := ( cWorkArea )->( RecNo() )
 
       If Len( ::aRecMap ) == 0
          ::TopBottom( GO_TOP )
@@ -3548,7 +3774,7 @@ Local s, _RecNo, nLen, lDone := .F.
          // Add one record at the top
          aAdd( ::aRecMap, Nil )
          aIns( ::aRecMap, 1 )
-         ::aRecMap[ 1 ] := ( ::WorkArea )->( RecNo() )
+         ::aRecMap[ 1 ] := ( cWorkArea )->( RecNo() )
          If ::Visible
             ::SetRedraw( .F. )
          EndIf
@@ -3586,17 +3812,18 @@ Return lDone
 *-----------------------------------------------------------------------------*
 METHOD Down( lAppend, lFirst ) CLASS TOBrowseByCell
 *-----------------------------------------------------------------------------*
-Local s, _RecNo, nLen, lDone := .F.
+Local s, _RecNo, nLen, lDone := .F., cWorkArea
 
    s := ::nRowPos
 
    If s >= Len( ::aRecMap )
-      If Select( ::WorkArea ) == 0
+      cWorkArea := ::WorkArea
+      If Select( cWorkArea ) == 0
          ::RecCount := 0
          Return lDone
       EndIf
 
-      _RecNo := ( ::WorkArea )->( RecNo() )
+      _RecNo := ( cWorkArea )->( RecNo() )
 
       If Len( ::aRecMap ) == 0
          ::TopBottom( GO_TOP )
@@ -3615,7 +3842,7 @@ Local s, _RecNo, nLen, lDone := .F.
             Return lDone
          EndIf
          // Add one record at the bottom
-         aAdd( ::aRecMap, ( ::WorkArea )->( RecNo() ) )
+         aAdd( ::aRecMap, ( cWorkArea )->( RecNo() ) )
          nLen := Len( ::aRecMap )
          If ::Visible
             ::SetRedraw( .F. )
@@ -3655,18 +3882,19 @@ Return lDone
 *-----------------------------------------------------------------------------*
 METHOD SetScrollPos( nPos, VScroll ) CLASS TOBrowseByCell
 *-----------------------------------------------------------------------------*
-Local BackRec
+Local BackRec, cWorkArea
 
-   If Select( ::WorkArea ) == 0
+   cWorkArea := ::WorkArea
+   If Select( cWorkArea ) == 0
       // Not workarea selected
    ElseIf nPos <= VScroll:RangeMin
       ::GoTop()
    ElseIf nPos >= VScroll:RangeMax
       ::GoBottom()
    Else
-      BackRec := ( ::WorkArea )->( RecNo() )
+      BackRec := ( cWorkArea )->( RecNo() )
       ::Super:SetScrollPos( nPos, VScroll )
-      ::Value := { ( ::WorkArea )->( RecNo() ), ::nColPos }
+      ::Value := { ( cWorkArea )->( RecNo() ), ::nColPos }
       ::DbGoTo( BackRec )
       ::BrowseOnChange()
    EndIf

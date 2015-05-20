@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.137 2015-05-17 15:22:51 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.138 2015-05-20 02:05:45 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -87,6 +87,7 @@ CLASS TXBrowse FROM TGrid
    DATA nHelpId                   INIT 0
    DATA lScrollBarUsesClientArea  INIT .T.
    DATA OnRefreshRow              INIT Nil
+   DATA lRefreshAfterValue        INIT .F.
 
    METHOD AddColumn
    METHOD AddItem                 BLOCK { || Nil }
@@ -814,7 +815,9 @@ METHOD Value( uValue ) CLASS TXBrowse
 
    If ::FirstVisibleColumn # 0 .AND. HB_IsNumeric( uValue ) .AND. uValue >= 1 .AND. uValue <= ::ItemCount
       ::Super:Value( uValue )
-      ::Refresh()
+      If ::lRefreshAfterValue
+         ::Refresh()
+      EndIf
    EndIf
 
 Return ::CurrentRow
@@ -1446,25 +1449,27 @@ METHOD Down( lAppend ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local nValue, lRet := .F.
 
-   If ! ::lLocked .AND. ::DbSkip( 1 ) == 1
-      nValue := ::CurrentRow
-      If nValue >= ::CountPerPage
-         ::DeleteItem( 1 )
+   If ! ::lLocked
+      If ::DbSkip( 1 ) == 1
+         nValue := ::CurrentRow
+         If nValue >= ::CountPerPage
+            ::DeleteItem( 1 )
+         Else
+            nValue ++
+         EndIf
+         If ::lUpdCols
+            ::Refresh( nValue )
+         Else
+            ::RefreshRow( nValue )
+            ::CurrentRow := nValue
+         EndIf
+         ::DoChange()
+         lRet := .T.
       Else
-         nValue ++
-      EndIf
-      If ::lUpdCols
-         ::Refresh( nValue )
-      Else
-         ::RefreshRow( nValue )
-         ::CurrentRow := nValue
-      EndIf
-      ::DoChange()
-      lRet := .T.
-   Else
-      ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT ::AllowAppend
-      If lAppend
-         lRet := ::AppendItem()
+         ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT ::AllowAppend
+         If lAppend
+            lRet := ::AppendItem()
+         EndIf
       EndIf
    EndIf
 
@@ -1659,12 +1664,13 @@ Local Value
 Return .T.
 
 *-----------------------------------------------------------------------------*
-METHOD EditItem( nItem, lAppend, lOneRow, lChange ) CLASS TXBrowse            
+METHOD EditItem( nItem, lAppend, lOneRow, lChange ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
-Local lRet lSomethingEdited := .F.
+Local lSomethingEdited := .F.
 
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
-   // to work properly, nRow and the data source record must be synchronized
+   ASSIGN lOneRow VALUE lOneRow TYPE "L" DEFAULT .T.
+   // to work properly, nItem and the data source record must be synchronized
    Empty( lChange )
 
    If ! ::lLocked
@@ -1683,30 +1689,18 @@ Local lRet lSomethingEdited := .F.
          ::VScroll:Enabled := .T.
       EndIf
 
-/*
-      If ::FullMove .OR. ::InPlace
-         If lAppend
-            ::GoBottom( .T. )
-            ::InsertBlank( ::ItemCount + 1 )
-            ::CurrentRow := ::ItemCount
-            ::oWorkArea:GoTo( 0 )
-         EndIf
-         If ::FullMove
-            Return ::EditGrid( , , lAppend, lOneRow )
-         Else
-            Return ::EditAllCells( , , lAppend, lOneRow )
-         EndIf
-      EndIf
-*/
       Do While .T.
-         If ! ::EditItem_B( lAppend, lOneRow )
+         If ! ::EditItem_B( lAppend )
             Exit
          EndIf
          if lAppend
-            :DoChange()
+            ::DoChange()
          EndIf
          lSomethingEdited := .T.
          If lOneRow
+            Exit
+         EndIf
+         If ! ::Down( .F. )
             Exit
          EndIf
       EndDo
@@ -1951,7 +1945,7 @@ Local lRet, bReplaceField, oWorkArea
          EndIf
       EndIf
    ElseIf lAppend
-      ::lAppendMode := .F.                                  
+      ::lAppendMode := .F.
       ::DoEvent( ::OnAbortEdit, "ABORTEDIT", { 0, 0 } )
    Else
       ::DoEvent( ::OnAbortEdit, "ABORTEDIT", { nRow, nCol } )
@@ -1964,7 +1958,7 @@ Local lRet, bReplaceField, oWorkArea
 Return lRet
 
 *-----------------------------------------------------------------------------*
-METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowse                  
+METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local lRet, lSomethingEdited
 
@@ -1977,7 +1971,15 @@ Local lRet, lSomethingEdited
    If ::FirstVisibleColumn == 0
       Return .F.
    EndIf
+   If ! HB_IsNumeric( nCol )
+      nCol := ::FirstColInOrder
+   EndIf
+   If nCol < 1 .OR. nCol > Len( ::aHeaders )
+      Return .F.
+   EndIf
+
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
+
    If lAppend
       If ::lAppendMode
          Return .F.
@@ -1987,22 +1989,16 @@ Local lRet, lSomethingEdited
       ::InsertBlank( ::ItemCount + 1 )
       ::CurrentRow := ::ItemCount
       ::oWorkArea:GoTo( 0 )
-      nRow := ::nRowPos
-      nCol := ::FirstColInOrder
    Else
       If ! HB_IsNumeric( nRow )
          nRow := Max( ::CurrentRow, 1 )
       EndIf
-      If ! HB_IsNumeric( nCol )
-         nCol := ::FirstColInOrder
-      EndIf
-      If nRow < 1 .OR. nRow > ::ItemCount .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
+      If nRow < 1 .OR. nRow > ::ItemCount
          Return .F.
       EndIf
-
       // to work properly, nRow and the data source record must be synchronized
       Empty( lChange)
-      ::SetControlValue( nRow, nCol )
+      ::SetControlValue( nRow )
    EndIf
 
    ASSIGN lOneRow VALUE lOneRow TYPE "L" DEFAULT .T.
@@ -2010,41 +2006,32 @@ Local lRet, lSomethingEdited
    lSomethingEdited := .F.
 
    Do While nCol >= 1 .AND. nCol <= Len( ::aHeaders )
-      _OOHG_ThisItemCellValue := ::Cell( nRow, nCol )
+      _OOHG_ThisItemCellValue := ::Cell( ::nRowPos, nCol )
 
-      If ::IsColumnReadOnly( nCol, nRow )
+      If ::IsColumnReadOnly( nCol, ::nRowPos )
         // Read only column
-      ElseIf ! ::IsColumnWhen( nCol, nRow )
+      ElseIf ! ::IsColumnWhen( nCol, ::nRowPos )
         // Not a valid WHEN
       ElseIf aScan( ::aHiddenCols, nCol ) > 0
         // Hidden column
       Else
          ::lCalledFromClass := .T.
-         lRet := ::EditCell( nRow, nCol, , , , , , , .F. )
+         lRet := ::EditCell( ::nRowPos, nCol, , , , , , , ::lAppendMode )
          ::lCalledFromClass := .F.
 
-         If ! lRet
-            If lAppend
-               ::lAppendMode := .F.
+         If ::lAppendMode
+            ::lAppendMode := .F.
+            If lRet
+               lSomethingEdited := .T.
+            Else
                ::GoBottom()
-            ElseIf lSomethingEdited
-               ::RefreshRow( ::nRowPos )
+               Exit
             EndIf
+         ElseIf lRet
+            lSomethingEdited := .T.
+         Else
             Exit
          EndIf
-
-         lSomethingEdited := .T.
-         If lAppend
-            ::lAppendMode := .F.
-            lAppend := .F.
-         EndIf
-
-         /*
-            ::OnEditCell may change ::nRowPos using ::Up(), ::PageUp(),
-            ::Down(), ::PageDown(), ::GoTop() and/or ::GoBottom().
-            Changes can't be ignored because, to work properly, nRow and
-            the data source record must be synchronized.
-         */
 
          If ::bPosition == 9                     // MOUSE EXIT
             // Edition window lost focus
@@ -2090,19 +2077,25 @@ Local lRet, lSomethingEdited
 
       nCol := ::NextColInOrder( nCol )
       If nCol == 0
-         If lOneRow .OR. ::nRowPos # ::ItemCount .OR. ( ! ::AllowAppend .AND. ! lAppend )
+         If lOneRow
             Exit
          EndIf
-
-         ::lAppendMode := .T.
-         ::GoBottom( .T. )
-         ::InsertBlank( ::ItemCount + 1 )
-         ::CurrentRow := ::ItemCount
-         ::oWorkArea:GoTo( 0 )
          nCol := ::FirstColInOrder
+         If nCol == 0
+            Exit
+         EndIf
+         If ! ::Down( .F. )
+            If ! lAppend .AND. ! ::AllowAppend
+               Exit
+            EndIf
+            ::lAppendMode := .T.
+            ::GoBottom( .T. )
+            ::InsertBlank( ::ItemCount + 1 )
+            ::CurrentRow := ::ItemCount
+            ::oWorkArea:GoTo( 0 )
+         EndIf
+         ::ScrollToLeft()
       EndIf
-
-      nRow := ::nRowPos
    Enddo
 
    ::ScrollToLeft()
@@ -2110,7 +2103,7 @@ Local lRet, lSomethingEdited
 Return lSomethingEdited
 
 *-----------------------------------------------------------------------------*
-METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowse            
+METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local lRet, lSomethingEdited
 
@@ -2120,50 +2113,64 @@ Local lRet, lSomethingEdited
    If ::FirstVisibleColumn == 0
       Return .F.
    EndIf
-   If ! HB_IsNumeric( nRow )
-      nRow := Max( ::CurrentRow, 1 )
-   EndIf
    If ! HB_IsNumeric( nCol )
       nCol := ::FirstColInOrder
    EndIf
-   If nRow < 1 .OR. nRow > ::ItemCount .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
+   If nCol < 1 .OR. nCol > Len( ::aHeaders )
       Return .F.
    EndIf
 
-   // to work properly, nRow and the data source record must be synchronized
-   Empty( lChange)
-   ::SetControlValue( nRow )
-
-   lSomethingEdited := .F.
-   ASSIGN lOneRow VALUE lOneRow TYPE "L" DEFAULT .F.
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
 
-   Do While nCol >= 1 .AND. nCol <= Len( ::aHeaders )
-      _OOHG_ThisItemCellValue := ::Cell( nRow, nCol )
+   If lAppend
+      If ::lAppendMode
+         Return .F.
+      EndIf
+      ::lAppendMode := .T.
+      ::GoBottom( .T. )
+      ::InsertBlank( ::ItemCount + 1 )
+      ::CurrentRow := ::ItemCount
+      ::oWorkArea:GoTo( 0 )
+   Else
+      If ! HB_IsNumeric( nRow )
+         nRow := Max( ::CurrentRow, 1 )
+      EndIf
+      If nRow < 1 .OR. nRow > ::ItemCount
+         Return .F.
+      EndIf
+      // to work properly, nRow and the data source record must be synchronized
+      Empty( lChange)
+      ::SetControlValue( nRow )
+   EndIf
 
-      If ::IsColumnReadOnly( nCol, nRow )
+   lSomethingEdited := .F.
+
+   Do While nCol >= 1 .AND. nCol <= Len( ::aHeaders )
+      _OOHG_ThisItemCellValue := ::Cell( ::nRowPos, nCol )
+
+      If ::IsColumnReadOnly( nCol, ::nRowPos )
         // Read only column, skip
-      ElseIf ! ::IsColumnWhen( nCol, nRow )
+      ElseIf ! ::IsColumnWhen( nCol, ::nRowPos )
         // Not a valid WHEN, skip
       ElseIf aScan( ::aHiddenCols, nCol ) > 0
         // Hidden column, skip
       Else
          ::lCalledFromClass := .T.
-         lRet := ::EditCell( nRow, nCol, , , , , , , lAppend )
+         lRet := ::EditCell( ::nRowPos, nCol, , , , , , , ::lAppendMode )
          ::lCalledFromClass := .F.
 
-         If ! lRet
-            If lAppend
-               ::lAppendMode := .F.
-               ::GoBottom()
-            EndIf
-            Exit
-         EndIf
-
-         lSomethingEdited := .T.
-         If lAppend
+         If ::lAppendMode
             ::lAppendMode := .F.
-            lAppend := .F.
+            If lRet
+               lSomethingEdited := .T.
+            Else
+               ::GoBottom()
+               Exit
+            EndIf
+         ElseIf lRet
+            lSomethingEdited := .T.
+         Else
+            Exit
          EndIf
 
          If ::bPosition == 9                     // MOUSE EXIT
@@ -2208,30 +2215,28 @@ Local lRet, lSomethingEdited
          EndIf
       EndIf
 
-      // ::OnEditCell may change ::nRowPos using ::Up(), ::PageUp(), ::Down(), ::PageDown(), ::GoTop(), ::GoBottom(), ::Left() and/or ::Right()
       nCol := ::NextColInOrder( nCol )
       If nCol == 0
-         If ::FullMove .AND. ! lOneRow
-            ::Down( .F. )
-            If ::Eof()
-               If ::AllowAppend .OR. lAppend
-                  ::GoBottom( .T. )
-                  ::InsertBlank( ::ItemCount + 1 )
-                  nRow := ::CurrentRow := ::ItemCount
-                  nCol := ::FirstColInOrder
-                  lAppend := .T.
-                  ::lAppendMode := .T.
-                  ::oWorkArea:GoTo( 0 )
-               Else
-                  Exit
-               EndIf
-            Else
-               nRow := ::nRowPos
-               nCol := ::FirstColInOrder
-            EndIf
-         Else
+         If HB_IsLogical( lOneRow ) .AND. lOneRow
+            Exit
+         ElseIf ! HB_IsLogical( lOneRow ) .AND. ! ::FullMove
             Exit
          EndIf
+         nCol := ::FirstColInOrder
+         If nCol == 0
+            Exit
+         EndIf
+         If ! ::Down( .F. )
+            If ! lAppend .AND. ! ::AllowAppend
+               Exit
+            EndIf
+            ::lAppendMode := .T.
+            ::GoBottom( .T. )
+            ::InsertBlank( ::ItemCount + 1 )
+            ::CurrentRow := ::ItemCount
+            ::oWorkArea:GoTo( 0 )
+         EndIf
+         ::ScrollToLeft()
       EndIf
    EndDo
 
@@ -2863,7 +2868,7 @@ CLASS TXBrowseByCell FROM TXBrowse
       VScrollVisible
       WorkArea
 
-   Available methods from TGrid:               
+   Available methods from TGrid:
       AddBitMap
       AdjustResize
       Append
@@ -3102,7 +3107,7 @@ Local lRet, lBefore
 Return lRet
 
 *-----------------------------------------------------------------------------*
-METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowseByCell  
+METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowseByCell
 *-----------------------------------------------------------------------------*
 Local lRet, lSomethingEdited
 
@@ -3112,9 +3117,6 @@ Local lRet, lSomethingEdited
    If ::FirstVisibleColumn == 0
       Return .F.
    EndIf
-   If ! HB_IsNumeric( nRow )
-      nRow := Max( ::nRowPos, 1 )
-   EndIf
    If ! HB_IsNumeric( nCol )
       If ::nColPos >= 1
          nCol := ::nColPos
@@ -3122,16 +3124,33 @@ Local lRet, lSomethingEdited
          nCol := ::FirstColInOrder
       EndIf
    EndIf
-   If nRow < 1 .OR. nRow > ::ItemCount .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
+   If nCol < 1 .OR. nCol > Len( ::aHeaders )
       Return .F.
    EndIf
 
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
-   ASSIGN lOneRow VALUE lOneRow TYPE "L" DEFAULT .F.
 
-   // to work properly, nRow and the data source record must be synchronized
-   Empty( lChange )
-   ::SetControlValue( nRow, nCol )
+   If lAppend
+      If ::lAppendMode
+         Return .F.
+      EndIf
+      ::lAppendMode := .T.
+      ::GoBottom( .T. )
+      ::InsertBlank( ::ItemCount + 1 )
+      ::CurrentRow := ::ItemCount
+      ::CurrentCol := nCol
+      ::oWorkArea:GoTo( 0 )
+   Else
+      If ! HB_IsNumeric( nRow )
+         nRow := Max( ::CurrentRow, 1 )
+      EndIf
+      If nRow < 1 .OR. nRow > ::ItemCount
+         Return .F.
+      EndIf
+      // to work properly, nRow and the data source record must be synchronized
+      Empty( lChange)
+      ::SetControlValue( nRow, nCol )
+   EndIf
 
    lSomethingEdited := .F.
 
@@ -3146,81 +3165,91 @@ Local lRet, lSomethingEdited
          // Hidden column
       Else
          ::lCalledFromClass := .T.
-         lRet := ::Super:EditCell( ::nRowPos, ::nColPos, , , , , , .F., lAppend )
+         lRet := ::Super:EditCell( ::nRowPos, ::nColPos, , , , , , .F., ::lAppendMode )
          ::lCalledFromClass := .F.
 
-         If ! lRet
-           If lAppend
-               ::lAppendMode := .F.
-               ::GoBottom()
-            EndIf
-            Exit
-         EndIf
-
-         lSomethingEdited := .T.
-         If lAppend
+         If ::lAppendMode
             ::lAppendMode := .F.
-            lAppend := .F.
-            ::DoEvent( ::OnAppend, "APPEND" )
+            If lRet
+               lSomethingEdited := .T.
+            Else
+               ::GoBottom()
+               Exit
+            EndIf
+         ElseIf lRet
+            lSomethingEdited := .T.
+         Else
+            Exit
          EndIf
       EndIf
 
-      /*
-       * ::OnEditCell may change ::nRowPos and/or ::nColPos
-       * using ::Up(), ::Down(), ::Left(), ::Right(), ::PageUp(),
-       * ::PageDown(), ::GoTop() and/or ::GoBottom()
-       */
-
       // ::bPosition is set by TGridControl()
       If ::bPosition == 1                            // UP
-         ::Up()
-         If ! ::FullMove .OR. lOneRow
+         If HB_IsLogical( lOneRow ) .AND. lOneRow
+            Exit
+         ElseIf ! HB_IsLogical( lOneRow ) .AND. ! ::FullMove
             Exit
          EndIf
+         ::Up()
       ElseIf ::bPosition == 2                        // RIGHT
-         If ::FullMove .AND. ! lOneRow
+         If ::nColPos # ::LastColInOrder
             ::Right( .F. )
-            lAppend := ::Eof() .AND. ::AllowAppend
-         ElseIf ::nColPos # ::LastColInOrder
-            ::Right( .F. )
-         Else
+         ElseIf HB_IsLogical( lOneRow ) .AND. lOneRow
             Exit
+         ElseIf ! HB_IsLogical( lOneRow ) .AND. ! ::FullMove
+            Exit
+         Else
+            ::Right( .F. )
+            ::lAppendMode := ::Eof() .AND. ( lAppend .OR. ::AllowAppend )
          EndIf
       ElseIf ::bPosition == 3                        // LEFT
-         If ::nColPos > 1 .OR. ( ::FullMove .AND. ! lOneRow )
+         If ::nColPos # ::FirstColInOrder
             ::Left()
-         Else
+         ElseIf HB_IsLogical( lOneRow ) .AND. lOneRow
             Exit
+         ElseIf ! HB_IsLogical( lOneRow ) .AND. ! ::FullMove
+            Exit
+         Else
+            ::Left()
          EndIf
       ElseIf ::bPosition == 4                        // HOME
+         If HB_IsLogical( lOneRow ) .AND. lOneRow
+            Exit
+         ElseIf ! HB_IsLogical( lOneRow ) .AND. ! ::FullMove
+            Exit
+         EndIf
          ::GoTop()
-         If ! ::FullMove .OR. lOneRow
-            Exit
-         EndIf
       ElseIf ::bPosition == 5                        // END
+         If HB_IsLogical( lOneRow ) .AND. lOneRow
+            Exit
+         ElseIf ! HB_IsLogical( lOneRow ) .AND. ! ::FullMove
+            Exit
+         EndIf
          ::GoBottom( .F. )
-         If ! ::FullMove .OR. lOneRow
-            Exit
-         EndIf
       ElseIf ::bPosition == 6                        // DOWN
+         If HB_IsLogical( lOneRow ) .AND. lOneRow
+            Exit
+         EndIf
          ::Down( .F. )
-         If ::FullMove .AND. ! lOneRow
-            lAppend := ::Eof() .AND. ::AllowAppend
-         Else
+         If ! HB_IsLogical( lOneRow ) .AND. ! ::FullMove
             Exit
          EndIf
+         ::lAppendMode := ::Eof() .AND. ( lAppend .OR. ::AllowAppend )
       ElseIf ::bPosition == 7                        // PRIOR
+         If HB_IsLogical( lOneRow ) .AND. lOneRow
+            Exit
+         ElseIf ! HB_IsLogical( lOneRow ) .AND. ! ::FullMove
+            Exit
+         EndIf
          ::PageUp()
-         If ! ::FullMove .OR. lOneRow
-            Exit
-         EndIf
       ElseIf ::bPosition == 8                        // NEXT
-         ::PageDown( .F. )
-         If ::FullMove .AND. ! lOneRow
-            lAppend := ::Eof() .AND. ::AllowAppend
-         Else
+         If HB_IsLogical( lOneRow ) .AND. lOneRow
+            Exit
+         ElseIf ! HB_IsLogical( lOneRow ) .AND. ! ::FullMove
             Exit
          EndIf
+         ::PageDown( .F. )
+         ::lAppendMode := ::Eof() .AND. ( lAppend .OR. ::AllowAppend )
       ElseIf ::bPosition == 9                        // MOUSE EXIT
          // Edition window lost focus
          ::bPosition := 0                   // This restores the processing of click messages
@@ -3261,23 +3290,24 @@ Local lRet, lSomethingEdited
          EndIf
          Exit
       Else                                           // OK
-         If ::FullMove .AND. ! lOneRow .AND. lSomethingEdited
+         If ::nColPos # ::LastColInOrder
             ::Right( .F. )
-            lAppend := ::Eof() .AND. ::AllowAppend
-         ElseIf ::nColPos # ::LastColInOrder
-            ::Right( .F. )
-         Else
+         ElseIf HB_IsLogical( lOneRow ) .AND. lOneRow
             Exit
+         ElseIf ! HB_IsLogical( lOneRow ) .AND. ! ::FullMove
+            Exit
+         Else
+            ::Right( .F. )
+            ::lAppendMode := ::Eof() .AND. ( lAppend .OR. ::AllowAppend )
          EndIf
       EndIf
 
-      If lSomethingEdited .AND. lAppend
+      If ::lAppendMode
          // Insert new row
          ::GoBottom( .T. )
          ::InsertBlank( ::ItemCount + 1 )
          ::CurrentRow := ::ItemCount
          ::CurrentCol := ::FirstColInOrder
-         ::lAppendMode := .T.
          ::oWorkArea:GoTo( 0 )
       EndIf
    EndDo
@@ -3298,28 +3328,32 @@ Local lRet, lSomethingEdited
    If ::FirstVisibleColumn == 0
       Return .F.
    EndIf
+   If ! HB_IsNumeric( nCol )
+      nCol := ::FirstColInOrder
+   EndIf
+   If nCol < 1 .OR. nCol > Len( ::aHeaders )
+      Return .F.
+   EndIf
+
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
+
    If lAppend
       If ::lAppendMode
          Return .F.
       EndIf
+      ::lAppendMode := .T.
       ::GoBottom( .T. )
       ::InsertBlank( ::ItemCount + 1 )
       ::CurrentRow := ::ItemCount
-      ::CurrentCol := ::FirstColInOrder
-      ::lAppendMode := .T.
+      ::CurrentCol := nCol
       ::oWorkArea:GoTo( 0 )
    Else
       If ! HB_IsNumeric( nRow )
          nRow := Max( ::CurrentRow, 1 )
       EndIf
-      If ! HB_IsNumeric( nCol )
-         nCol := ::FirstColInOrder
-      EndIf
-      If nRow < 1 .OR. nRow > ::ItemCount .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
+      If nRow < 1 .OR. nRow > ::ItemCount
          Return .F.
       EndIf
-
       // to work properly, nRow and the data source record must be synchronized
       Empty( lChange)
       ::SetControlValue( nRow, nCol )
@@ -3340,88 +3374,134 @@ Local lRet, lSomethingEdited
         // Hidden column
       Else
          ::lCalledFromClass := .T.
-         lRet := ::EditCell( ::nRowPos, ::nColPos, , , , , , , .F. )
+         lRet := ::Super:EditCell( ::nRowPos, ::nColPos, , , , , , .F., ::lAppendMode )
          ::lCalledFromClass := .F.
 
-         If ! lRet
-            If lAppend
-               ::lAppendMode := .F.
-               ::GoBottom()
-            ElseIf lSomethingEdited
-               ::RefreshRow( ::nRowPos )
-            EndIf
-            Exit
-         EndIf
-
-         lSomethingEdited := .T.
-         If lAppend
+         If ::lAppendMode
             ::lAppendMode := .F.
-            lAppend := .F.
-         EndIf
-
-         /*
-            ::OnEditCell may change ::nRowPos using ::Up(), ::PageUp(),
-            ::Down(), ::PageDown(), ::GoTop() and/or ::GoBottom().
-            Changes can't be ignored because, to work properly, edit row
-            and the data source record must be synchronized.
-         */
-
-         If ::bPosition == 9                     // MOUSE EXIT
-            // Edition window lost focus
-            ::bPosition := 0                     // This restores the processing of click messages
-            If ::nDelayedClick[ 1 ] > 0
-               // A click message was delayed
-               If ::nDelayedClick[ 3 ] <= 0
-                  ::MoveTo( ::nDelayedClick[ 1 ], ::nRowPos )
-               EndIf
-
-               If HB_IsNil( ::nDelayedClick[ 4 ] )
-                  If HB_IsBlock( ::OnClick )
-                     If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
-                        If ! ::NestedClick
-                           ::NestedClick := ! _OOHG_NestedSameEvent()
-                           ::DoEventMouseCoords( ::OnClick, "CLICK" )
-                           ::NestedClick := .F.
-                        EndIf
-                     EndIf
-                  EndIf
-               Else
-                  If HB_IsBlock( ::OnRClick )
-                     If ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
-                        ::DoEventMouseCoords( ::OnRClick, "RCLICK" )
-                     EndIf
-                  EndIf
-               EndIf
-
-               If ::nDelayedClick[ 3 ] > 0
-                  // change check mark
-                  ::CheckItem( ::nDelayedClick[ 3 ], ! ::CheckItem( ::nDelayedClick[ 3 ] ) )
-               EndIf
-
-               // fire context menu
-               If ! HB_IsNil( ::nDelayedClick[ 4 ] ) .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
-                  ::ContextMenu:Cargo := ::nDelayedClick[ 4 ]
-                  ::ContextMenu:Activate()
-               EndIf
+            If lRet
+               lSomethingEdited := .T.
+            Else
+               ::GoBottom()
+               Exit
             EndIf
+         ElseIf lRet
+            lSomethingEdited := .T.
+         Else
             Exit
          EndIf
       EndIf
 
-      nCol := ::NextColInOrder( ::nColPos )
-      If nCol == 0
-         If lOneRow .OR. ::nRowPos # ::ItemCount .OR. ( ! ::AllowAppend .AND. ! lAppend )
+      // ::bPosition is set by TGridControl()
+      If ::bPosition == 1                            // UP
+         If lOneRow
             Exit
          EndIf
+         ::Up()
+      ElseIf ::bPosition == 2                        // RIGHT
+         If ::nColPos # ::LastColInOrder
+            ::Right( .F. )
+         ElseIf lOneRow
+            Exit
+         Else
+            ::Right( .F. )
+            ::lAppendMode := ::Eof() .AND. ( lAppend .OR. ::AllowAppend )
+         EndIf
+      ElseIf ::bPosition == 3                        // LEFT
+         If ::nColPos # ::FirstColInOrder
+            ::Left()
+         ElseIf lOneRow
+            Exit
+         Else
+            ::Left()
+         EndIf
+      ElseIf ::bPosition == 4                        // HOME
+         If lOneRow
+            Exit
+         EndIf
+         ::GoTop()
+      ElseIf ::bPosition == 5                        // END
+         If lOneRow
+            Exit
+         EndIf
+         ::GoBottom( .F. )
+      ElseIf ::bPosition == 6                        // DOWN
+         If lOneRow
+            Exit
+         EndIf
+         ::Down( .F. )
+         ::lAppendMode := ::Eof() .AND. ( lAppend .OR. ::AllowAppend )
+      ElseIf ::bPosition == 7                        // PRIOR
+         If lOneRow
+            Exit
+         EndIf
+         ::PageUp()
+      ElseIf ::bPosition == 8                        // NEXT
+         If lOneRow
+            Exit
+         EndIf
+         ::PageDown( .F. )
+         ::lAppendMode := ::Eof() .AND. ( lAppend .OR. ::AllowAppend )
+      ElseIf ::bPosition == 9                        // MOUSE EXIT
+         // Edition window lost focus
+         ::bPosition := 0                   // This restores the processing of click messages
+         If ::nDelayedClick[ 1 ] > 0
+            // A click message was delayed
+            If ::nDelayedClick[ 3 ] <= 0
+               ::MoveTo( { ::nDelayedClick[ 1 ], ::nDelayedClick[ 2 ] }, { ::nRowPos, ::nColPos } )
+            EndIf
 
+            If HB_IsNil( ::nDelayedClick[ 4 ] )
+               If HB_IsBlock( ::OnClick )
+                  If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
+                     If ! ::NestedClick
+                        ::NestedClick := ! _OOHG_NestedSameEvent()
+                        ::DoEventMouseCoords( ::OnClick, "CLICK" )
+                        ::NestedClick := .F.
+                     EndIf
+                  EndIf
+               EndIf
+            Else
+               If HB_IsBlock( ::OnRClick )
+                  If ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
+                     ::DoEventMouseCoords( ::OnRClick, "RCLICK" )
+                  EndIf
+               EndIf
+            EndIf
+
+            If ::nDelayedClick[ 3 ] > 0
+               // change check mark
+               ::CheckItem( ::nDelayedClick[ 3 ], ! ::CheckItem( ::nDelayedClick[ 3 ] ) )
+            EndIf
+
+            // fire context menu
+            If ! HB_IsNil( ::nDelayedClick[ 4 ] ) .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
+               ::ContextMenu:Cargo := ::nDelayedClick[ 4 ]
+               ::ContextMenu:Activate()
+            EndIf
+         EndIf
+         Exit
+      Else                                           // OK
+         If ::nColPos # ::LastColInOrder
+            ::Right( .F. )
+         ElseIf lOneRow
+            Exit
+         Else
+            ::Right( .F. )
+            ::lAppendMode := ::Eof() .AND. ( lAppend .OR. ::AllowAppend )
+         EndIf
+      EndIf
+
+      If ::lAppendMode
+         // Insert new row
          ::GoBottom( .T. )
          ::InsertBlank( ::ItemCount + 1 )
          ::CurrentRow := ::ItemCount
          ::CurrentCol := ::FirstColInOrder
-         ::lAppendMode := .T.
          ::oWorkArea:GoTo( 0 )
+         ::ScrollToLeft()
       EndIf
-   Enddo
+   EndDo
 
    ::ScrollToLeft()
 
