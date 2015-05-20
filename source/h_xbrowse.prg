@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.138 2015-05-20 02:05:45 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.139 2015-05-20 22:31:04 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -60,34 +60,34 @@ STATIC _OOHG_XBrowseFixedBlocks := .T.
 STATIC _OOHG_XBrowseFixedControls := .F.
 
 CLASS TXBrowse FROM TGrid
-   DATA Type                      INIT "XBROWSE" READONLY
+   DATA aColumnBlocks             INIT Nil
    DATA aFields                   INIT Nil
+   DATA aReplaceField             INIT Nil
+   DATA Bof                       INIT .F.
+   DATA Eof                       INIT .F.
+   DATA goBottomBlock             INIT Nil
+   DATA goTopBlock                INIT Nil
+   DATA lDescending               INIT .F.
+   DATA lFixedBlocks              INIT .F.
+   DATA lLocked                   INIT .F.
+   DATA lNoShowEmptyRow           INIT .F.
+   DATA Lock                      INIT .F.
+   DATA lRecCount                 INIT .F.
+   DATA lRefreshAfterValue        INIT .F.
+   DATA lScrollBarUsesClientArea  INIT .T.
+   DATA lUpdCols                  INIT .F.
+   DATA lVscrollVisible           INIT .F.
+   DATA nHelpId                   INIT 0
+   DATA OnRefreshRow              INIT Nil
    DATA oWorkArea                 INIT Nil
+   DATA RefreshType               INIT REFRESH_DEFAULT
+   DATA ScrollButton              INIT Nil
+   DATA SearchWrap                INIT .F.
+   DATA skipBlock                 INIT Nil
+   DATA Type                      INIT "XBROWSE" READONLY
    DATA uWorkArea                 INIT Nil
    DATA VScroll                   INIT Nil
-   DATA ScrollButton              INIT Nil
-   DATA aReplaceField             INIT Nil
-   DATA Lock                      INIT .F.
-   DATA skipBlock                 INIT Nil
-   DATA goTopBlock                INIT Nil
-   DATA goBottomBlock             INIT Nil
-   DATA lLocked                   INIT .F.
-   DATA lRecCount                 INIT .F.
-   DATA lDescending               INIT .F.
-   DATA Eof                       INIT .F.
-   DATA Bof                       INIT .F.
-   DATA RefreshType               INIT REFRESH_DEFAULT
-   DATA SearchWrap                INIT .F.
    DATA VScrollCopy               INIT Nil
-   DATA lVscrollVisible           INIT .F.
-   DATA aColumnBlocks             INIT Nil
-   DATA lFixedBlocks              INIT .F.
-   DATA lNoShowEmptyRow           INIT .F.
-   DATA lUpdCols                  INIT .F.
-   DATA nHelpId                   INIT 0
-   DATA lScrollBarUsesClientArea  INIT .T.
-   DATA OnRefreshRow              INIT Nil
-   DATA lRefreshAfterValue        INIT .F.
 
    METHOD AddColumn
    METHOD AddItem                 BLOCK { || Nil }
@@ -156,6 +156,7 @@ CLASS TXBrowse FROM TGrid
       Cell
       CellCaption
       CellImage
+      CheckItem               
       ColumnBetterAutoFit
       ColumnCount
       ColumnHide
@@ -173,7 +174,6 @@ CLASS TXBrowse FROM TGrid
       FirstSelectedItem
       FirstVisibleColumn
       FirstVisibleItem
-      FixControls
       FontColor
       Header
       HeaderHeight
@@ -201,7 +201,6 @@ CLASS TXBrowse FROM TGrid
       SetItemColor
       SetRangeColor
       SetSelectedColors
-      Value                       it's used by ::CurrentRow() for painting the grid
 */
 
    EMPTY( _OOHG_AllVars )
@@ -2851,6 +2850,7 @@ CLASS TXBrowseByCell FROM TXBrowse
       EditItem_B
       Enabled
       FixBlocks
+      FixControls
       GetCellType
       HelpId
       PageDown
@@ -2876,8 +2876,10 @@ CLASS TXBrowseByCell FROM TXBrowse
       Cell
       CellCaption
       CellImage
+      CheckItem
       ColumnBetterAutoFit
       ColumnCount
+      ColumnHide
       ColumnOrder
       ColumnsBetterAutoFit
       ColumnShow
@@ -2885,6 +2887,7 @@ CLASS TXBrowseByCell FROM TXBrowse
       CountPerPage
       DeleteItem
       EditCell2
+      EditItem2
       Events_Enter
       FirstColInOrder
       FirstSelectedItem

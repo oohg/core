@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.122 2015-04-25 23:40:26 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.123 2015-05-20 22:31:03 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -90,6 +90,7 @@ AUXILIARY VARIABLES
 #xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
 #xtranslate _OOHG_ActiveControlBackground             => _OOHG_ActiveControlInfo \[  27 \]
 
+#xtranslate _OOHG_ActiveControlOnRClick               => _OOHG_ActiveControlInfo \[  90 \]
 #xtranslate _OOHG_ActiveControlExtDblClick            => _OOHG_ActiveControlInfo \[  91 \]
 #xtranslate _OOHG_ActiveControlExcludeArea            => _OOHG_ActiveControlInfo \[  92 \]
 #xtranslate _OOHG_ActiveControlNoLoadTransparent      => _OOHG_ActiveControlInfo \[  93 \]
@@ -2309,7 +2310,9 @@ GRID
       _OOHG_ActiveControlAutoPlay         := .F. ;;
       _OOHG_ActiveControlAddress          := .F. ;;
       _OOHG_ActiveControlShowAll          := .F. ;;
-      _OOHG_ActiveControlAutoSkip         := .F.
+      _OOHG_ActiveControlAutoSkip         := .F. ;;
+      _OOHG_ActiveControlDisplayChange    := NIL ;;
+      _OOHG_ActiveControlOnRClick         := NIL
 
 #xcommand SILENT <silent> ;
    => ;
@@ -2459,6 +2462,18 @@ GRID
    => ;
       _OOHG_ActiveControlExtDblClick := <extdbl>
 
+#xcommand CHANGEBEFOREEDIT <cbe> ;
+   => ;
+      _OOHG_ActiveControlDisplayChange := <cbe>
+
+#xcommand ONRCLICK <action> ;
+   => ;
+      _OOHG_ActiveControlOnRClick := <{action}>
+
+#xcommand ON RCLICK <action> ;
+   => ;
+      _OOHG_ActiveControlOnRClick := <{action}>
+
 #xcommand END GRID ;
    => ;
       _OOHG_SelectSubClass( IIF( _OOHG_ActiveControlByCell, TGridByCell(), IIF( _OOHG_ActiveControlMultiSelect, TGridMulti(), TGrid() ) ), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
@@ -2548,7 +2563,9 @@ GRID
             _OOHG_ActiveControlAutoPlay, ;
             _OOHG_ActiveControlAddress, ;
             _OOHG_ActiveControlShowAll, ;
-            _OOHG_ActiveControlAutoSkip )
+            _OOHG_ActiveControlAutoSkip, ;
+            _OOHG_ActiveControlDisplayChange, ;
+            _OOHG_ActiveControlOnRClick )
 
 /*---------------------------------------------------------------------------
 BROWSE
@@ -2629,7 +2646,12 @@ BROWSE
       _OOHG_ActiveControlAutoPlay         := .F. ;;
       _OOHG_ActiveControlAddress          := .T. ;;
       _OOHG_ActiveControlShowAll          := .F. ;;
-      _OOHG_ActiveControlAutoSkip         := .F.
+      _OOHG_ActiveControlAutoSkip         := .F. ;;
+      _OOHG_ActiveControlDisplayChange    := NIL ;;
+      _OOHG_ActiveControlOnRClick         := NIL ;;
+      _OOHG_ActiveControlCheckBoxes       := .F. ;;
+      _OOHG_ActiveControlOnCheckChange    := NIL ;;
+      _OOHG_ActiveControlOnTextFilled     := NIL
 
 #xcommand DELETEWHEN <delwhen> ;
    => ;
@@ -2694,6 +2716,14 @@ BROWSE
 #xcommand UPDATECOLORS <upcols> ;
    => ;
       _OOHG_ActiveControlUpdateColors := <upcols>
+
+#xcommand ONROWREFRESH <block> ;
+   => ;
+      _OOHG_ActiveControlOnTextFilled := <{block}>
+
+#xcommand ON ROWREFRESH <block> ;
+   => ;
+      _OOHG_ActiveControlOnTextFilled := <{block}>
 
 #xcommand END BROWSE ;
    => ;
@@ -2791,7 +2821,12 @@ BROWSE
             _OOHG_ActiveControlAutoPlay, ;
             _OOHG_ActiveControlAddress, ;
             _OOHG_ActiveControlShowAll, ;
-            _OOHG_ActiveControlAutoSkip )
+            _OOHG_ActiveControlAutoSkip, ;
+            _OOHG_ActiveControlDisplayChange, ;
+            _OOHG_ActiveControlOnRClick, ;
+            _OOHG_ActiveControlCheckBoxes, ;
+            _OOHG_ActiveControlOnCheckChange, ;
+            _OOHG_ActiveControlOnTextFilled )
 
 /*---------------------------------------------------------------------------
 XBROWSE
@@ -2866,7 +2901,12 @@ XBROWSE
       _OOHG_ActiveControlNoModalEdit      := .F. ;;
       _OOHG_ActiveControlAutoPlay         := .F. ;;
       _OOHG_ActiveControlAddress          := .T. ;;
-      _OOHG_ActiveControlShowAll          := .F.
+      _OOHG_ActiveControlShowAll          := .F. ;;
+      _OOHG_ActiveControlDisplayChange    := NIL ;;
+      _OOHG_ActiveControlOnRClick         := NIL ;;
+      _OOHG_ActiveControlCheckBoxes       := .F. ;;
+      _OOHG_ActiveControlOnCheckChange    := NIL ;;
+      _OOHG_ActiveControlOnTextFilled     := NIL
 
 #xcommand END XBROWSE ;
    => ;
@@ -2959,7 +2999,11 @@ XBROWSE
             _OOHG_ActiveControlExtDblClick, ;
             _OOHG_ActiveControlAutoPlay, ;
             _OOHG_ActiveControlAddress, ;
-            _OOHG_ActiveControlShowAll )
+            _OOHG_ActiveControlShowAll, ;
+            _OOHG_ActiveControlOnRClick, ;
+            _OOHG_ActiveControlCheckBoxes, ;
+            _OOHG_ActiveControlOnCheckChange, ;
+            _OOHG_ActiveControlOnTextFilled )
 
 /*---------------------------------------------------------------------------
 HYPERLINK
