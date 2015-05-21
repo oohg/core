@@ -1,11 +1,17 @@
 /*
- * $Id: ChangeLog,v 1.1481 2015-05-20 22:31:02 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1482 2015-05-21 00:08:14 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-05-20 21:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/changelog.htm
+     * Updated.
+   * source/h_browse.prg
+     ! RTE in TOBrowse:EditGrid() because lRet is uninitialized.
 
 2015-05-20 19:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt

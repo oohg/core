@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.155 2015-05-20 02:05:45 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.156 2015-05-21 00:08:14 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1358,7 +1358,7 @@ Return lSomethingEdited
 *-----------------------------------------------------------------------------*
 METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local lRet, lRowEdited, lSomethingEdited, nRecNo, lRowAppended, nNewRec, nNextRec, cWorkArea
+Local lRet := .F., lRowEdited, lSomethingEdited, nRecNo, lRowAppended, nNewRec, nNextRec, cWorkArea
 
    If ::FirstVisibleColumn == 0
       Return .F.
