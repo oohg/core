@@ -1,5 +1,5 @@
 /*
- * $Id: h_print.prg,v 1.146 2015-03-18 01:22:30 fyurisich Exp $
+ * $Id: h_print.prg,v 1.147 2015-05-21 01:10:29 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -494,7 +494,9 @@ METHOD EndDoc( lSaveTemp ) CLASS TPRINTBASE
    ::lSaveTemp := lSaveTemp
 
    ::EndDocX()
-   _oohg_winreport.Release()
+   IF IsWindowDefined( _oohg_winreport )
+      _oohg_winreport.Release()
+   ENDIF
    _modalhide.Release()
    ::aPageNames := {}
 RETURN Self
