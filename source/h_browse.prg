@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.157 2015-05-22 00:49:27 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.158 2015-05-22 02:56:21 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -681,11 +681,7 @@ Local _RecNo, s, cWorkArea
          ::DbSkip( -1 )
       EndIf
       ::Update()
-      If Len( ::aRecMap ) == 0
-         ::DbGoTo( 0 )
-      Else
-         ::DbGoTo( ::aRecMap[ Len( ::aRecMap ) ] )
-      EndIf
+      ::ScrollUpdate()
       ::CurrentRow := Len( ::aRecMap )
       ::DbGoTo( _RecNo )
    Else
@@ -714,9 +710,10 @@ Local _RecNo, cWorkArea
          ::DbGoTo( ::aRecMap[ 1 ] )
       EndIf
       ::DbSkip( - ::CountPerPage + 1 )
+      ::ScrollUpdate()
       ::Update()
-      ::CurrentRow := 1
       ::DbGoTo( _RecNo )
+      ::CurrentRow := 1
    Else
       ::FastUpdate( 1 - ::CurrentRow, 1 )
    EndIf
@@ -737,9 +734,10 @@ Local _RecNo, cWorkArea
    EndIf
    _RecNo := ( cWorkArea )->( RecNo() )
    ::TopBottom( GO_TOP )
+   ::ScrollUpdate()
    ::Update()
-   ::CurrentRow := 1
    ::DbGoTo( _RecNo )
+   ::CurrentRow := 1
 
    ::BrowseOnChange()
 
@@ -758,13 +756,14 @@ Local _RecNo, _BottomRec, cWorkArea
    _RecNo := ( cWorkArea )->( RecNo() )
    ::TopBottom( GO_BOTTOM )
    _BottomRec := ( cWorkArea )->( RecNo() )
+   ::ScrollUpdate()
 
    // If it's for APPEND, leaves a blank line ;)
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
    ::DbSkip( - ::CountPerPage + IF( lAppend, 2, 1 ) )
    ::Update()
-   ::CurrentRow := aScan( ::aRecMap, _BottomRec )
    ::DbGoTo( _RecNo )
+   ::CurrentRow := aScan( ::aRecMap, _BottomRec )
 
    ::BrowseOnChange()
 
@@ -818,8 +817,9 @@ Local s, _RecNo, nLen, lDone := .F., cWorkArea
          EndIf
       EndIf
 
-      ::CurrentRow := 1
+      ::ScrollUpdate()
       ::DbGoTo( _RecNo )
+      ::CurrentRow := 1
       If Len( ::aRecMap ) != 0
          lDone := .T.
       EndIf
@@ -881,8 +881,9 @@ Local s, _RecNo, nLen, lDone := .F., cWorkArea
          EndIf
       EndIf
 
-      ::CurrentRow := Len( ::aRecMap )
+      ::ScrollUpdate()
       ::DbGoTo( _RecNo )
+      ::CurrentRow := Len( ::aRecMap )
       If Len( ::aRecMap ) != 0
          lDone := .T.
       EndIf
@@ -1004,10 +1005,13 @@ Local _RecNo, m, hWnd, cWorkArea
       Return Self
    EndIf
 
+   If PCount() < 2                           // TODO: Check
+      ::ScrollUpdate()
+   EndIf
    ::DbSkip( -m + 1 )
    ::Update()
-   ::CurrentRow := aScan( ::aRecMap, Value )
    ::DbGoTo( _RecNo )
+   ::CurrentRow := aScan( ::aRecMap, Value )
 
    _OOHG_ThisEventType := 'BROWSE_ONCHANGE'
    ::BrowseOnChange()
@@ -1529,9 +1533,10 @@ Local lRet := .F., lRowEdited, lSomethingEdited, nRecNo, lRowAppended, nNewRec, 
             nNewRec := ::aRecMap[ nRow + 1 ]
             ::DbGoTo( nNewRec )
             ::Update( nRow + 1 )
+            ::ScrollUpdate()
+            ::DbGoTo( nRecNo )
             nRow := aScan( ::aRecMap, nNewRec )
             ::CurrentRow := nRow
-            ::DbGoTo( nRecNo )
          Else
             nRow ++
             ::FastUpdate( 1, nRow )
@@ -1721,7 +1726,6 @@ METHOD CurrentRow( nValue ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 
    If ValType( nValue ) == "N"
-      ::ScrollUpdate()
       If nValue < 1 .OR. nValue > ::ItemCount
          If ::CurrentRow # 0
             ListView_ClearCursel( ::hWnd, 0 )
@@ -1785,14 +1789,16 @@ Local s, _RecNo, v, cWorkArea
       Return Self
    EndIf
 
+   ::ScrollUpdate()
+
    If s != 0
       ::DbSkip( - s + 1 )
    EndIf
 
    ::Update()
 
-   ::nRecLastValue := v
    ::CurrentRow := aScan( ::aRecMap, v )
+   ::nRecLastValue := v
 
    ::DbGoTo( _RecNo )
 
@@ -3492,11 +3498,14 @@ Local nRow, nCol, _RecNo, m, hWnd, cWorkArea
             Return Self
          EndIf
 
+         If PCount() < 2
+            ::ScrollUpdate()
+         EndIf
          ::DbSkip( -m + 1 )
          ::Update()
+         ::DbGoTo( _RecNo )
          ::CurrentRow := aScan( ::aRecMap, Value )
          ::CurrentCol := nCol
-         ::DbGoTo( _RecNo )
 
          _OOHG_ThisEventType := 'BROWSE_ONCHANGE'
          ::BrowseOnChange()
@@ -3590,10 +3599,11 @@ Local _RecNo, aBefore, aAfter, lDone := .F., cWorkArea
    aBefore := ::Value
    _RecNo := ( cWorkArea )->( RecNo() )
    ::TopBottom( GO_TOP )
+   ::ScrollUpdate()
    ::Update()
+   ::DbGoTo( _RecNo )
    ::CurrentRow := 1
    ::CurrentCol := ::FirstColInOrder
-   ::DbGoTo( _RecNo )
    aAfter := ::Value
    lDone := ( aBefore[ 1 ] # aAfter[ 1 ] .OR. aBefore[ 2 ] # aAfter[ 2 ] )
    ::BrowseOnChange()
@@ -3613,14 +3623,15 @@ Local lDone := .F., aBefore, _Recno, cWorkArea
    aBefore := ::Value
    _RecNo := ( cWorkArea )->( RecNo() )
    ::TopBottom( GO_BOTTOM )
+   ::ScrollUpdate()
 
    // If it's for APPEND, leaves a blank line ;)
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
    ::DbSkip( - ::CountPerPage + If( lAppend, 2, 1 ) )
    ::Update()
+   ::DbGoTo( _RecNo )
    ::CurrentRow := Len( ::aRecMap )
    ::CurrentCol := If( lAppend, ::FirstColInOrder, ::LastColInOrder )
-   ::DbGoTo( _RecNo )
    lDone := ( aBefore[ 1 ] # ::Value[ 1 ] .OR. aBefore[ 2 ] # ::Value[ 2 ] )
    ::BrowseOnChange()
 
@@ -3646,9 +3657,10 @@ Local _RecNo, aBefore, lDone := .F., cWorkArea
          ::DbGoTo( ::aRecMap[ 1 ] )
       EndIf
       ::DbSkip( - ::CountPerPage + 1 )
+      ::ScrollUpdate()
       ::Update()
-      ::CurrentRow := 1
       ::DbGoTo( _RecNo )
+      ::CurrentRow := 1
       lDone := ( aBefore[ 1 ] # ::Value[ 1 ] .OR. aBefore[ 2 ] # ::Value[ 2 ] )
    Else
       ::FastUpdate( 1 - ::nRowPos, 1 )
@@ -3699,8 +3711,9 @@ Local _RecNo, s, lDone := .F., cWorkArea
          ::DbGoTo( ::aRecMap[ Len( ::aRecMap ) ] )
          lDone := .T.
       EndIf
-      ::CurrentRow := Len( ::aRecMap )
+      ::ScrollUpdate()
       ::DbGoTo( _RecNo )
+      ::CurrentRow := Len( ::aRecMap )
    Else
       ::FastUpdate( ::CountPerPage - s, Len( ::aRecMap ) )
       lDone := .T.
@@ -3758,11 +3771,12 @@ Local s, _RecNo, nLen, lDone := .F., cWorkArea
          EndIf
       EndIf
 
+      ::ScrollUpdate()
+      ::DbGoTo( _RecNo )
       ::CurrentRow := 1
       If HB_IsLogical( lLast ) .AND. lLast
          ::CurrentCol := ::LastColInOrder
       EndIf
-      ::DbGoTo( _RecNo )
       If Len( ::aRecMap ) != 0
          lDone := .T.
       EndIf
@@ -3830,11 +3844,12 @@ Local s, _RecNo, nLen, lDone := .F., cWorkArea
          ::DbGoTo( ATail( ::aRecMap ) )
          lDone := .T.
       EndIf
+      ::ScrollUpdate()
+      ::DbGoTo( _RecNo )
       ::CurrentRow := Len( ::aRecMap )
       If HB_IsLogical( lFirst ) .AND. lFirst
          ::CurrentCol := ::FirstColInOrder
       EndIf
-      ::DbGoTo( _RecNo )
    Else
       ::FastUpdate( 1, s + 1 )
       lDone := .T.
