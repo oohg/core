@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.156 2015-05-21 00:08:14 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.157 2015-05-22 00:49:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -116,6 +116,7 @@ CLASS TOBrowse FROM TXBrowse
     */
 
    METHOD BrowseOnChange
+   METHOD CurrentRow              SETGET
    METHOD DbGoTo
    METHOD DbSkip
    METHOD Define
@@ -232,7 +233,6 @@ CLASS TOBrowse FROM TXBrowse
       SetItemColor
       SetRangeColor
       SetSelectedColors
-      Value                       it's used by ::CurrentRow() for painting the grid
 */
 ENDCLASS
 
@@ -507,7 +507,7 @@ Local lColor, aFields, cWorkArea, hWnd, nWidth
       ::SetRedraw( .F. )
    EndIf
 
-   nCurrentLength  := ::ItemCount()
+   nCurrentLength  := ::ItemCount
    ::GridForeColor := Nil
    ::GridBackColor := Nil
 
@@ -651,7 +651,7 @@ METHOD PageDown( lAppend ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local _RecNo, s, cWorkArea
 
-   s := ::FirstSelectedItem
+   s := ::CurrentRow
 
    If s >= Len( ::aRecMap )
       cWorkArea := ::WorkArea
@@ -686,8 +686,7 @@ Local _RecNo, s, cWorkArea
       Else
          ::DbGoTo( ::aRecMap[ Len( ::aRecMap ) ] )
       EndIf
-      ::ScrollUpdate()
-      ListView_SetCursel( ::hWnd, Len( ::aRecMap ) )
+      ::CurrentRow := Len( ::aRecMap )
       ::DbGoTo( _RecNo )
    Else
       ::FastUpdate( ::CountPerPage - s, Len( ::aRecMap ) )
@@ -702,7 +701,7 @@ METHOD PageUp() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local _RecNo, cWorkArea
 
-   If ::FirstSelectedItem == 1
+   If ::CurrentRow == 1
       cWorkArea := ::WorkArea
       If Select( cWorkArea ) == 0
          ::RecCount := 0
@@ -715,13 +714,13 @@ Local _RecNo, cWorkArea
          ::DbGoTo( ::aRecMap[ 1 ] )
       EndIf
       ::DbSkip( - ::CountPerPage + 1 )
-      ::ScrollUpdate()
       ::Update()
+      ::CurrentRow := 1
       ::DbGoTo( _RecNo )
-      ListView_SetCursel( ::hWnd, 1 )
    Else
-      ::FastUpdate( 1 - ::FirstSelectedItem, 1 )
+      ::FastUpdate( 1 - ::CurrentRow, 1 )
    EndIf
+
    ::BrowseOnChange()
 
 Return Self
@@ -738,10 +737,9 @@ Local _RecNo, cWorkArea
    EndIf
    _RecNo := ( cWorkArea )->( RecNo() )
    ::TopBottom( GO_TOP )
-   ::ScrollUpdate()
    ::Update()
+   ::CurrentRow := 1
    ::DbGoTo( _RecNo )
-   ListView_SetCursel( ::hWnd, 1 )
 
    ::BrowseOnChange()
 
@@ -760,14 +758,13 @@ Local _RecNo, _BottomRec, cWorkArea
    _RecNo := ( cWorkArea )->( RecNo() )
    ::TopBottom( GO_BOTTOM )
    _BottomRec := ( cWorkArea )->( RecNo() )
-   ::ScrollUpdate()
 
    // If it's for APPEND, leaves a blank line ;)
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
    ::DbSkip( - ::CountPerPage + IF( lAppend, 2, 1 ) )
    ::Update()
+   ::CurrentRow := aScan( ::aRecMap, _BottomRec )
    ::DbGoTo( _RecNo )
-   ListView_SetCursel( ::hWnd, aScan ( ::aRecMap, _BottomRec ) )
 
    ::BrowseOnChange()
 
@@ -778,7 +775,7 @@ METHOD Up() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local s, _RecNo, nLen, lDone := .F., cWorkArea
 
-   s := ::FirstSelectedItem
+   s := ::CurrentRow
 
    If s <= 1
       cWorkArea := ::WorkArea
@@ -821,10 +818,9 @@ Local s, _RecNo, nLen, lDone := .F., cWorkArea
          EndIf
       EndIf
 
-      ::ScrollUpdate()
+      ::CurrentRow := 1
       ::DbGoTo( _RecNo )
       If Len( ::aRecMap ) != 0
-         ListView_SetCursel( ::hWnd, 1 )
          lDone := .T.
       EndIf
    Else
@@ -841,7 +837,7 @@ METHOD Down( lAppend ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local s, _RecNo, nLen, lDone := .F., cWorkArea
 
-   s := ::FirstSelectedItem
+   s := ::CurrentRow
 
    If s >= Len( ::aRecMap )
       cWorkArea := ::WorkArea
@@ -885,13 +881,11 @@ Local s, _RecNo, nLen, lDone := .F., cWorkArea
          EndIf
       EndIf
 
+      ::CurrentRow := Len( ::aRecMap )
+      ::DbGoTo( _RecNo )
       If Len( ::aRecMap ) != 0
-         ::DbGoTo( ATail( ::aRecMap ) )
          lDone := .T.
       EndIf
-      ::ScrollUpdate()
-      ::DbGoTo( _RecNo )
-      ListView_SetCursel( ::hWnd, Len( ::aRecMap ) )
    Else
       ::FastUpdate( 1, s + 1 )
       lDone := .T.
@@ -968,11 +962,10 @@ Local _RecNo, m, hWnd, cWorkArea
 
    If Value <= 0
       If ::lNoneUnsels
-         ListView_ClearCursel( ::hWnd, 0 )
+         ::CurrentRow := 0
          ::BrowseOnChange()
-      Else
-         Return Self
       EndIf
+      Return Self
    EndIf
 
    hWnd := ::hWnd
@@ -1011,14 +1004,10 @@ Local _RecNo, m, hWnd, cWorkArea
       Return Self
    EndIf
 
-   If PCount() < 2
-      ::ScrollUpdate()
-   EndIf
    ::DbSkip( -m + 1 )
-
    ::Update()
+   ::CurrentRow := aScan( ::aRecMap, Value )
    ::DbGoTo( _RecNo )
-   ListView_SetCursel( hWnd, aScan( ::aRecMap, Value ) )
 
    _OOHG_ThisEventType := 'BROWSE_ONCHANGE'
    ::BrowseOnChange()
@@ -1063,7 +1052,7 @@ Local Value, nRecNo, lSync, cWorkArea
       EndIf
 
       If Set( _SET_DELETED )
-         ::SetValue( ( cWorkArea )->( RecNo() ), ::FirstSelectedItem )
+         ::SetValue( ( cWorkArea )->( RecNo() ), ::CurrentRow )
       EndIf
    EndIf
 
@@ -1100,7 +1089,7 @@ Local nOldRecNo, nItem, cWorkArea, lRet, nNewRec
 
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
 
-   nItem := ::FirstSelectedItem
+   nItem := ::CurrentRow
    If nItem == 0 .AND. ! lAppend
       Return .F.
    EndIf
@@ -1133,7 +1122,7 @@ Local lRet, BackRec, cWorkArea, lBefore
    ASSIGN lRefresh VALUE lRefresh TYPE "L" DEFAULT ( ::RefreshType == REFRESH_FORCE )
    ASSIGN lChange  VALUE lChange  TYPE "L" DEFAULT ::lChangeBeforeEdit
 
-   If nRow < 1 .OR. nRow > ::ItemCount()
+   If nRow < 1 .OR. nRow > ::ItemCount
       Return .F.
    EndIf
 
@@ -1266,22 +1255,22 @@ Local lRet, lSomethingEdited, lRowAppended, nRecNo, cWorkArea
       If lAppend
          ::DbGoTo( 0 )
       Else
-         ::DbGoTo( ::aRecMap[ ::nRowPos ] )
+         ::DbGoTo( ::aRecMap[ nRow ] )
       EndIf
 
-      _OOHG_ThisItemCellValue := ::Cell( ::nRowPos, nCol )
+      _OOHG_ThisItemCellValue := ::Cell( nRow, nCol )
 
-      If ::IsColumnReadOnly( nCol, ::nRowPos )
+      If ::IsColumnReadOnly( nCol, nRow )
         // Read only column
-      ElseIf ! ::IsColumnWhen( nCol, ::nRowPos )
+      ElseIf ! ::IsColumnWhen( nCol, nRow )
         // WHEN returned .F.
-      ElseIf aScan( ::aHiddenCols, nCol, ::nRowPos ) > 0
+      ElseIf aScan( ::aHiddenCols, nCol,nRow ) > 0
         // Hidden column
       Else
          ::DbGoTo( nRecNo )
 
          ::lCalledFromClass := .T.
-         lRet := ::EditCell( ::nRowPos, nCol, , , , , lAppend, , .F., .F. )
+         lRet := ::EditCell( nRow, nCol, , , , , lAppend, , .F., .F. )
          ::lCalledFromClass := .F.
 
          If ! lRet
@@ -1337,7 +1326,7 @@ Local lRet, lSomethingEdited, lRowAppended, nRecNo, cWorkArea
                EndIf
             ElseIf lRowAppended
                // A new row was added and partially edited: set as new value and refresh the control
-               ::SetValue( aTail( ::aRecMap ), ::nRowPos )
+               ::SetValue( aTail( ::aRecMap ), nRow )
             Else
                // The user aborted the edition of an existing row: refresh the control without changing it's value
             EndIf
@@ -1364,7 +1353,7 @@ Local lRet := .F., lRowEdited, lSomethingEdited, nRecNo, lRowAppended, nNewRec, 
       Return .F.
    EndIf
    If ! HB_IsNumeric( nRow )
-      nRow := ::FirstSelectedItem
+      nRow := ::CurrentRow
    EndIf
    If ! HB_IsNumeric( nCol )
       nCol := ::FirstColInOrder
@@ -1533,17 +1522,16 @@ Local lRet := .F., lRowEdited, lSomethingEdited, nRecNo, lRowAppended, nNewRec, 
          nRow := ::CurrentRow := ::ItemCount
          lAppend := .T.
          ::lAppendMode := .T.
-      ElseIf nRow < ::ItemCount()
+      ElseIf nRow < ::ItemCount
          // Edit next row
          If lRowEdited .AND. lRefresh
             nRecNo := ( cWorkArea )->( RecNo() )
             nNewRec := ::aRecMap[ nRow + 1 ]
             ::DbGoTo( nNewRec )
             ::Update( nRow + 1 )
-            ::ScrollUpdate()
-            ::DbGoTo( nRecNo )
             nRow := aScan( ::aRecMap, nNewRec )
-            ListView_SetCursel( ::hWnd, nRow )
+            ::CurrentRow := nRow
+            ::DbGoTo( nRecNo )
          Else
             nRow ++
             ::FastUpdate( 1, nRow )
@@ -1627,7 +1615,7 @@ Return lSomethingEdited
 *-----------------------------------------------------------------------------*
 METHOD BrowseOnChange() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-LOCAL cWorkArea, lSync
+Local cWorkArea, lSync
 
    If ::lUpdCols
       ::UpdateColors()
@@ -1680,10 +1668,10 @@ Local ActualRecord, RecordCount
 
    If nRow < 1 .OR. nRow > Len( ::aRecMap )
       ::nRecLastValue := 0
-      ListView_ClearCursel( ::hWnd, 0 )
+      ::CurrentRow := 0
    Else
       ::nRecLastValue := ::aRecMap[ nRow ]
-      ListView_SetCursel( ::hWnd, nRow )
+      ::CurrentRow := nRow
    EndIf
 
 Return Self
@@ -1729,21 +1717,37 @@ Local ActualRecord, RecordCount, cWorkArea
 Return Self
 
 *-----------------------------------------------------------------------------*
+METHOD CurrentRow( nValue ) CLASS TOBrowse
+*-----------------------------------------------------------------------------*
+
+   If ValType( nValue ) == "N"
+      ::ScrollUpdate()
+      If nValue < 1 .OR. nValue > ::ItemCount
+         If ::CurrentRow # 0
+            ListView_ClearCursel( ::hWnd, 0 )
+         EndIf
+      Else
+         ListView_SetCursel( ::hWnd, nValue )
+      EndIf
+      ::nRowPos := ::FirstSelectedItem
+   EndIf
+
+Return ::FirstSelectedItem
+
+*-----------------------------------------------------------------------------*
 METHOD Refresh() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local s, _RecNo, v, cWorkArea, hWnd
+Local s, _RecNo, v, cWorkArea
 
    cWorkArea := ::WorkArea
-   hWnd := ::hWnd
-
    If Select( cWorkArea ) == 0
       ::DeleteAllItems()
       Return Self
    EndIf
 
-   v := ::nRecLastValue           // This is a record number
+   v := ::nRecLastValue       
 
-   s := ::FirstSelectedItem       // This is a row
+   s := ::CurrentRow       
 
    _RecNo := ( cWorkArea )->( RecNo() )
 
@@ -1781,16 +1785,14 @@ Local s, _RecNo, v, cWorkArea, hWnd
       Return Self
    EndIf
 
-   ::ScrollUpdate()
-
    If s != 0
       ::DbSkip( - s + 1 )
    EndIf
 
    ::Update()
 
-   ListView_SetCursel( hWnd, aScan( ::aRecMap, v ) )
    ::nRecLastValue := v
+   ::CurrentRow := aScan( ::aRecMap, v )
 
    ::DbGoTo( _RecNo )
 
@@ -1808,7 +1810,7 @@ Local nItem
       ::RecCount := 0
       uValue := 0
    Else
-      nItem := ::FirstSelectedItem
+      nItem := ::CurrentRow
       If nItem > 0 .AND. nItem <= Len( ::aRecMap )
          uValue := ::aRecMap[ nItem ]
       Else
@@ -2017,12 +2019,8 @@ Local nvKey, r, DeltaSelect, lGo, uValue, nNotify := GetNotifyCode( lParam )
       EndIf
 
       If ::bPosition == -2 .OR. ::bPosition == 9
-         ::nDelayedClick := { ::FirstSelectedItem, 0, uValue, Nil }
-         If ::nEditRow > 0
-            ListView_SetCursel( ::hWnd, ::nEditRow )
-         Else
-            ListView_ClearCursel( ::hWnd )
-         EndIf
+         ::nDelayedClick := { ::CurrentRow, 0, uValue, Nil }
+         ::CurrentRow := ::nEditRow
       Else
          If HB_IsBlock( ::OnClick )
             If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. uValue <= 0
@@ -2039,16 +2037,16 @@ Local nvKey, r, DeltaSelect, lGo, uValue, nNotify := GetNotifyCode( lParam )
             ::CheckItem( uValue, ! ::CheckItem( uValue ) )
          Else
             // select item
-            r := ::FirstSelectedItem
+            r := ::CurrentRow
             If r > 0
                DeltaSelect := r - ::nEditRow
                ::FastUpdate( DeltaSelect, r )
                ::BrowseOnChange()
             ElseIf ::lNoneUnsels
-               ListView_ClearCursel( ::hWnd )
+               ::CurrentRow := 0
                ::BrowseOnChange()
             Else
-               ListView_SetCursel( ::hWnd, ::nEditRow )
+               ::CurrentRow := ::nEditRow
             EndIf
          EndIf
       EndIf
@@ -2065,12 +2063,8 @@ Local nvKey, r, DeltaSelect, lGo, uValue, nNotify := GetNotifyCode( lParam )
       EndIf
 
       If ::bPosition == -2 .OR. ::bPosition == 9
-         ::nDelayedClick := { ::FirstSelectedItem, 0, uValue, _GetGridCellData( Self, ListView_ItemActivate( lParam ) ) }
-         If ::nEditRow > 0
-            ListView_SetCursel( ::hWnd, ::nEditRow )
-         Else
-            ListView_ClearCursel( ::hWnd )
-         EndIf
+         ::nDelayedClick := { ::CurrentRow, 0, uValue, _GetGridCellData( Self, ListView_ItemActivate( lParam ) ) }
+         ::CurrentRow := ::nEditRow
       Else
          If HB_IsBlock( ::OnRClick )
             If ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. uValue <= 0
@@ -2083,16 +2077,16 @@ Local nvKey, r, DeltaSelect, lGo, uValue, nNotify := GetNotifyCode( lParam )
             ::CheckItem( uValue, ! ::CheckItem( uValue ) )
          Else
             // select item
-            r := ::FirstSelectedItem
+            r := ::CurrentRow
             If r > 0
                DeltaSelect := r - ::nEditRow
                ::FastUpdate( DeltaSelect, r )
                ::BrowseOnChange()
             ElseIf ::lNoneUnsels
-               ListView_ClearCursel( ::hWnd )
+               ::CurrentRow := 0
                ::BrowseOnChange()
             Else
-               ListView_SetCursel( ::hWnd, ::nEditRow )
+               ::CurrentRow := ::nEditRow
             EndIf
          EndIf
 
@@ -2108,23 +2102,19 @@ Local nvKey, r, DeltaSelect, lGo, uValue, nNotify := GetNotifyCode( lParam )
 
    ElseIf nNotify == LVN_BEGINDRAG
       If ::bPosition == -2 .OR. ::bPosition == 9
-         ::nDelayedClick := { ::FirstSelectedItem, 0, 0, Nil }
-         If ::nEditRow > 0
-            ListView_SetCursel( ::hWnd, ::nEditRow )
-         Else
-            ListView_ClearCursel( ::hWnd )
-         EndIf
+         ::nDelayedClick := { ::CurrentRow, 0, 0, Nil }
+         ::CurrentRow := ::nEditRow
       Else
-         r := ::FirstSelectedItem
+         r := ::CurrentRow
          If r > 0
             DeltaSelect := r - ::nEditRow
             ::FastUpdate( DeltaSelect, r )
             ::BrowseOnChange()
          ElseIf ::lNoneUnsels
-            ListView_ClearCursel( ::hWnd )
+            ::CurrentRow := 0
             ::BrowseOnChange()
          Else
-            ListView_SetCursel( ::hWnd, ::nEditRow )
+            ::CurrentRow := ::nEditRow
          EndIf
       EndIf
       Return Nil
@@ -2355,7 +2345,6 @@ CLASS TOBrowseByCell FROM TOBrowse
       ScrollToRight
       SetItemColor
       SetRangeColor
-      Value                       it's used by ::CurrentRow() for painting the grid, triggers on change event only if ::lNoneUnsels is .T.
 */
 ENDCLASS
 
@@ -2577,27 +2566,24 @@ Local nItem
 
    If Select( ::WorkArea ) == 0
       ::RecCount := 0
-      ::nRowPos := 0
+      ::CurrentRow := 0
       ::nColPos := 0
       ::nRecLastValue := 0
       uValue := { 0, 0 }
-      ListView_ClearCursel( ::hWnd )
    ElseIf ::ItemCount == 0
-      ::nRowPos := 0
+      ::CurrentRow := 0
       ::nColPos := 0
       ::nRecLastValue := 0
       uValue := { 0, 0 }
-      ListView_ClearCursel( ::hWnd )
    Else
-      ::nRowPos := ::FirstSelectedItem
+      ::nRowPos := ::CurrentRow
       If ::nRowPos > 0 .AND. ::nRowPos <= Len( ::aRecMap ) .AND. ::nColPos >= 1 .AND. ::nColPos <= Len( ::aHeaders )
          uValue := { ::aRecMap[ ::nRowPos ], ::nColPos }
       Else
-         ::nRowPos := 0
+         ::CurrentRow := 0
          ::nColPos := 0
          ::nRecLastValue := 0
          uValue := { 0, 0 }
-         ListView_ClearCursel( ::hWnd )
       EndIf
    EndIf
 
@@ -2764,11 +2750,7 @@ Local nvKey, r, DeltaSelect, lGo, aCellData, uValue, nNotify := GetNotifyCode( l
       If ::bPosition == -2 .OR. ::bPosition == 9
          aCellData := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
          ::nDelayedClick := { aCellData[ 1 ], aCellData[ 2 ], uValue, Nil }
-         If ::nEditRow > 0
-            ListView_SetCursel( ::hWnd, ::nEditRow )
-         Else
-            ListView_ClearCursel( ::hWnd )
-         EndIf
+         ::CurrentRow := ::nEditRow
       Else
          If HB_IsBlock( ::OnClick )
             If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. uValue <= 0
@@ -2785,16 +2767,16 @@ Local nvKey, r, DeltaSelect, lGo, aCellData, uValue, nNotify := GetNotifyCode( l
             ::CheckItem( uValue, ! ::CheckItem( uValue ) )
          Else
             // select item
-            r := ::nRowPos
+            r := ::CurrentRow
             If r > 0
                DeltaSelect := r - ::nEditRow
                ::FastUpdate( DeltaSelect, r )
                ::BrowseOnChange()
             ElseIf ::lNoneUnsels
-               ListView_ClearCursel( ::hWnd )
+               ::CurrentRow := 0
                ::BrowseOnChange()
             Else
-               ListView_SetCursel( ::hWnd, ::nEditRow )
+               ::CurrentRow := ::nEditRow
             EndIf
          EndIf
       EndIf
@@ -2813,11 +2795,7 @@ Local nvKey, r, DeltaSelect, lGo, aCellData, uValue, nNotify := GetNotifyCode( l
       If ::bPosition == -2 .OR. ::bPosition == 9
          aCellData := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
          ::nDelayedClick := { aCellData[ 1 ], aCellData[ 2 ], uValue, aCellData }
-         If ::nEditRow > 0
-            ListView_SetCursel( ::hWnd, ::nEditRow )
-         Else
-            ListView_ClearCursel( ::hWnd )
-         EndIf
+         ::CurrentRow := ::nEditRow
       Else
          If HB_IsBlock( ::OnRClick )
             If ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. uValue <= 0
@@ -2830,16 +2808,16 @@ Local nvKey, r, DeltaSelect, lGo, aCellData, uValue, nNotify := GetNotifyCode( l
             ::CheckItem( uValue, ! ::CheckItem( uValue ) )
          Else
             // select item
-            r := ::nRowPos
+            r := ::CurrentRow
             If r > 0
                DeltaSelect := r - ::nEditRow
                ::FastUpdate( DeltaSelect, r )
                ::BrowseOnChange()
             ElseIf ::lNoneUnsels
-               ListView_ClearCursel( ::hWnd )
+               ::CurrentRow := 0
                ::BrowseOnChange()
             Else
-               ListView_SetCursel( ::hWnd, ::nEditRow )
+               ::CurrentRow := ::nEditRow
             EndIf
          EndIf
 
@@ -2857,22 +2835,18 @@ Local nvKey, r, DeltaSelect, lGo, aCellData, uValue, nNotify := GetNotifyCode( l
       If ::bPosition == -2 .OR. ::bPosition == 9
          aCellData := _GetGridCellData( Self, ListView_ListView( lParam ) )
          ::nDelayedClick := { aCellData[ 1 ], aCellData[ 2 ], 0, Nil }
-         If ::nEditRow > 0
-            ListView_SetCursel( ::hWnd, ::nEditRow )
-         Else
-            ListView_ClearCursel( ::hWnd )
-         EndIf
+         ::CurrentRow := ::nEditRow
       Else
-         r := ::nRowPos
+         r := ::CurrentRow
          If r > 0
             DeltaSelect := r - ::nEditRow
             ::FastUpdate( DeltaSelect, r )
             ::BrowseOnChange()
          ElseIf ::lNoneUnsels
-            ListView_ClearCursel( ::hWnd )
+            ::CurrentRow := 0
             ::BrowseOnChange()
          Else
-            ListView_SetCursel( ::hWnd, ::nEditRow )
+            ::CurrentRow := ::nEditRow
          EndIf
       EndIf
       Return Nil
@@ -3047,6 +3021,7 @@ Return ::Super:EditCell2( @nRow, @nCol, EditControl, uOldValue, @uValue, cMemVar
 *-----------------------------------------------------------------------------*
 METHOD EditItem_B( lAppend, lOneRow ) CLASS TOBrowseByCell
 *-----------------------------------------------------------------------------*
+
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
    ASSIGN lOneRow VALUE lOneRow TYPE "L" DEFAULT .T.
 
@@ -3420,7 +3395,7 @@ Return lSomethingEdited
 *-----------------------------------------------------------------------------*
 METHOD BrowseOnChange() CLASS TOBrowseByCell
 *-----------------------------------------------------------------------------*
-LOCAL cWorkArea, lSync, nRec
+Local cWorkArea, lSync, nRec
 
    If ::lUpdCols
       ::UpdateColors()
@@ -3517,29 +3492,24 @@ Local nRow, nCol, _RecNo, m, hWnd, cWorkArea
             Return Self
          EndIf
 
-         If PCount() < 2
-            ::ScrollUpdate()
-         EndIf
          ::DbSkip( -m + 1 )
-
          ::Update()
-         ::DbGoTo( _RecNo )
-         ListView_SetCursel( hWnd, aScan( ::aRecMap, Value ) )
-
+         ::CurrentRow := aScan( ::aRecMap, Value )
          ::CurrentCol := nCol
+         ::DbGoTo( _RecNo )
 
          _OOHG_ThisEventType := 'BROWSE_ONCHANGE'
          ::BrowseOnChange()
          _OOHG_ThisEventType := ''
       Else
          If ::lNoneUnsels
-            ListView_ClearCursel( ::hWnd, 0 )
+            ::CurrentRow := 0
             ::BrowseOnChange()
          EndIf
       EndIf
    Else
       If ::lNoneUnsels
-         ListView_ClearCursel( ::hWnd, 0 )
+         ::CurrentRow := 0
          ::BrowseOnChange()
       EndIf
    EndIf
@@ -3620,11 +3590,10 @@ Local _RecNo, aBefore, aAfter, lDone := .F., cWorkArea
    aBefore := ::Value
    _RecNo := ( cWorkArea )->( RecNo() )
    ::TopBottom( GO_TOP )
-   ::ScrollUpdate()
    ::Update()
-   ::DbGoTo( _RecNo )
-   ListView_SetCursel( ::hWnd, 1 )
+   ::CurrentRow := 1
    ::CurrentCol := ::FirstColInOrder
+   ::DbGoTo( _RecNo )
    aAfter := ::Value
    lDone := ( aBefore[ 1 ] # aAfter[ 1 ] .OR. aBefore[ 2 ] # aAfter[ 2 ] )
    ::BrowseOnChange()
@@ -3644,14 +3613,14 @@ Local lDone := .F., aBefore, _Recno, cWorkArea
    aBefore := ::Value
    _RecNo := ( cWorkArea )->( RecNo() )
    ::TopBottom( GO_BOTTOM )
-   ::ScrollUpdate()
+
    // If it's for APPEND, leaves a blank line ;)
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
    ::DbSkip( - ::CountPerPage + If( lAppend, 2, 1 ) )
    ::Update()
-   ::DbGoTo( _RecNo )
-   ListView_SetCursel( ::hWnd, Len( ::aRecMap ) )
+   ::CurrentRow := Len( ::aRecMap )
    ::CurrentCol := If( lAppend, ::FirstColInOrder, ::LastColInOrder )
+   ::DbGoTo( _RecNo )
    lDone := ( aBefore[ 1 ] # ::Value[ 1 ] .OR. aBefore[ 2 ] # ::Value[ 2 ] )
    ::BrowseOnChange()
 
@@ -3677,10 +3646,9 @@ Local _RecNo, aBefore, lDone := .F., cWorkArea
          ::DbGoTo( ::aRecMap[ 1 ] )
       EndIf
       ::DbSkip( - ::CountPerPage + 1 )
-      ::ScrollUpdate()
       ::Update()
+      ::CurrentRow := 1
       ::DbGoTo( _RecNo )
-      ListView_SetCursel( ::hWnd, 1 )
       lDone := ( aBefore[ 1 ] # ::Value[ 1 ] .OR. aBefore[ 2 ] # ::Value[ 2 ] )
    Else
       ::FastUpdate( 1 - ::nRowPos, 1 )
@@ -3731,9 +3699,8 @@ Local _RecNo, s, lDone := .F., cWorkArea
          ::DbGoTo( ::aRecMap[ Len( ::aRecMap ) ] )
          lDone := .T.
       EndIf
-      ::ScrollUpdate()
+      ::CurrentRow := Len( ::aRecMap )
       ::DbGoTo( _RecNo )
-      ListView_SetCursel( ::hWnd, Len( ::aRecMap ) )
    Else
       ::FastUpdate( ::CountPerPage - s, Len( ::aRecMap ) )
       lDone := .T.
@@ -3791,13 +3758,12 @@ Local s, _RecNo, nLen, lDone := .F., cWorkArea
          EndIf
       EndIf
 
-      ::ScrollUpdate()
+      ::CurrentRow := 1
+      If HB_IsLogical( lLast ) .AND. lLast
+         ::CurrentCol := ::LastColInOrder
+      EndIf
       ::DbGoTo( _RecNo )
       If Len( ::aRecMap ) != 0
-         ListView_SetCursel( ::hWnd, 1 )
-         If HB_IsLogical( lLast ) .AND. lLast
-            ::CurrentCol := ::LastColInOrder
-         EndIf
          lDone := .T.
       EndIf
    Else
@@ -3864,12 +3830,11 @@ Local s, _RecNo, nLen, lDone := .F., cWorkArea
          ::DbGoTo( ATail( ::aRecMap ) )
          lDone := .T.
       EndIf
-      ::ScrollUpdate()
-      ::DbGoTo( _RecNo )
-      ListView_SetCursel( ::hWnd, Len( ::aRecMap ) )
+      ::CurrentRow := Len( ::aRecMap )
       If HB_IsLogical( lFirst ) .AND. lFirst
          ::CurrentCol := ::FirstColInOrder
       EndIf
+      ::DbGoTo( _RecNo )
    Else
       ::FastUpdate( 1, s + 1 )
       lDone := .T.
@@ -3910,7 +3875,7 @@ Local r, nClientWidth, nScrollWidth, lColChanged
       If  nCol < 1 .OR. nCol > Len( ::aHeaders )
          ::nRowPos := 0
          ::nColPos := 0
-         ListView_ClearCursel( ::hWnd, 0 )
+         ::CurrentRow := 0
       Else
          lColChanged := ( ::nColPos # nCol )
          ::nColPos := nCol
@@ -3942,7 +3907,7 @@ Local r, nClientWidth, nScrollWidth, lColChanged
          EndIf
       EndIf
    Else
-      ::nRowPos := ::FirstSelectedItem
+      ::nRowPos := ::CurrentRow  
       If ::nRowPos == 0
          ::nColPos := 0
       EndIf

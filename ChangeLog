@@ -1,11 +1,25 @@
 /*
- * $Id: ChangeLog,v 1.1483 2015-05-21 01:10:29 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1484 2015-05-22 00:49:27 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-05-21 21:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/changelog.htm
+     * Updated.
+   * source/h_browse.prg
+     ! RTE in TOBrowse:EditAllCells() because ::nRowPos is 0.
+     + TOBrowse:CurrentRow().
+     * Comments.
+     * Format.
+     * ::FirstSelectedItem replaced with ::CurrentRow.
+     * Use ::CurrentRow( nNewRow ) instead of
+       ::ScrollUpdate() + ListView_SetCurSel( nNewRow ).
+     - Unneeded code.
+     * Use ::CurrentRow( 0 ) instead of ListView_ClearCurSel().
 
 2015-05-20 22:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * manual/changelog.htm

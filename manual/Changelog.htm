@@ -1,5 +1,5 @@
 <!--
-$Id: Changelog.htm,v 1.50 2015-05-21 01:10:29 fyurisich Exp $
+$Id: Changelog.htm,v 1.51 2015-05-22 00:49:27 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -142,6 +142,20 @@ CHANGELOG</div>
 </div>
 <div id="winchm_template_content">
 <pre>
+2015-05-21 21:50 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * manual/changelog.htm
+     * Updated.
+   * source/h_browse.prg
+     ! RTE in TOBrowse:EditAllCells() because ::nRowPos is 0.
+     + TOBrowse:CurrentRow().
+     * Comments.
+     * Format.
+     * ::FirstSelectedItem replaced with ::CurrentRow.
+     * Use ::CurrentRow( nNewRow ) instead of
+       ::ScrollUpdate() + ListView_SetCurSel( nNewRow ).
+     - Unneeded code.
+     * Use ::CurrentRow( 0 ) instead of ListView_ClearCurSel().
+
 2015-05-20 22:10 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * manual/changelog.htm
      * Updated.
