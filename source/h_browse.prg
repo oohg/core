@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.158 2015-05-22 02:56:21 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.159 2015-05-26 20:41:35 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1232,7 +1232,7 @@ Local lRet, lSomethingEdited, lRowAppended, nRecNo, cWorkArea
    If lAppend
       ::GoBottom( .T. )
       ::InsertBlank( ::ItemCount + 1 )
-      ::CurrentRow := ::ItemCount
+      nRow := ::CurrentRow := ::ItemCount
       ::lAppendMode := .T.
    Else
       If ! HB_IsNumeric( nRow )

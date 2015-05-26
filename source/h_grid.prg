@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.287 2015-05-20 02:05:45 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.288 2015-05-26 20:41:36 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1377,12 +1377,16 @@ Local aItems, lSomethingEdited := .F.
    If ::lAppendMode
       // Before calling ::EditItem an empty item was added at ::ItemCount
       nItem := ::ItemCount
+      lChange := .T.
    ElseIf lAppend
       // Add new item, ignore ::AllowAppend
       ::lAppendMode := .T.
       ::InsertBlank( ::ItemCount + 1 )
-      ::SetControlValue( ::ItemCount )
       nItem := ::ItemCount
+      ASSIGN lChange VALUE lChange TYPE "L" DEFAULT ::lChangeBeforeEdit
+      If lChange
+         ::SetControlValue( nItem )
+      EndIf
    Else
       // Edit item nItem
       If ! HB_IsNumeric( nItem )
@@ -1408,7 +1412,9 @@ Local aItems, lSomethingEdited := .F.
          ::DoEvent( ::OnAbortEdit, "ABORTEDIT", { nItem, 0 } )
          If ::lAppendMode
             ::DeleteItem( ::ItemCount )
-            ::SetControlValue( ::ItemCount )
+            If lChange
+               ::SetControlValue( ::ItemCount )
+            EndIf
          EndIf
          Exit
       EndIf
@@ -1416,10 +1422,9 @@ Local aItems, lSomethingEdited := .F.
       lSomethingEdited := .T.
       ::Item( nItem, ASize( aItems, Len( ::aHeaders ) ) )
       _SetThisCellInfo( ::hWnd, nItem, 1, Nil )
+      ::DoEvent( ::OnEditCell, "EDITCELL", { nItem, 0 } )
       If ::lAppendMode
          ::DoEvent( ::OnAppend, "APPEND", { nItem } )
-      Else
-         ::DoEvent( ::OnEditCell, "EDITCELL", { nItem, 0 } )
       EndIf
       _ClearThisCellInfo()
 
@@ -1427,12 +1432,16 @@ Local aItems, lSomethingEdited := .F.
          Exit
       ElseIf nItem < ::ItemCount
          nItem ++
-         ::SetControlValue( nItem )
+         If lChange
+            ::SetControlValue( nItem )
+         EndIf
       ElseIf lAppend .OR. ::AllowAppend
          ::lAppendMode := .T.
          ::InsertBlank( ::ItemCount + 1 )
          nItem := ::ItemCount
-         ::SetControlValue( nItem )
+         If lChange
+            ::SetControlValue( nItem )
+         EndIf
       Else
          Exit
       EndIf
