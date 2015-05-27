@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.160 2015-05-27 21:38:50 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.161 2015-05-27 22:30:49 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -3486,7 +3486,7 @@ Local nRow, nCol, _RecNo, m, hWnd, cWorkArea
 
          _RecNo := ( cWorkArea )->( RecNo() )
 
-         ::DbGoTo( Value )
+         ::DbGoTo( nRow )
          If ::Eof()
             ::DbGoTo( _RecNo )
             Return Self
@@ -3495,7 +3495,7 @@ Local nRow, nCol, _RecNo, m, hWnd, cWorkArea
          // Enforce filters in use
          ::DbSkip()
          ::DbSkip( -1 )
-         If ( cWorkArea )->( RecNo() ) != Value
+         If ( cWorkArea )->( RecNo() ) != nRow
             ::DbGoTo( _RecNo )
             Return Self
          EndIf
@@ -3506,7 +3506,7 @@ Local nRow, nCol, _RecNo, m, hWnd, cWorkArea
          ::DbSkip( -m + 1 )
          ::Update()
          ::DbGoTo( _RecNo )
-         ::CurrentRow := aScan( ::aRecMap, Value )
+         ::CurrentRow := aScan( ::aRecMap, nRow )
          ::CurrentCol := nCol
 
          _OOHG_ThisEventType := 'BROWSE_ONCHANGE'

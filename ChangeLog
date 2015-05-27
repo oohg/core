@@ -1,11 +1,19 @@
 /*
- * $Id: ChangeLog,v 1.1487 2015-05-27 21:38:49 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1488 2015-05-27 22:30:48 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-05-27 19:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./changelog.htm
+     * Previous entry.
+   * manual/changelog.htm
+     * Updated.
+   * source/h_browse.prg
+     ! RTE in TOBrowseByCell:SetValue().
 
 2015-05-27 18:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * manual/changelog.htm
