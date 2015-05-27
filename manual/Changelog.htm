@@ -1,5 +1,5 @@
 <!--
-$Id: Changelog.htm,v 1.53 2015-05-26 20:41:35 fyurisich Exp $
+$Id: Changelog.htm,v 1.54 2015-05-27 21:38:50 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -142,6 +142,26 @@ CHANGELOG</div>
 </div>
 <div id="winchm_template_content">
 <pre>
+2015-05-27 18:38 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * manual/changelog.htm
+     * Updated.
+   * include/i_altsyntax.prg
+   * include/i_grid.prg
+     + ON INSERT clause.
+   * source/h_grid.prg
+     + Data OnInsertItem.
+     + Support for ON INSERT event.
+       It's fired after inserting a blank item.
+       You can use it to set default values.
+     * ::aHeadClick size is adjusted at define time.
+   * source/h_xbrowse.prg
+     ! TXBrowse:EditCell behaviour when ::RefreshType is REFRESH_DEFAULT.
+     + New parameter to TGrid:Define() calls.
+     + New parameter to TXBrowseByCell:Define2().
+   * source/h_xbrowse.prg
+     + New parameter to TGrid:Define() calls.
+     + New parameter to TGridByCell:Define2().
+
 2015-05-26 17:41 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * manual/changelog.htm
      * Updated.

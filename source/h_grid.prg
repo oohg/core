@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.288 2015-05-26 20:41:36 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.289 2015-05-27 21:38:50 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -179,6 +179,7 @@ CLASS TGrid FROM TControl
    DATA onDelete                  INIT Nil
    DATA OnDispInfo                INIT Nil
    DATA OnEditCell                INIT Nil
+   DATA OnInsert                  INIT Nil
    DATA Picture                   INIT Nil
    DATA RClickOnCheckbox          INIT .T.
    DATA ReadOnly                  INIT Nil
@@ -296,7 +297,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
                bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
-               lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick ) CLASS TGrid
+               lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
+               oninsert ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 
    ::Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
@@ -314,7 +316,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
               bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
               lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
-              lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick )
+              lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
+              oninsert )
 
 Return Self
 
@@ -334,7 +337,8 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                 bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
                 bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
                 lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
-                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick ) CLASS TGrid
+                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
+                oninsert ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local ControlHandle, aImageList, i
 
@@ -361,11 +365,12 @@ Local ControlHandle, aImageList, i
 
    If HB_IsArray( aHeadClick )
       ::aHeadClick := aHeadClick
-   ElseIf HB_IsBlock( aHeadClick )
-      ::aHeadClick := Array( Len( ::aHeaders ) )
-      AFill( ::aHeadClick, aHeadClick )
+      ASize( ::aHeadClick, Len( ::aHeaders ) )
    Else
-      ::aHeadClick := {}
+      ::aHeadClick := Array( Len( ::aHeaders ) )
+      If HB_IsBlock( aHeadClick )
+         AFill( ::aHeadClick, aHeadClick )
+      EndIf
    EndIf
 
    If HB_IsLogical( lFixedCols )
@@ -528,6 +533,7 @@ Local ControlHandle, aImageList, i
    ASSIGN ::OnEditCell     VALUE editcell       TYPE "B"
    ASSIGN ::OnAbortEdit    VALUE abortedit      TYPE "B"
    ASSIGN ::OnRClick       VALUE onrclick       TYPE "B"
+   ASSIGN ::OnInsert       VALUE oninsert       TYPE "B"
 
 Return Self
 
@@ -3042,14 +3048,12 @@ Local lvc, _ThisQueryTemp, nvkey, uValue, lGo, aItem
       EndIf
 
    ElseIf nNotify == LVN_COLUMNCLICK
-      If HB_IsArray ( ::aHeadClick )
-         lvc := GetGridColumn( lParam ) + 1
-         If Len( ::aHeadClick ) >= lvc
-            _SetThisCellInfo( ::hWnd, 0, lvc )
-            ::DoEvent( ::aHeadClick[ lvc ], "HEADCLICK", { lvc } )
-            _ClearThisCellInfo()
-            Return Nil
-         EndIf
+      lvc := GetGridColumn( lParam ) + 1
+      If HB_IsBlock( ::aHeadClick[ lvc ] )
+         _SetThisCellInfo( ::hWnd, 0, lvc )
+         ::DoEvent( ::aHeadClick[ lvc ], "HEADCLICK", { lvc } )
+         _ClearThisCellInfo()
+         Return Nil
       EndIf
 
    ElseIf nNotify == LVN_ENDSCROLL
@@ -3208,7 +3212,11 @@ Local aGrid
       AIns( aGrid, nItem )
    EndIf
 
-Return InsertListViewItem( ::hWnd, Array( Len( ::aHeaders ) ), nItem )
+   nItem := InsertListViewItem( ::hWnd, Array( Len( ::aHeaders ) ), nItem )
+
+   ::DoEvent( ::OnInsert, "INSERT", { nItem } )
+
+Return nItem
 
 *-----------------------------------------------------------------------------*
 METHOD DeleteItem( nItem ) CLASS TGrid
@@ -3840,7 +3848,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
                bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
-               lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick ) CLASS TGridMulti
+               lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
+               oninsert ) CLASS TGridMulti
 *-----------------------------------------------------------------------------*
 Local nStyle := 0
 
@@ -3861,7 +3870,8 @@ Local nStyle := 0
               bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
               bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
               lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
-              lExtDbl, lSilent, lAltA, lNoShowAlways, .T., lCBE, onrclick )
+              lExtDbl, lSilent, lAltA, lNoShowAlways, .T., lCBE, onrclick, ;
+              oninsert )
 
 Return Self
 
@@ -4024,7 +4034,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
                bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
-               lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick ) CLASS TGridByCell
+               lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
+               oninsert ) CLASS TGridByCell
 *-----------------------------------------------------------------------------*
 
    ASSIGN lFocusRect          VALUE lFocusRect TYPE "L" DEFAULT .F.
@@ -4046,7 +4057,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
               bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
               lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
-              lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, onrclick )
+              lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, onrclick, ;
+              oninsert )
 
    // Search the current column
    ::SearchCol := -1

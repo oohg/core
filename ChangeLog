@@ -1,11 +1,31 @@
 /*
- * $Id: ChangeLog,v 1.1486 2015-05-26 20:41:35 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1487 2015-05-27 21:38:49 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-05-27 18:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/changelog.htm
+     * Updated.
+   * include/i_altsyntax.prg
+   * include/i_grid.prg
+     + ON INSERT clause.
+   * source/h_grid.prg
+     + Data OnInsertItem.
+     + Support for ON INSERT event.
+       It's fired after inserting a blank item.
+       You can use it to set default values.
+     * ::aHeadClick size is adjusted at define time.
+   * source/h_xbrowse.prg
+     ! TXBrowse:EditCell behaviour when ::RefreshType is REFRESH_DEFAULT.
+     + New parameter to TGrid:Define() calls.
+     + New parameter to TXBrowseByCell:Define2().
+   * source/h_xbrowse.prg
+     + New parameter to TGrid:Define() calls.
+     + New parameter to TGridByCell:Define2().
 
 2015-05-26 17:41 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * manual/changelog.htm

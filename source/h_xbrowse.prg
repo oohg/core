@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.139 2015-05-20 22:31:04 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.140 2015-05-27 21:38:50 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -297,7 +297,7 @@ Local nWidth2, nCol2, oScroll, z
               bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, , ;
               , DelMsg, lNoDelMsg, AllowAppend, , lNoModal, ;
               lFixedCtrls, bHeadRClick, , , ;
-              lExtDbl, lSilent, lAltA, lNoShowAlways, .F., .T., onrclick )
+              lExtDbl, lSilent, lAltA, lNoShowAlways, .F., .T., onrclick, )
 
    ::FixBlocks( lFixedBlocks )
 
@@ -1899,10 +1899,10 @@ Local lRet, bReplaceField, oWorkArea
             ::DoEvent( ::OnAppend, "APPEND" )
          EndIf
       EndIf
-      If ::RefreshType == REFRESH_NO
-         ::RefreshRow( nRow )
+      If ::RefreshType == REFRESH_FORCE
+         ::Refresh( nRow )
       Else
-         ::Refresh()
+         ::RefreshRow( nRow )
       EndIf
       If ! ::lCalledFromClass .AND. ::bPosition == 9                  // MOUSE EXIT
          // Edition window lost focus
@@ -2961,13 +2961,15 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                 bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
                 bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
                 lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
-                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick ) CLASS TXBrowseByCell
+                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
+                oninsert ) CLASS TXBrowseByCell
 *-----------------------------------------------------------------------------*
 
    Empty( nStyle )
    ASSIGN lFocusRect VALUE lFocusRect TYPE "L" DEFAULT .F.
    Empty( lNone )
    Empty( lCBE )
+   Empty( oninsert )
 
    ::Super:Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                     aRows, value, fontname, fontsize, tooltip, change, dblclick, ;
@@ -2984,7 +2986,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                     bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
                     bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
                     lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
-                    lExtDbl, lSilent, lAltA, lNoShowAlways, .F., .T., onrclick )
+                    lExtDbl, lSilent, lAltA, lNoShowAlways, .F., .T., onrclick, )
 
    // By default, search in the current column
    ::SearchCol := -1

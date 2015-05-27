@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.123 2015-05-20 22:31:03 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.124 2015-05-27 21:38:50 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -90,6 +90,7 @@ AUXILIARY VARIABLES
 #xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
 #xtranslate _OOHG_ActiveControlBackground             => _OOHG_ActiveControlInfo \[  27 \]
 
+#xtranslate _OOHG_ActiveControlOnInsert               => _OOHG_ActiveControlInfo \[  89 \]
 #xtranslate _OOHG_ActiveControlOnRClick               => _OOHG_ActiveControlInfo \[  90 \]
 #xtranslate _OOHG_ActiveControlExtDblClick            => _OOHG_ActiveControlInfo \[  91 \]
 #xtranslate _OOHG_ActiveControlExcludeArea            => _OOHG_ActiveControlInfo \[  92 \]
@@ -2312,7 +2313,8 @@ GRID
       _OOHG_ActiveControlShowAll          := .F. ;;
       _OOHG_ActiveControlAutoSkip         := .F. ;;
       _OOHG_ActiveControlDisplayChange    := NIL ;;
-      _OOHG_ActiveControlOnRClick         := NIL
+      _OOHG_ActiveControlOnRClick         := NIL ;;
+      _OOHG_ActiveControlOnInsert         := NIL
 
 #xcommand SILENT <silent> ;
    => ;
@@ -2474,6 +2476,14 @@ GRID
    => ;
       _OOHG_ActiveControlOnRClick := <{action}>
 
+#xcommand ONINSERT <action> ;
+   => ;
+      _OOHG_ActiveControlOnInsert := <{action}>
+
+#xcommand ON INSERT <action> ;
+   => ;
+      _OOHG_ActiveControlOnInsert := <{action}>
+
 #xcommand END GRID ;
    => ;
       _OOHG_SelectSubClass( IIF( _OOHG_ActiveControlByCell, TGridByCell(), IIF( _OOHG_ActiveControlMultiSelect, TGridMulti(), TGrid() ) ), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
@@ -2565,7 +2575,8 @@ GRID
             _OOHG_ActiveControlShowAll, ;
             _OOHG_ActiveControlAutoSkip, ;
             _OOHG_ActiveControlDisplayChange, ;
-            _OOHG_ActiveControlOnRClick )
+            _OOHG_ActiveControlOnRClick, ;
+            _OOHG_ActiveControlOnInsert )
 
 /*---------------------------------------------------------------------------
 BROWSE
@@ -2906,7 +2917,7 @@ XBROWSE
       _OOHG_ActiveControlOnRClick         := NIL ;;
       _OOHG_ActiveControlCheckBoxes       := .F. ;;
       _OOHG_ActiveControlOnCheckChange    := NIL ;;
-      _OOHG_ActiveControlOnTextFilled     := NIL
+      _OOHG_ActiveControlOnTextFilled     := NIL 
 
 #xcommand END XBROWSE ;
    => ;
