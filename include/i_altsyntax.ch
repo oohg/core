@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.124 2015-05-27 21:38:50 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.125 2015-05-30 00:16:13 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2662,7 +2662,8 @@ BROWSE
       _OOHG_ActiveControlOnRClick         := NIL ;;
       _OOHG_ActiveControlCheckBoxes       := .F. ;;
       _OOHG_ActiveControlOnCheckChange    := NIL ;;
-      _OOHG_ActiveControlOnTextFilled     := NIL
+      _OOHG_ActiveControlOnTextFilled     := NIL ;;
+      _OOHG_ActiveControlDefaultYear      := NIL
 
 #xcommand DELETEWHEN <delwhen> ;
    => ;
@@ -2735,6 +2736,10 @@ BROWSE
 #xcommand ON ROWREFRESH <block> ;
    => ;
       _OOHG_ActiveControlOnTextFilled := <{block}>
+
+#xcommand DEFAULTVALUES <aDefVal> ;
+   => ;
+      _OOHG_ActiveControlDefaultYear := <aDefVal>
 
 #xcommand END BROWSE ;
    => ;
@@ -2837,7 +2842,8 @@ BROWSE
             _OOHG_ActiveControlOnRClick, ;
             _OOHG_ActiveControlCheckBoxes, ;
             _OOHG_ActiveControlOnCheckChange, ;
-            _OOHG_ActiveControlOnTextFilled )
+            _OOHG_ActiveControlOnTextFilled, ;
+            _OOHG_ActiveControlDefaultYear )
 
 /*---------------------------------------------------------------------------
 XBROWSE
@@ -2917,7 +2923,8 @@ XBROWSE
       _OOHG_ActiveControlOnRClick         := NIL ;;
       _OOHG_ActiveControlCheckBoxes       := .F. ;;
       _OOHG_ActiveControlOnCheckChange    := NIL ;;
-      _OOHG_ActiveControlOnTextFilled     := NIL 
+      _OOHG_ActiveControlOnTextFilled     := NIL ;;
+      _OOHG_ActiveControlDefaultYear      := NIL
 
 #xcommand END XBROWSE ;
    => ;
@@ -3014,7 +3021,8 @@ XBROWSE
             _OOHG_ActiveControlOnRClick, ;
             _OOHG_ActiveControlCheckBoxes, ;
             _OOHG_ActiveControlOnCheckChange, ;
-            _OOHG_ActiveControlOnTextFilled )
+            _OOHG_ActiveControlOnTextFilled, ;
+            _OOHG_ActiveControlDefaultYear )
 
 /*---------------------------------------------------------------------------
 HYPERLINK

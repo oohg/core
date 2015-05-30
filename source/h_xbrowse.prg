@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.140 2015-05-27 21:38:50 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.141 2015-05-30 00:16:14 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -61,6 +61,7 @@ STATIC _OOHG_XBrowseFixedControls := .F.
 
 CLASS TXBrowse FROM TGrid
    DATA aColumnBlocks             INIT Nil
+   DATA aDefaultValues            INIT Nil
    DATA aFields                   INIT Nil
    DATA aReplaceField             INIT Nil
    DATA Bof                       INIT .F.
@@ -224,7 +225,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                bBeforeAutofit, lLikeExcel, lButtons, lNoDelMsg, lFixedCtrls, ;
                lNoShowEmptyRow, lUpdCols, bHeadRClick, lNoModal, lExtDbl, ;
                lSilent, lAltA, lNoShowAlways, onrclick, lCheckBoxes, oncheck, ;
-               rowrefresh ) CLASS TXBrowse
+               rowrefresh, aDefaultValues ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local nWidth2, nCol2, oScroll, z
 
@@ -238,6 +239,14 @@ Local nWidth2, nCol2, oScroll, z
    ASSIGN ::lNoShowEmptyRow VALUE lNoShowEmptyRow TYPE "L"
    ASSIGN ::lUpdCols        VALUE lUpdCols        TYPE "L"
    ASSIGN lAltA             VALUE lAltA           TYPE "L" DEFAULT .T.
+
+   If HB_IsArray( aDefaultValues )
+      ::aDefaultValues := aDefaultValues
+      ASize( ::aDefaultValues, Len( ::aHeaders ) )
+   Else
+      ::aDefaultValues := Array( Len( ::aHeaders ) )
+       AFill( ::aDefaultValues, aDefaultValues )
+   EndIf
 
    If ValType( columninfo ) == "A" .AND. LEN( columninfo ) > 0
       If ValType( ::aFields ) == "A"
@@ -1754,7 +1763,7 @@ Local aItems, aMemVars, aReplaceFields, aEditControls, l
    For z := 1 To l
       oEditControl := aEditControls[ z ]
       uOldValue := cMemVar := bReplaceField := Nil
-      ::GetCellType( z, @oEditControl, @uOldValue, @cMemVar, @bReplaceField )
+      ::GetCellType( z, @oEditControl, @uOldValue, @cMemVar, @bReplaceField, lAppend )
       aEditControls[ z ] := oEditControl
       If ValType( uOldValue ) $ "CM"
          uOldValue := AllTrim( uOldValue )
@@ -1832,7 +1841,7 @@ Return ! Empty( aItems )
 *-----------------------------------------------------------------------------*
 METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPos, lChange, lAppend ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
-Local lRet, bReplaceField, oWorkArea
+Local lRet, bReplaceField, oWorkArea, i, aItem, aRepl, aVals, oCtr, uVal, bRep
 
    If ::lLocked
       Return .F.
@@ -1860,8 +1869,9 @@ Local lRet, bReplaceField, oWorkArea
     * When the edition is aborted, the caller must deal with the added row
     * (typicaly it's deleted using method GoBottom).
     */
+   oWorkArea := ::oWorkArea
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
-   If ::oWorkArea:EOF() .AND. ! lAppend .AND. ! ::AllowAppend
+   If oWorkArea:EOF() .AND. ! lAppend .AND. ! ::AllowAppend
       Return .F.
    EndIf
 
@@ -1869,18 +1879,42 @@ Local lRet, bReplaceField, oWorkArea
    Empty( lChange )
    ::SetControlValue( nRow, nCol )                                // Second parameter is needed by TXBrowseByCell:EditCell
 
-   oWorkArea := ::oWorkArea
    If oWorkArea:EOF()
       ::lAppendMode := .T.
       lAppend := .T.
    EndIf
 
-   If ! lAppend .AND. ::Lock .AND. ! oWorkArea:Lock()
-      MsgExclamation( _OOHG_Messages( 3, 9 ), _OOHG_Messages( 3, 10 ) )
-      Return .F.
+   If lAppend
+      aItem := Array( Len( ::aHeaders ) )
+      aVals := Array( Len( ::aHeaders ) )
+      aRepl := Array( Len( ::aHeaders ) )
+      For i := 1 To nCol - 1
+         oCtr := uVal := bRep := Nil
+         ::GetCellType( i, @oCtr, @uVal, , @bRep, .T. )
+         aItem[ i ] := oCtr:GridValue( uVal )
+         aVals[ i ] := uVal
+         aRepl[ i ] := bRep
+      Next i
+      ::GetCellType( nCol, @EditControl, @uOldValue, @cMemVar, @bReplaceField, .T. )
+      aItem[ nCol ] := EditControl:GridValue( uOldValue )
+      aVals[ nCol ] := uOldValue
+      aRepl[ nCol ] := bReplaceField
+      For i := nCol + 1 To Len( ::aHeaders )
+         oCtr := uVal := bRep := Nil
+         ::GetCellType( i, @oCtr, @uVal, , @bRep, .T. )
+         aItem[ i ] := oCtr:GridValue( uVal )
+         aVals[ i ] := uVal
+         aRepl[ i ] := bRep
+      Next i
+      // Show default values in the edit row
+      ::Item( nRow, aItem )
+   Else
+      If ::Lock .AND. ! oWorkArea:Lock()
+         MsgExclamation( _OOHG_Messages( 3, 9 ), _OOHG_Messages( 3, 10 ) )
+         Return .F.
+      EndIf
+      ::GetCellType( nCol, @EditControl, @uOldValue, @cMemVar, @bReplaceField, lAppend )
    EndIf
-
-   ::GetCellType( nCol, @EditControl, @uOldValue, @cMemVar, @bReplaceField )
 
    lRet := ::EditCell2( @nRow, @nCol, EditControl, uOldValue, @uValue, cMemVar, nOnFocusPos )
    If lRet
@@ -1889,15 +1923,19 @@ Local lRet, bReplaceField, oWorkArea
       _ClearThisCellInfo()
       If lAppend
          oWorkArea:Append()
-      EndIf
-      _OOHG_Eval( bReplaceField, uValue, oWorkArea )
-      If lAppend
+         // Set edited and default values into the appended record
+         aVals[ nCol ] := uValue
+         For i := 1 To Len( ::aHeaders )
+            _OOHG_Eval( aRepl[ i ], aVals[ i ], oWorkArea )
+         Next i
          ::lAppendMode := .F.
          If ! EMPTY( oWorkArea:cAlias__ )
             ( oWorkArea:cAlias__ )->( ::DoEvent( ::OnAppend, "APPEND" ) )
          Else
             ::DoEvent( ::OnAppend, "APPEND" )
          EndIf
+      Else
+         _OOHG_Eval( bReplaceField, uValue, oWorkArea )
       EndIf
       If ::RefreshType == REFRESH_FORCE
          ::Refresh( nRow )
@@ -2244,7 +2282,7 @@ Local lRet, lSomethingEdited
 Return lSomethingEdited
 
 *-----------------------------------------------------------------------------*
-METHOD GetCellType( nCol, EditControl, uOldValue, cMemVar, bReplaceField ) CLASS TXBrowse
+METHOD GetCellType( nCol, EditControl, uOldValue, cMemVar, bReplaceField, lAppend ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local cField, cArea, nPos, aStruct
 
@@ -2257,7 +2295,13 @@ Local cField, cArea, nPos, aStruct
    EndIf
 
    If ValType( uOldValue ) == "U"
-      uOldValue := EVAL( ::ColumnBlock( nCol, .T. ), ::WorkArea )
+      If ! lAppend .OR. HB_IsNil( ::aDefaultValues[ nCol ] )
+         uOldValue := EVAL( ::ColumnBlock( nCol, .T. ), ::WorkArea )
+      ElseIf HB_IsBlock( ::aDefaultValues[ nCol ] )
+         uOldValue := EVAL( ::aDefaultValues[ nCol ], nCol )
+      Else
+         uOldValue := ::aDefaultValues[ nCol ]
+      EndIf
    EndIf
 
    If ValType( ::aReplaceField ) == "A" .AND. Len( ::aReplaceField ) >= nCol

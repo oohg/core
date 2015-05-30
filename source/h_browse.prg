@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.161 2015-05-27 22:30:49 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.162 2015-05-30 00:16:14 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -255,7 +255,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                bAfterColSize, bBeforeAutofit, lLikeExcel, lButtons, lUpdCols, ;
                lFixedCtrls, bHeadRClick, lExtDbl, lNoModal, lSilent, lAltA, ;
                lNoShowAlways, lNone, lCBE, onrclick, lCheckBoxes, oncheck, ;
-               rowrefresh ) CLASS TOBrowse
+               rowrefresh, aDefaultValues ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local nWidth2, nCol2, oScroll, z
 
@@ -270,6 +270,14 @@ Local nWidth2, nCol2, oScroll, z
    ASSIGN lFixedBlocks  VALUE lFixedBlocks TYPE "L" DEFAULT _OOHG_BrowseFixedBlocks
    ASSIGN lFixedCtrls   VALUE lFixedCtrls  TYPE "L" DEFAULT _OOHG_BrowseFixedControls
    ASSIGN lAltA         VALUE lAltA        TYPE "L" DEFAULT .T.
+
+   If HB_IsArray( aDefaultValues )
+      ::aDefaultValues := aDefaultValues
+      ASize( ::aDefaultValues, Len( ::aHeaders ) )
+   Else
+      ::aDefaultValues := Array( Len( ::aHeaders ) )
+       AFill( ::aDefaultValues, aDefaultValues )
+   EndIf
 
    If ValType( uRefresh ) == "N"
       If uRefresh == REFRESH_FORCE .OR. uRefresh == REFRESH_NO .OR. uRefresh == REFRESH_DEFAULT

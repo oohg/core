@@ -1,5 +1,5 @@
 /*
- * $Id: i_color.ch,v 1.4 2015-03-09 02:51:07 fyurisich Exp $
+ * $Id: i_color.ch,v 1.5 2015-05-30 00:16:13 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -57,17 +57,24 @@
  * If you do not wish that, delete this exception notice.
  */
 
-#define YELLOW  { 255, 255,   0 }
-#define PINK    { 255, 128, 192 }
-#define RED     { 255,   0,   0 }
-#define FUCHSIA { 255,   0, 255 }
-#define BROWN   { 128,  64,  64 }
-#define ORANGE  { 255, 128,  64 }
-#define GREEN   {   0, 255,   0 }
-#define PURPLE  { 128,   0, 128 }
+#define AQUA    {   0, 255, 255 }
 #define BLACK   {   0,   0,   0 }
-#define WHITE   { 255, 255, 255 }
-#define GRAY    { 128, 128, 128 }
 #define BLUE    {   0,   0, 255 }
-
-
+#define BROWN   { 128,  64,  64 }
+#define CYAN    { 153, 217, 234 }
+#define FUCHSIA { 255,   0, 255 }
+#define GRAY    { 128, 128, 128 }
+#define GREEN   {   0, 255,   0 }
+#define LGREEN  {   0, 128,   0 }
+#define MAGENTA { 255,   0, 255 }
+#define MAROON  { 128,   0,   0 }
+#define NAVY    {   0,   0, 128 }
+#define OLIVE   { 128, 128,   0 }
+#define ORANGE  { 255, 128,  64 }
+#define PINK    { 255, 128, 192 }
+#define PURPLE  { 128,   0, 128 }
+#define RED     { 255,   0,   0 }
+#define SILVER  { 192, 192, 192 }
+#define TEAL    {   0, 128, 128 }
+#define WHITE   { 255, 255, 255 }
+#define YELLOW  { 255, 255,   0 }

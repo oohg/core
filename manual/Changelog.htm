@@ -1,5 +1,5 @@
 <!--
-$Id: Changelog.htm,v 1.55 2015-05-27 22:30:48 fyurisich Exp $
+$Id: Changelog.htm,v 1.56 2015-05-30 00:16:13 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -142,6 +142,31 @@ CHANGELOG</div>
 </div>
 <div id="winchm_template_content">
 <pre>
+2015-05-29 21:16 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ./changelog.htm
+     * Previous entry.
+   * manual/changelog.htm
+     * Updated.
+   * include/i_color.ch
+     + CYAN, MAGENTA and other colors used in HMG Extended.
+   * include/i_altsyntax.ch
+   * include/i_browse.ch
+   * include/i_xbrowse.ch
+   * include/i_hmg_compat.ch
+     + DEFAULTVALUES clause.
+       Usage: DEFAULTVALUES aValues
+       aValues is an array of values and/or codeblocks.
+       When a new record is appended by the control, its fields are
+       initialized with these values.
+       Use NIL to retain previous behavior.
+   * source/h_browse.prg
+     + Support for DEFAULTVALUES clause.
+   * source/h_xbrowse.prg
+     + Support for DEFAULTVALUES clause.
+     + Parameter lAppend to TXBrowse:GetCellType().
+       When .T., uOldValue is set to the column's default value if one
+       is defined.
+
 2015-05-27 19:30 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * ./changelog.htm
      * Previous entry.

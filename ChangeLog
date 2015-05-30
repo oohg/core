@@ -1,11 +1,36 @@
 /*
- * $Id: ChangeLog,v 1.1488 2015-05-27 22:30:48 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1489 2015-05-30 00:16:13 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-05-29 21:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./changelog.htm
+     * Previous entry.
+   * manual/changelog.htm
+     * Updated.
+   * include/i_color.ch
+     + CYAN, MAGENTA and other colors used in HMG Extended.
+   * include/i_altsyntax.ch
+   * include/i_browse.ch
+   * include/i_xbrowse.ch
+   * include/i_hmg_compat.ch
+     + DEFAULTVALUES clause.
+       Usage: DEFAULTVALUES aValues
+       aValues is an array of values and/or codeblocks.
+       When a new record is appended by the control, its fields are
+       initialized with these values.
+       Use NIL to retain previous behavior.
+   * source/h_browse.prg
+     + Support for DEFAULTVALUES clause.
+   * source/h_xbrowse.prg
+     + Support for DEFAULTVALUES clause.
+     + Parameter lAppend to TXBrowse:GetCellType().
+       When .T., uOldValue is set to the column's default value if one
+       is defined.
 
 2015-05-27 19:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./changelog.htm
@@ -18,8 +43,8 @@
 2015-05-27 18:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * manual/changelog.htm
      * Updated.
-   * include/i_altsyntax.prg
-   * include/i_grid.prg
+   * include/i_altsyntax.ch
+   * include/i_grid.ch
      + ON INSERT clause.
    * source/h_grid.prg
      + Data OnInsertItem.
