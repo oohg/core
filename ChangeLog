@@ -1,11 +1,18 @@
 /*
- * $Id: ChangeLog,v 1.1489 2015-05-30 00:16:13 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1490 2015-06-02 23:34:52 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-06-02 20:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/changelog.htm
+     * Updated.
+   * source/h_browse.prg
+     ! Infinite loop in TOBrowse:EditGrid with FULLMOVE clause, when
+       last row has no editable column.
 
 2015-05-29 21:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./changelog.htm

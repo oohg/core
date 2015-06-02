@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.162 2015-05-30 00:16:14 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.163 2015-06-02 23:34:53 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1359,7 +1359,7 @@ Return lSomethingEdited
 *-----------------------------------------------------------------------------*
 METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local lRet := .F., lRowEdited, lSomethingEdited, nRecNo, lRowAppended, nNewRec, nNextRec, cWorkArea
+Local lRet := .T., lRowEdited, lSomethingEdited, nRecNo, lRowAppended, nNewRec, nNextRec, cWorkArea
 
    If ::FirstVisibleColumn == 0
       Return .F.
@@ -1551,14 +1551,22 @@ Local lRet := .F., lRowEdited, lSomethingEdited, nRecNo, lRowAppended, nNewRec, 
          EndIf
          ::BrowseOnChange()
       ElseIf nRow < ::CountPerPage
-         // Next visible row is blank, append new record
-         If lRefresh
-            ::GoBottom( .T. )
+         If ::AllowAppend
+            // Next visible row is blank, append new record
+            If lRefresh
+               ::GoBottom( .T. )
+            EndIf
+            ::InsertBlank( ::ItemCount + 1 )
+            nRow := ::CurrentRow := ::ItemCount
+            lAppend := .T.
+            ::lAppendMode := .T.
+         Else
+            If lRowEdited
+               // An existing row was fully edited: refresh the control without changing it's value
+               ::Refresh()
+            EndIf
+            Exit
          EndIf
-         ::InsertBlank( ::ItemCount + 1 )
-         nRow := ::CurrentRow := ::ItemCount
-         lAppend := .T.
-         ::lAppendMode := .T.
       Else
          // The last visible row was fully edited
          If nNextRec # 0
