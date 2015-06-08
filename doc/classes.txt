@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.99 2015-05-20 22:31:02 fyurisich Exp $
+ * $Id: classes.txt,v 1.100 2015-06-08 23:52:28 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -965,6 +965,7 @@ CLASS TGRID FROM TCONTROL
    DATA ONDELETE                  INIT NIL
    DATA ONDISPINFO                INIT NIL
    DATA ONEDITCELL                INIT NIL
+   DATA ONINSERT                  INIT NIL
    DATA PICTURE                   INIT NIL
    DATA RCLICKONCHECKBOX          INIT .T.
    DATA READONLY                  INIT NIL
@@ -1699,6 +1700,7 @@ CLASS TOBROWSE FROM TXBROWSE
    MESSAGE GOTOP                  METHOD HOME
 
    METHOD BROWSEONCHANGE
+   METHOD CURRENTROW              SETGET
    METHOD DBGOTO
    METHOD DBSKIP
    METHOD DEFINE

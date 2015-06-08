@@ -1,11 +1,21 @@
 /*
- * $Id: ChangeLog,v 1.1490 2015-06-02 23:34:52 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1491 2015-06-08 23:52:27 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-06-08 20:51 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./changelog.htm
+     * Previous entry.
+   * manual/changelog.htm
+     * Updated.
+   * ide/prgs/formedit.prg
+     + Support for new clauses.
+   * source/h_browse.prg
+     * Format.
 
 2015-06-02 20:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * manual/changelog.htm
@@ -54,7 +64,7 @@
    * include/i_grid.ch
      + ON INSERT clause.
    * source/h_grid.prg
-     + Data OnInsertItem.
+     + Data OnInsert.
      + Support for ON INSERT event.
        It's fired after inserting a blank item.
        You can use it to set default values.

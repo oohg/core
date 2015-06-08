@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.163 2015-06-02 23:34:53 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.164 2015-06-08 23:52:29 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -139,9 +139,9 @@ CLASS TOBrowse FROM TXBrowse
    METHOD Refresh
    METHOD RefreshData
    METHOD ScrollUpdate
+   METHOD SetControlValue         BLOCK { || Nil }
    METHOD SetScrollPos
    METHOD SetValue
-   METHOD SetControlValue         BLOCK { || Nil }
    METHOD TopBottom
    METHOD Up
    METHOD UpDate

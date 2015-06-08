@@ -1,5 +1,5 @@
 <!--
-$Id: Changelog.htm,v 1.57 2015-06-02 23:34:52 fyurisich Exp $
+$Id: Changelog.htm,v 1.58 2015-06-08 23:52:29 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -142,6 +142,16 @@ CHANGELOG</div>
 </div>
 <div id="winchm_template_content">
 <pre>
+2015-06-08 20:51 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ./changelog.htm
+     * Previous entry.
+   * manual/changelog.htm
+     * Updated.
+   * ide/prgs/formedit.prg
+     + Support for new clauses.
+   * source/h_browse.prg
+     * Format.
+
 2015-06-02 20:34 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * manual/changelog.htm
      * Updated.
@@ -185,11 +195,11 @@ CHANGELOG</div>
 2015-05-27 18:38 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * manual/changelog.htm
      * Updated.
-   * include/i_altsyntax.prg
-   * include/i_grid.prg
+   * include/i_altsyntax.ch
+   * include/i_grid.ch
      + ON INSERT clause.
    * source/h_grid.prg
-     + Data OnInsertItem.
+     + Data OnInsert.
      + Support for ON INSERT event.
        It's fired after inserting a blank item.
        You can use it to set default values.
@@ -238,6 +248,8 @@ CHANGELOG</div>
      ! RTE in TPrintBase:EndDoc() when _oohg_winreport is not defined.
 
 2015-05-20 21:08 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * manual/changelog.htm
+     * Updated.
    * source/h_browse.prg
      ! RTE in TOBrowse:EditGrid() because lRet is uninitialized.
 
@@ -1014,6 +1026,8 @@ CHANGELOG</div>
      * Updated.
 
 2015-04-25 16:16 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * manual/changelog.htm
+     * Updated.
    * source/h_xbrowse.prg
      * Comments.
      ! TXBrowseByCell:EditGrid() does not work properly when :FullMove is
@@ -1062,7 +1076,7 @@ CHANGELOG</div>
      + Added parameter lAppend to TGrid:AppendItem().
        Defaults to .F.
        When .T. an item is appended even if ::AllowAppend is .F.
-     * TXBrowse():EditCell() and TXBrowse:EditAllCells() now honor
+     * TXBrowse():EditCell() and TXBrowse:EditAllCells() now check
        ::FirstVisibleColumn.
      * TXBrowse:EditAllCells() now uses ::SyncData().
      + Parameter uReadOnly to TXBrowse:AddColumn(), TXBrowse:SetColumn()
@@ -1099,8 +1113,8 @@ CHANGELOG</div>
      ! All methods of TGrid, TGridMulti and TGridByCell that change the
        current column now fully honor the column order set by the user and
        skip hidden columns.
-     * All method os TGrid, TGridMulti and TGridByCell that returned Nil
-       now return Self.
+     * All methods of TGrid, TGridMulti and TGridByCell that returned Nil
+       to user now return Self.
      + Added parameter lAppend to TGrid:AppendItem(),
        TGridMulti:AppendItem() and TGridByCell:AppendItem().
        Defaults to .F.
@@ -1168,7 +1182,7 @@ CHANGELOG</div>
      * ::EditItem changed by ::AppendItem in TOBrowse():PageDown,
        TOBrowse():Down and TOBrowse():Events_Notify.
      % TOBrowse():Down.
-     * TOBrowse():EditAllCells now honors ::FirstVisibleColumn.
+     * TOBrowse():EditAllCells now checks ::FirstVisibleColumn.
      + _OOHG_ThisItemCellValue is set to cell's value before evaluating
        READONLY and WHEN clauses in TOBrowse():EditAllCells.
      * GetAltState() by GetKeyFlagState() for recognizing Alt-A.
@@ -1196,13 +1210,13 @@ CHANGELOG</div>
        testing it's value.
      ! Infinite loop in TOBrowseByCell():EditGrid caused by the reset of
        ::bPosition in TOBrowseByCell():EditCell.
-     * TOBrowseByCell():EditItem_B now honors ::AllowAppend.
+     * TOBrowseByCell():EditItem_B now checks ::AllowAppend.
      + Support for parameter lRefresh in TOBrowseByCell():EditGrid.
      - Unneeded code in TOBrowseByCell():EditGrid
      % TOBrowseByCell():PageDown.
      * ::EditItem changed by ::AppendItem in TOBrowseByCell():PageDown.
      % TOBrowseByCell():Down.
-     * TOBrowseByCell():Down now honors ::AllowAppend.
+     * TOBrowseByCell():Down now checks ::AllowAppend.
      * ::EditItem changed by ::AppendItem in TOBrowseByCell():Down.
      * TOBrowseByCell():Right now parameter lAppend defaults to .F.
      ; Some T*O*D*O*s pending.
@@ -1273,6 +1287,8 @@ CHANGELOG</div>
      ! Double click edits only one cell when ::FullMove is .T.
 
 2015-04-16 21:57 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * manual/changelog.htm
+     * Updated.
    * include/i_xbrowse.ch
      + NOSHOWALWAYS, SILENT, ENABLEALTA and DISABLEALTA clauses.
    * source/h_xbrowse.prg
@@ -1321,7 +1337,7 @@ CHANGELOG</div>
      + New parameters to method TXBrowseByCell():Define2.
      * Do not set current column to 0 in TXBrowseByCell():DeleteColumn.
      * TXBrowseByCell():DeleteColumn calls ::DoChange if necessary.
-     * TXBrowseByCell():EditCell now honors ::FirstVisibleColumn and
+     * TXBrowseByCell():EditCell now checks ::FirstVisibleColumn and
        ::lLocked, and checks that the cell is into bounds.
      ! TXBrowseByCell():EditCell shows wrong data when editing a cell
        that's not at the current row. Now, ::Value is set to the cell
@@ -1557,8 +1573,12 @@ CHANGELOG</div>
      ! Note: 24-bit BMP files does change image color :( .
 
 2015-03-26 19:06 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ./changelog
+     * Previous entry.
    * manual/changelog.htm
      * Updated.
+
+2015-03-26 19:06 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * source/h_browse.prg
      * Some format.
      + T*O*D*O notes.
@@ -1588,6 +1608,7 @@ CHANGELOG</div>
        and form's width is changed.
    * doc/how_to_configure_and_use.txt
      * Updated (not finished yet).
+
 2015-03-19 21:00 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * manual/changelog.htm
      * Updated.
