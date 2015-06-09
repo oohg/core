@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.56 2015-06-08 23:52:28 fyurisich Exp $
+ * $Id: formedit.prg,v 1.57 2015-06-09 00:14:48 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -6245,7 +6245,7 @@ LOCAL lCheckBoxes, cOnCheckChg, cOnRowRefresh, cDefVal, cOnInsert
    lCheckBoxes    := ( ::ReadLogicalData( cName, 'CHECKBOXES', "F" ) == "T" )
    cOnCheckChg    := ::ReadStringData( cName, 'ON CHECKCHANGE', '' )
    cOnRowRefresh  := ::ReadStringData( cName, 'ON ROWREFRESH', '' )
-   cDefVal        := ::ReadStringData( cName, 'DEFAULTVALUES', "{ '','' } ")
+   cDefVal        := ::ReadStringData( cName, 'DEFAULTVALUES', '')
    cOnInsert      := ::ReadStringData( cName, 'ON INSERT', '' )
 
    // Save properties
@@ -9632,7 +9632,7 @@ LOCAL cOnRowRefresh, cDefVal, cOnInsert
    lCheckBoxes    := ( ::ReadLogicalData( cName, 'CHECKBOXES', "F" ) == "T" )
    cOnCheckChg    := ::ReadStringData( cName, 'ON CHECKCHANGE', '' )
    cOnRowRefresh  := ::ReadStringData( cName, 'ON ROWREFRESH', '' )
-   cDefVal        := ::ReadStringData( cName, 'DEFAULTVALUES', "{ '','' } ")
+   cDefVal        := ::ReadStringData( cName, 'DEFAULTVALUES', '')
    cOnInsert      := ::ReadStringData( cName, 'ON INSERT', '' )
 
    // Save properties
