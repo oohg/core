@@ -1,5 +1,5 @@
 <!--
-$Id: Changelog.htm,v 1.59 2015-06-09 00:14:49 fyurisich Exp $
+$Id: Changelog.htm,v 1.60 2015-06-15 20:56:09 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -142,6 +142,15 @@ CHANGELOG</div>
 </div>
 <div id="winchm_template_content">
 <pre>
+2015-06-15 17:55 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ./changelog.htm
+     ! Typo in previous entry.
+   * manual/changelog.htm
+     * Updated.
+   * source/h_xbrowse.prg
+     ! RTE at :EditItem(.T.) caused by change in parameter's order.
+       Use TXBrowse:EditItem( lAppend, lOneRow, nItem, lChange ).
+
 2015-06-08 21:15 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * manual/changelog.htm
      * Updated.
@@ -516,7 +525,7 @@ CHANGELOG</div>
      + Support for parameter nItem TXBrowse:EditItem().
      ! TXBrowse:AppendItem is not working when ::FullMove and ::InPlace
        are both .F.
-     + Test for ::lAppenItem when parameter lAppend is .T. in
+     + Test for ::lAppendItem when parameter lAppend is .T. in
        TXBrowse:EditItem_B().
      * TXBrowse:EditItem_B now calls ::EditGrid() when ::FullMove is .T.
      ! RTE in TXBrowse:EditItem_B() when editing a logical column.
@@ -1172,7 +1181,7 @@ CHANGELOG</div>
        changing the control's value.
      + TXBrowse():EditAllCells now checks ::AllowAppend when lAppend
        parameter is .T.
-     % Deleted innecesary sentence in TXBrowseByCell():EditCell.
+     % Deleted unnecessary sentence in TXBrowseByCell():EditCell.
      + TXBrowse():EditGrid now checks ::AllowAppend when lAppend
        parameter is .T.
      - Some comments.

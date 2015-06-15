@@ -1,11 +1,20 @@
 /*
- * $Id: ChangeLog,v 1.1492 2015-06-09 00:14:48 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1493 2015-06-15 20:56:08 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-06-15 17:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./changelog.htm
+     ! Typo in previous entry.
+   * manual/changelog.htm
+     * Updated.
+   * source/h_xbrowse.prg
+     ! RTE at :EditItem(.T.) caused by change in parameter's order.
+       Use TXBrowse:EditItem( lAppend, lOneRow, nItem, lChange ).
 
 2015-06-08 21:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * manual/changelog.htm
@@ -381,7 +390,7 @@
      + Support for parameter nItem TXBrowse:EditItem().
      ! TXBrowse:AppendItem is not working when ::FullMove and ::InPlace
        are both .F.
-     + Test for ::lAppenItem when parameter lAppend is .T. in
+     + Test for ::lAppendItem when parameter lAppend is .T. in
        TXBrowse:EditItem_B().
      * TXBrowse:EditItem_B now calls ::EditGrid() when ::FullMove is .T.
      ! RTE in TXBrowse:EditItem_B() when editing a logical column.
@@ -1037,7 +1046,7 @@
        changing the control's value.
      + TXBrowse():EditAllCells now checks ::AllowAppend when lAppend
        parameter is .T.
-     % Deleted innecesary sentence in TXBrowseByCell():EditCell.
+     % Deleted unnecessary sentence in TXBrowseByCell():EditCell.
      + TXBrowse():EditGrid now checks ::AllowAppend when lAppend
        parameter is .T.
      - Some comments.

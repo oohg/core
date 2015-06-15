@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.141 2015-05-30 00:16:14 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.142 2015-06-15 20:56:09 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1497,7 +1497,7 @@ Local lRet := .F.
       ElseIf ::InPlace
          lRet := ::EditAllCells( , , .T. )
       Else
-         lRet := ::EditItem( , .T., .T. )
+         lRet := ::EditItem( .T. )
       EndIf
       ::lNestedEdit := .F.
    EndIf
@@ -1672,7 +1672,7 @@ Local Value
 Return .T.
 
 *-----------------------------------------------------------------------------*
-METHOD EditItem( nItem, lAppend, lOneRow, lChange ) CLASS TXBrowse
+METHOD EditItem( lAppend, lOneRow, nItem, lChange ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local lSomethingEdited := .F.
 
