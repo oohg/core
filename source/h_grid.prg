@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.289 2015-05-27 21:38:50 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.290 2015-06-21 14:44:10 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -5317,12 +5317,12 @@ Local aCellData
 Local nClientWidth
 Local aControlRect
 
-   If aPos[ 1 ] == 0 .AND. aPos[ 2 ] == 0     // item & subitem (column)
+   If aPos[ 1 ] == 0
       // Hit on an empty row
       Return { 0, 0, 0, 0, 0, 0 }
    EndIf
-   ThisItemRowIndex := aPos[ 1 ]
-   ThisItemColIndex := aPos[ 2 ]
+   ThisItemRowIndex := aPos[ 1 ]              // item
+   ThisItemColIndex := aPos[ 2 ]              // subitem (column)
 
    // Ensure that the column is inside the client area
    aControlRect := { 0, 0, 0, 0 }                                                         // left, top, right, bottom

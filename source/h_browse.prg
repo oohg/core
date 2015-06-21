@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.164 2015-06-08 23:52:29 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.165 2015-06-21 14:44:10 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1157,12 +1157,14 @@ Local lRet, BackRec, cWorkArea, lBefore
 
    lBefore := ::lCalledFromClass
    ::lCalledFromClass := .T.
-   lRet := ::Super:EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, nOnFocusPos, .F. )
+   lRet := ::Super:EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPos, .F., lAppend )
    ::lCalledFromClass := lBefore
 
    If lRet .AND. lAppend
       aAdd( ::aRecMap, ( cWorkArea )->( RecNo() ) )
    EndIf
+
+// xxx ::Super:EditCell refreshes the current row only, so here we must refresh entire grid when ::RefreshType == REFRESH_FORCE
 
    ::DbGoTo( BackRec )
 
@@ -1364,28 +1366,41 @@ Local lRet := .T., lRowEdited, lSomethingEdited, nRecNo, lRowAppended, nNewRec, 
    If ::FirstVisibleColumn == 0
       Return .F.
    EndIf
-   If ! HB_IsNumeric( nRow )
-      nRow := ::CurrentRow
-   EndIf
    If ! HB_IsNumeric( nCol )
       nCol := ::FirstColInOrder
    EndIf
-   If nRow < 1 .OR. nRow > ::ItemCount .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
+   If nCol < 1 .OR. nCol > Len( ::aHeaders )
       Return .F.
    EndIf
 
    cWorkArea := ::WorkArea
 
    ASSIGN lAppend  VALUE lAppend  TYPE "L" DEFAULT .F.
-   ASSIGN lOneRow  VALUE lOneRow  TYPE "L" DEFAULT .F.
-   ASSIGN lChange  VALUE lChange  TYPE "L" DEFAULT ::lChangeBeforeEdit
-   ASSIGN lRefresh VALUE lRefresh TYPE "L" DEFAULT ( ::RefreshType == REFRESH_FORCE )
 
-   If lChange
-      ::Value := ::aRecMap[ nRow ]
+   If lAppend
+      If ::lAppendMode
+         Return .F.
+      EndIf
+      ::lAppendMode := .T.
+      ::GoBottom( .T. )
+      ::InsertBlank( ::ItemCount + 1 )
+      nRow := ::CurrentRow := ::ItemCount
+   Else
+      If ! HB_IsNumeric( nRow )
+         nRow := Max( ::CurrentRow, 1 )
+      EndIf
+      If nRow < 1 .OR. nRow > ::ItemCount
+         Return .F.
+      EndIf
+      ASSIGN lChange VALUE lChange TYPE "L" DEFAULT ::lChangeBeforeEdit
+      If lChange
+         ::Value := ::aRecMap[ nRow ]
+      EndIf
    EndIf
 
    lSomethingEdited := .F.
+
+   ASSIGN lRefresh VALUE lRefresh TYPE "L" DEFAULT ( ::RefreshType == REFRESH_FORCE )
 
    Do While .t.
       lRowEdited := .F.
@@ -1507,7 +1522,7 @@ Local lRet := .T., lRowEdited, lSomethingEdited, nRecNo, lRowAppended, nNewRec, 
             ::Refresh()
          EndIf
          Exit
-      ElseIf lOneRow .OR. ! ::FullMove .OR. ( lRowAppended .AND. ! ::AllowAppend )
+      ElseIf ( HB_IsLogical( lOneRow ) .AND. lOneRow ) .OR. ( ! HB_IsLogical( lOneRow ) .AND. ! ::FullMove ) .OR. ( lRowAppended .AND. ! ::AllowAppend )
          // Stop If it's not fullmove editing or
          // If caller wants to edit only one row or
          // if, after appending a new row, appends are not allowed anymore

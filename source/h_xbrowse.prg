@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.142 2015-06-15 20:56:09 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.143 2015-06-21 14:44:10 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -69,6 +69,7 @@ CLASS TXBrowse FROM TGrid
    DATA goBottomBlock             INIT Nil
    DATA goTopBlock                INIT Nil
    DATA lDescending               INIT .F.
+   DATA lForceInPlace             INIT .T.
    DATA lFixedBlocks              INIT .F.
    DATA lLocked                   INIT .F.
    DATA lNoShowEmptyRow           INIT .F.
@@ -1682,7 +1683,20 @@ Local lSomethingEdited := .F.
    Empty( lChange )
 
    If ! ::lLocked
-      If ! lAppend
+      If ::InPlace .AND. ::lForceInPlace
+         Return ::EditAllCells( , , lAppend, lOneRow )
+      EndIf
+
+      If lAppend
+         If ::lAppendMode
+            Return .F.
+         EndIf
+         ::lAppendMode := .T.
+         ::GoBottom( .T. )
+         ::InsertBlank( ::ItemCount + 1 )
+         ::CurrentRow := ::ItemCount
+         ::oWorkArea:GoTo( 0 )
+      Else
          If ! HB_IsNumeric( nItem )
             nItem := Max( ::CurrentRow, 1 )
          EndIf
@@ -1739,10 +1753,6 @@ Local aItems, aMemVars, aReplaceFields, aEditControls, l
    EndIf
 
    If lAppend
-      If ::lAppendMode
-         Return .F.
-      EndIf
-      ::lAppendMode := .T.
       cTitle := _OOHG_Messages( 2, 1 )
       nOld := oWorkArea:RecNo()
       oWorkArea:GoTo( 0 )
@@ -1790,6 +1800,7 @@ Local aItems, aMemVars, aReplaceFields, aEditControls, l
 
    If Empty( aItems )
       If lAppend
+         ::GoBottom()
          ::lAppendMode := .F.
          oWorkArea:GoTo( nOld )
       EndIf
@@ -1841,7 +1852,7 @@ Return ! Empty( aItems )
 *-----------------------------------------------------------------------------*
 METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPos, lChange, lAppend ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
-Local lRet, bReplaceField, oWorkArea, i, aItem, aRepl, aVals, oCtr, uVal, bRep
+Local lRet, bReplaceField, oWorkArea, i, aItem, aRepl, aVals, oCtr, uVal, bRep, aNewI
 
    If ::lLocked
       Return .F.
@@ -1907,7 +1918,13 @@ Local lRet, bReplaceField, oWorkArea, i, aItem, aRepl, aVals, oCtr, uVal, bRep
          aRepl[ i ] := bRep
       Next i
       // Show default values in the edit row
-      ::Item( nRow, aItem )
+      aNewI := ::Item( nRow )
+      For i := 1 to Len( ::aHeaders )
+         If ! HB_IsNil( ::aDefaultValues[ i ] )
+            aNewI[ i ] := aItem[ i ]
+         EndIf
+      Next i
+      ::Item( nRow, aNewI )
    Else
       If ::Lock .AND. ! oWorkArea:Lock()
          MsgExclamation( _OOHG_Messages( 3, 9 ), _OOHG_Messages( 3, 10 ) )
@@ -1937,11 +1954,7 @@ Local lRet, bReplaceField, oWorkArea, i, aItem, aRepl, aVals, oCtr, uVal, bRep
       Else
          _OOHG_Eval( bReplaceField, uValue, oWorkArea )
       EndIf
-      If ::RefreshType == REFRESH_FORCE
-         ::Refresh( nRow )
-      Else
-         ::RefreshRow( nRow )
-      EndIf
+      ::RefreshRow( nRow )
       If ! ::lCalledFromClass .AND. ::bPosition == 9                  // MOUSE EXIT
          // Edition window lost focus
          ::bPosition := 0                   // This restores the processing of click messages

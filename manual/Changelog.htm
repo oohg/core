@@ -1,5 +1,5 @@
 <!--
-$Id: Changelog.htm,v 1.60 2015-06-15 20:56:09 fyurisich Exp $
+$Id: Changelog.htm,v 1.61 2015-06-21 14:44:09 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -142,6 +142,32 @@ CHANGELOG</div>
 </div>
 <div id="winchm_template_content">
 <pre>
+2015-06-21 11:43 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ./changelog.htm
+     ! Typo in previous entry.
+   * manual/changelog.htm
+     * Updated.
+   * source/h_browse.prg
+     ! TOBrowse:EditCell passes wrong parameters to ::Super:EditCell().
+     ! TOBrowse:EditGrid() with lAppend parameter set to .T. does not
+       add a new row before editing.
+     ! Support of lOneRow parameter in TOBrowse:EditGrid().
+   * source/h_xbrowse.prg
+     + Data lForceInPlace: when .F. TXBrowse:EditItem() will edit items
+       using an independent modal window (just like Grid does).
+     ! TXBrowse:EditItem() does not add a new item to the grid when
+       INPLACE is .T.
+     * TXBrowse:EditItem_B() no longer checks for ::lAppendMode because
+       the check is done at TXBrowse:EditItem().
+     ! TXBrowse:EditItem_B() does not reposition correctly after an
+       edition is aborted.
+     ! TXBrowse:EditCell shows values when DEFAULTVALUES clause is
+       not used.
+     ! TXBrowse:EditCell changes row position after editing a cell thats
+       part of an index key.
+   * source/h_grid.prg
+     ! Function _GetGridCellData is not detecting clicks on empty rows.
+
 2015-06-15 17:55 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * ./changelog.htm
      ! Typo in previous entry.
@@ -223,7 +249,7 @@ CHANGELOG</div>
      ! TXBrowse:EditCell behaviour when ::RefreshType is REFRESH_DEFAULT.
      + New parameter to TGrid:Define() calls.
      + New parameter to TXBrowseByCell:Define2().
-   * source/h_xbrowse.prg
+   * source/h_grid.prg
      + New parameter to TGrid:Define() calls.
      + New parameter to TGridByCell:Define2().
 
