@@ -1,5 +1,5 @@
 /*
- * $Id: c_gdiplus.c,v 1.15 2015-03-09 02:52:06 fyurisich Exp $
+ * $Id: c_gdiplus.c,v 1.16 2015-06-28 02:02:37 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -172,6 +172,12 @@ enum EncoderValue
    EncoderValueFrameDimensionPage
 };
 
+typedef DWORD ARGB;
+
+#define ARGB(a,r,g,b) ((ARGB)(((DWORD)(a)<<24)|((DWORD)(r)<<16)|((DWORD)(g)<<8)|((DWORD)(b))))
+
+#define COLORREFtoARGB(rgb) (ARGB(0xFF,GetRValue(rgb),GetGValue(rgb),GetBValue(rgb)))
+
 typedef void* gPlusImage;
 typedef gPlusImage * gPlusImagePtr;
 
@@ -184,7 +190,7 @@ typedef LONG(__stdcall* GDIPGETIMAGEENCODERS) ( UINT, UINT, IMAGE_CODEC_INFO* );
 typedef LONG(__stdcall* GDIPSAVEIMAGETOFILE) ( void*, const unsigned short*, const CLSID*, const ENCODER_PARAMETERS* );
 typedef LONG(__stdcall* GDIPLOADIMAGEFROMSTREAM) ( IStream*, void** );
 typedef LONG(__stdcall* GDIPCREATEBITMAPFROMSTREAM) ( IStream*, void** );
-typedef LONG(__stdcall* GDIPCREATEHBITMAPFROMBITMAP) ( void*, void*, ULONG );
+typedef LONG(__stdcall* GDIPCREATEHBITMAPFROMBITMAP) ( void*, void*, ARGB );
 typedef LONG(__stdcall* GDIPDISPOSEIMAGE) ( void* );
 typedef LONG(__stdcall* GDIPGETIMAGETHUMBNAIL) ( void*, UINT, UINT, void**, GET_THUMBNAIL_IMAGE_ABORT, void* );
 
@@ -989,7 +995,7 @@ HANDLE _OOHG_GDIPLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor, long 
    }
 
    // Creates HBITMAP
-   if( GdipCreateHBITMAPFromBitmap( gImage, &hImage, ( ULONG ) lBackColor ) != 0 )
+   if( GdipCreateHBITMAPFromBitmap( gImage, &hImage, COLORREFtoARGB( lBackColor ) ) != 0 )
    {
       hImage = 0;
    }

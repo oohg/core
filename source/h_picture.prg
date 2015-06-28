@@ -1,5 +1,5 @@
 /*
- * $Id: h_picture.prg,v 1.19 2015-03-09 02:52:08 fyurisich Exp $
+ * $Id: h_picture.prg,v 1.20 2015-06-28 02:02:37 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -114,7 +114,7 @@ Local ControlHandle, nStyle, nStyleEx
    ASSIGN ::aExcludeArea   VALUE aArea          TYPE "A"
    ASSIGN lDisabled        VALUE lDisabled      TYPE "L" DEFAULT .F.
 
-   IF BackColor == NIL
+   IF BackColor== NIL
       BackColor := GetSysColor( COLOR_3DFACE )
    ENDIF
 
