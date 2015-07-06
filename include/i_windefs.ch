@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.64 2015-05-02 04:20:45 fyurisich Exp $
+ * $Id: i_windefs.ch,v 1.65 2015-07-06 17:34:28 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -202,6 +202,9 @@ SYSTEM COLORS
 #define COLOR_HOTLIGHT                26
 #define COLOR_GRADIENTACTIVECAPTION   27
 #define COLOR_GRADIENTINACTIVECAPTION 28
+#define COLOR_MENUHILIGHT             29
+#define COLOR_MENUBAR                 30
+
 #define COLOR_DESKTOP                 COLOR_BACKGROUND
 #define COLOR_3DFACE                  COLOR_BTNFACE
 #define COLOR_3DSHADOW                COLOR_BTNSHADOW
