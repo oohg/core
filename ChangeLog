@@ -1,11 +1,20 @@
 /*
- * $Id: ChangeLog,v 1.1497 2015-07-06 17:34:28 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1498 2015-07-13 22:01:13 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-07-13 19:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/c_windows.c
+     ! Method TWindow:SaveAs() truncates window's captured image for
+       Win 8.1 because function _GETBITMAP() it's not aware of extended
+       frame bounds.
+     ! Method TWindow:SaveAs() saves incorrect area.
+   * manual/changelog.htm
+     * Updated.
 
 2015-07-06 17:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_windefs.ch

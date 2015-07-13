@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.82 2015-03-09 02:52:07 fyurisich Exp $
+ * $Id: c_windows.c,v 1.83 2015-07-13 22:01:13 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -956,6 +956,24 @@ WORD PaletteSize(LPSTR);
 WORD SaveDIB(HDIB , LPSTR);
 HANDLE DDBToDIB(HBITMAP , HPALETTE );
 
+#ifndef DWMWA_EXTENDED_FRAME_BOUNDS
+   #define DWMWA_EXTENDED_FRAME_BOUNDS 9
+#endif
+
+#ifndef DWMGETWINDOWATTRIBUTE
+   typedef HRESULT ( WINAPI * DWMGETWINDOWATTRIBUTE ) ( HWND, DWORD, PVOID, DWORD );
+#endif
+
+#ifndef DWMISCOMPOSITIONENABLED
+   typedef HRESULT ( WINAPI * DWMISCOMPOSITIONENABLED ) ( BOOL * );
+#endif
+
+static void getwinver( OSVERSIONINFO * pOSvi )
+{
+   pOSvi->dwOSVersionInfoSize = sizeof( OSVERSIONINFO );
+   GetVersionEx( pOSvi );
+}
+
 HB_FUNC( _GETBITMAP )                   // hWnd, bAll
 {
    HWND hWnd = HWNDparam( 1 );
@@ -964,13 +982,68 @@ HB_FUNC( _GETBITMAP )                   // hWnd, bAll
    RECT rct;
    HBITMAP hBitmap, hOldBmp;
    int iTop, iLeft;
+   OSVERSIONINFO osvi;
+   HMODULE Library;
+   DWMGETWINDOWATTRIBUTE DwmGetWindowAttribute;
+   HRESULT Ret;
+   BOOL isEnabled;
+   DWMISCOMPOSITIONENABLED DwmIsCompositionEnabled;
 
    if( bAll )
    {
       hDC = GetDC( HWND_DESKTOP );
-      GetWindowRect( hWnd, &rct );
+
+      if( ( Library = LoadLibrary( "dwmapi.dll") ) == NULL )
+      {
+         GetWindowRect( hWnd, &rct );
+      }
+      else
+      {
+         if( ( DwmIsCompositionEnabled = (DWMISCOMPOSITIONENABLED) GetProcAddress( Library, "DwmIsCompositionEnabled" ) ) == NULL )
+         {
+            GetWindowRect( hWnd, &rct );
+         }
+         else
+         {
+            Ret = ( DwmIsCompositionEnabled )( &isEnabled);
+
+            if( ( Ret == S_OK ) && isEnabled )
+            {
+               if( ( DwmGetWindowAttribute = (DWMGETWINDOWATTRIBUTE) GetProcAddress( Library, "DwmGetWindowAttribute" ) ) == NULL )
+               {
+                  GetWindowRect( hWnd, &rct );
+               }
+               else
+               {
+                  getwinver( &osvi );
+
+                  if( osvi.dwMajorVersion < 6 )
+                  {
+                     GetWindowRect( hWnd, &rct );
+                  }
+                  else
+                  {
+                     Ret = ( DwmGetWindowAttribute )( hWnd, DWMWA_EXTENDED_FRAME_BOUNDS, &rct, sizeof( RECT ) );
+
+                     if( Ret != S_OK )
+                     {
+                        GetWindowRect( hWnd, &rct );
+                     }
+                  }
+               }
+            }
+            else
+            {
+               GetWindowRect( hWnd, &rct );
+            }
+         }
+
+         FreeLibrary( Library );
+      }
+
       iTop = rct.top;
       iLeft = rct.left;
+
    }
    else
    {
@@ -984,7 +1057,7 @@ HB_FUNC( _GETBITMAP )                   // hWnd, bAll
    hBitmap = CreateCompatibleBitmap( hDC, rct.right - rct.left, rct.bottom - rct.top );
 
    hOldBmp = (HBITMAP) SelectObject( hMemDC, hBitmap );
-   BitBlt( hMemDC, 0, 0, rct.right - rct.left, rct.bottom - rct.top, hDC, iTop, iLeft, SRCCOPY );
+   BitBlt( hMemDC, 0, 0, rct.right - rct.left, rct.bottom - rct.top, hDC, iLeft, iTop, SRCCOPY );
    SelectObject( hMemDC, hOldBmp );
 
    DeleteDC( hMemDC );
@@ -1470,12 +1543,6 @@ HB_FUNC( ANIMATEWINDOW )                // hWnd, nTime, nFlags, lHide
 HB_FUNC( SHOWWINDOWNA )
 {
    ShowWindow( HWNDparam( 1 ), SW_SHOWNA );
-}
-
-static void getwinver( OSVERSIONINFO * pOSvi )
-{
-   pOSvi->dwOSVersionInfoSize = sizeof( OSVERSIONINFO );
-   GetVersionEx( pOSvi );
 }
 
 HB_FUNC( OSISWINXPORLATER )
