@@ -1,11 +1,21 @@
 /*
- * $Id: ChangeLog,v 1.1498 2015-07-13 22:01:13 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1499 2015-07-14 22:27:41 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-07-14 19:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_altsyntax.ch
+   * include/i_altsyntax.ch
+     + NOTHEME clause: paints without functions from uxtheme.dll.
+   * source/h_checkbox.prg
+     * INCOMPATIBLE: THEMED is now the default if app is themed.
+     ! FONTCOLOR is not working.
+   * manual/changelog.htm
+     * Updated.
 
 2015-07-13 19:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/c_windows.c
