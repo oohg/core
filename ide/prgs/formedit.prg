@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.57 2015-06-09 00:14:48 fyurisich Exp $
+ * $Id: formedit.prg,v 1.58 2015-08-01 21:17:16 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -3632,7 +3632,7 @@ LOCAL cName, oCtrl, aImages, aItems, nMin, nMax, j, aCaptions, nCnt, oPage, lRed
                   { || ::DrawOutline( oCtrl ) }, NIL, .F., .F., ::aBold[i], ;
                   ::aFontItalic[i], ::aFontUnderline[i], ::aFontStrikeout[i], ;
                   NIL, NIL, NIL, ::aTransparent[i], ::aAutoPlay[i], ::aRTL[i], ;
-                  .F., ::a3State[i], ::aLeft[i], ::aThemed[i] )
+                  .F., ::a3State[i], ::aLeft[i], &( ::aThemed[i] ) )
       IF ! Empty( ::aFontName[i] )
          oCtrl:FontName := ::aFontName[i]
       ENDIF
@@ -6482,7 +6482,7 @@ LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, cToolTip
 LOCAL cCaption, cOnChange, cField, cOnGotFocus, cOnLostFocus, nHelpID, lTrans
 LOCAL lNoTabStop, cValue, lBold, lItalic, lUnderline, lStrikeout, aBackColor
 LOCAL aFontColor, lVisible, lEnabled, lRTL, lThemed, lAutoSize, lLeft, l3State
-LOCAL cSubClass, oCtrl
+LOCAL cSubClass, oCtrl, lNoTheme
 
    // Load properties
    cName        := ::aControlW[i]
@@ -6522,6 +6522,7 @@ LOCAL cSubClass, oCtrl
    lEnabled     := ( Upper( ::ReadOopData( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
    lRTL         := ( ::ReadLogicalData( cName, 'RTL', "F" ) == "T" )
    lThemed      := ( ::ReadLogicalData( cName, 'THEMED', "F" ) == "T" )
+   lNoTheme     := ( ::ReadLogicalData( cName, 'NOTHEME', "F" ) == "T" )
    lAutoSize    := ( ::ReadLogicalData( cName, "AUTOSIZE", "F" ) == "T" )
    lLeft        := ( ::ReadLogicalData( cName, 'LEFTALIGN', "F" ) == "T" )
    l3State      := ( ::ReadLogicalData( cName, 'THREESTATE', "F" ) == "T" )
@@ -6552,7 +6553,7 @@ LOCAL cSubClass, oCtrl
    ::aVisible[i]       := lVisible
    ::aEnabled[i]       := lEnabled
    ::aRTL[i]           := lRTL
-   ::aThemed[i]        := lThemed
+   ::aThemed[i]        := IIF( lThemed, '.T.', IIF( lNoTheme, '.F.', 'NIL' ) )
    ::aAutoPlay[i]      := lAutoSize
    ::aLeft[i]          := lLeft
    ::a3State[i]        := l3State
@@ -11292,8 +11293,10 @@ LOCAL cValue
       IF ::aAutoPlay[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AUTOSIZE '
       ENDIF
-      IF ::aThemed[j]
+      IF ::aThemed[j] == ".T."
         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'THEMED '
+      ELSEIF ::aThemed[j] == ".F."
+        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTHEME '
       ENDIF
       IF ::aLeft[j]
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'LEFTALIGN '
@@ -14852,9 +14855,9 @@ LOCAL aFormats, aResults
 
    IF ::aCtrlType[j] == 'CHECKBOX'
       cTitle      := cNameW + " properties"
-      aLabels     := { 'Name',     'Value',                                                           'Caption',     'ToolTip',     'HelpID',     'Field',     'Transparent',     'Enabled',     'Visible',     "NoTabStop",     'Obj',      'AutoSize',     "RTL",     "ThreeState",  "Themed",     "LeftAlign" }
-      aInitValues := { ::aName[j], IIF( ::aValue[j] == '.T.', 1, IIF( ::aValue[j] == '.F.', 2, 3 ) ), ::aCaption[j], ::atooltip[j], ::aHelpID[j], ::afield[j], ::atransparent[j], ::aenabled[j], ::avisible[j], ::aNoTabStop[j], ::acobj[j], ::aautoplay[j], ::aRTL[j], ::a3State[j],  ::aThemed[j], ::aLeft[j] }
-      aFormats    := { 30,         { '.T.', '.F.', 'NIL' },                                           31,            120,           '999',        250,         .F.,               .F.,           .F.,           .F.,             31,         .F.,            .F.,       .F.,           .F.,          .F. }
+      aLabels     := { 'Name',     'Value',                                                           'Caption',     'ToolTip',     'HelpID',     'Field',     'Transparent',     'Enabled',     'Visible',     "NoTabStop",     'Obj',      'AutoSize',     "RTL",     "ThreeState", "Paint",                                                             "LeftAlign" }
+      aInitValues := { ::aName[j], IIF( ::aValue[j] == '.T.', 1, IIF( ::aValue[j] == '.F.', 2, 3 ) ), ::aCaption[j], ::atooltip[j], ::aHelpID[j], ::afield[j], ::atransparent[j], ::aenabled[j], ::avisible[j], ::aNoTabStop[j], ::acobj[j], ::aautoplay[j], ::aRTL[j], ::a3State[j], IIF( ::aThemed[j] == '.T.', 1, IIF( ::aThemed[j] == '.F.', 2, 3 ) ), ::aLeft[j] }
+      aFormats    := { 30,         { '.T.', '.F.', 'NIL' },                                           31,            120,           '999',        250,         .F.,               .F.,           .F.,           .F.,             31,         .F.,            .F.,       .F.,          { 'THEMED', 'NOTHEME', 'NIL' },                                      .F. }
       aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
       IF aResults[1] == NIL
          ::oDesignForm:SetFocus()
@@ -14874,7 +14877,7 @@ LOCAL aFormats, aResults
       ::aAutoPlay[j]         := aResults[12]           // AUTOSIZE
       ::aRTL[j]              := aResults[13]
       ::a3State[j]           := aResults[14]
-      ::aThemed[j]           := aResults[15]
+      ::aThemed[j]           := IIF( aResults[15] == 1, '.T.', IIF( aResults[15] == 2, '.F.', 'NIL' ) )
       ::aLeft[j]             := aResults[16]           // LEFTALIGN
    ENDIF
 

@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.1499 2015-07-14 22:27:41 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1500 2015-08-01 21:17:15 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,14 +7,31 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-08-01 18:17 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     ! Typo in previous entries.
+   * manual/Changelog.htm
+     * Updated.
+   * ide/prgs/formedit.prg
+     + Support for NOTHEME clause.
+   * ide/prgs/mgide.prg
+     ! Additional libs support.
+     + msimg32 library.
+   * include/i_windefs.ch
+     + WS_OVERLAPPEDWINDOW, WS_CHILDWINDOW and WS_POPUPWINDOW
+   * source/h_button.prg
+     * Enabled custom draw for OSes after XP.
+   ! source/h_radio.prg
+     * RTE "Argument error: .NOT." at TRADIOGROUP:DEFINE(158)
+
 2015-07-14 19:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_altsyntax.ch
-   * include/i_altsyntax.ch
+   * include/i_checkbox.ch
      + NOTHEME clause: paints without functions from uxtheme.dll.
    * source/h_checkbox.prg
      * INCOMPATIBLE: THEMED is now the default if app is themed.
      ! FONTCOLOR is not working.
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
 
 2015-07-13 19:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
@@ -23,23 +40,23 @@
        Win 8.1 because function _GETBITMAP() it's not aware of extended
        frame bounds.
      ! Method TWindow:SaveAs() saves incorrect area.
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
 
 2015-07-06 17:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_windefs.ch
      + COLOR_MENUHILIGHT and COLOR_MENUBAR
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
 
 2015-06-27 23:19 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
    * source/h_picture.prg
      ! Picture control does not honor the image's transparency.
 
 2015-06-27 23:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
    * source/c_gdiplus.c
      ! GdipCreateHBITMAPFromBitmap loads some images with wrong color.
@@ -47,9 +64,9 @@
      * Format.
 
 2015-06-21 11:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * ./changelog.htm
+   * ./Changelog
      ! Typo in previous entry.
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
    * source/h_browse.prg
      ! TOBrowse:EditCell passes wrong parameters to ::Super:EditCell().
@@ -73,24 +90,24 @@
      ! Function _GetGridCellData is not detecting clicks on empty rows.
 
 2015-06-15 17:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * ./changelog.htm
+   * ./Changelog
      ! Typo in previous entry.
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
    * source/h_xbrowse.prg
      ! RTE at :EditItem(.T.) caused by change in parameter's order.
        Use TXBrowse:EditItem( lAppend, lOneRow, nItem, lChange ).
 
 2015-06-08 21:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
    * ide/prgs/formedit.prg
      ! Support for DEFAULTVALUES clause.
 
 2015-06-08 20:51 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * ./changelog.htm
+   * ./Changelog
      * Previous entry.
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
    * ide/prgs/formedit.prg
      + Support for new clauses.
@@ -98,16 +115,16 @@
      * Format.
 
 2015-06-02 20:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
    * source/h_browse.prg
      ! Infinite loop in TOBrowse:EditGrid with FULLMOVE clause, when
        last row has no editable column.
 
 2015-05-29 21:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * ./changelog.htm
+   * ./Changelog
      * Previous entry.
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
    * include/i_color.ch
      + CYAN, MAGENTA and other colors used in HMG Extended.
@@ -130,15 +147,15 @@
        is defined.
 
 2015-05-27 19:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * ./changelog.htm
+   * ./Changelog
      * Previous entry.
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
    * source/h_browse.prg
      ! RTE in TOBrowseByCell:SetValue().
 
 2015-05-27 18:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
    * include/i_altsyntax.ch
    * include/i_grid.ch
@@ -158,7 +175,7 @@
      + New parameter to TGridByCell:Define2().
 
 2015-05-26 17:41 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
    * source/h_browse.prg
      ! RTE on TGrid:Cell because nRow parameter is undefined.
@@ -166,14 +183,14 @@
      ! TGrid:EditItem() does not fully honor parameter lChange.
 
 2015-05-21 23:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
    * source/h_browse.prg
      ! Scrollbar is not updated correctly.
      * ::CurrentRow no longer updates the scrollbar.
 
 2015-05-21 21:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
    * source/h_browse.prg
      ! RTE in TOBrowse:EditAllCells() because ::nRowPos is 0.
@@ -187,20 +204,20 @@
      * Use ::CurrentRow( 0 ) instead of ListView_ClearCurSel().
 
 2015-05-20 22:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
    * source/h_print.prg
      ! RTE in TPrintBase:EndDoc() when _oohg_winreport is not defined.
 
 2015-05-20 21:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
    * source/h_browse.prg
      ! RTE in TOBrowse:EditGrid() because lRet is uninitialized.
 
 2015-05-20 19:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt
-   * manual/changelog.htm
+   * manual/Changelog.htm
    * manual/CLASSES.HTM
      * Updated.
    * include/i_altsyntax.ch
@@ -220,7 +237,7 @@
      * Comments.
 
 2015-05-19 23:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
    * include/i_browse.ch
      + CHECKBOXES, ON CHECKCHANGE and ON REFRESHROW clauses.
@@ -280,7 +297,7 @@
      ! Infinite loop in TOBrowseByCell:EditAllCells().
 
 2015-05-17 12:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
    * source/h_xbrowse.prg
      * TXBrowse:Value() renamed as TXBrowse:SetControlValue().
@@ -299,14 +316,14 @@
      * All references to ::FirstSelectedItem changed by ::CurrentRow.
 
 2015-05-14 23:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
    * source/h_xbrowse.prg
      - Unneeded code.
      ! Infinite loop when a non integer number is assigned to ::Value.
 
 2015-05-14 22:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
    * source/h_grid.prg
      - Unneeded code.
@@ -314,7 +331,7 @@
        selected.
 
 2015-05-13 23:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
    * source/h_grid.prg
      * Comments.
@@ -347,7 +364,7 @@
 2015-05-12 23:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_xbrowse.ch
      + CHECKBOXES, ON CHECKCHANGE and ON REFRESHROW clauses.
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
    * source/h_grid.prg
      * Comments.
@@ -400,7 +417,7 @@
 2015-05-12 01:13 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog
      * Previous entries.
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
    * source/h_grid.prg
      + Support for parameters lAppend and lOneRow in TGrid:EditAllCells().
@@ -420,7 +437,7 @@
 2015-05-11 20:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt
    * manual/Classes.htm
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
    * source/h_grid.prg
      * Comments.
@@ -470,7 +487,7 @@
 2015-05-10 04:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog
      * Previous entry.
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
    * source/h_browse.prg
      - Unneeded code.
@@ -524,7 +541,7 @@
        notification.
 
 2015-05-10 03:09 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
    * source/h_xbrowse.prg
      - Unneeded code.
@@ -569,7 +586,7 @@
      * TXBrowseByCell:CurrentCol() now paints only when the column changes.
 
 2015-05-10 02:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
    * source/h_grid.prg
      * Format.
@@ -625,7 +642,7 @@
        to the Grid control.
 
 2015-05-10 01:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
    * include/i_grid.ch
    * include/i_browse.ch
@@ -651,7 +668,7 @@
    * source/h_init.prg
      + Support for Turkish language.
        Thanks to Hüseyin Aydin for his contribution.
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
 
 2015-05-06 01:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
@@ -659,7 +676,7 @@
      * Updated.
    * ide/compile.bat
      + Message OK/ERROR at end of process.
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
    * manual/Classes.htm
      * Updated.
@@ -703,7 +720,7 @@
        clicked in ::nDelayedClick.
 
 2015-05-04 23:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
    * ./Compile_MINGW.BAT
      + -lrddado -lhbusrrdd to THR_LIB.
@@ -802,7 +819,7 @@
      * TOBrowseByCell:SetValue() does things directly.
 
 2015-05-02 11:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
    * ide/prgs/formedit.prg
      + Support for SILENT, ENABLEALTA, DISABLEALTA, NOSHOWALWAYS,
@@ -813,11 +830,11 @@
 2015-05-02 01:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog
      * Previous entries.
-* ./ChangeLog.004
+* ./Changelog.004
      + Additional info to a previous entry.
    * doc/classes.txt
      * Updated.
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
    * include/i_windefs.ch
        + LVM_GETHEADER.
@@ -948,7 +965,7 @@
 2015-04-25 20:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_altsyntax.htm
      ! Typo.
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
 
 2015-04-25 20:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
@@ -961,17 +978,17 @@
      + Support for GRID with ROWSOURCE and COLUMNFIELDS clauses.
        ; ON SAVE clause is not supported.
        ; DYNAMICDISPLAY clauses is not suported, use EDITCONTROLS instead.
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
 
 2015-04-25 16:19 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog
      * Previous entry.
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
 
 2015-04-25 16:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
    * source/h_xbrowse.prg
      * Comments.
@@ -1000,7 +1017,7 @@
      * Previous entry.
    * doc/classes.txt
      * Updated.
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
    * source/h_grid.prg
      + Comments.
@@ -1039,7 +1056,7 @@
        now fully honors the column order set by the user.
 
 2015-04-23 01:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
    * source/h_grid.prg
      * Format.
@@ -1103,7 +1120,7 @@
      + Support for ALT+A in TGridByCell.
 
 2015-04-19 23:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
    * source/h_xbrowse.prg
      + TXBrowse():SyncData, to allow reuse of ::EditCell in TOBrowse class.
@@ -1193,7 +1210,7 @@
 2015-04-17 20:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt
      * Updated.
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
    * source/h_grid.prg
      * Format.
@@ -1232,7 +1249,7 @@
      ! Double click edits only one cell when ::FullMove is .T.
 
 2015-04-16 21:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
    * include/i_xbrowse.ch
      + NOSHOWALWAYS, SILENT, ENABLEALTA and DISABLEALTA clauses.
@@ -1369,7 +1386,7 @@
      Any change in DATA lNoneUnsels is ignored.
 
 2015-04-16 20:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
    * include/oohg.ch
      - Comment.
@@ -1386,23 +1403,23 @@
    * source/h_grid.prg
      * TGrid():EditItem2 now fully supports fixed values and blocks in
        When and Readonly clauses.
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
 
 2015-04-13 20:09 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt
      * Updated.
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
 
 2015-04-13 19:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * ./changelog
+   * ./Changelog
      * Previous entry.
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
 
 2015-04-13 18:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * ./ChangeLog.004
+   * ./Changelog.004
      * Fixed entry.
 
 2015-04-13 18:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
@@ -1415,7 +1432,7 @@
      ! Minimun width of MsgInfoExt's window is too small.
 
 2015-04-13 18:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * ./changelog
+   * ./Changelog
      * Previous entry.
    * distros/MakeDistro.bat
      * Copy only newer files if working folder is not empty.
@@ -1492,7 +1509,7 @@
      This is the default behaviour.
 
 2015-04-06 18:13 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * ./ChangeLog.004
+   * ./Changelog.004
      * Fixed entry.
 
 2015-03-30 19:36 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
@@ -1518,9 +1535,9 @@
      ! Note: 24-bit BMP files does change image color :( .
 
 2015-03-26 21:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * ./changelog
+   * ./Changelog
      * Previous entry.
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
 
 2015-03-26 19:06 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
@@ -1545,7 +1562,7 @@
      * Added support for new return value of hb_langSelect() in Harbour 3.2
 
 2015-03-20 22:32 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
    * source/h_radio.prg
      ! RadioGroup inside Tab disapears after setting height of Tab.
@@ -1555,7 +1572,7 @@
      * Updated (not finished yet).
 
 2015-03-19 21:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
    * distros/hb32mingw.iss
      + Support for multiple paths to files.
@@ -1634,7 +1651,7 @@
    + ide/prgs/mgide.prg
      ! Compilation under xHarbour.
      + (x)Harbour and C Compiler versions to About window.
-   * manual/changelog.htm
+   * manual/Changelog.htm
      * Updated.
    + resources/CompileRes_mingw.bat
      * Compiles OOHG's resource file for MinGW.
@@ -1664,6 +1681,6 @@
      ! BCC warning at some defines.
 
 2015-03-14 12:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   + ./ChangeLog.004
-   * ./ChangeLog
-     * Renamed to ChangeLog.004 and started a new one.
+   + ./Changelog.004
+   * ./Changelog
+     * Renamed to Changelog.004 and started a new one.

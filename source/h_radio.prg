@@ -1,5 +1,5 @@
 /*
- * $Id: h_radio.prg,v 1.42 2015-03-21 01:33:17 fyurisich Exp $
+ * $Id: h_radio.prg,v 1.43 2015-08-01 21:17:17 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -155,7 +155,10 @@ Local i, oItem, uToolTip, uReadOnly
    ASSIGN ::oBkGrnd     VALUE bkgrnd      TYPE "O"
    ASSIGN ::LeftAlign   VALUE left        TYPE "L"
    ASSIGN ::nSpacing    VALUE spacing     TYPE "N" DEFAULT Iif( ::lHorizontal, ::nWidth, ::nHeight )
-   ASSIGN ::TabStop     VALUE ! NoTabStop TYPE "L"
+
+   IF HB_IsLogical( NoTabStop )
+      ::TabStop := ! NoTabStop
+   EndIf
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, , lRtl )
    ::InitStyle( , , Invisible, ! ::TabStop, lDisabled )

@@ -1,5 +1,5 @@
 /*
- * $Id: mgide.prg,v 1.27 2015-03-18 20:49:41 fyurisich Exp $
+ * $Id: mgide.prg,v 1.28 2015-08-01 21:17:17 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -1164,7 +1164,7 @@ METHOD OkPrefer( aFont ) CLASS THMI
    ::nCompilerC         := ::Form_Prefer:radiogroup_2:Value
    ::lTBuild            := ::Form_Prefer:Radiogroup_3:Value
    ::lSnap              := ::Form_Prefer:checkbox_105:Value
-   ::cLib               := ::Form_Prefer:text_lib:Value
+   ::cLib               := AllTrim( ::Form_Prefer:text_lib:Value )
    ::cFormDefFontName   := IIF( Empty( aFont[1] ), '', aFont[1] )
    ::nFormDefFontSize   := IIF( aFont[2] > 0, Int( aFont[2] ), 0 )
    ::cFormDefFontColor  := IIF( aFont[5] == NIL .OR. aFont[5,1] == NIL, ;
@@ -1308,8 +1308,9 @@ METHOD BldMinGW( nOption ) CLASS THMI
                                   '-lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbziparc ' + ;
                                   '-lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc ' + ;
                                   '-lodbc32 -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 ' + ;
-                                  '-lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 ' + ;
+                                  '-lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -lmsimg32 ' + ;
                                   If( nOption == 2, '-lgtwin ', '' ) + ;
+                                  If( ! Empty( ::cLib ), ::cLib + ' ', '' ) + ;
                                   '-Wl,--end-group' + CRLF
          cOut += 'CC_EXE        = GCC.EXE' + CRLF
          cOut += 'CC_FLAGS      = -Wall -mwindows -O3' + CRLF
@@ -1600,8 +1601,9 @@ METHOD xBldMinGW( nOption ) CLASS THMI
                                   '-lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbziparc ' + ;
                                   '-lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc ' + ;
                                   '-lodbc32 -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 ' + ;
-                                  '-lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 ' + ;
+                                  '-lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -lmsimg32 ' + ;
                                   If( nOption == 2, '-lgtwin ', '' ) + ;
+                                  If( ! Empty( ::cLib ), ::cLib + ' ', '' ) + ;
                                   '-Wl,--end-group' + CRLF
          cOut += 'CC_EXE        = GCC.EXE' + CRLF
          cOut += 'CC_FLAGS      = -Wall -mwindows -O3' + CRLF
@@ -1931,6 +1933,9 @@ METHOD BuildBCC( nOption ) CLASS THMI
                cOut += '\' + CRLF + cHarbourFolder + 'LIB\' + i
             EndIf
          NEXT
+         If ! Empty( ::cLib )
+            cOut += '\' + CRLF + ::cLib
+         EndIf
          cOut += CRLF
          cOut += 'CC_EXE        = ' + cCompFolder + 'BIN\BCC32.EXE' + CRLF
          cOut += 'CC_FLAGS      = -c -O2 -tW -M' + CRLF
@@ -1938,7 +1943,7 @@ METHOD BuildBCC( nOption ) CLASS THMI
                                         cCompFolder + 'INCLUDE;' + ;
                                         cHarbourFolder + 'INCLUDE;' + ;
                                         cMiniGUIFolder + 'INCLUDE;' + ;
-                                 '-L' + cCompFolder + 'LIB;' + CRLF
+                                 '-L' + cCompFolder + 'LIB;' + cCompFolder + 'LIB\PSDK;' + CRLF
          cOut += 'HRB_EXE       = ' + cHarbourFolder + 'BIN\HARBOUR.EXE' + CRLF
          cOut += 'HRB_FLAGS     = -n -q ' + If( nOption == 2, "-b ", "" ) + CRLF
          cOut += 'HRB_SEARCH    = -i' + DelSlash( cFolder ) + ;
@@ -1948,7 +1953,7 @@ METHOD BuildBCC( nOption ) CLASS THMI
          cOut += CRLF
          // Rule for .exe building
          cOut += '$(APP_NAME) : $(OBJECTS) $(RESFILES)' + CRLF
-         cOut += HTAB + '$(LINK_EXE) $(LINK_SEARCH) $(LINK_FLAGS) c0w32.obj $(OBJECTS),$(APP_NAME),,$(LINK_LIBS) cw32.lib import32.lib,,$(RESFILES)' + CRLF
+         cOut += HTAB + '$(LINK_EXE) $(LINK_SEARCH) $(LINK_FLAGS) c0w32.obj $(OBJECTS),$(APP_NAME),,$(LINK_LIBS) cw32.lib import32.lib msimg32.lib,,$(RESFILES)' + CRLF
          cOut += HTAB + '@echo.' + CRLF
          cOut += CRLF
          // Rule for .c compiling
@@ -2258,6 +2263,9 @@ METHOD xBuildBCC( nOption ) CLASS THMI
                cOut += '\' + CRLF + cHarbourFolder + 'LIB\' + i
             EndIf
          NEXT
+         If ! Empty( ::cLib )
+            cOut += '\' + CRLF + ::cLib
+         EndIf
          cOut += CRLF
          cOut += 'CC_EXE        = ' + cCompFolder + 'BIN\BCC32.EXE' + CRLF
          cOut += 'CC_FLAGS      = -c -O2 -tW -M' + CRLF
@@ -2265,7 +2273,7 @@ METHOD xBuildBCC( nOption ) CLASS THMI
                                         cCompFolder + 'INCLUDE;' + ;
                                         cHarbourFolder + 'INCLUDE;' + ;
                                         cMiniGUIFolder + 'INCLUDE;' + ;
-                                 '-L' + cCompFolder + 'LIB;' + CRLF
+                                 '-L' + cCompFolder + 'LIB;' + cCompFolder + 'LIB\PSDK;' + CRLF
          cOut += 'HRB_EXE       = ' + cHarbourFolder + 'BIN\HARBOUR.EXE' + CRLF
          cOut += 'HRB_FLAGS     = -n -q ' + If( nOption == 2, "-b ", "" ) + CRLF
          cOut += 'HRB_SEARCH    = -i' + DelSlash( cFolder ) + ;
@@ -2275,7 +2283,7 @@ METHOD xBuildBCC( nOption ) CLASS THMI
          cOut += CRLF
          // Rule for .exe building
          cOut += '$(APP_NAME) : $(OBJECTS) $(RESFILES)' + CRLF
-         cOut += HTAB + '$(LINK_EXE) $(LINK_SEARCH) $(LINK_FLAGS) c0w32.obj $(OBJECTS),$(APP_NAME),,$(LINK_LIBS) cw32.lib import32.lib,,$(RESFILES)' + CRLF
+         cOut += HTAB + '$(LINK_EXE) $(LINK_SEARCH) $(LINK_FLAGS) c0w32.obj $(OBJECTS),$(APP_NAME),,$(LINK_LIBS) cw32.lib import32.lib msimg32.lib,,$(RESFILES)' + CRLF
          cOut += HTAB + '@del $(TDS_NAME)' + CRLF
          cOut += HTAB + '@echo.' + CRLF
          cOut += CRLF

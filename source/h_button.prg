@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.66 2015-03-09 02:52:07 fyurisich Exp $
+ * $Id: h_button.prg,v 1.67 2015-08-01 21:17:17 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -363,7 +363,6 @@ Local nNotify := GetNotifyCode( lParam )
       If IsWindowStyle( ::hWnd, BS_BITMAP ) .AND. ;
          ::lThemed .AND. ;
          IsAppThemed() .AND. ;
-         IsXPThemeActive() .AND. ;
          ValidHandler( ::hImage )
 
          Return TButton_Notify_CustomDraw( lParam )
