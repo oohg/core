@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.58 2015-08-01 21:17:16 fyurisich Exp $
+ * $Id: formedit.prg,v 1.59 2015-08-15 13:03:59 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -1288,7 +1288,7 @@ LOCAL i, j, nContLin, cForma, nStart, nEnd, nFWidth, nFHeight, cName, aColor
       ON MOUSEDRAG ::MouseMoveSize() ;
       ON GOTFOCUS ::DrawPoints() ;
       ON RESTORE ::DrawPoints() ;
-      ON SIZE ::DrawPoints() ;
+      ON SIZE ( ::DrawPoints(), ::lFSave := .F. ) ;
       BACKCOLOR aColor ;
       FONT ::cFFontName ;
       SIZE ::nFFontSize ;

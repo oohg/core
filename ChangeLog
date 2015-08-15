@@ -1,11 +1,15 @@
 /*
- * $Id: ChangeLog,v 1.1500 2015-08-01 21:17:15 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1501 2015-08-15 13:03:56 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-08-15 10:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/prgs/formedit.prg
+     ! Changes in form's size are not detected when made by mouse.
 
 2015-08-01 18:17 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog
