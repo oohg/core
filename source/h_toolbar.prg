@@ -1,5 +1,5 @@
 /*
- * $Id: h_toolbar.prg,v 1.41 2015-03-09 02:52:08 fyurisich Exp $
+ * $Id: h_toolbar.prg,v 1.42 2015-08-18 01:17:22 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -129,6 +129,7 @@ CLASS TToolBar FROM TControl
    DATA nButtonHeight      INIT 0
    DATA nButtonWidth       INIT 0
    DATA lVertical          INIT .F.
+   DATA oToolTip           INIT Nil
 
    METHOD Define
    METHOD Events_Size
@@ -181,6 +182,11 @@ Local ControlHandle, id, lSplitActive, nStyle
    ControlHandle := InitToolBar( ::ContainerhWnd, Caption, id, ::ContainerCol, ::ContainerRow, ::nButtonWidth, ::nButtonHeight, "", 0, flat, bottom, righttext, lSplitActive, border, ::lRtl, nStyle, lVertical )
 
    ::Register( ControlHandle, ControlName, , , ToolTip, Id )
+
+   ::oToolTip := TToolTip():Define( , Self )
+
+   SendMessage( ::hWnd, TB_SETTOOLTIPS, ::oToolTip:hWnd, 0 )
+
    ::SetFont( , , bold, italic, underline, strikeout )
 
    ::ContainerhWndValue := ::hWnd
@@ -570,7 +576,7 @@ HB_FUNC( INITTOOLBAR )
 {
    HWND hwnd;
    HWND hwndTB;
-   int Style = WS_CHILD | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | TBSTYLE_TOOLTIPS | hb_parni( 16 );
+   int Style = WS_CHILD | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | hb_parni( 16 );
 
    int ExStyle;
    int TbExStyle = TBSTYLE_EX_DRAWDDARROWS;

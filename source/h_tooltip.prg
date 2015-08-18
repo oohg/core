@@ -1,5 +1,5 @@
 /*
- * $Id: h_tooltip.prg,v 1.10 2015-03-09 02:52:08 fyurisich Exp $
+ * $Id: h_tooltip.prg,v 1.11 2015-08-18 01:17:22 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -98,6 +98,7 @@
 STATIC _OOHG_ToolTipInitialTime := 0
 STATIC _OOHG_ToolTipAutoPopTime := 0
 STATIC _OOHG_ToolTipReShowTime := 0
+STATIC _OOHG_ToolTipMultiLine := .F.
 
 CLASS TToolTip FROM TControl
    DATA Type           INIT "TOOLTIP" READONLY
@@ -118,7 +119,7 @@ CLASS TToolTip FROM TControl
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
-METHOD Define( ControlName, ParentForm, nInitial, nAutoPop, nReShow ) CLASS TToolTip
+METHOD Define( ControlName, ParentForm, nInitial, nAutoPop, nReShow, lMulti ) CLASS TToolTip
 *-----------------------------------------------------------------------------*
 LOCAL ControlHandle
    ::SetForm( ControlName, ParentForm )
@@ -127,6 +128,7 @@ LOCAL ControlHandle
    ASSIGN nInitial VALUE nInitial TYPE "N" DEFAULT _OOHG_ToolTipInitialTime
    ASSIGN nAutoPop VALUE nAutoPop TYPE "N" DEFAULT _OOHG_ToolTipAutoPopTime
    ASSIGN nReShow  VALUE nReShow  TYPE "N" DEFAULT _OOHG_ToolTipReshowTime
+   ASSIGN lMulti   VALUE lMulti   TYPE "L" DEFAULT _OOHG_ToolTipMultiLine
    If nInitial > 0
       ::InitialTime := nInitial
    EndIf
@@ -136,6 +138,7 @@ LOCAL ControlHandle
    If nReShow > 0
       ::ReshowTime := nReShow
    EndIf
+   ::MultiLine := lMulti
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -233,6 +236,14 @@ Function _SetToolTipReShowTime( nMilliSec )
       _OOHG_ToolTipReShowTime := nMilliSec
    EndIf
 Return _OOHG_ToolTipReShowTime
+
+*-----------------------------------------------------------------------------*
+Function _SetToolTipMultiLine( lMulti )
+*-----------------------------------------------------------------------------*
+   If HB_IsLogical( lMulti )
+      _OOHG_ToolTipMultiLine := lMulti
+   EndIf
+Return _OOHG_ToolTipMultiLine
 
 *-----------------------------------------------------------------------------*
 METHOD InitialTime( nMilliSecs ) CLASS TToolTip

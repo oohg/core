@@ -1,9 +1,9 @@
 /*
- * $Id: miniprint.ch,v 1.13 2015-03-09 02:51:07 fyurisich Exp $
+ * $Id: miniprint.ch,v 1.14 2015-08-18 01:17:22 fyurisich Exp $
  */
 /*
  * ooHG source code:
- * Miniprint libray definitions
+ * Miniprint library definitions
  *
  * Copyright 2007-2015 Vicente Guerra <vicente@guerra.com.mx>
  *

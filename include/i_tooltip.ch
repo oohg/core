@@ -1,5 +1,5 @@
 /*
- * $Id: i_tooltip.ch,v 1.7 2015-03-09 02:51:07 fyurisich Exp $
+ * $Id: i_tooltip.ch,v 1.8 2015-08-18 01:17:22 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -56,6 +56,10 @@
  * whether to permit this exception to apply to your modifications.
  * If you do not wish that, delete this exception notice.
  */
+
+#xcommand SET TOOLTIP MULTILINE <x: ON, OFF> ;
+   => ;
+      _SetToolTipMultiLine( Upper( <(x)> ) == "ON" )
 
 #xcommand SET TOOLTIPBALLOON <x: ON, OFF> ;
    => ;

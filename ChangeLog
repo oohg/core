@@ -1,11 +1,27 @@
 /*
- * $Id: ChangeLog,v 1.1501 2015-08-15 13:03:56 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1502 2015-08-18 01:17:22 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-08-17 22:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/miniprint.ch
+     ! Typo.
+   * include/i_tooltip.ch
+     + SET TOOLTIP MULTILINE command.
+   * include/i_windefs.ch
+     + TB_SETTOOLTIPS.
+   * source/h_toolbar.prg
+     + DATA oToolTip.
+     * TToolBar() now uses a TToolTip() controls instead of default
+       tooltip.
+     - TBSTYLE_TOOLTIPS from toolbar's initial style.
+     ! ToolBar's tooltips are not displayed in balloon style.
+   * source/h_tooltip.prg
+     + Support for SET TOOLTIP MULTILINE command.
 
 2015-08-15 10:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ide/prgs/formedit.prg
