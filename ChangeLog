@@ -1,11 +1,15 @@
 /*
- * $Id: ChangeLog,v 1.1502 2015-08-18 01:17:22 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1503 2015-08-19 22:37:54 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-08-19 19:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_toolbar.prg
+     ! RTE "Message not found: TTOOLTIP:POSITION"
 
 2015-08-17 22:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/miniprint.ch

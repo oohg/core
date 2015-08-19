@@ -1,5 +1,5 @@
 /*
- * $Id: h_toolbar.prg,v 1.42 2015-08-18 01:17:22 fyurisich Exp $
+ * $Id: h_toolbar.prg,v 1.43 2015-08-19 22:37:56 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -342,7 +342,7 @@ Local ButtonIndex, i, oControl
       If GetFocus() == ::hWnd
          ButtonIndex := SendMessage( ::hWnd, TB_GETHOTITEM , 0 , 0 )
          If ButtonIndex >= 0
-            i := Ascan( ::aControls, { |o| o:Position == ButtonIndex + 1 } )
+            i := Ascan( ::aControls, { |o| o:Type == "TOOLBUTTON" .AND. o:Position == ButtonIndex + 1 } )
             If i > 0
                oControl := ::aControls[ i ]
                If ! oControl:NestedClick
