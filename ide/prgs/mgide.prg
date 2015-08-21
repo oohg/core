@@ -1,5 +1,5 @@
 /*
- * $Id: mgide.prg,v 1.28 2015-08-01 21:17:17 fyurisich Exp $
+ * $Id: mgide.prg,v 1.29 2015-08-21 00:47:54 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -4396,7 +4396,7 @@ RETURN NIL
 //------------------------------------------------------------------------------
 METHOD myInputWindow( cTitle, aLabels, aValues, aFormats, bFunc1, bFunc2 ) CLASS THMI
 //------------------------------------------------------------------------------
-LOCAL l, aResult, wyw, i, wHeight, _iw, ControlRow, cLblName, cCtrlName, oWin
+LOCAL l, aResult, wyw, i, wHeight, _iw, ControlRow, cLblName, cCtrlName, oWin, lChange := .F.
 
    SET INTERACTIVECLOSE ON
    l := Len( aLabels )
@@ -4448,7 +4448,8 @@ LOCAL l, aResult, wyw, i, wHeight, _iw, ControlRow, cLblName, cCtrlName, oWin
       NOSIZE ;
       ICON 'Edit' ;
       FONT 'Courier new' SIZE 9 ;
-      BACKCOLOR ::aSystemColor
+      BACKCOLOR ::aSystemColor ;
+      ON INTERACTIVECLOSE IIF( lChange, MsgYesNo( "Close without saving?", 'ooHG IDE+' ), .T. )
 
       DEFINE STATUSBAR
          STATUSITEM " "
@@ -4459,7 +4460,7 @@ LOCAL l, aResult, wyw, i, wHeight, _iw, ControlRow, cLblName, cCtrlName, oWin
          STATUSITEM "Use Defaults    ." WIDTH 115 ACTION Eval( bFunc2 ) TOOLTIP "Use default font and default colors"
          ENDIF
          STATUSITEM "Ok              ." WIDTH 115 ACTION _myInputWindowOk( _iw, aResult, oWin ) TOOLTIP "Save changes"
-         STATUSITEM "Cancel          ." WIDTH 115 ACTION _myInputWindowCancel( _iw, aResult ) TOOLTIP "Discard changes"
+         STATUSITEM "Cancel          ." WIDTH 115 ACTION _myInputWindowCancel( _iw, aResult, lChange ) TOOLTIP "Discard changes"
       END STATUSBAR
 
       DEFINE WINDOW Int_1 OBJ oWin ;
@@ -4481,21 +4482,21 @@ LOCAL l, aResult, wyw, i, wHeight, _iw, ControlRow, cLblName, cCtrlName, oWin
 
             DO CASE
             CASE ValType ( aValues[i] ) == 'L'
-               @ ControlRow, 180 CHECKBOX &cCtrlName CAPTION '' VALUE aValues[i]
+               @ ControlRow, 180 CHECKBOX &cCtrlName CAPTION '' VALUE aValues[i] ON CHANGE lChange := .T.
                ControlRow := ControlRow + 30
             CASE ValType ( aValues[i] ) == 'D'
-               @ ControlRow, 180 DATEPICKER &cCtrlName VALUE aValues[i] WIDTH 420
+               @ ControlRow, 180 DATEPICKER &cCtrlName VALUE aValues[i] WIDTH 420 ON CHANGE lChange := .T.
                ControlRow := ControlRow + 26
             CASE ValType ( aValues[i] ) == 'N'
                If ValType ( aFormats[i] ) == 'A'
-                  @ ControlRow, 180 COMBOBOX &cCtrlName ITEMS aFormats[i] VALUE aValues[i] WIDTH 420  FONT 'Arial' SIZE 9
+                  @ ControlRow, 180 COMBOBOX &cCtrlName ITEMS aFormats[i] VALUE aValues[i] WIDTH 420  FONT 'Arial' SIZE 9 ON CHANGE lChange := .T.
                   ControlRow := ControlRow + 26
                ElseIf  ValType ( aFormats[i] ) == 'C'
                   If AT ( '.', aFormats[i] ) > 0
-                     @ ControlRow, 180 TEXTBOX &cCtrlName VALUE aValues[i] WIDTH 120 FONT 'Courier new' SIZE 9 NUMERIC INPUTMASK aFormats[i] RIGHTALIGN
+                     @ ControlRow, 180 TEXTBOX &cCtrlName VALUE aValues[i] WIDTH 120 FONT 'Courier new' SIZE 9 NUMERIC INPUTMASK aFormats[i] RIGHTALIGN ON CHANGE lChange := .T.
                      ControlRow := ControlRow + 26
                   Else
-                     @ ControlRow, 180 TEXTBOX &cCtrlName VALUE aValues[i] WIDTH 120 FONT 'Courier new' SIZE 9 NUMERIC INPUTMASK aFormats[i] RIGHTALIGN
+                     @ ControlRow, 180 TEXTBOX &cCtrlName VALUE aValues[i] WIDTH 120 FONT 'Courier new' SIZE 9 NUMERIC INPUTMASK aFormats[i] RIGHTALIGN ON CHANGE lChange := .T.
                      ControlRow := ControlRow + 26
                   EndIf
                Else
@@ -4504,27 +4505,27 @@ LOCAL l, aResult, wyw, i, wHeight, _iw, ControlRow, cLblName, cCtrlName, oWin
             CASE ValType ( aValues[i] ) == 'C'
                If ValType ( aFormats[i] ) == 'N'
                   If  aFormats[i] <= 32
-                     @ ControlRow, 180 TEXTBOX &cCtrlName VALUE aValues[i] WIDTH 270 FONT 'Courier new' SIZE 9 MAXLENGTH aFormats[i]
+                     @ ControlRow, 180 TEXTBOX &cCtrlName VALUE aValues[i] WIDTH 270 FONT 'Courier new' SIZE 9 MAXLENGTH aFormats[i] ON CHANGE lChange := .T.
                      ControlRow := ControlRow + 26
                   Else
-                     @ ControlRow, 180 EDITBOX &cCtrlName WIDTH 420 HEIGHT 40 VALUE aValues[i] FONT 'Courier new' SIZE 9 MAXLENGTH aFormats[i] NOVSCROLL
+                     @ ControlRow, 180 EDITBOX &cCtrlName WIDTH 420 HEIGHT 40 VALUE aValues[i] FONT 'Courier new' SIZE 9 MAXLENGTH aFormats[i] NOVSCROLL ON CHANGE lChange := .T.
                      ControlRow := ControlRow + 42
                   EndIf
                Else
                   ControlRow := ControlRow + 26
                EndIf
             CASE ValType ( aValues[i] ) == 'M'
-               @ ControlRow, 180 EDITBOX &cCtrlName WIDTH 420 HEIGHT 90 VALUE aValues[i] FONT 'Courier new' SIZE 9
+               @ ControlRow, 180 EDITBOX &cCtrlName WIDTH 420 HEIGHT 90 VALUE aValues[i] FONT 'Courier new' SIZE 9 ON CHANGE lChange := .T.
                ControlRow := ControlRow + 92
             OTHERWISE
-               @ ControlRow, 180 TEXTBOX &cCtrlName NOBORDER BACKCOLOR ::aSystemColor NOTABSTOP READONLY WIDTH 270 FONT 'Courier new' SIZE 9 MAXLENGTH 10
+               @ ControlRow, 180 TEXTBOX &cCtrlName NOBORDER BACKCOLOR ::aSystemColor NOTABSTOP READONLY WIDTH 270 FONT 'Courier new' SIZE 9 MAXLENGTH 10 ON CHANGE lChange := .T.
                ControlRow := ControlRow + 26
             ENDCASE
          NEXT i
 
       END WINDOW
 
-      ON KEY ESCAPE OF _inputwindow ACTION _myInputWindowCancel( _iw, aResult )
+      ON KEY ESCAPE OF _inputwindow ACTION _myInputWindowCancel( _iw, aResult, lChange )
 
    END WINDOW
 
@@ -4547,10 +4548,12 @@ LOCAL i, l
 RETURN Nil
 
 //------------------------------------------------------------------------------
-STATIC FUNCTION _myInputWindowCancel( oInputWindow, aResult )
+STATIC FUNCTION _myInputWindowCancel( oInputWindow, aResult, lChange )
 //------------------------------------------------------------------------------
-   aFill( aResult, NIL )
-   oInputWindow:Release()
+   IF ! lChange .OR. MsgYesNo( "Close without saving?", 'ooHG IDE+' )
+      aFill( aResult, NIL )
+      oInputWindow:Release()
+   ENDIF
 RETURN Nil
 
 //------------------------------------------------------------------------------
