@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.59 2015-08-15 13:03:59 fyurisich Exp $
+ * $Id: formedit.prg,v 1.60 2015-09-01 21:31:40 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -3390,7 +3390,8 @@ LOCAL nWidth := NIL, nHeight := NIL
 
       CASE ::CurrentControl == 3
          // 'CHECKBOX'
-         ::aValue[::nControlW] := 'NIL'
+         ::aValue[::nControlW]  := 'NIL'
+         ::aThemed[::nControlW] := 'NIL'
 
       CASE ::CurrentControl == 4
          // 'LIST'

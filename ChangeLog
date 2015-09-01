@@ -1,11 +1,15 @@
 /*
- * $Id: ChangeLog,v 1.1504 2015-08-21 00:47:54 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1505 2015-09-01 21:31:37 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-09-01 18:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/prgs/formedit.prg
+     ! RTE when adding a new CHECKBOX control.
 
 2015-08-20 21:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ide/prgs/mgide.prg
