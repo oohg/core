@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.60 2015-05-02 04:20:46 fyurisich Exp $
+ * $Id: winprint.prg,v 1.61 2015-09-13 23:32:36 fyurisich Exp $
  */
 /*----------------------------------------------------------------------------
  * ooHG source code:
@@ -313,7 +313,7 @@ Return Nil
 
 
 METHOD SetDevMode(what,newvalue) CLASS HBPrinter
-  ::hDCRef:=rr_setdevmode( what, newvalue, ! ::lGlobalChanges )
+  ::hDCRef:=rr_setdevmode( what, newvalue, ::lGlobalChanges )
   rr_getdevicecaps(::DEVCAPS,::Fonts[3])
   ::setunits(::units)
 Return Self
@@ -2401,7 +2401,7 @@ HB_FUNC (RR_SETDEVMODE)
      if (what==DM_PAPERWIDTH)     pi2->pDevMode->dmPaperWidth = (short)hb_parni(2);
 
      DocumentProperties(NULL, hPrinter,PrinterName,pi2->pDevMode,pi2->pDevMode,DM_IN_BUFFER | DM_OUT_BUFFER);
-     if( ! hb_parl( 3 ) )
+     if( hb_parl( 3 ) )
      {
         SetPrinter( hPrinter, 2, (LPBYTE) pi2, 0 );
      }
