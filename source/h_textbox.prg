@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.100 2015-03-09 02:52:08 fyurisich Exp $
+ * $Id: h_textbox.prg,v 1.101 2015-10-10 13:32:47 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -481,7 +481,6 @@ Local lWhen
 
             //::FontHandle := _SetFont( ::hWnd, ::cFocusFontName, ::nFocusFontSize, ::FocusBold, ::FocusItalic, ::FocusUnderline, ::FocusStrikeout )
             //::SetFont( ::cFocusFontName, ::nFocusFontSize, ::FocusBold, ::FocusItalic, ::FocusUnderline, ::FocusStrikeout )
-            ::DoEvent( ::OnGotFocus, "GOTFOCUS" )
          else
             _SetNextFocus()
          EndIf
