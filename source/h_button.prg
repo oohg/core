@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.67 2015-08-01 21:17:17 fyurisich Exp $
+ * $Id: h_button.prg,v 1.68 2015-10-14 23:38:29 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -110,6 +110,7 @@ CLASS TButton FROM TControl
    DATA aImageMargin    INIT {10, 10, 10, 10}
    DATA lNo3DColors     INIT .F.
    DATA lNoDIBSection   INIT .T.
+   DATA lNoHotLight     INIT .F.
 
    METHOD Define
    METHOD DefineImage
@@ -134,7 +135,7 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h, ;
                strikeout, lRtl, lNoPrefix, lDisabled, cBuffer, hBitMap, ;
                cImage, lNoTransparent, lScale, lCancel, cAlign, lMultiLine, ;
                themed, aImageMargin, OnMouseMove, lNo3DColors, lAutoFit, ;
-               lNoDIB, backcolor ) CLASS TButton
+               lNoDIB, backcolor, lNoHotLight ) CLASS TButton
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle, lBitMap, i
 
@@ -190,6 +191,7 @@ Local ControlHandle, nStyle, lBitMap, i
    ASSIGN ::AutoFit        VALUE lAutoFit       TYPE "L"
    ASSIGN ::lNo3DColors    VALUE lNo3DColors    TYPE "L"
    ASSIGN ::lNoDIBSection  VALUE lNoDIB         TYPE "L"
+   ASSIGN ::lNoHotLight    VALUE lNoHotLight    TYPE "L"
 
    IF VALTYPE( cAlign ) $ "CM"
       cAlign := ALLTRIM( UPPER( cAlign ) )
@@ -360,13 +362,14 @@ METHOD Events_Notify( wParam, lParam ) CLASS TButton
 Local nNotify := GetNotifyCode( lParam )
 
    If nNotify == NM_CUSTOMDRAW
+/*
       If IsWindowStyle( ::hWnd, BS_BITMAP ) .AND. ;
          ::lThemed .AND. ;
          IsAppThemed() .AND. ;
          ValidHandler( ::hImage )
-
-         Return TButton_Notify_CustomDraw( lParam )
-      EndIf
+*/
+         Return TButton_Notify_CustomDraw( lParam, ! ::lNoHotLight )
+//      EndIf
    EndIf
 
 Return ::Super:Events_Notify( wParam, lParam )
@@ -537,7 +540,6 @@ HB_FUNC( SETIMAGEXP )
       DeleteObject( hBmp2 );
       // This handle must be explicitly released !!!
       hb_retnl( (LONG) himl );
-
    }
 }
 
@@ -552,7 +554,7 @@ typedef int (CALLBACK *CALL_GETTHEMEBACKGROUNDCONTENTRECT )( HTHEME, HDC, int, i
 typedef int (CALLBACK *CALL_CLOSETHEMEDATA )( HTHEME );
 typedef int (CALLBACK *CALL_DRAWTHEMEPARENTBACKGROUND )( HWND, HDC, RECT* );
 
-int TButton_Notify_CustomDraw( LPARAM lParam )
+int TButton_Notify_CustomDraw( LPARAM lParam, BOOL bHotLight )
 {
    HMODULE hInstDLL;
    LPNMCUSTOMDRAW pCustomDraw = (LPNMCUSTOMDRAW) lParam;
@@ -615,7 +617,7 @@ int TButton_Notify_CustomDraw( LPARAM lParam )
       {
          state_id = PBS_PRESSED;
       }
-      else if( pCustomDraw->uItemState & CDIS_HOT )
+      else if( ( pCustomDraw->uItemState & CDIS_HOT ) && bHotLight )
       {
          state_id = PBS_HOT;
       }
@@ -657,7 +659,7 @@ int TButton_Notify_CustomDraw( LPARAM lParam )
 
 HB_FUNC( TBUTTON_NOTIFY_CUSTOMDRAW )
 {
-   hb_retni( TButton_Notify_CustomDraw( (LPARAM) hb_parnl( 1 ) ) );
+   hb_retni( TButton_Notify_CustomDraw( (LPARAM) hb_parnl( 1 ), hb_parl( 2 ) ) );
 }
 
 #pragma ENDDUMP

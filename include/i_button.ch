@@ -1,5 +1,5 @@
 /*
- * $Id: i_button.ch,v 1.26 2015-03-09 02:51:07 fyurisich Exp $
+ * $Id: i_button.ch,v 1.27 2015-10-14 23:38:29 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -96,6 +96,7 @@
       [ <autofit: AUTOFIT, ADJUST> ] ;
       [ <lDIB: DIBSECTION> ] ;
       [ BACKCOLOR <backcolor> ] ;
+      [ <nohotlight: NOHOTLIGHT> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TButton(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <caption>, <{action}>, ;
@@ -105,7 +106,7 @@
             <.disabled.>, <buffer>, <hbitmap>, <bitmap>, <.notrans.>, ;
             <.scale.>, <.cancel.>, <"alignment">, <.multiline.>, <.themed.>, ;
             <aImageMargin>, <{onmousemove}>, <.no3dcolors.>, <.autofit.>, ;
-            ! <.lDIB.>, <backcolor> )
+            ! <.lDIB.>, <backcolor>, <.nohotlight.> )
 
 #command @ <row>, <col> CHECKBUTTON <name> ;
       [ OBJ <obj> ] ;
@@ -146,6 +147,7 @@
       [ <alignment:LEFT,RIGHT,TOP,BOTTOM,CENTER> ] ;
       [ <multiline: MULTILINE> ] ;
       [ <flat: FLAT> ] ;
+      [ <nohotlight: NOHOTLIGHT> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TButtonCheck(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <caption>, <value>, ;
@@ -155,4 +157,4 @@
             <bitmap>, <buffer>, <hbitmap>, <.notrans.>, <.scale.>, ;
             <.no3dcolors.>, <.autofit.>, ! <.lDIB.>, <backcolor>, ;
             <.disabled.>, <.themed.>, <aImageMargin>, <{onmousemove}>, ;
-            <"alignment">, <.multiline.>, <.flat.> )
+            <"alignment">, <.multiline.>, <.flat.>, <.nohotlight.> )
