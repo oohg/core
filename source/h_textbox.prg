@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.101 2015-10-10 13:32:47 fyurisich Exp $
+ * $Id: h_textbox.prg,v 1.102 2015-10-15 01:19:15 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -444,7 +444,7 @@ Local lWhen
          ::lPrevUndo := .F.
       EndIf
 
-   elseIf Hi_wParam == EN_KILLFOCUS
+   ElseIf Hi_wParam == EN_KILLFOCUS
       If ! ::When_Procesing
          ::When_Processed := .F.
       EndIf
@@ -452,7 +452,7 @@ Local lWhen
       ::lFocused := .F.
       Return ::DoLostFocus()
 
-   elseIf Hi_wParam == EN_SETFOCUS
+   ElseIf Hi_wParam == EN_SETFOCUS
       lWhen := .T.
 
       If ! ::When_Processed
@@ -481,8 +481,12 @@ Local lWhen
 
             //::FontHandle := _SetFont( ::hWnd, ::cFocusFontName, ::nFocusFontSize, ::FocusBold, ::FocusItalic, ::FocusUnderline, ::FocusStrikeout )
             //::SetFont( ::cFocusFontName, ::nFocusFontSize, ::FocusBold, ::FocusItalic, ::FocusUnderline, ::FocusStrikeout )
-         else
-            _SetNextFocus()
+         Else
+            If GetKeyState( VK_TAB ) < 0 .AND. GetKeyFlagState() == MOD_SHIFT
+               _SetPrevFocus()
+            Else
+               _SetNextFocus()
+            EndIf
          EndIf
       EndIf
 
