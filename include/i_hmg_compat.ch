@@ -1,5 +1,5 @@
 /*
- * $Id: i_hmg_compat.ch,v 1.43 2015-05-30 00:16:13 fyurisich Exp $
+ * $Id: i_hmg_compat.ch,v 1.44 2015-10-17 23:34:47 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -374,15 +374,15 @@ SPLITBOX VERSION
             [ <themed> ] ;
             [ IMAGEMARGIN <aImageMargin> ] ;
             [ <no3dcolors> ] ;
-            [ <lDIB> ]
+            [ <lDIB> ] ;
+            [ <nohotlight> ] ;
+            [ BACKCOLOR <backcolor> ] ;
 
 /*
 TODO: Try to implement this BUTTONEX clauses
       [ PICTURE <bitmap> ] ;
       [ ICON <icon> ] ;
-      [ BACKCOLOR <backcolor> ] ;
       [ FONTCOLOR <fontcolor> ] ;
-      [ <nohotlight: NOHOTLIGHT> ] ;
       [ <noxpstyle: NOXPSTYLE > ] ;
       [ <default: DEFAULT> ] ;
 */

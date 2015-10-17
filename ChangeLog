@@ -1,11 +1,15 @@
 /*
- * $Id: ChangeLog,v 1.1510 2015-10-15 01:19:15 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1511 2015-10-17 23:34:46 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-10-17 20:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_hmg_compat.ch
+     + NOHOTLIGHT and BACKCOLOR clauses to BUTTONEX.
 
 2015-10-14 22:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_textbox.prg
