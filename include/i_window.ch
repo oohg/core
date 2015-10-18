@@ -1,5 +1,5 @@
 /*
- * $Id: i_window.ch,v 1.61 2015-04-16 23:06:41 fyurisich Exp $
+ * $Id: i_window.ch,v 1.62 2015-10-18 00:26:39 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -83,6 +83,8 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
             Action, OnClick, Length, hWnd, Object, ReadOnly, Cargo, TabStop, ;
             ItemHeight, RichValue, OnGotFocus, OnLostFocus, OnDblClick\> ;
             => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ;;
+      #xtranslate <w> . \<c: VScrollBar, HScrollBar\> . \<p\> ;
+            => GetExistingFormObject( <(w)> ):\<c\>:\<p\> ;;
       #xtranslate <w> . \<c\> . Enabled( \<arg\> ) ;
             => GetExistingControlObject( \<(c)\>, ;
             <(w)> ):ItemEnabled( \<arg\> ) ;;

@@ -1,11 +1,15 @@
 /*
- * $Id: ChangeLog,v 1.1511 2015-10-17 23:34:46 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1512 2015-10-18 00:26:38 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-10-17 21:26 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_window.ch
+     + VScrollBar and HScrollBar clauses.
 
 2015-10-17 20:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_hmg_compat.ch
