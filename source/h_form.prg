@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.60 2015-03-09 02:52:07 fyurisich Exp $
+ * $Id: h_form.prg,v 1.61 2015-10-18 01:14:19 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -268,8 +268,8 @@ CLASS TForm FROM TWindow
    METHOD HelpTopic(lParam)   BLOCK { | Self, lParam | HelpTopic( GetControlObjectByHandle( GetHelpData( lParam ) ):HelpId , 2 ), Self, nil }
    METHOD ScrollControls
    METHOD MessageLoop
-   // CGR
-   METHOD Inspector BLOCK {|self|Inspector(Self)}
+   METHOD HasStatusBar        BLOCK { | Self | aScan( ::aControls, { |c| c:Type == "MESSAGEBAR" } ) > 0 }
+   METHOD Inspector           BLOCK { | Self | Inspector( Self ) }
 
 ENDCLASS
 
@@ -321,7 +321,7 @@ METHOD Define2( FormName, Caption, x, y, w, h, Parent, helpbutton, nominimize, n
                 MouseMoveProcedure, MouseDragProcedure, InteractiveCloseProcedure, NoAutoRelease, nStyle, nStyleEx, ;
                 nWindowType, lRtl, mdi, topmost, clientarea, restoreprocedure, RClickProcedure, MClickProcedure, ;
                 DblClickProcedure, RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, minheight, maxheight, ;
-                MoveProcedure, FontColor ) CLASS TForm
+                MoveProcedure, fontcolor ) CLASS TForm
 *------------------------------------------------------------------------------*
 Local Formhandle
 
@@ -381,7 +381,6 @@ Local Formhandle
       EndIf
       nWindowType := 4
       nStyle   += WS_CLIPSIBLINGS + WS_CLIPCHILDREN // + WS_THICKFRAME
-* propiedad si es MDI????
    Else
       mdi := .F.
    EndIf
@@ -1196,7 +1195,7 @@ LOCAL hImageWork
          ::BackBitmap := NIL
       Else
          If ::lStretchBack
-            hImageWork := _OOHG_ScaleImage( Self, ::hBackImage, ::ClientWidth, ::ClientHeight )
+            hImageWork := _OOHG_ScaleImage( Self, ::hBackImage, ::ClientWidth, ::ClientHeight, .F. )
          Else
             hImageWork := _OOHG_CopyBitmap( ::hBackImage, 0, 0, LR_CREATEDIBSECTION )
          Endif
@@ -1480,30 +1479,27 @@ Local oCtrl, lMinim, nOffset,nDesp
 
       AEVAL( ::SplitChildList, { |o| AEVAL( o:GraphTasks, { |b| _OOHG_EVAL( b ) } ), _OOHG_EVAL( o:GraphCommand, o:hWnd, o:GraphData ) } )
 
+      ::DoEvent( ::OnPaint, "WINDOW_PAINT", { wParam, lParam } )
+
       AEVAL( ::GraphTasks, { |b| _OOHG_EVAL( b ) } )
       _OOHG_EVAL( ::GraphCommand, ::hWnd, ::GraphData )
 
-      ::DoEvent( ::OnPaint, "WINDOW_PAINT" )
-	  //CGR
-	  if ::nBorders[1]+::nBorders[2]+::nBorders[3] > 0
-		//msginfo('borde')
-		//dibujo el borde externo
-		::GetDc() // Captura el canvas
-		// nOffset := int((::nBorders[1]+1)/2)
-		::Fill(0,0,::nBorders[1],::ClientWidth,::abecolors[1])
-		::Fill(0,::ClientWidth,::Clientheight-::nBorders[1],::Clientwidth-::nBorders[1],::abecolors[2])
-		::Fill(::ClientHeight,::clientwidth,::clientheight-::nBorders[1],0,::abecolors[3])
-		::Fill(0,0,::ClientHeight,::nBorders[1],::abecolors[4])
-		//dibujo el borde interno
-		nOffSet:=::nBorders[1]+::nBorders[2]
-		nDesp:=::nBorders[1]+::nBorders[2]+::nBorders[3]
-		::Fill(nOffset,nOffset,nDesp,::ClientWidth-nOffset,::abicolors[1])
-		::Fill(nOffSet,::ClientWidth-nOffSet,::Clientheight-nOffset,::Clientwidth-nDesp,::abicolors[2])
-		::Fill(::ClientHeight-nOffSet,::clientwidth-nOffSet,::clientheight-nDesp,noffset,::abicolors[3])
-		::Fill(nOffSet,nOffSet,::ClientHeight-nDesp,nDesp,::abicolors[4])
-		::ReleaseDc() // libera el canvas
-	  EndIf
-
+      IF ::nBorders[ 1 ] + ::nBorders[ 2 ] + ::nBorders[ 3 ] > 0
+         ::GetDc()
+         // external border
+         ::Fill( 0, 0, ::nBorders[ 1 ], ::ClientWidth, ::aBEColors[ 1 ] )
+         ::Fill( 0, ::ClientWidth, ::ClientHeight - ::nBorders[ 1 ], ::ClientWidth - ::nBorders[ 1 ], ::aBEColors[ 2 ] )
+         ::Fill( ::ClientHeight, ::ClientWidth, ::ClientHeight - ::nBorders[ 1 ], 0, ::aBEColors[ 3 ] )
+         ::Fill( 0, 0, ::ClientHeight, ::nBorders[ 1 ], ::aBEColors[ 4 ] )
+         //internal border
+         nOffSet := ::nBorders[ 1 ] + ::nBorders[ 2 ]
+         nDesp := ::nBorders[ 1 ] + ::nBorders[ 2 ] + ::nBorders[ 3 ]
+         ::Fill( nOffSet, nOffSet, nDesp, ::ClientWidth - nOffSet, ::aBIColors[ 1 ] )
+         ::Fill( nOffSet, ::ClientWidth - nOffSet, ::Clientheight - nOffSet, ::Clientwidth - nDesp, ::aBIColors[ 2 ] )
+         ::Fill( ::ClientHeight - nOffSet, ::ClientWidth - nOffSet, ::ClientHeight - nDesp, nOffSet, ::aBIColors[ 3 ] )
+         ::Fill( nOffSet, nOffSet, ::ClientHeight - nDesp, nDesp, ::aBIColors[4])
+         ::ReleaseDc()
+      EndIf
 
       Return 1
 

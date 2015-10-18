@@ -1,5 +1,5 @@
 /*
- * $Id: c_gdiplus.c,v 1.16 2015-06-28 02:02:37 fyurisich Exp $
+ * $Id: c_gdiplus.c,v 1.17 2015-10-18 01:14:19 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -200,7 +200,6 @@ typedef LONG(__stdcall* GDIPGETIMAGEHEIGHT) ( void*, UINT* );
 
 BOOL InitDeinitGdiPlus( BOOL );
 BOOL LoadGdiPlusDll( void );
-BOOL SaveHBitmapToFile( void *, const char *, UINT, UINT, const char *, ULONG, ULONG );
 BOOL GetEnCodecClsid( const char *, CLSID * );
 LONG LoadImageFromFile( const char *, void** );
 
@@ -638,6 +637,12 @@ BOOL SaveHBitmapToFile( void *HBitmap, const char *FileName, unsigned int Width,
       EncoderParameters->Count = 1;
 
       // Quality: TGUID = 1d5be4b5-fa4a-452d-9cdd-5db35105e7eb
+      // Valid values: 0 (greatest compression, low quality) to 100 (least compression, high quality)
+      // Defaults to 75.
+      if( JpgQuality > 100 )
+      {
+         JpgQuality = 75;
+      }
       EncoderParameters->Parameter[0].Guid.Data1 = 0x1d5be4b5;
       EncoderParameters->Parameter[0].Guid.Data2 = 0xfa4a;
       EncoderParameters->Parameter[0].Guid.Data3 = 0x452d;
@@ -699,6 +704,10 @@ BOOL SaveHBitmapToFile( void *HBitmap, const char *FileName, unsigned int Width,
       // ColorDepth: 66087055-ad66-4c7c-9a18-38a2310b8337
       // Valid values for TIFF images are 1, 4, 8, 24, 32 bpp
       // Use 24 bpp if you want to include the image in a PDF file using TPDF class
+      if( ! ( ( ColorDepth == 1 ) || ( ColorDepth == 4 ) || ( ColorDepth == 8 ) || ( ColorDepth == 24 ) || ( ColorDepth == 32 ) ) )
+      {
+         ColorDepth = 24;
+      }
       EncoderParameters->Parameter[1].Guid.Data1 = 0x66087055;
       EncoderParameters->Parameter[1].Guid.Data2 = 0xad66;
       EncoderParameters->Parameter[1].Guid.Data3 = 0x4c7c;
@@ -966,9 +975,7 @@ HB_FUNC( _OOHG_USEGDIP )
    hb_retl( _OOHG_UseGDIP() );
 }
 
-HBITMAP _OOHG_ScaleImage( HWND, HBITMAP, int, int, int, LONG );
-
-HANDLE _OOHG_GDIPLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor, long lWidth2, long lHeight2 )
+HANDLE _OOHG_GDIPLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor, long lWidth2, long lHeight2, BOOL bIgnoreBkClr )
 {
    HBITMAP hImage = 0, hOldImage;
    IStream * iStream;
@@ -989,9 +996,16 @@ HANDLE _OOHG_GDIPLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor, long 
    GdipGetImageHeight( gImage, ( UINT * ) &uiHeight );
 
    // Back color
-   if( lBackColor == -1 )
+   if( bIgnoreBkClr )
    {
-      lBackColor = GetSysColor( COLOR_BTNFACE );
+      lBackColor = 0;
+   }
+   else
+   {
+      if( lBackColor == -1 )
+      {
+         lBackColor = GetSysColor( COLOR_BTNFACE );
+      }
    }
 
    // Creates HBITMAP
@@ -1022,7 +1036,7 @@ HANDLE _OOHG_GDIPLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor, long 
       if( lWidth2 != ( long ) uiWidth || lHeight2 != ( long ) uiHeight )
       {
          hOldImage = hImage;
-         hImage = _OOHG_ScaleImage( hWnd, hOldImage, lWidth2, lHeight2, 0, lBackColor );
+         hImage = _OOHG_ScaleImage( hWnd, hOldImage, lWidth2, lHeight2, 0, lBackColor, bIgnoreBkClr );
          DeleteObject( hOldImage );
       }
 

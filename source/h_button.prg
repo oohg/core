@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.68 2015-10-14 23:38:29 fyurisich Exp $
+ * $Id: h_button.prg,v 1.69 2015-10-18 01:14:19 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -516,15 +516,15 @@ HB_FUNC( SETIMAGEXP )
       GetObject( hBmp, sizeof( bm ), &bm );
       if( hb_parl( 9 ) )            // Stretch
       {
-         hBmp2 = _OOHG_ScaleImage( hWnd, hBmp, 0, 0, TRUE, hb_parnl( 4 ) );
+         hBmp2 = _OOHG_ScaleImage( hWnd, hBmp, 0, 0, TRUE, hb_parnl( 4 ), FALSE );
       }
       else if( hb_parl( 10 ) )      // AutoSize
       {
-         hBmp2 = _OOHG_ScaleImage( hWnd, hBmp, 0, 0, FALSE, hb_parnl( 4 ) );
+         hBmp2 = _OOHG_ScaleImage( hWnd, hBmp, 0, 0, FALSE, hb_parnl( 4 ), FALSE );
       }
       else                          // No scale
       {
-         hBmp2 = _OOHG_ScaleImage( hWnd, hBmp, bm.bmWidth, bm.bmHeight, FALSE, hb_parnl( 4 ) );
+         hBmp2 = _OOHG_ScaleImage( hWnd, hBmp, bm.bmWidth, bm.bmHeight, FALSE, hb_parnl( 4 ), FALSE );
       }
       GetObject( hBmp2, sizeof( bm ), &bm );
       himl = ImageList_Create( bm.bmWidth, bm.bmHeight, ILC_COLOR32 | ILC_MASK, 2, 2 );

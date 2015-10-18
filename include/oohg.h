@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.h,v 1.65 2015-03-09 02:51:07 fyurisich Exp $
+ * $Id: oohg.h,v 1.66 2015-10-18 01:14:19 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -130,14 +130,18 @@ extern int GetKeyFlagState( void );
 POCTRL _OOHG_GetControlInfo( PHB_ITEM pSelf );
 BOOL _OOHG_DetermineColor( PHB_ITEM pColor, LONG *lColor );
 BOOL _OOHG_DetermineColorReturn( PHB_ITEM pColor, LONG *lColor, BOOL fUpdate );
-HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, HWND hWnd, LONG BackColor );
-HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG BackColor, long lWidth2, long lHeight2 );
-HBITMAP _OOHG_ScaleImage( HWND hWnd, HBITMAP hImage, int iWidth, int iHeight, int scalestrech, LONG BackColor );
+HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, HWND hWnd, LONG BackColor, BOOL bIgnoreBkClr );
+HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG BackColor, long lWidth2, long lHeight2, BOOL bIgnoreBkClr );
+HBITMAP _OOHG_ScaleImage( HWND hWnd, HBITMAP hImage, int iWidth, int iHeight, int scalestrech, LONG BackColor, BOOL bIgnoreBkClr );
+BOOL _OOHG_UseGDIP( void );
+HANDLE _OOHG_GDIPLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor, long lWidth2, long lHeight2, BOOL bIgnoreBkClr );
 DWORD _OOHG_RTL_Status( BOOL bRtl );
 int _OOHG_SearchFormHandleInArray( HWND hWnd );
 int _OOHG_SearchControlHandleInArray( HWND hWnd );
 PHB_ITEM _OOHG_GetExistingObject( HWND hWnd, BOOL bForm, BOOL bForceAny );
 HBRUSH GetTabBrush( HWND hWnd );
+HFONT PrepareFont( char *Fontname, int FontSize, int Weight, int Italic, int Underline, int StrikeOut, int Angle, int Width );
+BOOL SaveHBitmapToFile( void *, const char *, UINT, UINT, const char *, ULONG, ULONG );
 
 // Symbols table
 #define s_Events_Notify        0

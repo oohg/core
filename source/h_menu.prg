@@ -1,5 +1,5 @@
 /*
- * $Id: h_menu.prg,v 1.38 2015-03-09 02:52:08 fyurisich Exp $
+ * $Id: h_menu.prg,v 1.39 2015-10-18 01:14:19 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -746,8 +746,8 @@ TODO: detect AERO and set background color accordingly
       }
    }
 
-   himage1 = (HBITMAP) _OOHG_LoadImage( ( char * ) hb_parc( 3 ), iAttributes, nWidth, nHeight, NULL, GetSysColor( COLOR_MENU ) );
-   himage2 = (HBITMAP) _OOHG_LoadImage( ( char * ) hb_parc( 4 ), iAttributes, nWidth, nHeight, NULL, GetSysColor( COLOR_MENU ) );
+   himage1 = (HBITMAP) _OOHG_LoadImage( ( char * ) hb_parc( 3 ), iAttributes, nWidth, nHeight, NULL, GetSysColor( COLOR_MENU ), FALSE );
+   himage2 = (HBITMAP) _OOHG_LoadImage( ( char * ) hb_parc( 4 ), iAttributes, nWidth, nHeight, NULL, GetSysColor( COLOR_MENU ), FALSE );
 
    SetMenuItemBitmaps( hMenu, hb_parni( 2 ), MF_BYCOMMAND, himage1, himage2 );
    

@@ -1,11 +1,42 @@
 /*
- * $Id: ChangeLog,v 1.1512 2015-10-18 00:26:38 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1513 2015-10-18 01:14:19 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-10-17 22:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_windows.prg
+     - Some comments.
+     * Format.
+   * source/c_gdiplus.c
+     - SaveHBitmapToFile and _OOHG_ScaleImage declarations.
+     + Validation for JpgQuality and ColorDepth parameters
+       in SaveHBitmapToFile().
+     + BOOL bIgnoreBkClr parameter to _OOHG_GDIPLoadPicture().
+   * source/c_image.c
+     - _OOHG_UseGDIP and _OOHG_GDIPLoadPicture declarations.
+     + BOOL bIgnoreBkClr parameter to _OOHG_OleLoadPicture(),
+       _OOHG_ScaleImage(), _OOHG_LoadImage(), _OOHG_BITMAPFROMFILE(),
+       _OOHG_BITMAPFROMBUFFER(), _OOHG_SETBITMAP() and _OOHG_SCALEIMAGE()
+   * include/oohg.h
+     + Some function declarations.
+     * Some function declarations.
+   * source/h_picture.prg
+   * source/h_button.prg
+     + New parameter to _OOHG_ScaleImage() calls.
+   * source/h_form.prg
+     + Method HasStatusBar to TForm class.
+     - Comments.
+     + New parameter to _OOHG_ScaleImage() calls.
+     * Execute OnPaint event before evaluating GraphTasks and
+       GraphCommand codeblocks.
+   * source/h_menu.prg
+     + New parameter to _OOHG_LoadImage() calls.
+   * source/h_tree.prg
+     - PrepareFont declaration.
 
 2015-10-17 21:26 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_window.ch

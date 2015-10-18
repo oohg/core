@@ -1,5 +1,5 @@
 /*
- * $Id: c_image.c,v 1.42 2015-03-09 02:52:07 fyurisich Exp $
+ * $Id: c_image.c,v 1.43 2015-10-18 01:14:19 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -119,10 +119,6 @@
 #include "olectl.h"
 #include "oohg.h"
 
-// Functions for automatic use of Gdi+
-BOOL _OOHG_UseGDIP( void );
-HANDLE _OOHG_GDIPLoadPicture( HGLOBAL, HWND, LONG, long, long );
-
 int _OOHG_StretchBltMode = COLORONCOLOR;
 
 HB_FUNC( _OOHG_STRETCHBLTMODE )
@@ -136,7 +132,7 @@ HB_FUNC( _OOHG_STRETCHBLTMODE )
    hb_retni( OldStretchBltMode );
 }
 
-HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor, long lWidth2, long lHeight2 )
+HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor, long lWidth2, long lHeight2, BOOL bIgnoreBkClr )
 {
    HANDLE hImage = 0;
    IStream * iStream;
@@ -149,7 +145,7 @@ HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor, long l
 
    if( _OOHG_UseGDIP() )
    {
-      return _OOHG_GDIPLoadPicture( hGlobal, hWnd, lBackColor, lWidth2, lHeight2 );
+      return _OOHG_GDIPLoadPicture( hGlobal, hWnd, lBackColor, lWidth2, lHeight2, bIgnoreBkClr );
    }
 
    CreateStreamOnHGlobal( hGlobal, FALSE, &iStream );
@@ -187,16 +183,19 @@ HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor, long l
       hImage = CreateCompatibleBitmap( hdc1, lWidth2, lHeight2 );
       SelectObject( hdc2, hImage );
 
-      if( lBackColor == -1 )
+      if( ! bIgnoreBkClr )
       {
-         hBrush = CreateSolidBrush( GetSysColor( COLOR_BTNFACE ) );
+         if( lBackColor == -1 )
+         {
+            hBrush = CreateSolidBrush( GetSysColor( COLOR_BTNFACE ) );
+         }
+         else
+         {
+            hBrush = CreateSolidBrush( lBackColor );
+         }
+         FillRect( hdc2, &rect, hBrush );
+         DeleteObject( hBrush );
       }
-      else
-      {
-         hBrush = CreateSolidBrush( lBackColor );
-      }
-      FillRect( hdc2, &rect, hBrush );
-      DeleteObject( hBrush );
 
       iPicture->lpVtbl->Render( iPicture, hdc2, 0, 0, lWidth2, lHeight2, 0, lHeight, lWidth, -lHeight, NULL );
       iPicture->lpVtbl->Release( iPicture );
@@ -208,7 +207,7 @@ HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor, long l
    return hImage;
 }
 
-HBITMAP _OOHG_ScaleImage( HWND hWnd, HBITMAP hImage, int iWidth, int iHeight, int scalestrech, LONG BackColor )
+HBITMAP _OOHG_ScaleImage( HWND hWnd, HBITMAP hImage, int iWidth, int iHeight, int scalestrech, LONG BackColor, BOOL bIgnoreBkColor )
 {
    RECT fromRECT, toRECT;
    HBITMAP hOldTo, hOldFrom, hpic = 0;
@@ -237,7 +236,10 @@ HBITMAP _OOHG_ScaleImage( HWND hWnd, HBITMAP hImage, int iWidth, int iHeight, in
       lWidth  = bm.bmWidth;
       lHeight = bm.bmHeight;
       SetRect( &fromRECT, 0, 0, lWidth, lHeight );
-      FillRect( fromDC, &fromRECT, hBrush );
+      if( ! bIgnoreBkColor )
+      {
+         FillRect( fromDC, &fromRECT, hBrush );
+      }
       hOldFrom = SelectObject( fromDC, hImage );
 
       // TO parameters
@@ -260,7 +262,10 @@ HBITMAP _OOHG_ScaleImage( HWND hWnd, HBITMAP hImage, int iWidth, int iHeight, in
       }
       SetRect( &toRECT, 0, 0, iWidth, iHeight );
       hpic = CreateCompatibleBitmap( imgDC, iWidth, iHeight );
-      FillRect( toDC, &toRECT, hBrush );
+      if( ! bIgnoreBkColor )
+      {
+         FillRect( toDC, &toRECT, hBrush );
+      }
       hOldTo = SelectObject( toDC, hpic );
 
       SetStretchBltMode( toDC, _OOHG_StretchBltMode );
@@ -377,7 +382,7 @@ HBITMAP _OOHG_RotateImage( HWND hWnd, HBITMAP hImage, LONG BackColor, int iDegre
    return hpic;
 }
 
-HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, HWND hWnd, LONG lBackColor )
+HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, HWND hWnd, LONG lBackColor, BOOL bIgnoreBkClr )
 {
    HANDLE hImage;
 
@@ -402,66 +407,54 @@ HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, 
    }
    if( ! hImage )
    {
-      HICON hIcon;
-
-      // Try to load ICON from EXE
-      hIcon = LoadImage( GetModuleHandle( NULL ), cImage, IMAGE_ICON, nWidth, nHeight, iAttributes );
-      if( ! hIcon )
+      if( bIgnoreBkClr )
       {
-         // Try to load ICON from FILE
-         hIcon = LoadImage( 0, cImage, IMAGE_ICON, nWidth, nHeight, iAttributes | LR_LOADFROMFILE );
-      }
-      if( hIcon )
-      {
-         HDC imgDC, toDC;
-         HBRUSH hBrush;
-         ICONINFO IconInfo;
-         BITMAP bm ;
-         HBITMAP hOldBmp;
-         int iWidth, iHeight;
-
-         GetIconInfo( hIcon, &IconInfo );
-
-         if( IconInfo.hbmColor )
+         // Try to load ICON from EXE
+         hImage = LoadImage( GetModuleHandle( NULL ), cImage, IMAGE_ICON, nWidth, nHeight, iAttributes );
+         if( ! hImage )
          {
-            // color ICON
-            GetObject( IconInfo.hbmColor, sizeof( BITMAP ), &bm );
-            iWidth  = bm.bmWidth;
-            iHeight = bm.bmHeight;
-
-            imgDC = GetDC( hWnd );
-            toDC = CreateCompatibleDC( imgDC );
-
-            hBrush = CreateSolidBrush( lBackColor );
-
-            hImage = CreateCompatibleBitmap( imgDC, iWidth, iHeight );
-            hOldBmp = SelectObject( toDC, hImage );
-
-            DrawIconEx( toDC, 0, 0, hIcon, iWidth, iHeight, 0, hBrush, DI_NORMAL );
-
-            DeleteDC( imgDC );
-            hImage = SelectObject( toDC, hOldBmp );
-            DeleteDC( toDC );
-            DeleteObject( hBrush );
-            DeleteObject( hIcon );
+            // Try to load ICON from FILE
+            hImage = LoadImage( 0, cImage, IMAGE_ICON, nWidth, nHeight, iAttributes | LR_LOADFROMFILE );
          }
-         else
+      }
+      else
+      {
+         HICON hIcon;
+
+         // Try to load ICON from EXE
+         hIcon = LoadImage( GetModuleHandle( NULL ), cImage, IMAGE_ICON, nWidth, nHeight, iAttributes );
+         if( ! hIcon )
          {
-            // black and white ICON
-            if (IconInfo.hbmMask)
+            // Try to load ICON from FILE
+            hIcon = LoadImage( 0, cImage, IMAGE_ICON, nWidth, nHeight, iAttributes | LR_LOADFROMFILE );
+         }
+         if( hIcon )
+         {
+            HDC imgDC, toDC;
+            HBRUSH hBrush;
+            ICONINFO IconInfo;
+            BITMAP bm ;
+            HBITMAP hOldBmp;
+            int iWidth, iHeight;
+
+            GetIconInfo( hIcon, &IconInfo );
+
+            if( IconInfo.hbmColor )
             {
-               GetObject( IconInfo.hbmMask, sizeof( BITMAP ), &bm );
+               // color ICON
+               GetObject( IconInfo.hbmColor, sizeof( BITMAP ), &bm );
                iWidth  = bm.bmWidth;
-               iHeight = bm.bmHeight / 2;
+               iHeight = bm.bmHeight;
 
                imgDC = GetDC( hWnd );
                toDC = CreateCompatibleDC( imgDC );
 
                hBrush = CreateSolidBrush( lBackColor );
 
-               hImage = CreateBitmap( iWidth, iHeight, 1, 1, NULL );
+               hImage = CreateCompatibleBitmap( imgDC, iWidth, iHeight );
                hOldBmp = SelectObject( toDC, hImage );
-               DrawIconEx( toDC, 0, 0, hIcon, iWidth, iHeight, 0, hBrush, DI_IMAGE );
+
+               DrawIconEx( toDC, 0, 0, hIcon, iWidth, iHeight, 0, hBrush, DI_NORMAL );
 
                DeleteDC( imgDC );
                hImage = SelectObject( toDC, hOldBmp );
@@ -471,8 +464,33 @@ HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, 
             }
             else
             {
-               DeleteObject( hIcon );
-               return NULL;
+               // black and white ICON
+               if (IconInfo.hbmMask)
+               {
+                  GetObject( IconInfo.hbmMask, sizeof( BITMAP ), &bm );
+                  iWidth  = bm.bmWidth;
+                  iHeight = bm.bmHeight / 2;
+
+                  imgDC = GetDC( hWnd );
+                  toDC = CreateCompatibleDC( imgDC );
+
+                  hBrush = CreateSolidBrush( lBackColor );
+
+                  hImage = CreateBitmap( iWidth, iHeight, 1, 1, NULL );
+                  hOldBmp = SelectObject( toDC, hImage );
+                  DrawIconEx( toDC, 0, 0, hIcon, iWidth, iHeight, 0, hBrush, DI_IMAGE );
+
+                  DeleteDC( imgDC );
+                  hImage = SelectObject( toDC, hOldBmp );
+                  DeleteDC( toDC );
+                  DeleteObject( hBrush );
+                  DeleteObject( hIcon );
+               }
+               else
+               {
+                  DeleteObject( hIcon );
+                  return NULL;
+               }
             }
          }
       }
@@ -532,7 +550,7 @@ HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, 
                if( hGlobal )
                {
                   memcpy( hGlobal, lpVoid, nSize );
-                  hImage = _OOHG_OleLoadPicture( hGlobal, hWnd, lBackColor, nWidth, nHeight );
+                  hImage = _OOHG_OleLoadPicture( hGlobal, hWnd, lBackColor, nWidth, nHeight, bIgnoreBkClr );
                   GlobalFree( hGlobal );
                }
             }
@@ -556,7 +574,7 @@ HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, 
          if( hGlobal )
          {
             ReadFile( hFile, hGlobal, nSize, &nReadByte, NULL );
-            hImage = _OOHG_OleLoadPicture( hGlobal, hWnd, lBackColor, nWidth, nHeight );
+            hImage = _OOHG_OleLoadPicture( hGlobal, hWnd, lBackColor, nWidth, nHeight, bIgnoreBkClr );
             GlobalFree( hGlobal );
          }
          CloseHandle( hFile );
@@ -566,7 +584,7 @@ HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, 
    return hImage;
 }
 
-HB_FUNC( _OOHG_BITMAPFROMFILE )   // ( oSelf, cFile, iAttributes, lAutoSize )
+HB_FUNC( _OOHG_BITMAPFROMFILE )   // ( oSelf, cFile, iAttributes, lAutoSize, lIgnoreBkColor )
 {
    POCTRL oSelf = _OOHG_GetControlInfo( hb_param( 1, HB_IT_OBJECT ) );
    HBITMAP hBitmap, hBitmap2;
@@ -585,10 +603,10 @@ HB_FUNC( _OOHG_BITMAPFROMFILE )   // ( oSelf, cFile, iAttributes, lAutoSize )
    {
       lWidth = lHeight = 0;
    }
-   hBitmap = (HBITMAP) _OOHG_LoadImage( ( char * ) hb_parc( 2 ), iAttributes, lWidth, lHeight, oSelf->hWnd, oSelf->lBackColor );
+   hBitmap = (HBITMAP) _OOHG_LoadImage( ( char * ) hb_parc( 2 ), iAttributes, lWidth, lHeight, oSelf->hWnd, oSelf->lBackColor, hb_parl( 5 ) );
    if( hb_parl( 4 ) )
    {
-      hBitmap2 = _OOHG_ScaleImage( oSelf->hWnd, hBitmap, 0, 0, FALSE, oSelf->lBackColor );
+      hBitmap2 = _OOHG_ScaleImage( oSelf->hWnd, hBitmap, 0, 0, FALSE, oSelf->lBackColor, hb_parl( 5 ) );
       DeleteObject( hBitmap );
       HWNDret( hBitmap2 );
    }
@@ -603,7 +621,7 @@ HB_FUNC( _OOHG_SIZEOFBITMAPFROMFILE )   // ( cFile )
    HBITMAP hBitmap;
    BITMAP bm;
 
-   hBitmap = (HBITMAP) _OOHG_LoadImage( ( char * ) hb_parc( 1 ), LR_CREATEDIBSECTION, 0, 0, NULL, 0 );
+   hBitmap = (HBITMAP) _OOHG_LoadImage( ( char * ) hb_parc( 1 ), LR_CREATEDIBSECTION, 0, 0, NULL, 0, TRUE );
 
    memset( &bm, 0, sizeof( bm ) );
 
@@ -637,7 +655,7 @@ HB_FUNC( _OOHG_SIZEOFHBITMAP )   // ( hBitmap )
    HB_STORNI( bm.bmBitsPixel, -1, 3 );
 }
 
-HB_FUNC( _OOHG_BITMAPFROMBUFFER )   // ( oSelf, cBuffer, lAutoSize )
+HB_FUNC( _OOHG_BITMAPFROMBUFFER )   // ( oSelf, cBuffer, lAutoSize, lIgnoreBkColor )
 {
    POCTRL oSelf = _OOHG_GetControlInfo( hb_param( 1, HB_IT_OBJECT ) );
    HBITMAP hBitmap = 0;
@@ -661,7 +679,7 @@ HB_FUNC( _OOHG_BITMAPFROMBUFFER )   // ( oSelf, cBuffer, lAutoSize )
             lWidth = lHeight = 0;
          }
          memcpy( hGlobal, hb_parc( 2 ), hb_parclen( 2 ) );
-         hBitmap = (HBITMAP) _OOHG_OleLoadPicture( hGlobal, oSelf->hWnd, oSelf->lBackColor, lWidth, lHeight );
+         hBitmap = (HBITMAP) _OOHG_OleLoadPicture( hGlobal, oSelf->hWnd, oSelf->lBackColor, lWidth, lHeight, hb_parl( 4 ) );
          GlobalFree( hGlobal );
       }
    }
@@ -669,7 +687,7 @@ HB_FUNC( _OOHG_BITMAPFROMBUFFER )   // ( oSelf, cBuffer, lAutoSize )
    HWNDret( hBitmap );
 }
 
-HB_FUNC( _OOHG_SETBITMAP )   // ( oSelf, hBitmap, iMessage, lScaleStretch, lAutoSize )
+HB_FUNC( _OOHG_SETBITMAP )   // ( oSelf, hBitmap, iMessage, lScaleStretch, lAutoSize, lIgnoreBkColor )
 {
    POCTRL oSelf = _OOHG_GetControlInfo( hb_param( 1, HB_IT_OBJECT ) );
    HBITMAP hBitmap1, hBitmap2 = 0;
@@ -679,17 +697,17 @@ HB_FUNC( _OOHG_SETBITMAP )   // ( oSelf, hBitmap, iMessage, lScaleStretch, lAuto
    {
       if( hb_parl( 4 ) )           // Stretch
       {
-         hBitmap2 = _OOHG_ScaleImage( oSelf->hWnd, hBitmap1, 0, 0, TRUE, oSelf->lBackColor );
+         hBitmap2 = _OOHG_ScaleImage( oSelf->hWnd, hBitmap1, 0, 0, TRUE, oSelf->lBackColor, hb_parl( 6 ) );
       }
       else if( hb_parl( 5 ) )      // AutoSize
       {
-         hBitmap2 = _OOHG_ScaleImage( oSelf->hWnd, hBitmap1, 0, 0, FALSE, oSelf->lBackColor );
+         hBitmap2 = _OOHG_ScaleImage( oSelf->hWnd, hBitmap1, 0, 0, FALSE, oSelf->lBackColor, hb_parl( 6 ) );
       }
       else                         // No scale
       {
          BITMAP bm;
          GetObject( hBitmap1, sizeof( bm ), &bm );
-         hBitmap2 = _OOHG_ScaleImage( oSelf->hWnd, hBitmap1, bm.bmWidth, bm.bmHeight, FALSE, oSelf->lBackColor );
+         hBitmap2 = _OOHG_ScaleImage( oSelf->hWnd, hBitmap1, bm.bmWidth, bm.bmHeight, FALSE, oSelf->lBackColor, hb_parl( 6 ) );
       }
    }
    SendMessage( oSelf->hWnd, hb_parni( 3 ), ( WPARAM ) IMAGE_BITMAP, ( LPARAM ) hBitmap2 );
@@ -735,12 +753,12 @@ HB_FUNC( _OOHG_ROTATEIMAGE )            // ( oSelf, hBitMap, nDegree )
    HWNDret( hBitmap );
 }
 
-HB_FUNC( _OOHG_SCALEIMAGE )            // ( oSelf, hBitMap, nWidth, nHeight )
+HB_FUNC( _OOHG_SCALEIMAGE )            // ( oSelf, hBitMap, nWidth, nHeight, lIgnoreBkColor )
 {
    POCTRL oSelf = _OOHG_GetControlInfo( hb_param( 1, HB_IT_OBJECT ) );
    HBITMAP hBitmap;
 
-   hBitmap = _OOHG_ScaleImage( oSelf->hWnd, ( HBITMAP ) HWNDparam( 2 ), hb_parni( 3 ), hb_parni( 4 ), FALSE, oSelf->lBackColor );
+   hBitmap = _OOHG_ScaleImage( oSelf->hWnd, ( HBITMAP ) HWNDparam( 2 ), hb_parni( 3 ), hb_parni( 4 ), FALSE, oSelf->lBackColor, hb_parl( 5 ) );
 
    HWNDret( hBitmap );
 }

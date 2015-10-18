@@ -1,5 +1,5 @@
 /*
- * $Id: h_tree.prg,v 1.43 2015-03-18 01:22:30 fyurisich Exp $
+ * $Id: h_tree.prg,v 1.44 2015-10-18 01:14:19 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2898,8 +2898,6 @@ HB_FUNC( TREEVIEW_ACTUALSELECTEDITEM )
 
    HTREEret( lpnmtv->itemNew.hItem );
 }
-
-HFONT PrepareFont( char *Fontname, int FontSize, int Weight, int Italic, int Underline, int StrikeOut, int Angle, int Width );
 
 HB_FUNC( TREEVIEW_BEGINDRAG )
 {

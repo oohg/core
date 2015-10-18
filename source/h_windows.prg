@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.255 2015-05-01 01:08:51 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.256 2015-10-18 01:14:20 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -273,15 +273,14 @@ CLASS TWindow
 
    DATA DefBkColorEdit      INIT nil
 
-   //CGR
-   // Client adjust
    DATA ClientAdjust        INIT 0 // 0=none, 1=top, 2=bottom, 3=left, 4=right, 5=Client
    DATA IsAdjust            INIT .F.
-   DATA nBorders            INIT {0,0,0} // ancho externo, estacio, ancho interno.
-   DATA aBECOLORS           INIT {{0,0,0},{0,0,0},{0,0,0},{0,0,0}} // color externo: arriba, derecha, abajo, izquierda
-   DATA aBICOLORS           INIT {{0,0,0},{0,0,0},{0,0,0},{0,0,0}} // color interno: arriba, derecha, abajo, izquierda
-   DATA nPaintCount                                                    // contador para GetDc y ReleaseDc
-   DATA hDC                                                              // puntero al contexto del canvas.
+
+   DATA nBorders            INIT {0,0,0}                              // ancho externo, estacio, ancho interno.
+   DATA aBEColors           INIT {{0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}} // color externo: arriba, derecha, abajo, izquierda
+   DATA aBIColors           INIT {{0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}} // color interno: arriba, derecha, abajo, izquierda
+   DATA nPaintCount                                                   // contador para GetDc y ReleaseDc
+   DATA hDC                                                           // puntero al contexto del canvas.
 
    METHOD SethWnd
    METHOD Release
@@ -359,10 +358,10 @@ CLASS TWindow
    METHOD ClientsPos
    METHOD ClientsPos2
    METHOD Adjust              SETGET
-   METHOD GetDC() INLINE If( ::hDC == nil, ::hDC := GetDC( ::hWnd ),),;
-       If( ::nPaintCount == nil, ::nPaintCount := 1, ::nPaintCount++ ), ::hDC
-   METHOD ReleaseDC() INLINE  If( --::nPaintCount == 0,;
-       If( ReleaseDC( ::hWnd, ::hDC ), ::hDC := nil,),)
+   METHOD GetDC()             INLINE If( ::hDC == nil, ::hDC := GetDC( ::hWnd ), ), ;
+                                     If( ::nPaintCount == nil, ::nPaintCount := 1, ::nPaintCount ++ ), ::hDC
+   METHOD ReleaseDC()         INLINE If( -- ::nPaintCount == 0, ;
+                                     If( ReleaseDC( ::hWnd, ::hDC ), ::hDC := nil, ), )
 
    METHOD DebugMessageName
    METHOD DebugMessageQuery
