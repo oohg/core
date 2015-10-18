@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.61 2015-10-18 01:14:19 fyurisich Exp $
+ * $Id: h_form.prg,v 1.62 2015-10-18 01:29:59 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1479,7 +1479,7 @@ Local oCtrl, lMinim, nOffset,nDesp
 
       AEVAL( ::SplitChildList, { |o| AEVAL( o:GraphTasks, { |b| _OOHG_EVAL( b ) } ), _OOHG_EVAL( o:GraphCommand, o:hWnd, o:GraphData ) } )
 
-      ::DoEvent( ::OnPaint, "WINDOW_PAINT", { wParam, lParam } )
+      ::DoEvent( ::OnPaint, "WINDOW_PAINT" )
 
       AEVAL( ::GraphTasks, { |b| _OOHG_EVAL( b ) } )
       _OOHG_EVAL( ::GraphCommand, ::hWnd, ::GraphData )

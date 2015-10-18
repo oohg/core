@@ -1,11 +1,15 @@
 /*
- * $Id: ChangeLog,v 1.1513 2015-10-18 01:14:19 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1514 2015-10-18 01:29:59 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-10-17 22:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_form.prg
+     - Unneeded OnPaint parameters.
 
 2015-10-17 22:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_windows.prg
