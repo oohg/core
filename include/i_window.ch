@@ -1,5 +1,5 @@
 /*
- * $Id: i_window.ch,v 1.62 2015-10-18 00:26:39 fyurisich Exp $
+ * $Id: i_window.ch,v 1.63 2015-10-22 20:55:31 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -70,7 +70,7 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
             HelpButton\> ;
             => GetExistingFormObject( <(w)> ):\<p\> ;;
       #xtranslate <w> . \<p: Activate, Center, Release, Maximize, Minimize, ;
-            Restore, Show, Hide, Print, SetFocus\> \[()\] ;
+            Restore, Show, Hide, Print, SetFocus, Redraw\> \[()\] ;
             => GetExistingFormObject( <(w)> ):\<p\> () ;;
       #xtranslate <w> . \<c\> . DisableEdit ;
             => GetExistingControlObject( \<(c)\>, <(w)> ):ReadOnly ;;
@@ -116,7 +116,7 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
             Release, Show, Hide, Play, Stop, Close, Pause, Eject, OpenDialog, ;
             Resume, ColumnsAutoFit, ColumnsAutoFitH, ColumnsBetterAutoFit, ;
             EditLabel, Up, Down, Left, Right, PageDown, PageUp, GoTop, ;
-            GoBottom\> \[()\] ;
+            GoBottom, Redraw\> \[()\] ;
             => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\>() ;;
       #xtranslate <w> . \<c\> . \<p: Save\> \[()\] ;
             => DoMethod( <(w)>, \<(c)\>, \<(p)> ) ;;
