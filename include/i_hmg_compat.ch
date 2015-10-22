@@ -1,5 +1,5 @@
 /*
- * $Id: i_hmg_compat.ch,v 1.44 2015-10-17 23:34:47 fyurisich Exp $
+ * $Id: i_hmg_compat.ch,v 1.45 2015-10-22 20:37:26 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -505,35 +505,29 @@ TODO: Try to implement this BUTTONEX clauses
    => ;
       READONLY
 
-#xtranslate STATUSITEM [ <cMsg> ] ;
-      [ WIDTH <nSize> ] ;
-      [ ACTION <uAction> ] ;
-      [ ICON <cBitmap> ] ;
-      STYLE [ <style: FLAT, RAISED> ] ;
-      [ TOOLTIP <cToolTip> ] ;
-      [ DEFAULT ] ;
+#xtranslate STATUSITEM [ <x> ] CENTERALIGN ;
    => ;
-      STATUSITEM [ <cMsg> ] ;
-            [ WIDTH <nSize> ] ;
-            [ ACTION <uAction> ] ;
-            [ ICON <cBitmap> ] ;
-            [ <style> ] ;
-            [ TOOLTIP <cToolTip> ]
+      STATUSITEM [ <x> ] CENTER
 
-#xtranslate STATUSITEM [ <cMsg> ] ;
-      [ WIDTH <nSize> ] ;
-      [ ACTION <uAction> ] ;
-      [ ICON <cBitmap> ] ;
-      [ STYLE ] [ <style: FLAT, RAISED> ] ;
-      [ TOOLTIP <cToolTip> ] ;
-      DEFAULT ;
+#xtranslate STATUSITEM [ <x> ] RIGHTALIGN ;
    => ;
-      STATUSITEM [ <cMsg> ] ;
-            [ WIDTH <nSize> ] ;
-            [ ACTION <uAction> ] ;
-            [ ICON <cBitmap> ] ;
-            [ <style> ] ;
-            [ TOOLTIP <cToolTip> ]
+      STATUSITEM [ <x> ] RIGHT
+
+#xtranslate STATUSITEM [ <x> ] DEFAULT ;
+   => ;
+      STATUSITEM [ <x> ]
+
+#xtranslate STATUSITEM [ <x> ] FONTCOLOR <fontcolor> ;
+   => ;
+      STATUSITEM [ <x> ]
+
+#xtranslate STATUSITEM [ <x> ] BACKCOLOR <backcolor> ;
+   => ;
+      STATUSITEM [ <x> ]
+
+#xtranslate STATUSITEM [ <x> ] STYLE ;
+   => ;
+      STATUSITEM [ <x> ]
 
 /*
  * GRID's unsupported clauses:
