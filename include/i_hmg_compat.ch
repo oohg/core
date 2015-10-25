@@ -1,5 +1,5 @@
 /*
- * $Id: i_hmg_compat.ch,v 1.45 2015-10-22 20:37:26 fyurisich Exp $
+ * $Id: i_hmg_compat.ch,v 1.46 2015-10-25 22:45:34 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -641,5 +641,23 @@ TODO: Try to implement this BUTTONEX clauses
 
 #xtranslate GRID [ <x> ] ALLOWDELETE ;
    => GRID [ <x> ] DELETE
+
+#xtranslate DIALOG ;
+   => PARENT
+
+#xtranslate ID <nId> [ <x> ] ;
+   => [ <x> ]
+
+#xtranslate DEFINE TAB [ <x> ] BACKCOLOR <backcolor> ;
+   => DEFINE TAB [ <x> ]
+
+#xtranslate DEFINE TAB [ <x> ] HTFORECOLOR <htforecolor> ;
+   => DEFINE TAB [ <x> ]
+
+#xtranslate DEFINE TAB [ <x> ] HTINACTIVECOLOR <htinactivecolor> ;
+   => DEFINE TAB [ <x> ]
+
+#xtranslate DEFINE TAB [ <x> ] BOTTOM ;
+   => DEFINE TAB [ <x> ]
 
 #endif
