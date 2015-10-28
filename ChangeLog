@@ -1,11 +1,15 @@
 /*
- * $Id: ChangeLog,v 1.1518 2015-10-28 02:16:19 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1519 2015-10-28 02:22:59 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-10-27 23:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   + samples\http\build.bat
+     * File for building the sample.
 
 2015-10-27 23:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/c_gdiplus.c
