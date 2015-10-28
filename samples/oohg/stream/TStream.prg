@@ -1,5 +1,5 @@
 /*
- * $Id: TStream.prg,v 1.4 2014-02-04 21:23:02 guerra000 Exp $
+ * $Id: TStream.prg,v 1.5 2015-10-28 02:16:19 fyurisich Exp $
  */
 /*
  * Data stream management class.
@@ -370,6 +370,7 @@ RETURN ::lCloseAtEnd
 #pragma BEGINDUMP
 
 #include <hbapi.h>
+#include <windows.h>
 
 HB_FUNC( STREAM_INSERT )   // ( pBuffer, cBuffer, nPos, nLen )
 {

@@ -1,5 +1,5 @@
 /*
- * $Id: TSmtpClient.prg,v 1.1 2015-09-23 04:08:27 guerra000 Exp $
+ * $Id: TSmtpClient.prg,v 1.2 2015-10-28 02:16:19 fyurisich Exp $
  */
 /*
  * Simple SMTP client using TStreamSocket() class.
@@ -397,8 +397,13 @@ LOCAL oPad := 0x5C , iPad := 0x36
    cPassword1 := cPassword
    cPassword2 := cPassword
    FOR nPos := 1 TO LEN( cPassword )
+#ifdef __HARBOUR__
+      cPassword1[ nPos ] := hb_bitXor( cPassword[ nPos ], oPad )
+      cPassword2[ nPos ] := hb_bitXor( cPassword[ nPos ], iPad )
+#else
       cPassword1[ nPos ] := cPassword[ nPos ] ^^ oPad
       cPassword2[ nPos ] := cPassword[ nPos ] ^^ iPad
+#endif
    NEXT
 cRet := ::Encode64( cUser + " " + ::MD5( cPassword1 + HEXTOSTR( ::MD5( cPassword2 + cChallenge ) ) ) )
 * // ? "cramed: ", cRet
@@ -500,7 +505,11 @@ LOCAL cRet
 
       *cTo = 0;
 
+#ifdef __HARBOUR__
+      hb_retclen_buffer( cRet, iLenRet );
+#else
       hb_retclenAdopt( cRet, iLenRet );
+#endif
    }
 * // ? "encoded: ", cRet
 RETURN cRet
@@ -607,7 +616,11 @@ LOCAL cRet
       }
       *cTo = 0;
 
+#ifdef __HARBOUR__
+      hb_retclen_buffer( cRet, iLenRet );
+#else
       hb_retclenAdopt( cRet, iLenRet );
+#endif
    }
 * // ? "decoded: ", LEN( cRet), cRet
 RETURN cRet
@@ -808,7 +821,7 @@ RETURN cBody
 METHOD FixText( cMessage ) CLASS TEmail
 LOCAL cRet
    cRet := HB_INLINE( cMessage ){
-      int iLen, iRetLen, iStep, iCount, iLineLen;
+      int iLen, iLenRet, iStep, iCount, iLineLen;
       char *cMessage, *cRet, *cFrom, *cTo, cChar;
 
       cMessage = ( char * ) hb_parc( 1 );
@@ -819,12 +832,12 @@ LOCAL cRet
       {
          if( iStep == 1 )
          {
-            cRet = hb_xgrab( iRetLen + 1 );
+            cRet = hb_xgrab( iLenRet + 1 );
             cTo = cRet;
          }
          cFrom = cMessage;
          iCount = iLen;
-         iRetLen = 0;
+         iLenRet = 0;
 
          iLineLen = 0;
          while( iCount )
@@ -834,7 +847,7 @@ LOCAL cRet
             if( cChar == '.' && iLineLen == 0 )
             {
                iLineLen = 2;
-               iRetLen += 2;
+               iLenRet += 2;
                if( iStep == 1 )
                {
                   *cTo++ = '.';
@@ -844,7 +857,7 @@ LOCAL cRet
             else if( cChar == '.' && iLineLen == 998 )
             {
                iLineLen = 2;
-               iRetLen += 4;
+               iLenRet += 4;
                if( iStep == 1 )
                {
                   *cTo++ = 13;
@@ -856,7 +869,7 @@ LOCAL cRet
             else if( cChar == 10 || cChar == 0 )
             {
                iLineLen = 0;
-               iRetLen += 2;
+               iLenRet += 2;
                if( iStep == 1 )
                {
                   *cTo++ = 13;
@@ -871,7 +884,7 @@ LOCAL cRet
                   cFrom++;
                }
                iLineLen = 0;
-               iRetLen += 2;
+               iLenRet += 2;
                if( iStep == 1 )
                {
                   *cTo++ = 13;
@@ -883,7 +896,7 @@ LOCAL cRet
                if( iLineLen == 998 )
                {
                   iLineLen = 0;
-                  iRetLen += 2;
+                  iLenRet += 2;
                   if( iStep == 1 )
                   {
                      *cTo++ = 13;
@@ -891,7 +904,7 @@ LOCAL cRet
                   }
                }
                iLineLen++;
-               iRetLen++;
+               iLenRet++;
                if( iStep == 1 )
                {
                   *cTo++ = cChar;
@@ -901,7 +914,7 @@ LOCAL cRet
 
          if( iLineLen > 0 || iLen == 0 )
          {
-            iRetLen += 2;
+            iLenRet += 2;
             if( iStep == 1 )
             {
                *cTo++ = 13;
@@ -914,7 +927,11 @@ LOCAL cRet
          iStep++;
       }
 
-      hb_retclenAdopt( cRet, iRetLen );
+#ifdef __HARBOUR__
+      hb_retclen_buffer( cRet, iLenRet );
+#else
+      hb_retclenAdopt( cRet, iLenRet );
+#endif
    }
 RETURN cRet
 

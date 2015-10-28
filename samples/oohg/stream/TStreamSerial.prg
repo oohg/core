@@ -1,5 +1,5 @@
 /*
- * $Id: TStreamSerial.prg,v 1.3 2013-03-04 23:38:21 guerra000 Exp $
+ * $Id: TStreamSerial.prg,v 1.4 2015-10-28 02:16:19 fyurisich Exp $
  */
 /*
  * TStreamSerial
@@ -28,6 +28,11 @@
 
 #include <hbapi.h>
 #include <hbapifs.h>
+
+#ifdef __HARBOUR__
+   #define ISCHAR( n )           HB_ISCHAR( n )
+   #define ISNUM( n )            HB_ISNUM( n )
+#endif
 
 #pragma ENDDUMP
 

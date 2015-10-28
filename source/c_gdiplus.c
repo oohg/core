@@ -1,5 +1,5 @@
 /*
- * $Id: c_gdiplus.c,v 1.17 2015-10-18 01:14:19 fyurisich Exp $
+ * $Id: c_gdiplus.c,v 1.18 2015-10-28 02:16:19 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -543,7 +543,7 @@ HB_FUNC( GPLUSSAVEHBITMAPTOFILE )
    hb_retl( SaveHBitmapToFile( (void*) hbmp, hb_parc( 2 ), (UINT) hb_parnl( 3 ), (UINT) hb_parnl( 4 ), hb_parc( 5 ), (ULONG) hb_parnl( 6 ), (ULONG) hb_parnl( 7 ) ) );
 }
 
-BOOL SaveHBitmapToFile( void *HBitmap, const char *FileName, unsigned int Width,unsigned int Height, const char *MimeType, ULONG JpgQuality, ULONG ColorDepth )
+BOOL SaveHBitmapToFile( void *HBitmap, const char *FileName, unsigned int Width, unsigned int Height, const char *MimeType, ULONG JpgQuality, ULONG ColorDepth )
 {
    void *GBitmap;
    void *GBitmapThumbnail;
@@ -611,7 +611,7 @@ BOOL SaveHBitmapToFile( void *HBitmap, const char *FileName, unsigned int Width,
       return FALSE;
    }
 
-   MultiByteToWideChar( CP_ACP, 0, FileName, -1, WFileName, ( strlen( FileName )*sizeof( WCHAR ) ) - 1 );
+   MultiByteToWideChar( CP_ACP, 0, FileName, -1, WFileName, ( strlen( FileName ) * sizeof( WCHAR ) ) - 1 );
 
    if( ( Width > 0 ) && ( Height > 0 ) )
    {
@@ -832,7 +832,7 @@ LONG LoadImageFromFile( const char *FileName, gPlusImagePtr gImage )
    if( WFileName == NULL )
      return -1L;
 
-   MultiByteToWideChar( CP_ACP, 0, FileName, -1, WFileName, ( strlen( FileName )*sizeof( WCHAR ) ) - 1 );
+   MultiByteToWideChar( CP_ACP, 0, FileName, -1, WFileName, ( strlen( FileName ) * sizeof( WCHAR ) ) - 1 );
 
    result = GdipLoadImageFromFile( WFileName, gImage );
 

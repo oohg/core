@@ -1,11 +1,28 @@
 /*
- * $Id: ChangeLog,v 1.1517 2015-10-25 22:45:34 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1518 2015-10-28 02:16:19 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-10-27 23:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/c_gdiplus.c
+     * Format.
+   * samples\oohg\stream\TSmtpClient.prg
+     ! Compiler error over hb_retclenAdopt function.
+     ! Harbour error over BitXor operator.
+     * Variable name.
+   * samples\oohg\stream\TStream.prg
+     ! Compiler error over BOOL data type.
+   * samples\oohg\stream\TStreamSerial.prg
+     ! Compiler errors over ISCHAR and ISNUM macros.
+   * samples\oohg\stream\TStreamZip.prg
+     ! Compiler error over z_stream data type caused by missing
+       zlib.h include. In case Harbour doesn't include this file
+       you must install zlib library from http://www.zlib.net/
+     ! Harbour error over BitAnd operator.
 
 2015-10-25 19:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_hmg_compat.ch
