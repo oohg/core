@@ -1,5 +1,5 @@
 /*
- * $Id: h_picture.prg,v 1.22 2015-10-18 01:14:19 fyurisich Exp $
+ * $Id: h_picture.prg,v 1.23 2015-10-29 00:04:55 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -187,6 +187,7 @@ METHOD HBitMap( hBitMap, lNoRepaint ) CLASS TPicture
       If ! HB_IsLogical( lNoRepaint ) .OR. ! lNoRepaint
          ::RePaint()
       EndIf
+      ::cPicture := ""
    EndIf
 Return ::hImage
 
@@ -199,6 +200,7 @@ METHOD Buffer( cBuffer, lNoRepaint ) CLASS TPicture
       If ! HB_IsLogical( lNoRepaint ) .OR. ! lNoRepaint
          ::RePaint()
       EndIf
+      ::cPicture := ""
    EndIf
 Return nil
 
@@ -245,36 +247,40 @@ Return ::Super:ToolTip( cToolTip )
 METHOD RePaint( lMoving ) CLASS TPicture
 *-----------------------------------------------------------------------------*
 LOCAL nWidth, nHeight, nAux
-   IF ValidHandler( ::AuxHandle ) .AND. ! ::AuxHandle == ::hImage
-      DeleteObject( ::AuxHandle )
-   ENDIF
-   IF ( ::Stretch .OR. ::AutoFit ) .AND. ! ::ImageSize
-// TO DO: ROTATE
-      ::AuxHandle := _OOHG_SetBitmap( Self, ::hImage, 0, ::Stretch, ::AutoFit )
-   ELSEIF ! ::nZoom == 1
-      ::AuxHandle := _OOHG_ScaleImage( Self, ::hImage, ( _OOHG_BitmapWidth( ::hImage ) * ::nZoom ) + 0.999, ( _OOHG_BitmapHeight( ::hImage ) * ::nZoom ) + 0.999, .F. )
-   ELSE
-      ::AuxHandle := ::hImage
-   ENDIF
+   IF ValidHandler( ::hImage )
+      IF ValidHandler( ::AuxHandle ) .AND. ! ::AuxHandle == ::hImage
+         DeleteObject( ::AuxHandle )
+      ENDIF
+      IF ( ::Stretch .OR. ::AutoFit ) .AND. ! ::ImageSize
+         // TO DO: ROTATE
+         ::AuxHandle := _OOHG_SetBitmap( Self, ::hImage, 0, ::Stretch, ::AutoFit )
+      ELSEIF ! ::nZoom == 1
+         ::AuxHandle := _OOHG_ScaleImage( Self, ::hImage, ( _OOHG_BitmapWidth( ::hImage ) * ::nZoom ) + 0.999, ( _OOHG_BitmapHeight( ::hImage ) * ::nZoom ) + 0.999, .F. )
+      ELSE
+         ::AuxHandle := ::hImage
+      ENDIF
 
-   // Rotate size
-   nWidth  := _OOHG_BitMapWidth( ::AuxHandle )
-   nHeight := _OOHG_BitMapHeight( ::AuxHandle )
-   IF ::nDegree == 90 .OR. ::nDegree == 270
-      nAux := nWidth
-      nWidth := nHeight
-      nHeight := nAux
-   ENDIF
+      // Rotate size
+      nWidth  := _OOHG_BitMapWidth( ::AuxHandle )
+      nHeight := _OOHG_BitMapHeight( ::AuxHandle )
+      IF ::nDegree == 90 .OR. ::nDegree == 270
+         nAux := nWidth
+         nWidth := nHeight
+         nHeight := nAux
+      ENDIF
 
-   IF ::ImageSize .AND. ( ! HB_IsLogical( lMoving ) .OR. ! lMoving )
-      ::Super:SizePos( ,, nWidth, nHeight )
-   ENDIF
-   IF SCROLLS( ::hWnd, nWidth, nHeight )
-//      ::ReDraw()
-   ENDIF
-   TPicture_SetNotify( Self, HB_IsBlock( ::bOnClick ) )
-   IF ( ! HB_IsLogical( lMoving ) .OR. ! lMoving )
-      ::ReDraw()
+      IF ::ImageSize .AND. ( ! HB_IsLogical( lMoving ) .OR. ! lMoving )
+         ::Super:SizePos( ,, nWidth, nHeight )
+      ENDIF
+      /*
+      IF SCROLLS( ::hWnd, nWidth, nHeight )
+         ::ReDraw()
+      ENDIF
+      */
+      TPicture_SetNotify( Self, HB_IsBlock( ::bOnClick ) )
+      IF ( ! HB_IsLogical( lMoving ) .OR. ! lMoving )
+         ::ReDraw()
+      ENDIF
    ENDIF
 RETURN Self
 
@@ -289,9 +295,7 @@ RETURN uRet
 *-----------------------------------------------------------------------------*
 METHOD Release() CLASS TPicture
 *-----------------------------------------------------------------------------*
-   IF ValidHandler( ::hImage )
-      DeleteObject( ::hImage )
-   ENDIF
+   DeleteObject( ::hImage )
 RETURN ::Super:Release()
 
 *------------------------------------------------------------------------------*

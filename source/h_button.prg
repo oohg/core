@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.69 2015-10-18 01:14:19 fyurisich Exp $
+ * $Id: h_button.prg,v 1.70 2015-10-29 00:04:55 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -298,6 +298,7 @@ METHOD HBitMap( hBitMap ) CLASS TButton
          ::nHeight := _OOHG_BitMapHeight( ::hImage )
       ENDIF
       ::RePaint()
+      ::cPicture := ""
    EndIf
 Return ::hImage
 
@@ -312,6 +313,7 @@ METHOD Buffer( cBuffer ) CLASS TButton
          ::nHeight := _OOHG_BitMapHeight( ::hImage )
       ENDIF
       ::RePaint()
+      ::cPicture := ""
    EndIf
 Return nil
 
@@ -323,13 +325,13 @@ Return ( ::Caption := uValue )
 *-----------------------------------------------------------------------------*
 METHOD RePaint() CLASS TButton
 *-----------------------------------------------------------------------------*
-   IF ! EMPTY( ::hImage )
+   IF ValidHandler( ::hImage )
       IF ValidHandler( ::AuxHandle )
          DeleteObject( ::AuxHandle )
       ENDIF
       ::AuxHandle := NIL
       ::TControl:SizePos()
-      IF OSisWinXPorLater() .AND. ValidHandler( ::hImage ) .AND. ( LEN( ::Caption ) > 0 .OR. ::lThemed )
+      IF OSisWinXPorLater() .AND. ( LEN( ::Caption ) > 0 .OR. ::lThemed )
          ::ImageList := SetImageXP( ::hWnd, ::hImage, ::nAlign, -1, ::aImageMargin[1], ::aImageMargin[2], ::aImageMargin[3], ::aImageMargin[4], ::Stretch, ::AutoFit )
          ::ReDraw()
       ELSEIF ::Stretch .OR. ::AutoFit
@@ -351,9 +353,7 @@ RETURN uRet
 *-----------------------------------------------------------------------------*
 METHOD Release() CLASS TButton
 *-----------------------------------------------------------------------------*
-   IF ValidHandler( ::hImage )
-      DeleteObject( ::hImage )
-   ENDIF
+   DeleteObject( ::hImage )
 RETURN ::Super:Release()
 
 *-----------------------------------------------------------------------------*

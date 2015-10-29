@@ -1,5 +1,5 @@
 /*
- * $Id: h_image.prg,v 1.39 2015-03-09 02:52:08 fyurisich Exp $
+ * $Id: h_image.prg,v 1.40 2015-10-29 00:04:55 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -223,6 +223,7 @@ METHOD HBitMap( hBitMap ) CLASS TImage
          ::nHeight := _OOHG_BitMapHeight( ::hImage )
       ENDIF
       ::RePaint()
+      ::cPicture := ""
    EndIf
 Return ::hImage
 
@@ -238,6 +239,7 @@ METHOD Buffer( cBuffer ) CLASS TImage
          ::nHeight := _OOHG_BitMapHeight( ::hImage )
       ENDIF
       ::RePaint()
+      ::cPicture := ""
    EndIf
 Return nil
 
@@ -270,25 +272,25 @@ RETURN uRet
 *-----------------------------------------------------------------------------*
 METHOD RePaint() CLASS TImage
 *-----------------------------------------------------------------------------*
-   IF ValidHandler( ::AuxHandle )
-      DeleteObject( ::AuxHandle )
+   IF ValidHandler( ::hImage )
+      IF ValidHandler( ::AuxHandle )
+         DeleteObject( ::AuxHandle )
+      ENDIF
+      ::AuxHandle := nil
+      ::Super:SizePos()
+      IF ::Stretch .OR. ::AutoFit
+         ::AuxHandle := _OOHG_SetBitmap( Self, ::hImage, STM_SETIMAGE, ::Stretch, ::AutoFit )
+      ELSE
+         SendMessage( ::hWnd, STM_SETIMAGE, IMAGE_BITMAP, ::hImage )
+      ENDIF
+      ::Parent:Redraw()
    ENDIF
-   ::AuxHandle := nil
-   ::Super:SizePos()
-   IF ::Stretch .OR. ::AutoFit
-      ::AuxHandle := _OOHG_SetBitmap( Self, ::hImage, STM_SETIMAGE, ::Stretch, ::AutoFit )
-   ELSE
-      SendMessage( ::hWnd, STM_SETIMAGE, IMAGE_BITMAP, ::hImage )
-   ENDIF
-   ::Parent:Redraw()
 RETURN Self
 
 *-----------------------------------------------------------------------------*
 METHOD Release() CLASS TImage
 *-----------------------------------------------------------------------------*
-   IF ValidHandler( ::hImage )
-      DeleteObject( ::hImage )
-   ENDIF
+   DeleteObject( ::hImage )
 RETURN ::Super:Release()
 
 *-----------------------------------------------------------------------------*

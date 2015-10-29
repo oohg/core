@@ -1,5 +1,5 @@
 /*
- * $Id: h_toolbar.prg,v 1.43 2015-08-19 22:37:56 fyurisich Exp $
+ * $Id: h_toolbar.prg,v 1.44 2015-10-29 00:04:55 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -376,6 +376,7 @@ CLASS TToolButton FROM TControl
    METHOD Buffer        SETGET
    METHOD Release
    METHOD Caption       SETGET
+   METHOD RePaint
 
    METHOD Events_Notify
 ENDCLASS
@@ -387,12 +388,12 @@ METHOD Define( ControlName, x, y, Caption, ProcedureName, w, h, image, ;
 *-----------------------------------------------------------------------------*
 Local id, nPos
 
-   ASSIGN ::nCol        VALUE x TYPE "N"
-   ASSIGN ::nRow        VALUE y TYPE "N"
-   ASSIGN ::nWidth      VALUE w TYPE "N"
-   ASSIGN ::nHeight     VALUE h TYPE "N"
+   ASSIGN ::nCol    VALUE x TYPE "N"
+   ASSIGN ::nRow    VALUE y TYPE "N"
+   ASSIGN ::nWidth  VALUE w TYPE "N"
+   ASSIGN ::nHeight VALUE h TYPE "N"
 
-Empty( FLAT )
+   Empty( flat )
 
    ::SetForm( ControlName, _OOHG_ActiveToolBar )
 
@@ -427,8 +428,8 @@ Empty( FLAT )
    ::Picture := image
 
    ASSIGN ::OnClick     VALUE ProcedureName TYPE "B"
-   ASSIGN ::OnLostFocus VALUE lostfocus TYPE "B"
-   ASSIGN ::OnGotFocus  VALUE gotfocus  TYPE "B"
+   ASSIGN ::OnLostFocus VALUE lostfocus     TYPE "B"
+   ASSIGN ::OnGotFocus  VALUE gotfocus      TYPE "B"
 
 Return Self
 
@@ -483,50 +484,10 @@ Return ::cPicture
 *-----------------------------------------------------------------------------*
 METHOD HBitMap( hBitMap ) CLASS TToolButton
 *-----------------------------------------------------------------------------*
-LOCAL hOld
    If ValType( hBitMap ) $ "NP"
-      hOld := ::hImage
+      DeleteObject( ::hImage )
       ::hImage := hBitMap
-
-      HB_INLINE( ::ContainerhWnd, hBitMap, ::Id ){
-         HWND            hwndTB;
-         HWND            hImageNew;
-         int             iId;
-         int             iPos;
-         TBBUTTONINFO    tbbtn;
-         TBADDBITMAP     tbadd;
-
-         hwndTB    = HWNDparam( 1 );
-         hImageNew = HWNDparam( 2 );
-         iId       = hb_parni( 3 );
-
-
-         if( hImageNew )
-         {
-            memset( &tbadd, 0, sizeof( tbadd ) );
-            tbadd.hInst = NULL;
-            tbadd.nID   = ( UINT_PTR ) hImageNew;
-            SendMessage( hwndTB, TB_BUTTONSTRUCTSIZE, ( WPARAM ) sizeof( TBBUTTON ), 0 );
-            iPos = SendMessage( hwndTB, TB_ADDBITMAP, 1, ( LPARAM ) &tbadd );
-         }
-         else
-         {
-            iPos = 0;
-         }
-
-         //
-         memset( &tbbtn, 0, sizeof( tbbtn ) );
-         tbbtn.cbSize    = sizeof( tbbtn );
-         tbbtn.dwMask    = TBIF_IMAGE;
-         tbbtn.idCommand = iId;
-         tbbtn.iImage    = iPos;
-         SendMessage( hwndTB, TB_BUTTONSTRUCTSIZE, ( WPARAM ) sizeof( TBBUTTON ), 0 );
-         SendMessage( hwndTB, TB_CHANGEBITMAP, iId, iPos );
-      }
-
-      If ValidHandler( hOld )
-         DeleteObject( hOld )
-      EndIf
+      ::RePaint()
       ::cPicture := ""
    EndIf
 Return ::hImage
@@ -542,9 +503,7 @@ Return nil
 *-----------------------------------------------------------------------------*
 METHOD Release() CLASS TToolButton
 *-----------------------------------------------------------------------------*
-   IF ValidHandler( ::hImage )
-      DeleteObject( ::hImage )
-   ENDIF
+   DeleteObject( ::hImage )
 RETURN ::Super:Release()
 
 *-----------------------------------------------------------------------------*
@@ -554,6 +513,48 @@ METHOD Caption( caption ) CLASS TToolButton
       SetToolButtonCaption( ::ContainerhWnd, ::Position - 1, caption )
    ENDIF
 RETURN GetToolButtonCaption( ::ContainerhWnd, ::Position - 1 )
+
+*-----------------------------------------------------------------------------*
+METHOD RePaint() CLASS TToolButton
+*-----------------------------------------------------------------------------*
+   IF ValidHandler( ::hImage )
+      HB_INLINE( ::ContainerhWnd, ::hImage, ::Id ){
+         HWND         hwndTB;
+         HWND         hImageNew;
+         int          iId;
+         int          iPos;
+         TBBUTTONINFO tbbtn;
+         TBADDBITMAP  tbadd;
+
+         hwndTB    = HWNDparam( 1 );
+         hImageNew = HWNDparam( 2 );
+         iId       = hb_parni( 3 );
+
+         if( hImageNew )
+         {
+            memset( &tbadd, 0, sizeof( tbadd ) );
+            tbadd.hInst = NULL;
+            tbadd.nID   = (UINT_PTR) hImageNew;
+            SendMessage( hwndTB, TB_BUTTONSTRUCTSIZE, (WPARAM) sizeof( TBBUTTON ), 0 );
+            iPos = SendMessage( hwndTB, TB_ADDBITMAP, 1, (LPARAM) &tbadd );
+         }
+         else
+         {
+            iPos = 0;
+         }
+
+         memset( &tbbtn, 0, sizeof( tbbtn ) );
+         tbbtn.cbSize    = sizeof( tbbtn );
+         tbbtn.dwMask    = TBIF_IMAGE;
+         tbbtn.idCommand = iId;
+         tbbtn.iImage    = iPos;
+         SendMessage( hwndTB, TB_BUTTONSTRUCTSIZE, (WPARAM) sizeof( TBBUTTON ), 0 );
+         SendMessage( hwndTB, TB_CHANGEBITMAP, iId, iPos );
+      }
+   ENDIF
+RETURN Self
+
+
 
 
 #pragma BEGINDUMP
