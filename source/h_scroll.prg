@@ -1,5 +1,5 @@
 /*
- * $Id: h_scroll.prg,v 1.24 2015-03-09 02:52:08 fyurisich Exp $
+ * $Id: h_scroll.prg,v 1.25 2015-10-31 17:07:44 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -177,9 +177,6 @@ METHOD Value( nValue ) CLASS TScrollBar
 *-----------------------------------------------------------------------------*
    if HB_IsNumeric( nValue )
       SetScrollPos( ::FromhWnd, ::ScrollType, nValue / ::nFactor, .T. )
-      ///#ifdef __HARBOUR__
-      /// ::Redraw()
-      ////#endif
    endif
 Return GetScrollPos( ::FromhWnd, ::ScrollType ) * ::nFactor
 

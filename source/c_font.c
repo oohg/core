@@ -1,5 +1,5 @@
 /*
- * $Id: c_font.c,v 1.5 2015-03-09 02:52:06 fyurisich Exp $
+ * $Id: c_font.c,v 1.6 2015-10-31 17:07:44 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -190,4 +190,37 @@ HB_FUNC ( SETFONTNAMESIZE )
 	}
 
     SendMessage( HWNDparam( 1 ) , (UINT)WM_SETFONT , (WPARAM) PrepareFont ( ( char * ) hb_parc(2) , (LPARAM) hb_parni(3),bold,italic,underline,strikeout,hb_parnl(8),hb_parnl(9)) , 1 ) ;
+}
+
+void getwinver( OSVERSIONINFO * pOSvi );
+
+HB_FUNC( GETSYSTEMFONT )
+{
+   LOGFONT lfDlgFont;
+   NONCLIENTMETRICS ncm;
+   OSVERSIONINFO osvi;
+   CHAR *szFName;
+   int iHeight;
+
+   getwinver( &osvi );
+   if( osvi.dwMajorVersion >= 5 )
+   {
+      ncm.cbSize = sizeof( ncm );
+
+      SystemParametersInfo( SPI_GETNONCLIENTMETRICS, ncm.cbSize, &ncm, 0 );
+
+      lfDlgFont = ncm.lfMessageFont;
+
+      szFName = lfDlgFont.lfFaceName;
+      iHeight = 21 + lfDlgFont.lfHeight;
+   }
+   else
+   {
+      szFName = "MS Sans Serif";
+      iHeight = 21 + 8;
+   }
+
+   hb_reta( 2 );
+   HB_STORC( szFName, -1, 1 );
+   HB_STORNI( iHeight, -1, 2 );
 }

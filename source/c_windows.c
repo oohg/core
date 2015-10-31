@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.83 2015-07-13 22:01:13 fyurisich Exp $
+ * $Id: c_windows.c,v 1.84 2015-10-31 17:07:44 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -968,7 +968,7 @@ HANDLE DDBToDIB(HBITMAP , HPALETTE );
    typedef HRESULT ( WINAPI * DWMISCOMPOSITIONENABLED ) ( BOOL * );
 #endif
 
-static void getwinver( OSVERSIONINFO * pOSvi )
+void getwinver( OSVERSIONINFO * pOSvi )
 {
    pOSvi->dwOSVersionInfoSize = sizeof( OSVERSIONINFO );
    GetVersionEx( pOSvi );

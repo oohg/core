@@ -1,5 +1,5 @@
 /*
- * $Id: i_pseudofunc.ch,v 1.5 2015-03-09 02:51:07 fyurisich Exp $
+ * $Id: i_pseudofunc.ch,v 1.6 2015-10-31 17:07:44 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -82,3 +82,12 @@
       ELSE ;;
          <var> := ( <default> ) ;;
       ENDIF
+
+#xtranslate GetDefaultFontName() ;
+   => ;
+	   GetSystemFont() \[1\]
+
+#xtranslate GetDefaultFontSize() ;
+   => ;
+	   GetSystemFont() \[2\]
+

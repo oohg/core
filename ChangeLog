@@ -1,11 +1,24 @@
 /*
- * $Id: ChangeLog,v 1.1520 2015-10-29 00:04:54 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1521 2015-10-31 17:07:44 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-10-31 14:06 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_pseudofunc.ch
+     + GetDefaultFontName() and GetDefaultFontSize().
+   * source/c_font.c
+     + GetSystemFont().
+   * source/c_window.c
+     * getwinver() is not static anymore.
+   * source/h_scroll.prg
+     - Commented code.
+   * samples\oohg\stream\TSmtpClient.prg
+   * samples\oohg\stream\TStreamSerial.prg
+   * samples\oohg\stream\TStreamZip.prg
 
 2015-10-28 21:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_window.ch

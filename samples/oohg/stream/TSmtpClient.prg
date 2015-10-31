@@ -1,5 +1,5 @@
 /*
- * $Id: TSmtpClient.prg,v 1.2 2015-10-28 02:16:19 fyurisich Exp $
+ * $Id: TSmtpClient.prg,v 1.3 2015-10-31 17:07:44 fyurisich Exp $
  */
 /*
  * Simple SMTP client using TStreamSocket() class.
@@ -397,7 +397,7 @@ LOCAL oPad := 0x5C , iPad := 0x36
    cPassword1 := cPassword
    cPassword2 := cPassword
    FOR nPos := 1 TO LEN( cPassword )
-#ifdef __HARBOUR__
+#ifndef __XHARBOUR__
       cPassword1[ nPos ] := hb_bitXor( cPassword[ nPos ], oPad )
       cPassword2[ nPos ] := hb_bitXor( cPassword[ nPos ], iPad )
 #else
@@ -505,7 +505,7 @@ LOCAL cRet
 
       *cTo = 0;
 
-#ifdef __HARBOUR__
+#ifndef __XHARBOUR__
       hb_retclen_buffer( cRet, iLenRet );
 #else
       hb_retclenAdopt( cRet, iLenRet );
@@ -616,7 +616,7 @@ LOCAL cRet
       }
       *cTo = 0;
 
-#ifdef __HARBOUR__
+#ifndef __XHARBOUR__
       hb_retclen_buffer( cRet, iLenRet );
 #else
       hb_retclenAdopt( cRet, iLenRet );
@@ -927,7 +927,7 @@ LOCAL cRet
          iStep++;
       }
 
-#ifdef __HARBOUR__
+#ifndef __XHARBOUR__
       hb_retclen_buffer( cRet, iLenRet );
 #else
       hb_retclenAdopt( cRet, iLenRet );

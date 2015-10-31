@@ -1,5 +1,5 @@
 /*
- * $Id: TStreamZip.prg,v 1.2 2015-10-28 02:16:19 fyurisich Exp $
+ * $Id: TStreamZip.prg,v 1.3 2015-10-31 17:07:44 fyurisich Exp $
  */
 /*
  * Data stream from (((compress/)))uncompress management class.
@@ -371,7 +371,7 @@ LOCAL cBuffer, nAux
       hHeader:CompressedSize := ASC( cBuffer[ 19 ] ) + ( ASC( cBuffer[ 20 ] ) * 256 ) + ( ASC( cBuffer[ 21 ] ) * 65536 ) + ( ASC( cBuffer[ 22 ] ) * 16777216 )
       //
       nAux := ASC( cBuffer[ 7 ] ) + ( ASC( cBuffer[ 8 ] ) * 256 )
-#ifdef __HARBOUR__
+#ifndef __XHARBOUR__
       hHeader:Encrypted  := ( hb_bitAnd( nAux, 0x0001 ) != 0 )
       hHeader:Descriptor := ( hb_bitAnd( nAux, 0x0008 ) != 0 )
       hHeader:Patched    := ( hb_bitAnd( nAux, 0x0020 ) != 0 )
@@ -417,7 +417,7 @@ LOCAL cBuffer, nAux
       hHeader:CompressedSize := ASC( cBuffer[ 21 ] ) + ( ASC( cBuffer[ 22 ] ) * 256 ) + ( ASC( cBuffer[ 23 ] ) * 65536 ) + ( ASC( cBuffer[ 24 ] ) * 16777216 )
       //
       nAux := ASC( cBuffer[ 9 ] ) + ( ASC( cBuffer[ 10 ] ) * 256 )
-#ifdef __HARBOUR__
+#ifndef __XHARBOUR__
       hHeader:Encrypted  := ( hb_bitAnd( nAux, 0x0001 ) != 0 )
       hHeader:Descriptor := ( hb_bitAnd( nAux, 0x0008 ) != 0 )
       hHeader:Patched    := ( hb_bitAnd( nAux, 0x0020 ) != 0 )
