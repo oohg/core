@@ -1,5 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.47 2015-03-09 02:52:08 fyurisich Exp $
+ * $Id: h_status.prg,v 1.48 2015-11-04 00:37:22 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -638,12 +638,11 @@ HB_FUNC( GETITEMBAR )
    hb_xfree( cString );
 }
 
-//////////// to check...
 HB_FUNC( INITITEMBAR )
 {
    HWND  hWndSB;
    int   cSpaceInBetween = 8;
-   int   ptArray[ NUM_OF_PARTS ];   // Array defining the number of parts/sections
+   int   ptArray[ NUM_OF_PARTS ];   
    int   nrOfParts = 0;
    int   n ;
    RECT  rect;
@@ -665,9 +664,9 @@ HB_FUNC( INITITEMBAR )
    if ( hb_parnl( 5 ) )
    {
       nrOfParts = SendMessage( hWndSB, SB_GETPARTS, 0, 0 );
-      SendMessage( hWndSB, SB_GETPARTS, NUM_OF_PARTS, ( LPARAM )( LPINT ) ptArray );
+      SendMessage( hWndSB, SB_GETPARTS, (WPARAM) NUM_OF_PARTS, (LPARAM) (LPINT) ptArray );
    }
-   nrOfParts++;
+   nrOfParts ++;
 
    hDC = GetDC( hWndSB );
    GetClientRect( hWndSB, &rect );
@@ -689,7 +688,7 @@ HB_FUNC( INITITEMBAR )
    }
    else
    {
-      for( n = 0; n < nrOfParts - 1; n++ )
+      for( n = 0; n < nrOfParts - 1; n ++ )
       {
          ptArray[ n ] -= hb_parni( 4 ) - cSpaceInBetween;
       }
@@ -698,25 +697,25 @@ HB_FUNC( INITITEMBAR )
 
    ReleaseDC( hWndSB, hDC );
 
-   SendMessage( hWndSB, SB_SETPARTS, nrOfParts, ( LPARAM ) ( LPINT ) ptArray );
+   SendMessage( hWndSB, SB_SETPARTS, (WPARAM) nrOfParts, (LPARAM) (LPINT) ptArray );
 
    cy = rect.bottom - rect.top - 4;
    cx = cy;
 
-   hIcon = ( HICON ) LoadImage( 0, hb_parc( 6 ), IMAGE_ICON, cx, cy, LR_LOADFROMFILE );
+   hIcon = (HICON) LoadImage( 0, hb_parc( 6 ), IMAGE_ICON, cx, cy, LR_LOADFROMFILE );
 
    if( ! hIcon )
    {
-      hIcon = (HICON)LoadImage(GetModuleHandle(NULL), hb_parc(6), IMAGE_ICON, cx, cy, 0 );
+      hIcon = (HICON) LoadImage( GetModuleHandle(NULL), hb_parc( 6 ), IMAGE_ICON, cx, cy, 0 );
    }
 
    if( hIcon != NULL )
    {
-      SendMessage( hWndSB, SB_SETICON, ( WPARAM ) nrOfParts - 1, ( LPARAM ) hIcon );
+      SendMessage( hWndSB, SB_SETICON, (WPARAM) ( nrOfParts - 1 ), (LPARAM) hIcon );
    }
 
-   SendMessage( hWndSB, SB_SETTEXT, ( nrOfParts - 1 ) | displayFlags, ( LPARAM ) hb_parc( 2 ) );
-   SendMessage( hWndSB, SB_SETTIPTEXT, ( WPARAM ) nrOfParts - 1, ( LPARAM ) hb_parc( 7 ) );
+   SendMessage( hWndSB, SB_SETTEXT, (WPARAM) ( ( nrOfParts - 1 ) | displayFlags ), (LPARAM) hb_parc( 2 ) );
+   SendMessage( hWndSB, SB_SETTIPTEXT, (WPARAM) ( nrOfParts - 1 ), (LPARAM) hb_parc( 7 ) );
 
    hb_retni( nrOfParts );
 }

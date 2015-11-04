@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.126 2015-07-14 22:27:41 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.127 2015-11-04 00:37:19 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1318,7 +1318,8 @@ BUTTON
       _OOHG_ActiveControlImageMargin  := NIL    ;;
       _OOHG_ActiveControlNo3DColors   := .F.    ;;
       _OOHG_ActiveControlAutoFit      := .F.    ;;
-      _OOHG_ActiveControlNoDIBSection := .T.
+      _OOHG_ActiveControlNoDIBSection := .T.    ;;
+      _OOHG_ActiveControlNoToday      := .F.
 
 #xcommand CAPTION <caption> ;
    => ;
@@ -1428,6 +1429,10 @@ BUTTON
    => ;
       _OOHG_ActiveControlNoDIBSection := ! <dibsection>
 
+#xcommand NOHOTLIGHT <nohotlight> ;
+   => ;
+      _OOHG_ActiveControlNoToday := <nohotlight>
+
 #xcommand END BUTTON ;
    => ;
       _OOHG_SelectSubClass( TButton(), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
@@ -1469,7 +1474,8 @@ BUTTON
             _OOHG_ActiveControlNo3DColors, ;
             _OOHG_ActiveControlAutoFit, ;
             _OOHG_ActiveControlNoDIBSection, ;
-            _OOHG_ActiveControlBackColor )
+            _OOHG_ActiveControlBackColor, ;
+            _OOHG_ActiveControlNoToday )
 
 /*---------------------------------------------------------------------------
 IMAGE
@@ -1594,7 +1600,8 @@ CHECK BOX/BUTTON
       _OOHG_ActiveControlOnMouseMove  := NIL   ;;
       _OOHG_ActiveControlAlignment    := NIL   ;;
       _OOHG_ActiveControlMultiLine    := .F.   ;;
-      _OOHG_ActiveControlFlat         := .F.
+      _OOHG_ActiveControlFlat         := .F.   ;;
+      _OOHG_ActiveControlNoToday      := .F.
 
 #xcommand ONCHANGE <onchange> ;
    => ;
@@ -1688,7 +1695,8 @@ CHECK BOX/BUTTON
             _OOHG_ActiveControlOnMouseMove, ;
             _OOHG_ActiveControlAlignment, ;
             _OOHG_ActiveControlMultiLine, ;
-            _OOHG_ActiveControlFlat )
+            _OOHG_ActiveControlFlat, ;
+            _OOHG_ActiveControlNoToday )
 
 /*---------------------------------------------------------------------------
 COMBOBOX

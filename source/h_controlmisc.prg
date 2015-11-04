@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.151 2015-03-09 02:52:07 fyurisich Exp $
+ * $Id: h_controlmisc.prg,v 1.152 2015-11-04 00:37:21 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2248,6 +2248,7 @@ Local nNotify := GetNotifyCode( lParam )
       Return ::DoLostFocus()
 
    ElseIf nNotify == NM_SETFOCUS
+      ::FocusEffect()
       ::DoEvent( ::OnGotFocus, "GOTFOCUS" )
 
    ElseIf nNotify == TVN_SELCHANGED

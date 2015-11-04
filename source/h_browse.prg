@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.165 2015-06-21 14:44:10 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.166 2015-11-04 00:37:19 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2008,12 +2008,12 @@ Local cWorkArea, _RecNo, nRow, uGridValue, aCellData, aPos
       ElseIf ::IsColumnReadOnly( _OOHG_ThisItemColIndex, _OOHG_ThisItemRowIndex )
          // Cell is readonly
          If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick )
-            ::DoEvent( ::OnDblClick, "DBLCLICK" )
+            ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
          EndIf
       ElseIf ! ::IsColumnWhen( _OOHG_ThisItemColIndex, _OOHG_ThisItemRowIndex )
          // Not a valid WHEN
          If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick )
-            ::DoEvent( ::OnDblClick, "DBLCLICK" )
+            ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
          EndIf
       ElseIf aScan( ::aHiddenCols, _OOHG_ThisItemColIndex ) > 0
          // Cell is in a hidden column

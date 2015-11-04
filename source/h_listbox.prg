@@ -1,5 +1,5 @@
 /*
- * $Id: h_listbox.prg,v 1.31 2015-03-09 02:52:08 fyurisich Exp $
+ * $Id: h_listbox.prg,v 1.32 2015-11-04 00:37:22 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -97,29 +97,30 @@
 #include "i_windefs.ch"
 
 CLASS TList FROM TControl
-   DATA Type                  INIT "LIST" READONLY
-   DATA nWidth                INIT 120
-   DATA nHeight               INIT 120
-   DATA nTextHeight           INIT 0
-   DATA bOnEnter              INIT nil
-   DATA lAdjustImages         INIT .F.
-   DATA ImageListColor        INIT CLR_DEFAULT
-   DATA ImageListFlags        INIT LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
+   DATA Type                      INIT "LIST" READONLY
+   DATA nWidth                    INIT 120
+   DATA nHeight                   INIT 120
+   DATA nTextHeight               INIT 0
+   DATA bOnEnter                  INIT nil
+   DATA lAdjustImages             INIT .F.
+   DATA ImageListColor            INIT CLR_DEFAULT
+   DATA ImageListFlags            INIT LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
+   DATA lFocused                  INIT .F.
 
    METHOD Define
    METHOD Define2
-   METHOD Value               SETGET
-   METHOD OnEnter             SETGET
+   METHOD Value                   SETGET
+   METHOD OnEnter                 SETGET
    METHOD Events
    METHOD Events_Command
    METHOD Events_DrawItem
    METHOD Events_MeasureItem
-   METHOD AddItem(uValue)     BLOCK { |Self,uValue| ListBoxAddstring2( Self, uValue ) }
-   METHOD DeleteItem(nItem)   BLOCK { |Self,nItem| ListBoxDeleteString( ::hWnd, nItem ) }
-   METHOD DeleteAllItems      BLOCK { | Self | ListBoxReset( ::hWnd ) }
+   METHOD AddItem(uValue)         BLOCK { |Self, uValue| ListBoxAddstring2( Self, uValue ) }
+   METHOD DeleteItem(nItem)       BLOCK { |Self, nItem| ListBoxDeleteString( ::hWnd, nItem ) }
+   METHOD DeleteAllItems          BLOCK { |Self| ListBoxReset( ::hWnd ) }
    METHOD Item
    METHOD InsertItem
-   METHOD ItemCount           BLOCK { | Self | ListBoxGetItemCount( ::hWnd ) }
+   METHOD ItemCount               BLOCK { |Self| ListBoxGetItemCount( ::hWnd ) }
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -183,7 +184,7 @@ Local ControlHandle
    ASSIGN ::OnGotFocus  VALUE gotfocus   TYPE "B"
    ASSIGN ::OnChange    VALUE ChangeProcedure TYPE "B"
    ASSIGN ::OnDblClick  VALUE dblclick   TYPE "B"
-   ASSIGN ::OnEnter     value onenter    TYPE "B"
+   ASSIGN ::OnEnter     VALUE onenter    TYPE "B"
 
 Return Self
 
@@ -216,9 +217,21 @@ RETURN bRet
 METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TList
 *-----------------------------------------------------------------------------*
    If nMsg == WM_LBUTTONDBLCLK
+      If ! ::lFocused
+         ::SetFocus()
+      EndIf
       Return nil
+
+   ElseIf nMsg == WM_LBUTTONDOWN
+      If ::lFocused
+         ::DoEventMouseCoords( ::OnClick, "CLICK" )
+      Else
+         ::SetFocus()
+         ::DoEventMouseCoords( ::OnClick, "CLICK" )
+      EndIf
+
    EndIf
-RETURN ::Super:Events( hWnd, nMsg, wParam, lParam )
+Return ::Super:Events( hWnd, nMsg, wParam, lParam )
 
 *-----------------------------------------------------------------------------*
 METHOD Events_Command( wParam ) CLASS TList
@@ -230,9 +243,12 @@ Local Hi_wParam := HIWORD( wParam )
       Return nil
 
    elseif Hi_wParam == LBN_KILLFOCUS
+      ::lFocused := .F.
       Return ::DoLostFocus()
 
    elseif Hi_wParam == LBN_SETFOCUS
+      ::lFocused := .T.
+      ::FocusEffect()
       ::DoEvent( ::OnGotFocus, "GOTFOCUS" )
       Return nil
 
@@ -266,10 +282,10 @@ Return ListBoxGetString( ::hWnd, nItem )
 
 
 CLASS TListMulti FROM TList
-   DATA Type      INIT "MULTILIST" READONLY
+   DATA Type                      INIT "MULTILIST" READONLY
 
    METHOD Define
-   METHOD Value   SETGET
+   METHOD Value                   SETGET
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -484,7 +500,7 @@ HB_FUNC( LISTBOXSETMULTISEL )
 
  for( i=0 ; i<n ; i++ )
  {
-  SendMessage(hwnd, LB_SETSEL, (WPARAM)(0), (LPARAM) i );
+  SendMessage( hwnd, LB_SETSEL, (WPARAM) 0, (LPARAM) i );
  }
 
    // SET NEW SELECTIONS

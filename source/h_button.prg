@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.70 2015-10-29 00:04:55 fyurisich Exp $
+ * $Id: h_button.prg,v 1.71 2015-11-04 00:37:21 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -236,7 +236,7 @@ METHOD DefineImage( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h,
                     strikeout, lRtl, lNoPrefix, lDisabled, cBuffer, hBitMap, ;
                     cImage, lNoTransparent, lScale, lCancel, cAlign, lMultiLine, ;
                     themed, aImageMargin, OnMouseMove, lNo3DColors, lAutoFit, ;
-                    lNoDIB ) CLASS TButton
+                    lNoDIB, backcolor, lNoHotLight ) CLASS TButton
 *------------------------------------------------------------------------------*
    If Empty( cBuffer )
       cBuffer := ""
@@ -246,7 +246,8 @@ Return ::Define( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h, ;
                  NoTabStop, HelpId, invisible, bold, italic, underline, ;
                  strikeout, lRtl, lNoPrefix, lDisabled, cBuffer, hBitMap, ;
                  cImage, lNoTransparent, lScale, lCancel, cAlign, lMultiLine, ;
-                 themed, aImageMargin, OnMouseMove, lNo3DColors, lAutoFit, lNoDIB )
+                 themed, aImageMargin, OnMouseMove, lNo3DColors, lAutoFit, ;
+                 lNoDIB, backcolor, lNoHotLight )
 
 *------------------------------------------------------------------------------*
 METHOD SetFocus() CLASS TButton
@@ -686,7 +687,7 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
                strikeout, field, lRtl, BitMap, cBuffer, hBitMap, ;
                lNoTransparent, lScale, lNo3DColors, lAutoFit, lNoDIB, backcolor, ;
                lDisabled, themed, aImageMargin, OnMouseMove, cAlign, lMultiLine, ;
-               flat ) CLASS TButtonCheck
+               flat, lNoHotLight ) CLASS TButtonCheck
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle, i
 
@@ -734,6 +735,7 @@ Local ControlHandle, nStyle, i
    ASSIGN ::AutoFit        VALUE lAutoFit       TYPE "L"
    ASSIGN ::lNo3DColors    VALUE lNo3DColors    TYPE "L"
    ASSIGN ::lNoDIBSection  VALUE lNoDIB         TYPE "L"
+   ASSIGN ::lNoHotLight    VALUE lNoHotLight    TYPE "L"
 
    IF VALTYPE( cAlign ) $ "CM"
       cAlign := ALLTRIM( UPPER( cAlign ) )
@@ -781,8 +783,9 @@ METHOD DefineImage( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
                     fontsize, tooltip, changeprocedure, w, h, lostfocus, gotfocus, ;
                     HelpId, invisible, notabstop, bold, italic, underline, ;
                     strikeout, field, lRtl, BitMap, cBuffer, hBitMap, ;
-                    lNoTransparent, lScale, lNo3DColors, lAutoFit, lNoDIB, ;
-                    themed, aImageMargin, OnMouseMove, cAlign, lMultiLine, flat ) CLASS TButtonCheck
+                    lNoTransparent, lScale, lNo3DColors, lAutoFit, lNoDIB, backcolor, ;
+                    lDisabled, themed, aImageMargin, OnMouseMove, cAlign, lMultiLine, ;
+                    flat, lNoHotLight ) CLASS TButtonCheck
 *-----------------------------------------------------------------------------*
    If Empty( cBuffer )
       cBuffer := ""
@@ -791,8 +794,9 @@ Return ::Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
                  fontsize, tooltip, changeprocedure, w, h, lostfocus, gotfocus, ;
                  HelpId, invisible, notabstop, bold, italic, underline, ;
                  strikeout, field, lRtl, BitMap, cBuffer, hBitMap, ;
-                 lNoTransparent, lScale, lNo3DColors, lAutoFit, lNoDIB, ;
-                 themed, aImageMargin, OnMouseMove, cAlign, lMultiLine, flat )
+                 lNoTransparent, lScale, lNo3DColors, lAutoFit, lNoDIB, backcolor, ;
+                 lDisabled, themed, aImageMargin, OnMouseMove, cAlign, lMultiLine, ;
+                 flat, lNoHotLight )
 
 *------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TButtonCheck

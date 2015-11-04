@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.84 2015-03-09 02:52:07 fyurisich Exp $
+ * $Id: h_combo.prg,v 1.85 2015-11-04 00:37:21 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -125,6 +125,7 @@ CLASS TCombo FROM TLabel
    DATA lRefresh              INIT NIL
    DATA SourceOrder           INIT NIL
    DATA onRefresh             INIT NIL
+   DATA lFocused              INIT .F.
 
    METHOD Define
    METHOD nHeight             SETGET
@@ -837,6 +838,12 @@ Local nArea, BackRec, nMax, i, nStart, bField, bValueSource, lNoEval, BackOrd :=
          EndIf
       Endif
 
+   ElseIf nMsg == WM_LBUTTONDOWN
+      If ! ::lFocused
+         ::SetFocus()
+      EndIf
+      ::DoEventMouseCoords( ::OnClick, "CLICK" )
+
    EndIf
 
 Return ::Super:Events( hWnd, nMsg, wParam, lParam )
@@ -863,9 +870,12 @@ Local Hi_wParam := HIWORD( wParam ), nArea, BackRec, i, nMax, bField, bValueSour
       Return NIL
 
    ElseIf Hi_wParam == CBN_KILLFOCUS
+      ::lFocused := .F.
       Return ::DoLostFocus()
 
    ElseIf Hi_wParam == CBN_SETFOCUS
+      ::lFocused := .T.
+      ::FocusEffect()
       ::DoEvent( ::OnGotFocus, "GOTFOCUS" )
       Return NIL
 
@@ -942,7 +952,6 @@ Local Hi_wParam := HIWORD( wParam ), nArea, BackRec, i, nMax, bField, bValueSour
             EndIf
          EndIf
       EndIf
-      ::DoEventMouseCoords( ::OnClick, "CLICK" )
       Return NIL
 
    ElseIf Hi_wParam == EN_KILLFOCUS .OR. ;
@@ -969,8 +978,8 @@ METHOD SetEditSel( nStart, nEnd ) CLASS TCombo
    starting position of 0 and an ending position of 4.
 
    This method is meaningfull only when de combo is in edit state.
-   When combo looses focus, it gets out of edit state.
-   When combo gots focus, all the text is selected.
+   When the combo loses the focus, it gets out of edit state.
+   When the combo gets the focus, all the text is selected.
 */
 Local lRet
 
@@ -992,8 +1001,8 @@ METHOD GetEditSel() CLASS TCombo
    after the last selected character). This value is the caret position.
 
    This method is meaningfull only when de combo is in edit state.
-   When combo looses focus, it gets out of edit state.
-   When combo gots focus, all the text is selected.
+   When the combo loses the focus, it gets out of edit state.
+   When the combo gets the focus, all the text is selected.
 */
 Local rRange := SendMessage( ::hWnd, CB_GETEDITSEL, 0, 0 )
 
@@ -1007,8 +1016,8 @@ METHOD CaretPos( nPos ) CLASS TCombo
    after the last selected character). This value is the caret position.
 
    This method is meaningfull only when de combo is in edit state.
-   When combo looses focus, it gets out of edit state, and this method returns 0.
-   When combo gots focus, all the text is selected.
+   When the combo loses the focus, it gets out of edit state, and this method returns 0.
+   When the combo gets the focus, all the text is selected.
 */
    If HB_IsNumeric( nPos )
       SendMessage( ::hWnd, CB_SETEDITSEL, 0, MakeLParam( nPos, nPos ) )
@@ -1074,7 +1083,7 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 HB_FUNC( INITCOMBOBOX )
 {
    HWND hwnd;
-   HWND hbutton;
+   HWND hcombo;
    int Style, StyleEx;
 
    hwnd = HWNDparam( 1 );
@@ -1085,7 +1094,7 @@ HB_FUNC( INITCOMBOBOX )
 
    ///// | CBS_OWNERDRAWFIXED; // CBS_OWNERDRAWVARIABLE;  si se coloca ownerdrawfixed el alto del combo no cambia cuando se cambia el font
 
-   hbutton = CreateWindowEx( StyleEx, "COMBOBOX",
+   hcombo = CreateWindowEx( StyleEx, "COMBOBOX",
                            "",
                            Style,
                            hb_parni(3),
@@ -1097,9 +1106,9 @@ HB_FUNC( INITCOMBOBOX )
                            GetModuleHandle(NULL),
                            NULL ) ;
 
-   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFunc );
+   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hcombo, GWL_WNDPROC, ( LONG ) SubClassFunc );
 
-   HWNDret( hbutton );
+   HWNDret( hcombo );
 }
 
 HB_FUNC( COMBOADDSTRING )

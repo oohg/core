@@ -1,11 +1,44 @@
 /*
- * $Id: ChangeLog,v 1.1521 2015-10-31 17:07:44 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1522 2015-11-04 00:37:19 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-11-03 21:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_altsyntax.ch
+     + Support for NOHOTLIGHT clause to BUTTON and CHECKBUTTON controls.
+   * source/h_browse.prg
+   * source/h_xbrowse.prg
+     + Missing mouse coordinates to CLICK events.
+   * source/h_button.prg
+     ! Missing parameters in method Define of TButton.
+     ! Missing parameters in methods Define and DefineImage of TButtonCheck.
+   * source/h_combo.prg
+     * Variable renamed for clarity.
+     * Some comments.
+     + Missing call to FocusEffect before firing ONGOTFOCUS.
+     + Data lFocused.
+     + Handler for WM_LBUTTONDOWN message to set focus and trigger
+       ONCLICK event.
+     - Evaluation of ONCLICK event inside CBN_EDITCHANGE handler.
+   * source/h_controlmisc.prg
+     + Missing call to FocusEffect before firing ONGOTFOCUS.
+   * source/h_hotkeybox.prg
+     * Variable renamed for clarity.
+   * source/listbox.prg
+     * Format.
+     * Data lFocused.
+     + Handler for WM_LBUTTONDOWN message to set focus and trigger
+       ONCLICK event.
+     + Handler for WM_LBUTTONDBLCLK message to set focus.
+     + Missing call to FocusEffect before firing ONGOTFOCUS.
+   * source/h_status.prg
+     - Some comments.
+     + Some casting.
+     * Format.
 
 2015-10-31 14:06 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_pseudofunc.ch
