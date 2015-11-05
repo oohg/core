@@ -1,5 +1,5 @@
 /*
- * $Id: h_checklist.prg,v 1.18 2015-05-20 22:31:04 fyurisich Exp $
+ * $Id: h_checklist.prg,v 1.19 2015-11-05 00:14:31 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -284,9 +284,6 @@ Return aItems
 METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TCheckList
 *-----------------------------------------------------------------------------*
 Local nNext
-
-   Empty( hWnd )
-   Empty( lParam )
 
    If nMsg == WM_LBUTTONDBLCLK
       // ignore double click on checkbox, it was processed as single click

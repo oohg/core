@@ -1,5 +1,5 @@
 /*
- * $Id: h_listbox.prg,v 1.32 2015-11-04 00:37:22 fyurisich Exp $
+ * $Id: h_listbox.prg,v 1.33 2015-11-05 00:14:31 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -223,11 +223,15 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TList
       Return nil
 
    ElseIf nMsg == WM_LBUTTONDOWN
-      If ::lFocused
-         ::DoEventMouseCoords( ::OnClick, "CLICK" )
-      Else
-         ::SetFocus()
-         ::DoEventMouseCoords( ::OnClick, "CLICK" )
+      If ! ::NestedClick
+         ::NestedClick := ! _OOHG_NestedSameEvent()
+         If ::lFocused
+            ::DoEventMouseCoords( ::OnClick, "CLICK" )
+         Else
+            ::SetFocus()
+            ::DoEventMouseCoords( ::OnClick, "CLICK" )
+         EndIf
+         ::NestedClick := .F.
       EndIf
 
    EndIf

@@ -1,11 +1,17 @@
 /*
- * $Id: ChangeLog,v 1.1522 2015-11-04 00:37:19 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1523 2015-11-05 00:14:30 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-11-04 21:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_listbox.prg
+     + Nested click check to WM_LBUTTONDOWN handler.
+   * source/h_checklist.prg
+     - Unneeded code.
 
 2015-11-03 21:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_altsyntax.ch
