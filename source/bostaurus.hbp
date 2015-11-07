@@ -1,0 +1,26 @@
+#
+# $Id: bostaurus.hbp,v 1.1 2015-11-07 22:39:58 fyurisich Exp $
+#
+
+# build a static library
+-hblib
+
+# compilation is incremental (hidden .hmk folder is created)
+-inc
+
+# name of output file
+-o${HG_ROOT}\${LIB_GUI}\${hb_name}
+
+# path to headers files (.ch)
+-i${HG_ROOT}\include
+
+# harbour compiler flags
+-n -q0 -ko -w3 -es2
+
+# uncomment this line to build .ppo files
+#-p${HG_ROOT}\source\ppo\
+
+# files to compile
+bostaurus.prg
+
+# EOF

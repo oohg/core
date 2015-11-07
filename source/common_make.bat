@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: common_make.bat,v 1.28 2014-05-17 21:30:00 fyurisich Exp $
+rem $Id: common_make.bat,v 1.29 2015-11-07 22:39:57 fyurisich Exp $
 rem
 
 if "%1"=="" goto INFO
@@ -34,8 +34,10 @@ if exist winprint.prg  %hg_hrb%\%BIN_HRB%\harbour winprint  %OOHG_X_FLAGS%
 if errorlevel 1 goto EXIT
 if exist miniprint.prg %hg_hrb%\%BIN_HRB%\harbour miniprint %OOHG_X_FLAGS%
 if errorlevel 1 goto EXIT
+if exist bostaurus.prg %hg_hrb%\%BIN_HRB%\harbour bostaurus %OOHG_X_FLAGS%
+if errorlevel 1 goto EXIT
 
-goto EXIT
+GOTO EXIT
 
 :INFO
 echo ooHG - Library compilation.

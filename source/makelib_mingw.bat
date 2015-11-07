@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: makelib_mingw.bat,v 1.39 2015-05-13 02:19:05 fyurisich Exp $
+rem $Id: makelib_mingw.bat,v 1.40 2015-11-07 22:39:57 fyurisich Exp $
 rem
 cls
 
@@ -38,6 +38,7 @@ rem *** Delete Old Libraries ***
 if exist %HG_ROOT%\%LIB_GUI%\liboohg.a      del %HG_ROOT%\%LIB_GUI%\liboohg.a
 if exist %HG_ROOT%\%LIB_GUI%\libhbprinter.a del %HG_ROOT%\%LIB_GUI%\libhbprinter.a
 if exist %HG_ROOT%\%LIB_GUI%\libminiprint.a del %HG_ROOT%\%LIB_GUI%\libminiprint.a
+if exist %HG_ROOT%\%LIB_GUI%\libbostaurus.a del %HG_ROOT%\%LIB_GUI%\libbostaurus.a
 
 rem *** Compile with Harbour ***
 call common_make "%HG_HRB%\%LIB_HRB%\libtip.a"
@@ -61,6 +62,8 @@ if exist winprint.c  gcc %OOHG_X_FLAGS% winprint.c
 if errorlevel 1 goto EXIT2
 if exist miniprint.c gcc %OOHG_X_FLAGS% miniprint.c
 if errorlevel 1 goto EXIT2
+if exist bostaurus.c gcc %OOHG_X_FLAGS% bostaurus.c
+if errorlevel 1 goto EXIT2
 
 rem *** Build Libraries ***
 echo Building libraries ...
@@ -74,6 +77,8 @@ if exist winprint.o  %HG_MINGW%\bin\ar rc %HG_ROOT%\%LIB_GUI%\libhbprinter.a win
 if errorlevel 2 goto EXIT3
 if exist miniprint.o %HG_MINGW%\bin\ar rc %HG_ROOT%\%LIB_GUI%\libminiprint.a miniprint.o
 if errorlevel 2 goto EXIT3
+if exist bostaurus.o %HG_MINGW%\bin\ar rc %HG_ROOT%\%LIB_GUI%\libbostaurus.a bostaurus.o
+if errorlevel 2 goto EXIT3
 
 :SUCCESS
 echo BUILD FINISHED !!!
@@ -84,6 +89,7 @@ if /I .%LIB_GUI%.==.LIB. goto EXIT2
 if exist %HG_ROOT%\%LIB_GUI%\liboohg.a      copy %HG_ROOT%\%LIB_GUI%\liboohg.a      %HG_ROOT%\lib\liboohg.a
 if exist %HG_ROOT%\%LIB_GUI%\libhbprinter.a copy %HG_ROOT%\%LIB_GUI%\libhbprinter.a %HG_ROOT%\lib\libhbprinter.a
 if exist %HG_ROOT%\%LIB_GUI%\libminiprint.a copy %HG_ROOT%\%LIB_GUI%\libminiprint.a %HG_ROOT%\lib\libminiprint.a
+if exist %HG_ROOT%\%LIB_GUI%\libbostaurus.a copy %HG_ROOT%\%LIB_GUI%\libbostaurus.a %HG_ROOT%\lib\libbostaurus.a
 
 :EXIT2
 set PATH=%TPATH%
@@ -94,6 +100,7 @@ for %%a in (*.o) do del %%a
 for %%a in (h_*.c) do del %%a
 if exist winprint.c  del winprint.c
 if exist miniprint.c del miniprint.c
+if exist bostaurus.c del bostaurus.c
 
 set OOHG_X_FLAGS=
 set HG_FILES1_PRG=

@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: compile_bcc.bat,v 1.18 2015-03-18 01:22:29 fyurisich Exp $
+rem $Id: compile_bcc.bat,v 1.19 2015-11-07 22:39:57 fyurisich Exp $
 rem
 cls
 
@@ -139,6 +139,7 @@ if exist %HG_HRB%\%LIB_HRB%\dll.lib        echo %HG_HRB%\%LIB_HRB%\dll.lib + >> 
 rem *** "Related" Libraries ***
 if exist %HG_HRB%\%LIB_HRB%\socket.lib     echo %HG_HRB%\%LIB_HRB%\socket.lib + >> b32.bc
 if exist %HG_ROOT%\%LIB_GUI%\socket.lib    echo %HG_ROOT%\%LIB_GUI%\socket.lib + >> b32.bc
+if exist %HG_ROOT%\%LIB_GUI%\bostaurus.lib echo %HG_ROOT%\%LIB_GUI%\bostaurus.lib + >> b32.bc
 if exist %HG_ROOT%\%LIB_GUI%\hbprinter.lib echo %HG_ROOT%\%LIB_GUI%\hbprinter.lib + >> b32.bc
 if exist %HG_ROOT%\%LIB_GUI%\miniprint.lib echo %HG_ROOT%\%LIB_GUI%\miniprint.lib + >> b32.bc
 

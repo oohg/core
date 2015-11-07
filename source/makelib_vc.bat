@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: makelib_vc.bat,v 1.5 2015-03-12 00:58:16 fyurisich Exp $
+rem $Id: makelib_vc.bat,v 1.6 2015-11-07 22:39:57 fyurisich Exp $
 rem
 cls
 
@@ -26,6 +26,7 @@ rem *** Delete Old Libraries ***
 if exist %HG_ROOT%\%LIB_GUI%\oohg.lib      del %HG_ROOT%\%LIB_GUI%\oohg.lib
 if exist %HG_ROOT%\%LIB_GUI%\hbprinter.lib del %HG_ROOT%\%LIB_GUI%\hbprinter.lib
 if exist %HG_ROOT%\%LIB_GUI%\miniprint.lib del %HG_ROOT%\%LIB_GUI%\miniprint.lib
+if exist %HG_ROOT%\%LIB_GUI%\bostaurus.lib del %HG_ROOT%\%LIB_GUI%\bostaurus.lib
 
 rem *** Compile with Harbour ***
 call common_make "%HG_HRB%\%LIB_HRB%\tip.lib"
@@ -43,6 +44,8 @@ if exist winprint.c  cl %OOHG_X_FLAGS% winprint.c
 if errorlevel 1 goto EXIT2
 if exist miniprint.c cl %OOHG_X_FLAGS% miniprint.c
 if errorlevel 1 goto EXIT2
+if exist bostaurus.c cl %OOHG_X_FLAGS% bostaurus.c
+if errorlevel 1 goto EXIT2
 
 rem *** Build Libraries ***
 echo /out:%HG_ROOT%\%LIB_GUI%\oohg.lib >%HG_ROOT%\%LIB_GUI%\oohg.def
@@ -55,6 +58,8 @@ if exist winprint.obj  lib /out:%HG_ROOT%\%LIB_GUI%\hbprinter.lib winprint.obj
 if errorlevel 2 goto EXIT3
 if exist miniprint.obj lib /out:%HG_ROOT%\%LIB_GUI%\miniprint.lib miniprint.obj
 if errorlevel 2 goto EXIT3
+if exist bostaurus.obj lib /out:%HG_ROOT%\%LIB_GUI%\bostaurus.lib bostaurus.obj
+if errorlevel 2 goto EXIT3
 
 
 :EXIT3
@@ -63,6 +68,7 @@ if exist %HG_ROOT%\%LIB_GUI%\oohg.def      del %HG_ROOT%\%LIB_GUI%\oohg.def
 if exist %HG_ROOT%\%LIB_GUI%\oohg.bak      del %HG_ROOT%\%LIB_GUI%\oohg.bak
 if exist %HG_ROOT%\%LIB_GUI%\hbprinter.bak del %HG_ROOT%\%LIB_GUI%\hbprinter.bak
 if exist %HG_ROOT%\%LIB_GUI%\miniprint.bak del %HG_ROOT%\%LIB_GUI%\miniprint.bak
+if exist %HG_ROOT%\%LIB_GUI%\bostaurus.bak del %HG_ROOT%\%LIB_GUI%\bostaurus.bak
 
 
 :EXIT2
@@ -75,6 +81,7 @@ rem *** Delete Unwanted Files ***
 del h_*.c
 if exist winprint.c  del winprint.c
 if exist miniprint.c del miniprint.c
+if exist bostaurus.c del bostaurus.c
 
 rem *** Clear Temporary EnvVars ***
 set OOHG_X_FLAGS=

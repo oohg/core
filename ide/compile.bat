@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: compile.bat,v 1.3 2015-05-06 04:24:14 fyurisich Exp $
+rem $Id: compile.bat,v 1.4 2015-11-07 22:39:57 fyurisich Exp $
 rem
 
 if /I not "%1%"=="/NOCLS" cls
@@ -77,6 +77,7 @@ if exist %HG_HRB%\%LIB_HRB%\hboleaut.lib   echo %HG_HRB%\%LIB_HRB%\hboleaut.lib 
 if exist %HG_HRB%\%LIB_HRB%\dll.lib        echo %HG_HRB%\%LIB_HRB%\dll.lib + >> b32.bc
 if exist %HG_HRB%\%LIB_HRB%\socket.lib     echo %HG_HRB%\%LIB_HRB%\socket.lib + >> b32.bc
 if exist %HG_ROOT%\%LIB_GUI%\socket.lib    echo %HG_ROOT%\%LIB_GUI%\socket.lib + >> b32.bc
+if exist %HG_ROOT%\%LIB_GUI%\bostaurus.lib echo %HG_ROOT%\%LIB_GUI%\bostaurus.lib + >> b32.bc
 if exist %HG_ROOT%\%LIB_GUI%\hbprinter.lib echo %HG_ROOT%\%LIB_GUI%\hbprinter.lib + >> b32.bc
 if exist %HG_ROOT%\%LIB_GUI%\miniprint.lib echo %HG_ROOT%\%LIB_GUI%\miniprint.lib + >> b32.bc
 echo cw32.lib + >> b32.bc

@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: makelib_bcc.bat,v 1.21 2015-03-18 01:22:30 fyurisich Exp $
+rem $Id: makelib_bcc.bat,v 1.22 2015-11-07 22:39:57 fyurisich Exp $
 rem
 cls
 
@@ -21,6 +21,7 @@ rem *** Delete Old Libraries ***
 if exist %HG_ROOT%\%LIB_GUI%\oohg.lib      del %HG_ROOT%\%LIB_GUI%\oohg.lib
 if exist %HG_ROOT%\%LIB_GUI%\hbprinter.lib del %HG_ROOT%\%LIB_GUI%\hbprinter.lib
 if exist %HG_ROOT%\%LIB_GUI%\miniprint.lib del %HG_ROOT%\%LIB_GUI%\miniprint.lib
+if exist %HG_ROOT%\%LIB_GUI%\bostaurus.lib del %HG_ROOT%\%LIB_GUI%\bostaurus.lib
 
 rem *** Compile with Harbour ***
 echo Compiling prg files ...
@@ -42,6 +43,8 @@ if exist winprint.c  %HG_BCC%\bin\bcc32 %OOHG_X_FLAGS% winprint.c >> resul.txt
 if errorlevel 1 goto EXIT2
 if exist miniprint.c %HG_BCC%\bin\bcc32 %OOHG_X_FLAGS% miniprint.c >> resul.txt
 if errorlevel 1 goto EXIT2
+if exist bostaurus.c %HG_BCC%\bin\bcc32 %OOHG_X_FLAGS% bostaurus.c >> resul.txt
+if errorlevel 1 goto EXIT2
 echo. >> resul.txt
 
 rem *** Build Libraries ***
@@ -56,6 +59,8 @@ if exist winprint.obj  %HG_BCC%\bin\tlib %HG_ROOT%\%LIB_GUI%\hbprinter +winprint
 if errorlevel 2 goto EXIT3
 if exist miniprint.obj %HG_BCC%\bin\tlib %HG_ROOT%\%LIB_GUI%\miniprint +miniprint.obj >> resul.txt
 if errorlevel 2 goto EXIT3
+if exist bostaurus.obj %HG_BCC%\bin\tlib %HG_ROOT%\%LIB_GUI%\bostaurus +bostaurus.obj >> resul.txt
+if errorlevel 2 goto EXIT3
 
 
 :EXIT3
@@ -63,6 +68,7 @@ rem *** Cleanup ***
 IF EXIST %HG_ROOT%\%LIB_GUI%\oohg.bak      del %HG_ROOT%\%LIB_GUI%\oohg.bak
 IF EXIST %HG_ROOT%\%LIB_GUI%\hbprinter.bak del %HG_ROOT%\%LIB_GUI%\hbprinter.bak
 IF EXIST %HG_ROOT%\%LIB_GUI%\miniprint.bak del %HG_ROOT%\%LIB_GUI%\miniprint.bak
+IF EXIST %HG_ROOT%\%LIB_GUI%\bostaurus.bak del %HG_ROOT%\%LIB_GUI%\bostaurus.bak
 
 
 :EXIT2

@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: MakeDistro.bat,v 1.2 2015-04-13 21:16:08 fyurisich Exp $
+rem $Id: MakeDistro.bat,v 1.3 2015-11-07 22:39:57 fyurisich Exp $
 rem
 cls
 
@@ -279,6 +279,8 @@ if /I "%1"=="HB30" xcopy %HG_ROOT%\source\buildlib_hbmk2.bat /r /y /d /q
 if /I "%1"=="HB32" xcopy %HG_ROOT%\source\buildlib_hbmk2.bat /r /y /d /q
 if /I "%1"=="HB32" xcopy %HG_ROOT%\source\oohg.hbp /r /y /d /q
 if /I "%1"=="HB30" xcopy %HG_ROOT%\source\oohg.hbp /r /y /d /q
+if /I "%1"=="HB32" xcopy %HG_ROOT%\source\bostaurus.hbp /r /y /d /q
+if /I "%1"=="HB30" xcopy %HG_ROOT%\source\bostaurus.hbp /r /y /d /q
 if /I "%1"=="HB32" xcopy %HG_ROOT%\source\miniprint.hbp /r /y /d /q
 if /I "%1"=="HB30" xcopy %HG_ROOT%\source\miniprint.hbp /r /y /d /q
 if /I "%1"=="HB32" xcopy %HG_ROOT%\source\hbprinter.hbp /r /y /d /q
@@ -318,6 +320,7 @@ set BIN_HRB=bin
 set TPATH=%PATH%
 set PATH=%HG_MINGW%\bin;%HG_HRB%\%BIN_HRB%
 hbmk2 oohg.hbp
+hbmk2 bostaurus.hbp
 hbmk2 miniprint.hbp
 hbmk2 hbprinter.hbp
 set PATH=%TPATH%
@@ -339,6 +342,7 @@ set BIN_HRB=bin
 set TPATH=%PATH%
 set PATH=%HG_MINGW%\bin;%HG_HRB%\%BIN_HRB%
 hbmk2 oohg.hbp
+hbmk2 bostaurus.hbp
 hbmk2 miniprint.hbp
 hbmk2 hbprinter.hbp
 set PATH=%TPATH%
@@ -362,22 +366,25 @@ echo Harbour: Compiling sources...
 set HG_FILES1_PRG=h_error h_windows h_form h_ipaddress h_monthcal h_help h_status h_tree h_toolbar h_init h_media h_winapimisc h_slider h_button h_checkbox h_combo h_controlmisc h_datepicker h_editbox h_dialogs h_grid h_image h_label h_listbox h_menu h_msgbox h_frame h_progressbar h_radio h_spinner h_tab h_textbox h_application
 set HG_FILES2_PRG=h_graph h_richeditbox h_edit h_edit_ex h_scrsaver h_browse h_crypt h_zip h_comm h_print h_scroll h_splitbox h_progressmeter h_scrollbutton h_xbrowse h_internal h_textarray h_hotkeybox h_activex h_pdf h_hotkey h_hyperlink h_tooltip h_picture h_dll h_checklist h_timer h_cursor h_ini h_report h_registry h_font
 set OOHG_X_FLAGS=-i"%HG_HRB%\include;%HG_ROOT%\include" -n1 -gc0 -q0
-%HG_HRB%\%BIN_HRB%\harbour %HG_FILES1_PRG% %HG_FILES2_PRG% miniprint winprint %OOHG_X_FLAGS%
+%HG_HRB%\%BIN_HRB%\harbour %HG_FILES1_PRG% %HG_FILES2_PRG% miniprint winprint bostaurus %OOHG_X_FLAGS%
 echo BCC32: Compiling...
 set OOHG_X_FLAGS=-c -O2 -tW -tWM -d -a8 -OS -5 -6 -I%HG_HRB%\include;%HG_BCC%\include;%HG_ROOT%\include; -L%HG_HRB%\%LIB_HRB%;%HG_BCC%\lib;
 set HG_FILES_C=c_media c_controlmisc c_resource c_cursor c_font c_dialogs c_windows c_image c_msgbox c_progressbar c_winapimisc c_scrsaver c_graph c_activex c_gdiplus
-for %%a in ( %HG_FILES1_PRG% %HG_FILES2_PRG% %HG_FILES_C% miniprint winprint ) do %HG_BCC%\bin\bcc32 %OOHG_X_FLAGS% %%a.c > nul
+for %%a in ( %HG_FILES1_PRG% %HG_FILES2_PRG% %HG_FILES_C% miniprint winprint bostaurus ) do %HG_BCC%\bin\bcc32 %OOHG_X_FLAGS% %%a.c > nul
 echo TLIB: Building library %HG_ROOT%\%LIB_GUI%\oohg.lib...
 for %%a in ( %HG_FILES1_PRG% %HG_FILES2_PRG% %HG_FILES_C% ) do %HG_BCC%\bin\tlib %HG_ROOT%\%LIB_GUI%\oohg +%%a.obj /P32 > nul
 echo TLIB: Building library %HG_ROOT%\%LIB_GUI%\hbprinter.lib...
 %HG_BCC%\bin\tlib %HG_ROOT%\%LIB_GUI%\hbprinter +winprint.obj > nul
 echo TLIB: Building library %HG_ROOT%\%LIB_GUI%\miniprint.lib...
 %HG_BCC%\bin\tlib %HG_ROOT%\%LIB_GUI%\miniprint +miniprint.obj > nul
+echo TLIB: Building library %HG_ROOT%\%LIB_GUI%\bostaurus.lib...
+%HG_BCC%\bin\tlib %HG_ROOT%\%LIB_GUI%\bostaurus +bostaurus.obj > nul
 del %HG_ROOT%\%LIB_GUI%\oohg.bak /q > nul
 del *.obj /q
 del h_*.c /q
 del winprint.c /q
 del miniprint.c /q
+del bostaurus.c /q
 set OOHG_X_FLAGS=
 set HG_FILES_C=
 set HG_FILES2_PRG=

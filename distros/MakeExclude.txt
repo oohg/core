@@ -3,6 +3,7 @@
 \cvs\
 \workinprogress\
 \distros\
+bostaurus.hbp
 buildapp.bat
 buildapp_hbmk2.bat
 buildapp30.bat

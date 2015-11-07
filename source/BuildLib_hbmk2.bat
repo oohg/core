@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: BuildLib_hbmk2.bat,v 1.1 2015-03-14 01:11:45 fyurisich Exp $
+rem $Id: BuildLib_hbmk2.bat,v 1.2 2015-11-07 22:39:57 fyurisich Exp $
 rem
 rem Build ooHG libraries from official distro
 rem
@@ -60,6 +60,7 @@ rem *** Build Libraries ***
 hbmk2 oohg.hbp      %HBMK2_WORDIR% %1 %2 %3 %4 %5 %6 %7 %8 %9
 hbmk2 miniprint.hbp %HBMK2_WORDIR% %1 %2 %3 %4 %5 %6 %7 %8 %9
 hbmk2 hbprinter.hbp %HBMK2_WORDIR% %1 %2 %3 %4 %5 %6 %7 %8 %9
+hbmk2 bostaurus.hbp %HBMK2_WORDIR% %1 %2 %3 %4 %5 %6 %7 %8 %9
 goto EXIT
 
 
@@ -68,6 +69,7 @@ rem *** Build Libraries ***
 hbmk2 oohg.hbp      %HBMK2_WORDIR% %2 %3 %4 %5 %6 %7 %8 %9 >> error.log 2>&1
 hbmk2 miniprint.hbp %HBMK2_WORDIR% %2 %3 %4 %5 %6 %7 %8 %9 >> error.log 2>&1
 hbmk2 hbprinter.hbp %HBMK2_WORDIR% %2 %3 %4 %5 %6 %7 %8 %9 >> error.log 2>&1
+hbmk2 bostaurus.hbp %HBMK2_WORDIR% %2 %3 %4 %5 %6 %7 %8 %9 >> error.log 2>&1
 goto EXIT
 
 
