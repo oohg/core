@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.291 2015-11-08 00:00:18 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.292 2015-11-08 23:36:05 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -5407,16 +5407,12 @@ PROCEDURE _ClearThisCellInfo()
 
 Return
 
-*------------------------------------------------------------------------------*
-FUNCTION _CheckCellNewValue()
-*------------------------------------------------------------------------------*
-
-/*
 // uValue may be passed by reference
 *------------------------------------------------------------------------------*
 FUNCTION _CheckCellNewValue( oControl, uValue )
 *------------------------------------------------------------------------------*
 Local lChange, uValue2
+
    uValue2 := _OOHG_ThisItemCellValue
    If uValue == uValue2
       If ValType( oControl:cMemVar ) $ "CM"
@@ -5434,10 +5430,8 @@ Local lChange, uValue2
    Else
       lChange := .F.
    EndIf
-Return lChange
-*/
 
-Return .F.
+Return lChange
 
 *-----------------------------------------------------------------------------*
 FUNCTION GridControlObject( aEditControl, oGrid )

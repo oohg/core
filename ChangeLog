@@ -1,11 +1,15 @@
 /*
- * $Id: ChangeLog,v 1.1526 2015-11-08 00:15:38 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1527 2015-11-08 23:36:04 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-11-08 20:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     ! Change of cell value in editcontrol valid is not working.
 
 2015-11-07 21:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/oohg.h
