@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.292 2015-11-08 23:36:05 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.293 2015-11-08 23:48:49 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -5415,14 +5415,14 @@ Local lChange, uValue2
 
    uValue2 := _OOHG_ThisItemCellValue
    If uValue == uValue2
-      If ValType( oControl:cMemVar ) $ "CM"
+      If ValType( oControl:cMemVar ) $ "CM" .AND. ! Empty( oControl:cMemVar )
          uValue2 := &( oControl:cMemVar )
       EndIf
    EndIf
    If ! uValue == uValue2
       oControl:ControlValue := uValue2
       _OOHG_ThisItemCellValue := uValue2
-      If ValType( oControl:cMemVar ) $ "CM"
+      If ValType( oControl:cMemVar ) $ "CM" .AND. ! Empty( oControl:cMemVar )
          &( oControl:cMemVar ) := uValue2
       EndIf
       uValue := uValue2
