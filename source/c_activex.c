@@ -1,5 +1,5 @@
 /*
- * $Id: c_activex.c,v 1.14 2015-03-09 02:52:06 fyurisich Exp $
+ * $Id: c_activex.c,v 1.15 2015-11-08 00:15:38 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -119,7 +119,7 @@ HB_FUNC( TACTIVEX___ERROR )
    {
       hb_vmPush( hb_param( iPCount, HB_IT_ANY ) );
    }
-   hb_vmSend( hb_pcount() );
+   hb_vmSend( (USHORT) hb_pcount() );
 }
 
 typedef HRESULT ( WINAPI *LPAtlAxWinInit )       ( void );
@@ -500,7 +500,7 @@ HB_FUNC( ATLAXGETDISP ) // hWnd -> pDisp
             }
 
             // execute
-            hb_vmDo( iArg );
+            hb_vmDo( (USHORT) iArg );
 
             // En caso de que los parametros sean pasados por referencia
             for( i=iArg; i > 0; i-- )
@@ -527,7 +527,7 @@ HB_FUNC( ATLAXGETDISP ) // hWnd -> pDisp
                         *((&(params->rgvarg[iArg-i]))->n1.n2.n3.pdblVal)  = (double)         hb_itemGetND(pItemArray[i-1]);
                         break;
                      case VT_BOOL|VT_BYREF:
-                        *((&(params->rgvarg[iArg-i]))->n1.n2.n3.pboolVal) =                  hb_itemGetL( pItemArray[i-1] ) ? 0xFFFF : 0;
+                        *((&(params->rgvarg[iArg-i]))->n1.n2.n3.pboolVal) =  (VARIANT_BOOL)  ( hb_itemGetL( pItemArray[i-1] ) ? 0xFFFF : 0 );
                         break;
                      //case VT_ERROR|VT_BYREF:
                      //   *((&(params->rgvarg[iArg-i]))->n1.n2.n3.pscode) = va_arg(argList, SCODE*);

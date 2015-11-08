@@ -1,5 +1,5 @@
 /*
- * $Id: c_dialogs.c,v 1.15 2015-03-09 02:52:06 fyurisich Exp $
+ * $Id: c_dialogs.c,v 1.16 2015-11-08 00:15:38 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -158,7 +158,7 @@ HB_FUNC( CHOOSEFONT )
 		 lf.lfStrikeOut = FALSE ;
 	}
 
-	lf.lfCharSet = hb_parni (8) ;
+	lf.lfCharSet = (BYTE) hb_parni( 8 ) ;
 
 	cf.lStructSize = sizeof(CHOOSEFONT);
 	cf.hwndOwner = hwnd ;

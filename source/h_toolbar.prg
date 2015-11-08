@@ -1,5 +1,5 @@
 /*
- * $Id: h_toolbar.prg,v 1.44 2015-10-29 00:04:55 fyurisich Exp $
+ * $Id: h_toolbar.prg,v 1.45 2015-11-08 00:15:38 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -567,11 +567,6 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 }
 
 #define NUM_TOOLBAR_BUTTONS 20
-
-#ifdef MAKELONG
-   #undef MAKELONG
-#endif
-#define MAKELONG(a, b)      ((LONG)(((WORD)((DWORD_PTR)(a) & 0xffff)) | (((DWORD)((WORD)((DWORD_PTR)(b) & 0xffff))) << 16)))
 
 HB_FUNC( INITTOOLBAR )
 {

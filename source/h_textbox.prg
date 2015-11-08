@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.102 2015-10-15 01:19:15 fyurisich Exp $
+ * $Id: h_textbox.prg,v 1.103 2015-11-08 00:15:38 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -710,7 +710,7 @@ HB_FUNC_STATIC( TTEXT_GETLINE )           // METHOD GetLine( nLine ) CLASS TText
    }
    else
    {
-      LenBuff = SendMessage( oSelf->hWnd, EM_LINELENGTH, nChar, 0 );
+      LenBuff = (WORD) SendMessage( oSelf->hWnd, EM_LINELENGTH, nChar, 0 );
       if( LenBuff )
       {
          strBuffer = (LPTSTR) hb_xgrab( ( LenBuff + 1 ) * sizeof( TCHAR ) );

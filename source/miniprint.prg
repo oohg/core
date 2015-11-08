@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.prg,v 1.53 2015-09-13 23:32:35 fyurisich Exp $
+ * $Id: miniprint.prg,v 1.54 2015-11-08 00:15:38 fyurisich Exp $
  */
 /*----------------------------------------------------------------------------
  * ooHG source code:
@@ -3138,7 +3138,7 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
       if( pi2->pDevMode->dmFields & DM_PAPERLENGTH )
       {
          fields = fields | DM_PAPERLENGTH;
-         pi2->pDevMode->dmPaperLength = (short) hb_parni( 4 ) * 10;
+         pi2->pDevMode->dmPaperLength = (short) ( hb_parni( 4 ) * 10 );
       }
       else
       {
@@ -3172,7 +3172,7 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
       if( pi2->pDevMode->dmFields & DM_PAPERWIDTH )
       {
          fields = fields | DM_PAPERWIDTH ;
-         pi2->pDevMode->dmPaperWidth = (short) hb_parni( 5 ) * 10;
+         pi2->pDevMode->dmPaperWidth = (short) ( hb_parni( 5 ) * 10 );
       }
       else
       {

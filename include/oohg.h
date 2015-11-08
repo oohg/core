@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.h,v 1.66 2015-10-18 01:14:19 fyurisich Exp $
+ * $Id: oohg.h,v 1.67 2015-11-08 00:15:38 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -239,6 +239,8 @@ BOOL SaveHBitmapToFile( void *, const char *, UINT, UINT, const char *, ULONG, U
    #define HB_PARCLEN( n, x )     hb_parclen( n, x )
    #define HB_PARNL3( n, x, y )   hb_parnl( n, x, y )
    #define HB_STORNI2( n, x )     hb_storni( n, x )
+   #define HB_STORND( n, x, y )   hb_stornd( n, x, y )
+   #define HB_PARND( n, x )       hb_parnd( n, x )
 #else
    #define HB_STORNI( n, x, y )   hb_storvni( n, x, y )
    #define HB_STORNL( n, x, y )   hb_storvnl( n, x, y )
@@ -251,6 +253,8 @@ BOOL SaveHBitmapToFile( void *, const char *, UINT, UINT, const char *, ULONG, U
    #define HB_PARCLEN( n, x )     hb_parvclen( n, x )
    #define HB_PARNL3( n, x, y )   hb_parvnl( n, x, y )
    #define HB_STORNI2( n, x )     hb_storvni( n, x )
+   #define HB_STORND( n, x, y )   hb_storvnd( n, x, y )
+   #define HB_PARND( n, x )       hb_parvnd( n, x )
 #endif
 
 #ifdef __XHARBOUR__
@@ -280,7 +284,7 @@ BOOL SaveHBitmapToFile( void *, const char *, UINT, UINT, const char *, ULONG, U
 // Hack for MinGW and static functions (object's methods)
 #ifdef __MINGW32__
    #undef  HB_FUNC_STATIC
-   #define HB_FUNC_STATIC( x )     HB_FUNC( x )
+   #define HB_FUNC_STATIC( x )   HB_FUNC( x )
 #endif
 
 #ifdef _MSC_VER
@@ -298,3 +302,14 @@ BOOL SaveHBitmapToFile( void *, const char *, UINT, UINT, const char *, ULONG, U
        #define GCL_HCURSOR (-12)
    #endif
 #endif
+
+#ifdef MAKEWORD
+   #undef MAKEWORD
+#endif
+#define MAKEWORD(a, b)	((WORD)(((BYTE)((DWORD_PTR)(a) & 0xff)) | (((WORD)((BYTE)((DWORD_PTR)(b) & 0xff))) << 8)))
+
+#ifdef MAKELONG
+   #undef MAKELONG
+#endif
+#define MAKELONG(a, b)  ((LONG)(((WORD)((DWORD_PTR)(a) & 0xffff)) | (((DWORD)((WORD)((DWORD_PTR)(b) & 0xffff))) << 16)))
+

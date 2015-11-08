@@ -1,5 +1,5 @@
 /*
- * $Id: c_gdiplus.c,v 1.18 2015-10-28 02:16:19 fyurisich Exp $
+ * $Id: c_gdiplus.c,v 1.19 2015-11-08 00:15:38 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -244,7 +244,7 @@ static HB_GARBAGE_FUNC( hb_gPlusImage_Destructor )
 static gPlusImagePtr hb_pargPlusImage( int iParam )
 {
    gPlusImagePtr * imPtr =
-   ( gPlusImagePtr * ) hb_parptrGC( &hb_gPlusImage_Destructor, iParam );
+   ( gPlusImagePtr * ) hb_parptrGC( hb_gPlusImage_Destructor, iParam );
 
    if( imPtr )
       return * imPtr;
@@ -256,7 +256,7 @@ static void hb_retgPlusImage( gPlusImagePtr image )
 {
    gPlusImagePtr * imPtr;
 
-   imPtr = ( gPlusImagePtr * ) hb_gcAlloc( sizeof( gPlusImagePtr ), &hb_gPlusImage_Destructor );
+   imPtr = ( gPlusImagePtr * ) hb_gcAlloc( sizeof( gPlusImagePtr ), hb_gPlusImage_Destructor );
    * imPtr = image;
    hb_retptrGC( ( void * ) imPtr );
 }

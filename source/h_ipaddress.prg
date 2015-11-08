@@ -1,5 +1,5 @@
 /*
- * $Id: h_ipaddress.prg,v 1.15 2015-05-01 01:08:51 guerra000 Exp $
+ * $Id: h_ipaddress.prg,v 1.16 2015-11-08 00:15:38 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -253,10 +253,10 @@ HB_FUNC( GETIPADDRESS )
    v4 = ( BYTE ) ( unsigned int ) FOURTH_IPADDRESS( pdwAddr );
 
    hb_reta( 4 );
-   HB_STORNI( ( INT ) v1, -1, 1 );
-   HB_STORNI( ( INT ) v2, -1, 2 );
-   HB_STORNI( ( INT ) v3, -1, 3 );
-   HB_STORNI( ( INT ) v4, -1, 4 );
+   HB_STORNI( ( int ) v1, -1, 1 );
+   HB_STORNI( ( int ) v2, -1, 2 );
+   HB_STORNI( ( int ) v3, -1, 3 );
+   HB_STORNI( ( int ) v4, -1, 4 );
 }
 
 HB_FUNC( GETIPADDRESSSTRING )

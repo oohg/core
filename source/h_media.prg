@@ -1,5 +1,5 @@
 /*
- * $Id: h_media.prg,v 1.9 2015-03-09 02:52:08 fyurisich Exp $
+ * $Id: h_media.prg,v 1.10 2015-11-08 00:15:38 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -257,6 +257,17 @@ EXTERN MCIFUNC
 #include <vfw.h>
 #include <commctrl.h>
 #include "oohg.h"
+
+// This fixes a warning over dwICValue
+HB_FUNC( ICGETDEFAULTQUALITY )
+{
+   hb_retnl( (LONG) ICGetDefaultQuality( (HIC) hb_parnl( 1 ) ) );
+}
+
+HB_FUNC( ICGETDEFAULTKEYFRAMERATE )
+{
+   hb_retnl( (LONG) ICGetDefaultKeyFrameRate( (HIC) hb_parnl( 1 ) ) );
+}
 
 /*
 static WNDPROC lpfnOldWndProcA = 0;

@@ -1,5 +1,5 @@
 /*
- * $Id: h_datepicker.prg,v 1.22 2015-03-09 02:52:07 fyurisich Exp $
+ * $Id: h_datepicker.prg,v 1.23 2015-11-08 00:15:38 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -335,11 +335,11 @@ HB_FUNC( SETDATEPICK )
    cDate = ( char * ) hb_pards( 2 );
    if( ! ( cDate[ 0 ] == ' ' ) )
    {
-      sysTime.wYear  = ( ( cDate[ 0 ] - '0' ) * 1000 ) +
-                       ( ( cDate[ 1 ] - '0' ) * 100 )  +
-                       ( ( cDate[ 2 ] - '0' ) * 10 ) + ( cDate[ 3 ] - '0' );
-      sysTime.wMonth = ( ( cDate[ 4 ] - '0' ) * 10 ) + ( cDate[ 5 ] - '0' );
-      sysTime.wDay   = ( ( cDate[ 6 ] - '0' ) * 10 ) + ( cDate[ 7 ] - '0' );
+      sysTime.wYear  = (WORD) ( ( ( cDate[ 0 ] - '0' ) * 1000 ) +
+                                ( ( cDate[ 1 ] - '0' ) * 100 )  +
+                                ( ( cDate[ 2 ] - '0' ) * 10 ) + ( cDate[ 3 ] - '0' ) );
+      sysTime.wMonth = (WORD) ( ( ( cDate[ 4 ] - '0' ) * 10 ) + ( cDate[ 5 ] - '0' ) );
+      sysTime.wDay   = (WORD) ( ( ( cDate[ 6 ] - '0' ) * 10 ) + ( cDate[ 7 ] - '0' ) );
 
       SendMessage( HWNDparam( 1 ), DTM_SETSYSTEMTIME, GDT_VALID, ( LPARAM ) &sysTime );
    }
@@ -373,22 +373,22 @@ HB_FUNC_STATIC( TDATEPICK_SETRANGE )
       cDate = ( char * ) hb_pards( 1 );
       if( ! ( cDate[ 0 ] == ' ' ) )
       {
-         sysTime[ 0 ].wYear  = ( ( cDate[ 0 ] - '0' ) * 1000 ) +
-                               ( ( cDate[ 1 ] - '0' ) * 100 )  +
-                               ( ( cDate[ 2 ] - '0' ) * 10 ) + ( cDate[ 3 ] - '0' );
-         sysTime[ 0 ].wMonth = ( ( cDate[ 4 ] - '0' ) * 10 ) + ( cDate[ 5 ] - '0' );
-         sysTime[ 0 ].wDay   = ( ( cDate[ 6 ] - '0' ) * 10 ) + ( cDate[ 7 ] - '0' );
+         sysTime[ 0 ].wYear  = (WORD) ( ( ( cDate[ 0 ] - '0' ) * 1000 ) +
+                                        ( ( cDate[ 1 ] - '0' ) * 100 )  +
+                                        ( ( cDate[ 2 ] - '0' ) * 10 ) + ( cDate[ 3 ] - '0' ) );
+         sysTime[ 0 ].wMonth = (WORD) ( ( ( cDate[ 4 ] - '0' ) * 10 ) + ( cDate[ 5 ] - '0' ) );
+         sysTime[ 0 ].wDay   = (WORD) ( ( ( cDate[ 6 ] - '0' ) * 10 ) + ( cDate[ 7 ] - '0' ) );
          wLimit |= GDTR_MIN;
       }
 
       cDate = ( char * ) hb_pards( 2 );
       if( ! ( cDate[ 0 ] == ' ' ) )
       {
-         sysTime[ 1 ].wYear  = ( ( cDate[ 0 ] - '0' ) * 1000 ) +
-                               ( ( cDate[ 1 ] - '0' ) * 100 )  +
-                               ( ( cDate[ 2 ] - '0' ) * 10 ) + ( cDate[ 3 ] - '0' );
-         sysTime[ 1 ].wMonth = ( ( cDate[ 4 ] - '0' ) * 10 ) + ( cDate[ 5 ] - '0' );
-         sysTime[ 1 ].wDay   = ( ( cDate[ 6 ] - '0' ) * 10 ) + ( cDate[ 7 ] - '0' );
+         sysTime[ 1 ].wYear  = (WORD) ( ( ( cDate[ 0 ] - '0' ) * 1000 ) +
+                                        ( ( cDate[ 1 ] - '0' ) * 100 )  +
+                                        ( ( cDate[ 2 ] - '0' ) * 10 ) + ( cDate[ 3 ] - '0' ) );
+         sysTime[ 1 ].wMonth = (WORD) ( ( ( cDate[ 4 ] - '0' ) * 10 ) + ( cDate[ 5 ] - '0' ) );
+         sysTime[ 1 ].wDay   = (WORD) ( ( ( cDate[ 6 ] - '0' ) * 10 ) + ( cDate[ 7 ] - '0' ) );
          wLimit |= GDTR_MAX;
       }
 
@@ -430,9 +430,9 @@ HB_FUNC( SETTIMEPICK )
    sysTime.wDay = 1;
    sysTime.wDayOfWeek = 0;
 
-   sysTime.wHour   = hb_parni( 2 );
-   sysTime.wMinute = hb_parni( 3 );
-   sysTime.wSecond = hb_parni( 4 );
+   sysTime.wHour   = (WORD) hb_parni( 2 );
+   sysTime.wMinute = (WORD) hb_parni( 3 );
+   sysTime.wSecond = (WORD) hb_parni( 4 );
    sysTime.wMilliseconds = 0;
 
    SendMessage( HWNDparam( 1 ), DTM_SETSYSTEMTIME, GDT_VALID, ( LPARAM ) &sysTime );
