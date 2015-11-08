@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.166 2015-11-04 00:37:19 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.167 2015-11-08 00:00:18 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -255,7 +255,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                bAfterColSize, bBeforeAutofit, lLikeExcel, lButtons, lUpdCols, ;
                lFixedCtrls, bHeadRClick, lExtDbl, lNoModal, lSilent, lAltA, ;
                lNoShowAlways, lNone, lCBE, onrclick, lCheckBoxes, oncheck, ;
-               rowrefresh, aDefaultValues ) CLASS TOBrowse
+               rowrefresh, aDefaultValues, editend ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local nWidth2, nCol2, oScroll, z
 
@@ -345,15 +345,16 @@ Local nWidth2, nCol2, oScroll, z
               tooltip, aHeadClick, nogrid, aImage, break, HelpId, bold, ;
               italic, underline, strikeout, edit, backcolor, fontcolor, ;
               dynamicbackcolor, dynamicforecolor, aPicture, lRtl, InPlace, ;
-              editcontrols, readonly, valid, validmessages, editcell, ;
+              editcontrols, readonly, valid, validmessages, , ;
               aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
               aHeaderImage, aHeaderImageAlign, FullMove, aSelectedColors, ;
-              aEditKeys, dblbffr, lFocusRect, lPLM, lFixedCols, abortedit, ;
-              click, lFixedWidths, bBeforeColMove, bAfterColMove, ;
-              bBeforeColSize, bAfterColSize, bBeforeAutofit, lLikeExcel, ;
+              aEditKeys, dblbffr, lFocusRect, lPLM, lFixedCols, , ;
+              , lFixedWidths, , , ;
+              , , , lLikeExcel, ;
               lButtons, AllowDelete, DelMsg, lNoDelMsg, AllowAppend, ;
-              lNoModal, lFixedCtrls, bHeadRClick, lExtDbl, Value, lSilent, ;
-              lAltA, lNoShowAlways, lNone, lCBE, onrclick, lCheckBoxes )
+              lNoModal, lFixedCtrls, , lExtDbl, Value, lSilent, ;
+              lAltA, lNoShowAlways, lNone, lCBE, , lCheckBoxes, ;
+               )
 
    ::nWidth := w
 
@@ -432,6 +433,7 @@ Local nWidth2, nCol2, oScroll, z
    ASSIGN ::OnAppend       VALUE onappend       TYPE "B"
    ASSIGN ::bHeadRClick    VALUE bHeadRClick    TYPE "B"
    ASSIGN ::OnEditCell     VALUE editcell       TYPE "B"
+   ASSIGN ::OnEditCellEnd  VALUE editend        TYPE "B"
    ASSIGN ::OnAbortEdit    VALUE abortedit      TYPE "B"
    ASSIGN ::OnRClick       VALUE onrclick       TYPE "B"
    ASSIGN ::OnRefreshRow   VALUE rowrefresh     TYPE "B"
@@ -451,7 +453,8 @@ METHOD Define3( ControlName, ParentForm, x, y, w, h, fontname, fontsize, ;
                 bBeforeColSize, bAfterColSize, bBeforeAutofit, lLikeExcel, ;
                 lButtons, AllowDelete, DelMsg, lNoDelMsg, AllowAppend, ;
                 lNoModal, lFixedCtrls, bHeadRClick, lExtDbl, Value, lSilent, ;
-                lAltA, lNoShowAlways, lNone, lCBE, onrclick, lCheckBoxes ) CLASS TOBrowse
+                lAltA, lNoShowAlways, lNone, lCBE, onrclick, lCheckBoxes, ;
+                editend ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 
    ::TGrid:Define( ControlName, ParentForm, x, y, w, h, ::aHeaders, ::aWidths, ;
@@ -469,7 +472,7 @@ METHOD Define3( ControlName, ParentForm, x, y, w, h, fontname, fontsize, ;
                    lButtons, AllowDelete, Nil, Nil, DelMsg, lNoDelMsg, ;
                    AllowAppend, Nil, lNoModal, lFixedCtrls, bHeadRClick, Nil, ;
                    Nil, lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, ;
-                   onrclick, Nil )
+                   onrclick, Nil, editend )
 
    If ValType( Value ) == "N"
       ::nRecLastValue := Value
@@ -2398,7 +2401,7 @@ METHOD Define3( ControlName, ParentForm, x, y, w, h, fontname, fontsize, ;
                 bBeforeColSize, bAfterColSize, bBeforeAutofit, lLikeExcel, ;
                 lButtons, AllowDelete, DelMsg, lNoDelMsg, AllowAppend, ;
                 lNoModal, lFixedCtrls, bHeadRClick, lExtDbl, Value, lSilent, ;
-                lAltA, lNoShowAlways, lNone, lCBE, onrclick ) CLASS TOBrowseByCell
+                lAltA, lNoShowAlways, lNone, lCBE, onrclick, editend ) CLASS TOBrowseByCell
 *-----------------------------------------------------------------------------*
 Local nAux
 
@@ -2419,7 +2422,7 @@ Local nAux
                    lButtons, AllowDelete, Nil, Nil, DelMsg, lNoDelMsg, ;
                    AllowAppend, Nil, lNoModal, lFixedCtrls, bHeadRClick, Nil, ;
                    Nil, lExtDbl, lSilent, lAltA, lNoShowAlways, .T., lCBE, ;
-                   onrclick, Nil )
+                   onrclick, Nil, editend )
 
    If HB_IsArray( Value ) .AND. Len( Value ) > 1
       nAux := Value[ 1 ]
@@ -2451,7 +2454,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                 bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
                 lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
                 lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
-                oninsert ) CLASS TOBrowseByCell
+                oninsert, editend ) CLASS TOBrowseByCell
 *-----------------------------------------------------------------------------*
 
    Empty( nStyle )
@@ -2474,7 +2477,8 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                     bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
                     bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
                     lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
-                    lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, )
+                    lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
+                    Nil, editend)
 
    // By default, search in the current column
    ::SearchCol := -1

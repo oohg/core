@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.290 2015-06-21 14:44:10 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.291 2015-11-08 00:00:18 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -179,6 +179,7 @@ CLASS TGrid FROM TControl
    DATA onDelete                  INIT Nil
    DATA OnDispInfo                INIT Nil
    DATA OnEditCell                INIT Nil
+   DATA OnEditCellEnd             INIT Nil
    DATA OnInsert                  INIT Nil
    DATA Picture                   INIT Nil
    DATA RClickOnCheckbox          INIT .T.
@@ -298,7 +299,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
-               oninsert ) CLASS TGrid
+               oninsert, editend ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 
    ::Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
@@ -317,7 +318,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
               lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
               lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
-              oninsert )
+              oninsert, editend )
 
 Return Self
 
@@ -338,7 +339,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                 bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
                 lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
                 lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
-                oninsert ) CLASS TGrid
+                oninsert, editend ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local ControlHandle, aImageList, i
 
@@ -531,6 +532,7 @@ Local ControlHandle, aImageList, i
    ASSIGN ::OnAppend       VALUE onappend       TYPE "B"
    ASSIGN ::bHeadRClick    VALUE bHeadRClick    TYPE "B"
    ASSIGN ::OnEditCell     VALUE editcell       TYPE "B"
+   ASSIGN ::OnEditCellEnd  VALUE editend        TYPE "B"
    ASSIGN ::OnAbortEdit    VALUE abortedit      TYPE "B"
    ASSIGN ::OnRClick       VALUE onrclick       TYPE "B"
    ASSIGN ::OnInsert       VALUE oninsert       TYPE "B"
@@ -1427,11 +1429,19 @@ Local aItems, lSomethingEdited := .F.
 
       lSomethingEdited := .T.
       ::Item( nItem, ASize( aItems, Len( ::aHeaders ) ) )
+
+      _SetThisCellInfo( ::hWnd, nItem, 1, Nil )
+      ::DoEvent( ::OnEditCellEnd, "EDITCELLEND", { nItem, 0 } )
+      _ClearThisCellInfo()
+
+      If ::lAppendMode
+         _SetThisCellInfo( ::hWnd, nItem, 1, Nil )
+         ::DoEvent( ::OnAppend, "APPEND", { nItem } )
+         _ClearThisCellInfo()
+      EndIf
+
       _SetThisCellInfo( ::hWnd, nItem, 1, Nil )
       ::DoEvent( ::OnEditCell, "EDITCELL", { nItem, 0 } )
-      If ::lAppendMode
-         ::DoEvent( ::OnAppend, "APPEND", { nItem } )
-      EndIf
       _ClearThisCellInfo()
 
       If lOneRow
@@ -2266,6 +2276,10 @@ Local lRet
       If ValType( uValue ) $ "CM"
          uValue := Trim( uValue )
       EndIf
+      _SetThisCellInfo( ::hWnd, nRow, nCol, uValue )
+      ::DoEvent( ::OnEditCellEnd, "EDITCELLEND", { nRow, nCol } )
+      _ClearThisCellInfo()
+
       ::Cell( nRow, nCol, uValue )
       _SetThisCellInfo( ::hWnd, nRow, nCol, uValue )
       ::DoEvent( ::OnEditCell, "EDITCELL", { nRow, nCol } )
@@ -2273,6 +2287,7 @@ Local lRet
          ::Cell( nRow, nCol, uValue )
       EndIf
       _ClearThisCellInfo()
+
       If ! ::lCalledFromClass .AND. ::bPosition == 9
          // Edition window lost focus, resume clic processing and process delayed click
          ::bPosition := 0
@@ -3849,7 +3864,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
-               oninsert ) CLASS TGridMulti
+               oninsert, editend ) CLASS TGridMulti
 *-----------------------------------------------------------------------------*
 Local nStyle := 0
 
@@ -3871,7 +3886,7 @@ Local nStyle := 0
               bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
               lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
               lExtDbl, lSilent, lAltA, lNoShowAlways, .T., lCBE, onrclick, ;
-              oninsert )
+              oninsert, editend )
 
 Return Self
 
@@ -4035,7 +4050,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
-               oninsert ) CLASS TGridByCell
+               oninsert, editend ) CLASS TGridByCell
 *-----------------------------------------------------------------------------*
 
    ASSIGN lFocusRect          VALUE lFocusRect TYPE "L" DEFAULT .F.
@@ -4058,7 +4073,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
               lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
               lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, onrclick, ;
-              oninsert )
+              oninsert, editend )
 
    // Search the current column
    ::SearchCol := -1

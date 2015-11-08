@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.1524 2015-11-07 22:39:57 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1525 2015-11-08 00:00:18 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,7 +7,39 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2015-11-07 19:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2015-11-07 21:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_altsyntax.ch
+   * include/i_browse.ch
+   * include/i_grid.ch
+   * include/i_hmg_compat.ch
+   * include/i_xbrowse.ch
+     + Support for ON EDITCELLEND clause.
+   * source/h_grid.prg
+     + Data OnEditCellEnd.
+     + New parameter to TGrid():Define and TGrid():Define2.
+     + New parameter to TGridMulti():Define.
+     + New parameter to TGridByCell():Define.
+     + OnEditCellEnd event to TGrid():EditItem and TGrid():EditCell.
+       The event is fired inmediatly after the cell edition ends and before
+       saving the value to the cell.
+   * source/h_xbrowse.prg
+     + New parameter to TXBrowse():Define and TXBrowseByCell():Define2.
+     * TXBrowse():Define no longer passes codeblocks to
+       TGrid():Define2 to avoid premature setting of the control's events.
+     + OnEditCellEnd event to TXBrowse():EditItem_B and TXBrowse():EditCell.
+       The event is fired inmediatly after the end of the cell edition
+       and before saving the value to the cell. It's followed by OnAppend
+       event in case a new row is being added.
+     + Cell info if set before OnAppend in TXBrowse():EditItem_B and
+       TXBrowse():EditCell.
+     ! OnEditCell event is fired last in TXBrowse():EditCell.
+   * source/h_browse.prg
+     + New parameter to TOBrowse():Define, TOBrowse():Define3,
+       TOBrowseByCell():Define2 and TOBrowseByCell():Define3.
+     * TOBrowse():Define no longer passes codeblocks to
+       TOBrowse():Define3 to avoid premature setting of the control's events.
+
+ 2015-11-07 19:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./compile_MINGW.BAT
    * ./compile_bcc.bat
    * distros/MakeDistro.bat

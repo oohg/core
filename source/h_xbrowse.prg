@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.144 2015-11-04 00:37:23 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.145 2015-11-08 00:00:18 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -226,7 +226,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                bBeforeAutofit, lLikeExcel, lButtons, lNoDelMsg, lFixedCtrls, ;
                lNoShowEmptyRow, lUpdCols, bHeadRClick, lNoModal, lExtDbl, ;
                lSilent, lAltA, lNoShowAlways, onrclick, lCheckBoxes, oncheck, ;
-               rowrefresh, aDefaultValues ) CLASS TXBrowse
+               rowrefresh, aDefaultValues, editend ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local nWidth2, nCol2, oScroll, z
 
@@ -299,15 +299,16 @@ Local nWidth2, nCol2, oScroll, z
               , , editable, backcolor, fontcolor, ;
               dynamicbackcolor, dynamicforecolor, aPicture, lRtl, LVS_SINGLESEL, ;
               inplace, editcontrols, readonly, valid, validmessages, ;
-              editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
+              , aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
               lHasHeaders, , aHeaderImage, aHeaderImageAlign, FullMove, ;
-              aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
-              lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
-              bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
-              bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, , ;
+              aSelectedColors, aEditKeys, lCheckBoxes, , lDblBffr, ;
+              lFocusRect, lPLM, lFixedCols, , , lFixedWidths, ;
+              , , , , ;
+              , lLikeExcel, lButtons, AllowDelete, , ;
               , DelMsg, lNoDelMsg, AllowAppend, , lNoModal, ;
-              lFixedCtrls, bHeadRClick, , , ;
-              lExtDbl, lSilent, lAltA, lNoShowAlways, .F., .T., onrclick, )
+              lFixedCtrls, , , , ;
+              lExtDbl, lSilent, lAltA, lNoShowAlways, .F., .T., , ;
+              , )
 
    ::FixBlocks( lFixedBlocks )
 
@@ -387,6 +388,7 @@ Local nWidth2, nCol2, oScroll, z
    ASSIGN ::OnAppend       VALUE onappend       TYPE "B"
    ASSIGN ::bHeadRClick    VALUE bHeadRClick    TYPE "B"
    ASSIGN ::OnEditCell     VALUE editcell       TYPE "B"
+   ASSIGN ::OnEditCellEnd  VALUE editend        TYPE "B"
    ASSIGN ::OnAbortEdit    VALUE abortedit      TYPE "B"
    ASSIGN ::OnRClick       VALUE onrclick       TYPE "B"
    ASSIGN ::OnRefreshRow   VALUE rowrefresh     TYPE "B"
@@ -1806,6 +1808,10 @@ Local aItems, aMemVars, aReplaceFields, aEditControls, l
       EndIf
       ::DoEvent( ::OnAbortEdit, "ABORTEDIT", { nRow, 0 } )
    Else
+      _SetThisCellInfo( ::hWnd, nRow, 0, Nil )
+      ::DoEvent( ::OnEditCellEnd, "EDITCELLEND", { nRow, 0 } )
+      _ClearThisCellInfo()
+
       If lAppend
          oWorkArea:Append()
       EndIf
@@ -1824,11 +1830,13 @@ Local aItems, aMemVars, aReplaceFields, aEditControls, l
 
       If lAppend
          ::lAppendMode := .F.
+         _SetThisCellInfo( ::hWnd, nRow, 0, Nil )
          If ! EMPTY( oWorkArea:cAlias__ )
             ( oWorkArea:cAlias__ )->( ::DoEvent( ::OnAppend, "APPEND" ) )
          Else
             ::DoEvent( ::OnAppend, "APPEND" )
          EndIf
+         _ClearThisCellInfo()
       EndIf
 
       If ::RefreshType == REFRESH_NO
@@ -1936,7 +1944,7 @@ Local lRet, bReplaceField, oWorkArea, i, aItem, aRepl, aVals, oCtr, uVal, bRep, 
    lRet := ::EditCell2( @nRow, @nCol, EditControl, uOldValue, @uValue, cMemVar, nOnFocusPos )
    If lRet
       _SetThisCellInfo( ::hWnd, nRow, nCol, uValue )
-      ::DoEvent( ::OnEditCell, "EDITCELL", { nRow, nCol } )
+      ::DoEvent( ::OnEditCellEnd, "EDITCELLEND", { nRow, nCol } )
       _ClearThisCellInfo()
       If lAppend
          oWorkArea:Append()
@@ -1946,15 +1954,20 @@ Local lRet, bReplaceField, oWorkArea, i, aItem, aRepl, aVals, oCtr, uVal, bRep, 
             _OOHG_Eval( aRepl[ i ], aVals[ i ], oWorkArea )
          Next i
          ::lAppendMode := .F.
+         _SetThisCellInfo( ::hWnd, nRow, nCol, uValue )
          If ! EMPTY( oWorkArea:cAlias__ )
             ( oWorkArea:cAlias__ )->( ::DoEvent( ::OnAppend, "APPEND" ) )
          Else
             ::DoEvent( ::OnAppend, "APPEND" )
          EndIf
+         _ClearThisCellInfo()
       Else
          _OOHG_Eval( bReplaceField, uValue, oWorkArea )
       EndIf
       ::RefreshRow( nRow )
+      _SetThisCellInfo( ::hWnd, nRow, nCol, uValue )
+      ::DoEvent( ::OnEditCell, "EDITCELL", { nRow, nCol } )
+      _ClearThisCellInfo()
       If ! ::lCalledFromClass .AND. ::bPosition == 9                  // MOUSE EXIT
          // Edition window lost focus
          ::bPosition := 0                   // This restores the processing of click messages
@@ -3019,7 +3032,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                 bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
                 lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
                 lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
-                oninsert ) CLASS TXBrowseByCell
+                oninsert, editend ) CLASS TXBrowseByCell
 *-----------------------------------------------------------------------------*
 
    Empty( nStyle )
@@ -3043,7 +3056,8 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                     bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
                     bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
                     lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
-                    lExtDbl, lSilent, lAltA, lNoShowAlways, .F., .T., onrclick, )
+                    lExtDbl, lSilent, lAltA, lNoShowAlways, .F., .T., onrclick, ;
+                    nil, editend )
 
    // By default, search in the current column
    ::SearchCol := -1

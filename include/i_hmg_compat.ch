@@ -1,5 +1,5 @@
 /*
- * $Id: i_hmg_compat.ch,v 1.46 2015-10-25 22:45:34 fyurisich Exp $
+ * $Id: i_hmg_compat.ch,v 1.47 2015-11-08 00:00:18 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -255,6 +255,7 @@ SPLITBOX VERSION
       [ <dummy16: ONCHECKCHANGE, ON CHECKCHANGE> <checkchange> ] ;
       [ <dummy17: ONROWREFRESH, ON ROWREFRESH> <rowrefresh> ] ;
       [ DEFAULTVALUES <aDefVal> ] ;
+      [ <dummy18: ONEDITCELLEND, ON EDITCELLEND> <editend> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TOBrowse(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, , , <w>, <h>, <headers>, <widths>, ;
@@ -290,7 +291,8 @@ SPLITBOX VERSION
             <{bheadrclick}>, <.extdbl.>, <.silent.>, ;
             ! Upper( #<alta> ) == "DISABLEALTA", <.noshow.>, ;
             Upper( #<none> ) == "NONEUNSELS", <.cbe.>, <{rclick}>, ;
-            <.checkboxes.>, <{checkchange}>, <{rowrefresh}>, <aDefVal> )
+            <.checkboxes.>, <{checkchange}>, <{rowrefresh}>, <aDefVal>, :
+            <{editend}> )
 
 #xcommand @ <row>, <col> BUTTONEX <name> ;
       [ OBJ <obj> ] ;

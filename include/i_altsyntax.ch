@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.127 2015-11-04 00:37:19 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.128 2015-11-08 00:00:18 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -90,6 +90,7 @@ AUXILIARY VARIABLES
 #xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
 #xtranslate _OOHG_ActiveControlBackground             => _OOHG_ActiveControlInfo \[  27 \]
 
+#xtranslate _OOHG_ActiveControlEditCellEnd            => _OOHG_ActiveControlInfo \[  88 \]
 #xtranslate _OOHG_ActiveControlOnInsert               => _OOHG_ActiveControlInfo \[  89 \]
 #xtranslate _OOHG_ActiveControlOnRClick               => _OOHG_ActiveControlInfo \[  90 \]
 #xtranslate _OOHG_ActiveControlExtDblClick            => _OOHG_ActiveControlInfo \[  91 \]
@@ -447,6 +448,18 @@ AUXILIARY VARIABLES
 #xcommand ON EDITCELL <editcell> ;
    => ;
       _OOHG_ActiveControlEditCell := <editcell>
+
+#xcommand EDITCELLEND <editend> ;
+   => ;
+      _OOHG_ActiveControlEditCellEnd := <editend>
+
+#xcommand ONEDITCELLEND <editend> ;
+   => ;
+      _OOHG_ActiveControlEditCellEnd := <editend>
+
+#xcommand ON EDITCELLEND <editend> ;
+   => ;
+      _OOHG_ActiveControlEditCellEnd := <editend>
 
 #xcommand ON ABORTEDIT <abortedit> ;
    => ;
@@ -2281,6 +2294,7 @@ GRID
       _OOHG_ActiveControlValid            := NIL ;;
       _OOHG_ActiveControlValidMessages    := NIL ;;
       _OOHG_ActiveControlEditCell         := NIL ;;
+      _OOHG_ActiveControlEditCellEnd      := NIL ;;
       _OOHG_ActiveControlWhen             := NIL ;;
       _OOHG_ActiveControlShowHeaders      := NIL ;;
       _OOHG_ActiveControlHeaderImages     := NIL ;;
@@ -2588,7 +2602,8 @@ GRID
             _OOHG_ActiveControlAutoSkip, ;
             _OOHG_ActiveControlDisplayChange, ;
             _OOHG_ActiveControlOnRClick, ;
-            _OOHG_ActiveControlOnInsert )
+            _OOHG_ActiveControlOnInsert, ;
+            _OOHG_ActiveControlEditCellEnd )
 
 /*---------------------------------------------------------------------------
 BROWSE
@@ -2621,6 +2636,7 @@ BROWSE
       _OOHG_ActiveControlWhen             := NIL ;;
       _OOHG_ActiveControlOnAppend         := NIL ;;
       _OOHG_ActiveControlEditCell         := NIL ;;
+      _OOHG_ActiveControlEditCellEnd      := NIL ;;
       _OOHG_ActiveControlEditControls     := NIL ;;
       _OOHG_ActiveControlReplaceFields    := NIL ;;
       _OOHG_ActiveControlShowHeaders      := NIL ;;
@@ -2855,7 +2871,8 @@ BROWSE
             _OOHG_ActiveControlCheckBoxes, ;
             _OOHG_ActiveControlOnCheckChange, ;
             _OOHG_ActiveControlOnTextFilled, ;
-            _OOHG_ActiveControlDefaultYear )
+            _OOHG_ActiveControlDefaultYear, ;
+            _OOHG_ActiveControlEditCellEnd )
 
 /*---------------------------------------------------------------------------
 XBROWSE
@@ -2888,6 +2905,7 @@ XBROWSE
       _OOHG_ActiveControlWhen             := NIL ;;
       _OOHG_ActiveControlOnAppend         := NIL ;;
       _OOHG_ActiveControlEditCell         := NIL ;;
+      _OOHG_ActiveControlEditCellEnd      := NIL ;;
       _OOHG_ActiveControlEditControls     := NIL ;;
       _OOHG_ActiveControlReplaceFields    := NIL ;;
       _OOHG_ActiveControlShowHeaders      := NIL ;;
@@ -3034,7 +3052,8 @@ XBROWSE
             _OOHG_ActiveControlCheckBoxes, ;
             _OOHG_ActiveControlOnCheckChange, ;
             _OOHG_ActiveControlOnTextFilled, ;
-            _OOHG_ActiveControlDefaultYear )
+            _OOHG_ActiveControlDefaultYear, ;
+            _OOHG_ActiveControlEditCellEnd )
 
 /*---------------------------------------------------------------------------
 HYPERLINK
