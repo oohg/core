@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.168 2015-11-11 01:27:39 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.169 2015-11-11 03:15:20 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -435,23 +435,19 @@ METHOD Define3( ControlName, ParentForm, x, y, w, h, fontname, fontsize, ;
                 lAltA, lNoShowAlways, lNone, lCBE, lCheckBoxes ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 
-   ::TGrid:Define( ControlName, ParentForm, x, y, w, h, ::aHeaders, ::aWidths, ;
-                   {}, , fontname, fontsize, tooltip, , , ;
-                   aHeadClick, , , nogrid, aImage, ::aJust, ;
-                   break, HelpId, bold, italic, underline, strikeout, , ;
-                   , , edit, backcolor, fontcolor, ;
-                   dynamicbackcolor, dynamicforecolor, aPicture, lRtl, InPlace, ;
-                   editcontrols, readonly, valid, validmessages, , ;
-                   aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
-                   , aHeaderImage, aHeaderImageAlign, FullMove, ;
-                   aSelectedColors, aEditKeys, lCheckBoxes, , dblbffr, ;
-                   lFocusRect, lPLM, lFixedCols, , , lFixedWidths, ;
-                   , , , , ;
-                   , lLikeExcel, lButtons, AllowDelete, , ;
-                   , DelMsg, lNoDelMsg, AllowAppend, , lNoModal, ;
-                   lFixedCtrls, , , , ;
-                   lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, , ;
-                   ,  )
+   ::Define2( ControlName, ParentForm, x, y, w, h, ::aHeaders, ::aWidths, {}, ;
+              , fontname, fontsize, tooltip, aHeadClick, nogrid, ;
+              aImage, ::aJust, break, HelpId, bold, italic, underline, ;
+              strikeout, , , edit, backcolor, ;
+              fontcolor, dynamicbackcolor, dynamicforecolor, aPicture, lRtl, ;
+              LVS_SINGLESEL, inplace, editcontrols, readonly, valid, validmessages, ;
+              aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
+              aHeaderImage, aHeaderImageAlign, FullMove, aSelectedColors, ;
+              aEditKeys, lCheckBoxes, dblbffr, lFocusRect, lPLM, ;
+              lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
+              DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
+              , , lExtDbl, lSilent, lAltA, ;
+              lNoShowAlways, lNone, lCBE )
 
    If ValType( Value ) == "N"
       ::nRecLastValue := Value
@@ -625,7 +621,7 @@ Local aTemp, x, aFields, cWorkArea, nWidth, nLen, _RecNo
    For x := 1 To nLen
       ::DbGoTo( ::aRecMap[ x ] )
       aEval( aFields, { |b,i| aTemp[ i ] := Eval( b ) } )
-      ( cWorkArea )->( ::SetItemColor( x,,, aTemp ) )
+      ( cWorkArea )->( ::SetItemColor( x, , , aTemp ) )
    Next x
 
    If ::Visible
@@ -2247,7 +2243,6 @@ CLASS TOBrowseByCell FROM TOBrowse
    METHOD AddColumn
    METHOD BrowseOnChange
    METHOD CurrentCol              SETGET
-   METHOD Define2
    METHOD Define3
    METHOD Delete
    METHOD DeleteAllItems
@@ -2331,6 +2326,7 @@ CLASS TOBrowseByCell FROM TOBrowse
       ColumnShow
       CompareItems
       CountPerPage
+      Define2
       DeleteItem
       EditItem2
       Events_Enter
@@ -2383,25 +2379,26 @@ METHOD Define3( ControlName, ParentForm, x, y, w, h, fontname, fontsize, ;
 *-----------------------------------------------------------------------------*
 Local nAux
 
+   Empty( InPlace )          // Forced to .T., it's needed for edit controls to work properly
+   ASSIGN lFocusRect VALUE lFocusRect TYPE "L" DEFAULT .F.
    Empty( lNone )
 
-   ::TGrid:Define( ControlName, ParentForm, x, y, w, h, ::aHeaders, ::aWidths, ;
-                   {}, , fontname, fontsize, tooltip, , , ;
-                   aHeadClick, , , nogrid, aImage, ::aJust, ;
-                   break, HelpId, bold, italic, underline, strikeout, , ;
-                   , , edit, backcolor, fontcolor, ;
-                   dynamicbackcolor, dynamicforecolor, aPicture, lRtl, InPlace, ;
-                   editcontrols, readonly, valid, validmessages, , ;
-                   aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
-                   , aHeaderImage, aHeaderImageAlign, FullMove, ;
-                   aSelectedColors, aEditKeys, lCheckBoxes, , dblbffr, ;
-                   lFocusRect, lPLM, lFixedCols, , , lFixedWidths, ;
-                   , , , , ;
-                   , lLikeExcel, lButtons, AllowDelete, , ;
-                   , DelMsg, lNoDelMsg, AllowAppend, , lNoModal, ;
-                   lFixedCtrls, , , , ;
-                   lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, , ;
-                   ,  )
+   ::Define2( ControlName, ParentForm, x, y, w, h, ::aHeaders, ::aWidths, {}, ;
+              , fontname, fontsize, tooltip, aHeadClick, nogrid, ;
+              aImage, ::aJust, break, HelpId, bold, italic, underline, ;
+              strikeout, , , edit, backcolor, ;
+              fontcolor, dynamicbackcolor, dynamicforecolor, aPicture, lRtl, ;
+              LVS_SINGLESEL, .T., editcontrols, readonly, valid, validmessages, ;
+              aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
+              aHeaderImage, aHeaderImageAlign, FullMove, aSelectedColors, ;
+              aEditKeys, lCheckBoxes, dblbffr, lFocusRect, lPLM, ;
+              lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
+              DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
+              , , lExtDbl, lSilent, lAltA, ;
+              lNoShowAlways, .T., lCBE )
+
+   // By default, search in the current column
+   ::SearchCol := -1
 
    If HB_IsArray( Value ) .AND. Len( Value ) > 1
       nAux := Value[ 1 ]
@@ -2413,45 +2410,6 @@ Local nAux
          ::nColPos := nAux
       EndIf
    EndIf
-
-Return Self
-
-*-----------------------------------------------------------------------------*
-METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
-                value, fontname, fontsize, tooltip, aHeadClick, nogrid, ;
-                aImage, aJust, break, HelpId, bold, italic, underline, ;
-                strikeout, ownerdata, itemcount, editable, backcolor, ;
-                fontcolor, dynamicbackcolor, dynamicforecolor, aPicture, lRtl, ;
-                nStyle, inplace, editcontrols, readonly, valid, validmessages, ;
-                aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
-                aHeaderImage, aHeaderImageAlign, FullMove, aSelectedColors, ;
-                aEditKeys, lCheckBoxes, lDblBffr, lFocusRect, lPLM, ;
-                lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
-                DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
-                lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
-                lNoShowAlways, lNone, lCBE ) CLASS TOBrowseByCell
-*-----------------------------------------------------------------------------*
-
-   Empty( nStyle )
-   Empty( InPlace )          // Forced to .T., it's needed for edit controls to work properly
-   ASSIGN lFocusRect VALUE lFocusRect TYPE "L" DEFAULT .F.
-
-   ::Super:Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
-                    value, fontname, fontsize, tooltip, aHeadClick, nogrid, ;
-                    aImage, aJust, break, HelpId, bold, italic, underline, ;
-                    strikeout, ownerdata, itemcount, editable, backcolor, ;
-                    fontcolor, dynamicbackcolor, dynamicforecolor, aPicture, lRtl, ;
-                    LVS_SINGLESEL, .T., editcontrols, readonly, valid, validmessages, ;
-                    aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
-                    aHeaderImage, aHeaderImageAlign, FullMove, aSelectedColors, ;
-                    aEditKeys, lCheckBoxes, lDblBffr, lFocusRect, lPLM, ;
-                    lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
-                    DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
-                    lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
-                    lNoShowAlways, lNone, lCBE )
-
-   // By default, search in the current column
-   ::SearchCol := -1
 
 Return Self
 

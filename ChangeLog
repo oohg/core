@@ -1,11 +1,18 @@
 /*
- * $Id: ChangeLog,v 1.1529 2015-11-11 01:27:38 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1530 2015-11-11 03:15:19 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-11-11 00:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_browse.prg
+     ! Control's events are assigned twice.
+     * Calls to TGrid():Define changed by call to ::Define2.
+     * Format.
+     - TOBrowseByCell():Define2.
 
 2015-11-10 22:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
