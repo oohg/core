@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.145 2015-11-08 00:00:18 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.146 2015-11-11 01:27:39 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -105,6 +105,7 @@ CLASS TXBrowse FROM TGrid
    METHOD DbSkip
    METHOD Define
    METHOD Define3
+   METHOD Define4
    METHOD Delete
    METHOD DeleteAllItems          BLOCK { | Self | ::nRowPos := 0, ::Super:DeleteAllItems() }
    METHOD DeleteColumn
@@ -292,23 +293,19 @@ Local nWidth2, nCol2, oScroll, z
    ASSIGN novscroll VALUE novscroll TYPE "L" DEFAULT .F.
    nWidth2 := if( novscroll, w, w - GETVSCROLLBARWIDTH() )
 
-   ::Define2( ControlName, ParentForm, x, y, nWidth2, h, ::aHeaders, aWidths, ;
-              , , fontname, fontsize, tooltip, , , ;
-              aHeadClick, , , nogrid, aImage, ::aJust, ;
-              break, HelpId, bold, italic, underline, strikeout, , ;
-              , , editable, backcolor, fontcolor, ;
-              dynamicbackcolor, dynamicforecolor, aPicture, lRtl, LVS_SINGLESEL, ;
-              inplace, editcontrols, readonly, valid, validmessages, ;
-              , aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
-              lHasHeaders, , aHeaderImage, aHeaderImageAlign, FullMove, ;
-              aSelectedColors, aEditKeys, lCheckBoxes, , lDblBffr, ;
-              lFocusRect, lPLM, lFixedCols, , , lFixedWidths, ;
-              , , , , ;
-              , lLikeExcel, lButtons, AllowDelete, , ;
-              , DelMsg, lNoDelMsg, AllowAppend, , lNoModal, ;
-              lFixedCtrls, , , , ;
-              lExtDbl, lSilent, lAltA, lNoShowAlways, .F., .T., , ;
-              , )
+   ::Define2( ControlName, ParentForm, x, y, nWidth2, h, ::aHeaders, aWidths, , ;
+              , fontname, fontsize, tooltip, aHeadClick, nogrid, ;
+              aImage, ::aJust, break, HelpId, bold, italic, underline, ;
+              strikeout, , , editable, backcolor, ;
+              fontcolor, dynamicbackcolor, dynamicforecolor, aPicture, lRtl, ;
+              LVS_SINGLESEL, inplace, editcontrols, readonly, valid, validmessages, ;
+              aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
+              aHeaderImage, aHeaderImageAlign, FullMove, aSelectedColors, ;
+              aEditKeys, lCheckBoxes, lDblBffr, lFocusRect, lPLM, ;
+              lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
+              DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
+              , , lExtDbl, lSilent, lAltA, ;
+              lNoShowAlways, .F., .T. )
 
    ::FixBlocks( lFixedBlocks )
 
@@ -371,27 +368,10 @@ Local nWidth2, nCol2, oScroll, z
    ::Define3( uValue )
 
    // Must be set after control is initialized
-   ASSIGN ::OnLostFocus    VALUE lostfocus      TYPE "B"
-   ASSIGN ::OnGotFocus     VALUE gotfocus       TYPE "B"
-   ASSIGN ::OnChange       VALUE Change         TYPE "B"
-   ASSIGN ::OnDblClick     VALUE dblclick       TYPE "B"
-   ASSIGN ::OnClick        VALUE click          TYPE "B"
-   ASSIGN ::OnEnter        VALUE onenter        TYPE "B"
-   ASSIGN ::OnCheckChange  VALUE oncheck        TYPE "B"
-   ASSIGN ::bBeforeColMove VALUE bBeforeColMove TYPE "B"
-   ASSIGN ::bAfterColMove  VALUE bAfterColMove  TYPE "B"
-   ASSIGN ::bBeforeColSize VALUE bBeforeColSize TYPE "B"
-   ASSIGN ::bAfterColSize  VALUE bAfterColSize  TYPE "B"
-   ASSIGN ::bBeforeAutofit VALUE bBeforeAutofit TYPE "B"
-   ASSIGN ::OnDelete       VALUE onDelete       TYPE "B"
-   ASSIGN ::bDelWhen       VALUE bDelWhen       TYPE "B"
-   ASSIGN ::OnAppend       VALUE onappend       TYPE "B"
-   ASSIGN ::bHeadRClick    VALUE bHeadRClick    TYPE "B"
-   ASSIGN ::OnEditCell     VALUE editcell       TYPE "B"
-   ASSIGN ::OnEditCellEnd  VALUE editend        TYPE "B"
-   ASSIGN ::OnAbortEdit    VALUE abortedit      TYPE "B"
-   ASSIGN ::OnRClick       VALUE onrclick       TYPE "B"
-   ASSIGN ::OnRefreshRow   VALUE rowrefresh     TYPE "B"
+   ::Define4( change, dblclick, gotfocus, lostfocus, editcell, onenter, ;
+              oncheck, abortedit, click, bbeforecolmove, baftercolmove, ;
+              bbeforecolsize, baftercolsize, bbeforeautofit, ondelete, ;
+              bdelwhen, onappend, bheadrclick, onrclick, editend, rowrefresh )
 
 Return Self
 
@@ -406,6 +386,38 @@ Local lLocked
    ::Refresh()
    ::Value := nValue
    ::lLocked := lLocked
+
+Return Self
+
+*-----------------------------------------------------------------------------*
+METHOD Define4( change, dblclick, gotfocus, lostfocus, editcell, onenter, ;
+                oncheck, abortedit, click, bbeforecolmove, baftercolmove, ;
+                bbeforecolsize, baftercolsize, bbeforeautofit, ondelete, ;
+                bDelWhen, onappend, bheadrclick, onrclick, editend, rowrefresh ) CLASS TXBrowse
+*-----------------------------------------------------------------------------*
+
+   // Must be set after control is initialized
+   ASSIGN ::OnChange       VALUE change         TYPE "B"
+   ASSIGN ::OnDblClick     VALUE dblclick       TYPE "B"
+   ASSIGN ::OnGotFocus     VALUE gotfocus       TYPE "B"
+   ASSIGN ::OnLostFocus    VALUE lostfocus      TYPE "B"
+   ASSIGN ::OnEditCell     VALUE editcell       TYPE "B"
+   ASSIGN ::OnEnter        VALUE onenter        TYPE "B"
+   ASSIGN ::OnCheckChange  VALUE oncheck        TYPE "B"
+   ASSIGN ::OnAbortEdit    VALUE abortedit      TYPE "B"
+   ASSIGN ::OnClick        VALUE click          TYPE "B"
+   ASSIGN ::bBeforeColMove VALUE bbeforecolmove TYPE "B"
+   ASSIGN ::bAfterColMove  VALUE baftercolmove  TYPE "B"
+   ASSIGN ::bBeforeColSize VALUE bbeforecolsize TYPE "B"
+   ASSIGN ::bAfterColSize  VALUE baftercolsize  TYPE "B"
+   ASSIGN ::bBeforeAutofit VALUE bbeforeautofit TYPE "B"
+   ASSIGN ::OnDelete       VALUE ondelete       TYPE "B"
+   ASSIGN ::bDelWhen       VALUE bdelwhen       TYPE "B"
+   ASSIGN ::OnAppend       VALUE onappend       TYPE "B"
+   ASSIGN ::bHeadRClick    VALUE bheadrclick    TYPE "B"
+   ASSIGN ::OnRClick       VALUE onrclick       TYPE "B"
+   ASSIGN ::OnEditCellEnd  VALUE editend        TYPE "B"
+   ASSIGN ::OnRefreshRow   VALUE rowrefresh     TYPE "B"
 
 Return Self
 
@@ -1941,7 +1953,7 @@ Local lRet, bReplaceField, oWorkArea, i, aItem, aRepl, aVals, oCtr, uVal, bRep, 
       ::GetCellType( nCol, @EditControl, @uOldValue, @cMemVar, @bReplaceField, lAppend )
    EndIf
 
-   lRet := ::EditCell2( @nRow, @nCol, EditControl, uOldValue, @uValue, cMemVar, nOnFocusPos )
+   lRet := ::EditCell2( @nRow, @nCol, @EditControl, uOldValue, @uValue, cMemVar, nOnFocusPos )
    If lRet
       _SetThisCellInfo( ::hWnd, nRow, nCol, uValue )
       ::DoEvent( ::OnEditCellEnd, "EDITCELLEND", { nRow, nCol } )
@@ -2914,6 +2926,7 @@ CLASS TXBrowseByCell FROM TXBrowse
       CurrentRow
       DbSkip
       Define
+      Define4
       Delete
       DoChange
       EditItem
@@ -3016,48 +3029,39 @@ Local lLocked
 Return Self
 
 *-----------------------------------------------------------------------------*
-METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
-                aRows, value, fontname, fontsize, tooltip, change, dblclick, ;
-                aHeadClick, gotfocus, lostfocus, nogrid, aImage, aJust, ;
-                break, HelpId, bold, italic, underline, strikeout, ownerdata, ;
-                ondispinfo, itemcount, editable, backcolor, fontcolor, ;
-                dynamicbackcolor, dynamicforecolor, aPicture, lRtl, nStyle, ;
-                InPlace, editcontrols, readonly, valid, validmessages, ;
-                editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
-                lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
-                aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
-                lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
-                bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
-                bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
-                bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
-                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
-                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
-                oninsert, editend ) CLASS TXBrowseByCell
+METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
+                value, fontname, fontsize, tooltip, aHeadClick, nogrid, ;
+                aImage, aJust, break, HelpId, bold, italic, underline, ;
+                strikeout, ownerdata, itemcount, editable, backcolor, ;
+                fontcolor, dynamicbackcolor, dynamicforecolor, aPicture, lRtl, ;
+                nStyle, InPlace, editcontrols, readonly, valid, validmessages, ;
+                aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
+                aHeaderImage, aHeaderImageAlign, FullMove, aSelectedColors, ;
+                aEditKeys, lCheckBoxes, lDblBffr, lFocusRect, lPLM, ;
+                lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
+                DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
+                lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
+                lNoShowAlways, lNone, lCBE ) CLASS TXBrowseByCell
 *-----------------------------------------------------------------------------*
 
    Empty( nStyle )
    ASSIGN lFocusRect VALUE lFocusRect TYPE "L" DEFAULT .F.
    Empty( lNone )
    Empty( lCBE )
-   Empty( oninsert )
 
-   ::Super:Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
-                    aRows, value, fontname, fontsize, tooltip, change, dblclick, ;
-                    aHeadClick, gotfocus, lostfocus, nogrid, aImage, aJust, ;
-                    break, HelpId, bold, italic, underline, strikeout, ownerdata, ;
-                    ondispinfo, itemcount, editable, backcolor, fontcolor, ;
-                    dynamicbackcolor, dynamicforecolor, aPicture, lRtl, LVS_SINGLESEL, ;
-                    InPlace, editcontrols, readonly, valid, validmessages, ;
-                    editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
-                    lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
-                    aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
-                    lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
-                    bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
-                    bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
-                    bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
-                    lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
-                    lExtDbl, lSilent, lAltA, lNoShowAlways, .F., .T., onrclick, ;
-                    nil, editend )
+   ::Super:Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
+                    value, fontname, fontsize, tooltip, aHeadClick, nogrid, ;
+                    aImage, aJust, break, HelpId, bold, italic, underline, ;
+                    strikeout, ownerdata, itemcount, editable, backcolor, ;
+                    fontcolor, dynamicbackcolor, dynamicforecolor, aPicture, lRtl, ;
+                    LVS_SINGLESEL, InPlace, editcontrols, readonly, valid, validmessages, ;
+                    aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
+                    aHeaderImage, aHeaderImageAlign, FullMove, aSelectedColors, ;
+                    aEditKeys, lCheckBoxes, lDblBffr, lFocusRect, lPLM, ;
+                    lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
+                    DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
+                    lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
+                    lNoShowAlways, .F., .T. )
 
    // By default, search in the current column
    ::SearchCol := -1

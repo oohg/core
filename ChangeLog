@@ -1,11 +1,36 @@
 /*
- * $Id: ChangeLog,v 1.1528 2015-11-08 23:48:48 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1529 2015-11-11 01:27:38 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-11-10 22:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     ! Another RTE at _CheckCellNewValue() when control has no memvar.
+     + TGrid():Define4 to handle the assignment of the control's events.
+     * TGrid():Define2 no longer assigns the control's events.
+     * Methods Define of TGrid, TGridMulti and TGridByCell classes now use
+       TGrid():Define4.
+     ! TGrid():EditCell2 now creates the variable asociated with the
+       cell's editcontrol (or _OOHG_NULLVAR_ variable if one is not
+       defined).
+     * Changed parameters in calls to modified methods.
+     * EditControl parameter is passed by reference in calls to ::EditCell2.
+   * source/h_xbrowse.prg
+     + TXBrowse():Define4 to handle the assignment of the control's events.
+     * Method Define of TXBrowse and TXBrowseByCell classes now use
+       TXBrowse():Define4.
+     * Changed parameters in calls to modified methods.
+     * EditControl parameter is passed by reference in calls to ::EditCell2.
+   * source/h_browse.prg
+     + TOBrowse():Define4 to handle the assignment of the control's events.
+     * Changed parameters in TOBrowse():Define3, TOBrowseByCell:Define2
+       and TOBrowseByCell:Define3.
+     * Changed parameters in calls to modified methods.
+     * EditControl parameter is passed by reference in calls to ::EditCell2.
 
 2015-11-08 20:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg

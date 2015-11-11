@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.293 2015-11-08 23:48:49 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.294 2015-11-11 01:27:39 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -220,6 +220,7 @@ CLASS TGrid FROM TControl
    METHOD CountPerPage            BLOCK { | Self | ListViewGetCountPerPage( ::hWnd ) }
    METHOD Define
    METHOD Define2
+   METHOD Define4
    METHOD DeleteAllItems          BLOCK { | Self | ListViewReset( ::hWnd ), ::GridForeColor := Nil, ::GridBackColor := Nil, ::DoChange() }
    METHOD DeleteColumn
    METHOD DeleteItem
@@ -302,44 +303,42 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                oninsert, editend ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 
-   ::Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
-              aRows, value, fontname, fontsize, tooltip, change, dblclick, ;
-              aHeadClick, gotfocus, lostfocus, nogrid, aImage, aJust, ;
-              break, HelpId, bold, italic, underline, strikeout, ownerdata, ;
-              ondispinfo, itemcount, editable, backcolor, fontcolor, ;
-              dynamicbackcolor, dynamicforecolor, aPicture, lRtl, LVS_SINGLESEL, ;
-              inplace, editcontrols, readonly, valid, validmessages, ;
-              editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
-              lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
-              aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
-              lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
-              bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
-              bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
-              bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
-              lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
-              lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
-              oninsert, editend )
+   ::Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
+              value, fontname, fontsize, tooltip, aHeadClick, nogrid, ;
+              aImage, aJust, break, HelpId, bold, italic, underline, ;
+              strikeout, ownerdata, itemcount, editable, backcolor, ;
+              fontcolor, dynamicbackcolor, dynamicforecolor, aPicture, lRtl, ;
+              LVS_SINGLESEL, inplace, editcontrols, readonly, valid, validmessages, ;
+              aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
+              aHeaderImage, aHeaderImageAlign, FullMove, aSelectedColors, ;
+              aEditKeys, lCheckBoxes, lDblBffr, lFocusRect, lPLM, ;
+              lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
+              DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
+              lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
+              lNoShowAlways, lNone, lCBE )
+
+   // Must be set after control is initialized
+   ::Define4( change, dblclick, gotfocus, lostfocus, ondispinfo, editcell, ;
+              onenter, oncheck, abortedit, click, bbeforecolmove, baftercolmove, ;
+              bbeforecolsize, baftercolsize, bbeforeautofit, ondelete, ;
+              bdelwhen, onappend, bheadrclick, onrclick, oninsert, editend )
 
 Return Self
 
 *-----------------------------------------------------------------------------*
-METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
-                aRows, value, fontname, fontsize, tooltip, change, dblclick, ;
-                aHeadClick, gotfocus, lostfocus, nogrid, aImage, aJust, ;
-                break, HelpId, bold, italic, underline, strikeout, ownerdata, ;
-                ondispinfo, itemcount, editable, backcolor, fontcolor, ;
-                dynamicbackcolor, dynamicforecolor, aPicture, lRtl, nStyle, ;
-                inplace, editcontrols, readonly, valid, validmessages, ;
-                editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
-                lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
-                aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
-                lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
-                bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
-                bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
-                bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
-                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
-                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
-                oninsert, editend ) CLASS TGrid
+METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
+                value, fontname, fontsize, tooltip, aHeadClick, nogrid, ;
+                aImage, aJust, break, HelpId, bold, italic, underline, ;
+                strikeout, ownerdata, itemcount, editable, backcolor, ;
+                fontcolor, dynamicbackcolor, dynamicforecolor, aPicture, lRtl, ;
+                nStyle, inplace, editcontrols, readonly, valid, validmessages, ;
+                aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
+                aHeaderImage, aHeaderImageAlign, FullMove, aSelectedColors, ;
+                aEditKeys, lCheckBoxes, lDblBffr, lFocusRect, lPLM, ;
+                lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
+                DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
+                lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
+                lNoShowAlways, lNone, lCBE ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local ControlHandle, aImageList, i
 
@@ -513,29 +512,38 @@ Local ControlHandle, aImageList, i
 
    ::Value := value
 
+Return Self
+
+*-----------------------------------------------------------------------------*
+METHOD Define4( change, dblclick, gotfocus, lostfocus, ondispinfo, editcell, ;
+                onenter, oncheck, abortedit, click, bbeforecolmove, baftercolmove, ;
+                bbeforecolsize, baftercolsize, bbeforeautofit, ondelete, ;
+                bDelWhen, onappend, bheadrclick, onrclick, oninsert, editend ) CLASS TGrid
+*-----------------------------------------------------------------------------*
+
    // Must be set after control is initialized
-   ASSIGN ::OnLostFocus    VALUE lostfocus      TYPE "B"
-   ASSIGN ::OnGotFocus     VALUE gotfocus       TYPE "B"
-   ASSIGN ::OnChange       VALUE Change         TYPE "B"
+   ASSIGN ::OnChange       VALUE change         TYPE "B"
    ASSIGN ::OnDblClick     VALUE dblclick       TYPE "B"
-   ASSIGN ::OnClick        VALUE click          TYPE "B"
+   ASSIGN ::OnGotFocus     VALUE gotfocus       TYPE "B"
+   ASSIGN ::OnLostFocus    VALUE lostfocus      TYPE "B"
    ASSIGN ::OnDispInfo     VALUE ondispinfo     TYPE "B"
+   ASSIGN ::OnEditCell     VALUE editcell       TYPE "B"
    ASSIGN ::OnEnter        VALUE onenter        TYPE "B"
    ASSIGN ::OnCheckChange  VALUE oncheck        TYPE "B"
-   ASSIGN ::bBeforeColMove VALUE bBeforeColMove TYPE "B"
-   ASSIGN ::bAfterColMove  VALUE bAfterColMove  TYPE "B"
-   ASSIGN ::bBeforeColSize VALUE bBeforeColSize TYPE "B"
-   ASSIGN ::bAfterColSize  VALUE bAfterColSize  TYPE "B"
-   ASSIGN ::bBeforeAutofit VALUE bBeforeAutofit TYPE "B"
-   ASSIGN ::OnDelete       VALUE onDelete       TYPE "B"
-   ASSIGN ::bDelWhen       VALUE bDelWhen       TYPE "B"
-   ASSIGN ::OnAppend       VALUE onappend       TYPE "B"
-   ASSIGN ::bHeadRClick    VALUE bHeadRClick    TYPE "B"
-   ASSIGN ::OnEditCell     VALUE editcell       TYPE "B"
-   ASSIGN ::OnEditCellEnd  VALUE editend        TYPE "B"
    ASSIGN ::OnAbortEdit    VALUE abortedit      TYPE "B"
+   ASSIGN ::OnClick        VALUE click          TYPE "B"
+   ASSIGN ::bBeforeColMove VALUE bbeforecolmove TYPE "B"
+   ASSIGN ::bAfterColMove  VALUE baftercolmove  TYPE "B"
+   ASSIGN ::bBeforeColSize VALUE bbeforecolsize TYPE "B"
+   ASSIGN ::bAfterColSize  VALUE baftercolsize  TYPE "B"
+   ASSIGN ::bBeforeAutofit VALUE bbeforeautofit TYPE "B"
+   ASSIGN ::OnDelete       VALUE ondelete       TYPE "B"
+   ASSIGN ::bDelWhen       VALUE bdelwhen       TYPE "B"
+   ASSIGN ::OnAppend       VALUE onappend       TYPE "B"
+   ASSIGN ::bHeadRClick    VALUE bheadrclick    TYPE "B"
    ASSIGN ::OnRClick       VALUE onrclick       TYPE "B"
    ASSIGN ::OnInsert       VALUE oninsert       TYPE "B"
+   ASSIGN ::OnEditCellEnd  VALUE editend        TYPE "B"
 
 Return Self
 
@@ -2271,7 +2279,7 @@ Local lRet
       ::SetControlValue( nRow )
    EndIf
 
-   lRet := ::EditCell2( @nRow, @nCol, EditControl, uOldValue, @uValue, cMemVar, nOnFocusPos )
+   lRet := ::EditCell2( @nRow, @nCol, @EditControl, uOldValue, @uValue, cMemVar, nOnFocusPos )
    If lRet
       If ValType( uValue ) $ "CM"
          uValue := Trim( uValue )
@@ -2337,13 +2345,13 @@ Local lRet
 
 Return lRet
 
-// nRow, nCol and uValue may be passed by reference
+// nRow, nCol, EditControl and uValue may be passed by reference
 *-----------------------------------------------------------------------------*
 METHOD EditCell2( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPos ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local r, r2, lRet := .F., nClientWidth, uAux, nScrollWidth
 
-   If ValType( cMemVar ) != "C"
+   If ! ValType( cMemVar ) $ "CM" .OR. Empty( cMemVar )
       cMemVar := "_OOHG_NULLVAR_"
    EndIf
    If ! HB_IsNumeric( nRow )
@@ -2432,6 +2440,9 @@ Local r, r2, lRet := .F., nClientWidth, uAux, nScrollWidth
          r[ 3 ] := Min( r[ 3 ], ::Parent:Col + ::Parent:Width - GetBorderWidth() - r[ 2 ] )
 
          EditControl:cMemVar := cMemVar
+         // Create memvar
+         &( cMemVar ) := Nil
+
          If HB_IsArray( ::Valid ) .AND. Len( ::Valid ) >= nCol
             If HB_IsBlock( ::Valid[ nCol ] )
                EditControl:bValid := ::Valid[ nCol ]
@@ -3870,23 +3881,25 @@ Local nStyle := 0
 
    Empty( lNone )
 
-   ::Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
-              aRows, value, fontname, fontsize, tooltip, change, dblclick, ;
-              aHeadClick, gotfocus, lostfocus, nogrid, aImage, aJust, ;
-              break, HelpId, bold, italic, underline, strikeout, ownerdata, ;
-              ondispinfo, itemcount, editable, backcolor, fontcolor, ;
-              dynamicbackcolor, dynamicforecolor, aPicture, lRtl, nStyle, ;
-              inplace, editcontrols, readonly, valid, validmessages, ;
-              editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
-              lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
-              aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
-              lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
-              bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
-              bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
-              bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
-              lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
-              lExtDbl, lSilent, lAltA, lNoShowAlways, .T., lCBE, onrclick, ;
-              oninsert, editend )
+   ::Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
+              value, fontname, fontsize, tooltip, aHeadClick, nogrid, ;
+              aImage, aJust, break, HelpId, bold, italic, underline, ;
+              strikeout, ownerdata, itemcount, editable, backcolor, ;
+              fontcolor, dynamicbackcolor, dynamicforecolor, aPicture, lRtl, ;
+              nStyle, inplace, editcontrols, readonly, valid, validmessages, ;
+              aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
+              aHeaderImage, aHeaderImageAlign, FullMove, aSelectedColors, ;
+              aEditKeys, lCheckBoxes, lDblBffr, lFocusRect, lPLM, ;
+              lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
+              DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
+              lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
+              lNoShowAlways, .T., lCBE )
+
+   // Must be set after control is initialized
+   ::Define4( change, dblclick, gotfocus, lostfocus, ondispinfo, editcell, ;
+              onenter, oncheck, abortedit, click, bBeforeColMove, bAfterColMove, ;
+              bBeforeColSize, bAfterColSize, bBeforeAutofit, onDelete, ;
+              bDelWhen, onappend, bHeadRClick, onrclick, oninsert, editend )
 
 Return Self
 
@@ -4057,26 +4070,28 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
    ASSIGN lNone               VALUE lNone      TYPE "L" DEFAULT .T.
    ASSIGN ::lChangeBeforeEdit VALUE lCBE       TYPE "L" DEFAULT .T.
 
-   ::Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
-              aRows, value, fontname, fontsize, tooltip, change, dblclick, ;
-              aHeadClick, gotfocus, lostfocus, nogrid, aImage, aJust, ;
-              break, HelpId, bold, italic, underline, strikeout, ownerdata, ;
-              ondispinfo, itemcount, editable, backcolor, fontcolor, ;
-              dynamicbackcolor, dynamicforecolor, aPicture, lRtl, LVS_SINGLESEL, ;
-              InPlace, editcontrols, readonly, valid, validmessages, ;
-              editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
-              lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
-              aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
-              lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
-              bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
-              bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
-              bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
-              lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
-              lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, onrclick, ;
-              oninsert, editend )
+   ::Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
+              value, fontname, fontsize, tooltip, aHeadClick, nogrid, ;
+              aImage, aJust, break, HelpId, bold, italic, underline, ;
+              strikeout, ownerdata, itemcount, editable, backcolor, ;
+              fontcolor, dynamicbackcolor, dynamicforecolor, aPicture, lRtl, ;
+              LVS_SINGLESEL, inplace, editcontrols, readonly, valid, validmessages, ;
+              aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
+              aHeaderImage, aHeaderImageAlign, FullMove, aSelectedColors, ;
+              aEditKeys, lCheckBoxes, lDblBffr, lFocusRect, lPLM, ;
+              lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
+              DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
+              lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
+              lNoShowAlways, .T., lCBE )
 
    // Search the current column
    ::SearchCol := -1
+
+   // Must be set after control is initialized
+   ::Define4( change, dblclick, gotfocus, lostfocus, ondispinfo, editcell, ;
+              onenter, oncheck, abortedit, click, bBeforeColMove, bAfterColMove, ;
+              bBeforeColSize, bAfterColSize, bBeforeAutofit, onDelete, ;
+              bDelWhen, onappend, bHeadRClick, onrclick, oninsert, editend )
 
 Return Self
 
@@ -4966,7 +4981,7 @@ METHOD EditCell2( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusP
       EndIf
    EndIf
 
-Return ::Super:EditCell2( @nRow, @nCol, EditControl, uOldValue, @uValue, cMemVar, nOnFocusPos )
+Return ::Super:EditCell2( @nRow, @nCol, @EditControl, uOldValue, @uValue, cMemVar, nOnFocusPos )
 
 *-----------------------------------------------------------------------------*
 METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TGridByCell
@@ -5415,7 +5430,7 @@ Local lChange, uValue2
 
    uValue2 := _OOHG_ThisItemCellValue
    If uValue == uValue2
-      If ValType( oControl:cMemVar ) $ "CM" .AND. ! Empty( oControl:cMemVar )
+      If ValType( oControl:cMemVar ) $ "CM" .AND. ! Empty( oControl:cMemVar ) .AND. Left( Type( oControl:cMemVar ), 1 ) != "U"
          uValue2 := &( oControl:cMemVar )
       EndIf
    EndIf
