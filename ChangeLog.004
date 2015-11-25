@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog.004,v 1.5 2015-05-02 04:20:45 fyurisich Exp $
+ * $Id: ChangeLog.004,v 1.6 2015-11-25 21:53:34 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -3704,7 +3704,7 @@
      + Method ClearBitMaps to release control's imagelist.
    * source/h_button.prg
      * SetImageXP now returns a handle to the imagelist
-       associated with the control so it can disposed when the
+       associated with the control so it can be disposed when the
        control is released.
      ! Memory leak when function SetImageXP is used.
 

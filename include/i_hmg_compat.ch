@@ -1,5 +1,5 @@
 /*
- * $Id: i_hmg_compat.ch,v 1.47 2015-11-08 00:00:18 fyurisich Exp $
+ * $Id: i_hmg_compat.ch,v 1.48 2015-11-25 21:53:34 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -291,7 +291,7 @@ SPLITBOX VERSION
             <{bheadrclick}>, <.extdbl.>, <.silent.>, ;
             ! Upper( #<alta> ) == "DISABLEALTA", <.noshow.>, ;
             Upper( #<none> ) == "NONEUNSELS", <.cbe.>, <{rclick}>, ;
-            <.checkboxes.>, <{checkchange}>, <{rowrefresh}>, <aDefVal>, :
+            <.checkboxes.>, <{checkchange}>, <{rowrefresh}>, <aDefVal>, ;
             <{editend}> )
 
 #xcommand @ <row>, <col> BUTTONEX <name> ;
