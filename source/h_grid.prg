@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.294 2015-11-11 01:27:39 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.295 2015-11-28 21:28:16 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -193,6 +193,7 @@ CLASS TGrid FROM TControl
    DATA uIniTime                  INIT 0
    DATA Valid                     INIT Nil
    DATA ValidMessages             INIT Nil
+   DATA lAtFirstCol               INIT .T.
 
    METHOD AddBitMap
    METHOD AddColumn
@@ -300,7 +301,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
-               oninsert, editend ) CLASS TGrid
+               oninsert, editend, lAtFirst ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 
    ::Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
@@ -315,7 +316,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
               DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
               lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
-              lNoShowAlways, lNone, lCBE )
+              lNoShowAlways, lNone, lCBE, lAtFirst )
 
    // Must be set after control is initialized
    ::Define4( change, dblclick, gotfocus, lostfocus, ondispinfo, editcell, ;
@@ -338,7 +339,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
                 lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
                 DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
                 lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
-                lNoShowAlways, lNone, lCBE ) CLASS TGrid
+                lNoShowAlways, lNone, lCBE, lAtFirst ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local ControlHandle, aImageList, i
 
@@ -390,6 +391,7 @@ Local ControlHandle, aImageList, i
    ASSIGN ::lPLM              VALUE lPLM              TYPE "L"
    ASSIGN ::lLikeExcel        VALUE lLikeExcel        TYPE "L"
    ASSIGN ::lButtons          VALUE lButtons          TYPE "L"
+   ASSIGN ::AllowEdit         VALUE editable          TYPE "L"
    ASSIGN ::AllowDelete       VALUE AllowDelete       TYPE "L"
    ASSIGN ::AllowAppend       VALUE AllowAppend       TYPE "L"
    ASSIGN ::lNoDelMsg         VALUE lNoDelMsg         TYPE "L"
@@ -402,6 +404,7 @@ Local ControlHandle, aImageList, i
    ASSIGN ::lAppendOnAltA     VALUE lAltA             TYPE "L"
    ASSIGN ::lNoneUnsels       VALUE lNone             TYPE "L"
    ASSIGN ::lChangeBeforeEdit VALUE lCBE              TYPE "L"
+   ASSIGN ::lAtFirstCol       VALUE lAtFirst          TYPE "L"
 
    /*
     * This must be placed before calling ::Register because when the
@@ -470,7 +473,6 @@ Local ControlHandle, aImageList, i
    ::aWhen := aWhenFields
    ASSIGN ::InPlace   VALUE inplace  TYPE "L"
    ASSIGN ::FullMove  VALUE FullMove TYPE "L"
-   ASSIGN ::AllowEdit VALUE ::InPlace .OR. ( HB_IsLogical( editable ) .AND. editable ) TYPE "L"
 
    ASSIGN lFixedCtrls VALUE lFixedCtrls TYPE "L" DEFAULT _OOHG_GridFixedControls
    ::FixControls( lFixedCtrls )
@@ -891,14 +893,19 @@ Local lRet, lSomethingEdited, nNextCol
    If ::FirstVisibleColumn == 0
       Return .F.
    EndIf
+
+   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
+
    If ! HB_IsNumeric( nCol )
-      nCol := ::FirstColInOrder
+      If ::lAppendMode .OR. lAppend .OR. ::lAtFirstCol
+         nCol := ::FirstColInOrder
+      Else
+         nCol := ::FirstVisibleColumn
+      EndIf
    EndIf
    If nCol < 1 .OR. nCol > Len( ::aHeaders )
       Return .F.
    EndIf
-
-   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
 
    If ::lAppendMode
       // Before calling ::EditGrid an empty item was added at ::ItemCount
@@ -2265,7 +2272,11 @@ Local lRet
       nRow := Max( ::FirstSelectedItem, 1 )
    EndIf
    If ! HB_IsNumeric( nCol )
-      nCol := ::FirstColInOrder
+      If ::lAppendMode .OR. ::lAtFirstCol
+         nCol := ::FirstColInOrder
+      Else
+         nCol := ::FirstVisibleColumn
+      EndIf
    EndIf
    If nRow < 1 .OR. nRow > ::ItemCount .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
       Return .F.
@@ -2358,7 +2369,11 @@ Local r, r2, lRet := .F., nClientWidth, uAux, nScrollWidth
       nRow := Max( ::FirstSelectedItem, 1 )
    EndIf
    If ! HB_IsNumeric( nCol )
-      nCol := ::FirstColInOrder
+      If ::lAtFirstCol
+         nCol := ::FirstColInOrder
+      Else
+         nCol := ::FirstVisibleColumn
+      EndIf
    EndIf
    If nRow < 1 .OR. nRow > ::ItemCount .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
       Return .F.
@@ -2493,17 +2508,23 @@ Local lRet, lSomethingEdited
    If ::FullMove
       Return ::EditGrid( nRow, nCol, lAppend, lOneRow, lChange )
    EndIf
+
    If ::FirstVisibleColumn == 0
-      Return .F.
-   EndIf
-   If ! HB_IsNumeric( nCol )
-      nCol := ::FirstColInOrder
-   EndIf
-   If nCol < 1 .OR. nCol > Len( ::aHeaders )
       Return .F.
    EndIf
 
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
+
+   If ! HB_IsNumeric( nCol )
+      If ::lAppendMode .OR. lAppend .OR. ::lAtFirstCol
+         nCol := ::FirstColInOrder
+      Else
+         nCol := ::FirstVisibleColumn
+      EndIf
+   EndIf
+   If nCol < 1 .OR. nCol > Len( ::aHeaders )
+      Return .F.
+   EndIf
 
    If ::lAppendMode
       // Before calling ::EditAllCells an empty item was added at ::ItemCount
@@ -3875,7 +3896,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
-               oninsert, editend ) CLASS TGridMulti
+               oninsert, editend, lAtFirst ) CLASS TGridMulti
 *-----------------------------------------------------------------------------*
 Local nStyle := 0
 
@@ -3893,7 +3914,7 @@ Local nStyle := 0
               lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
               DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
               lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
-              lNoShowAlways, .T., lCBE )
+              lNoShowAlways, .T., lCBE, lAtFirst )
 
    // Must be set after control is initialized
    ::Define4( change, dblclick, gotfocus, lostfocus, ondispinfo, editcell, ;
@@ -4063,7 +4084,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
-               oninsert, editend ) CLASS TGridByCell
+               oninsert, editend, lAtFirst ) CLASS TGridByCell
 *-----------------------------------------------------------------------------*
 
    ASSIGN lFocusRect          VALUE lFocusRect TYPE "L" DEFAULT .F.
@@ -4082,7 +4103,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
               DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
               lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
-              lNoShowAlways, .T., lCBE )
+              lNoShowAlways, .T., lCBE, lAtFirst )
 
    // Search the current column
    ::SearchCol := -1

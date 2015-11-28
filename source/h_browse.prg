@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.169 2015-11-11 03:15:20 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.170 2015-11-28 21:28:15 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -256,7 +256,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                bAfterColSize, bBeforeAutofit, lLikeExcel, lButtons, lUpdCols, ;
                lFixedCtrls, bHeadRClick, lExtDbl, lNoModal, lSilent, lAltA, ;
                lNoShowAlways, lNone, lCBE, onrclick, lCheckBoxes, oncheck, ;
-               rowrefresh, aDefaultValues, editend ) CLASS TOBrowse
+               rowrefresh, aDefaultValues, editend, lAtFirst ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local nWidth2, nCol2, oScroll, z
 
@@ -352,7 +352,7 @@ Local nWidth2, nCol2, oScroll, z
               dblbffr, lFocusRect, lPLM, lFixedCols, lFixedWidths, ;
               lLikeExcel, lButtons, AllowDelete, DelMsg, lNoDelMsg, ;
               AllowAppend, lNoModal, lFixedCtrls, lExtDbl, Value, lSilent, ;
-              lAltA, lNoShowAlways, lNone, lCBE, lCheckBoxes )
+              lAltA, lNoShowAlways, lNone, lCBE, lCheckBoxes, lAtFirst )
 
    ::nWidth := w
 
@@ -432,7 +432,7 @@ METHOD Define3( ControlName, ParentForm, x, y, w, h, fontname, fontsize, ;
                 dblbffr, lFocusRect, lPLM, lFixedCols, lFixedWidths, ;
                 lLikeExcel, lButtons, AllowDelete, DelMsg, lNoDelMsg, ;
                 AllowAppend, lNoModal, lFixedCtrls, lExtDbl, Value, lSilent, ;
-                lAltA, lNoShowAlways, lNone, lCBE, lCheckBoxes ) CLASS TOBrowse
+                lAltA, lNoShowAlways, lNone, lCBE, lCheckBoxes, lAtFirst ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 
    ::Define2( ControlName, ParentForm, x, y, w, h, ::aHeaders, ::aWidths, {}, ;
@@ -447,7 +447,7 @@ METHOD Define3( ControlName, ParentForm, x, y, w, h, fontname, fontsize, ;
               lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
               DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
               , , lExtDbl, lSilent, lAltA, ;
-              lNoShowAlways, lNone, lCBE )
+              lNoShowAlways, lNone, lCBE, lAtFirst )
 
    If ValType( Value ) == "N"
       ::nRecLastValue := Value
@@ -1209,14 +1209,18 @@ Local lRet, lSomethingEdited, lRowAppended, nRecNo, cWorkArea
    If ::FirstVisibleColumn == 0
       Return .F.
    EndIf
+   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
    If ! HB_IsNumeric( nCol )
-      nCol := ::FirstColInOrder
+      If ::lAppendMode .OR. lAppend .OR. ::lAtFirstCol
+         nCol := ::FirstColInOrder
+      Else
+         nCol := ::FirstVisibleColumn
+      EndIf
    EndIf
    If nCol < 1 .OR. nCol > Len( ::aHeaders )
       Return .F.
    EndIf
 
-   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
    If lAppend
       ::GoBottom( .T. )
       ::InsertBlank( ::ItemCount + 1 )
@@ -1229,7 +1233,6 @@ Local lRet, lSomethingEdited, lRowAppended, nRecNo, cWorkArea
       If nRow < 1 .OR. nRow > ::ItemCount
          Return .F.
       EndIf
-
       ASSIGN lChange VALUE lChange TYPE "L" DEFAULT ::lChangeBeforeEdit
       If lChange
          ::Value := { ::aRecMap[ nRow ], nCol }
@@ -1344,16 +1347,19 @@ Local lRet := .T., lRowEdited, lSomethingEdited, nRecNo, lRowAppended, nNewRec, 
    If ::FirstVisibleColumn == 0
       Return .F.
    EndIf
+   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
    If ! HB_IsNumeric( nCol )
-      nCol := ::FirstColInOrder
+      If ::lAppendMode .OR. lAppend .OR. ::lAtFirstCol
+         nCol := ::FirstColInOrder
+      Else
+         nCol := ::FirstVisibleColumn
+      EndIf
    EndIf
    If nCol < 1 .OR. nCol > Len( ::aHeaders )
       Return .F.
    EndIf
 
    cWorkArea := ::WorkArea
-
-   ASSIGN lAppend  VALUE lAppend  TYPE "L" DEFAULT .F.
 
    If lAppend
       If ::lAppendMode
@@ -2054,14 +2060,14 @@ Local nvKey, r, DeltaSelect, lGo, uValue, nNotify := GetNotifyCode( lParam )
             // select item
             r := ::CurrentRow
             If r > 0
-               DeltaSelect := r - ::nEditRow
+               DeltaSelect := r - ::nRowPos
                ::FastUpdate( DeltaSelect, r )
                ::BrowseOnChange()
             ElseIf ::lNoneUnsels
                ::CurrentRow := 0
                ::BrowseOnChange()
             Else
-               ::CurrentRow := ::nEditRow
+               ::CurrentRow := ::nRowPos
             EndIf
          EndIf
       EndIf
@@ -2094,14 +2100,14 @@ Local nvKey, r, DeltaSelect, lGo, uValue, nNotify := GetNotifyCode( lParam )
             // select item
             r := ::CurrentRow
             If r > 0
-               DeltaSelect := r - ::nEditRow
+               DeltaSelect := r - ::nRowPos
                ::FastUpdate( DeltaSelect, r )
                ::BrowseOnChange()
             ElseIf ::lNoneUnsels
                ::CurrentRow := 0
                ::BrowseOnChange()
             Else
-               ::CurrentRow := ::nEditRow
+               ::CurrentRow := ::nRowPos
             EndIf
          EndIf
 
@@ -2122,14 +2128,14 @@ Local nvKey, r, DeltaSelect, lGo, uValue, nNotify := GetNotifyCode( lParam )
       Else
          r := ::CurrentRow
          If r > 0
-            DeltaSelect := r - ::nEditRow
+            DeltaSelect := r - ::nRowPos
             ::FastUpdate( DeltaSelect, r )
             ::BrowseOnChange()
          ElseIf ::lNoneUnsels
             ::CurrentRow := 0
             ::BrowseOnChange()
          Else
-            ::CurrentRow := ::nEditRow
+            ::CurrentRow := ::nRowPos
          EndIf
       EndIf
       Return Nil
@@ -2375,7 +2381,7 @@ METHOD Define3( ControlName, ParentForm, x, y, w, h, fontname, fontsize, ;
                 dblbffr, lFocusRect, lPLM, lFixedCols, lFixedWidths, ;
                 lLikeExcel, lButtons, AllowDelete, DelMsg, lNoDelMsg, ;
                 AllowAppend, lNoModal, lFixedCtrls, lExtDbl, Value, lSilent, ;
-                lAltA, lNoShowAlways, lNone, lCBE, lCheckBoxes ) CLASS TOBrowseByCell
+                lAltA, lNoShowAlways, lNone, lCBE, lCheckBoxes, lAtFirst ) CLASS TOBrowseByCell
 *-----------------------------------------------------------------------------*
 Local nAux
 
@@ -2395,7 +2401,7 @@ Local nAux
               lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
               DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
               , , lExtDbl, lSilent, lAltA, ;
-              lNoShowAlways, .T., lCBE )
+              lNoShowAlways, .T., lCBE, lAtFirst )
 
    // By default, search in the current column
    ::SearchCol := -1
@@ -2738,16 +2744,20 @@ Local nvKey, r, DeltaSelect, lGo, aCellData, uValue, nNotify := GetNotifyCode( l
             ::CheckItem( uValue, ! ::CheckItem( uValue ) )
          Else
             // select item
-            r := ::CurrentRow
+            aCellData := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
+            r := aCellData[ 1 ]      // ::CurrentRow
             If r > 0
-               DeltaSelect := r - ::nEditRow
+               DeltaSelect := r - ::nRowPos
                ::FastUpdate( DeltaSelect, r )
+               ::CurrentCol := aCellData[ 2 ]
                ::BrowseOnChange()
             ElseIf ::lNoneUnsels
                ::CurrentRow := 0
+               ::CurrentCol := 0
                ::BrowseOnChange()
             Else
-               ::CurrentRow := ::nEditRow
+               ::CurrentRow := ::nRowPos
+               ::CurrentCol := ::nColPos
             EndIf
          EndIf
       EndIf
@@ -2779,16 +2789,20 @@ Local nvKey, r, DeltaSelect, lGo, aCellData, uValue, nNotify := GetNotifyCode( l
             ::CheckItem( uValue, ! ::CheckItem( uValue ) )
          Else
             // select item
-            r := ::CurrentRow
+            aCellData := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
+            r := aCellData[ 1 ]      // ::CurrentRow
             If r > 0
-               DeltaSelect := r - ::nEditRow
+               DeltaSelect := r - ::nRowPos
                ::FastUpdate( DeltaSelect, r )
+               ::CurrentCol := aCellData[ 2 ]
                ::BrowseOnChange()
             ElseIf ::lNoneUnsels
                ::CurrentRow := 0
+               ::CurrentCol := 0
                ::BrowseOnChange()
             Else
-               ::CurrentRow := ::nEditRow
+               ::CurrentRow := ::nRowPos
+               ::CurrentCol := ::nColPos
             EndIf
          EndIf
 
@@ -2810,14 +2824,14 @@ Local nvKey, r, DeltaSelect, lGo, aCellData, uValue, nNotify := GetNotifyCode( l
       Else
          r := ::CurrentRow
          If r > 0
-            DeltaSelect := r - ::nEditRow
+            DeltaSelect := r - ::nRowPos
             ::FastUpdate( DeltaSelect, r )
             ::BrowseOnChange()
          ElseIf ::lNoneUnsels
             ::CurrentRow := 0
             ::BrowseOnChange()
          Else
-            ::CurrentRow := ::nEditRow
+            ::CurrentRow := ::nRowPos
          EndIf
       EndIf
       Return Nil
@@ -3023,14 +3037,18 @@ Local lRet, lSomethingEdited, lRowAppended, nRecNo, cWorkArea, nNextCol
    If ::FirstVisibleColumn == 0
       Return .F.
    EndIf
+   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
    If ! HB_IsNumeric( nCol )
-      nCol := ::FirstColInOrder
+      If ::lAppendMode .OR. lAppend .OR. ::lAtFirstCol
+         nCol := ::FirstColInOrder
+      Else
+         nCol := ::FirstVisibleColumn
+      EndIf
    EndIf
    If nCol < 1 .OR. nCol > Len( ::aHeaders )
       Return .F.
    EndIf
 
-   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
    If lAppend
       ::GoBottom( .T. )
       ::InsertBlank( ::ItemCount + 1 )
@@ -3044,7 +3062,6 @@ Local lRet, lSomethingEdited, lRowAppended, nRecNo, cWorkArea, nNextCol
       If nRow < 1 .OR. nRow > ::ItemCount
          Return .F.
       EndIf
-
       ASSIGN lChange VALUE lChange TYPE "L" DEFAULT ::lChangeBeforeEdit
       If lChange
          ::Value := { ::aRecMap[ nRow ], nCol }
@@ -3881,10 +3898,10 @@ Local r, nClientWidth, nScrollWidth, lColChanged
                // Move left side into client area
                ListView_Scroll( ::hWnd, r[ 2 ], 0 )
             EndIf
+         EndIf
 
          // Ensure cell is visible
-            ListView_RedrawItems( ::hWnd, ::nRowPos, ::ItemCount )
-         EndIf
+         ListView_RedrawItems( ::hWnd, ::nRowPos, ::ItemCount )
       EndIf
    Else
       ::nRowPos := ::CurrentRow  

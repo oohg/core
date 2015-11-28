@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.146 2015-11-11 01:27:39 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.147 2015-11-28 21:28:16 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -227,7 +227,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                bBeforeAutofit, lLikeExcel, lButtons, lNoDelMsg, lFixedCtrls, ;
                lNoShowEmptyRow, lUpdCols, bHeadRClick, lNoModal, lExtDbl, ;
                lSilent, lAltA, lNoShowAlways, onrclick, lCheckBoxes, oncheck, ;
-               rowrefresh, aDefaultValues, editend ) CLASS TXBrowse
+               rowrefresh, aDefaultValues, editend, lAtFirst ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local nWidth2, nCol2, oScroll, z
 
@@ -305,7 +305,7 @@ Local nWidth2, nCol2, oScroll, z
               lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
               DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
               , , lExtDbl, lSilent, lAltA, ;
-              lNoShowAlways, .F., .T. )
+              lNoShowAlways, .F., .T., lAtFirst )
 
    ::FixBlocks( lFixedBlocks )
 
@@ -1883,16 +1883,6 @@ Local lRet, bReplaceField, oWorkArea, i, aItem, aRepl, aVals, oCtr, uVal, bRep, 
    If ! HB_IsNumeric( nRow )
       nRow := Max( ::CurrentRow, 1 )
    EndIf
-   If ! HB_IsNumeric( nCol )
-      nCol := ::FirstColInOrder
-   EndIf
-   If nRow < 1 .OR. nRow > ::ItemCount .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
-      Return .F.
-   EndIf
-   If AScan( ::aHiddenCols, nCol ) > 0
-      Return .F.
-   EndIf
-
    /*
     * lAppend == .T. means that beforehand an empty row was added to the grid
     * at position nRow, and that ::EditCell must edit it, append a new record
@@ -1905,15 +1895,27 @@ Local lRet, bReplaceField, oWorkArea, i, aItem, aRepl, aVals, oCtr, uVal, bRep, 
    If oWorkArea:EOF() .AND. ! lAppend .AND. ! ::AllowAppend
       Return .F.
    EndIf
-
-   // to work properly, nRow and the data source record must be synchronized
-   Empty( lChange )
-   ::SetControlValue( nRow, nCol )                                // Second parameter is needed by TXBrowseByCell:EditCell
-
    If oWorkArea:EOF()
       ::lAppendMode := .T.
       lAppend := .T.
    EndIf
+   If ! HB_IsNumeric( nCol )
+      If ::lAppendMode .OR. lAppend .OR. ::lAtFirstCol
+         nCol := ::FirstColInOrder
+      Else
+         nCol := ::FirstVisibleColumn
+      EndIf
+   EndIf
+   If nRow < 1 .OR. nRow > ::ItemCount .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
+      Return .F.
+   EndIf
+   If aScan( ::aHiddenCols, nCol ) > 0
+      Return .F.
+   EndIf
+
+   // to work properly, nRow and the data source record must be synchronized
+   Empty( lChange )
+   ::SetControlValue( nRow, nCol )                                // Second parameter is needed by TXBrowseByCell:EditCell
 
    If lAppend
       aItem := Array( Len( ::aHeaders ) )
@@ -2046,14 +2048,17 @@ Local lRet, lSomethingEdited
    If ::FirstVisibleColumn == 0
       Return .F.
    EndIf
+   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
    If ! HB_IsNumeric( nCol )
-      nCol := ::FirstColInOrder
+      If ::lAppendMode .OR. lAppend .OR. ::lAtFirstCol
+         nCol := ::FirstColInOrder
+      Else
+         nCol := ::FirstVisibleColumn
+      EndIf
    EndIf
    If nCol < 1 .OR. nCol > Len( ::aHeaders )
       Return .F.
    EndIf
-
-   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
 
    If lAppend
       If ::lAppendMode
@@ -2188,14 +2193,17 @@ Local lRet, lSomethingEdited
    If ::FirstVisibleColumn == 0
       Return .F.
    EndIf
+   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
    If ! HB_IsNumeric( nCol )
-      nCol := ::FirstColInOrder
+      If ::lAppendMode .OR. lAppend .OR. ::lAtFirstCol
+         nCol := ::FirstColInOrder
+      Else
+         nCol := ::FirstVisibleColumn
+      EndIf
    EndIf
    If nCol < 1 .OR. nCol > Len( ::aHeaders )
       Return .F.
    EndIf
-
-   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
 
    If lAppend
       If ::lAppendMode
@@ -3041,7 +3049,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
                 lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
                 DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
                 lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
-                lNoShowAlways, lNone, lCBE ) CLASS TXBrowseByCell
+                lNoShowAlways, lNone, lCBE, lAtFirst ) CLASS TXBrowseByCell
 *-----------------------------------------------------------------------------*
 
    Empty( nStyle )
@@ -3061,7 +3069,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
                     lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
                     DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
                     lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
-                    lNoShowAlways, .F., .T. )
+                    lNoShowAlways, .F., .T., lAtFirst )
 
    // By default, search in the current column
    ::SearchCol := -1
@@ -3408,14 +3416,17 @@ Local lRet, lSomethingEdited
    If ::FirstVisibleColumn == 0
       Return .F.
    EndIf
+   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
    If ! HB_IsNumeric( nCol )
-      nCol := ::FirstColInOrder
+      If ::lAppendMode .OR. lAppend .OR. ::lAtFirstCol
+         nCol := ::FirstColInOrder
+      Else
+         nCol := ::FirstVisibleColumn
+      EndIf
    EndIf
    If nCol < 1 .OR. nCol > Len( ::aHeaders )
       Return .F.
    EndIf
-
-   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
 
    If lAppend
       If ::lAppendMode
@@ -3872,31 +3883,29 @@ Local nNotify := GetNotifyCode( lParam ), aCellData, nvKey, lGo, uValue
             ListView_ClearCursel( ::hWnd )
          EndIf
       Else
-         If ! ::lLocked .AND. ::FirstVisibleColumn # 0
-            aCellData := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
-            ::MoveTo( { aCellData[ 1 ], aCellData[ 2 ] }, { ::nRowPos, ::nColPos } )
-         Else
-            ::CurrentRow := ::nRowPos
-            ::CurrentCol := ::nColPos
-         EndIf
-      EndIf
-
-      If HB_IsBlock( ::OnClick )
-         If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. uValue <= 0
-            If ! ::NestedClick
-               ::NestedClick := ! _OOHG_NestedSameEvent()
-               ::DoEventMouseCoords( ::OnClick, "CLICK" )
-               ::NestedClick := .F.
+         If HB_IsBlock( ::OnClick )
+            If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. uValue <= 0
+               If ! ::NestedClick
+                  ::NestedClick := ! _OOHG_NestedSameEvent()
+                  ::DoEventMouseCoords( ::OnClick, "CLICK" )
+                  ::NestedClick := .F.
+               EndIf
             EndIf
          EndIf
-      EndIf
 
-      If uValue > 0
-         // change check mark
-         ::CheckItem( uValue, ! ::CheckItem( uValue ) )
-      Else
-         // select item
-         ::MoveTo( ::CurrentRow, ::nRowPos )
+         If uValue > 0
+            // change check mark
+            ::CheckItem( uValue, ! ::CheckItem( uValue ) )
+         Else
+            // select item
+            If ! ::lLocked .AND. ::FirstVisibleColumn # 0
+               aCellData := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
+               ::MoveTo( { aCellData[ 1 ], aCellData[ 2 ] }, { ::nRowPos, ::nColPos } )
+            Else
+               ::CurrentRow := ::nRowPos
+               ::CurrentCol := ::nColPos
+            EndIf
+         EndIf
       EndIf
 
       // Skip default action
@@ -3919,33 +3928,31 @@ Local nNotify := GetNotifyCode( lParam ), aCellData, nvKey, lGo, uValue
             ListView_ClearCursel( ::hWnd )
          EndIf
       Else
-         If ! ::lLocked .AND. ::FirstVisibleColumn # 0
-            aCellData := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
-            ::MoveTo( { aCellData[ 1 ], aCellData[ 2 ] }, { ::nRowPos, ::nColPos } )
+         If HB_IsBlock( ::OnRClick )
+            If ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. uValue <= 0
+               ::DoEventMouseCoords( ::OnRClick, "RCLICK" )
+            EndIf
+         EndIf
+
+         If uValue > 0
+            // change check mark
+            ::CheckItem( uValue, ! ::CheckItem( uValue ) )
          Else
-            ::CurrentRow := ::nRowPos
-            ::CurrentCol := ::nColPos
+            // select item
+            If ! ::lLocked .AND. ::FirstVisibleColumn # 0
+               aCellData := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
+               ::MoveTo( { aCellData[ 1 ], aCellData[ 2 ] }, { ::nRowPos, ::nColPos } )
+            Else
+               ::CurrentRow := ::nRowPos
+               ::CurrentCol := ::nColPos
+            EndIf
          EndIf
-      EndIf
 
-      If HB_IsBlock( ::OnRClick )
-         If ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. uValue <= 0
-            ::DoEventMouseCoords( ::OnRClick, "RCLICK" )
-         EndIf
-      EndIf
-
-      If uValue > 0
-         // change check mark
-         ::CheckItem( uValue, ! ::CheckItem( uValue ) )
-      Else
-         // select item
-         ::MoveTo( ::CurrentRow, ::nRowPos )
-      EndIf
-
-      // Fire context menu
+         // Fire context menu
          If ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. uValue <= 0 )
-         ::ContextMenu:Cargo := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
-         ::ContextMenu:Activate()
+            ::ContextMenu:Cargo := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
+            ::ContextMenu:Activate()
+         EndIf
       EndIf
 
       // Skip default action
@@ -4347,10 +4354,10 @@ Local r, nClientWidth, nScrollWidth, lColChanged
             // Move left side into client area
             ListView_Scroll( ::hWnd, r[ 2 ], 0 )
          EndIf
+      EndIf
 
       // Ensure cell is visible
-         ListView_RedrawItems( ::hWnd, ::nRowPos, ::ItemCount )
-      EndIf
+      ListView_RedrawItems( ::hWnd, ::nRowPos, ::ItemCount )
    EndIf
 
 Return ::nColPos

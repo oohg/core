@@ -1,11 +1,31 @@
 /*
- * $Id: ChangeLog,v 1.1531 2015-11-25 21:53:33 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1532 2015-11-28 21:28:15 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-11-28 18:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+    * include/i_browse.ch
+    * include/i_grid.ch
+    * include/i_xbrowse.ch
+      + EDITFIRSTVISIBLE clause. By default edition starts on the first
+        non hidden column. This clauses forces the edition to start on the
+        first column currently visible.
+    * source/h_browse.prg
+      + Support for EDITFIRSTVISIBLE clause.
+      ! Scrollbar behaviour when clicking or righclicking.
+      ! BrowseByCell does not paint clicked or rightclicked cell.
+    * source/h_grid.prg
+      + DATA lAtFirstCol INIT .T.
+      ! BrowseByCell without EDIT clause allows editing because ::AllowEdit
+        is set to .T. when INPLACE clause is present.
+      + Support for EDITFIRSTVISIBLE clause.
+    * source/h_xbrowse.prg
+      + Support for EDITFIRSTVISIBLE clause.
+      ! XBrowseByCell does not paint clicked or rightclicked cell.
 
 2015-11-25 18:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog.004
