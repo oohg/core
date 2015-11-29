@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.67 2015-03-09 02:52:08 fyurisich Exp $
+ * $Id: h_tab.prg,v 1.68 2015-11-29 15:35:28 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -737,48 +737,47 @@ RETURN oPage
 
 
 CLASS TMultiPage FROM TControlGroup
-   DATA Type                INIT "MULTIPAGE" READONLY
-   DATA aPages              INIT {}
-   DATA oContainerBase      INIT nil
-   DATA oPageClass          INIT TTabPage()
-   DATA nFirstValue         INIT nil
+   DATA Type                      INIT "MULTIPAGE" READONLY
+   DATA aPages                    INIT {}
+   DATA oContainerBase            INIT nil
+   DATA oPageClass                INIT TTabPage()
+   DATA nFirstValue               INIT nil
 
    METHOD Define
    METHOD CreatePages
-   METHOD ItemCount         BLOCK { |Self| LEN( ::aPages ) }
+   METHOD ItemCount               BLOCK { |Self| LEN( ::aPages ) }
    METHOD Refresh
    METHOD RefreshData
    METHOD Release
    METHOD SizePos
-   METHOD Value             SETGET
-   METHOD Enabled           SETGET
-   METHOD Visible           SETGET
+   METHOD Value                   SETGET
+   METHOD Enabled                 SETGET
+   METHOD Visible                 SETGET
    METHOD ForceHide
-   METHOD SetFocus          BLOCK { |Self| ::oContainerBase:SetFocus() }
+   METHOD SetFocus                BLOCK { |Self| ::oContainerBase:SetFocus() }
    METHOD AdjustResize
-
    METHOD AddPage
    METHOD AddControl
    METHOD DeleteControl
    METHOD DeletePage
-
    METHOD RealPosition
    METHOD HidePage
    METHOD ShowPage
-
    METHOD Caption
    METHOD Picture
-
-   METHOD EndPage           BLOCK { |Self| _OOHG_DeleteFrame( ::oPageClass:Type ) }
+   METHOD EndPage                 BLOCK { |Self| _OOHG_DeleteFrame( ::oPageClass:Type ) }
    METHOD EndTab
 
    // Control-specific methods
-   METHOD ContainerValue             SETGET
-   METHOD ContainerCaption(x,y)      BLOCK { |Self,x,y| ::oContainerBase:Caption(x,y) }
-   METHOD ContainerItemCount         BLOCK { |Self| ::oContainerBase:ItemCount() }
-   METHOD InsertItem(x,y,z)          BLOCK { |Self,x,y,z| ::oContainerBase:InsertItem(x,y,z) }
+   METHOD ContainerValue          SETGET
+   METHOD ContainerCaption(x,y)   BLOCK { |Self,x,y| ::oContainerBase:Caption(x,y) }
+   METHOD ContainerItemCount      BLOCK { |Self| ::oContainerBase:ItemCount() }
+   METHOD InsertItem(x,y,z)       BLOCK { |Self,x,y,z| ::oContainerBase:InsertItem(x,y,z) }
    METHOD DeleteItem
-   METHOD hWnd                       BLOCK { |Self| IF( ::oContainerBase == nil, 0, ::oContainerBase:hWnd ) }
+   METHOD hWnd                    BLOCK { |Self| IF( ::oContainerBase == nil, 0, ::oContainerBase:hWnd ) }
+   METHOD bBeforeChange           SETGET
+   METHOD OnClick                 SETGET
+   METHOD OnRClick                SETGET
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -863,7 +862,7 @@ LOCAL nPage, nFocused
    nPage := IF( ::Visible, ::Value, 0 )
    AEVAL( ::aPages, { |p,i| p:Position := i , p:ForceHide() } )
    IF nPage >= 1 .AND. nPage <= LEN( ::aPages )
-      ::aPages[ nPage ]:Show()   
+      ::aPages[ nPage ]:Show()
       IF ! ::lProcMsgsOnVisible
          ProcessMessages()
       ENDIF
@@ -1126,7 +1125,7 @@ LOCAL nPos
       ENDIF
       IF nPos > 0
          ::Value := nPos
-         ::aPages[ nPos ]:Show()            
+         ::aPages[ nPos ]:Show()
          IF ! ::lProcMsgsOnVisible
             ProcessMessages()
          ENDIF
@@ -1214,26 +1213,49 @@ LOCAL nValue
    ENDIF
 RETURN nil
 
+*-----------------------------------------------------------------------------*
+METHOD bBeforeChange( bCode ) CLASS TMultiPage
+*-----------------------------------------------------------------------------*
+   IF PCount() > 0
+      ::oContainerBase:bBeforeChange := bCode
+   ENDIF
+RETURN ::oContainerBase:bBeforeChange
+
+*-----------------------------------------------------------------------------*
+METHOD OnClick( bCode ) CLASS TMultiPage
+*-----------------------------------------------------------------------------*
+   IF PCount() > 0
+      ::oContainerBase:OnClick := bCode
+   ENDIF
+RETURN ::oContainerBase:OnClick
+
+*-----------------------------------------------------------------------------*
+METHOD OnRClick( bCode ) CLASS TMultiPage
+*-----------------------------------------------------------------------------*
+   IF PCount() > 0
+      ::oContainerBase:OnRClick := bCode
+   ENDIF
+RETURN ::oContainerBase:OnRClick
+
 
 
 
 
 CLASS TTabRaw FROM TControl
-   DATA Type                INIT "TAB" READONLY
-   DATA ImageListColor      INIT CLR_DEFAULT
-   DATA ImageListFlags      INIT LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
-   DATA SetImageListCommand INIT TCM_SETIMAGELIST
+   DATA Type                      INIT "TAB" READONLY
+   DATA ImageListColor            INIT CLR_DEFAULT
+   DATA ImageListFlags            INIT LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
+   DATA SetImageListCommand       INIT TCM_SETIMAGELIST
+   DATA bBeforeChange             INIT nil
 
    METHOD Define
-   METHOD Value               SETGET
-
-   METHOD ItemCount           BLOCK { |Self| TabCtrl_GetItemCount( ::hWnd ) }
+   METHOD Value                   SETGET
+   METHOD ItemCount               BLOCK { |Self| TabCtrl_GetItemCount( ::hWnd ) }
    METHOD InsertItem
    METHOD DeleteItem
-
    METHOD Caption
    METHOD Picture
-
+   METHOD Events
    METHOD Events_Notify
    METHOD TabsAreaHeight
 ENDCLASS
@@ -1352,14 +1374,39 @@ METHOD Picture( nColumn, uValue ) CLASS TTabRaw
 RETURN nil
 
 *-----------------------------------------------------------------------------*
+METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TTabRaw
+*-----------------------------------------------------------------------------*
+   IF nMsg == WM_LBUTTONDOWN
+      IF ! ::NestedClick
+         ::NestedClick := ! _OOHG_NestedSameEvent()
+         ::DoEventMouseCoords( ::OnClick, "CLICK" )
+         ::NestedClick := .F.
+      ENDIF
+
+   ELSEIF nMsg == WM_RBUTTONDOWN
+      ::DoEventMouseCoords( ::OnRClick, "RCLICK" )
+
+   ENDIF
+RETURN ::Super:Events( hWnd, nMsg, wParam, lParam )
+
+*-----------------------------------------------------------------------------*
 METHOD Events_Notify( wParam, lParam ) CLASS TTabRaw
 *-----------------------------------------------------------------------------*
-LOCAL nNotify := GetNotifyCode( lParam )
+LOCAL lGo, nNotify := GetNotifyCode( lParam )
 
    IF nNotify == TCN_SELCHANGE
       ::Refresh()
       ::DoChange()
       RETURN nil
+
+   ELSEIF nNotify == TCN_SELCHANGING
+      If HB_IsBlock( ::bBeforeChange )
+         lGo := Eval( ::bBeforeChange, ::Value )
+         If HB_IsLogical( lGo ) .and. ! lGo
+            // Prevent the action
+            Return 1
+         EndIf
+      EndIf
 
    ENDIF
 
@@ -1450,7 +1497,7 @@ CLASS TTabPageInternal FROM TFormInternal
    METHOD EndPage             BLOCK { |Self| _OOHG_DeleteFrame( ::Type ) }
    METHOD Events_Size
    METHOD AdjustResize
-   
+
    METHOD SetFocus            BLOCK { |Self| ::Container:SetFocus() , ::Container:Value := ::Position , ::Super:SetFocus() , Self }
 ENDCLASS
 

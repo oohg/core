@@ -1,11 +1,19 @@
 /*
- * $Id: ChangeLog,v 1.1532 2015-11-28 21:28:15 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1533 2015-11-29 15:35:27 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-11-29 12:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_tab.prg
+     + Methods bBeforeChange, OnClick and OnRClick to TMultiPage class.
+     + DATA bBeforeChange to TTabRaw class. This block is evaluated before
+       changing the selected tab. It it returns .F. the change is prevented.
+     + Method Events to TTabRaw class.
+     + Handler for TCN_SELCHANGING message in TTabRaw():Events_Notify.
 
 2015-11-28 18:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
     * include/i_browse.ch
