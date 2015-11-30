@@ -1,5 +1,5 @@
 /*
- * $Id: h_picture.prg,v 1.23 2015-10-29 00:04:55 fyurisich Exp $
+ * $Id: h_picture.prg,v 1.24 2015-11-30 01:19:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -255,7 +255,7 @@ LOCAL nWidth, nHeight, nAux
          // TO DO: ROTATE
          ::AuxHandle := _OOHG_SetBitmap( Self, ::hImage, 0, ::Stretch, ::AutoFit )
       ELSEIF ! ::nZoom == 1
-         ::AuxHandle := _OOHG_ScaleImage( Self, ::hImage, ( _OOHG_BitmapWidth( ::hImage ) * ::nZoom ) + 0.999, ( _OOHG_BitmapHeight( ::hImage ) * ::nZoom ) + 0.999, .F. )
+         ::AuxHandle := _OOHG_ScaleImage( Self, ::hImage, ( _OOHG_BitmapWidth( ::hImage ) * ::nZoom ) + 0.999, ( _OOHG_BitmapHeight( ::hImage ) * ::nZoom ) + 0.999, .F., .F., NIL, 0, 0)
       ELSE
          ::AuxHandle := ::hImage
       ENDIF

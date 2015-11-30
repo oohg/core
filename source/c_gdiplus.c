@@ -1,5 +1,5 @@
 /*
- * $Id: c_gdiplus.c,v 1.19 2015-11-08 00:15:38 fyurisich Exp $
+ * $Id: c_gdiplus.c,v 1.20 2015-11-30 01:19:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1036,7 +1036,7 @@ HANDLE _OOHG_GDIPLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor, long 
       if( lWidth2 != ( long ) uiWidth || lHeight2 != ( long ) uiHeight )
       {
          hOldImage = hImage;
-         hImage = _OOHG_ScaleImage( hWnd, hOldImage, lWidth2, lHeight2, 0, lBackColor, bIgnoreBkClr );
+         hImage = _OOHG_ScaleImage( hWnd, hOldImage, lWidth2, lHeight2, FALSE, lBackColor, bIgnoreBkClr, 0, 0 );
          DeleteObject( hOldImage );
       }
 

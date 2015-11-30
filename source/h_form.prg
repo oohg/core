@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.62 2015-10-18 01:29:59 fyurisich Exp $
+ * $Id: h_form.prg,v 1.63 2015-11-30 01:19:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1195,7 +1195,7 @@ LOCAL hImageWork
          ::BackBitmap := NIL
       Else
          If ::lStretchBack
-            hImageWork := _OOHG_ScaleImage( Self, ::hBackImage, ::ClientWidth, ::ClientHeight, .F. )
+            hImageWork := _OOHG_ScaleImage( Self, ::hBackImage, ::ClientWidth, ::ClientHeight, .F., .F., NIL, 0, 0 )
          Else
             hImageWork := _OOHG_CopyBitmap( ::hBackImage, 0, 0, LR_CREATEDIBSECTION )
          Endif

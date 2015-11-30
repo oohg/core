@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.h,v 1.67 2015-11-08 00:15:38 fyurisich Exp $
+ * $Id: oohg.h,v 1.68 2015-11-30 01:19:26 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -132,7 +132,7 @@ BOOL _OOHG_DetermineColor( PHB_ITEM pColor, LONG *lColor );
 BOOL _OOHG_DetermineColorReturn( PHB_ITEM pColor, LONG *lColor, BOOL fUpdate );
 HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, HWND hWnd, LONG BackColor, BOOL bIgnoreBkClr );
 HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG BackColor, long lWidth2, long lHeight2, BOOL bIgnoreBkClr );
-HBITMAP _OOHG_ScaleImage( HWND hWnd, HBITMAP hImage, int iWidth, int iHeight, int scalestrech, LONG BackColor, BOOL bIgnoreBkClr );
+HBITMAP _OOHG_ScaleImage( HWND hWnd, HBITMAP hImage, int iWidth, int iHeight, BOOL scalestrech, LONG BackColor, BOOL bIgnoreBkClr, int iHrzMrgn, int iVrtMrgn );
 BOOL _OOHG_UseGDIP( void );
 HANDLE _OOHG_GDIPLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor, long lWidth2, long lHeight2, BOOL bIgnoreBkClr );
 DWORD _OOHG_RTL_Status( BOOL bRtl );

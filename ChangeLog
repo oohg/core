@@ -1,11 +1,34 @@
 /*
- * $Id: ChangeLog,v 1.1533 2015-11-29 15:35:27 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1534 2015-11-30 01:19:26 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-11-29 22:19 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_windefs.ch
+     + BUTTON_IMAGELIST_ALIGN_* constants.
+     + DT_* constants.
+   * include/oohg.h
+     * _OOHG_ScaleImage() declaration.
+   * source/c_gdiplus.c
+     * New parameters in calls to _OOHG_ScaleImage().
+   * source/c_image.c
+     + New parameters iHrzMrgn and iVrtMrgn in _OOHG_ScaleImage().
+       Use them to reduce the size of the scaled image so it does not
+       occupy the entire control's rect.
+     + New parameters in calls to _OOHG_ScaleImage().
+     * Parameter scalestrech changed from int to BOOL.
+   * source/h_button.prg
+     * Use BUTTON_IMAGELIST_ALIGN_* constants instead of numbers.
+     * aImageMargins now defaults to {6,10,6,10} so a 16x16 image vertically
+       fits in the center of a button with default height (28).
+     * New parameters in calls to _OOHG_ScaleImage().
+   * source/h_form.prg
+   * source/h_picture.prg
+     * New parameters in calls to _OOHG_ScaleImage().
 
 2015-11-29 12:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_tab.prg

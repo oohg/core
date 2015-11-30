@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.67 2015-08-18 01:17:22 fyurisich Exp $
+ * $Id: i_windefs.ch,v 1.68 2015-11-30 01:19:26 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -374,6 +374,11 @@ BUTTON CONTROL
 #define BN_CLICKED                    0
 #define BN_KILLFOCUS                  7
 #define BN_SETFOCUS                   6
+#define BUTTON_IMAGELIST_ALIGN_LEFT   0
+#define BUTTON_IMAGELIST_ALIGN_RIGHT  1
+#define BUTTON_IMAGELIST_ALIGN_TOP    2
+#define BUTTON_IMAGELIST_ALIGN_BOTTOM 3
+#define BUTTON_IMAGELIST_ALIGN_CENTER 4
 
 /*---------------------------------------------------------------------------
 LISTVIEW CONTROL
@@ -902,5 +907,16 @@ TOOLBAR CONTROL
 #define TB_AUTOSIZE                   1057
 #define TB_SETTOOLTIPS	              (WM_USER + 36)
 #define TB_GETHOTITEM                 (WM_USER + 71)
+
+/*---------------------------------------------------------------------------
+DRAWTEXT PARAMETERS
+---------------------------------------------------------------------------*/
+
+#define DT_LEFT    0
+#define DT_CENTER  1
+#define DT_RIGHT   2
+#define DT_TOP     0
+#define DT_VCENTER 4
+#define DT_BOTTOM  8
 
 #endif
