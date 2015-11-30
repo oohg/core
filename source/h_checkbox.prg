@@ -1,5 +1,5 @@
 /*
- * $Id: h_checkbox.prg,v 1.39 2015-07-14 22:27:41 fyurisich Exp $
+ * $Id: h_checkbox.prg,v 1.40 2015-11-30 01:25:11 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -127,6 +127,7 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
 Local ControlHandle, nStyle, nStyleEx := 0
 Local oTab
 
+   ASSIGN ::lThemed     VALUE themed      TYPE "L" DEFAULT IsAppThemed()
    ASSIGN ::nCol        VALUE x           TYPE "N"
    ASSIGN ::nRow        VALUE y           TYPE "N"
    ASSIGN ::nWidth      VALUE w           TYPE "N"
@@ -135,12 +136,6 @@ Local oTab
    ASSIGN ::Threestate  VALUE threestate  TYPE "L"
    ASSIGN ::LeftAlign   VALUE leftalign   TYPE "L"
    ASSIGN autosize      VALUE autosize    TYPE "L" DEFAULT .F.
-
-   IF HB_IsLogical( themed )
-      ::lThemed := themed
-   ELSEIF IsAppThemed()
-      ::lThemed := .T.
-   ENDIF
 
    IF ! ::Threestate .and. ! HB_IsLogical( value )
       value := .F.

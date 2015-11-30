@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.1534 2015-11-30 01:19:26 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1535 2015-11-30 01:25:11 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-11-29 22:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_checkbox.prg
+   * source/h_radio.prg
+     * ::lThemed now defaults to IsAppThemed() instead of .F. in ::Define().
 
 2015-11-29 22:19 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_windefs.ch

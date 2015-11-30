@@ -1,5 +1,5 @@
 /*
- * $Id: h_radio.prg,v 1.43 2015-08-01 21:17:17 fyurisich Exp $
+ * $Id: h_radio.prg,v 1.44 2015-11-30 01:25:11 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -148,7 +148,7 @@ Local i, oItem, uToolTip, uReadOnly
    ASSIGN ::nRow        VALUE y           TYPE "N"
    ASSIGN ::nWidth      VALUE width       TYPE "N"
    ASSIGN ::nHeight     VALUE height      TYPE "N"
-   ASSIGN ::lThemed     VALUE themed      TYPE "L"
+   ASSIGN ::lThemed     VALUE themed      TYPE "L" DEFAULT IsAppThemed()
    ASSIGN ::lAutoSize   VALUE autosize    TYPE "L"
    ASSIGN ::lHorizontal VALUE horizontal  TYPE "L"
    ASSIGN ::Transparent VALUE transparent TYPE "L"
