@@ -1,5 +1,5 @@
 /*
- * $Id: h_image.prg,v 1.40 2015-10-29 00:04:55 fyurisich Exp $
+ * $Id: h_image.prg,v 1.41 2015-12-01 22:15:19 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -132,22 +132,22 @@ ENDCLASS
 METHOD Define( ControlName, ParentForm, x, y, FileName, w, h, ProcedureName, ;
                HelpId, invisible, stretch, lWhiteBackground, lRtl, backcolor, ;
                cBuffer, hBitMap, autofit, imagesize, ToolTip, Border, ClientEdge, ;
-               lNoTransparent, lNo3DColors, lNoDIB, lStyleTransp, aArea, lDisabled ) CLASS TImage
+               lNoLoadTrans, lNo3DColors, lNoDIB, lStyleTransp, aArea, lDisabled ) CLASS TImage
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle, nStyleEx
 
-   ASSIGN ::nCol           VALUE x              TYPE "N"
-   ASSIGN ::nRow           VALUE y              TYPE "N"
-   ASSIGN ::nWidth         VALUE w              TYPE "N"
-   ASSIGN ::nHeight        VALUE h              TYPE "N"
-   ASSIGN ::Stretch        VALUE stretch        TYPE "L"
-   ASSIGN ::AutoFit        VALUE autofit        TYPE "L"
-   ASSIGN ::ImageSize      VALUE imagesize      TYPE "L"
-   ASSIGN ::lNoTransparent VALUE lNoTransparent TYPE "L"
-   ASSIGN ::lNo3DColors    VALUE lNo3DColors    TYPE "L"
-   ASSIGN ::lNoDIBSection  VALUE lNoDIB         TYPE "L"
-   ASSIGN ::aExcludeArea   VALUE aArea          TYPE "A"
-   ASSIGN lDisabled        VALUE lDisabled      TYPE "L" DEFAULT .F.
+   ASSIGN ::nCol           VALUE x            TYPE "N"
+   ASSIGN ::nRow           VALUE y            TYPE "N"
+   ASSIGN ::nWidth         VALUE w            TYPE "N"
+   ASSIGN ::nHeight        VALUE h            TYPE "N"
+   ASSIGN ::Stretch        VALUE stretch      TYPE "L"
+   ASSIGN ::AutoFit        VALUE autofit      TYPE "L"
+   ASSIGN ::ImageSize      VALUE imagesize    TYPE "L"
+   ASSIGN ::lNoTransparent VALUE lNoLoadTrans TYPE "L"
+   ASSIGN ::lNo3DColors    VALUE lNo3DColors  TYPE "L"
+   ASSIGN ::lNoDIBSection  VALUE lNoDIB       TYPE "L"
+   ASSIGN ::aExcludeArea   VALUE aArea        TYPE "A"
+   ASSIGN lDisabled        VALUE lDisabled    TYPE "L" DEFAULT .F.
 
    ::SetForm( ControlName, ParentForm,,,, BackColor,, lRtl )
    If HB_IsLogical( lWhiteBackground ) .AND. lWhiteBackground

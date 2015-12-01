@@ -1,11 +1,22 @@
 /*
- * $Id: ChangeLog,v 1.1535 2015-11-30 01:25:11 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1536 2015-12-01 22:15:18 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-12-01 19:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_altsyntax.ch
+     * THEMED clause is initialized as NIL instead of .F.
+     + EDITFIRSTVISIBLE clause.
+   * source/h_button.prg
+     * Image alignment now defaults to CENTER instead of LEFT when the
+       button has no caption.
+   * source/h_image.prg
+   * source/h_picture.prg
+     * Changed parameter name.
 
 2015-11-29 22:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_checkbox.prg

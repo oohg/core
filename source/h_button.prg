@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.72 2015-11-30 01:19:27 fyurisich Exp $
+ * $Id: h_button.prg,v 1.73 2015-12-01 22:15:19 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -144,21 +144,10 @@ Local ControlHandle, nStyle, lBitMap, i
    ASSIGN ::nWidth  VALUE w TYPE "N"
    ASSIGN ::nHeight VALUE h TYPE "N"
    
-   If ! Empty( cImage )
-      DEFAULT cAlign TO "LEFT"
-   EndIf
-
-   lBitMap := ! ValType( caption ) $ "CM" .AND. ;
-              ( ValType( cImage ) $ "CM" .OR. ;
-                ValType( cBuffer ) $ "CM" .OR. ;
-                ValidHandler( hBitMap ) )
-   If ! lBitMap .AND. Empty( caption )
-      If ( Valtype( cImage ) $ "CM" .AND. ! Empty( cImage ) ) .OR. ;
-         ( Valtype( cBuffer ) $ "CM" .AND. ! Empty( cBuffer ) ) .OR. ;
-         ValidHandler( hBitMap )
-         lBitMap := .T.
-      EndIf
-   EndIf
+   lBitMap := ( ( ValType( cImage ) $ "CM" .AND. ! Empty( cImage ) ) .OR. ;
+                ( ValType( cBuffer ) $ "CM" .AND. ! Empty( cBuffer ) ) .OR. ;
+                ValidHandler( hBitMap ) ) .AND. ;
+              ( ! ValType( Caption ) $ "CM" .OR. Empty( Caption ) )
 
    If HB_IsArray( aImageMargin )
       For i := 1 to MIN( 4, LEN( aImageMargin ) )
@@ -193,7 +182,14 @@ Local ControlHandle, nStyle, lBitMap, i
    ASSIGN ::lNoDIBSection  VALUE lNoDIB       TYPE "L"
    ASSIGN ::lNoHotLight    VALUE lNoHotLight  TYPE "L"
 
-   IF VALTYPE( cAlign ) $ "CM"
+   If lBitMap
+      If Empty( ::Caption )
+         DEFAULT cAlign TO "CENTER"
+      Else
+         DEFAULT cAlign TO "LEFT"
+      EndIf
+   EndIf
+   IF ValType( cAlign ) $ "CM"
       cAlign := ALLTRIM( UPPER( cAlign ) )
       DO CASE
       CASE EMPTY( cAlign )
@@ -210,7 +206,7 @@ Local ControlHandle, nStyle, lBitMap, i
          cAlign := BUTTON_IMAGELIST_ALIGN_TOP
       ENDCASE
    ENDIF
-   IF VALTYPE( cAlign ) == "N"
+   IF ValType( cAlign ) == "N"
       ::nAlign := cAlign
    ENDIF
 
@@ -259,7 +255,7 @@ Return ::Super:SetFocus()
 METHOD Picture( cPicture ) CLASS TButton
 *-----------------------------------------------------------------------------*
 LOCAL nAttrib, aPictSize
-   IF VALTYPE( cPicture ) $ "CM"
+   IF ValType( cPicture ) $ "CM"
       DeleteObject( ::hImage )
       ::cPicture := cPicture
 
@@ -306,7 +302,7 @@ Return ::hImage
 *-----------------------------------------------------------------------------*
 METHOD Buffer( cBuffer ) CLASS TButton
 *-----------------------------------------------------------------------------*
-   If VALTYPE( cBuffer ) $ "CM"
+   If ValType( cBuffer ) $ "CM"
       DeleteObject( ::hImage )
       ::hImage := _OOHG_BitmapFromBuffer( Self, cBuffer, ::AutoFit .AND. ! ::ImageSize .AND. ! ::Stretch )
       IF ::ImageSize
@@ -369,8 +365,9 @@ Local nNotify := GetNotifyCode( lParam )
          IsAppThemed() .AND. ;
          ValidHandler( ::hImage )
 */
+      If ::lThemed .AND. IsAppThemed()
          Return TButton_Notify_CustomDraw( lParam, ! ::lNoHotLight )
-//      EndIf
+      EndIf
    EndIf
 
 Return ::Super:Events_Notify( wParam, lParam )
@@ -690,16 +687,17 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
                lDisabled, themed, aImageMargin, OnMouseMove, cAlign, lMultiLine, ;
                flat, lNoHotLight ) CLASS TButtonCheck
 *-----------------------------------------------------------------------------*
-Local ControlHandle, nStyle, i
+Local ControlHandle, nStyle, lBitMap, i
 
    ASSIGN ::nCol    VALUE x TYPE "N"
    ASSIGN ::nRow    VALUE y TYPE "N"
    ASSIGN ::nWidth  VALUE w TYPE "N"
    ASSIGN ::nHeight VALUE h TYPE "N"
 
-   If ! Empty( cImage )
-      DEFAULT cAlign TO "LEFT"
-   EndIf
+   lBitMap := ( ( ValType( cImage ) $ "CM" .AND. ! Empty( cImage ) ) .OR. ;
+                ( ValType( cBuffer ) $ "CM" .AND. ! Empty( cBuffer ) ) .OR. ;
+                ValidHandler( hBitMap ) ) .AND. ;
+              ( ! ValType( Caption ) $ "CM" .OR. Empty( Caption ) )
 
    If HB_IsArray( aImageMargin )
       For i := 1 to MIN( 4, LEN( aImageMargin ) )
@@ -717,11 +715,8 @@ Local ControlHandle, nStyle, i
              BS_AUTOCHECKBOX + ;
              BS_PUSHLIKE + ;
              if( ValType( flat ) == "L"      .AND. flat,         BS_FLAT, 0 )     + ;
+             if( lBitMap,                                        BS_BITMAP, 0 ) + ;
              if( ValType( lMultiLine ) == "L" .AND. lMultiLine,  BS_MULTILINE, 0 )
-
-   IF VALTYPE( cImage ) $ "CM" .OR. VALTYPE( cBuffer ) $ "CM" .OR. VALTYPE( hBitMap ) $ "NP"
-      nStyle += BS_BITMAP
-   ENDIF
 
    ControlHandle := InitButton( ::ContainerhWnd, Caption, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, ::lRtl, nStyle )
 
@@ -738,7 +733,14 @@ Local ControlHandle, nStyle, i
    ASSIGN ::lNoDIBSection  VALUE lNoDIB       TYPE "L"
    ASSIGN ::lNoHotLight    VALUE lNoHotLight  TYPE "L"
 
-   IF VALTYPE( cAlign ) $ "CM"
+   If lBitMap
+      If Empty( ::Caption )
+         DEFAULT cAlign TO "CENTER"
+      Else
+         DEFAULT cAlign TO "LEFT"
+      EndIf
+   EndIf
+   IF ValType( cAlign ) $ "CM"
       cAlign := ALLTRIM( UPPER( cAlign ) )
       DO CASE
       CASE EMPTY( cAlign )
@@ -755,7 +757,7 @@ Local ControlHandle, nStyle, i
          cAlign := BUTTON_IMAGELIST_ALIGN_TOP
       ENDCASE
    ENDIF
-   IF VALTYPE( cAlign ) == "N"
+   IF ValType( cAlign ) == "N"
       ::nAlign := cAlign
    ENDIF
 
@@ -802,7 +804,7 @@ Return ::Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
 *------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TButtonCheck
 *------------------------------------------------------------------------------*
-   IF VALTYPE( uValue ) == "L"
+   IF ValType( uValue ) == "L"
       SendMessage( ::hWnd, BM_SETCHECK, if( uValue, BST_CHECKED, BST_UNCHECKED ), 0 )
       ::DoChange()
    ELSE

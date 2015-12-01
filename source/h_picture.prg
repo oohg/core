@@ -1,5 +1,5 @@
 /*
- * $Id: h_picture.prg,v 1.24 2015-11-30 01:19:27 fyurisich Exp $
+ * $Id: h_picture.prg,v 1.25 2015-12-01 22:15:19 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -96,23 +96,23 @@ ENDCLASS
 *-----------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, FileName, w, h, cBuffer, hBitMap, ;
                stretch, autofit, imagesize, BORDER, CLIENTEDGE, BackColor, ;
-               ProcedureName, ToolTip, HelpId, lRtl, invisible, lNoTransparent, ;
+               ProcedureName, ToolTip, HelpId, lRtl, invisible, lNoLoadTrans, ;
                lNo3DColors, lNoDIB, lStyleTransp, aArea, lDisabled ) CLASS TPicture
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle, nStyleEx
 
-   ASSIGN ::nCol           VALUE x              TYPE "N"
-   ASSIGN ::nRow           VALUE y              TYPE "N"
-   ASSIGN ::nWidth         VALUE w              TYPE "N"
-   ASSIGN ::nHeight        VALUE h              TYPE "N"
-   ASSIGN ::Stretch        VALUE stretch        TYPE "L"
-   ASSIGN ::AutoFit        VALUE autofit        TYPE "L"
-   ASSIGN ::ImageSize      VALUE imagesize      TYPE "L"
-   ASSIGN ::lNoTransparent VALUE lNoTransparent TYPE "L"
-   ASSIGN ::lNo3DColors    VALUE lNo3DColors    TYPE "L"
-   ASSIGN ::lNoDIBSection  VALUE lNoDIB         TYPE "L"
-   ASSIGN ::aExcludeArea   VALUE aArea          TYPE "A"
-   ASSIGN lDisabled        VALUE lDisabled      TYPE "L" DEFAULT .F.
+   ASSIGN ::nCol           VALUE x            TYPE "N"
+   ASSIGN ::nRow           VALUE y            TYPE "N"
+   ASSIGN ::nWidth         VALUE w            TYPE "N"
+   ASSIGN ::nHeight        VALUE h            TYPE "N"
+   ASSIGN ::Stretch        VALUE stretch      TYPE "L"
+   ASSIGN ::AutoFit        VALUE autofit      TYPE "L"
+   ASSIGN ::ImageSize      VALUE imagesize    TYPE "L"
+   ASSIGN ::lNoTransparent VALUE lNoLoadTrans TYPE "L"
+   ASSIGN ::lNo3DColors    VALUE lNo3DColors  TYPE "L"
+   ASSIGN ::lNoDIBSection  VALUE lNoDIB       TYPE "L"
+   ASSIGN ::aExcludeArea   VALUE aArea        TYPE "A"
+   ASSIGN lDisabled        VALUE lDisabled    TYPE "L" DEFAULT .F.
 
 /*
    IF BackColor== NIL

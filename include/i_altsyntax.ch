@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.128 2015-11-08 00:00:18 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.129 2015-12-01 22:15:19 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -968,7 +968,7 @@ RADIO GROUP
       _OOHG_ActiveControlSpacing     := NIL    ;;
       _OOHG_ActiveControlTransparent := .F.    ;;
       _OOHG_ActiveControlAutoSize    := .F.    ;;
-      _OOHG_ActiveControlThemed      := .F.    ;;
+      _OOHG_ActiveControlThemed      := NIL    ;;
       _OOHG_ActiveControlHorizontal  := .F.    ;;
       _OOHG_ActiveControlBackground  := NIL    ;;
       _OOHG_ActiveControlLeft        := .F.    ;;
@@ -1314,25 +1314,25 @@ BUTTON
 
 #xcommand DEFINE BUTTON <name> ;
    => ;
-      _OOHG_ClearActiveControlInfo( <(name)> ) ;;
-      _OOHG_ActiveControlCaption      := NIL    ;;
-      _OOHG_ActiveControlAction       := NIL    ;;
-      _OOHG_ActiveControlFlat         := .F.    ;;
-      _OOHG_ActiveControlPicture      := NIL    ;;
-      _OOHG_ActiveControlTransparent  := .T.    ;;
-      _OOHG_ActiveControlNoPrefix     := .F.    ;;
-      _OOHG_ActiveControlBuffer       := NIL    ;;
-      _OOHG_ActiveControlHBitmap      := NIL    ;;
-      _OOHG_ActiveControlScale        := .F.    ;;
-      _OOHG_ActiveControlCancel       := .F.    ;;
-      _OOHG_ActiveControlAlignment    := NIL    ;;
-      _OOHG_ActiveControlMultiLine    := .F.    ;;
-      _OOHG_ActiveControlThemed       := .F.    ;;
-      _OOHG_ActiveControlImageMargin  := NIL    ;;
-      _OOHG_ActiveControlNo3DColors   := .F.    ;;
-      _OOHG_ActiveControlAutoFit      := .F.    ;;
-      _OOHG_ActiveControlNoDIBSection := .T.    ;;
-      _OOHG_ActiveControlNoToday      := .F.
+      _OOHG_ClearActiveControlInfo( <(name)> )    ;;
+      _OOHG_ActiveControlCaption           := NIL ;;
+      _OOHG_ActiveControlAction            := NIL ;;
+      _OOHG_ActiveControlFlat              := .F. ;;
+      _OOHG_ActiveControlPicture           := NIL ;;
+      _OOHG_ActiveControlNoLoadTransparent := .F. ;;
+      _OOHG_ActiveControlNoPrefix          := .F. ;;
+      _OOHG_ActiveControlBuffer            := NIL ;;
+      _OOHG_ActiveControlHBitmap           := NIL ;;
+      _OOHG_ActiveControlScale             := .F. ;;
+      _OOHG_ActiveControlCancel            := .F. ;;
+      _OOHG_ActiveControlImagesAlign       := NIL ;;
+      _OOHG_ActiveControlMultiLine         := .F. ;;
+      _OOHG_ActiveControlThemed            := NIL ;;
+      _OOHG_ActiveControlImageMargin       := NIL ;;
+      _OOHG_ActiveControlNo3DColors        := .F. ;;
+      _OOHG_ActiveControlAutoFit           := .F. ;;
+      _OOHG_ActiveControlNoDIBSection      := .T. ;;
+      _OOHG_ActiveControlNoToday           := .F.
 
 #xcommand CAPTION <caption> ;
    => ;
@@ -1408,7 +1408,7 @@ BUTTON
 
 #xcommand ALIGNMENT <alignment:LEFT,RIGHT,TOP,BOTTOM,CENTER> ;
    => ;
-      _OOHG_ActiveControlAlignment := <"alignment">
+      _OOHG_ActiveControlImagesAlign := <"alignment">
 
 #xcommand MULTILINE <multiline> ;
    => ;
@@ -1476,10 +1476,10 @@ BUTTON
             _OOHG_ActiveControlBuffer, ;
             _OOHG_ActiveControlHBitmap, ;
             _OOHG_ActiveControlPicture, ;
-            ! _OOHG_ActiveControlTransparent, ;
+            _OOHG_ActiveControlNoLoadTransparent, ;
             _OOHG_ActiveControlScale, ;
             _OOHG_ActiveControlCancel, ;
-            _OOHG_ActiveControlAlignment, ;
+            _OOHG_ActiveControlImagesAlign, ;
             _OOHG_ActiveControlMultiLine, ;
             _OOHG_ActiveControlThemed, ;
             _OOHG_ActiveControlImageMargin, ;
@@ -1608,7 +1608,7 @@ CHECK BOX/BUTTON
       _OOHG_ActiveControlNo3DColors   := .F.   ;;
       _OOHG_ActiveControlAutoFit      := .F.   ;;
       _OOHG_ActiveControlNoDIBSection := .T.   ;;
-      _OOHG_ActiveControlThemed       := .F.   ;;
+      _OOHG_ActiveControlThemed       := NIL   ;;
       _OOHG_ActiveControlImageMargin  := NIL   ;;
       _OOHG_ActiveControlOnMouseMove  := NIL   ;;
       _OOHG_ActiveControlAlignment    := NIL   ;;
@@ -2509,6 +2509,10 @@ GRID
 #xcommand ON INSERT <action> ;
    => ;
       _OOHG_ActiveControlOnInsert := <{action}>
+
+#xcommand EDITFIRSTVISIBLE <efv> ;
+   => ;
+      _OOHG_ActiveControlDisplayEdit := ! <efv>
 
 #xcommand END GRID ;
    => ;
