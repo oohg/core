@@ -1,5 +1,5 @@
 /*
- * $Id: TStreamSocket.prg,v 1.2 2011-09-05 17:20:16 guerra000 Exp $
+ * $Id: TStreamSocket.prg,v 1.3 2015-12-08 06:01:18 guerra000 Exp $
  */
 /*
  * Data stream from network socket management class.
@@ -18,11 +18,20 @@
       #include <winsock.h>
 
       WSADATA *__Socket_Data = 0;
+
+      #ifndef AF_BTH
+         #define AF_BTH           32
+      #endif
+      #ifndef BTHPROTO_RFCOMM
+         #define BTHPROTO_RFCOMM  3
+      #endif
    #else
       #include <netdb.h>
       #include <sys/socket.h>
       #include <sys/ioctl.h>
       #include <netinet/in.h>
+      #include <bluetooth/bluetooth.h>
+      #include <bluetooth/rfcomm.h>
 
       typedef int SOCKET;
       typedef struct sockaddr_in SOCKADDR_IN;
@@ -32,6 +41,8 @@
       #define WSAENOBUFS       ENOBUFS
       #define INVALID_SOCKET   -1
       #define SOCKET_ERROR     -1
+
+      #define AF_BTH           AF_BLUETOOTH
    #endif
    #include <hbapi.h>
    #include <errno.h>
@@ -41,10 +52,29 @@
 
    int NonBlockingSocket( SOCKET sock );
 
+   #ifdef __XHARBOUR__
+      #ifndef HB_ISCHAR
+         #define HB_ISCHAR( n )         ISCHAR( n )
+      #endif
+      #ifndef HB_ISNUM
+         #define HB_ISNUM( n )          ISNUM( n )
+      #endif
+      //
+      #define HB_STORNI2( n, x )        hb_storni( n, x )
+      #define HB_STORCLEN( n, x, y )    hb_storclen( n, x, y )
+   #else
+      #define HB_STORNI2( n, x )        hb_storvni( n, x )
+      #define HB_STORCLEN( n, x, y )    hb_storvclen( n, x, y )
+   #endif
+
 #pragma ENDDUMP
 
 CLASS TStreamSocket FROM TStreamBase
-   DATA nSocket INIT 0
+   DATA nSocket           INIT 0     // SOCKET number
+   DATA nSocketType       INIT 0     // Type of socket ( see ::SockAddr() )
+   DATA nProtocolFamily   INIT 0     // Address family AF_ / protocol family PF_
+   DATA nProtocolSocket   INIT 0     // Protocol for socket()
+   DATA cSockAddr_In      INIT ""    // SOCKADDR_IN structure
 
    METHOD New
    METHOD IsConnected
@@ -56,49 +86,53 @@ CLASS TStreamSocket FROM TStreamBase
    //
    METHOD Listen
    METHOD Accept
+   METHOD SockAddr
 ENDCLASS
 
-METHOD New( cHost, nPort, nSocket ) CLASS TStreamSocket
+METHOD New( cHost, nPort, nSocket, nSocketType, cClassId ) CLASS TStreamSocket
+LOCAL cSockAddr_In
    ::Close()
    _s_InicSocket()
    IF HB_ISNUMERIC( nSocket ) .AND. nSocket > 0
       ::nSocket := nSocket
    ELSE
-      ::nSocket := HB_INLINE( cHost, nPort ){
-         SOCKET sock;
-         SOCKADDR_IN sin;
-         LPHOSTENT lpHost;
-         int err;
+      IF ::SockAddr( nSocketType, nPort, cHost, cClassId ) == nil
+         ::nSocket := 0
+      ELSE
+         cSockAddr_In := ::cSockAddr_In
+         ::nSocket := HB_INLINE( ::nProtocolFamily, ::nProtocolSocket, @cSockAddr_In ){
+               SOCKET sock;
+               LPSOCKADDR sin;
+               int err, iSockAddr_Len;
 
-         sock = socket( PF_INET, SOCK_STREAM, 0 );
-         if( sock != INVALID_SOCKET )
-         {
-            // Gets host's IP address
-            lpHost = gethostbyname( ( char * ) hb_parc( 1 ) );
-            if( lpHost != NULL )
-            {
-               // Conecta al host
-               sin.sin_family = PF_INET;
-               memcpy( &sin.sin_addr, lpHost->h_addr_list[ 0 ], lpHost->h_length );
-               sin.sin_port = htons( hb_parni( 2 ) );
-               err = connect( sock, ( LPSOCKADDR ) &sin, sizeof( sin ) );
-               if( err == 0 )
+               sock = socket( hb_parni( 1 ), SOCK_STREAM, hb_parni( 2 ) );
+               if( sock != INVALID_SOCKET )
                {
-                  NonBlockingSocket( sock );
+                  iSockAddr_Len = hb_parclen( 3 );
+                  sin = ( LPSOCKADDR ) hb_xgrab( iSockAddr_Len + 1 );
+                  memcpy( sin, hb_parc( 3 ), iSockAddr_Len );
+                  // Connect to host
+                  err = connect( sock, ( LPSOCKADDR ) sin, iSockAddr_Len );
+                  if( err == 0 )
+                  {
+                     NonBlockingSocket( sock );
+                  }
+                  else
+                  {
+                     sock = 0;
+                  }
+                  HB_STORCLEN( ( char * ) sin, iSockAddr_Len, 3 );
+                  hb_xfree( sin );
                }
                else
                {
                   sock = 0;
                }
-            }
-            else
-            {
-               sock = 0;
-            }
-         }
 
-         SOCKret( sock );
-      }
+               SOCKret( sock );
+            }
+         ::cSockAddr_In := cSockAddr_In
+      ENDIF
    ENDIF
    IF ::nSocket > 0
       ::ReSize( ::nMax )
@@ -186,67 +220,241 @@ LOCAL nWrite := 0
    ENDIF
 RETURN nWrite
 
-METHOD Listen( nPort, nQueue ) CLASS TStreamSocket
-LOCAL nSocket
-   nSocket := HB_INLINE( nPort, nQueue ){
-         SOCKET sock;
-         SOCKADDR_IN sin;
-         int err;
+METHOD Listen( nPort, nQueue, nSocketType ) CLASS TStreamSocket
+LOCAL nSocket, cSockAddr_In
+   IF ::SockAddr( nSocketType, nPort ) == nil
+      nSocket := 0
+   ELSE
+      cSockAddr_In := ::cSockAddr_In
+      nSocket := HB_INLINE( ::nProtocolFamily, ::nProtocolSocket, @cSockAddr_In, nQueue ){
+            SOCKET sock;
+            LPSOCKADDR sin;
+            int err, iSockAddr_Len;
 
-         sock = socket( PF_INET, SOCK_STREAM, 0 );
-         if( sock != INVALID_SOCKET )
-         {
-            memset( &sin, 0, sizeof( sin ) );
-            sin.sin_family = PF_INET;
-            sin.sin_port = htons( hb_parni( 1 ) );
-            err = bind( sock, ( LPSOCKADDR ) &sin, sizeof( sin ) );
-            if( err == 0 )
+            sock = socket( hb_parni( 1 ), SOCK_STREAM, hb_parni( 2 ) );
+            if( sock != INVALID_SOCKET )
             {
-               listen( sock, hb_parni( 2 ) );
-               NonBlockingSocket( sock );
+               iSockAddr_Len = hb_parclen( 3 );
+               sin = ( LPSOCKADDR ) hb_xgrab( iSockAddr_Len + 1 );
+               memcpy( sin, hb_parc( 3 ), iSockAddr_Len );
+               // Connect to host
+               err = bind( sock, ( LPSOCKADDR ) sin, iSockAddr_Len );
+               if( err == 0 )
+               {
+                  listen( sock, hb_parni( 4 ) );
+                  NonBlockingSocket( sock );
+               }
+               else
+               {
+                  sock = 0;
+               }
+               HB_STORCLEN( ( char * ) sin, iSockAddr_Len, 3 );
+               hb_xfree( sin );
             }
             else
             {
                sock = 0;
             }
-         }
 
-         SOCKret( sock );
-      }
+            SOCKret( sock );
+         }
+      ::cSockAddr_In := cSockAddr_In
+   ENDIF
    IF nSocket > 0
       ::nSocket := nSocket
    ENDIF
 RETURN ( nSocket > 0 )
 
 METHOD Accept() CLASS TStreamSocket
-LOCAL nSocket, oSocket := NIL
+LOCAL nSocket, cSockAddr_In, oSocket := NIL
    IF ::nSocket != 0
-      nSocket := HB_INLINE( ::nSocket ){
-            SOCKET sock;
-            SOCKADDR_IN sin;
-            int l;
+      IF ::SockAddr() == nil
+         nSocket := 0
+      ELSE
+         cSockAddr_In := ::cSockAddr_In
+         nSocket := HB_INLINE( ::nProtocolFamily, @cSockAddr_In, ::nSocket ){
+               SOCKET sock;
+               LPSOCKADDR sin;
+               int l, iSockAddr_Len;
 
-            memset( &sin, 0, sizeof( sin ) );
-            sin.sin_family = AF_INET;
-            l = sizeof( sin );
-            sock = accept( SOCKparam( 1 ), ( LPSOCKADDR ) &sin, &l );
-            if( sock == -1 )
-            {
-               sock = 0;
-            }
-            if( sock != 0 )
-            {
-               NonBlockingSocket( sock );
-            }
+               iSockAddr_Len = hb_parclen( 2 );
+               sin = ( LPSOCKADDR ) hb_xgrab( iSockAddr_Len + 1 );
+               memcpy( sin, hb_parc( 2 ), iSockAddr_Len );
+               //
+               l = iSockAddr_Len;
+               sock = accept( SOCKparam( 3 ), ( LPSOCKADDR ) sin, &l );
+               if( sock == -1 )
+               {
+                  sock = 0;
+               }
+               if( sock != 0 )
+               {
+                  NonBlockingSocket( sock );
+               }
+               HB_STORCLEN( ( char * ) sin, iSockAddr_Len, 2 );
+               hb_xfree( sin );
 
-            SOCKret( sock );
-         }
+               SOCKret( sock );
+            }
+      ENDIF
       IF nSocket > 0
          // oSocket := TStreamSocket():New( nSocket )
-         oSocket := __clsInst( ::ClassH ):New( ,, nSocket )
+         oSocket := __clsInst( ::ClassH )
+         oSocket:nSocketType := ::nSocketType
+         oSocket:nProtocolFamily := ::nProtocolFamily
+         oSocket:cSockAddr_In := cSockAddr_In
+         oSocket:New( ,, nSocket )
       ENDIF
    ENDIF
 RETURN oSocket
+
+METHOD SockAddr( nSocketType, xParam1, xParam2, xParam3 ) CLASS TStreamSocket
+LOCAL nProtocolFamily, nProtocolSocket
+LOCAL nPos, cBtAddr, nDigit
+   IF EMPTY( nSocketType )
+      nSocketType := ::nSocketType
+   ENDIF
+   IF     nSocketType == 2     // IPv6
+*
+   ELSEIF nSocketType == 3     // IrDA
+/*
+      ::cSockAddr_In := HB_INLINE( @nProtocolFamily, @nProtocolSocket, xParam1, xParam2 ){   // cServiceName, cDeviceId
+            #ifdef __WIN32__
+               struct {
+                  u_short    sir_family;        // irdaAddressFamily;
+                  u_char     sir_addr[ 4 ];     // irdaDeviceID[4];
+                  char       sir_name[ 25 ];    // irdaServiceName[25];
+               } sin;
+            #else
+               struct sockaddr_irda sin;
+            #endif
+            int iLen;
+            //
+            HB_STORNI2( AF_IRDA, 1 );
+            HB_STORNI2( 0, 2 );
+            memset( &sin, 0, sizeof( sin ) );
+            sin.sir_family = AF_IRDA;
+            //
+            if( HB_ISCHAR( 3 ) )
+            {
+               iLen = hb_parclen( 3 );
+               iLen = ( iLen > 24 ) ? 24 : iLen;
+               memcpy( &sin.sir_name, hb_parc( 3 ), iLen );
+               if( HB_ISCHAR( 4 ) )
+               {
+                  iLen = hb_parclen( 4 );
+                  iLen = ( iLen > 4 ) ? 4 : iLen;
+                  memcpy( &sin.sir_addr, hb_parc( 4 ), iLen );
+               }
+            }
+            //
+            hb_retclen( ( char * ) &sin, sizeof( sin ) );
+         }
+*/
+   ELSEIF nSocketType == 4     // Bluetooth
+      IF PCOUNT() == 2 .AND. EMPTY( xParam1 )
+         // For use with ::Listen(), BT_PORT_ANY to locate an available port
+         xParam1 := -1
+      ENDIF
+      IF HB_IsString( xParam2 )
+         nPos := 1
+         cBtAddr := ""
+         DO WHILE nPos <= LEN( xParam2 )
+            IF ! UPPER( xParam2[ nPos ] ) $ "0123456789ABCDEF"
+               cBtAddr := ""
+               EXIT
+            ENDIF
+            nDigit := 0
+            DO WHILE nPos <= LEN( xParam2 ) .AND. UPPER( xParam2[ nPos ] ) $ "0123456789ABCDEF"
+               nDigit := ( nDigit * 16 ) + ;
+                         AT( UPPER( xParam2[ nPos ] ), "0123456789ABCDEF" ) - 1
+               nPos++
+            ENDDO
+            IF nDigit > 255 .OR. nPos == LEN( xParam2 ) .OR. ( nPos < LEN( xParam2 ) .AND.  xParam2[ nPos ] != ":" )
+               cBtAddr := ""
+               EXIT
+            ENDIF
+            cBtAddr := CHR( nDigit ) + cBtAddr
+            nPos++
+         ENDDO
+         IF LEN( cBtAddr ) == 6
+            xParam2 := cBtAddr+chr(0)+chr(0)
+         ENDIF
+      ENDIF
+      ::cSockAddr_In := HB_INLINE( @nProtocolFamily, @nProtocolSocket, xParam1, xParam2, xParam3 ){   // nPort_ServiceChannel, cbtAddr, cserviceClassId
+            #ifdef __WIN32__
+               struct {
+                  USHORT     rc_family;         // addressFamily;
+                  char       rc_bdaddr[ 8 ];    // btAddr;
+                  char       serviceClassId[ 16 ];
+                  char       rc_channel[ 4 ];   // port;
+               } sin;
+            #else
+               struct sockaddr_rc sin;
+            #endif
+            int iLen;
+            //
+            HB_STORNI2( AF_BTH, 1 );
+            HB_STORNI2( BTHPROTO_RFCOMM, 2 );
+            memset( &sin, 0, sizeof( sin ) );
+            sin.rc_family = AF_BTH;
+            //
+            if( HB_ISNUM( 3 ) )
+            {
+               *( ( ULONG * )( &sin.rc_channel ) ) = hb_parni( 3 );
+               if( HB_ISCHAR( 4 ) )
+               {
+                  iLen = hb_parclen( 4 );
+                  iLen = ( iLen > 8 ) ? 8 : iLen;
+                  memcpy( &sin.rc_bdaddr, hb_parc( 4 ), iLen );
+                  #ifdef __WIN32__
+                     if( HB_ISCHAR( 5 ) )   // cserviceClassId
+                     {
+                        iLen = hb_parclen( 5 );
+                        iLen = ( iLen > 16 ) ? 16 : iLen;
+                        memcpy( &sin.serviceClassId, hb_parc( 5 ), iLen );
+                     }
+                  #endif
+               }
+            }
+            //
+            hb_retclen( ( char * ) &sin, sizeof( sin ) );
+         }
+   ELSE // IF nSocketType == 1 // IPv4 (default)
+      ::nSocketType := 1 // Forces default value
+      ::cSockAddr_In := HB_INLINE( @nProtocolFamily, @nProtocolSocket, xParam1, xParam2 ){   // nPort, cHostName
+            SOCKADDR_IN sin;
+            LPHOSTENT lpHost;
+            //
+            HB_STORNI2( AF_INET, 1 );
+            HB_STORNI2( 0, 2 );
+            memset( &sin, 0, sizeof( sin ) );
+            sin.sin_family = AF_INET;
+            //
+            if( HB_ISNUM( 3 ) )
+            {
+               sin.sin_port = htons( hb_parni( 3 ) );
+               if( HB_ISCHAR( 4 ) )
+               {
+                  lpHost = gethostbyname( ( char * ) hb_parc( 4 ) );
+                  if( lpHost != NULL )
+                  {
+                     memcpy( &sin.sin_addr, lpHost->h_addr_list[ 0 ], lpHost->h_length );
+                  }
+                  else
+                  {
+                     hb_ret();
+                     return;
+                  }
+               }
+            }
+            //
+            hb_retclen( ( char * ) &sin, sizeof( sin ) );
+         }
+   ENDIF
+   ::nProtocolFamily := nProtocolFamily
+   ::nProtocolSocket := nProtocolSocket
+RETURN ::cSockAddr_In
 
 ////////////////////////////////////////////////////////////// Miscelaneous
 

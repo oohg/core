@@ -1,5 +1,5 @@
 /*
- * $Id: TStream.prg,v 1.5 2015-10-28 02:16:19 fyurisich Exp $
+ * $Id: TStream.prg,v 1.6 2015-12-08 06:01:18 guerra000 Exp $
  */
 /*
  * Data stream management class.
@@ -33,6 +33,7 @@ CLASS TStreamBase
    METHOD ReSize        // Resize buffer
    METHOD Close         // Close buffer
    METHOD IsActive      // Check if stream is still active
+   METHOD Append        // Appends data to buffer
    DESTRUCTOR Destroy
 
    // Text-line functionality
@@ -119,6 +120,7 @@ METHOD Remove( nCount, nPosition ) CLASS TStreamBase
 RETURN nil
 
 METHOD Fill() CLASS TStreamBase
+LOCAL nRead
    IF ! EMPTY( ::pBuffer ) .AND. ::IsConnected()
       IF ::nLen < ::nMax
          nRead = ::RealFill( ::pBuffer, ::nLen + 1, ::nMax - ::nLen )
@@ -249,6 +251,19 @@ RETURN ( ! EMPTY( ::pBuffer ) .AND. ( ::nLen > 0 .OR. ::IsConnected() ) )
 
 METHOD IsConnected() CLASS TStreamBase
 RETURN .F.
+
+METHOD Append( cBuffer ) CLASS TStreamBase
+LOCAL nBytes := 0
+   IF HB_IsString( cBuffer ) .AND. LEN( cBuffer ) > 0
+      IF ! EMPTY( ::pBuffer ) .AND. ::IsConnected()
+         IF ::nLen < ::nMax
+            nBytes := MIN( LEN( cBuffer ), ::nMax - ::nLen )
+            Stream_Insert( ::pBuffer, cBuffer, ::nLen + 1, nBytes )
+            ::nLen += nBytes
+         ENDIF
+      ENDIF
+   ENDIF
+RETURN nBytes
 
 PROCEDURE Destroy() CLASS TStreamBase
    ::Close()
