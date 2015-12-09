@@ -1,5 +1,5 @@
 /*
- * $Id: c_image.c,v 1.44 2015-11-30 01:19:27 fyurisich Exp $
+ * $Id: c_image.c,v 1.45 2015-12-09 23:46:53 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -758,19 +758,19 @@ HB_FUNC( _OOHG_ROTATEIMAGE )            // ( oSelf, hBitMap, nDegree )
    HWNDret( hBitmap );
 }
 
-HB_FUNC( _OOHG_SCALEIMAGE )            // ( oSelf, hBitMap, nWidth, nHeight, lIgnoreBkColor, lScalestrech, uBackcolor, nHrzMrgn, nVrtMrg )
+HB_FUNC( _OOHG_SCALEIMAGE )            // ( oSelf, hBitMap, nWidth, nHeight, lScalestrech, uBackcolor, lIgnoreBkColor, nHrzMrgn, nVrtMrg )
 {
    POCTRL oSelf = _OOHG_GetControlInfo( hb_param( 1, HB_IT_OBJECT ) );
    HBITMAP hBitmap;
    LONG lColor = -1;
 
-   _OOHG_DetermineColor( hb_param( 7, HB_IT_ANY ), &lColor );
+   _OOHG_DetermineColor( hb_param( 6, HB_IT_ANY ), &lColor );
    if( lColor == -1 )
    {
       lColor = oSelf->lBackColor;
    }
 
-   hBitmap = _OOHG_ScaleImage( oSelf->hWnd, (HBITMAP) HWNDparam( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parl( 6 ), lColor, hb_parl( 5 ), hb_parni( 8 ), hb_parni( 9 ) );
+   hBitmap = _OOHG_ScaleImage( oSelf->hWnd, (HBITMAP) HWNDparam( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parl( 5 ), lColor, hb_parl( 7 ), hb_parni( 8 ), hb_parni( 9 ) );
 
    HWNDret( hBitmap );
 }
