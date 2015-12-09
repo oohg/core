@@ -1,5 +1,5 @@
 /*
- * $Id: h_picture.prg,v 1.25 2015-12-01 22:15:19 fyurisich Exp $
+ * $Id: h_picture.prg,v 1.26 2015-12-09 19:49:32 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -272,11 +272,9 @@ LOCAL nWidth, nHeight, nAux
       IF ::ImageSize .AND. ( ! HB_IsLogical( lMoving ) .OR. ! lMoving )
          ::Super:SizePos( ,, nWidth, nHeight )
       ENDIF
-      /*
       IF SCROLLS( ::hWnd, nWidth, nHeight )
-         ::ReDraw()
+//         ::ReDraw()
       ENDIF
-      */
       TPicture_SetNotify( Self, HB_IsBlock( ::bOnClick ) )
       IF ( ! HB_IsLogical( lMoving ) .OR. ! lMoving )
          ::ReDraw()

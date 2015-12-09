@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: makelib_bcc.bat,v 1.22 2015-11-07 22:39:57 fyurisich Exp $
+rem $Id: makelib_bcc.bat,v 1.23 2015-12-09 19:49:32 guerra000 Exp $
 rem
 cls
 
@@ -81,6 +81,7 @@ rem *** Cleanup ***
 del h_*.c
 if exist winprint.c  del winprint.c
 if exist miniprint.c del miniprint.c
+if exist bostaurus.c del bostaurus.c
 SET OOHG_X_FLAGS=
 SET HG_FILES1_PRG=
 SET HG_FILES2_PRG=
