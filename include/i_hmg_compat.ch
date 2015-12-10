@@ -1,5 +1,5 @@
 /*
- * $Id: i_hmg_compat.ch,v 1.48 2015-11-25 21:53:34 fyurisich Exp $
+ * $Id: i_hmg_compat.ch,v 1.49 2015-12-10 23:01:11 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -256,6 +256,7 @@ SPLITBOX VERSION
       [ <dummy17: ONROWREFRESH, ON ROWREFRESH> <rowrefresh> ] ;
       [ DEFAULTVALUES <aDefVal> ] ;
       [ <dummy18: ONEDITCELLEND, ON EDITCELLEND> <editend> ] ;
+      [ <efv: EDITFIRSTVISIBLE> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TOBrowse(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, , , <w>, <h>, <headers>, <widths>, ;
@@ -292,14 +293,13 @@ SPLITBOX VERSION
             ! Upper( #<alta> ) == "DISABLEALTA", <.noshow.>, ;
             Upper( #<none> ) == "NONEUNSELS", <.cbe.>, <{rclick}>, ;
             <.checkboxes.>, <{checkchange}>, <{rowrefresh}>, <aDefVal>, ;
-            <{editend}> )
+            <{editend}>, ! <.efv.> )
 
 #xcommand @ <row>, <col> BUTTONEX <name> ;
-      [ OBJ <obj> ] ;
       [ <dummy1: OF, PARENT> <parent> ] ;
       [ CAPTION <caption> ] ;
       [ <dummy2: PICTURE, ICON> <bitmap> ] ;
-      [ <dummy3: ACTION,ON CLICK,ONCLICK> <action> ] ;
+      [ <dummy3: ACTION, ON CLICK, ONCLICK> <action> ] ;
       [ WIDTH <w> ] ;
       [ HEIGHT <h> ] ;
       [ FONT <font> ] ;
@@ -309,41 +309,23 @@ SPLITBOX VERSION
       [ <underline: UNDERLINE> ] ;
       [ <strikeout: STRIKEOUT> ] ;
       [ <uptext: UPPERTEXT> ] ;
-      [ <ladjust: AUTOFIT, ADJUST> ] ;
+      [ <autofit: ADJUST> ] ;
       [ TOOLTIP <tooltip> ] ;
       [ BACKCOLOR <backcolor> ] ;
       [ FONTCOLOR <fontcolor> ] ;
       [ <nohotlight: NOHOTLIGHT> ] ;
       [ <flat: FLAT> ] ;
-      [ <notrans: NOLOADTRANSPARENT > ] ;
-      [ <noxpstyle: NOXPSTYLE > ] ;
-      [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
-      [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
+      [ <lnoldtr: NOLOADTRANSPARENT> ] ;
+      [ <noxpstyle: NOXPSTYLE> ] ;
+      [ <dummy02: ON GOTFOCUS> <gotfocus> ] ;
+      [ <dummy04: ON LOSTFOCUS> <lostfocus> ] ;
       [ <notabstop: NOTABSTOP> ] ;
       [ HELPID <helpid> ] ;
       [ <invisible: INVISIBLE> ] ;
       [ <default: DEFAULT> ] ;
-      [ ON MOUSEMOVE <onmousemove> ] ;
-      [ <rtl: RTL> ] ;
-      [ <noprefix: NOPREFIX> ] ;
-      [ SUBCLASS <subclass> ] ;
-      [ <disabled: DISABLED> ] ;
-      [ BUFFER <buffer> ] ;
-      [ HBITMAP <hbitmap> ] ;
-      [ <scale: FORCESCALE> ] ;
-      [ <cancel: CANCEL> ] ;
-      [ <alignment:LEFT,RIGHT,TOP,BOTTOM,CENTER> ] ;
-      [ <multiline: MULTILINE> ] ;
-      [ <themed: THEMED> ] ;
-      [ IMAGEMARGIN <aImageMargin> ] ;
-      [ <no3dcolors: NO3DCOLORS> ] ;
-      [ <lDIB: DIBSECTION> ] ;
    => ;
-      @ <row>, <col> BUTTON <name> ;
-            [ OBJ <obj> ] ;
+       @ <row>, <col> BUTTON <name> ;
             [ PARENT <parent> ] ;
-            [ CAPTION <caption> ] ;
-            [ PICTURE <bitmap> ] ;
             [ ACTION <action> ] ;
             [ WIDTH <w> ] ;
             [ HEIGHT <h> ] ;
@@ -360,34 +342,80 @@ SPLITBOX VERSION
             [ <notabstop> ] ;
             [ HELPID <helpid> ] ;
             [ <invisible> ] ;
-            [ <notrans> ] ;
-            [ <ladjust> ] ;
-            [ ON MOUSEMOVE <onmousemove> ] ;
-            [ <rtl> ] ;
-            [ <noprefix> ] ;
-            [ SUBCLASS <subclass> ] ;
-            [ <disabled> ] ;
-            [ BUFFER <buffer> ] ;
-            [ HBITMAP <hbitmap> ] ;
-            [ <scale> ] ;
-            [ <cancel> ] ;
-            [ <alignment> ] ;
-            [ <multiline> ] ;
-            [ <themed> ] ;
-            [ IMAGEMARGIN <aImageMargin> ] ;
-            [ <no3dcolors> ] ;
-            [ <lDIB> ] ;
-            [ <nohotlight> ] ;
+            [ CAPTION <caption> ] ;
+            [ PICTURE <bitmap> DIBSECTION ] ;
+            [ <lnoldtr> ] ;
+            BOTTOM ;
+            [ <autofit> ] ;
+            [ BACKCOLOR <backcolor> ]
+            [ <nohotlight> ]
+
+#xcommand @ <row>, <col> BUTTONEX <name> ;
+      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ CAPTION <caption> ] ;
+      [ <dummy2: PICTURE, ICON> <bitmap> ] ;
+      [ <dummy3: ACTION, ON CLICK, ONCLICK> <action> ] ;
+      [ WIDTH <w> ] ;
+      [ HEIGHT <h> ] ;
+      [ FONT <font> ] ;
+      [ SIZE <size> ] ;
+      [ <bold: BOLD> ] ;
+      [ <italic: ITALIC> ] ;
+      [ <underline: UNDERLINE> ] ;
+      [ <strikeout: STRIKEOUT> ] ;
+      [ <uptext: UPPERTEXT> ] ;
+      [ <autofit: ADJUST> ] ;
+      [ TOOLTIP <tooltip> ] ;
+      [ BACKCOLOR <backcolor> ] ;
+      [ FONTCOLOR <fontcolor> ] ;
+      [ <nohotlight: NOHOTLIGHT> ] ;
+      [ <flat: FLAT> ] ;
+      [ <lnoldtr: NOLOADTRANSPARENT> ] ;
+      [ <noxpstyle: NOXPSTYLE > ] ;
+      [ <dummy02: ON GOTFOCUS> <gotfocus> ] ;
+      [ <dummy04: ON LOSTFOCUS> <lostfocus> ] ;
+      [ <notabstop: NOTABSTOP> ] ;
+      [ HELPID <helpid> ] ;
+      [ <invisible: INVISIBLE> ] ;
+      [ <default: DEFAULT> ] ;
+      [ <imgalign: RIGHT, TOP, BOTTOM> ] ;
+   => ;
+       @ <row>, <col> BUTTON <name> ;
+            [ PARENT <parent> ] ;
+            [ ACTION <action> ] ;
+            [ WIDTH <w> ] ;
+            [ HEIGHT <h> ] ;
+            [ FONT <font> ] ;
+            [ SIZE <size> ] ;
+            [ <bold> ] ;
+            [ <italic> ] ;
+            [ <underline> ] ;
+            [ <strikeout> ] ;
+            [ TOOLTIP <tooltip> ] ;
+            [ <flat> ] ;
+            [ ON GOTFOCUS <gotfocus> ] ;
+            [ ON LOSTFOCUS <lostfocus> ] ;
+            [ <notabstop> ] ;
+            [ HELPID <helpid> ] ;
+            [ <invisible> ] ;
+            [ CAPTION <caption> ] ;
+            [ PICTURE <bitmap> DIBSECTION ] ;
+            [ <lnoldtr> ] ;
+            [ <imgalign> ] ;
+            [ <autofit> ] ;
             [ BACKCOLOR <backcolor> ] ;
+            [ <nohotlight> ]
 
 /*
 TODO: Try to implement this BUTTONEX clauses
-      [ PICTURE <bitmap> ] ;
-      [ ICON <icon> ] ;
       [ FONTCOLOR <fontcolor> ] ;
       [ <noxpstyle: NOXPSTYLE > ] ;
       [ <default: DEFAULT> ] ;
 */
+
+#xtranslate BUTTONEX [ <x> ] NOTRANSPARENT ;
+   => ;
+      BUTTONEX [ <x> ] NOLOADTRANSPARENT
 
 #xtranslate BUTTONEX [ <x> ] LEFTTEXT ;
    => ;
