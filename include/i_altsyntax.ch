@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.129 2015-12-01 22:15:19 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.130 2015-12-10 01:19:15 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2340,7 +2340,8 @@ GRID
       _OOHG_ActiveControlAutoSkip         := .F. ;;
       _OOHG_ActiveControlDisplayChange    := NIL ;;
       _OOHG_ActiveControlOnRClick         := NIL ;;
-      _OOHG_ActiveControlOnInsert         := NIL
+      _OOHG_ActiveControlOnInsert         := NIL ;;
+      _OOHG_ActiveControlDisplayEdit      := .T.
 
 #xcommand SILENT <silent> ;
    => ;
@@ -2607,7 +2608,8 @@ GRID
             _OOHG_ActiveControlDisplayChange, ;
             _OOHG_ActiveControlOnRClick, ;
             _OOHG_ActiveControlOnInsert, ;
-            _OOHG_ActiveControlEditCellEnd )
+            _OOHG_ActiveControlEditCellEnd, ;
+            _OOHG_ActiveControlDisplayEdit )
 
 /*---------------------------------------------------------------------------
 BROWSE
@@ -2695,7 +2697,8 @@ BROWSE
       _OOHG_ActiveControlCheckBoxes       := .F. ;;
       _OOHG_ActiveControlOnCheckChange    := NIL ;;
       _OOHG_ActiveControlOnTextFilled     := NIL ;;
-      _OOHG_ActiveControlDefaultYear      := NIL
+      _OOHG_ActiveControlDefaultYear      := NIL ;;
+      _OOHG_ActiveControlDisplayEdit      := .T.
 
 #xcommand DELETEWHEN <delwhen> ;
    => ;
@@ -2876,7 +2879,8 @@ BROWSE
             _OOHG_ActiveControlOnCheckChange, ;
             _OOHG_ActiveControlOnTextFilled, ;
             _OOHG_ActiveControlDefaultYear, ;
-            _OOHG_ActiveControlEditCellEnd )
+            _OOHG_ActiveControlEditCellEnd, ;
+            _OOHG_ActiveControlDisplayEdit )
 
 /*---------------------------------------------------------------------------
 XBROWSE
@@ -2958,7 +2962,8 @@ XBROWSE
       _OOHG_ActiveControlCheckBoxes       := .F. ;;
       _OOHG_ActiveControlOnCheckChange    := NIL ;;
       _OOHG_ActiveControlOnTextFilled     := NIL ;;
-      _OOHG_ActiveControlDefaultYear      := NIL
+      _OOHG_ActiveControlDefaultYear      := NIL ;;
+      _OOHG_ActiveControlDisplayEdit      := .T.
 
 #xcommand END XBROWSE ;
    => ;
@@ -3057,7 +3062,8 @@ XBROWSE
             _OOHG_ActiveControlOnCheckChange, ;
             _OOHG_ActiveControlOnTextFilled, ;
             _OOHG_ActiveControlDefaultYear, ;
-            _OOHG_ActiveControlEditCellEnd )
+            _OOHG_ActiveControlEditCellEnd, ;
+            _OOHG_ActiveControlDisplayEdit )
 
 /*---------------------------------------------------------------------------
 HYPERLINK
