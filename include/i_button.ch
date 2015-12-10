@@ -1,5 +1,5 @@
 /*
- * $Id: i_button.ch,v 1.28 2015-12-10 00:38:55 fyurisich Exp $
+ * $Id: i_button.ch,v 1.29 2015-12-10 23:14:42 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -90,8 +90,7 @@
       [ <cancel: CANCEL> ] ;
       [ <imgalign: LEFT,RIGHT,TOP,BOTTOM,CENTER> ] ;
       [ <multiline: MULTILINE> ] ;
-      [ <notheme: NOTHEME> ] ;
-      [ THEMED ] ;
+      [ <theme: THEMED, NOTHEME> ] ;
       [ IMAGEMARGIN <aImageMargin> ] ;
       [ <no3dcolors: NO3DCOLORS> ] ;
       [ <autofit: AUTOFIT, ADJUST> ] ;
@@ -105,7 +104,8 @@
             <.flat.>, <.notabstop.>, <helpid>, <.invisible.>, <.bold.>, ;
             <.italic.>, <.underline.>, <.strikeout.>, <.rtl.>, <.noprefix.>, ;
             <.disabled.>, <buffer>, <hbitmap>, <bitmap>, <.lnoldtr.>, ;
-            <.scale.>, <.cancel.>, <"imgalign">, <.multiline.>, ! <.notheme.>, ;
+            <.scale.>, <.cancel.>, <"imgalign">, <.multiline.>, ;
+            IIF( #<theme> == "THEMED", .T., IIF( #<theme> == "NOTHEME", .F., NIL ) ), ;
             <aImageMargin>, <{onmousemove}>, <.no3dcolors.>, <.autofit.>, ;
             ! <.lDIB.>, <backcolor>, <.nohotlight.> )
 
@@ -142,8 +142,7 @@
       [ <lDIB: DIBSECTION> ] ;
       [ BACKCOLOR <backcolor> ] ;
       [ <disabled: DISABLED> ] ;
-      [ <notheme: NOTHEME> ] ;
-      [ THEMED ] ;
+      [ <theme: THEMED, NOTHEME> ] ;
       [ IMAGEMARGIN <aImageMargin> ] ;
       [ ON MOUSEMOVE <onmousemove> ] ;
       [ <imgalign: LEFT,RIGHT,TOP,BOTTOM,CENTER> ] ;
@@ -157,6 +156,7 @@
             <{gotfocus}>, <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, ;
             <.italic.>, <.underline.>, <.strikeout.>, <(field)>, <.rtl.>, ;
             <bitmap>, <buffer>, <hbitmap>, <.lnoldtr.>, <.scale.>, ;
-            <.no3dcolors.>, <.autofit.>, ! <.lDIB.>, <backcolor>, ;
-            <.disabled.>, ! <.notheme.>, <aImageMargin>, <{onmousemove}>, ;
-            <"imgalign">, <.multiline.>, <.flat.>, <.nohotlight.> )
+            <.no3dcolors.>, <.autofit.>, ! <.lDIB.>, <backcolor>, <.disabled.>, ;
+            IIF( #<theme> == "THEMED", .T., IIF( #<theme> == "NOTHEME", .F., NIL ) ), ;
+            <aImageMargin>, <{onmousemove}>, <"imgalign">, <.multiline.>, ;
+            <.flat.>, <.nohotlight.> )

@@ -1,5 +1,5 @@
 /*
- * $Id: i_radiogroup.ch,v 1.13 2015-12-10 00:05:56 fyurisich Exp $
+ * $Id: i_radiogroup.ch,v 1.14 2015-12-10 23:14:42 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -84,8 +84,7 @@
       [ <rtl: RTL> ] ;
       [ HEIGHT <height> ] ;
       [ SUBCLASS <subclass> ] ;
-      [ <notheme: NOTHEME> ] ;
-      [ THEMED ] ;
+      [ <theme: THEMED, NOTHEME> ] ;
       [ BACKGROUND <bkgrnd> ] ;
 		[ <left: LEFTJUSTIFY> ] ;
 		[ READONLY <aReadOnly> ] ;
@@ -96,5 +95,6 @@
             <spacing>, <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, ;
             <.italic.>, <.underline.>, <.strikeout.>, <backcolor>, ;
             <fontcolor>, <.transparent.>, <.autosize.>, <.horizontal.>, ;
-            <.disabled.>, <.rtl.>, <height>, ! <.notheme.>, <bkgrnd>, <.left.>, ;
+            <.disabled.>, <.rtl.>, <height>, IIF( #<theme> == "THEMED", .T., ;
+            IIF( #<theme> == "NOTHEME", .F., NIL ) ), <bkgrnd>, <.left.>, ;
             <aReadOnly> )

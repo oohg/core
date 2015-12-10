@@ -1,11 +1,17 @@
 /*
- * $Id: ChangeLog,v 1.1543 2015-12-10 23:01:10 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1544 2015-12-10 23:14:42 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-12-10 20:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_button.ch
+   * include/i_checkbox.ch
+   * include/i_radiogroup.ch
+     ! Support for THEMED and NOTHEME clauses.
 
 2015-12-10 20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_hmg_compat.ch
