@@ -1,5 +1,5 @@
 /*
- * $Id: i_button.ch,v 1.27 2015-10-14 23:38:29 fyurisich Exp $
+ * $Id: i_button.ch,v 1.28 2015-12-10 00:38:55 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -85,12 +85,13 @@
       [ <dummy3: PICTURE, ICON> <bitmap> ] ;
       [ BUFFER <buffer> ] ;
       [ HBITMAP <hbitmap> ] ;
-      [ <notrans: NOLOADTRANSPARENT> ] ;
+      [ <lnoldtr: NOLOADTRANSPARENT> ] ;
       [ <scale: FORCESCALE> ] ;
       [ <cancel: CANCEL> ] ;
-      [ <alignment:LEFT,RIGHT,TOP,BOTTOM,CENTER> ] ;
+      [ <imgalign: LEFT,RIGHT,TOP,BOTTOM,CENTER> ] ;
       [ <multiline: MULTILINE> ] ;
-      [ <themed: THEMED> ] ;
+      [ <notheme: NOTHEME> ] ;
+      [ THEMED ] ;
       [ IMAGEMARGIN <aImageMargin> ] ;
       [ <no3dcolors: NO3DCOLORS> ] ;
       [ <autofit: AUTOFIT, ADJUST> ] ;
@@ -103,8 +104,8 @@
             <w>, <h>, <font>, <size>, <tooltip>, <{gotfocus}>, <{lostfocus}>, ;
             <.flat.>, <.notabstop.>, <helpid>, <.invisible.>, <.bold.>, ;
             <.italic.>, <.underline.>, <.strikeout.>, <.rtl.>, <.noprefix.>, ;
-            <.disabled.>, <buffer>, <hbitmap>, <bitmap>, <.notrans.>, ;
-            <.scale.>, <.cancel.>, <"alignment">, <.multiline.>, <.themed.>, ;
+            <.disabled.>, <buffer>, <hbitmap>, <bitmap>, <.lnoldtr.>, ;
+            <.scale.>, <.cancel.>, <"imgalign">, <.multiline.>, ! <.notheme.>, ;
             <aImageMargin>, <{onmousemove}>, <.no3dcolors.>, <.autofit.>, ;
             ! <.lDIB.>, <backcolor>, <.nohotlight.> )
 
@@ -133,7 +134,7 @@
       [ <dummy3: PICTURE, ICON> <bitmap> ] ;
       [ BUFFER <buffer> ] ;
       [ HBITMAP <hbitmap> ] ;
-      [ <notrans: NOLOADTRANSPARENT> ] ;
+      [ <lnoldtr: NOLOADTRANSPARENT> ] ;
       [ <scale: FORCESCALE> ] ;
       [ FIELD <field> ] ;
       [ <no3dcolors: NO3DCOLORS> ] ;
@@ -141,10 +142,11 @@
       [ <lDIB: DIBSECTION> ] ;
       [ BACKCOLOR <backcolor> ] ;
       [ <disabled: DISABLED> ] ;
-      [ <themed: THEMED> ] ;
+      [ <notheme: NOTHEME> ] ;
+      [ THEMED ] ;
       [ IMAGEMARGIN <aImageMargin> ] ;
       [ ON MOUSEMOVE <onmousemove> ] ;
-      [ <alignment:LEFT,RIGHT,TOP,BOTTOM,CENTER> ] ;
+      [ <imgalign: LEFT,RIGHT,TOP,BOTTOM,CENTER> ] ;
       [ <multiline: MULTILINE> ] ;
       [ <flat: FLAT> ] ;
       [ <nohotlight: NOHOTLIGHT> ] ;
@@ -154,7 +156,7 @@
             <f>, <n>, <tooltip>, <{change}>, [<w>], [<h>], <{lostfocus}>, ;
             <{gotfocus}>, <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, ;
             <.italic.>, <.underline.>, <.strikeout.>, <(field)>, <.rtl.>, ;
-            <bitmap>, <buffer>, <hbitmap>, <.notrans.>, <.scale.>, ;
+            <bitmap>, <buffer>, <hbitmap>, <.lnoldtr.>, <.scale.>, ;
             <.no3dcolors.>, <.autofit.>, ! <.lDIB.>, <backcolor>, ;
-            <.disabled.>, <.themed.>, <aImageMargin>, <{onmousemove}>, ;
-            <"alignment">, <.multiline.>, <.flat.>, <.nohotlight.> )
+            <.disabled.>, ! <.notheme.>, <aImageMargin>, <{onmousemove}>, ;
+            <"imgalign">, <.multiline.>, <.flat.>, <.nohotlight.> )
