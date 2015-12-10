@@ -1,5 +1,5 @@
 /*
- * $Id: i_checkbox.ch,v 1.13 2015-07-14 22:27:41 fyurisich Exp $
+ * $Id: i_checkbox.ch,v 1.14 2015-12-10 00:05:56 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -87,7 +87,8 @@
       [ <rtl: RTL> ] ;
       [ <threestate: THREESTATE> ] ;
       [ <leftalign: LEFTALIGN> ] ;
-      [ <themed: THEMED, NOTHEME> ] ;
+      [ <notheme: NOTHEME> ] ;
+      [ THEMED ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TCheckBox(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <caption>, <value>, ;
@@ -95,6 +96,4 @@
             <{gotfocus}>, <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, ;
             <.italic.>, <.underline.>, <.strikeout.>, <(field)>, <backcolor>, ;
             <fontcolor>, <.transparent.>, <.autosize.>, <.rtl.>, <.disabled.>, ;
-            <.threestate.>, <.leftalign.>, ;
-            IIF( Upper( #<themed> ) == "THEMED", .T., ;
-            IIF( Upper( #<themed> ) == "NOTHEME", .F., NIL ) ) )
+            <.threestate.>, <.leftalign.>, ! <.notheme.> )
