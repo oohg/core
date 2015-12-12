@@ -1,5 +1,5 @@
 /*
- * $Id: h_radio.prg,v 1.44 2015-11-30 01:25:11 fyurisich Exp $
+ * $Id: h_radio.prg,v 1.45 2015-12-12 19:57:03 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -163,7 +163,6 @@ Local i, oItem, uToolTip, uReadOnly
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, , lRtl )
    ::InitStyle( , , Invisible, ! ::TabStop, lDisabled )
    ::Register( 0, , HelpId, , tooltip )
-   ::SetFont( , , bold, italic, underline, strikeout )
 
    ::AutoSize := autosize
 
@@ -199,9 +198,12 @@ Local i, oItem, uToolTip, uReadOnly
    Next
 
    ::Value := Value
+
    If ! HB_IsNumeric( Value ) .AND. LEN( ::aOptions ) > 0
       ::aOptions[ 1 ]:TabStop := .T.
    EndIf
+
+   ::SetFont( , , bold, italic, underline, strikeout )
 
    ASSIGN ::OnChange VALUE Change TYPE "B"
 

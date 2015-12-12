@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog.004,v 1.6 2015-11-25 21:53:34 fyurisich Exp $
+ * $Id: ChangeLog.004,v 1.7 2015-12-12 19:57:03 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -857,7 +857,7 @@
    * source/h_hyperlink.prg
      + Support for https.
    * source/h_radio.prg
-     + Methods GroupHeight and GropWidth. They return the height and
+     + Methods GroupHeight and GroupWidth. They return the height and
        width of the whole radiogroup control.
    * source/h_spinner.prg
      ! Spinner window still visible after releasing TSpinner() control.
