@@ -1,5 +1,5 @@
 /*
- * $Id: TStreamSerial.prg,v 1.5 2015-10-31 17:07:44 fyurisich Exp $
+ * $Id: TStreamSerial.prg,v 1.6 2015-12-13 06:56:10 guerra000 Exp $
  */
 /*
  * TStreamSerial
@@ -74,7 +74,10 @@ METHOD New( cPort, nSpeed, nDataBits, cParity, nStop ) CLASS TStreamSerial
          else
          {
             memset( &to, 0, sizeof( to ) );
-            to.ReadIntervalTimeout = MAXDWORD;
+            // to.ReadIntervalTimeout = MAXDWORD;
+            to.ReadIntervalTimeout = 1;
+            // to.ReadTotalTimeoutMultiplier = 1;
+            to.ReadTotalTimeoutConstant = 1;
             SetCommTimeouts( iPort, &to );
          }
       #else
@@ -93,7 +96,7 @@ METHOD New( cPort, nSpeed, nDataBits, cParity, nStop ) CLASS TStreamSerial
             sTerm.c_cc[ VMIN ] = 0;
             tcflush( iPort, TCIFLUSH );
             tcsetattr( iPort, TCSANOW, &sTerm );
-            fcntl( iPort, F_SETFL, FNDELAY );
+            fcntl( iPort, F_SETFL, FNDELAY | O_SYNC );
          }
       #endif
 //

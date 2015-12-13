@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.152 2015-11-04 00:37:21 fyurisich Exp $
+ * $Id: h_controlmisc.prg,v 1.153 2015-12-13 06:56:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1818,9 +1818,8 @@ Local lRetVal
       ASSIGN _OOHG_ThisEventType VALUE cEventType TYPE "CM" DEFAULT ""
       _OOHG_ThisControl   := Self
       _OOHG_ThisObject    := Self
-      _OOHG_Eval_Array( bBlock, aParams )
+      lRetVal := _OOHG_Eval_Array( bBlock, aParams )
       _PopEventInfo()
-      lRetVal := .T.
    Else
       lRetVal := .F.
    EndIf
