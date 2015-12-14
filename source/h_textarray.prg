@@ -1,5 +1,5 @@
 /*
- * $Id: h_textarray.prg,v 1.22 2015-03-09 02:52:08 fyurisich Exp $
+ * $Id: h_textarray.prg,v 1.23 2015-12-14 06:25:57 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -682,6 +682,24 @@ HB_FUNC_STATIC( TTEXTARRAY_EVENTS )
          hb_ret();
          break;
 */
+
+      case WM_SETFOCUS:
+         _OOHG_Send( pSelf, s_Parent );
+         hb_vmSend( 0 );
+         _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_hWnd );
+         hb_vmSend( 0 );
+         PostMessage( GetParent( hWnd ), WM_COMMAND, MAKEWPARAM( LOWORD( wParam ), ( WORD ) EN_SETFOCUS ), ( LPARAM ) hWnd );
+         hb_ret();
+         break;
+
+      case WM_KILLFOCUS:
+         _OOHG_Send( pSelf, s_Parent );
+         hb_vmSend( 0 );
+         _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_hWnd );
+         hb_vmSend( 0 );
+         PostMessage( GetParent( hWnd ), WM_COMMAND, MAKEWPARAM( LOWORD( wParam ), ( WORD ) EN_KILLFOCUS ), ( LPARAM ) hWnd );
+         hb_ret();
+         break;
 
       default:
          _OOHG_Send( pSelf, s_Super );
