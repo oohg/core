@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.73 2015-12-01 22:15:19 fyurisich Exp $
+ * $Id: h_button.prg,v 1.74 2015-12-16 00:09:28 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -182,13 +182,17 @@ Local ControlHandle, nStyle, lBitMap, i
    ASSIGN ::lNoDIBSection  VALUE lNoDIB       TYPE "L"
    ASSIGN ::lNoHotLight    VALUE lNoHotLight  TYPE "L"
 
-   If lBitMap
+   If ( ( ValType( cImage ) $ "CM" .AND. ! Empty( cImage ) ) .OR. ;
+        ( ValType( cBuffer ) $ "CM" .AND. ! Empty( cBuffer ) ) .OR. ;
+        ValidHandler( hBitMap ) )
+      // The button has an image
       If Empty( ::Caption )
          DEFAULT cAlign TO "CENTER"
       Else
          DEFAULT cAlign TO "LEFT"
       EndIf
    EndIf
+
    IF ValType( cAlign ) $ "CM"
       cAlign := ALLTRIM( UPPER( cAlign ) )
       DO CASE
@@ -733,13 +737,17 @@ Local ControlHandle, nStyle, lBitMap, i
    ASSIGN ::lNoDIBSection  VALUE lNoDIB       TYPE "L"
    ASSIGN ::lNoHotLight    VALUE lNoHotLight  TYPE "L"
 
-   If lBitMap
+   If ( ( ValType( cImage ) $ "CM" .AND. ! Empty( cImage ) ) .OR. ;
+        ( ValType( cBuffer ) $ "CM" .AND. ! Empty( cBuffer ) ) .OR. ;
+        ValidHandler( hBitMap ) )
+      // The button has an image
       If Empty( ::Caption )
          DEFAULT cAlign TO "CENTER"
       Else
          DEFAULT cAlign TO "LEFT"
       EndIf
    EndIf
+
    IF ValType( cAlign ) $ "CM"
       cAlign := ALLTRIM( UPPER( cAlign ) )
       DO CASE
