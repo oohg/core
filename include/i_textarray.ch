@@ -1,5 +1,5 @@
 /*
- * $Id: i_textarray.ch,v 1.4 2015-03-09 02:51:07 fyurisich Exp $
+ * $Id: i_textarray.ch,v 1.5 2015-12-16 00:45:28 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -83,10 +83,13 @@
       [ VALUE <value> ] ;
       [ <notabstop: NOTABSTOP> ] ;
       [ <disabled: DISABLED> ] ;
+      [ <dummy2: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
+      [ <dummy3: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TTextArray(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <width>, <height>, ;
             <rowcount>, <colcount>, <.border.>, <.clientedge.>, <fontcolor>, ;
             <backcolor>, <{action}>, <fontname>, <fontsize>, <.bold.>, ;
             <.italic.>, <.underline.>, <.strikeout.>, <tooltip>, <helpid>, ;
-            <.invisible.>, <.rtl.>, <value>, <.notabstop.>, <.disabled.> )
+            <.invisible.>, <.rtl.>, <value>, <.notabstop.>, <.disabled.>, ;
+            <{gotfocus}>, <{lostfocus}> )

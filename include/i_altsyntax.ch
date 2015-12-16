@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.130 2015-12-10 01:19:15 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.131 2015-12-16 00:45:28 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -437,10 +437,6 @@ AUXILIARY VARIABLES
    => ;
       _OOHG_ActiveControlEditControls := <editcontrols>
 
-#xcommand EDITCELL <editcell> ;
-   => ;
-      _OOHG_ActiveControlEditCell := <editcell>
-
 #xcommand ONEDITCELL <editcell> ;
    => ;
       _OOHG_ActiveControlEditCell := <editcell>
@@ -448,10 +444,6 @@ AUXILIARY VARIABLES
 #xcommand ON EDITCELL <editcell> ;
    => ;
       _OOHG_ActiveControlEditCell := <editcell>
-
-#xcommand EDITCELLEND <editend> ;
-   => ;
-      _OOHG_ActiveControlEditCellEnd := <editend>
 
 #xcommand ONEDITCELLEND <editend> ;
    => ;
@@ -3530,4 +3522,6 @@ TEXTARRAY
             _OOHG_ActiveControlRtl, ;
             _OOHG_ActiveControlValue, ;
             _OOHG_ActiveControlNoTabStop, ;
-            _OOHG_ActiveControlDisabled )
+            _OOHG_ActiveControlDisabled, ;
+            _OOHG_ActiveControlOnGotFocus, ;
+            _OOHG_ActiveControlOnLostFocus )

@@ -1,5 +1,5 @@
 /*
- * $Id: h_textarray.prg,v 1.23 2015-12-14 06:25:57 guerra000 Exp $
+ * $Id: h_textarray.prg,v 1.24 2015-12-16 00:45:29 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -85,7 +85,8 @@ ENDCLASS
 METHOD Define( ControlName, ParentForm, x, y, w, h, RowCount, ColCount, ;
                BORDER, CLIENTEDGE, FontColor, BackColor, ProcedureName, ;
                fontname, fontsize, bold, italic, underline, strikeout, ;
-               ToolTip, HelpId, invisible, lRtl, value, NoTabStop, lDisabled ) CLASS TTextArray
+               ToolTip, HelpId, invisible, lRtl, value, NoTabStop, lDisabled, ;
+               GotFocus, LostFocus ) CLASS TTextArray
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle, nStyleEx
 
@@ -122,6 +123,8 @@ Local ControlHandle, nStyle, nStyleEx
    DEFINE TIMER 0 OF ( Self ) INTERVAL 500 ACTION TTextArray_CursorTimer( Self )
 
    ASSIGN ::OnClick     VALUE ProcedureName TYPE "B"
+   ASSIGN ::OnGotFocus  VALUE GotFocus      TYPE "B"
+   ASSIGN ::OnLostFocus VALUE LostFocus     TYPE "B"
 
 Return Self
 

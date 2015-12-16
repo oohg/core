@@ -1,11 +1,20 @@
 /*
- * $Id: ChangeLog,v 1.1549 2015-12-16 00:12:05 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1550 2015-12-16 00:45:28 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-12-15 21:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_altsyntax.ch
+    + Support for ONGOTFOCUS and ONLOSTFOCUS clauses.
+    - Wrongly defined EDITCELL and EDITCELLEND clauses
+   * include/i_textarray.ch
+    + Support for ONGOTFOCUS and ONLOSTFOCUS clauses.
+   * source/h_textarray.prg
+    + Support for ONGOTFOCUS and ONLOSTFOCUS clauses.
 
 2015-12-15 21:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog
