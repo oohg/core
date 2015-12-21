@@ -1,5 +1,5 @@
 /*
- * $Id: i_hmg_compat.ch,v 1.49 2015-12-10 23:01:11 fyurisich Exp $
+ * $Id: i_hmg_compat.ch,v 1.50 2015-12-21 21:48:20 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -347,7 +347,7 @@ SPLITBOX VERSION
             [ <lnoldtr> ] ;
             BOTTOM ;
             [ <autofit> ] ;
-            [ BACKCOLOR <backcolor> ]
+            [ BACKCOLOR <backcolor> ] ;
             [ <nohotlight> ]
 
 #xcommand @ <row>, <col> BUTTONEX <name> ;
