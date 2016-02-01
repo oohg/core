@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.295 2015-11-28 21:28:16 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.296 2016-02-01 00:03:38 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2360,7 +2360,7 @@ Return lRet
 *-----------------------------------------------------------------------------*
 METHOD EditCell2( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPos ) CLASS TGrid
 *-----------------------------------------------------------------------------*
-Local r, r2, lRet := .F., nClientWidth, uAux, nScrollWidth
+Local r, r2, lRet := .F., nClientWidth, nScrollWidth
 
    If ! ValType( cMemVar ) $ "CM" .OR. Empty( cMemVar )
       cMemVar := "_OOHG_NULLVAR_"
@@ -2383,117 +2383,125 @@ Local r, r2, lRet := .F., nClientWidth, uAux, nScrollWidth
    EndIf
    ::lNested := .T.
 
-   // This var may be used in When codeblock
-   _OOHG_ThisItemCellValue := uAux := ::Cell( nRow, nCol )
+   If ! ::lCalledFromClass
+      // This var may be used in When codeblock
+      _OOHG_ThisItemCellValue := ::Cell( nRow, nCol )
 
-   If ::IsColumnReadOnly( nCol, nRow )
-      // Read only column
-      If ! ::lSilent
-         PlayHand()
+      If ::IsColumnReadOnly( nCol, nRow )
+         // Read only column
+         If ! ::lSilent
+            PlayHand()
+         EndIf
+         ::lNested := .F.
+         Return .F.
+      ElseIf ! ::IsColumnWhen( nCol, nRow )
+         // WHEN Returned .F.
+         ::lNested := .F.
+         Return .F.
+      ElseIf AScan( ::aHiddenCols, nCol ) > 0
+        // Hidden column
+         ::lNested := .F.
+         Return .F.
       EndIf
-   ElseIf ! ::IsColumnWhen( nCol, nRow )
-      // WHEN Returned .F.
-   ElseIf AScan( ::aHiddenCols, nCol ) > 0
-     // Hidden column
+   EndIf
+
+   // Cell value
+   If ValType( uOldValue ) == "U"
+      uValue := ::Cell( nRow, nCol )
    Else
-      // Cell value
-      If ValType( uOldValue ) == "U"
-         uValue := uAux
+      uValue := uOldValue
+   EndIf
+
+   // Determine control type
+   If ! HB_IsObject( EditControl ) .AND. ::FixControls()
+      EditControl := ::aEditControls[ nCol ]
+   EndIf
+   EditControl := GetEditControlFromArray( EditControl, ::EditControls, nCol, Self )
+   If HB_IsObject( EditControl )
+      // EditControl specified
+   ElseIf ValType( ::Picture[ nCol ] ) $ "CM"
+      // Picture-based
+      EditControl := TGridControlTextBox():New( ::Picture[ nCol ], , ValType( uValue ), , , , Self )
+   ElseIf ValType( ::Picture[ nCol ] ) == "L" .AND. ::Picture[ nCol ]
+      EditControl := TGridControlImageList():New( Self )
+   Else
+      // Derive from data type
+      EditControl := GridControlObjectByType( uValue, Self )
+   EndIf
+
+   If ! HB_IsObject( EditControl )
+      MsgExclamation( _OOHG_Messages( 1, 12 ), _OOHG_Messages( 1, 5 ) )
+   Else
+      r := { 0, 0, 0, 0 }                                        // left, top, right, bottom
+      GetClientRect( ::hWnd, r )
+      nClientWidth := r[ 3 ] - r[ 1 ]
+      r2 := { 0, 0, 0, 0 }                                       // left, top, right, bottom
+      GetWindowRect( ::hWnd, r2 )
+      If ! OSisWinXPorLater() .OR. ! ListView_IsItemVisible( ::hWnd, nRow )
+         ListView_EnsureVisible( ::hWnd, nRow )
+      EndIf
+      r := ListView_GetSubitemRect( ::hWnd, nRow - 1, nCol - 1 ) // top, left, width, height
+      // Ensure cell is visible and compute editing window's rect
+      If ::lScrollBarUsesClientArea .AND. ::ItemCount > ::CountPerPage
+         nScrollWidth := GetVScrollBarWidth()
       Else
-         uValue := uOldValue
+         nScrollWidth := 0
+      EndIf
+      If r[ 2 ] + r[ 3 ] + nScrollWidth > nClientWidth
+         ListView_Scroll( ::hWnd, ( r[ 2 ] + r[ 3 ] + nScrollWidth - nClientWidth ), 0 )
+         r := ListView_GetSubitemRect( ::hWnd, nRow - 1, nCol - 1 )
+         r[ 3 ] := Min( r[ 3 ], nClientWidth )
+      EndIf
+      If r[ 2 ] < 0
+         ListView_Scroll( ::hWnd, r[ 2 ], 0 )
+         r := ListView_GetSubitemRect( ::hWnd, nRow - 1, nCol - 1 )
+         r[ 3 ] := Min( r[ 3 ], nClientWidth )
       EndIf
 
-      // Determine control type
-      If ! HB_IsObject( EditControl ) .AND. ::FixControls()
-         EditControl := ::aEditControls[ nCol ]
-      EndIf
-      EditControl := GetEditControlFromArray( EditControl, ::EditControls, nCol, Self ) 
-      If HB_IsObject( EditControl )
-         // EditControl specified
-      ElseIf ValType( ::Picture[ nCol ] ) $ "CM"
-         // Picture-based
-         EditControl := TGridControlTextBox():New( ::Picture[ nCol ], , ValType( uValue ), , , , Self )
-      ElseIf ValType( ::Picture[ nCol ] ) == "L" .AND. ::Picture[ nCol ]
-         EditControl := TGridControlImageList():New( Self )
-      Else
-         // Derive from data type
-         EditControl := GridControlObjectByType( uValue, Self )
-      EndIf
+      // Transform to screen coordinates, add some margins and check it's within form's rect
+      r[ 1 ] += r2[ 2 ] + 2
+      r[ 2 ] += r2[ 1 ] + 3
+      r[ 3 ] := Min( r[ 3 ], ::Parent:Col + ::Parent:Width - GetBorderWidth() - r[ 2 ] )
 
-      If ! HB_IsObject( EditControl )
-         MsgExclamation( _OOHG_Messages( 1, 12 ), _OOHG_Messages( 1, 5 ) )
-      Else
-         r := { 0, 0, 0, 0 }                                        // left, top, right, bottom
-         GetClientRect( ::hWnd, r )
-         nClientWidth := r[ 3 ] - r[ 1 ]
-         r2 := { 0, 0, 0, 0 }                                       // left, top, right, bottom
-         GetWindowRect( ::hWnd, r2 )
-         If ! OSisWinXPorLater() .OR. ! ListView_IsItemVisible( ::hWnd, nRow )
-            ListView_EnsureVisible( ::hWnd, nRow )
-         EndIf
-         r := ListView_GetSubitemRect( ::hWnd, nRow - 1, nCol - 1 ) // top, left, width, height
-         // Ensure cell is visible and compute editing window's rect
-         If ::lScrollBarUsesClientArea .AND. ::ItemCount > ::CountPerPage
-            nScrollWidth := GetVScrollBarWidth()
-         Else
-            nScrollWidth := 0
-         EndIf
-         If r[ 2 ] + r[ 3 ] + nScrollWidth > nClientWidth
-            ListView_Scroll( ::hWnd, ( r[ 2 ] + r[ 3 ] + nScrollWidth - nClientWidth ), 0 )
-            r := ListView_GetSubitemRect( ::hWnd, nRow - 1, nCol - 1 )
-            r[ 3 ] := Min( r[ 3 ], nClientWidth )
-         EndIf
-         If r[ 2 ] < 0
-            ListView_Scroll( ::hWnd, r[ 2 ], 0 )
-            r := ListView_GetSubitemRect( ::hWnd, nRow - 1, nCol - 1 )
-            r[ 3 ] := Min( r[ 3 ], nClientWidth )
-         EndIf
+      EditControl:cMemVar := cMemVar
+      // Create memvar
+      &( cMemVar ) := Nil
 
-         // Transform to screen coordinates, add some margins and check it's within form's rect
-         r[ 1 ] += r2[ 2 ] + 2
-         r[ 2 ] += r2[ 1 ] + 3
-         r[ 3 ] := Min( r[ 3 ], ::Parent:Col + ::Parent:Width - GetBorderWidth() - r[ 2 ] )
-
-         EditControl:cMemVar := cMemVar
-         // Create memvar
-         &( cMemVar ) := Nil
-
-         If HB_IsArray( ::Valid ) .AND. Len( ::Valid ) >= nCol
-            If HB_IsBlock( ::Valid[ nCol ] )
-               EditControl:bValid := ::Valid[ nCol ]
-            Else
-               EditControl:bValid := { || .T. }
-            EndIf
-         ElseIf HB_IsBlock( ::Valid )
-            EditControl:bValid := ::Valid
+      If HB_IsArray( ::Valid ) .AND. Len( ::Valid ) >= nCol
+         If HB_IsBlock( ::Valid[ nCol ] )
+            EditControl:bValid := ::Valid[ nCol ]
          Else
             EditControl:bValid := { || .T. }
          EndIf
-         If HB_IsArray( ::ValidMessages ) .AND. Len( ::ValidMessages ) >= nCol
-            EditControl:cValidMessage := ::ValidMessages[ nCol ]
-         EndIf
-         If nOnFocusPos # Nil
-            EditControl:nOnFocusPos := nOnFocusPos
-         EndIf
-         If ValType( uValue ) $ "CM"
-            uValue := Trim( uValue )
-         EndIf
-
-         ::nEditRow := nRow
-         ::nDelayedClick := { 0, 0, 0, .F. }
-         ::bPosition := -2
-         _SetThisCellInfo( ::hWnd, nRow, nCol, uValue )
-         lRet := EditControl:CreateWindow( uValue, r[ 1 ], r[ 2 ], r[ 3 ], r[ 4 ], ::FontName, ::FontSize, ::aEditKeys, Self )
-         If lRet
-            uValue := EditControl:Value
-         Else
-            ::SetFocus()
-         EndIf
-
-         _OOHG_ThisType := ''
-         _ClearThisCellInfo()
-
+      ElseIf HB_IsBlock( ::Valid )
+         EditControl:bValid := ::Valid
+      Else
+         EditControl:bValid := { || .T. }
       EndIf
+      If HB_IsArray( ::ValidMessages ) .AND. Len( ::ValidMessages ) >= nCol
+         EditControl:cValidMessage := ::ValidMessages[ nCol ]
+      EndIf
+      If nOnFocusPos # Nil
+         EditControl:nOnFocusPos := nOnFocusPos
+      EndIf
+      If ValType( uValue ) $ "CM"
+         uValue := Trim( uValue )
+      EndIf
+
+      ::nEditRow := nRow
+      ::nDelayedClick := { 0, 0, 0, .F. }
+      ::bPosition := -2
+      _SetThisCellInfo( ::hWnd, nRow, nCol, uValue )
+      lRet := EditControl:CreateWindow( uValue, r[ 1 ], r[ 2 ], r[ 3 ], r[ 4 ], ::FontName, ::FontSize, ::aEditKeys, Self )
+      If lRet
+         uValue := EditControl:Value
+      Else
+         ::SetFocus()
+      EndIf
+
+      _OOHG_ThisType := ''
+      _ClearThisCellInfo()
+
    EndIf
 
    ::lNested := .F.
@@ -2565,7 +2573,7 @@ Local lRet, lSomethingEdited
       Else
          ::lCalledFromClass := .T.
          lRet := ::EditCell( nRow, nCol, , , , , , .F. )
-         ::lCalledFromClass := .T.
+         ::lCalledFromClass := .F.
 
          If ::lAppendMode
             ::lAppendMode := .F.

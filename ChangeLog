@@ -1,11 +1,22 @@
 /*
- * $Id: ChangeLog,v 1.1551 2015-12-21 21:48:20 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1552 2016-02-01 00:03:38 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2016-01-31 21:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_dialogs.prg
+     + Support for numeric colors in function GetColor().
+   * source/h_grid.prg
+     ! ReadOnly and When codeblocks are evaluated twice before edition
+       in Grid, XBrowse and Browse controls.
+     ! ReadOnly and When codeblocks are not evaluated in method EditCell
+       after calling method EditAllCells.
+   * source/h_browse.prg
+     * Format.
 
 2015-12-21 18:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_hmg_compat.ch

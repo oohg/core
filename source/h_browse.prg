@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.170 2015-11-28 21:28:15 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.171 2016-02-01 00:03:38 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1259,7 +1259,7 @@ Local lRet, lSomethingEdited, lRowAppended, nRecNo, cWorkArea
         // Read only column
       ElseIf ! ::IsColumnWhen( nCol, nRow )
         // WHEN returned .F.
-      ElseIf aScan( ::aHiddenCols, nCol,nRow ) > 0
+      ElseIf aScan( ::aHiddenCols, nCol, nRow ) > 0
         // Hidden column
       Else
          ::DbGoTo( nRecNo )

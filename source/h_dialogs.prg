@@ -1,5 +1,5 @@
 /*
- * $Id: h_dialogs.prg,v 1.14 2015-03-09 02:52:07 fyurisich Exp $
+ * $Id: h_dialogs.prg,v 1.15 2016-02-01 00:03:38 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -100,6 +100,8 @@ Local aRetVal, nColor, nInitColor
 
    If HB_IsArray( aInitColor )
       nInitColor := RGB( aInitColor[ 1 ], aInitColor[ 2 ], aInitColor[ 3 ] )
+   ElseIf HB_IsNumeric( aInitColor )
+      nInitColor := aInitColor
    EndIf
 
    nColor := ChooseColor( NIL, nInitColor )
