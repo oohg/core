@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.74 2015-12-16 00:09:28 fyurisich Exp $
+ * $Id: h_button.prg,v 1.75 2016-02-14 15:21:28 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -826,6 +826,5 @@ METHOD Events_Command( wParam ) CLASS TButtonCheck
 Local Hi_wParam := HIWORD( wParam )
    If Hi_wParam == BN_CLICKED
       ::DoChange()
-      Return nil
    EndIf
 Return ::Super:Events_Command( wParam )

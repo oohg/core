@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.153 2015-12-13 06:56:10 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.154 2016-02-14 15:21:28 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1553,7 +1553,7 @@ RETURN Self
 *-----------------------------------------------------------------------------*
 METHOD Release() CLASS TControl
 *-----------------------------------------------------------------------------*
-Local mVar
+Local mVar, oCont
 
    // Erases events (for avoid wrong re-usage)
    ::OnClick        := nil
@@ -1570,6 +1570,11 @@ Local mVar
    ::OnEnter        := nil
 
    ::ReleaseAttached()
+
+   oCont := GetFormObjectByHandle( ::ContainerhWnd )
+   IF oCont:LastFocusedControl == ::hWnd
+      oCont:LastFocusedControl := 0
+   ENDIF
 
    // Removes from container
    IF ::Container != nil
@@ -2178,7 +2183,7 @@ Local Hi_wParam := HIWORD( wParam )
 Return nil
 
 *-----------------------------------------------------------------------------*
-METHOD FocusEffect CLASS tControl
+METHOD FocusEffect CLASS TControl
 *-----------------------------------------------------------------------------*
 local lMod:=.f.
 
