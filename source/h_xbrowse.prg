@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.147 2015-11-28 21:28:16 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.148 2016-02-16 22:03:33 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -482,7 +482,7 @@ Local i, oEditControl
          ::aEditControls := Array( Len( ::aHeaders ) )
          For i := 1 To Len( ::aHeaders )
             oEditControl := Nil
-            ::GetCellType( i, @oEditControl )
+            ::GetCellType( i, @oEditControl, , , , .F. )
             ::aEditControls[ i ] := oEditControl
          Next i
          ::lFixedControls := .T.
@@ -2341,6 +2341,7 @@ Local cField, cArea, nPos, aStruct
    EndIf
 
    If ValType( uOldValue ) == "U"
+      ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
       If ! lAppend .OR. HB_IsNil( ::aDefaultValues[ nCol ] )
          uOldValue := EVAL( ::ColumnBlock( nCol, .T. ), ::WorkArea )
       ElseIf HB_IsBlock( ::aDefaultValues[ nCol ] )
