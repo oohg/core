@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.85 2015-11-04 00:37:21 fyurisich Exp $
+ * $Id: h_combo.prg,v 1.86 2016-02-21 14:53:02 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -222,7 +222,7 @@ Local ControlHandle, WorkArea, uField, nStyle
       EndIf
    ElseIf ValType( itemsource ) != 'U'
       If ! '->' $ itemsource
-         MsgOOHGError( "Control: " + ControlName + " Of " + ParentForm + " : You must specify a fully qualified field name. Program Terminated." )
+         MsgOOHGError( "ITEMSOURCE clause must be a fully qualified field name. Program Terminated." )
       Else
          WorkArea := Left( itemsource, At( '->', itemsource ) - 1 )
          uField := Right( itemsource, Len( itemsource ) - At( '->', itemsource ) - 1 )
