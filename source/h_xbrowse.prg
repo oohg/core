@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.148 2016-02-16 22:03:33 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.149 2016-02-21 15:10:38 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -566,7 +566,7 @@ Local aItem, cWorkArea
 
    If ! ::lLocked
       cWorkArea := ::WorkArea
-      If ValType( cWorkArea ) $ "CM" .AND. Empty( cWorkArea )
+      If ValType( cWorkArea ) $ "CM" .AND. ( Empty( cWorkArea ) .OR. Select( cWorkArea ) == 0 )
          cWorkArea := Nil
       EndIf
       aItem := ARRAY( LEN( ::aFields ) )
@@ -604,7 +604,7 @@ Local oEditControl, cWorkArea, cValue, uPicture, bRet
       Return { || "" }
    EndIf
    cWorkArea := ::WorkArea
-   If ValType( cWorkArea ) $ "CM" .AND. Empty( cWorkArea )
+   If ValType( cWorkArea ) $ "CM" .AND. ( Empty( cWorkArea ) .OR. Select( cWorkArea ) == 0 )
       cWorkArea := Nil
    EndIf
    cValue := ::aFields[ nCol ]
@@ -967,7 +967,7 @@ Local oExcel, oSheet, nLin, i, cWorkArea, uValue, aColumnOrder
    nLin += 2
 
    cWorkArea := ::WorkArea
-   If ValType( cWorkArea ) $ "CM" .AND. Empty( cWorkArea )
+   If ValType( cWorkArea ) $ "CM" .AND. ( Empty( cWorkArea ) .OR. Select( cWorkArea ) == 0 )
       cWorkArea := Nil
    EndIf
 
@@ -1082,7 +1082,7 @@ Local oSerMan, oDesk, oPropVals, oBook, oSheet, nLin, i, uValue, cWorkArea, aCol
 
    // put rows
    cWorkArea := ::WorkArea
-   If ValType( cWorkArea ) $ "CM" .AND. Empty( cWorkArea )
+   If ValType( cWorkArea ) $ "CM" .AND. ( Empty( cWorkArea ) .OR. Select( cWorkArea ) == 0 )
       cWorkArea := Nil
    EndIf
 
@@ -1184,7 +1184,7 @@ Local cWorkArea, uGridValue
       EndIf
 
       cWorkArea := ::WorkArea
-      If ValType( cWorkArea ) $ "CM" .AND. Empty( cWorkArea )
+      If ValType( cWorkArea ) $ "CM" .AND. ( Empty( cWorkArea ) .OR. Select( cWorkArea ) == 0 )
          cWorkArea := Nil
       EndIf
 
@@ -3641,7 +3641,7 @@ Local aCellData, cWorkArea, uGridValue, nSearchCol, nRow, nCol, aPos
          EndIf
 
          cWorkArea := ::WorkArea
-         If ValType( cWorkArea ) $ "CM" .AND. Empty( cWorkArea )
+         If ValType( cWorkArea ) $ "CM" .AND. ( Empty( cWorkArea ) .OR. Select( cWorkArea ) == 0 )
             cWorkArea := Nil
          EndIf
 
