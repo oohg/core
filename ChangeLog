@@ -1,11 +1,18 @@
 /*
- * $Id: ChangeLog,v 1.1556 2016-02-21 15:10:37 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1557 2016-02-24 02:09:35 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2016-02-23 23:09 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_xbrowse.prg
+   * source/h_browse.prg
+     ! RTE when adding a new row after a column was added.
+     + New parameter uDefault to method AddColumn. It sets the default
+       value of the column when adding a new row.
 
 2016-02-21 12:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_xbrowse.prg

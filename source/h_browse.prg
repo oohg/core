@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.171 2016-02-01 00:03:38 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.172 2016-02-24 02:09:36 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2423,13 +2423,13 @@ Return Self
 METHOD AddColumn( nColIndex, xField, cHeader, nWidth, nJustify, uForeColor, ;
                   uBackColor, lNoDelete, uPicture, uEditControl, uHeadClick, ;
                   uValid, uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign, ;
-                  uReplaceField, lRefresh, uReadOnly ) CLASS TOBrowseByCell
+                  uReplaceField, lRefresh, uReadOnly, uDefault ) CLASS TOBrowseByCell
 *-----------------------------------------------------------------------------*
 
    nColIndex := ::Super:AddColumn( nColIndex, xField, cHeader, nWidth, nJustify, uForeColor, ;
                                    uBackColor, lNoDelete, uPicture, uEditControl, uHeadClick, ;
                                    uValid, uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign, ;
-                                   uReplaceField, lRefresh, uReadOnly )
+                                   uReplaceField, lRefresh, uReadOnly, uDefault )
 
    If nColIndex <= ::nColPos
       ::CurrentCol := ::nColPos + 1

@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.149 2016-02-21 15:10:38 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.150 2016-02-24 02:09:36 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2494,7 +2494,7 @@ Return ::uWorkArea
 METHOD AddColumn( nColIndex, xField, cHeader, nWidth, nJustify, uForeColor, ;
                   uBackColor, lNoDelete, uPicture, uEditControl, uHeadClick, ;
                   uValid, uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign, ;
-                  uReplaceField, lRefresh, uReadOnly ) CLASS TXBrowse
+                  uReplaceField, lRefresh, uReadOnly, uDefault ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 LOCAL nRet, nColumns := Len( ::aHeaders ) + 1
 
@@ -2510,6 +2510,9 @@ LOCAL nRet, nColumns := Len( ::aHeaders ) + 1
    ::aFields[ nColIndex ] := xField
 
    // Update before calling ::ColumnBlock
+   aSize( ::aDefaultValues, nColumns )
+   ::aDefaultValues[ nColIndex ] := uDefault
+
    If ValType( uEditControl ) != Nil .OR. HB_IsArray( ::EditControls )
       If ! HB_IsArray( ::EditControls )
          ::EditControls := Array( nColumns )
@@ -3081,13 +3084,13 @@ Return Self
 METHOD AddColumn( nColIndex, xField, cHeader, nWidth, nJustify, uForeColor, ;
                   uBackColor, lNoDelete, uPicture, uEditControl, uHeadClick, ;
                   uValid, uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign, ;
-                  uReplaceField, lRefresh, uReadOnly ) CLASS TXBrowseByCell
+                  uReplaceField, lRefresh, uReadOnly, uDefault ) CLASS TXBrowseByCell
 *-----------------------------------------------------------------------------*
 
    nColIndex := ::Super:AddColumn( nColIndex, xField, cHeader, nWidth, nJustify, uForeColor, ;
                                    uBackColor, lNoDelete, uPicture, uEditControl, uHeadClick, ;
                                    uValid, uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign, ;
-                                   uReplaceField, lRefresh, uReadOnly )
+                                   uReplaceField, lRefresh, uReadOnly, uDefault )
 
    If nColIndex <= ::nColPos
       ::CurrentCol := ::nColPos + 1
