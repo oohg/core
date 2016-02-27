@@ -1,5 +1,5 @@
 /*
- * $Id: h_listbox.prg,v 1.33 2015-11-05 00:14:31 fyurisich Exp $
+ * $Id: h_listbox.prg,v 1.34 2016-02-27 12:58:29 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -116,7 +116,7 @@ CLASS TList FROM TControl
    METHOD Events_DrawItem
    METHOD Events_MeasureItem
    METHOD AddItem(uValue)         BLOCK { |Self, uValue| ListBoxAddstring2( Self, uValue ) }
-   METHOD DeleteItem(nItem)       BLOCK { |Self, nItem| ListBoxDeleteString( ::hWnd, nItem ) }
+   METHOD DeleteItem(nItem)       BLOCK { |Self, nItem| ListBoxDeleteString( Self, nItem ) }
    METHOD DeleteAllItems          BLOCK { |Self| ListBoxReset( ::hWnd ) }
    METHOD Item
    METHOD InsertItem
@@ -267,8 +267,8 @@ Return ::Super:Events_Command( wParam )
 *-----------------------------------------------------------------------------*
 METHOD Item( nItem, uValue ) CLASS TList
 *-----------------------------------------------------------------------------*
-   IF VALTYPE( uValue ) $ "CM"
-      ListBoxDeleteString( ::hWnd, nItem )
+   IF ! HB_IsNil( uValue )
+      ListBoxDeleteString( Self, nItem )
       ListBoxInsertString2( Self, uValue, nItem )
    ENDIF
 Return ListBoxGetString( ::hWnd, nItem )
@@ -276,7 +276,7 @@ Return ListBoxGetString( ::hWnd, nItem )
 *-----------------------------------------------------------------------------*
 METHOD InsertItem( nItem, uValue ) CLASS TList
 *-----------------------------------------------------------------------------*
-   IF VALTYPE( uValue ) $ "CM"
+   IF ! HB_IsNil( uValue )
       ListBoxInsertString2( Self, uValue, nItem )
    ENDIF
 Return ListBoxGetString( ::hWnd, nItem )
@@ -338,8 +338,8 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 
 HB_FUNC( INITLISTBOX )
 {
- HWND hwnd;
- HWND hbutton;
+   HWND hwnd;
+   HWND hbutton;
    int Style = WS_CHILD | LBS_NOTIFY | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | hb_parni( 7 );
    int StyleEx;
 
@@ -349,22 +349,51 @@ HB_FUNC( INITLISTBOX )
 
    hbutton = CreateWindowEx( StyleEx, "LISTBOX", "", Style,
                              hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
-                             hwnd, ( HMENU ) hb_parni( 2 ), GetModuleHandle( NULL ), NULL );
+                             hwnd, (HMENU) hb_parni( 2 ), GetModuleHandle( NULL ), NULL );
 
-   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFunc );
+   lpfnOldWndProc = (WNDPROC) SetWindowLong( (HWND) hbutton, GWL_WNDPROC, (LONG) SubClassFunc );
 
    HWNDret( hbutton );
+}
+
+void TList_DelImageBuffer( POCTRL oSelf, int nItem )
+{
+   BYTE *cBuffer;
+   ULONG ulSize, ulSize2;
+   int *pImage, nCount;
+
+   if( oSelf->AuxBuffer )
+   {
+      if( nItem < (int) oSelf->AuxBufferLen )
+      {
+         pImage = &( (int *) oSelf->AuxBuffer )[ nItem * 2 ];
+         nCount = ListBox_GetCount( oSelf->hWnd );
+         if( nItem < nCount )
+         {
+            ulSize  = sizeof( int ) * 2 * nCount;
+            ulSize2 = sizeof( int ) * 2 * nItem;
+            cBuffer = (BYTE *) hb_xgrab( ulSize );
+            memset( cBuffer, -1, ulSize );
+            if( ( nItem + 1 ) < nCount )
+            {
+               memcpy( cBuffer, &pImage[ 2 ], ulSize - ulSize2 );
+            }
+            memcpy( &pImage[ 0 ], cBuffer, ulSize - ulSize2 );
+            hb_xfree( cBuffer );
+         }
+      }
+   }
 }
 
 void TList_SetImageBuffer( POCTRL oSelf, struct IMAGE_PARAMETER pStruct, int nItem )
 {
    BYTE *cBuffer;
    ULONG ulSize, ulSize2;
-   int *pImage;
+   int *pImage, nCount;
 
    if( oSelf->AuxBuffer || pStruct.iImage1 != -1 || pStruct.iImage2 != -1 )
    {
-      if( nItem >= ( int ) oSelf->AuxBufferLen )
+      if( nItem >= (int) oSelf->AuxBufferLen )
       {
          ulSize = sizeof( int ) * 2 * ( nItem + 100 );
          cBuffer = (BYTE *) hb_xgrab( ulSize );
@@ -378,10 +407,11 @@ void TList_SetImageBuffer( POCTRL oSelf, struct IMAGE_PARAMETER pStruct, int nIt
          oSelf->AuxBufferLen = nItem + 100;
       }
 
-      pImage = &( ( int * ) oSelf->AuxBuffer )[ nItem * 2 ];
-      if( nItem < ListBox_GetCount( oSelf->hWnd ) )
+      pImage = &( (int *) oSelf->AuxBuffer )[ nItem * 2 ];
+      nCount = ListBox_GetCount( oSelf->hWnd );
+      if( nItem < nCount )
       {
-         ulSize  = sizeof( int ) * 2 * ListBox_GetCount( oSelf->hWnd );
+         ulSize  = sizeof( int ) * 2 * nCount;
          ulSize2 = sizeof( int ) * 2 * nItem;
          cBuffer = (BYTE *) hb_xgrab( ulSize );
          memcpy( cBuffer, pImage, ulSize - ulSize2 );
@@ -395,7 +425,7 @@ void TList_SetImageBuffer( POCTRL oSelf, struct IMAGE_PARAMETER pStruct, int nIt
 
 HB_FUNC( LISTBOXADDSTRING )
 {
-   char *cString = ( char * ) hb_parc( 2 );
+   char *cString = (char *) hb_parc( 2 );
    SendMessage( HWNDparam( 1 ), LB_ADDSTRING, 0, (LPARAM) cString );
 }
 
@@ -408,19 +438,19 @@ HB_FUNC( LISTBOXADDSTRING2 )
 
    ImageFillParameter( &pStruct, hb_param( 2, HB_IT_ANY ) );
    TList_SetImageBuffer( oSelf, pStruct, nItem );
-   SendMessage( oSelf->hWnd, LB_ADDSTRING, 0, ( LPARAM ) pStruct.cString );
+   SendMessage( oSelf->hWnd, LB_ADDSTRING, 0, (LPARAM) pStruct.cString );
 }
 
 HB_FUNC( LISTBOXGETSTRING )
 {
-   char cString [1024] = "" ;
+   char cString [ 1024 ] = "" ;
    SendMessage( HWNDparam( 1 ), LB_GETTEXT, (WPARAM) hb_parni(2) - 1, (LPARAM) cString );
    hb_retc(cString);
 }
 
 HB_FUNC( LISTBOXINSERTSTRING )
 {
-   char *cString = ( char * ) hb_parc( 2 );
+   char *cString = (char *) hb_parc( 2 );
    SendMessage( HWNDparam( 1 ), LB_INSERTSTRING, (WPARAM) hb_parni(3) - 1 , (LPARAM) cString );
 }
 
@@ -434,22 +464,27 @@ HB_FUNC( LISTBOXINSERTSTRING2 )
 
    ImageFillParameter( &pStruct, pValue );
    TList_SetImageBuffer( oSelf, pStruct, nItem );
-   SendMessage( oSelf->hWnd, LB_INSERTSTRING, ( WPARAM ) nItem, ( LPARAM ) pStruct.cString );
+   SendMessage( oSelf->hWnd, LB_INSERTSTRING, (WPARAM) nItem, (LPARAM) pStruct.cString );
 }
 
 HB_FUNC( LISTBOXSETCURSEL )
 {
-   SendMessage( HWNDparam( 1 ), LB_SETCURSEL, (WPARAM) hb_parni(2)-1, 0);
+   SendMessage( HWNDparam( 1 ), LB_SETCURSEL, (WPARAM) ( hb_parni( 2 ) - 1 ), 0 );
 }
 
 HB_FUNC( LISTBOXGETCURSEL )
 {
-   hb_retni( SendMessage( HWNDparam( 1 ), LB_GETCURSEL, 0, 0 )  + 1 );
+   hb_retni( SendMessage( HWNDparam( 1 ), LB_GETCURSEL, 0, 0 ) + 1 );
 }
 
 HB_FUNC( LISTBOXDELETESTRING )
 {
-   SendMessage( HWNDparam( 1 ), LB_DELETESTRING, ( WPARAM ) hb_parni( 2 ) - 1, 0);
+   PHB_ITEM pSelf = (PHB_ITEM) hb_param( 1, HB_IT_ANY );
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   int nItem = hb_parni( 2 ) - 1;
+
+   TList_DelImageBuffer( oSelf, nItem );
+   SendMessage( oSelf->hWnd, LB_DELETESTRING, (WPARAM) nItem, 0 );
 }
 
 HB_FUNC( LISTBOXRESET )
@@ -464,22 +499,22 @@ HB_FUNC( LISTBOXGETMULTISEL )
    int *buffer;
    int n;
 
- n = SendMessage( hwnd, LB_GETSELCOUNT, 0, 0);
+   n = SendMessage( hwnd, LB_GETSELCOUNT, 0, 0);
 
    if( n > 0 )
- {
+   {
       hb_reta( n );
       buffer = (int *) hb_xgrab( ( n + 1 ) * sizeof( int ) );
 
-      SendMessage( hwnd, LB_GETSELITEMS, ( WPARAM ) n, ( LPARAM ) buffer );
+      SendMessage( hwnd, LB_GETSELITEMS, (WPARAM) n, (LPARAM) buffer );
 
       for( i = 0; i < n; i++ )
       {
-       HB_STORNI( (buffer[ i ] + 1), -1, (i + 1));
+         HB_STORNI( ( buffer[ i ] + 1 ), -1, ( i + 1 ) );
       }
 
       hb_xfree( buffer );
- }
+   }
    else
    {
       hb_reta( 0 );
@@ -488,30 +523,30 @@ HB_FUNC( LISTBOXGETMULTISEL )
 
 HB_FUNC( LISTBOXSETMULTISEL )
 {
- PHB_ITEM wArray;
+   PHB_ITEM wArray;
    HWND hwnd = HWNDparam( 1 );
    int i;
    int n;
    int l;
 
- wArray = hb_param( 2, HB_IT_ARRAY );
+   wArray = hb_param( 2, HB_IT_ARRAY );
 
    l = hb_parinfa( 2, 0 );
 
- n = SendMessage( hwnd , LB_GETCOUNT , 0 , 0 );
+   n = SendMessage( hwnd, LB_GETCOUNT, 0, 0 );
 
- // CLEAR CURRENT SELECTIONS
+   // CLEAR CURRENT SELECTIONS
 
- for( i=0 ; i<n ; i++ )
- {
-  SendMessage( hwnd, LB_SETSEL, (WPARAM) 0, (LPARAM) i );
- }
+   for( i = 0; i < n; i ++ )
+   {
+      SendMessage( hwnd, LB_SETSEL, (WPARAM) 0, (LPARAM) i );
+   }
 
    // SET NEW SELECTIONS
 
-   for( i = 1; i <= l ; i++ )
+   for( i = 1; i <= l ; i ++ )
    {
-      SendMessage( hwnd, LB_SETSEL, ( WPARAM ) 1, ( LPARAM ) ( hb_arrayGetNI( wArray, i ) ) - 1 );
+      SendMessage( hwnd, LB_SETSEL, (WPARAM) 1, (LPARAM) ( hb_arrayGetNI( wArray, i ) - 1 ) );
    }
 }
 
@@ -524,7 +559,7 @@ HB_FUNC_STATIC( TLIST_EVENTS_DRAWITEM )   // METHOD Events_DrawItem( lParam )
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
-   LPDRAWITEMSTRUCT lpdis = ( LPDRAWITEMSTRUCT ) hb_parnl( 1 );
+   LPDRAWITEMSTRUCT lpdis = (LPDRAWITEMSTRUCT) hb_parnl( 1 );
    COLORREF FontColor, BackColor;
    TEXTMETRIC lptm;
    char cBuffer[ 2048 ];
@@ -535,7 +570,7 @@ HB_FUNC_STATIC( TLIST_EVENTS_DRAWITEM )   // METHOD Events_DrawItem( lParam )
       // Checks if image defined for current item
       if( oSelf->ImageList && oSelf->AuxBuffer && ( lpdis->itemID + 1 ) <= oSelf->AuxBufferLen )
       {
-         iImage = ( ( int * ) oSelf->AuxBuffer )[ ( lpdis->itemID * 2 ) + ( lpdis->itemState & ODS_SELECTED ? 1 : 0 ) ];
+         iImage = ( (int *) oSelf->AuxBuffer )[ ( lpdis->itemID * 2 ) + ( lpdis->itemState & ODS_SELECTED ? 1 : 0 ) ];
          if( iImage >= 0 && iImage < ImageList_GetImageCount( oSelf->ImageList ) )
          {
             ImageList_GetIconSize( oSelf->ImageList, &cx, &cy );
@@ -558,17 +593,17 @@ HB_FUNC_STATIC( TLIST_EVENTS_DRAWITEM )   // METHOD Events_DrawItem( lParam )
       if( lpdis->itemState & ODS_SELECTED )
       {
          FontColor = SetTextColor( lpdis->hDC, ( ( oSelf->lFontColorSelected == -1 ) ? GetSysColor( COLOR_HIGHLIGHTTEXT ) : (COLORREF) oSelf->lFontColorSelected ) );
-         BackColor = SetBkColor(   lpdis->hDC, ( ( oSelf->lBackColorSelected == -1 ) ? GetSysColor( COLOR_HIGHLIGHT )     : (COLORREF) oSelf->lBackColorSelected ) );
+         BackColor = SetBkColor( lpdis->hDC, ( ( oSelf->lBackColorSelected == -1 ) ? GetSysColor( COLOR_HIGHLIGHT ) : (COLORREF) oSelf->lBackColorSelected ) );
       }
       else if( lpdis->itemState & ODS_DISABLED )
       {
          FontColor = SetTextColor( lpdis->hDC, GetSysColor( COLOR_GRAYTEXT ) );
-         BackColor = SetBkColor(   lpdis->hDC, GetSysColor( COLOR_BTNFACE ) );
+         BackColor = SetBkColor( lpdis->hDC, GetSysColor( COLOR_BTNFACE ) );
       }
       else
       {
          FontColor = SetTextColor( lpdis->hDC, ( ( oSelf->lFontColor == -1 ) ? GetSysColor( COLOR_WINDOWTEXT ) : (COLORREF) oSelf->lFontColor ) );
-         BackColor = SetBkColor(   lpdis->hDC, ( ( oSelf->lBackColor == -1 ) ? GetSysColor( COLOR_WINDOW )     : (COLORREF) oSelf->lBackColor ) );
+         BackColor = SetBkColor( lpdis->hDC, ( ( oSelf->lBackColor == -1 ) ? GetSysColor( COLOR_WINDOW ) : (COLORREF) oSelf->lBackColor ) );
       }
 
       // Window position
@@ -577,8 +612,8 @@ HB_FUNC_STATIC( TLIST_EVENTS_DRAWITEM )   // METHOD Events_DrawItem( lParam )
       x = LOWORD( GetDialogBaseUnits() ) / 2;
 
       // Text
-      SendMessage( lpdis->hwndItem, LB_GETTEXT, lpdis->itemID, ( LPARAM ) cBuffer );
-      ExtTextOut( lpdis->hDC, cx + x, y, ETO_CLIPPED | ETO_OPAQUE, &lpdis->rcItem, ( LPCSTR ) cBuffer, strlen( cBuffer ), NULL );
+      SendMessage( lpdis->hwndItem, LB_GETTEXT, lpdis->itemID, (LPARAM) cBuffer );
+      ExtTextOut( lpdis->hDC, cx + x, y, ETO_CLIPPED | ETO_OPAQUE, &lpdis->rcItem, (LPCSTR) cBuffer, strlen( cBuffer ), NULL );
 
       SetTextColor( lpdis->hDC, FontColor );
       SetBkColor( lpdis->hDC, BackColor );
@@ -623,7 +658,7 @@ HB_FUNC_STATIC( TLIST_EVENTS_MEASUREITEM )   // METHOD Events_MeasureItem( lPara
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
-   LPMEASUREITEMSTRUCT lpmis = ( LPMEASUREITEMSTRUCT ) hb_parnl( 1 );
+   LPMEASUREITEMSTRUCT lpmis = (LPMEASUREITEMSTRUCT) hb_parnl( 1 );
 
    HWND hWnd = GetActiveWindow();
    HDC hDC = GetDC( hWnd );
@@ -638,7 +673,7 @@ HB_FUNC_STATIC( TLIST_EVENTS_MEASUREITEM )   // METHOD Events_MeasureItem( lPara
 
    hFont = oSelf->hFontHandle;
 
-   hOldFont = ( HFONT ) SelectObject( hDC, hFont );
+   hOldFont = (HFONT) SelectObject( hDC, hFont );
    GetTextExtentPoint32( hDC, "_", 1, &sz );
 
    SelectObject( hDC, hOldFont );

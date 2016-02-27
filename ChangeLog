@@ -1,11 +1,17 @@
 /*
- * $Id: ChangeLog,v 1.1557 2016-02-24 02:09:35 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1558 2016-02-27 12:58:29 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2016-02-27 09:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_listbox.prg
+     ! Can't change images using method Item.
+     ! Wrong images are shown because the associated images of an item
+       are not cleared when the item is deleted.
 
 2016-02-23 23:09 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_xbrowse.prg
