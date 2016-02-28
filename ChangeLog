@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.1559 2016-02-28 22:40:17 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1560 2016-02-28 23:48:05 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-12-28 20:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_picture.prg
+     ! Control is not cleared after assigning an empty string to ::Picture.
+     - Unneeded code.
 
 2015-12-28 19:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog

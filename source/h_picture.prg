@@ -1,5 +1,5 @@
 /*
- * $Id: h_picture.prg,v 1.27 2015-12-09 23:46:53 fyurisich Exp $
+ * $Id: h_picture.prg,v 1.28 2016-02-28 23:48:05 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -247,38 +247,34 @@ Return ::Super:ToolTip( cToolTip )
 METHOD RePaint( lMoving ) CLASS TPicture
 *-----------------------------------------------------------------------------*
 LOCAL nWidth, nHeight, nAux
-   IF ValidHandler( ::hImage )
-      IF ValidHandler( ::AuxHandle ) .AND. ! ::AuxHandle == ::hImage
-         DeleteObject( ::AuxHandle )
-      ENDIF
-      IF ( ::Stretch .OR. ::AutoFit ) .AND. ! ::ImageSize
-         // TO DO: ROTATE
-         ::AuxHandle := _OOHG_SetBitmap( Self, ::hImage, 0, ::Stretch, ::AutoFit )
-      ELSEIF ! ::nZoom == 1
-         ::AuxHandle := _OOHG_ScaleImage( Self, ::hImage, ( _OOHG_BitmapWidth( ::hImage ) * ::nZoom ) + 0.999, ( _OOHG_BitmapHeight( ::hImage ) * ::nZoom ) + 0.999, .F., NIL, .F., 0, 0)
-      ELSE
-         ::AuxHandle := ::hImage
-      ENDIF
+   IF ValidHandler( ::AuxHandle ) .AND. ! ::AuxHandle == ::hImage
+      DeleteObject( ::AuxHandle )
+   ENDIF
+   IF ( ::Stretch .OR. ::AutoFit ) .AND. ! ::ImageSize
+      // TO DO: ROTATE
+      ::AuxHandle := _OOHG_SetBitmap( Self, ::hImage, 0, ::Stretch, ::AutoFit )
+   ELSEIF ! ::nZoom == 1
+      ::AuxHandle := _OOHG_ScaleImage( Self, ::hImage, ( _OOHG_BitmapWidth( ::hImage ) * ::nZoom ) + 0.999, ( _OOHG_BitmapHeight( ::hImage ) * ::nZoom ) + 0.999, .F., NIL, .F., 0, 0)
+   ELSE
+      ::AuxHandle := ::hImage
+   ENDIF
 
-      // Rotate size
-      nWidth  := _OOHG_BitMapWidth( ::AuxHandle )
-      nHeight := _OOHG_BitMapHeight( ::AuxHandle )
-      IF ::nDegree == 90 .OR. ::nDegree == 270
-         nAux := nWidth
-         nWidth := nHeight
-         nHeight := nAux
-      ENDIF
+   // Rotate size
+   nWidth  := _OOHG_BitMapWidth( ::AuxHandle )
+   nHeight := _OOHG_BitMapHeight( ::AuxHandle )
+   IF ::nDegree == 90 .OR. ::nDegree == 270
+      nAux := nWidth
+      nWidth := nHeight
+      nHeight := nAux
+   ENDIF
 
-      IF ::ImageSize .AND. ( ! HB_IsLogical( lMoving ) .OR. ! lMoving )
-         ::Super:SizePos( ,, nWidth, nHeight )
-      ENDIF
-      IF SCROLLS( ::hWnd, nWidth, nHeight )
-//         ::ReDraw()
-      ENDIF
-      TPicture_SetNotify( Self, HB_IsBlock( ::bOnClick ) )
-      IF ( ! HB_IsLogical( lMoving ) .OR. ! lMoving )
-         ::ReDraw()
-      ENDIF
+   IF ::ImageSize .AND. ( ! HB_IsLogical( lMoving ) .OR. ! lMoving )
+      ::Super:SizePos( ,, nWidth, nHeight )
+   ENDIF
+   Scrolls( ::hWnd, nWidth, nHeight )
+   TPicture_SetNotify( Self, HB_IsBlock( ::bOnClick ) )
+   IF ( ! HB_IsLogical( lMoving ) .OR. ! lMoving )
+      ::ReDraw()
    ENDIF
 RETURN Self
 
