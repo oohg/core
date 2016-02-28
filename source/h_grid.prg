@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.296 2016-02-01 00:03:38 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.297 2016-02-28 22:40:18 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -143,6 +143,7 @@ CLASS TGrid FROM TControl
    DATA InPlace                   INIT .F.
    DATA lAppendMode               INIT .F.
    DATA lAppendOnAltA             INIT .F.
+   DATA lAtFirstCol               INIT .T.
    DATA lBeginTrack               INIT .F.
    DATA lButtons                  INIT .F.
    DATA lCalledFromClass          INIT .F. PROTECTED
@@ -193,7 +194,6 @@ CLASS TGrid FROM TControl
    DATA uIniTime                  INIT 0
    DATA Valid                     INIT Nil
    DATA ValidMessages             INIT Nil
-   DATA lAtFirstCol               INIT .T.
 
    METHOD AddBitMap
    METHOD AddColumn

@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.150 2016-02-24 02:09:36 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.151 2016-02-28 22:40:18 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2668,37 +2668,35 @@ CLASS ooHGRecord
    METHOD Filter
    METHOD IsTableEmpty
 
-   METHOD Field      BLOCK { | Self, nPos |                   ( ::cAlias__ )->( Field( nPos ) ) }
-   METHOD FieldBlock BLOCK { | Self, cField |                 ( ::cAlias__ )->( FieldBlock( cField ) ) }
-   METHOD FieldGet   BLOCK { | Self, nPos |                   ( ::cAlias__ )->( FieldGet( nPos ) ) }
-   METHOD FieldName  BLOCK { | Self, nPos |                   ( ::cAlias__ )->( FieldName( nPos ) ) }
-   METHOD FieldPos   BLOCK { | Self, cField |                 ( ::cAlias__ )->( FieldPos( cField ) ) }
-   METHOD FieldPut   BLOCK { | Self, nPos, uValue |           ( ::cAlias__ )->( FieldPut( nPos, uValue ) ) }
-   METHOD Locate     BLOCK { | Self, bFor, bWhile, nNext, nRec, lRest | ( ::cAlias__ )->( __dbLocate( bFor, bWhile, nNext, nRec, lRest ) ) }
-   METHOD Seek       BLOCK { | Self, uKey, lSoftSeek, lLast | ( ::cAlias__ )->( DbSeek( uKey, lSoftSeek, lLast ) ) }
-   METHOD Skip       BLOCK { | Self, nCount |                 ( ::cAlias__ )->( DbSkip( nCount ) ) }
-   METHOD GoTo       BLOCK { | Self, nRecord |                ( ::cAlias__ )->( DbGoTo( nRecord ) ) }
-   METHOD GoTop      BLOCK { | Self |                         ( ::cAlias__ )->( DbGoTop() ) }
-   METHOD GoBottom   BLOCK { | Self |                         ( ::cAlias__ )->( DbGoBottom() ) }
-   METHOD Commit     BLOCK { | Self |                         ( ::cAlias__ )->( DbCommit() ) }
-   METHOD Unlock     BLOCK { | Self |                         ( ::cAlias__ )->( DbUnlock() ) }
-   METHOD Delete     BLOCK { | Self |                         ( ::cAlias__ )->( DbDelete() ) }
-   METHOD Close      BLOCK { | Self |                         ( ::cAlias__ )->( DbCloseArea() ) }
-   METHOD BOF        BLOCK { | Self |                         ( ::cAlias__ )->( BOF() ) }
-   METHOD EOF        BLOCK { | Self |                         ( ::cAlias__ )->( EOF() ) }
-   METHOD RecNo      BLOCK { | Self |                         ( ::cAlias__ )->( RecNo() ) }
-   METHOD RecCount   BLOCK { | Self |                         ( ::cAlias__ )->( RecCount() ) }
-   METHOD Found      BLOCK { | Self |                         ( ::cAlias__ )->( Found() ) }
-   METHOD SetOrder   BLOCK { | Self, uOrder |                 ( ::cAlias__ )->( ORDSETFOCUS( uOrder ) ) }
-   METHOD SetIndex   BLOCK { | Self, cFile, lAdditive |       If( EMPTY( lAdditive ), ( ::cAlias__ )->( ordListClear() ), ) , ( ::cAlias__ )->( ordListAdd( cFile ) ) }
-   METHOD Append     BLOCK { | Self |                         ( ::cAlias__ )->( DbAppend() ) }
-   METHOD Lock       BLOCK { | Self |                         ( ::cAlias__ )->( RLock() ) }
-   METHOD DbStruct   BLOCK { | Self |                         ( ::cAlias__ )->( DbStruct() ) }
-   METHOD OrdKeyNo   BLOCK { | Self |                         If( ( ::cAlias__ )->( OrdKeyCount() ) > 0, ( ::cAlias__ )->( OrdKeyNo() ), ( ::cAlias__ )->( RecNo() ) ) }
-   METHOD OrdKeyCount BLOCK { | Self |                        If( ( ::cAlias__ )->( OrdKeyCount() ) > 0, ( ::cAlias__ )->( OrdKeyCount() ), ( ::cAlias__ )->( RecCount() ) ) }
-   #ifdef __XHARBOUR__
-   METHOD OrdKeyGoTo BLOCK { | Self, nRecord |                ( ::cAlias__ )->( OrdKeyGoTo( nRecord ) ) }
-   #EndIf
+   METHOD Field       BLOCK { | Self, nPos |                   ( ::cAlias__ )->( Field( nPos ) ) }
+   METHOD FieldBlock  BLOCK { | Self, cField |                 ( ::cAlias__ )->( FieldBlock( cField ) ) }
+   METHOD FieldGet    BLOCK { | Self, nPos |                   ( ::cAlias__ )->( FieldGet( nPos ) ) }
+   METHOD FieldName   BLOCK { | Self, nPos |                   ( ::cAlias__ )->( FieldName( nPos ) ) }
+   METHOD FieldPos    BLOCK { | Self, cField |                 ( ::cAlias__ )->( FieldPos( cField ) ) }
+   METHOD FieldPut    BLOCK { | Self, nPos, uValue |           ( ::cAlias__ )->( FieldPut( nPos, uValue ) ) }
+   METHOD Locate      BLOCK { | Self, bFor, bWhile, nNext, nRec, lRest | ( ::cAlias__ )->( __dbLocate( bFor, bWhile, nNext, nRec, lRest ) ) }
+   METHOD Seek        BLOCK { | Self, uKey, lSoftSeek, lLast | ( ::cAlias__ )->( DbSeek( uKey, lSoftSeek, lLast ) ) }
+   METHOD Skip        BLOCK { | Self, nCount |                 ( ::cAlias__ )->( DbSkip( nCount ) ) }
+   METHOD GoTo        BLOCK { | Self, nRecord |                ( ::cAlias__ )->( DbGoTo( nRecord ) ) }
+   METHOD GoTop       BLOCK { | Self |                         ( ::cAlias__ )->( DbGoTop() ) }
+   METHOD GoBottom    BLOCK { | Self |                         ( ::cAlias__ )->( DbGoBottom() ) }
+   METHOD Commit      BLOCK { | Self |                         ( ::cAlias__ )->( DbCommit() ) }
+   METHOD Unlock      BLOCK { | Self |                         ( ::cAlias__ )->( DbUnlock() ) }
+   METHOD Delete      BLOCK { | Self |                         ( ::cAlias__ )->( DbDelete() ) }
+   METHOD Close       BLOCK { | Self |                         ( ::cAlias__ )->( DbCloseArea() ) }
+   METHOD BOF         BLOCK { | Self |                         ( ::cAlias__ )->( BOF() ) }
+   METHOD EOF         BLOCK { | Self |                         ( ::cAlias__ )->( EOF() ) }
+   METHOD RecNo       BLOCK { | Self |                         ( ::cAlias__ )->( RecNo() ) }
+   METHOD RecCount    BLOCK { | Self |                         ( ::cAlias__ )->( RecCount() ) }
+   METHOD Found       BLOCK { | Self |                         ( ::cAlias__ )->( Found() ) }
+   METHOD SetOrder    BLOCK { | Self, uOrder |                 ( ::cAlias__ )->( ORDSETFOCUS( uOrder ) ) }
+   METHOD SetIndex    BLOCK { | Self, cFile, lAdditive |       If( EMPTY( lAdditive ), ( ::cAlias__ )->( ordListClear() ), ) , ( ::cAlias__ )->( ordListAdd( cFile ) ) }
+   METHOD Append      BLOCK { | Self |                         ( ::cAlias__ )->( DbAppend() ) }
+   METHOD Lock        BLOCK { | Self |                         ( ::cAlias__ )->( RLock() ) }
+   METHOD DbStruct    BLOCK { | Self |                         ( ::cAlias__ )->( DbStruct() ) }
+   METHOD OrdKeyNo    BLOCK { | Self |                         If( ( ::cAlias__ )->( OrdKeyCount() ) > 0, ( ::cAlias__ )->( OrdKeyNo() ), ( ::cAlias__ )->( RecNo() ) ) }
+   METHOD OrdKeyCount BLOCK { | Self |                         If( ( ::cAlias__ )->( OrdKeyCount() ) > 0, ( ::cAlias__ )->( OrdKeyCount() ), ( ::cAlias__ )->( RecCount() ) ) }
+   METHOD OrdKeyGoTo  BLOCK { | Self, nRecord |                ( ::cAlias__ )->( OrdKeyGoTo( nRecord ) ) }
 
    ERROR HANDLER FieldAssign
 ENDCLASS

@@ -1,5 +1,5 @@
 /*
- * $Id: h_checklist.prg,v 1.19 2015-11-05 00:14:31 fyurisich Exp $
+ * $Id: h_checklist.prg,v 1.20 2016-02-28 22:40:18 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -389,6 +389,7 @@ Local uValue, uRet, nItem
       Return ::DoLostFocus()
 
    ElseIf nNotify == NM_SETFOCUS
+      ::FocusEffect()
       ::DoEvent( ::OnGotFocus, "GOTFOCUS" )
 
    EndIf

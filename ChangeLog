@@ -1,11 +1,26 @@
 /*
- * $Id: ChangeLog,v 1.1558 2016-02-27 12:58:29 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1559 2016-02-28 22:40:17 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-12-28 19:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     ! Typo.
+   * distros/MakeDistro.bat
+     % Copy newer files only.
+   * doc/classes.txt
+     * Updated.
+   * source/h_xbrowse.prg
+     + Method OrdKeyGoTo() to class ooHGRecord under Harbour.
+     * Some format.
+   * source/h_grid.prg
+     * Some format.
+   * source/h_checklist.prg
+     + Call to FocusEffect() before calling OnGotFocus event.
 
 2016-02-27 09:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_listbox.prg
@@ -336,7 +351,7 @@
      + Missing call to FocusEffect before firing ONGOTFOCUS.
    * source/h_hotkeybox.prg
      * Variable renamed for clarity.
-   * source/listbox.prg
+   * source/h_listbox.prg
      * Format.
      * Data lFocused.
      + Handler for WM_LBUTTONDOWN message to set focus and trigger

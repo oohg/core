@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: MakeDistro.bat,v 1.3 2015-11-07 22:39:57 fyurisich Exp $
+rem $Id: MakeDistro.bat,v 1.4 2016-02-28 22:40:17 fyurisich Exp $
 rem
 cls
 
@@ -192,7 +192,7 @@ echo Copying HB30...
 set BASE_DISTRO_SUBDIR=hb30
 if not exist hb30\nul goto ERROR5
 cd hb30
-xcopy %HG_HRB%\*.* /r /s /e /c /q /y
+xcopy %HG_HRB%\*.* /r /s /e /c /q /y /d
 cd ..
 echo.
 :HB32
@@ -201,7 +201,7 @@ echo Copying HB32...
 set BASE_DISTRO_SUBDIR=hb32
 if not exist hb32\nul goto ERROR5
 cd hb32
-xcopy %HG_HRB%\*.* /r /s /e /c /q /y
+xcopy %HG_HRB%\*.* /r /s /e /c /q /y /d
 cd ..
 echo.
 :XB
@@ -210,7 +210,7 @@ echo Copying xHarbour...
 set BASE_DISTRO_SUBDIR=xhbcc
 if not exist xhbcc\nul goto ERROR5
 cd xhbcc
-xcopy %HG_HRB%\*.* /r /s /e /c /q /y
+xcopy %HG_HRB%\*.* /r /s /e /c /q /y /d
 cd ..
 echo.
 :IDE
