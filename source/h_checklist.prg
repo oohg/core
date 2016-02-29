@@ -1,5 +1,5 @@
 /*
- * $Id: h_checklist.prg,v 1.20 2016-02-28 22:40:18 fyurisich Exp $
+ * $Id: h_checklist.prg,v 1.21 2016-02-29 01:48:08 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -631,35 +631,10 @@ METHOD ItemImage( nItem, nImage ) CLASS TCheckList
 Return ::Super:CellImage( nItem, 1, nImage )
 
 *-----------------------------------------------------------------------------*
-FUNCTION ArraysAreEqual ( array1, array2 )
+FUNCTION ArraysAreEqual( array1, array2 )
 *-----------------------------------------------------------------------------*
-Local lRet, nLen, i, cType
 
-   IF HB_IsArray( array1 ) .AND. HB_IsArray( array2 )
-      nLen := LEN( array1 )
-      IF LEN( array2 ) == nLen
-         lRet := .T.
-         FOR i := 1 to nLen
-            cType := VALTYPE( array1[ i ] )
-            IF ! VALTYPE( array2[ i ] ) == cType
-               lRet := .F.
-               EXIT
-            ELSEIF cType == "A" .AND. ! ArraysAreEqual( array1[ i ], array2[ i ] )
-               lRet := .F.
-               EXIT
-            ELSEIF ! array1[ i ] == array2[ i ]
-               lRet := .F.
-               EXIT
-            ENDIF
-         NEXT i
-      Else
-         lRet := .F.
-      ENDIF
-   ELSE
-      MsgOOHGError('ArraysAreEqual: Argument is not an array !!!')
-   ENDIF
-
-Return lRet
+Return aEqual( array1, array2 )
 
 /*
  * EOF

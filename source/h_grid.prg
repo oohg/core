@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.297 2016-02-28 22:40:18 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.298 2016-02-29 01:48:08 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -3940,7 +3940,7 @@ Local aRet, aNew
    If HB_IsArray( uValue )
       aRet := ListViewGetMultiSel( ::hWnd )
       aNew := aSort( AClone( uValue ), Nil, Nil, {|x, y| x < y } )
-      If ! AEqual( aNew, aRet )
+      If ! aEqual( aNew, aRet )
          ListViewSetMultiSel( ::hWnd, uValue )
          If Len( uValue ) > 0
             ListView_EnsureVisible( ::hWnd, uValue[ 1 ] )
@@ -3956,21 +3956,33 @@ Return aRet
 *-----------------------------------------------------------------------------*
 FUNCTION aEqual( array1, array2 )
 *-----------------------------------------------------------------------------*
-Local i, nLen
+Local lRet, nLen, i, cType
 
-   nLen := Len( array1 )
-   If ! nLen == Len( array2 )
-      Return .F.
-   EndIf
-   For i := 1 To nLen
-      If ! ValType( array1[ i ] ) == ValType( array2[ i ] )
-         Return .F.
-      ElseIf ! array1[ i ] == array2[ i ]
-         Return .F.
-      EndIf
-   Next i
+   IF HB_IsArray( array1 ) .AND. HB_IsArray( array2 )
+      nLen := LEN( array1 )
+      IF LEN( array2 ) == nLen
+         lRet := .T.
+         FOR i := 1 to nLen
+            cType := VALTYPE( array1[ i ] )
+            IF ! VALTYPE( array2[ i ] ) == cType
+               lRet := .F.
+               EXIT
+            ELSEIF cType == "A" .AND. ! ArraysAreEqual( array1[ i ], array2[ i ] )
+               lRet := .F.
+               EXIT
+            ELSEIF ! array1[ i ] == array2[ i ]
+               lRet := .F.
+               EXIT
+            ENDIF
+         NEXT i
+      Else
+         lRet := .F.
+      ENDIF
+   ELSE
+      MsgOOHGError( 'ArraysAreEqual: Argument is not an array !!!' )
+   ENDIF
 
-Return .T.
+Return lRet
 
 *-----------------------------------------------------------------------------*
 METHOD DoChange() CLASS TGridMulti
@@ -5350,7 +5362,7 @@ Local xValue, cType, cOldType
    If ( cOldType == "U" .OR. ! cType == cOldType .OR. ;
         ( HB_IsArray( xValue ) .AND. ! HB_IsArray( ::xOldValue ) ) .OR. ;
         ( ! HB_IsArray( xValue ) .AND. HB_IsArray( ::xOldValue ) ) .OR. ;
-        ! AEqual( xValue, ::xOldValue ) )
+        ! aEqual( xValue, ::xOldValue ) )
       ::xOldValue := xValue
       ::DoEvent( ::OnChange, "CHANGE" )
    EndIf
