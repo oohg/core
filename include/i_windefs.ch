@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.68 2015-11-30 01:19:26 fyurisich Exp $
+ * $Id: i_windefs.ch,v 1.69 2016-03-31 19:53:39 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -80,6 +80,7 @@ WINDOWS MESSAGES
 #define WM_SHOWWINDOW                 24
 #define WM_ACTIVATEAPP                28
 #define WM_CANCELMODE                 31
+#define WM_MOUSEACTIVATE              33
 #define WM_NEXTDLGCTL                 40
 #define WM_DRAWITEM                   43
 #define WM_VKEYTOITEM                 46
@@ -304,8 +305,8 @@ EDIT CONTROL
 #define EM_SETBKGNDCOLOR              1091
 #define EM_GETFIRSTVISIBLELINE        206
 #define EM_LINESCROLL                 182
-#define EM_EXLIMITTEXT                (WM_USER+53)
-#define EM_EXLINEFROMCHAR             (WM_USER+54)
+#define EM_EXLIMITTEXT                ( WM_USER + 53 )
+#define EM_EXLINEFROMCHAR             ( WM_USER + 54 )
 #define EN_MSGFILTER                  1792
 #define EN_SETFOCUS                   256
 #define EN_KILLFOCUS                  512
@@ -873,7 +874,7 @@ MESSAGEBOX FUNCTIONS PARAMETERS
 STATUSBAR CONTROL
 ---------------------------------------------------------------------------*/
 
-#define SB_SETMINHEIGHT	              (WM_USER+8)
+#define SB_SETMINHEIGHT	              ( WM_USER + 8 )
 
 /*---------------------------------------------------------------------------
 SETWINDOWPOS FUNCTION PARAMETERS
@@ -895,18 +896,26 @@ WM_TASKBAR PARAMETER
 MONTHCALENDAR CONTROL
 ---------------------------------------------------------------------------*/
 
-#define MCN_FIRST                     ( -750 )
-#define MCN_LAST                      ( -759 )
-#define MCN_SELCHANGE                 ( MCN_FIRST + 1 )
-#define MCN_SELECT                    ( MCN_FIRST + 4 )
+#define MCN_VIEWCHANGE                ( -750 )
+#define MCN_SELCHANGE	              ( -749 )
+#define MCN_GETDAYSTATE	              ( -747 )
+#define MCN_SELECT		              ( -746 )
+#define MCM_GETMAXSELCOUNT            0x1003
+#define MCM_SETMAXSELCOUNT            0x1004
+#define MCM_GETCURRENTVIEW            0x1016
+#define MCM_SETCURRENTVIEW            0x1020
+#define MCMV_MONTH                    0         // days in a month
+#define MCMV_YEAR                     1         // month in a year
+#define MCMV_DECADE                   2         // years in a decade
+#define MCMV_CENTURY                  3         // decades in a century
 
 /*---------------------------------------------------------------------------
 TOOLBAR CONTROL
 ---------------------------------------------------------------------------*/
 
 #define TB_AUTOSIZE                   1057
-#define TB_SETTOOLTIPS	              (WM_USER + 36)
-#define TB_GETHOTITEM                 (WM_USER + 71)
+#define TB_SETTOOLTIPS	              ( WM_USER + 36 )
+#define TB_GETHOTITEM                 ( WM_USER + 71 )
 
 /*---------------------------------------------------------------------------
 DRAWTEXT PARAMETERS

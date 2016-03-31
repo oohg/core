@@ -1,11 +1,44 @@
 /*
- * $Id: ChangeLog,v 1.1561 2016-02-29 01:48:08 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1562 2016-03-31 19:53:38 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2016-03-31 16:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_monthcal.prg
+     + Class TMonthCalMulti() to allow the selection of multiple days.
+     + DATA OnViewChange.
+     + DATA aBoldDays.
+     + METHOD Define2.
+     + METHOD CurrentView.
+     + METHOD Events.
+     + METHOD Width.
+     + METHOD Height.
+     + METHOD AddBoldDay.
+     + METHOD DelBoldDay.
+     + METHOD IsBoldDay.
+     + MCS_DAYSTATE style to allow the display of days in bold.
+     * Format.
+     * Use ::SizePos() in ::SetFont().
+     + Support for MCN_SELCHANGE, MCN_VIEWCHANGE and MCN_GETDAYSTATE
+       notifications in ::Events_Notify().
+     ! Focus is not set when mouse is clicked outside days' area.
+   * include/i_altsyntax.ch
+     + MonthCalendar's new clauses.
+   * include/oohg.h
+     + HB_STORDL.
+   * include/i_windefs.ch
+     + WM_MOUSEACTIVATE, MCN_GETDAYSTATE, MCN_VIEWCHANGE,
+       MCM_GETMAXSELCOUNT, MCM_SETMAXSELCOUNT, MCM_GETCURRENTVIEW,
+       MCM_SETCURRENTVIEW, MCMV_MONTH, MCMV_YEAR, MCMV_DECADE
+       and MCMV_CENTURY.
+     - MCN_FIRST, MCN_LAST
+     * MCN_SELCHANGE and MCN_SELECT.
+   * include/i_monthcal.ch
+     + MULTISELECT, ONVIEWCHANGE, ONGOTFOCUS and ONLOSTFOCUS clauses.
 
 2015-12-28 20:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg

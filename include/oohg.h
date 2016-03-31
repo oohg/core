@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.h,v 1.68 2015-11-30 01:19:26 fyurisich Exp $
+ * $Id: oohg.h,v 1.69 2016-03-31 19:53:39 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -241,6 +241,7 @@ BOOL SaveHBitmapToFile( void *, const char *, UINT, UINT, const char *, ULONG, U
    #define HB_STORNI2( n, x )     hb_storni( n, x )
    #define HB_STORND( n, x, y )   hb_stornd( n, x, y )
    #define HB_PARND( n, x )       hb_parnd( n, x )
+   #define HB_STORDL( n, x, y )   hb_stordl( n, x, y )
 #else
    #define HB_STORNI( n, x, y )   hb_storvni( n, x, y )
    #define HB_STORNL( n, x, y )   hb_storvnl( n, x, y )
@@ -255,6 +256,7 @@ BOOL SaveHBitmapToFile( void *, const char *, UINT, UINT, const char *, ULONG, U
    #define HB_STORNI2( n, x )     hb_storvni( n, x )
    #define HB_STORND( n, x, y )   hb_storvnd( n, x, y )
    #define HB_PARND( n, x )       hb_parvnd( n, x )
+   #define HB_STORDL( n, x, y )   hb_storvdl( n, x, y )
 #endif
 
 #ifdef __XHARBOUR__

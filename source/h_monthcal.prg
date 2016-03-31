@@ -1,5 +1,5 @@
 /*
- * $Id: h_monthcal.prg,v 1.16 2015-05-13 22:26:20 guerra000 Exp $
+ * $Id: h_monthcal.prg,v 1.17 2016-03-31 19:53:39 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -97,13 +97,14 @@
 #include "i_windefs.ch"
 
 CLASS TMonthCal FROM TControl
-   DATA Type      INIT "MONTHCAL" READONLY
+   DATA Type                      INIT "MONTHCAL" READONLY
+   DATA OnViewChange              INIT Nil
+   DATA aBoldDays                 INIT {}
 
    METHOD Define
    METHOD Value                   SETGET
    METHOD SetFont
    METHOD Events_Notify
-
    METHOD FontColor               SETGET
    METHOD BackColor               SETGET
    METHOD TitleFontColor          SETGET
@@ -111,6 +112,14 @@ CLASS TMonthCal FROM TControl
    METHOD TrailingFontColor       SETGET
    METHOD BackgroundColor         SETGET
    METHOD SetRange
+   METHOD Define2
+   METHOD CurrentView             SETGET
+   METHOD Events
+   METHOD Width                   SETGET
+   METHOD Height                  SETGET
+   METHOD AddBoldDay
+   METHOD DelBoldDay
+   METHOD IsBoldDay               BLOCK { |Self, dDay| aScan( ::aBoldDays, dDay ) > 0 }
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
@@ -121,14 +130,32 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
                change, HelpId, invisible, notabstop, bold, italic, ;
                underline, strikeout, lRtl, lDisabled, fontcolor, backcolor, ;
                titlefontcolor, titlebackcolor, trailingfontcolor, ;
-               backgroundcolor ) CLASS TMonthCal
+               backgroundcolor, viewchg, gotfocus, lostfocus ) CLASS TMonthCal
 *-----------------------------------------------------------------------------*
-Local ControlHandle, nStyle
 
-   ASSIGN ::nCol        VALUE x TYPE "N"
-   ASSIGN ::nRow        VALUE y TYPE "N"
-   ASSIGN ::nWidth      VALUE w TYPE "N"
-   ASSIGN ::nHeight     VALUE h TYPE "N"
+   ::Define2( ControlName, ParentForm, x, y, w, h, value, fontname, ;
+              fontsize, tooltip, notoday, notodaycircle, weeknumbers, ;
+              change, HelpId, invisible, notabstop, bold, italic, ;
+              underline, strikeout, lRtl, lDisabled, fontcolor, backcolor, ;
+              titlefontcolor, titlebackcolor, trailingfontcolor, ;
+              backgroundcolor, viewchg, 0, gotfocus, lostfocus )
+
+Return Self
+
+*-----------------------------------------------------------------------------*
+METHOD Define2( ControlName, ParentForm, x, y, w, h, value, fontname, ;
+                fontsize, tooltip, notoday, notodaycircle, weeknumbers, ;
+                change, HelpId, invisible, notabstop, bold, italic, ;
+                underline, strikeout, lRtl, lDisabled, fontcolor, backcolor, ;
+                titlefontcolor, titlebackcolor, trailingfontcolor, ;
+                backgroundcolor, viewchg, nStyle, gotfocus, lostfocus ) CLASS TMonthCal
+*-----------------------------------------------------------------------------*
+Local ControlHandle
+
+   ASSIGN ::nCol    VALUE x TYPE "N"
+   ASSIGN ::nRow    VALUE y TYPE "N"
+   ASSIGN ::nWidth  VALUE w TYPE "N"
+   ASSIGN ::nHeight VALUE h TYPE "N"
 
    If ! HB_IsDate( value )
       value := DATE()
@@ -136,7 +163,7 @@ Local ControlHandle, nStyle
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize,,,, lRtl )
 
-   nStyle := ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + ;
+   nStyle += ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + MCS_DAYSTATE + ;
              IF( HB_IsLogical( notoday )       .AND. notoday,       MCS_NOTODAY,       0 ) + ;
              IF( HB_IsLogical( notodaycircle ) .AND. notodaycircle, MCS_NOTODAYCIRCLE, 0 ) + ;
              IF( HB_IsLogical( weeknumbers )   .AND. weeknumbers,   MCS_WEEKNUMBERS,   0 )
@@ -152,28 +179,35 @@ Local ControlHandle, nStyle
    ::TrailingFontColor := trailingfontcolor
    ::BackgroundColor   := backgroundcolor
 
-   ::Value := value
+   ::Value             := value
+   SetDayState( Self )
 
-   ASSIGN ::OnChange    VALUE Change    TYPE "B"
+   ASSIGN ::OnChange     VALUE change    TYPE "B"
+   ASSIGN ::OnViewChange VALUE viewchg   TYPE "B"
+   ASSIGN ::OnGotFocus   VALUE gotfocus  TYPE "B"
+   ASSIGN ::OnLostFocus  VALUE lostfocus TYPE "B"
 
 Return Self
 
 *-----------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TMonthCal
 *-----------------------------------------------------------------------------*
+
    IF ValType( uValue ) == "D"
       SetMonthCal( ::hWnd, uValue )
    ENDIF
+
 Return GetMonthCalDate( ::hWnd )
 
 *-----------------------------------------------------------------------------*
 METHOD SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout ) CLASS TMonthCal
 *-----------------------------------------------------------------------------*
 Local uRet
+
    uRet := ::Super:SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout )
    AdjustMonthCalSize( ::hWnd, ::ContainerCol, ::ContainerRow )
-   ::nWidth  := GetWindowWidth( ::hWnd )
-   ::nHeight := GetWindowHeight( ::hWnd )
+   ::SizePos( , , GetWindowWidth( ::hWnd ), GetWindowHeight( ::hWnd ) )
+
 Return uRet
 
 *-----------------------------------------------------------------------------*
@@ -183,11 +217,283 @@ Local nNotify := GetNotifyCode( lParam )
 
    If nNotify == MCN_SELECT
       ::DoChange()
-      Return nil
+      Return Nil
+
+   ElseIf nNotify == MCN_SELCHANGE
+      ::DoChange()
+      Return Nil
+
+   ElseIf nNotify == MCN_VIEWCHANGE
+      ::DoEvent( ::OnViewChange, "VIEWCHANGE", GetViewChangeData( lParam ) )
+      Return Nil
+
+   ElseIF nNotify == MCN_GETDAYSTATE
+      RetDayState( Self, lParam )
 
    EndIf
 
 Return ::Super:Events_Notify( wParam, lParam )
+
+*-----------------------------------------------------------------------------*
+METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TMonthCal
+*-----------------------------------------------------------------------------*
+
+   If nMsg == WM_MOUSEACTIVATE
+      ::SetFocus()
+      Return 1
+
+   ElseIf nMsg == WM_SETFOCUS
+      ::FocusEffect()
+      ::DoEvent( ::OnGotFocus, "GOTFOCUS" )
+
+   ElseIf nMsg == WM_KILLFOCUS
+      Return ::DoLostFocus()
+
+   EndIf
+
+Return ::Super:Events( hWnd, nMsg, wParam, lParam )
+
+*-----------------------------------------------------------------------------*
+METHOD CurrentView( nView ) CLASS TMonthCal
+*-----------------------------------------------------------------------------*
+
+   /*
+   nView valid values are:
+   #define   MCMV_MONTH     0   // days in a month
+   #define   MCMV_YEAR      1   // month in a year
+   #define   MCMV_DECADE    2   // years in a decade
+   #define   MCMV_CENTURY   3   // decades in a century
+
+   Note that changing the current view in a MULTISELECT control,
+   from MCMV_MONTH to another view, generates a change in the
+   control's value. The previous value is lost and a new range
+   is set: for MCMV_YEAR the last days of the month are set,
+   for MCMV_DECADE the last days of the year are set and for
+   MCMV_CENTURY the last days of the decade are set.
+   */
+   IF HB_IsNumeric( nView )
+      SendMessage( ::hWnd, MCM_SETCURRENTVIEW, 0, nView )
+   ENDIF
+
+Return SendMessage( ::hWnd, MCM_GETCURRENTVIEW, 0, 0 )
+
+*-----------------------------------------------------------------------------*
+METHOD Width( nWidth ) CLASS TMonthCal
+*-----------------------------------------------------------------------------*
+
+   IF HB_IsNumeric( nWidth )
+      AdjustMonthCalSize( ::hWnd, ::ContainerCol, ::ContainerRow )
+      ::SizePos( , , GetWindowWidth( ::hWnd ), GetWindowHeight( ::hWnd ) )
+   EndIf
+
+Return ::nWidth
+
+*-----------------------------------------------------------------------------*
+METHOD Height( nHeight ) CLASS TMonthCal
+*-----------------------------------------------------------------------------*
+
+   IF HB_IsNumeric( nHeight )
+      AdjustMonthCalSize( ::hWnd, ::ContainerCol, ::ContainerRow )
+      ::SizePos( , , GetWindowWidth( ::hWnd ), GetWindowHeight( ::hWnd ) )
+   EndIf
+
+Return ::nHeight
+
+*-----------------------------------------------------------------------------*
+METHOD AddBoldDay( dDay ) CLASS TMonthCal
+*-----------------------------------------------------------------------------*
+Local i
+
+   i := aScan( ::aBoldDays, { |d| d >= dDay } )
+   IF i == 0
+      aAdd( ::aBoldDays, dDay )
+      SetDayState( Self )
+   ELSEIF ::aBoldDays[ i ] > dDay
+      aSize( ::aBoldDays, Len( ::aBoldDays ) + 1 )
+      aIns( ::aBoldDays, i )
+      ::aBoldDays[ i ] := dDay
+      SetDayState( Self )
+   ENDIF
+
+Return Nil
+
+*-----------------------------------------------------------------------------*
+METHOD DelBoldDay( dDay ) CLASS TMonthCal
+*-----------------------------------------------------------------------------*
+Local i
+
+   i := aScan( ::aBoldDays, dDay )
+   IF i > 0
+      aDel( ::aBoldDays, i )
+      aSize( ::aBoldDays, Len( ::aBoldDays ) - 1 )
+      SetDayState( Self )
+   ENDIF
+
+Return Nil
+
+
+
+
+
+CLASS TMonthCalMulti FROM TMonthCal
+   DATA Type                      INIT "MONTHCALMULTI" READONLY
+
+   METHOD Define
+   METHOD DoChange
+   METHOD MaxSelCount             SETGET
+   METHOD Value                   SETGET
+ENDCLASS
+
+*-----------------------------------------------------------------------------*
+METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
+               fontsize, tooltip, notoday, notodaycircle, weeknumbers, ;
+               change, HelpId, invisible, notabstop, bold, italic, ;
+               underline, strikeout, lRtl, lDisabled, fontcolor, backcolor, ;
+               titlefontcolor, titlebackcolor, trailingfontcolor, ;
+               backgroundcolor, viewchg, gotfocus, lostfocus ) CLASS TMonthCalMulti
+*-----------------------------------------------------------------------------*
+
+   ::Define2( ControlName, ParentForm, x, y, w, h, value, fontname, ;
+              fontsize, tooltip, notoday, notodaycircle, weeknumbers, ;
+              change, HelpId, invisible, notabstop, bold, italic, ;
+              underline, strikeout, lRtl, lDisabled, fontcolor, backcolor, ;
+              titlefontcolor, titlebackcolor, trailingfontcolor, ;
+              backgroundcolor, viewchg, MCS_MULTISELECT, gotfocus, lostfocus )
+
+Return Self
+
+*-----------------------------------------------------------------------------*
+METHOD MaxSelCount( nMax ) CLASS TMonthCalMulti
+*-----------------------------------------------------------------------------*
+
+   IF HB_IsNumeric( nMax )
+      SendMessage( ::hWnd, MCM_SETMAXSELCOUNT, nMax, 0 )
+   ENDIF
+
+Return SendMessage( ::hWnd, MCM_GETMAXSELCOUNT, 0, 0 )
+
+*-----------------------------------------------------------------------------*
+METHOD DoChange() CLASS TMonthCalMulti
+*-----------------------------------------------------------------------------*
+Local xValue, cType, cOldType
+
+   xValue   := ::Value
+   cType    := ValType( xValue )
+   cOldType := ValType( ::xOldValue )
+   cType    := If( cType == "M", "C", cType )
+   cOldType := If( cOldType == "M", "C", cOldType )
+   If ( cOldType == "U" .OR. ! cType == cOldType .OR. ;
+        ( HB_IsArray( xValue ) .AND. ! HB_IsArray( ::xOldValue ) ) .OR. ;
+        ( ! HB_IsArray( xValue ) .AND. HB_IsArray( ::xOldValue ) ) .OR. ;
+        ! aEqual( xValue, ::xOldValue ) )
+      ::xOldValue := xValue
+      ::DoEvent( ::OnChange, "CHANGE" )
+   EndIf
+
+Return Self
+
+*-----------------------------------------------------------------------------*
+METHOD Value( uValue ) CLASS TMonthCalMulti
+*-----------------------------------------------------------------------------*
+
+   IF HB_IsArray( uValue ) .AND. Len( uValue ) > 1 .AND. HB_IsDate( uValue[ 1 ] ) .AND. HB_IsDate( uValue[ 2 ] )
+      SetMonthCalRange( ::hWnd, uValue[ 1 ], uValue[ 2 ] )
+   ENDIF
+
+Return GetMonthCalRange( ::hWnd )
+
+
+
+
+
+*-----------------------------------------------------------------------------*
+FUNCTION SetDayState( Self )
+*-----------------------------------------------------------------------------*
+Local aData, nCount, aDays, dStart, iNextD, dEnd, dEoM, nMonth, dDay, nLen
+
+   aData  := GetMonthRange( ::hWnd )
+   nCount := aData[ 1 ]
+   IF nCount < 1
+      Return Nil
+   ENDIF
+
+   aDays := Array( nCount * 32 )
+   aFill( aDays, 0 )
+
+   dStart := aData[ 2 ]
+   iNextD := aScan( ::aBoldDays, { |d| d >= dStart } )
+
+   IF iNextD > 0
+      dEnd   := aData[ 3 ]
+      dEoM   := EoM( dStart )
+      nMonth := 0
+      dDay   := ::aBoldDays[ iNextD ]
+      nLen   := Len( ::aBoldDays )
+
+      DO WHILE dDay <= dEnd
+         IF dDay <= dEoM
+            aDays[ nMonth * 32 + Day( dDay ) ] := 1
+            iNextD ++
+            IF iNextD > nLen
+               EXIT
+            ENDIF
+            dDay := ::aBoldDays[ iNextD ]
+         ELSE
+            nMonth ++
+            dEoM := EoM( dEoM + 1 )
+         ENDIF
+      ENDDO
+   ENDIF
+
+   C_SETDAYSTATE( ::hWnd, nCount, aDays )
+
+Return Nil
+
+*-----------------------------------------------------------------------------*
+FUNCTION RetDayState( Self, lParam )
+*-----------------------------------------------------------------------------*
+Local aData, nCount, aDays, dStart, iNextD, dEoM, nMonth, dDay, nLen
+
+   aData  := GetDayStateData( lParam )
+   nCount := aData[ 1 ]
+   IF nCount < 1
+      Return Nil
+   ENDIF
+
+   aDays := Array( nCount * 32 )
+   aFill( aDays, 0 )
+
+   dStart := aData[ 2 ]
+   iNextD := aScan( ::aBoldDays, { |d| d >= dStart } )
+
+   IF iNextD > 0
+      dEoM   := EoM( dStart )
+      nMonth := 0
+      dDay   := ::aBoldDays[ iNextD ]
+      nLen   := Len( ::aBoldDays )
+
+      DO WHILE nMonth < nCount
+         IF dDay <= dEoM
+            aDays[ nMonth * 32 + Day( dDay ) ] := 1
+            iNextD ++
+            IF iNextD > nLen
+               EXIT
+            ENDIF
+            dDay := ::aBoldDays[ iNextD ]
+         ELSE
+            nMonth ++
+            dEoM := EoM( dEoM + 1 )
+         ENDIF
+      ENDDO
+   ENDIF
+
+   C_RETDAYSTATE( lParam, nCount, aDays )
+
+Return Nil
+
+
+
+
 
 #pragma BEGINDUMP
 
@@ -202,6 +508,7 @@ Return ::Super:Events_Notify( wParam, lParam )
 #include "hbvm.h"
 #include "hbstack.h"
 #include "hbapiitm.h"
+#include "hbdate.h"
 #include "winreg.h"
 #include "tchar.h"
 #include "oohg.h"
@@ -234,7 +541,7 @@ HB_FUNC( INITMONTHCAL )
                                hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
                                hwnd, HMENUparam( 2 ), GetModuleHandle( NULL ), NULL ) ;
 
-   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hmonthcal, GWL_WNDPROC, ( LONG ) SubClassFunc );
+   lpfnOldWndProc = (WNDPROC) SetWindowLong( (HWND) hmonthcal, GWL_WNDPROC, (LONG) SubClassFunc );
 
    HWNDret( hmonthcal );
 }
@@ -243,8 +550,23 @@ HB_FUNC( ADJUSTMONTHCALSIZE )
 {
    HWND hWnd = HWNDparam( 1 );
    RECT rMin;
+   int iToday;
+
+   if( ( GetWindowLong( hWnd, GWL_STYLE ) & MCS_NOTODAY ) == MCS_NOTODAY )
+   {
+      iToday = 0;
+   }
+   else
+   {
+      iToday = SendMessage( hWnd, MCM_GETMAXTODAYWIDTH, 0, 0 );
+   }
 
    MonthCal_GetMinReqRect( hWnd, &rMin );
+
+   if( rMin.right < iToday )
+   {
+      rMin.right = iToday;
+   }
 
    SetWindowPos( hWnd, NULL, hb_parni( 2 ), hb_parni( 3 ), rMin.right, rMin.bottom, SWP_NOZORDER );
 }
@@ -256,15 +578,15 @@ HB_FUNC( SETMONTHCAL )
 
    if( HB_ISDATE( 2 ) )
    {
-      cDate = ( char * ) hb_pards( 2 );
+      cDate = (char *) hb_pards( 2 );
       if( ! ( cDate[ 0 ] == ' ' ) )
       {
          memset( &sysTime, 0, sizeof( sysTime ) );
-         sysTime.wYear  = ( WORD ) ( ( ( ( int ) cDate[ 0 ] - '0' ) * 1000 ) +
-                                     ( ( ( int ) cDate[ 1 ] - '0' ) * 100 )  +
-                                     ( ( ( int ) cDate[ 2 ] - '0' ) * 10 ) + ( ( int ) cDate[ 3 ] - '0' ) );
-         sysTime.wMonth = ( WORD ) ( ( ( ( int ) cDate[ 4 ] - '0' ) * 10 ) + ( ( int ) cDate[ 5 ] - '0' ) );
-         sysTime.wDay   = ( WORD ) ( ( ( ( int ) cDate[ 6 ] - '0' ) * 10 ) + ( ( int ) cDate[ 7 ] - '0' ) );
+         sysTime.wYear  = (WORD) ( ( ( (int) cDate[ 0 ] - '0' ) * 1000 ) +
+                                   ( ( (int) cDate[ 1 ] - '0' ) * 100 )  +
+                                   ( ( (int) cDate[ 2 ] - '0' ) * 10 ) + ( (int) cDate[ 3 ] - '0' ) );
+         sysTime.wMonth = (WORD) ( ( ( (int) cDate[ 4 ] - '0' ) * 10 ) + ( (int) cDate[ 5 ] - '0' ) );
+         sysTime.wDay   = (WORD) ( ( ( (int) cDate[ 6 ] - '0' ) * 10 ) + ( (int) cDate[ 7 ] - '0' ) );
 
          MonthCal_SetCurSel( HWNDparam( 1 ), &sysTime );
       }
@@ -275,7 +597,7 @@ HB_FUNC( GETMONTHCALDATE )
 {
    SYSTEMTIME st;
 
-   SendMessage( HWNDparam( 1 ), MCM_GETCURSEL, 0, ( LPARAM ) &st );
+   SendMessage( HWNDparam( 1 ), MCM_GETCURSEL, 0, (LPARAM) &st );
 
    hb_retd( st.wYear, st.wMonth, st.wDay );
 }
@@ -302,7 +624,7 @@ HB_FUNC_STATIC( TMONTHCAL_FONTCOLOR )
       {
          if( oSelf->lFontColor != -1 )
          {
-            MonthCal_SetColor( oSelf->hWnd, MCSC_TEXT, ( COLORREF ) oSelf->lFontColor );
+            MonthCal_SetColor( oSelf->hWnd, MCSC_TEXT, (COLORREF) oSelf->lFontColor );
          }
          // else
          // {
@@ -312,7 +634,7 @@ HB_FUNC_STATIC( TMONTHCAL_FONTCOLOR )
       }
    }
 
-   lColor = ( LONG ) MonthCal_GetColor( oSelf->hWnd, MCSC_TEXT );
+   lColor = (LONG) MonthCal_GetColor( oSelf->hWnd, MCSC_TEXT );
    hb_reta( 3 );
    HB_STORNL( GetRValue( lColor ), -1, 1 );
    HB_STORNL( GetGValue( lColor ), -1, 2 );
@@ -331,7 +653,7 @@ HB_FUNC_STATIC( TMONTHCAL_BACKCOLOR )
       {
          if( oSelf->lBackColor != -1 )
          {
-            MonthCal_SetColor( oSelf->hWnd, MCSC_MONTHBK, ( COLORREF ) oSelf->lBackColor );
+            MonthCal_SetColor( oSelf->hWnd, MCSC_MONTHBK, (COLORREF) oSelf->lBackColor );
          }
          // else
          // {
@@ -341,7 +663,7 @@ HB_FUNC_STATIC( TMONTHCAL_BACKCOLOR )
       }
    }
 
-   lColor = ( LONG ) MonthCal_GetColor( oSelf->hWnd, MCSC_MONTHBK );
+   lColor = (LONG) MonthCal_GetColor( oSelf->hWnd, MCSC_MONTHBK );
    hb_reta( 3 );
    HB_STORNL( GetRValue( lColor ), -1, 1 );
    HB_STORNL( GetGValue( lColor ), -1, 2 );
@@ -360,7 +682,7 @@ HB_FUNC_STATIC( TMONTHCAL_TITLEFONTCOLOR )
       {
          if( lColor != -1 )
          {
-            MonthCal_SetColor( oSelf->hWnd, MCSC_TITLETEXT, ( COLORREF ) lColor );
+            MonthCal_SetColor( oSelf->hWnd, MCSC_TITLETEXT, (COLORREF) lColor );
          }
          // else
          // {
@@ -370,7 +692,7 @@ HB_FUNC_STATIC( TMONTHCAL_TITLEFONTCOLOR )
       }
    }
 
-   lColor = ( LONG ) MonthCal_GetColor( oSelf->hWnd, MCSC_TITLETEXT );
+   lColor = (LONG) MonthCal_GetColor( oSelf->hWnd, MCSC_TITLETEXT );
    hb_reta( 3 );
    HB_STORNL( GetRValue( lColor ), -1, 1 );
    HB_STORNL( GetGValue( lColor ), -1, 2 );
@@ -389,7 +711,7 @@ HB_FUNC_STATIC( TMONTHCAL_TITLEBACKCOLOR )
       {
          if( lColor != -1 )
          {
-            MonthCal_SetColor( oSelf->hWnd, MCSC_TITLEBK, ( COLORREF ) lColor );
+            MonthCal_SetColor( oSelf->hWnd, MCSC_TITLEBK, (COLORREF) lColor );
          }
          // else
          // {
@@ -399,7 +721,7 @@ HB_FUNC_STATIC( TMONTHCAL_TITLEBACKCOLOR )
       }
    }
 
-   lColor = ( LONG ) MonthCal_GetColor( oSelf->hWnd, MCSC_TITLEBK );
+   lColor = (LONG) MonthCal_GetColor( oSelf->hWnd, MCSC_TITLEBK );
    hb_reta( 3 );
    HB_STORNL( GetRValue( lColor ), -1, 1 );
    HB_STORNL( GetGValue( lColor ), -1, 2 );
@@ -418,7 +740,7 @@ HB_FUNC_STATIC( TMONTHCAL_TRAILINGFONTCOLOR )
       {
          if( lColor != -1 )
          {
-            MonthCal_SetColor( oSelf->hWnd, MCSC_TRAILINGTEXT, ( COLORREF ) lColor );
+            MonthCal_SetColor( oSelf->hWnd, MCSC_TRAILINGTEXT, (COLORREF) lColor );
          }
          // else
          // {
@@ -428,7 +750,7 @@ HB_FUNC_STATIC( TMONTHCAL_TRAILINGFONTCOLOR )
       }
    }
 
-   lColor = ( LONG ) MonthCal_GetColor( oSelf->hWnd, MCSC_TRAILINGTEXT );
+   lColor = (LONG) MonthCal_GetColor( oSelf->hWnd, MCSC_TRAILINGTEXT );
    hb_reta( 3 );
    HB_STORNL( GetRValue( lColor ), -1, 1 );
    HB_STORNL( GetGValue( lColor ), -1, 2 );
@@ -447,7 +769,7 @@ HB_FUNC_STATIC( TMONTHCAL_BACKGROUNDCOLOR )
       {
          if( lColor != -1 )
          {
-            MonthCal_SetColor( oSelf->hWnd, MCSC_BACKGROUND, ( COLORREF ) lColor );
+            MonthCal_SetColor( oSelf->hWnd, MCSC_BACKGROUND, (COLORREF) lColor );
          }
          // else
          // {
@@ -457,7 +779,7 @@ HB_FUNC_STATIC( TMONTHCAL_BACKGROUNDCOLOR )
       }
    }
 
-   lColor = ( LONG ) MonthCal_GetColor( oSelf->hWnd, MCSC_BACKGROUND );
+   lColor = (LONG) MonthCal_GetColor( oSelf->hWnd, MCSC_BACKGROUND );
    hb_reta( 3 );
    HB_STORNL( GetRValue( lColor ), -1, 1 );
    HB_STORNL( GetGValue( lColor ), -1, 2 );
@@ -476,30 +798,191 @@ HB_FUNC_STATIC( TMONTHCAL_SETRANGE )
    {
       memset( &sysTime, 0, sizeof( sysTime ) );
 
-      cDate = ( char * ) hb_pards( 1 );
+      cDate = (char *) hb_pards( 1 );
       if( ! ( cDate[ 0 ] == ' ' ) )
       {
-         sysTime[ 0 ].wYear  = ( WORD ) ( ( ( ( int ) cDate[ 0 ] - '0' ) * 1000 ) +
-                                          ( ( ( int ) cDate[ 1 ] - '0' ) * 100 )  +
-                                          ( ( ( int ) cDate[ 2 ] - '0' ) * 10 ) + ( ( int ) cDate[ 3 ] - '0' ) );
-         sysTime[ 0 ].wMonth = ( WORD ) ( ( ( ( int ) cDate[ 4 ] - '0' ) * 10 ) + ( ( int ) cDate[ 5 ] - '0' ) );
-         sysTime[ 0 ].wDay   = ( WORD ) ( ( ( ( int ) cDate[ 6 ] - '0' ) * 10 ) + ( ( int ) cDate[ 7 ] - '0' ) );
+         sysTime[ 0 ].wYear  = (WORD) ( ( ( (int) cDate[ 0 ] - '0' ) * 1000 ) +
+                                        ( ( (int) cDate[ 1 ] - '0' ) * 100 )  +
+                                        ( ( (int) cDate[ 2 ] - '0' ) * 10 ) + ( (int) cDate[ 3 ] - '0' ) );
+         sysTime[ 0 ].wMonth = (WORD) ( ( ( (int) cDate[ 4 ] - '0' ) * 10 ) + ( (int) cDate[ 5 ] - '0' ) );
+         sysTime[ 0 ].wDay   = (WORD) ( ( ( (int) cDate[ 6 ] - '0' ) * 10 ) + ( (int) cDate[ 7 ] - '0' ) );
          wLimit |= GDTR_MIN;
       }
 
       cDate = ( char * ) hb_pards( 2 );
       if( ! ( cDate[ 0 ] == ' ' ) )
       {
-         sysTime[ 1 ].wYear  = ( WORD ) ( ( ( ( int ) cDate[ 0 ] - '0' ) * 1000 ) +
-                                          ( ( ( int ) cDate[ 1 ] - '0' ) * 100 )  +
-                                          ( ( ( int ) cDate[ 2 ] - '0' ) * 10 ) + ( ( int ) cDate[ 3 ] - '0' ) );
-         sysTime[ 1 ].wMonth = ( WORD ) ( ( ( ( int ) cDate[ 4 ] - '0' ) * 10 ) + ( ( int ) cDate[ 5 ] - '0' ) );
-         sysTime[ 1 ].wDay   = ( WORD ) ( ( ( ( int ) cDate[ 6 ] - '0' ) * 10 ) + ( ( int ) cDate[ 7 ] - '0' ) );
+         sysTime[ 1 ].wYear  = (WORD) ( ( ( (int) cDate[ 0 ] - '0' ) * 1000 ) +
+                                        ( ( (int) cDate[ 1 ] - '0' ) * 100 )  +
+                                        ( ( (int) cDate[ 2 ] - '0' ) * 10 ) + ( (int) cDate[ 3 ] - '0' ) );
+         sysTime[ 1 ].wMonth = (WORD) ( ( ( (int) cDate[ 4 ] - '0' ) * 10 ) + ( (int) cDate[ 5 ] - '0' ) );
+         sysTime[ 1 ].wDay   = (WORD) ( ( ( (int) cDate[ 6 ] - '0' ) * 10 ) + ( (int) cDate[ 7 ] - '0' ) );
          wLimit |= GDTR_MAX;
       }
 
-      SendMessage( oSelf->hWnd, MCM_SETRANGE, wLimit, ( LPARAM ) &sysTime );
+      SendMessage( oSelf->hWnd, MCM_SETRANGE, wLimit, (LPARAM) &sysTime );
    }
+}
+
+HB_FUNC( SETMONTHCALRANGE )
+{
+   SYSTEMTIME sysTime[ 2 ];
+   char *cDate;
+
+   if( HB_ISDATE( 2 ) && HB_ISDATE( 3 ) )
+   {
+      memset( &sysTime, 0, sizeof( sysTime ) );
+
+      cDate = (char *) hb_pards( 2 );
+      if( ! ( cDate[ 0 ] == ' ' ) )
+      {
+         sysTime[ 0 ].wYear  = (WORD) ( ( ( (int) cDate[ 0 ] - '0' ) * 1000 ) +
+                                        ( ( (int) cDate[ 1 ] - '0' ) * 100 )  +
+                                        ( ( (int) cDate[ 2 ] - '0' ) * 10 ) + ( (int) cDate[ 3 ] - '0' ) );
+         sysTime[ 0 ].wMonth = (WORD) ( ( ( (int) cDate[ 4 ] - '0' ) * 10 ) + ( (int) cDate[ 5 ] - '0' ) );
+         sysTime[ 0 ].wDay   = (WORD) ( ( ( (int) cDate[ 6 ] - '0' ) * 10 ) + ( (int) cDate[ 7 ] - '0' ) );
+      }
+
+      cDate = (char *) hb_pards( 3 );
+      if( ! ( cDate[ 0 ] == ' ' ) )
+      {
+         sysTime[ 1 ].wYear  = (WORD) ( ( ( (int) cDate[ 0 ] - '0' ) * 1000 ) +
+                                        ( ( (int) cDate[ 1 ] - '0' ) * 100 )  +
+                                        ( ( (int) cDate[ 2 ] - '0' ) * 10 ) + ( (int) cDate[ 3 ] - '0' ) );
+         sysTime[ 1 ].wMonth = (WORD) ( ( ( (int) cDate[ 4 ] - '0' ) * 10 ) + ( (int) cDate[ 5 ] - '0' ) );
+         sysTime[ 1 ].wDay   = (WORD) ( ( ( (int) cDate[ 6 ] - '0' ) * 10 ) + ( (int) cDate[ 7 ] - '0' ) );
+      }
+
+      SendMessage( HWNDparam( 1 ), MCM_SETSELRANGE, 0, (LPARAM) &sysTime );
+   }
+}
+
+HB_FUNC( GETMONTHCALRANGE )
+{
+   SYSTEMTIME sysTime[ 2 ];
+
+   memset( &sysTime, 0, sizeof( sysTime ) );
+   SendMessage( HWNDparam( 1 ), MCM_GETSELRANGE, 0, (LPARAM) &sysTime );
+
+   hb_reta( 2 );
+   HB_STORDL( hb_dateEncode( sysTime[ 0 ].wYear, sysTime[ 0 ].wMonth, sysTime[ 0 ].wDay ), -1, 1 );
+   HB_STORDL( hb_dateEncode( sysTime[ 1 ].wYear, sysTime[ 1 ].wMonth, sysTime[ 1 ].wDay ), -1, 2 );
+}
+
+enum MonthCalendarView {
+   MCMV_MONTH = 0,
+   MCMV_YEAR = 1, 
+   MCMV_DECADE = 2,
+   MCMV_CENTURY = 3,
+   MCMV_MAX = MCMV_CENTURY
+};
+
+typedef struct tagNMVIEWCHANGE {
+  NMHDR nmhdr;
+  DWORD dwOldView;
+  DWORD dwNewView;
+} NMVIEWCHANGE, *LPNMVIEWCHANGE;
+
+HB_FUNC( GETVIEWCHANGEDATA )
+{
+   LPNMVIEWCHANGE pData = (NMVIEWCHANGE *) hb_parnl( 1 );
+
+   hb_reta( 2 );
+   HB_STORNI( (int) pData->dwOldView, -1, 1 );
+   HB_STORNI( (int) pData->dwNewView, -1, 2 );
+}
+
+HB_FUNC( GETMONTHRANGE )
+{
+   SYSTEMTIME sysTime[ 2 ];
+   int iCount;
+
+   memset( &sysTime, 0, sizeof( sysTime ) );
+   iCount = SendMessage( HWNDparam( 1 ), MCM_GETMONTHRANGE, (WPARAM) GMR_DAYSTATE, (LPARAM) &sysTime );
+
+   hb_reta( 3 );
+   HB_STORNI( iCount, -1, 1 );
+   HB_STORDL( hb_dateEncode( sysTime[ 0 ].wYear, sysTime[ 0 ].wMonth, sysTime[ 0 ].wDay ), -1, 2 );
+   HB_STORDL( hb_dateEncode( sysTime[ 1 ].wYear, sysTime[ 1 ].wMonth, sysTime[ 1 ].wDay ), -1, 3 );
+}
+
+#define BOLDDAY( ds, iDay ) if( iDay > 0 && iDay < 32 )( ds ) |= ( 0x00000001 << ( iDay - 1 ) )
+
+HB_FUNC( C_SETDAYSTATE )
+{
+   int i, j;
+
+   HWND hwnd = HWNDparam( 1 );
+   if( ValidHandler( hwnd ) )
+   {
+      int iCount = hb_parni( 2 );
+      if( iCount > 0 )
+      {
+         MONTHDAYSTATE rgMonths[ iCount ];
+         memset( &rgMonths, 0, sizeof( rgMonths ) );
+
+         int iLen = hb_parinfa( 3, 0 );
+         if( iLen == ( iCount * 32 ) )
+         {
+            PHB_ITEM hArray = hb_param( 3, HB_IT_ARRAY );
+
+            for( i = 0; i < iCount; i ++ )
+            {
+               for( j = 1; j <= 32; j ++ )
+               {
+                  if( hb_arrayGetNI( hArray, i * 32 + j ) == 1 )
+                  {
+                     BOLDDAY( rgMonths[ i ], j );
+                  }
+               }
+            }
+
+            SendMessage( HWNDparam( 1 ), MCM_SETDAYSTATE, (WPARAM) iCount, (LPARAM) &rgMonths );
+         }
+      }
+   }
+}
+
+HB_FUNC( C_RETDAYSTATE )
+{
+   int i, j;
+
+   LPNMDAYSTATE pData = (NMDAYSTATE *) hb_parnl( 1 );
+
+   int iCount = hb_parni( 2 );
+   if( iCount > 0 )
+   {
+      MONTHDAYSTATE rgMonths[ iCount ];
+      memset( &rgMonths, 0, sizeof( rgMonths ) );
+
+      int iLen = hb_parinfa( 3, 0 );
+      if( iLen == ( iCount * 32 ) )
+      {
+         PHB_ITEM hArray = hb_param( 3, HB_IT_ARRAY );
+
+         for( i = 0; i < iCount; i ++ )
+         {
+            for( j = 1; j <= 32; j ++ )
+            {
+               if( hb_arrayGetNI( hArray, i * 32 + j ) == 1 )
+               {
+                  BOLDDAY( rgMonths[ i ], j );
+               }
+            }
+         }
+
+         pData->prgDayState = (LPMONTHDAYSTATE) &rgMonths;
+      }
+   }
+}
+
+HB_FUNC( GETDAYSTATEDATA )
+{
+   LPNMDAYSTATE pData = (NMDAYSTATE *) hb_parnl( 1 );
+
+   hb_reta( 2 );
+   HB_STORNI( (int) pData->cDayState, -1, 1 );
+   HB_STORDL( hb_dateEncode( pData->stStart.wYear, pData->stStart.wMonth, pData->stStart.wDay ), -1, 2 );
 }
 
 #pragma ENDDUMP

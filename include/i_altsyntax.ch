@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.131 2015-12-16 00:45:28 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.132 2016-03-31 19:53:38 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1237,7 +1237,16 @@ MONTH CALENDAR
       _OOHG_ActiveControlTitleFontColor    := NIL ;;
       _OOHG_ActiveControlTitleBackColor    := NIL ;;
       _OOHG_ActiveControlTrailingFontColor := NIL ;;
-      _OOHG_ActiveControlBackgroundColor   := NIL
+      _OOHG_ActiveControlBackgroundColor   := NIL ;;
+      _OOHG_ActiveControlDisplayChange     := NIL
+
+#xcommand ON VIEWCHANGE <viewchange> ;
+   => ;
+      _OOHG_ActiveControlDisplayChange := <{viewchange}>
+
+#xcommand ONVIEWCHANGE <viewchange> ;
+   => ;
+      _OOHG_ActiveControlDisplayChange := <{viewchange}>
 
 #xcommand NOTODAY <notoday> ;
    => ;
@@ -1298,7 +1307,10 @@ MONTH CALENDAR
             _OOHG_ActiveControlTitleFontColor, ;
             _OOHG_ActiveControlTitleBackColor, ;
             _OOHG_ActiveControlTrailingFontColor, ;
-            _OOHG_ActiveControlBackgroundColor )
+            _OOHG_ActiveControlBackgroundColor, ;
+            _OOHG_ActiveControlDisplayChange, ;
+            _OOHG_ActiveControlOnGotFocus, ;
+            _OOHG_ActiveControlOnLostFocus )
 
 /*---------------------------------------------------------------------------
 BUTTON

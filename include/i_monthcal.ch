@@ -1,5 +1,5 @@
 /*
- * $Id: i_monthcal.ch,v 1.8 2015-03-09 02:51:07 fyurisich Exp $
+ * $Id: i_monthcal.ch,v 1.9 2016-03-31 19:53:39 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -68,11 +68,11 @@
       [ <underline: UNDERLINE> ] ;
       [ <strikeout: STRIKEOUT> ] ;
       [ TOOLTIP <tooltip> ] ;
-      [ < notoday: NOTODAY > ] ;
-      [ < notodaycircle: NOTODAYCIRCLE > ] ;
-      [ < weeknumbers: WEEKNUMBERS > ] ;
-      [ < invisible: INVISIBLE > ] ;
-      [ < notabstop: NOTABSTOP > ] ;
+      [ <notoday: NOTODAY> ] ;
+      [ <notodaycircle: NOTODAYCIRCLE> ] ;
+      [ <weeknumbers: WEEKNUMBERS> ] ;
+      [ <invisible: INVISIBLE> ] ;
+      [ <notabstop: NOTABSTOP> ] ;
       [ ON CHANGE <change> ] ;
       [ HELPID <helpid> ] ;
       [ <rtl: RTL> ] ;
@@ -84,11 +84,16 @@
       [ TITLEBACKCOLOR <titlebackcolor> ] ;
       [ TRAILINGFONTCOLOR <trailingfontcolor> ] ;
       [ BACKGROUNDCOLOR <backgroundcolor> ] ;
+      [ <multiselect: MULTISELECT> ] ;
+      [ <dummy2: ONVIEWCHANGE, ON VIEWCHANGE> <viewchg> ] ;
+      [ <dummy3: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
+      [ <dummy4: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
    => ;
-      [ <obj> := ] _OOHG_SelectSubClass( TMonthCal(), [ <subclass>() ] ):Define( ;
+      [ <obj> := ] _OOHG_SelectSubClass( IIF( <.multiselect.>, ;
+            TMonthCalMulti(), TMonthCal() ), [ <subclass>() ] ):Define( ;
             <(name)>, <(parent)>, <col>, <row>, 0, 0, <v>, <fontname>, <fontsize>, ;
             <tooltip>, <.notoday.>, <.notodaycircle.>, <.weeknumbers.>, <{change}>, ;
             <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, <.italic.>, ;
             <.underline.>, <.strikeout.>, <.rtl.>, <.disabled.>, <fontcolor>, ;
             <backcolor>, <titlefontcolor>, <titlebackcolor>, <trailingfontcolor>, ;
-            <backgroundcolor> )
+            <backgroundcolor>, <{viewchg}>, <{gotfocus}>, <{lostfocus}> )
