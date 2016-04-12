@@ -1,5 +1,5 @@
 /*
- * $Id: mgide.prg,v 1.29 2015-08-21 00:47:54 fyurisich Exp $
+ * $Id: mgide.prg,v 1.30 2016-04-12 22:04:33 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -3682,7 +3682,7 @@ LOCAL Output
 RETURN NIL
 
 //------------------------------------------------------------------------------
-METHOD modifyRpt(cItem,cparent) CLASS THMI
+METHOD ModifyRpt(cItem,cparent) CLASS THMI
 //------------------------------------------------------------------------------
    if citem=NIL
       cItem:=::Form_Tree:Tree_1:item(::Form_Tree:Tree_1:Value)
@@ -4545,7 +4545,7 @@ LOCAL i, l
       aResult[ i ] := oWin:Control( 'Control_' + Alltrim( Str( i ) ) ):Value
    NEXT i
    oInputWindow:Release()
-RETURN Nil
+RETURN .T.
 
 //------------------------------------------------------------------------------
 STATIC FUNCTION _myInputWindowCancel( oInputWindow, aResult, lChange )
@@ -4554,7 +4554,7 @@ STATIC FUNCTION _myInputWindowCancel( oInputWindow, aResult, lChange )
       aFill( aResult, NIL )
       oInputWindow:Release()
    ENDIF
-RETURN Nil
+RETURN .T.
 
 //------------------------------------------------------------------------------
 FUNCTION DelExt( cFileName )
