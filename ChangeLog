@@ -1,11 +1,55 @@
 /*
- * $Id: ChangeLog,v 1.1563 2016-04-12 22:04:33 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1564 2016-04-13 00:28:18 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2016-04-12 21:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/prgs/formedit.prg
+     * Single quotes were substituted by double quotes to improve readability
+       and facilitate searches.
+     + Some defines to improve readability of complex strings.
+     * Some variable names to improve code readability.
+     - Some comments.
+     ! Some typos.
+     * Some format.
+     - Unneeded code.
+     ! Focus problems with FRAME controls.
+     + IDE can now load controls defined using alternate syntax (except
+       MENU, NODE, SPLITBOX, HOTKEY, INTERNAL and TOOLBAR).
+     + Design form's position is now relative to controls' seleccion window.
+     * The setting of the design window's properties was moved from method
+       Open to method LoadForm.
+     + Support for numeric colors.
+     ! Some potential problems derived from the case of control's name.
+     ! Response of some controls to click, rclick and dblclick events.
+     ! RTE in method DrawOutline because lNoRefresh parameters is not logical.
+     ! Manual Move/Size does not set the focus correctly in some cases.
+     ! Manual Move/Size does not honor CLIENTAREA clause.
+     ! Manual Move/Size of FORM when there are no controls in it.
+     + Some DATAs to CLASS TFormEditor: aFormData , aOnEditCellEnd,
+       aOnInsert, aOnRClick, aOnRowRefresh, aOnScrEndTrack, aOnScrLineLU,
+       aOnScrLineRD, aOnScrLT, aOnScrPageLU, aOnScrPageRD, aOnScrRB,
+       aOnScrThumb and aOnScrTrack.
+     + Some METHODs to CLASS TFormEditor: CheckStringData,
+       PreProcessDefineWindow, ReadCtrlName, ReadFormLogicalData,
+       ReadFormPosition and ReadFormStringData.
+     - METHODs ReadFormCol and ReadFormRow.
+     * METHOD CrtlIsOfType renamed to CtrlIsOfType.
+     * BUTTON's backcolor is not longer forced to form's backcolor.
+     + MonthCalendar's new clauses.
+     * Action and Action2 moved to Events from Properties for TEXT controls.
+     * METHOD PrintBrief now show all events.
+     ; All controls must be defined between DEFINE WINDOW/END WINDOW.
+       Everything defined before the first DEFINE WINDOW of after the
+       first END WINDOW in the fmg file is ignored.
+     ; Only the first DEFINE WINDOW clause is processed, others are
+       ignored.
+     ; The first meaningfull line must start with DEFINE WINDOW TEMPLATE
+       or with DEFINE WINDOW <identifier>.
 
 2016-04-12 19:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ide/prgs/mgide.prg
