@@ -1,5 +1,5 @@
 /*
- * $Id: h_checkbox.prg,v 1.40 2015-11-30 01:25:11 fyurisich Exp $
+ * $Id: h_checkbox.prg,v 1.41 2016-04-22 00:51:47 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -351,7 +351,7 @@ int TCheckBox_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption,
    CALL_OPENTHEMEDATA dwProcOpenThemeData;
    HTHEME hTheme;
    LONG style, state;
-   int state_id, checkState, drawState;
+   int state_id, checkState, drawState, iNeeded;
    CALL_DRAWTHEMEBACKGROUND dwProcDrawThemeBackground;
    CALL_GETTHEMEBACKGROUNDCONTENTRECT dwProcGetThemeBackgroundContentRect;
    RECT content_rect, aux_rect;
@@ -453,17 +453,33 @@ int TCheckBox_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption,
       {
         aux_rect.left = aux_rect.right - 13;
         content_rect.right = aux_rect.left - 6;
+        content_rect.left += 2;
       }
       else
       {
         aux_rect.right = aux_rect.left + 13;
         content_rect.left = aux_rect.right + 6;
+        content_rect.right -= 2;
       }
       ( dwProcDrawThemeBackground )( hTheme, pCustomDraw->hdc, BP_CHECKBOX, state_id, &aux_rect, NULL );
 
       /* paint caption */
       SetTextColor( pCustomDraw->hdc, ( oSelf->lFontColor == -1 ) ? GetSysColor( COLOR_BTNTEXT ) : (COLORREF) oSelf->lFontColor );
-      DrawText( pCustomDraw->hdc, cCaption, -1, &content_rect, DT_VCENTER | DT_LEFT | DT_SINGLELINE );
+      DrawText( pCustomDraw->hdc, cCaption, -1, &content_rect, DT_VCENTER | DT_LEFT | DT_SINGLELINE );        // DrawThemeText
+
+      /* paint focus rectangle */
+      if( state & BST_FOCUS )
+      {
+         aux_rect = content_rect;
+         iNeeded = DrawText( pCustomDraw->hdc, cCaption, -1, &aux_rect, DT_VCENTER | DT_LEFT | DT_SINGLELINE | DT_CALCRECT );
+
+         aux_rect.left -= 1;
+         aux_rect.right += 1;
+         aux_rect.top = content_rect.top + ( ( content_rect.bottom - content_rect.top - iNeeded ) / 2 ) + 2;
+         aux_rect.bottom = aux_rect.top + iNeeded - 4;
+
+         DrawFocusRect( pCustomDraw->hdc, &aux_rect );         // Windows draws a rounded rectangle
+      }
 
       /* cleanup */
      ( dwProcCloseThemeData )( hTheme );

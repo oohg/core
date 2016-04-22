@@ -1,11 +1,15 @@
 /*
- * $Id: ChangeLog,v 1.1564 2016-04-13 00:28:18 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1565 2016-04-22 00:51:47 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2016-04-21 21:51 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_checkbox.prg
+     ! FocusRect is missing.
 
 2016-04-12 21:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ide/prgs/formedit.prg
