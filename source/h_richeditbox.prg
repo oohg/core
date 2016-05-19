@@ -1,5 +1,5 @@
 /*
- * $Id: h_richeditbox.prg,v 1.35 2015-03-09 02:52:08 fyurisich Exp $
+ * $Id: h_richeditbox.prg,v 1.36 2016-05-19 01:17:49 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -730,7 +730,7 @@ HB_FUNC( RICHEDIT_GETSELTEXT )
 FUNCTION TEditRich_Events2( hWnd, nMsg, wParam, lParam )
 *------------------------------------------------------------------------------*
 Local Self := QSelf()
-Local cText
+Local cText, lRet
 
    If nMsg == WM_KEYDOWN .AND. wParam == VK_Z .AND. ( GetKeyFlagState() == MOD_CONTROL .OR. GetKeyFlagState() == MOD_CONTROL + MOD_SHIFT )
 
@@ -740,7 +740,8 @@ Local cText
       Return 1
 
    ElseIf nMsg == WM_LBUTTONDBLCLK
-      If ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
+      lRet := ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
+      If HB_IsLogical( lRet ) .AND. lRet
          If ::lDefault
             // Do default action: select word
             Return Nil

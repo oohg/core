@@ -1,5 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.48 2015-11-04 00:37:22 fyurisich Exp $
+ * $Id: h_status.prg,v 1.49 2016-05-19 01:17:49 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -479,40 +479,50 @@ Return ::AddItem( Dtoc( Date() ), Width, action, ToolTip, icon, cstyl, cAlign )
 METHOD Events_Notify( wParam, lParam ) CLASS TMessageBar
 *-----------------------------------------------------------------------------*
 Local nNotify := GetNotifyCode( lParam )
-Local x
+Local x, lRet
+
    If nNotify == NM_CLICK
       DefWindowProc( ::hWnd, NM_CLICK, wParam, lParam )
       x := GetItemPos( lParam ) + 1
-      if x > 0 .AND. x <= Len( ::aClicks )
-         if ::DoEventMouseCoords( ::aClicks[ x ], "CLICK" )
-            Return Nil
+      If x > 0 .AND. x <= Len( ::aClicks )
+         lRet := ::DoEventMouseCoords( ::aClicks[ x ], "CLICK" )
+         If HB_IsLogical( lRet ) .AND. lRet
+            // supress default processing
+            Return lRet
          EndIf
       EndIf
    ElseIf nNotify == NM_RCLICK
       DefWindowProc( ::hWnd, NM_RCLICK, wParam, lParam )
       x := GetItemPos( lParam ) + 1
-      if x > 0 .AND. x <= Len( ::aRClicks )
-         if ::DoEventMouseCoords( ::aRClicks[ x ], "RCLICK" )
-            Return Nil
+      If x > 0 .AND. x <= Len( ::aRClicks )
+         lRet := ::DoEventMouseCoords( ::aRClicks[ x ], "RCLICK" )
+         If HB_IsLogical( lRet ) .AND. lRet
+            // supress default processing
+            Return lRet
          EndIf
       EndIf
    ElseIf nNotify == NM_DBLCLK
       DefWindowProc( ::hWnd, NM_DBLCLK, wParam, lParam )
       x := GetItemPos( lParam ) + 1
-      if x > 0 .AND. x <= Len( ::aDblClicks )
-         if ::DoEventMouseCoords( ::aDblClicks[ x ], "DBLCLICK" )
-            Return Nil
+      If x > 0 .AND. x <= Len( ::aDblClicks )
+         lRet := ::DoEventMouseCoords( ::aDblClicks[ x ], "DBLCLICK" )
+         If HB_IsLogical( lRet ) .AND. lRet
+            // supress default processing
+            Return lRet
          EndIf
       EndIf
    ElseIf nNotify == NM_RDBLCLK
       DefWindowProc( ::hWnd, NM_RDBLCLK, wParam, lParam )
       x := GetItemPos( lParam ) + 1
-      if x > 0 .AND. x <= Len( ::aRDblClicks )
-         if ::DoEventMouseCoords( ::aRDblClicks[ x ], "RDBLCLICK" )
-            Return Nil
+      If x > 0 .AND. x <= Len( ::aRDblClicks )
+         lRet := ::DoEventMouseCoords( ::aRDblClicks[ x ], "RDBLCLICK" )
+         If HB_IsLogical( lRet ) .AND. lRet
+            // supress default processing
+            Return lRet
          EndIf
       EndIf
    EndIf
+
 Return ::Super:Events_Notify( wParam, lParam )
 
 *-----------------------------------------------------------------------------*
