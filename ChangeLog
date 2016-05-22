@@ -1,11 +1,23 @@
 /*
- * $Id: ChangeLog,v 1.1567 2016-05-20 00:01:01 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1568 2016-05-22 01:41:35 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2016-05-19 22:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/ACTIVEX.HTM
+   * manual/ANIMATEBOX.HTM
+   * manual/BROWSE.HTM
+   * manual/BUTTON.HTM
+   * manual/Changelog.htm
+   * manual/CLASSES.HTM
+   * manual/PLAYER.HTM
+   * manual/CLASSES.HTM
+   * doc/classes.txt
+     * Updated.
 
 2016-05-19 21:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ide/prgs/formedit.prg
@@ -31,7 +43,7 @@
      * Some format.
      - Unneeded code.
      ! Focus problems with FRAME controls.
-     + IDE can now load controls defined using alternate syntax (except
+     + IDE can now load controls defined using alternative syntax (except
        MENU, NODE, SPLITBOX, HOTKEY, INTERNAL and TOOLBAR).
      + Design form's position is now relative to controls' seleccion window.
      * The setting of the design window's properties was moved from method

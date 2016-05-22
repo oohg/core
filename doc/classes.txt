@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.101 2016-02-28 22:40:17 fyurisich Exp $
+ * $Id: classes.txt,v 1.102 2016-05-22 01:41:35 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -1641,22 +1641,40 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS TMONTHCAL FROM TCONTROL
+   DATA ABOLDDAYS                 INIT {}
+   DATA ONVIEWCHANGE              INIT NIL
    DATA TYPE                      INIT "MONTHCAL" READONLY
 
+   METHOD ADDBOLDDAY
    METHOD BACKCOLOR               SETGET
    METHOD BACKGROUNDCOLOR         SETGET
+   METHOD CURRENTVIEW             SETGET
    METHOD DEFINE
+   METHOD DEFINE2
+   METHOD DELBOLDDAY
+   METHOD EVENTS
    METHOD EVENTS_NOTIFY
    METHOD FONTCOLOR               SETGET
+   METHOD HEIGHT                  SETGET
+   METHOD ISBOLDDAY               BLOCK { |SELF, DDAY| ASCAN( ::ABOLDDAYS, DDAY ) > 0 }
    METHOD SETFONT
    METHOD SETRANGE
    METHOD TITLEBACKCOLOR          SETGET
    METHOD TITLEFONTCOLOR          SETGET
    METHOD TRAILINGFONTCOLOR       SETGET
    METHOD VALUE                   SETGET
+   METHOD WIDTH                   SETGET
 ENDCLASS
 
 *------------------------------------------------------------------------------*
+CLASS TMONTHCALMULTI FROM TMONTHCAL
+   DATA TYPE                      INIT "MONTHCALMULTI" READONLY
+
+   METHOD DEFINE
+   METHOD DOCHANGE
+   METHOD MAXSELCOUNT             SETGET
+   METHOD VALUE                   SETGET
+ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS TMULTIPAGE FROM TCONTROLGROUP

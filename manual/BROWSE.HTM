@@ -1,5 +1,5 @@
 <!--
-$Id: BROWSE.HTM,v 1.5 2015-03-09 02:51:31 fyurisich Exp $
+$Id: BROWSE.HTM,v 1.6 2016-05-22 01:41:35 fyurisich Exp $
 -->
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -193,334 +193,243 @@ This control uses a grid to show data taken from the records of a DBF.
 
 *** Standard syntax:
 
-   #command @ &lt;row&gt;,&lt;col&gt; BROWSE &lt;name&gt; ;
-         [ &lt;dummy01: OF, PARENT&gt; &lt;parent&gt; ] ;
-         [ OBJ &lt;obj&gt; ] ;
-         [ WIDTH &lt;width&gt; ] ;
-         [ HEIGHT &lt;height&gt; ] ;
-         [ HEADERS &lt;headers&gt; ] ;
-         [ WIDTHS &lt;widths&gt; ] ;
-         [ WORKAREA &lt;workarea&gt; ] ;
-         [ FIELDS &lt;fields&gt; ] ;
-         [ INPUTMASK &lt;picture&gt; ] ;
-         [ VALUE &lt;value&gt; ] ;
-         [ FONT &lt;fontname&gt; ] ;
-         [ SIZE &lt;fontsize&gt; ] ;
-         [ &lt;bold: BOLD&gt; ] ;
-         [ &lt;italic: ITALIC&gt; ] ;
-         [ &lt;underline: UNDERLINE&gt; ] ;
-         [ &lt;strikeout: STRIKEOUT&gt; ] ;
-         [ TOOLTIP &lt;tooltip&gt; ] ;
-         [ BACKCOLOR &lt;backcolor&gt; ] ;
-         [ DYNAMICBACKCOLOR &lt;dynamicbackcolor&gt; ] ;
-         [ DYNAMICFORECOLOR &lt;dynamicforecolor&gt; ] ;
-         [ FONTCOLOR &lt;fontcolor&gt; ] ;
-         [ &lt;dummy02: ONGOTFOCUS, ON GOTFOCUS&gt; &lt;gotfocus&gt; ] ;
-         [ &lt;dummy03: ONCHANGE, ON CHANGE&gt; &lt;change&gt; ] ;
-         [ &lt;dummy04: ONLOSTFOCUS, ON LOSTFOCUS&gt; &lt;lostfocus&gt; ] ;
-         [ &lt;dummy05: ONDBLCLICK, ON DBLCLICK&gt; &lt;dblclick&gt; ] ;
-         [ &lt;dummy06: ONCLICK, ON CLICK&gt; &lt;click&gt; ] ;
-         [ &lt;edit: EDIT&gt; ] ;
-         [ &lt;inplace: INPLACE&gt; ] ;
-         [ &lt;append: APPEND&gt; ] ;
-         [ &lt;dummy07: ONHEADCLICK, ON HEADCLICK&gt; &lt;aheadclick&gt; ] ;
-         [ &lt;dummy08: WHEN, COLUMNWHEN&gt; &lt;awhenfields&gt; ] ;
-         [ VALID &lt;avalidfields&gt; ] ;
-         [ VALIDMESSAGES &lt;avalidmessages&gt; ] ;
-         [ READONLY &lt;areadonly&gt; ] ;
-         [ &lt;lock: LOCK&gt; ] ;
-         [ &lt;delete: DELETE&gt; ] ;
-         [ &lt;style: NOLINES&gt; ] ;
-         [ IMAGE &lt;aimage&gt; ] ;
-         [ JUSTIFY &lt;ajust&gt; ] ;
-         [ &lt;novscroll: NOVSCROLL&gt; ] ;
-         [ HELPID &lt;helpid&gt; ] ;
-         [ &lt;break: BREAK&gt; ] ;
-         [ &lt;rtl: RTL&gt; ] ;
-         [ &lt;dummy09: ONAPPEND, ON APPEND&gt; &lt;onappend&gt; ] ;
-         [ &lt;dummy10: ONEDITCELL, ON EDITCELL&gt; &lt;editcell&gt; ] ;
-         [ COLUMNCONTROLS &lt;editcontrols&gt; ] ;
-         [ REPLACEFIELD &lt;replacefields&gt; ] ;
-         [ SUBCLASS &lt;subclass&gt; ] ;
-         [ &lt;reccount: RECCOUNT&gt; ] ;
-         [ COLUMNINFO &lt;columninfo&gt; ] ;
-         [ &lt;noshowheaders: NOHEADERS&gt; ] ;
-         [ &lt;dummy11: ONENTER, ON ENTER&gt; &lt;enter&gt; ] ;
-         [ &lt;disabled: DISABLED&gt; ] ;
-         [ &lt;notabstop: NOTABSTOP&gt; ] ;
-         [ &lt;invisible: INVISIBLE&gt; ] ;
-         [ &lt;descending: DESCENDING&gt; ] ;
-         [ DELETEWHEN &lt;bwhendel&gt; ] ;
-         [ DELETEMSG &lt;delmsg&gt; ] ;
-         [ &lt;dummy12: ONDELETE, ON DELETE&gt; &lt;ondelete&gt; ] ;
-         [ HEADERIMAGES &lt;aheaderimages&gt; ] ;
-         [ IMAGESALIGN &lt;aimgalign&gt; ] ;
-         [ &lt;fullmove: FULLMOVE&gt; ] ;
-         [ SELECTEDCOLORS &lt;aselectedcolors&gt; ] ;
-         [ EDITKEYS &lt;aeditkeys&gt; ] ;
-         [ &lt;forcerefresh: FORCEREFRESH&gt; ] ;
-         [ &lt;norefresh: NOREFRESH&gt; ] ;
-         [ &lt;bffr: DOUBLEBUFFER, SINGLEBUFFER&gt; ] ;
-         [ &lt;focus: NOFOCUSRECT, FOCUSRECT&gt; ] ;
-         [ &lt;plm: PAINTLEFTMARGIN&gt; ] ;
-         [ &lt;sync: SYNCHRONIZED, UNSYNCHRONIZED&gt; ] ;
-         [ &lt;fixedcols: FIXEDCOLS&gt; ] ;
-         [ &lt;nodelmsg: NODELETEMSG&gt; ] ;
-         [ &lt;updall: UPDATEALL&gt; ] ;
-         [ &lt;dummy13: ONABORTEDIT, ON ABORTEDIT&gt; &lt;abortedit&gt; ] ;
-         [ &lt;fixedwidths: FIXEDWIDTHS&gt; ] ;
-         [ &lt;blocks: FIXEDBLOCKS, DYNAMICBLOCKS&gt; ] ;
-         [ BEFORECOLMOVE &lt;bbefmov&gt; ] ;
-         [ AFTERCOLMOVE &lt;baftmov&gt; ] ;
-         [ BEFORECOLSIZE &lt;bbefsiz&gt; ] ;
-         [ AFTERCOLSIZE &lt;baftsiz&gt; ] ;
-         [ BEFOREAUTOFIT &lt;bbefaut&gt; ] ;
-         [ &lt;excel: EDITLIKEEXCEL&gt; ] ;
-         [ &lt;buts: USEBUTTONS&gt; ] ;
-         [ &lt;upcol: UPDATECOLORS&gt; ] ;
-         [ &lt;edtctrls: FIXEDCONTROLS, DYNAMICCONTROLS&gt; ] ;
-         [ &lt;dummy14: ONHEADRCLICK, ON HEADRCLICK&gt; &lt;bheadrclick&gt; ] ;
-         [ &lt;extdbl: EXTDBLCLICK&gt; ]
+   @ nRow, nCol BROWSE Name ;
+      [ OBJ Obj ; ]
+      [ &lt;OF, PARENT&gt; Parent ; ]
+      [ WIDTH nWidth ; ]
+      [ HEIGHT nHeight ; ]
+      [ HEADERS aHeaders ; ]
+      [ WIDTHS aWidths ; ]
+      [ FIELDS aFields ; ]
+      [ VALUE nValue ; ]
+      [ FONT cFontName ; ]
+      [ SIZE nFontSize ; ]
+      [ TOOLTIP cTooltip ; ]
+      [ &lt;ONCHANGE, ON CHANGE&gt; bOnChange ; ]
+      [ &lt;ONDBLCLICK, ON DBLCLICK&gt; bOnDblClick ; ]
+      [ &lt;ONHEADCLICK, ON HEADCLICK&gt; aHeadClick ; ]
+      [ &lt;ONGOTFOCUS, ON GOTFOCUS&gt; bOnGotFocus ; ]
+      [ &lt;ONLOSTFOCUS, ON LOSTFOCUS&gt; bOnLostFocus ; ]
+      [ WORKAREA cWorkarea ; ]
+      [ DELETE ; ]
+      [ NOLINES ; ]
+      [ IMAGE aImage ; ]
+      [ JUSTIFY aJust ; ]
+      [ HELPID nHelpId ; ]
+      [ BOLD ; ]
+      [ ITALIC ; ]
+      [ UNDERLINE ; ]
+      [ STRIKEOUT ; ]
+      [ BREAK ; ]
+      [ BACKCOLOR uBackColor ; ]
+      [ FONTCOLOR uFontColor ; ]
+      [ LOCK ; ]
+      [ INPLACE ; ]
+      [ NOVSCROLL ; ]
+      [ APPEND ; ]
+      [ READONLY aReadonly ; ]
+      [ VALID aValid ; ]
+      [ VALIDMESSAGES aValidMessages ; ]
+      [ EDIT ; ]
+      [ DYNAMICBACKCOLOR uDynamicBackColor ; ]
+      [ &lt;WHEN, COLUMNWHEN&gt; aWhenFields ; ]
+      [ DYNAMICFORECOLOR uDynamicForeColor ; ]
+      [ INPUTMASK aPicture ; ]
+      [ RTL ; ]
+      [ &lt;ONAPPEND, ON APPEND&gt; bOnAppend ; ]
+      [ &lt;ONEDITCELL, ON EDITCELL&gt; bOnEditCell ; ]
+      [ COLUMNCONTROLS aEditControls ; ]
+      [ REPLACEFIELD aReplaceFields ; ]
+      [ RECCOUNT ; ]
+      [ COLUMNINFO aColumnInfo ; ]
+      [ NOHEADERS ; ]
+      [ &lt;ONENTER, ON ENTER&gt; bOnEnter ; ]
+      [ DISABLED ; ]
+      [ NOTABSTOP ; ]
+      [ INVISIBLE ; ]
+      [ DESCENDING ; ]
+      [ DELETEWHEN bDelWhen ; ]
+      [ DELETEMSG cDelMsg ; ]
+      [ &lt;ONDELETE, ON DELETE&gt; bOnDelete ; ]
+      [ HEADERIMAGES aHeaderImage ; ]
+      [ IMAGESALIGN aHeaderImageAlign ; ]
+      [ FULLMOVE ; ]
+      [ SELECTEDCOLORS aSelectedColors ; ]
+      [ EDITKEYS aEditKeys ; ]
+      [ &lt;FORCEREFRESH, NOREFRESH&gt; ; ]
+      [ &lt;DOUBLEBUFFER, SINGLEBUFFER&gt; ; ]
+      [ &lt;NOFOCUSRECT, FOCUSRECT&gt; ; ]
+      [ PAINTLEFTMARGIN ; ]
+      [ &lt;SYNCHRONIZED, UNSYNCHRONIZED&gt; ; ]
+      [ FIXEDCOLS ; ]
+      [ NODELETEMSG ; ]
+      [ UPDATEALL ; ]
+      [ &lt;ONABORTEDIT, ON ABORTEDIT&gt; bOnAbortedit ; ]
+      [ &lt;ACTION, ONCLICK, ON CLICK&gt; bOnClick ; ]
+      [ FIXEDWIDTHS ; ]
+      [ &lt;FIXEDBLOCKS, DYNAMICBLOCKS&gt; ; ]
+      [ BEFORECOLMOVE bBeforeColMove ; ]
+      [ AFTERCOLMOVE bAfterColMove ; ]
+      [ BEFORECOLSIZE bBeforeColSize ; ]
+      [ AFTERCOLSIZE bAfterColSize ; ]
+      [ BEFOREAUTOFIT bBeforeAutofit ; ]
+      [ EDITLIKEEXCEL ; ]
+      [ USEBUTTONS ; ]
+      [ UPDATECOLORS ; ]
+      [ &lt;FIXEDCONTROLS, DYNAMICCONTROLS&gt; ; ]
+      [ &lt;ONHEADRCLICK, ON HEADRCLICK&gt; bHeadRClick ; ]
+      [ EXTDBLCLICK ]
+      [ NOMODALEDIT ; ]
+      [ SILENT ; ]
+      [ &lt;ENABLEALTA, DISABLEALTA&gt; ; ]
+      [ NOSHOWALWAYS ; ]
+      [ &lt;NONEUNSELS, IGNORENONE&gt; ; ]
+      [ cbe: CHANGEBEFOREEDIT ; ]
+      [ &lt;ONRCLICK, ON RCLICK&gt; bOnRClick ; ]
+      [ CHECKBOXES ; ]
+      [ &lt;ONCHECKCHANGE, ON CHECKCHANGE&gt; bOnCheck ; ]
+      [ &lt;ONROWREFRESH, ON ROWREFRESH&gt; bOnRowRefresh ; ]
+      [ DEFAULTVALUES aDefaultValues ; ]
+      [ &lt;ONEDITCELLEND, ON EDITCELLEND&gt; bOnEditEnd ; ]
+      [ EDITFIRSTVISIBLE ; ]
+      [ NAVIGATEBYCELL ; ]
+      [ SUBCLASS Subclass ]
 
-   Is translated by the preprocessor to this OOP syntax:
+   To define this control inside a SPLITBOX use this syntax:
 
-   [ &lt;obj&gt; := ] _OOHG_SelectSubClass( TOBrowse(), [ &lt;subclass&gt;() ] ): ;
-         Define( &lt;(name)&gt;, &lt;(parent)&gt;, &lt;col&gt;, &lt;row&gt;, &lt;width&gt;, &lt;height&gt;, &lt;headers&gt;, &lt;widths&gt;, ;
-         &lt;fields&gt;, &lt;value&gt;, &lt;fontname&gt;, &lt;fontsize&gt;, &lt;tooltip&gt;, &lt;{change}&gt;, ;
-         &lt;{dblclick}&gt;, &lt;aheadclick&gt;, &lt;{gotfocus}&gt;, &lt;{lostfocus}&gt;, &lt;(workarea)&gt;, ;
-         &lt;.delete.&gt;, &lt;.style.&gt;, &lt;aimage&gt;, &lt;ajust&gt;, &lt;helpid&gt;, &lt;.bold.&gt;, ;
-         &lt;.italic.&gt;, &lt;.underline.&gt;, &lt;.strikeout.&gt;, &lt;.break.&gt;, &lt;backcolor&gt;, ;
-         &lt;fontcolor&gt;, &lt;.lock.&gt;, &lt;.inplace.&gt;, &lt;.novscroll.&gt;, &lt;.append.&gt;, ;
-         &lt;areadonly&gt;, &lt;avalidfields&gt;, &lt;avalidmessages&gt;, &lt;.edit.&gt;, ;
-         &lt;dynamicbackcolor&gt;, &lt;awhenfields&gt;, &lt;dynamicforecolor&gt;, &lt;picture&gt;, &lt;.rtl.&gt;, ;
-         &lt;{onappend}&gt;, &lt;{editcell}&gt;, &lt;editcontrols&gt;, &lt;replacefields&gt;, &lt;.reccount.&gt;, ;
-         &lt;columninfo&gt;, ! &lt;.noshowheaders.&gt;, &lt;{enter}&gt;, &lt;.disabled.&gt;, &lt;.notabstop.&gt;, ;
-         &lt;.invisible.&gt;, &lt;.descending.&gt;, &lt;{bwhendel}&gt;, &lt;delmsg&gt;, &lt;{ondelete}&gt;, ;
-         &lt;aheaderimages&gt;, &lt;aimgalign&gt;, &lt;.fullmove.&gt;, &lt;aselectedcolors&gt;, &lt;aeditkeys&gt;, ;
-         iif( &lt;.forcerefresh.&gt;, 0, if( &lt;.norefresh.&gt;, 1, nil ) ), ;
-         iif( upper( #&lt;bffr&gt; ) == "DOUBLEBUFFER", .t., iif( upper( #&lt;bffr&gt; ) == "SINGLEBUFFER", .f., .t. ) ), ;
-         iif( upper( #&lt;focus&gt; ) == "NOFOCUSRECT", .f., iif( upper( #&lt;focus&gt; ) == "FOCUSRECT", .t., nil ) ), ;
-         &lt;.plm.&gt;, iif( upper( #&lt;sync&gt; ) == "UNSYNCHRONIZED", .f., iif( upper( #&lt;sync&gt; ) == "SYNCHRONIZED", .t., nil ) ), ;
-         &lt;.fixedcols.&gt;, &lt;.nodelmsg.&gt;, &lt;.updall.&gt;, &lt;{abortedit}&gt;, &lt;{click}&gt;, &lt;.fixedwidths.&gt;, ;
-         iif( upper( #&lt;blocks&gt; ) == "FIXEDBLOCKS", .t., iif( upper( #&lt;blocks&gt; ) == "DYNAMICBLOCKS", .f., nil ) ), ;
-         &lt;{bbefmov}&gt;, &lt;{baftmov}&gt;, &lt;{bbefsiz}&gt;, &lt;{baftsiz}&gt;, &lt;{bbefaut}&gt;, &lt;.excel.&gt;, &lt;.buts.&gt;, &lt;.upcol.&gt;, ;
-         iif( upper( #&lt;edtctrls&gt; ) == "FIXEDCONTROLS", .t., iif( upper( #&lt;edtctrls&gt; ) == "DYNAMICCONTROLS", .f., nil ) ), ;
-         &lt;{bheadrclick}&gt;, &lt;.extdbl.&gt )
-
-*** Splitbox syntax:
-
-   #command BROWSE &lt;name&gt; ;
-         [ &lt;dummy01: OF, PARENT&gt; &lt;parent&gt; ] ;
-         [ OBJ &lt;obj&gt; ] ;
-         [ WIDTH &lt;width&gt; ] ;
-         [ HEIGHT &lt;height&gt; ] ;
-         [ HEADERS &lt;headers&gt; ] ;
-         [ WIDTHS &lt;widths&gt; ] ;
-         [ WORKAREA &lt;workarea&gt; ] ;
-         [ FIELDS &lt;fields&gt; ] ;
-         [ INPUTMASK &lt;picture&gt; ] ;
-         [ VALUE &lt;value&gt; ] ;
-         [ FONT &lt;fontname&gt; ] ;
-         [ SIZE &lt;fontsize&gt; ] ;
-         [ &lt;bold: BOLD&gt; ] ;
-         [ &lt;italic: ITALIC&gt; ] ;
-         [ &lt;underline: UNDERLINE&gt; ] ;
-         [ &lt;strikeout: STRIKEOUT&gt; ] ;
-         [ TOOLTIP &lt;tooltip&gt; ] ;
-         [ BACKCOLOR &lt;backcolor&gt; ] ;
-         [ DYNAMICBACKCOLOR &lt;dynamicbackcolor&gt; ] ;
-         [ DYNAMICFORECOLOR &lt;dynamicforecolor&gt; ] ;
-         [ FONTCOLOR &lt;fontcolor&gt; ] ;
-         [ &lt;dummy02: ONGOTFOCUS, ON GOTFOCUS&gt; &lt;gotfocus&gt; ] ;
-         [ &lt;dummy03: ONCHANGE, ON CHANGE&gt; &lt;change&gt; ] ;
-         [ &lt;dummy04: ONLOSTFOCUS, ON LOSTFOCUS&gt; &lt;lostfocus&gt; ] ;
-         [ &lt;dummy05: ONDBLCLICK, ON DBLCLICK&gt; &lt;dblclick&gt; ] ;
-         [ &lt;dummy06: ONCLICK, ON CLICK&gt; &lt;click&gt; ] ;
-         [ &lt;edit: EDIT&gt; ] ;
-         [ &lt;inplace: INPLACE&gt; ] ;
-         [ &lt;append: APPEND&gt; ] ;
-         [ &lt;dummy07: ONHEADCLICK, ON HEADCLICK&gt; &lt;aheadclick&gt; ] ;
-         [ &lt;dummy08: WHEN, COLUMNWHEN&gt; &lt;awhenfields&gt; ] ;
-         [ VALID &lt;avalidfields&gt; ] ;
-         [ VALIDMESSAGES &lt;avalidmessages&gt; ] ;
-         [ READONLY &lt;areadonly&gt; ] ;
-         [ &lt;lock: LOCK&gt; ] ;
-         [ &lt;delete: DELETE&gt; ] ;
-         [ &lt;style: NOLINES&gt; ] ;
-         [ IMAGE &lt;aimage&gt; ] ;
-         [ JUSTIFY &lt;ajust&gt; ] ;
-         [ &lt;novscroll: NOVSCROLL&gt; ] ;
-         [ HELPID &lt;helpid&gt; ] ;
-         [ &lt;break: BREAK&gt; ] ;
-         [ &lt;rtl: RTL&gt; ] ;
-         [ &lt;dummy09: ONAPPEND, ON APPEND&gt; &lt;onappend&gt; ] ;
-         [ &lt;dummy10: ONEDITCELL, ON EDITCELL&gt; &lt;editcell&gt; ] ;
-         [ COLUMNCONTROLS &lt;editcontrols&gt; ] ;
-         [ REPLACEFIELD &lt;replacefields&gt; ] ;
-         [ SUBCLASS &lt;subclass&gt; ] ;
-         [ &lt;reccount: RECCOUNT&gt; ] ;
-         [ COLUMNINFO &lt;columninfo&gt; ] ;
-         [ &lt;noshowheaders: NOHEADERS&gt; ] ;
-         [ &lt;dummy11: ONENTER, ON ENTER&gt; &lt;enter&gt; ] ;
-         [ &lt;disabled: DISABLED&gt; ] ;
-         [ &lt;notabstop: NOTABSTOP&gt; ] ;
-         [ &lt;invisible: INVISIBLE&gt; ] ;
-         [ &lt;descending: DESCENDING&gt; ] ;
-         [ DELETEWHEN &lt;bwhendel&gt; ] ;
-         [ DELETEMSG &lt;delmsg&gt; ] ;
-         [ &lt;dummy12: ONDELETE, ON DELETE&gt; &lt;ondelete&gt; ] ;
-         [ HEADERIMAGES &lt;aheaderimages&gt; ] ;
-         [ IMAGESALIGN &lt;aimgalign&gt; ] ;
-         [ &lt;fullmove: FULLMOVE&gt; ] ;
-         [ SELECTEDCOLORS &lt;aselectedcolors&gt; ] ;
-         [ EDITKEYS &lt;aeditkeys&gt; ] ;
-         [ &lt;forcerefresh: FORCEREFRESH&gt; ] ;
-         [ &lt;norefresh: NOREFRESH&gt; ] ;
-         [ &lt;bffr: DOUBLEBUFFER, SINGLEBUFFER&gt; ] ;
-         [ &lt;focus: NOFOCUSRECT, FOCUSRECT&gt; ] ;
-         [ &lt;plm: PAINTLEFTMARGIN&gt; ] ;
-         [ &lt;sync: SYNCHRONIZED, UNSYNCHRONIZED&gt; ] ;
-         [ &lt;fixedcols: FIXEDCOLS&gt; ] ;
-         [ &lt;nodelmsg: NODELETEMSG&gt; ] ;
-         [ &lt;updall: UPDATEALL&gt; ] ;
-         [ &lt;dummy13: ONABORTEDIT, ON ABORTEDIT&gt; &lt;abortedit&gt; ] ;
-         [ &lt;fixedwidths: FIXEDWIDTHS&gt; ] ;
-         [ &lt;blocks: FIXEDBLOCKS, DYNAMICBLOCKS&gt; ] ;
-         [ BEFORECOLMOVE &lt;bbefmov&gt; ] ;
-         [ AFTERCOLMOVE &lt;baftmov&gt; ] ;
-         [ BEFORECOLSIZE &lt;bbefsiz&gt; ] ;
-         [ AFTERCOLSIZE &lt;baftsiz&gt; ] ;
-         [ BEFOREAUTOFIT &lt;bbefaut&gt; ] ;
-         [ &lt;excel: EDITLIKEEXCEL&gt; ] ;
-         [ &lt;buts: USEBUTTONS&gt; ] ;
-         [ &lt;upcol: UPDATECOLORS&gt; ] ;
-         [ &lt;edtctrls: FIXEDCONTROLS, DYNAMICCONTROLS&gt; ] ;
-         [ &lt;dummy14: ONHEADRCLICK, ON HEADRCLICK&gt; &lt;bheadrclick&gt; ] ;
-         [ &lt;extdbl: EXTDBLCLICK&gt; ] ;
-
-   Is translated by the preprocessor to this OOP syntax:
-
-   [ &lt;obj&gt; := ] _OOHG_SelectSubClass( TOBrowse(), [ &lt;subclass&gt;() ] ): ;
-         Define( &lt;(name)&gt;, &lt;(parent)&gt;, , , &lt;width&gt;, &lt;height&gt;, &lt;headers&gt;, &lt;widths&gt;, ;
-         &lt;fields&gt;, &lt;value&gt;, &lt;fontname&gt;, &lt;fontsize&gt;, &lt;tooltip&gt;, &lt;{change}&gt;, ;
-         &lt;{dblclick}&gt;, &lt;aheadclick&gt;, &lt;{gotfocus}&gt;, &lt;{lostfocus}&gt;, &lt;(workarea)&gt;, ;
-         &lt;.delete.&gt;, &lt;.style.&gt;, &lt;aimage&gt;, &lt;ajust&gt;, &lt;helpid&gt;, &lt;.bold.&gt;, ;
-         &lt;.italic.&gt;, &lt;.underline.&gt;, &lt;.strikeout.&gt;, &lt;.break.&gt;, &lt;backcolor&gt;, ;
-         &lt;fontcolor&gt;, &lt;.lock.&gt;, &lt;.inplace.&gt;, &lt;.novscroll.&gt;, &lt;.append.&gt;, ;
-         &lt;areadonly&gt;, &lt;avalidfields&gt;, &lt;avalidmessages&gt;, &lt;.edit.&gt;, ;
-         &lt;dynamicbackcolor&gt;, &lt;awhenfields&gt;, &lt;dynamicforecolor&gt;, &lt;picture&gt;, &lt;.rtl.&gt;, ;
-         &lt;{onappend}&gt;, &lt;{editcell}&gt;, &lt;editcontrols&gt;, &lt;replacefields&gt;, &lt;.reccount.&gt;, ;
-         &lt;columninfo&gt;, ! &lt;.noshowheaders.&gt;, &lt;{enter}&gt;, &lt;.disabled.&gt;, &lt;.notabstop.&gt;, ;
-         &lt;.invisible.&gt;, &lt;.descending.&gt;, &lt;{bwhendel}&gt;, &lt;delmsg&gt;, &lt;{ondelete}&gt;, ;
-         &lt;aheaderimages&gt;, &lt;aimgalign&gt;, &lt;.fullmove.&gt;, &lt;aselectedcolors&gt;, &lt;aeditkeys&gt;, ;
-         iif( &lt;.forcerefresh.&gt;, 0, if( &lt;.norefresh.&gt;, 1, nil ) ), ;
-         iif( upper( #&lt;bffr&gt; ) == "DOUBLEBUFFER", .t., iif( upper( #&lt;bffr&gt; ) == "SINGLEBUFFER", .f., .t. ) ), ;
-         iif( upper( #&lt;focus&gt; ) == "NOFOCUSRECT", .f., iif( upper( #&lt;focus&gt; ) == "FOCUSRECT", .t., nil ) ), ;
-         &lt;.plm.&gt;, iif( upper( #&lt;sync&gt; ) == "UNSYNCHRONIZED", .f., iif( upper( #&lt;sync&gt; ) == "SYNCHRONIZED", .t., nil ) ), ;
-         &lt;.fixedcols.&gt;, &lt;.nodelmsg.&gt;, &lt;.updall.&gt;, &lt;{abortedit}&gt;, &lt;{click}&gt;, &lt;.fixedwidths.&gt;, ;
-         iif( upper( #&lt;blocks&gt; ) == "FIXEDBLOCKS", .t., iif( upper( #&lt;blocks&gt; ) == "DYNAMICBLOCKS", .f., nil ) ), ;
-         &lt;{bbefmov}&gt;, &lt;{baftmov}&gt;, &lt;{bbefsiz}&gt;, &lt;{baftsiz}&gt;, &lt;{bbefaut}&gt;, &lt;.excel.&gt;, &lt;.buts.&gt;, &lt;.upcol.&gt;, ;
-         iif( upper( #&lt;edtctrls&gt; ) == "FIXEDCONTROLS", .t., iif( upper( #&lt;edtctrls&gt; ) == "DYNAMICCONTROLS", .f., nil ) ), ;
-         &lt;{bheadrclick}&gt;, &lt;.extdbl.&gt )
+   BROWSE Name ;
+      [ &lt;clauses&gt; ]
 
 *** Alternative syntax:
 
-   DEFINE BROWSE &lt;name&gt;
-      [ PARENT &lt;parent&gt; ]
-      [ OBJECT &lt;obj&gt; ]
-      [ SUBCLASS &lt;subclass&gt; ]
-      [ ROW &lt;row&gt; ]
-      [ COL &lt;col&gt; ]
-      [ WIDTH &lt;width&gt; ]
-      [ HEIGHT &lt;height&gt; ]
-      [ HEADERS &lt;headers&gt; ]
-      [ WIDTHS &lt;widths&gt; ]
-      [ WORKAREA &lt;workarea&gt; ]
-      [ FIELDS &lt;fields&gt; ]
-      [ INPUTMASK &lt;picture&gt; ]
-      [ VALUE &lt;value&gt; ]
-      [ FONTNAME &lt;fontname&gt; ]
-      [ FONTSIZE &lt;fontsize&gt; ]
-      [ FONTBOLD &lt;.T. | .F.&gt; ]
-      [ FONTITALIC &lt;.T. | .F.&gt; ]
-      [ FONTSTRIKEOUT &lt;.T. | .F.&gt; ]
-      [ FONTUNDERLINE &lt;.T. | .F.&gt; ]
-      [ TOOLTIP &lt;tooltip&gt; ]
-      [ BACKCOLOR &lt;backcolor&gt; ]
-      [ DYNAMICBACKCOLOR &lt;dynamicbackcolor&gt; ]
-      [ DYNAMICFORECOLOR &lt;dynamicforecolor&gt; ]
-      [ FONTCOLOR &lt;fontcolor&gt; ]
-      [ ONGOTFOCUS | ON GOTFOCUS &lt;gotfocus&gt; ]
-      [ ONCHANGE | ON CHANGE &lt;change&gt; ]
-      [ ONLOSTFOCUS | ON LOSTFOCUS &lt;onlostfocus&gt; ]
-      [ ONDBLCLICK | ON DBLCLICK &lt;dblclick&gt; ]
-      [ ONCLICK | ON CLICK &lt;click&gt; ]
-      [ ALLOWEDIT &lt;.T. | .F.&gt; ]
-      [ INPLACEEDIT &lt;.T. | .F.&gt; ]
-      [ ALLOWAPPEND &lt;.T. | .F.&gt; ]
-      [ ONHEADCLICK | ON HEADCLICK &lt;aheadclick&gt; ]
-      [ WHEN | COLUMNWHEN &lt;awhenfields&gt; ]
-      [ VALID &lt;avalidfields&gt; ]
-      [ VALIDMESSAGES &lt;avalidmessages&gt; ]
-      [ READONLY &lt;areadonly&gt; ]
-      [ LOCK &lt;.T. | .F.&gt; ]
-      [ ALLOWDELETE &lt;.T. | .F.&gt; ]
-      [ NOLINES &lt;.T. | .F.&gt; ]
-      [ IMAGE &lt;aimage&gt; ]
-      [ JUSTIFY &lt;ajust&gt; ]
-      [ NOVSCROLLBAR &lt;.T. | .F.&gt; ]
-      [ HELPID &lt;helpid&gt; ]
-      [ SETBREAK &lt;.T. | .F.&gt; ]
-      [ RTL &lt;.T. | .F.&gt; ]
-      [ ONAPPEND | ON APPEND &lt;onappend&gt; ]
-      [ EDITCELL | ONEDITCELL | ON EDITCELL &lt;editcell&gt; ]
-      [ COLUMNCONTROLS &lt;editcontrols&gt; ]
-      [ REPLACEFIELD &lt;replacefields&gt; ]
-      [ RECCOUNT &lt;.T. | .F.&gt; ]
-      [ COLUMNINFO &lt;columninfo&gt; ]
-      [ SHOWHEADERS &lt;.T. | .F.&gt; ]
-      [ ONENTER | ON ENTER &lt;enter&gt; ]
-      [ DISABLED &lt;.T. | .F.&gt; ]
-      [ TABSTOP &lt;.T. | .F.&gt; ]
-      [ VISIBLE &lt;.T. | .F.&gt; ]
-      [ DESCENDING &lt;.T. | .F.&gt; ]
-      [ DELETEWHEN &lt;bwhendel&gt; ]
-      [ DELETEMSG &lt;delmsg&gt; ]
-      [ ONDELETE | ON DELETE &lt;ondelete&gt; ]
-      [ HEADERIMAGES &lt;aheaderimages&gt; ]
-      [ IMAGESALIGN &lt;aimgalign&gt; ]
-      [ FULLMOVE &lt;.T. | .F.&gt; ]
-      [ SELECTEDCOLORS &lt;aselectedcolors&gt; ]
-      [ EDITKEYS &lt;aeditkeys&gt; ]
-      [ FORCEREFRESH &lt;.T. | .F.&gt; ]
-      [ NOREFRESH &lt;.T. | .F.&gt; ]
-      [ DOUBLEBUFFER &lt;.T. | .F.&gt; ]
-      [ SINGLEBUFFER &lt;.T. | .F.&gt; ]
-      [ FOCUSRECT &lt;.T. | .F.&gt; ]
-      [ NOFOCUSRECT &lt;.T. | .F.&gt; ]
-      [ PAINTLEFTMARGIN &lt;.T. | .F.&gt; ]
-      [ SYNCHRONIZED &lt;.T. | .F.&gt; ]
-      [ UNSYNCHRONIZED &lt;.T. | .F.&gt; ]
-      [ FIXEDCOLS &lt;.T. | .F.&gt; ]
-      [ NODELETEMSG &lt;.T. | .F.&gt; ]
-      [ UPDATEALL &lt;.T. | .F.&gt; ]
-      [ ONABORTEDIT | ON ABORTEDIT &lt;abortedit&gt; ]
-      [ FIXEDWIDTHS &lt;.T. | .F.&gt; ]
-      [ DYNAMICBLOCKS &lt;.T. | .F.&gt; ]
-      [ FIXEDBLOCKS &lt;.T. | .F.&gt; ]
-      [ BEFORECOLMOVE &lt;bBefMov&gt; ]
-      [ AFTERCOLMOVE &lt;bAftMov&gt; ]
-      [ BEFORECOLSIZE &lt;bBefSiz&gt; ]
-      [ AFTERCOLSIZE &lt;bAftSiz&gt; ]
-      [ BEFOREAUTOFIT &lt;bBefAut&gt; ]
-      [ EDITLIKEEXCEL &lt;.T. | .F.&gt; ]
-      [ USEBUTTONS &lt;.T. | .F.&gt; ]
-      [ UPDATECOLORS &lt;.T. | .F.&gt; ]
-      [ FIXEDCONTROLS &lt;.T. | .F.&gt; ]
-      [ DYNAMICCONTROLS &lt;.T. | .F.&gt; ]
-      [ ONHEADRCLICK | ON HEADRCLICK &lt;bheadrclick&gt; ]
-      [ EXTDBLCLICK &lt;.T. | .F.&gt; ]
+   DEFINE BROWSE Name
+      [ PARENT Parent ]
+      [ OBJECT Obj ]
+      [ ROW nRow ]
+      [ COL nCol ]
+      [ WIDTH nWidth ]
+      [ HEIGHT nHeight ]
+      [ HEADERS aHeaders ]
+      [ WIDTHS aWidths ]
+      [ FIELDS aFields ]
+      [ VALUE nValue ]
+      [ FONTNAME cFontName ]
+      [ FONTSIZE nFontSize ]
+      [ TOOLTIP cTooltip ]
+      [ &lt;ONCHANGE, ON CHANGE&gt; bOnChange ]
+      [ &lt;ONDBLCLICK, ON DBLCLICK&gt; bOnDblClick ]
+      [ &lt;ONHEADCLICK, ON HEADCLICK&gt; aHeadClick ]
+      [ &lt;ONGOTFOCUS, ON GOTFOCUS&gt; bOnGotFocus ]
+      [ &lt;ONLOSTFOCUS, ON LOSTFOCUS&gt; bOnLostFocus ]
+      [ WORKAREA cWorkarea ]
+      [ ALLOWDELETE &lt;.T., .F.&gt; ]
+      [ NOLINES &lt;.T., .F.&gt; ]
+      [ IMAGE aimage ]
+      [ JUSTIFY ajust ]
+      [ HELPID helpid ]
+      [ FONTBOLD &lt;.T., .F.&gt; ]
+      [ FONTITALIC &lt;.T., .F.&gt; ]
+      [ FONTUNDERLINE &lt;.T., .F.&gt; ]
+      [ FONTSTRIKEOUT &lt;.T., .F.&gt; ]
+      [ SETBREAK &lt;.T., .F.&gt; ]
+      [ BACKCOLOR backcolor ]
+      [ FONTCOLOR fontcolor ]
+      [ LOCK &lt;.T., .F.&gt; ]
+      [ INPLACEEDIT &lt;.T., .F.&gt; ]
+      [ &lt;VSCROLLBAR, NOVSCROLLBAR&gt; &lt;.T., .F.&gt; ]
+      [ ALLOWAPPEND &lt;.T., .F.&gt; ]
+      [ READONLY aReadonly ]
+      [ VALID aValid ]
+      [ VALIDMESSAGES aValidMessages ]
+      [ ALLOWEDIT &lt;.T., .F.&gt; ]
+      [ DYNAMICBACKCOLOR uDynamicBackColor ]
+      [ &lt;WHEN, COLUMNWHEN&gt; aWhenFields ]
+      [ DYNAMICFORECOLOR uDynamicForeColor ]
+      [ INPUTMASK aPicture ]
+      [ RTL &lt;.T., .F.&gt; ]
+      [ &lt;ONAPPEND, ON APPEND&gt; bOnAppend ]
+      [ &lt;ONEDITCELL, ON EDITCELL&gt; bOnEditCell ]
+      [ COLUMNCONTROLS aEditControls ]
+      [ REPLACEFIELD aReplaceFields ]
+      [ RECCOUNT &lt;.T., .F.&gt; ]
+      [ COLUMNINFO aColumnInfo ]
+      [ SHOWHEADERS &lt;.T., .F.&gt; ]
+      [ &lt;ONENTER, ON ENTER&gt; bOnEnter ]
+      [ &lt;ENABLE, DISABLED&gt; &lt;.T., .F.&gt; ]
+      [ TABSTOP &lt;.T., .F.&gt; ]
+      [ &lt;VISIBLE, INVISIBLE&gt; &lt;.T., .F.&gt; ]
+      [ DESCENDING &lt;.T., .F.&gt; ]
+      [ DELETEWHEN bDelWhen ]
+      [ DELETEMSG cDelMsg ]
+      [ &lt;ONDELETE, ON DELETE&gt; bOnDelete ]
+      [ HEADERIMAGES aHeaderImage ]
+      [ IMAGESALIGN aHeaderImageAlign ]
+      [ FULLMOVE &lt;.T., .F.&gt; ]
+      [ SELECTEDCOLORS aSelectedColors ]
+      [ EDITKEYS aEditKeys ]
+      [ &lt;FORCEREFRESH, NOREFRESH&gt; &lt;.T., .F.&gt; ]
+      [ &lt;DOUBLEBUFFER, SINGLEBUFFER&gt; &lt;.T., .F.&gt; ]
+      [ &lt;FOCUSRECT, NOFOCUSRECT&gt; &lt;.T., .F.&gt; ]
+      [ PAINTLEFTMARGIN &lt;.T., .F.&gt; ]
+      [ &lt;SYNCHRONIZED, UNSYNCHRONIZED&gt; &lt;.T., .F.&gt; ]
+      [ FIXEDCOLS &lt;.T., .F.&gt; ]
+      [ NODELETEMSG &lt;.T., .F.&gt; ]
+      [ UPDATEALL &lt;.T., .F.&gt; ]
+      [ &lt;ONABORTEDIT, ON ABORTEDIT&gt; bOnAbortedit ]
+      [ &lt;ACTION, ONCLICK, ON CLICK&gt; bOnClick ]
+      [ FIXEDWIDTHS &lt;.T., .F.&gt; ]
+      [ &lt;DYNAMICBLOCKS, FIXEDBLOCKS&gt; &lt;.T., .F.&gt; ]
+      [ BEFORECOLMOVE bBeforeColMove ]
+      [ AFTERCOLMOVE bAfterColMove ]
+      [ BEFORECOLSIZE bBeforeColSize ]
+      [ AFTERCOLSIZE bAfterColSize ]
+      [ BEFOREAUTOFIT bBeforeAutofit ]
+      [ EDITLIKEEXCEL &lt;.T., .F.&gt; ]
+      [ USEBUTTONS &lt;.T., .F.&gt; ]
+      [ UPDATECOLORS &lt;.T., .F.&gt; ]
+      [ &lt;FIXEDCONTROLS, DYNAMICCONTROLS&gt; &lt;.T., .F.&gt; ]
+      [ &lt;ONHEADRCLICK, ON HEADRCLICK&gt; bHeadRClick ]
+      [ EXTDBLCLICK &lt;.T., .F.&gt; ]
+      [ NOMODALEDIT &lt;.T., .F.&gt; ]
+      [ SILENT &lt;.T., .F.&gt; ]
+      [ &lt;ENABLEALTA, DISABLEALTA&gt; &lt;.T., .F.&gt; ]
+      [ NOSHOWALWAYS &lt;.T., .F.&gt; ]
+      [ &lt;NONEUNSELS, IGNORENONE&gt; &lt;.T., .F.&gt; ]
+      [ CHANGEBEFOREEDIT &lt;.T., .F.&gt; ]
+      [ &lt;ONRCLICK, ON RCLICK&gt; bOnRClick ]
+      [ CHECKBOXES &lt;.T., .F.&gt; ]
+      [ &lt;ONCHECKCHANGE, ON CHECKCHANGE&gt; bOnCheck ]
+      [ &lt;ONROWREFRESH, ON ROWREFRESH&gt; bOnRowRefresh ]
+      [ DEFAULTVALUES aDefaultValues ]
+      [ &lt;ONEDITCELLEND, ON EDITCELLEND&gt; bOnEditEnd ]
+      [ EDITFIRSTVISIBLE &lt;.T., .F.&gt; ]
+      [ NAVIGATEBYCELL &lt;.T., .F.&gt; ]
+      [ SUBCLASS Subclass ]
    END BROWSE
+
+*** OOP Syntax:
+
+   [ Obj := ] TOBrowse():Define( ControlName, [ ParentForm ], [ nCol ], [ nRow ], [ nWidth ], [ nHeight ], [ aHeaders ], [ aWidths ], ;
+      [ aFields ], [ nValue ], [ cFontName ], [ nFontSize ], [ cTooltip ], [ bOnChange ], ;
+      [ bOnDblClick ], [ aHeadClick ], [ bOnGotFocus ], [ bOnLostFocus ], [ cWorkArea ], ;
+      [ lAllowDelete ], [ lNoLines ], [ aImage ], [ aJust ], [ nHelpId ], [ lBold ], [ lItalic ], ;
+      [ lUnderline ], [ lStrikeout ], [ lBreak ], [ uBackColor ], [ uFontColor ], [ lLock ], ;
+      [ lInPlace ], [ lNoVScroll ], [ lAllowAppend ], [ aReadonly ], [ aValid ], ;
+      [ aValidMessages ], [ lAllowEdit ], [ uDynamicBackColor ], [ aWhenFields ], ;
+      [ uDynamicForecolor ], [ aPicture ], [ lRtl ], [ bOnAppend ], [ bOnEditCell ], ;
+      [ aEditControls ], [ aReplaceFields ], [ lRecCount ], [ aColumnInfo ], ;
+      [ lHasHeaders ], [ bOnEnter ], [ lDisabled ], [ lNoTabStop ], [ lInvisible ], ;
+      [ lDescending ], [ bDelWhen ], [ cDelMsg ], [ bOnDelete ], [ aHeaderImage ], ;
+      [ aHeaderImageAlign ], [ lFullMove ], [ aSelectedColors ], [ aEditKeys ], ;
+      [ uRefresh ], [ lDblBffr ], [ lFocusRect ], [ lPLM ], [ lSync ], [ lFixedCols ], ;
+      [ lNoDelMsg ], [ lUpdateAll ], [ bOnAbortedit ], [ bOnClick ], [ lFixedWidths ], ;
+      [ lFixedBlocks ], [ bBeforeColMove ], [ bAfterColMove ], [ bBeforeColSize ], ;
+      [ bAfterColSize ], [ bBeforeAutofit ], [ lLikeExcel ], [ lButtons ], [ lUpdCols ], ;
+      [ lFixedCtrls ], [ bHeadRClick ], [ lExtDbl ], [ lNoModal ], [ lSilent ], [ lAltA ], ;
+      [ lNoShowAlways ], [ lNone ], [ lCBE ], [ bOnRClick ], [ lCheckBoxes ], [ bOnCheck ], ;
+      [ bOnRowRefresh ], [ aDefaultValues ], [ bOnEditEnd ], [ lAtFirst ] )
+
+   To define a BROWSE with NAVIGATEBYCELL clause replace TOBrowse() with TOBrowseByCell().
 
 <p><u>Related commands</u>:
 
@@ -560,7 +469,40 @@ This control uses a grid to show data taken from the records of a DBF.
    BROWSE_JTFY_LEFT
    BROWSE_JTFY_RIGHT
    BROWSE_JTFY_CENTER
-   BROWSE_JTFY_JUSTIFYMASK
+
+<p><u>Refresh constants</u>:
+
+   REFRESH_FORCE
+   REFRESH_NO
+   REFRESH_DEFAULT
+
+<p><u>Notes on clauses</u>:
+
+   1. PROGID identifies an ActiveX control. See <A href="http://support.microsoft.com/kb/192560/en-us" target="_blank">Active Template Library</A>.
+   2. OBJ and OBJECT set a reference to the control into the variable Obj.
+      When using OBJECT, the variable must be previously declared.
+      When using OBJ, if the variable does not exist, it's assumed PRIVATE.
+   3. PARENT declares which window is the parent (owner) of the control.
+      Can be ommited only when used inside a DEFINE WINDOW / END WINDOW structure.
+   4. ROW and COL define the position of the control inside the parent's client area.
+   5. WIDTH and HEIGHT define the dimension of the control.
+   6. TABSTOP and NOTABSTOP specify if the control can/can't be focused using TAB key.
+      Default is TABSTOP.
+   7. DISABLED specifies that the control can't receive mouse clicks and key presses.
+      Default is ENABLED.
+   8. SUBCLASS indicates that the control must be an instance of the specified class,
+      instead of the default TActiveX class.
+   9. VISIBLE and INVISIBLE specify if the control must be visible/hidden when
+      created. Default is VISIBLE.
+
+<p><u>Notes on parameters</u>:
+
+   1. nRow, nCol, nWidth and nHeight must be numbers.
+   2. Name and Parent must be valid identifiers enclosed or not within quotes.
+   3. cProgID must be a string containig a GUID, a ProgID or an URL.
+   4. Obj and Subclass must be valid identifiers not enclosed within quotes.
+   5. cName and cParent must be strings containing valid identifiers.
+   6. lNoTabstop, lDisabled and lInvisible must be .T. or .F.
 </PRE>
 </span>
 

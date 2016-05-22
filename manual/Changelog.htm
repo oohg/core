@@ -1,5 +1,5 @@
 <!--
-$Id: Changelog.htm,v 1.67 2015-08-01 21:17:17 fyurisich Exp $
+$Id: Changelog.htm,v 1.68 2016-05-22 01:41:36 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -142,7 +142,642 @@ CHANGELOG</div>
 </div>
 <div id="winchm_template_content">
 <pre>
-2015-08-01 18:17 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2016-05-19 21:00 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ide/prgs/formedit.prg
+     * Some titles in statusbar's properties window.
+
+2016-05-18 22:18 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_richeditbox.prg
+   * source/h_status.prg
+     ! RTE Argument error: conditional, after double click event.
+
+2016-04-21 21:51 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_checkbox.prg
+     ! FocusRect is missing.
+
+2016-04-12 21:28 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ide/prgs/formedit.prg
+     * Single quotes were substituted by double quotes to improve readability
+       and facilitate searches.
+     + Some defines to improve readability of complex strings.
+     * Some variable names to improve code readability.
+     - Some comments.
+     ! Some typos.
+     * Some format.
+     - Unneeded code.
+     ! Focus problems with FRAME controls.
+     + IDE can now load controls defined using alternative syntax (except
+       MENU, NODE, SPLITBOX, HOTKEY, INTERNAL and TOOLBAR).
+     + Design form's position is now relative to controls' seleccion window.
+     * The setting of the design window's properties was moved from method
+       Open to method LoadForm.
+     + Support for numeric colors.
+     ! Some potential problems derived from the case of control's name.
+     ! Response of some controls to click, rclick and dblclick events.
+     ! RTE in method DrawOutline because lNoRefresh parameters is not logical.
+     ! Manual Move/Size does not set the focus correctly in some cases.
+     ! Manual Move/Size does not honor CLIENTAREA clause.
+     ! Manual Move/Size of FORM when there are no controls in it.
+     + Some DATAs to CLASS TFormEditor: aFormData , aOnEditCellEnd,
+       aOnInsert, aOnRClick, aOnRowRefresh, aOnScrEndTrack, aOnScrLineLU,
+       aOnScrLineRD, aOnScrLT, aOnScrPageLU, aOnScrPageRD, aOnScrRB,
+       aOnScrThumb and aOnScrTrack.
+     + Some METHODs to CLASS TFormEditor: CheckStringData,
+       PreProcessDefineWindow, ReadCtrlName, ReadFormLogicalData,
+       ReadFormPosition and ReadFormStringData.
+     - METHODs ReadFormCol and ReadFormRow.
+     * METHOD CrtlIsOfType renamed to CtrlIsOfType.
+     * BUTTON's backcolor is not longer forced to form's backcolor.
+     + MonthCalendar's new clauses.
+     * Action and Action2 moved to Events from Properties for TEXT controls.
+     * METHOD PrintBrief now show all events.
+     ; All controls must be defined between DEFINE WINDOW/END WINDOW.
+       Everything defined before the first DEFINE WINDOW of after the
+       first END WINDOW in the fmg file is ignored.
+     ; Only the first DEFINE WINDOW clause is processed, others are
+       ignored.
+     ; The first meaningfull line must start with DEFINE WINDOW TEMPLATE
+       or with DEFINE WINDOW &lt;identifier&gt;.
+
+2016-04-12 19:04 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ide/prgs/mgide.prg
+     ! RTE at  _myInputWindowOk and _myInputWindowCancel functions.
+       ACTION codeblocks of STATUSITEM controls must return logical.
+     * Format.
+
+2016-03-31 16:52 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_monthcal.prg
+     + Class TMonthCalMulti() to allow the selection of multiple days.
+     + DATA OnViewChange.
+     + DATA aBoldDays.
+     + METHOD Define2.
+     + METHOD CurrentView.
+     + METHOD Events.
+     + METHOD Width.
+     + METHOD Height.
+     + METHOD AddBoldDay.
+     + METHOD DelBoldDay.
+     + METHOD IsBoldDay.
+     + MCS_DAYSTATE style to allow the display of days in bold.
+     * Format.
+     * Use ::SizePos() in ::SetFont().
+     + Support for MCN_SELCHANGE, MCN_VIEWCHANGE and MCN_GETDAYSTATE
+       notifications in ::Events_Notify().
+     ! Focus is not set when mouse is clicked outside days' area.
+   * include/i_altsyntax.ch
+     + MonthCalendar's new clauses.
+   * include/oohg.h
+     + HB_STORDL.
+   * include/i_windefs.ch
+     + WM_MOUSEACTIVATE, MCN_GETDAYSTATE, MCN_VIEWCHANGE,
+       MCM_GETMAXSELCOUNT, MCM_SETMAXSELCOUNT, MCM_GETCURRENTVIEW,
+       MCM_SETCURRENTVIEW, MCMV_MONTH, MCMV_YEAR, MCMV_DECADE
+       and MCMV_CENTURY.
+     - MCN_FIRST, MCN_LAST
+     * MCN_SELCHANGE and MCN_SELECT.
+   * include/i_monthcal.ch
+     + MULTISELECT, ONVIEWCHANGE, ONGOTFOCUS and ONLOSTFOCUS clauses.
+
+2015-12-28 20:47 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_grid.prg
+     * aEqual now does what former ArraysAreEqual() did.
+   * source/h_checklist.prg
+     * ArraysAreEqual() now calls aEqual().
+   * source/h_image.prg
+     ! Control is not cleared after assigning an empty string to ::Picture.
+
+2015-12-28 20:47 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_picture.prg
+     ! Control is not cleared after assigning an empty string to ::Picture.
+     - Unneeded code.
+
+2015-12-28 19:38 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ./Changelog
+     ! Typo.
+   * distros/MakeDistro.bat
+     % Copy newer files only.
+   * doc/classes.txt
+     * Updated.
+   * source/h_xbrowse.prg
+     + Method OrdKeyGoTo() to class ooHGRecord under Harbour.
+     * Some format.
+   * source/h_grid.prg
+     * Some format.
+   * source/h_checklist.prg
+     + Call to FocusEffect() before calling OnGotFocus event.
+
+2016-02-27 09:58 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_listbox.prg
+     ! Can't change images using method Item.
+     ! Wrong images are shown because the associated images of an item
+       are not cleared when the item is deleted.
+
+2016-02-23 23:09 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_xbrowse.prg
+   * source/h_browse.prg
+     ! RTE when adding a new row after a column was added.
+     + New parameter uDefault to method AddColumn. It sets the default
+       value of the column when adding a new row.
+
+2016-02-21 12:10 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_xbrowse.prg
+     + Some checks for unselected workarea
+
+2016-02-21 11:52 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_combo.prg
+     ! RTE when ITEMSOURCE clause is not a fully qualified field name
+       and no parent form is defined.
+
+2016-02-16 19:03 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_xbrowse.prg
+     ! RTE when calling ::GetCellType without lAppend parameter.
+
+2016-02-14 12:20 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_button.prg
+     ! TButtonCheck's OnClick is not fired.
+   * source/h_controlmisc.prg
+     ! RTE when the last focused control is released.
+
+2016-01-31 21:02 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_dialogs.prg
+     + Support for numeric colors in function GetColor().
+   * source/h_grid.prg
+     ! ReadOnly and When codeblocks are evaluated twice before edition
+       in Grid, XBrowse and Browse controls.
+     ! ReadOnly and When codeblocks are not evaluated in method EditCell
+       after calling method EditAllCells.
+   * source/h_browse.prg
+     * Format.
+
+2015-12-21 18:47 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * include/i_hmg_compat.ch
+     ! Missing ; at end of line.
+
+2015-12-15 21:45 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * include/i_altsyntax.ch
+    + Support for ONGOTFOCUS and ONLOSTFOCUS clauses.
+    - Wrongly defined EDITCELL and EDITCELLEND clauses
+   * include/i_textarray.ch
+    + Support for ONGOTFOCUS and ONLOSTFOCUS clauses.
+   * source/h_textarray.prg
+    + Support for ONGOTFOCUS and ONLOSTFOCUS clauses.
+
+2015-12-15 21:12 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ./Changelog
+     ! Previous entry.
+
+2015-12-15 21:09 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_button.prg
+     ! Fixed default image alignment when image and text are both present.
+
+2015-12-14 00:24 UTC-0600 Vicente Guerra &lt;vicente@guerra.com.mx&gt;
+   * source/h_textarray.prg
+     ! Fixed (added) ::OnGotFocus and ::OnLostFocus operation.
+
+2015-12-13 00:53 UTC-0600 Vicente Guerra &lt;vicente@guerra.com.mx&gt;
+   * source/h_controlmisc.prg
+     ! Fixed wrong ::DoMethod() return value.
+   * samples\oohg\stream\TStreamSerial.prg
+     ! Fixed timeouts.
+
+2015-12-12 16:55 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_radio.prg
+     ! BOLD clause is not working.
+
+2015-12-10 20:14 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * include/i_button.ch
+   * include/i_checkbox.ch
+   * include/i_radiogroup.ch
+     ! Support for THEMED and NOTHEME clauses.
+
+2015-12-10 20:00 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * include/i_hmg_compat.ch
+     + EDITFIRSTVISIBLE to BROWSE.
+     * BUTTONEX support.
+
+2015-12-09 22:18 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * include/i_altsyntax.ch
+   + Support for EDITFIRSTVISIBLE clause in GRID, BROWSE and XBROWSE.
+
+2015-12-09 21:38 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ./Changelog
+     ! Previous entry.
+   * include/i_button.ch
+     * Some markers names.
+     + NOTHEME clause.
+
+2015-12-09 21:05 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * include/i_checkbox.ch
+     ! Support for THEMED and NOTHEME clauses.
+   * include/i_radiogroup.ch
+     + NOTHEME clause.
+
+2015-12-09 20:46 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/c_image.c
+   * source/h_form.prg
+   * source/h_picture.prg
+     ! Wrong parameter order in _OOHG_ScaleImage() call.
+
+2015-12-09 13:46 UTC-0600 Vicente Guerra &lt;vicente@guerra.com.mx&gt;
+   * source/h_picture.prg
+     ! Re-activated commented SCROLLS() call.
+   * source/makelib_bcc.bat
+     ! Added bostaurus.c to clean up.
+
+2015-12-07 23:50 UTC-0600 Vicente Guerra &lt;vicente@guerra.com.mx&gt;
+   * samples\oohg\stream\TStream.prg
+     + ::Append() method added.
+   * samples\oohg\stream\TStreamSocket.prg
+     + Bluetooth support.
+
+2015-12-01 19:15 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * include/i_altsyntax.ch
+     * THEMED clause is initialized as NIL instead of .F.
+     + EDITFIRSTVISIBLE clause.
+   * source/h_button.prg
+     * Image alignment now defaults to CENTER instead of LEFT when the
+       button has no caption.
+   * source/h_image.prg
+   * source/h_picture.prg
+     * Changed parameter name.
+
+2015-11-29 22:24 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_checkbox.prg
+   * source/h_radio.prg
+     * ::lThemed now defaults to IsAppThemed() instead of .F. in ::Define().
+
+2015-11-29 22:19 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * include/i_windefs.ch
+     + BUTTON_IMAGELIST_ALIGN_* constants.
+     + DT_* constants.
+   * include/oohg.h
+     * _OOHG_ScaleImage() declaration.
+   * source/c_gdiplus.c
+     * New parameters in calls to _OOHG_ScaleImage().
+   * source/c_image.c
+     + New parameters iHrzMrgn and iVrtMrgn in _OOHG_ScaleImage().
+       Use them to reduce the size of the scaled image so it does not
+       occupy the entire control's rect.
+     + New parameters in calls to _OOHG_ScaleImage().
+     * Parameter scalestrech changed from int to BOOL.
+   * source/h_button.prg
+     * Use BUTTON_IMAGELIST_ALIGN_* constants instead of numbers.
+     * aImageMargins now defaults to {6,10,6,10} so a 16x16 image vertically
+       fits in the center of a button with default height (28).
+     * New parameters in calls to _OOHG_ScaleImage().
+   * source/h_form.prg
+   * source/h_picture.prg
+     * New parameters in calls to _OOHG_ScaleImage().
+
+2015-11-29 12:35 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_tab.prg
+     + Methods bBeforeChange, OnClick and OnRClick to TMultiPage class.
+     + DATA bBeforeChange to TTabRaw class. This block is evaluated before
+       changing the selected tab. It it returns .F. the change is prevented.
+     + Method Events to TTabRaw class.
+     + Handler for TCN_SELCHANGING message in TTabRaw():Events_Notify.
+
+2015-11-28 18:27 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+    * include/i_browse.ch
+    * include/i_grid.ch
+    * include/i_xbrowse.ch
+      + EDITFIRSTVISIBLE clause. By default edition starts on the first
+        non hidden column. This clauses forces the edition to start on the
+        first column currently visible.
+    * source/h_browse.prg
+      + Support for EDITFIRSTVISIBLE clause.
+      ! Scrollbar behaviour when clicking or righclicking.
+      ! BrowseByCell does not paint clicked or rightclicked cell.
+    * source/h_grid.prg
+      + DATA lAtFirstCol INIT .T.
+      ! BrowseByCell without EDIT clause allows editing because ::AllowEdit
+        is set to .T. when INPLACE clause is present.
+      + Support for EDITFIRSTVISIBLE clause.
+    * source/h_xbrowse.prg
+      + Support for EDITFIRSTVISIBLE clause.
+      ! XBrowseByCell does not paint clicked or rightclicked cell.
+
+2015-11-25 18:52 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ./Changelog.004
+   * include/i_hmg_compat.ch
+     ! Typos.
+
+2015-11-11 00:14 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_browse.prg
+     ! Control's events are assigned twice.
+     * Calls to TGrid():Define changed by call to ::Define2.
+     * Format.
+     - TOBrowseByCell():Define2.
+
+2015-11-10 22:27 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_grid.prg
+     ! Another RTE at _CheckCellNewValue() when control has no memvar.
+     + TGrid():Define4 to handle the assignment of the control's events.
+     * TGrid():Define2 no longer assigns the control's events.
+     * Methods Define of TGrid, TGridMulti and TGridByCell classes now use
+       TGrid():Define4.
+     ! TGrid():EditCell2 now creates the variable asociated with the
+       cell's editcontrol (or _OOHG_NULLVAR_ variable if one is not
+       defined).
+     * Changed parameters in calls to modified methods.
+     * EditControl parameter is passed by reference in calls to ::EditCell2.
+   * source/h_xbrowse.prg
+     + TXBrowse():Define4 to handle the assignment of the control's events.
+     * Method Define of TXBrowse and TXBrowseByCell classes now use
+       TXBrowse():Define4.
+     * Changed parameters in calls to modified methods.
+     * EditControl parameter is passed by reference in calls to ::EditCell2.
+   * source/h_browse.prg
+     + TOBrowse():Define4 to handle the assignment of the control's events.
+     * Changed parameters in TOBrowse():Define3, TOBrowseByCell:Define2
+       and TOBrowseByCell:Define3.
+     * Changed parameters in calls to modified methods.
+     * EditControl parameter is passed by reference in calls to ::EditCell2.
+
+2015-11-08 20:48 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_grid.prg
+     ! RTE at _CheckCellNewValue() when control has no memvar.
+
+2015-11-08 20:35 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_grid.prg
+     ! Change of cell value in editcontrol valid is not working.
+
+2015-11-07 21:15 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * include/oohg.h
+   * source/c_activex.c
+   * source/c_dialogs.c
+   * source/c_gdiplus.c
+   * source/h_datepicker.prg
+   * source/h_media.prg
+   * source/h_textbox.prg
+   * source/miniprint.prg
+     * BCC warnings pacified.
+   * source/h_ipaddress.prg
+     * Format.
+   * source/h_toolbar.prg
+     - Unneeded code.
+
+2015-11-07 21:00 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * include/i_altsyntax.ch
+   * include/i_browse.ch
+   * include/i_grid.ch
+   * include/i_hmg_compat.ch
+   * include/i_xbrowse.ch
+     + Support for ON EDITCELLEND clause.
+   * source/h_grid.prg
+     + Data OnEditCellEnd.
+     + New parameter to TGrid():Define and TGrid():Define2.
+     + New parameter to TGridMulti():Define.
+     + New parameter to TGridByCell():Define.
+     + OnEditCellEnd event to TGrid():EditItem and TGrid():EditCell.
+       The event is fired inmediatly after the cell edition ends and before
+       saving the value to the cell.
+   * source/h_xbrowse.prg
+     + New parameter to TXBrowse():Define and TXBrowseByCell():Define2.
+     * TXBrowse():Define no longer passes codeblocks to
+       TGrid():Define2 to avoid premature setting of the control's events.
+     + OnEditCellEnd event to TXBrowse():EditItem_B and TXBrowse():EditCell.
+       The event is fired inmediatly after the end of the cell edition
+       and before saving the value to the cell. It's followed by OnAppend
+       event in case a new row is being added.
+     + Cell info if set before OnAppend in TXBrowse():EditItem_B and
+       TXBrowse():EditCell.
+     ! OnEditCell event is fired last in TXBrowse():EditCell.
+   * source/h_browse.prg
+     + New parameter to TOBrowse():Define, TOBrowse():Define3,
+       TOBrowseByCell():Define2 and TOBrowseByCell():Define3.
+     * TOBrowse():Define no longer passes codeblocks to
+       TOBrowse():Define3 to avoid premature setting of the control's events.
+
+ 2015-11-07 19:38 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ./compile_MINGW.BAT
+   * ./compile_bcc.bat
+   * distros/MakeDistro.bat
+   * distros/MakeExclude.txt
+   * ide/compile.bat
+   + include/bostaurus.ch
+   * source/BuildLib_hbmk2.bat
+   + source/bostaurus.hbp
+   + source/bostaurus.prg
+   * source/common_make.bat
+   * source/makelib_bcc.bat
+   * source/makelib_mingw.bat
+   * source/makelib_pc.bat
+   * source/makelib_vc.bat
+   * source/xml.bat
+     + Bos Taurus graphic library by Claudio Soto.
+     * Folder for xHarbour to "xhbcc".
+
+2015-11-04 21:14 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_listbox.prg
+     + Nested click check to WM_LBUTTONDOWN handler.
+   * source/h_checklist.prg
+     - Unneeded code.
+
+2015-11-03 21:36 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * include/i_altsyntax.ch
+     + Support for NOHOTLIGHT clause to BUTTON and CHECKBUTTON controls.
+   * source/h_browse.prg
+   * source/h_xbrowse.prg
+     + Missing mouse coordinates to CLICK events.
+   * source/h_button.prg
+     ! Missing parameters in method Define of TButton.
+     ! Missing parameters in methods Define and DefineImage of TButtonCheck.
+   * source/h_combo.prg
+     * Variable renamed for clarity.
+     * Some comments.
+     + Missing call to FocusEffect before firing ONGOTFOCUS.
+     + Data lFocused.
+     + Handler for WM_LBUTTONDOWN message to set focus and trigger
+       ONCLICK event.
+     - Evaluation of ONCLICK event inside CBN_EDITCHANGE handler.
+   * source/h_controlmisc.prg
+     + Missing call to FocusEffect before firing ONGOTFOCUS.
+   * source/h_hotkeybox.prg
+     * Variable renamed for clarity.
+   * source/h_listbox.prg
+     * Format.
+     * Data lFocused.
+     + Handler for WM_LBUTTONDOWN message to set focus and trigger
+       ONCLICK event.
+     + Handler for WM_LBUTTONDBLCLK message to set focus.
+     + Missing call to FocusEffect before firing ONGOTFOCUS.
+   * source/h_status.prg
+     - Some comments.
+     + Some casting.
+     * Format.
+
+2015-10-31 14:06 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * include/i_pseudofunc.ch
+     + GetDefaultFontName() and GetDefaultFontSize().
+   * source/c_font.c
+     + GetSystemFont().
+   * source/c_window.c
+     * getwinver() is not static anymore.
+   * source/h_scroll.prg
+     - Commented code.
+   * samples\oohg\stream\TSmtpClient.prg
+   * samples\oohg\stream\TStreamSerial.prg
+   * samples\oohg\stream\TStreamZip.prg
+
+2015-10-28 21:04 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * include/i_window.ch
+     + HBitMap property.
+   * source/h_button.prg
+     * cPicture property is now reseted in methods HBitMap and Buffer.
+     * Use ValidHandler( ::hImage ) instead of ! Empty( ::hImage ).
+     * Removed ValidHandler check from method Release.
+   * source/h_image.prg
+     * cPicture property is now reseted in methods HBitMap and Buffer.
+     * Method RePaint will do nothing when ::hImage is not valid.
+     * Removed ValidHandler check from method Release.
+   * source/h_picture.prg
+     * cPicture property is now reseted in methods HBitMap and Buffer.
+     * Method RePaint will do nothing when ::hImage is not valid.
+     * Empty IF commented out.
+     * Removed ValidHandler check from method Release.
+   * source/h_toolbar.prg
+     * Format.
+     + Method RePaint.
+     * Method HBitMap simplified.
+     * Removed ValidHandler check from method Release.
+
+2015-10-27 23:22 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   + samples\http\build.bat
+     * File for building the sample.
+
+2015-10-27 23:16 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/c_gdiplus.c
+     * Format.
+   * samples\oohg\stream\TSmtpClient.prg
+     ! Compiler error over hb_retclenAdopt function.
+     ! Harbour error over BitXor operator.
+     * Variable name.
+   * samples\oohg\stream\TStream.prg
+     ! Compiler error over BOOL data type.
+   * samples\oohg\stream\TStreamSerial.prg
+     ! Compiler errors over ISCHAR and ISNUM macros.
+   * samples\oohg\stream\TStreamZip.prg
+     ! Compiler error over z_stream data type caused by missing
+       zlib.h include. In case Harbour doesn't include this file
+       you must install zlib library from http://www.zlib.net/
+     ! Harbour error over BitAnd operator.
+
+2015-10-25 19:45 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * include/i_hmg_compat.ch
+     * Support for TAB clauses improved.
+
+2015-10-22 17:55 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * include/i_window.ch
+     + Redraw function.
+
+2015-10-22 17:37 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * include/i_hmg_compat.ch
+     * Support for STATUSBAR clauses improved.
+
+2015-10-17 22:30 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_form.prg
+     - Unneeded OnPaint parameters.
+
+2015-10-17 22:14 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_windows.prg
+     - Some comments.
+     * Format.
+   * source/c_gdiplus.c
+     - SaveHBitmapToFile and _OOHG_ScaleImage declarations.
+     + Validation for JpgQuality and ColorDepth parameters
+       in SaveHBitmapToFile().
+     + BOOL bIgnoreBkClr parameter to _OOHG_GDIPLoadPicture().
+   * source/c_image.c
+     - _OOHG_UseGDIP and _OOHG_GDIPLoadPicture declarations.
+     + BOOL bIgnoreBkClr parameter to _OOHG_OleLoadPicture(),
+       _OOHG_ScaleImage(), _OOHG_LoadImage(), _OOHG_BITMAPFROMFILE(),
+       _OOHG_BITMAPFROMBUFFER(), _OOHG_SETBITMAP() and _OOHG_SCALEIMAGE()
+   * include/oohg.h
+     + Some function declarations.
+     * Some function declarations.
+   * source/h_picture.prg
+   * source/h_button.prg
+     + New parameter to _OOHG_ScaleImage() calls.
+   * source/h_form.prg
+     + Method HasStatusBar to TForm class.
+     - Comments.
+     + New parameter to _OOHG_ScaleImage() calls.
+     * Execute OnPaint event before evaluating GraphTasks and
+       GraphCommand codeblocks.
+   * source/h_menu.prg
+     + New parameter to _OOHG_LoadImage() calls.
+   * source/h_tree.prg
+     - PrepareFont declaration.
+
+2015-10-17 21:26 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * include/i_window.ch
+     + VScrollBar and HScrollBar clauses.
+
+2015-10-17 20:35 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * include/i_hmg_compat.ch
+     + NOHOTLIGHT and BACKCOLOR clauses to BUTTONEX.
+
+2015-10-14 22:18 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_textbox.prg
+     ! Shift-Tab not working properly if WHEN returns false.
+     * Some format.
+
+2015-10-14 20:38 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * include/i_button.ch
+   * source/h_button.prg
+     + NOHOTLIGHT clause.
+
+2015-10-10 10:32 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_textbox.prg
+     ! ::OnGotFocus is being called twice.
+
+2015-09-22 23:00 UTC-0500 Vicente Guerra &lt;vicente@guerra.com.mx&gt;
+   + samples/oohg/stream/TSmtpClient.prg
+     + Simple SMTP client sample using TStreamSocket() class.
+
+2015-09-13 20:32 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/winprint.prg
+     * Simplified global changes handling.
+   * source/miniprint.prg
+     - Some comments.
+     * Simplified _HMG_PRINTER_ThumbnailToggle().
+     * Some translations.
+     ! Global changes handling.
+
+2015-09-01 18:30 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ide/prgs/formedit.prg
+     ! RTE when adding a new CHECKBOX control.
+
+2015-08-20 21:47 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ide/prgs/mgide.prg
+     + THMI:myInputWindow() checks for changes before canceling edition.
+
+2015-08-19 19:37 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_toolbar.prg
+     ! RTE "Message not found: TTOOLTIP:POSITION"
+
+2015-08-17 22:16 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * include/miniprint.ch
+     ! Typo.
+   * include/i_tooltip.ch
+     + SET TOOLTIP MULTILINE command.
+   * include/i_windefs.ch
+     + TB_SETTOOLTIPS.
+   * source/h_toolbar.prg
+     + DATA oToolTip.
+     * TToolBar() now uses a TToolTip() controls instead of default
+       tooltip.
+     - TBSTYLE_TOOLTIPS from toolbar's initial style.
+     ! ToolBar's tooltips are not displayed in balloon style.
+   * source/h_tooltip.prg
+     + Support for SET TOOLTIP MULTILINE command.
+
+2015-08-15 10:03 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ide/prgs/formedit.prg
+     ! Changes in form's size are not detected when made by mouse.
+
+2015-08-01 18:17 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * ./Changelog
      ! Typo in previous entries.
    * manual/Changelog.htm
@@ -159,7 +794,7 @@ CHANGELOG</div>
    ! source/h_radio.prg
      * RTE "Argument error: .NOT." at TRADIOGROUP:DEFINE(158)
 
-2015-07-14 19:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2015-07-14 19:27 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * include/i_altsyntax.ch
    * include/i_checkbox.ch
      + NOTHEME clause: paints without functions from uxtheme.dll.

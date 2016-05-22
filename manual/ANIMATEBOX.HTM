@@ -1,5 +1,5 @@
 <!--
-$Id: ANIMATEBOX.HTM,v 1.6 2015-03-09 02:51:31 fyurisich Exp $
+$Id: ANIMATEBOX.HTM,v 1.7 2016-05-22 01:41:35 fyurisich Exp $
 -->
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -189,101 +189,102 @@ Note that the file must not contain sound or it will not be played.
 
 *** Standard syntax:
 
-   @ &lt;row&gt;, &lt;col&gt; ANIMATEBOX &lt;name&gt; ;
-      [ OBJ &lt;obj&gt; ] ;
-      [ &lt;OF, PARENT&gt; &lt;parent&gt; ] ;
-      [ WIDTH &lt;widht&gt; ] ;
-      [ HEIGHT &lt;height&gt; ] ;
-      [ FILE &lt;file&gt; ] ;
-      [ &lt;autoplay: AUTOPLAY&gt; ] ;
-      [ &lt;center: CENTER&gt; ] ;
-      [ &lt;transparent: TRANSPARENT&gt; ] ;
-      [ HELPID &lt;helpid&gt; ] ;
-      [ SUBCLASS &lt;subclass&gt; ] ;
-      [ &lt;invisible: INVISIBLE&gt; ] ;
-      [ &lt;notabstop: NOTABSTOP&gt; ] ;
-      [ &lt;disabled: DISABLED&gt; ] ;
-      [ &lt;rtl: RTL&gt; ] ;
-      [ &lt;tooltip: TOOLTIP&gt; ]
-
-   Is translated by the preprocessor to this OOP syntax:
-
-   [ &lt;obj&gt; := ] _OOHG_SelectSubClass( TAnimateBox(), [ &lt;subclass&gt;() ] ): ;
-      Define( &lt;(name)&gt;, &lt;(parent)&gt;, &lt;col&gt;, &lt;row&gt;, &lt;widht&gt;, &lt;height&gt;, ;
-      &lt;.autoplay.&gt;, &lt;.center.&gt;, &lt;.transparent.&gt;, &lt;file&gt;, &lt;helpid&gt;, ;
-      &lt;.invisible.&gt;, &lt;.notabstop.&gt;, &lt;.disabled.&gt;, &lt;.rtl.&gt;, &lt;tooltip&gt; )
+   @ nRow, nCol ANIMATEBOX Name ;
+      [ OBJ Obj ; ]
+      [ &lt;OF, PARENT&gt; Parent ; ]
+      [ WIDTH nWidht ; ]
+      [ HEIGHT nHeight ; ]
+      [ FILE cFile ; ]
+      [ AUTOPLAY ; ]
+      [ CENTER ; ]
+      [ TRANSPARENT ; ]
+      [ HELPID nHelpid ; ]
+      [ SUBCLASS Subclass ; ]
+      [ INVISIBLE ; ]
+      [ NOTABSTOP ; ]
+      [ DISABLED ; ]
+      [ RTL ; ]
+      [ TOOLTIP cTooltip ]
 
 *** Alternative syntax:
 
-   DEFINE ANIMATEBOX &lt;name&gt; ;
-      [ AUTOPLAY &lt;autoplay&gt; ]
-      [ CENTER &lt;center&gt; ]
-      [ COL &lt;col&gt; ]
-      [ DISABLED &lt;.T. | .F.&gt; ]
-      [ FILE &lt;file&gt; ]
-      [ HEIGHT &lt;height&gt; ]
-      [ HELPID &lt;helpid&gt; ]
-      [ OBJECT &lt;obj&gt; ]
-      [ PARENT &lt;parent&gt; ]
-      [ ROW &lt;row&gt; ]
-      [ RTL &lt;.T. | .F.&gt; ]
-      [ SUBCLASS &lt;subclass&gt; ]
-      [ TABSTOP &lt;.T. | .F.&gt; ]
-      [ TOOLTIP &lt;tooltip&gt; ]
-      [ TRANSPARENT &lt;.T. | .F.&gt; ]
-      [ VISIBLE &lt;.T. | .F.&gt; ]
-      [ WIDTH &lt;width&gt; ]
+   DEFINE ANIMATEBOX Name ;
+      [ COL nCol ]
+      [ ROW nRow ]
+      [ OBJECT Obj ]
+      [ PARENT Parent ]
+      [ WIDTH nWidth ]
+      [ HEIGHT nHeight ]
+      [ FILE cFile ]
+      [ AUTOPLAY &lt;.T., .F.&gt; ]
+      [ CENTER &lt;.T., .F.&gt; ]
+      [ TRANSPARENT &lt;.T., .F.&gt; ]
+      [ HELPID nHelpid ]
+      [ SUBCLASS Subclass ]
+      [ &lt;VISIBLE, INVISIBLE&gt; &lt;.T., .F.&gt; ]
+      [ TABSTOP &lt;.T., .F.&gt; ]
+      [ &lt;ENABLE, DISABLED&gt; &lt;.T., .F.&gt; ]
+      [ RTL &lt;.T., .F.&gt; ]
+      [ TOOLTIP cTooltip ]
    END ANIMATEBOX
 
-   Is translated by the preprocessor to this OOP syntax:
+*** OOP syntax:
 
-   _OOHG_SelectSubClass( TAnimateBox(), &lt;subclass&gt;(), { |_o_| &lt;obj&gt; := _o_ } ): ;
-      Define( &lt;(name)&gt;, &lt;(parent)&gt;, &lt;col&gt;, &lt;row&gt;, &lt;width&gt;, &lt;height&gt;, ;
-      &lt;autoplay&gt;, &lt;center&gt;, &lt;transparent&gt;, &lt;file&gt;, &lt;helpid&gt;, ! &lt;visible&gt;, ;
-      ! &lt;tabstop&gt;, ! &lt;disabled&gt;, &lt;rtl&gt;, &lt;tooltip&gt; )
-
-*** Alternate OOP syntax:
-
-   [ &lt;oObj&gt; := ] TAnimateBox():Define( cName, [ cParent ], [ nCol ], [ nRow ], ;
+   [ Obj := ] TAnimateBox():Define( cName, [ cParent ], [ nCol ], [ nRow ], ;
       [ nWidth ], [ nHeight ], [ lAutoplay ], [ lCenter ], [ lTransparent ], ;
       [ cFile ], [ nHelpId ], [ lInvisible ], [ lNoTabstop ], [ lDisabled ], ;
       [ lRtl ], [ cToolTip ] )
 
-<p><u>Related commands</u>:
+<p><u>Related commands, functions and methods</u>:
 
 *** Standard syntax:
 
-   OPEN ANIMATEBOX &lt;ControlName&gt; OF &lt;ParentForm&gt; FILE &lt;FileName&gt;
+   OPEN ANIMATEBOX ControlName OF ParentForm FILE cFileName
       Loads an AVI file and shows its first frame.
-   PLAY ANIMATEBOX &lt;ControlName&gt; OF &lt;ParentForm&gt;
+   PLAY ANIMATEBOX ControlName OF ParentForm
       Plays the file in the background while the app continues executing.
-   SEEK ANIMATEBOX &lt;ControlName&gt; OF &lt;ParentForm&gt; POSITION &lt;Frame&gt;
-      Shows the indicated frame.
-   STOP ANIMATEBOX &lt;ControlName&gt; OF &lt;ParentForm&gt;
+   SEEK ANIMATEBOX ControlName OF ParentForm POSITION nFrame
+      Shows the frame at position nFrame.
+   STOP ANIMATEBOX ControlName OF ParentForm
       Stops playing the file. The last played frame remains displayed.
-   CLOSE ANIMATEBOX &lt;ControlName&gt; OF &lt;ParentForm&gt;
+   CLOSE ANIMATEBOX ControlName OF ParentForm
       Closes the file.
-   DESTROY ANIMATEBOX &lt;ControlName&gt; OF &lt;ParentForm&gt;
+   DESTROY ANIMATEBOX ControlName OF ParentForm
       Releases the control.
 
 *** Alternative syntax:
 
-   OpenAnimateBox( &lt;ControlName&gt;, &lt;ParentForm&gt;, &lt;FileName&gt; )
+   OpenAnimateBox( ControlName, ParentForm, cFileName )
       Loads an AVI file and shows its first frame.
-   PlayAnimateBox( &lt;ControlName&gt;, &lt;ParentForm&gt; )
+   PlayAnimateBox( ControlName, ParentForm )
       Plays the file in the background while the app continues executing.
-   SeekAnimateBox( &lt;ControlName&gt;, &lt;ParentForm&gt;, &lt;frame&gt; )
-      Shows the indicated frame.
-   StopAnimateBox( &lt;ControlName&gt;, &lt;ParentForm&gt; )
+   SeekAnimateBox( ControlName, ParentForm, nFrame )
+      Shows the frame at position nFrame.
+   StopAnimateBox( ControlName, ParentForm )
       Stops playing the file. The last played frame remains displayed.
-   CloseAnimateBox( &lt;ControlName&gt;, &lt;ParentForm&gt; )
+   CloseAnimateBox( ControlName, ParentForm )
       Closes the file.
-   DestroyAnimateBox( &lt;ControlName&gt;, &lt;ParentForm&gt; )
+   DestroyAnimateBox( ControlName, ParentForm )
+      Releases the control.
+
+*** OOP syntax:
+
+   Obj:Open( cFileName )
+      Loads an AVI file and shows its first frame.
+   Obj:Play()
+      Plays the file in the background while the app continues executing.
+   Obj:Seek( nFrame )
+      Shows the frame at position nFrame.
+   Obj:Stop()
+      Stops playing the file. The last played frame remains displayed.
+   Obj:Close()
+      Closes the file.
+   Obj:Release()
       Releases the control.
 
 <p><u>Notes on clauses</u>:
 
-   1. OBJ and OBJECT set a reference to the control into variable &lt;obj&gt;.
+   1. OBJ and OBJECT set a reference to the control into variable Obj.
       When using OBJECT, the variable must be previously declared.
       When using OBJ, if the variable does not exist, it's created PRIVATE.
    2. PARENT declares which window is the parent (owner) of the control.
@@ -317,11 +318,14 @@ Note that the file must not contain sound or it will not be played.
 
 <p><u>Notes on parameters</u>:
 
-   1. &lt;Frame&gt;, &lt;helpid&gt;, &lt;row&gt;, &lt;col&gt;, &lt;width&gt; and &lt;height&gt; must be numbers.
-   2. &lt;name&gt;, &lt;parent&gt;, &lt;ControlName&gt; and &lt;ParentForm&gt; must be valid identifiers
+   1. nFrame, nHelpid, nRow, nCol, nWidth and nHeight must be numbers.
+   2. Name, Parent, ControlName and ParentForm must be valid identifiers
       enclosed or not within quotes.
-   3. &lt;file&gt; and &lt;FileName&gt; must be strings.
-   4. &lt;obj&gt; and &lt;subclass&gt; must be valid identifiers not enclosed within quotes.
+   3. cFile, cTooltip and cFileName must be strings.
+   4. Obj and Subclass must be valid identifiers not enclosed within quotes.
+   5. cName and cParent must be strings containing valid identifiers.
+   6. lAutoplay, lCenter, lTransparent, lInvisible, lNoTabstop, lDisabled
+      and lRtl must be .T. or .F.
 </PRE>
 
 </div>

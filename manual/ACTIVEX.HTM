@@ -1,5 +1,5 @@
 <!--
-$Id: ACTIVEX.HTM,v 1.7 2015-03-09 02:51:31 fyurisich Exp $
+$Id: ACTIVEX.HTM,v 1.8 2016-05-22 01:41:35 fyurisich Exp $
 -->
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -187,57 +187,47 @@ Embeds an ActiveX control into a form, providing access to all its functionality
 
 *** Standard syntax:
 
-   @ &lt;row&gt;, &lt;col&gt; ACTIVEX &lt;name&gt; ;
-      PROGID &lt;progid&gt; ;
-      [ OBJ &lt;obj&gt; ] ;
-      [ &lt;OF, PARENT&gt; &lt;parent&gt; ] ;
-      [ WIDTH &lt;width&gt; ] ;
-      [ HEIGHT &lt;height&gt; ] ;
-      [ &lt;notabstop: NOTABSTOP&gt; ] ;
-      [ &lt;disabled: DISABLED&gt; ] ;
-      [ SUBCLASS &lt;subclass&gt; ]
-
-   Is translated by the preprocessor to this OOP syntax:
-
-   [ &lt;obj&gt; := ] _OOHG_SelectSubClass( TActiveX(), [ &lt;subclass&gt;() ] ): ;
-      Define( &lt;(name)&gt;, &lt;(parent)&gt;, &lt;col&gt;, &lt;row&gt;, &lt;width&gt;, &lt;height&gt;, ;
-      &lt;progid&gt;, &lt;.notabstop.&gt;, &lt;.disabled.&gt; )
+   @ nRow, nCol ACTIVEX Name ;
+      PROGID cProgID ;
+      [ OBJ Obj ; ]
+      [ &lt;OF, PARENT&gt; Parent ; ]
+      [ WIDTH nWidth ; ]
+      [ HEIGHT nHeight ; ]
+      [ NOTABSTOP ; ]
+      [ DISABLED ; ]
+      [ INVISIBLE ; ]
+      [ SUBCLASS Subclass ]
 
 *** Alternative syntax:
 
-   DEFINE ACTIVEX &lt;name&gt;
-      PROGID &lt;progid&gt;
-      [ COL &lt;col&gt; ]
-      [ DISABLED &lt;.T. | .F.&gt; ]
-      [ HEIGHT &lt;height&gt; ]
-      [ OBJECT &lt;obj&gt; ]
-      [ PARENT &lt;parent&gt; ]
-      [ ROW &lt;row&gt; ]
-      [ SUBCLASS &lt;subclass&gt; ]
-      [ TABSTOP &lt;.T. | .F.&gt; ]
-      [ WIDTH &lt;width&gt; ]
+   DEFINE ACTIVEX Name
+      [ COL nCol ]
+      [ ROW nRow ]
+      PROGID cProgID
+      [ OBJECT Obj ]
+      [ PARENT Parent ]
+      [ WIDTH nWidth ]
+      [ HEIGHT nHeight ]
+      [ TABSTOP &lt;.T., .F.&gt; ]
+      [ &lt;ENABLE, DISABLED&gt; &lt;.T., .F.&gt; ]
+      [ &lt;VISIBLE, INVISIBLE&gt; &lt;.T., .F.&gt; ]
+      [ SUBCLASS Subclass ]
    END ACTIVEX
 
-   Is translated by the preprocessor to this OOP syntax:
+*** OOP syntax:
 
-   _OOHG_SelectSubClass( TActiveX(), &lt;subclass&gt;(), [ { |_o_| &lt;obj&gt; := _o_ } ] ): ;
-      Define( &lt;(name)&gt;, &lt;(parent)&gt;, &lt;col&gt;, &lt;row&gt;, &lt;width&gt;, &lt;height&gt;, ;
-      &lt;progid&gt;, ! &lt;tabstop&gt;, ! &lt;disabled&gt; )
-
-*** Alternate OOP syntax:
-
-   [ &lt;oObj&gt; := ] TActiveX():Define( cName, [ cParent ], [ nCol ], [ nRow ], ;
-      [ nWidth ], [ nHeight ], cProgID, [ lNoTabstop ], [ lDisabled ] )
+   [ Obj := ] TActiveX():Define( ControlName, [ ParentForm ], [ nCol ], [ nRow ], ;
+      [ nWidth ], [ nHeight ], cProgID, [ lNoTabstop ], [ lDisabled ], [ lInvisible ] )
 
 <p><u>Notes on clauses</u>:
 
    1. PROGID identifies an ActiveX control. See <A href="http://support.microsoft.com/kb/192560/en-us" target="_blank">Active Template Library</A>.
-   2. OBJ and OBJECT set the variable &lt;obj&gt; with a reference to the control.
+   2. OBJ and OBJECT set a reference to the control into the variable Obj.
       When using OBJECT, the variable must be previously declared.
       When using OBJ, if the variable does not exist, it's assumed PRIVATE.
    3. PARENT declares which window is the parent (owner) of the control.
       Can be ommited only when used inside a DEFINE WINDOW / END WINDOW structure.
-   4. ROW and COL define the position of the control inside it's parent client area.
+   4. ROW and COL define the position of the control inside the parent's client area.
    5. WIDTH and HEIGHT define the dimension of the control.
    6. TABSTOP and NOTABSTOP specify if the control can/can't be focused using TAB key.
       Default is TABSTOP.
@@ -245,13 +235,17 @@ Embeds an ActiveX control into a form, providing access to all its functionality
       Default is ENABLED.
    8. SUBCLASS indicates that the control must be an instance of the specified class,
       instead of the default TActiveX class.
+   9. VISIBLE and INVISIBLE specify if the control must be visible/hidden when
+      created. Default is VISIBLE.
 
 <p><u>Notes on parameters</u>:
 
-   1. &lt;row&gt;, &lt;col&gt;, &lt;width&gt; and &lt;height&gt; must be numbers.
-   2. &lt;name&gt; and &lt;parent&gt; must be valid identifiers enclosed or not within quotes.
-   3. &lt;progid&gt; must be a string.
-   4. &lt;obj&gt; and &lt;subclass&gt; must be valid identifiers not enclosed within quotes.
+   1. nRow, nCol, nWidth and nHeight must be numbers.
+   2. Name and Parent must be valid identifiers enclosed or not within quotes.
+   3. cProgID must be a string containig a GUID, a ProgID or an URL.
+   4. Obj and Subclass must be valid identifiers not enclosed within quotes.
+   5. ControlName and ParentForm must be strings containing valid identifiers.
+   6. lNoTabstop, lDisabled and lInvisible must be .T. or .F.
 </PRE>
 
 </div>

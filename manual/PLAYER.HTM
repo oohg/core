@@ -1,5 +1,5 @@
 <!--
-$Id: PLAYER.HTM,v 1.4 2015-03-09 02:51:32 fyurisich Exp $
+$Id: PLAYER.HTM,v 1.5 2016-05-22 01:41:36 fyurisich Exp $
 -->
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -208,9 +208,11 @@ Controls &gt; </div>
       [ &lt;rtl: RTL&gt; ] ;
    =&gt; ;
       [ &lt;obj&gt; := ] _OOHG_SelectSubClass( TPlayer(), [ &lt;subclass&gt;() ] ): ;
-         Define( &lt;(name)&gt;, &lt;(parent)&gt;, &lt;file&gt;, &lt;col&gt;, &lt;row&gt;, &lt;w&gt;, &lt;h&gt;, &lt;.noautosizewindow.&gt;, &lt;.noautosizemovie.&gt;, ;
-         &lt;.noerrordlg.&gt;, &lt;.nomenu.&gt;, &lt;.noopen.&gt;, &lt;.noplaybar.&gt;, &lt;.showall.&gt;, &lt;.showmode.&gt;, &lt;.showname.&gt;, ;
-         &lt;.showposition.&gt;, &lt;helpid&gt;, &lt;.invisible.&gt;, &lt;.notabstop.&gt;, &lt;.disabled.&gt;, &lt;.rtl.&gt; )
+         Define( &lt;(name)&gt;, &lt;(parent)&gt;, &lt;file&gt;, &lt;col&gt;, &lt;row&gt;, &lt;w&gt;, &lt;h&gt;, ;
+         &lt;.noautosizewindow.&gt;, &lt;.noautosizemovie.&gt;, &lt;.noerrordlg.&gt;, ;
+         &lt;.nomenu.&gt;, &lt;.noopen.&gt;, &lt;.noplaybar.&gt;, &lt;.showall.&gt;, &lt;.showmode.&gt;, ;
+         &lt;.showname.&gt;, &lt;.showposition.&gt;, &lt;helpid&gt;, &lt;.invisible.&gt;, ;
+         &lt;.notabstop.&gt;, &lt;.disabled.&gt;, &lt;.rtl.&gt; )
 
 #command PLAY PLAYER &lt;name&gt; OF &lt;parent&gt; ;
    =&gt; ;
