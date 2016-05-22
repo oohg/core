@@ -1,5 +1,5 @@
 /*
- * $Id: i_browse.ch,v 1.61 2015-11-28 21:28:15 fyurisich Exp $
+ * $Id: i_browse.ch,v 1.62 2016-05-22 04:09:22 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -64,7 +64,6 @@
 #define BROWSE_JTFY_LEFT        0
 #define BROWSE_JTFY_RIGHT       1
 #define BROWSE_JTFY_CENTER      2
-#define BROWSE_JTFY_JUSTIFYMASK 3
 
 #translate MemVar . <AreaName> . <FieldName> ;
    => ;

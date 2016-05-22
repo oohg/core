@@ -1,5 +1,5 @@
 /*
- * $Id: i_hmg_compat.ch,v 1.50 2015-12-21 21:48:20 fyurisich Exp $
+ * $Id: i_hmg_compat.ch,v 1.51 2016-05-22 04:09:22 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -101,7 +101,7 @@
 
 #xtranslate IFARRAY( <v1>, <exp1>, <exp2> ) ;
    => ;
-   IIF( ISARRAY( <v1> ), <exp1>, <exp2> )
+      IIF( ISARRAY( <v1> ), <exp1>, <exp2> )
 
 #xtranslate IFBLOCK( <v1>, <exp1>, <exp2> ) ;
    => ;
@@ -109,7 +109,7 @@
 
 #xtranslate IFCHARACTER( <v1>, <exp1>, <exp2> ) ;
    => ;
-    IIF( ISCHARACTER( <v1> ), <exp1>, <exp2> )
+      IIF( ISCHARACTER( <v1> ), <exp1>, <exp2> )
 
 #xtranslate IFCHAR( <v1>, <exp1>, <exp2> ) ;
    => ;
@@ -121,11 +121,11 @@
 
 #xtranslate IFDATE( <v1>, <exp1>, <exp2> ) ;
    => ;
-   IIF( ISDATE( <v1> ), <exp1>, <exp2> )
+      IIF( ISDATE( <v1> ), <exp1>, <exp2> )
 
 #xtranslate IFLOGICAL( <v1>, <exp1>, <exp2> ) ;
    => ;
-   IIF( ISLOGICAL( <v1> ), <exp1>, <exp2> )
+      IIF( ISLOGICAL( <v1> ), <exp1>, <exp2> )
 
 #xtranslate IFNUMBER( <v1>, <exp1>, <exp2> ) ;
    => ;
@@ -157,16 +157,14 @@
 SPLITBOX VERSION
 ---------------------------------------------------------------------------*/
 
-#command BROWSE <name> ;
-      [ <dummy01: OF, PARENT> <parent> ] ;
-      [ OBJ <obj> ] ;
+#xcommand BROWSE <name> ;
+      [ OF <parent> ] ;
       [ WIDTH <w> ] ;
       [ HEIGHT <h> ] ;
       [ HEADERS <headers> ] ;
       [ WIDTHS <widths> ] ;
       [ WORKAREA <workarea> ] ;
       [ FIELDS <Fields> ] ;
-      [ INPUTMASK <Picture> ] ;
       [ VALUE <value> ] ;
       [ FONT <fontname> ] ;
       [ SIZE <fontsize> ] ;
@@ -179,16 +177,17 @@ SPLITBOX VERSION
       [ DYNAMICBACKCOLOR <dynamicbackcolor> ] ;
       [ DYNAMICFORECOLOR <dynamicforecolor> ] ;
       [ FONTCOLOR <fontcolor> ] ;
-      [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
-      [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
-      [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
-      [ <dummy05: ONDBLCLICK, ON DBLCLICK> <dblclick> ] ;
-      [ <dummy06: ACTION, ONCLICK, ON CLICK> <click> ] ;
+      [ ON GOTFOCUS <gotfocus> ] ;
+      [ ON CHANGE <change> ] ;
+      [ ON LOSTFOCUS <lostfocus> ] ;
+      [ ON DBLCLICK <dblclick> ] ;
       [ <edit: EDIT> ] ;
       [ <inplace: INPLACE> ] ;
       [ <append: APPEND> ] ;
-      [ <dummy07: ONHEADCLICK, ON HEADCLICK> <aHeadClick> ] ;
-      [ <dummy08: WHEN, COLUMNWHEN> <aWhenFields> ] ;
+      [ INPUTITEMS <inputitems> ] ;
+      [ DISPLAYITEMS <displayitems> ] ;
+      [ ON HEADCLICK <aHeadClick> ] ;
+      [ WHEN <aWhenFields> ] ;
       [ VALID <aValidFields> ] ;
       [ VALIDMESSAGES <aValidMessages> ] ;
       [ READONLY <aReadOnly> ] ;
@@ -200,100 +199,25 @@ SPLITBOX VERSION
       [ <novscroll: NOVSCROLL> ] ;
       [ HELPID <helpid> ] ;
       [ <break: BREAK> ] ;
-      [ <rtl: RTL> ] ;
-      [ <dummy09: ONAPPEND, ON APPEND> <onappend> ] ;
-      [ <dummy10: ONEDITCELL, ON EDITCELL> <editcell> ] ;
-      [ COLUMNCONTROLS <editcontrols> ] ;
-      [ REPLACEFIELD <replacefields> ] ;
-      [ SUBCLASS <subclass> ] ;
-      [ <reccount: RECCOUNT> ] ;
-      [ COLUMNINFO <columninfo> ] ;
-      [ <noshowheaders: NOHEADERS> ] ;
-      [ <dummy11: ONENTER, ON ENTER> <enter> ] ;
-      [ <disabled: DISABLED> ] ;
+      [ HEADERIMAGE <aImageHeader> ] ;
       [ <notabstop: NOTABSTOP> ] ;
-      [ <invisible: INVISIBLE> ] ;
-      [ <descending: DESCENDING> ] ;
-      [ DELETEWHEN <bWhenDel> ] ;
-      [ DELETEMSG <DelMsg> ] ;
-      [ <dummy12: ONDELETE, ON DELETE> <onDelete> ] ;
-      [ HEADERIMAGES <aHeaderImages> ] ;
-      [ IMAGESALIGN <aImgAlign> ] ;
-      [ <fullmove: FULLMOVE> ] ;
-      [ SELECTEDCOLORS <aSelectedColors> ] ;
-      [ EDITKEYS <aEditKeys> ] ;
-      [ <forcerefresh: FORCEREFRESH> ] ;
-      [ <norefresh: NOREFRESH> ] ;
-      [ <bffr: DOUBLEBUFFER, SINGLEBUFFER> ] ;
-      [ <focus: NOFOCUSRECT, FOCUSRECT> ] ;
-      [ <plm: PAINTLEFTMARGIN> ] ;
-      [ <sync: SYNCHRONIZED, UNSYNCHRONIZED> ] ;
-      [ <fixedcols: FIXEDCOLS> ] ;
-      [ <nodelmsg: NODELETEMSG> ] ;
-      [ <updall: UPDATEALL> ] ;
-      [ <dummy13: ONABORTEDIT, ON ABORTEDIT> <abortedit> ] ;
-      [ <fixedwidths: FIXEDWIDTHS> ] ;
-      [ <blocks: FIXEDBLOCKS, DYNAMICBLOCKS> ] ;
-      [ BEFORECOLMOVE <bBefMov> ] ;
-      [ AFTERCOLMOVE <bAftMov> ] ;
-      [ BEFORECOLSIZE <bBefSiz> ] ;
-      [ AFTERCOLSIZE <bAftSiz> ] ;
-      [ BEFOREAUTOFIT <bBefAut> ] ;
-      [ <excel: EDITLIKEEXCEL> ] ;
-      [ <buts: USEBUTTONS> ] ;
-      [ <upcol: UPDATECOLORS> ] ;
-      [ <edtctrls: FIXEDCONTROLS, DYNAMICCONTROLS> ] ;
-      [ <dummy14: ONHEADRCLICK, ON HEADRCLICK> <bheadrclick> ] ;
-      [ <extdbl: EXTDBLCLICK> ] ;
-      [ <silent: SILENT> ] ;
-      [ <alta: ENABLEALTA, DISABLEALTA> ] ;
-      [ <noshow: NOSHOWALWAYS> ] ;
-      [ <none: NONEUNSELS, IGNORENONE> ] ;
-      [ <cbe: CHANGEBEFOREEDIT> ] ;
-      [ <dummy15: ONRCLICK, ON RCLICK> <rclick> ] ;
-      [ <checkboxes: CHECKBOXES> ] ;
-      [ <dummy16: ONCHECKCHANGE, ON CHECKCHANGE> <checkchange> ] ;
-      [ <dummy17: ONROWREFRESH, ON ROWREFRESH> <rowrefresh> ] ;
-      [ DEFAULTVALUES <aDefVal> ] ;
-      [ <dummy18: ONEDITCELLEND, ON EDITCELLEND> <editend> ] ;
-      [ <efv: EDITFIRSTVISIBLE> ] ;
    => ;
-      [ <obj> := ] _OOHG_SelectSubClass( TOBrowse(), [ <subclass>() ] ): ;
-            Define( <(name)>, <(parent)>, , , <w>, <h>, <headers>, <widths>, ;
-            <Fields>, <value>, <fontname>, <fontsize>, <tooltip>, <{change}>, ;
-            <{dblclick}>, <aHeadClick>, <{gotfocus}>, <{lostfocus}>, ;
-            <(workarea)>, <.delete.>, <.style.>, <aImage>, <aJust>, <helpid>, ;
-            <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, <.break.>, ;
-            <backcolor>, <fontcolor>, <.lock.>, <.inplace.>, <.novscroll.>, ;
-            <.append.>, <aReadOnly>, <aValidFields>, <aValidMessages>, ;
-            <.edit.>, <dynamicbackcolor>, <aWhenFields>, <dynamicforecolor>, ;
-            <Picture>, <.rtl.>, <{onappend}>, <{editcell}>, <editcontrols>, ;
-            <replacefields>, <.reccount.>, <columninfo>, ! <.noshowheaders.>, ;
-            <{enter}>, <.disabled.>, <.notabstop.>, <.invisible.>, ;
-            <.descending.>, <{bWhenDel}>, <DelMsg>, <{onDelete}>, ;
-            <aHeaderImages>, <aImgAlign>, <.fullmove.>, <aSelectedColors>, ;
-            <aEditKeys>, ;
-            IIF( <.forcerefresh.>, 0, IIF( <.norefresh.>, 1, NIL ) ), ;
-            IIF( Upper( #<bffr> ) == "DOUBLEBUFFER", .T., ;
-            IIF( Upper( #<bffr> ) == "SINGLEBUFFER", .F., .T. ) ), ;
-            IIF( Upper( #<focus> ) == "NOFOCUSRECT", .F., ;
-            IIF( Upper( #<focus> ) == "FOCUSRECT", .T., NIL ) ), ;
-            <.plm.>, ;
-            IIF( Upper( #<sync> ) == "UNSYNCHRONIZED", .F., ;
-            IIF( Upper( #<sync> ) == "SYNCHRONIZED", .T., NIL ) ), ;
-            <.fixedcols.>, <.nodelmsg.>, <.updall.>, <{abortedit}>, <{click}>, ;
-            <.fixedwidths.>, ;
-            IIF( Upper( #<blocks> ) == "FIXEDBLOCKS", .T., ;
-            IIF( Upper( #<blocks> ) == "DYNAMICBLOCKS", .F., NIL ) ), ;
-            <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}>, ;
-            <.excel.>, <.buts.>, <.upcol.>, ;
-            IIF( Upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., ;
-            IIF( Upper( #<edtctrls> ) == "DYNAMICCONTROLS", .F., NIL ) ), ;
-            <{bheadrclick}>, <.extdbl.>, <.silent.>, ;
-            ! Upper( #<alta> ) == "DISABLEALTA", <.noshow.>, ;
-            Upper( #<none> ) == "NONEUNSELS", <.cbe.>, <{rclick}>, ;
-            <.checkboxes.>, <{checkchange}>, <{rowrefresh}>, <aDefVal>, ;
-            <{editend}>, ! <.efv.> )
+      TOBrowse():Define( <(name)>, <(parent)>, , , <w>, <h>, <headers>, ;
+            <widths>, <Fields>, <value>, <fontname>, <fontsize>, <tooltip>, ;
+            <{change}>, <{dblclick}>, <aHeadClick>, <{gotfocus}>, ;
+            <{lostfocus}>, <(workarea)>, <.delete.>, <.style.>, <aImage>, ;
+            <aJust>, <helpid>, <.bold.>, <.italic.>, <.underline.>, ;
+            <.strikeout.>, <.break.>, <backcolor>, <fontcolor>, <.lock.>, ;
+            <.inplace.>, <.novscroll.>, <.append.>, <aReadOnly>, ;
+            <aValidFields>, <aValidMessages>, <.edit.>, <dynamicbackcolor>, ;
+            <aWhenFields>, <dynamicforecolor>, , , ;
+            , , , , , , , , , <.notabstop.>, , , , , , <aImageHeader> )
+
+/*
+TODO: Try to implement this BROWSE clauses using COLUMNCONTROLS:
+      [ INPUTITEMS <inputitems> ] ;
+      [ DISPLAYITEMS <displayitems> ] ;
+*/
 
 #xcommand @ <row>, <col> BUTTONEX <name> ;
       [ <dummy1: OF, PARENT> <parent> ] ;
@@ -324,7 +248,7 @@ SPLITBOX VERSION
       [ <invisible: INVISIBLE> ] ;
       [ <default: DEFAULT> ] ;
    => ;
-       @ <row>, <col> BUTTON <name> ;
+      @ <row>, <col> BUTTON <name> ;
             [ PARENT <parent> ] ;
             [ ACTION <action> ] ;
             [ WIDTH <w> ] ;
@@ -380,7 +304,7 @@ SPLITBOX VERSION
       [ <default: DEFAULT> ] ;
       [ <imgalign: RIGHT, TOP, BOTTOM> ] ;
    => ;
-       @ <row>, <col> BUTTON <name> ;
+      @ <row>, <col> BUTTON <name> ;
             [ PARENT <parent> ] ;
             [ ACTION <action> ] ;
             [ WIDTH <w> ] ;
@@ -559,14 +483,7 @@ TODO: Try to implement this BUTTONEX clauses
    => ;
       STATUSITEM [ <x> ]
 
-/*
- * GRID's unsupported clauses:
- * [ ON SAVE <onsave> ] ;
- * [ DYNAMICDISPLAY <dynamicdisplay> ] ;
- *    Use EDITCONTROLS instead.
- */
-
-#command @ <row>, <col> GRID <name> ;
+#xcommand @ <row>, <col> GRID <name> ;
       [ <dummy1: OF, PARENT> <parent> ] ;
       [ WIDTH <w> ] ;
       [ HEIGHT <h> ] ;
@@ -592,7 +509,7 @@ TODO: Try to implement this BUTTONEX clauses
       [ ON LOSTFOCUS <lostfocus> ] ;
       [ ON DBLCLICK <dblclick> ] ;
       [ ON HEADCLICK <aHeadClick> ] ;
-      [ <edit : EDIT> ] ;
+      [ <edit: EDIT> ] ;
       [ COLUMNCONTROLS <editcontrols> ] ;
       [ COLUMNVALID <columnvalid> ] ;
       [ COLUMNWHEN <columnwhen> ] ;
@@ -608,8 +525,10 @@ TODO: Try to implement this BUTTONEX clauses
       [ <break: BREAK> ] ;
       [ HEADERIMAGES <headerimages> ] ;
       [ <bycell: NAVIGATEBYCELL> ] ;
-      [ <append : APPEND> ] ;
-      [ <delete : DELETE> ] ;
+      [ <append: APPEND> ] ;
+      [ <delete: DELETE> ] ;
+      [ DYNAMICDISPLAY <dynamicdisplay> ] ;
+      [ ON SAVE <onsave> ] ;
       [ <fixedcols: FIXEDCOLS> ] ;
    => ;
       @ <row>, <col> BROWSE <name> ;
@@ -653,6 +572,12 @@ TODO: Try to implement this BUTTONEX clauses
             [ <bycell> ] ;
             [ <append> ] ;
             [ <delete> ]
+
+/*
+TODO: Try to implement this GRID clauses using COLUMNCONTROLS:
+      [ ON SAVE <onsave> ] ;
+      [ DYNAMICDISPLAY <dynamicdisplay> ] ;
+*/
 
 #xtranslate GRID [ <x> ] LOCKCOLUMNS <lockcolumns> ;
    => GRID [ <x> ] FIXEDCOLS

@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.1568 2016-05-22 01:41:35 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1569 2016-05-22 04:09:22 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,7 +7,30 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2016-05-19 22:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2016-05-22 01:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     ! Previous entry.
+   * manual/Changelog.htm
+     * Updated.
+   * include/i_altsyntax.ch
+     * Marker name.
+     + ENABLED and INVISIBLE clauses.
+     ! Parameters of END BROWSE.
+   * include/i_browse.ch
+     - BROWSE_JTFY_JUSTIFYMASK
+   * include/i_hmg_compat.ch
+     * BROWSE synchronized with HMG Extended.
+     + T*O*D*O note.
+     * Tabs replaced with spaces.
+   * source/h_activex.prg
+     - Comment.
+     * Some parameters' names.
+   * source/h_browse.prg
+     * Some parameters' names.
+   * source/h_media.prg
+     * Some parameters' names.
+
+2016-05-21 22:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * manual/ACTIVEX.HTM
    * manual/ANIMATEBOX.HTM
    * manual/BROWSE.HTM

@@ -1,5 +1,5 @@
 /*
- * $Id: h_activex.prg,v 1.12 2015-03-09 02:52:07 fyurisich Exp $
+ * $Id: h_activex.prg,v 1.13 2016-05-22 04:09:22 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -94,15 +94,15 @@ CLASS TActiveX FROM TControl
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
-METHOD Define( ControlName, ParentForm, x, y, w, h, cProgId, ;
-               NoTabStop, lDisabled, lInvisible ) CLASS TActiveX
+METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, cProgId, ;
+               lNoTabStop, lDisabled, lInvisible ) CLASS TActiveX
 *-----------------------------------------------------------------------------*
 LOCAL nStyle, oError, nControlHandle, bErrorBlock, hSink
 
-   ASSIGN ::nCol    VALUE x TYPE "N"
-   ASSIGN ::nRow    VALUE y TYPE "N"
-   ASSIGN ::nWidth  VALUE w TYPE "N"
-   ASSIGN ::nHeight VALUE h TYPE "N"
+   ASSIGN ::nCol    VALUE nCol    TYPE "N"
+   ASSIGN ::nRow    VALUE nRow    TYPE "N"
+   ASSIGN ::nWidth  VALUE nWidth  TYPE "N"
+   ASSIGN ::nHeight VALUE nHeight TYPE "N"
 
    ::SetForm( ControlName, ParentForm )
 
@@ -110,7 +110,7 @@ LOCAL nStyle, oError, nControlHandle, bErrorBlock, hSink
    ASSIGN ::nHeight VALUE ::nHeight TYPE "N" DEFAULT ::Parent:Height
    ASSIGN ::cProgId VALUE cProgId   TYPE "CM"
 
-   nStyle := ::InitStyle( ,, lInvisible, NoTabStop, lDisabled )
+   nStyle := ::InitStyle( ,, lInvisible, lNoTabStop, lDisabled )
 
    nControlHandle := InitActiveX( ::ContainerhWnd, ::cProgId, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle )
    ::hAtl := AtlAxGetDisp( nControlHandle )
@@ -137,7 +137,6 @@ LOCAL nStyle, oError, nControlHandle, bErrorBlock, hSink
    ::hSink := hSink
 
 Return Self
-*   ::CreateControl()         nControlHandle := InitActiveX( ::ContainerhWnd, ::cProgId, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle )
 
 *-----------------------------------------------------------------------------*
 METHOD Release() CLASS TActiveX

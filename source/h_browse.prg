@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.172 2016-02-24 02:09:36 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.173 2016-05-22 04:09:22 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -238,25 +238,25 @@ CLASS TOBrowse FROM TXBrowse
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
-METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
-               aFields, value, fontname, fontsize, tooltip, change, ;
-               dblclick, aHeadClick, gotfocus, lostfocus, WorkArea, ;
-               AllowDelete, nogrid, aImage, aJust, HelpId, bold, italic, ;
-               underline, strikeout, break, backcolor, fontcolor, lock, ;
-               inplace, novscroll, AllowAppend, readonly, valid, ;
-               validmessages, edit, dynamicbackcolor, aWhenFields, ;
-               dynamicforecolor, aPicture, lRtl, onappend, editcell, ;
-               editcontrols, replacefields, lRecCount, columninfo, ;
-               lHasHeaders, onenter, lDisabled, lNoTabStop, lInvisible, ;
-               lDescending, bDelWhen, DelMsg, onDelete, aHeaderImage, ;
-               aHeaderImageAlign, FullMove, aSelectedColors, aEditKeys, ;
-               uRefresh, dblbffr, lFocusRect, lPLM, sync, lFixedCols, ;
-               lNoDelMsg, lUpdateAll, abortedit, click, lFixedWidths, ;
+METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, aHeaders, aWidths, ;
+               aFields, nValue, cFontName, nFontSize, cTooltip, bOnChange, ;
+               bOnDblClick, aHeadClick, bOnGotFocus, bOnLostFocus, cWorkArea, ;
+               lAllowDelete, lNoLines, aImage, aJust, nHelpId, lBold, lItalic, ;
+               lUnderline, lStrikeout, lBreak, uBackColor, uFontColor, lLock, ;
+               lInPlace, lNoVScroll, lAllowAppend, aReadonly, aValid, ;
+               aValidMessages, lAllowEdit, uDynamicBackColor, aWhenFields, ;
+               uDynamicForecolor, aPicture, lRtl, bOnAppend, bOnEditCell, ;
+               aEditControls, aReplaceFields, lRecCount, aColumnInfo, ;
+               lHasHeaders, bOnEnter, lDisabled, lNoTabStop, lInvisible, ;
+               lDescending, bDelWhen, cDelMsg, bOnDelete, aHeaderImage, ;
+               aHeaderImageAlign, lFullMove, aSelectedColors, aEditKeys, ;
+               uRefresh, lDblBffr, lFocusRect, lPLM, lSync, lFixedCols, ;
+               lNoDelMsg, lUpdateAll, bOnAbortedit, bOnClick, lFixedWidths, ;
                lFixedBlocks, bBeforeColMove, bAfterColMove, bBeforeColSize, ;
                bAfterColSize, bBeforeAutofit, lLikeExcel, lButtons, lUpdCols, ;
                lFixedCtrls, bHeadRClick, lExtDbl, lNoModal, lSilent, lAltA, ;
-               lNoShowAlways, lNone, lCBE, onrclick, lCheckBoxes, oncheck, ;
-               rowrefresh, aDefaultValues, editend, lAtFirst ) CLASS TOBrowse
+               lNoShowAlways, lNone, lCBE, bOnRClick, lCheckBoxes, bOnCheck, ;
+               bOnRowRefresh, aDefaultValues, bOnEditEnd, lAtFirst ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local nWidth2, nCol2, oScroll, z
 
@@ -265,7 +265,7 @@ Local nWidth2, nCol2, oScroll, z
    ASSIGN ::aWidths     VALUE aWidths      TYPE "A" DEFAULT {}
    ASSIGN ::aJust       VALUE aJust        TYPE "A" DEFAULT {}
    ASSIGN ::lDescending VALUE lDescending  TYPE "L"
-   ASSIGN ::SyncStatus  VALUE sync         TYPE "L" DEFAULT Nil
+   ASSIGN ::SyncStatus  VALUE lSync        TYPE "L" DEFAULT Nil
    ASSIGN ::lUpdateAll  VALUE lUpdateAll   TYPE "L"
    ASSIGN ::lUpdCols    VALUE lUpdCols     TYPE "L"
    ASSIGN lFixedBlocks  VALUE lFixedBlocks TYPE "L" DEFAULT _OOHG_BrowseFixedBlocks
@@ -290,40 +290,40 @@ Local nWidth2, nCol2, oScroll, z
       ::RefreshType := REFRESH_DEFAULT
    EndIf
 
-   If ValType( columninfo ) == "A" .AND. Len( columninfo ) > 0
+   If ValType( aColumnInfo ) == "A" .AND. Len( aColumnInfo ) > 0
       If ValType( ::aFields ) == "A"
-         aSize( ::aFields,  Len( columninfo ) )
+         aSize( ::aFields,  Len( aColumnInfo ) )
       Else
-         ::aFields := Array( Len( columninfo ) )
+         ::aFields := Array( Len( aColumnInfo ) )
       EndIf
-      aSize( ::aHeaders, Len( columninfo ) )
-      aSize( ::aWidths,  Len( columninfo ) )
-      aSize( ::aJust,    Len( columninfo ) )
-      For z := 1 To Len( columninfo )
-         If ValType( columninfo[ z ] ) == "A"
-            If Len( columninfo[ z ] ) >= 1 .AND. ValType( columninfo[ z ][ 1 ] ) $ "CMB"
-               ::aFields[ z ]  := columninfo[ z ][ 1 ]
+      aSize( ::aHeaders, Len( aColumnInfo ) )
+      aSize( ::aWidths,  Len( aColumnInfo ) )
+      aSize( ::aJust,    Len( aColumnInfo ) )
+      For z := 1 To Len( aColumnInfo )
+         If ValType( aColumnInfo[ z ] ) == "A"
+            If Len( aColumnInfo[ z ] ) >= 1 .AND. ValType( aColumnInfo[ z ][ 1 ] ) $ "CMB"
+               ::aFields[ z ]  := aColumnInfo[ z ][ 1 ]
             EndIf
-            If Len( columninfo[ z ] ) >= 2 .AND. ValType( columninfo[ z ][ 2 ] ) $ "CM"
-               ::aHeaders[ z ] := columninfo[ z ][ 2 ]
+            If Len( aColumnInfo[ z ] ) >= 2 .AND. ValType( aColumnInfo[ z ][ 2 ] ) $ "CM"
+               ::aHeaders[ z ] := aColumnInfo[ z ][ 2 ]
             EndIf
-            If Len( columninfo[ z ] ) >= 3 .AND. ValType( columninfo[ z ][ 3 ] ) $ "N"
-               ::aWidths[ z ]  := columninfo[ z ][ 3 ]
+            If Len( aColumnInfo[ z ] ) >= 3 .AND. ValType( aColumnInfo[ z ][ 3 ] ) $ "N"
+               ::aWidths[ z ]  := aColumnInfo[ z ][ 3 ]
             EndIf
-            If Len( columninfo[ z ] ) >= 4 .AND. ValType( columninfo[ z ][ 4 ] ) $ "N"
-               ::aJust[ z ]    := columninfo[ z ][ 4 ]
+            If Len( aColumnInfo[ z ] ) >= 4 .AND. ValType( aColumnInfo[ z ][ 4 ] ) $ "N"
+               ::aJust[ z ]    := aColumnInfo[ z ][ 4 ]
             EndIf
          EndIf
       Next
    EndIf
 
-   If ! ValType( WorkArea ) $ "CM" .OR. Empty( WorkArea )
-      WorkArea := Alias()
+   If ! ValType( cWorkArea ) $ "CM" .OR. Empty( cWorkArea )
+      cWorkArea := Alias()
    EndIf
 
    If ValType( ::aFields ) != "A"
-      ::aFields := ( WorkArea )->( DbStruct() )
-      aEval( ::aFields, { |x,i| ::aFields[ i ] := WorkArea + "->" + x[ 1 ] } )
+      ::aFields := ( cWorkArea )->( DbStruct() )
+      aEval( ::aFields, { |x,i| ::aFields[ i ] := cWorkArea + "->" + x[ 1 ] } )
    EndIf
 
    aSize( ::aHeaders, Len( ::aFields ) )
@@ -334,33 +334,33 @@ Local nWidth2, nCol2, oScroll, z
 
    // If splitboxed force no vertical scrollbar
 
-   ASSIGN novscroll VALUE novscroll TYPE "L" DEFAULT .F.
-   If ValType(x) != "N" .OR. ValType(y) != "N"
-      novscroll := .T.
+   ASSIGN lNoVScroll VALUE lNoVScroll TYPE "L" DEFAULT .F.
+   If ValType( nCol ) != "N" .OR. ValType( nRow ) != "N"
+      lNoVScroll := .T.
    EndIf
 
-   ASSIGN w VALUE w TYPE "N" DEFAULT ::nWidth
-   nWidth2 := If( novscroll, w, w - GetVScrollBarWidth() )
+   ASSIGN nWidth VALUE nWidth TYPE "N" DEFAULT ::nWidth
+   nWidth2 := If( lNoVScroll, nWidth, nWidth - GetVScrollBarWidth() )
 
-   ::Define3( ControlName, ParentForm, x, y, nWidth2, h, fontname, fontsize, ;
-              tooltip, aHeadClick, nogrid, aImage, break, HelpId, bold, ;
-              italic, underline, strikeout, edit, backcolor, fontcolor, ;
-              dynamicbackcolor, dynamicforecolor, aPicture, lRtl, InPlace, ;
-              editcontrols, readonly, valid, validmessages, aWhenFields, ;
+   ::Define3( ControlName, ParentForm, nCol, nRow, nWidth2, nHeight, cFontName, nFontSize, ;
+              cTooltip, aHeadClick, lNoLines, aImage, lBreak, nHelpId, lBold, ;
+              lItalic, lUnderline, lStrikeout, lAllowEdit, uBackColor, uFontColor, ;
+              uDynamicBackColor, uDynamicForeColor, aPicture, lRtl, lInPlace, ;
+              aEditControls, aReadonly, aValid, aValidMessages, aWhenFields, ;
               lDisabled, lNoTabStop, lInvisible, lHasHeaders, aHeaderImage, ;
-              aHeaderImageAlign, FullMove, aSelectedColors, aEditKeys, ;
-              dblbffr, lFocusRect, lPLM, lFixedCols, lFixedWidths, ;
-              lLikeExcel, lButtons, AllowDelete, DelMsg, lNoDelMsg, ;
-              AllowAppend, lNoModal, lFixedCtrls, lExtDbl, Value, lSilent, ;
+              aHeaderImageAlign, lFullMove, aSelectedColors, aEditKeys, ;
+              lDblBffr, lFocusRect, lPLM, lFixedCols, lFixedWidths, ;
+              lLikeExcel, lButtons, lAllowDelete, cDelMsg, lNoDelMsg, ;
+              lAllowAppend, lNoModal, lFixedCtrls, lExtDbl, nValue, lSilent, ;
               lAltA, lNoShowAlways, lNone, lCBE, lCheckBoxes, lAtFirst )
 
-   ::nWidth := w
+   ::nWidth := nWidth
 
-   ASSIGN ::Lock          VALUE lock          TYPE "L"
-   ASSIGN ::aReplaceField VALUE replacefields TYPE "A"
-   ASSIGN ::lRecCount     VALUE lRecCount     TYPE "L"
+   ASSIGN ::Lock          VALUE lLock          TYPE "L"
+   ASSIGN ::aReplaceField VALUE aReplaceFields TYPE "A"
+   ASSIGN ::lRecCount     VALUE lRecCount      TYPE "L"
 
-   ::WorkArea := WorkArea
+   ::WorkArea := cWorkArea
 
    ::FixBlocks( lFixedBlocks )
 
@@ -396,8 +396,8 @@ Local nWidth2, nCol2, oScroll, z
    ::VScroll:OnPageUp   := { || ::SetFocus():PageUp() }
    ::VScroll:OnPageDown := { || ::SetFocus():PageDown() }
    ::VScroll:OnThumb    := { |VScroll,Pos| ::SetFocus():SetScrollPos( Pos, VScroll ) }
-   ::VScroll:ToolTip    := tooltip
-   ::VScroll:HelpId     := HelpId
+   ::VScroll:ToolTip    := cTooltip
+   ::VScroll:HelpId     := nHelpId
 
    ::VScrollCopy := oScroll
 
@@ -405,7 +405,7 @@ Local nWidth2, nCol2, oScroll, z
    ::Visible := ::Visible
 
    ::lVScrollVisible := .T.
-   If novscroll
+   If lNoVScroll
       ::VScrollVisible( .F. )
    EndIf
 
@@ -414,10 +414,10 @@ Local nWidth2, nCol2, oScroll, z
    ::lChangeBeforeEdit := .F.
 
    // Must be set after control is initialized
-   ::Define4( change, dblclick, gotfocus, lostfocus, editcell, onenter, ;
-              oncheck, abortedit, click, bbeforecolmove, baftercolmove, ;
-              bbeforecolsize, baftercolsize, bbeforeautofit, ondelete, ;
-              bdelwhen, onappend, bheadrclick, onrclick, editend, rowrefresh )
+   ::Define4( bOnChange, bOnDblClick, bOnGotFocus, bOnLostFocus, bOnEditCell, bOnEnter, ;
+              bOnCheck, bOnAbortEdit, bOnClick, bBeforeColMove, bAfterColMove, ;
+              bBeforeColSize, bAfterColSize, bBeforeAutoFit, bOnDelete, ;
+              bDelWhen, bOnAppend, bHeadRClick, bOnRClick, bOnEditEnd, bOnRowRefresh )
 
 Return Self
 

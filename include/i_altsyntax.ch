@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.132 2016-03-31 19:53:38 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.133 2016-05-22 04:09:22 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -294,7 +294,7 @@ AUXILIARY VARIABLES
 #xtranslate _OOHG_ActiveControlLock                   => _OOHG_ActiveControlInfo \[ 289 \]
 #xtranslate _OOHG_ActiveControlAppendable             => _OOHG_ActiveControlInfo \[ 290 \]
 #xtranslate _OOHG_ActiveControlFile                   => _OOHG_ActiveControlInfo \[ 291 \]
-#xtranslate _OOHG_ActiveControlAutoPlay               => _OOHG_ActiveControlInfo \[ 292 \]
+#xtranslate _OOHG_ActiveControlAutoPlay              => _OOHG_ActiveControlInfo \[ 292 \]
 #xtranslate _OOHG_ActiveControlCenter                 => _OOHG_ActiveControlInfo \[ 293 \]
 #xtranslate _OOHG_ActiveControlNoAutoSizeWindow       => _OOHG_ActiveControlInfo \[ 294 \]
 #xtranslate _OOHG_ActiveControlNoAuotSizeMovie        => _OOHG_ActiveControlInfo \[ 295 \]
@@ -409,13 +409,17 @@ AUXILIARY VARIABLES
    => ;
       _OOHG_ActiveControlTooltip := <tooltip>
 
-#xcommand TABSTOP <notabstop> ;
+#xcommand TABSTOP <tabstop> ;
    => ;
-      _OOHG_ActiveControlNoTabStop := ! <notabstop>
+      _OOHG_ActiveControlNoTabStop := ! <tabstop>
 
 #xcommand VISIBLE <visible> ;
    => ;
       _OOHG_ActiveControlInvisible := ! <visible>
+
+#xcommand INVISIBLE <invisible> ;
+   => ;
+      _OOHG_ActiveControlInvisible := <invisible>
 
 #xcommand HELPID <helpid> ;
    => ;
@@ -424,6 +428,10 @@ AUXILIARY VARIABLES
 #xcommand DISABLED <disabled> ;
    => ;
       _OOHG_ActiveControlDisabled := <disabled>
+
+#xcommand ENABLED <enabled> ;
+   => ;
+      _OOHG_ActiveControlDisabled := ! <enabled>
 
 #xcommand ITEMSOURCE <itemsource> ;
    => ;
@@ -2864,8 +2872,6 @@ BROWSE
             _OOHG_ActiveControlBeforeColSize, ;
             _OOHG_ActiveControlAfterColSize, ;
             _OOHG_ActiveControlBeforeAutoFit, ;
-            _OOHG_ActiveControlEditLikeExcel, ;
-            _OOHG_ActiveControlUseButtons, ;
             _OOHG_ActiveControlEditLikeExcel, ;
             _OOHG_ActiveControlUseButtons, ;
             _OOHG_ActiveControlUpdateColors, ;

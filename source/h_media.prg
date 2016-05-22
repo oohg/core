@@ -1,5 +1,5 @@
 /*
- * $Id: h_media.prg,v 1.10 2015-11-08 00:15:38 fyurisich Exp $
+ * $Id: h_media.prg,v 1.11 2016-05-22 04:09:22 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -220,34 +220,35 @@ CLASS TAnimateBox FROM TControl
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
-METHOD Define( ControlName, ParentForm, col, row, w, h, autoplay, center, ;
-               transparent, file, HelpId, Invisible, NoTabStop, lDisabled, ;
-               lRtl, ToolTip ) CLASS TAnimateBox
+METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, lAutoplay, ;
+               lCenter, lTransparent, cFile, nHelpId, lInvisible, lNoTabStop, ;
+               lDisabled, lRtl, cToolTip ) CLASS TAnimateBox
 *-----------------------------------------------------------------------------*
 Local hh, nStyle
 
-   ASSIGN ::nCol    VALUE col TYPE "N"
-   ASSIGN ::nRow    VALUE row TYPE "N"
-   ASSIGN ::nWidth  VALUE w   TYPE "N"
-   ASSIGN ::nHeight VALUE h   TYPE "N"
+   ASSIGN ::nCol    VALUE nCol    TYPE "N"
+   ASSIGN ::nRow    VALUE nRow    TYPE "N"
+   ASSIGN ::nWidth  VALUE nWidth  TYPE "N"
+   ASSIGN ::nHeight VALUE nHeight TYPE "N"
 
-   ::SetForm( ControlName, ParentForm,,,,,, lRtl )
+   ::SetForm( ControlName, ParentForm, , , , , , lRtl )
 
-   nStyle := ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + ;
+   nStyle := ::InitStyle( , , lInvisible, lNoTabStop, lDisabled ) + ;
              WS_CHILD + WS_BORDER + ;
-             IF( HB_IsLogical( autoplay ) .AND. autoplay, ACS_AUTOPLAY,  0 ) + ;
-             IF( HB_IsLogical( center ) .AND. center, ACS_CENTER,  0 ) + ;
-             IF( HB_IsLogical( transparent )  .AND. transparent, ACS_TRANSPARENT,  0 )
+             If( HB_IsLogical( lAutoplay ) .AND. lAutoplay, ACS_AUTOPLAY, 0 ) + ;
+             If( HB_IsLogical( lCenter ) .AND. lCenter, ACS_CENTER, 0 ) + ;
+             If( HB_IsLogical( lTransparent ) .AND. lTransparent, ACS_TRANSPARENT, 0 )
 
    hh := InitAnimate( ::ContainerhWnd, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle )
 
-   ::Register( hh, ControlName, HelpId,, ToolTip )
+   ::Register( hh, ControlName, nHelpId, , cToolTip )
 
-   if valtype(file) <> 'U'
-      ::Open( File )
+   If ValType( cFile ) <> 'U'
+      ::Open( cFile )
    EndIf
 
 Return Self
+
 
 EXTERN MCIFUNC
 
