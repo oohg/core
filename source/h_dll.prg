@@ -1,11 +1,11 @@
 /*
- * $Id: h_dll.prg,v 1.8 2015-03-09 02:52:07 fyurisich Exp $
+ * $Id: h_dll.prg,v 1.9 2016-05-22 23:53:22 fyurisich Exp $
  */ 
 /*
  * ooHG source code:
  * DLL access functions
  *
- * Copyright 2009-2015 Ciro Vargas Clemow <pcman2010@yahoo.com>
+ * Copyright 2009-2016 Ciro Vargas Clemow <cvc@oohg.org>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -16,7 +16,7 @@
  * Copyright 2001 Antonio Linares <alinares@fivetech.com>
  *
  * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2015, http://www.harbour-project.org/
+ * Copyright 1999-2016, http://www.harbour-project.org/
  *
  * Portions of this project are copyrighted 2005 by Vic McClung.
  *

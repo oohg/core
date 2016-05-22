@@ -1,8 +1,8 @@
 /*
- * $Id: browsecolumncontrols.prg,v 1.7 2015-03-09 02:52:05 fyurisich Exp $
+ * $Id: browsecolumncontrols.prg,v 1.8 2016-05-22 23:53:20 fyurisich Exp $
  */
 /*
- * ooHG Browse COLUMNCONTROLS demo. (c) 2005-2015 Vic
+ * ooHG Browse COLUMNCONTROLS demo. (c) 2005-2016 Vic
  * This demo shows how to create custom COLUMNCONTROLS objects,
  * and how to implement REPLACEFIELD clause on browse.
  */

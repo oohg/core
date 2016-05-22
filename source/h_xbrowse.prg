@@ -1,11 +1,11 @@
 /*
- * $Id: h_xbrowse.prg,v 1.151 2016-02-28 22:40:18 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.152 2016-05-22 23:53:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * eXtended Browse controls
  *
- * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2016 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * This program is free software; you can redistribute it and/or modify

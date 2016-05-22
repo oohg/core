@@ -1,11 +1,11 @@
 /*
- * $Id: c_gdiplus.c,v 1.20 2015-11-30 01:19:27 fyurisich Exp $
+ * $Id: c_gdiplus.c,v 1.21 2016-05-22 23:53:21 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * C GDI+ functions
  *
- * Copyright 2013-2015 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2013-2016 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

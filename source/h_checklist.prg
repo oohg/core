@@ -1,11 +1,11 @@
 /*
- * $Id: h_checklist.prg,v 1.21 2016-02-29 01:48:08 fyurisich Exp $
+ * $Id: h_checklist.prg,v 1.22 2016-05-22 23:53:22 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * CheckList control
  *
- * Copyright 2012-2015 Fernando Yurisich <fyurisich@oohg.org>
+ * Copyright 2012-2016 Fernando Yurisich <fyurisich@oohg.org>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

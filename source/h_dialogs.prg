@@ -1,11 +1,11 @@
 /*
- * $Id: h_dialogs.prg,v 1.15 2016-02-01 00:03:38 fyurisich Exp $
+ * $Id: h_dialogs.prg,v 1.16 2016-05-22 23:53:22 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * PRG dialogs functions
  *
- * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2016 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

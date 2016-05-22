@@ -1,11 +1,11 @@
 /*
- * $Id: h_init.prg,v 1.39 2015-05-08 22:11:47 fyurisich Exp $
+ * $Id: h_init.prg,v 1.40 2016-05-22 23:53:22 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * Initialization procedure
  *
- * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2016 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.guerra.com.mx
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

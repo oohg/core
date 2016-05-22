@@ -1,11 +1,11 @@
 /*
- * $Id: h_msgbox.prg,v 1.22 2015-04-13 21:24:19 fyurisich Exp $
+ * $Id: h_msgbox.prg,v 1.23 2016-05-22 23:53:22 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * PRG message boxes functions
  *
- * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2016 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

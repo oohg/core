@@ -1,10 +1,10 @@
 /*
- * $Id: mgide.prg,v 1.30 2016-04-12 22:04:33 fyurisich Exp $
+ * $Id: mgide.prg,v 1.31 2016-05-22 23:52:22 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
  *
- * Copyright 2002-2015 Ciro Vargas Clemov <cvc@oohg.org>
+ * Copyright 2002-2016 Ciro Vargas Clemov <cvc@oohg.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -908,7 +908,7 @@ LOCAL about_form
 
       @ 40,20 HYPERLINK LB_MAIL ;
       VALUE "(c) 2002-" + LTrim( Str( Year( Date() ) ) ) + " Ciro Vargas Clemow" ;
-      ADDRESS 'pcman2010@yahoo.com' ;
+      ADDRESS 'cvc@oohg.org' ;
       WIDTH 120 ;
       HEIGHT 24 ;
       AUTOSIZE ;

@@ -1,11 +1,11 @@
 /*
- * $Id: bostaurus.ch,v 1.1 2015-11-07 22:39:58 fyurisich Exp $
+ * $Id: bostaurus.ch,v 1.2 2016-05-22 23:52:22 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * Bos Taurus library - Miscelaneous defines
  *
- * Copyright 2015 Fernando Yurisich <fyurisich@oohg.org>
+ * Copyright 2015-2016 Fernando Yurisich <fyurisich@oohg.org>
  *
  * Adapted from the original BOS TAURUS Graphic Library for HMG
  * Copyright 2012-2015 by Dr. Claudio Soto (from Uruguay).

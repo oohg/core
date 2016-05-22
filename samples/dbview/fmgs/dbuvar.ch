@@ -1,9 +1,9 @@
 /*
- * $Id: dbuvar.ch,v 1.3 2015-03-09 02:52:05 fyurisich Exp $
+ * $Id: dbuvar.ch,v 1.4 2016-05-22 23:53:20 fyurisich Exp $
  */
 
 #define PROGRAM        'DBF Viewer 2020 '
-#define COPYRIGHT      ' (c)2009-2015 MigSoft  '
+#define COPYRIGHT      ' (c)2009-2016 MigSoft  '
 #define CRLF           HB_OsNewLine()
 #define _DBUreddish    {255,200,200}
 #define _DBUgreenish   {200,255,200}

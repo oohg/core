@@ -1,11 +1,11 @@
 /*
- * $Id: winprint.prg,v 1.61 2015-09-13 23:32:36 fyurisich Exp $
+ * $Id: winprint.prg,v 1.62 2016-05-22 23:53:23 fyurisich Exp $
  */
 /*----------------------------------------------------------------------------
  * ooHG source code:
  * HBPRINTER printing library based on Harbour Win32 GUI library source code
  *
- * Copyright 2006-2015 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2006-2016 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -16,7 +16,7 @@
  * Copyright 2001 Antonio Linares <alinares@fivetech.com>
  *
  * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2015, http://www.harbour-project.org/
+ * Copyright 1999-2016, http://www.harbour-project.org/
  *
  * Portions of this module are based upon:
  *

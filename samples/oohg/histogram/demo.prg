@@ -1,9 +1,9 @@
 /*
- * $Id: demo.prg,v 1.2 2015-03-09 02:52:06 fyurisich Exp $
+ * $Id: demo.prg,v 1.3 2016-05-22 23:53:20 fyurisich Exp $
  */
 /*
  * This demo shows how to use DRAW GRAPH.
- * Copyright (c)2007-2015 MigSoft <migsoft/at/oohg.org>
+ * Copyright (c)2007-2016 MigSoft <migsoft/at/oohg.org>
  *
  */
 

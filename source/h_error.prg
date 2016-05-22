@@ -1,5 +1,5 @@
 /*
- * $Id: h_error.prg,v 1.61 2015-05-10 04:37:48 fyurisich Exp $
+ * $Id: h_error.prg,v 1.62 2016-05-22 23:53:22 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -7,7 +7,7 @@
  * Author: Antonio Novo <novoantonio@hotmail.com>
  * Created: 01-01-2003
  *
- * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2016 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

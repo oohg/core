@@ -1,11 +1,11 @@
 /*
- * $Id: bostaurus.prg,v 1.1 2015-11-07 22:39:58 fyurisich Exp $
+ * $Id: bostaurus.prg,v 1.2 2016-05-22 23:53:21 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * Bos Taurus library code
  *
- * Copyright 2015 Fernando Yurisich <fyurisich@oohg.org>
+ * Copyright 2015-2016 Fernando Yurisich <fyurisich@oohg.org>
  *
  * Adapted from the original BOS TAURUS Graphic Library for HMG
  * Copyright 2012-2015 by Dr. Claudio Soto (from Uruguay).

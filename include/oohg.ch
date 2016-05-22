@@ -1,11 +1,11 @@
 /*
- * $Id: oohg.ch,v 1.23 2015-04-16 23:06:42 fyurisich Exp $
+ * $Id: oohg.ch,v 1.24 2016-05-22 23:52:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * Main include calls
  *
- * Copyright 2007-2015 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2007-2016 Vicente Guerra <vicente@guerra.com.mx>
  *
  * Portions of this project are based upon Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -15,7 +15,7 @@
  * Copyright 2001 Antonio Linares <alinares@fivetech.com>
  *
  * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2015, http://www.harbour-project.org/
+ * Copyright 1999-2016, http://www.harbour-project.org/
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

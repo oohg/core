@@ -1,11 +1,11 @@
 /*
- * $Id: h_windows.prg,v 1.256 2015-10-18 01:14:20 fyurisich Exp $
+ * $Id: h_windows.prg,v 1.257 2016-05-22 23:53:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * PRG Windows handling functions
  *
- * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2016 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

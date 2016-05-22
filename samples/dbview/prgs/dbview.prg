@@ -1,11 +1,11 @@
 /*
- * $Id: dbview.prg,v 1.4 2015-03-09 02:52:05 fyurisich Exp $
+ * $Id: dbview.prg,v 1.5 2016-05-22 23:53:20 fyurisich Exp $
  */
 
 /*
  *
  * Program to view DBF files using standard Browse control
- * Miguel Angel Juárez A. - 2009-2015 MigSoft <mig2soft/at/yahoo.com>
+ * Miguel Angel Juárez A. - 2009-2016 MigSoft <mig2soft/at/yahoo.com>
  * Includes the code of Grigory Filatov <gfilatov@freemail.ru>
  * and Rathinagiri <srathinagiri@gmail.com>
  *

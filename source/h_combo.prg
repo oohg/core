@@ -1,11 +1,11 @@
 /*
- * $Id: h_combo.prg,v 1.86 2016-02-21 14:53:02 fyurisich Exp $
+ * $Id: h_combo.prg,v 1.87 2016-05-22 23:53:22 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * PRG combobox functions
  *
- * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2016 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

@@ -1,11 +1,11 @@
 /*
- * $Id: h_activex.prg,v 1.13 2016-05-22 04:09:22 fyurisich Exp $
+ * $Id: h_activex.prg,v 1.14 2016-05-22 23:53:21 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * ActiveX control
  *
- * Copyright 2007-2015 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2007-2016 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -16,7 +16,7 @@
  * Copyright 2001 Antonio Linares <alinares@fivetech.com>
  *
  * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2015, http://www.harbour-project.org/
+ * Copyright 1999-2016, http://www.harbour-project.org/
  *
  * Portions of this code are based on:
  * TActiveX for [x]Harbour Minigui by Marcelo Torres, adapted from

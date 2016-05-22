@@ -1,8 +1,8 @@
 /*
- * $Id: textfile.prg,v 1.4 2015-03-09 02:52:06 fyurisich Exp $
+ * $Id: textfile.prg,v 1.5 2016-05-22 23:53:21 fyurisich Exp $
  */
 /*
- * ooHGRecord textfile-as-database demo. (c) 2010-2015 Vic
+ * ooHGRecord textfile-as-database demo. (c) 2010-2016 Vic
  * This demo reads a text file as a sequential database
  * using a textfile-as-database class.
  */

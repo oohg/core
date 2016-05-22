@@ -1,11 +1,11 @@
 /*
- * $Id: i_socket.ch,v 1.2 2015-03-09 02:52:05 fyurisich Exp $
+ * $Id: i_socket.ch,v 1.3 2016-05-22 23:53:20 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * HTTP-connection definitions
  *
- * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2016 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.guerra.com.mx
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

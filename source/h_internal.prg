@@ -1,11 +1,11 @@
 /*
- * $Id: h_internal.prg,v 1.10 2015-03-09 02:52:08 fyurisich Exp $
+ * $Id: h_internal.prg,v 1.11 2016-05-22 23:53:22 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * Internal window functions
  *
- * Copyright 2006-2015 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2006-2016 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * This program is free software; you can redistribute it and/or modify

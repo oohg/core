@@ -1,8 +1,8 @@
 /*
- * $Id: Readme.txt,v 1.3 2015-03-09 02:52:05 fyurisich Exp $
+ * $Id: Readme.txt,v 1.4 2016-05-22 23:53:20 fyurisich Exp $
  */
 
-(c)2011-2015 MigSoft Project Manager based upon
+(c)2011-2016 MigSoft Project Manager based upon
 2003(c) MPM (MiniGUI Project Manager) by Roberto Lopez
 
 MPM is a visual tool intented to speed up the application building process.

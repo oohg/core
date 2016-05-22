@@ -1,11 +1,11 @@
 /*
-* $Id: h_pdf.prg,v 1.18 2015-03-31 01:38:25 guerra000 Exp $
+* $Id: h_pdf.prg,v 1.19 2016-05-22 23:53:22 fyurisich Exp $
 */
 /*
  * ooHG source code:
  * TPDF class
  *
- * Copyright 2007-2015 Ciro Vargas Clemow <pcman2010@yahoo.com>
+ * Copyright 2007-2016 Ciro Vargas Clemow <cvc@oohg.org>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -16,7 +16,7 @@
  * Copyright 2001 Antonio Linares <alinares@fivetech.com>
  *
  * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2015, http://www.harbour-project.org/
+ * Copyright 1999-2016, http://www.harbour-project.org/
  *
  * Portions of this project are based on the works of
  * Victor K., http://www.ihaveparts.com, and

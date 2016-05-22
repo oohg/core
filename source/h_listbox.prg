@@ -1,11 +1,11 @@
 /*
- * $Id: h_listbox.prg,v 1.34 2016-02-27 12:58:29 fyurisich Exp $
+ * $Id: h_listbox.prg,v 1.35 2016-05-22 23:53:22 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * PRG listbox functions
  *
- * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2016 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.

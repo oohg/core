@@ -1,11 +1,11 @@
 /*
- * $Id: h_progressmeter.prg,v 1.21 2015-03-09 02:52:08 fyurisich Exp $
+ * $Id: h_progressmeter.prg,v 1.22 2016-05-22 23:53:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * PRG progress meter functions
  *
- * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2016 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * This program is free software; you can redistribute it and/or modify

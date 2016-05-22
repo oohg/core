@@ -1,11 +1,11 @@
 /*
- * $Id: h_image.prg,v 1.42 2016-02-29 01:48:08 fyurisich Exp $
+ * $Id: h_image.prg,v 1.43 2016-05-22 23:53:22 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * PRG image functions
  *
- * Copyright 2005-2015 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2016 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
