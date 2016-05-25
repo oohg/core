@@ -1,5 +1,5 @@
 /*
- * $Id: h_error.prg,v 1.62 2016-05-22 23:53:22 fyurisich Exp $
+ * $Id: h_error.prg,v 1.63 2016-05-25 00:14:56 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -249,11 +249,17 @@ ENDCLASS
 *------------------------------------------------------------------------------*
 METHOD New( cLang ) CLASS OOHG_TErrorHtml
 *------------------------------------------------------------------------------*
+LOCAL nAt
 
    IF VALTYPE( cLang ) $ "CM" .AND. ! EMPTY( cLang )
-      ::cLang := UPPER( ALLTRIM( cLang ) )
+      // Language specified via parameter
+      cLang := UPPER( ALLTRIM( cLang ) )
    ELSE
-      ::cLang := "EN"
+      // [x]Harbour's default language
+      cLang := Set( _SET_LANGUAGE )
+   ENDIF
+   IF ( nAt := At( ".", cLang ) ) > 0
+      ::cLang := LEFT( cLang, nAt - 1 )
    ENDIF
 
    DO CASE
