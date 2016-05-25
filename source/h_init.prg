@@ -1,5 +1,5 @@
 /*
- * $Id: h_init.prg,v 1.40 2016-05-22 23:53:22 fyurisich Exp $
+ * $Id: h_init.prg,v 1.41 2016-05-25 21:36:17 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -156,16 +156,14 @@ Procedure InitMessages( cLang )
 *------------------------------------------------------------------------------*
 Local aLang, aLangDefault, nAt
 
-   IF VALTYPE( cLang ) $ "CM" .AND. ! EMPTY( cLang )
-      // Language specified via parameter
-      cLang := UPPER( ALLTRIM( cLang ) )
-   ELSE
+   IF ! VALTYPE( cLang ) $ "CM" .OR. EMPTY( cLang )
       // [x]Harbour's default language
       cLang := Set( _SET_LANGUAGE )
    ENDIF
    IF ( nAt := At( ".", cLang ) ) > 0
       cLang := LEFT( cLang, nAt - 1 )
    ENDIF
+   cLang := UPPER( ALLTRIM( cLang ) )
 
    aLang := _OOHG_MacroCall( "ooHG_Messages_" + cLang + "()" )
    aLangDefault := ooHG_Messages_EN()
@@ -173,7 +171,6 @@ Local aLang, aLangDefault, nAt
    IF VALTYPE( aLang ) != "A"
       aLang := {}
    ENDIF
-
 
    _OOHG_Messages[  1 ] := InitMessagesMerge( aLang, aLangDefault,  1 )
    _OOHG_Messages[  2 ] := InitMessagesMerge( aLang, aLangDefault,  2 )

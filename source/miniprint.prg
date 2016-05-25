@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.prg,v 1.55 2016-05-22 23:53:23 fyurisich Exp $
+ * $Id: miniprint.prg,v 1.56 2016-05-25 21:36:17 fyurisich Exp $
  */
 /*----------------------------------------------------------------------------
  * ooHG source code:
@@ -1321,10 +1321,14 @@ LOCAL   cLang, nAt
 PUBLIC  _HMG_PRINTER_UserMessages [103]
 PUBLIC _OOHG_PRINTER_DocName := "OOHG printing system"
 
-   cLang := Set( _SET_LANGUAGE )
+   IF ! VALTYPE( cLang ) $ "CM" .OR. EMPTY( cLang )
+      // [x]Harbour's default language
+      cLang := Set( _SET_LANGUAGE )
+   ENDIF
    IF ( nAt := At( ".", cLang ) ) > 0
       cLang := LEFT( cLang, nAt - 1 )
    ENDIF
+   cLang := UPPER( ALLTRIM( cLang ) )
 
 // LANGUAGES NOT SUPPORTED BY hb_langSelect() FUNCTION.
 //        SET LANGUAGE TO FINNISH

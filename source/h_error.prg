@@ -1,5 +1,5 @@
 /*
- * $Id: h_error.prg,v 1.63 2016-05-25 00:14:56 fyurisich Exp $
+ * $Id: h_error.prg,v 1.64 2016-05-25 21:36:17 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -251,16 +251,14 @@ METHOD New( cLang ) CLASS OOHG_TErrorHtml
 *------------------------------------------------------------------------------*
 LOCAL nAt
 
-   IF VALTYPE( cLang ) $ "CM" .AND. ! EMPTY( cLang )
-      // Language specified via parameter
-      cLang := UPPER( ALLTRIM( cLang ) )
-   ELSE
+   IF ! VALTYPE( cLang ) $ "CM" .OR. EMPTY( cLang )
       // [x]Harbour's default language
       cLang := Set( _SET_LANGUAGE )
    ENDIF
    IF ( nAt := At( ".", cLang ) ) > 0
-      ::cLang := LEFT( cLang, nAt - 1 )
+      cLang := LEFT( cLang, nAt - 1 )
    ENDIF
+   ::cLang := UPPER( ALLTRIM( cLang ) )
 
    DO CASE
    CASE ::cLang == "HR852"                            // Croatian
