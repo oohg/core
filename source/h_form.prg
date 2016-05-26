@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.65 2016-05-22 23:53:22 fyurisich Exp $
+ * $Id: h_form.prg,v 1.66 2016-05-26 20:56:18 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -323,7 +323,7 @@ METHOD Define2( FormName, Caption, x, y, w, h, Parent, helpbutton, nominimize, n
                 DblClickProcedure, RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, minheight, maxheight, ;
                 MoveProcedure, fontcolor ) CLASS TForm
 *------------------------------------------------------------------------------*
-Local Formhandle
+Local Formhandle, aRet
 
    If _OOHG_GlobalRTL()
       lRtl := .T.
@@ -401,7 +401,11 @@ Local Formhandle
       Formhandle := InitWindowMDIClient( Caption, x, y, ::nWidth, ::nHeight, Parent, "MDICLIENT", nStyle, nStyleEx, lRtl )
    Else
       UnRegisterWindow( FormName )
-      ::BrushHandle := RegisterWindow( icon, FormName, aRGB, nWindowType )
+      aRet := RegisterWindow( icon, FormName, aRGB, nWindowType )
+      If aRet[ 2 ]
+         MsgOOHGError( "Window " + FormName + " registration Failed. Program Terminated." )
+      EndIf
+      ::BrushHandle := aRet[ 1 ]
       Formhandle := InitWindow( Caption, x, y, ::nWidth, ::nHeight, Parent, FormName, nStyle, nStyleEx, lRtl )
    EndIf
 
@@ -3117,6 +3121,7 @@ HB_FUNC( REGISTERWINDOW )
    HBRUSH hbrush = 0;
    int iWindowType = hb_parni( 4 );
    LONG lColor;
+   BOOL bError = FALSE;
 
    WndClass.style         = CS_DBLCLKS;
    WndClass.lpszClassName = hb_parc( 2 );
@@ -3124,48 +3129,46 @@ HB_FUNC( REGISTERWINDOW )
    switch( iWindowType )
    {
       case 2:                           // MDI client
-         WndClass.lpfnWndProc   = WndProcMdiChild;
-         // WndClass.lpszClassName = "MDICLIENT";
+         WndClass.lpfnWndProc = WndProcMdiChild;
          break;
 
       case 3:                           // MDI child
-         WndClass.lpfnWndProc   = WndProcMdiChild;
+         WndClass.lpfnWndProc = WndProcMdiChild;
          break;
 
       case 4:                           // MDI frame
-         WndClass.lpfnWndProc   = WndProcMdi;
+         WndClass.lpfnWndProc = WndProcMdi;
          break;
 
       default:
       // case 0:                           //
       // case 1:                           // Splitchild
-         WndClass.lpfnWndProc   = WndProc;
+         WndClass.lpfnWndProc = WndProc;
          break;
    }
-   WndClass.cbClsExtra    = 0;
-   WndClass.cbWndExtra    = 0;
-//    WndClass.cbWndExtra    = 20;   MDICHILD!
-   WndClass.hInstance     = GetModuleHandle( NULL );
-   WndClass.hIcon         = 0;
+   WndClass.cbClsExtra = 0;
+   WndClass.cbWndExtra = 0;
+   WndClass.hInstance  = GetModuleHandle( NULL );
+   WndClass.hIcon      = 0;
    if( hb_parclen( 1 ) )
    {
-      WndClass.hIcon      = LoadIcon( GetModuleHandle( NULL ), hb_parc( 1 ) );
+      WndClass.hIcon = LoadIcon( GetModuleHandle( NULL ), hb_parc( 1 ) );
       if( ! WndClass.hIcon )
       {
-         WndClass.hIcon   = ( HICON ) LoadImage( GetModuleHandle( NULL ), hb_parc( 1 ) , IMAGE_ICON, 0, 0, LR_LOADFROMFILE + LR_DEFAULTSIZE );
+         WndClass.hIcon = (HICON) LoadImage( GetModuleHandle( NULL ), hb_parc( 1 ) , IMAGE_ICON, 0, 0, LR_LOADFROMFILE + LR_DEFAULTSIZE );
       }
    }
    if( ! WndClass.hIcon )
    {
-       WndClass.hIcon     = LoadIcon( NULL, IDI_APPLICATION );
+      WndClass.hIcon = LoadIcon( NULL, IDI_APPLICATION );
    }
-   WndClass.hCursor       = LoadCursor( NULL, IDC_ARROW );
+   WndClass.hCursor = LoadCursor( NULL, IDC_ARROW );
 
    lColor = -1;
    _OOHG_DetermineColor( hb_param( 3, HB_IT_ANY ), &lColor );
    if( lColor == -1 )
    {
-      WndClass.hbrBackground = ( HBRUSH )( COLOR_BTNFACE + 1 );
+      WndClass.hbrBackground = (HBRUSH)( COLOR_BTNFACE + 1 );
    }
    else
    {
@@ -3173,17 +3176,15 @@ HB_FUNC( REGISTERWINDOW )
       WndClass.hbrBackground = hbrush;
    }
 
-   WndClass.lpszMenuName  = NULL;
+   WndClass.lpszMenuName = NULL;
    if( ! RegisterClass( &WndClass ) )
    {
-      char cBuffError[ 1000 ];
-      sprintf( cBuffError, "Window %s Registration Failed! Error %i", hb_parc( 2 ), ( int ) GetLastError() );
-      MessageBox( 0, cBuffError, "Error!",
-                  MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
-      ExitProcess( 0 );
+      bError = TRUE;
    }
 
-   HWNDret( ( HWND ) hbrush );
+   hb_reta( 2 );
+   HB_STORNL( (LONG) hbrush, -1, 1 );
+   HB_STORL( (LONG) bError, -1, 2 );
 }
 
 HB_FUNC( UNREGISTERWINDOW )

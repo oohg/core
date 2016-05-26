@@ -1,5 +1,5 @@
 <!--
-$Id: Changelog.htm,v 1.74 2016-05-25 21:36:16 fyurisich Exp $
+$Id: Changelog.htm,v 1.75 2016-05-26 20:56:18 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -142,6 +142,15 @@ CHANGELOG</div>
 </div>
 <div id="winchm_template_content">
 <pre>
+2016-05-26 17:55 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_form.prg
+     * Function RegisterWindow now return an array with second item
+       set to .T. if a registration failure occurred.
+     * TForm():Define() now handles registration failures by calling
+       MsgOOHGError() to log the error and end the program.
+   * manual/Changelog.htm
+     * Updated.
+
 2016-05-25 18:36 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * manual/Changelog.htm
      * Updated.

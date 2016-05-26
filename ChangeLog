@@ -1,11 +1,20 @@
 /*
- * $Id: ChangeLog,v 1.1574 2016-05-25 21:36:16 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1575 2016-05-26 20:56:18 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2016-05-26 17:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_form.prg
+     * Function RegisterWindow now return an array with second item
+       set to .T. if a registration failure occurred.
+     * TForm():Define() now handles registration failures by calling
+       MsgOOHGError() to log the error and end the program.
+   * manual/Changelog.htm
+     * Updated.
 
 2016-05-25 18:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * manual/Changelog.htm
