@@ -1,11 +1,25 @@
 /*
- * $Id: ChangeLog,v 1.1575 2016-05-26 20:56:18 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1576 2016-05-28 00:37:00 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2016-05-27 21:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog.003
+     ! Typos.
+   * include/i_hmg_compat.ch
+     + Translate for RADIOGROUP with ID clause.
+   * manual/Changelog.htm
+     * Updated.
+   * source/h_radio.prg
+     ! Only text area is painted with the selected BACKCOLOR.
+     ! FocusRect is missing.
+     * THEMED clause is forced when BACKGROUND clause is present.
+     * CustomDraw functions now accepts a parameter to avoid drawing
+       parent background.
 
 2016-05-26 17:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_form.prg

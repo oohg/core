@@ -1,5 +1,5 @@
 /*
- * $Id: i_hmg_compat.ch,v 1.52 2016-05-22 23:52:23 fyurisich Exp $
+ * $Id: i_hmg_compat.ch,v 1.53 2016-05-28 00:37:00 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -614,5 +614,8 @@ TODO: Try to implement this GRID clauses using COLUMNCONTROLS:
 
 #xtranslate DEFINE TAB [ <x> ] BOTTOM ;
    => DEFINE TAB [ <x> ]
+
+#xtranslate @ <row>, <col> RADIOGROUP [ <x> ] ID <aId> ;
+   => @ <row>, <col> RADIOGROUP [ <x> ]
 
 #endif

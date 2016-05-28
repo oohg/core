@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog.003,v 1.4 2014-07-12 15:29:21 fyurisich Exp $
+ * $Id: ChangeLog.003,v 1.5 2016-05-28 00:37:00 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -1453,7 +1453,7 @@
      + Added support for -w3 compiler switch.
 
 2013-05-26 16:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * source/h_radio.ch
+   * source/h_radio.prg
      + RadioGroup control now accepts an array in the TOOLTIP
        clause, so each RadioItem has his own tooltip.
      + TRadioGroup:AddItem() accepts tooltip as third parameter.
@@ -1519,7 +1519,7 @@
      * Formatted.
    * include/i_altsyntax.ch
      + Added support for THEMED clause in DEFINE RADIOGROUP.
-   * source/h_radio.ch
+   * source/h_radio.prg
      + Added DATA lThemed to TRadioGroup.
      + Added new parameter 'themed' to TRadioGroup:Define.
      + Added METHOD Events_Notify to TRadioItem class.

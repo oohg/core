@@ -1,5 +1,5 @@
 /*
- * $Id: h_radio.prg,v 1.46 2016-05-22 23:53:23 fyurisich Exp $
+ * $Id: h_radio.prg,v 1.47 2016-05-28 00:37:01 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -148,13 +148,19 @@ Local i, oItem, uToolTip, uReadOnly
    ASSIGN ::nRow        VALUE y           TYPE "N"
    ASSIGN ::nWidth      VALUE width       TYPE "N"
    ASSIGN ::nHeight     VALUE height      TYPE "N"
-   ASSIGN ::lThemed     VALUE themed      TYPE "L" DEFAULT IsAppThemed()
    ASSIGN ::lAutoSize   VALUE autosize    TYPE "L"
    ASSIGN ::lHorizontal VALUE horizontal  TYPE "L"
    ASSIGN ::Transparent VALUE transparent TYPE "L"
-   ASSIGN ::oBkGrnd     VALUE bkgrnd      TYPE "O"
    ASSIGN ::LeftAlign   VALUE left        TYPE "L"
    ASSIGN ::nSpacing    VALUE spacing     TYPE "N" DEFAULT Iif( ::lHorizontal, ::nWidth, ::nHeight )
+   ASSIGN aOptions      VALUE aOptions    TYPE "A" DEFAULT {}
+
+   If HB_IsObject( bkgrnd )
+      ::oBkGrnd := bkgrnd
+      ::lThemed := .T.
+   Else
+      ASSIGN ::lThemed VALUE themed TYPE "L" DEFAULT IsAppThemed()
+   EndIf
 
    IF HB_IsLogical( NoTabStop )
       ::TabStop := ! NoTabStop
@@ -651,7 +657,7 @@ Local nNotify := GetNotifyCode( lParam )
 
    If nNotify == NM_CUSTOMDRAW
       If ! ::Container == NIL .AND. ::Container:lThemed .AND. IsAppThemed()
-         Return TRadioItem_Notify_CustomDraw( Self, lParam, ::Caption )
+         Return TRadioItem_Notify_CustomDraw( Self, lParam, ::Caption, HB_IsObject( ::oBkGrnd ) )
       EndIf
    EndIf
 
@@ -780,7 +786,7 @@ typedef int (CALLBACK *CALL_GETTHEMEBACKGROUNDCONTENTRECT )( HTHEME, HDC, int, i
 typedef int (CALLBACK *CALL_CLOSETHEMEDATA )( HTHEME );
 typedef int (CALLBACK *CALL_DRAWTHEMEPARENTBACKGROUND )( HWND, HDC, RECT* );
 
-int TRadioItem_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption )
+int TRadioItem_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption, BOOL bDrawThemeParentBackground )
 {
    HMODULE hInstDLL;
    LPNMCUSTOMDRAW pCustomDraw = (LPNMCUSTOMDRAW) lParam;
@@ -788,7 +794,7 @@ int TRadioItem_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption
    CALL_OPENTHEMEDATA dwProcOpenThemeData;
    HTHEME hTheme;
    LONG style, state;
-   int state_id, checkState, drawState;
+   int state_id, checkState, drawState, iNeeded;
    CALL_DRAWTHEMEBACKGROUND dwProcDrawThemeBackground;
    CALL_GETTHEMEBACKGROUNDCONTENTRECT dwProcGetThemeBackgroundContentRect;
    RECT content_rect, aux_rect;
@@ -806,7 +812,7 @@ int TRadioItem_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption
       return CDRF_DODEFAULT;
    }
 
-   if( pCustomDraw->dwDrawStage == CDDS_PREERASE )
+   if( bDrawThemeParentBackground & ( pCustomDraw->dwDrawStage == CDDS_PREERASE ) )
    {
       /* erase background (according to parent window's themed background) */
       dwProcDrawThemeParentBackground = (CALL_DRAWTHEMEPARENTBACKGROUND) GetProcAddress( hInstDLL, "DrawThemeParentBackground" );
@@ -899,6 +905,20 @@ int TRadioItem_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption
       SetTextColor( pCustomDraw->hdc, ( oSelf->lFontColor == -1 ) ? GetSysColor( COLOR_BTNTEXT ) : (COLORREF) oSelf->lFontColor );
       DrawText( pCustomDraw->hdc, cCaption, -1, &content_rect, DT_VCENTER | DT_LEFT | DT_SINGLELINE );
 
+      /* paint focus rectangle */
+      if( state & BST_FOCUS )
+      {
+         aux_rect = content_rect;
+         iNeeded = DrawText( pCustomDraw->hdc, cCaption, -1, &aux_rect, DT_VCENTER | DT_LEFT | DT_SINGLELINE | DT_CALCRECT );
+
+         aux_rect.left -= 1;
+         aux_rect.right += 1;
+         aux_rect.top = content_rect.top + ( ( content_rect.bottom - content_rect.top - iNeeded ) / 2 ) + 2;
+         aux_rect.bottom = aux_rect.top + iNeeded - 4;
+
+         DrawFocusRect( pCustomDraw->hdc, &aux_rect );
+      }
+
       /* close theme */
       dwProcCloseThemeData = (CALL_CLOSETHEMEDATA) GetProcAddress( hInstDLL, "CloseThemeData" );
       if( dwProcCloseThemeData )
@@ -914,9 +934,9 @@ int TRadioItem_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption
    return CDRF_SKIPDEFAULT;
 }
 
-HB_FUNC( TRADIOITEM_NOTIFY_CUSTOMDRAW )
+HB_FUNC( TRADIOITEM_NOTIFY_CUSTOMDRAW)
 {
-   hb_retni( TRadioItem_Notify_CustomDraw( hb_param( 1, HB_IT_OBJECT ), (LPARAM) hb_parnl( 2 ), (LPCSTR) hb_parc( 3 ) ) );
+   hb_retni( TRadioItem_Notify_CustomDraw( hb_param( 1, HB_IT_OBJECT ), (LPARAM) hb_parnl( 2 ), (LPCSTR) hb_parc( 3 ), (BOOL) hb_parl( 4 ) ) );
 }
 
 #pragma ENDDUMP
