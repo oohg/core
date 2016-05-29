@@ -1,5 +1,5 @@
 /*
- * $Id: i_xbrowse.ch,v 1.44 2016-05-22 23:52:23 fyurisich Exp $
+ * $Id: i_xbrowse.ch,v 1.45 2016-05-29 14:33:48 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -96,7 +96,7 @@
       [ <append: APPEND> ] ;
       [ <dummy07: ONHEADCLICK, ON HEADCLICK> <aHeadClick> ] ;
       [ <dummy08: WHEN, COLUMNWHEN> <aWhenFields> ] ;
-      [ VALID <aValidFields> ] ;
+      [ <dummy20: VALID, COLUMNVALID> <aValidFields> ] ;
       [ VALIDMESSAGES <aValidMessages> ] ;
       [ READONLY <aReadOnly> ] ;
       [ <lock: LOCK> ] ;

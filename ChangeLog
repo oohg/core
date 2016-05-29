@@ -1,11 +1,23 @@
 /*
- * $Id: ChangeLog,v 1.1576 2016-05-28 00:37:00 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1577 2016-05-29 14:33:48 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2016-05-29 11:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/prgs/formedit.prg
+     + COLUMNVALID clause to Grid, Browse and Xbrowse.
+     + COLUMNWHEN clause to Grid controls.
+   * include/i_altsyntax.ch
+   * include/i_browse.ch
+   * include/i_grid.ch
+   * include/i_xbrowse.ch
+     + COLUMNVALID clause.
+   * manual/Changelog.htm
+     * Updated.
 
 2016-05-27 21:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog.003

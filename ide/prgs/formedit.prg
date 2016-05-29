@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.63 2016-05-22 23:52:22 fyurisich Exp $
+ * $Id: formedit.prg,v 1.64 2016-05-29 14:33:48 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -7008,6 +7008,7 @@ LOCAL lCheckBoxes, cOnCheckChg, cOnRowRefresh, cDefVal, cOnInsert, cOnEditEnd
    cWhen          := ::ReadStringData( cName, "WHEN", "" )
    cWhen          := ::ReadStringData( cName, "COLUMNWHEN", cWhen )
    cValid         := ::ReadStringData( cName, "VALID", "" )
+   cValid         := ::ReadStringData( cName, "COLUMNVALID", cValid )
    cValidMess     := ::ReadStringData( cName, "VALIDMESSAGES", "" )
    cReadOnly      := ::ReadStringData( cName, "READONLY", "")
    lLock          := ( ::ReadLogicalData( cName, "LOCK", "F" ) == "T" )
@@ -8199,7 +8200,9 @@ LOCAL lCBE, cOnRClick, cOnInsert, cOnEditEnd
    lBreak         := ( ::ReadLogicalData( cName, 'BREAK', 'F' ) == 'T' )
    lEdit          := ( ::ReadLogicalData( cName, 'EDIT', 'F' ) == 'T' )
    cValid         := ::ReadStringData( cName, 'VALID', '' )
+   cValid         := ::ReadStringData( cName, "COLUMNVALID", cValid )
    cWhen          := ::ReadStringData( cName, 'WHEN', '' )
+   cWhen          := ::ReadStringData( cName, "COLUMNWHEN", cWhen )
    cValidMess     := ::ReadStringData( cName, 'VALIDMESSAGES', '' )
    lRTL           := ( ::ReadLogicalData( cName, 'RTL', 'F' ) == 'T' )
    lNoTabStop     := ( ::ReadLogicalData( cName, 'NOTABSTOP', 'F' ) == 'T' )
@@ -10768,6 +10771,7 @@ LOCAL cOnRowRefresh, cDefVal, cOnInsert, cOnEditEnd
    cWhen          := ::ReadStringData( cName, 'WHEN', '' )
    cWhen          := ::ReadStringData( cName, 'COLUMNWHEN', cWhen )
    cValid         := ::ReadStringData( cName, 'VALID', '' )
+   cValid         := ::ReadStringData( cName, "COLUMNVALID", cValid )
    cValidMess     := ::ReadStringData( cName, 'VALIDMESSAGES', '' )
    cReadOnly      := ::ReadStringData( cName, 'READONLY', '')
    lLock          := ( ::ReadLogicalData( cName, 'LOCK', 'F' ) == 'T' )

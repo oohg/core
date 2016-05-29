@@ -1,5 +1,5 @@
 /*
- * $Id: i_browse.ch,v 1.63 2016-05-22 23:52:22 fyurisich Exp $
+ * $Id: i_browse.ch,v 1.64 2016-05-29 14:33:48 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -105,7 +105,7 @@ STANDARD VERSION
       [ <append: APPEND> ] ;
       [ <dummy07: ONHEADCLICK, ON HEADCLICK> <aHeadClick> ] ;
       [ <dummy08: WHEN, COLUMNWHEN> <aWhenFields> ] ;
-      [ VALID <aValidFields> ] ;
+      [ <dummy20: VALID, COLUMNVALID> <aValidFields> ] ;
       [ VALIDMESSAGES <aValidMessages> ] ;
       [ READONLY <aReadOnly> ] ;
       [ <lock: LOCK> ] ;

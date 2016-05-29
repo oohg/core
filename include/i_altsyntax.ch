@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.134 2016-05-22 23:52:22 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.135 2016-05-29 14:33:48 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -508,6 +508,10 @@ AUXILIARY VARIABLES
 #xcommand DATE <datetype> ;
    => ;
       _OOHG_ActiveControlDateType := <datetype>
+
+#xcommand COLUMNVALID <valid> ;
+   => ;
+      _OOHG_ActiveControlValid := <valid>
 
 #xcommand VALID <valid> ;
    => ;

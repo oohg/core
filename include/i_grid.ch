@@ -1,5 +1,5 @@
 /*
- * $Id: i_grid.ch,v 1.45 2016-05-22 23:52:23 fyurisich Exp $
+ * $Id: i_grid.ch,v 1.46 2016-05-29 14:33:48 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -109,7 +109,7 @@ STANDARD VERSION
       [ <inplace: INPLACE> ] ;
       [ COLUMNCONTROLS <editcontrols> ] ;
       [ READONLY <aReadOnly> ] ;
-      [ VALID <aValidFields> ] ;
+      [ <dummy20: VALID, COLUMNVALID> <aValidFields> ] ;
       [ VALIDMESSAGES <aValidMessages> ] ;
       [ <dummy09: ONEDITCELL, ON EDITCELL> <editcell> ] ;
       [ <noshowheaders: NOHEADERS> ] ;
@@ -237,7 +237,7 @@ SPLITBOX VERSION
       [ <inplace: INPLACE> ] ;
       [ COLUMNCONTROLS <editcontrols> ] ;
       [ READONLY <aReadOnly> ] ;
-      [ VALID <aValidFields> ] ;
+      [ <dummy20: VALID, COLUMNVALID> <aValidFields> ] ;
       [ VALIDMESSAGES <aValidMessages> ] ;
       [ <dummy09: ONEDITCELL, ON EDITCELL> <editcell> ] ;
       [ <noshowheaders: NOHEADERS> ] ;
