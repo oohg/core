@@ -1,11 +1,18 @@
 /*
- * $Id: ChangeLog,v 1.1578 2016-05-31 22:30:07 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1579 2016-05-31 22:43:19 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2016-05-31 19:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/prgs/mgide.prg
+     + Logic to read/save 'FMG Syntax' option from/to INI file.
+     * 'Snap to Grid' option is now save to INI file without decimals.
+   * manual/Changelog.htm
+     * Updated.
 
 2016-05-31 19:29 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ide/fmgs/form_prefer.fmg

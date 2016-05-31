@@ -1,5 +1,5 @@
 /*
- * $Id: mgide.prg,v 1.32 2016-05-31 22:30:08 fyurisich Exp $
+ * $Id: mgide.prg,v 1.33 2016-05-31 22:43:19 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -655,6 +655,7 @@ LOCAL lSnap := 0, nPos := 0
       GET lSnap               SECTION 'SETTINGS'  ENTRY "SNAP"            DEFAULT 0
       ::lSnap := ( lSnap == 1 )
       GET ::clib              SECTION 'SETTINGS'  ENTRY "LIB"             DEFAULT ''
+      GET ::nSyntax           SECTION 'SETTINGS'  ENTRY "SYNTAX"          DEFAULT 1
    END INI
 RETURN NIL
 
@@ -708,9 +709,10 @@ METHOD SaveINI( cFile ) CLASS THMI
       SET SECTION 'POSITION'    ENTRY "FORM_LIST_ROW" TO LTrim( Str( ::aPositions[3, 1], 6, 0 ) )
       SET SECTION 'POSITION'    ENTRY "FORM_LIST_COL" TO LTrim( Str( ::aPositions[3, 2], 6, 0 ) )
       //****************** OTHER
-      SET SECTION "SETTINGS"    ENTRY "BUILD"         TO LTrim( Str( ::ltbuild, 1, 0 ) )
+      SET SECTION "SETTINGS"    ENTRY "BUILD"         TO LTrim( Str( ::lTBuild, 1, 0 ) )
       SET SECTION "SETTINGS"    ENTRY "LIB"           TO ::clib
-      SET SECTION "SETTINGS"    ENTRY "SNAP"          TO IIF( ::lSnap, 1, 0 )
+      SET SECTION "SETTINGS"    ENTRY "SNAP"          TO IIF( ::lSnap, "1", "0" )
+      SET SECTION "SETTINGS"    ENTRY "SYNTAX"        TO LTrim( Str( ::nSyntax, 1, 0 ) )
    END INI
 RETURN NIL
 
@@ -2659,7 +2661,7 @@ METHOD XBldPellC( nOption ) CLASS THMI
          // Build
          EXECUTE FILE '_build.bat' WAIT HIDE
 
-   CASE ::ltbuild==1 // Compile.bat
+   CASE ::lTBuild == 1 // Compile.bat
 
          // Check for compile file
          If ! File( 'compile.bat' ) .and. ! IsFileInPath( 'compile.bat' )
@@ -2999,7 +3001,7 @@ METHOD BldPellC(nOption) CLASS THMI
          // Build
          EXECUTE FILE '_build.bat' WAIT HIDE
 
-   CASE ::ltbuild==1 // Compile.bat
+   CASE ::lTBuild == 1 // Compile.bat
 
          // Check for compile file
          If ! File( 'compile.bat' ) .and. ! IsFileInPath( 'compile.bat' )
