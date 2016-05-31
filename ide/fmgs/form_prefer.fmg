@@ -1,5 +1,5 @@
 /*
- * $Id: form_prefer.fmg,v 1.10 2016-05-22 23:52:22 fyurisich Exp $
+ * $Id: form_prefer.fmg,v 1.11 2016-05-31 22:30:07 fyurisich Exp $
  */
 
 * ooHG IDE Plus form generated code
@@ -26,7 +26,7 @@ DEFINE WINDOW TEMPLATE ;
       ACTION ::OkPrefer( aFont ) ;
       FONT 'Arial' ;
       SIZE 10 ;
-      FLAT 
+      FLAT
 
    @ 320, 510 BUTTON button_102 ;
       WIDTH 100 ;
@@ -35,26 +35,17 @@ DEFINE WINDOW TEMPLATE ;
       ACTION {|| form_prefer.release } ;
       FONT 'Arial' ;
       SIZE 10 ;
-      FLAT 
+      FLAT
 
-   @ 320, 290 CHECKBOX checkbox_105 ;
-      WIDTH 100 ;
-      HEIGHT 24 ;
-      CAPTION 'Snap to Grid' ;
-      VALUE .F. ;
-      FONT 'Arial' ;
-      SIZE 10
-
-   *****@ 14, 13 TAB tab_1 ;
    DEFINE TAB tab_1 ;
       AT 14, 13 ;
       WIDTH 600 ;
       HEIGHT 294 ;
-      VALUE 0 ;
+      VALUE 1 ;
       FONT 'Arial' ;
       SIZE 10 ;
       BUTTONS ;
-      FLAT 
+      FLAT
 
       DEFINE PAGE 'Project'
 
@@ -64,7 +55,7 @@ DEFINE WINDOW TEMPLATE ;
             VALUE 'Project Folder' ;
             FONT 'Arial' ;
             SIZE 10 ;
-            TRANSPARENT 
+            TRANSPARENT
 
          @ 50, 160 TEXTBOX text_3 ;
             WIDTH 250 ;
@@ -81,7 +72,7 @@ DEFINE WINDOW TEMPLATE ;
             VALUE 'Output Name' ;
             FONT 'Arial' ;
             SIZE 10 ;
-            TRANSPARENT 
+            TRANSPARENT
 
          @ 85, 160 TEXTBOX text_4 ;
             WIDTH 250 ;
@@ -105,22 +96,25 @@ DEFINE WINDOW TEMPLATE ;
             SIZE 10
 
          @ 130, 26 FRAME frame_1 ;
-            CAPTION 'xBase Compiler' ;
             WIDTH 140 ;
             HEIGHT 140 ;
-            TRANSPARENT 
+            CAPTION 'xBase Compiler' ;
+            FONT 'Arial' ;
+            SIZE 10
 
          @ 130, 219 FRAME frame_2 ;
-            CAPTION 'C Compiler' ;
             WIDTH 140 ;
             HEIGHT 140 ;
-            TRANSPARENT 
+            CAPTION 'C Compiler' ;
+            FONT 'Arial' ;
+            SIZE 10
 
          @ 130, 412 FRAME frame_3 ;
-            CAPTION 'Build Type' ;
             WIDTH 140 ;
             HEIGHT 140 ;
-            TRANSPARENT 
+            CAPTION 'Build Type' ;
+            FONT 'Arial' ;
+            SIZE 10
 
          @ 160, 431 RADIOGROUP radiogroup_3 ;
             OPTIONS {'Compile.bat','Own Make'} ;
@@ -567,11 +561,15 @@ DEFINE WINDOW TEMPLATE ;
             WIDTH 140 ;
             HEIGHT 24 ;
             VALUE "Label's Default Height" ;
-            TRANSPARENT 
+            FONT 'Arial' ;
+            SIZE 10 ;
+            TRANSPARENT
 
          @ 155, 170 TEXTBOX text_19 ;
             WIDTH 40 ;
             HEIGHT 24 ;
+            FONT 'Arial' ;
+            SIZE 10 ;
             TOOLTIP "Enter a 0 to use OOHG's default height." ;
             NUMERIC ;
             MAXLENGTH 3
@@ -580,24 +578,55 @@ DEFINE WINDOW TEMPLATE ;
             WIDTH 140 ;
             HEIGHT 24 ;
             VALUE "Textbox's Default Height" ;
-            TRANSPARENT 
+            FONT 'Arial' ;
+            SIZE 10 ;
+            TRANSPARENT
 
          @ 190, 170 TEXTBOX text_21 ;
             WIDTH 40 ;
             HEIGHT 24 ;
+            FONT 'Arial' ;
+            SIZE 10 ;
             TOOLTIP "Enter a 0 to use OOHG's default height." ;
             NUMERIC ;
             MAXLENGTH 3
+
+         @ 193, 320 LABEL label_26 ;
+            WIDTH 90 ;
+            HEIGHT 24 ;
+            VALUE "FMG Syntax" ;
+            FONT 'Arial' ;
+            SIZE 10 ;
+            TRANSPARENT
+
+         @ 190, 410 COMBOBOX combo_26 ;
+            WIDTH 100 ;
+            ITEMS { 'Standard', 'Alternative' } ;
+            VALUE 1 ;
+            FONT 'Arial' ;
+            SIZE 10
+
+         @ 225, 320 CHECKBOX checkbox_105 ;
+            WIDTH 100 ;
+            HEIGHT 24 ;
+            CAPTION 'Snap to Grid' ;
+            VALUE .F. ;
+            FONT 'Arial' ;
+            SIZE 10
 
          @ 225, 20 LABEL label_23 ;
             WIDTH 140 ;
             HEIGHT 24 ;
             VALUE 'Standard Vertical Gap' ;
-            TRANSPARENT 
+            FONT 'Arial' ;
+            SIZE 10 ;
+            TRANSPARENT
 
          @ 225, 170 TEXTBOX text_22 ;
             WIDTH 40 ;
             HEIGHT 24 ;
+            FONT 'Arial' ;
+            SIZE 10 ;
             TOOLTIP 'Enter a 0 to use 24 px as default value.' ;
             NUMERIC ;
             MAXLENGTH 3
@@ -606,11 +635,15 @@ DEFINE WINDOW TEMPLATE ;
             WIDTH 140 ;
             HEIGHT 24 ;
             VALUE 'Keyboard Move (Px)' ;
-            TRANSPARENT 
+            FONT 'Arial' ;
+            SIZE 10 ;
+            TRANSPARENT
 
          @ 260, 170 TEXTBOX text_23 ;
             WIDTH 40 ;
             HEIGHT 24 ;
+            FONT 'Arial' ;
+            SIZE 10 ;
             TOOLTIP 'Enter a 0 to use 5 px as default value.' ;
             NUMERIC ;
             MAXLENGTH 3
@@ -619,18 +652,20 @@ DEFINE WINDOW TEMPLATE ;
             WIDTH 140 ;
             HEIGHT 24 ;
             VALUE 'Keyboard Size (Px)' ;
-            TRANSPARENT 
+            FONT 'Arial' ;
+            TRANSPARENT
 
          @ 260, 470 TEXTBOX text_24 ;
             WIDTH 40 ;
             HEIGHT 24 ;
+            FONT 'Arial' ;
+            SIZE 10 ;
             TOOLTIP 'Enter a 0 to use 1 px as default value.' ;
             NUMERIC ;
             MAXLENGTH 3
 
-      END PAGE 
+      END PAGE
 
-   END TAB 
+   END TAB
 
-END WINDOW 
-
+END WINDOW

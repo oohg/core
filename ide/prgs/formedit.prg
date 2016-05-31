@@ -1,10 +1,10 @@
 /*
- * $Id: formedit.prg,v 1.64 2016-05-29 14:33:48 fyurisich Exp $
+ * $Id: formedit.prg,v 1.65 2016-05-31 22:30:07 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
  *
- * Copyright 2002-2016 Ciro Vargas Clemov <cvc@oohg.org>
+ * Copyright 2002-2016 Ciro Vargas Clemow <cvc@oohg.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1314,7 +1314,7 @@ LOCAL aTypes := { "ACTIVEX", "ANIMATEBOX", "BROWSE", "BUTTON", "CHECKBOX", ;
 
       ELSEIF At( "DEFINE TOOLBAR ", cLine ) == 1
          // Ignore it, support for DEFINE TOOLBAR is missing, see ::myTbEditor:CreateToolbarFromFile
-         // TODO: more than on toolbar, check for duplicated names
+         // TODO: more than one toolbar, check for duplicated names
          cSkip := "TOOLBAR"
 
       ELSEIF At( "DEFINE STATUSBAR ", cLine ) == 1
@@ -11276,7 +11276,7 @@ LOCAL aImages, aPageNames, aPageObjs, aPageSubClasses, nCount
    // Header
    Output := '' + CRLF
    Output += '* ooHG IDE Plus form generated code' + CRLF
-   Output += '* (c) 2003-' + LTrim( Str( Year( Date() ) ) ) + ' Ciro Vargas Clemov <cvc@oohg.org>' + CRLF
+   Output += '* (c) 2003-' + LTrim( Str( Year( Date() ) ) ) + ' Ciro Vargas Clemow <cvc@oohg.org>' + CRLF
    Output += CRLF
 
    // Form start
@@ -11880,3737 +11880,3740 @@ METHOD MakeControls( j, Output, nRow, nCol, nWidth, nHeight, nSpacing, nLevel ) 
 //------------------------------------------------------------------------------
 LOCAL cValue
 
-   IF ::aCtrlType[j] == 'BROWSE'
-      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' BROWSE ' + ::aName[j] + ' '
-      IF ! Empty( ::aCObj[j ] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
-      ENDIF
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
-      IF ! Empty( ::aHeaders[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEADERS ' + AllTrim( ::aHeaders[j] )
-      ELSE
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEADERS ' + "{ '', '' }"
-      ENDIF
-      IF ! Empty( ::aWidths[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTHS ' + AllTrim( ::aWidths[j] )
-      ELSE
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTHS ' + '{ 90, 60 }'
-      ENDIF
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WORKAREA ' + AllTrim( ::aWorkArea[j] )
-      IF ! Empty( ::aFields[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIELDS ' + AllTrim( ::aFields[j] )
-      ELSE
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIELDS ' + "{ 'field1', 'field2' }"
-      ENDIF
-      IF ::aValueN[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( ::aValueN[j] ) )
-      ENDIF
-      IF ! Empty( ::aFontName[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
-      ENDIF
-      IF ::aFontSize[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
-      ENDIF
-      IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
-      ENDIF
-      IF ! Empty( ::aInputMask[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INPUTMASK ' + AllTrim( ::aInputMask[j] )
-      ENDIF
-      IF ! Empty( AllTrim( ::aDynamicBackColor[j] ) ) .AND. UpperNIL( ::aDynamicBackColor[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DYNAMICBACKCOLOR ' + AllTrim( ::aDynamicBackColor[j] )
-      ENDIF
-      IF ! Empty( AllTrim( ::aDynamicForeColor[j] ) ) .AND. UpperNIL( ::aDynamicForeColor[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DYNAMICFORECOLOR ' + AllTrim( ::aDynamicForeColor[j] )
-      ENDIF
-      IF ! Empty( ::aColumnControls[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'COLUMNCONTROLS ' + AllTrim( ::aColumnControls[j] )
-      ENDIF
-      IF ! Empty( ::aOnChange[j] ) .AND. UpperNIL( ::aOnChange[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
-      ENDIF
-      IF ! Empty( ::aOnGotFocus[j] ) .AND. UpperNIL( ::aOnGotFocus[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( ::aOnGotFocus[j] )
-      ENDIF
-      IF ! Empty( ::aOnLostFocus[j] ) .AND. UpperNIL( ::aOnLostFocus[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
-      ENDIF
-      IF ! Empty( ::aOnDblClick[j] ) .AND. UpperNIL( ::aOnDblClick[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON DBLCLICK ' + AllTrim( ::aOnDblClick[j] )
-      ENDIF
-      IF ! Empty( ::aOnHeadClick[j] ) .AND. UpperNIL( ::aOnHeadClick[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON HEADCLICK ' + AllTrim( ::aOnHeadClick[j] )
-      ENDIF
-      IF ! Empty( ::aOnEditCell[j] ) .AND. UpperNIL( ::aOnEditCell[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON EDITCELL ' + AllTrim( ::aOnEditCell[j] )
-      ENDIF
-      IF ! Empty( ::aOnAppend[j] ) .AND. UpperNIL( ::aOnAppend[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON APPEND ' + AllTrim( ::aOnAppend[j] )
-      ENDIF
-      IF ! Empty( ::aWhen[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WHEN ' + AllTrim( ::aWhen[j] )
-      ENDIF
-      IF ! Empty( ::aValid[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALID ' + AllTrim( ::aValid[j] )
-      ENDIF
-      IF ! Empty( ::aValidMess[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALIDMESSAGES ' + AllTrim( ::aValidMess[j] )
-      ENDIF
-      IF ! Empty( ::aReadOnlyB[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'READONLY ' + AllTrim( ::aReadOnlyB[j] )
-      ENDIF
-      IF ::aLock[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'LOCK '
-      ENDIF
-      IF ::aDelete[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DELETE '
-      ENDIF
-      IF ::aInPlace[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INPLACE '
-      ENDIF
-      IF ::aEdit[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'EDIT '
-      ENDIF
-      IF ::anolines[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOLINES '
-      ENDIF
-      IF ! Empty( ::aImage[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'IMAGE ' + AllTrim( ::aImage[j] )
-      ENDIF
-      IF ! Empty( ::aJustify[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'JUSTIFY ' + AllTrim( ::aJustify[j] )
-      ENDIF
-      IF ! Empty( ::aOnEnter[j] ) .AND. UpperNIL( ::aOnEnter[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON ENTER ' + AllTrim( ::aOnEnter[j] )
-      ENDIF
-      IF ::aHelpID[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
-      ENDIF
-      IF ::aAppend[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'APPEND '
-      ENDIF
-      IF ::aBold[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
-      ENDIF
-      IF ::aFontItalic[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
-      ENDIF
-      IF ::aFontUnderline[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
-      ENDIF
-      IF ::aFontStrikeout[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
-      ENDIF
-      IF ::aBackColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
-      ENDIF
-      IF ::aFontColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + ::aFontColor[j]
-      ENDIF
-      IF ! Empty( ::aAction[j] ) .AND. UpperNIL( ::aAction[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + AllTrim( ::aAction[j] )
-      ENDIF
-      IF ::aBreak[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BREAK '
-      ENDIF
-      IF ::aRTL[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
-      ENDIF
-      IF ! ::aEnabled[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
-      ENDIF
-      IF ::aNoTabStop[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
-      ENDIF
-      IF ! ::aVisible[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
-      ENDIF
-      IF ::aFull[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FULLMOVE '
-      ENDIF
-      IF ::aButtons[j]
-         Output += ' ;' + CRLF + Space( nSpacing * 2) + 'USEBUTTONS '
-      ENDIF
-      IF ::aNoHeaders[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOHEADERS '
-      ENDIF
-      IF ! Empty( ::aHeaderImages[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEADERIMAGES ' + AllTrim( ::aHeaderImages[j] )
-      ENDIF
-      IF ! Empty( ::aImagesAlign[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'IMAGESALIGN ' + AllTrim( ::aImagesAlign[j] )
-      ENDIF
-      IF ! Empty( AllTrim( ::aSelColor[j] ) ) .AND. UpperNIL( ::aSelColor[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SELECTEDCOLORS ' + AllTrim( ::aSelColor[j] )
-      ENDIF
-      IF ! Empty( ::aEditKeys[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'EDITKEYS ' + AllTrim( ::aEditKeys[j] )
-      ENDIF
-      IF ::aDoubleBuffer[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DOUBLEBUFFER '
-      ENDIF
-      IF ::aSingleBuffer[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SINGLEBUFFER '
-      ENDIF
-      IF ::aFocusRect[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FOCUSRECT '
-      ENDIF
-      IF ::aNoFocusRect[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOFOCUSRECT '
-      ENDIF
-      IF ::aPLM[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PAINTLEFTMARGIN '
-      ENDIF
-      IF ::aFixedCols[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIXEDCOLS '
-      ENDIF
-      IF ! Empty( ::aOnAbortEdit[j] ) .AND. UpperNIL( ::aOnAbortEdit[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON ABORTEDIT ' + AllTrim( ::aOnAbortEdit[j] )
-      ENDIF
-      IF ::aFixedWidths[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIXEDWIDTHS '
-      ENDIF
-      IF ! Empty( ::aBeforeColMove[j] ) .AND. UpperNIL( ::aBeforeColMove[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BEFORECOLMOVE ' + AllTrim( ::aBeforeColMove[j] )
-      ENDIF
-      IF ! Empty( ::aAfterColMove[j] ) .AND. UpperNIL( ::aAfterColMove[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AFTERCOLMOVE ' + AllTrim( ::aAfterColMove[j] )
-      ENDIF
-      IF ! Empty( ::aBeforeColSize[j] ) .AND. UpperNIL( ::aBeforeColSize[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BEFORECOLSIZE ' + AllTrim( ::aBeforeColSize[j] )
-      ENDIF
-      IF ! Empty( ::aAfterColSize[j] ) .AND. UpperNIL( ::aAfterColSize[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AFTERCOLSIZE ' + AllTrim( ::aAfterColSize[j] )
-      ENDIF
-      IF ! Empty( ::aBeforeAutoFit[j] ) .AND. UpperNIL( ::aBeforeAutoFit[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BEFOREAUTOFIT ' + AllTrim( ::aBeforeAutoFit[j] )
-      ENDIF
-      IF ::aLikeExcel[j]
-         Output += ' ;' + CRLF + Space( nSpacing * 2) + 'EDITLIKEEXCEL '
-      ENDIF
-      IF ! Empty( ::aDeleteWhen[j] ) .AND. UpperNIL( ::aDeleteWhen[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * 2) + 'DELETEWHEN ' + AllTrim( ::aDeleteWhen[j] )
-      ENDIF
-      IF ! Empty( ::aDeleteMsg[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * 2) + 'DELETEMSG ' + AllTrim( ::aDeleteMsg[j] )
-      ENDIF
-      IF ! Empty( ::aOnDelete[j] ) .AND. UpperNIL( ::aOnDelete[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON DELETE ' + AllTrim( ::aOnDelete[j] )
-      ENDIF
-      IF ::aNoDelMsg[j]
-         Output += ' ;' + CRLF + Space( nSpacing * 2) + 'NODELETEMSG '
-      ENDIF
-      IF ::aFixedCtrls[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIXEDCONTROLS '
-      ENDIF
-      IF ::aDynamicCtrls[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DYNAMICCONTROLS '
-      ENDIF
-      IF ! Empty( ::aOnHeadRClick[j] ) .AND. UpperNIL( ::aOnHeadRClick[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON HEADRCLICK ' + AllTrim( ::aOnHeadRClick[j] )
-      ENDIF
-      IF ::aExtDblClick[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'EXTDBLCLICK '
-      ENDIF
-      IF ::anovscroll[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOVSCROLL '
-      ENDIF
-      IF ::aNoRefresh[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOREFRESH '
-      ENDIF
-      IF ! Empty( ::aReplaceField[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'REPLACEFIELD ' + AllTrim( ::aReplaceField[j] )
-      ENDIF
-      IF ! Empty( ::aSubClass[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
-      ENDIF
-      IF ::aRecCount[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RECCOUNT '
-      ENDIF
-      IF ! Empty( ::aColumnInfo[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'COLUMNINFO ' + AllTrim( ::aColumnInfo[j] )
-      ENDIF
-      IF ::aDescend[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DESCENDING '
-      ENDIF
-      IF ::aForceRefresh[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FORCEREFRESH '
-      ENDIF
-      IF ::aSync[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SYNCHRONIZED '
-      ELSEIF ::aUnSync[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNSYNCHRONIZED '
-      ENDIF
-      IF ::aUpdate[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UPDATEALL '
-      ENDIF
-      IF ::aFixBlocks[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIXEDBLOCKS '
-      ELSEIF ::aDynBlocks[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DYNAMICBLOCKS '
-      ENDIF
-      IF ::aUpdateColors[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UPDATECOLORS '
-      ENDIF
-      IF ::aNoModalEdit[j]
-         Output += ' ;' + CRLF + Space( nSpacing * 2) + 'NOMODALEDIT '
-      ENDIF
-      IF ::aByCell[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NAVIGATEBYCELL '
-      ENDIF
-      IF ::aAutoPlay[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SILENT '
-      ENDIF
-      IF ::aFlat[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLEALTA '
-      ENDIF
-      IF ::aShowAll[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOSHOWALWAYS '
-      ENDIF
-      IF ::aNoHideSel[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NONEUNSELS '
-      ENDIF
-      IF ::aDisplayEdit[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CHANGEBEFOREEDIT '
-      ENDIF
-      IF ! Empty( ::aOnRClick[j] ) .AND. UpperNIL( ::aOnRClick[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON RCLICK ' + AllTrim( ::aOnRClick[j] )
-      ENDIF
-      IF ::aCheckBoxes[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CHECKBOXES '
-      ENDIF
-      IF ! Empty( ::aOnCheckChg[j] ) .AND. UpperNIL( ::aOnCheckChg[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHECKCHANGE ' + AllTrim( ::aOnCheckChg[j] )
-      ENDIF
-      IF ! Empty( ::aOnRowRefresh[j] ) .AND. UpperNIL( ::aOnRowRefresh[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON ROWREFRESH ' + AllTrim( ::aOnRowRefresh[j] )
-      ENDIF
-      IF ! Empty( ::aDefaultYear[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DEFAULTVALUES ' + AllTrim( ::aDefaultYear[j] )
-      ENDIF
-      IF ! Empty( ::aOnInsert[j] ) .AND. UpperNIL( ::aOnInsert[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON INSERT ' + AllTrim( ::aOnInsert[j] )
-      ENDIF
-      IF ! Empty( ::aOnEditCellEnd[j] ) .AND. UpperNIL( ::aOnEditCellEnd[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON EDITCELLEND ' + AllTrim( ::aOnEditCellEnd[j] )
-      ENDIF
-      Output += CRLF + CRLF
-   ENDIF
-
-   IF ::aCtrlType[j] == 'BUTTON'
-      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' BUTTON ' + ::aName[j] + ' '
-      IF ! Empty( ::aCObj[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
-      ENDIF
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
-      IF ! Empty( ::aCaption[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + AllTrim( ::aCaption[j] )
-      ELSE
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + StrToStr( ::aName[j], .T. )
-      ENDIF
-      IF ! Empty( ::aPicture[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PICTURE ' + AllTrim( ::aPicture[j] )
-      ENDIF
-      IF ! Empty( ::aAction[j] ) .AND. UpperNIL( ::aAction[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + AllTrim( ::aAction[j] )
-      ELSE
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + "MsgInfo( 'Button Pressed' )"
-      ENDIF
-      IF ! Empty( ::aFontName[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
-      ENDIF
-      IF ::aFontSize[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
-      ENDIF
-      IF ::aBold[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
-      ENDIF
-      IF ::aFontItalic[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
-      ENDIF
-      IF ::aFontUnderline[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
-      ENDIF
-      IF ::aFontStrikeout[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
-      ENDIF
-      IF ::aBackColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
-      ENDIF
-      IF ! ::aVisible[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
-      ENDIF
-      IF ! ::aEnabled[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
-      ENDIF
-      IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
-      ENDIF
-      IF ::aFlat[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FLAT '
-      ENDIF
-      IF ! Empty( ::aJustify[j] ) .AND. ! Empty( ::aPicture[j] ) .AND. ! Empty( ::aCaption[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + Upper( AllTrim( ::aJustify[j] ) ) + ' '
-      ENDIF
-      IF ! Empty( ::aOnGotFocus[j] ) .AND. UpperNIL( ::aOnGotFocus[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( ::aOnGotFocus[j] )
-      ENDIF
-      IF ! Empty( ::aOnLostFocus[j] ) .AND. UpperNIL( ::aOnLostFocus[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
-      ENDIF
-      IF ! Empty( ::aOnMouseMove[j] ) .AND. UpperNIL( ::aOnMouseMove[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON MOUSEMOVE ' + AllTrim( ::aOnMouseMove[j] )
-      ENDIF
-      IF ::aNoTabStop[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
-      ENDIF
-      IF ::aHelpID[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
-      ENDIF
-      IF ! Empty( ::aBuffer[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BUFFER ' + AllTrim( ::aBuffer[j] )
-      ENDIF
-      IF ! Empty( ::aHBitmap[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HBITMAP ' + AllTrim( ::aHBitmap[j] )
-      ENDIF
-      IF ! Empty( ::aImageMargin[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'IMAGEMARGIN ' + AllTrim( ::aImageMargin[j] )
-      ENDIF
-      IF ::aRTL[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
-      ENDIF
-      IF ::aNoPrefix[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOPREFIX '
-      ENDIF
-      IF ::aNoLoadTrans[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOLOADTRANSPARENT '
-      ENDIF
-      IF ::aForceScale[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FORCESCALE '
-      ENDIF
-      IF ::aCancel[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CANCEL '
-      ENDIF
-      IF ::aMultiLine[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'MULTILINE '
-      ENDIF
-      IF ::aThemed[j] == '.T.'
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'THEMED '
-      ELSEIF ::aThemed[j] == '.F.'
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTHEME '
-      ENDIF
-      IF ::aNo3DColors[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NO3DCOLORS '
-      ENDIF
-      IF ::aFit[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AUTOFIT '
-      ENDIF
-      IF ::aDIBSection[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DIBSECTION '
-      ENDIF
-      IF ! Empty( ::aSubClass[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
-      ENDIF
-      Output += CRLF + CRLF
-   ENDIF
-
-   IF ::aCtrlType[j] == 'CHECKBTN'
-      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' CHECKBUTTON ' + ::aName[j] + ' '
-      IF ! Empty( ::aCObj[j ] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
-      ENDIF
-      IF ! Empty( ::aCaption[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + StrToStr( ::aCaption[j], .T. )
-      ELSE
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + StrToStr( ::aName[j], .T. )
-      ENDIF
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
-      IF ::aValueL[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE .T.'
-      ELSE
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE .F.'
-      ENDIF
-      IF ! Empty( ::aFontName[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
-      ENDIF
-      IF ::aFontSize[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
-      ENDIF
-      IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
-      ENDIF
-      IF ! Empty( ::aOnChange[j] ) .AND. UpperNIL( ::aOnChange[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
-      ENDIF
-      IF ! Empty( ::aOnGotFocus[j] ) .AND. UpperNIL( ::aOnGotFocus[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( ::aOnGotFocus[j] )
-      ENDIF
-      IF ! Empty( ::aOnLostFocus[j] ) .AND. UpperNIL( ::aOnLostFocus[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
-      ENDIF
-      IF ! Empty( ::aOnMouseMove[j] ) .AND. UpperNIL( ::aOnMouseMove[j] ) # 'NIL'
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON MOUSEMOVE ' + AllTrim( ::aOnMouseMove[j] )
-      ENDIF
-      IF ::aHelpID[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
-      ENDIF
-      IF ::aNoTabStop[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
-      ENDIF
-      IF ::aBold[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
-      ENDIF
-      IF ::aFontItalic[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
-      ENDIF
-      IF ::aFontUnderline[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
-      ENDIF
-      IF ::aFontStrikeout[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
-      ENDIF
-      IF ::aBackColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
-      ENDIF
-      IF ! ::aVisible[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
-      ENDIF
-      IF ! ::aEnabled[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
-      ENDIF
-      IF ::aRTL[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
-      ENDIF
-      IF ! Empty( ::aPicture[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PICTURE ' + StrToStr( ::aPicture[j] )
-      ENDIF
-      IF ! Empty( ::aBuffer[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BUFFER ' + AllTrim( ::aBuffer[j] )
-      ENDIF
-      IF ! Empty( ::aHBitmap[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HBITMAP ' + AllTrim( ::aHBitmap[j] )
-      ENDIF
-      IF ::aNoLoadTrans[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOLOADTRANSPARENT '
-      ENDIF
-      IF ::aForceScale[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FORCESCALE '
-      ENDIF
-      IF ! Empty( ::aField[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIELD ' + AllTrim( ::aField[j] )
-      ENDIF
-      IF ::aNo3DColors[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NO3DCOLORS '
-      ENDIF
-      IF ::aFit[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AUTOFIT '
-      ENDIF
-      IF ::aDIBSection[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DIBSECTION '
-      ENDIF
-      IF ::aThemed[j] == '.T.'
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'THEMED '
-      ELSEIF ::aThemed[j] == '.F.'
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTHEME '
-      ENDIF
-      IF ! Empty( ::aImageMargin[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'IMAGEMARGIN ' + AllTrim( ::aImageMargin[j] )
-      ENDIF
-      IF ! Empty( ::aJustify[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + Upper( AllTrim( ::aJustify[j] ) ) + ' '
-      ENDIF
-      IF ::aMultiLine[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'MULTILINE '
-      ENDIF
-      IF ::aFlat[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FLAT '
-      ENDIF
-      IF ! Empty( ::aSubClass[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
-      ENDIF
-      Output += CRLF + CRLF
-   ENDIF
-
-   IF ::aCtrlType[j] == 'CHECKBOX'
-      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' CHECKBOX ' + ::aName[j] + ' '
-      IF ! Empty( ::aCObj[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
-      ENDIF
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
-      IF ! Empty( ::aCaption[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + StrToStr( ::aCaption[j], .T. )
-      ELSE
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + "'" + "'"
-      ENDIF
-      IF ::aValue[j] == '.T.'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE .T.'
-      ELSEIF ::aValue[j] == '.F.'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE .F.'
-      ENDIF
-      IF ! Empty( ::aField[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIELD ' + AllTrim( ::aField[j] )
-      ENDIF
-      IF ! Empty( ::aFontName[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
-      ENDIF
-      IF ::aFontSize[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
-       ENDIF
-      IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
-      ENDIF
-      IF ! Empty( ::aOnChange[j] ) .AND. UpperNIL( ::aOnChange[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
-      ENDIF
-      IF ! Empty( ::aOnGotFocus[j] ) .AND. UpperNIL( ::aOnGotFocus[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( ::aOnGotFocus[j] )
-      ENDIF
-      IF ! Empty( ::aOnLostFocus[j] ) .AND. UpperNIL( ::aOnLostFocus[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
-      ENDIF
-      IF ::aTransparent[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TRANSPARENT '
-      ENDIF
-      IF ::aNoTabStop[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
-      ENDIF
-      IF ::aHelpID[j] > 0
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
-      ENDIF
-      IF ::aFontColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + ::aFontColor[j]
-      ENDIF
-      IF ::aBold[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
-      ENDIF
-      IF ::aFontItalic[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
-      ENDIF
-      IF ::aFontUnderline[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
-      ENDIF
-      IF ::aFontStrikeout[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
-      ENDIF
-      IF ::aBackColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
-      ENDIF
-      IF ! ::aVisible[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
-      ENDIF
-      IF ! ::aEnabled[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
-      ENDIF
-      IF ::aRTL[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
-      ENDIF
-      IF ::aAutoPlay[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AUTOSIZE '
-      ENDIF
-      IF ::aThemed[j] == '.T.'
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'THEMED '
-      ELSEIF ::aThemed[j] == '.F.'
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTHEME '
-      ENDIF
-      IF ::aLeft[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'LEFTALIGN '
-      ENDIF
-      IF ::a3State[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'THREESTATE '
-      ENDIF
-      IF ! Empty( ::aSubClass[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
-      ENDIF
-      Output += CRLF + CRLF
-   ENDIF
-
-   IF ::aCtrlType[j] == 'COMBO'
-      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' COMBOBOX ' + ::aName[j] + ' '
-      IF ! Empty( ::aCObj[j ] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
-      ENDIF
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
-      // Do not include HEIGHT
-      IF ! Empty( ::aItems[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITEMS ' + AllTrim( ::aItems[j] )
-      ENDIF
-      IF ! Empty( ::aItemSource[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITEMSOURCE ' + AllTrim( ::aItemSource[j] )
-      ENDIF
-      IF ::aValueN[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( ::aValueN[j] ) )
-      ENDIF
-      IF ! Empty( ::aValueSource[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUESOURCE ' + AllTrim( ::aValueSource[j] )
-      ENDIF
-      IF ::aDisplayEdit[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISPLAYEDIT '
-      ENDIF
-      IF ! Empty( ::aFontName[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
-      ENDIF
-      IF ::aFontSize[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
-      ENDIF
-      IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
-      ENDIF
-      IF ! Empty( ::aOnChange[j] ) .AND. UpperNIL( ::aOnChange[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
-      ENDIF
-      IF ! Empty( ::aOnGotFocus[j] ) .AND. UpperNIL( ::aOnGotFocus[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( ::aOnGotFocus[j] )
-      ENDIF
-      IF ! Empty( ::aOnLostFocus[j] ) .AND. UpperNIL( ::aOnLostFocus[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
-      ENDIF
-      IF ! Empty( ::aOnEnter[j] ) .AND. UpperNIL( ::aOnEnter[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON ENTER ' + AllTrim( ::aOnEnter[j] )
-      ENDIF
-      IF ! Empty( ::aOnDisplayChange[j] ) .AND. UpperNIL( ::aOnDisplayChange[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON DISPLAYCHANGE ' + AllTrim( ::aOnDisplayChange[j] )
-      ENDIF
-      IF ::aNoTabStop[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
-      ENDIF
-      IF ::aHelpID[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
-      ENDIF
-      IF ::aBreak[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BREAK '
-      ENDIF
-      IF ::aSort[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SORT '
-      ENDIF
-      IF ! Empty( ::aItemImageNumber[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITEMIMAGENUMBER ' + AllTrim( ::aItemImageNumber[j] )
-      ENDIF
-      IF ! Empty( ::aImageSource[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'IMAGESOURCE ' + AllTrim( ::aImageSource[j] )
-      ENDIF
-      IF ::aFirstItem[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIRSTITEM '
-      ENDIF
-      IF ::aListWidth[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'LISTWIDTH ' + LTrim( Str( ::aListWidth[j] ) )
-      ENDIF
-      IF ! Empty( ::aOnListDisplay[j] ) .AND. UpperNIL( ::aOnListDisplay[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LISTDISPLAY ' + AllTrim( ::aOnListDisplay[j] )
-      ENDIF
-      IF ! Empty( ::aOnListClose[j] ) .AND. UpperNIL( ::aOnListClose[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LISTCLOSE ' + AllTrim( ::aOnListClose[j] )
-      ENDIF
-      IF ::aDelayedLoad[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DELAYEDLOAD '
-      ENDIF
-      IF ::aIncremental[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INCREMENTAL '
-      ENDIF
-      IF ::aIntegralHeight[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INTEGRALHEIGHT '
-      ENDIF
-      IF ::aRefresh[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'REFRESH '
-      ENDIF
-      IF ::aNoRefresh[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOREFRESH '
-      ENDIF
-      IF ! Empty( ::aSourceOrder[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SOURCEORDER ' + AllTrim( ::aSourceOrder[j] )
-      ENDIF
-      IF ! Empty( ::aOnRefresh[j] ) .AND. UpperNIL( ::aOnRefresh[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON REFRESH ' + AllTrim( ::aOnRefresh[j] )
-      ENDIF
-      IF ! Empty( ::aSubClass[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
-      ENDIF
-      IF ::aSearchLapse[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SEARCHLAPSE ' + LTrim( Str( ::aSearchLapse[j] ) )
-      ENDIF
-      IF ! Empty( ::aGripperText[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'GRIPPERTEXT ' + AllTrim( ::aGripperText[j] )
-      ENDIF
-      IF ::aFontColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + AllTrim( ::aFontColor[j] )
-      ENDIF
-      IF ::aBold[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
-      ENDIF
-      IF ::aFontItalic[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
-      ENDIF
-      IF ::aFontUnderline[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
-      ENDIF
-      IF ::aFontStrikeout[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
-      ENDIF
-      IF ::aBackColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
-      ENDIF
-      IF ! ::aVisible[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
-      ENDIF
-      IF ! ::aEnabled[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
-      ENDIF
-      IF ::aRTL[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
-      ENDIF
-      IF ::aTextHeight[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TEXTHEIGHT ' + LTrim( Str( ::aTextHeight[j] ) )
-      ENDIF
-      IF ::aFit[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIT '
-      ENDIF
-      IF ! Empty( ::aImage[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'IMAGE ' + AllTrim( ::aImage[j] )
-      ENDIF
-      Output += CRLF + CRLF
-   ENDIF
-
-   IF ::aCtrlType[j] == 'DATEPICKER'
-      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' DATEPICKER ' + ::aName[j] + ' '
-      IF ! Empty( ::aCObj[j ] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
-      ENDIF
-      IF ! Empty( ::aValue[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + AllTrim( ::aValue[j] )
-      ENDIF
-      IF ! Empty( ::aField[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIELD ' + StrToStr( ::aField[j] )
-      ENDIF
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
-      IF ! Empty( ::aFontName[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
-      ENDIF
-      IF ::aFontSize[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
-      ENDIF
-      IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
-      ENDIF
-      IF ::aShowNone[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SHOWNONE '
-      ENDIF
-      IF ::aUpDown[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UPDOWN '
-      ENDIF
-      IF ::aRightAlign[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RIGHTALIGN '
-      ENDIF
-      IF ! Empty( ::aOnChange[j] ) .AND. UpperNIL( ::aOnChange[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
-      ENDIF
-      IF ! Empty( ::aOnGotFocus[j] ) .AND. UpperNIL( ::aOnGotFocus[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( ::aOnGotFocus[j] )
-      ENDIF
-      IF ! Empty( ::aOnLostFocus[j] ) .AND. UpperNIL( ::aOnLostFocus[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
-      ENDIF
-      IF ! Empty( ::aOnEnter[j] ) .AND. UpperNIL( ::aOnEnter[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON ENTER ' + AllTrim( ::aOnEnter[j] )
-      ENDIF
-      IF ::aHelpID[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
-      ENDIF
-      IF ::aBold[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
-      ENDIF
-      IF ::aFontItalic[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
-      ENDIF
-      IF ::aFontUnderline[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
-      ENDIF
-      IF ::aFontStrikeout[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
-      ENDIF
-      IF ::aRTL[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
-      ENDIF
-      IF ! ::aEnabled[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
-      ENDIF
-      IF ::aNoTabStop[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
-      ENDIF
-      IF ! ::aVisible[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
-      ENDIF
-      IF ::aBorder[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOBORDER '
-      ENDIF
-      IF ! Empty( ::aRange[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RANGE ' + AllTrim( ::aRange[j] )
-      ENDIF
-      IF ! Empty( ::aSubClass[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
-      ENDIF
-      Output += CRLF + CRLF
-   ENDIF
-
-   IF ::aCtrlType[j] == 'TIMEPICKER'
-      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' TIMEPICKER ' + ::aName[j] + ' '
-      IF ! Empty( ::aCObj[j ] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
-      ENDIF
-      IF ! Empty( ::aValue[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + AllTrim( ::aValue[j] )
-      ENDIF
-      IF ! Empty( ::aField[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIELD ' + StrToStr( ::aField[j] )
-      ENDIF
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
-      IF ! Empty( ::aFontName[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
-      ENDIF
-      IF ::aFontSize[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
-      ENDIF
-      IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
-      ENDIF
-      IF ::aShowNone[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SHOWNONE '
-      ENDIF
-      IF ::aUpDown[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UPDOWN '
-      ENDIF
-      IF ::aRightAlign[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RIGHTALIGN '
-      ENDIF
-      IF ! Empty( ::aOnChange[j] ) .AND. UpperNIL( ::aOnChange[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
-      ENDIF
-      IF ! Empty( ::aOnGotFocus[j] ) .AND. UpperNIL( ::aOnGotFocus[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( ::aOnGotFocus[j] )
-      ENDIF
-      IF ! Empty( ::aOnLostFocus[j] ) .AND. UpperNIL( ::aOnLostFocus[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
-      ENDIF
-      IF ! Empty( ::aOnEnter[j] ) .AND. UpperNIL( ::aOnEnter[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON ENTER ' + AllTrim( ::aOnEnter[j] )
-      ENDIF
-      IF ::aHelpID[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
-      ENDIF
-      IF ::aBold[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
-      ENDIF
-      IF ::aFontItalic[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
-      ENDIF
-      IF ::aFontUnderline[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
-      ENDIF
-      IF ::aFontStrikeout[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
-      ENDIF
-      IF ::aRTL[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
-      ENDIF
-      IF ! ::aEnabled[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
-      ENDIF
-      IF ::aNoTabStop[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
-      ENDIF
-      IF ! ::aVisible[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
-      ENDIF
-      IF ::aBorder[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOBORDER '
-      ENDIF
-      IF ! Empty( ::aSubClass[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
-      ENDIF
-      Output += CRLF + CRLF
-   ENDIF
-
-   IF ::aCtrlType[j] == 'EDIT'
-      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' EDITBOX ' + ::aName[j] + ' '
-      IF ! Empty( ::aCObj[j ] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
-      ENDIF
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
-      IF ! Empty( ::aField[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIELD ' + AllTrim( ::aField[j] )
-      ENDIF
-      IF ! Empty( ::aValue[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + AllTrim( ::aValue[j] )
-      ENDIF
-      IF ::aReadOnly[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'READONLY '
-      ENDIF
-      IF ! Empty( ::aFontName[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
-      ENDIF
-      IF ::aFontSize[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
-      ENDIF
-      IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
-      ENDIF
-      IF ::aMaxLength[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'MAXLENGTH ' + LTrim( Str( ::aMaxLength[j] ) )
-      ENDIF
-      IF ! Empty( ::aOnChange[j] ) .AND. UpperNIL( ::aOnChange[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
-      ENDIF
-      IF ! Empty( ::aOnGotFocus[j] ) .AND. UpperNIL( ::aOnGotFocus[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( ::aOnGotFocus[j] )
-      ENDIF
-      IF ! Empty( ::aOnLostFocus[j] ) .AND. UpperNIL( ::aOnLostFocus[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
-      ENDIF
-      IF ::aHelpID[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
-      ENDIF
-      IF ::aBreak[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BREAK '
-      ENDIF
-      IF ::aNoTabStop[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
-      ENDIF
-      IF ::anovscroll[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOVSCROLL '
-      ENDIF
-      IF ::aNoHScroll[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOHSCROLL '
-      ENDIF
-      IF ::aFontColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + ::aFontColor[j]
-      ENDIF
-      IF ::aBold[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
-      ENDIF
-      IF ::aFontItalic[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
-      ENDIF
-      IF ::aFontUnderline[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
-      ENDIF
-      IF ::aFontStrikeout[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
-      ENDIF
-      IF ::aBackColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
-      ENDIF
-      IF ! ::aVisible[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
-      ENDIF
-      IF ! ::aEnabled[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
-      ENDIF
-      IF ::aRTL[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
-      ENDIF
-      IF ::aBorder[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOBORDER '
-      ENDIF
-      IF ::aFocusedPos[j] <> -4            // default value, see DATA nOnFocusPos in h_editbox.prg
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FOCUSEDPOS ' + LTrim( Str( ::aFocusedPos[j] ) )
-      ENDIF
-      IF ! Empty( ::aOnHScroll[j] ) .AND. UpperNIL( ::aOnHScroll[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON HSCROLL ' + AllTrim( ::aOnHScroll[j] )
-      ENDIF
-      IF ! Empty( ::aOnVScroll[j] ) .AND. UpperNIL( ::aOnVScroll[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON VSCROLL ' + AllTrim( ::aOnVScroll[j] )
-      ENDIF
-      Output += CRLF + CRLF
-   ENDIF
-
-   IF ::aCtrlType[j] == 'FRAME'
-      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' FRAME ' + ::aName[j] + ' '
-      IF ! Empty( ::aCObj[j ] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
-      ENDIF
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
-      IF ! Empty( ::aCaption[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + StrToStr( ::aCaption[j], .T. )
-      ENDIF
-      IF ::aOpaque[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OPAQUE '
-      ENDIF
-      IF ::aTransparent[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TRANSPARENT '
-      ENDIF
-      IF ! Empty( ::aFontName[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
-      ENDIF
-      IF ::aFontSize[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
-      ENDIF
-      IF ::aFontColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + ::aFontColor[j]
-      ENDIF
-      IF ::aBold[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
-      ENDIF
-      IF ::aFontItalic[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
-      ENDIF
-      IF ::aFontUnderline[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
-      ENDIF
-      IF ::aFontStrikeout[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
-      ENDIF
-      IF ! ::aEnabled[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
-      ENDIF
-      IF ! ::aVisible[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
-      ENDIF
-      IF ::aBackColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + AllTrim( ::aBackColor[j] )
-      ENDIF
-      IF ::aRTL[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
-      ENDIF
-      IF ! Empty( ::aSubClass[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
-      ENDIF
-      Output += CRLF + CRLF
-   ENDIF
-
-   IF ::aCtrlType[j] == 'GRID'
-      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' GRID ' + ::aName[j] + ' '
-      IF ! Empty( ::aCObj[j ] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
-      ENDIF
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEADERS ' + AllTrim( ::aHeaders[j] )
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTHS ' + AllTrim( ::aWidths[j] )
-      IF ! Empty( ::aItems[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITEMS ' + AllTrim( ::aItems[j] )
-      ENDIF
-      IF ::aValueN[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( ::aValueN[j] ) )
-      ENDIF
-      IF ! Empty( AllTrim( ::aDynamicBackColor[j] ) ) .AND. UpperNIL( ::aDynamicBackColor[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DYNAMICBACKCOLOR ' + AllTrim( ::aDynamicBackColor[j] )
-      ENDIF
-      IF ! Empty( AllTrim( ::aDynamicForeColor[j] ) ) .AND. UpperNIL( ::aDynamicForeColor[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DYNAMICFORECOLOR ' + AllTrim( ::aDynamicForeColor[j] )
-      ENDIF
-      IF ! Empty( ::aColumnControls[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'COLUMNCONTROLS ' + AllTrim( ::aColumnControls[j] )
-      ENDIF
-      IF ! Empty( ::aFontName[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
-      ENDIF
-      IF ::aFontSize[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
-      ENDIF
-      IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
-      ENDIF
-      IF ! Empty( ::aOnChange[j] ) .AND. UpperNIL( ::aOnChange[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
-      ENDIF
-      IF ! Empty( ::aOnGotFocus[j] ) .AND. UpperNIL( ::aOnGotFocus[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( ::aOnGotFocus[j] )
-      ENDIF
-      IF ! Empty( ::aOnLostFocus[j] ) .AND. UpperNIL( ::aOnLostFocus[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
-      ENDIF
-      IF ! Empty( ::aOnDblClick[j] ) .AND. UpperNIL( ::aOnDblClick[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON DBLCLICK ' + AllTrim( ::aOnDblClick[j] )
-      ENDIF
-      IF ! Empty( ::aOnEnter[j] ) .AND. UpperNIL( ::aOnEnter[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON ENTER ' + AllTrim( ::aOnEnter[j] )
-      ENDIF
-      IF ! Empty( ::aOnHeadClick[j] ) .AND. UpperNIL( ::aOnHeadClick[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON HEADCLICK ' + AllTrim( ::aOnHeadClick[j] )
-      ENDIF
-      IF ! Empty( ::aOnEditCell[j] ) .AND. UpperNIL( ::aOnEditCell[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON EDITCELL ' + AllTrim( ::aOnEditCell[j] )
-      ENDIF
-      IF ::aMultiSelect[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'MULTISELECT '
-      ENDIF
-      IF ::anolines[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOLINES '
-      ENDIF
-      IF ::aInPlace[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INPLACE '
-      ENDIF
-      IF ::aEdit[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'EDIT '
-      ENDIF
-      IF ! Empty( ::aImage[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'IMAGE ' + AllTrim( ::aImage[j] )
-      ENDIF
-      IF ! Empty( ::aJustify[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'JUSTIFY ' + AllTrim( ::aJustify[j] )
-      ENDIF
-      IF ! Empty( ::aWhen[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WHEN ' + AllTrim( ::aWhen[j] )
-      ENDIF
-      IF ! Empty( ::aValid[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALID ' + AllTrim( ::aValid[j] )
-      ENDIF
-      IF ! Empty( ::aValidMess[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALIDMESSAGES ' + AllTrim( ::aValidMess[j] )
-      ENDIF
-      IF ! Empty( ::aReadOnlyB[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'READONLY ' + AllTrim( ::aReadOnlyB[j] )
-      ENDIF
-      IF ! Empty( ::aInputMask[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INPUTMASK ' + AllTrim( ::aInputMask[j] )
-      ENDIF
-      IF ::aHelpID[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
-      ENDIF
-      IF ::aBreak[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BREAK '
-      ENDIF
-      IF ::aBold[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
-      ENDIF
-      IF ::aFontItalic[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
-      ENDIF
-      IF ::aFontUnderline[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
-      ENDIF
-      IF ::aFontStrikeout[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
-      ENDIF
-      IF ::aBackColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
-      ENDIF
-      IF ::aFontColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + ::aFontColor[j]
-      ENDIF
-      IF ! Empty( ::aAction[j] ) .AND. UpperNIL( ::aAction[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + AllTrim( ::aAction[j] )
-      ENDIF
-      IF ::aRTL[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
-      ENDIF
-      IF ! ::aEnabled[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
-      ENDIF
-      IF ::aNoTabStop[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
-      ENDIF
-      IF ! ::aVisible[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
-      ENDIF
-      IF ::aFull[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FULLMOVE '
-      ENDIF
-      IF ::aCheckBoxes[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CHECKBOXES '
-      ENDIF
-      IF ! Empty( ::aOnCheckChg[j] ) .AND. UpperNIL( ::aOnCheckChg[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHECKCHANGE ' + AllTrim( ::aOnCheckChg[j] )
-      ENDIF
-      IF ::aButtons[j]
-         Output += ' ;' + CRLF + Space( nSpacing * 2) + 'USEBUTTONS '
-      ENDIF
-      IF ::aDelete[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DELETE '
-      ENDIF
-      IF ::aAppend[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'APPEND '
-      ENDIF
-      IF ! Empty( ::aOnAppend[j] ) .AND. UpperNIL( ::aOnAppend[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON APPEND ' + AllTrim( ::aOnAppend[j] )
-      ENDIF
-      IF ::aVirtual[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VIRTUAL '
-      ENDIF
-      IF ::aItemCount[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITEMCOUNT ' + LTrim( Str( ::aItemCount[j] ) )
-      ENDIF
-      IF ! Empty( ::aOnQueryData[j] ) .AND. UpperNIL( ::aOnQueryData[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON QUERYDATA ' + AllTrim( ::aOnQueryData[j] )
-      ENDIF
-      IF ::aNoHeaders[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOHEADERS '
-      ENDIF
-      IF ! Empty( ::aHeaderImages[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEADERIMAGES ' + AllTrim( ::aHeaderImages[j] )
-      ENDIF
-      IF ! Empty( ::aImagesAlign[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'IMAGESALIGN ' + AllTrim( ::aImagesAlign[j] )
-      ENDIF
-      IF ::aByCell[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NAVIGATEBYCELL '
-      ENDIF
-      IF ! Empty( AllTrim( ::aSelColor[j] ) ) .AND. UpperNIL( ::aSelColor[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SELECTEDCOLORS ' + AllTrim( ::aSelColor[j] )
-      ENDIF
-      IF ! Empty( ::aEditKeys[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'EDITKEYS ' + AllTrim( ::aEditKeys[j] )
-      ENDIF
-      IF ::aDoubleBuffer[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DOUBLEBUFFER '
-      ENDIF
-      IF ::aSingleBuffer[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SINGLEBUFFER '
-      ENDIF
-      IF ::aFocusRect[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FOCUSRECT '
-      ENDIF
-      IF ::aNoFocusRect[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOFOCUSRECT '
-      ENDIF
-      IF ::aPLM[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PAINTLEFTMARGIN '
-      ENDIF
-      IF ::aFixedCols[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIXEDCOLS '
-      ENDIF
-      IF ! Empty( ::aOnAbortEdit[j] ) .AND. UpperNIL( ::aOnAbortEdit[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON ABORTEDIT ' + AllTrim( ::aOnAbortEdit[j] )
-      ENDIF
-      IF ::aFixedWidths[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIXEDWIDTHS '
-      ENDIF
-      IF ! Empty( ::aBeforeColMove[j] ) .AND. UpperNIL( ::aBeforeColMove[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BEFORECOLMOVE ' + AllTrim( ::aBeforeColMove[j] )
-      ENDIF
-      IF ! Empty( ::aAfterColMove[j] ) .AND. UpperNIL( ::aAfterColMove[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AFTERCOLMOVE ' + AllTrim( ::aAfterColMove[j] )
-      ENDIF
-      IF ! Empty( ::aBeforeColSize[j] ) .AND. UpperNIL( ::aBeforeColSize[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BEFORECOLSIZE ' + AllTrim( ::aBeforeColSize[j] )
-      ENDIF
-      IF ! Empty( ::aAfterColSize[j] ) .AND. UpperNIL( ::aAfterColSize[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AFTERCOLSIZE ' + AllTrim( ::aAfterColSize[j] )
-      ENDIF
-      IF ! Empty( ::aBeforeAutoFit[j] ) .AND. UpperNIL( ::aBeforeAutoFit[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BEFOREAUTOFIT ' + AllTrim( ::aBeforeAutoFit[j] )
-      ENDIF
-      IF ::aLikeExcel[j]
-         Output += ' ;' + CRLF + Space( nSpacing * 2) + 'EDITLIKEEXCEL '
-      ENDIF
-      IF ! Empty( ::aDeleteWhen[j] ) .AND. UpperNIL( ::aDeleteWhen[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * 2) + 'DELETEWHEN ' + AllTrim( ::aDeleteWhen[j] )
-      ENDIF
-      IF ! Empty( ::aDeleteMsg[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * 2) + 'DELETEMSG ' + AllTrim( ::aDeleteMsg[j] )
-      ENDIF
-      IF ! Empty( ::aOnDelete[j] ) .AND. UpperNIL( ::aOnDelete[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON DELETE ' + AllTrim( ::aOnDelete[j] )
-      ENDIF
-      IF ::aNoDelMsg[j]
-         Output += ' ;' + CRLF + Space( nSpacing * 2) + 'NODELETEMSG '
-      ENDIF
-      IF ::aNoModalEdit[j]
-         Output += ' ;' + CRLF + Space( nSpacing * 2) + 'NOMODALEDIT '
-      ENDIF
-      IF ::aFixedCtrls[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIXEDCONTROLS '
-      ENDIF
-      IF ::aDynamicCtrls[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DYNAMICCONTROLS '
-      ENDIF
-      IF ! Empty( ::aOnHeadRClick[j] ) .AND. UpperNIL( ::aOnHeadRClick[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON HEADRCLICK ' + AllTrim( ::aOnHeadRClick[j] )
-      ENDIF
-      IF ::aNoClickOnCheck[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOCLICKONCHECKBOX '
-      ENDIF
-      IF ::aNoRClickOnCheck[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NORCLICKONCHECKBOX '
-      ENDIF
-      IF ::aExtDblClick[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'EXTDBLCLICK '
-      ENDIF
-      IF ! Empty( ::aSubClass[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
-      ENDIF
-      IF ::aAutoPlay[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SILENT '
-      ENDIF
-      IF ::aFlat[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ENABLEALTA '
-      ENDIF
-       IF ::aShowAll[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOSHOWALWAYS '
-      ENDIF
-      IF ::aNoHideSel[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NONEUNSELS '
-      ENDIF
-      IF ::aDisplayEdit[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CHANGEBEFOREEDIT '
-      ENDIF
-      IF ! Empty( ::aOnRClick[j] ) .AND. UpperNIL( ::aOnRClick[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON RCLICK ' + AllTrim( ::aOnRClick[j] )
-      ENDIF
-      IF ! Empty( ::aOnInsert[j] ) .AND. UpperNIL( ::aOnInsert[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON INSERT ' + AllTrim( ::aOnInsert[j] )
-      ENDIF
-      IF ! Empty( ::aOnEditCellEnd[j] ) .AND. UpperNIL( ::aOnEditCellEnd[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON EDITCELLEND ' + AllTrim( ::aOnEditCellEnd[j] )
-      ENDIF
-     Output += CRLF + CRLF
-   ENDIF
-
-   IF ::aCtrlType[j] == 'HYPERLINK'
-      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' HYPERLINK ' + ::aName[j] + ' '
-      IF ! Empty( ::aCObj[j ] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
-      ENDIF
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
-      IF ! Empty( ::aValue[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + StrToStr( ::aValue[j], .T. )
-      ELSE
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + "'ooHG Home'"
-      ENDIF
-      IF ! Empty( ::aAddress[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ADDRESS ' + StrToStr( ::aAddress[j] )
-      ELSE
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ADDRESS ' + "'https://sourceforge.net/projects/oohg/'"
-      ENDIF
-      IF ! Empty( ::aFontName[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
-      ENDIF
-      IF ::aFontSize[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
-      ENDIF
-      IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
-      ENDIF
-      IF ::aHelpID[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
-      ENDIF
-      IF ::aHandCursor[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HANDCURSOR '
-      ENDIF
-      IF ::aFontColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + ::aFontColor[j]
-      ENDIF
-      IF ::aBold[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
-      ENDIF
-      IF ::aFontItalic[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
-      ENDIF
-      IF ::aFontUnderline[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
-      ENDIF
-      IF ::aFontStrikeout[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
-      ENDIF
-      IF ::aBackColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
-      ENDIF
-      IF ! ::aVisible[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
-      ENDIF
-      IF ! ::aEnabled[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
-      ENDIF
-      IF ::aAutoPlay[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AUTOSIZE '
-      ENDIF
-      IF ::aBorder[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BORDER '
-      ENDIF
-      IF ::aClientEdge[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CLIENTEDGE '
-      ENDIF
-      IF ::aNoHScroll[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HSCROLL '
-      ENDIF
-      IF ::aNoVScroll[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VSCROLL '
-      ENDIF
-      IF ::aTransparent[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TRANSPARENT '
-      ENDIF
-      IF ::aRTL[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
-      ENDIF
-      Output += CRLF + CRLF
-   ENDIF
-
-   IF ::aCtrlType[j] == 'IMAGE'
-      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' IMAGE ' + ::aName[j] + ' '
-      IF ! Empty( ::aCObj[j ] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
-      ENDIF
-      IF ! Empty( ::aAction[j] ) .AND. UpperNIL( ::aAction[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + AllTrim( ::aAction[j] )
-      ENDIF
-      IF ! Empty( ::aPicture[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PICTURE ' + StrToStr( ::aPicture[j] )
-      ENDIF
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
-      IF ::aStretch[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRETCH '
-      ENDIF
-      IF ::aHelpID[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
-      ENDIF
-      IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
-      ENDIF
-      IF ::aBorder[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BORDER '
-      ENDIF
-      IF ::aClientEdge[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CLIENTEDGE '
-      ENDIF
-      IF ! ::aVisible[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
-      ENDIF
-      IF ! ::aEnabled[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
-      ENDIF
-      IF ::aTransparent[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TRANSPARENT '
-      ENDIF
-      IF ::aBackColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
-      ENDIF
-      IF ::aRTL[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
-      ENDIF
-      IF ! Empty( ::aBuffer[j] )
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BUFFER ' + AllTrim( ::aBuffer[j] )
-      ENDIF
-      IF ! Empty( ::aHBitmap[j] )
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HBITMAP ' + AllTrim( ::aHBitmap[j] )
-      ENDIF
-      IF ::aDIBSection[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NODIBSECTION '
-      ENDIF
-      IF ::aNo3DColors[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NO3DCOLORS '
-      ENDIF
-      IF ::aNoLoadTrans[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOLOADTRANSPARENT '
-      ENDIF
-      IF ::aFit[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NORESIZE '
-      ENDIF
-      IF ::aWhiteBack[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WHITEBACKGROUND '
-      ENDIF
-      IF ::aImageSize[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'IMAGESIZE '
-      ENDIF
-      IF ! Empty( ::aExclude[j] )
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'EXCLUDEAREA ' + AllTrim( ::aExclude[j] )
-      ENDIF
-      IF ! Empty( ::aSubClass[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
-      ENDIF
-      Output += CRLF + CRLF
-   ENDIF
-
-   IF ::aCtrlType[j] == 'IPADDRESS'
-      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' IPADDRESS ' + ::aName[j] + ' '
-      IF ! Empty( ::aCObj[j ] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
-      ENDIF
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
-      IF ! Empty( ::aValue[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + AllTrim( ::aValue[j] )
-      ENDIF
-      IF ! Empty( ::aFontName[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
-      ENDIF
-      IF ::aFontSize[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
-      ENDIF
-      IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
-      ENDIF
-      IF ! Empty( ::aOnChange[j] ) .AND. UpperNIL( ::aOnChange[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
-      ENDIF
-      IF ! Empty( ::aOnGotFocus[j] ) .AND. UpperNIL( ::aOnGotFocus[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( ::aOnGotFocus[j] )
-      ENDIF
-      IF ! Empty( ::aOnLostFocus[j] ) .AND. UpperNIL( ::aOnLostFocus[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
-      ENDIF
-      IF ::aHelpID[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
-      ENDIF
-      IF ::aNoTabStop[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
-      ENDIF
-      IF ::aFontColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + ::aFontColor[j]
-      ENDIF
-      IF ::aBold[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
-      ENDIF
-      IF ::aFontItalic[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
-      ENDIF
-      IF ::aFontUnderline[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
-      ENDIF
-      IF ::aFontStrikeout[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
-      ENDIF
-      IF ::aBackColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
-      ENDIF
-      IF ! ::aVisible[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
-      ENDIF
-      IF ! ::aEnabled[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
-      ENDIF
-      IF ::aRTL[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
-      ENDIF
-      IF ! Empty( ::aSubClass[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
-      ENDIF
-      Output += CRLF + CRLF
-   ENDIF
-
-   IF ::aCtrlType[j] == 'LABEL'
-      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' LABEL ' + ::aName[j] + ' '
-      IF ! Empty( ::aCObj[j ] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
-      ENDIF
-      IF ::aAutoPlay[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AUTOSIZE '
-      ELSE
+   IF ::myIde:nSyntax == 2                 // Alternative syntax
+      // TODO: generate alternative syntax output
+   ELSE                                    // Standard syntax
+      IF ::aCtrlType[j] == 'BROWSE'
+         Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' BROWSE ' + ::aName[j] + ' '
+         IF ! Empty( ::aCObj[j ] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
+         ENDIF
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
-      ENDIF
-      IF ! Empty( ::aValue[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + ::aValue[j]
-      ENDIF
-      IF ! Empty( ::aAction[j] ) .AND. UpperNIL( ::aAction[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + AllTrim( ::aAction[j] )
-      ENDIF
-      IF ! Empty( ::aFontName[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
-      ENDIF
-      IF ::aFontSize[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
-      ENDIF
-      IF ::aFontColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + ::aFontColor[j]
-      ENDIF
-      IF ::aBold[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
-      ENDIF
-      IF ::aFontItalic[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
-      ENDIF
-      IF ::aFontUnderline[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
-      ENDIF
-      IF ::aFontStrikeout[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
-      ENDIF
-      IF ::aBackColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
-      ENDIF
-      IF ::aHelpID[j] > 0
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
-      ENDIF
-      IF ::aTransparent[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TRANSPARENT '
-      ENDIF
-      IF ::aCenterAlign[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CENTERALIGN '
-      ENDIF
-      IF ::aRightAlign[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RIGHTALIGN '
-      ENDIF
-      IF ::aClientEdge[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CLIENTEDGE '
-      ENDIF
-      IF ::aBorder[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BORDER '
-      ENDIF
-      IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
-      ENDIF
-      IF ! ::aVisible[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
-      ENDIF
-      IF ! ::aEnabled[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
-      ENDIF
-      IF ! Empty( ::aInputMask[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INPUTMASK ' + AllTrim( ::aInputMask[j] )
-      ENDIF
-      IF ::aNoVScroll[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VSCROLL '
-      ENDIF
-      IF ::aNoHScroll[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HSCROLL '
-      ENDIF
-      IF ::aRTL[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
-      ENDIF
-      IF ::aWrap[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOWORDWRAP '
-      ENDIF
-      IF ::aNoPrefix[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOPREFIX '
-      ENDIF
-      IF ! Empty( ::aSubClass[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
-      ENDIF
-      Output += CRLF + CRLF
-   ENDIF
-
-   IF ::aCtrlType[j] == 'LIST'
-      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' LISTBOX ' + ::aName[j] + ' '
-      IF ! Empty( ::aCObj[j ] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
-      ENDIF
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
-      IF ! Empty( ::aItems[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITEMS ' + AllTrim( ::aItems[j] )
-      ENDIF
-      IF ::aValueN[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( ::aValueN[j] ) )
-      ENDIF
-      IF ! Empty( ::aFontName[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
-      ENDIF
-      IF ::aFontSize[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
-      ENDIF
-      IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
-      ENDIF
-      IF ! Empty( ::aOnChange[j] ) .AND. UpperNIL( ::aOnChange[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
-      ENDIF
-      IF ! Empty( ::aOnGotFocus[j] ) .AND. UpperNIL( ::aOnGotFocus[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( ::aOnGotFocus[j] )
-      ENDIF
-      IF ! Empty( ::aOnLostFocus[j] ) .AND. UpperNIL( ::aOnLostFocus[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
-      ENDIF
-      IF ! Empty( ::aOnDblClick[j] ) .AND. UpperNIL( ::aOnDblClick[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON DBLCLICK ' + AllTrim( ::aOnDblClick[j] )
-      ENDIF
-      IF ::aMultiSelect[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'MULTISELECT '
-      ENDIF
-      IF ::aHelpID[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
-      ENDIF
-      IF ::aBreak[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BREAK '
-      ENDIF
-      IF ::aNoTabStop[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
-      ENDIF
-      IF ::aSort[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SORT '
-      ENDIF
-      IF ::aFontColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + ::aFontColor[j]
-      ENDIF
-      IF ::aBold[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
-      ENDIF
-      IF ::aFontItalic[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
-      ENDIF
-      IF ::aFontUnderline[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
-      ENDIF
-      IF ::aFontStrikeout[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
-      ENDIF
-      IF ::aBackColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
-      ENDIF
-      IF ! ::aVisible[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
-      ENDIF
-      IF ! ::aEnabled[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
-      ENDIF
-      IF ::aRTL[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
-      ENDIF
-      IF ! Empty( ::aOnEnter[j] ) .AND. UpperNIL( ::aOnEnter[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON ENTER ' + AllTrim( ::aOnEnter[j] )
-      ENDIF
-      IF ! Empty( ::aImage[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'IMAGE ' + AllTrim( ::aImage[j] )
-         IF ::aFit[j]
-            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIT '
-         ENDIF
-      ENDIF
-      IF ::aTextHeight[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TEXTHEIGHT ' + LTrim( Str( ::aTextHeight[j] ) )
-      ENDIF
-      IF ::anovscroll[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOVSCROLL '
-      ENDIF
-      IF ! Empty( ::aSubClass[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
-      ENDIF
-      Output += CRLF + CRLF
-   ENDIF
-
-   IF ::aCtrlType[j] == 'ANIMATE'
-      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' ANIMATEBOX ' + ::aName[j] + ' '
-      IF ! Empty( ::aCObj[j ] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
-      ENDIF
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
-      IF ! Empty( ::aFile[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FILE ' + StrToStr( ::aFile[j] )
-      ENDIF
-      IF ::aAutoPlay[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AUTOPLAY '
-      ENDIF
-      IF ::aCenter[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CENTER '
-      ENDIF
-      IF ::aTransparent[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TRANSPARENT '
-      ENDIF
-      IF ::aHelpID[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
-      ENDIF
-      IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
-      ENDIF
-      IF ! ::aVisible[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
-      ENDIF
-      IF ! ::aEnabled[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
-      ENDIF
-      IF ::aRTL[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
-      ENDIF
-      IF ::aNoTabStop[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
-      ENDIF
-      IF ! Empty( ::aSubClass[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
-      ENDIF
-      Output += CRLF + CRLF
-   ENDIF
-
-   IF ::aCtrlType[j] == 'PLAYER'
-      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' PLAYER ' + ::aName[j] + ' '
-      IF ! Empty( ::aCObj[j ] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
-      ENDIF
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FILE ' + StrToStr( ::aFile[j] )
-      IF ::aHelpID[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
-      ENDIF
-      IF ::aNoTabStop[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
-      ENDIF
-      IF ! ::aVisible[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
-      ENDIF
-      IF ! ::aEnabled[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
-      ENDIF
-      IF ::aRTL[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
-      ENDIF
-      IF ::aNoAutoSizeWindow[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOAUTOSIZEWINDOW '
-      ENDIF
-      IF ::aNoAutoSizeMovie[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOAUTOSIZEMOVIE '
-      ENDIF
-      IF ::aNoErrorDlg[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOERRORDLG '
-      ENDIF
-      IF ::aNoMenu[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOMENU '
-      ENDIF
-      IF ::aNoOpen[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOOPEN '
-      ENDIF
-      IF ::aNoPlayBar[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOPLAYBAR '
-      ENDIF
-      IF ::aShowAll[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SHOWALL '
-      ENDIF
-      IF ::aShowMode[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SHOWMODE '
-      ENDIF
-      IF ::aShowName[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SHOWNAME '
-      ENDIF
-      IF ::aShowPosition[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SHOWPOSITION '
-      ENDIF
-      IF ! Empty( ::aSubClass[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
-      ENDIF
-      Output += CRLF + CRLF
-   ENDIF
-
-   IF ::aCtrlType[j] == 'MONTHCALENDAR'
-      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' MONTHCALENDAR ' + ::aName[j] + ' '
-      IF ! Empty( ::aCObj[j ] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
-      ENDIF
-      IF ! Empty( ::aValue[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + AllTrim( ::aValue[j] )
-      ENDIF
-      IF ! Empty( ::aFontName[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
-      ENDIF
-      IF ::aFontSize[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
-      ENDIF
-      IF ::aFontColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + ::aFontColor[j]
-      ENDIF
-      IF ::aBold[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
-      ENDIF
-      IF ::aFontItalic[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
-      ENDIF
-      IF ::aFontUnderline[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
-      ENDIF
-      IF ::aFontStrikeout[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
-      ENDIF
-      IF ::aBackColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
-      ENDIF
-      IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
-      ENDIF
-      IF ! Empty( ::aOnChange[j] ) .AND. UpperNIL( ::aOnChange[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
-      ENDIF
-      IF ::aHelpID[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
-      ENDIF
-      IF ::aNoTabStop[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
-      ENDIF
-      IF ! ::aVisible[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
-      ENDIF
-      IF ! ::aEnabled[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
-      ENDIF
-      IF ::aNoToday[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTODAY '
-      ENDIF
-      IF ::aNoTodayCircle[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTODAYCIRCLE '
-      ENDIF
-      IF ::aWeekNumbers[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WEEKNUMBERS '
-      ENDIF
-      IF ! Empty( ::aSubClass[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
-      ENDIF
-      IF ::aRTL[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
-      ENDIF
-      IF ::aTitleFontColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TITLEFONTCOLOR ' + ::aTitleFontColor[j]
-      ENDIF
-      IF ::aTitleBackColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TITLEBACKCOLOR ' + ::aTitleBackColor[j]
-      ENDIF
-      IF ::aTrailingFontColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TRAILINGFONTCOLOR ' + ::aTrailingFontColor[j]
-      ENDIF
-      IF ::aBackgroundColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKGROUNDCOLOR ' + ::aBackgroundColor[j]
-      ENDIF
-      IF ::aMultiSelect[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'MULTISELECT '
-      ENDIF
-      IF ! Empty( ::aOnViewChange[j] ) .AND. UpperNIL( ::aOnViewChange[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON VIEWCHANGE ' + AllTrim( ::aOnViewChange[j] )
-      ENDIF
-      IF ! Empty( ::aOnGotFocus[j] ) .AND. UpperNIL( ::aOnGotFocus[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( ::aOnGotFocus[j] )
-      ENDIF
-      IF ! Empty( ::aOnLostFocus[j] ) .AND. UpperNIL( ::aOnLostFocus[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
-      ENDIF
-      Output += CRLF + CRLF
-   ENDIF
-
-   IF ::aCtrlType[j] == 'PICBUTT'
-      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' BUTTON ' + ::aName[j] + ' '
-      IF ! Empty( ::aCObj[j ] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
-      ENDIF
-      IF ! Empty( ::aPicture[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PICTURE ' + StrToStr( ::aPicture[j] )
-      ELSE
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PICTURE ' + "'" + "'"
-      ENDIF
-      IF ! Empty( ::aAction[j] ) .AND. UpperNIL( ::aAction[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + AllTrim( ::aAction[j] )
-      ELSE
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + "MsgInfo( 'Button Pressed' )"
-      ENDIF
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
-      IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
-      ENDIF
-      IF ::aFlat[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FLAT '
-      ENDIF
-      IF ! Empty( ::aOnGotFocus[j] ) .AND. UpperNIL( ::aOnGotFocus[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( ::aOnGotFocus[j] )
-      ENDIF
-      IF ! Empty( ::aOnLostFocus[j] ) .AND. UpperNIL( ::aOnLostFocus[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
-      ENDIF
-      IF ::aNoTabStop[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
-      ENDIF
-      IF ::aHelpID[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
-      ENDIF
-      IF ! ::aEnabled[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
-      ENDIF
-      IF ! ::aVisible[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
-      ENDIF
-      IF ::aBackColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
-      ENDIF
-      IF ! Empty( ::aBuffer[j] )
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BUFFER ' + AllTrim( ::aBuffer[j] )
-      ENDIF
-      IF ! Empty( ::aHBitmap[j] )
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HBITMAP ' + AllTrim( ::aHBitmap[j] )
-      ENDIF
-      IF ::aNoLoadTrans[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOLOADTRANSPARENT '
-      ENDIF
-      IF ::aForceScale[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FORCESCALE '
-      ENDIF
-      IF ::aNo3DColors[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NO3DCOLORS '
-      ENDIF
-      IF ::aFit[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AUTOFIT '
-      ENDIF
-      IF ::aDIBSection[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DIBSECTION '
-      ENDIF
-      IF ! Empty( ::aOnMouseMove[j] ) .AND. UpperNIL( ::aOnMouseMove[j] ) # 'NIL'
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON MOUSEMOVE ' + AllTrim( ::aOnMouseMove[j] )
-      ENDIF
-      IF ::aThemed[j] == '.T.'
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'THEMED '
-      ELSEIF ::aThemed[j] == '.F.'
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTHEME '
-      ENDIF
-      IF ! Empty( ::aImageMargin[j] )
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'IMAGEMARGIN ' + AllTrim( ::aImageMargin[j] )
-      ENDIF
-      IF ! Empty( ::aJustify[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + Upper( AllTrim( ::aJustify[j] ) ) + ' '
-      ENDIF
-      IF ::aCancel[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CANCEL '
-      ENDIF
-      IF ! Empty( ::aSubClass[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
-      ENDIF
-      Output += CRLF + CRLF
-   ENDIF
-
-   IF ::aCtrlType[j] == 'PICCHECKBUTT'
-      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' CHECKBUTTON ' + ::aName[j] + ' '
-      IF ! Empty( ::aCObj[j ] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
-      ENDIF
-      IF ! Empty( ::aPicture[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PICTURE ' + StrToStr( ::aPicture[j] )
-      ELSE
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PICTURE ' + "'" + "'"
-      ENDIF
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
-      IF ::aValueL[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE .T.'
-      ELSE
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE .F.'
-      ENDIF
-      IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
-      ENDIF
-      IF ::aNoTabStop[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
-      ENDIF
-      IF ! Empty( ::aOnChange[j] ) .AND. UpperNIL( ::aOnChange[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
-      ENDIF
-      IF ! Empty( ::aOnGotFocus[j] ) .AND. UpperNIL( ::aOnGotFocus[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( ::aOnGotFocus[j] )
-      ENDIF
-      IF ! Empty( ::aOnLostFocus[j] ) .AND. UpperNIL( ::aOnLostFocus[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
-      ENDIF
-      IF ! Empty( ::aOnMouseMove[j] ) .AND. UpperNIL( ::aOnMouseMove[j] ) # 'NIL'
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON MOUSEMOVE ' + AllTrim( ::aOnMouseMove[j] )
-      ENDIF
-      IF ::aHelpID[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
-      ENDIF
-      IF ! Empty( ::aSubClass[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
-      ENDIF
-      IF ! ::aVisible[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
-      ENDIF
-      IF ! Empty( ::aBuffer[j] )
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BUFFER ' + AllTrim( ::aBuffer[j] )
-      ENDIF
-      IF ! Empty( ::aHBitmap[j] )
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HBITMAP ' + AllTrim( ::aHBitmap[j] )
-      ENDIF
-      IF ::aNoLoadTrans[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOLOADTRANSPARENT '
-      ENDIF
-      IF ::aForceScale[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FORCESCALE '
-      ENDIF
-      IF ! Empty( ::aField[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIELD ' + AllTrim( ::aField[j] )
-      ENDIF
-      IF ::aNo3DColors[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NO3DCOLORS '
-      ENDIF
-      IF ::aFit[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AUTOFIT '
-      ENDIF
-      IF ::aDIBSection[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DIBSECTION '
-      ENDIF
-      IF ::aBackColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
-      ENDIF
-      IF ! ::aEnabled[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
-      ENDIF
-      IF ::aThemed[j] == '.T.'
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'THEMED '
-      ELSEIF ::aThemed[j] == '.F.'
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTHEME '
-      ENDIF
-      IF ::aFlat[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FLAT '
-      ENDIF
-      IF ! Empty( ::aImageMargin[j] )
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'IMAGEMARGIN ' + AllTrim( ::aImageMargin[j] )
-      ENDIF
-      IF ! Empty( ::aJustify[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + Upper( AllTrim( ::aJustify[j] ) ) + ' '
-      ENDIF
-      Output += CRLF + CRLF
-   ENDIF
-
-   IF ::aCtrlType[j] == 'PROGRESSBAR'
-      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' PROGRESSBAR ' + ::aName[j] + ' '
-      IF ! Empty( ::aCObj[j ] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
-      ENDIF
-      IF ! Empty( ::aRange[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RANGE ' + AllTrim( ::aRange[j] )
-      ENDIF
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
-      IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
-      ENDIF
-      IF ::aVertical[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VERTICAL '
-      ENDIF
-      IF ::aSmooth[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SMOOTH '
-      ENDIF
-      IF ::aHelpID[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
-      ENDIF
-      IF ::aValueN[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( ::aValueN[j] ) )
-      ENDIF
-      IF ! ::aVisible[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
-      ENDIF
-      IF ::aBackColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
-      ENDIF
-      IF ::aFontColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FORECOLOR ' + ::aFontColor[j]
-      ENDIF
-      IF ::aRTL[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
-      ENDIF
-      IF ::aMarquee[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'MARQUEE ' + LTrim( Str( ::aMarquee[j] ) )
-      ENDIF
-      Output += CRLF + CRLF
-   ENDIF
-
-   IF ::aCtrlType[j] == 'RADIOGROUP'
-      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' RADIOGROUP ' + ::aName[j] + ' '
-      IF ! Empty( ::aCObj[j ] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
-      ENDIF
-      IF ! Empty( ::aItems[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OPTIONS ' + AllTrim( ::aItems[j] )
-      ENDIF
-      IF ::aValueN[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( ::aValueN[j] ) )
-      ENDIF
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
-      // Do no include HEIGHT
-      IF ::aSpacing[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SPACING ' + LTrim( Str( ::aSpacing[j] ) )
-      ENDIF
-      IF ! Empty( ::aFontName[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
-      ENDIF
-      IF ::aFontSize[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
-      ENDIF
-      IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
-      ENDIF
-      IF ! Empty( ::aOnChange[j] ) .AND. UpperNIL( ::aOnChange[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
-      ENDIF
-      IF ::aTransparent[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TRANSPARENT '
-      ENDIF
-      IF ::aHelpID[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
-      ENDIF
-      IF ::aBold[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
-      ENDIF
-      IF ::aFontItalic[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
-      ENDIF
-      IF ::aFontUnderline[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
-      ENDIF
-      IF ::aFontStrikeout[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
-      ENDIF
-      IF ::aBackColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
-      ENDIF
-      IF ::aFontColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + ::aFontColor[j]
-      ENDIF
-      IF ! ::aVisible[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
-      ENDIF
-      IF ::aNoTabStop[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
-      ENDIF
-      IF ::aAutoPlay[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AUTOSIZE '
-      ENDIF
-      IF ::aFlat[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HORIZONTAL '
-      ENDIF
-      IF ::aLeft[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'LEFTJUSTIFY '
-      ENDIF
-      IF ! Empty( ::aReadOnlyB[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'READONLY ' + AllTrim( ::aReadOnlyB[j] )
-      ENDIF
-      IF ! ::aEnabled[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
-      ENDIF
-      IF ::aRTL[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
-      ENDIF
-      IF ::aThemed[j] == '.T.'
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'THEMED '
-      ELSEIF ::aThemed[j] == '.F.'
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTHEME '
-      ENDIF
-      IF ! Empty( ::aBackground[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKGROUND ' + AllTrim( ::aBackground[j] )
-      ENDIF
-      IF ! Empty( ::aSubClass[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
-      ENDIF
-      Output += CRLF + CRLF
-   ENDIF
-
-   IF ::aCtrlType[j] == 'RICHEDIT'
-      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' RICHEDITBOX ' + ::aName[j] + ' '
-      IF ! Empty( ::aCObj[j ] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
-      ENDIF
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
-      IF ! Empty( ::aField[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIELD ' + AllTrim( ::aField[j] )
-      ENDIF
-      IF ! Empty( ::aValue[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + StrToStr( ::aValue[j], .T. )
-      ENDIF
-      IF ::aReadOnly[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'READONLY '
-      ENDIF
-      IF ! Empty( ::aFontName[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
-      ENDIF
-      IF ::aFontSize[j] > 0
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
-      ENDIF
-      IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
-      ENDIF
-      IF ::aMaxLength[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'MAXLENGTH ' + LTrim( Str( ::aMaxLength[j] ) )
-      ENDIF
-      IF ::aBreak[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BREAK '
-      ENDIF
-      IF ::aNoTabStop[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
-      ENDIF
-      IF ! Empty( ::aOnChange[j] ) .AND. UpperNIL( ::aOnChange[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
-      ENDIF
-      IF ! Empty( ::aOnGotFocus[j] ) .AND. UpperNIL( ::aOnGotFocus[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( ::aOnGotFocus[j] )
-      ENDIF
-      IF ! Empty( ::aOnLostFocus[j] ) .AND. UpperNIL( ::aOnLostFocus[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
-      ENDIF
-      IF ::aHelpID[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
-      ENDIF
-      IF ::aBold[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
-      ENDIF
-      IF ::aFontItalic[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
-      ENDIF
-      IF ::aFontUnderline[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
-      ENDIF
-      IF ::aFontStrikeout[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
-      ENDIF
-      IF ::aBackColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
-      ENDIF
-      IF ::aFontColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + ::aFontColor[j]
-      ENDIF
-      IF ! Empty( ::aOnSelChange[j] ) .AND. UpperNIL( ::aOnSelChange[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON SELCHANGE ' + AllTrim( ::aOnSelChange[j] )
-      ENDIF
-      IF ! ::aVisible[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
-      ENDIF
-      IF ::aRTL[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
-      ENDIF
-      IF ! ::aEnabled[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
-      ENDIF
-      IF ::aNoHideSel[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOHIDESEL '
-      ENDIF
-      IF ::aFocusedPos[j] <> -4            // default value, see DATA nOnFocusPos in h_textbox.prg
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FOCUSEDPOS ' + LTrim( Str( ::aFocusedPos[j] ) )
-      ENDIF
-      IF ::aNoVScroll[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOVSCROLL '
-      ENDIF
-      IF ::aNoHScroll[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOHSCROLL '
-      ENDIF
-      IF ! Empty( ::aFile[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FILE ' + StrToStr( ::aFile[j] )
-      ENDIF
-      IF ::aPlainText[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PLAINTEXT '
-      ENDIF
-      IF ::aFileType[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FILETYPE ' + LTrim( Str( ::aFileType[j] ) )
-      ENDIF
-      IF ! Empty( ::aOnVScroll[j] ) .AND. UpperNIL( ::aOnVScroll[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON VSCROLL ' + AllTrim( ::aOnVScroll[j] )
-      ENDIF
-      IF ! Empty( ::aOnHScroll[j] ) .AND. UpperNIL( ::aOnHScroll[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON HSCROLL ' + AllTrim( ::aOnHScroll[j] )
-      ENDIF
-      IF ! Empty( ::aSubClass[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
-      ENDIF
-      Output += CRLF + CRLF
-   ENDIF
-
-   IF ::aCtrlType[j] == 'SLIDER'
-      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' SLIDER ' + ::aName[j] + ' '
-      IF ! Empty( ::aCObj[j ] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
-      ENDIF
-      IF ! Empty( ::aRange[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RANGE ' + AllTrim( ::aRange[j] )
-      ELSE
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RANGE 1, 100'
-      ENDIF
-      IF ::aValueN[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( ::aValueN[j] ) )
-      ENDIF
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
-      IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
-      ENDIF
-      IF ! Empty( ::aOnChange[j] ) .AND. UpperNIL( ::aOnChange[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
-      ENDIF
-      IF ::aVertical[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VERTICAL '
-      ENDIF
-      IF ::aNoTicks[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTICKS '
-      ENDIF
-      IF ::aBoth[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOTH '
-      ENDIF
-      IF ::aTop[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOP '
-      ENDIF
-      IF ::aLeft[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'LEFT '
-      ENDIF
-      IF ::aHelpID[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
-      ENDIF
-      IF ::aBackColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
-      ENDIF
-      IF ! ::aEnabled[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
-      ENDIF
-      IF ::aNoTabStop[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
-      ENDIF
-      IF ! ::aVisible[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
-      ENDIF
-      IF ::aRTL[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
-      ENDIF
-      IF ! Empty( ::aSubClass[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
-      ENDIF
-      Output += CRLF + CRLF
-   ENDIF
-
-   IF ::aCtrlType[j] == 'SPINNER'
-      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' SPINNER ' + ::aName[j] + ' '
-      IF ! Empty( ::aCObj[j ] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
-      ENDIF
-      IF ! Empty( ::aRange[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RANGE ' + AllTrim( ::aRange[j] )
-      ENDIF
-      IF ::aValueN[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( ::aValueN[j] ) )
-      ENDIF
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
-      IF ! Empty( ::aFontName[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
-      ENDIF
-      IF ::aFontSize[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
-      ENDIF
-      IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
-      ENDIF
-      IF ! Empty( ::aOnChange[j] ) .AND. UpperNIL( ::aOnChange[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
-      ENDIF
-      IF ! Empty( ::aOnGotFocus[j] ) .AND. UpperNIL( ::aOnGotFocus[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( ::aOnGotFocus[j] )
-      ENDIF
-      IF ! Empty( ::aOnLostFocus[j] ) .AND. UpperNIL( ::aOnLostFocus[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
-      ENDIF
-      IF ::aHelpID[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
-      ENDIF
-      IF ::aNoTabStop[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
-      ENDIF
-      IF ::aWrap[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WRAP '
-      ENDIF
-      IF ::aReadOnly[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'READONLY '
-      ENDIF
-      IF ::aIncrement[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INCREMENT ' + LTrim( Str( ::aIncrement[j] ) )
-      ENDIF
-      IF ::aBold[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
-      ENDIF
-      IF ::aFontItalic[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
-      ENDIF
-      IF ::aFontUnderline[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
-      ENDIF
-      IF ::aFontStrikeout[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
-      ENDIF
-      IF ::aBackColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
-      ENDIF
-      IF ::aFontColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + ::aFontColor[j]
-      ENDIF
-      IF ! ::aEnabled[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
-      ENDIF
-      IF ! ::aVisible[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
-      ENDIF
-      IF ::aRTL[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
-      ENDIF
-      IF ::aBorder[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOBORDER '
-      ENDIF
-      IF ::aDisplayEdit[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOUNDTEXT '
-      ENDIF
-      Output += CRLF + CRLF
-   ENDIF
-
-   IF ::aCtrlType[j] == 'TEXT'
-      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' TEXTBOX ' + ::aName[j] + ' '
-      IF ! Empty( ::aCObj[j ] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
-      ENDIF
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
-      IF ! Empty( ::aField[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIELD ' + AllTrim( ::aField[j] )
-      ENDIF
-      IF ::aValue[j] == NIL
-         cValue := ''
-      ELSE
-         cValue := AllTrim( ::aValue[j] )
-      ENDIF
-      IF ! Empty( cValue )
-         IF ::aNumeric[j]
-            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + cValue
+         IF ! Empty( ::aHeaders[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEADERS ' + AllTrim( ::aHeaders[j] )
          ELSE
-            IF ::aDate[j]
-               Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + cValue
-            ELSE
-               Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + cValue
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEADERS ' + "{ '', '' }"
+         ENDIF
+         IF ! Empty( ::aWidths[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTHS ' + AllTrim( ::aWidths[j] )
+         ELSE
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTHS ' + '{ 90, 60 }'
+         ENDIF
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WORKAREA ' + AllTrim( ::aWorkArea[j] )
+         IF ! Empty( ::aFields[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIELDS ' + AllTrim( ::aFields[j] )
+         ELSE
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIELDS ' + "{ 'field1', 'field2' }"
+         ENDIF
+         IF ::aValueN[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( ::aValueN[j] ) )
+         ENDIF
+         IF ! Empty( ::aFontName[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
+         ENDIF
+         IF ::aFontSize[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
+         ENDIF
+         IF ! Empty( ::aToolTip[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
+         ENDIF
+         IF ! Empty( ::aInputMask[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INPUTMASK ' + AllTrim( ::aInputMask[j] )
+         ENDIF
+         IF ! Empty( AllTrim( ::aDynamicBackColor[j] ) ) .AND. UpperNIL( ::aDynamicBackColor[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DYNAMICBACKCOLOR ' + AllTrim( ::aDynamicBackColor[j] )
+         ENDIF
+         IF ! Empty( AllTrim( ::aDynamicForeColor[j] ) ) .AND. UpperNIL( ::aDynamicForeColor[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DYNAMICFORECOLOR ' + AllTrim( ::aDynamicForeColor[j] )
+         ENDIF
+         IF ! Empty( ::aColumnControls[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'COLUMNCONTROLS ' + AllTrim( ::aColumnControls[j] )
+         ENDIF
+         IF ! Empty( ::aOnChange[j] ) .AND. UpperNIL( ::aOnChange[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
+         ENDIF
+         IF ! Empty( ::aOnGotFocus[j] ) .AND. UpperNIL( ::aOnGotFocus[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( ::aOnGotFocus[j] )
+         ENDIF
+         IF ! Empty( ::aOnLostFocus[j] ) .AND. UpperNIL( ::aOnLostFocus[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
+         ENDIF
+         IF ! Empty( ::aOnDblClick[j] ) .AND. UpperNIL( ::aOnDblClick[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON DBLCLICK ' + AllTrim( ::aOnDblClick[j] )
+         ENDIF
+         IF ! Empty( ::aOnHeadClick[j] ) .AND. UpperNIL( ::aOnHeadClick[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON HEADCLICK ' + AllTrim( ::aOnHeadClick[j] )
+         ENDIF
+         IF ! Empty( ::aOnEditCell[j] ) .AND. UpperNIL( ::aOnEditCell[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON EDITCELL ' + AllTrim( ::aOnEditCell[j] )
+         ENDIF
+         IF ! Empty( ::aOnAppend[j] ) .AND. UpperNIL( ::aOnAppend[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON APPEND ' + AllTrim( ::aOnAppend[j] )
+         ENDIF
+         IF ! Empty( ::aWhen[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WHEN ' + AllTrim( ::aWhen[j] )
+         ENDIF
+         IF ! Empty( ::aValid[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALID ' + AllTrim( ::aValid[j] )
+         ENDIF
+         IF ! Empty( ::aValidMess[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALIDMESSAGES ' + AllTrim( ::aValidMess[j] )
+         ENDIF
+         IF ! Empty( ::aReadOnlyB[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'READONLY ' + AllTrim( ::aReadOnlyB[j] )
+         ENDIF
+         IF ::aLock[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'LOCK '
+         ENDIF
+         IF ::aDelete[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DELETE '
+         ENDIF
+         IF ::aInPlace[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INPLACE '
+         ENDIF
+         IF ::aEdit[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'EDIT '
+         ENDIF
+         IF ::anolines[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOLINES '
+         ENDIF
+         IF ! Empty( ::aImage[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'IMAGE ' + AllTrim( ::aImage[j] )
+         ENDIF
+         IF ! Empty( ::aJustify[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'JUSTIFY ' + AllTrim( ::aJustify[j] )
+         ENDIF
+         IF ! Empty( ::aOnEnter[j] ) .AND. UpperNIL( ::aOnEnter[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON ENTER ' + AllTrim( ::aOnEnter[j] )
+         ENDIF
+         IF ::aHelpID[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
+         ENDIF
+         IF ::aAppend[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'APPEND '
+         ENDIF
+         IF ::aBold[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
+         ENDIF
+         IF ::aFontItalic[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
+         ENDIF
+         IF ::aFontUnderline[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
+         ENDIF
+         IF ::aFontStrikeout[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
+         ENDIF
+         IF ::aBackColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
+         ENDIF
+         IF ::aFontColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + ::aFontColor[j]
+         ENDIF
+         IF ! Empty( ::aAction[j] ) .AND. UpperNIL( ::aAction[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + AllTrim( ::aAction[j] )
+         ENDIF
+         IF ::aBreak[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BREAK '
+         ENDIF
+         IF ::aRTL[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
+         ENDIF
+         IF ! ::aEnabled[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
+         ENDIF
+         IF ::aNoTabStop[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
+         ENDIF
+         IF ! ::aVisible[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
+         ENDIF
+         IF ::aFull[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FULLMOVE '
+         ENDIF
+         IF ::aButtons[j]
+            Output += ' ;' + CRLF + Space( nSpacing * 2) + 'USEBUTTONS '
+         ENDIF
+         IF ::aNoHeaders[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOHEADERS '
+         ENDIF
+         IF ! Empty( ::aHeaderImages[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEADERIMAGES ' + AllTrim( ::aHeaderImages[j] )
+         ENDIF
+         IF ! Empty( ::aImagesAlign[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'IMAGESALIGN ' + AllTrim( ::aImagesAlign[j] )
+         ENDIF
+         IF ! Empty( AllTrim( ::aSelColor[j] ) ) .AND. UpperNIL( ::aSelColor[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SELECTEDCOLORS ' + AllTrim( ::aSelColor[j] )
+         ENDIF
+         IF ! Empty( ::aEditKeys[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'EDITKEYS ' + AllTrim( ::aEditKeys[j] )
+         ENDIF
+         IF ::aDoubleBuffer[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DOUBLEBUFFER '
+         ENDIF
+         IF ::aSingleBuffer[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SINGLEBUFFER '
+         ENDIF
+         IF ::aFocusRect[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FOCUSRECT '
+         ENDIF
+         IF ::aNoFocusRect[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOFOCUSRECT '
+         ENDIF
+         IF ::aPLM[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PAINTLEFTMARGIN '
+         ENDIF
+         IF ::aFixedCols[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIXEDCOLS '
+         ENDIF
+         IF ! Empty( ::aOnAbortEdit[j] ) .AND. UpperNIL( ::aOnAbortEdit[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON ABORTEDIT ' + AllTrim( ::aOnAbortEdit[j] )
+         ENDIF
+         IF ::aFixedWidths[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIXEDWIDTHS '
+         ENDIF
+         IF ! Empty( ::aBeforeColMove[j] ) .AND. UpperNIL( ::aBeforeColMove[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BEFORECOLMOVE ' + AllTrim( ::aBeforeColMove[j] )
+         ENDIF
+         IF ! Empty( ::aAfterColMove[j] ) .AND. UpperNIL( ::aAfterColMove[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AFTERCOLMOVE ' + AllTrim( ::aAfterColMove[j] )
+         ENDIF
+         IF ! Empty( ::aBeforeColSize[j] ) .AND. UpperNIL( ::aBeforeColSize[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BEFORECOLSIZE ' + AllTrim( ::aBeforeColSize[j] )
+         ENDIF
+         IF ! Empty( ::aAfterColSize[j] ) .AND. UpperNIL( ::aAfterColSize[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AFTERCOLSIZE ' + AllTrim( ::aAfterColSize[j] )
+         ENDIF
+         IF ! Empty( ::aBeforeAutoFit[j] ) .AND. UpperNIL( ::aBeforeAutoFit[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BEFOREAUTOFIT ' + AllTrim( ::aBeforeAutoFit[j] )
+         ENDIF
+         IF ::aLikeExcel[j]
+            Output += ' ;' + CRLF + Space( nSpacing * 2) + 'EDITLIKEEXCEL '
+         ENDIF
+         IF ! Empty( ::aDeleteWhen[j] ) .AND. UpperNIL( ::aDeleteWhen[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * 2) + 'DELETEWHEN ' + AllTrim( ::aDeleteWhen[j] )
+         ENDIF
+         IF ! Empty( ::aDeleteMsg[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * 2) + 'DELETEMSG ' + AllTrim( ::aDeleteMsg[j] )
+         ENDIF
+         IF ! Empty( ::aOnDelete[j] ) .AND. UpperNIL( ::aOnDelete[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON DELETE ' + AllTrim( ::aOnDelete[j] )
+         ENDIF
+         IF ::aNoDelMsg[j]
+            Output += ' ;' + CRLF + Space( nSpacing * 2) + 'NODELETEMSG '
+         ENDIF
+         IF ::aFixedCtrls[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIXEDCONTROLS '
+         ENDIF
+         IF ::aDynamicCtrls[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DYNAMICCONTROLS '
+         ENDIF
+         IF ! Empty( ::aOnHeadRClick[j] ) .AND. UpperNIL( ::aOnHeadRClick[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON HEADRCLICK ' + AllTrim( ::aOnHeadRClick[j] )
+         ENDIF
+         IF ::aExtDblClick[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'EXTDBLCLICK '
+         ENDIF
+         IF ::anovscroll[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOVSCROLL '
+         ENDIF
+         IF ::aNoRefresh[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOREFRESH '
+         ENDIF
+         IF ! Empty( ::aReplaceField[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'REPLACEFIELD ' + AllTrim( ::aReplaceField[j] )
+         ENDIF
+         IF ! Empty( ::aSubClass[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
+         ENDIF
+         IF ::aRecCount[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RECCOUNT '
+         ENDIF
+         IF ! Empty( ::aColumnInfo[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'COLUMNINFO ' + AllTrim( ::aColumnInfo[j] )
+         ENDIF
+         IF ::aDescend[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DESCENDING '
+         ENDIF
+         IF ::aForceRefresh[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FORCEREFRESH '
+         ENDIF
+         IF ::aSync[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SYNCHRONIZED '
+         ELSEIF ::aUnSync[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNSYNCHRONIZED '
+         ENDIF
+         IF ::aUpdate[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UPDATEALL '
+         ENDIF
+         IF ::aFixBlocks[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIXEDBLOCKS '
+         ELSEIF ::aDynBlocks[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DYNAMICBLOCKS '
+         ENDIF
+         IF ::aUpdateColors[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UPDATECOLORS '
+         ENDIF
+         IF ::aNoModalEdit[j]
+            Output += ' ;' + CRLF + Space( nSpacing * 2) + 'NOMODALEDIT '
+         ENDIF
+         IF ::aByCell[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NAVIGATEBYCELL '
+         ENDIF
+         IF ::aAutoPlay[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SILENT '
+         ENDIF
+         IF ::aFlat[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLEALTA '
+         ENDIF
+         IF ::aShowAll[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOSHOWALWAYS '
+         ENDIF
+         IF ::aNoHideSel[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NONEUNSELS '
+         ENDIF
+         IF ::aDisplayEdit[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CHANGEBEFOREEDIT '
+         ENDIF
+         IF ! Empty( ::aOnRClick[j] ) .AND. UpperNIL( ::aOnRClick[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON RCLICK ' + AllTrim( ::aOnRClick[j] )
+         ENDIF
+         IF ::aCheckBoxes[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CHECKBOXES '
+         ENDIF
+         IF ! Empty( ::aOnCheckChg[j] ) .AND. UpperNIL( ::aOnCheckChg[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHECKCHANGE ' + AllTrim( ::aOnCheckChg[j] )
+         ENDIF
+         IF ! Empty( ::aOnRowRefresh[j] ) .AND. UpperNIL( ::aOnRowRefresh[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON ROWREFRESH ' + AllTrim( ::aOnRowRefresh[j] )
+         ENDIF
+         IF ! Empty( ::aDefaultYear[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DEFAULTVALUES ' + AllTrim( ::aDefaultYear[j] )
+         ENDIF
+         IF ! Empty( ::aOnInsert[j] ) .AND. UpperNIL( ::aOnInsert[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON INSERT ' + AllTrim( ::aOnInsert[j] )
+         ENDIF
+         IF ! Empty( ::aOnEditCellEnd[j] ) .AND. UpperNIL( ::aOnEditCellEnd[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON EDITCELLEND ' + AllTrim( ::aOnEditCellEnd[j] )
+         ENDIF
+         Output += CRLF + CRLF
+      ENDIF
+
+      IF ::aCtrlType[j] == 'BUTTON'
+         Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' BUTTON ' + ::aName[j] + ' '
+         IF ! Empty( ::aCObj[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
+         ENDIF
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+         IF ! Empty( ::aCaption[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + AllTrim( ::aCaption[j] )
+         ELSE
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + StrToStr( ::aName[j], .T. )
+         ENDIF
+         IF ! Empty( ::aPicture[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PICTURE ' + AllTrim( ::aPicture[j] )
+         ENDIF
+         IF ! Empty( ::aAction[j] ) .AND. UpperNIL( ::aAction[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + AllTrim( ::aAction[j] )
+         ELSE
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + "MsgInfo( 'Button Pressed' )"
+         ENDIF
+         IF ! Empty( ::aFontName[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
+         ENDIF
+         IF ::aFontSize[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
+         ENDIF
+         IF ::aBold[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
+         ENDIF
+         IF ::aFontItalic[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
+         ENDIF
+         IF ::aFontUnderline[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
+         ENDIF
+         IF ::aFontStrikeout[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
+         ENDIF
+         IF ::aBackColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
+         ENDIF
+         IF ! ::aVisible[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
+         ENDIF
+         IF ! ::aEnabled[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
+         ENDIF
+         IF ! Empty( ::aToolTip[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
+         ENDIF
+         IF ::aFlat[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FLAT '
+         ENDIF
+         IF ! Empty( ::aJustify[j] ) .AND. ! Empty( ::aPicture[j] ) .AND. ! Empty( ::aCaption[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + Upper( AllTrim( ::aJustify[j] ) ) + ' '
+         ENDIF
+         IF ! Empty( ::aOnGotFocus[j] ) .AND. UpperNIL( ::aOnGotFocus[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( ::aOnGotFocus[j] )
+         ENDIF
+         IF ! Empty( ::aOnLostFocus[j] ) .AND. UpperNIL( ::aOnLostFocus[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
+         ENDIF
+         IF ! Empty( ::aOnMouseMove[j] ) .AND. UpperNIL( ::aOnMouseMove[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON MOUSEMOVE ' + AllTrim( ::aOnMouseMove[j] )
+         ENDIF
+         IF ::aNoTabStop[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
+         ENDIF
+         IF ::aHelpID[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
+         ENDIF
+         IF ! Empty( ::aBuffer[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BUFFER ' + AllTrim( ::aBuffer[j] )
+         ENDIF
+         IF ! Empty( ::aHBitmap[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HBITMAP ' + AllTrim( ::aHBitmap[j] )
+         ENDIF
+         IF ! Empty( ::aImageMargin[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'IMAGEMARGIN ' + AllTrim( ::aImageMargin[j] )
+         ENDIF
+         IF ::aRTL[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
+         ENDIF
+         IF ::aNoPrefix[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOPREFIX '
+         ENDIF
+         IF ::aNoLoadTrans[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOLOADTRANSPARENT '
+         ENDIF
+         IF ::aForceScale[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FORCESCALE '
+         ENDIF
+         IF ::aCancel[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CANCEL '
+         ENDIF
+         IF ::aMultiLine[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'MULTILINE '
+         ENDIF
+         IF ::aThemed[j] == '.T.'
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'THEMED '
+         ELSEIF ::aThemed[j] == '.F.'
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTHEME '
+         ENDIF
+         IF ::aNo3DColors[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NO3DCOLORS '
+         ENDIF
+         IF ::aFit[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AUTOFIT '
+         ENDIF
+         IF ::aDIBSection[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DIBSECTION '
+         ENDIF
+         IF ! Empty( ::aSubClass[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
+         ENDIF
+         Output += CRLF + CRLF
+      ENDIF
+
+      IF ::aCtrlType[j] == 'CHECKBTN'
+         Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' CHECKBUTTON ' + ::aName[j] + ' '
+         IF ! Empty( ::aCObj[j ] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
+         ENDIF
+         IF ! Empty( ::aCaption[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + StrToStr( ::aCaption[j], .T. )
+         ELSE
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + StrToStr( ::aName[j], .T. )
+         ENDIF
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+         IF ::aValueL[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE .T.'
+         ELSE
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE .F.'
+         ENDIF
+         IF ! Empty( ::aFontName[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
+         ENDIF
+         IF ::aFontSize[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
+         ENDIF
+         IF ! Empty( ::aToolTip[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
+         ENDIF
+         IF ! Empty( ::aOnChange[j] ) .AND. UpperNIL( ::aOnChange[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
+         ENDIF
+         IF ! Empty( ::aOnGotFocus[j] ) .AND. UpperNIL( ::aOnGotFocus[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( ::aOnGotFocus[j] )
+         ENDIF
+         IF ! Empty( ::aOnLostFocus[j] ) .AND. UpperNIL( ::aOnLostFocus[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
+         ENDIF
+         IF ! Empty( ::aOnMouseMove[j] ) .AND. UpperNIL( ::aOnMouseMove[j] ) # 'NIL'
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON MOUSEMOVE ' + AllTrim( ::aOnMouseMove[j] )
+         ENDIF
+         IF ::aHelpID[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
+         ENDIF
+         IF ::aNoTabStop[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
+         ENDIF
+         IF ::aBold[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
+         ENDIF
+         IF ::aFontItalic[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
+         ENDIF
+         IF ::aFontUnderline[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
+         ENDIF
+         IF ::aFontStrikeout[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
+         ENDIF
+         IF ::aBackColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
+         ENDIF
+         IF ! ::aVisible[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
+         ENDIF
+         IF ! ::aEnabled[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
+         ENDIF
+         IF ::aRTL[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
+         ENDIF
+         IF ! Empty( ::aPicture[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PICTURE ' + StrToStr( ::aPicture[j] )
+         ENDIF
+         IF ! Empty( ::aBuffer[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BUFFER ' + AllTrim( ::aBuffer[j] )
+         ENDIF
+         IF ! Empty( ::aHBitmap[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HBITMAP ' + AllTrim( ::aHBitmap[j] )
+         ENDIF
+         IF ::aNoLoadTrans[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOLOADTRANSPARENT '
+         ENDIF
+         IF ::aForceScale[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FORCESCALE '
+         ENDIF
+         IF ! Empty( ::aField[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIELD ' + AllTrim( ::aField[j] )
+         ENDIF
+         IF ::aNo3DColors[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NO3DCOLORS '
+         ENDIF
+         IF ::aFit[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AUTOFIT '
+         ENDIF
+         IF ::aDIBSection[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DIBSECTION '
+         ENDIF
+         IF ::aThemed[j] == '.T.'
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'THEMED '
+         ELSEIF ::aThemed[j] == '.F.'
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTHEME '
+         ENDIF
+         IF ! Empty( ::aImageMargin[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'IMAGEMARGIN ' + AllTrim( ::aImageMargin[j] )
+         ENDIF
+         IF ! Empty( ::aJustify[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + Upper( AllTrim( ::aJustify[j] ) ) + ' '
+         ENDIF
+         IF ::aMultiLine[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'MULTILINE '
+         ENDIF
+         IF ::aFlat[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FLAT '
+         ENDIF
+         IF ! Empty( ::aSubClass[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
+         ENDIF
+         Output += CRLF + CRLF
+      ENDIF
+
+      IF ::aCtrlType[j] == 'CHECKBOX'
+         Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' CHECKBOX ' + ::aName[j] + ' '
+         IF ! Empty( ::aCObj[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
+         ENDIF
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+         IF ! Empty( ::aCaption[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + StrToStr( ::aCaption[j], .T. )
+         ELSE
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + "'" + "'"
+         ENDIF
+         IF ::aValue[j] == '.T.'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE .T.'
+         ELSEIF ::aValue[j] == '.F.'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE .F.'
+         ENDIF
+         IF ! Empty( ::aField[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIELD ' + AllTrim( ::aField[j] )
+         ENDIF
+         IF ! Empty( ::aFontName[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
+         ENDIF
+         IF ::aFontSize[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
+          ENDIF
+         IF ! Empty( ::aToolTip[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
+         ENDIF
+         IF ! Empty( ::aOnChange[j] ) .AND. UpperNIL( ::aOnChange[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
+         ENDIF
+         IF ! Empty( ::aOnGotFocus[j] ) .AND. UpperNIL( ::aOnGotFocus[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( ::aOnGotFocus[j] )
+         ENDIF
+         IF ! Empty( ::aOnLostFocus[j] ) .AND. UpperNIL( ::aOnLostFocus[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
+         ENDIF
+         IF ::aTransparent[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TRANSPARENT '
+         ENDIF
+         IF ::aNoTabStop[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
+         ENDIF
+         IF ::aHelpID[j] > 0
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
+         ENDIF
+         IF ::aFontColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + ::aFontColor[j]
+         ENDIF
+         IF ::aBold[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
+         ENDIF
+         IF ::aFontItalic[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
+         ENDIF
+         IF ::aFontUnderline[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
+         ENDIF
+         IF ::aFontStrikeout[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
+         ENDIF
+         IF ::aBackColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
+         ENDIF
+         IF ! ::aVisible[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
+         ENDIF
+         IF ! ::aEnabled[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
+         ENDIF
+         IF ::aRTL[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
+         ENDIF
+         IF ::aAutoPlay[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AUTOSIZE '
+         ENDIF
+         IF ::aThemed[j] == '.T.'
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'THEMED '
+         ELSEIF ::aThemed[j] == '.F.'
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTHEME '
+         ENDIF
+         IF ::aLeft[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'LEFTALIGN '
+         ENDIF
+         IF ::a3State[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'THREESTATE '
+         ENDIF
+         IF ! Empty( ::aSubClass[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
+         ENDIF
+         Output += CRLF + CRLF
+      ENDIF
+
+      IF ::aCtrlType[j] == 'COMBO'
+         Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' COMBOBOX ' + ::aName[j] + ' '
+         IF ! Empty( ::aCObj[j ] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
+         ENDIF
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+         // Do not include HEIGHT
+         IF ! Empty( ::aItems[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITEMS ' + AllTrim( ::aItems[j] )
+         ENDIF
+         IF ! Empty( ::aItemSource[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITEMSOURCE ' + AllTrim( ::aItemSource[j] )
+         ENDIF
+         IF ::aValueN[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( ::aValueN[j] ) )
+         ENDIF
+         IF ! Empty( ::aValueSource[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUESOURCE ' + AllTrim( ::aValueSource[j] )
+         ENDIF
+         IF ::aDisplayEdit[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISPLAYEDIT '
+         ENDIF
+         IF ! Empty( ::aFontName[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
+         ENDIF
+         IF ::aFontSize[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
+         ENDIF
+         IF ! Empty( ::aToolTip[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
+         ENDIF
+         IF ! Empty( ::aOnChange[j] ) .AND. UpperNIL( ::aOnChange[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
+         ENDIF
+         IF ! Empty( ::aOnGotFocus[j] ) .AND. UpperNIL( ::aOnGotFocus[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( ::aOnGotFocus[j] )
+         ENDIF
+         IF ! Empty( ::aOnLostFocus[j] ) .AND. UpperNIL( ::aOnLostFocus[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
+         ENDIF
+         IF ! Empty( ::aOnEnter[j] ) .AND. UpperNIL( ::aOnEnter[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON ENTER ' + AllTrim( ::aOnEnter[j] )
+         ENDIF
+         IF ! Empty( ::aOnDisplayChange[j] ) .AND. UpperNIL( ::aOnDisplayChange[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON DISPLAYCHANGE ' + AllTrim( ::aOnDisplayChange[j] )
+         ENDIF
+         IF ::aNoTabStop[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
+         ENDIF
+         IF ::aHelpID[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
+         ENDIF
+         IF ::aBreak[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BREAK '
+         ENDIF
+         IF ::aSort[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SORT '
+         ENDIF
+         IF ! Empty( ::aItemImageNumber[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITEMIMAGENUMBER ' + AllTrim( ::aItemImageNumber[j] )
+         ENDIF
+         IF ! Empty( ::aImageSource[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'IMAGESOURCE ' + AllTrim( ::aImageSource[j] )
+         ENDIF
+         IF ::aFirstItem[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIRSTITEM '
+         ENDIF
+         IF ::aListWidth[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'LISTWIDTH ' + LTrim( Str( ::aListWidth[j] ) )
+         ENDIF
+         IF ! Empty( ::aOnListDisplay[j] ) .AND. UpperNIL( ::aOnListDisplay[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LISTDISPLAY ' + AllTrim( ::aOnListDisplay[j] )
+         ENDIF
+         IF ! Empty( ::aOnListClose[j] ) .AND. UpperNIL( ::aOnListClose[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LISTCLOSE ' + AllTrim( ::aOnListClose[j] )
+         ENDIF
+         IF ::aDelayedLoad[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DELAYEDLOAD '
+         ENDIF
+         IF ::aIncremental[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INCREMENTAL '
+         ENDIF
+         IF ::aIntegralHeight[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INTEGRALHEIGHT '
+         ENDIF
+         IF ::aRefresh[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'REFRESH '
+         ENDIF
+         IF ::aNoRefresh[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOREFRESH '
+         ENDIF
+         IF ! Empty( ::aSourceOrder[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SOURCEORDER ' + AllTrim( ::aSourceOrder[j] )
+         ENDIF
+         IF ! Empty( ::aOnRefresh[j] ) .AND. UpperNIL( ::aOnRefresh[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON REFRESH ' + AllTrim( ::aOnRefresh[j] )
+         ENDIF
+         IF ! Empty( ::aSubClass[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
+         ENDIF
+         IF ::aSearchLapse[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SEARCHLAPSE ' + LTrim( Str( ::aSearchLapse[j] ) )
+         ENDIF
+         IF ! Empty( ::aGripperText[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'GRIPPERTEXT ' + AllTrim( ::aGripperText[j] )
+         ENDIF
+         IF ::aFontColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + AllTrim( ::aFontColor[j] )
+         ENDIF
+         IF ::aBold[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
+         ENDIF
+         IF ::aFontItalic[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
+         ENDIF
+         IF ::aFontUnderline[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
+         ENDIF
+         IF ::aFontStrikeout[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
+         ENDIF
+         IF ::aBackColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
+         ENDIF
+         IF ! ::aVisible[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
+         ENDIF
+         IF ! ::aEnabled[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
+         ENDIF
+         IF ::aRTL[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
+         ENDIF
+         IF ::aTextHeight[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TEXTHEIGHT ' + LTrim( Str( ::aTextHeight[j] ) )
+         ENDIF
+         IF ::aFit[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIT '
+         ENDIF
+         IF ! Empty( ::aImage[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'IMAGE ' + AllTrim( ::aImage[j] )
+         ENDIF
+         Output += CRLF + CRLF
+      ENDIF
+
+      IF ::aCtrlType[j] == 'DATEPICKER'
+         Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' DATEPICKER ' + ::aName[j] + ' '
+         IF ! Empty( ::aCObj[j ] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
+         ENDIF
+         IF ! Empty( ::aValue[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + AllTrim( ::aValue[j] )
+         ENDIF
+         IF ! Empty( ::aField[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIELD ' + StrToStr( ::aField[j] )
+         ENDIF
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+         IF ! Empty( ::aFontName[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
+         ENDIF
+         IF ::aFontSize[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
+         ENDIF
+         IF ! Empty( ::aToolTip[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
+         ENDIF
+         IF ::aShowNone[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SHOWNONE '
+         ENDIF
+         IF ::aUpDown[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UPDOWN '
+         ENDIF
+         IF ::aRightAlign[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RIGHTALIGN '
+         ENDIF
+         IF ! Empty( ::aOnChange[j] ) .AND. UpperNIL( ::aOnChange[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
+         ENDIF
+         IF ! Empty( ::aOnGotFocus[j] ) .AND. UpperNIL( ::aOnGotFocus[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( ::aOnGotFocus[j] )
+         ENDIF
+         IF ! Empty( ::aOnLostFocus[j] ) .AND. UpperNIL( ::aOnLostFocus[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
+         ENDIF
+         IF ! Empty( ::aOnEnter[j] ) .AND. UpperNIL( ::aOnEnter[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON ENTER ' + AllTrim( ::aOnEnter[j] )
+         ENDIF
+         IF ::aHelpID[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
+         ENDIF
+         IF ::aBold[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
+         ENDIF
+         IF ::aFontItalic[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
+         ENDIF
+         IF ::aFontUnderline[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
+         ENDIF
+         IF ::aFontStrikeout[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
+         ENDIF
+         IF ::aRTL[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
+         ENDIF
+         IF ! ::aEnabled[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
+         ENDIF
+         IF ::aNoTabStop[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
+         ENDIF
+         IF ! ::aVisible[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
+         ENDIF
+         IF ::aBorder[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOBORDER '
+         ENDIF
+         IF ! Empty( ::aRange[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RANGE ' + AllTrim( ::aRange[j] )
+         ENDIF
+         IF ! Empty( ::aSubClass[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
+         ENDIF
+         Output += CRLF + CRLF
+      ENDIF
+
+      IF ::aCtrlType[j] == 'TIMEPICKER'
+         Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' TIMEPICKER ' + ::aName[j] + ' '
+         IF ! Empty( ::aCObj[j ] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
+         ENDIF
+         IF ! Empty( ::aValue[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + AllTrim( ::aValue[j] )
+         ENDIF
+         IF ! Empty( ::aField[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIELD ' + StrToStr( ::aField[j] )
+         ENDIF
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+         IF ! Empty( ::aFontName[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
+         ENDIF
+         IF ::aFontSize[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
+         ENDIF
+         IF ! Empty( ::aToolTip[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
+         ENDIF
+         IF ::aShowNone[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SHOWNONE '
+         ENDIF
+         IF ::aUpDown[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UPDOWN '
+         ENDIF
+         IF ::aRightAlign[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RIGHTALIGN '
+         ENDIF
+         IF ! Empty( ::aOnChange[j] ) .AND. UpperNIL( ::aOnChange[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
+         ENDIF
+         IF ! Empty( ::aOnGotFocus[j] ) .AND. UpperNIL( ::aOnGotFocus[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( ::aOnGotFocus[j] )
+         ENDIF
+         IF ! Empty( ::aOnLostFocus[j] ) .AND. UpperNIL( ::aOnLostFocus[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
+         ENDIF
+         IF ! Empty( ::aOnEnter[j] ) .AND. UpperNIL( ::aOnEnter[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON ENTER ' + AllTrim( ::aOnEnter[j] )
+         ENDIF
+         IF ::aHelpID[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
+         ENDIF
+         IF ::aBold[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
+         ENDIF
+         IF ::aFontItalic[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
+         ENDIF
+         IF ::aFontUnderline[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
+         ENDIF
+         IF ::aFontStrikeout[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
+         ENDIF
+         IF ::aRTL[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
+         ENDIF
+         IF ! ::aEnabled[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
+         ENDIF
+         IF ::aNoTabStop[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
+         ENDIF
+         IF ! ::aVisible[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
+         ENDIF
+         IF ::aBorder[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOBORDER '
+         ENDIF
+         IF ! Empty( ::aSubClass[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
+         ENDIF
+         Output += CRLF + CRLF
+      ENDIF
+
+      IF ::aCtrlType[j] == 'EDIT'
+         Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' EDITBOX ' + ::aName[j] + ' '
+         IF ! Empty( ::aCObj[j ] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
+         ENDIF
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+         IF ! Empty( ::aField[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIELD ' + AllTrim( ::aField[j] )
+         ENDIF
+         IF ! Empty( ::aValue[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + AllTrim( ::aValue[j] )
+         ENDIF
+         IF ::aReadOnly[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'READONLY '
+         ENDIF
+         IF ! Empty( ::aFontName[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
+         ENDIF
+         IF ::aFontSize[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
+         ENDIF
+         IF ! Empty( ::aToolTip[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
+         ENDIF
+         IF ::aMaxLength[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'MAXLENGTH ' + LTrim( Str( ::aMaxLength[j] ) )
+         ENDIF
+         IF ! Empty( ::aOnChange[j] ) .AND. UpperNIL( ::aOnChange[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
+         ENDIF
+         IF ! Empty( ::aOnGotFocus[j] ) .AND. UpperNIL( ::aOnGotFocus[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( ::aOnGotFocus[j] )
+         ENDIF
+         IF ! Empty( ::aOnLostFocus[j] ) .AND. UpperNIL( ::aOnLostFocus[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
+         ENDIF
+         IF ::aHelpID[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
+         ENDIF
+         IF ::aBreak[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BREAK '
+         ENDIF
+         IF ::aNoTabStop[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
+         ENDIF
+         IF ::anovscroll[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOVSCROLL '
+         ENDIF
+         IF ::aNoHScroll[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOHSCROLL '
+         ENDIF
+         IF ::aFontColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + ::aFontColor[j]
+         ENDIF
+         IF ::aBold[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
+         ENDIF
+         IF ::aFontItalic[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
+         ENDIF
+         IF ::aFontUnderline[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
+         ENDIF
+         IF ::aFontStrikeout[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
+         ENDIF
+         IF ::aBackColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
+         ENDIF
+         IF ! ::aVisible[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
+         ENDIF
+         IF ! ::aEnabled[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
+         ENDIF
+         IF ::aRTL[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
+         ENDIF
+         IF ::aBorder[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOBORDER '
+         ENDIF
+         IF ::aFocusedPos[j] <> -4            // default value, see DATA nOnFocusPos in h_editbox.prg
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FOCUSEDPOS ' + LTrim( Str( ::aFocusedPos[j] ) )
+         ENDIF
+         IF ! Empty( ::aOnHScroll[j] ) .AND. UpperNIL( ::aOnHScroll[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON HSCROLL ' + AllTrim( ::aOnHScroll[j] )
+         ENDIF
+         IF ! Empty( ::aOnVScroll[j] ) .AND. UpperNIL( ::aOnVScroll[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON VSCROLL ' + AllTrim( ::aOnVScroll[j] )
+         ENDIF
+         Output += CRLF + CRLF
+      ENDIF
+
+      IF ::aCtrlType[j] == 'FRAME'
+         Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' FRAME ' + ::aName[j] + ' '
+         IF ! Empty( ::aCObj[j ] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
+         ENDIF
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+         IF ! Empty( ::aCaption[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + StrToStr( ::aCaption[j], .T. )
+         ENDIF
+         IF ::aOpaque[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OPAQUE '
+         ENDIF
+         IF ::aTransparent[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TRANSPARENT '
+         ENDIF
+         IF ! Empty( ::aFontName[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
+         ENDIF
+         IF ::aFontSize[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
+         ENDIF
+         IF ::aFontColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + ::aFontColor[j]
+         ENDIF
+         IF ::aBold[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
+         ENDIF
+         IF ::aFontItalic[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
+         ENDIF
+         IF ::aFontUnderline[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
+         ENDIF
+         IF ::aFontStrikeout[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
+         ENDIF
+         IF ! ::aEnabled[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
+         ENDIF
+         IF ! ::aVisible[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
+         ENDIF
+         IF ::aBackColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + AllTrim( ::aBackColor[j] )
+         ENDIF
+         IF ::aRTL[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
+         ENDIF
+         IF ! Empty( ::aSubClass[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
+         ENDIF
+         Output += CRLF + CRLF
+      ENDIF
+
+      IF ::aCtrlType[j] == 'GRID'
+         Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' GRID ' + ::aName[j] + ' '
+         IF ! Empty( ::aCObj[j ] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
+         ENDIF
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEADERS ' + AllTrim( ::aHeaders[j] )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTHS ' + AllTrim( ::aWidths[j] )
+         IF ! Empty( ::aItems[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITEMS ' + AllTrim( ::aItems[j] )
+         ENDIF
+         IF ::aValueN[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( ::aValueN[j] ) )
+         ENDIF
+         IF ! Empty( AllTrim( ::aDynamicBackColor[j] ) ) .AND. UpperNIL( ::aDynamicBackColor[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DYNAMICBACKCOLOR ' + AllTrim( ::aDynamicBackColor[j] )
+         ENDIF
+         IF ! Empty( AllTrim( ::aDynamicForeColor[j] ) ) .AND. UpperNIL( ::aDynamicForeColor[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DYNAMICFORECOLOR ' + AllTrim( ::aDynamicForeColor[j] )
+         ENDIF
+         IF ! Empty( ::aColumnControls[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'COLUMNCONTROLS ' + AllTrim( ::aColumnControls[j] )
+         ENDIF
+         IF ! Empty( ::aFontName[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
+         ENDIF
+         IF ::aFontSize[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
+         ENDIF
+         IF ! Empty( ::aToolTip[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
+         ENDIF
+         IF ! Empty( ::aOnChange[j] ) .AND. UpperNIL( ::aOnChange[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
+         ENDIF
+         IF ! Empty( ::aOnGotFocus[j] ) .AND. UpperNIL( ::aOnGotFocus[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( ::aOnGotFocus[j] )
+         ENDIF
+         IF ! Empty( ::aOnLostFocus[j] ) .AND. UpperNIL( ::aOnLostFocus[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
+         ENDIF
+         IF ! Empty( ::aOnDblClick[j] ) .AND. UpperNIL( ::aOnDblClick[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON DBLCLICK ' + AllTrim( ::aOnDblClick[j] )
+         ENDIF
+         IF ! Empty( ::aOnEnter[j] ) .AND. UpperNIL( ::aOnEnter[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON ENTER ' + AllTrim( ::aOnEnter[j] )
+         ENDIF
+         IF ! Empty( ::aOnHeadClick[j] ) .AND. UpperNIL( ::aOnHeadClick[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON HEADCLICK ' + AllTrim( ::aOnHeadClick[j] )
+         ENDIF
+         IF ! Empty( ::aOnEditCell[j] ) .AND. UpperNIL( ::aOnEditCell[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON EDITCELL ' + AllTrim( ::aOnEditCell[j] )
+         ENDIF
+         IF ::aMultiSelect[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'MULTISELECT '
+         ENDIF
+         IF ::anolines[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOLINES '
+         ENDIF
+         IF ::aInPlace[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INPLACE '
+         ENDIF
+         IF ::aEdit[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'EDIT '
+         ENDIF
+         IF ! Empty( ::aImage[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'IMAGE ' + AllTrim( ::aImage[j] )
+         ENDIF
+         IF ! Empty( ::aJustify[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'JUSTIFY ' + AllTrim( ::aJustify[j] )
+         ENDIF
+         IF ! Empty( ::aWhen[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WHEN ' + AllTrim( ::aWhen[j] )
+         ENDIF
+         IF ! Empty( ::aValid[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALID ' + AllTrim( ::aValid[j] )
+         ENDIF
+         IF ! Empty( ::aValidMess[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALIDMESSAGES ' + AllTrim( ::aValidMess[j] )
+         ENDIF
+         IF ! Empty( ::aReadOnlyB[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'READONLY ' + AllTrim( ::aReadOnlyB[j] )
+         ENDIF
+         IF ! Empty( ::aInputMask[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INPUTMASK ' + AllTrim( ::aInputMask[j] )
+         ENDIF
+         IF ::aHelpID[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
+         ENDIF
+         IF ::aBreak[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BREAK '
+         ENDIF
+         IF ::aBold[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
+         ENDIF
+         IF ::aFontItalic[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
+         ENDIF
+         IF ::aFontUnderline[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
+         ENDIF
+         IF ::aFontStrikeout[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
+         ENDIF
+         IF ::aBackColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
+         ENDIF
+         IF ::aFontColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + ::aFontColor[j]
+         ENDIF
+         IF ! Empty( ::aAction[j] ) .AND. UpperNIL( ::aAction[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + AllTrim( ::aAction[j] )
+         ENDIF
+         IF ::aRTL[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
+         ENDIF
+         IF ! ::aEnabled[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
+         ENDIF
+         IF ::aNoTabStop[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
+         ENDIF
+         IF ! ::aVisible[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
+         ENDIF
+         IF ::aFull[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FULLMOVE '
+         ENDIF
+         IF ::aCheckBoxes[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CHECKBOXES '
+         ENDIF
+         IF ! Empty( ::aOnCheckChg[j] ) .AND. UpperNIL( ::aOnCheckChg[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHECKCHANGE ' + AllTrim( ::aOnCheckChg[j] )
+         ENDIF
+         IF ::aButtons[j]
+            Output += ' ;' + CRLF + Space( nSpacing * 2) + 'USEBUTTONS '
+         ENDIF
+         IF ::aDelete[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DELETE '
+         ENDIF
+         IF ::aAppend[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'APPEND '
+         ENDIF
+         IF ! Empty( ::aOnAppend[j] ) .AND. UpperNIL( ::aOnAppend[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON APPEND ' + AllTrim( ::aOnAppend[j] )
+         ENDIF
+         IF ::aVirtual[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VIRTUAL '
+         ENDIF
+         IF ::aItemCount[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITEMCOUNT ' + LTrim( Str( ::aItemCount[j] ) )
+         ENDIF
+         IF ! Empty( ::aOnQueryData[j] ) .AND. UpperNIL( ::aOnQueryData[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON QUERYDATA ' + AllTrim( ::aOnQueryData[j] )
+         ENDIF
+         IF ::aNoHeaders[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOHEADERS '
+         ENDIF
+         IF ! Empty( ::aHeaderImages[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEADERIMAGES ' + AllTrim( ::aHeaderImages[j] )
+         ENDIF
+         IF ! Empty( ::aImagesAlign[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'IMAGESALIGN ' + AllTrim( ::aImagesAlign[j] )
+         ENDIF
+         IF ::aByCell[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NAVIGATEBYCELL '
+         ENDIF
+         IF ! Empty( AllTrim( ::aSelColor[j] ) ) .AND. UpperNIL( ::aSelColor[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SELECTEDCOLORS ' + AllTrim( ::aSelColor[j] )
+         ENDIF
+         IF ! Empty( ::aEditKeys[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'EDITKEYS ' + AllTrim( ::aEditKeys[j] )
+         ENDIF
+         IF ::aDoubleBuffer[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DOUBLEBUFFER '
+         ENDIF
+         IF ::aSingleBuffer[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SINGLEBUFFER '
+         ENDIF
+         IF ::aFocusRect[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FOCUSRECT '
+         ENDIF
+         IF ::aNoFocusRect[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOFOCUSRECT '
+         ENDIF
+         IF ::aPLM[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PAINTLEFTMARGIN '
+         ENDIF
+         IF ::aFixedCols[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIXEDCOLS '
+         ENDIF
+         IF ! Empty( ::aOnAbortEdit[j] ) .AND. UpperNIL( ::aOnAbortEdit[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON ABORTEDIT ' + AllTrim( ::aOnAbortEdit[j] )
+         ENDIF
+         IF ::aFixedWidths[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIXEDWIDTHS '
+         ENDIF
+         IF ! Empty( ::aBeforeColMove[j] ) .AND. UpperNIL( ::aBeforeColMove[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BEFORECOLMOVE ' + AllTrim( ::aBeforeColMove[j] )
+         ENDIF
+         IF ! Empty( ::aAfterColMove[j] ) .AND. UpperNIL( ::aAfterColMove[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AFTERCOLMOVE ' + AllTrim( ::aAfterColMove[j] )
+         ENDIF
+         IF ! Empty( ::aBeforeColSize[j] ) .AND. UpperNIL( ::aBeforeColSize[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BEFORECOLSIZE ' + AllTrim( ::aBeforeColSize[j] )
+         ENDIF
+         IF ! Empty( ::aAfterColSize[j] ) .AND. UpperNIL( ::aAfterColSize[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AFTERCOLSIZE ' + AllTrim( ::aAfterColSize[j] )
+         ENDIF
+         IF ! Empty( ::aBeforeAutoFit[j] ) .AND. UpperNIL( ::aBeforeAutoFit[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BEFOREAUTOFIT ' + AllTrim( ::aBeforeAutoFit[j] )
+         ENDIF
+         IF ::aLikeExcel[j]
+            Output += ' ;' + CRLF + Space( nSpacing * 2) + 'EDITLIKEEXCEL '
+         ENDIF
+         IF ! Empty( ::aDeleteWhen[j] ) .AND. UpperNIL( ::aDeleteWhen[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * 2) + 'DELETEWHEN ' + AllTrim( ::aDeleteWhen[j] )
+         ENDIF
+         IF ! Empty( ::aDeleteMsg[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * 2) + 'DELETEMSG ' + AllTrim( ::aDeleteMsg[j] )
+         ENDIF
+         IF ! Empty( ::aOnDelete[j] ) .AND. UpperNIL( ::aOnDelete[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON DELETE ' + AllTrim( ::aOnDelete[j] )
+         ENDIF
+         IF ::aNoDelMsg[j]
+            Output += ' ;' + CRLF + Space( nSpacing * 2) + 'NODELETEMSG '
+         ENDIF
+         IF ::aNoModalEdit[j]
+            Output += ' ;' + CRLF + Space( nSpacing * 2) + 'NOMODALEDIT '
+         ENDIF
+         IF ::aFixedCtrls[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIXEDCONTROLS '
+         ENDIF
+         IF ::aDynamicCtrls[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DYNAMICCONTROLS '
+         ENDIF
+         IF ! Empty( ::aOnHeadRClick[j] ) .AND. UpperNIL( ::aOnHeadRClick[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON HEADRCLICK ' + AllTrim( ::aOnHeadRClick[j] )
+         ENDIF
+         IF ::aNoClickOnCheck[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOCLICKONCHECKBOX '
+         ENDIF
+         IF ::aNoRClickOnCheck[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NORCLICKONCHECKBOX '
+         ENDIF
+         IF ::aExtDblClick[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'EXTDBLCLICK '
+         ENDIF
+         IF ! Empty( ::aSubClass[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
+         ENDIF
+         IF ::aAutoPlay[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SILENT '
+         ENDIF
+         IF ::aFlat[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ENABLEALTA '
+         ENDIF
+          IF ::aShowAll[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOSHOWALWAYS '
+         ENDIF
+         IF ::aNoHideSel[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NONEUNSELS '
+         ENDIF
+         IF ::aDisplayEdit[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CHANGEBEFOREEDIT '
+         ENDIF
+         IF ! Empty( ::aOnRClick[j] ) .AND. UpperNIL( ::aOnRClick[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON RCLICK ' + AllTrim( ::aOnRClick[j] )
+         ENDIF
+         IF ! Empty( ::aOnInsert[j] ) .AND. UpperNIL( ::aOnInsert[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON INSERT ' + AllTrim( ::aOnInsert[j] )
+         ENDIF
+         IF ! Empty( ::aOnEditCellEnd[j] ) .AND. UpperNIL( ::aOnEditCellEnd[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON EDITCELLEND ' + AllTrim( ::aOnEditCellEnd[j] )
+         ENDIF
+        Output += CRLF + CRLF
+      ENDIF
+
+      IF ::aCtrlType[j] == 'HYPERLINK'
+         Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' HYPERLINK ' + ::aName[j] + ' '
+         IF ! Empty( ::aCObj[j ] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
+         ENDIF
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+         IF ! Empty( ::aValue[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + StrToStr( ::aValue[j], .T. )
+         ELSE
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + "'ooHG Home'"
+         ENDIF
+         IF ! Empty( ::aAddress[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ADDRESS ' + StrToStr( ::aAddress[j] )
+         ELSE
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ADDRESS ' + "'https://sourceforge.net/projects/oohg/'"
+         ENDIF
+         IF ! Empty( ::aFontName[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
+         ENDIF
+         IF ::aFontSize[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
+         ENDIF
+         IF ! Empty( ::aToolTip[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
+         ENDIF
+         IF ::aHelpID[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
+         ENDIF
+         IF ::aHandCursor[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HANDCURSOR '
+         ENDIF
+         IF ::aFontColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + ::aFontColor[j]
+         ENDIF
+         IF ::aBold[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
+         ENDIF
+         IF ::aFontItalic[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
+         ENDIF
+         IF ::aFontUnderline[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
+         ENDIF
+         IF ::aFontStrikeout[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
+         ENDIF
+         IF ::aBackColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
+         ENDIF
+         IF ! ::aVisible[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
+         ENDIF
+         IF ! ::aEnabled[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
+         ENDIF
+         IF ::aAutoPlay[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AUTOSIZE '
+         ENDIF
+         IF ::aBorder[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BORDER '
+         ENDIF
+         IF ::aClientEdge[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CLIENTEDGE '
+         ENDIF
+         IF ::aNoHScroll[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HSCROLL '
+         ENDIF
+         IF ::aNoVScroll[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VSCROLL '
+         ENDIF
+         IF ::aTransparent[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TRANSPARENT '
+         ENDIF
+         IF ::aRTL[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
+         ENDIF
+         Output += CRLF + CRLF
+      ENDIF
+
+      IF ::aCtrlType[j] == 'IMAGE'
+         Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' IMAGE ' + ::aName[j] + ' '
+         IF ! Empty( ::aCObj[j ] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
+         ENDIF
+         IF ! Empty( ::aAction[j] ) .AND. UpperNIL( ::aAction[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + AllTrim( ::aAction[j] )
+         ENDIF
+         IF ! Empty( ::aPicture[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PICTURE ' + StrToStr( ::aPicture[j] )
+         ENDIF
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+         IF ::aStretch[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRETCH '
+         ENDIF
+         IF ::aHelpID[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
+         ENDIF
+         IF ! Empty( ::aToolTip[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
+         ENDIF
+         IF ::aBorder[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BORDER '
+         ENDIF
+         IF ::aClientEdge[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CLIENTEDGE '
+         ENDIF
+         IF ! ::aVisible[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
+         ENDIF
+         IF ! ::aEnabled[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
+         ENDIF
+         IF ::aTransparent[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TRANSPARENT '
+         ENDIF
+         IF ::aBackColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
+         ENDIF
+         IF ::aRTL[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
+         ENDIF
+         IF ! Empty( ::aBuffer[j] )
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BUFFER ' + AllTrim( ::aBuffer[j] )
+         ENDIF
+         IF ! Empty( ::aHBitmap[j] )
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HBITMAP ' + AllTrim( ::aHBitmap[j] )
+         ENDIF
+         IF ::aDIBSection[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NODIBSECTION '
+         ENDIF
+         IF ::aNo3DColors[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NO3DCOLORS '
+         ENDIF
+         IF ::aNoLoadTrans[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOLOADTRANSPARENT '
+         ENDIF
+         IF ::aFit[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NORESIZE '
+         ENDIF
+         IF ::aWhiteBack[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WHITEBACKGROUND '
+         ENDIF
+         IF ::aImageSize[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'IMAGESIZE '
+         ENDIF
+         IF ! Empty( ::aExclude[j] )
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'EXCLUDEAREA ' + AllTrim( ::aExclude[j] )
+         ENDIF
+         IF ! Empty( ::aSubClass[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
+         ENDIF
+         Output += CRLF + CRLF
+      ENDIF
+
+      IF ::aCtrlType[j] == 'IPADDRESS'
+         Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' IPADDRESS ' + ::aName[j] + ' '
+         IF ! Empty( ::aCObj[j ] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
+         ENDIF
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+         IF ! Empty( ::aValue[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + AllTrim( ::aValue[j] )
+         ENDIF
+         IF ! Empty( ::aFontName[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
+         ENDIF
+         IF ::aFontSize[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
+         ENDIF
+         IF ! Empty( ::aToolTip[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
+         ENDIF
+         IF ! Empty( ::aOnChange[j] ) .AND. UpperNIL( ::aOnChange[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
+         ENDIF
+         IF ! Empty( ::aOnGotFocus[j] ) .AND. UpperNIL( ::aOnGotFocus[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( ::aOnGotFocus[j] )
+         ENDIF
+         IF ! Empty( ::aOnLostFocus[j] ) .AND. UpperNIL( ::aOnLostFocus[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
+         ENDIF
+         IF ::aHelpID[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
+         ENDIF
+         IF ::aNoTabStop[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
+         ENDIF
+         IF ::aFontColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + ::aFontColor[j]
+         ENDIF
+         IF ::aBold[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
+         ENDIF
+         IF ::aFontItalic[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
+         ENDIF
+         IF ::aFontUnderline[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
+         ENDIF
+         IF ::aFontStrikeout[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
+         ENDIF
+         IF ::aBackColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
+         ENDIF
+         IF ! ::aVisible[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
+         ENDIF
+         IF ! ::aEnabled[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
+         ENDIF
+         IF ::aRTL[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
+         ENDIF
+         IF ! Empty( ::aSubClass[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
+         ENDIF
+         Output += CRLF + CRLF
+      ENDIF
+
+      IF ::aCtrlType[j] == 'LABEL'
+         Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' LABEL ' + ::aName[j] + ' '
+         IF ! Empty( ::aCObj[j ] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
+         ENDIF
+         IF ::aAutoPlay[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AUTOSIZE '
+         ELSE
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+         ENDIF
+         IF ! Empty( ::aValue[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + ::aValue[j]
+         ENDIF
+         IF ! Empty( ::aAction[j] ) .AND. UpperNIL( ::aAction[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + AllTrim( ::aAction[j] )
+         ENDIF
+         IF ! Empty( ::aFontName[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
+         ENDIF
+         IF ::aFontSize[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
+         ENDIF
+         IF ::aFontColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + ::aFontColor[j]
+         ENDIF
+         IF ::aBold[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
+         ENDIF
+         IF ::aFontItalic[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
+         ENDIF
+         IF ::aFontUnderline[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
+         ENDIF
+         IF ::aFontStrikeout[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
+         ENDIF
+         IF ::aBackColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
+         ENDIF
+         IF ::aHelpID[j] > 0
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
+         ENDIF
+         IF ::aTransparent[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TRANSPARENT '
+         ENDIF
+         IF ::aCenterAlign[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CENTERALIGN '
+         ENDIF
+         IF ::aRightAlign[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RIGHTALIGN '
+         ENDIF
+         IF ::aClientEdge[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CLIENTEDGE '
+         ENDIF
+         IF ::aBorder[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BORDER '
+         ENDIF
+         IF ! Empty( ::aToolTip[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
+         ENDIF
+         IF ! ::aVisible[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
+         ENDIF
+         IF ! ::aEnabled[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
+         ENDIF
+         IF ! Empty( ::aInputMask[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INPUTMASK ' + AllTrim( ::aInputMask[j] )
+         ENDIF
+         IF ::aNoVScroll[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VSCROLL '
+         ENDIF
+         IF ::aNoHScroll[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HSCROLL '
+         ENDIF
+         IF ::aRTL[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
+         ENDIF
+         IF ::aWrap[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOWORDWRAP '
+         ENDIF
+         IF ::aNoPrefix[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOPREFIX '
+         ENDIF
+         IF ! Empty( ::aSubClass[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
+         ENDIF
+         Output += CRLF + CRLF
+      ENDIF
+
+      IF ::aCtrlType[j] == 'LIST'
+         Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' LISTBOX ' + ::aName[j] + ' '
+         IF ! Empty( ::aCObj[j ] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
+         ENDIF
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+         IF ! Empty( ::aItems[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITEMS ' + AllTrim( ::aItems[j] )
+         ENDIF
+         IF ::aValueN[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( ::aValueN[j] ) )
+         ENDIF
+         IF ! Empty( ::aFontName[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
+         ENDIF
+         IF ::aFontSize[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
+         ENDIF
+         IF ! Empty( ::aToolTip[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
+         ENDIF
+         IF ! Empty( ::aOnChange[j] ) .AND. UpperNIL( ::aOnChange[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
+         ENDIF
+         IF ! Empty( ::aOnGotFocus[j] ) .AND. UpperNIL( ::aOnGotFocus[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( ::aOnGotFocus[j] )
+         ENDIF
+         IF ! Empty( ::aOnLostFocus[j] ) .AND. UpperNIL( ::aOnLostFocus[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
+         ENDIF
+         IF ! Empty( ::aOnDblClick[j] ) .AND. UpperNIL( ::aOnDblClick[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON DBLCLICK ' + AllTrim( ::aOnDblClick[j] )
+         ENDIF
+         IF ::aMultiSelect[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'MULTISELECT '
+         ENDIF
+         IF ::aHelpID[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
+         ENDIF
+         IF ::aBreak[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BREAK '
+         ENDIF
+         IF ::aNoTabStop[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
+         ENDIF
+         IF ::aSort[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SORT '
+         ENDIF
+         IF ::aFontColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + ::aFontColor[j]
+         ENDIF
+         IF ::aBold[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
+         ENDIF
+         IF ::aFontItalic[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
+         ENDIF
+         IF ::aFontUnderline[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
+         ENDIF
+         IF ::aFontStrikeout[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
+         ENDIF
+         IF ::aBackColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
+         ENDIF
+         IF ! ::aVisible[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
+         ENDIF
+         IF ! ::aEnabled[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
+         ENDIF
+         IF ::aRTL[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
+         ENDIF
+         IF ! Empty( ::aOnEnter[j] ) .AND. UpperNIL( ::aOnEnter[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON ENTER ' + AllTrim( ::aOnEnter[j] )
+         ENDIF
+         IF ! Empty( ::aImage[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'IMAGE ' + AllTrim( ::aImage[j] )
+            IF ::aFit[j]
+               Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIT '
             ENDIF
          ENDIF
+         IF ::aTextHeight[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TEXTHEIGHT ' + LTrim( Str( ::aTextHeight[j] ) )
+         ENDIF
+         IF ::anovscroll[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOVSCROLL '
+         ENDIF
+         IF ! Empty( ::aSubClass[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
+         ENDIF
+         Output += CRLF + CRLF
       ENDIF
-      IF ::aReadOnly[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'READONLY '
+
+      IF ::aCtrlType[j] == 'ANIMATE'
+         Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' ANIMATEBOX ' + ::aName[j] + ' '
+         IF ! Empty( ::aCObj[j ] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
+         ENDIF
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+         IF ! Empty( ::aFile[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FILE ' + StrToStr( ::aFile[j] )
+         ENDIF
+         IF ::aAutoPlay[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AUTOPLAY '
+         ENDIF
+         IF ::aCenter[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CENTER '
+         ENDIF
+         IF ::aTransparent[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TRANSPARENT '
+         ENDIF
+         IF ::aHelpID[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
+         ENDIF
+         IF ! Empty( ::aToolTip[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
+         ENDIF
+         IF ! ::aVisible[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
+         ENDIF
+         IF ! ::aEnabled[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
+         ENDIF
+         IF ::aRTL[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
+         ENDIF
+         IF ::aNoTabStop[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
+         ENDIF
+         IF ! Empty( ::aSubClass[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
+         ENDIF
+         Output += CRLF + CRLF
       ENDIF
-      IF ::aPassword[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PASSWORD '
+
+      IF ::aCtrlType[j] == 'PLAYER'
+         Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' PLAYER ' + ::aName[j] + ' '
+         IF ! Empty( ::aCObj[j ] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
+         ENDIF
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FILE ' + StrToStr( ::aFile[j] )
+         IF ::aHelpID[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
+         ENDIF
+         IF ::aNoTabStop[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
+         ENDIF
+         IF ! ::aVisible[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
+         ENDIF
+         IF ! ::aEnabled[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
+         ENDIF
+         IF ::aRTL[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
+         ENDIF
+         IF ::aNoAutoSizeWindow[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOAUTOSIZEWINDOW '
+         ENDIF
+         IF ::aNoAutoSizeMovie[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOAUTOSIZEMOVIE '
+         ENDIF
+         IF ::aNoErrorDlg[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOERRORDLG '
+         ENDIF
+         IF ::aNoMenu[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOMENU '
+         ENDIF
+         IF ::aNoOpen[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOOPEN '
+         ENDIF
+         IF ::aNoPlayBar[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOPLAYBAR '
+         ENDIF
+         IF ::aShowAll[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SHOWALL '
+         ENDIF
+         IF ::aShowMode[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SHOWMODE '
+         ENDIF
+         IF ::aShowName[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SHOWNAME '
+         ENDIF
+         IF ::aShowPosition[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SHOWPOSITION '
+         ENDIF
+         IF ! Empty( ::aSubClass[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
+         ENDIF
+         Output += CRLF + CRLF
       ENDIF
-      IF ! Empty( ::aFontName[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
+
+      IF ::aCtrlType[j] == 'MONTHCALENDAR'
+         Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' MONTHCALENDAR ' + ::aName[j] + ' '
+         IF ! Empty( ::aCObj[j ] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
+         ENDIF
+         IF ! Empty( ::aValue[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + AllTrim( ::aValue[j] )
+         ENDIF
+         IF ! Empty( ::aFontName[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
+         ENDIF
+         IF ::aFontSize[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
+         ENDIF
+         IF ::aFontColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + ::aFontColor[j]
+         ENDIF
+         IF ::aBold[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
+         ENDIF
+         IF ::aFontItalic[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
+         ENDIF
+         IF ::aFontUnderline[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
+         ENDIF
+         IF ::aFontStrikeout[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
+         ENDIF
+         IF ::aBackColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
+         ENDIF
+         IF ! Empty( ::aToolTip[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
+         ENDIF
+         IF ! Empty( ::aOnChange[j] ) .AND. UpperNIL( ::aOnChange[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
+         ENDIF
+         IF ::aHelpID[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
+         ENDIF
+         IF ::aNoTabStop[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
+         ENDIF
+         IF ! ::aVisible[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
+         ENDIF
+         IF ! ::aEnabled[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
+         ENDIF
+         IF ::aNoToday[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTODAY '
+         ENDIF
+         IF ::aNoTodayCircle[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTODAYCIRCLE '
+         ENDIF
+         IF ::aWeekNumbers[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WEEKNUMBERS '
+         ENDIF
+         IF ! Empty( ::aSubClass[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
+         ENDIF
+         IF ::aRTL[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
+         ENDIF
+         IF ::aTitleFontColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TITLEFONTCOLOR ' + ::aTitleFontColor[j]
+         ENDIF
+         IF ::aTitleBackColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TITLEBACKCOLOR ' + ::aTitleBackColor[j]
+         ENDIF
+         IF ::aTrailingFontColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TRAILINGFONTCOLOR ' + ::aTrailingFontColor[j]
+         ENDIF
+         IF ::aBackgroundColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKGROUNDCOLOR ' + ::aBackgroundColor[j]
+         ENDIF
+         IF ::aMultiSelect[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'MULTISELECT '
+         ENDIF
+         IF ! Empty( ::aOnViewChange[j] ) .AND. UpperNIL( ::aOnViewChange[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON VIEWCHANGE ' + AllTrim( ::aOnViewChange[j] )
+         ENDIF
+         IF ! Empty( ::aOnGotFocus[j] ) .AND. UpperNIL( ::aOnGotFocus[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( ::aOnGotFocus[j] )
+         ENDIF
+         IF ! Empty( ::aOnLostFocus[j] ) .AND. UpperNIL( ::aOnLostFocus[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
+         ENDIF
+         Output += CRLF + CRLF
       ENDIF
-      IF ::aFontSize[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
+
+      IF ::aCtrlType[j] == 'PICBUTT'
+         Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' BUTTON ' + ::aName[j] + ' '
+         IF ! Empty( ::aCObj[j ] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
+         ENDIF
+         IF ! Empty( ::aPicture[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PICTURE ' + StrToStr( ::aPicture[j] )
+         ELSE
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PICTURE ' + "'" + "'"
+         ENDIF
+         IF ! Empty( ::aAction[j] ) .AND. UpperNIL( ::aAction[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + AllTrim( ::aAction[j] )
+         ELSE
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + "MsgInfo( 'Button Pressed' )"
+         ENDIF
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+         IF ! Empty( ::aToolTip[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
+         ENDIF
+         IF ::aFlat[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FLAT '
+         ENDIF
+         IF ! Empty( ::aOnGotFocus[j] ) .AND. UpperNIL( ::aOnGotFocus[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( ::aOnGotFocus[j] )
+         ENDIF
+         IF ! Empty( ::aOnLostFocus[j] ) .AND. UpperNIL( ::aOnLostFocus[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
+         ENDIF
+         IF ::aNoTabStop[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
+         ENDIF
+         IF ::aHelpID[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
+         ENDIF
+         IF ! ::aEnabled[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
+         ENDIF
+         IF ! ::aVisible[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
+         ENDIF
+         IF ::aBackColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
+         ENDIF
+         IF ! Empty( ::aBuffer[j] )
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BUFFER ' + AllTrim( ::aBuffer[j] )
+         ENDIF
+         IF ! Empty( ::aHBitmap[j] )
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HBITMAP ' + AllTrim( ::aHBitmap[j] )
+         ENDIF
+         IF ::aNoLoadTrans[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOLOADTRANSPARENT '
+         ENDIF
+         IF ::aForceScale[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FORCESCALE '
+         ENDIF
+         IF ::aNo3DColors[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NO3DCOLORS '
+         ENDIF
+         IF ::aFit[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AUTOFIT '
+         ENDIF
+         IF ::aDIBSection[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DIBSECTION '
+         ENDIF
+         IF ! Empty( ::aOnMouseMove[j] ) .AND. UpperNIL( ::aOnMouseMove[j] ) # 'NIL'
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON MOUSEMOVE ' + AllTrim( ::aOnMouseMove[j] )
+         ENDIF
+         IF ::aThemed[j] == '.T.'
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'THEMED '
+         ELSEIF ::aThemed[j] == '.F.'
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTHEME '
+         ENDIF
+         IF ! Empty( ::aImageMargin[j] )
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'IMAGEMARGIN ' + AllTrim( ::aImageMargin[j] )
+         ENDIF
+         IF ! Empty( ::aJustify[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + Upper( AllTrim( ::aJustify[j] ) ) + ' '
+         ENDIF
+         IF ::aCancel[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CANCEL '
+         ENDIF
+         IF ! Empty( ::aSubClass[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
+         ENDIF
+         Output += CRLF + CRLF
       ENDIF
-      IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
+
+      IF ::aCtrlType[j] == 'PICCHECKBUTT'
+         Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' CHECKBUTTON ' + ::aName[j] + ' '
+         IF ! Empty( ::aCObj[j ] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
+         ENDIF
+         IF ! Empty( ::aPicture[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PICTURE ' + StrToStr( ::aPicture[j] )
+         ELSE
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PICTURE ' + "'" + "'"
+         ENDIF
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+         IF ::aValueL[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE .T.'
+         ELSE
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE .F.'
+         ENDIF
+         IF ! Empty( ::aToolTip[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
+         ENDIF
+         IF ::aNoTabStop[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
+         ENDIF
+         IF ! Empty( ::aOnChange[j] ) .AND. UpperNIL( ::aOnChange[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
+         ENDIF
+         IF ! Empty( ::aOnGotFocus[j] ) .AND. UpperNIL( ::aOnGotFocus[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( ::aOnGotFocus[j] )
+         ENDIF
+         IF ! Empty( ::aOnLostFocus[j] ) .AND. UpperNIL( ::aOnLostFocus[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
+         ENDIF
+         IF ! Empty( ::aOnMouseMove[j] ) .AND. UpperNIL( ::aOnMouseMove[j] ) # 'NIL'
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON MOUSEMOVE ' + AllTrim( ::aOnMouseMove[j] )
+         ENDIF
+         IF ::aHelpID[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
+         ENDIF
+         IF ! Empty( ::aSubClass[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
+         ENDIF
+         IF ! ::aVisible[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
+         ENDIF
+         IF ! Empty( ::aBuffer[j] )
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BUFFER ' + AllTrim( ::aBuffer[j] )
+         ENDIF
+         IF ! Empty( ::aHBitmap[j] )
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HBITMAP ' + AllTrim( ::aHBitmap[j] )
+         ENDIF
+         IF ::aNoLoadTrans[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOLOADTRANSPARENT '
+         ENDIF
+         IF ::aForceScale[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FORCESCALE '
+         ENDIF
+         IF ! Empty( ::aField[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIELD ' + AllTrim( ::aField[j] )
+         ENDIF
+         IF ::aNo3DColors[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NO3DCOLORS '
+         ENDIF
+         IF ::aFit[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AUTOFIT '
+         ENDIF
+         IF ::aDIBSection[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DIBSECTION '
+         ENDIF
+         IF ::aBackColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
+         ENDIF
+         IF ! ::aEnabled[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
+         ENDIF
+         IF ::aThemed[j] == '.T.'
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'THEMED '
+         ELSEIF ::aThemed[j] == '.F.'
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTHEME '
+         ENDIF
+         IF ::aFlat[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FLAT '
+         ENDIF
+         IF ! Empty( ::aImageMargin[j] )
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'IMAGEMARGIN ' + AllTrim( ::aImageMargin[j] )
+         ENDIF
+         IF ! Empty( ::aJustify[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + Upper( AllTrim( ::aJustify[j] ) ) + ' '
+         ENDIF
+         Output += CRLF + CRLF
       ENDIF
-      IF ::aNumeric[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NUMERIC '
+
+      IF ::aCtrlType[j] == 'PROGRESSBAR'
+         Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' PROGRESSBAR ' + ::aName[j] + ' '
+         IF ! Empty( ::aCObj[j ] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
+         ENDIF
+         IF ! Empty( ::aRange[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RANGE ' + AllTrim( ::aRange[j] )
+         ENDIF
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+         IF ! Empty( ::aToolTip[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
+         ENDIF
+         IF ::aVertical[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VERTICAL '
+         ENDIF
+         IF ::aSmooth[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SMOOTH '
+         ENDIF
+         IF ::aHelpID[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
+         ENDIF
+         IF ::aValueN[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( ::aValueN[j] ) )
+         ENDIF
+         IF ! ::aVisible[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
+         ENDIF
+         IF ::aBackColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
+         ENDIF
+         IF ::aFontColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FORECOLOR ' + ::aFontColor[j]
+         ENDIF
+         IF ::aRTL[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
+         ENDIF
+         IF ::aMarquee[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'MARQUEE ' + LTrim( Str( ::aMarquee[j] ) )
+         ENDIF
+         Output += CRLF + CRLF
+      ENDIF
+
+      IF ::aCtrlType[j] == 'RADIOGROUP'
+         Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' RADIOGROUP ' + ::aName[j] + ' '
+         IF ! Empty( ::aCObj[j ] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
+         ENDIF
+         IF ! Empty( ::aItems[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OPTIONS ' + AllTrim( ::aItems[j] )
+         ENDIF
+         IF ::aValueN[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( ::aValueN[j] ) )
+         ENDIF
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+         // Do no include HEIGHT
+         IF ::aSpacing[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SPACING ' + LTrim( Str( ::aSpacing[j] ) )
+         ENDIF
+         IF ! Empty( ::aFontName[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
+         ENDIF
+         IF ::aFontSize[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
+         ENDIF
+         IF ! Empty( ::aToolTip[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
+         ENDIF
+         IF ! Empty( ::aOnChange[j] ) .AND. UpperNIL( ::aOnChange[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
+         ENDIF
+         IF ::aTransparent[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TRANSPARENT '
+         ENDIF
+         IF ::aHelpID[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
+         ENDIF
+         IF ::aBold[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
+         ENDIF
+         IF ::aFontItalic[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
+         ENDIF
+         IF ::aFontUnderline[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
+         ENDIF
+         IF ::aFontStrikeout[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
+         ENDIF
+         IF ::aBackColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
+         ENDIF
+         IF ::aFontColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + ::aFontColor[j]
+         ENDIF
+         IF ! ::aVisible[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
+         ENDIF
+         IF ::aNoTabStop[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
+         ENDIF
+         IF ::aAutoPlay[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AUTOSIZE '
+         ENDIF
+         IF ::aFlat[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HORIZONTAL '
+         ENDIF
+         IF ::aLeft[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'LEFTJUSTIFY '
+         ENDIF
+         IF ! Empty( ::aReadOnlyB[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'READONLY ' + AllTrim( ::aReadOnlyB[j] )
+         ENDIF
+         IF ! ::aEnabled[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
+         ENDIF
+         IF ::aRTL[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
+         ENDIF
+         IF ::aThemed[j] == '.T.'
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'THEMED '
+         ELSEIF ::aThemed[j] == '.F.'
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTHEME '
+         ENDIF
+         IF ! Empty( ::aBackground[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKGROUND ' + AllTrim( ::aBackground[j] )
+         ENDIF
+         IF ! Empty( ::aSubClass[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
+         ENDIF
+         Output += CRLF + CRLF
+      ENDIF
+
+      IF ::aCtrlType[j] == 'RICHEDIT'
+         Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' RICHEDITBOX ' + ::aName[j] + ' '
+         IF ! Empty( ::aCObj[j ] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
+         ENDIF
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+         IF ! Empty( ::aField[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIELD ' + AllTrim( ::aField[j] )
+         ENDIF
+         IF ! Empty( ::aValue[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + StrToStr( ::aValue[j], .T. )
+         ENDIF
+         IF ::aReadOnly[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'READONLY '
+         ENDIF
+         IF ! Empty( ::aFontName[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
+         ENDIF
+         IF ::aFontSize[j] > 0
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
+         ENDIF
+         IF ! Empty( ::aToolTip[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
+         ENDIF
+         IF ::aMaxLength[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'MAXLENGTH ' + LTrim( Str( ::aMaxLength[j] ) )
+         ENDIF
+         IF ::aBreak[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BREAK '
+         ENDIF
+         IF ::aNoTabStop[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
+         ENDIF
+         IF ! Empty( ::aOnChange[j] ) .AND. UpperNIL( ::aOnChange[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
+         ENDIF
+         IF ! Empty( ::aOnGotFocus[j] ) .AND. UpperNIL( ::aOnGotFocus[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( ::aOnGotFocus[j] )
+         ENDIF
+         IF ! Empty( ::aOnLostFocus[j] ) .AND. UpperNIL( ::aOnLostFocus[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
+         ENDIF
+         IF ::aHelpID[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
+         ENDIF
+         IF ::aBold[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
+         ENDIF
+         IF ::aFontItalic[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
+         ENDIF
+         IF ::aFontUnderline[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
+         ENDIF
+         IF ::aFontStrikeout[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
+         ENDIF
+         IF ::aBackColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
+         ENDIF
+         IF ::aFontColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + ::aFontColor[j]
+         ENDIF
+         IF ! Empty( ::aOnSelChange[j] ) .AND. UpperNIL( ::aOnSelChange[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON SELCHANGE ' + AllTrim( ::aOnSelChange[j] )
+         ENDIF
+         IF ! ::aVisible[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
+         ENDIF
+         IF ::aRTL[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
+         ENDIF
+         IF ! ::aEnabled[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
+         ENDIF
+         IF ::aNoHideSel[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOHIDESEL '
+         ENDIF
+         IF ::aFocusedPos[j] <> -4            // default value, see DATA nOnFocusPos in h_textbox.prg
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FOCUSEDPOS ' + LTrim( Str( ::aFocusedPos[j] ) )
+         ENDIF
+         IF ::aNoVScroll[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOVSCROLL '
+         ENDIF
+         IF ::aNoHScroll[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOHSCROLL '
+         ENDIF
+         IF ! Empty( ::aFile[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FILE ' + StrToStr( ::aFile[j] )
+         ENDIF
+         IF ::aPlainText[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PLAINTEXT '
+         ENDIF
+         IF ::aFileType[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FILETYPE ' + LTrim( Str( ::aFileType[j] ) )
+         ENDIF
+         IF ! Empty( ::aOnVScroll[j] ) .AND. UpperNIL( ::aOnVScroll[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON VSCROLL ' + AllTrim( ::aOnVScroll[j] )
+         ENDIF
+         IF ! Empty( ::aOnHScroll[j] ) .AND. UpperNIL( ::aOnHScroll[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON HSCROLL ' + AllTrim( ::aOnHScroll[j] )
+         ENDIF
+         IF ! Empty( ::aSubClass[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
+         ENDIF
+         Output += CRLF + CRLF
+      ENDIF
+
+      IF ::aCtrlType[j] == 'SLIDER'
+         Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' SLIDER ' + ::aName[j] + ' '
+         IF ! Empty( ::aCObj[j ] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
+         ENDIF
+         IF ! Empty( ::aRange[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RANGE ' + AllTrim( ::aRange[j] )
+         ELSE
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RANGE 1, 100'
+         ENDIF
+         IF ::aValueN[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( ::aValueN[j] ) )
+         ENDIF
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+         IF ! Empty( ::aToolTip[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
+         ENDIF
+         IF ! Empty( ::aOnChange[j] ) .AND. UpperNIL( ::aOnChange[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
+         ENDIF
+         IF ::aVertical[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VERTICAL '
+         ENDIF
+         IF ::aNoTicks[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTICKS '
+         ENDIF
+         IF ::aBoth[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOTH '
+         ENDIF
+         IF ::aTop[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOP '
+         ENDIF
+         IF ::aLeft[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'LEFT '
+         ENDIF
+         IF ::aHelpID[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
+         ENDIF
+         IF ::aBackColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
+         ENDIF
+         IF ! ::aEnabled[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
+         ENDIF
+         IF ::aNoTabStop[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
+         ENDIF
+         IF ! ::aVisible[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
+         ENDIF
+         IF ::aRTL[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
+         ENDIF
+         IF ! Empty( ::aSubClass[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
+         ENDIF
+         Output += CRLF + CRLF
+      ENDIF
+
+      IF ::aCtrlType[j] == 'SPINNER'
+         Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' SPINNER ' + ::aName[j] + ' '
+         IF ! Empty( ::aCObj[j ] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
+         ENDIF
+         IF ! Empty( ::aRange[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RANGE ' + AllTrim( ::aRange[j] )
+         ENDIF
+         IF ::aValueN[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( ::aValueN[j] ) )
+         ENDIF
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+         IF ! Empty( ::aFontName[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
+         ENDIF
+         IF ::aFontSize[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
+         ENDIF
+         IF ! Empty( ::aToolTip[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
+         ENDIF
+         IF ! Empty( ::aOnChange[j] ) .AND. UpperNIL( ::aOnChange[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
+         ENDIF
+         IF ! Empty( ::aOnGotFocus[j] ) .AND. UpperNIL( ::aOnGotFocus[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( ::aOnGotFocus[j] )
+         ENDIF
+         IF ! Empty( ::aOnLostFocus[j] ) .AND. UpperNIL( ::aOnLostFocus[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
+         ENDIF
+         IF ::aHelpID[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
+         ENDIF
+         IF ::aNoTabStop[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
+         ENDIF
+         IF ::aWrap[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WRAP '
+         ENDIF
+         IF ::aReadOnly[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'READONLY '
+         ENDIF
+         IF ::aIncrement[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INCREMENT ' + LTrim( Str( ::aIncrement[j] ) )
+         ENDIF
+         IF ::aBold[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
+         ENDIF
+         IF ::aFontItalic[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
+         ENDIF
+         IF ::aFontUnderline[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
+         ENDIF
+         IF ::aFontStrikeout[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
+         ENDIF
+         IF ::aBackColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
+         ENDIF
+         IF ::aFontColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + ::aFontColor[j]
+         ENDIF
+         IF ! ::aEnabled[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
+         ENDIF
+         IF ! ::aVisible[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
+         ENDIF
+         IF ::aRTL[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
+         ENDIF
+         IF ::aBorder[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOBORDER '
+         ENDIF
+         IF ::aDisplayEdit[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOUNDTEXT '
+         ENDIF
+         Output += CRLF + CRLF
+      ENDIF
+
+      IF ::aCtrlType[j] == 'TEXT'
+         Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' TEXTBOX ' + ::aName[j] + ' '
+         IF ! Empty( ::aCObj[j ] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
+         ENDIF
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+         IF ! Empty( ::aField[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIELD ' + AllTrim( ::aField[j] )
+         ENDIF
+         IF ::aValue[j] == NIL
+            cValue := ''
+         ELSE
+            cValue := AllTrim( ::aValue[j] )
+         ENDIF
+         IF ! Empty( cValue )
+            IF ::aNumeric[j]
+               Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + cValue
+            ELSE
+               IF ::aDate[j]
+                  Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + cValue
+               ELSE
+                  Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + cValue
+               ENDIF
+            ENDIF
+         ENDIF
+         IF ::aReadOnly[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'READONLY '
+         ENDIF
+         IF ::aPassword[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PASSWORD '
+         ENDIF
+         IF ! Empty( ::aFontName[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
+         ENDIF
+         IF ::aFontSize[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
+         ENDIF
+         IF ! Empty( ::aToolTip[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
+         ENDIF
+         IF ::aNumeric[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NUMERIC '
+            IF ! Empty( ::aInputMask[j] )
+               Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INPUTMASK ' + AllTrim( ::aInputMask[j] )
+            ENDIF
+         ELSE
+            IF ! Empty( ::aInputMask[j] )
+               Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INPUTMASK ' + AllTrim( ::aInputMask[j] )
+            ENDIF
+         ENDIF
+         IF ! Empty( ::aFields[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FORMAT ' + StrToStr( ::aFields[j], .T. )
+         ENDIF
+         IF ::aDate[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DATE '
+         ENDIF
+         IF ::aMaxLength[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'MAXLENGTH ' + LTrim( Str( ::aMaxLength[j] ) )
+         ENDIF
+         IF ::aUpperCase[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UPPERCASE '
+         ELSEIF ::aLowerCase[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'LOWERCASE '
+         ENDIF
+         IF ! Empty( ::aOnGotFocus[j] ) .AND. UpperNIL( ::aOnGotFocus[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( ::aOnGotFocus[j] )
+         ENDIF
+         IF ! Empty( ::aOnLostFocus[j] ) .AND. UpperNIL( ::aOnLostFocus[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
+         ENDIF
+         IF ! Empty( ::aOnChange[j] ) .AND. UpperNIL( ::aOnChange[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
+         ENDIF
+         IF ! Empty( ::aOnEnter[j] ) .AND. UpperNIL( ::aOnEnter[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON ENTER ' + AllTrim( ::aOnEnter[j] )
+         ENDIF
+         IF ::aCenterAlign[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CENTERALIGN '
+         ELSEIF ::aRightAlign[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RIGHTALIGN '
+         ENDIF
+         IF ::aNoTabStop[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
+         ENDIF
+         IF ::aFocusedPos[j] <> -2            // default value, see DATA nOnFocusPos in h_textbox.prg
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FOCUSEDPOS ' + LTrim( Str( ::aFocusedPos[j] ) )
+         ENDIF
+         IF ! Empty( ::aValid[j] ) .AND. UpperNIL( ::aValid[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALID ' + AllTrim( ::aValid[j] )
+         ENDIF
+         IF ! Empty( ::aWhen[j] ) .AND. UpperNIL( ::aWhen[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WHEN ' + AllTrim( ::aWhen[j] )
+         ENDIF
+         IF ! Empty( ::aAction[j] ) .AND. UpperNIL( ::aAction[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + AllTrim( ::aAction[j] )
+         ENDIF
+         IF ! Empty( ::aAction2[j] ) .AND. UpperNIL( ::aAction2[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION2 ' + AllTrim( ::aAction2[j] )
+         ENDIF
+         IF ! Empty( ::aImage[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'IMAGE ' + AllTrim( ::aImage[j] )
+         ENDIF
+         IF ::aHelpID[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
+         ENDIF
+         IF ::aBold[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
+         ENDIF
+         IF ::aFontItalic[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
+         ENDIF
+         IF ::aFontUnderline[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
+         ENDIF
+         IF ::aFontStrikeout[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
+         ENDIF
+         IF ::aBackColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
+         ENDIF
+         IF ::aFontColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + ::aFontColor[j]
+         ENDIF
+         IF ::aRTL[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
+         ENDIF
+         IF ! ::aEnabled[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
+         ENDIF
+         IF ! ::aVisible[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
+         ENDIF
+         IF ::aBorder[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOBORDER '
+         ENDIF
+         IF ::aAutoPlay[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AUTOSKIP '
+         ENDIF
+         IF ! Empty( ::aOnTextFilled[j] ) .AND. UpperNIL( ::aOnTextFilled[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON TEXTFILLED ' + AllTrim( ::aOnTextFilled[j] )
+         ENDIF
+         IF ::aDefaultYear[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DEFAULTYEAR ' + LTrim( Str( ::aDefaultYear[j] ) )
+         ENDIF
+         IF ::aButtonWidth[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BUTTONWIDTH ' + LTrim( Str( ::aButtonWidth[j] ) )
+         ENDIF
+         IF ::aInsertType[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INSERTTYPE ' + LTrim( Str( ::aInsertType[j] ) )
+         ENDIF
+         IF ! Empty( ::aSubClass[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
+         ENDIF
+         Output += CRLF + CRLF
+      ENDIF
+
+      IF ::aCtrlType[j] == 'TIMER'
+         // Do not delete next line, it's needed to load the control properly
+         Output += Space( nSpacing ) + '*****@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' TIMER ' + ::aName[j] + ' ;' + CRLF
+         Output += Space( nSpacing * nLevel ) + 'DEFINE TIMER ' + ::aName[j]
+         IF ! Empty( ::aCObj[j ] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
+         ENDIF
+         IF ::aValueN[j] > 999
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INTERVAL ' + LTrim( Str( ::aValueN[j] ) )
+         ELSE
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INTERVAL ' + LTrim( Str( 1000 ) )
+         ENDIF
+         IF ! Empty( ::aAction[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + AllTrim( ::aAction[j] )
+         ELSE
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + '_dummy()'
+         ENDIF
+         IF ! ::aEnabled[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
+         ENDIF
+         IF ! Empty( ::aSubClass[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
+         ENDIF
+         Output += CRLF + CRLF
+      ENDIF
+
+      IF ::aCtrlType[j] == 'TREE'
+         Output += Space( nSpacing * nLevel ) + 'DEFINE TREE ' + ::aName[j]
+         IF ! Empty( ::aCObj[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
+         ENDIF
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AT ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+         IF ! Empty( ::aFontName[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
+         ENDIF
+         IF ::aFontSize[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
+         ENDIF
+         IF ::aFontColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + ::aFontColor[j]
+         ENDIF
+         IF ::aBold[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
+         ENDIF
+         IF ::aFontItalic[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
+         ENDIF
+         IF ::aFontUnderline[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
+         ENDIF
+         IF ::aFontStrikeout[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
+         ENDIF
+         IF ::aBackColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
+         ENDIF
+         IF ! ::aVisible[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
+         ENDIF
+         IF ! ::aEnabled[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
+         ENDIF
+         IF ! Empty( ::aToolTip[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
+         ENDIF
+         IF ! Empty( ::aOnChange[j] ) .AND. UpperNIL( ::aOnChange[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
+         ENDIF
+         IF ! Empty( ::aOnGotFocus[j] ) .AND. UpperNIL( ::aOnGotFocus[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( ::aOnGotFocus[j] )
+         ENDIF
+         IF ! Empty( ::aOnLostFocus[j] ) .AND. UpperNIL( ::aOnLostFocus[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
+         ENDIF
+         IF ! Empty( ::aOnDblClick[j] ) .AND. UpperNIL( ::aOnDblClick[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON DBLCLICK ' + AllTrim( ::aOnDblClick[j] )
+         ENDIF
+         IF ! Empty( ::aNodeImages[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NODEIMAGES ' + AllTrim( ::aNodeImages[j] )
+         ENDIF
+         IF ! Empty( ::aItemImages[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITEMIMAGES ' + AllTrim( ::aItemImages[j] )
+         ENDIF
+         IF ::aNoRootButton[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOROOTBUTTON '
+         ENDIF
+         IF ::aItemIDs[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITEMIDS '
+         ENDIF
+         IF ::aHelpID[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
+         ENDIF
+         IF ::aFull[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FULLROWSELECT '
+         ENDIF
+         IF ::aValueN[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( ::aValueN[j] ) )
+         ENDIF
+         IF ::aRTL[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
+         ENDIF
+         IF ! Empty( ::aOnEnter[j] ) .AND. UpperNIL( ::aOnEnter[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON ENTER ' + AllTrim( ::aOnEnter[j] )
+         ENDIF
+         IF ::aBreak[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BREAK '
+         ENDIF
+         IF ::aNoTabStop[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
+         ENDIF
+         IF ! Empty( AllTrim( ::aSelColor[j] ) ) .AND. UpperNIL( ::aSelColor[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SELCOLOR ' + AllTrim( ::aSelColor[j] )
+         ENDIF
+         IF ::aBold[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SELBOLD '
+         ENDIF
+         IF ::aCheckBoxes[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CHECKBOXES '
+         ENDIF
+         IF ::aEditLabels[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'EDITLABELS '
+         ENDIF
+         IF ::aNoHScroll[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOHSCROLL '
+         ENDIF
+         IF ::aNoVScroll[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOSCROLL '
+         ENDIF
+         IF ::aHotTrack[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HOTTRACKING '
+         ENDIF
+         IF ::aButtons[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOBUTTONS '
+         ENDIF
+         IF ::aDrag[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ENABLEDRAG '
+         ENDIF
+         IF ::aDrop[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ENABLEDROP '
+         ENDIF
+         IF ! Empty( ::aTarget[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TARGET ' + AllTrim( ::aTarget[j] )
+         ENDIF
+         IF ::aSingleExpand[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SINGLEEXPAND '
+         ENDIF
+         IF ::aBorder[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BORDERLESS '
+         ENDIF
+         IF ! Empty( ::aOnLabelEdit[j] ) .AND. UpperNIL( ::aOnLabelEdit[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LABELEDIT ' + AllTrim( ::aOnLabelEdit[j] )
+         ENDIF
+         IF ! Empty( ::aValid[j] ) .AND. UpperNIL( ::aValid[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALID ' + AllTrim( ::aValid[j] )
+         ENDIF
+         IF ! Empty( ::aOnCheckChg[j] ) .AND. UpperNIL( ::aOnCheckChg[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHECKCHANGE ' + AllTrim( ::aOnCheckChg[j] )
+         ENDIF
+         IF ::aIndent[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INDENT ' + LTrim( Str( ::aIndent[j] ) )
+         ENDIF
+         IF ! Empty( ::aOnDrop[j] ) .AND. UpperNIL( ::aOnDrop[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON DROP ' + AllTrim( ::aOnDrop[j] )
+         ENDIF
+         IF ::aNoLines[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOLINES '
+         ENDIF
+         IF ! Empty( ::aSubClass[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
+         ENDIF
+         Output += CRLF + CRLF
+   /*
+      TODO: Add
+
+      #xcommand DEFINE NODE <text> ;
+         [ IMAGES <aImage> ] ;
+         [ ID <id> ] ;
+         [ <checked: CHECKED> ] ;
+         [ <readonly: READONLY> ] ;
+         [ <bold: BOLD> ] ;
+         [ <disabled: DISABLED> ] ;
+         [ <nodrag: NODRAG> ] ;
+         [ <autoid: AUTOID> ] ;
+
+      #xcommand TREEITEM <text> ;
+         [ IMAGES <aImage> ] ;
+         [ ID <id> ] ;
+         [ <checked: CHECKED> ] ;
+         [ <readonly: READONLY> ] ;
+         [ <bold: BOLD> ] ;
+         [ <disabled: DISABLED> ] ;
+         [ <nodrag: NODRAG> ] ;
+         [ <autoid: AUTOID> ] ;
+
+      #xcommand DEFINE MENU DYNAMIC ;
+         [ OF <parent> ] ;
+         [ OBJ <obj> ] ;
+         [ SUBCLASS <subclass> ] ;
+         [ NAME <name> ] ;
+
+      TODO: Check all DEFINE * controls
+   */
+         Output += Space( nSpacing * nLevel ) + 'END TREE ' + CRLF + CRLF
+      ENDIF
+
+      IF ::aCtrlType[j] == 'XBROWSE'
+         Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' XBROWSE ' + ::aName[j] + ' '
+         IF ! Empty( ::aCObj[j ] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
+         ENDIF
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+         IF ! Empty( ::aHeaders[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEADERS ' + AllTrim( ::aHeaders[j] )
+         ELSE
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEADERS ' + "{ '', '' }"
+         ENDIF
+         IF ! Empty( ::aWidths[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTHS ' + AllTrim( ::aWidths[j] )
+         ELSE
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTHS ' + '{ 90, 60 }'
+         ENDIF
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WORKAREA ' + AllTrim( ::aWorkArea[j] )
+         IF ! Empty( ::aFields[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIELDS ' + AllTrim( ::aFields[j] )
+         ELSE
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIELDS ' + "{ 'field1', 'field2' }"
+         ENDIF
+         IF ::aValueN[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( ::aValueN[j] ) )
+         ENDIF
+         IF ! Empty( ::aFontName[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
+         ENDIF
+         IF ::aFontSize[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
+         ENDIF
+         IF ! Empty( ::aToolTip[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
+         ENDIF
          IF ! Empty( ::aInputMask[j] )
             Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INPUTMASK ' + AllTrim( ::aInputMask[j] )
          ENDIF
-      ELSE
-         IF ! Empty( ::aInputMask[j] )
-            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INPUTMASK ' + AllTrim( ::aInputMask[j] )
+         IF ! Empty( AllTrim( ::aDynamicBackColor[j] ) ) .AND. UpperNIL( ::aDynamicBackColor[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DYNAMICBACKCOLOR ' + AllTrim( ::aDynamicBackColor[j] )
          ENDIF
-      ENDIF
-      IF ! Empty( ::aFields[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FORMAT ' + StrToStr( ::aFields[j], .T. )
-      ENDIF
-      IF ::aDate[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DATE '
-      ENDIF
-      IF ::aMaxLength[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'MAXLENGTH ' + LTrim( Str( ::aMaxLength[j] ) )
-      ENDIF
-      IF ::aUpperCase[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UPPERCASE '
-      ELSEIF ::aLowerCase[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'LOWERCASE '
-      ENDIF
-      IF ! Empty( ::aOnGotFocus[j] ) .AND. UpperNIL( ::aOnGotFocus[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( ::aOnGotFocus[j] )
-      ENDIF
-      IF ! Empty( ::aOnLostFocus[j] ) .AND. UpperNIL( ::aOnLostFocus[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
-      ENDIF
-      IF ! Empty( ::aOnChange[j] ) .AND. UpperNIL( ::aOnChange[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
-      ENDIF
-      IF ! Empty( ::aOnEnter[j] ) .AND. UpperNIL( ::aOnEnter[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON ENTER ' + AllTrim( ::aOnEnter[j] )
-      ENDIF
-      IF ::aCenterAlign[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CENTERALIGN '
-      ELSEIF ::aRightAlign[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RIGHTALIGN '
-      ENDIF
-      IF ::aNoTabStop[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
-      ENDIF
-      IF ::aFocusedPos[j] <> -2            // default value, see DATA nOnFocusPos in h_textbox.prg
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FOCUSEDPOS ' + LTrim( Str( ::aFocusedPos[j] ) )
-      ENDIF
-      IF ! Empty( ::aValid[j] ) .AND. UpperNIL( ::aValid[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALID ' + AllTrim( ::aValid[j] )
-      ENDIF
-      IF ! Empty( ::aWhen[j] ) .AND. UpperNIL( ::aWhen[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WHEN ' + AllTrim( ::aWhen[j] )
-      ENDIF
-      IF ! Empty( ::aAction[j] ) .AND. UpperNIL( ::aAction[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + AllTrim( ::aAction[j] )
-      ENDIF
-      IF ! Empty( ::aAction2[j] ) .AND. UpperNIL( ::aAction2[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION2 ' + AllTrim( ::aAction2[j] )
-      ENDIF
-      IF ! Empty( ::aImage[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'IMAGE ' + AllTrim( ::aImage[j] )
-      ENDIF
-      IF ::aHelpID[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
-      ENDIF
-      IF ::aBold[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
-      ENDIF
-      IF ::aFontItalic[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
-      ENDIF
-      IF ::aFontUnderline[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
-      ENDIF
-      IF ::aFontStrikeout[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
-      ENDIF
-      IF ::aBackColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
-      ENDIF
-      IF ::aFontColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + ::aFontColor[j]
-      ENDIF
-      IF ::aRTL[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
-      ENDIF
-      IF ! ::aEnabled[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
-      ENDIF
-      IF ! ::aVisible[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
-      ENDIF
-      IF ::aBorder[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOBORDER '
-      ENDIF
-      IF ::aAutoPlay[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AUTOSKIP '
-      ENDIF
-      IF ! Empty( ::aOnTextFilled[j] ) .AND. UpperNIL( ::aOnTextFilled[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON TEXTFILLED ' + AllTrim( ::aOnTextFilled[j] )
-      ENDIF
-      IF ::aDefaultYear[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DEFAULTYEAR ' + LTrim( Str( ::aDefaultYear[j] ) )
-      ENDIF
-      IF ::aButtonWidth[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BUTTONWIDTH ' + LTrim( Str( ::aButtonWidth[j] ) )
-      ENDIF
-      IF ::aInsertType[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INSERTTYPE ' + LTrim( Str( ::aInsertType[j] ) )
-      ENDIF
-      IF ! Empty( ::aSubClass[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
-      ENDIF
-      Output += CRLF + CRLF
-   ENDIF
-
-   IF ::aCtrlType[j] == 'TIMER'
-      // Do not delete next line, it's needed to load the control properly
-      Output += Space( nSpacing ) + '*****@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' TIMER ' + ::aName[j] + ' ;' + CRLF
-      Output += Space( nSpacing * nLevel ) + 'DEFINE TIMER ' + ::aName[j]
-      IF ! Empty( ::aCObj[j ] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
-      ENDIF
-      IF ::aValueN[j] > 999
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INTERVAL ' + LTrim( Str( ::aValueN[j] ) )
-      ELSE
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INTERVAL ' + LTrim( Str( 1000 ) )
-      ENDIF
-      IF ! Empty( ::aAction[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + AllTrim( ::aAction[j] )
-      ELSE
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + '_dummy()'
-      ENDIF
-      IF ! ::aEnabled[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
-      ENDIF
-      IF ! Empty( ::aSubClass[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
-      ENDIF
-      Output += CRLF + CRLF
-   ENDIF
-
-   IF ::aCtrlType[j] == 'TREE'
-      Output += Space( nSpacing * nLevel ) + 'DEFINE TREE ' + ::aName[j]
-      IF ! Empty( ::aCObj[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
-      ENDIF
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AT ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) )
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
-      IF ! Empty( ::aFontName[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
-      ENDIF
-      IF ::aFontSize[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
-      ENDIF
-      IF ::aFontColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + ::aFontColor[j]
-      ENDIF
-      IF ::aBold[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
-      ENDIF
-      IF ::aFontItalic[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
-      ENDIF
-      IF ::aFontUnderline[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
-      ENDIF
-      IF ::aFontStrikeout[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
-      ENDIF
-      IF ::aBackColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
-      ENDIF
-      IF ! ::aVisible[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
-      ENDIF
-      IF ! ::aEnabled[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
-      ENDIF
-      IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
-      ENDIF
-      IF ! Empty( ::aOnChange[j] ) .AND. UpperNIL( ::aOnChange[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
-      ENDIF
-      IF ! Empty( ::aOnGotFocus[j] ) .AND. UpperNIL( ::aOnGotFocus[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( ::aOnGotFocus[j] )
-      ENDIF
-      IF ! Empty( ::aOnLostFocus[j] ) .AND. UpperNIL( ::aOnLostFocus[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
-      ENDIF
-      IF ! Empty( ::aOnDblClick[j] ) .AND. UpperNIL( ::aOnDblClick[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON DBLCLICK ' + AllTrim( ::aOnDblClick[j] )
-      ENDIF
-      IF ! Empty( ::aNodeImages[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NODEIMAGES ' + AllTrim( ::aNodeImages[j] )
-      ENDIF
-      IF ! Empty( ::aItemImages[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITEMIMAGES ' + AllTrim( ::aItemImages[j] )
-      ENDIF
-      IF ::aNoRootButton[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOROOTBUTTON '
-      ENDIF
-      IF ::aItemIDs[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITEMIDS '
-      ENDIF
-      IF ::aHelpID[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
-      ENDIF
-      IF ::aFull[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FULLROWSELECT '
-      ENDIF
-      IF ::aValueN[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( ::aValueN[j] ) )
-      ENDIF
-      IF ::aRTL[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
-      ENDIF
-      IF ! Empty( ::aOnEnter[j] ) .AND. UpperNIL( ::aOnEnter[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON ENTER ' + AllTrim( ::aOnEnter[j] )
-      ENDIF
-      IF ::aBreak[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BREAK '
-      ENDIF
-      IF ::aNoTabStop[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
-      ENDIF
-      IF ! Empty( AllTrim( ::aSelColor[j] ) ) .AND. UpperNIL( ::aSelColor[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SELCOLOR ' + AllTrim( ::aSelColor[j] )
-      ENDIF
-      IF ::aBold[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SELBOLD '
-      ENDIF
-      IF ::aCheckBoxes[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CHECKBOXES '
-      ENDIF
-      IF ::aEditLabels[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'EDITLABELS '
-      ENDIF
-      IF ::aNoHScroll[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOHSCROLL '
-      ENDIF
-      IF ::aNoVScroll[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOSCROLL '
-      ENDIF
-      IF ::aHotTrack[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HOTTRACKING '
-      ENDIF
-      IF ::aButtons[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOBUTTONS '
-      ENDIF
-      IF ::aDrag[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ENABLEDRAG '
-      ENDIF
-      IF ::aDrop[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ENABLEDROP '
-      ENDIF
-      IF ! Empty( ::aTarget[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TARGET ' + AllTrim( ::aTarget[j] )
-      ENDIF
-      IF ::aSingleExpand[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SINGLEEXPAND '
-      ENDIF
-      IF ::aBorder[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BORDERLESS '
-      ENDIF
-      IF ! Empty( ::aOnLabelEdit[j] ) .AND. UpperNIL( ::aOnLabelEdit[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LABELEDIT ' + AllTrim( ::aOnLabelEdit[j] )
-      ENDIF
-      IF ! Empty( ::aValid[j] ) .AND. UpperNIL( ::aValid[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALID ' + AllTrim( ::aValid[j] )
-      ENDIF
-      IF ! Empty( ::aOnCheckChg[j] ) .AND. UpperNIL( ::aOnCheckChg[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHECKCHANGE ' + AllTrim( ::aOnCheckChg[j] )
-      ENDIF
-      IF ::aIndent[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INDENT ' + LTrim( Str( ::aIndent[j] ) )
-      ENDIF
-      IF ! Empty( ::aOnDrop[j] ) .AND. UpperNIL( ::aOnDrop[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON DROP ' + AllTrim( ::aOnDrop[j] )
-      ENDIF
-      IF ::aNoLines[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOLINES '
-      ENDIF
-      IF ! Empty( ::aSubClass[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
-      ENDIF
-      Output += CRLF + CRLF
-/*
-   TODO: Add
-
-   #xcommand DEFINE NODE <text> ;
-      [ IMAGES <aImage> ] ;
-      [ ID <id> ] ;
-      [ <checked: CHECKED> ] ;
-      [ <readonly: READONLY> ] ;
-      [ <bold: BOLD> ] ;
-      [ <disabled: DISABLED> ] ;
-      [ <nodrag: NODRAG> ] ;
-      [ <autoid: AUTOID> ] ;
-
-   #xcommand TREEITEM <text> ;
-      [ IMAGES <aImage> ] ;
-      [ ID <id> ] ;
-      [ <checked: CHECKED> ] ;
-      [ <readonly: READONLY> ] ;
-      [ <bold: BOLD> ] ;
-      [ <disabled: DISABLED> ] ;
-      [ <nodrag: NODRAG> ] ;
-      [ <autoid: AUTOID> ] ;
-
-   #xcommand DEFINE MENU DYNAMIC ;
-      [ OF <parent> ] ;
-      [ OBJ <obj> ] ;
-      [ SUBCLASS <subclass> ] ;
-      [ NAME <name> ] ;
-
-   TODO: Check all DEFINE * controls
-*/
-      Output += Space( nSpacing * nLevel ) + 'END TREE ' + CRLF + CRLF
-   ENDIF
-
-   IF ::aCtrlType[j] == 'XBROWSE'
-      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' XBROWSE ' + ::aName[j] + ' '
-      IF ! Empty( ::aCObj[j ] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
-      ENDIF
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
-      IF ! Empty( ::aHeaders[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEADERS ' + AllTrim( ::aHeaders[j] )
-      ELSE
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEADERS ' + "{ '', '' }"
-      ENDIF
-      IF ! Empty( ::aWidths[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTHS ' + AllTrim( ::aWidths[j] )
-      ELSE
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTHS ' + '{ 90, 60 }'
-      ENDIF
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WORKAREA ' + AllTrim( ::aWorkArea[j] )
-      IF ! Empty( ::aFields[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIELDS ' + AllTrim( ::aFields[j] )
-      ELSE
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIELDS ' + "{ 'field1', 'field2' }"
-      ENDIF
-      IF ::aValueN[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( ::aValueN[j] ) )
-      ENDIF
-      IF ! Empty( ::aFontName[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
-      ENDIF
-      IF ::aFontSize[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
-      ENDIF
-      IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
-      ENDIF
-      IF ! Empty( ::aInputMask[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INPUTMASK ' + AllTrim( ::aInputMask[j] )
-      ENDIF
-      IF ! Empty( AllTrim( ::aDynamicBackColor[j] ) ) .AND. UpperNIL( ::aDynamicBackColor[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DYNAMICBACKCOLOR ' + AllTrim( ::aDynamicBackColor[j] )
-      ENDIF
-      IF ! Empty( AllTrim( ::aDynamicForeColor[j] ) ) .AND. UpperNIL( ::aDynamicForeColor[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DYNAMICFORECOLOR ' + AllTrim( ::aDynamicForeColor[j] )
-      ENDIF
-      IF ! Empty( ::aColumnControls[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'COLUMNCONTROLS ' + AllTrim( ::aColumnControls[j] )
-      ENDIF
-      IF ! Empty( ::aOnChange[j] ) .AND. UpperNIL( ::aOnChange[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
-      ENDIF
-      IF ! Empty( ::aOnGotFocus[j] ) .AND. UpperNIL( ::aOnGotFocus[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( ::aOnGotFocus[j] )
-      ENDIF
-      IF ! Empty( ::aOnLostFocus[j] ) .AND. UpperNIL( ::aOnLostFocus[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
-      ENDIF
-      IF ! Empty( ::aOnDblClick[j] ) .AND. UpperNIL( ::aOnDblClick[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON DBLCLICK ' + AllTrim( ::aOnDblClick[j] )
-      ENDIF
-      IF ! Empty( ::aOnHeadClick[j] ) .AND. UpperNIL( ::aOnHeadClick[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON HEADCLICK ' + AllTrim( ::aOnHeadClick[j] )
-      ENDIF
-      IF ! Empty( ::aOnEditCell[j] ) .AND. UpperNIL( ::aOnEditCell[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON EDITCELL ' + AllTrim( ::aOnEditCell[j] )
-      ENDIF
-      IF ! Empty( ::aOnAppend[j] ) .AND. UpperNIL( ::aOnAppend[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON APPEND ' + AllTrim( ::aOnAppend[j] )
-      ENDIF
-      IF ! Empty( ::aWhen[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WHEN ' + AllTrim( ::aWhen[j] )
-      ENDIF
-      IF ! Empty( ::aValid[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALID ' + AllTrim( ::aValid[j] )
-      ENDIF
-      IF ! Empty( ::aValidMess[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALIDMESSAGES ' + AllTrim( ::aValidMess[j] )
-      ENDIF
-      IF ! Empty( ::aReadOnlyB[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'READONLY ' + AllTrim( ::aReadOnlyB[j] )
-      ENDIF
-      IF ::aLock[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'LOCK '
-      ENDIF
-      IF ::aDelete[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DELETE '
-      ENDIF
-      IF ::aInPlace[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INPLACE '
-      ENDIF
-      IF ::aEdit[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'EDIT '
-      ENDIF
-      IF ::anolines[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOLINES '
-      ENDIF
-      IF ! Empty( ::aImage[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'IMAGE ' + AllTrim( ::aImage[j] )
-      ENDIF
-      IF ! Empty( ::aJustify[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'JUSTIFY ' + AllTrim( ::aJustify[j] )
-      ENDIF
-      IF ! Empty( ::aOnEnter[j] ) .AND. UpperNIL( ::aOnEnter[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON ENTER ' + AllTrim( ::aOnEnter[j] )
-      ENDIF
-      IF ::aHelpID[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
-      ENDIF
-      IF ::aAppend[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'APPEND '
-      ENDIF
-      IF ::aBold[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
-      ENDIF
-      IF ::aFontItalic[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
-      ENDIF
-      IF ::aFontUnderline[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
-      ENDIF
-      IF ::aFontStrikeout[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
-      ENDIF
-      IF ::aBackColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
-      ENDIF
-      IF ::aFontColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + ::aFontColor[j]
-      ENDIF
-      IF ! Empty( ::aAction[j] ) .AND. UpperNIL( ::aAction[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + AllTrim( ::aAction[j] )
-      ENDIF
-      IF ::aBreak[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BREAK '
-      ENDIF
-      IF ::aRTL[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
-      ENDIF
-      IF ! ::aEnabled[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
-      ENDIF
-      IF ::aNoTabStop[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
-      ENDIF
-      IF ! ::aVisible[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
-      ENDIF
-      IF ::aFull[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FULLMOVE '
-      ENDIF
-      IF ::aButtons[j]
-         Output += ' ;' + CRLF + Space( nSpacing * 2) + 'USEBUTTONS '
-      ENDIF
-      IF ::aNoHeaders[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOHEADERS '
-      ENDIF
-      IF ! Empty( ::aHeaderImages[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEADERIMAGES ' + AllTrim( ::aHeaderImages[j] )
-      ENDIF
-      IF ! Empty( ::aImagesAlign[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'IMAGESALIGN ' + AllTrim( ::aImagesAlign[j] )
-      ENDIF
-      IF ! Empty( AllTrim( ::aSelColor[j] ) ) .AND. UpperNIL( ::aSelColor[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SELECTEDCOLORS ' + AllTrim( ::aSelColor[j] )
-      ENDIF
-      IF ! Empty( ::aEditKeys[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'EDITKEYS ' + AllTrim( ::aEditKeys[j] )
-      ENDIF
-      IF ::aDoubleBuffer[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DOUBLEBUFFER '
-      ENDIF
-      IF ::aSingleBuffer[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SINGLEBUFFER '
-      ENDIF
-      IF ::aFocusRect[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FOCUSRECT '
-      ENDIF
-      IF ::aNoFocusRect[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOFOCUSRECT '
-      ENDIF
-      IF ::aPLM[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PAINTLEFTMARGIN '
-      ENDIF
-      IF ::aFixedCols[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIXEDCOLS '
-      ENDIF
-      IF ! Empty( ::aOnAbortEdit[j] ) .AND. UpperNIL( ::aOnAbortEdit[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON ABORTEDIT ' + AllTrim( ::aOnAbortEdit[j] )
-      ENDIF
-      IF ::aFixedWidths[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIXEDWIDTHS '
-      ENDIF
-      IF ! Empty( ::aBeforeColMove[j] ) .AND. UpperNIL( ::aBeforeColMove[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BEFORECOLMOVE ' + AllTrim( ::aBeforeColMove[j] )
-      ENDIF
-      IF ! Empty( ::aAfterColMove[j] ) .AND. UpperNIL( ::aAfterColMove[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AFTERCOLMOVE ' + AllTrim( ::aAfterColMove[j] )
-      ENDIF
-      IF ! Empty( ::aBeforeColSize[j] ) .AND. UpperNIL( ::aBeforeColSize[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BEFORECOLSIZE ' + AllTrim( ::aBeforeColSize[j] )
-      ENDIF
-      IF ! Empty( ::aAfterColSize[j] ) .AND. UpperNIL( ::aAfterColSize[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AFTERCOLSIZE ' + AllTrim( ::aAfterColSize[j] )
-      ENDIF
-      IF ! Empty( ::aBeforeAutoFit[j] ) .AND. UpperNIL( ::aBeforeAutoFit[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BEFOREAUTOFIT ' + AllTrim( ::aBeforeAutoFit[j] )
-      ENDIF
-      IF ::aLikeExcel[j]
-         Output += ' ;' + CRLF + Space( nSpacing * 2) + 'EDITLIKEEXCEL '
-      ENDIF
-      IF ! Empty( ::aDeleteWhen[j] ) .AND. UpperNIL( ::aDeleteWhen[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * 2) + 'DELETEWHEN ' + AllTrim( ::aDeleteWhen[j] )
-      ENDIF
-      IF ! Empty( ::aDeleteMsg[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * 2) + 'DELETEMSG ' + AllTrim( ::aDeleteMsg[j] )
-      ENDIF
-      IF ! Empty( ::aOnDelete[j] ) .AND. UpperNIL( ::aOnDelete[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON DELETE ' + AllTrim( ::aOnDelete[j] )
-      ENDIF
-      IF ::aNoDelMsg[j]
-         Output += ' ;' + CRLF + Space( nSpacing * 2) + 'NODELETEMSG '
-      ENDIF
-      IF ::aFixedCtrls[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIXEDCONTROLS '
-      ENDIF
-      IF ::aDynamicCtrls[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DYNAMICCONTROLS '
-      ENDIF
-      IF ! Empty( ::aOnHeadRClick[j] ) .AND. UpperNIL( ::aOnHeadRClick[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON HEADRCLICK ' + AllTrim( ::aOnHeadRClick[j] )
-      ENDIF
-      IF ::aExtDblClick[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'EXTDBLCLICK '
-      ENDIF
-      IF ::anovscroll[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOVSCROLL '
-      ENDIF
-      IF ! Empty( ::aReplaceField[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'REPLACEFIELD ' + AllTrim( ::aReplaceField[j] )
-      ENDIF
-      IF ! Empty( ::aSubClass[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
-      ENDIF
-      IF ::aRecCount[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RECCOUNT '
-      ENDIF
-      IF ! Empty( ::aColumnInfo[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'COLUMNINFO ' + AllTrim( ::aColumnInfo[j] )
-      ENDIF
-      IF ::aDescend[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DESCENDING '
-      ENDIF
-      IF ::aFixBlocks[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIXEDBLOCKS '
-      ELSEIF ::aDynBlocks[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DYNAMICBLOCKS '
-      ENDIF
-      IF ::aUpdateColors[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UPDATECOLORS '
-      ENDIF
-      IF ::aShowNone[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOSHOWEMPTYROW '
-      ENDIF
-      IF ::aNoModalEdit[j]
-         Output += ' ;' + CRLF + Space( nSpacing * 2) + 'NOMODALEDIT '
-      ENDIF
-      IF ::aByCell[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NAVIGATEBYCELL '
-      ENDIF
-      IF ::aAutoPlay[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SILENT '
-      ENDIF
-      IF ::aFlat[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLEALTA '
-      ENDIF
-      IF ::aShowAll[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOSHOWALWAYS '
-      ENDIF
-      IF ! Empty( ::aOnRClick[j] ) .AND. UpperNIL( ::aOnRClick[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON RCLICK ' + AllTrim( ::aOnRClick[j] )
-      ENDIF
-      IF ::aCheckBoxes[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CHECKBOXES '
-      ENDIF
-      IF ! Empty( ::aOnCheckChg[j] ) .AND. UpperNIL( ::aOnCheckChg[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHECKCHANGE ' + AllTrim( ::aOnCheckChg[j] )
-      ENDIF
-      IF ! Empty( ::aOnRowRefresh[j] ) .AND. UpperNIL( ::aOnRowRefresh[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON ROWREFRESH ' + AllTrim( ::aOnRowRefresh[j] )
-      ENDIF
-      IF ! Empty( ::aDefaultYear[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DEFAULTVALUES ' + AllTrim( ::aDefaultYear[j] )
-      ENDIF
-      IF ! Empty( ::aOnInsert[j] ) .AND. UpperNIL( ::aOnInsert[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON INSERT ' + AllTrim( ::aOnInsert[j] )
-      ENDIF
-      IF ! Empty( ::aOnEditCellEnd[j] ) .AND. UpperNIL( ::aOnEditCellEnd[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON EDITCELLEND ' + AllTrim( ::aOnEditCellEnd[j] )
-      ENDIF
-      Output += CRLF + CRLF
-   ENDIF
-
-   IF ::aCtrlType[j] == 'ACTIVEX'
-      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' ACTIVEX ' + ::aName[j] + ' '
-      IF ! Empty( ::aCObj[j ] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
-      ENDIF
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
-      IF ! Empty( ::aProgID[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PROGID ' + AllTrim( ::aProgID[j] )
-      ELSEIF ! Empty( ::aSubClass[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PROGID ' + StrToStr( ::aSubClass[j] )
-      ENDIF
-      IF ::aNoTabStop[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
-      ENDIF
-      IF ! ::aEnabled[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
-      ENDIF
-      IF ! ::aVisible[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
-      ENDIF
-      Output += CRLF + CRLF
-   ENDIF
-
-   IF ::aCtrlType[j] == 'CHECKLIST'
-      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' CHECKLIST ' + ::aName[j] + ' '
-      IF ! Empty( ::aCObj[j ] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
-      ENDIF
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
-      IF ! Empty( ::aItems[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITEMS ' + AllTrim( ::aItems[j] )
-      ENDIF
-      IF ! Empty( ::aImage[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'IMAGE ' + AllTrim( ::aImage[j] )
-      ENDIF
-      IF ::aValueN[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( ::aValueN[j] ) )
-      ENDIF
-      IF ! Empty( ::aFontName[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
-      ENDIF
-      IF ::aFontSize[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
-      ENDIF
-      IF ::aFontColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + ::aFontColor[j]
-      ENDIF
-      IF ::aBold[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
-      ENDIF
-      IF ::aFontItalic[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
-      ENDIF
-      IF ::aFontUnderline[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
-      ENDIF
-      IF ::aFontStrikeout[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
-      ENDIF
-      IF ::aBackColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
-      ENDIF
-      IF ! Empty( ::aJustify[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'JUSTIFY ' + AllTrim( ::aJustify[j] )
-      ENDIF
-      IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
-      ENDIF
-      IF ::aRTL[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
-      ENDIF
-      IF ! ::aEnabled[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
-      ENDIF
-      IF ::aNoTabStop[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
-      ENDIF
-      IF ! ::aVisible[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
-      ENDIF
-      IF ! Empty( AllTrim( ::aSelColor[j] ) ) .AND. UpperNIL( ::aSelColor[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SELECTEDCOLORS ' + AllTrim( ::aSelColor[j] )
-      ENDIF
-      IF ! Empty( ::aOnChange[j] ) .AND. UpperNIL( ::aOnChange[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
-      ENDIF
-      IF ! Empty( ::aOnGotFocus[j] ) .AND. UpperNIL( ::aOnGotFocus[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( ::aOnGotFocus[j] )
-      ENDIF
-      IF ! Empty( ::aOnLostFocus[j] ) .AND. UpperNIL( ::aOnLostFocus[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
-      ENDIF
-      IF ! Empty( ::aAction[j] ) .AND. UpperNIL( ::aAction[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + AllTrim( ::aAction[j] )
-      ENDIF
-      IF ::aHelpID[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
-      ENDIF
-      IF ::aBreak[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BREAK '
-      ENDIF
-      IF ::aSort[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SORT '
-      ENDIF
-      IF ::aDescend[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DESCENDING '
-      ENDIF
-      IF ::aDoubleBuffer[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DOUBLEBUFFER '
-      ENDIF
-      IF ::aSingleBuffer[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SINGLEBUFFER '
-      ENDIF
-      IF ! Empty( ::aSubClass[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
-      ENDIF
-      Output += CRLF + CRLF
-   ENDIF
-
-   IF ::aCtrlType[j] == 'HOTKEYBOX'
-      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' HOTKEYBOX ' + ::aName[j] + ' '
-      IF ! Empty( ::aCObj[j ] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
-      ENDIF
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
-      IF ! Empty( ::aValue[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + AllTrim( ::aValue[j] )
-      ENDIF
-      IF ! Empty( ::aFontName[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
-      ENDIF
-      IF ::aFontSize[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
-      ENDIF
-      IF ::aFontColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + ::aFontColor[j]
-      ENDIF
-      IF ::aBold[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
-      ENDIF
-      IF ::aFontItalic[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
-      ENDIF
-      IF ::aFontUnderline[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
-      ENDIF
-      IF ::aFontStrikeout[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
-      ENDIF
-      IF ::aBackColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
-      ENDIF
-      IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
-      ENDIF
-      IF ::aRTL[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
-      ENDIF
-      IF ! ::aEnabled[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
-      ENDIF
-      IF ::aNoTabStop[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
-      ENDIF
-      IF ! ::aVisible[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
-      ENDIF
-      IF ! Empty( ::aOnChange[j] ) .AND. UpperNIL( ::aOnChange[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
-      ENDIF
-      IF ! Empty( ::aOnGotFocus[j] ) .AND. UpperNIL( ::aOnGotFocus[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( ::aOnGotFocus[j] )
-      ENDIF
-      IF ! Empty( ::aOnLostFocus[j] ) .AND. UpperNIL( ::aOnLostFocus[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
-      ENDIF
-      IF ! Empty( ::aOnEnter[j] ) .AND. UpperNIL( ::aOnEnter[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON ENTER ' + AllTrim( ::aOnEnter[j] )
-      ENDIF
-      IF ::aNoPrefix[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOALT '
-      ENDIF
-      IF ::aHelpID[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
-      ENDIF
-      IF ! Empty( ::aSubClass[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
-      ENDIF
-      Output += CRLF + CRLF
-   ENDIF
-
-   IF ::aCtrlType[j] == 'PICTURE'
-      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' PICTURE ' + ::aName[j] + ' '
-      IF ! Empty( ::aCObj[j ] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
-      ENDIF
-      IF ! Empty( ::aAction[j] ) .AND. UpperNIL( ::aAction[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + AllTrim( ::aAction[j] )
-      ENDIF
-      IF ! Empty( ::aPicture[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PICTURE ' + StrToStr( ::aPicture[j] )
-      ENDIF
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
-      IF ::aStretch[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRETCH '
-      ENDIF
-      IF ::aHelpID[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
-      ENDIF
-      IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
-      ENDIF
-      IF ::aBorder[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BORDER '
-      ENDIF
-      IF ::aClientEdge[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CLIENTEDGE '
-      ENDIF
-      IF ! ::aVisible[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
-      ENDIF
-      IF ! ::aEnabled[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
-      ENDIF
-      IF ::aTransparent[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TRANSPARENT '
-      ENDIF
-      IF ::aBackColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
-      ENDIF
-      IF ::aRTL[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
-      ENDIF
-      IF ! Empty( ::aBuffer[j] )
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BUFFER ' + AllTrim( ::aBuffer[j] )
-      ENDIF
-      IF ! Empty( ::aHBitmap[j] )
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HBITMAP ' + AllTrim( ::aHBitmap[j] )
-      ENDIF
-      IF ::aDIBSection[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NODIBSECTION '
-      ENDIF
-      IF ::aNo3DColors[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NO3DCOLORS '
-      ENDIF
-      IF ::aNoLoadTrans[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOLOADTRANSPARENT '
-      ENDIF
-      IF ::aForceScale[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FORCESCALE '
-      ENDIF
-      IF ::aImageSize[j]
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'IMAGESIZE '
-      ENDIF
-      IF ! Empty( ::aExclude[j] )
-        Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'EXCLUDEAREA ' + AllTrim( ::aExclude[j] )
-      ENDIF
-      IF ! Empty( ::aSubClass[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
-      ENDIF
-      Output += CRLF + CRLF
-   ENDIF
-
-   IF ::aCtrlType[j] == 'PROGRESSMETER'
-      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' PROGRESSMETER ' + ::aName[j] + ' '
-      IF ! Empty( ::aCObj[j ] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
-      ENDIF
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
-      IF ! Empty( ::aRange[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RANGE ' + AllTrim( ::aRange[j] )
-      ENDIF
-      IF ::aValueN[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( ::aValueN[j] ) )
-      ENDIF
-      IF ! Empty( ::aFontName[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
-      ENDIF
-      IF ::aFontSize[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
-      ENDIF
-      IF ::aFontColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + ::aFontColor[j]
-      ENDIF
-      IF ::aBold[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
-      ENDIF
-      IF ::aFontItalic[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
-      ENDIF
-      IF ::aFontUnderline[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
-      ENDIF
-      IF ::aFontStrikeout[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
-      ENDIF
-      IF ::aBackColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
-      ENDIF
-      IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
-      ENDIF
-      IF ::aRTL[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
-      ENDIF
-      IF ! ::aEnabled[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
-      ENDIF
-      IF ! ::aVisible[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
-      ENDIF
-      IF ::aHelpID[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
-      ENDIF
-      IF ! Empty( ::aAction[j] ) .AND. UpperNIL( ::aAction[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + AllTrim( ::aAction[j] )
-      ENDIF
-      IF ::aClientEdge[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CLIENTEDGE '
-      ENDIF
-      IF ! Empty( ::aSubClass[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
-      ENDIF
-      Output += CRLF + CRLF
-   ENDIF
-
-   IF ::aCtrlType[j] == 'SCROLLBAR'
-      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' SCROLLBAR ' + ::aName[j] + ' '
-      IF ! Empty( ::aCObj[j ] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
-      ENDIF
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
-      IF ! Empty( ::aRange[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RANGE ' + AllTrim( ::aRange[j] )
-      ENDIF
-      IF ::aValueN[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( ::aValueN[j] ) )
-      ENDIF
-      IF ::aHelpID[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
-      ENDIF
-      IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
-      ENDIF
-      IF ::aRTL[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
-      ENDIF
-      IF ! ::aEnabled[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
-      ENDIF
-      IF ! ::aVisible[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
-      ENDIF
-      IF ! Empty( ::aSubClass[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
-      ENDIF
-      IF ::aFlat[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HORIZONTAL '
-      ELSEIF ::aVertical[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VERTICAL '
-      ENDIF
-      IF ::aAutoPlay[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AUTOMOVE '
-      ENDIF
-      IF ::aAppend[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ATTACHED '
-      ENDIF
-      IF ::aIncrement[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'LINESKIP ' + LTrim( Str( ::aIncrement[j] ) )
-      ENDIF
-      IF ::aIndent[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PAGESKIP ' + LTrim( Str( ::aIndent[j] ) )
-      ENDIF
-      IF ! Empty( ::aOnChange[j] ) .AND. UpperNIL( ::aOnChange[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
-      ENDIF
-      IF ! Empty( ::aOnScrLineLU[j] ) .AND. UpperNIL( ::aOnScrLineLU[j] ) # 'NIL'
-         IF ::aFlat[j]   // HORIZONTAL
-            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LINELEFT ' + AllTrim( ::aOnScrLineLU[j] )
-         ELSE
-            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LINEUP ' + AllTrim( ::aOnScrLineLU[j] )
+         IF ! Empty( AllTrim( ::aDynamicForeColor[j] ) ) .AND. UpperNIL( ::aDynamicForeColor[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DYNAMICFORECOLOR ' + AllTrim( ::aDynamicForeColor[j] )
          ENDIF
-      ENDIF
-      IF ! Empty( ::aOnScrLineRD[j] ) .AND. UpperNIL( ::aOnScrLineRD[j] ) # 'NIL'
-         IF ::aFlat[j]   // HORIZONTAL
-            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LINERIGHT ' + AllTrim( ::aOnScrLineRD[j] )
-         ELSE
-            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LINEDOWN ' + AllTrim( ::aOnScrLineRD[j] )
+         IF ! Empty( ::aColumnControls[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'COLUMNCONTROLS ' + AllTrim( ::aColumnControls[j] )
          ENDIF
-      ENDIF
-      IF ! Empty( ::aOnScrPageLU[j] ) .AND. UpperNIL( ::aOnScrPageLU[j] ) # 'NIL'
-         IF ::aFlat[j]   // HORIZONTAL
-            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON PAGELEFT ' + AllTrim( ::aOnScrPageLU[j] )
-         ELSE
-            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON PAGEUP ' + AllTrim( ::aOnScrPageLU[j] )
+         IF ! Empty( ::aOnChange[j] ) .AND. UpperNIL( ::aOnChange[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
          ENDIF
-      ENDIF
-      IF ! Empty( ::aOnScrPageRD[j] ) .AND. UpperNIL( ::aOnScrPageRD[j] ) # 'NIL'
-         IF ::aFlat[j]   // HORIZONTAL
-            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON PAGERIGHT ' + AllTrim( ::aOnScrPageRD[j] )
-         ELSE
-            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON PAGEDOWN ' + AllTrim( ::aOnScrPageRD[j] )
+         IF ! Empty( ::aOnGotFocus[j] ) .AND. UpperNIL( ::aOnGotFocus[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( ::aOnGotFocus[j] )
          ENDIF
-      ENDIF
-      IF ! Empty( ::aOnScrLT[j] ) .AND. UpperNIL( ::aOnScrLT[j] ) # 'NIL'
-         IF ::aFlat[j]   // HORIZONTAL
-            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LEFT ' + AllTrim( ::aOnScrLT[j] )
-         ELSE
-            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON TOP ' + AllTrim( ::aOnScrLT[j] )
+         IF ! Empty( ::aOnLostFocus[j] ) .AND. UpperNIL( ::aOnLostFocus[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
          ENDIF
-      ENDIF
-      IF ! Empty( ::aOnScrRB[j] ) .AND. UpperNIL( ::aOnScrRB[j] ) # 'NIL'
-         IF ::aFlat[j]   // HORIZONTAL
-            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON RIGHT ' + AllTrim( ::aOnScrRB[j] )
-         ELSE
-            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON BOTTOM ' + AllTrim( ::aOnScrRB[j] )
+         IF ! Empty( ::aOnDblClick[j] ) .AND. UpperNIL( ::aOnDblClick[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON DBLCLICK ' + AllTrim( ::aOnDblClick[j] )
          ENDIF
+         IF ! Empty( ::aOnHeadClick[j] ) .AND. UpperNIL( ::aOnHeadClick[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON HEADCLICK ' + AllTrim( ::aOnHeadClick[j] )
+         ENDIF
+         IF ! Empty( ::aOnEditCell[j] ) .AND. UpperNIL( ::aOnEditCell[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON EDITCELL ' + AllTrim( ::aOnEditCell[j] )
+         ENDIF
+         IF ! Empty( ::aOnAppend[j] ) .AND. UpperNIL( ::aOnAppend[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON APPEND ' + AllTrim( ::aOnAppend[j] )
+         ENDIF
+         IF ! Empty( ::aWhen[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WHEN ' + AllTrim( ::aWhen[j] )
+         ENDIF
+         IF ! Empty( ::aValid[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALID ' + AllTrim( ::aValid[j] )
+         ENDIF
+         IF ! Empty( ::aValidMess[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALIDMESSAGES ' + AllTrim( ::aValidMess[j] )
+         ENDIF
+         IF ! Empty( ::aReadOnlyB[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'READONLY ' + AllTrim( ::aReadOnlyB[j] )
+         ENDIF
+         IF ::aLock[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'LOCK '
+         ENDIF
+         IF ::aDelete[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DELETE '
+         ENDIF
+         IF ::aInPlace[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INPLACE '
+         ENDIF
+         IF ::aEdit[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'EDIT '
+         ENDIF
+         IF ::anolines[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOLINES '
+         ENDIF
+         IF ! Empty( ::aImage[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'IMAGE ' + AllTrim( ::aImage[j] )
+         ENDIF
+         IF ! Empty( ::aJustify[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'JUSTIFY ' + AllTrim( ::aJustify[j] )
+         ENDIF
+         IF ! Empty( ::aOnEnter[j] ) .AND. UpperNIL( ::aOnEnter[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON ENTER ' + AllTrim( ::aOnEnter[j] )
+         ENDIF
+         IF ::aHelpID[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
+         ENDIF
+         IF ::aAppend[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'APPEND '
+         ENDIF
+         IF ::aBold[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
+         ENDIF
+         IF ::aFontItalic[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
+         ENDIF
+         IF ::aFontUnderline[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
+         ENDIF
+         IF ::aFontStrikeout[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
+         ENDIF
+         IF ::aBackColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
+         ENDIF
+         IF ::aFontColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + ::aFontColor[j]
+         ENDIF
+         IF ! Empty( ::aAction[j] ) .AND. UpperNIL( ::aAction[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + AllTrim( ::aAction[j] )
+         ENDIF
+         IF ::aBreak[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BREAK '
+         ENDIF
+         IF ::aRTL[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
+         ENDIF
+         IF ! ::aEnabled[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
+         ENDIF
+         IF ::aNoTabStop[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
+         ENDIF
+         IF ! ::aVisible[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
+         ENDIF
+         IF ::aFull[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FULLMOVE '
+         ENDIF
+         IF ::aButtons[j]
+            Output += ' ;' + CRLF + Space( nSpacing * 2) + 'USEBUTTONS '
+         ENDIF
+         IF ::aNoHeaders[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOHEADERS '
+         ENDIF
+         IF ! Empty( ::aHeaderImages[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEADERIMAGES ' + AllTrim( ::aHeaderImages[j] )
+         ENDIF
+         IF ! Empty( ::aImagesAlign[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'IMAGESALIGN ' + AllTrim( ::aImagesAlign[j] )
+         ENDIF
+         IF ! Empty( AllTrim( ::aSelColor[j] ) ) .AND. UpperNIL( ::aSelColor[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SELECTEDCOLORS ' + AllTrim( ::aSelColor[j] )
+         ENDIF
+         IF ! Empty( ::aEditKeys[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'EDITKEYS ' + AllTrim( ::aEditKeys[j] )
+         ENDIF
+         IF ::aDoubleBuffer[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DOUBLEBUFFER '
+         ENDIF
+         IF ::aSingleBuffer[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SINGLEBUFFER '
+         ENDIF
+         IF ::aFocusRect[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FOCUSRECT '
+         ENDIF
+         IF ::aNoFocusRect[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOFOCUSRECT '
+         ENDIF
+         IF ::aPLM[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PAINTLEFTMARGIN '
+         ENDIF
+         IF ::aFixedCols[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIXEDCOLS '
+         ENDIF
+         IF ! Empty( ::aOnAbortEdit[j] ) .AND. UpperNIL( ::aOnAbortEdit[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON ABORTEDIT ' + AllTrim( ::aOnAbortEdit[j] )
+         ENDIF
+         IF ::aFixedWidths[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIXEDWIDTHS '
+         ENDIF
+         IF ! Empty( ::aBeforeColMove[j] ) .AND. UpperNIL( ::aBeforeColMove[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BEFORECOLMOVE ' + AllTrim( ::aBeforeColMove[j] )
+         ENDIF
+         IF ! Empty( ::aAfterColMove[j] ) .AND. UpperNIL( ::aAfterColMove[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AFTERCOLMOVE ' + AllTrim( ::aAfterColMove[j] )
+         ENDIF
+         IF ! Empty( ::aBeforeColSize[j] ) .AND. UpperNIL( ::aBeforeColSize[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BEFORECOLSIZE ' + AllTrim( ::aBeforeColSize[j] )
+         ENDIF
+         IF ! Empty( ::aAfterColSize[j] ) .AND. UpperNIL( ::aAfterColSize[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AFTERCOLSIZE ' + AllTrim( ::aAfterColSize[j] )
+         ENDIF
+         IF ! Empty( ::aBeforeAutoFit[j] ) .AND. UpperNIL( ::aBeforeAutoFit[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BEFOREAUTOFIT ' + AllTrim( ::aBeforeAutoFit[j] )
+         ENDIF
+         IF ::aLikeExcel[j]
+            Output += ' ;' + CRLF + Space( nSpacing * 2) + 'EDITLIKEEXCEL '
+         ENDIF
+         IF ! Empty( ::aDeleteWhen[j] ) .AND. UpperNIL( ::aDeleteWhen[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * 2) + 'DELETEWHEN ' + AllTrim( ::aDeleteWhen[j] )
+         ENDIF
+         IF ! Empty( ::aDeleteMsg[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * 2) + 'DELETEMSG ' + AllTrim( ::aDeleteMsg[j] )
+         ENDIF
+         IF ! Empty( ::aOnDelete[j] ) .AND. UpperNIL( ::aOnDelete[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON DELETE ' + AllTrim( ::aOnDelete[j] )
+         ENDIF
+         IF ::aNoDelMsg[j]
+            Output += ' ;' + CRLF + Space( nSpacing * 2) + 'NODELETEMSG '
+         ENDIF
+         IF ::aFixedCtrls[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIXEDCONTROLS '
+         ENDIF
+         IF ::aDynamicCtrls[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DYNAMICCONTROLS '
+         ENDIF
+         IF ! Empty( ::aOnHeadRClick[j] ) .AND. UpperNIL( ::aOnHeadRClick[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON HEADRCLICK ' + AllTrim( ::aOnHeadRClick[j] )
+         ENDIF
+         IF ::aExtDblClick[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'EXTDBLCLICK '
+         ENDIF
+         IF ::anovscroll[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOVSCROLL '
+         ENDIF
+         IF ! Empty( ::aReplaceField[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'REPLACEFIELD ' + AllTrim( ::aReplaceField[j] )
+         ENDIF
+         IF ! Empty( ::aSubClass[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
+         ENDIF
+         IF ::aRecCount[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RECCOUNT '
+         ENDIF
+         IF ! Empty( ::aColumnInfo[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'COLUMNINFO ' + AllTrim( ::aColumnInfo[j] )
+         ENDIF
+         IF ::aDescend[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DESCENDING '
+         ENDIF
+         IF ::aFixBlocks[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIXEDBLOCKS '
+         ELSEIF ::aDynBlocks[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DYNAMICBLOCKS '
+         ENDIF
+         IF ::aUpdateColors[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UPDATECOLORS '
+         ENDIF
+         IF ::aShowNone[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOSHOWEMPTYROW '
+         ENDIF
+         IF ::aNoModalEdit[j]
+            Output += ' ;' + CRLF + Space( nSpacing * 2) + 'NOMODALEDIT '
+         ENDIF
+         IF ::aByCell[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NAVIGATEBYCELL '
+         ENDIF
+         IF ::aAutoPlay[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SILENT '
+         ENDIF
+         IF ::aFlat[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLEALTA '
+         ENDIF
+         IF ::aShowAll[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOSHOWALWAYS '
+         ENDIF
+         IF ! Empty( ::aOnRClick[j] ) .AND. UpperNIL( ::aOnRClick[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON RCLICK ' + AllTrim( ::aOnRClick[j] )
+         ENDIF
+         IF ::aCheckBoxes[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CHECKBOXES '
+         ENDIF
+         IF ! Empty( ::aOnCheckChg[j] ) .AND. UpperNIL( ::aOnCheckChg[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHECKCHANGE ' + AllTrim( ::aOnCheckChg[j] )
+         ENDIF
+         IF ! Empty( ::aOnRowRefresh[j] ) .AND. UpperNIL( ::aOnRowRefresh[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON ROWREFRESH ' + AllTrim( ::aOnRowRefresh[j] )
+         ENDIF
+         IF ! Empty( ::aDefaultYear[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DEFAULTVALUES ' + AllTrim( ::aDefaultYear[j] )
+         ENDIF
+         IF ! Empty( ::aOnInsert[j] ) .AND. UpperNIL( ::aOnInsert[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON INSERT ' + AllTrim( ::aOnInsert[j] )
+         ENDIF
+         IF ! Empty( ::aOnEditCellEnd[j] ) .AND. UpperNIL( ::aOnEditCellEnd[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON EDITCELLEND ' + AllTrim( ::aOnEditCellEnd[j] )
+         ENDIF
+         Output += CRLF + CRLF
       ENDIF
-      IF ! Empty( ::aOnScrThumb[j] ) .AND. UpperNIL( ::aOnScrThumb[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON THUMB ' + AllTrim( ::aOnScrThumb[j] )
-      ENDIF
-      IF ! Empty( ::aOnScrTrack[j] ) .AND. UpperNIL( ::aOnScrTrack[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON TRACK ' + AllTrim( ::aOnScrTrack[j] )
-      ENDIF
-      IF ! Empty( ::aOnScrEndTrack[j] ) .AND. UpperNIL( ::aOnScrEndTrack[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON ENDTRACK ' + AllTrim( ::aOnScrEndTrack[j] )
-      ENDIF
-      Output += CRLF + CRLF
-   ENDIF
 
-   IF ::aCtrlType[j] == 'TEXTARRAY'
-      Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' TEXTARRAY ' + ::aName[j] + ' '
-      IF ! Empty( ::aCObj[j ] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
+      IF ::aCtrlType[j] == 'ACTIVEX'
+         Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' ACTIVEX ' + ::aName[j] + ' '
+         IF ! Empty( ::aCObj[j ] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
+         ENDIF
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+         IF ! Empty( ::aProgID[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PROGID ' + AllTrim( ::aProgID[j] )
+         ELSEIF ! Empty( ::aSubClass[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PROGID ' + StrToStr( ::aSubClass[j] )
+         ENDIF
+         IF ::aNoTabStop[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
+         ENDIF
+         IF ! ::aEnabled[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
+         ENDIF
+         IF ! ::aVisible[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
+         ENDIF
+         Output += CRLF + CRLF
       ENDIF
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
-      Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
-      IF ::aItemCount[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ROWCOUNT ' + LTrim( Str( ::aItemCount[j] ) )
-      ENDIF
-      IF ::aIncrement[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'COLCOUNT ' + LTrim( Str( ::aIncrement[j] ) )
-      ENDIF
-      IF ! Empty( ::aValue[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + StrToStr( ::aValue[j], .T. )
-      ENDIF
-      IF ! Empty( ::aAction[j] ) .AND. UpperNIL( ::aAction[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + AllTrim( ::aAction[j] )
-      ENDIF
-      IF ! Empty( ::aFontName[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
-      ENDIF
-      IF ::aFontSize[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
-      ENDIF
-      IF ::aFontColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + ::aFontColor[j]
-      ENDIF
-      IF ::aBold[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
-      ENDIF
-      IF ::aFontItalic[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
-      ENDIF
-      IF ::aFontUnderline[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
-      ENDIF
-      IF ::aFontStrikeout[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
-      ENDIF
-      IF ::aBackColor[j] # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
-      ENDIF
-      IF ::aHelpID[j] > 0
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
-      ENDIF
-      IF ! Empty( ::aToolTip[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
-      ENDIF
-      IF ::aRTL[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
-      ENDIF
-      IF ! ::aEnabled[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
-      ENDIF
-      IF ! ::aVisible[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
-      ENDIF
-      IF ::aNoTabStop[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
-      ENDIF
-      IF ::aBorder[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BORDER '
-      ENDIF
-      IF ::aClientEdge[j]
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CLIENTEDGE '
-      ENDIF
-      IF ! Empty( ::aSubClass[j] )
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
-      ENDIF
-      IF ! Empty( ::aOnGotFocus[j] ) .AND. UpperNIL( ::aOnGotFocus[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( ::aOnGotFocus[j] )
-      ENDIF
-      IF ! Empty( ::aOnLostFocus[j] ) .AND. UpperNIL( ::aOnLostFocus[j] ) # 'NIL'
-         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
-      ENDIF
-      Output += CRLF + CRLF
-   ENDIF
 
+      IF ::aCtrlType[j] == 'CHECKLIST'
+         Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' CHECKLIST ' + ::aName[j] + ' '
+         IF ! Empty( ::aCObj[j ] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
+         ENDIF
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+         IF ! Empty( ::aItems[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITEMS ' + AllTrim( ::aItems[j] )
+         ENDIF
+         IF ! Empty( ::aImage[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'IMAGE ' + AllTrim( ::aImage[j] )
+         ENDIF
+         IF ::aValueN[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( ::aValueN[j] ) )
+         ENDIF
+         IF ! Empty( ::aFontName[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
+         ENDIF
+         IF ::aFontSize[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
+         ENDIF
+         IF ::aFontColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + ::aFontColor[j]
+         ENDIF
+         IF ::aBold[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
+         ENDIF
+         IF ::aFontItalic[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
+         ENDIF
+         IF ::aFontUnderline[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
+         ENDIF
+         IF ::aFontStrikeout[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
+         ENDIF
+         IF ::aBackColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
+         ENDIF
+         IF ! Empty( ::aJustify[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'JUSTIFY ' + AllTrim( ::aJustify[j] )
+         ENDIF
+         IF ! Empty( ::aToolTip[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
+         ENDIF
+         IF ::aRTL[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
+         ENDIF
+         IF ! ::aEnabled[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
+         ENDIF
+         IF ::aNoTabStop[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
+         ENDIF
+         IF ! ::aVisible[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
+         ENDIF
+         IF ! Empty( AllTrim( ::aSelColor[j] ) ) .AND. UpperNIL( ::aSelColor[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SELECTEDCOLORS ' + AllTrim( ::aSelColor[j] )
+         ENDIF
+         IF ! Empty( ::aOnChange[j] ) .AND. UpperNIL( ::aOnChange[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
+         ENDIF
+         IF ! Empty( ::aOnGotFocus[j] ) .AND. UpperNIL( ::aOnGotFocus[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( ::aOnGotFocus[j] )
+         ENDIF
+         IF ! Empty( ::aOnLostFocus[j] ) .AND. UpperNIL( ::aOnLostFocus[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
+         ENDIF
+         IF ! Empty( ::aAction[j] ) .AND. UpperNIL( ::aAction[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + AllTrim( ::aAction[j] )
+         ENDIF
+         IF ::aHelpID[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
+         ENDIF
+         IF ::aBreak[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BREAK '
+         ENDIF
+         IF ::aSort[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SORT '
+         ENDIF
+         IF ::aDescend[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DESCENDING '
+         ENDIF
+         IF ::aDoubleBuffer[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DOUBLEBUFFER '
+         ENDIF
+         IF ::aSingleBuffer[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SINGLEBUFFER '
+         ENDIF
+         IF ! Empty( ::aSubClass[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
+         ENDIF
+         Output += CRLF + CRLF
+      ENDIF
+
+      IF ::aCtrlType[j] == 'HOTKEYBOX'
+         Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' HOTKEYBOX ' + ::aName[j] + ' '
+         IF ! Empty( ::aCObj[j ] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
+         ENDIF
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+         IF ! Empty( ::aValue[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + AllTrim( ::aValue[j] )
+         ENDIF
+         IF ! Empty( ::aFontName[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
+         ENDIF
+         IF ::aFontSize[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
+         ENDIF
+         IF ::aFontColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + ::aFontColor[j]
+         ENDIF
+         IF ::aBold[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
+         ENDIF
+         IF ::aFontItalic[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
+         ENDIF
+         IF ::aFontUnderline[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
+         ENDIF
+         IF ::aFontStrikeout[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
+         ENDIF
+         IF ::aBackColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
+         ENDIF
+         IF ! Empty( ::aToolTip[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
+         ENDIF
+         IF ::aRTL[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
+         ENDIF
+         IF ! ::aEnabled[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
+         ENDIF
+         IF ::aNoTabStop[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
+         ENDIF
+         IF ! ::aVisible[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
+         ENDIF
+         IF ! Empty( ::aOnChange[j] ) .AND. UpperNIL( ::aOnChange[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
+         ENDIF
+         IF ! Empty( ::aOnGotFocus[j] ) .AND. UpperNIL( ::aOnGotFocus[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( ::aOnGotFocus[j] )
+         ENDIF
+         IF ! Empty( ::aOnLostFocus[j] ) .AND. UpperNIL( ::aOnLostFocus[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
+         ENDIF
+         IF ! Empty( ::aOnEnter[j] ) .AND. UpperNIL( ::aOnEnter[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON ENTER ' + AllTrim( ::aOnEnter[j] )
+         ENDIF
+         IF ::aNoPrefix[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOALT '
+         ENDIF
+         IF ::aHelpID[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
+         ENDIF
+         IF ! Empty( ::aSubClass[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
+         ENDIF
+         Output += CRLF + CRLF
+      ENDIF
+
+      IF ::aCtrlType[j] == 'PICTURE'
+         Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' PICTURE ' + ::aName[j] + ' '
+         IF ! Empty( ::aCObj[j ] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
+         ENDIF
+         IF ! Empty( ::aAction[j] ) .AND. UpperNIL( ::aAction[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + AllTrim( ::aAction[j] )
+         ENDIF
+         IF ! Empty( ::aPicture[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PICTURE ' + StrToStr( ::aPicture[j] )
+         ENDIF
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+         IF ::aStretch[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRETCH '
+         ENDIF
+         IF ::aHelpID[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
+         ENDIF
+         IF ! Empty( ::aToolTip[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
+         ENDIF
+         IF ::aBorder[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BORDER '
+         ENDIF
+         IF ::aClientEdge[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CLIENTEDGE '
+         ENDIF
+         IF ! ::aVisible[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
+         ENDIF
+         IF ! ::aEnabled[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
+         ENDIF
+         IF ::aTransparent[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TRANSPARENT '
+         ENDIF
+         IF ::aBackColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
+         ENDIF
+         IF ::aRTL[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
+         ENDIF
+         IF ! Empty( ::aBuffer[j] )
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BUFFER ' + AllTrim( ::aBuffer[j] )
+         ENDIF
+         IF ! Empty( ::aHBitmap[j] )
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HBITMAP ' + AllTrim( ::aHBitmap[j] )
+         ENDIF
+         IF ::aDIBSection[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NODIBSECTION '
+         ENDIF
+         IF ::aNo3DColors[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NO3DCOLORS '
+         ENDIF
+         IF ::aNoLoadTrans[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOLOADTRANSPARENT '
+         ENDIF
+         IF ::aForceScale[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FORCESCALE '
+         ENDIF
+         IF ::aImageSize[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'IMAGESIZE '
+         ENDIF
+         IF ! Empty( ::aExclude[j] )
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'EXCLUDEAREA ' + AllTrim( ::aExclude[j] )
+         ENDIF
+         IF ! Empty( ::aSubClass[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
+         ENDIF
+         Output += CRLF + CRLF
+      ENDIF
+
+      IF ::aCtrlType[j] == 'PROGRESSMETER'
+         Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' PROGRESSMETER ' + ::aName[j] + ' '
+         IF ! Empty( ::aCObj[j ] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
+         ENDIF
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+         IF ! Empty( ::aRange[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RANGE ' + AllTrim( ::aRange[j] )
+         ENDIF
+         IF ::aValueN[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( ::aValueN[j] ) )
+         ENDIF
+         IF ! Empty( ::aFontName[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
+         ENDIF
+         IF ::aFontSize[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
+         ENDIF
+         IF ::aFontColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + ::aFontColor[j]
+         ENDIF
+         IF ::aBold[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
+         ENDIF
+         IF ::aFontItalic[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
+         ENDIF
+         IF ::aFontUnderline[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
+         ENDIF
+         IF ::aFontStrikeout[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
+         ENDIF
+         IF ::aBackColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
+         ENDIF
+         IF ! Empty( ::aToolTip[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
+         ENDIF
+         IF ::aRTL[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
+         ENDIF
+         IF ! ::aEnabled[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
+         ENDIF
+         IF ! ::aVisible[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
+         ENDIF
+         IF ::aHelpID[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
+         ENDIF
+         IF ! Empty( ::aAction[j] ) .AND. UpperNIL( ::aAction[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + AllTrim( ::aAction[j] )
+         ENDIF
+         IF ::aClientEdge[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CLIENTEDGE '
+         ENDIF
+         IF ! Empty( ::aSubClass[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
+         ENDIF
+         Output += CRLF + CRLF
+      ENDIF
+
+      IF ::aCtrlType[j] == 'SCROLLBAR'
+         Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' SCROLLBAR ' + ::aName[j] + ' '
+         IF ! Empty( ::aCObj[j ] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
+         ENDIF
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+         IF ! Empty( ::aRange[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RANGE ' + AllTrim( ::aRange[j] )
+         ENDIF
+         IF ::aValueN[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + LTrim( Str( ::aValueN[j] ) )
+         ENDIF
+         IF ::aHelpID[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
+         ENDIF
+         IF ! Empty( ::aToolTip[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
+         ENDIF
+         IF ::aRTL[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
+         ENDIF
+         IF ! ::aEnabled[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
+         ENDIF
+         IF ! ::aVisible[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
+         ENDIF
+         IF ! Empty( ::aSubClass[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
+         ENDIF
+         IF ::aFlat[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HORIZONTAL '
+         ELSEIF ::aVertical[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VERTICAL '
+         ENDIF
+         IF ::aAutoPlay[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AUTOMOVE '
+         ENDIF
+         IF ::aAppend[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ATTACHED '
+         ENDIF
+         IF ::aIncrement[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'LINESKIP ' + LTrim( Str( ::aIncrement[j] ) )
+         ENDIF
+         IF ::aIndent[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PAGESKIP ' + LTrim( Str( ::aIndent[j] ) )
+         ENDIF
+         IF ! Empty( ::aOnChange[j] ) .AND. UpperNIL( ::aOnChange[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
+         ENDIF
+         IF ! Empty( ::aOnScrLineLU[j] ) .AND. UpperNIL( ::aOnScrLineLU[j] ) # 'NIL'
+            IF ::aFlat[j]   // HORIZONTAL
+               Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LINELEFT ' + AllTrim( ::aOnScrLineLU[j] )
+            ELSE
+               Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LINEUP ' + AllTrim( ::aOnScrLineLU[j] )
+            ENDIF
+         ENDIF
+         IF ! Empty( ::aOnScrLineRD[j] ) .AND. UpperNIL( ::aOnScrLineRD[j] ) # 'NIL'
+            IF ::aFlat[j]   // HORIZONTAL
+               Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LINERIGHT ' + AllTrim( ::aOnScrLineRD[j] )
+            ELSE
+               Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LINEDOWN ' + AllTrim( ::aOnScrLineRD[j] )
+            ENDIF
+         ENDIF
+         IF ! Empty( ::aOnScrPageLU[j] ) .AND. UpperNIL( ::aOnScrPageLU[j] ) # 'NIL'
+            IF ::aFlat[j]   // HORIZONTAL
+               Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON PAGELEFT ' + AllTrim( ::aOnScrPageLU[j] )
+            ELSE
+               Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON PAGEUP ' + AllTrim( ::aOnScrPageLU[j] )
+            ENDIF
+         ENDIF
+         IF ! Empty( ::aOnScrPageRD[j] ) .AND. UpperNIL( ::aOnScrPageRD[j] ) # 'NIL'
+            IF ::aFlat[j]   // HORIZONTAL
+               Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON PAGERIGHT ' + AllTrim( ::aOnScrPageRD[j] )
+            ELSE
+               Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON PAGEDOWN ' + AllTrim( ::aOnScrPageRD[j] )
+            ENDIF
+         ENDIF
+         IF ! Empty( ::aOnScrLT[j] ) .AND. UpperNIL( ::aOnScrLT[j] ) # 'NIL'
+            IF ::aFlat[j]   // HORIZONTAL
+               Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LEFT ' + AllTrim( ::aOnScrLT[j] )
+            ELSE
+               Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON TOP ' + AllTrim( ::aOnScrLT[j] )
+            ENDIF
+         ENDIF
+         IF ! Empty( ::aOnScrRB[j] ) .AND. UpperNIL( ::aOnScrRB[j] ) # 'NIL'
+            IF ::aFlat[j]   // HORIZONTAL
+               Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON RIGHT ' + AllTrim( ::aOnScrRB[j] )
+            ELSE
+               Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON BOTTOM ' + AllTrim( ::aOnScrRB[j] )
+            ENDIF
+         ENDIF
+         IF ! Empty( ::aOnScrThumb[j] ) .AND. UpperNIL( ::aOnScrThumb[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON THUMB ' + AllTrim( ::aOnScrThumb[j] )
+         ENDIF
+         IF ! Empty( ::aOnScrTrack[j] ) .AND. UpperNIL( ::aOnScrTrack[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON TRACK ' + AllTrim( ::aOnScrTrack[j] )
+         ENDIF
+         IF ! Empty( ::aOnScrEndTrack[j] ) .AND. UpperNIL( ::aOnScrEndTrack[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON ENDTRACK ' + AllTrim( ::aOnScrEndTrack[j] )
+         ENDIF
+         Output += CRLF + CRLF
+      ENDIF
+
+      IF ::aCtrlType[j] == 'TEXTARRAY'
+         Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' TEXTARRAY ' + ::aName[j] + ' '
+         IF ! Empty( ::aCObj[j ] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
+         ENDIF
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+         Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+         IF ::aItemCount[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ROWCOUNT ' + LTrim( Str( ::aItemCount[j] ) )
+         ENDIF
+         IF ::aIncrement[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'COLCOUNT ' + LTrim( Str( ::aIncrement[j] ) )
+         ENDIF
+         IF ! Empty( ::aValue[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + StrToStr( ::aValue[j], .T. )
+         ENDIF
+         IF ! Empty( ::aAction[j] ) .AND. UpperNIL( ::aAction[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + AllTrim( ::aAction[j] )
+         ENDIF
+         IF ! Empty( ::aFontName[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONT ' + StrToStr( ::aFontName[j] )
+         ENDIF
+         IF ::aFontSize[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SIZE ' + LTrim( Str( ::aFontSize[j] ) )
+         ENDIF
+         IF ::aFontColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FONTCOLOR ' + ::aFontColor[j]
+         ENDIF
+         IF ::aBold[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BOLD '
+         ENDIF
+         IF ::aFontItalic[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ITALIC '
+         ENDIF
+         IF ::aFontUnderline[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'UNDERLINE '
+         ENDIF
+         IF ::aFontStrikeout[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'STRIKEOUT '
+         ENDIF
+         IF ::aBackColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
+         ENDIF
+         IF ::aHelpID[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
+         ENDIF
+         IF ! Empty( ::aToolTip[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
+         ENDIF
+         IF ::aRTL[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
+         ENDIF
+         IF ! ::aEnabled[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
+         ENDIF
+         IF ! ::aVisible[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
+         ENDIF
+         IF ::aNoTabStop[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTABSTOP '
+         ENDIF
+         IF ::aBorder[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BORDER '
+         ENDIF
+         IF ::aClientEdge[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CLIENTEDGE '
+         ENDIF
+         IF ! Empty( ::aSubClass[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
+         ENDIF
+         IF ! Empty( ::aOnGotFocus[j] ) .AND. UpperNIL( ::aOnGotFocus[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON GOTFOCUS ' + AllTrim( ::aOnGotFocus[j] )
+         ENDIF
+         IF ! Empty( ::aOnLostFocus[j] ) .AND. UpperNIL( ::aOnLostFocus[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON LOSTFOCUS ' + AllTrim( ::aOnLostFocus[j] )
+         ENDIF
+         Output += CRLF + CRLF
+      ENDIF
+   ENDIF
 /*
    TODO: Add this controls
 

@@ -1,10 +1,10 @@
 /*
- * $Id: toolbed.prg,v 1.14 2016-05-22 23:52:22 fyurisich Exp $
+ * $Id: toolbed.prg,v 1.15 2016-05-31 22:30:08 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
  *
- * Copyright 2002-2016 Ciro Vargas Clemov <cvc@oohg.org>
+ * Copyright 2002-2016 Ciro Vargas Clemow <cvc@oohg.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

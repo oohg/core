@@ -1,10 +1,10 @@
 /*
- * $Id: mgide.prg,v 1.31 2016-05-22 23:52:22 fyurisich Exp $
+ * $Id: mgide.prg,v 1.32 2016-05-31 22:30:08 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
  *
- * Copyright 2002-2016 Ciro Vargas Clemov <cvc@oohg.org>
+ * Copyright 2002-2016 Ciro Vargas Clemow <cvc@oohg.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -90,6 +90,7 @@ CLASS THMI
    DATA Form_Prefer        INIT NIL
    DATA Form_Splash        INIT NIL
    DATA Form_Tree          INIT NIL
+   DATA Form_Wait          INIT NIL
    DATA lCloseOnFormExit   INIT .F.
    DATA lPsave             INIT .T.
    DATA lSave              INIT .T.
@@ -107,12 +108,12 @@ CLASS THMI
    DATA nPxMove            INIT 5
    DATA nPxSize            INIT 1
    DATA nStdVertGap        INIT 24
+   DATA nSyntax            INIT 1
    DATA ntemp              INIT 0
    DATA nTextBoxHeight     INIT 0
    DATA swsalir            INIT .F.
    DATA swvan              INIT .F.
    DATA van                INIT 0
-   DATA Form_Wait          INIT NIL
 
    METHOD About
    METHOD AjustaFrame
@@ -1028,8 +1029,7 @@ LOCAL aFont := { ::cFormDefFontName, ;
    ::Form_Prefer:Radiogroup_3:value := ::lTBuild
    ::Form_Prefer:text_lib:value     := ::cLib
    ::Form_Prefer:checkbox_105:value := ::lSnap
-
-   ::Form_Prefer:checkbox_105:Backcolor := ::Form_Prefer:BackColor
+   ::Form_Prefer:combo_26:value     := ::nSyntax
 
    ACTIVATE WINDOW Form_Prefer
 
@@ -1177,6 +1177,7 @@ METHOD OkPrefer( aFont ) CLASS THMI
    ::nStdVertGap        := ::Form_Prefer:text_22:Value
    ::nPxMove            := ::Form_Prefer:text_23:Value
    ::nPxSize            := ::Form_Prefer:text_24:Value
+   ::nSyntax            := ::Form_Prefer:combo_26:Value
 
    ::Form_Prefer:Release()
 
