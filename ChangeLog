@@ -1,11 +1,22 @@
 /*
- * $Id: ChangeLog,v 1.1579 2016-05-31 22:43:19 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1580 2016-06-01 00:50:37 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2016-05-31 21:51 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/build.bat
+     + Logic to handle HB30 and HB32 in the same instalation.
+       Use 'BUILD.BAT' HB32 for incremental compilation with HB32
+       Use 'BUILD.BAT' HB30 for incremental compilation with HB30
+       Use 'BUILD.BAT' /C HB32 for full compilation with HB32
+       Use 'BUILD.BAT' /C HB30 for full compilation with HB30
+       /C swith is recommended to avoid mixing version.
+   * manual/Changelog.htm
+     * Updated.
 
 2016-05-31 19:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ide/prgs/mgide.prg
