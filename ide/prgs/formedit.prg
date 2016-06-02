@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.65 2016-05-31 22:30:07 fyurisich Exp $
+ * $Id: formedit.prg,v 1.66 2016-06-02 00:57:38 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -6369,7 +6369,7 @@ LOCAL i, sw := 0, zi, cvc, zf, nPos, cLine
                IF Len( cLine ) == 0
                   RETURN cDefault
                ELSEIF Upper( cLine ) == "NIL"
-                  RETURN "NIL"
+                  RETURN cDefault
                ELSE
                   RETURN cLine
                ENDIF
@@ -14485,7 +14485,7 @@ LOCAL cValue
                Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INPUTMASK ' + AllTrim( ::aInputMask[j] )
             ENDIF
          ENDIF
-         IF ! Empty( ::aFields[j] )
+         IF ! Empty( ::aFields[j] ) .AND. UpperNIL( ::aFields[j] ) # 'NIL'
             Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FORMAT ' + StrToStr( ::aFields[j], .T. )
          ENDIF
          IF ::aDate[j]
