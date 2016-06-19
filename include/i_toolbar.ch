@@ -1,5 +1,5 @@
 /*
- * $Id: i_toolbar.ch,v 1.12 2016-05-22 23:52:23 fyurisich Exp $
+ * $Id: i_toolbar.ch,v 1.13 2016-06-19 13:20:50 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -57,7 +57,7 @@
  * If you do not wish that, delete this exception notice.
  */
 
-#xcommand DEFINE TOOLBAR  <name> ;
+#xcommand DEFINE TOOLBAR <name> ;
       [ OBJ <obj> ] ;
       [ <dummy1: OF, PARENT> <parent> ] ;
       [ <dummy2: GRIPPERTEXT, CAPTION> <caption> ] ;

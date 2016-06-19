@@ -1,5 +1,5 @@
 /*
- * $Id: h_application.prg,v 1.3 2016-05-22 23:53:21 fyurisich Exp $
+ * $Id: h_application.prg,v 1.4 2016-06-19 13:20:50 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -84,7 +84,7 @@ CLASS TApplication
    METHOD Title      SETGET
    METHOD TopMost    SETGET
    METHOD Width      SETGET
-END CLASS
+ENDCLASS
 
 
 //------------------------------------------------------------------------------

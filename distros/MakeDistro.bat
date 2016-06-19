@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: MakeDistro.bat,v 1.4 2016-02-28 22:40:17 fyurisich Exp $
+rem $Id: MakeDistro.bat,v 1.5 2016-06-19 13:20:50 fyurisich Exp $
 rem
 cls
 
@@ -399,7 +399,7 @@ cd ide
 set TPATH=%PATH%
 set PATH=%HG_MINGW%\bin;%HG_HRB%\%BIN_HRB%
 echo #define oohgpath %HG_ROOT%\RESOURCES > _oohg_resconfig.h
-copy /b %HG_ROOT%\resources\oohg.rc + mgide.rc _temp.rc > nul
+copy /b mgide.rc + %HG_ROOT%\resources\oohg.rc _temp.rc > nul
 windres -i _temp.rc -o _temp.o
 hbmk2 mgide.hbp %HG_ROOT%\oohg.hbc
 del _oohg_resconfig.h /q

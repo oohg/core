@@ -1,11 +1,36 @@
 /*
- * $Id: ChangeLog,v 1.1581 2016-06-02 00:57:38 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1582 2016-06-19 13:20:50 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2016-06-19 10:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * distros/MakeDistro.bat
+     * Ide's rc is now at the top of temporay rc file.
+   * include/i_altsyntax.ch
+   * include/i_checkbox.ch
+   * include/i_radiogroup.ch
+     + LEFTALIGN clause as a synonym of LEFTJUSTIFY.
+   * include/i_graph.ch
+     * Format.
+     + DRAW PANEL.
+     + DRAW BOX.
+   * include/i_toolbar.ch
+     * Format.
+   * manual/Changelog.htm
+     * Updated.
+   * source/c_graph.c
+     + WindowRaised C function.
+     + WndBoxRaised PRG function.
+     + WndBoxRaisedDraw PRG function.
+     + WindowRaised command to _OOHG_GraphCommand().
+   * source/h_application.prg
+     * Format.
+   * source/h_graph.prg
+     + Function DrawWindowBoxRaised.
 
 2016-06-01 21:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ide/prgs/formedit.prg

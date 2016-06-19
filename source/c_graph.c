@@ -1,5 +1,5 @@
 /*
- * $Id: c_graph.c,v 1.9 2016-05-22 23:53:21 fyurisich Exp $
+ * $Id: c_graph.c,v 1.10 2016-06-19 13:20:50 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -370,6 +370,48 @@ HB_FUNC( WNDBOXINDRAW )
    ReleaseDC( hWnd, hDC );
 }
 
+void WindowRaised( HDC hDC, RECT * pRect )
+{
+   HPEN hGray  = CreatePen( PS_SOLID, 1, GetSysColor( COLOR_BTNSHADOW ) );
+   HPEN hWhite = CreatePen( PS_SOLID, 1, GetSysColor( COLOR_BTNHIGHLIGHT ) );
+
+   WndDrawBox( hDC, pRect, hWhite, hGray );
+
+   DeleteObject( hGray );
+   DeleteObject( hWhite );
+}
+
+HB_FUNC( WNDBOXRAISED )
+{
+   RECT rct;
+
+   rct.top    = hb_parni( 2 );
+   rct.left   = hb_parni( 3 );
+   rct.bottom = hb_parni( 4 );
+   rct.right  = hb_parni( 5 );
+
+   WindowRaised( ( HDC ) hb_parnl( 1 ), &rct );
+}
+
+HB_FUNC( WNDBOXRAISEDDRAW )
+{
+   RECT rct;
+   HDC hDC;
+   HWND hWnd;
+
+   hWnd = HWNDparam( 1 );
+   hDC = GetDC( hWnd );
+
+   rct.top    = hb_parni( 2 );
+   rct.left   = hb_parni( 3 );
+   rct.bottom = hb_parni( 4 );
+   rct.right  = hb_parni( 5 );
+
+   WindowRaised( hDC, &rct );
+
+   ReleaseDC( hWnd, hDC );
+}
+
 HB_FUNC ( GETDC )
 {
    hb_retnl( (ULONG) GetDC( HWNDparam( 1 ) ) );
@@ -574,6 +616,17 @@ void _OOHG_GraphCommand( HDC hDC, struct _OOHG_GraphData *pData )
             SetTextColor( hDC, FontColor );
             SetBkColor( hDC, BackColor );
 
+         }
+         break;
+
+      case 11:      // WindowRaised
+         {
+            RECT rct;
+            rct.top    = pData->top;
+            rct.left   = pData->left;
+            rct.bottom = pData->bottom;
+            rct.right  = pData->right;
+            WindowRaised( hDC, &rct );
          }
          break;
 

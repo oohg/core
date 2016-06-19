@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.135 2016-05-29 14:33:48 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.136 2016-06-19 13:20:50 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1601,15 +1601,15 @@ CHECK BOX/BUTTON
       _OOHG_ActiveControlField       := NIL    ;;
       _OOHG_ActiveControl3State      := .F.    ;;
       _OOHG_ActiveControlThemed      := NIL    ;;
-      _OOHG_ActiveControlRightAlign  := .T.
+      _OOHG_ActiveControlLeft        := .F.
 
 #xcommand THREESTATE <threestate> ;
    => ;
       _OOHG_ActiveControl3State := <threestate>
 
-#xcommand LEFTALIGN <leftalign> ;
+#xcommand LEFTALIGN <left> ;
    => ;
-      _OOHG_ActiveControlRightAlign := ! <leftalign>
+      _OOHG_ActiveControlLeft := <left>
 
 #xcommand DEFINE CHECKBUTTON <name> ;
    => ;
@@ -1680,7 +1680,7 @@ CHECK BOX/BUTTON
             _OOHG_ActiveControlRtl, ;
             _OOHG_ActiveControlDisabled, ;
             _OOHG_ActiveControl3State, ;
-            ! _OOHG_ActiveControlRightAlign, ;
+            _OOHG_ActiveControlLeft, ;
             _OOHG_ActiveControlThemed )
 
 #xcommand END CHECKBUTTON ;

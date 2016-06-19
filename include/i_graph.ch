@@ -1,5 +1,5 @@
 /*
- * $Id: i_graph.ch,v 1.8 2016-05-22 23:52:23 fyurisich Exp $
+ * $Id: i_graph.ch,v 1.9 2016-06-19 13:20:50 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -167,7 +167,7 @@
    => ;
       ( <nRed> + ( <nGreen> * 256 ) + ( <nBlue> * 65536 ) )
 
-#xcommand DRAW GRAPH IN WINDOW <window> ;
+#xcommand DRAW GRAPH IN WINDOW <windowname> ;
       AT <nT>, <nL> ;
       TO <nB>, <nR> ;
       TITLE <cTitle> ;
@@ -181,7 +181,7 @@
       [ <lSLeg: SHOWLEGENDS> ] ;
       [ <lNoBorder: NOBORDER> ] ;
    => ;
-      DrawPieGraph( <(window)>, <nT>, <nL>, <nB>, <nR>, <aSer>, <aName>, ;
+      DrawPieGraph( <(windowname)>, <nT>, <nL>, <nB>, <nR>, <aSer>, <aName>, ;
             <aColor>, <cTitle>, <nD>, <.l3D.>, <.lxVal.>, <.lSLeg.>, ;
             <.lNoBorder.> )
 
@@ -192,7 +192,7 @@
  *    "POINTS" or 3
  */
 #xcommand DRAW GRAPH ;
-      IN WINDOW <window> ;
+      IN WINDOW <windowname> ;
       AT <nT>, <nL> ;
       [ TO <nB>, <nR> ] ;
       [ TITLE <cTitle> ] ;
@@ -212,7 +212,20 @@
       [ LEGENDSWIDTH <nLegendWindth> ] ;
       [ <lNoborder: NOBORDER> ] ;
    => ;
-      GraphShow( <(window)>, <nT>, <nL>, <nB>, <nR>, NIL, NIL, <aSer>, ;
+      GraphShow( <(windowname)>, <nT>, <nL>, <nB>, <nR>, NIL, NIL, <aSer>, ;
             <cTitle>, <aYVal>, <nD>, <nW>, NIL, <nRange>, <.l3D.>, <.lGrid.>, ;
             .F., .F., <.lxVal.>, <.lyVal.>, <.lSLeg.>, <aName>, <aColor>, ;
             <(nType)>, .F., NIL, <nLegendWindth>, <.lNoborder.> )
+
+#xcommand DRAW PANEL IN WINDOW <windowname> ;
+      AT <frow>, <fcol> ;
+      TO <trow>, <tcol> ;
+   => ;
+      DrawWindowBoxRaised( <(windowname)>, <frow>, <fcol>, <trow>, <tcol> )
+
+#xcommand DRAW BOX IN WINDOW <windowname> ;
+      AT <frow>, <fcol> ;
+      TO <trow>, <tcol> ;
+   => ;
+      DrawWindowBoxIn( <(windowname)>, <frow>, <fcol>, <trow>, <tcol> )
+

@@ -1,5 +1,5 @@
 /*
- * $Id: h_graph.prg,v 1.13 2016-05-22 23:53:22 fyurisich Exp $
+ * $Id: h_graph.prg,v 1.14 2016-06-19 13:20:50 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -983,6 +983,18 @@ Local oWnd := GetFormObject( window )
 */
    oWnd:GraphCommand := { | hWnd, aData | _OOHG_GraphCommand( hWnd, aData ) }
    aAdd( oWnd:GraphData, _OOHG_NewGraphCommand( oWnd:hWnd, 7, row, col, rowr, colr ) )
+Return Nil
+
+
+Function DrawWindowBoxRaised( window, row, col, rowr, colr )
+Local oWnd := GetFormObject( window )
+
+/*
+   WndBoxRaisedDraw( oWnd:hWnd, row, col, rowr, colr )
+   aAdd ( oWnd:GraphTasks, { || WndBoxRaisedDraw( oWnd:hWnd, row, col, rowr, colr ) } )
+*/
+   oWnd:GraphCommand := { | hWnd, aData | _OOHG_GraphCommand( hWnd, aData ) }
+   aAdd( oWnd:GraphData, _OOHG_NewGraphCommand( oWnd:hWnd, 11, row, col, rowr, colr ) )
 Return Nil
 
 

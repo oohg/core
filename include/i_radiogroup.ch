@@ -1,5 +1,5 @@
 /*
- * $Id: i_radiogroup.ch,v 1.15 2016-05-22 23:52:23 fyurisich Exp $
+ * $Id: i_radiogroup.ch,v 1.16 2016-06-19 13:20:50 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -86,7 +86,7 @@
       [ SUBCLASS <subclass> ] ;
       [ <theme: THEMED, NOTHEME> ] ;
       [ BACKGROUND <bkgrnd> ] ;
-		[ <left: LEFTJUSTIFY> ] ;
+		[ <left: LEFTJUSTIFY, LEFTALIGN> ] ;
 		[ READONLY <aReadOnly> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TRadioGroup(), [ <subclass>() ] ): ;
