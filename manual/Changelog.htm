@@ -1,5 +1,5 @@
 <!--
-$Id: Changelog.htm,v 1.82 2016-06-19 13:20:50 fyurisich Exp $
+$Id: Changelog.htm,v 1.83 2016-06-20 01:36:56 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -142,6 +142,18 @@ CHANGELOG</div>
 </div>
 <div id="winchm_template_content">
 <pre>
+2016-06-19 22:36 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_textbox.prg
+   * source/h_richeditbox.prg
+     + Method GetRect.
+       Returns {top, left, bottom, right} of the area used for editing.
+     + Method GetCharFromPos( row, col ).
+       Returns zero-based {char index, line index} at the given point.
+     + Method GetLastVisibleLine.
+       Returns zero-based index of the last visible line.
+   * manual/Changelog.htm
+     * Updated.
+
 2016-06-19 10:20 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * distros/MakeDistro.bat
      * Ide's rc is now at the top of temporay rc file.

@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.104 2016-05-22 23:53:23 fyurisich Exp $
+ * $Id: h_textbox.prg,v 1.105 2016-06-20 01:36:56 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -99,26 +99,26 @@
 #include "hblang.ch"
 
 CLASS TText FROM TLabel
-   DATA Type            INIT "TEXT" READONLY
-   DATA lSetting        INIT .F.
-   DATA nMaxLength      INIT 0
-   DATA lAutoSkip       INIT .F.
-   DATA nOnFocusPos     INIT -2
-   DATA nWidth          INIT 120
-   DATA nHeight         INIT 24
-   DATA OnTextFilled    INIT Nil
-   DATA nDefAnchor      INIT 13   // TopBottomRight
-   DATA bWhen           INIT Nil
-   DATA When_Processed  INIT .F.
-   DATA When_Procesing  INIT .F.
-   DATA lInsert         INIT .T.
-   DATA lFocused        INIT .F.
-   DATA xUndo           INIT Nil
-   DATA lPrevUndo       INIT .F.
-   DATA xPrevUndo       INIT Nil
-   DATA nInsertType     INIT 0
-   DATA oButton1        INIT Nil
-   DATA oButton2        INIT Nil
+   DATA Type                      INIT "TEXT" READONLY
+   DATA lSetting                  INIT .F.
+   DATA nMaxLength                INIT 0
+   DATA lAutoSkip                 INIT .F.
+   DATA nOnFocusPos               INIT -2
+   DATA nWidth                    INIT 120
+   DATA nHeight                   INIT 24
+   DATA OnTextFilled              INIT Nil
+   DATA nDefAnchor                INIT 13   // TopBottomRight
+   DATA bWhen                     INIT Nil
+   DATA When_Processed            INIT .F.
+   DATA When_Procesing            INIT .F.
+   DATA lInsert                   INIT .T.
+   DATA lFocused                  INIT .F.
+   DATA xUndo                     INIT Nil
+   DATA lPrevUndo                 INIT .F.
+   DATA xPrevUndo                 INIT Nil
+   DATA nInsertType               INIT 0
+   DATA oButton1                  INIT Nil
+   DATA oButton2                  INIT Nil
 
    METHOD Define
    METHOD Define2
@@ -151,6 +151,9 @@ CLASS TText FROM TLabel
    METHOD GetLineFromChar( nChar )     
    METHOD GetCurrentLine               BLOCK { |Self| ::GetLineFromChar( -1 ) }
    METHOD GetLineLength( nLine )       BLOCK { |Self,nLine| SendMessage( ::hWnd, EM_LINELENGTH, ::GetLineIndex( nLine ), 0 ) }
+   METHOD GetLastVisibleLine
+   METHOD GetCharFromPos
+   METHOD GetRect
 
    Empty( _OOHG_AllVars )
 ENDCLASS
@@ -688,6 +691,51 @@ HB_FUNC( TTEXT_GETSELECTIONDATA )
    hb_reta( 2 );
    HB_STORNI( (int) wParam, -1, 1 );
    HB_STORNI( (int) lParam, -1, 2 );
+}
+
+// -----------------------------------------------------------------------------
+HB_FUNC_STATIC( TTEXT_GETCHARFROMPOS )           // METHOD GetCharFromPos( nRow, nCol ) CLASS TText
+// -----------------------------------------------------------------------------
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   LONG lRet;
+
+   lRet = SendMessage( oSelf->hWnd, EM_CHARFROMPOS, 0, MAKELPARAM( hb_parni( 2 ), hb_parni( 1 ) ) );
+
+   hb_reta( 2 );
+   HB_STORNI( (int) LOWORD( lRet ), -1, 1 );        // zero-based index of the char
+   HB_STORNI( (int) HIWORD( lRet ), -1, 2 );        // zero-based line containing the char
+}
+
+// -----------------------------------------------------------------------------
+HB_FUNC_STATIC( TTEXT_GETRECT )           // METHOD GetRect() CLASS TText
+// -----------------------------------------------------------------------------
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   RECT rect;
+
+   SendMessage( oSelf->hWnd, EM_GETRECT, 0, (LPARAM) &rect );
+
+   hb_reta( 4 );
+   HB_STORNI( (int) rect.top, -1, 1 );        
+   HB_STORNI( (int) rect.left, -1, 2 );
+   HB_STORNI( (int) rect.bottom, -1, 3 );
+   HB_STORNI( (int) rect.right, -1, 4 );
+}
+
+// -----------------------------------------------------------------------------
+HB_FUNC_STATIC( TTEXT_GETLASTVISIBLELINE )           // METHOD GetLastVisibleLine() CLASS TText
+// -----------------------------------------------------------------------------
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   RECT rect;
+
+   SendMessage( oSelf->hWnd, EM_GETRECT, 0, (LPARAM) &rect );
+
+   hb_retni( HIWORD( SendMessage( oSelf->hWnd, EM_CHARFROMPOS, 0, MAKELPARAM( rect.left + 1, rect.bottom - 2 ) ) ) );
 }
 
 // -----------------------------------------------------------------------------

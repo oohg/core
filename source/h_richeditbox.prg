@@ -1,5 +1,5 @@
 /*
- * $Id: h_richeditbox.prg,v 1.37 2016-05-22 23:53:23 fyurisich Exp $
+ * $Id: h_richeditbox.prg,v 1.38 2016-06-20 01:36:56 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -97,26 +97,28 @@
 #include "i_windefs.ch"
 
 CLASS TEditRich FROM TEdit
-   DATA Type         INIT "RICHEDIT" READONLY
-   DATA nWidth       INIT 120
-   DATA nHeight      INIT 240
-   DATA OnSelChange  INIT Nil
-   DATA lSelChanging INIT .F.
-   DATA lDefault     INIT .T.
+   DATA Type                      INIT "RICHEDIT" READONLY
+   DATA nWidth                    INIT 120
+   DATA nHeight                   INIT 240
+   DATA OnSelChange               INIT Nil
+   DATA lSelChanging              INIT .F.
+   DATA lDefault                  INIT .T.
 
    METHOD Define
-   METHOD FontColor  SETGET
-   METHOD BackColor  SETGET
-   METHOD RichValue  SETGET
+   METHOD FontColor               SETGET
+   METHOD BackColor               SETGET
+   METHOD RichValue               SETGET
    METHOD Events
    METHOD Events_Notify
    METHOD SetSelectionTextColor
    METHOD SetSelectionBackColor
    METHOD HideSelection
    METHOD GetSelText
-   METHOD MaxLength  SETGET
+   METHOD MaxLength               SETGET
    METHOD LoadFile
    METHOD SaveFile
+   METHOD GetLastVisibleLine
+   METHOD GetCharFromPos
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
@@ -724,6 +726,21 @@ HB_FUNC( RICHEDIT_GETSELTEXT )
    hb_xfree( cBuffer );
 }
 
+// -----------------------------------------------------------------------------
+HB_FUNC_STATIC( TEDITRICH_GETCHARFROMPOS )           // METHOD GetCharFromPos( nRow, nCol ) CLASS TEditRich
+// -----------------------------------------------------------------------------
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   LONG lRet;
+   POINTL pnt;
+
+   pnt.x = hb_parni( 2 );
+   pnt.y = hb_parni( 1 );
+
+   hb_retni( SendMessage( oSelf->hWnd, EM_CHARFROMPOS, 0, (LPARAM) &pnt ) );        // zero-based index
+}
+
 #pragma ENDDUMP
 
 *------------------------------------------------------------------------------*
@@ -789,3 +806,12 @@ METHOD MaxLength( nLen ) CLASS TEditRich
    EndIf
 Return SendMessage( ::hWnd, EM_GETLIMITTEXT, 0, 0 )
 
+*-----------------------------------------------------------------------------*
+METHOD GetLastVisibleLine CLASS TEditRich
+*-----------------------------------------------------------------------------*
+LOCAL aRect, nChar
+
+   aRect := ::GetRect()            // top, left, bottom, right
+   nChar := ::GetCharFromPos( aRect[3] - 2, aRect[2] + 1 )
+
+Return ::GetLineFromChar( nChar )
