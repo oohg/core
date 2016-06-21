@@ -1,5 +1,5 @@
 /*
- * $Id: h_richeditbox.prg,v 1.38 2016-06-20 01:36:56 fyurisich Exp $
+ * $Id: h_richeditbox.prg,v 1.39 2016-06-21 00:04:08 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -732,7 +732,6 @@ HB_FUNC_STATIC( TEDITRICH_GETCHARFROMPOS )           // METHOD GetCharFromPos( n
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
-   LONG lRet;
    POINTL pnt;
 
    pnt.x = hb_parni( 2 );
