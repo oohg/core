@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.299 2016-05-22 23:53:22 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.300 2016-06-24 02:43:16 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -5707,7 +5707,9 @@ Local lValid, uValue, cValidMessage
    EndIf
 
    _OOHG_ThisItemCellValue := uValue
+   _PushEventInfo()
    lValid := _OOHG_Eval( ::bValid, uValue )
+   _PopEventInfo()
    _CheckCellNewValue( Self, @uValue )
    If ! HB_IsLogical( lValid )
       lValid := .T.
