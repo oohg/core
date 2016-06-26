@@ -1,5 +1,5 @@
 /*
- * $Id: h_tree.prg,v 1.45 2016-05-22 23:53:23 fyurisich Exp $
+ * $Id: h_tree.prg,v 1.46 2016-06-26 14:17:00 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -126,8 +126,8 @@ CLASS TTree FROM TControl
    DATA ItemOnDrag           INIT 0                // handle of the item being dragged
    DATA aTarget              INIT {}               // posible targets for the drop
    DATA LastTarget           INIT Nil              // last target hovered
-   DATA CtrlLastDrop         INIT nil              // reference to the control target of last drop operation
-   DATA ItemLastDrop         INIT nil              // reference to item added o moved in last drop operation
+   DATA CtrlLastDrop         INIT Nil              // reference to the control target of last drop operation
+   DATA ItemLastDrop         INIT Nil              // reference to item added o moved in last drop operation
    DATA nLastIDNumber        INIT 0                // last number used by AutoID function
    DATA aItemIDs             INIT {}
 
@@ -236,7 +236,7 @@ Local Controlhandle, nStyle, ImgDefNode, ImgDefItem, aBitmaps := array(4)
    ::SetSplitBoxInfo( Break )
    ControlHandle := InitTree( ::ContainerhWnd, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, ::lRtl, lChkBox, !HB_IsLogical( lNoBor ) .OR. ! lNoBor )
 
-   ::Register( ControlHandle, ControlName, HelpId, , ToolTip )
+   ::Register( ControlHandle, ControlName, HelpId )
    ::SetFont( , , bold, italic, underline, strikeout )
 
    ImgDefNode := iif( HB_IsArray( aImgNode ), len( aImgNode ), 0 )
@@ -301,6 +301,22 @@ Local Controlhandle, nStyle, ImgDefNode, ImgDefItem, aBitmaps := array(4)
    // this functions is called in WM_LBUTTONUP event
    If ! HB_IsBlock( ::OnMouseDrop )
      ::OnMouseDrop := {|oOrigin, oTarget, wParam| TTree_OnMouseDrop( oOrigin, oTarget, wParam ) }
+   EndIf
+
+   ::oToolTip := TToolTip():Define( Nil, Self )
+   SendMessage( ::hWnd, TVM_SETTOOLTIPS, ::oToolTip:hWnd , 0 )
+   ::Tooltip := tooltip
+   If HB_IsObject( ::Parent:oToolTip )
+      WITH OBJECT ::Parent:oToolTip
+         ::oToolTip:AutoPopTime := :AutoPopTime
+         ::oToolTip:InitialTime := :InitialTime
+         ::oToolTip:ReshowTime  := :ReshowTime
+         ::oToolTip:WindowWidth := :WindowWidth
+         ::oToolTip:Title       := :Title
+         ::oToolTip:Icon        := :Icon
+         ::oToolTip:WindowWidth := :WindowWidth
+         ::oToolTip:MultiLine   := :MultiLine
+      END WITH
    EndIf
 
    _OOHG_ActiveTree := Self
@@ -2336,7 +2352,7 @@ HB_FUNC( INITTREE )
    int StyleEx;
    LONG CurStyle;
 
-   iStyle = hb_parni( 6 ) | WS_CHILD ;
+   iStyle = hb_parni( 6 ) | WS_CHILD | TVS_NOTOOLTIPS ;
    
    StyleEx = _OOHG_RTL_Status( hb_parl( 7 ) );
    if( hb_parl( 9 ) )

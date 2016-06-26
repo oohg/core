@@ -1,5 +1,5 @@
 /*
- * $Id: h_tooltip.prg,v 1.12 2016-05-22 23:53:23 fyurisich Exp $
+ * $Id: h_tooltip.prg,v 1.13 2016-06-26 14:17:00 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -99,36 +99,50 @@ STATIC _OOHG_ToolTipInitialTime := 0
 STATIC _OOHG_ToolTipAutoPopTime := 0
 STATIC _OOHG_ToolTipReShowTime := 0
 STATIC _OOHG_ToolTipMultiLine := .F.
+STATIC _OOHG_ToolTipBalloon := .F.
+STATIC _OOHG_ToolTipClose := .F.
+
+
+
+
 
 CLASS TToolTip FROM TControl
-   DATA Type           INIT "TOOLTIP" READONLY
-   DATA nWindowWidth   INIT -1
-   DATA lMultiLine     INIT .F.
+   DATA cIcon                     INIT ''
+   DATA cTitle                    INIT ''
+   DATA lMultiLine                INIT .F.
+   DATA nIcon                     INIT TTI_NONE
+   DATA nWindowWidth              INIT -1
+   DATA Type                      INIT "TOOLTIP" READONLY
 
+   METHOD AutoPopTime             SETGET
    METHOD Define
-   METHOD Item
    METHOD Events_Notify
-   METHOD WindowWidth    SETGET
-   METHOD MultiLine      SETGET
-   METHOD InitialTime    SETGET
-   METHOD AutoPopTime    SETGET
-   METHOD ReshowTime     SETGET
+   METHOD Icon                    SETGET
+   METHOD InitialTime             SETGET
+   METHOD Item
+   METHOD MultiLine               SETGET
    METHOD ResetDelays
+   METHOD ReshowTime              SETGET
+   METHOD Title                   SETGET
+   METHOD WindowWidth             SETGET
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
-METHOD Define( ControlName, ParentForm, nInitial, nAutoPop, nReShow, lMulti ) CLASS TToolTip
+METHOD Define( ControlName, ParentForm, nInitial, nAutoPop, nReShow, lMulti, lBalloon, lClose ) CLASS TToolTip
 *-----------------------------------------------------------------------------*
 LOCAL ControlHandle
-   ::SetForm( ControlName, ParentForm )
-   ControlHandle := InitToolTip( ::ContainerhWnd, _SetToolTipBalloon() )
-   ::Register( ControlHandle, ControlName )
    ASSIGN nInitial VALUE nInitial TYPE "N" DEFAULT _OOHG_ToolTipInitialTime
    ASSIGN nAutoPop VALUE nAutoPop TYPE "N" DEFAULT _OOHG_ToolTipAutoPopTime
    ASSIGN nReShow  VALUE nReShow  TYPE "N" DEFAULT _OOHG_ToolTipReshowTime
    ASSIGN lMulti   VALUE lMulti   TYPE "L" DEFAULT _OOHG_ToolTipMultiLine
+   ASSIGN lBalloon VALUE lBalloon TYPE "N" DEFAULT _OOHG_ToolTipBalloon
+   ASSIGN lClose   VALUE lClose   TYPE "L" DEFAULT _OOHG_ToolTipClose
+
+   ::SetForm( ControlName, ParentForm )
+   ControlHandle := InitToolTip( ::ContainerhWnd, lBalloon, lClose )
+   ::Register( ControlHandle, ControlName )
    If nInitial > 0
       ::InitialTime := nInitial
    EndIf
@@ -199,9 +213,7 @@ Return ::lMultiLine
 *-----------------------------------------------------------------------------*
 Function _SetToolTipBalloon( lNewBalloon )
 *-----------------------------------------------------------------------------*
-Static lBalloon := .F.
-Local oReg, lOldBalloon := lBalloon
-Local lYesNo := Nil
+Local oReg, lYesNo := Nil, lOldBalloon := _OOHG_ToolTipBalloon
 
    If HB_IsLogical( lNewBalloon )
       If lNewBalloon
@@ -209,41 +221,59 @@ Local lYesNo := Nil
          oReg:Get( "EnableBalloonTips", lYesNo )
          oReg:Close()
       EndIf
-      lBalloon := lNewBalloon
+      _OOHG_ToolTipBalloon := lNewBalloon
    Endif
 return lOldBalloon
 
 *-----------------------------------------------------------------------------*
+Function _SetToolTipClose( lNewClose )
+*-----------------------------------------------------------------------------*
+Local lOldClose := _OOHG_ToolTipClose
+
+   If HB_IsLogical( lNewClose )
+      _OOHG_ToolTipClose := lNewClose
+   Endif
+return lOldClose
+
+*-----------------------------------------------------------------------------*
 Function _SetToolTipInitialTime( nMilliSec )
 *-----------------------------------------------------------------------------*
+Local lOldInitialTime := _OOHG_ToolTipInitialTime
+
    If HB_IsNumeric( nMilliSec ) .AND. nMilliSec > 0
       _OOHG_ToolTipInitialTime := nMilliSec
    EndIf
-Return _OOHG_ToolTipInitialTime
+Return lOldInitialTime
 
 *-----------------------------------------------------------------------------*
 Function _SetToolTipAutoPopTime( nMilliSec )
 *-----------------------------------------------------------------------------*
+Local lOldAutoPopTime := _OOHG_ToolTipAutoPopTime
+
    If HB_IsNumeric( nMilliSec ) .AND. nMilliSec > 0
       _OOHG_ToolTipAutoPopTime := nMilliSec
    EndIf
-Return _OOHG_ToolTipAutoPopTime
+Return lOldAutoPopTime
 
 *-----------------------------------------------------------------------------*
 Function _SetToolTipReShowTime( nMilliSec )
 *-----------------------------------------------------------------------------*
+Local lOldReShowTime := _OOHG_ToolTipReShowTime
+
    If HB_IsNumeric( nMilliSec ) .AND. nMilliSec > 0
       _OOHG_ToolTipReShowTime := nMilliSec
    EndIf
-Return _OOHG_ToolTipReShowTime
+Return lOldReShowTime
 
 *-----------------------------------------------------------------------------*
-Function _SetToolTipMultiLine( lMulti )
+Function _SetToolTipMultiLine( lNewMultiLine )
 *-----------------------------------------------------------------------------*
-   If HB_IsLogical( lMulti )
-      _OOHG_ToolTipMultiLine := lMulti
+Local lOldMultiLine := _OOHG_ToolTipMultiLine
+
+   If HB_IsLogical( lNewMultiLine )
+      _OOHG_ToolTipMultiLine := lNewMultiLine
    EndIf
-Return _OOHG_ToolTipMultiLine
+Return lOldMultiLine
 
 *-----------------------------------------------------------------------------*
 METHOD InitialTime( nMilliSecs ) CLASS TToolTip
@@ -297,7 +327,47 @@ METHOD ResetDelays( nMilliSecs ) CLASS TToolTip
    SetDelayTime( ::hWnd, nMilliSecs )
 Return Nil
 
-EXTERN _SetToolTipBackColor, _SetToolTipForeColor
+*-----------------------------------------------------------------------------*
+METHOD Icon( uIcon ) CLASS TToolTip
+*-----------------------------------------------------------------------------*
+   /*
+    * uIcon valid values are:
+    * TTI_NONE    - no icon
+    * TTI_INFO    - info icon
+    * TTI_WARNING - warning icon
+    * a handle to icon
+    * a resource name
+    * a filename
+    */
+   If HB_IsNumeric( uIcon )
+      If ::nIcon > TTI_ERROR .AND. ValidHandler( ::nIcon )
+         DeleteObject( ::nIcon )
+      EndIf
+      ::cIcon := ''
+      ::nIcon := uIcon
+      TToolTip_SetIconAndTitle( ::hWnd, ::nIcon, Left( ::cTitle, 99 ) )
+   ElseIf ValType( uIcon ) $ "CM"
+      If ::nIcon > TTI_ERROR .AND. ValidHandler( ::nIcon )
+         DeleteObject( ::nIcon )
+      EndIf
+      ::cIcon := uIcon
+      ::nIcon := LoadIcon( GetInstance(), uIcon )
+      TToolTip_SetIconAndTitle( ::hWnd, ::nIcon, Left( ::cTitle, 99 ) )
+   EndIf
+RETURN TToolTip_GetIcon( ::hWnd )
+
+*-----------------------------------------------------------------------------*
+METHOD Title( cTitle ) CLASS TToolTip
+*-----------------------------------------------------------------------------*
+   If ValType( cTitle ) $ "CM"
+      ::cTitle := cTitle
+      TToolTip_SetIconAndTitle( ::hWnd, ::nIcon, Left( ::cTitle, 99 ) )
+   EndIf
+RETURN TToolTip_GetTitle( ::hWnd )
+
+
+
+
 
 #pragma BEGINDUMP
 
@@ -331,14 +401,23 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
    return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
 }
 
+typedef int (CALLBACK *CALL_SETWINDOWTHEME )( HWND, LPCWSTR, LPCWSTR );
+
 HB_FUNC( INITTOOLTIP )
 {
+   CALL_SETWINDOWTHEME dwSetWindowTheme;
+   HMODULE hInstDLL;
    HWND htooltip;
    int Style = TTS_ALWAYSTIP;
 
    if( hb_parl( 2 ) )
    {
       Style |= TTS_BALLOON;
+
+      if( hb_parl( 3 ) )
+      {
+         Style |= TTS_CLOSE;
+      }
    }
 
    InitCommonControls();
@@ -347,14 +426,29 @@ HB_FUNC( INITTOOLTIP )
                               0, 0, 0, 0, HWNDparam( 1 ),
                               NULL, GetModuleHandle( NULL ), NULL );
 
-   if( _OOHG_TooltipBackcolor != -1 )
+   if( ( _OOHG_TooltipBackcolor != -1 ) || ( _OOHG_TooltipForecolor != -1 ) )
    {
-      SendMessage( htooltip, TTM_SETTIPBKCOLOR, _OOHG_TooltipBackcolor, 0 );
-   }
+      hInstDLL = LoadLibrary( "UXTHEME.DLL" );
+      if( hInstDLL )
+      {
+         dwSetWindowTheme = (CALL_SETWINDOWTHEME) GetProcAddress( hInstDLL, "SetWindowTheme" );
+         if( dwSetWindowTheme )
+         {
+            if( ( dwSetWindowTheme )( htooltip, L" ", L" " ) == S_OK )
+            {
+               if( _OOHG_TooltipBackcolor != -1 )
+               {
+                  SendMessage( htooltip, TTM_SETTIPBKCOLOR, _OOHG_TooltipBackcolor, 0 );
+               }
 
-   if( _OOHG_TooltipForecolor != -1 )
-   {
-      SendMessage( htooltip, TTM_SETTIPTEXTCOLOR, _OOHG_TooltipForecolor, 0 );
+               if( _OOHG_TooltipForecolor != -1 )
+               {
+                  SendMessage( htooltip, TTM_SETTIPTEXTCOLOR, _OOHG_TooltipForecolor, 0 );
+               }
+            }
+         }
+         FreeLibrary( hInstDLL );
+      }
    }
 
    if( htooltip )
@@ -378,13 +472,14 @@ HB_FUNC( SETTOOLTIP )   // ( hWnd, cToolTip, hWndToolTip )
    memset( &ti, 0, sizeof( ti ) );
 
    ti.cbSize = sizeof( ti );
+// TODO: TTF_CENTERTIP, TTF_PARSELINKS, TTF_RTLREADING, TTF_TRACK
    ti.uFlags = TTF_SUBCLASS | TTF_IDISHWND;
    ti.hwnd = GetParent( hWnd );
    ti.uId = ( UINT ) hWnd;
 
-   if( SendMessage( hWnd_ToolTip, ( UINT ) TTM_GETTOOLINFO, ( WPARAM ) 0, ( LPARAM ) &ti ) )
+   if( SendMessage( hWnd_ToolTip, ( UINT ) TTM_GETTOOLINFO, (WPARAM) 0, (LPARAM) &ti ) )
    {
-      SendMessage( hWnd_ToolTip, ( UINT ) TTM_DELTOOL, ( WPARAM ) 0, ( LPARAM ) &ti );
+      SendMessage( hWnd_ToolTip, ( UINT ) TTM_DELTOOL, (WPARAM) 0, (LPARAM) &ti );
    }
 
    ti.cbSize = sizeof( ti );
@@ -397,10 +492,10 @@ HB_FUNC( SETTOOLTIP )   // ( hWnd, cToolTip, hWndToolTip )
    }
    else
    {
-      ti.lpszText = ( LPSTR ) hb_parc( 2 );
+      ti.lpszText = (LPSTR) hb_parc( 2 );
    }
 
-   SendMessage( hWnd_ToolTip, ( UINT ) TTM_ADDTOOL, ( WPARAM ) 0, ( LPARAM ) &ti );
+   SendMessage( hWnd_ToolTip, (UINT) TTM_ADDTOOL, (WPARAM) 0, (LPARAM) &ti );
 
    hb_retni( 0 );
 }
@@ -423,7 +518,7 @@ HB_FUNC( GETTOOLTIP )   // ( hWnd, hWndToolTip )
    ti.lpszText = ( LPTSTR ) &cText;
    cText[ 0 ] = 0;
 
-   SendMessage( hWnd_ToolTip, TTM_GETTOOLINFO, 0, ( LPARAM ) &ti );
+   SendMessage( hWnd_ToolTip, TTM_GETTOOLINFO, 0, (LPARAM) &ti );
 
    hb_retc( ( char * ) &cText );
 }
@@ -509,4 +604,60 @@ HB_FUNC( GETDOUBLECLICKTIME )
    hb_retni( GetDoubleClickTime() );
 }
 
+#ifndef TTM_GETTITLE
+   #define TTM_GETTITLE ( WM_USER + 35 ) // wParam = 0, lParam = TTGETTITLE*
+#endif
+
+typedef struct _TTGETTITLE
+{
+    DWORD dwSize;
+    UINT uTitleBitmap;
+    UINT cch;
+    WCHAR *pszTitle;
+} TTGETTITLE, *PTTGETTITLE;
+
+HB_FUNC( TTOOLTIP_GETICON )   // ( hWnd )
+{
+   TTGETTITLE gt;
+
+   memset( &gt, 0, sizeof( gt ) );
+   gt.dwSize = sizeof( gt );
+
+   SendMessage( HWNDparam( 1 ), TTM_GETTITLE, (WPARAM) 0, (LPARAM) &gt );
+
+   hb_retni( (int) gt.uTitleBitmap );
+}
+
+HB_FUNC( TTOOLTIP_GETTITLE )   // ( hWnd )
+{
+   TTGETTITLE gt;
+   char *cBuffer;
+
+   memset( &gt, 0, sizeof( gt ) );
+   gt.dwSize = sizeof( gt );
+
+   SendMessage( HWNDparam( 1 ), TTM_GETTITLE, (WPARAM) 0, (LPARAM) &gt );
+
+   if( gt.cch > 0 )
+   {
+      cBuffer = (char *) hb_xgrab( gt.cch );
+      WideCharToMultiByte( CP_ACP, 0, gt.pszTitle, -1, cBuffer, gt.cch, NULL, NULL );
+      hb_retc( cBuffer );
+      hb_xfree( cBuffer );
+   }
+   else
+   {
+      hb_retc( "" );
+   }
+}
+
+#ifndef TTM_SETTITLE
+   #define TTM_SETTITLE ( WM_USER + 32 )
+#endif
+
+HB_FUNC( TTOOLTIP_SETICONANDTITLE )   // ( hWnd, nIcon, cTitle )
+{
+   hb_retl( SendMessage( HWNDparam( 1 ), TTM_SETTITLE, (WPARAM) hb_parni( 2 ), (LPARAM) hb_parc( 3 ) ) );
+
+}
 #pragma ENDDUMP

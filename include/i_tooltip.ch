@@ -1,5 +1,5 @@
 /*
- * $Id: i_tooltip.ch,v 1.9 2016-05-22 23:52:23 fyurisich Exp $
+ * $Id: i_tooltip.ch,v 1.10 2016-06-26 14:17:00 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -56,6 +56,26 @@
  * whether to permit this exception to apply to your modifications.
  * If you do not wish that, delete this exception notice.
  */
+
+#xcommand SET TOOLTIPCLOSE <x: ON, OFF> ;
+   => ;
+      _SetToolTipClose( Upper( <(x)> ) == "ON" )
+
+#xcommand SET TOOLTIP CLOSE <x: ON, OFF> ;
+   => ;
+      _SetToolTipClose( Upper( <(x)> ) == "ON" )
+
+#xcommand SET TOOLTIPSTYLE CLOSE ;
+   => ;
+      _SetToolTipClose( .T. )
+
+#xcommand SET TOOLTIPSTYLE NOCLOSE ;
+   => ;
+      _SetToolTipClose( .F. )
+
+#xcommand SET TOOLTIPMULTILINE <x: ON, OFF> ;
+   => ;
+      _SetToolTipMultiLine( Upper( <(x)> ) == "ON" )
 
 #xcommand SET TOOLTIP MULTILINE <x: ON, OFF> ;
    => ;

@@ -1,5 +1,5 @@
 /*
- * $Id: c_image.c,v 1.46 2016-05-22 23:53:21 fyurisich Exp $
+ * $Id: c_image.c,v 1.47 2016-06-26 14:17:00 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -842,11 +842,70 @@ HB_FUNC( _OOHG_BLENDIMAGE )            // ( hImage, nImgX, nImgY, nImgW, nImgH, 
    }
 }
 
-HB_FUNC( _OOHG_COPYBITMAP )            // ( hBitmap, nWidth, nHeight, iAttributes)
+HB_FUNC( _OOHG_COPYBITMAP )            // ( hBitmap, nWidth, nHeight, iAttributes )
 {
    HBITMAP hCopy;
 
    hCopy = CopyImage( ( HBITMAP ) HWNDparam( 1 ), IMAGE_BITMAP, hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ) );
 
    HWNDret( hCopy );
+}
+
+HBITMAP _OOHG_ReplaceColor( HBITMAP hBitmap, int x, int y, LONG lNewColor )
+{
+   HDC hdcSrc, hdcDst;
+   int nRow, nCol;
+   HBITMAP hbmOldSrc, hbmOldDst, hbmNew = 0;
+   BITMAP bm;
+   COLORREF clrTP;
+
+   if( ( hdcSrc = CreateCompatibleDC( NULL ) ) != NULL )
+   {
+      if( ( hdcDst = CreateCompatibleDC( NULL ) ) != NULL )
+      {
+         GetObject( hBitmap, sizeof( bm ), &bm );
+         hbmOldSrc = SelectObject( hdcSrc, hBitmap );
+         hbmNew = CreateBitmap( bm.bmWidth, bm.bmHeight, bm.bmPlanes, bm.bmBitsPixel, NULL );
+         hbmOldDst = SelectObject( hdcDst, hbmNew );
+         BitBlt( hdcDst, 0, 0, bm.bmWidth, bm.bmHeight, hdcSrc, 0, 0, SRCCOPY );
+
+         // Get color of pixel at x,y
+         clrTP = GetPixel( hdcDst, x, y );
+         if( clrTP != CLR_INVALID )
+         {
+            // Work our way through all the pixels
+            for( nRow = 0; nRow < bm.bmHeight; nRow ++ )
+            {
+               for( nCol = 0; nCol < bm.bmWidth; nCol ++ )
+               {
+                  // Replace with the new color
+                  if( GetPixel( hdcDst, nCol, nRow ) == clrTP )
+                  {
+                     SetPixel( hdcDst, nCol, nRow, lNewColor );
+                  }
+               }
+            }
+         }
+
+         SelectObject( hdcSrc, hbmOldSrc );
+         SelectObject( hdcDst, hbmOldDst );
+         DeleteDC( hdcDst );
+      }
+      DeleteDC( hdcSrc );
+   }
+
+   return hbmNew;
+}
+
+HB_FUNC( _OOHG_REPLACECOLOR )          // ( hBitmap, nCol, nRow, uNewColor )
+{
+   LONG lColor = -1;
+
+   _OOHG_DetermineColor( hb_param( 2, HB_IT_ANY ), &lColor );
+   if( lColor == -1 )
+   {
+      lColor = GetSysColor( COLOR_BTNFACE );
+   }
+
+   HWNDret( _OOHG_ReplaceColor( (HBITMAP) HWNDparam( 1 ), hb_parni( 2 ), hb_parni( 3 ), lColor ) );
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: h_toolbar.prg,v 1.46 2016-05-22 23:53:23 fyurisich Exp $
+ * $Id: h_toolbar.prg,v 1.47 2016-06-26 14:17:00 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -122,14 +122,13 @@ STATIC _OOHG_ActiveToolBar := NIL    // Active toolbar
 #pragma ENDDUMP
 
 CLASS TToolBar FROM TControl
-   DATA Type               INIT "TOOLBAR" READONLY
-   DATA lAdjust            INIT .T.
-   DATA lfixfont           INIT .T.
-   DATA lTop	            INIT .T.
-   DATA nButtonHeight      INIT 0
-   DATA nButtonWidth       INIT 0
-   DATA lVertical          INIT .F.
-   DATA oToolTip           INIT Nil
+   DATA Type                      INIT "TOOLBAR" READONLY
+   DATA lAdjust                   INIT .T.
+   DATA lfixfont                  INIT .T.
+   DATA lTop	                   INIT .T.
+   DATA nButtonHeight             INIT 0
+   DATA nButtonWidth              INIT 0
+   DATA lVertical                 INIT .F.
 
    METHOD Define
    METHOD Events_Size
@@ -137,9 +136,9 @@ CLASS TToolBar FROM TControl
    METHOD Events
    METHOD Events_Command
    METHOD LookForKey
-   METHOD ClientHeightUsed BLOCK { |Self| GetWindowHeight( ::hWnd ) }
-   METHOD Height           SETGET
-   METHOD Width            SETGET
+   METHOD ClientHeightUsed        BLOCK { |Self| GetWindowHeight( ::hWnd ) }
+   METHOD Height                  SETGET
+   METHOD Width                   SETGET
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
@@ -156,44 +155,53 @@ Local ControlHandle, id, lSplitActive, nStyle
       caption := ""
    EndIf
 
-   ASSIGN ::nCol          VALUE x TYPE "N"
-   ASSIGN ::nRow          VALUE y TYPE "N"
-   ASSIGN ::nButtonWidth  VALUE w TYPE "N"
-   ASSIGN ::nButtonHeight VALUE h TYPE "N"
+   ASSIGN ::nCol          VALUE x         TYPE "N"
+   ASSIGN ::nRow          VALUE y         TYPE "N"
+   ASSIGN ::nButtonWidth  VALUE w         TYPE "N"
+   ASSIGN ::nButtonHeight VALUE h         TYPE "N"
+   ASSIGN flat            VALUE flat      TYPE "L" DEFAULT .F.
+   ASSIGN ::lTop          VALUE ! bottom  TYPE "L"
+   ASSIGN righttext       VALUE righttext TYPE "L" DEFAULT .F.
+   ASSIGN border          VALUE border    TYPE "L" DEFAULT .F.
+   ASSIGN ::lVertical     VALUE lVertical TYPE "L"
 
-   ASSIGN flat         VALUE flat         TYPE "L" DEFAULT .F.
-   ASSIGN bottom       VALUE bottom       TYPE "L" DEFAULT .F.
-   ASSIGN righttext    VALUE righttext    TYPE "L" DEFAULT .F.
-   ASSIGN border       VALUE border       TYPE "L" DEFAULT .F.
-   ASSIGN lVertical    VALUE lVertical    TYPE "L" DEFAULT .F.
-
-   If bottom .AND. lVertical
+   If ! ::lTop .AND. ::lVertical
       MsgOOHGError( "BOTTOM and VERTICAL clauses can't be used simultaneously. Program Terminated." )
    EndIf
 
-   ::SetForm( ControlName, ParentForm, FontName, FontSize,,,, lRtl )
+   ::SetForm( ControlName, ParentForm, FontName, FontSize, Nil, Nil, Nil, lRtl )
 
    _OOHG_ActiveToolBar := Self
 
    Id := _GetId()
 
-   lSplitActive := ::SetSplitBoxInfo( Break, caption, ::nButtonWidth,, .T. )
+   lSplitActive := ::SetSplitBoxInfo( Break, caption, ::nButtonWidth, Nil, .T. )
    nStyle := ::InitStyle( Nil, Nil, Nil, lNoTabStop, Nil )
-   ControlHandle := InitToolBar( ::ContainerhWnd, Caption, id, ::ContainerCol, ::ContainerRow, ::nButtonWidth, ::nButtonHeight, "", 0, flat, bottom, righttext, lSplitActive, border, ::lRtl, nStyle, lVertical )
+   ControlHandle := InitToolBar( ::ContainerhWnd, Caption, id, ::ContainerCol, ::ContainerRow, ::nButtonWidth, ::nButtonHeight, "", 0, flat, ! ::lTop, righttext, lSplitActive, border, ::lRtl, nStyle, ::lVertical )
 
-   ::Register( ControlHandle, ControlName, , , ToolTip, Id )
+   ::Register( ControlHandle, ControlName, Nil, Nil, Nil, Id )
 
-   ::oToolTip := TToolTip():Define( , Self )
-
-   SendMessage( ::hWnd, TB_SETTOOLTIPS, ::oToolTip:hWnd, 0 )
-
-   ::SetFont( , , bold, italic, underline, strikeout )
+   ::SetFont( Nil, Nil, bold, italic, underline, strikeout )
 
    ::ContainerhWndValue := ::hWnd
 
-   ASSIGN ::OnClick     VALUE ProcedureName TYPE "B"
-   ::lTop := ! bottom
-   ::lVertical := lVertical
+   ::oToolTip := TToolTip():Define( Nil, Self )
+   SendMessage( ::hWnd, TB_SETTOOLTIPS, ::oToolTip:hWnd, 0 )
+   ::Tooltip := tooltip
+   If HB_IsObject( ::Parent:oToolTip )
+      WITH OBJECT ::Parent:oToolTip
+         ::oToolTip:AutoPopTime := :AutoPopTime
+         ::oToolTip:InitialTime := :InitialTime
+         ::oToolTip:ReshowTime  := :ReshowTime
+         ::oToolTip:WindowWidth := :WindowWidth
+         ::oToolTip:Title       := :Title
+         ::oToolTip:Icon        := :Icon
+         ::oToolTip:WindowWidth := :WindowWidth
+         ::oToolTip:MultiLine   := :MultiLine
+      END WITH
+   EndIf
+
+   ASSIGN ::OnClick VALUE ProcedureName TYPE "B"
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -213,7 +221,7 @@ Local Self
 
       w := GetWindowWidth( ::hWnd )
 
-      SetSplitBoxItem( ::hWnd, ::Container:hWnd, w,,, MinWidth, MinHeight, ::Container:lInverted )
+      SetSplitBoxItem( ::hWnd, ::Container:hWnd, w, Nil, Nil, MinWidth, MinHeight, ::Container:lInverted )
 
       ASSIGN lBreak VALUE lBreak TYPE "L" DEFAULT .T.
 
@@ -228,7 +236,7 @@ Return Nil
 METHOD Height( nHeight ) CLASS TToolBar
 *------------------------------------------------------------------------------*
    if HB_IsNumeric( nHeight )
-      ::SizePos( , , , nHeight )
+      ::SizePos( Nil, Nil, Nil, nHeight )
    endif
 Return GetWindowHeight( ::hWnd )
 
@@ -236,14 +244,14 @@ Return GetWindowHeight( ::hWnd )
 METHOD Width( nWidth ) CLASS TToolBar
 *------------------------------------------------------------------------------*
    if HB_IsNumeric( nWidth )
-      ::SizePos( , , nWidth )
+      ::SizePos( Nil, Nil, nWidth )
    endif
 Return GetWindowWidth( ::hWnd )
 
 *-----------------------------------------------------------------------------*
 METHOD Events_Size() CLASS TToolBar
 *-----------------------------------------------------------------------------*
-   SendMessage( ::hWnd, TB_AUTOSIZE , 0 , 0 )
+   SendMessage( ::hWnd, TB_AUTOSIZE, 0, 0 )
 RETURN ::Super:Events_Size()
 
 *-----------------------------------------------------------------------------*
@@ -259,7 +267,7 @@ Local ws, x, aPos, cToolTip
          aPos:= { 0, 0, 0, 0 }
          GetWindowRect( ::hWnd, aPos )
          ws := GetButtonBarRect( ::hWnd, ::aControls[ x ]:Position - 1 )
-         ::aControls[ x ]:ContextMenu:Activate( aPos[2]+HiWord(ws)+(aPos[4]-aPos[2]-HiWord(ws))/2 , aPos[1]+LoWord(ws) )
+         ::aControls[ x ]:ContextMenu:Activate( aPos[2]+HiWord(ws)+(aPos[4]-aPos[2]-HiWord(ws))/2, aPos[1]+LoWord(ws) )
       EndIf
       Return nil
 
@@ -285,8 +293,8 @@ Local ws, x, aPos, cToolTip
          aPos:= {0,0,0,0}
          GetWindowRect( ::hWnd, aPos )
          ws := GetButtonBarRect( ::hWnd, ::aControls[ x ]:Position - 1 )
-         // TrackPopupMenu ( ::aControls[ x ]:ContextMenu:hWnd , aPos[1]+LoWord(ws) ,aPos[2]+HiWord(ws)+(aPos[4]-aPos[2]-HiWord(ws))/2 , ::hWnd )
-         ::aControls[ x ]:ContextMenu:Activate( aPos[2]+HiWord(ws)+(aPos[4]-aPos[2]-HiWord(ws))/2 , aPos[1]+LoWord(ws) )
+         // TrackPopupMenu ( ::aControls[ x ]:ContextMenu:hWnd, aPos[1]+LoWord(ws),aPos[2]+HiWord(ws)+(aPos[4]-aPos[2]-HiWord(ws))/2, ::hWnd )
+         ::aControls[ x ]:ContextMenu:Activate( aPos[2]+HiWord(ws)+(aPos[4]-aPos[2]-HiWord(ws))/2, aPos[1]+LoWord(ws) )
       EndIf
       Return nil
 */
@@ -340,7 +348,7 @@ Local ButtonIndex, i, oControl
    If nKey == VK_RETURN .and. nFlags == 0
       ::Events_Enter()
       If GetFocus() == ::hWnd
-         ButtonIndex := SendMessage( ::hWnd, TB_GETHOTITEM , 0 , 0 )
+         ButtonIndex := SendMessage( ::hWnd, TB_GETHOTITEM, 0, 0 )
          If ButtonIndex >= 0
             i := Ascan( ::aControls, { |o| o:Type == "TOOLBUTTON" .AND. o:Position == ButtonIndex + 1 } )
             If i > 0
@@ -411,11 +419,11 @@ Local id, nPos
 
    id := _GetId()
 
-   InitToolButton( ::ContainerhWnd, Caption, id, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, , 0, separator, autosize, check, group, dropdown, WholeDropdown, ::Parent:visible, GetControlObjectByHandle( ::ContainerhWnd ):lVertical )
+   InitToolButton( ::ContainerhWnd, Caption, id, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, Nil, 0, separator, autosize, check, group, dropdown, WholeDropdown, ::Parent:visible, GetControlObjectByHandle( ::ContainerhWnd ):lVertical )
 
    nPos := GetButtonBarCount( ::ContainerhWnd ) - if( separator, 1, 0 )
 
-   ::Register( , ControlName, , , ToolTip, Id )
+   ::Register( Nil, ControlName, Nil, Nil, ToolTip, Id )
 
    ::Position  :=  nPos
    ::Caption := Caption
@@ -437,7 +445,7 @@ Return Self
 METHOD Value( lValue ) CLASS TToolButton
 *-----------------------------------------------------------------------------*
    IF VALTYPE( lValue ) == "L"
-      CheckButtonBar( ::ContainerhWnd, ::Position - 1 , lValue )
+      CheckButtonBar( ::ContainerhWnd, ::Position - 1, lValue )
    ENDIF
 RETURN IsButtonBarChecked( ::ContainerhWnd, ::Position - 1 )
 
@@ -611,7 +619,7 @@ HB_FUNC( INITTOOLBAR )
 		Style = Style | CCS_VERT;
 	}
 
-	hwndTB = CreateWindowEx( ExStyle, TOOLBARCLASSNAME, (LPSTR) NULL, Style, 0, 0 ,0 ,0, hwnd, (HMENU) hb_parni( 3 ), GetModuleHandle( NULL ), NULL );
+	hwndTB = CreateWindowEx( ExStyle, TOOLBARCLASSNAME, (LPSTR) NULL, Style, 0, 0, 0, 0, hwnd, (HMENU) hb_parni( 3 ), GetModuleHandle( NULL ), NULL );
 
    lpfnOldWndProc = (WNDPROC) SetWindowLong( (HWND) hwndTB, GWL_WNDPROC, (LONG) SubClassFunc );
 
@@ -774,7 +782,7 @@ LONG WidestBtn(LPCTSTR pszStr, HWND hwnd)
    ReleaseDC(hwnd, hdc);
    DeleteObject(hFont);
 
-   return (MAKELONG(sz.cx ,sz.cy) );
+   return (MAKELONG(sz.cx, sz.cy) );
 }
 
 HB_FUNC( MAXTEXTBTNTOOLBAR )      //(HWND hwndTB, int cx, int cy)
@@ -794,7 +802,7 @@ HB_FUNC( MAXTEXTBTNTOOLBAR )      //(HWND hwndTB, int cx, int cy)
    for( i = 0; i < nBtn; i++ )
    {
       SendMessage( hWnd, TB_GETBUTTON, i, (LPARAM)  &lpBtn);
-      SendMessage( hWnd, TB_GETBUTTONTEXT , lpBtn.idCommand, (LPARAM)(LPCTSTR) cString);
+      SendMessage( hWnd, TB_GETBUTTONTEXT, lpBtn.idCommand, (LPARAM)(LPCTSTR) cString);
 
       tSize = WidestBtn(cString, hWnd );
       ty = HIWORD(tSize);
@@ -833,14 +841,14 @@ HB_FUNC( ISBUTTONBARCHECKED )          // hb_parni(2) -> Position in ToolBar
    TBBUTTON lpBtn;
 
    SendMessage( HWNDparam( 1 ),TB_GETBUTTON, hb_parni(2), (LPARAM)  &lpBtn);
-   hb_retl( SendMessage( HWNDparam( 1 ),TB_ISBUTTONCHECKED , lpBtn.idCommand , 0 ) );
+   hb_retl( SendMessage( HWNDparam( 1 ),TB_ISBUTTONCHECKED, lpBtn.idCommand, 0 ) );
 }
 
 HB_FUNC( CHECKBUTTONBAR )          // hb_parni(2) -> Position in ToolBar
 {
    TBBUTTON lpBtn;
    SendMessage( HWNDparam( 1 ),TB_GETBUTTON, hb_parni(2), (LPARAM)  &lpBtn);
-   SendMessage( HWNDparam( 1 ),TB_CHECKBUTTON , lpBtn.idCommand , hb_parl(3) );
+   SendMessage( HWNDparam( 1 ),TB_CHECKBUTTON, lpBtn.idCommand, hb_parl(3) );
 }
 
 HB_FUNC( GETBUTTONBARRECT )
@@ -910,7 +918,7 @@ HB_FUNC( GETTOOLBUTTONCAPTION )
    char cString[255] = "" ;
 
    SendMessage( HWNDparam( 1 ), TB_GETBUTTON, hb_parni( 2 ), (LPARAM)  &lpBtn);
-   SendMessage( HWNDparam( 1 ), TB_GETBUTTONTEXT , lpBtn.idCommand, (LPARAM)(LPCTSTR) cString);
+   SendMessage( HWNDparam( 1 ), TB_GETBUTTONTEXT, lpBtn.idCommand, (LPARAM)(LPCTSTR) cString);
 
    hb_retc( cString );
 }
@@ -923,9 +931,9 @@ HB_FUNC( SETTOOLBUTTONCAPTION )
    SendMessage( HWNDparam( 1 ), TB_GETBUTTON, hb_parni( 2 ), (LPARAM) &lpBtn);
 
    memset( &tbbtn, 0, sizeof( tbbtn ) );
-   tbbtn.cbSize    = sizeof( TBBUTTONINFO );
-   tbbtn.dwMask    = TBIF_TEXT;
-   tbbtn.pszText   = (LPTSTR) hb_parc( 3 );
+   tbbtn.cbSize  = sizeof( TBBUTTONINFO );
+   tbbtn.dwMask  = TBIF_TEXT;
+   tbbtn.pszText = (LPTSTR) hb_parc( 3 );
 
    SendMessage( HWNDparam( 1 ), TB_SETBUTTONINFO, (WPARAM) lpBtn.idCommand, (LPARAM) &tbbtn );
 }

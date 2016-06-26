@@ -1,5 +1,5 @@
 /*
- * $Id: hello.prg,v 1.26 2016-05-22 23:53:20 fyurisich Exp $
+ * $Id: hello.prg,v 1.27 2016-06-26 14:17:00 fyurisich Exp $
  */
 /*
  * ooHG Hello World Demo
@@ -20,8 +20,8 @@ PUblic _OOHG_printlibrary:="MINIPRINT"
 set century on
 
 SET TOOLTIPSTYLE BALLOON
-SET TOOLTIPBACKCOLOR  {255,0,0 }
-SET TOOLTIPFORECOLOR  {0,255,0 }
+SET TOOLTIPBACKCOLOR RED
+SET TOOLTIPFORECOLOR GREEN
 
 DEFINE WINDOW Win_1 OBJ oWnd ;
    AT 0,0 ;
@@ -173,13 +173,13 @@ DEFINE WINDOW Win_1 OBJ oWnd ;
 
    @ 280,200 combobox cmb items { "Uno", "Dos", "Tres" } width 150
 
-   @ 310,240 datepicker DTP value date()
+   @ 310,270 datepicker DTP value date()
 
     @ 513,21 timepicker TMP value time()
 
-   @ 350,240 progressmeter pgm width 120 height 20 value 75
+   @ 350,270 progressmeter pgm width 120 height 20 value 75
 
-   DEFINE WINDOW internal obj ointernal AT 390,240 WIDTH 120 HEIGHT 100 INTERNAL VIRTUAL WIDTH 200 VIRTUAL HEIGHT 150
+   DEFINE WINDOW internal obj ointernal AT 390,270 CLIENTAREA WIDTH 120 HEIGHT 100 INTERNAL VIRTUAL WIDTH 200 VIRTUAL HEIGHT 150
    @ 10, 10 LABEL LabelRed   VALUE "A" WIDTH 50 HEIGHT 100 CENTER BACKCOLOR RED
    @ 10, 60 LABEL LabelGreen VALUE "B" WIDTH 50 HEIGHT 100 CENTER BACKCOLOR GREEN
    @ 10,110 LABEL LabelBlue  VALUE "C" WIDTH 50 HEIGHT 100 CENTER BACKCOLOR BLUE
@@ -230,7 +230,7 @@ oWnd:Btn2:ToolTip := "Graph Print"
 oWnd:Btn2:Action := { || printform( ) }
 
 
-@ 330,510 BUTTON BTN3 PICTURE "RESOURCES\EDIT_NEW.BMP" width 90 height 90
+@ 330,510 BUTTON BTN3 PICTURE "RESOURCES\EDIT_NEW.BMP" width 80 height 80
 oWnd:Btn3:ToolTip :=" Tprint examples"
 oWnd:Btn3:Action := { || test( ) }
 

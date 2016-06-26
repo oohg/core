@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.155 2016-05-22 23:53:22 fyurisich Exp $
+ * $Id: h_controlmisc.prg,v 1.156 2016-06-26 14:17:00 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1275,6 +1275,7 @@ CLASS TControl FROM TWindow
    DATA xOldValue            INIT nil
    DATA OldColor
    DATA OldBackColor
+   DATA oToolTip             INIT Nil
 
    METHOD Row                SETGET
    METHOD Col                SETGET
@@ -1376,19 +1377,23 @@ RETURN ::nHeight
 *------------------------------------------------------------------------------*
 METHOD ToolTip( cToolTip ) CLASS TControl
 *------------------------------------------------------------------------------*
-   IF PCOUNT() > 0
-      IF valtype( cToolTip ) $ "CMB"
+   If PCount() > 0
+      If ValType( cToolTip ) $ "CMB"
          ::cToolTip := cToolTip
-      ELSE
+      Else
          ::cToolTip := ""
-      ENDIF
-      If HB_IsObject( ::Parent:oToolTip )
+      EndIf
+      If HB_IsObject( ::oToolTip )
+         ::oToolTip:Item( ::hWnd, cToolTip )
+      ElseIf HB_IsObject( ::Parent:oToolTip )
          ::Parent:oToolTip:Item( ::hWnd, cToolTip )
       EndIf
-   ENDIF
-RETURN ::cToolTip
+   EndIf
+Return ::cToolTip
 
+*------------------------------------------------------------------------------*
 FUNCTION _OOHG_GetNullName( cName )
+*------------------------------------------------------------------------------*
 STATIC nCtrl := 0
    cName := IF( VALTYPE( cName ) $ "CM", UPPER( ALLTRIM( cName ) ), "0" )
    IF EMPTY( cName ) .OR. cName == "0" .OR. cName == "NONAME" .OR. cName == "NIL" .OR. cName == "NULL" .OR. cName == "NONE"

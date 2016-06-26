@@ -1,5 +1,5 @@
 /*
- * $Id: bostaurus.prg,v 1.2 2016-05-22 23:53:21 fyurisich Exp $
+ * $Id: bostaurus.prg,v 1.3 2016-06-26 14:17:00 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -769,25 +769,29 @@ IsDelete_hBitmap_Original
 HBITMAP bt_bmp_convert_to_24bpp( HBITMAP hBitmap_Original, BOOL IsDelete_hBitmap_Original )
 {
    HDC     memDC1, memDC2;
-   HBITMAP hBitmap_New;
+   HBITMAP hBitmap_New, hPrevious1, hPrevious2;
    BITMAP  bm;
 
    GetObject( hBitmap_Original, sizeof( BITMAP ), (LPBYTE) &bm );
    hBitmap_New = bt_bmp_create_24bpp( bm.bmWidth, bm.bmHeight );
 
    memDC1 = CreateCompatibleDC( NULL );
-   SelectObject( memDC1, hBitmap_Original );
+   hPrevious1 = SelectObject( memDC1, hBitmap_Original );
 
    memDC2 = CreateCompatibleDC( NULL );
-   SelectObject( memDC2, hBitmap_New );
+   hPrevious2 = SelectObject( memDC2, hBitmap_New );
 
    StretchBlt( memDC2, 0, 0, bm.bmWidth, bm.bmHeight, memDC1, 0, 0, bm.bmWidth, bm.bmHeight, SRCCOPY );
 
+   SelectObject( memDC1, hPrevious1 );
    DeleteDC( memDC1 );
+   SelectObject( memDC2, hPrevious2 );
    DeleteDC( memDC2 );
 
    if( IsDelete_hBitmap_Original )
-       DeleteObject( hBitmap_Original );
+   {
+      DeleteObject( hBitmap_Original );
+   }
 
    return hBitmap_New;
 }
@@ -872,7 +876,7 @@ HBITMAP bt_LoadOLEPicture( TCHAR *FileName, TCHAR *TypePictureResource, BOOL bCo
 {
    IStream  *iStream;
    IPicture *iPicture;
-   HBITMAP  hBitmap;
+   HBITMAP  hBitmap, hPrevious;
    HDC      memDC;
    HGLOBAL  hGlobalAlloc;
    LONG     hmWidth, hmHeight;
@@ -922,12 +926,13 @@ HBITMAP bt_LoadOLEPicture( TCHAR *FileName, TCHAR *TypePictureResource, BOOL bCo
    pxHeight = bt_LOGHIMETRIC_TO_PIXEL (hmHeight, GetDeviceCaps (memDC, LOGPIXELSY));
 
    hBitmap = bt_bmp_create_24bpp( pxWidth, pxHeight );
-   SelectObject( memDC, hBitmap );
+   hPrevious = SelectObject( memDC, hBitmap );
 
    iPicture->lpVtbl->Render( iPicture, memDC, 0, 0, pxWidth, pxHeight, 0, hmHeight, hmWidth, -hmHeight, NULL );
    iPicture->lpVtbl->Release( iPicture );
    iStream->lpVtbl->Release( iStream );
 
+   SelectObject( memDC, hPrevious );
    DeleteDC( memDC );
    GlobalFree( hGlobalAlloc );
 

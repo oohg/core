@@ -1,5 +1,5 @@
 /*
- * $Id: h_menu.prg,v 1.40 2016-05-22 23:53:22 fyurisich Exp $
+ * $Id: h_menu.prg,v 1.41 2016-06-26 14:17:00 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -82,13 +82,13 @@
 
  Parts of this project are based upon:
 
-	"Harbour GUI framework for Win32"
- 	Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- 	Copyright 2001 Antonio Linares <alinares@fivetech.com>
-	www - http://www.harbour-project.org
+   "Harbour GUI framework for Win32"
+   Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
+   Copyright 2001 Antonio Linares <alinares@fivetech.com>
+   www - http://www.harbour-project.org
 
-	"Harbour Project"
-	Copyright 1999-2003, http://www.harbour-project.org/
+   "Harbour Project"
+   Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
 #include "oohg.ch"
@@ -727,7 +727,7 @@ TODO: detect AERO and set background color accordingly
    int iAttributes;
    int nWidth = 0;
    int nHeight = 0;
-   
+
    if( hb_parl( 6 ) )
    {
       iAttributes = LR_LOADMAP3DCOLORS | LR_LOADTRANSPARENT;
@@ -750,7 +750,7 @@ TODO: detect AERO and set background color accordingly
    himage2 = (HBITMAP) _OOHG_LoadImage( ( char * ) hb_parc( 4 ), iAttributes, nWidth, nHeight, NULL, GetSysColor( COLOR_MENU ), FALSE );
 
    SetMenuItemBitmaps( hMenu, hb_parni( 2 ), MF_BYCOMMAND, himage1, himage2 );
-   
+
    hb_reta( 2 );
    HB_STORNL( ( LONG ) himage1, -1, 1 );
    HB_STORNL( ( LONG ) himage2, -1, 2 );

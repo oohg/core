@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.66 2016-05-26 20:56:18 fyurisich Exp $
+ * $Id: h_form.prg,v 1.67 2016-06-26 14:17:00 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -247,8 +247,15 @@ CLASS TForm FROM TWindow
    METHOD DefWindowProc(nMsg,wParam,lParam)       BLOCK { |Self,nMsg,wParam,lParam| IF( ValidHandler( ::hWndClient ), ;
                                                   DefFrameProc( ::hWnd, ::hWndClient, nMsg, wParam, lParam ) , ;
                                                   DefWindowProc( ::hWnd, nMsg, wParam, lParam ) ) }
-   METHOD ToolTipWidth       SETGET
-   METHOD ToolTipMultiLine   SETGET
+
+   METHOD ToolTipWidth( nWidth )          BLOCK { |Self, nWidth | ::oToolTip:WindowWidth( nWidth ) }
+   METHOD ToolTipMultiLine( lMultiLine )  BLOCK { |Self,lMultiLine| ::oToolTip:MultiLine( lMultiLine ) }
+   METHOD ToolTipAutoPopTime( nMilliSec ) BLOCK { |Self,nMilliSec| ::oToolTip:AutoPopTime( nMilliSec ) }
+   METHOD ToolTipInitialTime( nMilliSec ) BLOCK { |Self,nMilliSec| ::oToolTip:InitialTime( nMilliSec ) }
+   METHOD ToolTipResetDelays( nMilliSec ) BLOCK { |Self,nMilliSec| ::oToolTip:ResetDelays( nMilliSec ) }
+   METHOD ToolTipReshowTime( nMilliSec )  BLOCK { |Self,nMilliSec| ::oToolTip:ReshowTime( nMilliSec ) }
+   METHOD ToolTipIcon( nIcon )            BLOCK { |Self,nIcon| ::oToolTip:Icon( nIcon ) }
+   METHOD ToolTipTitle( cTitle )          BLOCK { |Self,cTitle| ::oToolTip:Title( cTitle ) }
 
    METHOD getWindowState()
 
@@ -690,22 +697,6 @@ METHOD RefreshData() CLASS TForm
    EndIf
    AEVAL( ::aControls, { |o| If( o:Container == nil, o:RefreshData(), ) } )
 Return nil
-
-*-----------------------------------------------------------------------------*
-METHOD ToolTipWidth( nWidth ) CLASS TForm
-*-----------------------------------------------------------------------------*
-   If HB_IsNumeric( nWidth )
-      ::oToolTip:WindowWidth := nWidth
-   EndIf
-Return ::oToolTip:WindowWidth
-
-*-----------------------------------------------------------------------------*
-METHOD ToolTipMultiLine( lMultiLine ) CLASS TForm
-*-----------------------------------------------------------------------------*
-   If HB_IsLogical( lMultiLine )
-      ::oToolTip:MultiLine := lMultiLine
-   EndIf
-Return ::oToolTip:MultiLine
 
 *-----------------------------------------------------------------------------*
 METHOD SetActivationFocus() CLASS TForm

@@ -1,11 +1,62 @@
 /*
- * $Id: ChangeLog,v 1.1586 2016-06-24 02:46:46 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1587 2016-06-26 14:17:00 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+? fmt.bat
+
+2016-06-26 11:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     ! Typo.
+   * include/i_tooltip.ch
+     + SET TOOLTIPCLOSE, SET TOOLTIP CLOSE, SET TOOLTIPSTYLE CLOSE
+       SET TOOLTIPSTYLE NOCLOSE and SET TOOLTIPMULTILINE.
+   * include/i_windefs.ch
+     + TVM_SETTOOLTIPS              
+     ! Typo.
+   * include/oohg.h
+     + _OOHG_ReplaceColor declaration.
+   * manual/OVERVIEW.HTM
+     + OOHG image.
+   * manual/Changelog.htm
+     * Updated.
+   + manual/images/oohg.bmp
+   * samples/oohg/hello.prg
+     * Position of some controls to avoid overlapping.
+   * source/bostaurus.prg
+     ! Memory leaks.
+   * source/c_image.c
+     + _OOHG_ReplaceColor C and PRG functions.
+   * source/h_controlmisc.prg
+     + DATA oToolTip to TControl class.
+     * Method ToolTip uses the control's oToolTip if it's defined.
+       If not, uses the parent form's oToolTip.
+   * source/h_form.prg
+     + Methods ToolTipAutoPopTime, ToolTipInitialTime, ToolTipResetDelays,
+       ToolTipReshowTime, ToolTipIcon and ToolTipTitle.
+     * Methods ToolTipWidth and ToolTipMultiLine are now defined as BLOCK.
+   * source/h_menu.prg
+     * Some tabs removed.
+   * source/h_toolbar.prg
+     - DATA oToolTip from TToolBar class.
+     * Format.
+     % Variables initialization.
+     * ToolTip handling.
+   * source/h_tooltip.prg
+     + Balloon and close parameter to method Define.
+     + Function _SetToolTipClose.
+     + Methods Icon and Title.
+     + Datas cIcon, nIcon and cTitle.
+     ! SET TOOLTIPBACKCOLOR and SET TOOLTIPFORECOLOR.
+     + Functions TToolTip_SetIconAndTitle, TToolTip_GetIcon and
+       TToolTip_GetTitle.
+   * source/h_tree.prg
+     - DATA oToolTip from TTree class.
+     * ToolTip handling. TTree() now uses a TToolTip() control instead
+       of default tooltip.
 
 2016-06-23 23:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * manual/Changelog.htm
@@ -1078,7 +1129,7 @@
      + TB_SETTOOLTIPS.
    * source/h_toolbar.prg
      + DATA oToolTip.
-     * TToolBar() now uses a TToolTip() controls instead of default
+     * TToolBar() now uses a TToolTip() control instead of default
        tooltip.
      - TBSTYLE_TOOLTIPS from toolbar's initial style.
      ! ToolBar's tooltips are not displayed in balloon style.

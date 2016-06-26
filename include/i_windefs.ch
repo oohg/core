@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.70 2016-05-22 23:52:23 fyurisich Exp $
+ * $Id: i_windefs.ch,v 1.71 2016-06-26 14:17:00 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -468,6 +468,7 @@ TREEVIEW CONTROL
 #define TVM_GETNEXTITEM               ( TV_FIRST + 10 )
 #define TVM_SELECTITEM                ( TV_FIRST + 11 )
 #define TVM_GETEDITCONTROL            ( TV_FIRST + 15 )
+#define TVM_SETTOOLTIPS               ( TV_FIRST + 24 )
 #define TVSIL_NORMAL                  0
 #define TVSIL_STATE                   2
 #define TVE_COLLAPSE                  1
@@ -629,7 +630,7 @@ SYSTEM METRICS
 #define SM_CYFULLSCREEN               17
 
 /*---------------------------------------------------------------------------
-TOOTIP CONTROL
+TOOLTIP CONTROL
 ---------------------------------------------------------------------------*/
 
 #define TTM_SETTIPBKCOLOR             ( WM_USER + 19 )
