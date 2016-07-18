@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.300 2016-06-24 02:43:16 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.301 2016-07-18 16:03:14 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -3250,7 +3250,7 @@ Local aGrid
     * This method may change the selected item's number if the new item is
     * inserted before or at the position of the selected item. For example:
     * ::FirstSelectedItem is 10, after inserting a new item at 5
-    * ::FirestSelecteItem is 11. This is equivalent to ::Value == 10
+    * ::FirstSelectedItem is 11. This is equivalent to ::Value == 10
     * before insertion and ::Value == 11 after.
     * This method does not trigger ::DoChange() because the selected item
     * is not changed.
@@ -8084,6 +8084,7 @@ HB_FUNC( LISTVIEW_ADDCOLUMN )
    LV_COLUMN COL;
    int iColumn = hb_parni( 2 ) - 1;
    HWND hwnd = HWNDparam( 1 );
+   int iWidth;
 
    if( iColumn < 0 )
    {
@@ -8104,7 +8105,13 @@ HB_FUNC( LISTVIEW_ADDCOLUMN )
       ListView_DeleteColumn( hwnd, 0 );
    }
 
-   if( ! hb_parl( 6 ) )
+   if( hb_parl( 6 ) )
+   {
+      iWidth = ListView_GetColumnWidth( hwnd, iColumn ) + 1;
+      ListView_SetColumnWidth( hwnd, iColumn, iWidth );
+      ListView_SetColumnWidth( hwnd, iColumn, iWidth - 1 );
+   }
+   else
    {
       SendMessage( hwnd, LVM_DELETEALLITEMS, 0, 0 );
       RedrawWindow( hwnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
