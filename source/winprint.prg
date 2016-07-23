@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.63 2016-07-23 16:27:17 fyurisich Exp $
+ * $Id: winprint.prg,v 1.64 2016-07-23 16:38:29 fyurisich Exp $
  */
 /*----------------------------------------------------------------------------
  * ooHG source code:
@@ -1707,7 +1707,7 @@ local i, pi, cLang, oHBPreview
                     "Páginas:", ;
                     "Zoom Máximo/Mínimo", ;
                     "Opciones de Impresión", ;
-                    "Imprimir De", ;
+                    "Imprimir de", ;
                     "a", ;
                     "Copias", ;
                     "Imprimir rango", ;
