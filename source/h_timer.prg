@@ -1,5 +1,5 @@
 /*
- * $Id: h_timer.prg,v 1.10 2016-05-22 23:53:23 fyurisich Exp $
+ * $Id: h_timer.prg,v 1.11 2016-07-23 16:27:17 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -154,15 +154,28 @@ RETURN ::Super:Release()
 EXTERN InitTimer, KillTimer
 
 #pragma BEGINDUMP
-#ifndef _WIN32_IE
-   #define _WIN32_IE      0x0500
-#endif
-#define HB_OS_WIN_32_USED
-#ifndef _WIN32_WINNT
-   #define _WIN32_WINNT   0x0400
-#endif
-#include <shlobj.h>
 
+#ifndef HB_OS_WIN_32_USED
+   #define HB_OS_WIN_32_USED
+#endif
+
+#ifndef _WIN32_IE
+   #define _WIN32_IE 0x0500
+#endif
+#if ( _WIN32_IE < 0x0500 )
+   #undef _WIN32_IE
+   #define _WIN32_IE 0x0500
+#endif
+
+#ifndef _WIN32_WINNT
+   #define _WIN32_WINNT 0x0400
+#endif
+#if ( _WIN32_WINNT < 0x0400 )
+   #undef _WIN32_WINNT
+   #define _WIN32_WINNT 0x0400
+#endif
+
+#include <shlobj.h>
 #include <windows.h>
 #include <commctrl.h>
 #include "hbapi.h"

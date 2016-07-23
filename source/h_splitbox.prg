@@ -1,5 +1,5 @@
 /*
- * $Id: h_splitbox.prg,v 1.22 2016-05-22 23:53:23 fyurisich Exp $
+ * $Id: h_splitbox.prg,v 1.23 2016-07-23 16:27:17 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -253,15 +253,25 @@ EXTERN SetSplitBoxItem
 
 #pragma BEGINDUMP
 
-#ifdef _WIN32_IE
-   #undef _WIN32_IE
+#ifndef HB_OS_WIN_32_USED
+   #define HB_OS_WIN_32_USED
 #endif
-#define _WIN32_IE 0x0400
 
-#ifdef _WIN32_WINNT
-   #undef _WIN32_WINNT
+#ifndef _WIN32_IE
+   #define _WIN32_IE 0x0400
 #endif
-#define _WIN32_WINNT 0x0400
+#if ( _WIN32_IE < 0x0400 )
+   #undef _WIN32_IE
+   #define _WIN32_IE 0x0400
+#endif
+
+#ifndef _WIN32_WINNT
+   #define _WIN32_WINNT 0x0400
+#endif
+#if ( _WIN32_WINNT < 0x0400 )
+   #undef _WIN32_WINNT
+   #define _WIN32_WINNT 0x0400
+#endif
 
 #include <hbapi.h>
 #include <windows.h>

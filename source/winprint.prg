@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.62 2016-05-22 23:53:23 fyurisich Exp $
+ * $Id: winprint.prg,v 1.63 2016-07-23 16:27:17 fyurisich Exp $
  */
 /*----------------------------------------------------------------------------
  * ooHG source code:
@@ -87,8 +87,8 @@
 
 /* Background Modes */
 
-#define TRANSPARENT         1
-#define OPAQUE              2
+#define BKMODE_TRANSPARENT  1
+#define BKMODE_OPAQUE       2
 #define BKMODE_LAST         2
 
 CLASS HBPrinter
@@ -111,7 +111,7 @@ CLASS HBPrinter
    DATA    DOCNAME INIT "HBPRINTER"
    DATA    TextColor INIT 0
    DATA    BkColor INIT 0xFFFFFF
-   DATA    BkMode INIT 1         &&TRANSPARENT
+   DATA    BkMode INIT BKMODE_TRANSPARENT
    DATA    PolyFillMode INIT 1
    DATA    Cargo INIT {0,0,0,0,0,0,0,0,0,0}
    DATA    FONTS INIT {{},{},0,{}}
@@ -346,12 +346,12 @@ return Self
 
 METHOD Startpage() CLASS HBPrinter
   if ::PreviewMode
-	if ::InMemory
-		::hDC:=rr_createmfile()
-	else
-		::hDC:=rr_createfile( ::BaseDoc + alltrim(strzero(::CurPage,4))+'.emf')
-		::CurPage := ::CurPage + 1
-	end
+   if ::InMemory
+      ::hDC:=rr_createmfile()
+   else
+      ::hDC:=rr_createfile( ::BaseDoc + alltrim(strzero(::CurPage,4))+'.emf')
+      ::CurPage := ::CurPage + 1
+   end
   else
     rr_Startpage()
   endif
@@ -369,12 +369,12 @@ return self
 
 METHOD Endpage() CLASS HBPrinter
   if ::PreviewMode
-	if ::InMemory
-		aadd(::MetaFiles,{rr_closemfile(),::DEVCAPS[1],::DEVCAPS[2],::DEVCAPS[3],::DEVCAPS[4],::DEVCAPS[15],::DEVCAPS[17]})
-	else
-		rr_closefile()
-		aadd(::MetaFiles,{::BaseDoc + strzero(::CurPage-1,4)+'.emf',::DEVCAPS[1],::DEVCAPS[2],::DEVCAPS[3],::DEVCAPS[4],::DEVCAPS[15],::DEVCAPS[17]})
-	end
+   if ::InMemory
+      aadd(::MetaFiles,{rr_closemfile(),::DEVCAPS[1],::DEVCAPS[2],::DEVCAPS[3],::DEVCAPS[4],::DEVCAPS[15],::DEVCAPS[17]})
+   else
+      rr_closefile()
+      aadd(::MetaFiles,{::BaseDoc + strzero(::CurPage-1,4)+'.emf',::DEVCAPS[1],::DEVCAPS[2],::DEVCAPS[3],::DEVCAPS[4],::DEVCAPS[15],::DEVCAPS[17]})
+   end
   else
      rr_endpage()
   endif
@@ -1128,12 +1128,12 @@ METHOD End() CLASS HBPrinter
 local n,l
   if ::PreviewMode
     ::Metafiles:={}
-	if !::InMemory
-	        l:=::curpage-1
-		for n := 1 to l
-		    ferase(::BaseDoc + alltrim(strzero(n,4))+'.emf')
-	        next
-	endif
+   if !::InMemory
+           l:=::curpage-1
+      for n := 1 to l
+          ferase(::BaseDoc + alltrim(strzero(n,4))+'.emf')
+           next
+   endif
   endif
   if ::HDCRef!=0
       ef_resetprinter()
@@ -1606,272 +1606,273 @@ return self
 **********************************
 METHOD Preview() CLASS HBPrinter
 **********************************
-local i, pi, wl, oHBPreview
+local i, pi, cLang, oHBPreview
 
-   ::aopisy:=;
-{"Preview",;
-"&Cancel",;
-"&Print",;
-"&Save",;
-"&First",;
-"P&revious",;
-"&Next",;
-"&Last",;
-"Zoom In",;
-"Zoom Out",;
-"&Options",;
-"Go To Page:",;
-"Page preview ",;
-"Thumbnails preview",;
-"Page",;
-"Print only current page",;
-"Pages:",;
-"No more zoom !",;
-"Print options",;
-"Print from",;
-"to",;
-"Copies",;
-"Print Range",;
-"All from range",;
-"Odd only",;
-"Even only",;
-"All but odd first",;
-"All but even first",;
-"Printing ....",;
-"Waiting for paper change..."}
+   ::aopisy := { "Preview", ;
+                 "&Cancel", ;
+                 "&Print", ;
+                 "&Save", ;
+                 "&First", ;
+                 "P&revious", ;
+                 "&Next", ;
+                 "&Last", ;
+                 "Zoom In", ;
+                 "Zoom Out", ;
+                 "&Options", ;
+                 "Go To Page:", ;
+                 "Page preview ", ;
+                 "Thumbnails preview", ;
+                 "Page", ;
+                 "Print only current page", ;
+                 "Pages:", ;
+                 "No more zoom !", ;
+                 "Print options", ;
+                 "Print from", ;
+                 "to", ;
+                 "Copies", ;
+                 "Print Range", ;
+                 "All from range", ;
+                 "Odd only", ;
+                 "Even only", ;
+                 "All but odd first", ;
+                 "All but even first", ;
+                 "Printing ....", ;
+                 "Waiting for paper change..." }
 
-   ::iloscstron:=len(::metafiles)
-   ::ngroup:=-1
-   ::page:=1
-   ::ath:={}
-   ::ahs:={}
-   ::azoom:={0,0,0,0}
-   ::scale:=::PREVIEWSCALE
-   ::npages:={}
+   ::iloscstron := len( ::metafiles )
+   ::ngroup     := -1
+   ::page       := 1
+   ::ath        := {}
+   ::ahs        := {}
+   ::azoom      := { 0, 0, 0, 0 }
+   ::scale      := ::PREVIEWSCALE
+   ::npages     := {}
 
-#ifdef __XHARBOUR__
-   wl:=set(100)
-#else
-   wl:=hb_langselect()
-#endif
+   // [x]Harbour's default language
+   cLang := Set( _SET_LANGUAGE )
+   IF ( i := At( ".", cLang ) ) > 0
+      cLang := LEFT( cLang, i - 1 )
+   ENDIF
+   cLang := UPPER( ALLTRIM( cLang ) )
+
    do case
-      case wl="EN"
-::aopisy:={"Preview";
-,"&Cancel";
-,"&Print";
-,"&Save";
-,"&First";
-,"P&revious";
-,"&Next";
-,"&Last";
-,"Zoom In";
-,"Zoom Out";
-,"&Options";
-,"Go To Page:";
-,"Page preview ";
-,"Thumbnails preview";
-,"Page";
-,"Print only actual page";
-,"Pages:";
-,"No more zoom !";
-,"Print options";
-,"Print from";
-,"to";
-,"Copies";
-,"Print Range";
-,"All from range";
-,"Odd only";
-,"Even only";
-,"All but odd first";
-,"All but even first";
-,"Printing ....";
-,"Waiting for paper change..."}
-  case wl="ES"
-::aopisy:={"Vista Previa";
-,"&Salir";
-,"&Imprimir";
-,"&Guardar";
-,"&Primera";
-,"&Anterior";
-,"&Siguiente";
-,"&Ultima";
-,"Zoom +";
-,"Zoom -";
-,"&Opciones";
-,"Pag.:";
-,"Pagina ";
-,"Miniaturas";
-,"Pag.";
-,"Imprimir solo pag. actual";
-,"Paginas:";
-,"Zoom Maximo/Minimo";
-,"Opciones de Impresion";
-,"Imprimir De";
-,"a";
-,"Copias";
-,"Imprimir rango";
-,"Todo a partir de";
-,"Solo impares";
-,"Solo pares";
-,"Todo (impares primero)";
-,"Todo (pares primero)";
-,"Imprimiendo ....";
-,"Esperando cambio de papel..."}
-  case wl="IT"
-::aopisy:={"Anteprima";
-,"&Cancella";
-,"S&tampa";
-,"&Salva";
-,"&Primo";
-,"&Indietro";
-,"&Avanti";
-,"&Ultimo";
-,"Zoom In";
-,"Zoom Out";
-,"&Opzioni";
-,"Pagina:";
-,"Pagina anteprima ";
-,"Miniatura Anteprima";
-,"Pagina";
-,"Stampa solo pagina attuale";
-,"Pagine:";
-,"Limite zoom !";
-,"Opzioni Stampa";
-,"Stampa da";
-,"a";
-,"Copie";
-,"Range Stampa";
-,"Tutte";
-,"Solo dispari";
-,"Solo pari";
-,"Tutte iniziando dispari";
-,"Tutte iniziando pari";
-,"Stampa in corso ....";
-,"Attendere cambio carta..."}
-case wl="PLWIN"
-::aopisy:={"Podgl¹d";
-,"&Rezygnuj";
-,"&Drukuj";
-,"Zapisz";
-,"Pierwsza";
-,"Poprzednia";
-,"Nastêpna";
-,"Ostatnia";
-,"Powiêksz";
-,"Pomniejsz";
-,"Opc&je";
-,"IdŸ do strony:";
-,"Podgl¹d strony";
-,"Podgl¹d miniaturek";
-,"Strona";
-,"Drukuj aktualn¹ stronê";
-,"Stron:";
-,"Nie mozna wiêcej !";
-,"Opcje drukowania";
-,"Drukuj od";
-,"do";
-,"Kopii";
-,"Zakres";
-,"Wszystkie z zakresu";
-,"Tylko nieparzyste";
-,"Tylko parzyste";
-,"Najpierw nieparzyste";
-,"Najpierw parzyste";
-,"Drukowanie ....";
-,"Czekam na zmiane papieru..."}
-case wl="PT"
-::aopisy:={"Inspeção Prévia";
-,"&Cancelar";
-,"&Imprimir";
-,"&Salvar";
-,"&Primera";
-,"&Anterior";
-,"Próximo";
-,"&Último";
-,"Zoom +";
-,"Zoom -";
-,"&Opções";
-,"Pag.:";
-,"Página ";
-,"Miniaturas";
-,"Pag.";
-,"Imprimir somente a pag. atual";
-,"Páginas:";
-,"Zoom Máximo/Minimo";
-,"Opções de Impressão";
-,"Imprimir de";
-,"Esta";
-,"Cópias";
-,"Imprimir rango";
-,"Tudo a partir desta";
-,"Só Ímpares";
-,"Só Pares";
-,"Todas as Ímpares Primeiro";
-,"Todas Pares primero";
-,"Imprimindo ....";
-,"Esperando por papel..."}
-case wl="DEWIN"
-::aopisy:={"Vorschau";
-,"&Abbruch";
-,"&Drucken";
-,"&Speichern";
-,"&Erste";
-,"&Vorige";
-,"&Nächste";
-,"&Letzte";
-,"Ver&größern";
-,"Ver&kleinern";
-,"&Optionen";
-,"Seite:";
-,"Seitenvorschau";
-,"Überblick";
-,"Seite";
-,"Aktuelle Seite drucken";
-,"Seiten:";
-,"Maximum erreicht!";
-,"Druckeroptionen";
-,"Drucke von";
-,"bis";
-,"Anzahl";
-,"Bereich";
-,"Alle Seiten";
-,"Ungerade Seiten";
-,"Gerade Seiten";
-,"Alles, ungerade Seiten zuerst";
-,"Alles, gerade Seiten zuerst";
-,"Druckt ....";
-,"Bitte Papier nachlegen..."}
-case wl='FR'
-::aopisy:={"Prévisualisation";
-,"&Abandonner";
-,"&Imprimer";
-,"&Sauver";
-,"&Premier";
-,"P&récédent";
-,"&Suivant";
-,"&Dernier";
-,"Zoom +";
-,"Zoom -";
-,"&Options";
-,"Aller à la page:";
-,"Aperçu de la page";
-,"Aperçu affichettes";
-,"Page";
-,"Imprimer la page en cours";
-,"Pages:";
-,"Plus de zoom !";
-,"Options d'impression";
-,"Imprimer de";
-,"à";
-,"Copies";
-,"Intervalle d'impression";
-,"Tout dans l'intervalle";
-,"Impair seulement";
-,"Pair seulement";
-,"Tout mais impair d'abord";
-,"Tout mais pair d'abord";
-,"Impression ....";
-,"Attente de changement de papier..."}
+   case cLang == "EN"
+      ::aopisy := { "Preview", ;
+                    "&Cancel", ;
+                    "&Print", ;
+                    "&Save", ;
+                    "&First", ;
+                    "P&revious", ;
+                    "&Next", ;
+                    "&Last", ;
+                    "Zoom In", ;
+                    "Zoom Out", ;
+                    "&Options", ;
+                    "Go to Page:", ;
+                    "Page preview ", ;
+                    "Thumbnails preview", ;
+                    "Page", ;
+                    "Print only actual page", ;
+                    "Pages:", ;
+                    "No more zoom !", ;
+                    "Print options", ;
+                    "Print from", ;
+                    "to", ;
+                    "Copies", ;
+                    "Print Range", ;
+                    "All from range", ;
+                    "Odd only", ;
+                    "Even only", ;
+                    "All but odd first", ;
+                    "All but even first", ;
+                    "Printing ....", ;
+                    "Waiting for paper change..." }
+   case cLang == "ES"
+      ::aopisy := { "Vista Previa", ;
+                    "&Salir", ;
+                    "&Imprimir", ;
+                    "&Guardar", ;
+                    "&Primera", ;
+                    "&Anterior", ;
+                    "&Siguiente", ;
+                    "&Última", ;
+                    "Zoom +", ;
+                    "Zoom -", ;
+                    "&Opciones", ;
+                    "Ir a Página:", ;
+                    "Página ", ;
+                    "Miniaturas", ;
+                    "Página", ;
+                    "Imprimir página actual", ;
+                    "Páginas:", ;
+                    "Zoom Máximo/Mínimo", ;
+                    "Opciones de Impresión", ;
+                    "Imprimir De", ;
+                    "a", ;
+                    "Copias", ;
+                    "Imprimir rango", ;
+                    "Todo a partir de", ;
+                    "Solo impares", ;
+                    "Solo pares", ;
+                    "Todo (impares primero)", ;
+                    "Todo (pares primero)", ;
+                    "Imprimiendo ....", ;
+                    "Esperando cambio de papel..." }
+   case cLang == "IT"
+      ::aopisy := { "Anteprima", ;
+                    "&Cancella", ;
+                    "S&tampa", ;
+                    "&Salva", ;
+                    "&Primo", ;
+                    "&Indietro", ;
+                    "&Avanti", ;
+                    "&Ultimo", ;
+                    "Zoom In", ;
+                    "Zoom Out", ;
+                    "&Opzioni", ;
+                    "Pagina:", ;
+                    "Pagina anteprima ", ;
+                    "Miniatura Anteprima", ;
+                    "Pagina", ;
+                    "Stampa solo pagina attuale", ;
+                    "Pagine:", ;
+                    "Limite zoom !", ;
+                    "Opzioni Stampa", ;
+                    "Stampa da", ;
+                    "a", ;
+                    "Copie", ;
+                    "Range Stampa", ;
+                    "Tutte", ;
+                    "Solo dispari", ;
+                    "Solo pari", ;
+                    "Tutte iniziando dispari", ;
+                    "Tutte iniziando pari", ;
+                    "Stampa in corso ....", ;
+                    "Attendere cambio carta..." }
+   case cLang == "PLWIN"
+      ::aopisy := { "Podgl¹d", ;
+                    "&Rezygnuj", ;
+                    "&Drukuj", ;
+                    "Zapisz", ;
+                    "Pierwsza", ;
+                    "Poprzednia", ;
+                    "Nastêpna", ;
+                    "Ostatnia", ;
+                    "Powiêksz", ;
+                    "Pomniejsz", ;
+                    "Opc&je", ;
+                    "IdŸ do strony:", ;
+                    "Podgl¹d strony", ;
+                    "Podgl¹d miniaturek", ;
+                    "Strona", ;
+                    "Drukuj aktualn¹ stronê", ;
+                    "Stron:", ;
+                    "Nie mozna wiêcej !", ;
+                    "Opcje drukowania", ;
+                    "Drukuj od", ;
+                    "do", ;
+                    "Kopii", ;
+                    "Zakres", ;
+                    "Wszystkie z zakresu", ;
+                    "Tylko nieparzyste", ;
+                    "Tylko parzyste", ;
+                    "Najpierw nieparzyste", ;
+                    "Najpierw parzyste", ;
+                    "Drukowanie ....", ;
+                    "Czekam na zmiane papieru..."}
+   case cLang == "PT"
+      ::aopisy := { "Inspeção Prévia", ;
+                    "&Cancelar", ;
+                    "&Imprimir", ;
+                    "&Salvar", ;
+                    "&Primera", ;
+                    "&Anterior", ;
+                    "Próximo", ;
+                    "&Último", ;
+                    "Zoom +", ;
+                    "Zoom -", ;
+                    "&Opções", ;
+                    "Pag.:", ;
+                    "Página ", ;
+                    "Miniaturas", ;
+                    "Pag.", ;
+                    "Imprimir somente a pag. atual", ;
+                    "Páginas:", ;
+                    "Zoom Máximo/Minimo", ;
+                    "Opções de Impressão", ;
+                    "Imprimir de", ;
+                    "Esta", ;
+                    "Cópias", ;
+                    "Imprimir rango", ;
+                    "Tudo a partir desta", ;
+                    "Só Ímpares", ;
+                    "Só Pares", ;
+                    "Todas as Ímpares Primeiro", ;
+                    "Todas Pares primero", ;
+                    "Imprimindo ....", ;
+                    "Esperando por papel..." }
+   case cLang == "DEWIN"
+      ::aopisy := { "Vorschau", ;
+                    "&Abbruch", ;
+                    "&Drucken", ;
+                    "&Speichern", ;
+                    "&Erste", ;
+                    "&Vorige", ;
+                    "&Nächste", ;
+                    "&Letzte", ;
+                    "Ver&größern", ;
+                    "Ver&kleinern", ;
+                    "&Optionen", ;
+                    "Seite:", ;
+                    "Seitenvorschau", ;
+                    "Überblick", ;
+                    "Seite", ;
+                    "Aktuelle Seite drucken", ;
+                    "Seiten:", ;
+                    "Maximum erreicht!", ;
+                    "Druckeroptionen", ;
+                    "Drucke von", ;
+                    "bis", ;
+                    "Anzahl", ;
+                    "Bereich", ;
+                    "Alle Seiten", ;
+                    "Ungerade Seiten", ;
+                    "Gerade Seiten", ;
+                    "Alles ungerade Seiten zuerst", ;
+                    "Alles gerade Seiten zuerst", ;
+                    "Druckt ....", ;
+                    "Bitte Papier nachlegen..." }
+   case cLang == 'FR'
+      ::aopisy := { "Prévisualisation", ;
+                    "&Abandonner", ;
+                    "&Imprimer", ;
+                    "&Sauver", ;
+                    "&Premier", ;
+                    "P&récédent", ;
+                    "&Suivant", ;
+                    "&Dernier", ;
+                    "Zoom +", ;
+                    "Zoom -", ;
+                    "&Options", ;
+                    "Aller à la page:", ;
+                    "Aperçu de la page", ;
+                    "Aperçu affichettes", ;
+                    "Page", ;
+                    "Imprimer la page en cours", ;
+                    "Pages:", ;
+                    "Plus de zoom !", ;
+                    "Options d'impression", ;
+                    "Imprimer de", ;
+                    "à", ;
+                    "Copies", ;
+                    "Intervalle d'impression", ;
+                    "Tout dans l'intervalle", ;
+                    "Impair seulement", ;
+                    "Pair seulement", ;
+                    "Tout mais impair d'abord", ;
+                    "Tout mais pair d'abord", ;
+                    "Impression ....", ;
+                    "Attente de changement de papier..." }
    endcase
 
    if ::nwhattoprint<2
@@ -1928,7 +1929,7 @@ case wl='FR'
 
          END STATUSBAR
 
-               @ 15 ,::ahs[1,6]-150 LABEL prl VALUE ::aopisy[12] WIDTH  80 HEIGHT 18 FONT 'Arial' SIZE 08
+               @ 15, ::ahs[1,6]-150 LABEL prl VALUE ::aopisy[12] WIDTH 80 HEIGHT 18 FONT 'Arial' SIZE 08 TRANSPARENT
                @ 13 ,::ahs[1,6]-77  COMBOBOX combo_1  ITEMS ::npages VALUE 1 WIDTH 58 FONT 'Arial' SIZE  8 ON CHANGE {|| ::page := ::CurPage:=HBPREVIEW.combo_1.value,::PrevShow(),::oHBPreview1:setfocus() }
 
          DEFINE SPLITBOX
@@ -2081,7 +2082,9 @@ Return OKPrint
 
 #pragma BEGINDUMP
 
-#define HB_OS_WIN_32_USED
+#ifndef HB_OS_WIN_32_USED
+   #define HB_OS_WIN_32_USED
+#endif
 
 #ifndef WINVER
    #define WINVER 0x0400
@@ -3037,7 +3040,7 @@ HB_FUNC (RR_CLOSEMFILE)
 
 HB_FUNC (RR_CLOSEFILE)
 {
- 	DeleteEnhMetaFile(CloseEnhMetaFile( hDC ));
+   DeleteEnhMetaFile(CloseEnhMetaFile( hDC ));
 }
 
 
@@ -3745,7 +3748,7 @@ HB_FUNC (RR_PREVIEWFPLAY)
         HDC imgDC = GetWindowDC((HWND) hb_parnl(1));
         HDC tmpDC = CreateCompatibleDC(imgDC);
         HENHMETAFILE hh= GetEnhMetaFile( hb_parc(2) ) ;
-		//SetEnhMetaFileBits((UINT) HB_PARCLEN(2,1), ( BYTE * ) HB_PARC(2,1));
+      //SetEnhMetaFileBits((UINT) HB_PARCLEN(2,1), ( BYTE * ) HB_PARC(2,1));
         HBITMAP himgbmp;
         if (tmpDC==NULL)
            {

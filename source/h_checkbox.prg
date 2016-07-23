@@ -1,5 +1,5 @@
 /*
- * $Id: h_checkbox.prg,v 1.42 2016-05-22 23:53:22 fyurisich Exp $
+ * $Id: h_checkbox.prg,v 1.43 2016-07-23 16:27:16 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -243,16 +243,24 @@ Return ::Super:Events_Notify( wParam, lParam )
 
 #pragma BEGINDUMP
 
-#ifndef _WIN32_IE
-   #define _WIN32_IE      0x0500
-#endif
-
 #ifndef HB_OS_WIN_32_USED
    #define HB_OS_WIN_32_USED
 #endif
 
+#ifndef _WIN32_IE
+   #define _WIN32_IE 0x0500
+#endif
+#if ( _WIN32_IE < 0x0500 )
+   #undef _WIN32_IE
+   #define _WIN32_IE 0x0500
+#endif
+
 #ifndef _WIN32_WINNT
-   #define _WIN32_WINNT   0x0501
+   #define _WIN32_WINNT 0x0501
+#endif
+#if ( _WIN32_WINNT < 0x0501 )
+   #undef _WIN32_WINNT
+   #define _WIN32_WINNT 0x0501
 #endif
 
 #include "hbapi.h"

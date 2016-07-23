@@ -1,5 +1,5 @@
 /*
- * $Id: h_ini.prg,v 1.9 2016-05-22 23:53:22 fyurisich Exp $
+ * $Id: h_ini.prg,v 1.10 2016-07-23 16:27:16 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -239,10 +239,19 @@ RETURN aArray
 EXTERN GETPRIVATEPROFILESTRING, WRITEPRIVATEPROFILESTRING, DELINIENTRY, DELINISECTION
 
 #pragma BEGINDUMP
-#define HB_OS_WIN_32_USED
-#ifndef _WIN32_WINNT
-   #define _WIN32_WINNT   0x0400
+
+#ifndef HB_OS_WIN_32_USED
+   #define HB_OS_WIN_32_USED
 #endif
+
+#ifndef _WIN32_WINNT
+   #define _WIN32_WINNT 0x0400
+#endif
+#if ( _WIN32_WINNT < 0x0400 )
+   #undef _WIN32_WINNT
+   #define _WIN32_WINNT 0x0400
+#endif
+
 #include <windows.h>
 #include <commctrl.h>
 #include "hbapi.h"

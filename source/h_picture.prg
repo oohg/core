@@ -1,5 +1,5 @@
 /*
- * $Id: h_picture.prg,v 1.29 2016-05-22 23:53:22 fyurisich Exp $
+ * $Id: h_picture.prg,v 1.30 2016-07-23 16:27:16 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -364,6 +364,10 @@ RETURN _OOHG_CopyBitmap( ::hImage, 0, 0 )
 #pragma BEGINDUMP
 
 #define s_Super s_TControl
+
+#ifndef HB_OS_WIN_32_USED
+   #define HB_OS_WIN_32_USED
+#endif
 
 #ifndef _WIN32_WINNT
    #define _WIN32_WINNT 0x0500

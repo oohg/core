@@ -1,5 +1,5 @@
 /*
- * $Id: h_slider.prg,v 1.22 2016-05-22 23:53:23 fyurisich Exp $
+ * $Id: h_slider.prg,v 1.23 2016-07-23 16:27:17 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -229,6 +229,10 @@ METHOD Events_Vscroll ( wParam )   CLASS TSlider
 Return NIL
 
 #pragma BEGINDUMP
+
+#ifndef HB_OS_WIN_32_USED
+   #define HB_OS_WIN_32_USED
+#endif
 
 #ifndef _WIN32_IE
    #define _WIN32_IE 0x0400

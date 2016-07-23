@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: CompileRes_mingw.bat,v 1.1 2015-03-18 01:22:30 fyurisich Exp $
+rem $Id: CompileRes_mingw.bat,v 1.2 2016-07-23 16:27:16 fyurisich Exp $
 rem
 
 if /I not "%1%"=="/NOCLS" cls
@@ -16,7 +16,13 @@ echo #define oohgpath %HG_ROOT%\RESOURCES > _oohg_resconfig.h
 if not exist _oohg_resconfig.h goto ERROR3
 if exist oohg.o del oohg.o
 if exist oohg.o goto ERROR4
-%HG_MINGW%\bin\windres -i ooHG.rc -o ooHG.o
+
+set TPATH=%PATH%
+set PATH=%HG_MINGW%\bin
+windres -i ooHG.rc -o ooHG.o
+set PATH=%TPATH%
+set TPATH=
+
 rem Do not delete _oohg_resconfig.h, QAC/QPM need it
 if exist oohg.o echo Done.
 if not exist oohg.o echo Not done.

@@ -1,5 +1,5 @@
 /*
- * $Id: h_tooltip.prg,v 1.13 2016-06-26 14:17:00 fyurisich Exp $
+ * $Id: h_tooltip.prg,v 1.14 2016-07-23 16:27:17 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -371,20 +371,25 @@ RETURN TToolTip_GetTitle( ::hWnd )
 
 #pragma BEGINDUMP
 
-#ifdef _WIN32_IE
+#ifndef HB_OS_WIN_32_USED
+   #define HB_OS_WIN_32_USED
+#endif
+
+#ifndef _WIN32_IE
+   #define _WIN32_IE 0x0500
+#endif
+#if ( _WIN32_IE < 0x0500 )
    #undef _WIN32_IE
+   #define _WIN32_IE 0x0500
 #endif
-#define _WIN32_IE      0x0500
 
-#ifdef HB_OS_WIN_32_USED
-      #undef HB_OS_WIN_32_USED
+#ifndef _WIN32_WINNT
+   #define _WIN32_WINNT 0x0400
 #endif
-#define HB_OS_WIN_32_USED
-
-#ifdef _WIN32_WINNT
-    #undef _WIN32_WINNT
+#if ( _WIN32_WINNT < 0x0400 )
+   #undef _WIN32_WINNT
+   #define _WIN32_WINNT 0x0400
 #endif
-#define _WIN32_WINNT   0x0400
 
 #include <windows.h>
 #include <commctrl.h>
@@ -402,6 +407,10 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 }
 
 typedef int (CALLBACK *CALL_SETWINDOWTHEME )( HWND, LPCWSTR, LPCWSTR );
+
+#ifndef TTS_CLOSE
+   #define TTS_CLOSE 0x80
+#endif
 
 HB_FUNC( INITTOOLTIP )
 {
@@ -606,15 +615,15 @@ HB_FUNC( GETDOUBLECLICKTIME )
 
 #ifndef TTM_GETTITLE
    #define TTM_GETTITLE ( WM_USER + 35 ) // wParam = 0, lParam = TTGETTITLE*
-#endif
 
-typedef struct _TTGETTITLE
-{
-    DWORD dwSize;
-    UINT uTitleBitmap;
-    UINT cch;
-    WCHAR *pszTitle;
-} TTGETTITLE, *PTTGETTITLE;
+   typedef struct _TTGETTITLE
+   {
+       DWORD dwSize;
+       UINT uTitleBitmap;
+       UINT cch;
+       WCHAR *pszTitle;
+   } TTGETTITLE, *PTTGETTITLE;
+#endif
 
 HB_FUNC( TTOOLTIP_GETICON )   // ( hWnd )
 {

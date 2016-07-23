@@ -1,5 +1,5 @@
 /*
- * $Id: h_radio.prg,v 1.47 2016-05-28 00:37:01 fyurisich Exp $
+ * $Id: h_radio.prg,v 1.48 2016-07-23 16:27:17 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -673,16 +673,24 @@ EXTERN InitRadioGroup, InitRadioButton
 
 // #define s_Super s_TLabel
 
-#ifndef _WIN32_IE
-   #define _WIN32_IE      0x0500
-#endif
-
 #ifndef HB_OS_WIN_32_USED
    #define HB_OS_WIN_32_USED
 #endif
 
+#ifndef _WIN32_IE
+   #define _WIN32_IE 0x0500
+#endif
+#if ( _WIN32_IE < 0x0500 )
+   #undef _WIN32_IE
+   #define _WIN32_IE 0x0500
+#endif
+
 #ifndef _WIN32_WINNT
-   #define _WIN32_WINNT   0x0501
+   #define _WIN32_WINNT 0x0501
+#endif
+#if ( _WIN32_WINNT < 0x0501 )
+   #undef _WIN32_WINNT
+   #define _WIN32_WINNT 0x0501
 #endif
 
 #include "hbapi.h"

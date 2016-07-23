@@ -1,5 +1,5 @@
 /*
- * $Id: i_lang.ch,v 1.9 2016-05-22 23:52:23 fyurisich Exp $
+ * $Id: i_lang.ch,v 1.10 2016-07-23 16:27:16 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -77,9 +77,9 @@
 
 #translate SET LANGUAGE TO PORTUGUESE ;
    => ;
-   REQUEST HB_LANG_PT ;;
-   HB_LANGSELECT( "PT" ) ;;
-   InitMessages()
+      REQUEST HB_LANG_PT ;;
+      HB_LANGSELECT( "PT" ) ;;
+      InitMessages()
 
 #translate SET LANGUAGE TO GERMAN ;
    => ;

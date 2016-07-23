@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.67 2016-06-26 14:17:00 fyurisich Exp $
+ * $Id: h_form.prg,v 1.68 2016-07-23 16:27:16 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -116,6 +116,10 @@ STATIC _OOHG_ActiveModal := {}       // Modal windows' stack
 STATIC _OOHG_ActiveForm := {}        // Forms under creation
 
 #pragma BEGINDUMP
+
+#ifndef HB_OS_WIN_32_USED
+   #define HB_OS_WIN_32_USED
+#endif
 
 #ifndef WINVER
    #define WINVER 0x0500

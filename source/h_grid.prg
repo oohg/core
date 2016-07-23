@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.301 2016-07-18 16:03:14 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.302 2016-07-23 16:27:16 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -6867,6 +6867,10 @@ EXTERN ListView_SetColumnWidth, _OOHG_GridArrayWidths, ListView_AddColumn, ListV
 EXTERN GetGridVKey, TGrid_Notify_CustomDraw
 
 #pragma BEGINDUMP
+
+#ifndef HB_OS_WIN_32_USED
+   #define HB_OS_WIN_32_USED
+#endif
 
 #ifndef WINVER
    #define WINVER 0x0500

@@ -1,5 +1,5 @@
 /*
- * $Id: h_scrollbutton.prg,v 1.5 2016-05-22 23:53:23 fyurisich Exp $
+ * $Id: h_scrollbutton.prg,v 1.6 2016-07-23 16:27:17 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -126,10 +126,11 @@ Return Self
 EXTERN INITVSCROLLBARBUTTON
 
 #pragma BEGINDUMP
+
 #include "hbapi.h"
 #include <windows.h>
 #include <commctrl.h>
-#include "../include/oohg.h"
+#include "oohg.h"
 
 static WNDPROC lpfnOldWndProc = 0;
 

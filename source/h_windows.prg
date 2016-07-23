@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.257 2016-05-22 23:53:23 fyurisich Exp $
+ * $Id: h_windows.prg,v 1.258 2016-07-23 16:27:17 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -113,6 +113,10 @@ STATIC _OOHG_bKeyDown := nil         // Application-wide WM_KEYDOWN handler
 
 // C static variables
 #pragma BEGINDUMP
+
+#ifndef HB_OS_WIN_32_USED
+   #define HB_OS_WIN_32_USED
+#endif
 
 #ifndef WINVER
    #define WINVER 0x0500

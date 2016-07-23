@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.152 2016-05-22 23:53:23 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.153 2016-07-23 16:27:17 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -4369,6 +4369,10 @@ Return ::nColPos
 
 
 #pragma BEGINDUMP
+
+#ifndef HB_OS_WIN_32_USED
+   #define HB_OS_WIN_32_USED
+#endif
 
 #ifndef WINVER
    #define WINVER 0x0500

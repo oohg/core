@@ -1,5 +1,5 @@
 /*
- * $Id: h_internal.prg,v 1.11 2016-05-22 23:53:22 fyurisich Exp $
+ * $Id: h_internal.prg,v 1.12 2016-07-23 16:27:16 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -226,6 +226,10 @@ Function _EndInternal()
 Return _OOHG_DeleteFrame( "INTERNAL" )
 
 #pragma BEGINDUMP
+
+#ifndef HB_OS_WIN_32_USED
+   #define HB_OS_WIN_32_USED
+#endif
 
 #ifndef _WIN32_WINNT
    #define _WIN32_WINNT 0x0400

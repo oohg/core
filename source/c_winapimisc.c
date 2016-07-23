@@ -1,5 +1,5 @@
 /*
- * $Id: c_winapimisc.c,v 1.25 2016-05-22 23:53:21 fyurisich Exp $
+ * $Id: c_winapimisc.c,v 1.26 2016-07-23 16:27:16 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -91,9 +91,26 @@
  Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#define _WIN32_IE      0x0500
-#define HB_OS_WIN_32_USED
-#define _WIN32_WINNT   0x0400
+#ifndef _WIN32_IE
+   #define _WIN32_IE 0x0500
+#endif
+#if ( _WIN32_IE < 0x0500 )
+   #undef _WIN32_IE
+   #define _WIN32_IE 0x0500
+#endif
+
+#ifndef HB_OS_WIN_32_USED
+   #define HB_OS_WIN_32_USED
+#endif
+
+#ifndef _WIN32_WINNT
+   #define _WIN32_WINNT 0x0400
+#endif
+#if ( _WIN32_WINNT < 0x0400 )
+   #undef _WIN32_WINNT
+   #define _WIN32_WINNT 0x0400
+#endif
+
 #include <shlobj.h>
 // #include <stdlib.h>
 #ifdef __MINGW32__

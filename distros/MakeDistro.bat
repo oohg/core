@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: MakeDistro.bat,v 1.5 2016-06-19 13:20:50 fyurisich Exp $
+rem $Id: MakeDistro.bat,v 1.6 2016-07-23 16:27:16 fyurisich Exp $
 rem
 cls
 
@@ -64,16 +64,16 @@ echo.
 goto END
 
 :CONTINUE
-rem Change this sets to use different sources for OOHG, Harbour and MinGW
+rem Change these sets to use different sources for OOHG, Harbour and MinGW
 if "%HG_ROOT%" == "" set HG_ROOT=C:\OOHG
 
 if not exist %HG_ROOT%\distros\MakeExclude.txt goto ERROR2
-if /I "%1"=="HB30" set HG_HRB=C:\HB30
-if /I "%1"=="HB30" set HG_MINGW=C:\HB30\COMP\MINGW
-if /I "%1"=="HB32" set HG_HRB=C:\HB32
-if /I "%1"=="HB32" set HG_MINGW=C:\HB32\COMP\MINGW
-if /I "%1"=="XB"   set HG_HRB=C:\XHBCC
-if /I "%1"=="XB"   set HG_BCC=C:\BORLAND\BCC55
+if /I "%1"=="HB30" if "%HG_HRB%" == ""   set HG_HRB=C:\HB30
+if /I "%1"=="HB30" if "%HG_MINGW%" == "" set HG_MINGW=C:\HB30\COMP\MINGW
+if /I "%1"=="HB32" if "%HG_HRB%" == ""   set HG_HRB=C:\HB32
+if /I "%1"=="HB32" if "%HG_MINGW%" == "" set HG_MINGW=C:\HB32\COMP\MINGW
+if /I "%1"=="XB"   if "%HG_HRB%" == ""   set HG_HRB=C:\XHBCC
+if /I "%1"=="XB"   if "%HG_BCC%" == ""   set HG_BCC=C:\BORLAND\BCC55
 
 :DISTRO_FOLDER
 if not "%BASE_DISTRO_DIR%"=="" goto PREPARE
@@ -358,7 +358,6 @@ echo Building libs...
 cd source
 set HG_ROOT=%BASE_DISTRO_DIR%
 set HG_HRB=%BASE_DISTRO_DIR%\xhbcc
-set HG_BCC=C:\BORLAND\BCC55
 set LIB_GUI=lib\xhb\bcc
 set LIB_HRB=lib
 set BIN_HRB=bin

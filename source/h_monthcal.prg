@@ -1,5 +1,5 @@
 /*
- * $Id: h_monthcal.prg,v 1.18 2016-05-22 23:53:22 fyurisich Exp $
+ * $Id: h_monthcal.prg,v 1.19 2016-07-23 16:27:16 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -497,9 +497,26 @@ Return Nil
 
 #pragma BEGINDUMP
 
-#define _WIN32_IE      0x0500
-#define HB_OS_WIN_32_USED
-#define _WIN32_WINNT   0x0400
+#ifndef HB_OS_WIN_32_USED
+   #define HB_OS_WIN_32_USED
+#endif
+
+#ifndef _WIN32_IE
+   #define _WIN32_IE 0x0500
+#endif
+#if ( _WIN32_IE < 0x0500 )
+   #undef _WIN32_IE
+   #define _WIN32_IE 0x0500
+#endif
+
+#ifndef _WIN32_WINNT
+   #define _WIN32_WINNT 0x0400
+#endif
+#if ( _WIN32_WINNT < 0x0400 )
+   #undef _WIN32_WINNT
+   #define _WIN32_WINNT 0x0400
+#endif
+
 #include <shlobj.h>
 
 #include <windows.h>
@@ -877,11 +894,15 @@ enum MonthCalendarView {
    MCMV_MAX = MCMV_CENTURY
 };
 
-typedef struct tagNMVIEWCHANGE {
-  NMHDR nmhdr;
-  DWORD dwOldView;
-  DWORD dwNewView;
-} NMVIEWCHANGE, *LPNMVIEWCHANGE;
+#ifndef MCN_VIEWCHANGE
+   #define MCN_VIEWCHANGE (MCN_FIRST-4)
+
+   typedef struct tagNMVIEWCHANGE {
+     NMHDR nmhdr;
+     DWORD dwOldView;
+     DWORD dwNewView;
+   } NMVIEWCHANGE, *LPNMVIEWCHANGE;
+#endif
 
 HB_FUNC( GETVIEWCHANGEDATA )
 {
@@ -906,74 +927,62 @@ HB_FUNC( GETMONTHRANGE )
    HB_STORDL( hb_dateEncode( sysTime[ 1 ].wYear, sysTime[ 1 ].wMonth, sysTime[ 1 ].wDay ), -1, 3 );
 }
 
-#define BOLDDAY( ds, iDay ) if( iDay > 0 && iDay < 32 )( ds ) |= ( 0x00000001 << ( iDay - 1 ) )
+#ifndef BOLDDAY
+   #define BOLDDAY( ds, iDay ) if( iDay > 0 && iDay < 32 )( ds ) |= ( 0x00000001 << ( iDay - 1 ) )
+#endif
 
 HB_FUNC( C_SETDAYSTATE )
 {
-   int i, j;
-
+   int i, j, iSize;
+   LPMONTHDAYSTATE rgMonths;
    HWND hwnd = HWNDparam( 1 );
-   if( ValidHandler( hwnd ) )
+   int iCount = hb_parni( 2 );
+   PHB_ITEM hArray = hb_param( 3, HB_IT_ARRAY );
+
+   iSize = sizeof( MONTHDAYSTATE ) * iCount;
+   rgMonths = (LPMONTHDAYSTATE) hb_xgrab( iSize );
+   memset( rgMonths, 0, iSize );
+
+   for( i = 0; i < iCount; i ++ )
    {
-      int iCount = hb_parni( 2 );
-      if( iCount > 0 )
+      for( j = 1; j <= 32; j ++ )
       {
-         MONTHDAYSTATE rgMonths[ iCount ];
-         memset( &rgMonths, 0, sizeof( rgMonths ) );
-
-         int iLen = hb_parinfa( 3, 0 );
-         if( iLen == ( iCount * 32 ) )
+         if( hb_arrayGetNI( hArray, i * 32 + j ) == 1 )
          {
-            PHB_ITEM hArray = hb_param( 3, HB_IT_ARRAY );
-
-            for( i = 0; i < iCount; i ++ )
-            {
-               for( j = 1; j <= 32; j ++ )
-               {
-                  if( hb_arrayGetNI( hArray, i * 32 + j ) == 1 )
-                  {
-                     BOLDDAY( rgMonths[ i ], j );
-                  }
-               }
-            }
-
-            SendMessage( HWNDparam( 1 ), MCM_SETDAYSTATE, (WPARAM) iCount, (LPARAM) &rgMonths );
+            BOLDDAY( rgMonths[ i ], j );
          }
       }
    }
+
+   SendMessage( hwnd, MCM_SETDAYSTATE, (WPARAM) iCount, (LPARAM) rgMonths );
+   hb_xfree( rgMonths );
 }
 
 HB_FUNC( C_RETDAYSTATE )
 {
-   int i, j;
-
+   int i, j, iSize;
+   LPMONTHDAYSTATE rgMonths;
    LPNMDAYSTATE pData = (NMDAYSTATE *) hb_parnl( 1 );
-
    int iCount = hb_parni( 2 );
-   if( iCount > 0 )
+   PHB_ITEM hArray = hb_param( 3, HB_IT_ARRAY );
+
+   iSize = sizeof( MONTHDAYSTATE ) * iCount;
+   rgMonths = (LPMONTHDAYSTATE) hb_xgrab( iSize );
+   memset( rgMonths, 0, iSize );
+
+   for( i = 0; i < iCount; i ++ )
    {
-      MONTHDAYSTATE rgMonths[ iCount ];
-      memset( &rgMonths, 0, sizeof( rgMonths ) );
-
-      int iLen = hb_parinfa( 3, 0 );
-      if( iLen == ( iCount * 32 ) )
+      for( j = 1; j <= 32; j ++ )
       {
-         PHB_ITEM hArray = hb_param( 3, HB_IT_ARRAY );
-
-         for( i = 0; i < iCount; i ++ )
+         if( hb_arrayGetNI( hArray, i * 32 + j ) == 1 )
          {
-            for( j = 1; j <= 32; j ++ )
-            {
-               if( hb_arrayGetNI( hArray, i * 32 + j ) == 1 )
-               {
-                  BOLDDAY( rgMonths[ i ], j );
-               }
-            }
+            BOLDDAY( rgMonths[ i ], j );
          }
-
-         pData->prgDayState = (LPMONTHDAYSTATE) &rgMonths;
       }
    }
+
+   pData->prgDayState = rgMonths;
+   hb_xfree( rgMonths );
 }
 
 HB_FUNC( GETDAYSTATEDATA )

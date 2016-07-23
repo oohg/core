@@ -1,5 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.50 2016-05-22 23:53:23 fyurisich Exp $
+ * $Id: h_status.prg,v 1.51 2016-07-23 16:27:17 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -582,6 +582,10 @@ Return _OOHG_ActiveMessageBar:AddItem( Caption, Width, action, ToolTip, icon, cs
 
 
 #pragma BEGINDUMP
+
+#ifndef HB_OS_WIN_32_USED
+   #define HB_OS_WIN_32_USED
+#endif
 
 #ifndef _WIN32_IE
    #define _WIN32_IE 0x0400

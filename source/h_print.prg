@@ -1,5 +1,5 @@
 /*
- * $Id: h_print.prg,v 1.148 2016-05-22 23:53:22 fyurisich Exp $
+ * $Id: h_print.prg,v 1.149 2016-07-23 16:27:16 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -5107,7 +5107,9 @@ RETURN cBarCode
 
 #PRAGMA BEGINDUMP
 
-#define HB_OS_WIN_32_USED
+#ifndef HB_OS_WIN_32_USED
+   #define HB_OS_WIN_32_USED
+#endif
 
 #ifndef WINVER
    #define WINVER 0x0400

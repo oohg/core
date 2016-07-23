@@ -1,5 +1,5 @@
 /*
- * $Id: bostaurus.prg,v 1.3 2016-06-26 14:17:00 fyurisich Exp $
+ * $Id: bostaurus.prg,v 1.4 2016-07-23 16:27:16 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -602,6 +602,10 @@ Return Nil
 
 #pragma BEGINDUMP
 
+#ifndef HB_OS_WIN_32_USED
+   #define HB_OS_WIN_32_USED
+#endif
+
 #ifndef WINVER
    #define WINVER         0x0501   // Win XP
 #endif
@@ -626,7 +630,6 @@ Return Nil
    #define _WIN32_IE 0x0600  
 #endif
 
-#define HB_OS_WIN_32_USED
 #define COBJMACROS
 
 #include <shlobj.h>

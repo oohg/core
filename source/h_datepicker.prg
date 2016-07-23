@@ -1,5 +1,5 @@
 /*
- * $Id: h_datepicker.prg,v 1.24 2016-05-22 23:53:22 fyurisich Exp $
+ * $Id: h_datepicker.prg,v 1.25 2016-07-23 16:27:16 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -263,20 +263,25 @@ Return ::Super:Events_Notify( wParam, lParam )
 
 #pragma BEGINDUMP
 
-#ifdef _WIN32_IE
+#ifndef HB_OS_WIN_32_USED
+   #define HB_OS_WIN_32_USED
+#endif
+
+#ifndef _WIN32_IE
+   #define _WIN32_IE 0x0500
+#endif
+#if ( _WIN32_IE < 0x0500 )
    #undef _WIN32_IE
+   #define _WIN32_IE 0x0500
 #endif
-#define _WIN32_IE      0x0500
 
-#ifdef HB_OS_WIN_32_USED
-   #undef HB_OS_WIN_32_USED
+#ifndef _WIN32_WINNT
+   #define _WIN32_WINNT 0x0400
 #endif
-#define HB_OS_WIN_32_USED
-
-#ifdef _WIN32_WINNT
+#if ( _WIN32_WINNT < 0x0400 )
    #undef _WIN32_WINNT
+   #define _WIN32_WINNT 0x0400
 #endif
-#define _WIN32_WINNT   0x0400
 
 #include <shlobj.h>
 #include <windows.h>

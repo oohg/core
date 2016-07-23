@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.76 2016-05-22 23:53:21 fyurisich Exp $
+ * $Id: h_button.prg,v 1.77 2016-07-23 16:27:16 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -399,16 +399,24 @@ Return ::aImageMargin
 
 #pragma BEGINDUMP
 
-#ifndef _WIN32_IE
-   #define _WIN32_IE      0x0500
-#endif
-
 #ifndef HB_OS_WIN_32_USED
    #define HB_OS_WIN_32_USED
 #endif
 
+#ifndef _WIN32_IE
+   #define _WIN32_IE 0x0500
+#endif
+#if ( _WIN32_IE < 0x0500 )
+   #undef _WIN32_IE
+   #define _WIN32_IE 0x0500
+#endif
+
 #ifndef _WIN32_WINNT
-   #define _WIN32_WINNT   0x0501
+   #define _WIN32_WINNT 0x0501
+#endif
+#if ( _WIN32_WINNT < 0x0501 )
+   #undef _WIN32_WINNT
+   #define _WIN32_WINNT 0x0501
 #endif
 
 #include <hbapi.h>
@@ -416,7 +424,7 @@ Return ::aImageMargin
 #include <commctrl.h>
 //#include <uxtheme.h>
 //#include <tmschema.h>
-#include <oohg.h>
+#include "oohg.h"
 
 #ifndef BCM_FIRST
    #define BCM_FIRST     0x1600

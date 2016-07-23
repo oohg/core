@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.69 2016-05-22 23:53:23 fyurisich Exp $
+ * $Id: h_tab.prg,v 1.70 2016-07-23 16:27:17 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1565,6 +1565,10 @@ EXTERN InitTabControl, SetTabCaption
 EXTERN TabCtrl_SetCurSel, TabCtrl_GetCurSel, TabCtrl_InsertItem, TabCtrl_DeleteItem, TabCtrl_GetItemRect, TabCtrl_GetRowCount
 
 #pragma BEGINDUMP
+
+#ifndef HB_OS_WIN_32_USED
+   #define HB_OS_WIN_32_USED
+#endif
 
 #ifndef _WIN32_IE
    #define _WIN32_IE 0x0400
