@@ -1,11 +1,50 @@
 /*
- * $Id: ChangeLog,v 1.1590 2016-07-23 16:38:28 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1591 2016-08-14 23:38:58 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2016-08-14 20:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * distros/MakeDistro.bat
+     + Missing parameters for BCC32 compilator.
+   * doc/classes.txt
+     * Updated.
+   * include/i_hmg_compat.ch
+     - Application object definitions moved to core.
+   + include/i_app.ch
+     + Application object definitions.
+     + App shortcut.
+   * include/oohg.ch
+     + i_app.ch
+   * include/i_toolbar.ch
+   * include/i_tree.ch
+     + OWNTOOLTIP clause.
+   * manual/Changelog.htm
+   * manual/CLASSES.HTM
+     * Updated.
+   * source/c_windows.c
+     + Some comments.
+   * source/h_application.prg
+     ! METHOD BackColor was not returning the seted color.
+   * source/h_controlmisc.prg
+     + METHOD oToolTip
+     + DATA oToolTipCtrl
+     - DATA oToolTip
+     ! RTE accessing oToolTip for a control that uses its parent's tooltip
+       (all controls except TOOLBARs and TREEs, those have their own).
+     * Empty() replaced with HB_SYMBOL_UNUSED.
+   * source/h_form.prg
+     ! App stops if a TFormModal child of TFormMain is activated and
+       released before activating it's parent.
+   * source/h_grid.prg
+     ! "_OOHG_GRIDWN registration failed" RTE.
+   * source/h_toolbar.prg
+   * source/h_tree.prg
+     ! BCC warnings.
+     ! Control wasn't using parent's tooltip by default.
 
 2016-07-23 13:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/winprint.prg

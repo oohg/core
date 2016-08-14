@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.302 2016-07-23 16:27:16 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.303 2016-08-14 23:38:59 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -5625,74 +5625,70 @@ ENDCLASS
 METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys, oGrid ) CLASS TGridControl
 Local lRet := .F., i, nSize
 
-   If ! IsWindowDefined( _oohg_gridwn )
-      If HB_IsObject( oGrid )
-         ::oGrid := oGrid
-      EndIf
-
-      If HB_IsObject( ::oGrid ) .AND. ::oGrid:InPlace .AND. ( ::lNoModal .OR. ::oGrid:lNoModal )
-
-      DEFINE WINDOW _oohg_gridwn OBJ ::oWindow ;
-         AT nRow, nCol WIDTH nWidth HEIGHT nHeight ;
-         CHILD NOSIZE NOCAPTION ;
-         FONT cFontName SIZE nFontSize ;
-         ON INIT ( ::onLostFocus := { |bAux| ::oGrid:bPosition := 9, bAux := ::onLostFocus, ::onLostFocus := Nil, lRet := ::Valid(), ::onLostFocus := bAux } )
-
-         ::bOk := { |nPos, bAux| ::oGrid:bPosition := nPos, bAux := ::onLostFocus, ::onLostFocus := Nil, lRet := ::Valid(), ::onLostFocus := bAux }
-         ::bCancel := { || ::oGrid:bPosition := 0, ::oWindow:Release() }
-
-      ElseIf HB_IsObject( ::oGrid )
-
-      DEFINE WINDOW _oohg_gridwn OBJ ::oWindow ;
-         AT nRow, nCol WIDTH nWidth HEIGHT nHeight ;
-         MODAL NOSIZE NOCAPTION ;
-         FONT cFontName SIZE nFontSize
-
-         ::bOk := { |nPos| ::oGrid:bPosition := nPos, lRet := ::Valid() }
-         ::bCancel := { || ::oGrid:bPosition := 0, ::oWindow:Release() }
-
-      Else
-
-      DEFINE WINDOW _oohg_gridwn OBJ ::oWindow ;
-         AT nRow, nCol WIDTH nWidth HEIGHT nHeight ;
-         MODAL NOSIZE NOCAPTION ;
-         FONT cFontName SIZE nFontSize
-
-         ::bOk := { || lRet := ::Valid() }
-         ::bCancel := { || ::oWindow:Release() }
-
-      EndIf
-
-         ON KEY RETURN OF ( ::oWindow ) ACTION EVAL( ::bOk, -1 )
-         ON KEY ESCAPE OF ( ::oWindow ) ACTION EVAL( ::bCancel )
-
-         If HB_IsArray( aKeys )
-            For i := 1 To Len( aKeys )
-               If HB_IsArray( aKeys[ i ] ) .AND. Len( aKeys[ i ] ) > 1 .AND. ValType( aKeys[ i, 1 ] ) $ "CM" .AND. HB_IsBlock( aKeys[ i, 2 ] ) .AND. ! ( aKeys[ i, 1 ] == "RETURN" .OR. aKeys[ i, 1 ] == "ESCAPE" )
-                  _DefineAnyKey( ::oWindow, aKeys[ i, 1 ], aKeys[ i, 2 ] )
-               EndIf
-            Next
-         EndIf
-
-         If ::lButtons .OR. ( HB_IsObject( ::oGrid ) .AND. ::oGrid:lButtons )
-            nSize := nHeight - 4
-            ::CreateControl( uValue, ::oWindow, 0, 0, nWidth - nSize * 2 - 6, nHeight )
-            @ 2, nWidth - nSize * 2 - 6 + 2 BUTTON 0 WIDTH nSize HEIGHT nSize ACTION EVAL( ::bOk, -1 ) OF ( ::oWindow ) PICTURE ::cImageOk
-            @ 2, nWidth - nSize - 2 BUTTON 0 WIDTH nSize HEIGHT nSize ACTION EVAL( ::bCancel ) OF ( ::oWindow ) PICTURE ::cImageCancel
-         Else
-            ::CreateControl( uValue, ::oWindow, 0, 0, nWidth, nHeight )
-         EndIf
-         ::Value := ::ControlValue
-      END WINDOW
+   If HB_IsObject( oGrid )
+      ::oGrid := oGrid
    EndIf
 
-   If IsWindowDefined( _oohg_gridwn ) .AND. ! IsWindowActive( _oohg_gridwn )
-      If HB_IsObject( ::oControl )
-         ::oControl:SetFocus()
+   If HB_IsObject( ::oGrid ) .AND. ::oGrid:InPlace .AND. ( ::lNoModal .OR. ::oGrid:lNoModal )
+
+   DEFINE WINDOW 0 OBJ ::oWindow ;
+      AT nRow, nCol WIDTH nWidth HEIGHT nHeight ;
+      CHILD NOSIZE NOCAPTION ;
+      FONT cFontName SIZE nFontSize ;
+      ON INIT ( ::onLostFocus := { |bAux| ::oGrid:bPosition := 9, bAux := ::onLostFocus, ::onLostFocus := Nil, lRet := ::Valid(), ::onLostFocus := bAux } )
+
+      ::bOk := { |nPos, bAux| ::oGrid:bPosition := nPos, bAux := ::onLostFocus, ::onLostFocus := Nil, lRet := ::Valid(), ::onLostFocus := bAux }
+      ::bCancel := { || ::oGrid:bPosition := 0, ::oWindow:Release() }
+
+   ElseIf HB_IsObject( ::oGrid )
+
+   DEFINE WINDOW 0 OBJ ::oWindow ;
+      AT nRow, nCol WIDTH nWidth HEIGHT nHeight ;
+      MODAL NOSIZE NOCAPTION ;
+      FONT cFontName SIZE nFontSize
+
+      ::bOk := { |nPos| ::oGrid:bPosition := nPos, lRet := ::Valid() }
+      ::bCancel := { || ::oGrid:bPosition := 0, ::oWindow:Release() }
+
+   Else
+
+   DEFINE WINDOW 0 OBJ ::oWindow ;
+      AT nRow, nCol WIDTH nWidth HEIGHT nHeight ;
+      MODAL NOSIZE NOCAPTION ;
+      FONT cFontName SIZE nFontSize
+
+      ::bOk := { || lRet := ::Valid() }
+      ::bCancel := { || ::oWindow:Release() }
+
+   EndIf
+
+      ON KEY RETURN OF ( ::oWindow ) ACTION EVAL( ::bOk, -1 )
+      ON KEY ESCAPE OF ( ::oWindow ) ACTION EVAL( ::bCancel )
+
+      If HB_IsArray( aKeys )
+         For i := 1 To Len( aKeys )
+            If HB_IsArray( aKeys[ i ] ) .AND. Len( aKeys[ i ] ) > 1 .AND. ValType( aKeys[ i, 1 ] ) $ "CM" .AND. HB_IsBlock( aKeys[ i, 2 ] ) .AND. ! ( aKeys[ i, 1 ] == "RETURN" .OR. aKeys[ i, 1 ] == "ESCAPE" )
+               _DefineAnyKey( ::oWindow, aKeys[ i, 1 ], aKeys[ i, 2 ] )
+            EndIf
+         Next
       EndIf
-      If HB_IsObject( ::oWindow )
-         ::oWindow:Activate()
+
+      If ::lButtons .OR. ( HB_IsObject( ::oGrid ) .AND. ::oGrid:lButtons )
+         nSize := nHeight - 4
+         ::CreateControl( uValue, ::oWindow, 0, 0, nWidth - nSize * 2 - 6, nHeight )
+         @ 2, nWidth - nSize * 2 - 6 + 2 BUTTON 0 WIDTH nSize HEIGHT nSize ACTION EVAL( ::bOk, -1 ) OF ( ::oWindow ) PICTURE ::cImageOk
+         @ 2, nWidth - nSize - 2 BUTTON 0 WIDTH nSize HEIGHT nSize ACTION EVAL( ::bCancel ) OF ( ::oWindow ) PICTURE ::cImageCancel
+      Else
+         ::CreateControl( uValue, ::oWindow, 0, 0, nWidth, nHeight )
       EndIf
+      ::Value := ::ControlValue
+   END WINDOW
+
+   If HB_IsObject( ::oControl )
+      ::oControl:SetFocus()
+   EndIf
+   If HB_IsObject( ::oWindow )
+      ::oWindow:Activate()
    EndIf
    ::oWindow := Nil
 Return lRet
@@ -5825,110 +5821,106 @@ Return Self
 METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys, oGrid ) CLASS TGridControlTextBox
 Local lRet := .F., i, aPos, nPos1, nPos2, cText, nPos
 
-   If ! IsWindowDefined( _oohg_gridwn )
-      If HB_IsObject( oGrid )
-         ::oGrid := oGrid
-      EndIf
-
-      If HB_IsObject( ::oGrid ) .AND. ::oGrid:InPlace .AND. ( ::lNoModal .OR. ::oGrid:lNoModal ) .AND. ! ::lForceModal
-
-      DEFINE WINDOW _oohg_gridwn OBJ ::oWindow ;
-         AT nRow - 3, nCol - 3 WIDTH nWidth + 6 HEIGHT nHeight + 6 ;
-         CHILD NOSIZE NOCAPTION ;
-         FONT cFontName SIZE nFontSize ;
-         ON INIT ( ::onLostFocus := { |bAux| ::oGrid:bPosition := 9, bAux := ::onLostFocus, ::onLostFocus := Nil, lRet := ::Valid(), ::onLostFocus := bAux } )
-
-         ::bOk := { |nPos, bAux| ::oGrid:bPosition := nPos, bAux := ::onLostFocus, ::onLostFocus := Nil, lRet := ::Valid(), ::onLostFocus := bAux }
-         ::bCancel := { || ::oGrid:bPosition := 0, ::oWindow:Release() }
-
-      ElseIf HB_IsObject( ::oGrid )
-
-      DEFINE WINDOW _oohg_gridwn OBJ ::oWindow ;
-         AT nRow - 3, nCol - 3 WIDTH nWidth + 6 HEIGHT nHeight + 6 ;
-         MODAL NOSIZE NOCAPTION ;
-         FONT cFontName SIZE nFontSize
-
-         ::bOk := { |nPos| ::oGrid:bPosition := nPos, lRet := ::Valid() }
-         ::bCancel := { || ::oGrid:bPosition := 0, ::oWindow:Release() }
-
-      Else
-
-      DEFINE WINDOW _oohg_gridwn OBJ ::oWindow ;
-         AT nRow - 3, nCol - 3 WIDTH nWidth + 6 HEIGHT nHeight + 6 ;
-         MODAL NOSIZE NOCAPTION ;
-         FONT cFontName SIZE nFontSize
-
-         ::bOk := { || lRet := ::Valid() }
-         ::bCancel := { || ::oWindow:Release() }
-
-      EndIf
-
-         ON KEY RETURN OF ( ::oWindow ) ACTION EVAL( ::bOk, -1 )
-         ON KEY ESCAPE OF ( ::oWindow ) ACTION EVAL( ::bCancel )
-
-         If HB_IsArray( aKeys )
-            For i := 1 To Len( aKeys )
-               If HB_IsArray( aKeys[ i ] ) .AND. Len( aKeys[ i ] ) > 1
-                  If ValType( aKeys[ i, 1 ] ) $ "CM" .AND. HB_IsBlock( aKeys[ i, 2 ] )
-                     If ! ( aKeys[ i, 1 ] == "RETURN" .OR. aKeys[ i, 1 ] == "ESCAPE" .OR. ( aKeys[ i, 1 ] == ::cEditKey .AND. HB_IsObject( ::oGrid ) .AND. ::oGrid:InPlace .AND. ( ::lLikeExcel .OR. ::oGrid:lLikeExcel ) ) )
-                        _DefineAnyKey( ::oWindow, aKeys[ i, 1 ], aKeys[ i, 2 ] )
-                     EndIf
-                  EndIf
-               EndIf
-            Next
-         EndIf
-
-         ::CreateControl( uValue, ::oWindow, 0, 0, nWidth + 6, nHeight + 6 )
-
-         If HB_IsObject( ::oGrid ) .AND. ::oGrid:InPlace .AND. ( ::lLikeExcel .OR. ::oGrid:lLikeExcel )
-            ON KEY UP             OF ( ::oControl ) ACTION EVAL( ::bOk, 1 )
-            ON KEY RIGHT          OF ( ::oControl ) ACTION EVAL( ::bOk, 2 )
-            ON KEY LEFT           OF ( ::oControl ) ACTION EVAL( ::bOk, 3 )
-            ON KEY HOME           OF ( ::oControl ) ACTION EVAL( ::bOk, 4 )
-            ON KEY END            OF ( ::oControl ) ACTION EVAL( ::bOk, 5 )
-            ON KEY DOWN           OF ( ::oControl ) ACTION EVAL( ::bOk, 6 )
-            ON KEY PRIOR          OF ( ::oControl ) ACTION EVAL( ::bOk, 7 )
-            ON KEY NEXT           OF ( ::oControl ) ACTION EVAL( ::bOk, 8 )
-            ON KEY ( ::cEditKey ) OF ( ::oControl ) ACTION TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey )
-            ::oControl:OnClick     := { || TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey ) }
-            ::oControl:OnDblClick  := { || TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey ) }
-            ::oControl:OnRClick    := { || TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey ) }
-            ::oControl:OnRDblClick := { || TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey ) }
-            ::oControl:OnMClick    := { || TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey ) }
-            ::oControl:OnMDblClick := { || TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey ) }
-         EndIf
-
-         ::Value := ::ControlValue
-      END WINDOW
+   If HB_IsObject( oGrid )
+      ::oGrid := oGrid
    EndIf
 
-   If IsWindowDefined( _oohg_gridwn ) .AND. ! IsWindowActive( _oohg_gridwn )
-      If HB_IsObject( ::oControl )
-         ::oControl:SetFocus()
-         If HB_IsObject( ::oGrid ) .AND. ::oGrid:InPlace .AND. ( ::lLikeExcel .OR. ::oGrid:lLikeExcel )
-            If ::oControl:Type == "TEXTPICTURE"
-               If ValType( uValue ) $ "CM" .AND. Len( uValue ) == 1
-                  aPos := ::oControl:GetSelection()
-                  nPos1 := aPos[ 1 ]
-                  nPos2 := aPos[ 2 ]
-                  cText := ::oControl:Caption
-                  nPos := nPos1
-                  cText := TTextPicture_Clear( cText, nPos + 1, nPos2 - nPos1, ::oControl:ValidMask, ::oControl:InsertStatus )
-                  If TTextPicture_Events2_String( ::oControl, @cText, @nPos, uValue, ::oControl:ValidMask, ::oControl:PictureMask, ::oControl:InsertStatus )
-                     ::oControl:Caption := cText
-                     SendMessage( ::oControl:hWnd, EM_SETSEL, nPos, nPos )
+   If HB_IsObject( ::oGrid ) .AND. ::oGrid:InPlace .AND. ( ::lNoModal .OR. ::oGrid:lNoModal ) .AND. ! ::lForceModal
+
+   DEFINE WINDOW 0 OBJ ::oWindow ;
+      AT nRow - 3, nCol - 3 WIDTH nWidth + 6 HEIGHT nHeight + 6 ;
+      CHILD NOSIZE NOCAPTION ;
+      FONT cFontName SIZE nFontSize ;
+      ON INIT ( ::onLostFocus := { |bAux| ::oGrid:bPosition := 9, bAux := ::onLostFocus, ::onLostFocus := Nil, lRet := ::Valid(), ::onLostFocus := bAux } )
+
+      ::bOk := { |nPos, bAux| ::oGrid:bPosition := nPos, bAux := ::onLostFocus, ::onLostFocus := Nil, lRet := ::Valid(), ::onLostFocus := bAux }
+      ::bCancel := { || ::oGrid:bPosition := 0, ::oWindow:Release() }
+
+   ElseIf HB_IsObject( ::oGrid )
+
+   DEFINE WINDOW 0 OBJ ::oWindow ;
+      AT nRow - 3, nCol - 3 WIDTH nWidth + 6 HEIGHT nHeight + 6 ;
+      MODAL NOSIZE NOCAPTION ;
+      FONT cFontName SIZE nFontSize
+
+      ::bOk := { |nPos| ::oGrid:bPosition := nPos, lRet := ::Valid() }
+      ::bCancel := { || ::oGrid:bPosition := 0, ::oWindow:Release() }
+
+   Else
+
+   DEFINE WINDOW 0 OBJ ::oWindow ;
+      AT nRow - 3, nCol - 3 WIDTH nWidth + 6 HEIGHT nHeight + 6 ;
+      MODAL NOSIZE NOCAPTION ;
+      FONT cFontName SIZE nFontSize
+
+      ::bOk := { || lRet := ::Valid() }
+      ::bCancel := { || ::oWindow:Release() }
+
+   EndIf
+
+      ON KEY RETURN OF ( ::oWindow ) ACTION EVAL( ::bOk, -1 )
+      ON KEY ESCAPE OF ( ::oWindow ) ACTION EVAL( ::bCancel )
+
+      If HB_IsArray( aKeys )
+         For i := 1 To Len( aKeys )
+            If HB_IsArray( aKeys[ i ] ) .AND. Len( aKeys[ i ] ) > 1
+               If ValType( aKeys[ i, 1 ] ) $ "CM" .AND. HB_IsBlock( aKeys[ i, 2 ] )
+                  If ! ( aKeys[ i, 1 ] == "RETURN" .OR. aKeys[ i, 1 ] == "ESCAPE" .OR. ( aKeys[ i, 1 ] == ::cEditKey .AND. HB_IsObject( ::oGrid ) .AND. ::oGrid:InPlace .AND. ( ::lLikeExcel .OR. ::oGrid:lLikeExcel ) ) )
+                     _DefineAnyKey( ::oWindow, aKeys[ i, 1 ], aKeys[ i, 2 ] )
                   EndIf
                EndIf
-            Else
-               ::oControl:CaretPos := -1
             EndIf
+         Next
+      EndIf
+
+      ::CreateControl( uValue, ::oWindow, 0, 0, nWidth + 6, nHeight + 6 )
+
+      If HB_IsObject( ::oGrid ) .AND. ::oGrid:InPlace .AND. ( ::lLikeExcel .OR. ::oGrid:lLikeExcel )
+         ON KEY UP             OF ( ::oControl ) ACTION EVAL( ::bOk, 1 )
+         ON KEY RIGHT          OF ( ::oControl ) ACTION EVAL( ::bOk, 2 )
+         ON KEY LEFT           OF ( ::oControl ) ACTION EVAL( ::bOk, 3 )
+         ON KEY HOME           OF ( ::oControl ) ACTION EVAL( ::bOk, 4 )
+         ON KEY END            OF ( ::oControl ) ACTION EVAL( ::bOk, 5 )
+         ON KEY DOWN           OF ( ::oControl ) ACTION EVAL( ::bOk, 6 )
+         ON KEY PRIOR          OF ( ::oControl ) ACTION EVAL( ::bOk, 7 )
+         ON KEY NEXT           OF ( ::oControl ) ACTION EVAL( ::bOk, 8 )
+         ON KEY ( ::cEditKey ) OF ( ::oControl ) ACTION TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey )
+         ::oControl:OnClick     := { || TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey ) }
+         ::oControl:OnDblClick  := { || TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey ) }
+         ::oControl:OnRClick    := { || TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey ) }
+         ::oControl:OnRDblClick := { || TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey ) }
+         ::oControl:OnMClick    := { || TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey ) }
+         ::oControl:OnMDblClick := { || TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey ) }
+      EndIf
+
+      ::Value := ::ControlValue
+   END WINDOW
+
+   If HB_IsObject( ::oControl )
+      ::oControl:SetFocus()
+      If HB_IsObject( ::oGrid ) .AND. ::oGrid:InPlace .AND. ( ::lLikeExcel .OR. ::oGrid:lLikeExcel )
+         If ::oControl:Type == "TEXTPICTURE"
+            If ValType( uValue ) $ "CM" .AND. Len( uValue ) == 1
+               aPos := ::oControl:GetSelection()
+               nPos1 := aPos[ 1 ]
+               nPos2 := aPos[ 2 ]
+               cText := ::oControl:Caption
+               nPos := nPos1
+               cText := TTextPicture_Clear( cText, nPos + 1, nPos2 - nPos1, ::oControl:ValidMask, ::oControl:InsertStatus )
+               If TTextPicture_Events2_String( ::oControl, @cText, @nPos, uValue, ::oControl:ValidMask, ::oControl:PictureMask, ::oControl:InsertStatus )
+                  ::oControl:Caption := cText
+                  SendMessage( ::oControl:hWnd, EM_SETSEL, nPos, nPos )
+               EndIf
+            EndIf
+         Else
+            ::oControl:CaretPos := -1
          EndIf
       EndIf
-      If HB_IsObject( ::oWindow )
-         ::oWindow:Activate()
-      EndIf
-      ::oWindow := Nil
    EndIf
+   If HB_IsObject( ::oWindow )
+      ::oWindow:Activate()
+   EndIf
+   ::oWindow := Nil
 Return lRet
 
 FUNCTION TGridControlTextBox_ReleaseKeys( oControl, cEditKey )

@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.85 2016-05-22 23:53:21 fyurisich Exp $
+ * $Id: c_windows.c,v 1.86 2016-08-14 23:38:59 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -283,7 +283,7 @@ HB_FUNC( _OOHG_DOMESSAGELOOP )
 
    if( HB_ISARRAY( 1 ) && hb_parinfa( 1, 0 ) >= 2 )
    {
-      HB_STORPTR( ( void * ) &iSwitch , 1, 2 );
+      HB_STORPTR( ( void * ) &iSwitch , 1, 2 );     // ::ActivateCount[2]
    }
 
    iSwitch = 1;
@@ -303,7 +303,7 @@ HB_FUNC( _OOHG_DOMESSAGELOOP )
 HB_FUNC( _MESSAGELOOPEND )
 {
    int *pSwitch;
-   pSwitch = ( int * ) hb_parptr( 1 );
+   pSwitch = ( int * ) hb_parptr( 1 );              // ::ActivateCount[2]
 
    if( pSwitch )
    {

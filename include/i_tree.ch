@@ -1,5 +1,5 @@
 /*
- * $Id: i_tree.ch,v 1.14 2016-05-22 23:52:23 fyurisich Exp $
+ * $Id: i_tree.ch,v 1.15 2016-08-14 23:38:59 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -72,6 +72,7 @@
       [ <underline: UNDERLINE> ] ;
       [ <strikeout: STRIKEOUT> ] ;
       [ TOOLTIP <tooltip> ] ;
+      [ <own: OWNTOOLTIP> ] ;
       [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
       [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
       [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
@@ -117,7 +118,7 @@
             <.checkboxes.>, <.editlabels.>, <.noHScr.>, <.noScr.>, <.hott.>, ;
             .F., <.nobuts.>, <.drag.>, <.single.>, <.noborder.>, <selcolor>, ;
             <{labeledit}>, <{valid}>, <{checkchange}>, <pixels>, <.selbold.>, ;
-            <.drop.>, <aTarget>, <{ondrop}> )
+            <.drop.>, <aTarget>, <{ondrop}>, <.own.> )
 
 #xcommand DEFINE TREE <name> ;
       [ OBJ <obj> ] ;
@@ -133,6 +134,7 @@
       [ <underline: UNDERLINE> ] ;
       [ <strikeout: STRIKEOUT> ] ;
       [ TOOLTIP <tooltip> ] ;
+      [ <own: OWNTOOLTIP> ] ;
       [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
       [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
       [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
@@ -180,7 +182,7 @@
             <.noScr.>, <.hott.>, <.nolines.>, <.nobuts.>, <.drag.>, ;
             <.single.>, <.noborder.>, <selcolor>, <{labeledit}>, <{valid}>, ;
             <{checkchange}>, <pixels>, <.selbold.>, <.drop.>, <aTarget>, ;
-            <{ondrop}> )
+            <{ondrop}>, <.own.> )
 
 #xcommand NODE <text> ;
       [ IMAGES <aImage> ] ;

@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.68 2016-07-23 16:27:16 fyurisich Exp $
+ * $Id: h_form.prg,v 1.69 2016-08-14 23:38:59 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1071,7 +1071,7 @@ Local mVar
       If ::ActivateCount[ 1 ] < 1
          _MessageLoopEnd( ::ActivateCount[ 2 ] )
          ::ActivateCount[ 2 ] := NIL
-         ::ActivateCount[ 3 ] := .F.
+         ::ActivateCount[ 3 ] := .T.
       Endif
    Endif
 

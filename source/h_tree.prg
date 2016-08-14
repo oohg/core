@@ -1,5 +1,5 @@
 /*
- * $Id: h_tree.prg,v 1.46 2016-06-26 14:17:00 fyurisich Exp $
+ * $Id: h_tree.prg,v 1.47 2016-08-14 23:38:59 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -184,9 +184,9 @@ METHOD Define( ControlName, ParentForm, row, col, width, height, change, ;
                invisible, notabstop, fontcolor, BackColor, lFullRowSel, ;
                lChkBox, lEdtLbl, lNoHScr, lNoScroll, lHotTrak, lNoLines, ;
                lNoBut, lDrag, lSingle, lNoBor, aSelCol, labeledit, valid, ;
-               checkchange, indent, lSelBold, lDrop, aTarget, ondrop ) CLASS TTree
+               checkchange, indent, lSelBold, lDrop, aTarget, ondrop, lOwnToolTip ) CLASS TTree
 *------------------------------------------------------------------------------*
-Local Controlhandle, nStyle, ImgDefNode, ImgDefItem, aBitmaps := array(4)
+Local Controlhandle, nStyle, ImgDefNode, ImgDefItem, aBitmaps := array(4), oCtrl
 
    ASSIGN ::nWidth      VALUE Width    TYPE "N"
    ASSIGN ::nHeight     VALUE Height   TYPE "N"
@@ -303,21 +303,31 @@ Local Controlhandle, nStyle, ImgDefNode, ImgDefItem, aBitmaps := array(4)
      ::OnMouseDrop := {|oOrigin, oTarget, wParam| TTree_OnMouseDrop( oOrigin, oTarget, wParam ) }
    EndIf
 
-   ::oToolTip := TToolTip():Define( Nil, Self )
-   SendMessage( ::hWnd, TVM_SETTOOLTIPS, ::oToolTip:hWnd , 0 )
-   ::Tooltip := tooltip
-   If HB_IsObject( ::Parent:oToolTip )
-      WITH OBJECT ::Parent:oToolTip
-         ::oToolTip:AutoPopTime := :AutoPopTime
-         ::oToolTip:InitialTime := :InitialTime
-         ::oToolTip:ReshowTime  := :ReshowTime
-         ::oToolTip:WindowWidth := :WindowWidth
-         ::oToolTip:Title       := :Title
-         ::oToolTip:Icon        := :Icon
-         ::oToolTip:WindowWidth := :WindowWidth
-         ::oToolTip:MultiLine   := :MultiLine
-      END WITH
+   ASSIGN lOwnToolTip VALUE lOwnToolTip TYPE "L" DEFAULT .F.
+   If ! lOwnToolTip .AND. ! HB_IsObject( :: Parent:oToolTip )
+      lOwnToolTip := .T.
    EndIf
+   If lOwnToolTip
+      oCtrl := TToolTip():Define( Nil, Self )
+      If HB_IsObject( ::Parent:oToolTip )
+         WITH OBJECT ::Parent:oToolTip
+            oCtrl:AutoPopTime := :AutoPopTime
+            oCtrl:InitialTime := :InitialTime
+            oCtrl:ReshowTime  := :ReshowTime
+            oCtrl:WindowWidth := :WindowWidth
+            oCtrl:Title       := :Title
+            oCtrl:Icon        := :Icon
+            oCtrl:WindowWidth := :WindowWidth
+            oCtrl:MultiLine   := :MultiLine
+         END WITH
+      EndIf
+      ::oToolTip := oCtrl
+   Else
+      // Use parent's tooltip
+      oCtrl :=  ::oToolTip
+   EndIf
+   SendMessage( ::hWnd, TVM_SETTOOLTIPS, oCtrl:hWnd , 0 )
+   ::Tooltip := tooltip
 
    _OOHG_ActiveTree := Self
 
@@ -2223,7 +2233,6 @@ LOCAL Handle, Prev
    Else
       Prev := 0
    EndIf
-
 Return Prev
 
 *------------------------------------------------------------------------------*
@@ -2312,13 +2321,25 @@ Return ::Super:Release()
 
 #pragma BEGINDUMP
 
-#define _WIN32_IE      0x0500
-
 #ifndef HB_OS_WIN_32_USED
    #define HB_OS_WIN_32_USED
 #endif
 
-#define _WIN32_WINNT   0x0400
+#ifndef _WIN32_IE
+   #define _WIN32_IE 0x0500
+#endif
+#if ( _WIN32_IE < 0x0500 )
+   #undef _WIN32_IE
+   #define _WIN32_IE 0x0500
+#endif
+
+#ifndef _WIN32_WINNT
+   #define _WIN32_WINNT 0x0400
+#endif
+#if ( _WIN32_WINNT < 0x0400 )
+   #undef _WIN32_WINNT
+   #define _WIN32_WINNT 0x0400
+#endif
 
 #include <shlobj.h>
 #include <windows.h>
@@ -3323,7 +3344,9 @@ HB_FUNC( TREEVIEW_ONMOUSEDROP)
    HTREEret( htiTarget );
 }
 
-VOID WINAPI ImageList_EndDrag(VOID);
+#if defined( __BORLANDC__ )
+WINCOMMCTRLAPI void WINAPI ImageList_EndDrag( void );
+#endif
 
 HB_FUNC( IMAGELIST_ENDDRAG )
 {

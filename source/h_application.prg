@@ -1,5 +1,5 @@
 /*
- * $Id: h_application.prg,v 1.4 2016-06-19 13:20:50 fyurisich Exp $
+ * $Id: h_application.prg,v 1.5 2016-08-14 23:38:59 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -90,8 +90,18 @@ ENDCLASS
 //------------------------------------------------------------------------------
 METHOD BackColor( uColor ) CLASS TApplication
 //------------------------------------------------------------------------------
-Return If( HB_IsObject( _OOHG_Main ), _OOHG_Main:BackColor( uColor ), Nil )
+   Local uRet := Nil
 
+   If PCount() > 0
+      If HB_IsObject( _OOHG_Main )
+         uRet := _OOHG_Main:BackColor( uColor )
+      EndIf
+   Else
+      If HB_IsObject( _OOHG_Main )
+         uRet := _OOHG_Main:BackColor()
+      EndIf
+   EndIf
+Return uRet
 
 //------------------------------------------------------------------------------
 METHOD Col( nCol ) CLASS TApplication

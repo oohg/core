@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: MakeDistro.bat,v 1.6 2016-07-23 16:27:16 fyurisich Exp $
+rem $Id: MakeDistro.bat,v 1.7 2016-08-14 23:38:59 fyurisich Exp $
 rem
 cls
 
@@ -367,7 +367,7 @@ set HG_FILES2_PRG=h_graph h_richeditbox h_edit h_edit_ex h_scrsaver h_browse h_c
 set OOHG_X_FLAGS=-i"%HG_HRB%\include;%HG_ROOT%\include" -n1 -gc0 -q0
 %HG_HRB%\%BIN_HRB%\harbour %HG_FILES1_PRG% %HG_FILES2_PRG% miniprint winprint bostaurus %OOHG_X_FLAGS%
 echo BCC32: Compiling...
-set OOHG_X_FLAGS=-c -O2 -tW -tWM -d -a8 -OS -5 -6 -I%HG_HRB%\include;%HG_BCC%\include;%HG_ROOT%\include; -L%HG_HRB%\%LIB_HRB%;%HG_BCC%\lib;
+set OOHG_X_FLAGS=-c -O2 -tW -tWM -d -a8 -OS -5 -6 -w -I%HG_HRB%\include;%HG_BCC%\include;%HG_ROOT%\include; -L%HG_HRB%\%LIB_HRB%;%HG_BCC%\lib; -D__XHARBOUR__
 set HG_FILES_C=c_media c_controlmisc c_resource c_cursor c_font c_dialogs c_windows c_image c_msgbox c_progressbar c_winapimisc c_scrsaver c_graph c_activex c_gdiplus
 for %%a in ( %HG_FILES1_PRG% %HG_FILES2_PRG% %HG_FILES_C% miniprint winprint bostaurus ) do %HG_BCC%\bin\bcc32 %OOHG_X_FLAGS% %%a.c > nul
 echo TLIB: Building library %HG_ROOT%\%LIB_GUI%\oohg.lib...

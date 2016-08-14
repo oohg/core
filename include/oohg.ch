@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.ch,v 1.24 2016-05-22 23:52:23 fyurisich Exp $
+ * $Id: oohg.ch,v 1.25 2016-08-14 23:38:59 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -63,6 +63,7 @@
 #include "common.ch"
 #include "i_activex.ch"
 #include "i_altsyntax.ch"
+#include "i_app.ch"
 #include "i_browse.ch"
 #include "i_button.ch"
 #include "i_checkbox.ch"

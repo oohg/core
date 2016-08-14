@@ -1,5 +1,5 @@
 /*
- * $Id: i_toolbar.ch,v 1.13 2016-06-19 13:20:50 fyurisich Exp $
+ * $Id: i_toolbar.ch,v 1.14 2016-08-14 23:38:59 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -70,6 +70,7 @@
       [ <underline: UNDERLINE> ] ;
       [ <strikeout: STRIKEOUT> ] ;
       [ TOOLTIP <tooltip> ] ;
+      [ <own: OWNTOOLTIP> ] ;
       [ <flat: FLAT> ] ;
       [ <bottom: BOTTOM> ] ;
       [ <vertical: VERTICAL> ] ;
@@ -84,7 +85,8 @@
             Define( <(name)>, <(parent)>, 0, 0, <w>, <h>, <caption>, ;
             <{action}>, <f>, <s>, <tooltip>, <.flat.>, <.bottom.>, ;
             <.righttext.>, <.break.>, <.bold.>, <.italic.>, <.underline.>, ;
-            <.strikeout.>, <.border.>, <.rtl.>, <.notabstop.>, <.vertical.> )
+            <.strikeout.>, <.border.>, <.rtl.>, <.notabstop.>, <.vertical.>, ;
+            <.own.> )
 
 #xcommand END TOOLBAR [ <nobreak: NOBREAK> ] ;
    => ;

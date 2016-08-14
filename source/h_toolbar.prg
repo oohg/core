@@ -1,5 +1,5 @@
 /*
- * $Id: h_toolbar.prg,v 1.47 2016-06-26 14:17:00 fyurisich Exp $
+ * $Id: h_toolbar.prg,v 1.48 2016-08-14 23:38:59 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -99,15 +99,27 @@ STATIC _OOHG_ActiveToolBar := NIL    // Active toolbar
 
 #pragma BEGINDUMP
 
-#ifndef _WIN32_IE
-   #define _WIN32_IE      0x0500
+#ifndef HB_OS_WIN_32_USED
+   #define HB_OS_WIN_32_USED
 #endif
-#define HB_OS_WIN_32_USED
-#ifndef _WIN32_WINNT
-   #define _WIN32_WINNT   0x0400
-#endif
-#include <shlobj.h>
 
+#ifndef _WIN32_IE
+   #define _WIN32_IE 0x0500
+#endif
+#if ( _WIN32_IE < 0x0500 )
+   #undef _WIN32_IE
+   #define _WIN32_IE 0x0500
+#endif
+
+#ifndef _WIN32_WINNT
+   #define _WIN32_WINNT 0x0400
+#endif
+#if ( _WIN32_WINNT < 0x0400 )
+   #undef _WIN32_WINNT
+   #define _WIN32_WINNT 0x0400
+#endif
+
+#include <shlobj.h>
 #include <windows.h>
 #include <commctrl.h>
 #include "hbapi.h"
@@ -147,9 +159,9 @@ ENDCLASS
 METHOD Define( ControlName, ParentForm, x, y, w, h, caption, ProcedureName, ;
                fontname, fontsize, tooltip, flat, bottom, righttext, break, ;
                bold, italic, underline, strikeout, border, lRtl, lNoTabStop, ;
-               lVertical ) CLASS TToolBar
+               lVertical, lOwnToolTip ) CLASS TToolBar
 *-----------------------------------------------------------------------------*
-Local ControlHandle, id, lSplitActive, nStyle
+Local ControlHandle, id, lSplitActive, nStyle, oCtrl
 
    If valtype( caption ) == 'U'
       caption := ""
@@ -185,21 +197,31 @@ Local ControlHandle, id, lSplitActive, nStyle
 
    ::ContainerhWndValue := ::hWnd
 
-   ::oToolTip := TToolTip():Define( Nil, Self )
-   SendMessage( ::hWnd, TB_SETTOOLTIPS, ::oToolTip:hWnd, 0 )
-   ::Tooltip := tooltip
-   If HB_IsObject( ::Parent:oToolTip )
-      WITH OBJECT ::Parent:oToolTip
-         ::oToolTip:AutoPopTime := :AutoPopTime
-         ::oToolTip:InitialTime := :InitialTime
-         ::oToolTip:ReshowTime  := :ReshowTime
-         ::oToolTip:WindowWidth := :WindowWidth
-         ::oToolTip:Title       := :Title
-         ::oToolTip:Icon        := :Icon
-         ::oToolTip:WindowWidth := :WindowWidth
-         ::oToolTip:MultiLine   := :MultiLine
-      END WITH
+   ASSIGN lOwnToolTip VALUE lOwnToolTip TYPE "L" DEFAULT .F.
+   If ! lOwnToolTip .AND. ! HB_IsObject( :: Parent:oToolTip )
+      lOwnToolTip := .T.
    EndIf
+   If lOwnToolTip
+      oCtrl := TToolTip():Define( Nil, Self )
+      If HB_IsObject( ::Parent:oToolTip )
+         WITH OBJECT ::Parent:oToolTip
+            oCtrl:AutoPopTime := :AutoPopTime
+            oCtrl:InitialTime := :InitialTime
+            oCtrl:ReshowTime  := :ReshowTime
+            oCtrl:WindowWidth := :WindowWidth
+            oCtrl:Title       := :Title
+            oCtrl:Icon        := :Icon
+            oCtrl:WindowWidth := :WindowWidth
+            oCtrl:MultiLine   := :MultiLine
+         END WITH
+      EndIf
+      ::oToolTip := oCtrl
+   Else
+      // Use parent's tooltip
+      oCtrl :=  ::oToolTip
+   EndIf
+   SendMessage( ::hWnd, TB_SETTOOLTIPS, oCtrl:hWnd , 0 )
+   ::Tooltip := tooltip
 
    ASSIGN ::OnClick VALUE ProcedureName TYPE "B"
 Return Self

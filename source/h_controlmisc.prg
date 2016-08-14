@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.156 2016-06-26 14:17:00 fyurisich Exp $
+ * $Id: h_controlmisc.prg,v 1.157 2016-08-14 23:38:59 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1258,6 +1258,7 @@ Return GetWindowText( GetControlObject( ControlName, ParentForm ):hWnd )
 *------------------------------------------------------------------------------*
 CLASS TControl FROM TWindow
 *------------------------------------------------------------------------------*
+   DATA oToolTipCtrl         INIT Nil
    DATA cToolTip             INIT ""
    DATA AuxHandle            INIT 0
    DATA Transparent          INIT .F.
@@ -1275,7 +1276,6 @@ CLASS TControl FROM TWindow
    DATA xOldValue            INIT nil
    DATA OldColor
    DATA OldBackColor
-   DATA oToolTip             INIT Nil
 
    METHOD Row                SETGET
    METHOD Col                SETGET
@@ -1312,7 +1312,7 @@ CLASS TControl FROM TWindow
    METHOD DoEventMouseCoords
    METHOD DoLostFocus
    METHOD DoChange
-
+   METHOD oToolTip           SETGET
    METHOD Events
    METHOD Events_Color
    METHOD Events_Enter
@@ -1375,18 +1375,31 @@ METHOD Height( nHeight ) CLASS TControl
 RETURN ::nHeight
 
 *------------------------------------------------------------------------------*
+METHOD oToolTip( oCtrl ) CLASS TControl
+*------------------------------------------------------------------------------*
+   IF HB_IsObject( oCtrl )
+      ::oToolTipCtrl := oCtrl
+   ELSEIF HB_IsObject( ::oToolTipCtrl )
+      oCtrl := ::oToolTipCtrl
+   ELSEIF HB_IsObject( ::Parent:oToolTip )
+      oCtrl := ::Parent:oToolTip
+   ELSE
+      oCtrl := Nil
+   ENDIF
+RETURN oCtrl
+
+*------------------------------------------------------------------------------*
 METHOD ToolTip( cToolTip ) CLASS TControl
 *------------------------------------------------------------------------------*
+LOCAL oCtrl
    If PCount() > 0
       If ValType( cToolTip ) $ "CMB"
          ::cToolTip := cToolTip
       Else
          ::cToolTip := ""
       EndIf
-      If HB_IsObject( ::oToolTip )
-         ::oToolTip:Item( ::hWnd, cToolTip )
-      ElseIf HB_IsObject( ::Parent:oToolTip )
-         ::Parent:oToolTip:Item( ::hWnd, cToolTip )
+      If HB_IsObject( oCtrl := ::oToolTip )
+         oCtrl:Item( ::hWnd, cToolTip )
       EndIf
    EndIf
 Return ::cToolTip
@@ -1517,8 +1530,8 @@ METHOD Register( hWnd, cName, HelpId, Visible, ToolTip, Id ) CLASS TControl
 Local mVar
 
    // cName NO debe recibirse!!! Ya debe estar desde :SetForm()!!!!
-*   ::Name   := _OOHG_GetNullName( ControlName )
-EMPTY(cName)
+   // ::Name   := _OOHG_GetNullName( ControlName )
+   HB_SYMBOL_UNUSED( cName )
 
    ::hWnd := hWnd
    ::SethWnd( hWnd )
