@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: compile_bcc.bat,v 1.19 2015-11-07 22:39:57 fyurisich Exp $
+rem $Id: compile_bcc.bat,v 1.20 2016-09-01 00:36:51 fyurisich Exp $
 rem
 cls
 
@@ -37,6 +37,10 @@ set PRG_LOG=
 set C_LOG=
 :LOOP_START
 if "%2"==""    goto LOOP_END
+if "%2"=="/c"  goto COMP_CONSOLE
+if "%2"=="-c"  goto COMP_CONSOLE
+if "%2"=="/C"  goto COMP_CONSOLE
+if "%2"=="-C"  goto COMP_CONSOLE
 if "%2"=="/d"  goto COMP_DEBUG
 if "%2"=="-d"  goto COMP_DEBUG
 if "%2"=="/D"  goto COMP_DEBUG
@@ -64,6 +68,10 @@ if "%2"=="-L"  goto USELOG
 set EXTRA=%EXTRA% %2
 shift
 goto LOOP_START
+:COMP_CONSOLE
+set COMP_TYPE=CONSOLE
+shift
+goto LOOP_START
 :COMP_DEBUG
 set COMP_TYPE=DEBUG
 shift
@@ -87,12 +95,15 @@ shift
 goto LOOP_START
 :LOOP_END
 
-rem *** Set GT and Check for Debug Switch ***
-set HG_USE_GT=gtwin
+rem *** Set GT and Check for Debug or Console Switch ***
+set HG_USE_GT=gtwin gtgui
 if "%COMP_TYPE%"=="DEBUG" goto DEBUG_COMP
+if "%COMP_TYPE%"=="CONSOLE" goto PRG_COMP
+set HG_USE_GT=gtgui gtwin
 
-rem *** Set GT and Compile with Harbour ***
-if exist %HG_HRB%\%LIB_HRB%\gtgui.lib set HG_USE_GT=gtgui
+
+:PRG_COMP
+rem *** Compile with (x)Harbour ***
 %HG_HRB%\%BIN_HRB%\harbour %TFILE%.prg -n %EXTRA% -i%HG_HRB%\include;%HG_ROOT%\include; %PRG_LOG%
 
 rem *** Continue with .c Compilation ***
