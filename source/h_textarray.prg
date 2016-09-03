@@ -1,5 +1,5 @@
 /*
- * $Id: h_textarray.prg,v 1.25 2016-05-22 23:53:23 fyurisich Exp $
+ * $Id: h_textarray.prg,v 1.26 2016-09-03 15:00:18 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -704,6 +704,12 @@ HB_FUNC_STATIC( TTEXTARRAY_EVENTS )
          hb_ret();
          break;
 
+      case WM_LBUTTONUP:
+         {
+            SendMessage( GetParent( hWnd ), WM_COMMAND, MAKEWORD( STN_CLICKED, 0 ), ( LPARAM ) hWnd );
+         }
+         break;
+
       default:
          _OOHG_Send( pSelf, s_Super );
          hb_vmSend( 0 );
@@ -1328,7 +1334,7 @@ HB_FUNC( INITTEXTARRAY )
    }
 
    hwnd = HWNDparam( 1 );
-   Style = hb_parni( 6 ) | WS_CHILD;
+   Style = hb_parni( 6 ) | WS_CHILD | SS_NOTIFY;
    ExStyle = hb_parni( 7 ) | _OOHG_RTL_Status( hb_parl( 8 ) );
 
    hbutton = CreateWindowEx( ExStyle, "_OOHG_TEXTARRAY", "", Style,
