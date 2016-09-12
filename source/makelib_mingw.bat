@@ -1,13 +1,13 @@
 @echo off
 rem
-rem $Id: makelib_mingw.bat,v 1.40 2015-11-07 22:39:57 fyurisich Exp $
+rem $Id: makelib_mingw.bat,v 1.41 2016-09-12 22:53:11 fyurisich Exp $
 rem
 cls
 
 rem *** Set Paths ***
 if "%HG_ROOT%"==""  set HG_ROOT=c:\oohg
-if "%HG_HRB%"==""   set HG_HRB=c:\oohg\harbour
-if "%HG_MINGW%"=="" set HG_MINGW=c:\oohg\mingw
+if "%HG_HRB%"==""   set HG_HRB=c:\oohg\hb32
+if "%HG_MINGW%"=="" set HG_MINGW=c:\oohg\hb32\comp\mingw
 
 rem *** To Build with Nightly Harbour ***
 rem set HG_HRB=c:\hb32
@@ -17,8 +17,8 @@ rem *** For 64 bits MinGW ***
 rem set HG_MINGW=c:\hb32\comp\mingw64
 
 rem *** Set EnvVars ***
-if "%LIB_GUI%"=="" set LIB_GUI=lib
-if "%LIB_HRB%"=="" set LIB_HRB=lib
+if "%LIB_GUI%"==""  set LIB_GUI=lib\hb\mingw
+if "%LIB_HRB%"=="" set LIB_HRB=lib\win\mingw
 if "%BIN_HRB%"=="" set BIN_HRB=bin
 
 rem *** To Build with Nightly Harbour ***
@@ -46,8 +46,8 @@ if errorlevel 1 goto EXIT1
 
 rem *** Set PATH ***
 rem *** If PATH is empty "SET TPATH=%PATH%" sets ERRORLEVEL TO 1 ***
-if not "%PATH%"=="" set TPATH=%PATH%
-PATH %HG_MINGW%\bin
+set TPATH=%PATH%
+set PATH=%HG_MINGW%\bin
 
 rem *** Compile with GCC ***
 echo Compiling C sources ...
