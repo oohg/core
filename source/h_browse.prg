@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.174 2016-05-22 23:53:21 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.175 2016-09-29 23:22:52 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -499,6 +499,7 @@ Local lColor, aFields, cWorkArea, hWnd, nWidth
 
    If ::Eof()
       _BrowseRecMap := {}
+      ::DeleteAllItems()
    Else
       If ! HB_IsNumeric( nRow ) .OR. nRow < 1 .OR. nRow > PageLength
          nRow := 1
@@ -525,6 +526,16 @@ Local lColor, aFields, cWorkArea, hWnd, nWidth
          aAdd( _BrowseRecMap, ( cWorkArea )->( RecNo() ) )
          ::DbSkip()
       EndDo
+      Do While Len( _BrowseRecMap ) < PageLength
+         ::DbGoTo( _BrowseRecMap[ 1 ] )
+         ::DbSkip( -1 )
+         If ::Bof()
+            Exit
+         EndIf
+         aAdd( _BrowseRecMap, Nil )
+         aIns( _BrowseRecMap, 1 )
+         _BrowseRecMap[ 1 ] := ( cWorkArea )->( RecNo() )
+      EndDo
       For x := 1 To Len( _BrowseRecMap )
          ::DbGoTo( _BrowseRecMap[ x ] )
 
@@ -543,12 +554,11 @@ Local lColor, aFields, cWorkArea, hWnd, nWidth
       Next x
       // Repositions the file as If _BrowseRecMap was builded using successive ::DbSkip() calls
       ::DbSkip()
+      Do While nCurrentLength > Len( _BrowseRecMap )
+         ::DeleteItem( nCurrentLength )
+         nCurrentLength --
+      EndDo
    EndIf
-
-   Do While nCurrentLength > Len( _BrowseRecMap )
-      ::DeleteItem( nCurrentLength )
-      nCurrentLength --
-   EndDo
 
    If ::Visible
       ::SetRedraw( .T. )
@@ -3171,7 +3181,6 @@ Local lRet, lSomethingEdited, lRowAppended, nRecNo, cWorkArea, nNextCol
    ::ScrollToLeft()
 
 Return lSomethingEdited
-
 
 *-----------------------------------------------------------------------------*
 METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOBrowseByCell

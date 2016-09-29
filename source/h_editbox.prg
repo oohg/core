@@ -1,5 +1,5 @@
 /*
- * $Id: h_editbox.prg,v 1.27 2016-05-22 23:53:22 fyurisich Exp $
+ * $Id: h_editbox.prg,v 1.28 2016-09-29 23:22:52 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -114,7 +114,7 @@ ENDCLASS
 
 *-----------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
-               fontsize, tooltip, maxlenght, gotfocus, change, lostfocus, ;
+               fontsize, tooltip, maxlength, gotfocus, change, lostfocus, ;
                readonly, break, HelpId, invisible, notabstop, bold, italic, ;
                underline, strikeout, field, backcolor, fontcolor, novscroll, ;
                nohscroll, lRtl, lNoBorder, OnFocusPos, OnHScroll, OnVScroll, ;
@@ -131,7 +131,7 @@ Local nStyle := ES_MULTILINE + ES_WANTRETURN, nStyleEx := 0
    ::SetSplitBoxInfo( Break )
 
    ::Define2( ControlName, ParentForm, x, y, ::nWidth, ::nHeight, value, ;
-              fontname, fontsize, tooltip, maxlenght, .f., ;
+              fontname, fontsize, tooltip, maxlength, .f., ;
               lostfocus, gotfocus, change, nil, .f., HelpId, ;
               readonly, bold, italic, underline, strikeout, field, ;
               backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;

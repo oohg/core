@@ -1,5 +1,5 @@
 /*
- * $Id: i_editbox.ch,v 1.13 2016-05-22 23:52:23 fyurisich Exp $
+ * $Id: i_editbox.ch,v 1.14 2016-09-29 23:22:51 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -78,7 +78,7 @@ STANDARD VERSION
       [ TOOLTIP <tooltip> ] ;
       [ BACKCOLOR <backcolor> ] ;
       [ FONTCOLOR <fontcolor> ] ;
-      [ MAXLENGTH <maxlenght> ] ;
+      [ MAXLENGTH <maxlength> ] ;
       [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
       [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
       [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
@@ -95,7 +95,7 @@ STANDARD VERSION
       [ <disabled: DISABLED> ] ;
    => ;
       [ <obj> := ] TEdit():Define( <(name)>, <(parent)>, <col>, <row>, <w>, ;
-            <h>, <value>, <f>, <s>, <tooltip>, <maxlenght>, <{gotfocus}>, ;
+            <h>, <value>, <f>, <s>, <tooltip>, <maxlength>, <{gotfocus}>, ;
             <{change}>, <{lostfocus}>, <.readonly.>, .f., <helpid>, ;
             <.invisible.>, <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, ;
             <.strikeout.>, <(field)>, <backcolor>, <fontcolor>, <.novscroll.>, ;
@@ -123,7 +123,7 @@ SPLITBOX VERSION
       [ TOOLTIP <tooltip> ] ;
       [ BACKCOLOR <backcolor> ] ;
       [ FONTCOLOR <fontcolor> ] ;
-      [ MAXLENGTH <maxlenght> ] ;
+      [ MAXLENGTH <maxlength> ] ;
       [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
       [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
       [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
@@ -141,7 +141,7 @@ SPLITBOX VERSION
       [ <disabled: DISABLED> ] ;
    => ;
       [ <obj> := ] TEdit():Define( <(name)>, <(parent)>,,, <w>, <h>, <value>, ;
-            <f>, <s>, <tooltip>, <maxlenght>, <{gotfocus}>, <{change}>, ;
+            <f>, <s>, <tooltip>, <maxlength>, <{gotfocus}>, <{change}>, ;
             <{lostfocus}>, <.readonly.>, <.break.>, <helpid>, <.invisible.>, ;
             <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
             <(field)>, <backcolor>, <fontcolor>, <.novscroll.>, <.nohscroll.>, ;

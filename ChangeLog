@@ -1,11 +1,24 @@
 /*
- * $Id: ChangeLog,v 1.1594 2016-09-12 22:53:11 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1595 2016-09-29 23:22:51 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2016-09-29 20:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/Changelog.htm
+     * Updated.
+   * include/i_editbox.prg
+   * include/i_richeditbox.prg
+   * source/h_editbox.prg
+   * source/h_richeditbox.prg
+     ! Typo.
+   * source/h_controlmisc.prg
+     + Support for method Maxlength to SetProperty and GetProperty functions.
+   * source/h_browse.prg
+     ! No record is selected after PgDn past last record.
 
 2016-09-12 19:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/makelib_mingw.bat

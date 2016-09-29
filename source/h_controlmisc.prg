@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.157 2016-08-14 23:38:59 fyurisich Exp $
+ * $Id: h_controlmisc.prg,v 1.158 2016-09-29 23:22:52 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -708,6 +708,9 @@ Local oWnd, oCtrl, nPos
       ElseIf Arg3 == "ONCHANGE"
          oCtrl:OnChange := Arg4
 
+      ElseIf Arg3 == "MAXLENGTH"
+         oCtrl:MaxLength := Arg4
+
       Else
          // Pseudo-property
          nPos := ASCAN( oCtrl:aProperties, { |a| a[ 1 ] == Arg3 } )
@@ -929,6 +932,9 @@ Local RetVal, oWnd, oCtrl, nPos
 
       ElseIf Arg3 == 'LENGTH'
          RetVal := oCtrl:Length
+
+      ElseIf Arg3 == 'MAXLENGTH'
+         RetVal := oCtrl:MaxLength
 
       ElseIf Arg3 == 'POSITION'
          RetVal := oCtrl:Position

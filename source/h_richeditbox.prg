@@ -1,5 +1,5 @@
 /*
- * $Id: h_richeditbox.prg,v 1.39 2016-06-21 00:04:08 fyurisich Exp $
+ * $Id: h_richeditbox.prg,v 1.40 2016-09-29 23:22:52 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -125,7 +125,7 @@ ENDCLASS
 
 *-----------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
-               fontsize, tooltip, maxlenght, gotfocus, change, lostfocus, ;
+               fontsize, tooltip, maxlength, gotfocus, change, lostfocus, ;
                readonly, break, HelpId, invisible, notabstop, bold, italic, ;
                underline, strikeout, field, backcolor, lRtl, lDisabled, ;
                selchange, fontcolor, nohidesel, OnFocusPos, novscroll, ;
@@ -147,7 +147,7 @@ Local ControlHandle, nStyle
              if( HB_IsLogical( nohscroll ) .AND. nohscroll, 0, WS_HSCROLL )
 
    ::SetSplitBoxInfo( Break, )
-   ControlHandle := InitRichEditBox( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, maxlenght, ::lRtl )
+   ControlHandle := InitRichEditBox( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, maxlength, ::lRtl )
 
    ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )

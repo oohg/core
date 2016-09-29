@@ -1,5 +1,5 @@
 /*
- * $Id: i_richeditbox.ch,v 1.15 2016-05-22 23:52:23 fyurisich Exp $
+ * $Id: i_richeditbox.ch,v 1.16 2016-09-29 23:22:51 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -80,7 +80,7 @@ STANDARD VERSION
       [ TOOLTIP <tooltip> ] ;
       [ BACKCOLOR <backcolor> ] ;
       [ FONTCOLOR <fontcolor> ] ;
-      [ MAXLENGTH <maxlenght> ] ;
+      [ MAXLENGTH <maxlength> ] ;
       [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
       [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
       [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
@@ -101,7 +101,7 @@ STANDARD VERSION
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TEditRich(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <value>, ;
-            <f>, <s>, <tooltip>, <maxlenght>, <{gotfocus}>, <{change}>, ;
+            <f>, <s>, <tooltip>, <maxlength>, <{gotfocus}>, <{change}>, ;
             <{lostfocus}>, <.readonly.>, <.break.>, <helpid>, <.invisible.>, ;
             <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
             <(field)>, <backcolor>, <.rtl.>, <.disabled.>, <{selchange}>, ;
@@ -133,7 +133,7 @@ SPLITBOX VERSION
       [ TOOLTIP <tooltip> ] ;
       [ BACKCOLOR <backcolor> ] ;
       [ FONTCOLOR <fontcolor> ] ;
-      [ MAXLENGTH <maxlenght> ] ;
+      [ MAXLENGTH <maxlength> ] ;
       [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
       [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
       [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
@@ -154,7 +154,7 @@ SPLITBOX VERSION
    =>;
       [ <obj> := ] _OOHG_SelectSubClass( TEditRich(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, , , <w>, <h>, <value>, <f>, <s>, ;
-            <tooltip>, <maxlenght>, <{gotfocus}>, <{change}>, <{lostfocus}>, ;
+            <tooltip>, <maxlength>, <{gotfocus}>, <{change}>, <{lostfocus}>, ;
             <.readonly.>, <.break.>, <helpid>, <.invisible.>, <.notabstop.>, ;
             <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, <(field)>, ;
             <backcolor>, <.rtl.>, <.disabled.>, <{selchange}>, <fontcolor>, ;
