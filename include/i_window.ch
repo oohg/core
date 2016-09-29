@@ -1,5 +1,5 @@
 /*
- * $Id: i_window.ch,v 1.65 2016-05-22 23:52:23 fyurisich Exp $
+ * $Id: i_window.ch,v 1.66 2016-09-29 23:50:37 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -318,6 +318,11 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
       _OOHG_TempWindowName := <(w)> ;;
       DECLARE WINDOW <w> ;;
       #include \<<w>.fmg\>
+
+#xcommand LOAD WINDOW <ww> AS <w: 0, NONAME, NIL, NULL, NONE> ;
+   => ;
+      _OOHG_TempWindowName := <(w)> ;;
+      #include \<<ww>.fmg\>
 
 #xcommand LOAD WINDOW <ww> AS <w> ;
    => ;
