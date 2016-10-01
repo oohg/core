@@ -1,5 +1,5 @@
 /*
- * $Id: mymenued.fmg,v 1.9 2016-05-22 23:52:22 fyurisich Exp $
+ * $Id: mymenued.fmg,v 1.10 2016-10-01 23:19:30 fyurisich Exp $
  */
 
 * ooHG IDE Plus form generated code
@@ -241,7 +241,7 @@ DEFINE WINDOW TEMPLATE ;
       TRANSPARENT ;
       CENTERALIGN 
 
-   @ 360, 560 BUTTON button_104 ;
+   @ 360, 560 BUTTON btn_LvlDwn ;
       WIDTH 90 ;
       HEIGHT 28 ;
       CAPTION '<--' ;
@@ -249,7 +249,7 @@ DEFINE WINDOW TEMPLATE ;
       FONT 'Arial' ;
       SIZE 10
 
-   @ 360, 660 BUTTON button_105 ;
+   @ 360, 660 BUTTON btn_LvlUp ;
       WIDTH 90 ;
       HEIGHT 28 ;
       CAPTION '-->' ;

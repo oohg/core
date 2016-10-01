@@ -1,5 +1,5 @@
 /*
- * $Id: fontclrs.fmg,v 1.9 2016-05-22 23:52:22 fyurisich Exp $
+ * $Id: fontclrs.fmg,v 1.10 2016-10-01 23:19:30 fyurisich Exp $
  */
 
 * ooHG IDE Plus form generated code
@@ -79,7 +79,7 @@ DEFINE WINDOW TEMPLATE ;
       SIZE 9 ;
       INVISIBLE 
 
-   @ 120, 160 BUTTON button_104 ;
+   @ 120, 160 BUTTON btn_TtlBckClr ;
       WIDTH 110 ;
       HEIGHT 28 ;
       CAPTION 'Title BackColor' ;
@@ -88,7 +88,7 @@ DEFINE WINDOW TEMPLATE ;
       SIZE 9 ;
       INVISIBLE 
 
-   @ 160, 20 BUTTON button_105 ;
+   @ 160, 20 BUTTON btn_TrlFntClr ;
       WIDTH 110 ;
       HEIGHT 28 ;
       CAPTION 'Trailing FontColor' ;

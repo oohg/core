@@ -1,11 +1,108 @@
 /*
- * $Id: ChangeLog,v 1.1596 2016-09-29 23:50:37 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1597 2016-10-01 23:19:30 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2016-10-01 20:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/mgide.rc
+     * Resources renamed to IDE_something.
+     - Unused resources.
+     * Format.
+   * ide/fmgs/fontclrs.fmg
+   * ide/fmgs/mymenued.fmg
+     * Some control's names.
+   * ide/fmgs/form_prefer.fmg
+     + Support for hidding the tooltip of the Project Tree.
+     * Some control's names.
+   + ide/fmgs/mytbsel.fmg
+     + Support for more than one toolbar.
+   * ide/fmgs/mytoolbared.fmg
+     * Some control's names.
+     * Control's layout.
+     * Some control's action clauses.
+   - ide/imgs/bebox.bmp
+   - ide/imgs/bprinter.bmp
+   - ide/imgs/br_ok.bmp
+   - ide/imgs/bus.bmp
+   * ide/imgs/cp_settings.bmp
+   + ide/imgs/debug.bmp
+   - ide/imgs/demo.Bmp
+   - ide/imgs/find.bmp
+   - ide/imgs/intermove.bmp
+   - ide/imgs/menu.bmp
+   + ide/imgs/menubrowse.bmp
+   + ide/imgs/menuclose.bmp
+   + ide/imgs/menuedit.bmp
+   + ide/imgs/menunew.bmp
+   + ide/imgs/menupack.bmp
+   + ide/imgs/menurecall.bmp
+   + ide/imgs/menustru.bmp
+   + ide/imgs/menuzap.bmp
+   * ide/imgs/mod.bmp
+   + ide/imgs/oide.bmp
+   + ide/imgs/oohg16.bmp
+   - ide/imgs/remov.bmp
+   - ide/imgs/status.bmp
+   - ide/imgs/tbbuild.bmp
+   - ide/imgs/tbbuild2.bmp
+   - ide/imgs/tbfind.bmp
+   - ide/imgs/tbmod.bmp
+   - ide/imgs/tbmod1.bmp
+   - ide/imgs/tbmod2.bmp
+   - ide/imgs/tbnew.bmp
+   - ide/imgs/tbprint.bmp
+   - ide/imgs/tbqbrow.bmp
+   - ide/imgs/tbremove.bmp
+   - ide/imgs/tbrun.bmp
+   - ide/imgs/teven.bmp
+   - ide/imgs/tfoco.bmp
+   - ide/imgs/tframe.bmp
+   - ide/imgs/torder.bmp
+   - ide/imgs/tprop.bmp
+   - ide/imgs/tstat.bmp
+   - ide/imgs/wd.bmp
+   * ide/prgs/dbucvc.prg
+     ! Menu icons restored.
+     ! Edit function restored.
+     - Message on exit.
+     - Some comments.
+   * ide/prgs/formedit.prg
+     * Some comments and messages.
+     * Control inspector is now resizable.
+     + Support for DEFINE TOOLBAR/BUTTON/END TOOLBAR clauses.
+     ! Points were drawn over toolbars.
+     ! Caption and Picture clauses of BUTTON controls.
+     + Support for tooltips defined using OOP syntax on AnimateBox,
+       Image and Label controls.
+     ! Value clause of LABEL and TEXTBOX controls.
+     ! InputMask clause of TEXTBOX controls.
+     ! Tab order is not preserved when a control is modified.
+   * ide/prgs/menued.prg
+     * Use DATA var instead of PARAMETER var in Method Edit.
+   * ide/prgs/mgide.prg
+     % Code readability.
+     + Support for editing ch, prg, rc and rpt files from command line.
+     * Menu icons restored.
+     + Check for unsaved files and forms before exit.
+     * Default INI file is re-read when creating a new project.
+     * Default INI file is no longer updated on form's close.
+     * Text displayed when F1 key is pressed.
+     * Some comments and messages.
+     + New INI parameter to hide the tooltip of the Project Tree.
+   * ide/prgs/toolbed.prg
+     * Toolbar loading process redesigned so it reads
+       DEFINE TOOLBAR/BUTTON/END TOOLBAR clauses directly from
+       the fmg file instead of using and auxiliary file.
+   * ide/sample/Main2.prg
+     * Removed unneeded code.
+   * ide/mgide.rc
+     - Unused images.
+   * manual/Changelog.htm
+     * Updated.
 
 2016-09-29 20:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * manual/Changelog.htm

@@ -1,5 +1,5 @@
 /*
- * $Id: menued.prg,v 1.15 2016-05-31 22:30:08 fyurisich Exp $
+ * $Id: menued.prg,v 1.16 2016-10-01 23:19:31 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -279,7 +279,6 @@ METHOD CreateMenuFromFile( oEditor, nType, cButton, oButton ) CLASS TMyMenuEdito
    IF HB_IsNumeric( nType ) .AND. nType >= 1 .AND. nType <= 4
       ::nType := nType
    ENDIF
-
    ::OpenWorkArea( cButton )
    ::ParseData()
    ::CreateMenuCtrl( oButton )
@@ -315,14 +314,16 @@ Local cTitulo := {'Main', 'Context', 'Notify', 'Drop Down'}
    ENDIF
    IF HB_IsNumeric( nType ) .AND. nType >= 1 .AND. nType <= 4
       ::nType := nType
+   ENDIF
+   IF ::nType >= 1 .AND. ::nType <= 4
       ::OpenWorkArea( cButton )
       LOAD WINDOW myMenuEd AS ( ::cID )
       ::FormEdit := GetFormObject( ::cID )
-      IF nType > 1
-         ::FormEdit:button_104:Enabled := .F.
-         ::FormEdit:button_105:Enabled := .F.
+      IF ::nType > 1
+         ::FormEdit:btn_LvlDwn:Enabled := .F.
+         ::FormEdit:btn_LvlUp:Enabled := .F.
       ENDIF
-      ::FormEdit:Title := 'ooHG IDE+ ' + cTitulo[nType] + ' menu editor'
+      ::FormEdit:Title := 'ooHG IDE+ ' + cTitulo[ ::nType ] + ' menu editor'
       IF ( ::cID )->( RecCount() ) > 0
          ::FormEdit:browse_101:Value := 1
       ENDIF

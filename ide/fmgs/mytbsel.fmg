@@ -1,0 +1,75 @@
+/*
+ * $Id: mytbsel.fmg,v 1.1 2016-10-01 23:19:30 fyurisich Exp $
+ */
+
+* ooHG IDE Plus form generated code
+* (c) 2003-2016 Ciro Vargas Clemow <cvc@oohg.org>
+
+DEFINE WINDOW TEMPLATE ;
+   AT 100, 100 ;
+   WIDTH 370 ;
+   HEIGHT 350 ;
+   TITLE 'ooHG IDE+ Toolbar selector' ;
+   MODAL ;
+   FONT 'Arial' ;
+   SIZE 10 ;
+   CLIENTAREA ;
+   ON INIT ( aEval( ::aToolBars, { |oTb| oLst:AddItem( oTb:Name ) } ), oLst:Value := Min( 1, ::Count ), oEdit:Enabled := oDel:Enabled := ( ::Count > 0 ) )
+
+   @ 15, 30 LABEL label_1 ;
+      WIDTH 120 ;
+      HEIGHT 24 ;
+      VALUE 'Toolbars:' ;
+      TRANSPARENT
+
+   @ 50, 20 LISTBOX list_Tbs ;
+      OBJ oLst ;
+      WIDTH 200 ;
+      HEIGHT 280
+
+   @ 50, 250 BUTTON button_Add ;
+      WIDTH 100 ;
+      HEIGHT 28 ;
+      CAPTION 'Add' ;
+      ACTION { |oTb| oTb := ::AddToolBar(), IF( ::EditToolBar( ::Count ) == EDIT_SAVED, ( oLst:AddItem( oTb:Name ), oLst:Value := ::Count, oEdit:Enabled := oDel:Enabled := .T. ), ::DelToolBar( ::Count ) ) }
+
+   @ 92, 250 BUTTON button_Del ;
+      OBJ oDel ;
+      WIDTH 100 ;
+      HEIGHT 28 ;
+      CAPTION 'Delete' ;
+      ACTION { || IF( MsgYesNo( 'Are you sure you want to delete toolbar ' + oLst:Item( oLst:Value ) + ' ?', 'OOHG IDE+' ), Eval( { |i| i := oLst:Value, ::DelToolBar( i ), ::lChanged := .T., oLst:DeleteItem( i ), oLst:Value := Min( i, ::Count ), oEdit:Enabled := oDel:Enabled := ( oLst:Value > 0 ) } ), NIL ) }
+
+   @ 134, 250 BUTTON button_Edit ;
+      OBJ oEdit ;
+      WIDTH 100 ;
+      HEIGHT 28 ;
+      CAPTION 'Edit' ;
+      ACTION ::EditToolBar( oLst:Value )
+
+   @ 176, 250 BUTTON button_Up ;
+      WIDTH 100 ;
+      HEIGHT 28 ;
+      CAPTION '/\' ;
+      ACTION { |i| i := ::MoveToolBarUp( oLst:Value ), oLst:DeleteAllItems(), aEval( ::aToolBars, { |oTb| oLst:AddItem( oTb:Name ) } ), oLst:Value := i }
+
+   @ 218, 250 BUTTON button_Down ;
+      WIDTH 100 ;
+      HEIGHT 28 ;
+      CAPTION '\/' ;
+      ACTION { |i| i := ::MoveToolBarDown( oLst:Value ), oLst:DeleteAllItems(), aEval( ::aToolBars, { |oTb| oLst:AddItem( oTb:Name ) } ), oLst:Value := i }
+
+   @ 260, 250 BUTTON button_Save ;
+      WIDTH 100 ;
+      HEIGHT 28 ;
+      CAPTION 'Discard' ;
+      ACTION IF( ::lChanged, IF( MsgYesNo( "Changes will be discarded and toolbars will be reloaded from FMG file, are you sure?", 'OOHG IDE+' ), ( ::LoadToolBars(), oLst:DeleteAllItems(), aEval( ::aToolBars, { |oTb| oLst:AddItem( oTb:Name ) } ), oLst:Value := Min( 1, ::Count ), oEdit:Enabled := oDel:Enabled := ( ::Count > 0 ) ), Nil ), MsgExclamation( "No changes were made !!!", 'ooHG IDE+' ) )
+
+   @ 302, 250 BUTTON button_Exit ;
+      WIDTH 100 ;
+      HEIGHT 28 ;
+      CAPTION 'Exit' ;
+      ACTION ThisWindow.Release()
+
+END WINDOW
+

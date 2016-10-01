@@ -1,383 +1,388 @@
 /*
- * $Id: mytoolbared.fmg,v 1.9 2016-05-22 23:52:22 fyurisich Exp $
+ * $Id: mytoolbared.fmg,v 1.10 2016-10-01 23:19:30 fyurisich Exp $
  */
 
 * ooHG IDE Plus form generated code
 * (c) 2003-2016 Ciro Vargas Clemow <cvc@oohg.org>
 
 DEFINE WINDOW TEMPLATE ;
+   OBJ ::FormEdit ;
    AT 108, 99 ;
-   WIDTH 778 ;
+   WIDTH 788 ;
    HEIGHT 519 ;
    TITLE 'ooHG IDE+ Toolbar editor' ;
    MODAL ;
    ON RELEASE ::FormEdit := NIL ;
    BACKCOLOR ::oEditor:myIde:aSystemColor ;
    FONT 'Arial' ;
-   SIZE 10
+   SIZE 10 ;
+   ON INIT ::OnEditInit()
 
-   @ 10, 10 FRAME frame_2 ;
+   @ 10, 10 FRAME frm_Btns ;
       WIDTH 530 ;
       HEIGHT 260 ;
-      CAPTION 'Items' ;
+      CAPTION 'Buttons' ;
       TRANSPARENT 
 
-   @ 30, 15 BROWSE browse_101 ;
+   @ 30, 15 GRID grd_Buttons ;
       WIDTH 520 ;
       HEIGHT 200 ;
-      HEADERS {'name','caption','action','check','autosize','image','separator','group','tooltip','obj','dropdown', 'wholedropdown','subclass'} ;
-      WIDTHS {90,160,250,40,40,160,40,40,160,90,40,90} ;
-      WORKAREA ( ::cID ) ;
-      FIELDS {'named','item','action','check','autosize','image','separator','group','tooltip','obj','drop','whole','subclass'} ;
-      VALUE 1 ;
+      HEADERS { 'name', 'caption', 'action', 'check', 'autosize', 'picture', 'separator', 'group', 'tooltip', 'obj', 'dropdown', 'wholedropdown', 'subclass' } ;
+      WIDTHS  { 90,     160,       250,      40,      40,         160,       40,          40,      160,       90,    40,         90,              90 } ;
       FONT 'courier new' ;
       SIZE 10 ;
-      ON CHANGE ::ParseItem() ;
-      ON GOTFOCUS ::ParseItem() ;
-      LOCK 
+      COLUMNCONTROLS { NIL, NIL, NIL, {'LCOMBOBOX'}, {'LCOMBOBOX'}, NIL, {'LCOMBOBOX'}, {'LCOMBOBOX'}, NIL, NIL, {'LCOMBOBOX'}, {'LCOMBOBOX'}, NIL } ;
+      ON CHANGE ::OnGridChange()
 
-   @ 235, 15 BUTTON button_101 ;
+   @ 235, 15 BUTTON btn_Insert ;
       WIDTH 100 ;
       HEIGHT 28 ;
-      CAPTION 'Insert item' ;
-      ACTION ::InsertItem()
+      CAPTION 'Insert button' ;
+      ACTION ::InsertBtn()
 
-   @ 235, 120 BUTTON button_102 ;
+   @ 235, 120 BUTTON btn_Delete ;
       WIDTH 100 ;
       HEIGHT 28 ;
-      CAPTION 'Delete item' ;
-      ACTION ::DeleteItem()
+      CAPTION 'Delete button' ;
+      ACTION ::DeleteBtn()
 
-   @ 235, 225 BUTTON button_103 ;
+   @ 235, 225 BUTTON btn_New ;
       WIDTH 100 ;
       HEIGHT 28 ;
-      CAPTION 'New item' ;
-      ACTION ::AddItem()
+      CAPTION 'New button' ;
+      ACTION ::AddBtn()
 
-   @ 235, 330 BUTTON button_106 ;
+   @ 235, 330 BUTTON btn_Up ;
       WIDTH 100 ;
       HEIGHT 28 ;
       CAPTION '/\' ;
       ACTION ::MoveUp()
 
-   @ 235, 435 BUTTON button_107 ;
+   @ 235, 435 BUTTON btn_Down ;
       WIDTH 100 ;
       HEIGHT 28 ;
       CAPTION '\/' ;
       ACTION ::MoveDown()
 
-   @ 280, 10 FRAME frame_1 ;
+   @ 280, 10 FRAME frm_Props ;
       WIDTH 530 ;
       HEIGHT 195 ;
       CAPTION 'Toolbar Properties' ;
       TRANSPARENT 
 
-   @ 300, 20 CHECKBOX checkbox_1 ;
+   @ 300, 20 CHECKBOX chk_Flat ;
       WIDTH 80 ;
       HEIGHT 28 ;
       CAPTION 'Flat' ;
       VALUE .F. ;
-      ON CHANGE ::lFlat := ::FormEdit:checkbox_1:Value
+      ON CHANGE ::lFlat := ::FormEdit:chk_Flat:Value
 
-   @ 300, 110 CHECKBOX checkbox_3 ;
+   @ 300, 110 CHECKBOX chk_Right ;
       WIDTH 80 ;
       HEIGHT 28 ;
       CAPTION 'RightText' ;
       VALUE .F. ;
-      ON CHANGE ::lRightText := ::FormEdit:checkbox_3:Value
+      ON CHANGE ::lRightText := ::FormEdit:chk_Right:Value
 
-   @ 300, 200 CHECKBOX checkbox_5 ;
+   @ 300, 200 CHECKBOX chk_Vert ;
       WIDTH 80 ;
       HEIGHT 28 ;
       CAPTION 'Vertical' ;
       VALUE .F. ;
-      ON CHANGE ::lVertical := ::FormEdit:checkbox_5:Value
+      ON CHANGE ::lVertical := ::FormEdit:chk_Vert:Value
 
-   @ 300, 290 CHECKBOX checkbox_6 ;
+   @ 300, 290 CHECKBOX chk_RTL ;
       WIDTH 80 ;
       HEIGHT 28 ;
       CAPTION 'RTL' ;
       VALUE .F. ;
-      ON CHANGE ::lRTL := ::FormEdit:checkbox_6:Value
+      ON CHANGE ::lRTL := ::FormEdit:chk_RTL:Value
 
-   @ 330, 20 CHECKBOX checkbox_2 ;
+   @ 330, 20 CHECKBOX chk_Bottom ;
       WIDTH 80 ;
       HEIGHT 24 ;
       CAPTION 'Bottom' ;
       VALUE .F. ;
-      ON CHANGE ::lBottom := ::FormEdit:checkbox_2:Value
+      ON CHANGE ::lBottom := ::FormEdit:chk_Bottom:Value
 
-   @ 330, 110 CHECKBOX checkbox_4 ;
+   @ 330, 110 CHECKBOX chk_Border ;
       WIDTH 80 ;
       HEIGHT 25 ;
       CAPTION 'Border' ;
       VALUE .F. ;
-      ON CHANGE ::lBorder := ::FormEdit:checkbox_4:Value
+      ON CHANGE ::lBorder := ::FormEdit:chk_Border:Value
 
-   @ 330, 200 CHECKBOX checkbox_7 ;
+   @ 330, 200 CHECKBOX chk_NoTab ;
       WIDTH 80 ;
       HEIGHT 28 ;
       CAPTION 'NoTabStop' ;
       VALUE .F. ;
-      ON CHANGE ::lNoTabStop := ::FormEdit:checkbox_7:Value
+      ON CHANGE ::lNoTabStop := ::FormEdit:chk_NoTab:Value
 
-   @ 330, 290 CHECKBOX checkbox_8 ;
+   @ 330, 290 CHECKBOX chk_Break ;
       WIDTH 80 ;
       HEIGHT 28 ;
       CAPTION 'Break' ;
       VALUE .F. ;
-      ON CHANGE ::lBreak := ::FormEdit:checkbox_8:Value
+      ON CHANGE ::lBreak := ::FormEdit:chk_Break:Value
 
-   @ 298, 390 FRAME frame_4 ;
+   @ 298, 390 FRAME frm_Size ;
       WIDTH 140 ;
       HEIGHT 80 ;
       CAPTION 'Button' ;
       TRANSPARENT 
 
-   @ 320, 400 LABEL label_8 ;
+   @ 320, 400 LABEL lbl_Height ;
       WIDTH 60 ;
       HEIGHT 24 ;
       VALUE 'Height'
 
-   @ 317, 460 TEXTBOX text_3 ;
+   @ 317, 460 TEXTBOX txt_Height ;
       WIDTH 60 ;
       HEIGHT 24 ;
       NUMERIC ;
       MAXLENGTH 4 ;
-      ON CHANGE ::nHeight := ::FormEdit:text_3:Value
+      ON CHANGE ::nHeight := ::FormEdit:txt_Height:Value
 
-   @ 350, 400 LABEL label_7 ;
+   @ 350, 400 LABEL lbl_Width ;
       WIDTH 60 ;
       HEIGHT 24 ;
       VALUE 'Width'
 
-   @ 347, 460 TEXTBOX text_2 ;
+   @ 347, 460 TEXTBOX txt_Width ;
       WIDTH 60 ;
       HEIGHT 24 ;
       NUMERIC ;
       MAXLENGTH 4 ;
-      ON CHANGE ::nWidth := ::FormEdit:text_2:Value
+      ON CHANGE ::nWidth := ::FormEdit:txt_Width:Value
 
-   @ 370, 20 LABEL label_1 ;
+   @ 370, 20 LABEL label_TbName ;
       WIDTH 120 ;
       HEIGHT 18 ;
       VALUE 'Toolbar Name' ;
       CENTERALIGN 
 
-   @ 390, 20 TEXTBOX text_1 ;
+   @ 390, 20 TEXTBOX txt_Name ;
       WIDTH 120 ;
       HEIGHT 24 ;
       MAXLENGTH 30 ;
-      ON CHANGE ::cTbName := AllTrim( ::FormEdit:text_1:Value )
+      ON CHANGE ::Name := AllTrim( ::FormEdit:txt_Name:Value )
 
-   @ 370, 150 LABEL label_2 ;
+   @ 370, 150 LABEL lbl_ToolTip ;
       WIDTH 120 ;
       HEIGHT 18 ;
       VALUE 'Tooltip' ;
       CENTERALIGN 
 
-   @ 390, 150 TEXTBOX text_4 ;
+   @ 390, 150 TEXTBOX txt_ToolTip ;
       WIDTH 120 ;
       HEIGHT 24 ;
       MAXLENGTH 30 ;
-      ON CHANGE ::cToolTip := AllTrim( ::FormEdit:text_4:Value )
+      ON CHANGE ::cToolTip := AllTrim( ::FormEdit:txt_ToolTip:Value )
 
-   @ 370, 280 LABEL label_3 ;
+   @ 370, 280 LABEL lbl_Obj ;
       WIDTH 120 ;
       HEIGHT 24 ;
       VALUE 'Obj' ;
       TRANSPARENT ;
       CENTERALIGN 
 
-   @ 390, 280 TEXTBOX text_8 ;
+   @ 390, 280 TEXTBOX txt_Ojb ;
       WIDTH 120 ;
       HEIGHT 24 ;
       MAXLENGTH 30 ;
-      ON CHANGE ::cObj := AllTrim( ::FormEdit:text_8:Value )
+      ON CHANGE ::cObj := AllTrim( ::FormEdit:txt_Ojb:Value )
 
-   @ 388, 430 CHECKBOX checkbox_9 ;
+   @ 386, 430 CHECKBOX chk_NoBreak ;
       WIDTH 100 ;
       HEIGHT 28 ;
       CAPTION 'End NoBreak' ;
       VALUE .F. ;
-      ON CHANGE ::lNoBorder := ::FormEdit:checkbox_9:Value
+      ON CHANGE ::lNoBreak := ::FormEdit:chk_NoBreak:Value
 
-   @ 420, 20 LABEL label_9 ;
+   @ 410, 430 CHECKBOX chk_OwnTT ;
+      WIDTH 100 ;
+      HEIGHT 28 ;
+      CAPTION 'Own Tooltip' ;
+      VALUE .F. ;
+      ON CHANGE ::lOwnTT := ::FormEdit:chk_OwnTT:Value
+
+   @ 420, 20 LABEL lbl_Caption ;
       WIDTH 120 ;
       HEIGHT 24 ;
       VALUE 'Caption' ;
       TRANSPARENT ;
       CENTERALIGN 
 
-   @ 440, 20 TEXTBOX text_9 ;
+   @ 440, 20 TEXTBOX txt_Caption ;
       WIDTH 120 ;
       HEIGHT 24 ;
       MAXLENGTH 30 ;
-      ON CHANGE ::cCaption := AllTrim( ::FormEdit:text_9:Value )
+      ON CHANGE ::cCaption := AllTrim( ::FormEdit:txt_Caption:Value )
 
-   @ 420, 150 LABEL label_10 ;
+   @ 420, 150 LABEL lbl_Action ;
       WIDTH 120 ;
       HEIGHT 24 ;
       VALUE 'Action' ;
       TRANSPARENT ;
       CENTERALIGN 
 
-   @ 440, 150 TEXTBOX text_10 ;
+   @ 440, 150 TEXTBOX txt_Action ;
       WIDTH 120 ;
       HEIGHT 24 ;
       MAXLENGTH 30 ;
-      ON CHANGE ::cAction := AllTrim( ::FormEdit:text_10:Value )
+      ON CHANGE ::cAction := AllTrim( ::FormEdit:txt_Action:Value )
 
-   @ 420, 280 LABEL label_11 ;
+   @ 420, 280 LABEL lbl_Subclass ;
       WIDTH 120 ;
       HEIGHT 24 ;
       VALUE 'Subclass' ;
       TRANSPARENT ;
       CENTERALIGN 
 
-   @ 440, 280 TEXTBOX text_11 ;
+   @ 440, 280 TEXTBOX txt_Subclass ;
       WIDTH 120 ;
       HEIGHT 24 ;
       MAXLENGTH 30 ;
-      ON CHANGE ::cSubclass := AllTrim( ::FormEdit:text_11:Value )
+      ON CHANGE ::cSubclass := AllTrim( ::FormEdit:txt_Subclass:Value )
 
-   @ 438, 430 BUTTON button_tbp ;
+   @ 438, 430 BUTTON btn_SetFont ;
       WIDTH 100 ;
       HEIGHT 28 ;
       CAPTION 'Font' ;
       ACTION ::SetFont()
 
-   @ 10, 550 FRAME frame_3 ;
+   @ 10, 550 FRAME frm_Selected ;
       WIDTH 210 ;
       HEIGHT 420 ;
       CAPTION 'Selected Item' ;
       TRANSPARENT 
 
-   @ 40, 560 LABEL label_101 ;
-      WIDTH 59 ;
-      HEIGHT 21 ;
-      VALUE 'Caption'
-
-   @ 37, 635 TEXTBOX text_101 ;
-      WIDTH 120 ;
-      HEIGHT 23 ;
-      MAXLENGTH 80 ;
-      ON CHANGE ::WriteCaption()
-
-   @ 73, 560 LABEL label_102 ;
+   @ 40, 560 LABEL lbl_ItName ;
       WIDTH 45 ;
-      HEIGHT 16 ;
+      HEIGHT 23 ;
       VALUE 'Name'
 
-   @ 70, 635 TEXTBOX text_102 ;
+   @ 37, 635 TEXTBOX txt_ItName ;
       WIDTH 120 ;
       HEIGHT 23 ;
       MAXLENGTH 40 ;
       ON CHANGE ::WriteName()
 
-   @ 106, 560 LABEL label_103 ;
+   @ 73, 560 LABEL lbl_ItCaption ;
+      WIDTH 59 ;
+      HEIGHT 23 ;
+      VALUE 'Caption'
+
+   @ 70, 635 TEXTBOX txt_ItCaption ;
+      WIDTH 120 ;
+      HEIGHT 23 ;
+      MAXLENGTH 80 ;
+      ON CHANGE ::WriteCaption()
+
+   @ 106, 560 LABEL lbl_ItAction ;
       WIDTH 55 ;
-      HEIGHT 21 ;
+      HEIGHT 23 ;
       VALUE 'Action'
 
-   @ 103, 635 TEXTBOX edit_101 ;
+   @ 103, 635 TEXTBOX txt_ItAction ;
       WIDTH 120 ;
       HEIGHT 23 ;
       MAXLENGTH 250 ;
       ON CHANGE ::WriteAction()
 
-   @ 139, 560 LABEL label_104 ;
-      WIDTH 47 ;
-      HEIGHT 22 ;
-      VALUE 'Image'
+   @ 139, 560 CHECKBOX chk_ItCheck ;
+      WIDTH 90 ;
+      HEIGHT 23 ;
+      CAPTION 'Check' ;
+      VALUE .F. ;
+      ON CHANGE ::WriteCheck()
 
-   @ 136, 635 TEXTBOX text_103 ;
+   @ 139, 660 CHECKBOX chk_ItAutosize ;
+      WIDTH 90 ;
+      HEIGHT 23 ;
+      CAPTION 'Autosize' ;
+      VALUE .F. ;
+      ON CHANGE ::WriteAutosize()
+
+   @ 172, 560 LABEL lbl_ItPicture ;
+      WIDTH 47 ;
+      HEIGHT 23 ;
+      VALUE 'Picture'
+
+   @ 169, 635 TEXTBOX txt_ItPicture ;
       WIDTH 120 ;
       HEIGHT 23 ;
       MAXLENGTH 40 ;
-      ON CHANGE ::WriteImage()
+      ON CHANGE ::WritePicture()
 
-   @ 172, 560 LABEL label_4 ;
+   @ 205, 560 CHECKBOX chk_ItSeparator ;
+      WIDTH 90 ;
+      HEIGHT 23 ;
+      CAPTION 'Separator' ;
+      VALUE .F. ;
+      ON CHANGE ::WriteSeparator()
+
+   @ 205, 660 CHECKBOX chk_ItGroup ;
+      WIDTH 100 ;
+      HEIGHT 23 ;
+      CAPTION 'Group' ;
+      VALUE .F. ;
+      ON CHANGE ::WriteGroup()
+
+   @ 238, 560 LABEL lbl_ItToolTip ;
       WIDTH 76 ;
-      HEIGHT 17 ;
+      HEIGHT 23 ;
       VALUE 'Tooltip'
 
-   @ 169, 635 TEXTBOX text_5 ;
+   @ 235, 635 TEXTBOX txt_ItToolTip ;
       WIDTH 120 ;
       HEIGHT 23 ;
       MAXLENGTH 80 ;
       ON CHANGE ::WriteToolTip()
 
-   @ 205, 560 LABEL label_5 ;
+   @ 271, 560 LABEL lbl_ItObj ;
       WIDTH 76 ;
-      HEIGHT 17 ;
+      HEIGHT 23 ;
       VALUE 'Obj'
 
-   @ 202, 635 TEXTBOX text_6 ;
+   @ 268, 635 TEXTBOX txt_ItObj ;
       WIDTH 120 ;
       HEIGHT 23 ;
       MAXLENGTH 30 ;
       ON CHANGE ::WriteObj()
 
-   @ 238, 560 LABEL label_6 ;
-      WIDTH 76 ;
-      HEIGHT 17 ;
-      VALUE 'Subclass'
-
-   @ 235, 635 TEXTBOX text_7 ;
-      WIDTH 120 ;
-      HEIGHT 23 ;
-      MAXLENGTH 30 ;
-      ON CHANGE ::WriteSubclass()
-
-   @ 278, 560 CHECKBOX checkbox_101 ;
-      WIDTH 90 ;
-      HEIGHT 26 ;
-      CAPTION 'Check' ;
-      VALUE .F. ;
-      ON CHANGE ::WriteCheck()
-
-   @ 278, 660 CHECKBOX checkbox_103 ;
-      WIDTH 90 ;
-      HEIGHT 26 ;
-      CAPTION 'Separator' ;
-      VALUE .F. ;
-      ON CHANGE ::WriteSeparator()
-
-   @ 310, 560 CHECKBOX checkbox_104 ;
-      WIDTH 100 ;
-      HEIGHT 26 ;
-      CAPTION 'Group' ;
-      VALUE .F. ;
-      ON CHANGE ::WriteGroup()
-
-   @ 310, 660 CHECKBOX checkbox_102 ;
-      WIDTH 90 ;
-      HEIGHT 26 ;
-      CAPTION 'Autosize' ;
-      VALUE .F. ;
-      ON CHANGE ::WriteAutosize()
-
-   @ 360, 560 BUTTON button_1 ;
+   @ 304, 560 BUTTON btn_DrpDwnMnu ;
       WIDTH 100 ;
       HEIGHT 28 ;
       CAPTION 'Dropdown Menu' ;
       ACTION ::EditDropDownButton()
 
-   @ 395, 560 CHECKBOX checkbox_105 ;
+   @ 304, 560 CHECKBOX chk_ItWhole ;
       WIDTH 120 ;
-      HEIGHT 26 ;
+      HEIGHT 23 ;
       CAPTION 'WholeDropDown' ;
       VALUE .F. ;
       ON CHANGE ::WriteWhole()
 
-   @ 438, 550 BUTTON button_108 ;
+   @ 337, 560 LABEL lbl_ItSubclass ;
+      WIDTH 76 ;
+      HEIGHT 23 ;
+      VALUE 'Subclass'
+
+   @ 334, 635 TEXTBOX txt_ItSubclass ;
+      WIDTH 120 ;
+      HEIGHT 23 ;
+      MAXLENGTH 30 ;
+      ON CHANGE ::WriteSubclass()
+
+   @ 438, 550 BUTTON btn_Save ;
       WIDTH 100 ;
       HEIGHT 28 ;
-      CAPTION 'Save / Exit' ;
-      ACTION ::Exit()
+      CAPTION 'Save + Exit' ;
+      ACTION ::Save()
 
-   @ 438, 660 BUTTON button_109 ;
+   @ 438, 660 BUTTON btn_Discard ;
       WIDTH 100 ;
       HEIGHT 28 ;
       CAPTION 'Discard' ;

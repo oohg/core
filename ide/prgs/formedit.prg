@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.66 2016-06-02 00:57:38 fyurisich Exp $
+ * $Id: formedit.prg,v 1.67 2016-10-01 23:19:31 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -181,7 +181,7 @@ CLASS TFormEditor
    DATA aMaxLength           INIT {}
    DATA aMultiLine           INIT {}
    DATA aMultiSelect         INIT {}
-   DATA aName                INIT {}          // Name of the control in the fmg file, must be unique
+   DATA aName                INIT {}          // Name of the control in the FMG file, must be unique
    DATA aNo3DColors          INIT {}
    DATA aNoAutoSizeMovie     INIT {}
    DATA aNoAutoSizeWindow    INIT {}
@@ -208,7 +208,7 @@ CLASS TFormEditor
    DATA aNoToday             INIT {}
    DATA aNoTodayCircle       INIT {}
    DATA aNoVScroll           INIT {}
-   DATA aNumber              INIT {}          // End line of control's definition in .fmg file
+   DATA aNumber              INIT {}          // End line of control's definition in FMG file
    DATA aNumeric             INIT {}
    DATA aOnAbortEdit         INIT {}
    DATA aOnAppend            INIT {}
@@ -279,7 +279,7 @@ CLASS TFormEditor
    DATA aSort                INIT {}
    DATA aSourceOrder         INIT {}
    DATA aSpacing             INIT {}
-   DATA aSpeed               INIT {}          // Start line of control's definition in .fmg file
+   DATA aSpeed               INIT {}          // Start line of control's definition in FMG file
    DATA aStretch             INIT {}
    DATA aSubClass            INIT {}
    DATA aSync                INIT {}
@@ -439,6 +439,7 @@ CLASS TFormEditor
    METHOD AddControl
    METHOD AddCtrlToTabPage
    METHOD AddTabPage
+   METHOD AdjustInspectorCntrls
    METHOD CheckForFrame
    METHOD CheckStringData                     
    METHOD Clean
@@ -568,7 +569,6 @@ LOCAL nPos, cName
    ::cFFontColor  := ::myIde:cFormDefFontColor
    ::cFFontName   := ::myIde:cFormDefFontName
    ::nFFontSize   := ::myIde:nFormDefFontSize
-   ::myTbEditor   := TMyToolBarEditor():New( Self )
 
    DEFINE WINDOW 0 OBJ ::oWaitMsg ;
       AT 10, 10 ;
@@ -599,7 +599,7 @@ LOCAL nPos, cName
       NOSHOW ;
       NOMAXIMIZE ;
       NOSIZE ;
-      ICON "Edit" ;
+      ICON 'IDE_EDIT' ;
       FONT "MS Sans Serif" ;
       SIZE 10 ;
       BACKCOLOR ::myIde:aSystemColor ;
@@ -614,22 +614,22 @@ LOCAL nPos, cName
          SIZE 9
 
       @ 17,10 BUTTON exit ;
-         PICTURE "A1";
+         PICTURE "IDE_EXIT" ;
          ACTION ::Exit() ;
          WIDTH 30 ;
          HEIGHT 28 ;
          TOOLTIP "Exit"
 
       @ 17,42 BUTTON save ;
-         PICTURE "A2";
-         ACTION ::Save( 0 ) ;
+         PICTURE "IDE_SAVE" ;
+         ACTION ::Save( .F. ) ;
          WIDTH 30 ;
          HEIGHT 28 ;
          TOOLTIP "Save"
 
       @ 17,74 BUTTON save_as ;
-         PICTURE "A3";
-         ACTION ::Save( 1 ) ;
+         PICTURE "IDE_SAVEAS" ;
+         ACTION ::Save( .T. ) ;
          WIDTH 30 ;
          HEIGHT 28 ;
          TOOLTIP "Save as"
@@ -641,70 +641,70 @@ LOCAL nPos, cName
          SIZE 9
 
       @ 17,118 BUTTON form_prop ;
-         PICTURE "A4";
+         PICTURE "IDE_FRMPROPS" ;
          ACTION ::FrmProperties() ;
          WIDTH 30 ;
          HEIGHT 28 ;
          TOOLTIP "Properties"
 
       @ 17,150 BUTTON events_prop ;
-         PICTURE "A5";
+         PICTURE "IDE_FRMEVENTS" ;
          ACTION ::FrmEvents() ;
          WIDTH 30 ;
          HEIGHT 28 ;
          TOOLTIP "Events"
 
       @ 17,182 BUTTON form_mc ;
-         PICTURE "A6";
+         PICTURE "IDE_FRMFONT" ;
          ACTION ::FrmFontColors() ;
          WIDTH 30 ;
          HEIGHT 28 ;
          TOOLTIP "Fonts and Colors"
 
       @ 17,214 BUTTON tbc_fmms ;
-         PICTURE "A7";
+         PICTURE "IDE_MMS" ;
          ACTION ::ManualMoveSize( 0 ) ;
          WIDTH 30 ;
          HEIGHT 28 ;
          TOOLTIP "Manual Move/Size"
 
       @ 17,246 BUTTON mmenu1 ;
-         PICTURE "A8";
+         PICTURE "IDE_MENUMAIN" ;
          ACTION TMyMenuEditor():Edit( Self, 1 ) ;
          WIDTH 30 ;
          HEIGHT 28 ;
          TOOLTIP "Main Menu"
 
       @ 17,278 BUTTON mmenu2 ;
-         PICTURE "A9";
+         PICTURE "IDE_MENUCNTX" ;
          ACTION TMyMenuEditor():Edit( Self, 2 ) ;
          WIDTH 30 ;
          HEIGHT 28 ;
          TOOLTIP "Context Menu"
 
       @ 17,310 BUTTON mmenu3 ;
-         PICTURE "A10";
+         PICTURE "IDE_MENUNOTY" ;
          ACTION TMyMenuEditor():Edit( Self, 3 ) ;
          WIDTH 30 ;
          HEIGHT 28 ;
          TOOLTIP "Notify Menu"
 
       @ 17,342 BUTTON toolb ;
-         PICTURE "A11";
+         PICTURE "IDE_EDTTOOL" ;
          ACTION ::myTbEditor:Edit() ;
          WIDTH 30 ;
          HEIGHT 28 ;
          TOOLTIP "Toolbar"
 
       @ 17,374 BUTTON form_co ;
-         PICTURE "A12";
+         PICTURE "IDE_ORDER" ;
          ACTION ::OrderControls() ;
          WIDTH 30 ;
          HEIGHT 28 ;
          TOOLTIP "Order"
 
-      @ 17,406 BUTTON  butt_status ;
-         PICTURE "A13";
+      @ 17,406 BUTTON butt_status ;
+         PICTURE "IDE_STATBAR" ;
          ACTION ::VerifyBar() ;
          WIDTH 30 ;
          HEIGHT 28 ;
@@ -719,49 +719,49 @@ LOCAL nPos, cName
       ::Form_Main:frame_3:lProcMsgsOnVisible := .F.
 
       @ 17,450 BUTTON tbc_prop ;
-         PICTURE "A4";
+         PICTURE "IDE_FRMPROPS" ;
          ACTION ::Properties_Click() ;
          WIDTH 30 ;
          HEIGHT 28 ;
          TOOLTIP "Properties"
 
       @ 17,482 BUTTON tbc_events ;
-         PICTURE "A5";
+         PICTURE "IDE_FRMEVENTS" ;
          ACTION ::Events_Click() ;
          WIDTH 30 ;
          HEIGHT 28 ;
          TOOLTIP "Events"
 
       @ 17,514 BUTTON tbc_ifc ;
-         PICTURE "A6";
+         PICTURE "IDE_FRMFONT" ;
          ACTION ::CtrlFontColors() ;
          WIDTH 30 ;
          HEIGHT 28 ;
          TOOLTIP "Font and Colors"
 
       @ 17,546 BUTTON tbc_mms ;
-         PICTURE "A7";
+         PICTURE "IDE_MMS" ;
          ACTION ::ManualMoveSize( 1 ) ;
          WIDTH 30 ;
          HEIGHT 28 ;
          TOOLTIP "Manual Move/Size"
 
       @ 17,578 BUTTON tbc_im ;
-         PICTURE "A17";
+         PICTURE "IDE_MOVECTRL" ;
          ACTION ::MoveControl() ;
          WIDTH 30 ;
          HEIGHT 28 ;
          TOOLTIP "Interactive Move"
 
       @ 17,610 BUTTON tbc_is ;
-         PICTURE "A14";
+         PICTURE "IDE_SIZECTRL" ;
          ACTION ::SizeControl() ;
          WIDTH 30 ;
          HEIGHT 28 ;
          TOOLTIP "Interactive Size"
 
       @ 17,642 BUTTON tbc_del ;
-         PICTURE "A16";
+         PICTURE "IDE_DELCTRL" ;
          ACTION ::DeleteControl() ;
          WIDTH 30 ;
          HEIGHT 28 ;
@@ -796,7 +796,6 @@ LOCAL nPos, cName
       HEIGHT 377 ;
       CLIENTAREA ;
       TITLE "Controls" ;
-      ICON "VD" ;
       CHILD ;
       NOSHOW ;
       NOSIZE ;
@@ -807,7 +806,7 @@ LOCAL nPos, cName
       BACKCOLOR ::myIde:aSystemColor
 
       @ 000, 00 CHECKBUTTON Control_01 ;
-         PICTURE "SELECT" ;
+         PICTURE "IDE_SELECT" ;
          VALUE .T. ;
          WIDTH 28 ;
          HEIGHT 28 ;
@@ -815,7 +814,7 @@ LOCAL nPos, cName
          ON CHANGE ::Control_Click( 1 )
 
       @ 000, 29 CHECKBUTTON Control_02 ;
-         PICTURE "BUTTON1" ;
+         PICTURE "IDE_BUTTON" ;
          VALUE .F. ;
          WIDTH 28 ;
          HEIGHT 28 ;
@@ -823,7 +822,7 @@ LOCAL nPos, cName
          ON CHANGE ::Control_Click( 2 )
 
       @ 000, 58 CHECKBUTTON Control_03 ;
-         PICTURE "CHECKBOX1" ;
+         PICTURE "IDE_CHECKBOX" ;
          VALUE .F. ;
          WIDTH 28 ;
          HEIGHT 28 ;
@@ -831,7 +830,7 @@ LOCAL nPos, cName
          ON CHANGE ::Control_Click( 3 )
 
       @ 029, 00 CHECKBUTTON Control_04 ;
-         PICTURE "LISTBOX1" ;
+         PICTURE "IDE_LISTBOX" ;
          VALUE .F. ;
          WIDTH 28 ;
          HEIGHT 28 ;
@@ -839,7 +838,7 @@ LOCAL nPos, cName
          ON CHANGE ::Control_Click( 4 )
 
       @ 029, 29 CHECKBUTTON Control_05 ;
-         PICTURE "COMBOBOX1" ;
+         PICTURE "IDE_COMBOBOX" ;
          VALUE .F. ;
          WIDTH 28 ;
          HEIGHT 28 ;
@@ -847,7 +846,7 @@ LOCAL nPos, cName
          ON CHANGE ::Control_Click( 5 )
 
       @ 029, 58 CHECKBUTTON Control_06 ;
-         PICTURE "CHECKBUTTON" ;
+         PICTURE "IDE_CHECKBUTTON" ;
          VALUE .F. ;
          WIDTH 28 ;
          HEIGHT 28 ;
@@ -855,7 +854,7 @@ LOCAL nPos, cName
          ON CHANGE ::Control_Click( 6 )
 
       @ 058, 00 CHECKBUTTON Control_07 ;
-         PICTURE "GRID" ;
+         PICTURE "IDE_GRID" ;
          VALUE .F. ;
          WIDTH 28 ;
          HEIGHT 28 ;
@@ -863,7 +862,7 @@ LOCAL nPos, cName
          ON CHANGE ::Control_Click( 7 )
 
       @ 058, 29 CHECKBUTTON Control_08 ;
-         PICTURE "FRAME" ;
+         PICTURE "IDE_FRAME" ;
          VALUE .F. ;
          WIDTH 28 ;
          HEIGHT 28 ;
@@ -871,7 +870,7 @@ LOCAL nPos, cName
          ON CHANGE ::Control_Click( 8 )
 
       @ 058, 58 CHECKBUTTON Control_09 ;
-         PICTURE "TAB" ;
+         PICTURE "IDE_TAB" ;
          VALUE .F. ;
          WIDTH 28 ;
          HEIGHT 28 ;
@@ -879,7 +878,7 @@ LOCAL nPos, cName
          ON CHANGE ::Control_Click( 9 )
 
       @ 087, 00 CHECKBUTTON Control_10 ;
-         PICTURE "IMAGE" ;
+         PICTURE "IDE_IMAGE" ;
          VALUE .F. ;
          WIDTH 28 ;
          HEIGHT 28 ;
@@ -887,7 +886,7 @@ LOCAL nPos, cName
          ON CHANGE ::Control_Click( 10 )
 
       @ 087, 29 CHECKBUTTON Control_11 ;
-         PICTURE "ANIMATEBOX" ;
+         PICTURE "IDE_ANIMATEBOX" ;
          VALUE .F. ;
          WIDTH 28 ;
          HEIGHT 28 ;
@@ -895,7 +894,7 @@ LOCAL nPos, cName
          ON CHANGE ::Control_Click( 11 )
 
       @ 087, 58 CHECKBUTTON Control_12 ;
-         PICTURE "DATEPICKER" ;
+         PICTURE "IDE_DATEPICKER" ;
          VALUE .F. ;
          WIDTH 28 ;
          HEIGHT 28 ;
@@ -903,7 +902,7 @@ LOCAL nPos, cName
          ON CHANGE ::Control_Click( 12 )
 
       @ 116, 00 CHECKBUTTON Control_13 ;
-         PICTURE "TEXTBOX" ;
+         PICTURE "IDE_TEXTBOX" ;
          VALUE .F. ;
          WIDTH 28 ;
          HEIGHT 28 ;
@@ -911,7 +910,7 @@ LOCAL nPos, cName
          ON CHANGE ::Control_Click( 13 )
 
       @ 116, 29 CHECKBUTTON Control_14 ;
-         PICTURE "EDITBOX" ;
+         PICTURE "IDE_EDITBOX" ;
          VALUE .F. ;
          WIDTH 28 ;
          HEIGHT 28 ;
@@ -919,7 +918,7 @@ LOCAL nPos, cName
          ON CHANGE ::Control_Click( 14 )
 
       @ 116, 58 CHECKBUTTON Control_15 ;
-         PICTURE "LABEL" ;
+         PICTURE "IDE_LABEL" ;
          VALUE .F. ;
          WIDTH 28 ;
          HEIGHT 28 ;
@@ -927,7 +926,7 @@ LOCAL nPos, cName
          ON CHANGE ::Control_Click( 15 )
 
       @ 145, 00 CHECKBUTTON Control_16 ;
-         PICTURE "PLAYER" ;
+         PICTURE "IDE_PLAYER" ;
          VALUE .F. ;
          WIDTH 28 ;
          HEIGHT 28 ;
@@ -935,7 +934,7 @@ LOCAL nPos, cName
          ON CHANGE ::Control_Click( 16 )
 
       @ 145, 29 CHECKBUTTON Control_17 ;
-         PICTURE "PROGRESSBAR" ;
+         PICTURE "IDE_PROGRESSBAR" ;
          VALUE .F. ;
          WIDTH 28 ;
          HEIGHT 28 ;
@@ -943,7 +942,7 @@ LOCAL nPos, cName
          ON CHANGE ::Control_Click( 17 )
 
       @ 145, 58 CHECKBUTTON Control_18 ;
-         PICTURE "RADIOGROUP" ;
+         PICTURE "IDE_RADIOGROUP" ;
          VALUE .F. ;
          WIDTH 28 ;
          HEIGHT 28 ;
@@ -951,7 +950,7 @@ LOCAL nPos, cName
          ON CHANGE ::Control_Click( 18 )
 
       @ 174, 00 CHECKBUTTON Control_19 ;
-         PICTURE "SLIDER" ;
+         PICTURE "IDE_SLIDER" ;
          VALUE .F. ;
          WIDTH 28 ;
          HEIGHT 28 ;
@@ -959,7 +958,7 @@ LOCAL nPos, cName
          ON CHANGE ::Control_Click( 19 )
 
       @ 174, 29 CHECKBUTTON Control_20 ;
-         PICTURE "SPINNER" ;
+         PICTURE "IDE_SPINNER" ;
          VALUE .F. ;
          WIDTH 28 ;
          HEIGHT 28 ;
@@ -967,7 +966,7 @@ LOCAL nPos, cName
          ON CHANGE ::Control_Click( 20 )
 
       @ 174, 58 CHECKBUTTON Control_21 ;
-         PICTURE "IMAGECHECKBUTTON" ;
+         PICTURE "IDE_IMAGECHECKBUTTON" ;
          VALUE .F. ;
          WIDTH 28 ;
          HEIGHT 28 ;
@@ -975,7 +974,7 @@ LOCAL nPos, cName
          ON CHANGE ::Control_Click( 21 )
 
       @ 203, 00 CHECKBUTTON Control_22 ;
-         PICTURE "IMAGEBUTTON" ;
+         PICTURE "IDE_IMAGEBUTTON" ;
          VALUE .F. ;
          WIDTH 28 ;
          HEIGHT 28 ;
@@ -983,7 +982,7 @@ LOCAL nPos, cName
          ON CHANGE ::Control_Click( 22 )
 
       @ 203, 29 CHECKBUTTON Control_23 ;
-         PICTURE "TIMER" ;
+         PICTURE "IDE_TIMER" ;
          VALUE .F. ;
          WIDTH 28 ;
          HEIGHT 28 ;
@@ -991,7 +990,7 @@ LOCAL nPos, cName
          ON CHANGE ::Control_Click( 23 )
 
       @ 203, 58 CHECKBUTTON Control_24 ;
-         PICTURE "BROWSE" ;
+         PICTURE "IDE_BROWSE" ;
          VALUE .F. ;
          WIDTH 28 ;
          HEIGHT 28 ;
@@ -999,7 +998,7 @@ LOCAL nPos, cName
          ON CHANGE ::Control_Click( 24 )
 
       @ 232, 00 CHECKBUTTON Control_25 ;
-         PICTURE "TREE" ;
+         PICTURE "IDE_TREE" ;
          VALUE .F. ;
          WIDTH 28 ;
          HEIGHT 28 ;
@@ -1007,7 +1006,7 @@ LOCAL nPos, cName
          ON CHANGE ::Control_Click( 25 )
 
       @ 232, 29 CHECKBUTTON Control_26 ;
-         PICTURE "IPAD" ;
+         PICTURE "IDE_IPAD" ;
          VALUE .F. ;
          WIDTH 28 ;
          HEIGHT 28 ;
@@ -1015,7 +1014,7 @@ LOCAL nPos, cName
          ON CHANGE ::Control_Click( 26 )
 
       @ 232, 58 CHECKBUTTON Control_27 ;
-         PICTURE "MONTHCAL" ;
+         PICTURE "IDE_MONTHCAL" ;
          VALUE .F. ;
          WIDTH 28 ;
          HEIGHT 28 ;
@@ -1023,7 +1022,7 @@ LOCAL nPos, cName
          ON CHANGE ::Control_Click( 27 )
 
       @ 261, 00 CHECKBUTTON Control_28 ;
-         PICTURE "HYPLINK" ;
+         PICTURE "IDE_HYPLINK" ;
          VALUE .F. ;
          WIDTH 28 ;
          HEIGHT 28 ;
@@ -1031,7 +1030,7 @@ LOCAL nPos, cName
          ON CHANGE ::Control_Click( 28 )
 
       @ 261, 29 CHECKBUTTON Control_29 ;
-         PICTURE "RICHEDIT" ;
+         PICTURE "IDE_RICHEDIT" ;
          VALUE .F. ;
          WIDTH 28 ;
          HEIGHT 28 ;
@@ -1039,7 +1038,7 @@ LOCAL nPos, cName
          ON CHANGE ::Control_Click( 29 )
 
       @ 261, 58 CHECKBUTTON Control_30 ;
-         PICTURE "TIMEP" ;
+         PICTURE "IDE_TIMEP" ;
          VALUE .F. ;
          WIDTH 28 ;
          HEIGHT 28 ;
@@ -1047,7 +1046,7 @@ LOCAL nPos, cName
          ON CHANGE ::Control_Click( 30 )
 
       @ 290, 00 CHECKBUTTON Control_31 ;
-         PICTURE "XBROWSE" ;
+         PICTURE "IDE_XBROWSE" ;
          VALUE .F. ;
          WIDTH 28 ;
          HEIGHT 28 ;
@@ -1055,7 +1054,7 @@ LOCAL nPos, cName
          ON CHANGE ::Control_Click( 31 )
 
       @ 290, 29 CHECKBUTTON Control_32 ;
-         PICTURE "ACTIVEX" ;
+         PICTURE "IDE_ACTIVEX" ;
          VALUE .F. ;
          WIDTH 28 ;
          HEIGHT 28 ;
@@ -1063,7 +1062,7 @@ LOCAL nPos, cName
          ON CHANGE ::Control_Click( 32 )
 
       @ 290, 58 CHECKBUTTON Control_33 ;
-         PICTURE "CHECKLIST" ;
+         PICTURE "IDE_CHECKLIST" ;
          VALUE .F. ;
          WIDTH 28 ;
          HEIGHT 28 ;
@@ -1071,7 +1070,7 @@ LOCAL nPos, cName
          ON CHANGE ::Control_Click( 33 )
 
       @ 319, 00 CHECKBUTTON Control_34 ;
-         PICTURE "HKB" ;
+         PICTURE "IDE_HKB" ;
          VALUE .F. ;
          WIDTH 28 ;
          HEIGHT 28 ;
@@ -1079,7 +1078,7 @@ LOCAL nPos, cName
          ON CHANGE ::Control_Click( 34 )
 
       @ 319, 29 CHECKBUTTON Control_35 ;
-         PICTURE "PICTURE" ;
+         PICTURE "IDE_PICTURE" ;
          VALUE .F. ;
          WIDTH 28 ;
          HEIGHT 28 ;
@@ -1087,7 +1086,7 @@ LOCAL nPos, cName
          ON CHANGE ::Control_Click( 35 )
 
       @ 319, 58 CHECKBUTTON Control_36 ;
-         PICTURE "METER" ;
+         PICTURE "IDE_METER" ;
          VALUE .F. ;
          WIDTH 28 ;
          HEIGHT 28 ;
@@ -1095,7 +1094,7 @@ LOCAL nPos, cName
          ON CHANGE ::Control_Click( 36 )
 
       @ 348, 00 CHECKBUTTON Control_37 ;
-         PICTURE "SCRLLBR" ;
+         PICTURE "IDE_SCRLLBR" ;
          VALUE .F. ;
          WIDTH 28 ;
          HEIGHT 28 ;
@@ -1103,7 +1102,7 @@ LOCAL nPos, cName
          ON CHANGE ::Control_Click( 37 )
 
       @ 348, 29 CHECKBUTTON Control_38 ;
-         PICTURE "ATEXT" ;
+         PICTURE "IDE_ATEXT" ;
          VALUE .F. ;
          WIDTH 28 ;
          HEIGHT 28 ;
@@ -1111,7 +1110,7 @@ LOCAL nPos, cName
          ON CHANGE ::Control_Click( 38 )
 
       @ 348, 58 CHECKBUTTON Control_Stabusbar ;
-         PICTURE "STAT" ;
+         PICTURE "IDE_STATBAR" ;
          VALUE .F. ;
          WIDTH 28 ;
          HEIGHT 28 ;
@@ -1136,7 +1135,8 @@ LOCAL nPos, cName
    ENDIF
    ::cFName := Lower( cName )
 
-   ::lSStat := .F.
+   ::myTbEditor := TMyToolBarEditor():New( Self )
+
    IF File( cFullName )
       ::Open( cFullName, lWait )
    ELSE
@@ -1145,9 +1145,28 @@ LOCAL nPos, cName
 RETURN Self
 
 //------------------------------------------------------------------------------
+METHOD AdjustInspectorCntrls()  CLASS TFormEditor
+//------------------------------------------------------------------------------
+LOCAL w, h
+
+   w := ::Form_List:ClientWidth
+   IF w < 370
+      ::Form_List:ClientWidth := 370
+      w := 370
+   ENDIF
+   h := ::Form_List:ClientHeight
+   IF h < 490
+      ::Form_List:ClientHeight := 490
+      h := 490
+   ENDIF
+   ::oCtrlList:Width  := w - 20
+   ::oCtrlList:Height := h - 90
+RETURN Nil
+
+//------------------------------------------------------------------------------
 METHOD Open( cFMG, lWait )  CLASS TFormEditor
 //------------------------------------------------------------------------------
-LOCAL i, nContLin, cFormTxt, cName, cType, cLine, cSkip := "", lAdd
+LOCAL i, nContLin, cFormTxt, cName, cType, cLine, cSkip := "", lAdd, nPos
 LOCAL aTypes := { "ACTIVEX", "ANIMATEBOX", "BROWSE", "BUTTON", "CHECKBOX", ;
                   "CHECKBUTTON", "CHECKLIST", "COMBOBOX", "DATEPICKER", ;
                   "EDITBOX", "FRAME", "GRID", "HOTKEYBOX", "HYPERLINK", ;
@@ -1166,15 +1185,14 @@ LOCAL aTypes := { "ACTIVEX", "ANIMATEBOX", "BROWSE", "BUTTON", "CHECKBOX", ;
       HEIGHT 490 ;
       CLIENTAREA ;
       TITLE "Control Inspector" ;
-      ICON "Edit" ;
       CHILD ;
       NOSHOW ;
       NOMAXIMIZE ;
       NOMINIMIZE ;
-      NOSIZE ;
       NOSYSMENU ;
       BACKCOLOR ::myIde:aSystemColor ;
-      ON INIT SetHeightForWholeRows( ::oCtrlList, 400 )
+      ON INIT SetHeightForWholeRows( ::oCtrlList, 400 ) ;
+      ON SIZE ::AdjustInspectorCntrls()
 
       @ 10, 10 GRID 0 OBJ ::oCtrlList ;
          WIDTH 350 ;
@@ -1214,14 +1232,14 @@ LOCAL aTypes := { "ACTIVEX", "ANIMATEBOX", "BROWSE", "BUTTON", "CHECKBOX", ;
          SEPARATOR
          ITEM "Print Brief"            ACTION ::PrintBrief()
          SEPARATOR
-         ITEM "Form's context menu"    ACTION IIF( HB_IsObject( ::myCMCtrl ), ::myCMCtrl:Activate(), MsgInfo( "Context menu is not defined !!!", "OOHG IDE+" ) )
-         ITEM "Form's notify menu"     ACTION IIF( HB_IsObject( ::myNMCtrl ), ::myNMCtrl:Activate(), MsgInfo( "Notify menu is not defined !!!", "OOHG IDE+" ) )
+         ITEM "Form's context menu"    ACTION IIF( HB_IsObject( ::myCMCtrl ), ::myCMCtrl:Activate(), MsgInfo( "Context menu is not defined !!!", 'OOHG IDE+' ) )
+         ITEM "Form's notify menu"     ACTION IIF( HB_IsObject( ::myNMCtrl ), ::myNMCtrl:Activate(), MsgInfo( "Notify menu is not defined !!!", 'OOHG IDE+' ) )
       END MENU
 
-      @ 420, 10 LABEL lop1 VALUE "Double click or Enter to modify the position or size of a control." FONT "Calibri" SIZE 9 AUTOSIZE HEIGHT 15
-      @ 435, 10 LABEL lop2 VALUE "Right click to access properties or events, or to do global" FONT "Calibri" SIZE 9 AUTOSIZE HEIGHT 15
-      @ 450, 10 LABEL lop3 VALUE "align/resize of selected controls (use Ctrl+Click to select)." FONT "Calibri" SIZE 9 AUTOSIZE HEIGHT 15
-      @ 465, 10 LABEL lop4 VALUE "Click on the headers to change display order." FONT "Calibri" SIZE 9 AUTOSIZE HEIGHT 15
+      @ 420, 10 LABEL Lop1 VALUE "Double click or Enter to modify the position or size of a control." FONT "Calibri" SIZE 9 AUTOSIZE HEIGHT 15
+      @ 435, 10 LABEL Lop2 VALUE "Right click to access properties or events, or to do global" FONT "Calibri" SIZE 9 AUTOSIZE HEIGHT 15
+      @ 450, 10 LABEL Lop3 VALUE "align/resize of selected controls (use Ctrl+Click to select)." FONT "Calibri" SIZE 9 AUTOSIZE HEIGHT 15
+      @ 465, 10 LABEL Lop4 VALUE "Click on the headers to change display order." FONT "Calibri" SIZE 9 AUTOSIZE HEIGHT 15
    END WINDOW
 
    // Load form
@@ -1240,7 +1258,7 @@ LOCAL aTypes := { "ACTIVEX", "ANIMATEBOX", "BROWSE", "BUTTON", "CHECKBOX", ;
          ENDIF
 
       ELSEIF At( "END WINDOW ", cLine ) == 1
-         // Stop processing, remaining control are ignored
+         // Stop processing, remaining controls are ignored
          nContLin := i
          EXIT
 
@@ -1249,7 +1267,7 @@ LOCAL aTypes := { "ACTIVEX", "ANIMATEBOX", "BROWSE", "BUTTON", "CHECKBOX", ;
          cName := "TEMPLATE"
          cType := "FORM"
          IF aScan( ::aControlW, "template" ) > 0
-            MsgStop( "The fmg contains more than one DEFINE WINDOW (extra ones will be ignored).", "OOHG IDE+" )
+            MsgStop( "The FMG file contains more than one DEFINE WINDOW (extra ones will be ignored).", 'OOHG IDE+' )
             // Add "empty" control to properly set ::aNumber
             cName := ""
          ENDIF
@@ -1263,10 +1281,10 @@ LOCAL aTypes := { "ACTIVEX", "ANIMATEBOX", "BROWSE", "BUTTON", "CHECKBOX", ;
          cName := ::ReadCtrlName( i )
          cType := ::ReadCtrlType( i )
          IF aScan( ::aControlW, "template" ) == 0
-            MsgStop( "Control " + DQM( cName ) + " will be ignored because it's defined before DEFINE WINDOW.", "OOHG IDE+" )
+            MsgStop( "Control " + DQM( cName ) + " will be ignored because it's defined before DEFINE WINDOW.", 'OOHG IDE+' )
             cName := ""
-         ELSEIF aScan( ::aControlW, Lower( cName ) ) > 0
-            MsgStop( "The fmg contains two controls named " + DQM( cName ) + " (the second one will be ignored).", "OOHG IDE+" )
+         ELSEIF ! Empty( cName ) .and. aScan( ::aControlW, Lower( cName ) ) > 0
+            MsgStop( "The FMG file contains two controls named " + DQM( cName ) + " (the second one will be ignored).", 'OOHG IDE+' )
             cName := ""
          ENDIF
          ::IniArray( cName, cType )
@@ -1313,9 +1331,32 @@ LOCAL aTypes := { "ACTIVEX", "ANIMATEBOX", "BROWSE", "BUTTON", "CHECKBOX", ;
          cSkip := "INTERNAL"
 
       ELSEIF At( "DEFINE TOOLBAR ", cLine ) == 1
-         // Ignore it, support for DEFINE TOOLBAR is missing, see ::myTbEditor:CreateToolbarFromFile
-         // TODO: more than one toolbar, check for duplicated names
-         cSkip := "TOOLBAR"
+         cName := ::ReadCtrlName( i )
+         cType := "TOOLBAR"
+         IF aScan( ::aControlW, "template" ) == 0
+            MsgStop( "ToolBar " + DQM( cName ) + " will be ignored because it's defined before DEFINE WINDOW.", 'OOHG IDE+' )
+            cName := ""
+         ELSEIF ! Empty( cName ) .and. aScan( ::aControlW, Lower( cName ) ) > 0
+            MsgStop( "The FMG file contains two controls named " + DQM( cName ) + " (the second one will be ignored).", 'OOHG IDE+' )
+            cName := ""
+         ENDIF
+         ::IniArray( cName, cType )
+         ::aSpeed[::nControlW] := i
+
+      ELSEIF At( "BUTTON ", cLine ) == 1
+         nPos := At( "BUTTON ", Upper( ::aLine[i] ) )
+         ::aLine[i] := "DEFINE TBBUTTON " + SubStr( ::aLine[i], nPos + 7 )
+         cName := ::ReadCtrlName( i )
+         cType := "TBBUTTON"
+         IF aScan( ::aControlW, "template" ) == 0
+            MsgStop( "ToolBar button " + DQM( cName ) + " will be ignored because it's defined before DEFINE WINDOW.", 'OOHG IDE+' )
+            cName := ""
+         ELSEIF ! Empty( cName ) .and. aScan( ::aControlW, Lower( cName ) ) > 0
+            MsgStop( "The FMG file contains two controls named " + DQM( cName ) + " (the second one will be ignored).", 'OOHG IDE+' )
+            cName := ""
+         ENDIF
+         ::IniArray( cName, cType )
+         ::aSpeed[::nControlW] := i
 
       ELSEIF At( "DEFINE STATUSBAR ", cLine ) == 1
          // Ignore content, it's processed by ::LoadControls
@@ -1323,10 +1364,10 @@ LOCAL aTypes := { "ACTIVEX", "ANIMATEBOX", "BROWSE", "BUTTON", "CHECKBOX", ;
          cType := ;
          cSkip := "STATUSBAR"
          IF aScan( ::aControlW, "template" ) == 0
-            MsgStop( "STATUSBAR control will be ignored because it's defined before DEFINE WINDOW.", "OOHG IDE+" )
+            MsgStop( "STATUSBAR control will be ignored because it's defined before DEFINE WINDOW.", 'OOHG IDE+' )
             cName := ""
          ELSEIF aScan( ::aControlW, Lower( cName ) ) > 0
-            MsgStop( "The fmg contains two STATUSBAR controls (the second one will be ignored).", "OOHG IDE+" )
+            MsgStop( "The FMG file contains two STATUSBAR controls (the second one will be ignored).", 'OOHG IDE+' )
             cName := ""
          ENDIF
          ::IniArray( cName, cType )
@@ -1346,10 +1387,10 @@ LOCAL aTypes := { "ACTIVEX", "ANIMATEBOX", "BROWSE", "BUTTON", "CHECKBOX", ;
             cName := ::ReadCtrlName( i )
             cType := "TAB"
             IF aScan( ::aControlW, "template" ) == 0
-               MsgStop( "Control " + DQM( cName ) + " will be ignored because it's defined before DEFINE WINDOW.", "OOHG IDE+" )
+               MsgStop( "Control " + DQM( cName ) + " will be ignored because it's defined before DEFINE WINDOW.", 'OOHG IDE+' )
                cName := ""
-            ELSEIF aScan( ::aControlW, Lower( cName ) ) > 0
-               MsgStop( "The fmg contains two controls named " + DQM( cName ) + " (the second one will be ignored).", "OOHG IDE+" )
+            ELSEIF ! Empty( cName ) .and. aScan( ::aControlW, Lower( cName ) ) > 0
+               MsgStop( "The FMG file contains two controls named " + DQM( cName ) + " (the second one will be ignored).", 'OOHG IDE+' )
                cName := ""
             ENDIF
             ::IniArray( cName, cType )
@@ -1382,10 +1423,10 @@ LOCAL aTypes := { "ACTIVEX", "ANIMATEBOX", "BROWSE", "BUTTON", "CHECKBOX", ;
             cName := ::ReadCtrlName( i )
             cType := "TIMER"
             IF aScan( ::aControlW, "template" ) == 0
-               MsgStop( "Control " + DQM( cName ) + " will be ignored because it's defined before DEFINE WINDOW.", "OOHG IDE+" )
+               MsgStop( "Control " + DQM( cName ) + " will be ignored because it's defined before DEFINE WINDOW.", 'OOHG IDE+' )
                cName := ""
-            ELSEIF aScan( ::aControlW, Lower( cName ) ) > 0
-               MsgStop( "The fmg contains two controls named " + DQM( cName ) + " (the second one will be ignored).", "OOHG IDE+" )
+            ELSEIF ! Empty( cName ) .and. aScan( ::aControlW, Lower( cName ) ) > 0
+               MsgStop( "The FMG file contains two controls named " + DQM( cName ) + " (the second one will be ignored).", 'OOHG IDE+' )
                cName := ""
             ENDIF
             ::IniArray( cName, cType )
@@ -1405,10 +1446,10 @@ LOCAL aTypes := { "ACTIVEX", "ANIMATEBOX", "BROWSE", "BUTTON", "CHECKBOX", ;
             cName := ::ReadCtrlName( i )
             cType := "TREE"
             IF aScan( ::aControlW, "template" ) == 0
-               MsgStop( "Control " + DQM( cName ) + " will be ignored because it's defined before DEFINE WINDOW.", "OOHG IDE+" )
+               MsgStop( "Control " + DQM( cName ) + " will be ignored because it's defined before DEFINE WINDOW.", 'OOHG IDE+' )
                cName := ""
-            ELSEIF aScan( ::aControlW, Lower( cName ) ) > 0
-               MsgStop( "The fmg contains two controls named " + DQM( cName ) + " (the second one will be ignored).", "OOHG IDE+" )
+            ELSEIF ! Empty( cName ) .and. aScan( ::aControlW, Lower( cName ) ) > 0
+               MsgStop( "The FMG file contains two controls named " + DQM( cName ) + " (the second one will be ignored).", 'OOHG IDE+' )
                 cName := ""
             ENDIF
             ::IniArray( cName, cType )
@@ -1421,14 +1462,14 @@ LOCAL aTypes := { "ACTIVEX", "ANIMATEBOX", "BROWSE", "BUTTON", "CHECKBOX", ;
          cType := ::ReadCtrlType( i )
          // Process if it's a supported type of control
          IF aScan( aTypes, cType ) == 0
-            MsgStop( "The fmg contains a control named " + DQM( cName ) + " that will be ignored because it's of an unknown type " + DQM( cType ) + ".", "OOHG IDE+" )
+            MsgStop( "The FMG file contains a control named " + DQM( cName ) + " that will be ignored because it's of an unknown type " + DQM( cType ) + ".", 'OOHG IDE+' )
             cName := ""
          ELSE
             IF aScan( ::aControlW, "template" ) == 0
-               MsgStop( "Control " + DQM( cName ) + " will be ignored because it's defined before DEFINE WINDOW.", "OOHG IDE+" )
+               MsgStop( "Control " + DQM( cName ) + " will be ignored because it's defined before DEFINE WINDOW.", 'OOHG IDE+' )
                cName := ""
-            ELSEIF aScan( ::aControlW, Lower( cName ) ) > 0
-               MsgStop( "The fmg contains two controls named " + DQM( cName ) + " (the second one will be ignored).", "OOHG IDE+" )
+            ELSEIF ! Empty( cName ) .and. aScan( ::aControlW, Lower( cName ) ) > 0
+               MsgStop( "The FMG file contains two controls named " + DQM( cName ) + " (the second one will be ignored).", 'OOHG IDE+' )
                cName := ""
             ENDIF
          ENDIF
@@ -1460,10 +1501,10 @@ LOCAL aTypes := { "ACTIVEX", "ANIMATEBOX", "BROWSE", "BUTTON", "CHECKBOX", ;
       ::DelArray( i )
    ENDDO
    IF ::nControlW == 0
-      MsgStop( "The fmg contains no controls.", "OOHG IDE+" )
+      MsgStop( "The FMG file contains no controls.", 'OOHG IDE+' )
       ::IniArray( "TEMPLATE", "FORM" )
    ELSEIF i > 1
-      MsgStop( "DEFINE WINDOW TEMPLATE is not the first control. Please report this error to OOHG developers.", "OOHG IDE+" )
+      MsgStop( "DEFINE WINDOW TEMPLATE is not the first control. Please report this error to OOHG developers.", 'OOHG IDE+' )
    ENDIF
 
    // Create canvas
@@ -1474,7 +1515,7 @@ LOCAL aTypes := { "ACTIVEX", "ANIMATEBOX", "BROWSE", "BUTTON", "CHECKBOX", ;
       WIDTH 700 ;
       HEIGHT 410 ;
       TITLE "Title" ;
-      ICON "VD" ;
+      ICON 'IDE_VD' ;
       CHILD ;
       NOSHOW ;
       ON RCLICK ::AddControl() ;
@@ -1511,8 +1552,8 @@ LOCAL aTypes := { "ACTIVEX", "ANIMATEBOX", "BROWSE", "BUTTON", "CHECKBOX", ;
          SEPARATOR
          ITEM "Print Brief"            ACTION ::PrintBrief()
          SEPARATOR
-         ITEM "Form's context menu"    ACTION IIF( HB_IsObject( ::myCMCtrl ), ::myCMCtrl:Activate(), MsgInfo( "Context menu is not defined !!!", "OOHG IDE+" ) )
-         ITEM "Form's notify menu"     ACTION IIF( HB_IsObject( ::myNMCtrl ), ::myNMCtrl:Activate(), MsgInfo( "Notify menu is not defined !!!", "OOHG IDE+" ) )
+         ITEM "Form's context menu"    ACTION IIF( HB_IsObject( ::myCMCtrl ), ::myCMCtrl:Activate(), MsgInfo( "Context menu is not defined !!!", 'OOHG IDE+' ) )
+         ITEM "Form's notify menu"     ACTION IIF( HB_IsObject( ::myNMCtrl ), ::myNMCtrl:Activate(), MsgInfo( "Notify menu is not defined !!!", 'OOHG IDE+' ) )
       END MENU
 
       ON KEY ALT+D  ACTION ::Debug()
@@ -1557,7 +1598,7 @@ LOCAL cName, aFntClr
       AT ::myIde:aPositions[2, 1], ::myIde:aPositions[2, 2] + 120 ;
       WIDTH 700 ;
       HEIGHT 410 ;
-      ICON "VD" ;
+      ICON 'IDE_VD' ;
       CHILD ;
       NOSHOW ;
       ON RCLICK ::AddControl() ;
@@ -1594,8 +1635,8 @@ LOCAL cName, aFntClr
          SEPARATOR
          ITEM "Print Brief"            ACTION ::PrintBrief()
          SEPARATOR
-         ITEM "Form's context menu"    ACTION IIF( HB_IsObject( ::myCMCtrl ), ::myCMCtrl:Activate(), MsgInfo( "Context menu is not defined !!!", "OOHG IDE+" ) )
-         ITEM "Form's notify menu"     ACTION IIF( HB_IsObject( ::myNMCtrl ), ::myNMCtrl:Activate(), MsgInfo( "Notify menu is not defined !!!", "OOHG IDE+" ) )
+         ITEM "Form's context menu"    ACTION IIF( HB_IsObject( ::myCMCtrl ), ::myCMCtrl:Activate(), MsgInfo( "Context menu is not defined !!!", 'OOHG IDE+' ) )
+         ITEM "Form's notify menu"     ACTION IIF( HB_IsObject( ::myNMCtrl ), ::myNMCtrl:Activate(), MsgInfo( "Notify menu is not defined !!!", 'OOHG IDE+' ) )
       END MENU
 
       ON KEY ALT+C  ACTION ::CopyControl()
@@ -1610,15 +1651,14 @@ LOCAL cName, aFntClr
       HEIGHT 490 ;
       CLIENTAREA ;
       TITLE "Control Inspector" ;
-      ICON "Edit" ;
       CHILD ;
       NOSHOW ;
       NOMAXIMIZE ;
       NOMINIMIZE ;
-      NOSIZE ;
       NOSYSMENU ;
       BACKCOLOR ::myIde:aSystemColor ;
-      ON INIT SetHeightForWholeRows( ::oCtrlList, 400 )
+      ON INIT SetHeightForWholeRows( ::oCtrlList, 400 ) ;
+      ON SIZE ::AdjustInspectorCntrls()
 
       @ 10, 10 GRID 0 OBJ ::oCtrlList ;
          WIDTH 350 ;
@@ -1658,8 +1698,8 @@ LOCAL cName, aFntClr
          SEPARATOR
          ITEM "Print Brief"            ACTION ::PrintBrief()
          SEPARATOR
-         ITEM "Form's context menu"    ACTION IIF( HB_IsObject( ::myCMCtrl ), ::myCMCtrl:Activate(), MsgInfo( "Context menu is not defined !!!", "OOHG IDE+" ) )
-         ITEM "Form's notify menu"     ACTION IIF( HB_IsObject( ::myNMCtrl ), ::myNMCtrl:Activate(), MsgInfo( "Notify menu is not defined !!!", "OOHG IDE+" ) )
+         ITEM "Form's context menu"    ACTION IIF( HB_IsObject( ::myCMCtrl ), ::myCMCtrl:Activate(), MsgInfo( "Context menu is not defined !!!", 'OOHG IDE+' ) )
+         ITEM "Form's notify menu"     ACTION IIF( HB_IsObject( ::myNMCtrl ), ::myNMCtrl:Activate(), MsgInfo( "Notify menu is not defined !!!", 'OOHG IDE+' ) )
       END MENU
 
       @ 420, 10 LABEL lop1 VALUE "Double click or Enter to modify the position or size of a control." FONT "Calibri" SIZE 9 AUTOSIZE HEIGHT 15
@@ -1687,11 +1727,12 @@ METHOD Exit() CLASS TFormEditor
 //------------------------------------------------------------------------------
 LOCAL aPositions[3]
 
-   IF ! ::lFSave
-      IF MsgYesNo( "Form not saved, save it now?", "ooHG IDE+" )
-         ::Save( 0 )
+   IF ! ::lFSave .OR. ::myTbEditor:lChanged
+      IF MsgYesNo( "Form not saved, save it now?", 'OOHG IDE+' )
+         ::Save( .F. )
       ENDIF
    ENDIF
+   ::myTbEditor:Release()
    ::oDesignForm:Release()
    aPositions[3] := { ::Form_List:Row, ::Form_List:Col }
    ::Form_List:Release()
@@ -1699,8 +1740,7 @@ LOCAL aPositions[3]
    ::cvcControls:Release()
    aPositions[1] := { ::Form_Main:Row, ::Form_Main:Col }
    ::Form_Main:Release()
-   _OOHG_DeleteArrayItem( ::myIde:aEditors, ::nEditorIndex )
-   ::myIde:EditorExit( aPositions )
+   ::myIde:EditorExit( aPositions, ::nEditorIndex )
 RETURN NIL
 
 //------------------------------------------------------------------------------
@@ -2163,8 +2203,8 @@ LOCAL ia, si, cName, FormFontColor
             FormFontColor:button_101:Visible := .F.
          ELSEIF ::aCtrlType[si] == "MONTHCALENDAR"
             FormFontColor:button_103:Visible := .T.
-            FormFontColor:button_104:Visible := .T.
-            FormFontColor:button_105:Visible := .T.
+            FormFontColor:btn_TtlBckClr:Visible := .T.
+            FormFontColor:btn_TrlFntClr:Visible := .T.
             FormFontColor:button_106:Visible := .T.
          ELSEIF ::aCtrlType[si] $ "DATEPICKER TIMEPICKER"
             FormFontColor:button_102:Visible := .F.
@@ -3287,7 +3327,7 @@ STATIC lBusy := .F.
             ::DrawOutline( oControl )
 
          ELSE
-            MsgStop( "This control can't be sized interactively.", "OOHG IDE+" )
+            MsgStop( "This control can't be sized interactively.", 'OOHG IDE+' )
          ENDIF
       ENDIF
       ::swCursor := 0
@@ -3756,7 +3796,7 @@ LOCAL nWidth := NIL, nHeight := NIL
 
       CASE ::CurrentControl == 21
          // "PICCHECKBUTT"
-         ::aPicture[::nControlW] := "A4"
+         ::aPicture[::nControlW] := "IDE_FRMPROPS"
          nWidth                  := 30
          nHeight                 := 30
 
@@ -3765,7 +3805,7 @@ LOCAL nWidth := NIL, nHeight := NIL
          ::aAction[::nControlW]  := "MsgInfo( 'Pic button pressed.' )"
          nWidth                  := 30
          nHeight                 := 30
-         ::aPicture[::nControlW] := "A4"
+         ::aPicture[::nControlW] := "IDE_FRMPROPS"
 
       CASE ::CurrentControl == 23
          // "TIMER"
@@ -4327,7 +4367,7 @@ TODO: GripperText, Delay
    CASE nControlType == 14           // "EDIT"
 /*
       [ <obj> := ] TEdit():Define( <(name)>, <(parent)>,,, <w>, <h>, <value>, ;
-            <f>, <s>, <tooltip>, <maxlenght>, <{gotfocus}>, <{change}>, ;
+            <f>, <s>, <tooltip>, <maxlength>, <{gotfocus}>, <{change}>, ;
             <{lostfocus}>, <.readonly.>, <.break.>, <helpid>, <.invisible.>, ;
             <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
             <(field)>, <backcolor>, <fontcolor>, <.novscroll.>, <.nohscroll.>, ;
@@ -5218,7 +5258,7 @@ RETURN NIL
 METHOD KeyboardMoveSize() CLASS TFormEditor
 //------------------------------------------------------------------------------
    IF ::nHandleA == 0
-      MsgStop( "You must select a control first.", "OOHG IDE+" )
+      MsgStop( "You must select a control first.", 'OOHG IDE+' )
       RETURN NIL
    ENDIF
    IF ::nControlW == 1
@@ -5314,7 +5354,7 @@ LOCAL ia, oControl, nOldHeight, nNewWidth, nNewHeight
 
    ia := ::nHandleA
    IF ia > 0
-      IF ::CtrlIsOfType( ia, "STATUSBAR TOOLBAR MONTHCALENDAR TIMER HOTKEYBOX" )
+      IF ::CtrlIsOfType( ia, "STATUSBAR TOOLBAR TBBUTTON MONTHCALENDAR TIMER HOTKEYBOX" )
          RETURN NIL
       ENDIF
       oControl   := ::oDesignForm:aControls[ia]
@@ -5524,7 +5564,7 @@ LOCAL nIndice, cObj, nCantItems
    IF oPrint:lPrError
       oPrint:Release()
       CursorArrow()
-      MsgStop( "Error detected while printing.", "ooHG IDE+" )
+      MsgStop( "Error detected while printing.", 'OOHG IDE+' )
       RETURN NIL
    ENDIF
    oPrint:Begindoc()
@@ -5788,9 +5828,8 @@ LOCAL cToolTip, lCenter, lLeft, lRight, cCaption, nProcess
 
    // Load statusbar data
    FOR i := 1 TO Len( ::aLine )
-      IF At( "DEFINE STATUSBAR", Upper( ::aLine[i] ) ) # 0
+      IF At( "DEFINE STATUSBAR", Upper( LTrim( ::aLine[i] ) ) ) == 1
          ::lSStat := .T.
-         ::Form_Main:butt_status:Value := .T.
          ::cvcControls:Control_Stabusbar:Visible := .T.
 
          ::cSCObj         := ::ReadStringData( "DEFINE STATUSBAR", "OBJ", "" )
@@ -6070,11 +6109,6 @@ LOCAL cToolTip, lCenter, lLeft, lRight, cCaption, nProcess
          ENDIF
 
          EXIT
-      ELSE
-         ::lSStat := .F.
-
-         ::Form_Main:butt_status:Value := .F.
-         ::cvcControls:Control_Stabusbar:Visible := .F.
       ENDIF
    NEXT i
 
@@ -6098,10 +6132,14 @@ LOCAL cToolTip, lCenter, lLeft, lRight, cCaption, nProcess
       ENDIF
       /*
          For each new control you must add a CASE for calling the method that
-         loads the control's properties and events from the fmg.
+         loads the control's properties and events from the FMG file.
       */
       DO CASE
       CASE cType == "STATUSBAR"
+         // Do nothing
+      CASE cType == "TOOLBAR"
+         // Do nothing
+      CASE cType == "TBBUTTON"
          // Do nothing
       CASE cType == "FORM"
          ::pForm()
@@ -6185,15 +6223,8 @@ LOCAL cToolTip, lCenter, lLeft, lRight, cCaption, nProcess
       ENDCASE
    NEXT i
 
-   // Delete "empty" controls
-   FOR i := ::nControlW TO 1 STEP -1
-      IF ::aControlW[i] == "toolbar"
-         ::DelArray( i )
-       ENDIF
-   NEXT i
-
-   // Toolbar
-   ::myTbEditor:CreateToolbarFromFile()
+   // Toolbars
+   ::myTbEditor:LoadToolBars()
 
    // Main menu
    TMyMenuEditor():CreateMenuFromFile( Self, 1 )
@@ -6268,23 +6299,26 @@ LOCAL nStart, j, cCtrlName
    IF ( j := At( " ", cCtrlType ) ) # 0
       cCtrlName := LTrim( Substr( cCtrlType, j + 1 ) )
       cCtrlType := Upper( Left( cCtrlType, j - 1 ) )
+      IF ( j := At( " ", cCtrlName ) ) # 0
+         cCtrlName := Upper( Left( cCtrlName, j - 1 ) )
+      ENDIF
    ELSE
       cCtrlName := ""
       cCtrlType := Upper( cCtrlType )
    ENDIF
    // Validate name
    IF Empty( cCtrlName )
-      MsgStop( "A control will be ignored because it has no name.", "OOHG IDE+" )
+      MsgStop( "A control in line " + Ltrim( Str( i ) ) + " will be ignored because it has no name.", 'OOHG IDE+' )
    ELSE
       nStart := Asc( Upper( Left( cCtrlName, 1 ) ) )
       IF nStart < 65 .OR. ( nStart > 90 .AND. nStart # 95 )
-         MsgStop( "A control will be ignored because it has an invalid name: " + DQM( cCtrlName ) + ".", "OOHG IDE+" )
+         MsgStop( "A control in line " + Ltrim( Str( i ) ) + " will be ignored because it has an invalid name: " + DQM( cCtrlName ) + ".", 'OOHG IDE+' )
          cCtrlName := ""
       ELSE
          FOR j := 2 TO Len( cCtrlName )
             nStart := Asc( Upper( SubStr( cCtrlName, j, 1 ) ) )
             IF ! ( nStart == 95 .OR. ( nStart >= 65 .AND. nStart <= 90 ) .OR. ( nStart >= 48 .AND. nStart <= 57 ) )
-               MsgStop( "A control will be ignored because it has an invalid name: " + DQM( cCtrlName ) + ".", "OOHG IDE+" )
+               MsgStop( "A control in line " + Ltrim( Str( i ) ) + " will be ignored because it has an invalid name: " + DQM( cCtrlName ) + ".", 'OOHG IDE+' )
                cCtrlName := ""
                EXIT
             ENDIF
@@ -6352,7 +6386,7 @@ LOCAL i, sw := 0, zi, cvc, zf, nPos, cLine
    zi  := IIF( cvc > 0, ::aSpeed[cvc], 1 )
    zf  := IIF( cvc > 0, ::aNumber[cvc], Len( ::aLine ) )
    FOR i := zi TO zf
-      // Finds the control inside the fmg, and searchs for the property from there on
+      // Finds the control inside the FMG file, and searchs for the property from there on
       IF At( " " + Upper( cName ) + " ", Upper( ::aLine[i] ) ) # 0 .AND. sw == 0
          sw := 1
       ELSE
@@ -6388,7 +6422,7 @@ LOCAL i, sw := 0, zi, cvc, zf
    zi  := IIF( cvc > 0, ::aSpeed[cvc], 1 )
    zf  := IIF( cvc > 0, ::aNumber[cvc], Len( ::aLine ) )
    FOR i := zi TO zf
-      // Finds the control inside the fmg, and searchs for the property from there on
+      // Finds the control inside the FMG file, and searchs for the property from there on
       IF At( " " + Upper( cName ) + " ", Upper( ::aLine[i] ) ) # 0 .AND. sw == 0
          sw := 1
       ELSE
@@ -6420,8 +6454,7 @@ LOCAL i, sw := 0, zi, cvc, zf, nPos, cValue
          sw := 1
       ELSE
          IF sw == 1
-            IF Len( RTrim( ::aLine[i] ) ) == 0
-               // keyword not found
+            IF Empty( ::aLine[i] )
                RETURN cDefault
             ENDIF
             IF ( nPos := At( " " + Upper( cProp ) + " ", Upper( ::aLine[i] ) ) ) > 0
@@ -6664,19 +6697,25 @@ RETURN cData
 //------------------------------------------------------------------------------
 METHOD DrawPoints() CLASS TFormEditor
 //------------------------------------------------------------------------------
-LOCAL hDC, nHeight, nWidth, i, j, nTop
+LOCAL hDC, nHeight, nWidth, i, j, nTop := 0, oTBCtrl
 
    nHeight := ::oDesignForm:ClientHeight
    nWidth  := ::oDesignForm:ClientWidth
 
-   IF _IsControlDefined( "Statusbar", ::oDesignForm:Name )
+   IF _IsControlDefined( "StatusBar", ::oDesignForm:Name )
       nHeight -= ::oDesignForm:Statusbar:ClientHeightUsed
    ENDIF
-   IF HB_IsObject( ::myTbEditor:oToolbar )
-      nTop := Round( ::myTbEditor:oToolbar:ClientHeightUsed(), -1 )
-   ELSE
-      nTop := 0
-   ENDIF
+
+   FOR i := 1 to ::myTbEditor:Count
+      oTBCtrl := ::myTbEditor:aToolBars[i]:oTBCtrl
+      IF HB_IsObject( oTBCtrl )
+         IF oTBCtrl:lTop
+            nTop += Round( oTBCtrl:ClientHeightUsed(), -1 )
+         ELSE
+            nHeight -= Round( oTBCtrl:ClientHeightUsed(), -1 )
+         ENDIF
+      ENDIF
+   NEXT i
 
    hDC := GetDC( ::oDesignForm:hWnd )
 
@@ -6898,6 +6937,7 @@ LOCAL cToolTip, lVisible, lEnabled, nHelpid, nRow, nCol, lRTL, lNoTabStop, oCtrl
    lTrans     := ( ::ReadLogicalData( cName, "TRANSPARENT", "F" ) == "T" )
    nHelpid    := Val( ::ReadStringData( cName, "HELPID", "0" ) )
    cToolTip   := ::Clean( ::ReadStringData( cName, "TOOLTIP", "" ) )
+   cToolTip   := ::Clean( ::ReadOopData( cName, "TOOLTIP", cToolTip ) )
    lVisible   := ( ::ReadLogicalData( cName, "INVISIBLE", "F" ) == "F" )
    lVisible   := ( Upper( ::ReadOopData( cName, "VISIBLE", IF( lVisible, ".T.", ".F." ) ) ) == ".T." )
    lEnabled   := ( ::ReadLogicalData( cName, "DISABLED", "F" ) == "F" )
@@ -7226,7 +7266,7 @@ LOCAL lDIBSection, cBuffer, cHBitmap, cImgMargin, cSubClass, oCtrl, lNoHotLight
 
    // Load properties
    cName         := ::aControlW[i]
-   cObj          := ::ReadStringData( cName, 'OBJ', '' )
+   cObj          := ::ReadStringData( cName, 'OBJ', '' )                                      // TODO: change ' by "
    cObj          := ::ReadStringData( cName, 'OBJECT', cObj )
    nRow          := Val( ::ReadCtrlRow( cName ) )
    nCol          := Val( ::ReadCtrlCol( cName ) )
@@ -7262,8 +7302,8 @@ LOCAL lDIBSection, cBuffer, cHBitmap, cImgMargin, cSubClass, oCtrl, lNoHotLight
    cOnLostFocus  := ::ReadStringData( cName, 'ON LOSTFOCUS', '' )
    cOnLostFocus  := ::ReadStringData( cName, 'ONLOSTFOCUS', cOnLostFocus )
    nHelpId       := Val( ::ReadStringData( cName, 'HELPID', '0' ) )
-   cCaption      := ::ReadStringData( cName, 'CAPTION', cName )
-   cPicture      := ::ReadStringData( cName, 'PICTURE', '' )
+   cCaption      := ::Clean( ::ReadStringData( cName, 'CAPTION', cName ) )
+   cPicture      := ::Clean( ::ReadStringData( cName, 'PICTURE', '' ) )
    cAction       := ::ReadStringData( cName, 'ACTION', "MsgInfo( 'Button pressed' )" )
    cAction       := ::ReadStringData( cName, 'ON CLICK',cAction )
    cAction       := ::ReadStringData( cName, 'ONCLICK', cAction )
@@ -8566,6 +8606,7 @@ LOCAL lNo3DColors, lFit, lWhiteBack, lImageSize, cExclude, cSubClass, oCtrl
    cPicture      := ::Clean( ::ReadStringData(cName, 'PICTURE', '' ) )
    lStretch      := ( ::ReadLogicalData( cName, 'STRETCH', 'F') == 'T' )
    cToolTip      := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
+   cToolTip      := ::Clean( ::ReadOopData( cName, "TOOLTIP", cToolTip ) )
    lBorder       := ( ::ReadLogicalData( cName, 'BORDER', 'F' ) == 'T' )
    lClientEdge   := ( ::ReadLogicalData( cName, 'CLIENTEDGE', 'F') == 'T' )
    lVisible      := ( ::ReadLogicalData( cName, 'INVISIBLE', 'F' ) == 'F' )
@@ -8729,6 +8770,7 @@ LOCAL lRTL, lNoWrap, lNoPrefix, cSubClass, oCtrl
    cAction      := ::ReadStringData( cName, 'ON CLICK',cAction )
    cAction      := ::ReadStringData( cName, 'ONCLICK', cAction )
    cToolTip     := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
+   cToolTip     := ::Clean( ::ReadOopData( cName, 'TOOLTIP', cToolTip ) )
    lBorder      := ( ::ReadLogicalData( cName, 'BORDER', 'F' ) == 'T' )
    lClientEdge  := ( ::ReadLogicalData( cName, 'CLIENTEDGE', 'F') == 'T' )
    lVisible     := ( ::ReadLogicalData( cName, 'INVISIBLE', 'F' ) == 'F' )
@@ -8739,7 +8781,7 @@ LOCAL lRTL, lNoWrap, lNoPrefix, cSubClass, oCtrl
    nHelpId      := Val( ::ReadStringData( cName, 'HELPID', '0' ) )
    aBackColor   := ::ReadStringData( cName, 'BACKCOLOR', 'NIL' )
    aBackColor   := UpperNIL( ::ReadOopData( cName, 'BACKCOLOR', aBackColor ) )
-   cValue       := ::ReadStringData( cName, 'VALUE', '' )
+   cValue       := ::Clean( ::ReadStringData( cName, 'VALUE', '' ) )
    cFontName    := ::Clean( ::ReadStringData( cName, 'FONT', '' ) )
    cFontName    := ::Clean( ::ReadStringData( cName, 'FONTNAME', cFontName ) )
    cFontName    := ::Clean( ::ReadOopData( cName, 'FONTNAME', cFontName ) )
@@ -9053,7 +9095,7 @@ LOCAL lBottom, lLeft, lRight, lCenter, lCancel, cSubClass, oCtrl, lNoTheme
    cOnLostFocus := ::ReadStringData( cName, 'ONLOSTFOCUS', cOnLostFocus )
    nHelpId      := Val( ::ReadStringData( cName, 'HELPID', '0' ) )
    cPicture     := ::Clean( ::ReadStringData( cName, 'PICTURE', '' ) )
-   cPicture     := IIF( Empty( cPicture ), 'A4', cPicture )
+   cPicture     := IIF( Empty( cPicture ), 'IDE_FRMPROPS', cPicture )
    cAction      := ::ReadStringData( cName, 'ACTION', "MsgInfo( 'Button pressed' )" )
    cAction      := ::ReadStringData( cName, 'ON CLICK',cAction )
    cAction      := ::ReadStringData( cName, 'ONCLICK', cAction )
@@ -9137,8 +9179,8 @@ LOCAL cImgMargin, lFlat, lTop, lBottom, lLeft, lRight, lCenter, cSubClass
    nCol         := Val( ::ReadCtrlCol( cName ) )
    nWidth       := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( TButtonCheck():nWidth ) ) ) )
    nHeight      := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TButtonCheck():nHeight ) ) ) )
-   cPicture     := ::Clean( ::ReadStringData( cName, 'PICTURE', 'A4' ) )
-   cPicture     := IIF( Empty( cPicture ), 'A4', cPicture )
+   cPicture     := ::Clean( ::ReadStringData( cName, 'PICTURE', 'IDE_FRMPROPS' ) )
+   cPicture     := IIF( Empty( cPicture ), 'IDE_FRMPROPS', cPicture )
    lValue       := ( ::ReadLogicalData( cName, 'VALUE', 'F' ) == 'T' )
    cToolTip     := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
    lNoTabStop   := ( ::ReadLogicalData( cName, 'NOTABSTOP', 'F' ) == 'T' )
@@ -10308,7 +10350,7 @@ LOCAL nInsertType, oCtrl
    lStrikeout   := ( ::ReadLogicalData( cName, 'STRIKEOUT', 'F' ) == 'T' )
    lStrikeout   := ( ::ReadLogicalData( cName, 'FONTSTRIKEOUT', IF( lStrikeout, 'T', 'F' ) ) == 'T' )
    lStrikeout   := ( Upper( ::ReadOopData( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) == '.T.' )
-   cValue       := ::ReadStringData( cName, 'VALUE', '' )
+   cValue       := ::Clean( ::ReadStringData( cName, 'VALUE', '' ) )
    cField       := ::ReadStringData( cName, 'FIELD', '' )
    cToolTip     := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
    nMaxLength   := Val( ::ReadStringData( cName, 'MAXLENGTH', '0' ) )
@@ -10320,7 +10362,7 @@ LOCAL nInsertType, oCtrl
    lRightAlign  := ( ::ReadLogicalData( cName, 'RIGHTALIGN', 'F' ) == 'T' )
    lNoTabStop   := ( ::ReadLogicalData( cName, 'NOTABSTOP', 'F' ) == 'T' )
    lDate        := ( ::ReadLogicalData( cName, 'DATE', 'F' ) == 'T' )
-   cInputMask   := ::ReadStringData( cName, 'INPUTMASK', '' )
+   cInputMask   := ::Clean( ::ReadStringData( cName, 'INPUTMASK', '' ) )
    cFormat      := ::Clean( ::ReadStringData( cName, 'FORMAT', '' ) )
    cOnEnter     := ::ReadStringData( cName, 'ON ENTER', '' )
    cOnEnter     := ::ReadStringData( cName, 'ONENTER', cOnEnter )
@@ -11169,7 +11211,7 @@ LOCAL iMin, w_OOHG_MouseRow, w_OOHG_MouseCol, i, oControl, ia
    // Check to see if mouse is over the red square at bottom-right corner
    iMin := 0
    FOR i := 2 TO ::nControlW
-      IF ! ::aCtrlType[i] $ 'STATUSBAR TOOLBAR MONTHCALENDAR TIMER HOTKEYBOX'
+      IF ! ::aCtrlType[i] $ 'STATUSBAR TOOLBAR TBBUTTON MONTHCALENDAR TIMER HOTKEYBOX'
          IF ( ia := aScan( ::oDesignForm:aControls, { |c| Lower( c:Name ) == ::aControlW[i] } ) ) > 0
             oControl := ::oDesignForm:aControls[ia]
 
@@ -11629,7 +11671,7 @@ LOCAL aImages, aPageNames, aPageObjs, aPageSubClasses, nCount
    // Notify menu
    Output += TMyMenuEditor():FmgOutput( Self, 3, nSpacing )
 
-   // Toolbar
+   // ToolBars
    Output += ::myTbEditor:FmgOutput( nSpacing )
 
    // Form's controls
@@ -11817,8 +11859,8 @@ LOCAL aImages, aPageNames, aPageObjs, aPageSubClasses, nCount
 
    ::oWaitMsg:Hide()
 
-   // Save FMG
-   IF lSaveAs == 1
+   // Save FMG file
+   IF lSaveAs
       IF ! HB_MemoWrit( PutFile( { { 'Form files *.fmg', '*.fmg' } }, 'Save Form As', , .T. ), Output )
          CursorArrow()
          MsgStop( 'Error writing FMG file.', 'OOHG IDE+' )
@@ -11853,24 +11895,23 @@ LOCAL cRet
 	      cRet := "'" + cData + "'"
 	   ELSEIF ! '"' $ cData
 	      cRet := '"' + cData + '"'
-	   ELSEIF ! '[' $ cData .AND. ! ']' $ cData
+	   ELSEIF ! ']' $ cData
 	      cRet := '[' + cData + ']'
 	   ELSE
-	      cRet := "'" + cData + "'"
-	      // We can't assure that cRet is properly formed
-	      // This may cause a runtime error
+	      cRet := cData
+	      // cData contains a string that can't be represented using "content of cData"
+	      // or 'content of cData' or [content of cData] without causing a RTE when
+         // compiling the FMG file. So I choosed to output the raw content of cData.
 	   ENDIF
 	ELSE
 	   IF ! "'" $ cData
 	      cRet := "'" + AllTrim( cData ) + "'"
 	   ELSEIF ! '"' $ cData
 	      cRet := '"' + AllTrim( cData ) + '"'
-	   ELSEIF ! '[' $ cData .AND. ! ']' $ cData
+	   ELSEIF ! ']' $ cData
 	      cRet := '[' + AllTrim( cData ) + ']'
 	   ELSE
-	      cRet := "'" + AllTrim( cData ) + "'"
-	      // We can't assure that cRet is properly formed
-	      // This may cause a runtime error
+	      cRet := AllTrim( cData )
 	   ENDIF
 	ENDIF
 RETURN cRet
@@ -12209,12 +12250,10 @@ LOCAL cValue
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
          Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
          IF ! Empty( ::aCaption[j] )
-            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + AllTrim( ::aCaption[j] )
-         ELSE
-            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + StrToStr( ::aName[j], .T. )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CAPTION ' + StrToStr( ::aCaption[j], .T. )
          ENDIF
          IF ! Empty( ::aPicture[j] )
-            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PICTURE ' + AllTrim( ::aPicture[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'PICTURE ' + StrToStr( ::aPicture[j] )
          ENDIF
          IF ! Empty( ::aAction[j] ) .AND. UpperNIL( ::aAction[j] ) # 'NIL'
             Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + AllTrim( ::aAction[j] )
@@ -12847,8 +12886,8 @@ LOCAL cValue
          IF ! Empty( ::aField[j] )
             Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIELD ' + AllTrim( ::aField[j] )
          ENDIF
-         IF ! Empty( ::aValue[j] )
-            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + AllTrim( ::aValue[j] )
+         IF Len( ::aValue[j] ) > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + StrToStr( ::aValue[j] )
          ENDIF
          IF ::aReadOnly[j]
             Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'READONLY '
@@ -13500,7 +13539,7 @@ LOCAL cValue
             Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
          ENDIF
          IF ! Empty( ::aValue[j] )
-            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + ::aValue[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + StrToStr( ::aValue[j] )
          ENDIF
          IF ! Empty( ::aAction[j] ) .AND. UpperNIL( ::aAction[j] ) # 'NIL'
             Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + AllTrim( ::aAction[j] )
@@ -14193,7 +14232,7 @@ LOCAL cValue
          IF ! Empty( ::aField[j] )
             Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FIELD ' + AllTrim( ::aField[j] )
          ENDIF
-         IF ! Empty( ::aValue[j] )
+         IF Len( ::aValue[j] ) > 0
             Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + StrToStr( ::aValue[j], .T. )
          ENDIF
          IF ::aReadOnly[j]
@@ -14449,14 +14488,14 @@ LOCAL cValue
          ELSE
             cValue := AllTrim( ::aValue[j] )
          ENDIF
-         IF ! Empty( cValue )
+         IF Len( cValue ) > 0
             IF ::aNumeric[j]
                Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + cValue
             ELSE
                IF ::aDate[j]
                   Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + cValue
                ELSE
-                  Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + cValue
+                  Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VALUE ' + StrToStr( cValue )
                ENDIF
             ENDIF
          ENDIF
@@ -14478,11 +14517,11 @@ LOCAL cValue
          IF ::aNumeric[j]
             Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NUMERIC '
             IF ! Empty( ::aInputMask[j] )
-               Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INPUTMASK ' + AllTrim( ::aInputMask[j] )
+               Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INPUTMASK ' + StrToStr( ::aInputMask[j] )
             ENDIF
          ELSE
             IF ! Empty( ::aInputMask[j] )
-               Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INPUTMASK ' + AllTrim( ::aInputMask[j] )
+               Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INPUTMASK ' + StrToStr( ::aInputMask[j] )
             ENDIF
          ENDIF
          IF ! Empty( ::aFields[j] ) .AND. UpperNIL( ::aFields[j] ) # 'NIL'
@@ -16903,10 +16942,11 @@ RETURN NIL
 //------------------------------------------------------------------------------
 METHOD RecreateControl( oControl, j ) CLASS TFormEditor
 //------------------------------------------------------------------------------
-LOCAL nRow, nCol, nStyle, nWidth, nHeight, i, aCtrls, cTab, oTab
+LOCAL nRow, nCol, nStyle, nWidth, nHeight, i, aCtrls, cTab, oTab, nInd
 
    nRow := oControl:Row
    nCol := oControl:Col
+   nInd := oControl:TabIndex
 
    IF ::aCtrlType[j] == 'SLIDER'
       nStyle := WindowStyleFlag( oControl:hWnd,  TBS_VERT )
@@ -16941,9 +16981,10 @@ LOCAL nRow, nCol, nStyle, nWidth, nHeight, i, aCtrls, cTab, oTab
 
    oControl:Release()
 
-   oControl     := ::CreateControl( aScan( ::ControlType, ::aCtrlType[j] ), j, nWidth, nHeight, aCtrls )
-   oControl:Row := nRow
-   oControl:Col := nCol
+   oControl          := ::CreateControl( aScan( ::ControlType, ::aCtrlType[j] ), j, nWidth, nHeight, aCtrls )
+   oControl:Row      := nRow
+   oControl:Col      := nCol
+   oControl:TabIndex := nInd
 
    IF ::aTabPage[j, 1] # '' .AND. ::aTabPage[j, 2] > 0
       IF ( i := aScan( ::aName, { |c| Lower( c ) == ::aTabPage[j, 1] } ) ) > 0
@@ -17067,13 +17108,13 @@ LOCAL i, aCaptions
          IF HB_IsString( aCaptions[i] )
             oTab:Caption( i, aCaptions[i] )
          ELSE
-            MsgStop( 'The caption of page' + LTrim( Str( i ) ) + ' is not a valid string !!!', 'ooHG IDE+' )
+            MsgStop( 'The caption of page' + LTrim( Str( i ) ) + ' is not a valid string !!!', 'OOHG IDE+' )
             RETURN .F.
          ENDIF
       NEXT i
       RETURN .T.
    ENDIF
-   MsgStop( DQM( 'Caption' ) + ' must be a valid array of strings !!!', 'ooHG IDE+' )
+   MsgStop( DQM( 'Caption' ) + ' must be a valid array of strings !!!', 'OOHG IDE+' )
 RETURN .F.
 
 //------------------------------------------------------------------------------
@@ -17087,13 +17128,13 @@ LOCAL i, aImages
          IF HB_IsString( aImages[i] )
             oTab:Picture( i, aImages[i] )
          ELSE
-            MsgStop( 'The image of page' + LTrim( Str( i ) ) + ' is not a valid string !!!', 'ooHG IDE+' )
+            MsgStop( 'The image of page' + LTrim( Str( i ) ) + ' is not a valid string !!!', 'OOHG IDE+' )
             RETURN .F.
          ENDIF
       NEXT i
       RETURN .T.
    ENDIF
-   MsgStop( DQM( 'Image' ) + ' must be a valid array of strings !!!', 'ooHG IDE+' )
+   MsgStop( DQM( 'Image' ) + ' must be a valid array of strings !!!', 'OOHG IDE+' )
 RETURN .F.
 
 //------------------------------------------------------------------------------
@@ -17105,13 +17146,13 @@ LOCAL i, aNames
       aNames := &( oTabProp:Edit_4:Value )
       FOR i := 1 TO Len( aNames )
          IF ! HB_IsString( aNames[i] )
-            MsgStop( 'The name of page' + LTrim( Str( i ) ) + ' is not a valid string !!!', 'ooHG IDE+' )
+            MsgStop( 'The name of page' + LTrim( Str( i ) ) + ' is not a valid string !!!', 'OOHG IDE+' )
             RETURN .F.
          ENDIF
       NEXT i
       RETURN .T.
    ENDIF
-   MsgStop( DQM( 'Name' ) + ' must be a valid array of strings !!!', 'ooHG IDE+' )
+   MsgStop( DQM( 'Name' ) + ' must be a valid array of strings !!!', 'OOHG IDE+' )
 RETURN .F.
 
 //------------------------------------------------------------------------------
@@ -17123,13 +17164,13 @@ LOCAL i, aObjs
       aObjs := &( oTabProp:Edit_4:Value )
       FOR i := 1 TO Len( aObjs )
          IF ! HB_IsString( aObjs[i] )
-            MsgStop( 'The obj of page' + LTrim( Str( i ) ) + ' is not a valid string !!!', 'ooHG IDE+' )
+            MsgStop( 'The obj of page' + LTrim( Str( i ) ) + ' is not a valid string !!!', 'OOHG IDE+' )
             RETURN .F.
          ENDIF
       NEXT i
       RETURN .T.
    ENDIF
-   MsgStop( DQM( 'Obj' ) + ' must be a valid array of strings !!!', 'ooHG IDE+' )
+   MsgStop( DQM( 'Obj' ) + ' must be a valid array of strings !!!', 'OOHG IDE+' )
 RETURN .F.
 
 //------------------------------------------------------------------------------
@@ -17141,17 +17182,17 @@ LOCAL i, aSubs
       aSubs := &( oTabProp:Edit_4:Value )
       FOR i := 1 TO Len( aSubs )
          IF ! HB_IsString( aSubs[i] )
-            MsgStop( 'The subclass of page' + LTrim( Str( i ) ) + ' is not a valid string !!!', 'ooHG IDE+' )
+            MsgStop( 'The subclass of page' + LTrim( Str( i ) ) + ' is not a valid string !!!', 'OOHG IDE+' )
             RETURN .F.
          ENDIF
       NEXT i
       RETURN .T.
    ENDIF
-   MsgStop( DQM( 'Subclass' ) + ' must be a valid array of strings !!!', 'ooHG IDE+' )
+   MsgStop( DQM( 'Subclass' ) + ' must be a valid array of strings !!!', 'OOHG IDE+' )
 RETURN .F.
 
 //------------------------------------------------------------------------------
-STATIC FUNCTION IsValidArray( cArray )
+FUNCTION IsValidArray( cArray )
 //------------------------------------------------------------------------------
 LOCAL nOpen := 0, nClose := 0, i
 
@@ -17864,8 +17905,26 @@ RETURN .F.
 
 #pragma BEGINDUMP
 
-#define HB_OS_WIN_32_USED
-#define _WIN32_WINNT   0x0400
+#ifndef HB_OS_WIN_32_USED
+   #define HB_OS_WIN_32_USED
+#endif
+
+#ifndef _WIN32_IE
+   #define _WIN32_IE 0x0500
+#endif
+#if ( _WIN32_IE < 0x0500 )
+   #undef _WIN32_IE
+   #define _WIN32_IE 0x0500
+#endif
+
+#ifndef _WIN32_WINNT
+   #define _WIN32_WINNT 0x0400
+#endif
+#if ( _WIN32_WINNT < 0x0400 )
+   #undef _WIN32_WINNT
+   #define _WIN32_WINNT 0x0400
+#endif
+
 #include <windows.h>
 #include "hbapi.h"
 #include "hbapiitm.h"
