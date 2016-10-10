@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.67 2016-10-01 23:19:31 fyurisich Exp $
+ * $Id: formedit.prg,v 1.68 2016-10-10 15:38:11 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -4407,7 +4407,7 @@ TODO: GripperText, Delay
                   NIL, NIL, ::aToolTip[i], NIL, .F., ;
                   ::aFontItalic[i], ::aFontUnderline[i], ::aFontStrikeout[i], ::aAutoPlay[i], ;
                   ::aRightAlign[i], ::aCenterAlign[i], ::aRTL[i], ::aWrap[i], ;
-                  ::aNoPrefix[i], ::aInputMask[i], .F. )
+                  ::aNoPrefix[i], ::aInputMask[i], .F., ::aImagesAlign[i] )
       IF ! Empty( ::aFontName[i] )
          oCtrl:FontName := ::aFontName[i]
       ENDIF
@@ -8756,7 +8756,7 @@ LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cAction, cToolTip, lBorder
 LOCAL lClientEdge, lVisible, lEnabled, lTrans, nHelpId, aBackColor, cValue
 LOCAL cFontName, nFontSize, aFontColor, lBold, lItalic, lUnderline, lStrikeout
 LOCAL lRightAlign, lCenterAlign, lAutoSize, cInputMask, lHScroll, lVScroll
-LOCAL lRTL, lNoWrap, lNoPrefix, cSubClass, oCtrl
+LOCAL lRTL, lNoWrap, lNoPrefix, cSubClass, oCtrl, lVCntrAlign
 
    // Load properties
    cName        := ::aControlW[i]
@@ -8804,6 +8804,7 @@ LOCAL lRTL, lNoWrap, lNoPrefix, cSubClass, oCtrl
    lStrikeout   := ( Upper( ::ReadOopData( cName, 'FONTSTRIKEOUT', IF( lStrikeout, '.T.', '.F.' ) ) ) == '.T.' )
    lRightAlign  := ( ::ReadLogicalData( cName, 'RIGHTALIGN', 'F' ) == 'T' )
    lCenterAlign := ( ::ReadLogicalData( cName, 'CENTERALIGN', 'F' ) == 'T' )
+   lVCntrAlign  := ( ::ReadLogicalData( cName, 'VCENTERALIGN', 'F' ) == 'T' )
    lAutoSize    := ( ::ReadLogicalData( cName, 'AUTOSIZE', 'F' ) == 'T' )
    cInputMask   := ::ReadStringData( cName, 'INPUTMASK', '' )
    lHScroll     := ( ::ReadLogicalData( cName, 'HSCROLL', 'F' ) == 'T' )
@@ -8835,6 +8836,7 @@ LOCAL lRTL, lNoWrap, lNoPrefix, cSubClass, oCtrl
    ::aFontStrikeout[i] := lStrikeout
    ::aRightAlign[i]    := lRightAlign
    ::aCenterAlign[i]   := lCenterAlign
+   ::aImagesAlign[i]   := lVCntrAlign
    ::aAutoPlay[i]      := lAutoSize
    ::aInputMask[i]     := cInputMask
    ::aNoHScroll[i]     := lHScroll
@@ -13577,6 +13579,9 @@ LOCAL cValue
          IF ::aCenterAlign[j]
             Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CENTERALIGN '
          ENDIF
+         IF ::aImagesAlign[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'VCENTERALIGN '
+         ENDIF
          IF ::aRightAlign[j]
             Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RIGHTALIGN '
          ENDIF
@@ -15996,9 +16001,9 @@ LOCAL aFormats, aResults
 
    IF ::aCtrlType[j] == 'LABEL'
       cTitle      := ::aName[j] + ' properties'
-      aLabels     := { 'Name',     'Value',     'HelpID',     'Transparent',     'CenterAlign',     'RightAlign',     'ToolTip',     'AutoSize',     'Enabled',     'Visible',     'ClientEdge',     'Border',    'Obj',      'InputMask',      'HScroll',       'VScroll',       'RTL',     'NoWrap',   'NoPrefix',     'SubClass' }
-      aInitValues := { ::aName[j], ::aValue[j], ::aHelpID[j], ::aTransparent[j], ::acenteralign[j], ::aRightAlign[j], ::aToolTip[j], ::aAutoPlay[j], ::aEnabled[j], ::aVisible[j], ::aclientedge[j], ::aBorder[j], ::aCObj[j], ::aInputMask[j], ::aNoHScroll[j], ::aNoVScroll[j], ::aRTL[j], ::aWrap[j], ::aNoPrefix[j], ::aSubClass[j] }
-      aFormats    := { 30,         300,         '999',        .F.,               .F.,               .F.,              250,           .F.,            .F.,           .F.,           .F.,              .F.,          31,         1100,            .F.,             .F.,             .F.,       .F.,        .F.,            250 }
+      aLabels     := { 'Name',     'Value',     'HelpID',     'Transparent',     'CenterAlign',     'RightAlign',     'ToolTip',     'AutoSize',     'Enabled',     'Visible',     'ClientEdge',     'Border',    'Obj',      'InputMask',      'HScroll',       'VScroll',       'RTL',     'NoWrap',   'NoPrefix',     'SubClass',     'VCenterAlign' }
+      aInitValues := { ::aName[j], ::aValue[j], ::aHelpID[j], ::aTransparent[j], ::acenteralign[j], ::aRightAlign[j], ::aToolTip[j], ::aAutoPlay[j], ::aEnabled[j], ::aVisible[j], ::aclientedge[j], ::aBorder[j], ::aCObj[j], ::aInputMask[j], ::aNoHScroll[j], ::aNoVScroll[j], ::aRTL[j], ::aWrap[j], ::aNoPrefix[j], ::aSubClass[j], ::aImagesAlign[j] }
+      aFormats    := { 30,         300,         '999',        .F.,               .F.,               .F.,              250,           .F.,            .F.,           .F.,           .F.,              .F.,          31,         1100,            .F.,             .F.,             .F.,       .F.,        .F.,            250,            .F. }
       aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
       IF aResults[1] == NIL
          oControl:SetFocus()
@@ -16024,6 +16029,7 @@ LOCAL aFormats, aResults
       ::aWrap[j]             := aResults[18]           // NOWRAP
       ::aNoPrefix[j]         := aResults[19]
       ::aSubClass[j]         := aResults[20]
+      ::aImagesAlign[j]      := aResults[21]
    ENDIF
 
    IF ::aCtrlType[j] == 'PROGRESSBAR'

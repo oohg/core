@@ -1,5 +1,5 @@
 /*
- * $Id: h_label.prg,v 1.31 2016-05-22 23:53:22 fyurisich Exp $
+ * $Id: h_label.prg,v 1.32 2016-10-10 15:38:11 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -123,7 +123,7 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, w, h, fontname, ;
                lTRANSPARENT, aRGB_bk, aRGB_font, ProcedureName, tooltip, ;
                HelpId, invisible, italic, underline, strikeout, autosize, ;
                rightalign, centeralign, lRtl, lNoWordWrap, lNoPrefix, ;
-               cPicture, lDisabled ) CLASS TLabel
+               cPicture, lDisabled, lCenterAlign ) CLASS TLabel
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle, nStyleEx
 
@@ -138,10 +138,11 @@ Local ControlHandle, nStyle, nStyleEx
    ::SetForm( ControlName, ParentForm, FontName, FontSize, aRGB_font, aRGB_bk, , lRtl )
 
    nStyle := ::InitStyle( ,, Invisible, .T., lDisabled ) + ;
-             if( HB_IsLogical( BORDER )    .AND. BORDER,     WS_BORDER,   0 ) + ;
-             if( HB_IsLogical( HSCROLL )   .AND. HSCROLL,    WS_HSCROLL,  0 ) + ;
-             if( HB_IsLogical( VSCROLL ) .AND. VSCROLL,    WS_VSCROLL,  0 ) + ;
-             if( HB_IsLogical( lNoPrefix ) .AND. lNoPrefix,  SS_NOPREFIX, 0 )
+             if( HB_IsLogical( BORDER )       .AND. BORDER,        WS_BORDER,      0 ) + ;
+             if( HB_IsLogical( HSCROLL )      .AND. HSCROLL,       WS_HSCROLL,     0 ) + ;
+             if( HB_IsLogical( VSCROLL )      .AND. VSCROLL,       WS_VSCROLL,     0 ) + ;
+             if( HB_IsLogical( lNoPrefix )    .AND. lNoPrefix,     SS_NOPREFIX,    0 ) + ;
+             if( HB_IsLogical( lCenterAlign ) .AND. lCenterAlign,  SS_CENTERIMAGE, 0 )
 
    If HB_IsLogical( lNoWordWrap )  .AND. lNoWordWrap
       nStyle += SS_LEFTNOWORDWRAP

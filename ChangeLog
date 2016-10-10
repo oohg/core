@@ -1,11 +1,26 @@
 /*
- * $Id: ChangeLog,v 1.1599 2016-10-10 13:09:08 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1600 2016-10-10 15:38:11 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2016-10-10 12:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/prgs/formedit.prg
+     + Support for VCENTERALIGN clause.
+   * include/i_altsyntax.prg
+     + Support for VCENTERALIGN clause.
+     + Support for PAINTDOUBLEBUFFER clause.
+   * include/i_hmg_compat.prg
+     + Support for PAINTDOUBLEBUFFER clause.
+   * include/i_label.prg
+     + VCENTERALIGN clause for vertical aligning of text.
+   * source/h_label.prg
+     + lCenterAlign parameter to TLabel:Define().
+   * manual/Changelog.htm
+     * Updated.
 
 2016-10-10 10:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_browse.prg

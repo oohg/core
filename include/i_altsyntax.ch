@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.136 2016-06-19 13:20:50 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.137 2016-10-10 15:38:11 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -734,6 +734,10 @@ CHECKLIST
       _OOHG_ActiveControlDblBffer       := .T. ;;
       _OOHG_ActiveControlSngBffer       := .F. ;;
       _OOHG_ActiveControlAction         := NIL
+
+#xcommand PAINTDOUBLEBUFFER <dblbffr> ;
+   => ;
+      _OOHG_ActiveControlDblBffer := <dblbffr>
 
 #xcommand DOUBLEBUFFER <dblbffr> ;
    => ;
@@ -2177,7 +2181,12 @@ LABEL
       _OOHG_ActiveControlCenterAlign := .F.    ;;
       _OOHG_ActiveControlNoWordWrap  := .F.    ;;
       _OOHG_ActiveControlNoPrefix    := .F.    ;;
-      _OOHG_ActiveControlInputMask   := NIL
+      _OOHG_ActiveControlInputMask   := NIL    ;;
+      _OOHG_ActiveControlAlignment   := .F.
+
+#xcommand VCENTERALIGN <vcenteralign> ;
+   => ;
+      _OOHG_ActiveControlAlignment := <vcenteralign>
 
 #xcommand CENTERALIGN <centeralign> ;
    => ;
@@ -2245,7 +2254,8 @@ LABEL
             _OOHG_ActiveControlNoWordWrap, ;
             _OOHG_ActiveControlNoPrefix, ;
             _OOHG_ActiveControlInputMask, ;
-            _OOHG_ActiveControlDisabled )
+            _OOHG_ActiveControlDisabled, ;
+            _OOHG_ActiveControlAlignment )
 
 #xcommand DEFINE IPADDRESS <name> ;
    => ;

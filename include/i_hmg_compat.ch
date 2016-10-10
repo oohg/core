@@ -1,5 +1,5 @@
 /*
- * $Id: i_hmg_compat.ch,v 1.54 2016-08-14 23:38:59 fyurisich Exp $
+ * $Id: i_hmg_compat.ch,v 1.55 2016-10-10 15:38:11 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -562,7 +562,7 @@ TODO: Try to implement this GRID clauses using COLUMNCONTROLS:
 #xtranslate GRID [ <x> ] CELLNAVIGATION ;
    => GRID [ <x> ] NAVIGATEBYCELL
 
-#xtranslate GRID [ <x> ] BUFFERED ;
+#xtranslate GRID [ <x> ] PAINTDOUBLEBUFFER ;
    => GRID [ <x> ]
 
 #xtranslate GRID [ <x> ] ALLOWAPPEND ;

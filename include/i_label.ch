@@ -1,5 +1,5 @@
 /*
- * $Id: i_label.ch,v 1.14 2016-05-22 23:52:23 fyurisich Exp $
+ * $Id: i_label.ch,v 1.15 2016-10-10 15:38:11 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -89,6 +89,7 @@
       [ INPUTMASK <picture> ] ;
       [ SUBCLASS <subclass> ] ;
       [ <disabled: DISABLED> ] ;
+	   [ <lcenteralign: VCENTERALIGN> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TLabel(), [ <subclass>() ] ):Define( ;
             <(name)>, <(parent)>, <col>, <row>, <value>, <width>, <height>, ;
@@ -97,4 +98,4 @@
             [ <fontcolor> ], <{action}>, <tooltip>, <helpid>, <.invisible.>, ;
             <.italic.>, <.underline.>, <.strikeout.>, <.autosize.>, ;
             <.rightalign.>, <.centeralign.>, <.rtl.>, <.nowordwrap.>, ;
-            <.noprefix.>, <picture>, <.disabled.> )
+            <.noprefix.>, <picture>, <.disabled.>, <.lcenteralign.> )
