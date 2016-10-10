@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.176 2016-10-10 00:01:33 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.177 2016-10-10 13:09:08 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -419,6 +419,8 @@ Local nWidth2, nCol2, oScroll, z
               bBeforeColSize, bAfterColSize, bBeforeAutoFit, bOnDelete, ;
               bDelWhen, bOnAppend, bHeadRClick, bOnRClick, bOnEditEnd, bOnRowRefresh )
 
+   ::Value := nValue
+
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -459,7 +461,7 @@ Return Self
 METHOD UpDate( nRow, lComplete ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local PageLength, aTemp, _BrowseRecMap, x, nRecNo, nCurrentLength
-Local lColor, aFields, cWorkArea, hWnd, nWidth
+Local lColor, aFields, cWorkArea, nWidth
 
    cWorkArea := ::WorkArea
 
@@ -482,8 +484,6 @@ Local lColor, aFields, cWorkArea, hWnd, nWidth
      aFields := Array( nWidth )
      aEval( ::aFields, { |c,i| aFields[ i ] := ::ColumnBlock( i ), c } )
    EndIf
-
-   hWnd := ::hWnd
 
    lColor := ! ( Empty( ::DynamicForeColor ) .AND. Empty( ::DynamicBackColor ) )
 
@@ -548,10 +548,10 @@ Local lColor, aFields, cWorkArea, hWnd, nWidth
          EndIf
 
          If nCurrentLength < x
-            AddListViewItems( hWnd, aTemp )
+            AddListViewItems( ::hWnd, aTemp )
             nCurrentLength ++
          Else
-            ListViewSetItem( hWnd, aTemp, x )
+            ListViewSetItem( ::hWnd, aTemp, x )
          EndIf
       Next x
       // Repositions the file as If _BrowseRecMap was builded using successive ::DbSkip() calls
@@ -950,7 +950,7 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD SetValue( Value, mp ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local _RecNo, m, hWnd, cWorkArea
+Local _RecNo, m, cWorkArea
 
    cWorkArea := ::WorkArea
 
@@ -967,10 +967,8 @@ Local _RecNo, m, hWnd, cWorkArea
       Return Self
    EndIf
 
-   hWnd := ::hWnd
-
    If _OOHG_ThisEventType == 'BROWSE_ONCHANGE'
-      If hWnd == _OOHG_ThisControl:hWnd
+      If ::hWnd == _OOHG_ThisControl:hWnd
          MsgOOHGError( "BROWSE: Value property can't be changed inside ON CHANGE event. Program Terminated." )
       EndIf
    EndIf

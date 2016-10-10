@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.1598 2016-10-10 00:01:32 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1599 2016-10-10 13:09:08 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,9 +7,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-10-10 10:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_browse.prg
+     ! Value set at define time is ignored.
+     - Unneeded auxiliary var.
+   * manual/Changelog.htm
+     * Updated.
+
 2016-10-09 21:01 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_browse.prg
-     ! Inline editing windows is displayed at wrong position the first
+     ! Inline editing window is displayed at wrong position the first
        time a new record is added.
    * source/h_grid.prg
      * ListView_EnsureVisible() is now called with parameter fPartialOK
