@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.303 2016-08-14 23:38:59 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.304 2016-10-10 00:01:33 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2437,11 +2437,11 @@ Local r, r2, lRet := .F., nClientWidth, nScrollWidth
       nClientWidth := r[ 3 ] - r[ 1 ]
       r2 := { 0, 0, 0, 0 }                                       // left, top, right, bottom
       GetWindowRect( ::hWnd, r2 )
-      If ! OSisWinXPorLater() .OR. ! ListView_IsItemVisible( ::hWnd, nRow )
+      // Ensure cell is visible and compute editing window's rect
+      If ! OsIsWinVistaOrLater() .OR. ! ListView_IsItemVisible( ::hWnd, nRow )
          ListView_EnsureVisible( ::hWnd, nRow )
       EndIf
       r := ListView_GetSubitemRect( ::hWnd, nRow - 1, nCol - 1 ) // top, left, width, height
-      // Ensure cell is visible and compute editing window's rect
       If ::lScrollBarUsesClientArea .AND. ::ItemCount > ::CountPerPage
          nScrollWidth := GetVScrollBarWidth()
       Else
@@ -6905,11 +6905,6 @@ EXTERN GetGridVKey, TGrid_Notify_CustomDraw
    #define WM_MOUSEWHEEL  0x020A
 #endif
 
-#ifndef LVM_ISITEMVISIBLE
-   #define LVM_ISITEMVISIBLE (LVM_FIRST + 182)
-   #define ListView_IsItemVisible(w,i) (BOOL)SNDMSG((w),LVM_ISITEMVISIBLE,i,0)
-#endif
-
 #define s_Super s_TControl
 
 // -----------------------------------------------------------------------------
@@ -7762,7 +7757,7 @@ HB_FUNC( LISTVIEWGETCOUNTPERPAGE )
 
 HB_FUNC( LISTVIEW_ENSUREVISIBLE )
 {
-   hb_retl( ListView_EnsureVisible( HWNDparam( 1 ), hb_parni( 2 ) - 1, 1 ) );
+   hb_retl( ListView_EnsureVisible( HWNDparam( 1 ), hb_parni( 2 ) - 1, FALSE ) );
 }
 
 HB_FUNC( LISTVIEW_ISITEMVISIBLE )
@@ -7771,7 +7766,7 @@ HB_FUNC( LISTVIEW_ISITEMVISIBLE )
    int iItem = hb_parni( 2 ) - 1;
    int iTop = ListView_GetTopIndex( hwnd );
 
-   hb_retl( iItem >= iTop && iItem <= iTop + ListView_GetCountPerPage( hwnd ) - 1 );
+   hb_retl( ( iItem >= iTop ) && ( iItem <= iTop + ListView_GetCountPerPage( hwnd ) - 1 ) );
 }
 
 HB_FUNC( LISTVIEW_GETTOPINDEX )

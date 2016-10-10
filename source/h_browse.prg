@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.175 2016-09-29 23:22:52 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.176 2016-10-10 00:01:33 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -456,7 +456,7 @@ METHOD Define3( ControlName, ParentForm, x, y, w, h, fontname, fontsize, ;
 Return Self
 
 *-----------------------------------------------------------------------------*
-METHOD UpDate( nRow ) CLASS TOBrowse
+METHOD UpDate( nRow, lComplete ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local PageLength, aTemp, _BrowseRecMap, x, nRecNo, nCurrentLength
 Local lColor, aFields, cWorkArea, hWnd, nWidth
@@ -526,16 +526,18 @@ Local lColor, aFields, cWorkArea, hWnd, nWidth
          aAdd( _BrowseRecMap, ( cWorkArea )->( RecNo() ) )
          ::DbSkip()
       EndDo
-      Do While Len( _BrowseRecMap ) < PageLength
-         ::DbGoTo( _BrowseRecMap[ 1 ] )
-         ::DbSkip( -1 )
-         If ::Bof()
-            Exit
-         EndIf
-         aAdd( _BrowseRecMap, Nil )
-         aIns( _BrowseRecMap, 1 )
-         _BrowseRecMap[ 1 ] := ( cWorkArea )->( RecNo() )
-      EndDo
+      If HB_IsLogical( lComplete ) .AND. lComplete
+         Do While Len( _BrowseRecMap ) < PageLength
+            ::DbGoTo( _BrowseRecMap[ 1 ] )
+            ::DbSkip( -1 )
+            If ::Bof()
+               Exit
+            EndIf
+            aAdd( _BrowseRecMap, Nil )
+            aIns( _BrowseRecMap, 1 )
+            _BrowseRecMap[ 1 ] := ( cWorkArea )->( RecNo() )
+         EndDo
+      EndIf
       For x := 1 To Len( _BrowseRecMap )
          ::DbGoTo( _BrowseRecMap[ x ] )
 
@@ -757,7 +759,7 @@ Local _RecNo, _BottomRec, cWorkArea
    // If it's for APPEND, leaves a blank line ;)
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
    ::DbSkip( - ::CountPerPage + IF( lAppend, 2, 1 ) )
-   ::Update()
+   ::Update( 1, .F. )
    ::DbGoTo( _RecNo )
    ::CurrentRow := aScan( ::aRecMap, _BottomRec )
 

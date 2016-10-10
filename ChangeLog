@@ -1,11 +1,22 @@
 /*
- * $Id: ChangeLog,v 1.1597 2016-10-01 23:19:30 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1598 2016-10-10 00:01:32 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2016-10-09 21:01 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_browse.prg
+     ! Inline editing windows is displayed at wrong position the first
+       time a new record is added.
+   * source/h_grid.prg
+     * ListView_EnsureVisible() is now called with parameter fPartialOK
+       set to FALSE.
+     ! ListView_IsItemVisible is not present under XP.
+   * manual/Changelog.htm
+     * Updated.
 
 2016-10-01 20:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ide/mgide.rc
