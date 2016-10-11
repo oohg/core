@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.158 2016-09-29 23:22:52 fyurisich Exp $
+ * $Id: h_controlmisc.prg,v 1.159 2016-10-11 01:26:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -566,6 +566,9 @@ Local oWnd, oCtrl, nPos
       ElseIf Arg2 == "CURSOR"
          oWnd:Cursor := Arg3
 
+      ElseIf Arg2 == "CLOSABLE"
+         oWnd:Closeable := Arg3
+
       Else
          // Pseudo-property
          nPos := ASCAN( oWnd:aProperties, { |a| a[ 1 ] == Arg2 } )
@@ -819,6 +822,9 @@ Local RetVal, oWnd, oCtrl, nPos
 
       ElseIf Arg2 == 'WIDTH'
          RetVal := oWnd:Width
+
+      ElseIf Arg2 == 'CLOSABLE'
+         RetVal := oWnd:Closable
 
       ElseIf Arg2 == 'COL'
          RetVal := oWnd:Col

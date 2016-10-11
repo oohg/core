@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.71 2016-06-26 14:17:00 fyurisich Exp $
+ * $Id: i_windefs.ch,v 1.72 2016-10-11 01:26:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -268,8 +268,16 @@ EXTENDED WINDOW STYLES
 #define WS_EX_CONTROLPARENT           0x00010000
 #define WS_EX_STATICEDGE              0x00020000
 #define WS_EX_APPWINDOW               0x00040000
+#define WS_EX_LAYERED                 0x00080000
 #define WS_EX_OVERLAPPEDWINDOW        ( WS_EX_WINDOWEDGE + WS_EX_CLIENTEDGE )
 #define WS_EX_PALETTEWINDOW           ( WS_EX_WINDOWEDGE + WS_EX_TOOLWINDOW + WS_EX_TOPMOST )
+
+/*---------------------------------------------------------------------------
+LAYERED WINDOW FLAGS
+---------------------------------------------------------------------------*/
+
+#define LWA_COLORKEY                  0x01
+#define LWA_ALPHA                     0x02
 
 /*---------------------------------------------------------------------------
 EDIT CONTROL

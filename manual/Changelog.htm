@@ -1,5 +1,5 @@
 <!--
-$Id: Changelog.htm,v 1.96 2016-10-10 15:38:11 fyurisich Exp $
+$Id: Changelog.htm,v 1.97 2016-10-11 01:26:27 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -142,6 +142,26 @@ CHANGELOG</div>
 </div>
 <div id="winchm_template_content">
 <pre>
+2016-10-10 22:25 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ide/prgs/formedit.prg
+     ! Form's PARENT and BACKIMAGE clauses.
+   * include/i_windefs.ch
+     + WS_EX_LAYERED, LWA_COLORKEY and LWA_ALPHA.
+   * include/i_window.ch
+     + SET WINDOW &lt;FormName&gt; TRANSPARENT TO &lt;nAlphaBlend&gt; command.
+     + SET WINDOW &lt;FormName&gt; [ TRANSPARENT ] TO OPAQUE command.
+     + SET WINDOW &lt;FormName&gt; TRANSPARENT TO COLOR &lt;aColor&gt; command.
+     + SET WINDOW &lt;FormName&gt; TRANSPARENT OFF command.
+   * manual/Changelog.htm
+     * Updated.
+   * source/c_windows.c
+     + SetLayeredWindowAttributes() at C level.
+   * source/h_controlmisc.prg
+     + Support for method CLOSABLE in GetProperty() and SetProperty().
+   * source/h_form.prg
+     + Method CLOSABLE.
+     + GetSystemMenu() at C level.
+
 2016-10-10 12:38 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * ide/prgs/formedit.prg
      + Support for VCENTERALIGN clause.

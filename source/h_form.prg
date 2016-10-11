@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.69 2016-08-14 23:38:59 fyurisich Exp $
+ * $Id: h_form.prg,v 1.70 2016-10-11 01:26:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -231,14 +231,14 @@ CLASS TForm FROM TWindow
    METHOD AutoAdjust
    METHOD AdjustWindowSize
    METHOD ClientsPos
-
+   METHOD Closable            SETGET
    METHOD FocusedControl
    METHOD SizePos
    METHOD Define
    METHOD Define2
    METHOD EndWindow
    METHOD Register
-   METHOD Visible       SETGET
+   METHOD Visible             SETGET
    METHOD Show
    METHOD Hide
    METHOD Activate
@@ -995,6 +995,17 @@ Return ::Super:DeleteControl( oControl )
 METHOD OnHideFocusManagement() CLASS TForm
 *-----------------------------------------------------------------------------*
 Return nil
+
+*-----------------------------------------------------------------------------*
+METHOD Closable( lCloseable ) CLASS TForm
+*-----------------------------------------------------------------------------*
+Local lRet
+   If IsWindowStyle( ::hWnd, WS_CAPTION ) .AND. IsWindowStyle( ::hWnd, WS_SYSMENU )
+      lRet := MenuEnabled( GetSystemMenu( ::hWnd ), SC_CLOSE, lCloseable )
+   Else
+      lRet := .F.
+   EndIf
+Return lRet
 
 *-----------------------------------------------------------------------------*
 METHOD CheckInteractiveClose() CLASS TForm
@@ -3285,6 +3296,11 @@ MDICHILD:
    }
 
    HWNDret( hwnd );
+}
+
+HB_FUNC( GETSYSTEMMENU )
+{
+   HMENUret( GetSystemMenu( HWNDparam( 1 ), FALSE ) );
 }
 
 

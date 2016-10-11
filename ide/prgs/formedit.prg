@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.68 2016-10-10 15:38:11 fyurisich Exp $
+ * $Id: formedit.prg,v 1.69 2016-10-11 01:26:27 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -11335,7 +11335,7 @@ LOCAL aImages, aPageNames, aPageObjs, aPageSubClasses, nCount
       Output += Space( nSpacing ) + 'HEIGHT ' + LTrim( Str( ::oDesignForm:Height ) )
    ENDIF
    IF ! Empty( ::cFParent ) .AND. UpperNIL( ::cFParent ) # 'NIL'
-      Output += ' ;' + CRLF + Space( nSpacing ) + 'PARENT ' + StrToStr( ::cFParent )
+      Output += ' ;' + CRLF + Space( nSpacing ) + 'PARENT ' + AllTrim( ::cFParent )
    ENDIF
    IF ::nFVirtualW > 0
       Output += ' ;' + CRLF + Space( nSpacing ) + 'VIRTUAL WIDTH ' + LTrim( Str( ::nFVirtualW ) )      // Must be declared after WIDTH
@@ -11485,7 +11485,7 @@ LOCAL aImages, aPageNames, aPageObjs, aPageSubClasses, nCount
    IF ::nFMaxHeight > 0
       Output += ' ;' + CRLF + Space( nSpacing ) + 'MAXHEIGHT ' + LTrim( Str( ::nFMaxHeight ) )
    ENDIF
-   IF ! Empty( ::cFBackImage ) .AND. ! ::cFBackImage == 'NIL'
+   IF ! Empty( ::cFBackImage ) .AND. UpperNIL( ::cFBackImage ) # 'NIL'
       Output += ' ;' + CRLF + Space( nSpacing ) + 'BACKIMAGE ' + StrToStr( ::cFBackImage )
       Output += IIF( ::lFStretch, ' ;' + CRLF + Space( nSpacing ) + 'STRETCH ', '')
    ENDIF

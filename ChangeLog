@@ -1,11 +1,31 @@
 /*
- * $Id: ChangeLog,v 1.1600 2016-10-10 15:38:11 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1601 2016-10-11 01:26:27 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2016-10-10 22:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/prgs/formedit.prg
+     ! Form's PARENT and BACKIMAGE clauses.
+   * include/i_windefs.ch
+     + WS_EX_LAYERED, LWA_COLORKEY and LWA_ALPHA.
+   * include/i_window.ch
+     + SET WINDOW <FormName> TRANSPARENT TO <nAlphaBlend> command.
+     + SET WINDOW <FormName> [ TRANSPARENT ] TO OPAQUE command.
+     + SET WINDOW <FormName> TRANSPARENT TO COLOR <aColor> command.
+     + SET WINDOW <FormName> TRANSPARENT OFF command.
+   * manual/Changelog.htm
+     * Updated.
+   * source/c_windows.c
+     + SetLayeredWindowAttributes() at C level.
+   * source/h_controlmisc.prg
+     + Support for method CLOSABLE in GetProperty() and SetProperty().
+   * source/h_form.prg
+     + Method CLOSABLE.
+     + GetSystemMenu() at C level.
 
 2016-10-10 12:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ide/prgs/formedit.prg

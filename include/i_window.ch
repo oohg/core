@@ -1,5 +1,5 @@
 /*
- * $Id: i_window.ch,v 1.66 2016-09-29 23:50:37 fyurisich Exp $
+ * $Id: i_window.ch,v 1.67 2016-10-11 01:26:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -67,7 +67,7 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
             ClientWidth, VirtualHeight, VirtualWidth, Col, Row, BackColor, ;
             FocusedControl, hWnd, Object, Cursor, NotifyIcon, NotifyToolTip, ;
             SaveAs, MinWidth, MaxWidth, MinHeight, MaxHeight, Topmost, ;
-            HelpButton\> ;
+            HelpButton, Closable, Handle\> ;
             => GetExistingFormObject( <(w)> ):\<p\> ;;
       #xtranslate <w> . \<p: Activate, Center, Release, Maximize, Minimize, ;
             Restore, Show, Hide, Print, SetFocus, Redraw\> \[()\] ;
@@ -82,7 +82,7 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
             Indent, SelColor, OnChange, AllowAppend, AllowDelete, AllowEdit, ;
             Action, OnClick, Length, hWnd, Object, ReadOnly, Cargo, TabStop, ;
             ItemHeight, RichValue, OnGotFocus, OnLostFocus, OnDblClick, ;
-            HBitMap\> ;
+            HBitMap, Handle\> ;
             => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ;;
       #xtranslate <w> . \<c: VScrollBar, HScrollBar\> . \<p\> ;
             => GetExistingFormObject( <(w)> ):\<c\>:\<p\> ;;
@@ -215,7 +215,7 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
             AddControl, AddPage\>( \<a1\>, \<a2\>, \<a3\>, \<a4\> ) ;
             => <w> . \<c\> . \<p\> ( \<a1\>, \<a2\>, \<a3\>, \<a4\> ) ;;
       #xtranslate <w> . \<x\>( \<k\> ) . \<c\> . \<p: Name, Length, hWnd, ;
-            Object, ReadOnly, DisableEdit, Speed, Volume, Zoom\> ;
+            Object, ReadOnly, DisableEdit, Speed, Volume, Zoom, Handle\> ;
             => <w> . \<c\> . \<p\>
 
 #xcommand DEFINE WINDOW <w> ;
@@ -515,3 +515,23 @@ AUTOADJUST
 #xtranslate SET ADJUSTFONT OFF ;
    => ;
       _OOHG_AdjustFont := .F.
+
+/*---------------------------------------------------------------------------
+TRANSPARENCY
+---------------------------------------------------------------------------*/
+
+#xtranslate SET WINDOW <FormName> TRANSPARENT TO <nAlphaBlend> ;  // nAlphaBlend = 0 (transparent) to 255 (opaque)
+   => ;
+      SetLayeredWindowAttributes( GetFormHandle( <"FormName"> ), 0, <nAlphaBlend>, LWA_ALPHA )
+
+#xtranslate SET WINDOW <FormName> [ TRANSPARENT ] TO OPAQUE ;
+   => ;
+      SetLayeredWindowAttributes( GetFormHandle( <"FormName"> ), 0, 255, LWA_ALPHA )
+
+#xtranslate SET WINDOW <FormName> TRANSPARENT TO COLOR <aColor> ;
+   => ;
+      SetLayeredWindowAttributes( GetFormHandle( <"FormName"> ), RGB(<aColor>\[1\], <aColor>\[2\], <aColor>\[3\]), 0, LWA_COLORKEY )
+
+#xtranslate SET WINDOW <FormName> TRANSPARENT OFF ;
+   => ;
+      WindowExStyleFlag( GetFormHandle( <"FormName"> ), WS_EX_LAYERED, 0 )

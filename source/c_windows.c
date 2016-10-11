@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.86 2016-08-14 23:38:59 fyurisich Exp $
+ * $Id: c_windows.c,v 1.87 2016-10-11 01:26:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1587,4 +1587,45 @@ HBRUSH GetTabBrush( HWND hWnd )
    ReleaseDC( hWnd, hDC );
 
    return hBrush;
+}
+
+HB_FUNC( SETLAYEREDWINDOWATTRIBUTES )
+{
+   HWND     hWnd    = HWNDparam( 1 );
+   COLORREF crKey   = ( COLORREF ) hb_parnl( 2 );
+   BYTE     bAlpha  = ( BYTE ) hb_parni( 3 );
+   DWORD    dwFlags = ( DWORD ) hb_parnl( 4 );
+
+#if defined ( __MINGW32__ ) && ! defined ( __MINGW32_VERSION )
+   if( ! ( GetWindowLongPtr( hWnd, GWL_EXSTYLE ) & WS_EX_LAYERED ) )
+   {
+      SetWindowLongPtr( hWnd, GWL_EXSTYLE, ( GetWindowLongPtr( hWnd, GWL_EXSTYLE ) | WS_EX_LAYERED ) );
+   }
+
+   hb_retl( (BOOL) SetLayeredWindowAttributes( hWnd, crKey, bAlpha, dwFlags ) );
+#else
+   typedef BOOL (__stdcall * PFN_SETLAYEREDWINDOWATTRIBUTES)( HWND, COLORREF, BYTE, DWORD );
+
+   PFN_SETLAYEREDWINDOWATTRIBUTES pfnSetLayeredWindowAttributes = NULL;
+
+   HINSTANCE hLib = LoadLibrary( "user32.dll" );
+
+   if( hLib != NULL )
+   {
+      pfnSetLayeredWindowAttributes = (PFN_SETLAYEREDWINDOWATTRIBUTES) GetProcAddress( hLib, "SetLayeredWindowAttributes" );
+   }
+
+   if( pfnSetLayeredWindowAttributes )
+   {
+      SetWindowLong( hWnd, GWL_EXSTYLE, GetWindowLong( hWnd, GWL_EXSTYLE ) | WS_EX_LAYERED );
+      pfnSetLayeredWindowAttributes( hWnd, crKey, bAlpha, dwFlags );
+   }
+
+   hb_retl( (BOOL) pfnSetLayeredWindowAttributes );
+
+   if( ! hLib )
+   {
+      FreeLibrary( hLib );
+   }
+#endif
 }
