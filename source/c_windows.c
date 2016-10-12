@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.87 2016-10-11 01:26:27 fyurisich Exp $
+ * $Id: c_windows.c,v 1.88 2016-10-12 23:40:02 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -601,7 +601,22 @@ HB_FUNC( GETDESKTOPREALWIDTH )
 
    hb_retni( w );
 }
-HB_FUNC (GETWINDOWROW)
+
+HB_FUNC( GETDESKTOPREALTOP )
+{
+   RECT rect;
+   SystemParametersInfo ( SPI_GETWORKAREA, 0, &rect, 0 );
+   hb_retni( rect.top );
+}
+
+HB_FUNC( GETDESKTOPREALLEFT )
+{
+   RECT rect;
+   SystemParametersInfo ( SPI_GETWORKAREA, 0, &rect, 0 );
+   hb_retni( rect.left );
+}
+
+HB_FUNC( GETWINDOWROW )
 {
    RECT rect;
    hb_xmemset( &rect, 0, sizeof( rect ) );

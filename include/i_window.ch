@@ -1,5 +1,5 @@
 /*
- * $Id: i_window.ch,v 1.67 2016-10-11 01:26:27 fyurisich Exp $
+ * $Id: i_window.ch,v 1.68 2016-10-12 23:40:02 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -522,16 +522,16 @@ TRANSPARENCY
 
 #xtranslate SET WINDOW <FormName> TRANSPARENT TO <nAlphaBlend> ;  // nAlphaBlend = 0 (transparent) to 255 (opaque)
    => ;
-      SetLayeredWindowAttributes( GetFormHandle( <"FormName"> ), 0, <nAlphaBlend>, LWA_ALPHA )
+      SetLayeredWindowAttributes( GetFormHandle( <"FormName"> ), 0, <nAlphaBlend>, 0x02)   // LWA_ALPHA
 
 #xtranslate SET WINDOW <FormName> [ TRANSPARENT ] TO OPAQUE ;
    => ;
-      SetLayeredWindowAttributes( GetFormHandle( <"FormName"> ), 0, 255, LWA_ALPHA )
+      SetLayeredWindowAttributes( GetFormHandle( <"FormName"> ), 0, 255, 0x02)   // LWA_ALPHA
 
 #xtranslate SET WINDOW <FormName> TRANSPARENT TO COLOR <aColor> ;
    => ;
-      SetLayeredWindowAttributes( GetFormHandle( <"FormName"> ), RGB(<aColor>\[1\], <aColor>\[2\], <aColor>\[3\]), 0, LWA_COLORKEY )
+      SetLayeredWindowAttributes( GetFormHandle( <"FormName"> ), RGB(<aColor>\[1\], <aColor>\[2\], <aColor>\[3\]), 0, 0x01 )  // LWA_COLORKEY
 
 #xtranslate SET WINDOW <FormName> TRANSPARENT OFF ;
    => ;
-      WindowExStyleFlag( GetFormHandle( <"FormName"> ), WS_EX_LAYERED, 0 )
+      WindowExStyleFlag( GetFormHandle( <"FormName"> ), 0x00080000, 0 )   // WS_EX_LAYERED

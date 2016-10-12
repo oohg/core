@@ -1,11 +1,23 @@
 /*
- * $Id: ChangeLog,v 1.1601 2016-10-11 01:26:27 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1602 2016-10-12 23:40:02 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2016-10-12 20:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_dll.ch
+     * Format.
+   * include/i_window.ch
+     * Constants changed by its values.
+   * source/c_msgbox.c
+     + Functions MessageBoxIndirect and MessageBoxTimeout.
+   * source/c_windows.c
+     + Functions GetDesktopRealTop and GetDesktopRealLeft.
+   * manual/Changelog.htm
+     * Updated.
 
 2016-10-10 22:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ide/prgs/formedit.prg

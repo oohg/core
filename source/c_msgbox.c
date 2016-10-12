@@ -1,5 +1,5 @@
 /*
- * $Id: c_msgbox.c,v 1.9 2016-05-22 23:53:21 fyurisich Exp $
+ * $Id: c_msgbox.c,v 1.10 2016-10-12 23:40:02 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -264,4 +264,57 @@ HB_FUNC( C_MSGEXCLAMATIONYESNO )
    }
 
    hb_retni( MessageBox( GetActiveWindow(), hb_parc( 1 ), hb_parc( 2 ), MB_YESNO | MB_ICONEXCLAMATION | uType ) );
+}
+
+// MessageBoxIndirect( [hWnd], cText, [cCaption], [nStyle], [xIcon], [hInst], [nHelpId], [nProc], [nLang] )
+// Contributed by Andy Wos <andywos@unwired.com.au>
+HB_FUNC( MESSAGEBOXINDIRECT )
+{
+   MSGBOXPARAMS mbp;
+
+   mbp.cbSize             = sizeof( MSGBOXPARAMS );
+   mbp.hwndOwner          = HB_ISNIL( 1 ) ? GetActiveWindow() : HWNDparam( 1 );
+   mbp.hInstance          = HB_ISNIL( 6 ) ? GetModuleHandle( NULL ) : ( HINSTANCE ) hb_parnl( 6 );
+   mbp.lpszText           = HB_ISCHAR( 2 ) ? hb_parc( 2 ) : ( HB_ISNIL( 2 ) ? NULL : MAKEINTRESOURCE( hb_parni( 2 ) ) );
+   mbp.lpszCaption        = HB_ISCHAR( 3 ) ? hb_parc( 3 ) : ( HB_ISNIL( 3 ) ? "" : MAKEINTRESOURCE( hb_parni( 3 ) ) );
+   mbp.dwStyle            = ( DWORD ) hb_parni( 4 );
+   mbp.lpszIcon           = HB_ISCHAR( 5 ) ? hb_parc( 5 ) : ( HB_ISNIL( 5 ) ? NULL : MAKEINTRESOURCE( hb_parni( 5 ) ) );
+   mbp.dwContextHelpId    = HB_ISNIL( 7 ) ? 0 : ( DWORD ) hb_parni( 7 );
+   mbp.lpfnMsgBoxCallback = HB_ISNIL( 8 ) ? NULL : ( MSGBOXCALLBACK ) hb_parnl( 8 );
+   mbp.dwLanguageId       = HB_ISNIL( 9 ) ? MAKELANGID( LANG_NEUTRAL, SUBLANG_NEUTRAL ) : ( DWORD ) hb_parni( 9 );
+
+   hb_retni( ( int ) MessageBoxIndirect( &mbp ) );
+}
+
+typedef int ( WINAPI * PMessageBoxTimeout )( HWND, LPCSTR, LPCSTR, UINT, WORD, DWORD );
+static PMessageBoxTimeout pMessageBoxTimeout = NULL;
+
+int WINAPI MessageBoxTimeout( HWND hWnd, LPCSTR lpText, LPCSTR lpCaption, UINT uType, WORD wLanguageId, DWORD dwMilliseconds )
+{
+   if( pMessageBoxTimeout == NULL )
+   {
+      HMODULE hLib = LoadLibrary( "User32.dll" );
+
+      pMessageBoxTimeout = ( PMessageBoxTimeout ) GetProcAddress( hLib, "MessageBoxTimeoutA" );
+   }
+
+   if( pMessageBoxTimeout == NULL )
+      return FALSE;
+
+   return pMessageBoxTimeout( hWnd, lpText, lpCaption, uType, wLanguageId, dwMilliseconds );
+}
+
+// MessageBoxTimeout( Text, Caption, nTypeButton, nMilliseconds ) ---> Return iRetButton
+HB_FUNC( MESSAGEBOXTIMEOUT )
+{
+   HWND hWnd = GetActiveWindow();
+   const char * lpText         = ( const char * ) hb_parc( 1 );
+   const char * lpCaption      = ( const char * ) hb_parc( 2 );
+   UINT         uType          = HB_ISNIL( 3 ) ? MB_OK : ( UINT ) hb_parnl( 3 );
+   WORD         wLanguageId    = MAKELANGID( LANG_NEUTRAL, SUBLANG_NEUTRAL );
+   DWORD        dwMilliseconds = HB_ISNIL( 4 ) ? ( DWORD ) 0xFFFFFFFF : ( DWORD ) hb_parnl( 4 );
+
+   int iRet = MessageBoxTimeout( hWnd, lpText, lpCaption, uType, wLanguageId, dwMilliseconds );
+
+   hb_retni( iRet );
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: i_dll.ch,v 1.5 2016-05-22 23:52:23 fyurisich Exp $
+ * $Id: i_dll.ch,v 1.6 2016-10-12 23:40:02 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -61,10 +61,10 @@
 FLAGS
 ---------------------------------------------------------------------------*/
 
-#define  DC_MICROSOFT            0x0000
-#define  DC_BORLAND              0x0001
-#define  DC_CALL_CDECL           0x0010
-#define  DC_CALL_STD             0x0020
+#define DC_MICROSOFT             0x0000
+#define DC_BORLAND               0x0001
+#define DC_CALL_CDECL            0x0010
+#define DC_CALL_STD              0x0020
 
 /*---------------------------------------------------------------------------
 TYPES
