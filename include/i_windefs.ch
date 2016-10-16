@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.72 2016-10-11 01:26:27 fyurisich Exp $
+ * $Id: i_windefs.ch,v 1.73 2016-10-16 04:46:11 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -727,6 +727,7 @@ TOOLBUTTON CONTROL
 #define TBN_GETINFOTIPA               ( TBN_FIRST - 18 )
 #define TBN_GETINFOTIPW               ( TBN_FIRST - 19 )
 #define TBN_GETINFOTIP                TBN_GETINFOTIPA
+#define TB_DELETEBUTTON               ( WM_USER + 22 )
 
 /*---------------------------------------------------------------------------
 LOADIMAGE/COPYIMAGE FUNCTIONS, BM_SETIMAGE/STM_SETIMAGE MESSAGES PARAMETERS

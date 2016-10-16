@@ -1,5 +1,5 @@
 <!--
-$Id: Changelog.htm,v 1.98 2016-10-12 23:40:02 fyurisich Exp $
+$Id: Changelog.htm,v 1.99 2016-10-16 04:46:11 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -142,6 +142,22 @@ CHANGELOG</div>
 </div>
 <div id="winchm_template_content">
 <pre>
+2016-10-16 01:46 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * doc/classes.txt
+     * Updated.
+   * include/i_windefs.ch
+     + TB_DELETEBUTTON
+   * manual/Changelog.htm
+     * Updated.
+   * source/h_toolbar.prg
+     * Format.
+     + Methods AddButton and DeleteButton to class TToolBar.
+     + Data oHotKey to class TToolButton.
+     + Parameter toolbar to TToolButton:Define() to allow runtime
+       defined buttons.
+     + Explicit release of button's hotkey.
+     + Buttons are deleted from the toolbar before releasing them.
+
 2016-10-12 20:40 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * include/i_dll.ch
      * Format.

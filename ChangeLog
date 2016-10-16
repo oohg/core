@@ -1,11 +1,27 @@
 /*
- * $Id: ChangeLog,v 1.1602 2016-10-12 23:40:02 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1603 2016-10-16 04:46:11 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2016-10-16 01:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * doc/classes.txt
+     * Updated.
+   * include/i_windefs.ch
+     + TB_DELETEBUTTON
+   * manual/Changelog.htm
+     * Updated.
+   * source/h_toolbar.prg
+     * Format.
+     + Methods AddButton and DeleteButton to class TToolBar.
+     + Data oHotKey to class TToolButton.
+     + Parameter toolbar to TToolButton:Define() to allow runtime
+       defined buttons.
+     + Explicit release of button's hotkey.
+     + Buttons are deleted from the toolbar before releasing them.
 
 2016-10-12 20:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_dll.ch

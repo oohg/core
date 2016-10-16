@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.103 2016-08-14 23:38:59 fyurisich Exp $
+ * $Id: classes.txt,v 1.104 2016-10-16 04:46:11 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -758,6 +758,7 @@ CLASS TFORM FROM TWINDOW
    METHOD CENTER
    METHOD CHECKINTERACTIVECLOSE
    METHOD CLIENTSPOS
+   METHOD CLOSABLE                SETGET
    METHOD COL                     SETGET
    METHOD CURSOR                  SETGET
    METHOD DEFINE
@@ -2695,8 +2696,10 @@ CLASS TTOOLBAR FROM TCONTROL
    DATA NBUTTONWIDTH              INIT 0
    DATA TYPE                      INIT "TOOLBAR" READONLY
 
+   METHOD ADDBUTTON
    METHOD CLIENTHEIGHTUSED
    METHOD DEFINE
+   METHOD DELETEBUTTON
    METHOD EVENTS
    METHOD EVENTS_COMMAND
    METHOD EVENTS_NOTIFY
@@ -2711,6 +2714,7 @@ CLASS TTOOLBUTTON FROM TCONTROL
    DATA CPICTURE                  INIT ""
    DATA HIMAGE                    INIT 0
    DATA LADJUST                   INIT .F.
+   DATA OHOTKEY                   INIT NIL
    DATA POSITION                  INIT 0
    DATA TYPE                      INIT "TOOLBUTTON" READONLY
 
