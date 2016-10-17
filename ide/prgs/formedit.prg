@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.69 2016-10-11 01:26:27 fyurisich Exp $
+ * $Id: formedit.prg,v 1.70 2016-10-17 22:25:12 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -3771,6 +3771,7 @@ LOCAL nWidth := NIL, nHeight := NIL
 
       CASE ::CurrentControl == 15
          // "LABEL"
+         ::aImagesAlign[::nControlW] := .F.
 
       CASE ::CurrentControl == 16
          // "PLAYER"
