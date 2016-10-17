@@ -1,16 +1,24 @@
 /*
- * $Id: h_edit.prg,v 1.24 2016-05-22 23:53:22 fyurisich Exp $
+ * $Id: h_edit.prg,v 1.25 2016-10-17 01:55:34 fyurisich Exp $
  */
 /*
  * ooHG source code:
- * PRG editor functions
+ * EDIT WORKAREA command
  *
  * Copyright 2005-2016 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.oohg.org
+ * https://sourceforge.net/projects/oohg/
  *
- * Portions of this code are copyrighted by the Harbour MiniGUI library.
+ * Portions of this project are based upon Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
  *
+ * Portions of this project are based upon Harbour GUI framework for Win32.
+ * Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
+ * Copyright 2001 Antonio Linares <alinares@fivetech.com>
+ *
+ * Portions of this project are based upon Harbour Project.
+ * Copyright 1999-2016, http://www.harbour-project.org/
+ */
+/*
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2, or (at your option)
@@ -23,8 +31,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this software; see the file COPYING.  If not, write to
- * the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307 USA (or visit the web site http://www.gnu.org/).
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
  *
  * As a special exception, the ooHG Project gives permission for
  * additional uses of the text contained in its release of ooHG.
@@ -49,50 +57,32 @@
  * If you write modifications of your own for ooHG, it is your choice
  * whether to permit this exception to apply to your modifications.
  * If you do not wish that, delete this exception notice.
- *
  */
-/*----------------------------------------------------------------------------
- MINIGUI - Harbour Win32 GUI library source code
 
- Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
- http://www.geocities.com/harbour_minigui/
 
- This program is free software; you can redistribute it and/or modify it under
- the terms of the GNU General Public License as published by the Free Software
- Foundation; either version 2 of the License, or (at your option) any later
- version.
-
- This program is distributed in the hope that it will be useful, but WITHOUT
- ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License along with
- this software; see the file COPYING. If not, write to the Free Software
- Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA (or
- visit the web site http://www.gnu.org/).
-
- As a special exception, you have permission for additional uses of the text
- contained in this release of Harbour Minigui.
-
- The exception is that, if you link the Harbour Minigui library with other
- files to produce an executable, this does not by itself cause the resulting
- executable to be covered by the GNU General Public License.
- Your use of that executable is in no way restricted on account of linking the
- Harbour-Minigui library code into it.
-
- Parts of this project are based upon:
-
-	"Harbour GUI framework for Win32"
- 	Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- 	Copyright 2001 Antonio Linares <alinares@fivetech.com>
-	www - http://www.harbour-project.org
-
-	"Harbour Project"
-	Copyright 1999-2003, http://www.harbour-project.org/
----------------------------------------------------------------------------*/
-
- /***************************************************************************************
- *   Historial: Mar 03  - Definición de la función.
+/*
+ * - Descripción -
+ * ===============
+ *      EDIT WORKAREA, es un comando que permite realizar altas, bajas y modificaciones
+ *      sobre una base de datos.
+ *
+ * - Sintáxis -
+ * ============
+ *      Todos los parámetros del comando EDIT WORKAREA son opcionales, con excepción del área de trabajo.
+ *
+ *      EDIT WORKAREA cArea      ;
+ *       [ TITLE cTitulo ]       ;
+ *       [ FIELDS aCampos ]      ;
+ *       [ READONLY aEditables ] ;
+ *       [ SAVE bGuardar ]       ;
+ *       [ SEARCH bBuscar ]
+ *
+ *      Ver detalle de parámetros en función ABM().
+ *
+ *
+ * - Historial -
+ * =============
+ *              Mar 03  - Definición de la función.
  *                      - Pruebas.
  *                      - Soporte para lenguaje en inglés.
  *                      - Corregido bug al borrar en bdds con CDX.
@@ -107,10 +97,11 @@
  *			- Añadido soporte para lenguaje Francés (C. Jouniauxdiv).
  *              May 03  - Añadido soporte para lenguaje Italiano (Lupano Piero).
  *                      - Añadido soporte para lenguaje Alemán (Janusz Poura).
- ***************************************************************************************/
+ *
+ */
+
 
 #include "oohg.ch"
-
 #include "winprint.ch"
 
 // Modos.
@@ -137,7 +128,6 @@
 #define ABM_LISTADO_MAS         2
 #define ABM_LISTADO_MENOS       3
 #define ABM_LISTADO_IMPRIMIR    4
-
 
 
 /*

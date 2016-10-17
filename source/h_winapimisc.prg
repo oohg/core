@@ -1,16 +1,24 @@
 /*
- * $Id: h_winapimisc.prg,v 1.3 2016-05-22 23:53:23 fyurisich Exp $
+ * $Id: h_winapimisc.prg,v 1.4 2016-10-17 01:55:34 fyurisich Exp $
  */
 /*
  * ooHG source code:
- * PRG Windows API functions
+ * Windows API functions
  *
  * Copyright 2005-2016 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * https://sourceforge.net/projects/oohg/
  *
- * Portions of this code are copyrighted by the Harbour MiniGUI library.
+ * Portions of this project are based upon Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
  *
+ * Portions of this project are based upon Harbour GUI framework for Win32.
+ * Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
+ * Copyright 2001 Antonio Linares <alinares@fivetech.com>
+ *
+ * Portions of this project are based upon Harbour Project.
+ * Copyright 1999-2016, http://www.harbour-project.org/
+ */
+/*
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2, or (at your option)
@@ -23,8 +31,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this software; see the file COPYING.  If not, write to
- * the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307 USA (or visit the web site http://www.gnu.org/).
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
  *
  * As a special exception, the ooHG Project gives permission for
  * additional uses of the text contained in its release of ooHG.
@@ -49,47 +57,7 @@
  * If you write modifications of your own for ooHG, it is your choice
  * whether to permit this exception to apply to your modifications.
  * If you do not wish that, delete this exception notice.
- *
  */
-/*----------------------------------------------------------------------------
- MINIGUI - Harbour Win32 GUI library source code
-
- Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
- http://www.geocities.com/harbour_minigui/
-
- This program is free software; you can redistribute it and/or modify it under
- the terms of the GNU General Public License as published by the Free Software
- Foundation; either version 2 of the License, or (at your option) any later
- version.
-
- This program is distributed in the hope that it will be useful, but WITHOUT
- ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License along with
- this software; see the file COPYING. If not, write to the Free Software
- Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA (or
- visit the web site http://www.gnu.org/).
-
- As a special exception, you have permission for additional uses of the text
- contained in this release of Harbour Minigui.
-
- The exception is that, if you link the Harbour Minigui library with other
- files to produce an executable, this does not by itself cause the resulting
- executable to be covered by the GNU General Public License.
- Your use of that executable is in no way restricted on account of linking the
- Harbour-Minigui library code into it.
-
- Parts of this project are based upon:
-
-	"Harbour GUI framework for Win32"
- 	Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- 	Copyright 2001 Antonio Linares <alinares@fivetech.com>
-	www - http://www.harbour-project.org
-
-	"Harbour Project"
-	Copyright 1999-2003, http://www.harbour-project.org/
----------------------------------------------------------------------------*/
 
 
 #define CSIDL_DESKTOP                   0x0000        // <desktop>
@@ -145,92 +113,92 @@
 *-----------------------------------------------------------------------------*
 Function GetWindowsFolder()
 *-----------------------------------------------------------------------------*
-local lfolder
+Local lFolder
     lFolder := GETWINDOWSDIR()
-return lfolder
+Return lFolder
+
 *-----------------------------------------------------------------------------*
 Function GetSystemFolder()
 *-----------------------------------------------------------------------------*
-local lfolder
-  lfolder:=GETSYSTEMDIR()
-return lfolder
+Local lFolder
+  lFolder := GETSYSTEMDIR()
+Return lFolder
+
 *-----------------------------------------------------------------------------*
 Function GetTempFolder()
 *-----------------------------------------------------------------------------*
-local lfolder
-  lfolder:=GETTEMPDIR()
-return lfolder
+Local lFolder
+  lFolder := GETTEMPDIR()
+Return lFolder
+
 *-----------------------------------------------------------------------------*
 Function GetMyDocumentsFolder()
 *-----------------------------------------------------------------------------*
-local lfolder
-  lfolder:=getspecialfolder(CSIDL_PERSONAL)
-return lfolder
+Local lFolder
+  lFolder := GETSPECIALFOLDER( CSIDL_PERSONAL )
+Return lFolder
+
 *-----------------------------------------------------------------------------*
 Function GetDesktopFolder()
 *-----------------------------------------------------------------------------*
-local lfolder
-  lfolder:=getspecialfolder(CSIDL_DESKTOPDIRECTORY)
-return lfolder
+Local lFolder
+  lFolder := GETSPECIALFOLDER( CSIDL_DESKTOPDIRECTORY )
+Return lFolder
+
 *-----------------------------------------------------------------------------*
 Function GetProgramFilesFolder()
 *-----------------------------------------------------------------------------*
-local lfolder
-  lfolder:=getspecialfolder(CSIDL_PROGRAM_FILES)
-return lfolder
-*-----------------------------------------------------------------------------*
+Local lFolder
+  lFolder := GETSPECIALFOLDER( CSIDL_PROGRAM_FILES )
+Return lFolder
 
 *-----------------------------------------------------------------------------*
-Function GETSPECIALFOLDER(nCSIDL) // Contributed By Ryszard Rylko
+Function GETSPECIALFOLDER( nCSIDL ) // Contributed By Ryszard Rylko
 *-----------------------------------------------------------------------------*
-Local   RetVal
-	RetVal:=C_getspecialfolder(nCSIDL)
-return RetVal
+Local RetVal
+	RetVal := C_GETSPECIALFOLDER( nCSIDL )
+Return RetVal
 
 *-----------------------------------------------------------------------------*
-procedure ProcessMessages
+Procedure ProcessMessages
 *-----------------------------------------------------------------------------*
-  while _ProcessMess()
-  enddo
-return
+  Do While _ProcessMess()
+  EndDo
+Return
 
 *-----------------------------------------------------------------------------*
 Function WindowsVersion()
 *-----------------------------------------------------------------------------*
-LOCAL   aRetVal
-
-aRetVal := WinVersion()
-
-RETURN { aRetVal [1] + aRetVal [4] , aRetVal [2] , 'Build ' + aRetVal [3] }
+Local aRetVal
+   aRetVal := WinVersion()
+Return { aRetVal[ 1 ] + aRetVal[ 4 ], aRetVal[ 2 ], 'Build ' + aRetVal[ 3 ] }
 
 *-----------------------------------------------------------------------------*
-Function _Execute( nActiveWindowhandle , cOperation , cFile , cParaMeters , cDefault , nState )
+Function _Execute( nActiveWindowhandle, cOperation, cFile, cParaMeters, cDefault, nState )
 *-----------------------------------------------------------------------------*
 
-	If ValType ( nActiveWindowhandle ) == 'U'
+	If ValType( nActiveWindowhandle ) == 'U'
 		nActiveWindowhandle := 0
 	EndIf
 
-	If ValType ( cOperation ) == 'U'
+	If ValType( cOperation ) == 'U'
 		cOperation := Nil
 	EndIf
 
-	If ValType ( cFile ) == 'U'
+	If ValType( cFile ) == 'U'
 		cFile := ""
 	EndIf
 
-	If ValType ( cParaMeters ) == 'U'
+	If ValType( cParaMeters ) == 'U'
 		cParaMeters := Nil
 	EndIf
 
-	If ValType ( cDefault ) == 'U'
+	If ValType( cDefault ) == 'U'
 		 cDefault := Nil
 	EndIf
 
-	If ValType ( nState ) == 'U'
+	If ValType( nState ) == 'U'
 		 nState := 10 // SW_SHOWDEFAULT
 	EndIf
 
-	ShellExecute ( nActiveWindowhandle , cOperation , cFile , cParaMeters , cDefault , nState )
-
-RETURN Nil
+Return ShellExecute( nActiveWindowhandle, cOperation, cFile, cParaMeters, cDefault, nState )

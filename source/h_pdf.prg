@@ -1,14 +1,19 @@
 /*
-* $Id: h_pdf.prg,v 1.19 2016-05-22 23:53:22 fyurisich Exp $
+* $Id: h_pdf.prg,v 1.20 2016-10-17 01:55:34 fyurisich Exp $
 */
 /*
  * ooHG source code:
- * TPDF class
+ * PDF class
+ *
+ * Based upon
+ * Original works of
+ * Victor K., http://www.ihaveparts.com, and
+ * Pritpal Bedi, http://www.vouchcac.com
  *
  * Copyright 2007-2016 Ciro Vargas Clemow <cvc@oohg.org>
- * www - http://www.oohg.org
+ * https://sourceforge.net/projects/oohg/
  *
- * Portions of this code are copyrighted by the Harbour MiniGUI library.
+ * Portions of this project are based upon Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
  *
  * Portions of this project are based upon Harbour GUI framework for Win32.
@@ -17,11 +22,8 @@
  *
  * Portions of this project are based upon Harbour Project.
  * Copyright 1999-2016, http://www.harbour-project.org/
- *
- * Portions of this project are based on the works of
- * Victor K., http://www.ihaveparts.com, and
- * Pritpal Bedi, http://www.vouchcac.com
- *
+ */
+/*
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2, or (at your option)
@@ -34,8 +36,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this software; see the file COPYING.  If not, write to
- * the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307 USA (or visit the web site http://www.gnu.org/).
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
  *
  * As a special exception, the ooHG Project gives permission for
  * additional uses of the text contained in its release of ooHG.
@@ -60,28 +62,8 @@
  * If you write modifications of your own for ooHG, it is your choice
  * whether to permit this exception to apply to your modifications.
  * If you do not wish that, delete this exception notice.
- *
  */
 
-
-/*
-  Lo que esta sin asterisco no lo pude encontrar en la definicion de papel de hbprinter.
-  * "LETTER",    8.50, 11.00 },
-  * "LEGAL" ,    8.50, 14.00 },
-  * "LEDGER",   11.00, 17.00 },
-  * "EXECUTIVE", 7.25, 10.50 },
-  * "A4",        8.27, 11.69 },
-  * "A3",       11.69, 16.54 },
-  * "JIS B4",   10.12, 14.33 },
-  * "JIS B5",    7.16, 10.12 },
-  * "JPOST",     3.94,  5.83 },
-   "JPOSTD",    5.83,  7.87 },
-  * "COM10",     4.12,  9.50 },
-  * "MONARCH",   3.87,  7.50 },
-  * "C5",        6.38,  9.01 },
-  * "DL",        4.33,  8.66 },
-  * "B5",        6.93,  9.84 } }
-*/
 
 #include "hbclass.ch"
 #include "fileio.ch"
@@ -666,14 +648,14 @@ METHOD CreateHeader
    METHOD CheckLine
    METHOD ClosePage
    METHOD FilePrint
-METHOD GetFontInfo
+   METHOD GetFontInfo
    METHOD M2R
    METHOD M2X
    METHOD M2Y
    METHOD R2D
    METHOD R2M
    METHOD X2M
-METHOD TextPrint
+   METHOD TextPrint
    METHOD TextNextPara
    METHOD Execute
 

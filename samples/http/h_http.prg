@@ -1,14 +1,14 @@
 /*
- * $Id: h_http.prg,v 1.4 2016-05-22 23:53:20 fyurisich Exp $
+ * $Id: h_http.prg,v 1.5 2016-10-17 01:55:33 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * HTTP class call
  *
  * Copyright 2005-2016 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * https://sourceforge.net/projects/oohg/
  *
- * Portions of this code are copyrighted by the Harbour MiniGUI library.
+ * Portions of this project are based upon Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -23,8 +23,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this software; see the file COPYING.  If not, write to
- * the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307 USA (or visit the web site http://www.gnu.org/).
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
  *
  * As a special exception, the ooHG Project gives permission for
  * additional uses of the text contained in its release of ooHG.

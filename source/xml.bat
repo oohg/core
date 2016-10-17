@@ -1,13 +1,13 @@
 @echo off
 rem
-rem $Id: xml.bat,v 1.9 2015-11-07 22:39:57 fyurisich Exp $
+rem $Id: xml.bat,v 1.10 2016-10-17 01:55:34 fyurisich Exp $
 rem
 cls
 
 rem *** Set Paths ***
 if "%HG_BCC%"==""  set HG_BCC=c:\borland\bcc55
 if "%HG_ROOT%"=="" set HG_ROOT=c:\oohg
-if "%HG_HRB%"==""  set HG_HRB=C:\xhbcc
+if "%HG_HRB%"==""  set HG_HRB=c:\oohg\xhbcc
 
 rem *** Set EnvVars ***
 if "%LIB_GUI%"=="" set LIB_GUI=lib\xhb\bcc

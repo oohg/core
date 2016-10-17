@@ -1,11 +1,116 @@
 /*
- * $Id: ChangeLog,v 1.1603 2016-10-16 04:46:11 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1604 2016-10-17 01:55:33 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2016-10-16 22:54 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * samples/dbview
+   * samples/http
+   * source/bostaurus.prg
+   * source/c_activex.c
+   * source/c_controlmisc.c
+   * source/c_cursor.c
+   * source/c_dialogs.c
+   * source/c_font.c
+   * source/c_gdiplus.c
+   * source/c_graph.c
+   * source/c_image.c
+   * source/c_media.c
+   * source/c_msgbox.c
+   * source/c_progressbar.c
+   * source/c_resource.c
+   * source/c_scrsaver.c
+   * source/c_winapimisc.c
+   * source/c_windows.c
+   * source/h_activex.prg
+   * source/h_application.prg
+   * source/h_browse.prg
+   * source/h_button.prg
+   * source/h_checkbox.prg
+   * source/h_checklist.prg
+   * source/h_combo.prg
+   * source/h_comm.prg
+   * source/h_controlmisc.prg
+   * source/h_crypt.prg
+   * source/h_cursor.prg
+   * source/h_datepicker.prg
+   * source/h_dialogs.prg
+   * source/h_dll.prg
+   * source/h_edit.prg
+   * source/h_edit_ex.prg
+   * source/h_editbox.prg
+   * source/h_error.prg
+   * source/h_font.prg
+   * source/h_form.prg
+   * source/h_frame.prg
+   * source/h_graph.prg
+   * source/h_grid.prg
+   * source/h_help.prg
+   * source/h_hotkey.prg
+   * source/h_hotkeybox.prg
+   * source/h_hyperlink.prg
+   * source/h_image.prg
+   * source/h_ini.prg
+   * source/h_init.prg
+   * source/h_internal.prg
+   * source/h_ipaddress.prg
+   * source/h_label.prg
+   * source/h_listbox.prg
+   * source/h_media.prg
+   * source/h_menu.prg
+   * source/h_monthcal.prg
+   * source/h_msgbox.prg
+   * source/h_pdf.prg
+   * source/h_picture.prg
+   * source/h_print.prg
+   * source/h_progressbar.prg
+   * source/h_progressmeter.prg
+   * source/h_radio.prg
+   * source/h_registry.prg
+   * source/h_report.prg
+   * source/h_richeditbox.prg
+   * source/h_scroll.prg
+   * source/h_scrollbutton.prg
+   * source/h_scrsaver.prg
+   * source/h_slider.prg
+   * source/h_spinner.prg
+   * source/h_splitbox.prg
+   * source/h_status.prg
+   * source/h_tab.prg
+   * source/h_textarray.prg
+   * source/h_textbox.prg
+   * source/h_timer.prg
+   * source/h_toolbar.prg
+   * source/h_tooltip.prg
+   * source/h_tree.prg
+   * source/h_winapimisc.prg
+   * source/h_windows.prg
+   * source/h_xbrowse.prg
+   * source/h_zip.prg
+   * source/miniprint.prg
+   * source/winprint.prg
+     * Updated copyright info.
+   * ide/compile.bat
+   * source/xml.bat
+     ! Path to xharbour compiler.
+   * source/c_windows.c
+     ! Missing define at C level.
+   * source/h_cursor.prg
+     * Format.
+   * source/h_dialogs.prg
+     * Format.
+     * Empty() replaced with HB_SYMBOL_UNUSED.
+     - Unreacheable code.
+   * source/h_edit.prg
+   * source/h_edit_ex.prg
+   * source/h_form.prg
+     * Some comments.
+   * manual/Changelog.htm
+     * Updated.
 
 2016-10-16 01:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt

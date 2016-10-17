@@ -1,5 +1,5 @@
 /*
- * $Id: Showprop.prg,v 1.2 2014-11-04 16:46:42 migsoft Exp $
+ * $Id: Showprop.prg,v 1.3 2016-10-17 01:55:33 fyurisich Exp $
  */
 
 /*
@@ -10,7 +10,7 @@
  *
  * Program to view DBF files using standard Browse control
  * Miguel Angel Juárez A. - 2009-2012 MigSoft <mig2soft/at/yahoo.com>
- * Includes the code of Grigory Filatov <gfilatov@freemail.ru>
+ * Includes the code of Grigory Filatov <gfilatov@inbox.ru>
  * and Rathinagiri <srathinagiri@gmail.com>
  *
  */

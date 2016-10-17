@@ -1,12 +1,12 @@
 /*
- * $Id: oWndBase.fmg,v 1.4 2016-05-22 23:53:20 fyurisich Exp $
+ * $Id: oWndBase.fmg,v 1.5 2016-10-17 01:55:33 fyurisich Exp $
  */
 
 /*
  *
  * Program to view DBF files using standard Browse control
  * Miguel Angel Juárez A. - 2009-2016 MigSoft <mig2soft/at/yahoo.com>
- * Includes the code of Grigory Filatov <gfilatov@freemail.ru>
+ * Includes the code of Grigory Filatov <gfilatov@inbox.ru>
  * and Rathinagiri <srathinagiri@gmail.com>
  *
  */

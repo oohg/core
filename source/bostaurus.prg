@@ -1,17 +1,19 @@
 /*
- * $Id: bostaurus.prg,v 1.4 2016-07-23 16:27:16 fyurisich Exp $
+ * $Id: bostaurus.prg,v 1.5 2016-10-17 01:55:33 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * Bos Taurus library code
  *
- * Copyright 2015-2016 Fernando Yurisich <fyurisich@oohg.org>
- *
- * Adapted from the original BOS TAURUS Graphic Library for HMG
+ * Based upon
+ * BOS TAURUS Graphic Library for HMG
  * Copyright 2012-2015 by Dr. Claudio Soto (from Uruguay).
- * mail: <srvet@adinet.com.uy>
- * blog: http://srvet.blogspot.com
+ * <srvet@adinet.com.uy> http://srvet.blogspot.com
  *
+ * Copyright 2015-2016 Fernando Yurisich <fyurisich@oohg.org>
+ * https://sourceforge.net/projects/oohg/
+ */
+/*
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2, or (at your option)
@@ -23,9 +25,9 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this software; see the file COPYING.TXT.  If not, write to
+ * along with this software; see the file COPYING.  If not, write to
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1301,USA (or download from http://www.gnu.org/licenses/).
+ * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
  *
  * As a special exception, the ooHG Project gives permission for
  * additional uses of the text contained in its release of ooHG.

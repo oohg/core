@@ -1,14 +1,18 @@
 /*
- * $Id: h_dll.prg,v 1.9 2016-05-22 23:53:22 fyurisich Exp $
+ * $Id: h_dll.prg,v 1.10 2016-10-17 01:55:34 fyurisich Exp $
  */ 
 /*
  * ooHG source code:
  * DLL access functions
  *
- * Copyright 2009-2016 Ciro Vargas Clemow <cvc@oohg.org>
- * www - http://www.oohg.org
+ * Based upon
+ * Original source code of Vic McClung
+ * Copyright 2005 <vicmcclung@vicmcclung.com>
  *
- * Portions of this code are copyrighted by the Harbour MiniGUI library.
+ * Copyright 2009-2016 Ciro Vargas Clemow <cvc@oohg.org>
+ * https://sourceforge.net/projects/oohg/
+ *
+ * Portions of this project are based upon Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
  *
  * Portions of this project are based upon Harbour GUI framework for Win32.
@@ -17,9 +21,8 @@
  *
  * Portions of this project are based upon Harbour Project.
  * Copyright 1999-2016, http://www.harbour-project.org/
- *
- * Portions of this project are copyrighted 2005 by Vic McClung.
- *
+ */
+/*
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2, or (at your option)
@@ -32,8 +35,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this software; see the file COPYING.  If not, write to
- * the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307 USA (or visit the web site http://www.gnu.org/).
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
  *
  * As a special exception, the ooHG Project gives permission for
  * additional uses of the text contained in its release of ooHG.
@@ -58,7 +61,6 @@
  * If you write modifications of your own for ooHG, it is your choice
  * whether to permit this exception to apply to your modifications.
  * If you do not wish that, delete this exception notice.
- *
  */
 
 
