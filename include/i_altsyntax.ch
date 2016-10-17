@@ -1,12 +1,12 @@
 /*
- * $Id: i_altsyntax.ch,v 1.137 2016-10-10 15:38:11 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.138 2016-10-17 21:39:26 fyurisich Exp $
  */
 /*
  * ooHG source code:
- * Alternate syntax
- */
-/*
- * Copyright 2007-2016 Vicente Guerra <vicente@guerra.com.mx>
+ * Alternate syntax definitions
+ *
+ * Copyright 2005-2016 Vicente Guerra <vicente@guerra.com.mx>
+ * https://sourceforge.net/projects/oohg/
  *
  * Portions of this project are based upon Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -17,7 +17,8 @@
  *
  * Portions of this project are based upon Harbour Project.
  * Copyright 1999-2016, http://www.harbour-project.org/
- *
+ */
+/*
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2, or (at your option)
@@ -29,9 +30,9 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this software; see the file COPYING.TXT.  If not, write to
+ * along with this software; see the file COPYING.  If not, write to
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1301,USA (or download from http://www.gnu.org/licenses/).
+ * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
  *
  * As a special exception, the ooHG Project gives permission for
  * additional uses of the text contained in its release of ooHG.
@@ -57,6 +58,7 @@
  * whether to permit this exception to apply to your modifications.
  * If you do not wish that, delete this exception notice.
  */
+
 
 /*---------------------------------------------------------------------------
 AUXILIARY VARIABLES
