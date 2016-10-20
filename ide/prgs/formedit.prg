@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.70 2016-10-17 22:25:12 fyurisich Exp $
+ * $Id: formedit.prg,v 1.71 2016-10-20 01:52:54 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -17070,9 +17070,9 @@ LOCAL nPages
    oTab:Addpage( nPages + 1, 'Page ' + AllTrim( Str( nPages + 1 ) ) )
 RETURN NIL
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD DeleteTabPage( i, oTab, oTabProp ) CLASS TFormEditor
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 LOCAL nPages, cName, j
 
    nPages := oTab:ItemCount

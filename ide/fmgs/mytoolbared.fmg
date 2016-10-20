@@ -1,5 +1,5 @@
 /*
- * $Id: mytoolbared.fmg,v 1.10 2016-10-01 23:19:30 fyurisich Exp $
+ * $Id: mytoolbared.fmg,v 1.11 2016-10-20 01:52:54 fyurisich Exp $
  */
 
 * ooHG IDE Plus form generated code
@@ -269,108 +269,108 @@ DEFINE WINDOW TEMPLATE ;
       MAXLENGTH 40 ;
       ON CHANGE ::WriteName()
 
-   @ 73, 560 LABEL lbl_ItCaption ;
+   @ 76, 560 LABEL lbl_ItCaption ;
       WIDTH 59 ;
       HEIGHT 23 ;
       VALUE 'Caption'
 
-   @ 70, 635 TEXTBOX txt_ItCaption ;
+   @ 73, 635 TEXTBOX txt_ItCaption ;
       WIDTH 120 ;
       HEIGHT 23 ;
       MAXLENGTH 80 ;
       ON CHANGE ::WriteCaption()
 
-   @ 106, 560 LABEL lbl_ItAction ;
+   @ 112, 560 LABEL lbl_ItAction ;
       WIDTH 55 ;
       HEIGHT 23 ;
       VALUE 'Action'
 
-   @ 103, 635 TEXTBOX txt_ItAction ;
+   @ 109, 635 TEXTBOX txt_ItAction ;
       WIDTH 120 ;
       HEIGHT 23 ;
       MAXLENGTH 250 ;
       ON CHANGE ::WriteAction()
 
-   @ 139, 560 CHECKBOX chk_ItCheck ;
+   @ 145, 560 CHECKBOX chk_ItCheck ;
       WIDTH 90 ;
       HEIGHT 23 ;
       CAPTION 'Check' ;
       VALUE .F. ;
       ON CHANGE ::WriteCheck()
 
-   @ 139, 660 CHECKBOX chk_ItAutosize ;
+   @ 145, 660 CHECKBOX chk_ItAutosize ;
       WIDTH 90 ;
       HEIGHT 23 ;
       CAPTION 'Autosize' ;
       VALUE .F. ;
       ON CHANGE ::WriteAutosize()
 
-   @ 172, 560 LABEL lbl_ItPicture ;
+   @ 184, 560 LABEL lbl_ItPicture ;
       WIDTH 47 ;
       HEIGHT 23 ;
       VALUE 'Picture'
 
-   @ 169, 635 TEXTBOX txt_ItPicture ;
+   @ 181, 635 TEXTBOX txt_ItPicture ;
       WIDTH 120 ;
       HEIGHT 23 ;
       MAXLENGTH 40 ;
       ON CHANGE ::WritePicture()
 
-   @ 205, 560 CHECKBOX chk_ItSeparator ;
+   @ 215, 560 CHECKBOX chk_ItSeparator ;
       WIDTH 90 ;
       HEIGHT 23 ;
       CAPTION 'Separator' ;
       VALUE .F. ;
       ON CHANGE ::WriteSeparator()
 
-   @ 205, 660 CHECKBOX chk_ItGroup ;
+   @ 215, 660 CHECKBOX chk_ItGroup ;
       WIDTH 100 ;
       HEIGHT 23 ;
       CAPTION 'Group' ;
       VALUE .F. ;
       ON CHANGE ::WriteGroup()
 
-   @ 238, 560 LABEL lbl_ItToolTip ;
+   @ 256, 560 LABEL lbl_ItToolTip ;
       WIDTH 76 ;
       HEIGHT 23 ;
       VALUE 'Tooltip'
 
-   @ 235, 635 TEXTBOX txt_ItToolTip ;
+   @ 253, 635 TEXTBOX txt_ItToolTip ;
       WIDTH 120 ;
       HEIGHT 23 ;
       MAXLENGTH 80 ;
       ON CHANGE ::WriteToolTip()
 
-   @ 271, 560 LABEL lbl_ItObj ;
+   @ 288, 560 LABEL lbl_ItObj ;
       WIDTH 76 ;
       HEIGHT 23 ;
       VALUE 'Obj'
 
-   @ 268, 635 TEXTBOX txt_ItObj ;
+   @ 285, 635 TEXTBOX txt_ItObj ;
       WIDTH 120 ;
       HEIGHT 23 ;
       MAXLENGTH 30 ;
       ON CHANGE ::WriteObj()
 
-   @ 304, 560 BUTTON btn_DrpDwnMnu ;
+   @ 320, 560 BUTTON btn_DrpDwnMnu ;
       WIDTH 100 ;
       HEIGHT 28 ;
       CAPTION 'Dropdown Menu' ;
       ACTION ::EditDropDownButton()
 
-   @ 304, 560 CHECKBOX chk_ItWhole ;
+   @ 357, 560 CHECKBOX chk_ItWhole ;
       WIDTH 120 ;
       HEIGHT 23 ;
       CAPTION 'WholeDropDown' ;
       VALUE .F. ;
       ON CHANGE ::WriteWhole()
 
-   @ 337, 560 LABEL lbl_ItSubclass ;
+   @ 392, 560 LABEL lbl_ItSubclass ;
       WIDTH 76 ;
       HEIGHT 23 ;
       VALUE 'Subclass'
 
-   @ 334, 635 TEXTBOX txt_ItSubclass ;
+   @ 389, 635 TEXTBOX txt_ItSubclass ;
       WIDTH 120 ;
       HEIGHT 23 ;
       MAXLENGTH 30 ;
