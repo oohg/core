@@ -1,5 +1,5 @@
 /*
- * $Id: h_hyperlink.prg,v 1.13 2016-10-17 01:55:34 fyurisich Exp $
+ * $Id: h_hyperlink.prg,v 1.14 2016-10-22 16:23:55 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -74,12 +74,12 @@ CLASS THyperLink FROM TLabel
    EMPTY( _OOHG_AllVars )
 ENDCLASS
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, Caption, url, w, h, fontname, ;
                fontsize, bold, BORDER, CLIENTEDGE, HSCROLL, VSCROLL, ;
                TRANSPARENT, aRGB_bk, aRGB_font, tooltip, HelpId, invisible, ;
                italic, autosize, handcursor, lRtl ) CLASS THyperLink
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 
    DEFAULT Url           TO "http://www.oohg.org"
    DEFAULT Caption       TO "www.oohg.org"

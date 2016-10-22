@@ -1,5 +1,5 @@
 /*
- * $Id: h_activex.prg,v 1.15 2016-10-17 01:55:33 fyurisich Exp $
+ * $Id: h_activex.prg,v 1.16 2016-10-22 16:23:55 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -93,10 +93,10 @@ CLASS TActiveX FROM TControl
    EMPTY( _OOHG_AllVars )
 ENDCLASS
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, cProgId, ;
                lNoTabStop, lDisabled, lInvisible ) CLASS TActiveX
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 LOCAL nStyle, oError, nControlHandle, bErrorBlock, hSink
 
    ASSIGN ::nCol    VALUE nCol    TYPE "N"
@@ -138,9 +138,9 @@ LOCAL nStyle, oError, nControlHandle, bErrorBlock, hSink
 
 Return Self
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Release() CLASS TActiveX
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
    SHUTDOWNCONNECTIONPOINT( ::hSink )
    ReleaseDispatch( ::hAtl )
 Return ::Super:Release()
@@ -192,9 +192,9 @@ RETURN NIL
 
 #ifndef __XHARBOUR__       //// si es harbour 
 #ifndef __BORLANDC__       //// y no es borlandc
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD __Error( ... )
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local cMessage
 cMessage := __GetMessage()
 

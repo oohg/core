@@ -1,5 +1,5 @@
 /*
- * $Id: h_editbox.prg,v 1.29 2016-10-17 01:55:34 fyurisich Exp $
+ * $Id: h_editbox.prg,v 1.30 2016-10-22 16:23:55 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -81,14 +81,14 @@ CLASS TEdit FROM TText
    EMPTY( _OOHG_AllVars )
 ENDCLASS
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
                fontsize, tooltip, maxlength, gotfocus, change, lostfocus, ;
                readonly, break, HelpId, invisible, notabstop, bold, italic, ;
                underline, strikeout, field, backcolor, fontcolor, novscroll, ;
                nohscroll, lRtl, lNoBorder, OnFocusPos, OnHScroll, OnVScroll, ;
                lDisabled ) CLASS TEdit
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local nStyle := ES_MULTILINE + ES_WANTRETURN, nStyleEx := 0
 
    ASSIGN ::nWidth  VALUE w TYPE "N"
@@ -110,9 +110,9 @@ Local nStyle := ES_MULTILINE + ES_WANTRETURN, nStyleEx := 0
    ASSIGN ::OnVScroll VALUE OnVScroll TYPE "B"
 Return Self
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD LookForKey( nKey, nFlags ) CLASS TEdit
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local lDone
    lDone := ::Super:LookForKey( nKey, nFlags )
    If nKey == VK_ESCAPE .and. nFlags == 0

@@ -1,5 +1,5 @@
 /*
- * $Id: h_frame.prg,v 1.20 2016-10-17 01:55:34 fyurisich Exp $
+ * $Id: h_frame.prg,v 1.21 2016-10-22 16:23:55 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -76,11 +76,11 @@ CLASS TFrame FROM TControl
    EMPTY( _OOHG_AllVars )
 ENDCLASS
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, y, x, w, h, caption, fontname, ;
                fontsize, opaque, bold, italic, underline, strikeout, ;
                backcolor, fontcolor, transparent, lRtl, invisible, lDisabled ) CLASS TFrame
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local ControlHandle, nStyle
 Local oTab
 

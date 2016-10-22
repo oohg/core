@@ -1,5 +1,5 @@
 /*
- * $Id: h_tooltip.prg,v 1.15 2016-10-17 01:55:34 fyurisich Exp $
+ * $Id: h_tooltip.prg,v 1.16 2016-10-22 16:23:55 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -99,9 +99,9 @@ CLASS TToolTip FROM TControl
    EMPTY( _OOHG_AllVars )
 ENDCLASS
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, nInitial, nAutoPop, nReShow, lMulti, lBalloon, lClose ) CLASS TToolTip
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 LOCAL ControlHandle
    ASSIGN nInitial VALUE nInitial TYPE "N" DEFAULT _OOHG_ToolTipInitialTime
    ASSIGN nAutoPop VALUE nAutoPop TYPE "N" DEFAULT _OOHG_ToolTipAutoPopTime
@@ -125,17 +125,17 @@ LOCAL ControlHandle
    ::MultiLine := lMulti
 Return Self
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Item( hWnd, cToolTip ) CLASS TToolTip
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
    If VALTYPE( cToolTip ) $ "CM" .OR. HB_IsBlock( cToolTip )
       SetToolTip( hWnd, cToolTip, ::hWnd )
    EndIf
 RETURN GetToolTip( hWnd, ::hWnd )
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Events_Notify( wParam, lParam ) CLASS TToolTip
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local nNotify := GetNotifyCode( lParam )
 Local oControl, cToolTip
 
@@ -153,9 +153,9 @@ Local oControl, cToolTip
 
 Return ::Super:Events_Notify( wParam, lParam )
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD WindowWidth( nWidth ) CLASS TToolTip
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
    If HB_IsNumeric( nWidth )
       SendMessage( ::hWnd, TTM_SETMAXTIPWIDTH, 0, nWidth )
       ::nWindowWidth := nWidth
@@ -163,9 +163,9 @@ METHOD WindowWidth( nWidth ) CLASS TToolTip
    EndIf
 Return ::nWindowWidth
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD MultiLine( lMultiLine ) CLASS TToolTip
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
    If HB_IsLogical( lMultiLine ) .AND. ! lMultiLine == ::lMultiLine
       ::lMultiLine := lMultiLine
       If lMultiLine
@@ -180,9 +180,9 @@ METHOD MultiLine( lMultiLine ) CLASS TToolTip
    EndIf
 Return ::lMultiLine
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Function _SetToolTipBalloon( lNewBalloon )
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local oReg, lYesNo := Nil, lOldBalloon := _OOHG_ToolTipBalloon
 
    If HB_IsLogical( lNewBalloon )
@@ -195,9 +195,9 @@ Local oReg, lYesNo := Nil, lOldBalloon := _OOHG_ToolTipBalloon
    Endif
 return lOldBalloon
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Function _SetToolTipClose( lNewClose )
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local lOldClose := _OOHG_ToolTipClose
 
    If HB_IsLogical( lNewClose )
@@ -205,9 +205,9 @@ Local lOldClose := _OOHG_ToolTipClose
    Endif
 return lOldClose
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Function _SetToolTipInitialTime( nMilliSec )
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local lOldInitialTime := _OOHG_ToolTipInitialTime
 
    If HB_IsNumeric( nMilliSec ) .AND. nMilliSec > 0
@@ -215,9 +215,9 @@ Local lOldInitialTime := _OOHG_ToolTipInitialTime
    EndIf
 Return lOldInitialTime
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Function _SetToolTipAutoPopTime( nMilliSec )
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local lOldAutoPopTime := _OOHG_ToolTipAutoPopTime
 
    If HB_IsNumeric( nMilliSec ) .AND. nMilliSec > 0
@@ -225,9 +225,9 @@ Local lOldAutoPopTime := _OOHG_ToolTipAutoPopTime
    EndIf
 Return lOldAutoPopTime
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Function _SetToolTipReShowTime( nMilliSec )
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local lOldReShowTime := _OOHG_ToolTipReShowTime
 
    If HB_IsNumeric( nMilliSec ) .AND. nMilliSec > 0
@@ -235,9 +235,9 @@ Local lOldReShowTime := _OOHG_ToolTipReShowTime
    EndIf
 Return lOldReShowTime
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Function _SetToolTipMultiLine( lNewMultiLine )
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local lOldMultiLine := _OOHG_ToolTipMultiLine
 
    If HB_IsLogical( lNewMultiLine )
@@ -245,9 +245,9 @@ Local lOldMultiLine := _OOHG_ToolTipMultiLine
    EndIf
 Return lOldMultiLine
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD InitialTime( nMilliSecs ) CLASS TToolTip
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
    If PCount() > 0
       /* nMilliSec := -1 returns the initial time (amount of time the mouse
          must remain stationary on a control before the tooltip appears) to
@@ -257,9 +257,9 @@ METHOD InitialTime( nMilliSecs ) CLASS TToolTip
    EndIf
 Return GetInitialTime( ::hWnd )
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD AutoPopTime( nMilliSecs ) CLASS TToolTip
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
    If PCount() > 0
       /* nMilliSec := -1 returns the autopop time (amount of time a tooltip
          remains visible if the mouse is stationary on the control) to its
@@ -269,9 +269,9 @@ METHOD AutoPopTime( nMilliSecs ) CLASS TToolTip
    EndIf
 Return GetAutoPopTime( ::hWnd )
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD ReshowTime( nMilliSecs ) CLASS TToolTip
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
    If PCount() > 0
       /* nMilliSec := -1 returns the reshow time (amount of time it takes for
          subsequent tooltip windows to appear as the mouse moves from one
@@ -281,9 +281,9 @@ METHOD ReshowTime( nMilliSecs ) CLASS TToolTip
    EndIf
 Return GetReshowTime( ::hWnd )
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD ResetDelays( nMilliSecs ) CLASS TToolTip
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
    /* Sets all three delay times to default proportions. The autopop time will
       be ten times the initial time and the reshow time will be one fifth the
       initial time. Use nMilliSec > 0 to specify a new initial time. Use a
@@ -297,9 +297,9 @@ METHOD ResetDelays( nMilliSecs ) CLASS TToolTip
    SetDelayTime( ::hWnd, nMilliSecs )
 Return Nil
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Icon( uIcon ) CLASS TToolTip
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
    /*
     * uIcon valid values are:
     * TTI_NONE    - no icon
@@ -326,9 +326,9 @@ METHOD Icon( uIcon ) CLASS TToolTip
    EndIf
 RETURN TToolTip_GetIcon( ::hWnd )
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Title( cTitle ) CLASS TToolTip
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
    If ValType( cTitle ) $ "CM"
       ::cTitle := cTitle
       TToolTip_SetIconAndTitle( ::hWnd, ::nIcon, Left( ::cTitle, 99 ) )

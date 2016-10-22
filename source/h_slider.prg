@@ -1,5 +1,5 @@
 /*
- * $Id: h_slider.prg,v 1.24 2016-10-17 01:55:34 fyurisich Exp $
+ * $Id: h_slider.prg,v 1.25 2016-10-22 16:23:55 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -86,11 +86,11 @@ ENDCLASS
 
 
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, w, h, LO, HI, value, tooltip, ;
                change, vertical, noticks, both, top, left, HelpId, invisible, ;
                notabstop, backcolor, lRtl, lDisabled ) CLASS TSlider
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local ControlHandle, nStyle
 
    ASSIGN ::nCol        VALUE x  TYPE "N"

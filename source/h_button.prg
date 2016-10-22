@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.78 2016-10-17 01:55:33 fyurisich Exp $
+ * $Id: h_button.prg,v 1.79 2016-10-22 16:23:55 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -97,7 +97,7 @@ CLASS TButton FROM TControl
    EMPTY( _OOHG_AllVars )
 ENDCLASS
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h, ;
                fontname, fontsize, tooltip, GotFocus, LostFocus, flat, ;
                NoTabStop, HelpId, invisible, bold, italic, underline, ;
@@ -105,7 +105,7 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h, ;
                cImage, lNoLoadTrans, lScale, lCancel, cAlign, lMultiLine, ;
                themed, aImageMargin, OnMouseMove, lNo3DColors, lAutoFit, ;
                lNoDIB, backcolor, lNoHotLight ) CLASS TButton
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local ControlHandle, nStyle, lBitMap, i
 
    ASSIGN ::nCol    VALUE x TYPE "N"
@@ -224,9 +224,9 @@ METHOD SetFocus() CLASS TButton
    SendMessage( ::hWnd , BM_SETSTYLE , LOWORD( BS_DEFPUSHBUTTON ) , 1 )
 Return ::Super:SetFocus()
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Picture( cPicture ) CLASS TButton
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 LOCAL nAttrib, aPictSize
    IF ValType( cPicture ) $ "CM"
       DeleteObject( ::hImage )
@@ -257,9 +257,9 @@ LOCAL nAttrib, aPictSize
    ENDIF
 Return ::cPicture
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD HBitMap( hBitMap ) CLASS TButton
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
    If ValType( hBitMap ) $ "NP"
       DeleteObject( ::hImage )
       ::hImage := hBitMap
@@ -272,9 +272,9 @@ METHOD HBitMap( hBitMap ) CLASS TButton
    EndIf
 Return ::hImage
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Buffer( cBuffer ) CLASS TButton
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
    If ValType( cBuffer ) $ "CM"
       DeleteObject( ::hImage )
       ::hImage := _OOHG_BitmapFromBuffer( Self, cBuffer, ::AutoFit .AND. ! ::ImageSize .AND. ! ::Stretch )
@@ -292,9 +292,9 @@ METHOD Value( uValue ) CLASS TButton
 *------------------------------------------------------------------------------*
 Return ( ::Caption := uValue )
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD RePaint() CLASS TButton
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
    IF ValidHandler( ::hImage )
       IF ValidHandler( ::AuxHandle )
          DeleteObject( ::AuxHandle )
@@ -312,23 +312,23 @@ METHOD RePaint() CLASS TButton
    ENDIF
 RETURN Self
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD SizePos( Row, Col, Width, Height ) CLASS TButton
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 LOCAL uRet
    uRet := ::Super:SizePos( Row, Col, Width, Height )
    ::RePaint()
 RETURN uRet
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Release() CLASS TButton
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
    DeleteObject( ::hImage )
 RETURN ::Super:Release()
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Events_Notify( wParam, lParam ) CLASS TButton
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local nNotify := GetNotifyCode( lParam )
 
    If nNotify == NM_CUSTOMDRAW
@@ -345,9 +345,9 @@ Local nNotify := GetNotifyCode( lParam )
 
 Return ::Super:Events_Notify( wParam, lParam )
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD ImageMargin( aMargins ) CLASS TButton
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 LOCAL i
 
    If HB_IsArray( aMargins )
@@ -659,7 +659,7 @@ CLASS TButtonCheck FROM TButton
    METHOD Events_Command
 ENDCLASS
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
                fontsize, tooltip, changeprocedure, w, h, lostfocus, gotfocus, ;
                HelpId, invisible, notabstop, bold, italic, underline, ;
@@ -667,7 +667,7 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
                lNoLoadTrans, lScale, lNo3DColors, lAutoFit, lNoDIB, backcolor, ;
                lDisabled, themed, aImageMargin, OnMouseMove, cAlign, lMultiLine, ;
                flat, lNoHotLight ) CLASS TButtonCheck
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local ControlHandle, nStyle, lBitMap, i
 
    ASSIGN ::nCol    VALUE x TYPE "N"
@@ -766,7 +766,7 @@ Local ControlHandle, nStyle, lBitMap, i
 
 Return Self
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD DefineImage( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
                     fontsize, tooltip, changeprocedure, w, h, lostfocus, gotfocus, ;
                     HelpId, invisible, notabstop, bold, italic, underline, ;
@@ -774,7 +774,7 @@ METHOD DefineImage( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
                     lNoLoadTrans, lScale, lNo3DColors, lAutoFit, lNoDIB, backcolor, ;
                     lDisabled, themed, aImageMargin, OnMouseMove, cAlign, lMultiLine, ;
                     flat, lNoHotLight ) CLASS TButtonCheck
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
    If Empty( cBuffer )
       cBuffer := ""
    EndIf

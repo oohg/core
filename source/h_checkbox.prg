@@ -1,5 +1,5 @@
 /*
- * $Id: h_checkbox.prg,v 1.44 2016-10-17 01:55:33 fyurisich Exp $
+ * $Id: h_checkbox.prg,v 1.45 2016-10-22 16:23:55 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -86,13 +86,13 @@ CLASS TCheckBox FROM TLabel
    EMPTY( _OOHG_AllVars )
 ENDCLASS
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
                fontsize, tooltip, changeprocedure, w, h, lostfocus, gotfocus, ;
                HelpId, invisible, notabstop, bold, italic, underline, ;
                strikeout, field, backcolor, fontcolor, transparent, autosize, ;
                lRtl, lDisabled, threestate, leftalign, themed ) CLASS TCheckBox
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local ControlHandle, nStyle, nStyleEx := 0
 Local oTab
 
@@ -193,9 +193,9 @@ METHOD Events_Color( wParam, nDefColor ) CLASS TCheckBox
 
 Return Events_Color_InTab( Self, wParam, nDefColor )    // see h_controlmisc.prg
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Events_Notify( wParam, lParam ) CLASS TCheckBox
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local nNotify := GetNotifyCode( lParam )
 
    If nNotify == NM_CUSTOMDRAW

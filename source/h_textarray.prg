@@ -1,5 +1,5 @@
 /*
- * $Id: h_textarray.prg,v 1.27 2016-10-17 01:55:34 fyurisich Exp $
+ * $Id: h_textarray.prg,v 1.28 2016-10-22 16:23:55 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -92,13 +92,13 @@ CLASS TTextArray FROM TControl
    EMPTY( _OOHG_AllVars )
 ENDCLASS
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, w, h, RowCount, ColCount, ;
                BORDER, CLIENTEDGE, FontColor, BackColor, ProcedureName, ;
                fontname, fontsize, bold, italic, underline, strikeout, ;
                ToolTip, HelpId, invisible, lRtl, value, NoTabStop, lDisabled, ;
                GotFocus, LostFocus ) CLASS TTextArray
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local ControlHandle, nStyle, nStyleEx
 
    ASSIGN ::nCol        VALUE x TYPE "N"
@@ -139,9 +139,9 @@ Local ControlHandle, nStyle, nStyleEx
 
 Return Self
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout ) CLASS TTextArray
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
    ::Super:SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout )
    TTextArray_SetFontSize( Self )
 Return Nil

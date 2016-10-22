@@ -1,5 +1,5 @@
 /*
- * $Id: h_timer.prg,v 1.12 2016-10-17 01:55:34 fyurisich Exp $
+ * $Id: h_timer.prg,v 1.13 2016-10-22 16:23:55 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -75,9 +75,9 @@ CLASS TTimer FROM TControl
    EMPTY( _OOHG_AllVars )
 ENDCLASS
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, Interval, ProcedureName, lDisabled ) CLASS TTimer
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
    ::SetForm( ControlName, ParentForm )
    ::InitStyle( ,,,, lDisabled )
    ::Register( 0, ControlName, , , , _GetId() )
@@ -86,9 +86,9 @@ METHOD Define( ControlName, ParentForm, Interval, ProcedureName, lDisabled ) CLA
    ::Value := Interval
 Return Self
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Value( nValue ) CLASS TTimer
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
    If VALTYPE( nValue ) == "N"
       If ::lEnabled
          KillTimer( ::Parent:hWnd, ::Id )
@@ -98,9 +98,9 @@ METHOD Value( nValue ) CLASS TTimer
    EndIf
 RETURN ::Interval
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Enabled( lEnabled ) CLASS TTimer
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
    IF VALTYPE( lEnabled ) == "L" .AND. ::lEnabled != lEnabled
       IF lEnabled
          InitTimer( ::Parent:hWnd, ::Id, ::Interval )
@@ -111,9 +111,9 @@ METHOD Enabled( lEnabled ) CLASS TTimer
    ENDIF
 RETURN ::lEnabled
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Release() CLASS TTimer
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
    If ::lEnabled
       KillTimer( ::Parent:hWnd, ::Id )
    EndIf

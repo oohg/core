@@ -1,5 +1,5 @@
 /*
- * $Id: h_richeditbox.prg,v 1.41 2016-10-17 01:55:34 fyurisich Exp $
+ * $Id: h_richeditbox.prg,v 1.42 2016-10-22 16:23:55 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -92,14 +92,14 @@ CLASS TEditRich FROM TEdit
    EMPTY( _OOHG_AllVars )
 ENDCLASS
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
                fontsize, tooltip, maxlength, gotfocus, change, lostfocus, ;
                readonly, break, HelpId, invisible, notabstop, bold, italic, ;
                underline, strikeout, field, backcolor, lRtl, lDisabled, ;
                selchange, fontcolor, nohidesel, OnFocusPos, novscroll, ;
                nohscroll, file, type, OnHScroll, OnVScroll ) CLASS TEditRich
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local ControlHandle, nStyle
 
    ASSIGN ::nWidth  VALUE w TYPE "N"
@@ -139,9 +139,9 @@ Local ControlHandle, nStyle
    ASSIGN ::nOnFocusPos VALUE OnFocusPos TYPE "N"
 Return Self
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD LoadFile( cFile, nType ) CLASS TEditRich
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local lRet := .F.
    ASSIGN cFile VALUE cFile TYPE "C" DEFAULT ""
    ASSIGN nType VALUE nType TYPE "N" DEFAULT 2
@@ -150,9 +150,9 @@ Local lRet := .F.
    EndIf
 Return lRet
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD SaveFile( cFile, nType ) CLASS TEditRich
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local lRet := .F.
    ASSIGN cFile VALUE cFile TYPE "C" DEFAULT ""
    ASSIGN nType VALUE nType TYPE "N" DEFAULT 2
@@ -161,9 +161,9 @@ Local lRet := .F.
    EndIf
 Return lRet
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD RichValue( cValue ) CLASS TEditRich
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
    If VALTYPE( cValue ) $ "CM"
       RichStreamIn( ::hWnd, cValue )
    EndIf
@@ -740,9 +740,9 @@ Local cText, lRet
 
 Return ::Super:Events( hWnd, nMsg, wParam, lParam )
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Events_Notify( wParam, lParam ) CLASS TEditRich
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local nNotify := GetNotifyCode( lParam )
 
    If nNotify == EN_SELCHANGE
@@ -755,9 +755,9 @@ Local nNotify := GetNotifyCode( lParam )
 
 Return ::Super:Events_Notify( wParam, lParam )
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD GetSelText( lTranslate ) CLASS TEditRich
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local cSelText := RichEdit_GetSelText( ::hWnd )
 
    If HB_IsLogical( lTranslate ) .AND. lTranslate
@@ -766,17 +766,17 @@ Local cSelText := RichEdit_GetSelText( ::hWnd )
 
 Return cSelText
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD MaxLength( nLen ) CLASS TEditRich
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
    If HB_IsNumeric( nLen )
       SendMessage( ::hWnd, EM_EXLIMITTEXT, 0, nLen )
    EndIf
 Return SendMessage( ::hWnd, EM_GETLIMITTEXT, 0, 0 )
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD GetLastVisibleLine CLASS TEditRich
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 LOCAL aRect, nChar
 
    aRect := ::GetRect()            // top, left, bottom, right

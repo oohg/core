@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.106 2016-10-17 01:55:34 fyurisich Exp $
+ * $Id: h_textbox.prg,v 1.107 2016-10-22 16:23:55 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -127,7 +127,7 @@ CLASS TText FROM TLabel
    Empty( _OOHG_AllVars )
 ENDCLASS
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
                cFontName, nFontSize, cToolTip, nMaxLength, lUpper, lLower, ;
                lPassword, uLostFocus, uGotFocus, uChange, uEnter, right, ;
@@ -135,7 +135,7 @@ METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
                backcolor, fontcolor, invisible, notabstop, lRtl, lAutoSkip, ;
                lNoBorder, OnFocusPos, lDisabled, bValid, bAction, aBitmap, ;
                nBtnwidth, bAction2, bWhen, lCenter, OnTextFilled, nInsType ) CLASS TText
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local nStyle := ES_AUTOHSCROLL, nStyleEx := 0
 
    nStyle += If( HB_IsLogical( lUpper ) .AND. lUpper, ES_UPPERCASE, 0 ) + ;
@@ -152,7 +152,7 @@ Local nStyle := ES_AUTOHSCROLL, nStyleEx := 0
 
 Return Self
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Define2( cControlName, cParentForm, x, y, w, h, cValue, ;
                 cFontName, nFontSize, cToolTip, nMaxLength, lPassword, ;
                 uLostFocus, uGotFocus, uChange, uEnter, right, HelpId, ;
@@ -161,7 +161,7 @@ METHOD Define2( cControlName, cParentForm, x, y, w, h, cValue, ;
                 lAutoSkip, nStyleEx, lNoBorder, OnFocusPos, lDisabled, ;
                 bValid, bAction, aBitmap, nBtnwidth, bAction2, bWhen, ;
                 lCenter, OnTextFilled, nInsType ) CLASS TText
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local nControlHandle
 Local break := Nil
 
@@ -242,9 +242,9 @@ Local break := Nil
 
 Return Self
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD RefreshData() CLASS TText
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local uValue
    If HB_IsBlock( ::Block )
       uValue := Eval( ::Block )
@@ -824,7 +824,7 @@ CLASS TTextPicture FROM TText
    METHOD Events_Command
 ENDCLASS
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, uValue, ;
                cInputMask, cFontName, nFontSize, cToolTip, uLostFocus, ;
                uGotFocus, uChange, uEnter, right, HelpId, readonly, bold, ;
@@ -833,7 +833,7 @@ METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, uValue, ;
                lDisabled, bValid, lUpper, lLower, bAction, aBitmap, ;
                nBtnwidth, bAction2, bWhen, lCenter, nYear, OnTextFilled, ;
                nInsType ) CLASS TTextPicture
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local nStyle := ES_AUTOHSCROLL, nStyleEx := 0
 
    nStyle += If( HB_IsLogical( lUpper ) .AND. lUpper, ES_UPPERCASE, 0 ) + ;
@@ -1537,9 +1537,9 @@ Return ::Super:Events_Command( wParam )
 
 
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 CLASS TTextNum FROM TText
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
    DATA Type          INIT "NUMTEXT" READONLY
 
    METHOD Define
@@ -1547,7 +1547,7 @@ CLASS TTextNum FROM TText
    METHOD Events_Command
 ENDCLASS
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
                cFontName, nFontSize, cToolTip, nMaxLength, lUpper, lLower, ;
                lPassword, uLostFocus, uGotFocus, uChange , uEnter , right  , ;
@@ -1555,7 +1555,7 @@ METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
                backcolor , fontcolor , invisible , notabstop, lRtl, lAutoSkip, ;
                lNoBorder, OnFocusPos, lDisabled, bValid, bAction, aBitmap, ;
                nBtnwidth, bAction2, bWhen, lCenter, OnTextFilled, nInsType ) CLASS TTextNum
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local nStyle := ES_NUMBER + ES_AUTOHSCROLL, nStyleEx := 0
 
    Empty( lUpper )
@@ -1619,7 +1619,7 @@ Return ::Super:Events_Command( wParam )
 
 
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 FUNCTION DefineTextBox( cControlName, cParentForm, x, y, Width, Height, ;
                         Value, cFontName, nFontSize, cToolTip, nMaxLength, ;
                         lUpper, lLower, lPassword, uLostFocus, uGotFocus, ;
@@ -1630,7 +1630,7 @@ FUNCTION DefineTextBox( cControlName, cParentForm, x, y, Width, Height, ;
                         date, numeric, inputmask, format, subclass, bAction, ;
                         aBitmap, nBtnwidth, bAction2, bWhen, lCenter, nYear, ;
                         OnTextFilled, nInsType )
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local Self, lInsert
 
    // If format is specified, inputmask is enabled

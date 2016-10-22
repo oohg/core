@@ -1,5 +1,5 @@
 /*
- * $Id: h_progressbar.prg,v 1.17 2016-10-17 01:55:34 fyurisich Exp $
+ * $Id: h_progressbar.prg,v 1.18 2016-10-22 16:23:55 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -90,11 +90,11 @@ CLASS TProgressBar FROM TControl
    EMPTY( _OOHG_AllVars )
 ENDCLASS
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, w, h, lo, hi, tooltip, ;
                vertical, smooth, HelpId, invisible, nValue, BackColor, ;
                BarColor, lRtl, nVelocity ) CLASS TProgressBar
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local ControlHandle
 
    ASSIGN vertical  VALUE vertical  TYPE "L" DEFAULT .F.

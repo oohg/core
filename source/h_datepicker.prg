@@ -1,5 +1,5 @@
 /*
- * $Id: h_datepicker.prg,v 1.26 2016-10-17 01:55:34 fyurisich Exp $
+ * $Id: h_datepicker.prg,v 1.27 2016-10-22 16:23:55 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -78,13 +78,13 @@ CLASS TDatePick FROM TControl
    EMPTY( _OOHG_AllVars )
 ENDCLASS
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
                fontsize, tooltip, change, lostfocus, gotfocus, shownone, ;
                updown, rightalign, HelpId, invisible, notabstop, bold, ;
                italic, underline, strikeout, Field, Enter, lRtl, lDisabled, ;
                lNoBorder, DateFrom, DateTo ) CLASS TDatePick
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local ControlHandle, nStyle, nStyleEx
 
    ASSIGN ::nCol    VALUE x TYPE "N"
@@ -117,9 +117,9 @@ Local ControlHandle, nStyle, nStyleEx
    
 Return Self
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TDatePick
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
    IF HB_IsDate( uValue )
       IF EMPTY( uValue )
          SetDatePickNull( ::hWnd )
@@ -133,9 +133,9 @@ METHOD Value( uValue ) CLASS TDatePick
    ENDIF
 Return GetDatePick( ::hWnd )
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Events_Notify( wParam, lParam ) CLASS TDatePick
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local nNotify := GetNotifyCode( lParam )
 
    If nNotify == DTN_DATETIMECHANGE
@@ -160,13 +160,13 @@ CLASS TTimePick FROM TControl
    METHOD Events_Notify
 ENDCLASS
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
                fontsize, tooltip, change, lostfocus, gotfocus, shownone, ;
                updown, rightalign, HelpId, invisible, notabstop, bold, ;
                italic, underline, strikeout, Field, Enter, lRtl, lDisabled, ;
                lNoBorder ) CLASS TTimePick
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local ControlHandle, nStyle, nStyleEx
 
    ASSIGN ::nCol    VALUE x TYPE "N"
@@ -201,9 +201,9 @@ Local ControlHandle, nStyle, nStyleEx
 
 Return Self
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TTimePick
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
    IF VALTYPE( uValue ) == "C"
       SetTimePick( ::hWnd, VAL(left(uValue,2)),VAL(SUBSTR(uValue,4,2)),VAL( SUBSTR(uValue,7,2 )) )
        ::DoChange()
@@ -213,9 +213,9 @@ METHOD Value( uValue ) CLASS TTimePick
    ENDIF
 Return StrZero( GetDatePickHour( ::hWnd ), 2 ) + ":" + StrZero( GetDatePickMinute( ::hWnd ), 2 ) + ":" + StrZero( GetDatePickSecond( ::hWnd ), 2 )
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Events_Notify( wParam, lParam ) CLASS TTimePick
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local nNotify := GetNotifyCode( lParam )
 
    If nNotify == DTN_DATETIMECHANGE

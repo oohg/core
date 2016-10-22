@@ -1,5 +1,5 @@
 /*
- * $Id: h_listbox.prg,v 1.36 2016-10-17 01:55:34 fyurisich Exp $
+ * $Id: h_listbox.prg,v 1.37 2016-10-22 16:23:55 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -92,14 +92,14 @@ CLASS TList FROM TControl
    METHOD ItemCount               BLOCK { |Self| ListBoxGetItemCount( ::hWnd ) }
 ENDCLASS
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
                fontsize, tooltip, changeprocedure, dblclick, gotfocus, ;
                lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
                italic, underline, strikeout, backcolor, fontcolor, lRtl, ;
                lDisabled, onenter, aImage, TextHeight, lAdjustImages, ;
                novscroll ) CLASS TList
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local nStyle := 0
    ::Define2( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
               fontsize, tooltip, changeprocedure, dblclick, gotfocus, ;
@@ -109,14 +109,14 @@ Local nStyle := 0
               novscroll )
 Return Self
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Define2( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
                 fontsize, tooltip, changeprocedure, dblclick, gotfocus, ;
                 lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
                 italic, underline, strikeout, backcolor, fontcolor, nStyle, ;
                 lRtl, lDisabled, onenter, aImage, TextHeight, lAdjustImages, ;
                 novscroll ) CLASS TList
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local ControlHandle
 
    ASSIGN ::nWidth        VALUE w             TYPE "N"
@@ -166,9 +166,9 @@ METHOD Value( uValue ) CLASS TList
    ENDIF
 RETURN ListBoxGetCursel( ::hWnd )
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD OnEnter( bEnter ) CLASS TList
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 LOCAL bRet
    IF HB_IsBlock( bEnter )
       IF _OOHG_SameEnterDblClick
@@ -182,9 +182,9 @@ LOCAL bRet
    ENDIF
 RETURN bRet
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TList
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
    If nMsg == WM_LBUTTONDBLCLK
       If ! ::lFocused
          ::SetFocus()
@@ -206,9 +206,9 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TList
    EndIf
 Return ::Super:Events( hWnd, nMsg, wParam, lParam )
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Events_Command( wParam ) CLASS TList
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local Hi_wParam := HIWORD( wParam )
 
    if Hi_wParam == LBN_SELCHANGE
@@ -233,18 +233,18 @@ Local Hi_wParam := HIWORD( wParam )
 
 Return ::Super:Events_Command( wParam )
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Item( nItem, uValue ) CLASS TList
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
    IF ! HB_IsNil( uValue )
       ListBoxDeleteString( Self, nItem )
       ListBoxInsertString2( Self, uValue, nItem )
    ENDIF
 Return ListBoxGetString( ::hWnd, nItem )
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD InsertItem( nItem, uValue ) CLASS TList
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
    IF ! HB_IsNil( uValue )
       ListBoxInsertString2( Self, uValue, nItem )
    ENDIF
@@ -261,14 +261,14 @@ CLASS TListMulti FROM TList
    METHOD Value                   SETGET
 ENDCLASS
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
                fontsize, tooltip, changeprocedure, dblclick, gotfocus, ;
                lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
                italic, underline, strikeout, backcolor, fontcolor, lRtl, ;
                lDisabled, onenter, aImage, TextHeight, lAdjustImages, ;
                novscroll ) CLASS TListMulti
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local nStyle := LBS_EXTENDEDSEL + LBS_MULTIPLESEL
 
    ::Define2( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;

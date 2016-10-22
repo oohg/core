@@ -1,5 +1,5 @@
 /*
- * $Id: h_hotkeybox.prg,v 1.13 2016-10-17 01:55:34 fyurisich Exp $
+ * $Id: h_hotkeybox.prg,v 1.14 2016-10-22 16:23:55 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -77,14 +77,14 @@ CLASS THotKeyBox FROM TLabel
    EMPTY( _OOHG_AllVars )
 ENDCLASS
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, w, h, uValue, ;
                FontName, FontSize, ToolTip, ;
                uLostFocus, uGotFocus, uChange, uEnter, ;
                HelpId, bold, italic, underline, strikeout, ;
                BackColor, FontColor, invisible, notabstop, lRtl, ;
                lDisabled, lNoAlt ) CLASS THotKeyBox
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local ControlHandle, nStyle := 0, nStyleEx := 0
 
    ASSIGN ::nCol      VALUE x TYPE "N"

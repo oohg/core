@@ -1,5 +1,5 @@
 /*
- * $Id: h_scrollbutton.prg,v 1.7 2016-10-17 01:55:34 fyurisich Exp $
+ * $Id: h_scrollbutton.prg,v 1.8 2016-10-22 16:23:55 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -74,9 +74,9 @@ CLASS TScrollButton FROM TControl
    EMPTY( _OOHG_AllVars )
 ENDCLASS
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, w, h ) CLASS TScrollButton
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local ControlHandle
 
    ::SetForm( ControlName, ParentForm /* , FontName, FontSize, FontColor, BackColor,, lRtl */ )

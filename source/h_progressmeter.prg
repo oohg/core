@@ -1,5 +1,5 @@
 /*
- * $Id: h_progressmeter.prg,v 1.23 2016-10-17 01:55:34 fyurisich Exp $
+ * $Id: h_progressmeter.prg,v 1.24 2016-10-22 16:23:55 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -87,12 +87,12 @@ CLASS TProgressMeter FROM TLabel
    EMPTY( _OOHG_AllVars )
 ENDCLASS
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, w, h, lo, hi, value, tooltip, ;
                fontname, fontsize, bold, italic, underline, strikeout, ;
                FontColor, BackColor, ProcedureName, HelpId, invisible, lRtl, ;
                CLIENTEDGE, lDisabled ) CLASS TProgressMeter
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local ControlHandle, nStyle, nStyleEx
 
    IF FontColor != NIL

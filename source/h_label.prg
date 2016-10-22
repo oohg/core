@@ -1,5 +1,5 @@
 /*
- * $Id: h_label.prg,v 1.33 2016-10-17 01:55:34 fyurisich Exp $
+ * $Id: h_label.prg,v 1.34 2016-10-22 16:23:55 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -86,14 +86,14 @@ CLASS TLabel FROM TControl
    EMPTY( _OOHG_AllVars )
 ENDCLASS
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, Caption, w, h, fontname, ;
                fontsize, bold, BORDER, CLIENTEDGE, HSCROLL, VSCROLL, ;
                lTRANSPARENT, aRGB_bk, aRGB_font, ProcedureName, tooltip, ;
                HelpId, invisible, italic, underline, strikeout, autosize, ;
                rightalign, centeralign, lRtl, lNoWordWrap, lNoPrefix, ;
                cPicture, lDisabled, lCenterAlign ) CLASS TLabel
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local ControlHandle, nStyle, nStyleEx
 
    ASSIGN ::nCol        VALUE x TYPE "N"
@@ -140,9 +140,9 @@ Local ControlHandle, nStyle, nStyleEx
 
 Return Self
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Value( cValue ) CLASS TLabel
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
    If PCOUNT() > 0
       If VALTYPE( ::Picture ) $ "CM"
          ::Caption := TRANSFORM( cValue, ::Picture )
@@ -152,9 +152,9 @@ METHOD Value( cValue ) CLASS TLabel
    Endif
 Return ::Caption
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Caption( cValue ) CLASS TLabel
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
    IF VALTYPE( cValue ) $ "CM"
       if ::lAutoSize
          ::SizePos( , , GetTextWidth( nil, cValue , ::FontHandle ) + ::IconWidth, GetTextHeight( nil, cValue , ::FontHandle ) )
@@ -168,9 +168,9 @@ METHOD Caption( cValue ) CLASS TLabel
    EndIf
 RETURN cValue
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout, Angle, Width ) CLASS Tlabel
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
    ///local cCaption
    ::SUPER:setfont(FontName, FontSize, Bold, Italic, Underline, Strikeout, Angle,Width )
    IF ::lAutosize
@@ -180,9 +180,9 @@ METHOD SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout, Angle, W
    ENDIF
 Return Nil
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD AutoSize( lValue ) CLASS TLabel
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local cCaption
    If HB_IsLogical( lValue )
       ::lAutoSize := lValue
@@ -193,9 +193,9 @@ Local cCaption
    EndIf
 Return ::lAutoSize
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Align( nAlign ) CLASS TLabel
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Return WindowStyleFlag( ::hWnd, 0x3F, nAlign )
 
 EXTERN InitLabel

@@ -1,5 +1,5 @@
 /*
- * $Id: h_menu.prg,v 1.43 2016-10-17 01:55:34 fyurisich Exp $
+ * $Id: h_menu.prg,v 1.44 2016-10-22 16:23:55 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -533,9 +533,9 @@ METHOD SetItemsColor( uColor, lApplyToSubItems ) CLASS TMenuItem
    ENDIF
 Return Nil
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD DoEvent( bBlock, cEventType, aParams ) CLASS TMenuItem
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local aNew, uCargo
    IF HB_IsNil( ::Cargo ) .AND. HB_IsNil( ::Container:Cargo ) .AND. HB_IsNil( ::Parent:Cargo )
       aNew := aParams

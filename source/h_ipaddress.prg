@@ -1,5 +1,5 @@
 /*
- * $Id: h_ipaddress.prg,v 1.19 2016-10-17 01:55:34 fyurisich Exp $
+ * $Id: h_ipaddress.prg,v 1.20 2016-10-22 16:23:55 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -76,12 +76,12 @@ CLASS TIpAddress FROM TLabel
    EMPTY( _OOHG_AllVars )
 ENDCLASS
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, w, h, aValue, fontname, ;
                fontsize, tooltip, lostfocus, gotfocus, change, HelpId, ;
                invisible, notabstop, bold, italic, underline, strikeout, lRtl, ;
                lDisabled, FontColor, BackColor ) CLASS TIpAddress
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local ControlHandle, nStyle
 
    // Assign STANDARD values to optional params.

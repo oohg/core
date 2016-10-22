@@ -1,5 +1,5 @@
 /*
- * $Id: h_picture.prg,v 1.31 2016-10-17 01:55:34 fyurisich Exp $
+ * $Id: h_picture.prg,v 1.32 2016-10-22 16:23:55 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -104,12 +104,12 @@ CLASS TPicture FROM TControl
    EMPTY( _OOHG_AllVars )
 ENDCLASS
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, FileName, w, h, cBuffer, hBitMap, ;
                stretch, autofit, imagesize, BORDER, CLIENTEDGE, BackColor, ;
                ProcedureName, ToolTip, HelpId, lRtl, invisible, lNoLoadTrans, ;
                lNo3DColors, lNoDIB, lStyleTransp, aArea, lDisabled ) CLASS TPicture
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local ControlHandle, nStyle, nStyleEx
 
    ASSIGN ::nCol           VALUE x            TYPE "N"
@@ -157,9 +157,9 @@ Local ControlHandle, nStyle, nStyleEx
 
 Return Self
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Picture( cPicture, lNoRepaint ) CLASS TPicture
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 LOCAL nAttrib, aPictSize
    IF VALTYPE( cPicture ) $ "CM"
       DeleteObject( ::hImage )
@@ -189,9 +189,9 @@ LOCAL nAttrib, aPictSize
    EndIf
 Return ::cPicture
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD HBitMap( hBitMap, lNoRepaint ) CLASS TPicture
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
    If ValType( hBitMap ) $ "NP"
       DeleteObject( ::hImage )
       ::hImage := hBitMap
@@ -202,9 +202,9 @@ METHOD HBitMap( hBitMap, lNoRepaint ) CLASS TPicture
    EndIf
 Return ::hImage
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Buffer( cBuffer, lNoRepaint ) CLASS TPicture
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
    If VALTYPE( cBuffer ) $ "CM"
       DeleteObject( ::hImage )
       ::hImage := _OOHG_BitmapFromBuffer( Self, cBuffer, .F. )
@@ -215,9 +215,9 @@ METHOD Buffer( cBuffer, lNoRepaint ) CLASS TPicture
    EndIf
 Return nil
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Zoom( nZoom, lNoRepaint ) CLASS TPicture
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
    If HB_IsNumeric( nZoom )
       ::nZoom := nZoom
       If ! HB_IsLogical( lNoRepaint ) .OR. ! lNoRepaint
@@ -226,9 +226,9 @@ METHOD Zoom( nZoom, lNoRepaint ) CLASS TPicture
    EndIf
 Return ::nZoom
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Rotate( nDegree, lNoRepaint ) CLASS TPicture
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
    If HB_IsNumeric( nDegree )
       ::nDegree := nDegree
       If ! HB_IsLogical( lNoRepaint ) .OR. ! lNoRepaint
@@ -237,9 +237,9 @@ METHOD Rotate( nDegree, lNoRepaint ) CLASS TPicture
    EndIf
 Return ::nDegree
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD OnClick( bOnClick ) CLASS TPicture
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
    If PCOUNT() > 0
       ::bOnClick := bOnClick
       TPicture_SetNotify( Self, HB_IsBlock( bOnClick ) )
@@ -254,9 +254,9 @@ METHOD ToolTip( cToolTip ) CLASS TPicture
    EndIf
 Return ::Super:ToolTip( cToolTip )
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD RePaint( lMoving ) CLASS TPicture
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 LOCAL nWidth, nHeight, nAux
    IF ValidHandler( ::AuxHandle ) .AND. ! ::AuxHandle == ::hImage
       DeleteObject( ::AuxHandle )
@@ -289,17 +289,17 @@ LOCAL nWidth, nHeight, nAux
    ENDIF
 RETURN Self
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD SizePos( Row, Col, Width, Height ) CLASS TPicture
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 LOCAL uRet
    uRet := ::Super:SizePos( Row, Col, Width, Height )
    ::RePaint( .T. )
 RETURN uRet
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Release() CLASS TPicture
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
    DeleteObject( ::hImage )
 RETURN ::Super:Release()
 
@@ -333,9 +333,9 @@ Local nRangeMin, nRangeMax, nPos
    EndIf
 Return nPos
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD OriginalSize() CLASS TPicture
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local aRet
    IF ValidHandler( ::hImage )
       aRet := { _OOHG_BitMapWidth( ::hImage ), _OOHG_BitMapHeight( ::hImage ) }
@@ -344,9 +344,9 @@ Local aRet
    ENDIF
 RETURN aRet
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD CurrentSize() CLASS TPicture
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Local aRet
    IF ValidHandler( ::AuxHandle )
       aRet := { _OOHG_BitMapWidth( ::AuxHandle ), _OOHG_BitMapHeight( ::AuxHandle ) }
@@ -357,16 +357,16 @@ Local aRet
    ENDIF
 RETURN aRet
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Blend( hSprite, nImgX, nImgY, nImgW, nImgH, aColor, nSprX, nSprY, nSprW, nSprH ) CLASS TPicture
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
    _OOHG_BlendImage( ::hImage, nImgX, nImgY, nImgW, nImgH, hSprite, aColor, nSprX, nSprY, nSprW, nSprH )
    ::RePaint()
 RETURN Self
 
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 METHOD Copy( lAsDIB ) CLASS TPicture
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
    DEFAULT lAsDIB TO ! ::lNoDIBSection
    // Do not forget to call DeleteObject
 RETURN _OOHG_CopyBitmap( ::hImage, 0, 0 )
