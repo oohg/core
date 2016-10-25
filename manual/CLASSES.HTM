@@ -1,5 +1,5 @@
 <!--
-$Id: CLASSES.HTM,v 1.17 2016-08-14 23:38:59 fyurisich Exp $
+$Id: CLASSES.HTM,v 1.18 2016-10-25 21:37:45 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -378,6 +378,35 @@ CLASS TACTIVEX FROM TCONTROL
    METHOD DEFINE
    METHOD EVENTMAP
    METHOD RELEASE
+ENDCLASS
+
+*------------------------------------------------------------------------------*
+CLASS TANIGIF FROM TCONTROL
+   DATA ADELAYS                   INIT {}
+   DATA AINFO                     INIT { "", 0, 0 }
+   DATA APICTURES                 INIT {}
+   DATA CURRENTFRAME              INIT 0
+   DATA FILENAME                  INIT ""
+   DATA NHEIGHT                   INIT 100
+   DATA NWIDTH                    INIT 100
+   DATA OIMAGE                    INIT NIL
+   DATA OTIMER                    INIT NIL
+   DATA TYPE                      INIT "ANIGIF" READONLY
+
+   METHOD DEFINE
+   METHOD FRAMECOUNT              BLOCK { |SELF| LEN( ::APICTURES ) }
+   METHOD FRAMEDELAY
+   METHOD FRAMEHEIGHT             BLOCK { |SELF| ::AINFO[ 3 ] }
+   METHOD FRAMEWIDTH              BLOCK { |SELF| ::AINFO[ 2 ] }
+   METHOD ISPLAYING               BLOCK { |SELF| ::OTIMER:ENABLED }
+   METHOD LOAD
+   METHOD ONCLICK                 SETGET
+   METHOD PLAY                    BLOCK { |SELF| ::OTIMER:ENABLED := ( ::FRAMECOUNT > 1 ) }
+   METHOD RELEASE
+   METHOD SHOWNEXTFRAME
+   METHOD STOP                    BLOCK { |SELF| ::OTIMER:ENABLED := .F. }
+   METHOD VERSION                 BLOCK { |SELF| ::AINFO[ 1 ] }
+   METHOD VISIBLE                 SETGET
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -897,6 +926,7 @@ CLASS TFORM FROM TWINDOW
    METHOD CENTER
    METHOD CHECKINTERACTIVECLOSE
    METHOD CLIENTSPOS
+   METHOD CLOSABLE                SETGET
    METHOD COL                     SETGET
    METHOD CURSOR                  SETGET
    METHOD DEFINE
@@ -2834,8 +2864,10 @@ CLASS TTOOLBAR FROM TCONTROL
    DATA NBUTTONWIDTH              INIT 0
    DATA TYPE                      INIT "TOOLBAR" READONLY
 
+   METHOD ADDBUTTON
    METHOD CLIENTHEIGHTUSED
    METHOD DEFINE
+   METHOD DELETEBUTTON
    METHOD EVENTS
    METHOD EVENTS_COMMAND
    METHOD EVENTS_NOTIFY
@@ -2850,6 +2882,7 @@ CLASS TTOOLBUTTON FROM TCONTROL
    DATA CPICTURE                  INIT ""
    DATA HIMAGE                    INIT 0
    DATA LADJUST                   INIT .F.
+   DATA OHOTKEY                   INIT NIL
    DATA POSITION                  INIT 0
    DATA TYPE                      INIT "TOOLBUTTON" READONLY
 

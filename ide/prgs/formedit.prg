@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.71 2016-10-20 01:52:54 fyurisich Exp $
+ * $Id: formedit.prg,v 1.72 2016-10-25 21:37:45 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -27,7 +27,7 @@
 #include "i_windefs.ch"
 
 #define UpperNIL( cValue ) IIF( Upper( AllTrim( cValue ) ) == "NIL", "NIL", cValue )
-#define IDE_LAST_CTRL 38
+#define IDE_LAST_CTRL 39
 #define DOUBLE_QUOTATION_MARK '"'
 #define DQM( x ) DOUBLE_QUOTATION_MARK + x + DOUBLE_QUOTATION_MARK
 
@@ -65,7 +65,7 @@ CLASS TFormEditor
    /*
       Arrays to hold the values of properties and events of the controls in the designed form.
       Each time a new property or event is added to a control, you must add a new DATA here (except when you use a existing one).
-      In such a case, you must handle it in methods IniArray, SwapArray, DelArray, CopyControl, p(*****), Save, Properties_Click and Events_Click.
+      In such a case, you must handle it in methods IniArray, SwapArray, DelArray, CopyControl, p(*****), Save, PropertiesClick and EventsClick.
    */
    DATA a3State              INIT {}
    DATA aAction              INIT {}
@@ -431,10 +431,10 @@ CLASS TFormEditor
    DATA nSKWidth             INIT 0
 
    // Lowercase needed
-   DATA ControlPrefix        INIT { "form_", "button_", "checkbox_", "list_", "combo_", "checkbtn_", "grid_", "frame_", "tab_", "image_", "animate_", "datepicker_", "text_", "edit_", "label_", "player_", "progressbar_", "radiogroup_", "slider_", "spinner_", "piccheckbutt_", "picbutt_", "timer_", "browse_", "tree_", "ipaddress_", "monthcal_",     "hyperlink_", "richeditbox_", "timepicker_", "xbrowse_", "activex_", "checklist_", "hotkeybox_", "picture_", "progressmeter_", "scrollbar_", "textarray_" }
+   DATA ControlPrefix        INIT { "form_", "button_", "checkbox_", "list_", "combo_", "checkbtn_", "grid_", "frame_", "tab_", "image_", "animate_", "datepicker_", "text_", "edit_", "label_", "player_", "progressbar_", "radiogroup_", "slider_", "spinner_", "piccheckbutt_", "picbutt_", "timer_", "browse_", "tree_", "ipaddress_", "monthcal_",     "hyperlink_", "richeditbox_", "timepicker_", "xbrowse_", "activex_", "checklist_", "hotkeybox_", "picture_", "progressmeter_", "scrollbar_", "textarray_", "anigif_" }
    // Uppercase needed
-   DATA ControlType          INIT { "FORM",  "BUTTON",  "CHECKBOX",  "LIST",  "COMBO",  "CHECKBTN",  "GRID",  "FRAME",  "TAB",  "IMAGE",  "ANIMATE",  "DATEPICKER",  "TEXT",  "EDIT",  "LABEL",  "PLAYER",  "PROGRESSBAR",  "RADIOGROUP",  "SLIDER",  "SPINNER",  "PICCHECKBUTT",  "PICBUTT",  "TIMER",  "BROWSE",  "TREE",  "IPADDRESS",  "MONTHCALENDAR", "HYPERLINK",  "RICHEDIT",     "TIMEPICKER",  "XBROWSE",  "ACTIVEX",  "CHECKLIST",  "HOTKEYBOX",  "PICTURE",  "PROGRESSMETER",  "SCROLLBAR",  "TEXTARRAY" }
-   DATA ControlCount         INIT { 0,       0,         0,           0,       0,        0,           0,       0,        0,      0,        0,          0,             0,       0,       0,        0,         0,              0,             0,         0,          0,               0,          0,        0,         0,       0,            0,               0,            0,              0,             0,          0,          0,            0,            0,          0,                0,            0 }
+   DATA ControlType          INIT { "FORM",  "BUTTON",  "CHECKBOX",  "LIST",  "COMBO",  "CHECKBTN",  "GRID",  "FRAME",  "TAB",  "IMAGE",  "ANIMATE",  "DATEPICKER",  "TEXT",  "EDIT",  "LABEL",  "PLAYER",  "PROGRESSBAR",  "RADIOGROUP",  "SLIDER",  "SPINNER",  "PICCHECKBUTT",  "PICBUTT",  "TIMER",  "BROWSE",  "TREE",  "IPADDRESS",  "MONTHCALENDAR", "HYPERLINK",  "RICHEDIT",     "TIMEPICKER",  "XBROWSE",  "ACTIVEX",  "CHECKLIST",  "HOTKEYBOX",  "PICTURE",  "PROGRESSMETER",  "SCROLLBAR",  "TEXTARRAY",  "ANIGIF" }
+   DATA ControlCount         INIT { 0,       0,         0,           0,       0,        0,           0,       0,        0,      0,        0,          0,             0,       0,       0,        0,         0,              0,             0,         0,          0,               0,          0,        0,         0,       0,            0,               0,            0,              0,             0,          0,          0,            0,            0,          0,                0,            0,            0 }
 
    METHOD AddControl
    METHOD AddCtrlToTabPage
@@ -443,7 +443,7 @@ CLASS TFormEditor
    METHOD CheckForFrame
    METHOD CheckStringData                     
    METHOD Clean
-   METHOD Control_Click
+   METHOD ControlClick
    METHOD CopyControl
    METHOD CreateControl
    METHOD CreateStatusBar
@@ -453,11 +453,11 @@ CLASS TFormEditor
    METHOD DelArray
    METHOD DeleteControl
    METHOD DeleteTabPage
-   METHOD DrawOutline                         // Dibuja
-   METHOD DrawPoints                          // MisPuntos
-   METHOD Edit_Properties
+   METHOD DrawOutline
+   METHOD DrawPoints                          
    METHOD EditForm           CONSTRUCTOR
-   METHOD Events_Click
+   METHOD EditProperties
+   METHOD EventsClick
    METHOD Exit
    METHOD FillListOfCtrls
    METHOD FillListOfGroups
@@ -479,10 +479,11 @@ CLASS TFormEditor
    METHOD MoveControl
    METHOD New
    METHOD Open
-   METHOD Order_Down
-   METHOD Order_Up
    METHOD OrderControls
+   METHOD OrderDown
+   METHOD OrderUp
    METHOD pActiveX
+   METHOD pAniGIF
    METHOD pAnimateBox
    METHOD pBrowse
    METHOD pButton
@@ -512,8 +513,8 @@ CLASS TFormEditor
    METHOD pRadioGroup
    METHOD pRichedit
    METHOD PrintBrief
-   METHOD ProcesaControl
-   METHOD Properties_Click
+   METHOD ProcessControl
+   METHOD PropertiesClick
    METHOD pScrollBar
    METHOD pSlider
    METHOD pSpinner
@@ -720,14 +721,14 @@ LOCAL nPos, cName
 
       @ 17,450 BUTTON tbc_prop ;
          PICTURE "IDE_FRMPROPS" ;
-         ACTION ::Properties_Click() ;
+         ACTION ::PropertiesClick() ;
          WIDTH 30 ;
          HEIGHT 28 ;
          TOOLTIP "Properties"
 
       @ 17,482 BUTTON tbc_events ;
          PICTURE "IDE_FRMEVENTS" ;
-         ACTION ::Events_Click() ;
+         ACTION ::EventsClick() ;
          WIDTH 30 ;
          HEIGHT 28 ;
          TOOLTIP "Events"
@@ -811,7 +812,7 @@ LOCAL nPos, cName
          WIDTH 28 ;
          HEIGHT 28 ;
          TOOLTIP "Select Object" ;
-         ON CHANGE ::Control_Click( 1 )
+         ON CHANGE ::ControlClick( 1 )
 
       @ 000, 29 CHECKBUTTON Control_02 ;
          PICTURE "IDE_BUTTON" ;
@@ -819,7 +820,7 @@ LOCAL nPos, cName
          WIDTH 28 ;
          HEIGHT 28 ;
          TOOLTIP "Button and ButtonMixed" ;
-         ON CHANGE ::Control_Click( 2 )
+         ON CHANGE ::ControlClick( 2 )
 
       @ 000, 58 CHECKBUTTON Control_03 ;
          PICTURE "IDE_CHECKBOX" ;
@@ -827,7 +828,7 @@ LOCAL nPos, cName
          WIDTH 28 ;
          HEIGHT 28 ;
          TOOLTIP "CheckBox" ;
-         ON CHANGE ::Control_Click( 3 )
+         ON CHANGE ::ControlClick( 3 )
 
       @ 029, 00 CHECKBUTTON Control_04 ;
          PICTURE "IDE_LISTBOX" ;
@@ -835,7 +836,7 @@ LOCAL nPos, cName
          WIDTH 28 ;
          HEIGHT 28 ;
          TOOLTIP "ListBox" ;
-         ON CHANGE ::Control_Click( 4 )
+         ON CHANGE ::ControlClick( 4 )
 
       @ 029, 29 CHECKBUTTON Control_05 ;
          PICTURE "IDE_COMBOBOX" ;
@@ -843,7 +844,7 @@ LOCAL nPos, cName
          WIDTH 28 ;
          HEIGHT 28 ;
          TOOLTIP "ComboBox" ;
-         ON CHANGE ::Control_Click( 5 )
+         ON CHANGE ::ControlClick( 5 )
 
       @ 029, 58 CHECKBUTTON Control_06 ;
          PICTURE "IDE_CHECKBUTTON" ;
@@ -851,7 +852,7 @@ LOCAL nPos, cName
          WIDTH 28 ;
          HEIGHT 28 ;
          TOOLTIP "CheckButton" ;
-         ON CHANGE ::Control_Click( 6 )
+         ON CHANGE ::ControlClick( 6 )
 
       @ 058, 00 CHECKBUTTON Control_07 ;
          PICTURE "IDE_GRID" ;
@@ -859,7 +860,7 @@ LOCAL nPos, cName
          WIDTH 28 ;
          HEIGHT 28 ;
          TOOLTIP "Grid" ;
-         ON CHANGE ::Control_Click( 7 )
+         ON CHANGE ::ControlClick( 7 )
 
       @ 058, 29 CHECKBUTTON Control_08 ;
          PICTURE "IDE_FRAME" ;
@@ -867,7 +868,7 @@ LOCAL nPos, cName
          WIDTH 28 ;
          HEIGHT 28 ;
          TOOLTIP "Frame" ;
-         ON CHANGE ::Control_Click( 8 )
+         ON CHANGE ::ControlClick( 8 )
 
       @ 058, 58 CHECKBUTTON Control_09 ;
          PICTURE "IDE_TAB" ;
@@ -875,7 +876,7 @@ LOCAL nPos, cName
          WIDTH 28 ;
          HEIGHT 28 ;
          TOOLTIP "Tab" ;
-         ON CHANGE ::Control_Click( 9 )
+         ON CHANGE ::ControlClick( 9 )
 
       @ 087, 00 CHECKBUTTON Control_10 ;
          PICTURE "IDE_IMAGE" ;
@@ -883,7 +884,7 @@ LOCAL nPos, cName
          WIDTH 28 ;
          HEIGHT 28 ;
          TOOLTIP "Image" ;
-         ON CHANGE ::Control_Click( 10 )
+         ON CHANGE ::ControlClick( 10 )
 
       @ 087, 29 CHECKBUTTON Control_11 ;
          PICTURE "IDE_ANIMATEBOX" ;
@@ -891,7 +892,7 @@ LOCAL nPos, cName
          WIDTH 28 ;
          HEIGHT 28 ;
          TOOLTIP "AnimateBox" ;
-         ON CHANGE ::Control_Click( 11 )
+         ON CHANGE ::ControlClick( 11 )
 
       @ 087, 58 CHECKBUTTON Control_12 ;
          PICTURE "IDE_DATEPICKER" ;
@@ -899,7 +900,7 @@ LOCAL nPos, cName
          WIDTH 28 ;
          HEIGHT 28 ;
          TOOLTIP "DatePicker" ;
-         ON CHANGE ::Control_Click( 12 )
+         ON CHANGE ::ControlClick( 12 )
 
       @ 116, 00 CHECKBUTTON Control_13 ;
          PICTURE "IDE_TEXTBOX" ;
@@ -907,7 +908,7 @@ LOCAL nPos, cName
          WIDTH 28 ;
          HEIGHT 28 ;
          TOOLTIP "TextBox" ;
-         ON CHANGE ::Control_Click( 13 )
+         ON CHANGE ::ControlClick( 13 )
 
       @ 116, 29 CHECKBUTTON Control_14 ;
          PICTURE "IDE_EDITBOX" ;
@@ -915,7 +916,7 @@ LOCAL nPos, cName
          WIDTH 28 ;
          HEIGHT 28 ;
          TOOLTIP "EditBox" ;
-         ON CHANGE ::Control_Click( 14 )
+         ON CHANGE ::ControlClick( 14 )
 
       @ 116, 58 CHECKBUTTON Control_15 ;
          PICTURE "IDE_LABEL" ;
@@ -923,7 +924,7 @@ LOCAL nPos, cName
          WIDTH 28 ;
          HEIGHT 28 ;
          TOOLTIP "Label" ;
-         ON CHANGE ::Control_Click( 15 )
+         ON CHANGE ::ControlClick( 15 )
 
       @ 145, 00 CHECKBUTTON Control_16 ;
          PICTURE "IDE_PLAYER" ;
@@ -931,7 +932,7 @@ LOCAL nPos, cName
          WIDTH 28 ;
          HEIGHT 28 ;
          TOOLTIP "Player" ;
-         ON CHANGE ::Control_Click( 16 )
+         ON CHANGE ::ControlClick( 16 )
 
       @ 145, 29 CHECKBUTTON Control_17 ;
          PICTURE "IDE_PROGRESSBAR" ;
@@ -939,7 +940,7 @@ LOCAL nPos, cName
          WIDTH 28 ;
          HEIGHT 28 ;
          TOOLTIP "ProgressBar" ;
-         ON CHANGE ::Control_Click( 17 )
+         ON CHANGE ::ControlClick( 17 )
 
       @ 145, 58 CHECKBUTTON Control_18 ;
          PICTURE "IDE_RADIOGROUP" ;
@@ -947,7 +948,7 @@ LOCAL nPos, cName
          WIDTH 28 ;
          HEIGHT 28 ;
          TOOLTIP "RadioGroup" ;
-         ON CHANGE ::Control_Click( 18 )
+         ON CHANGE ::ControlClick( 18 )
 
       @ 174, 00 CHECKBUTTON Control_19 ;
          PICTURE "IDE_SLIDER" ;
@@ -955,7 +956,7 @@ LOCAL nPos, cName
          WIDTH 28 ;
          HEIGHT 28 ;
          TOOLTIP "Slider" ;
-         ON CHANGE ::Control_Click( 19 )
+         ON CHANGE ::ControlClick( 19 )
 
       @ 174, 29 CHECKBUTTON Control_20 ;
          PICTURE "IDE_SPINNER" ;
@@ -963,7 +964,7 @@ LOCAL nPos, cName
          WIDTH 28 ;
          HEIGHT 28 ;
          TOOLTIP "Spinner" ;
-         ON CHANGE ::Control_Click( 20 )
+         ON CHANGE ::ControlClick( 20 )
 
       @ 174, 58 CHECKBUTTON Control_21 ;
          PICTURE "IDE_IMAGECHECKBUTTON" ;
@@ -971,7 +972,7 @@ LOCAL nPos, cName
          WIDTH 28 ;
          HEIGHT 28 ;
          TOOLTIP "Picture CheckButton" ;
-         ON CHANGE ::Control_Click( 21 )
+         ON CHANGE ::ControlClick( 21 )
 
       @ 203, 00 CHECKBUTTON Control_22 ;
          PICTURE "IDE_IMAGEBUTTON" ;
@@ -979,7 +980,7 @@ LOCAL nPos, cName
          WIDTH 28 ;
          HEIGHT 28 ;
          TOOLTIP "Picture Button" ;
-         ON CHANGE ::Control_Click( 22 )
+         ON CHANGE ::ControlClick( 22 )
 
       @ 203, 29 CHECKBUTTON Control_23 ;
          PICTURE "IDE_TIMER" ;
@@ -987,7 +988,7 @@ LOCAL nPos, cName
          WIDTH 28 ;
          HEIGHT 28 ;
          TOOLTIP "Timer" ;
-         ON CHANGE ::Control_Click( 23 )
+         ON CHANGE ::ControlClick( 23 )
 
       @ 203, 58 CHECKBUTTON Control_24 ;
          PICTURE "IDE_BROWSE" ;
@@ -995,7 +996,7 @@ LOCAL nPos, cName
          WIDTH 28 ;
          HEIGHT 28 ;
          TOOLTIP "Browse" ;
-         ON CHANGE ::Control_Click( 24 )
+         ON CHANGE ::ControlClick( 24 )
 
       @ 232, 00 CHECKBUTTON Control_25 ;
          PICTURE "IDE_TREE" ;
@@ -1003,7 +1004,7 @@ LOCAL nPos, cName
          WIDTH 28 ;
          HEIGHT 28 ;
          TOOLTIP "Tree" ;
-         ON CHANGE ::Control_Click( 25 )
+         ON CHANGE ::ControlClick( 25 )
 
       @ 232, 29 CHECKBUTTON Control_26 ;
          PICTURE "IDE_IPAD" ;
@@ -1011,7 +1012,7 @@ LOCAL nPos, cName
          WIDTH 28 ;
          HEIGHT 28 ;
          TOOLTIP "IPAddress" ;
-         ON CHANGE ::Control_Click( 26 )
+         ON CHANGE ::ControlClick( 26 )
 
       @ 232, 58 CHECKBUTTON Control_27 ;
          PICTURE "IDE_MONTHCAL" ;
@@ -1019,7 +1020,7 @@ LOCAL nPos, cName
          WIDTH 28 ;
          HEIGHT 28 ;
          TOOLTIP "MonthCalendar" ;
-         ON CHANGE ::Control_Click( 27 )
+         ON CHANGE ::ControlClick( 27 )
 
       @ 261, 00 CHECKBUTTON Control_28 ;
          PICTURE "IDE_HYPLINK" ;
@@ -1027,7 +1028,7 @@ LOCAL nPos, cName
          WIDTH 28 ;
          HEIGHT 28 ;
          TOOLTIP "HyperLink" ;
-         ON CHANGE ::Control_Click( 28 )
+         ON CHANGE ::ControlClick( 28 )
 
       @ 261, 29 CHECKBUTTON Control_29 ;
          PICTURE "IDE_RICHEDIT" ;
@@ -1035,7 +1036,7 @@ LOCAL nPos, cName
          WIDTH 28 ;
          HEIGHT 28 ;
          TOOLTIP "RichEditBox" ;
-         ON CHANGE ::Control_Click( 29 )
+         ON CHANGE ::ControlClick( 29 )
 
       @ 261, 58 CHECKBUTTON Control_30 ;
          PICTURE "IDE_TIMEP" ;
@@ -1043,7 +1044,7 @@ LOCAL nPos, cName
          WIDTH 28 ;
          HEIGHT 28 ;
          TOOLTIP "TimePicker" ;
-         ON CHANGE ::Control_Click( 30 )
+         ON CHANGE ::ControlClick( 30 )
 
       @ 290, 00 CHECKBUTTON Control_31 ;
          PICTURE "IDE_XBROWSE" ;
@@ -1051,7 +1052,7 @@ LOCAL nPos, cName
          WIDTH 28 ;
          HEIGHT 28 ;
          TOOLTIP "XBrowse" ;
-         ON CHANGE ::Control_Click( 31 )
+         ON CHANGE ::ControlClick( 31 )
 
       @ 290, 29 CHECKBUTTON Control_32 ;
          PICTURE "IDE_ACTIVEX" ;
@@ -1059,7 +1060,7 @@ LOCAL nPos, cName
          WIDTH 28 ;
          HEIGHT 28 ;
          TOOLTIP "ActiveX" ;
-         ON CHANGE ::Control_Click( 32 )
+         ON CHANGE ::ControlClick( 32 )
 
       @ 290, 58 CHECKBUTTON Control_33 ;
          PICTURE "IDE_CHECKLIST" ;
@@ -1067,7 +1068,7 @@ LOCAL nPos, cName
          WIDTH 28 ;
          HEIGHT 28 ;
          TOOLTIP "CheckList" ;
-         ON CHANGE ::Control_Click( 33 )
+         ON CHANGE ::ControlClick( 33 )
 
       @ 319, 00 CHECKBUTTON Control_34 ;
          PICTURE "IDE_HKB" ;
@@ -1075,7 +1076,7 @@ LOCAL nPos, cName
          WIDTH 28 ;
          HEIGHT 28 ;
          TOOLTIP "HotKeyBox" ;
-         ON CHANGE ::Control_Click( 34 )
+         ON CHANGE ::ControlClick( 34 )
 
       @ 319, 29 CHECKBUTTON Control_35 ;
          PICTURE "IDE_PICTURE" ;
@@ -1083,7 +1084,7 @@ LOCAL nPos, cName
          WIDTH 28 ;
          HEIGHT 28 ;
          TOOLTIP "Picture" ;
-         ON CHANGE ::Control_Click( 35 )
+         ON CHANGE ::ControlClick( 35 )
 
       @ 319, 58 CHECKBUTTON Control_36 ;
          PICTURE "IDE_METER" ;
@@ -1091,7 +1092,7 @@ LOCAL nPos, cName
          WIDTH 28 ;
          HEIGHT 28 ;
          TOOLTIP "ProgressMeter" ;
-         ON CHANGE ::Control_Click( 36 )
+         ON CHANGE ::ControlClick( 36 )
 
       @ 348, 00 CHECKBUTTON Control_37 ;
          PICTURE "IDE_SCRLLBR" ;
@@ -1099,7 +1100,7 @@ LOCAL nPos, cName
          WIDTH 28 ;
          HEIGHT 28 ;
          TOOLTIP "ScrollBar" ;
-         ON CHANGE ::Control_Click( 37 )
+         ON CHANGE ::ControlClick( 37 )
 
       @ 348, 29 CHECKBUTTON Control_38 ;
          PICTURE "IDE_ATEXT" ;
@@ -1107,9 +1108,17 @@ LOCAL nPos, cName
          WIDTH 28 ;
          HEIGHT 28 ;
          TOOLTIP "TextArray" ;
-         ON CHANGE ::Control_Click( 38 )
+         ON CHANGE ::ControlClick( 38 )
 
-      @ 348, 58 CHECKBUTTON Control_Stabusbar ;
+      @ 348, 58 CHECKBUTTON Control_39 ;
+         PICTURE "IDE_GIF" ;
+         VALUE .F. ;
+         WIDTH 28 ;
+         HEIGHT 28 ;
+         TOOLTIP "Animated GIF" ;
+         ON CHANGE ::ControlClick( 39 )
+
+      @ 377, 00 CHECKBUTTON Control_Statusbar ;
          PICTURE "IDE_STATBAR" ;
          VALUE .F. ;
          WIDTH 28 ;
@@ -1167,7 +1176,7 @@ RETURN Nil
 METHOD Open( cFMG, lWait )  CLASS TFormEditor
 //------------------------------------------------------------------------------
 LOCAL i, nContLin, cFormTxt, cName, cType, cLine, cSkip := "", lAdd, nPos
-LOCAL aTypes := { "ACTIVEX", "ANIMATEBOX", "BROWSE", "BUTTON", "CHECKBOX", ;
+LOCAL aTypes := { "ACTIVEX", "ANIGIF", "ANIMATEBOX", "BROWSE", "BUTTON", "CHECKBOX", ;
                   "CHECKBUTTON", "CHECKLIST", "COMBOBOX", "DATEPICKER", ;
                   "EDITBOX", "FRAME", "GRID", "HOTKEYBOX", "HYPERLINK", ;
                   "IMAGE", "IPADDRESS", "LABEL", "LISTBOX", "MONTHCALENDAR", ;
@@ -1212,8 +1221,8 @@ LOCAL aTypes := { "ACTIVEX", "ANIMATEBOX", "BROWSE", "BUTTON", "CHECKBOX", ;
       ::oCtrlList:ColumnHide( 6 )
 
       DEFINE CONTEXT MENU CONTROL ( ::oCtrlList:Name ) OF ( ::Form_List:Name ) OBJ ::oContextMenu
-         ITEM "Properties"             ACTION { |aParams| ::Edit_Properties( aParams ) }
-         ITEM "Events"                 ACTION ::Events_Click()
+         ITEM "Properties"             ACTION { |aParams| ::EditProperties( aParams ) }
+         ITEM "Events"                 ACTION ::EventsClick()
          ITEM "Font/Colors"            ACTION ::CtrlFontColors()
          ITEM "Manual Move/Size"       ACTION ::ManualMoveSize( 1 )
          ITEM "Interactive Move"       ACTION ::MoveControl()
@@ -1520,7 +1529,7 @@ LOCAL aTypes := { "ACTIVEX", "ANIMATEBOX", "BROWSE", "BUTTON", "CHECKBOX", ;
       NOSHOW ;
       ON RCLICK ::AddControl() ;
       ON MOUSECLICK ::AddControl() ;
-      ON DBLCLICK ::Properties_Click() ;
+      ON DBLCLICK ::PropertiesClick() ;
       ON MOUSEMOVE ::MouseTrack() ;
       ON MOUSEDRAG ::MouseMoveSize() ;
       ON GOTFOCUS ::DrawPoints() ;
@@ -1532,8 +1541,8 @@ LOCAL aTypes := { "ACTIVEX", "ANIMATEBOX", "BROWSE", "BUTTON", "CHECKBOX", ;
                    IIF( ::oCtrlList:ItemCount > 0, ::oCtrlList:Value := { 1 }, NIL ) }
 
       DEFINE CONTEXT MENU
-         ITEM "Properties"             ACTION ::Properties_Click()
-         ITEM "Events"                 ACTION ::Events_Click()
+         ITEM "Properties"             ACTION ::PropertiesClick()
+         ITEM "Events"                 ACTION ::EventsClick()
          ITEM "Font/Colors"            ACTION ::CtrlFontColors()
          ITEM "Manual Move/Size"       ACTION ::ManualMoveSize( 1 )
          ITEM "Interactive Move"       ACTION ::MoveControl()
@@ -1603,7 +1612,7 @@ LOCAL cName, aFntClr
       NOSHOW ;
       ON RCLICK ::AddControl() ;
       ON MOUSECLICK ::AddControl() ;
-      ON DBLCLICK ::Properties_Click() ;
+      ON DBLCLICK ::PropertiesClick() ;
       ON MOUSEMOVE ::MouseTrack() ;
       ON MOUSEDRAG ::MouseMoveSize() ;
       ON GOTFOCUS ::DrawPoints() ;
@@ -1615,8 +1624,8 @@ LOCAL cName, aFntClr
       NOMINIMIZE
 
       DEFINE CONTEXT MENU
-         ITEM "Properties"             ACTION ::Properties_Click()
-         ITEM "Events"                 ACTION ::Events_Click()
+         ITEM "Properties"             ACTION ::PropertiesClick()
+         ITEM "Events"                 ACTION ::EventsClick()
          ITEM "Font/Colors"            ACTION ::CtrlFontColors()
          ITEM "Manual Move/Size"       ACTION ::ManualMoveSize( 1 )
          ITEM "Interactive Move"       ACTION ::MoveControl()
@@ -1678,8 +1687,8 @@ LOCAL cName, aFntClr
       ::oCtrlList:ColumnHide( 6 )
 
       DEFINE CONTEXT MENU CONTROL ( ::oCtrlList:Name ) OF ( ::Form_List:Name ) OBJ ::oContextMenu
-         ITEM "Properties"             ACTION { |aParams| ::Edit_Properties( aParams ) }
-         ITEM "Events"                 ACTION ::Events_Click()
+         ITEM "Properties"             ACTION { |aParams| ::EditProperties( aParams ) }
+         ITEM "Events"                 ACTION ::EventsClick()
          ITEM "Font/Colors"            ACTION ::CtrlFontColors()
          ITEM "Manual Move/Size"       ACTION ::ManualMoveSize( 1 )
          ITEM "Interactive Move"       ACTION ::MoveControl()
@@ -1805,7 +1814,7 @@ LOCAL cName, CurrentPage, j, aCaptions, i
       FOR i := 2 TO ::nControlW
          IF ! Empty( ::aControlW[i] ) .AND. ::aTabPage[i, 2] == 0
             IF ! ::aControlW[i] $ "statusbar mainmenu contextmenu notifymenu"
-               IF ! ::FormCtrlOrder:CheckBtn_Filter:Value .OR. ! ::aCtrlType[i] $ "LABEL FRAME TIMER IMAGE PICTURE ACTIVEX PROGRESSBAR PROGRESSMETER ANIMATE"
+               IF ! ::FormCtrlOrder:CheckBtn_Filter:Value .OR. ! ::aCtrlType[i] $ "LABEL FRAME TIMER IMAGE PICTURE ACTIVEX PROGRESSBAR PROGRESSMETER ANIMATE ANIGIF"
                   ::FormCtrlOrder:List_Ctrls:AddItem( ::aName[i] )
                ENDIF
             ENDIF
@@ -1827,7 +1836,7 @@ LOCAL cName, CurrentPage, j, aCaptions, i
                  ::FormCtrlOrder:List_Ctrls:AddItem( "page " + aCaptions[CurrentPage] )
                ENDDO
             ENDIF
-            IF ! ::FormCtrlOrder:CheckBtn_Filter:Value .OR. ! ::aCtrlType[i] $ "LABEL FRAME TIMER IMAGE PICTURE ACTIVEX PROGRESSBAR PROGRESSMETER ANIMATE"
+            IF ! ::FormCtrlOrder:CheckBtn_Filter:Value .OR. ! ::aCtrlType[i] $ "LABEL FRAME TIMER IMAGE PICTURE ACTIVEX PROGRESSBAR PROGRESSMETER ANIMATE ANIGIF"
                ::FormCtrlOrder:List_Ctrls:AddItem( "      " + ::aName[i] )
             ENDIF
          ENDIF
@@ -1842,7 +1851,7 @@ LOCAL cName, CurrentPage, j, aCaptions, i
 RETURN NIL
 
 //------------------------------------------------------------------------------
-METHOD Order_Up() CLASS TFormEditor
+METHOD OrderUp() CLASS TFormEditor
 //------------------------------------------------------------------------------
 LOCAL t, iabajo, iarriba, cControl1, cControl2, iPosicion1, iPosicion2
 
@@ -1872,7 +1881,7 @@ LOCAL t, iabajo, iarriba, cControl1, cControl2, iPosicion1, iPosicion2
 RETURN NIL
 
 //------------------------------------------------------------------------------
-METHOD Order_Down() CLASS TFormEditor
+METHOD OrderDown() CLASS TFormEditor
 //------------------------------------------------------------------------------
 LOCAL t, iDown, iUp, cControl1, cControl2, iPos1, iPos2
 
@@ -2199,8 +2208,9 @@ LOCAL ia, si, cName, FormFontColor
          FormFontColor:label_1:Value := "Control: " + ::aName[si]
          IF ::aCtrlType[si] $ "PROGRESSBAR PROGRESSMETER"
             FormFontColor:label_2:Visible := .T.
-         ELSEIF ::aCtrlType[si] $ "IMAGE PICTURE PICCHECKBUTT PICBUTT SLIDER"
+         ELSEIF ::aCtrlType[si] $ "IMAGE PICTURE PICCHECKBUTT PICBUTT SLIDER ANIGIF"
             FormFontColor:button_101:Visible := .F.
+            FormFontColor:button_108:Visible := .F.
          ELSEIF ::aCtrlType[si] == "MONTHCALENDAR"
             FormFontColor:button_103:Visible := .T.
             FormFontColor:btn_TtlBckClr:Visible := .T.
@@ -2507,11 +2517,13 @@ RETURN NIL
 METHOD VerifyBar() CLASS TFormEditor
 //------------------------------------------------------------------------------
    IF ::lSStat
-      ::cvcControls:Control_Stabusbar:Visible := .F.
+      ::cvcControls:Control_Statusbar:Visible := .F.
+      ::cvcControls:ClientHeight := 377
       ::lSStat := .F.
       ::oDesignForm:Statusbar:Release()
    ELSE
-      ::cvcControls:Control_Stabusbar:Visible := .T.
+      ::cvcControls:Control_Statusbar:Visible := .T.
+      ::cvcControls:ClientHeight := (377 + 29)
       ::lSStat := .T.
       ::CreateStatusBar()
    ENDIF
@@ -2571,7 +2583,7 @@ LOCAL cTitle, aLabels, aInitValues, aFormats, aResults
    aFormats    := { NIL,                      31,      .F.,    .F.,             250,             NIL,                       250,         250,       250,        250,      250,       250,         250,       NIL,                .F.,      "9999",     250,         250,          { "FLAT", "RAISED", "NONE" },                                        { "CENTER", "LEFT", "RIGHT", "NONE" },                                                                NIL,                 .F.,      "9999",     250,         250,          250,        .F.,       { "FLAT", "RAISED", "NONE" },                                        { "CENTER", "LEFT", "RIGHT", "NONE" },                                                                NIL,                    .T.,          "9999",     250,         250,          250,        { "FLAT", "RAISED", "NONE" },                                        { "CENTER", "LEFT", "RIGHT", "NONE" } }
    aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats, {|| ::SetFontType( -1 ) }, {|| ::SetDefaultFontType( -1 ) } )
    IF aResults[1] == NIL
-      ::Control_Click( 1 )
+      ::ControlClick( 1 )
       RETURN NIL
    ENDIF
 
@@ -2612,7 +2624,7 @@ LOCAL cTitle, aLabels, aInitValues, aFormats, aResults
    ::CreateStatusBar()
 
    ::lFSave := .F.
-   ::Control_Click( 1 )
+   ::ControlClick( 1 )
 RETURN NIL
 
 //------------------------------------------------------------------------------
@@ -3873,6 +3885,11 @@ LOCAL nWidth := NIL, nHeight := NIL
          nWidth  := 100
          nHeight := 100
 
+      CASE ::CurrentControl == 39
+         // "ANIGIF"
+         nWidth  := 100
+         nHeight := 100
+
       ENDCASE
 
       oNewCtrl := ::CreateControl( ::CurrentControl, ::nControlW, nWidth, nHeight, NIL )
@@ -3911,7 +3928,7 @@ LOCAL nWidth := NIL, nHeight := NIL
       ENDIF
 
       ::RefreshControlInspector()
-      ::Control_Click( 1 )
+      ::ControlClick( 1 )
       ::oCtrlList:SetFocus()
       ::oCtrlList:Value := { ::oCtrlList:ItemCount }
       oNewCtrl:SetFocus()
@@ -3963,7 +3980,7 @@ LOCAL cName, oCtrl, aImages, aItems, nMin, nMax, j, aCaptions, nCnt, oPage, lRed
       ENDIF
       oCtrl:OnClick    := { || ::DrawOutline( oCtrl ) }
       oCtrl:OnRClick   := { || ::DrawOutline( oCtrl ) }
-      oCtrl:OnDblClick := { || ::Properties_Click() }
+      oCtrl:OnDblClick := { || ::PropertiesClick() }
 
    CASE nControlType == 3            // "CHECKBOX"
 /*
@@ -3995,7 +4012,7 @@ LOCAL cName, oCtrl, aImages, aItems, nMin, nMax, j, aCaptions, nCnt, oPage, lRed
       ENDIF
       oCtrl:OnChange   := { || ::DrawOutline( oCtrl ) }
       oCtrl:OnRClick   := { || ::DrawOutline( oCtrl ) }
-      oCtrl:OnDblClick := { || ::Properties_Click() }
+      oCtrl:OnDblClick := { || ::PropertiesClick() }
 
    CASE nControlType == 4            // "LIST"
 /*
@@ -4043,7 +4060,7 @@ LOCAL cName, oCtrl, aImages, aItems, nMin, nMax, j, aCaptions, nCnt, oPage, lRed
       ENDIF
       oCtrl:OnClick    := { || ::DrawOutline( oCtrl ) }
       oCtrl:OnRClick   := { || ::DrawOutline( oCtrl ) }
-      oCtrl:OnDblClick := { || ::Properties_Click() }
+      oCtrl:OnDblClick := { || ::PropertiesClick() }
 
    CASE nControlType == 5            // "COMBO"
 /*
@@ -4087,7 +4104,7 @@ TODO: GripperText, Delay
       ENDIF
       oCtrl:OnClick    := { || ::DrawOutline( oCtrl ) }
       oCtrl:OnRClick   := { || ::DrawOutline( oCtrl ) }
-      oCtrl:OnDblClick := { || ::Properties_Click() }
+      oCtrl:OnDblClick := { || ::PropertiesClick() }
 
    CASE nControlType == 6            // "CHECKBTN"
 /*
@@ -4120,7 +4137,7 @@ TODO: GripperText, Delay
       ENDIF
       oCtrl:OnClick    := { || ::DrawOutline( oCtrl ) }
       oCtrl:OnRClick   := { || ::DrawOutline( oCtrl ) }
-      oCtrl:OnDblClick := { || ::Properties_Click() }
+      oCtrl:OnDblClick := { || ::PropertiesClick() }
 
    CASE nControlType == 7            // "GRID"
 /*
@@ -4190,7 +4207,7 @@ TODO: GripperText, Delay
       ENDIF
       oCtrl:OnClick     := { || ::DrawOutline( oCtrl ) }
       oCtrl:OnRClick    := { || oCtrl:SetFocus(), ::DrawOutline( oCtrl ), ::oCtrlList:SetFocus(), ::oContextMenu:Activate() }
-      oCtrl:OnDblClick  := { || ::DrawOutline( oCtrl ), ::Properties_Click() }
+      oCtrl:OnDblClick  := { || ::DrawOutline( oCtrl ), ::PropertiesClick() }
       oCtrl:aHeadClick  := { { || ::DrawOutline( oCtrl ) }, { || ::DrawOutline( oCtrl ) } }
       oCtrl:bHeadRClick := { || oCtrl:SetFocus(), ::DrawOutline( oCtrl ), ::oCtrlList:SetFocus(), ::oContextMenu:Activate() }
 
@@ -4259,7 +4276,7 @@ TODO: GripperText, Delay
       oCtrl:Value := ::aValueN[i]
 // TODO: seleccionar el tab cuando se hace click en la página
       oCtrl:OnClick  := { || ::DrawOutline( oCtrl ) }
-      oCtrl:OnRClick := { || ::DrawOutline( oCtrl ), ::Properties_Click() }
+      oCtrl:OnRClick := { || ::DrawOutline( oCtrl ), ::PropertiesClick() }
 
    CASE nControlType == 10           // "IMAGE"
 /*
@@ -4282,7 +4299,7 @@ TODO: GripperText, Delay
       ENDIF
 // TODO: Check action event
       oCtrl:OnRClick   := { || ::DrawOutline( oCtrl ) }
-      oCtrl:OnDblClick := { || ::Properties_Click() }
+      oCtrl:OnDblClick := { || ::PropertiesClick() }
 
    CASE nControlType == 11           // "ANIMATE"
 /*
@@ -4302,7 +4319,7 @@ TODO: GripperText, Delay
                   .F., NIL, .F. )
       oCtrl:OnClick    := { || ::DrawOutline( oCtrl ) }
       oCtrl:OnRClick   := { || ::DrawOutline( oCtrl ) }
-      oCtrl:OnDblClick := { || ::Properties_Click() }
+      oCtrl:OnDblClick := { || ::PropertiesClick() }
 
    CASE nControlType == 12           // "DATEPICKER"
 /*
@@ -4363,7 +4380,7 @@ TODO: GripperText, Delay
       IF IsValidArray( ::aBackColor[i] )
          oCtrl:BackColor := &( ::aBackColor[i] )
       ENDIF
-      oCtrl:OnDblClick := { || ::Properties_Click() }
+      oCtrl:OnDblClick := { || ::PropertiesClick() }
 
    CASE nControlType == 14           // "EDIT"
 /*
@@ -4397,7 +4414,7 @@ TODO: GripperText, Delay
          oCtrl:BackColor := &( ::aBackColor[i] )
       ENDIF
       oCtrl:OnRClick   := { || ::DrawOutline( oCtrl ) }
-      oCtrl:OnDblClick := { || ::Properties_Click() }
+      oCtrl:OnDblClick := { || ::PropertiesClick() }
 
    CASE nControlType == 15           // "LABEL"
       oCtrl := TLabel():Define( cName, ::oDesignForm:Name, ;
@@ -4423,7 +4440,7 @@ TODO: GripperText, Delay
       ENDIF
       oCtrl:OnClick    := { || ::DrawOutline( oCtrl ) }
       oCtrl:OnRClick   := { || ::DrawOutline( oCtrl ) }
-      oCtrl:OnDblClick := { || ::Properties_Click() }
+      oCtrl:OnDblClick := { || ::PropertiesClick() }
 
    CASE nControlType == 16           // "PLAYER"
       oCtrl := TLabel():Define( cName, ::oDesignForm:Name, ;
@@ -4437,7 +4454,7 @@ TODO: GripperText, Delay
                   .F., NIL, .F. )
       oCtrl:OnClick    := { || ::DrawOutline( oCtrl ) }
       oCtrl:OnRClick   := { || ::DrawOutline( oCtrl ) }
-      oCtrl:OnDblClick := { || ::Properties_Click() }
+      oCtrl:OnDblClick := { || ::PropertiesClick() }
 
    CASE nControlType == 17           // "PROGRESSBAR"
       IF ( j := At( ",", ::aRange[i] ) ) > 0
@@ -4464,7 +4481,7 @@ TODO: GripperText, Delay
       oCtrl:OnClick    := { || ::DrawOutline( oCtrl ) }
       oCtrl:OnRClick   := { || ::DrawOutline( oCtrl ) }
       oCtrl:Value      := ::aName[i]
-      oCtrl:OnDblClick := { || ::Properties_Click() }   
+      oCtrl:OnDblClick := { || ::PropertiesClick() }
 
    CASE nControlType == 18           // "RADIOGROUP"
       oCtrl := myTRadioGroup():Define( cName, ::oDesignForm:Name, ;
@@ -4493,7 +4510,7 @@ TODO: GripperText, Delay
       ENDIF
       oCtrl:OnClick    := { || ::DrawOutline( oCtrl ) }
       oCtrl:OnRClick   := { || ::DrawOutline( oCtrl ) }
-      oCtrl:OnDblClick := { || ::Properties_Click() }
+      oCtrl:OnDblClick := { || ::PropertiesClick() }
 
    CASE nControlType == 19           // "SLIDER"
       IF ( j := At( ",", ::aRange[i] ) ) > 0
@@ -4516,7 +4533,7 @@ TODO: GripperText, Delay
          oCtrl:BackColor := &( ::aBackColor[i] )
       ENDIF
       oCtrl:OnRClick   := { || ::DrawOutline( oCtrl ) }
-      oCtrl:OnDblClick := { || ::Properties_Click() }
+      oCtrl:OnDblClick := { || ::PropertiesClick() }
 
    CASE nControlType == 20           // "SPINNER"
       IF ( j := At( ",", ::aRange[i] ) ) > 0
@@ -4553,7 +4570,7 @@ TODO: GripperText, Delay
          oCtrl:BackColor := &( ::aBackColor[i] )
       ENDIF
       oCtrl:OnRClick   := { || ::DrawOutline( oCtrl ) }
-      oCtrl:OnDblClick := { || ::Properties_Click() }  
+      oCtrl:OnDblClick := { || ::PropertiesClick() }
 
    CASE nControlType == 21           // "PICCHECKBUTT"
       oCtrl := TButtonCheck():Define( cName, ::oDesignForm:Name, ;
@@ -4569,7 +4586,7 @@ TODO: GripperText, Delay
          oCtrl:BackColor := &( ::aBackColor[i] )
       ENDIF
       oCtrl:OnRClick := { || ::DrawOutline( oCtrl ) }
-      oCtrl:OnDblClick := { || ::Properties_Click() }
+      oCtrl:OnDblClick := { || ::PropertiesClick() }
 
    CASE nControlType == 22           // "PICBUTT"
       oCtrl := TButton(): Define( cName, ::oDesignForm:Name, ;
@@ -4590,7 +4607,7 @@ TODO: GripperText, Delay
       IF IsValidArray( ::aBackColor[i] )
          oCtrl:BackColor := &( ::aBackColor[i] )
       ENDIF
-      oCtrl:OnDblClick := { || ::Properties_Click() }
+      oCtrl:OnDblClick := { || ::PropertiesClick() }
 
    CASE nControlType == 23           // "TIMER"
       oCtrl := TLabel():Define( cName, ::oDesignForm:Name, ;
@@ -4604,7 +4621,7 @@ TODO: GripperText, Delay
                   .F., NIL, .F. )
       oCtrl:OnClick    := { || ::DrawOutline( oCtrl ) }
       oCtrl:OnRClick   := { || ::DrawOutline( oCtrl ) }
-      oCtrl:OnDblClick := { || ::Properties_Click() }
+      oCtrl:OnDblClick := { || ::PropertiesClick() }
 
    CASE nControlType == 24           // "BROWSE"
       oCtrl := TGrid():Define( cName, ::oDesignForm:Name, ;
@@ -4633,7 +4650,7 @@ TODO: GripperText, Delay
          oCtrl:BackColor := &( ::aBackColor[i] )
       ENDIF
       oCtrl:OnRClick   := { || ::DrawOutline( oCtrl ) }
-      oCtrl:OnDblClick := { || ::Properties_Click() }
+      oCtrl:OnDblClick := { || ::PropertiesClick() }
 
    CASE nControlType == 25           // "TREE"
       oCtrl := TTree():Define( cName, ::oDesignForm:Name, ;
@@ -4667,7 +4684,7 @@ TODO: GripperText, Delay
       IF IsValidArray( ::aBackColor[i] )
          oCtrl:BackColor := &( ::aBackColor[i] )
       ENDIF
-      oCtrl:OnDblClick := { || ::Properties_Click() }    
+      oCtrl:OnDblClick := { || ::PropertiesClick() }
 
    CASE nControlType == 26           // "IPADDRESS"
       oCtrl := TLabel():Define( cName, ::oDesignForm:Name, ;
@@ -4695,7 +4712,7 @@ TODO: GripperText, Delay
       ENDIF
       oCtrl:OnClick    := { || ::DrawOutline( oCtrl ) }
       oCtrl:OnRClick   := { || ::DrawOutline( oCtrl ) }
-      oCtrl:OnDblClick := { || ::Properties_Click() }
+      oCtrl:OnDblClick := { || ::PropertiesClick() }
 
    CASE nControlType == 27           // "MONTHCALENDAR"
 /*
@@ -4740,7 +4757,7 @@ TODO: GripperText, Delay
          oCtrl:BackgroundColor := &( ::aBackgroundColor[i] )
       ENDIF
       oCtrl:OnGotFocus := { || ::DrawOutline( oCtrl ) }                                   // TODO: en todos los controles, falta rclick
-      oCtrl:OnDblClick := { || ::Properties_Click() }
+      oCtrl:OnDblClick := { || ::PropertiesClick() }
 
    CASE nControlType == 28           // "HYPERLINK"
       oCtrl := THyperLink():Define( cName, ::oDesignForm:Name, ;
@@ -4766,7 +4783,7 @@ TODO: GripperText, Delay
       ENDIF
       oCtrl:OnClick    := { || ::DrawOutline( oCtrl ) }
       oCtrl:OnRClick   := { || ::DrawOutline( oCtrl ) }
-      oCtrl:OnDblClick := { || ::Properties_Click() }
+      oCtrl:OnDblClick := { || ::PropertiesClick() }
 
    CASE nControlType == 29           // "RICHEDIT"
       oCtrl := TEditRich():Define( cName, ::oDesignForm:Name, ;
@@ -4792,7 +4809,7 @@ TODO: GripperText, Delay
          oCtrl:BackColor := &( ::aBackColor[i] )
       ENDIF
       oCtrl:OnRClick   := { || ::DrawOutline( oCtrl ) }
-      oCtrl:OnDblClick := { || ::Properties_Click() }
+      oCtrl:OnDblClick := { || ::PropertiesClick() }
 
    CASE nControlType == 30           // "TIMEPICKER"
       oCtrl := TTimePick():Define( cName, ::oDesignForm:Name, ;
@@ -4816,7 +4833,7 @@ TODO: GripperText, Delay
          oCtrl:BackColor := &( ::aBackColor[i] )
       ENDIF
       oCtrl:OnRClick   := { || ::DrawOutline( oCtrl ) }
-      oCtrl:OnDblClick := { || ::Properties_Click() }
+      oCtrl:OnDblClick := { || ::PropertiesClick() }
 
    CASE nControlType == 31           // "XBROWSE"
       oCtrl := TGrid():Define( cName, ::oDesignForm:Name, ;
@@ -4847,7 +4864,7 @@ TODO: GripperText, Delay
       ENDIF
       oCtrl:OnClick     := { || ::DrawOutline( oCtrl ) }
       oCtrl:OnRClick    := { || oCtrl:SetFocus(), ::DrawOutline( oCtrl ), ::oCtrlList:SetFocus(), ::oContextMenu:Activate() }
-      oCtrl:OnDblClick  := { || ::DrawOutline( oCtrl ), ::Properties_Click() }                                                    // TODO: NO FUNCIONA
+      oCtrl:OnDblClick  := { || ::DrawOutline( oCtrl ), ::PropertiesClick() }                                                    // TODO: NO FUNCIONA
       oCtrl:aHeadClick  := { { || ::DrawOutline( oCtrl ) }, { || ::DrawOutline( oCtrl ) } }
       oCtrl:bHeadRClick := { || oCtrl:SetFocus(), ::DrawOutline( oCtrl ), ::oCtrlList:SetFocus(), ::oContextMenu:Activate() }
 
@@ -4863,7 +4880,7 @@ TODO: GripperText, Delay
                   .F., NIL, .F. )
       oCtrl:OnClick    := { || ::DrawOutline( oCtrl ) }
       oCtrl:OnRClick   := { || ::DrawOutline( oCtrl ) }
-      oCtrl:OnDblClick := { || ::Properties_Click() }
+      oCtrl:OnDblClick := { || ::PropertiesClick() }
 
    CASE nControlType == 33           // "CHECKLIST"
       If IsValidArray( ::aImage[i] ) .AND. Len( &( ::aImage[i] ) ) > 0
@@ -4911,7 +4928,7 @@ TODO: GripperText, Delay
       IF IsValidArray( ::aBackColor[i] )
          oCtrl:BackColor := &( ::aBackColor[i] )
       ENDIF
-      oCtrl:OnDblClick := { || ::Properties_Click() }
+      oCtrl:OnDblClick := { || ::PropertiesClick() }
 
    CASE nControlType == 34           // "HOTKEYBOX"
       oCtrl := TLabel():Define( cName, ::oDesignForm:Name, ;
@@ -4937,7 +4954,7 @@ TODO: GripperText, Delay
       ENDIF
       oCtrl:OnClick    := { || ::DrawOutline( oCtrl ) }
       oCtrl:OnRClick   := { || ::DrawOutline( oCtrl ) }
-      oCtrl:OnDblClick := { || ::Properties_Click() }
+      oCtrl:OnDblClick := { || ::PropertiesClick() }
 
    CASE nControlType == 35           // "PICTURE"
       oCtrl := TPicture():Define( cName, ::oDesignForm:Name, ;
@@ -4953,7 +4970,7 @@ TODO: GripperText, Delay
          oCtrl:BackColor := &( ::aBackColor[i] )
       ENDIF
       oCtrl:OnRClick   := { || ::DrawOutline( oCtrl ) }
-      oCtrl:OnDblClick := { || ::Properties_Click() }
+      oCtrl:OnDblClick := { || ::PropertiesClick() }
 
    CASE nControlType == 36           // "PROGRESSMETER"
       IF ( j := At( ",", ::aRange[i] ) ) > 0
@@ -4986,7 +5003,7 @@ TODO: GripperText, Delay
       IF IsValidArray( ::aBackColor[i] )
          oCtrl:BackColor := &( ::aBackColor[i] )
       ENDIF
-      oCtrl:OnDblClick := { || ::Properties_Click() }
+      oCtrl:OnDblClick := { || ::PropertiesClick() }
 
    CASE nControlType == 37           // "SCROLLBAR"
       oCtrl := TScrollBar():Define( cName, ::oDesignForm:Name, ;
@@ -5001,7 +5018,7 @@ TODO: GripperText, Delay
                   .F., NIL, .F., NIL, NIL, .F. )
       oCtrl:OnRClick    := { || ::DrawOutline( oCtrl ) }
       oCtrl:ContextMenu := ::oContextMenu
-      oCtrl:OnDblClick := { || ::Properties_Click() }
+      oCtrl:OnDblClick := { || ::PropertiesClick() }
 
    CASE nControlType == 38           // "TEXTARRAY"
       oCtrl := TLabel():Define( cName, ::oDesignForm:Name, ;
@@ -5028,8 +5045,29 @@ TODO: GripperText, Delay
       ENDIF
       oCtrl:OnClick    := { || ::DrawOutline( oCtrl ) }
       oCtrl:OnRClick   := { || ::DrawOutline( oCtrl ) }
-      oCtrl:OnDblClick := { || ::Properties_Click() }
+      oCtrl:OnDblClick := { || ::PropertiesClick() }
 
+   CASE nControlType == 39           // "ANIGIF"
+/*
+      [ <obj> := ] _OOHG_SelectSubClass( TAniGIF(), [ <subclass>() ] ):Define( ;
+            <(name)>, <(parent)>, <col>, <row>, <filename>, <w>, <h>, ;
+            <{action}>, <helpid>, <.invisible.>, <.whitebackground.>, <.rtl.>, ;
+            <backcolor>, <tooltip>, <.border.>, <.clientedge.>, <.disabled.> )
+*/
+      oCtrl := TLabel():Define( cName, ::oDesignForm:Name, ;
+                  _OOHG_MouseCol, _OOHG_MouseRow, ;
+                  cName, nWidth, nHeight, ;
+                  NIL, NIL, .F., ::aBorder[i] .OR. ! ::aClientEdge[i], ;
+                  ::aClientEdge[i], .F.,.F., .F., WHITE, NIL, ;
+                  NIL, ::aToolTip[i], NIL, .F., ;
+                  .F., .F., .F., ;
+                  .F., .F., .F., ::aRTL[i], .F., .F., NIL, .F. )
+      IF IsValidArray( ::aBackColor[i] )
+         oCtrl:BackColor := &( ::aBackColor[i] )
+      ENDIF
+      oCtrl:OnClick    := { || ::DrawOutline( oCtrl ) }
+      oCtrl:OnRClick   := { || ::DrawOutline( oCtrl ) }
+      oCtrl:OnDblClick := { || ::PropertiesClick() }
    ENDCASE
 
    IF lRed
@@ -5136,20 +5174,20 @@ STATIC lBusy := .F.
 RETURN NIL
 
 //------------------------------------------------------------------------------
-METHOD Edit_Properties( aParams ) CLASS TFormEditor
+METHOD EditProperties( aParams ) CLASS TFormEditor
 //------------------------------------------------------------------------------
 LOCAL ia
 
    IF HB_IsArray( aParams ) .AND. Len( aParams ) > 0 .AND. aParams[1] > 0
       IF ( ia := aScan( ::oDesignForm:aControls, { |c| Lower( c:Name ) == ::oCtrlList:Cell( aParams[1], 6 ) } ) ) > 0
          ::DrawOutline( ::oDesignForm:aControls[ia] )
-         ::Properties_Click()
+         ::PropertiesClick()
       ENDIF
    ELSE
       ia := ::nHandleA
       IF ia > 0
          ::DrawOutline( ::oDesignForm:aControls[ia] )
-         ::Properties_Click()
+         ::PropertiesClick()
       ENDIF
    ENDIF
 RETURN NIL
@@ -5411,7 +5449,7 @@ LOCAL aItemsSel, nLen, i, cName, oCtrl, aInput, aControls, nRow, nCol, nHeight
             IF aInput[2] # 0
                oCtrl:Col := aInput[2]
             ENDIF
-            ::ProcesaControl( oCtrl )
+            ::ProcessControl( oCtrl )
             nRow := nRow + aInput[1] + nHeight
          NEXT
 
@@ -5445,7 +5483,7 @@ LOCAL wValue, cName, oCtrl
       oCtrl:Height := Val( ::oCtrlList:Cell( wValue, 5 ) )
    ENDCASE
 
-   ::ProcesaControl( oCtrl )
+   ::ProcessControl( oCtrl )
 RETURN NIL
 
 //------------------------------------------------------------------------------
@@ -5505,7 +5543,7 @@ LOCAL oCtrl, nHShift, nVShift, nLen, ia
               oCtrl:Row    := oCtrl:Row + aInput[2]
          ENDCASE
 
-         ::ProcesaControl( oCtrl )
+         ::ProcessControl( oCtrl )
       NEXT
 
       EraseWindow( ::oDesignForm:Name )
@@ -5609,7 +5647,7 @@ LOCAL nIndice, cObj, nCantItems
       nIndice   := aScan( ::aControlW, cName )
       cObj      := ::aCObj[nIndice]
 
-      IF Upper( cType ) $ "LABEL FRAME TIMER IMAGE PICTURE ACTIVEX PROGRESSBAR PROGRESSMETER ANIMATE" .AND. lDynamicOnly
+      IF Upper( cType ) $ "LABEL FRAME TIMER IMAGE PICTURE ACTIVEX PROGRESSBAR PROGRESSMETER ANIMATE ANIGIF" .AND. lDynamicOnly
       ELSE
          IF ! aInput[4]
             ContLin ++
@@ -5831,7 +5869,8 @@ LOCAL cToolTip, lCenter, lLeft, lRight, cCaption, nProcess
    FOR i := 1 TO Len( ::aLine )
       IF At( "DEFINE STATUSBAR", Upper( LTrim( ::aLine[i] ) ) ) == 1
          ::lSStat := .T.
-         ::cvcControls:Control_Stabusbar:Visible := .T.
+         ::cvcControls:Control_Statusbar:Visible := .T.
+         ::cvcControls:ClientHeight := (377 + 29)
 
          ::cSCObj         := ::ReadStringData( "DEFINE STATUSBAR", "OBJ", "" )
          ::lSTop          := ( ::ReadLogicalData( "DEFINE STATUSBAR", "TOP", "F" ) == "T" )
@@ -6160,6 +6199,8 @@ LOCAL cToolTip, lCenter, lLeft, lRight, cCaption, nProcess
          ::pPicButt( i )
       CASE cType == "IMAGE"
          ::pImage( i )
+      CASE cType == "ANIGIF"
+         ::pAniGIF( i )
       CASE cType == "ANIMATEBOX"
          ::pAnimateBox( i )
       CASE cType == "DATEPICKER"
@@ -6250,7 +6291,7 @@ LOCAL cToolTip, lCenter, lLeft, lRight, cCaption, nProcess
 RETURN NIL
 
 //------------------------------------------------------------------------------
-METHOD Control_Click( wpar ) CLASS TFormEditor
+METHOD ControlClick( wpar ) CLASS TFormEditor
 //------------------------------------------------------------------------------
 LOCAL cControl, i
 STATIC lIdle := .T.
@@ -6908,6 +6949,64 @@ LOCAL lEnabled, cSubClass, oCtrl
    ::aNoTabStop[i]   := lNoTabStop
    ::aVisible[i]     := lVisible
    ::aEnabled[i]     := lEnabled
+   ::aSubClass[i]    := cSubClass
+
+   // Create control
+   oCtrl     := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i, nWidth, nHeight, NIL )
+   oCtrl:Row := nRow
+   oCtrl:Col := nCol
+
+   ::AddCtrlToTabPage( i, nRow, nCol )
+RETURN NIL
+
+//------------------------------------------------------------------------------
+METHOD pAniGIF( i ) CLASS TFormEditor
+//------------------------------------------------------------------------------
+LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cAction, cFile
+LOCAL cToolTip, lBorder, lClientEdge, lVisible, lEnabled, nHelpId
+LOCAL aBackColor, lRTL, lWhiteBack, cSubClass, oCtrl
+
+   // Load properties
+   cName         := ::aControlW[i]
+   cObj          := ::ReadStringData( cName, 'OBJ', '' )
+   cObj          := ::ReadStringData( cName, 'OBJECT', cObj )
+   nRow          := Val( ::ReadCtrlRow( cName ) )
+   nCol          := Val( ::ReadCtrlCol( cName ) )
+   nWidth        := Val( ::ReadStringData( cName, 'WIDTH', LTrim( Str( TImage():nWidth ) ) ) )
+   nHeight       := Val( ::ReadStringData( cName, 'HEIGHT', LTrim( Str( TImage():nHeight ) ) ) )
+   cAction       := ::ReadStringData( cName, 'ACTION', '' )
+   cAction       := ::ReadStringData( cName, 'ON CLICK',cAction )
+   cAction       := ::ReadStringData( cName, 'ONCLICK', cAction )
+   cFile         := ::Clean( ::ReadStringData(cName, 'FILE', '' ) )
+   cToolTip      := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
+   cToolTip      := ::Clean( ::ReadOopData( cName, "TOOLTIP", cToolTip ) )
+   lBorder       := ( ::ReadLogicalData( cName, 'BORDER', 'F' ) == 'T' )
+   lClientEdge   := ( ::ReadLogicalData( cName, 'CLIENTEDGE', 'F') == 'T' )
+   lVisible      := ( ::ReadLogicalData( cName, 'INVISIBLE', 'F' ) == 'F' )
+   lVisible      := ( Upper( ::ReadOopData( cName, 'VISIBLE', IF( lVisible, '.T.', '.F.' ) ) ) == '.T.' )
+   lEnabled      := ( ::ReadLogicalData( cName, 'DISABLED', 'F' ) == 'F' )
+   lEnabled      := ( Upper( ::ReadOopData( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
+   nHelpId       := Val( ::ReadStringData( cName, 'HELPID', '0' ) )
+   aBackColor    := ::ReadStringData( cName, 'BACKCOLOR', 'NIL' )
+   aBackColor    := UpperNIL( ::ReadOopData( cName, 'BACKCOLOR', aBackColor ) )
+   lRTL          := ( ::ReadLogicalData( cName, 'RTL', 'F' ) == 'T' )
+   lWhiteBack    := ( ::ReadLogicalData( cName, 'WHITEBACKGROUND', 'F' ) == 'T' )
+   cSubClass     := ::ReadStringData( cName, 'SUBCLASS', '' )
+
+   // Save properties
+   ::aCtrlType[i]    := 'ANIGIF'
+   ::aCObj[i]        := cObj
+   ::aAction[i]      := cAction
+   ::aFile[i]        := cFile
+   ::aToolTip[i]     := cToolTip
+   ::aBorder[i]      := lBorder
+   ::aClientEdge[i]  := lClientEdge
+   ::aVisible[i]     := lVisible
+   ::aEnabled[i]     := lEnabled
+   ::aHelpID[i]      := nHelpid
+   ::aBackColor[i]   := aBackColor
+   ::aRTL[i]         := lRTL
+   ::aWhiteBack[i]   := lWhiteBack
    ::aSubClass[i]    := cSubClass
 
    // Create control
@@ -11048,7 +11147,7 @@ LOCAL nStartLine, nPageCount, i, nPos, cTabName
 RETURN NIL
 
 //------------------------------------------------------------------------------
-METHOD ProcesaControl( oControl ) CLASS TFormEditor
+METHOD ProcessControl( oControl ) CLASS TFormEditor
 //------------------------------------------------------------------------------
 LOCAL oPage, oTab, nPos
 
@@ -13387,6 +13486,56 @@ LOCAL cValue
          Output += CRLF + CRLF
       ENDIF
 
+      IF ::aCtrlType[j] == 'ANIGIF'
+         Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' ANIGIF ' + ::aName[j] + ' '
+         IF ! Empty( ::aCObj[j ] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
+         ENDIF
+         IF ! Empty( ::aAction[j] ) .AND. UpperNIL( ::aAction[j] ) # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ACTION ' + AllTrim( ::aAction[j] )
+         ENDIF
+         IF ! Empty( ::aFile[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FILE ' + StrToStr( ::aFile[j] )
+         ENDIF
+         IF nWidth > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WIDTH ' + LTrim( Str( nWidth ) )
+         ENDIF
+         IF nHeight > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HEIGHT ' + LTrim( Str( nHeight ) )
+         ENDIF
+         IF ::aHelpID[j] > 0
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
+         ENDIF
+         IF ! Empty( ::aToolTip[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
+         ENDIF
+         IF ::aBorder[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BORDER '
+         ENDIF
+         IF ::aClientEdge[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'CLIENTEDGE '
+         ENDIF
+         IF ! ::aVisible[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'INVISIBLE '
+         ENDIF
+         IF ! ::aEnabled[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
+         ENDIF
+         IF ::aBackColor[j] # 'NIL'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKCOLOR ' + ::aBackColor[j]
+         ENDIF
+         IF ::aRTL[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
+         ENDIF
+         IF ::aWhiteBack[j]
+           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WHITEBACKGROUND '
+         ENDIF
+         IF ! Empty( ::aSubClass[j] )
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'SUBCLASS ' + AllTrim( ::aSubClass[j] )
+         ENDIF
+         Output += CRLF + CRLF
+      ENDIF
+
       IF ::aCtrlType[j] == 'IMAGE'
          Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' IMAGE ' + ::aName[j] + ' '
          IF ! Empty( ::aCObj[j ] )
@@ -15669,7 +15818,7 @@ LOCAL cValue
 RETURN Output
 
 //------------------------------------------------------------------------------
-METHOD Properties_Click() CLASS TFormEditor
+METHOD PropertiesClick() CLASS TFormEditor
 //------------------------------------------------------------------------------
 LOCAL oControl, j, cTitle, aLabels, aInitValues, ia
 LOCAL aFormats, aResults
@@ -16003,7 +16152,7 @@ LOCAL aFormats, aResults
    IF ::aCtrlType[j] == 'LABEL'
       cTitle      := ::aName[j] + ' properties'
       aLabels     := { 'Name',     'Value',     'HelpID',     'Transparent',     'CenterAlign',     'RightAlign',     'ToolTip',     'AutoSize',     'Enabled',     'Visible',     'ClientEdge',     'Border',    'Obj',      'InputMask',      'HScroll',       'VScroll',       'RTL',     'NoWrap',   'NoPrefix',     'SubClass',     'VCenterAlign' }
-      aInitValues := { ::aName[j], ::aValue[j], ::aHelpID[j], ::aTransparent[j], ::acenteralign[j], ::aRightAlign[j], ::aToolTip[j], ::aAutoPlay[j], ::aEnabled[j], ::aVisible[j], ::aclientedge[j], ::aBorder[j], ::aCObj[j], ::aInputMask[j], ::aNoHScroll[j], ::aNoVScroll[j], ::aRTL[j], ::aWrap[j], ::aNoPrefix[j], ::aSubClass[j], ::aImagesAlign[j] }
+      aInitValues := { ::aName[j], ::aValue[j], ::aHelpID[j], ::aTransparent[j], ::acenteralign[j], ::aRightAlign[j], ::aToolTip[j], ::aAutoPlay[j], ::aEnabled[j], ::aVisible[j], ::aClientEdge[j], ::aBorder[j], ::aCObj[j], ::aInputMask[j], ::aNoHScroll[j], ::aNoVScroll[j], ::aRTL[j], ::aWrap[j], ::aNoPrefix[j], ::aSubClass[j], ::aImagesAlign[j] }
       aFormats    := { 30,         300,         '999',        .F.,               .F.,               .F.,              250,           .F.,            .F.,           .F.,           .F.,              .F.,          31,         1100,            .F.,             .F.,             .F.,       .F.,        .F.,            250,            .F. }
       aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
       IF aResults[1] == NIL
@@ -16130,7 +16279,7 @@ LOCAL aFormats, aResults
       ::aEnabled[j]          := aResults[06]
       ::aVisible[j]          := aResults[07]
       ::aflat[j]             := aResults[08]
-      ::apicture[j]          := aResults[09]
+      ::aPicture[j]          := aResults[09]
       ::ajustify[j]          := aResults[10]           // ALIGNMENT
       ::aCObj[j]             := aResults[11]
       ::aRTL[j]              := aResults[12]
@@ -16497,7 +16646,7 @@ LOCAL aFormats, aResults
    IF ::aCtrlType[j] == 'PICCHECKBUTT'
       cTitle      := ::aName[j] + ' properties'
       aLabels     := { 'Name',     'Value',      'Picture',     'ToolTip',     'HelpID',     'Enabled',     'Visible',     'NoTabStop',     'Obj',      'SubClass',     'Buffer',     'HBitmap',     'NoLoadTransparent', 'ForceScale',     'Field',     'No3DColors',     'AutoFit', 'DIBSection',     'Themed',                                                            'Flat',     'ImageMargin',     'Align' }
-      aInitValues := { ::aName[j], ::aValueL[j], ::apicture[j], ::aToolTip[j], ::aHelpID[j], ::aEnabled[j], ::aVisible[j], ::aNoTabStop[j], ::aCObj[j], ::aSubClass[j], ::aBuffer[j], ::aHBitmap[j], ::aNoLoadTrans[j],   ::aForceScale[j], ::aField[j], ::aNo3DColors[j], ::aFit[j], ::aDIBSection[j], IIF( ::aThemed[j] == '.T.', 1, IIF( ::aThemed[j] == '.F.', 2, 3 ) ), ::aFlat[j], ::aImageMargin[j],  IIF( ::aJustify[j] == 'BOTTOM',  1,  IIF( ::aJustify[j] == 'CENTER',  2,  IIF( ::aJustify[j] == 'LEFT',  3,  IIF( ::aJustify[j] == 'RIGHT',  4,  IIF( ::aJustify[j] == 'TOP',  5,  6 ) ) ) ) ) }
+      aInitValues := { ::aName[j], ::aValueL[j], ::aPicture[j], ::aToolTip[j], ::aHelpID[j], ::aEnabled[j], ::aVisible[j], ::aNoTabStop[j], ::aCObj[j], ::aSubClass[j], ::aBuffer[j], ::aHBitmap[j], ::aNoLoadTrans[j],   ::aForceScale[j], ::aField[j], ::aNo3DColors[j], ::aFit[j], ::aDIBSection[j], IIF( ::aThemed[j] == '.T.', 1, IIF( ::aThemed[j] == '.F.', 2, 3 ) ), ::aFlat[j], ::aImageMargin[j],  IIF( ::aJustify[j] == 'BOTTOM',  1,  IIF( ::aJustify[j] == 'CENTER',  2,  IIF( ::aJustify[j] == 'LEFT',  3,  IIF( ::aJustify[j] == 'RIGHT',  4,  IIF( ::aJustify[j] == 'TOP',  5,  6 ) ) ) ) ) }
       aFormats    := { 30,         .F.,          31,            250,           '999',        .F.,           .F.,           .F.,             31,         250,            250,          250,            .F.,                .F.,              250,         .F.,              .F.,       .F.,              { 'THEMED', 'NOTHEME', 'NIL' },                                      .F.,        250,               { 'BOTTOM',  'CENTER',  'LEFT',  'RIGHT',  'TOP',  'NONE' } }
       aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
       IF aResults[1] == NIL
@@ -16535,7 +16684,7 @@ LOCAL aFormats, aResults
    IF ::aCtrlType[j] == 'PICBUTT'
       cTitle      := ::aName[j] + ' properties'
       aLabels     := { 'Name',     'Picture',     'ToolTip',     'HelpID',     'NoTabStop',     'Enabled',     'Visible',     'Flat',     'Obj',      'Buffer',     'HBitmap',     'NoLoadTransparent', 'ForceScale',     'No3DColors',     'AutoFit', 'DIBSection',     'Themed',                                                            'ImageMargin',     'Align',                                                                                                                                                                                         'Cancel',     'SubClass' }
-      aInitValues := { ::aName[j], ::apicture[j], ::aToolTip[j], ::aHelpID[j], ::aNoTabStop[j], ::aEnabled[j], ::aVisible[j], ::aflat[j], ::aCObj[j], ::aBuffer[j], ::aHBitmap[j], ::aNoLoadTrans[j],   ::aForceScale[j], ::aNo3DColors[j], ::aFit[j], ::aDIBSection[j], IIF( ::aThemed[j] == '.T.', 1, IIF( ::aThemed[j] == '.F.', 2, 3 ) ), ::aImageMargin[j],  IIF( ::aJustify[j] == 'BOTTOM',  1,  IIF( ::aJustify[j] == 'CENTER',  2,  IIF( ::aJustify[j] == 'LEFT',  3,  IIF( ::aJustify[j] == 'RIGHT',  4,  IIF( ::aJustify[j] == 'TOP',  5,  6 ) ) ) ) ), ::aCancel[j], ::aSubClass[j] }
+      aInitValues := { ::aName[j], ::aPicture[j], ::aToolTip[j], ::aHelpID[j], ::aNoTabStop[j], ::aEnabled[j], ::aVisible[j], ::aflat[j], ::aCObj[j], ::aBuffer[j], ::aHBitmap[j], ::aNoLoadTrans[j],   ::aForceScale[j], ::aNo3DColors[j], ::aFit[j], ::aDIBSection[j], IIF( ::aThemed[j] == '.T.', 1, IIF( ::aThemed[j] == '.F.', 2, 3 ) ), ::aImageMargin[j],  IIF( ::aJustify[j] == 'BOTTOM',  1,  IIF( ::aJustify[j] == 'CENTER',  2,  IIF( ::aJustify[j] == 'LEFT',  3,  IIF( ::aJustify[j] == 'RIGHT',  4,  IIF( ::aJustify[j] == 'TOP',  5,  6 ) ) ) ) ), ::aCancel[j], ::aSubClass[j] }
       aFormats    := { 30,         30,            250,           '999',        .F.,             .T.,           .T.,           .F.,        31,         250,          250,           .F.,                 .F.,              .F.,              .F.,       .F.,              { 'THEMED', 'NOTHEME', 'NIL' },                                      250,               { 'BOTTOM',  'CENTER',  'LEFT',  'RIGHT',  'TOP',  'NONE' },                                                                                                                                     .F.,          250 }
       aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
       IF aResults[1] == NIL
@@ -16569,10 +16718,34 @@ LOCAL aFormats, aResults
       ::aSubClass[j]         := aResults[21]
    ENDIF
 
+   IF ::aCtrlType[j] == 'ANIGIF'
+      cTitle      := ::aName[j] + ' properties'
+      aLabels     := { 'Name',     'File',     'ToolTip',     'HelpID',     'Enabled',     'Visible',     'Obj',      'ClientEdge',     'Border',     'SubClass',     'RTL',     'WhiteBackground' }
+      aInitValues := { ::aName[j], ::aFile[j], ::aToolTip[j], ::aHelpID[j], ::aEnabled[j], ::aVisible[j], ::aCObj[j], ::aClientEdge[j], ::aBorder[j], ::aSubClass[j], ::aRTL[j], ::aWhiteBack[j],  }
+      aFormats    := { 30,         30,         250,           '999',        .F.,           .F.,           31,         .F.,              .F.,          250,            .F.,       .F.               }
+      aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
+      IF aResults[1] == NIL
+         oControl:SetFocus()
+         RETURN NIL
+      ENDIF
+      ::aName[j]             := IIF( ! ::IsUnique( aResults[01], j ), ::aName[j], AllTrim( aResults[01] ) )
+      ::aFile[j]             := aResults[02]
+      ::aToolTip[j]          := aResults[03]
+      ::aHelpID[j]           := aResults[04]
+      ::aEnabled[j]          := aResults[05]
+      ::aVisible[j]          := aResults[06]
+      ::aCObj[j]             := aResults[07]
+      ::aClientEdge[j]       := aResults[08]
+      ::aBorder[j]           := aResults[09]
+      ::aSubClass[j]         := aResults[10]
+      ::aRTL[j]              := aResults[11]
+      ::aWhiteBack[j]        := aResults[12]
+   ENDIF
+
    IF ::aCtrlType[j] == 'IMAGE'
       cTitle      := ::aName[j] + ' properties'
       aLabels     := { 'Name',     'Picture',     'ToolTip',     'HelpID',     'Stretch',     'Enabled',     'Visible',     'Obj',      'ClientEdge',     'Border',     'Transparent',     'SubClass',     'RTL',     'Buffer',     'HBitmap',     'DIBSection',     'No3DColors',     'NoLoadTransparent', 'NoResize', 'WhiteBackground', 'ImageSize',     'ExcludeArea' }
-      aInitValues := { ::aName[j], ::apicture[j], ::aToolTip[j], ::aHelpID[j], ::astretch[j], ::aEnabled[j], ::aVisible[j], ::aCObj[j], ::aclientedge[j], ::aBorder[j], ::aTransparent[j], ::aSubClass[j], ::aRTL[j], ::aBuffer[j], ::aHBitmap[j], ::aDIBSection[j], ::aNo3DColors[j], ::aNoLoadTrans[j],   ::aFit[j],  ::aWhiteBack[j],   ::aImageSize[j], ::aExclude[j] }
+      aInitValues := { ::aName[j], ::aPicture[j], ::aToolTip[j], ::aHelpID[j], ::astretch[j], ::aEnabled[j], ::aVisible[j], ::aCObj[j], ::aClientEdge[j], ::aBorder[j], ::aTransparent[j], ::aSubClass[j], ::aRTL[j], ::aBuffer[j], ::aHBitmap[j], ::aDIBSection[j], ::aNo3DColors[j], ::aNoLoadTrans[j],   ::aFit[j],  ::aWhiteBack[j],   ::aImageSize[j], ::aExclude[j] }
       aFormats    := { 30,         30,            250,           '999',        .F.,           .F.,           .F.,           31,         .F.,              .F.,          .F.,               250,            .F.,       250,          250,           .F.,              .F.,              .F.,                 .F.,        .F.,               .F.,             250 }
       aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
       IF aResults[1] == NIL
@@ -17220,7 +17393,7 @@ LOCAL nOpen := 0, nClose := 0, i
 RETURN Type( cArray ) == 'A'
 
 //------------------------------------------------------------------------------
-METHOD Events_Click() CLASS TFormEditor
+METHOD EventsClick() CLASS TFormEditor
 //------------------------------------------------------------------------------
 LOCAL oControl, j, cTitle, aLabels, aInitValues, aFormats
 LOCAL ia, aResults
@@ -17519,6 +17692,19 @@ LOCAL ia, aResults
       ::aOnLostFocus[j]     := aResults[02]
       ::aAction[j]          := aResults[03]
       ::aOnMouseMove[j]     := aResults[04]
+   ENDIF
+
+   IF ::aCtrlType[j] == 'ANIGIF'
+      cTitle      := ::aName[j] + ' events'
+      aLabels     := { 'Action' }
+      aInitValues := { ::aAction[j] }
+      aFormats    := { 250 }
+      aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
+      IF aResults[1] == NIL
+         oControl:SetFocus()
+         RETURN NIL
+      ENDIF
+      ::aAction[j]          := aResults[01]
    ENDIF
 
    IF ::aCtrlType[j] == 'IMAGE'
@@ -17960,7 +18146,7 @@ HB_FUNC( SETPIXEL )
 */
 
 //------------------------------------------------------------------------------
-HB_FUNC ( INTERACTIVESIZEHANDLE )
+HB_FUNC( INTERACTIVESIZEHANDLE )
 //------------------------------------------------------------------------------
 {
    keybd_event( VK_DOWN, 0, 0, 0 );
@@ -17969,7 +18155,7 @@ HB_FUNC ( INTERACTIVESIZEHANDLE )
 }
 
 //------------------------------------------------------------------------------
-HB_FUNC ( INTERACTIVEMOVEHANDLE )
+HB_FUNC( INTERACTIVEMOVEHANDLE )
 //------------------------------------------------------------------------------
 {
    keybd_event( VK_RIGHT, 0, 0, 0 );

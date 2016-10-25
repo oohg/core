@@ -1,5 +1,5 @@
 /*
- * $Id: h_checkbox.prg,v 1.45 2016-10-22 16:23:55 fyurisich Exp $
+ * $Id: h_checkbox.prg,v 1.46 2016-10-25 21:38:01 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -440,22 +440,25 @@ int TCheckBox_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption,
       }
       ( dwProcDrawThemeBackground )( hTheme, pCustomDraw->hdc, BP_CHECKBOX, state_id, &aux_rect, NULL );
 
-      /* paint caption */
-      SetTextColor( pCustomDraw->hdc, ( oSelf->lFontColor == -1 ) ? GetSysColor( COLOR_BTNTEXT ) : (COLORREF) oSelf->lFontColor );
-      DrawText( pCustomDraw->hdc, cCaption, -1, &content_rect, DT_VCENTER | DT_LEFT | DT_SINGLELINE );        // DrawThemeText
-
-      /* paint focus rectangle */
-      if( state & BST_FOCUS )
+      if( strlen( cCaption ) > 0 )
       {
-         aux_rect = content_rect;
-         iNeeded = DrawText( pCustomDraw->hdc, cCaption, -1, &aux_rect, DT_VCENTER | DT_LEFT | DT_SINGLELINE | DT_CALCRECT );
+         /* paint caption */
+         SetTextColor( pCustomDraw->hdc, ( oSelf->lFontColor == -1 ) ? GetSysColor( COLOR_BTNTEXT ) : (COLORREF) oSelf->lFontColor );
+         DrawText( pCustomDraw->hdc, cCaption, -1, &content_rect, DT_VCENTER | DT_LEFT | DT_SINGLELINE );        // DrawThemeText
 
-         aux_rect.left -= 1;
-         aux_rect.right += 1;
-         aux_rect.top = content_rect.top + ( ( content_rect.bottom - content_rect.top - iNeeded ) / 2 ) + 2;
-         aux_rect.bottom = aux_rect.top + iNeeded - 4;
+         /* paint focus rectangle */
+         if( state & BST_FOCUS )
+         {
+            aux_rect = content_rect;
+            iNeeded = DrawText( pCustomDraw->hdc, cCaption, -1, &aux_rect, DT_VCENTER | DT_LEFT | DT_SINGLELINE | DT_CALCRECT );
 
-         DrawFocusRect( pCustomDraw->hdc, &aux_rect );         // Windows draws a rounded rectangle
+            aux_rect.left -= 1;
+            aux_rect.right += 1;
+            aux_rect.top = content_rect.top + ( ( content_rect.bottom - content_rect.top - iNeeded ) / 2 ) + 2;
+            aux_rect.bottom = aux_rect.top + iNeeded - 4;
+
+            DrawFocusRect( pCustomDraw->hdc, &aux_rect );         // Windows draws a rounded rectangle
+         }
       }
 
       /* cleanup */

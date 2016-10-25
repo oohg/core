@@ -1,5 +1,5 @@
 /*
- * $Id: h_tree.prg,v 1.49 2016-10-22 16:23:55 fyurisich Exp $
+ * $Id: h_tree.prg,v 1.50 2016-10-25 21:38:01 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -99,6 +99,8 @@ CLASS TTree FROM TControl
    DATA ItemLastDrop         INIT Nil              // reference to item added o moved in last drop operation
    DATA nLastIDNumber        INIT 0                // last number used by AutoID function
    DATA aItemIDs             INIT {}
+   DATA OnMouseDrop          INIT Nil
+   DATA OnDrop              INIT nil               // executed after drop is finished
 
    METHOD Define
    METHOD AddItem

@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.138 2016-10-17 21:39:26 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.139 2016-10-25 21:37:45 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1518,7 +1518,7 @@ IMAGE
 
 #xcommand DEFINE IMAGE <name> ;
    => ;
-      _OOHG_ClearActiveControlInfo( <(name)> )  ;;
+      _OOHG_ClearActiveControlInfo( <(name)> )    ;;
       _OOHG_ActiveControlPicture           := NIL ;;
       _OOHG_ActiveControlAction            := NIL ;;
       _OOHG_ActiveControlStretch           := .F. ;;
@@ -1592,6 +1592,40 @@ IMAGE
             _OOHG_ActiveControlNoDIBSection, ;
             _OOHG_ActiveControlTransparent, ;
             _OOHG_ActiveControlExcludeArea, ;
+            _OOHG_ActiveControlDisabled )
+
+/*---------------------------------------------------------------------------
+ANIGIF
+---------------------------------------------------------------------------*/
+
+#xcommand DEFINE ANIGIF <name> ;
+   => ;
+      _OOHG_ClearActiveControlInfo( <(name)> )  ;;
+      _OOHG_ActiveControlFile            := NIL ;;
+      _OOHG_ActiveControlAction          := NIL ;;
+      _OOHG_ActiveControlWhiteBackground := NIL ;;
+      _OOHG_ActiveControlBorder          := .F. ;;
+      _OOHG_ActiveControlClientEdge      := .F.
+
+#xcommand END ANIGIF ;
+   => ;
+      _OOHG_SelectSubClass( TAniGIF(), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
+            _OOHG_ActiveControlName, ;
+            _OOHG_ActiveControlOf, ;
+            _OOHG_ActiveControlCol, ;
+            _OOHG_ActiveControlRow, ;
+            _OOHG_ActiveControlFile, ;
+            _OOHG_ActiveControlWidth, ;
+            _OOHG_ActiveControlHeight, ;
+            _OOHG_ActiveControlAction, ;
+            _OOHG_ActiveControlHelpId, ;
+            _OOHG_ActiveControlInvisible, ;
+            _OOHG_ActiveControlWhiteBackground, ;
+            _OOHG_ActiveControlRtl, ;
+            _OOHG_ActiveControlBackColor, ;
+            _OOHG_ActiveControlTooltip, ;
+            _OOHG_ActiveControlBorder, ;
+            _OOHG_ActiveControlClientEdge, ;
             _OOHG_ActiveControlDisabled )
 
 /*---------------------------------------------------------------------------

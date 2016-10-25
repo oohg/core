@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.104 2016-10-16 04:46:11 fyurisich Exp $
+ * $Id: classes.txt,v 1.105 2016-10-25 21:37:45 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -239,6 +239,35 @@ CLASS TACTIVEX FROM TCONTROL
    METHOD DEFINE
    METHOD EVENTMAP
    METHOD RELEASE
+ENDCLASS
+
+*------------------------------------------------------------------------------*
+CLASS TANIGIF FROM TCONTROL
+   DATA ADELAYS                   INIT {}
+   DATA AINFO                     INIT { "", 0, 0 }
+   DATA APICTURES                 INIT {}
+   DATA CURRENTFRAME              INIT 0
+   DATA FILENAME                  INIT ""
+   DATA NHEIGHT                   INIT 100
+   DATA NWIDTH                    INIT 100
+   DATA OIMAGE                    INIT NIL
+   DATA OTIMER                    INIT NIL
+   DATA TYPE                      INIT "ANIGIF" READONLY
+
+   METHOD DEFINE
+   METHOD FRAMECOUNT              BLOCK { |SELF| LEN( ::APICTURES ) }
+   METHOD FRAMEDELAY
+   METHOD FRAMEHEIGHT             BLOCK { |SELF| ::AINFO[ 3 ] }
+   METHOD FRAMEWIDTH              BLOCK { |SELF| ::AINFO[ 2 ] }
+   METHOD ISPLAYING               BLOCK { |SELF| ::OTIMER:ENABLED }
+   METHOD LOAD
+   METHOD ONCLICK                 SETGET
+   METHOD PLAY                    BLOCK { |SELF| ::OTIMER:ENABLED := ( ::FRAMECOUNT > 1 ) }
+   METHOD RELEASE
+   METHOD SHOWNEXTFRAME
+   METHOD STOP                    BLOCK { |SELF| ::OTIMER:ENABLED := .F. }
+   METHOD VERSION                 BLOCK { |SELF| ::AINFO[ 1 ] }
+   METHOD VISIBLE                 SETGET
 ENDCLASS
 
 *------------------------------------------------------------------------------*

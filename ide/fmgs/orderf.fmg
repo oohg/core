@@ -1,5 +1,5 @@
 /*
- * $Id: orderf.fmg,v 1.8 2016-05-22 23:52:22 fyurisich Exp $
+ * $Id: orderf.fmg,v 1.9 2016-10-25 21:37:45 fyurisich Exp $
  */
 
 * ooHG IDE Plus form generated code
@@ -46,7 +46,7 @@ DEFINE WINDOW TEMPLATE ;
       WIDTH 40 ;
       HEIGHT 28 ;
       CAPTION '/\' ;
-      ACTION ::Order_Up() ;
+      ACTION ::OrderUp() ;
       SIZE 9 ;
       TOOLTIP 'Move up.'
 
@@ -54,7 +54,7 @@ DEFINE WINDOW TEMPLATE ;
       WIDTH 40 ;
       HEIGHT 28 ;
       CAPTION '\/' ;
-      ACTION ::Order_Down() ;
+      ACTION ::OrderDown() ;
       SIZE 9 ;
       TOOLTIP 'Move down.'
 

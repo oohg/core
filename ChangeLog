@@ -1,11 +1,116 @@
 /*
- * $Id: ChangeLog,v 1.1607 2016-10-20 01:52:54 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1608 2016-10-25 21:37:45 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2016-10-25 18:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * distros/MakeDistro.bat
+   * doc/classes.txt
+     + h_anigif.prg
+   * ide/mgide.rc
+     + ANIGIF related resource.
+   * ide/fmgs/orderf.fmg
+     * Some methods were renamed.
+   + ide/imgs/gif.ico
+     * Image for ANIGIF control in "Controls" panel.
+   * ide/formedit.prg
+     * Some methods were renamed.
+     + Support for ANIGIF.
+   * include/i_altsyntax.ch
+     + Support for ANIGIF.
+   + include/i_anigif.ch
+     + ANIGIF control.
+   * include/oohg.ch
+     + i_anigif.ch
+   * manual/ACTIVEX.htm
+     * Next topic is now ANIGIF.
+   + manual/ANIGIF.htm
+     * ANIGIF syntax.
+   * manual/ANIMATEBOX.htm
+     * Previous topic is now ANIGIF.
+   * manual/BUTTON.HTM
+     * Format.
+   * manual/CLASSES.HTM
+   * manual/Changelog.htm
+     * Updated.
+   * manual/OVERVIEW.HTM
+     * Fixed version number changed by CVS date keyword.
+   * manual/ooHG.hhc
+   * manual/ooHG.hhk
+   * manual/ooHG.hhp
+     + ANIGIF page.
+   + source/h_anigif.prg
+     * Class TAniGIF.
+     * Function SaveResourceToFile.
+   * source/common_make.bat
+   * source/makelib_mingw.bat
+   * source/oohg.hbp
+     + h_anigif to input files list.
+   * source/h_checkbox.prg
+     ! Focus rect is shown when control has no caption.
+   * source/h_tree.prg
+     + DATA OnMouseDrop.
+     + DATA OnDrop.
+   * source/h_windows.prg
+     - DATA OnMouseDrop.
+     - DATA OnDrop.
+
+2016-10-22 13:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_activex.prg
+   * source/h_browse.prg
+   * source/h_button.prg
+   * source/h_checkbox.prg
+   * source/h_checklist.prg
+   * source/h_combo.prg
+   * source/h_comm.prg
+   * source/h_controlmisc.prg
+   * source/h_datepicker.prg
+   * source/h_dialogs.prg
+   * source/h_editbox.prg
+   * source/h_font.prg
+   * source/h_form.prg
+   * source/h_frame.prg
+   * source/h_grid.prg
+   * source/h_hotkey.prg
+   * source/h_hotkeybox.prg
+   * source/h_hyperlink.prg
+   * source/h_image.prg
+   * source/h_internal.prg
+   * source/h_ipaddress.prg
+   * source/h_label.prg
+   * source/h_listbox.prg
+   * source/h_media.prg
+   * source/h_menu.prg
+   * source/h_monthcal.prg
+   * source/h_msgbox.prg
+   * source/h_pdf.prg
+   * source/h_picture.prg
+   * source/h_print.prg
+   * source/h_progressbar.prg
+   * source/h_progressmeter.prg
+   * source/h_radio.prg
+   * source/h_richeditbox.prg
+   * source/h_scroll.prg
+   * source/h_scrollbutton.prg
+   * source/h_slider.prg
+   * source/h_spinner.prg
+   * source/h_splitbox.prg
+   * source/h_status.prg
+   * source/h_tab.prg
+   * source/h_textarray.prg
+   * source/h_textbox.prg
+   * source/h_timer.prg
+   * source/h_toolbar.prg
+   * source/h_tooltip.prg
+   * source/h_tree.prg
+   * source/h_winapimisc.prg
+   * source/h_windows.prg
+   * source/h_xbrowse.prg
+     * Format.
 
 2016-10-19 22:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ide/prgs/formedit.prg

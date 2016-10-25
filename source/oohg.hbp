@@ -1,5 +1,5 @@
 #
-# $Id: oohg.hbp,v 1.8 2014-05-17 21:30:00 fyurisich Exp $
+# $Id: oohg.hbp,v 1.9 2016-10-25 21:38:01 fyurisich Exp $
 #
 
 # build a static library
@@ -37,6 +37,7 @@ c_scrsaver.c
 c_winapimisc.c
 c_windows.c
 h_activex.prg
+h_anigif.prg
 h_application.prg
 h_browse.prg
 h_button.prg

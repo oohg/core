@@ -32,6 +32,11 @@
 			<param name="ImageNumber" value="11">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="ANIGIF">
+			<param name="Local" value="ANIGIF.HTM">
+			<param name="ImageNumber" value="11">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="ANIMATEBOX">
 			<param name="Local" value="ANIMATEBOX.HTM">
 			<param name="ImageNumber" value="11">

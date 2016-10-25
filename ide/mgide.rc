@@ -1,5 +1,5 @@
 //
-// $Id: mgide.rc,v 1.4 2016-10-01 23:19:31 fyurisich Exp $
+// $Id: mgide.rc,v 1.5 2016-10-25 21:37:45 fyurisich Exp $
 //
 
 IDE_ABOUT             JPG          imgs\oohgjpg.jpg
@@ -42,6 +42,7 @@ IDE_FRAME             BITMAP       imgs\frame.bmp
 IDE_FRMEVENTS         BITMAP       imgs\event.bmp
 IDE_FRMFONT           BITMAP       imgs\fontcolor.bmp
 IDE_FRMPROPS          BITMAP       imgs\properties.bmp
+IDE_GIF               ICON         imgs\gif.ico
 IDE_GO                BITMAP       imgs\go.bmp
 IDE_GRID              BITMAP       imgs\grid.bmp
 IDE_HKB               BITMAP       imgs\hkb.bmp

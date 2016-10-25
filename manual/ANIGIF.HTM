@@ -1,5 +1,5 @@
 <!--
-$Id: ANIMATEBOX.HTM,v 1.9 2016-10-25 21:37:45 fyurisich Exp $
+$Id: ANIGIF.HTM,v 1.1 2016-10-25 21:37:46 fyurisich Exp $
 -->
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -12,8 +12,8 @@ xmlns="http://www.w3.org/TR/REC-html40">
 <meta name=ProgId content=Word.Document>
 <meta name=Generator content="Microsoft Word 11">
 <meta name=Originator content="Microsoft Word 11">
-<link rel=File-List href="ANIMATEBOX_archivos/filelist.xml">
-<title>ANIMATEBOX</title>
+<link rel=File-List href="ANIGIF_archivos/filelist.xml">
+<title>ANIGIF</title>
 
 <style>
 <!--
@@ -26,6 +26,12 @@ xmlns="http://www.w3.org/TR/REC-html40">
 	font-size:12.0pt;
 	font-family:"Times New Roman";
 	mso-fareast-font-family:"Times New Roman";}
+span.SpellE
+	{mso-style-name:"";
+	mso-spl-e:yes;}
+span.GramE
+	{mso-style-name:"";
+	mso-gram-e:yes;}
 @page Section1
 	{size:612.0pt 792.0pt;
 	margin:70.85pt 3.0cm 70.85pt 3.0cm;
@@ -47,8 +53,8 @@ html {
 body {
 	padding: 0px;
 	margin: 0px;
-	overflow: auto;
-	background-color: #FFFFFF;
+	overflow: auto; 
+	background-color: #FFFFFF; 
 }
 
 #winchm_template_navigation{
@@ -66,12 +72,12 @@ body {
 	font-size: 10px;
 	font-style: normal;
 	font-weight: normal;
-	color: #626262;
-
+	color: #626262; 
+	 
 	border-bottom-style: solid;
 	border-bottom-width: 1px;
 	border-bottom-color: #DBDBDB;
-
+	
 	background-color: #E2EDFA;
 	width: auto;
 }
@@ -89,7 +95,7 @@ body {
 	font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
 	font-weight: bold;
 	font-size: 18px;
-	color: 353535;
+	color: 353535;	
 
 	margin-top: 0px;
 	margin-left: 0px;
@@ -100,7 +106,7 @@ body {
 	padding-left: 5px;
 	padding-bottom: 10px;
 	padding-right: 10px;
-
+	
 	border-bottom-style: solid;
 	border-bottom-width: 1px;
 	border-bottom-color: #C7C7C7;
@@ -125,7 +131,7 @@ body {
 	border-width: 1px;
 	border-color: #c0c0c0;
 	border-top-style: solid;
-
+	
 	margin-top: 0px;
 	margin-left: 15px;
 	margin-bottom: 5px;
@@ -140,8 +146,8 @@ body {
 	font-size: 9px;
 	color: #909090;
 
-	text-align: left;
-	width: auto;
+	text-align: left;	
+	width: auto;	
 }
 
 #winchm_template_navigation a:link	{text-decoration: none;color: #0000ff}
@@ -166,9 +172,9 @@ visibility:hidden;
 <body>
 
 <div id="winchm_template_title">
-<div id="winchm_template_button"><A href="ANIGIF.HTM" title="Previous topic"><img id="winchm_template_prev" alt="Previous topic" src="template4/btn_prev_n.gif" border="0"></a><A href="BROWSE.HTM" title="Next topic"><img id="winchm_template_next" alt="Next topic" src="template4/btn_next_n.gif" border="0"></a></div>
-ANIMATEBOX</div>
-<div id="winchm_template_navigation">Help &gt;
+<div id="winchm_template_button"><A href="ACTIVEX.HTM" title="Previous topic"><img id="winchm_template_prev" alt="Previous topic" src="template4/btn_prev_n.gif" border="0"></a><A href="ANIMATEBOX.HTM" title="Next topic"><img id="winchm_template_next" alt="Next topic" src="template4/btn_next_n.gif" border="0"></a></div>
+ANIGIF</div>
+<div id="winchm_template_navigation">Help &gt; 
 Controls &gt; </div>
 <div id="winchm_template_content">
 
@@ -177,110 +183,63 @@ Controls &gt; </div>
 <PRE>
 <span style='color:darkgreen'><b>
 ///////////////////////////////////////////////////////////////////////////////
-// ANIMATEBOX
+// ANIGIF
 ///////////////////////////////////////////////////////////////////////////////
 </b></span>
 
-Creates an animation control inside a form, to play an AVI file.
-A set of commands is provided for manipulating an existing control.
-Note that the file must not contain sound or it will not be played.
+Creates a control inside a form to play an animated GIF file.
+Currently only GIF89a format is supported.
 
 <p><u>Control creation</u>:
 
 *** Standard syntax:
 
-   @ nRow, nCol ANIMATEBOX Name ;
+   @ nRow, nCol ANIGIF Name ;
       [ OBJ Obj ; ]
       [ &lt;OF, PARENT&gt; Parent ; ]
+      [ &lt;ACTION, ON CLICK, ONCLICK&gt; bAction ; ]
       [ WIDTH nWidht ; ]
       [ HEIGHT nHeight ; ]
-      [ FILE cFile ; ]
-      [ AUTOPLAY ; ]
-      [ CENTER ; ]
-      [ TRANSPARENT ; ]
       [ HELPID nHelpid ; ]
-      [ SUBCLASS Subclass ; ]
       [ INVISIBLE ; ]
-      [ NOTABSTOP ; ]
-      [ DISABLED ; ]
       [ RTL ; ]
-      [ TOOLTIP cTooltip ]
+      [ WHITEBACKGROUND ; ]
+      [ BACKCOLOR uBackColor ; ]
+      [ FILE cFile ; ]
+      [ TOOLTIP cTooltip ; ]
+      [ BORDER ; ]
+      [ CLIENTEDGE ; ]
+      [ DISABLED ; ]
+      [ SUBCLASS Subclass ]
 
 *** Alternative syntax:
 
-   DEFINE ANIMATEBOX Name ;
+   DEFINE ANIGIF Name ;
       [ COL nCol ]
       [ ROW nRow ]
       [ OBJECT Obj ]
       [ PARENT Parent ]
+      [ &lt;ACTION, ON CLICK, ONCLICK&gt; bAction ]
       [ WIDTH nWidth ]
       [ HEIGHT nHeight ]
-      [ FILE cFile ]
-      [ AUTOPLAY &lt;.T., .F.&gt; ]
-      [ CENTER &lt;.T., .F.&gt; ]
-      [ TRANSPARENT &lt;.T., .F.&gt; ]
       [ HELPID nHelpid ]
-      [ SUBCLASS Subclass ]
       [ &lt;VISIBLE, INVISIBLE&gt; &lt;.T., .F.&gt; ]
-      [ TABSTOP &lt;.T., .F.&gt; ]
-      [ &lt;ENABLE, DISABLED&gt; &lt;.T., .F.&gt; ]
       [ RTL &lt;.T., .F.&gt; ]
+      [ WHITEBACKGROUND &lt;.T., .F.&gt; ]
+      [ FILE cFile ]
       [ TOOLTIP cTooltip ]
-   END ANIMATEBOX
+      [ BORDER &lt;.T., .F.&gt; ]
+      [ CLIENTEDGE &lt;.T., .F.&gt; ]
+      [ &lt;ENABLE, DISABLED&gt; &lt;.T., .F.&gt; ]
+      [ SUBCLASS Subclass ]
+   END ANIGIF
 
 *** OOP syntax:
 
-   [ Obj := ] TAnimateBox():Define( cName, [ cParent ], [ nCol ], [ nRow ], ;
-      [ nWidth ], [ nHeight ], [ lAutoplay ], [ lCenter ], [ lTransparent ], ;
-      [ cFile ], [ nHelpId ], [ lInvisible ], [ lNoTabstop ], [ lDisabled ], ;
-      [ lRtl ], [ cToolTip ] )
-
-<p><u>Related commands, functions and methods</u>:
-
-*** Standard syntax:
-
-   OPEN ANIMATEBOX ControlName OF ParentForm FILE cFileName
-      Loads an AVI file and shows its first frame.
-   PLAY ANIMATEBOX ControlName OF ParentForm
-      Plays the file in the background while the app continues executing.
-   SEEK ANIMATEBOX ControlName OF ParentForm POSITION nFrame
-      Shows the frame at position nFrame.
-   STOP ANIMATEBOX ControlName OF ParentForm
-      Stops playing the file. The last played frame remains displayed.
-   CLOSE ANIMATEBOX ControlName OF ParentForm
-      Closes the file.
-   DESTROY ANIMATEBOX ControlName OF ParentForm
-      Releases the control.
-
-*** Alternative syntax:
-
-   OpenAnimateBox( ControlName, ParentForm, cFileName )
-      Loads an AVI file and shows its first frame.
-   PlayAnimateBox( ControlName, ParentForm )
-      Plays the file in the background while the app continues executing.
-   SeekAnimateBox( ControlName, ParentForm, nFrame )
-      Shows the frame at position nFrame.
-   StopAnimateBox( ControlName, ParentForm )
-      Stops playing the file. The last played frame remains displayed.
-   CloseAnimateBox( ControlName, ParentForm )
-      Closes the file.
-   DestroyAnimateBox( ControlName, ParentForm )
-      Releases the control.
-
-*** OOP syntax:
-
-   Obj:Open( cFileName )
-      Loads an AVI file and shows its first frame.
-   Obj:Play()
-      Plays the file in the background while the app continues executing.
-   Obj:Seek( nFrame )
-      Shows the frame at position nFrame.
-   Obj:Stop()
-      Stops playing the file. The last played frame remains displayed.
-   Obj:Close()
-      Closes the file.
-   Obj:Release()
-      Releases the control.
+   [ Obj := ] TAniGIF():Define( cName, [ cParent ], [ nCol ], [ nRow ], ;
+      [ cFile ], [ nWidth ], [ nHeight ], [ bAction ], [ nHelpId ], ;
+      [ lInvisible ], [ lWhiteBackgroung ], [ lRtl ], [ uBackColor ], ;
+      [ cToolTip ], [ lBorder ], [ lClientedge ], [ lDisabled ] )
 
 <p><u>Notes on clauses</u>:
 
@@ -292,40 +251,33 @@ Note that the file must not contain sound or it will not be played.
    3. ROW and COL define the position of the control inside it's parent client
       area. Default is 0.
    4. WIDTH and HEIGHT define the dimension of the control. Default is 0.
-   5. TABSTOP and NOTABSTOP specify if the control can/can't be focused using
-      TAB key. Default is TABSTOP.
-   6. DISABLED specifies that the control can't receive mouse clicks and
+   5. DISABLED specifies that the control can't receive mouse clicks and
       pressed keys. Default is ENABLED.
-   7. SUBCLASS indicates that the control must be an instance of the specified
+   6. SUBCLASS indicates that the control must be an instance of the specified
       class, instead of the default TActiveX class.
-   8. VISIBLE and INVISIBLE specify if the control must be visible/hidden when
+   7. VISIBLE and INVISIBLE specify if the control must be visible/hidden when
       created. Default is VISIBLE.
-   9. RTL specifies that the control must have WS_EX_LTRREADING, WS_EX_LEFT and
+   8. RTL specifies that the control must have WS_EX_LTRREADING, WS_EX_LEFT and
       WS_EX_LEFTSCROLLBAR styles.
       Default is .F.
-  10. HELPID associates a help topic within the current help file to the
+   9. HELPID associates a help topic within the current help file to the
       control. Default is 0.
-  11. FILE specifies that the control must load and show the firt frame of the
-      indicated AVI file. Default is NIL.
-  12. AUTOPLAY specifies that the control must have <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/bb761886(v=vs.85).aspx" target="_blank">ACS_AUTOPLAY</a> style.
-      Default is .F.
-  13. CENTER specifies that the control must have <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/bb761886(v=vs.85).aspx" target="_blank">ACS_CENTER</a> style.
-      Default is .F.
-  14. TRANSPARENT specifies that the control must have <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/bb761886(v=vs.85).aspx" target="_blank">ACS_TRANSPARENT</a> style.
-      Default is .F.
-  15. TOOLTIP sets a text that will be display when the mouse is positioned
+  10. FILE specifies that the control must load and show the firt frame of the
+      indicated GIF file. Default is NIL.
+  11. TOOLTIP sets a text that will be display when the mouse is positioned
       over the control. Default is NIL.
 
 <p><u>Notes on parameters</u>:
 
-   1. nFrame, nHelpid, nRow, nCol, nWidth and nHeight must be numbers.
-   2. Name, Parent, ControlName and ParentForm must be valid identifiers
-      enclosed or not within quotes.
-   3. cFile, cTooltip and cFileName must be strings.
+   1. nHelpid, nRow, nCol, nWidth and nHeight must be numbers.
+   2. Name and Parent must be valid identifiers enclosed or not within quotes.
+   3. cFile and cTooltip must be strings.
    4. Obj and Subclass must be valid identifiers not enclosed within quotes.
    5. cName and cParent must be strings containing valid identifiers.
-   6. lAutoplay, lCenter, lTransparent, lInvisible, lNoTabstop, lDisabled
-      and lRtl must be .T. or .F.
+   6. lInvisible, lWhiteBackgroung, lRtl, lBorder, lClientedge and lDisabled
+      must be .T. or .F.
+   7. bAction must be a valid codeblock.
+   8. uBackColor must be a valid color (number, array of string).
 </PRE>
 
 </div>
