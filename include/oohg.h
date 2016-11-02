@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.h,v 1.72 2016-10-17 21:39:27 fyurisich Exp $
+ * $Id: oohg.h,v 1.73 2016-11-02 13:26:09 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -145,6 +145,7 @@ HBRUSH GetTabBrush( HWND hWnd );
 HFONT PrepareFont( char *Fontname, int FontSize, int Weight, int Italic, int Underline, int StrikeOut, int Angle, int Width );
 BOOL SaveHBitmapToFile( void *, const char *, UINT, UINT, const char *, ULONG, ULONG );
 HBITMAP _OOHG_ReplaceColor( HBITMAP hBitmap, int x, int y, LONG lNewColor );
+wchar_t * AnsiToWide( const char * szString );
 
 // Symbols table
 #define s_Events_Notify        0

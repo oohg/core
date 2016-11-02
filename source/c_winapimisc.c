@@ -1,5 +1,5 @@
 /*
- * $Id: c_winapimisc.c,v 1.27 2016-10-17 01:55:33 fyurisich Exp $
+ * $Id: c_winapimisc.c,v 1.28 2016-11-02 13:26:09 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -839,3 +839,13 @@ HB_FUNC ( GETSHORTPATHNAME )
    hb_retnl( iRet );
 }
 
+wchar_t * AnsiToWide( const char * szString )
+{
+   int       iLen;
+   wchar_t * szWide;
+
+   iLen = MultiByteToWideChar( CP_ACP, MB_PRECOMPOSED, szString, -1, NULL, 0 );
+   szWide = ( wchar_t* ) hb_xgrab( iLen * sizeof( wchar_t ) );
+   MultiByteToWideChar( CP_ACP, MB_PRECOMPOSED, szString, -1, szWide, iLen );
+   return szWide;
+}

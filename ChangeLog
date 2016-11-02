@@ -1,11 +1,28 @@
 /*
- * $Id: ChangeLog,v 1.1608 2016-10-25 21:37:45 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1609 2016-11-02 13:26:09 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2016-11-02 10:26 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * distros/MakeDistro.bat
+     + /L switch to skip the build of the IDE.
+   * include/oohg.h
+     + Declaration for AnsiToWide C function.
+   * source/c_winapimisc.c
+     + AnsiToWide function.
+   * source/c_windows.c
+     * Function SetLayeredWindowAttributes was rewritten.
+   * source/h_controlmisc.prg
+     * Method Events_Color of class TControl now saves a reference
+       to NULL_BRUSH when data Transparent is .T.
+     * Function Events_Color_InTab now saves a reference
+       to NULL_BRUSH when data Transparent is .T.
+   * source/h_form.prg
+     * Assign NULL instead of 0 to oSelf->BrushHandle.
 
 2016-10-25 18:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * distros/MakeDistro.bat

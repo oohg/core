@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.89 2016-10-17 01:55:33 fyurisich Exp $
+ * $Id: c_windows.c,v 1.90 2016-11-02 13:26:10 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1582,7 +1582,7 @@ HBRUSH GetTabBrush( HWND hWnd )
 
    hOldBmp = (HBITMAP) SelectObject( hDCMem, hBmp );
 
-   SendMessage( hWnd, WM_PRINTCLIENT, (WPARAM) hDCMem,  (LPARAM) PRF_ERASEBKGND | PRF_CLIENT | PRF_NONCLIENT );
+   SendMessage( hWnd, WM_PRINTCLIENT, (WPARAM) hDCMem,  (LPARAM) ( PRF_ERASEBKGND | PRF_CLIENT | PRF_NONCLIENT ) );
 
    hBrush = CreatePatternBrush( hBmp );
 
@@ -1595,7 +1595,7 @@ HBRUSH GetTabBrush( HWND hWnd )
    return hBrush;
 }
 
-HB_FUNC( SETLAYEREDWINDOWATTRIBUTES )
+HB_FUNC( SETLAYEREDWINDOWATTRIBUTES )   // hWnd, color, opacity, flag (LWA_COLORKEY or LWA_ALPHA)
 {
    HWND     hWnd    = HWNDparam( 1 );
    COLORREF crKey   = ( COLORREF ) hb_parnl( 2 );
@@ -1608,30 +1608,27 @@ HB_FUNC( SETLAYEREDWINDOWATTRIBUTES )
       SetWindowLongPtr( hWnd, GWL_EXSTYLE, ( GetWindowLongPtr( hWnd, GWL_EXSTYLE ) | WS_EX_LAYERED ) );
    }
 
-   hb_retl( (BOOL) SetLayeredWindowAttributes( hWnd, crKey, bAlpha, dwFlags ) );
+   hb_retl( SetLayeredWindowAttributes( hWnd, crKey, bAlpha, dwFlags ) );
 #else
    typedef BOOL (__stdcall * PFN_SETLAYEREDWINDOWATTRIBUTES)( HWND, COLORREF, BYTE, DWORD );
 
-   PFN_SETLAYEREDWINDOWATTRIBUTES pfnSetLayeredWindowAttributes = NULL;
-
    HINSTANCE hLib = LoadLibrary( "user32.dll" );
-
-   if( hLib != NULL )
+   if( hLib == NULL )
    {
-      pfnSetLayeredWindowAttributes = (PFN_SETLAYEREDWINDOWATTRIBUTES) GetProcAddress( hLib, "SetLayeredWindowAttributes" );
+      hb_retl( FALSE );
    }
 
-   if( pfnSetLayeredWindowAttributes )
+   PFN_SETLAYEREDWINDOWATTRIBUTES pfnSetLayeredWindowAttributes = NULL;
+   pfnSetLayeredWindowAttributes = (PFN_SETLAYEREDWINDOWATTRIBUTES) GetProcAddress( hLib, "SetLayeredWindowAttributes" );
+   if( pfnSetLayeredWindowAttributes == NULL )
    {
-      SetWindowLong( hWnd, GWL_EXSTYLE, GetWindowLong( hWnd, GWL_EXSTYLE ) | WS_EX_LAYERED );
-      pfnSetLayeredWindowAttributes( hWnd, crKey, bAlpha, dwFlags );
+      hb_retl( FALSE );
    }
 
-   hb_retl( (BOOL) pfnSetLayeredWindowAttributes );
+   SetWindowLong( hWnd, GWL_EXSTYLE, GetWindowLong( hWnd, GWL_EXSTYLE ) | WS_EX_LAYERED );
+   BOOL bRet = ( pfnSetLayeredWindowAttributes )( hWnd, crKey, bAlpha, dwFlags );
 
-   if( ! hLib )
-   {
-      FreeLibrary( hLib );
-   }
+   FreeLibrary( hLib );
+   hb_retl( bRet );
 #endif
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.72 2016-10-22 16:23:55 fyurisich Exp $
+ * $Id: h_form.prg,v 1.73 2016-11-02 13:26:10 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -871,7 +871,7 @@ HB_FUNC_STATIC( TFORM_BACKCOLOR )
       if( oSelf->BrushHandle )
       {
          DeleteObject( oSelf->BrushHandle );
-         oSelf->BrushHandle = 0;
+         oSelf->BrushHandle = NULL;
       }
       if( oSelf->lBackColor != -1 )
       {

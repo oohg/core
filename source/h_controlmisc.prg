@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.161 2016-10-22 16:23:55 fyurisich Exp $
+ * $Id: h_controlmisc.prg,v 1.162 2016-11-02 13:26:10 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1975,8 +1975,10 @@ HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )
    hb_vmSend( 0 );
    if( hb_parl( -1 ) )
    {
-      SetBkMode( hdc, ( COLORREF ) TRANSPARENT );
-      hb_retnl( ( LONG ) GetStockObject( NULL_BRUSH ) );
+      SetBkMode( hdc, (COLORREF) TRANSPARENT );
+      DeleteObject( oSelf->BrushHandle );
+      oSelf->BrushHandle = GetStockObject( NULL_BRUSH );
+      hb_retnl( (LONG) oSelf->BrushHandle );
       return;
    }
 
@@ -2006,7 +2008,7 @@ HB_FUNC( EVENTS_COLOR_INTAB )
 {
    PHB_ITEM pSelf = hb_param( 1, HB_IT_ANY );
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
-   HDC hdc = ( HDC ) hb_parnl( 2 );
+   HDC hdc = (HDC) hb_parnl( 2 );
    LONG lBackColor;
    RECT rc;
    LPRECT lprc;
@@ -2017,7 +2019,7 @@ HB_FUNC( EVENTS_COLOR_INTAB )
 
    if( oSelf->lFontColor != -1 )
    {
-      SetTextColor( hdc, ( COLORREF ) oSelf->lFontColor );
+      SetTextColor( hdc, (COLORREF) oSelf->lFontColor );
    }
 
    _OOHG_Send( pSelf, s_TabHandle );
@@ -2043,8 +2045,10 @@ HB_FUNC( EVENTS_COLOR_INTAB )
             hb_vmSend( 0 );
             if( hb_parl( -1 ) )
             {
-               SetBkMode( hdc, ( COLORREF ) TRANSPARENT );
-               hb_retnl( ( LONG ) GetStockObject( NULL_BRUSH ) );
+               SetBkMode( hdc, (COLORREF) TRANSPARENT );
+               DeleteObject( oSelf->BrushHandle );
+               oSelf->BrushHandle = GetStockObject( NULL_BRUSH );
+               hb_retnl( (LONG) oSelf->BrushHandle );
                return;
             }
 
@@ -2056,19 +2060,16 @@ HB_FUNC( EVENTS_COLOR_INTAB )
          }
          else
          {
+            SetBkMode( hdc, (COLORREF) TRANSPARENT );
             DeleteObject( oSelf->BrushHandle );
-
             oSelf->BrushHandle = GetTabBrush( hwnd );
-
-            SetBkMode( hdc, TRANSPARENT );
 
             GetWindowRect( oSelf->hWnd, &rc );
             lprc = &rc;
-            MapWindowPoints( NULL, hwnd, (LPPOINT) lprc, 2 );
-
+            MapWindowPoints( HWND_DESKTOP, hwnd, (LPPOINT) lprc, 2 );
             SetBrushOrgEx( hdc, -rc.left, -rc.top, NULL );
 
-            hb_retnl( ( LONG ) oSelf->BrushHandle );
+            hb_retnl( (LONG) oSelf->BrushHandle );
             return;
          }
       }
@@ -2077,7 +2078,7 @@ HB_FUNC( EVENTS_COLOR_INTAB )
    {
       _OOHG_Send( pSelf, s_Type );
       hb_vmSend( 0 );
-      if( strcmp( hb_parc( -1 ), "RADIOITEM" ) == 0 )
+      if( ( strcmp( hb_parc( -1 ), "RADIOITEM" ) == 0 ) || ( strcmp( hb_parc( -1 ), "CHECKBOX" ) == 0 ) || ( strcmp( hb_parc( -1 ), "FRAME" ) == 0 ) )
       {
          _OOHG_Send( pSelf, s_oBkGrnd );
          hb_vmSend( 0 );
@@ -2089,19 +2090,16 @@ HB_FUNC( EVENTS_COLOR_INTAB )
 
             if( ValidHandler( hwnd ) )
             {
+               SetBkMode( hdc, (COLORREF) TRANSPARENT );
                DeleteObject( oSelf->BrushHandle );
-
                oSelf->BrushHandle = GetTabBrush( hwnd );
-
-               SetBkMode( hdc, TRANSPARENT );
 
                GetWindowRect( oSelf->hWnd, &rc );
                lprc = &rc;
-               MapWindowPoints( NULL, hwnd, (LPPOINT) lprc, 2 );
-
+               MapWindowPoints( HWND_DESKTOP, hwnd, (LPPOINT) lprc, 2 );
                SetBrushOrgEx( hdc, -rc.left, -rc.top, NULL );
 
-               hb_retnl( ( LONG ) oSelf->BrushHandle );
+               hb_retnl( (LONG) oSelf->BrushHandle );
                return;
             }
          }
@@ -2111,8 +2109,10 @@ HB_FUNC( EVENTS_COLOR_INTAB )
       hb_vmSend( 0 );
       if( hb_parl( -1 ) )
       {
-         SetBkMode( hdc, ( COLORREF ) TRANSPARENT );
-         hb_retnl( ( LONG ) GetStockObject( NULL_BRUSH ) );
+         SetBkMode( hdc, (COLORREF) TRANSPARENT );
+         DeleteObject( oSelf->BrushHandle );
+         oSelf->BrushHandle = GetStockObject( NULL_BRUSH );
+         hb_retnl( (LONG) oSelf->BrushHandle );
          return;
       }
 
@@ -2123,7 +2123,7 @@ HB_FUNC( EVENTS_COLOR_INTAB )
       }
    }
 
-   SetBkColor( hdc, ( COLORREF ) lBackColor );
+   SetBkColor( hdc, (COLORREF) lBackColor );
    if( lBackColor != oSelf->lOldBackColor )
    {
       oSelf->lOldBackColor = lBackColor;
@@ -2131,7 +2131,7 @@ HB_FUNC( EVENTS_COLOR_INTAB )
       oSelf->BrushHandle = CreateSolidBrush( lBackColor );
    }
 
-   hb_retnl( ( LONG ) oSelf->BrushHandle );
+   hb_retnl( (LONG) oSelf->BrushHandle );
 }
 
 #pragma ENDDUMP

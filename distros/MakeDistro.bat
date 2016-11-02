@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: MakeDistro.bat,v 1.8 2016-10-25 21:37:45 fyurisich Exp $
+rem $Id: MakeDistro.bat,v 1.9 2016-11-02 13:26:09 fyurisich Exp $
 rem
 cls
 
@@ -9,10 +9,11 @@ if /I "%1"=="HB30" goto CONTINUE
 if /I "%1"=="HB32" goto CONTINUE
 if /I "%1"=="XB"   goto CONTINUE
 echo.
-echo Usage: MakeDistro HarbourVersion [ /C ]
-echo where /C switch requests the erase of the
-echo destination folder before making the distro
-echo and HarbourVersion is one of the following
+echo Usage: MakeDistro HarbourVersion [ /C ] [ /L ]
+echo where
+echo /L means build libraries only, /C requests the
+echo erase of the destination folder before making the
+echo distro and HarbourVersion is one of the following
 echo   HB30 - Harbour 3.0 and MinGW
 echo   HB32 - Harbour 3.2 and MinGW
 echo   XB   - xHarbour and BCC
@@ -116,6 +117,9 @@ if /I "%2"=="/C" attrib -s -h %BASE_DISTRO_DIR%\*.* /s /d > nul
 if /I "%2"=="/C" del /f /s /q %BASE_DISTRO_DIR%\*.* > nul
 if /I "%2"=="/C" rd /s /q %BASE_DISTRO_DIR% > nul
 if /I "%2"=="/C" if exist %BASE_DISTRO_DIR%\nul goto ERROR4
+set NOIDE=F
+if /I "%2"=="/L" set NOIDE=T
+if /I "%3"=="/L" set NOIDE=T
 
 :CREATE
 if not exist %BASE_DISTRO_DIR%\nul md %BASE_DISTRO_DIR%
@@ -329,6 +333,7 @@ attrib -s -h %BASE_DISTRO_DIR%\%LIB_GUI%\.hbmk /s /d
 rd %BASE_DISTRO_DIR%\%LIB_GUI%\.hbmk /s /q
 echo.
 cd ..
+if /I "%NOIDE%"=="T" goto END
 goto OIDE_HBMK2
 
 :LIBSHB32
@@ -351,6 +356,7 @@ attrib -s -h %BASE_DISTRO_DIR%\%LIB_GUI%\.hbmk /s /d
 rd %BASE_DISTRO_DIR%\%LIB_GUI%\.hbmk /s /q
 echo.
 cd ..
+if /I "%NOIDE%"=="T" goto END
 goto OIDE_HBMK2
 
 :LIBSXB
@@ -390,6 +396,7 @@ set HG_FILES2_PRG=
 set HG_FILES1_PRG=
 echo.
 cd ..
+if /I "%NOIDE%"=="T" goto END
 goto OIDE_XBCC
 
 :OIDE_HBMK2
