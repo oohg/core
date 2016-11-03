@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.162 2016-11-02 13:26:10 fyurisich Exp $
+ * $Id: h_controlmisc.prg,v 1.163 2016-11-03 22:37:42 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1978,6 +1978,7 @@ HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )
       SetBkMode( hdc, (COLORREF) TRANSPARENT );
       DeleteObject( oSelf->BrushHandle );
       oSelf->BrushHandle = GetStockObject( NULL_BRUSH );
+      oSelf->lOldBackColor = -1;
       hb_retnl( (LONG) oSelf->BrushHandle );
       return;
    }
@@ -2048,6 +2049,7 @@ HB_FUNC( EVENTS_COLOR_INTAB )
                SetBkMode( hdc, (COLORREF) TRANSPARENT );
                DeleteObject( oSelf->BrushHandle );
                oSelf->BrushHandle = GetStockObject( NULL_BRUSH );
+               oSelf->lOldBackColor = -1;
                hb_retnl( (LONG) oSelf->BrushHandle );
                return;
             }
@@ -2063,6 +2065,7 @@ HB_FUNC( EVENTS_COLOR_INTAB )
             SetBkMode( hdc, (COLORREF) TRANSPARENT );
             DeleteObject( oSelf->BrushHandle );
             oSelf->BrushHandle = GetTabBrush( hwnd );
+            oSelf->lOldBackColor = -1;
 
             GetWindowRect( oSelf->hWnd, &rc );
             lprc = &rc;
@@ -2078,7 +2081,8 @@ HB_FUNC( EVENTS_COLOR_INTAB )
    {
       _OOHG_Send( pSelf, s_Type );
       hb_vmSend( 0 );
-      if( ( strcmp( hb_parc( -1 ), "RADIOITEM" ) == 0 ) || ( strcmp( hb_parc( -1 ), "CHECKBOX" ) == 0 ) || ( strcmp( hb_parc( -1 ), "FRAME" ) == 0 ) )
+      if( strcmp( hb_parc( -1 ), "RADIOITEM" ) == 0 )
+//      if( ( strcmp( hb_parc( -1 ), "RADIOITEM" ) == 0 ) || ( strcmp( hb_parc( -1 ), "CHECKBOX" ) == 0 ) || ( strcmp( hb_parc( -1 ), "FRAME" ) == 0 ) )
       {
          _OOHG_Send( pSelf, s_oBkGrnd );
          hb_vmSend( 0 );
@@ -2093,6 +2097,7 @@ HB_FUNC( EVENTS_COLOR_INTAB )
                SetBkMode( hdc, (COLORREF) TRANSPARENT );
                DeleteObject( oSelf->BrushHandle );
                oSelf->BrushHandle = GetTabBrush( hwnd );
+               oSelf->lOldBackColor = -1;
 
                GetWindowRect( oSelf->hWnd, &rc );
                lprc = &rc;
@@ -2112,6 +2117,7 @@ HB_FUNC( EVENTS_COLOR_INTAB )
          SetBkMode( hdc, (COLORREF) TRANSPARENT );
          DeleteObject( oSelf->BrushHandle );
          oSelf->BrushHandle = GetStockObject( NULL_BRUSH );
+         oSelf->lOldBackColor = -1;
          hb_retnl( (LONG) oSelf->BrushHandle );
          return;
       }

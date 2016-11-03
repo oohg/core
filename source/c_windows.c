@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.90 2016-11-02 13:26:10 fyurisich Exp $
+ * $Id: c_windows.c,v 1.91 2016-11-03 22:37:42 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1582,7 +1582,7 @@ HBRUSH GetTabBrush( HWND hWnd )
 
    hOldBmp = (HBITMAP) SelectObject( hDCMem, hBmp );
 
-   SendMessage( hWnd, WM_PRINTCLIENT, (WPARAM) hDCMem,  (LPARAM) ( PRF_ERASEBKGND | PRF_CLIENT | PRF_NONCLIENT ) );
+   SendMessage( hWnd, WM_PRINTCLIENT, (WPARAM) hDCMem, (LPARAM) ( PRF_ERASEBKGND | PRF_CLIENT | PRF_NONCLIENT ) );
 
    hBrush = CreatePatternBrush( hBmp );
 

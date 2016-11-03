@@ -1,11 +1,19 @@
 /*
- * $Id: ChangeLog,v 1.1609 2016-11-02 13:26:09 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1610 2016-11-03 22:37:42 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2016-11-03 19:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_controlmisc.prg
+     * oSelf->lOldBackColor is set to -1 when a NULL BRUSH is
+       asigned to oSelf->BrushHandle.
+     ! RTE at function Events_Color_InTab.
+   * source/c_windows.c
+     * Format.
 
 2016-11-02 10:26 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * distros/MakeDistro.bat
