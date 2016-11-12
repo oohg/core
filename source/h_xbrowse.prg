@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.155 2016-10-22 16:23:55 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.156 2016-11-12 15:04:18 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2540,6 +2540,11 @@ LOCAL nRet, nColumns := Len( ::aHeaders ) + 1
 
    // Update after updating ::EditControls
    If ::FixBlocks()
+      // Update before calling ::ColumnBlock
+      ASize( ::Picture, nColumns )
+      AIns( ::Picture, nColIndex )
+      ::Picture[ nColIndex ] := Iif( ( ValType( uPicture ) $ "CM" .AND. ! Empty( uPicture ) ) .OR. HB_IsLogical( uPicture ), uPicture, Nil )
+
       aSize( ::aColumnBlocks, nColumns )
       aIns( ::aColumnBlocks, nColIndex )
       ::aColumnBlocks[ nColIndex ] := ::ColumnBlock( nColIndex )
