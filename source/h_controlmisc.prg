@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.163 2016-11-03 22:37:42 fyurisich Exp $
+ * $Id: h_controlmisc.prg,v 1.164 2016-11-27 15:13:46 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2180,47 +2180,123 @@ Return nil
 *------------------------------------------------------------------------------*
 METHOD FocusEffect CLASS TControl
 *------------------------------------------------------------------------------*
-local lMod:=.f.
+Local lMod
 
-     if (.not.( empty(::cFocusFontName).and.empty( ::nFocusFontSize).and.empty(::FocusBold).and.;
-            empty(::FocusItalic).and.empty(::FocusUnderline).and.empty(::FocusStrikeout))).or.;
-            (.not.( empty(::Parent:cFocusFontName).and.empty( ::Parent:nFocusFontSize).and.empty(::Parent:FocusBold).and.;
-            empty(::Parent:FocusItalic).and.empty(::Parent:FocusUnderline).and.empty(::Parent:FocusStrikeout)))
+   If     ! Empty( ::cFocusFontName )
+      lMod := .T.
+   ElseIf ! Empty( ::nFocusFontSize )
+      lMod := .T.
+   ElseIf ! Empty( ::FocusBold )
+      lMod := .T.
+   ElseIf ! Empty( ::FocusItalic )
+      lMod := .T.
+   ElseIf ! Empty( ::FocusUnderline )
+      lMod := .T.
+   ElseIf ! Empty( ::FocusStrikeout )
+      lMod := .T.
+   ElseIf ::Parent == Nil
+      lMod := .F.
+   ElseIf ( _OOHG_HasData( ::Parent, "CFOCUSFONTNAME" ) .OR. _OOHG_HasMethod( ::Parent, "CFOCUSFONTNAME" ) ) .AND. ! Empty( ::Parent:cFocusFontName )
+      lMod := .T.
+   ElseIf ( _OOHG_HasData( ::Parent, "NFOCUSFONTSIZE" ) .OR. _OOHG_HasMethod( ::Parent, "NFOCUSFONTSIZE" ) ) .AND. ! Empty( ::Parent:nFocusFontSize )
+      lMod := .T.
+   ElseIf ( _OOHG_HasData( ::Parent, "FOCUSBOLD" )      .OR. _OOHG_HasMethod( ::Parent, "FOCUSBOLD" ) )      .AND. ! Empty( ::Parent:FocusBold )
+      lMod := .T.
+   ElseIf ( _OOHG_HasData( ::Parent, "FOCUSITALIC" )    .OR. _OOHG_HasMethod( ::Parent, "FOCUSITALIC" ) )    .AND. ! Empty( ::Parent:FocusItalic )
+      lMod := .T.
+   ElseIf ( _OOHG_HasData( ::Parent, "FOCUSUNDERLINE" ) .OR. _OOHG_HasMethod( ::Parent, "FOCUSUNDERLINE" ) ) .AND. ! Empty( ::Parent:FocusUnderline )
+      lMod := .T.
+   ElseIf ( _OOHG_HasData( ::Parent, "FOCUSSTRIKEOUT" ) .OR. _OOHG_HasMethod( ::Parent, "FOCUSSTRIKEOUT" ) ) .AND. ! Empty( ::Parent:FocusStrikeout )
+      lMod := .T.
+   Else
+      lMod := .F.
+   EndIf
 
-      ::cFocusFontName:=if(empty(::cFocusFontName),::Parent:cFocusFontName,::cFocusFontName)
-      ::nFocusFontSize:=if(empty( ::nFocusFontSize),::Parent:nFocusFontSize,::nFocusFontSize)
-      ::FocusBold:=if(empty(::FocusBold),::Parent:FocusBold,::FocusBold)
-      ::FocusItalic:=if(empty(::FocusItalic),::Parent:FocusItalic,::FocusItalic)
-      ::FocusUnderline:=if(empty(::FocusUnderline),::Parent:FocusUnderline,::FocusUnderline)
-      ::FocusStrikeout:=if(empty(::FocusStrikeout),::Parent:FocusStrikeout,::FocusStrikeout)
+   If lMod
+      If Empty( ::cFocusFontName )
+         If ::Parent != Nil .AND. ( _OOHG_HasData( ::Parent, "CFOCUSFONTNAME" ) .OR. _OOHG_HasMethod( ::Parent, "CFOCUSFONTNAME" ) ) .AND. ! Empty( ::Parent:cFocusFontName )
+            ::cFocusFontName := ::Parent:cFocusFontName
+         EndIf
+      EndIf
+      If Empty( ::cFocusFontName )
+         ::cFocusFontName := ::cFontName
+      EndIf
 
-      ::cFocusFontName:=if(empty(::cFocusFontName),::cFontName,::cFocusFontName)
-      ::nFocusFontSize:=if(empty( ::nFocusFontSize),::nFontSize,::nFocusFontSize)
-      ::FocusBold:=if(empty(::FocusBold),::Bold,::FocusBold)
-      ::FocusItalic:=if(empty(::FocusItalic),::Italic,::FocusItalic)
-      ::FocusUnderline:=if(empty(::FocusUnderline),::Underline,::FocusUnderline)
-      ::FocusStrikeout:=if(empty(::FocusStrikeout),::Strikeout,::FocusStrikeout)
+      If Empty( ::nFocusFontSize )
+         If ::Parent != Nil .AND. ( _OOHG_HasData( ::Parent, "NFOCUSFONTSIZE" ) .OR. _OOHG_HasMethod( ::Parent, "NFOCUSFONTSIZE" ) ) .AND. ! Empty( ::Parent:nFocusFontSize )
+            ::nFocusFontSize := ::Parent:nFocusFontSize
+         EndIf
+      EndIf
+      If Empty( ::nFocusFontSize )
+         ::nFocusFontSize := ::nFontSize
+      EndIf
 
-      ::FontHandle := _SetFont( ::hWnd,::cFocusFontName,::nFocusFontSize,::FocusBold,;
-         ::FocusItalic,::FocusUnderline, ::FocusStrikeout,::FntAngle,::FntWidth)
-      lMod:=.t.
-     end
-     if (.not.( empty(::FocusColor) )).or.(.not.( empty(::Parent:FocusColor)))
-      ::OldColor:=::FontColor
-      ::FocusColor:=if(empty(::FocusColor),::Parent:FocusColor,::FocusColor)
-      ::FontColor:=::FocusColor
-      lMod:=.t.
-     end
-     if (.not.( empty(::FocusBackColor) )).or.(.not.( empty(::Parent:FocusBackColor) ))
-      ::OldBackColor:=::BackColor
-      ::FocusBackColor:=if(empty(::FocusBackColor),::Parent:FocusBackColor,::FocusBackColor)
-      ::BackColor:=::FocusBackColor
-      lMod:=.t.
-     end
-   if lMod
+      If Empty( ::FocusBold )
+         If ::Parent != Nil .AND. ( _OOHG_HasData( ::Parent, "FOCUSBOLD" ) .OR. _OOHG_HasMethod( ::Parent, "FOCUSBOLD" ) ) .AND. ! Empty( ::Parent:FocusBold )
+            ::FocusBold := ::Parent:FocusBold
+         EndIf
+      EndIf
+      If Empty( ::FocusBold )
+         ::FocusBold := ::Bold
+      EndIf
+
+      If Empty( ::FocusItalic )
+         If ::Parent != Nil .AND. ( _OOHG_HasData( ::Parent, "FOCUSITALIC" ) .OR. _OOHG_HasMethod( ::Parent, "FOCUSITALIC" ) ) .AND. ! Empty( ::Parent:FocusItalic )
+            ::FocusItalic := ::Parent:FocusItalic
+         EndIf
+      EndIf
+      If Empty( ::FocusItalic )
+         ::FocusItalic := ::Italic
+      EndIf
+
+      If Empty( ::FocusUnderline )
+         If ::Parent != Nil .AND. ( _OOHG_HasData( ::Parent, "FOCUSUNDERLINE" ) .OR. _OOHG_HasMethod( ::Parent, "FOCUSUNDERLINE" ) ) .AND. ! Empty( ::Parent:FocusUnderline )
+            ::FocusUnderline := ::Parent:FocusUnderline
+         EndIf
+      EndIf
+      If Empty( ::FocusUnderline )
+         ::FocusUnderline := ::Underline
+      EndIf
+
+      If Empty( ::FocusStrikeout )
+         If ::Parent != Nil .AND. ( _OOHG_HasData( ::Parent, "FOCUSSTRIKEOUT" ) .OR. _OOHG_HasMethod( ::Parent, "FOCUSSTRIKEOUT" ) ) .AND. ! Empty( ::Parent:FocusStrikeout )
+            ::FocusStrikeout := ::Parent:FocusStrikeout
+         EndIf
+      EndIf
+      If Empty( ::FocusStrikeout )
+         ::FocusStrikeout := ::Strikeout
+      EndIf
+
+      ::FontHandle := _SetFont( ::hWnd, ::cFocusFontName, ::nFocusFontSize, ::FocusBold, ::FocusItalic, ::FocusUnderline, ::FocusStrikeout, ::FntAngle, ::FntWidth )
+   EndIf
+
+   If ! Empty( ::FocusColor )
+      ::OldColor := ::FontColor
+      ::FontColor := ::FocusColor
+      lMod := .T.
+   ElseIf ::Parent != Nil .AND. ( _OOHG_HasData( ::Parent, "FOCUSCOLOR" ) .OR. _OOHG_HasMethod( ::Parent, "FOCUSCOLOR" ) ) .AND. ! Empty( ::Parent:FocusColor )
+      ::OldColor := ::FontColor
+      ::FocusColor := ::Parent:FocusColor
+      ::FontColor := ::FocusColor
+      lMod := .T.
+   EndIf
+
+   If ! Empty( ::FocusBackColor )
+      ::OldBackColor := ::BackColor
+      ::BackColor := ::FocusBackColor
+      lMod := .T.
+   ElseIf ::Parent != Nil .AND. ( _OOHG_HasData( ::Parent, "FOCUSBACKCOLOR" ) .OR. _OOHG_HasMethod( ::Parent, "FOCUSBACKCOLOR" ) ) .AND. ! Empty( ::Parent:FocusBackColor )
+      ::OldBackColor := ::BackColor
+      ::FocusBackColor := ::Parent:FocusBackColor
+      ::BackColor  := ::FocusBackColor
+      lMod := .T.
+   EndIf
+
+   If lMod
       ::ReDraw()
-   end
-RETURN nil
+   EndIf
+
+Return Nil
 
 *------------------------------------------------------------------------------*
 METHOD Events_Enter() CLASS TControl

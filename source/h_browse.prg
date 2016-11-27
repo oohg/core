@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.179 2016-10-22 16:23:55 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.180 2016-11-27 15:13:46 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -225,7 +225,8 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, aHeaders, a
                bAfterColSize, bBeforeAutofit, lLikeExcel, lButtons, lUpdCols, ;
                lFixedCtrls, bHeadRClick, lExtDbl, lNoModal, lSilent, lAltA, ;
                lNoShowAlways, lNone, lCBE, bOnRClick, lCheckBoxes, bOnCheck, ;
-               bOnRowRefresh, aDefaultValues, bOnEditEnd, lAtFirst ) CLASS TOBrowse
+               bOnRowRefresh, aDefaultValues, bOnEditEnd, lAtFirst, ;
+               bbeforeditcell ) CLASS TOBrowse
 *------------------------------------------------------------------------------*
 Local nWidth2, nCol2, oScroll, z
 
@@ -386,7 +387,8 @@ Local nWidth2, nCol2, oScroll, z
    ::Define4( bOnChange, bOnDblClick, bOnGotFocus, bOnLostFocus, bOnEditCell, bOnEnter, ;
               bOnCheck, bOnAbortEdit, bOnClick, bBeforeColMove, bAfterColMove, ;
               bBeforeColSize, bAfterColSize, bBeforeAutoFit, bOnDelete, ;
-              bDelWhen, bOnAppend, bHeadRClick, bOnRClick, bOnEditEnd, bOnRowRefresh )
+              bDelWhen, bOnAppend, bHeadRClick, bOnRClick, bOnEditEnd, bOnRowRefresh, ;
+              bbeforeditcell )
 
    ::Value := nValue
 

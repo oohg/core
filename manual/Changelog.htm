@@ -1,5 +1,5 @@
 <!--
-$Id: Changelog.htm,v 1.103 2016-10-25 21:37:45 fyurisich Exp $
+$Id: Changelog.htm,v 1.104 2016-11-27 15:13:46 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -142,6 +142,58 @@ CHANGELOG</div>
 </div>
 <div id="winchm_template_content">
 <pre>
+2016-11-27 12:12 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_error.prg
+     ! Typo.
+     * Format.
+   * source/h_grid.prg
+     + DATA OnBeforeEditCell.
+       If setted, this code block is evaluated before initiating the
+       cell's edition and if it returns false the edition is aborted
+       as if the user has desisted.
+       To avoid bad side effects  do not delete items or change
+       control's value inside this code block.
+   * source/h_browse.prg
+     + Support for OnBeforeEditCell.
+   * source/h_xbrowse.prg
+     + Support for OnBeforeEditCell.
+     * Format.
+   * source/h_windows.prg
+     * Format.
+   * source/h_controlmisc.prg
+     ! RTE when control's parent is not derived from TWindow class.
+   * manual/Changelog.htm
+     * Updated.
+
+2016-11-12 12:03 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_xbrowse.prg
+     ! RTE when adding a column to a browse with FIXEDBLOCKS clause.
+
+2016-11-03 19:37 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_controlmisc.prg
+     * oSelf->lOldBackColor is set to -1 when a NULL BRUSH is
+       asigned to oSelf->BrushHandle.
+     ! RTE at function Events_Color_InTab.
+   * source/c_windows.c
+     * Format.
+
+2016-11-02 10:26 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * distros/MakeDistro.bat
+     + /L switch to skip the build of the IDE.
+   * include/oohg.h
+     + Declaration for AnsiToWide C function.
+   * source/c_winapimisc.c
+     + AnsiToWide function.
+   * source/c_windows.c
+     * Function SetLayeredWindowAttributes was rewritten.
+   * source/h_controlmisc.prg
+     * Method Events_Color of class TControl now saves a reference
+       to NULL_BRUSH when data Transparent is .T.
+     * Function Events_Color_InTab now saves a reference
+       to NULL_BRUSH when data Transparent is .T.
+   * source/h_form.prg
+     * Assign NULL instead of 0 to oSelf->BrushHandle.
+
 2016-10-25 18:37 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * distros/MakeDistro.bat
    * doc/classes.txt

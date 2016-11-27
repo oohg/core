@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.306 2016-10-22 16:23:55 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.307 2016-11-27 15:13:46 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -145,6 +145,7 @@ CLASS TGrid FROM TControl
    DATA nWidth                    INIT 240
    DATA OnAbortEdit               INIT Nil
    DATA OnAppend                  INIT Nil
+   DATA OnBeforeEditCell          INIT Nil
    DATA OnCheckChange             INIT Nil
    DATA onDelete                  INIT Nil
    DATA OnDispInfo                INIT Nil
@@ -270,7 +271,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
-               oninsert, editend, lAtFirst ) CLASS TGrid
+               oninsert, editend, lAtFirst, bbeforeditcell ) CLASS TGrid
 *------------------------------------------------------------------------------*
 
    ::Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
@@ -291,7 +292,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
    ::Define4( change, dblclick, gotfocus, lostfocus, ondispinfo, editcell, ;
               onenter, oncheck, abortedit, click, bbeforecolmove, baftercolmove, ;
               bbeforecolsize, baftercolsize, bbeforeautofit, ondelete, ;
-              bdelwhen, onappend, bheadrclick, onrclick, oninsert, editend )
+              bdelwhen, onappend, bheadrclick, onrclick, oninsert, editend, ;
+              bbeforeditcell )
 
 Return Self
 
@@ -489,32 +491,34 @@ Return Self
 METHOD Define4( change, dblclick, gotfocus, lostfocus, ondispinfo, editcell, ;
                 onenter, oncheck, abortedit, click, bbeforecolmove, baftercolmove, ;
                 bbeforecolsize, baftercolsize, bbeforeautofit, ondelete, ;
-                bDelWhen, onappend, bheadrclick, onrclick, oninsert, editend ) CLASS TGrid
+                bDelWhen, onappend, bheadrclick, onrclick, oninsert, editend, ;
+                bbeforeditcell ) CLASS TGrid
 *------------------------------------------------------------------------------*
 
    // Must be set after control is initialized
-   ASSIGN ::OnChange       VALUE change         TYPE "B"
-   ASSIGN ::OnDblClick     VALUE dblclick       TYPE "B"
-   ASSIGN ::OnGotFocus     VALUE gotfocus       TYPE "B"
-   ASSIGN ::OnLostFocus    VALUE lostfocus      TYPE "B"
-   ASSIGN ::OnDispInfo     VALUE ondispinfo     TYPE "B"
-   ASSIGN ::OnEditCell     VALUE editcell       TYPE "B"
-   ASSIGN ::OnEnter        VALUE onenter        TYPE "B"
-   ASSIGN ::OnCheckChange  VALUE oncheck        TYPE "B"
-   ASSIGN ::OnAbortEdit    VALUE abortedit      TYPE "B"
-   ASSIGN ::OnClick        VALUE click          TYPE "B"
-   ASSIGN ::bBeforeColMove VALUE bbeforecolmove TYPE "B"
-   ASSIGN ::bAfterColMove  VALUE baftercolmove  TYPE "B"
-   ASSIGN ::bBeforeColSize VALUE bbeforecolsize TYPE "B"
-   ASSIGN ::bAfterColSize  VALUE baftercolsize  TYPE "B"
-   ASSIGN ::bBeforeAutofit VALUE bbeforeautofit TYPE "B"
-   ASSIGN ::OnDelete       VALUE ondelete       TYPE "B"
-   ASSIGN ::bDelWhen       VALUE bdelwhen       TYPE "B"
-   ASSIGN ::OnAppend       VALUE onappend       TYPE "B"
-   ASSIGN ::bHeadRClick    VALUE bheadrclick    TYPE "B"
-   ASSIGN ::OnRClick       VALUE onrclick       TYPE "B"
-   ASSIGN ::OnInsert       VALUE oninsert       TYPE "B"
-   ASSIGN ::OnEditCellEnd  VALUE editend        TYPE "B"
+   ASSIGN ::OnChange         VALUE change         TYPE "B"
+   ASSIGN ::OnDblClick       VALUE dblclick       TYPE "B"
+   ASSIGN ::OnGotFocus       VALUE gotfocus       TYPE "B"
+   ASSIGN ::OnLostFocus      VALUE lostfocus      TYPE "B"
+   ASSIGN ::OnDispInfo       VALUE ondispinfo     TYPE "B"
+   ASSIGN ::OnEditCell       VALUE editcell       TYPE "B"
+   ASSIGN ::OnEnter          VALUE onenter        TYPE "B"
+   ASSIGN ::OnCheckChange    VALUE oncheck        TYPE "B"
+   ASSIGN ::OnAbortEdit      VALUE abortedit      TYPE "B"
+   ASSIGN ::OnClick          VALUE click          TYPE "B"
+   ASSIGN ::bBeforeColMove   VALUE bbeforecolmove TYPE "B"
+   ASSIGN ::bAfterColMove    VALUE baftercolmove  TYPE "B"
+   ASSIGN ::bBeforeColSize   VALUE bbeforecolsize TYPE "B"
+   ASSIGN ::bAfterColSize    VALUE baftercolsize  TYPE "B"
+   ASSIGN ::bBeforeAutofit   VALUE bbeforeautofit TYPE "B"
+   ASSIGN ::OnDelete         VALUE ondelete       TYPE "B"
+   ASSIGN ::bDelWhen         VALUE bdelwhen       TYPE "B"
+   ASSIGN ::OnAppend         VALUE onappend       TYPE "B"
+   ASSIGN ::bHeadRClick      VALUE bheadrclick    TYPE "B"
+   ASSIGN ::OnRClick         VALUE onrclick       TYPE "B"
+   ASSIGN ::OnInsert         VALUE oninsert       TYPE "B"
+   ASSIGN ::OnEditCellEnd    VALUE editend        TYPE "B"
+   ASSIGN ::OnBeforeEditCell VALUE bbeforeditcell TYPE "B"
 
 Return Self
 
@@ -2232,7 +2236,7 @@ Return uValue2
 *------------------------------------------------------------------------------*
 METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPos, lChange ) CLASS TGrid
 *------------------------------------------------------------------------------*
-Local lRet
+Local lRet, lRet2
 
    If ::FirstVisibleColumn == 0
       Return .F.
@@ -2259,68 +2263,104 @@ Local lRet
       ::SetControlValue( nRow )
    EndIf
 
-   lRet := ::EditCell2( @nRow, @nCol, @EditControl, uOldValue, @uValue, cMemVar, nOnFocusPos )
+   If HB_IsBlock( ::OnBeforeEditCell )
+      _OOHG_ThisItemCellValue := ::Cell( nRow, nCol )
+      lRet2 := ::DoEvent( ::OnBeforeEditCell, "BEFOREEDITCELL", { nRow, nCol } )
+      _ClearThisCellInfo()
+      If ! HB_IsLogical( lRet2 )
+         lRet2 := .T.
+      EndIf
+   Else
+      lRet2 := .T.
+   EndIf
+
+   If lRet2
+      lRet := ::EditCell2( @nRow, @nCol, @EditControl, uOldValue, @uValue, cMemVar, nOnFocusPos )
+   Else
+      lRet := .F.
+   EndIf
+
    If lRet
       If ValType( uValue ) $ "CM"
          uValue := Trim( uValue )
       EndIf
-      _SetThisCellInfo( ::hWnd, nRow, nCol, uValue )
-      ::DoEvent( ::OnEditCellEnd, "EDITCELLEND", { nRow, nCol } )
-      _ClearThisCellInfo()
-
-      ::Cell( nRow, nCol, uValue )
-      _SetThisCellInfo( ::hWnd, nRow, nCol, uValue )
-      ::DoEvent( ::OnEditCell, "EDITCELL", { nRow, nCol } )
-      If _CheckCellNewValue( EditControl, @uValue )
-         ::Cell( nRow, nCol, uValue )
+      If HB_IsBlock( ::OnEditCellEnd )
+         _SetThisCellInfo( ::hWnd, nRow, nCol, uValue )
+         lRet2 := ::DoEvent( ::OnEditCellEnd, "EDITCELLEND", { nRow, nCol } )
+         _ClearThisCellInfo()
+         If HB_IsLogical( lRet2 ) .and. ! lRet2
+            lRet := .F.
+         EndIf
       EndIf
-      _ClearThisCellInfo()
 
-      If ! ::lCalledFromClass .AND. ::bPosition == 9
-         // Edition window lost focus, resume clic processing and process delayed click
-         ::bPosition := 0
-         If ::nDelayedClick[ 1 ] > 0
-            // A click message was delayed
-            If ::nDelayedClick[ 3 ] <= 0
-               ::SetControlValue( ::nDelayedClick[ 1 ] )
+      If lRet
+         ::Cell( nRow, nCol, uValue )
+         _SetThisCellInfo( ::hWnd, nRow, nCol, uValue )
+         If HB_IsBlock( ::OnEditCell )
+            lRet2 := ::DoEvent( ::OnEditCell, "EDITCELL", { nRow, nCol } )
+            If HB_IsLogical( lRet2 ) .and. ! lRet2
+               lRet := .F.
             EndIf
+         EndIf
+         If lRet
+            If _CheckCellNewValue( EditControl, @uValue )
+               ::Cell( nRow, nCol, uValue )
+            EndIf
+         EndIf
+         _ClearThisCellInfo()
 
-            If HB_IsNil( ::nDelayedClick[ 4 ] )
-               If HB_IsBlock( ::OnClick )
-                  If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
-                     If ! ::NestedClick
-                        ::NestedClick := ! _OOHG_NestedSameEvent()
-                        ::DoEventMouseCoords( ::OnClick, "CLICK" )
-                        ::NestedClick := .F.
+         If lRet
+            If ! ::lCalledFromClass .AND. ::bPosition == 9
+               // Edition window lost focus, resume clic processing and process delayed click
+               ::bPosition := 0
+               If ::nDelayedClick[ 1 ] > 0
+                  // A click message was delayed
+                  If ::nDelayedClick[ 3 ] <= 0
+                     ::SetControlValue( ::nDelayedClick[ 1 ] )
+                  EndIf
+
+                  If HB_IsNil( ::nDelayedClick[ 4 ] )
+                     If HB_IsBlock( ::OnClick )
+                        If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
+                           If ! ::NestedClick
+                              ::NestedClick := ! _OOHG_NestedSameEvent()
+                              ::DoEventMouseCoords( ::OnClick, "CLICK" )
+                              ::NestedClick := .F.
+                           EndIf
+                        EndIf
+                     EndIf
+                  Else
+                     If HB_IsBlock( ::OnRClick )
+                        If ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
+                           ::DoEventMouseCoords( ::OnRClick, "RCLICK" )
+                        EndIf
                      EndIf
                   EndIf
-               EndIf
-            Else
-               If HB_IsBlock( ::OnRClick )
-                  If ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
-                     ::DoEventMouseCoords( ::OnRClick, "RCLICK" )
+
+                  If ::nDelayedClick[ 3 ] > 0
+                     // change check mark
+                     ::CheckItem( ::nDelayedClick[ 3 ], ! ::CheckItem( ::nDelayedClick[ 3 ] ) )
+                  EndIf
+
+                  // fire context menu
+                  If ! HB_IsNil( ::nDelayedClick[ 4 ] ) .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
+                     ::ContextMenu:Cargo := ::nDelayedClick[ 4 ]
+                     ::ContextMenu:Activate()
                   EndIf
                EndIf
-            EndIf
-
-            If ::nDelayedClick[ 3 ] > 0
-               // change check mark
-               ::CheckItem( ::nDelayedClick[ 3 ], ! ::CheckItem( ::nDelayedClick[ 3 ] ) )
-            EndIf
-
-            // fire context menu
-            If ! HB_IsNil( ::nDelayedClick[ 4 ] ) .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
-               ::ContextMenu:Cargo := ::nDelayedClick[ 4 ]
-               ::ContextMenu:Activate()
             EndIf
          EndIf
       EndIf
-   ElseIf ::lAppendMode
-      ::DoEvent( ::OnAbortEdit, "ABORTEDIT", { 0, 0 } )
-      ::DeleteItem( ::ItemCount )
-      ::SetControlValue( ::ItemCount )
-   Else
-      ::DoEvent( ::OnAbortEdit, "ABORTEDIT", { nRow, nCol } )
+   EndIf
+
+   If ! lRet
+      If ::lAppendMode
+         ::DoEvent( ::OnAbortEdit, "ABORTEDIT", { 0, 0 } )
+         ::DeleteItem( ::ItemCount )
+         ::SetControlValue( ::ItemCount )
+      Else
+         ::DoEvent( ::OnAbortEdit, "ABORTEDIT", { nRow, nCol } )
+      EndIf
    EndIf
 
 Return lRet
@@ -3873,7 +3913,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
-               oninsert, editend, lAtFirst ) CLASS TGridMulti
+               oninsert, editend, lAtFirst, bbeforeditcell ) CLASS TGridMulti
 *------------------------------------------------------------------------------*
 Local nStyle := 0
 
@@ -3897,7 +3937,8 @@ Local nStyle := 0
    ::Define4( change, dblclick, gotfocus, lostfocus, ondispinfo, editcell, ;
               onenter, oncheck, abortedit, click, bBeforeColMove, bAfterColMove, ;
               bBeforeColSize, bAfterColSize, bBeforeAutofit, onDelete, ;
-              bDelWhen, onappend, bHeadRClick, onrclick, oninsert, editend )
+              bDelWhen, onappend, bHeadRClick, onrclick, oninsert, editend, ;
+              bbeforeditcell )
 
 Return Self
 
@@ -4073,7 +4114,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
-               oninsert, editend, lAtFirst ) CLASS TGridByCell
+               oninsert, editend, lAtFirst, bbeforeditcell ) CLASS TGridByCell
 *------------------------------------------------------------------------------*
 
    ASSIGN lFocusRect          VALUE lFocusRect TYPE "L" DEFAULT .F.
@@ -4101,7 +4142,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
    ::Define4( change, dblclick, gotfocus, lostfocus, ondispinfo, editcell, ;
               onenter, oncheck, abortedit, click, bBeforeColMove, bAfterColMove, ;
               bBeforeColSize, bAfterColSize, bBeforeAutofit, onDelete, ;
-              bDelWhen, onappend, bHeadRClick, onrclick, oninsert, editend )
+              bDelWhen, onappend, bHeadRClick, onrclick, oninsert, editend, ;
+              bbeforeditcell )
 
 Return Self
 
@@ -5558,25 +5600,25 @@ Return ImageList_Size( ListView_GetImageList( hwnd, LVSIL_STATE ) )[ 1 ]
 *------------------------------------------------------------------------------*
 CLASS TGridControl
 *------------------------------------------------------------------------------*
-   DATA Type                  INIT "TGRIDCONTROL" READONLY
-   DATA oControl              INIT Nil
-   DATA oWindow               INIT Nil
-   DATA oGrid                 INIT Nil
-   DATA Value                 INIT Nil
-   DATA bWhen                 INIT Nil
-   DATA cMemVar               INIT Nil
-   DATA bValid                INIT Nil
-   DATA cValidMessage         INIT Nil
-   DATA nDefWidth             INIT 140
-   DATA nDefHeight            INIT 24
-   DATA bCancel               INIT Nil
-   DATA bOk                   INIT Nil
-   DATA lButtons              INIT .F.
-   DATA cImageOk              INIT 'EDIT_OK_16'
-   DATA cImageCancel          INIT 'EDIT_CANCEL_16'
-   DATA lLikeExcel            INIT .F.
-   DATA nOnFocusPos           INIT Nil
-   DATA lNoModal              INIT .F.
+   DATA Type                      INIT "TGRIDCONTROL" READONLY
+   DATA oControl                  INIT Nil
+   DATA oWindow                   INIT Nil
+   DATA oGrid                     INIT Nil
+   DATA Value                     INIT Nil
+   DATA bWhen                     INIT Nil
+   DATA cMemVar                   INIT Nil
+   DATA bValid                    INIT Nil
+   DATA cValidMessage             INIT Nil
+   DATA nDefWidth                 INIT 140
+   DATA nDefHeight                INIT 24
+   DATA bCancel                   INIT Nil
+   DATA bOk                       INIT Nil
+   DATA lButtons                  INIT .F.
+   DATA cImageOk                  INIT 'EDIT_OK_16'
+   DATA cImageCancel              INIT 'EDIT_CANCEL_16'
+   DATA lLikeExcel                INIT .F.
+   DATA nOnFocusPos               INIT Nil
+   DATA lNoModal                  INIT .F.
 
    METHOD New                     BLOCK { | Self | Self }
    METHOD CreateWindow

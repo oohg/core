@@ -1,5 +1,5 @@
 /*
- * $Id: h_error.prg,v 1.65 2016-10-17 01:55:34 fyurisich Exp $
+ * $Id: h_error.prg,v 1.66 2016-11-27 15:13:46 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -106,7 +106,7 @@ LOCAL cMessage
       RETURN .T.
    ENDIF
 
-   // Set NetErr() of there was a database open error
+   // Set NetErr() if there was a database open error
    IF oError:genCode == EG_OPEN .AND. ;
       oError:osCode == 32 .AND. ;
       oError:canDefault
@@ -163,9 +163,9 @@ LOCAL cMessage
 
    // add either filename or operation
    DO CASE
-   CASE !Empty( oError:filename )
+   CASE ! Empty( oError:filename )
       cMessage += ": " + oError:filename
-   CASE !Empty( oError:operation )
+   CASE ! Empty( oError:operation )
       cMessage += ": " + oError:operation
    ENDCASE
 

@@ -1,11 +1,34 @@
 /*
- * $Id: ChangeLog,v 1.1611 2016-11-12 15:04:18 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1612 2016-11-27 15:13:46 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2016-11-27 12:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_error.prg
+     ! Typo.
+     * Format.
+   * source/h_grid.prg
+     + DATA OnBeforeEditCell.
+       If setted, this code block is evaluated before initiating the
+       cell's edition and if it returns false the edition is aborted
+       as if the user has desisted.
+       To avoid bad side effects  do not delete items or change
+       control's value inside this code block.
+   * source/h_browse.prg
+     + Support for OnBeforeEditCell.
+   * source/h_xbrowse.prg
+     + Support for OnBeforeEditCell.
+     * Format.
+   * source/h_windows.prg
+     * Format.
+   * source/h_controlmisc.prg
+     ! RTE when control's parent is not derived from TWindow class.
+   * manual/Changelog.htm
+     * Updated.
 
 2016-11-12 12:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_xbrowse.prg

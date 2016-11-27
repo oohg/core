@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.261 2016-10-25 21:38:01 fyurisich Exp $
+ * $Id: h_windows.prg,v 1.262 2016-11-27 15:13:47 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1407,11 +1407,13 @@ Local nPos, lDone
    EndIf
 Return lDone
 
+*------------------------------------------------------------------------------*
 STATIC FUNCTION LookForKey_Check_bKeyDown( bKeyDown, nKey, nFlags, Self )
+*------------------------------------------------------------------------------*
 Local lDone
    If HB_IsBlock( bKeyDown )
       lDone := ::DoEvent( bKeyDown, "KEYDOWN", { nKey, nFlags } )
-      If !HB_IsLogical( lDone )
+      If ! HB_IsLogical( lDone )
          lDone := .F.
       EndIf
    Else

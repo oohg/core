@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.156 2016-11-12 15:04:18 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.157 2016-11-27 15:13:47 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -239,7 +239,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                bBeforeAutofit, lLikeExcel, lButtons, lNoDelMsg, lFixedCtrls, ;
                lNoShowEmptyRow, lUpdCols, bHeadRClick, lNoModal, lExtDbl, ;
                lSilent, lAltA, lNoShowAlways, onrclick, lCheckBoxes, oncheck, ;
-               rowrefresh, aDefaultValues, editend, lAtFirst ) CLASS TXBrowse
+               rowrefresh, aDefaultValues, editend, lAtFirst, bbeforeditcell ) CLASS TXBrowse
 *------------------------------------------------------------------------------*
 Local nWidth2, nCol2, oScroll, z
 
@@ -383,7 +383,8 @@ Local nWidth2, nCol2, oScroll, z
    ::Define4( change, dblclick, gotfocus, lostfocus, editcell, onenter, ;
               oncheck, abortedit, click, bbeforecolmove, baftercolmove, ;
               bbeforecolsize, baftercolsize, bbeforeautofit, ondelete, ;
-              bdelwhen, onappend, bheadrclick, onrclick, editend, rowrefresh )
+              bdelwhen, onappend, bheadrclick, onrclick, editend, rowrefresh, ;
+              bbeforeditcell )
 
 Return Self
 
@@ -405,31 +406,33 @@ Return Self
 METHOD Define4( change, dblclick, gotfocus, lostfocus, editcell, onenter, ;
                 oncheck, abortedit, click, bbeforecolmove, baftercolmove, ;
                 bbeforecolsize, baftercolsize, bbeforeautofit, ondelete, ;
-                bDelWhen, onappend, bheadrclick, onrclick, editend, rowrefresh ) CLASS TXBrowse
+                bDelWhen, onappend, bheadrclick, onrclick, editend, rowrefresh, ;
+                bbeforeditcell ) CLASS TXBrowse
 *------------------------------------------------------------------------------*
 
    // Must be set after control is initialized
-   ASSIGN ::OnChange       VALUE change         TYPE "B"
-   ASSIGN ::OnDblClick     VALUE dblclick       TYPE "B"
-   ASSIGN ::OnGotFocus     VALUE gotfocus       TYPE "B"
-   ASSIGN ::OnLostFocus    VALUE lostfocus      TYPE "B"
-   ASSIGN ::OnEditCell     VALUE editcell       TYPE "B"
-   ASSIGN ::OnEnter        VALUE onenter        TYPE "B"
-   ASSIGN ::OnCheckChange  VALUE oncheck        TYPE "B"
-   ASSIGN ::OnAbortEdit    VALUE abortedit      TYPE "B"
-   ASSIGN ::OnClick        VALUE click          TYPE "B"
-   ASSIGN ::bBeforeColMove VALUE bbeforecolmove TYPE "B"
-   ASSIGN ::bAfterColMove  VALUE baftercolmove  TYPE "B"
-   ASSIGN ::bBeforeColSize VALUE bbeforecolsize TYPE "B"
-   ASSIGN ::bAfterColSize  VALUE baftercolsize  TYPE "B"
-   ASSIGN ::bBeforeAutofit VALUE bbeforeautofit TYPE "B"
-   ASSIGN ::OnDelete       VALUE ondelete       TYPE "B"
-   ASSIGN ::bDelWhen       VALUE bdelwhen       TYPE "B"
-   ASSIGN ::OnAppend       VALUE onappend       TYPE "B"
-   ASSIGN ::bHeadRClick    VALUE bheadrclick    TYPE "B"
-   ASSIGN ::OnRClick       VALUE onrclick       TYPE "B"
-   ASSIGN ::OnEditCellEnd  VALUE editend        TYPE "B"
-   ASSIGN ::OnRefreshRow   VALUE rowrefresh     TYPE "B"
+   ASSIGN ::OnChange         VALUE change         TYPE "B"
+   ASSIGN ::OnDblClick       VALUE dblclick       TYPE "B"
+   ASSIGN ::OnGotFocus       VALUE gotfocus       TYPE "B"
+   ASSIGN ::OnLostFocus      VALUE lostfocus      TYPE "B"
+   ASSIGN ::OnEditCell       VALUE editcell       TYPE "B"
+   ASSIGN ::OnEnter          VALUE onenter        TYPE "B"
+   ASSIGN ::OnCheckChange    VALUE oncheck        TYPE "B"
+   ASSIGN ::OnAbortEdit      VALUE abortedit      TYPE "B"
+   ASSIGN ::OnClick          VALUE click          TYPE "B"
+   ASSIGN ::bBeforeColMove   VALUE bbeforecolmove TYPE "B"
+   ASSIGN ::bAfterColMove    VALUE baftercolmove  TYPE "B"
+   ASSIGN ::bBeforeColSize   VALUE bbeforecolsize TYPE "B"
+   ASSIGN ::bAfterColSize    VALUE baftercolsize  TYPE "B"
+   ASSIGN ::bBeforeAutofit   VALUE bbeforeautofit TYPE "B"
+   ASSIGN ::OnDelete         VALUE ondelete       TYPE "B"
+   ASSIGN ::bDelWhen         VALUE bdelwhen       TYPE "B"
+   ASSIGN ::OnAppend         VALUE onappend       TYPE "B"
+   ASSIGN ::bHeadRClick      VALUE bheadrclick    TYPE "B"
+   ASSIGN ::OnRClick         VALUE onrclick       TYPE "B"
+   ASSIGN ::OnEditCellEnd    VALUE editend        TYPE "B"
+   ASSIGN ::OnRefreshRow     VALUE rowrefresh     TYPE "B"
+   ASSIGN ::OnBeforeEditCell VALUE bbeforeditcell TYPE "B"
 
 Return Self
 
@@ -1884,7 +1887,7 @@ Return ! Empty( aItems )
 *------------------------------------------------------------------------------*
 METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPos, lChange, lAppend ) CLASS TXBrowse
 *------------------------------------------------------------------------------*
-Local lRet, bReplaceField, oWorkArea, i, aItem, aRepl, aVals, oCtr, uVal, bRep, aNewI
+Local lRet, bReplaceField, oWorkArea, i, aItem, aRepl, aVals, oCtr, uVal, bRep, aNewI, lRet2
 
    If ::lLocked
       Return .F.
@@ -1908,7 +1911,6 @@ Local lRet, bReplaceField, oWorkArea, i, aItem, aRepl, aVals, oCtr, uVal, bRep, 
       Return .F.
    EndIf
    If oWorkArea:EOF()
-      ::lAppendMode := .T.
       lAppend := .T.
    EndIf
    If ! HB_IsNumeric( nCol )
@@ -1930,6 +1932,7 @@ Local lRet, bReplaceField, oWorkArea, i, aItem, aRepl, aVals, oCtr, uVal, bRep, 
    ::SetControlValue( nRow, nCol )                                // Second parameter is needed by TXBrowseByCell:EditCell
 
    If lAppend
+      ::lAppendMode := .T.
       aItem := Array( Len( ::aHeaders ) )
       aVals := Array( Len( ::aHeaders ) )
       aRepl := Array( Len( ::aHeaders ) )
@@ -1967,7 +1970,23 @@ Local lRet, bReplaceField, oWorkArea, i, aItem, aRepl, aVals, oCtr, uVal, bRep, 
       ::GetCellType( nCol, @EditControl, @uOldValue, @cMemVar, @bReplaceField, lAppend )
    EndIf
 
-   lRet := ::EditCell2( @nRow, @nCol, @EditControl, uOldValue, @uValue, cMemVar, nOnFocusPos )
+   If HB_IsBlock( ::OnBeforeEditCell )
+      _OOHG_ThisItemCellValue := uOldValue
+      lRet2 := ::DoEvent( ::OnBeforeEditCell, "BEFOREEDITCELL", { nRow, nCol } )
+      _ClearThisCellInfo()
+      If ! HB_IsLogical( lRet2 )
+         lRet2 := .T.
+      EndIf
+   Else
+      lRet2 := .T.
+   EndIf
+
+   If lRet2
+      lRet := ::EditCell2( @nRow, @nCol, @EditControl, uOldValue, @uValue, cMemVar, nOnFocusPos )
+   Else
+      lRet := .F.
+   EndIf
+
    If lRet
       _SetThisCellInfo( ::hWnd, nRow, nCol, uValue )
       ::DoEvent( ::OnEditCellEnd, "EDITCELLEND", { nRow, nCol } )
