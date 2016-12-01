@@ -1,5 +1,5 @@
 /*
- * $Id: h_radio.prg,v 1.50 2016-10-22 16:23:55 fyurisich Exp $
+ * $Id: h_radio.prg,v 1.51 2016-12-01 00:27:26 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -74,9 +74,9 @@ CLASS TRadioGroup FROM TLabel
    DATA aOptions               INIT {}
    DATA TabHandle              INIT 0
    DATA lHorizontal            INIT .F.
-   DATA nSpacing               INIT nil
+   DATA nSpacing               INIT Nil
    DATA lThemed                INIT .F.
-   DATA oBkGrnd                INIT nil
+   DATA oBkGrnd                INIT Nil
    DATA LeftAlign              INIT .F.
 
    METHOD RowMargin            BLOCK { |Self| - ::Row }
@@ -138,8 +138,6 @@ Local i, oItem, uToolTip, uReadOnly
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, , lRtl )
    ::InitStyle( , , Invisible, ! ::TabStop, lDisabled )
    ::Register( 0, , HelpId, , tooltip )
-
-   ::AutoSize := autosize
 
    ::aOptions := {}
 
@@ -224,7 +222,7 @@ RETURN nRet
 METHOD SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout ) CLASS TRadioGroup
 *------------------------------------------------------------------------------*
    AEVAL( ::aOptions, { |o| o:SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout ) } )
-RETURN ::Super:SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout )
+RETURN Nil
 
 *------------------------------------------------------------------------------*
 METHOD SizePos( Row, Col, Width, Height ) CLASS TRadioGroup
@@ -236,7 +234,7 @@ Local nDeltaRow, nDeltaCol, uRet
    nDeltaRow := ::Row - nDeltaRow
    nDeltaCol := ::Col - nDeltaCol
    AEVAL( ::aControls, { |o| o:Visible := .F., o:SizePos( o:Row + nDeltaRow, o:Col + nDeltaCol, Width, Height ), o:Visible := .T. } )
-Return uRet
+RETURN uRet
 
 *------------------------------------------------------------------------------*
 METHOD Value( nValue ) CLASS TRadioGroup
@@ -330,7 +328,7 @@ Local nPos2, Spacing, oItem, x, y, nValue, hWnd
       nPosition := LEN( ::aOptions ) + 1
    EndIf
 
-   AADD( ::aOptions, nil )
+   AADD( ::aOptions, Nil )
    AINS( ::aOptions, nPosition )
    nPos2 := LEN( ::aOptions )
    DO WHILE nPos2 > nPosition
@@ -375,7 +373,7 @@ Local nPos2, Spacing, oItem, x, y, nValue, hWnd
    If nValue >= nPosition
       ::Value := ::Value
    EndIf
-Return nil
+Return Nil
 
 *------------------------------------------------------------------------------*
 METHOD DeleteItem( nItem ) CLASS TRadioGroup
@@ -397,7 +395,7 @@ Local nValue
    If nValue >= nItem
       ::Value := ::Value
    EndIf
-Return nil
+Return Nil
 
 *------------------------------------------------------------------------------*
 METHOD Caption( nItem, uValue ) CLASS TRadioGroup
@@ -497,7 +495,7 @@ CLASS TRadioItem FROM TLabel
    DATA nHeight       INIT 25
    DATA IconWidth     INIT 19
    DATA TabHandle     INIT 0
-   DATA oBkGrnd       INIT 0
+   DATA oBkGrnd       INIT Nil
    DATA LeftAlign     INIT .F.
 
    METHOD Define
@@ -545,7 +543,7 @@ Local ControlHandle, nStyle, oContainer
 
    If _OOHG_UsesVisualStyle()
       oContainer := ::Container
-      DO WHILE ! oContainer == NIL
+      DO WHILE ! oContainer == Nil
          If oContainer:Type == "TAB"
             ::TabHandle := oContainer:hWnd
             EXIT
@@ -556,9 +554,8 @@ Local ControlHandle, nStyle, oContainer
 
    ::Transparent := transparent
    ::AutoSize    := autosize
-   ::Caption := caption
-
-   ::Value := value
+   ::Caption     := caption
+   ::Value       := value
 Return Self
 
 *------------------------------------------------------------------------------*
@@ -579,17 +576,17 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TRadioItem
    If nMsg == WM_LBUTTONDBLCLK
       If HB_IsBlock( ::OnDblClick )
          ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
-      ElseIf ! ::Container == NIL
+      ElseIf ! ::Container == Nil
          ::Container:DoEventMouseCoords( ::Container:OnDblClick, "DBLCLICK" )
       EndIf
-      Return nil
+      Return Nil
    ElseIf nMsg == WM_RBUTTONUP
       If HB_IsBlock( ::OnRClick )
          ::DoEventMouseCoords( ::OnRClick, "RCLICK" )
-      ElseIf ! ::Container == NIL
+      ElseIf ! ::Container == Nil
          ::Container:DoEventMouseCoords( ::Container:OnRClick, "RCLICK" )
       EndIf
-      Return nil
+      Return Nil
    EndIf
 RETURN ::Super:Events( hWnd, nMsg, wParam, lParam )
 
@@ -601,7 +598,7 @@ Local Hi_wParam := HIWORD( wParam )
 Local lTab
 */
    If Hi_wParam == BN_CLICKED
-      If ! ::Container == NIL
+      If ! ::Container == Nil
 /*
          lTab := ( ::Container:TabStop .AND. ::Value )
          If ! lTab == ::TabStop
@@ -610,7 +607,7 @@ Local lTab
 */
          ::Container:DoChange()
       EndIf
-      Return nil
+      Return Nil
    EndIf
 Return ::Super:Events_Command( wParam )
 
@@ -625,8 +622,8 @@ METHOD Events_Notify( wParam, lParam ) CLASS TRadioItem
 Local nNotify := GetNotifyCode( lParam )
 
    If nNotify == NM_CUSTOMDRAW
-      If ! ::Container == NIL .AND. ::Container:lThemed .AND. IsAppThemed()
-         Return TRadioItem_Notify_CustomDraw( Self, lParam, ::Caption, HB_IsObject( ::oBkGrnd ) )
+      If ! ::Container == Nil .AND. ::Container:lThemed .AND. IsAppThemed()
+         Return TRadioItem_Notify_CustomDraw( Self, lParam, ::Caption, HB_IsObject( ::oBkGrnd ), ::LeftAlign )
       EndIf
    EndIf
 
@@ -636,11 +633,7 @@ Return ::Super:Events_Notify( wParam, lParam )
 
 
 
-EXTERN InitRadioGroup, InitRadioButton
-
 #pragma BEGINDUMP
-
-// #define s_Super s_TLabel
 
 #ifndef HB_OS_WIN_32_USED
    #define HB_OS_WIN_32_USED
@@ -687,6 +680,49 @@ typedef struct _MARGINS {
 } MARGINS, *PMARGINS;
 
 typedef HANDLE HTHEME;
+
+typedef enum THEMESIZE {
+  TS_MIN,
+  TS_TRUE,
+  TS_DRAW
+} THEMESIZE;
+
+#define DTT_TEXTCOLOR (__MSABI_LONG(1U) << 0)
+#define DTT_BORDERCOLOR (__MSABI_LONG(1U) << 1)
+#define DTT_SHADOWCOLOR (__MSABI_LONG(1U) << 2)
+#define DTT_SHADOWTYPE (__MSABI_LONG(1U) << 3)
+#define DTT_SHADOWOFFSET (__MSABI_LONG(1U) << 4)
+#define DTT_BORDERSIZE (__MSABI_LONG(1U) << 5)
+#define DTT_FONTPROP (__MSABI_LONG(1U) << 6)
+#define DTT_COLORPROP (__MSABI_LONG(1U) << 7)
+#define DTT_STATEID (__MSABI_LONG(1U) << 8)
+#define DTT_CALCRECT (__MSABI_LONG(1U) << 9)
+#define DTT_APPLYOVERLAY (__MSABI_LONG(1U) << 10)
+#define DTT_GLOWSIZE (__MSABI_LONG(1U) << 11)
+#define DTT_CALLBACK (__MSABI_LONG(1U) << 12)
+#define DTT_COMPOSITED (__MSABI_LONG(1U) << 13)
+#define DTT_VALIDBITS (DTT_TEXTCOLOR | DTT_BORDERCOLOR | DTT_SHADOWCOLOR | DTT_SHADOWTYPE | DTT_SHADOWOFFSET | DTT_BORDERSIZE | \
+                       DTT_FONTPROP | DTT_COLORPROP | DTT_STATEID | DTT_CALCRECT | DTT_APPLYOVERLAY | DTT_GLOWSIZE | DTT_COMPOSITED)
+
+typedef int (WINAPI *DTT_CALLBACK_PROC)(HDC hdc,LPWSTR pszText,int cchText,LPRECT prc,UINT dwFlags,LPARAM lParam);
+
+typedef struct _DTTOPTS {
+    DWORD dwSize;
+    DWORD dwFlags;
+    COLORREF crText;
+    COLORREF crBorder;
+    COLORREF crShadow;
+    int iTextShadowType;
+    POINT ptShadowOffset;
+    int iBorderSize;
+    int iFontPropId;
+    int iColorPropId;
+    int iStateId;
+    WINBOOL fApplyOverlay;
+    int iGlowSize;
+    DTT_CALLBACK_PROC pfnDrawTextCallback;
+    LPARAM lParam;
+} DTTOPTS, *PDTTOPTS;
 
 enum {
 	BP_PUSHBUTTON = 1,
@@ -755,57 +791,58 @@ HB_FUNC( INITRADIOBUTTON )
    HWNDret( hbutton );
 }
 
-/* http://devel.no-ip.org/programming/static/os/ReactOS-0.3.14/dll/win32/comctl32/theme_button.c */
-
-typedef int (CALLBACK *CALL_OPENTHEMEDATA )( HWND, LPCWSTR );
-typedef int (CALLBACK *CALL_DRAWTHEMEBACKGROUND )( HTHEME, HDC, int, int, const RECT*, const RECT* );
-typedef int (CALLBACK *CALL_GETTHEMEBACKGROUNDCONTENTRECT )( HTHEME, HDC, int, int, const RECT*, RECT* );
 typedef int (CALLBACK *CALL_CLOSETHEMEDATA )( HTHEME );
+typedef int (CALLBACK *CALL_DRAWTHEMEBACKGROUND )( HTHEME, HDC, int, int, const RECT*, const RECT* );
 typedef int (CALLBACK *CALL_DRAWTHEMEPARENTBACKGROUND )( HWND, HDC, RECT* );
+typedef int (CALLBACK *CALL_DRAWTHEMETEXTEX )( HTHEME, HDC, int, int, LPCWSTR, int, DWORD, const RECT*, const DTTOPTS *pOptions );
+typedef int (CALLBACK *CALL_GETTHEMEBACKGROUNDCONTENTRECT )( HTHEME, HDC, int, int, const RECT*, RECT* );
+typedef int (CALLBACK *CALL_GETTHEMEPARTSIZE )( HTHEME, HDC, int, int, const RECT*, THEMESIZE, SIZE* );
+typedef int (CALLBACK *CALL_ISTHEMEBACKGROUNDPARTIALLYTRANSPARENT )( HTHEME, int, int );
+typedef int (CALLBACK *CALL_OPENTHEMEDATA )( HWND, LPCWSTR );
 
-int TRadioItem_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption, BOOL bDrawThemeParentBackground )
+int TRadioItem_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption, BOOL bDrawThemeParentBackground, BOOL bLeftAlign )
 {
-   HMODULE hInstDLL;
-   LPNMCUSTOMDRAW pCustomDraw = (LPNMCUSTOMDRAW) lParam;
-   CALL_DRAWTHEMEPARENTBACKGROUND dwProcDrawThemeParentBackground;
-   CALL_OPENTHEMEDATA dwProcOpenThemeData;
-   HTHEME hTheme;
-   LONG style, state;
-   int state_id, checkState, drawState, iNeeded;
-   CALL_DRAWTHEMEBACKGROUND dwProcDrawThemeBackground;
-   CALL_GETTHEMEBACKGROUNDCONTENTRECT dwProcGetThemeBackgroundContentRect;
-   RECT content_rect, aux_rect;
-   CALL_CLOSETHEMEDATA dwProcCloseThemeData;
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   LPNMCUSTOMDRAW pCustomDraw = (LPNMCUSTOMDRAW) lParam;
+   CALL_CLOSETHEMEDATA dwProcCloseThemeData;
+   CALL_DRAWTHEMEBACKGROUND dwProcDrawThemeBackground;
+   CALL_DRAWTHEMEPARENTBACKGROUND dwProcDrawThemeParentBackground;
+   CALL_DRAWTHEMETEXTEX dwProcDrawThemeTextEx;
+   CALL_GETTHEMEBACKGROUNDCONTENTRECT dwProcGetThemeBackgroundContentRect;
+   CALL_GETTHEMEPARTSIZE dwProcGetThemePartSize;
+   CALL_ISTHEMEBACKGROUNDPARTIALLYTRANSPARENT dwProcIsThemeBackgroundPartiallyTransparent;
+   CALL_OPENTHEMEDATA dwProcOpenThemeData;
+   DTTOPTS pOptions;
+   HMODULE hInstDLL;
+   HTHEME hTheme;
+   int state_id, checkState, drawState;
+   LONG style, state;
+   RECT content_rect, aux_rect;
+   SIZE s;
    static const int rb_states[2][5] =
    {
       { RBS_UNCHECKEDNORMAL, RBS_UNCHECKEDHOT, RBS_UNCHECKEDPRESSED, RBS_UNCHECKEDDISABLED, RBS_UNCHECKEDNORMAL },
       { RBS_CHECKEDNORMAL,   RBS_CHECKEDHOT,   RBS_CHECKEDPRESSED,   RBS_CHECKEDDISABLED,   RBS_CHECKEDNORMAL }
    };
 
-   hInstDLL = LoadLibrary( "UXTHEME.DLL" );
-   if( ! hInstDLL )
+   if( pCustomDraw->dwDrawStage == CDDS_PREERASE || pCustomDraw->dwDrawStage == CDDS_PREPAINT )
    {
-      return CDRF_DODEFAULT;
-   }
-
-   if( bDrawThemeParentBackground & ( pCustomDraw->dwDrawStage == CDDS_PREERASE ) )
-   {
-      /* erase background (according to parent window's themed background) */
-      dwProcDrawThemeParentBackground = (CALL_DRAWTHEMEPARENTBACKGROUND) GetProcAddress( hInstDLL, "DrawThemeParentBackground" );
-      if( ! dwProcDrawThemeParentBackground )
+      hInstDLL = LoadLibrary( "UXTHEME.DLL" );
+      if( ! hInstDLL )
       {
-         FreeLibrary( hInstDLL );
          return CDRF_DODEFAULT;
       }
-      ( dwProcDrawThemeParentBackground )( pCustomDraw->hdr.hwndFrom, pCustomDraw->hdc, &pCustomDraw->rc );
-   }
 
- 	if (pCustomDraw->dwDrawStage == CDDS_PREERASE || pCustomDraw->dwDrawStage == CDDS_PREPAINT)
-   {
-      /* get theme handle */
+      dwProcCloseThemeData = (CALL_CLOSETHEMEDATA) GetProcAddress( hInstDLL, "CloseThemeData" );
+      dwProcDrawThemeBackground = (CALL_DRAWTHEMEBACKGROUND) GetProcAddress( hInstDLL, "DrawThemeBackground" );
+      dwProcDrawThemeParentBackground = (CALL_DRAWTHEMEPARENTBACKGROUND) GetProcAddress( hInstDLL, "DrawThemeParentBackground" );
+      dwProcDrawThemeTextEx = (CALL_DRAWTHEMETEXTEX) GetProcAddress( hInstDLL, "DrawThemeTextEx" );
+      dwProcGetThemeBackgroundContentRect = (CALL_GETTHEMEBACKGROUNDCONTENTRECT) GetProcAddress( hInstDLL, "GetThemeBackgroundContentRect" );
+      dwProcGetThemePartSize = (CALL_GETTHEMEPARTSIZE) GetProcAddress( hInstDLL, "GetThemePartSize" );
+      dwProcIsThemeBackgroundPartiallyTransparent = (CALL_ISTHEMEBACKGROUNDPARTIALLYTRANSPARENT) GetProcAddress( hInstDLL, "IsThemeBackgroundPartiallyTransparent" );
       dwProcOpenThemeData = (CALL_OPENTHEMEDATA) GetProcAddress( hInstDLL, "OpenThemeData" );
-      if( ! dwProcOpenThemeData )
+
+      if( ! ( dwProcCloseThemeData && dwProcDrawThemeBackground && dwProcDrawThemeParentBackground && dwProcDrawThemeTextEx && dwProcGetThemeBackgroundContentRect && dwProcGetThemePartSize && dwProcIsThemeBackgroundPartiallyTransparent && dwProcOpenThemeData ) )
       {
          FreeLibrary( hInstDLL );
          return CDRF_DODEFAULT;
@@ -818,11 +855,9 @@ int TRadioItem_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption
          return CDRF_DODEFAULT;
       }
 
-      /* determine state for DrawThemeBackground()
-         note: order of these tests is significant */
+      /* determine control's state, note that the order of these tests is significant */
       style = GetWindowLong( pCustomDraw->hdr.hwndFrom, GWL_STYLE );
       state = SendMessage( pCustomDraw->hdr.hwndFrom, BM_GETSTATE, 0, 0 );
-
       if( state & BST_CHECKED )
       {
          checkState = 1;
@@ -831,7 +866,6 @@ int TRadioItem_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption
       {
          checkState = 0;
       }
-
       if( style & WS_DISABLED )
       {
          drawState = 3;
@@ -852,57 +886,82 @@ int TRadioItem_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption
       {
          drawState = 0;
       }
-
       state_id = rb_states[checkState][drawState];
 
-      /* get content rectangle */
-      dwProcGetThemeBackgroundContentRect = (CALL_GETTHEMEBACKGROUNDCONTENTRECT) GetProcAddress( hInstDLL, "GetThemeBackgroundContentRect" );
-      if( ! dwProcGetThemeBackgroundContentRect )
+      if( pCustomDraw->dwDrawStage == CDDS_PREERASE )
       {
+         if( bDrawThemeParentBackground )
+         {
+            if( ( dwProcIsThemeBackgroundPartiallyTransparent )( hTheme, BP_RADIOBUTTON, state_id ) )
+            {
+               /* pCustomDraw->rc is the item´s client area */
+               ( dwProcDrawThemeParentBackground )( pCustomDraw->hdr.hwndFrom, pCustomDraw->hdc, &pCustomDraw->rc );
+            }
+         }
+
+         ( dwProcCloseThemeData )( hTheme );
          FreeLibrary( hInstDLL );
+
          return CDRF_DODEFAULT;
       }
+
+      /* get button size */
+      ( dwProcGetThemePartSize )( hTheme, pCustomDraw->hdc, BP_RADIOBUTTON, state_id, NULL, TS_TRUE, &s );
+
+      /* get content rectangle */
       ( dwProcGetThemeBackgroundContentRect )( hTheme, pCustomDraw->hdc, BP_RADIOBUTTON, state_id, &pCustomDraw->rc, &content_rect );
 
-      /* draw themed button background appropriate to control state */
-      dwProcDrawThemeBackground = (CALL_DRAWTHEMEBACKGROUND) GetProcAddress( hInstDLL, "DrawThemeBackground" );
-      if( ! dwProcDrawThemeBackground )
-      {
-         FreeLibrary( hInstDLL );
-         return CDRF_DODEFAULT;
-      }
       aux_rect = pCustomDraw->rc;
-      aux_rect.top = aux_rect.top + (content_rect.bottom - content_rect.top - 13) / 2;
-      aux_rect.bottom = aux_rect.top + 13;
-      aux_rect.right = aux_rect.left + 13;
-      content_rect.left = aux_rect.right + 6;
+      aux_rect.top = aux_rect.top + (content_rect.bottom - content_rect.top - s.cy) / 2;
+      aux_rect.bottom = aux_rect.top + s.cy;
+      if( bLeftAlign )
+      {
+         aux_rect.left = aux_rect.right - s.cx;
+         content_rect.right = aux_rect.left - 3;
+      }
+      else
+      {
+         aux_rect.right = aux_rect.left + s.cx;
+         content_rect.left = aux_rect.right + 3;
+      }
+
+      /* aux_rect is the rect of the item's button area */
       ( dwProcDrawThemeBackground )( hTheme, pCustomDraw->hdc, BP_RADIOBUTTON, state_id, &aux_rect, NULL );
 
-      // paint caption
-      SetTextColor( pCustomDraw->hdc, ( oSelf->lFontColor == -1 ) ? GetSysColor( COLOR_BTNTEXT ) : (COLORREF) oSelf->lFontColor );
-      DrawText( pCustomDraw->hdc, cCaption, -1, &content_rect, DT_VCENTER | DT_LEFT | DT_SINGLELINE );
-
-      /* paint focus rectangle */
-      if( state & BST_FOCUS )
+      if( strlen( cCaption ) > 0 )
       {
-         aux_rect = content_rect;
-         iNeeded = DrawText( pCustomDraw->hdc, cCaption, -1, &aux_rect, DT_VCENTER | DT_LEFT | DT_SINGLELINE | DT_CALCRECT );
+         /* paint caption */
+         memset( &pOptions, 0, sizeof( DTTOPTS ) );
+         pOptions.dwSize = sizeof( DTTOPTS );
+         if( oSelf->lFontColor != -1 )
+         {
+            pOptions.dwFlags |= DTT_TEXTCOLOR;
+            pOptions.crText = (COLORREF) oSelf->lFontColor;
+         }
+         ( dwProcDrawThemeTextEx )( hTheme, pCustomDraw->hdc, BP_CHECKBOX, state_id, AnsiToWide( cCaption ), -1, DT_VCENTER | DT_LEFT | DT_SINGLELINE, &content_rect, &pOptions );
 
-         aux_rect.left -= 1;
-         aux_rect.right += 1;
-         aux_rect.top = content_rect.top + ( ( content_rect.bottom - content_rect.top - iNeeded ) / 2 ) + 2;
-         aux_rect.bottom = aux_rect.top + iNeeded - 4;
+         /* paint focus rectangle */
+         if( state & BST_FOCUS )
+         {
+            aux_rect = content_rect;
+            pOptions.dwFlags = DTT_CALCRECT;
+            ( dwProcDrawThemeTextEx )( hTheme, pCustomDraw->hdc, BP_CHECKBOX, state_id, AnsiToWide( cCaption ), -1, DT_VCENTER | DT_LEFT | DT_SINGLELINE | DT_CALCRECT, &aux_rect, &pOptions );
 
-         DrawFocusRect( pCustomDraw->hdc, &aux_rect );
+            if( bLeftAlign )
+            {
+               aux_rect.right += 1;
+            }
+            else
+            {
+               aux_rect.left -= 1;
+               aux_rect.right += 1;
+            }
+
+            DrawFocusRect( pCustomDraw->hdc, &aux_rect );
+         }
       }
 
-      /* close theme */
-      dwProcCloseThemeData = (CALL_CLOSETHEMEDATA) GetProcAddress( hInstDLL, "CloseThemeData" );
-      if( dwProcCloseThemeData )
-      {
-         ( dwProcCloseThemeData )( hTheme );
-      }
-
+      ( dwProcCloseThemeData )( hTheme );
       FreeLibrary( hInstDLL );
 
       return CDRF_SKIPDEFAULT;
@@ -913,7 +972,7 @@ int TRadioItem_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption
 
 HB_FUNC( TRADIOITEM_NOTIFY_CUSTOMDRAW)
 {
-   hb_retni( TRadioItem_Notify_CustomDraw( hb_param( 1, HB_IT_OBJECT ), (LPARAM) hb_parnl( 2 ), (LPCSTR) hb_parc( 3 ), (BOOL) hb_parl( 4 ) ) );
+   hb_retni( TRadioItem_Notify_CustomDraw( hb_param( 1, HB_IT_OBJECT ), (LPARAM) hb_parnl( 2 ), (LPCSTR) hb_parc( 3 ), (BOOL) hb_parl( 4 ), (BOOL) hb_parl( 5 ) ) );
 }
 
 #pragma ENDDUMP

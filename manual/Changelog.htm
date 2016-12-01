@@ -1,5 +1,5 @@
 <!--
-$Id: Changelog.htm,v 1.104 2016-11-27 15:13:46 fyurisich Exp $
+$Id: Changelog.htm,v 1.105 2016-12-01 00:27:26 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -142,6 +142,24 @@ CHANGELOG</div>
 </div>
 <div id="winchm_template_content">
 <pre>
+2016-11-30 21:27 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * include/i_altsyntax.ch
+   * include/i_browse.ch
+   * include/i_grid.ch
+   * include/i_xbrowse.ch
+     + ONBEFOREEDITCELL clause.
+   * source/h_label.prg
+     * Format.
+   * source/h_radio.prg
+     ! RadioGroup with AUTOSIZE clause is not painted.
+     * DATA oBkGrnd initialized to Nil instead of 0.
+     * Format.
+     + Left alignment of THEMED items.
+     * CustomDraw is now performed using DrawThemeTextEx(),
+       GetThemePartSize() and IsThemeBackgroundPartiallyTransparent().
+   * manual/Changelog.htm
+     * Updated.
+
 2016-11-27 12:12 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * source/h_error.prg
      ! Typo.

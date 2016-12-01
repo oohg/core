@@ -1,5 +1,5 @@
 /*
- * $Id: i_grid.ch,v 1.47 2016-10-17 21:39:26 fyurisich Exp $
+ * $Id: i_grid.ch,v 1.48 2016-12-01 00:27:26 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -164,6 +164,7 @@ STANDARD VERSION
       [ <dummy18: ONINSERT, ON INSERT> <oninsert> ] ;
       [ <dummy19: ONEDITCELLEND, ON EDITCELLEND> <editend> ] ;
       [ <efv: EDITFIRSTVISIBLE> ] ;
+      [ <dummy20: ONBEFOREEDITCELL, ON BEFOREEDITCELL> <beforedit> ] ;
    =>;
       [ <obj> := ] _OOHG_SelectSubClass( IIF( <.bycell.>, TGridByCell(), ;
             IIF( <.multiselect.>, TGridMulti(), TGrid() ) ), ;
@@ -192,7 +193,7 @@ STANDARD VERSION
             <{bheadrclick}>, ! <.noclick.>, ! <.norclick.>, <.extdbl.>, ;
             <.silent.>, Upper( #<alta> ) == "ENABLEALTA", <.noshow.>, ;
             Upper( #<none> ) == "NONEUNSELS", <.cbe.>, <{rclick}>, ;
-            <{oninsert}>, <{editend}>, ! <.efv.> )
+            <{oninsert}>, <{editend}>, ! <.efv.>, <{beforedit}> )
 
 /*---------------------------------------------------------------------------
 SPLITBOX VERSION
@@ -292,6 +293,7 @@ SPLITBOX VERSION
       [ <dummy18: ONINSERT, ON INSERT> <oninsert> ] ;
       [ <dummy19: ONEDITCELLEND, ON EDITCELLEND> <editend> ] ;
       [ <efv: EDITFIRSTVISIBLE> ] ;
+      [ <dummy20: ONBEFOREEDITCELL, ON BEFOREEDITCELL> <beforedit> ] ;
    =>;
       [ <obj> := ] _OOHG_SelectSubClass( IIF( <.bycell.>, TGridByCell(), ;
             IIF( <.multiselect.>, TGridMulti(), TGrid() ) ), ;
@@ -320,7 +322,7 @@ SPLITBOX VERSION
             <{bheadrclick}>, ! <.noclick.>, ! <.norclick.>, <.extdbl.>, ;
             <.silent.>, Upper( #<alta> ) == "ENABLEALTA", <.noshow.>, ;
             Upper( #<none> ) == "NONEUNSELS", <.cbe.>, <{rclick}>, ;
-            <{oninsert}>, <{editend}>, ! <.efv.> )
+            <{oninsert}>, <{editend}>, ! <.efv.>, <{beforedit}> )
 
 #command SET GRIDFIXEDCONTROLS ON ;
    => ;

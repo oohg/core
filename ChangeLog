@@ -1,11 +1,29 @@
 /*
- * $Id: ChangeLog,v 1.1612 2016-11-27 15:13:46 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1613 2016-12-01 00:27:26 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2016-11-30 21:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_altsyntax.ch
+   * include/i_browse.ch
+   * include/i_grid.ch
+   * include/i_xbrowse.ch
+     + ONBEFOREEDITCELL clause.
+   * source/h_label.prg
+     * Format.
+   * source/h_radio.prg
+     ! RadioGroup with AUTOSIZE clause is not painted.
+     * DATA oBkGrnd initialized to Nil instead of 0.
+     * Format.
+     + Left alignment of THEMED items.
+     * CustomDraw is now performed using DrawThemeTextEx(),
+       GetThemePartSize() and IsThemeBackgroundPartiallyTransparent().
+   * manual/Changelog.htm
+     * Updated.
 
 2016-11-27 12:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_error.prg

@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.139 2016-10-25 21:37:45 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.140 2016-12-01 00:27:26 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -92,6 +92,7 @@ AUXILIARY VARIABLES
 #xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
 #xtranslate _OOHG_ActiveControlBackground             => _OOHG_ActiveControlInfo \[  27 \]
 
+#xtranslate _OOHG_ActiveControlBeforeEditCell         => _OOHG_ActiveControlInfo \[  87 \]
 #xtranslate _OOHG_ActiveControlEditCellEnd            => _OOHG_ActiveControlInfo \[  88 \]
 #xtranslate _OOHG_ActiveControlOnInsert               => _OOHG_ActiveControlInfo \[  89 \]
 #xtranslate _OOHG_ActiveControlOnRClick               => _OOHG_ActiveControlInfo \[  90 \]
@@ -296,7 +297,7 @@ AUXILIARY VARIABLES
 #xtranslate _OOHG_ActiveControlLock                   => _OOHG_ActiveControlInfo \[ 289 \]
 #xtranslate _OOHG_ActiveControlAppendable             => _OOHG_ActiveControlInfo \[ 290 \]
 #xtranslate _OOHG_ActiveControlFile                   => _OOHG_ActiveControlInfo \[ 291 \]
-#xtranslate _OOHG_ActiveControlAutoPlay              => _OOHG_ActiveControlInfo \[ 292 \]
+#xtranslate _OOHG_ActiveControlAutoPlay               => _OOHG_ActiveControlInfo \[ 292 \]
 #xtranslate _OOHG_ActiveControlCenter                 => _OOHG_ActiveControlInfo \[ 293 \]
 #xtranslate _OOHG_ActiveControlNoAutoSizeWindow       => _OOHG_ActiveControlInfo \[ 294 \]
 #xtranslate _OOHG_ActiveControlNoAuotSizeMovie        => _OOHG_ActiveControlInfo \[ 295 \]
@@ -462,6 +463,14 @@ AUXILIARY VARIABLES
 #xcommand ON EDITCELLEND <editend> ;
    => ;
       _OOHG_ActiveControlEditCellEnd := <editend>
+
+#xcommand ONBEFOREEDITCELL <beforedit> ;
+   => ;
+      _OOHG_ActiveControlBeforeEditCell := <beforedit>
+
+#xcommand ON BEFOREEDITCELL <beforedit> ;
+   => ;
+      _OOHG_ActiveControlBeforeEditCell := <beforedit>
 
 #xcommand ON ABORTEDIT <abortedit> ;
    => ;
@@ -2357,6 +2366,7 @@ GRID
       _OOHG_ActiveControlValidMessages    := NIL ;;
       _OOHG_ActiveControlEditCell         := NIL ;;
       _OOHG_ActiveControlEditCellEnd      := NIL ;;
+      _OOHG_ActiveControlBeforeEditCell   := NIL ;;
       _OOHG_ActiveControlWhen             := NIL ;;
       _OOHG_ActiveControlShowHeaders      := NIL ;;
       _OOHG_ActiveControlHeaderImages     := NIL ;;
@@ -2671,7 +2681,8 @@ GRID
             _OOHG_ActiveControlOnRClick, ;
             _OOHG_ActiveControlOnInsert, ;
             _OOHG_ActiveControlEditCellEnd, ;
-            _OOHG_ActiveControlDisplayEdit )
+            _OOHG_ActiveControlDisplayEdit, ;
+            _OOHG_ActiveControlBeforeEditCell )
 
 /*---------------------------------------------------------------------------
 BROWSE
@@ -2705,6 +2716,7 @@ BROWSE
       _OOHG_ActiveControlOnAppend         := NIL ;;
       _OOHG_ActiveControlEditCell         := NIL ;;
       _OOHG_ActiveControlEditCellEnd      := NIL ;;
+      _OOHG_ActiveControlBeforeEditCell   := NIL ;;
       _OOHG_ActiveControlEditControls     := NIL ;;
       _OOHG_ActiveControlReplaceFields    := NIL ;;
       _OOHG_ActiveControlShowHeaders      := NIL ;;
@@ -2940,7 +2952,8 @@ BROWSE
             _OOHG_ActiveControlOnTextFilled, ;
             _OOHG_ActiveControlDefaultYear, ;
             _OOHG_ActiveControlEditCellEnd, ;
-            _OOHG_ActiveControlDisplayEdit )
+            _OOHG_ActiveControlDisplayEdit, ;
+            _OOHG_ActiveControlBeforeEditCell )
 
 /*---------------------------------------------------------------------------
 XBROWSE
@@ -2974,6 +2987,7 @@ XBROWSE
       _OOHG_ActiveControlOnAppend         := NIL ;;
       _OOHG_ActiveControlEditCell         := NIL ;;
       _OOHG_ActiveControlEditCellEnd      := NIL ;;
+      _OOHG_ActiveControlBeforeEditCell   := NIL ;;
       _OOHG_ActiveControlEditControls     := NIL ;;
       _OOHG_ActiveControlReplaceFields    := NIL ;;
       _OOHG_ActiveControlShowHeaders      := NIL ;;
@@ -3123,7 +3137,8 @@ XBROWSE
             _OOHG_ActiveControlOnTextFilled, ;
             _OOHG_ActiveControlDefaultYear, ;
             _OOHG_ActiveControlEditCellEnd, ;
-            _OOHG_ActiveControlDisplayEdit )
+            _OOHG_ActiveControlDisplayEdit, ;
+            _OOHG_ActiveControlBeforeEditCell )
 
 /*---------------------------------------------------------------------------
 HYPERLINK

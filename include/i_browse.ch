@@ -1,5 +1,5 @@
 /*
- * $Id: i_browse.ch,v 1.65 2016-10-17 21:39:26 fyurisich Exp $
+ * $Id: i_browse.ch,v 1.66 2016-12-01 00:27:26 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -178,6 +178,7 @@ STANDARD VERSION
       [ DEFAULTVALUES <aDefVal> ] ;
       [ <dummy18: ONEDITCELLEND, ON EDITCELLEND> <editend> ] ;
       [ <efv: EDITFIRSTVISIBLE> ] ;
+      [ <dummy19: ONBEFOREEDITCELL, ON BEFOREEDITCELL> <beforedit> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( IIF( <.bycell.>, TOBrowseByCell(), TOBrowse() ), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, ;
@@ -212,7 +213,7 @@ STANDARD VERSION
             ! Upper( #<alta> ) == "DISABLEALTA", <.noshow.>, ;
             Upper( #<none> ) == "NONEUNSELS", <.cbe.>, <{rclick}>, ;
             <.checkboxes.>, <{checkchange}>, <{rowrefresh}>, <aDefVal>, ;
-            <{editend}>, ! <.efv.> )
+            <{editend}>, ! <.efv.>, <{beforedit}> )
 
 #command SET BROWSESYNC ON ;
    => ;

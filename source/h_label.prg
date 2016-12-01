@@ -1,5 +1,5 @@
 /*
- * $Id: h_label.prg,v 1.34 2016-10-22 16:23:55 fyurisich Exp $
+ * $Id: h_label.prg,v 1.35 2016-12-01 00:27:26 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -172,13 +172,11 @@ RETURN cValue
 METHOD SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout, Angle, Width ) CLASS Tlabel
 *------------------------------------------------------------------------------*
    ///local cCaption
-   ::SUPER:setfont(FontName, FontSize, Bold, Italic, Underline, Strikeout, Angle,Width )
-   IF ::lAutosize
-      ::Autosize(.T.)   ///  esta es una forma de hacerlo...  mas abajo la otra forma
-      ////cCaption := GetWindowText( ::hWnd )
-     /// ::SizePos( , , GetTextWidth( NIL, cCaption, ::FontHandle ) + ::IconWidth, GetTextHeight( NIL, cCaption, ::FontHandle ) )
-   ENDIF
-Return Nil
+   ::Super:SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout, Angle, Width )
+   If ::lAutosize
+      ::AutoSize( .T. )
+   EndIf
+RETURN Nil
 
 *------------------------------------------------------------------------------*
 METHOD AutoSize( lValue ) CLASS TLabel
@@ -188,10 +186,10 @@ Local cCaption
       ::lAutoSize := lValue
       If lValue
          cCaption := GetWindowText( ::hWnd )
-         ::SizePos( , , GetTextWidth( NIL, cCaption, ::FontHandle ) + ::IconWidth, GetTextHeight( NIL, cCaption, ::FontHandle ) )
+         ::SizePos( , , GetTextWidth( Nil, cCaption, ::FontHandle ) + ::IconWidth, GetTextHeight( Nil, cCaption, ::FontHandle ) )
       EndIf
    EndIf
-Return ::lAutoSize
+RETURN ::lAutoSize
 
 *------------------------------------------------------------------------------*
 METHOD Align( nAlign ) CLASS TLabel
