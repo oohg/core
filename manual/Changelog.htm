@@ -1,5 +1,5 @@
 <!--
-$Id: Changelog.htm,v 1.105 2016-12-01 00:27:26 fyurisich Exp $
+$Id: Changelog.htm,v 1.106 2016-12-10 18:52:26 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -142,6 +142,19 @@ CHANGELOG</div>
 </div>
 <div id="winchm_template_content">
 <pre>
+2016-12-10 15:52 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_radio.prg
+     ! Missing declaration of __MSABI_LONG on older versions of Windows
+       is causing errors at compile time.
+     * IsAppThemed() calls replaced by _OOHG_UsesVisualStyle().
+   * manual/Changelog.htm
+     * Updated.
+   * source/bostaurus.hbp
+   * source/hbprinter.hbp
+   * source/oohg.hbp
+   * source/winprint.hbp
+     + Comment.
+
 2016-11-30 21:27 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * include/i_altsyntax.ch
    * include/i_browse.ch
@@ -1975,7 +1988,7 @@ CHANGELOG</div>
 2015-07-14 19:27 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * include/i_altsyntax.ch
    * include/i_checkbox.ch
-     + NOTHEME clause: paints without functions from uxtheme.dll.
+     + NOTHEME clause: control is painted by Windows.
    * source/h_checkbox.prg
      * INCOMPATIBLE: THEMED is now the default if app is themed.
      ! FONTCOLOR is not working.

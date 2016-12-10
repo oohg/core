@@ -1,11 +1,12 @@
 #
-# $Id: bostaurus.hbp,v 1.1 2015-11-07 22:39:58 fyurisich Exp $
+# $Id: bostaurus.hbp,v 1.2 2016-12-10 18:52:26 fyurisich Exp $
 #
 
 # build a static library
 -hblib
 
 # compilation is incremental (hidden .hmk folder is created)
+# to make a full compilation add '-rebuild' flag to command line
 -inc
 
 # name of output file

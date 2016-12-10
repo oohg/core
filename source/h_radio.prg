@@ -1,5 +1,5 @@
 /*
- * $Id: h_radio.prg,v 1.51 2016-12-01 00:27:26 fyurisich Exp $
+ * $Id: h_radio.prg,v 1.52 2016-12-10 18:52:26 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -128,7 +128,7 @@ Local i, oItem, uToolTip, uReadOnly
       ::oBkGrnd := bkgrnd
       ::lThemed := .T.
    Else
-      ASSIGN ::lThemed VALUE themed TYPE "L" DEFAULT IsAppThemed()
+      ASSIGN ::lThemed VALUE themed TYPE "L" DEFAULT _OOHG_UsesVisualStyle()
    EndIf
 
    IF HB_IsLogical( NoTabStop )
@@ -622,7 +622,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TRadioItem
 Local nNotify := GetNotifyCode( lParam )
 
    If nNotify == NM_CUSTOMDRAW
-      If ! ::Container == Nil .AND. ::Container:lThemed .AND. IsAppThemed()
+      If ! ::Container == Nil .AND. ::Container:lThemed .AND. _OOHG_UsesVisualStyle()
          Return TRadioItem_Notify_CustomDraw( Self, lParam, ::Caption, HB_IsObject( ::oBkGrnd ), ::LeftAlign )
       EndIf
    EndIf
@@ -686,6 +686,14 @@ typedef enum THEMESIZE {
   TS_TRUE,
   TS_DRAW
 } THEMESIZE;
+
+#ifndef __MSABI_LONG
+#  ifndef __LP64__
+#    define __MSABI_LONG(x) x ## l
+#  else
+#    define __MSABI_LONG(x) x
+#  endif
+#endif
 
 #define DTT_TEXTCOLOR (__MSABI_LONG(1U) << 0)
 #define DTT_BORDERCOLOR (__MSABI_LONG(1U) << 1)

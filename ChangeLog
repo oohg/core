@@ -1,11 +1,24 @@
 /*
- * $Id: ChangeLog,v 1.1613 2016-12-01 00:27:26 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1614 2016-12-10 18:52:26 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2016-12-10 15:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_radio.prg
+     ! Missing declaration of __MSABI_LONG on older versions of Windows
+       is causing errors at compile time.
+     * IsAppThemed() calls replaced by _OOHG_UsesVisualStyle().
+   * manual/Changelog.htm
+     * Updated.
+   * source/bostaurus.hbp
+   * source/hbprinter.hbp
+   * source/oohg.hbp
+   * source/winprint.hbp
+     + Comment.
 
 2016-11-30 21:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_altsyntax.ch
