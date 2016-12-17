@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.263 2016-12-17 01:43:23 fyurisich Exp $
+ * $Id: h_windows.prg,v 1.264 2016-12-17 01:55:08 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -999,7 +999,7 @@ METHOD DisableVisualStyle CLASS TWindow
          ::lVisualStyle := .F.
       ENDIF
    ENDIF
-RETURN ::lVisualStyled
+RETURN Nil
 
 *------------------------------------------------------------------------------*
 METHOD PreRelease() CLASS TWindow

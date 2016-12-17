@@ -1,11 +1,17 @@
 /*
- * $Id: ChangeLog,v 1.1615 2016-12-17 01:43:03 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1616 2016-12-17 01:55:08 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2016-12-16 22:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_windows.prg
+     * METHOD DisableVisualStyle now returns Nil.
+   * manual/Changelog.htm
+     * Updated.
 
 2016-12-16 22:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog
