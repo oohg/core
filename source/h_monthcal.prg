@@ -1,5 +1,5 @@
 /*
- * $Id: h_monthcal.prg,v 1.21 2016-10-22 16:23:55 fyurisich Exp $
+ * $Id: h_monthcal.prg,v 1.22 2016-12-17 01:43:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -212,6 +212,7 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TMonthCal
       Return 1
 
    ElseIf nMsg == WM_SETFOCUS
+      GetFormObjectByHandle( ::ContainerhWnd ):LastFocusedControl := ::hWnd
       ::FocusEffect()
       ::DoEvent( ::OnGotFocus, "GOTFOCUS" )
 

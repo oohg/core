@@ -1,5 +1,5 @@
 /*
- * $Id: i_radiogroup.ch,v 1.17 2016-10-17 21:39:26 fyurisich Exp $
+ * $Id: i_radiogroup.ch,v 1.18 2016-12-17 01:43:03 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -86,10 +86,10 @@
       [ <rtl: RTL> ] ;
       [ HEIGHT <height> ] ;
       [ SUBCLASS <subclass> ] ;
-      [ <theme: THEMED, NOTHEME> ] ;
+      [ <drawby: OOHGDRAW, WINDRAW> ] ;
       [ BACKGROUND <bkgrnd> ] ;
-		[ <left: LEFTJUSTIFY, LEFTALIGN> ] ;
-		[ READONLY <aReadOnly> ] ;
+      [ <left: LEFTJUSTIFY, LEFTALIGN> ] ;
+      [ READONLY <aReadOnly> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TRadioGroup(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <aOptions>, <value>, ;
@@ -97,6 +97,6 @@
             <spacing>, <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, ;
             <.italic.>, <.underline.>, <.strikeout.>, <backcolor>, ;
             <fontcolor>, <.transparent.>, <.autosize.>, <.horizontal.>, ;
-            <.disabled.>, <.rtl.>, <height>, IIF( #<theme> == "THEMED", .T., ;
-            IIF( #<theme> == "NOTHEME", .F., NIL ) ), <bkgrnd>, <.left.>, ;
+            <.disabled.>, <.rtl.>, <height>, IIF( #<drawby> == "OOHGDRAW", .T., ;
+            IIF( #<drawby> == "WINDRAW", .F., NIL ) ), <bkgrnd>, <.left.>, ;
             <aReadOnly> )

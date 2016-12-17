@@ -1,5 +1,5 @@
 <!--
-$Id: CLASSES.HTM,v 1.18 2016-10-25 21:37:45 fyurisich Exp $
+$Id: CLASSES.HTM,v 1.19 2016-12-17 01:43:03 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -455,7 +455,7 @@ CLASS TBUTTON FROM TCONTROL
    DATA LNO3DCOLORS               INIT .F.
    DATA LNODIBSECTION             INIT .T.
    DATA LNOTRANSPARENT            INIT .F.
-   DATA LTHEMED                   INIT .F.
+   DATA LLIBDRAW                  INIT .F.
    DATA NALIGN                    INIT 2
    DATA NHEIGHT                   INIT 28
    DATA NWIDTH                    INIT 100
@@ -518,7 +518,7 @@ CLASS TCHECKBOX FROM TLABEL
    DATA CPICTURE                  INIT ""
    DATA ICONWIDTH                 INIT 19
    DATA LEFTALIGN                 INIT .F.
-   DATA LTHEMED                   INIT .F.
+   DATA LLIBDRAW                  INIT .F.
    DATA NHEIGHT                   INIT 28
    DATA NWIDTH                    INIT 100
    DATA TABHANDLE                 INIT 0
@@ -1144,6 +1144,7 @@ CLASS TGRID FROM TCONTROL
    DATA NWIDTH                    INIT 240
    DATA ONABORTEDIT               INIT NIL
    DATA ONAPPEND                  INIT NIL
+   DATA ONBEFOREEDITCELL          INIT NIL
    DATA ONCHECKCHANGE             INIT NIL
    DATA ONDELETE                  INIT NIL
    DATA ONDISPINFO                INIT NIL
@@ -2334,11 +2335,11 @@ CLASS TRADIOGROUP FROM TLABEL
    DATA ICONWIDTH                 INIT 19
    DATA LEFTALIGN                 INIT .F.
    DATA LHORIZONTAL               INIT .F.
-   DATA LTHEMED                   INIT .F.
+   DATA LLIBDRAW                  INIT .F.
    DATA NHEIGHT                   INIT 25
    DATA NSPACING                  INIT NIL
    DATA NWIDTH                    INIT 120
-   DATA OBKGRND                   INIT 0
+   DATA OBKGRND                   INIT NIL
    DATA TABHANDLE                 INIT 0
    DATA TABSTOP                   INIT .T.
    DATA TYPE                      INIT "RADIOGROUP" READONLY
@@ -2372,7 +2373,7 @@ CLASS TRADIOITEM FROM TLABEL
    DATA LEFTALIGN                 INIT .F.
    DATA NHEIGHT                   INIT 25
    DATA NWIDTH                    INIT 120
-   DATA OBKGRND                   INIT 0
+   DATA OBKGRND                   INIT NIL
    DATA TABHANDLE                 INIT 0
    DATA TYPE                      INIT "RADIOITEM" READONLY
 

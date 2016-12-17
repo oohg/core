@@ -1,5 +1,5 @@
 /*
- * $Id: h_radio.prg,v 1.52 2016-12-10 18:52:26 fyurisich Exp $
+ * $Id: h_radio.prg,v 1.53 2016-12-17 01:43:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -75,7 +75,7 @@ CLASS TRadioGroup FROM TLabel
    DATA TabHandle              INIT 0
    DATA lHorizontal            INIT .F.
    DATA nSpacing               INIT Nil
-   DATA lThemed                INIT .F.
+   DATA lLibDraw               INIT .F.
    DATA oBkGrnd                INIT Nil
    DATA LeftAlign              INIT .F.
 
@@ -109,7 +109,7 @@ METHOD Define( ControlName, ParentForm, x, y, aOptions, Value, fontname, ;
                fontsize, tooltip, change, width, spacing, HelpId, invisible, ;
                notabstop, bold, italic, underline, strikeout, backcolor, ;
                fontcolor, transparent, autosize, horizontal, lDisabled, lRtl, ;
-               height, themed, bkgrnd, left, readonly ) CLASS TRadioGroup
+               height, drawby, bkgrnd, left, readonly ) CLASS TRadioGroup
 *------------------------------------------------------------------------------*
 Local i, oItem, uToolTip, uReadOnly
 
@@ -123,12 +123,10 @@ Local i, oItem, uToolTip, uReadOnly
    ASSIGN ::LeftAlign   VALUE left        TYPE "L"
    ASSIGN ::nSpacing    VALUE spacing     TYPE "N" DEFAULT Iif( ::lHorizontal, ::nWidth, ::nHeight )
    ASSIGN aOptions      VALUE aOptions    TYPE "A" DEFAULT {}
+   ASSIGN ::lLibDraw    VALUE drawby      TYPE "L" DEFAULT _OOHG_UsesVisualStyle()
 
    If HB_IsObject( bkgrnd )
       ::oBkGrnd := bkgrnd
-      ::lThemed := .T.
-   Else
-      ASSIGN ::lThemed VALUE themed TYPE "L" DEFAULT _OOHG_UsesVisualStyle()
    EndIf
 
    IF HB_IsLogical( NoTabStop )
@@ -622,7 +620,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TRadioItem
 Local nNotify := GetNotifyCode( lParam )
 
    If nNotify == NM_CUSTOMDRAW
-      If ! ::Container == Nil .AND. ::Container:lThemed .AND. _OOHG_UsesVisualStyle()
+      If ! ::Container == Nil .AND. ::Container:lLibDraw .AND. ::Container:lVisualStyled .AND. _OOHG_UsesVisualStyle()
          Return TRadioItem_Notify_CustomDraw( Self, lParam, ::Caption, HB_IsObject( ::oBkGrnd ), ::LeftAlign )
       EndIf
    EndIf

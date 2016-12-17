@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.262 2016-11-27 15:13:47 fyurisich Exp $
+ * $Id: h_windows.prg,v 1.263 2016-12-17 01:43:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -169,7 +169,7 @@ CLASS TWindow
    DATA FocusStrikeout      INIT .F.
    DATA FocusColor
    DATA FocusBackColor
-   
+   DATA lVisualStyled       INIT _OOHG_UsesVisualStyle()
    DATA RowMargin           INIT 0
    DATA ColMargin           INIT 0
    DATA Container           INIT nil
@@ -236,7 +236,6 @@ CLASS TWindow
 
    DATA ClientAdjust        INIT 0 // 0=none, 1=top, 2=bottom, 3=left, 4=right, 5=Client
    DATA IsAdjust            INIT .F.
-
    DATA nBorders            INIT {0,0,0}                              // ancho externo, estacio, ancho interno.
    DATA aBEColors           INIT {{0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}} // color externo: arriba, derecha, abajo, izquierda
    DATA aBIColors           INIT {{0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}} // color interno: arriba, derecha, abajo, izquierda
@@ -260,7 +259,7 @@ CLASS TWindow
    METHOD BackBitMap          SETGET
    METHOD Caption             SETGET
    METHOD Events
-
+   METHOD DisableVisualStyle  
    METHOD Object              BLOCK { |Self| Self }
    METHOD Enabled             SETGET
    METHOD Enable              BLOCK { |Self| ::Enabled := .T. }
@@ -966,7 +965,41 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
    }
 }
 
+typedef int (CALLBACK *CALL_SETWINDOWTHEME )( HWND, LPCWSTR, LPCWSTR );
+
+HB_FUNC( DISABLEVISUALSTYLE )
+{
+   CALL_SETWINDOWTHEME dwSetWindowTheme;
+   HMODULE hInstDLL;
+   BOOL bRet = FALSE;
+
+   hInstDLL = LoadLibrary( "UXTHEME.DLL" );
+   if( hInstDLL )
+   {
+      dwSetWindowTheme = (CALL_SETWINDOWTHEME) GetProcAddress( hInstDLL, "SetWindowTheme" );
+      if( dwSetWindowTheme )
+      {
+         if( dwSetWindowTheme( HWNDparam( 1 ), L" ", L" " ) == S_OK )
+         {
+            bRet = TRUE;
+         }
+      }
+      FreeLibrary( hInstDLL );
+   }
+   hb_retl( bRet );
+}
+
 #pragma ENDDUMP
+
+*------------------------------------------------------------------------------*
+METHOD DisableVisualStyle CLASS TWindow
+*------------------------------------------------------------------------------*
+   IF ::lVisualStyled
+      IF DisableVisualStyle( ::hWnd )
+         ::lVisualStyle := .F.
+      ENDIF
+   ENDIF
+RETURN ::lVisualStyled
 
 *------------------------------------------------------------------------------*
 METHOD PreRelease() CLASS TWindow

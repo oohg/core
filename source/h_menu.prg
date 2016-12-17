@@ -1,5 +1,5 @@
 /*
- * $Id: h_menu.prg,v 1.44 2016-10-22 16:23:55 fyurisich Exp $
+ * $Id: h_menu.prg,v 1.45 2016-12-17 01:43:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -797,7 +797,10 @@ HB_FUNC_STATIC( TMENU_SETMENUBARCOLOR )           // METHOD SetMenuBarColor( uCo
             iMenuInfo.fMask |= MIM_APPLYTOSUBMENUS;
          }
 
-         SetMenuInfo( (HMENU) oSelf->hWnd, &iMenuInfo );
+         if( SetMenuInfo( (HMENU) oSelf->hWnd, &iMenuInfo ) )
+         {
+            DrawMenuBar( HWNDparam( 3 ) );
+         }
       }
    }
 
@@ -827,7 +830,10 @@ HB_FUNC( TMENUITEMSETITEMSCOLOR )
             iMenuInfo.fMask |= MIM_APPLYTOSUBMENUS;
          }
 
-         SetMenuInfo( (HMENU) oSelf->hWnd, &iMenuInfo );
+         if( SetMenuInfo( (HMENU) oSelf->hWnd, &iMenuInfo ) )
+         {
+            DrawMenuBar( oSelf->hWnd );
+         }
       }
    }
 

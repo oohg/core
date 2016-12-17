@@ -1,5 +1,5 @@
 /*
- * $Id: h_listbox.prg,v 1.37 2016-10-22 16:23:55 fyurisich Exp $
+ * $Id: h_listbox.prg,v 1.38 2016-12-17 01:43:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -221,6 +221,7 @@ Local Hi_wParam := HIWORD( wParam )
 
    elseif Hi_wParam == LBN_SETFOCUS
       ::lFocused := .T.
+      GetFormObjectByHandle( ::ContainerhWnd ):LastFocusedControl := ::hWnd
       ::FocusEffect()
       ::DoEvent( ::OnGotFocus, "GOTFOCUS" )
       Return nil

@@ -1,5 +1,5 @@
 <!--
-$Id: RADIOGROUP.HTM,v 1.5 2016-05-22 23:52:47 fyurisich Exp $
+$Id: RADIOGROUP.HTM,v 1.6 2016-12-17 01:43:03 fyurisich Exp $
 -->
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -174,376 +174,67 @@ Controls &gt; </div>
 
 <div class=Section1>
 
-<p class=MsoNormal><span lang=ES style="COLOR: darkgreen; mso-ansi-language: ES">///////////////////////////////////////////////////////////////////////////////
+<p class=MsoNormal><span lang=ES style='color:darkgreen;mso-ansi-language:ES'>///////////////////////////////////////////////////////////////////////////////
 <br>
-// RADIOGROUP <br>
+// CHECKBOX <br>
 ///////////////////////////////////////////////////////////////////////////////
 <br>
-</span><span lang=ES style="COLOR: gray; mso-ansi-language: ES"><br>
-</span><span lang=ES style="COLOR: blue; mso-ansi-language: ES">#</span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">command</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">@</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;row&gt;,&lt;col&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">RADIOGROUP</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;name&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span lang=ES style="COLOR: blue; mso-ansi-language: ES">;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span lang=ES style="COLOR: black; mso-ansi-language: ES">[</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">OBJ</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;obj&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">]</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span lang=ES style="COLOR: blue; mso-ansi-language: ES">;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES"> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">[</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;dummy1:</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">OF,</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">PARENT&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;parent&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">]</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">OPTIONS</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;aOptions&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;&nbsp;&nbsp; </span><span
- lang=ES style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES"> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">[</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">VALUE</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">value</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">]</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;&nbsp;&nbsp; </span><span
- lang=ES style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES"> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">[</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">WIDTH</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;width&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">]</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;&nbsp;&nbsp;&nbsp; </span><span
- lang=ES style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES"> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">[</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">SPACING</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;spacing&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">]</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;&nbsp;&nbsp;&nbsp; </span><span
- lang=ES style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES"> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">[</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">FONT</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;fontname&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">]</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;&nbsp;&nbsp;&nbsp; </span><span
- lang=ES style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES"> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">[</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">SIZE</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;fontsize&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">]</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;&nbsp;&nbsp; </span><span
- lang=ES style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES"> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">[</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;bold</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">:</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">BOLD&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">]</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">[</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;italic</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">:</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">ITALIC&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">]</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">[</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;underline</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">:</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">UNDERLINE&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">]</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">[</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;strikeout</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">:</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">STRIKEOUT&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">]</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">[</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">TOOLTIP</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;tooltip&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">]</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;&nbsp;&nbsp; </span><span
- lang=ES style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES"> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">[</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">BACKCOLOR</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;backcolor&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">]</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">[</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">FONTCOLOR</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;fontcolor&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">]</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">[</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">ON</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">CHANGE</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;change&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">]</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;&nbsp;&nbsp; </span><span
- lang=ES style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES"> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">[</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;transparent:</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">TRANSPARENT&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">]</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">[</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">HELPID</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;helpid&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">]</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span lang=ES style="COLOR: blue; mso-ansi-language: ES">;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES"> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">[</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;invisible</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">:</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">INVISIBLE&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">]</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
- lang=ES style="COLOR: black; mso-ansi-language: ES">[</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;notabstop</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">:</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">NOTABSTOP&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">]</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES">&nbsp; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span lang=ES style="COLOR: black; mso-ansi-language: ES">[</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;autosize</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">:</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">AUTOSIZE&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">]</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES">&nbsp; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span lang=ES style="COLOR: black; mso-ansi-language: ES">[</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;horizontal:</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">HORIZONTAL&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">]</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-&nbsp;&nbsp;&nbsp; </span><span lang=ES style="COLOR:
- blue; mso-ansi-language: ES">=</span><span lang=ES style="COLOR: black; mso-ansi-language: ES">&gt;</span><span
- lang=ES style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES"> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">[</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;obj&gt;</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">:</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">=</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES style="COLOR:
- black; mso-ansi-language: ES">]</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES style="COLOR: blue; mso-ansi-language: ES">;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES"> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">TRadioGroup():Define(</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;(name)&gt;,</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;(parent)&gt;,</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;col&gt;,</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;row&gt;,</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;aOptions&gt;,</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">value</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&gt;,</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span lang=ES style="COLOR: black; mso-ansi-language: ES">&lt;fontname&gt;,</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;fontsize&gt;,</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;tooltip&gt;,</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;{change}&gt;,</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;width&gt;,</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span lang=ES style="COLOR: black; mso-ansi-language: ES">&lt;spacing&gt;,</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;helpid&gt;,</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;.invisible.&gt;,</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;.notabstop.&gt;,</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;.bold.&gt;,</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span lang=ES style="COLOR: black; mso-ansi-language: ES">&lt;.italic.&gt;,</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;.underline.&gt;,</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;.strikeout.&gt;,</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;backcolor&gt;,</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: blue; mso-ansi-language: ES">;</span><span lang=ES style="COLOR:
- gray; mso-ansi-language: ES"> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span lang=ES style="COLOR: black; mso-ansi-language: ES">&lt;fontcolor&gt;,</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;.transparent.&gt;,</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;.autosize.&gt;,</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">&lt;.horizontal.&gt;</span><span
- lang=ES style="COLOR: gray; mso-ansi-language: ES">&nbsp;</span><span lang=ES
- style="COLOR: black; mso-ansi-language: ES">)</span><span lang=ES
- style="COLOR: gray; mso-ansi-language: ES"> <br>
-&nbsp;</span></p>
+</span>
+
+<p>
+<span lang=ES style="COLOR: black; mso-ansi-language: ES">
+<PRE>
+#command @ &lt;row&gt;, &lt;col&gt; RADIOGROUP &lt;name&gt; ;
+      [ OBJ &lt;obj&gt; ] ;
+      [ &lt;dummy1: OF, PARENT&gt; &lt;parent&gt; ] ;
+      [ OPTIONS &lt;aOptions&gt; ] ;
+      [ VALUE &lt;value&gt; ] ;
+      [ WIDTH &lt;width&gt; ] ;
+      [ SPACING &lt;spacing&gt; ] ;
+      [ FONT &lt;fontname&gt; ] ;
+      [ SIZE &lt;fontsize&gt; ] ;
+      [ &lt;bold: BOLD&gt; ] ;
+      [ &lt;italic: ITALIC&gt; ] ;
+      [ &lt;underline: UNDERLINE&gt; ] ;
+      [ &lt;strikeout: STRIKEOUT&gt; ] ;
+      [ TOOLTIP &lt;tooltip&gt; ] ;
+      [ BACKCOLOR &lt;backcolor&gt; ] ;
+      [ FONTCOLOR &lt;fontcolor&gt; ] ;
+      [ &lt;dummy03: ONCHANGE, ON CHANGE&gt; &lt;change&gt; ] ;
+      [ &lt;transparent: TRANSPARENT&gt; ] ;
+      [ HELPID &lt;helpid&gt; ] ;
+      [ &lt;invisible: INVISIBLE&gt; ] ;
+      [ &lt;notabstop: NOTABSTOP&gt; ] ;
+      [ &lt;autosize: AUTOSIZE&gt; ] ;
+      [ &lt;horizontal: HORIZONTAL&gt; ] ;
+      [ &lt;disabled: DISABLED&gt; ] ;
+      [ &lt;rtl: RTL&gt; ] ;
+      [ HEIGHT &lt;height&gt; ] ;
+      [ SUBCLASS &lt;subclass&gt; ] ;
+      [ &lt;drawby: OOHGDRAW, WINDRAW&gt; ] ;
+      [ BACKGROUND &lt;bkgrnd&gt; ] ;
+      [ &lt;left: LEFTJUSTIFY, LEFTALIGN&gt; ] ;
+      [ READONLY &lt;aReadOnly&gt; ] ;
+   =&gt; ;
+      [ &lt;obj&gt; := ] _OOHG_SelectSubClass( TRadioGroup(), [ &lt;subclass&gt;() ] ): ;
+            Define( &lt;(name)&gt;, &lt;(parent)&gt;, &lt;col&gt;, &lt;row&gt;, &lt;aOptions&gt;, &lt;value&gt;, ;
+            &lt;fontname&gt;, &lt;fontsize&gt;, &lt;tooltip&gt;, &lt;{change}&gt;, &lt;width&gt;, ;
+            &lt;spacing&gt;, &lt;helpid&gt;, &lt;.invisible.&gt;, &lt;.notabstop.&gt;, &lt;.bold.&gt;, ;
+            &lt;.italic.&gt;, &lt;.underline.&gt;, &lt;.strikeout.&gt;, &lt;backcolor&gt;, ;
+            &lt;fontcolor&gt;, &lt;.transparent.&gt;, &lt;.autosize.&gt;, &lt;.horizontal.&gt;, ;
+            &lt;.disabled.&gt;, &lt;.rtl.&gt;, &lt;height&gt;, IIF( #&lt;drawby&gt; == "OOHGDRAW", .T., ;
+            IIF( #&lt;drawby&gt; == "WINDRAW", .F., NIL ) ), &lt;bkgrnd&gt;, &lt;.left.&gt;, ;
+            &lt;aReadOnly&gt; )
+</PRE>
+</span>
 
 </div>
 
 </div>
-<div id="winchm_template_footer"><FONT color=#808080 
-size=1>Copyright © 2013-2016 ooHG Development Team - </FONT><A 
-href="https://sourceforge.net/projects/oohg/" target="_blank"><FONT 
-size=1>https://sourceforge.net/projects/oohg/</FONT></A> 
+<div id="winchm_template_footer"><FONT color=#808080
+size=1>Copyright © 2013-2016 ooHG Development Team - </FONT><A
+href="https://sourceforge.net/projects/oohg/" target="_blank"><FONT
+size=1>https://sourceforge.net/projects/oohg/</FONT></A>
      </div>
 
 </body>

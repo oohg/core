@@ -1,5 +1,5 @@
 /*
- * $Id: h_checklist.prg,v 1.24 2016-10-22 16:23:55 fyurisich Exp $
+ * $Id: h_checklist.prg,v 1.25 2016-12-17 01:43:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -397,6 +397,7 @@ Local uValue, uRet, nItem
       Return ::DoLostFocus()
 
    ElseIf nNotify == NM_SETFOCUS
+      GetFormObjectByHandle( ::ContainerhWnd ):LastFocusedControl := ::hWnd
       ::FocusEffect()
       ::DoEvent( ::OnGotFocus, "GOTFOCUS" )
 

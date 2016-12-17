@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.140 2016-12-01 00:27:26 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.141 2016-12-17 01:43:03 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -157,7 +157,7 @@ AUXILIARY VARIABLES
 #xtranslate _OOHG_ActiveControlImageSource            => _OOHG_ActiveControlInfo \[ 149 \]
 #xtranslate _OOHG_ActiveControlOnMouseMove            => _OOHG_ActiveControlInfo \[ 150 \]
 #xtranslate _OOHG_ActiveControlImageMargin            => _OOHG_ActiveControlInfo \[ 151 \]
-#xtranslate _OOHG_ActiveControlThemed                 => _OOHG_ActiveControlInfo \[ 152 \]
+#xtranslate _OOHG_ActiveControlDrawBy                 => _OOHG_ActiveControlInfo \[ 152 \]
 #xtranslate _OOHG_ActiveControlListWidth              => _OOHG_ActiveControlInfo \[ 153 \]
 #xtranslate _OOHG_ActiveControl3State                 => _OOHG_ActiveControlInfo \[ 154 \]
 #xtranslate _OOHG_ActiveControlMultiLine              => _OOHG_ActiveControlInfo \[ 155 \]
@@ -987,7 +987,7 @@ RADIO GROUP
       _OOHG_ActiveControlSpacing     := NIL    ;;
       _OOHG_ActiveControlTransparent := .F.    ;;
       _OOHG_ActiveControlAutoSize    := .F.    ;;
-      _OOHG_ActiveControlThemed      := NIL    ;;
+      _OOHG_ActiveControlDrawBy      := NIL    ;;
       _OOHG_ActiveControlHorizontal  := .F.    ;;
       _OOHG_ActiveControlBackground  := NIL    ;;
       _OOHG_ActiveControlLeft        := .F.    ;;
@@ -1043,7 +1043,7 @@ RADIO GROUP
             _OOHG_ActiveControlDisabled, ;
             _OOHG_ActiveControlRtl, ;
             _OOHG_ActiveControlHeight, ;
-            _OOHG_ActiveControlThemed, ;
+            _OOHG_ActiveControlDrawBy, ;
             _OOHG_ActiveControlBackground, ;
             _OOHG_ActiveControlLeft, ;
             _OOHG_ActiveControlReadOnly )
@@ -1358,7 +1358,7 @@ BUTTON
       _OOHG_ActiveControlCancel            := .F. ;;
       _OOHG_ActiveControlImagesAlign       := NIL ;;
       _OOHG_ActiveControlMultiLine         := .F. ;;
-      _OOHG_ActiveControlThemed            := NIL ;;
+      _OOHG_ActiveControlDrawBy            := NIL ;;
       _OOHG_ActiveControlImageMargin       := NIL ;;
       _OOHG_ActiveControlNo3DColors        := .F. ;;
       _OOHG_ActiveControlAutoFit           := .F. ;;
@@ -1445,13 +1445,13 @@ BUTTON
    => ;
       _OOHG_ActiveControlMultiLine := <multiline>
 
-#xcommand THEMED <themed> ;
+#xcommand OOHGDRAW <oohgdraw> ;
    => ;
-      _OOHG_ActiveControlThemed := <themed>
+      _OOHG_ActiveControlDrawBy := <oohgdraw>
 
-#xcommand NOTHEME <notheme> ;
+#xcommand WINDRAW <windraw> ;
    => ;
-      _OOHG_ActiveControlThemed := ! <notheme>
+      _OOHG_ActiveControlDrawBy := ! <windraw>
 
 #xcommand IMAGEMARGIN <margin> ;
    => ;
@@ -1512,7 +1512,7 @@ BUTTON
             _OOHG_ActiveControlCancel, ;
             _OOHG_ActiveControlImagesAlign, ;
             _OOHG_ActiveControlMultiLine, ;
-            _OOHG_ActiveControlThemed, ;
+            _OOHG_ActiveControlDrawBy, ;
             _OOHG_ActiveControlImageMargin, ;
             _OOHG_ActiveControlOnMouseMove, ;
             _OOHG_ActiveControlNo3DColors, ;
@@ -1649,7 +1649,7 @@ CHECK BOX/BUTTON
       _OOHG_ActiveControlAutoSize    := .F.    ;;
       _OOHG_ActiveControlField       := NIL    ;;
       _OOHG_ActiveControl3State      := .F.    ;;
-      _OOHG_ActiveControlThemed      := NIL    ;;
+      _OOHG_ActiveControlDrawBy      := NIL    ;;
       _OOHG_ActiveControlLeft        := .F.
 
 #xcommand THREESTATE <threestate> ;
@@ -1673,7 +1673,7 @@ CHECK BOX/BUTTON
       _OOHG_ActiveControlNo3DColors   := .F.   ;;
       _OOHG_ActiveControlAutoFit      := .F.   ;;
       _OOHG_ActiveControlNoDIBSection := .T.   ;;
-      _OOHG_ActiveControlThemed       := NIL   ;;
+      _OOHG_ActiveControlDrawBy       := NIL   ;;
       _OOHG_ActiveControlImageMargin  := NIL   ;;
       _OOHG_ActiveControlOnMouseMove  := NIL   ;;
       _OOHG_ActiveControlAlignment    := NIL   ;;
@@ -1730,7 +1730,7 @@ CHECK BOX/BUTTON
             _OOHG_ActiveControlDisabled, ;
             _OOHG_ActiveControl3State, ;
             _OOHG_ActiveControlLeft, ;
-            _OOHG_ActiveControlThemed )
+            _OOHG_ActiveControlDrawBy )
 
 #xcommand END CHECKBUTTON ;
    => ;
@@ -1768,7 +1768,7 @@ CHECK BOX/BUTTON
             _OOHG_ActiveControlNoDIBSection, ;
             _OOHG_ActiveControlBackColor, ;
             _OOHG_ActiveControlDisabled, ;
-            _OOHG_ActiveControlThemed, ;
+            _OOHG_ActiveControlDrawBy, ;
             _OOHG_ActiveControlImageMargin, ;
             _OOHG_ActiveControlOnMouseMove, ;
             _OOHG_ActiveControlAlignment, ;

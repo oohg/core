@@ -1,5 +1,5 @@
 /*
- * $Id: i_checkbox.ch,v 1.18 2016-10-17 21:39:26 fyurisich Exp $
+ * $Id: i_checkbox.ch,v 1.19 2016-12-17 01:43:03 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -88,8 +88,8 @@
       [ SUBCLASS <subclass> ] ;
       [ <rtl: RTL> ] ;
       [ <threestate: THREESTATE> ] ;
-		[ <left: LEFTJUSTIFY, LEFTALIGN> ] ;
-      [ <theme: THEMED, NOTHEME> ] ;
+      [ <left: LEFTJUSTIFY, LEFTALIGN> ] ;
+      [ <drawby: OOHGDRAW, WINDRAW> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TCheckBox(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <caption>, <value>, ;
@@ -97,5 +97,5 @@
             <{gotfocus}>, <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, ;
             <.italic.>, <.underline.>, <.strikeout.>, <(field)>, <backcolor>, ;
             <fontcolor>, <.transparent.>, <.autosize.>, <.rtl.>, <.disabled.>, ;
-            <.threestate.>, <.left.>, IIF( #<theme> == "THEMED", .T., ;
-            IIF( #<theme> == "NOTHEME", .F., NIL ) ) )
+            <.threestate.>, <.left.>, IIF( #<drawby> == "OOHGDRAW", .T., ;
+            IIF( #<drawby> == "WINDRAW", .F., NIL ) ) )

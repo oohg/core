@@ -1,11 +1,87 @@
 /*
- * $Id: ChangeLog,v 1.1614 2016-12-10 18:52:26 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1615 2016-12-17 01:43:03 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2016-12-16 22:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     ! Previous entry.
+   * doc/classes.txt
+     * Updated.
+   * ide/prgs/formedit.prg
+     + OOHGDRAW and WINDRAW clauses.
+       THEMED and NOTHEME are still recognized.
+   * include/i_altsyntax.ch
+   * include/i_button.ch
+   * include/i_checkbox.ch
+   * include/i_radiogroup.ch
+     * INCOMPATIBLE.
+       THEMED and NOTHEME clauses changed by OOHGDRAW and WINDRAW.
+       OOHGDRAW is the default clause unless the OS does not supports
+       visual styles or if visual styles are disabled for the app, in
+       which case defaults to WINDRAW.
+       Those who do not want to change their sources must include
+       this pre-processor directives:
+       #xtranslate BUTTON [ <x> ] THEMED => BUTTON [ <x> ]
+       #xtranslate BUTTON [ <x> ] NOTHEME => BUTTON [ <x> ] WINDRAW
+       #xtranslate CHECKBUTTON [ <x> ] THEMED => BUTTON [ <x> ]
+       #xtranslate CHECKBUTTON [ <x> ] NOTHEME => BUTTON [ <x> ] WINDRAW
+       #xtranslate CHECKBOX [ <x> ] THEMED => CHECKBOX [ <x> ]
+       #xtranslate CHECKBOX [ <x> ] NOTHEME => CHECKBOX [ <x> ] WINDRAW
+       #xtranslate RADIOGROUP [ <x> ] THEMED => RADIOGROUP [ <x> ]
+       #xtranslate RADIOGROUP [ <x> ] NOTHEME => RADIOGROUP [ <x> ] WINDRAW
+       #translate THEMED <themed> => OOHGDRAW <themed>
+       #translate NOTHEME <notheme> => WINDRAW <notheme>
+   * manual/BUTTON.HTM
+   * manual/CHECKBOX.htm
+   * manual/CLASSES.HTM
+   * manual/Changelog.htm
+   * manual/RADIOGROUP.htm
+     * Updated.
+   * samples/mpm/fmgs/main.Fmg
+     * Removed unneeded clause.
+   * source/h_button.prg
+     * DATA lThemed renamed to lLibDraw. INCOMPATIBLE.
+       Defaults to _OOHG_UsesVisualStyle().
+     - Comment.
+     ! Painting when button is not the focused control.
+     * Do not use custom draw when control's lVisualStyled flag is set.
+   * source/h_checkbox.prg
+     * DATA lThemed renamed to lLibDraw. INCOMPATIBLE.
+       Defaults to _OOHG_UsesVisualStyle().
+     * Do not use custom draw when control's lVisualStyled flag is set.
+   * source/h_checklist.prg
+     ! NM_SETFOCUS event handler was not setting the form's
+       LastFocusedControl property.
+   * source/h_combo.prg
+     ! CBN_SETFOCUS event handler was not setting the form's
+       LastFocusedControl property.
+   * source/h_controlmisc.prg
+     ! Method DoLostFocus not working properly when there are 2 or more
+       TEXTBOX controls with VALID clause in the same form.
+     ! EN_SETFOCUS, NM_SETFOCUS and BN_SETFOCUS event handler was not setting the form's
+       LastFocusedControl property.
+   * source/h_listbox.prg
+     ! LBN_SETFOCUS event handler was not setting the form's
+       LastFocusedControl property.
+   * source/h_menu.prg
+     * Force control's redraw after changing colors.
+   * source/h_monthcal.prg
+     ! WM_SETFOCUS event handler was not setting the form's
+       LastFocusedControl property.
+   * source/h_radio.prg
+     * DATA lThemed renamed to lLibDraw. INCOMPATIBLE.
+       Defaults to _OOHG_UsesVisualStyle().
+     * BACKGROUND clause no longer forces OOHGDRAW clause.
+     * Do not use custom draw when control's lVisualStyled flag is set.
+   * source/h_windows.prg
+     + DATA lVisualStyled, defaults to _OOHG_UsesVisualStyle().
+     + METHOD DisableVisualStyle.
+     + DisableVisualStyle function at C level.
 
 2016-12-10 15:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_radio.prg
@@ -93,7 +169,7 @@
 2016-10-25 18:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * distros/MakeDistro.bat
    * doc/classes.txt
-     + h_anigif.prg
+     + Class TANIGIF.
    * ide/mgide.rc
      + ANIGIF related resource.
    * ide/fmgs/orderf.fmg
@@ -1853,7 +1929,7 @@
 2015-07-14 19:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_altsyntax.ch
    * include/i_checkbox.ch
-     + NOTHEME clause: paints without functions from uxtheme.dll.
+     + NOTHEME clause: control is painted by Windows.
    * source/h_checkbox.prg
      * INCOMPATIBLE: THEMED is now the default if app is themed.
      ! FONTCOLOR is not working.

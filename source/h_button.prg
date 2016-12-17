@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.79 2016-10-22 16:23:55 fyurisich Exp $
+ * $Id: h_button.prg,v 1.80 2016-12-17 01:43:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -75,7 +75,7 @@ CLASS TButton FROM TControl
    DATA Stretch         INIT .F.
    DATA hImage          INIT nil
    DATA ImageSize       INIT .F.
-   DATA lThemed         INIT .F.
+   DATA lLibDraw        INIT .F.
    DATA aImageMargin    INIT {6, 10, 6, 10}    // top, left, bottom, right
    DATA lNo3DColors     INIT .F.
    DATA lNoDIBSection   INIT .T.
@@ -103,7 +103,7 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h, ;
                NoTabStop, HelpId, invisible, bold, italic, underline, ;
                strikeout, lRtl, lNoPrefix, lDisabled, cBuffer, hBitMap, ;
                cImage, lNoLoadTrans, lScale, lCancel, cAlign, lMultiLine, ;
-               themed, aImageMargin, OnMouseMove, lNo3DColors, lAutoFit, ;
+               drawby, aImageMargin, OnMouseMove, lNo3DColors, lAutoFit, ;
                lNoDIB, backcolor, lNoHotLight ) CLASS TButton
 *------------------------------------------------------------------------------*
 Local ControlHandle, nStyle, lBitMap, i
@@ -145,7 +145,7 @@ Local ControlHandle, nStyle, lBitMap, i
    ASSIGN ::lNoTransparent VALUE lNoLoadTrans TYPE "L"
    ASSIGN ::Stretch        VALUE lScale       TYPE "L"
    ASSIGN ::lCancel        VALUE lCancel      TYPE "L"
-   ASSIGN ::lThemed        VALUE themed       TYPE "L" DEFAULT IsAppThemed()
+   ASSIGN ::lLibDraw       VALUE drawby       TYPE "L" DEFAULT _OOHG_UsesVisualStyle()
    ASSIGN ::AutoFit        VALUE lAutoFit     TYPE "L"
    ASSIGN ::lNo3DColors    VALUE lNo3DColors  TYPE "L"
    ASSIGN ::lNoDIBSection  VALUE lNoDIB       TYPE "L"
@@ -204,7 +204,7 @@ METHOD DefineImage( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h,
                     NoTabStop, HelpId, invisible, bold, italic, underline, ;
                     strikeout, lRtl, lNoPrefix, lDisabled, cBuffer, hBitMap, ;
                     cImage, lNoLoadTrans, lScale, lCancel, cAlign, lMultiLine, ;
-                    themed, aImageMargin, OnMouseMove, lNo3DColors, lAutoFit, ;
+                    drawby, aImageMargin, OnMouseMove, lNo3DColors, lAutoFit, ;
                     lNoDIB, backcolor, lNoHotLight ) CLASS TButton
 *------------------------------------------------------------------------------*
    If Empty( cBuffer )
@@ -215,7 +215,7 @@ Return ::Define( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h, ;
                  NoTabStop, HelpId, invisible, bold, italic, underline, ;
                  strikeout, lRtl, lNoPrefix, lDisabled, cBuffer, hBitMap, ;
                  cImage, lNoLoadTrans, lScale, lCancel, cAlign, lMultiLine, ;
-                 themed, aImageMargin, OnMouseMove, lNo3DColors, lAutoFit, ;
+                 drawby, aImageMargin, OnMouseMove, lNo3DColors, lAutoFit, ;
                  lNoDIB, backcolor, lNoHotLight )
 
 *------------------------------------------------------------------------------*
@@ -301,7 +301,7 @@ METHOD RePaint() CLASS TButton
       ENDIF
       ::AuxHandle := NIL
       ::TControl:SizePos()
-      IF OSisWinXPorLater() .AND. ( LEN( ::Caption ) > 0 .OR. ::lThemed )
+      IF OSisWinXPorLater() .AND. ( LEN( ::Caption ) > 0 .OR. ( ::lLibDraw .AND. ::lVisualStyled ) )
          ::ImageList := SetImageXP( ::hWnd, ::hImage, ::nAlign, -1, ::aImageMargin[1], ::aImageMargin[2], ::aImageMargin[3], ::aImageMargin[4], ::Stretch, ::AutoFit )
          ::ReDraw()
       ELSEIF ::Stretch .OR. ::AutoFit
@@ -332,14 +332,8 @@ METHOD Events_Notify( wParam, lParam ) CLASS TButton
 Local nNotify := GetNotifyCode( lParam )
 
    If nNotify == NM_CUSTOMDRAW
-/*
-      If IsWindowStyle( ::hWnd, BS_BITMAP ) .AND. ;
-         ::lThemed .AND. ;
-         IsAppThemed() .AND. ;
-         ValidHandler( ::hImage )
-*/
-      If ::lThemed .AND. IsAppThemed()
-         Return TButton_Notify_CustomDraw( lParam, ! ::lNoHotLight )
+      If ::lLibDraw .AND. ::lVisualStyled .AND. _OOHG_UsesVisualStyle()
+         Return TButton_Notify_CustomDraw( lParam, ! ::lNoHotLight, ( GetFormObjectByHandle( ::ContainerhWnd ):LastFocusedControl == ::hWnd ) )
       EndIf
    EndIf
 
@@ -534,7 +528,7 @@ typedef int (CALLBACK *CALL_GETTHEMEBACKGROUNDCONTENTRECT )( HTHEME, HDC, int, i
 typedef int (CALLBACK *CALL_CLOSETHEMEDATA )( HTHEME );
 typedef int (CALLBACK *CALL_DRAWTHEMEPARENTBACKGROUND )( HWND, HDC, RECT* );
 
-int TButton_Notify_CustomDraw( LPARAM lParam, BOOL bHotLight )
+int TButton_Notify_CustomDraw( LPARAM lParam, BOOL bHotLight, BOOL bFocused )
 {
    HMODULE hInstDLL;
    LPNMCUSTOMDRAW pCustomDraw = (LPNMCUSTOMDRAW) lParam;
@@ -601,7 +595,7 @@ int TButton_Notify_CustomDraw( LPARAM lParam, BOOL bHotLight )
       {
          state_id = PBS_HOT;
       }
-      else if( style & BS_DEFPUSHBUTTON )
+      else if( style & BS_DEFPUSHBUTTON && bFocused )
       {
          state_id = PBS_DEFAULTED;
       }
@@ -639,7 +633,7 @@ int TButton_Notify_CustomDraw( LPARAM lParam, BOOL bHotLight )
 
 HB_FUNC( TBUTTON_NOTIFY_CUSTOMDRAW )
 {
-   hb_retni( TButton_Notify_CustomDraw( (LPARAM) hb_parnl( 1 ), hb_parl( 2 ) ) );
+   hb_retni( TButton_Notify_CustomDraw( (LPARAM) hb_parnl( 1 ), hb_parl( 2 ), hb_parl( 3 ) ) );
 }
 
 #pragma ENDDUMP
@@ -665,7 +659,7 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
                HelpId, invisible, notabstop, bold, italic, underline, ;
                strikeout, field, lRtl, cImage, cBuffer, hBitMap, ;
                lNoLoadTrans, lScale, lNo3DColors, lAutoFit, lNoDIB, backcolor, ;
-               lDisabled, themed, aImageMargin, OnMouseMove, cAlign, lMultiLine, ;
+               lDisabled, drawby, aImageMargin, OnMouseMove, cAlign, lMultiLine, ;
                flat, lNoHotLight ) CLASS TButtonCheck
 *------------------------------------------------------------------------------*
 Local ControlHandle, nStyle, lBitMap, i
@@ -708,7 +702,7 @@ Local ControlHandle, nStyle, lBitMap, i
 
    ASSIGN ::lNoTransparent VALUE lNoLoadTrans TYPE "L"
    ASSIGN ::Stretch        VALUE lScale       TYPE "L"
-   ASSIGN ::lThemed        VALUE themed       TYPE "L" DEFAULT IsAppThemed()
+   ASSIGN ::lLibDraw       VALUE drawby       TYPE "L" DEFAULT _OOHG_UsesVisualStyle()
    ASSIGN ::AutoFit        VALUE lAutoFit     TYPE "L"
    ASSIGN ::lNo3DColors    VALUE lNo3DColors  TYPE "L"
    ASSIGN ::lNoDIBSection  VALUE lNoDIB       TYPE "L"
@@ -772,7 +766,7 @@ METHOD DefineImage( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
                     HelpId, invisible, notabstop, bold, italic, underline, ;
                     strikeout, field, lRtl, cImage, cBuffer, hBitMap, ;
                     lNoLoadTrans, lScale, lNo3DColors, lAutoFit, lNoDIB, backcolor, ;
-                    lDisabled, themed, aImageMargin, OnMouseMove, cAlign, lMultiLine, ;
+                    lDisabled, drawby, aImageMargin, OnMouseMove, cAlign, lMultiLine, ;
                     flat, lNoHotLight ) CLASS TButtonCheck
 *------------------------------------------------------------------------------*
    If Empty( cBuffer )
@@ -783,7 +777,7 @@ Return ::Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
                  HelpId, invisible, notabstop, bold, italic, underline, ;
                  strikeout, field, lRtl, cImage, cBuffer, hBitMap, ;
                  lNoLoadTrans, lScale, lNo3DColors, lAutoFit, lNoDIB, backcolor, ;
-                 lDisabled, themed, aImageMargin, OnMouseMove, cAlign, lMultiLine, ;
+                 lDisabled, drawby, aImageMargin, OnMouseMove, cAlign, lMultiLine, ;
                  flat, lNoHotLight )
 
 *------------------------------------------------------------------------------*

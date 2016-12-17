@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.72 2016-10-25 21:37:45 fyurisich Exp $
+ * $Id: formedit.prg,v 1.73 2016-12-17 01:43:03 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -286,7 +286,7 @@ CLASS TFormEditor
    DATA aTabPage             INIT {}          // Each item is { cTabName, nPageCount }
    DATA aTarget              INIT {}
    DATA aTextHeight          INIT {}
-   DATA aThemed              INIT {}
+   DATA aDrawBy              INIT {}
    DATA aTitleBackColor      INIT {}
    DATA aTitleFontColor      INIT {}
    DATA aToolTip             INIT {}
@@ -2131,7 +2131,7 @@ LOCAL t83, t84
    my_aSwap( ::aSync, x1, x2 )
    my_aSwap( ::aTarget, x1, x2 )
    my_aSwap( ::aTextHeight, x1, x2 )
-   my_aSwap( ::aThemed, x1, x2 )
+   my_aSwap( ::aDrawBy, x1, x2 )
    my_aSwap( ::aToolTip, x1, x2 )
    my_aSwap( ::aTop, x1, x2 )
    my_aSwap( ::aTransparent, x1, x2 )
@@ -2862,7 +2862,7 @@ METHOD IniArray( cControlName, cCtrlType ) CLASS TFormEditor
    aAdd( ::aTabPage, { "", 0 } )
    aAdd( ::aTarget, "" )
    aAdd( ::aTextHeight, 0 )
-   aAdd( ::aThemed, "NIL" )
+   aAdd( ::aDrawBy, "NIL" )
    aAdd( ::aTitleBackColor, "NIL" )
    aAdd( ::aTitleFontColor, "NIL" )
    aAdd( ::aToolTip, "" )
@@ -3114,7 +3114,7 @@ METHOD DelArray( z ) CLASS TFormEditor
    my_aDel( ::aTabPage, z )
    my_aDel( ::aTarget, z )
    my_aDel( ::aTextHeight, z )
-   my_aDel( ::aThemed, z )
+   my_aDel( ::aDrawBy, z )
    my_aDel( ::aTitleBackColor, z )
    my_aDel( ::aTitleFontColor, z )
    my_aDel( ::aToolTip, z )
@@ -3586,7 +3586,7 @@ LOCAL ia, oControl, z, i, ControlName, oNewCtrl := NIL, cTab, oTab
          aAdd( ::aTabPage,           ::aTabPage[z] )
          aAdd( ::aTarget,            ::aTarget[z] )
          aAdd( ::aTextHeight,        ::aTextHeight[z] )
-         aAdd( ::aThemed,            ::aThemed[z] )
+         aAdd( ::aDrawBy,            ::aDrawBy[z] )
          aAdd( ::aTitleBackColor,    ::aTitleBackColor[z] )
          aAdd( ::aTitleFontColor,    ::aTitleFontColor[z] )
          aAdd( ::aToolTip,           ::aToolTip[z] )
@@ -3956,17 +3956,19 @@ LOCAL cName, oCtrl, aImages, aItems, nMin, nMax, j, aCaptions, nCnt, oPage, lRed
             <w>, <h>, <font>, <size>, <tooltip>, <{gotfocus}>, <{lostfocus}>, ;
             <.flat.>, <.notabstop.>, <helpid>, <.invisible.>, <.bold.>, ;
             <.italic.>, <.underline.>, <.strikeout.>, <.rtl.>, <.noprefix.>, ;
-            <.disabled.>, <buffer>, <hbitmap>, <bitmap>, <.notrans.>, ;
-            <.scale.>, <.cancel.>, <"alignment">, <.multiline.>, ! <.notheme.>, ;
+            <.disabled.>, <buffer>, <hbitmap>, <bitmap>, <.lnoldtr.>, ;
+            <.scale.>, <.cancel.>, <"imgalign">, <.multiline.>, ;
+            IIF( #<drawby> == "OOHGDRAW", .T., IIF( #<drawby> == "WINDRAW", .F., NIL ) ), ;
             <aImageMargin>, <{onmousemove}>, <.no3dcolors.>, <.autofit.>, ;
             ! <.lDIB.>, <backcolor>, <.nohotlight.> )
 */
+
       oCtrl := TButton(): Define( cName, ::oDesignForm:Name, _OOHG_MouseCol, _OOHG_MouseRow, ::aCaption[i], NIL, ;
                   nWidth, nHeight, NIL, NIL, ::aToolTip[i], NIL, NIL, ;
                   ::aFlat[i], .F., NIL, .F., ::aBold[i], ;
                   ::aFontItalic[i], ::aFontUnderline[i], ::aFontStrikeout[i], ::aRTL[i], ::aNoPrefix[i], ;
                   .F., NIL, NIL, ::aPicture[i], ::aNoLoadTrans[i], ;
-                  ::aForceScale[i], .F., ::aJustify[i], ::aMultiLine[i], &( ::aThemed[i] ), ;
+                  ::aForceScale[i], .F., ::aJustify[i], ::aMultiLine[i], &( ::aDrawBy[i] ), ;
                   IIF( IsValidArray( ::aImageMargin[i] ), &( ::aImageMargin[i] ), NIL ), NIL, ::aNo3DColors[i], ::aFit[i], ;
                   ! ::aDIBSection[i], NIL, ::aHotTrack[i] )
       IF ! Empty( ::aFontName[i] )
@@ -3990,14 +3992,16 @@ LOCAL cName, oCtrl, aImages, aItems, nMin, nMax, j, aCaptions, nCnt, oPage, lRed
             <{gotfocus}>, <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, ;
             <.italic.>, <.underline.>, <.strikeout.>, <(field)>, <backcolor>, ;
             <fontcolor>, <.transparent.>, <.autosize.>, <.rtl.>, <.disabled.>, ;
-            <.threestate.>, <.leftalign.>, ! <.notheme.> )
+            <.threestate.>, <.left.>, IIF( #<drawby> == "OOHGDRAW", .T., ;
+            IIF( #<drawby> == "WINDRAW", .F., NIL ) ) )
 */
+
       oCtrl := TCheckBox():Define( cName, ::oDesignForm:Name, _OOHG_MouseCol, _OOHG_MouseRow, IIF( Empty( ::aCaption[i] ), cName, ::aCaption[i] ), &( ::aValue[i] ), ;
                   NIL, NIL, ::aToolTip[i], NIL, nWidth, nHeight, NIL, ;
                   NIL, NIL, .F., .F., ::aBold[i], ;
                   ::aFontItalic[i], ::aFontUnderline[i], ::aFontStrikeout[i], NIL, NIL, ;
                   NIL, ::aTransparent[i], ::aAutoPlay[i], ::aRTL[i], .F., ;
-                  ::a3State[i], ::aLeft[i], &( ::aThemed[i] ) )
+                  ::a3State[i], ::aLeft[i], &( ::aDrawBy[i] ) )
       IF ! Empty( ::aFontName[i] )
          oCtrl:FontName := ::aFontName[i]
       ENDIF
@@ -4113,10 +4117,11 @@ TODO: GripperText, Delay
             <f>, <n>, <tooltip>, <{change}>, [<w>], [<h>], <{lostfocus}>, ;
             <{gotfocus}>, <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, ;
             <.italic.>, <.underline.>, <.strikeout.>, <(field)>, <.rtl.>, ;
-            <bitmap>, <buffer>, <hbitmap>, <.notrans.>, <.scale.>, ;
-            <.no3dcolors.>, <.autofit.>, ! <.lDIB.>, <backcolor>, ;
-            <.disabled.>, ! <.notheme.>, <aImageMargin>, <{onmousemove}>, ;
-            <"alignment">, <.multiline.>, <.flat.>, <.nohotlight.> )
+            <bitmap>, <buffer>, <hbitmap>, <.lnoldtr.>, <.scale.>, ;
+            <.no3dcolors.>, <.autofit.>, ! <.lDIB.>, <backcolor>, <.disabled.>, ;
+            IIF( #<drawby> == "OOHGDRAW", .T., IIF( #<drawby> == "WINDRAW", .F., NIL ) ), ;
+            <aImageMargin>, <{onmousemove}>, <"imgalign">, <.multiline.>, ;
+            <.flat.>, <.nohotlight.> )
 */
       oCtrl := TButtonCheck():Define( cName, ::oDesignForm:Name, _OOHG_MouseCol, _OOHG_MouseRow, IIF( Empty( ::aCaption[i] ), cName, ::aCaption[i] ), ::aValueL[i], ;
                   NIL, NIL, ::aToolTip[i], NIL, nWidth, nHeight, NIL, ;
@@ -4124,7 +4129,7 @@ TODO: GripperText, Delay
                   ::aFontItalic[i], ::aFontUnderline[i], ::aFontStrikeout[i], NIL, ::aRTL[i], ;
                   ::aPicture[i], NIL, NIL, ::aNoLoadTrans[i], ::aForceScale[i], ;
                   ::aNo3DColors[i], ::aFit[i], ! ::aDIBSection[i], NIL, ;
-                  .F., &( ::aThemed[i] ), ::aImageMargin[i], NIL, ;
+                  .F., &( ::aDrawBy[i] ), ::aImageMargin[i], NIL, ;
                   ::aJustify[i], ::aMultiLine[i], ::aFlat[i], ::aHotTrack[i] )
       IF ! Empty( ::aFontName[i] )
          oCtrl:FontName := ::aFontName[i]
@@ -4492,7 +4497,7 @@ TODO: GripperText, Delay
                   .F., .F., ::aBold[i], ::aFontItalic[i], ::aFontUnderline[i], ;
                   ::aFontStrikeout[i], NIL, NIL, ::aTransparent[i], ;
                   ::aAutoPlay[i], ::aFlat[i], .F., ::aRTL[i], nHeight, ;
-                  &( ::aThemed[i] ), ::aBackground[i], ::aLeft[i], )
+                  &( ::aDrawBy[i] ), ::aBackground[i], ::aLeft[i], )
       IF ! Empty( ::aFontName[i] )
          oCtrl:FontName := ::aFontName[i]
       ENDIF
@@ -4580,7 +4585,7 @@ TODO: GripperText, Delay
                   .F., .F., .F., .F., .F., .F., NIL, .F., ::aPicture[i], ;
                   NIL, NIL, ::aNoLoadTrans[i], ::aForceScale[i], ;
                   ::aNo3DColors[i], ::aFit[i], ! ::aDIBSection[i], NIL, ;
-                  .F., &( ::aThemed[i] ), ::aImageMargin[i], NIL, ::aJustify[i], ;
+                  .F., &( ::aDrawBy[i] ), ::aImageMargin[i], NIL, ::aJustify[i], ;
                   .F., ::aFlat[i] )
       IF IsValidArray( ::aBackColor[i] )
          oCtrl:BackColor := &( ::aBackColor[i] )
@@ -4595,7 +4600,7 @@ TODO: GripperText, Delay
                   NIL, NIL, ::aToolTip[i], { || ::DrawOutline( oCtrl ) }, ;
                   NIL, ::aFlat[i], .F., NIL, NIL, NIL, NIL, NIL, NIL, NIL, ;
                   NIL, NIL, NIL, NIL, ::aPicture[i], ::aNoLoadTrans[i], ;
-                  ::aForceScale[i], .F., ::aJustify[i], .F., &( ::aThemed[i] ), ;
+                  ::aForceScale[i], .F., ::aJustify[i], .F., &( ::aDrawBy[i] ), ;
                   IIF( IsValidArray( ::aImageMargin[i] ), &( ::aImageMargin[i] ), NIL ), ;
                   NIL, ::aNo3DColors[i], ::aFit[i], ! ::aDIBSection[i], NIL )
       IF ! Empty( ::aFontName[i] )
@@ -7357,11 +7362,11 @@ RETURN NIL
 //------------------------------------------------------------------------------
 METHOD pButton( i ) CLASS TFormEditor
 //------------------------------------------------------------------------------
-LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, lBold, lNoTheme
+LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, lBold, lWinDraw
 LOCAL lItalic, lUnderline, lStrikeout, aBackColor, lVisible, lEnabled, cToolTip
 LOCAL cOnGotFocus, cOnLostFocus, nHelpId, cCaption, cPicture, cAction, lNoTabStop
 LOCAL lFlat, lTop, lBottom, lLeft, lRight, lCenter, cOnMouseMove, lRTL, lNoPrefix
-LOCAL lNoLoadTrans, lForceScale, lCancel, lMultiLine, lThemed, lNo3DColors, lFit
+LOCAL lNoLoadTrans, lForceScale, lCancel, lMultiLine, lOOHGDraw, lNo3DColors, lFit
 LOCAL lDIBSection, cBuffer, cHBitmap, cImgMargin, cSubClass, oCtrl, lNoHotLight
 
    // Load properties
@@ -7422,12 +7427,14 @@ LOCAL lDIBSection, cBuffer, cHBitmap, cImgMargin, cSubClass, oCtrl, lNoHotLight
    lForceScale   := ( ::ReadLogicalData( cName, 'FORCESCALE', 'F' ) == 'T' )
    lCancel       := ( ::ReadLogicalData( cName, 'CANCEL', 'F' ) == 'T' )
    lMultiLine    := ( ::ReadLogicalData( cName, 'MULTILINE', 'F' ) == 'T' )
-   lThemed       := UpperNIL( ::ReadStringData( cName, 'THEMED', 'NIL' ) )
-   lThemed       := IF( lThemed == '.T.', .T., If( lThemed == '.F.', .F., NIL ) )
-   lThemed       := IF( lThemed == NIL, IF( ::ReadLogicalData( cName, 'THEMED', 'F' ) == 'T', .T., NIL ), lThemed )
-   lNoTheme      := UpperNIL( ::ReadStringData( cName, 'NOTHEME', 'NIL' ) )
-   lNoTheme      := IF( lNoTheme == '.T.', .T., If( lNoTheme == '.F.', .F., NIL ) )
-   lNoTheme      := IF( lNoTheme == NIL, IF( ::ReadLogicalData( cName, 'NOTHEME', 'F' ) == 'T', .T., NIL ), lNoTheme )
+   lOOHGDraw     := UpperNIL( ::ReadStringData( cName, 'THEMED', 'NIL' ) )
+   lOOHGDraw     := IF( lOOHGDraw == '.T.', .T., If( lOOHGDraw == '.F.', .F., NIL ) )
+   lOOHGDraw     := IF( lOOHGDraw == NIL, IF( ::ReadLogicalData( cName, 'THEMED', 'F' ) == 'T', .T., NIL ), lOOHGDraw )
+   lOOHGDraw     := IF( lOOHGDraw == NIL, IF( ::ReadLogicalData( cName, 'OOHGDRAW', 'F' ) == 'T', .T., NIL ), lOOHGDraw )
+   lWinDraw      := UpperNIL( ::ReadStringData( cName, 'NOTHEME', 'NIL' ) )
+   lWinDraw      := IF( lWinDraw == '.T.', .T., If( lWinDraw == '.F.', .F., NIL ) )
+   lWinDraw      := IF( lWinDraw == NIL, IF( ::ReadLogicalData( cName, 'NOTHEME', 'F' ) == 'T', .T., NIL ), lWinDraw )
+   lWinDraw      := IF( lWinDraw == NIL, IF( ::ReadLogicalData( cName, 'WINDRAW', 'F' ) == 'T', .T., NIL ), lWinDraw )
    lNo3DColors   := ( ::ReadLogicalData( cName, 'NO3DCOLORS', 'F' ) == 'T' )
    lFit          := ::ReadLogicalData( cName, 'AUTOFIT', 'F' )
    lFit          := ( ::ReadLogicalData( cName, 'ADJUST', lFit ) == 'T' )
@@ -7467,7 +7474,7 @@ LOCAL lDIBSection, cBuffer, cHBitmap, cImgMargin, cSubClass, oCtrl, lNoHotLight
    ::aForceScale[i]    := lForceScale
    ::aCancel[i]        := lCancel
    ::aMultiLine[i]     := lMultiLine
-   ::aThemed[i]        := IIF( HB_IsLogical( lThemed ) .AND. lThemed, '.T.', IIF( HB_IsLogical( lNoTheme ) .AND. lNoTheme, '.F.', 'NIL' ) )
+   ::aDrawBy[i]        := IIF( HB_IsLogical( lOOHGDraw ) .AND. lOOHGDraw, '.T.', IIF( HB_IsLogical( lWinDraw ) .AND. lWinDraw, '.F.', 'NIL' ) )
    ::aNo3DColors[i]    := lNo3DColors
    ::aFit[i]           := lFit
    ::aDIBSection[i]    := lDIBSection
@@ -7491,8 +7498,8 @@ METHOD pCheckBox( i ) CLASS TFormEditor
 LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, cToolTip
 LOCAL cCaption, cOnChange, cField, cOnGotFocus, cOnLostFocus, nHelpID, lTrans
 LOCAL lNoTabStop, cValue, lBold, lItalic, lUnderline, lStrikeout, aBackColor
-LOCAL aFontColor, lVisible, lEnabled, lRTL, lThemed, lAutoSize, lLeft, l3State
-LOCAL cSubClass, oCtrl, lNoTheme
+LOCAL aFontColor, lVisible, lEnabled, lRTL, lOOHGDraw, lAutoSize, lLeft, l3State
+LOCAL cSubClass, oCtrl, lWinDraw
 
    // Load properties
    cName        := ::aControlW[i]
@@ -7541,12 +7548,14 @@ LOCAL cSubClass, oCtrl, lNoTheme
    lEnabled     := ( ::ReadLogicalData( cName, 'DISABLED', 'F' ) == 'F' )
    lEnabled     := ( Upper( ::ReadOopData( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
    lRTL         := ( ::ReadLogicalData( cName, 'RTL', 'F' ) == 'T' )
-   lThemed      := UpperNIL( ::ReadStringData( cName, 'THEMED', 'NIL' ) )
-   lThemed      := IF( lThemed == '.T.', .T., If( lThemed == '.F.', .F., NIL ) )
-   lThemed      := IF( lThemed == NIL, IF( ::ReadLogicalData( cName, 'THEMED', 'F' ) == 'T', .T., NIL ), lThemed )
-   lNoTheme     := UpperNIL( ::ReadStringData( cName, 'NOTHEME', 'NIL' ) )
-   lNoTheme     := IF( lNoTheme == '.T.', .T., If( lNoTheme == '.F.', .F., NIL ) )
-   lNoTheme     := IF( lNoTheme == NIL, IF( ::ReadLogicalData( cName, 'NOTHEME', 'F' ) == 'T', .T., NIL ), lNoTheme )
+   lOOHGDraw    := UpperNIL( ::ReadStringData( cName, 'THEMED', 'NIL' ) )
+   lOOHGDraw    := IF( lOOHGDraw == '.T.', .T., If( lOOHGDraw == '.F.', .F., NIL ) )
+   lOOHGDraw    := IF( lOOHGDraw == NIL, IF( ::ReadLogicalData( cName, 'THEMED', 'F' ) == 'T', .T., NIL ), lOOHGDraw )
+   lOOHGDraw    := IF( lOOHGDraw == NIL, IF( ::ReadLogicalData( cName, 'OOHGDRAW', 'F' ) == 'T', .T., NIL ), lOOHGDraw )
+   lWinDraw     := UpperNIL( ::ReadStringData( cName, 'NOTHEME', 'NIL' ) )
+   lWinDraw     := IF( lWinDraw == '.T.', .T., If( lWinDraw == '.F.', .F., NIL ) )
+   lWinDraw     := IF( lWinDraw == NIL, IF( ::ReadLogicalData( cName, 'NOTHEME', 'F' ) == 'T', .T., NIL ), lWinDraw )
+   lWinDraw     := IF( lWinDraw == NIL, IF( ::ReadLogicalData( cName, 'WINDRAW', 'F' ) == 'T', .T., NIL ), lWinDraw )
    lAutoSize    := ( ::ReadLogicalData( cName, 'AUTOSIZE', 'F' ) == 'T' )
    lLeft        := ( ::ReadLogicalData( cName, 'LEFTALIGN', 'F' ) == 'T' )
    l3State      := ( ::ReadLogicalData( cName, 'THREESTATE', 'F' ) == 'T' )
@@ -7577,7 +7586,7 @@ LOCAL cSubClass, oCtrl, lNoTheme
    ::aVisible[i]       := lVisible
    ::aEnabled[i]       := lEnabled
    ::aRTL[i]           := lRTL
-   ::aThemed[i]        := IIF( HB_IsLogical( lThemed ) .AND. lThemed, '.T.', IIF( HB_IsLogical( lNoTheme ) .AND. lNoTheme, '.F.', 'NIL' ) )
+   ::aDrawBy[i]        := IIF( HB_IsLogical( lOOHGDraw ) .AND. lOOHGDraw, '.T.', IIF( HB_IsLogical( lWinDraw ) .AND. lWinDraw, '.F.', 'NIL' ) )
    ::aAutoPlay[i]      := lAutoSize
    ::aLeft[i]          := lLeft
    ::a3State[i]        := l3State
@@ -7598,7 +7607,7 @@ LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cCaption, cFontName, nFontSize
 LOCAL lBold, lItalic, lUnderline, lStrikeout, aBackColor, lVisible, lEnabled
 LOCAL cToolTip, cOnGotFocus, cOnLostFocus, nHelpId, lRTL, cPicture, cBuffer
 LOCAL cHBitmap, lNoLoadTrans, lForceScale, cField, lNo3DColors, lFit, lMultiLine
-LOCAL lDIBSection, lNoTabStop, cOnChange, lValue, oCtrl, cSubClass, lThemed, lNoTheme
+LOCAL lDIBSection, lNoTabStop, cOnChange, lValue, oCtrl, cSubClass, lOOHGDraw, lWinDraw
 LOCAL cImgMargin, cOnMouseMove, lTop, lBottom, lLeft, lRight, lCenter, lFlat
 
    // Load properties
@@ -7656,12 +7665,14 @@ LOCAL cImgMargin, cOnMouseMove, lTop, lBottom, lLeft, lRight, lCenter, lFlat
    cOnChange    := ::ReadStringData( cName, 'ONCHANGE', cOnChange )
    lValue       := ( ::ReadStringData( cName, 'VALUE', '.F.' ) == '.T.' )
    cSubClass    := ::ReadStringData( cName, 'SUBCLASS', '' )
-   lThemed      := UpperNIL( ::ReadStringData( cName, 'THEMED', 'NIL' ) )
-   lThemed      := IF( lThemed == '.T.', .T., If( lThemed == '.F.', .F., NIL ) )
-   lThemed      := IF( lThemed == NIL, IF( ::ReadLogicalData( cName, 'THEMED', 'F' ) == 'T', .T., NIL ), lThemed )
-   lNoTheme     := UpperNIL( ::ReadStringData( cName, 'NOTHEME', 'NIL' ) )
-   lNoTheme     := IF( lNoTheme == '.T.', .T., If( lNoTheme == '.F.', .F., NIL ) )
-   lNoTheme     := IF( lNoTheme == NIL, IF( ::ReadLogicalData( cName, 'NOTHEME', 'F' ) == 'T', .T., NIL ), lNoTheme )
+   lOOHGDraw    := UpperNIL( ::ReadStringData( cName, 'THEMED', 'NIL' ) )
+   lOOHGDraw    := IF( lOOHGDraw == '.T.', .T., If( lOOHGDraw == '.F.', .F., NIL ) )
+   lOOHGDraw    := IF( lOOHGDraw == NIL, IF( ::ReadLogicalData( cName, 'THEMED', 'F' ) == 'T', .T., NIL ), lOOHGDraw )
+   lOOHGDraw    := IF( lOOHGDraw == NIL, IF( ::ReadLogicalData( cName, 'OOHGDRAW', 'F' ) == 'T', .T., NIL ), lOOHGDraw )
+   lWinDraw     := UpperNIL( ::ReadStringData( cName, 'NOTHEME', 'NIL' ) )
+   lWinDraw     := IF( lWinDraw == '.T.', .T., If( lWinDraw == '.F.', .F., NIL ) )
+   lWinDraw     := IF( lWinDraw == NIL, IF( ::ReadLogicalData( cName, 'NOTHEME', 'F' ) == 'T', .T., NIL ), lWinDraw )
+   lWinDraw     := IF( lWinDraw == NIL, IF( ::ReadLogicalData( cName, 'WINDRAW', 'F' ) == 'T', .T., NIL ), lWinDraw )
    cImgMargin   := ::ReadStringData( cName, 'IMAGEMARGIN', '' )
    cOnMouseMove := ::ReadStringData( cName, 'ON MOUSEMOVE', '' )
    cOnMouseMove := ::ReadStringData( cName, 'ONMOUSEMOVE', cOnMouseMove )
@@ -7704,7 +7715,7 @@ LOCAL cImgMargin, cOnMouseMove, lTop, lBottom, lLeft, lRight, lCenter, lFlat
    ::aOnChange[i]      := cOnChange
    ::aValueL[i]        := lValue
    ::aSubClass[i]      := cSubClass
-   ::aThemed[i]        := IIF( HB_IsLogical( lThemed ) .AND. lThemed, '.T.', IIF( HB_IsLogical( lNoTheme ) .AND. lNoTheme, '.F.', 'NIL' ) )
+   ::aDrawBy[i]        := IIF( HB_IsLogical( lOOHGDraw ) .AND. lOOHGDraw, '.T.', IIF( HB_IsLogical( lWinDraw ) .AND. lWinDraw, '.F.', 'NIL' ) )
    ::aImageMargin[i]   := cImgMargin
    ::aOnMouseMove[i]   := cOnMouseMove
    ::aJustify[i]       := IIF( lTop, 'TOP', IIF( lBottom, 'BOTTOM', IIF( lLeft, 'LEFT', IIF( lRight, 'RIGHT', IIF( lCenter, 'CENTER', '' ) ) ) ) )
@@ -9173,8 +9184,8 @@ METHOD pPicButt( i ) CLASS TFormEditor
 LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, aBackColor, lVisible, lEnabled
 LOCAL cToolTip, cOnGotFocus, cOnLostFocus, nHelpId, cPicture, cAction
 LOCAL lNoTabStop, lFlat, cBuffer, cHBitmap, lNoLoadTrans, lForceScale
-LOCAL lNo3DColors, lFit, lDIBSection, cOnMouseMove, lThemed, cImgMargin, lTop
-LOCAL lBottom, lLeft, lRight, lCenter, lCancel, cSubClass, oCtrl, lNoTheme
+LOCAL lNo3DColors, lFit, lDIBSection, cOnMouseMove, lOOHGDraw, cImgMargin, lTop
+LOCAL lBottom, lLeft, lRight, lCenter, lCancel, cSubClass, oCtrl, lWinDraw
 
    // Load properties
    cName        := ::aControlW[i]
@@ -9213,12 +9224,14 @@ LOCAL lBottom, lLeft, lRight, lCenter, lCancel, cSubClass, oCtrl, lNoTheme
    lDIBSection  := ( ::ReadLogicalData( cName, 'DIBSECTION', 'F' ) == 'T' )
    cOnMouseMove := ::ReadStringData( cName, 'ON MOUSEMOVE', '' )
    cOnMouseMove := ::ReadStringData( cName, 'ONMOUSEMOVE', cOnMouseMove )
-   lThemed      := UpperNIL( ::ReadStringData( cName, 'THEMED', 'NIL' ) )
-   lThemed      := IF( lThemed == '.T.', .T., If( lThemed == '.F.', .F., NIL ) )
-   lThemed      := IF( lThemed == NIL, IF( ::ReadLogicalData( cName, 'THEMED', 'F' ) == 'T', .T., NIL ), lThemed )
-   lNoTheme     := UpperNIL( ::ReadStringData( cName, 'NOTHEME', 'NIL' ) )
-   lNoTheme     := IF( lNoTheme == '.T.', .T., If( lNoTheme == '.F.', .F., NIL ) )
-   lNoTheme     := IF( lNoTheme == NIL, IF( ::ReadLogicalData( cName, 'NOTHEME', 'F' ) == 'T', .T., NIL ), lNoTheme )
+   lOOHGDraw    := UpperNIL( ::ReadStringData( cName, 'THEMED', 'NIL' ) )
+   lOOHGDraw    := IF( lOOHGDraw == '.T.', .T., If( lOOHGDraw == '.F.', .F., NIL ) )
+   lOOHGDraw    := IF( lOOHGDraw == NIL, IF( ::ReadLogicalData( cName, 'THEMED', 'F' ) == 'T', .T., NIL ), lOOHGDraw )
+   lOOHGDraw    := IF( lOOHGDraw == NIL, IF( ::ReadLogicalData( cName, 'OOHGDRAW', 'F' ) == 'T', .T., NIL ), lOOHGDraw )
+   lWinDraw     := UpperNIL( ::ReadStringData( cName, 'NOTHEME', 'NIL' ) )
+   lWinDraw     := IF( lWinDraw == '.T.', .T., If( lWinDraw == '.F.', .F., NIL ) )
+   lWinDraw     := IF( lWinDraw == NIL, IF( ::ReadLogicalData( cName, 'NOTHEME', 'F' ) == 'T', .T., NIL ), lWinDraw )
+   lWinDraw     := IF( lWinDraw == NIL, IF( ::ReadLogicalData( cName, 'WINDRAW', 'F' ) == 'T', .T., NIL ), lWinDraw )
    cImgMargin   := ::ReadStringData( cName, 'IMAGEMARGIN', '' )
    lTop         := ( ::ReadLogicalData( cName, 'TOP', 'F' ) == 'T' )
    lBottom      := ( ::ReadLogicalData( cName, 'BOTTOM', 'F' ) == 'T' )
@@ -9250,7 +9263,7 @@ LOCAL lBottom, lLeft, lRight, lCenter, lCancel, cSubClass, oCtrl, lNoTheme
    ::aFit[i]         := lFit
    ::aDIBSection[i]  := lDIBSection
    ::aOnMouseMove[i] := cOnMouseMove
-   ::aThemed[i]      := IIF( HB_IsLogical( lThemed ) .AND. lThemed, '.T.', IIF( HB_IsLogical( lNoTheme ) .AND. lNoTheme, '.F.', 'NIL' ) )
+   ::aDrawBy[i]      := IIF( HB_IsLogical( lOOHGDraw ) .AND. lOOHGDraw, '.T.', IIF( HB_IsLogical( lWinDraw ) .AND. lWinDraw, '.F.', 'NIL' ) )
    ::aImageMargin[i] := cImgMargin
    ::aJustify[i]     := IIF( lTop, 'TOP', IIF( lBottom, 'BOTTOM', IIF( lLeft, 'LEFT', IIF( lRight, 'RIGHT', IIF( lCenter, 'CENTER', '' ) ) ) ) )
    ::aCancel[i]      := lCancel
@@ -9270,7 +9283,7 @@ METHOD pPicCheckButt( i ) CLASS TFormEditor
 LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cPicture, lValue, cToolTip
 LOCAL lNoTabStop, cOnChange, cOnGotFocus, cOnLostFocus, nHelpId, lEnabled
 LOCAL lVisible, cBuffer, cHBitmap, lNoLoadTrans, lForceScale, cField, oCtrl
-LOCAL lNo3DColors, lFit, lDIBSection, lThemed, aBackColor, cOnMouseMove, lNoTheme
+LOCAL lNo3DColors, lFit, lDIBSection, lOOHGDraw, aBackColor, cOnMouseMove, lWinDraw
 LOCAL cImgMargin, lFlat, lTop, lBottom, lLeft, lRight, lCenter, cSubClass
 
    // Load properties
@@ -9307,12 +9320,14 @@ LOCAL cImgMargin, lFlat, lTop, lBottom, lLeft, lRight, lCenter, cSubClass
    lFit         := ( ::ReadLogicalData( cName, 'ADJUST', lFit ) == 'T' )
    lDIBSection  := ( ::ReadLogicalData( cName, 'DIBSECTION', 'F' ) == 'T' )
    cSubClass    := ::ReadStringData( cName, 'SUBCLASS', '' )
-   lThemed      := UpperNIL( ::ReadStringData( cName, 'THEMED', 'NIL' ) )
-   lThemed      := IF( lThemed == '.T.', .T., If( lThemed == '.F.', .F., NIL ) )
-   lThemed      := IF( lThemed == NIL, IF( ::ReadLogicalData( cName, 'THEMED', 'F' ) == 'T', .T., NIL ), lThemed )
-   lNoTheme     := UpperNIL( ::ReadStringData( cName, 'NOTHEME', 'NIL' ) )
-   lNoTheme     := IF( lNoTheme == '.T.', .T., If( lNoTheme == '.F.', .F., NIL ) )
-   lNoTheme     := IF( lNoTheme == NIL, IF( ::ReadLogicalData( cName, 'NOTHEME', 'F' ) == 'T', .T., NIL ), lNoTheme )
+   lOOHGDraw    := UpperNIL( ::ReadStringData( cName, 'THEMED', 'NIL' ) )
+   lOOHGDraw    := IF( lOOHGDraw == '.T.', .T., If( lOOHGDraw == '.F.', .F., NIL ) )
+   lOOHGDraw    := IF( lOOHGDraw == NIL, IF( ::ReadLogicalData( cName, 'THEMED', 'F' ) == 'T', .T., NIL ), lOOHGDraw )
+   lOOHGDraw    := IF( lOOHGDraw == NIL, IF( ::ReadLogicalData( cName, 'OOHGDRAW', 'F' ) == 'T', .T., NIL ), lOOHGDraw )
+   lWinDraw     := UpperNIL( ::ReadStringData( cName, 'NOTHEME', 'NIL' ) )
+   lWinDraw     := IF( lWinDraw == '.T.', .T., If( lWinDraw == '.F.', .F., NIL ) )
+   lWinDraw     := IF( lWinDraw == NIL, IF( ::ReadLogicalData( cName, 'NOTHEME', 'F' ) == 'T', .T., NIL ), lWinDraw )
+   lWinDraw     := IF( lWinDraw == NIL, IF( ::ReadLogicalData( cName, 'WINDRAW', 'F' ) == 'T', .T., NIL ), lWinDraw )
    cImgMargin   := ::ReadStringData( cName, 'IMAGEMARGIN', '' )
    aBackColor   := ::ReadStringData( cName, 'BACKCOLOR', 'NIL' )
    aBackColor   := UpperNIL( ::ReadOopData( cName, 'BACKCOLOR', aBackColor ) )
@@ -9346,7 +9361,7 @@ LOCAL cImgMargin, lFlat, lTop, lBottom, lLeft, lRight, lCenter, cSubClass
    ::aNo3DColors[i]  := lNo3DColors
    ::aFit[i]         := lFit
    ::aDIBSection[i]  := lDIBSection
-   ::aThemed[i]      := IIF( HB_IsLogical( lThemed ) .AND. lThemed, '.T.', IIF( HB_IsLogical( lNoTheme ) .AND. lNoTheme, '.F.', 'NIL' ) )
+   ::aDrawBy[i]      := IIF( HB_IsLogical( lOOHGDraw ) .AND. lOOHGDraw, '.T.', IIF( HB_IsLogical( lWinDraw ) .AND. lWinDraw, '.F.', 'NIL' ) )
    ::aBackColor[i]   := aBackColor
    ::aOnMouseMove[i] := cOnMouseMove
    ::aImageMargin[i] := cImgMargin
@@ -9653,8 +9668,8 @@ METHOD pRadiogroup( i ) CLASS TFormEditor
 LOCAL cName, cObj, nRow, nCol, nWidth, nValue, nSpacing, cFontName, nFontSize
 LOCAL cToolTip, cOnChange, lTrans, nHelpid, cItems, lVisible, lEnabled, lBold
 LOCAL lItalic, lUnderline, lStrikeout, aBackColor, aFontColor, lRTL, lNoTabStop
-LOCAL lAutoSize, lHorizontal, lThemed, cBackground, cSubClass, oCtrl, nHeight
-LOCAL cReadOnly, lLeftJust, lNoTheme
+LOCAL lAutoSize, lHorizontal, lOOHGDraw, cBackground, cSubClass, oCtrl, nHeight
+LOCAL cReadOnly, lLeftJust, lWinDraw
 
    // Load properties
    cName       := ::aControlW[i]
@@ -9702,12 +9717,14 @@ LOCAL cReadOnly, lLeftJust, lNoTheme
    lNoTabStop  := ( ::ReadLogicalData( cName, 'NOTABSTOP', 'F' ) == 'T' )
    lAutoSize   := ( ::ReadLogicalData( cName, 'AUTOSIZE', 'F' ) == 'T' )
    lHorizontal := ( ::ReadLogicalData( cName, 'HORIZONTAL', 'F' ) == 'T' )
-   lThemed     := UpperNIL( ::ReadStringData( cName, 'THEMED', 'NIL' ) )
-   lThemed     := IF( lThemed == '.T.', .T., If( lThemed == '.F.', .F., NIL ) )
-   lThemed     := IF( lThemed == NIL, IF( ::ReadLogicalData( cName, 'THEMED', 'F' ) == 'T', .T., NIL ), lThemed )
-   lNoTheme    := UpperNIL( ::ReadStringData( cName, 'NOTHEME', 'NIL' ) )
-   lNoTheme    := IF( lNoTheme == '.T.', .T., If( lNoTheme == '.F.', .F., NIL ) )
-   lNoTheme    := IF( lNoTheme == NIL, IF( ::ReadLogicalData( cName, 'NOTHEME', 'F' ) == 'T', .T., NIL ), lNoTheme )
+   lOOHGDraw   := UpperNIL( ::ReadStringData( cName, 'THEMED', 'NIL' ) )
+   lOOHGDraw   := IF( lOOHGDraw == '.T.', .T., If( lOOHGDraw == '.F.', .F., NIL ) )
+   lOOHGDraw   := IF( lOOHGDraw == NIL, IF( ::ReadLogicalData( cName, 'THEMED', 'F' ) == 'T', .T., NIL ), lOOHGDraw )
+   lOOHGDraw    := IF( lOOHGDraw == NIL, IF( ::ReadLogicalData( cName, 'OOHGDRAW', 'F' ) == 'T', .T., NIL ), lOOHGDraw )
+   lWinDraw    := UpperNIL( ::ReadStringData( cName, 'NOTHEME', 'NIL' ) )
+   lWinDraw    := IF( lWinDraw == '.T.', .T., If( lWinDraw == '.F.', .F., NIL ) )
+   lWinDraw    := IF( lWinDraw == NIL, IF( ::ReadLogicalData( cName, 'NOTHEME', 'F' ) == 'T', .T., NIL ), lWinDraw )
+   lWinDraw    := IF( lWinDraw == NIL, IF( ::ReadLogicalData( cName, 'WINDRAW', 'F' ) == 'T', .T., NIL ), lWinDraw )
    cBackground := ::ReadStringData( cName, 'BACKGROUND', '' )
    cSubClass   := ::ReadStringData( cName, 'SUBCLASS', '' )
    cReadOnly   := ::ReadStringData( cName, 'READONLY', '' )
@@ -9737,7 +9754,7 @@ LOCAL cReadOnly, lLeftJust, lNoTheme
    ::aNoTabStop[i]     := lNoTabStop
    ::aAutoPlay[i]      := lAutoSize
    ::aFlat[i]          := lHorizontal
-   ::aThemed[i]        := IIF( HB_IsLogical( lThemed ) .AND. lThemed, '.T.', IIF( HB_IsLogical( lNoTheme ) .AND. lNoTheme, '.F.', 'NIL' ) )
+   ::aDrawBy[i]        := IIF( HB_IsLogical( lOOHGDraw ) .AND. lOOHGDraw, '.T.', IIF( HB_IsLogical( lWinDraw ) .AND. lWinDraw, '.F.', 'NIL' ) )
    ::aBackground[i]    := cBackground
    ::aSubClass[i]      := cSubClass
    ::aReadOnlyB[i]     := cReadOnly
@@ -12440,10 +12457,10 @@ LOCAL cValue
          IF ::aMultiLine[j]
             Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'MULTILINE '
          ENDIF
-         IF ::aThemed[j] == '.T.'
-           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'THEMED '
-         ELSEIF ::aThemed[j] == '.F.'
-           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTHEME '
+         IF ::aDrawBy[j] == '.T.'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OOHGDRAW '
+         ELSEIF ::aDrawBy[j] == '.F.'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WINDRAW '
          ENDIF
          IF ::aNo3DColors[j]
             Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NO3DCOLORS '
@@ -12555,10 +12572,10 @@ LOCAL cValue
          IF ::aDIBSection[j]
             Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DIBSECTION '
          ENDIF
-         IF ::aThemed[j] == '.T.'
-           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'THEMED '
-         ELSEIF ::aThemed[j] == '.F.'
-           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTHEME '
+         IF ::aDrawBy[j] == '.T.'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OOHGDRAW '
+         ELSEIF ::aDrawBy[j] == '.F.'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WINDRAW '
          ENDIF
          IF ! Empty( ::aImageMargin[j] )
             Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'IMAGEMARGIN ' + AllTrim( ::aImageMargin[j] )
@@ -12655,10 +12672,10 @@ LOCAL cValue
          IF ::aAutoPlay[j]
             Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'AUTOSIZE '
          ENDIF
-         IF ::aThemed[j] == '.T.'
-           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'THEMED '
-         ELSEIF ::aThemed[j] == '.F.'
-           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTHEME '
+         IF ::aDrawBy[j] == '.T.'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OOHGDRAW '
+         ELSEIF ::aDrawBy[j] == '.F.'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WINDRAW '
          ENDIF
          IF ::aLeft[j]
             Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'LEFTALIGN '
@@ -14133,10 +14150,10 @@ LOCAL cValue
          IF ! Empty( ::aOnMouseMove[j] ) .AND. UpperNIL( ::aOnMouseMove[j] ) # 'NIL'
            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON MOUSEMOVE ' + AllTrim( ::aOnMouseMove[j] )
          ENDIF
-         IF ::aThemed[j] == '.T.'
-           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'THEMED '
-         ELSEIF ::aThemed[j] == '.F.'
-           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTHEME '
+         IF ::aDrawBy[j] == '.T.'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OOHGDRAW '
+         ELSEIF ::aDrawBy[j] == '.F.'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WINDRAW '
          ENDIF
          IF ! Empty( ::aImageMargin[j] )
            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'IMAGEMARGIN ' + AllTrim( ::aImageMargin[j] )
@@ -14227,10 +14244,10 @@ LOCAL cValue
          IF ! ::aEnabled[j]
             Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DISABLED '
          ENDIF
-         IF ::aThemed[j] == '.T.'
-           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'THEMED '
-         ELSEIF ::aThemed[j] == '.F.'
-           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTHEME '
+         IF ::aDrawBy[j] == '.T.'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OOHGDRAW '
+         ELSEIF ::aDrawBy[j] == '.F.'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WINDRAW '
          ENDIF
          IF ::aFlat[j]
             Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'FLAT '
@@ -14363,10 +14380,10 @@ LOCAL cValue
          IF ::aRTL[j]
            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'RTL '
          ENDIF
-         IF ::aThemed[j] == '.T.'
-           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'THEMED '
-         ELSEIF ::aThemed[j] == '.F.'
-           Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOTHEME '
+         IF ::aDrawBy[j] == '.T.'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OOHGDRAW '
+         ELSEIF ::aDrawBy[j] == '.F.'
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'WINDRAW '
          ENDIF
          IF ! Empty( ::aBackground[j] )
             Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'BACKGROUND ' + AllTrim( ::aBackground[j] )
@@ -16263,9 +16280,9 @@ LOCAL aFormats, aResults
 
    IF ::aCtrlType[j] == 'BUTTON'
       cTitle      := ::aName[j] + ' properties'
-      aLabels     := { 'Name',     'Caption',     'ToolTip',     'HelpID',     'NoTabStop',     'Enabled',     'Visible',     'Flat',     'Picture',     'Alignment',   'Obj',      'RTL',     'NoPrefix',     'NoLoadTransp.',   'ForceScale',     'Cancel',     'MultiLine',     'Themed',                                                            'No3DColors',     'AutoFit', 'DIB Section',    'Buffer',     'HBitmap',     'ImageMargin',     'SubClass' }
-      aInitValues := { ::aName[j], ::aCaption[j], ::aToolTip[j], ::aHelpID[j], ::aNoTabStop[j], ::aEnabled[j], ::aVisible[j], ::aflat[j], ::aPicture[j], ::Ajustify[j], ::aCObj[j], ::aRTL[j], ::aNoPrefix[j], ::aNoLoadTrans[j], ::aForceScale[j], ::aCancel[j], ::aMultiLine[j], IIF( ::aThemed[j] == '.T.', 1, IIF( ::aThemed[j] == '.F.', 2, 3 ) ), ::aNo3DColors[j], ::aFit[j], ::aDIBSection[j], ::aBuffer[j], ::aHBitmap[j], ::aImageMargin[j], ::aSubClass[j] }
-      aFormats    := { 30,         300,           250,           '999',        .F.,             .T.,           .T.,           .T.,        40,            20,            31,         .F.,       .F.,            .F.,               .F.,              .F.,          .F.,             { 'THEMED', 'NOTHEME', 'NIL' },                                      .F.,              .F.,       .F.,              300,          300,           300,               300 }
+      aLabels     := { 'Name',     'Caption',     'ToolTip',     'HelpID',     'NoTabStop',     'Enabled',     'Visible',     'Flat',     'Picture',     'Alignment',   'Obj',      'RTL',     'NoPrefix',     'NoLoadTransp.',   'ForceScale',     'Cancel',     'MultiLine',     'DrawBy',                                                               'No3DColors',     'AutoFit', 'DIB Section',    'Buffer',     'HBitmap',     'ImageMargin',     'SubClass' }
+      aInitValues := { ::aName[j], ::aCaption[j], ::aToolTip[j], ::aHelpID[j], ::aNoTabStop[j], ::aEnabled[j], ::aVisible[j], ::aflat[j], ::aPicture[j], ::Ajustify[j], ::aCObj[j], ::aRTL[j], ::aNoPrefix[j], ::aNoLoadTrans[j], ::aForceScale[j], ::aCancel[j], ::aMultiLine[j], IIF( ::aDrawBy[j] == '.T.', 1,    IIF( ::aDrawBy[j] == '.F.', 2, 3 ) ), ::aNo3DColors[j], ::aFit[j], ::aDIBSection[j], ::aBuffer[j], ::aHBitmap[j], ::aImageMargin[j], ::aSubClass[j] }
+      aFormats    := { 30,         300,           250,           '999',        .F.,             .T.,           .T.,           .T.,        40,            20,            31,         .F.,       .F.,            .F.,               .F.,              .F.,          .F.,             { 'OOHGDRAW', 'WINDRAW', 'NIL' },                                       .F.,              .F.,       .F.,              300,          300,           300,               300 }
       aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
       IF aResults[1] == NIL
          oControl:SetFocus()
@@ -16288,7 +16305,7 @@ LOCAL aFormats, aResults
       ::aForceScale[j]       := aResults[15]
       ::aCancel[j]           := aResults[16]
       ::aMultiLine[j]        := aResults[17]
-      ::aThemed[j]           := IIF( aResults[18] == 1, '.T.', IIF( aResults[18] == 2, '.F.', 'NIL' ) )
+      ::aDrawBy[j]           := IIF( aResults[18] == 1, '.T.', IIF( aResults[18] == 2, '.F.', 'NIL' ) )
       ::aNo3DColors[j]       := aResults[19]
       ::aFit[j]              := aResults[20]           // AUTOFIT
       ::aDIBSection[j]       := aResults[21]
@@ -16300,9 +16317,9 @@ LOCAL aFormats, aResults
 
    IF ::aCtrlType[j] == 'CHECKBOX'
       cTitle      := ::aName[j] + ' properties'
-      aLabels     := { 'Name',     'Value',                                                           'Caption',     'ToolTip',     'HelpID',     'Field',     'Transparent',     'Enabled',     'Visible',     'NoTabStop',     'Obj',      'AutoSize',     'RTL',     'ThreeState', 'Themed',                                                            'LeftAlign' }
-      aInitValues := { ::aName[j], IIF( ::aValue[j] == '.T.', 1, IIF( ::aValue[j] == '.F.', 2, 3 ) ), ::aCaption[j], ::aToolTip[j], ::aHelpID[j], ::aField[j], ::aTransparent[j], ::aEnabled[j], ::aVisible[j], ::aNoTabStop[j], ::aCObj[j], ::aAutoPlay[j], ::aRTL[j], ::a3State[j], IIF( ::aThemed[j] == '.T.', 1, IIF( ::aThemed[j] == '.F.', 2, 3 ) ), ::aLeft[j] }
-      aFormats    := { 30,         { '.T.', '.F.', 'NIL' },                                           31,            250,           '999',        250,         .F.,               .F.,           .F.,           .F.,             31,         .F.,            .F.,       .F.,          { 'THEMED', 'NOTHEME', 'NIL' },                                      .F. }
+      aLabels     := { 'Name',     'Value',                                                           'Caption',     'ToolTip',     'HelpID',     'Field',     'Transparent',     'Enabled',     'Visible',     'NoTabStop',     'Obj',      'AutoSize',     'RTL',     'ThreeState', 'DrawBy',                                                               'LeftAlign' }
+      aInitValues := { ::aName[j], IIF( ::aValue[j] == '.T.', 1, IIF( ::aValue[j] == '.F.', 2, 3 ) ), ::aCaption[j], ::aToolTip[j], ::aHelpID[j], ::aField[j], ::aTransparent[j], ::aEnabled[j], ::aVisible[j], ::aNoTabStop[j], ::aCObj[j], ::aAutoPlay[j], ::aRTL[j], ::a3State[j], IIF( ::aDrawBy[j] == '.T.', 1,    IIF( ::aDrawBy[j] == '.F.', 2, 3 ) ), ::aLeft[j] }
+      aFormats    := { 30,         { '.T.', '.F.', 'NIL' },                                           31,            250,           '999',        250,         .F.,               .F.,           .F.,           .F.,             31,         .F.,            .F.,       .F.,          { 'OOHGDRAW', 'WINDRAW', 'NIL' },                                       .F. }
       aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
       IF aResults[1] == NIL
          oControl:SetFocus()
@@ -16322,7 +16339,7 @@ LOCAL aFormats, aResults
       ::aAutoPlay[j]         := aResults[12]           // AUTOSIZE
       ::aRTL[j]              := aResults[13]
       ::a3State[j]           := aResults[14]
-      ::aThemed[j]           := IIF( aResults[15] == 1, '.T.', IIF( aResults[15] == 2, '.F.', 'NIL' ) )
+      ::aDrawBy[j]           := IIF( aResults[15] == 1, '.T.', IIF( aResults[15] == 2, '.F.', 'NIL' ) )
       ::aLeft[j]             := aResults[16]           // LEFTALIGN
    ENDIF
 
@@ -16534,9 +16551,9 @@ LOCAL aFormats, aResults
 
    IF ::aCtrlType[j] == 'RADIOGROUP'
       cTitle      := ::aName[j] + ' properties'
-      aLabels     := { 'Name',     'Value',      'Options',   'ToolTip',     'Spacing',     'HelpID',     'Transparent',     'Enabled',     'Visible',     'Obj',      'RTL',     'NoTabStop',     'AutoSize',     'Horizontal', 'Themed',                                                            'Background',     'SubClass',     'LeftJustify', 'ReadOnly' }
-      aInitValues := { ::aName[j], ::aValueN[j], ::aitems[j], ::aToolTip[j], ::aspacing[j], ::aHelpID[j], ::aTransparent[j], ::aEnabled[j], ::aVisible[j], ::aCObj[j], ::aRTL[j], ::aNoTabStop[j], ::aAutoPlay[j], ::aFlat[j],   IIF( ::aThemed[j] == '.T.', 1, IIF( ::aThemed[j] == '.F.', 2, 3 ) ), ::aBackground[j], ::aSubClass[j], ::aLeft[j],    ::aReadOnlyB[j] }
-      aFormats    := { 30,         '999',        250,         250,           '999',         '999',        .F.,               .F.,           .F.,           31,         .F.,       .F.,             .F.,            .F.,          { 'THEMED', 'NOTHEME', 'NIL' },                                      250,              250,            .F.,           250}
+      aLabels     := { 'Name',     'Value',      'Options',   'ToolTip',     'Spacing',     'HelpID',     'Transparent',     'Enabled',     'Visible',     'Obj',      'RTL',     'NoTabStop',     'AutoSize',     'Horizontal', 'DrawBy',                                                               'Background',     'SubClass',     'LeftJustify', 'ReadOnly' }
+      aInitValues := { ::aName[j], ::aValueN[j], ::aitems[j], ::aToolTip[j], ::aspacing[j], ::aHelpID[j], ::aTransparent[j], ::aEnabled[j], ::aVisible[j], ::aCObj[j], ::aRTL[j], ::aNoTabStop[j], ::aAutoPlay[j], ::aFlat[j],   IIF( ::aDrawBy[j] == '.T.', 1,    IIF( ::aDrawBy[j] == '.F.', 2, 3 ) ), ::aBackground[j], ::aSubClass[j], ::aLeft[j],    ::aReadOnlyB[j] }
+      aFormats    := { 30,         '999',        250,         250,           '999',         '999',        .F.,               .F.,           .F.,           31,         .F.,       .F.,             .F.,            .F.,          { 'OOHGDRAW', 'WINDRAW', 'NIL' },                                       250,              250,            .F.,           250}
       aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
       IF aResults[1] == NIL
          oControl:SetFocus()
@@ -16556,7 +16573,7 @@ LOCAL aFormats, aResults
       ::aNoTabStop[j]        := aResults[12]
       ::aAutoPlay[j]         := aResults[13]           // AUTOSIZE
       ::aFlat[j]             := aResults[14]           // HORIZONTAL
-      ::aThemed[j]           := IIF( aResults[15] == 1, '.T.', IIF( aResults[15] == 2, '.F.', 'NIL' ) )
+      ::aDrawBy[j]           := IIF( aResults[15] == 1, '.T.', IIF( aResults[15] == 2, '.F.', 'NIL' ) )
       ::aBackground[j]       := aResults[16]
       ::aSubClass[j]         := aResults[17]
       ::aLeft[j]             := aResults[18]           // LEFTJUSTIFY
@@ -16604,9 +16621,9 @@ LOCAL aFormats, aResults
 
    IF ::aCtrlType[j] == 'CHECKBTN'
       cTitle      := ::aName[j] + ' properties'
-      aLabels     := { 'Name',     'Value',      'Caption',     'ToolTip',     'HelpID',     'Enabled',     'Visible',     'NoTabStop',     'Obj',      'RTL',     'Picture',     'Buffer',     'HBitmap',     'NoLoadTransparent', 'ForceScale',     'Field',     'No3DColors',     'Fit',     'DIBSection',     'Themed',                                                            'MultiLine',     'Flat',     'SubClass',     'ImageMargin',     'Align'                                                                                                                                                                                        }
-      aInitValues := { ::aName[j], ::aValueL[j], ::aCaption[j], ::aToolTip[j], ::aHelpID[j], ::aEnabled[j], ::aVisible[j], ::aNoTabStop[j], ::aCObj[j], ::aRTL[j], ::aPicture[j], ::aBuffer[j], ::aHBitmap[j], ::aNoLoadTrans[j],   ::aForceScale[j], ::aField[j], ::aNo3DColors[j], ::aFit[j], ::aDIBSection[j], IIF( ::aThemed[j] == '.T.', 1, IIF( ::aThemed[j] == '.F.', 2, 3 ) ), ::aMultiLine[j], ::aFlat[j], ::aSubClass[j], ::aImageMargin[j], IIF( ::aJustify[j] == 'BOTTOM',  1,  IIF( ::aJustify[j] == 'CENTER',  2,  IIF( ::aJustify[j] == 'LEFT',  3,  IIF( ::aJustify[j] == 'RIGHT',  4,  IIF( ::aJustify[j] == 'TOP',  5,  6 ) ) ) ) ) }
-      aFormats    := { 30,         .F.,          31,            250,           '999',        .F.,           .F.,           .F.,             31,         .F.,       250,           250,          250,           .F.,                 .F.,              250,         .F.,              .F.,       .F.,              { 'THEMED', 'NOTHEME', 'NIL' },                                      .F.,             .F.,        250,            250,               { 'BOTTOM',  'CENTER',  'LEFT',  'RIGHT',  'TOP',  'NONE' }                                                                                                                                    }
+      aLabels     := { 'Name',     'Value',      'Caption',     'ToolTip',     'HelpID',     'Enabled',     'Visible',     'NoTabStop',     'Obj',      'RTL',     'Picture',     'Buffer',     'HBitmap',     'NoLoadTransparent', 'ForceScale',     'Field',     'No3DColors',     'Fit',     'DIBSection',     'DrawBy',                                                               'MultiLine',     'Flat',     'SubClass',     'ImageMargin',     'Align'                                                                                                                                                                                        }
+      aInitValues := { ::aName[j], ::aValueL[j], ::aCaption[j], ::aToolTip[j], ::aHelpID[j], ::aEnabled[j], ::aVisible[j], ::aNoTabStop[j], ::aCObj[j], ::aRTL[j], ::aPicture[j], ::aBuffer[j], ::aHBitmap[j], ::aNoLoadTrans[j],   ::aForceScale[j], ::aField[j], ::aNo3DColors[j], ::aFit[j], ::aDIBSection[j], IIF( ::aDrawBy[j] == '.T.', 1,    IIF( ::aDrawBy[j] == '.F.', 2, 3 ) ), ::aMultiLine[j], ::aFlat[j], ::aSubClass[j], ::aImageMargin[j], IIF( ::aJustify[j] == 'BOTTOM',  1,  IIF( ::aJustify[j] == 'CENTER',  2,  IIF( ::aJustify[j] == 'LEFT',  3,  IIF( ::aJustify[j] == 'RIGHT',  4,  IIF( ::aJustify[j] == 'TOP',  5,  6 ) ) ) ) ) }
+      aFormats    := { 30,         .F.,          31,            250,           '999',        .F.,           .F.,           .F.,             31,         .F.,       250,           250,          250,           .F.,                 .F.,              250,         .F.,              .F.,       .F.,              { 'OOHGDRAW', 'WINDRAW', 'NIL' },                                       .F.,             .F.,        250,            250,               { 'BOTTOM',  'CENTER',  'LEFT',  'RIGHT',  'TOP',  'NONE' }                                                                                                                                    }
       aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
       IF aResults[1] == NIL
          oControl:SetFocus()
@@ -16631,7 +16648,7 @@ LOCAL aFormats, aResults
       ::aNo3DColors[j]       := aResults[17]
       ::aFit[j]              := aResults[18]
       ::aDIBSection[j]       := aResults[19]
-      ::aThemed[j]           := IIF( aResults[20] == 1, '.T.', IIF( aResults[20] == 2, '.F.', 'NIL' ) )
+      ::aDrawBy[j]           := IIF( aResults[20] == 1, '.T.', IIF( aResults[20] == 2, '.F.', 'NIL' ) )
       ::aMultiLine[j]        := aResults[21]
       ::aFlat[j]             := aResults[22]
       ::aSubClass[j]         := aResults[23]
@@ -16645,9 +16662,9 @@ LOCAL aFormats, aResults
 
    IF ::aCtrlType[j] == 'PICCHECKBUTT'
       cTitle      := ::aName[j] + ' properties'
-      aLabels     := { 'Name',     'Value',      'Picture',     'ToolTip',     'HelpID',     'Enabled',     'Visible',     'NoTabStop',     'Obj',      'SubClass',     'Buffer',     'HBitmap',     'NoLoadTransparent', 'ForceScale',     'Field',     'No3DColors',     'AutoFit', 'DIBSection',     'Themed',                                                            'Flat',     'ImageMargin',     'Align' }
-      aInitValues := { ::aName[j], ::aValueL[j], ::aPicture[j], ::aToolTip[j], ::aHelpID[j], ::aEnabled[j], ::aVisible[j], ::aNoTabStop[j], ::aCObj[j], ::aSubClass[j], ::aBuffer[j], ::aHBitmap[j], ::aNoLoadTrans[j],   ::aForceScale[j], ::aField[j], ::aNo3DColors[j], ::aFit[j], ::aDIBSection[j], IIF( ::aThemed[j] == '.T.', 1, IIF( ::aThemed[j] == '.F.', 2, 3 ) ), ::aFlat[j], ::aImageMargin[j],  IIF( ::aJustify[j] == 'BOTTOM',  1,  IIF( ::aJustify[j] == 'CENTER',  2,  IIF( ::aJustify[j] == 'LEFT',  3,  IIF( ::aJustify[j] == 'RIGHT',  4,  IIF( ::aJustify[j] == 'TOP',  5,  6 ) ) ) ) ) }
-      aFormats    := { 30,         .F.,          31,            250,           '999',        .F.,           .F.,           .F.,             31,         250,            250,          250,            .F.,                .F.,              250,         .F.,              .F.,       .F.,              { 'THEMED', 'NOTHEME', 'NIL' },                                      .F.,        250,               { 'BOTTOM',  'CENTER',  'LEFT',  'RIGHT',  'TOP',  'NONE' } }
+      aLabels     := { 'Name',     'Value',      'Picture',     'ToolTip',     'HelpID',     'Enabled',     'Visible',     'NoTabStop',     'Obj',      'SubClass',     'Buffer',     'HBitmap',     'NoLoadTransparent', 'ForceScale',     'Field',     'No3DColors',     'AutoFit', 'DIBSection',     'DrawBy',                                                               'Flat',     'ImageMargin',     'Align' }
+      aInitValues := { ::aName[j], ::aValueL[j], ::aPicture[j], ::aToolTip[j], ::aHelpID[j], ::aEnabled[j], ::aVisible[j], ::aNoTabStop[j], ::aCObj[j], ::aSubClass[j], ::aBuffer[j], ::aHBitmap[j], ::aNoLoadTrans[j],   ::aForceScale[j], ::aField[j], ::aNo3DColors[j], ::aFit[j], ::aDIBSection[j], IIF( ::aDrawBy[j] == '.T.', 1,    IIF( ::aDrawBy[j] == '.F.', 2, 3 ) ), ::aFlat[j], ::aImageMargin[j],  IIF( ::aJustify[j] == 'BOTTOM',  1,  IIF( ::aJustify[j] == 'CENTER',  2,  IIF( ::aJustify[j] == 'LEFT',  3,  IIF( ::aJustify[j] == 'RIGHT',  4,  IIF( ::aJustify[j] == 'TOP',  5,  6 ) ) ) ) ) }
+      aFormats    := { 30,         .F.,          31,            250,           '999',        .F.,           .F.,           .F.,             31,         250,            250,          250,            .F.,                .F.,              250,         .F.,              .F.,       .F.,              { 'OOHGDRAW', 'WINDRAW', 'NIL' },                                       .F.,        250,               { 'BOTTOM',  'CENTER',  'LEFT',  'RIGHT',  'TOP',  'NONE' } }
       aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
       IF aResults[1] == NIL
          oControl:SetFocus()
@@ -16671,7 +16688,7 @@ LOCAL aFormats, aResults
       ::aNo3DColors[j]       := aResults[16]
       ::aFit[j]              := aResults[17]           // AUTOFIT
       ::aDIBSection[j]       := aResults[18]
-      ::aThemed[j]           := IIF( aResults[19] == 1, '.T.', IIF( aResults[19] == 2, '.F.', 'NIL' ) )
+      ::aDrawBy[j]           := IIF( aResults[19] == 1, '.T.', IIF( aResults[19] == 2, '.F.', 'NIL' ) )
       ::aFlat[j]             := aResults[20]
       ::aImageMargin[j]      := aResults[21]
       ::aJustify[j]          := IIF( aResults[22] == 1, 'BOTTOM', ;
@@ -16683,9 +16700,9 @@ LOCAL aFormats, aResults
 
    IF ::aCtrlType[j] == 'PICBUTT'
       cTitle      := ::aName[j] + ' properties'
-      aLabels     := { 'Name',     'Picture',     'ToolTip',     'HelpID',     'NoTabStop',     'Enabled',     'Visible',     'Flat',     'Obj',      'Buffer',     'HBitmap',     'NoLoadTransparent', 'ForceScale',     'No3DColors',     'AutoFit', 'DIBSection',     'Themed',                                                            'ImageMargin',     'Align',                                                                                                                                                                                         'Cancel',     'SubClass' }
-      aInitValues := { ::aName[j], ::aPicture[j], ::aToolTip[j], ::aHelpID[j], ::aNoTabStop[j], ::aEnabled[j], ::aVisible[j], ::aflat[j], ::aCObj[j], ::aBuffer[j], ::aHBitmap[j], ::aNoLoadTrans[j],   ::aForceScale[j], ::aNo3DColors[j], ::aFit[j], ::aDIBSection[j], IIF( ::aThemed[j] == '.T.', 1, IIF( ::aThemed[j] == '.F.', 2, 3 ) ), ::aImageMargin[j],  IIF( ::aJustify[j] == 'BOTTOM',  1,  IIF( ::aJustify[j] == 'CENTER',  2,  IIF( ::aJustify[j] == 'LEFT',  3,  IIF( ::aJustify[j] == 'RIGHT',  4,  IIF( ::aJustify[j] == 'TOP',  5,  6 ) ) ) ) ), ::aCancel[j], ::aSubClass[j] }
-      aFormats    := { 30,         30,            250,           '999',        .F.,             .T.,           .T.,           .F.,        31,         250,          250,           .F.,                 .F.,              .F.,              .F.,       .F.,              { 'THEMED', 'NOTHEME', 'NIL' },                                      250,               { 'BOTTOM',  'CENTER',  'LEFT',  'RIGHT',  'TOP',  'NONE' },                                                                                                                                     .F.,          250 }
+      aLabels     := { 'Name',     'Picture',     'ToolTip',     'HelpID',     'NoTabStop',     'Enabled',     'Visible',     'Flat',     'Obj',      'Buffer',     'HBitmap',     'NoLoadTransparent', 'ForceScale',     'No3DColors',     'AutoFit', 'DIBSection',     'DrawBy',                                                               'ImageMargin',     'Align',                                                                                                                                                                                         'Cancel',     'SubClass' }
+      aInitValues := { ::aName[j], ::aPicture[j], ::aToolTip[j], ::aHelpID[j], ::aNoTabStop[j], ::aEnabled[j], ::aVisible[j], ::aflat[j], ::aCObj[j], ::aBuffer[j], ::aHBitmap[j], ::aNoLoadTrans[j],   ::aForceScale[j], ::aNo3DColors[j], ::aFit[j], ::aDIBSection[j], IIF( ::aDrawBy[j] == '.T.', 1,    IIF( ::aDrawBy[j] == '.F.', 2, 3 ) ), ::aImageMargin[j],  IIF( ::aJustify[j] == 'BOTTOM',  1,  IIF( ::aJustify[j] == 'CENTER',  2,  IIF( ::aJustify[j] == 'LEFT',  3,  IIF( ::aJustify[j] == 'RIGHT',  4,  IIF( ::aJustify[j] == 'TOP',  5,  6 ) ) ) ) ), ::aCancel[j], ::aSubClass[j] }
+      aFormats    := { 30,         30,            250,           '999',        .F.,             .T.,           .T.,           .F.,        31,         250,          250,           .F.,                 .F.,              .F.,              .F.,       .F.,              { 'OOHGDRAW', 'WINDRAW', 'NIL' },                                       250,               { 'BOTTOM',  'CENTER',  'LEFT',  'RIGHT',  'TOP',  'NONE' },                                                                                                                                     .F.,          250 }
       aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
       IF aResults[1] == NIL
          oControl:SetFocus()
@@ -16707,7 +16724,7 @@ LOCAL aFormats, aResults
       ::aNo3DColors[j]       := aResults[14]
       ::aFit[j]              := aResults[15]           // AUTOFIT
       ::aDIBSection[j]       := aResults[16]
-      ::aThemed[j]           := IIF( aResults[17] == 1, '.T.', IIF( aResults[17] == 2, '.F.', 'NIL' ) )
+      ::aDrawBy[j]           := IIF( aResults[17] == 1, '.T.', IIF( aResults[17] == 2, '.F.', 'NIL' ) )
       ::aImageMargin[j]      := aResults[18]
       ::aJustify[j]          := IIF( aResults[19] == 1, 'BOTTOM', ;
                                 IIF( aResults[19] == 2, 'CENTER', ;

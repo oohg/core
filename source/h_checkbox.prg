@@ -1,5 +1,5 @@
 /*
- * $Id: h_checkbox.prg,v 1.46 2016-10-25 21:38:01 fyurisich Exp $
+ * $Id: h_checkbox.prg,v 1.47 2016-12-17 01:43:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -75,7 +75,7 @@ CLASS TCheckBox FROM TLabel
    DATA TabHandle  INIT 0
    DATA Threestate INIT .F.
    DATA LeftAlign  INIT .F.
-   DATA lThemed    INIT .F.
+   DATA lLibDraw   INIT .F.
 
    METHOD Define
    METHOD Value       SETGET
@@ -91,12 +91,12 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
                fontsize, tooltip, changeprocedure, w, h, lostfocus, gotfocus, ;
                HelpId, invisible, notabstop, bold, italic, underline, ;
                strikeout, field, backcolor, fontcolor, transparent, autosize, ;
-               lRtl, lDisabled, threestate, leftalign, themed ) CLASS TCheckBox
+               lRtl, lDisabled, threestate, leftalign, drawby ) CLASS TCheckBox
 *------------------------------------------------------------------------------*
 Local ControlHandle, nStyle, nStyleEx := 0
 Local oTab
 
-   ASSIGN ::lThemed     VALUE themed      TYPE "L" DEFAULT IsAppThemed()
+   ASSIGN ::lLibDraw    VALUE drawby      TYPE "L" DEFAULT _OOHG_UsesVisualStyle()
    ASSIGN ::nCol        VALUE x           TYPE "N"
    ASSIGN ::nRow        VALUE y           TYPE "N"
    ASSIGN ::nWidth      VALUE w           TYPE "N"
@@ -199,7 +199,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TCheckBox
 Local nNotify := GetNotifyCode( lParam )
 
    If nNotify == NM_CUSTOMDRAW
-      If ::lThemed .AND. IsAppThemed()
+      If ::lLibDraw .AND. ::lVisualStyled .AND. _OOHG_UsesVisualStyle()
          Return TCheckBox_Notify_CustomDraw( Self, lParam, ::Caption, ::LeftAlign )
       EndIf
    EndIf

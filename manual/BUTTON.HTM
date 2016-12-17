@@ -1,5 +1,5 @@
 <!--
-$Id: BUTTON.HTM,v 1.8 2016-10-25 21:37:45 fyurisich Exp $
+$Id: BUTTON.HTM,v 1.9 2016-12-17 01:43:03 fyurisich Exp $
 -->
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -190,7 +190,7 @@ Controls &gt; </div>
 #xcommand @ &lt;row&gt;, &lt;col&gt; BUTTON &lt;name&gt; ;
       [ OBJ &lt;obj&gt; ] ;
       [ &lt;dummy1: OF, PARENT&gt; &lt;parent&gt; ] ;
-      [ &lt;dummy2: ACTION, ON CLICK, ONCLICK&gt; &lt;action&gt; ] ;
+      [ &lt;dummy2: ACTION,ON CLICK,ONCLICK&gt; &lt;action&gt; ] ;
       [ WIDTH &lt;w&gt; ] ;
       [ HEIGHT &lt;h&gt; ] ;
       [ FONT &lt;font&gt; ] ;
@@ -215,27 +215,29 @@ Controls &gt; </div>
       [ &lt;dummy3: PICTURE, ICON&gt; &lt;bitmap&gt; ] ;
       [ BUFFER &lt;buffer&gt; ] ;
       [ HBITMAP &lt;hbitmap&gt; ] ;
-      [ &lt;notrans: NOLOADTRANSPARENT&gt; ] ;
+      [ &lt;lnoldtr: NOLOADTRANSPARENT&gt; ] ;
       [ &lt;scale: FORCESCALE&gt; ] ;
       [ &lt;cancel: CANCEL&gt; ] ;
-      [ &lt;alignment:LEFT,RIGHT,TOP,BOTTOM,CENTER&gt; ] ;
+      [ &lt;imgalign: LEFT,RIGHT,TOP,BOTTOM,CENTER&gt; ] ;
       [ &lt;multiline: MULTILINE&gt; ] ;
-      [ &lt;themed: THEMED&gt; ] ;
+      [ &lt;drawby: OOHGDRAW, WINDRAW&gt; ] ;
       [ IMAGEMARGIN &lt;aImageMargin&gt; ] ;
       [ &lt;no3dcolors: NO3DCOLORS&gt; ] ;
       [ &lt;autofit: AUTOFIT, ADJUST&gt; ] ;
       [ &lt;lDIB: DIBSECTION&gt; ] ;
       [ BACKCOLOR &lt;backcolor&gt; ] ;
+      [ &lt;nohotlight: NOHOTLIGHT&gt; ] ;
    =&gt; ;
       [ &lt;obj&gt; := ] _OOHG_SelectSubClass( TButton(), [ &lt;subclass&gt;() ] ): ;
             Define( &lt;(name)&gt;, &lt;(parent)&gt;, &lt;col&gt;, &lt;row&gt;, &lt;caption&gt;, &lt;{action}&gt;, ;
             &lt;w&gt;, &lt;h&gt;, &lt;font&gt;, &lt;size&gt;, &lt;tooltip&gt;, &lt;{gotfocus}&gt;, &lt;{lostfocus}&gt;, ;
             &lt;.flat.&gt;, &lt;.notabstop.&gt;, &lt;helpid&gt;, &lt;.invisible.&gt;, &lt;.bold.&gt;, ;
             &lt;.italic.&gt;, &lt;.underline.&gt;, &lt;.strikeout.&gt;, &lt;.rtl.&gt;, &lt;.noprefix.&gt;, ;
-            &lt;.disabled.&gt;, &lt;buffer&gt;, &lt;hbitmap&gt;, &lt;bitmap&gt;, &lt;.notrans.&gt;, ;
-            &lt;.scale.&gt;, &lt;.cancel.&gt;, &lt;"alignment"&gt;, &lt;.multiline.&gt;, &lt;.themed.&gt;, ;
+            &lt;.disabled.&gt;, &lt;buffer&gt;, &lt;hbitmap&gt;, &lt;bitmap&gt;, &lt;.lnoldtr.&gt;, ;
+            &lt;.scale.&gt;, &lt;.cancel.&gt;, &lt;"imgalign"&gt;, &lt;.multiline.&gt;, ;
+            IIF( #&lt;drawby&gt; == "OOHGDRAW", .T., IIF( #&lt;drawby&gt; == "WINDRAW", .F., NIL ) ), ;
             &lt;aImageMargin&gt;, &lt;{onmousemove}&gt;, &lt;.no3dcolors.&gt;, &lt;.autofit.&gt;, ;
-            ! &lt;.lDIB.&gt;, &lt;backcolor&gt; )
+            ! &lt;.lDIB.&gt;, &lt;backcolor&gt;, &lt;.nohotlight.&gt; )
 
 #command @ &lt;row&gt;, &lt;col&gt; CHECKBUTTON &lt;name&gt; ;
       [ OBJ &lt;obj&gt; ] ;
@@ -262,21 +264,32 @@ Controls &gt; </div>
       [ &lt;dummy3: PICTURE, ICON&gt; &lt;bitmap&gt; ] ;
       [ BUFFER &lt;buffer&gt; ] ;
       [ HBITMAP &lt;hbitmap&gt; ] ;
-      [ &lt;notrans: NOLOADTRANSPARENT&gt; ] ;
+      [ &lt;lnoldtr: NOLOADTRANSPARENT&gt; ] ;
       [ &lt;scale: FORCESCALE&gt; ] ;
       [ FIELD &lt;field&gt; ] ;
       [ &lt;no3dcolors: NO3DCOLORS&gt; ] ;
       [ &lt;autofit: AUTOFIT, ADJUST&gt; ] ;
       [ &lt;lDIB: DIBSECTION&gt; ] ;
       [ BACKCOLOR &lt;backcolor&gt; ] ;
+      [ &lt;disabled: DISABLED&gt; ] ;
+      [ &lt;drawby: OOHGDRAW, WINDRAW&gt; ] ;
+      [ IMAGEMARGIN &lt;aImageMargin&gt; ] ;
+      [ ON MOUSEMOVE &lt;onmousemove&gt; ] ;
+      [ &lt;imgalign: LEFT,RIGHT,TOP,BOTTOM,CENTER&gt; ] ;
+      [ &lt;multiline: MULTILINE&gt; ] ;
+      [ &lt;flat: FLAT&gt; ] ;
+      [ &lt;nohotlight: NOHOTLIGHT&gt; ] ;
    =&gt; ;
       [ &lt;obj&gt; := ] _OOHG_SelectSubClass( TButtonCheck(), [ &lt;subclass&gt;() ] ): ;
             Define( &lt;(name)&gt;, &lt;(parent)&gt;, &lt;col&gt;, &lt;row&gt;, &lt;caption&gt;, &lt;value&gt;, ;
             &lt;f&gt;, &lt;n&gt;, &lt;tooltip&gt;, &lt;{change}&gt;, [&lt;w&gt;], [&lt;h&gt;], &lt;{lostfocus}&gt;, ;
             &lt;{gotfocus}&gt;, &lt;helpid&gt;, &lt;.invisible.&gt;, &lt;.notabstop.&gt;, &lt;.bold.&gt;, ;
             &lt;.italic.&gt;, &lt;.underline.&gt;, &lt;.strikeout.&gt;, &lt;(field)&gt;, &lt;.rtl.&gt;, ;
-            &lt;bitmap&gt;, &lt;buffer&gt;, &lt;hbitmap&gt;, &lt;.notrans.&gt;, &lt;.scale.&gt;, ;
-            &lt;.no3dcolors.&gt;, &lt;.autofit.&gt;, ! &lt;.lDIB.&gt;, &lt;backcolor&gt; )
+            &lt;bitmap&gt;, &lt;buffer&gt;, &lt;hbitmap&gt;, &lt;.lnoldtr.&gt;, &lt;.scale.&gt;, ;
+            &lt;.no3dcolors.&gt;, &lt;.autofit.&gt;, ! &lt;.lDIB.&gt;, &lt;backcolor&gt;, &lt;.disabled.&gt;, ;
+            IIF( #&lt;drawby&gt; == "OOHGDRAW", .T., IIF( #&lt;drawby&gt; == "WINDRAW", .F., NIL ) ), ;
+            &lt;aImageMargin&gt;, &lt;{onmousemove}&gt;, &lt;"imgalign"&gt;, &lt;.multiline.&gt;, ;
+            &lt;.flat.&gt;, &lt;.nohotlight.&gt; )
 </PRE>
 </span>
 

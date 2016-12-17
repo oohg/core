@@ -1,5 +1,5 @@
 /*
- * $Id: main.Fmg,v 1.2 2014-07-11 19:38:40 migsoft Exp $
+ * $Id: main.Fmg,v 1.3 2016-12-17 01:43:23 fyurisich Exp $
  */
 
 *HMGS-MINIGUI-IDE Two-Way Form Designer Generated Code
@@ -35,7 +35,6 @@ DEFINE WINDOW TEMPLATE AT 196 , 293 WIDTH 625 HEIGHT 496 TITLE "(c) MigSoft Proj
                HEIGHT 28
                ACTION If ( !Empty( Folder := GetFolder() ) , main.Text_1.Value := Folder , )
               PICTURE "mfolder"
-              THEMED .T.
               TOP .T.
         END BUTTON
 

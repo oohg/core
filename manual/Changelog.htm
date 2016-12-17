@@ -1,5 +1,5 @@
 <!--
-$Id: Changelog.htm,v 1.106 2016-12-10 18:52:26 fyurisich Exp $
+$Id: Changelog.htm,v 1.107 2016-12-17 01:43:03 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -142,6 +142,82 @@ CHANGELOG</div>
 </div>
 <div id="winchm_template_content">
 <pre>
+2016-12-16 22:42 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ./Changelog
+     ! Previous entry.
+   * doc/classes.txt
+     * Updated.
+   * ide/prgs/formedit.prg
+     + OOHGDRAW and WINDRAW clauses.
+       THEMED and NOTHEME are still recognized.
+   * include/i_altsyntax.ch
+   * include/i_button.ch
+   * include/i_checkbox.ch
+   * include/i_radiogroup.ch
+     * INCOMPATIBLE.
+       THEMED and NOTHEME clauses changed by OOHGDRAW and WINDRAW.
+       OOHGDRAW is the default clause unless the OS does not supports
+       visual styles or if visual styles are disabled for the app, in
+       which case defaults to WINDRAW.
+       Those who do not want to change their sources must include
+       this pre-processor directives:
+       #xtranslate BUTTON [ &lt;x&gt; ] THEMED =&gt; BUTTON [ &lt;x&gt; ]
+       #xtranslate BUTTON [ &lt;x&gt; ] NOTHEME =&gt; BUTTON [ &lt;x&gt; ] WINDRAW
+       #xtranslate CHECKBUTTON [ &lt;x&gt; ] THEMED =&gt; BUTTON [ &lt;x&gt; ]
+       #xtranslate CHECKBUTTON [ &lt;x&gt; ] NOTHEME =&gt; BUTTON [ &lt;x&gt; ] WINDRAW
+       #xtranslate CHECKBOX [ &lt;x&gt; ] THEMED =&gt; CHECKBOX [ &lt;x&gt; ]
+       #xtranslate CHECKBOX [ &lt;x&gt; ] NOTHEME =&gt; CHECKBOX [ &lt;x&gt; ] WINDRAW
+       #xtranslate RADIOGROUP [ &lt;x&gt; ] THEMED =&gt; RADIOGROUP [ &lt;x&gt; ]
+       #xtranslate RADIOGROUP [ &lt;x&gt; ] NOTHEME =&gt; RADIOGROUP [ &lt;x&gt; ] WINDRAW
+       #translate THEMED &lt;themed&gt; =&gt; OOHGDRAW &lt;themed&gt;
+       #translate NOTHEME &lt;notheme&gt; =&gt; WINDRAW &lt;notheme&gt;
+   * manual/BUTTON.HTM
+   * manual/CHECKBOX.htm
+   * manual/CLASSES.HTM
+   * manual/Changelog.htm
+   * manual/RADIOGROUP.htm
+     * Updated.
+   * samples/mpm/fmgs/main.Fmg
+     * Removed unneeded clause.
+   * source/h_button.prg
+     * DATA lThemed renamed to lLibDraw. INCOMPATIBLE.
+       Defaults to _OOHG_UsesVisualStyle().
+     - Comment.
+     ! Painting when button is not the focused control.
+     * Do not use custom draw when control's lVisualStyled flag is set.
+   * source/h_checkbox.prg
+     * DATA lThemed renamed to lLibDraw. INCOMPATIBLE.
+       Defaults to _OOHG_UsesVisualStyle().
+     * Do not use custom draw when control's lVisualStyled flag is set.
+   * source/h_checklist.prg
+     ! NM_SETFOCUS event handler was not setting the form's
+       LastFocusedControl property.
+   * source/h_combo.prg
+     ! CBN_SETFOCUS event handler was not setting the form's
+       LastFocusedControl property.
+   * source/h_controlmisc.prg
+     ! Method DoLostFocus not working properly when there are 2 or more
+       TEXTBOX controls with VALID clause in the same form.
+     ! EN_SETFOCUS, NM_SETFOCUS and BN_SETFOCUS event handler was not setting the form's
+       LastFocusedControl property.
+   * source/h_listbox.prg
+     ! LBN_SETFOCUS event handler was not setting the form's
+       LastFocusedControl property.
+   * source/h_menu.prg
+     * Force control's redraw after changing colors.
+   * source/h_monthcal.prg
+     ! WM_SETFOCUS event handler was not setting the form's
+       LastFocusedControl property.
+   * source/h_radio.prg
+     * DATA lThemed renamed to lLibDraw. INCOMPATIBLE.
+       Defaults to _OOHG_UsesVisualStyle().
+     * BACKGROUND clause no longer forces OOHGDRAW clause.
+     * Do not use custom draw when control's lVisualStyled flag is set.
+   * source/h_windows.prg
+     + DATA lVisualStyled, defaults to _OOHG_UsesVisualStyle().
+     + METHOD DisableVisualStyle.
+     + DisableVisualStyle function at C level.
+
 2016-12-10 15:52 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * source/h_radio.prg
      ! Missing declaration of __MSABI_LONG on older versions of Windows
@@ -228,7 +304,7 @@ CHANGELOG</div>
 2016-10-25 18:37 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * distros/MakeDistro.bat
    * doc/classes.txt
-     + h_anigif.prg
+     + Class TANIGIF.
    * ide/mgide.rc
      + ANIGIF related resource.
    * ide/fmgs/orderf.fmg

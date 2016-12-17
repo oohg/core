@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.164 2016-11-27 15:13:46 fyurisich Exp $
+ * $Id: h_controlmisc.prg,v 1.165 2016-12-17 01:43:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -70,6 +70,7 @@ STATIC _OOHG_aControlIds := {},  _OOHG_aControlNames := {}
 
 STATIC _OOHG_lMultiple := .T.         // Allows the same applicaton runs more one instance at a time
 STATIC _OOHG_lSettingFocus := .F.     // If there's a ::SetFocus() call inside ON ENTER event.
+STATIC _OOHG_lValidating := .F.       // If there's a ::SetFocus() call inside ON ENTER event.
 
 #pragma BEGINDUMP
 #include "hbapi.h"
@@ -1719,7 +1720,6 @@ LOCAL xRet, nOldWidth, nOldHeight
       ::nHeight := Height
    ENDIF
    xRet := MoveWindow( ::hWnd, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight , .T. )
-   //CGR
    ::CheckClientsPos()
 
    // Anchor
@@ -1831,32 +1831,37 @@ Return ::DoEvent( bBlock, cEventType, aPos )
 *------------------------------------------------------------------------------*
 METHOD DoLostFocus() CLASS TControl
 *------------------------------------------------------------------------------*
-Local uRet := nil, nFocus, oFocus
+Local uRet := Nil, nFocus, oFocus
    If ! ::ContainerReleasing
       nFocus := GetFocus()
       If nFocus > 0
          oFocus := GetControlObjectByHandle( nFocus )
          If ! oFocus:lCancel
+            If _OOHG_lValidating
+               Return Nil
+            EndIf
+            _OOHG_lValidating := .T.
             uRet := _OOHG_Eval( ::postBlock, Self )
             If HB_IsLogical( uRet ) .AND. ! uRet
                ::SetFocus()
+               _OOHG_lValidating := .F.
                Return 1
             EndIf
-            uRet := nil
+            _OOHG_lValidating := .F.
+            uRet := Nil
          EndIf
       EndIf
-     //CGR
-       if .not.( empty(::cFocusFontName).and.empty( ::nFocusFontSize).and.empty(::FocusBold).and.;
-         empty(::FocusItalic).and.empty(::FocusUnderline).and.empty(::FocusStrikeout))
-      ::SetFont( ::cFontName, ::nFontSize, ::Bold, ::Italic, ::Underline, ::Strikeout )
-      ::refresh()
-     end
-       if .not.( empty(::FocusColor) )
-      ::FontColor:=::OldColor
-     end
-     if .not.( empty(::FocusBackColor) )
-      ::BackColor:=::OldBackColor
-     end
+      If ! ( Empty( ::cFocusFontName ) .AND. Empty( ::nFocusFontSize ) .AND. Empty( ::FocusBold ) .AND. ;
+             Empty( ::FocusItalic ) .AND. Empty( ::FocusUnderline ) .AND. Empty( ::FocusStrikeout ) )
+         ::SetFont( ::cFontName, ::nFontSize, ::Bold, ::Italic, ::Underline, ::Strikeout )
+         ::Refresh()
+      EndIF
+      If ! Empty( ::FocusColor )
+         ::FontColor := ::OldColor
+      EndIf
+      If ! Empty( ::FocusBackColor )
+         ::BackColor:=::OldBackColor
+      EndIf
 
       ::DoEvent( ::OnLostFocus, "LOSTFOCUS" )
    EndIf
@@ -2161,7 +2166,7 @@ Local Hi_wParam := HIWORD( wParam )
       Return ::DoLostFocus()
 
    elseif Hi_wParam == EN_SETFOCUS
-      //CGR
+      GetFormObjectByHandle( ::ContainerhWnd ):LastFocusedControl := ::hWnd
       ::FocusEffect()
       ::DoEvent( ::OnGotFocus, "GOTFOCUS" )
 
@@ -2169,7 +2174,7 @@ Local Hi_wParam := HIWORD( wParam )
       Return ::DoLostFocus()
 
    elseif Hi_wParam == BN_SETFOCUS
-      //cgr
+      GetFormObjectByHandle( ::ContainerhWnd ):LastFocusedControl := ::hWnd
       ::FocusEffect()
       ::DoEvent( ::OnGotFocus, "GOTFOCUS" )
 
@@ -2323,6 +2328,7 @@ Local nNotify := GetNotifyCode( lParam )
       Return ::DoLostFocus()
 
    ElseIf nNotify == NM_SETFOCUS
+      GetFormObjectByHandle( ::ContainerhWnd ):LastFocusedControl := ::hWnd
       ::FocusEffect()
       ::DoEvent( ::OnGotFocus, "GOTFOCUS" )
 
