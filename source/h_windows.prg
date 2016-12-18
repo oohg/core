@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.264 2016-12-17 01:55:08 fyurisich Exp $
+ * $Id: h_windows.prg,v 1.265 2016-12-18 22:25:14 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -143,102 +143,102 @@ HB_FUNC( _OOHG_SETMOUSECOORDS )
 *------------------------------------------------------------------------------*
 CLASS TWindow
 *------------------------------------------------------------------------------*
-   DATA hWnd                INIT 0
-   DATA aControlInfo        INIT { CHR( 0 ) }
-   DATA Name                INIT ""
-   DATA Type                INIT ""
-   DATA Parent              INIT nil
-   DATA nRow                INIT 0
-   DATA nCol                INIT 0
-   DATA nWidth              INIT 0
-   DATA nHeight             INIT 0
-   DATA Active              INIT .F.
-   DATA cFontName           INIT ""
-   DATA nFontSize           INIT 0
-   DATA Bold                INIT .F.
-   DATA Italic              INIT .F.
-   DATA Underline           INIT .F.
-   DATA Strikeout           INIT .F.
-   DATA FntWidth            INIT 0
-   DATA FntAngle            INIT 0
-   DATA cFocusFontName      INIT ""
-   DATA nFocusFontSize      INIT 0
-   DATA FocusBold           INIT .F.
-   DATA FocusItalic         INIT .F.
-   DATA FocusUnderline      INIT .F.
-   DATA FocusStrikeout      INIT .F.
+   DATA hWnd                      INIT 0
+   DATA aControlInfo              INIT { CHR( 0 ) }
+   DATA Name                      INIT ""
+   DATA Type                      INIT ""
+   DATA Parent                    INIT Nil
+   DATA nRow                      INIT 0
+   DATA nCol                      INIT 0
+   DATA nWidth                    INIT 0
+   DATA nHeight                   INIT 0
+   DATA Active                    INIT .F.
+   DATA cFontName                 INIT ""
+   DATA nFontSize                 INIT 0
+   DATA Bold                      INIT .F.
+   DATA Italic                    INIT .F.
+   DATA Underline                 INIT .F.
+   DATA Strikeout                 INIT .F.
+   DATA FntWidth                  INIT 0
+   DATA FntAngle                  INIT 0
+   DATA cFocusFontName            INIT ""
+   DATA nFocusFontSize            INIT 0
+   DATA FocusBold                 INIT .F.
+   DATA FocusItalic               INIT .F.
+   DATA FocusUnderline            INIT .F.
+   DATA FocusStrikeout            INIT .F.
    DATA FocusColor
    DATA FocusBackColor
-   DATA lVisualStyled       INIT _OOHG_UsesVisualStyle()
-   DATA RowMargin           INIT 0
-   DATA ColMargin           INIT 0
-   DATA Container           INIT nil
-   DATA ContainerhWndValue  INIT nil
-   DATA lRtl                INIT .F.
-   DATA lVisible            INIT .T.
-   DATA lRedraw             INIT .T.
-   DATA ContextMenu         INIT nil
-   DATA Cargo               INIT nil
-   DATA lEnabled            INIT .T.
-   DATA aControls           INIT {}
-   DATA aControlsNames      INIT {}
-   DATA aCtrlsTabIndxs      INIT {}
-   DATA WndProc             INIT nil
-   DATA OverWndProc         INIT nil
-   DATA lInternal           INIT .T.
-   DATA lForm               INIT .F.
-   DATA lReleasing          INIT .F.
-   DATA lDestroyed          INIT .F.
-   DATA Block               INIT nil
-   DATA VarName             INIT ""
-   DATA lControlsAsProperties   INIT .F.
-   DATA hDynamicValues      INIT nil
+   DATA lVisualStyled             INIT Nil PROTECTED
+   DATA RowMargin                 INIT 0
+   DATA ColMargin                 INIT 0
+   DATA Container                 INIT Nil
+   DATA ContainerhWndValue        INIT Nil
+   DATA lRtl                      INIT .F.
+   DATA lVisible                  INIT .T.
+   DATA lRedraw                   INIT .T.
+   DATA ContextMenu               INIT Nil
+   DATA Cargo                     INIT Nil
+   DATA lEnabled                  INIT .T.
+   DATA aControls                 INIT {}
+   DATA aControlsNames            INIT {}
+   DATA aCtrlsTabIndxs            INIT {}
+   DATA WndProc                   INIT Nil
+   DATA OverWndProc               INIT Nil
+   DATA lInternal                 INIT .T.
+   DATA lForm                     INIT .F.
+   DATA lReleasing                INIT .F.
+   DATA lDestroyed                INIT .F.
+   DATA Block                     INIT Nil
+   DATA VarName                   INIT ""
+   DATA lControlsAsProperties     INIT .F.
+   DATA hDynamicValues            INIT Nil
 
-   DATA lAdjust             INIT .T.
-   DATA lFixFont            INIT .F.
-   DATA lfixwidth           INIT .F.
-   DATA ClientHeightUsed    INIT 0
-   DATA nFixedHeightUsed    INIT 0
+   DATA lAdjust                   INIT .T.
+   DATA lFixFont                  INIT .F.
+   DATA lfixwidth                 INIT .F.
+   DATA ClientHeightUsed          INIT 0
+   DATA nFixedHeightUsed          INIT 0
 
-   DATA OnClick             INIT nil
-   DATA OnDblClick          INIT nil
-   DATA OnRClick            INIT nil
-   DATA OnRDblClick         INIT nil
-   DATA OnMClick            INIT nil
-   DATA OnMDblClick         INIT nil
-   DATA OnGotFocus          INIT nil
-   DATA OnLostFocus         INIT nil
-   DATA OnMouseDrag         INIT nil
-   DATA DropEnabled         INIT .F.              // .T. if control accepts drops
-   DATA HasDragFocus        INIT .F.              // .T. when drag image is upon the control and the control is drop enabled
-   DATA OnMouseMove         INIT nil
-   DATA OnDropFiles         INIT nil
-   DATA aKeys               INIT {}  // { Id, Mod, Key, Action }   Application-controlled hotkeys
-   DATA aHotKeys            INIT {}  // { Id, Mod, Key, Action }   OperatingSystem-controlled hotkeys
-   DATA aAcceleratorKeys    INIT {}  // { Id, Mod, Key, Action }   Accelerator hotkeys
-   DATA aProperties         INIT {}  // { cProperty, xValue }      Pseudo-properties
-   DATA bKeyDown            INIT nil     // WM_KEYDOWN handler
-   DATA NestedClick         INIT .F.
-   DATA HScrollBar          INIT nil
-   DATA VScrollBar          INIT nil
+   DATA OnClick                   INIT Nil
+   DATA OnDblClick                INIT Nil
+   DATA OnRClick                  INIT Nil
+   DATA OnRDblClick               INIT Nil
+   DATA OnMClick                  INIT Nil
+   DATA OnMDblClick               INIT Nil
+   DATA OnGotFocus                INIT Nil
+   DATA OnLostFocus               INIT Nil
+   DATA OnMouseDrag               INIT Nil
+   DATA DropEnabled               INIT .F.              // .T. if control accepts drops
+   DATA HasDragFocus              INIT .F.              // .T. when drag image is upon the control and the control is drop enabled
+   DATA OnMouseMove               INIT Nil
+   DATA OnDropFiles               INIT Nil
+   DATA aKeys                     INIT {}  // { Id, Mod, Key, Action }   Application-controlled hotkeys
+   DATA aHotKeys                  INIT {}  // { Id, Mod, Key, Action }   OperatingSystem-controlled hotkeys
+   DATA aAcceleratorKeys          INIT {}  // { Id, Mod, Key, Action }   Accelerator hotkeys
+   DATA aProperties               INIT {}  // { cProperty, xValue }      Pseudo-properties
+   DATA bKeyDown                  INIT Nil     // WM_KEYDOWN handler
+   DATA NestedClick               INIT .F.
+   DATA HScrollBar                INIT Nil
+   DATA VScrollBar                INIT Nil
 
     //////// all redimension Vars
-   DATA nOldw               INIT NIL
-   DATA nOLdh               INIT NIL
-   DATA nWindowState        INIT 0   /// 2 Maximizada 1 minimizada  0 Normal
+   DATA nOldw                     INIT Nil
+   DATA nOLdh                     INIT Nil
+   DATA nWindowState              INIT 0   /// 2 Maximizada 1 minimizada  0 Normal
    // Anchor
-   DATA nAnchor             INIT nil
-   DATA nDefAnchor          INIT 3
+   DATA nAnchor                   INIT Nil
+   DATA nDefAnchor                INIT 3
 
-   DATA lProcMsgsOnVisible  INIT .T.
+   DATA lProcMsgsOnVisible        INIT .T.
 
-   DATA DefBkColorEdit      INIT nil
+   DATA DefBkColorEdit            INIT Nil
 
-   DATA ClientAdjust        INIT 0 // 0=none, 1=top, 2=bottom, 3=left, 4=right, 5=Client
-   DATA IsAdjust            INIT .F.
-   DATA nBorders            INIT {0,0,0}                              // ancho externo, estacio, ancho interno.
-   DATA aBEColors           INIT {{0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}} // color externo: arriba, derecha, abajo, izquierda
-   DATA aBIColors           INIT {{0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}} // color interno: arriba, derecha, abajo, izquierda
+   DATA ClientAdjust              INIT 0 // 0=none, 1=top, 2=bottom, 3=left, 4=right, 5=Client
+   DATA IsAdjust                  INIT .F.
+   DATA nBorders                  INIT {0,0,0}                              // ancho externo, estacio, ancho interno.
+   DATA aBEColors                 INIT {{0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}} // color externo: arriba, derecha, abajo, izquierda
+   DATA aBIColors                 INIT {{0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}} // color interno: arriba, derecha, abajo, izquierda
    DATA nPaintCount                                                   // contador para GetDc y ReleaseDc
    DATA hDC                                                           // puntero al contexto del canvas.
 
@@ -259,7 +259,8 @@ CLASS TWindow
    METHOD BackBitMap          SETGET
    METHOD Caption             SETGET
    METHOD Events
-   METHOD DisableVisualStyle  
+   METHOD IsVisualStyled
+   METHOD DisableVisualStyle
    METHOD Object              BLOCK { |Self| Self }
    METHOD Enabled             SETGET
    METHOD Enable              BLOCK { |Self| ::Enabled := .T. }
@@ -992,11 +993,19 @@ HB_FUNC( DISABLEVISUALSTYLE )
 #pragma ENDDUMP
 
 *------------------------------------------------------------------------------*
+METHOD IsVisualStyled CLASS TWindow
+*------------------------------------------------------------------------------*
+   IF HB_IsNil( ::lVisualStyled )
+      ::lVisualStyled := _OOHG_UsesVisualStyle()
+   ENDIF
+RETURN ::lVisualStyled
+
+*------------------------------------------------------------------------------*
 METHOD DisableVisualStyle CLASS TWindow
 *------------------------------------------------------------------------------*
-   IF ::lVisualStyled
+   IF ::IsVisualStyled
       IF DisableVisualStyle( ::hWnd )
-         ::lVisualStyle := .F.
+         ::lVisualStyled := .F.
       ENDIF
    ENDIF
 RETURN Nil

@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.106 2016-12-17 01:43:03 fyurisich Exp $
+ * $Id: classes.txt,v 1.107 2016-12-18 22:25:14 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -3047,6 +3047,7 @@ CLASS TWINDOW
    DATA LRELEASING                INIT .F.
    DATA LRTL                      INIT .F.
    DATA LVISIBLE                  INIT .T.
+   DATA LVISUALSTYLED             INIT NIL PROTECTED
    DATA NAME                      INIT ""
    DATA NANCHOR                   INIT NIL
    DATA NBORDERS                  INIT {0,0,0}
@@ -3146,6 +3147,7 @@ CLASS TWINDOW
    METHOD HIDE
    METHOD HOTKEY
    METHOD IMAGELIST               SETGET
+   METHOD ISVISUALSTYLED
    METHOD LINE
    METHOD LOOKFORKEY
    METHOD OBJECT

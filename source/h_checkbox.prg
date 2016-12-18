@@ -1,5 +1,5 @@
 /*
- * $Id: h_checkbox.prg,v 1.47 2016-12-17 01:43:23 fyurisich Exp $
+ * $Id: h_checkbox.prg,v 1.48 2016-12-18 22:25:14 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -199,7 +199,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TCheckBox
 Local nNotify := GetNotifyCode( lParam )
 
    If nNotify == NM_CUSTOMDRAW
-      If ::lLibDraw .AND. ::lVisualStyled .AND. _OOHG_UsesVisualStyle()
+      If ::lLibDraw .AND. ::IsVisualStyled .AND. _OOHG_UsesVisualStyle()
          Return TCheckBox_Notify_CustomDraw( Self, lParam, ::Caption, ::LeftAlign )
       EndIf
    EndIf

@@ -1,5 +1,5 @@
 <!--
-$Id: Changelog.htm,v 1.108 2016-12-17 01:55:08 fyurisich Exp $
+$Id: Changelog.htm,v 1.109 2016-12-18 22:25:14 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -142,6 +142,19 @@ CHANGELOG</div>
 </div>
 <div id="winchm_template_content">
 <pre>
+2016-12-18 19:24 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * doc/classes.txt
+   * manual/CLASSES.HTM
+   * manual/Changelog.htm
+     * Updated.
+   * source/h_button.prg
+   * source/h_checkbox.prg
+   * source/h_radio.prg
+     * Use ::IsVisualStyled instead of ::lVisualStyled.
+   * source/h_windows.prg
+     * DATA lVisualStyled is now PROTECTED, use ::IsVisualStyled instead.
+     + METHOD IsVisualStyled.
+
 2016-12-16 22:55 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * source/h_windows.prg
      * METHOD DisableVisualStyle now returns Nil.

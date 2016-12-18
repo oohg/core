@@ -1,5 +1,5 @@
 <!--
-$Id: CLASSES.HTM,v 1.19 2016-12-17 01:43:03 fyurisich Exp $
+$Id: CLASSES.HTM,v 1.20 2016-12-18 22:25:14 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -3186,6 +3186,7 @@ CLASS TWINDOW
    DATA LRELEASING                INIT .F.
    DATA LRTL                      INIT .F.
    DATA LVISIBLE                  INIT .T.
+   DATA LVISUALSTYLED             INIT NIL PROTECTED
    DATA NAME                      INIT ""
    DATA NANCHOR                   INIT NIL
    DATA NBORDERS                  INIT {0,0,0}
@@ -3285,6 +3286,7 @@ CLASS TWINDOW
    METHOD HIDE
    METHOD HOTKEY
    METHOD IMAGELIST               SETGET
+   METHOD ISVISUALSTYLED
    METHOD LINE
    METHOD LOOKFORKEY
    METHOD OBJECT

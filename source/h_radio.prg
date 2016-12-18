@@ -1,5 +1,5 @@
 /*
- * $Id: h_radio.prg,v 1.53 2016-12-17 01:43:23 fyurisich Exp $
+ * $Id: h_radio.prg,v 1.54 2016-12-18 22:25:14 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -620,7 +620,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TRadioItem
 Local nNotify := GetNotifyCode( lParam )
 
    If nNotify == NM_CUSTOMDRAW
-      If ! ::Container == Nil .AND. ::Container:lLibDraw .AND. ::Container:lVisualStyled .AND. _OOHG_UsesVisualStyle()
+      If ! ::Container == Nil .AND. ::Container:lLibDraw .AND. ::Container:IsVisualStyled .AND. _OOHG_UsesVisualStyle()
          Return TRadioItem_Notify_CustomDraw( Self, lParam, ::Caption, HB_IsObject( ::oBkGrnd ), ::LeftAlign )
       EndIf
    EndIf

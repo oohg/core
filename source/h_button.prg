@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.80 2016-12-17 01:43:23 fyurisich Exp $
+ * $Id: h_button.prg,v 1.81 2016-12-18 22:25:14 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -301,7 +301,7 @@ METHOD RePaint() CLASS TButton
       ENDIF
       ::AuxHandle := NIL
       ::TControl:SizePos()
-      IF OSisWinXPorLater() .AND. ( LEN( ::Caption ) > 0 .OR. ( ::lLibDraw .AND. ::lVisualStyled ) )
+      IF OSisWinXPorLater() .AND. ( LEN( ::Caption ) > 0 .OR. ( ::lLibDraw .AND. ::IsVisualStyled ) )
          ::ImageList := SetImageXP( ::hWnd, ::hImage, ::nAlign, -1, ::aImageMargin[1], ::aImageMargin[2], ::aImageMargin[3], ::aImageMargin[4], ::Stretch, ::AutoFit )
          ::ReDraw()
       ELSEIF ::Stretch .OR. ::AutoFit
@@ -332,7 +332,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TButton
 Local nNotify := GetNotifyCode( lParam )
 
    If nNotify == NM_CUSTOMDRAW
-      If ::lLibDraw .AND. ::lVisualStyled .AND. _OOHG_UsesVisualStyle()
+      If ::lLibDraw .AND. ::IsVisualStyled .AND. _OOHG_UsesVisualStyle()
          Return TButton_Notify_CustomDraw( lParam, ! ::lNoHotLight, ( GetFormObjectByHandle( ::ContainerhWnd ):LastFocusedControl == ::hWnd ) )
       EndIf
    EndIf
