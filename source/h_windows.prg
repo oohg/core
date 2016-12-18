@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.265 2016-12-18 22:25:14 fyurisich Exp $
+ * $Id: h_windows.prg,v 1.266 2016-12-18 23:11:02 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1006,6 +1006,7 @@ METHOD DisableVisualStyle CLASS TWindow
    IF ::IsVisualStyled
       IF DisableVisualStyle( ::hWnd )
          ::lVisualStyled := .F.
+         ::Redraw()
       ENDIF
    ENDIF
 RETURN Nil
