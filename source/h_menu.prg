@@ -1,5 +1,5 @@
 /*
- * $Id: h_menu.prg,v 1.45 2016-12-17 01:43:23 fyurisich Exp $
+ * $Id: h_menu.prg,v 1.46 2016-12-19 00:03:00 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -67,17 +67,17 @@
 STATIC _OOHG_xMenuActive := {}
 
 CLASS TMenu FROM TControl
-   DATA Type      INIT "MENU" READONLY
-   DATA lMain     INIT .F.
+   DATA lAdjust                   INIT .F.
+   DATA lMain                     INIT .F.
+   DATA Type                      INIT "MENU" READONLY
 
-   DATA lAdjust   INIT .F.
-
-   METHOD Define
    METHOD Activate
+   METHOD Define
+   METHOD DisableVisualStyle
    METHOD EndMenu
    METHOD Refresh
-   METHOD Release     BLOCK { |Self| DestroyMenu( ::hWnd ), ::Super:Release() }
-   METHOD Separator   BLOCK { |Self| TMenuItem():DefineSeparator( , Self ) }
+   METHOD Release                 BLOCK { |Self| DestroyMenu( ::hWnd ), ::Super:Release() }
+   METHOD Separator               BLOCK { |Self| TMenuItem():DefineSeparator( , Self ) }
    METHOD SetMenuBarColor
 
    EMPTY( _OOHG_AllVars )
@@ -91,6 +91,17 @@ METHOD Define( Parent, Name ) CLASS TMenu
    ::Register( CreatePopUpMenu() )
    AADD( _OOHG_xMenuActive, Self )
 Return Self
+
+*------------------------------------------------------------------------------*
+METHOD DisableVisualStyle CLASS TMenu
+*------------------------------------------------------------------------------*
+   IF ::IsVisualStyled
+      ::Parent:DisableVisualStyle()
+      IF ! ::Parent:IsVisualStyled
+         ::lVisualStyled := .F.
+      ENDIF
+   ENDIF
+RETURN Nil
 
 *------------------------------------------------------------------------------*
 METHOD Activate( nRow, nCol ) CLASS TMenu
