@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.91 2016-11-03 22:37:42 fyurisich Exp $
+ * $Id: c_windows.c,v 1.92 2016-12-30 16:36:25 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1611,6 +1611,8 @@ HB_FUNC( SETLAYEREDWINDOWATTRIBUTES )   // hWnd, color, opacity, flag (LWA_COLOR
    hb_retl( SetLayeredWindowAttributes( hWnd, crKey, bAlpha, dwFlags ) );
 #else
    typedef BOOL (__stdcall * PFN_SETLAYEREDWINDOWATTRIBUTES)( HWND, COLORREF, BYTE, DWORD );
+   PFN_SETLAYEREDWINDOWATTRIBUTES pfnSetLayeredWindowAttributes;
+   BOOL bRet;
 
    HINSTANCE hLib = LoadLibrary( "user32.dll" );
    if( hLib == NULL )
@@ -1618,7 +1620,6 @@ HB_FUNC( SETLAYEREDWINDOWATTRIBUTES )   // hWnd, color, opacity, flag (LWA_COLOR
       hb_retl( FALSE );
    }
 
-   PFN_SETLAYEREDWINDOWATTRIBUTES pfnSetLayeredWindowAttributes = NULL;
    pfnSetLayeredWindowAttributes = (PFN_SETLAYEREDWINDOWATTRIBUTES) GetProcAddress( hLib, "SetLayeredWindowAttributes" );
    if( pfnSetLayeredWindowAttributes == NULL )
    {
@@ -1626,7 +1627,7 @@ HB_FUNC( SETLAYEREDWINDOWATTRIBUTES )   // hWnd, color, opacity, flag (LWA_COLOR
    }
 
    SetWindowLong( hWnd, GWL_EXSTYLE, GetWindowLong( hWnd, GWL_EXSTYLE ) | WS_EX_LAYERED );
-   BOOL bRet = ( pfnSetLayeredWindowAttributes )( hWnd, crKey, bAlpha, dwFlags );
+   bRet = ( pfnSetLayeredWindowAttributes )( hWnd, crKey, bAlpha, dwFlags );
 
    FreeLibrary( hLib );
    hb_retl( bRet );

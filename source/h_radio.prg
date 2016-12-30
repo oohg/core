@@ -1,5 +1,5 @@
 /*
- * $Id: h_radio.prg,v 1.54 2016-12-18 22:25:14 fyurisich Exp $
+ * $Id: h_radio.prg,v 1.55 2016-12-30 16:36:25 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -711,6 +711,10 @@ typedef enum THEMESIZE {
                        DTT_FONTPROP | DTT_COLORPROP | DTT_STATEID | DTT_CALCRECT | DTT_APPLYOVERLAY | DTT_GLOWSIZE | DTT_COMPOSITED)
 
 typedef int (WINAPI *DTT_CALLBACK_PROC)(HDC hdc,LPWSTR pszText,int cchText,LPRECT prc,UINT dwFlags,LPARAM lParam);
+
+#ifdef __BORLANDC__
+typedef BOOL WINBOOL;
+#endif
 
 typedef struct _DTTOPTS {
     DWORD dwSize;

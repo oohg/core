@@ -1,11 +1,19 @@
 /*
- * $Id: ChangeLog,v 1.1619 2016-12-19 00:02:59 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1620 2016-12-30 16:36:23 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2016-12-30 13:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * samples/oohg/printtest.prg
+     * Format.
+     + Sample about printing text using proportional font.
+   * source/c_windows.c
+   * source/h_radio.prg
+     ! BCC compiler errors.
 
 2016-12-18 21:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * manual/Changelog.htm
