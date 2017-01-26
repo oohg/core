@@ -1,5 +1,5 @@
 /*
- * $Id: h_activex.prg,v 1.16 2016-10-22 16:23:55 fyurisich Exp $
+ * $Id: h_activex.prg,v 1.17 2017-01-26 20:27:04 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -141,6 +141,7 @@ Return Self
 *------------------------------------------------------------------------------*
 METHOD Release() CLASS TActiveX
 *------------------------------------------------------------------------------*
+   ::oOle := Nil
    SHUTDOWNCONNECTIONPOINT( ::hSink )
    ReleaseDispatch( ::hAtl )
 Return ::Super:Release()
