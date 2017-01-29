@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: makelib_mingw.bat,v 1.42 2016-10-25 21:38:01 fyurisich Exp $
+rem $Id: makelib_mingw.bat,v 1.43 2017-01-29 03:55:42 fyurisich Exp $
 rem
 cls
 
@@ -17,7 +17,7 @@ rem *** For 64 bits MinGW ***
 rem set HG_MINGW=c:\hb32\comp\mingw64
 
 rem *** Set EnvVars ***
-if "%LIB_GUI%"==""  set LIB_GUI=lib\hb\mingw
+if "%LIB_GUI%"=="" set LIB_GUI=lib\hb\mingw
 if "%LIB_HRB%"=="" set LIB_HRB=lib\win\mingw
 if "%BIN_HRB%"=="" set BIN_HRB=bin
 

@@ -1,5 +1,5 @@
 /*
- * $Id: h_image.prg,v 1.45 2016-10-22 16:23:55 fyurisich Exp $
+ * $Id: h_image.prg,v 1.46 2017-01-29 03:55:42 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -241,17 +241,19 @@ RETURN uRet
 *------------------------------------------------------------------------------*
 METHOD RePaint() CLASS TImage
 *------------------------------------------------------------------------------*
-   IF ValidHandler( ::AuxHandle )
-      DeleteObject( ::AuxHandle )
+   IF ValidHandler( ::hImage )
+      IF ValidHandler( ::AuxHandle )
+         DeleteObject( ::AuxHandle )
+      ENDIF
+      ::AuxHandle := nil
+      ::Super:SizePos()
+      IF ::Stretch .OR. ::AutoFit
+         ::AuxHandle := _OOHG_SetBitmap( Self, ::hImage, STM_SETIMAGE, ::Stretch, ::AutoFit )
+      ELSE
+         SendMessage( ::hWnd, STM_SETIMAGE, IMAGE_BITMAP, ::hImage )
+      ENDIF
+      ::Parent:Redraw()
    ENDIF
-   ::AuxHandle := nil
-   ::Super:SizePos()
-   IF ::Stretch .OR. ::AutoFit
-      ::AuxHandle := _OOHG_SetBitmap( Self, ::hImage, STM_SETIMAGE, ::Stretch, ::AutoFit )
-   ELSE
-      SendMessage( ::hWnd, STM_SETIMAGE, IMAGE_BITMAP, ::hImage )
-   ENDIF
-   ::Parent:Redraw()
 RETURN Self
 
 *------------------------------------------------------------------------------*

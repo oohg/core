@@ -1,11 +1,18 @@
 /*
- * $Id: ChangeLog,v 1.1621 2017-01-26 20:27:04 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1622 2017-01-29 03:55:41 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2017-01-29 00:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_image.prg
+     ! IMAGE control with CLIENTEDGE and WHITEBACKGROUND clause and
+       no picture is not displayed properly inside a TAB control.
+   * source/makelib_mingw.bat
+     * Format.
 
 2017-01-26 17:26 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_activex.prg
