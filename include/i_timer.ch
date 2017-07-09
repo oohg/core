@@ -1,5 +1,5 @@
 /*
- * $Id: i_timer.ch,v 1.9 2016-10-17 21:39:26 fyurisich Exp $
+ * $Id: i_timer.ch,v 1.10 2017-07-09 20:08:03 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -62,8 +62,8 @@
 #command DEFINE TIMER <name> ;
       [ OBJ <obj> ] ;
       [ <dummy1: OF, PARENT> <parent> ] ;
-      INTERVAL <interval> ;
-      ACTION <action> ;
+      [ INTERVAL <interval> ] ;
+      [ ACTION <action> ] ;
       [ SUBCLASS <subclass> ] ;
       [ <disabled: DISABLED> ] ;
 	=> ;

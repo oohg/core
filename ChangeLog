@@ -1,11 +1,25 @@
 /*
- * $Id: ChangeLog,v 1.1622 2017-01-29 03:55:41 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1623 2017-07-09 20:08:03 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2017-07-09 14:58 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/common_make.bat
+  * source/c_windows.c
+  * source/h_form.prg
+  + source/h_notify.prg
+  * source/oohg.hbp
+    * Moved some functions from c_windows.c to h_notify.prg .
+    + TNotifyIcon control added. Support for multiple notify icons.
+  + samples/oohg/clocks.prg
+    + Multiple notify icons sample.
+  * include/i_timer.ch
+    * ITERVAL and ACTION clausules defined as optionals, for
+      avoid an strict order definition.
 
 2017-01-29 00:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_image.prg
@@ -836,7 +850,7 @@
      + SET TOOLTIPCLOSE, SET TOOLTIP CLOSE, SET TOOLTIPSTYLE CLOSE
        SET TOOLTIPSTYLE NOCLOSE and SET TOOLTIPMULTILINE.
    * include/i_windefs.ch
-     + TVM_SETTOOLTIPS              
+     + TVM_SETTOOLTIPS
      ! Typo.
    * include/oohg.h
      + _OOHG_ReplaceColor declaration.

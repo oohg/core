@@ -1,11 +1,11 @@
 /*
- * $Id: h_form.prg,v 1.73 2016-11-02 13:26:10 fyurisich Exp $
+ * $Id: h_form.prg,v 1.74 2017-07-09 20:08:03 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Forms handling functions
  *
- * Copyright 2005-2016 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
  * https://sourceforge.net/projects/oohg/
  *
  * Portions of this project are based upon Harbour MiniGUI library.
@@ -166,20 +166,9 @@ CLASS TForm FROM TWindow
    DATA GraphData      INIT {}
    DATA SplitChildList INIT {}    // INTERNAL windows.
    DATA aChildPopUp    INIT {}    // POP UP windows.
+   DATA lTopmost       INIT .F.
+   DATA aNotifyIcons   INIT {}
 
-   DATA NotifyIconLeftClick   INIT nil
-   DATA NotifyIconDblClick    INIT nil
-   DATA NotifyIconRightClick  INIT nil
-   DATA NotifyIconRDblClick   INIT nil
-   DATA NotifyIconMidClick    INIT nil
-   DATA NotifyIconMDblClick   INIT nil
-   DATA NotifyMenu            INIT nil
-   DATA cNotifyIconName       INIT ""
-   DATA cNotifyIconToolTip    INIT ""
-   DATA lTopmost              INIT .F.
-
-   METHOD NotifyIcon          SETGET
-   METHOD NotifyToolTip       SETGET
    METHOD Title               SETGET
    METHOD Height              SETGET
    METHOD Width               SETGET
@@ -244,6 +233,20 @@ CLASS TForm FROM TWindow
    METHOD MessageLoop
    METHOD HasStatusBar        BLOCK { | Self | aScan( ::aControls, { |c| c:Type == "MESSAGEBAR" } ) > 0 }
    METHOD Inspector           BLOCK { | Self | Inspector( Self ) }
+
+   METHOD NotifyIconObject
+   METHOD NotifyIcon            SETGET
+   METHOD NotifyToolTip         SETGET
+   METHOD NotifyIconLeftClick   SETGET
+   METHOD NotifyIconDblClick    SETGET
+   METHOD NotifyIconRightClick  SETGET
+   METHOD NotifyIconRDblClick   SETGET
+   METHOD NotifyIconMidClick    SETGET
+   METHOD NotifyIconMDblClick   SETGET
+   METHOD NotifyMenu            SETGET
+   METHOD cNotifyIconName       SETGET
+   METHOD cNotifyIconToolTip    SETGET
+   METHOD AddNotifyIcon
 
 ENDCLASS
 
@@ -691,22 +694,110 @@ METHOD ProcessInitProcedure() CLASS TForm
 Return nil
 
 *------------------------------------------------------------------------------*
+METHOD NotifyIconObject() CLASS TForm
+*------------------------------------------------------------------------------*
+   IF LEN( ::aNotifyIcons ) == 0
+      TNotifyIcon():Define( "0", Self )
+   ENDIF
+RETURN ::aNotifyIcons[ 1 ]
+
+*------------------------------------------------------------------------------*
 METHOD NotifyIcon( IconName ) CLASS TForm
 *------------------------------------------------------------------------------*
    IF PCOUNT() > 0
-      ChangeNotifyIcon( ::hWnd, LoadTrayIcon(GETINSTANCE(), IconName ) , ::NotifyTooltip )
-      ::cNotifyIconName := IconName
+      ::NotifyIconObject:Picture := IconName
    ENDIF
-RETURN ::cNotifyIconName
+RETURN ::NotifyIconObject:Picture
 
 *------------------------------------------------------------------------------*
 METHOD NotifyTooltip( TooltipText ) CLASS TForm
 *------------------------------------------------------------------------------*
    IF PCOUNT() > 0
-      ChangeNotifyIcon( ::hWnd, LoadTrayIcon(GETINSTANCE(), ::NotifyIcon ) , TooltipText )
-      ::cNotifyIconTooltip := TooltipText
+      ::NotifyIconObject:ToolTip := TooltipText
    ENDIF
-RETURN ::cNotifyIconTooltip
+RETURN ::NotifyIconObject:ToolTip
+
+*------------------------------------------------------------------------------*
+METHOD NotifyIconLeftClick( bClick ) CLASS TForm
+*------------------------------------------------------------------------------*
+   IF PCOUNT() > 0
+      ::NotifyIconObject:OnClick := bClick
+   ENDIF
+RETURN ::NotifyIconObject:OnClick
+
+*------------------------------------------------------------------------------*
+METHOD NotifyIconDblClick( bClick ) CLASS TForm
+*------------------------------------------------------------------------------*
+   IF PCOUNT() > 0
+      ::NotifyIconObject:OnDblClick := bClick
+   ENDIF
+RETURN ::NotifyIconObject:OnDblClick
+
+*------------------------------------------------------------------------------*
+METHOD NotifyIconRightClick( bClick ) CLASS TForm
+*------------------------------------------------------------------------------*
+   IF PCOUNT() > 0
+      ::NotifyIconObject:OnRClick := bClick
+   ENDIF
+RETURN ::NotifyIconObject:OnRClick
+
+*------------------------------------------------------------------------------*
+METHOD NotifyIconRDblClick( bClick ) CLASS TForm
+*------------------------------------------------------------------------------*
+   IF PCOUNT() > 0
+      ::NotifyIconObject:OnRDblClick := bClick
+   ENDIF
+RETURN ::NotifyIconObject:OnRDblClick
+
+*------------------------------------------------------------------------------*
+METHOD NotifyIconMidClick( bClick ) CLASS TForm
+*------------------------------------------------------------------------------*
+   IF PCOUNT() > 0
+      ::NotifyIconObject:OnMClick := bClick
+   ENDIF
+RETURN ::NotifyIconObject:OnMClick
+
+*------------------------------------------------------------------------------*
+METHOD NotifyIconMDblClick( bClick ) CLASS TForm
+*------------------------------------------------------------------------------*
+   IF PCOUNT() > 0
+      ::NotifyIconObject:OnMDblClick := bClick
+   ENDIF
+RETURN ::NotifyIconObject:OnMDblClick
+
+*------------------------------------------------------------------------------*
+METHOD NotifyMenu( oMenu ) CLASS TForm
+*------------------------------------------------------------------------------*
+   IF PCOUNT() > 0
+      ::NotifyIconObject:ContextMenu := oMenu
+   ENDIF
+RETURN ::NotifyIconObject:ContextMenu
+
+*------------------------------------------------------------------------------*
+METHOD cNotifyIconName( IconName ) CLASS TForm
+*------------------------------------------------------------------------------*
+   // Only for possible compatibility
+   IF PCOUNT() > 0
+      ::NotifyIconObject:Picture := IconName
+   ENDIF
+RETURN ::NotifyIconObject:Picture
+
+*------------------------------------------------------------------------------*
+METHOD cNotifyIconToolTip( TooltipText ) CLASS TForm
+*------------------------------------------------------------------------------*
+   // Only for possible compatibility
+   IF PCOUNT() > 0
+      ::NotifyIconObject:ToolTip := TooltipText
+   ENDIF
+RETURN ::NotifyIconObject:ToolTip
+
+*------------------------------------------------------------------------------*
+METHOD AddNotifyIcon( cPicture, cToolTip, ProcedureName, ControlName ) CLASS TForm
+*------------------------------------------------------------------------------*
+   IF EMPTY( ControlName )
+      ControlName := "0"
+   ENDIF
+RETURN TNotifyIcon():Define( ControlName, Self, cPicture, cToolTip, ProcedureName )
 
 *------------------------------------------------------------------------------*
 METHOD Title( cTitle ) CLASS TForm
@@ -1009,12 +1100,6 @@ Local mVar
    ::ReleaseAttached()
 
    // Any data must be destroyed... regardless FORM is active or not.
-
-   // Delete Notify icon
-   ShowNotifyIcon( ::hWnd, .F. , 0, "" )
-   If ::NotifyMenu != nil
-      ::NotifyMenu:Release()
-   EndIf
 
    If ::oMenu != NIL
       ::oMenu:Release()
@@ -1392,32 +1477,9 @@ Local oCtrl, lMinim, nOffset,nDesp
    case nMsg == WM_TASKBAR
    ***********************************************************************
 
-      If wParam == ID_TASKBAR .and. lParam # WM_MOUSEMOVE
-
-         do case
-            case lParam == WM_LBUTTONDOWN
-               ::DoEvent( ::NotifyIconLeftClick, "WINDOW_NOTIFYLEFTCLICK" )
-
-            case lParam == WM_RBUTTONDOWN .OR. lParam == WM_CONTEXTMENU
-               If _OOHG_ShowContextMenus()
-                  If ::NotifyMenu != nil
-                     ::NotifyMenu:Activate()
-                  Endif
-               EndIf
-
-            case lParam == WM_LBUTTONDBLCLK
-               ::DoEvent( ::NotifyIconDblClick, "WINDOW_NOTIFYDBLCLICK" )
-
-            case lParam == WM_RBUTTONDBLCLK
-               ::DoEvent( ::NotifyIconRDblClick, "WINDOW_NOTIFYRDBLCLICK" )
-
-            case lParam == WM_MBUTTONDOWN
-               ::DoEvent( ::NotifyIconMidClick, "WINDOW_NOTIFYMIDCLICK" )
-
-            case lParam == WM_MBUTTONDBLCLK
-               ::DoEvent( ::NotifyIconMDblClick, "WINDOW_NOTIFYMDBLCLICK" )
-
-         endcase
+      i := ASCAN( ::aNotifyIcons, { |o| o:nTrayId == wParam } )
+      If i > 0
+         ::aNotifyIcons[ i ]:Events_TaskBar( lParam )
       EndIf
 
    ***********************************************************************
@@ -1856,14 +1918,9 @@ Local nStyle := 0, nStyleEx := 0
               DblClickProcedure, RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, minheight, maxheight, ;
               MoveProcedure, fontcolor )
 
-   if ! valtype( NotifyIconName ) $ "CM"
-      NotifyIconName := ""
-   Else
-      ShowNotifyIcon( ::hWnd, .T. , LoadTrayIcon(GETINSTANCE(), NotifyIconName ), NotifyIconTooltip )
-      ::NotifyIcon := NotifyIconName
-      ::NotifyToolTip := NotifyIconToolTip
-      ::NotifyIconLeftClick := NotifyIconLeftClick
-   endif
+   ::NotifyIconObject:Picture := NotifyIconName
+   ::NotifyIconObject:ToolTip := NotifyIconToolTip
+   ::NotifyIconObject:OnClick := NotifyIconLeftClick
 
 Return Self
 
@@ -2529,14 +2586,9 @@ Local aError := {}
                maxwidth, minheight, maxheight, MoveProcedure, fontcolor )
    EndIf
 
-   if ! valtype( NotifyIconName ) $ "CM"
-      NotifyIconName := ""
-   Else
-      ShowNotifyIcon( ::hWnd, .T. , LoadTrayIcon(GETINSTANCE(), NotifyIconName ), NotifyIconTooltip )
-      ::NotifyIcon := NotifyIconName
-      ::NotifyToolTip := NotifyIconToolTip
-      ::NotifyIconLeftClick := NotifyIconLeftClick
-   endif
+   ::NotifyIconObject:Picture := NotifyIconName
+   ::NotifyIconObject:ToolTip := NotifyIconToolTip
+   ::NotifyIconObject:OnClick := NotifyIconLeftClick
 
    ::lStretchBack := lStretchBack
    ::BackImage := cBackImage
@@ -2734,8 +2786,7 @@ Local i, oWnd
       Endif
 
       If ! Empty( oWnd:NotifyIcon )
-         oWnd:NotifyIcon := ""
-         ShowNotifyIcon( oWnd:hWnd, .F., NIL, NIL )
+         oWnd:NotifyIconObject:Release()
       EndIf
 
       aeval( oWnd:aHotKeys, { |a| ReleaseHotKey( oWnd:hWnd, a[ HOTKEY_ID ] ) } )

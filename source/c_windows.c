@@ -1,11 +1,11 @@
 /*
- * $Id: c_windows.c,v 1.92 2016-12-30 16:36:25 fyurisich Exp $
+ * $Id: c_windows.c,v 1.93 2017-07-09 20:08:03 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Windows handling functions
  *
- * Copyright 2005-2016 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
  * https://sourceforge.net/projects/oohg/
  *
  * Portions of this project are based upon Harbour MiniGUI library.
@@ -87,8 +87,6 @@
    #undef _WIN32_WINNT
    #define _WIN32_WINNT 0x0500
 #endif
-
-#define WM_TASKBAR WM_USER+1043
 
 /* Handle to a DIB */
 #define HDIB HANDLE
@@ -675,29 +673,6 @@ HB_FUNC( ISWINDOWMINIMIZED )
    hb_retl( IsIconic( HWNDparam( 1 ) ) );
 }
 
-static void ShowNotifyIcon(HWND hWnd, BOOL bAdd, HICON hIcon, LPSTR szText)
-{
-  NOTIFYICONDATA nid;
-  ZeroMemory(&nid,sizeof(nid));
-  nid.cbSize=sizeof(NOTIFYICONDATA);
-  nid.hWnd=hWnd;
-  nid.uID=0;
-  nid.uFlags=NIF_ICON | NIF_MESSAGE | NIF_TIP;
-  nid.uCallbackMessage=WM_TASKBAR;
-  nid.hIcon=hIcon;
-  lstrcpy(nid.szTip,TEXT(szText));
-
-  if(bAdd)
-    Shell_NotifyIcon(NIM_ADD,&nid);
-  else
-    Shell_NotifyIcon(NIM_DELETE,&nid);
-}
-
-HB_FUNC( SHOWNOTIFYICON )
-{
-   ShowNotifyIcon( HWNDparam( 1 ), (BOOL) hb_parl(2), (HICON) hb_parnl(3), (LPSTR) hb_parc(4) );
-}
-
 HB_FUNC( GETINSTANCE )
 {
    HWNDret( GetModuleHandle( NULL ) );
@@ -713,42 +688,6 @@ HB_FUNC( GETCURSORPOS )
 
    HB_STORNI( pt.y, -1, 1 );
    HB_STORNI( pt.x, -1, 2 );
-}
-
-HB_FUNC( LOADTRAYICON )
-{
-   HICON himage;
-   HINSTANCE hInstance  = (HINSTANCE) hb_parnl(1);  // handle to application instance
-   LPCTSTR   lpIconName = (LPCTSTR)   hb_parc(2);   // name string or resource identifier
-
-   himage = LoadIcon( hInstance ,  lpIconName );
-
-   if( himage == NULL )
-   {
-      himage = ( HICON ) LoadImage( hInstance ,  lpIconName , IMAGE_ICON, 0, 0, LR_LOADFROMFILE + LR_DEFAULTSIZE ) ;
-   }
-
-   hb_retnl ( (LONG) himage );
-}
-
-static void ChangeNotifyIcon(HWND hWnd, HICON hIcon, LPSTR szText)
-{
-   NOTIFYICONDATA nid;
-   ZeroMemory( &nid, sizeof( nid ) );
-   nid.cbSize = sizeof( NOTIFYICONDATA );
-   nid.hWnd = hWnd;
-   nid.uID = 0;
-   nid.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
-   nid.uCallbackMessage = WM_TASKBAR;
-   nid.hIcon = hIcon;
-   lstrcpy( nid.szTip, TEXT( szText ) );
-
-   Shell_NotifyIcon( NIM_MODIFY, &nid );
-}
-
-HB_FUNC( CHANGENOTIFYICON )
-{
-   ChangeNotifyIcon( HWNDparam( 1 ), (HICON) hb_parnl(2), (LPSTR) hb_parc(3) );
 }
 
 HB_FUNC( GETITEMPOS )
