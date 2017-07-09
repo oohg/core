@@ -1,5 +1,5 @@
 /*
- * $Id: h_notify.prg,v 1.1 2017-07-09 20:08:04 guerra000 Exp $
+ * $Id: h_notify.prg,v 1.2 2017-07-09 21:45:54 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -319,12 +319,12 @@ HB_FUNC( SETNOTIFYICONDATA )     // ( hWnd, nId, lAlreadyCreated, hIcon, cToolti
    nid.hWnd = HWNDparam( 1 );
    nid.uID = hb_parni( 2 );
    nid.uFlags = 0;
-   if( ! ISNIL( 4 ) )
+   if( ! HB_ISNIL( 4 ) )
    {
       nid.uFlags |= NIF_ICON;
       nid.hIcon = ( HICON ) HWNDparam( 4 );
    }
-   if( ISCHAR( 5 ) )
+   if( HB_ISCHAR( 5 ) )
    {
       nid.uFlags |= NIF_TIP;
       lstrcpy( nid.szTip, TEXT( ( LPSTR ) hb_parc( 5 ) ) );

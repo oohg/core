@@ -1,5 +1,5 @@
 <!--
-$Id: Changelog.htm,v 1.111 2016-12-19 00:02:59 fyurisich Exp $
+$Id: Changelog.htm,v 1.112 2017-07-09 21:45:53 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -142,6 +142,51 @@ CHANGELOG</div>
 </div>
 <div id="winchm_template_content">
 <pre>
+2017-07-09 18:45 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_notify.prg
+     ! Compiler warnings at C level.
+   * distros/MakeDistro.bat
+   * source/makelib_mingw.bat
+   * manual/Changelog.htm
+     * Updated.
+
+2017-07-09 15:12 UTC-0500 Vicente Guerra &lt;vicente@guerra.com.mx&gt;
+  * samples/oohg/stream/TStreamSSL.prg
+    ! Fixed double BIO_free() call.
+
+2017-07-09 14:58 UTC-0500 Vicente Guerra &lt;vicente@guerra.com.mx&gt;
+  * source/common_make.bat
+  * source/c_windows.c
+  * source/h_form.prg
+  + source/h_notify.prg
+  * source/oohg.hbp
+    * Moved some functions from c_windows.c to h_notify.prg .
+    + TNotifyIcon control added. Support for multiple notify icons.
+  + samples/oohg/clocks.prg
+    + Multiple notify icons sample.
+  * include/i_timer.ch
+    * ITERVAL and ACTION clausules defined as optionals, for
+      avoid an strict order definition.
+
+2017-01-29 00:55 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_image.prg
+     ! IMAGE control with CLIENTEDGE and WHITEBACKGROUND clause and
+       no picture is not displayed properly inside a TAB control.
+   * source/makelib_mingw.bat
+     * Format.
+
+2017-01-26 17:26 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * source/h_activex.prg
+     ! RTE when ACTIVEX control is created after a previous release.
+
+2016-12-30 13:35 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * samples/oohg/printtest.prg
+     * Format.
+     + Sample about printing text using proportional font.
+   * source/c_windows.c
+   * source/h_radio.prg
+     ! BCC compiler errors.
+
 2016-12-18 21:03 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * manual/Changelog.htm
      * Updated.
@@ -2816,7 +2861,7 @@ CHANGELOG</div>
        to process WM_NOTIFY message.
      * LVN_KEYDOWN handler in TGridByCell:Events_Notify() now checks
        ::FirstVisibleColumn.
-     * Function _GetGridCellData now uses tan array holding item and
+     * Function _GetGridCellData now uses an array holding item and
        subitem number (derived from lParam) instead of lParam.
      ! ListView_IsItemVisible() returns .T. for an item placed under the
        grid's header.
