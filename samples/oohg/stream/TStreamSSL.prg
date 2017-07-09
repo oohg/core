@@ -1,12 +1,19 @@
 /*
- * $Id: TStreamSSL.prg,v 1.1 2011-07-17 14:57:50 guerra000 Exp $
+ * $Id: TStreamSSL.prg,v 1.2 2017-07-09 20:16:20 guerra000 Exp $
  */
 /*
  * Data stream from (((compress/)))uncompress management class.
  *
  * TStreamSSL. Reads/writes data over a SSL connection.
  *             It requires OpenSSL library.
- */
+ *
+ * Some info about openssl DLL:
+ * Embarcadero: http://docwiki.embarcadero.com/RADStudio/Tokyo/en/OpenSSL
+ * ZIP files: http://indy.fulgan.com/SSL/
+ *
+ * Version 0.9.8zh worked OK
+ * Version 1.0.2k generates GPF
+*/
 
 #include "hbclass.ch"
 
@@ -45,9 +52,10 @@ extern int          SSL_write( SSL *, void *, int );
 #define BIO_NOCLOSE                0
 #define BIO_CLOSE                  1
 
+int bInit = 0;
+
 HB_FUNC( SSL_CTX_NEW )
 {
-   static int bInit = 0;
    SSL_CTX *pCtx;
 
    if( ! bInit )
@@ -109,6 +117,7 @@ HB_FUNC( SSL_SHUTDOWN )   // ( pSsl )
 {
 // HB_FUNC( SSL_SHUTDOWN )
    SSL_shutdown( ( SSL * ) hb_parptr( 1 ) );
+   SSL_shutdown( ( SSL * ) hb_parptr( 1 ) );
 
 // HB_FUNC( SSL_FREE )
    SSL_free( ( SSL * ) hb_parptr( 1 ) );
@@ -116,7 +125,8 @@ HB_FUNC( SSL_SHUTDOWN )   // ( pSsl )
 
 HB_FUNC( BIO_FREE )   // ( pBio )
 {
-   BIO_free( ( BIO * ) hb_parptr( 1 ) );
+   // It's already freed by SSL_Shutdown
+   // BIO_free( ( BIO * ) hb_parptr( 1 ) );
 }
 
 HB_FUNC( SSL_CTX_FREE )   // ( pCtx )
