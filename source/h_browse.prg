@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.180 2016-11-27 15:13:46 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.181 2017-07-18 17:02:50 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -3081,7 +3081,7 @@ Local lRet, lSomethingEdited, lRowAppended, nRecNo, cWorkArea, nNextCol
          If ! lRet
             If lAppend
                ::lAppendMode := .F.
-               ::GoBottom()
+               ::GoBottom( .T. )
             EndIf
             Exit
          EndIf
@@ -3209,7 +3209,7 @@ Local lSomethingEdited, nRecNo, lRet, lRowAppended, cWorkArea
             If lAppend
                ::lAppendMode := .F.
                lAppend := .F.
-               ::GoBottom()
+               ::GoBottom( .T. )
             EndIf
             Exit
          EndIf

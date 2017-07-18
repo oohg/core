@@ -1,11 +1,18 @@
 /*
- * $Id: ChangeLog,v 1.1625 2017-07-09 21:45:51 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1626 2017-07-18 17:02:49 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2017-07-09 14:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_browse.prg
+     * EditAllCells and EditGrid methods of TOBrowseByCell will place
+       the focus on the first column instead of the last.
+   * manual/Changelog.htm
+     * Updated.
 
 2017-07-09 18:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_notify.prg
