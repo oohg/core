@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.74 2017-07-09 20:08:03 guerra000 Exp $
+ * $Id: h_form.prg,v 1.75 2017-07-21 00:35:20 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1908,6 +1908,7 @@ Local nStyle := 0, nStyleEx := 0
 
    _OOHG_Main := Self
    nStyle += WS_POPUP
+   ASSIGN icon VALUE icon TYPE "CM" DEFAULT _OOHG_Main_Icon
 
    ::Define2( FormName, Caption, x, y, w, h, 0, helpbutton, nominimize, nomaximize, nosize, nosysmenu, ;
               nocaption, virtualheight, virtualwidth, hscrollbox, vscrollbox, fontname, fontsize, aRGB, cursor, ;

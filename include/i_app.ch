@@ -1,5 +1,5 @@
 /*
- * $Id: i_app.ch,v 1.2 2016-10-17 21:39:26 fyurisich Exp $
+ * $Id: i_app.ch,v 1.3 2017-07-21 00:35:20 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -61,8 +61,8 @@
 
 
 #xtranslate App . <p: ArgC, Args, BackColor, Col, Cursor, Drive, ExeName, ;
-      FormName, Handle, Height, HelpButton, Name, Path, Row, Title, Topmost, ;
-      Width> ;
+      FormName, Handle, Height, HelpButton, Icon, Name, Path, Row, Title, ;
+      Topmost, Width> ;
    => ;
       Application.<p>
 
@@ -81,6 +81,7 @@
 #xtranslate Application.Height := <arg>     => TApplication():Height( <arg> )
 #xtranslate Application.HelpButton          => TApplication():HelpButton
 #xtranslate Application.HelpButton := <arg> => TApplication():HelpButton( <arg> )
+#xtranslate Application.Icon                => TApplication():Icon
 #xtranslate Application.Name                => TApplication():Name
 #xtranslate Application.Path                => TApplication():Path
 #xtranslate Application.Row                 => TApplication():Row

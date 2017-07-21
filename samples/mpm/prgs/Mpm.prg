@@ -1,5 +1,5 @@
 /*
- * $Id: Mpm.prg,v 1.2 2014-07-11 19:38:40 migsoft Exp $
+ * $Id: Mpm.prg,v 1.3 2017-07-21 00:35:20 fyurisich Exp $
  */
 
 /*
@@ -1265,7 +1265,7 @@ Function Hblibs( cRuta,cHb,cCclr )
    Endif
 
    aHba := {'libhbsix.a', 'libhbvm.a', 'libhbrdd.a', 'libhbmacro.a', 'libhbpp.a', 'libhbrtl.a', 'libhblang.a', 'libhbcommon.a', 'librddntx.a', 'librddcdx.a', 'librddfpt.a', 'libhbct.a', 'libsocket.a', 'libmysqldll.a', 'libdll.a', 'libhbcpage.a', 'libhbdebug.a', 'libhbhsx.a', 'libhbpcre.a', 'libhbmzip.a', 'libhbzlib.a', 'libhbwin.a', 'libxhb.a','libodbc32.a', 'libhbmisc.a', 'libhbnf.a', 'libhbmemio.a','libhbcplr.a','libhbziparc.a','libminizip.a','libhbtip.a' }
-   aHba1:= {'lhbsix', 'lhbvm', 'lhbrdd', 'lhbmacro', 'lhbpp', 'lhbrtl', 'lhblang', 'lhbcommon', 'lrddntx', 'lrddcdx', 'lrddfpt', 'lhbct', 'lsocket', 'lmysqldll', 'ldll', 'lhbcpage', 'lhbdebug', 'lhbhsx', 'lhbpcre', 'lhbmzip', 'lhbzlib', 'lhbwin', 'lxhb', 'lodbc32', 'lhbmisc', 'lhbnf', 'lhbmemio','lhbcplr','lhbziparc','lminizip','lhbtip' }
+   aHba1:= {'lhbsix', 'lhbvm', 'lhbrdd', 'lhbmacro', 'lhbpp', 'lhbrtl', 'lhblang', 'lhbcommon', 'lrddntx', 'lrddcdx', 'lrddfpt', 'lhbct', 'lsocket', 'lmysqldll', 'ldll', 'lhbcpage', 'lhbdebug', 'lhbhsx', 'lhbpcre', 'lhbmzip', 'lhbzlib', 'lhbwin', 'lxhb', 'lodbc32', 'lhbmisc', 'lhbnf', 'lhbmemio','lhbcplr','lhbzebra','lhbziparc','lminizip','lhbtip' }
 
    axHb := {'hbsix.lib', 'vm.lib'  , 'rdd.lib'  , 'macro.lib'  , 'pp.lib'  , 'rtl.lib'  , 'lang.lib'  , 'common.lib'  , 'nulsys.lib', 'dbfntx.lib', 'dbfcdx.lib', 'dbffpt.lib', 'ct.lib', 'libmisc.lib', 'hbodbc.lib', 'odbc32.lib', 'use_dll.lib', 'pcrepos.lib', 'codepage.lib', 'zlib.lib', 'tip.lib', 'rdds.lib' ,'dll.lib','socket.lib', 'rddads.lib', 'ace32.lib','debug.lib'}
    axHba:= {'libgtwin.a','libhbsix.a', 'libvm.a', 'librdd.a', 'libmacro.a', 'libpp.a', 'librtl.a', 'liblang.a', 'libcommon.a', 'libnulsys.a', 'libdbfntx.a', 'libdbfcdx.a', 'libdbffpt.a', 'libct.a', 'liblibmisc.a', 'libhbodbc.a', 'libodbc32.a', 'libuse_dll.a', 'libpcrepos.a', 'libcodepage.a', 'libzlib.a', 'libtip.a', 'librdds.a','libdll.a','libsocket.a' }

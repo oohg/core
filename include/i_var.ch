@@ -1,5 +1,5 @@
 /*
- * $Id: i_var.ch,v 1.27 2016-10-17 21:39:26 fyurisich Exp $
+ * $Id: i_var.ch,v 1.28 2017-07-21 00:35:20 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -93,6 +93,7 @@ MEMVAR _OOHG_AllVars
 #xtranslate _OOHG_ThisQueryData      => _OOHG_AllVars \[  26 \]
 #xtranslate _OOHG_ThisQueryRowIndex  => _OOHG_AllVars \[  27 \]
 #xtranslate _OOHG_ThisType           => _OOHG_AllVars \[  28 \]
+#xtranslate _OOHG_Main_Icon          => _OOHG_AllVars \[  29 \]
 
 /*---------------------------------------------------------------------------
 PSEUDO VARIABLES USED BY OOHG MODULES

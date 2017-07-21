@@ -1,11 +1,42 @@
 /*
- * $Id: ChangeLog,v 1.1626 2017-07-18 17:02:49 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1627 2017-07-21 00:35:19 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2017-07-20 21:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./compile_MINGW.BAT
+   * ./oohg.hbc
+   * ide/prgs/mgide.prg
+   * samples/mpm/prgs/Mpm.prg
+     + library hb_zebra.a
+   * include/i_app.ch
+     + Icon property.
+   * include/i_var.ch
+     + _OOHG_Main_Icon.
+   * include/i_window.ch
+     + FLASH WINDOW.
+     + SET DEFAULT ICON TO.
+     ; This command sets the name of the app's default icon.
+       To be effective, it must take place before the definition of the
+       program's main window. This command is equivalent to the clause
+       ICON at DEFINE WINDOW ... MAIN.
+   * source/bostaurus.prg
+     ! bt_bmp_SaveFile wasn't working when gdi+ system wasn't initialized.
+   * source/c_windows.c
+     + FLASHWINDOWEX function.
+   * source/h_application.prg
+     + Method Icon.
+     ; This method sets/gets the name of the app's default icon.
+       To be effective, the set of the default icon must take place
+       before the definition of the program's main window.
+   * source/h_form.prg
+     + Support for SET DEFAULT ICON TO.
+   * manual/Changelog.htm
+     * Updated.
 
 2017-07-09 14:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_browse.prg

@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.93 2017-07-09 20:08:03 guerra000 Exp $
+ * $Id: c_windows.c,v 1.94 2017-07-21 00:35:20 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1571,4 +1571,17 @@ HB_FUNC( SETLAYEREDWINDOWATTRIBUTES )   // hWnd, color, opacity, flag (LWA_COLOR
    FreeLibrary( hLib );
    hb_retl( bRet );
 #endif
+}
+
+HB_FUNC( FLASHWINDOWEX )   // hWnd, dwFlags, uCount, dwTimeout
+{
+   FLASHWINFO FlashWinInfo;
+
+   FlashWinInfo.cbSize    = sizeof( FLASHWINFO );
+   FlashWinInfo.hwnd      = HWNDparam( 1 );;
+   FlashWinInfo.dwFlags   = ( DWORD ) hb_parnl( 2 );
+   FlashWinInfo.uCount    = ( UINT ) hb_parnl( 3 );
+   FlashWinInfo.dwTimeout = ( DWORD ) hb_parnl( 4 );
+
+   hb_retl( ( BOOL ) FlashWindowEx( &FlashWinInfo ) );
 }

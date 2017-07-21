@@ -1,5 +1,5 @@
 /*
- * $Id: i_window.ch,v 1.69 2016-10-17 21:39:26 fyurisich Exp $
+ * $Id: i_window.ch,v 1.70 2017-07-21 00:35:20 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -518,6 +518,10 @@ AUTOADJUST
    => ;
       _OOHG_AdjustFont := .F.
 
+#xtranslate SET DEFAULT ICON TO <cIcon> ;
+   => ;
+      _OOHG_Main_Icon := <cIcon>
+
 /*---------------------------------------------------------------------------
 TRANSPARENCY
 ---------------------------------------------------------------------------*/
@@ -537,3 +541,19 @@ TRANSPARENCY
 #xtranslate SET WINDOW <FormName> TRANSPARENT OFF ;
    => ;
       WindowExStyleFlag( GetFormHandle( <"FormName"> ), 0x00080000, 0 )   // WS_EX_LAYERED
+
+/*---------------------------------------------------------------------------
+FLASH
+---------------------------------------------------------------------------*/
+
+#xtranslate FLASH WINDOW <FormName> CAPTION COUNT <nTimes> INTERVAL <nMilliseconds> ;
+   => ;
+      FlashWindowEx( GetFormHandle( <"FormName"> ), 1, <nTimes>, <nMilliseconds> )   // FLASHW_CAPTION
+
+#xtranslate FLASH WINDOW <FormName> TASKBAR COUNT <nTimes> INTERVAL <nMilliseconds> ;
+   => ;
+      FlashWindowEx( GetFormHandle( <"FormName"> ), 2, <nTimes>, <nMilliseconds> )   // FLASHW_TRAY
+
+#xtranslate FLASH WINDOW <FormName> [ ALL ] COUNT <nTimes> INTERVAL <nMilliseconds> ;
+   => ;
+      FlashWindowEx( GetFormHandle( <"FormName"> ), 3, <nTimes>, <nMilliseconds> )   // FLASHW_ALL (FLASHW_CAPTION + FLASHW_TRAY)

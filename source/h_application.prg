@@ -1,5 +1,5 @@
 /*
- * $Id: h_application.prg,v 1.6 2016-10-17 01:55:33 fyurisich Exp $
+ * $Id: h_application.prg,v 1.7 2017-07-21 00:35:20 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -77,7 +77,8 @@ CLASS TApplication
    METHOD Col        SETGET
    METHOD Cursor     SETGET
    METHOD Drive      BLOCK { |Self| Left( ::ExeName, 1 ) }
-   METHOD MainName   BLOCK { || If( HB_IsObject( _OOHG_Main ), _OOHG_Main:Name,  ) }
+   METHOD Icon       SETGET
+   METHOD MainName   BLOCK { || If( HB_IsObject( _OOHG_Main ), _OOHG_Main:Name, Nil ) }
    METHOD FormObject BLOCK { || _OOHG_Main }
    METHOD Handle     BLOCK { || If( HB_IsObject( _OOHG_Main ), _OOHG_Main:hWnd, Nil ) }
    METHOD Height     SETGET
@@ -123,6 +124,15 @@ Return If( HB_IsObject( _OOHG_Main ), _OOHG_Main:Cursor( uValue ), Nil )
 METHOD Height( nHeight ) CLASS TApplication
 //------------------------------------------------------------------------------
 Return If( HB_IsObject( _OOHG_Main ), _OOHG_Main:Height( nHeight ), Nil )
+
+
+//------------------------------------------------------------------------------
+METHOD Icon( cIcon ) CLASS TApplication
+//------------------------------------------------------------------------------
+   If PCount() > 0
+      _OOHG_Main_Icon := cIcon
+   EndIf
+Return _OOHG_Main_Icon
 
 
 //------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 /*
- * $Id: bostaurus.prg,v 1.5 2016-10-17 01:55:33 fyurisich Exp $
+ * $Id: bostaurus.prg,v 1.6 2017-07-21 00:35:20 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2429,6 +2429,9 @@ BOOL bt_bmp_SaveFile( HBITMAP hBitmap, TCHAR* FileName, int nTypePicture )
 
    if( nTypePicture != 0 )
    {
+      if( ! _OOHG_UseGDIP() )
+          return FALSE;
+
       switch( nTypePicture )
       {
          case BT_FILEFORMAT_BMP:
