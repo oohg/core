@@ -1,11 +1,40 @@
 /*
- * $Id: ChangeLog,v 1.1627 2017-07-21 00:35:19 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1628 2017-07-28 00:09:07 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2017-07-27 21:09 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_windefs.ch
+     + FlashWindowEx constants.
+   * source/h_form.prg
+     + Method Flash( nWhat, nTimes, nMilliseconds ) to TForm class.
+       nWhat            action
+       FLASHW_CAPTION   Flash the window caption.
+       FLASHW_TRAY      Flash the taskbar button.
+       FLASHW_ALL       Flash both the window caption and the taskbar button.
+       FLASHW_TIMER     Add to one the previous to flash continuously, until
+                        the FLASHW_STOP flag is set.
+       FLASHW_STOP      Stop flashing. The system restores the window to its
+                        original state.
+       FLASHW_TIMERNOFG Add to FLASHW_TRAY to continuously flash the taskbar
+                        button until the window comes to the foreground.
+
+       nTimes           Number of times to flash the window.
+                        Set to 0 when using FLASHW_TIMER to obtain non-stop
+                        flashing.
+                        Set to 0 when usingh FLASHW_CAPTION, FLASHW_TRAY or
+                        FLASHW_ALL to toggle the current flash status.
+
+       nMilliseconds    Flashing interval. 0 means use the default cursor blink rate.
+
+       If the window caption was drawn as active before the call, the return value is .T.
+       Otherwise, the return value is .F.
+   * manual/Changelog.htm
+     * Updated.
 
 2017-07-20 21:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./compile_MINGW.BAT

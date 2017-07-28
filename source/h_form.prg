@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.75 2017-07-21 00:35:20 fyurisich Exp $
+ * $Id: h_form.prg,v 1.76 2017-07-28 00:09:08 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -193,6 +193,7 @@ CLASS TForm FROM TWindow
    METHOD Visible             SETGET
    METHOD Show
    METHOD Hide
+   METHOD Flash
    METHOD Activate
    METHOD Release
    METHOD RefreshData
@@ -1264,6 +1265,29 @@ LOCAL hImageWork
       ReDrawWindow( ::hWnd )
    EndIf
 Return ::hBackImage
+
+*------------------------------------------------------------------------------*
+METHOD Flash( nWhat, nTimes, nMilliseconds ) CLASS TForm
+*------------------------------------------------------------------------------*
+   /*
+    * nWhat            action
+    * FLASHW_CAPTION   Flash the window caption.
+    * FLASHW_TRAY      Flash the taskbar button.
+    * FLASHW_ALL       Flash both the window caption and the taskbar button.
+    * FLASHW_TIMER     Add to one the previous to flash continuously, until the FLASHW_STOP flag is set.
+    * FLASHW_STOP      Stop flashing. The system restores the window to its original state.
+    * FLASHW_TIMERNOFG Add to FLASHW_TRAY to continuously flash the taskbar button until the window comes to the foreground.
+    *
+    * nTimes           Number of times to flash the window.
+    *                  Set to 0 when using FLASHW_TIMER to obtain non-stop flashing.
+    *                  Set to 0 when usingh FLASHW_CAPTION, FLASHW_TRAY or FLASHW_ALL to toggle the current flash status.
+    *
+    * nMilliseconds    Flashing interval. 0 means use the default cursor blink rate
+    *
+    * If the window caption was drawn as active before the call, the return value is .T.
+    * Otherwise, the return value is .F.
+    */
+Return FlashWindowEx( ::hWnd, nWhat, nTimes, nMilliseconds )
 
 
 #pragma BEGINDUMP

@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.74 2016-10-17 21:39:26 fyurisich Exp $
+ * $Id: i_windefs.ch,v 1.75 2017-07-28 00:09:08 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -280,6 +280,17 @@ LAYERED WINDOW FLAGS
 
 #define LWA_COLORKEY                  0x01
 #define LWA_ALPHA                     0x02
+
+/*---------------------------------------------------------------------------
+FLASH WINDOW FLAGS
+---------------------------------------------------------------------------*/
+
+#define FLASHW_STOP                   0x00000000
+#define FLASHW_CAPTION                0x00000001
+#define FLASHW_TRAY                   0x00000002
+#define FLASHW_ALL                    0x00000003
+#define FLASHW_TIMER                  0x00000004
+#define FLASHW_TIMERNOFG              0x0000000C
 
 /*---------------------------------------------------------------------------
 EDIT CONTROL
