@@ -1,11 +1,20 @@
 /*
- * $Id: ChangeLog,v 1.1628 2017-07-28 00:09:07 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1629 2017-08-07 23:46:44 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2017-08-07 20:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_browse.prg
+   * source/h_xbrowse.prg
+     ! After aborting edition in a control using NAVIGATEBYCELL
+       the view is shifted to the first column instead of staying
+       at the edited cell.
+   * manual/Changelog.htm
+     * Updated.
 
 2017-07-27 21:09 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_windefs.ch

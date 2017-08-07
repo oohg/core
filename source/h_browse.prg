@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.181 2017-07-18 17:02:50 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.182 2017-08-07 23:46:44 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -3148,8 +3148,6 @@ Local lRet, lSomethingEdited, lRowAppended, nRecNo, cWorkArea, nNextCol
       EndIf
       ::CurrentCol := nNextCol
    EndDo
-
-   ::ScrollToLeft()
 
 Return lSomethingEdited
 

@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.157 2016-11-27 15:13:47 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.158 2017-08-07 23:46:44 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -3637,8 +3637,6 @@ Local lRet, lSomethingEdited
          ::ScrollToLeft()
       EndIf
    EndDo
-
-   ::ScrollToLeft()
 
 Return lSomethingEdited
 
