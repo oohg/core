@@ -1,5 +1,5 @@
 /*
- * $Id: h_listbox.prg,v 1.38 2016-12-17 01:43:23 fyurisich Exp $
+ * $Id: h_listbox.prg,v 1.39 2017-08-11 23:17:48 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -84,8 +84,8 @@ CLASS TList FROM TControl
    METHOD Events_Command
    METHOD Events_DrawItem
    METHOD Events_MeasureItem
-   METHOD AddItem(uValue)         BLOCK { |Self, uValue| ListBoxAddstring2( Self, uValue ) }
-   METHOD DeleteItem(nItem)       BLOCK { |Self, nItem| ListBoxDeleteString( Self, nItem ) }
+   METHOD AddItem( uValue )       BLOCK { |Self, uValue| ListBoxAddstring2( Self, uValue ) }
+   METHOD DeleteItem( nItem )     BLOCK { |Self, nItem| ListBoxDeleteString( Self, nItem ) }
    METHOD DeleteAllItems          BLOCK { |Self| ListBoxReset( ::hWnd ) }
    METHOD Item
    METHOD InsertItem
@@ -98,7 +98,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
                lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
                italic, underline, strikeout, backcolor, fontcolor, lRtl, ;
                lDisabled, onenter, aImage, TextHeight, lAdjustImages, ;
-               novscroll ) CLASS TList
+               novscroll, multicols ) CLASS TList
 *------------------------------------------------------------------------------*
 Local nStyle := 0
    ::Define2( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
@@ -106,7 +106,7 @@ Local nStyle := 0
               lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
               italic, underline, strikeout, backcolor, fontcolor, nStyle, ;
               lRtl, lDisabled, onenter, aImage, TextHeight, lAdjustImages, ;
-              novscroll )
+              novscroll, multicols )
 Return Self
 
 *------------------------------------------------------------------------------*
@@ -115,7 +115,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
                 lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
                 italic, underline, strikeout, backcolor, fontcolor, nStyle, ;
                 lRtl, lDisabled, onenter, aImage, TextHeight, lAdjustImages, ;
-                novscroll ) CLASS TList
+                novscroll, multicols ) CLASS TList
 *------------------------------------------------------------------------------*
 Local ControlHandle
 
@@ -131,7 +131,8 @@ Local ControlHandle
    nStyle := ::InitStyle( nStyle,, invisible, notabstop, lDisabled ) + ;
              If( HB_ISLOGICAL( novscroll ) .AND. novscroll, 0, WS_VSCROLL + LBS_DISABLENOSCROLL ) + ;
              If( HB_ISLOGICAL( sort ) .AND. sort, LBS_SORT, 0 ) + ;
-             If( HB_IsArray( aImage ),  LBS_OWNERDRAWFIXED, 0)
+             If( HB_IsArray( aImage ),  LBS_OWNERDRAWFIXED, 0) + ;
+             If( HB_ISLOGICAL( multicols ) .AND. multicols, LBS_MULTICOLUMN, 0 )
 
    ::SetSplitBoxInfo( Break )
    ControlHandle := InitListBox( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, ::lRtl )
@@ -268,7 +269,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
                lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
                italic, underline, strikeout, backcolor, fontcolor, lRtl, ;
                lDisabled, onenter, aImage, TextHeight, lAdjustImages, ;
-               novscroll ) CLASS TListMulti
+               novscroll, multicols ) CLASS TListMulti
 *------------------------------------------------------------------------------*
 Local nStyle := LBS_EXTENDEDSEL + LBS_MULTIPLESEL
 
@@ -277,7 +278,7 @@ Local nStyle := LBS_EXTENDEDSEL + LBS_MULTIPLESEL
               lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
               italic, underline, strikeout, backcolor, fontcolor, nStyle, ;
               lRtl, lDisabled, onenter, aImage, TextHeight, lAdjustImages, ;
-              novscroll )
+              novscroll, multicols )
 Return Self
 
 *------------------------------------------------------------------------------*
@@ -583,6 +584,7 @@ HB_FUNC_STATIC( TLIST_EVENTS_DRAWITEM )   // METHOD Events_DrawItem( lParam )
 
       // Text
       SendMessage( lpdis->hwndItem, LB_GETTEXT, lpdis->itemID, (LPARAM) cBuffer );
+      // Use DRAWTEXT to expand TABS and enable MULTITABS style
       ExtTextOut( lpdis->hDC, cx + x, y, ETO_CLIPPED | ETO_OPAQUE, &lpdis->rcItem, (LPCSTR) cBuffer, strlen( cBuffer ), NULL );
 
       SetTextColor( lpdis->hDC, FontColor );

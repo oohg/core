@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.73 2016-12-17 01:43:03 fyurisich Exp $
+ * $Id: formedit.prg,v 1.74 2017-08-11 23:17:46 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -4028,27 +4028,24 @@ LOCAL cName, oCtrl, aImages, aItems, nMin, nMax, j, aCaptions, nCnt, oPage, lRed
             <helpid>, <.invisible.>, <.notabstop.>, <.sort.>, ;
             <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
             <backcolor>, <fontcolor>, <.rtl.>, <.disabled.>, <{enter}>, ;
-            <aImage>, <textheight>, <.fit.>, <.novscroll.> )
+            <aImage>, <textheight>, <.fit.>, <.novscroll.>, <.multicol.> )
 */
       IF ::aMultiSelect[i]
-         oCtrl := TListMulti():Define( cName, ::oDesignForm:Name, _OOHG_MouseCol, _OOHG_MouseRow, nWidth, nHeight, IIF( IsValidArray( ::aItems[i] ), ::aItems[i], { cName } ), ;
+         oCtrl := TListMulti():Define( cName, ::oDesignForm:Name, _OOHG_MouseCol, _OOHG_MouseRow, nWidth, nHeight, IIF( IsValidArray( ::aItems[i] ), &( ::aItems[i] ), { cName } ), ;
                      ::aValueN[i], NIL, NIL, ::aToolTip[i], NIL, ;
                      NIL, NIL, NIL, .F., ;
                      NIL, .F., .F., ::aSort[i], ;
                      ::aBold[i], ::aFontItalic[i], ::aFontUnderline[i], ::aFontStrikeout[i], ;
                      NIL, NIL, ::aRTL[i], .F., NIL, ;
-                     ::aImage[i], ::aTextHeight[i], ::aFit[i], ::aNoVScroll[i] )
+                     ::aImage[i], ::aTextHeight[i], ::aFit[i], ::aNoVScroll[i], ::aMultiLine[i] )
       ELSE
-         oCtrl := TList():Define( cName, ::oDesignForm:Name, ;
-                     _OOHG_MouseCol, _OOHG_MouseRow, nWidth, nHeight, ;
-                     IIF( IsValidArray( ::aItems[i] ), ::aItems[i], { cName } ), ;
-                     ::aValueN[i], NIL, NIL, ::aToolTip[i], ;
-                     NIL, NIL, ;
-                     NIL, NIL, .F., ;
-                     NIL, .F., .F., ::aSort[i], ::aBold[i], ::aFontItalic[i], ;
-                     ::aFontUnderline[i], ::aFontStrikeout[i], NIL, NIL, ;
-                     ::aRTL[i], .F., NIL, ::aImage[i], ::aTextHeight[i], ;
-                     ::aFit[i], ::aNoVScroll[i] )
+         oCtrl := TList():Define( cName, ::oDesignForm:Name, _OOHG_MouseCol, _OOHG_MouseRow, nWidth, nHeight, IIF( IsValidArray( ::aItems[i] ), &( ::aItems[i] ), { cName } ), ;
+                     ::aValueN[i], NIL, NIL, ::aToolTip[i], NIL, ;
+                     NIL, NIL, NIL, .F., ;
+                     NIL, .F., .F., ::aSort[i], ;
+                     ::aBold[i], ::aFontItalic[i], ::aFontUnderline[i], ::aFontStrikeout[i], ;
+                     NIL, NIL, ::aRTL[i], .F., NIL, ;
+                     ::aImage[i], ::aTextHeight[i], ::aFit[i], ::aNoVScroll[i], ::aMultiLine[i] )
       ENDIF
       IF ! Empty( ::aFontName[i] )
          oCtrl:FontName := ::aFontName[i]
@@ -8972,7 +8969,7 @@ LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cToolTip, nHelpId, cFontName
 LOCAL nFontSize, lBold, lItalic, lUnderline, lStrikeout, aBackColor, aFontColor
 LOCAL lVisible, lEnabled, lRTL, cOnEnter, lNoVScroll, cImage, lFit, nTextHeight
 LOCAL cOnGotFocus, cOnLostFocus, cOnChange, cOnDblClick, cItems, nValue
-LOCAL lMultiSelect, lNoTabStop, lBreak, lSort, cSubClass, oCtrl
+LOCAL lMultiSelect, lNoTabStop, lBreak, lSort, cSubClass, oCtrl, lMultiColumn
 
    // Load properties
    cName        := ::aControlW[i]
@@ -9028,6 +9025,7 @@ LOCAL lMultiSelect, lNoTabStop, lBreak, lSort, cSubClass, oCtrl
    cItems       := ::ReadStringData( cName, 'ITEMS', '' )
    nValue       := Val( ::ReadStringData( cName, 'VALUE', '0' ) )
    lMultiSelect := ( ::ReadLogicalData( cName, 'MULTISELECT', 'F' ) == 'T' )
+   lMultiColumn := ( ::ReadLogicalData( cName, 'MULTICOLUMN', 'F' ) == 'T' )
    lNoTabStop   := ( ::ReadLogicalData( cName, 'NOTABSTOP', 'F' ) == 'T' )
    lBreak       := ( ::ReadLogicalData( cName, 'BREAK', 'F' ) == 'T' )
    lSort        := ( ::ReadLogicalData( cName, 'SORT', 'F' ) == 'T' )
@@ -9061,6 +9059,7 @@ LOCAL lMultiSelect, lNoTabStop, lBreak, lSort, cSubClass, oCtrl
    ::aItems[i]         := cItems
    ::aValueN[i]        := nValue
    ::aMultiSelect[i]   := lMultiSelect
+   ::aMultiLine[i]     := lMultiColumn
    ::aNoTabStop[i]     := lNoTabStop
    ::aBreak[i]         := lBreak
    ::aSort[i]          := lSort
@@ -13828,6 +13827,9 @@ LOCAL cValue
          IF ::aMultiSelect[j]
             Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'MULTISELECT '
          ENDIF
+         IF ::aMultiLine[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'MULTICOLUMN '
+         ENDIF
          IF ::aHelpID[j] > 0
             Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
          ENDIF
@@ -16345,9 +16347,9 @@ LOCAL aFormats, aResults
 
    IF ::aCtrlType[j] == 'LIST'
       cTitle      := ::aName[j] + ' properties'
-      aLabels     := { 'Name',     'Value',      'Items',     'ToolTip',     'MultiSelect',     'HelpID',     'Break',     'NoTabStop',     'Sort',     'Enabled',     'Visible',     'Obj',      'RTL',     'NoVScroll',     'Image',     'Fit',     'TextHeight',     'SubClass' }
-      aInitValues := { ::aName[j], ::aValueN[j], ::aitems[j], ::aToolTip[j], ::amultiselect[j], ::aHelpID[j], ::aBreak[j], ::aNoTabStop[j], ::asort[j], ::aEnabled[j], ::aVisible[j], ::aCObj[j], ::aRTL[j], ::aNoVScroll[j], ::aImage[j], ::aFit[j], ::aTextHeight[j], ::aSubClass[j] }
-      aFormats    := { 30,         '999',        1100,        250,           .F.,               '999',        .F.,         .F.,             .F.,        .F.,           .F.,           31,         .F.,       .F.,             250,         .F.,       '999',            250 }
+      aLabels     := { 'Name',     'Value',      'Items',     'ToolTip',     'MultiSelect',     'MultiColumn',   'HelpID',     'Break',     'NoTabStop',     'Sort',     'Enabled',     'Visible',     'Obj',      'RTL',     'NoVScroll',     'Image',     'Fit',     'TextHeight',     'SubClass' }
+      aInitValues := { ::aName[j], ::aValueN[j], ::aitems[j], ::aToolTip[j], ::aMultiSelect[j], ::aMultiLine[j], ::aHelpID[j], ::aBreak[j], ::aNoTabStop[j], ::asort[j], ::aEnabled[j], ::aVisible[j], ::aCObj[j], ::aRTL[j], ::aNoVScroll[j], ::aImage[j], ::aFit[j], ::aTextHeight[j], ::aSubClass[j] }
+      aFormats    := { 30,         '999',        1100,        250,           .F.,               .F.,             '999',        .F.,         .F.,             .F.,        .F.,           .F.,           31,         .F.,       .F.,             250,         .F.,       '999',            250 }
       aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
       IF aResults[1] == NIL
          oControl:SetFocus()
@@ -16357,20 +16359,21 @@ LOCAL aFormats, aResults
       ::aValueN[j]           := aResults[02]
       ::aitems[j]            := aResults[03]
       ::aToolTip[j]          := aResults[04]
-      ::amultiselect[j]      := aResults[05]
-      ::aHelpID[j]           := aResults[06]
-      ::aBreak[j]            := aResults[07]
-      ::aNoTabStop[j]        := aResults[08]
-      ::asort[j]             := aResults[09]
-      ::aEnabled[j]          := aResults[10]
-      ::aVisible[j]          := aResults[11]
-      ::aCObj[j]             := aResults[12]
-      ::aRTL[j]              := aResults[13]
-      ::aNoVScroll[j]        := aResults[14]
-      ::aImage[j]            := aResults[15]
-      ::aFit[j]              := aResults[16]
-      ::aTextHeight[j]       := aResults[17]
-      ::aSubClass[j]         := aResults[18]
+      ::aMultiSelect[j]      := aResults[05]
+      ::aMultiLine[j]        := aResults[06]
+      ::aHelpID[j]           := aResults[07]
+      ::aBreak[j]            := aResults[08]
+      ::aNoTabStop[j]        := aResults[09]
+      ::asort[j]             := aResults[10]
+      ::aEnabled[j]          := aResults[11]
+      ::aVisible[j]          := aResults[12]
+      ::aCObj[j]             := aResults[13]
+      ::aRTL[j]              := aResults[14]
+      ::aNoVScroll[j]        := aResults[15]
+      ::aImage[j]            := aResults[16]
+      ::aFit[j]              := aResults[17]
+      ::aTextHeight[j]       := aResults[18]
+      ::aSubClass[j]         := aResults[19]
    ENDIF
 
    IF ::aCtrlType[j] == 'BROWSE'

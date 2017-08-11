@@ -1,5 +1,5 @@
 /*
- * $Id: i_status.ch,v 1.13 2016-10-17 21:39:26 fyurisich Exp $
+ * $Id: i_status.ch,v 1.14 2017-08-11 23:17:47 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -96,9 +96,9 @@
       [ WIDTH <nSize> ] ;
       [ ACTION <uAction> ] ;
       [ ICON <cBitmap> ] ;
-      [ <styl:FLAT, RAISED> ] ;
+      [ <styl: FLAT, RAISED> ] ;
       [ TOOLTIP <cToolTip> ] ;
-      [ <align:LEFT, CENTER, RIGHT> ] ;
+      [ <align: LEFT, CENTER, RIGHT> ] ;
    => ;
       _SetStatusItem( <cMsg>, <nSize>, <{uAction}>, <cToolTip>, <cBitmap>, ;
             <(styl)>, <(align)> )
@@ -107,8 +107,8 @@
       [ <w: WIDTH > <nSize> ] ;
       [ ACTION <uAction> ] ;
       [ TOOLTIP <cToolTip> ] ;
-      [ <styl:FLAT, RAISED> ] ;
-      [ <align:LEFT, CENTER, RIGHT> ] ;
+      [ <styl: FLAT, RAISED> ] ;
+      [ <align: LEFT, CENTER, RIGHT> ] ;
    => ;
       _SetStatusItem( Dtoc( Date() ), ;
             IIF( <.w.>, <nSize>, ;

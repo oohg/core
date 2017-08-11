@@ -1,11 +1,37 @@
 /*
- * $Id: ChangeLog,v 1.1629 2017-08-07 23:46:44 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1630 2017-08-11 23:17:46 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2017-08-11 20:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   ./Changelog.004
+     ! Typo.
+   * ./oohg.hbc
+     + Library bostaurus.
+   + include/hmg.ch
+     ; HMG and Extended compatibility file.
+   * include/i_altsyntax.ch
+     * Some auxiliary variable names changed.
+     * Changed the variables in some defines.
+     + Missing translations.
+     + Support for BOTTOM, RIGHT, TOPALIGN, BOTTOMALIGN, ALIGNMENT,
+       RIGHTALIGN, VCENTER and MULTICOLUMN clauses.
+   * include/i_listbox.ch
+   * source/h_listbox.prg
+   * manual/LISTBOX.htm
+     + MULTICOLUMN property.
+   * include/i_button.ch
+   * include/i_status.ch
+     * Format.
+   * manual/Changelog.htm
+     * Updated.
+   * ide/prgs/formedit.prg
+     + MULTICOLUMN property.
+     ! Listbox is not showing items.
 
 2017-08-07 20:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_browse.prg

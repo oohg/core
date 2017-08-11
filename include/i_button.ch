@@ -1,5 +1,5 @@
 /*
- * $Id: i_button.ch,v 1.32 2016-12-17 01:43:03 fyurisich Exp $
+ * $Id: i_button.ch,v 1.33 2017-08-11 23:17:47 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -91,7 +91,7 @@
       [ <lnoldtr: NOLOADTRANSPARENT> ] ;
       [ <scale: FORCESCALE> ] ;
       [ <cancel: CANCEL> ] ;
-      [ <imgalign: LEFT,RIGHT,TOP,BOTTOM,CENTER> ] ;
+      [ <imgalign: LEFT, RIGHT, TOP, BOTTOM, CENTER> ] ;
       [ <multiline: MULTILINE> ] ;
       [ <drawby: OOHGDRAW, WINDRAW> ] ;
       [ IMAGEMARGIN <aImageMargin> ] ;
@@ -148,7 +148,7 @@
       [ <drawby: OOHGDRAW, WINDRAW> ] ;
       [ IMAGEMARGIN <aImageMargin> ] ;
       [ ON MOUSEMOVE <onmousemove> ] ;
-      [ <imgalign: LEFT,RIGHT,TOP,BOTTOM,CENTER> ] ;
+      [ <imgalign: LEFT, RIGHT, TOP, BOTTOM, CENTER> ] ;
       [ <multiline: MULTILINE> ] ;
       [ <flat: FLAT> ] ;
       [ <nohotlight: NOHOTLIGHT> ] ;

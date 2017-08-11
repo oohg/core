@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.141 2016-12-17 01:43:03 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.142 2017-08-11 23:17:47 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -213,7 +213,7 @@ AUXILIARY VARIABLES
 #xtranslate _OOHG_ActiveControlDynamicBackColor       => _OOHG_ActiveControlInfo \[ 205 \]
 #xtranslate _OOHG_ActiveControlEditCell               => _OOHG_ActiveControlInfo \[ 206 \]
 #xtranslate _OOHG_ActiveControlHandCursor             => _OOHG_ActiveControlInfo \[ 207 \]
-#xtranslate _OOHG_ActiveControlCenterAlign            => _OOHG_ActiveControlInfo \[ 208 \]
+#xtranslate _OOHG_ActiveControlCenter                 => _OOHG_ActiveControlInfo \[ 208 \]
 #xtranslate _OOHG_ActiveControlNoHScroll              => _OOHG_ActiveControlInfo \[ 209 \]
 #xtranslate _OOHG_ActiveControlGripperText            => _OOHG_ActiveControlInfo \[ 210 \]
 #xtranslate _OOHG_ActiveControlDisplayEdit            => _OOHG_ActiveControlInfo \[ 211 \]
@@ -243,7 +243,7 @@ AUXILIARY VARIABLES
 #xtranslate _OOHG_ActiveControlOnEnter                => _OOHG_ActiveControlInfo \[ 235 \]
 #xtranslate _OOHG_ActiveControlShowNone               => _OOHG_ActiveControlInfo \[ 236 \]
 #xtranslate _OOHG_ActiveControlUpDown                 => _OOHG_ActiveControlInfo \[ 237 \]
-#xtranslate _OOHG_ActiveControlRightAlign             => _OOHG_ActiveControlInfo \[ 238 \]
+#xtranslate _OOHG_ActiveControlRight                  => _OOHG_ActiveControlInfo \[ 238 \]
 #xtranslate _OOHG_ActiveControlReadOnly               => _OOHG_ActiveControlInfo \[ 239 \]
 #xtranslate _OOHG_ActiveControlMaxLength              => _OOHG_ActiveControlInfo \[ 240 \]
 #xtranslate _OOHG_ActiveControlBreak                  => _OOHG_ActiveControlInfo \[ 241 \]
@@ -298,7 +298,7 @@ AUXILIARY VARIABLES
 #xtranslate _OOHG_ActiveControlAppendable             => _OOHG_ActiveControlInfo \[ 290 \]
 #xtranslate _OOHG_ActiveControlFile                   => _OOHG_ActiveControlInfo \[ 291 \]
 #xtranslate _OOHG_ActiveControlAutoPlay               => _OOHG_ActiveControlInfo \[ 292 \]
-#xtranslate _OOHG_ActiveControlCenter                 => _OOHG_ActiveControlInfo \[ 293 \]
+#xtranslate _OOHG_ActiveControlVCenter                => _OOHG_ActiveControlInfo \[ 293 \]
 #xtranslate _OOHG_ActiveControlNoAutoSizeWindow       => _OOHG_ActiveControlInfo \[ 294 \]
 #xtranslate _OOHG_ActiveControlNoAuotSizeMovie        => _OOHG_ActiveControlInfo \[ 295 \]
 #xtranslate _OOHG_ActiveControlNoErrorDlg             => _OOHG_ActiveControlInfo \[ 296 \]
@@ -677,7 +677,8 @@ LIST BOX
       _OOHG_ActiveControlImage       := NIL    ;;
       _OOHG_ActiveControlTextHeight  := NIL    ;;
       _OOHG_ActiveControlStretch     := .F.    ;;
-      _OOHG_ActiveControlNoVScroll   := .F.
+      _OOHG_ActiveControlNoVScroll   := .F.    ;;
+      _OOHG_ActiveControlMultiLine   := .F.
 
 #xcommand SORT <sort> ;
    => ;
@@ -690,6 +691,10 @@ LIST BOX
 #xcommand TEXTHEIGHT <textheight> ;
    => ;
       _OOHG_ActiveControlTextHeight := <textheight>
+
+#xcommand MULTICOLUMN <multicolumn> ;
+   => ;
+      _OOHG_ActiveControlMultiLine := <multicolumn>
 
 #xcommand END LISTBOX ;
    => ;
@@ -726,7 +731,8 @@ LIST BOX
             _OOHG_ActiveControlImage, ;
             _OOHG_ActiveControlTextHeight, ;
             _OOHG_ActiveControlStretch, ;
-            _OOHG_ActiveControlNoVScroll )
+            _OOHG_ActiveControlNoVScroll, ;
+            _OOHG_ActiveControlMultiLine )
 
 /*---------------------------------------------------------------------------
 CHECKLIST
@@ -813,6 +819,7 @@ ANIMATEBOX COMMANDS
 
 #xcommand CENTER <center> ;
    => ;
+      _OOHG_ActiveControlAlignment := "CENTER" ;;
       _OOHG_ActiveControlCenter := <center>
 
 #xcommand FILE <file> ;
@@ -1073,10 +1080,12 @@ SLIDER
 
 #xcommand TOP <top> ;
    => ;
+      _OOHG_ActiveControlAlignment := "TOP" ;;
       _OOHG_ActiveControlTop := <top>
 
 #xcommand LEFT <left> ;
    => ;
+      _OOHG_ActiveControlAlignment := "LEFT" ;;
       _OOHG_ActiveControlLeft := <left>
 
 #xcommand END SLIDER ;
@@ -1118,7 +1127,7 @@ TEXT BOX
       _OOHG_ActiveControlLowerCase    := .F.   ;;
       _OOHG_ActiveControlNumeric      := .F.   ;;
       _OOHG_ActiveControlPassword     := .F.   ;;
-      _OOHG_ActiveControlRightAlign   := .F.   ;;
+      _OOHG_ActiveControlRight        := .F.   ;;
       _OOHG_ActiveControlReadonly     := .F.   ;;
       _OOHG_ActiveControlDateType     := .F.   ;;
       _OOHG_ActiveControlInputMask    := NIL   ;;
@@ -1132,7 +1141,7 @@ TEXT BOX
       _OOHG_ActiveControlWhen         := NIL   ;;
       _OOHG_ActiveControlAction       := NIL   ;;
       _OOHG_ActiveControlAction2      := NIL   ;;
-      _OOHG_ActiveControlCenterAlign  := NIL   ;;
+      _OOHG_ActiveControlCenter       := NIL   ;;
       _OOHG_ActiveControlDefaultYear  := NIL   ;;
       _OOHG_ActiveControlOnTextFilled := NIL   ;;
       _OOHG_ActiveControlInsertType   := NIL
@@ -1218,7 +1227,7 @@ TEXT BOX
             _OOHG_ActiveControlOnGotFocus, ;
             _OOHG_ActiveControlOnChange, ;
             _OOHG_ActiveControlOnEnter, ;
-            _OOHG_ActiveControlRightAlign, ;
+            _OOHG_ActiveControlRight, ;
             _OOHG_ActiveControlHelpId, ;
             _OOHG_ActiveControlReadonly, ;
             _OOHG_ActiveControlFontBold, ;
@@ -1246,7 +1255,7 @@ TEXT BOX
             _OOHG_ActiveControlButtonWidth, ;
             _OOHG_ActiveControlAction2, ;
             _OOHG_ActiveControlWhen, ;
-            _OOHG_ActiveControlCenterAlign, ;
+            _OOHG_ActiveControlCenter, ;
             _OOHG_ActiveControlDefaultYear, ;
             _OOHG_ActiveControlOnTextFilled, ;
             _OOHG_ActiveControlInsertType ), NIL, _OOHG_ActiveControlAssignObject )
@@ -1356,7 +1365,7 @@ BUTTON
       _OOHG_ActiveControlHBitmap           := NIL ;;
       _OOHG_ActiveControlScale             := .F. ;;
       _OOHG_ActiveControlCancel            := .F. ;;
-      _OOHG_ActiveControlImagesAlign       := NIL ;;
+      _OOHG_ActiveControlAlignment         := NIL ;;
       _OOHG_ActiveControlMultiLine         := .F. ;;
       _OOHG_ActiveControlDrawBy            := NIL ;;
       _OOHG_ActiveControlImageMargin       := NIL ;;
@@ -1437,9 +1446,47 @@ BUTTON
    => ;
       _OOHG_ActiveControlCancel := <cancel>
 
-#xcommand ALIGNMENT <alignment:LEFT,RIGHT,TOP,BOTTOM,CENTER> ;
+#xcommand BOTTOM <bottom> ;
    => ;
-      _OOHG_ActiveControlImagesAlign := <"alignment">
+      _OOHG_ActiveControlAlignment := "BOTTOM"
+
+#xcommand RIGHT <right> ;
+   => ;
+      _OOHG_ActiveControlAlignment := "RIGHT" ;;
+      _OOHG_ActiveControlRight := <right>
+
+#xcommand TOPALIGN <top> ;
+   => ;
+      _OOHG_ActiveControlAlignment := "TOP" ;;
+      _OOHG_ActiveControlTop := <top>
+
+#xcommand BOTTOMALIGN <bottom> ;
+   => ;
+      _OOHG_ActiveControlAlignment := "BOTTOM"
+
+#xcommand ALIGNMENT LEFT ;
+   => ;
+      _OOHG_ActiveControlAlignment := "LEFT" ;;
+      _OOHG_ActiveControlLeft := .T.
+
+#xcommand ALIGNMENT RIGHT ;
+   => ;
+      _OOHG_ActiveControlAlignment := "RIGHT" ;;
+      _OOHG_ActiveControlRight := .T.
+
+#xcommand ALIGNMENT TOP ;
+   => ;
+      _OOHG_ActiveControlAlignment := "TOP" ;;
+      _OOHG_ActiveControlTop := .T.
+
+#xcommand ALIGNMENT BOTTOM ;
+   => ;
+      _OOHG_ActiveControlAlignment := "BOTTOM"
+
+#xcommand ALIGNMENT CENTER ;
+   => ;
+      _OOHG_ActiveControlAlignment := "CENTER" ;;
+      _OOHG_ActiveControlCenter := .T.
 
 #xcommand MULTILINE <multiline> ;
    => ;
@@ -1510,7 +1557,7 @@ BUTTON
             _OOHG_ActiveControlNoLoadTransparent, ;
             _OOHG_ActiveControlScale, ;
             _OOHG_ActiveControlCancel, ;
-            _OOHG_ActiveControlImagesAlign, ;
+            _OOHG_ActiveControlAlignment, ;
             _OOHG_ActiveControlMultiLine, ;
             _OOHG_ActiveControlDrawBy, ;
             _OOHG_ActiveControlImageMargin, ;
@@ -1658,6 +1705,7 @@ CHECK BOX/BUTTON
 
 #xcommand LEFTALIGN <left> ;
    => ;
+      _OOHG_ActiveControlAlignment := "LEFT" ;;
       _OOHG_ActiveControlLeft := <left>
 
 #xcommand DEFINE CHECKBUTTON <name> ;
@@ -1946,13 +1994,13 @@ DATEPICKER
 #xcommand DEFINE DATEPICKER <name> ;
    => ;
       _OOHG_ClearActiveControlInfo( <(name)> ) ;;
-      _OOHG_ActiveControlShowNone   := .F.     ;;
-      _OOHG_ActiveControlUpDown     := .F.     ;;
-      _OOHG_ActiveControlRightAlign := .F.     ;;
-      _OOHG_ActiveControlField      := NIL     ;;
-      _OOHG_ActiveControlNoBorder   := .F.     ;;
-      _OOHG_ActiveControlRangeLow   := NIL      ;;
-      _OOHG_ActiveControlRangeHigh  := NIL
+      _OOHG_ActiveControlShowNone  := .F.      ;;
+      _OOHG_ActiveControlUpDown    := .F.      ;;
+      _OOHG_ActiveControlRight     := .F.      ;;
+      _OOHG_ActiveControlField     := NIL      ;;
+      _OOHG_ActiveControlNoBorder  := .F.      ;;
+      _OOHG_ActiveControlRangeLow  := NIL      ;;
+      _OOHG_ActiveControlRangeHigh := NIL
 
 #xcommand SHOWNONE <shownone> ;
    => ;
@@ -1962,9 +2010,10 @@ DATEPICKER
    => ;
       _OOHG_ActiveControlUpDown := <updown>
 
-#xcommand RIGHTALIGN <rightalign> ;
+#xcommand RIGHTALIGN <right> ;
    => ;
-      _OOHG_ActiveControlRightAlign := <rightalign>
+      _OOHG_ActiveControlAlignment := "RIGHT" ;;
+      _OOHG_ActiveControlRight := <right>
 
 #xcommand END DATEPICKER ;
    => ;
@@ -1984,7 +2033,7 @@ DATEPICKER
             _OOHG_ActiveControlOnGotFocus, ;
             _OOHG_ActiveControlShowNone, ;
             _OOHG_ActiveControlUpDown, ;
-            _OOHG_ActiveControlRightAlign, ;
+            _OOHG_ActiveControlRight, ;
             _OOHG_ActiveControlHelpId, ;
             _OOHG_ActiveControlInvisible, ;
             _OOHG_ActiveControlNoTabStop, ;
@@ -2003,11 +2052,11 @@ DATEPICKER
 #xcommand DEFINE TIMEPICKER <name> ;
    => ;
       _OOHG_ClearActiveControlInfo( <(name)> ) ;;
-      _OOHG_ActiveControlShowNone   := .F.     ;;
-      _OOHG_ActiveControlUpDown     := .F.     ;;
-      _OOHG_ActiveControlRightAlign := .F.     ;;
-      _OOHG_ActiveControlField      := NIL     ;;
-      _OOHG_ActiveControlNoBorder   := .F.
+      _OOHG_ActiveControlShowNone := .F.       ;;
+      _OOHG_ActiveControlUpDown   := .F.       ;;
+      _OOHG_ActiveControlRight    := .F.       ;;
+      _OOHG_ActiveControlField    := NIL       ;;
+      _OOHG_ActiveControlNoBorder := .F.
 
 #xcommand END TIMEPICKER ;
    => ;
@@ -2027,7 +2076,7 @@ DATEPICKER
             _OOHG_ActiveControlOnGotFocus, ;
             _OOHG_ActiveControlShowNone, ;
             _OOHG_ActiveControlUpDown, ;
-            _OOHG_ActiveControlRightAlign, ;
+            _OOHG_ActiveControlRight, ;
             _OOHG_ActiveControlHelpId, ;
             _OOHG_ActiveControlInvisible, ;
             _OOHG_ActiveControlNoTabStop, ;
@@ -2221,21 +2270,30 @@ LABEL
       _OOHG_ActiveControlVScroll     := .F.    ;;
       _OOHG_ActiveControlTransparent := .F.    ;;
       _OOHG_ActiveControlAction      := NIL    ;;
-      _OOHG_ActiveControlRightAlign  := .F.    ;;
+      _OOHG_ActiveControlRight       := .F.    ;;
       _OOHG_ActiveControlAutoSize    := .F.    ;;
-      _OOHG_ActiveControlCenterAlign := .F.    ;;
+      _OOHG_ActiveControlCenter      := .F.    ;;
       _OOHG_ActiveControlNoWordWrap  := .F.    ;;
       _OOHG_ActiveControlNoPrefix    := .F.    ;;
       _OOHG_ActiveControlInputMask   := NIL    ;;
-      _OOHG_ActiveControlAlignment   := .F.
+      _OOHG_ActiveControlVCenter     := .F.
 
-#xcommand VCENTERALIGN <vcenteralign> ;
+#xcommand VCENTERALIGN <vcenter> ;
    => ;
-      _OOHG_ActiveControlAlignment := <vcenteralign>
+      _OOHG_ActiveControlVCenter := <vcenter>
 
-#xcommand CENTERALIGN <centeralign> ;
+#xcommand CENTERALIGN <center> ;
    => ;
-      _OOHG_ActiveControlCenterAlign := <centeralign>
+      _OOHG_ActiveControlAlignment := "CENTER" ;;
+      _OOHG_ActiveControlCenter := <center>
+
+#xcommand VCENTER <vcenter> ;
+   => ;
+      _OOHG_ActiveControlVCenter := <vcenter>
+
+#xcommand ALIGNMENT VCENTER ;
+   => ;
+      _OOHG_ActiveControlVCenter := .T.
 
 #xcommand FORECOLOR <color> ;
    => ;
@@ -2293,14 +2351,14 @@ LABEL
             _OOHG_ActiveControlFontUnderLine, ;
             _OOHG_ActiveControlFontStrikeOut, ;
             _OOHG_ActiveControlAutoSize, ;
-            _OOHG_ActiveControlRightAlign, ;
-            _OOHG_ActiveControlCenterAlign, ;
+            _OOHG_ActiveControlRight, ;
+            _OOHG_ActiveControlCenter, ;
             _OOHG_ActiveControlRtl, ;
             _OOHG_ActiveControlNoWordWrap, ;
             _OOHG_ActiveControlNoPrefix, ;
             _OOHG_ActiveControlInputMask, ;
             _OOHG_ActiveControlDisabled, ;
-            _OOHG_ActiveControlAlignment )
+            _OOHG_ActiveControlVCenter )
 
 #xcommand DEFINE IPADDRESS <name> ;
    => ;
@@ -3492,6 +3550,10 @@ SCROLLBAR
       _OOHG_ActiveControlOnTop := <{top}>
 
 #xcommand ON BOTTOM <bottom> ;
+   => ;
+      _OOHG_ActiveControlOnBottom := <{bottom}>
+
+#xcommand ON RIGHT <bottom> ;
    => ;
       _OOHG_ActiveControlOnBottom := <{bottom}>
 

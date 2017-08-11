@@ -1,5 +1,5 @@
 #
-# $Id: oohg.hbc,v 1.5 2017-07-21 00:35:20 fyurisich Exp $
+# $Id: oohg.hbc,v 1.6 2017-08-11 23:17:46 fyurisich Exp $
 #
 
 # oohg paths
@@ -21,7 +21,7 @@
 {win}libs=oohg
 
 # printing libs
-libs=hbprinter miniprint
+libs=hbprinter miniprint bostaurus
 
 # harbour contribs
 {win}libs=hbct hbmisc hbtip hbziparc hbmzip minizip hbwin xhb hbzebra

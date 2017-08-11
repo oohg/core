@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog.004,v 1.7 2015-12-12 19:57:03 fyurisich Exp $
+ * $Id: ChangeLog.004,v 1.8 2017-08-11 23:17:46 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -301,7 +301,7 @@
    * include/i_window.ch
    * include/i_xbrowse.ch
    * include/i_zip.ch
-   * include/i_minigui.ch
+   * include/minigui.ch
    * include/miniprint.ch
    * include/oohg.ch
    * include/oohg.h
