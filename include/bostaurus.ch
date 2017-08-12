@@ -1,5 +1,5 @@
 /*
- * $Id: bostaurus.ch,v 1.3 2016-10-17 21:39:26 fyurisich Exp $
+ * $Id: bostaurus.ch,v 1.4 2017-08-12 19:00:52 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -154,7 +154,7 @@
 #define BT_GRADIENTFILL_HORIZONTAL                 0
 #define BT_GRADIENTFILL_VERTICAL                   1
 
-// BT_DRAW_HDC_TEXTOUT()
+// BT_DRAW_HDC_TEXTOUT(), BT_DRAW_HDC_DRAWTEXT()
 // Type
 #define BT_TEXT_OPAQUE                             0
 #define BT_TEXT_TRANSPARENT                        1
@@ -275,3 +275,15 @@
 #define BT_DIRECTORYINFO_INTERNALDATA_FOLDER       "D-"
 #define BT_DIRECTORYINFO_INTERNALDATA_HASSUBFOLDER "D+"
 #define BT_DIRECTORYINFO_INTERNALDATA_NOFOLDER     "F"
+
+// BT_DRAW_HDC_POLY()
+// nPOLY
+#define BT_DRAW_POLYLINE                           0
+#define BT_DRAW_POLYGON                            1
+#define BT_DRAW_POLYBEZIER                         2
+
+// BT_DRAW_HDC_ARCX()
+// nArcType
+#define BT_DRAW_ARC                                0
+#define BT_DRAW_CHORD                              1
+#define BT_DRAW_PIE                                2

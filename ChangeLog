@@ -1,11 +1,39 @@
 /*
- * $Id: ChangeLog,v 1.1630 2017-08-11 23:17:46 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1631 2017-08-12 19:00:52 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2017-08-12 16:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/bostaurus.ch
+     + New constants.
+   * source/bostaurus.prg
+     * Synchronized with HMG Extended version.
+     + PRG function BT_DrawPolygon.
+     + PRG function BT_DrawPolyBezier.
+     + PRG Function BT_DrawArc.
+     + PRG function BT_DrawChord.
+     + PRG function BT_DrawPie.
+     * PRG function BT_DrawPolyLine now calls C function BT_DRAW_HDC_POLY.
+     * PRG function BT_DrawEllipse now calls PRG function BT_DrawArc.
+     + New constants at C level.
+     - C function BT_DRAW_HDC_POLYLINE.
+     + C function BT_DRAW_HDC_POLY.
+     + C function BT_DRAW_HDC_ARC.
+     + C function BT_DRAW_HDC_ARCX.
+     ! Some memory leaks at C level.
+     ! Casting of hDC parameter at C function BT_DRAW_HDC_GRADIENTFILL.
+     ! Casting of Orientation parameter at C functions BT_DRAW_HDC_TEXTOUT
+       and BT_DRAW_HDC_DRAWTEXT.
+     ! Background painting at C functions BT_DRAW_HDC_TEXTOUT,
+       BT_BITMAPLOADEMF and BT_BMP_TRANSFORM.
+     ! Some missing casting.
+     * Some format.
+   * manual/Changelog.htm
+     * Updated.
 
 2017-08-11 20:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    ./Changelog.004
