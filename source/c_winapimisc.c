@@ -1,5 +1,5 @@
 /*
- * $Id: c_winapimisc.c,v 1.28 2016-11-02 13:26:09 fyurisich Exp $
+ * $Id: c_winapimisc.c,v 1.29 2017-08-18 23:41:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -104,7 +104,8 @@
 
 BOOL SysRefresh( void );
 
-/*WaitRun function For minigui With Pipe redirection
+/*
+WaitRun function For minigui With Pipe redirection
 Author Luiz Rafael Culik Guimaraes: culikr@uol.com.br
 Parameters WaitRunPipe(cCommand,nShowWindow,cFile)
 */
@@ -146,7 +147,7 @@ HB_FUNC( WAITRUNPIPE )
 
    memset( &StartupInfo, 0, sizeof( StartupInfo ) );
    StartupInfo.dwFlags = STARTF_USESHOWWINDOW |STARTF_USESTDHANDLES;
-   StartupInfo.wShowWindow = (SHORT) hb_parni( 2 );
+   StartupInfo.wShowWindow = (WORD) hb_parni( 2 );
    StartupInfo.hStdOutput = WritePipeHandle;
    StartupInfo.hStdError = WritePipeHandle;
 
@@ -268,23 +269,62 @@ HB_FUNC( C_GETSPECIALFOLDER ) // Contributed By Ryszard Ryüko
    hb_xfree( lpBuffer );
 }
 
+typedef BOOL ( WINAPI * GlobalMemoryStatusEx_ptr )( MEMORYSTATUSEX * );
+
 HB_FUNC( MEMORYSTATUS )
 {
-   MEMORYSTATUS mst;
-   long n = hb_parnl( 1 );
+   HMODULE hDll = GetModuleHandle( TEXT( "kernel32.dll" ) );
 
-   mst.dwLength = sizeof( MEMORYSTATUS );
-   GlobalMemoryStatus( &mst );
-
-   switch( n )
+   if( NULL == hDll )
    {
-      case 1:  hb_retnl( mst.dwTotalPhys     / ( 1024*1024 ) ); break;
-      case 2:  hb_retnl( mst.dwAvailPhys     / ( 1024*1024 ) ); break;
-      case 3:  hb_retnl( mst.dwTotalPageFile / ( 1024*1024 ) ); break;
-      case 4:  hb_retnl( mst.dwAvailPageFile / ( 1024*1024 ) ); break;
-      case 5:  hb_retnl( mst.dwTotalVirtual  / ( 1024*1024 ) ); break;
-      case 6:  hb_retnl( mst.dwAvailVirtual  / ( 1024*1024 ) ); break;
-      default: hb_retnl( 0 );
+      hb_retnl( 0 );
+   }
+   else
+   {
+      GlobalMemoryStatusEx_ptr fn_GlobalMemoryStatusEx = (GlobalMemoryStatusEx_ptr) GetProcAddress( hDll, "GlobalMemoryStatusEx" );
+
+      if( NULL != fn_GlobalMemoryStatusEx )
+      {
+         MEMORYSTATUSEX mstex;
+
+         mstex.dwLength = sizeof( mstex );
+
+         if( fn_GlobalMemoryStatusEx( &mstex ) )
+         {
+            switch( hb_parni( 1 ) )
+            {
+               case 1:  hb_retnll( mstex.ullTotalPhys / ( 1024*1024 ) ); break;
+               case 2:  hb_retnll( mstex.ullAvailPhys / ( 1024*1024 ) ); break;
+               case 3:  hb_retnll( mstex.ullTotalPageFile / ( 1024*1024 ) ); break;
+               case 4:  hb_retnll( mstex.ullAvailPageFile / ( 1024*1024 ) ); break;
+               case 5:  hb_retnll( mstex.ullTotalVirtual / ( 1024*1024 ) ); break;
+               case 6:  hb_retnll( mstex.ullAvailVirtual / ( 1024*1024 ) ); break;
+               default: hb_retnl( 0 );
+            }
+         }
+         else
+         {
+            hb_retnl( 0 );
+         }
+      }
+      else
+      {
+         MEMORYSTATUS mst;
+
+         mst.dwLength = sizeof( MEMORYSTATUS );
+         GlobalMemoryStatus( &mst );
+
+         switch( hb_parni( 1 ) )
+         {
+            case 1:  hb_retnl( mst.dwTotalPhys / ( 1024*1024 ) ); break;
+            case 2:  hb_retnl( mst.dwAvailPhys / ( 1024*1024 ) ); break;
+            case 3:  hb_retnl( mst.dwTotalPageFile / ( 1024*1024 ) ); break;
+            case 4:  hb_retnl( mst.dwAvailPageFile / ( 1024*1024 ) ); break;
+            case 5:  hb_retnl( mst.dwTotalVirtual / ( 1024*1024 ) ); break;
+            case 6:  hb_retnl( mst.dwAvailVirtual / ( 1024*1024 ) ); break;
+            default: hb_retnl( 0 );
+         }
+      }
    }
 }
 
@@ -454,12 +494,12 @@ HB_FUNC( _OOHG_GETLASTERROR )
 
 HB_FUNC ( CREATEFOLDER )
 {
-   CreateDirectory( (LPCTSTR) hb_parc( 1 ) , NULL );
+   hb_retl( CreateDirectory( (LPCTSTR) hb_parc( 1 ) , NULL ) );
 }
 
 HB_FUNC ( SETCURRENTFOLDER )
 {
-   SetCurrentDirectory( (LPCTSTR) hb_parc( 1 ) );
+   hb_retl( SetCurrentDirectory( (LPCTSTR) hb_parc( 1 ) ) );
 }
 
 HB_FUNC( REMOVEFOLDER )
@@ -526,6 +566,11 @@ HB_FUNC( WINVERSION )
    CHAR *szBuild = NULL;
    CHAR buffer[5];
    CHAR *szVersionEx = NULL;
+   HKEY hKey;
+   LONG lRetVal;
+   DWORD dwBufLen;
+   BYTE *lpData;
+   DWORD dwUBR;
 
    ZeroMemory( &osvi, sizeof( OSVERSIONINFOEX ) );
    osvi.dwOSVersionInfoSize = sizeof( OSVERSIONINFOEX );
@@ -545,189 +590,230 @@ HB_FUNC( WINVERSION )
       switch( osvi.dwPlatformId )
       {
          case VER_PLATFORM_WIN32_NT:
-            if( osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 3 && osvi.wProductType != VER_NT_WORKSTATION )
-            {
-               szVersion = "Windows Server 2012 R2 ";
-            }
-            if( osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 3 && osvi.wProductType == VER_NT_WORKSTATION )
-            {
-               szVersion = "Windows 8.1 ";
-            }
 
-            if( osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 2 && osvi.wProductType != VER_NT_WORKSTATION )
-            {
-               szVersion = "Windows Server 2012 ";
-            }
-            if( osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 2 && osvi.wProductType == VER_NT_WORKSTATION )
-            {
-               szVersion = "Windows 8 ";
-            }
-            if( osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 1 && osvi.wProductType != VER_NT_WORKSTATION )
-            {
-               szVersion = "Windows Server 2008 R2 ";
-            }
-            if( osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 1 && osvi.wProductType == VER_NT_WORKSTATION )
-            {
-               szVersion = "Windows 7 ";
-            }
-            if( osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 0 && osvi.wProductType != VER_NT_WORKSTATION )
-            {
-               szVersion = "Windows Server 2008 ";
-            }
-            if( osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 0 && osvi.wProductType == VER_NT_WORKSTATION )
-            {
-               szVersion = "Windows Vista ";
-            }
-            if( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 2 )
-            {
-               szVersion = "Windows Server 2003 family ";
-            }
-            if( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 1 )
-            {
-               szVersion = "Windows XP ";
-            }
-            if( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 0 )
-            {
-               szVersion = "Windows 2000 ";
-            }
-            if( osvi.dwMajorVersion <= 4 )
-            {
-               szVersion = "Windows NT ";
-            }
+            if( osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0 )
+               if( bOsVersionInfoEx && osvi.wProductType != VER_NT_WORKSTATION )
+                  szVersion = _TEXT( "Windows Server 2016 " );
+               else
+                  szVersion = _TEXT( "Windows 10 " );
+            else if( osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 3 )
+               if( bOsVersionInfoEx && osvi.wProductType != VER_NT_WORKSTATION )
+                  szVersion = _TEXT( "Windows Server 2012 R2 " );
+               else
+                  szVersion = _TEXT( "Windows 8.1 " );
+            else if( osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 2 )
+               if( bOsVersionInfoEx && osvi.wProductType != VER_NT_WORKSTATION )
+                  szVersion = _TEXT( "Windows Server 2012 " );
+               else
+                  szVersion = _TEXT( "Windows 8 " );
+            else if( osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 1 )
+               if( bOsVersionInfoEx && osvi.wProductType != VER_NT_WORKSTATION )
+                  szVersion = _TEXT( "Windows Server 2008 R2 " );
+               else
+                  szVersion = _TEXT( "Windows 7 " );
+            else if( osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 0 )
+               if( bOsVersionInfoEx && osvi.wProductType != VER_NT_WORKSTATION )
+                  szVersion = _TEXT( "Windows Server 2008 " );
+               else
+                  szVersion = _TEXT( "Windows Vista " );
+            else if( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 2 )
+               szVersion = _TEXT( "Windows Server 2003 " );
+            else if (osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 1)
+               szVersion = _TEXT( "Windows XP " );
+            else if( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 0 )
+               szVersion = _TEXT( "Windows 2000 " );
+            else if( osvi.dwMajorVersion <= 4 )
+               szVersion = _TEXT( "Windows NT " );
 
             if( bOsVersionInfoEx )
             {
                if( osvi.wProductType == VER_NT_WORKSTATION )
                {
-                  if( osvi.dwMajorVersion == 4 )
+                  if( osvi.dwMajorVersion == 10 )
                   {
-                     szVersionEx = "Workstation 4.0 ";
+                     lRetVal = RegOpenKeyEx( HKEY_LOCAL_MACHINE,
+                                             _TEXT( "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion" ),
+                                             0,
+                                             KEY_QUERY_VALUE,
+                                             &hKey);
+                     if( lRetVal == ERROR_SUCCESS )
+                     {
+                        dwBufLen = 0;
+                        lRetVal = RegQueryValueEx( hKey,
+                                                   _TEXT( "ProductName" ),
+                                                   NULL,
+                                                   NULL,
+                                                   NULL,
+                                                   &dwBufLen );
+                        if( lRetVal == ERROR_SUCCESS )
+                        {
+                           lpData = (BYTE *) hb_xgrab( (int) dwBufLen + 1 );
+                           lRetVal = RegQueryValueEx( hKey,
+                                                      _TEXT( "ProductName" ),
+                                                      NULL,
+                                                      NULL,
+                                                      lpData,
+                                                      &dwBufLen );
+                           if( lRetVal == ERROR_SUCCESS )
+                              szVersion = (CHAR *) lpData;
+                           else
+                              hb_xfree( lpData );
+                        }
+                     }
+                     RegCloseKey( hKey );
                   }
+                  else if( osvi.dwMajorVersion == 4 )
+                     szVersionEx = _TEXT( "Workstation 4.0 " ) ;
                   else if( osvi.wSuiteMask & VER_SUITE_PERSONAL )
-                  {
-                     szVersionEx = "Home Edition ";
-                  }
+                     szVersionEx = _TEXT( "Home Edition ") ;
                   else
-                  {
-                     szVersionEx = "Professional ";
-                  }
+                     szVersionEx = _TEXT( "Professional ");
                }
-               else if( osvi.wProductType == VER_NT_SERVER )
+               else if( osvi.wProductType == VER_NT_SERVER || osvi.wProductType == VER_NT_DOMAIN_CONTROLLER )
                {
                   if( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 2 )
                   {
                      if( osvi.wSuiteMask & VER_SUITE_DATACENTER )
-                     {
-                        szVersionEx = "Datacenter Edition ";
-                     }
+                        szVersionEx = _TEXT( "Datacenter Edition " ) ;
                      else if( osvi.wSuiteMask & VER_SUITE_ENTERPRISE )
-                     {
-                        szVersionEx = "Enterprise Edition ";
-                     }
+                        szVersionEx = _TEXT( "Enterprise Edition " ) ;
                      else if( osvi.wSuiteMask & VER_SUITE_BLADE )
-                     {
-                        szVersionEx = "Web Edition ";
-                     }
+                        szVersionEx = _TEXT( "Web Edition " ) ;
+                     else if( osvi.wSuiteMask & VER_SUITE_WH_SERVER )
+                        szVersionEx = _TEXT( "Home Edition " ) ;
                      else
-                     {
-                        szVersionEx = "Standard Edition ";
-                     }
+                        szVersionEx = _TEXT( "Standard Edition " ) ;
                   }
                   else if( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 0 )
                   {
                      if( osvi.wSuiteMask & VER_SUITE_DATACENTER )
-                     {
-                        szVersionEx = "Datacenter Server ";
-                     }
+                        szVersionEx = _TEXT( "Datacenter Server " ) ;
                      else if( osvi.wSuiteMask & VER_SUITE_ENTERPRISE )
-                     {
-                        szVersionEx = "Advanced Server ";
-                     }
+                        szVersionEx = _TEXT( "Advanced Server " ) ;
                      else
-                     {
-                        szVersionEx = "Server ";
-                     }
+                        szVersionEx = _TEXT( "Server " );
                   }
                   else
                   {
                      if( osvi.wSuiteMask & VER_SUITE_ENTERPRISE )
-                     {
-                        szVersionEx = "Server 4.0, Enterprise Edition ";
-                     }
+                        szVersionEx = _TEXT( "Server 4.0, Enterprise Edition " ) ;
                      else
-                     {
-                        szVersionEx = "Server 4.0 ";
-                     }
+                        szVersionEx = _TEXT( "Server 4.0 " ) ;
                   }
                }
             }
             else
             {
-               HKEY hKey;
-               char szProductType[ 80 ];
-               DWORD dwBufLen = 80;
-               LONG lRetVal;
-
                lRetVal = RegOpenKeyEx( HKEY_LOCAL_MACHINE,
-                                       "SYSTEM\\CurrentControlSet\\Control\\ProductOptions",
+                                       _TEXT( "SYSTEM\\CurrentControlSet\\Control\\ProductOptions" ),
                                        0,
                                        KEY_QUERY_VALUE,
-                                       &hKey );
-
-               if( lRetVal != ERROR_SUCCESS )
+                                       &hKey);
+               if( lRetVal == ERROR_SUCCESS )
                {
-                  szVersion = "Unknown Operating System";
-               }
-               else
-               {
+                  dwBufLen = 0;
                   lRetVal = RegQueryValueEx( hKey,
-                                             "ProductType",
+                                             _TEXT( "ProductType" ),
                                              NULL,
                                              NULL,
-                                             (LPBYTE) szProductType,
+                                             NULL,
                                              &dwBufLen );
-
-                  if( ( lRetVal != ERROR_SUCCESS ) || ( dwBufLen > 80 ) )
+                  if( lRetVal == ERROR_SUCCESS )
                   {
-                     szVersion = "Unknown Operating System";
+                     lpData = (BYTE *) hb_xgrab( (int) dwBufLen + 1 );
+                     lRetVal = RegQueryValueEx( hKey,
+                                                _TEXT( "ProductType" ),
+                                                NULL,
+                                                NULL,
+                                                lpData,
+                                                &dwBufLen );
+                     if( lRetVal != ERROR_SUCCESS )
+                     {
+                        hb_xfree( lpData );
+                        szVersion = _TEXT( "Unknown Operating System" );
+                     }
                   }
+                  else
+                     szVersion = _TEXT( "Unknown Operating System" );
                }
                RegCloseKey( hKey );
 
-               if( szVersion != (CHAR *) "Unknown Operating System" )
+               if( lstrcmp( szVersion, _TEXT( "Unknown Operating System" ) ) != 0 )
                {
-                  if( lstrcmpi( "WINNT", szProductType ) == 0 )
-                  {
-                     szVersionEx = "Workstation ";
-                  }
-                  if( lstrcmpi( "LANMANNT", szProductType ) == 0 )
-                  {
-                     szVersionEx = "Server ";
-                  }
-                  if( lstrcmpi( "SERVERNT", szProductType) == 0 )
-                  {
-                     szVersionEx = "Advanced Server ";
-                  }
+                  if( lstrcmpi( _TEXT( "WINNT" ), (CHAR *) lpData ) == 0 )
+                     szVersionEx = _TEXT( "Workstation ") ;
+                  if( lstrcmpi( _TEXT( "LANMANNT" ), (CHAR *) lpData  ) == 0 )
+                     szVersionEx = _TEXT( "Server ") ;
+                  if( lstrcmpi( _TEXT( "SERVERNT" ), (CHAR *) lpData  ) == 0 )
+                     szVersionEx = _TEXT( "Advanced Server ") ;
 
-                  szVersion = strcat( szVersion, ultoa( osvi.dwMajorVersion, buffer, 10 ) );
-                  szVersion = strcat( szVersion, "." );
-                  szVersion = strcat( szVersion, ultoa( osvi.dwMinorVersion, buffer, 10 ) );
+                  szVersion = lstrcat( szVersion, ultoa( osvi.dwMajorVersion, buffer, 10 ) );
+                  szVersion = lstrcat( szVersion, _TEXT( "." ) );
+                  szVersion = lstrcat( szVersion, ultoa( osvi.dwMinorVersion, buffer, 10 ) );
                }
             }
 
-            if( osvi.dwMajorVersion == 4 && lstrcmpi( osvi.szCSDVersion, "Service Pack 6" ) == 0 )
+            if( osvi.dwMajorVersion == 10 )
             {
                HKEY hKey;
-               LONG lRetVal;
-
-               lRetVal = RegOpenKeyEx( HKEY_LOCAL_MACHINE,
-                                       "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Hotfix\\Q246009",
-                                       0,
-                                       KEY_QUERY_VALUE,
-                                       &hKey );
+               LONG lRetVal = RegOpenKeyEx( HKEY_LOCAL_MACHINE,
+                                            _TEXT( "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion" ),
+                                            0,
+                                            KEY_QUERY_VALUE,
+                                            &hKey);
                if( lRetVal == ERROR_SUCCESS )
                {
-                  szServicePack = "Service Pack 6a";
+                  DWORD dwBufLen = 0;
+                  lRetVal = RegQueryValueEx( hKey,
+                                             _TEXT( "ReleaseId" ),
+                                             NULL,
+                                             NULL,
+                                             NULL,
+                                             &dwBufLen );
+                  if( lRetVal == ERROR_SUCCESS )
+                  {
+                     BYTE * lpData = (BYTE *) hb_xgrab( (int) dwBufLen + 1 );
+                     lRetVal = RegQueryValueEx( hKey,
+                                                _TEXT( "ReleaseId" ),
+                                                NULL,
+                                                NULL,
+                                                (BYTE *) lpData,
+                                                &dwBufLen );
+                     if( lRetVal == ERROR_SUCCESS )
+                     {
+                        szServicePack = (CHAR *) lpData;
+                        // Add UBR
+                        dwBufLen = sizeof( dwUBR );
+                        lRetVal = RegQueryValueEx( hKey,
+                                                   _TEXT( "UBR" ),
+                                                   NULL,
+                                                   NULL,
+                                                   (BYTE *) &dwUBR,
+                                                   &dwBufLen );
+                        if( lRetVal == ERROR_SUCCESS )
+                        {
+                           szServicePack = lstrcat( szServicePack, _TEXT( "." ) );
+                           szServicePack = lstrcat( szServicePack, ultoa( dwUBR, buffer, 10 ) );
+                        }
+                     }
+                     else
+                        hb_xfree( (BYTE *) lpData );
+                  }
+               }
+               RegCloseKey( hKey );
+               szBuild = ultoa( osvi.dwBuildNumber & 0xFFFF, buffer, 10 );
+            }
+            else if( osvi.dwMajorVersion == 4 && lstrcmpi( osvi.szCSDVersion, _TEXT( "Service Pack 6" ) ) == 0 )
+            {
+               HKEY hKey;
+               LONG lRetVal = RegOpenKeyEx( HKEY_LOCAL_MACHINE,
+                                            _TEXT( "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Hotfix\\Q246009" ),
+                                            0,
+                                            KEY_QUERY_VALUE,
+                                            &hKey );
+               if( lRetVal == ERROR_SUCCESS )
+               {
+                  szServicePack = _TEXT( "Service Pack 6a" );
                   szBuild = ultoa( osvi.dwBuildNumber & 0xFFFF, buffer, 10 );
                }
                else
@@ -747,44 +833,43 @@ HB_FUNC( WINVERSION )
          case VER_PLATFORM_WIN32_WINDOWS:
             if( ( osvi.dwMajorVersion == 4 ) && ( osvi.dwMinorVersion == 0 ) )
             {
-               if( osvi.szCSDVersion[ 1 ] == 'B' )
+               if( osvi.szCSDVersion[1] == 'B' )
                {
-                  szVersion = "Windows 95 B";
-                  szServicePack = "OSR2";
+                  szVersion = _TEXT( "Windows 95 B" );
+                  szServicePack = _TEXT( "OSR2" );
                }
                else
                {
-                  if( osvi.szCSDVersion[ 1 ] == 'C' )
+                  if( osvi.szCSDVersion[1] == _TEXT( 'C' ) )
                   {
-                     szVersion = "Windows 95 C";
-                     szServicePack = "OSR2";
+                     szVersion = _TEXT( "Windows 95 C" );
+                     szServicePack = _TEXT( "OSR2" );
                   }
                   else
                   {
-                     szVersion = "Windows 95";
-                     szServicePack = "OSR1";
+                     szVersion = _TEXT( "Windows 95" );
+                     szServicePack = _TEXT( "OSR1" );
                   }
                }
                szBuild = ultoa( osvi.dwBuildNumber & 0x0000FFFF, buffer, 10 );
             }
             if( ( osvi.dwMajorVersion == 4 ) && ( osvi.dwMinorVersion == 10 ) )
             {
-               if( osvi.szCSDVersion[ 1 ] == 'A' )
+               if( osvi.szCSDVersion[1] == 'A' )
                {
-                  szVersion = "Windows 98 A";
-                  szServicePack = "Second Edition";
+                  szVersion = _TEXT( "Windows 98 A" );
+                  szServicePack = _TEXT( "Second Edition" );
                }
                else
                {
-                  szVersion = "Windows 98";
-                  szServicePack = "First Edition";
+                  szVersion = _TEXT( "Windows 98" );
+                  szServicePack = _TEXT( "First Edition" );
                }
-
                szBuild = ultoa( osvi.dwBuildNumber & 0x0000FFFF, buffer, 10 );
             }
             if( ( osvi.dwMajorVersion == 4 ) && ( osvi.dwMinorVersion == 90 ) )
             {
-               szVersion = "Windows ME";
+               szVersion = _TEXT( "Windows ME" );
                szBuild = ultoa( osvi.dwBuildNumber & 0x0000FFFF, buffer, 10 );
             }
             break;
@@ -803,7 +888,6 @@ HB_FUNC( SETWINDOWPOS )
    hb_retl( SetWindowPos( HWNDparam( 1 ), HWNDparam( 2 ), hb_parni( 4 ), hb_parni( 3 ), hb_parni( 5 ), hb_parni( 6 ), hb_parni( 7 ) ) );
 }
 
-
 HB_FUNC ( GETCOMPUTERNAME )
 {
    TCHAR lpBuffer[129];
@@ -818,6 +902,31 @@ HB_FUNC ( GETUSERNAME )
    DWORD nSize = UNLEN;
    GetUserName( lpBuffer, &nSize );
    hb_retc( lpBuffer );
+}
+
+typedef BOOL ( WINAPI * PathCompactPathExA_Ptr )( LPTSTR pszOut, LPTSTR pszSrc, INT cchMax, DWORD dwFlags );
+
+HB_FUNC( GETCOMPACTPATH )
+{
+   HINSTANCE hDll = LoadLibrary( "shlwapi.dll" );
+
+   if( hDll == NULL )
+   {
+      hb_retl( FALSE ) ;
+   }
+   else
+   {
+      PathCompactPathExA_Ptr PathCompactPathExA = (PathCompactPathExA_Ptr) GetProcAddress( hDll, "PathCompactPathExA" );
+      if( PathCompactPathExA == NULL )
+      {
+         hb_retl( FALSE ) ;
+      }
+      else
+      {
+         hb_retl( PathCompactPathExA( (LPTSTR) hb_parc( 1 ), (LPTSTR) hb_parc( 2 ), (INT) hb_parni( 3 ), (DWORD) hb_parnl( 4 ) ) );
+      }
+      FreeLibrary( hDll );
+   }
 }
 
 // Jacek Kubica <kubica@wssk.wroc.pl> HMG 1.1 Experimental Build 11a

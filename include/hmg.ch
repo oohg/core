@@ -1,11 +1,11 @@
 /*
- * $Id: i_pseudofunc.ch,v 1.9 2017-08-18 23:41:26 fyurisich Exp $
+ * $Id: hmg.ch,v 1.1 2017-08-18 23:41:26 fyurisich Exp $
  */
 /*
  * ooHG source code:
- * Pseudo-functions definitions
+ * Compatibility file
  *
- * Copyright 2005-2016 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2017-2017 Fernando Yurisich <fyurisich@oohg.org>
  *
  * Portions of this project are based upon Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -59,48 +59,5 @@
  */
 
 
-#translate IsControlDefined( <ControlName>, <FormName> ) ;
-   => ;
-      _IsControlDefined( <(ControlName)>, <(FormName)> )
-
-#translate IsWIndowActive( <FormName> ) ;
-   => ;
-      _IsWIndowActive( <(FormName)> )
-
-#translate IsWindowDefined( <FormName> ) ;
-   => ;
-      _IsWindowDefined( <(FormName)> )
-
-#command ASSIGN <var> VALUE <value> TYPE <type> ;
-   => ;
-      IF ValType( <value> ) $ ( <type> ) ;;
-         <var> := ( <value> ) ;;
-      ENDIF
-
-#command ASSIGN <var> VALUE <value> TYPE <type> DEFAULT <default> ;
-   => ;
-      IF ValType( <value> ) $ ( <type> ) ;;
-         <var> := ( <value> ) ;;
-      ELSE ;;
-         <var> := ( <default> ) ;;
-      ENDIF
-
-#xtranslate GetDefaultFontName() ;
-   => ;
-	   GetSystemFont() \[1\]
-
-#xtranslate GetDefaultFontSize() ;
-   => ;
-	   GetSystemFont() \[2\]
-
-#xtranslate LB_String2Array( <cData> [, <Sep> ] ) ;
-   => ;
-      hb_ATokens( <cData>, iif( HB_IsString( <Sep> ) , <Sep> , Chr(9) ) )
-
-#xtranslate ISWINXPORLATER() ;
-   => ;
-	   OSISWINXPORLATER()
-
-#xtranslate ISVISTAORLATER() ;
-   => ;
-	   OSISWINVISTAORLATER()
+#include "oohg.ch"
+#include "i_hmg_compat.ch"

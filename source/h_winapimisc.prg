@@ -1,5 +1,5 @@
 /*
- * $Id: h_winapimisc.prg,v 1.5 2016-10-22 16:23:55 fyurisich Exp $
+ * $Id: h_winapimisc.prg,v 1.6 2017-08-18 23:41:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -153,11 +153,21 @@ Local lFolder
 Return lFolder
 
 *------------------------------------------------------------------------------*
-Function GETSPECIALFOLDER( nCSIDL ) // Contributed By Ryszard Rylko
+Function GetSpecialFolder( nCSIDL ) // Contributed By Ryszard Rylko
 *------------------------------------------------------------------------------*
 Local RetVal
 	RetVal := C_GETSPECIALFOLDER( nCSIDL )
 Return RetVal
+
+*------------------------------------------------------------------------------*
+Function _GetCompactPath( cFile, nMax ) // Contributed By Jacek Kubica
+*------------------------------------------------------------------------------*
+Local cShort
+   If ! HB_IsNumeric( nMax )
+      nMax := 64
+   EndIf
+   cShort := Space( nMax )
+Return If( GETCOMPACTPATH( @cShort, cFile, nMax + 1, Nil ), cShort, cFile )
 
 *------------------------------------------------------------------------------*
 Procedure ProcessMessages

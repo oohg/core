@@ -1,5 +1,5 @@
 /*
- * $Id: i_listbox.ch,v 1.14 2017-08-11 23:17:47 fyurisich Exp $
+ * $Id: i_listbox.ch,v 1.15 2017-08-18 23:41:26 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -65,7 +65,7 @@ STANDARD VERSION
 
 #command @ <row>, <col> LISTBOX <name> ;
       [ OBJ <obj> ] ;
-      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ <dummy01: OF, PARENT> <parent> ] ;
       [ WIDTH <w> ] ;
       [ HEIGHT <h> ] ;
       [ ITEMS <aRows> ] ;
@@ -82,20 +82,21 @@ STANDARD VERSION
       [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
       [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
       [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
-      [ ON DBLCLICK <dblclick> ] ;
+      [ <dummy05: ONDBLCLICK, ON DBLCLICK> <dblclick> ] ;
+      [ <dummy06: ONENTER, ON ENTER> <enter> ] ;
       [ <multiselect: MULTISELECT> ] ;
       [ HELPID <helpid> ] ;
       [ <invisible: INVISIBLE> ] ;
       [ <notabstop: NOTABSTOP> ] ;
       [ <sort: SORT> ] ;
       [ <rtl: RTL> ] ;
-      [ <dummy11: ONENTER, ON ENTER> <enter> ] ;
       [ <disabled: DISABLED> ] ;
       [ SUBCLASS <subclass> ] ;
       [ IMAGE <aImage> [ <fit: FIT> ] ] ;
       [ TEXTHEIGHT <textheight> ] ;
       [ <novscroll: NOVSCROLL> ] ;
-      [ <multicolumn: MULTICOLUMN> ] ;
+      [ <multicolumn: MULTICOLUMN> [ COLUMNWIDTH <nColWidth> ] ] ;
+      [ <multitab : MULTITAB> [ TABSWIDTH <aWidth> ] ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( ;
             IIF( <.multiselect.>, TListMulti(), TList() ), [ <subclass>() ] ): ;
@@ -105,7 +106,8 @@ STANDARD VERSION
             <helpid>, <.invisible.>, <.notabstop.>, <.sort.>, ;
             <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
             <backcolor>, <fontcolor>, <.rtl.>, <.disabled.>, <{enter}>, ;
-            <aImage>, <textheight>, <.fit.>, <.novscroll.>, <.multicolumn.> )
+            <aImage>, <textheight>, <.fit.>, <.novscroll.>, <.multicolumn.>, ;
+            <nColWidth>, <.multitab.>, <aWidth> )
 
 /*---------------------------------------------------------------------------
 SPLITBOX VERSION
@@ -113,7 +115,7 @@ SPLITBOX VERSION
 
 #xcommand LISTBOX <name> ;
       [ OBJ <obj> ] ;
-      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ <dummy01: OF, PARENT> <parent> ] ;
       [ WIDTH <w> ] ;
       [ HEIGHT <h> ] ;
       [ ITEMS <aRows> ] ;
@@ -130,7 +132,8 @@ SPLITBOX VERSION
       [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
       [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
       [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
-      [ ON DBLCLICK <dblclick> ] ;
+      [ <dummy05: ONDBLCLICK, ON DBLCLICK> <dblclick> ] ;
+      [ <dummy06: ONENTER, ON ENTER> <enter> ] ;
       [ <multiselect: MULTISELECT> ] ;
       [ HELPID <helpid> ] ;
       [ <break: BREAK> ] ;
@@ -138,13 +141,13 @@ SPLITBOX VERSION
       [ <notabstop: NOTABSTOP> ] ;
       [ <sort: SORT> ] ;
       [ <rtl: RTL> ] ;
-      [ <dummy11: ONENTER, ON ENTER> <enter> ] ;
       [ <disabled: DISABLED> ] ;
       [ SUBCLASS <subclass> ] ;
       [ IMAGE <aImage> [ <fit: FIT> ] ] ;
       [ TEXTHEIGHT <textheight> ] ;
       [ <novscroll: NOVSCROLL> ] ;
-      [ <multicolumn: MULTICOLUMN> ] ;
+      [ <multicolumn: MULTICOLUMN> [ COLUMNWIDTH <nColWidth> ] ] ;
+      [ <multitab : MULTITAB> [ TABSWIDTH <aWidth> ] ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( ;
             IIF( <.multiselect.>, TListMulti(), TList() ), [ <subclass>() ] ): ;
@@ -154,4 +157,5 @@ SPLITBOX VERSION
             <.invisible.>, <.notabstop.>, <.sort.>,<.bold.>, ;
             <.italic.>, <.underline.>, <.strikeout.>, <backcolor>, ;
             <fontcolor>, <.rtl.>, <.disabled.>, <{enter}>, ;
-            <aImage>, <textheight>, <.fit.>, <.novscroll.>, <.multicolumn.> )
+            <aImage>, <textheight>, <.fit.>, <.novscroll.>, <.multicolumn.>, ;
+            <nColWidth>, <.multitab.>, <aWidth> )

@@ -1,5 +1,5 @@
 /*
- * $Id: i_hmg_compat.ch,v 1.56 2016-10-17 21:39:26 fyurisich Exp $
+ * $Id: i_hmg_compat.ch,v 1.57 2017-08-18 23:41:26 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -122,10 +122,6 @@
 #xtranslate _HMG_ThisFormName ;
    => ;
       _OOHG_ThisForm:Name
-
-#xcommand BREAK <break> ;
-   => ;
-      _OOHG_ActiveControlBreak := <break>
 
 #define PICTALIGNMENT //
 

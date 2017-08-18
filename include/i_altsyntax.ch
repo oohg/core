@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.142 2017-08-11 23:17:47 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.143 2017-08-18 23:41:26 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -85,13 +85,20 @@ AUXILIARY VARIABLES
 #xtranslate _OOHG_ActiveControlInvisible              => _OOHG_ActiveControlInfo \[  19 \]
 #xtranslate _OOHG_ActiveControlHelpId                 => _OOHG_ActiveControlInfo \[  20 \]
 #xtranslate _OOHG_ActiveControlDisabled               => _OOHG_ActiveControlInfo \[  21 \]
-#xtranslate _OOHG_ActiveControlShowHeaders            => _OOHG_ActiveControlInfo \[  22 \]
-#xtranslate _OOHG_ActiveControlTitleFontColor         => _OOHG_ActiveControlInfo \[  23 \]
-#xtranslate _OOHG_ActiveControlTitleBackColor         => _OOHG_ActiveControlInfo \[  24 \]
-#xtranslate _OOHG_ActiveControlTrailingFontColor      => _OOHG_ActiveControlInfo \[  25 \]
-#xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
-#xtranslate _OOHG_ActiveControlBackground             => _OOHG_ActiveControlInfo \[  27 \]
+#xtranslate _OOHG_ActiveControlOnLostFocus            => _OOHG_ActiveControlInfo \[  22 \]
+#xtranslate _OOHG_ActiveControlOnGotFocus             => _OOHG_ActiveControlInfo \[  23 \]
+#xtranslate _OOHG_ActiveControlOnChange               => _OOHG_ActiveControlInfo \[  24 \]
+#xtranslate _OOHG_ActiveControlOnEnter                => _OOHG_ActiveControlInfo \[  25 \]
+#xtranslate _OOHG_ActiveControlAssignObject           => _OOHG_ActiveControlInfo \[  26 \]
+#xtranslate _OOHG_ActiveControlSubClass               => _OOHG_ActiveControlInfo \[  27 \]
 
+#xtranslate _OOHG_ActiveControlMultiTab               => _OOHG_ActiveControlInfo \[  80 \]
+#xtranslate _OOHG_ActiveControlShowHeaders            => _OOHG_ActiveControlInfo \[  81 \]
+#xtranslate _OOHG_ActiveControlTitleFontColor         => _OOHG_ActiveControlInfo \[  82 \]
+#xtranslate _OOHG_ActiveControlTitleBackColor         => _OOHG_ActiveControlInfo \[  83 \]
+#xtranslate _OOHG_ActiveControlTrailingFontColor      => _OOHG_ActiveControlInfo \[  84 \]
+#xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  85 \]
+#xtranslate _OOHG_ActiveControlBackground             => _OOHG_ActiveControlInfo \[  86 \]
 #xtranslate _OOHG_ActiveControlBeforeEditCell         => _OOHG_ActiveControlInfo \[  87 \]
 #xtranslate _OOHG_ActiveControlEditCellEnd            => _OOHG_ActiveControlInfo \[  88 \]
 #xtranslate _OOHG_ActiveControlOnInsert               => _OOHG_ActiveControlInfo \[  89 \]
@@ -134,8 +141,8 @@ AUXILIARY VARIABLES
 #xtranslate _OOHG_ActiveControlOnSelChange            => _OOHG_ActiveControlInfo \[ 126 \]
 #xtranslate _OOHG_ActiveControlOnListDisplay          => _OOHG_ActiveControlInfo \[ 127 \]
 #xtranslate _OOHG_ActiveControlOnListClose            => _OOHG_ActiveControlInfo \[ 128 \]
-#xtranslate _OOHG_ActiveControlSubClass               => _OOHG_ActiveControlInfo \[ 129 \]
-#xtranslate _OOHG_ActiveControlAssignObject           => _OOHG_ActiveControlInfo \[ 130 \]
+
+
 #xtranslate _OOHG_ActiveControlFixedWidths            => _OOHG_ActiveControlInfo \[ 131 \]
 #xtranslate _OOHG_ActiveControlAbortEdit              => _OOHG_ActiveControlInfo \[ 132 \]
 #xtranslate _OOHG_ActiveControlUpdateAll              => _OOHG_ActiveControlInfo \[ 133 \]
@@ -235,12 +242,12 @@ AUXILIARY VARIABLES
 #xtranslate _OOHG_ActiveControlCaption                => _OOHG_ActiveControlInfo \[ 227 \]
 #xtranslate _OOHG_ActiveControlAction                 => _OOHG_ActiveControlInfo \[ 228 \]
 #xtranslate _OOHG_ActiveControlFlat                   => _OOHG_ActiveControlInfo \[ 229 \]
-#xtranslate _OOHG_ActiveControlOnGotFocus             => _OOHG_ActiveControlInfo \[ 230 \]
-#xtranslate _OOHG_ActiveControlOnLostFocus            => _OOHG_ActiveControlInfo \[ 231 \]
+
+
 #xtranslate _OOHG_ActiveControlPicture                => _OOHG_ActiveControlInfo \[ 232 \]
-#xtranslate _OOHG_ActiveControlOnChange               => _OOHG_ActiveControlInfo \[ 233 \]
+
 #xtranslate _OOHG_ActiveControlItems                  => _OOHG_ActiveControlInfo \[ 234 \]
-#xtranslate _OOHG_ActiveControlOnEnter                => _OOHG_ActiveControlInfo \[ 235 \]
+
 #xtranslate _OOHG_ActiveControlShowNone               => _OOHG_ActiveControlInfo \[ 236 \]
 #xtranslate _OOHG_ActiveControlUpDown                 => _OOHG_ActiveControlInfo \[ 237 \]
 #xtranslate _OOHG_ActiveControlRight                  => _OOHG_ActiveControlInfo \[ 238 \]
@@ -251,8 +258,8 @@ AUXILIARY VARIABLES
 #xtranslate _OOHG_ActiveControlHeaders                => _OOHG_ActiveControlInfo \[ 243 \]
 #xtranslate _OOHG_ActiveControlWidths                 => _OOHG_ActiveControlInfo \[ 244 \]
 #xtranslate _OOHG_ActiveControlOnDblClick             => _OOHG_ActiveControlInfo \[ 245 \]
-#xtranslate _OOHG_ActiveControlOnRDblClick            => _OOHG_ActiveControlInfo \[ 246 \]
-#xtranslate _OOHG_ActiveControlOnMDblClick            => _OOHG_ActiveControlInfo \[ 247 \]
+
+
 #xtranslate _OOHG_ActiveControlOnHeadClick            => _OOHG_ActiveControlInfo \[ 248 \]
 #xtranslate _OOHG_ActiveControlNoLines                => _OOHG_ActiveControlInfo \[ 249 \]
 #xtranslate _OOHG_ActiveControlImage                  => _OOHG_ActiveControlInfo \[ 250 \]
@@ -330,8 +337,6 @@ AUXILIARY VARIABLES
       _OOHG_ActiveControlHelpId        := NIL          ;;
       _OOHG_ActiveControlDisabled      := .F.          ;;
       _OOHG_ActiveControlOnDblClick    := NIL          ;;
-      _OOHG_ActiveControlOnRDblClick   := NIL          ;;
-      _OOHG_ActiveControlOnMDblClick   := NIL          ;;
       _OOHG_ActiveControlOnLostFocus   := NIL          ;;
       _OOHG_ActiveControlOnGotFocus    := NIL          ;;
       _OOHG_ActiveControlOnChange      := NIL          ;;
@@ -678,7 +683,10 @@ LIST BOX
       _OOHG_ActiveControlTextHeight  := NIL    ;;
       _OOHG_ActiveControlStretch     := .F.    ;;
       _OOHG_ActiveControlNoVScroll   := .F.    ;;
-      _OOHG_ActiveControlMultiLine   := .F.
+      _OOHG_ActiveControlMultiLine   := .F.    ;;
+      _OOHG_ActiveControlFixedWidth  := NIL    ;;
+      _OOHG_ActiveControlMultiTab    := .F.    ;;
+      _OOHG_ActiveControlWidths      := NIL
 
 #xcommand SORT <sort> ;
    => ;
@@ -695,6 +703,18 @@ LIST BOX
 #xcommand MULTICOLUMN <multicolumn> ;
    => ;
       _OOHG_ActiveControlMultiLine := <multicolumn>
+
+#xcommand COLUMNWIDTH <multicolumn> ;
+   => ;
+      _OOHG_ActiveControlFixedWidth := <multicolumn>
+
+#xcommand MULTITAB <multitab> ;
+   => ;
+      _OOHG_ActiveControlMultiTab := <multitab>
+
+#xcommand TABSWIDTH <aTabs> ;
+   => ;
+      _OOHG_ActiveControlWidths := <aTabs>
 
 #xcommand END LISTBOX ;
    => ;
@@ -732,7 +752,10 @@ LIST BOX
             _OOHG_ActiveControlTextHeight, ;
             _OOHG_ActiveControlStretch, ;
             _OOHG_ActiveControlNoVScroll, ;
-            _OOHG_ActiveControlMultiLine )
+            _OOHG_ActiveControlMultiLine, ;
+            _OOHG_ActiveControlFixedWidth, ;
+            _OOHG_ActiveControlMultiTab, ;
+            _OOHG_ActiveControlWidths )
 
 /*---------------------------------------------------------------------------
 CHECKLIST
@@ -2117,6 +2140,10 @@ EDIT BOX
       _OOHG_ActiveControlMaxLength := <maxlength>
 
 #xcommand SETBREAK <break> ;
+   => ;
+      _OOHG_ActiveControlBreak := <break>
+
+#xcommand BREAK <break> ;
    => ;
       _OOHG_ActiveControlBreak := <break>
 

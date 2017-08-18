@@ -1,5 +1,5 @@
 /*
- * $Id: h_init.prg,v 1.42 2016-10-17 01:55:34 fyurisich Exp $
+ * $Id: h_init.prg,v 1.43 2017-08-18 23:41:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -71,6 +71,7 @@ INIT PROCEDURE _OOHG_INIT()
    Public _OOHG_AllVars[ 34 ]
 
     _OOHG_Main              := NIL
+    _OOHG_Main_Icon         := NIL
 
    _OOHG_ThisType           := ''
    _OOHG_ThisForm           := NIL

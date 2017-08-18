@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.75 2017-07-28 00:09:08 fyurisich Exp $
+ * $Id: i_windefs.ch,v 1.76 2017-08-18 23:41:26 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -451,6 +451,7 @@ LISTVIEW CONTROL
 LISTBOX CONTROL
 ---------------------------------------------------------------------------*/
 
+#define LB_SETCOLUMNWIDTH             0x0195
 #define LBS_NOTIFY                    1
 #define LBS_SORT                      2
 #define LBS_NOREDRAW                  4

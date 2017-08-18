@@ -1,5 +1,5 @@
 /*
- * $Id: h_listbox.prg,v 1.39 2017-08-11 23:17:48 fyurisich Exp $
+ * $Id: h_listbox.prg,v 1.40 2017-08-18 23:41:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -70,11 +70,13 @@ CLASS TList FROM TControl
    DATA nWidth                    INIT 120
    DATA nHeight                   INIT 120
    DATA nTextHeight               INIT 0
-   DATA bOnEnter                  INIT nil
+   DATA bOnEnter                  INIT Nil
    DATA lAdjustImages             INIT .F.
    DATA ImageListColor            INIT CLR_DEFAULT
    DATA ImageListFlags            INIT LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
    DATA lFocused                  INIT .F.
+   DATA lMultiTab                 INIT .F.
+   DATA nColWidth                 INIT 120
 
    METHOD Define
    METHOD Define2
@@ -84,12 +86,14 @@ CLASS TList FROM TControl
    METHOD Events_Command
    METHOD Events_DrawItem
    METHOD Events_MeasureItem
-   METHOD AddItem( uValue )       BLOCK { |Self, uValue| ListBoxAddstring2( Self, uValue ) }
+   METHOD AddItem( uValue )
    METHOD DeleteItem( nItem )     BLOCK { |Self, nItem| ListBoxDeleteString( Self, nItem ) }
    METHOD DeleteAllItems          BLOCK { |Self| ListBoxReset( ::hWnd ) }
    METHOD Item
    METHOD InsertItem
    METHOD ItemCount               BLOCK { |Self| ListBoxGetItemCount( ::hWnd ) }
+   METHOD ItemHeight
+   METHOD ColumnWidth             SETGET
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -98,16 +102,16 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
                lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
                italic, underline, strikeout, backcolor, fontcolor, lRtl, ;
                lDisabled, onenter, aImage, TextHeight, lAdjustImages, ;
-               novscroll, multicols ) CLASS TList
+               novscroll, multicol, colwidth, multitab, aWidth ) CLASS TList
 *------------------------------------------------------------------------------*
-Local nStyle := 0
+LOCAL nStyle := 0
    ::Define2( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
               fontsize, tooltip, changeprocedure, dblclick, gotfocus, ;
               lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
               italic, underline, strikeout, backcolor, fontcolor, nStyle, ;
               lRtl, lDisabled, onenter, aImage, TextHeight, lAdjustImages, ;
-              novscroll, multicols )
-Return Self
+              novscroll, multicol, colwidth, multitab, aWidth )
+RETURN Self
 
 *------------------------------------------------------------------------------*
 METHOD Define2( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
@@ -115,9 +119,9 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
                 lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
                 italic, underline, strikeout, backcolor, fontcolor, nStyle, ;
                 lRtl, lDisabled, onenter, aImage, TextHeight, lAdjustImages, ;
-                novscroll, multicols ) CLASS TList
+                novscroll, multicol, colwidth, multitab, aWidth ) CLASS TList
 *------------------------------------------------------------------------------*
-Local ControlHandle
+LOCAL ControlHandle, i
 
    ASSIGN ::nWidth        VALUE w             TYPE "N"
    ASSIGN ::nHeight       VALUE h             TYPE "N"
@@ -125,14 +129,16 @@ Local ControlHandle
    ASSIGN ::nCol          VALUE x             TYPE "N"
    ASSIGN ::nTextHeight   VALUE TextHeight    TYPE "N"
    ASSIGN ::lAdjustImages VALUE lAdjustImages TYPE "L"
+   ASSIGN ::lMultiTab     VALUE multitab     TYPE "L"
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .T., lRtl )
 
    nStyle := ::InitStyle( nStyle,, invisible, notabstop, lDisabled ) + ;
-             If( HB_ISLOGICAL( novscroll ) .AND. novscroll, 0, WS_VSCROLL + LBS_DISABLENOSCROLL ) + ;
-             If( HB_ISLOGICAL( sort ) .AND. sort, LBS_SORT, 0 ) + ;
-             If( HB_IsArray( aImage ),  LBS_OWNERDRAWFIXED, 0) + ;
-             If( HB_ISLOGICAL( multicols ) .AND. multicols, LBS_MULTICOLUMN, 0 )
+             IIF( HB_ISLOGICAL( novscroll ) .AND. novscroll, 0, WS_VSCROLL + LBS_DISABLENOSCROLL ) + ;
+             IIF( HB_ISLOGICAL( sort ) .AND. sort, LBS_SORT, 0 ) + ;
+             IIF( HB_IsArray( aImage ),  LBS_OWNERDRAWFIXED, 0) + ;
+             IIF( HB_ISLOGICAL( multicol ) .AND. multicol, LBS_MULTICOLUMN, 0 ) + ;
+             IIF( ::lMultiTab, LBS_USETABSTOPS, 0 )
 
    ::SetSplitBoxInfo( Break )
    ControlHandle := InitListBox( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, ::lRtl )
@@ -140,13 +146,40 @@ Local ControlHandle
    ::Register( ControlHandle, ControlName, HelpId, , ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
 
-   If HB_IsArray( aImage )
+   IF HB_IsArray( aImage )
       ::AddBitMap( aImage )
-   EndIf
+   ENDIF
 
-   If HB_IsArray( rows )
+   IF ::lMultiTab
+      IF ! HB_IsArray( aWidth )
+         aWidth := {}
+      ENDIF
+
+      IF LEN( rows ) > 0
+         IF LEN( aWidth ) == 0
+            IF HB_IsArray( rows[1] )
+               FOR i := 1 TO LEN( rows[1] )
+                  AADD( aWidth, INT( w / LEN( rows[1] ) ) )
+               NEXT
+            ENDIF
+         ENDIF
+         FOR i := 1 TO LEN( rows )
+            IF HB_IsArray( rows[i] )
+               rows[i] := LB_Array2String( rows[i] )
+            ENDIF
+         NEXT
+      ENDIF
+   ENDIF
+
+   ::ColumnWidth := colwidth
+
+   IF HB_IsArray( rows )
       AEVAL( rows, { |c| ListboxAddString2( Self, c ) } )
-   EndIf
+   ENDIF
+
+   IF ::lMultiTab
+      LISTBOXSETMULTITAB( ControlHandle, aWidth )
+   ENDIF
 
    ::Value := Value
 
@@ -156,21 +189,24 @@ Local ControlHandle
    ASSIGN ::OnDblClick  VALUE dblclick   TYPE "B"
    ASSIGN ::OnEnter     VALUE onenter    TYPE "B"
 
-Return Self
+RETURN Self
 
 *------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TList
 *------------------------------------------------------------------------------*
+
    IF VALTYPE( uValue ) == "N"
       ListBoxSetCursel( ::hWnd, uValue )
       ::DoChange()
    ENDIF
+
 RETURN ListBoxGetCursel( ::hWnd )
 
 *------------------------------------------------------------------------------*
 METHOD OnEnter( bEnter ) CLASS TList
 *------------------------------------------------------------------------------*
 LOCAL bRet
+
    IF HB_IsBlock( bEnter )
       IF _OOHG_SameEnterDblClick
          ::OnDblClick := bEnter
@@ -179,78 +215,140 @@ LOCAL bRet
       ENDIF
       bRet := bEnter
    ELSE
-      bRet := IF( _OOHG_SameEnterDblClick, ::OnDblClick, ::bOnEnter )
+      bRet := IIF( _OOHG_SameEnterDblClick, ::OnDblClick, ::bOnEnter )
    ENDIF
+
 RETURN bRet
 
 *------------------------------------------------------------------------------*
 METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TList
 *------------------------------------------------------------------------------*
-   If nMsg == WM_LBUTTONDBLCLK
-      If ! ::lFocused
-         ::SetFocus()
-      EndIf
-      Return nil
 
-   ElseIf nMsg == WM_LBUTTONDOWN
-      If ! ::NestedClick
+   IF nMsg == WM_LBUTTONDBLCLK
+      IF ! ::lFocused
+         ::SetFocus()
+      ENDIF
+      RETURN Nil
+
+   ELSEIF nMsg == WM_LBUTTONDOWN
+      IF ! ::NestedClick
          ::NestedClick := ! _OOHG_NestedSameEvent()
-         If ::lFocused
+         IF ::lFocused
             ::DoEventMouseCoords( ::OnClick, "CLICK" )
-         Else
+         ELSE
             ::SetFocus()
             ::DoEventMouseCoords( ::OnClick, "CLICK" )
-         EndIf
+         ENDIF
          ::NestedClick := .F.
-      EndIf
+      ENDIF
 
-   EndIf
-Return ::Super:Events( hWnd, nMsg, wParam, lParam )
+   ENDIF
+
+RETURN ::Super:Events( hWnd, nMsg, wParam, lParam )
 
 *------------------------------------------------------------------------------*
 METHOD Events_Command( wParam ) CLASS TList
 *------------------------------------------------------------------------------*
-Local Hi_wParam := HIWORD( wParam )
+LOCAL Hi_wParam := HIWORD( wParam )
 
-   if Hi_wParam == LBN_SELCHANGE
+   IF Hi_wParam == LBN_SELCHANGE
       ::DoChange()
-      Return nil
+      RETURN Nil
 
-   elseif Hi_wParam == LBN_KILLFOCUS
+   ELSEIF Hi_wParam == LBN_KILLFOCUS
       ::lFocused := .F.
-      Return ::DoLostFocus()
+      RETURN ::DoLostFocus()
 
-   elseif Hi_wParam == LBN_SETFOCUS
+   ELSEIF Hi_wParam == LBN_SETFOCUS
       ::lFocused := .T.
       GetFormObjectByHandle( ::ContainerhWnd ):LastFocusedControl := ::hWnd
       ::FocusEffect()
       ::DoEvent( ::OnGotFocus, "GOTFOCUS" )
-      Return nil
+      RETURN Nil
 
-   elseif Hi_wParam == LBN_DBLCLK
+   ELSEIF Hi_wParam == LBN_DBLCLK
       ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
-      Return nil
+      RETURN Nil
 
-   EndIf
+   ENDIF
 
-Return ::Super:Events_Command( wParam )
+RETURN ::Super:Events_Command( wParam )
+
+*------------------------------------------------------------------------------*
+METHOD AddItem( uValue ) CLASS TList
+*------------------------------------------------------------------------------*
+
+   IF ::lMultiTab .AND. HB_IsArray( uValue )
+      uValue := LB_Array2String( uValue )
+   ENDIF
+
+RETURN ListBoxAddstring2( Self, uValue )
 
 *------------------------------------------------------------------------------*
 METHOD Item( nItem, uValue ) CLASS TList
 *------------------------------------------------------------------------------*
+LOCAL cRet
+
    IF ! HB_IsNil( uValue )
       ListBoxDeleteString( Self, nItem )
+      IF ::lMultiTab .AND. HB_IsArray( uValue )
+         uValue := LB_Array2String( uValue )
+      ENDIF
       ListBoxInsertString2( Self, uValue, nItem )
    ENDIF
-Return ListBoxGetString( ::hWnd, nItem )
+   cRet := ListBoxGetString( ::hWnd, nItem )
+   IF ::lMultiTab
+      cRet := LB_String2Array( cRet )
+   ENDIF
+
+RETURN cRet
 
 *------------------------------------------------------------------------------*
 METHOD InsertItem( nItem, uValue ) CLASS TList
 *------------------------------------------------------------------------------*
+LOCAL cRet
+
    IF ! HB_IsNil( uValue )
+      IF ::lMultiTab .AND. HB_IsArray( uValue )
+         uValue := LB_Array2String( uValue )
+      ENDIF
       ListBoxInsertString2( Self, uValue, nItem )
    ENDIF
-Return ListBoxGetString( ::hWnd, nItem )
+   cRet := ListBoxGetString( ::hWnd, nItem )
+   IF ::lMultiTab
+      cRet := LB_String2Array( cRet )
+   ENDIF
+
+RETURN cRet
+
+*------------------------------------------------------------------------------*
+METHOD ColumnWidth( uValue ) CLASS TList
+*------------------------------------------------------------------------------*
+
+   IF ValType( uValue ) == "N" .AND. uValue > 0
+      ::nColWidth := uValue
+      SendMessage( ::hWnd, LB_SETCOLUMNWIDTH, uValue, 0 )
+   ENDIF
+
+RETURN ::nColWidth
+
+*------------------------------------------------------------------------------*
+FUNCTION LB_Array2String( aData, Sep )
+*------------------------------------------------------------------------------*
+LOCAL n, cData
+
+   IF HB_IsArray( aData ) .AND. LEN( aData ) > 0
+      ASSIGN Sep VALUE Sep TYPE "CM" DEFAULT Chr(9)
+
+      cData := aData[1]
+      FOR n := 2 TO LEN( aData )
+         cData += ( Sep + aData[n] )
+      NEXT
+   ELSE
+      cData := ""
+   ENDIF
+
+RETURN cData
 
 
 
@@ -269,29 +367,37 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
                lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
                italic, underline, strikeout, backcolor, fontcolor, lRtl, ;
                lDisabled, onenter, aImage, TextHeight, lAdjustImages, ;
-               novscroll, multicols ) CLASS TListMulti
+               novscroll, multicol, colwidth, multitab, aWidth ) CLASS TListMulti
 *------------------------------------------------------------------------------*
-Local nStyle := LBS_EXTENDEDSEL + LBS_MULTIPLESEL
+LOCAL nStyle := LBS_EXTENDEDSEL + LBS_MULTIPLESEL
 
    ::Define2( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
               fontsize, tooltip, changeprocedure, dblclick, gotfocus, ;
               lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
               italic, underline, strikeout, backcolor, fontcolor, nStyle, ;
               lRtl, lDisabled, onenter, aImage, TextHeight, lAdjustImages, ;
-              novscroll, multicols )
-Return Self
+              novscroll, multicol, colwidth, multitab, aWidth )
+
+RETURN Self
 
 *------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TListMulti
 *------------------------------------------------------------------------------*
+
    IF VALTYPE( uValue ) == "A"
       LISTBOXSETMULTISEL( ::hWnd, uValue )
    ELSEIF VALTYPE( uValue ) == "N"
       LISTBOXSETMULTISEL( ::hWnd, { uValue } )
    ENDIF
+
 RETURN ListBoxGetMultiSel( ::hWnd )
 
+
+
+
+
 #pragma BEGINDUMP
+
 #include <windows.h>
 #include <commctrl.h>
 #include <hbapi.h>
@@ -397,7 +503,11 @@ void TList_SetImageBuffer( POCTRL oSelf, struct IMAGE_PARAMETER pStruct, int nIt
 HB_FUNC( LISTBOXADDSTRING )
 {
    char *cString = (char *) hb_parc( 2 );
-   SendMessage( HWNDparam( 1 ), LB_ADDSTRING, 0, (LPARAM) cString );
+   int nIndex = SendMessage( HWNDparam( 1 ), LB_ADDSTRING, 0, (LPARAM) cString );
+   if( ( nIndex == LB_ERR ) || ( nIndex == LB_ERRSPACE ) )
+      hb_retni( 0 );
+   else
+      hb_retni( nIndex + 1 );
 }
 
 HB_FUNC( LISTBOXADDSTRING2 )
@@ -406,23 +516,37 @@ HB_FUNC( LISTBOXADDSTRING2 )
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
    struct IMAGE_PARAMETER pStruct;
    int nItem = ListBox_GetCount( oSelf->hWnd );
+   int nIndex;
 
    ImageFillParameter( &pStruct, hb_param( 2, HB_IT_ANY ) );
    TList_SetImageBuffer( oSelf, pStruct, nItem );
-   SendMessage( oSelf->hWnd, LB_ADDSTRING, 0, (LPARAM) pStruct.cString );
+   nIndex = SendMessage( oSelf->hWnd, LB_ADDSTRING, 0, (LPARAM) pStruct.cString );
+   if( ( nIndex == LB_ERR ) || ( nIndex == LB_ERRSPACE ) )
+      hb_retni( 0 );
+   else
+      hb_retni( nIndex + 1 );
 }
 
 HB_FUNC( LISTBOXGETSTRING )
 {
-   char cString [ 1024 ] = "" ;
-   SendMessage( HWNDparam( 1 ), LB_GETTEXT, (WPARAM) hb_parni(2) - 1, (LPARAM) cString );
-   hb_retc(cString);
+   int  iLen = SendMessage( HWNDparam( 1 ), LB_GETTEXTLEN, (WPARAM) ( hb_parni( 2 ) - 1 ), 0 );
+   char *cString;
+
+   if( ( iLen > 0 ) && ( NULL != ( cString = (char *) hb_xgrab( ( iLen + 1 ) * sizeof( TCHAR ) ) ) ) )
+   {
+      SendMessage( HWNDparam( 1 ), LB_GETTEXT, (WPARAM) ( hb_parni( 2 ) - 1 ), (LPARAM) cString );
+      hb_retclen_buffer( cString, iLen );
+   }
+   else
+   {
+      hb_retc_null();
+   }
 }
 
 HB_FUNC( LISTBOXINSERTSTRING )
 {
    char *cString = (char *) hb_parc( 2 );
-   SendMessage( HWNDparam( 1 ), LB_INSERTSTRING, (WPARAM) hb_parni(3) - 1 , (LPARAM) cString );
+   SendMessage( HWNDparam( 1 ), LB_INSERTSTRING, (WPARAM) ( hb_parni(3) - 1 ), (LPARAM) cString );
 }
 
 HB_FUNC( LISTBOXINSERTSTRING2 )
@@ -475,6 +599,7 @@ HB_FUNC( LISTBOXGETMULTISEL )
    if( n > 0 )
    {
       hb_reta( n );
+
       buffer = (int *) hb_xgrab( ( n + 1 ) * sizeof( int ) );
 
       SendMessage( hwnd, LB_GETSELITEMS, (WPARAM) n, (LPARAM) buffer );
@@ -507,19 +632,70 @@ HB_FUNC( LISTBOXSETMULTISEL )
    n = SendMessage( hwnd, LB_GETCOUNT, 0, 0 );
 
    // CLEAR CURRENT SELECTIONS
-
    for( i = 0; i < n; i ++ )
    {
-      SendMessage( hwnd, LB_SETSEL, (WPARAM) 0, (LPARAM) i );
+      SendMessage( hwnd, LB_SETSEL, 0, (LPARAM) i );
    }
 
    // SET NEW SELECTIONS
-
    for( i = 1; i <= l ; i ++ )
    {
       SendMessage( hwnd, LB_SETSEL, (WPARAM) 1, (LPARAM) ( hb_arrayGetNI( wArray, i ) - 1 ) );
    }
 }
+
+/*
+#define TOTAL_TABS 10
+
+HB_FUNC( LISTBOXSETMULTITAB )
+{
+   PHB_ITEM wArray;
+   int      nTabStops[ TOTAL_TABS ] ;
+   int      l, i;
+   DWORD    dwDlgBase = GetDialogBaseUnits();
+   int      baseunitX = LOWORD( dwDlgBase );
+   HWND     hwnd = HWNDparam( 1 );
+
+   wArray = hb_param( 2, HB_IT_ARRAY );
+
+   l = hb_parinfa( 2, 0 ) - 1;
+
+   if( l >= 0 )
+   {
+      for( i = 0; i <= l; i++ )
+         nTabStops[ i ] = MulDiv( hb_arrayGetNI( wArray, i + 1 ), 4, baseunitX );
+
+      SendMessage( hwnd, LB_SETTABSTOPS, (WPARAM) ( l + 1 ), (LPARAM) &nTabStops );
+   }
+}
+*/
+
+HB_FUNC( LISTBOXSETMULTITAB )
+{
+   PHB_ITEM wArray;
+   int      *nTabStops;
+   int      l, i;
+   DWORD    dwDlgBase = GetDialogBaseUnits();
+   int      baseunitX = LOWORD( dwDlgBase );
+   HWND     hwnd = HWNDparam( 1 );
+
+   wArray = hb_param( 2, HB_IT_ARRAY );
+
+   l = hb_parinfa( 2, 0 ) - 1;
+
+   if( l >= 0 )
+   {
+      nTabStops = (int *) hb_xgrab( ( l + 1 ) * sizeof( int ) );
+
+      for( i = 0; i <= l; i++ )
+         nTabStops[ i ] = MulDiv( hb_arrayGetNI( wArray, i + 1 ), 4, baseunitX );
+
+      SendMessage( hwnd, LB_SETTABSTOPS, (WPARAM) ( l + 1 ), (LPARAM) nTabStops );
+
+      hb_xfree( nTabStops );
+   }
+}
+
 
 HB_FUNC( LISTBOXGETITEMCOUNT )
 {
@@ -536,15 +712,45 @@ HB_FUNC_STATIC( TLIST_EVENTS_DRAWITEM )   // METHOD Events_DrawItem( lParam )
    char cBuffer[ 2048 ];
    int x, y, cx, cy, iImage, dy;
 
-   if( lpdis->itemID != (UINT) -1 )
+   if( lpdis->itemID == (UINT) -1 )
    {
-      // Checks if image defined for current item
-      if( oSelf->ImageList && oSelf->AuxBuffer && ( lpdis->itemID + 1 ) <= oSelf->AuxBufferLen )
+      hb_retl( FALSE );
+   }
+   else
+   {
+      if( ( lpdis->itemAction == ODA_SELECT ) || ( lpdis->itemAction == ODA_DRAWENTIRE ) )
       {
-         iImage = ( (int *) oSelf->AuxBuffer )[ ( lpdis->itemID * 2 ) + ( lpdis->itemState & ODS_SELECTED ? 1 : 0 ) ];
-         if( iImage >= 0 && iImage < ImageList_GetImageCount( oSelf->ImageList ) )
+         // Text color
+         if( lpdis->itemState & ODS_SELECTED )
          {
-            ImageList_GetIconSize( oSelf->ImageList, &cx, &cy );
+            FontColor = SetTextColor( lpdis->hDC, ( ( oSelf->lFontColorSelected == -1 ) ? GetSysColor( COLOR_HIGHLIGHTTEXT ) : (COLORREF) oSelf->lFontColorSelected ) );
+            BackColor = SetBkColor( lpdis->hDC, ( ( oSelf->lBackColorSelected == -1 ) ? GetSysColor( COLOR_HIGHLIGHT ) : (COLORREF) oSelf->lBackColorSelected ) );
+         }
+         else if( lpdis->itemState & ODS_DISABLED )
+         {
+            FontColor = SetTextColor( lpdis->hDC, GetSysColor( COLOR_GRAYTEXT ) );
+            BackColor = SetBkColor( lpdis->hDC, GetSysColor( COLOR_BTNFACE ) );
+         }
+         else
+         {
+            FontColor = SetTextColor( lpdis->hDC, ( ( oSelf->lFontColor == -1 ) ? GetSysColor( COLOR_WINDOWTEXT ) : (COLORREF) oSelf->lFontColor ) );
+            BackColor = SetBkColor( lpdis->hDC, ( ( oSelf->lBackColor == -1 ) ? GetSysColor( COLOR_WINDOW ) : (COLORREF) oSelf->lBackColor ) );
+         }
+
+         // See if the current item has an image
+         if( oSelf->ImageList && oSelf->AuxBuffer && ( lpdis->itemID + 1 ) <= oSelf->AuxBufferLen )
+         {
+            iImage = ( (int *) oSelf->AuxBuffer )[ ( lpdis->itemID * 2 ) + ( lpdis->itemState & ODS_SELECTED ? 1 : 0 ) ];
+            if( iImage >= 0 && iImage < ImageList_GetImageCount( oSelf->ImageList ) )
+            {
+               ImageList_GetIconSize( oSelf->ImageList, &cx, &cy );
+            }
+            else
+            {
+               cx = 0;
+               cy = 0;
+               iImage = -1;
+            }
          }
          else
          {
@@ -552,77 +758,50 @@ HB_FUNC_STATIC( TLIST_EVENTS_DRAWITEM )   // METHOD Events_DrawItem( lParam )
             cy = 0;
             iImage = -1;
          }
-      }
-      else
-      {
-         cx = 0;
-         cy = 0;
-         iImage = -1;
-      }
 
-      // Text color
-      if( lpdis->itemState & ODS_SELECTED )
-      {
-         FontColor = SetTextColor( lpdis->hDC, ( ( oSelf->lFontColorSelected == -1 ) ? GetSysColor( COLOR_HIGHLIGHTTEXT ) : (COLORREF) oSelf->lFontColorSelected ) );
-         BackColor = SetBkColor( lpdis->hDC, ( ( oSelf->lBackColorSelected == -1 ) ? GetSysColor( COLOR_HIGHLIGHT ) : (COLORREF) oSelf->lBackColorSelected ) );
-      }
-      else if( lpdis->itemState & ODS_DISABLED )
-      {
-         FontColor = SetTextColor( lpdis->hDC, GetSysColor( COLOR_GRAYTEXT ) );
-         BackColor = SetBkColor( lpdis->hDC, GetSysColor( COLOR_BTNFACE ) );
-      }
-      else
-      {
-         FontColor = SetTextColor( lpdis->hDC, ( ( oSelf->lFontColor == -1 ) ? GetSysColor( COLOR_WINDOWTEXT ) : (COLORREF) oSelf->lFontColor ) );
-         BackColor = SetBkColor( lpdis->hDC, ( ( oSelf->lBackColor == -1 ) ? GetSysColor( COLOR_WINDOW ) : (COLORREF) oSelf->lBackColor ) );
-      }
+         // Window position
+         GetTextMetrics( lpdis->hDC, &lptm );
+         y = ( lpdis->rcItem.bottom + lpdis->rcItem.top - lptm.tmHeight ) / 2;
+         x = LOWORD( GetDialogBaseUnits() ) / 2;
 
-      // Window position
-      GetTextMetrics( lpdis->hDC, &lptm );
-      y = ( lpdis->rcItem.bottom + lpdis->rcItem.top - lptm.tmHeight ) / 2;
-      x = LOWORD( GetDialogBaseUnits() ) / 2;
+         // Text
+         SendMessage( lpdis->hwndItem, LB_GETTEXT, lpdis->itemID, (LPARAM) cBuffer );
+         ExtTextOut( lpdis->hDC, cx + x, y, ETO_CLIPPED | ETO_OPAQUE, &lpdis->rcItem, (LPCSTR) cBuffer, strlen( cBuffer ), NULL );
 
-      // Text
-      SendMessage( lpdis->hwndItem, LB_GETTEXT, lpdis->itemID, (LPARAM) cBuffer );
-      // Use DRAWTEXT to expand TABS and enable MULTITABS style
-      ExtTextOut( lpdis->hDC, cx + x, y, ETO_CLIPPED | ETO_OPAQUE, &lpdis->rcItem, (LPCSTR) cBuffer, strlen( cBuffer ), NULL );
+         // Restore DC
+         SetTextColor( lpdis->hDC, FontColor );
+         SetBkColor( lpdis->hDC, BackColor );
 
-      SetTextColor( lpdis->hDC, FontColor );
-      SetBkColor( lpdis->hDC, BackColor );
-
-      // Draws image vertically centered
-      if( iImage != -1 )
-      {
-         if( cy < lpdis->rcItem.bottom - lpdis->rcItem.top )                   // there is spare space
+         // Draws image vertically centered
+         if( iImage != -1 )
          {
-            y = ( lpdis->rcItem.bottom + lpdis->rcItem.top - cy ) / 2;         // center image
-            dy = cy;                                                           // use real size
-         }
-         else
-         {
-            y = lpdis->rcItem.top;                                             // place image at top
-
-            _OOHG_Send( pSelf, s_lAdjustImages );
-            hb_vmSend( 0 );
-
-            if( hb_parl( -1 ) )
+            if( cy <= lpdis->rcItem.bottom - lpdis->rcItem.top )                  // there is spare space
             {
-               dy = ( lpdis->rcItem.bottom - lpdis->rcItem.top );              // clip exceeding pixels or stretch image
+               y = ( lpdis->rcItem.bottom + lpdis->rcItem.top - cy ) / 2;         // center image
+               dy = cy;                                                           // use real size
             }
             else
             {
-               dy = cy;                                                        // use real size
+               y = lpdis->rcItem.top;                                             // place image at top
+
+               _OOHG_Send( pSelf, s_lAdjustImages );
+               hb_vmSend( 0 );
+
+               if( hb_parl( -1 ) )
+               {
+                  dy = ( lpdis->rcItem.bottom - lpdis->rcItem.top );              // clip exceeding pixels or stretch image
+               }
+               else
+               {
+                  dy = cy;                                                        // use real size
+               }
             }
+
+            ImageList_DrawEx( oSelf->ImageList, iImage, lpdis->hDC, 0, y, cx, dy, CLR_DEFAULT, CLR_NONE, ILD_NORMAL );
          }
-
-         ImageList_DrawEx( oSelf->ImageList, iImage, lpdis->hDC, 0, y, cx, dy, CLR_DEFAULT, CLR_NONE, ILD_NORMAL );
       }
 
-      // Focused rectangle
-      if( lpdis->itemState & ODS_FOCUS )
-      {
-         DrawFocusRect( lpdis->hDC, &lpdis->rcItem );
-      }
+      hb_retl( TRUE );
    }
 }
 
@@ -659,6 +838,36 @@ HB_FUNC_STATIC( TLIST_EVENTS_MEASUREITEM )   // METHOD Events_MeasureItem( lPara
    lpmis->itemHeight = iSize;
 
    hb_retnl( 1 );
+}
+
+HB_FUNC_STATIC( TLIST_ITEMHEIGHT )   // METHOD ItemHeight()
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   HDC hDC;
+   HFONT hFont, hOldFont;
+   SIZE sz;
+   int iSize;
+
+   hDC = GetDC( oSelf->hWnd );
+
+   _OOHG_Send( pSelf, s_nTextHeight );
+   hb_vmSend( 0 );
+   iSize = hb_parni( -1 );
+
+   hFont = oSelf->hFontHandle;
+   hOldFont = ( HFONT ) SelectObject( hDC, hFont );
+   GetTextExtentPoint32( hDC, "_", 1, &sz );
+
+   SelectObject( hDC, hOldFont );
+   ReleaseDC( oSelf->hWnd, hDC );
+
+   if( iSize < sz.cy + 2 )
+   {
+      iSize = sz.cy + 2;
+   }
+
+   hb_retni( iSize );
 }
 
 #pragma ENDDUMP

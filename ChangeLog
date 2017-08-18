@@ -1,11 +1,64 @@
 /*
- * $Id: ChangeLog,v 1.1631 2017-08-12 19:00:52 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1632 2017-08-18 23:41:25 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2017-08-18 20:41 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   - ide_up_to_2013-08-13.zip
+   + include/hmg.ch
+     ; HMG and HMG Extended compatibility file.
+   * include/i_altsyntax.ch
+     * Changed placement of some auxiliary variables.
+     - Unused auxiliary variables.
+     + COLUMNWIDTH, MULTITAB and TABSWIDTH properties.
+     + BREAK translation.
+   * include/i_hmg_compat.ch
+     - BREAK translation.
+   * include/i_listbox.ch
+     + COLUMNWIDTH, MULTITAB and TABSWIDTH properties.
+     + ONDBLCLICK.
+     * Format.
+   * include/i_pseudofunc.ch
+     + Functions LB_String2Array, ISWINXPORLATER and ISVISTAORLATER.
+   * include/i_windefs.ch
+     + LB_SETCOLUMNWIDTH.
+   * manual/Changelog.htm
+     * Updated.
+   * resources/WindowsXP.Manifest
+   * resources/WindowsXP64.Manifest
+     * Added compatibility with all Windows versions.
+   * source/c_winapimisc.c
+     * Some format.
+     * Some casting.
+     * Updated function MEMORYSTATUS using api GlobalMemoryStatusEx.
+     * Functions CREATEFOLDER and SETCURRENTFOLDER now return .T. on success
+       or .F. on failure.
+     * Updated function WINVERSION to recognize Windows 10.
+     + Function GETCOMPACTPATH.
+       Truncates a path to fit within a certain number of characters by
+       replacing path components with ellipses.
+   * source/h_init.prg
+     + Initial value for _OOHG_Main_Icon var.
+   * source/h_listbox.prg
+     * Some format.
+     + Data lMultiTab and nColWidth.
+     + Support for MULTITAB and TABSWIDTH properties.
+     + Function LB_Array2String.
+     * Method AddItem and functions LISTBOXADDSTRING and LISTBOXADDSTRING2
+       now return the index of the item added or 0 if an error happened.
+     * Function LISTBOXGETSTRING: removed string length limitation.
+     + Function LISTBOXSETMULTITAB.
+     + Methods ItemHeight and ColumnWidth.
+     ! FocusRect is missing.
+   * source/h_winapimisc.prg
+     * Some format.
+     + Function _GetCompactPath.
+       Truncates a path to fit within a certain number of characters by
+       replacing path components with ellipses.
 
 2017-08-12 16:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/bostaurus.ch
@@ -40,8 +93,6 @@
      ! Typo.
    * ./oohg.hbc
      + Library bostaurus.
-   + include/hmg.ch
-     ; HMG and Extended compatibility file.
    * include/i_altsyntax.ch
      * Some auxiliary variable names changed.
      * Changed the variables in some defines.
