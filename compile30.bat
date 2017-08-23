@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: compile30.bat,v 1.1 2015-03-12 23:06:41 fyurisich Exp $
+rem $Id: compile30.bat,v 1.2 2017-08-23 00:10:47 fyurisich Exp $
 rem
 cls
 
@@ -27,4 +27,5 @@ shift
 :COMPILE
 
 rem *** Call Compiler Specific Batch File ***
+set HG_RC=%HG_ROOT%\resources\oohg_hb30.o
 call %HG_ROOT%\compile_mingw.bat %1 %2 %3 %4 %5 %6 %7 %8 %9

@@ -1,5 +1,5 @@
 <!--
-$Id: Changelog.htm,v 1.119 2017-08-18 23:41:26 fyurisich Exp $
+$Id: Changelog.htm,v 1.120 2017-08-23 00:11:03 fyurisich Exp $
 -->
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -142,6 +142,111 @@ CHANGELOG</div>
 </div>
 <div id="winchm_template_content">
 <pre>
+2017-08-22 21:10 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   - ./COPYING
+   - ./ChangeLog.001
+   - ./ChangeLog.002
+   - ./ChangeLog.003
+   - ./ChangeLog.004
+   + ./ChangeLog.txt
+   + ./ChangeLog_001.txt
+   + ./ChangeLog_002.txt
+   + ./ChangeLog_003.txt
+   + ./ChangeLog_004.txt
+   + ./LICENSE.txt
+     ; Added extension to enable file opening with doubleclick.
+   * ./compile30.bat
+   * ./compile32.bat
+   * ./compile_MINGW.BAT
+     * Use version specific object of rc file.
+   * distros/MakeDistro.bat
+     * Ignore harbour's uninstall.exe
+   * distros/MakeExclude.txt
+     + Some files.
+   + doc/Maintenance.txt
+     ; List of task to maintain docs up to date.
+   * doc/classes.txt
+     * Updated.
+   * ide/prgs/formedit.prg
+     + ListBox properties COLWIDTH, MULTITAB, TABSWIDTH and DRAGITEMS.
+     * Some format.
+   * include/bostaurus.ch
+     * Remove && comment.
+   * include/i_altsyntax.ch
+     + DRAGITEMS clause.
+     ! COLUMNWIDTH clause.
+   * include/i_listbox.ch
+     + DRAGITEMS clause.
+   * include/i_var.ch
+     * Format.
+   * include/i_windefs.ch
+     + ListBox constants related to drag and drop operations.
+     - LB_SETCOLUMNWIDTH constant.
+     * Some format.
+   * include/oohg.h
+     + Events_Drag to symbols table.
+   * manual/CLASSES.HTM
+   * manual/Changelog.htm
+   * manual/GRID.HTM
+   * manual/LISTBOX.HTM
+   * manual/OVERVIEW.HTM
+   * manual/TREE.HTM
+   * manual/XBROWSE.HTM
+     * Updated.
+   * manual/DO_REPORT.HTM
+   * manual/DRAW_IN_WINDOW.HTM
+   * manual/EDIT_EXTENTED.HTM
+   * manual/EDIT_WORKAREA.HTM
+   * manual/HBPRINTER.HTM
+   * manual/PLAYER.HTM
+   * manual/WAVE.HTM
+     ! Tag.
+   * resources/CompileRes.bat
+   * resources/CompileRes_mingw.bat
+     * Now can separatly compile resources for HB30 and HB32.
+     ; Compilation results on oohg_hb30.o or oohg_hb32.o
+     ; If you need oohg.o please rename de proper one.
+   + resources/dragdown.cur
+   + resources/dragup.cur
+   - resources/oohg.o
+     ; Rename oohg_hb30.o or oohg_hb32.o as oohg.o if needed.
+   * resources/oohg.rc
+     + MINIGUI_DRAGUP and MINIGUI_DRAGDOWN cursors.
+     * Format.
+   * resources/oohg.res
+     * Updated.
+   * resources/oohg_bcc.rc
+     + MINIGUI_DRAGUP and MINIGUI_DRAGDOWN cursors.
+     ! Missing resources.
+     * Format.
+   * source/bostaurus.prg
+     ! BCC errors.
+   * source/c_controlmisc.c
+     + Symbol Events_Drag.
+   * source/c_winapimisc.c
+     ! BCC errors.
+   * source/h_crypt.prg
+   * source/h_report.prg
+     * && replaced by //.
+   * source/h_init.prg
+     * _OOHG_AllVars size.
+     * Format.
+     + Initialization of Drag ListBox message.
+   * source/h_listbox.prg
+     + Support for DRAGITEMS clause.
+     + DATA DragItem and DATA DragTo.
+     + Methods Events_Drag, TopIndex and EnsureVisible.
+     * Method ItemHeight simplified.
+     ! TextHeight clause not working for text only listbox.
+     * Some format.
+     * Calls to SendMessage changed by calls to C functions.
+     + Functions _GETDDLMESSAGE, GET_DRAG_LIST_NOTIFICATION_CODE,
+       GET_DRAG_LIST_DRAGITEM, DRAG_LIST_DRAWINSERT, DRAG_LIST_MOVE_ITEMS,
+       LISTBOXSETTOPINDEX, LISTBOXGETTOPINDEX, LISTBOXGETCOUNT,
+       LISTBOXGETITEMHEIGHT and LISTBOXSETCOLUMNWIDTH
+   * source/h_windows.prg
+     + Support for Drag List notifications.
+
 2017-08-18 20:41 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    - ide_up_to_2013-08-13.zip
    + include/hmg.ch
@@ -2834,7 +2939,7 @@ CHANGELOG</div>
      ! Wrong value was set into ::nDelayedClick for LVN_BEGINDRAG
        notification.
 
-2015-05-10 03:09 UTC-0300 Fernando Yurisich  &lt;fyurisich@oohg.org&gt;
+2015-05-10 03:09 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * manual/changelog.htm
      * Updated.
    * source/h_xbrowse.prg

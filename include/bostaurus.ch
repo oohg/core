@@ -1,5 +1,5 @@
 /*
- * $Id: bostaurus.ch,v 1.4 2017-08-12 19:00:52 fyurisich Exp $
+ * $Id: bostaurus.ch,v 1.5 2017-08-23 00:10:49 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -230,7 +230,7 @@
 // Mode
 #define BT_BITMAP_REFLECT_HORIZONTAL               1
 #define BT_BITMAP_REFLECT_VERTICAL                 2
-#define BT_BITMAP_ROTATE                           4   // Angle = 0 To 360º   &&  Color_Fill_Bk = color to fill the empty spaces the background
+#define BT_BITMAP_ROTATE                           4   // Angle = 0 To 360º       Color_Fill_Bk = color to fill the empty spaces the background
 
 // BT_DRAW_HDC_PIXEL()
 // Action

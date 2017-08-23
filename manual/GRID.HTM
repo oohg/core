@@ -1,5 +1,5 @@
 <!--
-$Id: GRID.HTM,v 1.5 2016-05-22 23:52:47 fyurisich Exp $
+$Id: GRID.HTM,v 1.6 2017-08-23 00:11:03 fyurisich Exp $
 -->
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -26,12 +26,6 @@ xmlns="http://www.w3.org/TR/REC-html40">
 	font-size:12.0pt;
 	font-family:"Times New Roman";
 	mso-fareast-font-family:"Times New Roman";}
-span.SpellE
-	{mso-style-name:"";
-	mso-spl-e:yes;}
-span.GramE
-	{mso-style-name:"";
-	mso-gram-e:yes;}
 @page Section1
 	{size:612.0pt 792.0pt;
 	margin:70.85pt 3.0cm 70.85pt 3.0cm;
@@ -53,8 +47,8 @@ html {
 body {
 	padding: 0px;
 	margin: 0px;
-	overflow: auto; 
-	background-color: #FFFFFF; 
+	overflow: auto;
+	background-color: #FFFFFF;
 }
 
 #winchm_template_navigation{
@@ -72,12 +66,12 @@ body {
 	font-size: 10px;
 	font-style: normal;
 	font-weight: normal;
-	color: #626262; 
-	 
+	color: #626262;
+
 	border-bottom-style: solid;
 	border-bottom-width: 1px;
 	border-bottom-color: #DBDBDB;
-	
+
 	background-color: #E2EDFA;
 	width: auto;
 }
@@ -95,7 +89,7 @@ body {
 	font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
 	font-weight: bold;
 	font-size: 18px;
-	color: 353535;	
+	color: 353535;
 
 	margin-top: 0px;
 	margin-left: 0px;
@@ -106,7 +100,7 @@ body {
 	padding-left: 5px;
 	padding-bottom: 10px;
 	padding-right: 10px;
-	
+
 	border-bottom-style: solid;
 	border-bottom-width: 1px;
 	border-bottom-color: #C7C7C7;
@@ -131,7 +125,7 @@ body {
 	border-width: 1px;
 	border-color: #c0c0c0;
 	border-top-style: solid;
-	
+
 	margin-top: 0px;
 	margin-left: 15px;
 	margin-bottom: 5px;
@@ -146,8 +140,8 @@ body {
 	font-size: 9px;
 	color: #909090;
 
-	text-align: left;	
-	width: auto;	
+	text-align: left;
+	width: auto;
 }
 
 #winchm_template_navigation a:link	{text-decoration: none;color: #0000ff}
@@ -174,595 +168,312 @@ visibility:hidden;
 <div id="winchm_template_title">
 <div id="winchm_template_button"><A href="FRAME.HTM" title="Previous topic"><img id="winchm_template_prev" alt="Previous topic" src="template4/btn_prev_n.gif" border="0"></a><A href="HOTKEY.HTM" title="Next topic"><img id="winchm_template_next" alt="Next topic" src="template4/btn_next_n.gif" border="0"></a></div>
 GRID</div>
-<div id="winchm_template_navigation">Help &gt; 
+<div id="winchm_template_navigation">Help &gt;
 Controls &gt; </div>
 <div id="winchm_template_content">
 
 <div class=Section1>
 
-<p class=MsoNormal><span lang=ES style="COLOR: darkgreen; mso-ansi-language: ES">///////////////////////////////////////////////////////////////////////////////
-<br>
-// GRID (STANDARD VERSION)<br>
+<PRE>
+<span style='color:darkgreen'><b>
 ///////////////////////////////////////////////////////////////////////////////
-<br>
-</span><span lang=ES style="COLOR: gray; mso-ansi-language: ES"><br>
-</span><span lang=ES style="COLOR: black; mso-ansi-language: ES">#<span
- class=SpellE>command</span>&nbsp;@&nbsp;&lt;<span class=SpellE>row</span>&gt;,&lt;col&gt;&nbsp;GRID&nbsp;&lt;<span
- class=SpellE>name</span>&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;&nbsp; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[&nbsp;OBJ&nbsp;&lt;<span class=SpellE>obj</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;&lt;dummy1:&nbsp;OF,&nbsp;PARENT&gt;&nbsp;&lt;<span
- class=SpellE>parent</span>&gt;&nbsp;]&nbsp;; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;WIDTH&nbsp;&lt;w&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;HEIGHT&nbsp;&lt;h&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;HEADERS&nbsp;&lt;<span
- class=SpellE>headers</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;WIDTHS&nbsp;&lt;<span
- class=SpellE>widths</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-;&nbsp; <br>
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;INPUTMASK&nbsp;&lt;Picture&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;ITEMS&nbsp;&lt;<span
- class=SpellE>rows</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;VALUE&nbsp;&lt;<span
- class=SpellE>value</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;FONT&nbsp;&lt;<span
- class=SpellE>fontname</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;SIZE&nbsp;&lt;<span
- class=SpellE>fontsize</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;&lt;<span class=SpellE>bold</span>&nbsp;:&nbsp;BOLD&gt;&nbsp;]&nbsp;;
-<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;&lt;<span class=SpellE>italic</span>&nbsp;:&nbsp;ITALIC&gt;&nbsp;]&nbsp;;
-<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;&lt;<span class=SpellE>underline</span>&nbsp;:&nbsp;UNDERLINE&gt;&nbsp;]&nbsp;;
-<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;&lt;<span class=SpellE>strikeout</span>&nbsp;:&nbsp;STRIKEOUT&gt;&nbsp;]&nbsp;;
-<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;TOOLTIP&nbsp;&lt;<span
- class=SpellE>tooltip</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;BACKCOLOR&nbsp;&lt;<span
- class=SpellE>backcolor</span>&gt;&nbsp;]&nbsp;; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;FONTCOLOR&nbsp;&lt;<span
- class=SpellE>fontcolor</span>&gt;&nbsp;]&nbsp;;&nbsp; <br>
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;DYNAMICBACKCOLOR&nbsp;&lt;<span class=SpellE>dynamicbackcolor</span>&gt;&nbsp;]&nbsp;;
-<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;DYNAMICFORECOLOR&nbsp;&lt;<span
- class=SpellE>dynamicforecolor</span>&gt;&nbsp;]&nbsp;; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;ON&nbsp;GOTFOCUS&nbsp;&lt;<span
- class=SpellE>gotfocus</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;ON&nbsp;CHANGE&nbsp;&lt;<span
- class=SpellE>change</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;ON&nbsp;LOSTFOCUS&nbsp;&lt;<span
- class=SpellE>lostfocus</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;ON&nbsp;DBLCLICK&nbsp;&lt;<span
- class=SpellE>dblclick</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;ON&nbsp;HEADCLICK&nbsp;&lt;<span
- class=SpellE>aHeadClick</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;&lt;<span class=SpellE>edit</span>&nbsp;:&nbsp;EDIT&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;&lt;<span class=SpellE>ownerdata</span>:&nbsp;VIRTUAL&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;ITEMCOUNT&nbsp;&lt;<span
- class=SpellE>itemcount</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;ON&nbsp;QUERYDATA&nbsp;&lt;<span
- class=SpellE>dispinfo</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;&lt;<span class=SpellE>multiselect</span>:&nbsp;MULTISELECT&gt;&nbsp;]&nbsp;&nbsp;&nbsp;
-;&nbsp; <br>
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;&lt;<span class=SpellE>style</span>:&nbsp;NOLINES&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-;&nbsp; <br>
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;IMAGE&nbsp;&lt;<span class=SpellE>aImage</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-;&nbsp; <br>
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;JUSTIFY&nbsp;&lt;<span class=SpellE>aJust</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;HELPID&nbsp;&lt;<span
- class=SpellE>helpid</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;&lt;<span class=SpellE>break</span>:&nbsp;BREAK&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-;&nbsp; <br>
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;&lt;<span class=SpellE>rtl</span>:&nbsp;RTL&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-;&nbsp; <br>
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;&lt;<span class=SpellE>inplace</span>:&nbsp;INPLACE&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-;&nbsp; <br>
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;COLUMNCONTROLS&nbsp;&lt;<span class=SpellE>editcontrols</span>&gt;&nbsp;]&nbsp;;
-<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;READONLY&nbsp;&lt;<span
- class=SpellE>aReadOnly</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;VALID&nbsp;&lt;<span
- class=SpellE>aValidFields</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;VALIDMESSAGES&nbsp;&lt;<span
- class=SpellE>aValidMessages</span>&gt;&nbsp;]&nbsp;;&nbsp; <br>
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;ON&nbsp;EDITCELL&nbsp;&lt;<span class=SpellE>editcell</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-;&nbsp; <br>
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;&lt;dummy2:&nbsp;WHEN,&nbsp;COLUMNWHEN&gt;&nbsp;&lt;<span class=SpellE>aWhenFields</span>&gt;&nbsp;]&nbsp;;&nbsp;
-<br>
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;SUBCLASS&nbsp;&lt;<span class=SpellE>subclass</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-;&nbsp; <br>
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;&lt;<span class=SpellE>disabled</span>:&nbsp;DISABLED&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-;&nbsp; <br>
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;&lt;<span class=SpellE>notabstop</span>:&nbsp;NOTABSTOP&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-;&nbsp; <br>
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;&lt;invisible:&nbsp;INVISIBLE&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;
-<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
- class=GramE>[ ON</span> ENTER &lt;<span class=SpellE>enter</span>&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
- class=GramE>[ HEADERIMAGES</span> &lt;<span class=SpellE>aHeaderImages</span>&gt;
-] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
- class=GramE>[ IMAGESALIGN</span> &lt;<span class=SpellE>aImgAlign</span>&gt; ]
-;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
- class=SpellE><span class=GramE>fullmove</span></span>: FULLMOVE&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
- class=SpellE><span class=GramE>bycell</span></span>: NAVIGATEBYCELL&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
- class=GramE>[ SELECTEDCOLORS</span> &lt;<span class=SpellE>aSelectedColors</span>&gt;
-] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
- class=GramE>[ EDITKEYS</span> &lt;<span class=SpellE>aEditKeys</span>&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
- class=SpellE><span class=GramE>checkboxes</span></span>: CHECKBOXES&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
- class=GramE>[ ON</span> CHECKCHANGE &lt;<span class=SpellE>checkchange</span>&gt;
-] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
- class=SpellE><span class=GramE>bffr</span></span>: DOUBLEBUFFER,
-SINGLEBUFFER&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
- class=SpellE><span class=GramE>focus</span></span>: NOFOCUSRECT, FOCUSRECT&gt;
-] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
- class=SpellE><span class=GramE>plm</span></span>: PAINTLEFTMARGIN&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
- class=SpellE><span class=GramE>fixedcols</span></span>: FIXEDCOLS&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
- class=GramE>[ ON</span> ABORTEDIT &lt;<span class=SpellE>abortedit</span>&gt; ]
-;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
- class=SpellE><span class=GramE>fixedwidths</span></span>: FIXEDWIDTHS&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp; </span>=&gt;;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
- class=SpellE><span class=GramE>obj</span></span>&gt; := ] _<span class=SpellE>OOHG_SelectSubClass</span>(<span
- class=SpellE>iif</span>( &lt;.bycell.&gt;, <span class=SpellE>TGridByCell</span>(),
-<span class=SpellE>iif</span>( &lt;.multiselect.&gt;, <span class=SpellE>TGridMulti</span>(),
-<span class=SpellE>TGrid</span>() ) ), [ &lt;<span class=SpellE>subclass</span>&gt;()
-] ): ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>Define( &lt;(<span class=SpellE>name</span>)&gt;, &lt;(parent)&gt;,
-&lt;col&gt;, &lt;<span class=SpellE>row</span>&gt;, &lt;w&gt;, &lt;h&gt;, &lt;<span
- class=SpellE>headers</span><span class=GramE>&gt;, ;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;<span class=GramE>widths</span>&gt;, &lt;rows&gt;, &lt;<span
- class=SpellE>value</span>&gt;, &lt;fontname&gt;, &lt;fontsize&gt;, &lt;<span
- class=SpellE>tooltip</span>&gt;, ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;{<span class=GramE>change</span>}&gt;, &lt;{dblclick}&gt;, &lt;<span
- class=SpellE>aHeadClick</span>&gt;, &lt;{gotfocus}&gt;, &lt;{lostfocus}&gt;, ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;.<span class=SpellE>style</span>.&gt;, &lt;aImage&gt;,
-&lt;aJust&gt;, &lt;.<span class=SpellE>break</span>.&gt;, &lt;helpid&gt;,
-&lt;.bold.<span class=GramE>&gt;, ;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;.<span class=SpellE>italic</span>.&gt;, &lt;.underline.&gt;,
-&lt;.strikeout.&gt;, &lt;.<span class=SpellE>ownerdata</span>.&gt;,
-&lt;{dispinfo}<span class=GramE>&gt;, ;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;<span class=GramE>itemcount</span>&gt;, &lt;.<span class=SpellE>edit</span>.&gt;,
-&lt;backcolor&gt;, &lt;fontcolor&gt;, &lt;<span class=SpellE>dynamicbackcolor</span>&gt;,
-;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;<span class=GramE>dynamicforecolor</span>&gt;, &lt;Picture&gt;,
-&lt;.<span class=SpellE>rtl</span>.&gt;, &lt;.inplace.&gt;, &lt;editcontrols&gt;,
-;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;<span class=SpellE><span class=GramE>aReadOnly</span></span>&gt;,
-&lt;aValidFields&gt;, &lt;aValidMessages&gt;, &lt;{<span class=SpellE>editcell</span>}&gt;,
-;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;<span class=GramE>aWhenFields</span>&gt;, &lt;.disabled.&gt;, &lt;.<span
- class=SpellE>notabstop</span>.&gt;, &lt;.invisible.&gt;, ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>! &lt;.noshowheaders.&gt;, &lt;{<span class=SpellE>enter</span>}&gt;,
-&lt;aHeaderImages&gt;, &lt;aImgAlign&gt;, &lt;.<span class=SpellE>fullmove</span>.<span
- class=GramE>&gt;, ;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&lt;<span
- class=GramE>aSelectedColors</span>&gt;, &lt;aEditKeys&gt;, &lt;.<span
- class=SpellE>checkboxes</span>.&gt;, &lt;{checkchange}&gt;, ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span class=SpellE>iif</span>( <span class=SpellE>upper</span>( #&lt;<span
- class=SpellE>bffr</span>&gt; ) == "DOUBLEBUFFER", .T., <span
- class=SpellE>iif</span>( <span class=SpellE>upper</span>( #&lt;<span
- class=SpellE>bffr</span>&gt; ) == "SINGLEBUFFER", .F., .T. ) ), ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span class=SpellE><span class=GramE>iif</span></span>( #&lt;<span
- class=SpellE>focus</span>&gt; == "NOFOCUSRECT", .F., <span
- class=SpellE>iif</span>( #&lt;<span class=SpellE>focus</span>&gt; == "FOCUSRECT",
-.T., NIL ) ), ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;.<span class=SpellE>plm</span>.&gt;, &lt;.fixedcols.&gt;, <span
- class=GramE>&lt;{</span>abortedit}&gt;, &lt;{click}&gt;, &lt;.fixedwidths.&gt;
-)<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: gray; mso-ansi-language: ES"><br>
-</span><span lang=ES style="COLOR: darkgreen; mso-ansi-language: ES">///////////////////////////////////////////////////////////////////////////////
-<br>
-// GRID (SPLITBOX VERSION) <br>
+// GRID
 ///////////////////////////////////////////////////////////////////////////////
-<br>
-</span><span lang=ES style="COLOR: gray; mso-ansi-language: ES"><br>
-</span><span lang=ES style="COLOR: black; mso-ansi-language: ES">#<span
- class=SpellE>command</span>&nbsp;GRID&nbsp;&lt;<span class=SpellE>name</span>&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[&nbsp;OBJ&nbsp;&lt;<span class=SpellE>obj</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;&lt;dummy1:&nbsp;OF,&nbsp;PARENT&gt;&nbsp;&lt;<span
- class=SpellE>parent</span>&gt;&nbsp;]&nbsp;; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;WIDTH&nbsp;&lt;w&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;HEIGHT&nbsp;&lt;h&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;HEADERS&nbsp;&lt;<span
- class=SpellE>headers</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;WIDTHS&nbsp;&lt;<span
- class=SpellE>widths</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[&nbsp;INPUTMASK&nbsp;&lt;Picture&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;ITEMS&nbsp;&lt;<span
- class=SpellE>rows</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;VALUE&nbsp;&lt;<span
- class=SpellE>value</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;FONT&nbsp;&lt;<span
- class=SpellE>fontname</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;SIZE&nbsp;&lt;<span
- class=SpellE>fontsize</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;&lt;<span class=SpellE>bold</span>&nbsp;:&nbsp;BOLD&gt;&nbsp;]&nbsp;;
-<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;&lt;<span class=SpellE>italic</span>&nbsp;:&nbsp;ITALIC&gt;&nbsp;]&nbsp;;
-<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;&lt;<span class=SpellE>underline</span>&nbsp;:&nbsp;UNDERLINE&gt;&nbsp;]&nbsp;;
-<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;&lt;<span class=SpellE>strikeout</span>&nbsp;:&nbsp;STRIKEOUT&gt;&nbsp;]&nbsp;;
-<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;TOOLTIP&nbsp;&lt;<span
- class=SpellE>tooltip</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;BACKCOLOR&nbsp;&lt;<span
- class=SpellE>backcolor</span>&gt;&nbsp;]&nbsp;; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;FONTCOLOR&nbsp;&lt;<span
- class=SpellE>fontcolor</span>&gt;&nbsp;]&nbsp;; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[&nbsp;DYNAMICBACKCOLOR&nbsp;&lt;<span class=SpellE>dynamicbackcolor</span>&gt;&nbsp;]&nbsp;;
-<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;DYNAMICFORECOLOR&nbsp;&lt;<span
- class=SpellE>dynamicforecolor</span>&gt;&nbsp;]&nbsp;; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;ON&nbsp;GOTFOCUS&nbsp;&lt;<span
- class=SpellE>gotfocus</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;ON&nbsp;CHANGE&nbsp;&lt;<span
- class=SpellE>change</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;ON&nbsp;LOSTFOCUS&nbsp;&lt;<span
- class=SpellE>lostfocus</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;ON&nbsp;DBLCLICK&nbsp;&lt;<span
- class=SpellE>dblclick</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;ON&nbsp;HEADCLICK&nbsp;&lt;<span
- class=SpellE>aHeadClick</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;&lt;<span class=SpellE>edit</span>&nbsp;:&nbsp;EDIT&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;&lt;<span class=SpellE>ownerdata</span>:&nbsp;VIRTUAL&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;ITEMCOUNT&nbsp;&lt;<span
- class=SpellE>itemcount</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;ON&nbsp;QUERYDATA&nbsp;&lt;<span
- class=SpellE>dispinfo</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;&lt;<span class=SpellE>multiselect</span>:&nbsp;MULTISELECT&gt;&nbsp;]&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[&nbsp;&lt;<span class=SpellE>style</span>:&nbsp;NOLINES&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[&nbsp;IMAGE&nbsp;&lt;<span class=SpellE>aImage</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[&nbsp;JUSTIFY&nbsp;&lt;<span class=SpellE>aJust</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;HELPID&nbsp;&lt;<span
- class=SpellE>helpid</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;&lt;<span class=SpellE>break</span>:&nbsp;BREAK&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[&nbsp;&lt;<span class=SpellE>rtl</span>:&nbsp;RTL&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[&nbsp;&lt;<span class=SpellE>inplace</span>:&nbsp;INPLACE&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[&nbsp;COLUMNCONTROLS&nbsp;&lt;<span class=SpellE>editcontrols</span>&gt;&nbsp;]&nbsp;;
-<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;READONLY&nbsp;&lt;<span
- class=SpellE>aReadOnly</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;VALID&nbsp;&lt;<span
- class=SpellE>aValidFields</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;VALIDMESSAGES&nbsp;&lt;<span
- class=SpellE>aValidMessages</span>&gt;&nbsp;]&nbsp;; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[&nbsp;ON&nbsp;EDITCELL&nbsp;&lt;<span class=SpellE>editcell</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[&nbsp;&lt;dummy2:&nbsp;WHEN,&nbsp;COLUMNWHEN&gt;&nbsp;&lt;<span class=SpellE>aWhenFields</span>&gt;&nbsp;]&nbsp;;
-<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[&nbsp;SUBCLASS&nbsp;&lt;<span class=SpellE>subclass</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[&nbsp;&lt;<span class=SpellE>disabled</span>:&nbsp;DISABLED&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[&nbsp;&lt;<span class=SpellE>notabstop</span>:&nbsp;NOTABSTOP&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[&nbsp;&lt;invisible:&nbsp;INVISIBLE&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;
-<br>
-<span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ ON ENTER
-&lt;<span class=SpellE>enter</span>&gt; ] ;<o:p></o:p></span></p>
+</b></span>
 
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
- class=GramE>[ HEADERIMAGES</span> &lt;<span class=SpellE>aHeaderImages</span>&gt;
-] ;<o:p></o:p></span></p>
+/*---------------------------------------------------------------------------
+STANDARD VERSION
+---------------------------------------------------------------------------*/
 
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
- class=GramE>[ IMAGESALIGN</span> &lt;<span class=SpellE>aImgAlign</span>&gt; ]
-;<o:p></o:p></span></p>
+#command @ &lt;row&gt;, &lt;col&gt; GRID &lt;name&gt; ;
+      [ OBJ &lt;obj&gt; ] ;
+      [ &lt;dummy01: OF, PARENT&gt; &lt;parent&gt; ] ;
+      [ WIDTH &lt;w&gt; ] ;
+      [ HEIGHT &lt;h&gt; ] ;
+      [ HEADERS &lt;headers&gt; ] ;
+      [ WIDTHS &lt;widths&gt; ] ;
+      [ INPUTMASK &lt;Picture&gt; ] ;
+      [ ITEMS &lt;rows&gt; ] ;
+      [ VALUE &lt;value&gt; ] ;
+      [ FONT &lt;fontname&gt; ] ;
+      [ SIZE &lt;fontsize&gt; ] ;
+      [ &lt;bold: BOLD&gt; ] ;
+      [ &lt;italic: ITALIC&gt; ] ;
+      [ &lt;underline: UNDERLINE&gt; ] ;
+      [ &lt;strikeout: STRIKEOUT&gt; ] ;
+      [ TOOLTIP &lt;tooltip&gt; ] ;
+      [ BACKCOLOR &lt;backcolor&gt; ] ;
+      [ FONTCOLOR &lt;fontcolor&gt; ] ;
+      [ DYNAMICBACKCOLOR &lt;dynamicbackcolor&gt; ] ;
+      [ DYNAMICFORECOLOR &lt;dynamicforecolor&gt; ] ;
+      [ &lt;dummy02: ONGOTFOCUS, ON GOTFOCUS&gt; &lt;gotfocus&gt; ] ;
+      [ &lt;dummy03: ONCHANGE, ON CHANGE&gt; &lt;change&gt; ] ;
+      [ &lt;dummy04: ONLOSTFOCUS, ON LOSTFOCUS&gt; &lt;lostfocus&gt; ] ;
+      [ &lt;dummy05: ONDBLCLICK, ON DBLCLICK&gt; &lt;dblclick&gt; ] ;
+      [ &lt;dummy06: ACTION, ONCLICK, ON CLICK&gt; &lt;click&gt; ] ;
+      [ &lt;dummy07: ONHEADCLICK, ON HEADCLICK&gt; &lt;aHeadClick&gt; ] ;
+      [ &lt;edit: EDIT&gt; ] ;
+      [ &lt;ownerdata: VIRTUAL&gt; ] ;
+      [ ITEMCOUNT &lt;itemcount&gt; ] ;
+      [ &lt;dummy08: ONQUERYDATA, ON QUERYDATA&gt; &lt;dispinfo&gt; ] ;
+      [ &lt;multiselect: MULTISELECT&gt; ] ;
+      [ &lt;style: NOLINES&gt; ] ;
+      [ IMAGE &lt;aImage&gt; ] ;
+      [ JUSTIFY &lt;aJust&gt; ] ;
+      [ HELPID &lt;helpid&gt; ] ;
+      [ &lt;break: BREAK&gt; ] ;
+      [ &lt;rtl: RTL&gt; ] ;
+      [ &lt;inplace: INPLACE&gt; ] ;
+      [ COLUMNCONTROLS &lt;editcontrols&gt; ] ;
+      [ READONLY &lt;aReadOnly&gt; ] ;
+      [ &lt;dummy20: VALID, COLUMNVALID&gt; &lt;aValidFields&gt; ] ;
+      [ VALIDMESSAGES &lt;aValidMessages&gt; ] ;
+      [ &lt;dummy09: ONEDITCELL, ON EDITCELL&gt; &lt;editcell&gt; ] ;
+      [ &lt;noshowheaders: NOHEADERS&gt; ] ;
+      [ &lt;dummy10: WHEN, COLUMNWHEN&gt; &lt;aWhenFields&gt; ] ;
+      [ SUBCLASS &lt;subclass&gt; ] ;
+      [ &lt;disabled: DISABLED&gt; ] ;
+      [ &lt;notabstop: NOTABSTOP&gt; ] ;
+      [ &lt;invisible: INVISIBLE&gt; ] ;
+      [ &lt;dummy11: ONENTER, ON ENTER&gt; &lt;enter&gt; ] ;
+      [ HEADERIMAGES &lt;aHeaderImages&gt; ] ;
+      [ IMAGESALIGN &lt;aImgAlign&gt; ] ;
+      [ &lt;fullmove: FULLMOVE&gt; ] ;
+      [ &lt;bycell: NAVIGATEBYCELL&gt; ] ;
+      [ SELECTEDCOLORS &lt;aSelectedColors&gt; ] ;
+      [ EDITKEYS &lt;aEditKeys&gt; ] ;
+      [ &lt;checkboxes: CHECKBOXES&gt; ] ;
+      [ &lt;dummy12: ONCHECKCHANGE, ON CHECKCHANGE&gt; &lt;checkchange&gt; ] ;
+      [ &lt;bffr: DOUBLEBUFFER, SINGLEBUFFER&gt; ] ;
+      [ &lt;focus: NOFOCUSRECT, FOCUSRECT&gt; ] ;
+      [ &lt;plm: PAINTLEFTMARGIN&gt; ] ;
+      [ &lt;fixedcols: FIXEDCOLS&gt; ] ;
+      [ &lt;dummy13: ONABORTEDIT, ON ABORTEDIT&gt; &lt;abortedit&gt; ] ;
+      [ &lt;fixedwidths: FIXEDWIDTHS&gt; ] ;
+      [ BEFORECOLMOVE &lt;bBefMov&gt; ] ;
+      [ AFTERCOLMOVE &lt;bAftMov&gt; ] ;
+      [ BEFORECOLSIZE &lt;bBefSiz&gt; ] ;
+      [ AFTERCOLSIZE &lt;bAftSiz&gt; ] ;
+      [ BEFOREAUTOFIT &lt;bBefAut&gt; ] ;
+      [ &lt;excel: EDITLIKEEXCEL&gt; ] ;
+      [ &lt;buts: USEBUTTONS&gt; ] ;
+      [ &lt;delete: DELETE&gt; ] ;
+      [ DELETEWHEN &lt;bWhenDel&gt; ] ;
+      [ DELETEMSG &lt;DelMsg&gt; ] ;
+      [ &lt;dummy14: ONDELETE, ON DELETE&gt; &lt;onDelete&gt; ] ;
+      [ &lt;nodelmsg: NODELETEMSG&gt; ] ;
+      [ &lt;append: APPEND&gt; ] ;
+      [ &lt;dummy15: ONAPPEND, ON APPEND&gt; &lt;onappend&gt; ] ;
+      [ &lt;nomodal: NOMODALEDIT&gt; ] ;
+      [ &lt;edtctrls: FIXEDCONTROLS, DYNAMICCONTROLS&gt; ] ;
+      [ &lt;dummy16: ONHEADRCLICK, ON HEADRCLICK&gt; &lt;bheadrclick&gt; ] ;
+      [ &lt;noclick: NOCLICKONCHECKBOX&gt; ] ;
+      [ &lt;norclick: NORCLICKONCHECKBOX&gt; ] ;
+      [ &lt;extdbl: EXTDBLCLICK&gt; ] ;
+      [ &lt;silent: SILENT&gt; ] ;
+      [ &lt;alta: ENABLEALTA, DISABLEALTA&gt; ] ;
+      [ &lt;noshow: NOSHOWALWAYS&gt; ] ;
+      [ &lt;none: NONEUNSELS, IGNORENONE&gt; ] ;
+      [ &lt;cbe: CHANGEBEFOREEDIT&gt; ] ;
+      [ &lt;dummy17: ONRCLICK, ON RCLICK&gt; &lt;rclick&gt; ] ;
+      [ &lt;dummy18: ONINSERT, ON INSERT&gt; &lt;oninsert&gt; ] ;
+      [ &lt;dummy19: ONEDITCELLEND, ON EDITCELLEND&gt; &lt;editend&gt; ] ;
+      [ &lt;efv: EDITFIRSTVISIBLE&gt; ] ;
+      [ &lt;dummy20: ONBEFOREEDITCELL, ON BEFOREEDITCELL&gt; &lt;beforedit&gt; ] ;
+   =&gt;;
+      [ &lt;obj&gt; := ] _OOHG_SelectSubClass( IIF( &lt;.bycell.&gt;, TGridByCell(), ;
+            IIF( &lt;.multiselect.&gt;, TGridMulti(), TGrid() ) ), ;
+            [ &lt;subclass&gt;() ] ):Define( &lt;(name)&gt;, &lt;(parent)&gt;, &lt;col&gt;, &lt;row&gt;, ;
+            &lt;w&gt;, &lt;h&gt;, &lt;headers&gt;, &lt;widths&gt;, &lt;rows&gt;, &lt;value&gt;, &lt;fontname&gt;, ;
+            &lt;fontsize&gt;, &lt;tooltip&gt;, &lt;{change}&gt;, &lt;{dblclick}&gt;, &lt;aHeadClick&gt;, ;
+            &lt;{gotfocus}&gt;, &lt;{lostfocus}&gt;, &lt;.style.&gt;, &lt;aImage&gt;, &lt;aJust&gt;, ;
+            &lt;.break.&gt;, &lt;helpid&gt;, &lt;.bold.&gt;, &lt;.italic.&gt;, &lt;.underline.&gt;, ;
+            &lt;.strikeout.&gt;, &lt;.ownerdata.&gt;, &lt;{dispinfo}&gt;, &lt;itemcount&gt;, &lt;.edit.&gt;, ;
+            &lt;backcolor&gt;, &lt;fontcolor&gt;, &lt;dynamicbackcolor&gt;, &lt;dynamicforecolor&gt;, ;
+            &lt;Picture&gt;, &lt;.rtl.&gt;, &lt;.inplace.&gt;, &lt;editcontrols&gt;, &lt;aReadOnly&gt;, ;
+            &lt;aValidFields&gt;, &lt;aValidMessages&gt;, &lt;{editcell}&gt;, &lt;aWhenFields&gt;, ;
+            &lt;.disabled.&gt;, &lt;.notabstop.&gt;, &lt;.invisible.&gt;, ! &lt;.noshowheaders.&gt;, ;
+            &lt;{enter}&gt;, &lt;aHeaderImages&gt;, &lt;aImgAlign&gt;, &lt;.fullmove.&gt;, ;
+            &lt;aSelectedColors&gt;, &lt;aEditKeys&gt;, &lt;.checkboxes.&gt;, &lt;{checkchange}&gt;, ;
+            IIF( Upper( #&lt;bffr&gt; ) == "DOUBLEBUFFER", .T., ;
+            IIF( Upper( #&lt;bffr&gt; ) == "SINGLEBUFFER", .F., .T. ) ), ;
+            IIF( #&lt;focus&gt; == "NOFOCUSRECT", .F., ;
+            IIF( #&lt;focus&gt; == "FOCUSRECT", .T., NIL ) ), ;
+            &lt;.plm.&gt;, &lt;.fixedcols.&gt;, &lt;{abortedit}&gt;, &lt;{click}&gt;, &lt;.fixedwidths.&gt;, ;
+            &lt;{bBefMov}&gt;, &lt;{bAftMov}&gt;, &lt;{bBefSiz}&gt;, &lt;{bAftSiz}&gt;, &lt;{bBefAut}&gt;, ;
+            &lt;.excel.&gt;, &lt;.buts.&gt;, &lt;.delete.&gt;, &lt;{onDelete}&gt;, &lt;{bWhenDel}&gt;, ;
+            &lt;DelMsg&gt;, &lt;.nodelmsg.&gt;, &lt;.append.&gt;, &lt;{onappend}&gt;, &lt;.nomodal.&gt;, ;
+            IIF( Upper( #&lt;edtctrls&gt; ) == "FIXEDCONTROLS", .T., ;
+            IIF( Upper( #&lt;edtctrls&gt; ) == "DYNAMICCONTROLS", .F., NIL ) ), ;
+            &lt;{bheadrclick}&gt;, ! &lt;.noclick.&gt;, ! &lt;.norclick.&gt;, &lt;.extdbl.&gt;, ;
+            &lt;.silent.&gt;, Upper( #&lt;alta&gt; ) == "ENABLEALTA", &lt;.noshow.&gt;, ;
+            Upper( #&lt;none&gt; ) == "NONEUNSELS", &lt;.cbe.&gt;, &lt;{rclick}&gt;, ;
+            &lt;{oninsert}&gt;, &lt;{editend}&gt;, ! &lt;.efv.&gt;, &lt;{beforedit}&gt; )
 
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
- class=SpellE><span class=GramE>fullmove</span></span>: FULLMOVE&gt; ] ;<o:p></o:p></span></p>
+/*---------------------------------------------------------------------------
+SPLITBOX VERSION
+---------------------------------------------------------------------------*/
 
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
- class=SpellE><span class=GramE>bycell</span></span>: NAVIGATEBYCELL&gt; ] ;<o:p></o:p></span></p>
+#command GRID &lt;name&gt; ;
+      [ OBJ &lt;obj&gt; ] ;
+      [ &lt;dummy01: OF, PARENT&gt; &lt;parent&gt; ] ;
+      [ WIDTH &lt;w&gt; ] ;
+      [ HEIGHT &lt;h&gt; ] ;
+      [ HEADERS &lt;headers&gt; ] ;
+      [ WIDTHS &lt;widths&gt; ] ;
+      [ INPUTMASK &lt;Picture&gt; ] ;
+      [ ITEMS &lt;rows&gt; ] ;
+      [ VALUE &lt;value&gt; ] ;
+      [ FONT &lt;fontname&gt; ] ;
+      [ SIZE &lt;fontsize&gt; ] ;
+      [ &lt;bold: BOLD&gt; ] ;
+      [ &lt;italic: ITALIC&gt; ] ;
+      [ &lt;underline: UNDERLINE&gt; ] ;
+      [ &lt;strikeout: STRIKEOUT&gt; ] ;
+      [ TOOLTIP &lt;tooltip&gt; ] ;
+      [ BACKCOLOR &lt;backcolor&gt; ] ;
+      [ FONTCOLOR &lt;fontcolor&gt; ] ;
+      [ DYNAMICBACKCOLOR &lt;dynamicbackcolor&gt; ] ;
+      [ DYNAMICFORECOLOR &lt;dynamicforecolor&gt; ] ;
+      [ &lt;dummy02: ONGOTFOCUS, ON GOTFOCUS&gt; &lt;gotfocus&gt; ] ;
+      [ &lt;dummy03: ONCHANGE, ON CHANGE&gt; &lt;change&gt; ] ;
+      [ &lt;dummy04: ONLOSTFOCUS, ON LOSTFOCUS&gt; &lt;lostfocus&gt; ] ;
+      [ &lt;dummy05: ONDBLCLICK, ON DBLCLICK&gt; &lt;dblclick&gt; ] ;
+      [ &lt;dummy06: ACTION, ONCLICK, ON CLICK&gt; &lt;click&gt; ] ;
+      [ &lt;dummy07: ONHEADCLICK, ON HEADCLICK&gt; &lt;aHeadClick&gt; ] ;
+      [ &lt;edit: EDIT&gt; ] ;
+      [ &lt;ownerdata: VIRTUAL&gt; ] ;
+      [ ITEMCOUNT &lt;itemcount&gt; ] ;
+      [ &lt;dummy08: ONQUERYDATA, ON QUERYDATA&gt; &lt;dispinfo&gt; ] ;
+      [ &lt;multiselect: MULTISELECT&gt; ] ;
+      [ &lt;style: NOLINES&gt; ] ;
+      [ IMAGE &lt;aImage&gt; ] ;
+      [ JUSTIFY &lt;aJust&gt; ] ;
+      [ HELPID &lt;helpid&gt; ] ;
+      [ &lt;break: BREAK&gt; ] ;
+      [ &lt;rtl: RTL&gt; ] ;
+      [ &lt;inplace: INPLACE&gt; ] ;
+      [ COLUMNCONTROLS &lt;editcontrols&gt; ] ;
+      [ READONLY &lt;aReadOnly&gt; ] ;
+      [ &lt;dummy20: VALID, COLUMNVALID&gt; &lt;aValidFields&gt; ] ;
+      [ VALIDMESSAGES &lt;aValidMessages&gt; ] ;
+      [ &lt;dummy09: ONEDITCELL, ON EDITCELL&gt; &lt;editcell&gt; ] ;
+      [ &lt;noshowheaders: NOHEADERS&gt; ] ;
+      [ &lt;dummy10: WHEN, COLUMNWHEN&gt; &lt;aWhenFields&gt; ] ;
+      [ SUBCLASS &lt;subclass&gt; ] ;
+      [ &lt;disabled: DISABLED&gt; ] ;
+      [ &lt;notabstop: NOTABSTOP&gt; ] ;
+      [ &lt;invisible: INVISIBLE&gt; ] ;
+      [ &lt;dummy11: ONENTER, ON ENTER&gt; &lt;enter&gt; ] ;
+      [ HEADERIMAGES &lt;aHeaderImages&gt; ] ;
+      [ IMAGESALIGN &lt;aImgAlign&gt; ] ;
+      [ &lt;fullmove: FULLMOVE&gt; ] ;
+      [ &lt;bycell: NAVIGATEBYCELL&gt; ] ;
+      [ SELECTEDCOLORS &lt;aSelectedColors&gt; ] ;
+      [ EDITKEYS &lt;aEditKeys&gt; ] ;
+      [ &lt;checkboxes: CHECKBOXES&gt; ] ;
+      [ &lt;dummy12: ONCHECKCHANGE, ON CHECKCHANGE&gt; &lt;checkchange&gt; ] ;
+      [ &lt;bffr: DOUBLEBUFFER, SINGLEBUFFER&gt; ] ;
+      [ &lt;focus: NOFOCUSRECT, FOCUSRECT&gt; ] ;
+      [ &lt;plm: PAINTLEFTMARGIN&gt; ] ;
+      [ &lt;fixedcols: FIXEDCOLS&gt; ] ;
+      [ &lt;dummy13: ONABORTEDIT, ON ABORTEDIT&gt; &lt;abortedit&gt; ] ;
+      [ &lt;fixedwidths: FIXEDWIDTHS&gt; ] ;
+      [ BEFORECOLMOVE &lt;bBefMov&gt; ] ;
+      [ AFTERCOLMOVE &lt;bAftMov&gt; ] ;
+      [ BEFORECOLSIZE &lt;bBefSiz&gt; ] ;
+      [ AFTERCOLSIZE &lt;bAftSiz&gt; ] ;
+      [ BEFOREAUTOFIT &lt;bBefAut&gt; ] ;
+      [ &lt;excel: EDITLIKEEXCEL&gt; ] ;
+      [ &lt;buts: USEBUTTONS&gt; ] ;
+      [ &lt;delete: DELETE&gt; ] ;
+      [ DELETEWHEN &lt;bWhenDel&gt; ] ;
+      [ DELETEMSG &lt;DelMsg&gt; ] ;
+      [ &lt;dummy14: ONDELETE, ON DELETE&gt; &lt;onDelete&gt; ] ;
+      [ &lt;nodelmsg: NODELETEMSG&gt; ] ;
+      [ &lt;append: APPEND&gt; ] ;
+      [ &lt;dummy15: ONAPPEND, ON APPEND&gt; &lt;onappend&gt; ] ;
+      [ &lt;nomodal: NOMODALEDIT&gt; ] ;
+      [ &lt;edtctrls: FIXEDCONTROLS, DYNAMICCONTROLS&gt; ] ;
+      [ &lt;dummy16: ONHEADRCLICK, ON HEADRCLICK&gt; &lt;bheadrclick&gt; ] ;
+      [ &lt;noclick: NOCLICKONCHECKBOX&gt; ] ;
+      [ &lt;norclick: NORCLICKONCHECKBOX&gt; ] ;
+      [ &lt;extdbl: EXTDBLCLICK&gt; ] ;
+      [ &lt;silent: SILENT&gt; ] ;
+      [ &lt;alta: ENABLEALTA, DISABLEALTA&gt; ] ;
+      [ &lt;noshow: NOSHOWALWAYS&gt; ] ;
+      [ &lt;none: NONEUNSELS, IGNORENONE&gt; ] ;
+      [ &lt;cbe: CHANGEBEFOREEDIT&gt; ] ;
+      [ &lt;dummy17: ONRCLICK, ON RCLICK&gt; &lt;rclick&gt; ] ;
+      [ &lt;dummy18: ONINSERT, ON INSERT&gt; &lt;oninsert&gt; ] ;
+      [ &lt;dummy19: ONEDITCELLEND, ON EDITCELLEND&gt; &lt;editend&gt; ] ;
+      [ &lt;efv: EDITFIRSTVISIBLE&gt; ] ;
+      [ &lt;dummy20: ONBEFOREEDITCELL, ON BEFOREEDITCELL&gt; &lt;beforedit&gt; ] ;
+   =&gt;;
+      [ &lt;obj&gt; := ] _OOHG_SelectSubClass( IIF( &lt;.bycell.&gt;, TGridByCell(), ;
+            IIF( &lt;.multiselect.&gt;, TGridMulti(), TGrid() ) ), ;
+            [ &lt;subclass&gt;() ] ):Define( &lt;(name)&gt;, &lt;(parent)&gt;, , , &lt;w&gt;, &lt;h&gt;, ;
+            &lt;headers&gt;, &lt;widths&gt;, &lt;rows&gt;, &lt;value&gt;, &lt;fontname&gt;, &lt;fontsize&gt;, ;
+            &lt;tooltip&gt;, &lt;{change}&gt;, &lt;{dblclick}&gt;, &lt;aHeadClick&gt;, &lt;{gotfocus}&gt;, ;
+            &lt;{lostfocus}&gt;, &lt;.style.&gt;, &lt;aImage&gt;, &lt;aJust&gt;, &lt;.break.&gt;, &lt;helpid&gt;, ;
+            &lt;.bold.&gt;, &lt;.italic.&gt;, &lt;.underline.&gt;, &lt;.strikeout.&gt;, &lt;.ownerdata.&gt;, ;
+            &lt;{dispinfo}&gt;, &lt;itemcount&gt;, &lt;.edit.&gt;, &lt;backcolor&gt;, &lt;fontcolor&gt;, ;
+            &lt;dynamicbackcolor&gt;, &lt;dynamicforecolor&gt;, &lt;Picture&gt;, &lt;.rtl.&gt;, ;
+            &lt;.inplace.&gt;, &lt;editcontrols&gt;, &lt;aReadOnly&gt;, &lt;aValidFields&gt;, ;
+            &lt;aValidMessages&gt;, &lt;{editcell}&gt;, &lt;aWhenFields&gt;, &lt;.disabled.&gt;, ;
+            &lt;.notabstop.&gt;, &lt;.invisible.&gt;, ! &lt;.noshowheaders.&gt;, &lt;{enter}&gt;, ;
+            &lt;aHeaderImages&gt;, &lt;aImgAlign&gt;, &lt;.fullmove.&gt;, &lt;aSelectedColors&gt;, ;
+            &lt;aEditKeys&gt;, &lt;.checkboxes.&gt;, &lt;{checkchange}&gt;, ;
+            IIF( Upper( #&lt;bffr&gt; ) == "DOUBLEBUFFER", .T., ;
+            IIF( Upper( #&lt;bffr&gt; ) == "SINGLEBUFFER", .F., .T. ) ), ;
+            IIF( #&lt;focus&gt; == "NOFOCUSRECT", .F., ;
+            IIF( #&lt;focus&gt; == "FOCUSRECT", .T., NIL ) ), ;
+            &lt;.plm.&gt;, &lt;.fixedcols.&gt;, &lt;{abortedit}&gt;, &lt;{click}&gt;, &lt;.fixedwidths.&gt;, ;
+            &lt;{bBefMov}&gt;, &lt;{bAftMov}&gt;, &lt;{bBefSiz}&gt;, &lt;{bAftSiz}&gt;, &lt;{bBefAut}&gt;, ;
+            &lt;.excel.&gt;, &lt;.buts.&gt;, &lt;.delete.&gt;, &lt;{onDelete}&gt;, &lt;{bWhenDel}&gt;, ;
+            &lt;DelMsg&gt;, &lt;.nodelmsg.&gt;, &lt;.append.&gt;, &lt;{onappend}&gt;, &lt;.nomodal.&gt;, ;
+            IIF( Upper( #&lt;edtctrls&gt; ) == "FIXEDCONTROLS", .T., ;
+            IIF( Upper( #&lt;edtctrls&gt; ) == "DYNAMICCONTROLS", .F., NIL ) ), ;
+            &lt;{bheadrclick}&gt;, ! &lt;.noclick.&gt;, ! &lt;.norclick.&gt;, &lt;.extdbl.&gt;, ;
+            &lt;.silent.&gt;, Upper( #&lt;alta&gt; ) == "ENABLEALTA", &lt;.noshow.&gt;, ;
+            Upper( #&lt;none&gt; ) == "NONEUNSELS", &lt;.cbe.&gt;, &lt;{rclick}&gt;, ;
+            &lt;{oninsert}&gt;, &lt;{editend}&gt;, ! &lt;.efv.&gt;, &lt;{beforedit}&gt; )
 
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
- class=GramE>[ SELECTEDCOLORS</span> &lt;<span class=SpellE>aSelectedColors</span>&gt;
-] ;<o:p></o:p></span></p>
+#command SET GRIDFIXEDCONTROLS ON ;
+   =&gt; ;
+      SetGridFixedControls( .T. )
 
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
- class=GramE>[ EDITKEYS</span> &lt;<span class=SpellE>aEditKeys</span>&gt; ] ;<o:p></o:p></span></p>
+#command SET GRIDFIXEDCONTROLS OFF ;
+   =&gt; ;
+      SetGridFixedControls( .F. )
 
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
- class=SpellE><span class=GramE>checkboxes</span></span>: CHECKBOXES&gt; ] ;<o:p></o:p></span></p>
+#define GRID_JTFY_LEFT      0
+#define GRID_JTFY_RIGHT     1
+#define GRID_JTFY_CENTER    2
 
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
- class=GramE>[ ON</span> CHECKCHANGE &lt;<span class=SpellE>checkchange</span>&gt;
-] ;<o:p></o:p></span></p>
+#define HEADER_IMG_AT_LEFT  0
+#define HEADER_IMG_AT_RIGHT 1
 
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
- class=SpellE><span class=GramE>bffr</span></span>: DOUBLEBUFFER,
-SINGLEBUFFER&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
- class=SpellE><span class=GramE>focus</span></span>: NOFOCUSRECT, FOCUSRECT&gt;
-] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
- class=SpellE><span class=GramE>plm</span></span>: PAINTLEFTMARGIN&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
- class=SpellE><span class=GramE>fixedcols</span></span>: FIXEDCOLS&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
- class=SpellE><span class=GramE>fixedwidths</span></span>: FIXEDWIDTHS&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp; </span>=&gt;;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
- class=SpellE><span class=GramE>obj</span></span>&gt; := ] _<span class=SpellE>OOHG_SelectSubClass</span>(<span
- class=SpellE>iif</span>( &lt;.bycell.&gt;, <span class=SpellE>TGridByCell</span>(),
-<span class=SpellE>iif</span>( &lt;.multiselect.&gt;, <span class=SpellE>TGridMulti</span>(),
-<span class=SpellE>TGrid</span>() ) ), [ &lt;<span class=SpellE>subclass</span>&gt;()
-] ): ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>Define( &lt;(<span class=SpellE>name</span>)&gt;, &lt;(parent)&gt;<span
- class=GramE>, , ,</span> &lt;w&gt;, &lt;h&gt;, &lt;<span class=SpellE>headers</span>&gt;,
-;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;<span class=GramE>widths</span>&gt;, &lt;rows&gt;, &lt;<span
- class=SpellE>value</span>&gt;, &lt;fontname&gt;, &lt;fontsize&gt;, &lt;<span
- class=SpellE>tooltip</span>&gt;, ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;{<span class=GramE>change</span>}&gt;, &lt;{dblclick}&gt;, &lt;<span
- class=SpellE>aHeadClick</span>&gt;, &lt;{gotfocus}&gt;, &lt;{lostfocus}&gt;, ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&lt;.<span
- class=SpellE>style</span>.&gt;, &lt;aImage&gt;, &lt;aJust&gt;, &lt;.<span
- class=SpellE>break</span>.&gt;, &lt;helpid&gt;, &lt;.bold.<span class=GramE>&gt;,
-;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;.<span class=SpellE>italic</span>.&gt;, &lt;.underline.&gt;,
-&lt;.strikeout.&gt;, &lt;.<span class=SpellE>ownerdata</span>.&gt;,
-&lt;{dispinfo}<span class=GramE>&gt;, ;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;<span class=GramE>itemcount</span>&gt;, &lt;.<span class=SpellE>edit</span>.&gt;,
-&lt;backcolor&gt;, &lt;fontcolor&gt;, &lt;<span class=SpellE>dynamicbackcolor</span>&gt;,
-;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;<span class=GramE>dynamicforecolor</span>&gt;, &lt;Picture&gt;,
-&lt;.<span class=SpellE>rtl</span>.&gt;, &lt;.inplace.&gt;,
-&lt;editcontrols&gt;, ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;<span class=SpellE><span class=GramE>aReadOnly</span></span>&gt;,
-&lt;aValidFields&gt;, &lt;aValidMessages&gt;, &lt;{<span class=SpellE>editcell</span>}&gt;,
-;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;<span class=GramE>aWhenFields</span>&gt;, &lt;.disabled.&gt;, &lt;.<span
- class=SpellE>notabstop</span>.&gt;, &lt;.invisible.&gt;, ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>! &lt;.noshowheaders.&gt;, &lt;{<span class=SpellE>enter</span>}&gt;,
-&lt;aHeaderImages&gt;, &lt;aImgAlign&gt;, &lt;.fullmove.<span class=GramE>&gt;,
-;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;<span class=GramE>aSelectedColors</span>&gt;, &lt;aEditKeys&gt;,
-&lt;.<span class=SpellE>checkboxes</span>.&gt;, &lt;{checkchange}&gt;, ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span class=SpellE>iif</span>( <span class=SpellE>upper</span>( #&lt;<span
- class=SpellE>bffr</span>&gt; ) == "DOUBLEBUFFER", .T., <span
- class=SpellE>iif</span>( <span class=SpellE>upper</span>( #&lt;<span
- class=SpellE>bffr</span>&gt; ) == "SINGLEBUFFER", .F., .T. ) ), ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span class=SpellE><span class=GramE>iif</span></span>( #&lt;<span
- class=SpellE>focus</span>&gt; == "NOFOCUSRECT", .F., <span
- class=SpellE>iif</span>( #&lt;<span class=SpellE>focus</span>&gt; == 
-"FOCUSRECT", .T., NIL ) ), ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;.<span class=SpellE>plm</span>.&gt;, &lt;.fixedcols.&gt;, <span
- class=GramE>&lt;{</span>click}&gt;, &lt;.fixedwidths.&gt; )<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: gray; mso-ansi-language: ES"><o:p>&nbsp;</o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: gray; mso-ansi-language: ES"><o:p>&nbsp;</o:p></span></p>
+COLUMNCONTROLS syntax:
+{'TEXTBOX', cType, cPicture, cFunction, nOnFocusPos, lButtons, aImages, lLikeExcel, cEditKey, lNoModal}
+{'TEXTBOXACTION', cType, cPicture, cFunction, nOnFocusPos, aImages, lLikeExcel, cEditKey, lNoModal, bAction, bAction2}
+{'MEMO', cTitle, lCleanCRLF, nWidth, nHeight, lSize, lNoHScroll}
+{'DATEPICKER', lUpDown, lShowNone, lButtons, aImages, lNoModal}
+{'COMBOBOX', aItems, aValues, cRetValType, lButtons, aImages, lNoModal}
+{'COMBOBOXTEXT', aItems, lIncremental, lWinSize, lButtons, aImages, lNoModal}
+{'SPINNER', nRangeMin, nRangeMax, lButtons, aImages, lNoModal}
+{'CHECKBOX', cTrue, cFalse, lButtons, aImages, lNoModal}
+{'IMAGELIST', lButtons, aImages, lNoModal}
+{'IMAGEDATA', oData, lButtons, aImages, lNoModal}
+{'LCOMBOBOX', cTrue, cFalse, lButtons, aImages, lNoModal}
+</PRE>
 
 </div>
-
 </div>
-<div id="winchm_template_footer"><FONT color=#808080 
-size=1>Copyright © 2013-2016 ooHG Development Team - </FONT><A 
-href="https://sourceforge.net/projects/oohg/" target="_blank"><FONT 
-size=1>https://sourceforge.net/projects/oohg/</FONT></A> 
-     </div>
+<div id="winchm_template_footer"><FONT color=#808080 size=1>Copyright © 2013-2016 ooHG Development Team - </FONT>
+<A href="https://sourceforge.net/projects/oohg/" target="_blank"><FONT size=1>https://sourceforge.net/projects/oohg/</FONT></A>
+</div>
 
 </body>
 
+</html>

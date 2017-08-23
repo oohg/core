@@ -1,5 +1,5 @@
 /*
- * $Id: h_report.prg,v 1.52 2016-10-17 01:55:34 fyurisich Exp $
+ * $Id: h_report.prg,v 1.53 2017-08-23 00:11:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -740,7 +740,7 @@ local nff,ncf,cgrpby,chdrgrp,llandscape,lnoprop
        nff:=val((repobject:learowi('IMAGE',2)))
        ncf:=val((repobject:leacoli('IMAGE',2)))
        cgraphicalt:=(repobject:leadato('DEFINE REPORT','IMAGE',''))
-       IF len(cgraphicalt)>0  &&& para sintaxis DEFINE REPORT
+       IF len(cgraphicalt)>0  // para sintaxis DEFINE REPORT
           cgraphicalt:=&cgraphicalt
           cgraphic:=cgraphicalt[1]
           nfi:=cgraphicalt[2]
@@ -929,20 +929,20 @@ RETURN ncol
 
 
 ********* Parámetros del reporte ************
-#define _RF_FIRSTCOL  0  && Offset Primer columna
-#define _RF_FIRSTROW  1  && Offset Primer fila
-#define _RF_ROWINC    4  && Interlineado
-#define _RF_FONT      "Courier New"  && Font a usar (No usar proporcional!)
-#define _RF_SIZECONDENSED 7   && Tamaño de font a usar cuando el ancho es mayor de 80 columnas (132)
-#define _RF_SIZENORMAL   12   && Tamaño de font a usar cuando el ancho es menor de 80 columnas
-#define _RF_ROWSINLETTER  60  && Cantidad de Filas máximo que soporta el tamaño carta. Si hay mas líneas, se usa Legal
+#define _RF_FIRSTCOL  0  // Offset Primer columna
+#define _RF_FIRSTROW  1  // Offset Primer fila
+#define _RF_ROWINC    4  // Interlineado
+#define _RF_FONT      "Courier New"  // Font a usar (No usar proporcional!)
+#define _RF_SIZECONDENSED 7   // Tamaño de font a usar cuando el ancho es mayor de 80 columnas (132)
+#define _RF_SIZENORMAL   12   // Tamaño de font a usar cuando el ancho es menor de 80 columnas
+#define _RF_ROWSINLETTER  60  // Cantidad de Filas máximo que soporta el tamaño carta. Si hay mas líneas, se usa Legal
 
 
 **** Constantes para el Nation Message ********
-#define _RF_PAGENO       3     && Página
-#define _RF_SUBTOTAL     4     && Subtotal
-#define _RF_SUBSUBTOTAL  5     && SubSubtotal
-#define _RF_TOTAL        6     && Total
+#define _RF_PAGENO       3     // Página
+#define _RF_SUBTOTAL     4     // Subtotal
+#define _RF_SUBSUBTOTAL  5     // SubSubtotal
+#define _RF_TOTAL        6     // Total
 
 ********** Tamaños de buffer *************
 #define  SIZE_FILE_BUFF             1990
@@ -1019,10 +1019,10 @@ RETURN ncol
 #define RG_COUNT    5
 
 ********** Errores ************
-#define  F_OK                       0   && Ok!
-#define  F_EMPTY                   -3   && Archivo vacío
-#define  F_ERROR                   -1   && Error desconocido
-#define  F_NOEXIST                  2   && Archivo inexistente
+#define  F_OK                       0   // Ok!
+#define  F_EMPTY                   -3   // Archivo vacío
+#define  F_ERROR                   -1   // Error desconocido
+#define  F_NOEXIST                  2   // Archivo inexistente
 
 ////#include "oohg.ch"
 
@@ -1103,7 +1103,7 @@ IF lSummary != NIL
 
     aReportData[ RP_HEADING ]    := cHeading
 
-    nPageNumber := 1      && Primer página
+    nPageNumber := 1      // Primer página
     lFirstPass  := .T.
 
     nLinesLeft  := aReportData[ RP_LINES ]

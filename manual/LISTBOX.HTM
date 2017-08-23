@@ -1,5 +1,5 @@
 <!--
-$Id: LISTBOX.HTM,v 1.6 2017-08-11 23:17:47 fyurisich Exp $
+$Id: LISTBOX.HTM,v 1.7 2017-08-23 00:11:03 fyurisich Exp $
 -->
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -272,7 +272,9 @@ SPLITBOX VERSION
       [ IMAGE &lt;aImage&gt; [ &lt;fit: FIT&gt; ] ] ;
       [ TEXTHEIGHT &lt;textheight&gt; ] ;
       [ &lt;novscroll: NOVSCROLL&gt; ] ;
-      [ &lt;multicolumn: MULTICOLUMN&gt; ] ;
+      [ &lt;multicolumn: MULTICOLUMN&gt; [ COLUMNWIDTH &lt;nColWidth&gt; ] ] ;
+      [ &lt;multitab : MULTITAB&gt; [ TABSWIDTH &lt;aWidth&gt; ] ] ;
+      [ &lt;dragitems : DRAGITEMS&gt; ] ;
    =&gt; ;
       [ &lt;obj&gt; := ] _OOHG_SelectSubClass( ;
             IIF( &lt;.multiselect.&gt;, TListMulti(), TList() ), [ &lt;subclass&gt;() ] ): ;
@@ -282,7 +284,8 @@ SPLITBOX VERSION
             &lt;.invisible.&gt;, &lt;.notabstop.&gt;, &lt;.sort.&gt;,&lt;.bold.&gt;, ;
             &lt;.italic.&gt;, &lt;.underline.&gt;, &lt;.strikeout.&gt;, &lt;backcolor&gt;, ;
             &lt;fontcolor&gt;, &lt;.rtl.&gt;, &lt;.disabled.&gt;, &lt;{enter}&gt;, ;
-            &lt;aImage&gt;, &lt;textheight&gt;, &lt;.fit.&gt;, &lt;.novscroll.&gt;, &lt;.multicolumn.&gt; )
+            &lt;aImage&gt;, &lt;textheight&gt;, &lt;.fit.&gt;, &lt;.novscroll.&gt;, &lt;.multicolumn.&gt;,
+            &lt;nColWidth&gt;, &lt;.multitab.&gt;, &lt;aWidth&gt;, &lt;.dragitems.&gt; )
 </PRE>
 </span>
 

@@ -1,5 +1,5 @@
 /*
- * $Id: h_listbox.prg,v 1.40 2017-08-18 23:41:27 fyurisich Exp $
+ * $Id: h_listbox.prg,v 1.41 2017-08-23 00:11:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -77,6 +77,8 @@ CLASS TList FROM TControl
    DATA lFocused                  INIT .F.
    DATA lMultiTab                 INIT .F.
    DATA nColWidth                 INIT 120
+   DATA DragItem                  INIT 0
+   DATA DragTo                    INIT 0
 
    METHOD Define
    METHOD Define2
@@ -84,16 +86,19 @@ CLASS TList FROM TControl
    METHOD OnEnter                 SETGET
    METHOD Events
    METHOD Events_Command
+   METHOD Events_Drag
    METHOD Events_DrawItem
    METHOD Events_MeasureItem
-   METHOD AddItem( uValue )
+   METHOD AddItem
    METHOD DeleteItem( nItem )     BLOCK { |Self, nItem| ListBoxDeleteString( Self, nItem ) }
    METHOD DeleteAllItems          BLOCK { |Self| ListBoxReset( ::hWnd ) }
    METHOD Item
    METHOD InsertItem
    METHOD ItemCount               BLOCK { |Self| ListBoxGetItemCount( ::hWnd ) }
-   METHOD ItemHeight
+   METHOD ItemHeight              BLOCK { |Self| ListBoxGetItemHeight( ::hWnd ) }
    METHOD ColumnWidth             SETGET
+   METHOD TopIndex                SETGET
+   METHOD EnsureVisible
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -102,7 +107,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
                lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
                italic, underline, strikeout, backcolor, fontcolor, lRtl, ;
                lDisabled, onenter, aImage, TextHeight, lAdjustImages, ;
-               novscroll, multicol, colwidth, multitab, aWidth ) CLASS TList
+               novscroll, multicol, colwidth, multitab, aWidth, dragitems ) CLASS TList
 *------------------------------------------------------------------------------*
 LOCAL nStyle := 0
    ::Define2( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
@@ -110,7 +115,7 @@ LOCAL nStyle := 0
               lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
               italic, underline, strikeout, backcolor, fontcolor, nStyle, ;
               lRtl, lDisabled, onenter, aImage, TextHeight, lAdjustImages, ;
-              novscroll, multicol, colwidth, multitab, aWidth )
+              novscroll, multicol, colwidth, multitab, aWidth, dragitems )
 RETURN Self
 
 *------------------------------------------------------------------------------*
@@ -119,7 +124,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
                 lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
                 italic, underline, strikeout, backcolor, fontcolor, nStyle, ;
                 lRtl, lDisabled, onenter, aImage, TextHeight, lAdjustImages, ;
-                novscroll, multicol, colwidth, multitab, aWidth ) CLASS TList
+                novscroll, multicol, colwidth, multitab, aWidth, dragitems ) CLASS TList
 *------------------------------------------------------------------------------*
 LOCAL ControlHandle, i
 
@@ -129,20 +134,20 @@ LOCAL ControlHandle, i
    ASSIGN ::nCol          VALUE x             TYPE "N"
    ASSIGN ::nTextHeight   VALUE TextHeight    TYPE "N"
    ASSIGN ::lAdjustImages VALUE lAdjustImages TYPE "L"
-   ASSIGN ::lMultiTab     VALUE multitab     TYPE "L"
+   ASSIGN ::lMultiTab     VALUE multitab      TYPE "L"
+   ASSIGN dragitems       VALUE dragitems     TYPE "L" DEFAULT .F.
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .T., lRtl )
 
    nStyle := ::InitStyle( nStyle,, invisible, notabstop, lDisabled ) + ;
              IIF( HB_ISLOGICAL( novscroll ) .AND. novscroll, 0, WS_VSCROLL + LBS_DISABLENOSCROLL ) + ;
              IIF( HB_ISLOGICAL( sort ) .AND. sort, LBS_SORT, 0 ) + ;
-             IIF( HB_IsArray( aImage ),  LBS_OWNERDRAWFIXED, 0) + ;
+             IIF( HB_IsArray( aImage ) .OR. ::nTextHeight > 0,  LBS_OWNERDRAWFIXED, 0) + ;
              IIF( HB_ISLOGICAL( multicol ) .AND. multicol, LBS_MULTICOLUMN, 0 ) + ;
              IIF( ::lMultiTab, LBS_USETABSTOPS, 0 )
 
    ::SetSplitBoxInfo( Break )
-   ControlHandle := InitListBox( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, ::lRtl )
-
+   ControlHandle := InitListBox( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, ::lRtl, dragitems )
    ::Register( ControlHandle, ControlName, HelpId, , ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
 
@@ -178,7 +183,7 @@ LOCAL ControlHandle, i
    ENDIF
 
    IF ::lMultiTab
-      LISTBOXSETMULTITAB( ControlHandle, aWidth )
+      ListBoxSetMultiTab( ControlHandle, aWidth )
    ENDIF
 
    ::Value := Value
@@ -275,6 +280,49 @@ LOCAL Hi_wParam := HIWORD( wParam )
 RETURN ::Super:Events_Command( wParam )
 
 *------------------------------------------------------------------------------*
+METHOD Events_Drag( lParam ) CLASS TList
+*------------------------------------------------------------------------------*
+
+   SWITCH GET_DRAG_LIST_NOTIFICATION_CODE( lParam )
+      CASE DL_BEGINDRAG
+         ::DragItem := GET_DRAG_LIST_DRAGITEM( lParam )
+         RETURN 1
+
+      CASE DL_DRAGGING
+         ::DragTo := GET_DRAG_LIST_DRAGITEM( lParam )
+         IF ::DragTo > ::DragItem
+            DRAG_LIST_DRAWINSERT( ::Parent:hWnd, lParam, ::DragTo + 1 )
+         ELSE
+            DRAG_LIST_DRAWINSERT( ::Parent:hWnd, lParam, ::DragTo )
+         ENDIF
+         IF ::DragTo <> -1
+            IF ::DragTo > ::DragItem
+               SetResCursor( LoadCursor( GetInstance(), "MINIGUI_DRAGDOWN" ) )
+            ELSE
+               SetResCursor( LoadCursor( GetInstance(), "MINIGUI_DRAGUP" ) )
+            ENDIF
+            RETURN DL_CURSORSET
+         ENDIF
+         RETURN DL_STOPCURSOR
+
+      CASE DL_CANCELDRAG
+         ::DragItem := -1
+         EXIT
+
+      CASE DL_DROPPED
+         ::DragTo := GET_DRAG_LIST_DRAGITEM( lParam )
+         IF ::DragTo <> -1
+            DRAG_LIST_MOVE_ITEMS( lParam, ::DragItem, ::DragTo )
+         ENDIF
+         DRAG_LIST_DRAWINSERT( ::Parent:hWnd, lParam, -1 )
+         ::DragItem := -1
+         EXIT
+
+   END SWITCH
+
+RETURN Nil
+
+*------------------------------------------------------------------------------*
 METHOD AddItem( uValue ) CLASS TList
 *------------------------------------------------------------------------------*
 
@@ -327,10 +375,18 @@ METHOD ColumnWidth( uValue ) CLASS TList
 
    IF ValType( uValue ) == "N" .AND. uValue > 0
       ::nColWidth := uValue
-      SendMessage( ::hWnd, LB_SETCOLUMNWIDTH, uValue, 0 )
+      ListBoxSetColumnWidth( ::hWnd, uValue )
    ENDIF
 
 RETURN ::nColWidth
+
+*------------------------------------------------------------------------------*
+METHOD TopIndex( nTopIndex ) CLASS TList
+*------------------------------------------------------------------------------*
+   IF ValType( nTopIndex ) == "N" .and. nTopIndex > 0
+      ListBoxSetTopIndex( ::hWnd, nTopIndex )
+   ENDIF
+RETURN ListBoxGetTopIndex( :: hWnd )
 
 *------------------------------------------------------------------------------*
 FUNCTION LB_Array2String( aData, Sep )
@@ -367,7 +423,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
                lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
                italic, underline, strikeout, backcolor, fontcolor, lRtl, ;
                lDisabled, onenter, aImage, TextHeight, lAdjustImages, ;
-               novscroll, multicol, colwidth, multitab, aWidth ) CLASS TListMulti
+               novscroll, multicol, colwidth, multitab, aWidth, dragitems ) CLASS TListMulti
 *------------------------------------------------------------------------------*
 LOCAL nStyle := LBS_EXTENDEDSEL + LBS_MULTIPLESEL
 
@@ -376,7 +432,7 @@ LOCAL nStyle := LBS_EXTENDEDSEL + LBS_MULTIPLESEL
               lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
               italic, underline, strikeout, backcolor, fontcolor, nStyle, ;
               lRtl, lDisabled, onenter, aImage, TextHeight, lAdjustImages, ;
-              novscroll, multicol, colwidth, multitab, aWidth )
+              novscroll, multicol, colwidth, multitab, aWidth, dragitems )
 
 RETURN Self
 
@@ -385,9 +441,9 @@ METHOD Value( uValue ) CLASS TListMulti
 *------------------------------------------------------------------------------*
 
    IF VALTYPE( uValue ) == "A"
-      LISTBOXSETMULTISEL( ::hWnd, uValue )
+      ListBoxSetMultiSel( ::hWnd, uValue )
    ELSEIF VALTYPE( uValue ) == "N"
-      LISTBOXSETMULTISEL( ::hWnd, { uValue } )
+      ListBoxSetMultiSel( ::hWnd, { uValue } )
    ENDIF
 
 RETURN ListBoxGetMultiSel( ::hWnd )
@@ -429,6 +485,9 @@ HB_FUNC( INITLISTBOX )
                              hwnd, (HMENU) hb_parni( 2 ), GetModuleHandle( NULL ), NULL );
 
    lpfnOldWndProc = (WNDPROC) SetWindowLong( (HWND) hbutton, GWL_WNDPROC, (LONG) SubClassFunc );
+
+   if( hb_parl( 9 ) )
+      MakeDragList( hbutton );
 
    HWNDret( hbutton );
 }
@@ -644,32 +703,6 @@ HB_FUNC( LISTBOXSETMULTISEL )
    }
 }
 
-/*
-#define TOTAL_TABS 10
-
-HB_FUNC( LISTBOXSETMULTITAB )
-{
-   PHB_ITEM wArray;
-   int      nTabStops[ TOTAL_TABS ] ;
-   int      l, i;
-   DWORD    dwDlgBase = GetDialogBaseUnits();
-   int      baseunitX = LOWORD( dwDlgBase );
-   HWND     hwnd = HWNDparam( 1 );
-
-   wArray = hb_param( 2, HB_IT_ARRAY );
-
-   l = hb_parinfa( 2, 0 ) - 1;
-
-   if( l >= 0 )
-   {
-      for( i = 0; i <= l; i++ )
-         nTabStops[ i ] = MulDiv( hb_arrayGetNI( wArray, i + 1 ), 4, baseunitX );
-
-      SendMessage( hwnd, LB_SETTABSTOPS, (WPARAM) ( l + 1 ), (LPARAM) &nTabStops );
-   }
-}
-*/
-
 HB_FUNC( LISTBOXSETMULTITAB )
 {
    PHB_ITEM wArray;
@@ -699,7 +732,7 @@ HB_FUNC( LISTBOXSETMULTITAB )
 
 HB_FUNC( LISTBOXGETITEMCOUNT )
 {
-   hb_retnl( SendMessage( HWNDparam( 1 ), LB_GETCOUNT, 0, 0 ) );
+   hb_retni( SendMessage( HWNDparam( 1 ), LB_GETCOUNT, 0, 0 ) );
 }
 
 HB_FUNC_STATIC( TLIST_EVENTS_DRAWITEM )   // METHOD Events_DrawItem( lParam )
@@ -840,34 +873,102 @@ HB_FUNC_STATIC( TLIST_EVENTS_MEASUREITEM )   // METHOD Events_MeasureItem( lPara
    hb_retnl( 1 );
 }
 
-HB_FUNC_STATIC( TLIST_ITEMHEIGHT )   // METHOD ItemHeight()
+HB_FUNC( GET_DRAG_LIST_NOTIFICATION_CODE )
+{
+   LPARAM lParam = (LPARAM) hb_parnl( 1 );
+   LPDRAGLISTINFO lpdli = (LPDRAGLISTINFO) lParam;
+
+   hb_retni( lpdli->uNotification );
+}
+
+HB_FUNC( GET_DRAG_LIST_DRAGITEM )
+{
+   int nDragItem;
+   LPARAM lParam = (LPARAM) hb_parnl( 1 );
+   LPDRAGLISTINFO lpdli = (LPDRAGLISTINFO) lParam;
+
+   nDragItem = LBItemFromPt( lpdli->hWnd, lpdli->ptCursor, TRUE );
+
+   hb_retni( nDragItem );
+}
+
+HB_FUNC( DRAG_LIST_DRAWINSERT )
+{
+   HWND hwnd = HWNDparam( 1 );
+   LPARAM lParam = (LPARAM) hb_parnl( 2 );
+   int nItem = hb_parni( 3 );
+   LPDRAGLISTINFO lpdli = (LPDRAGLISTINFO) lParam;
+   int nItemCount;
+
+   nItemCount = SendMessage( (HWND) lpdli->hWnd, LB_GETCOUNT, 0, 0 );
+
+   if( nItem < nItemCount )
+      DrawInsert( hwnd, lpdli->hWnd, nItem );
+   else
+      DrawInsert( hwnd, lpdli->hWnd, -1 );
+}
+
+HB_FUNC( DRAG_LIST_MOVE_ITEMS )
+{
+   LPARAM lParam = (LPARAM) hb_parnl( 1 );
+   LPDRAGLISTINFO lpdli = (LPDRAGLISTINFO) lParam;
+   char string[ 1024 ];
+   int result;
+
+   result = ListBox_GetText( lpdli->hWnd, hb_parni( 2 ), string );
+   if( result != LB_ERR )
+      result = ListBox_DeleteString( lpdli->hWnd, hb_parni( 2 ) );
+   if( result != LB_ERR )
+      result = ListBox_InsertString( lpdli->hWnd, hb_parni( 3 ), string );
+   if( result != LB_ERR )
+      result = ListBox_SetCurSel( lpdli->hWnd, hb_parni( 3 ) );
+
+   hb_retl( result != LB_ERR ? TRUE : FALSE );
+}
+
+HB_FUNC( TLIST_ENSUREVISIBLE )   // METHOD EnsureVisible( nItem )
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
-   HDC hDC;
-   HFONT hFont, hOldFont;
-   SIZE sz;
-   int iSize;
+   RECT rect;
+   int nItemHeight, nVisibleCount, nTopIndex;
+   int nItem = hb_parni( 1 );
 
-   hDC = GetDC( oSelf->hWnd );
-
-   _OOHG_Send( pSelf, s_nTextHeight );
-   hb_vmSend( 0 );
-   iSize = hb_parni( -1 );
-
-   hFont = oSelf->hFontHandle;
-   hOldFont = ( HFONT ) SelectObject( hDC, hFont );
-   GetTextExtentPoint32( hDC, "_", 1, &sz );
-
-   SelectObject( hDC, hOldFont );
-   ReleaseDC( oSelf->hWnd, hDC );
-
-   if( iSize < sz.cy + 2 )
+   GetClientRect( oSelf->hWnd, &rect );
+   nItemHeight = SendMessage( oSelf->hWnd, LB_GETITEMHEIGHT, 0, 0 );
+   if( nItemHeight > 0)
    {
-      iSize = sz.cy + 2;
+      nVisibleCount = (int) ( rect.bottom / nItemHeight );
+      nTopIndex = SendMessage( oSelf->hWnd, LB_GETTOPINDEX, 0, 0 );
+      if( nItem > 0 )
+      {
+         if( nItem < nTopIndex )
+            nTopIndex = nItem - 1;                               // scroll up
+         else if( nItem >= nTopIndex + nVisibleCount )
+            nTopIndex = nItem - nVisibleCount;                   // scroll down
+      }
+      SendMessage( oSelf->hWnd, LB_SETTOPINDEX, (WPARAM) nTopIndex, 0 );
    }
+}
 
-   hb_retni( iSize );
+HB_FUNC( LISTBOXSETTOPINDEX )
+{
+   SendMessage( HWNDparam( 1 ), LB_SETTOPINDEX, (WPARAM) ( hb_parni( 2 ) - 1 ), 0 );
+}
+
+HB_FUNC( LISTBOXGETTOPINDEX )
+{
+   hb_retni( SendMessage( HWNDparam( 1 ), LB_GETTOPINDEX, 0, 0 ) + 1 );
+}
+
+HB_FUNC( LISTBOXGETITEMHEIGHT )
+{
+   hb_retni( SendMessage( HWNDparam( 1 ), LB_GETITEMHEIGHT, 0, 0 ) );
+}
+
+HB_FUNC( LISTBOXSETCOLUMNWIDTH )
+{
+   SendMessage( HWNDparam( 1 ), LB_SETCOLUMNWIDTH, (WPARAM) ( hb_parni( 2 ) ), 0 );
 }
 
 #pragma ENDDUMP

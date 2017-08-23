@@ -1,9 +1,9 @@
 //
-// $Id: oohg_bcc.rc,v 1.4 2015-03-18 01:22:30 fyurisich Exp $
+// $Id: oohg_bcc.rc,v 1.5 2017-08-23 00:11:23 fyurisich Exp $
 //
-// Use CompileRes.bat to build oohg.res from this file using Borland Compiler
+// Use CompileRes_bcc.bat to build oohg.res from this file using Borland compiler
 
-// MANIFEST FOR CREATE 'XP-STYLE' APPLICATIONS
+// MANIFESTS TO ALLOW THE STYLING OF CONTROLS BY THE OS
 
 #if defined( HB_ARCH_64BIT )
     1 24 WindowsXP64.Manifest
@@ -11,58 +11,67 @@
     1 24 WindowsXP.Manifest
 #endif
 
-MINIGUI_FINGER          CURSOR          FINGER.CUR
+// CURSORS
+
+MINIGUI_FINGER          CURSOR         finger.cur
+MINIGUI_DRAGUP          CURSOR         dragup.cur
+MINIGUI_DRAGDOWN        CURSOR         dragdown.cur
+DRAG_NO                 CURSOR         dragno.cur
+DRAG_ARROW_COPY         CURSOR         dragcopy.cur
+DRAG_ARROW_MOVE         CURSOR         dragmove.cur
 
 // EDIT COMMAND IMAGE BUTTONS
 
-MINIGUI_EDIT_CANCEL     BITMAP          edit_cancel.bmp
-MINIGUI_EDIT_CLOSE      BITMAP          edit_close.bmp
-MINIGUI_EDIT_COPY       BITMAP          edit_copy.bmp
-MINIGUI_EDIT_DELETE     BITMAP          edit_delete.bmp
-MINIGUI_EDIT_EDIT       BITMAP          edit_edit.bmp
-MINIGUI_EDIT_FIND       BITMAP          edit_find.bmp
-MINIGUI_EDIT_NEW        BITMAP          edit_new.bmp
-MINIGUI_EDIT_OK         BITMAP          edit_ok.bmp
-MINIGUI_EDIT_PRINT      BITMAP          edit_print.bmp
-MINIGUI_EDIT_ADD        BITMAP          edit_add.bmp
-MINIGUI_EDIT_DEL        BITMAP          edit_del.bmp
-MINIGUI_EDIT_SET        BITMAP          edit_set.bmp
-MINIGUI_EDIT_UNDO       BITMAP          edit_undo.bmp
+MINIGUI_EDIT_CANCEL     BITMAP         edit_cancel.bmp
+MINIGUI_EDIT_CLOSE      BITMAP         edit_close.bmp
+MINIGUI_EDIT_COPY       BITMAP         edit_copy.bmp
+MINIGUI_EDIT_DELETE     BITMAP         edit_delete.bmp
+MINIGUI_EDIT_EDIT       BITMAP         edit_edit.bmp
+MINIGUI_EDIT_FIND       BITMAP         edit_find.bmp
+MINIGUI_EDIT_NEW        BITMAP         edit_new.bmp
+MINIGUI_EDIT_OK         BITMAP         edit_ok.bmp
+MINIGUI_EDIT_PRINT      BITMAP         edit_print.bmp
+MINIGUI_EDIT_ADD        BITMAP         edit_add.bmp
+MINIGUI_EDIT_DEL        BITMAP         edit_del.bmp
+MINIGUI_EDIT_SET        BITMAP         edit_set.bmp
+MINIGUI_EDIT_UNDO       BITMAP         edit_undo.bmp
 
-ZZZ_AAAOOHG             ICON            OOHG.ICO
-ZZZ_AAAWINDOW           ICON            WINDOW.ICO
-ZZZ_LED_ON              ICON            LED_ON.ICO
-ZZZ_LED_OFF             ICON            LED_OFF.ICO
+// MISCELANEOUS
+
+ZZZ_AAAOOHG             ICON           oohg.ico
+ZZZ_AAAWINDOW           ICON           window.ico
+ZZZ_LED_ON              ICON           led_on.ico
+ZZZ_LED_OFF             ICON           led_off.ico
 
 // HBPRINT PRINT PREVIEW IMAGE BUTTONS
 
-zzz_printicon           ICON    print.ico
-hbprint_end             BITMAP  hbprint_end.bmp
-hbprint_next            BITMAP  hbprint_next.bmp
-hbprint_top             BITMAP  hbprint_top.bmp
-hbprint_back            BITMAP  hbprint_back.bmp
-hbprint_close           BITMAP  hbprint_close.bmp
-hbprint_print           BITMAP  hbprint_print.bmp
-hbprint_save            BITMAP  hbprint_save.bmp
-hbprint_zoomin          BITMAP  hbprint_zoomin.bmp
-hbprint_zoomout         BITMAP  hbprint_zoomout.bmp
-hbprint_option          BITMAP  hbprint_option.bmp
+zzz_printicon           ICON           print.ico
+hbprint_end             BITMAP         hbprint_end.bmp
+hbprint_next            BITMAP         hbprint_next.bmp
+hbprint_top             BITMAP         hbprint_top.bmp
+hbprint_back            BITMAP         hbprint_back.bmp
+hbprint_close           BITMAP         hbprint_close.bmp
+hbprint_print           BITMAP         hbprint_print.bmp
+hbprint_save            BITMAP         hbprint_save.bmp
+hbprint_zoomin          BITMAP         hbprint_zoomin.bmp
+hbprint_zoomout         BITMAP         hbprint_zoomout.bmp
+hbprint_option          BITMAP         hbprint_option.bmp
 
 // MINIPRINT PRINT PREVIEW IMAGE BUTTONS
 
-HP_END          BITMAP  HP_END.BMP
-HP_TOP          BITMAP  HP_TOP.BMP
-HP_NEXT         BITMAP  HP_NEXT.BMP
-HP_BACK         BITMAP  HP_BACK.BMP
-HP_PRINT        BITMAP  HP_PRINT.BMP
-HP_ZOOM         BITMAP  HP_ZOOM.BMP
-HP_GOPAGE       BITMAP  HP_GOPAGE.BMP
-HP_CLOSE        BITMAP  HP_CLOSE.BMP
-HP_SAVE         BITMAP  HP_SAVE.BMP
-HP_THUMBNAIL    BITMAP  hp_thumbnail.bmp
-HP_GLASS        CURSOR  HP_GLASS.CUR
+HP_END                  BITMAP         hp_end.bmp
+HP_TOP                  BITMAP         hp_top.bmp
+HP_NEXT                 BITMAP         hp_next.bmp
+HP_BACK                 BITMAP         hp_back.bmp
+HP_PRINT                BITMAP         hp_print.bmp
+HP_ZOOM                 BITMAP         hp_zoom.bmp
+HP_GOPAGE               BITMAP         hp_gopage.bmp
+HP_CLOSE                BITMAP         hp_close.bmp
+HP_SAVE                 BITMAP         hp_save.bmp
+HP_THUMBNAIL            BITMAP         hp_thumbnail.bmp
+HP_GLASS                CURSOR         hp_glass.cur
 
 // IMAGES FOR TGRIDCONTROL BUTTONS
 
-EDIT_OK_16      BITMAP  EDIT_OK_16.BMP
-EDIT_CANCEL_16  BITMAP  EDIT_CANCEL_16.BMP
+EDIT_OK_16              BITMAP         edit_ok_16.bmp
+EDIT_CANCEL_16          BITMAP         edit_cancel_16.bmp

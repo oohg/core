@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.h,v 1.73 2016-11-02 13:26:09 fyurisich Exp $
+ * $Id: oohg.h,v 1.74 2017-08-23 00:10:49 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -229,7 +229,8 @@ wchar_t * AnsiToWide( const char * szString );
 #define s_Events_NCDestroy     78
 #define s_aExcludeArea         79
 #define s_CompareItems         80
-#define s_LastSymbol           81
+#define s_Events_Drag          81
+#define s_LastSymbol           82
 
 #ifdef __XHARBOUR__
    #define HB_STORNI( n, x, y )   hb_storni( n, x, y )

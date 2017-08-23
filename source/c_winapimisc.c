@@ -1,5 +1,5 @@
 /*
- * $Id: c_winapimisc.c,v 1.29 2017-08-18 23:41:27 fyurisich Exp $
+ * $Id: c_winapimisc.c,v 1.30 2017-08-23 00:11:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -73,11 +73,11 @@
 #endif
 
 #ifndef _WIN32_WINNT
-   #define _WIN32_WINNT 0x0400
+   #define _WIN32_WINNT 0x0500
 #endif
-#if ( _WIN32_WINNT < 0x0400 )
+#if ( _WIN32_WINNT < 0x0500 )
    #undef _WIN32_WINNT
-   #define _WIN32_WINNT 0x0400
+   #define _WIN32_WINNT 0x0500
 #endif
 
 #include <shlobj.h>
@@ -553,10 +553,13 @@ HB_FUNC ( SETWINDOWLONG )
 HB_FUNC( WINVERSION )
 {
    #ifndef VER_SUITE_PERSONAL
-      #define VER_SUITE_PERSONAL 0x00000200
+      #define VER_SUITE_PERSONAL  0x00000200
    #endif
    #ifndef VER_SUITE_BLADE
-      #define VER_SUITE_BLADE    0x00000400
+      #define VER_SUITE_BLADE     0x00000400
+   #endif
+   #ifndef VER_SUITE_WH_SERVER
+      #define VER_SUITE_WH_SERVER 0x00008000
    #endif
 
    OSVERSIONINFOEX osvi;
@@ -569,7 +572,7 @@ HB_FUNC( WINVERSION )
    HKEY hKey;
    LONG lRetVal;
    DWORD dwBufLen;
-   BYTE *lpData;
+   BYTE *lpData = NULL;
    DWORD dwUBR;
 
    ZeroMemory( &osvi, sizeof( OSVERSIONINFOEX ) );

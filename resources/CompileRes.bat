@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: CompileRes.bat,v 1.8 2015-03-18 01:22:30 fyurisich Exp $
+rem $Id: CompileRes.bat,v 1.9 2017-08-23 00:11:23 fyurisich Exp $
 rem
 cls
 
@@ -18,6 +18,7 @@ if exist CompileRes_mingw.bat goto MINGW
 goto EXIT
 
 :MINGW
-call CompileRes_mingw.bat /NOCLS
+if exist ..\compile30.bat call CompileRes_mingw.bat /NOCLS HB30
+if exist ..\compile32.bat call CompileRes_mingw.bat /NOCLS HB32
 
 :EXIT

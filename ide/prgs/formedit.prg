@@ -1,5 +1,5 @@
 /*
- * $Id: formedit.prg,v 1.74 2017-08-11 23:17:46 fyurisich Exp $
+ * $Id: formedit.prg,v 1.75 2017-08-23 00:10:48 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -181,6 +181,10 @@ CLASS TFormEditor
    DATA aMaxLength           INIT {}
    DATA aMultiLine           INIT {}
    DATA aMultiSelect         INIT {}
+   DATA aColWidth            INIT {}
+   DATA aMultiTab            INIT {}
+   DATA aTabsWidth           INIT {}
+   DATA aDragItems           INIT {}
    DATA aName                INIT {}          // Name of the control in the FMG file, must be unique
    DATA aNo3DColors          INIT {}
    DATA aNoAutoSizeMovie     INIT {}
@@ -249,6 +253,7 @@ CLASS TFormEditor
    DATA aOnViewChange        INIT {}
    DATA aOnVScroll           INIT {}
    DATA aOpaque              INIT {}
+   DATA aOwnTT               INIT {}
    DATA aPageNames           INIT {}
    DATA aPageObjs            INIT {}
    DATA aPageSubClasses      INIT {}
@@ -1945,6 +1950,7 @@ LOCAL t83, t84
    my_aSwap( ::aCObj, x1, x2 )
    my_aSwap( ::aColumnControls, x1, x2 )
    my_aSwap( ::aColumnInfo, x1, x2 )
+   my_aSwap( ::aColWidth, x1, x2 )
    my_aSwap( ::aControlW, x1, x2 )
    my_aSwap( ::aCtrlType, x1, x2 )
    my_aSwap( ::aDate, x1, x2 )
@@ -1958,6 +1964,8 @@ LOCAL t83, t84
    my_aSwap( ::aDisplayEdit, x1, x2 )
    my_aSwap( ::aDoubleBuffer, x1, x2 )
    my_aSwap( ::aDrag, x1, x2 )
+   my_aSwap( ::aDragItems, x1, x2 )
+   my_aSwap( ::aDrawBy, x1, x2 )
    my_aSwap( ::aDrop, x1, x2 )
    my_aSwap( ::aDynamicBackColor, x1, x2 )
    my_aSwap( ::aDynamicCtrls, x1, x2 )
@@ -2027,6 +2035,7 @@ LOCAL t83, t84
    my_aSwap( ::aMaxLength, x1, x2 )
    my_aSwap( ::aMultiLine, x1, x2 )
    my_aSwap( ::aMultiSelect, x1, x2 )
+   my_aSwap( ::aMultiTab, x1, x2 )
    my_aSwap( ::aName, x1, x2 )
    my_aSwap( ::aNo3DColors, x1, x2 )
    my_aSwap( ::aNoAutoSizeMovie, x1, x2 )
@@ -2095,6 +2104,7 @@ LOCAL t83, t84
    my_aSwap( ::aOnViewChange, x1, x2 )
    my_aSwap( ::aOnVScroll, x1, x2 )
    my_aSwap( ::aOpaque, x1, x2 )
+   my_aSwap( ::aOwnTT, x1, x2 )
    my_aSwap( ::aPageNames, x1, x2 )
    my_aSwap( ::aPageObjs, x1, x2 )
    my_aSwap( ::aPageSubClasses, x1, x2 )
@@ -2129,9 +2139,9 @@ LOCAL t83, t84
    my_aSwap( ::aStretch, x1, x2 )
    my_aSwap( ::aSubClass, x1, x2 )
    my_aSwap( ::aSync, x1, x2 )
+   my_aSwap( ::aTabsWidth, x1, x2 )
    my_aSwap( ::aTarget, x1, x2 )
    my_aSwap( ::aTextHeight, x1, x2 )
-   my_aSwap( ::aDrawBy, x1, x2 )
    my_aSwap( ::aToolTip, x1, x2 )
    my_aSwap( ::aTop, x1, x2 )
    my_aSwap( ::aTransparent, x1, x2 )
@@ -2675,6 +2685,7 @@ METHOD IniArray( cControlName, cCtrlType ) CLASS TFormEditor
    aAdd( ::aCObj, "" )
    aAdd( ::aColumnControls, "" )
    aAdd( ::aColumnInfo, "" )
+   aAdd( ::aColWidth, 0 )
    aAdd( ::aControlW, Lower( cControlName ) )
    aAdd( ::aCtrlType, Upper( cCtrlType ) )
    aAdd( ::aDate, .F. )
@@ -2688,6 +2699,8 @@ METHOD IniArray( cControlName, cCtrlType ) CLASS TFormEditor
    aAdd( ::aDisplayEdit, .F. )
    aAdd( ::aDoubleBuffer, .F. )
    aAdd( ::aDrag, .F. )
+   aAdd( ::aDragItems, .F. )
+   aAdd( ::aDrawBy, "NIL" )
    aAdd( ::aDrop, .F. )
    aAdd( ::aDynamicBackColor, "" )
    aAdd( ::aDynamicCtrls, .F. )
@@ -2757,6 +2770,7 @@ METHOD IniArray( cControlName, cCtrlType ) CLASS TFormEditor
    aAdd( ::aMaxLength, 30 )
    aAdd( ::aMultiLine, .F. )
    aAdd( ::aMultiSelect, .F. )
+   aAdd( ::aMultiTab, .F. )
    aAdd( ::aName, cControlName )
    aAdd( ::aNo3DColors, .F. )
    aAdd( ::aNoAutoSizeMovie, .F. )
@@ -2825,6 +2839,7 @@ METHOD IniArray( cControlName, cCtrlType ) CLASS TFormEditor
    aAdd( ::aOnViewChange, "" )
    aAdd( ::aOnVScroll, "" )
    aAdd( ::aOpaque, .F. )
+   aAdd( ::aOwnTT, .F. )
    aAdd( ::aPageNames, "" )
    aAdd( ::aPageObjs, "" )
    aAdd( ::aPageSubClasses, "" )
@@ -2860,9 +2875,9 @@ METHOD IniArray( cControlName, cCtrlType ) CLASS TFormEditor
    aAdd( ::aSubClass, "" )
    aAdd( ::aSync, .F. )
    aAdd( ::aTabPage, { "", 0 } )
+   aAdd( ::aTabsWidth, "" )
    aAdd( ::aTarget, "" )
    aAdd( ::aTextHeight, 0 )
-   aAdd( ::aDrawBy, "NIL" )
    aAdd( ::aTitleBackColor, "NIL" )
    aAdd( ::aTitleFontColor, "NIL" )
    aAdd( ::aToolTip, "" )
@@ -2927,6 +2942,7 @@ METHOD DelArray( z ) CLASS TFormEditor
    my_aDel( ::aCObj, z)
    my_aDel( ::aColumnControls, z )
    my_aDel( ::aColumnInfo, z )
+   my_aDel( ::aColWidth, z )
    my_aDel( ::aControlW, z )
    my_aDel( ::aCtrlType, z )
    my_aDel( ::aDate, z )
@@ -2940,6 +2956,8 @@ METHOD DelArray( z ) CLASS TFormEditor
    my_aDel( ::aDisplayEdit, z )
    my_aDel( ::aDoubleBuffer, z )
    my_aDel( ::aDrag, z )
+   my_aDel( ::aDragItems, z )
+   my_aDel( ::aDrawBy, z )
    my_aDel( ::aDrop, z )
    my_aDel( ::aDynamicBackColor, z )
    my_aDel( ::aDynamicCtrls, z )
@@ -3009,6 +3027,7 @@ METHOD DelArray( z ) CLASS TFormEditor
    my_aDel( ::aMaxLength, z )
    my_aDel( ::aMultiLine, z )
    my_aDel( ::aMultiSelect, z )
+   my_aDel( ::aMultiTab, z )
    my_aDel( ::aName, z )
    my_aDel( ::aNo3DColors, z )
    my_aDel( ::aNoAutoSizeMovie, z )
@@ -3077,6 +3096,7 @@ METHOD DelArray( z ) CLASS TFormEditor
    my_aDel( ::aOnViewChange, z )
    my_aDel( ::aOnVScroll, z )
    my_aDel( ::aOpaque, z )
+   my_aDel( ::aOwnTT, z )
    my_aDel( ::aPageNames, z )
    my_aDel( ::aPageObjs, z )
    my_aDel( ::aPageSubClasses, z )
@@ -3112,9 +3132,9 @@ METHOD DelArray( z ) CLASS TFormEditor
    my_aDel( ::aSubClass, z )
    my_aDel( ::aSync, z )
    my_aDel( ::aTabPage, z )
+   my_aDel( ::aTabsWidth, z )
    my_aDel( ::aTarget, z )
    my_aDel( ::aTextHeight, z )
-   my_aDel( ::aDrawBy, z )
    my_aDel( ::aTitleBackColor, z )
    my_aDel( ::aTitleFontColor, z )
    my_aDel( ::aToolTip, z )
@@ -3399,6 +3419,7 @@ LOCAL ia, oControl, z, i, ControlName, oNewCtrl := NIL, cTab, oTab
          aAdd( ::aCObj,              ::aCObj[z] )
          aAdd( ::aColumnControls,    ::aColumnControls[z] )
          aAdd( ::aColumnInfo,        ::aColumnInfo[z] )
+         aAdd( ::aColWidth,          ::aColWidth[z] )
          aAdd( ::aControlW,          Lower( ControlName ) )
          aAdd( ::aCtrlType,          ::aCtrlType[z] )
          aAdd( ::aDate,              ::aDate[z] )
@@ -3412,6 +3433,8 @@ LOCAL ia, oControl, z, i, ControlName, oNewCtrl := NIL, cTab, oTab
          aAdd( ::aDisplayEdit,       ::aDisplayEdit[z] )
          aAdd( ::aDoubleBuffer,      ::aDoubleBuffer[z] )
          aAdd( ::aDrag,              ::aDrag[z] )
+         aAdd( ::aDragItems,         ::aDragItems[z] )
+         aAdd( ::aDrawBy,            ::aDrawBy[z] )
          aAdd( ::aDrop,              ::aDrop[z] )
          aAdd( ::aDynamicBackColor,  ::aDynamicBackColor[z] )
          aAdd( ::aDynamicCtrls,      ::aDynamicCtrls[z] )
@@ -3481,6 +3504,7 @@ LOCAL ia, oControl, z, i, ControlName, oNewCtrl := NIL, cTab, oTab
          aAdd( ::aMaxLength,         ::aMaxLength[z] )
          aAdd( ::aMultiLine,         ::aMultiLine[z] )
          aAdd( ::aMultiSelect,       ::aMultiSelect[z] )
+         aAdd( ::aMultiTab,          ::aMultiTab[z] )
          aAdd( ::aName,              ControlName )
          aAdd( ::aNo3DColors,        ::aNo3DColors[z] )
          aAdd( ::aNoAutoSizeMovie,   ::aNoAutoSizeMovie[z] )
@@ -3493,7 +3517,7 @@ LOCAL ia, oControl, z, i, ControlName, oNewCtrl := NIL, cTab, oTab
          aAdd( ::aNoHeaders,         ::aNoHeaders[z] )
          aAdd( ::aNoHideSel,         ::aNoHideSel[z] )
          aAdd( ::aNoHScroll,         ::aNoHScroll[z] )
-         aAdd( ::anolines,           ::anolines[z] )
+         aAdd( ::aNoLines,           ::aNoLines[z] )
          aAdd( ::aNoLoadTrans,       ::aNoLoadTrans[z] )
          aAdd( ::aNoMenu,            ::aNoMenu[z] )
          aAdd( ::aNoModalEdit,       ::aNoModalEdit[z] )
@@ -3549,6 +3573,7 @@ LOCAL ia, oControl, z, i, ControlName, oNewCtrl := NIL, cTab, oTab
          aAdd( ::aOnViewChange,      ::aOnViewChange[z] )
          aAdd( ::aOnVScroll,         ::aOnVScroll[z] )
          aAdd( ::aOpaque,            ::aOpaque[z] )
+         aAdd( ::aOwnTT,             ::aOwnTT[z] )
          aAdd( ::aPageNames,         ::aPageNames[z] )
          aAdd( ::aPageObjs,          ::aPageObjs[z] )
          aAdd( ::aPageSubClasses,    ::aPageSubClasses[z] )
@@ -3584,9 +3609,9 @@ LOCAL ia, oControl, z, i, ControlName, oNewCtrl := NIL, cTab, oTab
          aAdd( ::aSubClass,          ::aSubClass[z] )
          aAdd( ::aSync,              ::aSync[z] )
          aAdd( ::aTabPage,           ::aTabPage[z] )
+         aAdd( ::aTabsWidth,         ::aTabsWidth[z] )
          aAdd( ::aTarget,            ::aTarget[z] )
          aAdd( ::aTextHeight,        ::aTextHeight[z] )
-         aAdd( ::aDrawBy,            ::aDrawBy[z] )
          aAdd( ::aTitleBackColor,    ::aTitleBackColor[z] )
          aAdd( ::aTitleFontColor,    ::aTitleFontColor[z] )
          aAdd( ::aToolTip,           ::aToolTip[z] )
@@ -4028,8 +4053,10 @@ LOCAL cName, oCtrl, aImages, aItems, nMin, nMax, j, aCaptions, nCnt, oPage, lRed
             <helpid>, <.invisible.>, <.notabstop.>, <.sort.>, ;
             <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
             <backcolor>, <fontcolor>, <.rtl.>, <.disabled.>, <{enter}>, ;
-            <aImage>, <textheight>, <.fit.>, <.novscroll.>, <.multicol.> )
+            <aImage>, <textheight>, <.fit.>, <.novscroll.>, <.multicolumn.>, ;
+            <nColWidth>, <.multitab.>, <aWidth>, <.dragitems.> )
 */
+
       IF ::aMultiSelect[i]
          oCtrl := TListMulti():Define( cName, ::oDesignForm:Name, _OOHG_MouseCol, _OOHG_MouseRow, nWidth, nHeight, IIF( IsValidArray( ::aItems[i] ), &( ::aItems[i] ), { cName } ), ;
                      ::aValueN[i], NIL, NIL, ::aToolTip[i], NIL, ;
@@ -4037,7 +4064,8 @@ LOCAL cName, oCtrl, aImages, aItems, nMin, nMax, j, aCaptions, nCnt, oPage, lRed
                      NIL, .F., .F., ::aSort[i], ;
                      ::aBold[i], ::aFontItalic[i], ::aFontUnderline[i], ::aFontStrikeout[i], ;
                      NIL, NIL, ::aRTL[i], .F., NIL, ;
-                     ::aImage[i], ::aTextHeight[i], ::aFit[i], ::aNoVScroll[i], ::aMultiLine[i] )
+                     ::aImage[i], ::aTextHeight[i], ::aFit[i], ::aNoVScroll[i], ::aMultiLine[i], ;
+                     ::aColWidth[i], ::aMultiTab[i], ::aTabsWidth[i], ::aDragItems[i] )
       ELSE
          oCtrl := TList():Define( cName, ::oDesignForm:Name, _OOHG_MouseCol, _OOHG_MouseRow, nWidth, nHeight, IIF( IsValidArray( ::aItems[i] ), &( ::aItems[i] ), { cName } ), ;
                      ::aValueN[i], NIL, NIL, ::aToolTip[i], NIL, ;
@@ -4045,7 +4073,8 @@ LOCAL cName, oCtrl, aImages, aItems, nMin, nMax, j, aCaptions, nCnt, oPage, lRed
                      NIL, .F., .F., ::aSort[i], ;
                      ::aBold[i], ::aFontItalic[i], ::aFontUnderline[i], ::aFontStrikeout[i], ;
                      NIL, NIL, ::aRTL[i], .F., NIL, ;
-                     ::aImage[i], ::aTextHeight[i], ::aFit[i], ::aNoVScroll[i], ::aMultiLine[i] )
+                     ::aImage[i], ::aTextHeight[i], ::aFit[i], ::aNoVScroll[i], ::aMultiLine[i], ;
+                     ::aColWidth[i], ::aMultiTab[i], ::aTabsWidth[i], ::aDragItems[i] )
       ENDIF
       IF ! Empty( ::aFontName[i] )
          oCtrl:FontName := ::aFontName[i]
@@ -4655,19 +4684,31 @@ TODO: GripperText, Delay
       oCtrl:OnDblClick := { || ::PropertiesClick() }
 
    CASE nControlType == 25           // "TREE"
-      oCtrl := TTree():Define( cName, ::oDesignForm:Name, ;
-                  _OOHG_MouseRow, _OOHG_MouseCol, nWidth, nHeight, ;
-                  { || ::DrawOutline( oCtrl ) }, ::aToolTip[i], NIL, NIL, ;
-                  { || ::DrawOutline( oCtrl ) }, NIL, NIL, .F., NIL, NIL, ;
-                  IIF( IsValidArray( ::aNodeImages[i] ), &( ::aNodeImages[i] ), NIL ), ;
-                  IIF( IsValidArray( ::aItemImages[i] ), &( ::aItemImages[i] ), NIL ), ;
-                  ::aNoRootButton[i], ::aBold[i], ::aFontItalic[i], ;
-                  ::aFontUnderline[i], ::aFontStrikeout[i], .F., ::aRTL[i], ;
-                  NIL, .F., .F., .F., NIL, NIL, .F., ::aCheckBoxes[i], ;
-                  ::aFull[i], ::aNoHScroll[i], ::aNoVScroll[i], ::aHotTrack[i], ;
-                  ::aNoLines[i], ::aButtons[i], .F., ::aSingleExpand[i], ::aBorder[i], ;
-                  IIF( IsValidArray( ::aSelColor[i] ), &( ::aSelColor[i] ), NIL ), ;
-                  NIL, NIL, NIL, ::aIndent[i], ::aSelBold[i], .F., NIL, NIL )
+/*
+      [ <obj> := ] _OOHG_SelectSubClass( TTree(), [ <subclass>() ] ): ;
+            Define( <(name)>, <(parent)>, <row>, <col>, <width>, <height>, ;
+            <{change}>, <tooltip>, <fontname>, <fontsize>, <{gotfocus}>, ;
+            <{lostfocus}>, <{dblclick}>, <.break.>, <value>, <helpid>, ;
+            <aImgNode>, <aImgItem>, <.noBut.>, <.bold.>, <.italic.>, ;
+            <.underline.>, <.strikeout.>, <.itemids.>, <.rtl.>, <{enter}>, ;
+            <.disabled.>, <.invisible.>, <.notabstop.>, <fontcolor>, ;
+            <backcolor>, .F., <.checkboxes.>, <.editlabels.>, <.noHScr.>, ;
+            <.noScr.>, <.hott.>, <.nolines.>, <.nobuts.>, <.drag.>, ;
+            <.single.>, <.noborder.>, <selcolor>, <{labeledit}>, <{valid}>, ;
+            <{checkchange}>, <pixels>, <.selbold.>, <.drop.>, <aTarget>, ;
+            <{ondrop}>, <.own.> )
+*/
+      oCtrl := TTree():Define( cName, ::oDesignForm:Name, _OOHG_MouseRow, _OOHG_MouseCol, nWidth, nHeight, ;
+                  { || ::DrawOutline( oCtrl ) }, ::aToolTip[i], NIL, NIL, { || ::DrawOutline( oCtrl ) }, ;
+                  NIL, NIL, .F., NIL, NIL, ;
+                  IIF( IsValidArray( ::aNodeImages[i] ), &( ::aNodeImages[i] ), NIL ), IIF( IsValidArray( ::aItemImages[i] ), &( ::aItemImages[i] ), NIL ), ::aNoRootButton[i], ::aBold[i], ::aFontItalic[i], ;
+                  ::aFontUnderline[i], ::aFontStrikeout[i], .F., ::aRTL[i], NIL, ;
+                  .F., .F., .F., NIL, ;
+                  NIL, .F., ::aCheckBoxes[i], ::aFull[i], ::aNoHScroll[i], ;
+                  ::aNoVScroll[i], ::aHotTrack[i], ::aNoLines[i], ::aButtons[i], .F., ;
+                  ::aSingleExpand[i], ::aBorder[i], IIF( IsValidArray( ::aSelColor[i] ), &( ::aSelColor[i] ), NIL ), NIL, NIL, ;
+                  NIL, ::aIndent[i], ::aSelBold[i], .F., NIL, ;
+                  NIL, ::aOwnTT[i] )
 
          NODE "Tree"
          END NODE
@@ -8146,7 +8187,7 @@ LOCAL lBreak, nHelpID, lNoTabStop, lNoVScroll, lNoHScroll, oCtrl
    lNoHScroll   := ( ::ReadLogicalData( cName, 'NOHSCROLL', 'F' ) == 'T' )
 
    // Save properties
-   ::aCtrlType[i]      := 'EDIT'
+   ::aCtrlType[i]      := "EDIT"
    ::aCObj[i]          := cObj
    ::aFontName[i]      := cFontName
    ::aFontSize[i]      := nFontSize
@@ -8970,6 +9011,7 @@ LOCAL nFontSize, lBold, lItalic, lUnderline, lStrikeout, aBackColor, aFontColor
 LOCAL lVisible, lEnabled, lRTL, cOnEnter, lNoVScroll, cImage, lFit, nTextHeight
 LOCAL cOnGotFocus, cOnLostFocus, cOnChange, cOnDblClick, cItems, nValue
 LOCAL lMultiSelect, lNoTabStop, lBreak, lSort, cSubClass, oCtrl, lMultiColumn
+LOCAL nColWidth, lMultiTab, cTabs, lDragItems
 
    // Load properties
    cName        := ::aControlW[i]
@@ -9026,6 +9068,10 @@ LOCAL lMultiSelect, lNoTabStop, lBreak, lSort, cSubClass, oCtrl, lMultiColumn
    nValue       := Val( ::ReadStringData( cName, 'VALUE', '0' ) )
    lMultiSelect := ( ::ReadLogicalData( cName, 'MULTISELECT', 'F' ) == 'T' )
    lMultiColumn := ( ::ReadLogicalData( cName, 'MULTICOLUMN', 'F' ) == 'T' )
+   nColWidth    := Val( ::ReadStringData( cName, 'COLUMNWIDTH', '0' ) )
+   lMultiTab    := ( ::ReadLogicalData( cName, 'MULTITAB', 'F' ) == 'T' )
+   cTabs        := ::ReadStringData( cName, 'TABSWIDTH', '' )
+   lDragItems   := ( ::ReadLogicalData( cName, 'DRAGITEMS', 'F' ) == 'T' )
    lNoTabStop   := ( ::ReadLogicalData( cName, 'NOTABSTOP', 'F' ) == 'T' )
    lBreak       := ( ::ReadLogicalData( cName, 'BREAK', 'F' ) == 'T' )
    lSort        := ( ::ReadLogicalData( cName, 'SORT', 'F' ) == 'T' )
@@ -9060,6 +9106,10 @@ LOCAL lMultiSelect, lNoTabStop, lBreak, lSort, cSubClass, oCtrl, lMultiColumn
    ::aValueN[i]        := nValue
    ::aMultiSelect[i]   := lMultiSelect
    ::aMultiLine[i]     := lMultiColumn
+   ::aColWidth[i]      := nColWidth
+   ::aMultiTab[i]      := lMultiTab
+   ::aTabsWidth[i]     := cTabs
+   ::aDragItems[i]     := lDragItems
    ::aNoTabStop[i]     := lNoTabStop
    ::aBreak[i]         := lBreak
    ::aSort[i]          := lSort
@@ -9728,6 +9778,7 @@ LOCAL cReadOnly, lLeftJust, lWinDraw
    cSubClass   := ::ReadStringData( cName, 'SUBCLASS', '' )
    cReadOnly   := ::ReadStringData( cName, 'READONLY', '' )
    lLeftJust   := ( ::ReadLogicalData( cName, 'LEFTJUSTIFY', 'F' ) == 'T' )
+   lLeftJust   := lLeftJust .OR. ( ::ReadLogicalData( cName, 'LEFTALIGN', 'F' ) == 'T' )
 
    // Save properties
    ::aCtrlType[i]      := 'RADIOGROUP'
@@ -10712,7 +10763,7 @@ LOCAL cName, cObj, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aFontColor
 LOCAL lBold, lItalic, lUnderline, lStrikeout, aBackColor, lVisible, lEnabled
 LOCAL cToolTip, cOnChange, cOnGotFocus, cOnLostFocus, cOnDblClick, cNodeimages
 LOCAL cItemImages, lNoRootButton, lItemIds, nHelpId, lFull, nValue, lRTL
-LOCAL cOnEnter, lBreak, lNoTabStop, aSelColor, lSelBold, lCheckBoxes
+LOCAL cOnEnter, lBreak, lNoTabStop, aSelColor, lSelBold, lCheckBoxes, lOwnTT
 LOCAL lEditLabels, lNoHScroll, lNoScroll, lHotTrack, lButtons, lEnableDrag
 LOCAL lEnableDrop, aTarget, lSingleExpand, lNoBorder, cOnLabelEdit, cValid
 LOCAL cOnCheckChg, nIndent, cOnDrop, lNoLines, oCtrl
@@ -10752,6 +10803,7 @@ LOCAL cOnCheckChg, nIndent, cOnDrop, lNoLines, oCtrl
    lEnabled      := ( ::ReadLogicalData( cName, 'DISABLED', 'F' ) == 'F' )
    lEnabled      := ( Upper( ::ReadOopData( cName, 'ENABLED', IF( lEnabled, '.T.', '.F.' ) ) ) == '.T.' )
    cToolTip      := ::Clean( ::ReadStringData( cName, 'TOOLTIP', '' ) )
+   lOwnTT        := ( ::ReadLogicalData( cName, 'OWNTOOLTIP', 'F' ) == 'T' )
    cOnChange     := ::ReadStringData( cName, 'ON CHANGE', '' )
    cOnChange     := ::ReadStringData( cName, 'ONCHANGE', cOnChange )
    cOnGotFocus   := ::ReadStringData( cName, 'ON GOTFOCUS', '' )
@@ -10843,6 +10895,7 @@ LOCAL cOnCheckChg, nIndent, cOnDrop, lNoLines, oCtrl
    ::aIndent[i]        := nIndent
    ::aOnDrop[i]        := cOnDrop
    ::aNoLines[i]       := lNoLines
+   ::aOwnTT[i]         := lOwnTT
 
    // Create control
    oCtrl     := ::CreateControl( aScan( ::ControlType, ::aCtrlType[i] ), i, nWidth, nHeight, NIL )
@@ -12134,7 +12187,7 @@ LOCAL cValue
          IF ::aEdit[j]
             Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'EDIT '
          ENDIF
-         IF ::anolines[j]
+         IF ::aNoLines[j]
             Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOLINES '
          ENDIF
          IF ! Empty( ::aImage[j] )
@@ -12994,7 +13047,7 @@ LOCAL cValue
          Output += CRLF + CRLF
       ENDIF
 
-      IF ::aCtrlType[j] == 'EDIT'
+      IF ::aCtrlType[j] == "EDIT"
          Output += Space( nSpacing * nLevel ) + '@ ' + LTrim( Str( nRow ) ) + ', ' + LTrim( Str( nCol ) ) + ' EDITBOX ' + ::aName[j] + ' '
          IF ! Empty( ::aCObj[j ] )
             Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OBJ ' + AllTrim( ::aCObj[j] )
@@ -13200,7 +13253,7 @@ LOCAL cValue
          IF ::aMultiSelect[j]
             Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'MULTISELECT '
          ENDIF
-         IF ::anolines[j]
+         IF ::aNoLines[j]
             Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOLINES '
          ENDIF
          IF ::aInPlace[j]
@@ -13829,6 +13882,18 @@ LOCAL cValue
          ENDIF
          IF ::aMultiLine[j]
             Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'MULTICOLUMN '
+            IF ::aColWidth[j] > 0
+               Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'COLUMNWIDTH ' + LTrim( Str( ::aColWidth[j] ) )
+            ENDIF
+         ENDIF
+         IF ::aMultiTab[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'MULTITAB '
+            IF ! Empty( ::aTabsWidth[j] )
+               Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TABSWIDTH ' + AllTrim( ::aTabsWidth[j] )
+            ENDIF
+         ENDIF
+         IF ::aDragItems[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'DRAGITEMS '
          ENDIF
          IF ::aHelpID[j] > 0
             Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'HELPID ' + LTrim( Str( ::aHelpID[j] ) )
@@ -14871,6 +14936,9 @@ LOCAL cValue
          IF ! Empty( ::aToolTip[j] )
             Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'TOOLTIP ' + StrToStr( ::aToolTip[j], .T. )
          ENDIF
+         IF ::aOwnTT[j]
+            Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'OWNTOOLTIP '
+         ENDIF
          IF ! Empty( ::aOnChange[j] ) .AND. UpperNIL( ::aOnChange[j] ) # 'NIL'
             Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'ON CHANGE ' + AllTrim( ::aOnChange[j] )
          ENDIF
@@ -15103,7 +15171,7 @@ LOCAL cValue
          IF ::aEdit[j]
             Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'EDIT '
          ENDIF
-         IF ::anolines[j]
+         IF ::aNoLines[j]
             Output += ' ;' + CRLF + Space( nSpacing * ( nLevel + 1 ) ) + 'NOLINES '
          ENDIF
          IF ! Empty( ::aImage[j] )
@@ -15833,6 +15901,8 @@ LOCAL cValue
    INTERNAL
    SPLITBOX
    SplitBox versions of controls
+   i_graph.ch
+   i_edit.ch
 */
 RETURN Output
 
@@ -15989,9 +16059,9 @@ LOCAL aFormats, aResults
 
    IF ::aCtrlType[j] == 'TREE'
       cTitle      := ::aName[j] + ' properties'
-      aLabels     := { 'Name',     'ToolTip',     'Enabled',     'Visible',     'NodeImages',     'ItemImages',     'NoRootButton',     'ItemIDs',     'HelpID',     'Obj',      'FullRowSelect', 'Value',      'RTL',     'Break',     'NoTabStop',     'SelColor',     'SelBold',     'CheckBoxes',     'EditLabels',     'NoHScroll',     'NoScroll',      'HotTracking',  'NoButtons',   'EnableDrag', 'EnableDrop', 'TargeT',     'SingleExpand',     'BorderLess', 'Valid',     'Indent',     'NoLines',     'SubClass' }
-      aInitValues := { ::aName[j], ::aToolTip[j], ::aEnabled[j], ::aVisible[j], ::aNodeImages[j], ::aitemimages[j], ::anorootbutton[j], ::aitemids[j], ::aHelpID[j], ::aCObj[j], ::aFull[j],      ::aValueN[j], ::aRTL[j], ::aBreak[j], ::aNoTabStop[j], ::aSelColor[j], ::aSelBold[j], ::aCheckBoxes[j], ::aEditLabels[j], ::aNoHScroll[j], ::aNoVScroll[j], ::aHotTrack[j], ::aButtons[j], ::aDrag[j],   ::aDrop[j],   ::aTarget[j], ::aSingleExpand[j], ::aBorder[j], ::aValid[j], ::aIndent[j], ::aNoLines[j], ::aSubClass[j] }
-      aFormats    := { 60,         250,           .T.,           .T.,           60,               60,               .F.,                .F.,           '999',        31,         .F.,             '999999',     .F.,       .F.,         .F.,             250,            .F.,           .F.,              .F.,              .F.,             .F.,             .F.,            .F.,           .F.,          .F.,          250,          .F.,                .F.,          250,         '999',        .F.,           250 }
+      aLabels     := { 'Name',     'ToolTip',     'OwnToolTip', 'Enabled',     'Visible',     'NodeImages',     'ItemImages',     'NoRootButton',     'ItemIDs',     'HelpID',     'Obj',      'FullRowSelect', 'Value',      'RTL',     'Break',     'NoTabStop',     'SelColor',     'SelBold',     'CheckBoxes',     'EditLabels',     'NoHScroll',     'NoScroll',      'HotTracking',  'NoButtons',   'EnableDrag', 'EnableDrop', 'TargeT',     'SingleExpand',     'BorderLess', 'Valid',     'Indent',     'NoLines',     'SubClass' }
+      aInitValues := { ::aName[j], ::aToolTip[j], ::aOwnTT[j],  ::aEnabled[j], ::aVisible[j], ::aNodeImages[j], ::aItemImages[j], ::aNoRootButton[j], ::aItemIDs[j], ::aHelpID[j], ::aCObj[j], ::aFull[j],      ::aValueN[j], ::aRTL[j], ::aBreak[j], ::aNoTabStop[j], ::aSelColor[j], ::aSelBold[j], ::aCheckBoxes[j], ::aEditLabels[j], ::aNoHScroll[j], ::aNoVScroll[j], ::aHotTrack[j], ::aButtons[j], ::aDrag[j],   ::aDrop[j],   ::aTarget[j], ::aSingleExpand[j], ::aBorder[j], ::aValid[j], ::aIndent[j], ::aNoLines[j], ::aSubClass[j] }
+      aFormats    := { 60,         250,           .T.,          .T.,           .T.,           60,               60,               .F.,                .F.,           '999',        31,         .F.,             '999999',     .F.,       .F.,         .F.,             250,            .F.,           .F.,              .F.,              .F.,             .F.,             .F.,            .F.,           .F.,          .F.,          250,          .F.,                .F.,          250,         '999',        .F.,           250 }
       aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
       IF aResults[1] == NIL
          oControl:SetFocus()
@@ -15999,39 +16069,40 @@ LOCAL aFormats, aResults
       ENDIF
       ::aName[j]             := IIF( ! ::IsUnique( aResults[01], j ), ::aName[j], AllTrim( aResults[01] ) )
       ::aToolTip[j]          := aResults[02]
-      ::aEnabled[j]          := aResults[03]
-      ::aVisible[j]          := aResults[04]
-      ::aNodeImages[j]       := aResults[05]
-      ::aitemimages[j]       := aResults[06]
-      ::anorootbutton[j]     := aResults[07]
-      ::aitemids[j]          := aResults[08]
-      ::aHelpID[j]           := aResults[09]
-      ::aCObj[j]             := aResults[10]
-      ::aFull[j]             := aResults[11]           // FULLROWSELECT
-      ::aValueN[j]           := aResults[12]
-      ::aRTL[j]              := aResults[13]
-      ::aBreak[j]            := aResults[14]
-      ::aNoTabStop[j]        := aResults[15]
-      ::aSelColor[j]         := aResults[16]
-      ::aSelBold[j]          := aResults[17]
-      ::aCheckBoxes[j]       := aResults[18]
-      ::aEditLabels[j]       := aResults[19]
-      ::aNoHScroll[j]        := aResults[20]
-      ::aNoVScroll[j]        := aResults[21]
-      ::aHotTrack[j]         := aResults[22]
-      ::aButtons[j]          := aResults[23]           // NOBUTTONS
-      ::aDrag[j]             := aResults[24]           // ENABLEDRAG
-      ::aDrop[j]             := aResults[25]           // ENABLEDROP
-      ::aTarget[j]           := aResults[26]
-      ::aSingleExpand[j]     := aResults[27]
-      ::aBorder[j]           := aResults[28]           // BORDERLESS
-      ::aValid[j]            := aResults[29]
-      ::aIndent[j]           := aResults[30]
-      ::aNoLines[j]          := aResults[31]
-      ::aSubClass[j]         := aResults[32]
+      ::aOwnTT[j]            := aResults[03]
+      ::aEnabled[j]          := aResults[04]
+      ::aVisible[j]          := aResults[05]
+      ::aNodeImages[j]       := aResults[06]
+      ::aItemImages[j]       := aResults[07]
+      ::aNoRootButton[j]     := aResults[08]
+      ::aItemIDs[j]          := aResults[09]
+      ::aHelpID[j]           := aResults[10]
+      ::aCObj[j]             := aResults[11]
+      ::aFull[j]             := aResults[12]           // FULLROWSELECT
+      ::aValueN[j]           := aResults[13]
+      ::aRTL[j]              := aResults[14]
+      ::aBreak[j]            := aResults[15]
+      ::aNoTabStop[j]        := aResults[16]
+      ::aSelColor[j]         := aResults[17]
+      ::aSelBold[j]          := aResults[18]
+      ::aCheckBoxes[j]       := aResults[19]
+      ::aEditLabels[j]       := aResults[20]
+      ::aNoHScroll[j]        := aResults[21]
+      ::aNoVScroll[j]        := aResults[22]
+      ::aHotTrack[j]         := aResults[23]
+      ::aButtons[j]          := aResults[24]           // NOBUTTONS
+      ::aDrag[j]             := aResults[25]           // ENABLEDRAG
+      ::aDrop[j]             := aResults[26]           // ENABLEDROP
+      ::aTarget[j]           := aResults[27]
+      ::aSingleExpand[j]     := aResults[28]
+      ::aBorder[j]           := aResults[29]           // BORDERLESS
+      ::aValid[j]            := aResults[30]
+      ::aIndent[j]           := aResults[31]
+      ::aNoLines[j]          := aResults[32]
+      ::aSubClass[j]         := aResults[33]
    ENDIF
 
-   IF ::aCtrlType[j] == 'EDIT'
+   IF ::aCtrlType[j] == "EDIT"
       cTitle      := ::aName[j] + ' properties'
       aLabels     := { 'Name',     'ToolTip',     'MaxLength',     'ReadOnly',     'Value',     'HelpID',     'Break',     'Field',     'Enabled',     'Visible',     'NoTabStop',     'NoVScroll',     'NoHScroll',     'Obj',      'RTL',     'NoBorder',   'FocusedPos' }
       aInitValues := { ::aName[j], ::aToolTip[j], ::aMaxLength[j], ::aReadOnly[j], ::aValue[j], ::aHelpID[j], ::aBreak[j], ::aField[j], ::aEnabled[j], ::aVisible[j], ::aNoTabStop[j], ::anovscroll[j], ::anohscroll[j], ::aCObj[j], ::aRTL[j], ::aBorder[j], ::aFocusedPos[j] }
@@ -16096,7 +16167,7 @@ LOCAL aFormats, aResults
    IF ::aCtrlType[j] == 'GRID'
       cTitle      := ::aName[j] + ' properties'
       aLabels     := { 'Name',     'Headers',     'Widths',     'Items',     'Value',      'ToolTip',     'MultiSelect',     'NoLines',     'Image',     'HelpID',     'Break',     'Justify',     'Enabled',     'Visible',     'DynamicBackColor',     'DynamicForeColor',     'ColumnControls',     'Valid',     'ValidMessages', 'When',     'ReadOnly',      'InPlace',     'InputMask',     'Edit',     'Obj',      'Virtual',     'ItemCount',     'NoHeaders',     'HeaderImages',     'ImagesAlign',     'NavigateByCell', 'SelectedColor', 'EditKeys',     'DoubleBuffer',     'SingleBuffer',     'FocusedRect',   'NoFocusedRect',   'PaintLeftMargin', 'FixedCols',     'FixedWidths',     'BeforeColMove',     'AfterColMove',     'BeforeColSize',     'AfterColSize',     'BeforeAutoFit',     'LikeExcel',     'Delete',     'DeleteWhen',     'DeleteMsg',     'NoDelMsg',     'NoModalEdit',     'FixedControls',  'DynamicControls',  'NoClickOnCheckBox',  'NoRClickOnCheckbox',  'ExtDblClick',     'CheckBoxes',     'SubClass',     'Silent',       'EnableAltA', 'NoShowAlways', 'NoneUnsels',    'ChangeBeforeEdit' }
-      aInitValues := { ::aName[j], ::aheaders[j], ::awidths[j], ::aitems[j], ::aValueN[j], ::aToolTip[j], ::amultiselect[j], ::anolines[j], ::aimage[j], ::aHelpID[j], ::aBreak[j], ::ajustify[j], ::aEnabled[j], ::aVisible[j], ::adynamicbackcolor[j], ::adynamicforecolor[j], ::acolumncontrols[j], ::avalid[j], ::avalidmess[j], ::awhen[j], ::aReadOnlyb[j], ::ainplace[j], ::aInputMask[j], ::aedit[j], ::aCObj[j], ::aVirtual[j], ::aItemCount[j], ::aNoHeaders[j], ::aHeaderImages[j], ::aImagesAlign[j], ::aByCell[j],     ::aSelColor[j],  ::aEditKeys[j], ::aDoubleBuffer[j], ::aSingleBuffer[j], ::aFocusRect[j], ::aNoFocusRect[j], ::aPLM[j],         ::aFixedCols[j], ::aFixedWidths[j], ::aBeforeColMove[j], ::aAfterColMove[j], ::aBeforeColSize[j], ::aAfterColSize[j], ::aBeforeAutoFit[j], ::aLikeExcel[j], ::aDelete[j], ::aDeleteWhen[j], ::aDeleteMsg[j], ::aNoDelMsg[j], ::aNoModalEdit[j], ::aFixedCtrls[j], ::aDynamicCtrls[j], ::aNoClickOnCheck[j], ::aNoRClickOnCheck[j], ::aExtDblClick[j], ::aCheckBoxes[j], ::aSubClass[j], ::aAutoPlay[j], ::aFlat[j],   ::aShowAll[j],  ::aNoHideSel[j], ::aDisplayEdit[j] }
+      aInitValues := { ::aName[j], ::aheaders[j], ::awidths[j], ::aitems[j], ::aValueN[j], ::aToolTip[j], ::aMultiSelect[j], ::aNoLines[j], ::aimage[j], ::aHelpID[j], ::aBreak[j], ::ajustify[j], ::aEnabled[j], ::aVisible[j], ::adynamicbackcolor[j], ::adynamicforecolor[j], ::acolumncontrols[j], ::avalid[j], ::avalidmess[j], ::awhen[j], ::aReadOnlyb[j], ::ainplace[j], ::aInputMask[j], ::aedit[j], ::aCObj[j], ::aVirtual[j], ::aItemCount[j], ::aNoHeaders[j], ::aHeaderImages[j], ::aImagesAlign[j], ::aByCell[j],     ::aSelColor[j],  ::aEditKeys[j], ::aDoubleBuffer[j], ::aSingleBuffer[j], ::aFocusRect[j], ::aNoFocusRect[j], ::aPLM[j],         ::aFixedCols[j], ::aFixedWidths[j], ::aBeforeColMove[j], ::aAfterColMove[j], ::aBeforeColSize[j], ::aAfterColSize[j], ::aBeforeAutoFit[j], ::aLikeExcel[j], ::aDelete[j], ::aDeleteWhen[j], ::aDeleteMsg[j], ::aNoDelMsg[j], ::aNoModalEdit[j], ::aFixedCtrls[j], ::aDynamicCtrls[j], ::aNoClickOnCheck[j], ::aNoRClickOnCheck[j], ::aExtDblClick[j], ::aCheckBoxes[j], ::aSubClass[j], ::aAutoPlay[j], ::aFlat[j],   ::aShowAll[j],  ::aNoHideSel[j], ::aDisplayEdit[j] }
       aFormats    := { 30,         1100,          1100,         1100,        '999999',     250,           .F.,               .F.,           60,          '999',        .F.,         350,           .F.,           .F.,           350,                    350,                    1100,                 1100,        1100,            1100,       1100,            .T.,           1100,            .T.,        31,         .F.,           '9999',          .F.,             250,                250,               .F.,              250,             250,            .F.,                .F.,                .F.,             .F.,               .F.,               .F.,             .F.,               250,                 250,                250,                 250,                250,                 .F.,             .F.,          250,              250,             250,            .F.,               .F.,              .F.,                .F.,                  .F.,                   .F.,               .F.,              250,            .F.,            .F.,          .F.,            .F.,             .F. }
       aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
       IF aResults[1] == NIL
@@ -16109,8 +16180,8 @@ LOCAL aFormats, aResults
       ::aitems[j]            := aResults[04]
       ::aValueN[j]           := aResults[05]
       ::aToolTip[j]          := aResults[06]
-      ::amultiselect[j]      := aResults[07]
-      ::anolines[j]          := aResults[08]
+      ::aMultiSelect[j]      := aResults[07]
+      ::aNoLines[j]          := aResults[08]
       ::aimage[j]            := aResults[09]
       ::aHelpID[j]           := aResults[10]
       ::aBreak[j]            := aResults[11]
@@ -16345,11 +16416,11 @@ LOCAL aFormats, aResults
       ::aLeft[j]             := aResults[16]           // LEFTALIGN
    ENDIF
 
-   IF ::aCtrlType[j] == 'LIST'
+     IF ::aCtrlType[j] == 'LIST'
       cTitle      := ::aName[j] + ' properties'
-      aLabels     := { 'Name',     'Value',      'Items',     'ToolTip',     'MultiSelect',     'MultiColumn',   'HelpID',     'Break',     'NoTabStop',     'Sort',     'Enabled',     'Visible',     'Obj',      'RTL',     'NoVScroll',     'Image',     'Fit',     'TextHeight',     'SubClass' }
-      aInitValues := { ::aName[j], ::aValueN[j], ::aitems[j], ::aToolTip[j], ::aMultiSelect[j], ::aMultiLine[j], ::aHelpID[j], ::aBreak[j], ::aNoTabStop[j], ::asort[j], ::aEnabled[j], ::aVisible[j], ::aCObj[j], ::aRTL[j], ::aNoVScroll[j], ::aImage[j], ::aFit[j], ::aTextHeight[j], ::aSubClass[j] }
-      aFormats    := { 30,         '999',        1100,        250,           .F.,               .F.,             '999',        .F.,         .F.,             .F.,        .F.,           .F.,           31,         .F.,       .F.,             250,         .F.,       '999',            250 }
+      aLabels     := { 'Name',     'Value',      'Items',     'ToolTip',     'MultiSelect',     'MultiColumn',   'ColumnWidth',  'MultiTab',     'TabsWidth',     'DragItems',     'HelpID',     'Break',     'NoTabStop',     'Sort',     'Enabled',     'Visible',     'Obj',      'RTL',     'NoVScroll',     'Image',     'Fit',     'TextHeight',     'SubClass' }
+      aInitValues := { ::aName[j], ::aValueN[j], ::aitems[j], ::aToolTip[j], ::aMultiSelect[j], ::aMultiLine[j], ::aColWidth[j], ::aMultiTab[j], ::aTabsWidth[j], ::aDragItems[j], ::aHelpID[j], ::aBreak[j], ::aNoTabStop[j], ::asort[j], ::aEnabled[j], ::aVisible[j], ::aCObj[j], ::aRTL[j], ::aNoVScroll[j], ::aImage[j], ::aFit[j], ::aTextHeight[j], ::aSubClass[j] }
+      aFormats    := { 30,         '999',        1100,        250,           .F.,               .F.,             '999',          .F.,            250,             .F.,             '999',        .F.,         .F.,             .F.,        .F.,           .F.,           31,         .F.,       .F.,             250,         .F.,       '999',            250 }
       aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
       IF aResults[1] == NIL
          oControl:SetFocus()
@@ -16361,25 +16432,29 @@ LOCAL aFormats, aResults
       ::aToolTip[j]          := aResults[04]
       ::aMultiSelect[j]      := aResults[05]
       ::aMultiLine[j]        := aResults[06]
-      ::aHelpID[j]           := aResults[07]
-      ::aBreak[j]            := aResults[08]
-      ::aNoTabStop[j]        := aResults[09]
-      ::asort[j]             := aResults[10]
-      ::aEnabled[j]          := aResults[11]
-      ::aVisible[j]          := aResults[12]
-      ::aCObj[j]             := aResults[13]
-      ::aRTL[j]              := aResults[14]
-      ::aNoVScroll[j]        := aResults[15]
-      ::aImage[j]            := aResults[16]
-      ::aFit[j]              := aResults[17]
-      ::aTextHeight[j]       := aResults[18]
-      ::aSubClass[j]         := aResults[19]
+      ::aColWidth[j]         := aResults[07]
+      ::aMultiTab[j]         := aResults[08]
+      ::aTabsWidth[j]        := aResults[09]
+      ::aDragItems[j]        := aResults[10]
+      ::aHelpID[j]           := aResults[11]
+      ::aBreak[j]            := aResults[12]
+      ::aNoTabStop[j]        := aResults[13]
+      ::asort[j]             := aResults[14]
+      ::aEnabled[j]          := aResults[15]
+      ::aVisible[j]          := aResults[16]
+      ::aCObj[j]             := aResults[17]
+      ::aRTL[j]              := aResults[18]
+      ::aNoVScroll[j]        := aResults[19]
+      ::aImage[j]            := aResults[20]
+      ::aFit[j]              := aResults[21]
+      ::aTextHeight[j]       := aResults[22]
+      ::aSubClass[j]         := aResults[23]
    ENDIF
 
    IF ::aCtrlType[j] == 'BROWSE'
       cTitle      := ::aName[j] + ' properties'
       aLabels     := { 'Name',     'Headers',     'Widths',     'WorkArea',     'Fields',     'Value ',     'ToolTip',     'Valid',     'ValidMessages', 'ReadOnly',      'Lock',     'Delete',     'NoLines',     'Image',     'Justify',     'HelpID',     'Enabled',     'Visible',     'When',     'DynamicBackColor',     'DynamicForeColor',     'ColumnControls',     'InputMask',     'InPlace',     'Edit',     'Append',     'Obj',      'Break',     'RTL',     'NoTabStop',     'FullMove',  'UseButtons',  'NoHeaders',     'HeaderImages',     'ImagesAlign',     'SelectedColors', 'EditKeys',     'DoubleBuffer',     'SingleBuffer',     'FocusRect',     'NoFocusRect',     'PaintLeftMargin', 'FixedCols',     'FixedWidths',     'LikeExcel',     'DeleteWhen',     'DeleteMsg',     'NoDeleteMsg',  'FixedControls',  'DynamicControls',  'FixedBlocks',   'DynamicBlocks', 'BeforeColMove',     'AfterColMove',     'BeforeColSize',     'AfterColSize',     'BeforeAutoFit',     'ExtDblClick',     'NoVScroll',     'NoRefresh',     'ForceRefresh',     'ReplaceField',     'SubClass',     'ColumnInfo',     'RecCount',     'Descending',  'Synchronized', 'UnSynchronized', 'UpdateColors',     'UpdateAll',  'NoModalEdit',     'NavigateByCell', 'Silent',       'DisableAltA', 'NoShowAlways', 'NoneUnsels',    'ChangeBeforeEdit', 'CheckBoxes',     'DefaultValues' }
-      aInitValues := { ::aName[j], ::aheaders[j], ::awidths[j], ::aworkarea[j], ::aFields[j], ::aValueN[j], ::aToolTip[j], ::avalid[j], ::avalidmess[j], ::aReadOnlyb[j], ::alock[j], ::adelete[j], ::anolines[j], ::aimage[j], ::ajustify[j], ::aHelpID[j], ::aEnabled[j], ::aVisible[j], ::awhen[j], ::adynamicbackcolor[j], ::adynamicforecolor[j], ::acolumncontrols[j], ::aInputMask[j], ::ainplace[j], ::aedit[j], ::aAppend[j], ::aCObj[j], ::aBreak[j], ::aRTL[j], ::aNoTabStop[j], ::aFull[j],  ::aButtons[j], ::aNoHeaders[j], ::aHeaderImages[j], ::aImagesAlign[j], ::aSelColor[j],   ::aEditKeys[j], ::aDoubleBuffer[j], ::aSingleBuffer[j], ::aFocusRect[j], ::aNoFocusRect[j], ::aPLM[j],         ::aFixedCols[j], ::aFixedWidths[j], ::aLikeExcel[j], ::aDeleteWhen[j], ::aDeleteMsg[j], ::aNoDelMsg[j], ::aFixedCtrls[j], ::aDynamicCtrls[j], ::aFixBlocks[j], ::aDynBlocks[j], ::aBeforeColMove[j], ::aAfterColMove[j], ::aBeforeColSize[j], ::aAfterColSize[j], ::aBeforeAutoFit[j], ::aExtDblClick[j], ::anovscroll[j], ::aNoRefresh[j], ::aForceRefresh[j], ::aReplaceField[j], ::aSubClass[j], ::aColumnInfo[j], ::aRecCount[j], ::aDescend[j], ::aSync[j],     ::aUnSync[j],     ::aUpdateColors[j], ::aUpdate[j], ::aNoModalEdit[j], ::aByCell[j],     ::aAutoPlay[j], ::aFlat[j],    ::aShowAll[j],  ::aNoHideSel[j], ::aDisplayEdit[j],  ::aCheckBoxes[j], ::aDefaultYear[j] }
+      aInitValues := { ::aName[j], ::aheaders[j], ::awidths[j], ::aworkarea[j], ::aFields[j], ::aValueN[j], ::aToolTip[j], ::avalid[j], ::avalidmess[j], ::aReadOnlyb[j], ::alock[j], ::adelete[j], ::aNoLines[j], ::aimage[j], ::ajustify[j], ::aHelpID[j], ::aEnabled[j], ::aVisible[j], ::awhen[j], ::adynamicbackcolor[j], ::adynamicforecolor[j], ::acolumncontrols[j], ::aInputMask[j], ::ainplace[j], ::aedit[j], ::aAppend[j], ::aCObj[j], ::aBreak[j], ::aRTL[j], ::aNoTabStop[j], ::aFull[j],  ::aButtons[j], ::aNoHeaders[j], ::aHeaderImages[j], ::aImagesAlign[j], ::aSelColor[j],   ::aEditKeys[j], ::aDoubleBuffer[j], ::aSingleBuffer[j], ::aFocusRect[j], ::aNoFocusRect[j], ::aPLM[j],         ::aFixedCols[j], ::aFixedWidths[j], ::aLikeExcel[j], ::aDeleteWhen[j], ::aDeleteMsg[j], ::aNoDelMsg[j], ::aFixedCtrls[j], ::aDynamicCtrls[j], ::aFixBlocks[j], ::aDynBlocks[j], ::aBeforeColMove[j], ::aAfterColMove[j], ::aBeforeColSize[j], ::aAfterColSize[j], ::aBeforeAutoFit[j], ::aExtDblClick[j], ::anovscroll[j], ::aNoRefresh[j], ::aForceRefresh[j], ::aReplaceField[j], ::aSubClass[j], ::aColumnInfo[j], ::aRecCount[j], ::aDescend[j], ::aSync[j],     ::aUnSync[j],     ::aUpdateColors[j], ::aUpdate[j], ::aNoModalEdit[j], ::aByCell[j],     ::aAutoPlay[j], ::aFlat[j],    ::aShowAll[j],  ::aNoHideSel[j], ::aDisplayEdit[j],  ::aCheckBoxes[j], ::aDefaultYear[j] }
       aFormats    := { 30,         1100,          1100,         80,             1100,         '999999',     250,           1100,        1100,            1100,            .T.,        .F.,          .F.,           1100,        1100,          '99999',      .F.,           .F.,           1100,       1100,                   1100,                   1100,                 1100,             .F.,           .F.,        .F.,          31,         .F.,         .F.,       .F.,             .F.,         .F.,           .F.,             250,                250,               250,              250,            .F.,                .F.,                .F.,             .F.,               .F.,               .F.,             .F.,               .F.,             250,              250,             .F.,            .F.,              .F.,                .F.,             .F.,             250,                 250,                250,                 250,                250,                 .F.,               .F.,             .F.,             .F.,                250,                250,            250,              .F.,            .F.,           .F.,            .F.,              .F.,                .F.,         .F.,               .F.,              .F.,            .F.,           .F.,            .F.,             .F.,                .F.,              250 }
       aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
       IF aResults[1] == NIL
@@ -16398,7 +16473,7 @@ LOCAL aFormats, aResults
       ::aReadOnlyb[j]        := aResults[10]
       ::alock[j]             := aResults[11]
       ::adelete[j]           := aResults[12]
-      ::anolines[j]          := aResults[13]
+      ::aNoLines[j]          := aResults[13]
       ::aimage[j]            := aResults[14]
       ::ajustify[j]          := aResults[15]
       ::aHelpID[j]           := aResults[16]
@@ -16470,7 +16545,7 @@ LOCAL aFormats, aResults
    IF ::aCtrlType[j] == 'XBROWSE'
       cTitle      := ::aName[j] + ' properties'
       aLabels     := { 'Name',     'Headers',     'Widths',     'WorkArea',     'Fields',     'Value ',     'ToolTip',     'Valid',     'ValidMessages',  'ReadOnly',      'Lock',     'Delete',     'NoLines',     'Image',     'Justify',     'HelpID',     'Enabled',     'Visible',     'When',     'DynamicBackColor',     'DynamicForeColor',     'ColumnControls',     'InputMask',     'InPlace',     'Edit',     'Append',     'Obj',      'Break',     'RTL',     'NoTabStop',     'FullMove',  'UseButtons',  'NoHeaders',     'HeaderImages',     'ImagesAlign',     'SelectedColors', 'EditKeys',     'DoubleBuffer',     'SingleBuffer',     'FocusRect',     'NoFocusRect',     'PaintLeftMargin', 'FixedCols',     'FixedWidths',     'LikeExcel',     'DeleteWhen',     'DeleteMsg',     'NoDeleteMsg',  'FixedControls',  'DynamicControls',  'FixedBlocks',   'DynamicBlocks', 'BeforeColMove',     'AfterColMove',     'BeforeColSize',     'AfterColSize',     'BeforeAutoFit',     'ExtDblClick',     'NoVScroll',     'ReplaceField',     'SubClass',     'ColumnInfo',     'RecCount',     'Descending',  'UpdateColors',     'NoShowEmptyRow', 'NoModalEdit',     'NavigateBycell', 'Silent',       'DisableAltA', 'NoShowAlways', 'CheckBoxes',     'DefaultValues' }
-      aInitValues := { ::aName[j], ::aheaders[j], ::awidths[j], ::aworkarea[j], ::aFields[j], ::aValueN[j], ::aToolTip[j], ::avalid[j], ::avalidmess[j],  ::aReadOnlyb[j], ::alock[j], ::adelete[j], ::anolines[j], ::aimage[j], ::ajustify[j], ::aHelpID[j], ::aEnabled[j], ::aVisible[j], ::awhen[j], ::adynamicbackcolor[j], ::adynamicforecolor[j], ::acolumncontrols[j], ::aInputMask[j], ::ainplace[j], ::aedit[j], ::aAppend[j], ::aCObj[j], ::aBreak[j], ::aRTL[j], ::aNoTabStop[j], ::aFull[j],  ::aButtons[j], ::aNoHeaders[j], ::aHeaderImages[j], ::aImagesAlign[j], ::aSelColor[j],   ::aEditKeys[j], ::aDoubleBuffer[j], ::aSingleBuffer[j], ::aFocusRect[j], ::aNoFocusRect[j], ::aPLM[j],         ::aFixedCols[j], ::aFixedWidths[j], ::aLikeExcel[j], ::aDeleteWhen[j], ::aDeleteMsg[j], ::aNoDelMsg[j], ::aFixedCtrls[j], ::aDynamicCtrls[j], ::aFixBlocks[j], ::aDynBlocks[j], ::aBeforeColMove[j], ::aAfterColMove[j], ::aBeforeColSize[j], ::aAfterColSize[j], ::aBeforeAutoFit[j], ::aExtDblClick[j], ::anovscroll[j], ::aReplaceField[j], ::aSubClass[j], ::aColumnInfo[j], ::aRecCount[j], ::aDescend[j], ::aUpdateColors[j], ::aShowNone[j],   ::aNoModalEdit[j], ::aByCell[j],     ::aAutoPlay[j], ::aFlat[j],    ::aShowAll[j],  ::aCheckBoxes[j], ::aDefaultYear[j] }
+      aInitValues := { ::aName[j], ::aheaders[j], ::awidths[j], ::aworkarea[j], ::aFields[j], ::aValueN[j], ::aToolTip[j], ::avalid[j], ::avalidmess[j],  ::aReadOnlyb[j], ::alock[j], ::adelete[j], ::aNoLines[j], ::aimage[j], ::ajustify[j], ::aHelpID[j], ::aEnabled[j], ::aVisible[j], ::awhen[j], ::adynamicbackcolor[j], ::adynamicforecolor[j], ::acolumncontrols[j], ::aInputMask[j], ::ainplace[j], ::aedit[j], ::aAppend[j], ::aCObj[j], ::aBreak[j], ::aRTL[j], ::aNoTabStop[j], ::aFull[j],  ::aButtons[j], ::aNoHeaders[j], ::aHeaderImages[j], ::aImagesAlign[j], ::aSelColor[j],   ::aEditKeys[j], ::aDoubleBuffer[j], ::aSingleBuffer[j], ::aFocusRect[j], ::aNoFocusRect[j], ::aPLM[j],         ::aFixedCols[j], ::aFixedWidths[j], ::aLikeExcel[j], ::aDeleteWhen[j], ::aDeleteMsg[j], ::aNoDelMsg[j], ::aFixedCtrls[j], ::aDynamicCtrls[j], ::aFixBlocks[j], ::aDynBlocks[j], ::aBeforeColMove[j], ::aAfterColMove[j], ::aBeforeColSize[j], ::aAfterColSize[j], ::aBeforeAutoFit[j], ::aExtDblClick[j], ::anovscroll[j], ::aReplaceField[j], ::aSubClass[j], ::aColumnInfo[j], ::aRecCount[j], ::aDescend[j], ::aUpdateColors[j], ::aShowNone[j],   ::aNoModalEdit[j], ::aByCell[j],     ::aAutoPlay[j], ::aFlat[j],    ::aShowAll[j],  ::aCheckBoxes[j], ::aDefaultYear[j] }
       aFormats    := { 30,         1100,          1100,         80,             1100,         '999999',     250,           1100,        1100,             1100,            .T.,        .F.,          .F.,           1100,        1100,          '99999',      .F.,           .F.,           1100,       1100,                   1100,                   1100,                 1100,            .F.,           .F.,        .F.,          31,         .F.,         .F.,       .F.,             .F.,         .F.,           .F.,             250,                250,               250,              250,            .F.,                .F.,                .F.,             .F.,               .F.,               .F.,             .F.,               .F.,             250,              250,             .F.,            .F.,              .F.,                .F.,             .F.,             250,                 250,                250,                 250,                250,                 .F.,               .F.,             250,                250,            250,              .F.,            .F.,           .F.,                .F.,              .F.,               .F.,              .F.,            .F.,           .F.,            .F.,              250 }
       aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
       IF aResults[1] == NIL
@@ -16489,7 +16564,7 @@ LOCAL aFormats, aResults
       ::aReadOnlyb[j]        := aResults[10]
       ::alock[j]             := aResults[11]
       ::adelete[j]           := aResults[12]
-      ::anolines[j]          := aResults[13]
+      ::aNoLines[j]          := aResults[13]
       ::aimage[j]            := aResults[14]
       ::ajustify[j]          := aResults[15]
       ::aHelpID[j]           := aResults[16]
@@ -16927,7 +17002,7 @@ LOCAL aFormats, aResults
    IF ::aCtrlType[j] == 'MONTHCALENDAR'
       cTitle      := ::aName[j] + ' properties'
       aLabels     := { 'Name',     'Value',     'ToolTip',     'NoToday',     'NoTodayCircle',     'WeekNumbers',     'HelpID',     'Visible',     'Enabled',     'Obj',      'NoTabStop',     'RTL',     'SubClass',     'MultiSelect' }
-      aInitValues := { ::aName[j], ::aValue[j], ::aToolTip[j], ::anotoday[j], ::anotodaycircle[j], ::aweeknumbers[j], ::aHelpID[j], ::aVisible[j], ::aEnabled[j], ::aCObj[j], ::aNoTabStop[j], ::aRTL[j], ::aSubClass[j], ::aMultiSelect[j] }
+      aInitValues := { ::aName[j], ::aValue[j], ::aToolTip[j], ::aNoToday[j], ::aNoTodaycircle[j], ::aWeekNumbers[j], ::aHelpID[j], ::aVisible[j], ::aEnabled[j], ::aCObj[j], ::aNoTabStop[j], ::aRTL[j], ::aSubClass[j], ::aMultiSelect[j] }
       aFormats    := { 30,         30,          250,           .F.,           .F.,                 .F.,               '999',        .T.,           .T.,           31,         .F.,             .F.,       250,            .F. }
       aResults    := ::myIde:myInputWindow( cTitle, aLabels, aInitValues, aFormats )
       IF aResults[1] == NIL
@@ -17840,7 +17915,7 @@ LOCAL ia, aResults
       ::aOnEnter[j]         := aResults[04]
    ENDIF
 
-   IF ::aCtrlType[j] == 'EDIT'
+   IF ::aCtrlType[j] == "EDIT"
       cTitle      := ::aName[j] + ' events'
       aLabels     := { 'On Change',    'On GotFocus',    'On LostFocus',    'On HScroll',    'On VScroll' }
       aInitValues := { ::aOnChange[j], ::aOnGotFocus[j], ::aOnLostFocus[j], ::aOnHScroll[j], ::aOnVScroll[j] }

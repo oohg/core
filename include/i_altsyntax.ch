@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.143 2017-08-18 23:41:26 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.144 2017-08-23 00:10:49 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -684,7 +684,7 @@ LIST BOX
       _OOHG_ActiveControlStretch     := .F.    ;;
       _OOHG_ActiveControlNoVScroll   := .F.    ;;
       _OOHG_ActiveControlMultiLine   := .F.    ;;
-      _OOHG_ActiveControlFixedWidth  := NIL    ;;
+      _OOHG_ActiveControlFixedWidths := NIL    ;;
       _OOHG_ActiveControlMultiTab    := .F.    ;;
       _OOHG_ActiveControlWidths      := NIL
 
@@ -706,7 +706,7 @@ LIST BOX
 
 #xcommand COLUMNWIDTH <multicolumn> ;
    => ;
-      _OOHG_ActiveControlFixedWidth := <multicolumn>
+      _OOHG_ActiveControlFixedWidths := <multicolumn>
 
 #xcommand MULTITAB <multitab> ;
    => ;
@@ -715,6 +715,10 @@ LIST BOX
 #xcommand TABSWIDTH <aTabs> ;
    => ;
       _OOHG_ActiveControlWidths := <aTabs>
+
+#xcommand DRAGITEMS <dragitems> ;
+   => ;
+      _OOHG_ActiveControlFullMove := <dragitems>
 
 #xcommand END LISTBOX ;
    => ;
@@ -753,9 +757,10 @@ LIST BOX
             _OOHG_ActiveControlStretch, ;
             _OOHG_ActiveControlNoVScroll, ;
             _OOHG_ActiveControlMultiLine, ;
-            _OOHG_ActiveControlFixedWidth, ;
+            _OOHG_ActiveControlFixedWidths, ;
             _OOHG_ActiveControlMultiTab, ;
-            _OOHG_ActiveControlWidths )
+            _OOHG_ActiveControlWidths, ;
+            _OOHG_ActiveControlFullMove )
 
 /*---------------------------------------------------------------------------
 CHECKLIST

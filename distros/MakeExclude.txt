@@ -19,9 +19,9 @@ compile_vc.bat
 compile30.bat
 compile32.bat
 compileXB.bat
+compres.bat
 hbprinter.hbp
 hmi.ini
-ide_up_to_2013-08-13.zip
 makelib_bcc.bat
 makelib_mingw.bat
 makelib_pc.bat
@@ -47,3 +47,5 @@ oohg.rc
 oohg_bcc.rc
 oohg.res
 oohg.o
+oohg_hb30.o
+oohg_hb32.o

@@ -1,5 +1,5 @@
 /*
- * $Id: i_var.ch,v 1.28 2017-07-21 00:35:20 fyurisich Exp $
+ * $Id: i_var.ch,v 1.29 2017-08-23 00:10:49 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -65,35 +65,35 @@ PUBLIC VARIABLES USED BY OOHG MODULES
 
 MEMVAR _OOHG_AllVars
 
-#xtranslate _OOHG_ActiveControlInfo  => _OOHG_AllVars \[   1 \]
-#xtranslate _OOHG_ActiveFrame        => _OOHG_AllVars \[   2 \]
-#xtranslate _OOHG_AdjustFont         => _OOHG_AllVArs \[   3 \]
-#xtranslate _OOHG_AdjustWidth        => _OOHG_AllVArs \[   4 \]
-#xtranslate _OOHG_AutoAdjust         => _OOHG_AllVars \[   5 \]
-#xtranslate _OOHG_DefaultFontColor   => _OOHG_AllVars \[   6 \]
-#xtranslate _OOHG_DefaultFontName    => _OOHG_AllVars \[   7 \]
-#xtranslate _OOHG_DefaultFontSize    => _OOHG_AllVars \[   8 \]
-#xtranslate _OOHG_DialogCancelled    => _OOHG_AllVars \[   9 \]
-#xtranslate _OOHG_ExtendedNavigation => _OOHG_AllVars \[  10 \]
-#xtranslate _OOHG_Main               => _OOHG_AllVars \[  11 \]
-#xtranslate _OOHG_SameEnterDblClick  => _OOHG_AllVArs \[  12 \]
-#xtranslate _OOHG_TempWindowName     => _OOHG_AllVars \[  13 \]
-#xtranslate _OOHG_ThisControl        => _OOHG_AllVars \[  14 \]
-#xtranslate _OOHG_ThisEventType      => _OOHG_AllVars \[  15 \]
-#xtranslate _OOHG_ThisForm           => _OOHG_AllVars \[  16 \]
-#xtranslate _OOHG_ThisItemCellCol    => _OOHG_AllVars \[  17 \]
-#xtranslate _OOHG_ThisItemCellHeight => _OOHG_AllVars \[  18 \]
-#xtranslate _OOHG_ThisItemCellRow    => _OOHG_AllVars \[  19 \]
-#xtranslate _OOHG_ThisItemCellValue  => _OOHG_AllVars \[  20 \]
-#xtranslate _OOHG_ThisItemCellWidth  => _OOHG_AllVars \[  21 \]
-#xtranslate _OOHG_ThisItemColIndex   => _OOHG_AllVars \[  22 \]
-#xtranslate _OOHG_ThisItemRowIndex   => _OOHG_AllVars \[  23 \]
-#xtranslate _OOHG_ThisObject         => _OOHG_AllVars \[  24 \]
-#xtranslate _OOHG_ThisQueryColIndex  => _OOHG_AllVars \[  25 \]
-#xtranslate _OOHG_ThisQueryData      => _OOHG_AllVars \[  26 \]
-#xtranslate _OOHG_ThisQueryRowIndex  => _OOHG_AllVars \[  27 \]
-#xtranslate _OOHG_ThisType           => _OOHG_AllVars \[  28 \]
-#xtranslate _OOHG_Main_Icon          => _OOHG_AllVars \[  29 \]
+#xtranslate _OOHG_ActiveControlInfo       => _OOHG_AllVars \[   1 \]
+#xtranslate _OOHG_ActiveFrame             => _OOHG_AllVars \[   2 \]
+#xtranslate _OOHG_AdjustFont              => _OOHG_AllVArs \[   3 \]
+#xtranslate _OOHG_AdjustWidth             => _OOHG_AllVArs \[   4 \]
+#xtranslate _OOHG_AutoAdjust              => _OOHG_AllVars \[   5 \]
+#xtranslate _OOHG_DefaultFontColor        => _OOHG_AllVars \[   6 \]
+#xtranslate _OOHG_DefaultFontName         => _OOHG_AllVars \[   7 \]
+#xtranslate _OOHG_DefaultFontSize         => _OOHG_AllVars \[   8 \]
+#xtranslate _OOHG_DialogCancelled         => _OOHG_AllVars \[   9 \]
+#xtranslate _OOHG_ExtendedNavigation      => _OOHG_AllVars \[  10 \]
+#xtranslate _OOHG_Main                    => _OOHG_AllVars \[  11 \]
+#xtranslate _OOHG_SameEnterDblClick       => _OOHG_AllVArs \[  12 \]
+#xtranslate _OOHG_TempWindowName          => _OOHG_AllVars \[  13 \]
+#xtranslate _OOHG_ThisControl             => _OOHG_AllVars \[  14 \]
+#xtranslate _OOHG_ThisEventType           => _OOHG_AllVars \[  15 \]
+#xtranslate _OOHG_ThisForm                => _OOHG_AllVars \[  16 \]
+#xtranslate _OOHG_ThisItemCellCol         => _OOHG_AllVars \[  17 \]
+#xtranslate _OOHG_ThisItemCellHeight      => _OOHG_AllVars \[  18 \]
+#xtranslate _OOHG_ThisItemCellRow         => _OOHG_AllVars \[  19 \]
+#xtranslate _OOHG_ThisItemCellValue       => _OOHG_AllVars \[  20 \]
+#xtranslate _OOHG_ThisItemCellWidth       => _OOHG_AllVars \[  21 \]
+#xtranslate _OOHG_ThisItemColIndex        => _OOHG_AllVars \[  22 \]
+#xtranslate _OOHG_ThisItemRowIndex        => _OOHG_AllVars \[  23 \]
+#xtranslate _OOHG_ThisObject              => _OOHG_AllVars \[  24 \]
+#xtranslate _OOHG_ThisQueryColIndex       => _OOHG_AllVars \[  25 \]
+#xtranslate _OOHG_ThisQueryData           => _OOHG_AllVars \[  26 \]
+#xtranslate _OOHG_ThisQueryRowIndex       => _OOHG_AllVars \[  27 \]
+#xtranslate _OOHG_ThisType                => _OOHG_AllVars \[  28 \]
+#xtranslate _OOHG_Main_Icon               => _OOHG_AllVars \[  29 \]
 
 /*---------------------------------------------------------------------------
 PSEUDO VARIABLES USED BY OOHG MODULES

@@ -1,11 +1,11 @@
 //
-// $Id: oohg.rc,v 1.9 2015-03-18 01:22:30 fyurisich Exp $
+// $Id: oohg.rc,v 1.10 2017-08-23 00:11:23 fyurisich Exp $
 //
-// Use this file with MinGW Compiler
+// Use CompileRes_mingw.bat to build oohg.o from this file using MinGW compiler
 
 #include "_oohg_resconfig.h"
 
-// MANIFEST FOR CREATE 'XP-STYLE' APPLICATIONS
+// MANIFESTS TO ALLOW THE STYLING OF CONTROLS BY THE OS
 
 #if defined( HB_ARCH_64BIT )
     1 24 oohgpath\WindowsXP64.Manifest
@@ -13,7 +13,11 @@
     1 24 oohgpath\WindowsXP.Manifest
 #endif
 
-MINIGUI_FINGER          CURSOR          oohgpath\FINGER.CUR
+// CURSORS
+
+MINIGUI_FINGER          CURSOR          oohgpath\finger.cur
+MINIGUI_DRAGUP          CURSOR          oohgpath\dragup.cur
+MINIGUI_DRAGDOWN        CURSOR          oohgpath\dragdown.cur
 DRAG_NO                 CURSOR          oohgpath\dragno.cur
 DRAG_ARROW_COPY         CURSOR          oohgpath\dragcopy.cur
 DRAG_ARROW_MOVE         CURSOR          oohgpath\dragmove.cur
@@ -34,40 +38,42 @@ MINIGUI_EDIT_DEL        BITMAP          oohgpath\edit_del.bmp
 MINIGUI_EDIT_SET        BITMAP          oohgpath\edit_set.bmp
 MINIGUI_EDIT_UNDO       BITMAP          oohgpath\edit_undo.bmp
 
-ZZZ_AAAOOHG             ICON            oohgpath\OOHG.ICO
-ZZZ_AAAWINDOW           ICON            oohgpath\WINDOW.ICO
-ZZZ_LED_ON              ICON            oohgpath\LED_ON.ICO
-ZZZ_LED_OFF             ICON            oohgpath\LED_OFF.ICO
+// MISCELANEOUS
+
+ZZZ_AAAOOHG             ICON            oohgpath\oohg.ico
+ZZZ_AAAWINDOW           ICON            oohgpath\window.ico
+ZZZ_LED_ON              ICON            oohgpath\led_on.ico
+ZZZ_LED_OFF             ICON            oohgpath\led_off.ico
 
 // HBPRINT PRINT PREVIEW IMAGE BUTTONS
 
-zzz_printicon           ICON    oohgpath\print.ico
-hbprint_end             BITMAP  oohgpath\hbprint_end.bmp
-hbprint_next            BITMAP  oohgpath\hbprint_next.bmp
-hbprint_top             BITMAP  oohgpath\hbprint_top.bmp
-hbprint_back            BITMAP  oohgpath\hbprint_back.bmp
-hbprint_close           BITMAP  oohgpath\hbprint_close.bmp
-hbprint_print           BITMAP  oohgpath\hbprint_print.bmp
-hbprint_save            BITMAP  oohgpath\hbprint_save.bmp
-hbprint_zoomin          BITMAP  oohgpath\hbprint_zoomin.bmp
-hbprint_zoomout         BITMAP  oohgpath\hbprint_zoomout.bmp
-hbprint_option          BITMAP  oohgpath\hbprint_option.bmp
+zzz_printicon           ICON            oohgpath\print.ico
+hbprint_end             BITMAP          oohgpath\hbprint_end.bmp
+hbprint_next            BITMAP          oohgpath\hbprint_next.bmp
+hbprint_top             BITMAP          oohgpath\hbprint_top.bmp
+hbprint_back            BITMAP          oohgpath\hbprint_back.bmp
+hbprint_close           BITMAP          oohgpath\hbprint_close.bmp
+hbprint_print           BITMAP          oohgpath\hbprint_print.bmp
+hbprint_save            BITMAP          oohgpath\hbprint_save.bmp
+hbprint_zoomin          BITMAP          oohgpath\hbprint_zoomin.bmp
+hbprint_zoomout         BITMAP          oohgpath\hbprint_zoomout.bmp
+hbprint_option          BITMAP          oohgpath\hbprint_option.bmp
 
 // MINIPRINT PRINT PREVIEW IMAGE BUTTONS
 
-HP_END          BITMAP  oohgpath\HP_END.BMP
-HP_TOP          BITMAP  oohgpath\HP_TOP.BMP
-HP_NEXT         BITMAP  oohgpath\HP_NEXT.BMP
-HP_BACK         BITMAP  oohgpath\HP_BACK.BMP
-HP_PRINT        BITMAP  oohgpath\HP_PRINT.BMP
-HP_ZOOM         BITMAP  oohgpath\HP_ZOOM.BMP
-HP_GOPAGE       BITMAP  oohgpath\HP_GOPAGE.BMP
-HP_CLOSE        BITMAP  oohgpath\HP_CLOSE.BMP
-HP_SAVE         BITMAP  oohgpath\HP_SAVE.BMP
-HP_THUMBNAIL    BITMAP  oohgpath\hp_thumbnail.bmp
-HP_GLASS        CURSOR  oohgpath\HP_GLASS.CUR
+HP_END                  BITMAP          oohgpath\hp_end.bmp
+HP_TOP                  BITMAP          oohgpath\hp_top.bmp
+HP_NEXT                 BITMAP          oohgpath\hp_next.bmp
+HP_BACK                 BITMAP          oohgpath\hp_back.bmp
+HP_PRINT                BITMAP          oohgpath\hp_print.bmp
+HP_ZOOM                 BITMAP          oohgpath\hp_zoom.bmp
+HP_GOPAGE               BITMAP          oohgpath\hp_gopage.bmp
+HP_CLOSE                BITMAP          oohgpath\hp_close.bmp
+HP_SAVE                 BITMAP          oohgpath\hp_save.bmp
+HP_THUMBNAIL            BITMAP          oohgpath\hp_thumbnail.bmp
+HP_GLASS                CURSOR          oohgpath\hp_glass.cur
 
 // IMAGES FOR TGRIDCONTROL BUTTONS
 
-EDIT_OK_16      BITMAP  oohgpath\EDIT_OK_16.BMP
-EDIT_CANCEL_16  BITMAP  oohgpath\EDIT_CANCEL_16.BMP
+EDIT_OK_16              BITMAP          oohgpath\edit_ok_16.bmp
+EDIT_CANCEL_16          BITMAP          oohgpath\edit_cancel_16.bmp

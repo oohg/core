@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.76 2017-08-18 23:41:26 fyurisich Exp $
+ * $Id: i_windefs.ch,v 1.77 2017-08-23 00:10:49 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -169,7 +169,7 @@ GENERIC WM_NOTIFY CALLS
 #define NM_RELEASEDCAPTURE            ( NM_FIRST - 16 )
 #define NM_SETCURSOR                  ( NM_FIRST - 17 )   // Uses NMMOUSE struct
 #define NM_CHAR                       ( NM_FIRST - 18 )   // Uses NMCHAR struct
-#define NM_TOOLTIPSCREATED            ( NM_FIRST - 19 )  
+#define NM_TOOLTIPSCREATED            ( NM_FIRST - 19 )
 #define NM_LDOWN                      ( NM_FIRST - 20 )
 #define NM_RDOWN                      ( NM_FIRST - 21 )
 
@@ -451,7 +451,14 @@ LISTVIEW CONTROL
 LISTBOX CONTROL
 ---------------------------------------------------------------------------*/
 
-#define LB_SETCOLUMNWIDTH             0x0195
+#define DL_BEGINDRAG                  ( WM_USER + 133 )
+#define DL_DRAGGING                   ( WM_USER + 134 )
+#define DL_DROPPED                    ( WM_USER + 135 )
+#define DL_CANCELDRAG                 ( WM_USER + 136 )
+#define DL_CURSORSET                  0
+#define DL_STOPCURSOR                 1
+#define DL_COPYCURSOR                 2
+#define DL_MOVECURSOR                 3
 #define LBS_NOTIFY                    1
 #define LBS_SORT                      2
 #define LBS_NOREDRAW                  4
@@ -531,7 +538,7 @@ TREEVIEW CONTROL
 #define DLGC_WANTMESSAGE              4
 
 /*---------------------------------------------------------------------------
-TAB CONTROL 
+TAB CONTROL
 ---------------------------------------------------------------------------*/
 
 #define TCM_FIRST                     0x1300
@@ -669,7 +676,7 @@ TOOLTIP CONTROL
 /*---------------------------------------------------------------------------
 LABEL, IMAGE, INTERNAL, PICTURE, BUTTON AND SCROLLBUTTON CONTROLS
 ---------------------------------------------------------------------------*/
- 
+
 #define SS_LEFT                       0
 #define SS_CENTER                     1
 #define SS_RIGHT                      2
@@ -788,7 +795,7 @@ ANIMATEBOX, PLAYER AND PLAY WAVE CONTROLS
 /*---------------------------------------------------------------------------
 GETWINDOW FUNCTION PARAMETERS
 ---------------------------------------------------------------------------*/
- 
+
 #define GW_HWNDFIRST                  0
 #define GW_HWNDLAST                   1
 #define GW_HWNDNEXT                   2
@@ -898,7 +905,7 @@ MESSAGEBOX FUNCTIONS PARAMETERS
 STATUSBAR CONTROL
 ---------------------------------------------------------------------------*/
 
-#define SB_SETMINHEIGHT	              ( WM_USER + 8 )
+#define SB_SETMINHEIGHT               ( WM_USER + 8 )
 
 /*---------------------------------------------------------------------------
 SETWINDOWPOS FUNCTION PARAMETERS
@@ -921,9 +928,9 @@ MONTHCALENDAR CONTROL
 ---------------------------------------------------------------------------*/
 
 #define MCN_VIEWCHANGE                ( -750 )
-#define MCN_SELCHANGE	              ( -749 )
-#define MCN_GETDAYSTATE	              ( -747 )
-#define MCN_SELECT		              ( -746 )
+#define MCN_SELCHANGE                 ( -749 )
+#define MCN_GETDAYSTATE               ( -747 )
+#define MCN_SELECT                    ( -746 )
 #define MCM_GETMAXSELCOUNT            0x1003
 #define MCM_SETMAXSELCOUNT            0x1004
 #define MCM_GETCURRENTVIEW            0x1016
@@ -938,7 +945,7 @@ TOOLBAR CONTROL
 ---------------------------------------------------------------------------*/
 
 #define TB_AUTOSIZE                   1057
-#define TB_SETTOOLTIPS	              ( WM_USER + 36 )
+#define TB_SETTOOLTIPS                ( WM_USER + 36 )
 #define TB_GETHOTITEM                 ( WM_USER + 71 )
 
 /*---------------------------------------------------------------------------

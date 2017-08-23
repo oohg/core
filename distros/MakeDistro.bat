@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: MakeDistro.bat,v 1.10 2017-07-09 21:45:53 fyurisich Exp $
+rem $Id: MakeDistro.bat,v 1.11 2017-08-23 00:10:48 fyurisich Exp $
 rem
 cls
 
@@ -197,6 +197,7 @@ set BASE_DISTRO_SUBDIR=hb30
 if not exist hb30\nul goto ERROR5
 cd hb30
 xcopy %HG_HRB%\*.* /r /s /e /c /q /y /d
+if exist uninstall.exe del uninstall.exe
 cd ..
 echo.
 :HB32
@@ -206,6 +207,7 @@ set BASE_DISTRO_SUBDIR=hb32
 if not exist hb32\nul goto ERROR5
 cd hb32
 xcopy %HG_HRB%\*.* /r /s /e /c /q /y /d
+if exist uninstall.exe del uninstall.exe
 cd ..
 echo.
 :XB
@@ -215,6 +217,7 @@ set BASE_DISTRO_SUBDIR=xhbcc
 if not exist xhbcc\nul goto ERROR5
 cd xhbcc
 xcopy %HG_HRB%\*.* /r /s /e /c /q /y /d
+if exist uninstall.exe del uninstall.exe
 cd ..
 echo.
 :IDE
@@ -301,8 +304,8 @@ echo.
 :RES_FILE
 echo Compiling resource file...
 cd resources
-if /I "%1"=="HB30" call compileres_mingw.bat /NOCLS
-if /I "%1"=="HB32" call compileres_mingw.bat /NOCLS
+if /I "%1"=="HB30" call compileres_mingw.bat /NOCLS HB30
+if /I "%1"=="HB32" call compileres_mingw.bat /NOCLS HB32
 if /I "%1"=="XB"   call compileres_bcc.bat /NOCLS
 cd ..
 

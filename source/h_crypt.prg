@@ -1,5 +1,5 @@
 /*
- * $Id: h_crypt.prg,v 1.8 2016-10-17 01:55:34 fyurisich Exp $
+ * $Id: h_crypt.prg,v 1.9 2017-08-23 00:11:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -489,13 +489,13 @@ Local aString[Len(aFields)] , nFields , cSeek , i , cAlias , cTmpAlias // RL
 
 Select &cAlias
 Do while .not. eof() .and. &(cWhile)
-   If !&(cFor)                         && Select records that meet for condition
+   If !&(cFor)                         // Select records that meet for condition
       Skip
       Loop
    Endif
 
    Select &cTmpAlias
-   dbAppend()                          && Create record at target file
+   dbAppend()                          // Create record at target file
 
    For i=1 to nFields
        FieldPut(i, &cAlias->(FieldGet(i)))
@@ -506,22 +506,22 @@ Do while .not. eof() .and. &(cWhile)
 
    cBuf:=&cSeek
    cVal:=cBuf
-   Do while cBuf=cVal .and. !Eof()    && Evaluate records with same key
-      If !&(cFor)                     && Evaluate For condition within
+   Do while cBuf=cVal .and. !Eof()    // Evaluate records with same key
+      If !&(cFor)                     // Evaluate For condition within
          Skip
          Loop
       Endif
 
-      For i=1 to Len(aString)         && Crypt values
+      For i=1 to Len(aString)         // Crypt values
           aString[i]:=_ENCRYPT(FieldGet(FieldPos(aFields[i])), cPass)
       Next
 
-      skip                            && Evaluate condition in next record
+      skip                            // Evaluate condition in next record
       cVal:=&cSeek
    Enddo
 
    Select &cTmpAlias
-   For i=1 to Len(aString)            && Place Crypts in target file
+   For i=1 to Len(aString)            // Place Crypts in target file
        FieldPut(FieldPos(aFields[i]), aString[i])
    Next
 
@@ -542,9 +542,9 @@ Do while .not. eof()
       Select &cTmpAlias
       skip
 Enddo
-use                                   && Close target file
+use                                   // Close target file
 ferase(cTmpFile)
-Select &cAlias                        && Select prior file
+Select &cAlias                        // Select prior file
 go nRecno
 
 RETURN NIL

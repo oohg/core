@@ -1,5 +1,5 @@
 /*
- * $Id: bostaurus.prg,v 1.7 2017-08-12 19:00:53 fyurisich Exp $
+ * $Id: bostaurus.prg,v 1.8 2017-08-23 00:11:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1625,8 +1625,8 @@ HB_FUNC( BT_DRAW_HDC_POLY )    // ( hDC, aPointX, aPointY, ColorLine, nWidthLine
       #endif
       for( i = 0; i < nLen; i++ )
       {
-         aPoint[ i ].x = hb_parvni( 2, i + 1 );
-         aPoint[ i ].y = hb_parvni( 3, i + 1 );
+         aPoint[ i ].x = HB_PARNI( 2, i + 1 );
+         aPoint[ i ].y = HB_PARNI( 3, i + 1 );
       }
 
       hPen     = CreatePen( PS_SOLID, nWidthLine, ColorLine );

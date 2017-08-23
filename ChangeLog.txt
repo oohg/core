@@ -1,0 +1,3952 @@
+/*
+ * $Id: ChangeLog.txt,v 1.1 2017-08-23 00:10:47 fyurisich Exp $
+ */
+/* Use this format for the entry headers:
+   YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
+   For example:
+   2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
+*/
+
+2017-08-22 21:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   - ./COPYING
+   - ./ChangeLog.001
+   - ./ChangeLog.002
+   - ./ChangeLog.003
+   - ./ChangeLog.004
+   + ./ChangeLog.txt
+   + ./ChangeLog_001.txt
+   + ./ChangeLog_002.txt
+   + ./ChangeLog_003.txt
+   + ./ChangeLog_004.txt
+   + ./LICENSE.txt
+     ; Added extension to enable file opening with doubleclick.
+   * ./compile30.bat
+   * ./compile32.bat
+   * ./compile_MINGW.BAT
+     * Use version specific object of rc file.
+   * distros/MakeDistro.bat
+     * Ignore harbour's uninstall.exe
+   * distros/MakeExclude.txt
+     + Some files.
+   + doc/Maintenance.txt
+     ; List of task to maintain docs up to date.
+   * doc/classes.txt
+     * Updated.
+   * ide/prgs/formedit.prg
+     + ListBox properties COLWIDTH, MULTITAB, TABSWIDTH and DRAGITEMS.
+     * Some format.
+   * include/bostaurus.ch
+     * Remove && comment.
+   * include/i_altsyntax.ch
+     + DRAGITEMS clause.
+     ! COLUMNWIDTH clause.
+   * include/i_listbox.ch
+     + DRAGITEMS clause.
+   * include/i_var.ch
+     * Format.
+   * include/i_windefs.ch
+     + ListBox constants related to drag and drop operations.
+     - LB_SETCOLUMNWIDTH constant.
+     * Some format.
+   * include/oohg.h
+     + Events_Drag to symbols table.
+   * manual/CLASSES.HTM
+   * manual/Changelog.htm
+   * manual/GRID.HTM
+   * manual/LISTBOX.HTM
+   * manual/OVERVIEW.HTM
+   * manual/TREE.HTM
+   * manual/XBROWSE.HTM
+     * Updated.
+   * manual/DO_REPORT.HTM
+   * manual/DRAW_IN_WINDOW.HTM
+   * manual/EDIT_EXTENTED.HTM
+   * manual/EDIT_WORKAREA.HTM
+   * manual/HBPRINTER.HTM
+   * manual/PLAYER.HTM
+   * manual/WAVE.HTM
+     ! Tag.
+   * resources/CompileRes.bat
+   * resources/CompileRes_mingw.bat
+     * Now can separatly compile resources for HB30 and HB32.
+     ; Compilation results on oohg_hb30.o or oohg_hb32.o
+     ; If you need oohg.o please rename de proper one.
+   + resources/dragdown.cur
+   + resources/dragup.cur
+   - resources/oohg.o
+     ; Rename oohg_hb30.o or oohg_hb32.o as oohg.o if needed.
+   * resources/oohg.rc
+     + MINIGUI_DRAGUP and MINIGUI_DRAGDOWN cursors.
+     * Format.
+   * resources/oohg.res
+     * Updated.
+   * resources/oohg_bcc.rc
+     + MINIGUI_DRAGUP and MINIGUI_DRAGDOWN cursors.
+     ! Missing resources.
+     * Format.
+   * source/bostaurus.prg
+     ! BCC errors.
+   * source/c_controlmisc.c
+     + Symbol Events_Drag.
+   * source/c_winapimisc.c
+     ! BCC errors.
+   * source/h_crypt.prg
+   * source/h_report.prg
+     * && replaced by //.
+   * source/h_init.prg
+     * _OOHG_AllVars size.
+     * Format.
+     + Initialization of Drag ListBox message.
+   * source/h_listbox.prg
+     + Support for DRAGITEMS clause.
+     + DATA DragItem and DATA DragTo.
+     + Methods Events_Drag, TopIndex and EnsureVisible.
+     * Method ItemHeight simplified.
+     ! TextHeight clause not working for text only listbox.
+     * Some format.
+     * Calls to SendMessage changed by calls to C functions.
+     + Functions _GETDDLMESSAGE, GET_DRAG_LIST_NOTIFICATION_CODE,
+       GET_DRAG_LIST_DRAGITEM, DRAG_LIST_DRAWINSERT, DRAG_LIST_MOVE_ITEMS,
+       LISTBOXSETTOPINDEX, LISTBOXGETTOPINDEX, LISTBOXGETCOUNT,
+       LISTBOXGETITEMHEIGHT and LISTBOXSETCOLUMNWIDTH
+   * source/h_windows.prg
+     + Support for Drag List notifications.
+
+2017-08-18 20:41 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   - ide_up_to_2013-08-13.zip
+   + include/hmg.ch
+     ; HMG and HMG Extended compatibility file.
+   * include/i_altsyntax.ch
+     * Changed placement of some auxiliary variables.
+     - Unused auxiliary variables.
+     + COLUMNWIDTH, MULTITAB and TABSWIDTH clauses.
+     + BREAK translation.
+   * include/i_hmg_compat.ch
+     - BREAK translation.
+   * include/i_listbox.ch
+     + COLUMNWIDTH, MULTITAB and TABSWIDTH clauses.
+     + ONDBLCLICK.
+     * Format.
+   * include/i_pseudofunc.ch
+     + Functions LB_String2Array, ISWINXPORLATER and ISVISTAORLATER.
+   * include/i_windefs.ch
+     + LB_SETCOLUMNWIDTH.
+   * manual/Changelog.htm
+     * Updated.
+   * resources/WindowsXP.Manifest
+   * resources/WindowsXP64.Manifest
+     * Added compatibility with all Windows versions.
+   * source/c_winapimisc.c
+     * Some format.
+     * Some casting.
+     * Updated function MEMORYSTATUS using api GlobalMemoryStatusEx.
+     * Functions CREATEFOLDER and SETCURRENTFOLDER now return .T. on success
+       or .F. on failure.
+     * Updated function WINVERSION to recognize Windows 10.
+     + Function GETCOMPACTPATH.
+       Truncates a path to fit within a certain number of characters by
+       replacing path components with ellipses.
+   * source/h_init.prg
+     + Initial value for _OOHG_Main_Icon var.
+   * source/h_listbox.prg
+     * Some format.
+     + Data lMultiTab and nColWidth.
+     + Support for MULTITAB and TABSWIDTH clauses.
+     + Function LB_Array2String.
+     * Method AddItem and functions LISTBOXADDSTRING and LISTBOXADDSTRING2
+       now return the index of the item added or 0 if an error happened.
+     * Function LISTBOXGETSTRING: removed string length limitation.
+     + Function LISTBOXSETMULTITAB.
+     + Methods ItemHeight and ColumnWidth.
+     ! FocusRect is missing.
+   * source/h_winapimisc.prg
+     * Some format.
+     + Function _GetCompactPath.
+       Truncates a path to fit within a certain number of characters by
+       replacing path components with ellipses.
+
+2017-08-12 16:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/bostaurus.ch
+     + New constants.
+   * source/bostaurus.prg
+     * Synchronized with HMG Extended version.
+     + PRG function BT_DrawPolygon.
+     + PRG function BT_DrawPolyBezier.
+     + PRG Function BT_DrawArc.
+     + PRG function BT_DrawChord.
+     + PRG function BT_DrawPie.
+     * PRG function BT_DrawPolyLine now calls C function BT_DRAW_HDC_POLY.
+     * PRG function BT_DrawEllipse now calls PRG function BT_DrawArc.
+     + New constants at C level.
+     - C function BT_DRAW_HDC_POLYLINE.
+     + C function BT_DRAW_HDC_POLY.
+     + C function BT_DRAW_HDC_ARC.
+     + C function BT_DRAW_HDC_ARCX.
+     ! Some memory leaks at C level.
+     ! Casting of hDC parameter at C function BT_DRAW_HDC_GRADIENTFILL.
+     ! Casting of Orientation parameter at C functions BT_DRAW_HDC_TEXTOUT
+       and BT_DRAW_HDC_DRAWTEXT.
+     ! Background painting at C functions BT_DRAW_HDC_TEXTOUT,
+       BT_BITMAPLOADEMF and BT_BMP_TRANSFORM.
+     ! Some missing casting.
+     * Some format.
+   * manual/Changelog.htm
+     * Updated.
+
+2017-08-11 20:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   ./Changelog.004
+     ! Typo.
+   * ./oohg.hbc
+     + Library bostaurus.
+   * include/i_altsyntax.ch
+     * Some auxiliary variable names changed.
+     * Changed the variables in some defines.
+     + Missing translations.
+     + Support for BOTTOM, RIGHT, TOPALIGN, BOTTOMALIGN, ALIGNMENT,
+       RIGHTALIGN, VCENTER and MULTICOLUMN clauses.
+   * include/i_listbox.ch
+   * source/h_listbox.prg
+   * manual/LISTBOX.htm
+     + MULTICOLUMN property.
+   * include/i_button.ch
+   * include/i_status.ch
+     * Format.
+   * manual/Changelog.htm
+     * Updated.
+   * ide/prgs/formedit.prg
+     + MULTICOLUMN property.
+     ! Listbox is not showing items.
+
+2017-08-07 20:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_browse.prg
+   * source/h_xbrowse.prg
+     ! After aborting edition in a control using NAVIGATEBYCELL
+       the view is shifted to the first column instead of staying
+       at the edited cell.
+   * manual/Changelog.htm
+     * Updated.
+
+2017-07-27 21:09 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_windefs.ch
+     + FlashWindowEx constants.
+   * source/h_form.prg
+     + Method Flash( nWhat, nTimes, nMilliseconds ) to TForm class.
+       nWhat            action
+       FLASHW_CAPTION   Flash the window caption.
+       FLASHW_TRAY      Flash the taskbar button.
+       FLASHW_ALL       Flash both the window caption and the taskbar button.
+       FLASHW_TIMER     Add to one the previous to flash continuously, until
+                        the FLASHW_STOP flag is set.
+       FLASHW_STOP      Stop flashing. The system restores the window to its
+                        original state.
+       FLASHW_TIMERNOFG Add to FLASHW_TRAY to continuously flash the taskbar
+                        button until the window comes to the foreground.
+
+       nTimes           Number of times to flash the window.
+                        Set to 0 when using FLASHW_TIMER to obtain non-stop
+                        flashing.
+                        Set to 0 when usingh FLASHW_CAPTION, FLASHW_TRAY or
+                        FLASHW_ALL to toggle the current flash status.
+
+       nMilliseconds    Flashing interval. 0 means use the default cursor blink rate.
+
+       If the window caption was drawn as active before the call, the return value is .T.
+       Otherwise, the return value is .F.
+   * manual/Changelog.htm
+     * Updated.
+
+2017-07-20 21:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./compile_MINGW.BAT
+   * ./oohg.hbc
+   * ide/prgs/mgide.prg
+   * samples/mpm/prgs/Mpm.prg
+     + library hb_zebra.a
+   * include/i_app.ch
+     + Icon property.
+   * include/i_var.ch
+     + _OOHG_Main_Icon.
+   * include/i_window.ch
+     + FLASH WINDOW.
+     + SET DEFAULT ICON TO.
+     ; This command sets the name of the app's default icon.
+       To be effective, it must take place before the definition of the
+       program's main window. This command is equivalent to the clause
+       ICON at DEFINE WINDOW ... MAIN.
+   * source/bostaurus.prg
+     ! bt_bmp_SaveFile wasn't working when gdi+ system wasn't initialized.
+   * source/c_windows.c
+     + FLASHWINDOWEX function.
+   * source/h_application.prg
+     + Method Icon.
+     ; This method sets/gets the name of the app's default icon.
+       To be effective, the set of the default icon must take place
+       before the definition of the program's main window.
+   * source/h_form.prg
+     + Support for SET DEFAULT ICON TO.
+   * manual/Changelog.htm
+     * Updated.
+
+2017-07-09 14:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_browse.prg
+     * EditAllCells and EditGrid methods of TOBrowseByCell will place
+       the focus on the first column instead of the last.
+   * manual/Changelog.htm
+     * Updated.
+
+2017-07-09 18:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_notify.prg
+     ! Compiler warnings at C level.
+   * distros/MakeDistro.bat
+   * source/makelib_mingw.bat
+   * manual/Changelog.htm
+     * Updated.
+
+2017-07-09 15:12 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * samples/oohg/stream/TStreamSSL.prg
+    ! Fixed double BIO_free() call.
+
+2017-07-09 14:58 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+   * source/common_make.bat
+   * source/c_windows.c
+   * source/h_form.prg
+   + source/h_notify.prg
+   * source/oohg.hbp
+     * Moved some functions from c_windows.c to h_notify.prg .
+     + TNotifyIcon control added. Support for multiple notify icons.
+   + samples/oohg/clocks.prg
+     + Multiple notify icons sample.
+   * include/i_timer.ch
+     * INTERVAL and ACTION clausules defined as optionals, for
+      avoid an strict order definition.
+
+2017-01-29 00:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_image.prg
+     ! IMAGE control with CLIENTEDGE and WHITEBACKGROUND clause and
+       no picture is not displayed properly inside a TAB control.
+   * source/makelib_mingw.bat
+     * Format.
+
+2017-01-26 17:26 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_activex.prg
+     ! RTE when ACTIVEX control is created after a previous release.
+
+2016-12-30 13:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * samples/oohg/printtest.prg
+     * Format.
+     + Sample about printing text using proportional font.
+   * source/c_windows.c
+   * source/h_radio.prg
+     ! BCC compiler errors.
+
+2016-12-18 21:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/Changelog.htm
+     * Updated.
+   * source/h_menu.prg
+     ! Method DisableVisualStyle not working.
+       Note that disabling visual style for a MAIN menu is the
+       same as disabling visual style for the form it belongs to.
+
+2016-12-18 20:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/Changelog.htm
+     * Updated.
+   * source/h_windows.prg
+     ! Painting after removing visual styles.
+
+2016-12-18 19:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * doc/classes.txt
+   * manual/CLASSES.HTM
+   * manual/Changelog.htm
+     * Updated.
+   * source/h_button.prg
+   * source/h_checkbox.prg
+   * source/h_radio.prg
+     * Use ::IsVisualStyled instead of ::lVisualStyled.
+   * source/h_windows.prg
+     * DATA lVisualStyled is now PROTECTED, use ::IsVisualStyled instead.
+     + METHOD IsVisualStyled.
+
+2016-12-16 22:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_windows.prg
+     * METHOD DisableVisualStyle now returns Nil.
+   * manual/Changelog.htm
+     * Updated.
+
+2016-12-16 22:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     ! Previous entry.
+   * doc/classes.txt
+     * Updated.
+   * ide/prgs/formedit.prg
+     + OOHGDRAW and WINDRAW clauses.
+       THEMED and NOTHEME are still recognized.
+   * include/i_altsyntax.ch
+   * include/i_button.ch
+   * include/i_checkbox.ch
+   * include/i_radiogroup.ch
+     * INCOMPATIBLE.
+       THEMED and NOTHEME clauses changed by OOHGDRAW and WINDRAW.
+       OOHGDRAW is the default clause unless the OS does not supports
+       visual styles or if visual styles are disabled for the app, in
+       which case defaults to WINDRAW.
+       Those who do not want to change their sources must include
+       this pre-processor directives:
+       #xtranslate BUTTON [ <x> ] THEMED => BUTTON [ <x> ]
+       #xtranslate BUTTON [ <x> ] NOTHEME => BUTTON [ <x> ] WINDRAW
+       #xtranslate CHECKBUTTON [ <x> ] THEMED => BUTTON [ <x> ]
+       #xtranslate CHECKBUTTON [ <x> ] NOTHEME => BUTTON [ <x> ] WINDRAW
+       #xtranslate CHECKBOX [ <x> ] THEMED => CHECKBOX [ <x> ]
+       #xtranslate CHECKBOX [ <x> ] NOTHEME => CHECKBOX [ <x> ] WINDRAW
+       #xtranslate RADIOGROUP [ <x> ] THEMED => RADIOGROUP [ <x> ]
+       #xtranslate RADIOGROUP [ <x> ] NOTHEME => RADIOGROUP [ <x> ] WINDRAW
+       #translate THEMED <themed> => OOHGDRAW <themed>
+       #translate NOTHEME <notheme> => WINDRAW <notheme>
+   * manual/BUTTON.HTM
+   * manual/CHECKBOX.htm
+   * manual/CLASSES.HTM
+   * manual/Changelog.htm
+   * manual/RADIOGROUP.htm
+     * Updated.
+   * samples/mpm/fmgs/main.Fmg
+     * Removed unneeded clause.
+   * source/h_button.prg
+     * DATA lThemed renamed to lLibDraw. INCOMPATIBLE.
+       Defaults to _OOHG_UsesVisualStyle().
+     - Comment.
+     ! Painting when button is not the focused control.
+     * Do not use custom draw when control's lVisualStyled flag is set.
+   * source/h_checkbox.prg
+     * DATA lThemed renamed to lLibDraw. INCOMPATIBLE.
+       Defaults to _OOHG_UsesVisualStyle().
+     * Do not use custom draw when control's lVisualStyled flag is set.
+   * source/h_checklist.prg
+     ! NM_SETFOCUS event handler was not setting the form's
+       LastFocusedControl property.
+   * source/h_combo.prg
+     ! CBN_SETFOCUS event handler was not setting the form's
+       LastFocusedControl property.
+   * source/h_controlmisc.prg
+     ! Method DoLostFocus not working properly when there are 2 or more
+       TEXTBOX controls with VALID clause in the same form.
+     ! EN_SETFOCUS, NM_SETFOCUS and BN_SETFOCUS event handler was not setting the form's
+       LastFocusedControl property.
+   * source/h_listbox.prg
+     ! LBN_SETFOCUS event handler was not setting the form's
+       LastFocusedControl property.
+   * source/h_menu.prg
+     * Force control's redraw after changing colors.
+   * source/h_monthcal.prg
+     ! WM_SETFOCUS event handler was not setting the form's
+       LastFocusedControl property.
+   * source/h_radio.prg
+     * DATA lThemed renamed to lLibDraw. INCOMPATIBLE.
+       Defaults to _OOHG_UsesVisualStyle().
+     * BACKGROUND clause no longer forces OOHGDRAW clause.
+     * Do not use custom draw when control's lVisualStyled flag is set.
+   * source/h_windows.prg
+     + DATA lVisualStyled, defaults to _OOHG_UsesVisualStyle().
+     + METHOD DisableVisualStyle.
+     + DisableVisualStyle function at C level.
+
+2016-12-10 15:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_radio.prg
+     ! Missing declaration of __MSABI_LONG on older versions of Windows
+       is causing errors at compile time.
+     * IsAppThemed() calls replaced by _OOHG_UsesVisualStyle().
+   * manual/Changelog.htm
+     * Updated.
+   * source/bostaurus.hbp
+   * source/hbprinter.hbp
+   * source/oohg.hbp
+   * source/winprint.hbp
+     + Comment.
+
+2016-11-30 21:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_altsyntax.ch
+   * include/i_browse.ch
+   * include/i_grid.ch
+   * include/i_xbrowse.ch
+     + ONBEFOREEDITCELL clause.
+   * source/h_label.prg
+     * Format.
+   * source/h_radio.prg
+     ! RadioGroup with AUTOSIZE clause is not painted.
+     * DATA oBkGrnd initialized to Nil instead of 0.
+     * Format.
+     + Left alignment of THEMED items.
+     * CustomDraw is now performed using DrawThemeTextEx(),
+       GetThemePartSize() and IsThemeBackgroundPartiallyTransparent().
+   * manual/Changelog.htm
+     * Updated.
+
+2016-11-27 12:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_error.prg
+     ! Typo.
+     * Format.
+   * source/h_grid.prg
+     + DATA OnBeforeEditCell.
+       If setted, this code block is evaluated before initiating the
+       cell's edition and if it returns false the edition is aborted
+       as if the user has desisted.
+       To avoid bad side effects  do not delete items or change
+       control's value inside this code block.
+   * source/h_browse.prg
+     + Support for OnBeforeEditCell.
+   * source/h_xbrowse.prg
+     + Support for OnBeforeEditCell.
+     * Format.
+   * source/h_windows.prg
+     * Format.
+   * source/h_controlmisc.prg
+     ! RTE when control's parent is not derived from TWindow class.
+   * manual/Changelog.htm
+     * Updated.
+
+2016-11-12 12:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_xbrowse.prg
+     ! RTE when adding a column to a browse with FIXEDBLOCKS clause.
+
+2016-11-03 19:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_controlmisc.prg
+     * oSelf->lOldBackColor is set to -1 when a NULL BRUSH is
+       asigned to oSelf->BrushHandle.
+     ! RTE at function Events_Color_InTab.
+   * source/c_windows.c
+     * Format.
+
+2016-11-02 10:26 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * distros/MakeDistro.bat
+     + /L switch to skip the build of the IDE.
+   * include/oohg.h
+     + Declaration for AnsiToWide C function.
+   * source/c_winapimisc.c
+     + AnsiToWide function.
+   * source/c_windows.c
+     * Function SetLayeredWindowAttributes was rewritten.
+   * source/h_controlmisc.prg
+     * Method Events_Color of class TControl now saves a reference
+       to NULL_BRUSH when data Transparent is .T.
+     * Function Events_Color_InTab now saves a reference
+       to NULL_BRUSH when data Transparent is .T.
+   * source/h_form.prg
+     * Assign NULL instead of 0 to oSelf->BrushHandle.
+
+2016-10-25 18:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * distros/MakeDistro.bat
+   * doc/classes.txt
+     + Class TANIGIF.
+   * ide/mgide.rc
+     + ANIGIF related resource.
+   * ide/fmgs/orderf.fmg
+     * Some methods were renamed.
+   + ide/imgs/gif.ico
+     * Image for ANIGIF control in "Controls" panel.
+   * ide/formedit.prg
+     * Some methods were renamed.
+     + Support for ANIGIF.
+   * include/i_altsyntax.ch
+     + Support for ANIGIF.
+   + include/i_anigif.ch
+     + ANIGIF control.
+   * include/oohg.ch
+     + i_anigif.ch
+   * manual/ACTIVEX.htm
+     * Next topic is now ANIGIF.
+   + manual/ANIGIF.htm
+     * ANIGIF syntax.
+   * manual/ANIMATEBOX.htm
+     * Previous topic is now ANIGIF.
+   * manual/BUTTON.HTM
+     * Format.
+   * manual/CLASSES.HTM
+   * manual/Changelog.htm
+     * Updated.
+   * manual/OVERVIEW.HTM
+     * Fixed version number changed by CVS date keyword.
+   * manual/ooHG.hhc
+   * manual/ooHG.hhk
+   * manual/ooHG.hhp
+     + ANIGIF page.
+   + source/h_anigif.prg
+     * Class TAniGIF.
+     * Function SaveResourceToFile.
+   * source/common_make.bat
+   * source/makelib_mingw.bat
+   * source/oohg.hbp
+     + h_anigif to input files list.
+   * source/h_checkbox.prg
+     ! Focus rect is shown when control has no caption.
+   * source/h_tree.prg
+     + DATA OnMouseDrop.
+     + DATA OnDrop.
+   * source/h_windows.prg
+     - DATA OnMouseDrop.
+     - DATA OnDrop.
+
+2016-10-22 13:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_activex.prg
+   * source/h_browse.prg
+   * source/h_button.prg
+   * source/h_checkbox.prg
+   * source/h_checklist.prg
+   * source/h_combo.prg
+   * source/h_comm.prg
+   * source/h_controlmisc.prg
+   * source/h_datepicker.prg
+   * source/h_dialogs.prg
+   * source/h_editbox.prg
+   * source/h_font.prg
+   * source/h_form.prg
+   * source/h_frame.prg
+   * source/h_grid.prg
+   * source/h_hotkey.prg
+   * source/h_hotkeybox.prg
+   * source/h_hyperlink.prg
+   * source/h_image.prg
+   * source/h_internal.prg
+   * source/h_ipaddress.prg
+   * source/h_label.prg
+   * source/h_listbox.prg
+   * source/h_media.prg
+   * source/h_menu.prg
+   * source/h_monthcal.prg
+   * source/h_msgbox.prg
+   * source/h_pdf.prg
+   * source/h_picture.prg
+   * source/h_print.prg
+   * source/h_progressbar.prg
+   * source/h_progressmeter.prg
+   * source/h_radio.prg
+   * source/h_richeditbox.prg
+   * source/h_scroll.prg
+   * source/h_scrollbutton.prg
+   * source/h_slider.prg
+   * source/h_spinner.prg
+   * source/h_splitbox.prg
+   * source/h_status.prg
+   * source/h_tab.prg
+   * source/h_textarray.prg
+   * source/h_textbox.prg
+   * source/h_timer.prg
+   * source/h_toolbar.prg
+   * source/h_tooltip.prg
+   * source/h_tree.prg
+   * source/h_winapimisc.prg
+   * source/h_windows.prg
+   * source/h_xbrowse.prg
+     * Format.
+
+2016-10-19 22:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/prgs/formedit.prg
+     * Format.
+   * ide/fmgs/mytoolbared.fmg
+     ! Some controls are not entirely visible.
+
+2016-10-17 18:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/prgs/formedit.prg
+     ! RTE when the value property of a newly added label is changed.
+   * manual/Changelog.htm
+     * Updated.
+
+2016-10-17 18:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/bostaurus.ch
+   * include/i_activex.ch
+   * include/i_altsyntax.ch
+   * include/i_app.ch
+   * include/i_browse.ch
+   * include/i_button.ch
+   * include/i_checkbox.ch
+   * include/i_checklist.ch
+   * include/i_color.ch
+   * include/i_combobox.ch
+   * include/i_comm.ch
+   * include/i_controlmisc.ch
+   * include/i_datepicker.ch
+   * include/i_dll.ch
+   * include/i_edit.ch
+   * include/i_editbox.ch
+   * include/i_encrypt.ch
+   * include/i_exec.ch
+   * include/i_frame.ch
+   * include/i_graph.ch
+   * include/i_grid.ch
+   * include/i_hb_compat.ch
+   * include/i_help.ch
+   * include/i_hmg_compat.ch
+   * include/i_hotkeybox.ch
+   * include/i_hyperlink.ch
+   * include/i_image.ch
+   * include/i_ini.ch
+   * include/i_internal.ch
+   * include/i_ipaddress.ch
+   * include/i_keybd.ch
+   * include/i_label.ch
+   * include/i_lang.ch
+   * include/i_listbox.ch
+   * include/i_media.ch
+   * include/i_menu.ch
+   * include/i_misc.ch
+   * include/i_monthcal.ch
+   * include/i_picture.ch
+   * include/i_progressbar.ch
+   * include/i_progressmeter.ch
+   * include/i_pseudofunc.ch
+   * include/i_radiogroup.ch
+   * include/i_region.ch
+   * include/i_registry.ch
+   * include/i_report.ch
+   * include/i_richeditbox.ch
+   * include/i_scroll.ch
+   * include/i_scrsaver.ch
+   * include/i_slider.ch
+   * include/i_spinner.ch
+   * include/i_splitbox.ch
+   * include/i_status.ch
+   * include/i_tab.ch
+   * include/i_textarray.ch
+   * include/i_textbox.ch
+   * include/i_this.ch
+   * include/i_timer.ch
+   * include/i_toolbar.ch
+   * include/i_tooltip.ch
+   * include/i_tree.ch
+   * include/i_var.ch
+   * include/i_windefs.ch
+   * include/i_window.ch
+   * include/i_xbrowse.ch
+   * include/i_zip.ch
+   * include/minigui.ch
+   * include/miniprint.ch
+   * include/oohg.ch
+   * include/oohg.h
+   * include/winprint.ch
+     * Updated copyright info.
+   * manual/Changelog.htm
+     * Updated.
+
+2016-10-16 22:54 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * samples/dbview
+   * samples/http
+   * source/bostaurus.prg
+   * source/c_activex.c
+   * source/c_controlmisc.c
+   * source/c_cursor.c
+   * source/c_dialogs.c
+   * source/c_font.c
+   * source/c_gdiplus.c
+   * source/c_graph.c
+   * source/c_image.c
+   * source/c_media.c
+   * source/c_msgbox.c
+   * source/c_progressbar.c
+   * source/c_resource.c
+   * source/c_scrsaver.c
+   * source/c_winapimisc.c
+   * source/c_windows.c
+   * source/h_activex.prg
+   * source/h_application.prg
+   * source/h_browse.prg
+   * source/h_button.prg
+   * source/h_checkbox.prg
+   * source/h_checklist.prg
+   * source/h_combo.prg
+   * source/h_comm.prg
+   * source/h_controlmisc.prg
+   * source/h_crypt.prg
+   * source/h_cursor.prg
+   * source/h_datepicker.prg
+   * source/h_dialogs.prg
+   * source/h_dll.prg
+   * source/h_edit.prg
+   * source/h_edit_ex.prg
+   * source/h_editbox.prg
+   * source/h_error.prg
+   * source/h_font.prg
+   * source/h_form.prg
+   * source/h_frame.prg
+   * source/h_graph.prg
+   * source/h_grid.prg
+   * source/h_help.prg
+   * source/h_hotkey.prg
+   * source/h_hotkeybox.prg
+   * source/h_hyperlink.prg
+   * source/h_image.prg
+   * source/h_ini.prg
+   * source/h_init.prg
+   * source/h_internal.prg
+   * source/h_ipaddress.prg
+   * source/h_label.prg
+   * source/h_listbox.prg
+   * source/h_media.prg
+   * source/h_menu.prg
+   * source/h_monthcal.prg
+   * source/h_msgbox.prg
+   * source/h_pdf.prg
+   * source/h_picture.prg
+   * source/h_print.prg
+   * source/h_progressbar.prg
+   * source/h_progressmeter.prg
+   * source/h_radio.prg
+   * source/h_registry.prg
+   * source/h_report.prg
+   * source/h_richeditbox.prg
+   * source/h_scroll.prg
+   * source/h_scrollbutton.prg
+   * source/h_scrsaver.prg
+   * source/h_slider.prg
+   * source/h_spinner.prg
+   * source/h_splitbox.prg
+   * source/h_status.prg
+   * source/h_tab.prg
+   * source/h_textarray.prg
+   * source/h_textbox.prg
+   * source/h_timer.prg
+   * source/h_toolbar.prg
+   * source/h_tooltip.prg
+   * source/h_tree.prg
+   * source/h_winapimisc.prg
+   * source/h_windows.prg
+   * source/h_xbrowse.prg
+   * source/h_zip.prg
+   * source/miniprint.prg
+   * source/winprint.prg
+     * Updated copyright info.
+   * ide/compile.bat
+   * source/xml.bat
+     ! Path to xharbour compiler.
+   * source/c_windows.c
+     ! Missing define at C level.
+   * source/h_cursor.prg
+     * Format.
+   * source/h_dialogs.prg
+     * Format.
+     * Empty() replaced with HB_SYMBOL_UNUSED.
+     - Unreacheable code.
+   * source/h_edit.prg
+   * source/h_edit_ex.prg
+   * source/h_form.prg
+     * Some comments.
+   * manual/Changelog.htm
+     * Updated.
+
+2016-10-16 01:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * doc/classes.txt
+     * Updated.
+   * include/i_windefs.ch
+     + TB_DELETEBUTTON
+   * manual/Changelog.htm
+     * Updated.
+   * source/h_toolbar.prg
+     * Format.
+     + Methods AddButton and DeleteButton to class TToolBar.
+     + Data oHotKey to class TToolButton.
+     + Parameter toolbar to TToolButton:Define() to allow runtime
+       defined buttons.
+     + Explicit release of button's hotkey.
+     + Buttons are deleted from the toolbar before releasing them.
+
+2016-10-12 20:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_dll.ch
+     * Format.
+   * include/i_window.ch
+     * Constants changed by its values.
+   * source/c_msgbox.c
+     + Functions MessageBoxIndirect and MessageBoxTimeout.
+   * source/c_windows.c
+     + Functions GetDesktopRealTop and GetDesktopRealLeft.
+   * manual/Changelog.htm
+     * Updated.
+
+2016-10-10 22:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/prgs/formedit.prg
+     ! Form's PARENT and BACKIMAGE clauses.
+   * include/i_windefs.ch
+     + WS_EX_LAYERED, LWA_COLORKEY and LWA_ALPHA.
+   * include/i_window.ch
+     + SET WINDOW <FormName> TRANSPARENT TO <nAlphaBlend> command.
+     + SET WINDOW <FormName> [ TRANSPARENT ] TO OPAQUE command.
+     + SET WINDOW <FormName> TRANSPARENT TO COLOR <aColor> command.
+     + SET WINDOW <FormName> TRANSPARENT OFF command.
+   * manual/Changelog.htm
+     * Updated.
+   * source/c_windows.c
+     + SetLayeredWindowAttributes() at C level.
+   * source/h_controlmisc.prg
+     + Support for method CLOSABLE in GetProperty() and SetProperty().
+   * source/h_form.prg
+     + Method CLOSABLE.
+     + GetSystemMenu() at C level.
+
+2016-10-10 12:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/prgs/formedit.prg
+     + Support for VCENTERALIGN clause.
+   * include/i_altsyntax.prg
+     + Support for VCENTERALIGN clause.
+     + Support for PAINTDOUBLEBUFFER clause.
+   * include/i_hmg_compat.prg
+     + Support for PAINTDOUBLEBUFFER clause.
+   * include/i_label.prg
+     + VCENTERALIGN clause for vertical aligning of text.
+   * source/h_label.prg
+     + lCenterAlign parameter to TLabel:Define().
+   * manual/Changelog.htm
+     * Updated.
+
+2016-10-10 10:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_browse.prg
+     ! Value set at define time is ignored.
+     - Unneeded auxiliary var.
+   * manual/Changelog.htm
+     * Updated.
+
+2016-10-09 21:01 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_browse.prg
+     ! Inline editing window is displayed at wrong position the first
+       time a new record is added.
+   * source/h_grid.prg
+     * ListView_EnsureVisible() is now called with parameter fPartialOK
+       set to FALSE.
+     ! ListView_IsItemVisible is not present under XP.
+   * manual/Changelog.htm
+     * Updated.
+
+2016-10-01 20:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/mgide.rc
+     * Resources renamed to IDE_something.
+     - Unused resources.
+     * Format.
+   * ide/fmgs/fontclrs.fmg
+   * ide/fmgs/mymenued.fmg
+     * Some control's names.
+   * ide/fmgs/form_prefer.fmg
+     + Support for hidding the tooltip of the Project Tree.
+     * Some control's names.
+   + ide/fmgs/mytbsel.fmg
+     + Support for more than one toolbar.
+   * ide/fmgs/mytoolbared.fmg
+     * Some control's names.
+     * Control's layout.
+     * Some control's action clauses.
+   - ide/imgs/bebox.bmp
+   - ide/imgs/bprinter.bmp
+   - ide/imgs/br_ok.bmp
+   - ide/imgs/bus.bmp
+   * ide/imgs/cp_settings.bmp
+   + ide/imgs/debug.bmp
+   - ide/imgs/demo.Bmp
+   - ide/imgs/find.bmp
+   - ide/imgs/intermove.bmp
+   - ide/imgs/menu.bmp
+   + ide/imgs/menubrowse.bmp
+   + ide/imgs/menuclose.bmp
+   + ide/imgs/menuedit.bmp
+   + ide/imgs/menunew.bmp
+   + ide/imgs/menupack.bmp
+   + ide/imgs/menurecall.bmp
+   + ide/imgs/menustru.bmp
+   + ide/imgs/menuzap.bmp
+   * ide/imgs/mod.bmp
+   + ide/imgs/oide.bmp
+   + ide/imgs/oohg16.bmp
+   - ide/imgs/remov.bmp
+   - ide/imgs/status.bmp
+   - ide/imgs/tbbuild.bmp
+   - ide/imgs/tbbuild2.bmp
+   - ide/imgs/tbfind.bmp
+   - ide/imgs/tbmod.bmp
+   - ide/imgs/tbmod1.bmp
+   - ide/imgs/tbmod2.bmp
+   - ide/imgs/tbnew.bmp
+   - ide/imgs/tbprint.bmp
+   - ide/imgs/tbqbrow.bmp
+   - ide/imgs/tbremove.bmp
+   - ide/imgs/tbrun.bmp
+   - ide/imgs/teven.bmp
+   - ide/imgs/tfoco.bmp
+   - ide/imgs/tframe.bmp
+   - ide/imgs/torder.bmp
+   - ide/imgs/tprop.bmp
+   - ide/imgs/tstat.bmp
+   - ide/imgs/wd.bmp
+   * ide/prgs/dbucvc.prg
+     ! Menu icons restored.
+     ! Edit function restored.
+     - Message on exit.
+     - Some comments.
+   * ide/prgs/formedit.prg
+     * Some comments and messages.
+     * Control inspector is now resizable.
+     + Support for DEFINE TOOLBAR/BUTTON/END TOOLBAR clauses.
+     ! Points were drawn over toolbars.
+     ! Caption and Picture clauses of BUTTON controls.
+     + Support for tooltips defined using OOP syntax on AnimateBox,
+       Image and Label controls.
+     ! Value clause of LABEL and TEXTBOX controls.
+     ! InputMask clause of TEXTBOX controls.
+     ! Tab order is not preserved when a control is modified.
+   * ide/prgs/menued.prg
+     * Use DATA var instead of PARAMETER var in Method Edit.
+   * ide/prgs/mgide.prg
+     % Code readability.
+     + Support for editing ch, prg, rc and rpt files from command line.
+     * Menu icons restored.
+     + Check for unsaved files and forms before exit.
+     * Default INI file is re-read when creating a new project.
+     * Default INI file is no longer updated on form's close.
+     * Text displayed when F1 key is pressed.
+     * Some comments and messages.
+     + New INI parameter to hide the tooltip of the Project Tree.
+   * ide/prgs/toolbed.prg
+     * Toolbar loading process redesigned so it reads
+       DEFINE TOOLBAR/BUTTON/END TOOLBAR clauses directly from
+       the fmg file instead of using and auxiliary file.
+   * ide/sample/Main2.prg
+     * Removed unneeded code.
+   * ide/mgide.rc
+     - Unused images.
+   * manual/Changelog.htm
+     * Updated.
+
+2016-09-29 20:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/Changelog.htm
+     * Updated.
+   * include/i_window.prg
+     + Support for LOAD WINDOW fmg AS 0 command.
+     ; You must include an OBJ clause in the fmg to handle the form
+       using oop syntax.
+
+2016-09-29 20:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/Changelog.htm
+     * Updated.
+   * include/i_editbox.prg
+   * include/i_richeditbox.prg
+   * source/h_editbox.prg
+   * source/h_richeditbox.prg
+     ! Typo.
+   * source/h_controlmisc.prg
+     + Support for method Maxlength to SetProperty and GetProperty functions.
+   * source/h_browse.prg
+     ! No record is selected after PgDn past last record.
+
+2016-09-12 19:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/makelib_mingw.bat
+     ! Library build fails after harbour compilation.
+
+2016-09-03 12:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_textarray.prg
+     ! ACTION is not being fired.
+
+2016-08-31 21:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./compile_bcc.bat
+     + /c parameter to compile in console mode.
+       Usage: compile_bcc myprg /c
+
+2016-08-14 20:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * distros/MakeDistro.bat
+     + Missing parameters for BCC32 compilator.
+   * doc/classes.txt
+     * Updated.
+   * include/i_hmg_compat.ch
+     - Application object definitions moved to core.
+   + include/i_app.ch
+     + Application object definitions.
+     + App shortcut.
+   * include/oohg.ch
+     + i_app.ch
+   * include/i_toolbar.ch
+   * include/i_tree.ch
+     + OWNTOOLTIP clause.
+   * manual/Changelog.htm
+   * manual/CLASSES.HTM
+     * Updated.
+   * source/c_windows.c
+     + Some comments.
+   * source/h_application.prg
+     ! METHOD BackColor was not returning the seted color.
+   * source/h_controlmisc.prg
+     + METHOD oToolTip
+     + DATA oToolTipCtrl
+     - DATA oToolTip
+     ! RTE accessing oToolTip for a control that uses its parent's tooltip
+       (all controls except TOOLBARs and TREEs, those have their own).
+     * Empty() replaced with HB_SYMBOL_UNUSED.
+   * source/h_form.prg
+     ! App stops if a TFormModal child of TFormMain is activated and
+       released before activating it's parent.
+   * source/h_grid.prg
+     ! "_OOHG_GRIDWN registration failed" RTE.
+   * source/h_toolbar.prg
+   * source/h_tree.prg
+     ! BCC warnings.
+     ! Control wasn't using parent's tooltip by default.
+
+2016-07-23 13:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/winprint.prg
+     * Some messages for spanish language.
+   * manual/Changelog.htm
+     * Updated.
+
+2016-07-23 13:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * distros/MakeDistro.bat
+     ! Typo.
+     * Do not use fixed folders for compilers.
+   * include/i_lang.ch
+     * Format.
+   * manual/Changelog.htm
+     * Updated.
+   + resources/CompileRes_mingw.bat
+     ! Resouce file is not compiled under some versions of MinGW.
+   * source/h_scrollbutton.prg
+     * Removed path to oohg.h
+   * source/bostaurus.prg
+   * source/c_winapimisc.c
+   * source/h_button.prg
+   * source/h_checkbox.prg
+   * source/h_datepicker.prg
+   * source/h_form.prg
+   * source/h_frame.prg
+   * source/h_grid.prg
+   * source/h_ini.prg
+   * source/h_internal.prg
+   * source/h_ipaddress.prg
+   * source/h_menu.prg
+   * source/h_picture.prg
+   * source/h_print.prg
+   * source/h_radio.prg
+   * source/h_scrollbutton.prg
+   * source/h_slider.prg
+   * source/h_spinner.prg
+   * source/h_splitbox.prg
+   * source/h_status.prg
+   * source/h_tab.prg
+   * source/h_timer.prg
+   * source/h_tooltip.prg
+   * source/h_windows.prg
+   * source/h_xbrowse.prg
+     ! Compiler warnings at C level.
+   * source/h_monthcal.prg
+     ! Compiler warnings at C level.
+     ! BCC compiler error at functions C_SETDAYSTATE and C_RETDAYSTATE.
+   * source/winprint.prg
+     ! Messages do not honor SET LANGUAGE.
+     * Tabs changed to spaces.
+     * Format.
+     * Defines for background modes.
+     ! 'Go to page' label has wrong background.
+     ! Compiler warning at C level.
+
+2016-07-18 13:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     ! Typo.
+   * source/h_grid.prg
+   ! The grid's horizontal scrollbar is not shown immediately after
+     adding a column that becomes partially or totally hidden.
+
+2016-06-26 11:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     ! Typo.
+   * include/i_tooltip.ch
+     + SET TOOLTIPCLOSE, SET TOOLTIP CLOSE, SET TOOLTIPSTYLE CLOSE
+       SET TOOLTIPSTYLE NOCLOSE and SET TOOLTIPMULTILINE.
+   * include/i_windefs.ch
+     + TVM_SETTOOLTIPS
+     ! Typo.
+   * include/oohg.h
+     + _OOHG_ReplaceColor declaration.
+   * manual/OVERVIEW.HTM
+     + OOHG image.
+   * manual/Changelog.htm
+     * Updated.
+   + manual/images/oohg.bmp
+   * samples/oohg/hello.prg
+     * Position of some controls to avoid overlapping.
+   * source/bostaurus.prg
+     ! Memory leaks.
+   * source/c_image.c
+     + _OOHG_ReplaceColor C and PRG functions.
+   * source/h_controlmisc.prg
+     + DATA oToolTip to TControl class.
+     * Method ToolTip uses the control's oToolTip if it's defined.
+       If not, uses the parent form's oToolTip.
+   * source/h_form.prg
+     + Methods ToolTipAutoPopTime, ToolTipInitialTime, ToolTipResetDelays,
+       ToolTipReshowTime, ToolTipIcon and ToolTipTitle.
+     * Methods ToolTipWidth and ToolTipMultiLine are now defined as BLOCK.
+   * source/h_menu.prg
+     * Some tabs removed.
+   * source/h_toolbar.prg
+     - DATA oToolTip from TToolBar class.
+     * Format.
+     % Variables initialization.
+     * ToolTip handling.
+   * source/h_tooltip.prg
+     + Balloon and close parameter to method Define.
+     + Function _SetToolTipClose.
+     + Methods Icon and Title.
+     + Datas cIcon, nIcon and cTitle.
+     ! SET TOOLTIPBACKCOLOR and SET TOOLTIPFORECOLOR.
+     + Functions TToolTip_SetIconAndTitle, TToolTip_GetIcon and
+       TToolTip_GetTitle.
+   * source/h_tree.prg
+     - DATA oToolTip from TTree class.
+     * ToolTip handling. TTree() now uses a TToolTip() control instead
+       of default tooltip.
+
+2016-06-23 23:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/Changelog.htm
+     * Updated.
+
+2016-06-23 23:41 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     !  Argument error at _CHECKCELLNEWVALUE(5473).
+
+2016-06-20 21:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_richeditbox.prg
+     - Unused variable.
+   * manual/Changelog.htm
+     * Updated.
+
+2016-06-19 22:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_textbox.prg
+   * source/h_richeditbox.prg
+     + Method GetRect.
+       Returns {top, left, bottom, right} of the area used for editing.
+     + Method GetCharFromPos( row, col ).
+       Returns zero-based {char index, line index} at the given point.
+     + Method GetLastVisibleLine.
+       Returns zero-based index of the last visible line.
+   * manual/Changelog.htm
+     * Updated.
+
+2016-06-19 10:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * distros/MakeDistro.bat
+     * Ide's rc is now at the top of temporay rc file.
+   * include/i_altsyntax.ch
+   * include/i_checkbox.ch
+   * include/i_radiogroup.ch
+     + LEFTALIGN clause as a synonym of LEFTJUSTIFY.
+   * include/i_graph.ch
+     * Format.
+     + DRAW PANEL.
+     + DRAW BOX.
+   * include/i_toolbar.ch
+     * Format.
+   * manual/Changelog.htm
+     * Updated.
+   * source/c_graph.c
+     + WindowRaised C function.
+     + WndBoxRaised PRG function.
+     + WndBoxRaisedDraw PRG function.
+     + WindowRaised command to _OOHG_GraphCommand().
+   * source/h_application.prg
+     * Format.
+   * source/h_graph.prg
+     + Function DrawWindowBoxRaised.
+
+2016-06-01 21:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/prgs/formedit.prg
+     ! RTE on FORMAT NIL clause.
+   * manual/Changelog.htm
+     * Updated.
+
+2016-05-31 21:51 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/build.bat
+     + Logic to handle HB30 and HB32 in the same instalation.
+       Use 'BUILD.BAT' HB32 for incremental compilation with HB32
+       Use 'BUILD.BAT' HB30 for incremental compilation with HB30
+       Use 'BUILD.BAT' /C HB32 for full compilation with HB32
+       Use 'BUILD.BAT' /C HB30 for full compilation with HB30
+       /C swith is recommended to avoid mixing version.
+   * manual/Changelog.htm
+     * Updated.
+
+2016-05-31 19:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/prgs/mgide.prg
+     + Logic to read/save 'FMG Syntax' option from/to INI file.
+     * 'Snap to Grid' option is now save to INI file without decimals.
+   * manual/Changelog.htm
+     * Updated.
+
+2016-05-31 19:29 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/fmgs/form_prefer.fmg
+     * Format.
+     * 'Snap to Grid' moved to 'Other' tab.
+     + 'FMG Syntax' options (when operational will allow to
+       choose the output syntax: Standard/Alternative).
+   * ide/prgs/formedit.prg
+     ! Typo.
+     + TODO: add support for alternative syntax in METHOD MakeControls
+       of CLASS TFormEditor.
+     + Logic to handle 'FMG Syntax' option.
+   * ide/prgs/mgide.prg
+     ! Typo.
+     * Format.
+     + DATA nSyntax to CLASS THMI.
+     + Logic to show/get 'FMG Syntax' option in Preferences.
+   * ide/prgs/dbucvc.prg
+   * ide/prgs/menued.prg
+   * ide/prgs/toolbed.prg
+     ! Typo.
+   * manual/Changelog.htm
+     * Updated.
+
+2016-05-29 11:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/prgs/formedit.prg
+     + COLUMNVALID clause to Grid, Browse and Xbrowse.
+     + COLUMNWHEN clause to Grid controls.
+   * include/i_altsyntax.ch
+   * include/i_browse.ch
+   * include/i_grid.ch
+   * include/i_xbrowse.ch
+     + COLUMNVALID clause.
+   * manual/Changelog.htm
+     * Updated.
+
+2016-05-27 21:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog.003
+     ! Typos.
+   * include/i_hmg_compat.ch
+     + Translate for RADIOGROUP with ID clause.
+   * manual/Changelog.htm
+     * Updated.
+   * source/h_radio.prg
+     ! Only text area is painted with the selected BACKCOLOR.
+     ! FocusRect is missing.
+     * THEMED clause is forced when BACKGROUND clause is present.
+     * CustomDraw functions now accepts a parameter to avoid drawing
+       parent background.
+
+2016-05-26 17:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_form.prg
+     * Function RegisterWindow now return an array with second item
+       set to .T. if a registration failure occurred.
+     * TForm():Define() now handles registration failures by calling
+       MsgOOHGError() to log the error and end the program.
+   * manual/Changelog.htm
+     * Updated.
+
+2016-05-25 18:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/Changelog.htm
+     * Updated.
+   * source/h_error.prg
+   * source/h_init.prg
+   * source/h_miniprint.prg
+     ! Text is displayed always in English.
+
+2016-05-24 21:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/Changelog.htm
+     * Updated.
+   * source/h_error.prg
+     ! Text is displayed always in English.
+
+2016-05-22 20:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/Changelog.htm
+     * Updated.
+
+2016-05-22 20:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/fmgs/fontclrs.fmg
+   * ide/fmgs/form_prefer.fmg
+   * ide/fmgs/mymenued.fmg
+   * ide/fmgs/mytoolbared.fmg
+   * ide/fmgs/orderf.fmg
+   * ide/fmgs/tabprop.fmg
+   * ide/prgs/dbucvc.prg
+   * ide/prgs/formedit.prg
+   * ide/prgs/menued.prg
+   * ide/prgs/mgide.prg
+   * ide/prgs/toolbed.prg
+   * ide/sample/cvc.fmg
+   * ide/sample/form_prefer.fmg
+   * ide/sample/fp.fmg
+   * ide/sample/newform.fmg
+   * ide/sample/qwerty.fmg
+   * ide/sample/tbarsamp.fmg
+   * include/bostaurus.ch
+   * include/i_activex.ch
+   * include/i_altsyntax.ch
+   * include/i_browse.ch
+   * include/i_button.ch
+   * include/i_checkbox.ch
+   * include/i_checklist.ch
+   * include/i_color.ch
+   * include/i_combobox.ch
+   * include/i_comm.ch
+   * include/i_controlmisc.ch
+   * include/i_datepicker.ch
+   * include/i_dll.ch
+   * include/i_edit.ch
+   * include/i_editbox.ch
+   * include/i_encrypt.ch
+   * include/i_exec.ch
+   * include/i_frame.ch
+   * include/i_graph.ch
+   * include/i_grid.ch
+   * include/i_hb_compat.ch
+   * include/i_help.ch
+   * include/i_hmg_compat.ch
+   * include/i_hotkeybox.ch
+   * include/i_hyperlink.ch
+   * include/i_image.ch
+   * include/i_ini.ch
+   * include/i_internal.ch
+   * include/i_ipaddress.ch
+   * include/i_keybd.ch
+   * include/i_label.ch
+   * include/i_lang.ch
+   * include/i_listbox.ch
+   * include/i_media.ch
+   * include/i_menu.ch
+   * include/i_misc.ch
+   * include/i_monthcal.ch
+   * include/i_picture.ch
+   * include/i_progressbar.ch
+   * include/i_progressmeter.ch
+   * include/i_pseudofunc.ch
+   * include/i_radiogroup.ch
+   * include/i_region.ch
+   * include/i_registry.ch
+   * include/i_report.ch
+   * include/i_richeditbox.ch
+   * include/i_scroll.ch
+   * include/i_scrsaver.ch
+   * include/i_slider.ch
+   * include/i_spinner.ch
+   * include/i_splitbox.ch
+   * include/i_status.ch
+   * include/i_tab.ch
+   * include/i_textarray.ch
+   * include/i_textbox.ch
+   * include/i_this.ch
+   * include/i_timer.ch
+   * include/i_toolbar.ch
+   * include/i_tooltip.ch
+   * include/i_tree.ch
+   * include/i_var.ch
+   * include/i_windefs.ch
+   * include/i_window.ch
+   * include/i_xbrowse.ch
+   * include/i_zip.ch
+   * include/minigui.ch
+   * include/miniprint.ch
+   * include/oohg.ch
+   * include/oohg.h
+   * include/winprint.ch
+   * manual/ACTIVEX.HTM
+   * manual/ANIMATEBOX.HTM
+   * manual/BROWSE.HTM
+   * manual/BUTTON.HTM
+   * manual/CHECKBOX.HTM
+   * manual/CHECKBUTTON.HTM
+   * manual/CHECKLIST.HTM
+   * manual/CLASSES.HTM
+   * manual/COMBOBOX.HTM
+   * manual/Changelog.htm
+   * manual/DATEPICKER.HTM
+   * manual/DO_REPORT.HTM
+   * manual/DRAW_IN_WINDOW.HTM
+   * manual/EDITBOX.HTM
+   * manual/EDIT_EXTENDED.HTM
+   * manual/EDIT_WORKAREA.HTM
+   * manual/FRAME.HTM
+   * manual/GRID.HTM
+   * manual/HBPRINTER.HTM
+   * manual/HBPRINTER_@_COMMANDS.HTM
+   * manual/HBPRINTER_CONSTANTS.HTM
+   * manual/HBPRINTER_DRAWING_COMMANDS.HTM
+   * manual/HBPRINTER_FONT_COMMANDS.HTM
+   * manual/HBPRINTER_GET_COMMANDS.HTM
+   * manual/HBPRINTER_PRINT_COMMANDS.HTM
+   * manual/HBPRINTER_SAMPLE.HTM
+   * manual/HBPRINTER_SET_COMMANDS.HTM
+   * manual/HBPRINTER_SET_GET_TEXT_COMMANDS.htm
+   * manual/HOTKEY.HTM
+   * manual/HOTKEYBOX.HTM
+   * manual/HYPERLINK.HTM
+   * manual/IMAGE.HTM
+   * manual/INTERNAL.HTM
+   * manual/IPADDRESS.HTM
+   * manual/LABEL.HTM
+   * manual/LIBRARIES.HTM
+   * manual/LISTBOX.HTM
+   * manual/MONTHCALENDAR.HTM
+   * manual/OVERVIEW.HTM
+   * manual/PLAYER.HTM
+   * manual/PROGRESSBAR.HTM
+   * manual/PROGRESSMETER.HTM
+   * manual/RADIOGROUP.HTM
+   * manual/RICHEDITBOX.HTM
+   * manual/SCREENSAVER.HTM
+   * manual/SLIDER.HTM
+   * manual/SPINNER.HTM
+   * manual/SPLITBOX.HTM
+   * manual/STATUSBAR.HTM
+   * manual/TAB.HTM
+   * manual/TEXTARRAY.HTM
+   * manual/TEXTBOX.HTM
+   * manual/TIMEPICKER.HTM
+   * manual/TIMER.HTM
+   * manual/TOOLBAR.HTM
+   * manual/TPRINT.HTM
+   * manual/TREE.HTM
+   * manual/UNCOMPRESS.HTM
+   * manual/WAVE.HTM
+   * manual/WINDOW.HTM
+   * manual/XBROWSE.HTM
+   * manual/ooHG.hhp
+   * samples/dbview/fmgs/dbuvar.ch
+   * samples/dbview/fmgs/oWndBase.fmg
+   * samples/dbview/prgs/dbview.prg
+   * samples/http/h_http.prg
+   * samples/http/i_socket.ch
+   * samples/mpm/Readme.txt
+   * samples/mpm/fmgs/mpm.ch
+   * samples/oohg/browsecolumncontrols.prg
+   * samples/oohg/gridcolumncontrols.prg
+   * samples/oohg/hello.prg
+   * samples/oohg/maindemooop.prg
+   * samples/oohg/rtl.prg
+   * samples/oohg/autoadjust/demo.prg
+   * samples/oohg/basegraph/demo.prg
+   * samples/oohg/fastfind/demo.prg
+   * samples/oohg/histogram/demo.prg
+   * samples/oohg/mybrowse/mybrowse.prg
+   * samples/oohg/oohgrecord/brw_odbc.prg
+   * samples/oohg/oohgrecord/recordmerge.prg
+   * samples/oohg/oohgrecord/textfile.prg
+   * samples/oohg/oohgrecord/xbrowsearray.prg
+   * source/bostaurus.prg
+   * source/c_activex.c
+   * source/c_controlmisc.c
+   * source/c_cursor.c
+   * source/c_dialogs.c
+   * source/c_font.c
+   * source/c_gdiplus.c
+   * source/c_graph.c
+   * source/c_image.c
+   * source/c_media.c
+   * source/c_msgbox.c
+   * source/c_progressbar.c
+   * source/c_resource.c
+   * source/c_scrsaver.c
+   * source/c_winapimisc.c
+   * source/c_windows.c
+   * source/h_activex.prg
+   * source/h_application.prg
+   * source/h_browse.prg
+   * source/h_button.prg
+   * source/h_checkbox.prg
+   * source/h_checklist.prg
+   * source/h_combo.prg
+   * source/h_comm.prg
+   * source/h_controlmisc.prg
+   * source/h_crypt.prg
+   * source/h_cursor.prg
+   * source/h_datepicker.prg
+   * source/h_dialogs.prg
+   * source/h_dll.prg
+   * source/h_edit.prg
+   * source/h_edit_ex.prg
+   * source/h_editbox.prg
+   * source/h_error.prg
+   * source/h_font.prg
+   * source/h_form.prg
+   * source/h_frame.prg
+   * source/h_graph.prg
+   * source/h_grid.prg
+   * source/h_help.prg
+   * source/h_hotkey.prg
+   * source/h_hotkeybox.prg
+   * source/h_hyperlink.prg
+   * source/h_image.prg
+   * source/h_ini.prg
+   * source/h_init.prg
+   * source/h_internal.prg
+   * source/h_ipaddress.prg
+   * source/h_label.prg
+   * source/h_listbox.prg
+   * source/h_media.prg
+   * source/h_menu.prg
+   * source/h_monthcal.prg
+   * source/h_msgbox.prg
+   * source/h_pdf.prg
+   * source/h_picture.prg
+   * source/h_print.prg
+   * source/h_progressbar.prg
+   * source/h_progressmeter.prg
+   * source/h_radio.prg
+   * source/h_registry.prg
+   * source/h_report.prg
+   * source/h_richeditbox.prg
+   * source/h_scroll.prg
+   * source/h_scrollbutton.prg
+   * source/h_scrsaver.prg
+   * source/h_slider.prg
+   * source/h_spinner.prg
+   * source/h_splitbox.prg
+   * source/h_status.prg
+   * source/h_tab.prg
+   * source/h_textarray.prg
+   * source/h_textbox.prg
+   * source/h_timer.prg
+   * source/h_toolbar.prg
+   * source/h_tooltip.prg
+   * source/h_tree.prg
+   * source/h_winapimisc.prg
+   * source/h_windows.prg
+   * source/h_xbrowse.prg
+   * source/h_zip.prg
+   * source/miniprint.prg
+   * source/winprint.prg
+     * Updated copyright info.
+
+2016-05-22 01:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/BROWSE.HTM
+   * manual/Changelog.htm
+     * Updated.
+
+2016-05-22 01:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     ! Previous entry.
+   * manual/Changelog.htm
+     * Updated.
+   * include/i_altsyntax.ch
+     * Marker name.
+     + ENABLED and INVISIBLE clauses.
+     ! Parameters of END BROWSE.
+   * include/i_browse.ch
+     - BROWSE_JTFY_JUSTIFYMASK
+   * include/i_hmg_compat.ch
+     * BROWSE synchronized with HMG Extended.
+     + T*O*D*O note.
+     * Tabs replaced with spaces.
+   * source/h_activex.prg
+     - Comment.
+     * Some parameters' names.
+   * source/h_browse.prg
+     * Some parameters' names.
+   * source/h_media.prg
+     * Some parameters' names.
+
+2016-05-21 22:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/ACTIVEX.HTM
+   * manual/ANIMATEBOX.HTM
+   * manual/BROWSE.HTM
+   * manual/BUTTON.HTM
+   * manual/Changelog.htm
+   * manual/CLASSES.HTM
+   * manual/PLAYER.HTM
+   * manual/CLASSES.HTM
+   * doc/classes.txt
+     * Updated.
+
+2016-05-19 21:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/prgs/formedit.prg
+     * Some titles in statusbar's properties window.
+
+2016-05-18 22:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_richeditbox.prg
+   * source/h_status.prg
+     ! RTE Argument error: conditional, after double click event.
+
+2016-04-21 21:51 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_checkbox.prg
+     ! FocusRect is missing.
+
+2016-04-12 21:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/prgs/formedit.prg
+     * Single quotes were substituted by double quotes to improve readability
+       and facilitate searches.
+     + Some defines to improve readability of complex strings.
+     * Some variable names to improve code readability.
+     - Some comments.
+     ! Some typos.
+     * Some format.
+     - Unneeded code.
+     ! Focus problems with FRAME controls.
+     + IDE can now load controls defined using alternative syntax (except
+       MENU, NODE, SPLITBOX, HOTKEY, INTERNAL and TOOLBAR).
+     + Design form's position is now relative to controls' seleccion window.
+     * The setting of the design window's properties was moved from method
+       Open to method LoadForm.
+     + Support for numeric colors.
+     ! Some potential problems derived from the case of control's name.
+     ! Response of some controls to click, rclick and dblclick events.
+     ! RTE in method DrawOutline because lNoRefresh parameters is not logical.
+     ! Manual Move/Size does not set the focus correctly in some cases.
+     ! Manual Move/Size does not honor CLIENTAREA clause.
+     ! Manual Move/Size of FORM when there are no controls in it.
+     + Some DATAs to CLASS TFormEditor: aFormData , aOnEditCellEnd,
+       aOnInsert, aOnRClick, aOnRowRefresh, aOnScrEndTrack, aOnScrLineLU,
+       aOnScrLineRD, aOnScrLT, aOnScrPageLU, aOnScrPageRD, aOnScrRB,
+       aOnScrThumb and aOnScrTrack.
+     + Some METHODs to CLASS TFormEditor: CheckStringData,
+       PreProcessDefineWindow, ReadCtrlName, ReadFormLogicalData,
+       ReadFormPosition and ReadFormStringData.
+     - METHODs ReadFormCol and ReadFormRow.
+     * METHOD CrtlIsOfType renamed to CtrlIsOfType.
+     * BUTTON's backcolor is not longer forced to form's backcolor.
+     + MonthCalendar's new clauses.
+     * Action and Action2 moved to Events from Properties for TEXT controls.
+     * METHOD PrintBrief now show all events.
+     ; All controls must be defined between DEFINE WINDOW/END WINDOW.
+       Everything defined before the first DEFINE WINDOW of after the
+       first END WINDOW in the fmg file is ignored.
+     ; Only the first DEFINE WINDOW clause is processed, others are
+       ignored.
+     ; The first meaningfull line must start with DEFINE WINDOW TEMPLATE
+       or with DEFINE WINDOW <identifier>.
+
+2016-04-12 19:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/prgs/mgide.prg
+     ! RTE at  _myInputWindowOk and _myInputWindowCancel functions.
+       ACTION codeblocks of STATUSITEM controls must return logical.
+     * Format.
+
+2016-03-31 16:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_monthcal.prg
+     + Class TMonthCalMulti() to allow the selection of multiple days.
+     + DATA OnViewChange.
+     + DATA aBoldDays.
+     + METHOD Define2.
+     + METHOD CurrentView.
+     + METHOD Events.
+     + METHOD Width.
+     + METHOD Height.
+     + METHOD AddBoldDay.
+     + METHOD DelBoldDay.
+     + METHOD IsBoldDay.
+     + MCS_DAYSTATE style to allow the display of days in bold.
+     * Format.
+     * Use ::SizePos() in ::SetFont().
+     + Support for MCN_SELCHANGE, MCN_VIEWCHANGE and MCN_GETDAYSTATE
+       notifications in ::Events_Notify().
+     ! Focus is not set when mouse is clicked outside days' area.
+   * include/i_altsyntax.ch
+     + MonthCalendar's new clauses.
+   * include/oohg.h
+     + HB_STORDL.
+   * include/i_windefs.ch
+     + WM_MOUSEACTIVATE, MCN_GETDAYSTATE, MCN_VIEWCHANGE,
+       MCM_GETMAXSELCOUNT, MCM_SETMAXSELCOUNT, MCM_GETCURRENTVIEW,
+       MCM_SETCURRENTVIEW, MCMV_MONTH, MCMV_YEAR, MCMV_DECADE
+       and MCMV_CENTURY.
+     - MCN_FIRST, MCN_LAST
+     * MCN_SELCHANGE and MCN_SELECT.
+   * include/i_monthcal.ch
+     + MULTISELECT, ONVIEWCHANGE, ONGOTFOCUS and ONLOSTFOCUS clauses.
+
+2015-12-28 20:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     * aEqual now does what former ArraysAreEqual() did.
+   * source/h_checklist.prg
+     * ArraysAreEqual() now calls aEqual().
+   * source/h_image.prg
+     ! Control is not cleared after assigning an empty string to ::Picture.
+
+2015-12-28 20:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_picture.prg
+     ! Control is not cleared after assigning an empty string to ::Picture.
+     - Unneeded code.
+
+2015-12-28 19:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     ! Typo.
+   * distros/MakeDistro.bat
+     % Copy newer files only.
+   * doc/classes.txt
+     * Updated.
+   * source/h_xbrowse.prg
+     + Method OrdKeyGoTo() to class ooHGRecord under Harbour.
+     * Some format.
+   * source/h_grid.prg
+     * Some format.
+   * source/h_checklist.prg
+     + Call to FocusEffect() before calling OnGotFocus event.
+
+2016-02-27 09:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_listbox.prg
+     ! Can't change images using method Item.
+     ! Wrong images are shown because the associated images of an item
+       are not cleared when the item is deleted.
+
+2016-02-23 23:09 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_xbrowse.prg
+   * source/h_browse.prg
+     ! RTE when adding a new row after a column was added.
+     + New parameter uDefault to method AddColumn. It sets the default
+       value of the column when adding a new row.
+
+2016-02-21 12:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_xbrowse.prg
+     + Some checks for unselected workarea
+
+2016-02-21 11:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_combo.prg
+     ! RTE when ITEMSOURCE clause is not a fully qualified field name
+       and no parent form is defined.
+
+2016-02-16 19:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_xbrowse.prg
+     ! RTE when calling ::GetCellType without lAppend parameter.
+
+2016-02-14 12:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_button.prg
+     ! TButtonCheck's OnClick is not fired.
+   * source/h_controlmisc.prg
+     ! RTE when the last focused control is released.
+
+2016-01-31 21:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_dialogs.prg
+     + Support for numeric colors in function GetColor().
+   * source/h_grid.prg
+     ! ReadOnly and When codeblocks are evaluated twice before edition
+       in Grid, XBrowse and Browse controls.
+     ! ReadOnly and When codeblocks are not evaluated in method EditCell
+       after calling method EditAllCells.
+   * source/h_browse.prg
+     * Format.
+
+2015-12-21 18:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_hmg_compat.ch
+     ! Missing ; at end of line.
+
+2015-12-15 21:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_altsyntax.ch
+    + Support for ONGOTFOCUS and ONLOSTFOCUS clauses.
+    - Wrongly defined EDITCELL and EDITCELLEND clauses
+   * include/i_textarray.ch
+    + Support for ONGOTFOCUS and ONLOSTFOCUS clauses.
+   * source/h_textarray.prg
+    + Support for ONGOTFOCUS and ONLOSTFOCUS clauses.
+
+2015-12-15 21:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     ! Previous entry.
+
+2015-12-15 21:09 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_button.prg
+     ! Fixed default image alignment when image and text are both present.
+
+2015-12-14 00:24 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+   * source/h_textarray.prg
+     ! Fixed (added) ::OnGotFocus and ::OnLostFocus operation.
+
+2015-12-13 00:53 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+   * source/h_controlmisc.prg
+     ! Fixed wrong ::DoMethod() return value.
+   * samples\oohg\stream\TStreamSerial.prg
+     ! Fixed timeouts.
+
+2015-12-12 16:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_radio.prg
+     ! BOLD clause is not working.
+
+2015-12-10 20:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_button.ch
+   * include/i_checkbox.ch
+   * include/i_radiogroup.ch
+     ! Support for THEMED and NOTHEME clauses.
+
+2015-12-10 20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_hmg_compat.ch
+     + EDITFIRSTVISIBLE to BROWSE.
+     * BUTTONEX support.
+
+2015-12-09 22:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_altsyntax.ch
+   + Support for EDITFIRSTVISIBLE clause in GRID, BROWSE and XBROWSE.
+
+2015-12-09 21:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     ! Previous entry.
+   * include/i_button.ch
+     * Some markers names.
+     + NOTHEME clause.
+
+2015-12-09 21:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_checkbox.ch
+     ! Support for THEMED and NOTHEME clauses.
+   * include/i_radiogroup.ch
+     + NOTHEME clause.
+
+2015-12-09 20:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/c_image.c
+   * source/h_form.prg
+   * source/h_picture.prg
+     ! Wrong parameter order in _OOHG_ScaleImage() call.
+
+2015-12-09 13:46 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+   * source/h_picture.prg
+     ! Re-activated commented SCROLLS() call.
+   * source/makelib_bcc.bat
+     ! Added bostaurus.c to clean up.
+
+2015-12-07 23:50 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+   * samples\oohg\stream\TStream.prg
+     + ::Append() method added.
+   * samples\oohg\stream\TStreamSocket.prg
+     + Bluetooth support.
+
+2015-12-01 19:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_altsyntax.ch
+     * THEMED clause is initialized as NIL instead of .F.
+     + EDITFIRSTVISIBLE clause.
+   * source/h_button.prg
+     * Image alignment now defaults to CENTER instead of LEFT when the
+       button has no caption.
+   * source/h_image.prg
+   * source/h_picture.prg
+     * Changed parameter name.
+
+2015-11-29 22:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_checkbox.prg
+   * source/h_radio.prg
+     * ::lThemed now defaults to IsAppThemed() instead of .F. in ::Define().
+
+2015-11-29 22:19 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_windefs.ch
+     + BUTTON_IMAGELIST_ALIGN_* constants.
+     + DT_* constants.
+   * include/oohg.h
+     * _OOHG_ScaleImage() declaration.
+   * source/c_gdiplus.c
+     * New parameters in calls to _OOHG_ScaleImage().
+   * source/c_image.c
+     + New parameters iHrzMrgn and iVrtMrgn in _OOHG_ScaleImage().
+       Use them to reduce the size of the scaled image so it does not
+       occupy the entire control's rect.
+     + New parameters in calls to _OOHG_ScaleImage().
+     * Parameter scalestrech changed from int to BOOL.
+   * source/h_button.prg
+     * Use BUTTON_IMAGELIST_ALIGN_* constants instead of numbers.
+     * aImageMargins now defaults to {6,10,6,10} so a 16x16 image vertically
+       fits in the center of a button with default height (28).
+     * New parameters in calls to _OOHG_ScaleImage().
+   * source/h_form.prg
+   * source/h_picture.prg
+     * New parameters in calls to _OOHG_ScaleImage().
+
+2015-11-29 12:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_tab.prg
+     + Methods bBeforeChange, OnClick and OnRClick to TMultiPage class.
+     + DATA bBeforeChange to TTabRaw class. This block is evaluated before
+       changing the selected tab. It it returns .F. the change is prevented.
+     + Method Events to TTabRaw class.
+     + Handler for TCN_SELCHANGING message in TTabRaw():Events_Notify.
+
+2015-11-28 18:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+    * include/i_browse.ch
+    * include/i_grid.ch
+    * include/i_xbrowse.ch
+      + EDITFIRSTVISIBLE clause. By default edition starts on the first
+        non hidden column. This clauses forces the edition to start on the
+        first column currently visible.
+    * source/h_browse.prg
+      + Support for EDITFIRSTVISIBLE clause.
+      ! Scrollbar behaviour when clicking or righclicking.
+      ! BrowseByCell does not paint clicked or rightclicked cell.
+    * source/h_grid.prg
+      + DATA lAtFirstCol INIT .T.
+      ! BrowseByCell without EDIT clause allows editing because ::AllowEdit
+        is set to .T. when INPLACE clause is present.
+      + Support for EDITFIRSTVISIBLE clause.
+    * source/h_xbrowse.prg
+      + Support for EDITFIRSTVISIBLE clause.
+      ! XBrowseByCell does not paint clicked or rightclicked cell.
+
+2015-11-25 18:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog.004
+   * include/i_hmg_compat.ch
+     ! Typos.
+
+2015-11-11 00:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_browse.prg
+     ! Control's events are assigned twice.
+     * Calls to TGrid():Define changed by call to ::Define2.
+     * Format.
+     - TOBrowseByCell():Define2.
+
+2015-11-10 22:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     ! Another RTE at _CheckCellNewValue() when control has no memvar.
+     + TGrid():Define4 to handle the assignment of the control's events.
+     * TGrid():Define2 no longer assigns the control's events.
+     * Methods Define of TGrid, TGridMulti and TGridByCell classes now use
+       TGrid():Define4.
+     ! TGrid():EditCell2 now creates the variable asociated with the
+       cell's editcontrol (or _OOHG_NULLVAR_ variable if one is not
+       defined).
+     * Changed parameters in calls to modified methods.
+     * EditControl parameter is passed by reference in calls to ::EditCell2.
+   * source/h_xbrowse.prg
+     + TXBrowse():Define4 to handle the assignment of the control's events.
+     * Method Define of TXBrowse and TXBrowseByCell classes now use
+       TXBrowse():Define4.
+     * Changed parameters in calls to modified methods.
+     * EditControl parameter is passed by reference in calls to ::EditCell2.
+   * source/h_browse.prg
+     + TOBrowse():Define4 to handle the assignment of the control's events.
+     * Changed parameters in TOBrowse():Define3, TOBrowseByCell:Define2
+       and TOBrowseByCell:Define3.
+     * Changed parameters in calls to modified methods.
+     * EditControl parameter is passed by reference in calls to ::EditCell2.
+
+2015-11-08 20:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     ! RTE at _CheckCellNewValue() when control has no memvar.
+
+2015-11-08 20:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     ! Change of cell value in editcontrol valid is not working.
+
+2015-11-07 21:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/oohg.h
+   * source/c_activex.c
+   * source/c_dialogs.c
+   * source/c_gdiplus.c
+   * source/h_datepicker.prg
+   * source/h_media.prg
+   * source/h_textbox.prg
+   * source/miniprint.prg
+     * BCC warnings pacified.
+   * source/h_ipaddress.prg
+     * Format.
+   * source/h_toolbar.prg
+     - Unneeded code.
+
+2015-11-07 21:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_altsyntax.ch
+   * include/i_browse.ch
+   * include/i_grid.ch
+   * include/i_hmg_compat.ch
+   * include/i_xbrowse.ch
+     + Support for ON EDITCELLEND clause.
+   * source/h_grid.prg
+     + Data OnEditCellEnd.
+     + New parameter to TGrid():Define and TGrid():Define2.
+     + New parameter to TGridMulti():Define.
+     + New parameter to TGridByCell():Define.
+     + OnEditCellEnd event to TGrid():EditItem and TGrid():EditCell.
+       The event is fired inmediatly after the cell edition ends and before
+       saving the value to the cell.
+   * source/h_xbrowse.prg
+     + New parameter to TXBrowse():Define and TXBrowseByCell():Define2.
+     * TXBrowse():Define no longer passes codeblocks to
+       TGrid():Define2 to avoid premature setting of the control's events.
+     + OnEditCellEnd event to TXBrowse():EditItem_B and TXBrowse():EditCell.
+       The event is fired inmediatly after the end of the cell edition
+       and before saving the value to the cell. It's followed by OnAppend
+       event in case a new row is being added.
+     + Cell info if set before OnAppend in TXBrowse():EditItem_B and
+       TXBrowse():EditCell.
+     ! OnEditCell event is fired last in TXBrowse():EditCell.
+   * source/h_browse.prg
+     + New parameter to TOBrowse():Define, TOBrowse():Define3,
+       TOBrowseByCell():Define2 and TOBrowseByCell():Define3.
+     * TOBrowse():Define no longer passes codeblocks to
+       TOBrowse():Define3 to avoid premature setting of the control's events.
+
+ 2015-11-07 19:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./compile_MINGW.BAT
+   * ./compile_bcc.bat
+   * distros/MakeDistro.bat
+   * distros/MakeExclude.txt
+   * ide/compile.bat
+   + include/bostaurus.ch
+   * source/BuildLib_hbmk2.bat
+   + source/bostaurus.hbp
+   + source/bostaurus.prg
+   * source/common_make.bat
+   * source/makelib_bcc.bat
+   * source/makelib_mingw.bat
+   * source/makelib_pc.bat
+   * source/makelib_vc.bat
+   * source/xml.bat
+     + Bos Taurus graphic library by Claudio Soto.
+     * Folder for xHarbour to "xhbcc".
+
+2015-11-04 21:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_listbox.prg
+     + Nested click check to WM_LBUTTONDOWN handler.
+   * source/h_checklist.prg
+     - Unneeded code.
+
+2015-11-03 21:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_altsyntax.ch
+     + Support for NOHOTLIGHT clause to BUTTON and CHECKBUTTON controls.
+   * source/h_browse.prg
+   * source/h_xbrowse.prg
+     + Missing mouse coordinates to CLICK events.
+   * source/h_button.prg
+     ! Missing parameters in method Define of TButton.
+     ! Missing parameters in methods Define and DefineImage of TButtonCheck.
+   * source/h_combo.prg
+     * Variable renamed for clarity.
+     * Some comments.
+     + Missing call to FocusEffect before firing ONGOTFOCUS.
+     + Data lFocused.
+     + Handler for WM_LBUTTONDOWN message to set focus and trigger
+       ONCLICK event.
+     - Evaluation of ONCLICK event inside CBN_EDITCHANGE handler.
+   * source/h_controlmisc.prg
+     + Missing call to FocusEffect before firing ONGOTFOCUS.
+   * source/h_hotkeybox.prg
+     * Variable renamed for clarity.
+   * source/h_listbox.prg
+     * Format.
+     * Data lFocused.
+     + Handler for WM_LBUTTONDOWN message to set focus and trigger
+       ONCLICK event.
+     + Handler for WM_LBUTTONDBLCLK message to set focus.
+     + Missing call to FocusEffect before firing ONGOTFOCUS.
+   * source/h_status.prg
+     - Some comments.
+     + Some casting.
+     * Format.
+
+2015-10-31 14:06 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_pseudofunc.ch
+     + GetDefaultFontName() and GetDefaultFontSize().
+   * source/c_font.c
+     + GetSystemFont().
+   * source/c_window.c
+     * getwinver() is not static anymore.
+   * source/h_scroll.prg
+     - Commented code.
+   * samples\oohg\stream\TSmtpClient.prg
+   * samples\oohg\stream\TStreamSerial.prg
+   * samples\oohg\stream\TStreamZip.prg
+
+2015-10-28 21:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_window.ch
+     + HBitMap property.
+   * source/h_button.prg
+     * cPicture property is now reseted in methods HBitMap and Buffer.
+     * Use ValidHandler( ::hImage ) instead of ! Empty( ::hImage ).
+     * Removed ValidHandler check from method Release.
+   * source/h_image.prg
+     * cPicture property is now reseted in methods HBitMap and Buffer.
+     * Method RePaint will do nothing when ::hImage is not valid.
+     * Removed ValidHandler check from method Release.
+   * source/h_picture.prg
+     * cPicture property is now reseted in methods HBitMap and Buffer.
+     * Method RePaint will do nothing when ::hImage is not valid.
+     * Empty IF commented out.
+     * Removed ValidHandler check from method Release.
+   * source/h_toolbar.prg
+     * Format.
+     + Method RePaint.
+     * Method HBitMap simplified.
+     * Removed ValidHandler check from method Release.
+
+2015-10-27 23:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   + samples\http\build.bat
+     * File for building the sample.
+
+2015-10-27 23:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/c_gdiplus.c
+     * Format.
+   * samples\oohg\stream\TSmtpClient.prg
+     ! Compiler error over hb_retclenAdopt function.
+     ! Harbour error over BitXor operator.
+     * Variable name.
+   * samples\oohg\stream\TStream.prg
+     ! Compiler error over BOOL data type.
+   * samples\oohg\stream\TStreamSerial.prg
+     ! Compiler errors over ISCHAR and ISNUM macros.
+   * samples\oohg\stream\TStreamZip.prg
+     ! Compiler error over z_stream data type caused by missing
+       zlib.h include. In case Harbour doesn't include this file
+       you must install zlib library from http://www.zlib.net/
+     ! Harbour error over BitAnd operator.
+
+2015-10-25 19:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_hmg_compat.ch
+     * Support for TAB clauses improved.
+
+2015-10-22 17:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_window.ch
+     + Redraw function.
+
+2015-10-22 17:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_hmg_compat.ch
+     * Support for STATUSBAR clauses improved.
+
+2015-10-17 22:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_form.prg
+     - Unneeded OnPaint parameters.
+
+2015-10-17 22:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_windows.prg
+     - Some comments.
+     * Format.
+   * source/c_gdiplus.c
+     - SaveHBitmapToFile and _OOHG_ScaleImage declarations.
+     + Validation for JpgQuality and ColorDepth parameters
+       in SaveHBitmapToFile().
+     + BOOL bIgnoreBkClr parameter to _OOHG_GDIPLoadPicture().
+   * source/c_image.c
+     - _OOHG_UseGDIP and _OOHG_GDIPLoadPicture declarations.
+     + BOOL bIgnoreBkClr parameter to _OOHG_OleLoadPicture(),
+       _OOHG_ScaleImage(), _OOHG_LoadImage(), _OOHG_BITMAPFROMFILE(),
+       _OOHG_BITMAPFROMBUFFER(), _OOHG_SETBITMAP() and _OOHG_SCALEIMAGE()
+   * include/oohg.h
+     + Some function declarations.
+     * Some function declarations.
+   * source/h_picture.prg
+   * source/h_button.prg
+     + New parameter to _OOHG_ScaleImage() calls.
+   * source/h_form.prg
+     + Method HasStatusBar to TForm class.
+     - Comments.
+     + New parameter to _OOHG_ScaleImage() calls.
+     * Execute OnPaint event before evaluating GraphTasks and
+       GraphCommand codeblocks.
+   * source/h_menu.prg
+     + New parameter to _OOHG_LoadImage() calls.
+   * source/h_tree.prg
+     - PrepareFont declaration.
+
+2015-10-17 21:26 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_window.ch
+     + VScrollBar and HScrollBar clauses.
+
+2015-10-17 20:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_hmg_compat.ch
+     + NOHOTLIGHT and BACKCOLOR clauses to BUTTONEX.
+
+2015-10-14 22:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_textbox.prg
+     ! Shift-Tab not working properly if WHEN returns false.
+     * Some format.
+
+2015-10-14 20:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_button.ch
+   * source/h_button.prg
+     + NOHOTLIGHT clause.
+
+2015-10-10 10:32 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_textbox.prg
+     ! ::OnGotFocus is being called twice.
+
+2015-09-22 23:00 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+   + samples/oohg/stream/TSmtpClient.prg
+     + Simple SMTP client sample using TStreamSocket() class.
+
+2015-09-13 20:32 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/winprint.prg
+     * Simplified global changes handling.
+   * source/miniprint.prg
+     - Some comments.
+     * Simplified _HMG_PRINTER_ThumbnailToggle().
+     * Some translations.
+     ! Global changes handling.
+
+2015-09-01 18:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/prgs/formedit.prg
+     ! RTE when adding a new CHECKBOX control.
+
+2015-08-20 21:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/prgs/mgide.prg
+     + THMI:myInputWindow() checks for changes before canceling edition.
+
+2015-08-19 19:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_toolbar.prg
+     ! RTE "Message not found: TTOOLTIP:POSITION"
+
+2015-08-17 22:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/miniprint.ch
+     ! Typo.
+   * include/i_tooltip.ch
+     + SET TOOLTIP MULTILINE command.
+   * include/i_windefs.ch
+     + TB_SETTOOLTIPS.
+   * source/h_toolbar.prg
+     + DATA oToolTip.
+     * TToolBar() now uses a TToolTip() control instead of default
+       tooltip.
+     - TBSTYLE_TOOLTIPS from toolbar's initial style.
+     ! ToolBar's tooltips are not displayed in balloon style.
+   * source/h_tooltip.prg
+     + Support for SET TOOLTIP MULTILINE command.
+
+2015-08-15 10:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/prgs/formedit.prg
+     ! Changes in form's size are not detected when made by mouse.
+
+2015-08-01 18:17 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     ! Typo in previous entries.
+   * manual/Changelog.htm
+     * Updated.
+   * ide/prgs/formedit.prg
+     + Support for NOTHEME clause.
+   * ide/prgs/mgide.prg
+     ! Additional libs support.
+     + msimg32 library.
+   * include/i_windefs.ch
+     + WS_OVERLAPPEDWINDOW, WS_CHILDWINDOW and WS_POPUPWINDOW
+   * source/h_button.prg
+     * Enabled custom draw for OSes after XP.
+   ! source/h_radio.prg
+     * RTE "Argument error: .NOT." at TRADIOGROUP:DEFINE(158)
+
+2015-07-14 19:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_altsyntax.ch
+   * include/i_checkbox.ch
+     + NOTHEME clause: control is painted by Windows.
+   * source/h_checkbox.prg
+     * INCOMPATIBLE: THEMED is now the default if app is themed.
+     ! FONTCOLOR is not working.
+   * manual/Changelog.htm
+     * Updated.
+
+2015-07-13 19:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/c_windows.c
+     ! Method TWindow:SaveAs() truncates window's captured image for
+       Win 8.1 because function _GETBITMAP() it's not aware of extended
+       frame bounds.
+     ! Method TWindow:SaveAs() saves incorrect area.
+   * manual/Changelog.htm
+     * Updated.
+
+2015-07-06 17:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_windefs.ch
+     + COLOR_MENUHILIGHT and COLOR_MENUBAR
+   * manual/Changelog.htm
+     * Updated.
+
+2015-06-27 23:19 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/Changelog.htm
+     * Updated.
+   * source/h_picture.prg
+     ! Picture control does not honor the image's transparency.
+
+2015-06-27 23:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/Changelog.htm
+     * Updated.
+   * source/c_gdiplus.c
+     ! GdipCreateHBITMAPFromBitmap loads some images with wrong color.
+   * source/h_picture.prg
+     * Format.
+
+2015-06-21 11:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     ! Typo in previous entry.
+   * manual/Changelog.htm
+     * Updated.
+   * source/h_browse.prg
+     ! TOBrowse:EditCell passes wrong parameters to ::Super:EditCell().
+     ! TOBrowse:EditGrid() with lAppend parameter set to .T. does not
+       add a new row before editing.
+     ! Support of lOneRow parameter in TOBrowse:EditGrid().
+   * source/h_xbrowse.prg
+     + Data lForceInPlace: when .F. TXBrowse:EditItem() will edit items
+       using an independent modal window (just like Grid does).
+     ! TXBrowse:EditItem() does not add a new item to the grid when
+       INPLACE is .T.
+     * TXBrowse:EditItem_B() no longer checks for ::lAppendMode because
+       the check is done at TXBrowse:EditItem().
+     ! TXBrowse:EditItem_B() does not reposition correctly after an
+       edition is aborted.
+     ! TXBrowse:EditCell shows values when DEFAULTVALUES clause is
+       not used.
+     ! TXBrowse:EditCell changes row position after editing a cell thats
+       part of an index key.
+   * source/h_grid.prg
+     ! Function _GetGridCellData is not detecting clicks on empty rows.
+
+2015-06-15 17:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     ! Typo in previous entry.
+   * manual/Changelog.htm
+     * Updated.
+   * source/h_xbrowse.prg
+     ! RTE at :EditItem(.T.) caused by change in parameter's order.
+       Use TXBrowse:EditItem( lAppend, lOneRow, nItem, lChange ).
+
+2015-06-08 21:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/Changelog.htm
+     * Updated.
+   * ide/prgs/formedit.prg
+     ! Support for DEFAULTVALUES clause.
+
+2015-06-08 20:51 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Previous entry.
+   * manual/Changelog.htm
+     * Updated.
+   * ide/prgs/formedit.prg
+     + Support for new clauses.
+   * source/h_browse.prg
+     * Format.
+
+2015-06-02 20:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/Changelog.htm
+     * Updated.
+   * source/h_browse.prg
+     ! Infinite loop in TOBrowse:EditGrid with FULLMOVE clause, when
+       last row has no editable column.
+
+2015-05-29 21:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Previous entry.
+   * manual/Changelog.htm
+     * Updated.
+   * include/i_color.ch
+     + CYAN, MAGENTA and other colors used in HMG Extended.
+   * include/i_altsyntax.ch
+   * include/i_browse.ch
+   * include/i_xbrowse.ch
+   * include/i_hmg_compat.ch
+     + DEFAULTVALUES clause.
+       Usage: DEFAULTVALUES aValues
+       aValues is an array of values and/or codeblocks.
+       When a new record is appended by the control, its fields are
+       initialized with these values.
+       Use NIL to retain previous behavior.
+   * source/h_browse.prg
+     + Support for DEFAULTVALUES clause.
+   * source/h_xbrowse.prg
+     + Support for DEFAULTVALUES clause.
+     + Parameter lAppend to TXBrowse:GetCellType().
+       When .T., uOldValue is set to the column's default value if one
+       is defined.
+
+2015-05-27 19:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Previous entry.
+   * manual/Changelog.htm
+     * Updated.
+   * source/h_browse.prg
+     ! RTE in TOBrowseByCell:SetValue().
+
+2015-05-27 18:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/Changelog.htm
+     * Updated.
+   * include/i_altsyntax.ch
+   * include/i_grid.ch
+     + ON INSERT clause.
+   * source/h_grid.prg
+     + Data OnInsert.
+     + Support for ON INSERT event.
+       It's fired after inserting a blank item.
+       You can use it to set default values.
+     * ::aHeadClick size is adjusted at define time.
+   * source/h_xbrowse.prg
+     ! TXBrowse:EditCell behaviour when ::RefreshType is REFRESH_DEFAULT.
+     + New parameter to TGrid:Define() calls.
+     + New parameter to TXBrowseByCell:Define2().
+   * source/h_grid.prg
+     + New parameter to TGrid:Define() calls.
+     + New parameter to TGridByCell:Define2().
+
+2015-05-26 17:41 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/Changelog.htm
+     * Updated.
+   * source/h_browse.prg
+     ! RTE on TGrid:Cell because nRow parameter is undefined.
+   * source/h_grid.prg
+     ! TGrid:EditItem() does not fully honor parameter lChange.
+
+2015-05-21 23:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/Changelog.htm
+     * Updated.
+   * source/h_browse.prg
+     ! Scrollbar is not updated correctly.
+     * ::CurrentRow no longer updates the scrollbar.
+
+2015-05-21 21:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/Changelog.htm
+     * Updated.
+   * source/h_browse.prg
+     ! RTE in TOBrowse:EditAllCells() because ::nRowPos is 0.
+     + TOBrowse:CurrentRow().
+     * Comments.
+     * Format.
+     * ::FirstSelectedItem replaced with ::CurrentRow.
+     * Use ::CurrentRow( nNewRow ) instead of
+       ::ScrollUpdate() + ListView_SetCurSel( nNewRow ).
+     - Unneeded code.
+     * Use ::CurrentRow( 0 ) instead of ListView_ClearCurSel().
+
+2015-05-20 22:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/Changelog.htm
+     * Updated.
+   * source/h_print.prg
+     ! RTE in TPrintBase:EndDoc() when _oohg_winreport is not defined.
+
+2015-05-20 21:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/Changelog.htm
+     * Updated.
+   * source/h_browse.prg
+     ! RTE in TOBrowse:EditGrid() because lRet is uninitialized.
+
+2015-05-20 19:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * doc/classes.txt
+   * manual/Changelog.htm
+   * manual/CLASSES.HTM
+     * Updated.
+   * include/i_altsyntax.ch
+     + ON RCLICK and CHANGEBEFOREEDIT clauses to Grid's syntax.
+     + ON RCLICK, CHANGEBEFOREEDIT, CHECKBOXES, ON CHECKCHANGE and
+       ON REFRESHROW clauses to Browse's syntax.
+     + ON RCLICK, CHECKBOXES, ON CHECKCHANGE and ON REFRESHROW clauses to
+       XBrowse's syntax.
+   * include/i_hmg_compat.ch
+     + CHECKBOXES, ON CHECKCHANGE and ON REFRESHROW clauses.
+   * source/h_checklist.prg
+     + New parameters in call to TGrid:Define.
+   * ide/prgs/formedit.prg
+     + Support for new clauses.
+   * source/h_xbrowse.prg
+     * Format.
+     * Comments.
+
+2015-05-19 23:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/Changelog.htm
+     * Updated.
+   * include/i_browse.ch
+     + CHECKBOXES, ON CHECKCHANGE and ON REFRESHROW clauses.
+   * source/h_grid.prg
+     - Unneeded code.
+     ! Support for lOneRow in TGrid:EditGrid().
+     ! TGrid:EditGrid() does not scroll to left after editing.
+     ! TGrid:EditAllCells() scrolls to left before editing the next column.
+     + Support for lOneRow in TGridByCell:EditGrid().
+   * source/h_xbrowse.prg
+     * Comments.
+     - Unneeded code.
+     + Data lRefreshAfterValue. When .T. TXBrowse:Value() and
+       TXBrowseByCell:Value() will call ::Refresh() after changing
+       the selected row in the grid. Defaults to .F.
+     ! TXBrowse:Down() appends a new item when ::lLocked and ::AllowAppend
+       are .T.
+     ! Typos in TXBrowse:EditItem().
+     ! Missing lOneRow initialization in TXBrowse:EditItem().
+     ! TXBrowse:EditItem() does not scroll to a new row after editing
+       the last row in the grid.
+     * TXBrowse:EditAllCells() initializations and validations placement.
+     * TXBrowse:EditAllCells() now uses ::nRowPos directly.
+     ! Support for lAppend and lOneRow in TXBrowse:EditAllCells().
+     ! TXBrowse:EditAllCells() does not scroll to a new row after editing
+       the last row in the grid.
+     ! Support for lAppend and lOneRow in TXBrowse:EditGrid().
+     * TXBrowse:EditGrid() now uses ::nRowPos directly.
+     ! TXBrowseByCell:EditGrid() does not scroll to left after editing.
+     ! Support for lAppend and lOneRow in TXBrowseByCell:EditGrid().
+     * TXBrowseByCell:EditGrid() initializations and validations placement.
+     * TXBrowseByCell:EditAllCells() initializations and validations
+       placement.
+     ! Support for lAppend and lOneRow in TXBrowseByCell:EditAllCells().
+     ! Handling of end of edition events in TXBrowseByCell:EditAllCells().
+   * source/h_browse.prg
+     * Comments.
+     + Support for CHECKBOXES and ON CHECKCHANGE clauses.
+       ; Checkboxes are not tied to data source records but to the rows
+         in the supporting grid. When a checked row is scrolled out and
+         later scrolled in, the checkmark is lost. To link the checkmarks
+         with the records, additional logic is needed: you can use
+         ON CHECKCHANGE to save the checkmark status to the data source
+         and ON REFRESHROW event to read the saved status and set the
+         checkmark.
+     % ::WorkArea replaced by local var.
+     - lOneRow parameter from TOBrowse:EditItem_B().
+     * TOBrowse:EditItem_B() no longer calls ::EditAllCells() when
+       ::InPlace is .T.
+       ; This change enabled de row edition using a modal window, just like
+         TGrid and TOBrowse classes.
+     ! Support for mouse click exit from NOMODAL edition.
+     + Support for lAppend parameter in TOBrowse:EditAllCells().
+     ! RTE in TOBrowse:EditAllCells() because lOneRow is not logical.
+     ! TOBrowse:Refresh() does not work properly after clicking a row.
+     ! RTE in TOBrowseByCell:EditAllCells() because lOneRow is not logical.
+     ! Infinite loop in TOBrowseByCell:EditAllCells().
+
+2015-05-17 12:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/Changelog.htm
+     * Updated.
+   * source/h_xbrowse.prg
+     * TXBrowse:Value() renamed as TXBrowse:SetControlValue().
+     * TXBrowse:Value() now calls ::Super:Value() to change the selected
+       row in the grid, and uses ::Refresh() to repaint the grid with
+       the current data source record placed at the selected row.
+     * TXBrowse:Down() now returns .T. when successful.
+     * TXBrowse:EditItem() now fully supports lOneRow.
+     - Parameter lOneRow from TXBrowse:EditItem_B().
+     * TXBrowse:EditItem_B() now longer calls ::EditAllCells() nor
+       ::EditGrid() when ::InPlace or ::FullMove are .T.
+     * TXBrowseByCell:Value renamed as TXBrowseByCell:SetControlValue.
+     * TXBrowseByCell:Value() now calls ::Super:Value() to change the selected
+       row in the grid, and uses ::Refresh() to repaint the grid with
+       the current data source record placed at the selected row.
+     * All references to ::FirstSelectedItem changed by ::CurrentRow.
+
+2015-05-14 23:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/Changelog.htm
+     * Updated.
+   * source/h_xbrowse.prg
+     - Unneeded code.
+     ! Infinite loop when a non integer number is assigned to ::Value.
+
+2015-05-14 22:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/Changelog.htm
+     * Updated.
+   * source/h_grid.prg
+     - Unneeded code.
+     ! TGrid:EditItem() does not change ::Value when the next row is
+       selected.
+
+2015-05-13 23:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/Changelog.htm
+     * Updated.
+   * source/h_grid.prg
+     * Comments.
+     - Unneeded code.
+     ! TGrid:EditGrid() does not fully honor parameter lOneRow.
+     * TGrid:EditGrid(), lAppend .T. now adds a new row before editing.
+     ! TGrid:EditGrid() behaviour when ::nColPos is 0 or there are no
+       visible columns.
+     ! TGrid:EditItem() does not honor ::AllowAppend.
+     ! TGrid:EditItem() always adds a new row after editing another.
+     ! TGrid:EditItem() does not scroll to left after editing.
+     ! TGrid:EditAllCells() does not set proper column when called from
+       TGridByCell class.
+     ! TGrid:EditAllCells() behaviour when ::nColPos is 0 or there are no
+       visible columns.
+     * TGridByCell:EditGrid(), lAppend .T. now adds a new row before
+       editing.
+     ! TGridByCell:EditGrid() does not honor the column order set by the
+       user.
+     ! TGridByCell:EditGrid() behaviour when ::nColPos is 0 or there are no
+       visible columns.
+     * TGridByCell:EditCell() now process mouse clicks.
+
+2015-05-13 17:19 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+   * source/h_monthcal.prg
+     ! Casting.
+   * source/h_xbrowse.prg
+     ! Fixed typo.
+
+2015-05-12 23:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_xbrowse.ch
+     + CHECKBOXES, ON CHECKCHANGE and ON REFRESHROW clauses.
+   * manual/Changelog.htm
+     * Updated.
+   * source/h_grid.prg
+     * Comments.
+     - Unneeded code.
+     ! TGridByCell:EditCell() with NOMODAL clause sets column to 1 when user
+       exits cell edition with a mouse click.
+     ! RTE in NM_CLICK and NM_RCLICK handlers of TGridByCell class.
+     + TGridControlTextAction class for editing a cell using a textbox
+       control with ACTION and/or ACTION2 clauses.
+     ! TGridControlTextBox with lButton parameter set to .T. in a Grid with
+       NOMODAL edit clause, hangs the app when a button is clicked. Until
+       a solution is found, edit control es forced to MODAL behaviour.
+       This means that you cant exit the editing windows with the mouse.
+   * source/h_xbrowse.prg
+     * Comments.
+     *- Unneeded code.
+     + Data TXBrowse:OnRefreshRow.
+     - TXBrowse:CheckItem().
+     + Support for ON REFRESHROW clause. TXBrowse:RefreshRow() evaluates
+       OnRefreshRow codeblock after refreshing the row, with parameters
+       nRow and aItem.
+     ! TXBrowse:EditAllCells() scrolls to the left before editing each
+       cell in the row.
+     ! TXBrowseByCell:EditItem() ignores indicated row and always edit
+       the current one.
+     ! TXBrowse:EditCell() does not set ::Value when called from
+       TXBrowseByCell class.
+     ! TXBrowse:EditCell() no longer scrolls to left before starting the
+       edition of a row.
+     ! TXBrowse:EditGrid() no longer scrolls to left before starting the
+       edition of a row.
+     ! ON EDITCELL events is not fired inmediatly after the end of the
+       cell edition.
+     + TXBrowseByCell:EditAllCells().
+     + TXBrowseByCell:EditItem_B().
+     - TXBrowseByCell:EditItem2().
+     - Function _OOHG_TXBrowseByCell_Events2.
+     * TXBrowseByCell:Events() moved to PRG level.
+     + Support for CHECKBOXES and ON CHECKCHANGE clauses.
+       ; Checkboxes are not tied to data source records but to the rows
+         in the supporting grid. When a checked row is scrolled out and
+         later scrolled in, the checkmark is lost. To link the checkmarks
+         with the records, additional logic is needed: you can use
+         ON CHECKCHANGE to save the checkmark status to the data source
+         and ON REFRESHROW event to read the saved status and set the
+         checkmark.
+   * source/makelib_mingw.prg
+     ! Flag -mno-cygwin prevents the building of the libraries.
+
+2015-05-12 01:13 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Previous entries.
+   * manual/Changelog.htm
+     * Updated.
+   * source/h_grid.prg
+     + Support for parameters lAppend and lOneRow in TGrid:EditAllCells().
+     ! TGridByCell:EditGrid(), control with NOMODAL clause, when clicking
+       outside the edition window, the edition is not ended.
+     * TGridByCell:EdtiCell() check ::HiddenCols before changing ::Value.
+     * NM_CLICK and NM_RCLICK handlers of TGridByCell do not process the
+       message when a cell is being edited. Instead they store the cell
+       clicked in ::nDelayedClick.
+   * source/h_xbrowse.prg
+     * Comments.
+     - Unneeded code.
+     + Support for parameters lAppend and lOneRow in TXBrowse:EditAllCells().
+     * Parameters passed to ::MoveTo by TXBrowseByCell:EditCell().
+     * Handling of NOMODAL clause in TXBrowseByCell:EditGrid().
+
+2015-05-11 20:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * doc/classes.txt
+   * manual/Classes.htm
+   * manual/Changelog.htm
+     * Updated.
+   * source/h_grid.prg
+     * Comments.
+     - Unneeded code.
+     * TGrid:AppendItem() no longer tests ::lEditMode.
+     * TGrid:EditGrid() sets ::lEditMode to .T. only when ::FullMove is .T.
+     * TGrid:Left() and TGrid:Right no longer test for ::FullMove.
+     - Parameter nCol in TGrid:EditItem() because is meaningless.
+       INCOMPATIBLE.
+     + Support for parameters lAppend and lOneRow in TGrid:EditItem().
+     - Determination of edit control before editing in TGrid:EditItem().
+     + Support for IMAGELIST edit control in TGrid:EditItem2().
+     - Determination of edit control before editing in TGrid:EditCell().
+     ! ON ABORTEDIT event is fired after deleting the blank line instead
+       of before.
+     + Support for IMAGELIST edit control in TGrid:EditCell2().
+     ! TGrid:EditCell2() shows an editing window that goes beyond the
+       right side of the Grid's parent.
+     + WM_MOUSEWHEEL handler to function _OOHG_TGrid_Events2().
+     - WM_MOUSEWHEEL handler from TGridByCell:Events().
+     + Data Type to all classes derived from TGridControl class.
+       Usefull for debugging.
+     * WM_MOUSEWHEEL message is passed by TGrid_Events() at C level to
+       function _OOHG_TGrid_Events2() at PRG level.
+     ; All T*O*D*O notes were cleared.
+   * source/h_xbrowse.prg
+     + TXBrowse:FixControls().
+     ! TXBrowse:Events_Notify() and TXBrowseByCell:Events_Notify(), row is
+       not changed when mouse is clicked on it.
+     - Parameter nCol in TXBrowse:EditItem() because is meaningless.
+       INCOMPATIBLE.
+     + Support for parameter nItem TXBrowse:EditItem().
+     ! TXBrowse:AppendItem is not working when ::FullMove and ::InPlace
+       are both .F.
+     + Test for ::lAppendItem when parameter lAppend is .T. in
+       TXBrowse:EditItem_B().
+     * TXBrowse:EditItem_B now calls ::EditGrid() when ::FullMove is .T.
+     ! RTE in TXBrowse:EditItem_B() when editing a logical column.
+     ! TXBrowse:EditGrid() does not append a new row when ::FullMove is .T.
+       and last row is fully edited.
+     ! TXBrowse:EditGrid() does not move to the next row when ::FullMove is
+       .T. and the current row is fully edited.
+     ! TXBrowse:EditGrid() does not scroll to left before starting the
+       edition of a row.
+     % TXBrowse:GetCellType().
+
+2015-05-10 04:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Previous entry.
+   * manual/Changelog.htm
+     * Updated.
+   * source/h_browse.prg
+     - Unneeded code.
+     * Comments.
+     + T*O*D*O notes.
+     * TXBrowse:EditGrid is now an independent method and behaves like
+       old TXBrowse:EditAllCells. After editing the initial row, the edition
+       continues in the next row or a new one is appended.
+     * TXBrowse:SyncData() was renamed ::SetControlValue.
+     + Support for CHANGEBEFOREEDIT and ON RCLICK clauses.
+     ! CHANGEBEFOREEDIT defaults to .F. to keep previous behavior.
+     ! ::OnClick, ::bBeforeColMove, ::bAfterColMove, ::bBeforeColSize,
+       ::bAfterColSize, ::bBeforeAutofit, ::bHeadRClick, ::OnEditCell,
+       ::OnAbortEdit and ::OnRClick are not setted at define time.
+     ! Support for NONEUNSELS clause.
+     ! TOBrowse:EditItem_B() does not honor ::RefreshType.
+     ! TOBrowse:EditCell(), exit clicks are being processed by ::Super.
+     + Parameter nRow to ::IsColumnReadonly() and ::IsColumnWhen() calls.
+     ! Support for lChange parameter in TOBrowse:EditAllCells().
+     ! Handling of NOMODAL clause in TOBrowse and TOBrowseByCell classes
+       (when clicking outside the edition window, the edition is not ended).
+     - Data TOBrowseByCell:aRecMap.
+     - Data TOBrowseByCell:RecCount.
+     - Data TOBrowseByCell:lUpdateAll.
+     - Data TOBrowseByCell:SyncStatus.
+     - TOBrowseByCell:MoveTo().
+     * TOBrowseByCell:EditAllCells() is now an independent method and
+       behaves TXBrowse:EditAllCells().
+     * TOBrowseByCell:Value() now resets ::nRowPos, ::nColPos and
+       ::nRecLastValue to 0 when there are no records or no items or
+       ::nRowPos is 0 or ::nColPos is 0.
+     * Handling of NOMODAL clause in TXBrowseByCell:Events_Notify().
+     ! TOBrowseByCell:EditCell(), exit clicks are being processed by ::Super.
+     ! TOBrowseByCell:EditCell() was calling TOBrowse:EditCell() instead
+       of calling TXBrowse:EditCell().
+     * TOBrowseByCell:Edit_ItemB() now calls ::EditAllCells().
+     * Added lChange parameter to TOBrowseByCell:EditGrid().
+       INCOMPATIBLE.
+     + Parameter nRow to ::IsColumnReadonly() and :IsColumnWhen() in
+       TOBrowseByCell:EditGrid() and _OOHG_TXBrowseByCell_Events2().
+     ! TOBrowseByCell:EditGrid(), exit clicks are being processed by ::Super.
+     ! Clicks are not recognized after a row edition was aborted.
+     ! Methods :EditGrid(), ::Left() and ::Right() of TOBrowseByCell do not
+       honor the column order set by the user.
+     ! Painting in TOBrowseByCell:CurrentCol().
+     * TOBrowseByCell:CurrentCol() now paints only when the column changes.
+   * source/h_xbrowse.prg
+     ! Order of events in NM_CLICK and NM_RCLICK handlers.
+     ! ::lLocked was not honored in NM_CLICK and NM_RCLICK handlers.
+     ! Wrong value was set into ::nDelayedClick for LVN_BEGINDRAG
+       notification.
+
+2015-05-10 03:09 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/Changelog.htm
+     * Updated.
+   * source/h_xbrowse.prg
+     - Unneeded code.
+     * Comments.
+     + T*O*D*O notes.
+     + TXBrowse:DeleteAllItems().
+     * TXBrowse:SyncData() is now a BLOCK and was renamed ::SetControlValue.
+     * TXBrowse:EditGrid() is now an independent method and behaves like
+       old TGrid:EditAllCells(). After editing the initial row, the edition
+       continues in the next row or a new one is appended.
+     + Support for ON RCLICK clause.
+     ! ::OnClick, ::bBeforeColMove, ::bAfterColMove, ::bBeforeColSize,
+       ::bAfterColSize, ::bBeforeAutofit, ::bHeadRClick, ::OnEditCell,
+       ::OnAbortEdit and ::OnRClick are not setted at define time.
+     ! Handling of NOMODAL clause in TXBrowse and TXBrowseByCell classes
+       (when clicking outside the edition window, the edition is not ended).
+     * TXBrowse:AppendItem() now behaves like TGrid:AppendItem().
+     * ::OnAppend, ::OnEditCell and ::OnAbortEdit codeblocks are evaluated
+       using ::DoEvent() instead of _OOHG_Eval().
+     * Placement of parameter lAppend in TXBrowse:EditCell().
+       INCOMPATIBLE.
+     * Parameters validations in TXBrowse:EditCell().
+     ! TXBrowse:EditCell() does not honor ::RefreshType.
+     * Handling of NOMODAL clause in TXBrowse:EditCell().
+     * TXBrowse:EditAllCells() now behaves like TGrid:EditAllCells().
+       When ::FullMove is .F., it edits only one row.
+       When ::Fullmove is .T., it calls ::EditGrid().
+     * TXBrowseByCell:DeleteAllItems() is now a BLOCK.
+     - TXBrowseByCell:EditAllCells().
+     - TXBrowseByCell:EditCell2().
+     + TXBrowseByCell:SetControlValue().
+     * TXBrowseByCell no longer forces ::InPlace to .T.
+     * Placement of parameter lAppend in TXBrowseByCell:EditCell().
+       INCOMPATIBLE.
+     ! TXBrowseByCell:EditCell(), exit clicks are being processed by ::Super.
+     * Parameters validations in TXBrowseByCell:EditGrid().
+     + Parameter nRow to ::IsColumnReadonly() and :IsColumnWhen() in
+       TXBrowseByCell:EditGrid() and _OOHG_TXBrowseByCell_Events2().
+     ! TXBrowseByCell:EditGrid(), exit clicks are being processed by ::Super.
+     ! Ctrl+VK_UP and Ctrl+VK_DOWN behaviour.
+     * Handling of NOMODAL clause in TXBrowseByCell:Events_Notify().
+     * TXBrowseByCell:CurrentCol() now paints only when the column changes.
+
+2015-05-10 02:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/Changelog.htm
+     * Updated.
+   * source/h_grid.prg
+     * Format.
+     * Comments.
+     - Unneeded code.
+     + T*O*D*O notes.
+     * Use methods instead of api.
+     * Data nDelayedClick type and initial value.
+     + Data nEditRow.
+     * Data lFromEditAllCells renamed to lCalledFromClass.
+     + TGrid:SetControlValue(). It's like ::Value. It enables that
+       methods can be used by TGridMulti and TGridByCell classes.
+     + Support for CHANGEBEFOREEDIT and ON RCLICK clauses.
+     ! Grid shows an imagelist in column 1 when another column has
+       an IMAGELIST columncontrol.
+     ! TGrid:EditGrid() and TGrid:EditAllCells() call ::OnAbortEdit twice.
+     * ::OnAppend codeblock now receives the number of the new row.
+     ! TGrid:EditGrid() throws a RTE on ::lOneRow.
+     ! TGrid:EditItem() and TGrid:EditCell() do not fire ::OnAppend event.
+     * TGrid:EditCell() is now responsible for deleting the blank item,
+       for setting the control's value and for calling ::OnAbortEdit when
+       an append is cancelled.
+     * ::OnAppend, ::OnEditCell and ::OnAbortEdit codeblocks are evaluated
+       using ::DoEvent() instead of _OOHG_Eval().
+     + Data lDeleteAll to TGridMulti class. When .T., DELETE key will
+       delete all selected items. When .F., only ::FirstSelectedItem is
+       deleted. Defaults to .F.
+     - TGridMulti:AppendItem().
+     - TGridMulti:Down().
+     - TGridMulti:EditAllCells().
+     - TGridMulti:EditCell().
+     - TGridMulti:EditGrid().
+     - TGridMulti:EditItem().
+     - TGridMulti:Events().
+     - TGridMulti:GoBottom().
+     - TGridMulti:GoTop().
+     - TGridMulti:PageDown().
+     - TGridMulti:PageUp().
+     - TGridMulti:Up().
+     + TGridMulti:SetControlValue().
+     - NM_CLICK and NM_RCLICK handlers from TGridMulti:Events_Notify().
+     - TGridByCell:AppendItem().
+     - TGridByCell:EditAllCells().
+     - TGridByCell:EditItem().
+     - TGridByCell:EditItem2().
+     + TGridByCell:SetControlValue().
+     * TGridByCell no longer forces ::InPlace nor ::lChangeBeforeEdit to .T.
+     ! TGridByCell:EditGrid() and TGridByCell:EditAllCells() call
+       ::OnAbortEdit twice.
+     ! Mouse clicks are no longer recognized after cancelling an edition.
+     ! RTE "No exported variable: BPOSITION" when an edit control is
+       defined using the syntax TGridControl():New() without a reference
+       to the Grid control.
+
+2015-05-10 01:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/Changelog.htm
+     * Updated.
+   * include/i_grid.ch
+   * include/i_browse.ch
+   * include/i_hmg_compat.ch
+     + CHANGEBEFOREEDIT clause.
+     + ON RCLICK clause.
+   * include/i_xbrowse.ch
+     + ON RCLICK clause.
+   * include/i_lang.ch
+     * Format.
+   * source/h_error.prg
+     * Copyright notice.
+     * Format.
+     * Comments.
+     ! RTE when PutMsg is called without lEvents parameter.
+     + OOHG_TErrorHtml:CopyLog().
+     + OOHG_TErrorHtml:DeleteLog().
+     + Support for Turkish language.
+     ; TODO: Translate messages.
+
+2015-05-08 19:11 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_lang.ch
+   * source/h_init.prg
+     + Support for Turkish language.
+       Thanks to Hüseyin Aydin for his contribution.
+   * manual/Changelog.htm
+     * Updated.
+
+2015-05-06 01:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * doc/classes.txt
+     * Updated.
+   * ide/compile.bat
+     + Message OK/ERROR at end of process.
+   * manual/Changelog.htm
+     * Updated.
+   * manual/Classes.htm
+     * Updated.
+   * source/h_grid.prg
+     * Comments.
+     - Unneeded code.
+     + DATA nDelayedClick.
+     + DATA lFromEditAllCells.
+     ! Grid with NOMODALEDIT clause: when clicking outside the edition
+       window, the edition is not ended.
+     * TGrid:EditCell2() sets ::bPosition to -2 (means "editing") and
+       :: nDelayedClick to 0.
+   * source/h_xbrowse.prg
+     * Comments.
+     - Unneeded code.
+     ! XBrowse with NOMODALEDIT clause: when clicking outside the edition
+       window, the edition is not ended.
+     ! RTE caused by accessing ::nColPos in a function.
+     * NM_CLICK, NM_RCLICK and LVN_BEGINDRAG handlers do not process the
+       message when a cell is being edited. Instead they store the row
+       clicked in ::nDelayedClick.
+     * TXBrowse:EditCell() selectes row ::nDelayedClick after storing
+       cell value into data provider, when called  with ::lFromEditAllCells
+       setted to .F.
+     * TXBrowse:EditAllCells() selectes row ::nDelayedClick after edition's
+       end (TXBrowse:EditCell() is called with ::lFromEditAllCells
+       setted to .T.)
+   * source/h_browse.prg
+     * Comments.
+     - Unneeded code.
+     ! Browse with NOMODALEDIT clause: when clicking outside the edition
+       window, the edition is not ended.
+     * TOBrowse:EditCell() selectes row ::nDelayedClick after storing
+       cell value into dbf, when called  with ::lFromEditAllCells
+       setted to .F.
+     * TOBrowse:EditAllCells() selectes row ::nDelayedClick after edition's
+       end (TOBrowse:EditCell() is called with ::lFromEditAllCells
+       setted to .T.)
+     * NM_CLICK, NM_RCLICK and LVN_BEGINDRAG handlers do not process the
+       message when a cell is being edited. Instead they store the row
+       clicked in ::nDelayedClick.
+
+2015-05-04 23:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/Changelog.htm
+     * Updated.
+   * ./Compile_MINGW.BAT
+     + -lrddado -lhbusrrdd to THR_LIB.
+   * source/h_grid.prg
+     * Comments.
+     + DATA lShowItemAtTop. When .T. TGridByCell:Value() tries to place
+       the selected row at the top.
+     ! Dlbclicking the grid causes the program to stop working.
+     ! Right clicking on a header brings up the Grid's context menu.
+     * TGridByCell:Define(), ::InPlace is setted to .T. in ::Define2().
+     ! TGridByCell:Value() changes column placement when column is not
+       changed.
+     ! TGridByCell:Value() does not show the new selected row when its
+       number is less than the number of the currently selected one.
+       Beware that ListView_Scroll() does no vertical scrolling when
+       the parameter is negative (scrolling towards the top).
+     * Methods Right(), Left(), Up() and Down() if TGridByCell no longer
+       change ::Value in "circular" way (last cell to first, first cell
+       to last, first row to last, last row to first). To restore this
+       features, please subclass this methods.
+     * TGridByCell:PageDown() now tries to place the next selected row
+       at the top.
+     - Function _OOHG_TGRIDBYCELL_EVENTS2.
+     % TGridByCell:Events() moved to PRG level. Now it uses ::Super:Events()
+       to process WM_NOTIFY message.
+     * LVN_KEYDOWN handler in TGridByCell:Events_Notify() now checks
+       ::FirstVisibleColumn.
+     * Function _GetGridCellData now uses tan array holding item and
+       subitem number (derived from lParam) instead of lParam.
+     ! ListView_IsItemVisible() returns .T. for an item placed under the
+       grid's header.
+     * Function LISTVIEW_HITTEDCELL renamed to LISTVIEW_ITEMACTIVATE.
+       INCOMPATIBLE.
+     + Function LISTVIEW_LISTVIEW at C level.
+     + Function GET_XY_LPARAM at C level.
+     + T*O*D*O.
+   * source/h_xbrowse.prg
+     * Comments.
+     + TXBrowse:SortColumn() as a NIL codeblock.
+     + TXBrowse:SortItems() as a NIL codeblock.
+     * Calls to _GetGridCellData adapted to new syntax.
+     * TXBrowseByCell:Define()2, ::InPlace is setted to .T. in ::Define2().
+   * source/h_browse.prg
+     * Comments.
+     * Format.
+     - TOBrowse:Events_Enter().
+     + TOBrowse:MoveTo() as a NIL codeblock.
+     * TXBrowse:Define() sets ::lChangeBeforeEdit to .T.
+     * TOBrowse:DbGoTo() set ::EOF when record number is greater than
+       the record count.
+     * TOBrowse:EditCell(). When lChange is .T. and lAppend is .F., the
+       control's value is changed to the forthcoming record to edit before
+       the edition's start. When lchange is .T. and lAppend is .T., the
+       control's value is changed to the new record after the edition's end.
+     + Parameter lChange to TOBrowse:EditAllCells()
+       INCOMPATIBLE: the order of the parameters was changed.
+     + TOBrowse:EditAllCells() now checks for workarea after editing a row.
+     * Calls to Listview_Scroll changed by ::ScrollToLeft().
+     * TOBrowse:FastUpdate(). When nRow is not valid the grid's current
+       selected item is cleared using Listview_ClearCursel.
+     * TOBrowse:Refresh() now uses ::nRecLastValue instead of ::Value.
+     * Calls to _GetGridCellData adapted to new syntax.
+     + WM_LBUTTONDBLCLK handler to TOBrowse:Events().
+     * TOBrowse:Events_Notify() now moves to new record before firing
+       OnClick event.
+     ! TOBrowse:Events_Notify() does not fire OnRClick event.
+     ! TOBrowse:Events_Notify() does not open context menu.
+     * TOBrowse:Events_Notify() now handles NM_CUSTOMDRAW directly
+       instead of calling ::Super.
+     * TOBrowse:Events_Notify() now calls ::Super instead of ::TGrid
+       to process unhandled messages.
+     * Class TOBrowseByCell no longer inherits from class TXBrowseByCell.
+     + TOBrowseByCell:AddColumn().
+     - TOBrowseByCell:DbGoTo().
+     - TOBrowseByCell:DbSkip().
+     - TOBrowseByCell:Define().
+     + TOBrowseByCell:Define2().
+     + TOBrowseByCell:DeleteAllItems().
+     + TOBrowseByCell:DeleteColumn().
+     + TOBrowseByCell:EditCell2().
+     - TOBrowseByCell:Events_Enter().
+     - TOBrowseByCell:FastUpdate().
+     + TOBrowseByCell:MoveTo() as a NIL codeblock.
+     - TOBrowseByCell:Refresh().
+     - TOBrowseByCell:RefreshData().
+     - TOBrowseByCell:ScrollUpdate().
+     + TOBrowseByCell:SetSelectedColors().
+     - TOBrowseByCell:TopBottom().
+     - TOBrowseByCell:Update().
+     - TOBrowseByCell:UpdateColors().
+     - TOBrowseByCell's handler for WM_LBUTTONDOWN and WM_RBUTTONDOWN.
+     ! TOBrowseByCell:Value() does not reset ::CurrentCol nor
+       ::nRecLastValue when new value is {0,0}.
+     + NM_CUSTOMDRAW handler to TOBrowseByCell:Events_Notify().
+     * TOBrowseByCell:DoChange() does things directly.
+     * TOBrowseByCell:SetValue() does things directly.
+
+2015-05-02 11:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/Changelog.htm
+     * Updated.
+   * ide/prgs/formedit.prg
+     + Support for SILENT, ENABLEALTA, DISABLEALTA, NOSHOWALWAYS,
+       NONEUNSELS and IGNORENONE clauses in Browse and Grid controls.
+     + Support for SILENT, ENABLEALTA, DISABLEALTA and NOSHOWALWAYS
+       in XBrowse controls.
+
+2015-05-02 01:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Previous entries.
+* ./Changelog.004
+     + Additional info to a previous entry.
+   * doc/classes.txt
+     * Updated.
+   * manual/Changelog.htm
+     * Updated.
+   * include/i_windefs.ch
+       + LVM_GETHEADER.
+   + samples/oohg/TVirtual/TVirtualField.prg
+     * Shows how to use TVirtualField class.
+   * source/h_grid.prg
+     * Format.
+     * Comments.
+     + Some T*O*D*O*S.
+     % Some code.
+     - Unneeded code.
+     + Data TGrid:lChangeBeforeEdit. When .T. the control's value is set
+       to nRow parameter before editing. Defaults to .F. for TGrid and
+       TGridMulti classes, and is forced to .T. for TGridMulti.
+     + Data TGrid:lScrollBarUsesClientArea, .F. for TGrid, TGridMulti and
+       TGridByCell classes. Scrollbars in Grid controls do no use space
+       in the control's cliente area while scrollbars in XBrowse and Browse
+       controls do. This behaviour must be taken into account to not
+       affect the location of the control's columns at the screen.
+     + Parameters lOneRow and to TGrid:EditGrid(), TGridMulti:EditGrid()
+       and TGridByCell:EditGrid().
+     + Parameter lChange to editing methods.
+       Defaults to ::lChangeBeforeEdit for TGrid and TGridMulti classes.
+       This parameters is ignored and forced to .T. in TGridByCell methods.
+     * nRow/nItem parameters in editing methods now default to
+       Max( 1, ::FirstSelectedItem ).
+     + Parameter nRow to TGrid:IsColumnReadonly() and TGrid:IsColumnWhen().
+       This parameter allows the selection of the item passed to the
+       codeblock. Previously selected row was always used.
+       Defaults to ::FirstSelectedItem.
+       If no row is selected, an empty array {} is passed.
+       All calls to this methods in TGrid, TGridMulti and TGridByCell
+       classes now use this parameter.
+     * All editing methods now check ::FirstVisibleColumn.
+     * Calls to Listview_Scroll changed by ::ScrollToLeft().
+     + Parameters nItem, nCol, lAppend, lOneRow and lChange to
+       TGrid:EditItem().
+     * Function _GetGridCellData now uses parameter lParam to obtain the
+       row and col of the just clicked cell.
+     ! Cell is wrongly positioned before entering inline edition.
+     ! Function _OOHG_TGrid_Notify2 does not detect the right column
+       when user rightclicks in a header near its upper border.
+     ! TGrid:Events_Notify() does not detect the right cell when user
+       clicks near its borders.
+     * TGrid:DeleteItem() now triggers ::DoChange() when ::lNoneUnsels is
+       .T. and ::FirstSelectedItem is 0.
+     ! TGrid:ColumnWidth() does not remove a column from ::aHiddenCols
+       when its size is changed to a non zero value.
+     ! Some methods inherited from TGrid class do not work properly with
+       MULTISELECT grids.
+     + Methods EditAllCells, EditCell, EditItem, Events and Events_Notify
+       to TGridMulti class.
+     ! Some methods inherited from TGrid class do not work properly with
+       NAVIGATEBYCELL grids.
+     + Methods AddColumn, DeleteAllItems and InsertBlank to
+       TGridByCell class.
+     - Methods ColumnHide, Events_Enter, IsColumnReadonly and IsColumnWhen
+       from TGridByCell class.
+     * TGridByCell:EditItem() now calls TGridByCell:EditGrid()
+       instead of doing nothing.
+     ! TGridByCell:Value() positions the column in the wrong place.
+     ! TGridByCell:Value() scrolls to column 1 after setting new value.
+     * When TGridByCell:Value() is called without or with an invalid
+       parameter, ::nRowPos is forced to ::FirstSelectedItem and, if
+       there's no item selected, ::nColPos is set to 0.
+     ! TGridByCell:DeleteItem() does not change control's value when
+       deleting a row that precedes the selected one.
+     - TGridByCell's handler for WM_LBUTTONDOWN and WM_RBUTTONDOWN.
+     + Ctrl+UpArrow and Ctrl+DownArrow to move the current cell of a
+       TGridByCell control to the first row and the last row in the
+       same column.
+     + TGridByCell's handler for NM_CLICK and NM_RCLICK.
+     * TGridByCell:DoChange() now uses AEqual().
+     + Function LISTVIEW_HITTEDCELL at C level.
+     + Function HEADER_HITTEST at C level.
+   * source/h_xbrowse.prg
+     * Comments.
+     % Some code.
+     + Data TXBrowse:lScrollBarUsesClientArea, .T. for TXBrowse,
+       TXBrowseByCell, TOBrowse an TOBrowseByCell.
+     + TXBrowse:AddItem() as a NIL codeblock.
+     + TXBrowse:InserItem() as a NIL codeblock.
+     * TXBrowse:Define() sets ::lChangeBeforeEdit to .T.
+     * TXBrowse:Events_Notify() now handles NM_CLICK, NM_RCLICk and
+       NM_CUSTOMDRAW directly instead of calling ::Super.
+     * TXBrowse:AppendItem() uses new parameters in ::EditItem() call.
+     + Parameter lChange to editing methods.
+     + Parameters nItem, nCol and lChange to TXBrowse:EditItem().
+       INCOMPATIBLE: the order of the parameters was changed.
+     + All calls to methods IsColumnReadonly and IsColumnWhen in TXBrowse
+       and TXBrowseByCell classes now use nRow parameter.
+     * Calls to Listview_Scroll changed by ::ScrollToLeft().
+     * Class TVirtualField now available to Harbour builds.
+     * Class TXBrowseByCell no longer inherits from class TGridByCell.
+     + TXBrowseByCell:AddColumn().
+     + TXBrowseByCell:DeleteAllItems().
+     + TXBrowseByCell:EditItem2() as a NIL codeblock.
+     - TXBrowseByCell:IsColumnReadonly()
+     - TXBrowseByCell:IsColumnWhen()
+     - TXBrowseByCell:Events_Enter()
+     + Ctrl+UpArrow and Ctrl+DownArrow to move the current cell of a
+       TXBrowseByCell control to the first row and the last row in the
+       same column.
+     + Parameter lParam in calls to function _GetGridCellData.
+     + Validation over column parameter in TXBrowseByCell:Refresh().
+     ! TXBrowseByCell:CurrentCol() positions the column in the wrong place.
+     - TXBrowseByCell's handler for WM_LBUTTONDOWN and WM_RBUTTONDOWN.
+   * source/winprint.prg
+     ! Typo in option text.
+
+2015-04-30 20:08 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+   * source/h_ipaddress.prg
+     ! Casting.
+   * source/h_windows.prg
+     + TWindow:lControlsAsProperties property added.
+       Controls accessed via WINDOW:CONTROL syntax returns direct
+       control's value instead control's object.
+       i.e.       oWnd:TextBox1 := UPPER( oWnd:TextBox2 )
+       instead of oWnd:TextBox1:Value := UPPER( oWnd:TextBox2:Value )
+     + TDynamicValues() class added.
+     + TWindow:DynamicValues method added.
+       Returns an object which allows access to controls' values
+       as properties.
+       i.e.    x := oWnd:DynamicValues() ; x:TextBox1 := UPPER( x:TextBox2 )
+   * source/h_xbrowse.prg
+     + TVirtualField class added.
+
+2015-04-25 20:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_altsyntax.htm
+     ! Typo.
+   * manual/Changelog.htm
+     * Updated.
+
+2015-04-25 20:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_altsyntax.htm
+     + Support for SILENT, ENABLEALTA, DISABLEALTA, NOSHOWALWAYS,
+       NONEUNSELS and IGNORENONE clauses.
+   * include/i_hmg_compat.htm
+     + Support for SILENT, ENABLEALTA, DISABLEALTA, NOSHOWALWAYS,
+       NONEUNSELS and IGNORENONE clauses.
+     + Support for GRID with ROWSOURCE and COLUMNFIELDS clauses.
+       ; ON SAVE clause is not supported.
+       ; DYNAMICDISPLAY clauses is not suported, use EDITCONTROLS instead.
+   * manual/Changelog.htm
+     * Updated.
+
+2015-04-25 16:19 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Previous entry.
+   * manual/Changelog.htm
+     * Updated.
+
+2015-04-25 16:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/Changelog.htm
+     * Updated.
+   * source/h_xbrowse.prg
+     * Comments.
+     ! TXBrowseByCell:EditGrid() does not work properly when :FullMove is
+       .F., the edition is exited with Left Right key or with Enter key,
+       and columns has been rearranged by the user.
+     ! TXBrowseByCell:EditGrid() does not work properly when adding a
+       new row after editing the last row.
+     ! TXBrowseByCell:GoBottom() does not honor the column order set by
+       the user.
+     % Code simplification.
+   * source/h_browse.prg
+     * Comments.
+     * Format.
+     % Code simplification.
+     * All methods of TOBrowse and TOBrowseByCell that returned
+       Nil to user now return Self.
+     * LISTVIEW_GETFIRSTITEM changed by ::FirstSelectedItem.
+     * All methods of TOBrowse and TOBrowseByCell now fully honor the
+       column order set by the user.
+     ! TOBrowse:EditItem_B() do not restore pointer in an unsynchronized
+       database when editing an existing row if ::InPlace is .F.
+
+2015-04-24 23:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Previous entry.
+   * doc/classes.txt
+     * Updated.
+   * manual/Changelog.htm
+     * Updated.
+   * source/h_grid.prg
+     + Comments.
+   * source/h_xbrowse.prg
+     * Comments.
+     * Format.
+     % Code simplification.
+     * All methods of TXBrowse, ooHGRecord and TXBrowseByCell that returned
+       Nil to user now return Self.
+     * All methods of TXBrowse and TXBrowseByCell now fully honor the
+       column order set by the user.
+     * Validations of parameters nColTo and nColFrom in TXBrowse:ToExcel()
+       and TXBrowse:ToOpenOffice().
+     ! TXBrowse:ToOpenOffice() generates a RTE when a field is defined
+       using a string.
+     ! TXBrowse:Events() generates a RTE when a char key is pressed to
+       start searching for some value in a column.
+     + Added parameter lAppend to TGrid:AppendItem().
+       Defaults to .F.
+       When .T. an item is appended even if ::AllowAppend is .F.
+     * TXBrowse():EditCell() and TXBrowse:EditAllCells() now check
+       ::FirstVisibleColumn.
+     * TXBrowse:EditAllCells() now uses ::SyncData().
+     + Parameter uReadOnly to TXBrowse:AddColumn(), TXBrowse:SetColumn()
+       and TXBrowseByCell:AddColumn().
+     ! TXBrowse:AddColumn() and TXBrowse:SetColumn() don't set edit control
+       for newly added column when FIXEDCONTROLS is .T.
+     - TXBrowseByCell:AddColumn()
+     ! TXBrowseByCell:EditGrid() don't update readonly columns in just
+       added row when edition is aborted before fully editing the row.
+     * Function _OOHG_TXBrowseByCell_Events2 no longer places the
+       selected cell at { ::ItemCount, ::ColumnCount } when a column
+       search ends without a match, instead the selected cell is set to
+       { ::ItemCount, ::SearchCol }.
+     * Function _OOHG_TXBrowseByCell_Events2 used by TXBrowseByCell:Events()
+       now fully honors the column order set by the user.
+
+2015-04-23 01:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/Changelog.htm
+     * Updated.
+   * source/h_grid.prg
+     * Format.
+     * Comments.
+     + TGrid:PriorColInOrder( nCol ), returns the number of the first
+       visible column to the left of nCol.
+     + TGrid:NextConInOrder( nCol ), returns the number of the first
+       visible column to the right of nCol.
+     + TGrid:FirstColInOrder(), returns the number of the leftmost visible
+       column.
+     + TGrid:LastColInOrder(), returns the number of the rightmost visible
+       column.
+     % Various methods now use newly added methods, in others some logical
+       conditions were changed, in others vars are initialized just before
+       referenced instead of at the top of the method.
+     ! All methods of TGrid, TGridMulti and TGridByCell that change the
+       current column now fully honor the column order set by the user and
+       skip hidden columns.
+     * All methods of TGrid, TGridMulti and TGridByCell that returned Nil
+        to user now return Self.
+     + Added parameter lAppend to TGrid:AppendItem(),
+       TGridMulti:AppendItem() and TGridByCell:AppendItem().
+       Defaults to .F.
+       When .T. an item is appended even if ::AllowAppend is .F.
+     * TGrid:AppendItem() and TGrid:AppendItem() do nothing when
+       ::lEditMode is .T. or when ::AllowAppend and lAppend are both .F.
+     + Added parameter lAppend to TGrid:EditGrid(), TGridMulti:EditGrid()
+       and TGridByCell:EditGrid().
+       Defaults to .F.
+       When .T. and ::FullMove is .T., after editing last row an item is
+       appended even if ::AllowAppend is .F.
+     + TGrid:EditGrid() and TGridMulti:EditGrid() now call ON ABORTEDIT
+       if an append is aborted.
+     + Support for single block in VALID clause to TGrid:EditItem2() and
+       TGrid:EditCell2().
+     + Parameter uReadOnly to TGrid:AddColumn() and TGrid:SetColumn().
+     ! TGrid:AddColumn() and TGrid:SetColumn() don't set edit control for
+       newly added column when FIXEDCONTROLS is .T.
+     ! TGrid:DeleteColumn() was not deleting item from ::Readonly and
+       ::aEditControls arrays.
+     + TGrid:EditAllCells() and TGridByCell:EditGrid() now call
+       ON ABORTEDIT if an append or an edit is aborted.
+     - TGridByCell:AddColumn()
+     * TGridByCell:AppendItem() does nothing when ::AllowAppend and
+       lAppend are both .F.
+     * Use ::nRowCol and ::nColPos in all methods of TGridByCell, instead
+       of using ::Value[1] and ::Value[2].
+     * TGridByCell():Right(), TGridByCell():Left(), TGridByCell:Up(),
+       TGridByCell:Down(), TGridByCell:PageUp(), TGridByCell:PageDown(),
+       TGridByCell:GoTop() and TGridByCell:GoBottom(), when current
+       ::Value is not valid or it's {0,0}, these methods try to set the
+       ::Value to something in row 1. If there are no items, the ::Value
+       is set to {0,0}.
+     * TGridByCell:PageUp(), TGridByCell:PageDown(), TGridByCell:GoTop()
+       and TGridByCell:GoBottom() now return .T. on success.
+     * TGridByCell:EditCell() ignores exit key is ::Value is not valid or
+       it's {0,0}.
+     * Default values for nRow and nCol in TGridByCell:EditCell2().
+     * Commented out the sentence after calling custom draw routine.
+       This needs more testing.
+     + Support for ALT+A in TGridByCell.
+
+2015-04-19 23:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/Changelog.htm
+     * Updated.
+   * source/h_xbrowse.prg
+     + TXBrowse():SyncData, to allow reuse of ::EditCell in TOBrowse class.
+     * Some validations in TXBrowse():EditCell are now done before
+       changing the control's value.
+     + TXBrowse():EditAllCells now checks ::AllowAppend when lAppend
+       parameter is .T.
+     % Deleted unnecessary sentence in TXBrowseByCell():EditCell.
+     + TXBrowse():EditGrid now checks ::AllowAppend when lAppend
+       parameter is .T.
+     - Some comments.
+   * source/h_browse.prg
+     + TBrowse():SyncData, to allow reuse of TXBrowse():EditCell.
+     + New parameters to TBrowse():Define.
+     + Support for SILENT, ENABLEALTA, DISABLEALTA, NOSHOWALWAYS,
+       NONEUNSELS and IGNORENONE clauses.
+     + Scrollbar's HelpId and ToolTip are changed when the control's
+       ones are changed.
+     * LISTVIEW_GETFIRSTITEM changed by ::FirstSelectedItem.
+     + Parameter lAppend to TOBrowse():PageDown.
+     * ::EditItem changed by ::AppendItem in TOBrowse():PageDown,
+       TOBrowse():Down and TOBrowse():Events_Notify.
+     % TOBrowse():Down.
+     * TOBrowse():EditAllCells now checks ::FirstVisibleColumn.
+     + _OOHG_ThisItemCellValue is set to cell's value before evaluating
+       READONLY and WHEN clauses in TOBrowse():EditAllCells.
+     * GetAltState() by GetKeyFlagState() for recognizing Alt-A.
+     - TOBrowseByCell:CurrentRow.
+     * Some comments.
+     + New parameters to TOBrowseByCell():Define.
+     + New parameters to TOBrowseByCell():Define3.
+     % TOBrowseByCell() now uses ::nRowPos and ::nColPos instead
+       of ::CurrentRow (or LISTVIEW_GETFIRSTITEM) and ::CurrentCol.
+     * Parameter Value renamed to aValue in TOBrowseByCell():Events.
+     ! Search wrap in TOBrowseByCell():Events.
+     % TOBrowseByCell():Events uses ::nColPos instead of ::CurrentCol.
+     + CTRL+LEFT ARROW to move TOBrowseByCell to leftmost column in
+       TOBrowseByCell():Events.
+     + CTRL+RIGHT ARROW to move TOBrowseByCell to rightmost column in
+       TOBrowseByCell():Events.
+     % TOBrowseByCell():Events_Enter.
+     + Support for ::lAppendOnAltA in TOBrowseByCell():Events_Notify.
+     * ::EditItem changed by ::AppendItem in TOBrowseByCell():Events_Notify.
+     + Support for parameters lRefresh and lChange in
+       TOBrowseByCell():EditCell.
+     * TOBrowseByCell():EditCell now checks for invalid column and for
+       hidden column before edition.
+     * TOBrowseByCell():EditCell no longer resets ::bPosition after
+       testing it's value.
+     ! Infinite loop in TOBrowseByCell():EditGrid caused by the reset of
+       ::bPosition in TOBrowseByCell():EditCell.
+     * TOBrowseByCell():EditItem_B now checks ::AllowAppend.
+     + Support for parameter lRefresh in TOBrowseByCell():EditGrid.
+     - Unneeded code in TOBrowseByCell():EditGrid
+     % TOBrowseByCell():PageDown.
+     * ::EditItem changed by ::AppendItem in TOBrowseByCell():PageDown.
+     % TOBrowseByCell():Down.
+     * TOBrowseByCell():Down now checks ::AllowAppend.
+     * ::EditItem changed by ::AppendItem in TOBrowseByCell():Down.
+     * TOBrowseByCell():Right now parameter lAppend defaults to .F.
+     ; Some T*O*D*O*s pending.
+   * include/i_browse.ch
+     + SILENT, ENABLEALTA, DISABLEALTA, NOSHOWALWAYS, NONEUNSELS and
+       IGNORENONE clauses.
+
+   ; NOSHOWALWAYS: hides selected items when control loses focus.
+     Defaults to .F.
+     This a style, so to change an existing control you must use function
+     WindowStyleFlag with LVS_SHOWSELALWAYS.
+   ; SILENT: mutes warning sound when trying to edit a readonly column.
+     Defaults to .F.
+     You can change this setting using DATA lSilent.
+   ; NONEUNSELS: the GRID control will clear the selected item and fire
+     ON CHANGE event when an invalid value is set.
+     Defauls to .F.
+     You can change this setting using DATA lNoneUnsels.
+     This clause is forced to .T. by BROWSE controls with NAVIGATEBYCELL
+     clause, and any change in DATA lNoneUnsels is ignored.
+   ; IGNORENONE: the GRID control ignores invalid values and the current
+     value is not changed. This is the default behaviour.
+   ; ENABLEALTA: enables use of Alt-A for appending new items.
+     This is the default behaviour.
+     You can change this setting using DATA lAppendOnAltA.
+   ; DISABLEALTA: disables use of Alt-A for appending new items.
+     Defaults to .F.
+
+2015-04-17 20:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * doc/classes.txt
+     * Updated.
+   * manual/Changelog.htm
+     * Updated.
+   * source/h_grid.prg
+     * Format.
+     * ::bPosition is set to 0 in TGrid():EditCell2, before the edition
+       process starts.
+     * Do not reset ::bPosition to 0 in TGrid():EditCell after edition.
+       It´s value is used in other methods.
+     ! TGridControl() does not set ::bPosition on OK exit.
+     ! TGridControlTextBox() does not set ::bPosition on OK exit.
+     ! TGridControlMemo() does not set ::bPosition on OK exit.
+     * Use ::bCancel in TGridControlMemo():CreateWindow.
+     ! After TGridByCell():EditCell exits keys other than Enter or Esc
+       are not honored.
+     ! In TGridByCell():EditGrid exits keys other than Enter or Esc
+       are not honored.
+   * source/h_xbrowse.prg
+     * Parameter nValue renamed to uValue in TXBrowse():Define.
+       It can be a number or an array depending on the calling class.
+     * All the code, except the related with initial ::Value asignment,
+       was moved back from TXBrowse():Define3.
+     * TXBrowse():Define3 now only sets ::Value.
+     + TXBrowse():AddColumn now checks if the number of the added column
+       is equal to the index assigned to it in the control's arrays.
+     - TXBrowseByCell():Define.
+     + TXBrowseByCell():Define3.
+     ! Wrong parameters in TXBrowseByCell():AddColumn provoke a RTE.
+     + TXBrowseByCell():AddColumn now repaints the grid when the added
+       column is located to the right of the current column.
+     * Do not reset ::bPosition to 0 in TXBrowseByCell():EditCell after
+       edition. It´s value is used in other methods.
+     ! In TXBrowseByCell():EditGrid the exit key is not honored.
+     ! In TXBRowseByCell():EditGrid exiting with Home key causes an
+       infinite loop.
+     * Function _OOHG_TXBrowseByCell_Events2 now calls
+       TXBRowseByCell():EditGrid when ::FullMove is .T.
+     ! Double click edits only one cell when ::FullMove is .T.
+
+2015-04-16 21:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/Changelog.htm
+     * Updated.
+   * include/i_xbrowse.ch
+     + NOSHOWALWAYS, SILENT, ENABLEALTA and DISABLEALTA clauses.
+   * source/h_xbrowse.prg
+     * Comments.
+     + DATA nHelpId.
+     + TXBrowse():AppendItem.
+     + TXBrowse():Define3.
+     + TXBrowse():HelpId to change scrollbar's HelpId.
+     + TXBrowse():ToolTip to change scrollbar's ToolTip.
+     + TXBrowse():Value, uses TXBRowse():MoveTo.
+     + New parameters to TXBrowse():Define.
+     * Parameter "value" renamed to "nValue" in TXBrowse():Define because
+       ASSIGN value VALUE value TYPE "N" DEFAULT 1 it's not preprocessed.
+     * Most of TXBrowse():Define's processing moved to TXBrowse():Define3.
+     ! VALUE clause at define time is not honored.
+     ! TXBrowse:MoveTo fires ON CHANGE event when To and From items are
+       the same.
+     ! TXBrowse():CurrentRow may set incorrect values into ::nRowPos.
+     + Support for ::lAppendOnAltA in TXBrowse():Events_Notify.
+     * ::EditItem changed by ::AppendItem in TXBrowse():Events_Notify.
+     * ::EditItem changed by ::AppendItem in TXBrowse():Down.
+     * ::EditItem changed by ::AppendItem in TXBrowse():PageDown.
+     % TXBrowse:GoBottom.
+     ! TXBrowse():EditItem_B does not check WHEN clause before editing.
+     ! TXBrowse():EditCell shows wrong data when editing a row that's not
+       the current one. Now, ::Value is set to the row to edit before start
+       (this also ensures that the row is refreshed before start).
+     + _OOHG_ThisItemCellValue is set to cell's value before evaluating
+       READONLY and WHEN clauses in TXBrowse():EditCell.
+     + Support for ::lSilent in TXBrowse():EditCell.
+     ! TXBrowse():EditCell does not check WHEN clause before editing.
+     ! TXBrowse():EditAllCells shows wrong data when editing a row that's
+       not the current one. Now, ::Value is set to the row to edit before
+       start (this also ensures that the row is refreshed before start).
+     + _OOHG_ThisItemCellValue is set with cell's value before evaluating
+       READONLY and WHEN clauses in TXBrowse():EditAllCells.
+     - TXBrowseByCell():AppendItem.
+     - TXBrowseByCell():CurrentRow.
+     + TXBrowseByCell():Define.
+     - TXBrowseByCell():DeleteItem.
+     + TXBrowseByCell():Down.
+     + TXBrowseByCell():MoveTo.
+     + TXBrowseByCell():Up.
+     * TXBrowseByCell():AddColumn calls ::DoChange if necessary.
+     % TXBrowseByCell():AddColumn uses ::nColPos instead of ::CurrentCol.
+     + New parameters to method TXBrowseByCell():Define2.
+     * Do not set current column to 0 in TXBrowseByCell():DeleteColumn.
+     * TXBrowseByCell():DeleteColumn calls ::DoChange if necessary.
+     * TXBrowseByCell():EditCell now checks ::FirstVisibleColumn and
+       ::lLocked, and checks that the cell is into bounds.
+     ! TXBrowseByCell():EditCell shows wrong data when editing a cell
+       that's not at the current row. Now, ::Value is set to the cell
+       to edit before start (this also ensures that the row is
+       refreshed before start).
+     * TXBrowseByCell():EditCell now resets ::bPosition before and after
+       cell edition.
+     % TXBrowseByCell():EditCell when processing left and right exits.
+     % TXBrowseByCell():EditCell now uses ::nRowCol and ::nColPos for
+       reference.
+     % TXBrowseByCell():EditCell2 now uses ::nRowCol and ::nColPos for
+       reference.
+     ! TXBrowseByCell():EditGrid shows wrong data when editing a cell
+       that's not at the current row. Now, ::Value is set to the cell
+       to edit before start (this also ensures that the row is
+       refreshed before start).
+     * TXBrowseByCell():EditGrid now stops processing if row or column
+       are not equal to or greater than 1.
+     ! TXBrowseByCell():EditGrid falls into a continous loop if none
+       of the columns is editable.
+     ! TXBrowseByCell():EditGrid shows wrong data after cell edition
+       has ended.
+     + _OOHG_ThisItemCellValue is set to cell's value before evaluating
+       READONLY and WHEN clauses in TXBrowseByCell():EditGrid.
+     * TXBrowseByCell():EditGrid now resets ::bPosition before and after
+       cell edition.
+     % TXBrowseByCell():EditGrid now uses ::nRowCol and ::nColPos for
+       reference.
+     + Support for lOneRow parameter in TXBrowseByCell():EditGrid.
+     % Function _OOHG_TXBrowseByCell_Events2 now uses ::nRowCol and
+       ::nColPos for reference.
+     * _OOHG_ThisItemCellValue is set with cell's value before evaluating
+       READONLY and WHEN in function _OOHG_TXBrowseByCell_Events2.
+     ! _OOHG_TXBrowseByCell_Events2 do not check WHEN clause before
+       starting cell's edition.
+     + CTRL+LEFT ARROW to move TGridByCell to leftmost column in
+       _OOHG_TXBrowseByCell_Events2.
+     + CTRL+RIGHT ARROW to move TGridByCell to rightmost column in
+       _OOHG_TXBrowseByCell_Events2.
+     * TXBrowseByCell():Events_Notify uses ::ColumnRow and ::ColumnCol
+       instead of ::Value to avoid triggering ON CHANGE event.
+     + Support for ::lAppendOnAltA in TXBrowseByCell():Events_Notify.
+     * ::EditItem changed by ::AppendItem in TXBrowseByCell():Events_Notify.
+     % TXBrowseByCell():Events_Notify uses ::nRowPos and ::nColPos instead
+       of ::CurrentRow and ::CurrentCol.
+     * TXBrowseByCell():GoBottom uses ::TopBottom instead of
+       ::Super:GoBottom to avoid firing ON CHANGE event twice.
+     * TXBrowseByCell():GoTop uses ::TopBottom instead of
+       ::Super:GoTop to avoid firing ON CHANGE event twice.
+     % TXBrowseByCell():IsColumnReadonly and TXBrowseByCell():IsColumWhen
+       use ::nRowPos instead of ::CurrentRow.
+     % TXBrowseByCell():Left uses ::nRowPos and ::nColPos instead
+       of ::CurrentRow and ::CurrentCol.
+     ! TXBrowseByCell():Left does not ignore hidden columns.
+     * TXBrowseByCell():Left now returns .T. on success.
+     * TXBrowseByCell():Refresh now expects an array as first parameter.
+     * TXBrowseByCell():Refresh uses ::ColumnRow and ::ColumnCol
+       instead of ::Value to avoid triggering ON CHANGE event.
+     % TXBrowseByCell():Refresh uses ::nRowPos and ::nColPos instead
+       of ::CurrentRow and ::CurrentCol.
+     % TXBrowseByCell():Right uses ::nRowPos and ::nColPos instead
+       of ::CurrentRow and ::CurrentCol.
+     ! TXBrowseByCell():Right does not ignore hidden columns.
+     * TXBrowseByCell():Right now returns .T. on success.
+     * TXBrowseByCell():Right now uses ::DbSkip() instead of ::Down to
+       avoid triggering ON CHANGE event twice.
+     * TXBrowseByCell():Value now uses ::MoveTo instead of painting.
+     * TXBrowseByCell():CurrentCol now does the painting.
+
+   ; NOSHOWALWAYS: hides selected items when control loses focus.
+     Defaults to .F.
+     This a style, so to change an existing control you must use function
+     WindowStyleFlag with LVS_SHOWSELALWAYS.
+   ; SILENT: mutes warning sound when trying to edit a readonly column.
+     Defaults to .F.
+     You can change this setting using DATA lSilent.
+   ; ENABLEALTA: enables use of Alt-A for appending new items.
+     This is the default behaviour.
+   ; DISABLEALTA: disables use of Alt-A for appending new items.
+     Defaults to .F.
+   ; XBROWSE controls, because of their design, must always have one
+     item or cell selected. That's the reason why NONEUNSELS and
+     IGNORENONE clauses can't be implemented.
+     Any change in DATA lNoneUnsels is ignored.
+
+2015-04-16 20:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/Changelog.htm
+     * Updated.
+   * include/oohg.ch
+     - Comment.
+   * include/i_window.ch
+   * include/i_controlmisc.ch
+     * All FETCH and MODIFY clauses now use xcommand instead of translate.
+     ! Compiler error at MODIFY clause because is not translated properly.
+   * source/h_grid.prg
+     + CTRL+LEFT ARROW to move TGridByCell to leftmost column.
+     + CTRL+RIGHT ARROW to move TGridByCell to rightmost column.
+     ! TGridControlMemo does not set ::bPosition on exit.
+
+2015-04-14 19:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     * TGrid():EditItem2 now fully supports fixed values and blocks in
+       When and Readonly clauses.
+   * manual/Changelog.htm
+     * Updated.
+
+2015-04-13 20:09 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * doc/classes.txt
+     * Updated.
+   * manual/Changelog.htm
+     * Updated.
+
+2015-04-13 19:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Previous entry.
+   * manual/Changelog.htm
+     * Updated.
+
+2015-04-13 18:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog.004
+     * Fixed entry.
+
+2015-04-13 18:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_checklist.prg
+     ! Missing parameters in call to TGrid:Define.
+     + New parameters in call to TGrid:Define.
+
+2015-04-13 18:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_msgbox.prg
+     ! Minimun width of MsgInfoExt's window is too small.
+
+2015-04-13 18:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Previous entry.
+   * distros/MakeDistro.bat
+     * Copy only newer files if working folder is not empty.
+   * source/h_grid.prg
+     * Methods AppendItem in TGrid, TGridMulti and TGridByCell classes
+       now return .T. if a new item was appended.
+     * TGrid():Value does nothing when new value is 0 and there's no
+       item selected.
+     * Changed prefix of numeric vars from l* to n* in
+       TGrid():HeaderSetFont.
+     ! lAppend parameter in TGridMulti():Down, TGridByCell():Right and
+       TGridByCell():Down was wrongly checked against numeric type.
+     ! TGridByCell():Right and TGridByCell():Left do not ignore hidden
+       columns.
+     * TGridByCell():Right no longer sets value to {1,1} when current
+       value is not valid, instead the command is ignored.
+     * Methods Right, Left, Up and Down of TGridByCell class now return
+       .T. if selected cell was changed.
+
+2015-04-09 17:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     * GetAltState() by GetKeyFlagState() for recognizing Alt-A.
+
+2015-04-06 23:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_grid.ch
+     + NOSHOWALWAYS, SILENT, ENABLEALTA, DISABLEALTA, NONEUNSELS
+       and IGNORENONE clauses.
+   * source/h_grid.prg
+     + DATAs lSilent, lAppendOnAltA and lNoneUnsels.
+     + New parameters to methods TGrid():Define and TGrid():Define2.
+     * Assignment of LVS_SHOWSELALWAYS style moved to PRG level.
+     * TGrid():Value honors ::lNoneUnsels.
+     * TGrid():EditCell2 honors ::lSilent.
+     + Alt-A to add new items in TGrid():Events_Notify.
+     + Method TGridMulti():DoChange.
+     + New parameters to method TGridMulti():Define.
+     ! TGridMulti():Value does not fires ON CHANGE event when selection
+       is cleared.
+     ! TGridMulti():Value fires ON CHANGE event when new value is equal
+       to current value.
+     + Function aEqual( array1, array2 ): returns .T. if the two arrays
+       have the same length and corresponding items are equal.
+     ! TGridMulti():DoChange fires ON CHANGE event when new value is
+       equal to current value.
+     + Function aEqual( array1, array2 ): returns .T. if the two arrays
+       have the same length and corresponding items are equal.
+     + New parameters to method TGridByCell():Define.
+     ! TGridByCell():Value scrolls window's content when new value is
+       not valid.
+     * TGridByCell():EditGrid and TGridByCell():EditCell now reset
+       ::bPosition before and after cell edition.
+     * InitListvie() does not sets LVS_SHOWSELALWAYS style by default.
+     * TGrid_Notify_CustomDraw() honors ::lNoneUnsels.
+
+   ; NOSHOWALWAYS: hides selected items when control loses focus.
+     Defaults to .F.
+     This a style, so to change an existing control you must use function
+     WindowStyleFlag with LVS_SHOWSELALWAYS.
+   ; SILENT: mutes warning sound when trying to edit a readonly column.
+     Defaults to .F.
+     You can change this setting using DATA lSilent.
+   ; NONEUNSELS: the GRID control will clear the selected item and fire
+     ON CHANGE event when an invalid value is set.
+     Defauls to .F.
+     You can change this setting using DATA lNoneUnsels.
+     This clause is forced to .T. by GRID controls with MULTISELECT or
+     NAVIGATEBYCELL clauses, and any change in DATA lNoneUnsels is ignored.
+   ; IGNORENONE: the GRID control ignores invalid values and the current
+     value is not changed. This is the default behaviour.
+   ; ENABLEALTA: enables use of Alt-A for appending new items.
+     Defaults to .F.
+     You can change this setting using DATA lAppendOnAltA.
+   ; DISABLEALTA: disables use of Alt-A for appending new items.
+     This is the default behaviour.
+
+2015-04-06 18:13 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog.004
+     * Fixed entry.
+
+2015-03-30 19:36 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+   * source/h_windows.prg
+     ! Casting.
+   * source/h_pdf.prg
+     ! Minimal source code alignment.
+     ! Few ::aReport[] items converted to object's properties.
+     + Added support for 2-bit, 4-bit and 8-bit BMP files.
+     ! Previous commit was support for 1-bit.
+     ! Note: 24-bit BMP files are converted from RGB to CYMK but
+       it changes image color :( .
+
+2015-03-28 09:54 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+   * source/h_pdf.prg
+     ! Removed unused variable.
+
+2015-03-27 20:30 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+   * source/h_pdf.prg
+     ! Minimal source code alignment.
+     ! Few ::aReport[] items converted to object's properties.
+     + Support for 2-bit and 24-bit .BMP files.
+     ! Note: 24-bit BMP files does change image color :( .
+
+2015-03-26 21:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Previous entry.
+   * manual/Changelog.htm
+     * Updated.
+
+2015-03-26 19:06 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_browse.prg
+     * Some format.
+     + T*O*D*O notes.
+     + Support for lOneRow to TOBrowseByCell:EditGrid.
+     ! New rows in TOBrowseByCell are edited with the values of the
+       previous last row in grid instead of empty values.
+     * Methods Right, Left, Home, End, PageUp, PageDown, Up and Down of
+       TOBrowseByCell now return .T. of .F. indicating that the requested
+       action was or was not performed.
+     ! Wrong scroll in TOBrowseByCell:CurrentCol.
+
+2015-03-24 19:06 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_browse.prg
+     ! ::DoChange() calls ON CHANGE event when workarea is closed,
+       causing RTE if a field is referenced.
+   * source/miniprint.prg
+   * source/h_ini.prg
+     ! OOHG messages do not honor SET LANGUAGE.
+     * Added support for new return value of hb_langSelect() in Harbour 3.2
+
+2015-03-20 22:32 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/Changelog.htm
+     * Updated.
+   * source/h_radio.prg
+     ! RadioGroup inside Tab disapears after setting height of Tab.
+     ! Spacing is not automatically changed when SET AUTOADJUST is ON
+       and form's width is changed.
+   * doc/how_to_configure_and_use.txt
+     * Updated (not finished yet).
+
+2015-03-19 21:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/Changelog.htm
+     * Updated.
+   * distros/hb32mingw.iss
+     + Support for multiple paths to files.
+     ! Wrong name in Windows Start Menu.
+     ! File's CVS Id.
+     ! Missing OOHG icon.
+     ! Missing license, before and after files.
+   * distros/hb30mingw.iss
+   * distros/xhbbcc.iss
+     + Support for multiple paths to files.
+     ! Wrong name in Windows Start Menu.
+   * distros/infoafter_bcc.txt
+   * distros/infoafter_mingw.txt
+     * Improved messages.
+   * manual/ooHG.hhp
+     * ooHG.chm is now builded into ide folder directly.
+   * include/i_altsyntax.ch
+     + Missing parameters in ACTIVEX, BUTTON, IMAGE, CHECKBUTTON, EDITBOX,
+       PICTURE, PROGRESSMETER, RICHEDITBOX, LABEL, IPADDRESS, GRID, ;
+       SPINNER, BROWSE and XBROWSE.
+     ! Wrong values set to some parameters due to missing parameters
+       in GRID and XBROWSE.
+     + Support for NAVIGATEBYCELL clause in BROWSE and XBROWSE.
+   * include/i_window.ch
+     + RePaint to semi-oop syntax.
+
+2015-03-18 20:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   - ./MakeDistro.bat
+   - ./MakeExclude.txt
+     ; Moved to "distros" folder.
+   + distros/.cvsignore
+   + distros/MakeDistro.bat
+     ! Predefined environment vars are not honored.
+   + distros/MakeExclude.txt
+   + distros/hb30mingw.iss
+   + distros/hb32mingw.iss
+   + distros/xhbbcc.iss
+     ; To create installer exes using INNO Setup 5.5.5
+   + distros/infoafter_bcc.txt
+   + distros/infoafter_mingw.txt
+   + distros/infobefore.txt
+   + distros/license.txt
+     ; To customize installer exes using INNO Setup 5.5.5
+   * ./compileXB.bat
+   * ide/compile.bat
+   * source/makelibXB.bat
+     * Folder for xHarbour to "xhbcc".
+
+2015-03-18 17:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ide/prgs/mgide.prg
+     ! RTE at methods GoLine, LookChanges, PosXY and NextSearch
+       of THMI class.
+   * ./MakeDistro.bat
+     ! Predefined environment vars are not honored.
+
+2015-03-17 22:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog.004
+     * Previous entry.
+   * ./MakeDistro.bat
+     + Support for xHarbour with BCC.
+   * ./MakeExclude.txt
+     + More files.
+   * ./compile.bat
+     + Support for xHarbour with BCC.
+   + ./compileXB.bat
+     * Use this file to compile using xHarbour and BCC.
+     ; Use /c switch to set environment vars to its default values.
+     ; Syntax: CompileXB /c prgfile
+   * ./compile_bcc.bat
+     ! Response file.
+   * ./compile_MINGW.BAT
+     + libmsimg32.a to all builds.
+     + libiphlpapi.a to optional libraries (use with libsocket.a).
+   + ide/compile.bat
+     * To compile the IDE using xHarbour and BCC.
+   + ide/prgs/mgide.prg
+     ! Compilation under xHarbour.
+     + (x)Harbour and C Compiler versions to About window.
+   * manual/Changelog.htm
+     * Updated.
+   + resources/CompileRes_mingw.bat
+     * Compiles OOHG's resource file for MinGW.
+   + resources/CompileRes_bcc.bat
+     * Compiles OOHG's resource file for BCC.
+   * resources/CompileRes.bat
+     * Now calls CompileRes_mingw.bat and CompileRes_bcc.bat.
+   * resources/WindowsXP64.Manifest
+     + requestedExecutionLevel.
+   * resources/oohg.rc
+     ! Manifest selection for 64 bits MinGW.
+   * resources/oohg_bcc.rc
+     + Manifest selection for 64 bits MinGW.
+   * source/h_msgbox.prg
+     ! BCC warning at _Dummy().
+   * source/h_print.prg
+     ! BCC warning at some defines.
+   * source/h_tree.prg
+     ! BCC warning at TTREE_FONTCOLOR()
+   * source/makelib.bat
+     + Support for xHarbour with BCC.
+   + source/makelibXB.bat
+     * Builds OOHG's libraries for xHarbour and BCC via makelib_bcc.bat
+   * source/makelib_bcc.bat
+     * Output is captured to resul.txt and showed at the end.
+   * source/winprint.prg
+     ! BCC warning at some defines.
+
+2015-03-14 12:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   + ./Changelog.004
+   * ./Changelog
+     * Renamed to Changelog.004 and started a new one.

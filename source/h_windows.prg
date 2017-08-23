@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.266 2016-12-18 23:11:02 fyurisich Exp $
+ * $Id: h_windows.prg,v 1.267 2017-08-23 00:11:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -654,6 +654,13 @@ HB_FUNC_STATIC( TWINDOW_ACCEPTFILES )
    hb_retl( ( GetWindowLong( oSelf->hWnd, GWL_EXSTYLE ) & WS_EX_ACCEPTFILES ) == WS_EX_ACCEPTFILES );
 }
 
+static UINT _OOHG_ListBoxDragNotification = 0;
+
+HB_FUNC( _GETDDLMESSAGE )
+{
+   _OOHG_ListBoxDragNotification = (UINT) RegisterWindowMessage( DRAGLISTMSGSTRING );
+}
+
 HB_FUNC_STATIC( TWINDOW_EVENTS )
 {
    HWND hWnd      = HWNDparam( 1 );
@@ -941,26 +948,35 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
          break;
 
       default:
-         _OOHG_Send( pSelf, s_WndProc );
-         hb_vmSend( 0 );
-         if( hb_param( -1, HB_IT_BLOCK ) )
+         if( message == _OOHG_ListBoxDragNotification )
          {
-#ifdef __XHARBOUR__
-            hb_vmPushSymbol( &hb_symEval );
-#else
-            hb_vmPushEvalSym();
-#endif
-            hb_vmPush( hb_param( -1, HB_IT_BLOCK ) );
-            HWNDpush( hWnd );
-            hb_vmPushLong( message );
-            hb_vmPushLong( wParam );
+            _OOHG_Send( GetControlObjectByHandle( ( (LPDRAGLISTINFO) lParam )->hWnd ), s_Events_Drag );
             hb_vmPushLong( lParam );
-            hb_vmPush( pSelf );
-            hb_vmDo( 5 );
+            hb_vmSend( 1 );
          }
          else
          {
-            hb_ret();
+            _OOHG_Send( pSelf, s_WndProc );
+            hb_vmSend( 0 );
+            if( hb_param( -1, HB_IT_BLOCK ) )
+            {
+#ifdef __XHARBOUR__
+               hb_vmPushSymbol( &hb_symEval );
+#else
+               hb_vmPushEvalSym();
+#endif
+               hb_vmPush( hb_param( -1, HB_IT_BLOCK ) );
+               HWNDpush( hWnd );
+               hb_vmPushLong( message );
+               hb_vmPushLong( wParam );
+               hb_vmPushLong( lParam );
+               hb_vmPush( pSelf );
+               hb_vmDo( 5 );
+            }
+            else
+            {
+               hb_ret();
+            }
          }
          break;
    }

@@ -1,5 +1,5 @@
 /*
- * $Id: i_listbox.ch,v 1.15 2017-08-18 23:41:26 fyurisich Exp $
+ * $Id: i_listbox.ch,v 1.16 2017-08-23 00:10:49 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -97,6 +97,7 @@ STANDARD VERSION
       [ <novscroll: NOVSCROLL> ] ;
       [ <multicolumn: MULTICOLUMN> [ COLUMNWIDTH <nColWidth> ] ] ;
       [ <multitab : MULTITAB> [ TABSWIDTH <aWidth> ] ] ;
+      [ <dragitems : DRAGITEMS> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( ;
             IIF( <.multiselect.>, TListMulti(), TList() ), [ <subclass>() ] ): ;
@@ -107,7 +108,7 @@ STANDARD VERSION
             <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
             <backcolor>, <fontcolor>, <.rtl.>, <.disabled.>, <{enter}>, ;
             <aImage>, <textheight>, <.fit.>, <.novscroll.>, <.multicolumn.>, ;
-            <nColWidth>, <.multitab.>, <aWidth> )
+            <nColWidth>, <.multitab.>, <aWidth>, <.dragitems.> )
 
 /*---------------------------------------------------------------------------
 SPLITBOX VERSION
@@ -148,6 +149,7 @@ SPLITBOX VERSION
       [ <novscroll: NOVSCROLL> ] ;
       [ <multicolumn: MULTICOLUMN> [ COLUMNWIDTH <nColWidth> ] ] ;
       [ <multitab : MULTITAB> [ TABSWIDTH <aWidth> ] ] ;
+      [ <dragitems : DRAGITEMS> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( ;
             IIF( <.multiselect.>, TListMulti(), TList() ), [ <subclass>() ] ): ;
@@ -158,4 +160,4 @@ SPLITBOX VERSION
             <.italic.>, <.underline.>, <.strikeout.>, <backcolor>, ;
             <fontcolor>, <.rtl.>, <.disabled.>, <{enter}>, ;
             <aImage>, <textheight>, <.fit.>, <.novscroll.>, <.multicolumn.>, ;
-            <nColWidth>, <.multitab.>, <aWidth> )
+            <nColWidth>, <.multitab.>, <aWidth>, <.dragitems.> )
