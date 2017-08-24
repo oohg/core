@@ -1,14 +1,18 @@
 #
-# $Id: oohg.hbc,v 1.6 2017-08-11 23:17:46 fyurisich Exp $
+# $Id: oohg.hbc,v 1.7 2017-08-24 22:29:19 fyurisich Exp $
 #
 
 # oohg paths
 {win}incpaths=include
 
-# c compiler will search this dir for OOHG's libs
+# c compiler will search this folder for OOHG's libs
 {win}libpaths=${HG_ROOT}\${LIB_GUI}
 
-# add app dir to search for additional include files
+# add harbour contrib folder to search for additional include files
+{win}incpaths=${HG_HRB}\contrib\hbzebra
+{win}incpaths=${HG_HRB}\contrib\hbhpdf
+
+# add app folder to search for additional include files
 {win}incpaths=${hb_curdir}
 
 # app + oohg resources
@@ -24,7 +28,7 @@
 libs=hbprinter miniprint bostaurus
 
 # harbour contribs
-{win}libs=hbct hbmisc hbtip hbziparc hbmzip minizip hbwin xhb hbzebra
+{win}libs=hbct hbmisc hbtip hbziparc hbmzip minizip hbwin xhb hbzebra hbhpdf libhpdf png
 
 # optional libs for HB 3.0
 #{win}libs=socket mysqldll dll hbmysql rddleto

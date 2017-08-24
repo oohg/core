@@ -1,5 +1,5 @@
 /*
- * $Id: h_msgbox.prg,v 1.25 2016-10-22 16:23:55 fyurisich Exp $
+ * $Id: h_msgbox.prg,v 1.26 2017-08-24 22:29:19 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -63,11 +63,24 @@
 #include 'oohg.ch'
 #include 'i_windefs.ch'
 
+static _OOHG_AutoTypeNoSpaces := .F.
 static _OOHG_OneItemPerLine := .F.
 static _OOHG_MsgDefaultMessage := ''
 static _OOHG_MsgDefaultTitle := ''
 static _OOHG_MsgDefaultMode := Nil
-// Nil = MB_SYSTEMMODAL, other values MB_APPLMODAL and MB_TASKMODAL
+// Nil equals MB_SYSTEMMODAL, other valid values are MB_APPLMODAL and MB_TASKMODAL
+// See https://msdn.microsoft.com/en-us/library/windows/desktop/ms645505(v=vs.85).aspx
+
+
+*------------------------------------------------------------------------------*
+Function SetAutoTypeNoSpaces( lSet )
+*------------------------------------------------------------------------------*
+
+   IF HB_IsLogical( lSet )
+      _OOHG_AutoTypeNoSpaces := lSet
+   ENDIF
+
+Return _OOHG_AutoTypeNoSpaces
 
 
 *------------------------------------------------------------------------------*
@@ -335,7 +348,7 @@ Return Nil
 Function AutoMsgInfoExt( uInfo, cTitulo, nSecs )
 *------------------------------------------------------------------------------*
 
-   MsgInfoExt( autoType( uInfo ), cTitulo, Nsecs )
+   MsgInfoExt( AutoType( uInfo ), cTitulo, Nsecs )
 
 Return nil
 
@@ -347,7 +360,7 @@ Function AutoMsgBox( uMessage, cTitle, nMode )
    DEFAULT cTitle TO _OOHG_MsgDefaultTitle
    DEFAULT nMode TO _OOHG_MsgDefaultMode
 
-   uMessage :=  autoType( uMessage )
+   uMessage :=  AutoType( uMessage )
    c_msgbox( uMessage, cTitle, nMode )
 
 Return Nil
@@ -360,7 +373,7 @@ Function AutoMsgExclamation( uMessage, cTitle, nMode )
    DEFAULT cTitle TO _OOHG_MsgDefaultTitle
    DEFAULT nMode TO _OOHG_MsgDefaultMode
  
-   uMessage := autoType( uMessage )
+   uMessage := AutoType( uMessage )
    c_msgexclamation( uMessage, cTitle, nMode )
 
 Return Nil
@@ -373,7 +386,7 @@ Function AutoMsgStop( uMessage, cTitle, nMode )
    DEFAULT cTitle TO _OOHG_MsgDefaultTitle
    DEFAULT nMode TO _OOHG_MsgDefaultMode
 
-   uMessage := autoType( uMessage )
+   uMessage := AutoType( uMessage )
    c_msgstop( uMessage, cTitle, nMode )
 
 Return Nil
@@ -386,7 +399,7 @@ Function AutoMsgInfo( uMessage, cTitle, nMode )
    DEFAULT cTitle TO _OOHG_MsgDefaultTitle
    DEFAULT nMode TO _OOHG_MsgDefaultMode
 
-   uMessage := autoType( uMessage )
+   uMessage := AutoType( uMessage )
    c_msginfo( uMessage, cTitle, nMode )
 
 Return Nil
@@ -401,31 +414,54 @@ Local cMessage, cType, l, i
 
    do case
    case cType $ "CNLDM"
-      cMessage := transform( Message, "@" ) + "   "
+      cMessage := transform( Message, "@" ) + iif( _OOHG_AutoTypeNoSpaces, "", "   " )
    case cType = "O"
-      cMessage := Message:ClassName() + " :Object:   "
+      cMessage := Message:ClassName() + " :Object:" + iif( _OOHG_AutoTypeNoSpaces, "", "   " )
    case cType = "A"
       l := len( Message )
       cMessage := ""
       for i := 1 to l
          if _OOHG_OneItemPerLine
-            cMessage := cMessage + iif( i = l, autoType( Message[ i ] ), autoType( Message[ i ] ) + chr( 13 ) + chr( 10 ) )
+            cMessage := cMessage + iif( i = l, AutoType( Message[ i ] ), AutoType( Message[ i ] ) + iif( _OOHG_AutoTypeNoSpaces, "", "   " ) + chr( 13 ) + chr( 10 ) )
          else
-            cMessage := cMessage + iif( i = l, autoType( Message[ i ] ) + chr( 13 ) + chr( 10 ), autoType( Message[ i ] ) + "   " )
+            cMessage := cMessage + iif( i = l, AutoType( Message[ i ] ) + chr( 13 ) + chr( 10 ), AutoType( Message[ i ] ) + iif( _OOHG_AutoTypeNoSpaces, "", "   " ) )
          endif
       next i
    case cType = "B"
-      cMessage := "{|| Codeblock }   "
+      cMessage := "{|| Codeblock }" + iif( _OOHG_AutoTypeNoSpaces, "", "   " )
    case cType = "H"
-      cMessage := ":Hash:   "
+      cMessage := ":Hash:" + iif( _OOHG_AutoTypeNoSpaces, "", "   " )
    case cType = "P"
       #ifdef __XHARBOUR__
-         cMessage :=  ltrim( Hb_ValToStr( Message )) + " HexToNum()=> " + ltrim( str( HexToNum( substr( Hb_ValToStr( Message ), 3 ) ) ) )
+         cMessage :=  ltrim( Hb_ValToStr( Message )) + " HexToNum()=> " + ltrim( str( HexToNum( substr( Hb_ValToStr( Message ), 3 ) ) ) ) + iif( _OOHG_AutoTypeNoSpaces, "", "   " )
       #else
-         cMessage :=  ltrim( Hb_ValToStr( Message )) + " Hb_HexToNum()=> " + ltrim( str( Hb_HexToNum( substr( Hb_ValToStr( Message ), 3 ) ) ) )
+         cMessage :=  ltrim( Hb_ValToStr( Message )) + " Hb_HexToNum()=> " + ltrim( str( Hb_HexToNum( substr( Hb_ValToStr( Message ), 3 ) ) ) ) + iif( _OOHG_AutoTypeNoSpaces, "", "   " )
       #endif
    otherwise
-      cMessage := "<NIL>   "
+      cMessage := "<NIL>" + iif( _OOHG_AutoTypeNoSpaces, "", "   " )
    endcase
 
 Return cMessage
+
+
+*------------------------------------------------------------------------------*
+Function _MsgBox( Message, Title, Style, Icon, SysModal, TopMost )
+*------------------------------------------------------------------------------*
+Local cMessage
+
+   DEFAULT Message TO _OOHG_MsgDefaultMessage
+   DEFAULT Title TO _OOHG_MsgDefaultTitle
+
+   cMessage := AutoType( Message )
+
+   if ! HB_IsLogical( SysModal ) .OR. SysModal
+      Style += MB_SYSTEMMODAL
+   else
+       Style += MB_APPLMODAL
+   endif
+
+   if ! HB_IsLogical( TopMost ) .OR. TopMost
+      Style += MB_TOPMOST
+   endif
+
+Return MessageBoxIndirect( Nil, cMessage, Title, Style, Icon )

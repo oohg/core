@@ -1,11 +1,28 @@
 /*
- * $Id: ChangeLog.txt,v 1.3 2017-08-24 01:29:08 fyurisich Exp $
+ * $Id: ChangeLog.txt,v 1.4 2017-08-24 22:29:19 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2017-08-24 19:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./compile_MINGW.BAT
+     + Libs hbhpdf, libhbhpf y png.
+   * ./oohg.hbc
+     + Libs hbhpdf, libhbhpf y png.
+     + Search path for hbzebra and hbhpdf.
+   * include/i_pseudofunc.ch
+     + MsgAlert.
+   * include/i_windefs.ch
+     + MB_TOPMOST constant.
+   * source/h_msgbox.prg
+     + Function SetAutoTypeNoSpaces( lSet ).
+     + Some format.
+     * Right padding is optional in function AutoType.
+     + Function _MsgBox( Message, Title, Style, Icon, SysModal, TopMost )
+       for compatibility with HMG Extended.
 
 2017-08-23 22:29 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt

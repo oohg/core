@@ -1,5 +1,5 @@
 /*
- * $Id: i_pseudofunc.ch,v 1.9 2017-08-18 23:41:26 fyurisich Exp $
+ * $Id: i_pseudofunc.ch,v 1.10 2017-08-24 22:29:19 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -104,3 +104,7 @@
 #xtranslate ISVISTAORLATER() ;
    => ;
 	   OSISWINVISTAORLATER()
+
+#xtranslate MsgAlert( <c>, <t> ) ;
+   => ;
+      MsgExclamation( <c>, <t> )

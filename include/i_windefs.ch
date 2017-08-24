@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.77 2017-08-23 00:10:49 fyurisich Exp $
+ * $Id: i_windefs.ch,v 1.78 2017-08-24 22:29:19 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -900,6 +900,7 @@ MESSAGEBOX FUNCTIONS PARAMETERS
 #define MB_APPLMODAL                  0
 #define MB_SYSTEMMODAL                4096
 #define MB_TASKMODAL                  8192
+#define MB_TOPMOST                    262144
 
 /*---------------------------------------------------------------------------
 STATUSBAR CONTROL
