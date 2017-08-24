@@ -1,5 +1,5 @@
 /*
- * $Id: h_application.prg,v 1.7 2017-07-21 00:35:20 fyurisich Exp $
+ * $Id: h_application.prg,v 1.8 2017-08-24 01:29:09 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -69,20 +69,20 @@
 
 
 CLASS TApplication
-   DATA ArgC         INIT HB_ArgC()
-   DATA Args         INIT GetCommandLineArgs()
-   DATA ExeName      INIT GetProgramFileName()
+   DATA ArgC         INIT HB_ArgC()            READONLY
+   DATA Args         INIT GetCommandLineArgs() READONLY
+   DATA ExeName      INIT GetProgramFileName() READONLY
 
    METHOD BackColor  SETGET
    METHOD Col        SETGET
    METHOD Cursor     SETGET
    METHOD Drive      BLOCK { |Self| Left( ::ExeName, 1 ) }
-   METHOD Icon       SETGET
-   METHOD MainName   BLOCK { || If( HB_IsObject( _OOHG_Main ), _OOHG_Main:Name, Nil ) }
    METHOD FormObject BLOCK { || _OOHG_Main }
    METHOD Handle     BLOCK { || If( HB_IsObject( _OOHG_Main ), _OOHG_Main:hWnd, Nil ) }
    METHOD Height     SETGET
    METHOD HelpButton SETGET
+   METHOD Icon       SETGET
+   METHOD MainName   BLOCK { || If( HB_IsObject( _OOHG_Main ), _OOHG_Main:Name, Nil ) }
    METHOD Name       BLOCK { |Self| Substr( ::ExeName, RAt( '\', ::ExeName ) + 1 ) }
    METHOD Path       BLOCK { |Self| Left( ::ExeName, RAt( '\', ::ExeName ) - 1 ) }
    METHOD Row        SETGET

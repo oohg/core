@@ -1,11 +1,47 @@
 /*
- * $Id: ChangeLog.txt,v 1.2 2017-08-23 01:56:47 fyurisich Exp $
+ * $Id: ChangeLog.txt,v 1.3 2017-08-24 01:29:08 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2017-08-23 22:29 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * doc/classes.txt
+   * include/i_app.ch
+     + Alternative syntax for FormObject and MainName
+   + manual/LICENSE.HTM
+     ; A copy of ./LICENSE.txt
+   + manual/TAPPLICATION.HTM
+     ; Basic doc for TApplication class.
+   * manual/ACTIVEX.HTM
+   * manual/ANIGIF.HTM
+   * manual/ANIMATEBOX.HTM
+   * manual/BROWSE.HTM
+   * manual/CLASSES.HTM
+   * manual/Changelog.htm
+   * manual/DATEPICKER.HTM
+   * manual/DO_REPORT.HTM
+   * manual/DRAW_IN_WINDOW.HTM
+   * manual/EDITBOX.HTM
+   * manual/EDIT_EXTENDED.HTM
+   * manual/EDIT_WORKAREA.HTM
+   * manual/OVERVIEW.HTM
+   * manual/TPRINT.HTM
+   * manual/TREE.HTM
+   * manual/UNCOMPRESS.HTM
+   * manual/WAVE.HTM
+   * manual/WINDOW.HTM
+     * Updated links.
+     * Format.
+   * manual/ooHG.hhc
+   * manual/ooHG.hhp
+     + Added new pages.
+     * Changed layout.
+   * source/h_application.prg
+     * Class datas are now readonly.
+     * Format.
 
 2017-08-22 22:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * manual/Changelog.htm

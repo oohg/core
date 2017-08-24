@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.108 2017-08-23 00:10:48 fyurisich Exp $
+ * $Id: classes.txt,v 1.109 2017-08-24 01:29:08 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -293,12 +293,12 @@ CLASS TAPPLICATION
    METHOD COL                     SETGET
    METHOD CURSOR                  SETGET
    METHOD DRIVE
-   METHOD ICON
-   METHOD MAINNAME
    METHOD FORMOBJECT
    METHOD HANDLE
    METHOD HEIGHT                  SETGET
    METHOD HELPBUTTON              SETGET
+   METHOD ICON
+   METHOD MAINNAME
    METHOD NAME
    METHOD PATH
    METHOD ROW                     SETGET

@@ -1,160 +1,71 @@
 <!--
-$Id: TPRINT.HTM,v 1.7 2016-05-22 23:52:47 fyurisich Exp $
+$Id: TPRINT.HTM,v 1.8 2017-08-24 01:29:09 fyurisich Exp $
 -->
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=Windows-1252" />
-<title>TPRINT</title>
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv=Content-Type content="text/html; charset=Windows-1252">
 
+      <title>TPRINT CLASS</title>
 
-<style>
-html {
-	overflow-y:scroll;
-}
+      <style>
+         html { overflow-y: scroll; }
+         body { padding: 0px; margin: 0px; overflow: auto; background-color: #FFFFFF; }
+         #winchm_template_navigation { margin-top: 0px; margin-left: 0px; margin-bottom: 0px; margin-right: 0px;
+           padding-top: 5px; padding-left: 5px; padding-bottom: 5px; padding-right: 5px;
+           font-family: arial, helvetica, sans-serif; font-size: 10px; font-style: normal; font-weight: normal;
+           color: #626262; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #DBDBDB;
+           background-color: #E2EDFA; width: auto; }
+         #winchm_template_button { float: right; top: -7px; position: relative; text-align: right; right: -5px;
+           height: auto; }
+         #winchm_template_title { font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif; font-weight: bold;
+            font-size: 18px; color: 353535; margin-top: 0px; margin-left: 0px; margin-bottom: 0px; margin-right: 0px;
+            padding-top: 10px; padding-left: 5px; padding-bottom: 10px; padding-right: 10px; border-bottom-style: solid;
+            border-bottom-width: 1px; border-bottom-color: #C7C7C7; width: auto; background-color: #C4DBF4;
+            text-align: left; }
+         #winchm_template_content { padding: 0px; margin-top: 15px; margin-left: 15px; margin-bottom: 15px;
+            margin-right: 15px; width: auto !important; width: 100%; }
+         #winchm_template_footer { border-width: 1px; border-color: #c0c0c0; border-top-style: solid; margin-top: 0px;
+            margin-left: 15px; margin-bottom: 5px; margin-right: 15px; padding-top: 6px; padding-left: 0px;
+            padding-bottom: 20px; padding-right: 0px; font-family: arial, helvetica, sans-serif; font-size: 9px;
+            color: #909090; text-align: left; width: auto; }
+         #winchm_template_navigation a:link { text-decoration: none; color: #0000ff }
+         #winchm_template_navigation a:visited { text-decoration: none; color: #0000ff }
+         #winchm_template_navigation a:active { text-decoration: none; color: #0000ff }
+         #winchm_template_navigation a:hover {text-decoration: none; color: #0000ff }
+         a:link { text-decoration: underline; color:#0033cc }
+         a:visited { text-decoration: underline; color: #0033cc }
+         a:active { text-decoration: underline; color: #0033cc }
+         a:hover { text-decoration: underline;color: #ff0000 }
+         @media print { #winchm_template_button{ visibility:hidden; } }
+      </style>
+   </head>
 
-body {
-	padding: 0px;
-	margin: 0px;
-	overflow: auto;
-	background-color: #FFFFFF;
-}
-
-#winchm_template_navigation{
-	margin-top: 0px;
-	margin-left: 0px;
-	margin-bottom: 0px;
-	margin-right: 0px;
-
-	padding-top: 5px;
-	padding-left: 5px;
-	padding-bottom: 5px;
-	padding-right: 5px;
-
-	font-family: arial, helvetica, sans-serif;
-	font-size: 10px;
-	font-style: normal;
-	font-weight: normal;
-	color: #626262;
-
-	border-bottom-style: solid;
-	border-bottom-width: 1px;
-	border-bottom-color: #DBDBDB;
-
-	background-color: #E2EDFA;
-	width: auto;
-}
-
-#winchm_template_button{
-	float: right;
-	top: -7px;
-	position: relative;
-	text-align: right;
-	right: -5px;
-	height: auto;
-}
-
-#winchm_template_title{
-	font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
-	font-weight: bold;
-	font-size: 18px;
-	color: 353535;
-
-	margin-top: 0px;
-	margin-left: 0px;
-	margin-bottom: 0px;
-	margin-right: 0px;
-
-	padding-top: 10px;
-	padding-left: 5px;
-	padding-bottom: 10px;
-	padding-right: 10px;
-
-	border-bottom-style: solid;
-	border-bottom-width: 1px;
-	border-bottom-color: #C7C7C7;
-
-	width: auto;
-	background-color: #C4DBF4;
-	text-align: left;
-}
-
-#winchm_template_content{
-	padding: 0px;
-	margin-top: 15px;
-	margin-left: 15px;
-	margin-bottom: 15px;
-	margin-right: 15px;
-
-	width: auto  !important;
-	width: 100%;
-}
-
-#winchm_template_footer{
-	border-width: 1px;
-	border-color: #c0c0c0;
-	border-top-style: solid;
-
-	margin-top: 0px;
-	margin-left: 15px;
-	margin-bottom: 5px;
-	margin-right: 15px;
-
-	padding-top: 6px;
-	padding-left: 0px;
-	padding-bottom: 20px;
-	padding-right: 0px;
-
-	font-family: arial, helvetica, sans-serif;
-	font-size: 9px;
-	color: #909090;
-
-	text-align: left;
-	width: auto;
-}
-
-#winchm_template_navigation a:link	{text-decoration: none;color: #0000ff}
-#winchm_template_navigation a:visited  {text-decoration: none; color: #0000ff}
-#winchm_template_navigation a:active {text-decoration: none; color: #0000ff}
-#winchm_template_navigation a:hover {text-decoration: none;color: #0000ff}
-
-a:link	{text-decoration: underline; color:#0033cc}
-a:visited  {text-decoration: underline; color: #0033cc}
-a:active {text-decoration: underline; color: #0033cc }
-a:hover {text-decoration: underline;color: #ff0000;}
-
-@media print
-{
-#winchm_template_button{
-visibility:hidden;
-}
-}
-</style>
-</head>
-
-<body>
-
-<div id="winchm_template_title">
-<div id="winchm_template_button"><A href="CLASSES.HTM" title="Previous topic"><img id="winchm_template_prev" alt="Previous topic" src="template4/btn_prev_n.gif" border="0"></a><A href="LIBRARIES.HTM" title="Next topic"><img id="winchm_template_next" alt="Next topic" src="template4/btn_next_n.gif" border="0"></a></div>
-TPRINT CLASS</div>
-<div id="winchm_template_navigation">Help &gt;
-Classes &gt; </div>
-<div id="winchm_template_content">
-
-<div class=Section1>
+   <body>
+      <div id="winchm_template_title">
+         <div id="winchm_template_button">
+            <A href="TAPPLICATION.HTM" title="Previous topic">
+               <img id="winchm_template_prev" alt="Previous topic" src="template4/btn_prev_n.gif" border="0"></A>
+            <A href="LIBRARIES.HTM" title="Next topic">
+               <img id="winchm_template_next" alt="Next topic" src="template4/btn_next_n.gif" border="0"></A>
+         </div>TPRINT CLASS
+      </div>
+      <div id="winchm_template_navigation">Help &gt; Classes &gt;
+      </div>
+      <div id="winchm_template_content">
+         <div class=Section1>
 
 <PRE>
 <span style='color:darkgreen'><b>
 ///////////////////////////////////////////////////////////////////////////////
-// TPRINT Class
+// TPRINT CLASS
 ///////////////////////////////////////////////////////////////////////////////
 </b></span>
-
 This class is a wrapper for different modes of printing a report or
 exporting it to a file.
 
-<p><u>How to use it</u>:
+<u>How to use it</u>:
 
 The general procedure to use this class is:
 
@@ -175,7 +86,7 @@ The general procedure to use this class is:
     See .\samples\oohg\printtest.prg for a functional sample.
     Use &quot;compile MainDemoOop&quot; to build and test it.
 
-<p><u>How to instantiate an object</u>:
+<u>How to instantiate an object</u>:
 
 <b>oTPrintObject := TPRINT( cMode )</b>
 
@@ -212,7 +123,7 @@ The general procedure to use this class is:
     Once the TRINT object is created, _OOHG_PrintLibrary is set to the
     selected mode.
 
-<p><u>Main methods</u>:
+<u>Main methods</u>:
 
 <b>::Init()</b>
 
@@ -346,7 +257,7 @@ The general procedure to use this class is:
 
   Releases the TPRINT object and all allocated resources.
 
-<p><u>Data print methods</u>:
+<u>Data print methods</u>:
 
 <b>::PrintData( nLin, nCol, uData, cFont, nSize, lBold, aColor, ;
              cAlign, nLen, lItalic, nAngle, lUnder, lStrike, nWidth )</b>
@@ -824,7 +735,7 @@ The general procedure to use this class is:
     nWidth      = width of each bar. Unit: mm. Defaults to 0.495.
     nHeight     = height of each bar. Unit: mm. Defaults to 15.
 
-<p><u>Other methods</u>:
+<u>Other methods</u>:
 
 <b>::CondenDos()</b>
 
@@ -1032,7 +943,7 @@ The general procedure to use this class is:
 
   Gets the version number of the TPRINT library.
 
-<p><u>Datas</u>:
+<u>Datas</u>:
 
    All the datas are READONLY.
 
@@ -1080,16 +991,17 @@ The general procedure to use this class is:
    <b>::nUnitsLin</b>         1
    <b>::nvFij</b>             ( 12 / 1.65 )
    <b>::nwPen</b>             0.1                                  pen width in MM, do not exceed 1
-
 </PRE>
-</span>
 
-</div>
-<div id="winchm_template_footer"><FONT color=#808080
-size=1>Copyright © 2013-2016 ooHG Development Team - </FONT><A
-href="https://sourceforge.net/projects/oohg/" target="_blank"><FONT
-size=1>https://sourceforge.net/projects/oohg/</FONT></A>
-     </div>
+         </div>
+      </div>
+      <div id="winchm_template_footer">
+         <FONT color=#808080 size=1>Copyright © 2013-2016 ooHG Development Team -
+         </FONT>
+         <A href="https://sourceforge.net/projects/oohg/" target="_blank">
+            <FONT size=1>https://sourceforge.net/projects/oohg/
+            </FONT></A>
+      </div>
+   </body>
 
-</body>
 </html>

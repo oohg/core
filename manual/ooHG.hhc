@@ -18,12 +18,53 @@
 		<param name="ImageNumber" value="11">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="Changelog">
+		<param name="Name" value="Log of Changes">
 		<param name="Local" value="Changelog.htm">
+		<param name="ImageNumber" value="11">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="Controls">
+		<param name="Name" value="License">
+		<param name="Local" value="LICENSE.HTM">
+		<param name="ImageNumber" value="11">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Commands">
 		<param name="ImageNumber" value="1">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="DO REPORT">
+			<param name="Local" value="DO_REPORT.HTM">
+			<param name="ImageNumber" value="11">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="DRAW IN WINDOW">
+			<param name="Local" value="DRAW_IN_WINDOW.HTM">
+			<param name="ImageNumber" value="11">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="EDIT EXTENDED">
+			<param name="Local" value="EDIT_EXTENDED.HTM">
+			<param name="ImageNumber" value="11">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="EDIT WORKAREA">
+			<param name="Local" value="EDIT_WORKAREA.HTM">
+			<param name="ImageNumber" value="11">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="UNCOMPRESS">
+			<param name="Local" value="UNCOMPRESS.HTM">
+			<param name="ImageNumber" value="11">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="WAVE">
+			<param name="Local" value="WAVE.HTM">
+			<param name="ImageNumber" value="11">
+			</OBJECT>
+	</UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Controls">
 		</OBJECT>
 	<UL>
 		<LI> <OBJECT type="text/sitemap">
@@ -74,26 +115,6 @@
 		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="DATEPICKER">
 			<param name="Local" value="DATEPICKER.HTM">
-			<param name="ImageNumber" value="11">
-			</OBJECT>
-		<LI> <OBJECT type="text/sitemap">
-			<param name="Name" value="DO REPORT">
-			<param name="Local" value="DO_REPORT.HTM">
-			<param name="ImageNumber" value="11">
-			</OBJECT>
-		<LI> <OBJECT type="text/sitemap">
-			<param name="Name" value="DRAW IN WINDOW">
-			<param name="Local" value="DRAW_IN_WINDOW.HTM">
-			<param name="ImageNumber" value="11">
-			</OBJECT>
-		<LI> <OBJECT type="text/sitemap">
-			<param name="Name" value="EDIT EXTENDED">
-			<param name="Local" value="EDIT_EXTENDED.HTM">
-			<param name="ImageNumber" value="11">
-			</OBJECT>
-		<LI> <OBJECT type="text/sitemap">
-			<param name="Name" value="EDIT WORKAREA">
-			<param name="Local" value="EDIT_WORKAREA.HTM">
 			<param name="ImageNumber" value="11">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
@@ -242,16 +263,6 @@
 			<param name="ImageNumber" value="11">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
-			<param name="Name" value="UNCOMPRESS">
-			<param name="Local" value="UNCOMPRESS.HTM">
-			<param name="ImageNumber" value="11">
-			</OBJECT>
-		<LI> <OBJECT type="text/sitemap">
-			<param name="Name" value="WAVE">
-			<param name="Local" value="WAVE.HTM">
-			<param name="ImageNumber" value="11">
-			</OBJECT>
-		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="WINDOW">
 			<param name="Local" value="WINDOW.HTM">
 			<param name="ImageNumber" value="11">
@@ -268,12 +279,17 @@
 		</OBJECT>
 	<UL>
 		<LI> <OBJECT type="text/sitemap">
-			<param name="Name" value="CLASSES">
+			<param name="Name" value="Index of Classes">
 			<param name="Local" value="CLASSES.HTM">
 			<param name="ImageNumber" value="11">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
-			<param name="Name" value="TPRINT">
+			<param name="Name" value="TAPPLICATION CLASS">
+			<param name="Local" value="TAPPLICATION.HTM">
+			<param name="ImageNumber" value="11">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="TPRINT CLASS">
 			<param name="Local" value="TPRINT.HTM">
 			<param name="ImageNumber" value="11">
 			</OBJECT>
