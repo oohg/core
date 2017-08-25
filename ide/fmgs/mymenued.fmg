@@ -1,9 +1,9 @@
 /*
- * $Id: mymenued.fmg,v 1.10 2016-10-01 23:19:30 fyurisich Exp $
+ * $Id: mymenued.fmg,v 1.11 2017-08-25 19:03:22 fyurisich Exp $
  */
 
 * ooHG IDE Plus form generated code
-* (c) 2003-2016 Ciro Vargas Clemow <cvc@oohg.org>
+* (c) 2003-2017 Ciro Vargas Clemow <cvc@oohg.org>
 
 DEFINE WINDOW TEMPLATE ;
    AT 108, 99 ;
