@@ -1,9 +1,9 @@
 /*
- * $Id: mybrowse.prg,v 1.3 2016-05-22 23:53:21 fyurisich Exp $
+ * $Id: mybrowse.prg,v 1.4 2017-08-25 19:28:46 fyurisich Exp $
  */
 /*
  * This demo shows how to use BROWSE.
- * Copyright (c)2007-2016 MigSoft <migsoft/at/oohg.org>
+ * Copyright (c)2007-2017 MigSoft <migsoft/at/oohg.org>
  *
  */
 
@@ -60,7 +60,7 @@ Function CreaBrowse( cBase, aNomb, aLong, aJust )
 
     DEFINE WINDOW oWndBase AT nRow , nCol OBJ oWndBase;
       WIDTH nWidth HEIGHT nHeight ;
-      TITLE "(c)2009-2016 MigSoft - MyBrowse" ;
+      TITLE "(c)2009-2017 MigSoft - MyBrowse" ;
       ICON "main" ;
       MAIN ;
       ON SIZE Adjust() ON MAXIMIZE Adjust()

@@ -1,8 +1,8 @@
 /*
- * $Id: mpm.ch,v 1.4 2016-05-22 23:53:20 fyurisich Exp $
+ * $Id: mpm.ch,v 1.5 2017-08-25 19:28:44 fyurisich Exp $
  */
 
-#define cAppName      '(c)2008-2016 MigSoft Project Manager'
+#define cAppName      '(c)2008-2017 MigSoft Project Manager'
 #define cAddMail      ' - migsoft@oohg.org'
 #define NewLi         Hb_OSNewLine()
 #define cBackS        Hb_OsPathSeparator()

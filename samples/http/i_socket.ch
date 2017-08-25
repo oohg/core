@@ -1,11 +1,11 @@
 /*
- * $Id: i_socket.ch,v 1.4 2016-10-17 01:55:33 fyurisich Exp $
+ * $Id: i_socket.ch,v 1.5 2017-08-25 19:28:44 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * HTTP-connection definitions
  *
- * Copyright 2005-2016 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
  * https://sourceforge.net/projects/oohg/
  *
  * Portions of this project are based upon Harbour MiniGUI library.
@@ -88,7 +88,7 @@
    www - http://www.harbour-project.org
 
    "Harbour Project"
-   Copyright 1999-2003, http://www.harbour-project.org/
+   Copyright 1999-2003, https://harbour.github.io/
 ---------------------------------------------------------------------------*/
 
 // HTTP

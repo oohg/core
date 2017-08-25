@@ -1,9 +1,9 @@
 /*
- * $Id: rtl.prg,v 1.3 2016-05-22 23:53:20 fyurisich Exp $
+ * $Id: rtl.prg,v 1.4 2017-08-25 19:28:45 fyurisich Exp $
  */
 /*
 * ooHG Right-to-left demo
-* (c) 2005-2016 Vic
+* (c) 2005-2017 Vic
 */
 
 #include "oohg.ch"
