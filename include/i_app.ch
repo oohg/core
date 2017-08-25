@@ -1,11 +1,11 @@
 /*
- * $Id: i_app.ch,v 1.4 2017-08-24 01:29:08 fyurisich Exp $
+ * $Id: i_app.ch,v 1.5 2017-08-25 19:26:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * Application object definitions
  *
- * Copyright 2015-2016 Fernando Yurisich <fyurisich@oohg.org>
+ * Copyright 2015-2017 Fernando Yurisich <fyurisich@oohg.org>
  * https://sourceforge.net/projects/oohg/
  *
  * Portions of this project are based upon Harbour MiniGUI library.
@@ -16,7 +16,7 @@
  * Copyright 2001 Antonio Linares <alinares@fivetech.com>
  *
  * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2016, http://www.harbour-project.org/
+ * Copyright 1999-2017, https://harbour.github.io/
  */
 /*
  * This program is free software; you can redistribute it and/or modify
@@ -94,3 +94,11 @@
 #xtranslate Application.Topmost := <arg>    => TApplication():Topmost( <arg> )
 #xtranslate Application.Width               => TApplication():Width
 #xtranslate Application.Width := <arg>      => TApplication():Width( <arg> )
+
+#xtranslate SET DEFAULT ICON TO <cIcon> ;
+   => ;
+      _OOHG_Main_Icon := <cIcon>
+
+#xcommand DO EVENTS ;
+   => ;
+      ProcessMessages()

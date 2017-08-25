@@ -1,11 +1,11 @@
 /*
- * $Id: bostaurus.ch,v 1.5 2017-08-23 00:10:49 fyurisich Exp $
+ * $Id: bostaurus.ch,v 1.6 2017-08-25 19:26:26 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * Bos Taurus library definitions
  *
- * Copyright 2015-2016 Fernando Yurisich <fyurisich@oohg.org>
+ * Copyright 2015-2017 Fernando Yurisich <fyurisich@oohg.org>
  * https://sourceforge.net/projects/oohg/
  *
  * Portions of this project are based upon Harbour MiniGUI library.
@@ -16,7 +16,7 @@
  * Copyright 2001 Antonio Linares <alinares@fivetech.com>
  *
  * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2016, http://www.harbour-project.org/
+ * Copyright 1999-2017, https://harbour.github.io/
  */
 /*
  * This program is free software; you can redistribute it and/or modify

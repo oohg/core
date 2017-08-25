@@ -1,5 +1,5 @@
 /*
- * $Id: i_graph.ch,v 1.10 2016-10-17 21:39:26 fyurisich Exp $
+ * $Id: i_graph.ch,v 1.11 2017-08-25 19:26:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -7,7 +7,7 @@
  * ooHG source code:
  * Graphic drawing definitions
  *
- * Copyright 2005-2016 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
  *
  * Portions of this project are based upon Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -17,7 +17,7 @@
  * Copyright 2001 Antonio Linares <alinares@fivetech.com>
  *
  * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2016, http://www.harbour-project.org/
+ * Copyright 1999-2017, https://harbour.github.io/
  */
 /*
  * This program is free software; you can redistribute it and/or modify
@@ -138,7 +138,7 @@
 
 /*
  * POINTS must be specified using this syntax:
- *    { {row1, col1}, {row2,col2}, {row3,col3}, ... }
+ *    { {row1, col1}, {row2, col2}, {row3, col3}, ... }
  */
 #xcommand DRAW POLYGON IN WINDOW <windowname> ;
       POINTS <pointsarr> ;
@@ -230,4 +230,3 @@
       TO <trow>, <tcol> ;
    => ;
       DrawWindowBoxIn( <(windowname)>, <frow>, <fcol>, <trow>, <tcol> )
-

@@ -1,11 +1,11 @@
 /*
- * $Id: i_window.ch,v 1.70 2017-07-21 00:35:20 fyurisich Exp $
+ * $Id: i_window.ch,v 1.71 2017-08-25 19:26:28 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * Windows definitions
  *
- * Copyright 2005-2016 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
  *
  * Portions of this project are based upon Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -15,7 +15,7 @@
  * Copyright 2001 Antonio Linares <alinares@fivetech.com>
  *
  * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2016, http://www.harbour-project.org/
+ * Copyright 1999-2017, https://harbour.github.io/
  */
 /*
  * This program is free software; you can redistribute it and/or modify
@@ -384,10 +384,6 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
    => ;
       _EndWindow ()
 
-#xcommand DO EVENTS ;
-   => ;
-      ProcessMessages()
-
 #xcommand FETCH [ PROPERTY ] [ WINDOW ] <Arg1> <Arg2> TO <Arg3> ;
    => ;
       <Arg3> := GetProperty( <(Arg1)>, <(Arg2)> )
@@ -517,10 +513,6 @@ AUTOADJUST
 #xtranslate SET ADJUSTFONT OFF ;
    => ;
       _OOHG_AdjustFont := .F.
-
-#xtranslate SET DEFAULT ICON TO <cIcon> ;
-   => ;
-      _OOHG_Main_Icon := <cIcon>
 
 /*---------------------------------------------------------------------------
 TRANSPARENCY
