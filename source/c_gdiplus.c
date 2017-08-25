@@ -1,5 +1,5 @@
 /*
- * $Id: c_gdiplus.c,v 1.22 2016-10-17 01:55:33 fyurisich Exp $
+ * $Id: c_gdiplus.c,v 1.23 2017-08-25 19:42:17 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -9,7 +9,7 @@
  * hbGdiPlus library
  * Copyright 2007 P.Chornyj <myorg63@mail.ru>
  *
- * Copyright 2013-2016 Fernando Yurisich <fyurisich@oohg.org>
+ * Copyright 2013-2017 Fernando Yurisich <fyurisich@oohg.org>
  * https://sourceforge.net/projects/oohg/
  *
  * Portions of this project are based upon Harbour MiniGUI library.
@@ -20,7 +20,7 @@
  * Copyright 2001 Antonio Linares <alinares@fivetech.com>
  *
  * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2016, http://www.harbour-project.org/
+ * Copyright 1999-2017, https://harbour.github.io/
  */
 /*
  * This program is free software; you can redistribute it and/or modify

@@ -1,11 +1,11 @@
 /*
- * $Id: h_picture.prg,v 1.32 2016-10-22 16:23:55 fyurisich Exp $
+ * $Id: h_picture.prg,v 1.33 2017-08-25 19:42:22 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * Picture control
  *
- * Copyright 2009-2016 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2009-2017 Vicente Guerra <vicente@guerra.com.mx>
  * https://sourceforge.net/projects/oohg/
  *
  * Portions of this project are based upon Harbour MiniGUI library.
@@ -16,7 +16,7 @@
  * Copyright 2001 Antonio Linares <alinares@fivetech.com>
  *
  * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2016, http://www.harbour-project.org/
+ * Copyright 1999-2017, https://harbour.github.io/
  */
 /*
  * This program is free software; you can redistribute it and/or modify

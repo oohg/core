@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.94 2017-07-21 00:35:20 fyurisich Exp $
+ * $Id: c_windows.c,v 1.95 2017-08-25 19:42:17 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -16,7 +16,7 @@
  * Copyright 2001 Antonio Linares <alinares@fivetech.com>
  *
  * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2016, http://www.harbour-project.org/
+ * Copyright 1999-2017, https://harbour.github.io/
  */
 /*
  * This program is free software; you can redistribute it and/or modify

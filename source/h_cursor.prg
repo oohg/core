@@ -1,5 +1,5 @@
 /*
- * $Id: h_cursor.prg,v 1.4 2016-10-17 01:55:34 fyurisich Exp $
+ * $Id: h_cursor.prg,v 1.5 2017-08-25 19:42:18 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -10,7 +10,7 @@
  * Jacek Kubica <kubica@wssk.wroc.pl>
  * Grigory Filatov <gfilatov@inbox.ru>
  *
- * Copyright 2005-2016 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
  * https://sourceforge.net/projects/oohg/
  *
  * Portions of this project are based upon Harbour MiniGUI library.
@@ -21,7 +21,7 @@
  * Copyright 2001 Antonio Linares <alinares@fivetech.com>
  *
  * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2016, http://www.harbour-project.org/
+ * Copyright 1999-2017, https://harbour.github.io/
  */
 /*
  * This program is free software; you can redistribute it and/or modify

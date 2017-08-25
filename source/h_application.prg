@@ -1,5 +1,5 @@
 /*
- * $Id: h_application.prg,v 1.8 2017-08-24 01:29:09 fyurisich Exp $
+ * $Id: h_application.prg,v 1.9 2017-08-25 19:42:18 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -9,7 +9,7 @@
  * HMG Extended source code
  * Copyright 2009 by Grigory Filatov <gfilatov@inbox.ru>
  *
- * Copyright 2014-2016 Fernando Yurisich <fyurisich@oohg.org>
+ * Copyright 2014-2017 Fernando Yurisich <fyurisich@oohg.org>
  * https://sourceforge.net/projects/oohg/
  *
  * Portions of this project are based upon Harbour MiniGUI library.
@@ -20,7 +20,7 @@
  * Copyright 2001 Antonio Linares <alinares@fivetech.com>
  *
  * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2016, http://www.harbour-project.org/
+ * Copyright 1999-2017, https://harbour.github.io/
  */
 /*
  * This program is free software; you can redistribute it and/or modify

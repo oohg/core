@@ -1,11 +1,11 @@
 /*
- * $Id: h_anigif.prg,v 1.1 2016-10-25 21:38:01 fyurisich Exp $
+ * $Id: h_anigif.prg,v 1.2 2017-08-25 19:42:18 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * Animate GIF control
  *
- * Copyright 2016 Fernando Yurisich <fyurisich@oohg.org>
+ * Copyright 2016-2017 Fernando Yurisich <fyurisich@oohg.org>
  * https://sourceforge.net/projects/oohg/
  *
  * Based upon an HMG sample by
@@ -19,7 +19,7 @@
  * Copyright 2001 Antonio Linares <alinares@fivetech.com>
  *
  * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2016, http://www.harbour-project.org/
+ * Copyright 1999-2017, https://harbour.github.io/
  */
 /*
  * This program is free software; you can redistribute it and/or modify

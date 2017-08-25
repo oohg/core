@@ -1,5 +1,5 @@
 /*
- * $Id: bostaurus.prg,v 1.8 2017-08-23 00:11:23 fyurisich Exp $
+ * $Id: bostaurus.prg,v 1.9 2017-08-25 19:42:17 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -10,7 +10,7 @@
  * Copyright 2012-2015 by Dr. Claudio Soto (from Uruguay).
  * <srvet@adinet.com.uy> http://srvet.blogspot.com
  *
- * Copyright 2015-2016 Fernando Yurisich <fyurisich@oohg.org>
+ * Copyright 2015-2017 Fernando Yurisich <fyurisich@oohg.org>
  * https://sourceforge.net/projects/oohg/
  */
 /*

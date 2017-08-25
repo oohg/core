@@ -1,5 +1,5 @@
 /*
-* $Id: h_pdf.prg,v 1.21 2016-10-22 16:23:55 fyurisich Exp $
+* $Id: h_pdf.prg,v 1.22 2017-08-25 19:42:22 fyurisich Exp $
 */
 /*
  * ooHG source code:
@@ -10,7 +10,7 @@
  * Victor K., http://www.ihaveparts.com, and
  * Pritpal Bedi, http://www.vouchcac.com
  *
- * Copyright 2007-2016 Ciro Vargas Clemow <cvc@oohg.org>
+ * Copyright 2007-2017 Ciro Vargas Clemow <cvc@oohg.org>
  * https://sourceforge.net/projects/oohg/
  *
  * Portions of this project are based upon Harbour MiniGUI library.
@@ -21,7 +21,7 @@
  * Copyright 2001 Antonio Linares <alinares@fivetech.com>
  *
  * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2016, http://www.harbour-project.org/
+ * Copyright 1999-2017, https://harbour.github.io/
  */
 /*
  * This program is free software; you can redistribute it and/or modify

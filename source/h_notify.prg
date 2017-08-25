@@ -1,5 +1,5 @@
 /*
- * $Id: h_notify.prg,v 1.2 2017-07-09 21:45:54 fyurisich Exp $
+ * $Id: h_notify.prg,v 1.3 2017-08-25 19:42:22 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -16,7 +16,7 @@
  * Copyright 2001 Antonio Linares <alinares@fivetech.com>
  *
  * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2016, http://www.harbour-project.org/
+ * Copyright 1999-2017, https://harbour.github.io/
  */
 /*
  * This program is free software; you can redistribute it and/or modify

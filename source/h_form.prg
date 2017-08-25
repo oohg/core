@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.76 2017-07-28 00:09:08 fyurisich Exp $
+ * $Id: h_form.prg,v 1.77 2017-08-25 19:42:18 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -16,7 +16,7 @@
  * Copyright 2001 Antonio Linares <alinares@fivetech.com>
  *
  * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2016, http://www.harbour-project.org/
+ * Copyright 1999-2017, https://harbour.github.io/
  */
 /*
  * This program is free software; you can redistribute it and/or modify

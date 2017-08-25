@@ -1,11 +1,11 @@
 /*
- * $Id: h_tab.prg,v 1.72 2016-10-22 16:23:55 fyurisich Exp $
+ * $Id: h_tab.prg,v 1.73 2017-08-25 19:42:22 fyurisich Exp $
  */
 /*
  * ooHG source code:
  * Tab control
  *
- * Copyright 2005-2016 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
  * https://sourceforge.net/projects/oohg/
  *
  * Portions of this project are based upon Harbour MiniGUI library.
@@ -16,7 +16,7 @@
  * Copyright 2001 Antonio Linares <alinares@fivetech.com>
  *
  * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2016, http://www.harbour-project.org/
+ * Copyright 1999-2017, https://harbour.github.io/
  */
 /*
  * This program is free software; you can redistribute it and/or modify
