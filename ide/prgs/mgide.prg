@@ -1,10 +1,10 @@
 /*
- * $Id: mgide.prg,v 1.35 2017-07-21 00:35:20 fyurisich Exp $
+ * $Id: mgide.prg,v 1.36 2017-08-25 18:20:41 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
  *
- * Copyright 2002-2016 Ciro Vargas Clemow <cvc@oohg.org>
+ * Copyright 2002-2017 Ciro Vargas Clemow <cvc@oohg.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
