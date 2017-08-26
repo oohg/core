@@ -1,5 +1,5 @@
 /*
- * $Id: Maintenance.txt,v 1.1 2017-08-23 00:10:48 fyurisich Exp $
+ * $Id: Maintenance.txt,v 1.2 2017-08-26 03:03:15 fyurisich Exp $
  */
 
 This document states the tasks to fulfill whenever:
@@ -19,7 +19,7 @@ This document states the tasks to fulfill whenever:
    * Copy the modifications to manual/Changelog.htm
 
 5. A new distro is builded:
-   * Change the date in manual/OVERVIEW.HTM
+   * Change the date in manual/OOHG.HTM
    * Change the date in function _oohg_Version of source/h_error.prg
 
 6. A new year starts:
