@@ -1,0 +1,311 @@
+<!--
+$Id: BOSTAURUS_CONSTANTS.HTM,v 1.1 2017-08-26 02:54:09 fyurisich Exp $
+-->
+
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv=Content-Type content="text/html; charset=Windows-1252">
+
+      <title>BOSTAURUS CONSTANTS</title>
+
+      <style>
+         html { overflow-y: scroll; }
+         body { padding: 0px; margin: 0px; overflow: auto; background-color: #FFFFFF; }
+         #winchm_template_navigation { margin-top: 0px; margin-left: 0px; margin-bottom: 0px; margin-right: 0px;
+           padding-top: 5px; padding-left: 5px; padding-bottom: 5px; padding-right: 5px;
+           font-family: arial, helvetica, sans-serif; font-size: 10px; font-style: normal; font-weight: normal;
+           color: #626262; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #DBDBDB;
+           background-color: #E2EDFA; width: auto; }
+         #winchm_template_button { float: right; top: -7px; position: relative; text-align: right; right: -5px;
+           height: auto; }
+         #winchm_template_title { font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif; font-weight: bold;
+            font-size: 18px; color: 353535; margin-top: 0px; margin-left: 0px; margin-bottom: 0px; margin-right: 0px;
+            padding-top: 10px; padding-left: 5px; padding-bottom: 10px; padding-right: 10px; border-bottom-style: solid;
+            border-bottom-width: 1px; border-bottom-color: #C7C7C7; width: auto; background-color: #C4DBF4;
+            text-align: left; }
+         #winchm_template_content { padding: 0px; margin-top: 15px; margin-left: 15px; margin-bottom: 15px;
+            margin-right: 15px; width: auto !important; width: 100%; }
+         #winchm_template_footer { border-width: 1px; border-color: #c0c0c0; border-top-style: solid; margin-top: 0px;
+            margin-left: 15px; margin-bottom: 5px; margin-right: 15px; padding-top: 6px; padding-left: 0px;
+            padding-bottom: 20px; padding-right: 0px; font-family: arial, helvetica, sans-serif; font-size: 9px;
+            color: #909090; text-align: left; width: auto; }
+         #winchm_template_navigation a:link { text-decoration: none; color: #0000ff }
+         #winchm_template_navigation a:visited { text-decoration: none; color: #0000ff }
+         #winchm_template_navigation a:active { text-decoration: none; color: #0000ff }
+         #winchm_template_navigation a:hover {text-decoration: none; color: #0000ff }
+         a:link { text-decoration: underline; color:#0033cc }
+         a:visited { text-decoration: underline; color: #0033cc }
+         a:active { text-decoration: underline; color: #0033cc }
+         a:hover { text-decoration: underline;color: #ff0000 }
+         @media print { #winchm_template_button{ visibility:hidden; } }
+      </style>
+   </head>
+
+   <body>
+      <div id="winchm_template_title">
+         <div id="winchm_template_button">
+            <A href="BOSTAURUS_FUNCTIONS.HTM" title="Previous topic">
+               <img id="winchm_template_prev" alt="Previous topic" src="template4/btn_prev_n.gif" border="0"></A>
+<!--            <A href="MINIPRINT_PRINT_COMMANDS.HTM" title="Next topic">
+               <img id="winchm_template_next" alt="Next topic" src="template4/btn_next_n.gif" border="0"></A> -->
+               <img id="winchm_template_next" alt="Next topic" src="template4/btn_next_g.gif" border="0">
+         </div>BOSTAURUS CONSTANTS
+      </div>
+      <div id="winchm_template_navigation">Help &gt; Libraries &gt; BOSTAURUS &gt;
+      </div>
+      <div id="winchm_template_content">
+         <div class=Section1>
+
+<PRE>
+<span style='color:darkgreen'><b>
+/////////////////////////////////////////////////////////////////////
+// BOSTAURUS CONSTANTS
+/////////////////////////////////////////////////////////////////////
+</b></span>
+
+<u>Function BT_InfoName() - return value</u>:
+
+      _BT_INFO_NAME_
+
+<u>Function BT_InfoVersion() - return value</u>:
+
+      _BT_INFO_MAJOR_VERSION_
+      _BT_INFO_MINOR_VERSION_
+      _BT_INFO_PATCHLEVEL_
+
+<u>Function BT_InfoAuthor() - return value</u>:
+
+      _BT_INFO_AUTHOR_
+
+<u>Function BT_DC_CREATE() - parameter Type</u>:
+
+      BT_HDC_DESKTOP
+      BT_HDC_WINDOW
+      BT_HDC_ALLCLIENTAREA
+      BT_HDC_INVALIDCLIENTAREA
+      BT_HDC_BITMAP
+
+<u>Function BT_SCR_GETINFO() - parameter Mode</u>:
+
+      BT_SCR_DESKTOP
+      BT_SCR_WINDOW
+      BT_SCR_CLIENTAREA
+
+<u>Function BT_SCR_GETINFO() - parameter Info</u>:
+
+      BT_SCR_INFO_WIDTH
+      BT_SCR_INFO_HEIGHT
+
+<u>Function BT_DRAWEDGE() - parameter nEdge</u>:
+
+      BDR_RAISEDOUTER
+      BDR_SUNKENOUTER
+      BDR_RAISEDINNER
+      BDR_SUNKENINNER
+      BDR_OUTER
+      BDR_INNER
+      BDR_RAISED
+      BDR_SUNKEN
+      EDGE_RAISED
+      EDGE_SUNKEN
+      EDGE_ETCHED
+      EDGE_BUMP
+
+<u>Function BT_DRAWEDGE() - parameter nGrfFlags</u>:
+
+      BF_LEFT
+      BF_TOP
+      BF_RIGHT
+      BF_BOTTOM
+      BF_TOPLEFT
+      BF_TOPRIGHT
+      BF_BOTTOMLEFT
+      BF_BOTTOMRIGHT
+      BF_RECT
+      BF_DIAGONAL
+      BF_DIAGONAL_ENDTOPRIGHT
+      BF_DIAGONAL_ENDTOPLEFT
+      BF_DIAGONAL_ENDBOTTOMLEFT
+      BF_DIAGONAL_ENDBOTTOMRIGHT
+      BF_MIDDLE
+      BF_SOFT
+      BF_ADJUST
+      BF_FLAT
+      BF_MONO
+
+<u>Function BT_DRAW_HDC_FILLEDOBJECT() - parameter Type</u>:
+
+      BT_FILLRECTANGLE
+      BT_FILLELLIPSE
+      BT_FILLROUNDRECT
+      BT_FILLFLOOD
+
+<u>Function BT_DRAW_HDC_BITMAP(), BT_BMP_PASTE() - parameter Action</u>:
+
+      BT_BITMAP_OPAQUE
+      BT_BITMAP_TRANSPARENT
+
+<u>Functions BT_DRAW_HDC_BITMAP() and BT_DRAW_HDC_BITMAPALPHABL() - parameter Mode_Stretch</u>:
+
+      BT_SCALE
+      BT_STRETCH
+      BT_COPY
+
+<u>Function BT_DRAW_HDC_BITMAPALPHABLEND() - parameter Alpha</u>:
+
+      BT_ALPHABLEND_TRANSPARENT
+      BT_ALPHABLEND_OPAQUE
+
+<u>Function BT_DRAW_HDC_GRADIENTFILL() - parameter Mode</u>:
+
+      BT_GRADIENTFILL_HORIZONTAL
+      BT_GRADIENTFILL_VERTICAL
+
+<u>Functions BT_DRAW_HDC_TEXTOUT() and BT_DRAW_HDC_DRAWTEXT() - parameter Type</u>:
+
+      BT_TEXT_OPAQUE
+      BT_TEXT_TRANSPARENT
+      BT_TEXT_BOLD
+      BT_TEXT_ITALIC
+      BT_TEXT_UNDERLINE
+      BT_TEXT_STRIKEOUT
+
+<u>Function BT_DRAW_HDC_TEXTOUT() - parameter Align</u>:
+
+      BT_TEXT_LEFT
+      BT_TEXT_CENTER
+      BT_TEXT_RIGHT
+      BT_TEXT_TOP
+      BT_TEXT_BASELINE
+      BT_TEXT_BOTTOM
+
+<u>Function BT_DRAW_HDC_TEXTOUT() - parameter Orientation</u>:
+
+      BT_TEXT_NORMAL_ORIENTATION
+      BT_TEXT_VERTICAL_ASCENDANT
+      BT_TEXT_VERTICAL_DESCENDANT
+      BT_TEXT_DIAGONAL_ASCENDANT
+      BT_TEXT_DIAGONAL_DESCENDANT
+
+<u>Function BT_DRAW_HDC_TO_HDC() - parameter Action</u>:
+
+      BT_HDC_OPAQUE
+      BT_HDC_TRANSPARENT
+
+<u>Function BT_BMP_SAVEFILE() - parameter nTypePicture</u>:
+
+      BT_FILEFORMAT_BMP
+      BT_FILEFORMAT_JPG
+      BT_FILEFORMAT_GIF
+      BT_FILEFORMAT_TIF
+      BT_FILEFORMAT_PNG
+
+<u>Function BT_BMP_CAPTURESCR() - parameter Mode</u>:
+
+      BT_BITMAP_CAPTURE_DESKTOP
+      BT_BITMAP_CAPTURE_WINDOW
+      BT_BITMAP_CAPTURE_CLIENTAREA
+
+<u>Function BT_BMP_GETINFO() - parameter Info</u>:
+
+      BT_BITMAP_INFO_WIDTH
+      BT_BITMAP_INFO_HEIGHT
+      BT_BITMAP_INFO_BITSPIXEL
+      BT_BITMAP_INFO_GETCOLORPIXEL
+
+<u>Function BT_BMP_PROCESS() - parameter Action</u>:
+
+      BT_BMP_PROCESS_INVERT
+      BT_BMP_PROCESS_GRAYNESS
+      BT_BMP_PROCESS_BRIGHTNESS
+      BT_BMP_PROCESS_CONTRAST
+      BT_BMP_PROCESS_MODIFYCOLOR
+      BT_BMP_PROCESS_GAMMACORRECT
+
+<u>Function BT_BMP_PROCESS() - parameter Gray_Level</u>:
+
+      BT_BITMAP_GRAY_NONE
+      BT_BITMAP_GRAY_FULL
+
+<u>Function BT_BMP_PROCESS() - parameter Light_Level</u>:
+
+      BT_BITMAP_LIGHT_BLACK
+      BT_BITMAP_LIGHT_NONE
+      BT_BITMAP_LIGHT_WHITE
+
+<u>Function BT_BMP_TRANSFORM() - parameter Mode</u>:
+
+      BT_BITMAP_REFLECT_HORIZONTAL
+      BT_BITMAP_REFLECT_VERTICAL
+      BT_BITMAP_ROTATE
+
+<u>Function BT_DRAW_HDC_PIXEL() - parameter Action</u>:
+
+      BT_HDC_GETPIXEL
+      BT_HDC_SETPIXEL
+
+<u>Function BT_BMP_COPYANDRESIZE() - parameter nAlgorithm</u>:
+
+      BT_RESIZE_COLORONCOLOR
+      BT_RESIZE_HALFTONE
+      BT_RESIZE_BILINEAR
+
+<u>Function BT_REGIONCOMBINE() - parameter nCombineMode</u>:
+
+      BT_REGION_AND
+      BT_REGION_OR
+      BT_REGION_XOR
+      BT_REGION_DIFF
+      BT_REGION_COPY
+
+<u>Function BT_REGIONCOMBINE() - return value</u>:
+
+      BT_REGION_ERROR
+      BT_REGION_NULLREGION
+      BT_REGION_SIMPLEREGION
+      BT_REGION_COMPLEXREGION
+
+<u>Function BT_DIRECTORYINFO() - parameter nTypeList</u>:
+
+      BT_DIRECTORYINFO_INFOROOT
+      BT_DIRECTORYINFO_LISTALL
+      BT_DIRECTORYINFO_LISTFOLDER
+      BT_DIRECTORYINFO_LISTNONFOLDER
+      BT_DIRECTORYINFO_NAME
+      BT_DIRECTORYINFO_DATE
+      BT_DIRECTORYINFO_TYPE
+      BT_DIRECTORYINFO_SIZE
+      BT_DIRECTORYINFO_FULLNAME
+      BT_DIRECTORYINFO_INTERNALDATA_TYPE
+      BT_DIRECTORYINFO_INTERNALDATA_DATE
+      BT_DIRECTORYINFO_INTERNALDATA_IMAGEINDEX
+      BT_DIRECTORYINFO_INTERNALDATA_FOLDER
+      BT_DIRECTORYINFO_INTERNALDATA_HASSUBFOLDER
+      BT_DIRECTORYINFO_INTERNALDATA_NOFOLDER
+
+<u>Function BT_DRAW_HDC_POLY() - parameter nPOLY</u>:
+
+      BT_DRAW_POLYLINE
+      BT_DRAW_POLYGON
+      BT_DRAW_POLYBEZIER
+
+<u>Function BT_DRAW_HDC_ARCX() - parameter nArcType</u>:
+
+      BT_DRAW_ARC
+      BT_DRAW_CHORD
+      BT_DRAW_PIE
+</PRE>
+
+         </div>
+      </div>
+      <div id="winchm_template_footer">
+         <FONT color=#808080 size=1>Copyright © 2013-2017 ooHG Development Team -
+         </FONT>
+         <A href="https://sourceforge.net/projects/oohg/" target="_blank">
+            <FONT size=1>https://sourceforge.net/projects/oohg/
+            </FONT></A>
+      </div>
+   </body>
+
+</html>

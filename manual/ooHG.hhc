@@ -7,28 +7,75 @@
 <OBJECT type="text/site properties">
 	<param name="FrameName" value="right">
 	<param name="WindowName" value="main">
-	<param name="ExWindow Styles" value="0x0">
-	<param name="Window Styles" value="0x27">
+	<param name="Window Styles" value="0x25">
 <param name="Font" value=",8,0">
 </OBJECT>
 <UL>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="Overview">
-		<param name="Local" value="OVERVIEW.HTM">
-		<param name="ImageNumber" value="11">
+		<param name="Name" value="ooHG Reference Manual">
+		<param name="Local" value="OOHG.HTM">
+		<param name="ImageNumber" value="17">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="Log of Changes">
-		<param name="Local" value="Changelog.htm">
-		<param name="ImageNumber" value="11">
+		<param name="Name" value="Information">
+		<param name="Local" value="INFORMATION.HTM">
 		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Overview">
+			<param name="Local" value="OVERVIEW.HTM">
+			<param name="ImageNumber" value="11">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Log of Changes">
+			<param name="Local" value="Changelog.htm">
+			<param name="ImageNumber" value="11">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="License">
+			<param name="Local" value="LICENSE.HTM">
+			<param name="ImageNumber" value="11">
+			</OBJECT>
+	</UL>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="License">
-		<param name="Local" value="LICENSE.HTM">
-		<param name="ImageNumber" value="11">
+		<param name="Name" value="Forms">
+		<param name="Local" value="WINDOW.HTM">
 		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="DECLARE WINDOW">
+			<param name="Local" value="WINDOW_DECLARE.HTM">
+			<param name="ImageNumber" value="11">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="DEFINE WINDOW">
+			<param name="Local" value="WINDOW_DEFINE.HTM">
+			<param name="ImageNumber" value="11">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="LOAD WINDOW">
+			<param name="Local" value="WINDOW_LOAD.HTM">
+			<param name="ImageNumber" value="11">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="WINDOW Commands">
+			<param name="Local" value="WINDOW_COMMANDS.HTM">
+			<param name="ImageNumber" value="11">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="WINDOW Sets">
+			<param name="Local" value="WINDOW_SETS.HTM">
+			<param name="ImageNumber" value="11">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="DEFINE INTERNAL">
+			<param name="Local" value="INTERNAL.HTM">
+			<param name="ImageNumber" value="11">
+			</OBJECT>
+	</UL>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Commands">
+		<param name="Local" value="COMMANDS.HTM">
 		<param name="ImageNumber" value="1">
 		</OBJECT>
 	<UL>
@@ -53,7 +100,7 @@
 			<param name="ImageNumber" value="11">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
-			<param name="Name" value="UNCOMPRESS">
+			<param name="Name" value="Zip Handling">
 			<param name="Local" value="UNCOMPRESS.HTM">
 			<param name="ImageNumber" value="11">
 			</OBJECT>
@@ -65,6 +112,7 @@
 	</UL>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Controls">
+		<param name="Local" value="CONTROLS.HTM">
 		</OBJECT>
 	<UL>
 		<LI> <OBJECT type="text/sitemap">
@@ -153,11 +201,6 @@
 			<param name="ImageNumber" value="11">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
-			<param name="Name" value="INTERNAL">
-			<param name="Local" value="INTERNAL.HTM">
-			<param name="ImageNumber" value="11">
-			</OBJECT>
-		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="IPADDRESS">
 			<param name="Local" value="IPADDRESS.HTM">
 			<param name="ImageNumber" value="11">
@@ -175,6 +218,11 @@
 		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="MONTHCALENDAR">
 			<param name="Local" value="MONTHCALENDAR.HTM">
+			<param name="ImageNumber" value="11">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="PICTURE">
+			<param name="Local" value="PICTURE.HTM">
 			<param name="ImageNumber" value="11">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
@@ -258,13 +306,13 @@
 			<param name="ImageNumber" value="11">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
-			<param name="Name" value="TREE">
-			<param name="Local" value="TREE.HTM">
+			<param name="Name" value="TOOLTIP">
+			<param name="Local" value="TOOLTIP.HTM">
 			<param name="ImageNumber" value="11">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
-			<param name="Name" value="WINDOW">
-			<param name="Local" value="WINDOW.HTM">
+			<param name="Name" value="TREE">
+			<param name="Local" value="TREE.HTM">
 			<param name="ImageNumber" value="11">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
@@ -275,12 +323,13 @@
 	</UL>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Classes">
+		<param name="Local" value="CLASSES.HTM">
 		<param name="ImageNumber" value="1">
 		</OBJECT>
 	<UL>
 		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="Index of Classes">
-			<param name="Local" value="CLASSES.HTM">
+			<param name="Local" value="CLASSES_INDEX.HTM">
 			<param name="ImageNumber" value="11">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
@@ -307,38 +356,99 @@
 			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="Print Commands">
 				<param name="Local" value="HBPRINTER_PRINT_COMMANDS.HTM">
+				<param name="ImageNumber" value="11">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="Get Commands">
 				<param name="Local" value="HBPRINTER_GET_COMMANDS.HTM">
+				<param name="ImageNumber" value="11">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="Set Commands">
 				<param name="Local" value="HBPRINTER_SET_COMMANDS.HTM">
+				<param name="ImageNumber" value="11">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
-				<param name="Name" value="@... COMMANDS">
+				<param name="Name" value="@... Commands">
 				<param name="Local" value="HBPRINTER_@_COMMANDS.HTM">
+				<param name="ImageNumber" value="11">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="Font Commands">
 				<param name="Local" value="HBPRINTER_FONT_COMMANDS.HTM">
+				<param name="ImageNumber" value="11">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="Drawing Commands">
 				<param name="Local" value="HBPRINTER_DRAWING_COMMANDS.HTM">
+				<param name="ImageNumber" value="11">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="Set/Get Text Commands">
 				<param name="Local" value="HBPRINTER_SET_GET_TEXT_COMMANDS.htm">
+				<param name="ImageNumber" value="11">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="Print Constants">
 				<param name="Local" value="HBPRINTER_CONSTANTS.HTM">
+				<param name="ImageNumber" value="11">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="Print Sample">
 				<param name="Local" value="HBPRINTER_SAMPLE.HTM">
+				<param name="ImageNumber" value="11">
+				</OBJECT>
+		</UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="MINIPRINT">
+			<param name="Local" value="MINIPRINT.HTM">
+			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Print Commands">
+				<param name="Local" value="MINIPRINT_PRINT_COMMANDS.HTM">
+				<param name="ImageNumber" value="11">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Set Commands">
+				<param name="Local" value="MINIPRINT_SET_COMMANDS.HTM">
+				<param name="ImageNumber" value="11">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="@... Commands">
+				<param name="Local" value="MINIPRINT_@_COMMANDS.HTM">
+				<param name="ImageNumber" value="11">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Drawing Commands">
+				<param name="Local" value="MINIPRINT_DRAWING_COMMANDS.HTM">
+				<param name="ImageNumber" value="11">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Print Constants">
+				<param name="Local" value="MINIPRINT_CONSTANTS.HTM">
+				<param name="ImageNumber" value="11">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Print Sample">
+				<param name="Local" value="MINIPRINT_SAMPLE.HTM">
+				<param name="ImageNumber" value="11">
+				</OBJECT>
+		</UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="BOSTAURUS">
+			<param name="Local" value="BOSTAURUS.HTM">
+			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Functions">
+				<param name="Local" value="BOSTAURUS_FUNCTIONS.HTM">
+				<param name="ImageNumber" value="11">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Constants">
+				<param name="Local" value="BOSTAURUS_CONSTANTS.HTM">
+				<param name="ImageNumber" value="11">
 				</OBJECT>
 		</UL>
 	</UL>

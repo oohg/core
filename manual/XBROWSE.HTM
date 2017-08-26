@@ -1,186 +1,67 @@
 <!--
-$Id: XBROWSE.HTM,v 1.6 2017-08-23 00:11:04 fyurisich Exp $
+$Id: XBROWSE.HTM,v 1.7 2017-08-26 02:54:08 fyurisich Exp $
 -->
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html xmlns:o="urn:schemas-microsoft-com:office:office"
-xmlns:w="urn:schemas-microsoft-com:office:word"
-xmlns="http://www.w3.org/TR/REC-html40">
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv=Content-Type content="text/html; charset=Windows-1252">
 
-<head>
-<meta http-equiv=Content-Type content="text/html; charset=Windows-1252">
-<meta name=ProgId content=Word.Document>
-<meta name=Generator content="Microsoft Word 11">
-<meta name=Originator content="Microsoft Word 11">
-<link rel=File-List href="XBROWSE_archivos/filelist.xml">
-<title>XBROWSE</title>
+      <title>XBROWSE</title>
 
-<style>
-<!--
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{mso-style-parent:"";
-	margin:0cm;
-	margin-bottom:.0001pt;
-	mso-pagination:widow-orphan;
-	font-size:12.0pt;
-	font-family:"Times New Roman";
-	mso-fareast-font-family:"Times New Roman";}
-@page Section1
-	{size:612.0pt 792.0pt;
-	margin:70.85pt 3.0cm 70.85pt 3.0cm;
-	mso-header-margin:35.4pt;
-	mso-footer-margin:35.4pt;
-	mso-paper-source:0;}
-div.Section1
-	{page:Section1;}
--->
-</style>
+      <style>
+         html { overflow-y: scroll; }
+         body { padding: 0px; margin: 0px; overflow: auto; background-color: #FFFFFF; }
+         #winchm_template_navigation { margin-top: 0px; margin-left: 0px; margin-bottom: 0px; margin-right: 0px;
+           padding-top: 5px; padding-left: 5px; padding-bottom: 5px; padding-right: 5px;
+           font-family: arial, helvetica, sans-serif; font-size: 10px; font-style: normal; font-weight: normal;
+           color: #626262; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #DBDBDB;
+           background-color: #E2EDFA; width: auto; }
+         #winchm_template_button { float: right; top: -7px; position: relative; text-align: right; right: -5px;
+           height: auto; }
+         #winchm_template_title { font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif; font-weight: bold;
+            font-size: 18px; color: 353535; margin-top: 0px; margin-left: 0px; margin-bottom: 0px; margin-right: 0px;
+            padding-top: 10px; padding-left: 5px; padding-bottom: 10px; padding-right: 10px; border-bottom-style: solid;
+            border-bottom-width: 1px; border-bottom-color: #C7C7C7; width: auto; background-color: #C4DBF4;
+            text-align: left; }
+         #winchm_template_content { padding: 0px; margin-top: 15px; margin-left: 15px; margin-bottom: 15px;
+            margin-right: 15px; width: auto !important; width: 100%; }
+         #winchm_template_footer { border-width: 1px; border-color: #c0c0c0; border-top-style: solid; margin-top: 0px;
+            margin-left: 15px; margin-bottom: 5px; margin-right: 15px; padding-top: 6px; padding-left: 0px;
+            padding-bottom: 20px; padding-right: 0px; font-family: arial, helvetica, sans-serif; font-size: 9px;
+            color: #909090; text-align: left; width: auto; }
+         #winchm_template_navigation a:link { text-decoration: none; color: #0000ff }
+         #winchm_template_navigation a:visited { text-decoration: none; color: #0000ff }
+         #winchm_template_navigation a:active { text-decoration: none; color: #0000ff }
+         #winchm_template_navigation a:hover {text-decoration: none; color: #0000ff }
+         a:link { text-decoration: underline; color:#0033cc }
+         a:visited { text-decoration: underline; color: #0033cc }
+         a:active { text-decoration: underline; color: #0033cc }
+         a:hover { text-decoration: underline;color: #ff0000 }
+         @media print { #winchm_template_button{ visibility:hidden; } }
+      </style>
+   </head>
 
-
-
-<style>
-html {
-	overflow-y:scroll;
-}
-
-body {
-	padding: 0px;
-	margin: 0px;
-	overflow: auto;
-	background-color: #FFFFFF;
-}
-
-#winchm_template_navigation{
-	margin-top: 0px;
-	margin-left: 0px;
-	margin-bottom: 0px;
-	margin-right: 0px;
-
-	padding-top: 5px;
-	padding-left: 5px;
-	padding-bottom: 5px;
-	padding-right: 5px;
-
-	font-family: arial, helvetica, sans-serif;
-	font-size: 10px;
-	font-style: normal;
-	font-weight: normal;
-	color: #626262;
-
-	border-bottom-style: solid;
-	border-bottom-width: 1px;
-	border-bottom-color: #DBDBDB;
-
-	background-color: #E2EDFA;
-	width: auto;
-}
-
-#winchm_template_button{
-	float: right;
-	top: -7px;
-	position: relative;
-	text-align: right;
-	right: -5px;
-	height: auto;
-}
-
-#winchm_template_title{
-	font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
-	font-weight: bold;
-	font-size: 18px;
-	color: 353535;
-
-	margin-top: 0px;
-	margin-left: 0px;
-	margin-bottom: 0px;
-	margin-right: 0px;
-
-	padding-top: 10px;
-	padding-left: 5px;
-	padding-bottom: 10px;
-	padding-right: 10px;
-
-	border-bottom-style: solid;
-	border-bottom-width: 1px;
-	border-bottom-color: #C7C7C7;
-
-	width: auto;
-	background-color: #C4DBF4;
-	text-align: left;
-}
-
-#winchm_template_content{
-	padding: 0px;
-	margin-top: 15px;
-	margin-left: 15px;
-	margin-bottom: 15px;
-	margin-right: 15px;
-
-	width: auto  !important;
-	width: 100%;
-}
-
-#winchm_template_footer{
-	border-width: 1px;
-	border-color: #c0c0c0;
-	border-top-style: solid;
-
-	margin-top: 0px;
-	margin-left: 15px;
-	margin-bottom: 5px;
-	margin-right: 15px;
-
-	padding-top: 6px;
-	padding-left: 0px;
-	padding-bottom: 20px;
-	padding-right: 0px;
-
-	font-family: arial, helvetica, sans-serif;
-	font-size: 9px;
-	color: #909090;
-
-	text-align: left;
-	width: auto;
-}
-
-#winchm_template_navigation a:link	{text-decoration: none;color: #0000ff}
-#winchm_template_navigation a:visited  {text-decoration: none; color: #0000ff}
-#winchm_template_navigation a:active {text-decoration: none; color: #0000ff}
-#winchm_template_navigation a:hover {text-decoration: none;color: #0000ff}
-
-a:link	{text-decoration: underline; color:#0033cc}
-a:visited  {text-decoration: underline; color: #0033cc}
-a:active {text-decoration: underline; color: #0033cc }
-a:hover {text-decoration: underline;color: #ff0000;}
-
-@media print
-{
-#winchm_template_button{
-visibility:hidden;
-}
-}
-</style>
-</head>
-
-<body>
-
-<div id="winchm_template_title">
-<div id="winchm_template_button"><A href="WINDOW.HTM" title="Previous topic"><img id="winchm_template_prev" alt="Previous topic" src="template4/btn_prev_n.gif" border="0"></a><A href="CLASSES.HTM" title="Next topic"><img id="winchm_template_next" alt="Next topic" src="template4/btn_next_n.gif" border="0"></a></div>
-XBROWSE</div>
-<div id="winchm_template_navigation">Help &gt;
-Controls &gt; </div>
-<div id="winchm_template_content">
-
-<div class=Section1>
+   <body>
+      <div id="winchm_template_title">
+         <div id="winchm_template_button">
+            <A href="TREE.HTM" title="Previous topic">
+               <img id="winchm_template_prev" alt="Previous topic" src="template4/btn_prev_n.gif" border="0"></A>
+            <A href="CLASSES.HTM" title="Next topic">
+               <img id="winchm_template_next" alt="Next topic" src="template4/btn_next_n.gif" border="0"></A>
+         </div>XBROWSE
+      </div>
+      <div id="winchm_template_navigation">Help &gt; Controls &gt;
+      </div>
+      <div id="winchm_template_content">
+         <div class=Section1>
 
 <PRE>
 <span style='color:darkgreen'><b>
-///////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////
 // XBROWSE
-///////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////
 </b></span>
-
 #command @ &lt;row&gt;, &lt;col&gt; XBROWSE &lt;name&gt; ;
       [ &lt;dummy01: OF, PARENT&gt; &lt;parent&gt; ] ;
       [ OBJ &lt;obj&gt; ] ;
@@ -311,51 +192,71 @@ Controls &gt; </div>
             &lt;.noshow.&gt;, &lt;{rclick}&gt;, &lt;.checkboxes.&gt;, &lt;{checkchange}&gt;, ;
             &lt;{rowrefresh}&gt;, &lt;aDefVal&gt;, &lt;{editend}&gt;, ! &lt;.efv.&gt;, &lt;{beforedit}&gt; )
 
-#command SET XBROWSEFIXEDBLOCKS ON ;
-   =&gt; ;
-      SetXBrowseFixedBlocks( .T. )
+<u>Related commands and functions</u>:
 
-#command SET XBROWSEFIXEDBLOCKS OFF ;
-   =&gt; ;
-      SetXBrowseFixedBlocks( .F. )
+*** Standard syntax:
 
-#command SET XBROWSEFIXEDCONTROLS ON ;
-   =&gt; ;
-      SetXBrowseFixedControls( .T. )
-#command SET XBROWSEFIXEDCONTROLS OFF ;
-   =&gt; ;
-      SetXBrowseFixedControls( .F. )
+   SET XBROWSEFIXEDBLOCKS ON
+   SET XBROWSEFIXEDBLOCKS OFF
+   SET XBROWSEFIXEDCONTROLS ON
+   SET XBROWSEFIXEDCONTROLS OFF
 
-#define XBROWSE_JTFY_LEFT        0
-#define XBROWSE_JTFY_RIGHT       1
-#define XBROWSE_JTFY_CENTER      2
-#define XBROWSE_JTFY_JUSTIFYMASK 3
+*** Alternative syntax:
 
-#translate MemVar . &lt;AreaName&gt; . &lt;FieldName&gt; =&gt; MemVar&lt;AreaName&gt;&lt;FieldName&gt;
+   SetXBrowseFixedBlocks( .T. )
+   SetXBrowseFixedBlocks( .F. )
+   SetXBrowseFixedControls( .T. )
+   SetXBrowseFixedControls( .F. )
 
-#define HEADER_IMG_AT_LEFT  0
-#define HEADER_IMG_AT_RIGHT 1
+<u>Auxiliary variables</u>:
 
-COLUMNCONTROLS syntax:
-{'TEXTBOX', cType, cPicture, cFunction, nOnFocusPos, lButtons, aImages, lLikeExcel, cEditKey, lNoModal}
-{'TEXTBOXACTION', cType, cPicture, cFunction, nOnFocusPos, aImages, lLikeExcel, cEditKey, lNoModal, bAction, bAction2}
-{'MEMO', cTitle, lCleanCRLF, nWidth, nHeight, lSize, lNoHScroll}
-{'DATEPICKER', lUpDown, lShowNone, lButtons, aImages, lNoModal}
-{'COMBOBOX', aItems, aValues, cRetValType, lButtons, aImages, lNoModal}
-{'COMBOBOXTEXT', aItems, lIncremental, lWinSize, lButtons, aImages, lNoModal}
-{'SPINNER', nRangeMin, nRangeMax, lButtons, aImages, lNoModal}
-{'CHECKBOX', cTrue, cFalse, lButtons, aImages, lNoModal}
-{'IMAGELIST', lButtons, aImages, lNoModal}
-{'IMAGEDATA', oData, lButtons, aImages, lNoModal}
-{'LCOMBOBOX', cTrue, cFalse, lButtons, aImages, lNoModal}
+   During the execution of the VALID codeblocks, an auxiliary memvar containing
+   the value entered by the user is available for validation purposes.
+
+   This memvar name has the following syntaxes:
+      a) MemVar.AreaName.FieldName
+      b) MemVarAreaNameFieldName
+
+   For example, if a a column shows field TEST->NUMBER, inside the VALID
+   codeblock you can use the memvar "Memvar.Test.Number" or "MemvarTestNumber"
+   to access and validate the valued entered by de user.
+
+<u>Column justification constants</u>:
+
+   XBROWSE_JTFY_LEFT
+   XBROWSE_JTFY_RIGHT
+   XBROWSE_JTFY_CENTER
+   XBROWSE_JTFY_JUSTIFYMASK
+
+<u>Placement of headers images</u>:
+
+   HEADER_IMG_AT_LEFT
+   HEADER_IMG_AT_RIGHT
+
+<u>COLUMNCONTROLS syntax</u>:
+
+   {'TEXTBOX', cType, cPicture, cFunction, nOnFocusPos, lButtons, aImages, lLikeExcel, cEditKey, lNoModal}
+   {'TEXTBOXACTION', cType, cPicture, cFunction, nOnFocusPos, aImages, lLikeExcel, cEditKey, lNoModal, bAction, bAction2}
+   {'MEMO', cTitle, lCleanCRLF, nWidth, nHeight, lSize, lNoHScroll}
+   {'DATEPICKER', lUpDown, lShowNone, lButtons, aImages, lNoModal}
+   {'COMBOBOX', aItems, aValues, cRetValType, lButtons, aImages, lNoModal}
+   {'COMBOBOXTEXT', aItems, lIncremental, lWinSize, lButtons, aImages, lNoModal}
+   {'SPINNER', nRangeMin, nRangeMax, lButtons, aImages, lNoModal}
+   {'CHECKBOX', cTrue, cFalse, lButtons, aImages, lNoModal}
+   {'IMAGELIST', lButtons, aImages, lNoModal}
+   {'IMAGEDATA', oData, lButtons, aImages, lNoModal}
+   {'LCOMBOBOX', cTrue, cFalse, lButtons, aImages, lNoModal}
 </PRE>
 
-</div>
-</div>
-<div id="winchm_template_footer"><FONT color=#808080 size=1>Copyright © 2013-2016 ooHG Development Team - </FONT>
-<A href="https://sourceforge.net/projects/oohg/" target="_blank"><FONT size=1>https://sourceforge.net/projects/oohg/</FONT></A>
-</div>
-
-</body>
+         </div>
+      </div>
+      <div id="winchm_template_footer">
+         <FONT color=#808080 size=1>Copyright © 2013-2017 ooHG Development Team -
+         </FONT>
+         <A href="https://sourceforge.net/projects/oohg/" target="_blank">
+            <FONT size=1>https://sourceforge.net/projects/oohg/
+            </FONT></A>
+      </div>
+   </body>
 
 </html>

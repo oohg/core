@@ -1,439 +1,156 @@
 <!--
-$Id: STATUSBAR.HTM,v 1.5 2016-05-22 23:52:47 fyurisich Exp $
+$Id: STATUSBAR.HTM,v 1.6 2017-08-26 02:54:08 fyurisich Exp $
 -->
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html xmlns:o="urn:schemas-microsoft-com:office:office"
-xmlns:w="urn:schemas-microsoft-com:office:word"
-xmlns="http://www.w3.org/TR/REC-html40">
-
-<head>
-<meta http-equiv=Content-Type content="text/html; charset=Windows-1252">
-<meta name=ProgId content=Word.Document>
-<meta name=Generator content="Microsoft Word 11">
-<meta name=Originator content="Microsoft Word 11">
-<link rel=File-List href="STATUSBAR_archivos/filelist.xml">
-<title>STATUSBAR</title>
-
-<style>
-<!--
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{mso-style-parent:"";
-	margin:0cm;
-	margin-bottom:.0001pt;
-	mso-pagination:widow-orphan;
-	font-size:12.0pt;
-	font-family:"Times New Roman";
-	mso-fareast-font-family:"Times New Roman";}
-span.SpellE
-	{mso-style-name:"";
-	mso-spl-e:yes;}
-@page Section1
-	{size:612.0pt 792.0pt;
-	margin:70.85pt 3.0cm 70.85pt 3.0cm;
-	mso-header-margin:35.4pt;
-	mso-footer-margin:35.4pt;
-	mso-paper-source:0;}
-div.Section1
-	{page:Section1;}
--->
-</style>
-
-
-
-<style>
-html {
-	overflow-y:scroll;
-}
-
-body {
-	padding: 0px;
-	margin: 0px;
-	overflow: auto; 
-	background-color: #FFFFFF; 
-}
-
-#winchm_template_navigation{
-	margin-top: 0px;
-	margin-left: 0px;
-	margin-bottom: 0px;
-	margin-right: 0px;
-
-	padding-top: 5px;
-	padding-left: 5px;
-	padding-bottom: 5px;
-	padding-right: 5px;
-
-	font-family: arial, helvetica, sans-serif;
-	font-size: 10px;
-	font-style: normal;
-	font-weight: normal;
-	color: #626262; 
-	 
-	border-bottom-style: solid;
-	border-bottom-width: 1px;
-	border-bottom-color: #DBDBDB;
-	
-	background-color: #E2EDFA;
-	width: auto;
-}
-
-#winchm_template_button{
-	float: right;
-	top: -7px;
-	position: relative;
-	text-align: right;
-	right: -5px;
-	height: auto;
-}
-
-#winchm_template_title{
-	font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
-	font-weight: bold;
-	font-size: 18px;
-	color: 353535;	
-
-	margin-top: 0px;
-	margin-left: 0px;
-	margin-bottom: 0px;
-	margin-right: 0px;
-
-	padding-top: 10px;
-	padding-left: 5px;
-	padding-bottom: 10px;
-	padding-right: 10px;
-	
-	border-bottom-style: solid;
-	border-bottom-width: 1px;
-	border-bottom-color: #C7C7C7;
-
-	width: auto;
-	background-color: #C4DBF4;
-	text-align: left;
-}
-
-#winchm_template_content{
-	padding: 0px;
-	margin-top: 15px;
-	margin-left: 15px;
-	margin-bottom: 15px;
-	margin-right: 15px;
-
-	width: auto  !important;
-	width: 100%;
-}
-
-#winchm_template_footer{
-	border-width: 1px;
-	border-color: #c0c0c0;
-	border-top-style: solid;
-	
-	margin-top: 0px;
-	margin-left: 15px;
-	margin-bottom: 5px;
-	margin-right: 15px;
-
-	padding-top: 6px;
-	padding-left: 0px;
-	padding-bottom: 20px;
-	padding-right: 0px;
-
-	font-family: arial, helvetica, sans-serif;
-	font-size: 9px;
-	color: #909090;
-
-	text-align: left;	
-	width: auto;	
-}
-
-#winchm_template_navigation a:link	{text-decoration: none;color: #0000ff}
-#winchm_template_navigation a:visited  {text-decoration: none; color: #0000ff}
-#winchm_template_navigation a:active {text-decoration: none; color: #0000ff}
-#winchm_template_navigation a:hover {text-decoration: none;color: #0000ff}
-
-a:link	{text-decoration: underline; color:#0033cc}
-a:visited  {text-decoration: underline; color: #0033cc}
-a:active {text-decoration: underline; color: #0033cc }
-a:hover {text-decoration: underline;color: #ff0000;}
-
-@media print
-{
-#winchm_template_button{
-visibility:hidden;
-}
-}
-</style>
-</head>
-
-<body>
-
-<div id="winchm_template_title">
-<div id="winchm_template_button"><A href="SPLITBOX.HTM" title="Previous topic"><img id="winchm_template_prev" alt="Previous topic" src="template4/btn_prev_n.gif" border="0"></a><A href="TAB.HTM" title="Next topic"><img id="winchm_template_next" alt="Next topic" src="template4/btn_next_n.gif" border="0"></a></div>
-STATUSBAR</div>
-<div id="winchm_template_navigation">Help &gt; 
-Controls &gt; </div>
-<div id="winchm_template_content">
-
-<div class=Section1>
-
-<p class=MsoNormal><span lang=ES style="COLOR: darkgreen; mso-ansi-language: ES">///////////////////////////////////////////////////////////////////////////////
-<br>
-// STATUSBAR <br>
-///////////////////////////////////////////////////////////////////////////////
-<br>
-</span><span lang=ES style="COLOR: gray; mso-ansi-language: ES"><br>
-</span><span lang=ES style="COLOR: black; mso-ansi-language: ES">#<span
- class=SpellE>xcommand</span>&nbsp;DEFINE&nbsp;STATUSBAR&nbsp;;&nbsp; <br>
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;&lt;dummy1:&nbsp;OF,&nbsp;PARENT&gt;&nbsp;&lt;<span class=SpellE>parent</span>&gt;&nbsp;]&nbsp;;&nbsp;
-<br>
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;OBJ&nbsp;&lt;<span class=SpellE>obj</span>&gt;&nbsp;]&nbsp;; <br>
-<span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
- class=SpellE>kbd</span>: KEYBOARD&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;date:
-DATE&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
- class=SpellE>clock</span>: CLOCK&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ FONT &lt;<span
- class=SpellE>fontname</span>&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ SIZE &lt;<span
- class=SpellE>fontsize</span>&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
- class=SpellE>bold</span>: BOLD&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
- class=SpellE>top</span>: TOP&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
- class=SpellE>italic</span>: ITALIC&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
- class=SpellE>underline</span>: UNDERLINE&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
- class=SpellE>strikeout</span>: STRIKEOUT&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ MESSAGE &lt;<span
- class=SpellE>msg</span>&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ SUBCLASS &lt;<span
- class=SpellE>subclass</span>&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
- class=SpellE>noautoadjust</span>: NOAUTOADJUST&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ WIDTH &lt;<span
- class=SpellE>nSize</span>&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ ACTION &lt;<span
- class=SpellE>uAction</span>&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ ICON &lt;<span
- class=SpellE>cBitmap</span>&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
- class=SpellE>styl</span>: FLAT, RAISED&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ TOOLTIP &lt;<span
- class=SpellE>cToolTip</span>&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
- class=SpellE>align</span>: LEFT, CENTER, RIGHT&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp; </span>=&gt; ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
- class=SpellE>obj</span>&gt; := ] _<span class=SpellE>OOHG_SelectSubClass</span>(
-<span class=SpellE>TMessageBar</span>(), [ &lt;<span class=SpellE>subclass</span>&gt;()
-] ): ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>Define( "<span class=SpellE>StatusBar</span>",
-&lt;(parent)&gt;, 0, 0, 0, 0, &lt;<span class=SpellE>msg</span>&gt;,
-&lt;{uAction}&gt;, ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;fontname&gt;, &lt;<span class=SpellE>fontsize</span>&gt;,
-&lt;cToolTip&gt;, &lt;.clock.&gt;, &lt;.date.&gt;, &lt;.<span class=SpellE>kbd</span>.&gt;,
-;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span class=SpellE>Nil</span>, <span class=SpellE>Nil</span>, &lt;.<span
- class=SpellE>bold</span>.&gt;, &lt;.italic.&gt;, &lt;.underline.&gt;, &lt;.<span
- class=SpellE>strikeout</span>.&gt;, ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;.top.&gt;, &lt;.noautoadjust.&gt;, &lt;<span class=SpellE>nSize</span>&gt;,
-&lt;cBitmap&gt;, &lt;(styl)&gt;, &lt;(align)&gt; )<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><o:p>&nbsp;</o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><br>
-#<span class=SpellE>xcommand</span>&nbsp; END&nbsp;STATUSBAR&nbsp;; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =&gt;&nbsp;; <br>
-&nbsp;&nbsp;&nbsp; _<span class=SpellE>EndMessageBar</span>&nbsp;() <br>
-<br>
-#<span class=SpellE>xcommand</span>&nbsp;STATUSITEM&nbsp;[&nbsp;&lt;<span
- class=SpellE>cMsg</span>&gt;&nbsp;]&nbsp;;&nbsp; <br>
- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;WIDTH&nbsp;&lt;<span
- class=SpellE>nSize</span>&gt;&nbsp;]&nbsp;;&nbsp; <br>
- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;ACTION&nbsp;&lt;<span
- class=SpellE>uAction</span>&gt;&nbsp;]&nbsp;; <br>
-&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;ICON&nbsp;&lt;<span class=SpellE>cBitmap</span>&gt;&nbsp;]&nbsp;;
-<br>
-&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp;&lt;<span class=SpellE>styl:FLAT,RAISED</span>&gt;&nbsp;]&nbsp;;&nbsp;
-<br>
- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;TOOLTIP&nbsp;&lt;<span
- class=SpellE>cToolTip</span>&gt;&nbsp;]&nbsp;; <o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
- class=SpellE>align:LEFT</span>, CENTER, RIGHT&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp; </span>=&gt; ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>_<span
- class=SpellE>SetStatusItem</span>( &lt;cMsg&gt;, &lt;nSize&gt;, &lt;{<span
- class=SpellE>uAction</span>}&gt;, &lt;cToolTip&gt;, &lt;cBitmap&gt;, &lt;(<span
- class=SpellE>styl</span>)&gt;, &lt;(<span class=SpellE>align</span>)&gt; )<br>
-#<span class=SpellE>xcommand</span>&nbsp;DATE&nbsp;; <br>
-&nbsp;&nbsp;&nbsp; [&nbsp;&lt;w:&nbsp;WIDTH&nbsp;&gt;&nbsp;&lt;<span
- class=SpellE>nSize</span>&gt;&nbsp;]&nbsp;; <br>
-&nbsp;&nbsp;&nbsp; [&nbsp;ACTION&nbsp;&lt;<span class=SpellE>uAction</span>&gt;&nbsp;]&nbsp;;
-<br>
-&nbsp;&nbsp;&nbsp; [&nbsp;TOOLTIP&nbsp;&lt;<span class=SpellE>cToolTip</span>&gt;&nbsp;]&nbsp;;&nbsp;
-<br>
- &nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;&lt;<span class=SpellE>styl:FLAT,RAISED</span>&gt;&nbsp;]&nbsp;;
-<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
- class=SpellE>align:LEFT</span>, CENTER, RIGHT&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp; </span>=&gt; ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>_<span
- class=SpellE>SetStatusItem</span>( <span class=SpellE>Dtoc</span>( Date() ), ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span class=SpellE>if</span>( &lt;.w.&gt;, &lt;nSize&gt;, <span
- class=SpellE>if</span>( "<span class=SpellE>yyyy</span>" $ <span
- class=SpellE>lower</span>( set( _<span class=SpellE>SET_DATEFORMAT</span> ) ),
-95, 75 ) ), ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;{<span class=SpellE>uAction</span>}&gt;, &lt;cToolTip&gt;, <span
- class=SpellE>Nil</span>, &lt;(<span class=SpellE>styl</span>)&gt;, &lt;(<span
- class=SpellE>align</span>)&gt; )<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><br>
-#<span class=SpellE>xcommand</span>&nbsp;CLOCK&nbsp;; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[&nbsp;WIDTH&nbsp;&lt;<span class=SpellE>nSize</span>&gt;&nbsp;]&nbsp;; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[&nbsp;ACTION&nbsp;&lt;<span class=SpellE>uAction</span>&gt;&nbsp;]&nbsp;; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[&nbsp;TOOLTIP&nbsp;&lt;<span class=SpellE>cToolTip</span>&gt;&nbsp;]&nbsp;; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[&nbsp;&lt;<span class=SpellE>ampm</span>:&nbsp;AMPM&gt;&nbsp;]&nbsp;; <o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ ICON &lt;<span
- class=SpellE>cBitmap</span>&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
- class=SpellE>styl:FLAT</span>, RAISED&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
- class=SpellE>align:LEFT</span>, CENTER, RIGHT&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp; </span>=&gt; ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>_<span
- class=SpellE>SetStatusClock</span>( &lt;nSize&gt;, &lt;cToolTip&gt;, &lt;{<span
- class=SpellE>uAction</span>}&gt;, &lt;.ampm.&gt;, &lt;cBitmap&gt;, &lt;(<span
- class=SpellE>styl</span>)&gt;, &lt;(<span class=SpellE>align</span>)&gt; )<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><br>
-#<span class=SpellE>xcommand</span>&nbsp;KEYBOARD&nbsp;; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[&nbsp;WIDTH&nbsp;&lt;<span class=SpellE>nSize</span>&gt;&nbsp;]&nbsp;; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[&nbsp;ACTION&nbsp;&lt;<span class=SpellE>uAction</span>&gt;&nbsp;]&nbsp;; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[&nbsp;TOOLTIP&nbsp;&lt;<span class=SpellE>cToolTip</span>&gt;&nbsp;]&nbsp;; <o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ ICON &lt;<span
- class=SpellE>cBitmap</span>&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
- class=SpellE>styl:FLAT</span>, RAISED&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[ &lt;<span
- class=SpellE>align:LEFT</span>, CENTER, RIGHT&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp; </span>=&gt; ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>_<span
- class=SpellE>SetStatusKeybrd</span>( &lt;nSize&gt;, &lt;cToolTip&gt;, &lt;{<span
- class=SpellE>uAction</span>}&gt;, &lt;cBitmap&gt;, &lt;(styl)&gt;, &lt;(<span
- class=SpellE>align</span>)&gt; )<br style="mso-special-character: line-break"><br style="mso-special-character: line-break"></span><span style="COLOR: black"><o:p></o:p></span></p>
-
-</div>
-
-</div>
-<div id="winchm_template_footer"><FONT color=#808080 
-size=1>Copyright © 2013-2016 ooHG Development Team - </FONT><A 
-href="https://sourceforge.net/projects/oohg/" target="_blank"><FONT 
-size=1>https://sourceforge.net/projects/oohg/</FONT></A> 
-     </div>
-
-</body>
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv=Content-Type content="text/html; charset=Windows-1252">
+
+      <title>STATUSBAR</title>
+
+      <style>
+         html { overflow-y: scroll; }
+         body { padding: 0px; margin: 0px; overflow: auto; background-color: #FFFFFF; }
+         #winchm_template_navigation { margin-top: 0px; margin-left: 0px; margin-bottom: 0px; margin-right: 0px;
+           padding-top: 5px; padding-left: 5px; padding-bottom: 5px; padding-right: 5px;
+           font-family: arial, helvetica, sans-serif; font-size: 10px; font-style: normal; font-weight: normal;
+           color: #626262; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #DBDBDB;
+           background-color: #E2EDFA; width: auto; }
+         #winchm_template_button { float: right; top: -7px; position: relative; text-align: right; right: -5px;
+           height: auto; }
+         #winchm_template_title { font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif; font-weight: bold;
+            font-size: 18px; color: 353535; margin-top: 0px; margin-left: 0px; margin-bottom: 0px; margin-right: 0px;
+            padding-top: 10px; padding-left: 5px; padding-bottom: 10px; padding-right: 10px; border-bottom-style: solid;
+            border-bottom-width: 1px; border-bottom-color: #C7C7C7; width: auto; background-color: #C4DBF4;
+            text-align: left; }
+         #winchm_template_content { padding: 0px; margin-top: 15px; margin-left: 15px; margin-bottom: 15px;
+            margin-right: 15px; width: auto !important; width: 100%; }
+         #winchm_template_footer { border-width: 1px; border-color: #c0c0c0; border-top-style: solid; margin-top: 0px;
+            margin-left: 15px; margin-bottom: 5px; margin-right: 15px; padding-top: 6px; padding-left: 0px;
+            padding-bottom: 20px; padding-right: 0px; font-family: arial, helvetica, sans-serif; font-size: 9px;
+            color: #909090; text-align: left; width: auto; }
+         #winchm_template_navigation a:link { text-decoration: none; color: #0000ff }
+         #winchm_template_navigation a:visited { text-decoration: none; color: #0000ff }
+         #winchm_template_navigation a:active { text-decoration: none; color: #0000ff }
+         #winchm_template_navigation a:hover {text-decoration: none; color: #0000ff }
+         a:link { text-decoration: underline; color:#0033cc }
+         a:visited { text-decoration: underline; color: #0033cc }
+         a:active { text-decoration: underline; color: #0033cc }
+         a:hover { text-decoration: underline;color: #ff0000 }
+         @media print { #winchm_template_button{ visibility:hidden; } }
+      </style>
+   </head>
+
+   <body>
+      <div id="winchm_template_title">
+         <div id="winchm_template_button">
+            <A href="SPLITBOX.HTM" title="Previous topic">
+               <img id="winchm_template_prev" alt="Previous topic" src="template4/btn_prev_n.gif" border="0"></A>
+            <A href="TAB.HTM" title="Next topic">
+               <img id="winchm_template_next" alt="Next topic" src="template4/btn_next_n.gif" border="0"></A>
+         </div>STATUSBAR
+      </div>
+      <div id="winchm_template_navigation">Help &gt; Controls &gt;
+      </div>
+      <div id="winchm_template_content">
+         <div class=Section1>
+
+<PRE>
+<span style='color:darkgreen'><b>
+/////////////////////////////////////////////////////////////////////
+// STATUSBAR
+/////////////////////////////////////////////////////////////////////
+</b></span>
+#xcommand DEFINE STATUSBAR ;
+      [ &lt;dummy1: OF, PARENT&gt; &lt;parent&gt; ] ;
+      [ OBJ &lt;obj&gt; ] ;
+      [ &lt;kbd: KEYBOARD&gt; ] ;
+      [ &lt;date: DATE&gt; ] ;
+      [ &lt;clock: CLOCK&gt; ] ;
+      [ FONT &lt;fontname&gt; ] ;
+      [ SIZE &lt;fontsize&gt; ] ;
+      [ &lt;bold: BOLD&gt; ] ;
+      [ &lt;top: TOP&gt; ] ;
+      [ &lt;italic: ITALIC&gt; ] ;
+      [ &lt;underline: UNDERLINE&gt; ] ;
+      [ &lt;strikeout: STRIKEOUT&gt; ] ;
+      [ MESSAGE &lt;msg&gt; ] ;
+      [ SUBCLASS &lt;subclass&gt; ] ;
+      [ &lt;noautoadjust: NOAUTOADJUST&gt; ] ;
+      [ WIDTH &lt;nSize&gt; ] ;
+      [ ACTION &lt;uAction&gt; ] ;
+      [ ICON &lt;cBitmap&gt; ] ;
+      [ &lt;styl: FLAT, RAISED&gt; ] ;
+      [ TOOLTIP &lt;cToolTip&gt; ] ;
+      [ &lt;align: LEFT, CENTER, RIGHT&gt; ] ;
+   =&gt; ;
+      [ &lt;obj&gt; := ] _OOHG_SelectSubClass( TMessageBar(), [ &lt;subclass&gt;() ] ): ;
+            Define( "StatusBar", &lt;(parent)&gt;, 0, 0, 0, 0, &lt;msg&gt;, &lt;{uAction}&gt;, ;
+            &lt;fontname&gt;, &lt;fontsize&gt;, &lt;cToolTip&gt;, &lt;.clock.&gt;, &lt;.date.&gt;, &lt;.kbd.&gt;, ;
+            NIL, NIL, &lt;.bold.&gt;, &lt;.italic.&gt;, &lt;.underline.&gt;, &lt;.strikeout.&gt;, ;
+            &lt;.top.&gt;, &lt;.noautoadjust.&gt;, &lt;nSize&gt;, &lt;cBitmap&gt;, &lt;(styl)&gt;, &lt;(align)&gt; )
+
+#xcommand END STATUSBAR ;
+   =&gt; ;
+      _EndMessageBar ()
+
+#xcommand STATUSITEM [ &lt;cMsg&gt; ] ;
+      [ WIDTH &lt;nSize&gt; ] ;
+      [ ACTION &lt;uAction&gt; ] ;
+      [ ICON &lt;cBitmap&gt; ] ;
+      [ &lt;styl: FLAT, RAISED&gt; ] ;
+      [ TOOLTIP &lt;cToolTip&gt; ] ;
+      [ &lt;align: LEFT, CENTER, RIGHT&gt; ] ;
+   =&gt; ;
+      _SetStatusItem( &lt;cMsg&gt;, &lt;nSize&gt;, &lt;{uAction}&gt;, &lt;cToolTip&gt;, &lt;cBitmap&gt;, ;
+            &lt;(styl)&gt;, &lt;(align)&gt; )
+
+#xcommand DATE ;
+      [ &lt;w: WIDTH &gt; &lt;nSize&gt; ] ;
+      [ ACTION &lt;uAction&gt; ] ;
+      [ TOOLTIP &lt;cToolTip&gt; ] ;
+      [ &lt;styl: FLAT, RAISED&gt; ] ;
+      [ &lt;align: LEFT, CENTER, RIGHT&gt; ] ;
+   =&gt; ;
+      _SetStatusItem( Dtoc( Date() ), ;
+            IIF( &lt;.w.&gt;, &lt;nSize&gt;, ;
+            IIF( "yyyy" $ Lower( Set( _SET_DATEFORMAT ) ), 95, 75 ) ), ;
+            &lt;{uAction}&gt;, &lt;cToolTip&gt;, NIL, &lt;(styl)&gt;, &lt;(align)&gt; )
+
+#xcommand CLOCK ;
+      [ WIDTH &lt;nSize&gt; ] ;
+      [ ACTION &lt;uAction&gt; ] ;
+      [ TOOLTIP &lt;cToolTip&gt; ] ;
+      [ &lt;ampm: AMPM&gt; ] ;
+      [ ICON &lt;cBitmap&gt; ] ;
+      [ &lt;styl: FLAT, RAISED&gt; ] ;
+      [ &lt;align: LEFT, CENTER, RIGHT&gt; ] ;
+   =&gt; ;
+      _SetStatusClock( &lt;nSize&gt;, &lt;cToolTip&gt;, &lt;{uAction}&gt;, &lt;.ampm.&gt;, &lt;cBitmap&gt;, ;
+            &lt;(styl)&gt;, &lt;(align)&gt; )
+
+#xcommand KEYBOARD ;
+      [ WIDTH &lt;nSize&gt; ] ;
+      [ ACTION &lt;uAction&gt; ] ;
+      [ TOOLTIP &lt;cToolTip&gt; ] ;
+      [ ICON &lt;cBitmap&gt; ] ;
+      [ &lt;styl: FLAT, RAISED&gt; ] ;
+      [ &lt;align: LEFT, CENTER, RIGHT&gt; ] ;
+   =&gt; ;
+      _SetStatusKeybrd( &lt;nSize&gt;, &lt;cToolTip&gt;, &lt;{uAction}&gt;, &lt;cBitmap&gt;, ;
+            &lt;(styl)&gt;, &lt;(align)&gt; )
+</PRE>
+
+         </div>
+      </div>
+      <div id="winchm_template_footer">
+         <FONT color=#808080 size=1>Copyright © 2013-2017 ooHG Development Team -
+         </FONT>
+         <A href="https://sourceforge.net/projects/oohg/" target="_blank">
+            <FONT size=1>https://sourceforge.net/projects/oohg/
+            </FONT></A>
+      </div>
+   </body>
 
 </html>

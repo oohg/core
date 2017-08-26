@@ -1,5 +1,5 @@
 <!--
-$Id: Changelog.htm,v 1.122 2017-08-24 01:29:09 fyurisich Exp $
+$Id: Changelog.htm,v 1.123 2017-08-26 02:54:07 fyurisich Exp $
 -->
 
 <!DOCTYPE html>
@@ -51,12 +51,34 @@ $Id: Changelog.htm,v 1.122 2017-08-24 01:29:09 fyurisich Exp $
                <img id="winchm_template_next" alt="Next topic" src="template4/btn_next_n.gif" border="0"></A>
          </div>LOG OF CHANGES
       </div>
-      <div id="winchm_template_navigation">Help &gt;
+      <div id="winchm_template_navigation">Help &gt; Information &gt;
       </div>
       <div id="winchm_template_content">
          <div class=Section1>
 
 <PRE>
+<span style='color:darkgreen'><b>
+/////////////////////////////////////////////////////////////////////
+// LOG OF CHANGES
+/////////////////////////////////////////////////////////////////////
+</b></span>
+2017-08-24 19:28 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
+   * ./compile_MINGW.BAT
+     + Libs hbhpdf, libhbhpf y png.
+   * ./oohg.hbc
+     + Libs hbhpdf, libhbhpf y png.
+     + Search path for hbzebra and hbhpdf.
+   * include/i_pseudofunc.ch
+     + MsgAlert.
+   * include/i_windefs.ch
+     + MB_TOPMOST constant.
+   * source/h_msgbox.prg
+     + Function SetAutoTypeNoSpaces( lSet ).
+     + Some format.
+     * Right padding is optional in function AutoType.
+     + Function _MsgBox( Message, Title, Style, Icon, SysModal, TopMost )
+       for compatibility with HMG Extended.
+
 2017-08-23 22:29 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * doc/classes.txt
    * include/i_app.ch
@@ -92,7 +114,6 @@ $Id: Changelog.htm,v 1.122 2017-08-24 01:29:09 fyurisich Exp $
    * source/h_application.prg
      * Class datas are now readonly.
      * Format.
-
 
 2017-08-22 22:56 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * manual/Changelog.htm
@@ -18586,7 +18607,7 @@ $Id: Changelog.htm,v 1.122 2017-08-24 01:29:09 fyurisich Exp $
          </div>
       </div>
       <div id="winchm_template_footer">
-         <FONT color=#808080 size=1>Copyright © 2013-2016 ooHG Development Team -
+         <FONT color=#808080 size=1>Copyright © 2013-2017 ooHG Development Team -
          </FONT>
          <A href="https://sourceforge.net/projects/oohg/" target="_blank">
             <FONT size=1>https://sourceforge.net/projects/oohg/

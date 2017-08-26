@@ -1,5 +1,5 @@
 /*
- * $Id: bostaurus.ch,v 1.6 2017-08-25 19:26:26 fyurisich Exp $
+ * $Id: bostaurus.ch,v 1.7 2017-08-26 02:54:07 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -60,15 +60,18 @@
  */
 
 
+// BT_INFONAME()
 #define _BT_INFO_NAME_                             "Bos Taurus"
+
+
+// BT_INFOVERSION()
 #define _BT_INFO_MAJOR_VERSION_                    1
 #define _BT_INFO_MINOR_VERSION_                    0
 #define _BT_INFO_PATCHLEVEL_                       5
+
+
+// BT_INFOAUTHOR()
 #define _BT_INFO_AUTHOR_                           "(c) Dr. Claudio Soto (from Uruguay)"
-
-#define ArrayRGB_TO_COLORREF(aRGB)                 RGB( aRGB[1], aRGB[2], aRGB[3] )
-
-#define COLORREF_TO_ArrayRGB(nRGB)                 { hb_bitAND( nRGB, 0xFF ), hb_bitAND( HB_bitSHIFT( nRGB, -8 ), 0xFF ), hb_bitAND( HB_bitSHIFT( nRGB, -16 ), 0xFF ) }
 
 // BT_DC_CREATE()
 // Type
@@ -287,3 +290,7 @@
 #define BT_DRAW_ARC                                0
 #define BT_DRAW_CHORD                              1
 #define BT_DRAW_PIE                                2
+
+// PSEUDO-FUNCTIONS
+#define ArrayRGB_TO_COLORREF(aRGB)                 RGB( aRGB[1], aRGB[2], aRGB[3] )
+#define COLORREF_TO_ArrayRGB(nRGB)                 { hb_bitAND( nRGB, 0xFF ), hb_bitAND( HB_bitSHIFT( nRGB, -8 ), 0xFF ), hb_bitAND( HB_bitSHIFT( nRGB, -16 ), 0xFF ) }

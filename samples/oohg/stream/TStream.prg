@@ -1,5 +1,5 @@
 /*
- * $Id: TStream.prg,v 1.6 2015-12-08 06:01:18 guerra000 Exp $
+ * $Id: TStream.prg,v 1.7 2017-08-26 02:54:27 fyurisich Exp $
  */
 /*
  * Data stream management class.
@@ -524,7 +524,7 @@ HB_FUNC( STREAM_CUTLINEATB )
 
 #pragma ENDDUMP
 
-///////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 
 CLASS TStreamFile FROM TStreamBase
    DATA nHdl INIT 0

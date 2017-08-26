@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.prg,v 1.58 2017-08-25 19:42:22 fyurisich Exp $
+ * $Id: miniprint.prg,v 1.59 2017-08-26 02:54:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -65,9 +65,9 @@
  */
 
 
-//////////////////////////////////////////////////////////////////////////////////
-// HARBOUR LEVEL PRINT ROUTINES
-///////////////////////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////
+   // HARBOUR LEVEL PRINT ROUTINES
+   ///////////////////////////////////////////////////////////////////
 
 #include "oohg.ch"
 #include "miniprint.ch"
@@ -1322,10 +1322,10 @@ PUBLIC _OOHG_PRINTER_DocName := "OOHG printing system"
 
    Do Case
 
-      Case cLang == "HR852" // Croatian
-   /////////////////////////////////////////////////////////////
+      Case cLang == "HR852"
+   ///////////////////////////////////////////////////////////////////
    // CROATIAN
-   ////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////
 
          _HMG_PRINTER_UserMessages [01] := 'Page'
          _HMG_PRINTER_UserMessages [02] := 'Print Preview'
@@ -1360,10 +1360,10 @@ PUBLIC _OOHG_PRINTER_DocName := "OOHG printing system"
          _HMG_PRINTER_UserMessages [102] := 'No printer is installed in this system.'
          _HMG_PRINTER_UserMessages [103] := 'Closing preview... Please Wait...'
 
-      Case cLang == "EU"        // Basque.
-   /////////////////////////////////////////////////////////////
+      Case cLang == "EU"
+   ///////////////////////////////////////////////////////////////////
    // BASQUE
-   ////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////
 
          _HMG_PRINTER_UserMessages [01] := 'Page'
          _HMG_PRINTER_UserMessages [02] := 'Print Preview'
@@ -1398,10 +1398,10 @@ PUBLIC _OOHG_PRINTER_DocName := "OOHG printing system"
          _HMG_PRINTER_UserMessages [102] := 'No printer is installed in this system.'
          _HMG_PRINTER_UserMessages [103] := 'Closing preview... Please Wait...'
 
-      Case cLang == "EN"        // English
-   /////////////////////////////////////////////////////////////
+      Case cLang == "EN"       
+   ///////////////////////////////////////////////////////////////////
    // ENGLISH
-   ////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////
 
          _HMG_PRINTER_UserMessages [01] := 'Page'
          _HMG_PRINTER_UserMessages [02] := 'Print Preview'
@@ -1436,10 +1436,10 @@ PUBLIC _OOHG_PRINTER_DocName := "OOHG printing system"
          _HMG_PRINTER_UserMessages [102] := 'No printer is installed in this system.'
          _HMG_PRINTER_UserMessages [103] := 'Closing preview... Please Wait...'
 
-      Case cLang == "FR"        // French
-   /////////////////////////////////////////////////////////////
+      Case cLang == "FR"
+   ///////////////////////////////////////////////////////////////////
    // FRENCH
-   ////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////
 
             _HMG_PRINTER_UserMessages [01] := 'Page'
             _HMG_PRINTER_UserMessages [02] := "Aperçu avant impression"
@@ -1474,10 +1474,10 @@ PUBLIC _OOHG_PRINTER_DocName := "OOHG printing system"
             _HMG_PRINTER_UserMessages [102] := "Aucune imprimeur n'est installé dans ce système."
             _HMG_PRINTER_UserMessages [103] := 'Closing preview... Please Wait...'
 
-      Case cLang == "DEWIN" .OR. cLang == "DE"       // German
-   /////////////////////////////////////////////////////////////
+      Case cLang == "DEWIN" .OR. cLang == "DE"    
+   ///////////////////////////////////////////////////////////////////
    // GERMAN
-   ////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////
 
          _HMG_PRINTER_UserMessages [01] := 'Seite'
          _HMG_PRINTER_UserMessages [02] := 'Druckvorschau'
@@ -1512,10 +1512,10 @@ PUBLIC _OOHG_PRINTER_DocName := "OOHG printing system"
          _HMG_PRINTER_UserMessages [102] := 'Es sind keine Drucker im System installiert.'
          _HMG_PRINTER_UserMessages [103] := 'Bitte warten, während die Druckvorschau Schließens...'
 
-      Case cLang == "IT"        // Italian
-   /////////////////////////////////////////////////////////////
+      Case cLang == "IT"        
+   ///////////////////////////////////////////////////////////////////
    // ITALIAN
-   ////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////
 
          _HMG_PRINTER_UserMessages [01] := 'Pagina'
          _HMG_PRINTER_UserMessages [02] := 'Anteprima di stampa'
@@ -1550,10 +1550,10 @@ PUBLIC _OOHG_PRINTER_DocName := "OOHG printing system"
          _HMG_PRINTER_UserMessages [102] := 'Nessuna stampatore è installata in questo sistema.'
          _HMG_PRINTER_UserMessages [103] := 'Closing preview... Please Wait...'
 
-      Case cLang == "PLWIN"  .OR. cLang == "PL852"  .OR. cLang == "PLISO"  .OR. cLang == ""  .OR. cLang == "PLMAZ"   // Polish
-   /////////////////////////////////////////////////////////////
+      Case cLang == "PLWIN"  .OR. cLang == "PL852"  .OR. cLang == "PLISO"  .OR. cLang == ""  .OR. cLang == "PLMAZ"
+   ///////////////////////////////////////////////////////////////////
    // POLISH
-   ////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////
 
       	_HMG_PRINTER_UserMessages [01] := 'Strona'
       	_HMG_PRINTER_UserMessages [02] := 'Podgl¹d wydruku'
@@ -1588,10 +1588,10 @@ PUBLIC _OOHG_PRINTER_DocName := "OOHG printing system"
          _HMG_PRINTER_UserMessages [102] := 'No printer is installed in this system.'
          _HMG_PRINTER_UserMessages [103] := 'Closing preview... Please Wait...'
 
-      Case cLang == "PT"        // Portuguese
-   /////////////////////////////////////////////////////////////
+      Case cLang == "PT"        
+   ///////////////////////////////////////////////////////////////////
    // PORTUGUESE
-   ////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////
 
          _HMG_PRINTER_UserMessages [01] := 'Página'
          _HMG_PRINTER_UserMessages [02] := 'Inspecção prévia De Cópia'
@@ -1626,10 +1626,10 @@ PUBLIC _OOHG_PRINTER_DocName := "OOHG printing system"
          _HMG_PRINTER_UserMessages [102] := 'Nenhuma impressora está instalado neste sistema.'
          _HMG_PRINTER_UserMessages [103] := 'Closing preview... Please Wait...'
 
-      Case cLang == "RUWIN"  .OR. cLang == "RU866" .OR. cLang == "RUKOI8" // Russian
-   /////////////////////////////////////////////////////////////
+      Case cLang == "RUWIN"  .OR. cLang == "RU866" .OR. cLang == "RUKOI8"
+   ///////////////////////////////////////////////////////////////////
    // RUSSIAN
-   ////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////
 
          _HMG_PRINTER_UserMessages [01] := 'Page'
          _HMG_PRINTER_UserMessages [02] := 'Print Preview'
@@ -1664,10 +1664,10 @@ PUBLIC _OOHG_PRINTER_DocName := "OOHG printing system"
          _HMG_PRINTER_UserMessages [102] := 'No printer is installed in this system.'
          _HMG_PRINTER_UserMessages [103] := 'Closing preview... Please Wait...'
 
-      Case cLang == "ES"  .OR. cLang == "ESWIN"       // Spanish
-   /////////////////////////////////////////////////////////////
+      Case cLang == "ES"  .OR. cLang == "ESWIN"
+   ///////////////////////////////////////////////////////////////////
    // SPANISH
-   ////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////
 
          _HMG_PRINTER_UserMessages [01] := 'Página'
          _HMG_PRINTER_UserMessages [02] := 'Vista Previa'
@@ -1702,10 +1702,10 @@ PUBLIC _OOHG_PRINTER_DocName := "OOHG printing system"
          _HMG_PRINTER_UserMessages [102] := 'No hay impresora instalada en este sistema.'
          _HMG_PRINTER_UserMessages [103] := 'Cerrando vista previa... Espere Por Favor...'
 
-      Case cLang == "FI"        // Finnish
-   ///////////////////////////////////////////////////////////////////////
+      Case cLang == "FI"
+   ///////////////////////////////////////////////////////////////////
    // FINNISH
-   ///////////////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////
 
          _HMG_PRINTER_UserMessages [01] := 'Page'
          _HMG_PRINTER_UserMessages [02] := 'Print Preview'
@@ -1740,10 +1740,10 @@ PUBLIC _OOHG_PRINTER_DocName := "OOHG printing system"
          _HMG_PRINTER_UserMessages [102] := 'No printer is installed in this system.'
          _HMG_PRINTER_UserMessages [103] := 'Closing preview... Please Wait...'
 
-      Case cLang == "NL"        // Dutch
-   /////////////////////////////////////////////////////////////
+      Case cLang == "NL"
+   ///////////////////////////////////////////////////////////////////
    // DUTCH
-   ////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////
 
          _HMG_PRINTER_UserMessages [01] := 'Page'
          _HMG_PRINTER_UserMessages [02] := 'Print Preview'
@@ -1778,10 +1778,10 @@ PUBLIC _OOHG_PRINTER_DocName := "OOHG printing system"
          _HMG_PRINTER_UserMessages [102] := 'No printer is installed in this system.'
          _HMG_PRINTER_UserMessages [103] := 'Closing preview... Please Wait...'
 
-      Case cLang == "SLWIN" .OR. cLang == "SLISO" .OR. cLang == "SL852" .OR. cLang == "" .OR. cLang == "SL437" // Slovenian
-   /////////////////////////////////////////////////////////////
+      Case cLang == "SLWIN" .OR. cLang == "SLISO" .OR. cLang == "SL852" .OR. cLang == "" .OR. cLang == "SL437"
+   ///////////////////////////////////////////////////////////////////
    // SLOVENIAN
-   ////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////
 
          _HMG_PRINTER_UserMessages [01] := 'Page'
          _HMG_PRINTER_UserMessages [02] := 'Print Preview'
@@ -1817,9 +1817,9 @@ PUBLIC _OOHG_PRINTER_DocName := "OOHG printing system"
          _HMG_PRINTER_UserMessages [103] := 'Closing preview... Please Wait...'
 
       Otherwise
-   /////////////////////////////////////////////////////////////
-   // DEFAULT ENGLISH
-   ////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////
+   // DEFAULT TO ENGLISH
+   ///////////////////////////////////////////////////////////////////
 
          _HMG_PRINTER_UserMessages [01] := 'Page'
          _HMG_PRINTER_UserMessages [02] := 'Print Preview'
@@ -1927,9 +1927,9 @@ RETURN ( _HMG_PRINTER_Dz / 200 )
 
 #pragma BEGINDUMP
 
-///////////////////////////////////////////////////////////////////////////////
-// LOW LEVEL C PRINT ROUTINES
-///////////////////////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////
+   // LOW LEVEL C PRINT ROUTINES
+   ///////////////////////////////////////////////////////////////////
 
 #include <windows.h>
 #include <stdio.h>
@@ -2908,9 +2908,9 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
    int fields = 0;
    int error = 0;
 
-   ///////////////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////
    // Get the current settings from the printer's driver
-   ///////////////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////
 
    bFlag = OpenPrinter( (char *) hb_parc( 1 ), &hPrinter, NULL );
 
@@ -3045,9 +3045,9 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
       pi2->pDevMode = pDevMode;
    }
 
-   ///////////////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////
    // Set new values if the driver supports changing the properties
-   ///////////////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////
 
    // Orientation
    if( hb_parni( 2 ) != -999 )
@@ -3423,9 +3423,9 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
       }
    }
 
-   ///////////////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////
    // Update driver
-   ///////////////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////
 
    // Specify exactly what we are attempting to change
    pi2->pDevMode->dmFields = fields;
@@ -3459,9 +3459,9 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
       SetPrinter( hPrinter, 2, (LPBYTE) pi2, 0 );
    }
 
-   ///////////////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////
    // Create a DC to handle the print job
-   ///////////////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////
 
    hdcPrint = CreateDC( NULL, TEXT( hb_parc( 1 ) ), NULL, pi2->pDevMode );
 

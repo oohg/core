@@ -1,245 +1,121 @@
 <!--
-$Id: HBPRINTER_SAMPLE.HTM,v 1.4 2016-05-22 23:52:47 fyurisich Exp $
+$Id: HBPRINTER_SAMPLE.HTM,v 1.5 2017-08-26 02:54:08 fyurisich Exp $
 -->
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html xmlns:o="urn:schemas-microsoft-com:office:office"
-xmlns:w="urn:schemas-microsoft-com:office:word"
-xmlns="http://www.w3.org/TR/REC-html40">
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv=Content-Type content="text/html; charset=Windows-1252">
 
-<head>
-<meta http-equiv=Content-Type content="text/html; charset=Windows-1252">
-<meta name=ProgId content=Word.Document>
-<meta name=Generator content="Microsoft Word 11">
-<meta name=Originator content="Microsoft Word 11">
-<link rel=File-List href="HBPRINTER_SAMPLE_archivos/filelist.xml">
-<title>HBPRINTER SAMPLE</title>
+      <title>HBPRINTER SAMPLE</title>
 
-<style>
-<!--
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{mso-style-parent:"";
-	margin:0cm;
-	margin-bottom:.0001pt;
-	mso-pagination:widow-orphan;
-	font-size:12.0pt;
-	font-family:"Times New Roman";
-	mso-fareast-font-family:"Times New Roman";}
-@page Section1
-	{size:612.0pt 792.0pt;
-	margin:70.85pt 3.0cm 70.85pt 3.0cm;
-	mso-header-margin:35.4pt;
-	mso-footer-margin:35.4pt;
-	mso-paper-source:0;}
-div.Section1
-	{page:Section1;}
--->
-</style>
+      <style>
+         html { overflow-y: scroll; }
+         body { padding: 0px; margin: 0px; overflow: auto; background-color: #FFFFFF; }
+         #winchm_template_navigation { margin-top: 0px; margin-left: 0px; margin-bottom: 0px; margin-right: 0px;
+           padding-top: 5px; padding-left: 5px; padding-bottom: 5px; padding-right: 5px;
+           font-family: arial, helvetica, sans-serif; font-size: 10px; font-style: normal; font-weight: normal;
+           color: #626262; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #DBDBDB;
+           background-color: #E2EDFA; width: auto; }
+         #winchm_template_button { float: right; top: -7px; position: relative; text-align: right; right: -5px;
+           height: auto; }
+         #winchm_template_title { font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif; font-weight: bold;
+            font-size: 18px; color: 353535; margin-top: 0px; margin-left: 0px; margin-bottom: 0px; margin-right: 0px;
+            padding-top: 10px; padding-left: 5px; padding-bottom: 10px; padding-right: 10px; border-bottom-style: solid;
+            border-bottom-width: 1px; border-bottom-color: #C7C7C7; width: auto; background-color: #C4DBF4;
+            text-align: left; }
+         #winchm_template_content { padding: 0px; margin-top: 15px; margin-left: 15px; margin-bottom: 15px;
+            margin-right: 15px; width: auto !important; width: 100%; }
+         #winchm_template_footer { border-width: 1px; border-color: #c0c0c0; border-top-style: solid; margin-top: 0px;
+            margin-left: 15px; margin-bottom: 5px; margin-right: 15px; padding-top: 6px; padding-left: 0px;
+            padding-bottom: 20px; padding-right: 0px; font-family: arial, helvetica, sans-serif; font-size: 9px;
+            color: #909090; text-align: left; width: auto; }
+         #winchm_template_navigation a:link { text-decoration: none; color: #0000ff }
+         #winchm_template_navigation a:visited { text-decoration: none; color: #0000ff }
+         #winchm_template_navigation a:active { text-decoration: none; color: #0000ff }
+         #winchm_template_navigation a:hover {text-decoration: none; color: #0000ff }
+         a:link { text-decoration: underline; color:#0033cc }
+         a:visited { text-decoration: underline; color: #0033cc }
+         a:active { text-decoration: underline; color: #0033cc }
+         a:hover { text-decoration: underline;color: #ff0000 }
+         @media print { #winchm_template_button{ visibility:hidden; } }
+      </style>
+   </head>
+
+   <body>
+      <div id="winchm_template_title">
+         <div id="winchm_template_button">
+            <A href="HBPRINTER_CONSTANTS.HTM" title="Previous topic">
+               <img id="winchm_template_prev" alt="Previous topic" src="template4/btn_prev_n.gif" border="0"></A>
+            <A href="MINIPRINT.HTM" title="Next topic">
+               <img id="winchm_template_next" alt="Next topic" src="template4/btn_next_n.gif" border="0"></A>
+         </div>HBPRINTER SAMPLE
+      </div>
+      <div id="winchm_template_navigation">Help &gt; Libraries &gt; HBPRINTER &gt;
+      </div>
+      <div id="winchm_template_content">
+         <div class=Section1>
+
+<PRE>
+<span style='color:darkgreen'><b>
+/////////////////////////////////////////////////////////////////////
+// HBPRINTER SAMPLE
+/////////////////////////////////////////////////////////////////////
+</b></span>
+      INIT PRINTSYS
+      SELECT DEFAULT PREVIEW
+      DEFINE FONT &quot;F0&quot; NAME &quot;Courier New&quot; SIZE 24
+      START DOC
+         FOR i := 1 TO 10
+            START PAGE
+               @ 10,10 SAY &quot;Page&quot; + STR( i ) FONT &quot;F0&quot; TO PRINT
+            END PAGE
+         NEXT i
+      END DOC
+      RELEASE PRINTSYS
+
+<u>Hints</u>:
+
+The best way to get the most similiar printout on various printers is to use <b>SET UNITS MM</b>, remembering to use margins large enough for all printers.
+When setting units to <b>ROWCOL</b>, you must consider that the font is not mapped exactly in the same way by different printer drivers.
+Row height is measured using mapped printer <b>DC font</b>, so, its slightly different on different printers.
+This is why the printout varies on different printers.
+When setting units to <b>MM</b>, the printout position is calculated using printer resolution in pixels-per-inch, so this method is more exact than setting units to <b>ROWCOL</b>.
+Remember that the preview shows only the printable area and not the whole paper area.
+
+Case MM (note that point 0,0 is the upper left corner of the paper area):
+
+SET UNITS MM
+@ 5, 5 PICTURE &quot;info.bmp&quot; size 15, 10
+
+<img src="images/HBPRINTER_SAMPLE_1.PNG" border="0" alt="graphic">
+
+
+Case ROWCOL (note that point 0,0 is the upper left corner of the printable area):
+
+SET UNITS ROWCOL
+DEFINE FONT &quot;F0&quot; NAME &quot;Courier New&quot; SIZE 40
+@ 0, 0 PICTURE &quot;info.bmp&quot; size 2, 3
+@ 3, 0 SAY &quot;This is a text&quot; FONT &quot;F0&quot; TO PRINT
+
+<img src="images/HBPRINTER_SAMPLE_2.PNG" border="0" alt="graphic">
 
 
 
-<style>
-html {
-	overflow-y:scroll;
-}
-
-body {
-	padding: 0px;
-	margin: 0px;
-	overflow: auto;
-	background-color: #FFFFFF;
-}
-
-#winchm_template_navigation{
-	margin-top: 0px;
-	margin-left: 0px;
-	margin-bottom: 0px;
-	margin-right: 0px;
-
-	padding-top: 5px;
-	padding-left: 5px;
-	padding-bottom: 5px;
-	padding-right: 5px;
-
-	font-family: arial, helvetica, sans-serif;
-	font-size: 10px;
-	font-style: normal;
-	font-weight: normal;
-	color: #626262;
-
-	border-bottom-style: solid;
-	border-bottom-width: 1px;
-	border-bottom-color: #DBDBDB;
-
-	background-color: #E2EDFA;
-	width: auto;
-}
-
-#winchm_template_button{
-	float: right;
-	top: -7px;
-	position: relative;
-	text-align: right;
-	right: -5px;
-	height: auto;
-}
-
-#winchm_template_title{
-	font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
-	font-weight: bold;
-	font-size: 18px;
-	color: 353535;
-
-	margin-top: 0px;
-	margin-left: 0px;
-	margin-bottom: 0px;
-	margin-right: 0px;
-
-	padding-top: 10px;
-	padding-left: 5px;
-	padding-bottom: 10px;
-	padding-right: 10px;
-
-	border-bottom-style: solid;
-	border-bottom-width: 1px;
-	border-bottom-color: #C7C7C7;
-
-	width: auto;
-	background-color: #C4DBF4;
-	text-align: left;
-}
-
-#winchm_template_content{
-	padding: 0px;
-	margin-top: 15px;
-	margin-left: 15px;
-	margin-bottom: 15px;
-	margin-right: 15px;
-
-	width: auto  !important;
-	width: 100%;
-}
-
-#winchm_template_footer{
-	border-width: 1px;
-	border-color: #c0c0c0;
-	border-top-style: solid;
-
-	margin-top: 0px;
-	margin-left: 15px;
-	margin-bottom: 5px;
-	margin-right: 15px;
-
-	padding-top: 6px;
-	padding-left: 0px;
-	padding-bottom: 20px;
-	padding-right: 0px;
-
-	font-family: arial, helvetica, sans-serif;
-	font-size: 9px;
-	color: #909090;
-
-	text-align: left;
-	width: auto;
-}
-
-#winchm_template_navigation a:link	{text-decoration: none;color: #0000ff}
-#winchm_template_navigation a:visited  {text-decoration: none; color: #0000ff}
-#winchm_template_navigation a:active {text-decoration: none; color: #0000ff}
-#winchm_template_navigation a:hover {text-decoration: none;color: #0000ff}
-
-a:link	{text-decoration: underline; color:#0033cc}
-a:visited  {text-decoration: underline; color: #0033cc}
-a:active {text-decoration: underline; color: #0033cc }
-a:hover {text-decoration: underline;color: #ff0000;}
-
-@media print
-{
-#winchm_template_button{
-visibility:hidden;
-}
-}
-</style>
-</head>
-
-<body>
-
-<div id="winchm_template_title">
-<div id="winchm_template_button"><A href="HBPRINTER_CONSTANTS.HTM" title="Previous topic"><img id="winchm_template_prev" alt="Previous topic" src="template4/btn_prev_n.gif" border="0"></a><img id="winchm_template_next" alt="Next topic" src="template4/btn_next_g.gif" border="0"></div>
-HBPRINTER LIBRARY</div>
-<div id="winchm_template_navigation">Help &gt;
-Libraries &gt; HBPRINTER &gt; </div>
-<div id="winchm_template_content">
-
-<div class=Section1>
-
-<p class=MsoNormal><span lang=ES style="COLOR: darkgreen; mso-ansi-language: ES">///////////////////////////////////////////////////////////////////////////////
-<br>
-// HBPRINTER SAMPLE <br>
-///////////////////////////////////////////////////////////////////////////////
-<br>
-</span><span lang=ES style="COLOR: gray; mso-ansi-language: ES"><br>
-
-<p style="margin-left:00mm;"><b>INIT PRINTSYS</b>
-<p style="margin-left:10mm;"><b>SELECT DEFAULT PREVIEW</b>
-<p style="margin-left:10mm;"><b>DEFINE FONT &quot;F0&quot; NAME &quot;Courier New&quot; SIZE 24</b>
-<p style="margin-left:10mm;"><b>START DOC</b>
-<p style="margin-left:20mm;"><b>FOR i := 1 TO 10</b>
-<p style="margin-left:30mm;"><b>START PAGE</b>
-<p style="margin-left:40mm;"><b>@ 10,10 SAY &quot;Page&quot; + STR( i ) FONT &quot;F0&quot; TO PRINT</b>
-<p style="margin-left:30mm;"><b>END PAGE</b>
-<p style="margin-left:20mm;"><b>NEXT i</b>
-<p style="margin-left:10mm;"><b>END DOC</b>
-<p style="margin-left:00mm;"><b>RELEASE PRINTSYS</b>
-
-<p>&nbsp;
-<p><b><u>Hints:</u></b>
-<p>
-The best way to get the most similiar printout on various printers is to use <b>SET UNITS MM</b>, remembering to use margins large enough for all printers.<br>
-When setting units to rowcol, you must consider that the font is not mapped exactly in the same way by different printer drivers.<br>
-Row height is measured using mapped printer <b>DC</b> font, so, its slightly different on different printers.<br>
-This is why the printout varies on different printers.<br>
-When setting units MM, the printout position is calculated using printer resolution in pixels-per-inch, so this method is more exact than setting units ROWCOL.<br>
-Remember that the preview shows only the printable area and not the whole paper area.<br>
-
-<p>Case MM (note that point 0,0 is the upper left corner of the paper area):
-<p>
-SET UNITS MM<br>
-@ 5, 5 PICTURE &quot;info.bmp&quot; size 15, 10<br>
-<p><img src="images/HBPRINTER_SAMPLE_1.PNG"  border="0"  alt="graphic">
-
-<p>&nbsp;
-
-<p>Case ROWCOL (note that point 0,0 is the upper left corner of the printable area):
-<p>
-SET UNITS ROWCOL<br>
-DEFINE FONT &quot;F0&quot; NAME &quot;Courier New&quot; SIZE 40<br>
-@ 0, 0 PICTURE &quot;info.bmp&quot; size 2, 3<br>
-@ 3, 0 SAY &quot;This is a text&quot; FONT &quot;F0&quot; TO PRINT<br>
-<p><img src="images/HBPRINTER_SAMPLE_2.PNG"  border="0"  alt="graphic">
-
-<p>&nbsp;
-
-<p>The content of this page is derived from the MiniGui Extended help manual.<br>
-(c) MiniGUI Team (Grigory Filatov, Jacek Kubica, Janusz Pora)<br>
+The content of this page is derived from the MiniGui Extended help manual.
+(c) MiniGUI Team (Grigory Filatov, Jacek Kubica, Janusz Pora)
 You can access the original work at <A href="https://sourceforge.net/projects/hmgs-minigui/" target="_blank">https://sourceforge.net/projects/hmgs-minigui/</A>
+</PRE>
 
-</span>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES">
-</span>
-
-</div>
-
-</div>
-
-<div id="winchm_template_footer"><FONT color=#808080
-size=1>Copyright © 2013-2016 ooHG Development Team - </FONT><A
-href="https://sourceforge.net/projects/oohg/" target="_blank"><FONT
-size=1>https://sourceforge.net/projects/oohg/</FONT></A>
-</div>
-
-</body>
+         </div>
+      </div>
+      <div id="winchm_template_footer">
+         <FONT color=#808080 size=1>Copyright © 2013-2017 ooHG Development Team -
+         </FONT>
+         <A href="https://sourceforge.net/projects/oohg/" target="_blank">
+            <FONT size=1>https://sourceforge.net/projects/oohg/
+            </FONT></A>
+      </div>
+   </body>
 
 </html>

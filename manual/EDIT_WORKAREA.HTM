@@ -1,316 +1,87 @@
 <!--
-$Id: EDIT_WORKAREA.HTM,v 1.7 2017-08-24 01:29:09 fyurisich Exp $
+$Id: EDIT_WORKAREA.HTM,v 1.8 2017-08-26 02:54:08 fyurisich Exp $
 -->
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html xmlns:o="urn:schemas-microsoft-com:office:office"
-xmlns:w="urn:schemas-microsoft-com:office:word"
-xmlns="http://www.w3.org/TR/REC-html40">
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv=Content-Type content="text/html; charset=Windows-1252">
 
-<head>
-<meta http-equiv=Content-Type content="text/html; charset=Windows-1252">
-<meta name=ProgId content=Word.Document>
-<meta name=Generator content="Microsoft Word 11">
-<meta name=Originator content="Microsoft Word 11">
-<link rel=File-List href="EDIT_WORKAREA_archivos/filelist.xml">
-<title>EDIT WORKAREA</title>
+      <title>EDIT WORKAREA</title>
 
-<style>
-<!--
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{mso-style-parent:"";
-	margin:0cm;
-	margin-bottom:.0001pt;
-	mso-pagination:widow-orphan;
-	font-size:12.0pt;
-	font-family:"Times New Roman";
-	mso-fareast-font-family:"Times New Roman";}
-span.SpellE
-	{mso-style-name:"";
-	mso-spl-e:yes;}
-@page Section1
-	{size:612.0pt 792.0pt;
-	margin:70.85pt 3.0cm 70.85pt 3.0cm;
-	mso-header-margin:35.4pt;
-	mso-footer-margin:35.4pt;
-	mso-paper-source:0;}
-div.Section1
-	{page:Section1;}
--->
-</style>
+      <style>
+         html { overflow-y: scroll; }
+         body { padding: 0px; margin: 0px; overflow: auto; background-color: #FFFFFF; }
+         #winchm_template_navigation { margin-top: 0px; margin-left: 0px; margin-bottom: 0px; margin-right: 0px;
+           padding-top: 5px; padding-left: 5px; padding-bottom: 5px; padding-right: 5px;
+           font-family: arial, helvetica, sans-serif; font-size: 10px; font-style: normal; font-weight: normal;
+           color: #626262; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #DBDBDB;
+           background-color: #E2EDFA; width: auto; }
+         #winchm_template_button { float: right; top: -7px; position: relative; text-align: right; right: -5px;
+           height: auto; }
+         #winchm_template_title { font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif; font-weight: bold;
+            font-size: 18px; color: 353535; margin-top: 0px; margin-left: 0px; margin-bottom: 0px; margin-right: 0px;
+            padding-top: 10px; padding-left: 5px; padding-bottom: 10px; padding-right: 10px; border-bottom-style: solid;
+            border-bottom-width: 1px; border-bottom-color: #C7C7C7; width: auto; background-color: #C4DBF4;
+            text-align: left; }
+         #winchm_template_content { padding: 0px; margin-top: 15px; margin-left: 15px; margin-bottom: 15px;
+            margin-right: 15px; width: auto !important; width: 100%; }
+         #winchm_template_footer { border-width: 1px; border-color: #c0c0c0; border-top-style: solid; margin-top: 0px;
+            margin-left: 15px; margin-bottom: 5px; margin-right: 15px; padding-top: 6px; padding-left: 0px;
+            padding-bottom: 20px; padding-right: 0px; font-family: arial, helvetica, sans-serif; font-size: 9px;
+            color: #909090; text-align: left; width: auto; }
+         #winchm_template_navigation a:link { text-decoration: none; color: #0000ff }
+         #winchm_template_navigation a:visited { text-decoration: none; color: #0000ff }
+         #winchm_template_navigation a:active { text-decoration: none; color: #0000ff }
+         #winchm_template_navigation a:hover {text-decoration: none; color: #0000ff }
+         a:link { text-decoration: underline; color:#0033cc }
+         a:visited { text-decoration: underline; color: #0033cc }
+         a:active { text-decoration: underline; color: #0033cc }
+         a:hover { text-decoration: underline;color: #ff0000 }
+         @media print { #winchm_template_button{ visibility:hidden; } }
+      </style>
+   </head>
 
+   <body>
+      <div id="winchm_template_title">
+         <div id="winchm_template_button">
+            <A href="EDIT_EXTENDED.HTM" title="Previous topic">
+               <img id="winchm_template_prev" alt="Previous topic" src="template4/btn_prev_n.gif" border="0"></A>
+            <A href="UNCOMPRESS.HTM" title="Next topic">
+               <img id="winchm_template_next" alt="Next topic" src="template4/btn_next_n.gif" border="0"></A>
+         </div>EDIT WORKAREA
+      </div>
+      <div id="winchm_template_navigation">Help &gt; Commands &gt;
+      </div>
+      <div id="winchm_template_content">
+         <div class=Section1>
 
+<PRE>
+<span style='color:darkgreen'><b>
+/////////////////////////////////////////////////////////////////////
+// EDIT WORKAREA
+/////////////////////////////////////////////////////////////////////
+</b></span>
+#translate EDIT WORKAREA &lt;workarea&gt; ;
+      [ TITLE &lt;title&gt; ] ;
+      [ FIELDS &lt;fields&gt; ] ;
+      [ READONLY &lt;editablefields&gt; ] ;
+      [ SAVE &lt;bsave&gt; ] ;
+      [ SEARCH &lt;bsearch&gt; ] ;
+   =&gt; ;
+      ABM( &lt;(workarea)&gt;, &lt;title&gt;, &lt;fields&gt;, NoArray( &lt;editablefields&gt; ), ;
+            &lt;bsave&gt;, &lt;bsearch&gt; )
+</PRE>
 
-<style>
-html {
-	overflow-y:scroll;
-}
-
-body {
-	padding: 0px;
-	margin: 0px;
-	overflow: auto; 
-	background-color: #FFFFFF; 
-}
-
-#winchm_template_navigation{
-	margin-top: 0px;
-	margin-left: 0px;
-	margin-bottom: 0px;
-	margin-right: 0px;
-
-	padding-top: 5px;
-	padding-left: 5px;
-	padding-bottom: 5px;
-	padding-right: 5px;
-
-	font-family: arial, helvetica, sans-serif;
-	font-size: 10px;
-	font-style: normal;
-	font-weight: normal;
-	color: #626262; 
-	 
-	border-bottom-style: solid;
-	border-bottom-width: 1px;
-	border-bottom-color: #DBDBDB;
-	
-	background-color: #E2EDFA;
-	width: auto;
-}
-
-#winchm_template_button{
-	float: right;
-	top: -7px;
-	position: relative;
-	text-align: right;
-	right: -5px;
-	height: auto;
-}
-
-#winchm_template_title{
-	font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
-	font-weight: bold;
-	font-size: 18px;
-	color: 353535;	
-
-	margin-top: 0px;
-	margin-left: 0px;
-	margin-bottom: 0px;
-	margin-right: 0px;
-
-	padding-top: 10px;
-	padding-left: 5px;
-	padding-bottom: 10px;
-	padding-right: 10px;
-	
-	border-bottom-style: solid;
-	border-bottom-width: 1px;
-	border-bottom-color: #C7C7C7;
-
-	width: auto;
-	background-color: #C4DBF4;
-	text-align: left;
-}
-
-#winchm_template_content{
-	padding: 0px;
-	margin-top: 15px;
-	margin-left: 15px;
-	margin-bottom: 15px;
-	margin-right: 15px;
-
-	width: auto  !important;
-	width: 100%;
-}
-
-#winchm_template_footer{
-	border-width: 1px;
-	border-color: #c0c0c0;
-	border-top-style: solid;
-	
-	margin-top: 0px;
-	margin-left: 15px;
-	margin-bottom: 5px;
-	margin-right: 15px;
-
-	padding-top: 6px;
-	padding-left: 0px;
-	padding-bottom: 20px;
-	padding-right: 0px;
-
-	font-family: arial, helvetica, sans-serif;
-	font-size: 9px;
-	color: #909090;
-
-	text-align: left;	
-	width: auto;	
-}
-
-#winchm_template_navigation a:link	{text-decoration: none;color: #0000ff}
-#winchm_template_navigation a:visited  {text-decoration: none; color: #0000ff}
-#winchm_template_navigation a:active {text-decoration: none; color: #0000ff}
-#winchm_template_navigation a:hover {text-decoration: none;color: #0000ff}
-
-a:link	{text-decoration: underline; color:#0033cc}
-a:visited  {text-decoration: underline; color: #0033cc}
-a:active {text-decoration: underline; color: #0033cc }
-a:hover {text-decoration: underline;color: #ff0000;}
-
-@media print
-{
-#winchm_template_button{
-visibility:hidden;
-}
-}
-</style>
-</head>
-
-<body>
-
-<div id="winchm_template_title">
-<div id="winchm_template_button"><A href="EDIT_EXTENDED.HTM" title="Previous topic"><img id="winchm_template_prev" alt="Previous topic" src="template4/btn_prev_n.gif" border="0"></a><A href="UNCOMPRESS.HTM" title="Next topic"><img id="winchm_template_next" alt="Next topic" src="template4/btn_next_n.gif" border="0"></a></div>
-EDIT WORKAREA</div>
-<div id="winchm_template_navigation">Help &gt; 
-Commands &gt; </div>
-<div id="winchm_template_content">
-
-<div class=Section1>
-
-<p class=MsoNormal><span lang=ES style='color:darkgreen;mso-ansi-language:ES'>///////////////////////////////////////////////////////////////////////////////
-<br>
-// EDIT WORKAREA <br>
-///////////////////////////////////////////////////////////////////////////////
-<br>
-</span><span lang=ES style='color:gray;mso-ansi-language:ES'><br>
-</span><span lang=ES style='color:blue;mso-ansi-language:ES'>#</span><span
-class=SpellE><span lang=ES style='color:black;mso-ansi-language:ES'>translate</span></span><span
-lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
-style='color:black;mso-ansi-language:ES'>EDIT</span><span lang=ES
-style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
-style='color:black;mso-ansi-language:ES'>WORKAREA</span><span lang=ES
-style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
-style='color:black;mso-ansi-language:ES'>&lt;<span class=SpellE>workarea</span>&gt;</span><span
-lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
-lang=ES style='color:gray;mso-ansi-language:ES'> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
-style='color:black;mso-ansi-language:ES'>[</span><span lang=ES
-style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
-style='color:black;mso-ansi-language:ES'>TITLE</span><span lang=ES
-style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
-style='color:black;mso-ansi-language:ES'>&lt;<span class=SpellE>title</span>&gt;</span><span
-lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
-style='color:black;mso-ansi-language:ES'>]</span><span lang=ES
-style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
-lang=ES style='color:gray;mso-ansi-language:ES'> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
-style='color:black;mso-ansi-language:ES'>[</span><span lang=ES
-style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
-style='color:black;mso-ansi-language:ES'>FIELDS</span><span lang=ES
-style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
-style='color:black;mso-ansi-language:ES'>&lt;<span class=SpellE>fields</span>&gt;</span><span
-lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
-style='color:black;mso-ansi-language:ES'>]</span><span lang=ES
-style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
-lang=ES style='color:gray;mso-ansi-language:ES'> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
-style='color:black;mso-ansi-language:ES'>[</span><span lang=ES
-style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
-style='color:black;mso-ansi-language:ES'>READONLY</span><span lang=ES
-style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
-style='color:black;mso-ansi-language:ES'>&lt;<span class=SpellE>editablefields</span>&gt;</span><span
-lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
-style='color:black;mso-ansi-language:ES'>]</span><span lang=ES
-style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
-lang=ES style='color:gray;mso-ansi-language:ES'> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
-style='color:black;mso-ansi-language:ES'>[</span><span lang=ES
-style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
-style='color:black;mso-ansi-language:ES'>SAVE</span><span lang=ES
-style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
-style='color:black;mso-ansi-language:ES'>&lt;<span class=SpellE>bsave</span>&gt;</span><span
-lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
-style='color:black;mso-ansi-language:ES'>]</span><span lang=ES
-style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
-lang=ES style='color:gray;mso-ansi-language:ES'> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
-style='color:black;mso-ansi-language:ES'>[</span><span lang=ES
-style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
-style='color:black;mso-ansi-language:ES'>SEARCH</span><span lang=ES
-style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
-style='color:black;mso-ansi-language:ES'>&lt;<span class=SpellE>bsearch</span>&gt;</span><span
-lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
-style='color:black;mso-ansi-language:ES'>]</span><span lang=ES
-style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
-lang=ES style='color:gray;mso-ansi-language:ES'> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
-style='color:blue;mso-ansi-language:ES'>=</span><span lang=ES style='color:
-black;mso-ansi-language:ES'>&gt;</span><span lang=ES style='color:gray;
-mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
-lang=ES style='color:gray;mso-ansi-language:ES'> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span lang=ES style='color:black;mso-ansi-language:ES'>ABM(</span><span
-lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp; </span><span
-lang=ES style='color:black;mso-ansi-language:ES'>&lt;(<span class=SpellE>workarea</span>)&gt;</span><span
-lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
-style='color:black;mso-ansi-language:ES'>,</span><span lang=ES
-style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
-lang=ES style='color:gray;mso-ansi-language:ES'> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-lang=ES style='color:black;mso-ansi-language:ES'>&lt;title&gt;</span><span
-lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
-style='color:black;mso-ansi-language:ES'>,</span><span lang=ES
-style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
-lang=ES style='color:gray;mso-ansi-language:ES'> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-lang=ES style='color:black;mso-ansi-language:ES'>&lt;fields&gt;</span><span
-lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
-style='color:black;mso-ansi-language:ES'>,</span><span lang=ES
-style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
-lang=ES style='color:gray;mso-ansi-language:ES'> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-class=SpellE><span lang=ES style='color:black;mso-ansi-language:ES'>NoArray</span></span><span
-lang=ES style='color:black;mso-ansi-language:ES'>(&lt;<span class=SpellE>editablefields</span>&gt;)</span><span
-lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
-style='color:black;mso-ansi-language:ES'>,</span><span lang=ES
-style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES
-style='color:gray;mso-ansi-language:ES'> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-lang=ES style='color:black;mso-ansi-language:ES'>&lt;bsave&gt;</span><span
-lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
-style='color:black;mso-ansi-language:ES'>,</span><span lang=ES
-style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
-lang=ES style='color:gray;mso-ansi-language:ES'> <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-lang=ES style='color:black;mso-ansi-language:ES'>&lt;bsearch&gt;</span><span
-lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
-style='color:black;mso-ansi-language:ES'>)</span><span lang=ES
-style='color:gray;mso-ansi-language:ES'> <br>
-<br style='mso-special-character:line-break'>
-<br style='mso-special-character:line-break'>
-</span></p>
-
-</div>
-
-</div>
-<div id="winchm_template_footer"><FONT color=#808080 
-size=1>Copyright © 2013-2016 ooHG Development Team - </FONT><A 
-href="https://sourceforge.net/projects/oohg/" target="_blank"><FONT 
-size=1>https://sourceforge.net/projects/oohg/</FONT></A> 
-     </div>
-
-</body>
+         </div>
+      </div>
+      <div id="winchm_template_footer">
+         <FONT color=#808080 size=1>Copyright © 2013-2017 ooHG Development Team -
+         </FONT>
+         <A href="https://sourceforge.net/projects/oohg/" target="_blank">
+            <FONT size=1>https://sourceforge.net/projects/oohg/
+            </FONT></A>
+      </div>
+   </body>
 
 </html>

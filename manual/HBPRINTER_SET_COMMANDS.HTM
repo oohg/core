@@ -1,264 +1,175 @@
 <!--
-$Id: HBPRINTER_SET_COMMANDS.HTM,v 1.5 2016-05-22 23:52:47 fyurisich Exp $
+$Id: HBPRINTER_SET_COMMANDS.HTM,v 1.6 2017-08-26 02:54:08 fyurisich Exp $
 -->
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html xmlns:o="urn:schemas-microsoft-com:office:office"
-xmlns:w="urn:schemas-microsoft-com:office:word"
-xmlns="http://www.w3.org/TR/REC-html40">
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv=Content-Type content="text/html; charset=Windows-1252">
 
-<head>
-<meta http-equiv=Content-Type content="text/html; charset=Windows-1252">
-<meta name=ProgId content=Word.Document>
-<meta name=Generator content="Microsoft Word 11">
-<meta name=Originator content="Microsoft Word 11">
-<link rel=File-List href="HBPRINTER_SET_COMMANDS_archivos/filelist.xml">
-<title>HBPRINTER SET COMMANDS</title>
+      <title>HBPRINTER SET COMMANDS</title>
 
-<style>
-<!--
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{mso-style-parent:"";
-	margin:0cm;
-	margin-bottom:.0001pt;
-	mso-pagination:widow-orphan;
-	font-size:12.0pt;
-	font-family:"Times New Roman";
-	mso-fareast-font-family:"Times New Roman";}
-@page Section1
-	{size:612.0pt 792.0pt;
-	margin:70.85pt 3.0cm 70.85pt 3.0cm;
-	mso-header-margin:35.4pt;
-	mso-footer-margin:35.4pt;
-	mso-paper-source:0;}
-div.Section1
-	{page:Section1;}
--->
-</style>
+      <style>
+         html { overflow-y: scroll; }
+         body { padding: 0px; margin: 0px; overflow: auto; background-color: #FFFFFF; }
+         #winchm_template_navigation { margin-top: 0px; margin-left: 0px; margin-bottom: 0px; margin-right: 0px;
+           padding-top: 5px; padding-left: 5px; padding-bottom: 5px; padding-right: 5px;
+           font-family: arial, helvetica, sans-serif; font-size: 10px; font-style: normal; font-weight: normal;
+           color: #626262; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #DBDBDB;
+           background-color: #E2EDFA; width: auto; }
+         #winchm_template_button { float: right; top: -7px; position: relative; text-align: right; right: -5px;
+           height: auto; }
+         #winchm_template_title { font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif; font-weight: bold;
+            font-size: 18px; color: 353535; margin-top: 0px; margin-left: 0px; margin-bottom: 0px; margin-right: 0px;
+            padding-top: 10px; padding-left: 5px; padding-bottom: 10px; padding-right: 10px; border-bottom-style: solid;
+            border-bottom-width: 1px; border-bottom-color: #C7C7C7; width: auto; background-color: #C4DBF4;
+            text-align: left; }
+         #winchm_template_content { padding: 0px; margin-top: 15px; margin-left: 15px; margin-bottom: 15px;
+            margin-right: 15px; width: auto !important; width: 100%; }
+         #winchm_template_footer { border-width: 1px; border-color: #c0c0c0; border-top-style: solid; margin-top: 0px;
+            margin-left: 15px; margin-bottom: 5px; margin-right: 15px; padding-top: 6px; padding-left: 0px;
+            padding-bottom: 20px; padding-right: 0px; font-family: arial, helvetica, sans-serif; font-size: 9px;
+            color: #909090; text-align: left; width: auto; }
+         #winchm_template_navigation a:link { text-decoration: none; color: #0000ff }
+         #winchm_template_navigation a:visited { text-decoration: none; color: #0000ff }
+         #winchm_template_navigation a:active { text-decoration: none; color: #0000ff }
+         #winchm_template_navigation a:hover {text-decoration: none; color: #0000ff }
+         a:link { text-decoration: underline; color:#0033cc }
+         a:visited { text-decoration: underline; color: #0033cc }
+         a:active { text-decoration: underline; color: #0033cc }
+         a:hover { text-decoration: underline;color: #ff0000 }
+         @media print { #winchm_template_button{ visibility:hidden; } }
+      </style>
+   </head>
 
+   <body>
+      <div id="winchm_template_title">
+         <div id="winchm_template_button">
+            <A href="HBPRINTER_GET_COMMANDS.HTM" title="Previous topic">
+               <img id="winchm_template_prev" alt="Previous topic" src="template4/btn_prev_n.gif" border="0"></A>
+            <A href="HBPRINTER_@_COMMANDS.HTM" title="Next topic">
+               <img id="winchm_template_next" alt="Next topic" src="template4/btn_next_n.gif" border="0"></A>
+         </div>HBPRINTER SET COMMANDS
+      </div>
+      <div id="winchm_template_navigation">Help &gt; Libraries &gt; HBPRINTER &gt;
+      </div>
+      <div id="winchm_template_content">
+         <div class=Section1>
 
-
-<style>
-html {
-	overflow-y:scroll;
-}
-
-body {
-	padding: 0px;
-	margin: 0px;
-	overflow: auto;
-	background-color: #FFFFFF;
-}
-
-#winchm_template_navigation{
-	margin-top: 0px;
-	margin-left: 0px;
-	margin-bottom: 0px;
-	margin-right: 0px;
-
-	padding-top: 5px;
-	padding-left: 5px;
-	padding-bottom: 5px;
-	padding-right: 5px;
-
-	font-family: arial, helvetica, sans-serif;
-	font-size: 10px;
-	font-style: normal;
-	font-weight: normal;
-	color: #626262;
-
-	border-bottom-style: solid;
-	border-bottom-width: 1px;
-	border-bottom-color: #DBDBDB;
-
-	background-color: #E2EDFA;
-	width: auto;
-}
-
-#winchm_template_button{
-	float: right;
-	top: -7px;
-	position: relative;
-	text-align: right;
-	right: -5px;
-	height: auto;
-}
-
-#winchm_template_title{
-	font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
-	font-weight: bold;
-	font-size: 18px;
-	color: 353535;
-
-	margin-top: 0px;
-	margin-left: 0px;
-	margin-bottom: 0px;
-	margin-right: 0px;
-
-	padding-top: 10px;
-	padding-left: 5px;
-	padding-bottom: 10px;
-	padding-right: 10px;
-
-	border-bottom-style: solid;
-	border-bottom-width: 1px;
-	border-bottom-color: #C7C7C7;
-
-	width: auto;
-	background-color: #C4DBF4;
-	text-align: left;
-}
-
-#winchm_template_content{
-	padding: 0px;
-	margin-top: 15px;
-	margin-left: 15px;
-	margin-bottom: 15px;
-	margin-right: 15px;
-
-	width: auto  !important;
-	width: 100%;
-}
-
-#winchm_template_footer{
-	border-width: 1px;
-	border-color: #c0c0c0;
-	border-top-style: solid;
-
-	margin-top: 0px;
-	margin-left: 15px;
-	margin-bottom: 5px;
-	margin-right: 15px;
-
-	padding-top: 6px;
-	padding-left: 0px;
-	padding-bottom: 20px;
-	padding-right: 0px;
-
-	font-family: arial, helvetica, sans-serif;
-	font-size: 9px;
-	color: #909090;
-
-	text-align: left;
-	width: auto;
-}
-
-#winchm_template_navigation a:link	{text-decoration: none;color: #0000ff}
-#winchm_template_navigation a:visited  {text-decoration: none; color: #0000ff}
-#winchm_template_navigation a:active {text-decoration: none; color: #0000ff}
-#winchm_template_navigation a:hover {text-decoration: none;color: #0000ff}
-
-a:link	{text-decoration: underline; color:#0033cc}
-a:visited  {text-decoration: underline; color: #0033cc}
-a:active {text-decoration: underline; color: #0033cc }
-a:hover {text-decoration: underline;color: #ff0000;}
-
-@media print
-{
-#winchm_template_button{
-visibility:hidden;
-}
-}
-</style>
-</head>
-
-<body>
-
-<div id="winchm_template_title">
-<div id="winchm_template_button"><A href="HBPRINTER_GET_COMMANDS.HTM" title="Previous topic"><img id="winchm_template_prev" alt="Previous topic" src="template4/btn_prev_n.gif" border="0"></a><A href="HBPRINTER_@_COMMANDS.HTM" title="Next topic"><img id="winchm_template_next" alt="Next topic" src="template4/btn_next_n.gif" border="0"></a></div>
-HBPRINTER LIBRARY</div>
-<div id="winchm_template_navigation">Help &gt;
-Libraries &gt; HBPRINTER &gt; </div>
-<div id="winchm_template_content">
-
-<div class=Section1>
-
-<p class=MsoNormal><span lang=ES style="COLOR: darkgreen; mso-ansi-language: ES">///////////////////////////////////////////////////////////////////////////////
-<br>
-// HBPRINTER SET COMMANDS <br>
-///////////////////////////////////////////////////////////////////////////////
-<br>
-</span><span lang=ES style="COLOR: gray; mso-ansi-language: ES"><br>
-</span>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES">
-<b>SET UNITS ROWCOL | MM | INCHES | PIXELS [ ABSOLUTE ]</b><br>
+<PRE>
+<span style='color:darkgreen'><b>
+/////////////////////////////////////////////////////////////////////
+// HBPRINTER SET COMMANDS
+/////////////////////////////////////////////////////////////////////
+</b></span>
+SET UNITS ROWCOL | MM | INCHES | PIXELS [ ABSOLUTE ]
 Sets the mesure units for @... commands.
-<p><b>SET UNITS</b><br>
+
+SET UNITS
 Same as SET UNITS ROWCOL.
-<p><b>SET UNITS ROWS &lt;r&gt; COLS &lt;c&gt; [ ABSOLUTE ]</b><br>
+
+SET UNITS ROWS &lt;r&gt; COLS &lt;c&gt; [ ABSOLUTE ]
 Sets property MaxRow to (r-1) and property MaxCol to (c-1).
-<p><b>SELECT BY DIALOG [ PREVIEW ]</b><br>
+
+SELECT BY DIALOG [ PREVIEW ]
 Selects a printer using a dialog box.
-<p><b>SELECT DEFAULT [ PREVIEW ]</b><br>
+
+SELECT DEFAULT [ PREVIEW ]
 Selects the default printer.
-<p><b>SELECT PRINTER &lt;cprinter&gt; [ PREVIEW ]</b><br>
+
+SELECT PRINTER &lt;cprinter&gt; [ PREVIEW ]
 Selects the indicated printer.
-<p><b>DEFINE IMAGELIST &lt;cimglist&gt; PICTURE &lt;cpicture&gt; [ ICONCOUNT &lt;nicons&gt; ]</b><br>
+
+DEFINE IMAGELIST &lt;cimglist&gt; PICTURE &lt;cpicture&gt; [ ICONCOUNT &lt;nicons&gt; ]
 Loads a bitmap image into an imagelist ("nicons" is the number of number of individual iconos stored in the image).
-<p><b>ENABLE THUMBNAILS</b><br>
+
+ENABLE THUMBNAILS
 Enables thumbails in print preview.
-<p><b>DISABLE THUMBNAILS</b><br>
+
+DISABLE THUMBNAILS
 Disables thumbails in print preview.
-<p><b>SET THUMBNAILS ON | OFF</b><br>
+
+SET THUMBNAILS ON | OFF
 Enables / disables thumbails in print preview.
-<p><b>SET PREVIEW RECT &lt;row&gt;, &lt;col&gt;, &lt;row2&gt;, &lt;col2&gt;</b><br>
+
+SET PREVIEW RECT &lt;row&gt;, &lt;col&gt;, &lt;row2&gt;, &lt;col2&gt;
 Sets the area for print preview.
-<p><b>SET PREVIEW SCALE &lt;scale&gt;</b><br>
+
+SET PREVIEW SCALE &lt;scale&gt;
 Sets the scale for print preview.
-<p><b>SET PAGE [ ORIENTATION &lt;orient&gt; ] [ PAPERSIZE &lt;psize&gt; ] [ FONT &lt;cfont&gt; ]</b><br>
+
+SET PAGE [ ORIENTATION &lt;orient&gt; ] [ PAPERSIZE &lt;psize&gt; ] [ FONT &lt;cfont&gt; ]
 Sets page's orientation, paper size and/or default font.
-<p><b>SET ORIENTATION PORTRAIT</b><br>
+
+SET ORIENTATION PORTRAIT
 Sets paper's orientation to portrait.
-<p><b>SET ORIENTATION LANDSCAPE</b><br>
+
+SET ORIENTATION LANDSCAPE
 Sets paper's orientation to landscape.
-<p><b>SET PAPERSIZE &lt;psize&gt;</b><br>
+
+SET PAPERSIZE &lt;psize&gt;
 Sets paper's size.
-<p><b>SET QUALITY &lt;quality&gt;</b><br>
+
+SET QUALITY &lt;quality&gt;
 Sets printer's quality.
-<p><b>SET COLORMODE &lt;mode&gt;</b><br>
+
+SET COLORMODE &lt;mode&gt;
 Sets printer's color mode.
-<p><b>SET PREVIEW ON | OFF</b><br>
+
+SET PREVIEW ON | OFF
 Sets printer's preview.
-<p><b>SET TEXTCOLOR &lt;clr&gt; | &lt;aRGBColor&gt;</b><br>
+
+SET TEXTCOLOR &lt;clr&gt; | &lt;aRGBColor&gt;
 Sets the default color for text.
-<p><b>SET BACKCOLOR &lt;nColor&gt; | &lt;aRGBColor&gt;</b><br>
+
+SET BACKCOLOR &lt;nColor&gt; | &lt;aRGBColor&gt;
 Sets the default color for background.
-<p><b>SET PRINT MARGINS [ TOP &lt;lm&gt; ] [ LEFT &lt;rm&gt; ]</b><br>
+
+SET PRINT MARGINS [ TOP &lt;lm&gt; ] [ LEFT &lt;rm&gt; ]
 Sets printing margins.
-<p><b>SET DUPLEX VERTICAL | HORIZONTAL</b><br>
+
+SET DUPLEX VERTICAL | HORIZONTAL
 Enables duplex printing using long-edge / short-edge binding.
-<p><b>SET DUPLEX OFF</b><br>
+
+SET DUPLEX OFF
 Disables duplex printing.
-<p><b>SET BIN [TO] &lt;prnbin&gt;</b><br>
+
+SET BIN [TO] &lt;prnbin&gt;
 Sets printer's default bin.
-<p><b>SET COLLATE ON | OFF</b><br>
+
+SET COLLATE ON | OFF
 Sets collated printing.
-<p><b>SET CHANGES LOCAL</b><br>
+
+SET CHANGES LOCAL
 Instructs HBPRINTER not to change the system's printer settings.
-<p><b>SET CHANGES GLOBAL</b><br>
+
+SET CHANGES GLOBAL
 Instructs HBPRINTER to change the system's printer settings (default behaviour).
-<p><b>SET COPIES TO &lt;nCopies&gt;</b><br>
+
+SET COPIES TO &lt;nCopies&gt;
 Sets the printer's default number of printed copies.
-<p><b>SET SCALE TO &lt;nScale&gt;</b><br>
+
+SET SCALE TO &lt;nScale&gt;
 Sets the factor by which the printed output is to be scaled.
-<p><b>SET PAPERLENGTH TO &lt;nPaperLength&gt;</b><br>
-Overrides the length of the paper specified by SET PAPERSIZE.<br>
+
+SET PAPERLENGTH TO &lt;nPaperLength&gt;
+Overrides the length of the paper specified by SET PAPERSIZE.
 New value must be in tenths of a millimeter.
-<p><b>SET PAPERLENGTH TO &lt;nPaperLength&gt;</b><br>
-Overrides the width of the paper specified by SET PAPERSIZE.<br>
+
+SET PAPERWIDTH TO &lt;nPaperWidth&gt;
+Overrides the width of the paper specified by SET PAPERSIZE.
 New value must be in tenths of a millimeter.
-</span>
+</PRE>
 
-</div>
+         </div>
+      </div>
+      <div id="winchm_template_footer">
+         <FONT color=#808080 size=1>Copyright © 2013-2017 ooHG Development Team -
+         </FONT>
+         <A href="https://sourceforge.net/projects/oohg/" target="_blank">
+            <FONT size=1>https://sourceforge.net/projects/oohg/
+            </FONT></A>
+      </div>
+   </body>
 
-</div>
-
-<div id="winchm_template_footer"><FONT color=#808080
-size=1>Copyright © 2013-2016 ooHG Development Team - </FONT><A
-href="https://sourceforge.net/projects/oohg/" target="_blank"><FONT
-size=1>https://sourceforge.net/projects/oohg/</FONT></A>
-</div>
-
-</body>
+</html>

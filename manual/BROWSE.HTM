@@ -1,5 +1,5 @@
 <!--
-$Id: BROWSE.HTM,v 1.9 2017-08-24 01:29:09 fyurisich Exp $
+$Id: BROWSE.HTM,v 1.10 2017-08-26 02:54:07 fyurisich Exp $
 -->
 
 <!DOCTYPE html>
@@ -58,9 +58,9 @@ $Id: BROWSE.HTM,v 1.9 2017-08-24 01:29:09 fyurisich Exp $
 
 <PRE>
 <span style='color:darkgreen'><b>
-///////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////
 // BROWSE
-///////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////
 </b></span>
 This control uses a grid to show data taken from the records of a DBF.
 
@@ -75,46 +75,49 @@ This control uses a grid to show data taken from the records of a DBF.
       [ HEIGHT nHeight ; ]
       [ HEADERS aHeaders ; ]
       [ WIDTHS aWidths ; ]
+      [ WORKAREA cWorkarea ; ]
       [ FIELDS aFields ; ]
+      [ INPUTMASK aPicture ; ]
       [ VALUE nValue ; ]
       [ FONT cFontName ; ]
       [ SIZE nFontSize ; ]
-      [ TOOLTIP cTooltip ; ]
-      [ &lt;ONCHANGE, ON CHANGE&gt; bOnChange ; ]
-      [ &lt;ONDBLCLICK, ON DBLCLICK&gt; bOnDblClick ; ]
-      [ &lt;ONHEADCLICK, ON HEADCLICK&gt; aHeadClick ; ]
-      [ &lt;ONGOTFOCUS, ON GOTFOCUS&gt; bOnGotFocus ; ]
-      [ &lt;ONLOSTFOCUS, ON LOSTFOCUS&gt; bOnLostFocus ; ]
-      [ WORKAREA cWorkarea ; ]
-      [ DELETE ; ]
-      [ NOLINES ; ]
-      [ IMAGE aImage ; ]
-      [ JUSTIFY aJust ; ]
-      [ HELPID nHelpId ; ]
       [ BOLD ; ]
       [ ITALIC ; ]
       [ UNDERLINE ; ]
       [ STRIKEOUT ; ]
-      [ BREAK ; ]
+      [ TOOLTIP cTooltip ; ]
       [ BACKCOLOR uBackColor ; ]
+      [ DYNAMICBACKCOLOR uDynamicBackColor ; ]
+      [ DYNAMICFORECOLOR uDynamicForeColor ; ]
       [ FONTCOLOR uFontColor ; ]
-      [ LOCK ; ]
+      [ &lt;ONGOTFOCUS, ON GOTFOCUS&gt; bOnGotFocus ; ]
+      [ &lt;ONCHANGE, ON CHANGE&gt; bOnChange ; ]
+      [ &lt;ONLOSTFOCUS, ON LOSTFOCUS&gt; bOnLostFocus ; ]
+      [ &lt;ONDBLCLICK, ON DBLCLICK&gt; bOnDblClick ; ]
+      [ &lt;ACTION, ONCLICK, ON CLICK&gt; bOnClick ; ]
+      [ EDIT ; ]
       [ INPLACE ; ]
-      [ NOVSCROLL ; ]
       [ APPEND ; ]
-      [ READONLY aReadonly ; ]
+      [ &lt;ONHEADCLICK, ON HEADCLICK&gt; aHeadClick ; ]
+      [ &lt;WHEN, COLUMNWHEN&gt; aWhenFields ; ]
       [ VALID aValid ; ]
       [ VALIDMESSAGES aValidMessages ; ]
-      [ EDIT ; ]
-      [ DYNAMICBACKCOLOR uDynamicBackColor ; ]
-      [ &lt;WHEN, COLUMNWHEN&gt; aWhenFields ; ]
-      [ DYNAMICFORECOLOR uDynamicForeColor ; ]
-      [ INPUTMASK aPicture ; ]
+      [ READONLY aReadonly ; ]
+      [ LOCK ; ]
+      [ DELETE ; ]
+      [ NOLINES ; ]
+      [ IMAGE aImage ; ]
+      [ JUSTIFY aJust ; ]
+      [ NOVSCROLL ; ]
+      [ HELPID nHelpId ; ]
+      [ BREAK ; ]
       [ RTL ; ]
       [ &lt;ONAPPEND, ON APPEND&gt; bOnAppend ; ]
       [ &lt;ONEDITCELL, ON EDITCELL&gt; bOnEditCell ; ]
+      [ &lt;ONBEFOREEDITCELL, ON BEFOREEDITCELL&gt; bOnBeforEditCell ; ]
       [ COLUMNCONTROLS aEditControls ; ]
       [ REPLACEFIELD aReplaceFields ; ]
+      [ SUBCLASS Subclass ]
       [ RECCOUNT ; ]
       [ COLUMNINFO aColumnInfo ; ]
       [ NOHEADERS ; ]
@@ -140,7 +143,6 @@ This control uses a grid to show data taken from the records of a DBF.
       [ NODELETEMSG ; ]
       [ UPDATEALL ; ]
       [ &lt;ONABORTEDIT, ON ABORTEDIT&gt; bOnAbortedit ; ]
-      [ &lt;ACTION, ONCLICK, ON CLICK&gt; bOnClick ; ]
       [ FIXEDWIDTHS ; ]
       [ &lt;FIXEDBLOCKS, DYNAMICBLOCKS&gt; ; ]
       [ BEFORECOLMOVE bBeforeColMove ; ]
@@ -168,7 +170,6 @@ This control uses a grid to show data taken from the records of a DBF.
       [ &lt;ONEDITCELLEND, ON EDITCELLEND&gt; bOnEditEnd ; ]
       [ EDITFIRSTVISIBLE ; ]
       [ NAVIGATEBYCELL ; ]
-      [ SUBCLASS Subclass ]
 
 *** Alternative syntax:
 
@@ -219,6 +220,7 @@ This control uses a grid to show data taken from the records of a DBF.
       [ RTL &lt;.T., .F.&gt; ]
       [ &lt;ONAPPEND, ON APPEND&gt; bOnAppend ]
       [ &lt;ONEDITCELL, ON EDITCELL&gt; bOnEditCell ]
+      [ &lt;ONBEFOREEDITCELL, ON BEFOREEDITCELL&gt; bOnBeforEditCell ]
       [ COLUMNCONTROLS aEditControls ]
       [ REPLACEFIELD aReplaceFields ]
       [ RECCOUNT &lt;.T., .F.&gt; ]
@@ -279,17 +281,19 @@ This control uses a grid to show data taken from the records of a DBF.
 
 *** OOP Syntax:
 
-   [ Obj := ] TOBrowse():Define( ControlName, [ ParentForm ], [ nCol ], [ nRow ], [ nWidth ], [ nHeight ], [ aHeaders ], [ aWidths ], ;
-      [ aFields ], [ nValue ], [ cFontName ], [ nFontSize ], [ cTooltip ], [ bOnChange ], ;
-      [ bOnDblClick ], [ aHeadClick ], [ bOnGotFocus ], [ bOnLostFocus ], [ cWorkArea ], ;
-      [ lAllowDelete ], [ lNoLines ], [ aImage ], [ aJust ], [ nHelpId ], [ lBold ], [ lItalic ], ;
-      [ lUnderline ], [ lStrikeout ], [ lBreak ], [ uBackColor ], [ uFontColor ], [ lLock ], ;
-      [ lInPlace ], [ lNoVScroll ], [ lAllowAppend ], [ aReadonly ], [ aValid ], ;
-      [ aValidMessages ], [ lAllowEdit ], [ uDynamicBackColor ], [ aWhenFields ], ;
-      [ uDynamicForecolor ], [ aPicture ], [ lRtl ], [ bOnAppend ], [ bOnEditCell ], ;
-      [ aEditControls ], [ aReplaceFields ], [ lRecCount ], [ aColumnInfo ], ;
-      [ lHasHeaders ], [ bOnEnter ], [ lDisabled ], [ lNoTabStop ], [ lInvisible ], ;
-      [ lDescending ], [ bDelWhen ], [ cDelMsg ], [ bOnDelete ], [ aHeaderImage ], ;
+   [ Obj := ] TOBrowse():Define( ControlName, [ ParentForm ], [ nCol ], [ nRow ], [ nWidth ], [ nHeight ], [ aHeaders ], ;
+      [ aWidths ], [ aFields ], [ nValue ], [ cFontName ], [ nFontSize ], [ cTooltip ], ;
+      [ bOnChange ], [ bOnDblClick ], [ aHeadClick ], [ bOnGotFocus ], ;
+      [ bOnLostFocus ], [ cWorkArea ], [ lAllowDelete ], [ lNoLines ], [ aImage ], ;
+      [ aJust ], [ nHelpId ], [ lBold ], [ lItalic ], [ lUnderline ], ;
+      [ lStrikeout ], [ lBreak ], [ uBackColor ], [ uFontColor ], [ lLock ], ;
+      [ lInPlace ], [ lNoVScroll ], [ lAllowAppend ], [ aReadonly ], ;
+      [ aValid ], [ aValidMessages ], [ lAllowEdit ], [ uDynamicBackColor ], ;
+      [ aWhenFields ], [ uDynamicForecolor ], [ aPicture ], [ lRtl ], ;
+      [ bOnAppend ], [ bOnEditCell ], [ aEditControls ], [ aReplaceFields ], ;
+      [ lRecCount ], [ aColumnInfo ], [ lHasHeaders ], [ bOnEnter ], ;
+      [ lDisabled ], [ lNoTabStop ], [ lInvisible ], [ lDescending ], ;
+      [ bDelWhen ], [ cDelMsg ], [ bOnDelete ], [ aHeaderImage ], ;
       [ aHeaderImageAlign ], [ lFullMove ], [ aSelectedColors ], [ aEditKeys ], ;
       [ uRefresh ], [ lDblBffr ], [ lFocusRect ], [ lPLM ], [ lSync ], [ lFixedCols ], ;
       [ lNoDelMsg ], [ lUpdateAll ], [ bOnAbortedit ], [ bOnClick ], [ lFixedWidths ], ;
@@ -297,7 +301,7 @@ This control uses a grid to show data taken from the records of a DBF.
       [ bAfterColSize ], [ bBeforeAutofit ], [ lLikeExcel ], [ lButtons ], [ lUpdCols ], ;
       [ lFixedCtrls ], [ bHeadRClick ], [ lExtDbl ], [ lNoModal ], [ lSilent ], [ lAltA ], ;
       [ lNoShowAlways ], [ lNone ], [ lCBE ], [ bOnRClick ], [ lCheckBoxes ], [ bOnCheck ], ;
-      [ bOnRowRefresh ], [ aDefaultValues ], [ bOnEditEnd ], [ lAtFirst ] )
+      [ bOnRowRefresh ], [ aDefaultValues ], [ bOnEditEnd ], [ lAtFirst ], [ bOnBeforEditCell ] )
 
    To define a BROWSE with NAVIGATEBYCELL clause replace TOBrowse() with TOBrowseByCell().
 
@@ -378,7 +382,7 @@ This control uses a grid to show data taken from the records of a DBF.
          </div>
       </div>
       <div id="winchm_template_footer">
-         <FONT color=#808080 size=1>Copyright © 2013-2016 ooHG Development Team -
+         <FONT color=#808080 size=1>Copyright © 2013-2017 ooHG Development Team -
          </FONT>
          <A href="https://sourceforge.net/projects/oohg/" target="_blank">
             <FONT size=1>https://sourceforge.net/projects/oohg/

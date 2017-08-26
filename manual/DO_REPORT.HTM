@@ -1,394 +1,262 @@
 <!--
-$Id: DO_REPORT.HTM,v 1.7 2017-08-24 01:29:09 fyurisich Exp $
+$Id: DO_REPORT.HTM,v 1.8 2017-08-26 02:54:08 fyurisich Exp $
 -->
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html xmlns:o="urn:schemas-microsoft-com:office:office"
-xmlns:w="urn:schemas-microsoft-com:office:word"
-xmlns="http://www.w3.org/TR/REC-html40">
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv=Content-Type content="text/html; charset=Windows-1252">
 
-<head>
-<meta http-equiv=Content-Type content="text/html; charset=Windows-1252">
-<meta name=ProgId content=Word.Document>
-<meta name=Generator content="Microsoft Word 11">
-<meta name=Originator content="Microsoft Word 11">
-<link rel=File-List href="DO_REPORT_archivos/filelist.xml">
-<title>DO REPORT</title>
+      <title>DO REPORT</title>
 
-<style>
-<!--
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{mso-style-parent:"";
-	margin:0cm;
-	margin-bottom:.0001pt;
-	mso-pagination:widow-orphan;
-	font-size:12.0pt;
-	font-family:"Times New Roman";
-	mso-fareast-font-family:"Times New Roman";}
-span.SpellE
-	{mso-style-name:"";
-	mso-spl-e:yes;}
-span.GramE
-	{mso-style-name:"";
-	mso-gram-e:yes;}
-@page Section1
-	{size:612.0pt 792.0pt;
-	margin:70.85pt 3.0cm 70.85pt 3.0cm;
-	mso-header-margin:35.4pt;
-	mso-footer-margin:35.4pt;
-	mso-paper-source:0;}
-div.Section1
-	{page:Section1;}
--->
-</style>
+      <style>
+         html { overflow-y: scroll; }
+         body { padding: 0px; margin: 0px; overflow: auto; background-color: #FFFFFF; }
+         #winchm_template_navigation { margin-top: 0px; margin-left: 0px; margin-bottom: 0px; margin-right: 0px;
+           padding-top: 5px; padding-left: 5px; padding-bottom: 5px; padding-right: 5px;
+           font-family: arial, helvetica, sans-serif; font-size: 10px; font-style: normal; font-weight: normal;
+           color: #626262; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #DBDBDB;
+           background-color: #E2EDFA; width: auto; }
+         #winchm_template_button { float: right; top: -7px; position: relative; text-align: right; right: -5px;
+           height: auto; }
+         #winchm_template_title { font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif; font-weight: bold;
+            font-size: 18px; color: 353535; margin-top: 0px; margin-left: 0px; margin-bottom: 0px; margin-right: 0px;
+            padding-top: 10px; padding-left: 5px; padding-bottom: 10px; padding-right: 10px; border-bottom-style: solid;
+            border-bottom-width: 1px; border-bottom-color: #C7C7C7; width: auto; background-color: #C4DBF4;
+            text-align: left; }
+         #winchm_template_content { padding: 0px; margin-top: 15px; margin-left: 15px; margin-bottom: 15px;
+            margin-right: 15px; width: auto !important; width: 100%; font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;}
+         #winchm_template_footer { border-width: 1px; border-color: #c0c0c0; border-top-style: solid; margin-top: 0px;
+            margin-left: 15px; margin-bottom: 5px; margin-right: 15px; padding-top: 6px; padding-left: 0px;
+            padding-bottom: 20px; padding-right: 0px; font-family: arial, helvetica, sans-serif; font-size: 9px;
+            color: #909090; text-align: left; width: auto; }
+         #winchm_template_navigation a:link { text-decoration: none; color: #0000ff }
+         #winchm_template_navigation a:visited { text-decoration: none; color: #0000ff }
+         #winchm_template_navigation a:active { text-decoration: none; color: #0000ff }
+         #winchm_template_navigation a:hover {text-decoration: none; color: #0000ff }
+         a:link { text-decoration: underline; color:#0033cc }
+         a:visited { text-decoration: underline; color: #0033cc }
+         a:active { text-decoration: underline; color: #0033cc }
+         a:hover { text-decoration: underline;color: #ff0000 }
+         @media print { #winchm_template_button{ visibility:hidden; } }
+      </style>
+   </head>
 
+   <body>
+      <div id="winchm_template_title">
+         <div id="winchm_template_button">
+            <A href="COMMANDS.HTM" title="Previous topic">
+               <img id="winchm_template_prev" alt="Previous topic" src="template4/btn_prev_n.gif" border="0"></A>
+            <A href="DRAW_IN_WINDOW.HTM" title="Next topic">
+               <img id="winchm_template_next" alt="Next topic" src="template4/btn_next_n.gif" border="0"></A>
+         </div>DO REPORT
+      </div>
+      <div id="winchm_template_navigation">Help &gt; Commands &gt;
+      </div>
+      <div id="winchm_template_content">
+         <div class=Section1>
 
+<PRE>
+<span style='color:darkgreen'><b>
+/////////////////////////////////////////////////////////////////////
+// DO REPORT
+/////////////////////////////////////////////////////////////////////
+</b></span>
+#xcommand DO REPORT ;
+      TITLE &lt;ctitle&gt; ;
+      HEADERS &lt;aheaders1&gt;, &lt;aheaders2&gt; ;
+      FIELDS &lt;a&gt; ;
+      WIDTHS &lt;awidths&gt; ;
+      [ TOTALS &lt;ato&gt; ] ;
+      [ NFORMATS &lt;aformats&gt; ] ;
+      WORKAREA &lt;calias&gt; ;
+      [ LPP &lt;nlpp&gt; ] ;
+      [ CPL &lt;ncpl&gt; ] ;
+      [ LMARGIN &lt;nllmargin&gt; ] ;
+      [ PAPERSIZE &lt;npapersize&gt; ] ;
+      [ &lt;lnoprop: NOFIXED&gt; ] ;
+      [ &lt;ldos: DOSMODE&gt; ] ;
+      [ &lt;lpreview: PREVIEW&gt; ] ;
+      [ &lt;lselect: SELECT&gt; ] ;
+      [ IMAGE &lt;cgraphic&gt; AT &lt;nfi&gt;, &lt;nci&gt; TO &lt;nff&gt;, &lt;ncf&gt; ] ;
+      [ &lt;lmul: MULTIPLE&gt; ] ;
+      [ GROUPED BY &lt;cgrpby&gt; ] ;
+      [ HEADRGRP &lt;chdrgrp&gt; ] ;
+      [ &lt;llandscape: LANDSCAPE&gt; ] ;
+      [ &lt;lgroupeject: GROUPEJECT&gt; ] ;
+      [ HEADING &lt;cheader&gt; ] ;
+   =&gt; ;
+      EasyReport( &lt;ctitle&gt;, &lt;aheaders1&gt;, &lt;aheaders2&gt;, &lt;a&gt;, &lt;awidths&gt;, &lt;ato&gt;, ;
+            &lt;nlpp&gt;, &lt;.ldos.&gt;, &lt;.lpreview.&gt;, &lt;cgraphic&gt;, &lt;nfi&gt;, &lt;nci&gt;, &lt;nff&gt;, ;
+            &lt;ncf&gt;, &lt;.lmul.&gt;, &lt;"cgrpby"&gt;, &lt;chdrgrp&gt;, &lt;.llandscape.&gt;, &lt;ncpl&gt;, ;
+            &lt;.lselect.&gt;, &lt;(calias)&gt;, &lt;nllmargin&gt;, &lt;aformats&gt;, &lt;npapersize&gt;, ;
+            &lt;cheader&gt;, &lt;.lnoprop.&gt;, &lt;.lgroupeject.&gt; )
 
-<style>
-html {
-	overflow-y:scroll;
-}
+<span style='color:darkgreen'><b>
+/////////////////////////////////////////////////////////////////////
+// REPORTFORMWIN
+/////////////////////////////////////////////////////////////////////
+</b></span>
+#command REPORTFORMWIN &lt;frm&gt; ;
+      [ HEADING &lt;head&gt; ] ;
+      [ &lt;plain:PLAIN&gt; ] ;
+      [ &lt;noej:NOEJECT&gt; ] ;
+      [ &lt;sum:SUMMARY&gt; ] ;
+      [ &lt;nocon:NOCONSOLE&gt; ] ;
+      [ &lt;prn:TO PRINTER&gt; ] [ TO FILE &lt;(f)&gt; ] ;
+      [ FOR &lt;for&gt; ] ;
+      [ WHILE &lt;while&gt; ] ;
+      [ NEXT &lt;next&gt; ] ;
+      [ RECORD &lt;rec&gt; ] ;
+      [ &lt;rest:REST&gt; ] ;
+      [ ALL ] ;
+   =&gt; ;
+      __ReportFormwin( &lt;(frm)&gt;, &lt;.prn.&gt;, &lt;(f)&gt;, &lt;.nocon.&gt;, &lt;{for}&gt;, &lt;{while}&gt;, ;
+            &lt;next&gt;, &lt;rec&gt;, &lt;.rest.&gt;, &lt;.plain.&gt;, &lt;head&gt;, &lt;.noej.&gt;, &lt;.sum.&gt; )
 
-body {
-	padding: 0px;
-	margin: 0px;
-	overflow: auto; 
-	background-color: #FFFFFF; 
-}
+<span style='color:darkgreen'><b>
+/////////////////////////////////////////////////////////////////////
+// DO REPORT FORM
+/////////////////////////////////////////////////////////////////////
+</b></span>
+#xcommand DO REPORT FORM &lt;cfilerep&gt; ;
+      [ HEADING &lt;cheading&gt; ] ;
+   =&gt; ;
+      ExtReport( &lt;"cfilerep"&gt;, &lt;cheading&gt; )
 
-#winchm_template_navigation{
-	margin-top: 0px;
-	margin-left: 0px;
-	margin-bottom: 0px;
-	margin-right: 0px;
+<u>Paper size</u>:
 
-	padding-top: 5px;
-	padding-left: 5px;
-	padding-bottom: 5px;
-	padding-right: 5px;
+      DMPAPER_FIRST                          DMPAPER_LETTER
+      DMPAPER_LETTER                         Letter 8 1/2 x 11 in
+      DMPAPER_LETTERSMALL                    Letter Small 8 1/2 x 11 in
+      DMPAPER_TABLOID                        Tabloid 11 x 17 in
+      DMPAPER_LEDGER                         Ledger 17 x 11 in
+      DMPAPER_LEGAL                          Legal 8 1/2 x 14 in
+      DMPAPER_STATEMENT                      Statement 5 1/2 x 8 1/2 in
+      DMPAPER_EXECUTIVE                      Executive 7 1/4 x 10 1/2 in
+      DMPAPER_A3                             A3 297 x 420 mm )
+      DMPAPER_A4                             A4 210 x 297 mm
+      DMPAPER_A4SMALL                        A4 Small 210 x 297 mm
+      DMPAPER_A5                             A5 148 x 210 mm
+      DMPAPER_B4                             B4 (JIS) 250 x 354
+      DMPAPER_B5                             B5 (JIS) 182 x 257 mm
+      DMPAPER_FOLIO                          Folio 8 1/2 x 13 in
+      DMPAPER_QUARTO                         Quarto 215 x 275 mm
+      DMPAPER_10X14                          10x14 in
+      DMPAPER_11X17                          11x17 in
+      DMPAPER_NOTE                           Note 8 1/2 x 11 in
+      DMPAPER_ENV_9                          Envelope #9 3 7/8 x 8 7/8
+      DMPAPER_ENV_10                         Envelope #10 4 1/8 x 9 1/2
+      DMPAPER_ENV_11                         Envelope #11 4 1/2 x 10 3/8
+      DMPAPER_ENV_12                         Envelope #12 4 \276 x 11
+      DMPAPER_ENV_14                         Envelope #14 5 x 11 1/2
+      DMPAPER_CSHEET                         C size sheet
+      DMPAPER_DSHEET                         D size sheet
+      DMPAPER_ESHEET                         E size sheet
+      DMPAPER_ENV_DL                         Envelope DL 110 x 220mm
+      DMPAPER_ENV_C5                         Envelope C5 162 x 229 mm
+      DMPAPER_ENV_C3                         Envelope C3 324 x 458 mm
+      DMPAPER_ENV_C4                         Envelope C4 229 x 324 mm
+      DMPAPER_ENV_C6                         Envelope C6 114 x 162 mm
+      DMPAPER_ENV_C65                        Envelope C65 114 x 229 mm
+      DMPAPER_ENV_B4                         Envelope B4 250 x 353 mm
+      DMPAPER_ENV_B5                         Envelope B5 176 x 250 mm
+      DMPAPER_ENV_B6                         Envelope B6 176 x 125 mm
+      DMPAPER_ENV_ITALY                      Envelope 110 x 230 mm
+      DMPAPER_ENV_MONARCH                    Envelope Monarch 3.875 x 7.5 in
+      DMPAPER_ENV_PERSONAL                   6 3/4 Envelope 3 5/8 x 6 1/2 in
+      DMPAPER_FANFOLD_US                     US Std Fanfold 14 7/8 x 11 in
+      DMPAPER_FANFOLD_STD_GERMAN             German Std Fanfold 8 1/2 x 12 in
+      DMPAPER_FANFOLD_LGL_GERMAN             German Legal Fanfold 8 1/2 x 13 in
+      DMPAPER_ISO_B4                         B4 (ISO) 250 x 353 mm
+      DMPAPER_JAPANESE_POSTCARD              Japanese Postcard 100 x 148 mm
+      DMPAPER_9X11                           9 x 11 in
+      DMPAPER_10X11                          10 x 11 in
+      DMPAPER_15X11                          15 x 11 in
+      DMPAPER_ENV_INVITE                     Envelope Invite 220 x 220 mm
+      DMPAPER_RESERVED_48                    RESERVED--DO NOT USE
+      DMPAPER_RESERVED_49                    RESERVED--DO NOT USE
+      DMPAPER_LETTER_EXTRA                   Letter Extra 9 \275 x 12 in
+      DMPAPER_LEGAL_EXTRA                    Legal Extra 9 \275 x 15 in
+      DMPAPER_TABLOID_EXTRA                  Tabloid Extra 11.69 x 18 in
+      DMPAPER_A4_EXTRA                       A4 Extra 9.27 x 12.69 in
+      DMPAPER_LETTER_TRANSVERSE              Letter Transverse 8 \275 x 11 in
+      DMPAPER_A4_TRANSVERSE                  A4 Transverse 210 x 297 mm
+      DMPAPER_LETTER_EXTRA_TRANSVERSE        Letter Extra Transverse 9\275 x 12 in
+      DMPAPER_A_PLUS                         SuperA/SuperA/A4 227 x 356 mm
+      DMPAPER_B_PLUS                         SuperB/SuperB/A3 305 x 487 mm
+      DMPAPER_LETTER_PLUS                    Letter Plus 8.5 x 12.69 in
+      DMPAPER_A4_PLUS                        A4 Plus 210 x 330 mm
+      DMPAPER_A5_TRANSVERSE                  A5 Transverse 148 x 210 mm
+      DMPAPER_B5_TRANSVERSE                  B5 (JIS) Transverse 182 x 257 mm
+      DMPAPER_A3_EXTRA                       A3 Extra 322 x 445 mm
+      DMPAPER_A5_EXTRA                       A5 Extra 174 x 235 mm
+      DMPAPER_B5_EXTRA                       B5 (ISO) Extra 201 x 276 mm
+      DMPAPER_A2                             A2 420 x 594 mm
+      DMPAPER_A3_TRANSVERSE                  A3 Transverse 297 x 420 mm
+      DMPAPER_A3_EXTRA_TRANSVERSE            A3 Extra Transverse 322 x 445 mm
+      DMPAPER_DBL_JAPANESE_POSTCARD          Jap. Double Postcard 200 x 148 mm
+      DMPAPER_A6                             A6 105 x 148 mm
+      DMPAPER_JENV_KAKU2                     Japanese Envelope Kaku #2
+      DMPAPER_JENV_KAKU3                     Japanese Envelope Kaku #3
+      DMPAPER_JENV_CHOU3                     Japanese Envelope Chou #3
+      DMPAPER_JENV_CHOU4                     Japanese Envelope Chou #4
+      DMPAPER_LETTER_ROTATED                 Letter Rotated 11 x 8 1/2 11 in
+      DMPAPER_A3_ROTATED                     A3 Rotated 420 x 297 mm
+      DMPAPER_A4_ROTATED                     A4 Rotated 297 x 210 mm
+      DMPAPER_A5_ROTATED                     A5 Rotated 210 x 148 mm
+      DMPAPER_B4_JIS_ROTATED                 B4 (JIS) Rotated 364 x 257 mm
+      DMPAPER_B5_JIS_ROTATED                 B5 (JIS) Rotated 257 x 182 mm
+      DMPAPER_JAPANESE_POSTCARD_ROTATED      Jap. Postcard Rotated 148 x 100 mm
+      DMPAPER_DBL_JAPANESE_POSTCARD_ROTATED  Double Jap. Postcard Rotated 148 x 200 mm
+      DMPAPER_A6_ROTATED                     A6 Rotated 148 x 105 mm
+      DMPAPER_JENV_KAKU2_ROTATED             Japanese Envelope Kaku #2 Rotated
+      DMPAPER_JENV_KAKU3_ROTATED             Japanese Envelope Kaku #3 Rotated
+      DMPAPER_JENV_CHOU3_ROTATED             Japanese Envelope Chou #3 Rotated
+      DMPAPER_JENV_CHOU4_ROTATED             Japanese Envelope Chou #4 Rotated
+      DMPAPER_B6_JIS                         B6 (JIS) 128 x 182 mm
+      DMPAPER_B6_JIS_ROTATED                 B6 (JIS) Rotated 182 x 128 mm
+      DMPAPER_12X11                          12 x 11 in
+      DMPAPER_JENV_YOU4                      Japanese Envelope You #4
+      DMPAPER_JENV_YOU4_ROTATED              Japanese Envelope You #4 Rotated
+      DMPAPER_P16K                           PRC 16K 146 x 215 mm
+      DMPAPER_P32K                           RC 32K 97 x 151 mm
+      DMPAPER_P32KBIG                        PRC 32K(Big) 97 x 151 mm
+      DMPAPER_PENV_1                         PRC Envelope #1 102 x 165 mm
+      DMPAPER_PENV_2                         PRC Envelope #2 102 x 176 mm
+      DMPAPER_PENV_3                         PRC Envelope #3 125 x 176 mm
+      DMPAPER_PENV_4                         Envelope #4 110 x 208 mm
+      DMPAPER_PENV_5                         PRC Envelope #5 110 x 220 mm
+      DMPAPER_PENV_6                         PRC Envelope #6 120 x 230 mm
+      DMPAPER_PENV_7                         PRC Envelope #7 160 x 230 mm
+      DMPAPER_PENV_8                         PRC Envelope #8 120 x 309 mm
+      DMPAPER_PENV_9                         PRC Envelope #9 229 x 324 mm
+      DMPAPER_PENV_10                        Envelope #10 324 x 458 mm
+      DMPAPER_P16K_ROTATED                   PRC 16K Rotated
+      DMPAPER_P32K_ROTATED                   PRC 32K Rotated
+      DMPAPER_P32KBIG_ROTATED                PRC 32K(Big) Rotated
+      DMPAPER_PENV_1_ROTATED                 PRC Envelope #1 Rotated 165 x 102 mm
+      DMPAPER_PENV_2_ROTATED                 PRC Envelope #2 Rotated 176 x 102 mm
+      DMPAPER_PENV_3_ROTATED                 PRC Envelope #3 Rotated 176 x 125 mm
+      DMPAPER_PENV_4_ROTATED                 PRC Envelope #4 Rotated 208 x 110 mm
+      DMPAPER_PENV_5_ROTATED                 PRC Envelope #5 Rotated 220 x 110 mm
+      DMPAPER_PENV_6_ROTATED                 PRC Envelope #6 Rotated 230 x 120 mm
+      DMPAPER_PENV_7_ROTATED                 PRC Envelope #7 Rotated 230 x 160 mm
+      DMPAPER_PENV_8_ROTATED                 PRC Envelope #8 Rotated 309 x 120 mm
+      DMPAPER_PENV_9_ROTATED                 PRC Envelope #9 Rotated 324 x 229 mm
+      DMPAPER_PENV_10_ROTATED                PRC Envelope #10 Rotated 458 x 324 mm
+      DMPAPER_USER                           User defined
+</PRE>
 
-	font-family: arial, helvetica, sans-serif;
-	font-size: 10px;
-	font-style: normal;
-	font-weight: normal;
-	color: #626262; 
-	 
-	border-bottom-style: solid;
-	border-bottom-width: 1px;
-	border-bottom-color: #DBDBDB;
-	
-	background-color: #E2EDFA;
-	width: auto;
-}
-
-#winchm_template_button{
-	float: right;
-	top: -7px;
-	position: relative;
-	text-align: right;
-	right: -5px;
-	height: auto;
-}
-
-#winchm_template_title{
-	font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
-	font-weight: bold;
-	font-size: 18px;
-	color: 353535;	
-
-	margin-top: 0px;
-	margin-left: 0px;
-	margin-bottom: 0px;
-	margin-right: 0px;
-
-	padding-top: 10px;
-	padding-left: 5px;
-	padding-bottom: 10px;
-	padding-right: 10px;
-	
-	border-bottom-style: solid;
-	border-bottom-width: 1px;
-	border-bottom-color: #C7C7C7;
-
-	width: auto;
-	background-color: #C4DBF4;
-	text-align: left;
-}
-
-#winchm_template_content{
-	padding: 0px;
-	margin-top: 15px;
-	margin-left: 15px;
-	margin-bottom: 15px;
-	margin-right: 15px;
-
-	width: auto  !important;
-	width: 100%;
-}
-
-#winchm_template_footer{
-	border-width: 1px;
-	border-color: #c0c0c0;
-	border-top-style: solid;
-	
-	margin-top: 0px;
-	margin-left: 15px;
-	margin-bottom: 5px;
-	margin-right: 15px;
-
-	padding-top: 6px;
-	padding-left: 0px;
-	padding-bottom: 20px;
-	padding-right: 0px;
-
-	font-family: arial, helvetica, sans-serif;
-	font-size: 9px;
-	color: #909090;
-
-	text-align: left;	
-	width: auto;	
-}
-
-#winchm_template_navigation a:link	{text-decoration: none;color: #0000ff}
-#winchm_template_navigation a:visited  {text-decoration: none; color: #0000ff}
-#winchm_template_navigation a:active {text-decoration: none; color: #0000ff}
-#winchm_template_navigation a:hover {text-decoration: none;color: #0000ff}
-
-a:link	{text-decoration: underline; color:#0033cc}
-a:visited  {text-decoration: underline; color: #0033cc}
-a:active {text-decoration: underline; color: #0033cc }
-a:hover {text-decoration: underline;color: #ff0000;}
-
-@media print
-{
-#winchm_template_button{
-visibility:hidden;
-}
-}
-</style>
-</head>
-
-<body>
-
-<div id="winchm_template_title">
-<div id="winchm_template_button"><A href="LICENSE.HTM" title="Previous topic"><img id="winchm_template_prev" alt="Previous topic" src="template4/btn_prev_n.gif" border="0"></a><A href="DRAW_IN_WINDOW.HTM" title="Next topic"><img id="winchm_template_next" alt="Next topic" src="template4/btn_next_n.gif" border="0"></a></div>
-DO REPORT</div>
-<div id="winchm_template_navigation">Help &gt; 
-Commands &gt; </div>
-<div id="winchm_template_content">
-
-<div class=Section1>
-
-<p class=MsoNormal><span lang=ES style="COLOR: darkgreen; mso-ansi-language: ES">///////////////////////////////////////////////////////////////////////////////
-<br>
-// DO REPORT <br>
-///////////////////////////////////////////////////////////////////////////////
-<br>
-</span><span lang=ES style="COLOR: gray; mso-ansi-language: ES"><br>
-</span><span lang=ES style="COLOR: black; mso-ansi-language: ES">#<span
- class=SpellE>xcommand</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DO&nbsp;REPORT&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TITLE&nbsp;&lt;<span
- class=SpellE>ctitle</span>&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp; </span>HEADERS&nbsp;&lt;aheaders1&gt;&nbsp;,&nbsp;&lt;aheaders2&gt;&nbsp;;
-<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp; </span>FIELDS&nbsp;&lt;a&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WIDTHS&nbsp;&lt;<span
- class=SpellE>awidths</span>&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;TOTALS&nbsp;&lt;ato&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;NFORMATS&nbsp;&lt;<span
- class=SpellE>aformats</span>&gt;&nbsp;]&nbsp;; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WORKAREA&nbsp;&lt;<span
- class=SpellE>calias</span>&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-;&nbsp; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[&nbsp;LPP&nbsp;&nbsp;&nbsp; &lt;<span class=SpellE>nlpp</span>&gt;&nbsp;&nbsp;&nbsp;&nbsp;
-]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;&nbsp; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[&nbsp;CPL&nbsp;&nbsp;&nbsp; &lt;<span class=SpellE>ncpl</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-;&nbsp; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[&nbsp;LMARGIN&nbsp;&lt;<span class=SpellE>nllmargin</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-;&nbsp; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[&nbsp;PAPERSIZE&nbsp;&lt;<span class=SpellE>npapersize</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-;&nbsp; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[&nbsp;&lt;<span class=SpellE>lnoprop</span>:&nbsp;NOFIXED&gt;&nbsp;]&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp; </span>[&nbsp;&lt;<span
- class=SpellE>ldos</span>:&nbsp;DOSMODE&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-;&nbsp; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[&nbsp;&lt;<span class=SpellE>lpreview</span>:&nbsp;PREVIEW&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-;&nbsp; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[&nbsp;&lt;<span class=SpellE>lselect</span>:&nbsp;SELECT&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-;&nbsp; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[&nbsp;IMAGE&nbsp;&lt;<span class=SpellE>cgraphic</span>&gt;&nbsp;AT&nbsp;&lt;<span
- class=SpellE>nfi</span>&gt;&nbsp;,&nbsp;&lt;<span class=SpellE>nci</span>&gt;&nbsp;TO&nbsp;&lt;<span
- class=SpellE>nff</span>&gt;&nbsp;,&nbsp;&lt;<span class=SpellE>ncf</span>&gt;&nbsp;]&nbsp;;&nbsp;
-<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[&nbsp;&lt;<span class=SpellE>lmul</span>:&nbsp;MULTIPLE&gt;&nbsp;&nbsp;&nbsp; ]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-;&nbsp; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[&nbsp;GROUPED&nbsp;BY&nbsp;&lt;<span class=SpellE>cgrpby</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-;&nbsp; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[&nbsp;HEADRGRP&nbsp;&nbsp; &lt;<span class=SpellE>chdrgrp</span>&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-;&nbsp; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[&nbsp;&lt;<span class=SpellE>llandscape</span>:&nbsp;LANDSCAPE&gt;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-;&nbsp; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[&nbsp;&lt;<span class=SpellE>lgroupeject</span>:&nbsp;GROUPEJECT&gt;&nbsp;]&nbsp;
-;&nbsp; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[&nbsp;HEADING&nbsp; &lt;<span class=SpellE>cheader</span>&gt;&nbsp;]&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp; =&gt;; <br>
-<span class=SpellE>easyreport</span>&nbsp; (&nbsp;&lt;<span class=SpellE>ctitle</span>&gt;&nbsp;,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;aheaders1&gt;&nbsp;,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;aheaders2&gt;&nbsp;,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;a&gt;&nbsp;,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;<span class=SpellE>awidths</span>&gt;&nbsp;,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;ato&gt;&nbsp;,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;<span class=SpellE>nlpp</span>&gt;&nbsp;,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;.<span class=SpellE>ldos</span>.&gt;,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-&lt;.<span class=SpellE>lpreview</span>.&gt;,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-&lt;<span class=SpellE>cgraphic</span>&gt;,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-&lt;<span class=SpellE>nfi</span>&gt;&nbsp;,&nbsp;&lt;<span class=SpellE>nci</span>&gt;&nbsp;,&nbsp;&lt;<span
- class=SpellE>nff</span>&gt;&nbsp;,&nbsp;&lt;<span class=SpellE>ncf</span>&gt;&nbsp;,&nbsp;&nbsp;
-; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-&lt;.<span class=SpellE>lmul</span>.&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-,&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-&lt;"<span class=SpellE>cgrpby</span>"&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-,&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-&lt;<span class=SpellE>chdrgrp</span>&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-,&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-&lt;.<span class=SpellE>llandscape</span>.&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-,&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-&lt;<span class=SpellE>ncpl</span>&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-,&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-&lt;.<span class=SpellE>lselect</span>.&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-,&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-&lt;(<span class=SpellE>calias</span>)&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-,&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-&lt;<span class=SpellE>nllmargin</span>&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-,&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-&lt;<span class=SpellE>aformats</span>&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-,&nbsp; ; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-&lt;<span class=SpellE>npapersize</span>&gt;,&lt;<span class=SpellE>cheader</span>&gt;,&lt;.<span
- class=SpellE>lnoprop</span>.&gt;,&lt;.<span class=SpellE>lgroupeject</span>.&gt;&nbsp;)
-<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><o:p>&nbsp;</o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES">#<span
- class=SpellE>command</span> REPORTFORMWIN &lt;<span class=SpellE>frm</span>&gt;
-[HEADING &lt;<span class=SpellE>head</span>&gt;] [&lt;<span class=SpellE>plain<span
- class=GramE>:PLAIN</span></span>&gt;] [&lt;<span class=SpellE>noej:NOEJECT</span>&gt;];<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>[&lt;<span class=SpellE><span class=GramE>sum:</span>SUMMARY</span>&gt;]
-[&lt;<span class=SpellE><span class=GramE>nocon:</span>NOCONSOLE</span>&gt;] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>[&lt;<span class=SpellE><span class=GramE>prn:</span>TO</span>
-PRINTER&gt;] [TO FILE <span class=GramE>&lt;(</span>f)&gt;] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>[FOR &lt;<span class=SpellE>for</span>&gt;] [WHILE &lt;<span
- class=SpellE>while</span>&gt;] [NEXT &lt;<span class=SpellE>next</span>&gt;<span
- class=GramE>] ;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>[RECORD &lt;<span class=SpellE>rec</span>&gt;] [&lt;<span class=SpellE><span
- class=GramE>rest:</span>REST</span>&gt;] [ALL] =&gt; ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>__<span class=SpellE>ReportFormwin</span>( &lt;(<span class=SpellE>frm</span>)&gt;,
-&lt;.<span class=SpellE>prn</span>.&gt;, &lt;(f)&gt;, &lt;.<span class=SpellE>nocon</span>.<span
- class=GramE>&gt;, ;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;{<span class=SpellE><span class=GramE>for</span></span>}&gt;, &lt;{<span
- class=SpellE>while</span>}&gt;, &lt;<span class=SpellE>next</span>&gt;, &lt;<span
- class=SpellE>rec</span>&gt;, &lt;.<span class=SpellE>rest</span>.&gt;, ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><span
- style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;.<span class=SpellE>plain</span>.&gt;, &lt;<span class=SpellE>head</span>&gt;,
-&lt;.<span class=SpellE>noej</span>.&gt;, &lt;.<span class=SpellE>sum</span>.<span
- class=GramE>&gt; )</span><o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><o:p>&nbsp;</o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><o:p>&nbsp;</o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><o:p>&nbsp;</o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><o:p>&nbsp;</o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><o:p>&nbsp;</o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES">#<span
- class=SpellE>xcommand</span> DO REPORT FORM &lt;<span class=SpellE>cfilerep</span>&gt;
-<span class=GramE>[ HEADING</span> &lt;<span class=SpellE>cheading</span>&gt; ]
-=&gt; <span class=SpellE>extreport</span>(&lt;"<span class=SpellE>cfilerep</span>"&gt;,&lt;<span
- class=SpellE>cheading</span>&gt; )<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES"><o:p>&nbsp;</o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: gray; mso-ansi-language: ES"><o:p>&nbsp;</o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style="COLOR: gray; mso-ansi-language: ES"><br>
-<br style="mso-special-character: line-break"><br style="mso-special-character: line-break"></span></p>
-
-</div>
-
-</div>
-<div id="winchm_template_footer"><FONT color=#808080 
-size=1>Copyright © 2013-2016 ooHG Development Team - </FONT><A 
-href="https://sourceforge.net/projects/oohg/" target="_blank"><FONT 
-size=1>https://sourceforge.net/projects/oohg/</FONT></A> 
-     </div>
-
-</body>
+         </div>
+      </div>
+      <div id="winchm_template_footer">
+         <FONT color=#808080 size=1>Copyright © 2013-2017 ooHG Development Team -
+         </FONT>
+         <A href="https://sourceforge.net/projects/oohg/" target="_blank">
+            <FONT size=1>https://sourceforge.net/projects/oohg/
+            </FONT></A>
+      </div>
+   </body>
 
 </html>

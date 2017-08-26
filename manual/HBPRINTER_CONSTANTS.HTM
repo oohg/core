@@ -1,547 +1,421 @@
 <!--
-$Id: HBPRINTER_CONSTANTS.HTM,v 1.5 2016-05-22 23:52:47 fyurisich Exp $
+$Id: HBPRINTER_CONSTANTS.HTM,v 1.6 2017-08-26 02:54:08 fyurisich Exp $
 -->
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html xmlns:o="urn:schemas-microsoft-com:office:office"
-xmlns:w="urn:schemas-microsoft-com:office:word"
-xmlns="http://www.w3.org/TR/REC-html40">
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv=Content-Type content="text/html; charset=Windows-1252">
 
-<head>
-<meta http-equiv=Content-Type content="text/html; charset=Windows-1252">
-<meta name=ProgId content=Word.Document>
-<meta name=Generator content="Microsoft Word 11">
-<meta name=Originator content="Microsoft Word 11">
-<link rel=File-List href="HBPRINTER_CONSTANTS_archivos/filelist.xml">
-<title>HBPRINTER CONSTANTS</title>
+      <title>HBPRINTER CONSTANTS</title>
 
-<style>
-<!--
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{mso-style-parent:"";
-	margin:0cm;
-	margin-bottom:.0001pt;
-	mso-pagination:widow-orphan;
-	font-size:12.0pt;
-	font-family:"Times New Roman";
-	mso-fareast-font-family:"Times New Roman";}
-@page Section1
-	{size:612.0pt 792.0pt;
-	margin:70.85pt 3.0cm 70.85pt 3.0cm;
-	mso-header-margin:35.4pt;
-	mso-footer-margin:35.4pt;
-	mso-paper-source:0;}
-div.Section1
-	{page:Section1;}
--->
-</style>
+      <style>
+         html { overflow-y: scroll; }
+         body { padding: 0px; margin: 0px; overflow: auto; background-color: #FFFFFF; }
+         #winchm_template_navigation { margin-top: 0px; margin-left: 0px; margin-bottom: 0px; margin-right: 0px;
+           padding-top: 5px; padding-left: 5px; padding-bottom: 5px; padding-right: 5px;
+           font-family: arial, helvetica, sans-serif; font-size: 10px; font-style: normal; font-weight: normal;
+           color: #626262; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #DBDBDB;
+           background-color: #E2EDFA; width: auto; }
+         #winchm_template_button { float: right; top: -7px; position: relative; text-align: right; right: -5px;
+           height: auto; }
+         #winchm_template_title { font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif; font-weight: bold;
+            font-size: 18px; color: 353535; margin-top: 0px; margin-left: 0px; margin-bottom: 0px; margin-right: 0px;
+            padding-top: 10px; padding-left: 5px; padding-bottom: 10px; padding-right: 10px; border-bottom-style: solid;
+            border-bottom-width: 1px; border-bottom-color: #C7C7C7; width: auto; background-color: #C4DBF4;
+            text-align: left; }
+         #winchm_template_content { padding: 0px; margin-top: 15px; margin-left: 15px; margin-bottom: 15px;
+            margin-right: 15px; width: auto !important; width: 100%; font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;}
+         #winchm_template_footer { border-width: 1px; border-color: #c0c0c0; border-top-style: solid; margin-top: 0px;
+            margin-left: 15px; margin-bottom: 5px; margin-right: 15px; padding-top: 6px; padding-left: 0px;
+            padding-bottom: 20px; padding-right: 0px; font-family: arial, helvetica, sans-serif; font-size: 9px;
+            color: #909090; text-align: left; width: auto; }
+         #winchm_template_navigation a:link { text-decoration: none; color: #0000ff }
+         #winchm_template_navigation a:visited { text-decoration: none; color: #0000ff }
+         #winchm_template_navigation a:active { text-decoration: none; color: #0000ff }
+         #winchm_template_navigation a:hover {text-decoration: none; color: #0000ff }
+         a:link { text-decoration: underline; color:#0033cc }
+         a:visited { text-decoration: underline; color: #0033cc }
+         a:active { text-decoration: underline; color: #0033cc }
+         a:hover { text-decoration: underline;color: #ff0000 }
+         @media print { #winchm_template_button{ visibility:hidden; } }
+      </style>
+   </head>
 
+   <body>
+      <div id="winchm_template_title">
+         <div id="winchm_template_button">
+            <A href="HBPRINTER_SET_GET_TEXT_COMMANDS.HTM" title="Previous topic">
+               <img id="winchm_template_prev" alt="Previous topic" src="template4/btn_prev_n.gif" border="0"></A>
+            <A href="HBPRINTER_SAMPLE.HTM" title="Next topic">
+               <img id="winchm_template_next" alt="Next topic" src="template4/btn_next_n.gif" border="0"></A>
+         </div>HBPRINTER CONSTANTS
+      </div>
+      <div id="winchm_template_navigation">Help &gt; Controls &gt;
+      </div>
+      <div id="winchm_template_content">
+         <div class=Section1>
 
+<PRE>
+<span style='color:darkgreen'><b>
+/////////////////////////////////////////////////////////////////////
+// HBPRINTER CONSTANTS
+/////////////////////////////////////////////////////////////////////
+</b></span>
+<u>Bin selection</u>:
 
-<style>
-html {
-	overflow-y:scroll;
-}
+      DMBIN_FIRST
+      DMBIN_UPPER
+      DMBIN_ONLYONE
+      DMBIN_LOWER
+      DMBIN_MIDDLE
+      DMBIN_MANUAL
+      DMBIN_ENVELOPE
+      DMBIN_ENVMANUAL
+      DMBIN_AUTO
+      DMBIN_TRACTOR
+      DMBIN_SMALLFMT
+      DMBIN_LARGEFMT
+      DMBIN_LARGECAPACITY
+      DMBIN_CASSETTE
+      DMBIN_FORMSOURCE
+      DMBIN_LAST
+      DMBIN_USER
 
-body {
-	padding: 0px;
-	margin: 0px;
-	overflow: auto;
-	background-color: #FFFFFF;
-}
+<u>Orientation</u>:
 
-#winchm_template_navigation{
-	margin-top: 0px;
-	margin-left: 0px;
-	margin-bottom: 0px;
-	margin-right: 0px;
+      DMORIENT_PORTRAIT        
+      DMORIENT_LANDSCAPE
 
-	padding-top: 5px;
-	padding-left: 5px;
-	padding-bottom: 5px;
-	padding-right: 5px;
+<u>Color enable/disable for color printers</u>:
 
-	font-family: arial, helvetica, sans-serif;
-	font-size: 10px;
-	font-style: normal;
-	font-weight: normal;
-	color: #626262;
+      DMCOLOR_MONOCHROME
+      DMCOLOR_COLOR
 
-	border-bottom-style: solid;
-	border-bottom-width: 1px;
-	border-bottom-color: #DBDBDB;
+<u>Print qualities</u>:
 
-	background-color: #E2EDFA;
-	width: auto;
-}
+      DMRES_DRAFT
+      DMRES_LOW
+      DMRES_MEDIUM
+      DMRES_HIGH
 
-#winchm_template_button{
-	float: right;
-	top: -7px;
-	position: relative;
-	text-align: right;
-	right: -5px;
-	height: auto;
-}
+<u>Brush styles</u>:
 
-#winchm_template_title{
-	font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
-	font-weight: bold;
-	font-size: 18px;
-	color: 353535;
+      BS_SOLID
+      BS_NULL
+      BS_HOLLOW
+      BS_HATCHED
+      BS_PATTERN
+      BS_INDEXED
+      BS_DIBPATTERN
+      BS_DIBPATTERNPT
+      BS_PATTERN8X8
+      BS_DIBPATTERN8X8
+      BS_MONOPATTERN
 
-	margin-top: 0px;
-	margin-left: 0px;
-	margin-bottom: 0px;
-	margin-right: 0px;
+<u>Hatch styles</u>:
 
-	padding-top: 10px;
-	padding-left: 5px;
-	padding-bottom: 10px;
-	padding-right: 10px;
+      HS_HORIZONTAL
+      HS_VERTICAL
+      HS_FDIAGONAL
+      HS_BDIAGONAL
+      HS_CROSS
+      HS_DIAGCROSS
 
-	border-bottom-style: solid;
-	border-bottom-width: 1px;
-	border-bottom-color: #C7C7C7;
+<u>Pen styles</u>:
 
-	width: auto;
-	background-color: #C4DBF4;
-	text-align: left;
-}
+      PS_SOLID
+      PS_DASH
+      PS_DOT
+      PS_DASHDOT
+      PS_DASHDOTDOT
+      PS_NULL
+      PS_INSIDEFRAME
+      PS_USERSTYLE
+      PS_ALTERNATE
+      PS_STYLE_MASK
 
-#winchm_template_content{
-	padding: 0px;
-	margin-top: 15px;
-	margin-left: 15px;
-	margin-bottom: 15px;
-	margin-right: 15px;
+<u>Combine region styles</u>:
 
-	width: auto  !important;
-	width: 100%;
-}
+      RGN_AND
+      RGN_OR
+      RGN_XOR
+      RGN_DIFF
+      RGN_COPY
+      RGN_MIN
+      RGN_MAX
 
-#winchm_template_footer{
-	border-width: 1px;
-	border-color: #c0c0c0;
-	border-top-style: solid;
+<u>PolyFill modes</u>:
 
-	margin-top: 0px;
-	margin-left: 15px;
-	margin-bottom: 5px;
-	margin-right: 15px;
+      ALTERNATE
+      WINDING
+      POLYFILL_LAST
 
-	padding-top: 6px;
-	padding-left: 0px;
-	padding-bottom: 20px;
-	padding-right: 0px;
+<u>Text Alignment options</u>:
 
-	font-family: arial, helvetica, sans-serif;
-	font-size: 9px;
-	color: #909090;
+      TA_NOUPDATECP
+      TA_UPDATECP
+      TA_LEFT
+      TA_RIGHT
+      TA_CENTER
+      TA_TOP
+      TA_BOTTOM
+      TA_BASELINE
+      TA_RTLREADING
+      TA_MASK
 
-	text-align: left;
-	width: auto;
-}
+<u>DrawText format flags</u>:
 
-#winchm_template_navigation a:link	{text-decoration: none;color: #0000ff}
-#winchm_template_navigation a:visited  {text-decoration: none; color: #0000ff}
-#winchm_template_navigation a:active {text-decoration: none; color: #0000ff}
-#winchm_template_navigation a:hover {text-decoration: none;color: #0000ff}
+      DT_TOP
+      DT_LEFT
+      DT_CENTER
+      DT_RIGHT
+      DT_VCENTER
+      DT_BOTTOM
+      DT_WORDBREAK
+      DT_SINGLELINE
+      DT_EXPANDTABS
+      DT_TABSTOP
+      DT_NOCLIP
+      DT_EXTERNALLEADING
+      DT_CALCRECT
+      DT_NOPREFIX
+      DT_INTERNAL
+      DT_EDITCONTROL
+      DT_PATH_ELLIPSIS
+      DT_END_ELLIPSIS
+      DT_MODIFYSTRING
+      DT_RTLREADING
+      DT_WORD_ELLIPSIS
+      DT_NOFULLWIDTHCHARBREAK
+      DT_HIDEPREFIX
+      DT_PREFIXONLY
 
-a:link	{text-decoration: underline; color:#0033cc}
-a:visited  {text-decoration: underline; color: #0033cc}
-a:active {text-decoration: underline; color: #0033cc }
-a:hover {text-decoration: underline;color: #ff0000;}
+<u>Charsets</u>:
 
-@media print
-{
-#winchm_template_button{
-visibility:hidden;
-}
-}
-</style>
-</head>
+      ANSI_CHARSET
+      DEFAULT_CHARSET
+      SYMBOL_CHARSET
+      SHIFTJIS_CHARSET
+      HANGEUL_CHARSET
+      HANGUL_CHARSET
+      GB2312_CHARSET
+      CHINESEBIG5_CHARSET
+      OEM_CHARSET
+      JOHAB_CHARSET
+      HEBREW_CHARSET
+      ARABIC_CHARSET
+      GREEK_CHARSET
+      TURKISH_CHARSET
+      VIETNAMESE_CHARSET
+      THAI_CHARSET
+      EASTEUROPE_CHARSET
+      RUSSIAN_CHARSET
+      MAC_CHARSET
+      BALTIC_CHARSET
 
-<body>
+<u>Stock logical objects</u>:
 
-<div id="winchm_template_title">
-<div id="winchm_template_button"><A href="HBPRINTER_SET_GET_TEXT_COMMANDS.HTM" title="Previous topic"><img id="winchm_template_prev" alt="Previous topic" src="template4/btn_prev_n.gif" border="0"></a><A href="HBPRINTER_SAMPLE.HTM" title="Next topic"><img id="winchm_template_next" alt="Next topic" src="template4/btn_next_n.gif" border="0"></a></div>
-HBPRINTER LIBRARY</div>
-<div id="winchm_template_navigation">Help &gt;
-Libraries &gt; HBPRINTER &gt; </div>
-<div id="winchm_template_content">
+      WHITE_BRUSH
+      LTGRAY_BRUSH
+      GRAY_BRUSH
+      DKGRAY_BRUSH
+      BLACK_BRUSH
+      NULL_BRUSH
+      HOLLOW_BRUSH
+      WHITE_PEN
+      BLACK_PEN
+      NULL_PEN
+      OEM_FIXED_FONT
+      ANSI_FIXED_FONT
+      ANSI_VAR_FONT
+      SYSTEM_FONT
+      DEVICE_DEFAULT_FONT
+      DEFAULT_PALETTE
+      SYSTEM_FIXED_FONT
 
-<div class=Section1>
+<u>Duplex printing</u>:
 
-<p class=MsoNormal><span lang=ES style="COLOR: darkgreen; mso-ansi-language: ES">///////////////////////////////////////////////////////////////////////////////
-<br>
-// HBPRINTER CONSTANTS <br>
-///////////////////////////////////////////////////////////////////////////////
-<br>
-</span><span lang=ES style="COLOR: gray; mso-ansi-language: ES"><br>
-</span>
+      DMDUP_SIMPLEX
+      DMDUP_VERTICAL
+      DMDUP_HORIZONTAL
 
-<p class=MsoNormal><span lang=ES style="COLOR: black; mso-ansi-language: ES">
-<b>Bin selection</b><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DMBIN_FIRST<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DMBIN_UPPER<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DMBIN_ONLYONE<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DMBIN_LOWER<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DMBIN_MIDDLE<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DMBIN_MANUAL<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DMBIN_ENVELOPE<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DMBIN_ENVMANUAL<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DMBIN_AUTO<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DMBIN_TRACTOR<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DMBIN_SMALLFMT<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DMBIN_LARGEFMT<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DMBIN_LARGECAPACITY<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DMBIN_CASSETTE<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DMBIN_FORMSOURCE<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DMBIN_LAST<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DMBIN_USER
+<u>Field selection bits for SetDevMode() "what" parameter</u>:
 
-<p><b>Paper size</b><br>
-<table width="760" cellpadding="0"  cellspacing="0"  style="border-collapse: collapse; border: none">
-   <COLGROUP>
-      <COL width="3%">
-      <COL width="49%">
-      <COL width="48%">
-   </COLGROUP>
-<tr><td></td><td>DMPAPER_FIRST</td><td>DMPAPER_LETTER</td></tr>
-<tr><td></td><td>DMPAPER_LETTER</td><td>Letter 8 1/2 x 11 in</td></tr>
-<tr><td></td><td>DMPAPER_LETTERSMALL</td><td>Letter Small 8 1/2 x 11 in</td></tr>
-<tr><td></td><td>DMPAPER_TABLOID</td><td>Tabloid 11 x 17 in</td></tr>
-<tr><td></td><td>DMPAPER_LEDGER</td><td>Ledger 17 x 11 in</td></tr>
-<tr><td></td><td>DMPAPER_LEGAL </td><td>Legal 8 1/2 x 14 in </td></tr>
-<tr><td></td><td>DMPAPER_STATEMENT</td><td>Statement 5 1/2 x 8 1/2 in</td></tr>
-<tr><td></td><td>DMPAPER_EXECUTIVE</td><td>Executive 7 1/4 x 10 1/2 in</td></tr>
-<tr><td></td><td>DMPAPER_A3</td><td>A3 297 x 420 mm )</td></tr>
-<tr><td></td><td>DMPAPER_A4</td><td>A4 210 x 297 mm</td></tr>
-<tr><td></td><td>DMPAPER_A4SMALL</td><td>A4 Small 210 x 297 mm</td></tr>
-<tr><td></td><td>DMPAPER_A5</td><td>A5 148 x 210 mm</td></tr>
-<tr><td></td><td>DMPAPER_B4</td><td>B4 (JIS) 250 x 354</td></tr>
-<tr><td></td><td>DMPAPER_B5</td><td>B5 (JIS) 182 x 257 mm</td></tr>
-<tr><td></td><td>DMPAPER_FOLIO</td><td>Folio 8 1/2 x 13 in</td></tr>
-<tr><td></td><td>DMPAPER_QUARTO</td><td>Quarto 215 x 275 mm</td></tr>
-<tr><td></td><td>DMPAPER_10X14</td><td>10x14 in</td></tr>
-<tr><td></td><td>DMPAPER_11X17</td><td>11x17 in</td></tr>
-<tr><td></td><td>DMPAPER_NOTE</td><td>Note 8 1/2 x 11 in</td></tr>
-<tr><td></td><td>DMPAPER_ENV_9</td><td>Envelope #9 3 7/8 x 8 7/8</td></tr>
-<tr><td></td><td>DMPAPER_ENV_10</td><td>Envelope #10 4 1/8 x 9 1/2</td></tr>
-<tr><td></td><td>DMPAPER_ENV_11</td><td>Envelope #11 4 1/2 x 10 3/8</td></tr>
-<tr><td></td><td>DMPAPER_ENV_12</td><td>Envelope #12 4 \276 x 11</td></tr>
-<tr><td></td><td>DMPAPER_ENV_14</td><td>Envelope #14 5 x 11 1/2</td></tr>
-<tr><td></td><td>DMPAPER_CSHEET</td><td>C size sheet</td></tr>
-<tr><td></td><td>DMPAPER_DSHEET</td><td>D size sheet</td></tr>
-<tr><td></td><td>DMPAPER_ESHEET</td><td>E size sheet</td></tr>
-<tr><td></td><td>DMPAPER_ENV_DL</td><td>Envelope DL 110 x 220mm</td></tr>
-<tr><td></td><td>DMPAPER_ENV_C5</td><td>Envelope C5 162 x 229 mm</td></tr>
-<tr><td></td><td>DMPAPER_ENV_C3</td><td>Envelope C3 324 x 458 mm</td></tr>
-<tr><td></td><td>DMPAPER_ENV_C4</td><td>Envelope C4 229 x 324 mm</td></tr>
-<tr><td></td><td>DMPAPER_ENV_C6</td><td>Envelope C6 114 x 162 mm</td></tr>
-<tr><td></td><td>DMPAPER_ENV_C65</td><td>Envelope C65 114 x 229 mm</td></tr>
-<tr><td></td><td>DMPAPER_ENV_B4</td><td>Envelope B4 250 x 353 mm</td></tr>
-<tr><td></td><td>DMPAPER_ENV_B5</td><td>Envelope B5 176 x 250 mm</td></tr>
-<tr><td></td><td>DMPAPER_ENV_B6</td><td>Envelope B6 176 x 125 mm</td></tr>
-<tr><td></td><td>DMPAPER_ENV_ITALY</td><td>Envelope 110 x 230 mm</td></tr>
-<tr><td></td><td>DMPAPER_ENV_MONARCH</td><td>Envelope Monarch 3.875 x 7.5 in</td></tr>
-<tr><td></td><td>DMPAPER_ENV_PERSONAL</td><td>6 3/4 Envelope 3 5/8 x 6 1/2 in</td></tr>
-<tr><td></td><td>DMPAPER_FANFOLD_US</td><td>US Std Fanfold 14 7/8 x 11 in</td></tr>
-<tr><td></td><td>DMPAPER_FANFOLD_STD_GERMAN</td><td>German Std Fanfold 8 1/2 x 12 in</td></tr>
-<tr><td></td><td>DMPAPER_FANFOLD_LGL_GERMAN</td><td>German Legal Fanfold 8 1/2 x 13 in</td></tr>
-<tr><td></td><td>DMPAPER_ISO_B4</td><td>B4 (ISO) 250 x 353 mm</td></tr>
-<tr><td></td><td>DMPAPER_JAPANESE_POSTCARD</td><td>Japanese Postcard 100 x 148 mm</td></tr>
-<tr><td></td><td>DMPAPER_9X11</td><td>9 x 11 in</td></tr>
-<tr><td></td><td>DMPAPER_10X11</td><td>10 x 11 in</td></tr>
-<tr><td></td><td>DMPAPER_15X11</td><td>15 x 11 in</td></tr>
-<tr><td></td><td>DMPAPER_ENV_INVITE</td><td>Envelope Invite 220 x 220 mm</td></tr>
-<tr><td></td><td>DMPAPER_RESERVED_48</td><td>RESERVED--DO NOT USE</td></tr>
-<tr><td></td><td>DMPAPER_RESERVED_49</td><td>RESERVED--DO NOT USE</td></tr>
-<tr><td></td><td>DMPAPER_LETTER_EXTRA</td><td>Letter Extra 9 \275 x 12 in</td></tr>
-<tr><td></td><td>DMPAPER_LEGAL_EXTRA</td><td>Legal Extra 9 \275 x 15 in</td></tr>
-<tr><td></td><td>DMPAPER_TABLOID_EXTRA</td><td>Tabloid Extra 11.69 x 18 in</td></tr>
-<tr><td></td><td>DMPAPER_A4_EXTRA</td><td>A4 Extra 9.27 x 12.69 in</td></tr>
-<tr><td></td><td>DMPAPER_LETTER_TRANSVERSE</td><td>Letter Transverse 8 \275 x 11 in</td></tr>
-<tr><td></td><td>DMPAPER_A4_TRANSVERSE</td><td>A4 Transverse 210 x 297 mm</td></tr>
-<tr><td></td><td>DMPAPER_LETTER_EXTRA_TRANSVERSE</td><td>Letter Extra Transverse 9\275 x 12 in</td></tr>
-<tr><td></td><td>DMPAPER_A_PLUS</td><td>SuperA/SuperA/A4 227 x 356 mm</td></tr>
-<tr><td></td><td>DMPAPER_B_PLUS</td><td>SuperB/SuperB/A3 305 x 487 mm</td></tr>
-<tr><td></td><td>DMPAPER_LETTER_PLUS</td><td>Letter Plus 8.5 x 12.69 in</td></tr>
-<tr><td></td><td>DMPAPER_A4_PLUS</td><td>A4 Plus 210 x 330 mm</td></tr>
-<tr><td></td><td>DMPAPER_A5_TRANSVERSE</td><td>A5 Transverse 148 x 210 mm</td></tr>
-<tr><td></td><td>DMPAPER_B5_TRANSVERSE</td><td>B5 (JIS) Transverse 182 x 257 mm</td></tr>
-<tr><td></td><td>DMPAPER_A3_EXTRA</td><td>A3 Extra 322 x 445 mm</td></tr>
-<tr><td></td><td>DMPAPER_A5_EXTRA</td><td>A5 Extra 174 x 235 mm</td></tr>
-<tr><td></td><td>DMPAPER_B5_EXTRA</td><td>B5 (ISO) Extra 201 x 276 mm</td></tr>
-<tr><td></td><td>DMPAPER_A2</td><td>A2 420 x 594 mm</td></tr>
-<tr><td></td><td>DMPAPER_A3_TRANSVERSE</td><td>A3 Transverse 297 x 420 mm</td></tr>
-<tr><td></td><td>DMPAPER_A3_EXTRA_TRANSVERSE</td><td>A3 Extra Transverse 322 x 445 mm</td></tr>
-<tr><td></td><td>DMPAPER_DBL_JAPANESE_POSTCARD</td><td>Jap. Double Postcard 200 x 148 mm</td></tr>
-<tr><td></td><td>DMPAPER_A6</td><td>A6 105 x 148 mm</td></tr>
-<tr><td></td><td>DMPAPER_JENV_KAKU2</td><td>Japanese Envelope Kaku #2</td></tr>
-<tr><td></td><td>DMPAPER_JENV_KAKU3</td><td>Japanese Envelope Kaku #3</td></tr>
-<tr><td></td><td>DMPAPER_JENV_CHOU3</td><td>Japanese Envelope Chou #3</td></tr>
-<tr><td></td><td>DMPAPER_JENV_CHOU4</td><td>Japanese Envelope Chou #4</td></tr>
-<tr><td></td><td>DMPAPER_LETTER_ROTATED</td><td>Letter Rotated 11 x 8 1/2 11 in</td></tr>
-<tr><td></td><td>DMPAPER_A3_ROTATED</td><td>A3 Rotated 420 x 297 mm</td></tr>
-<tr><td></td><td>DMPAPER_A4_ROTATED</td><td>A4 Rotated 297 x 210 mm</td></tr>
-<tr><td></td><td>DMPAPER_A5_ROTATED</td><td>A5 Rotated 210 x 148 mm</td></tr>
-<tr><td></td><td>DMPAPER_B4_JIS_ROTATED</td><td>B4 (JIS) Rotated 364 x 257 mm</td></tr>
-<tr><td></td><td>DMPAPER_B5_JIS_ROTATED</td><td>B5 (JIS) Rotated 257 x 182 mm</td></tr>
-<tr><td></td><td>DMPAPER_JAPANESE_POSTCARD_ROTATED</td><td>Jap. Postcard Rotated 148 x 100 mm</td></tr>
-<tr><td></td><td>DMPAPER_DBL_JAPANESE_POSTCARD_ROTATED</td><td>Double Jap. Postcard Rotated 148 x 200 mm</td></tr>
-<tr><td></td><td>DMPAPER_A6_ROTATED</td><td>A6 Rotated 148 x 105 mm</td></tr>
-<tr><td></td><td>DMPAPER_JENV_KAKU2_ROTATED</td><td>Japanese Envelope Kaku #2 Rotated</td></tr>
-<tr><td></td><td>DMPAPER_JENV_KAKU3_ROTATED</td><td>Japanese Envelope Kaku #3 Rotated</td></tr>
-<tr><td></td><td>DMPAPER_JENV_CHOU3_ROTATED</td><td>Japanese Envelope Chou #3 Rotated</td></tr>
-<tr><td></td><td>DMPAPER_JENV_CHOU4_ROTATED</td><td>Japanese Envelope Chou #4 Rotated</td></tr>
-<tr><td></td><td>DMPAPER_B6_JIS</td><td>B6 (JIS) 128 x 182 mm</td></tr>
-<tr><td></td><td>DMPAPER_B6_JIS_ROTATED</td><td>B6 (JIS) Rotated 182 x 128 mm</td></tr>
-<tr><td></td><td>DMPAPER_12X11</td><td>12 x 11 in</td></tr>
-<tr><td></td><td>DMPAPER_JENV_YOU4</td><td>Japanese Envelope You #4</td></tr>
-<tr><td></td><td>DMPAPER_JENV_YOU4_ROTATED</td><td>Japanese Envelope You #4 Rotated</td></tr>
-<tr><td></td><td>DMPAPER_P16K</td><td>PRC 16K 146 x 215 mm</td></tr>
-<tr><td></td><td>DMPAPER_P32K</td><td>PRC 32K 97 x 151 mm</td></tr>
-<tr><td></td><td>DMPAPER_P32KBIG</td><td>PRC 32K(Big) 97 x 151 mm</td></tr>
-<tr><td></td><td>DMPAPER_PENV_1</td><td>PRC Envelope #1 102 x 165 mm</td></tr>
-<tr><td></td><td>DMPAPER_PENV_2</td><td>PRC Envelope #2 102 x 176 mm</td></tr>
-<tr><td></td><td>DMPAPER_PENV_3</td><td>PRC Envelope #3 125 x 176 mm</td></tr>
-<tr><td></td><td>DMPAPER_PENV_4</td><td>Eenvelope #4 110 x 208 mm</td></tr>
-<tr><td></td><td>DMPAPER_PENV_5</td><td>PRC Envelope #5 110 x 220 mm</td></tr>
-<tr><td></td><td>DMPAPER_PENV_6</td><td>PRC Envelope #6 120 x 230 mm</td></tr>
-<tr><td></td><td>DMPAPER_PENV_7</td><td>PRC Envelope #7 160 x 230 mm</td></tr>
-<tr><td></td><td>DMPAPER_PENV_8</td><td>PRC Envelope #8 120 x 309 mm</td></tr>
-<tr><td></td><td>DMPAPER_PENV_9</td><td>PRC Envelope #9 229 x 324 mm</td></tr>
-<tr><td></td><td>DMPAPER_PENV_10</td><td>Envelope #10 324 x 458 mm</td></tr>
-<tr><td></td><td>DMPAPER_P16K_ROTATED</td><td>PRC 16K Rotated</td></tr>
-<tr><td></td><td>DMPAPER_P32K_ROTATED</td><td>PRC 32K Rotated</td></tr>
-<tr><td></td><td>DMPAPER_P32KBIG_ROTATED</td><td>PRC 32K(Big) Rotated</td></tr>
-<tr><td></td><td>DMPAPER_PENV_1_ROTATED</td><td>PRC Envelope #1 Rotated 165 x 102 mm</td></tr>
-<tr><td></td><td>DMPAPER_PENV_2_ROTATED</td><td>PRC Envelope #2 Rotated 176 x 102 mm</td></tr>
-<tr><td></td><td>DMPAPER_PENV_3_ROTATED</td><td>PRC Envelope #3 Rotated 176 x 125 mm</td></tr>
-<tr><td></td><td>DMPAPER_PENV_4_ROTATED</td><td>PRC Envelope #4 Rotated 208 x 110 mm</td></tr>
-<tr><td></td><td>DMPAPER_PENV_5_ROTATED</td><td>PRC Envelope #5 Rotated 220 x 110 mm</td></tr>
-<tr><td></td><td>DMPAPER_PENV_6_ROTATED</td><td>PRC Envelope #6 Rotated 230 x 120 mm</td></tr>
-<tr><td></td><td>DMPAPER_PENV_7_ROTATED</td><td>PRC Envelope #7 Rotated 230 x 160 mm</td></tr>
-<tr><td></td><td>DMPAPER_PENV_8_ROTATED</td><td>PRC Envelope #8 Rotated 309 x 120 mm</td></tr>
-<tr><td></td><td>DMPAPER_PENV_9_ROTATED</td><td>PRC Envelope #9 Rotated 324 x 229 mm</td></tr>
-<tr><td></td><td>DMPAPER_PENV_10_ROTATED</td><td>PRC Envelope #10 Rotated 458 x 324 mm</td></tr>
-<tr><td></td><td>DMPAPER_USER</td><td>&nbsp;</td></tr>
-</table>
+      DM_ORIENTATION
+      DM_PAPERSIZE
+      DM_PAPERLENGTH
+      DM_PAPERWIDTH
+      DM_SCALE
+      DM_POSITION
+      DM_NUP
+      DM_COPIES
+      DM_DEFAULTSOURCE
+      DM_PRINTQUALITY
+      DM_COLOR
+      DM_DUPLEX
+      DM_YRESOLUTION
+      DM_TTOPTION
+      DM_COLLATE
+      DM_FORMNAME
+      DM_LOGPIXELS
+      DM_BITSPERPEL
+      DM_PELSWIDTH
+      DM_PELSHEIGHT
+      DM_DISPLAYFLAGS
+      DM_DISPLAYFREQUENCY
+      DM_ICMMETHOD
+      DM_ICMINTENT
+      DM_MEDIATYPE
+      DM_DITHERTYPE
+      DM_PANNINGWIDTH
+      DM_PANNINGHEIGHT
 
-<p><b>Orientation</b><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DMORIENT_PORTRAIT<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DMORIENT_LANDSCAPE
+<u>Imagelist drawing styles</u>:
 
-<p><b>Color enable/disable for color printers</b><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DMCOLOR_MONOCHROME<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DMCOLOR_COLOR
+      ILD_NORMAL
+      ILD_MASK
+      ILD_BLEND25
+      ILD_BLEND50
 
-<p><b>Print qualities</b><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DMRES_DRAFT<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DMRES_LOW<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DMRES_MEDIUM<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DMRES_HIGH
+<u>Collate</u>:
 
-<p><b>Brush styles</b><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BS_SOLID<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BS_NULL<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BS_HOLLOW<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BS_HATCHED<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BS_PATTERN<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BS_INDEXED<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BS_DIBPATTERN<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BS_DIBPATTERNPT<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BS_PATTERN8X8<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BS_DIBPATTERN8X8<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BS_MONOPATTERN
+      DMCOLLATE_TRUE
+      DMCOLLATE_FALSE
 
-<p><b>Hatch styles</b><br>
-<table width="760" cellpadding="0"  cellspacing="0"  style="border-collapse: collapse; border: none">
-   <COLGROUP>
-      <COL width="3%">
-      <COL width="49%">
-      <COL width="48%">
-   </COLGROUP>
-<tr><td></td><td>HS_HORIZONTAL</td><td>-----</td></tr>
-<tr><td></td><td>HS_VERTICAL</td><td>|||||</td></tr>
-<tr><td></td><td>HS_FDIAGONAL</td><td>\\\\\</td></tr>
-<tr><td></td><td>HS_BDIAGONAL</td><td>/////</td></tr>
-<tr><td></td><td>HS_CROSS</td><td>+++++</td></tr>
-<tr><td></td><td>HS_DIAGCROSS</td><td>xxxxx</td></tr>
-</table>
+<u>Paper size</u>:
 
-<p><b>Pen styles</b><br>
-<table width="760" cellpadding="0"  cellspacing="0"  style="border-collapse: collapse; border: none">
-   <COLGROUP>
-      <COL width="3%">
-      <COL width="49%">
-      <COL width="48%">
-   </COLGROUP>
-<tr><td></td><td>PS_SOLID</td><td></td></tr>
-<tr><td></td><td>PS_DASH</td><td>-------</td></tr>
-<tr><td></td><td>PS_DOT</td><td>.......</td></tr>
-<tr><td></td><td>PS_DASHDOT</td><td>_._._._</td></tr>
-<tr><td></td><td>PS_DASHDOTDOT</td><td>_.._.._</td></tr>
-<tr><td></td><td>PS_NULL</td><td></td></tr>
-<tr><td></td><td>PS_INSIDEFRAME</td><td></td></tr>
-<tr><td></td><td>PS_USERSTYLE</td><td></td></tr>
-<tr><td></td><td>PS_ALTERNATE</td><td></td></tr>
-<tr><td></td><td>PS_STYLE_MASK</td><td></td></tr>
-</table>
+      DMPAPER_FIRST
+      DMPAPER_LETTER
+      DMPAPER_LETTERSMALL
+      DMPAPER_TABLOID
+      DMPAPER_LEDGER
+      DMPAPER_LEGAL
+      DMPAPER_STATEMENT
+      DMPAPER_EXECUTIVE
+      DMPAPER_A3
+      DMPAPER_A4
+      DMPAPER_A4SMALL
+      DMPAPER_A5
+      DMPAPER_B4
+      DMPAPER_B5
+      DMPAPER_FOLIO
+      DMPAPER_QUARTO
+      DMPAPER_10X14
+      DMPAPER_11X17
+      DMPAPER_NOTE
+      DMPAPER_ENV_9
+      DMPAPER_ENV_10
+      DMPAPER_ENV_11
+      DMPAPER_ENV_12
+      DMPAPER_ENV_14
+      DMPAPER_CSHEET
+      DMPAPER_DSHEET
+      DMPAPER_ESHEET
+      DMPAPER_ENV_DL
+      DMPAPER_ENV_C5
+      DMPAPER_ENV_C3
+      DMPAPER_ENV_C4
+      DMPAPER_ENV_C6
+      DMPAPER_ENV_C65
+      DMPAPER_ENV_B4
+      DMPAPER_ENV_B5
+      DMPAPER_ENV_B6
+      DMPAPER_ENV_ITALY
+      DMPAPER_ENV_MONARCH
+      DMPAPER_ENV_PERSONAL
+      DMPAPER_FANFOLD_US
+      DMPAPER_FANFOLD_STD_GERMAN
+      DMPAPER_FANFOLD_LGL_GERMAN
+      DMPAPER_ISO_B4
+      DMPAPER_JAPANESE_POSTCARD
+      DMPAPER_9X11
+      DMPAPER_10X11
+      DMPAPER_15X11
+      DMPAPER_ENV_INVITE
+      DMPAPER_RESERVED_48
+      DMPAPER_RESERVED_49
+      DMPAPER_LETTER_EXTRA
+      DMPAPER_LEGAL_EXTRA
+      DMPAPER_TABLOID_EXTRA
+      DMPAPER_A4_EXTRA
+      DMPAPER_LETTER_TRANSVERSE
+      DMPAPER_A4_TRANSVERSE
+      DMPAPER_LETTER_EXTRA_TRANSVERSE
+      DMPAPER_A_PLUS
+      DMPAPER_B_PLUS
+      DMPAPER_LETTER_PLUS
+      DMPAPER_A4_PLUS
+      DMPAPER_A5_TRANSVERSE
+      DMPAPER_B5_TRANSVERSE
+      DMPAPER_A3_EXTRA
+      DMPAPER_A5_EXTRA
+      DMPAPER_B5_EXTRA
+      DMPAPER_A2
+      DMPAPER_A3_TRANSVERSE
+      DMPAPER_A3_EXTRA_TRANSVERSE
+      DMPAPER_DBL_JAPANESE_POSTCARD
+      DMPAPER_A6
+      DMPAPER_JENV_KAKU2
+      DMPAPER_JENV_KAKU3
+      DMPAPER_JENV_CHOU3
+      DMPAPER_JENV_CHOU4
+      DMPAPER_LETTER_ROTATED
+      DMPAPER_A3_ROTATED
+      DMPAPER_A4_ROTATED
+      DMPAPER_A5_ROTATED
+      DMPAPER_B4_JIS_ROTATED
+      DMPAPER_B5_JIS_ROTATED
+      DMPAPER_JAPANESE_POSTCARD_ROTATED
+      DMPAPER_DBL_JAPANESE_POSTCARD_ROTATE
+      DMPAPER_A6_ROTATED
+      DMPAPER_JENV_KAKU2_ROTATED
+      DMPAPER_JENV_KAKU3_ROTATED
+      DMPAPER_JENV_CHOU3_ROTATED
+      DMPAPER_JENV_CHOU4_ROTATED
+      DMPAPER_B6_JIS
+      DMPAPER_B6_JIS_ROTATED
+      DMPAPER_12X11
+      DMPAPER_JENV_YOU4
+      DMPAPER_JENV_YOU4_ROTATED
+      DMPAPER_P16K
+      DMPAPER_P32K
+      DMPAPER_P32KBIG
+      DMPAPER_PENV_1
+      DMPAPER_PENV_2
+      DMPAPER_PENV_3
+      DMPAPER_PENV_4
+      DMPAPER_PENV_5
+      DMPAPER_PENV_6
+      DMPAPER_PENV_7
+      DMPAPER_PENV_8
+      DMPAPER_PENV_9
+      DMPAPER_PENV_10
+      DMPAPER_P16K_ROTATED
+      DMPAPER_P32K_ROTATED
+      DMPAPER_P32KBIG_ROTATED
+      DMPAPER_PENV_1_ROTATED
+      DMPAPER_PENV_2_ROTATED
+      DMPAPER_PENV_3_ROTATED
+      DMPAPER_PENV_4_ROTATED
+      DMPAPER_PENV_5_ROTATED
+      DMPAPER_PENV_6_ROTATED
+      DMPAPER_PENV_7_ROTATED
+      DMPAPER_PENV_8_ROTATED
+      DMPAPER_PENV_9_ROTATED
+      DMPAPER_PENV_10_ROTATED
+      DMPAPER_USER
+</PRE>
 
-<p><b>Combine region styles</b><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RGN_AND<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RGN_OR<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RGN_XOR<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RGN_DIFF<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RGN_COPY<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RGN_MIN<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RGN_MAX
-
-<p><b>PolyFill modes</b><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ALTERNATE<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WINDING<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;POLYFILL_LAST
-
-<p><b>Text Alignment options</b><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TA_NOUPDATECP<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TA_UPDATECP<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TA_LEFT<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TA_RIGHT<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TA_CENTER<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TA_TOP<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TA_BOTTOM<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TA_BASELINE<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TA_RTLREADING<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TA_MASK
-
-<p><b>DrawText format flags<br></b><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DT_TOP<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DT_LEFT<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DT_CENTER<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DT_RIGHT<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DT_VCENTER<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DT_BOTTOM<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DT_WORDBREAK<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DT_SINGLELINE<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DT_EXPANDTABS<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DT_TABSTOP<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DT_NOCLIP<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DT_EXTERNALLEADING<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DT_CALCRECT<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DT_NOPREFIX<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DT_INTERNAL<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DT_EDITCONTROL<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DT_PATH_ELLIPSIS<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DT_END_ELLIPSIS<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DT_MODIFYSTRING<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DT_RTLREADING<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DT_WORD_ELLIPSIS<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DT_NOFULLWIDTHCHARBREAK<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DT_HIDEPREFIX<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DT_PREFIXONLY
-
-<p><b>Charsets</b><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ANSI_CHARSET<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DEFAULT_CHARSET<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SYMBOL_CHARSET<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SHIFTJIS_CHARSET<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HANGEUL_CHARSET<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HANGUL_CHARSET<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GB2312_CHARSET<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CHINESEBIG5_CHARSET<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OEM_CHARSET<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;JOHAB_CHARSET<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HEBREW_CHARSET<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ARABIC_CHARSET<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GREEK_CHARSET<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TURKISH_CHARSET<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VIETNAMESE_CHARSET<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;THAI_CHARSET<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EASTEUROPE_CHARSET<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RUSSIAN_CHARSET<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MAC_CHARSET<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BALTIC_CHARSET
-
-<p><b>Stock logical objects</b><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WHITE_BRUSH<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LTGRAY_BRUSH<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GRAY_BRUSH<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DKGRAY_BRUSH<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BLACK_BRUSH<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NULL_BRUSH<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HOLLOW_BRUSH<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WHITE_PEN<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BLACK_PEN<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NULL_PEN<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OEM_FIXED_FONT<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ANSI_FIXED_FONT<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ANSI_VAR_FONT<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SYSTEM_FONT<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DEVICE_DEFAULT_FONT<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DEFAULT_PALETTE<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SYSTEM_FIXED_FONT
-
-<p><b>Duplex printing</b><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DMDUP_SIMPLEX<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DMDUP_VERTICAL<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DMDUP_HORIZONTAL
-
-<p><b>Field selection bits for SetDevMode() "what" parameter</b><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DM_ORIENTATION<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DM_PAPERSIZE<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DM_PAPERLENGTH<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DM_PAPERWIDTH<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DM_SCALE<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DM_POSITION<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DM_NUP<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DM_COPIES<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DM_DEFAULTSOURCE<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DM_PRINTQUALITY<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DM_COLOR<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DM_DUPLEX<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DM_YRESOLUTION<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DM_TTOPTION<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DM_COLLATE<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DM_FORMNAME<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DM_LOGPIXELS<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DM_BITSPERPEL<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DM_PELSWIDTH<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DM_PELSHEIGHT<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DM_DISPLAYFLAGS<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DM_DISPLAYFREQUENCY<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DM_ICMMETHOD<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DM_ICMINTENT<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DM_MEDIATYPE<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DM_DITHERTYPE<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DM_PANNINGWIDTH<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DM_PANNINGHEIGHT<br>
-
-<p><b>Imagelist drawing styles</b><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ILD_NORMAL<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ILD_MASK<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ILD_BLEND25<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ILD_BLEND50<br>
-
-<p><b>Collate</b><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DMCOLLATE_TRUE<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DMCOLLATE_FALSE<br>
-
-</span>
-
-</div>
-
-</div>
-
-<div id="winchm_template_footer"><FONT color=#808080
-size=1>Copyright © 2013-2016 ooHG Development Team - </FONT><A
-href="https://sourceforge.net/projects/oohg/" target="_blank"><FONT
-size=1>https://sourceforge.net/projects/oohg/</FONT></A>
-</div>
-
-</body>
+         </div>
+      </div>
+      <div id="winchm_template_footer">
+         <FONT color=#808080 size=1>Copyright © 2013-2017 ooHG Development Team -
+         </FONT>
+         <A href="https://sourceforge.net/projects/oohg/" target="_blank">
+            <FONT size=1>https://sourceforge.net/projects/oohg/
+            </FONT></A>
+      </div>
+   </body>
 
 </html>

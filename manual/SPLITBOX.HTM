@@ -1,292 +1,100 @@
 <!--
-$Id: SPLITBOX.HTM,v 1.5 2016-05-22 23:52:47 fyurisich Exp $
+$Id: SPLITBOX.HTM,v 1.6 2017-08-26 02:54:08 fyurisich Exp $
 -->
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html xmlns:o="urn:schemas-microsoft-com:office:office"
-xmlns:w="urn:schemas-microsoft-com:office:word"
-xmlns="http://www.w3.org/TR/REC-html40">
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv=Content-Type content="text/html; charset=Windows-1252">
 
-<head>
-<meta http-equiv=Content-Type content="text/html; charset=Windows-1252">
-<meta name=ProgId content=Word.Document>
-<meta name=Generator content="Microsoft Word 11">
-<meta name=Originator content="Microsoft Word 11">
-<link rel=File-List href="SPLITBOX_archivos/filelist.xml">
-<title>SPLITBOX</title>
+      <title>SPLITBOX</title>
 
-<style>
-<!--
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{mso-style-parent:"";
-	margin:0cm;
-	margin-bottom:.0001pt;
-	mso-pagination:widow-orphan;
-	font-size:12.0pt;
-	font-family:"Times New Roman";
-	mso-fareast-font-family:"Times New Roman";}
-span.SpellE
-	{mso-style-name:"";
-	mso-spl-e:yes;}
-span.GramE
-	{mso-style-name:"";
-	mso-gram-e:yes;}
-@page Section1
-	{size:612.0pt 792.0pt;
-	margin:70.85pt 3.0cm 70.85pt 3.0cm;
-	mso-header-margin:35.4pt;
-	mso-footer-margin:35.4pt;
-	mso-paper-source:0;}
-div.Section1
-	{page:Section1;}
--->
-</style>
+      <style>
+         html { overflow-y: scroll; }
+         body { padding: 0px; margin: 0px; overflow: auto; background-color: #FFFFFF; }
+         #winchm_template_navigation { margin-top: 0px; margin-left: 0px; margin-bottom: 0px; margin-right: 0px;
+           padding-top: 5px; padding-left: 5px; padding-bottom: 5px; padding-right: 5px;
+           font-family: arial, helvetica, sans-serif; font-size: 10px; font-style: normal; font-weight: normal;
+           color: #626262; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #DBDBDB;
+           background-color: #E2EDFA; width: auto; }
+         #winchm_template_button { float: right; top: -7px; position: relative; text-align: right; right: -5px;
+           height: auto; }
+         #winchm_template_title { font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif; font-weight: bold;
+            font-size: 18px; color: 353535; margin-top: 0px; margin-left: 0px; margin-bottom: 0px; margin-right: 0px;
+            padding-top: 10px; padding-left: 5px; padding-bottom: 10px; padding-right: 10px; border-bottom-style: solid;
+            border-bottom-width: 1px; border-bottom-color: #C7C7C7; width: auto; background-color: #C4DBF4;
+            text-align: left; }
+         #winchm_template_content { padding: 0px; margin-top: 15px; margin-left: 15px; margin-bottom: 15px;
+            margin-right: 15px; width: auto !important; width: 100%; }
+         #winchm_template_footer { border-width: 1px; border-color: #c0c0c0; border-top-style: solid; margin-top: 0px;
+            margin-left: 15px; margin-bottom: 5px; margin-right: 15px; padding-top: 6px; padding-left: 0px;
+            padding-bottom: 20px; padding-right: 0px; font-family: arial, helvetica, sans-serif; font-size: 9px;
+            color: #909090; text-align: left; width: auto; }
+         #winchm_template_navigation a:link { text-decoration: none; color: #0000ff }
+         #winchm_template_navigation a:visited { text-decoration: none; color: #0000ff }
+         #winchm_template_navigation a:active { text-decoration: none; color: #0000ff }
+         #winchm_template_navigation a:hover {text-decoration: none; color: #0000ff }
+         a:link { text-decoration: underline; color:#0033cc }
+         a:visited { text-decoration: underline; color: #0033cc }
+         a:active { text-decoration: underline; color: #0033cc }
+         a:hover { text-decoration: underline;color: #ff0000 }
+         @media print { #winchm_template_button{ visibility:hidden; } }
+      </style>
+   </head>
 
+   <body>
+      <div id="winchm_template_title">
+         <div id="winchm_template_button">
+            <A href="SPINNER.HTM" title="Previous topic">
+               <img id="winchm_template_prev" alt="Previous topic" src="template4/btn_prev_n.gif" border="0"></A>
+            <A href="STATUSBAR.HTM" title="Next topic">
+               <img id="winchm_template_next" alt="Next topic" src="template4/btn_next_n.gif" border="0"></A>
+         </div>SPLITBOX
+      </div>
+      <div id="winchm_template_navigation">Help &gt; Controls &gt;
+      </div>
+      <div id="winchm_template_content">
+         <div class=Section1>
 
+<PRE>
+<span style='color:darkgreen'><b>
+/////////////////////////////////////////////////////////////////////
+// SPLITBOX
+/////////////////////////////////////////////////////////////////////
+</b></span>
+#xcommand DEFINE SPLITBOX ;
+      [ OBJ &lt;obj&gt; ] ;
+      [ &lt;dummy1: OF, PARENT&gt; &lt;parent&gt; ] ;
+      [ &lt;bottom: BOTTOM&gt; ]	;
+      [ &lt;horizontal: HORIZONTAL&gt; ] ;
+      [ &lt;vertical: VERTICAL&gt; ] ;
+      [ &lt;rtl: RTL&gt; ] ;
+      [ &lt;noattached: NOATTACHED&gt; ] ;
+      [ SUBCLASS &lt;subclass&gt; ] ;
+   =&gt; ;
+      [ &lt;obj&gt; := ] _OOHG_SelectSubClass( TSplitBox(), [ &lt;subclass&gt;() ] ): ;
+            Define( &lt;(parent)&gt;, &lt;.bottom.&gt;, &lt;.vertical.&gt; .OR. &lt;.horizontal.&gt;, ;
+            &lt;.rtl.&gt;, &lt;.noattached.&gt; )
 
-<style>
-html {
-	overflow-y:scroll;
-}
+#xcommand END SPLITBOX ;
+   =&gt; ;
+      _EndSplitBox()
 
-body {
-	padding: 0px;
-	margin: 0px;
-	overflow: auto; 
-	background-color: #FFFFFF; 
-}
+#xcommand FORCEBREAK ;
+      [ &lt;dummy1: OF, PARENT&gt; &lt;parent&gt; ] ;
+   =&gt; ;
+      _ForceBreak( &lt;(parent)&gt; )
+</PRE>
 
-#winchm_template_navigation{
-	margin-top: 0px;
-	margin-left: 0px;
-	margin-bottom: 0px;
-	margin-right: 0px;
-
-	padding-top: 5px;
-	padding-left: 5px;
-	padding-bottom: 5px;
-	padding-right: 5px;
-
-	font-family: arial, helvetica, sans-serif;
-	font-size: 10px;
-	font-style: normal;
-	font-weight: normal;
-	color: #626262; 
-	 
-	border-bottom-style: solid;
-	border-bottom-width: 1px;
-	border-bottom-color: #DBDBDB;
-	
-	background-color: #E2EDFA;
-	width: auto;
-}
-
-#winchm_template_button{
-	float: right;
-	top: -7px;
-	position: relative;
-	text-align: right;
-	right: -5px;
-	height: auto;
-}
-
-#winchm_template_title{
-	font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
-	font-weight: bold;
-	font-size: 18px;
-	color: 353535;	
-
-	margin-top: 0px;
-	margin-left: 0px;
-	margin-bottom: 0px;
-	margin-right: 0px;
-
-	padding-top: 10px;
-	padding-left: 5px;
-	padding-bottom: 10px;
-	padding-right: 10px;
-	
-	border-bottom-style: solid;
-	border-bottom-width: 1px;
-	border-bottom-color: #C7C7C7;
-
-	width: auto;
-	background-color: #C4DBF4;
-	text-align: left;
-}
-
-#winchm_template_content{
-	padding: 0px;
-	margin-top: 15px;
-	margin-left: 15px;
-	margin-bottom: 15px;
-	margin-right: 15px;
-
-	width: auto  !important;
-	width: 100%;
-}
-
-#winchm_template_footer{
-	border-width: 1px;
-	border-color: #c0c0c0;
-	border-top-style: solid;
-	
-	margin-top: 0px;
-	margin-left: 15px;
-	margin-bottom: 5px;
-	margin-right: 15px;
-
-	padding-top: 6px;
-	padding-left: 0px;
-	padding-bottom: 20px;
-	padding-right: 0px;
-
-	font-family: arial, helvetica, sans-serif;
-	font-size: 9px;
-	color: #909090;
-
-	text-align: left;	
-	width: auto;	
-}
-
-#winchm_template_navigation a:link	{text-decoration: none;color: #0000ff}
-#winchm_template_navigation a:visited  {text-decoration: none; color: #0000ff}
-#winchm_template_navigation a:active {text-decoration: none; color: #0000ff}
-#winchm_template_navigation a:hover {text-decoration: none;color: #0000ff}
-
-a:link	{text-decoration: underline; color:#0033cc}
-a:visited  {text-decoration: underline; color: #0033cc}
-a:active {text-decoration: underline; color: #0033cc }
-a:hover {text-decoration: underline;color: #ff0000;}
-
-@media print
-{
-#winchm_template_button{
-visibility:hidden;
-}
-}
-</style>
-</head>
-
-<body>
-
-<div id="winchm_template_title">
-<div id="winchm_template_button"><A href="SPINNER.HTM" title="Previous topic"><img id="winchm_template_prev" alt="Previous topic" src="template4/btn_prev_n.gif" border="0"></a><A href="STATUSBAR.HTM" title="Next topic"><img id="winchm_template_next" alt="Next topic" src="template4/btn_next_n.gif" border="0"></a></div>
-SPLITBOX</div>
-<div id="winchm_template_navigation">Help &gt; 
-Controls &gt; </div>
-<div id="winchm_template_content">
-
-<div class=Section1>
-
-<p class=MsoNormal><span lang=ES style='color:darkgreen;mso-ansi-language:ES'>///////////////////////////////////////////////////////////////////////////////
-<br>
-// SPLITBOX <br>
-///////////////////////////////////////////////////////////////////////////////
-<br>
-</span><span lang=ES style='color:gray;mso-ansi-language:ES'><br>
-</span><span lang=ES style='color:black;mso-ansi-language:ES'>#<span
-class=SpellE>xcommand</span>&nbsp;DEFINE&nbsp;SPLITBOX&nbsp;; <br>
-<span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[
-OBJ &lt;<span class=SpellE>obj</span>&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-tab-count:2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-class=GramE>[ &lt;</span>dummy1: OF, PARENT&gt; &lt;<span class=SpellE>parent</span>&gt;
-] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-tab-count:2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[
-&lt;<span class=SpellE><span class=GramE>bottom</span></span>: BOTTOM&gt; ]<span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[
-&lt;<span class=GramE>horizontal</span>: HORIZONTAL&gt; ]<span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span>;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[
-&lt;<span class=GramE>vertical</span>: VERTICAL&gt; ]<span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span>;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[
-&lt;<span class=SpellE><span class=GramE>rtl</span></span>: RTL&gt; ]<span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span>;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[
-&lt;<span class=SpellE><span class=GramE>noattached</span></span>:
-NOATTACHED&gt; ]<span style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span>;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-class=GramE>[ SUBCLASS</span> &lt;<span class=SpellE>subclass</span>&gt; ]<span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'>=&gt;;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[
-&lt;<span class=SpellE><span class=GramE>obj</span></span>&gt; := ] _<span
-class=SpellE>OOHG_SelectSubClass</span>( <span class=SpellE>TSplitBox</span>(),
-[ &lt;<span class=SpellE>subclass</span>&gt;() ] )<span class=GramE>: ;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span class=GramE>Define(</span> &lt;(<span class=SpellE>parent</span>)&gt;,
-&lt;.<span class=SpellE>bottom</span>.&gt;, &lt;.vertical.&gt; .OR.
-&lt;.horizontal.&gt;, &lt;.<span class=SpellE>rtl</span>.&gt;, &lt;.<span
-class=SpellE>noattached</span>.<span class=GramE>&gt; )</span><o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><o:p>&nbsp;</o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'>#<span
-class=SpellE>xcommand</span> END <span class=GramE>SPLITBOX ;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'>=&gt;;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>_<span class=SpellE><span class=GramE>EndSplitBox</span></span><span
-class=GramE>()</span><o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><o:p>&nbsp;</o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'>#<span
-class=SpellE>xcommand</span> <span class=GramE>FORCEBREAK ;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span class=GramE>[ &lt;</span>dummy1: OF, PARENT&gt; &lt;<span
-class=SpellE>parent</span>&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'>=&gt;;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>_<span class=SpellE><span class=GramE>ForceBreak</span></span><span
-class=GramE>(</span> &lt;(<span class=SpellE>parent</span>)&gt; )<o:p></o:p></span></p>
-
-</div>
-
-</div>
-<div id="winchm_template_footer"><FONT color=#808080 
-size=1>Copyright © 2013-2016 ooHG Development Team - </FONT><A 
-href="https://sourceforge.net/projects/oohg/" target="_blank"><FONT 
-size=1>https://sourceforge.net/projects/oohg/</FONT></A> 
-     </div>
-
-</body>
+         </div>
+      </div>
+      <div id="winchm_template_footer">
+         <FONT color=#808080 size=1>Copyright © 2013-2017 ooHG Development Team -
+         </FONT>
+         <A href="https://sourceforge.net/projects/oohg/" target="_blank">
+            <FONT size=1>https://sourceforge.net/projects/oohg/
+            </FONT></A>
+      </div>
+   </body>
 
 </html>

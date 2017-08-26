@@ -1,0 +1,640 @@
+<!--
+$Id: BOSTAURUS_FUNCTIONS.HTM,v 1.1 2017-08-26 02:54:09 fyurisich Exp $
+-->
+
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv=Content-Type content="text/html; charset=Windows-1252">
+
+      <title>BOSTAURUS FUNCTIONS</title>
+
+      <style>
+         html { overflow-y: scroll; }
+         body { padding: 0px; margin: 0px; overflow: auto; background-color: #FFFFFF; }
+         #winchm_template_navigation { margin-top: 0px; margin-left: 0px; margin-bottom: 0px; margin-right: 0px;
+           padding-top: 5px; padding-left: 5px; padding-bottom: 5px; padding-right: 5px;
+           font-family: arial, helvetica, sans-serif; font-size: 10px; font-style: normal; font-weight: normal;
+           color: #626262; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #DBDBDB;
+           background-color: #E2EDFA; width: auto; }
+         #winchm_template_button { float: right; top: -7px; position: relative; text-align: right; right: -5px;
+           height: auto; }
+         #winchm_template_title { font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif; font-weight: bold;
+            font-size: 18px; color: 353535; margin-top: 0px; margin-left: 0px; margin-bottom: 0px; margin-right: 0px;
+            padding-top: 10px; padding-left: 5px; padding-bottom: 10px; padding-right: 10px; border-bottom-style: solid;
+            border-bottom-width: 1px; border-bottom-color: #C7C7C7; width: auto; background-color: #C4DBF4;
+            text-align: left; }
+         #winchm_template_content { padding: 0px; margin-top: 15px; margin-left: 15px; margin-bottom: 15px;
+            margin-right: 15px; width: auto !important; width: 100%; }
+         #winchm_template_footer { border-width: 1px; border-color: #c0c0c0; border-top-style: solid; margin-top: 0px;
+            margin-left: 15px; margin-bottom: 5px; margin-right: 15px; padding-top: 6px; padding-left: 0px;
+            padding-bottom: 20px; padding-right: 0px; font-family: arial, helvetica, sans-serif; font-size: 9px;
+            color: #909090; text-align: left; width: auto; }
+         #winchm_template_navigation a:link { text-decoration: none; color: #0000ff }
+         #winchm_template_navigation a:visited { text-decoration: none; color: #0000ff }
+         #winchm_template_navigation a:active { text-decoration: none; color: #0000ff }
+         #winchm_template_navigation a:hover {text-decoration: none; color: #0000ff }
+         a:link { text-decoration: underline; color:#0033cc }
+         a:visited { text-decoration: underline; color: #0033cc }
+         a:active { text-decoration: underline; color: #0033cc }
+         a:hover { text-decoration: underline;color: #ff0000 }
+         @media print { #winchm_template_button{ visibility:hidden; } }
+      </style>
+   </head>
+
+   <body>
+      <div id="winchm_template_title">
+         <div id="winchm_template_button">
+            <A href="BOSTAURUS.HTM" title="Previous topic">
+               <img id="winchm_template_prev" alt="Previous topic" src="template4/btn_prev_n.gif" border="0"></A>
+            <A href="BOSTAURUS_CONSTANTS.HTM" title="Next topic">
+               <img id="winchm_template_next" alt="Next topic" src="template4/btn_next_n.gif" border="0"></A>
+         </div>BOSTAURUS FUNCTIONS
+      </div>
+      <div id="winchm_template_navigation">Help &gt; Libraries &gt; BOSTAURUS &gt;
+      </div>
+      <div id="winchm_template_content">
+         <div class=Section1>
+
+<PRE>
+<span style='color:darkgreen'><b>
+/////////////////////////////////////////////////////////////////////
+// BOSTAURUS FUNCTIONS
+/////////////////////////////////////////////////////////////////////
+</b></span>
+Function BT_WinHandle( window_hWnd_or_window_name )
+Return hWnd
+
+
+Function BT_FillRectIsNIL( Row, Col, Width, Height, Row_value, Col_value, Width_value, Height_value )
+Return Nil
+
+
+Function BT_AdjustWidthHeightRect( Row, Col, Width, Height, Max_Width, Max_Height )
+Return Nil
+
+
+Function BT_ListCalledFunctions( nActivation )
+Return cList
+
+
+Function BT_InfoName()
+Return cInfo
+
+
+Function BT_InfoVersion()
+Return cInfo
+
+
+Function BT_InfoAuthor()
+Return cInfo
+
+
+Function BT_CreateDC( window_hWnd_or_window_name_or_hBitmap, Type, BTstruct )
+Return hDC
+
+
+Function BT_DeleteDC( BTstruct )
+Return lSuccess
+
+
+Function BT_DrawGetPixel( hDC, Row, Col )
+Return aRGBcolor
+
+
+Function BT_DrawSetPixel( hDC, Row, Col, aRGBcolor )
+Return aRGBcolor_Old
+
+
+Function BT_DrawBitmap( hDC, Row, Col, Width, Height, Mode_Stretch, hBitmap )
+Return Nil
+
+
+Function BT_DrawBitmapTransparent( hDC, Row, Col, Width, Height, Mode_Stretch, hBitmap, aRGBcolor_transp )
+Return Nil
+
+
+Function BT_DrawBitmapAlphaBlend( hDC, Row, Col, Width, Height, Alpha, Mode_Stretch, hBitmap )
+Return Nil
+
+
+Function BT_DrawDCtoDC( hDC1, Row1, Col1, Width1, Height1, Mode_Stretch, hDC2, Row2, Col2, Width2, Height2 )
+Return Nil
+
+
+Function BT_DrawDCtoDCTransparent( hDC1, Row1, Col1, Width1, Height1, Mode_Stretch, hDC2, Row2, Col2, Width2, Height2, aRGBcolor_transp )
+Return Nil
+
+
+Function BT_DrawDCtoDCAlphaBlend( hDC1, Row1, Col1, Width1, Height1, Alpha, Mode_Stretch, hDC2, Row2, Col2, Width2, Height2 )
+Return Nil
+
+
+Function BT_DrawGradientFillHorizontal( hDC, Row, Col, Width, Height, aColorRGBstart, aColorRGBend )
+Return Nil
+
+
+Function BT_DrawGradientFillVertical( hDC, Row, Col, Width, Height, aColorRGBstart, aColorRGBend )
+Return Nil
+
+
+Function BT_DrawText( hDC, Row, Col, cText, cFontName, nFontSize, aFontColor, aBackColor, nTypeText, nAlignText, nOrientation )
+Return Nil
+
+
+Function BT_DrawTextEx( hDC, Row, Col, Width, Height, cText, cFontName, nFontSize, aFontColor, aBackColor, nTypeText, nAlignText, nOrientation )
+Return Nil
+
+
+Function BT_DrawTextSize( hDC, cText, cFontName, nFontSize, nTypeText )
+Return aSize
+
+
+Function BT_DrawPolyLine( hDC, aPointY, aPointX, aColorRGBLine, nWidthLine )
+Return Nil
+
+
+Function BT_DrawPolygon( hDC, aPointY, aPointX, aColorRGBLine, nWidthLine, aColorRGBFill )
+Return Nil
+
+
+Function BT_DrawPolyBezier( hDC, aPointY, aPointX, aColorRGBLine, nWidthLine )
+Return Nil
+
+
+Function BT_DrawArc( hDC, Row1, Col1, Row2, Col2, RowStartArc, ColStartArc, RowEndArc, ColEndArc, aColorRGBLine, nWidthLine )
+Return Nil
+
+
+Function BT_DrawChord( hDC, Row1, Col1, Row2, Col2, RowStartArc, ColStartArc, RowEndArc, ColEndArc, aColorRGBLine, nWidthLine, aColorRGBFill )
+Return Nil
+
+
+Function BT_DrawPie( hDC, Row1, Col1, Row2, Col2, RowStartArc, ColStartArc, RowEndArc, ColEndArc, aColorRGBLine, nWidthLine, aColorRGBFill )
+Return Nil
+
+
+Function BT_DrawLine( hDC, Row1, Col1, Row2, Col2, aColorRGBLine, nWidthLine )
+Return Nil
+
+
+Function BT_DrawRectangle( hDC, Row, Col, Width, Height, aColorRGBLine, nWidthLine )
+Return Nil
+
+
+Function BT_DrawEllipse( hDC, Row1, Col1, Width, Height, aColorRGBLine, nWidthLine )
+Return Nil
+
+
+Function BT_DrawFillRectangle( hDC, Row, Col, Width, Height, aColorRGBFill, aColorRGBLine, nWidthLine )
+Return Nil
+
+
+Function BT_DrawFillEllipse( hDC, Row, Col, Width, Height, aColorRGBFill, aColorRGBLine, nWidthLine )
+Return Nil
+
+
+Function BT_DrawFillRoundRect( hDC, Row, Col, Width, Height, RoundWidth, RoundHeight, aColorRGBFill, aColorRGBLine, nWidthLine )
+Return Nil
+
+
+Function BT_DrawFillFlood( hDC, Row, Col, aColorRGBFill )
+Return Nil
+
+
+Function BT_GetDesktopHandle()
+Return hWnd
+
+
+Function BT_DesktopWidth()
+Return nWidth
+
+
+Function BT_DesktopHeight()
+Return nHeight
+
+
+Function BT_WindowWidth( window_hWnd_or_window_name )
+Return nWidth
+
+
+Function BT_WindowHeight( window_hWnd_or_window_name )
+Return nHeight
+
+
+Function BT_ClientAreaWidth( window_hWnd_or_window_name )
+Return nWidth
+
+
+Function BT_ClientAreaHeight( window_hWnd_or_window_name )
+Return nHeight
+
+
+Function BT_StatusBarHandle( window_hWnd_or_window_name )
+Return hWnd
+
+
+Function BT_StatusBarWidth( window_hWnd_or_window_name )
+Return nWidth
+
+
+Function BT_StatusBarHeight( window_hWnd_or_window_name )
+Return nHeight
+
+
+Function BT_ToolBarBottomHandle( window_hWnd_or_window_name )
+Return hWnd
+
+
+Function BT_ToolBarBottomHeight( window_hWnd_or_window_name )
+Return nHeight
+
+
+Function BT_ToolBarBottomWidth( window_hWnd_or_window_name )
+Return nWidth
+
+
+Function BT_ToolBarTopHandle( window_hWnd_or_window_name )
+Return hWnd
+
+
+Function BT_ToolBarTopHeight( window_hWnd_or_window_name )
+Return nHeight
+
+
+Function BT_ToolBarTopWidth( window_hWnd_or_window_name )
+Return nWidth
+
+
+Function BT_ClientAreaInvalidateAll( Win, lErase )
+Return Nil
+
+
+Function BT_ClientAreaInvalidateRect( Win, Row, Col, Width, Height, lErase )
+Return Nil
+
+
+Function BT_BitmapLoadFile( cFileName )
+Return hBitmap
+
+
+Function BT_BitmapSaveFile( hBitmap, cFileName, nTypePicture )
+Return lSuccess
+
+
+Function BT_BitmapCreateNew( Width, Height, aRGBcolor_Fill_Bk )
+Return hBitmap
+
+
+Function BT_BitmapRelease( hBitmap )
+Return Nil
+
+
+Function BT_BitmapWidth( hBitmap )
+Return nWidth
+
+
+Function BT_BitmapHeight( hBitmap )
+Return nHeight
+
+
+Function BT_BitmapBitsPerPixel( hBitmap )
+Return nBitsPixel
+
+
+Function BT_BitmapInvert( hBitmap )
+Return Nil
+
+
+Function BT_BitmapGrayness( hBitmap, Gray_Level )
+Return Nil
+
+
+Function BT_BitmapBrightness( hBitmap, Light_Level )
+Return Nil
+
+
+Function BT_BitmapContrast( hBitmap, ContrastAngle )
+Return Nil
+
+
+Function BT_BitmapModifyColor( hBitmap, RedLevel, GreenLevel, BlueLevel )
+Return Nil
+
+
+Function BT_BitmapGammaCorrect( hBitmap, RedGamma, GreenGamma, BlueGamma )
+Return Nil
+
+
+Function BT_BitmapConvolutionFilter3x3( hBitmap, aFilter )
+Return Nil
+
+
+Function BT_BitmapTransform( hBitmap, Mode, Angle, aRGBColor_Fill_Bk )
+Return hBitmap
+
+
+Function BT_BitmapClone( hBitmap, Row, Col, Width, Height )
+Return hBitmap
+
+
+Function BT_BitmapCopyAndResize( hBitmap, New_Width, New_Height, Mode_Stretch, Algorithm )
+Return hBitmap
+
+
+Function BT_BitmapPaste( hBitmap_D, Row_D, Col_D, Width_D, Height_D, Mode_Stretch, hBitmap_O )
+Return Nil
+
+
+Function BT_BitmapPasteTransparent( hBitmap_D, Row_D, Col_D, Width_D, Height_D, Mode_Stretch, hBitmap_O, aRGBcolor_transp )
+Return Nil
+
+
+Function BT_BitmapPasteAlphaBlend( hBitmap_D, Row_D, Col_D, Width_D, Height_D, Alpha, Mode_Stretch, hBitmap_O )
+Return Nil
+
+
+Function BT_BitmapCaptureDesktop( Row, Col, Width, Height )
+Return hBitmap
+
+
+Function BT_BitmapCaptureWindow( Win, Row, Col, Width, Height )
+Return hBitmap
+
+
+Function BT_BitmapCaptureClientArea( Win, Row, Col, Width, Height )
+Return hBitmap
+
+
+Function BT_BitmapClipboardGet( window_hWnd_or_window_name )
+Return hBitmap
+
+
+Function BT_BitmapClipboardPut( Win, hBitmap )
+Return lSuccess
+
+
+Function BT_BitmapClipboardClean( window_hWnd_or_window_name )
+Return lSuccess
+
+
+Function BT_BitmapClipboardIsEmpty()
+Return lIsEmpty
+
+
+Function BT_GetImage( cFormName, cControlName )
+Return hBitMap
+
+
+Function BT_CloneImage( cFormName, cControlName )
+Return hBitmap
+
+
+Function BT_SetImage( cFormName, cControlName, hBitmap, lReleasePreviousBitmap )
+Return Nil
+
+
+Function BT_DC_CREATE( Type, hWnd_or_hBitmap )
+Return { Type, hWnd, hBitmap, hDC, PaintStruct }
+
+
+Function BT_DC_DELETE( { Type, hWnd, hBitmap, hDC, PaintStruct } )
+Return lSuccess
+
+
+Function BT_SCR_GETDESKTOPHANDLE()
+Return hWnd
+
+
+Function BT_SCR_GETINFO( hWnd, Mode, Info )
+Return uRequestedInfo
+
+
+Function BT_SCR_INVALIDATERECT( hWnd, { x_left, y_top, x_right, y_bottom }, lEraseBackground )
+Return lSuccess
+
+
+Function BT_DRAWEDGE( hDC, nRow, nCol, nWidth, nHeight, nEdge, nGrfFlags )
+Return Nil
+
+
+Function BT_DRAW_HDC_POLY( hDC, aPointX, aPointY, ColorLine, nWidthLine, ColorFill, nPOLY )
+Return lSuccess
+
+
+Function BT_DRAW_HDC_ARCX( hDC, x1, y1, x2, y2, XStartArc, YStartArc, XEndArc, YEndArc, ColorLine, nWidthLine, ColorFill, nArcType )
+Return Nil
+
+
+Function BT_DRAW_HDC_FILLEDOBJECT( hDC, x1, y1, Width1, Height1, ColorFill, ColorLine, nWidthLine, Type, RoundWidth, RoundHeight )
+Return Nil
+
+
+Function BT_DRAW_HDC_BITMAP( hDC, x1, y1, Width1, Height1, hBitmap, x2, y2, Width2, Height2, Mode_Stretch, Action, Color_Transp, ClrOnClr )
+Return lSuccess
+
+
+Function BT_DRAW_HDC_BITMAPALPHABLEND( hDC, x1, y1, Width1, Height1, hBitmap, x2, y2, Width2, Height2, Alpha, Mode_Stretch, ClrOnClr )
+Return Nil
+
+
+Function BT_DRAW_HDC_GRADIENTFILL( hDC, x1, y1, Width1, Height1, Color_RGB_O, Color_RGB_D, Mode )
+Return Nil
+
+
+Function BT_DRAW_HDC_TEXTOUT( hDC, x, y, Text, FontName, FontSize, Text_Color, Back_color, Type, Align, Orientation )
+Return Nil
+
+
+Function BT_DRAW_HDC_DRAWTEXT( hDC, x, y, w, h, Text, FontName, FontSize, Text_Color, Back_color, Type, Align, Action )
+Return Nil
+
+
+Function BT_DRAW_HDC_TEXTSIZE( hDC, Text, FontName, FontSize, Type )
+Return Nil
+
+
+Function BT_DRAW_HDC_PIXEL( hDC, x, y, Action, Color )
+Return aColor
+
+
+Function BT_DRAW_HDC_TO_HDC( hDC1, x1, y1, Width1, Height1, hDC2, x2, y2, Width2, Height2, Mode_Stretch, Action, Color_Transp, ClrOnClr )
+Return lSuccess
+
+
+Function BT_DRAW_HDC_TO_HDC_ALPHABLEND( hDC1, x1, y1, Width1, Height1, hDC2, x2, y2, Width2, Height2, Alpha, Mode_Stretch, ClrOnClr )
+Return Nil
+
+
+Function BT_BMP_CREATE( Width, Height, Color_Fill_Bk )
+Return hBitmap
+
+
+Function BT_BMP_RELEASE( hBitmap )
+Return lSuccess
+
+
+Function BT_BMP_LOADFILE( cFileBMP, ClrOnClr )
+Return hBitmap
+
+
+Function BT_BITMAPLOADEMF( cFileName, aRGBBackgroundColor, nNewWidth, nNewHeight, ModeStretch )
+Return hBitmap
+
+
+Function BT_BMP_SAVEFILE( hBitmap, cFileName, nType )
+Return lSuccess
+
+
+Function BT_BMP_GETINFO( hBitmap, Info, x, y )
+Return nRequestedInfo
+
+
+Function BT_BMP_CLONE( hBitmap, x1, y1, Width1, Height1 )
+Return hBitmap
+
+
+Function BT_BMP_COPYANDRESIZE( hBitmap, New_Width, New_Height, Mode_Stretch, nAlgorithm )
+Return hBitmap
+
+
+Function BT_BMP_PASTE( hBitmap_D, x1, y1, Width1, Height1, hBitmap_O, x2, y2, Width2, Height2, Mode_Stretch, Action, Color_Transp, ClrOnClr )
+Return lSuccess
+
+
+Function BT_BMP_PASTE_ALPHABLEND( hBitmap_D, x1, y1, Width1, Height1, hBitmap_O, x2, y2, Width2, Height2, Alpha, Mode_Stretch, ClrOnClr )
+Return Nil
+
+
+Function BT_BMP_CAPTURESCR( hWnd, x1, y1, Width1, Height1, Mode )
+Return hBitmap
+
+
+Function BT_BMP_PROCESS( hBitmap, Action, Value )
+Return lSuccess
+
+
+Function BT_BMP_FILTER3X3( hBitmap, aFilter )
+Return lSuccess
+
+
+Function BT_BMP_TRANSFORM( hBitmap, Mode, Angle, Color_Fill_Bk, ClrOnClr )
+Return hBitmap
+
+
+Function BT_BMP_CLIPBOARD_ISEMPTY()
+Return lIsEmpty
+
+
+Function BT_BMP_CLEAN_CLIPBOARD( hWnd )
+Return lSuccess
+
+
+Function BT_BMP_GET_CLIPBOARD( hWnd )
+Return hBitmap
+
+
+Function BT_BMP_PUT_CLIPBOARD( hBitmap )
+Return lSuccess
+
+
+Function BT_DELAY_EXECUTION( nMilliSeconds )
+Return Nil
+
+
+Function BT_DELAY_EXECUTION_WITH_DOEVENTS( nMilliSeconds )
+Return Nil
+
+
+Function BT_SCR_SHOWCURSOR( lOnOff )
+Return nDisplayCounter
+
+
+Function BT_STRETCH_RECT( @Width1, @Height1, @Width2, @Height2, Mode_Stretch )
+Return lSuccess
+
+
+Function BT_TEXTOUT_SIZE( hWnd, Text, FontName, FontSize, Type )
+Return { nWidth, nHeight }
+
+
+Function BT_MATHPI()
+Return 3.14159265358979323846
+
+
+Function BT_MATHSIN( AngleInDegrees )
+Return nSine
+
+
+Function BT_MATHCOS( AngleInDegrees )
+Return nCosine
+
+
+Function BT_MATHTAN( AngleInDegrees )
+Return nTangent
+
+
+Function BT_MATHCIRCUMFERENCEY( Radius, AngleInDegrees )
+Return nRow
+
+
+Function BT_MATHCIRCUMFERENCEX( Radius, AngleInDegrees )
+Return nCol
+
+
+Function BT_MATHCIRCUMFERENCEARCANGLE( Radius, Arc )
+Return nAngleInDegrees
+
+
+Function BT_SELECTOBJECT( hDC, hGDIobj )
+Return hWnd
+
+
+Function BT_DELETEOBJECT( hGDIobj )
+Return lSuccess
+
+
+Function BT_REGIONCREATEELLIPTIC( nCol1, nRow1, nCol2, nRow2 )
+Return hWnd
+
+
+Function BT_REGIONCOMBINE( @hRgnDest, hRgnSrc1, hRgnSrc2, nCombineMode )
+Return nType_of_RgnDest
+
+
+Function BT_REGIONFRAME( hDC, hRgn, aColor, nWidth, nHeight )
+Return lSuccess
+
+
+Function BT_IMAGELISTGETSYSTEMICON( lLargeIcon )
+Return hIcon
+
+
+Function BT_IMAGELISTEXTRACTICON( hImagelist, nIndex )
+Return hIcon
+
+
+Function BT_DIRECTORYINFO( nCSIDL_or_cPath, nTypeList, @nIndexRoot, @CSIDL_Name )
+Return aData
+
+
+Pseudo-Function ArrayRGB_TO_COLORREF( aRGB )
+Return RGB( aRGB[1], aRGB[2], aRGB[3] )
+
+
+Pseudo-Function COLORREF_TO_ArrayRGB( nRGB )
+Return { hb_bitAND( nRGB, 0xFF ), hb_bitAND( HB_bitSHIFT( nRGB, -8 ), 0xFF ), hb_bitAND( HB_bitSHIFT( nRGB, -16 ), 0xFF ) }
+</PRE>
+
+         </div>
+      </div>
+      <div id="winchm_template_footer">
+         <FONT color=#808080 size=1>Copyright © 2013-2017 ooHG Development Team -
+         </FONT>
+         <A href="https://sourceforge.net/projects/oohg/" target="_blank">
+            <FONT size=1>https://sourceforge.net/projects/oohg/
+            </FONT></A>
+      </div>
+   </body>
+
+</html>

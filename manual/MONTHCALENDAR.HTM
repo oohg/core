@@ -1,378 +1,118 @@
 <!--
-$Id: MONTHCALENDAR.HTM,v 1.5 2016-05-22 23:52:47 fyurisich Exp $
+$Id: MONTHCALENDAR.HTM,v 1.6 2017-08-26 02:54:08 fyurisich Exp $
 -->
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html xmlns:o="urn:schemas-microsoft-com:office:office"
-xmlns:w="urn:schemas-microsoft-com:office:word"
-xmlns="http://www.w3.org/TR/REC-html40">
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv=Content-Type content="text/html; charset=Windows-1252">
 
-<head>
-<meta http-equiv=Content-Type content="text/html; charset=Windows-1252">
-<meta name=ProgId content=Word.Document>
-<meta name=Generator content="Microsoft Word 11">
-<meta name=Originator content="Microsoft Word 11">
-<link rel=File-List href="MONTHCALENDAR_archivos/filelist.xml">
-<title>MONTHCALENDAR</title>
+      <title>MONTHCALENDAR</title>
 
-<style>
-<!--
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{mso-style-parent:"";
-	margin:0cm;
-	margin-bottom:.0001pt;
-	mso-pagination:widow-orphan;
-	font-size:12.0pt;
-	font-family:"Times New Roman";
-	mso-fareast-font-family:"Times New Roman";}
-span.SpellE
-	{mso-style-name:"";
-	mso-spl-e:yes;}
-span.GramE
-	{mso-style-name:"";
-	mso-gram-e:yes;}
-@page Section1
-	{size:612.0pt 792.0pt;
-	margin:70.85pt 3.0cm 70.85pt 3.0cm;
-	mso-header-margin:35.4pt;
-	mso-footer-margin:35.4pt;
-	mso-paper-source:0;}
-div.Section1
-	{page:Section1;}
--->
-</style>
+      <style>
+         html { overflow-y: scroll; }
+         body { padding: 0px; margin: 0px; overflow: auto; background-color: #FFFFFF; }
+         #winchm_template_navigation { margin-top: 0px; margin-left: 0px; margin-bottom: 0px; margin-right: 0px;
+           padding-top: 5px; padding-left: 5px; padding-bottom: 5px; padding-right: 5px;
+           font-family: arial, helvetica, sans-serif; font-size: 10px; font-style: normal; font-weight: normal;
+           color: #626262; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #DBDBDB;
+           background-color: #E2EDFA; width: auto; }
+         #winchm_template_button { float: right; top: -7px; position: relative; text-align: right; right: -5px;
+           height: auto; }
+         #winchm_template_title { font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif; font-weight: bold;
+            font-size: 18px; color: 353535; margin-top: 0px; margin-left: 0px; margin-bottom: 0px; margin-right: 0px;
+            padding-top: 10px; padding-left: 5px; padding-bottom: 10px; padding-right: 10px; border-bottom-style: solid;
+            border-bottom-width: 1px; border-bottom-color: #C7C7C7; width: auto; background-color: #C4DBF4;
+            text-align: left; }
+         #winchm_template_content { padding: 0px; margin-top: 15px; margin-left: 15px; margin-bottom: 15px;
+            margin-right: 15px; width: auto !important; width: 100%; }
+         #winchm_template_footer { border-width: 1px; border-color: #c0c0c0; border-top-style: solid; margin-top: 0px;
+            margin-left: 15px; margin-bottom: 5px; margin-right: 15px; padding-top: 6px; padding-left: 0px;
+            padding-bottom: 20px; padding-right: 0px; font-family: arial, helvetica, sans-serif; font-size: 9px;
+            color: #909090; text-align: left; width: auto; }
+         #winchm_template_navigation a:link { text-decoration: none; color: #0000ff }
+         #winchm_template_navigation a:visited { text-decoration: none; color: #0000ff }
+         #winchm_template_navigation a:active { text-decoration: none; color: #0000ff }
+         #winchm_template_navigation a:hover {text-decoration: none; color: #0000ff }
+         a:link { text-decoration: underline; color:#0033cc }
+         a:visited { text-decoration: underline; color: #0033cc }
+         a:active { text-decoration: underline; color: #0033cc }
+         a:hover { text-decoration: underline;color: #ff0000 }
+         @media print { #winchm_template_button{ visibility:hidden; } }
+      </style>
+   </head>
 
+   <body>
+      <div id="winchm_template_title">
+         <div id="winchm_template_button">
+            <A href="LISTBOX.HTM" title="Previous topic">
+               <img id="winchm_template_prev" alt="Previous topic" src="template4/btn_prev_n.gif" border="0"></A>
+            <A href="PICTURE.HTM" title="Next topic">
+               <img id="winchm_template_next" alt="Next topic" src="template4/btn_next_n.gif" border="0"></A>
+         </div>MONTHCALENDAR
+      </div>
+      <div id="winchm_template_navigation">Help &gt; Controls &gt;
+      </div>
+      <div id="winchm_template_content">
+         <div class=Section1>
 
+<PRE>
+<span style='color:darkgreen'><b>
+/////////////////////////////////////////////////////////////////////
+// MONTHCALENDAR
+/////////////////////////////////////////////////////////////////////
+</b></span>
+#command @ &lt;row&gt;, &lt;col&gt; MONTHCALENDAR &lt;name&gt; ;
+      [ OBJ &lt;obj&gt; ] ;
+      [ &lt;dummy1: OF, PARENT&gt; &lt;parent&gt; ] ;
+      [ VALUE &lt;v&gt; ] ;
+      [ FONT &lt;fontname&gt; ] ;
+      [ SIZE &lt;fontsize&gt; ] ;
+      [ &lt;bold: BOLD&gt; ] ;
+      [ &lt;italic: ITALIC&gt; ] ;
+      [ &lt;underline: UNDERLINE&gt; ] ;
+      [ &lt;strikeout: STRIKEOUT&gt; ] ;
+      [ TOOLTIP &lt;tooltip&gt; ] ;
+      [ &lt;notoday: NOTODAY&gt; ] ;
+      [ &lt;notodaycircle: NOTODAYCIRCLE&gt; ] ;
+      [ &lt;weeknumbers: WEEKNUMBERS&gt; ] ;
+      [ &lt;invisible: INVISIBLE&gt; ] ;
+      [ &lt;notabstop: NOTABSTOP&gt; ] ;
+      [ ON CHANGE &lt;change&gt; ] ;
+      [ HELPID &lt;helpid&gt; ] ;
+      [ &lt;rtl: RTL&gt; ] ;
+      [ SUBCLASS &lt;subclass&gt; ] ;
+      [ &lt;disabled: DISABLED&gt; ] ;
+      [ FONTCOLOR &lt;fontcolor&gt; ] ;
+      [ BACKCOLOR &lt;backcolor&gt; ] ;
+      [ TITLEFONTCOLOR &lt;titlefontcolor&gt; ] ;
+      [ TITLEBACKCOLOR &lt;titlebackcolor&gt; ] ;
+      [ TRAILINGFONTCOLOR &lt;trailingfontcolor&gt; ] ;
+      [ BACKGROUNDCOLOR &lt;backgroundcolor&gt; ] ;
+      [ &lt;multiselect: MULTISELECT&gt; ] ;
+      [ &lt;dummy2: ONVIEWCHANGE, ON VIEWCHANGE&gt; &lt;viewchg&gt; ] ;
+      [ &lt;dummy3: ONGOTFOCUS, ON GOTFOCUS&gt; &lt;gotfocus&gt; ] ;
+      [ &lt;dummy4: ONLOSTFOCUS, ON LOSTFOCUS&gt; &lt;lostfocus&gt; ] ;
+   =&gt; ;
+      [ &lt;obj&gt; := ] _OOHG_SelectSubClass( IIF( &lt;.multiselect.&gt;, ;
+            TMonthCalMulti(), TMonthCal() ), [ &lt;subclass&gt;() ] ):Define( ;
+            &lt;(name)&gt;, &lt;(parent)&gt;, &lt;col&gt;, &lt;row&gt;, 0, 0, &lt;v&gt;, &lt;fontname&gt;, &lt;fontsize&gt;, ;
+            &lt;tooltip&gt;, &lt;.notoday.&gt;, &lt;.notodaycircle.&gt;, &lt;.weeknumbers.&gt;, &lt;{change}&gt;, ;
+            &lt;helpid&gt;, &lt;.invisible.&gt;, &lt;.notabstop.&gt;, &lt;.bold.&gt;, &lt;.italic.&gt;, ;
+            &lt;.underline.&gt;, &lt;.strikeout.&gt;, &lt;.rtl.&gt;, &lt;.disabled.&gt;, &lt;fontcolor&gt;, ;
+            &lt;backcolor&gt;, &lt;titlefontcolor&gt;, &lt;titlebackcolor&gt;, &lt;trailingfontcolor&gt;, ;
+            &lt;backgroundcolor&gt;, &lt;{viewchg}&gt;, &lt;{gotfocus}&gt;, &lt;{lostfocus}&gt; )
+</PRE>
 
-<style>
-html {
-	overflow-y:scroll;
-}
-
-body {
-	padding: 0px;
-	margin: 0px;
-	overflow: auto; 
-	background-color: #FFFFFF; 
-}
-
-#winchm_template_navigation{
-	margin-top: 0px;
-	margin-left: 0px;
-	margin-bottom: 0px;
-	margin-right: 0px;
-
-	padding-top: 5px;
-	padding-left: 5px;
-	padding-bottom: 5px;
-	padding-right: 5px;
-
-	font-family: arial, helvetica, sans-serif;
-	font-size: 10px;
-	font-style: normal;
-	font-weight: normal;
-	color: #626262; 
-	 
-	border-bottom-style: solid;
-	border-bottom-width: 1px;
-	border-bottom-color: #DBDBDB;
-	
-	background-color: #E2EDFA;
-	width: auto;
-}
-
-#winchm_template_button{
-	float: right;
-	top: -7px;
-	position: relative;
-	text-align: right;
-	right: -5px;
-	height: auto;
-}
-
-#winchm_template_title{
-	font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
-	font-weight: bold;
-	font-size: 18px;
-	color: 353535;	
-
-	margin-top: 0px;
-	margin-left: 0px;
-	margin-bottom: 0px;
-	margin-right: 0px;
-
-	padding-top: 10px;
-	padding-left: 5px;
-	padding-bottom: 10px;
-	padding-right: 10px;
-	
-	border-bottom-style: solid;
-	border-bottom-width: 1px;
-	border-bottom-color: #C7C7C7;
-
-	width: auto;
-	background-color: #C4DBF4;
-	text-align: left;
-}
-
-#winchm_template_content{
-	padding: 0px;
-	margin-top: 15px;
-	margin-left: 15px;
-	margin-bottom: 15px;
-	margin-right: 15px;
-
-	width: auto  !important;
-	width: 100%;
-}
-
-#winchm_template_footer{
-	border-width: 1px;
-	border-color: #c0c0c0;
-	border-top-style: solid;
-	
-	margin-top: 0px;
-	margin-left: 15px;
-	margin-bottom: 5px;
-	margin-right: 15px;
-
-	padding-top: 6px;
-	padding-left: 0px;
-	padding-bottom: 20px;
-	padding-right: 0px;
-
-	font-family: arial, helvetica, sans-serif;
-	font-size: 9px;
-	color: #909090;
-
-	text-align: left;	
-	width: auto;	
-}
-
-#winchm_template_navigation a:link	{text-decoration: none;color: #0000ff}
-#winchm_template_navigation a:visited  {text-decoration: none; color: #0000ff}
-#winchm_template_navigation a:active {text-decoration: none; color: #0000ff}
-#winchm_template_navigation a:hover {text-decoration: none;color: #0000ff}
-
-a:link	{text-decoration: underline; color:#0033cc}
-a:visited  {text-decoration: underline; color: #0033cc}
-a:active {text-decoration: underline; color: #0033cc }
-a:hover {text-decoration: underline;color: #ff0000;}
-
-@media print
-{
-#winchm_template_button{
-visibility:hidden;
-}
-}
-</style>
-</head>
-
-<body>
-
-<div id="winchm_template_title">
-<div id="winchm_template_button"><A href="LISTBOX.HTM" title="Previous topic"><img id="winchm_template_prev" alt="Previous topic" src="template4/btn_prev_n.gif" border="0"></a><A href="PLAYER.HTM" title="Next topic"><img id="winchm_template_next" alt="Next topic" src="template4/btn_next_n.gif" border="0"></a></div>
-MONTHCALENDAR</div>
-<div id="winchm_template_navigation">Help &gt; 
-Controls &gt; </div>
-<div id="winchm_template_content">
-
-<div class=Section1>
-
-<p class=MsoNormal><span lang=ES style='color:darkgreen;mso-ansi-language:ES'>///////////////////////////////////////////////////////////////////////////////
-<br>
-// MONTHCALENDAR <br>
-///////////////////////////////////////////////////////////////////////////////
-<br>
-</span><span lang=ES style='color:gray;mso-ansi-language:ES'><br>
-</span><span lang=ES style='color:black;mso-ansi-language:ES'>#<span
-class=SpellE>command</span>&nbsp;@&nbsp;&lt;<span class=SpellE>row</span>&gt;,&lt;col&gt;&nbsp;MONTHCALENDAR&nbsp;&lt;<span
-class=SpellE>name</span>&gt;&nbsp;; <br>
-<span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[
-OBJ &lt;<span class=SpellE>obj</span>&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-tab-count:2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-class=GramE>[ &lt;</span>dummy1: OF, PARENT&gt; &lt;<span class=SpellE>parent</span>&gt;
-] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-tab-count:2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-class=GramE>[ VALUE</span> &lt;v&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-tab-count:2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-class=GramE>[ FONT</span> &lt;<span class=SpellE>fontname</span>&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-tab-count:2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-class=GramE>[ SIZE</span> &lt;<span class=SpellE>fontsize</span>&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-tab-count:2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[
-&lt;<span class=SpellE><span class=GramE>bold</span></span> : BOLD&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-tab-count:2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[
-&lt;<span class=SpellE><span class=GramE>italic</span></span> : ITALIC&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-tab-count:2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[
-&lt;<span class=SpellE><span class=GramE>underline</span></span> :
-UNDERLINE&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-tab-count:2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[
-&lt;<span class=SpellE><span class=GramE>strikeout</span></span> :
-STRIKEOUT&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-tab-count:2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-class=GramE>[ TOOLTIP</span> &lt;<span class=SpellE>tooltip</span>&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-tab-count:2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[
-&lt; <span class=SpellE><span class=GramE>notoday</span></span>: NOTODAY &gt; ]
-;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-tab-count:2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[
-&lt; <span class=SpellE><span class=GramE>notodaycircle</span></span>:
-NOTODAYCIRCLE &gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-tab-count:2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[
-&lt; <span class=SpellE><span class=GramE>weeknumbers</span></span>:
-WEEKNUMBERS &gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-tab-count:2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[
-&lt; <span class=GramE>invisible</span>: INVISIBLE &gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-tab-count:2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[
-&lt; <span class=SpellE><span class=GramE>notabstop</span></span>: NOTABSTOP
-&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-tab-count:2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-class=GramE>[ ON</span> CHANGE &lt;<span class=SpellE>change</span>&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-tab-count:2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-class=GramE>[ HELPID</span> &lt;<span class=SpellE>helpid</span>&gt; ] <span
-style='mso-tab-count:2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;</span><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[
-&lt;<span class=SpellE><span class=GramE>rtl</span></span>: RTL&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-class=GramE>[ SUBCLASS</span> &lt;<span class=SpellE>subclass</span>&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[
-&lt;<span class=SpellE><span class=GramE>disabled</span></span>: DISABLED&gt;
-]<span style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-class=GramE>[ FONTCOLOR</span> &lt;<span class=SpellE>fontcolor</span>&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-class=GramE>[ BACKCOLOR</span> &lt;<span class=SpellE>backcolor</span>&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-class=GramE>[ TITLEFONTCOLOR</span> &lt;<span class=SpellE>titlefontcolor</span>&gt;
-] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;</span><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-class=GramE>[ TITLEBACKCOLOR</span> &lt;<span class=SpellE>titlebackcolor</span>&gt;
-] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-class=GramE>[ TRAILINGFONTCOLOR</span> &lt;<span class=SpellE>trailingfontcolor</span>&gt;
-] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[
-BACKGROUNDCOLOR &lt;backgroundcolor&gt; ] ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>=&gt;;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[
-&lt;<span class=SpellE><span class=GramE>obj</span></span>&gt; := ] _<span
-class=SpellE>OOHG_SelectSubClass</span>( <span class=SpellE>TMonthCal</span>(),
-[ &lt;<span class=SpellE>subclass</span>&gt;() ] ):Define( ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;(<span class=SpellE><span class=GramE>name</span></span>)&gt;, &lt;(<span
-class=SpellE>parent</span>)&gt;, &lt;col&gt;, &lt;<span class=SpellE>row</span>&gt;,
-0, 0, &lt;v&gt;, &lt;<span class=SpellE>fontname</span>&gt;, &lt;<span
-class=SpellE>fontsize</span>&gt;, ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;<span class=SpellE><span class=GramE>tooltip</span></span>&gt;,
-&lt;.<span class=SpellE>notoday</span>.&gt;, &lt;.<span class=SpellE>notodaycircle</span>.&gt;,
-&lt;.<span class=SpellE>weeknumbers</span>.&gt;, &lt;{<span class=SpellE>change</span>}&gt;,
-;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;<span class=SpellE><span class=GramE>helpid</span></span>&gt;,
-&lt;.invisible.&gt;, &lt;.<span class=SpellE>notabstop</span>.&gt;, &lt;.<span
-class=SpellE>bold</span>.&gt;, &lt;.<span class=SpellE>italic</span>.&gt;, ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;.<span class=SpellE>underline</span>.&gt;, &lt;.<span class=SpellE>strikeout</span>.&gt;,
-&lt;.<span class=SpellE>rtl</span>.&gt;, &lt;.<span class=SpellE>disabled</span>.&gt;,
-&lt;<span class=SpellE>fontcolor</span><span class=GramE>&gt;, ;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;<span class=SpellE><span class=GramE>backcolor</span></span>&gt;,
-&lt;<span class=SpellE>titlefontcolor</span>&gt;, &lt;<span class=SpellE>titlebackcolor</span>&gt;,
-&lt;<span class=SpellE>trailingfontcolor</span>&gt;, ;<o:p></o:p></span></p>
-
-<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>&lt;<span class=SpellE><span class=GramE>backgroundcolor</span></span>&gt;
-)<o:p></o:p></span></p>
-
-</div>
-
-</div>
-<div id="winchm_template_footer"><FONT color=#808080 
-size=1>Copyright © 2013-2016 ooHG Development Team - </FONT><A 
-href="https://sourceforge.net/projects/oohg/" target="_blank"><FONT 
-size=1>https://sourceforge.net/projects/oohg/</FONT></A> 
-     </div>
-
-</body>
+         </div>
+      </div>
+      <div id="winchm_template_footer">
+         <FONT color=#808080 size=1>Copyright © 2013-2017 ooHG Development Team -
+         </FONT>
+         <A href="https://sourceforge.net/projects/oohg/" target="_blank">
+            <FONT size=1>https://sourceforge.net/projects/oohg/
+            </FONT></A>
+      </div>
+   </body>
 
 </html>

@@ -1,5 +1,5 @@
 <!--
-$Id: TAPPLICATION.HTM,v 1.1 2017-08-24 01:29:09 fyurisich Exp $
+$Id: TAPPLICATION.HTM,v 1.2 2017-08-26 02:54:08 fyurisich Exp $
 -->
 
 <!DOCTYPE html>
@@ -45,7 +45,7 @@ $Id: TAPPLICATION.HTM,v 1.1 2017-08-24 01:29:09 fyurisich Exp $
    <body>
       <div id="winchm_template_title">
          <div id="winchm_template_button">
-            <A href="CLASSES.HTM" title="Previous topic">
+            <A href="CLASSES_INDEX.HTM" title="Previous topic">
                <img id="winchm_template_prev" alt="Previous topic" src="template4/btn_prev_n.gif" border="0"></A>
             <A href="TPRINT.HTM" title="Next topic">
                <img id="winchm_template_next" alt="Next topic" src="template4/btn_next_n.gif" border="0"></A>
@@ -57,9 +57,9 @@ $Id: TAPPLICATION.HTM,v 1.1 2017-08-24 01:29:09 fyurisich Exp $
          <div class=Section1>
 <PRE>
 <span style='color:darkgreen'><b>
-///////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////
 // TAPPLICATION CLASS
-///////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////
 </b></span>
 CLASS TApplication
    DATA ArgC         INIT HB_ArgC()            READONLY
@@ -118,11 +118,16 @@ ENDCLASS
 #xtranslate Application.Topmost := &lt;arg&gt;    =&gt; TApplication():Topmost( &lt;arg&gt; )
 #xtranslate Application.Width               =&gt; TApplication():Width
 #xtranslate Application.Width := &lt;arg&gt;      =&gt; TApplication():Width( &lt;arg&gt; )
+
+#xtranslate SET DEFAULT ICON TO &lt;cIcon&gt; ;
+   =&gt; ;
+      _OOHG_Main_Icon := &lt;cIcon&gt;
+
 </PRE>
          </div>
       </div>
       <div id="winchm_template_footer">
-         <FONT color=#808080 size=1>Copyright © 2013-2016 ooHG Development Team -
+         <FONT color=#808080 size=1>Copyright © 2013-2017 ooHG Development Team -
          </FONT>
          <A href="https://sourceforge.net/projects/oohg/" target="_blank">
             <FONT size=1>https://sourceforge.net/projects/oohg/

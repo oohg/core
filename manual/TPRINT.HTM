@@ -1,5 +1,5 @@
 <!--
-$Id: TPRINT.HTM,v 1.8 2017-08-24 01:29:09 fyurisich Exp $
+$Id: TPRINT.HTM,v 1.9 2017-08-26 02:54:08 fyurisich Exp $
 -->
 
 <!DOCTYPE html>
@@ -58,9 +58,9 @@ $Id: TPRINT.HTM,v 1.8 2017-08-24 01:29:09 fyurisich Exp $
 
 <PRE>
 <span style='color:darkgreen'><b>
-///////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////
 // TPRINT CLASS
-///////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////
 </b></span>
 This class is a wrapper for different modes of printing a report or
 exporting it to a file.
@@ -751,6 +751,22 @@ The general procedure to use this class is:
   Notes:
     Applies only to MINIPRINT and HBPRINTER modes.
 
+<b>::MaxCol()</b>
+
+  Returns the maximum number of printable columns.
+
+  Notes:
+    Applies only to TMINIPRINT, THBPRINTER, TEXCELPRINT and TCALCPRINT modes.
+    For other modes it returns 0.
+
+<b>::MaxRow()</b>
+
+  Returns the maximum number of printable rows.
+
+  Notes:
+    Applies only to TMINIPRINT, THBPRINTER, TEXCELPRINT and TCALCPRINT modes.
+    For other modes it returns 0.
+
 <b>::NormalDos()</b>
 
   Sets the printer to normal mode.
@@ -952,6 +968,7 @@ The general procedure to use this class is:
    <b>::aBarColor</b>         {1, 1, 1}                            brush color for barcodes
    <b>::aColor</b>            {0, 0, 0}                            brush color
    <b>::aFontColor</b>        {0, 0, 0}                            font color
+   <b>::aLinCelda</b>         {}
    <b>::aPageNames</b>        {}                                   page's names
    <b>::aPorts</b>            {}                                   available printing ports
    <b>::aPrinters</b>         {}                                   available printers
@@ -965,6 +982,7 @@ The general procedure to use this class is:
    <b>::cTempFile</b>         TEMP_FILE_NAME
    <b>::cUnits</b>            "ROWCOL"                             currently selected printing units
    <b>::cVersion</b>          "(oohg-tprint)V 4.10"                library's current version
+   <b>::Exit</b>              .F.
    <b>::ImPreview</b>         .T.
    <b>::lFontBold</b>         .F.
    <b>::lFontItalic</b>       .F.
@@ -985,18 +1003,27 @@ The general procedure to use this class is:
    <b>::nhFij</b>             ( 12 / 3.70 )
    <b>::nLinPag</b>           0
    <b>::nLMargin</b>          0
+   <b>::nMaxCol</b>           0
+   <b>::nMaxRow</b>           0
    <b>::nmHor</b>             ( 10 / 4.75 )
    <b>::nmVer</b>             ( 10 / 2.35 )
    <b>::nTMargin</b>          0
    <b>::nUnitsLin</b>         1
    <b>::nvFij</b>             ( 12 / 1.65 )
    <b>::nwPen</b>             0.1                                  pen width in MM, do not exceed 1
+
+<u>Important note</u>:
+
+  Beware that TPRINT creates a MODAL hidden window to prevent recursive calls.
+  For this reason you must be very careful with the creation of other MODAL windows
+  between ::BeginDoc() and ::EndDoc().   If you fail to release them before ::EndDoc()
+  a RTE will be rised stating that "Non top modal window *_MODALHIDE* can't be released."
 </PRE>
 
          </div>
       </div>
       <div id="winchm_template_footer">
-         <FONT color=#808080 size=1>Copyright © 2013-2016 ooHG Development Team -
+         <FONT color=#808080 size=1>Copyright © 2013-2017 ooHG Development Team -
          </FONT>
          <A href="https://sourceforge.net/projects/oohg/" target="_blank">
             <FONT size=1>https://sourceforge.net/projects/oohg/

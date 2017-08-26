@@ -1,5 +1,5 @@
 /*
- * $Id: bostaurus.prg,v 1.9 2017-08-25 19:42:17 fyurisich Exp $
+ * $Id: bostaurus.prg,v 1.10 2017-08-26 02:54:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -608,7 +608,7 @@ Return lRet
 
 Function BT_GetImage( cFormName, cControlName )
    LOCAL oCtrl := GetControlObject( cControlName, cFormName )
-Return oCtrl:HBitMap
+Return oCtrl:hBitMap
 
 
 Function BT_CloneImage( cFormName, cControlName )
