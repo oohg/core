@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog.txt,v 1.6 2017-08-26 03:03:14 fyurisich Exp $
+ * $Id: ChangeLog.txt,v 1.7 2017-08-26 03:17:26 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,8 +7,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2017-08-26 00:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2017-08-26 00:17 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * distros/MakeExclude.txt
+     + Added file.
+   * manual/Changelog.htm
+     * Updated.
+
+2017-08-26 00:04 UTC-0300 Fernando Yurisich &lt;fyurisich@oohg.org&gt;
    * doc/Maintenance.txt
+   * manual/Changelog.htm
      * Updated.
    * manual/OVERVIEW.HTM
    * source/h_error.prg

@@ -33,6 +33,7 @@ miniprint.hbp
 oohg.hbc
 oohg.hbp
 oohg.log
+oohg.chw
 output.log
 thumbs.db
 xhbcc.bat
