@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.73 2017-08-25 19:42:22 fyurisich Exp $
+ * $Id: h_tab.prg,v 1.74 2017-09-01 20:55:05 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -68,10 +68,10 @@ CLASS TTab FROM TTabMulti
 ENDCLASS
 
 CLASS TTabDirect FROM TTabRaw
-   // DATA Type                  INIT "TAB" READONLY
-   DATA aPages                INIT {}
-   DATA lInternals            INIT .F.
-   DATA nFirstValue           INIT nil
+// DATA Type                      INIT "TAB" READONLY
+   DATA aPages                    INIT {}
+   DATA lInternals                INIT .F.
+   DATA nFirstValue               INIT Nil
 
    METHOD Define
    METHOD EndTab
@@ -96,7 +96,7 @@ CLASS TTabDirect FROM TTabRaw
    METHOD RealPosition
    METHOD HidePage
    METHOD ShowPage
-
+   METHOD SaveData
    METHOD Caption
    METHOD Picture
 ENDCLASS
@@ -162,12 +162,12 @@ LOCAL z, Caption, Image, aControls, Mnemonic
       IF z <= LEN( aPageMap ) .AND. HB_IsArray( aPageMap[ z ] )
          aControls := aPageMap[ z ]
       ELSE
-         aControls := nil
+         aControls := Nil
       ENDIF
       IF z <= LEN( aMnemonic ) .AND. HB_IsBlock( aMnemonic[ z ] )
          Mnemonic := aMnemonic[ z ]
       ELSE
-         Mnemonic := nil
+         Mnemonic := Nil
       ENDIF
       ::AddPage( , Caption, Image, aControls, Mnemonic )
       z++
@@ -179,7 +179,7 @@ LOCAL z, Caption, Image, aControls, Mnemonic
       ::Value := 1
    ENDIF
 
-   ASSIGN ::OnChange    VALUE Change    TYPE "B"
+   ASSIGN ::OnChange VALUE Change TYPE "B"
 
 RETURN Self
 
@@ -194,7 +194,7 @@ METHOD EndTab() CLASS TTabDirect
    IF HB_IsNumeric( ::nFirstValue ) .AND. ! ::Value == ::nFirstValue
       ::Value := ::nFirstValue
    ENDIF
-RETURN nil
+RETURN Nil
 
 *------------------------------------------------------------------------------*
 METHOD Refresh() CLASS TTabDirect
@@ -219,14 +219,14 @@ LOCAL nPage, nFocused
          ::SetFocus()
       ENDIF
    ENDIF
-RETURN nil
+RETURN Nil
 
 *------------------------------------------------------------------------------*
 METHOD RefreshData() CLASS TTabDirect
 *------------------------------------------------------------------------------*
    ::Super:RefreshData()
    AEVAL( ::aPages, { |o| o:RefreshData() } )
-RETURN nil
+RETURN Nil
 
 *------------------------------------------------------------------------------*
 METHOD Release() CLASS TTabDirect
@@ -239,7 +239,7 @@ METHOD SizePos( Row, Col, Width, Height ) CLASS TTabDirect
 *------------------------------------------------------------------------------*
    ::Super:SizePos( Row, Col, Width, Height )
    AEVAL( ::aPages, { |o| o:Events_Size() } )
-RETURN nil
+RETURN Nil
 
 *------------------------------------------------------------------------------*
 METHOD Value( nValue ) CLASS TTabDirect
@@ -311,7 +311,7 @@ METHOD AdjustResize( nDivh, nDivw, lSelfOnly ) CLASS TTabDirect
    // .T. is needed to avoid calling ::AdjustResize() for the TTabRaw control.
    ::Super:AdjustResize( nDivh, nDivw, .T. )
    AEVAL( ::aPages, { |o| o:AdjustResize( nDivh, nDivw, lSelfOnly ) } )
-RETURN nil
+RETURN Nil
 
 *------------------------------------------------------------------------------*
 METHOD AddPage( Position, Caption, Image, aControls, Mnemonic, Name, oSubClass ) CLASS TTabDirect
@@ -347,7 +347,7 @@ LOCAL oPage, nPos
    oPage:Picture   := Image
    oPage:Position  := Position
 
-   AADD( ::aPages, nil )
+   AADD( ::aPages, Nil )
    AINS( ::aPages, Position )
    ::aPages[ Position ] := oPage
 
@@ -399,7 +399,7 @@ RETURN oPage
 Function _EndTabPage()
 *------------------------------------------------------------------------------*
    _OOHG_DeleteFrame( "TABPAGE" )
-RETURN nil
+RETURN Nil
 
 *------------------------------------------------------------------------------*
 Function _EndTab()
@@ -409,7 +409,7 @@ Function _EndTab()
       _EndTabPage()
    ENDIF
    ATAIL( _OOHG_ActiveFrame ):EndTab()
-RETURN nil
+RETURN Nil
 
 *------------------------------------------------------------------------------*
 METHOD AddControl( oCtrl, PageNumber, Row, Col ) CLASS TTabDirect
@@ -461,7 +461,7 @@ LOCAL nValue, nRealPosition
       ::Refresh()
    ENDIF
 
-RETURN nil
+RETURN Nil
 
 *------------------------------------------------------------------------------*
 METHOD DeleteControl( oCtrl ) CLASS TTabDirect
@@ -501,7 +501,7 @@ LOCAL nPos
          ENDIF
       ENDIF
    ENDIF
-RETURN nil
+RETURN Nil
 
 *------------------------------------------------------------------------------*
 METHOD ShowPage( nPage ) CLASS TTabDirect
@@ -516,7 +516,7 @@ LOCAL nRealPosition
       ENDIF
       // Enable hotkey!
    ENDIF
-RETURN nil
+RETURN Nil
 
 *------------------------------------------------------------------------------*
 METHOD Caption( nColumn, uValue ) CLASS TTabDirect
@@ -551,6 +551,12 @@ LOCAL oPage, nRealPosition
    ENDIF
 RETURN oPage:Picture
 
+*------------------------------------------------------------------------------*
+METHOD SaveData() CLASS TTabDirect
+*------------------------------------------------------------------------------*
+   _OOHG_EVAL( ::Block, ::Value )
+   AEVAL( ::aPages, { |o| o:SaveData() } )
+RETURN Nil
 
 
 
@@ -708,9 +714,9 @@ RETURN oPage
 CLASS TMultiPage FROM TControlGroup
    DATA Type                      INIT "MULTIPAGE" READONLY
    DATA aPages                    INIT {}
-   DATA oContainerBase            INIT nil
+   DATA oContainerBase            INIT Nil
    DATA oPageClass                INIT TTabPage()
-   DATA nFirstValue               INIT nil
+   DATA nFirstValue               INIT Nil
 
    METHOD Define
    METHOD CreatePages
@@ -736,6 +742,7 @@ CLASS TMultiPage FROM TControlGroup
    METHOD Picture
    METHOD EndPage                 BLOCK { |Self| _OOHG_DeleteFrame( ::oPageClass:Type ) }
    METHOD EndTab
+   METHOD SaveData
 
    // Control-specific methods
    METHOD ContainerValue          SETGET
@@ -811,17 +818,17 @@ LOCAL z, Caption, Image, aControls, Mnemonic
       IF z <= LEN( aPageMap ) .AND. HB_IsArray( aPageMap[ z ] )
          aControls := aPageMap[ z ]
       ELSE
-         aControls := nil
+         aControls := Nil
       ENDIF
       IF z <= LEN( aMnemonic ) .AND. HB_IsBlock( aMnemonic[ z ] )
          Mnemonic := aMnemonic[ z ]
       ELSE
-         Mnemonic := nil
+         Mnemonic := Nil
       ENDIF
       ::AddPage( , Caption, Image, aControls, Mnemonic )
       z++
    ENDDO
-RETURN nil
+RETURN Nil
 
 *------------------------------------------------------------------------------*
 METHOD Refresh() CLASS TMultiPage
@@ -846,14 +853,14 @@ LOCAL nPage, nFocused
          ::SetFocus()
       ENDIF
    ENDIF
-RETURN nil
+RETURN Nil
 
 *------------------------------------------------------------------------------*
 METHOD RefreshData() CLASS TMultiPage
 *------------------------------------------------------------------------------*
    ::Super:RefreshData()
    AEVAL( ::aPages, { |o| o:RefreshData() } )
-RETURN nil
+RETURN Nil
 
 *------------------------------------------------------------------------------*
 METHOD Release() CLASS TMultiPage
@@ -865,11 +872,11 @@ RETURN ::Super:Release()
 METHOD SizePos( Row, Col, Width, Height ) CLASS TMultiPage
 *------------------------------------------------------------------------------*
    ::Super:SizePos( Row, Col, Width, Height )
-   IF ! ::oContainerBase == nil
+   IF ! ::oContainerBase == Nil
       ::oContainerBase:SizePos( 0, 0, Width, Height )
    ENDIF
    AEVAL( ::aPages, { |o| o:Events_Size() } )
-RETURN nil
+RETURN Nil
 
 *------------------------------------------------------------------------------*
 METHOD Value( nValue ) CLASS TMultiPage
@@ -939,7 +946,7 @@ METHOD AdjustResize( nDivh, nDivw, lSelfOnly ) CLASS TMultiPage
    // .T. is needed to avoid calling ::AdjustResize() for the TTabRaw control.
    ::Super:AdjustResize( nDivh, nDivw, .T. )
    AEVAL( ::aPages, { |o| o:AdjustResize( nDivh, nDivw, lSelfOnly ) } )
-RETURN nil
+RETURN Nil
 
 *------------------------------------------------------------------------------*
 METHOD AddPage( Position, Caption, Image, aControls, Mnemonic, Name, oSubClass ) CLASS TMultiPage
@@ -973,7 +980,7 @@ LOCAL oPage, nPos
    oPage:Picture   := Image
    oPage:Position  := Position
 
-   AADD( ::aPages, nil )
+   AADD( ::aPages, Nil )
    AINS( ::aPages, Position )
    ::aPages[ Position ] := oPage
 
@@ -1035,7 +1042,7 @@ METHOD AddControl( oCtrl, PageNumber, Row, Col ) CLASS TMultiPage
    oCtrl:lProcMsgsOnVisible := ::lProcMsgsOnVisible
 
    ::aPages[ PageNumber ]:AddControl( oCtrl, Row, Col )
-RETURN nil
+RETURN Nil
 
 *------------------------------------------------------------------------------*
 METHOD DeleteControl( oCtrl ) CLASS TMultiPage
@@ -1065,7 +1072,7 @@ LOCAL nValue, nRealPosition
       ::Refresh()
    ENDIF
 
-RETURN nil
+RETURN Nil
 
 *------------------------------------------------------------------------------*
 METHOD RealPosition( nPage ) CLASS TMultiPage
@@ -1100,7 +1107,7 @@ LOCAL nPos
          ENDIF
       ENDIF
    ENDIF
-RETURN nil
+RETURN Nil
 
 *------------------------------------------------------------------------------*
 METHOD ShowPage( nPage ) CLASS TMultiPage
@@ -1113,7 +1120,7 @@ METHOD ShowPage( nPage ) CLASS TMultiPage
       ENDIF
       // Enable hotkey!
    ENDIF
-RETURN nil
+RETURN Nil
 
 *------------------------------------------------------------------------------*
 METHOD Caption( nColumn, uValue ) CLASS TMultiPage
@@ -1161,7 +1168,7 @@ METHOD EndTab() CLASS TMultiPage
    ELSEIF ::Value == 0
       ::Value := 1
    ENDIF
-RETURN nil
+RETURN Nil
 
 *------------------------------------------------------------------------------*
 METHOD ContainerValue( nValue ) CLASS TMultiPage
@@ -1169,7 +1176,7 @@ METHOD ContainerValue( nValue ) CLASS TMultiPage
    IF HB_IsNumeric( nValue )
       ::oContainerBase:Value := nValue
    ENDIF
-RETURN IF( ::oContainerBase == nil, 0, ::oContainerBase:Value )
+RETURN IF( ::oContainerBase == Nil, 0, ::oContainerBase:Value )
 
 *------------------------------------------------------------------------------*
 METHOD DeleteItem( nItem ) CLASS TMultiPage
@@ -1180,7 +1187,7 @@ LOCAL nValue
    IF ::ContainerValue == 0
       ::ContainerValue := MIN( nValue, ::ContainerItemCount )
    ENDIF
-RETURN nil
+RETURN Nil
 
 *------------------------------------------------------------------------------*
 METHOD bBeforeChange( bCode ) CLASS TMultiPage
@@ -1206,6 +1213,13 @@ METHOD OnRClick( bCode ) CLASS TMultiPage
    ENDIF
 RETURN ::oContainerBase:OnRClick
 
+*------------------------------------------------------------------------------*
+METHOD SaveData() CLASS TMultiPage
+*------------------------------------------------------------------------------*
+   _OOHG_EVAL( ::Block, ::Value )
+   AEVAL( ::aPages, { |o| o:SaveData() } )
+RETURN Nil
+
 
 
 
@@ -1215,7 +1229,7 @@ CLASS TTabRaw FROM TControl
    DATA ImageListColor            INIT CLR_DEFAULT
    DATA ImageListFlags            INIT LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
    DATA SetImageListCommand       INIT TCM_SETIMAGELIST
-   DATA bBeforeChange             INIT nil
+   DATA bBeforeChange             INIT Nil
 
    METHOD Define
    METHOD Value                   SETGET
@@ -1312,13 +1326,13 @@ METHOD InsertItem( nPosition, cCaption, xImage ) CLASS TTabRaw
    IF HB_IsNumeric( xImage ) .AND. xImage >= 0
       SetTabPageImage( ::hWnd, nPosition, xImage )
    ENDIF
-RETURN nil
+RETURN Nil
 
 *------------------------------------------------------------------------------*
 METHOD DeleteItem( nPosition ) CLASS TTabRaw
 *------------------------------------------------------------------------------*
    TabCtrl_DeleteItem( ::hWnd, nPosition - 1 )
-RETURN nil
+RETURN Nil
 
 *------------------------------------------------------------------------------*
 METHOD Caption( nColumn, uValue ) CLASS TTabRaw
@@ -1340,7 +1354,7 @@ METHOD Picture( nColumn, uValue ) CLASS TTabRaw
       SetTabPageImage( ::hWnd, nColumn, uValue )
       ::Refresh()
    ENDIF
-RETURN nil
+RETURN Nil
 
 *------------------------------------------------------------------------------*
 METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TTabRaw
@@ -1366,14 +1380,14 @@ LOCAL lGo, nNotify := GetNotifyCode( lParam )
    IF nNotify == TCN_SELCHANGE
       ::Refresh()
       ::DoChange()
-      RETURN nil
+      RETURN Nil
 
    ELSEIF nNotify == TCN_SELCHANGING
       If HB_IsBlock( ::bBeforeChange )
          lGo := Eval( ::bBeforeChange, ::Value )
          If HB_IsLogical( lGo ) .and. ! lGo
             // Prevent the action
-            Return 1
+            RETURN 1
          EndIf
       EndIf
 
@@ -1402,7 +1416,7 @@ CLASS TTabPage FROM TControlGroup
    METHOD EndPage             BLOCK { |Self| _OOHG_DeleteFrame( ::Type ) }
 
    METHOD ContainerVisible
-
+   METHOD SaveData
    METHOD SetFocus            BLOCK { |Self| ::Container:SetFocus() , ::Container:Value := ::Position , Self }
    METHOD Events_Size
    METHOD AdjustResize
@@ -1424,7 +1438,7 @@ LOCAL oTab
    oTab := ::Container
    ::SizePos( , , oTab:Width, oTab:Height )
    ::Parent:Redraw()
-RETURN nil
+RETURN Nil
 
 *------------------------------------------------------------------------------*
 METHOD AdjustResize( nDivh, nDivw, lSelfOnly ) CLASS TTabPage
@@ -1448,7 +1462,14 @@ METHOD AdjustResize( nDivh, nDivw, lSelfOnly ) CLASS TTabPage
          AEVAL( ::aControls, { |o| o:AdjustResize( ( ::Height - ::nFixedHeightUsed ) / ( ::Height / nDivh - ::nFixedHeightUsed ), nDivw ) } )
       ENDIF
    ENDIF
-RETURN nil
+RETURN Nil
+
+*------------------------------------------------------------------------------*
+METHOD SaveData() CLASS TTabPage
+*------------------------------------------------------------------------------*
+   _OOHG_EVAL( ::Block, ::Value )
+   AEVAL( ::aControls, { |o| o:SaveData() } )
+RETURN Nil
 
 
 
@@ -1474,7 +1495,6 @@ ENDCLASS
 METHOD Define( ControlName, ParentForm ) CLASS TTabPageInternal
 *------------------------------------------------------------------------------*
 LOCAL aArea
-
    ::SearchParent( ParentForm )
    aArea := _OOHG_TabPage_GetArea( ::Container )
    ::Super:Define( ControlName,, aArea[ 1 ], aArea[ 2 ], aArea[ 3 ], aArea[ 4 ], ParentForm )
@@ -1494,7 +1514,7 @@ LOCAL aArea
    ::ColMargin := - aArea[ 1 ]
    ::SizePos( aArea[ 2 ], aArea[ 1 ], aArea[ 3 ], aArea[ 4 ] )
    ::ScrollControls()
-RETURN NIL
+RETURN Nil
 
 *------------------------------------------------------------------------------*
 METHOD AdjustResize( nDivh, nDivw, lSelfOnly ) CLASS TTabPageInternal
@@ -1518,9 +1538,11 @@ METHOD AdjustResize( nDivh, nDivw, lSelfOnly ) CLASS TTabPageInternal
          AEVAL( ::aControls, { |o| o:AdjustResize( ( ::Height - ::nFixedHeightUsed ) / ( ::Height / nDivh - ::nFixedHeightUsed ), nDivw ) } )
       ENDIF
    ENDIF
-RETURN nil
+RETURN Nil
 
+*------------------------------------------------------------------------------*
 STATIC FUNCTION _OOHG_TabPage_GetArea( oTab )
+*------------------------------------------------------------------------------*
 LOCAL aRect
    aRect := TabCtrl_GetItemRect( oTab:hWnd, 0 )
    aRect := { 2, aRect[ 4 ] + 2, oTab:Width - 2, oTab:Height - 2 }
@@ -1595,14 +1617,14 @@ HB_FUNC( INITTABCONTROL )
 HB_FUNC (TABCTRL_SETCURSEL)
 {
 
-	HWND hwnd;
-	int s;
+   HWND hwnd;
+   int s;
 
    hwnd = HWNDparam( 1 );
 
-	s = hb_parni (2);
+   s = hb_parni (2);
 
-	TabCtrl_SetCurSel( hwnd , s-1 );
+   TabCtrl_SetCurSel( hwnd , s-1 );
 
 }
 
