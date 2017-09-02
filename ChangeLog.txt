@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog.txt,v 1.9 2017-09-01 20:55:05 fyurisich Exp $
+ * $Id: ChangeLog.txt,v 1.10 2017-09-02 22:14:01 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2017-09-02 19:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_image.prg
+     ! Image can't be cleared.
+     ! Control disappears when an inexistent image is assigned.
 
 2017-09-01 17:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_tab.prg

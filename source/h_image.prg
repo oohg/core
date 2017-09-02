@@ -1,5 +1,5 @@
 /*
- * $Id: h_image.prg,v 1.47 2017-08-25 19:42:21 fyurisich Exp $
+ * $Id: h_image.prg,v 1.48 2017-09-02 22:14:01 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -253,6 +253,8 @@ METHOD RePaint() CLASS TImage
          SendMessage( ::hWnd, STM_SETIMAGE, IMAGE_BITMAP, ::hImage )
       ENDIF
       ::Parent:Redraw()
+   ELSE
+      PaintBkGnd( ::hWnd, ::BackColor )
    ENDIF
 RETURN Self
 
