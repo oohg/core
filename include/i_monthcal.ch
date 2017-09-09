@@ -1,5 +1,5 @@
 /*
- * $Id: i_monthcal.ch,v 1.12 2017-08-25 19:26:28 fyurisich Exp $
+ * $Id: i_monthcal.ch,v 1.13 2017-09-09 15:02:24 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -85,7 +85,7 @@
       [ TITLEFONTCOLOR <titlefontcolor> ] ;
       [ TITLEBACKCOLOR <titlebackcolor> ] ;
       [ TRAILINGFONTCOLOR <trailingfontcolor> ] ;
-      [ BACKGROUNDCOLOR <backgroundcolor> ] ;
+		[ <dummy5: BACKGROUNDCOLOR, BKGNDCOLOR> <backgroundcolor> ] ;
       [ <multiselect: MULTISELECT> ] ;
       [ <dummy2: ONVIEWCHANGE, ON VIEWCHANGE> <viewchg> ] ;
       [ <dummy3: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
