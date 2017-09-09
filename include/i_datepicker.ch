@@ -1,5 +1,5 @@
 /*
- * $Id: i_datepicker.ch,v 1.14 2017-08-25 19:26:27 fyurisich Exp $
+ * $Id: i_datepicker.ch,v 1.15 2017-09-09 14:37:53 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -88,6 +88,7 @@
       [ <rtl: RTL> ] ;
       [ SUBCLASS <subclass> ] ;
       [ <dummy2: RANGE> <min>, <max> ] ;
+      [ DATEFORMAT <cDateFormat> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TDatePick(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <v>, ;
@@ -95,7 +96,7 @@
             <{gotfocus}>, <.shownone.>, <.updown.>, <.rightalign.>, <helpid>, ;
             <.invisible.>, <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, ;
             <.strikeout.>, <(field)>, <{enter}>, <.rtl.>, <.disabled.>, ;
-            <.noborder.>, <min>, <max> )
+            <.noborder.>, <min>, <max>, <cDateFormat> )
 
 #command @ <row>, <col> TIMEPICKER <name> ;
       [ OBJ <obj> ] ;
@@ -125,11 +126,12 @@
       [ <noborder: NOBORDER> ] ;
       [ <rtl: RTL> ] ;
       [ SUBCLASS <subclass> ] ;
+      [ TIMEFORMAT <cTimeFormat> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TTimePick(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <v>, ;
             <fontname>, <fontsize>, <tooltip>, <{change}>, <{lostfocus}>, ;
-            <{gotfocus}>, <.shownone.>, <.updown.>, <.rightalign.>, <helpid>, ;
+            <{gotfocus}>, <.shownone.>, .T., .F., <helpid>, ;
             <.invisible.>, <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, ;
             <.strikeout.>, <(field)>, <{enter}>, <.rtl.>, <.disabled.>, ;
-            <.noborder.> )
+            <.noborder.>, <cTimeFormat> )

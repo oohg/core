@@ -1,11 +1,38 @@
 /*
- * $Id: ChangeLog.txt,v 1.10 2017-09-02 22:14:01 fyurisich Exp $
+ * $Id: ChangeLog.txt,v 1.11 2017-09-09 14:37:52 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2017-09-09 11:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_altsyntax.ch
+   * include/i_datepicker.ch
+     + Added clause DATEFORMAT in DATEPICKER control.
+     + Added clause TIMEFORMAT in TIMEPICKER control.
+     * Parameters UPDOWN and RIGHTALIGN in call to TTimePick():Define
+       are now forced to .T. and .F. respectively.
+     ; TIMEPICKER control always has UPDOWN style.
+     ; TIMEPICKER control ignores RIGHTALIGN style.
+   * include/i_hmg_compat.ch
+     + PP rules to ignore BACKCOLOR, FONTCOLOR, TITLEBACKCOLOR,
+       TITLEFONTCOLOR and TRAILINGFONTCOLOR clauses of DATEPICKER control.
+     ; These clauses have no effect under when visual styles are on.
+     - Unneeded PP rule related to RADIOGROUP control.
+   * source/h_datepicker.prg
+     + Support for new clauses in DATEPICKER and TIMEPICKER controls.
+     + DATA cDateFormat and METHOD DateFormat in TDatePick class.
+     + DATA cTimeFormat METHOD TimeFormat in TTimePick class.
+     * TTimePick():Value for controls with SHOWNONE style will now
+       set the control to NULL if passed value is an empty string,
+       instead of setting it to 00:00:00.
+     * TTimePick():Value for controls with SHOWNONE style will now
+       set the control to NULL if passed value is NIL, instead of
+       setting it to current time.
+     + Function SetDatePickerDateFormat.
+     * Empty() replaced with HB_SYMBOL_UNUSED.
 
 2017-09-02 19:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_image.prg

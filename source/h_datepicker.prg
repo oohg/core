@@ -1,5 +1,5 @@
 /*
- * $Id: h_datepicker.prg,v 1.28 2017-08-25 19:42:18 fyurisich Exp $
+ * $Id: h_datepicker.prg,v 1.29 2017-09-09 14:37:53 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -66,16 +66,18 @@
 #include "i_windefs.ch"
 
 CLASS TDatePick FROM TControl
-   DATA Type      INIT "DATEPICK" READONLY
-   DATA nWidth    INIT 120
-   DATA nHeight   INIT 24
+   DATA Type                      INIT "DATEPICK" READONLY
+   DATA nWidth                    INIT 120
+   DATA nHeight                   INIT 24
+   DATA cDateFormat               INIT ""
 
    METHOD Define
-   METHOD Value            SETGET
+   METHOD Value                   SETGET
    METHOD Events_Notify
    METHOD SetRange
+   METHOD DateFormat              SETGET
 
-   EMPTY( _OOHG_AllVars )
+   HB_SYMBOL_UNUSED( _OOHG_AllVars )
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -83,7 +85,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
                fontsize, tooltip, change, lostfocus, gotfocus, shownone, ;
                updown, rightalign, HelpId, invisible, notabstop, bold, ;
                italic, underline, strikeout, Field, Enter, lRtl, lDisabled, ;
-               lNoBorder, DateFrom, DateTo ) CLASS TDatePick
+               lNoBorder, DateFrom, DateTo, cDateFormat ) CLASS TDatePick
 *------------------------------------------------------------------------------*
 Local ControlHandle, nStyle, nStyleEx
 
@@ -92,9 +94,9 @@ Local ControlHandle, nStyle, nStyleEx
    ASSIGN ::nWidth  VALUE w TYPE "N"
    ASSIGN ::nHeight VALUE h TYPE "N"
 
-   ::SetForm( ControlName, ParentForm, FontName, FontSize, , , .t. , lRtl )
+   ::SetForm( ControlName, ParentForm, FontName, FontSize, , , .t., lRtl )
 
-   nStyle := ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + ;
+   nStyle := ::InitStyle( , , Invisible, NoTabStop, lDisabled ) + ;
              IF( HB_IsLogical( shownone   ) .AND. shownone,    DTS_SHOWNONE,   0 ) + ;
              IF( HB_IsLogical( updown     ) .AND. updown,      DTS_UPDOWN,     0 ) + ;
              IF( HB_IsLogical( rightalign ) .AND. rightalign,  DTS_RIGHTALIGN, 0 )
@@ -103,12 +105,16 @@ Local ControlHandle, nStyle, nStyleEx
 
    ControlHandle := InitDatePick( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, nStyleEx, ::lRtl )
 
-   ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
+   ::Register( ControlHandle, ControlName, HelpId, , ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
 
    ::SetRange(DateFrom, DateTo)
 
    ::SetVarBlock( Field, Value )
+
+   IF HB_IsString( cDateFormat )
+      ::DateFormat := cDateFormat
+   ENDIF
 
    ASSIGN ::OnLostFocus VALUE lostfocus TYPE "B"
    ASSIGN ::OnGotFocus  VALUE gotfocus  TYPE "B"
@@ -116,6 +122,21 @@ Local ControlHandle, nStyle, nStyleEx
    ASSIGN ::OnEnter     VALUE Enter     TYPE "B"
    
 Return Self
+
+*------------------------------------------------------------------------------*
+METHOD DateFormat( cDateFormat ) CLASS TDatePick
+*------------------------------------------------------------------------------*
+Local lRes
+
+   IF VALTYPE( cDateFormat ) == "C"
+      // cDateFormat == "" means reset to default
+      lRes := SetDatePickerDateFormat( ::hWnd, cDateFormat )
+      IF lRes
+         ::cDateFormat := cDateFormat
+      ENDIF
+   ENDIF
+
+Return ::cDateFormat
 
 *------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TDatePick
@@ -131,6 +152,7 @@ METHOD Value( uValue ) CLASS TDatePick
       SetDatePickNull( ::hWnd )
       ::DoChange()
    ENDIF
+
 Return GetDatePick( ::hWnd )
 
 *------------------------------------------------------------------------------*
@@ -138,11 +160,11 @@ METHOD Events_Notify( wParam, lParam ) CLASS TDatePick
 *------------------------------------------------------------------------------*
 Local nNotify := GetNotifyCode( lParam )
 
-   If nNotify == DTN_DATETIMECHANGE
+   IF nNotify == DTN_DATETIMECHANGE
       ::DoChange()
       Return nil
 
-   EndIf
+   ENDIF
 
 Return ::Super:Events_Notify( wParam, lParam )
 
@@ -151,13 +173,15 @@ Return ::Super:Events_Notify( wParam, lParam )
 
 
 CLASS TTimePick FROM TControl
-   DATA Type      INIT "TIMEPICK" READONLY
-   DATA nWidth    INIT 120
-   DATA nHeight   INIT 24
+   DATA Type                      INIT "TIMEPICK" READONLY
+   DATA nWidth                    INIT 120
+   DATA nHeight                   INIT 24
+   DATA cTimeFormat               INIT ""
 
    METHOD Define
-   METHOD Value            SETGET
+   METHOD Value                   SETGET
    METHOD Events_Notify
+   METHOD TimeFormat              SETGET
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -165,7 +189,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
                fontsize, tooltip, change, lostfocus, gotfocus, shownone, ;
                updown, rightalign, HelpId, invisible, notabstop, bold, ;
                italic, underline, strikeout, Field, Enter, lRtl, lDisabled, ;
-               lNoBorder ) CLASS TTimePick
+               lNoBorder, cTimeFormat ) CLASS TTimePick
 *------------------------------------------------------------------------------*
 Local ControlHandle, nStyle, nStyleEx
 
@@ -174,25 +198,28 @@ Local ControlHandle, nStyle, nStyleEx
    ASSIGN ::nWidth  VALUE w TYPE "N"
    ASSIGN ::nHeight VALUE h TYPE "N"
 
-////   DEFAULT cTimeFormat  TO "HH:mm:ss"
+   ::SetForm( ControlName, ParentForm, FontName, FontSize, , , .t., lRtl )
 
-   ::SetForm( ControlName, ParentForm, FontName, FontSize, , , .t. , lRtl )
+   nStyle := ::InitStyle( , , Invisible, NoTabStop, lDisabled ) + ;
+             IF( HB_IsLogical( shownone ) .AND. shownone, DTS_SHOWNONE, 0 )
 
-   nStyle := ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + ;
-             IF( HB_IsLogical( shownone   ) .AND. shownone,    DTS_SHOWNONE,   0 ) /* + ;
-             IF( HB_IsLogical( updown     ) .AND. updown,      DTS_UPDOWN,     0 ) + ;
-             IF( HB_IsLogical( rightalign ) .AND. rightalign,  DTS_RIGHTALIGN, 0 ) */
-   EMPTY( updown )
-   EMPTY( rightalign )
+   // Control always has DTS_UPDOWN style.
+   // Control ignores DTS_RIGHTALIGN style.
+   HB_SYMBOL_UNUSED( updown )
+   HB_SYMBOL_UNUSED( rightalign )
 
    nStyleEx := IF( ! HB_IsLogical( lNoBorder ) .OR. ! lNoBorder, WS_EX_CLIENTEDGE, 0 )
 
    ControlHandle := InitTimePick( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, nStyleEx, ::lRtl )
 
-   ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
+   ::Register( ControlHandle, ControlName, HelpId, , ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
 
    ::SetVarBlock( Field, Value )
+
+   IF HB_IsString( cTimeFormat )
+      ::TimeFormat := cTimeFormat
+   ENDIF
 
    ASSIGN ::OnLostFocus VALUE lostfocus TYPE "B"
    ASSIGN ::OnGotFocus  VALUE gotfocus  TYPE "B"
@@ -202,27 +229,51 @@ Local ControlHandle, nStyle, nStyleEx
 Return Self
 
 *------------------------------------------------------------------------------*
+METHOD TimeFormat( cTimeFormat ) CLASS TTimePick
+*------------------------------------------------------------------------------*
+Local lRes
+
+   IF VALTYPE( cTimeFormat ) == "C"
+      // cTimeFormat == "" means reset to default
+      lRes := SetDatePickerDateFormat( ::hWnd, cTimeFormat )
+      IF lRes
+         ::cTimeFormat := cTimeFormat
+      ENDIF
+   ENDIF
+
+Return ::cTimeFormat
+
+*------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TTimePick
 *------------------------------------------------------------------------------*
    IF VALTYPE( uValue ) == "C"
-      SetTimePick( ::hWnd, VAL(left(uValue,2)),VAL(SUBSTR(uValue,4,2)),VAL( SUBSTR(uValue,7,2 )) )
+      IF EMPTY( uValue ) .AND. IsWindowStyle( ::hWnd, DTS_SHOWNONE )
+         SetDatePickNull( ::hWnd )
+      ELSE
+         SetTimePick( ::hWnd, VAL( LEFT( uValue, 2 ) ), VAL( SUBSTR( uValue, 4, 2 ) ), VAL( SUBSTR( uValue, 7, 2 ) ) )
+      ENDIF
        ::DoChange()
    ELSEIF PCOUNT() > 0
-      SetTimePick( ::hWnd, VAL(left(TIME(),2)),VAL(SUBSTR(TIME(),4,2)),VAL( SUBSTR(TIME(),7,2) ))
+      IF HB_IsNil( uValue ) .AND. IsWindowStyle( ::hWnd, DTS_SHOWNONE )
+         SetDatePickNull( ::hWnd )
+      ELSE
+         SetTimePick( ::hWnd, VAL( LEFT( TIME(), 2 ) ), VAL( SUBSTR( TIME(), 4, 2 ) ), VAL( SUBSTR( TIME(), 7, 2) ) )
+      ENDIF
        ::DoChange()
    ENDIF
-Return StrZero( GetDatePickHour( ::hWnd ), 2 ) + ":" + StrZero( GetDatePickMinute( ::hWnd ), 2 ) + ":" + StrZero( GetDatePickSecond( ::hWnd ), 2 )
+
+Return STRZERO( GetDatePickHour( ::hWnd ), 2 ) + ":" + STRZERO( GetDatePickMinute( ::hWnd ), 2 ) + ":" + STRZERO( GetDatePickSecond( ::hWnd ), 2 )
 
 *------------------------------------------------------------------------------*
 METHOD Events_Notify( wParam, lParam ) CLASS TTimePick
 *------------------------------------------------------------------------------*
 Local nNotify := GetNotifyCode( lParam )
 
-   If nNotify == DTN_DATETIMECHANGE
+   IF nNotify == DTN_DATETIMECHANGE
       ::DoChange()
-      Return nil
+      Return Nil
 
-   EndIf
+   ENDIF
 
 Return ::Super:Events_Notify( wParam, lParam )
 
@@ -315,7 +366,7 @@ HB_FUNC( SETDATEPICK )
       sysTime.wMonth = (WORD) ( ( ( cDate[ 4 ] - '0' ) * 10 ) + ( cDate[ 5 ] - '0' ) );
       sysTime.wDay   = (WORD) ( ( ( cDate[ 6 ] - '0' ) * 10 ) + ( cDate[ 7 ] - '0' ) );
 
-      SendMessage( HWNDparam( 1 ), DTM_SETSYSTEMTIME, GDT_VALID, ( LPARAM ) &sysTime );
+      SendMessage( HWNDparam( 1 ), DTM_SETSYSTEMTIME, GDT_VALID, (LPARAM) &sysTime );
    }
 }
 
@@ -323,13 +374,13 @@ HB_FUNC( GETDATEPICK )
 {
    SYSTEMTIME st;
 
-   SendMessage( HWNDparam( 1 ), DTM_GETSYSTEMTIME, 0, ( LPARAM ) &st );
+   SendMessage( HWNDparam( 1 ), DTM_GETSYSTEMTIME, 0, (LPARAM) &st );
    hb_retd( st.wYear, st.wMonth, st.wDay );
 }
 
 HB_FUNC( SETDATEPICKNULL )
 {
-   SendMessage( HWNDparam( 1 ), DTM_SETSYSTEMTIME, GDT_NONE, ( LPARAM ) 0 );
+   SendMessage( HWNDparam( 1 ), DTM_SETSYSTEMTIME, GDT_NONE, (LPARAM) 0 );
 }
 
 HB_FUNC_STATIC( TDATEPICK_SETRANGE )
@@ -366,7 +417,7 @@ HB_FUNC_STATIC( TDATEPICK_SETRANGE )
          wLimit |= GDTR_MAX;
       }
 
-      SendMessage( oSelf->hWnd, DTM_SETRANGE, wLimit, ( LPARAM ) &sysTime );
+      SendMessage( oSelf->hWnd, DTM_SETRANGE, wLimit, (LPARAM) &sysTime );
    }
 }
 
@@ -409,14 +460,14 @@ HB_FUNC( SETTIMEPICK )
    sysTime.wSecond = (WORD) hb_parni( 4 );
    sysTime.wMilliseconds = 0;
 
-   SendMessage( HWNDparam( 1 ), DTM_SETSYSTEMTIME, GDT_VALID, ( LPARAM ) &sysTime );
+   SendMessage( HWNDparam( 1 ), DTM_SETSYSTEMTIME, GDT_VALID, (LPARAM) &sysTime );
 }
 
 HB_FUNC( GETDATEPICKHOUR )
 {
    SYSTEMTIME st;
 
-   if( SendMessage( HWNDparam( 1 ), DTM_GETSYSTEMTIME, 0, ( LPARAM ) &st ) == GDT_VALID )
+   if( SendMessage( HWNDparam( 1 ), DTM_GETSYSTEMTIME, 0, (LPARAM) &st ) == GDT_VALID )
    {
       hb_retni( st.wHour );
    }
@@ -430,7 +481,7 @@ HB_FUNC( GETDATEPICKMINUTE )
 {
    SYSTEMTIME st;
 
-   if( SendMessage( HWNDparam( 1 ), DTM_GETSYSTEMTIME, 0, ( LPARAM ) &st ) == GDT_VALID )
+   if( SendMessage( HWNDparam( 1 ), DTM_GETSYSTEMTIME, 0, (LPARAM) &st ) == GDT_VALID )
    {
       hb_retni( st.wMinute );
    }
@@ -444,13 +495,26 @@ HB_FUNC( GETDATEPICKSECOND )
 {
    SYSTEMTIME st;
 
-   if( SendMessage( HWNDparam( 1 ), DTM_GETSYSTEMTIME, 0, ( LPARAM ) &st ) == GDT_VALID )
+   if( SendMessage( HWNDparam( 1 ), DTM_GETSYSTEMTIME, 0, (LPARAM) &st ) == GDT_VALID )
    {
       hb_retni( st.wSecond );
    }
    else
    {
       hb_retni( -1 );
+   }
+}
+
+HB_FUNC( SETDATEPICKERDATEFORMAT )           // ( hwnd, cFormat )
+{
+   if( HB_ISCHAR( 2 ) && hb_parclen( 2 ) > 0 )
+   {
+      hb_retl( SendMessage( HWNDparam( 1 ), DTM_SETFORMAT, 0, (LPARAM) (LPCTSTR) hb_parc( 2 ) ) );
+   }
+   else
+   {
+      // reset to default
+      hb_retl( SendMessage( HWNDparam( 1 ), DTM_SETFORMAT, 0, (LPARAM) NULL ) );
    }
 }
 

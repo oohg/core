@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.145 2017-08-25 19:26:27 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.146 2017-09-09 14:37:53 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1340,6 +1340,10 @@ MONTH CALENDAR
    => ;
       _OOHG_ActiveControlBackgroundColor := <color>
 
+#xcommand BKGNDCOLOR <color> ;
+   => ;
+      _OOHG_ActiveControlBackgroundColor := <color>
+
 #xcommand END MONTHCALENDAR ;
    => ;
       _OOHG_SelectSubClass( TMonthCal(), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
@@ -1858,7 +1862,7 @@ COMBOBOX
 
 #xcommand DEFINE COMBOBOX <name> ;
    => ;
-      _OOHG_ClearActiveControlInfo( <(name)> ) ;;
+      _OOHG_ClearActiveControlInfo( <(name)> )     ;;
       _OOHG_ActiveControlItems             := NIL  ;;
       _OOHG_ActiveControlSort              := .F.  ;;
       _OOHG_ActiveControlItemSource        := NIL  ;;
@@ -2021,14 +2025,19 @@ DATEPICKER
 
 #xcommand DEFINE DATEPICKER <name> ;
    => ;
-      _OOHG_ClearActiveControlInfo( <(name)> ) ;;
-      _OOHG_ActiveControlShowNone  := .F.      ;;
-      _OOHG_ActiveControlUpDown    := .F.      ;;
-      _OOHG_ActiveControlRight     := .F.      ;;
-      _OOHG_ActiveControlField     := NIL      ;;
-      _OOHG_ActiveControlNoBorder  := .F.      ;;
-      _OOHG_ActiveControlRangeLow  := NIL      ;;
-      _OOHG_ActiveControlRangeHigh := NIL
+      _OOHG_ClearActiveControlInfo( <(name)> )    ;;
+      _OOHG_ActiveControlShowNone          := .F. ;;
+      _OOHG_ActiveControlUpDown            := .F. ;;
+      _OOHG_ActiveControlRight             := .F. ;;
+      _OOHG_ActiveControlField             := NIL ;;
+      _OOHG_ActiveControlNoBorder          := .F. ;;
+      _OOHG_ActiveControlRangeLow          := NIL ;;
+      _OOHG_ActiveControlRangeHigh         := NIL ;;
+      _OOHG_ActiveControlFormat            := NIL
+
+#xcommand DATEFORMAT <format> ;
+   => ;
+      _OOHG_ActiveControlFormat := <format>
 
 #xcommand SHOWNONE <shownone> ;
    => ;
@@ -2075,16 +2084,20 @@ DATEPICKER
             _OOHG_ActiveControlDisabled, ;
             _OOHG_ActiveControlNoBorder, ;
             _OOHG_ActiveControlRangeLow, ;
-            _OOHG_ActiveControlRangeHigh )
+            _OOHG_ActiveControlRangeHigh, ;
+            _OOHG_ActiveControlFormat )
 
 #xcommand DEFINE TIMEPICKER <name> ;
    => ;
       _OOHG_ClearActiveControlInfo( <(name)> ) ;;
       _OOHG_ActiveControlShowNone := .F.       ;;
-      _OOHG_ActiveControlUpDown   := .F.       ;;
-      _OOHG_ActiveControlRight    := .F.       ;;
       _OOHG_ActiveControlField    := NIL       ;;
-      _OOHG_ActiveControlNoBorder := .F.
+      _OOHG_ActiveControlNoBorder := .F.       ;;
+      _OOHG_ActiveControlFormat   := NIL
+
+#xcommand TIMEFORMAT <format> ;
+   => ;
+      _OOHG_ActiveControlFormat := <format>
 
 #xcommand END TIMEPICKER ;
    => ;
@@ -2103,8 +2116,8 @@ DATEPICKER
             _OOHG_ActiveControlOnLostFocus, ;
             _OOHG_ActiveControlOnGotFocus, ;
             _OOHG_ActiveControlShowNone, ;
-            _OOHG_ActiveControlUpDown, ;
-            _OOHG_ActiveControlRight, ;
+            .T., ;
+            .F., ;
             _OOHG_ActiveControlHelpId, ;
             _OOHG_ActiveControlInvisible, ;
             _OOHG_ActiveControlNoTabStop, ;
@@ -2116,7 +2129,8 @@ DATEPICKER
             _OOHG_ActiveControlOnEnter, ;
             _OOHG_ActiveControlRtl, ;
             _OOHG_ActiveControlDisabled, ;
-            _OOHG_ActiveControlNoBorder )
+            _OOHG_ActiveControlNoBorder, ;
+            _OOHG_ActiveControlFormat )
 
 /*---------------------------------------------------------------------------
 EDIT BOX
@@ -3420,19 +3434,19 @@ PICTURE
 
 #xcommand DEFINE PICTURE <name> ;
    => ;
-      _OOHG_ClearActiveControlInfo( <(name)> ) ;;
-      _OOHG_ActiveControlPicture           := NIL   ;;
-      _OOHG_ActiveControlImagesize         := .F.   ;;
-      _OOHG_ActiveControlBuffer            := NIL   ;;
-      _OOHG_ActiveControlHBitmap           := NIL   ;;
-      _OOHG_ActiveControlAction            := NIL   ;;
-      _OOHG_ActiveControlClientEdge        := .F.   ;;
-      _OOHG_ActiveControlImagesize         := .F.   ;;
-      _OOHG_ActiveControlBorder            := .F.   ;;
-      _OOHG_ActiveControlScale             := .F.   ;;
-      _OOHG_ActiveControlStretch           := .F.   ;;
-      _OOHG_ActiveControlNoDIBSection      := .F.   ;;
-      _OOHG_ActiveControlNo3DColors        := .F.   ;;
+      _OOHG_ClearActiveControlInfo( <(name)> )    ;;
+      _OOHG_ActiveControlPicture           := NIL ;;
+      _OOHG_ActiveControlImagesize         := .F. ;;
+      _OOHG_ActiveControlBuffer            := NIL ;;
+      _OOHG_ActiveControlHBitmap           := NIL ;;
+      _OOHG_ActiveControlAction            := NIL ;;
+      _OOHG_ActiveControlClientEdge        := .F. ;;
+      _OOHG_ActiveControlImagesize         := .F. ;;
+      _OOHG_ActiveControlBorder            := .F. ;;
+      _OOHG_ActiveControlScale             := .F. ;;
+      _OOHG_ActiveControlStretch           := .F. ;;
+      _OOHG_ActiveControlNoDIBSection      := .F. ;;
+      _OOHG_ActiveControlNo3DColors        := .F. ;;
       _OOHG_ActiveControlNoLoadTransparent := .F. ;;
       _OOHG_ActiveControlTransparent       := .F. ;;
       _OOHG_ActiveControlExcludeArea       := NIL

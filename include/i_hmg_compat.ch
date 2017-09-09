@@ -1,5 +1,5 @@
 /*
- * $Id: i_hmg_compat.ch,v 1.58 2017-08-25 19:26:27 fyurisich Exp $
+ * $Id: i_hmg_compat.ch,v 1.59 2017-09-09 14:37:53 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -587,7 +587,24 @@ TODO: Try to implement this GRID clauses using COLUMNCONTROLS:
 #xtranslate DEFINE TAB [ <x> ] BOTTOM ;
    => DEFINE TAB [ <x> ]
 
-#xtranslate @ <row>, <col> RADIOGROUP [ <x> ] ID <aId> ;
-   => @ <row>, <col> RADIOGROUP [ <x> ]
+#command @ <row>, <col> DATEPICKER [ <x> ] BACKCOLOR <backcolor> ;
+   => ;
+      @ <row>, <col> DATEPICKER [ <x> ]
+
+#command @ <row>, <col> DATEPICKER [ <x> ] FONTCOLOR <fontcolor> ;
+   => ;
+      @ <row>, <col> DATEPICKER [ <x> ]
+
+#command @ <row>, <col> DATEPICKER [ <x> ] TITLEBACKCOLOR <titlebackclr> ;
+   => ;
+      @ <row>, <col> DATEPICKER [ <x> ]
+
+#command @ <row>, <col> DATEPICKER [ <x> ] TITLEFONTCOLOR <titlefontclr> ;
+   => ;
+      @ <row>, <col> DATEPICKER [ <x> ]
+
+#command @ <row>, <col> DATEPICKER [ <x> ] TRAILINGFONTCOLOR <trlfontclr> ;
+   => ;
+      @ <row>, <col> DATEPICKER [ <x> ]
 
 #endif
