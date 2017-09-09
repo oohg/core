@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.308 2017-08-25 19:42:18 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.309 2017-09-09 16:58:22 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -227,6 +227,7 @@ CLASS TGrid FROM TControl
    METHOD ItemHeight
    METHOD Justify
    METHOD LastColInOrder
+   METHOD LastVisibleColumn
    METHOD Left
    METHOD LoadHeaderImages
    METHOD NextColInOrder
@@ -597,7 +598,7 @@ Local aColumnOrder, nLen, i, r, nRet := 0, lEmpty := .F., nClientWidth, nScrollW
       r := { 0, 0, 0, 0 }                                        // left, top, right, bottom
       GetClientRect( ::hWnd, r )
       nClientWidth := r[ 3 ] - r[ 1 ]
-      If ::lScrollBarUsesClientArea .AND. ::ItemCount >  ::CountPerPage
+      If ::lScrollBarUsesClientArea .AND. ::ItemCount > ::CountPerPage
          nScrollWidth := GetVScrollBarWidth()
       Else
          nScrollWidth := 0
@@ -626,6 +627,58 @@ Local aColumnOrder, nLen, i, r, nRet := 0, lEmpty := .F., nClientWidth, nScrollW
          EndIf
       EndIf
       i ++
+   EndDo
+
+   If lEmpty
+      ListViewDeleteString( ::hWnd, 1 )
+   EndIf
+
+Return nRet
+
+*------------------------------------------------------------------------------*
+METHOD LastVisibleColumn( lEnd ) CLASS TGrid
+*------------------------------------------------------------------------------*
+Local aColumnOrder, nLen, i, r, nRet := 0, lEmpty := .F., nClientWidth, nScrollWidth
+
+   ASSIGN lEnd VALUE lEnd TYPE "L" DEFAULT .F.
+
+   If ::ItemCount < 1
+      lEmpty := .T.
+      InsertListViewItem( ::hWnd, Array( Len( ::aHeaders ) ), 1 )
+   EndIf
+
+   // To check we need the width of the grid's client area minus the width of the scrollbar if one is present.
+   r := { 0, 0, 0, 0 }                                        // left, top, right, bottom
+   GetClientRect( ::hWnd, r )
+   nClientWidth := r[ 3 ] - r[ 1 ]
+   If ::lScrollBarUsesClientArea .AND. ::ItemCount >  ::CountPerPage
+      nScrollWidth := GetVScrollBarWidth()
+   Else
+      nScrollWidth := 0
+   EndIf
+
+   aColumnOrder := ::ColumnOrder
+   nLen := Len( aColumnOrder )
+   i := nLen
+   Do While i >= 1
+      If AScan( ::aHiddenCols, aColumnOrder[ i ] ) == 0
+         // get the column's rect
+         r := ListView_GetSubitemRect( ::hWnd, 0, aColumnOrder[ i ] - 1 )     // top, left, width, height
+         If lEnd
+            // check if the right side is inside the client area
+            If r[ 2 ] + r[ 3 ] >= 0 .AND. r[ 2 ] + r[ 3 ] <= nClientWidth - nScrollWidth
+              nRet := aColumnOrder[ i ]
+              Exit
+            EndIf
+         Else
+            // We are looking for the rightmost column
+            If r[ 2 ] <= nClientWidth - nScrollWidth
+               nRet := aColumnOrder[ i ]
+               Exit
+            EndIf
+         EndIf
+      EndIf
+      i --
    EndDo
 
    If lEmpty

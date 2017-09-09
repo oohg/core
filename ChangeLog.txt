@@ -1,11 +1,18 @@
 /*
- * $Id: ChangeLog.txt,v 1.13 2017-09-09 15:34:10 fyurisich Exp $
+ * $Id: ChangeLog.txt,v 1.14 2017-09-09 16:58:22 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2017-09-09 13:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     + METHOD LastVisibleColumn( lEnd ): when lEnd is .F.
+       (default value) returns the number of the column shown at
+       grid's right side; when lEnd is .T. returns the number of the
+       rightmost column with it's right border visible.
 
 2017-09-09 12:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_windows.prg
