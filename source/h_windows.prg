@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.268 2017-08-25 19:42:22 fyurisich Exp $
+ * $Id: h_windows.prg,v 1.269 2017-09-09 15:34:10 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2842,8 +2842,8 @@ Local uRet
    EndIf
 Return uRet
 
-PROCEDURE _OOHG_CallDump( uTitle )
-LOCAL nLevel, cText
+PROCEDURE _OOHG_CallDump( uTitle, cOutput )
+LOCAL nLevel, cText, oLog
    cText := ""
    nLevel := 1
    DO WHILE ! Empty( PROCNAME( nLevel ) )
@@ -2853,7 +2853,22 @@ LOCAL nLevel, cText
       cText += PROCNAME( nLevel ) + "(" + LTRIM( STR( PROCLINE( nLevel ) ) ) + ")"
       nLevel++
    ENDDO
-   MSGINFO( cText, autotype( uTitle ) )
+
+   ASSIGN cOutput VALUE cOutput TYPE "C" DEFAULT "S"
+   cOutPut := Left( cOutPut, 1 )
+   IF cOutput $ "FB"        // To File or Both
+      oLog := OOHG_TErrorTxt():New()
+      oLog:FileName := "DumpLog.txt"
+      oLog:Write( AutoType( uTitle ) )
+      oLog:Write( "" )
+      oLog:Write( cText )
+      oLog:Write( "" )
+      oLog:Write( Replicate( "-", 40 ) )
+      oLog:CreateLog()
+   ENDIF
+   IF cOutput $ "BS"        // To File or Screen
+      MSGINFO( cText, AutoType( uTitle ) )
+   ENDIF
 Return
 
 // PATCH :(
