@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.183 2017-08-25 19:42:18 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.184 2017-09-13 21:02:24 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -287,9 +287,10 @@ Local nWidth2, nCol2, oScroll, z
       Next
    EndIf
 
-   If ! ValType( cWorkArea ) $ "CM" .OR. Empty( cWorkArea )
+   If ! ValType( cWorkArea ) $ "CMO" .OR. Empty( cWorkArea )
       cWorkArea := Alias()
    EndIf
+   cWorkArea := ::WorkArea( cWorkArea )
 
    If ValType( ::aFields ) != "A"
       ::aFields := ( cWorkArea )->( DbStruct() )
@@ -329,8 +330,6 @@ Local nWidth2, nCol2, oScroll, z
    ASSIGN ::Lock          VALUE lLock          TYPE "L"
    ASSIGN ::aReplaceField VALUE aReplaceFields TYPE "A"
    ASSIGN ::lRecCount     VALUE lRecCount      TYPE "L"
-
-   ::WorkArea := cWorkArea
 
    ::FixBlocks( lFixedBlocks )
 
