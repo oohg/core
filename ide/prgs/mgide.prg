@@ -1,5 +1,5 @@
 /*
- * $Id: mgide.prg,v 1.36 2017-08-25 18:20:41 fyurisich Exp $
+ * $Id: mgide.prg,v 1.37 2017-09-13 22:25:17 fyurisich Exp $
  */
 /*
  * ooHG IDE+ form generator
@@ -4348,7 +4348,7 @@ LOCAL curfol, curdrv, cFile, nPos, i, j
 RETURN NIL
 
 //------------------------------------------------------------------------------
-METHOD myInputWindow( cTitle, aLabels, aValues, aFormats, bFunc1, bFunc2 ) CLASS THMI
+METHOD myInputWindow( cTitle, aLabels, aValues, aFormats, aStat1, aStat2 ) CLASS THMI
 //------------------------------------------------------------------------------
 LOCAL l, aResult, wyw, i, wHeight, _iw, ControlRow, cLblName, cCtrlName, oWin, lChange := .F.
 
@@ -4407,13 +4407,13 @@ LOCAL l, aResult, wyw, i, wHeight, _iw, ControlRow, cLblName, cCtrlName, oWin, l
 
       DEFINE STATUSBAR
          STATUSITEM " "
-         IF HB_IsBlock( bFunc1 )
-         STATUSITEM "Set Font/Colors ." WIDTH 115 ACTION Eval( bFunc1 ) TOOLTIP "Change font and colors."
+         IF HB_IsArray( aStat1 )
+         STATUSITEM aStat1[1]           WIDTH 115 ACTION Eval( aStat1[2] )                             TOOLTIP aStat1[3]
          ENDIF
-         IF HB_IsBlock( bFunc2 )
-         STATUSITEM "Use Defaults    ." WIDTH 115 ACTION Eval( bFunc2 ) TOOLTIP "Use default font and default colors."
+         IF HB_IsArray( aStat2 )
+         STATUSITEM aStat2[1]           WIDTH 115 ACTION Eval( aStat2[2] )                             TOOLTIP aStat2[3]
          ENDIF
-         STATUSITEM "Ok              ." WIDTH 115 ACTION _myInputWindowOk( _iw, aResult, oWin ) TOOLTIP "Save changes."
+         STATUSITEM "Ok              ." WIDTH 115 ACTION _myInputWindowOk( _iw, aResult, oWin )        TOOLTIP "Save changes."
          STATUSITEM "Cancel          ." WIDTH 115 ACTION _myInputWindowCancel( _iw, aResult, lChange ) TOOLTIP "Discard changes."
       END STATUSBAR
 
