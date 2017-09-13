@@ -1,5 +1,5 @@
 /*
- * $Id: i_hmg_compat.ch,v 1.59 2017-09-09 14:37:53 fyurisich Exp $
+ * $Id: i_hmg_compat.ch,v 1.60 2017-09-13 22:29:09 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -606,5 +606,13 @@ TODO: Try to implement this GRID clauses using COLUMNCONTROLS:
 #command @ <row>, <col> DATEPICKER [ <x> ] TRAILINGFONTCOLOR <trlfontclr> ;
    => ;
       @ <row>, <col> DATEPICKER [ <x> ]
+
+#xcommand STATUSDATE [ <X> ] ;
+   => ;
+      DATE [ <X> ]
+
+#xtranslate _GetSysFont() ;
+   => ;
+      GetDefaultFontName()
 
 #endif
