@@ -1,16 +1,19 @@
 /*
- * $Id: Maintenance.txt,v 1.2 2017-08-26 03:03:15 fyurisich Exp $
+ * $Id: Maintenance.txt,v 1.3 2017-09-13 22:21:07 fyurisich Exp $
  */
 
 This document states the tasks to fulfill whenever:
 
 1. A property or event is added to a control in it's i_xxxxxxxx.ch:
    * Add support for it to the IDE.
-   * Add it to the corresponding HTML file at folder "manual".
+   * Update the corresponding HTML file at folder "manual".
+   * Add support for alternative syntax to i_altsyntax.ch, if necessary.
 
 2. A property or event is deleted from a control's i_xxxxxxxx.ch:
    * Delete the support for it from the IDE.
-   * Delete it from the corresponding HTML file at folder "manual".
+   * Update the corresponding HTML file at folder "manual".
+   * Remove support for alternative syntax from i_altsyntax.ch, if it's
+     no longer necessary.
 
 3. A METHOD or DATA is added to or deleted from a class.
    * Update doc/classes.txt and manual/CLASSES.HTM

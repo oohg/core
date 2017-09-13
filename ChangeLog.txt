@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog.txt,v 1.15 2017-09-13 21:02:24 fyurisich Exp $
+ * $Id: ChangeLog.txt,v 1.16 2017-09-13 22:21:07 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2017-09-13 19:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * doc/classes.txt
+   * doc/Maintenance.txt
+     * Updated.
 
 2017-09-13 18:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_browse.prg
@@ -23,7 +28,7 @@
    * source/h_windows.prg
      + Support for writing _OOHG_CALLDUMP() output to a text file
        named DumpLog.txt at the current folder.
-       Usage: _OOHG_CALDUMP( uTitle, cOutput ) where
+       Usage: _OOHG_CALLDUMP( uTitle, cOutput ) where
        - uTitle: data (any type) to output. Defaults to NIL.
        - cOutput: S to get screen output only, F to get file output
          only, or B to get screen and file output simultaneously.

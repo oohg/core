@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.109 2017-08-24 01:29:08 fyurisich Exp $
+ * $Id: classes.txt,v 1.110 2017-09-13 22:21:07 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -618,10 +618,12 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS TDATEPICK FROM TCONTROL
+   DATA CDATEFORMAT               INIT ""
    DATA NHEIGHT                   INIT 24
    DATA NWIDTH                    INIT 120
-   DATA TYPE                      INIT "DATEPICK"            READONLY
+   DATA TYPE                      INIT "DATEPICK" READONLY
 
+   METHOD DATEFORMAT              SETGET
    METHOD DEFINE
    METHOD EVENTS_NOTIFY
    METHOD SETRANGE
@@ -1089,6 +1091,7 @@ CLASS TGRID FROM TCONTROL
    METHOD ITEMHEIGHT
    METHOD JUSTIFY
    METHOD LASTCOLINORDER
+   METHOD LASTVISIBLECOLUMN
    METHOD LEFT
    METHOD LOADHEADERIMAGES
    METHOD NEXTCOLINORDER
@@ -1762,6 +1765,7 @@ CLASS TMULTIPAGE FROM TCONTROLGROUP
    METHOD REFRESH
    METHOD REFRESHDATA
    METHOD RELEASE
+   METHOD SAVEDATA
    METHOD SETFOCUS
    METHOD SHOWPAGE
    METHOD SIZEPOS
@@ -2491,10 +2495,6 @@ CLASS TTABDIRECT FROM TTABRAW
    DATA LINTERNALS                INIT .F.
    DATA NFIRSTVALUE               INIT NIL
 
-     + DATA bBeforeChange to TTabRaw class. This block is evaluated before
-       changing the selected tab. It it returns .F. the change is prevented.
-     + Method Events to TTabRaw class.
-
    METHOD ADDCONTROL
    METHOD ADDPAGE
    METHOD ADJUSTRESIZE
@@ -2513,6 +2513,7 @@ CLASS TTABDIRECT FROM TTABRAW
    METHOD REFRESH
    METHOD REFRESHDATA
    METHOD RELEASE
+   METHOD SAVEDATA
    METHOD SHOWPAGE
    METHOD SIZEPOS
    METHOD VALUE                   SETGET
@@ -2539,7 +2540,8 @@ CLASS TTABPAGE FROM TCONTROLGROUP
    METHOD CONTAINERVISIBLE
    METHOD ENDPAGE             
    METHOD EVENTS_SIZE
-   METHOD SETFOCUS            
+   METHOD SAVEDATA
+   METHOD SETFOCUS
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -2707,12 +2709,14 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS TTIMEPICK FROM TCONTROL
+   DATA CTIMEFORMAT               INIT ""
    DATA NHEIGHT                   INIT 24
    DATA NWIDTH                    INIT 120
    DATA TYPE                      INIT "TIMEPICK" READONLY
 
    METHOD DEFINE
    METHOD EVENTS_NOTIFY
+   METHOD TIMEFORMAT              SETGET
    METHOD VALUE                   SETGET
 ENDCLASS
 
