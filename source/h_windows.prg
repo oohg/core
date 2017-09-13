@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.269 2017-09-09 15:34:10 fyurisich Exp $
+ * $Id: h_windows.prg,v 1.270 2017-09-13 22:33:17 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -661,7 +661,7 @@ HB_FUNC( _GETDDLMESSAGE )
    _OOHG_ListBoxDragNotification = (UINT) RegisterWindowMessage( DRAGLISTMSGSTRING );
 }
 
-HB_FUNC_STATIC( TWINDOW_EVENTS )
+HB_FUNC_STATIC( TWINDOW_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TWindow
 {
    HWND hWnd      = HWNDparam( 1 );
    UINT message   = ( UINT )   hb_parni( 2 );

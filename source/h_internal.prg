@@ -1,5 +1,5 @@
 /*
- * $Id: h_internal.prg,v 1.15 2017-08-25 19:42:21 fyurisich Exp $
+ * $Id: h_internal.prg,v 1.16 2017-09-13 22:33:17 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -321,7 +321,7 @@ HB_FUNC( INITINTERNAL )
    HWNDret( hbutton );
 }
 
-HB_FUNC_STATIC( TINTERNAL_EVENTS )
+HB_FUNC_STATIC( TINTERNAL_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TInternal
 {
    HWND hWnd      = ( HWND )   hb_parnl( 1 );
    UINT message   = ( UINT )   hb_parni( 2 );

@@ -1,5 +1,5 @@
 /*
- * $Id: h_textarray.prg,v 1.29 2017-08-25 19:42:22 fyurisich Exp $
+ * $Id: h_textarray.prg,v 1.30 2017-09-13 22:33:17 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -525,7 +525,7 @@ static void DrawCursor( POCTRL oSelf, BOOL bStatus )
 
 static BOOL bRegistered = 0;
 
-HB_FUNC_STATIC( TTEXTARRAY_EVENTS )
+HB_FUNC_STATIC( TTEXTARRAY_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TTextArray
 {
    HWND hWnd      = ( HWND )   hb_parnl( 1 );
    UINT message   = ( UINT )   hb_parni( 2 );

@@ -1,5 +1,5 @@
 /*
- * $Id: h_notify.prg,v 1.3 2017-08-25 19:42:22 fyurisich Exp $
+ * $Id: h_notify.prg,v 1.4 2017-09-13 22:33:17 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -278,7 +278,7 @@ HB_FUNC( LOADTRAYICON )
    HWNDret( ( HWND ) hImage );
 }
 
-HB_FUNC( CHANGENOTIFYICON )
+HB_FUNC( CHANGENOTIFYICON )     // ( hWnd, hIcon, cTooltip )
 {
    NOTIFYICONDATA nid;
    ZeroMemory( &nid, sizeof( nid ) );
@@ -293,7 +293,7 @@ HB_FUNC( CHANGENOTIFYICON )
    Shell_NotifyIcon( NIM_MODIFY, &nid );
 }
 
-HB_FUNC( SHOWNOTIFYICON )
+HB_FUNC( SHOWNOTIFYICON )     // ( hWnd, lAdd, hIcon, cTooltip )
 {
    NOTIFYICONDATA nid;
    ZeroMemory( &nid, sizeof( nid ) );

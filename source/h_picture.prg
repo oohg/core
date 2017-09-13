@@ -1,5 +1,5 @@
 /*
- * $Id: h_picture.prg,v 1.33 2017-08-25 19:42:22 fyurisich Exp $
+ * $Id: h_picture.prg,v 1.34 2017-09-13 22:33:17 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -621,7 +621,7 @@ void _OOHG_PictureControl_RePaint( PHB_ITEM pSelf, RECT *rect, HDC hdc )
 
 BOOL PtInExcludeArea( PHB_ITEM pArea, int x, int y );
 
-HB_FUNC_STATIC( TPICTURE_EVENTS )
+HB_FUNC_STATIC( TPICTURE_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TPicture
 {
    HWND hWnd      = ( HWND )   hb_parnl( 1 );
    UINT message   = ( UINT )   hb_parni( 2 );

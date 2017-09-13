@@ -1,5 +1,5 @@
 /*
- * $Id: h_image.prg,v 1.48 2017-09-02 22:14:01 fyurisich Exp $
+ * $Id: h_image.prg,v 1.49 2017-09-13 22:33:17 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -377,7 +377,7 @@ BOOL PtInExcludeArea( PHB_ITEM pArea, int x, int y )
    return FALSE;
 }
 
-HB_FUNC_STATIC( TIMAGE_EVENTS )
+HB_FUNC_STATIC( TIMAGE_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TImage
 {
    HWND hWnd      = ( HWND )   hb_parnl( 1 );
    UINT message   = ( UINT )   hb_parni( 2 );

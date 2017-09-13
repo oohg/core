@@ -1,5 +1,5 @@
 /*
- * $Id: h_progressmeter.prg,v 1.25 2017-08-25 19:42:22 fyurisich Exp $
+ * $Id: h_progressmeter.prg,v 1.26 2017-09-13 22:33:17 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -256,7 +256,7 @@ void ProgressMeter_Paint( POCTRL oSelf, HDC hdc )
    }
 }
 
-HB_FUNC_STATIC( TPROGRESSMETER_EVENTS )
+HB_FUNC_STATIC( TPROGRESSMETER_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TProgressMeter
 {
    HWND hWnd      = HWNDparam( 1 );
    UINT message   = ( UINT )   hb_parni( 2 );
