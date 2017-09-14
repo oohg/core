@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.91 2017-08-25 19:42:18 fyurisich Exp $
+ * $Id: h_combo.prg,v 1.92 2017-09-14 20:48:11 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -93,7 +93,7 @@ CLASS TCombo FROM TLabel
    DATA oEditBox              INIT NIL
    DATA lRefresh              INIT NIL
    DATA SourceOrder           INIT NIL
-   DATA onRefresh             INIT NIL
+   DATA OnRefresh             INIT NIL
    DATA lFocused              INIT .F.
 
    METHOD Define
@@ -631,6 +631,7 @@ Local nArea, BackRec, nMax, i, nStart, bField, bValueSource, lNoEval, BackOrd :=
             Return 0
          EndIf
       Else
+         ::cText := ""
          If OSisWinXPorLater() .AND. ::lDelayLoad
             If ( nArea := Select( ::WorkArea ) ) != 0
                // load all remaining items so OS can search
@@ -667,6 +668,7 @@ Local nArea, BackRec, nMax, i, nStart, bField, bValueSource, lNoEval, BackOrd :=
       EndIf
 
    ElseIf nMsg == WM_MOUSEWHEEL
+      ::cText := ""
       If OSisWinXPorLater() .AND. ::lDelayLoad
          If ( nArea := Select( ::WorkArea ) ) != 0
             If GET_WHEEL_DELTA_WPARAM( wParam ) < 0                // DOWN
@@ -709,6 +711,8 @@ Local nArea, BackRec, nMax, i, nStart, bField, bValueSource, lNoEval, BackOrd :=
          If ( nArea := Select( ::WorkArea ) ) != 0
             Do Case
             Case wParam == VK_END
+               ::cText := ""
+
                // load all remaining items
                bField := ::Field
                bValueSource := ::ValueSource
@@ -740,6 +744,8 @@ Local nArea, BackRec, nMax, i, nStart, bField, bValueSource, lNoEval, BackOrd :=
                ( nArea )->( DBGoTo( BackRec ) )
 
             Case wParam == VK_NEXT
+               ::cText := ""
+
                // load one more page of items
                nMax := ::VisibleItems
                bField := ::Field
@@ -774,6 +780,8 @@ Local nArea, BackRec, nMax, i, nStart, bField, bValueSource, lNoEval, BackOrd :=
                ( nArea )->( DBGoTo( BackRec ) )
 
             Case wParam == VK_DOWN
+               ::cText := ""
+
                // load one more item
                bField := ::Field
                bValueSource := ::ValueSource
@@ -803,6 +811,9 @@ Local nArea, BackRec, nMax, i, nStart, bField, bValueSource, lNoEval, BackOrd :=
                EndIf
                ( nArea )->( DBGoTo( BackRec ) )
 
+            Case wParam == VK_UP .OR. wParam == VK_HOME .OR. wParam == VK_PRIOR
+               ::cText := ""
+
             EndCase
          EndIf
       Endif
@@ -811,7 +822,6 @@ Local nArea, BackRec, nMax, i, nStart, bField, bValueSource, lNoEval, BackOrd :=
       If ! ::lFocused
          ::SetFocus()
       EndIf
-      ::DoEventMouseCoords( ::OnClick, "CLICK" )
 
    EndIf
 
@@ -831,22 +841,29 @@ Local Hi_wParam := HIWORD( wParam ), nArea, BackRec, i, nMax, bField, bValueSour
       Return NIL
 
    ElseIf Hi_wParam == CBN_DROPDOWN
+      ::cText := ""
       ::DoEvent( ::OnListDisplay, "LISTDISPLAY" )
       Return NIL
 
    ElseIf Hi_wParam == CBN_CLOSEUP
+      ::cText := ""
       ::DoEvent( ::OnListClose, "LISTCLOSE" )
       Return NIL
 
    ElseIf Hi_wParam == CBN_KILLFOCUS
+      ::cText := ""
       ::lFocused := .F.
       Return ::DoLostFocus()
 
-   ElseIf Hi_wParam == CBN_SETFOCUS
-      ::lFocused := .T.
-      GetFormObjectByHandle( ::ContainerhWnd ):LastFocusedControl := ::hWnd
-      ::FocusEffect()
-      ::DoEvent( ::OnGotFocus, "GOTFOCUS" )
+   ElseIf Hi_wParam == CBN_SETFOCUS .OR. ;
+          Hi_wParam == BN_SETFOCUS
+      If ! ::lFocused
+         ::cText := ""
+         ::lFocused := .T.
+         GetFormObjectByHandle( ::ContainerhWnd ):LastFocusedControl := ::hWnd
+         ::FocusEffect()
+         ::DoEvent( ::OnGotFocus, "GOTFOCUS" )
+      EndIf
       Return NIL
 
    ElseIf Hi_wParam == EN_CHANGE
@@ -922,6 +939,7 @@ Local Hi_wParam := HIWORD( wParam ), nArea, BackRec, i, nMax, bField, bValueSour
             EndIf
          EndIf
       EndIf
+      ::DoEvent( ::OnClick, "DISPLAYCHANGE" )
       Return NIL
 
    ElseIf Hi_wParam == EN_KILLFOCUS .OR. ;
