@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.309 2017-09-09 16:58:22 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.310 2017-09-14 21:56:34 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -3496,15 +3496,82 @@ Local aTemp, nLen
 Return aGrid
 
 *------------------------------------------------------------------------------*
-METHOD Justify( nColumn, uValue ) CLASS TGrid
+METHOD Justify( uPar1, uPar2, uPar3 ) CLASS TGrid
 *------------------------------------------------------------------------------*
+LOCAL uRet, aNew, i, nLen
 
-   If HB_IsNumeric( uValue )
-      ::aJust[ nColumn ] := uValue
-      SetGridColumnJustify( ::hWnd, nColumn, uValue )
+/*
+ * Expected params:
+ *   For multiple columns change:
+ *      uPar1 -> array of BROWSE_JTFY_LEFT, BROWSE_JTFY_RIGHT or BROWSE_JTFY_CENTER.
+ *               Note that invalid items are not changed.
+ *      uPar2 -> .T. to force the control's redraw, defaults to .F.
+ *      uPar3 -> not needed, it's ignored.
+ *   For single column change:
+ *      uPar1 -> numeric >= 1 and <= Len( ::aHeaders ).
+ *      uPar2 -> BROWSE_JTFY_LEFT, BROWSE_JTFY_RIGHT OR BROWSE_JTFY_CENTER.
+ *      uPar3 -> .T. to force the control's redraw, defaults to .F.
+ *   For single column retrieve:
+ *      uPar1 -> numeric >= 1 and <= Len( ::aHeaders ).
+ *      uPar2 -> ommited.
+ *      uPar3 -> not needed, it's ignored.
+ *   For multiple columns retrieve:
+ *      None.
+ *
+ * Return value:
+ *   For multiple columns change:
+ *      A copy of the resulting ::aJust property or a copy of the
+ *      current ::aJust property if no change was made.
+ *   For single column change:
+ *      uPar2 if it was accepted by the control or column's current
+ *      justification if it wasn't.
+ *   For single column retrieve:
+ *      uPar1's current justification.
+ *   For multiple columns retrieve:
+ *      A copy of the current ::aJust property.
+ *   When uPar1 is not array nor a numeric:
+ *      A copy of the current ::aJust property.
+ *   When uPar1 is not a valid number:
+ *      Nil.
+ *   When uPar1 is a valid number and uPar2 is not a valid value:
+ *      uPar1's current justification.
+ */
+
+   If HB_IsArray( uPar1 )
+      aNew := aClone( uPar1 )
+      nLen := Len( ::aHeaders )
+      ASize( aNew, nLen )
+
+      For i := 1 to nLen
+         If HB_IsNumeric( aNew[i] )
+            uRet := SetGridColumnJustify( ::hWnd, i, aNew[i] )
+            If uRet != ::aJust[ i ]
+               ::aJust[ i ] := uRet
+            EndIf
+         EndIf
+      Next i
+
+      uRet := aClone( ::aJust )
+      If HB_IsLogical( uPar2 ) .AND. uPar2
+         RedrawWindow( ::hWnd )
+      EndIf
+   ElseIf ! HB_IsNumeric( uPar1 )
+      uRet := aClone( ::aJust )
+   ElseIf uPar1 < 1 .OR. uPar1 > Len( ::aHeaders )
+      uRet := Nil
+   ElseIf ! HB_IsNumeric( uPar2 )
+      uRet := ::aJust[ uPar1 ]
+   Else
+      uRet := SetGridColumnJustify( ::hWnd, uPar1, uPar2 )
+      If uRet != ::aJust[ uPar1 ]
+         ::aJust[ uPar1 ] := uRet
+         If HB_IsLogical( uPar3 ) .AND. uPar3
+            RedrawWindow( ::hWnd )
+         EndIf
+      EndIf
    EndIf
 
-Return ::aJust[ nColumn ]
+Return uRet
 
 *------------------------------------------------------------------------------*
 METHOD Header( nColumn, uValue ) CLASS TGrid
@@ -7344,16 +7411,32 @@ static void _OOHG_ListView_FillItem( HWND hWnd, int nItem, PHB_ITEM pItems )
 HB_FUNC( SETGRIDCOLUMNJUSTIFY )
 {
    LV_COLUMN COL;
+   int iOld, iNew;
 
    COL.mask = LVCF_FMT;
-
    ListView_GetColumn( HWNDparam( 1 ), hb_parni( 2 ) - 1, &COL );
+   iOld = ( COL.fmt & LVCFMT_JUSTIFYMASK );
 
-   COL.fmt &= ~ ( COL.fmt & LVCFMT_JUSTIFYMASK );
+   iNew = ( hb_parni( 3 ) & LVCFMT_JUSTIFYMASK );
 
-   COL.fmt |= hb_parni( 3 );
+   if( ( iNew == iOld ) || ( iNew == LVCFMT_JUSTIFYMASK ) )
+   {
+      hb_retni( iOld );
+   }
+   else
+   {
+      COL.fmt &= ~ ( COL.fmt & LVCFMT_JUSTIFYMASK );
+      COL.fmt |= iNew;
 
-   ListView_SetColumn( HWNDparam( 1 ), hb_parni( 2 ) - 1, &COL );
+      if( ListView_SetColumn( HWNDparam( 1 ), hb_parni( 2 ) - 1, &COL ) )
+      {
+         hb_retni( iNew );
+      }
+      else
+      {
+         hb_retni( iOld );
+      }
+   }
 }
 
 HB_FUNC( SETGRIDCOLUMNHEADER )
