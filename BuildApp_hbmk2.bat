@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: BuildApp_hbmk2.bat,v 1.1 2015-03-12 22:21:58 fyurisich Exp $
+rem $Id: BuildApp_hbmk2.bat,v 1.2 2017-10-01 14:33:00 fyurisich Exp $
 rem
 
 REM *** Check for .prg ***
@@ -89,8 +89,8 @@ copy /b %HG_ROOT%\resources\oohg.rc+%TFILE%.rc _temp.rc > nul
 windres -i _temp.rc -o _temp.o
 
 rem *** Compile and Link ***
-if "%NO_LOG%"=="YES" hbmk2 %TFILE% %EXTRA% %HG_ROOT%\oohg.hbc %RUNEXE%
-if not "%NO_LOG%"=="YES" hbmk2 %TFILE% %EXTRA% %HG_ROOT%\oohg.hbc >> output.log 2>&1 %RUNEXE% -prgflag=-q
+if "%NO_LOG%"=="YES" hbmk2 %EXTRA% %TFILE% %HG_ROOT%\oohg.hbc %RUNEXE%
+if not "%NO_LOG%"=="YES" hbmk2 %EXTRA% %TFILE% %HG_ROOT%\oohg.hbc >> output.log 2>&1 %RUNEXE% -prgflag=-q
 if exist output.log type output.log
 
 rem *** Cleanup ***

@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.66 2017-08-25 19:42:23 fyurisich Exp $
+ * $Id: winprint.prg,v 1.67 2017-10-01 14:33:01 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -68,22 +68,20 @@
  */
 
 
-// Define NO_GUI macro for non-ooHG compilation.
-// It allows to compile HBPRINTER library for console mode.
-// Fully functional but no preview.
+#include "hbclass.ch"
+
+/*
+ * Define NO_GUI macro for non-ooHG compilation.
+ * It allows to compile HBPRINTER library for console mode.
+ * Fully functional but no preview.
+ */
 #ifndef NO_GUI
    #include "oohg.ch"
 #endif
 
-#include "HBClass.ch"
+#define NO_HBPRN_DECLARATION
 #include "winprint.ch"
 
-
-/* Background Modes */
-
-#define BKMODE_TRANSPARENT  1
-#define BKMODE_OPAQUE       2
-#define BKMODE_LAST         2
 
 CLASS HBPrinter
 
@@ -232,7 +230,7 @@ CLASS HBPrinter
 
    IF TIME() == "Z"
       EMPTY( _OOHG_AllVars )
-      EMPTY( HBPRN )
+//      EMPTY( HBPRN )
    ENDIF
 ENDCLASS
 

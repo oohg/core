@@ -1,11 +1,27 @@
 /*
- * $Id: ChangeLog.txt,v 1.22 2017-09-28 21:33:03 fyurisich Exp $
+ * $Id: ChangeLog.txt,v 1.23 2017-10-01 14:33:00 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2017-10-01 11:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./BuildApp_hbmk2.bat
+     ! Order of parameters in hbmk2 call.
+   * source/h_tab.prg
+   * source/h_windows.prg
+     * Format.
+   * source/h_edit_ex.prg
+     - Unused public variable nImpLen.
+     * Var hbprn is now local.
+   * source/winprint.prg
+     - Defines for background modes.
+     * Some comments.
+     - EMPTY( hbprn ).
+   * include/winprint.ch
+     + Defines for background modes.
 
 2017-09-28 18:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_report.ch

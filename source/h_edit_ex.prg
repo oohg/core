@@ -1,5 +1,5 @@
 /*
- * $Id: h_edit_ex.prg,v 1.19 2017-08-25 19:42:18 fyurisich Exp $
+ * $Id: h_edit_ex.prg,v 1.20 2017-10-01 14:33:00 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -203,6 +203,7 @@
 // Ficheros de definiciones.---------------------------------------------------
 #include "oohg.ch"
 #include "dbstruct.ch"
+#define NO_HBPRN_DECLARATION
 #include "winprint.ch"
 
 // Declaración de definiciones.------------------------------------------------
@@ -323,7 +324,6 @@ function ABM2( cArea, cTitulo, aNombreCampo, ;
         local   _BakExtendedNavigation          // Estado de SET NAVIAGTION.
         Local _BackDeleted
         Local cFiltroAnt     as character     // Condición del filtro anterior.
-        public  nImpLen
 
 
 ////////// Gusrdar estado actual de SET DELETED y activarlo
@@ -2130,8 +2130,8 @@ static function ABM2Imprimir()
         local cRegistro1    as character        // Valor del registro inicial.
         local cRegistro2    as character        // Valor del registro final.
         local aImpresoras   as array            // Impresoras disponibles.
-	local NIMPLEN
-        private hbprn
+        local NIMPLEN
+        local hbprn
 
          wndabm2edit.tbbNuevo.enabled:=.F.
           wndabm2edit.tbbEditar.enabled:=.F.

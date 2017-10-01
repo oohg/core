@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.270 2017-09-13 22:33:17 fyurisich Exp $
+ * $Id: h_windows.prg,v 1.271 2017-10-01 14:33:01 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1612,10 +1612,10 @@ LOCAL nFixedHeightUsed
          IF ! ::lFixWidth
             ::Sizepos( , , ::width * nDivw, ::height * nDivh )
 
-            IF  _OOHG_adjustFont
-                IF ! ::lFixFont
-                   ::fontsize := ::fontsize * nDivw
-                ENDIF
+            IF _OOHG_adjustFont
+               IF ! ::lFixFont
+                  ::fontsize := ::fontsize * nDivw
+               ENDIF
             ENDIF
          ENDIF
       ENDIF

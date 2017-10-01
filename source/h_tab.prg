@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.74 2017-09-01 20:55:05 fyurisich Exp $
+ * $Id: h_tab.prg,v 1.75 2017-10-01 14:33:01 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1450,10 +1450,10 @@ METHOD AdjustResize( nDivh, nDivw, lSelfOnly ) CLASS TTabPage
 
       IF _OOHG_adjustWidth
          IF ! ::lFixWidth
-            IF  _OOHG_adjustFont
-                IF ! ::lFixFont
-                   ::fontsize := ::fontsize * nDivw
-                ENDIF
+            IF _OOHG_adjustFont
+               IF ! ::lFixFont
+                  ::fontsize := ::fontsize * nDivw
+               ENDIF
             ENDIF
          ENDIF
       ENDIF
@@ -1526,10 +1526,10 @@ METHOD AdjustResize( nDivh, nDivw, lSelfOnly ) CLASS TTabPageInternal
 
       IF _OOHG_adjustWidth
          IF ! ::lFixWidth
-            IF  _OOHG_adjustFont
-                IF ! ::lFixFont
-                   ::fontsize := ::fontsize * nDivw
-                ENDIF
+            IF _OOHG_adjustFont
+               IF ! ::lFixFont
+                  ::fontsize := ::fontsize * nDivw
+               ENDIF
             ENDIF
          ENDIF
       ENDIF

@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.ch,v 1.18 2017-09-28 21:33:03 fyurisich Exp $
+ * $Id: winprint.ch,v 1.19 2017-10-01 14:33:00 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -247,17 +247,22 @@ MEMVAR HBPRN
    => ;
       <clr> := hbprn:GetBkColor()
 
+/* Background Modes */
+#define BKMODE_TRANSPARENT  1
+#define BKMODE_OPAQUE       2
+#define BKMODE_LAST         2
+
 #xcommand SET BKMODE <mode> ;
    => ;
       hbprn:SetBkMode( <mode> )
 
 #xcommand SET BKMODE TRANSPARENT ;
    => ;
-      hbprn:SetBkMode( 1 )
+      hbprn:SetBkMode( BKMODE_TRANSPARENT )
 
 #xcommand SET BKMODE OPAQUE ;
    => ;
-      hbprn:SetBkMode( 2 )
+      hbprn:SetBkMode( BKMODE_OPAQUE )
 
 #xcommand GET BKMODE [ TO ] <mode> ;
    => ;
