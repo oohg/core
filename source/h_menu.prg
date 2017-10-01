@@ -1,5 +1,5 @@
 /*
- * $Id: h_menu.prg,v 1.47 2017-08-25 19:42:22 fyurisich Exp $
+ * $Id: h_menu.prg,v 1.48 2017-10-01 15:52:26 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -80,7 +80,7 @@ CLASS TMenu FROM TControl
    METHOD Separator               BLOCK { |Self| TMenuItem():DefineSeparator( , Self ) }
    METHOD SetMenuBarColor
 
-   EMPTY( _OOHG_AllVars )
+   /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
 ENDCLASS
 
 *------------------------------------------------------------------------------*

@@ -1,5 +1,5 @@
 /*
- * $Id: h_checkbox.prg,v 1.49 2017-08-25 19:42:18 fyurisich Exp $
+ * $Id: h_checkbox.prg,v 1.50 2017-10-01 15:52:26 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -83,7 +83,7 @@ CLASS TCheckBox FROM TLabel
    METHOD Events_Color
    METHOD Events_Notify
 
-   EMPTY( _OOHG_AllVars )
+   /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
 ENDCLASS
 
 *------------------------------------------------------------------------------*

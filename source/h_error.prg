@@ -1,5 +1,5 @@
 /*
- * $Id: h_error.prg,v 1.68 2017-08-26 03:03:15 fyurisich Exp $
+ * $Id: h_error.prg,v 1.69 2017-10-01 15:52:26 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -214,7 +214,7 @@ CLASS OOHG_TErrorHtml
    METHOD Write
    METHOD Write2
 
-   EMPTY( _OOHG_AllVars )
+   /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -619,7 +619,13 @@ METHOD ErrorMessage( cError, nPosition ) CLASS OOHG_TErrorHtml
    // Called functions
    nPosition++
    DO WHILE ! Empty( ProcName( nPosition ) )
-      ::Write( ::aMessages[10] + ProcName( nPosition ) + "(" + AllTrim( Str( ProcLine( nPosition++ ) ) ) + ")" )
+      ::Write( ::aMessages[10] + ;
+               ProcName( nPosition ) + ;
+               " (" + ;
+               AllTrim( Str( ProcLine( nPosition ) ) ) + ;
+               ")" + ;
+               iif( Empty( ProcFile( nPosition ) ), "", " in " + ProcFile( nPosition ) ) )
+      nPosition ++
    ENDDO
 
    // Event list

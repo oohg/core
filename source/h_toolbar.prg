@@ -1,5 +1,5 @@
 /*
- * $Id: h_toolbar.prg,v 1.52 2017-08-25 19:42:22 fyurisich Exp $
+ * $Id: h_toolbar.prg,v 1.53 2017-10-01 15:52:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -123,7 +123,7 @@ CLASS TToolBar FROM TControl
    METHOD AddButton
    METHOD DeleteButton
 
-   EMPTY( _OOHG_AllVars )
+   /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
 ENDCLASS
 
 *------------------------------------------------------------------------------*

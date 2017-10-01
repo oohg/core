@@ -1,5 +1,5 @@
 /*
- * $Id: h_scrsaver.prg,v 1.9 2017-08-25 19:42:22 fyurisich Exp $
+ * $Id: h_scrsaver.prg,v 1.10 2017-10-01 15:52:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -87,7 +87,7 @@ Function _BeginScrSaver( cSSaver, lNoShow, cInit, cRelease, cPaint, nTimer, aBac
    Public _ScrSaverConfig := NIL
 
    DEFAULT nTimer TO 1
-   EMPTY( _OOHG_AllVars )
+   /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
 
    Set InterActiveClose Off
 

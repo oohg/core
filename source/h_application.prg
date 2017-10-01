@@ -1,5 +1,5 @@
 /*
- * $Id: h_application.prg,v 1.9 2017-08-25 19:42:18 fyurisich Exp $
+ * $Id: h_application.prg,v 1.10 2017-10-01 15:52:26 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -68,7 +68,44 @@
 #include "hbclass.ch"
 
 
+#define NDX_OOHG_ACTIVECONTROLINFO     01
+#define NDX_OOHG_ACTIVEFRAME           02
+#define NDX_OOHG_ADJUSTFONT            03
+#define NDX_OOHG_ADJUSTWIDTH           04
+#define NDX_OOHG_AUTOADJUST            05
+#define NDX_OOHG_DEFAULTFONTCOLOR      06
+#define NDX_OOHG_DEFAULTFONTNAME       07
+#define NDX_OOHG_DEFAULTFONTSIZE       08
+#define NDX_OOHG_DIALOGCANCELLED       09
+#define NDX_OOHG_EXTENDEDNAVIGATION    10
+#define NDX_OOHG_MAIN                  11
+#define NDX_OOHG_SAMEENTERDBLCLICK     12
+#define NDX_OOHG_TEMPWINDOWNAME        13
+#define NDX_OOHG_THISCONTROL           14
+#define NDX_OOHG_THISEVENTTYPE         15
+#define NDX_OOHG_THISFORM              16
+#define NDX_OOHG_THISITEMCELLCOL       17
+#define NDX_OOHG_THISITEMCELLHEIGHT    18
+#define NDX_OOHG_THISITEMCELLROW       19
+#define NDX_OOHG_THISITEMCELLVALUE     20
+#define NDX_OOHG_THISITEMCELLWIDTH     21
+#define NDX_OOHG_THISITEMCOLINDEX      22
+#define NDX_OOHG_THISITEMROWINDEX      23
+#define NDX_OOHG_THISOBJECT            24
+#define NDX_OOHG_THISQUERYCOLINDEX     25
+#define NDX_OOHG_THISQUERYDATA         26
+#define NDX_OOHG_THISQUERYROWINDEX     27
+#define NDX_OOHG_THISTYPE              28
+#define NDX_OOHG_MAIN_ICON             29
+#define NUMBER_OF_APP_WIDE_VARS        29
+
+
+STATIC _OOHG_Application := NIL
+
+
 CLASS TApplication
+
+   DATA AllVars      INIT Nil
    DATA ArgC         INIT HB_ArgC()            READONLY
    DATA Args         INIT GetCommandLineArgs() READONLY
    DATA ExeName      INIT GetProgramFileName() READONLY
@@ -77,13 +114,14 @@ CLASS TApplication
    METHOD Col        SETGET
    METHOD Cursor     SETGET
    METHOD Drive      BLOCK { |Self| Left( ::ExeName, 1 ) }
-   METHOD FormObject BLOCK { || _OOHG_Main }
-   METHOD Handle     BLOCK { || If( HB_IsObject( _OOHG_Main ), _OOHG_Main:hWnd, Nil ) }
+   METHOD FormObject BLOCK { |Self| ::AllVars[ NDX_OOHG_MAIN ] }
+   METHOD Handle     BLOCK { |Self| If( HB_IsObject( ::AllVars[ NDX_OOHG_MAIN ] ), ::AllVars[ NDX_OOHG_MAIN ]:hWnd, Nil ) }
    METHOD Height     SETGET
    METHOD HelpButton SETGET
    METHOD Icon       SETGET
-   METHOD MainName   BLOCK { || If( HB_IsObject( _OOHG_Main ), _OOHG_Main:Name, Nil ) }
+   METHOD MainName   BLOCK { |Self| If( HB_IsObject( ::AllVars[ NDX_OOHG_MAIN ] ), ::AllVars[ NDX_OOHG_MAIN ]:Name, Nil ) }
    METHOD Name       BLOCK { |Self| Substr( ::ExeName, RAt( '\', ::ExeName ) + 1 ) }
+   METHOD New        CONSTRUCTOR
    METHOD Path       BLOCK { |Self| Left( ::ExeName, RAt( '\', ::ExeName ) - 1 ) }
    METHOD Row        SETGET
    METHOD Title      SETGET
@@ -93,17 +131,59 @@ ENDCLASS
 
 
 //------------------------------------------------------------------------------
+METHOD New() CLASS TApplication
+//------------------------------------------------------------------------------
+
+   IF _OOHG_Application == NIL
+      ::AllVars := Array( NUMBER_OF_APP_WIDE_VARS )
+
+      ::AllVars[ NDX_OOHG_ACTIVECONTROLINFO ]  := {}
+      ::AllVars[ NDX_OOHG_ACTIVEFRAME ]        := {}
+      ::AllVars[ NDX_OOHG_ADJUSTFONT ]         := .T.
+      ::AllVars[ NDX_OOHG_ADJUSTWIDTH ]        := .T.
+      ::AllVars[ NDX_OOHG_AUTOADJUST ]         := .F.
+      ::AllVars[ NDX_OOHG_DEFAULTFONTCOLOR ]   := NIL
+      ::AllVars[ NDX_OOHG_DEFAULTFONTNAME ]    := 'Arial'
+      ::AllVars[ NDX_OOHG_DEFAULTFONTSIZE ]    := 9
+      ::AllVars[ NDX_OOHG_DIALOGCANCELLED ]    := .F.
+      ::AllVars[ NDX_OOHG_EXTENDEDNAVIGATION ] := .F.
+      ::AllVars[ NDX_OOHG_MAIN ]               := NIL
+      ::AllVars[ NDX_OOHG_SAMEENTERDBLCLICK ]  := .F.
+      ::AllVars[ NDX_OOHG_TEMPWINDOWNAME ]     := ""
+      ::AllVars[ NDX_OOHG_THISCONTROL ]        := NIL
+      ::AllVars[ NDX_OOHG_THISEVENTTYPE ]      := ''
+      ::AllVars[ NDX_OOHG_THISFORM ]           := NIL
+      ::AllVars[ NDX_OOHG_THISITEMCELLCOL ]    := 0
+      ::AllVars[ NDX_OOHG_THISITEMCELLHEIGHT ] := 0
+      ::AllVars[ NDX_OOHG_THISITEMCELLROW ]    := 0
+      ::AllVars[ NDX_OOHG_THISITEMCELLVALUE ]  := NIL
+      ::AllVars[ NDX_OOHG_THISITEMCELLWIDTH ]  := 0
+      ::AllVars[ NDX_OOHG_THISITEMCOLINDEX ]   := 0
+      ::AllVars[ NDX_OOHG_THISITEMROWINDEX ]   := 0
+      ::AllVars[ NDX_OOHG_THISOBJECT ]         := ''
+      ::AllVars[ NDX_OOHG_THISQUERYCOLINDEX ]  := 0
+      ::AllVars[ NDX_OOHG_THISQUERYDATA ]      := ""
+      ::AllVars[ NDX_OOHG_THISQUERYROWINDEX ]  := 0
+      ::AllVars[ NDX_OOHG_THISTYPE ]           := ''
+      ::AllVars[ NDX_OOHG_MAIN_ICON ]          := NIL
+
+      _OOHG_Application := Self
+   ENDIF
+
+RETURN Self
+
+//------------------------------------------------------------------------------
 METHOD BackColor( uColor ) CLASS TApplication
 //------------------------------------------------------------------------------
    Local uRet := Nil
 
    If PCount() > 0
-      If HB_IsObject( _OOHG_Main )
-         uRet := _OOHG_Main:BackColor( uColor )
+      If HB_IsObject( ::AllVars[ NDX_OOHG_MAIN ] )
+         uRet := ::AllVars[ NDX_OOHG_MAIN ]:BackColor( uColor )
       EndIf
    Else
-      If HB_IsObject( _OOHG_Main )
-         uRet := _OOHG_Main:BackColor()
+      If HB_IsObject( ::AllVars[ NDX_OOHG_MAIN ] )
+         uRet := ::AllVars[ NDX_OOHG_MAIN ]:BackColor()
       EndIf
    EndIf
 Return uRet
@@ -111,58 +191,58 @@ Return uRet
 //------------------------------------------------------------------------------
 METHOD Col( nCol ) CLASS TApplication
 //------------------------------------------------------------------------------
-Return If( HB_IsObject( _OOHG_Main ), _OOHG_Main:Col( nCol ), Nil )
+Return If( HB_IsObject( ::AllVars[ NDX_OOHG_MAIN ] ), ::AllVars[ NDX_OOHG_MAIN ]:Col( nCol ), Nil )
 
 
 //------------------------------------------------------------------------------
 METHOD Cursor( uValue ) CLASS TApplication
 //------------------------------------------------------------------------------
-Return If( HB_IsObject( _OOHG_Main ), _OOHG_Main:Cursor( uValue ), Nil )
+Return If( HB_IsObject( ::AllVars[ NDX_OOHG_MAIN ] ), ::AllVars[ NDX_OOHG_MAIN ]:Cursor( uValue ), Nil )
 
 
 //------------------------------------------------------------------------------
 METHOD Height( nHeight ) CLASS TApplication
 //------------------------------------------------------------------------------
-Return If( HB_IsObject( _OOHG_Main ), _OOHG_Main:Height( nHeight ), Nil )
+Return If( HB_IsObject( ::AllVars[ NDX_OOHG_MAIN ] ), ::AllVars[ NDX_OOHG_MAIN ]:Height( nHeight ), Nil )
 
 
 //------------------------------------------------------------------------------
 METHOD Icon( cIcon ) CLASS TApplication
 //------------------------------------------------------------------------------
    If PCount() > 0
-      _OOHG_Main_Icon := cIcon
+      ::AllVars[ NDX_OOHG_MAIN_ICON ] := cIcon
    EndIf
-Return _OOHG_Main_Icon
+Return ::AllVars[ NDX_OOHG_MAIN_ICON ]
 
 
 //------------------------------------------------------------------------------
 METHOD HelpButton( lShow ) CLASS TApplication
 //------------------------------------------------------------------------------
-Return If( HB_IsObject( _OOHG_Main ), _OOHG_Main:HelpButton( lShow ), Nil )
+Return If( HB_IsObject( ::AllVars[ NDX_OOHG_MAIN ] ), ::AllVars[ NDX_OOHG_MAIN ]:HelpButton( lShow ), Nil )
 
 
 //------------------------------------------------------------------------------
 METHOD Row( nRow ) CLASS TApplication
 //------------------------------------------------------------------------------
-Return If( HB_IsObject( _OOHG_Main ), _OOHG_Main:Row( nRow ), Nil )
+Return If( HB_IsObject( ::AllVars[ NDX_OOHG_MAIN ] ), ::AllVars[ NDX_OOHG_MAIN ]:Row( nRow ), Nil )
 
 
 //------------------------------------------------------------------------------
 METHOD Title( cTitle ) CLASS TApplication
 //------------------------------------------------------------------------------
-Return If( HB_IsObject( _OOHG_Main ), _OOHG_Main:Title( cTitle ), Nil )
+Return If( HB_IsObject( ::AllVars[ NDX_OOHG_MAIN ] ), ::AllVars[ NDX_OOHG_MAIN ]:Title( cTitle ), Nil )
 
 
 //------------------------------------------------------------------------------
 METHOD TopMost( lTopmost ) CLASS TApplication
 //------------------------------------------------------------------------------
-Return If( HB_IsObject( _OOHG_Main ), _OOHG_Main:TopMost( lTopmost ), Nil )
+Return If( HB_IsObject( ::AllVars[ NDX_OOHG_MAIN ] ), ::AllVars[ NDX_OOHG_MAIN ]:TopMost( lTopmost ), Nil )
 
 
 //------------------------------------------------------------------------------
 METHOD Width( nWidth ) CLASS TApplication
 //------------------------------------------------------------------------------
-Return If( HB_IsObject( _OOHG_Main ), _OOHG_Main:Width( nWidth ), Nil )
+Return If( HB_IsObject( ::AllVars[ NDX_OOHG_MAIN ] ), ::AllVars[ NDX_OOHG_MAIN ]:Width( nWidth ), Nil )
 
 
 //------------------------------------------------------------------------------

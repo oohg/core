@@ -1,5 +1,5 @@
 /*
- * $Id: h_label.prg,v 1.36 2017-08-25 19:42:21 fyurisich Exp $
+ * $Id: h_label.prg,v 1.37 2017-10-01 15:52:26 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -83,7 +83,7 @@ CLASS TLabel FROM TControl
    METHOD Align      SETGET
    METHOD SetFont
 
-   EMPTY( _OOHG_AllVars )
+   /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
 ENDCLASS
 
 *------------------------------------------------------------------------------*

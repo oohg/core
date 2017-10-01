@@ -1,5 +1,5 @@
 /*
- * $Id: h_spinner.prg,v 1.27 2017-08-25 19:42:22 fyurisich Exp $
+ * $Id: h_spinner.prg,v 1.28 2017-10-01 15:52:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -86,7 +86,7 @@ CLASS TSpinner FROM TControl
    METHOD Increment           SETGET
    METHOD Events_Command
 
-   EMPTY( _OOHG_AllVars )
+   /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
 ENDCLASS
 
 *------------------------------------------------------------------------------*

@@ -1,5 +1,5 @@
 /*
- * $Id: h_internal.prg,v 1.16 2017-09-13 22:33:17 fyurisich Exp $
+ * $Id: h_internal.prg,v 1.17 2017-10-01 15:52:26 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -91,7 +91,7 @@ CLASS TInternal FROM TControl
    METHOD BackColor           SETGET
    METHOD BackColorCode       SETGET
 
-   EMPTY( _OOHG_AllVars )
+   /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
 ENDCLASS
 
 *------------------------------------------------------------------------------*

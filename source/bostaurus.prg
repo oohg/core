@@ -1,5 +1,5 @@
 /*
- * $Id: bostaurus.prg,v 1.10 2017-08-26 02:54:27 fyurisich Exp $
+ * $Id: bostaurus.prg,v 1.11 2017-10-01 15:52:26 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -628,7 +628,7 @@ Return Nil
 
 
 Function BT_Nil
-   Empty( _OOHG_AllVars )
+   /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
 Return Nil
 
 

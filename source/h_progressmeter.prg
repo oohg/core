@@ -1,5 +1,5 @@
 /*
- * $Id: h_progressmeter.prg,v 1.26 2017-09-13 22:33:17 fyurisich Exp $
+ * $Id: h_progressmeter.prg,v 1.27 2017-10-01 15:52:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -84,7 +84,7 @@ CLASS TProgressMeter FROM TLabel
    METHOD SetPercent          SETGET
    METHOD Align               SETGET
 
-   EMPTY( _OOHG_AllVars )
+   /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
 ENDCLASS
 
 *------------------------------------------------------------------------------*

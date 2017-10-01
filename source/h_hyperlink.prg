@@ -1,5 +1,5 @@
 /*
- * $Id: h_hyperlink.prg,v 1.15 2017-08-25 19:42:21 fyurisich Exp $
+ * $Id: h_hyperlink.prg,v 1.16 2017-10-01 15:52:26 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -71,7 +71,7 @@ CLASS THyperLink FROM TLabel
    METHOD Define
    METHOD Address   SETGET
 
-   EMPTY( _OOHG_AllVars )
+   /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
 ENDCLASS
 
 *------------------------------------------------------------------------------*

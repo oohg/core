@@ -1,5 +1,5 @@
 /*
- * $Id: h_registry.prg,v 1.9 2017-08-25 19:42:22 fyurisich Exp $
+ * $Id: h_registry.prg,v 1.10 2017-10-01 15:52:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -78,7 +78,7 @@ CLASS TReg32
    METHOD KeyDelete( cSubKey )
    METHOD Close() BLOCK {| Self | If( ::lError, , ( ::nError := RegCloseKey( ::nHandle ) ) ) }
 
-   EMPTY( _OOHG_AllVars )
+   /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
 ENDCLASS
 
 //------------------------------------------------------------------------------

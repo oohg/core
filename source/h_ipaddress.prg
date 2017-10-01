@@ -1,5 +1,5 @@
 /*
- * $Id: h_ipaddress.prg,v 1.21 2017-08-25 19:42:21 fyurisich Exp $
+ * $Id: h_ipaddress.prg,v 1.22 2017-10-01 15:52:26 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -73,7 +73,7 @@ CLASS TIpAddress FROM TLabel
    METHOD Value       SETGET
    METHOD String      SETGET
 
-   EMPTY( _OOHG_AllVars )
+   /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
 ENDCLASS
 
 *------------------------------------------------------------------------------*

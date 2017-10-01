@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.82 2017-08-25 19:42:18 fyurisich Exp $
+ * $Id: h_button.prg,v 1.83 2017-10-01 15:52:26 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -94,7 +94,7 @@ CLASS TButton FROM TControl
    METHOD Release
    METHOD ImageMargin   SETGET
 
-   EMPTY( _OOHG_AllVars )
+   /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
 ENDCLASS
 
 *------------------------------------------------------------------------------*

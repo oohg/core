@@ -1,5 +1,5 @@
 /*
- * $Id: h_init.prg,v 1.45 2017-08-25 19:42:21 fyurisich Exp $
+ * $Id: h_init.prg,v 1.46 2017-10-01 15:52:26 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -68,36 +68,7 @@ STATIC _OOHG_Messages := { {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {} }
 
 INIT PROCEDURE _OOHG_INIT()
 
-   Public _OOHG_AllVars[ 29 ]
-
-   _OOHG_ActiveFrame        := {}
-   _OOHG_AdjustFont         := .T.
-   _OOHG_AdjustWidth        := .T.
-   _OOHG_AutoAdjust         := .F.
-   _OOHG_DefaultFontColor   := NIL
-   _OOHG_DefaultFontName    := 'Arial'
-   _OOHG_DefaultFontSize    := 9
-   _OOHG_DialogCancelled    := .F.
-   _OOHG_ExtendedNavigation := .F.
-   _OOHG_Main               := NIL
-   _OOHG_SameEnterDblClick  := .F.
-   _OOHG_TempWindowName     := ""
-   _OOHG_ThisControl        := NIL
-   _OOHG_ThisEventType      := ''
-   _OOHG_ThisForm           := NIL
-   _OOHG_ThisItemCellCol    := 0
-   _OOHG_ThisItemCellHeight := 0
-   _OOHG_ThisItemCellRow    := 0
-   _OOHG_ThisItemCellValue  := NIL
-   _OOHG_ThisItemCellWidth  := 0
-   _OOHG_ThisItemColIndex   := 0
-   _OOHG_ThisItemRowIndex   := 0
-   _OOHG_ThisObject         := ''
-   _OOHG_ThisQueryColIndex  := 0
-   _OOHG_ThisQueryData      := ""
-   _OOHG_ThisQueryRowIndex  := 0
-   _OOHG_ThisType           := ''
-   _OOHG_Main_Icon          := NIL
+   TApplication():New()
 
    _GETDDLMESSAGE()
 

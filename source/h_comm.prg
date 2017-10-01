@@ -1,5 +1,5 @@
 /*
- * $Id: h_comm.prg,v 1.10 2017-08-25 19:42:18 fyurisich Exp $
+ * $Id: h_comm.prg,v 1.11 2017-10-01 15:52:26 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -347,5 +347,5 @@ Function SetCommPath( cph )
    If ValType( cph ) $ "CM"
       _OOHG_CommPath := cph
    EndIf
-   EMPTY( _OOHG_AllVars )
+   /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
 Return _OOHG_CommPath

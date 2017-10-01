@@ -1,5 +1,5 @@
 /*
- * $Id: h_slider.prg,v 1.26 2017-08-25 19:42:22 fyurisich Exp $
+ * $Id: h_slider.prg,v 1.27 2017-10-01 15:52:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -80,7 +80,7 @@ CLASS TSlider FROM TControl
    METHOD Events_Hscroll
    METHOD Events_Vscroll
 
-   EMPTY( _OOHG_AllVars )
+   /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
 ENDCLASS
 
 

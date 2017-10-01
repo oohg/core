@@ -1,5 +1,5 @@
 /*
- * $Id: h_editbox.prg,v 1.31 2017-08-25 19:42:18 fyurisich Exp $
+ * $Id: h_editbox.prg,v 1.32 2017-10-01 15:52:26 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -78,7 +78,7 @@ CLASS TEdit FROM TText
    METHOD Events_Command
    METHOD Events_Enter   BLOCK { || Nil }
 
-   EMPTY( _OOHG_AllVars )
+   /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
 ENDCLASS
 
 *------------------------------------------------------------------------------*

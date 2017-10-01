@@ -1,5 +1,5 @@
 /*
- * $Id: h_radio.prg,v 1.56 2017-08-25 19:42:22 fyurisich Exp $
+ * $Id: h_radio.prg,v 1.57 2017-10-01 15:52:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -101,7 +101,7 @@ CLASS TRadioGroup FROM TLabel
    METHOD ItemReadOnly
    METHOD Spacing              SETGET
 
-   EMPTY( _OOHG_AllVars )
+   /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
 ENDCLASS
 
 *------------------------------------------------------------------------------*

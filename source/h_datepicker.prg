@@ -1,5 +1,5 @@
 /*
- * $Id: h_datepicker.prg,v 1.29 2017-09-09 14:37:53 fyurisich Exp $
+ * $Id: h_datepicker.prg,v 1.30 2017-10-01 15:52:26 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -77,7 +77,7 @@ CLASS TDatePick FROM TControl
    METHOD SetRange
    METHOD DateFormat              SETGET
 
-   HB_SYMBOL_UNUSED( _OOHG_AllVars )
+   /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
 ENDCLASS
 
 *------------------------------------------------------------------------------*

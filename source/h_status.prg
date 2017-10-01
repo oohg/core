@@ -1,5 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.54 2017-08-25 19:42:22 fyurisich Exp $
+ * $Id: h_status.prg,v 1.55 2017-10-01 15:52:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -106,7 +106,7 @@ CLASS TMessageBar FROM TControl
    METHOD Events_Size
    METHOD RefreshData
 
-   EMPTY( _OOHG_AllVars )
+   /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
 ENDCLASS
 
 *------------------------------------------------------------------------------*

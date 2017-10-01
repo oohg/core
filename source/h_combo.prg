@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.92 2017-09-14 20:48:11 fyurisich Exp $
+ * $Id: h_combo.prg,v 1.93 2017-10-01 15:52:26 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -130,7 +130,7 @@ CLASS TCombo FROM TLabel
    METHOD Field               SETGET
    METHOD ValueSource         SETGET
 
-   EMPTY( _OOHG_AllVars )
+   /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -1467,7 +1467,7 @@ CLASS TListCombo FROM TControl STATIC
    METHOD Define
    METHOD Events_VScroll
 
-   EMPTY( _OOHG_AllVars )
+   /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -1657,7 +1657,7 @@ CLASS TEditCombo FROM TControl STATIC
    METHOD Define
    METHOD Events
 
-   EMPTY( _OOHG_AllVars )
+   /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
 ENDCLASS
 
 *------------------------------------------------------------------------------*

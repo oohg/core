@@ -1,5 +1,5 @@
 /*
- * $Id: h_checklist.prg,v 1.26 2017-08-25 19:42:18 fyurisich Exp $
+ * $Id: h_checklist.prg,v 1.27 2017-10-01 15:52:26 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -147,7 +147,7 @@ CLASS TCheckList FROM TGrid
    METHOD HeaderImageAlign     BLOCK { || Nil }
    METHOD LoadHeaderImages     BLOCK { || Nil }
 
-   EMPTY( _OOHG_AllVars )
+   /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
 ENDCLASS
 
 *------------------------------------------------------------------------------*

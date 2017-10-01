@@ -1,5 +1,5 @@
 /*
- * $Id: h_monthcal.prg,v 1.23 2017-08-25 19:42:22 fyurisich Exp $
+ * $Id: h_monthcal.prg,v 1.24 2017-10-01 15:52:26 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -90,7 +90,7 @@ CLASS TMonthCal FROM TControl
    METHOD DelBoldDay
    METHOD IsBoldDay               BLOCK { |Self, dDay| aScan( ::aBoldDays, dDay ) > 0 }
 
-   EMPTY( _OOHG_AllVars )
+   /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
 ENDCLASS
 
 *------------------------------------------------------------------------------*

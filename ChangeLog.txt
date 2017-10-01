@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog.txt,v 1.23 2017-10-01 14:33:00 fyurisich Exp $
+ * $Id: ChangeLog.txt,v 1.24 2017-10-01 15:52:26 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,7 +7,75 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2017-10-01 11:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2017-10-01 12:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_var.ch
+     - References to _OOHG_AllVars array.
+     * Variables _OOHG_* are now defined as datas of TApplication
+       object.
+
+   * source/bostaurus.prg
+   * source/h_activex.prg
+   * source/h_anigif.prg
+   * source/h_application.prg
+   * source/h_button.prg
+   * source/h_checkbox.prg
+   * source/h_checklist.prg
+   * source/h_combo.prg
+   * source/h_comm.prg
+   * source/h_datepicker.prg
+   * source/h_dialogs.prg
+   * source/h_edit.prg
+   * source/h_editbox.prg
+   * source/h_error.prg
+   * source/h_frame.prg
+   * source/h_hotkey.prg
+   * source/h_hotkeybox.prg
+   * source/h_hyperlink.prg
+   * source/h_image.prg
+   * source/h_ini.prg
+   * source/h_init.prg
+   * source/h_internal.prg
+   * source/h_ipaddress.prg
+   * source/h_label.prg
+   * source/h_media.prg
+   * source/h_menu.prg
+   * source/h_monthcal.prg
+   * source/h_notify.prg
+   * source/h_picture.prg
+   * source/h_progressbar.prg
+   * source/h_progressmeter.prg
+   * source/h_radio.prg
+   * source/h_registry.prg
+   * source/h_report.prg
+   * source/h_richeditbox.prg
+   * source/h_scroll.prg
+   * source/h_scrollbutton.prg
+   * source/h_scrsaver.prg
+   * source/h_slider.prg
+   * source/h_spinner.prg
+   * source/h_splitbox.prg
+   * source/h_status.prg
+   * source/h_textarray.prg
+   * source/h_textbox.prg
+   * source/h_timer.prg
+   * source/h_toolbar.prg
+   * source/h_tooltip.prg
+   * source/h_xbrowse.prg
+   * source/winprint.prg
+     - EMPTY( _OOHG_AllVars array ).
+
+   * source/h_application.prg
+     + Method New to initialize application wide variables.
+
+   * source/h_init.prg
+     - Initialization of application wide variables.
+     - Public var _OOHG_AllVars.
+     ! Errorlog errors in multithreaded apps.
+
+   * source/h_error.prg
+     + ProcFile() info to error messages.
+
+2017-10-01 11:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./BuildApp_hbmk2.bat
      ! Order of parameters in hbmk2 call.
    * source/h_tab.prg

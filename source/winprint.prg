@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.67 2017-10-01 14:33:01 fyurisich Exp $
+ * $Id: winprint.prg,v 1.68 2017-10-01 15:52:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -219,19 +219,18 @@ CLASS HBPrinter
    METHOD GetTextExtent(ctext,apoint,deffont)
    METHOD End()
    METHOD ReportData(l_x1,l_x2,l_x3,l_x4,l_x5,l_x6)
-   #ifndef NO_GUI
-      METHOD Preview()
-      METHOD PrevPrint(n1)
-      METHOD PrevShow()
-      METHOD PrevThumb(nclick)
-      // new method
-      METHOD PrintOption()
-   #endif
+#ifndef NO_GUI
+   METHOD Preview()
+   METHOD PrevPrint(n1)
+   METHOD PrevShow()
+   METHOD PrevThumb(nclick)
+   METHOD PrintOption()
+#endif
 
-   IF TIME() == "Z"
-      EMPTY( _OOHG_AllVars )
+//   IF TIME() == "Z"
+//      /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
 //      EMPTY( HBPRN )
-   ENDIF
+//   ENDIF
 ENDCLASS
 
 

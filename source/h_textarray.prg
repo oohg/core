@@ -1,5 +1,5 @@
 /*
- * $Id: h_textarray.prg,v 1.30 2017-09-13 22:33:17 fyurisich Exp $
+ * $Id: h_textarray.prg,v 1.31 2017-10-01 15:52:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -89,7 +89,7 @@ CLASS TTextArray FROM TControl
 
    METHOD Cls                  BLOCK { |Self| ::Clear() , ::DevPos( 0, 0 ) }
 
-   EMPTY( _OOHG_AllVars )
+   /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
 ENDCLASS
 
 *------------------------------------------------------------------------------*

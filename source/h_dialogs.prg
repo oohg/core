@@ -1,5 +1,5 @@
 /*
- * $Id: h_dialogs.prg,v 1.19 2017-08-25 19:42:18 fyurisich Exp $
+ * $Id: h_dialogs.prg,v 1.20 2017-10-01 15:52:26 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -81,7 +81,7 @@ Local aRetVal, nColor, nInitColor
       aRetVal := { GetRed( nColor ), GetGreen( nColor ), GetBlue( nColor ) }
    EndIf
 
-   HB_SYMBOL_UNUSED( _OOHG_AllVars )
+   /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
 Return aRetVal
 
 *------------------------------------------------------------------------------*

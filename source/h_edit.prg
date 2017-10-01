@@ -1,5 +1,5 @@
 /*
- * $Id: h_edit.prg,v 1.26 2017-08-25 19:42:18 fyurisich Exp $
+ * $Id: h_edit.prg,v 1.27 2017-10-01 15:52:26 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -239,7 +239,7 @@ Local _BackDeleted
 // Inicializa el soporte multilenguaje.----------------------------------------
 InitMessages()
 IF EMPTY( DATE() )
-   EMPTY( _OOHG_AllVars )
+   /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
    EMPTY( HBPRN )
 ENDIF
 

@@ -1,5 +1,5 @@
 /*
- * $Id: h_picture.prg,v 1.34 2017-09-13 22:33:17 fyurisich Exp $
+ * $Id: h_picture.prg,v 1.35 2017-10-01 15:52:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -101,7 +101,7 @@ CLASS TPicture FROM TControl
    METHOD Blend
    METHOD Copy
 
-   EMPTY( _OOHG_AllVars )
+   /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
 ENDCLASS
 
 *------------------------------------------------------------------------------*

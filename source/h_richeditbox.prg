@@ -1,5 +1,5 @@
 /*
- * $Id: h_richeditbox.prg,v 1.43 2017-08-25 19:42:22 fyurisich Exp $
+ * $Id: h_richeditbox.prg,v 1.44 2017-10-01 15:52:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -89,7 +89,7 @@ CLASS TEditRich FROM TEdit
    METHOD GetLastVisibleLine
    METHOD GetCharFromPos
 
-   EMPTY( _OOHG_AllVars )
+   /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
 ENDCLASS
 
 *------------------------------------------------------------------------------*

@@ -1,5 +1,5 @@
 /*
- * $Id: h_hotkey.prg,v 1.19 2017-08-25 19:42:21 fyurisich Exp $
+ * $Id: h_hotkey.prg,v 1.20 2017-10-01 15:52:26 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -225,7 +225,7 @@ CLASS THotKey FROM TControl
    METHOD Enabled      SETGET
    METHOD Release
 
-   EMPTY( _OOHG_AllVars )
+   /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
 ENDCLASS
 
 *------------------------------------------------------------------------------*

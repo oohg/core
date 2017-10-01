@@ -1,5 +1,5 @@
 /*
- * $Id: h_anigif.prg,v 1.2 2017-08-25 19:42:18 fyurisich Exp $
+ * $Id: h_anigif.prg,v 1.3 2017-10-01 15:52:26 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -97,7 +97,7 @@ CLASS TAniGIF FROM TImage
    METHOD Stop                    BLOCK { |Self| ::oTimer:Enabled := .F. }
    METHOD Version                 BLOCK { |Self| ::aInfo[ 1 ] }
 
-   HB_SYMBOL_UNUSED( _OOHG_AllVars )
+   /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
 ENDCLASS
 
 *------------------------------------------------------------------------------*
