@@ -1,5 +1,5 @@
 /*
- * $Id: h_application.prg,v 1.10 2017-10-01 15:52:26 fyurisich Exp $
+ * $Id: h_application.prg,v 1.11 2017-10-01 16:04:16 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -170,7 +170,7 @@ METHOD New() CLASS TApplication
       _OOHG_Application := Self
    ENDIF
 
-RETURN Self
+RETURN _OOHG_Application
 
 //------------------------------------------------------------------------------
 METHOD BackColor( uColor ) CLASS TApplication
