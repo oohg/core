@@ -1,11 +1,15 @@
 /*
- * $Id: ChangeLog.txt,v 1.25 2017-10-01 16:04:16 fyurisich Exp $
+ * $Id$
  */
+
 /* Use this format for the entry headers:
-   YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
-   For example:
-   2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
-*/
+ * YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Name or Username and/or <your_email@address>
+ * For example:
+ * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
+ */
+
+   ./*.*
+     ; Initial upload to GitHub from SourceForge.
 
 2017-10-01 13:04:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_application.prg
