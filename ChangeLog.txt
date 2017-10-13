@@ -9,6 +9,14 @@
  */
 
 2017-10-12 20:45:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   - samples/dbview/*.*
+   - samples/http/*.*
+   - samples/mpm/*.*
+   - samples/oohg/*.*
+   - ./samples
+     ; Moved to a separated repository.
+
+2017-10-12 20:45:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    - distros/hb30mingw.iss
    - distros/hb32mingw.iss
    - distros/infoafter_bcc.txt
