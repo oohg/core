@@ -8,6 +8,10 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2017-10-14 0:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core/ide/*.*
+     ; Files moved to ide repository.
+
 2017-10-14 0:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core/doc/*.*
      ; Files moved to core/doc.
