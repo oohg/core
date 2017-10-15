@@ -2,39 +2,16 @@
 rem
 rem $Id: makelib.bat,v 1.40 2015-03-18 01:22:30 fyurisich Exp $
 rem
+
 cls
 
 :PARAMS
 
-   if /I "%1"=="HB30" goto CHECK30
-   if /I "%1"=="HB32" goto CHECK32
-   if /I "%1"=="XB"   goto CHECKXB
+   if /I "%1"=="HB32" goto MAKELIB32
+   if /I "%1"=="XB"   goto MAKELIBXB
+   if /I "%1"=="HB30" goto MAKELIB30
 
-:NOVERSION
-
-   if not exist makelib30.bat goto NOVERSION2
-   if exist makelib32.bat goto SYNTAX
-   if exist makelibXB.bat goto SYNTAX
-   goto HB30
-
-:NOVERSION2
-
-   if not exist makelib32.bat goto NOVERSION3
-   if exist makelibXB.bat goto SYNTAX
-   goto HB32
-
-:NOVERSION3
-
-   if exist makelibXB.bat goto XB
-   echo File makelib30.bat not found !!!
-   echo File makelib32.bat not found !!!
-   echo File makelibXB.bat not found !!!
-   echo.
-   echo This file must be executed from SOURCE folder !!!
-   echo.
-   goto END
-
-:SYNTAX
+:NOPARAM
 
    echo Syntax:
    echo    To build with Harbour 3.0 and MinGW
@@ -46,48 +23,79 @@ cls
    echo.
    goto END
 
-:CHECK30
+:MAKELIB30
 
-   shift
-   if exist makelib30.bat goto HB30
-   echo File makelib30.bat not found !!!
-   echo.
-   echo This file must be executed from SOURCE folder !!!
-   echo.
+   cls
+   rem *** Set Paths ***
+   if "%2"=="/C" goto CLEAN30
+   if "%2"=="/c" goto CLEAN30
+   if "%HG_ROOT%"==""  set HG_ROOT=c:\oohg
+   if "%HG_HRB%"==""   set HG_HRB=c:\oohg\hb30
+   if "%HG_MINGW%"=="" set HG_MINGW=c:\oohg\hb30\comp\mingw
+   if "%LIB_GUI%"==""  set LIB_GUI=lib
+   if "%LIB_HRB%"==""  set LIB_HRB=lib
+   if "%BIN_HRB%"==""  set BIN_HRB=bin
+   call makelib_mingw.bat
    goto END
 
-:CHECK32
+:CLEAN30
 
-   shift
-   if exist makelib32.bat goto HB32
-   echo File makelib32.bat not found !!!
-   echo.
-   echo This file must be executed from SOURCE folder !!!
-   echo.
+   set HG_ROOT=c:\oohg
+   set HG_HRB=c:\oohg\hb30
+   set HG_MINGW=c:\oohg\hb30\comp\mingw
+   set LIB_GUI=lib
+   set LIB_HRB=lib
+   set BIN_HRB=bin
    goto END
 
-:CHECKXB
+:MAKELIB32
 
-   shift
-   if exist makelibXB.bat goto XB
-   echo File makelibXB.bat not found !!!
-   echo.
-   echo This file must be executed from SOURCE folder !!!
-   echo.
+   cls
+   rem *** Set Paths ***
+   if "%2"=="/C" goto CLEAN32
+   if "%2"=="/c" goto CLEAN32
+   if "%HG_ROOT%"==""  set HG_ROOT=c:\oohg
+   if "%HG_HRB%"==""   set HG_HRB=c:\oohg\hb32
+   if "%HG_MINGW%"=="" set HG_MINGW=c:\oohg\hb32\comp\mingw
+   if "%LIB_GUI%"==""  set LIB_GUI=lib\hb\mingw
+   if "%LIB_HRB%"==""  set LIB_HRB=lib\win\mingw
+   if "%BIN_HRB%"==""  set BIN_HRB=bin
+   call makelib_mingw.bat
    goto END
 
-:HB30
+:CLEAN32
 
-   call makelib30.bat %*
+   set HG_ROOT=c:\oohg
+   set HG_HRB=c:\oohg\hb32
+   set HG_MINGW=c:\oohg\hb32\comp\mingw
+   set LIB_GUI=lib\hb\mingw
+   set LIB_HRB=lib\win\mingw
+   set BIN_HRB=bin
    goto END
 
-:HB32
+:MAKELIBXB
 
-   call makelib32.bat %*
+   cls
+   rem *** Set Paths ***
+   if "%2"=="/C" goto CLEAN_PATH
+   if "%2"=="/c" goto CLEAN_PATH
+   if "%HG_ROOT%"=="" set HG_ROOT=c:\oohg
+   if "%HG_HRB%"==""  set HG_HRB=c:\oohg\xhbcc
+   if "%HG_BCC%"==""  set HG_BCC=c:\Borland\BCC55
+   if "%LIB_GUI%"=="" set LIB_GUI=lib\xhb\bcc
+   if "%LIB_HRB%"=="" set LIB_HRB=lib
+   if "%BIN_HRB%"=="" set BIN_HRB=bin
+   call makelib_bcc.bat
    goto END
 
-:XB
-   call makelibXB.bat %*
+:CLEANXB
+
+   set HG_ROOT=c:\oohg
+   set HG_HRB=c:\oohg\xhbcc
+   set HG_MINGW=c:\Borland\BCC55
+   set LIB_GUI=lib\xhb\bcc
+   set LIB_HRB=lib
+   set BIN_HRB=bin
    goto END
 
 :END
