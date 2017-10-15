@@ -56,24 +56,25 @@ rem See Build30.bat and Build32.bat
 rem Warning: different versions must use different folders.
 
 :SCREEN
-rem *** Build Libraries ***
-hbmk2 oohg.hbp      %HBMK2_WORDIR% %1 %2 %3 %4 %5 %6 %7 %8 %9
-hbmk2 miniprint.hbp %HBMK2_WORDIR% %1 %2 %3 %4 %5 %6 %7 %8 %9
-hbmk2 hbprinter.hbp %HBMK2_WORDIR% %1 %2 %3 %4 %5 %6 %7 %8 %9
-hbmk2 bostaurus.hbp %HBMK2_WORDIR% %1 %2 %3 %4 %5 %6 %7 %8 %9
-goto EXIT
 
+   rem *** Build Libraries ***
+   hbmk2 oohg.hbp      %HBMK2_WORDIR% %1 %2 %3 %4 %5 %6 %7 %8 %9
+   hbmk2 miniprint.hbp %HBMK2_WORDIR% %1 %2 %3 %4 %5 %6 %7 %8 %9
+   hbmk2 hbprinter.hbp %HBMK2_WORDIR% %1 %2 %3 %4 %5 %6 %7 %8 %9
+   hbmk2 bostaurus.hbp %HBMK2_WORDIR% %1 %2 %3 %4 %5 %6 %7 %8 %9
+   goto EXIT
 
 :FILE
-rem *** Build Libraries ***
-hbmk2 oohg.hbp      %HBMK2_WORDIR% %2 %3 %4 %5 %6 %7 %8 %9 >> error.log 2>&1
-hbmk2 miniprint.hbp %HBMK2_WORDIR% %2 %3 %4 %5 %6 %7 %8 %9 >> error.log 2>&1
-hbmk2 hbprinter.hbp %HBMK2_WORDIR% %2 %3 %4 %5 %6 %7 %8 %9 >> error.log 2>&1
-hbmk2 bostaurus.hbp %HBMK2_WORDIR% %2 %3 %4 %5 %6 %7 %8 %9 >> error.log 2>&1
-goto EXIT
 
+   rem *** Build Libraries ***
+   hbmk2 oohg.hbp      %HBMK2_WORDIR% %2 %3 %4 %5 %6 %7 %8 %9 >> error.log 2>&1
+   hbmk2 miniprint.hbp %HBMK2_WORDIR% %2 %3 %4 %5 %6 %7 %8 %9 >> error.log 2>&1
+   hbmk2 hbprinter.hbp %HBMK2_WORDIR% %2 %3 %4 %5 %6 %7 %8 %9 >> error.log 2>&1
+   hbmk2 bostaurus.hbp %HBMK2_WORDIR% %2 %3 %4 %5 %6 %7 %8 %9 >> error.log 2>&1
+   goto EXIT
 
 :EXIT
-rem *** Restore PATH ***
-set PATH=%TPATH%
-set TPATH=
+
+   rem *** Restore PATH ***
+   set PATH=%TPATH%
+   set TPATH=
