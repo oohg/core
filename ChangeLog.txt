@@ -8,6 +8,11 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2017-10-15 15:07 UTC-0300 Jose Quintas
+   - core/*.bat
+   - core/*.hbp
+   ; format only
+
 2017-10-14 21:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core/manual/*.*
      ; Files moved to doc repository.
