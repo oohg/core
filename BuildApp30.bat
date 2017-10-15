@@ -29,4 +29,4 @@ goto COMPILE
 
    rem *** Call Compiler Specific Batch File ***
    set HG_CCOMP=%HG_MINGW%
-   call %HG_ROOT%\BuildApp_hbmk2.bat %1 %2 %3 %4 %5 %6 %7 %8 %9
+   call %HG_ROOT%\BuildApp_hbmk2.bat %*

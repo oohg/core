@@ -29,4 +29,4 @@ goto BUILD
 
    set HG_CCOMP=%HG_MINGW%
    set HBMK2_WORDIR=
-   call BuildLib_hbmk2.bat %1 %2 %3 %4 %5 %6 %7 %8 %9
+   call BuildLib_hbmk2.bat %*

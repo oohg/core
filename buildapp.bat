@@ -60,12 +60,12 @@ cls
 
 :HB30
 
-   call %HG_ROOT%\buildapp30.bat %HG_CLEAN% %1 %2 %3 %4 %5 %6 %7 %8 %9
+   call %HG_ROOT%\buildapp30.bat %HG_CLEAN% %*
    goto END
 
 :HB32
 
-   call %HG_ROOT%\buildapp32.bat %HG_CLEAN% %1 %2 %3 %4 %5 %6 %7 %8 %9
+   call %HG_ROOT%\buildapp32.bat %HG_CLEAN% %*
    goto END
 
 :END

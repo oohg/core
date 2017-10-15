@@ -28,4 +28,4 @@ goto COMPILE
 :COMPILE
 
    rem *** Call Compiler Specific Batch File ***
-   call %HG_ROOT%\compile_bcc.bat %1 %2 %3 %4 %5 %6 %7 %8 %9
+   call %HG_ROOT%\compile_bcc.bat %*

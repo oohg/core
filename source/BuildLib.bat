@@ -53,12 +53,12 @@ cls
 
 :HB30
 
-   call buildlib30.bat %1 %2 %3 %4 %5 %6 %7 %8 %9
+   call buildlib30.bat %*
    goto END
 
 :HB32
 
-   call buildlib32.bat %1 %2 %3 %4 %5 %6 %7 %8 %9
+   call buildlib32.bat %*
    goto END
 
 :END

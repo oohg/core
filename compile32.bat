@@ -29,4 +29,4 @@ goto COMPILE
 
    rem *** Call Compiler Specific Batch File ***
    set HG_RC=%HG_ROOT%\resources\oohg_hb32.o
-   call %HG_ROOT%\compile_mingw.bat %1 %2 %3 %4 %5 %6 %7 %8 %9
+   call %HG_ROOT%\compile_mingw.bat %*
