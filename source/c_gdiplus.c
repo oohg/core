@@ -252,8 +252,7 @@ static void hb_retgPlusImage( gPlusImagePtr image )
 {
    gPlusImagePtr * imPtr;
 
-   imPtr = ( gPlusImagePtr * ) hb_gcAllocate( sizeof( gPlusImagePtr ),
-   &s_gcPlusImageFuncs );
+   imPtr = ( gPlusImagePtr * ) hb_gcAllocate( sizeof( gPlusImagePtr ), &s_gcPlusImageFuncs );
    * imPtr = image;
    hb_retptrGC( ( void * ) imPtr );
 }
