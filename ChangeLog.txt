@@ -8,6 +8,13 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2017-10-16 11:15 UTC-0300 Jose Quintas <jmcquintasatgmail.com>
+   * core/*.bat *.hbp *.hbc
+   - format, experimental: hbp/hbc to harbour and xharbour
+   * core/include/i_var.ch
+   * core/source/h_application.prg
+   - change tapplication() to direct access to static var
+
 2017-10-15 21:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    + core/.gitattributes
    + core/.gitignore
