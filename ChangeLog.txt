@@ -8,6 +8,10 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2017-10-15 21:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   + core/.gitattributes
+   + core/.gitignore
+
 2017-10-14 21:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core/manual/*.*
      ; Files moved to doc repository.
@@ -23,7 +27,7 @@
    * core/ChangeLog.txt
      ! Previous entries fixed.
 
-2017-10-12 20:45:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2017-10-12 20:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    - core/samples/dbview/*.*
    - core/samples/http/*.*
    - core/samples/mpm/*.*
@@ -31,7 +35,7 @@
    - core/samples
      ; Moved to a separated repository.
 
-2017-10-12 20:45:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2017-10-12 20:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    - core/distros/hb30mingw.iss
    - core/distros/hb32mingw.iss
    - core/distros/infoafter_bcc.txt
@@ -45,11 +49,11 @@
    - core/distros
      ; Moved to a separated repository.
 
-2017-10-12 20:20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2017-10-12 20:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    + core/*.*
      ; Initial upload to GitHub from SourceForge.
 
-2017-10-01 13:04:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2017-10-01 13:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_application.prg
      ! Array access error on _OOHG_* vars.
 
