@@ -19,7 +19,7 @@ incpaths=${hb_curdir}
 #sources=${hb_curdir}_temp.o
 
 # gui mode
-gt=gtgui
+gui=yes
 
 # core lib
 libs=oohg
@@ -31,7 +31,7 @@ libs=hbprinter miniprint bostaurus
 {!xhb}libs=hbct.hbc hbmisc.hbc hbtip.hbc hbziparc.hbc hbmzip.hbc minizip.hbc hbwin.hbc xhb.hbc hbzebra.hbc hbhpdf.hbc png.hbc
 
 #xharbour contribs
-{xhb}libs=hbct hbmisc hbtip hbziparc hbmzip minizip hbwin xhb hbzebra hbhpdf libhpdf png
+{xhb}libs=ct
 
 # optional libs for HB 3.0
 #libs=socket mysqldll dll hbmysql rddleto
