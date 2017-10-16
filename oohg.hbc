@@ -3,35 +3,38 @@
 #
 
 # oohg paths
-{win}incpaths=include
+incpaths=include
 
 # c compiler will search this folder for OOHG's libs
-{win}libpaths=${HG_ROOT}\${LIB_GUI}
+libpaths=lib
 
 # add harbour contrib folder to search for additional include files
-{win}incpaths=${HG_HRB}\contrib\hbzebra
-{win}incpaths=${HG_HRB}\contrib\hbhpdf
+incpaths=include
+#{!xhb}incpaths=${HG_HRB}\contrib\hbhpdf
 
 # add app folder to search for additional include files
-{win}incpaths=${hb_curdir}
+incpaths=${hb_curdir}
 
 # app + oohg resources
-{win}sources=${hb_curdir}_temp.o
+#sources=${hb_curdir}_temp.o
 
 # gui mode
-{win}gt=gtgui
+gt=gtgui
 
 # core lib
-{win}libs=oohg
+libs=oohg
 
 # printing libs
 libs=hbprinter miniprint bostaurus
 
 # harbour contribs
-{win}libs=hbct hbmisc hbtip hbziparc hbmzip minizip hbwin xhb hbzebra hbhpdf libhpdf png
+{!xhb}libs=hbct.hbc hbmisc.hbc hbtip.hbc hbziparc.hbc hbmzip.hbc minizip.hbc hbwin.hbc xhb.hbc hbzebra.hbc hbhpdf.hbc png.hbc
+
+#xharbour contribs
+{xhb}libs=hbct hbmisc hbtip hbziparc hbmzip minizip hbwin xhb hbzebra hbhpdf libhpdf png
 
 # optional libs for HB 3.0
-#{win}libs=socket mysqldll dll hbmysql rddleto
+#libs=socket mysqldll dll hbmysql rddleto
 
 # system
-{win}libs=msvfw32 vfw32
+libs=msvfw32 vfw32

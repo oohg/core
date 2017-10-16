@@ -16,7 +16,10 @@
 -i../include
 
 # harbour compiler flags
--n -q0 -w3 -es2
+{!xhb}-n -q0 -w3 -es2 -ge1
+
+# xharbour compiler flags
+{xhb}-n -q0 -w3 -es2
 
 # uncomment this line to build .ppo files
 #-p./ppo/
