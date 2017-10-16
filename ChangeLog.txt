@@ -8,6 +8,12 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2017-10-16 09:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core/compile_MINGW.bat
+   * core/oohg.hbc
+     + Set static building.
+   + README.md
+
 2017-10-15 21:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    + core/.gitattributes
    + core/.gitignore

@@ -1,5 +1,5 @@
 #
-# $Id: oohg.hbc,v 1.7 2017-08-24 22:29:19 fyurisich Exp $
+# oohg.hbc
 #
 
 # oohg paths
@@ -7,6 +7,9 @@
 
 # c compiler will search this folder for OOHG's libs
 {win}libpaths=${HG_ROOT}\${LIB_GUI}
+
+# libs must be statically linked to avoid "missing lib" runtime errors
+-static
 
 # add harbour contrib folder to search for additional include files
 {win}incpaths=${HG_HRB}\contrib\hbzebra
