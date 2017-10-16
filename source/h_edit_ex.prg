@@ -330,9 +330,6 @@ function ABM2( cArea, cTitulo, aNombreCampo, ;
         _BackDeleted := set( _SET_DELETED )
         SET DELETED ON
 
-////////// Inicialización del soporte multilenguaje.---------------------------
-	InitMessages()
-
 ////////// Desactivación de SET NAVIGATION.------------------------------------
         _BakExtendedNavigation := _OOHG_ExtendedNavigation
         _OOHG_ExtendedNavigation    := .F.
