@@ -18,7 +18,7 @@
 # harbour compiler flags
 -n -q0 -ko -w3 -es2
 
-# uncomment this line to build .ppo files
+# uncomment the following line to build .ppo files
 #-p${HG_ROOT}\source\ppo\
 
 # files to compile
