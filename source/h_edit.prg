@@ -102,6 +102,8 @@
 
 
 #include "oohg.ch"
+
+#define NO_HBPRN_DECLARATION
 #include "winprint.ch"
 
 // Modos.
@@ -236,12 +238,10 @@ local nMascaraTotal     // := 0                         // Tamaño de la máscara 
 local nMascaraDecimales // := 0                         // Tamaño de los decimales.
 Local _BackDeleted
 
-// Inicializa el soporte multilenguaje.----------------------------------------
-InitMessages()
-IF EMPTY( DATE() )
+//IF EMPTY( DATE() )
    /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
-   EMPTY( HBPRN )
-ENDIF
+//   EMPTY( HBPRN )
+//ENDIF
 
 ////////// Gusrdar estado actual de SET DELETED y activarlo
         _BackDeleted := set( _SET_DELETED )
