@@ -961,3 +961,8 @@ wchar_t * AnsiToWide( const char * szString )
    MultiByteToWideChar( CP_ACP, MB_PRECOMPOSED, szString, -1, szWide, iLen );
    return szWide;
 }
+
+HB_FUNC( CLOSEHANDLE )
+{
+   CloseHandle( (HANDLE) hb_parnl( 1 ) );
+}
