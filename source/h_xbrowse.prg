@@ -172,7 +172,7 @@ CLASS TXBrowse FROM TGrid
       Cell
       CellCaption
       CellImage
-      CheckItem               
+      CheckItem
       ColumnBetterAutoFit
       ColumnCount
       ColumnHide

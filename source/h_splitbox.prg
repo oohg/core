@@ -71,7 +71,7 @@ CLASS TSplitBox FROM TControl
    DATA lInverted              INIT .F.
    DATA nMinWidth              INIT nil
    DATA nMinHeight             INIT nil
-   
+
    METHOD Define
    METHOD SizePos              BLOCK { |Self| SizeRebar( ::hWnd ) , RedrawWindow( ::hWnd ) }
    METHOD Refresh              BLOCK { |Self| SizeRebar( ::hWnd ) , RedrawWindow( ::hWnd ) }
@@ -187,7 +187,7 @@ METHOD HideBand( nBandId ) CLASS TSplitBox
 *------------------------------------------------------------------------------*
 
    SetBandStyle( ::hWnd, nBandId, RBBS_HIDDEN, .T. )
-   
+
 Return ( BandHasStyleSet( ::hWnd, nBandId, RBBS_HIDDEN ) == .T. )
 
 *------------------------------------------------------------------------------*
@@ -195,7 +195,7 @@ METHOD ShowBand( nBandId ) CLASS TSplitBox
 *------------------------------------------------------------------------------*
 
    SetBandStyle( ::hWnd, nBandId, RBBS_HIDDEN, .F. )
-   
+
 Return ( BandHasStyleSet( ::hWnd, nBandId, RBBS_HIDDEN ) == .F. )
 
 *------------------------------------------------------------------------------*
@@ -378,7 +378,7 @@ HB_FUNC( SETSPLITBOXITEM )
    if( HB_ISLOG( 4 ) )
    {
       rbBand.fMask |= RBBIM_STYLE;
-      
+
       if( hb_parl( 4 ) )
       {
          rbBand.fStyle |=  RBBS_BREAK;

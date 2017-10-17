@@ -2532,7 +2532,7 @@ static function ABM2DefinirColumnas( nAccion )
                                    nItem := 1
                                 endif
                                 Empty( nItem )
-                                
+
                                 wndABM2Listado.lbxCampoListado.Value := ;
                                         wndABM2Listado.lbxCampoListado.ItemCount
                         endif

@@ -1301,7 +1301,7 @@ IF !lFirstPass
         AADD( aRecordHeader, "" )
 
         IF ( nGroup == 1 )
-           lEjectGrp := aReportData[ RP_GROUPS, nGroup, RG_AEJECT ]      
+           lEjectGrp := aReportData[ RP_GROUPS, nGroup, RG_AEJECT ]
         ENDIF
 
         ********** Recorro las columnas totalizando *************

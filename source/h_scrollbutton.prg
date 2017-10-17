@@ -66,7 +66,7 @@
 
 CLASS TScrollButton FROM TControl
    DATA Type            INIT "SCROLLBUTTON" READONLY
-   
+
    DATA ladjust  INIT .F.
 
    METHOD Define

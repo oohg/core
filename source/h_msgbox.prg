@@ -372,7 +372,7 @@ Function AutoMsgExclamation( uMessage, cTitle, nMode )
 
    DEFAULT cTitle TO _OOHG_MsgDefaultTitle
    DEFAULT nMode TO _OOHG_MsgDefaultMode
- 
+
    uMessage := AutoType( uMessage )
    c_msgexclamation( uMessage, cTitle, nMode )
 

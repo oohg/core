@@ -68,18 +68,23 @@
 #define MSGSTOP( c ) MsgStop( c, "Stop!" )
 
 FUNCTION _ENCRYPT( cStr, cPass )
-LOCAL cXorStr := CHARXOR( cStr, "<ORIGINAL>" )
+
+   LOCAL cXorStr := CHARXOR( cStr, "<ORIGINAL>" )
+
    IF ! EMPTY( cPass )
       cXorStr := CHARXOR( cXorStr, cPass )
    ENDIF
-RETURN cXorStr
+
+   RETURN cXorStr
 
 FUNCTION _DECRYPT(cStr, cPass)
-RETURN CHARXOR( CHARXOR( cStr, cPass ), "<ORIGINAL>" )
+
+   RETURN CHARXOR( CHARXOR( cStr, cPass ), "<ORIGINAL>" )
 
 FUNCTION FI_CODE(cInFile, cPass, cOutFile, lDelete)
-LOCAL nHandle, cBuffer, cStr, nRead := 1
-LOCAL nOutHandle
+
+   LOCAL nHandle, cBuffer, cStr, nRead := 1
+   LOCAL nOutHandle
 
    IF EMPTY(cInFile) .OR. .NOT. FILE(cInFile)
       MSGSTOP("No such file")
@@ -150,11 +155,12 @@ LOCAL nOutHandle
       FERASE(cInFile)
    ENDIF
 
-RETURN NIL
+   RETURN NIL
 
 FUNCTION FI_DECODE(cInFile, cPass, cOutFile, lDelete)
-LOCAL nHandle, cBuffer, cStr, nRead := 1
-LOCAL nOutHandle
+
+   LOCAL nHandle, cBuffer, cStr, nRead := 1
+   LOCAL nOutHandle
 
    IF EMPTY(cInFile) .OR. .NOT. FILE(cInFile)
       MSGSTOP("No such file")
@@ -230,10 +236,11 @@ LOCAL nOutHandle
       FERASE(cInFile)
    ENDIF
 
-RETURN NIL
+   RETURN NIL
 
 FUNCTION DB_ENCRYPT(cFile, cPass)
-LOCAL nHandle, cBuffer := SPACE(4), cFlag := SPACE(3)
+
+   LOCAL nHandle, cBuffer := SPACE(4), cFlag := SPACE(3)
 
    IF cPass == NIL
       cPass := "<PRIMARY>"
@@ -341,10 +348,11 @@ LOCAL nHandle, cBuffer := SPACE(4), cFlag := SPACE(3)
    ENDIF
 
 
-RETURN NIL
+   RETURN NIL
 
 FUNCTION DB_UNENCRYPT(cFile, cPass)
-LOCAL nHandle, cBuffer := SPACE(4), cSavePass := SPACE(10), cFlag := SPACE(3)
+
+   LOCAL nHandle, cBuffer := SPACE(4), cSavePass := SPACE(10), cFlag := SPACE(3)
 
    IF cPass == NIL
       cPass := "<PRIMARY>"
@@ -458,17 +466,19 @@ LOCAL nHandle, cBuffer := SPACE(4), cSavePass := SPACE(10), cFlag := SPACE(3)
       MSGSTOP("No such file")
    ENDIF
 
-
-RETURN NIL
+   RETURN NIL
 
 Static Function cFileName( cMask )
-Local cName := AllTrim( cMask )
-Local n     := At( ".", cName )
-Return AllTrim( If( n > 0, Left( cName, n - 1 ), cName ) )
+
+   Local cName := AllTrim( cMask )
+   Local n     := At( ".", cName )
+
+   Return AllTrim( If( n > 0, Left( cName, n - 1 ), cName ) )
 
 FUNCTION DB_CODE(cData, cKey, aFields, cPass, cFor, cWhile)
-local cTmpFile := "__temp__.dbf", nRecno := recno(), cVal, cBuf
-Local aString[Len(aFields)] , nFields , cSeek , i , cAlias , cTmpAlias // RL
+
+   local cTmpFile := "__temp__.dbf", nRecno := recno(), cVal, cBuf
+   Local aString[Len(aFields)] , nFields , cSeek , i , cAlias , cTmpAlias // RL
 
    cData:=If(cData=nil,Alias()+".DBF",cData)
    cData:=If(at(".",cData)=0,cData+".DBF",cData)
@@ -487,67 +497,67 @@ Local aString[Len(aFields)] , nFields , cSeek , i , cAlias , cTmpAlias // RL
    Use (cTmpFile) New Exclusive
    cTmpAlias:=Alias()
 
-Select &cAlias
-Do while .not. eof() .and. &(cWhile)
-   If !&(cFor)                         // Select records that meet for condition
-      Skip
-      Loop
-   Endif
-
-   Select &cTmpAlias
-   dbAppend()                          // Create record at target file
-
-   For i=1 to nFields
-       FieldPut(i, &cAlias->(FieldGet(i)))
-   Next
-
    Select &cAlias
-   afill(aString, '')
-
-   cBuf:=&cSeek
-   cVal:=cBuf
-   Do while cBuf=cVal .and. !Eof()    // Evaluate records with same key
-      If !&(cFor)                     // Evaluate For condition within
+   Do while .not. eof() .and. &(cWhile)
+      If !&(cFor)                         // Select records that meet for condition
          Skip
          Loop
       Endif
 
-      For i=1 to Len(aString)         // Crypt values
-          aString[i]:=_ENCRYPT(FieldGet(FieldPos(aFields[i])), cPass)
+      Select &cTmpAlias
+      dbAppend()                          // Create record at target file
+
+      For i=1 to nFields
+          FieldPut(i, &cAlias->(FieldGet(i)))
       Next
 
-      skip                            // Evaluate condition in next record
-      cVal:=&cSeek
+      Select &cAlias
+      afill(aString, '')
+
+      cBuf:=&cSeek
+      cVal:=cBuf
+      Do while cBuf=cVal .and. !Eof()    // Evaluate records with same key
+         If !&(cFor)                     // Evaluate For condition within
+            Skip
+            Loop
+         Endif
+
+         For i=1 to Len(aString)         // Crypt values
+            aString[i]:=_ENCRYPT(FieldGet(FieldPos(aFields[i])), cPass)
+         Next
+
+         skip                            // Evaluate condition in next record
+         cVal:=&cSeek
+      Enddo
+
+      Select &cTmpAlias
+      For i=1 to Len(aString)            // Place Crypts in target file
+         FieldPut(FieldPos(aFields[i]), aString[i])
+      Next
+
+      Select &cAlias
    Enddo
 
    Select &cTmpAlias
-   For i=1 to Len(aString)            // Place Crypts in target file
-       FieldPut(FieldPos(aFields[i]), aString[i])
-   Next
-
-   Select &cAlias
-Enddo
-
-Select &cTmpAlias
-go top
-Do while .not. eof()
+   go top
+   Do while .not. eof()
       cVal:=&cSeek
       Select &cAlias
       seek cVal
-	rlock()
+	   rlock()
       For i=1 to nFields
          FieldPut(i, &cTmpAlias->(FieldGet(i)))
       Next
-	dbunlock()
+	   dbunlock()
       Select &cTmpAlias
       skip
-Enddo
-use                                   // Close target file
-ferase(cTmpFile)
-Select &cAlias                        // Select prior file
-go nRecno
+   Enddo
+   use                                   // Close target file
+   ferase(cTmpFile)
+   Select &cAlias                        // Select prior file
+   go nRecno
 
-RETURN NIL
+   RETURN NIL
 
 EXTERN CHARXOR
 

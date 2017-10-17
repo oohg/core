@@ -112,7 +112,7 @@ Local ControlHandle, nStyle, lBitMap, i
    ASSIGN ::nRow    VALUE y TYPE "N"
    ASSIGN ::nWidth  VALUE w TYPE "N"
    ASSIGN ::nHeight VALUE h TYPE "N"
-   
+
    lBitMap := ( ( ValType( cImage ) $ "CM" .AND. ! Empty( cImage ) ) .OR. ;
                 ( ValType( cBuffer ) $ "CM" .AND. ! Empty( cBuffer ) ) .OR. ;
                 ValidHandler( hBitMap ) ) .AND. ;
@@ -350,14 +350,14 @@ LOCAL i
             ::aImageMargin[i] := aMargins[i]
          EndIf
       Next
-      
+
       ::RePaint()
    ElseIf HB_IsNumeric( aMargins )
       ::aImageMargin := {aMargins, aMargins, aMargins, aMargins}
-      
+
       ::RePaint()
    EndIf
-   
+
 Return ::aImageMargin
 
 #pragma BEGINDUMP
@@ -582,7 +582,7 @@ int TButton_Notify_CustomDraw( LPARAM lParam, BOOL bHotLight, BOOL bFocused )
       style = GetWindowLong( pCustomDraw->hdr.hwndFrom, GWL_STYLE );
 
       state_id = PBS_NORMAL;
-      
+
       if( style & WS_DISABLED )
       {
          state_id = PBS_DISABLED;

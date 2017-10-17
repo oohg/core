@@ -586,7 +586,7 @@ Return New_hBitmap
 
 
 Function BT_BitmapClipboardGet( Win )
-   LOCAL hBitmap 
+   LOCAL hBitmap
    hBitmap := BT_BMP_GET_CLIPBOARD( BT_WinHandle( Win ) )
 Return hBitmap
 
@@ -659,7 +659,7 @@ Return Nil
 #endif
 #if ( _WIN32_IE < 0x0600 )
    #undef _WIN32_IE
-   #define _WIN32_IE 0x0600  
+   #define _WIN32_IE 0x0600
 #endif
 
 #define COBJMACROS
@@ -1311,7 +1311,7 @@ BOOL bt_SaveGDIPlusPicture( HBITMAP hBitmap, TCHAR *FileName, INT TypePicture ) 
          #endif
 
           ret1 = GdipLoadImageFromStream( iStream, &image );
-          ret2 = GdipSaveImageToFile( image, wFileName, &encoderClsid, NULL );  
+          ret2 = GdipSaveImageToFile( image, wFileName, &encoderClsid, NULL );
 
           iStream->lpVtbl->Release( iStream );
           bt_Release_GDIplus();
@@ -1368,17 +1368,17 @@ HB_FUNC( BT_DC_CREATE )    // ( Type, [ hWnd | hBitmap ] ) ---> Return array = {
          break;
 
       case BT_HDC_WINDOW:
-         BT.hWnd = HWNDparam( 2 );    
+         BT.hWnd = HWNDparam( 2 );
          BT.hDC  = GetWindowDC( BT.hWnd );
          break;
 
       case BT_HDC_ALLCLIENTAREA:
-         BT.hWnd = HWNDparam( 2 );    
+         BT.hWnd = HWNDparam( 2 );
          BT.hDC  = GetDC( BT.hWnd );
          break;
 
       case BT_HDC_INVALIDCLIENTAREA:
-         BT.hWnd = HWNDparam( 2 );    
+         BT.hWnd = HWNDparam( 2 );
          BT.hDC  = BeginPaint( BT.hWnd, &BT.PaintStruct );
 
          break;
@@ -1390,7 +1390,7 @@ HB_FUNC( BT_DC_CREATE )    // ( Type, [ hWnd | hBitmap ] ) ---> Return array = {
          break;
 
       default:
-         hb_ret(); 
+         hb_ret();
          return;
    }
 
@@ -1495,7 +1495,7 @@ HB_FUNC( BT_SCR_GETINFO )    // ( hWnd, Mode, Info )
    RECT rect;
    INT  Mode, info;
 
-   hWnd = HWNDparam( 1 );   
+   hWnd = HWNDparam( 1 );
    Mode = (INT)  hb_parni( 2 );
    info = (INT)  hb_parni( 3 );
 

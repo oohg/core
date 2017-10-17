@@ -1744,9 +1744,9 @@ Local s, _RecNo, v, cWorkArea
       Return Self
    EndIf
 
-   v := ::nRecLastValue       
+   v := ::nRecLastValue
 
-   s := ::CurrentRow       
+   s := ::CurrentRow
 
    _RecNo := ( cWorkArea )->( RecNo() )
 
@@ -3881,7 +3881,7 @@ Local r, nClientWidth, nScrollWidth, lColChanged
          ListView_RedrawItems( ::hWnd, ::nRowPos, ::ItemCount )
       EndIf
    Else
-      ::nRowPos := ::CurrentRow  
+      ::nRowPos := ::CurrentRow
       If ::nRowPos == 0
          ::nColPos := 0
       EndIf
