@@ -2139,10 +2139,7 @@ Local nStyle := 0, nStyleEx := 0
    ::SearchParent( oParent )
    ::Focused := ( HB_IsLogical( Focused ) .AND. Focused )
    nStyle += WS_CHILD
-   If _OOHG_SetControlParent()
-      // This is not working when there's a RADIO control :(
-      nStyleEx += WS_EX_CONTROLPARENT
-   EndIf
+   nStyleEx += WS_EX_CONTROLPARENT
 
    ::Define2( FormName, Caption, x, y, w, h, ::Parent:hWnd, .F., .T., .T., .T., .T., ;
               .T., virtualheight, virtualwidth, hscrollbox, vscrollbox, fontname, fontsize, aRGB, cursor, ;
@@ -2256,10 +2253,7 @@ Local nStyle := 0, nStyleEx := 0
    ::Focused := ( HB_IsLogical( Focused ) .AND. Focused )
    nStyle += WS_CHILD
    nStyleEx += WS_EX_STATICEDGE + WS_EX_TOOLWINDOW
-   If _OOHG_SetControlParent()
-      // This is not working when there's a RADIO control :(
-      nStyleEx += WS_EX_CONTROLPARENT
-   EndIf
+   nStyleEx += WS_EX_CONTROLPARENT
 
    If ! ::SetSplitBoxInfo()
       MsgOOHGError( "SplitChild Windows Can be Defined Only Inside SplitBox. Program Terminated." )

@@ -2871,14 +2871,6 @@ LOCAL nLevel, cText, oLog
    ENDIF
 Return
 
-// PATCH :(
-FUNCTION _OOHG_SetControlParent( lNewState )
-STATIC lState := .T.
-   If HB_IsLogical( lNewState )
-      lState := lNewState
-   EndIf
-RETURN lState
-
 *------------------------------------------------------------------------------*
 CLASS TDynamicValues
 *------------------------------------------------------------------------------*

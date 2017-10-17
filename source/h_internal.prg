@@ -126,10 +126,7 @@ Local ControlHandle, nStyle, nStyleEx := 0
 
    nStyleEx += if( ValType( CLIENTEDGE ) == "L" .AND. CLIENTEDGE, WS_EX_CLIENTEDGE, 0 ) + ;
                if( ::Transparent, WS_EX_TRANSPARENT, 0 )
-   If _OOHG_SetControlParent()
-      // This is not working when there's a RADIO control :(
-      nStyleEx += WS_EX_CONTROLPARENT
-   EndIf
+   nStyleEx += WS_EX_CONTROLPARENT
 
    Controlhandle := InitInternal( ::ContainerhWnd, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, nStyle, nStyleEx, ::lRtl )
 
