@@ -398,7 +398,7 @@ RETURN _OOHG_CopyBitmap( ::hImage, 0, 0 )
 #include "oohg.h"
 
 static WNDPROC lpfnOldWndProc = 0;
-static BOOL bRegistered = 0;
+static BOOL bRegistered = 0;               // TODO: Thread safe ?
 
 static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {

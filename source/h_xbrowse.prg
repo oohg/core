@@ -68,6 +68,7 @@
 #define GO_TOP    -1
 #define GO_BOTTOM  1
 
+// TODO: Thread safe ?
 STATIC _OOHG_XBrowseFixedBlocks := .T.
 STATIC _OOHG_XBrowseFixedControls := .F.
 

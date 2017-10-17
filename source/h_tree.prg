@@ -2574,7 +2574,7 @@ HB_FUNC( TREEVIEW_SETINDENT )
 }
 
 static WNDPROC lpfnOldWndProcEditCtrl = 0;
-static HWND hwndTreeView = NULL;
+static HWND hwndTreeView = NULL;                      // TODO: Thread safe ?
 
 static LRESULT APIENTRY SubClassFuncEditCtrl( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
@@ -3181,7 +3181,7 @@ HB_FUNC( TREEVIEW_ISITEMCOLLAPSED )
 
 HB_FUNC( TREEVIEW_AUTOEXPAND )
 {
-   static HTREEITEM htiPrevious = NULL;
+   static HTREEITEM htiPrevious = NULL;        // TODO: Thread safe ?
    POINT pnt;
    HTREEITEM htiTarget;
    TVHITTESTINFO tvht;

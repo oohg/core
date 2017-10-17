@@ -231,6 +231,7 @@ static void hb_retgPlusImage( gPlusImagePtr image )
 
 #else
 
+// TODO: thread safe ?
 static const HB_GC_FUNCS s_gcPlusImageFuncs =
 {
    hb_gPlusImage_Destructor,
@@ -272,6 +273,7 @@ HB_FUNC( GPLUSDEINIT )
    hb_retl( InitDeinitGdiPlus( FALSE ) );
 }
 
+// TODO: thread safe ?
 static BOOL GDIP_InitOK;
 
 BOOL InitDeinitGdiPlus( BOOL OnOff )
@@ -894,6 +896,7 @@ BOOL GDIP_IsInit( void )
    return GDIP_InitOK;
 }
 
+// TODO: thread safe ?
 static int _OOHG_GdiPlus = 2;
 
 HB_FUNC( _OOHG_SETGDIP )

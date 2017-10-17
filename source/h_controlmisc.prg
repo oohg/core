@@ -65,8 +65,8 @@
 #include "common.ch"
 #include "i_windefs.ch"
 
-STATIC _OOHG_aControlhWnd := {}, _OOHG_aControlObjects := {}
-STATIC _OOHG_aControlIds := {},  _OOHG_aControlNames := {}
+STATIC _OOHG_aControlhWnd := {}, _OOHG_aControlObjects := {}         // TODO: Thread safe?
+STATIC _OOHG_aControlIds := {},  _OOHG_aControlNames := {}           // TODO: Thread safe?
 
 STATIC _OOHG_lSettingFocus := .F.     // If there's a ::SetFocus() call inside ON ENTER event.
 STATIC _OOHG_lValidating := .F.       // If there's a ::SetFocus() call inside ON ENTER event.
@@ -2409,7 +2409,7 @@ Function _GetId()
 Local RetVal
    Do While .T.
       RetVal := Int( hb_random( 59000 ) ) + 2001   // Lower than 0xF000
-      If aScan( _OOHG_aControlIds , { |a| a[ 1 ] == RetVal } ) == 0
+      If aScan( _OOHG_aControlIds , { |a| a[ 1 ] == RetVal } ) == 0          // TODO: thread safe, move to h_application.prg
          Exit
       EndIf
    EndDo

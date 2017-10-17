@@ -519,7 +519,7 @@ HB_FUNC( _GETTOOLTIPGETDISPINFOHWND )     // ( lParam )
    HWNDret( notify->hdr.idFrom );
 }
 
-static char _OOHG_ToolTipBuffer[ 10001 ];
+static char _OOHG_ToolTipBuffer[ 10001 ];             // TODO: Thread safe ?
 
 HB_FUNC( _SETTOOLTIPGETDISPINFO )     // ( lParam, cToolTip )
 {

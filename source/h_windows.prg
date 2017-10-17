@@ -71,7 +71,6 @@ STATIC _OOHG_bKeyDown := nil         // Application-wide WM_KEYDOWN handler
 
 #include "hbclass.ch"
 
-// C static variables
 #pragma BEGINDUMP
 
 #ifndef HB_OS_WIN_32_USED
@@ -107,6 +106,7 @@ STATIC _OOHG_bKeyDown := nil         // Application-wide WM_KEYDOWN handler
    #define hb_dynsymSymbol( pDynSym )        ( ( pDynSym )->pSymbol )
 #endif
 
+// C static variables                 // TODO: Thread safe ?
 int  _OOHG_ShowContextMenus = 1;      //
 int  _OOHG_GlobalRTL = 0;             // Force RTL functionality
 int  _OOHG_NestedSameEvent = 0;       // Allows to nest an event currently performed (i.e. CLICK button)
@@ -654,7 +654,7 @@ HB_FUNC_STATIC( TWINDOW_ACCEPTFILES )
    hb_retl( ( GetWindowLong( oSelf->hWnd, GWL_EXSTYLE ) & WS_EX_ACCEPTFILES ) == WS_EX_ACCEPTFILES );
 }
 
-static UINT _OOHG_ListBoxDragNotification = 0;
+static UINT _OOHG_ListBoxDragNotification = 0;            // TODO: Thread safe ?
 
 HB_FUNC( _GETDDLMESSAGE )
 {

@@ -2138,6 +2138,7 @@ Return OKPrint
    #define HB_STORNI2( n, x )     hb_storvni( n, x )
 #endif
 
+// TODO: Thread safe ?
 static HDC hDC=NULL;
 static HDC hDCRef=NULL;
 static HDC hDCtemp;

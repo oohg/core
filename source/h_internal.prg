@@ -264,7 +264,7 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
    return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
 }
 
-static BOOL bRegistered = 0;
+static BOOL bRegistered = 0;       // TODO: Thread safe ?
 
 static LRESULT CALLBACK _OOHG_TInternal_WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
 {

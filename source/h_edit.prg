@@ -186,7 +186,7 @@
 
 
 
-// Declaración de variables globales.
+// Declaración de variables globales. // TODO: thread safe?
 STATIC _cArea          := ""                            // Nombre del area.
 STATIC _aEstructura    := {}                            // Estructura de la bdd.
 STATIC _cTitulo        := ""                            // Titulo de la ventana.

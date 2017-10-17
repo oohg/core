@@ -64,20 +64,22 @@
 
 #define ABM_CRLF HB_OsNewLine()
 
-STATIC _OOHG_Messages := { {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {} }
+STATIC _OOHG_Messages := { {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {} }          // TODO: Thread safe ?
 
 INIT PROCEDURE _OOHG_INIT()
 
    TApplication():New()
 
+   // TODO: Move to TApplication ?
    _GETDDLMESSAGE()
 
 #ifndef __XHARBOUR__
-  REQUEST DBFNTX,DBFDBT
-  ANNOUNCE HB_GTSYS
+   REQUEST DBFNTX,DBFDBT
+   ANNOUNCE HB_GTSYS
 #endif
 
- InitMessages()
+   // TODO: Move to TApplication or make thread safe ?
+   InitMessages()
 
 Return
 

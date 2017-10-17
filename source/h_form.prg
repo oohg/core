@@ -71,7 +71,7 @@
 #define HOTKEY_ACTION    4
 
 
-STATIC _OOHG_aFormhWnd := {}, _OOHG_aFormObjects := {}
+STATIC _OOHG_aFormhWnd := {}, _OOHG_aFormObjects := {}               // TODO: Thread safe ?
 STATIC _OOHG_UserWindow := nil       // User's window
 STATIC _OOHG_InteractiveClose := 1   // Interactive close
 STATIC _OOHG_ActiveModal := {}       // Modal windows' stack
@@ -1069,6 +1069,11 @@ Return lRet
 METHOD CheckInteractiveClose() CLASS TForm
 *------------------------------------------------------------------------------*
 Local lRet := .T.
+/*
+0 - close is not allowed
+1 - close is allowed, no question is asked before
+2 - close is allowed when question is answered yes
+*/
    Do Case
       Case _OOHG_InteractiveClose == 0
          MsgStop( _OOHG_Messages( 1, 3 ) )
@@ -2956,7 +2961,7 @@ EXTERN GetFormObjectByHandle
 #endif
 
 static PHB_SYMB _ooHG_Symbol_TForm = 0;
-static PHB_ITEM _OOHG_aFormhWnd, _OOHG_aFormObjects;
+static PHB_ITEM _OOHG_aFormhWnd, _OOHG_aFormObjects;           // TODO: Thread safe ?
 
 HB_FUNC( _OOHG_INIT_C_VARS_C_SIDE )
 {

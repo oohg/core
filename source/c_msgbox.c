@@ -256,6 +256,8 @@ HB_FUNC( MESSAGEBOXINDIRECT )
 }
 
 typedef int ( WINAPI * PMessageBoxTimeout )( HWND, LPCSTR, LPCSTR, UINT, WORD, DWORD );
+
+// TODO: thread safe ?
 static PMessageBoxTimeout pMessageBoxTimeout = NULL;
 
 int WINAPI MessageBoxTimeout( HWND hWnd, LPCSTR lpText, LPCSTR lpCaption, UINT uType, WORD wLanguageId, DWORD dwMilliseconds )
