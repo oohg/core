@@ -172,15 +172,15 @@ Local ControlHandle, WorkArea, uField, nStyle
    ::SetFont(, , bold, italic, underline, strikeout )
 
    If ::lDelayLoad .And. Sort
-      MsgOOHGError( "SORT and DELAYLOAD clauses can't be used simultaneously. Program Terminated." )
+      MsgOOHGError( "SORT and DELAYLOAD clauses can't be used simultaneously. Program terminated." )
    EndIf
 
    If ValType( itemsource ) != 'U' .And. Sort == .T.
-      MsgOOHGError( "SORT and ITEMSOURCE clauses can't be used simultaneously. Program Terminated." )
+      MsgOOHGError( "SORT and ITEMSOURCE clauses can't be used simultaneously. Program terminated." )
    EndIf
 
    If ValType( valuesource ) != 'U' .And. Sort == .T.
-      MsgOOHGError( "SORT and VALUESOURCE clauses can't be used simultaneously. Program Terminated." )
+      MsgOOHGError( "SORT and VALUESOURCE clauses can't be used simultaneously. Program terminated." )
    EndIf
 
    If ValType( itemsource ) == 'A'
@@ -191,7 +191,7 @@ Local ControlHandle, WorkArea, uField, nStyle
       EndIf
    ElseIf ValType( itemsource ) != 'U'
       If ! '->' $ itemsource
-         MsgOOHGError( "ITEMSOURCE clause must be a fully qualified field name. Program Terminated." )
+         MsgOOHGError( "ITEMSOURCE clause must be a fully qualified field name. Program terminated." )
       Else
          WorkArea := Left( itemsource, At( '->', itemsource ) - 1 )
          uField := Right( itemsource, Len( itemsource ) - At( '->', itemsource ) - 1 )

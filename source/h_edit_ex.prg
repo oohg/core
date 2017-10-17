@@ -248,30 +248,30 @@
 #define ABM_LIS_SET2            2
 
 // Declaración de variables globales.------------------------------------------
-static _cArea           as character            // Nombre del area de la bdd.
-static _aEstructura     as array                // Estructura de la bdd.
-static _aIndice         as array                // Nombre de los indices de la bdd.
-static _aIndiceCampo    as array                // Número del campo indice.
-static _nIndiceActivo   as array                // Indice activo.
-static _aNombreCampo    as array                // Nombre desciptivo de los campos de la bdd.
-static _aEditable       as array                // Indicador de si son editables.
-static _cTitulo         as character            // Título de la ventana.
-static _nAltoPantalla   as numeric              // Alto de la pantalla.
-static _nAnchoPantalla  as numeric              // Ancho de la pantalla.
-static _aEtiqueta       as array                // Datos de las etiquetas.
-static _aControl        as array                // Datos de los controles.
-static _aCampoTabla     as array                // Nombre de los campos para la tabla.
-static _aAnchoTabla     as array                // Anchos de los campos para la tabla.
-static _aCabeceraTabla  as array                // Texto de las columnas de la tabla.
-static _aAlineadoTabla  as array                // Alineación de las columnas de la tabla.
-static _aVisibleEnTabla as array                // Campos visibles en la tabla.
-static _nControlActivo  as numeric              // Control con foco.
-static _aOpciones       as array                // Opciones del usuario.
-static _bGuardar        as codeblock            // Acción para guardar registro.
-static _bBuscar         as codeblock            // Acción para buscar registro.
-static _bImprimir       as codeblock            // Acción para imprimir listado.
-static _lFiltro         as logical              // Indicativo de filtro activo.
-static _cFiltro         as character            // Condición de filtro.
+STATIC _cArea           AS Character            // Nombre del area de la bdd.
+STATIC _aEstructura     AS Array                // Estructura de la bdd.
+STATIC _aIndice         AS Array                // Nombre de los indices de la bdd.
+STATIC _aIndiceCampo    AS Array                // Número del campo indice.
+STATIC _nIndiceActivo   AS Array                // Indice activo.
+STATIC _aNombreCampo    AS Array                // Nombre desciptivo de los campos de la bdd.
+STATIC _aEditable       AS Array                // Indicador de si son editables.
+STATIC _cTitulo         AS Character            // Título de la ventana.
+STATIC _nAltoPantalla   AS Numeric              // Alto de la pantalla.
+STATIC _nAnchoPantalla  AS Numeric              // Ancho de la pantalla.
+STATIC _aEtiqueta       AS Array                // Datos de las etiquetas.
+STATIC _aControl        AS Array                // Datos de los controles.
+STATIC _aCampoTabla     AS Array                // Nombre de los campos para la tabla.
+STATIC _aAnchoTabla     AS Array                // Anchos de los campos para la tabla.
+STATIC _aCabeceraTabla  AS Array                // Texto de las columnas de la tabla.
+STATIC _aAlineadoTabla  AS Array                // Alineación de las columnas de la tabla.
+STATIC _aVisibleEnTabla AS Array                // Campos visibles en la tabla.
+STATIC _nControlActivo  AS Numeric              // Control con foco.
+STATIC _aOpciones       AS Array                // Opciones del usuario.
+STATIC _bGuardar        AS Codeblock            // Acción para guardar registro.
+STATIC _bBuscar         AS Codeblock            // Acción para buscar registro.
+STATIC _bImprimir       AS Codeblock            // Acción para imprimir listado.
+STATIC _lFiltro         AS Logical              // Indicativo de filtro activo.
+STATIC _cFiltro         AS Character            // Condición de filtro.
 
 
 

@@ -2582,7 +2582,7 @@ LOCAL nRet, nColumns := Len( ::aHeaders ) + 1
                               uValid, uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign, ;
                               uReadOnly )
    If nRet # nColIndex
-      MsgOOHGError( "XBrowse: Column added in another place. Program Terminated." )
+      MsgOOHGError( "XBrowse: Column added in another place. Program terminated." )
    EndIf
 
    If ! HB_IsLogical( lRefresh ) .OR. lRefresh

@@ -1532,7 +1532,7 @@ Local mVar
 
    AADD( _OOHG_aControlhWnd,    hWnd )
    AADD( _OOHG_aControlObjects, Self )
-   AADD( _OOHG_aControlIds,     { ::Id, ::Parent:hWnd } ) // ::Id )
+   AADD( _OOHG_aControlIds,     { ::Id, ::Parent:hWnd } )
    AADD( _OOHG_aControlNames,   UPPER( ::Parent:Name + CHR( 255 ) + ::Name ) )
 
    mVar := "_" + ::Parent:Name + "_" + ::Name
@@ -2399,7 +2399,7 @@ Function GetExistingControlObject( ControlName, FormName )
 Local mVar
    mVar := '_' + FormName + '_' + ControlName
    If ! Type( mVar ) == "O"
-      MsgOOHGError( "Control: " + ControlName + " of " + FormName + " not defined. Program Terminated." )
+      MsgOOHGError( "Control: " + ControlName + " of " + FormName + " not defined. Program terminated." )
    EndIf
 Return &mVar
 

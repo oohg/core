@@ -93,7 +93,7 @@ Local oTab
    ASSIGN transparent VALUE transparent TYPE "L"  DEFAULT .T.
 
    If opaque .AND. transparent
-      MsgOOHGError( "OPAQUE and TRANSPARENT clauses can't be used simultaneously. Program Terminated." )
+      MsgOOHGError( "OPAQUE and TRANSPARENT clauses can't be used simultaneously. Program terminated." )
    EndIf
 
    If valtype( caption ) == 'U'

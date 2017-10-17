@@ -156,13 +156,13 @@ Local acButton, acLabel, acUser, acPrint
                          "&Cancel", ;
                          "&OK" }
    acBrowseError    := { "Window: ", ;
-                         " is not defined. Program Terminated.", ;
+                         " is not defined. Program terminated.", ;
                          "OOHG Error", ;
                          "Control: ", ;
                          " Of ", ;
-                         " Already defined. Program Terminated.", ;
-                         "Browse: Type Not Allowed. Program Terminated.", ;
-                         "Browse: Append Clause Can't Be Used With Fields Not Belonging To Browse WorkArea. Program Terminated.", ;
+                         " Already defined. Program terminated.", ;
+                         "Browse: Type Not Allowed. Program terminated.", ;
+                         "Browse: Append Clause Can't Be Used With Fields Not Belonging To Browse WorkArea. Program terminated.", ;
                          "Record Is Being Edited By Another User", ;
                          "Warning", ;
                          "Invalid Entry" }
@@ -2208,13 +2208,13 @@ Local acButton, acLabel, acUser, acPrint
                          "Prekini", ;
                          "V redu" }
    acBrowseError    := { "Window: ", ;
-                         " not defined. Program Terminated.", ;
+                         " not defined. Program terminated.", ;
                          "OOHG Error", ;
                          "Control: ", ;
                          " Of ", ;
-                         " Already defined. Program Terminated.", ;
-                         "Type Not Allowed. Program Terminated.", ;
-                         "False WorkArea. Program Terminated.", ;
+                         " Already defined. Program terminated.", ;
+                         "Type Not Allowed. Program terminated.", ;
+                         "False WorkArea. Program terminated.", ;
                          "Zapis ureja drug uporabnik", ;
                          "Opozorilo", ;
                          "Narobe vnos" }

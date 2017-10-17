@@ -187,19 +187,19 @@
 
 
 // Declaración de variables globales.
-static _cArea          := ""                            // Nombre del area.
-static _aEstructura    := {}                            // Estructura de la bdd.
-static _cTitulo        := ""                            // Titulo de la ventana.
-static _aCampos        := {}                            // Nombre de los campos.
-static _aEditables     := {}                            // Controles editables.
-static _bGuardar       := {|| NIL }                     // Bloque para la accion guardar.
-static _bBuscar        := {|| NIL }                     // Bloque para la acción buscar.
-static _OOHG_aControles     := {}                            // Controles de edición.
-static _aBotones       := {}                            // Controles BUTTON.
-static _lEditar        := .t.                           // Modo.
-static _aCamposListado := {}                            // Campos del listado.
-static _aAnchoCampo    := {}                            // Ancho campos listado.
-static _aNumeroCampo   := {}                            // Numero de campo del listado.
+STATIC _cArea          := ""                            // Nombre del area.
+STATIC _aEstructura    := {}                            // Estructura de la bdd.
+STATIC _cTitulo        := ""                            // Titulo de la ventana.
+STATIC _aCampos        := {}                            // Nombre de los campos.
+STATIC _aEditables     := {}                            // Controles editables.
+STATIC _bGuardar       := {|| NIL }                     // Bloque para la accion guardar.
+STATIC _bBuscar        := {|| NIL }                     // Bloque para la acción buscar.
+STATIC _OOHG_aControles     := {}                            // Controles de edición.
+STATIC _aBotones       := {}                            // Controles BUTTON.
+STATIC _lEditar        := .t.                           // Modo.
+STATIC _aCamposListado := {}                            // Campos del listado.
+STATIC _aAnchoCampo    := {}                            // Ancho campos listado.
+STATIC _aNumeroCampo   := {}                            // Numero de campo del listado.
 
 
 

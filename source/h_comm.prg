@@ -242,7 +242,7 @@ LOCAL pData, cLen, cType, FileName, Rows, Cols
 					pData := Data [i]
 					cLen := Alltrim(Str(Len(pData)))
 				Else
-               MsgOOHGError('SendData: Type Not Suported. Program Terminated.')
+               MsgOOHGError('SendData: Type Not Suported. Program terminated.')
 				EndIf
 
 				cData := cData + '#DataBlock='	+ cType	+ ',' + cLen + chr(13) + chr(10)
@@ -283,7 +283,7 @@ LOCAL pData, cLen, cType, FileName, Rows, Cols
 					pData := Data [i] [j]
 					cLen := Alltrim(Str(Len(pData)))
 				Else
-               MsgOOHGError('SendData: Type Not Suported. Program Terminated.')
+               MsgOOHGError('SendData: Type Not Suported. Program terminated.')
 				EndIf
 
 				cData := cData + '#DataBlock='	+ cType	+ ',' + cLen+ chr(13) + chr(10)
@@ -317,7 +317,7 @@ LOCAL pData, cLen, cType, FileName, Rows, Cols
 			pData := Data
 			cLen := Alltrim(Str(Len(pData)))
 		Else
-         MsgOOHGError( "SendData: Type Not Suported. Program Terminated." )
+         MsgOOHGError( "SendData: Type Not Suported. Program terminated." )
 		EndIf
 
 		cData := '#DataRows=0'		+ chr(13) + chr(10)

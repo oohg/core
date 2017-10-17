@@ -321,11 +321,11 @@ Local ControlHandle, aImageList, i
    ASSIGN ::aHeaders VALUE aHeaders TYPE "A"
 
    If Len( ::aHeaders ) != Len( ::aWidths )
-      MsgOOHGError( "Grid: HEADERS/WIDTHS array size mismatch. Program Terminated." )
+      MsgOOHGError( "Grid: HEADERS/WIDTHS array size mismatch. Program terminated." )
    EndIf
    If HB_IsArray( aRows )
       If AScan( aRows, { |a| ! HB_IsArray( a ) .OR. Len( a ) != Len( aHeaders ) } ) > 0
-         MsgOOHGError( "Grid: ITEMS length mismatch. Program Terminated." )
+         MsgOOHGError( "Grid: ITEMS length mismatch. Program terminated." )
       EndIf
    Else
       aRows := {}
@@ -386,7 +386,7 @@ Local ControlHandle, aImageList, i
    ::EditControls := editcontrols
 
    If ::lCheckBoxes .AND. ::lPLM
-      MsgOOHGError( "CHECKBOXES and PAINTLEFTMARGIN clauses can't be used simultaneously. Program Terminated." )
+      MsgOOHGError( "CHECKBOXES and PAINTLEFTMARGIN clauses can't be used simultaneously. Program terminated." )
    EndIf
 
    nStyle := ::InitStyle( nStyle,, lInvisible, lNoTabStop, lDisabled ) + ;
@@ -3267,7 +3267,7 @@ METHOD AddItem( aRow, uForeColor, uBackColor ) CLASS TGrid
 Local aText
 
    If Len( ::aHeaders ) != Len( aRow )
-      MsgOOHGError( "Grid.AddItem: Item size mismatch. Program Terminated." )
+      MsgOOHGError( "Grid.AddItem: Item size mismatch. Program terminated." )
    EndIf
 
    aText := TGrid_SetArray( Self, aRow )
@@ -3291,7 +3291,7 @@ Local aText
     */
 
    If Len( ::aHeaders ) != Len( aRow )
-      MsgOOHGError( "Grid.InsertItem: Item size mismatch. Program Terminated." )
+      MsgOOHGError( "Grid.InsertItem: Item size mismatch. Program terminated." )
    EndIf
 
    aText := TGrid_SetArray( Self, aRow )
@@ -6550,7 +6550,7 @@ Local cValueSource, cWorkArea, cField, nRecno, aIt, aVa, uValue
          Else
             uValue := &( cValueSource )
             If ! ValType( uValue ) == ::cRetValType
-               MsgOOHGError( "GridControl: ValueSource/RetVal type mismatch. Program Terminated." )
+               MsgOOHGError( "GridControl: ValueSource/RetVal type mismatch. Program terminated." )
             EndIf
          EndIf
          AAdd( aVa, uValue )

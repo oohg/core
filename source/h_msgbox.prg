@@ -63,11 +63,11 @@
 #include 'oohg.ch'
 #include 'i_windefs.ch'
 
-static _OOHG_AutoTypeNoSpaces := .F.
-static _OOHG_OneItemPerLine := .F.
-static _OOHG_MsgDefaultMessage := ''
-static _OOHG_MsgDefaultTitle := ''
-static _OOHG_MsgDefaultMode := Nil
+STATIC _OOHG_AutoTypeNoSpaces := .F.
+STATIC _OOHG_OneItemPerLine := .F.
+STATIC _OOHG_MsgDefaultMessage := ''
+STATIC _OOHG_MsgDefaultTitle := ''
+STATIC _OOHG_MsgDefaultMode := Nil
 // Nil equals MB_SYSTEMMODAL, other valid values are MB_APPLMODAL and MB_TASKMODAL
 // See https://msdn.microsoft.com/en-us/library/windows/desktop/ms645505(v=vs.85).aspx
 

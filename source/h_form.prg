@@ -320,7 +320,7 @@ Local Formhandle, aRet
    FormName := _OOHG_GetNullName( FormName )
 
    If _IsWindowDefined( FormName )
-      MsgOOHGError( "Window: " + FormName + " already defined. Program Terminated." )
+      MsgOOHGError( "Window: " + FormName + " already defined. Program terminated." )
    Endif
 
    If ! valtype( Caption ) $ "CM"
@@ -382,7 +382,7 @@ Local Formhandle, aRet
       UnRegisterWindow( FormName )
       aRet := RegisterWindow( icon, FormName, aRGB, nWindowType )
       If aRet[ 2 ]
-         MsgOOHGError( "Window " + FormName + " registration Failed. Program Terminated." )
+         MsgOOHGError( "Window " + FormName + " registration failed. Program terminated." )
       EndIf
       ::BrushHandle := aRet[ 1 ]
       Formhandle := InitWindow( Caption, x, y, ::nWidth, ::nHeight, Parent, FormName, nStyle, nStyleEx, lRtl )
@@ -564,26 +564,26 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
 *------------------------------------------------------------------------------*
 
    If ::Active
-      MsgOOHGError( "Window: " + ::Name + " already active. Program Terminated." )
+      MsgOOHGError( "Window: " + ::Name + " already active. Program terminated." )
    Endif
 
    ASSIGN lNoStop VALUE lNoStop TYPE "L" DEFAULT .F.
 
    If _OOHG_ThisEventType == 'WINDOW_RELEASE' .AND. ! lNoStop
-      MsgOOHGError( "ACTIVATE WINDOW: activate windows within an 'on release' window procedure is not allowed. Program Terminated." )
+      MsgOOHGError( "ACTIVATE WINDOW: activate windows within an 'on release' window procedure is not allowed. Program terminated." )
    Endif
 
    TForm_WindowStructureClosed( Self )
    // If Len( _OOHG_ActiveForm ) > 0
-   //    MsgOOHGError( "ACTIVATE WINDOW: DEFINE WINDOW structure is not closed. Program Terminated." )
+   //    MsgOOHGError( "ACTIVATE WINDOW: DEFINE WINDOW structure is not closed. Program terminated." )
    // Endif
 
    If _OOHG_ThisEventType == 'WINDOW_GOTFOCUS'
-      MsgOOHGError( "ACTIVATE WINDOW / Activate(): Not allowed in window's GOTFOCUS event procedure. Program Terminated." )
+      MsgOOHGError( "ACTIVATE WINDOW / Activate(): Not allowed in window's GOTFOCUS event procedure. Program terminated." )
    Endif
 
    If _OOHG_ThisEventType == 'WINDOW_LOSTFOCUS'
-      MsgOOHGError( "ACTIVATE WINDOW / Activate(): Not allowed in window's LOSTFOCUS event procedure. Program Terminated." )
+      MsgOOHGError( "ACTIVATE WINDOW / Activate(): Not allowed in window's LOSTFOCUS event procedure. Program terminated." )
    Endif
 
    // Checks for non-stop window
@@ -619,7 +619,7 @@ Return Nil
 
 STATIC FUNCTION TForm_WindowStructureClosed( Self )
    If ASCAN( _OOHG_ActiveForm, { |o| o:Name == ::Name .AND. o:hWnd == ::hWnd } ) > 0
-      MsgOOHGError( "ACTIVATE WINDOW: DEFINE WINDOW structure for window " + ::Name + " is not closed. Program Terminated." )
+      MsgOOHGError( "ACTIVATE WINDOW: DEFINE WINDOW structure for window " + ::Name + " is not closed. Program terminated." )
    EndIf
    AEVAL( ::SplitChildList, { |o| TForm_WindowStructureClosed( o ) } )
 Return nil
@@ -645,7 +645,7 @@ METHOD Release() CLASS TForm
 *------------------------------------------------------------------------------*
    If ! ::lReleasing
       If ! ::Active
-         MsgOOHGError( "Window: " + ::Name + " is not active. Program Terminated." )
+         MsgOOHGError( "Window: " + ::Name + " is not active. Program terminated." )
       Endif
 
       _ReleaseWindowList( { Self } )
@@ -1930,7 +1930,7 @@ METHOD Define( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
 Local nStyle := 0, nStyleEx := 0
 
    If _OOHG_Main != nil
-      MsgOOHGError( "Main Window Already Defined. Program Terminated." )
+      MsgOOHGError( "Main window already defined. Program terminated." )
    Endif
 
    _OOHG_Main := Self
@@ -2086,7 +2086,7 @@ METHOD Release() CLASS TFormModal
 *------------------------------------------------------------------------------*
    If ! ::lReleasing
       If ( Len( _OOHG_ActiveModal ) == 0 .OR. ATAIL( _OOHG_ActiveModal ):hWnd <> ::hWnd ) .AND. IsWindowVisible( ::hWnd )
-         MsgOOHGError( "Non top modal window *" + ::Name + "* can't be released. Program Terminated." )
+         MsgOOHGError( "Non top modal window *" + ::Name + "* can't be released. Program terminated." )
       EndIf
 	EndIf
 Return ::Super:Release()
@@ -2259,7 +2259,7 @@ Local nStyle := 0, nStyleEx := 0
    nStyleEx += WS_EX_CONTROLPARENT
 
    If ! ::SetSplitBoxInfo()
-      MsgOOHGError( "SplitChild Windows Can be Defined Only Inside SplitBox. Program Terminated." )
+      MsgOOHGError( "SplitChild windows can be defined only inside SplitBox. Program terminated." )
    EndIf
 
    ::Define2( FormName, Title, 0, 0, w, h, ::Parent:hWnd, .F., .F., .F., .F., .F., ;
@@ -2516,7 +2516,7 @@ Local aError := {}
    EndIf
 
    if Len( aError ) > 1
-      MsgOOHGError( "Window: " + aError[ 1 ] + " and " + aError[ 2 ] + " clauses can't be used Simultaneously. Program Terminated." )
+      MsgOOHGError( "Window: " + aError[ 1 ] + " and " + aError[ 2 ] + " clauses can't be used simultaneously. Program terminated." )
    endif
 
    If main
@@ -2662,7 +2662,7 @@ Function GetExistingFormObject( FormName )
 Local mVar
    mVar := '_' + FormName
    If ! Type( mVar ) == "O"
-      MsgOOHGError( "Window " + FormName + " not defined. Program Terminated." )
+      MsgOOHGError( "Window " + FormName + " not defined. Program terminated." )
    EndIf
 Return &mVar
 
@@ -2714,11 +2714,11 @@ Local z, aForm2, oWndActive, oWnd, lModal
    FOR z := 1 TO Len( aForm2 )
       oWnd := GetFormObject( aForm2[ z ] )
       IF ! ValidHandler( oWnd:hWnd )
-         MsgOOHGError( "ACTIVATE WINDOW: Window " + aForm2[ z ] + " not defined. Program Terminated." )
+         MsgOOHGError( "ACTIVATE WINDOW: Window " + aForm2[ z ] + " not defined. Program terminated." )
       ENDIF
       IF oWnd:Type == "M" .AND. oWnd:lVisible
          IF lModal
-            MsgOOHGError( "ACTIVATE WINDOW: Only one initially visible modal window allowed. Program Terminated." )
+            MsgOOHGError( "ACTIVATE WINDOW: Only one initially visible modal window allowed. Program terminated." )
          ENDIF
          lModal := .T.
       ENDIF
@@ -2740,13 +2740,13 @@ Local MainName := ''
 
    // Not mandatory MAIN
    // If _OOHG_Main == nil
-   //    MsgOOHGError( "MAIN WINDOW not defined. Program Terminated." )
+   //    MsgOOHGError( "MAIN WINDOW not defined. Program terminated." )
    // EndIf
 
 	* If Already Active Windows Abort Command
 
    If ascan( _OOHG_aFormObjects, { |o| o:Active .AND. ! o:lInternal } ) > 0
-      MsgOOHGError( "ACTIVATE WINDOW ALL: This Command Should Be Used At Application Startup Only. Program Terminated." )
+      MsgOOHGError( "ACTIVATE WINDOW ALL: This command should be used at application startup only. Program terminated." )
 	EndIf
 
 // WHY???   * Force NoShow And NoAutoRelease Styles For Non Main Windows
@@ -2770,9 +2770,9 @@ Local MainName := ''
 	* Check For Error And Call Activate Window Command
 
    If Empty( MainName )
-      MsgOOHGError( "ACTIVATE WINDOW ALL: Main Window Not Defined. Program Terminated." )
+      MsgOOHGError( "ACTIVATE WINDOW ALL: Main window not defined. Program terminated." )
    ElseIf Len( aForm ) == 0
-      MsgOOHGError( "ACTIVATE WINDOW ALL: No Windows Defined. Program Terminated." )
+      MsgOOHGError( "ACTIVATE WINDOW ALL: No windows defined. Program terminated." )
 	Else
       _ActivateWindow( aForm )
 	EndIf

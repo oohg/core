@@ -358,7 +358,7 @@ Local oWnd := GetFormObject( parent )
       lError := .T.
    EndIf
    If lError
-      MsgOOHGError( "DRAW GRAPH: Graph type is not valid. Program Terminated." )
+      MsgOOHGError( "DRAW GRAPH: Graph type is not valid. Program terminated." )
    EndIf
 
    If ! lLegends
@@ -367,7 +367,7 @@ Local oWnd := GetFormObject( parent )
 
    If ( Len( aSeries ) != Len( aData ) ) .or. ;
       ( Len( aSeries ) != Len( aColors ) )
-      MsgOOHGError( "DRAW GRAPH: 'Series' / 'SerieNames' / 'Colors' Arrays size mismatch. Program Terminated." )
+      MsgOOHGError( "DRAW GRAPH: 'Series' / 'SerieNames' / 'Colors' Arrays size mismatch. Program terminated." )
    EndIf
 
    If _IsControlDefined( 'Graph_Title', parent )

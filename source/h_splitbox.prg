@@ -98,7 +98,7 @@ Local ControlHandle, nStyle
    ::SetForm( , ParentForm,,,,,, lRtl )
 
    If ::Container != nil .AND. ! ValidHandler( ::ContainerhWndValue )
-      MsgOOHGError( "SPLITBOX can't be defined inside Tab control. Program Terminated." )
+      MsgOOHGError( "SPLITBOX can't be defined inside Tab control. Program terminated." )
    EndIf
 
    ASSIGN ::lInverted VALUE inverted   TYPE "L"

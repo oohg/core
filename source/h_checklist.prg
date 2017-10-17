@@ -176,7 +176,7 @@ LOCAL aHdr, aWidth, aJust, aPic, aEdC
                                 Len( a ) # 2 .OR. ;
                                 ! ValType( a[1] ) $ "CM" .OR. ;
                                 ValType( a[2] ) # "N" } ) > 0
-            MsgOOHGError( "CheckList.Define: Invalid items. Program Terminated." )
+            MsgOOHGError( "CheckList.Define: Invalid items. Program terminated." )
          EndIf
       Else
          aRows := {}
@@ -191,7 +191,7 @@ LOCAL aHdr, aWidth, aJust, aPic, aEdC
 
       If HB_IsArray( aRows )
          If aScan( aRows, { |a| ! ValType( a ) $ "CM" } ) > 0
-            MsgOOHGError( "CheckList.Define: Invalid items. Program Terminated." )
+            MsgOOHGError( "CheckList.Define: Invalid items. Program terminated." )
          EndIf
       Else
          aRows := {}
@@ -470,13 +470,13 @@ Local aRow
 
    If ValidHandler( ::ImageList )
       If Len( uItem ) # 2
-         MsgOOHGError( "CheckList.AddItem: Item size mismatch. Program Terminated." )
+         MsgOOHGError( "CheckList.AddItem: Item size mismatch. Program terminated." )
       ElseIf ! HB_IsArray( uItem ) .OR. ! ValType( uItem[1] ) $ "CM" .OR. ValType( uItem[2] ) # "N"
-         MsgOOHGError( "CheckList.AddItem: Invalid item. Program Terminated." )
+         MsgOOHGError( "CheckList.AddItem: Invalid item. Program terminated." )
       EndIf
    Else
       If ! ValType( uItem ) $ "CM"
-         MsgOOHGError( "CheckList.AddItem: Invalid item. Program Terminated." )
+         MsgOOHGError( "CheckList.AddItem: Invalid item. Program terminated." )
       EndIf
    EndIf
    aRow := { uItem }
@@ -500,13 +500,13 @@ Local aRow, aValue
 
    If ValidHandler( ::ImageList )
       If Len( uItem ) # 2
-         MsgOOHGError( "CheckList.InsertItem: Item size mismatch. Program Terminated." )
+         MsgOOHGError( "CheckList.InsertItem: Item size mismatch. Program terminated." )
       ElseIf ! HB_IsArray( uItem ) .OR. ! ValType( uItem[1] ) $ "CM" .OR. ValType( uItem[2] ) # "N"
-         MsgOOHGError( "CheckList.InsertItem: Invalid item. Program Terminated." )
+         MsgOOHGError( "CheckList.InsertItem: Invalid item. Program terminated." )
       EndIf
    Else
       If ! ValType( uItem ) $ "CM"
-         MsgOOHGError( "CheckList.InsertItem: Invalid item. Program Terminated." )
+         MsgOOHGError( "CheckList.InsertItem: Invalid item. Program terminated." )
       EndIf
    EndIf
    aRow := { uItem }
@@ -573,13 +573,13 @@ Local aRow
 
    If ValidHandler( ::ImageList )
       If Len( uItem ) # 2
-         MsgOOHGError( "CheckList.Item: Item size mismatch. Program Terminated." )
+         MsgOOHGError( "CheckList.Item: Item size mismatch. Program terminated." )
       ElseIf ! HB_IsArray( uItem ) .OR. ! ValType( uItem[1] ) $ "CM" .OR. ValType( uItem[2] ) # "N"
-         MsgOOHGError( "CheckList.Item: Invalid item. Program Terminated." )
+         MsgOOHGError( "CheckList.Item: Invalid item. Program terminated." )
       EndIf
    Else
       If ! ValType( uItem ) $ "CM"
-         MsgOOHGError( "CheckList.Item: Invalid item. Program Terminated." )
+         MsgOOHGError( "CheckList.Item: Invalid item. Program terminated." )
       EndIf
    EndIf
    aRow := { uItem }

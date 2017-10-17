@@ -149,7 +149,7 @@ Local ControlHandle, id, lSplitActive, nStyle, oCtrl
    ASSIGN ::lVertical     VALUE lVertical TYPE "L"
 
    If ! ::lTop .AND. ::lVertical
-      MsgOOHGError( "BOTTOM and VERTICAL clauses can't be used simultaneously. Program Terminated." )
+      MsgOOHGError( "BOTTOM and VERTICAL clauses can't be used simultaneously. Program terminated." )
    EndIf
 
    ::SetForm( ControlName, ParentForm, fontName, fontSize, Nil, Nil, Nil, lRtl )
@@ -437,7 +437,7 @@ Local id, nPos
    ASSIGN WholeDropdown VALUE WholeDropdown TYPE "L"  DEFAULT .F.
 
    If ValType( ProcedureName ) == "B" .and. WholeDropdown
-      MsgOOHGError( "ACTION and WHOLEDROPDOWN clauses can't be used simultaneously. Program Terminated." )
+      MsgOOHGError( "ACTION and WHOLEDROPDOWN clauses can't be used simultaneously. Program terminated." )
    EndIf
 
    id := _GetId()

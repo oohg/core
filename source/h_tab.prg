@@ -1448,9 +1448,9 @@ METHOD AdjustResize( nDivh, nDivw, lSelfOnly ) CLASS TTabPage
       // are set by the container. See ::Events_Size() and ::Container:SizePos()
       ::Sizepos()
 
-      IF _OOHG_adjustWidth
+      IF _OOHG_AdjustWidth
          IF ! ::lFixWidth
-            IF _OOHG_adjustFont
+            IF _OOHG_AdjustFont
                IF ! ::lFixFont
                   ::fontsize := ::fontsize * nDivw
                ENDIF
@@ -1524,11 +1524,11 @@ METHOD AdjustResize( nDivh, nDivw, lSelfOnly ) CLASS TTabPageInternal
       // are set by the container. See ::Events_Size() and ::Container:SizePos()
       ::Sizepos()
 
-      IF _OOHG_adjustWidth
+      IF _OOHG_AdjustWidth
          IF ! ::lFixWidth
-            IF _OOHG_adjustFont
+            IF _OOHG_AdjustFont
                IF ! ::lFixFont
-                  ::fontsize := ::fontsize * nDivw
+                  ::FontSize := ::FontSize * nDivw
                ENDIF
             ENDIF
          ENDIF

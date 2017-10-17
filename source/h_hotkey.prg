@@ -96,7 +96,7 @@ LOCAL aKey
       Keybd_Event( aKey[ 1 ], .f. )
       Keybd_Event( aKey[ 1 ], .t. )
    ELSE
-      MsgOOHGError( "PUSH KEY: Key combination name not valid: " + cKey + ". Program Terminated." )
+      MsgOOHGError( "PUSH KEY: Key combination name not valid: " + cKey + ". Program terminated." )
    ENDIF
 Return Nil
 
@@ -169,7 +169,7 @@ LOCAL aKey, oBase, bCode
          oBase:_HOTKEYMETHOD( aKey[ 1 ], aKey[ 2 ], bAction )
       ENDIF
    ELSE
-      MsgOOHGError( "HOTKEY: Key combination name not valid: " + cKey + ". Program Terminated." )
+      MsgOOHGError( "HOTKEY: Key combination name not valid: " + cKey + ". Program terminated." )
       // bCode := NIL
    ENDIF
 Return bCode
@@ -187,7 +187,7 @@ LOCAL aKey, oBase, bCode
          oBase:AcceleratorKey( aKey[ 1 ], aKey[ 2 ], bAction )
       ENDIF
    ELSE
-      MsgOOHGError( "ACCELERATOR: Key combination name not valid: " + cKey + ". Program Terminated." )
+      MsgOOHGError( "ACCELERATOR: Key combination name not valid: " + cKey + ". Program terminated." )
       // bCode := NIL
    ENDIF
 Return bCode

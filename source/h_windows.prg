@@ -1224,7 +1224,7 @@ METHOD SearchParent( uParent ) CLASS TWindow
 Local nPos
    If ValType( uParent ) $ "CM" .AND. ! Empty( uParent )
       If ! _IsWindowDefined( uParent )
-         MsgOOHGError( "Window: "+ uParent + " is not defined. Program Terminated." )
+         MsgOOHGError( "Window: "+ uParent + " is not defined. Program terminated." )
       Else
          uParent := GetFormObject( uParent )
       Endif
@@ -1236,7 +1236,7 @@ Local nPos
 
    If ::lInternal
       If ! HB_IsObject( uParent )
-         MsgOOHGError( "Window: No window name specified. Program Terminated." )
+         MsgOOHGError( "No name specified for new window. Program terminated." )
       EndIf
 
       // NOTE: For INTERNALs, sets ::Parent and ::Container
@@ -1608,13 +1608,13 @@ LOCAL nFixedHeightUsed
 
       ::Sizepos( ( ::Row - nFixedHeightUsed ) * nDivh + nFixedHeightUsed, ::Col * nDivw )
 
-      IF _OOHG_adjustWidth
+      IF _OOHG_AdjustWidth
          IF ! ::lFixWidth
-            ::Sizepos( , , ::width * nDivw, ::height * nDivh )
+            ::Sizepos( , , ::Width * nDivw, ::Height * nDivh )
 
-            IF _OOHG_adjustFont
+            IF _OOHG_AdjustFont
                IF ! ::lFixFont
-                  ::fontsize := ::fontsize * nDivw
+                  ::FontSize := ::FontSize * nDivw
                ENDIF
             ENDIF
          ENDIF

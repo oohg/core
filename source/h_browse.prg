@@ -939,7 +939,7 @@ Local _RecNo, m, cWorkArea
 
    If _OOHG_ThisEventType == 'BROWSE_ONCHANGE'
       If ::hWnd == _OOHG_ThisControl:hWnd
-         MsgOOHGError( "BROWSE: Value property can't be changed inside ON CHANGE event. Program Terminated." )
+         MsgOOHGError( "BROWSE: Value property can't be changed inside ON CHANGE event. Program terminated." )
       EndIf
    EndIf
 
@@ -3421,7 +3421,7 @@ Local nRow, nCol, _RecNo, m, hWnd, cWorkArea
    hWnd := ::hWnd
    If _OOHG_ThisEventType == 'BROWSE_ONCHANGE'
       If hWnd == _OOHG_ThisControl:hWnd
-         MsgOOHGError( "BROWSEBYCELL: Value property can't be changed inside ONCHANGE event. Program Terminated." )
+         MsgOOHGError( "BROWSEBYCELL: Value property can't be changed inside ONCHANGE event. Program terminated." )
       EndIf
    EndIf
 
