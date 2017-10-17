@@ -132,6 +132,7 @@ CLASS TForm FROM TWindow
    DATA hBackImage         INIT nil
    DATA lentersizemove     INIT .F.
    DATA ldefined           INIT .F.
+   DATA uFormCursor        INIT IDC_ARROW
 
    DATA OnRelease          INIT nil
    DATA OnInit             INIT nil
@@ -214,7 +215,7 @@ CLASS TForm FROM TWindow
    METHOD ToolTipIcon( nIcon )            BLOCK { |Self,nIcon| ::oToolTip:Icon( nIcon ) }
    METHOD ToolTipTitle( cTitle )          BLOCK { |Self,cTitle| ::oToolTip:Title( cTitle ) }
 
-   METHOD getWindowState()
+   METHOD GetWindowState()
 
    METHOD SetActivationFocus
    METHOD ProcessInitProcedure
@@ -876,9 +877,11 @@ Return if( nPos == 0, "", ::aControls[ nPos ]:Name )
 METHOD Cursor( uValue ) CLASS TForm
 *------------------------------------------------------------------------------*
    IF uValue != nil
-      SetWindowCursor( ::hWnd, uValue )
+      IF SetWindowCursor( ::hWnd, uValue )
+         ::uFormCursor := uValue
+      ENDIF
    ENDIF
-Return nil
+Return ::uFormCursor
 
 *------------------------------------------------------------------------------*
 METHOD AutoAdjust( nDivH, nDivW ) CLASS TForm
