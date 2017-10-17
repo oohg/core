@@ -415,30 +415,36 @@ Local cMessage, cType, l, i
    do case
    case cType $ "CNLDM"
       cMessage := transform( Message, "@" ) + iif( _OOHG_AutoTypeNoSpaces, "", "   " )
-   case cType = "O"
+   case cType == "O"
       cMessage := Message:ClassName() + " :Object:" + iif( _OOHG_AutoTypeNoSpaces, "", "   " )
-   case cType = "A"
+   case cType == "A"
       l := len( Message )
       cMessage := ""
       for i := 1 to l
          if _OOHG_OneItemPerLine
-            cMessage := cMessage + iif( i = l, AutoType( Message[ i ] ), AutoType( Message[ i ] ) + iif( _OOHG_AutoTypeNoSpaces, "", "   " ) + chr( 13 ) + chr( 10 ) )
+            cMessage := cMessage + iif( i == l, AutoType( Message[ i ] ), AutoType( Message[ i ] ) + iif( _OOHG_AutoTypeNoSpaces, "", "   " ) + chr( 13 ) + chr( 10 ) )
          else
-            cMessage := cMessage + iif( i = l, AutoType( Message[ i ] ) + chr( 13 ) + chr( 10 ), AutoType( Message[ i ] ) + iif( _OOHG_AutoTypeNoSpaces, "", "   " ) )
+            cMessage := cMessage + iif( i == l, AutoType( Message[ i ] ) + chr( 13 ) + chr( 10 ), AutoType( Message[ i ] ) + iif( _OOHG_AutoTypeNoSpaces, "", "   " ) )
          endif
       next i
-   case cType = "B"
+   case cType == "B"
       cMessage := "{|| Codeblock }" + iif( _OOHG_AutoTypeNoSpaces, "", "   " )
-   case cType = "H"
+   case cType == "H"
       cMessage := ":Hash:" + iif( _OOHG_AutoTypeNoSpaces, "", "   " )
-   case cType = "P"
+   case cType == "P"
       #ifdef __XHARBOUR__
          cMessage :=  ltrim( Hb_ValToStr( Message )) + " HexToNum()=> " + ltrim( str( HexToNum( substr( Hb_ValToStr( Message ), 3 ) ) ) ) + iif( _OOHG_AutoTypeNoSpaces, "", "   " )
       #else
          cMessage :=  ltrim( Hb_ValToStr( Message )) + " Hb_HexToNum()=> " + ltrim( str( Hb_HexToNum( substr( Hb_ValToStr( Message ), 3 ) ) ) ) + iif( _OOHG_AutoTypeNoSpaces, "", "   " )
       #endif
-   otherwise
+   case cType == "T"
+      cMessage := "t'" + hb_TSToStr( Message, .T. ) + "'" + iif( _OOHG_AutoTypeNoSpaces, "", "   " )
+   case cType == "S"
+      cMessage := "@" + Message:name + "()" + iif( _OOHG_AutoTypeNoSpaces, "", "   " )
+   case cMessage == NIL
       cMessage := "<NIL>" + iif( _OOHG_AutoTypeNoSpaces, "", "   " )
+   otherwise
+      cMessage := "???:" + cType + iif( _OOHG_AutoTypeNoSpaces, "", "   " )
    endcase
 
 Return cMessage
