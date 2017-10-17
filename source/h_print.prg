@@ -5147,8 +5147,6 @@ RETURN cBarCode
 #include <commctrl.h>
 #include "oohg.h"
 
-static OSVERSIONINFO osvi;
-
 HB_FUNC( GETPRINTERSINFO )
 {
    DWORD dwSize = 0;
@@ -5159,6 +5157,7 @@ HB_FUNC( GETPRINTERSINFO )
    PRINTER_INFO_5* pInfo5;
    DWORD level;
    DWORD flags;
+   OSVERSIONINFO osvi;
 
    osvi.dwOSVersionInfoSize = sizeof( OSVERSIONINFO );
    GetVersionEx( &osvi );
