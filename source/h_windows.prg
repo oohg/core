@@ -112,7 +112,11 @@ int  _OOHG_GlobalRTL = 0;             // Force RTL functionality
 int  _OOHG_NestedSameEvent = 0;       // Allows to nest an event currently performed (i.e. CLICK button)
 int  _OOHG_MouseCol = 0;              // Mouse's column
 int  _OOHG_MouseRow = 0;              // Mouse's row
-PHB_ITEM _OOHG_LastSelf = NULL;
+#ifdef __BORLANDC__
+PHB_ITEM __thread _OOHG_LastSelf = NULL;
+#else
+__thread PHB_ITEM _OOHG_LastSelf = NULL;
+#endif
 
 void _OOHG_SetMouseCoords( PHB_ITEM pSelf, int iCol, int iRow )
 {
