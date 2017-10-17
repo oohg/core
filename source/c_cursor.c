@@ -183,6 +183,7 @@ HB_FUNC( CURSORUPARROW )
 HB_FUNC( SETWINDOWCURSOR )
 {
    HCURSOR ch;
+   ULONG_PTR ret;
 
    if( HB_ISCHAR(2) )
    {
@@ -198,9 +199,9 @@ HB_FUNC( SETWINDOWCURSOR )
       ch = LoadCursor( NULL, MAKEINTRESOURCE( hb_parnl(2) ) );
    }
 
-   SetClassLong( HWNDparam(1),    // window handle
-                 GCL_HCURSOR,     // change cursor
-                 (LONG) ch );     // new cursor
+   ret = SetClassLongPtr( HWNDparam(1), GCL_HCURSOR, (LONG_PTR) ch );
+
+   hb_retl( ret != 0 || GetLastError() == 0 );
 }
 
 HB_FUNC( SETHANDCURSOR )
