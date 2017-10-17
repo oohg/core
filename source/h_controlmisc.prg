@@ -68,7 +68,6 @@
 STATIC _OOHG_aControlhWnd := {}, _OOHG_aControlObjects := {}
 STATIC _OOHG_aControlIds := {},  _OOHG_aControlNames := {}
 
-STATIC _OOHG_lMultiple := .T.         // Allows the same applicaton runs more one instance at a time
 STATIC _OOHG_lSettingFocus := .F.     // If there's a ::SetFocus() call inside ON ENTER event.
 STATIC _OOHG_lValidating := .F.       // If there's a ::SetFocus() call inside ON ENTER event.
 
@@ -2436,31 +2435,6 @@ Function GetStartUpFolder()
 *------------------------------------------------------------------------------*
 Local StartUpFolder := GetProgramFileName()
 Return Left ( StartUpFolder , Rat ( '\' , StartUpFolder ) - 1 )
-
-*------------------------------------------------------------------------------*
-Function _OOHG_SetMultiple( lMultiple, lWarning )
-*------------------------------------------------------------------------------*
-Local lRet := _OOHG_lMultiple
-   If HB_IsLogical( lMultiple )
-      _OOHG_lMultiple := lMultiple
-   ElseIf HB_IsNumeric( lMultiple )
-      _OOHG_lMultiple := ( lMultiple != 0 )
-   ElseIf VALTYPE( lMultiple ) $ "CM"
-      If UPPER( ALLTRIM( lMultiple ) ) == "ON"
-         _OOHG_lMultiple := .T.
-      ElseIf UPPER( ALLTRIM( lMultiple ) ) == "OFF"
-         _OOHG_lMultiple := .F.
-      EndIf
-   EndIf
-   If ! _OOHG_lMultiple .AND. ;
-      ( EMPTY( CreateMutex( , .T., strtran(GetModuleFileName(),'\','_') ) ) .OR. (_OOHG_GetLastError() > 0) )
-      If HB_IsLogical( lWarning ) .AND. lWarning
-         InitMessages()
-         MsgStop( _OOHG_Messages( 1, 4 ) )
-      Endif
-      ExitProcess(0)
-   ENDIF
-Return lRet
 
 // Initializes C variables
 *------------------------------------------------------------------------------*

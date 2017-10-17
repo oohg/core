@@ -97,161 +97,957 @@
 #define NDX_OOHG_THISQUERYROWINDEX     27
 #define NDX_OOHG_THISTYPE              28
 #define NDX_OOHG_MAIN_ICON             29
-#define NUMBER_OF_APP_WIDE_VARS        29
-
-
-STATIC _OOHG_Application := NIL
+#define NDX_OOHG_MULTIPLEINSTANCES     30
+#define NDX_OOHG_APP_CARGO             31
+#define NUMBER_OF_APP_WIDE_VARS        31
 
 
 CLASS TApplication
 
-   DATA AllVars      INIT Nil
-   DATA ArgC         INIT HB_ArgC()            READONLY
-   DATA Args         INIT GetCommandLineArgs() READONLY
-   DATA ExeName      INIT GetProgramFileName() READONLY
+   CLASSDATA oAppObj              INIT NIL HIDDEN
+   CLASSDATA hClsMtx              INIT NIL HIDDEN
 
-   METHOD BackColor  SETGET
-   METHOD Col        SETGET
-   METHOD Cursor     SETGET
-   METHOD Drive      BLOCK { |Self| Left( ::ExeName, 1 ) }
-   METHOD FormObject BLOCK { |Self| ::AllVars[ NDX_OOHG_MAIN ] }
-   METHOD Handle     BLOCK { |Self| If( HB_IsObject( ::AllVars[ NDX_OOHG_MAIN ] ), ::AllVars[ NDX_OOHG_MAIN ]:hWnd, Nil ) }
-   METHOD Height     SETGET
-   METHOD HelpButton SETGET
-   METHOD Icon       SETGET
-   METHOD MainName   BLOCK { |Self| If( HB_IsObject( ::AllVars[ NDX_OOHG_MAIN ] ), ::AllVars[ NDX_OOHG_MAIN ]:Name, Nil ) }
-   METHOD Name       BLOCK { |Self| Substr( ::ExeName, RAt( '\', ::ExeName ) + 1 ) }
-   METHOD New        CONSTRUCTOR
-   METHOD Path       BLOCK { |Self| Left( ::ExeName, RAt( '\', ::ExeName ) - 1 ) }
-   METHOD Row        SETGET
-   METHOD Title      SETGET
-   METHOD TopMost    SETGET
-   METHOD Width      SETGET
+   DATA aVars                     INIT NIL HIDDEN
+   DATA ArgC                      INIT NIL READONLY
+   DATA Args                      INIT NIL READONLY
+   DATA Drive                     INIT NIL READONLY
+   DATA ExeName                   INIT NIL READONLY
+   DATA AppMutex                  INIT NIL HIDDEN
+   DATA FileName                  INIT NIL READONLY
+   DATA Path                      INIT NIL READONLY
+
+   METHOD Define
+
+   METHOD BackColor               SETGET
+   METHOD Col                     SETGET
+   METHOD Cursor                  SETGET
+   METHOD Height                  SETGET
+   METHOD HelpButton              SETGET
+   METHOD hWnd
+   METHOD MultipleInstances       SETGET
+   METHOD MainClientHeight        SETGET
+   METHOD MainClientWidth         SETGET
+   METHOD MainName
+   METHOD MainObject
+   METHOD MainStyle               SETGET
+   METHOD Row                     SETGET
+   METHOD Title                   SETGET
+   METHOD TopMost                 SETGET
+   METHOD Value_Pos01             SETGET
+   METHOD Value_Pos02             SETGET
+   METHOD Value_Pos03             SETGET
+   METHOD Value_Pos04             SETGET
+   METHOD Value_Pos05             SETGET
+   METHOD Value_Pos06             SETGET
+   METHOD Value_Pos07             SETGET
+   METHOD Value_Pos08             SETGET
+   METHOD Value_Pos09             SETGET
+   METHOD Value_Pos10             SETGET
+   METHOD Value_Pos11             SETGET
+   METHOD Value_Pos12             SETGET
+   METHOD Value_Pos13             SETGET
+   METHOD Value_Pos14             SETGET
+   METHOD Value_Pos15             SETGET
+   METHOD Value_Pos16             SETGET
+   METHOD Value_Pos17             SETGET
+   METHOD Value_Pos18             SETGET
+   METHOD Value_Pos19             SETGET
+   METHOD Value_Pos20             SETGET
+   METHOD Value_Pos21             SETGET
+   METHOD Value_Pos22             SETGET
+   METHOD Value_Pos23             SETGET
+   METHOD Value_Pos24             SETGET
+   METHOD Value_Pos25             SETGET
+   METHOD Value_Pos26             SETGET
+   METHOD Value_Pos27             SETGET
+   METHOD Value_Pos28             SETGET
+   METHOD Value_Pos29             SETGET
+   METHOD Value_Pos30             SETGET
+   METHOD Value_Pos31             SETGET
+   METHOD Width                   SETGET
+
+   MESSAGE Cargo                  METHOD Value_Pos31
+   MESSAGE FormObject             METHOD MinObject
+   MESSAGE Handle                 METHOD hWnd
+   MESSAGE Icon                   METHOD Value_Pos29
 ENDCLASS
 
 
 //------------------------------------------------------------------------------
-METHOD New() CLASS TApplication
+METHOD Define() CLASS TApplication
 //------------------------------------------------------------------------------
 
-   IF _OOHG_Application == NIL
-      ::AllVars := Array( NUMBER_OF_APP_WIDE_VARS )
+   IF ::oAppObj == NIL
+      ::aVars := Array( NUMBER_OF_APP_WIDE_VARS )
 
-      ::AllVars[ NDX_OOHG_ACTIVECONTROLINFO ]  := {}
-      ::AllVars[ NDX_OOHG_ACTIVEFRAME ]        := {}
-      ::AllVars[ NDX_OOHG_ADJUSTFONT ]         := .T.
-      ::AllVars[ NDX_OOHG_ADJUSTWIDTH ]        := .T.
-      ::AllVars[ NDX_OOHG_AUTOADJUST ]         := .F.
-      ::AllVars[ NDX_OOHG_DEFAULTFONTCOLOR ]   := NIL
-      ::AllVars[ NDX_OOHG_DEFAULTFONTNAME ]    := 'Arial'
-      ::AllVars[ NDX_OOHG_DEFAULTFONTSIZE ]    := 9
-      ::AllVars[ NDX_OOHG_DIALOGCANCELLED ]    := .F.
-      ::AllVars[ NDX_OOHG_EXTENDEDNAVIGATION ] := .F.
-      ::AllVars[ NDX_OOHG_MAIN ]               := NIL
-      ::AllVars[ NDX_OOHG_SAMEENTERDBLCLICK ]  := .F.
-      ::AllVars[ NDX_OOHG_TEMPWINDOWNAME ]     := ""
-      ::AllVars[ NDX_OOHG_THISCONTROL ]        := NIL
-      ::AllVars[ NDX_OOHG_THISEVENTTYPE ]      := ''
-      ::AllVars[ NDX_OOHG_THISFORM ]           := NIL
-      ::AllVars[ NDX_OOHG_THISITEMCELLCOL ]    := 0
-      ::AllVars[ NDX_OOHG_THISITEMCELLHEIGHT ] := 0
-      ::AllVars[ NDX_OOHG_THISITEMCELLROW ]    := 0
-      ::AllVars[ NDX_OOHG_THISITEMCELLVALUE ]  := NIL
-      ::AllVars[ NDX_OOHG_THISITEMCELLWIDTH ]  := 0
-      ::AllVars[ NDX_OOHG_THISITEMCOLINDEX ]   := 0
-      ::AllVars[ NDX_OOHG_THISITEMROWINDEX ]   := 0
-      ::AllVars[ NDX_OOHG_THISOBJECT ]         := ''
-      ::AllVars[ NDX_OOHG_THISQUERYCOLINDEX ]  := 0
-      ::AllVars[ NDX_OOHG_THISQUERYDATA ]      := ""
-      ::AllVars[ NDX_OOHG_THISQUERYROWINDEX ]  := 0
-      ::AllVars[ NDX_OOHG_THISTYPE ]           := ''
-      ::AllVars[ NDX_OOHG_MAIN_ICON ]          := NIL
+      ::aVars[ NDX_OOHG_ACTIVECONTROLINFO ]  := {}
+      ::aVars[ NDX_OOHG_ACTIVEFRAME ]        := {}
+      ::aVars[ NDX_OOHG_ADJUSTFONT ]         := .T.
+      ::aVars[ NDX_OOHG_ADJUSTWIDTH ]        := .T.
+      ::aVars[ NDX_OOHG_AUTOADJUST ]         := .F.
+      ::aVars[ NDX_OOHG_DEFAULTFONTCOLOR ]   := NIL
+      ::aVars[ NDX_OOHG_DEFAULTFONTNAME ]    := 'Arial'
+      ::aVars[ NDX_OOHG_DEFAULTFONTSIZE ]    := 9
+      ::aVars[ NDX_OOHG_DIALOGCANCELLED ]    := .F.
+      ::aVars[ NDX_OOHG_EXTENDEDNAVIGATION ] := .F.
+      ::aVars[ NDX_OOHG_MAIN ]               := NIL
+      ::aVars[ NDX_OOHG_SAMEENTERDBLCLICK ]  := .F.
+      ::aVars[ NDX_OOHG_TEMPWINDOWNAME ]     := ""
+      ::aVars[ NDX_OOHG_THISCONTROL ]        := NIL
+      ::aVars[ NDX_OOHG_THISEVENTTYPE ]      := ''
+      ::aVars[ NDX_OOHG_THISFORM ]           := NIL
+      ::aVars[ NDX_OOHG_THISITEMCELLCOL ]    := 0
+      ::aVars[ NDX_OOHG_THISITEMCELLHEIGHT ] := 0
+      ::aVars[ NDX_OOHG_THISITEMCELLROW ]    := 0
+      ::aVars[ NDX_OOHG_THISITEMCELLVALUE ]  := NIL
+      ::aVars[ NDX_OOHG_THISITEMCELLWIDTH ]  := 0
+      ::aVars[ NDX_OOHG_THISITEMCOLINDEX ]   := 0
+      ::aVars[ NDX_OOHG_THISITEMROWINDEX ]   := 0
+      ::aVars[ NDX_OOHG_THISOBJECT ]         := ''
+      ::aVars[ NDX_OOHG_THISQUERYCOLINDEX ]  := 0
+      ::aVars[ NDX_OOHG_THISQUERYDATA ]      := ""
+      ::aVars[ NDX_OOHG_THISQUERYROWINDEX ]  := 0
+      ::aVars[ NDX_OOHG_THISTYPE ]           := ''
+      ::aVars[ NDX_OOHG_MAIN_ICON ]          := NIL
+      ::aVars[ NDX_OOHG_MULTIPLEINSTANCES ]  := .T.
 
-      _OOHG_Application := Self
+      ::ArgC     := HB_ArgC()
+      ::Args     := GetCommandLineArgs()
+      ::ExeName  := GetProgramFileName()
+      ::Drive    := Left( ::ExeName, 1 )
+      ::Path     := Left( ::ExeName, RAt( '\', ::ExeName ) - 1 )
+      ::FileName := Substr( ::ExeName, RAt( '\', ::ExeName ) + 1 )
+
+      ::hClsMtx := hb_mutexCreate()
+      ::oAppObj := Self
    ENDIF
 
-RETURN _OOHG_Application
+   RETURN ( ::oAppObj )
+
 
 //------------------------------------------------------------------------------
 METHOD BackColor( uColor ) CLASS TApplication
 //------------------------------------------------------------------------------
-   Local uRet := Nil
+   LOCAL oMain, uRet := NIL
 
+   hb_mutexLock( ::hClsMtx )
    If PCount() > 0
-      If HB_IsObject( ::AllVars[ NDX_OOHG_MAIN ] )
-         uRet := ::AllVars[ NDX_OOHG_MAIN ]:BackColor( uColor )
+      oMain := ::aVars[ NDX_OOHG_MAIN ]
+      If HB_IsObject( oMain )
+         uRet := oMain:BackColor( uColor )
       EndIf
    Else
-      If HB_IsObject( ::AllVars[ NDX_OOHG_MAIN ] )
-         uRet := ::AllVars[ NDX_OOHG_MAIN ]:BackColor()
+      oMain := ::aVars[ NDX_OOHG_MAIN ]
+      If HB_IsObject( oMain )
+         uRet := oMain:BackColor()
       EndIf
    EndIf
-Return uRet
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
 
 //------------------------------------------------------------------------------
 METHOD Col( nCol ) CLASS TApplication
 //------------------------------------------------------------------------------
-Return If( HB_IsObject( ::AllVars[ NDX_OOHG_MAIN ] ), ::AllVars[ NDX_OOHG_MAIN ]:Col( nCol ), Nil )
+   LOCAL oMain, uRet := NIL
+
+   hb_mutexLock( ::hClsMtx )
+   If PCount() > 0
+      oMain := ::aVars[ NDX_OOHG_MAIN ]
+      If HB_IsObject( oMain )
+         uRet := oMain:Col( nCol )
+      EndIf
+   Else
+      oMain := ::aVars[ NDX_OOHG_MAIN ]
+      If HB_IsObject( oMain )
+         uRet := oMain:Col()
+      EndIf
+   EndIf
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
 
 
 //------------------------------------------------------------------------------
 METHOD Cursor( uValue ) CLASS TApplication
 //------------------------------------------------------------------------------
-Return If( HB_IsObject( ::AllVars[ NDX_OOHG_MAIN ] ), ::AllVars[ NDX_OOHG_MAIN ]:Cursor( uValue ), Nil )
+   LOCAL oMain, uRet := NIL
+
+   hb_mutexLock( ::hClsMtx )
+   If PCount() > 0
+      oMain := ::aVars[ NDX_OOHG_MAIN ]
+      If HB_IsObject( oMain )
+         uRet := oMain:Cursor( uValue )
+      EndIf
+   Else
+      oMain := ::aVars[ NDX_OOHG_MAIN ]
+      If HB_IsObject( oMain )
+         uRet := oMain:Cursor()
+      EndIf
+   EndIf
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+//------------------------------------------------------------------------------
+METHOD hWnd CLASS TApplication
+//------------------------------------------------------------------------------
+   LOCAL oMain, uRet := NIL
+
+   hb_mutexLock( ::hClsMtx )
+   oMain := ::aVars[ NDX_OOHG_MAIN ]
+   If HB_IsObject( oMain )
+      uRet := oMain:hWnd
+   EndIf
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+
+//------------------------------------------------------------------------------
+METHOD MainClientHeight( nHeight ) CLASS TApplication
+//------------------------------------------------------------------------------
+   LOCAL oMain, uRet := NIL
+
+   hb_mutexLock( ::hClsMtx )
+   If PCount() > 0
+      oMain := ::aVars[ NDX_OOHG_MAIN ]
+      If HB_IsObject( oMain )
+         uRet := oMain:ClientHeight( nHeight )
+      EndIf
+   Else
+      oMain := ::aVars[ NDX_OOHG_MAIN ]
+      If HB_IsObject( oMain )
+         uRet := oMain:ClientHeight()
+      EndIf
+   EndIf
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+
+//------------------------------------------------------------------------------
+METHOD MainClientWidth( nHeight ) CLASS TApplication
+//------------------------------------------------------------------------------
+   LOCAL oMain, uRet := NIL
+
+   hb_mutexLock( ::hClsMtx )
+   If PCount() > 0
+      oMain := ::aVars[ NDX_OOHG_MAIN ]
+      If HB_IsObject( oMain )
+         uRet := oMain:ClientWidth( nHeight )
+      EndIf
+   Else
+      oMain := ::aVars[ NDX_OOHG_MAIN ]
+      If HB_IsObject( oMain )
+         uRet := oMain:ClientWidth()
+      EndIf
+   EndIf
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+
+//------------------------------------------------------------------------------
+METHOD MainName CLASS TApplication
+//------------------------------------------------------------------------------
+   LOCAL oMain, uRet := NIL
+
+   hb_mutexLock( ::hClsMtx )
+   oMain := ::aVars[ NDX_OOHG_MAIN ]
+   If HB_IsObject( oMain )
+      uRet := oMain:Name
+   EndIf
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+
+//------------------------------------------------------------------------------
+METHOD MainObject CLASS TApplication
+//------------------------------------------------------------------------------
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   uRet := ::aVars[ NDX_OOHG_MAIN ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+
+//------------------------------------------------------------------------------
+METHOD MainStyle( nStyle ) CLASS TApplication
+//------------------------------------------------------------------------------
+   LOCAL oMain, uRet := NIL
+
+   hb_mutexLock( ::hClsMtx )
+   If PCount() > 0
+      oMain := ::aVars[ NDX_OOHG_MAIN ]
+      If HB_IsObject( oMain )
+         uRet := oMain:Style( nStyle )
+      EndIf
+   Else
+      oMain := ::aVars[ NDX_OOHG_MAIN ]
+      If HB_IsObject( oMain )
+         uRet := oMain:Style()
+      EndIf
+   EndIf
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
 
 
 //------------------------------------------------------------------------------
 METHOD Height( nHeight ) CLASS TApplication
 //------------------------------------------------------------------------------
-Return If( HB_IsObject( ::AllVars[ NDX_OOHG_MAIN ] ), ::AllVars[ NDX_OOHG_MAIN ]:Height( nHeight ), Nil )
+   LOCAL oMain, uRet := NIL
 
-
-//------------------------------------------------------------------------------
-METHOD Icon( cIcon ) CLASS TApplication
-//------------------------------------------------------------------------------
+   hb_mutexLock( ::hClsMtx )
    If PCount() > 0
-      ::AllVars[ NDX_OOHG_MAIN_ICON ] := cIcon
+      oMain := ::aVars[ NDX_OOHG_MAIN ]
+      If HB_IsObject( oMain )
+         uRet := oMain:Height( nHeight )
+      EndIf
+   Else
+      oMain := ::aVars[ NDX_OOHG_MAIN ]
+      If HB_IsObject( oMain )
+         uRet := oMain:Height()
+      EndIf
    EndIf
-Return ::AllVars[ NDX_OOHG_MAIN_ICON ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
 
 
 //------------------------------------------------------------------------------
 METHOD HelpButton( lShow ) CLASS TApplication
 //------------------------------------------------------------------------------
-Return If( HB_IsObject( ::AllVars[ NDX_OOHG_MAIN ] ), ::AllVars[ NDX_OOHG_MAIN ]:HelpButton( lShow ), Nil )
+   LOCAL oMain, uRet := NIL
+
+   hb_mutexLock( ::hClsMtx )
+   If PCount() > 0
+      oMain := ::aVars[ NDX_OOHG_MAIN ]
+      If HB_IsObject( oMain )
+         uRet := oMain:HelpButton( lShow )
+      EndIf
+   Else
+      oMain := ::aVars[ NDX_OOHG_MAIN ]
+      If HB_IsObject( oMain )
+         uRet := oMain:HelpButton()
+      EndIf
+   EndIf
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+
+//------------------------------------------------------------------------------
+METHOD MultipleInstances( lMultiple, lWarning ) CLASS TApplication
+//------------------------------------------------------------------------------
+LOCAL lBefore, lRet
+
+   hb_mutexLock( ::hClsMtx )
+   If lMultiple == NIL
+      lRet := ::aVars[ NDX_OOHG_MULTIPLEINSTANCES ]
+   Else
+      lBefore := ::aVars[ NDX_OOHG_MULTIPLEINSTANCES ]
+
+      If HB_IsLogical( lMultiple )
+         ::aVars[ NDX_OOHG_MULTIPLEINSTANCES ] := lMultiple
+      ElseIf HB_IsNumeric( lMultiple )
+         ::aVars[ NDX_OOHG_MULTIPLEINSTANCES ] := ( lMultiple != 0 )
+      ElseIf VALTYPE( lMultiple ) $ "CM"
+         If UPPER( ALLTRIM( lMultiple ) ) == "ON"
+            ::aVars[ NDX_OOHG_MULTIPLEINSTANCES ] := .T.
+         ElseIf UPPER( ALLTRIM( lMultiple ) ) == "OFF"
+            ::aVars[ NDX_OOHG_MULTIPLEINSTANCES ] := .F.
+         EndIf
+      EndIf
+
+      lRet := ::aVars[ NDX_OOHG_MULTIPLEINSTANCES ]
+      If lRet # lBefore
+         If lRet
+            CloseHandle( ::AppMutex )
+            ::AppMutex := NIL
+         Else
+            ::AppMutex := CreateMutex( , .T., STRTRAN( GetModuleFileName(), '\', '_' ) )
+            If EMPTY( ::AppMutex ) .OR. _OOHG_GetLastError() > 0
+               If HB_IsLogical( lWarning ) .AND. lWarning
+                  MsgStop( _OOHG_Messages( 1, 4 ) )
+               Endif
+               ExitProcess(0)
+            EndIf
+         EndIf
+      EndIf
+   EndIf
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( lRet )
 
 
 //------------------------------------------------------------------------------
 METHOD Row( nRow ) CLASS TApplication
 //------------------------------------------------------------------------------
-Return If( HB_IsObject( ::AllVars[ NDX_OOHG_MAIN ] ), ::AllVars[ NDX_OOHG_MAIN ]:Row( nRow ), Nil )
+   LOCAL oMain, uRet := NIL
+
+   hb_mutexLock( ::hClsMtx )
+   If PCount() > 0
+      oMain := ::aVars[ NDX_OOHG_MAIN ]
+      If HB_IsObject( oMain )
+         uRet := oMain:Row( nRow )
+      EndIf
+   Else
+      oMain := ::aVars[ NDX_OOHG_MAIN ]
+      If HB_IsObject( oMain )
+         uRet := oMain:Row()
+      EndIf
+   EndIf
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
 
 
 //------------------------------------------------------------------------------
 METHOD Title( cTitle ) CLASS TApplication
 //------------------------------------------------------------------------------
-Return If( HB_IsObject( ::AllVars[ NDX_OOHG_MAIN ] ), ::AllVars[ NDX_OOHG_MAIN ]:Title( cTitle ), Nil )
+   LOCAL oMain, uRet := NIL
+
+   hb_mutexLock( ::hClsMtx )
+   If PCount() > 0
+      oMain := ::aVars[ NDX_OOHG_MAIN ]
+      If HB_IsObject( oMain )
+         uRet := oMain:Title( cTitle )
+      EndIf
+   Else
+      oMain := ::aVars[ NDX_OOHG_MAIN ]
+      If HB_IsObject( oMain )
+         uRet := oMain:Title()
+      EndIf
+   EndIf
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
 
 
 //------------------------------------------------------------------------------
 METHOD TopMost( lTopmost ) CLASS TApplication
 //------------------------------------------------------------------------------
-Return If( HB_IsObject( ::AllVars[ NDX_OOHG_MAIN ] ), ::AllVars[ NDX_OOHG_MAIN ]:TopMost( lTopmost ), Nil )
+   LOCAL oMain, uRet := NIL
+
+   hb_mutexLock( ::hClsMtx )
+   If PCount() > 0
+      oMain := ::aVars[ NDX_OOHG_MAIN ]
+      If HB_IsObject( oMain )
+         uRet := oMain:TopMost( lTopmost )
+      EndIf
+   Else
+      oMain := ::aVars[ NDX_OOHG_MAIN ]
+      If HB_IsObject( oMain )
+         uRet := oMain:TopMost()
+      EndIf
+   EndIf
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+
+//------------------------------------------------------------------------------
+METHOD Value_Pos01( uValue ) CLASS TApplication
+//------------------------------------------------------------------------------
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   If uValue != NIL
+      ::aVars[ NDX_OOHG_ACTIVECONTROLINFO ] := uValue
+   EndIf
+   uRet := ::aVars[ NDX_OOHG_ACTIVECONTROLINFO ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+
+//------------------------------------------------------------------------------
+METHOD Value_Pos02( uValue ) CLASS TApplication
+//------------------------------------------------------------------------------
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   If uValue != NIL
+      ::aVars[ NDX_OOHG_ACTIVEFRAME ] := uValue
+   EndIf
+   uRet := ::aVars[ NDX_OOHG_ACTIVEFRAME ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+
+//------------------------------------------------------------------------------
+METHOD Value_Pos03( uValue ) CLASS TApplication
+//------------------------------------------------------------------------------
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   If uValue != NIL
+      ::aVars[ NDX_OOHG_ADJUSTFONT ] := uValue
+   EndIf
+   uRet := ::aVars[ NDX_OOHG_ADJUSTFONT ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+
+//------------------------------------------------------------------------------
+METHOD Value_Pos04( uValue ) CLASS TApplication
+//------------------------------------------------------------------------------
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   If uValue != NIL
+      ::aVars[ NDX_OOHG_ADJUSTWIDTH ] := uValue
+   EndIf
+   uRet := ::aVars[ NDX_OOHG_ADJUSTWIDTH ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+
+//------------------------------------------------------------------------------
+METHOD Value_Pos05( uValue ) CLASS TApplication
+//------------------------------------------------------------------------------
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   If uValue != NIL
+      ::aVars[ NDX_OOHG_AUTOADJUST ] := uValue
+   EndIf
+   uRet := ::aVars[ NDX_OOHG_AUTOADJUST ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+
+//------------------------------------------------------------------------------
+METHOD Value_Pos06( uValue ) CLASS TApplication
+//------------------------------------------------------------------------------
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   If uValue != NIL
+      ::aVars[ NDX_OOHG_DEFAULTFONTCOLOR ] := uValue
+   EndIf
+   uRet := ::aVars[ NDX_OOHG_DEFAULTFONTCOLOR ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+
+//------------------------------------------------------------------------------
+METHOD Value_Pos07( uValue ) CLASS TApplication
+//------------------------------------------------------------------------------
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   If uValue != NIL
+      ::aVars[ NDX_OOHG_DEFAULTFONTNAME ] := uValue
+   EndIf
+   uRet := ::aVars[ NDX_OOHG_DEFAULTFONTNAME ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+
+//------------------------------------------------------------------------------
+METHOD Value_Pos08( uValue ) CLASS TApplication
+//------------------------------------------------------------------------------
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   If uValue != NIL
+      ::aVars[ NDX_OOHG_DEFAULTFONTSIZE ] := uValue
+   EndIf
+   uRet := ::aVars[ NDX_OOHG_DEFAULTFONTSIZE ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+
+//------------------------------------------------------------------------------
+METHOD Value_Pos09( uValue ) CLASS TApplication
+//------------------------------------------------------------------------------
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   If uValue != NIL
+      ::aVars[ NDX_OOHG_DIALOGCANCELLED ] := uValue
+   EndIf
+   uRet := ::aVars[ NDX_OOHG_DIALOGCANCELLED ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+
+//------------------------------------------------------------------------------
+METHOD Value_Pos10( uValue ) CLASS TApplication
+//------------------------------------------------------------------------------
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   If uValue != NIL
+      ::aVars[ NDX_OOHG_EXTENDEDNAVIGATION ] := uValue
+   EndIf
+   uRet := ::aVars[ NDX_OOHG_EXTENDEDNAVIGATION ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+
+//------------------------------------------------------------------------------
+METHOD Value_Pos11( uValue ) CLASS TApplication
+//------------------------------------------------------------------------------
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   If uValue != NIL
+      ::aVars[ NDX_OOHG_MAIN ] := uValue
+   EndIf
+   uRet := ::aVars[ NDX_OOHG_MAIN ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+
+//------------------------------------------------------------------------------
+METHOD Value_Pos12( uValue ) CLASS TApplication
+//------------------------------------------------------------------------------
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   If uValue != NIL
+      ::aVars[ NDX_OOHG_SAMEENTERDBLCLICK ] := uValue
+   EndIf
+   uRet := ::aVars[ NDX_OOHG_SAMEENTERDBLCLICK ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+
+//------------------------------------------------------------------------------
+METHOD Value_Pos13( uValue ) CLASS TApplication
+//------------------------------------------------------------------------------
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   If uValue != NIL
+      ::aVars[ NDX_OOHG_TEMPWINDOWNAME ] := uValue
+   EndIf
+   uRet := ::aVars[ NDX_OOHG_TEMPWINDOWNAME ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+
+//------------------------------------------------------------------------------
+METHOD Value_Pos14( uValue ) CLASS TApplication
+//------------------------------------------------------------------------------
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   If uValue != NIL
+      ::aVars[ NDX_OOHG_THISCONTROL ] := uValue
+   EndIf
+   uRet := ::aVars[ NDX_OOHG_THISCONTROL ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+
+//------------------------------------------------------------------------------
+METHOD Value_Pos15( uValue ) CLASS TApplication
+//------------------------------------------------------------------------------
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   If uValue != NIL
+      ::aVars[ NDX_OOHG_THISEVENTTYPE ] := uValue
+   EndIf
+   uRet := ::aVars[ NDX_OOHG_THISEVENTTYPE ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+
+//------------------------------------------------------------------------------
+METHOD Value_Pos16( uValue ) CLASS TApplication
+//------------------------------------------------------------------------------
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   If uValue != NIL
+      ::aVars[ NDX_OOHG_THISFORM ] := uValue
+   EndIf
+   uRet := ::aVars[ NDX_OOHG_THISFORM ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+
+//------------------------------------------------------------------------------
+METHOD Value_Pos17( uValue ) CLASS TApplication
+//------------------------------------------------------------------------------
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   If uValue != NIL
+      ::aVars[ NDX_OOHG_THISITEMCELLCOL ] := uValue
+   EndIf
+   uRet := ::aVars[ NDX_OOHG_THISITEMCELLCOL ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+
+//------------------------------------------------------------------------------
+METHOD Value_Pos18( uValue ) CLASS TApplication
+//------------------------------------------------------------------------------
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   If uValue != NIL
+      ::aVars[ NDX_OOHG_THISITEMCELLHEIGHT ] := uValue
+   EndIf
+   uRet := ::aVars[ NDX_OOHG_THISITEMCELLHEIGHT ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+
+//------------------------------------------------------------------------------
+METHOD Value_Pos19( uValue ) CLASS TApplication
+//------------------------------------------------------------------------------
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   If uValue != NIL
+      ::aVars[ NDX_OOHG_THISITEMCELLROW ] := uValue
+   EndIf
+   uRet := ::aVars[ NDX_OOHG_THISITEMCELLROW ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+
+//------------------------------------------------------------------------------
+METHOD Value_Pos20( uValue ) CLASS TApplication
+//------------------------------------------------------------------------------
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   If uValue != NIL
+      ::aVars[ NDX_OOHG_THISITEMCELLVALUE ] := uValue
+   EndIf
+   uRet := ::aVars[ NDX_OOHG_THISITEMCELLVALUE ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+
+//------------------------------------------------------------------------------
+METHOD Value_Pos21( uValue ) CLASS TApplication
+//------------------------------------------------------------------------------
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   If uValue != NIL
+      ::aVars[ NDX_OOHG_THISITEMCELLWIDTH ] := uValue
+   EndIf
+   uRet := ::aVars[ NDX_OOHG_THISITEMCELLWIDTH ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+
+//------------------------------------------------------------------------------
+METHOD Value_Pos22( uValue ) CLASS TApplication
+//------------------------------------------------------------------------------
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   If uValue != NIL
+      ::aVars[ NDX_OOHG_THISITEMCOLINDEX ] := uValue
+   EndIf
+   uRet := ::aVars[ NDX_OOHG_THISITEMCOLINDEX ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+
+//------------------------------------------------------------------------------
+METHOD Value_Pos23( uValue ) CLASS TApplication
+//------------------------------------------------------------------------------
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   If uValue != NIL
+      ::aVars[ NDX_OOHG_THISITEMROWINDEX ] := uValue
+   EndIf
+   uRet := ::aVars[ NDX_OOHG_THISITEMROWINDEX ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+
+//------------------------------------------------------------------------------
+METHOD Value_Pos24( uValue ) CLASS TApplication
+//------------------------------------------------------------------------------
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   If uValue != NIL
+      ::aVars[ NDX_OOHG_THISOBJECT ] := uValue
+   EndIf
+   uRet := ::aVars[ NDX_OOHG_THISOBJECT ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+
+//------------------------------------------------------------------------------
+METHOD Value_Pos25( uValue ) CLASS TApplication
+//------------------------------------------------------------------------------
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   If uValue != NIL
+      ::aVars[ NDX_OOHG_THISQUERYCOLINDEX ] := uValue
+   EndIf
+   uRet := ::aVars[ NDX_OOHG_THISQUERYCOLINDEX ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+
+//------------------------------------------------------------------------------
+METHOD Value_Pos26( uValue ) CLASS TApplication
+//------------------------------------------------------------------------------
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   If uValue != NIL
+      ::aVars[ NDX_OOHG_THISQUERYDATA ] := uValue
+   EndIf
+   uRet := ::aVars[ NDX_OOHG_THISQUERYDATA ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+
+//------------------------------------------------------------------------------
+METHOD Value_Pos27( uValue ) CLASS TApplication
+//------------------------------------------------------------------------------
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   If uValue != NIL
+      ::aVars[ NDX_OOHG_THISQUERYROWINDEX ] := uValue
+   EndIf
+   uRet := ::aVars[ NDX_OOHG_THISQUERYROWINDEX ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+
+//------------------------------------------------------------------------------
+METHOD Value_Pos28( uValue ) CLASS TApplication
+//------------------------------------------------------------------------------
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   If uValue != NIL
+      ::aVars[ NDX_OOHG_THISTYPE ] := uValue
+   EndIf
+   uRet := ::aVars[ NDX_OOHG_THISTYPE ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+
+//------------------------------------------------------------------------------
+METHOD Value_Pos29( uValue ) CLASS TApplication
+//------------------------------------------------------------------------------
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   If uValue != NIL
+      ::aVars[ NDX_OOHG_MAIN_ICON ] := uValue
+   EndIf
+   uRet := ::aVars[ NDX_OOHG_MAIN_ICON ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+
+//------------------------------------------------------------------------------
+METHOD Value_Pos30( uValue ) CLASS TApplication
+//------------------------------------------------------------------------------
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   If uValue != NIL
+      ::MultipleInstances( uValue, .F. )
+   EndIf
+   uRet := ::aVars[ NDX_OOHG_MULTIPLEINSTANCES ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+
+//------------------------------------------------------------------------------
+METHOD Value_Pos31( uValue ) CLASS TApplication
+//------------------------------------------------------------------------------
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   If uValue != NIL
+      ::aVars[ NDX_OOHG_APP_CARGO ] := uValue
+   EndIf
+   uRet := ::aVars[ NDX_OOHG_APP_CARGO ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
 
 
 //------------------------------------------------------------------------------
 METHOD Width( nWidth ) CLASS TApplication
 //------------------------------------------------------------------------------
-Return If( HB_IsObject( ::AllVars[ NDX_OOHG_MAIN ] ), ::AllVars[ NDX_OOHG_MAIN ]:Width( nWidth ), Nil )
+   LOCAL oMain, uRet := NIL
+
+   hb_mutexLock( ::hClsMtx )
+   If PCount() > 0
+      oMain := ::aVars[ NDX_OOHG_MAIN ]
+      If HB_IsObject( oMain )
+         uRet := oMain:Width( nWidth )
+      EndIf
+   Else
+      oMain := ::aVars[ NDX_OOHG_MAIN ]
+      If HB_IsObject( oMain )
+         uRet := oMain:Width()
+      EndIf
+   EndIf
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
 
 
 //------------------------------------------------------------------------------
 STATIC FUNCTION GetCommandLineArgs
 //------------------------------------------------------------------------------
-Local i, nCount, aArgs
+   LOCAL i, nCount, aArgs
+
    nCount := HB_ArgC()
    aArgs := {}
    For i := 1 To nCount
       aAdd( aArgs, HB_ArgV( i ) )
    Next i
-Return aArgs
+
+   RETURN ( aArgs )

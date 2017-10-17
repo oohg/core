@@ -858,6 +858,7 @@ HB_FUNC( GETKEYFLAGSTATE )
    hb_retni( GetKeyFlagState() );
 }
 
+// thread safe ?
 static PHB_SYMB _ooHG_Symbol_TControl = 0;
 static PHB_ITEM _OOHG_aControlhWnd, _OOHG_aControlObjects, _OOHG_aControlIds;
 

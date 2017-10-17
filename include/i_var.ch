@@ -63,35 +63,36 @@
 APPLICATION WIDE VARIABLES USED BY OOHG MODULES
 ---------------------------------------------------------------------------*/
 
-#xtranslate _OOHG_ActiveControlInfo       => TApplication():New():AllVars \[   1 \]
-#xtranslate _OOHG_ActiveFrame             => TApplication():New():AllVars \[   2 \]
-#xtranslate _OOHG_AdjustFont              => TApplication():New():AllVars \[   3 \]
-#xtranslate _OOHG_AdjustWidth             => TApplication():New():AllVars \[   4 \]
-#xtranslate _OOHG_AutoAdjust              => TApplication():New():AllVars \[   5 \]
-#xtranslate _OOHG_DefaultFontColor        => TApplication():New():AllVars \[   6 \]
-#xtranslate _OOHG_DefaultFontName         => TApplication():New():AllVars \[   7 \]
-#xtranslate _OOHG_DefaultFontSize         => TApplication():New():AllVars \[   8 \]
-#xtranslate _OOHG_DialogCancelled         => TApplication():New():AllVars \[   9 \]
-#xtranslate _OOHG_ExtendedNavigation      => TApplication():New():AllVars \[  10 \]
-#xtranslate _OOHG_Main                    => TApplication():New():AllVars \[  11 \]
-#xtranslate _OOHG_SameEnterDblClick       => TApplication():New():AllVars \[  12 \]
-#xtranslate _OOHG_TempWindowName          => TApplication():New():AllVars \[  13 \]
-#xtranslate _OOHG_ThisControl             => TApplication():New():AllVars \[  14 \]
-#xtranslate _OOHG_ThisEventType           => TApplication():New():AllVars \[  15 \]
-#xtranslate _OOHG_ThisForm                => TApplication():New():AllVars \[  16 \]
-#xtranslate _OOHG_ThisItemCellCol         => TApplication():New():AllVars \[  17 \]
-#xtranslate _OOHG_ThisItemCellHeight      => TApplication():New():AllVars \[  18 \]
-#xtranslate _OOHG_ThisItemCellRow         => TApplication():New():AllVars \[  19 \]
-#xtranslate _OOHG_ThisItemCellValue       => TApplication():New():AllVars \[  20 \]
-#xtranslate _OOHG_ThisItemCellWidth       => TApplication():New():AllVars \[  21 \]
-#xtranslate _OOHG_ThisItemColIndex        => TApplication():New():AllVars \[  22 \]
-#xtranslate _OOHG_ThisItemRowIndex        => TApplication():New():AllVars \[  23 \]
-#xtranslate _OOHG_ThisObject              => TApplication():New():AllVars \[  24 \]
-#xtranslate _OOHG_ThisQueryColIndex       => TApplication():New():AllVars \[  25 \]
-#xtranslate _OOHG_ThisQueryData           => TApplication():New():AllVars \[  26 \]
-#xtranslate _OOHG_ThisQueryRowIndex       => TApplication():New():AllVars \[  27 \]
-#xtranslate _OOHG_ThisType                => TApplication():New():AllVars \[  28 \]
-#xtranslate _OOHG_Main_Icon               => TApplication():New():AllVars \[  29 \]
+#xtranslate _OOHG_ActiveControlInfo   => TApplication():Define():Value_Pos01
+#xtranslate _OOHG_ActiveFrame         => TApplication():Define():Value_Pos02
+#xtranslate _OOHG_AdjustFont          => TApplication():Define():Value_Pos03
+#xtranslate _OOHG_AdjustWidth         => TApplication():Define():Value_Pos04
+#xtranslate _OOHG_AutoAdjust          => TApplication():Define():Value_Pos05
+#xtranslate _OOHG_DefaultFontColor    => TApplication():Define():Value_Pos06
+#xtranslate _OOHG_DefaultFontName     => TApplication():Define():Value_Pos07
+#xtranslate _OOHG_DefaultFontSize     => TApplication():Define():Value_Pos08
+#xtranslate _OOHG_DialogCancelled     => TApplication():Define():Value_Pos09
+#xtranslate _OOHG_ExtendedNavigation  => TApplication():Define():Value_Pos10
+#xtranslate _OOHG_Main                => TApplication():Define():Value_Pos11
+#xtranslate _OOHG_SameEnterDblClick   => TApplication():Define():Value_Pos12
+#xtranslate _OOHG_TempWindowName      => TApplication():Define():Value_Pos13
+#xtranslate _OOHG_ThisControl         => TApplication():Define():Value_Pos14
+#xtranslate _OOHG_ThisEventType       => TApplication():Define():Value_Pos15
+#xtranslate _OOHG_ThisForm            => TApplication():Define():Value_Pos16
+#xtranslate _OOHG_ThisItemCellCol     => TApplication():Define():Value_Pos17
+#xtranslate _OOHG_ThisItemCellHeight  => TApplication():Define():Value_Pos18
+#xtranslate _OOHG_ThisItemCellRow     => TApplication():Define():Value_Pos19
+#xtranslate _OOHG_ThisItemCellValue   => TApplication():Define():Value_Pos20
+#xtranslate _OOHG_ThisItemCellWidth   => TApplication():Define():Value_Pos21
+#xtranslate _OOHG_ThisItemColIndex    => TApplication():Define():Value_Pos22
+#xtranslate _OOHG_ThisItemRowIndex    => TApplication():Define():Value_Pos23
+#xtranslate _OOHG_ThisObject          => TApplication():Define():Value_Pos24
+#xtranslate _OOHG_ThisQueryColIndex   => TApplication():Define():Value_Pos25
+#xtranslate _OOHG_ThisQueryData       => TApplication():Define():Value_Pos26
+#xtranslate _OOHG_ThisQueryRowIndex   => TApplication():Define():Value_Pos27
+#xtranslate _OOHG_ThisType            => TApplication():Define():Value_Pos28
+#xtranslate _OOHG_Main_Icon           => TApplication():Define():Value_Pos29
+#xtranslate _OOHG_MultipleInstances   => TApplication():Define():Value_Pos30
 
 /*---------------------------------------------------------------------------
 PSEUDO VARIABLES USED BY OOHG MODULES

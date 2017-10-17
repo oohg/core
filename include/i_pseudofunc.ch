@@ -108,3 +108,7 @@
 #xtranslate MsgAlert( <c>, <t> ) ;
    => ;
       MsgExclamation( <c>, <t> )
+
+#xtranslate _OOHG_SetMultiple( <lMultiple>, <lWarning> ) ;
+   => ;
+      TApplication():Define():MultipleInstances( <lMultiple>, <lWarning> )
