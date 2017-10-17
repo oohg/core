@@ -8,6 +8,133 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2017-10-16 23:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core/ChangeLog.txt
+     * Updated.
+   * core/source/oohg.hbp
+     * Changed comment.
+
+2017-10-16 23:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core/source/h_windows.prg
+     * Var _OOHG_LastSelf is now declared as __thread type.
+
+2017-10-16 23:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core/h_controlmisc.prg
+     + Check for upper limit in control's ID.
+
+2017-10-16 23:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core/source/h_edit.prg
+     + Define NO_HBPRN_DECLARATION to pacify warning.
+     - Call to function InitMessages.
+     * Commented out some unneeded code.
+
+2017-10-16 23:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_controlmisc.c
+   * core\source\c_gdiplus.c
+   * core\source\c_msgbox.c
+   * core\source\h_controlmisc.prg
+   * core\source\h_dll.prg
+   * core\source\h_edit.prg
+   * core\source\h_form.prg
+   * core\source\h_init.prg
+   * core\source\h_internal.prg
+   * core\source\h_picture.prg
+   * core/source/h_tooltip.prg
+   * core\source\h_tree.prg
+   * core\source\h_windows.prg
+   * core\source\h_xbrowse.prg
+   * core\source\winprint.prg
+      + TO*DO related to thread safety.
+
+2017-10-16 22:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core/include/i_controlmisc.ch
+   * core/source/h_bostaurus.prg
+   * core/source/h_browse.prg
+   * core/source/h_checklist.prg
+   * core/source/h_combo.prg
+   * core/source/h_comm.prg
+   * core/source/h_controlsmisc.prg
+   * core/source/h_edit.prg
+   * core/source/h_edit_ex.prg
+   * core/source/h_form.prg
+   * core/source/h_frame.prg
+   * core/source/h_graph.prg
+   * core/source/h_grid.prg
+   * core/source/h_hotkey.prg
+   * core/source/h_hyperlink.prg
+   * core/source/h_init.prg
+   * core/source/h_msgbox.prg
+   * core/source/h_splitbox.prg
+   * core/source/h_tab.prg
+   * core/source/h_toolbar.prg
+   * core/source/h_tree.prg
+   * core/source/h_windows.prg
+   * core/source/h_windows.prg
+   * core/source/h_xbrowse.prg
+     * Some casing changed.
+
+2017-10-16 22:31 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core/source/c_winapimisc.c
+     + Function CloseHandle.
+
+2017-10-16 21:51 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core/source/c_cursor.c
+     * Function SetWindowCursor now returns .T. on success or .F. on error.
+
+2017-10-16 21:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core/source/h_form.prg
+     + Added DATA uFormCursor with current cursor's name.
+     ! Method TForm:Cursor is now truly setget.
+     * Some casing.
+
+2017-10-16 21:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core/source/h_form.prg
+     - Unneeded code in methods TFormInternal:Define and TFormSplit:Define.
+   * core/source/h_internal.prg
+     - Unneeded code in methods TInternal:Define.
+   * core/source/h_windows.prg
+     - Removed no longer needed function _OOHG_SetControlParent.
+
+2017-10-16 21:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core/source/h_help.prg
+     - Removed some commented out code.
+
+2017-10-16 21:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core/include/h_print.prg
+     * Static var at source level moved to local var.
+
+2017-10-16 21:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core/source/h_msgbox.prg
+     * Changed "=" comparisons to "==".
+     + Check for NIL and types "T" and "S" in function AutoType.
+
+2017-10-16 21:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core/incluce/i_app.ch
+     * Changed translation for Application.<property>.
+     + Added new properties.
+   * core/include/i_pseudofunc.ch
+     + Added translate for function _OOHG_SetMultiple.
+   * core/include/i_var.ch
+     * Changed translation for _OOHG_* vars.
+   * core/source/c_controlmisc.c
+     + TO*DO.
+   * core/source/h_application.prg
+     * Static var changed to CLASS VAR.
+     * Access to array of properties is now handled by methods
+       with mutex protection.
+   * core/source/h_controlsmisc.prg
+     - Static var _OOHG_lMultiple.
+     - Function _OOHG_SetMultiple.
+   ; This changes should make thread safe the access to _oohg_* var.
+
+2017-10-16 20:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core/source/c_gdiplus.c
+     * Some format.
+
+2017-10-16 20:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core/source/h_edit_ex.prg
+     - Call to function InitMessages.
+
 2017-10-16 09:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core/compile_MINGW.bat
    * core/oohg.hbc
