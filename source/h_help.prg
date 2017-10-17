@@ -64,8 +64,6 @@
 #include "fileio.ch"
 
 STATIC _OOHG_ActiveHelpFile := ""
-*STATIC _OOHG_nTopic         := 0
-*STATIC _OOHG_nMet           := 0
 
 *-------------------------------------------------------------
 Function SetHelpFile( cFile )
@@ -105,9 +103,6 @@ Local ret:=0
       if !HB_IsNumeric( nMet )
          nMet := 0
       endif
-
-*      _OOHG_nTopic := nTopic
-*      _OOHG_nMet   := nMet
 
       if UPPER( Right( ALLTRIM( _OOHG_ActiveHelpFile ), 4 ) ) == '.CHM'
          ret := WinHelp( _OOHG_Main:hWnd, _OOHG_ActiveHelpFile, 0, nMet, nTopic )
