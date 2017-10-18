@@ -858,7 +858,7 @@ HB_FUNC( GETMONTHCALRANGE )
 
 enum MonthCalendarView {
    MCMV_MONTH = 0,
-   MCMV_YEAR = 1, 
+   MCMV_YEAR = 1,
    MCMV_DECADE = 2,
    MCMV_CENTURY = 3,
    MCMV_MAX = MCMV_CENTURY

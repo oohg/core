@@ -625,7 +625,7 @@ HB_FUNC( INITITEMBAR )
 {
    HWND  hWndSB;
    int   cSpaceInBetween = 8;
-   int   ptArray[ NUM_OF_PARTS ];   
+   int   ptArray[ NUM_OF_PARTS ];
    int   nrOfParts = 0;
    int   n ;
    RECT  rect;

@@ -67,7 +67,6 @@
 #include "oohg.ch"
 #include "hbclass.ch"
 
-
 #define NDX_OOHG_ACTIVECONTROLINFO     01
 #define NDX_OOHG_ACTIVEFRAME           02
 #define NDX_OOHG_ADJUSTFONT            03
@@ -100,7 +99,6 @@
 #define NDX_OOHG_MULTIPLEINSTANCES     30
 #define NDX_OOHG_APP_CARGO             31
 #define NUMBER_OF_APP_WIDE_VARS        31
-
 
 CLASS TApplication
 
@@ -170,12 +168,10 @@ CLASS TApplication
    MESSAGE FormObject             METHOD MainObject
    MESSAGE Handle                 METHOD hWnd
    MESSAGE Icon                   METHOD Value_Pos29
-ENDCLASS
 
+   ENDCLASS
 
-//------------------------------------------------------------------------------
 METHOD Define() CLASS TApplication
-//------------------------------------------------------------------------------
 
    IF ::oAppObj == NIL
       ::aVars := Array( NUMBER_OF_APP_WIDE_VARS )
@@ -224,10 +220,8 @@ METHOD Define() CLASS TApplication
 
    RETURN ( ::oAppObj )
 
-
-//------------------------------------------------------------------------------
 METHOD BackColor( uColor ) CLASS TApplication
-//------------------------------------------------------------------------------
+
    LOCAL oMain, uRet := NIL
 
    hb_mutexLock( ::hClsMtx )
@@ -246,10 +240,8 @@ METHOD BackColor( uColor ) CLASS TApplication
 
    RETURN ( uRet )
 
-
-//------------------------------------------------------------------------------
 METHOD Col( nCol ) CLASS TApplication
-//------------------------------------------------------------------------------
+
    LOCAL oMain, uRet := NIL
 
    hb_mutexLock( ::hClsMtx )
@@ -268,10 +260,8 @@ METHOD Col( nCol ) CLASS TApplication
 
    RETURN ( uRet )
 
-
-//------------------------------------------------------------------------------
 METHOD Cursor( uValue ) CLASS TApplication
-//------------------------------------------------------------------------------
+
    LOCAL oMain, uRet := NIL
 
    hb_mutexLock( ::hClsMtx )
@@ -290,9 +280,8 @@ METHOD Cursor( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
-//------------------------------------------------------------------------------
 METHOD hWnd CLASS TApplication
-//------------------------------------------------------------------------------
+
    LOCAL oMain, uRet := NIL
 
    hb_mutexLock( ::hClsMtx )
@@ -304,10 +293,8 @@ METHOD hWnd CLASS TApplication
 
    RETURN ( uRet )
 
-
-//------------------------------------------------------------------------------
 METHOD MainClientHeight( nHeight ) CLASS TApplication
-//------------------------------------------------------------------------------
+
    LOCAL oMain, uRet := NIL
 
    hb_mutexLock( ::hClsMtx )
@@ -326,10 +313,8 @@ METHOD MainClientHeight( nHeight ) CLASS TApplication
 
    RETURN ( uRet )
 
-
-//------------------------------------------------------------------------------
 METHOD MainClientWidth( nHeight ) CLASS TApplication
-//------------------------------------------------------------------------------
+
    LOCAL oMain, uRet := NIL
 
    hb_mutexLock( ::hClsMtx )
@@ -348,10 +333,8 @@ METHOD MainClientWidth( nHeight ) CLASS TApplication
 
    RETURN ( uRet )
 
-
-//------------------------------------------------------------------------------
 METHOD MainName CLASS TApplication
-//------------------------------------------------------------------------------
+
    LOCAL oMain, uRet := NIL
 
    hb_mutexLock( ::hClsMtx )
@@ -363,10 +346,8 @@ METHOD MainName CLASS TApplication
 
    RETURN ( uRet )
 
-
-//------------------------------------------------------------------------------
 METHOD MainObject CLASS TApplication
-//------------------------------------------------------------------------------
+
    LOCAL uRet
 
    hb_mutexLock( ::hClsMtx )
@@ -375,10 +356,8 @@ METHOD MainObject CLASS TApplication
 
    RETURN ( uRet )
 
-
-//------------------------------------------------------------------------------
 METHOD MainStyle( nStyle ) CLASS TApplication
-//------------------------------------------------------------------------------
+
    LOCAL oMain, uRet := NIL
 
    hb_mutexLock( ::hClsMtx )
@@ -397,10 +376,8 @@ METHOD MainStyle( nStyle ) CLASS TApplication
 
    RETURN ( uRet )
 
-
-//------------------------------------------------------------------------------
 METHOD Height( nHeight ) CLASS TApplication
-//------------------------------------------------------------------------------
+
    LOCAL oMain, uRet := NIL
 
    hb_mutexLock( ::hClsMtx )
@@ -420,9 +397,8 @@ METHOD Height( nHeight ) CLASS TApplication
    RETURN ( uRet )
 
 
-//------------------------------------------------------------------------------
 METHOD HelpButton( lShow ) CLASS TApplication
-//------------------------------------------------------------------------------
+
    LOCAL oMain, uRet := NIL
 
    hb_mutexLock( ::hClsMtx )
@@ -441,11 +417,9 @@ METHOD HelpButton( lShow ) CLASS TApplication
 
    RETURN ( uRet )
 
-
-//------------------------------------------------------------------------------
 METHOD MultipleInstances( lMultiple, lWarning ) CLASS TApplication
-//------------------------------------------------------------------------------
-LOCAL lBefore, lRet
+
+   LOCAL lBefore, lRet
 
    hb_mutexLock( ::hClsMtx )
    If lMultiple == NIL
@@ -485,10 +459,8 @@ LOCAL lBefore, lRet
 
    RETURN ( lRet )
 
-
-//------------------------------------------------------------------------------
 METHOD Row( nRow ) CLASS TApplication
-//------------------------------------------------------------------------------
+
    LOCAL oMain, uRet := NIL
 
    hb_mutexLock( ::hClsMtx )
@@ -507,10 +479,8 @@ METHOD Row( nRow ) CLASS TApplication
 
    RETURN ( uRet )
 
-
-//------------------------------------------------------------------------------
 METHOD Title( cTitle ) CLASS TApplication
-//------------------------------------------------------------------------------
+
    LOCAL oMain, uRet := NIL
 
    hb_mutexLock( ::hClsMtx )
@@ -529,10 +499,8 @@ METHOD Title( cTitle ) CLASS TApplication
 
    RETURN ( uRet )
 
-
-//------------------------------------------------------------------------------
 METHOD TopMost( lTopmost ) CLASS TApplication
-//------------------------------------------------------------------------------
+
    LOCAL oMain, uRet := NIL
 
    hb_mutexLock( ::hClsMtx )
@@ -551,10 +519,8 @@ METHOD TopMost( lTopmost ) CLASS TApplication
 
    RETURN ( uRet )
 
-
-//------------------------------------------------------------------------------
 METHOD Value_Pos01( uValue ) CLASS TApplication
-//------------------------------------------------------------------------------
+
    LOCAL uRet
 
    hb_mutexLock( ::hClsMtx )
@@ -566,10 +532,8 @@ METHOD Value_Pos01( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
-
-//------------------------------------------------------------------------------
 METHOD Value_Pos02( uValue ) CLASS TApplication
-//------------------------------------------------------------------------------
+
    LOCAL uRet
 
    hb_mutexLock( ::hClsMtx )
@@ -581,10 +545,8 @@ METHOD Value_Pos02( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
-
-//------------------------------------------------------------------------------
 METHOD Value_Pos03( uValue ) CLASS TApplication
-//------------------------------------------------------------------------------
+
    LOCAL uRet
 
    hb_mutexLock( ::hClsMtx )
@@ -596,10 +558,8 @@ METHOD Value_Pos03( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
-
-//------------------------------------------------------------------------------
 METHOD Value_Pos04( uValue ) CLASS TApplication
-//------------------------------------------------------------------------------
+
    LOCAL uRet
 
    hb_mutexLock( ::hClsMtx )
@@ -611,10 +571,8 @@ METHOD Value_Pos04( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
-
-//------------------------------------------------------------------------------
 METHOD Value_Pos05( uValue ) CLASS TApplication
-//------------------------------------------------------------------------------
+
    LOCAL uRet
 
    hb_mutexLock( ::hClsMtx )
@@ -626,10 +584,8 @@ METHOD Value_Pos05( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
-
-//------------------------------------------------------------------------------
 METHOD Value_Pos06( uValue ) CLASS TApplication
-//------------------------------------------------------------------------------
+
    LOCAL uRet
 
    hb_mutexLock( ::hClsMtx )
@@ -641,10 +597,8 @@ METHOD Value_Pos06( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
-
-//------------------------------------------------------------------------------
 METHOD Value_Pos07( uValue ) CLASS TApplication
-//------------------------------------------------------------------------------
+
    LOCAL uRet
 
    hb_mutexLock( ::hClsMtx )
@@ -656,10 +610,8 @@ METHOD Value_Pos07( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
-
-//------------------------------------------------------------------------------
 METHOD Value_Pos08( uValue ) CLASS TApplication
-//------------------------------------------------------------------------------
+
    LOCAL uRet
 
    hb_mutexLock( ::hClsMtx )
@@ -671,10 +623,8 @@ METHOD Value_Pos08( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
-
-//------------------------------------------------------------------------------
 METHOD Value_Pos09( uValue ) CLASS TApplication
-//------------------------------------------------------------------------------
+
    LOCAL uRet
 
    hb_mutexLock( ::hClsMtx )
@@ -686,10 +636,8 @@ METHOD Value_Pos09( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
-
-//------------------------------------------------------------------------------
 METHOD Value_Pos10( uValue ) CLASS TApplication
-//------------------------------------------------------------------------------
+
    LOCAL uRet
 
    hb_mutexLock( ::hClsMtx )
@@ -702,9 +650,8 @@ METHOD Value_Pos10( uValue ) CLASS TApplication
    RETURN ( uRet )
 
 
-//------------------------------------------------------------------------------
 METHOD Value_Pos11( uValue ) CLASS TApplication
-//------------------------------------------------------------------------------
+
    LOCAL uRet
 
    hb_mutexLock( ::hClsMtx )
@@ -716,10 +663,8 @@ METHOD Value_Pos11( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
-
-//------------------------------------------------------------------------------
 METHOD Value_Pos12( uValue ) CLASS TApplication
-//------------------------------------------------------------------------------
+
    LOCAL uRet
 
    hb_mutexLock( ::hClsMtx )
@@ -731,10 +676,8 @@ METHOD Value_Pos12( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
-
-//------------------------------------------------------------------------------
 METHOD Value_Pos13( uValue ) CLASS TApplication
-//------------------------------------------------------------------------------
+
    LOCAL uRet
 
    hb_mutexLock( ::hClsMtx )
@@ -746,10 +689,8 @@ METHOD Value_Pos13( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
-
-//------------------------------------------------------------------------------
 METHOD Value_Pos14( uValue ) CLASS TApplication
-//------------------------------------------------------------------------------
+
    LOCAL uRet
 
    hb_mutexLock( ::hClsMtx )
@@ -761,10 +702,8 @@ METHOD Value_Pos14( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
-
-//------------------------------------------------------------------------------
 METHOD Value_Pos15( uValue ) CLASS TApplication
-//------------------------------------------------------------------------------
+
    LOCAL uRet
 
    hb_mutexLock( ::hClsMtx )
@@ -776,10 +715,8 @@ METHOD Value_Pos15( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
-
-//------------------------------------------------------------------------------
 METHOD Value_Pos16( uValue ) CLASS TApplication
-//------------------------------------------------------------------------------
+
    LOCAL uRet
 
    hb_mutexLock( ::hClsMtx )
@@ -791,10 +728,8 @@ METHOD Value_Pos16( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
-
-//------------------------------------------------------------------------------
 METHOD Value_Pos17( uValue ) CLASS TApplication
-//------------------------------------------------------------------------------
+
    LOCAL uRet
 
    hb_mutexLock( ::hClsMtx )
@@ -806,10 +741,8 @@ METHOD Value_Pos17( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
-
-//------------------------------------------------------------------------------
 METHOD Value_Pos18( uValue ) CLASS TApplication
-//------------------------------------------------------------------------------
+
    LOCAL uRet
 
    hb_mutexLock( ::hClsMtx )
@@ -821,10 +754,8 @@ METHOD Value_Pos18( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
-
-//------------------------------------------------------------------------------
 METHOD Value_Pos19( uValue ) CLASS TApplication
-//------------------------------------------------------------------------------
+
    LOCAL uRet
 
    hb_mutexLock( ::hClsMtx )
@@ -836,10 +767,8 @@ METHOD Value_Pos19( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
-
-//------------------------------------------------------------------------------
 METHOD Value_Pos20( uValue ) CLASS TApplication
-//------------------------------------------------------------------------------
+
    LOCAL uRet
 
    hb_mutexLock( ::hClsMtx )
@@ -851,10 +780,8 @@ METHOD Value_Pos20( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
-
-//------------------------------------------------------------------------------
 METHOD Value_Pos21( uValue ) CLASS TApplication
-//------------------------------------------------------------------------------
+
    LOCAL uRet
 
    hb_mutexLock( ::hClsMtx )
@@ -866,10 +793,8 @@ METHOD Value_Pos21( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
-
-//------------------------------------------------------------------------------
 METHOD Value_Pos22( uValue ) CLASS TApplication
-//------------------------------------------------------------------------------
+
    LOCAL uRet
 
    hb_mutexLock( ::hClsMtx )
@@ -881,10 +806,8 @@ METHOD Value_Pos22( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
-
-//------------------------------------------------------------------------------
 METHOD Value_Pos23( uValue ) CLASS TApplication
-//------------------------------------------------------------------------------
+
    LOCAL uRet
 
    hb_mutexLock( ::hClsMtx )
@@ -896,10 +819,8 @@ METHOD Value_Pos23( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
-
-//------------------------------------------------------------------------------
 METHOD Value_Pos24( uValue ) CLASS TApplication
-//------------------------------------------------------------------------------
+
    LOCAL uRet
 
    hb_mutexLock( ::hClsMtx )
@@ -911,10 +832,8 @@ METHOD Value_Pos24( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
-
-//------------------------------------------------------------------------------
 METHOD Value_Pos25( uValue ) CLASS TApplication
-//------------------------------------------------------------------------------
+
    LOCAL uRet
 
    hb_mutexLock( ::hClsMtx )
@@ -926,10 +845,8 @@ METHOD Value_Pos25( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
-
-//------------------------------------------------------------------------------
 METHOD Value_Pos26( uValue ) CLASS TApplication
-//------------------------------------------------------------------------------
+
    LOCAL uRet
 
    hb_mutexLock( ::hClsMtx )
@@ -941,10 +858,8 @@ METHOD Value_Pos26( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
-
-//------------------------------------------------------------------------------
 METHOD Value_Pos27( uValue ) CLASS TApplication
-//------------------------------------------------------------------------------
+
    LOCAL uRet
 
    hb_mutexLock( ::hClsMtx )
@@ -956,10 +871,8 @@ METHOD Value_Pos27( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
-
-//------------------------------------------------------------------------------
 METHOD Value_Pos28( uValue ) CLASS TApplication
-//------------------------------------------------------------------------------
+
    LOCAL uRet
 
    hb_mutexLock( ::hClsMtx )
@@ -971,10 +884,8 @@ METHOD Value_Pos28( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
-
-//------------------------------------------------------------------------------
 METHOD Value_Pos29( uValue ) CLASS TApplication
-//------------------------------------------------------------------------------
+
    LOCAL uRet
 
    hb_mutexLock( ::hClsMtx )
@@ -986,10 +897,8 @@ METHOD Value_Pos29( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
-
-//------------------------------------------------------------------------------
 METHOD Value_Pos30( uValue ) CLASS TApplication
-//------------------------------------------------------------------------------
+
    LOCAL uRet
 
    hb_mutexLock( ::hClsMtx )
@@ -1001,10 +910,8 @@ METHOD Value_Pos30( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
-
-//------------------------------------------------------------------------------
 METHOD Value_Pos31( uValue ) CLASS TApplication
-//------------------------------------------------------------------------------
+
    LOCAL uRet
 
    hb_mutexLock( ::hClsMtx )
@@ -1016,10 +923,8 @@ METHOD Value_Pos31( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
-
-//------------------------------------------------------------------------------
 METHOD Width( nWidth ) CLASS TApplication
-//------------------------------------------------------------------------------
+
    LOCAL oMain, uRet := NIL
 
    hb_mutexLock( ::hClsMtx )
@@ -1038,10 +943,8 @@ METHOD Width( nWidth ) CLASS TApplication
 
    RETURN ( uRet )
 
-
-//------------------------------------------------------------------------------
 STATIC FUNCTION GetCommandLineArgs
-//------------------------------------------------------------------------------
+
    LOCAL i, nCount, aArgs
 
    nCount := HB_ArgC()

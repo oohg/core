@@ -993,7 +993,7 @@ Local lRet, lSomethingEdited, nNextCol
 
          If ::bPosition == 9                     // MOUSE EXIT
             // Edition window lost focus, resume clic processing and process delayed click
-            ::bPosition := 0                     
+            ::bPosition := 0
             If ::nDelayedClick[ 1 ] > 0
                // A click message was delayed
                If ::nDelayedClick[ 3 ] <= 0
@@ -3389,7 +3389,7 @@ Local nColumn, aTemp, oEditControl
       If HB_IsArray( ::EditControls )
          For nColumn := 1 To Len( uValue )
             oEditControl := GetEditControlFromArray( Nil, ::EditControls, nColumn, Self )
-            ::aEditControls[ nColumn ] := oEditControl                                    
+            ::aEditControls[ nColumn ] := oEditControl
             If HB_IsObject( oEditControl )
                If oEditControl:Type == "TGRIDCONTROLIMAGEDATA"
                   // when the column has images, ListViewGetItem Returns only the image's index number
@@ -3422,7 +3422,7 @@ Local aTemp, nColumn, xValue, oEditControl
          EndIf
       Next
    Else
-      ::aEditControls := Array( Len( uValue ) )  
+      ::aEditControls := Array( Len( uValue ) )
       For nColumn := 1 To Len( uValue )
          xValue := uValue[ nColumn ]
          oEditControl := GetEditControlFromArray( Nil, ::EditControls, nColumn, Self )
@@ -4200,7 +4200,7 @@ CLASS TGridByCell FROM TGrid
    METHOD DoChange
    METHOD Down
    METHOD EditCell
-   METHOD EditCell2  
+   METHOD EditCell2
    METHOD EditGrid
    METHOD Events
    METHOD Events_Notify
@@ -4938,7 +4938,7 @@ METHOD InsertBlank( nItem ) CLASS TGridByCell
 Return nItem
 
 *------------------------------------------------------------------------------*
-METHOD DeleteItem( nItem ) CLASS TGridByCell  
+METHOD DeleteItem( nItem ) CLASS TGridByCell
 *------------------------------------------------------------------------------*
 Local lRet
 

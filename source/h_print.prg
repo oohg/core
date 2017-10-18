@@ -4244,7 +4244,7 @@ LOCAL nLin, i, nCol, aColor, oPage, oGraph, aAnchor := {}, cName
       IF ::aLinCelda[ i, 7] = .T.
          ::oCell:CharWeight := 150                                 // Bold
       ELSE
-         ::oCell:CharWeight := 100                  
+         ::oCell:CharWeight := 100
       ENDIF
       DO CASE
       CASE ::aLinCelda[ i, 5 ] = "R"

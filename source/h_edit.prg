@@ -455,7 +455,7 @@ next
         workarea &_cArea ;
         fields   aBrwCampos ;
         value    (_cArea)->( RecNo() ) ;
-        ON DBLCLICK ABMEventos( ABM_EVENTO_EDITAR ) ;        
+        ON DBLCLICK ABMEventos( ABM_EVENTO_EDITAR ) ;
         on change {|| (_cArea)->( dbGoTo( wndABM.brwBrowse.Value ) ), ABMRefresh( ABM_MODO_VER ) }
 
 // Definición de los botones.--------------------------------------------------

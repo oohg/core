@@ -166,7 +166,7 @@ Local uState
       ::DoChange()
    ELSE
       uState := SendMessage( ::hWnd, BM_GETCHECK , 0 , 0 )
-      
+
       IF uState == BST_CHECKED
          uValue := .T.
       ELSEIF uState == BST_UNCHECKED

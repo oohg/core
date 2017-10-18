@@ -191,7 +191,7 @@ METHOD EventMap( nMsg, xExec, oSelf )
    ::aAxExec[ nAt ] := { xExec, oSelf }
 RETURN NIL
 
-#ifndef __XHARBOUR__       //// si es harbour 
+#ifndef __XHARBOUR__       //// si es harbour
 #ifndef __BORLANDC__       //// y no es borlandc
 *------------------------------------------------------------------------------*
 METHOD __Error( ... )

@@ -1398,7 +1398,7 @@ PUBLIC _OOHG_PRINTER_DocName := "OOHG printing system"
          _HMG_PRINTER_UserMessages [102] := 'No printer is installed in this system.'
          _HMG_PRINTER_UserMessages [103] := 'Closing preview... Please Wait...'
 
-      Case cLang == "EN"       
+      Case cLang == "EN"
    ///////////////////////////////////////////////////////////////////
    // ENGLISH
    ///////////////////////////////////////////////////////////////////
@@ -1474,7 +1474,7 @@ PUBLIC _OOHG_PRINTER_DocName := "OOHG printing system"
             _HMG_PRINTER_UserMessages [102] := "Aucune imprimeur n'est installé dans ce système."
             _HMG_PRINTER_UserMessages [103] := 'Closing preview... Please Wait...'
 
-      Case cLang == "DEWIN" .OR. cLang == "DE"    
+      Case cLang == "DEWIN" .OR. cLang == "DE"
    ///////////////////////////////////////////////////////////////////
    // GERMAN
    ///////////////////////////////////////////////////////////////////
@@ -1512,7 +1512,7 @@ PUBLIC _OOHG_PRINTER_DocName := "OOHG printing system"
          _HMG_PRINTER_UserMessages [102] := 'Es sind keine Drucker im System installiert.'
          _HMG_PRINTER_UserMessages [103] := 'Bitte warten, während die Druckvorschau Schließens...'
 
-      Case cLang == "IT"        
+      Case cLang == "IT"
    ///////////////////////////////////////////////////////////////////
    // ITALIAN
    ///////////////////////////////////////////////////////////////////
@@ -1588,7 +1588,7 @@ PUBLIC _OOHG_PRINTER_DocName := "OOHG printing system"
          _HMG_PRINTER_UserMessages [102] := 'No printer is installed in this system.'
          _HMG_PRINTER_UserMessages [103] := 'Closing preview... Please Wait...'
 
-      Case cLang == "PT"        
+      Case cLang == "PT"
    ///////////////////////////////////////////////////////////////////
    // PORTUGUESE
    ///////////////////////////////////////////////////////////////////

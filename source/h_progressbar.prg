@@ -126,7 +126,7 @@ Local ControlHandle
 
    if HB_IsNumeric( nVelocity )
       ::nVelocity := nVelocity
-       
+
       ::SetStyleMarquee( nVelocity )
    endif
 
@@ -158,11 +158,11 @@ METHOD SetStyleNormal( uValue ) CLASS TProgressBar
       ::StopMarquee()
 
       ::Style( ::Style() - PBS_MARQUEE )
-      
+
       if ! HB_IsNumeric( uValue ) .or. uValue < 0
         uValue := 0
       endif
-      
+
       ::value := uValue
    endif
 
@@ -187,7 +187,7 @@ METHOD StartMarquee() CLASS TProgressBar
    if IsWindowStyle( ::hWnd, PBS_MARQUEE )
       if ! ::lRunning
          ::lRunning := .T.
-         
+
          if ::nVelocity <= 0
             ::nVelocity := 30
          endif
@@ -206,7 +206,7 @@ METHOD StopMarquee() CLASS TProgressBar
    if IsWindowStyle( ::hWnd, PBS_MARQUEE )
       if ::lRunning
         ::lRunning := .F.
-        
+
          if ::nVelocity <= 0
             ::nVelocity := 30
          endif

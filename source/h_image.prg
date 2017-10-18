@@ -346,22 +346,22 @@ BOOL PtInExcludeArea( PHB_ITEM pArea, int x, int y )
    PHB_ITEM pSector;
    ULONG ulCount;
 
-   if( pArea )                                                             
+   if( pArea )
    {
       for( ulCount = 1; ulCount <= hb_arrayLen( pArea ); ulCount++ )
       {
-         if( HB_IS_ARRAY( hb_arrayGetItemPtr( pArea, ulCount ) ) )         
+         if( HB_IS_ARRAY( hb_arrayGetItemPtr( pArea, ulCount ) ) )
          {
-            if( hb_arrayLen( hb_arrayGetItemPtr( pArea, ulCount ) ) >= 4 ) 
+            if( hb_arrayLen( hb_arrayGetItemPtr( pArea, ulCount ) ) >= 4 )
             {
                pSector = hb_arrayGetItemPtr( pArea, ulCount );
 
-               if( HB_IS_NUMERIC( hb_arrayGetItemPtr( pSector, 1 ) ) &&    
-                   HB_IS_NUMERIC( hb_arrayGetItemPtr( pSector, 2 ) ) &&    
-                   HB_IS_NUMERIC( hb_arrayGetItemPtr( pSector, 3 ) ) &&    
-                   HB_IS_NUMERIC( hb_arrayGetItemPtr( pSector, 4 ) ) )     
+               if( HB_IS_NUMERIC( hb_arrayGetItemPtr( pSector, 1 ) ) &&
+                   HB_IS_NUMERIC( hb_arrayGetItemPtr( pSector, 2 ) ) &&
+                   HB_IS_NUMERIC( hb_arrayGetItemPtr( pSector, 3 ) ) &&
+                   HB_IS_NUMERIC( hb_arrayGetItemPtr( pSector, 4 ) ) )
                {
-                  if( ( hb_arrayGetNL( pSector, 1 ) <= x ) &&      
+                  if( ( hb_arrayGetNL( pSector, 1 ) <= x ) &&
                       ( x < hb_arrayGetNL( pSector, 3 ) ) &&
                       ( hb_arrayGetNL( pSector, 2 ) <= y ) &&
                       ( y < hb_arrayGetNL( pSector, 4 ) ) )

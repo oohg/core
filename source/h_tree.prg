@@ -174,7 +174,7 @@ Local Controlhandle, nStyle, ImgDefNode, ImgDefItem, aBitmaps := array(4), oCtrl
       nStyle += TVS_FULLROWSELECT
    ElseIf ! HB_IsLogical( lNoLines ) .OR. ! lNoLines
       nStyle += TVS_HASLINES
-         
+
       If ! HB_IsLogical( noBot ) .OR. ! noBot
          nStyle += TVS_LINESATROOT
       EndIf
@@ -230,7 +230,7 @@ Local Controlhandle, nStyle, ImgDefNode, ImgDefItem, aBitmaps := array(4), oCtrl
 
       ::ImageListColor := GetSysColor( COLOR_3DFACE )
       ::ImageListFlags := LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
-      
+
       ::AddBitMap( aBitmaps )
    EndIf
 
@@ -353,7 +353,7 @@ Local NewHandle, TempHandle, i, Pos, ChildHandle, BackHandle, ParentHandle, iPos
 
             iUnSel := ::AddBitMap( aImage[ 1 ] ) - 1
          EndIf
-         
+
          If ImgDef == 1
             // if only one bitmap in array isel = iunsel, only one bitmap loaded
             iSel := iUnSel
@@ -591,7 +591,7 @@ Local Handle, Pos, OldID, iID
    If Pos == 0
       MsgOOHGError( "SelectionID: Item Selected Is Invalid. Program terminated." )
    EndIf
-   
+
    If pcount() > 0
       // set
       OldID := ::aTreeIdMap[ Pos ]
@@ -674,7 +674,7 @@ Local TreeItemHandle
          If iID == 0
             MsgOOHGError( "DeleteItem: Invalid Item Id. Program terminated." )
          EndIf
-         
+
          aDel( ::aItemIDs, iID )
       EndIf
 
@@ -820,7 +820,7 @@ LOCAL bRet
    Else
       bRet := iif( _OOHG_SameEnterDblClick, ::OnDblClick, ::bOnEnter )
    EndIf
-   
+
 Return bRet
 
 *------------------------------------------------------------------------------*
@@ -1085,7 +1085,7 @@ Local cNewValue, lValid, TreeItemHandle, Item
          If TreeItemHandle != 0
             TreeView_SetBoldState( ::hWnd, TreeItemHandle, .F. )
          EndIf
-         
+
          TreeItemHandle := TreeView_ActualSelectedItem( lParam )
          If TreeItemHandle != 0
             TreeView_SetBoldState( ::hWnd, TreeItemHandle, .T. )
@@ -1124,11 +1124,11 @@ Local cNewValue, lValid, TreeItemHandle, Item
 
       If HB_IsBlock( ::Valid )
          lValid := Eval( ::Valid, ::Value, cNewValue )
-         
+
          If HB_IsLogical( lValid ) .AND. ! lValid
             // force label editing after exit
             ::EditLabel()
-            
+
             // revert to original value
             Return 0
          EndIf
@@ -1142,7 +1142,7 @@ Local cNewValue, lValid, TreeItemHandle, Item
 
    ElseIf nNotify == NM_CLICK .OR. nNotify == NM_DBLCLK
       TreeItemHandle := TreeView_GetItemHit( lParam )
-      
+
       If TreeItemHandle == 0
          // no item was clicked, allow default processing
          Return 0
@@ -1157,7 +1157,7 @@ Local cNewValue, lValid, TreeItemHandle, Item
          // trigger OnCheckChange procedure, see Events method
          PostMessage( ::hWnd, WM_APP + 8, 0, TreeItemHandle )
       EndIf
-      
+
       // allow default processing
       Return 0
 
@@ -1223,19 +1223,19 @@ Local nItem, lChecked, TargetHandle, i, oAux, Value
                   oAux := ::aTarget[ i ]
                ElseIf HB_IsBlock( ::aTarget[ i ] )
                   oAux := Eval( ::aTarget[ i ] )
-                  
+
                   If ! HB_IsObject( oAux )
                      oAux := Nil
                   EndIf
                Else
                   oAux := Nil
                Endif
-               
+
                If oAux:hWnd == TargetHandle
                   Exit
                EndIf
             Next i
-            
+
             If i <= len( ::aTarget ) .AND. oAux:DropEnabled
                If HB_IsObject( ::LastTarget )
                   If ::LastTarget:hWnd # oAux:hWnd
@@ -1262,7 +1262,7 @@ Local nItem, lChecked, TargetHandle, i, oAux, Value
                Return Nil
             EndIf
          EndIf
-         
+
          // when dragging over no target, change cursor to NO and drag image
          TreeView_OnMouseDrag( ::hWnd, ::ItemOnDrag, Nil, wParam )
       EndIf
@@ -1275,7 +1275,7 @@ Local nItem, lChecked, TargetHandle, i, oAux, Value
 
          If HB_IsObject( ::LastTarget )
             ::LastTarget:HasDragFocus := .F.
-            
+
             If __objHasData( ::LastTarget, "AutoScrollTimer" )
                If HB_IsObject( ::LastTarget:AutoScrollTimer )
                   ::LastTarget:AutoScrollTimer:Enabled := .F.
@@ -1351,7 +1351,7 @@ Local nItem, lChecked, TargetHandle, i, oAux, Value
          ::DragImageList := 0
          ::ItemOnDrag := 0
          ::DragActive := .F.
-         
+
          If HB_IsObject( ::LastTarget )
            ::LastTarget:Redraw()
          EndIf
@@ -1369,7 +1369,7 @@ Local nItem, lChecked, TargetHandle, i, oAux, Value
       EndIf
 
    EndIf
-   
+
 Return ::Super:Events( hWnd, nMsg, wParam, lParam )
 
 *------------------------------------------------------------------------------*
@@ -1517,7 +1517,7 @@ Local Pos, FromHandle, aItems, i, ItemOld, j, aImages
 
       aId[ 1 ] := i
    EndIf
-   
+
    // insert new items
    For i := 1 to len( aItems )
       ItemOld := aItems[ i, 1 ]
@@ -1563,7 +1563,7 @@ Local aItems, i, ItemOld, j, aImages, ItemParent
       Pos := ItemFrom
    EndIf
    FromHandle := ::aTreeMap[ Pos ]
-   
+
    // get the handle of the From item's parent
    ItemParent := ::GetParent( ItemFrom )
    If ItemParent == Nil
@@ -1666,7 +1666,7 @@ Local aItems, i, ItemOld, j, aImages, ItemParent
          EndIf
       Next j
    Next i
-   
+
    // search for the To item's handle to get the item's reference
    // because it may have changed after inserting new items
    Pos := aScan( oTarget:aTreeMap, ToHandle )
@@ -1719,7 +1719,7 @@ Local ParentPos, ParentItem, NextChild, NextPos, NextItem
       ParentItem := if( Self:ItemIds, Self:aTreeIdMap[ ParentPos ], ParentPos )
 
       NextChild := ChildHandle
-      
+
       Do While NextChild != 0
          NextPos := aScan( ::aTreeMap, NextChild )
          If NextPos == 0
@@ -1755,7 +1755,7 @@ METHOD EditLabel() CLASS TTree
    ::SetFocus()
 
    TreeView_EditLabel( ::hWnd, TreeView_GetSelection( ::hWnd ) )
-   
+
 Return Nil
 
 *------------------------------------------------------------------------------*
@@ -1811,7 +1811,7 @@ Local ItemHandle, Pos
          ItemHandle := ::aTreeMap[ Item ]
       EndIf
    EndIf
-   
+
 Return TreeView_GetCheckState( ::hWnd, ItemHandle ) == 1
 
 *------------------------------------------------------------------------------*
@@ -1879,7 +1879,7 @@ Local Pos
 
          Pos := Item
       EndIf
-      
+
       ::aTreeRO[ Pos ] := lReadOnly
    Else
       // get
@@ -1893,7 +1893,7 @@ Local Pos
          If Item < 1 .OR. Item > len( ::aTreeMap )
             MsgOOHGError( "ItemReadonly: Invalid Item Reference. Program terminated." )
          EndIf
-         
+
          Pos := Item
       EndIf
    EndIf
@@ -2003,7 +2003,7 @@ Local Pos, ItemHandle, ParentHandle, ParentItem
 
    ItemHandle := ::aTreeMap[ Pos ]
    ParentHandle := TreeView_GetParent( ::hWnd, ItemHandle )
-   
+
    If ParentHandle == 0
       ParentItem := Nil
    ElseIf ::ItemIds
@@ -2011,7 +2011,7 @@ Local Pos, ItemHandle, ParentHandle, ParentItem
    Else
       ParentItem := aScan( ::aTreeMap, ParentHandle )
    EndIf
-   
+
 Return ParentItem
 
 *------------------------------------------------------------------------------*
@@ -2034,11 +2034,11 @@ Local Pos, ItemHandle, ChildHandle, ChildItem, ChildrenItems
    EndIf
 
    ItemHandle := ::aTreeMap[ Pos ]
-   
+
    ChildrenItems := {}
-   
+
    ChildHandle := TreeView_GetChild( ::hWnd, ItemHandle )
-   
+
    do while ChildHandle != 0
       If ::ItemIds
          ChildItem := ::aTreeIdMap[ aScan( ::aTreeMap, ChildHandle ) ]
@@ -2047,7 +2047,7 @@ Local Pos, ItemHandle, ChildHandle, ChildItem, ChildrenItems
       EndIf
 
       aAdd( ChildrenItems, ChildItem )
-      
+
       ChildHandle := TreeView_GetNextSibling( ::hWnd, ChildHandle )
    enddo
 
@@ -2060,7 +2060,7 @@ METHOD LookForKey( nKey, nFlags ) CLASS TTree
    If nKey == VK_ESCAPE .and. nFlags == 0
       If ::hWndEditCtrl != Nil
          Return Nil
-        
+
       ElseIf ::DragActive
          // this call fires WM_CAPTURECHANGED
          ReleaseCapture()
@@ -2068,7 +2068,7 @@ METHOD LookForKey( nKey, nFlags ) CLASS TTree
          Return Nil
       EndIf
    EndIf
-   
+
 Return ::Super:LookForKey( nKey, nFlags )
 
 *------------------------------------------------------------------------------*
@@ -2113,15 +2113,15 @@ METHOD HandleToItem( Handle) CLASS TTree
 Local Pos
 
    Pos := aScan( ::aTreeMap, Handle )
-   
+
    If Pos == 0
       MsgOOHGError( "HandleToItem: Invalid Item Handle. Program terminated." )
    EndIf
-   
+
    If ::ItemIds
       Pos := ::aTreeIdMap[ Pos ]
    EndIf
-   
+
 Return Pos
 
 *------------------------------------------------------------------------------*
@@ -2174,7 +2174,7 @@ LOCAL Handle, Item
 
    // first item shown in the control's window
    Handle := TreeView_GetFirstVisible( ::hWnd )
-   
+
    If ValidHandler( Handle )
       Item := ::HandleToItem( Handle )
    ElseIf ::ItemIds
@@ -2264,11 +2264,11 @@ METHOD ItemHeight( nHeight ) CLASS TTree
  * If this argument is not even, it will be rounded down to the nearest even value.
  * If this argument is -1, the control will revert to using its default item height.
  */
- 
+
  If HB_IsNumeric( nHeight ) .and. nHeight # 0
     TreeView_SetItemHeight( ::hWnd, nHeight )
  EndIf
- 
+
 Return TreeView_GetItemHeight( ::hWnd )
 
 *------------------------------------------------------------------------------*
@@ -2345,7 +2345,7 @@ HB_FUNC( INITTREE )
    LONG CurStyle;
 
    iStyle = hb_parni( 6 ) | WS_CHILD | TVS_NOTOOLTIPS ;
-   
+
    StyleEx = _OOHG_RTL_Status( hb_parl( 7 ) );
    if( hb_parl( 9 ) )
    {
@@ -2367,7 +2367,7 @@ HB_FUNC( INITTREE )
       CurStyle = GetWindowLong(hWndTV, GWL_STYLE);
       SetWindowLong(hWndTV, GWL_STYLE, CurStyle | TVS_CHECKBOXES);
    }
-   
+
    HWNDret( hWndTV );
 }
 

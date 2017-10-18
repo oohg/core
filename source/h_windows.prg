@@ -340,12 +340,12 @@ CLASS TWindow
    // Specific HACKS :(
    METHOD SetSplitBox         BLOCK { || .F. }
    METHOD SetSplitBoxInfo     BLOCK { |Self,a,b,c,d| if( ::Container != nil, ::Container:SetSplitBox( a,b,c,d ), .F. ) }
-   
+
    // Graphics Methods
    METHOD Line
    METHOD Fill
    Method Box
-   Method RoundBox   
+   Method RoundBox
    METHOD Ellipse
    METHOD Arc
    METHOD Pie
@@ -1132,7 +1132,7 @@ Local myobject, cWork, cExt
    ::SaveAs( cWork, lAll, cType, nQuality, nColorDepth ) //// save as BMP by default
 
    myobject := Tprint()
-   
+
    With Object myobject
       :init()
       :selprinter( .T., .T., .T. )  /// select,preview,landscape
@@ -1796,7 +1796,7 @@ local nOffset // desplazamientos por borde
             oControl:Height := nHeight
             nWidth := nWidth - oControl:nWidth
          EndIf
-         
+
          //oControl:SizePos()
          oControl:Show()
       EndIf

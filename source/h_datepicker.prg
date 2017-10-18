@@ -120,7 +120,7 @@ Local ControlHandle, nStyle, nStyleEx
    ASSIGN ::OnGotFocus  VALUE gotfocus  TYPE "B"
    ASSIGN ::OnChange    VALUE Change    TYPE "B"
    ASSIGN ::OnEnter     VALUE Enter     TYPE "B"
-   
+
 Return Self
 
 *------------------------------------------------------------------------------*

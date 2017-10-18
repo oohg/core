@@ -231,12 +231,13 @@ CLASS HBPrinter
 //      /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
 //      EMPTY( HBPRN )
 //   ENDIF
-ENDCLASS
 
-
+   ENDCLASS
 
 METHOD New() CLASS HBPrinter
-local aprnport
+
+   local aprnport
+
    aprnport:=rr_getprinters()
    IF aprnport<>",,"
       aprnport:=str2arr(aprnport,",,")
@@ -248,10 +249,13 @@ local aprnport
    ENDIF
    ::TimeStamp := strzero( Seconds() * 100 , 8 )
    ::BaseDoc := rr_GetTempFolder() + '\' + ::TimeStamp + "_HBPrinter_preview_"
-return self
+
+   return self
 
 METHOD SelectPrinter( cPrinter ,lPrev ) CLASS HBPrinter
-local txtp:="",txtb:="",t:={0,0,1,.t.}
+
+   local txtp:="",txtb:="",t:={0,0,1,.t.}
+
    IF cPrinter == Nil
       ::hDCRef := rr_getdc(::PrinterDefault)
       ::hDC:=::hDCRef
@@ -300,16 +304,19 @@ local txtp:="",txtb:="",t:={0,0,1,.t.}
       rr_getdevicecaps(::DEVCAPS,::Fonts[3])
       ::setunits(::units)
    ENDIF
-Return Nil
 
+   Return Nil
 
 METHOD SetDevMode(what,newvalue) CLASS HBPrinter
-  ::hDCRef:=rr_setdevmode( what, newvalue, ::lGlobalChanges )
-  rr_getdevicecaps(::DEVCAPS,::Fonts[3])
-  ::setunits(::units)
-Return Self
+
+   ::hDCRef:=rr_setdevmode( what, newvalue, ::lGlobalChanges )
+   rr_getdevicecaps(::DEVCAPS,::Fonts[3])
+   ::setunits(::units)
+
+   Return Self
 
 METHOD StartDoc(ldocname) CLASS HBPrinter
+
   ::Printing:=.t.
   if ldocname<>NIL
      ::DOCNAME:=ldocname
@@ -317,62 +324,70 @@ METHOD StartDoc(ldocname) CLASS HBPrinter
   if !::PreviewMode
       rr_startdoc(::DOCNAME)
   endif
-return self
+
+   return self
 
 METHOD SetPage(orient,size,fontname) CLASS HBPrinter
-local lhand:=::getobjbyname(fontname,"F")
-  if size<>NIL
-     ::SetDevMode(DM_PAPERSIZE,size)
-  endif
-  if orient<>NIL
-     ::SetDevMode(DM_ORIENTATION,orient)
-  endif
-  if lhand<>0
-     ::Fonts[3]:=lhand
-  endif
-  rr_getdevicecaps(::DEVCAPS,::Fonts[3])
-  ::setunits(::units)
-return Self
 
+   local lhand:=::getobjbyname(fontname,"F")
+   if size<>NIL
+      ::SetDevMode(DM_PAPERSIZE,size)
+   endif
+   if orient<>NIL
+      ::SetDevMode(DM_ORIENTATION,orient)
+   endif
+   if lhand<>0
+      ::Fonts[3]:=lhand
+   endif
+   rr_getdevicecaps(::DEVCAPS,::Fonts[3])
+   ::setunits(::units)
+
+   return Self
 
 METHOD Startpage() CLASS HBPrinter
-  if ::PreviewMode
-   if ::InMemory
-      ::hDC:=rr_createmfile()
+
+   if ::PreviewMode
+      if ::InMemory
+         ::hDC:=rr_createmfile()
+      else
+         ::hDC:=rr_createfile( ::BaseDoc + alltrim(strzero(::CurPage,4))+'.emf')
+         ::CurPage := ::CurPage + 1
+      end
    else
-      ::hDC:=rr_createfile( ::BaseDoc + alltrim(strzero(::CurPage,4))+'.emf')
-      ::CurPage := ::CurPage + 1
-   end
-  else
-    rr_Startpage()
-  endif
-  if !::Printingemf
-    rr_selectcliprgn(::Regions[1,1])
-    rr_setviewportorg(::ViewPortOrg)
-    rr_settextcolor(::textcolor)
-    rr_setbkcolor(::bkcolor)
-    rr_setbkmode(::bkmode)
-    rr_selectbrush(::Brushes[1,1])
-    rr_selectpen(::Pens[1,1])
-    rr_selectfont(::Fonts[1,1])
-  endif
-return self
+      rr_Startpage()
+   endif
+   if !::Printingemf
+      rr_selectcliprgn(::Regions[1,1])
+      rr_setviewportorg(::ViewPortOrg)
+      rr_settextcolor(::textcolor)
+      rr_setbkcolor(::bkcolor)
+      rr_setbkmode(::bkmode)
+      rr_selectbrush(::Brushes[1,1])
+      rr_selectpen(::Pens[1,1])
+      rr_selectfont(::Fonts[1,1])
+   endif
+
+   return self
 
 METHOD Endpage() CLASS HBPrinter
-  if ::PreviewMode
-   if ::InMemory
-      aadd(::MetaFiles,{rr_closemfile(),::DEVCAPS[1],::DEVCAPS[2],::DEVCAPS[3],::DEVCAPS[4],::DEVCAPS[15],::DEVCAPS[17]})
+
+   if ::PreviewMode
+      if ::InMemory
+         aadd(::MetaFiles,{rr_closemfile(),::DEVCAPS[1],::DEVCAPS[2],::DEVCAPS[3],::DEVCAPS[4],::DEVCAPS[15],::DEVCAPS[17]})
+      else
+         rr_closefile()
+         aadd(::MetaFiles,{::BaseDoc + strzero(::CurPage-1,4)+'.emf',::DEVCAPS[1],::DEVCAPS[2],::DEVCAPS[3],::DEVCAPS[4],::DEVCAPS[15],::DEVCAPS[17]})
+      end
    else
-      rr_closefile()
-      aadd(::MetaFiles,{::BaseDoc + strzero(::CurPage-1,4)+'.emf',::DEVCAPS[1],::DEVCAPS[2],::DEVCAPS[3],::DEVCAPS[4],::DEVCAPS[15],::DEVCAPS[17]})
-   end
-  else
-     rr_endpage()
-  endif
-return self
+      rr_endpage()
+   endif
+
+   return self
 
 METHOD SaveMetaFiles(number) CLASS HBPrinter
-Local n,l
+
+   Local n,l
+
    If Empty(number)
       number:=NIL
    EndIf
@@ -394,302 +409,326 @@ Local n,l
          endif
       endif
    endif
-return self
 
-***********************************
+   return self
+
 METHOD EndDoc() CLASS HBPrinter
-***********************************
 
- if ::PreviewMode
-    ::preview()
- else
-   rr_enddoc()
- endif
- ::Printing:=.f.
-return self
+   if ::PreviewMode
+      ::preview()
+   else
+     rr_enddoc()
+   endif
+   ::Printing:=.f.
 
-******************************************
+   return self
+
 METHOD SetTextColor(clr) CLASS HBPrinter
-******************************************
-local lret:=::Textcolor
-  if clr<>NIL
 
-        // BEGIN RL 2003-08-03
+   local lret:=::Textcolor
 
-        IF HB_IsNumeric (clr)
-            ::TextColor:=rr_settextcolor(clr)
-        ELSEIF HB_IsArray (clr)
-            ::TextColor:=rr_settextcolor( RR_SETRGB ( clr [1] , clr [2] , clr [3] ) )
-        ENDIF
+   if clr<>NIL
 
-        // END RL
+      // BEGIN RL 2003-08-03
 
-  endif
-return lret
+      IF HB_IsNumeric (clr)
+         ::TextColor:=rr_settextcolor(clr)
+      ELSEIF HB_IsArray (clr)
+         ::TextColor:=rr_settextcolor( RR_SETRGB ( clr [1] , clr [2] , clr [3] ) )
+      ENDIF
+
+      // END RL
+
+   endif
+
+   return lret
 
 METHOD SetPolyFillMode(style) CLASS HBPrinter
-local lret:=::PolyFillMode
-  ::PolyFillMode:=rr_setpolyfillmode(style)
-return lret
+
+   local lret:=::PolyFillMode
+
+   ::PolyFillMode:=rr_setpolyfillmode(style)
+
+   return lret
 
 METHOD SetBkColor(clr) CLASS HBPrinter
-local lret:=::BkColor
 
-        // BEGIN RL 2003-08-03
+   local lret:=::BkColor
 
-        IF HB_IsNumeric (clr)
-          ::BkColor:=rr_setbkcolor(clr)
-        ELSEIF HB_IsArray (clr)
-          ::BkColor:=rr_setbkcolor( RR_SETRGB ( clr [1] , clr [2] , clr [3] ) )
-        ENDIF
+   // BEGIN RL 2003-08-03
 
-        // END RL
+   IF HB_IsNumeric (clr)
+      ::BkColor:=rr_setbkcolor(clr)
+   ELSEIF HB_IsArray (clr)
+      ::BkColor:=rr_setbkcolor( RR_SETRGB ( clr [1] , clr [2] , clr [3] ) )
+   ENDIF
 
-return lret
+   // END RL
+
+   return lret
 
 METHOD SetBkMode(nmode) CLASS HBPrinter
-local lret:=::Bkmode
-  ::BkMode:=nmode
-  rr_setbkmode(nmode)
-return lret
+
+   local lret:=::Bkmode
+
+   ::BkMode:=nmode
+   rr_setbkmode(nmode)
+
+   return lret
 
 METHOD DefineBrush(defname,lstyle,lcolor,lhatch) CLASS HBPrinter
-local lhand:=::getobjbyname(defname,"B")
- if lhand<>0
-    return self
- endif
 
-        // BEGIN RL 2003-08-03
+   local lhand:=::getobjbyname(defname,"B")
 
-        IF HB_IsArray (lcolor)
-            lcolor := RR_SETRGB ( lcolor [1] , lcolor [2] , lcolor [3] )
-        ENDIF
+   if lhand<>0
+      return self
+   endif
 
-        // END RL
+   // BEGIN RL 2003-08-03
 
- lstyle:=if(lstyle==NIL,BS_NULL,lstyle)
- lcolor:=if(lcolor==NIL,0xFFFFFF,lcolor)
- lhatch:=if(lhatch==NIL,HS_HORIZONTAL,lhatch)
- aadd(::Brushes[1],rr_createbrush(lstyle,lcolor,lhatch))
- aadd(::Brushes[2],upper(alltrim(defname)))
-return self
+   IF HB_IsArray (lcolor)
+      lcolor := RR_SETRGB ( lcolor [1] , lcolor [2] , lcolor [3] )
+   ENDIF
+
+   // END RL
+
+   lstyle:=if(lstyle==NIL,BS_NULL,lstyle)
+   lcolor:=if(lcolor==NIL,0xFFFFFF,lcolor)
+   lhatch:=if(lhatch==NIL,HS_HORIZONTAL,lhatch)
+   aadd(::Brushes[1],rr_createbrush(lstyle,lcolor,lhatch))
+   aadd(::Brushes[2],upper(alltrim(defname)))
+
+   return self
 
 METHOD SelectBrush(defname) CLASS HBPrinter
-local lhand:=::getobjbyname(defname,"B")
-  if lhand<>0
-        rr_selectbrush(lhand)
-        ::Brushes[1,1]:=lhand
-  endif
-return self
+
+   local lhand:=::getobjbyname(defname,"B")
+
+   if lhand<>0
+      rr_selectbrush(lhand)
+      ::Brushes[1,1]:=lhand
+   endif
+
+   return self
 
 METHOD ModifyBrush(defname,lstyle,lcolor,lhatch) CLASS HBPrinter
-local lhand:=0,lpos
- if defname=="*"
-    lpos:=ascan(::Brushes[1],::Brushes[1,1],2)
-    if lpos>1
-       lhand:=::Brushes[1,lpos]
-    endif
- else
-    lhand:=::getobjbyname(defname,"B")
-    lpos:=::getobjbyname(defname,"B",.t.)
- endif
- if lhand==0 .or. lpos==0
-    ::error:=1
-    return self
- endif
- lstyle:=if(lstyle==NIL,-1,lstyle)
 
-        // BEGIN RL 2003-08-03
+   local lhand:=0,lpos
 
-        IF HB_IsArray (lcolor)
-            lcolor := RR_SETRGB ( lcolor [1] , lcolor [2] , lcolor [3] )
-        ENDIF
-
-        // END RL
-
- lcolor:=if(lcolor==NIL,-1,lcolor)
- lhatch:=if(lhatch==NIL,-1,lhatch)
- ::Brushes[1,lpos]:=rr_modifybrush(lhand,lstyle,lcolor,lhatch)
- if lhand==::Brushes[1,1]
-    ::selectbrush(::Brushes[2,lpos])
- endif
-return self
-
-***************************************************************
-METHOD DefinePen(defname,lstyle,lwidth,lcolor) CLASS HBPrinter
-***************************************************************
-local lhand:=::getobjbyname(defname,"P")
- if lhand<>0
-    return self
- endif
-
-        // BEGIN RL 2003-08-03
-
-        IF HB_IsArray (lcolor)
-            lcolor := RR_SETRGB ( lcolor [1] , lcolor [2] , lcolor [3] )
-        ENDIF
-
-        // END RL
-
- lstyle:=if(lstyle==NIL,PS_SOLID,lstyle)
- lcolor:=if(lcolor==NIL,0xFFFFFF,lcolor)
- lwidth:=if(lwidth==NIL,0,lwidth)
- aadd(::Pens[1],rr_createpen(lstyle,lwidth,lcolor))
- aadd(::Pens[2],upper(alltrim(defname)))
-return self
-
-***************************************************************
-METHOD ModifyPen(defname,lstyle,lwidth,lcolor) CLASS HBPrinter
-***************************************************************
-local lhand:=0,lpos
- if defname=="*"
-    lpos:=ascan(::Pens[1],::Pens[1,1],2)
-    if lpos>1
-       lhand:=::Pens[1,lpos]
-    endif
- else
-    lhand:=::getobjbyname(defname,"P")
-    lpos:=::getobjbyname(defname,"P",.t.)
- endif
- if lhand==0 .or. lpos<=1
-    ::error:=1
-    return self
- endif
-
- lstyle:=if(lstyle==NIL,-1,lstyle)
-
-        // BEGIN RL 2003-08-03
-
-        IF HB_IsArray (lcolor)
-            lcolor := RR_SETRGB ( lcolor [1] , lcolor [2] , lcolor [3] )
-        ENDIF
-
-        // END RL
-
- lcolor:=if(lcolor==NIL,-1,lcolor)
- lwidth:=if(lwidth==NIL,-1,lwidth)
- ::Pens[1,lpos]:=rr_modifypen(lhand,lstyle,lwidth,lcolor)
- if lhand==::Pens[1,1]
-    ::selectpen(::Pens[2,lpos])
- endif
-return self
-
-*********************************************
-METHOD SelectPen(defname) CLASS HBPrinter
-*********************************************
-local lhand:=::getobjbyname(defname,"P")
-  if lhand<>0
-        rr_selectpen(lhand)
-        ::Pens[1,1]:=lhand
-  endif
-return self
-
-*********************************************************
-METHOD DefineFont(defname,lfontname,lfontsize,lfontwidth,langle,lweight,litalic,lunderline,lstrikeout) CLASS HBPrinter
-*********************************************************
-local lhand:=::getobjbyname(lfontname,"F")
- if lhand<>0
-    return self
- endif
- lfontname:=if(lfontname==NIL,"",upper(alltrim(lfontname)))
- if lfontsize==NIL
-    lfontsize:=-1
- endif
-
- if lfontwidth==NIL
-      lfontwidth:=0
- endif
- if langle==NIL
-    langle:=-1
- endif
- lweight:=if(empty(lweight),0,1)
- litalic:=if(empty(litalic),0,1)
- lunderline:=if(empty(lunderline),0,1)
- lstrikeout:=if(empty(lstrikeout),0,1)
- aadd(::Fonts[1],rr_createfont(lfontname,lfontsize,-lfontwidth,langle*10,lweight,litalic,lunderline,lstrikeout))
- aadd(::Fonts[2],upper(alltrim(defname)))
- aadd(::Fonts[4],{lfontname,lfontsize,lfontwidth,langle,lweight,litalic,lunderline,lstrikeout})
-return self
-
-*********************************************************
-METHOD ModifyFont(defname,lfontname,lfontsize,lfontwidth,langle,lweight,lnweight,litalic,lnitalic,lunderline,lnunderline,lstrikeout,lnstrikeout) CLASS HBPrinter
-*********************************************************
-local lhand:=0,lpos
- if defname=="*"
-    lpos:=ascan(::Fonts[1],::Fonts[1,1],2)
-    if lpos>1
-       lhand:=::Fonts[1,lpos]
-    endif
- else
-    lhand:=::getobjbyname(defname,"F")
-    lpos:=::getobjbyname(defname,"F",.t.)
- endif
- if lhand==0 .or. lpos<=1
-    ::error:=1
-    return self
- endif
-
- if lfontname<>NIL
-   ::Fonts[4,lpos,1]:=upper(alltrim(lfontname))
- endif
-
- if lfontsize<>NIL
-    ::Fonts[4,lpos,2]:=lfontsize
- endif
- if lfontwidth<>NIL
-   ::Fonts[4,lpos,3]:=lfontwidth
+   if defname=="*"
+      lpos:=ascan(::Brushes[1],::Brushes[1,1],2)
+      if lpos>1
+         lhand:=::Brushes[1,lpos]
+      endif
+   else
+      lhand:=::getobjbyname(defname,"B")
+      lpos:=::getobjbyname(defname,"B",.t.)
    endif
-if langle<>NIL
-    ::Fonts[4,lpos,4]:=langle
-endif
- if lweight
-   ::Fonts[4,lpos,5]:=1
- endif
- if lnweight
-    ::Fonts[4,lpos,5]:=0
- endif
- if litalic
-    ::Fonts[4,lpos,6]:=1
- endif
- if lnitalic
-    ::Fonts[4,lpos,6]:=0
- endif
- if lunderline
-   ::Fonts[4,lpos,7]:=1
- endif
- if lnunderline
-   ::Fonts[4,lpos,7]:=0
- endif
- if lstrikeout
-    ::Fonts[4,lpos,8]:=1
- endif
- if lnstrikeout
-   ::Fonts[4,lpos,8]:=0
- endif
+   if lhand==0 .or. lpos==0
+      ::error:=1
+      return self
+   endif
+   lstyle:=if(lstyle==NIL,-1,lstyle)
 
+   // BEGIN RL 2003-08-03
 
- ::Fonts[1,lpos]:=rr_createfont(::Fonts[4,lpos,1],::Fonts[4,lpos,2],-::Fonts[4,lpos,3],::Fonts[4,lpos,4]*10,::Fonts[4,lpos,5],::Fonts[4,lpos,6],::Fonts[4,lpos,7],::Fonts[4,lpos,8])
+   IF HB_IsArray (lcolor)
+      lcolor := RR_SETRGB ( lcolor [1] , lcolor [2] , lcolor [3] )
+   ENDIF
 
- if lhand==::Fonts[1,1]
-    ::selectfont(::Fonts[2,lpos])
- endif
- rr_deleteobjects({0,lhand})
-return self
+   // END RL
 
+   lcolor:=if(lcolor==NIL,-1,lcolor)
+   lhatch:=if(lhatch==NIL,-1,lhatch)
+   ::Brushes[1,lpos]:=rr_modifybrush(lhand,lstyle,lcolor,lhatch)
+   if lhand==::Brushes[1,1]
+      ::selectbrush(::Brushes[2,lpos])
+   endif
+
+   return self
+
+METHOD DefinePen(defname,lstyle,lwidth,lcolor) CLASS HBPrinter
+
+   local lhand:=::getobjbyname(defname,"P")
+
+   if lhand<>0
+      return self
+   endif
+
+   // BEGIN RL 2003-08-03
+
+   IF HB_IsArray (lcolor)
+      lcolor := RR_SETRGB ( lcolor [1] , lcolor [2] , lcolor [3] )
+   ENDIF
+
+   // END RL
+
+  lstyle:=if(lstyle==NIL,PS_SOLID,lstyle)
+  lcolor:=if(lcolor==NIL,0xFFFFFF,lcolor)
+  lwidth:=if(lwidth==NIL,0,lwidth)
+  aadd(::Pens[1],rr_createpen(lstyle,lwidth,lcolor))
+  aadd(::Pens[2],upper(alltrim(defname)))
+
+  return self
+
+METHOD ModifyPen(defname,lstyle,lwidth,lcolor) CLASS HBPrinter
+
+   local lhand:=0,lpos
+
+   if defname=="*"
+      lpos:=ascan(::Pens[1],::Pens[1,1],2)
+      if lpos>1
+         lhand:=::Pens[1,lpos]
+      endif
+   else
+      lhand:=::getobjbyname(defname,"P")
+      lpos:=::getobjbyname(defname,"P",.t.)
+   endif
+   if lhand==0 .or. lpos<=1
+      ::error:=1
+      return self
+   endif
+
+   lstyle:=if(lstyle==NIL,-1,lstyle)
+
+   // BEGIN RL 2003-08-03
+
+   IF HB_IsArray (lcolor)
+      lcolor := RR_SETRGB ( lcolor [1] , lcolor [2] , lcolor [3] )
+   ENDIF
+
+   // END RL
+
+  lcolor:=if(lcolor==NIL,-1,lcolor)
+  lwidth:=if(lwidth==NIL,-1,lwidth)
+  ::Pens[1,lpos]:=rr_modifypen(lhand,lstyle,lwidth,lcolor)
+  if lhand==::Pens[1,1]
+     ::selectpen(::Pens[2,lpos])
+  endif
+
+  return self
+
+METHOD SelectPen(defname) CLASS HBPrinter
+
+   local lhand:=::getobjbyname(defname,"P")
+
+   if lhand<>0
+      rr_selectpen(lhand)
+      ::Pens[1,1]:=lhand
+   endif
+
+   return self
+
+METHOD DefineFont(defname,lfontname,lfontsize,lfontwidth,langle,lweight,litalic,lunderline,lstrikeout) CLASS HBPrinter
+
+   local lhand:=::getobjbyname(lfontname,"F")
+
+   if lhand<>0
+      return self
+   endif
+   lfontname:=if(lfontname==NIL,"",upper(alltrim(lfontname)))
+   if lfontsize==NIL
+      lfontsize:=-1
+   endif
+
+   if lfontwidth==NIL
+      lfontwidth:=0
+   endif
+   if langle==NIL
+      langle:=-1
+   endif
+   lweight:=if(empty(lweight),0,1)
+   litalic:=if(empty(litalic),0,1)
+   lunderline:=if(empty(lunderline),0,1)
+   lstrikeout:=if(empty(lstrikeout),0,1)
+   aadd(::Fonts[1],rr_createfont(lfontname,lfontsize,-lfontwidth,langle*10,lweight,litalic,lunderline,lstrikeout))
+   aadd(::Fonts[2],upper(alltrim(defname)))
+   aadd(::Fonts[4],{lfontname,lfontsize,lfontwidth,langle,lweight,litalic,lunderline,lstrikeout})
+
+   return self
+
+METHOD ModifyFont(defname,lfontname,lfontsize,lfontwidth,langle,lweight,lnweight,litalic,lnitalic,lunderline,lnunderline,lstrikeout,lnstrikeout) CLASS HBPrinter
+
+   local lhand:=0,lpos
+
+   if defname=="*"
+      lpos:=ascan(::Fonts[1],::Fonts[1,1],2)
+      if lpos>1
+         lhand:=::Fonts[1,lpos]
+      endif
+   else
+      lhand:=::getobjbyname(defname,"F")
+      lpos:=::getobjbyname(defname,"F",.t.)
+   endif
+   if lhand==0 .or. lpos<=1
+      ::error:=1
+      return self
+   endif
+
+   if lfontname<>NIL
+     ::Fonts[4,lpos,1]:=upper(alltrim(lfontname))
+   endif
+
+   if lfontsize<>NIL
+      ::Fonts[4,lpos,2]:=lfontsize
+   endif
+   if lfontwidth<>NIL
+      ::Fonts[4,lpos,3]:=lfontwidth
+   endif
+   if langle<>NIL
+      ::Fonts[4,lpos,4]:=langle
+   endif
+   if lweight
+      ::Fonts[4,lpos,5]:=1
+   endif
+   if lnweight
+      ::Fonts[4,lpos,5]:=0
+   endif
+   if litalic
+      ::Fonts[4,lpos,6]:=1
+   endif
+   if lnitalic
+      ::Fonts[4,lpos,6]:=0
+   endif
+   if lunderline
+     ::Fonts[4,lpos,7]:=1
+   endif
+   if lnunderline
+     ::Fonts[4,lpos,7]:=0
+   endif
+   if lstrikeout
+      ::Fonts[4,lpos,8]:=1
+   endif
+   if lnstrikeout
+     ::Fonts[4,lpos,8]:=0
+   endif
+
+   ::Fonts[1,lpos]:=rr_createfont(::Fonts[4,lpos,1],::Fonts[4,lpos,2],-::Fonts[4,lpos,3],::Fonts[4,lpos,4]*10,::Fonts[4,lpos,5],::Fonts[4,lpos,6],::Fonts[4,lpos,7],::Fonts[4,lpos,8])
+
+   if lhand==::Fonts[1,1]
+      ::selectfont(::Fonts[2,lpos])
+   endif
+   rr_deleteobjects({0,lhand})
+
+   return self
 
 METHOD SelectFont(defname) CLASS HBPrinter
-local lhand:=::getobjbyname(defname,"F")
-  if lhand<>0
-        rr_selectfont(lhand)
-        ::Fonts[1,1]:=lhand
-  endif
-return self
+
+   local lhand:=::getobjbyname(defname,"F")
+   if lhand<>0
+      rr_selectfont(lhand)
+      ::Fonts[1,1]:=lhand
+   endif
+
+   return self
 
 METHOD SetUnits(newvalue,r,c,lAbsolute) CLASS HBPrinter
-local oldvalue:=::UNITS
+
+   local oldvalue:=::UNITS
+
    If HB_IsString(newvalue)
       newvalue := UPPER( ALLTRIM( newvalue ) )
-      If     newvalue == "ROWCOL"
+      If newvalue == "ROWCOL"
          newvalue := 0
       ElseIf newvalue == "MM"
          newvalue := 1
@@ -702,128 +741,144 @@ local oldvalue:=::UNITS
    newvalue:=if(HB_IsNumeric(newvalue),newvalue,0)
    ::UNITS:=if(newvalue<0 .or. newvalue>4,0,newvalue)
    do case
-      case ::Units==0
-           ::MaxRow:=::DevCaps[13]-1
-           ::MaxCol:=::DevCaps[14]-1
-      case ::Units==1
-           ::MaxRow:=::DevCaps[1]-1
-           ::MaxCol:=::DevCaps[2]-1
-      case ::Units==2
-           ::MaxRow:=(::DevCaps[1]/25.4)-1
-           ::MaxCol:=(::DevCaps[2]/25.4)-1
-      case ::Units==3
-           ::MaxRow:=::DevCaps[3]
-           ::MaxCol:=::DevCaps[4]
-      case ::Units==4
-           if HB_IsNumeric(r)
-              ::MaxRow:=r-1
-           endif
-           if HB_IsNumeric(c)
-              ::MaxCol:=c-1
-           endif
+   case ::Units==0
+      ::MaxRow:=::DevCaps[13]-1
+      ::MaxCol:=::DevCaps[14]-1
+   case ::Units==1
+      ::MaxRow:=::DevCaps[1]-1
+      ::MaxCol:=::DevCaps[2]-1
+   case ::Units==2
+      ::MaxRow:=(::DevCaps[1]/25.4)-1
+      ::MaxCol:=(::DevCaps[2]/25.4)-1
+   case ::Units==3
+      ::MaxRow:=::DevCaps[3]
+      ::MaxCol:=::DevCaps[4]
+   case ::Units==4
+      if HB_IsNumeric(r)
+         ::MaxRow:=r-1
+      endif
+      if HB_IsNumeric(c)
+         ::MaxCol:=c-1
+      endif
    endcase
    If Hb_IsLogical( lAbsolute )
       ::lAbsoluteCoords := lAbsolute
    EndIf
-return oldvalue
+
+   return oldvalue
 
 METHOD Convert(arr,lsize) CLASS HBPrinter
-local aret:=aclone(arr)
-do case
+
+   local aret:=aclone(arr)
+
+   do case
    case ::UNITS==0
-        aret[1]:=(arr[1])*::DEVCAPS[11]
-        aret[2]:=(arr[2])*::DEVCAPS[12]
+      aret[1]:=(arr[1])*::DEVCAPS[11]
+      aret[2]:=(arr[2])*::DEVCAPS[12]
    case ::UNITS==3
    case ::UNITS==4
-        aret[1]:=(arr[1])*::DEVCAPS[3]/(::maxrow+1)
-        aret[2]:=(arr[2])*::DEVCAPS[4]/(::maxcol+1)
+      aret[1]:=(arr[1])*::DEVCAPS[3]/(::maxrow+1)
+      aret[2]:=(arr[2])*::DEVCAPS[4]/(::maxcol+1)
    case ::UNITS==1
-        aret[1]:=(arr[1])*::DEVCAPS[5]/25.4-if(! ::lAbsoluteCoords .AND. lsize==NIL,::DEVCAPS[9 ],0)
-        aret[2]:=(arr[2])*::DEVCAPS[6]/25.4-if(! ::lAbsoluteCoords .AND. lsize==NIL,::DEVCAPS[10],0)
+      aret[1]:=(arr[1])*::DEVCAPS[5]/25.4-if(! ::lAbsoluteCoords .AND. lsize==NIL,::DEVCAPS[9 ],0)
+      aret[2]:=(arr[2])*::DEVCAPS[6]/25.4-if(! ::lAbsoluteCoords .AND. lsize==NIL,::DEVCAPS[10],0)
    case ::UNITS==2
-        aret[1]:=(arr[1])*::DEVCAPS[5]-if(! ::lAbsoluteCoords .AND. lsize==NIL,::DEVCAPS[9 ],0)
-        aret[2]:=(arr[2])*::DEVCAPS[6]-if(! ::lAbsoluteCoords .AND. lsize==NIL,::DEVCAPS[10],0)
+      aret[1]:=(arr[1])*::DEVCAPS[5]-if(! ::lAbsoluteCoords .AND. lsize==NIL,::DEVCAPS[9 ],0)
+      aret[2]:=(arr[2])*::DEVCAPS[6]-if(! ::lAbsoluteCoords .AND. lsize==NIL,::DEVCAPS[10],0)
    otherwise
-        aret[1]:=(arr[1])*::DEVCAPS[11]
-        aret[2]:=(arr[2])*::DEVCAPS[12]
-endcase
-return aret
+      aret[1]:=(arr[1])*::DEVCAPS[11]
+      aret[2]:=(arr[2])*::DEVCAPS[12]
+   endcase
+
+   return aret
 
 METHOD DrawText(row,col,torow,tocol,txt,style,defname,lNoWordBreak) CLASS HBPrinter
-local lhf:=::getobjbyname(defname,"F")
-     if torow==NIL
-        torow:=::maxrow
-      endif
-     if tocol==NIL
-        tocol:=::maxcol
-     endif
-     rr_drawtext(::Convert({row,col}),::Convert({torow,tocol}),txt,style,lhf,lNoWordBreak)
-return self
+
+   local lhf:=::getobjbyname(defname,"F")
+
+  if torow==NIL
+     torow:=::maxrow
+  endif
+  if tocol==NIL
+     tocol:=::maxcol
+  endif
+  rr_drawtext(::Convert({row,col}),::Convert({torow,tocol}),txt,style,lhf,lNoWordBreak)
+
+   return self
 
 METHOD TEXTOUT(row,col,txt,defname) CLASS HBPrinter
-local lhf:=::getobjbyname(defname,"F")
-  rr_textout(txt,::Convert({row,col}),lhf,rat(" ",txt))
-return self
+
+   local lhf:=::getobjbyname(defname,"F")
+
+   rr_textout(txt,::Convert({row,col}),lhf,rat(" ",txt))
+
+   return self
 
 METHOD Say(row,col,txt,defname,lcolor,lalign)    CLASS HBPrinter
-local atxt:={},i,lhf:=::getobjbyname(defname,"F"),oldalign
-local apos
-  do case
-     case HB_IsNumeric(txt)    ;  aadd(atxt,str(txt))
-     case valtype(txt)=="T"    ;  aadd(atxt,ttoc(txt))
-     case HB_IsDate(txt)       ;  aadd(atxt,dtoc(txt))
-     case HB_IsLogical(txt)    ;  aadd(atxt,if(txt,".T.",".F."))
-     case valtype(txt)=="U"    ;  aadd(atxt,"NIL")
-     case valtype(txt)$"BO"    ;  aadd(atxt,"")
-     case HB_IsArray(txt)      ;  aeval(txt,{|x| aadd(atxt,sayconvert(x)) })
-     case valtype(txt)$"MC"    ;  atxt:=str2arr(txt,hb_osnewline())
-  endcase
-  apos:=::convert({row,col})
-  if lcolor<>NIL
 
-        // BEGIN RL 2003-08-03
+   local atxt:={},i,lhf:=::getobjbyname(defname,"F"),oldalign
+   local apos
 
-        IF HB_IsNumeric (lcolor)
-            rr_settextcolor(lcolor)
-        ELSEIF HB_IsArray (lcolor)
-            rr_settextcolor( RR_SETRGB ( lcolor [1] , lcolor [2] , lcolor [3] ) )
-        ENDIF
+   do case
+   case HB_IsNumeric(txt)    ;  aadd(atxt,str(txt))
+   case valtype(txt)=="T"    ;  aadd(atxt,ttoc(txt))
+   case HB_IsDate(txt)       ;  aadd(atxt,dtoc(txt))
+   case HB_IsLogical(txt)    ;  aadd(atxt,if(txt,".T.",".F."))
+   case valtype(txt)=="U"    ;  aadd(atxt,"NIL")
+   case valtype(txt)$"BO"    ;  aadd(atxt,"")
+   case HB_IsArray(txt)      ;  aeval(txt,{|x| aadd(atxt,sayconvert(x)) })
+   case valtype(txt)$"MC"    ;  atxt:=str2arr(txt,hb_osnewline())
+   endcase
+   apos:=::convert({row,col})
+   if lcolor<>NIL
+     // BEGIN RL 2003-08-03
 
-        // END RL
+      IF HB_IsNumeric (lcolor)
+         rr_settextcolor(lcolor)
+      ELSEIF HB_IsArray (lcolor)
+         rr_settextcolor( RR_SETRGB ( lcolor [1] , lcolor [2] , lcolor [3] ) )
+      ENDIF
 
-  endif
-  if lalign<>NIL
-     oldalign:=rr_gettextalign()
-     rr_settextalign(lalign)
-  endif
-  for i:=1 to len(atxt)
-     rr_textout(atxt[i],apos,lhf,rat(" ",atxt[i]))
-     apos[1]+=::DEVCAPS[11]
-  next
-  if lalign<>NIL
-     rr_settextalign(oldalign)
-  endif
+     // END RL
 
-  if lcolor<>NIL
-     rr_settextcolor(::textcolor)
-  endif
+   endif
+   if lalign<>NIL
+      oldalign:=rr_gettextalign()
+      rr_settextalign(lalign)
+   endif
+   for i:=1 to len(atxt)
+      rr_textout(atxt[i],apos,lhf,rat(" ",atxt[i]))
+      apos[1]+=::DEVCAPS[11]
+   next
+   if lalign<>NIL
+      rr_settextalign(oldalign)
+   endif
 
-return self
+   if lcolor<>NIL
+      rr_settextcolor(::textcolor)
+   endif
+
+   return self
 
 METHOD DefineImageList(defname,cpicture,nicons) CLASS HBPrinter
-local lhi:=::getobjbyname(defname,"I"),w:=0,h:=0,hand
- if lhi<>0
-    return self
- endif
- hand:=rr_createimagelist(cpicture,nicons,@w,@h)
- if hand<>0 .and. w>0 .and. h>0
-   aadd(::imagelists[1],{hand,nicons,w,h})
-   aadd(::imagelists[2],upper(alltrim(defname)))
- endif
-return self
+
+   local lhi:=::getobjbyname(defname,"I"),w:=0,h:=0,hand
+
+   if lhi<>0
+      return self
+   endif
+   hand:=rr_createimagelist(cpicture,nicons,@w,@h)
+   if hand<>0 .and. w>0 .and. h>0
+     aadd(::imagelists[1],{hand,nicons,w,h})
+     aadd(::imagelists[2],upper(alltrim(defname)))
+   endif
+
+   return self
 
 METHOD DRAWIMAGELIST(defname,nicon,row,col,torow,tocol,lstyle,color) CLASS HBPrinter
-local lhi:=::getobjbyname(defname,"I")
+
+   local lhi:=::getobjbyname(defname,"I")
+
    if empty(lhi)
       return self
    endif
@@ -837,12 +892,13 @@ local lhi:=::getobjbyname(defname,"I")
     tocol:=::maxcol
    endif
    ::error:=rr_drawimagelist(lhi[1],nicon,::convert({row,col}),::convert({torow-row,tocol-col}),lhi[3],lhi[4],lstyle,color)
-return self
 
-
+   return self
 
 METHOD Rectangle(row,col,torow,tocol,defpen,defbrush) CLASS HBPrinter
-local lhp:=::getobjbyname(defpen,"P"),lhb:=::getobjbyname(defbrush,"B")
+
+   local lhp:=::getobjbyname(defpen,"P"),lhb:=::getobjbyname(defbrush,"B")
+
    if torow==NIL
       torow:=::maxrow
    endif
@@ -850,10 +906,13 @@ local lhp:=::getobjbyname(defpen,"P"),lhb:=::getobjbyname(defbrush,"B")
       tocol:=::maxcol
    endif
    ::error=rr_rectangle(::convert({row,col}),::convert({torow,tocol}),lhp,lhb)
-return self
+
+   return self
 
 METHOD FrameRect(row,col,torow,tocol,defbrush) CLASS HBPrinter
-local lhb:=::getobjbyname(defbrush,"B")
+
+   local lhb:=::getobjbyname(defbrush,"B")
+
    if torow==NIL
       torow:=::maxrow
    endif
@@ -861,10 +920,13 @@ local lhb:=::getobjbyname(defbrush,"B")
      tocol:=::maxcol
    endif
    ::error=rr_framerect(::convert({row,col}),::convert({torow,tocol}),lhb)
-return self
+
+   return self
 
 METHOD RoundRect(row,col,torow,tocol,widthellipse,heightellipse,defpen,defbrush) CLASS HBPrinter
-local lhp:=::getobjbyname(defpen,"P"),lhb:=::getobjbyname(defbrush,"B")
+
+   local lhp:=::getobjbyname(defpen,"P"),lhb:=::getobjbyname(defbrush,"B")
+
    if torow==NIL
      torow := ::maxrow
    endif
@@ -878,10 +940,13 @@ local lhp:=::getobjbyname(defpen,"P"),lhb:=::getobjbyname(defbrush,"B")
      heightellipse := 0
    endif
    ::error=rr_roundrect(::convert({row,col}),::convert({torow,tocol}),::convert({widthellipse,heightellipse}),lhp,lhb)
-return self
+
+   return self
 
 METHOD FillRect(row,col,torow,tocol,defbrush) CLASS HBPrinter
-local lhb:=::getobjbyname(defbrush,"B")
+
+   local lhb:=::getobjbyname(defbrush,"B")
+
    if torow==NIL
       torow:=::maxrow
     endif
@@ -889,9 +954,11 @@ local lhb:=::getobjbyname(defbrush,"B")
       tocol:=::maxcol
    endif
    ::error=rr_fillrect(::convert({row,col}),::convert({torow,tocol}),lhb)
-return self
+
+   return self
 
 METHOD InvertRect(row,col,torow,tocol) CLASS HBPrinter
+
    if torow==NIL
      torow:=::maxrow
    endif
@@ -899,10 +966,13 @@ METHOD InvertRect(row,col,torow,tocol) CLASS HBPrinter
       tocol:=::maxcol
    endif
    ::error=rr_invertrect(::convert({row,col}),::convert({torow,tocol}))
-return self
+
+   return self
 
 METHOD Ellipse(row,col,torow,tocol,defpen,defbrush) CLASS HBPrinter
-local lhp:=::getobjbyname(defpen,"P"),lhb:=::getobjbyname(defbrush,"B")
+
+   local lhp:=::getobjbyname(defpen,"P"),lhb:=::getobjbyname(defbrush,"B")
+
    if torow==NIL
      torow:=::maxrow
    endif
@@ -910,10 +980,13 @@ local lhp:=::getobjbyname(defpen,"P"),lhb:=::getobjbyname(defbrush,"B")
      tocol:=::maxcol
    endif
    ::error=rr_ellipse(::convert({row,col}),::convert({torow,tocol}),lhp,lhb)
-return self
+
+   return self
 
 METHOD Arc(row,col,torow,tocol,rowsarc,colsarc,rowearc,colearc,defpen) CLASS HBPrinter
-local lhp:=::getobjbyname(defpen,"P")
+
+   local lhp:=::getobjbyname(defpen,"P")
+
    if torow==NIL
       torow:=::maxrow
    endif
@@ -921,10 +994,13 @@ local lhp:=::getobjbyname(defpen,"P")
      tocol:=::maxcol
    endif
    ::error=rr_arc(::convert({row,col}),::convert({torow,tocol}),::convert({rowsarc,colsarc}),::convert({rowearc,colearc}),lhp)
-return self
+
+   return self
 
 METHOD ArcTo(row,col,torow,tocol,rowrad1,colrad1,rowrad2,colrad2,defpen) CLASS HBPrinter
-local lhp:=::getobjbyname(defpen,"P")
+
+   local lhp:=::getobjbyname(defpen,"P")
+
    if torow==NIL
       torow:=::maxrow
    endif
@@ -932,11 +1008,13 @@ local lhp:=::getobjbyname(defpen,"P")
       tocol:=::maxcol
    endif
    ::error=rr_arcto(::convert({row,col}),::convert({torow,tocol}),::convert({rowrad1,colrad1}),::convert({rowrad2,colrad2}),lhp)
-return self
 
+   return self
 
 METHOD Chord(row,col,torow,tocol,rowrad1,colrad1,rowrad2,colrad2,defpen,defbrush) CLASS HBPrinter
-local lhp:=::getobjbyname(defpen,"P"),lhb:=::getobjbyname(defbrush,"B")
+
+   local lhp:=::getobjbyname(defpen,"P"),lhb:=::getobjbyname(defbrush,"B")
+
    if torow==NIL
       torow:=::maxrow
    endif
@@ -944,10 +1022,13 @@ local lhp:=::getobjbyname(defpen,"P"),lhb:=::getobjbyname(defbrush,"B")
       tocol:=::maxcol
    endif
    ::error=rr_chord(::convert({row,col}),::convert({torow,tocol}),::convert({rowrad1,colrad1}),::convert({rowrad2,colrad2}),lhp,lhb)
-return self
+
+   return self
 
 METHOD Pie(row,col,torow,tocol,rowrad1,colrad1,rowrad2,colrad2,defpen,defbrush) CLASS HBPrinter
-local lhp:=::getobjbyname(defpen,"P"),lhb:=::getobjbyname(defbrush,"B")
+
+   local lhp:=::getobjbyname(defpen,"P"),lhb:=::getobjbyname(defbrush,"B")
+
    if torow==NIL
       torow:=::maxrow
    endif
@@ -955,32 +1036,44 @@ local lhp:=::getobjbyname(defpen,"P"),lhb:=::getobjbyname(defbrush,"B")
       tocol:=::maxcol
    endif
    ::error=rr_pie(::convert({row,col}),::convert({torow,tocol}),::convert({rowrad1,colrad1}),::convert({rowrad2,colrad2}),lhp,lhb)
-return self
+
+   return self
 
 METHOD Polygon(apoints,defpen,defbrush,style) CLASS HBPrinter
-local apx:={},apy:={},temp
-local lhp:=::getobjbyname(defpen,"P"),lhb:=::getobjbyname(defbrush,"B")
- aeval(apoints,{|x| temp:=::convert(x),aadd(apx,temp[2]), aadd(apy,temp[1])})
- ::error:=rr_polygon(apx,apy,lhp,lhb,style)
-return self
+
+   local apx:={},apy:={},temp
+   local lhp:=::getobjbyname(defpen,"P"),lhb:=::getobjbyname(defbrush,"B")
+
+   aeval(apoints,{|x| temp:=::convert(x),aadd(apx,temp[2]), aadd(apy,temp[1])})
+   ::error:=rr_polygon(apx,apy,lhp,lhb,style)
+
+   return self
 
 METHOD PolyBezier(apoints,defpen) CLASS HBPrinter
-local apx:={},apy:={},temp
-local lhp:=::getobjbyname(defpen,"P")
- aeval(apoints,{|x| temp:=::convert(x),aadd(apx,temp[2]), aadd(apy,temp[1])})
- ::error:=rr_polybezier(apx,apy,lhp)
-return self
+
+   local apx:={},apy:={},temp
+   local lhp:=::getobjbyname(defpen,"P")
+
+   aeval(apoints,{|x| temp:=::convert(x),aadd(apx,temp[2]), aadd(apy,temp[1])})
+   ::error:=rr_polybezier(apx,apy,lhp)
+
+   return self
 
 METHOD PolyBezierTo(apoints,defpen) CLASS HBPrinter
-local apx:={},apy:={},temp
-local lhp:=::getobjbyname(defpen,"P")
- aeval(apoints,{|x| temp:=::convert(x),aadd(apx,temp[2]), aadd(apy,temp[1])})
- ::error:=rr_polybezierto(apx,apy,lhp)
-return self
 
+   local apx:={},apy:={},temp
+   local lhp:=::getobjbyname(defpen,"P")
+
+   aeval(apoints,{|x| temp:=::convert(x),aadd(apx,temp[2]), aadd(apy,temp[1])})
+
+   ::error:=rr_polybezierto(apx,apy,lhp)
+
+   return self
 
 METHOD Line(row,col,torow,tocol,defpen) CLASS HBPrinter
-local lhp:=::getobjbyname(defpen,"P")
+
+   local lhp:=::getobjbyname(defpen,"P")
+
    if torow==NIL
       torow:=::maxrow
    endif
@@ -988,121 +1081,149 @@ local lhp:=::getobjbyname(defpen,"P")
       tocol:=::maxcol
    endif
    ::error=rr_line(::convert({row,col}),::convert({torow,tocol}),lhp)
-return self
+
+   return self
 
 METHOD LineTo(row,col,defpen) CLASS HBPrinter
-local lhp:=::getobjbyname(defpen,"P")
+
+   local lhp:=::getobjbyname(defpen,"P")
+
    ::error=rr_lineto(::convert({row,col}),lhp)
-return self
+
+   return self
 
 METHOD GetTextExtent(ctext,apoint,deffont) CLASS HBPrinter
-local lhf:=::getobjbyname(deffont,"F")
-   ::error=rr_gettextextent(ctext,apoint,lhf)
-return self
 
+   local lhf:=::getobjbyname(deffont,"F")
+
+   ::error=rr_gettextextent(ctext,apoint,lhf)
+
+   return self
 
 METHOD GetObjByName(defname,what,retpos) CLASS HBPrinter
-local lfound,lret:=0,aref,ahref
- if valtype(defname)=="C"
-    do case
-       case what=="F" ; aref:=::Fonts[2]      ; ahref:=::Fonts[1]
-       case what=="B" ; aref:=::Brushes[2]    ; ahref:=::Brushes[1]
-       case what=="P" ; aref:=::Pens[2]       ; ahref:=::Pens[1]
-       case what=="R" ; aref:=::Regions[2]    ; ahref:=::Regions[1]
-       case what=="I" ; aref:=::ImageLists[2] ; ahref:=::ImageLists[1]
-    endcase
-    lfound:=ascan(aref,upper(alltrim(defname)))
-    if lfound>0
-       if aref[lfound]==upper(alltrim(defname))
-          if retpos<>NIL
-            lret:=lfound
-          else
-            lret:=ahref[lfound]
-          endif
-       endif
-    endif
- endif
-return lret
+
+   local lfound,lret:=0,aref,ahref
+
+   if valtype(defname)=="C"
+      do case
+      case what=="F" ; aref:=::Fonts[2]      ; ahref:=::Fonts[1]
+      case what=="B" ; aref:=::Brushes[2]    ; ahref:=::Brushes[1]
+      case what=="P" ; aref:=::Pens[2]       ; ahref:=::Pens[1]
+      case what=="R" ; aref:=::Regions[2]    ; ahref:=::Regions[1]
+      case what=="I" ; aref:=::ImageLists[2] ; ahref:=::ImageLists[1]
+      endcase
+      lfound:=ascan(aref,upper(alltrim(defname)))
+      if lfound>0
+         if aref[lfound]==upper(alltrim(defname))
+            if retpos<>NIL
+              lret:=lfound
+            else
+              lret:=ahref[lfound]
+            endif
+         endif
+      endif
+   endif
+
+   return lret
 
 METHOD DefineRectRgn(defname,row,col,torow,tocol) CLASS HBPrinter
-local lhand:=::getobjbyname(defname,"R")
- if lhand<>0
-    return self
- endif
- if torow==NIL
-    torow:=::maxrow
- endif
- if tocol==NIL
-    tocol:=::maxcol
- endif
- aadd(::Regions[1],rr_creatergn(::convert({row,col}),::convert({torow,tocol}),1))
- aadd(::Regions[2],upper(alltrim(defname)))
-return self
+
+   local lhand:=::getobjbyname(defname,"R")
+
+   if lhand<>0
+      return self
+   endif
+   if torow==NIL
+      torow:=::maxrow
+   endif
+   if tocol==NIL
+      tocol:=::maxcol
+   endif
+   aadd(::Regions[1],rr_creatergn(::convert({row,col}),::convert({torow,tocol}),1))
+   aadd(::Regions[2],upper(alltrim(defname)))
+
+   return self
 
 METHOD DefineEllipticRgn(defname,row,col,torow,tocol) CLASS HBPrinter
-local lhand:=::getobjbyname(defname,"R")
- if lhand<>0
-    return self
- endif
- if torow==NIL
-    torow:=::maxrow
- endif
- if tocol==NIL
-    tocol:=::maxcol
- endif
- aadd(::Regions[1],rr_creatergn(::convert({row,col}),::convert({torow,tocol}),2))
- aadd(::Regions[2],upper(alltrim(defname)))
-return self
+
+   local lhand:=::getobjbyname(defname,"R")
+
+   if lhand<>0
+      return self
+   endif
+   if torow==NIL
+      torow:=::maxrow
+   endif
+   if tocol==NIL
+      tocol:=::maxcol
+   endif
+   aadd(::Regions[1],rr_creatergn(::convert({row,col}),::convert({torow,tocol}),2))
+   aadd(::Regions[2],upper(alltrim(defname)))
+
+   return self
 
 METHOD DefineRoundRectRgn(defname,row,col,torow,tocol,widthellipse,heightellipse) CLASS HBPrinter
-local lhand:=::getobjbyname(defname,"R")
- if lhand<>0
-    return self
- endif
- if torow==NIL
-   torow:=::maxrow
- endif
- if tocol==NIL
-    tocol:=::maxcol
- endif
- aadd(::Regions[1],rr_creatergn(::convert({row,col}),::convert({torow,tocol}),3,::convert({widthellipse,heightellipse})))
- aadd(::Regions[2],upper(alltrim(defname)))
-return self
+
+   local lhand:=::getobjbyname(defname,"R")
+
+   if lhand<>0
+      return self
+   endif
+   if torow==NIL
+     torow:=::maxrow
+   endif
+   if tocol==NIL
+      tocol:=::maxcol
+   endif
+   aadd(::Regions[1],rr_creatergn(::convert({row,col}),::convert({torow,tocol}),3,::convert({widthellipse,heightellipse})))
+   aadd(::Regions[2],upper(alltrim(defname)))
+
+   return self
 
 METHOD DefinePolygonRgn(defname,apoints,style) CLASS HBPrinter
-local apx:={},apy:={},temp
-local lhand:=::getobjbyname(defname,"R")
- if lhand<>0
-    return self
- endif
- aeval(apoints,{|x| temp:=::convert(x),aadd(apx,temp[2]), aadd(apy,temp[1])})
- aadd(::Regions[1],rr_createPolygonrgn(apx,apy,style))
- aadd(::Regions[2],upper(alltrim(defname)))
-return self
 
+   local apx:={},apy:={},temp
+   local lhand:=::getobjbyname(defname,"R")
+
+   if lhand<>0
+      return self
+   endif
+   aeval(apoints,{|x| temp:=::convert(x),aadd(apx,temp[2]), aadd(apy,temp[1])})
+   aadd(::Regions[1],rr_createPolygonrgn(apx,apy,style))
+   aadd(::Regions[2],upper(alltrim(defname)))
+
+   return self
 
 METHOD CombineRgn(defname,reg1,reg2,style) CLASS HBPrinter
-local lr1:=::getobjbyname(reg1,"R"),lr2:=::getobjbyname(reg2,"R")
-local lhand:=::getobjbyname(defname,"R")
- if lhand<>0 .or. lr1==0 .or. lr2==0
-    return self
- endif
- aadd(::Regions[1],rr_combinergn(lr1,lr2,style))
- aadd(::Regions[2],upper(alltrim(defname)))
-return self
+
+   local lr1:=::getobjbyname(reg1,"R"),lr2:=::getobjbyname(reg2,"R")
+   local lhand:=::getobjbyname(defname,"R")
+
+   if lhand<>0 .or. lr1==0 .or. lr2==0
+      return self
+   endif
+   aadd(::Regions[1],rr_combinergn(lr1,lr2,style))
+   aadd(::Regions[2],upper(alltrim(defname)))
+
+   return self
 
 METHOD SelectClipRgn(defname) CLASS HBPrinter
-local lhand:=::getobjbyname(defname,"R")
-  if lhand<>0
-        rr_selectcliprgn(lhand)
-        ::Regions[1,1]:=lhand
-  endif
-return self
+
+   local lhand:=::getobjbyname(defname,"R")
+
+   if lhand<>0
+      rr_selectcliprgn(lhand)
+      ::Regions[1,1]:=lhand
+   endif
+
+   return self
 
 METHOD DeleteClipRgn() CLASS HBPrinter
-  ::Regions[1,1]:=0
-  rr_deletecliprgn()
-return self
+
+   ::Regions[1,1]:=0
+   rr_deletecliprgn()
+
+   return self
 
 METHOD SetViewPortOrg(row,col) CLASS HBPrinter
   row:=if(row<>NIL,row,0)

@@ -117,7 +117,7 @@ CLASS TText FROM TLabel
    METHOD GetLineIndex( nLine )        BLOCK { |Self,nLine| SendMessage( ::hWnd, EM_LINEINDEX, nLine, 0 ) }
    METHOD GetFirstVisibleLine          BLOCK { |Self| SendMessage( ::hWnd, EM_GETFIRSTVISIBLELINE, 0, 0 ) }
    METHOD GetLineCount                 BLOCK { |Self| SendMessage( ::hWnd, EM_GETLINECOUNT, 0, 0 ) }
-   METHOD GetLineFromChar( nChar )     
+   METHOD GetLineFromChar( nChar )
    METHOD GetCurrentLine               BLOCK { |Self| ::GetLineFromChar( -1 ) }
    METHOD GetLineLength( nLine )       BLOCK { |Self,nLine| SendMessage( ::hWnd, EM_LINELENGTH, ::GetLineIndex( nLine ), 0 ) }
    METHOD GetLastVisibleLine
@@ -688,7 +688,7 @@ HB_FUNC_STATIC( TTEXT_GETRECT )           // METHOD GetRect() CLASS TText
    SendMessage( oSelf->hWnd, EM_GETRECT, 0, (LPARAM) &rect );
 
    hb_reta( 4 );
-   HB_STORNI( (int) rect.top, -1, 1 );        
+   HB_STORNI( (int) rect.top, -1, 1 );
    HB_STORNI( (int) rect.left, -1, 2 );
    HB_STORNI( (int) rect.bottom, -1, 3 );
    HB_STORNI( (int) rect.right, -1, 4 );
