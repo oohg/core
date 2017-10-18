@@ -83,6 +83,6 @@ echo       CompileRes_mingw [/NOCLS] HB30
 echo   To build with Harbour 3.2 and MinGW
 echo       CompileRes_mingw [/NOCLS] HB32
 echo.
-goto END
+goto EXIT
 
 :EXIT
