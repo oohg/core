@@ -167,7 +167,7 @@ CLASS TApplication
    METHOD Width                   SETGET
 
    MESSAGE Cargo                  METHOD Value_Pos31
-   MESSAGE FormObject             METHOD MinObject
+   MESSAGE FormObject             METHOD MainObject
    MESSAGE Handle                 METHOD hWnd
    MESSAGE Icon                   METHOD Value_Pos29
 ENDCLASS

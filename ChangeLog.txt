@@ -8,22 +8,35 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+   * core\.gitignore
+     + Some files.
+   + core\ofmt.bat
+     * Batch file to execute fmt.
+   + core\oide.bat
+     * Batch file to execute ide.
+   * core\oohg.hbc
+     - Remove unneeded directive.
+     ! Static building directive.
+   * core\source\h_application.prg
+     ! Typo that causes error "TApplication_MinObject" function not found
+       when building librares.
+
 2017-10-16 23:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * core/ChangeLog.txt
+   * core\ChangeLog.txt
      * Updated.
-   * core/source/oohg.hbp
+   * core\source\oohg.hbp
      * Changed comment.
 
 2017-10-16 23:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * core/source/h_windows.prg
+   * core\source\h_windows.prg
      * Var _OOHG_LastSelf is now declared as __thread type.
 
 2017-10-16 23:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * core/h_controlmisc.prg
+   * core\h_controlmisc.prg
      + Check for upper limit in control's ID.
 
 2017-10-16 23:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * core/source/h_edit.prg
+   * core\source\h_edit.prg
      + Define NO_HBPRN_DECLARATION to pacify warning.
      - Call to function InitMessages.
      * Commented out some unneeded code.
@@ -39,7 +52,7 @@
    * core\source\h_init.prg
    * core\source\h_internal.prg
    * core\source\h_picture.prg
-   * core/source/h_tooltip.prg
+   * core\source\h_tooltip.prg
    * core\source\h_tree.prg
    * core\source\h_windows.prg
    * core\source\h_xbrowse.prg
@@ -47,244 +60,244 @@
       + TO*DO related to thread safety.
 
 2017-10-16 22:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * core/include/i_controlmisc.ch
-   * core/source/h_bostaurus.prg
-   * core/source/h_browse.prg
-   * core/source/h_checklist.prg
-   * core/source/h_combo.prg
-   * core/source/h_comm.prg
-   * core/source/h_controlsmisc.prg
-   * core/source/h_edit.prg
-   * core/source/h_edit_ex.prg
-   * core/source/h_form.prg
-   * core/source/h_frame.prg
-   * core/source/h_graph.prg
-   * core/source/h_grid.prg
-   * core/source/h_hotkey.prg
-   * core/source/h_hyperlink.prg
-   * core/source/h_init.prg
-   * core/source/h_msgbox.prg
-   * core/source/h_splitbox.prg
-   * core/source/h_tab.prg
-   * core/source/h_toolbar.prg
-   * core/source/h_tree.prg
-   * core/source/h_windows.prg
-   * core/source/h_windows.prg
-   * core/source/h_xbrowse.prg
+   * core\include\i_controlmisc.ch
+   * core\source\h_bostaurus.prg
+   * core\source\h_browse.prg
+   * core\source\h_checklist.prg
+   * core\source\h_combo.prg
+   * core\source\h_comm.prg
+   * core\source\h_controlsmisc.prg
+   * core\source\h_edit.prg
+   * core\source\h_edit_ex.prg
+   * core\source\h_form.prg
+   * core\source\h_frame.prg
+   * core\source\h_graph.prg
+   * core\source\h_grid.prg
+   * core\source\h_hotkey.prg
+   * core\source\h_hyperlink.prg
+   * core\source\h_init.prg
+   * core\source\h_msgbox.prg
+   * core\source\h_splitbox.prg
+   * core\source\h_tab.prg
+   * core\source\h_toolbar.prg
+   * core\source\h_tree.prg
+   * core\source\h_windows.prg
+   * core\source\h_windows.prg
+   * core\source\h_xbrowse.prg
      * Some casing changed.
 
 2017-10-16 22:31 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * core/source/c_winapimisc.c
+   * core\source\c_winapimisc.c
      + Function CloseHandle.
 
 2017-10-16 21:51 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * core/source/c_cursor.c
+   * core\source\c_cursor.c
      * Function SetWindowCursor now returns .T. on success or .F. on error.
 
 2017-10-16 21:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * core/source/h_form.prg
+   * core\source\h_form.prg
      + Added DATA uFormCursor with current cursor's name.
      ! Method TForm:Cursor is now truly setget.
      * Some casing.
 
 2017-10-16 21:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * core/source/h_form.prg
+   * core\source\h_form.prg
      - Unneeded code in methods TFormInternal:Define and TFormSplit:Define.
-   * core/source/h_internal.prg
+   * core\source\h_internal.prg
      - Unneeded code in methods TInternal:Define.
-   * core/source/h_windows.prg
+   * core\source\h_windows.prg
      - Removed no longer needed function _OOHG_SetControlParent.
 
 2017-10-16 21:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * core/source/h_help.prg
+   * core\source\h_help.prg
      - Removed some commented out code.
 
 2017-10-16 21:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * core/include/h_print.prg
+   * core\include\h_print.prg
      * Static var at source level moved to local var.
 
 2017-10-16 21:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * core/source/h_msgbox.prg
+   * core\source\h_msgbox.prg
      * Changed "=" comparisons to "==".
      + Check for NIL and types "T" and "S" in function AutoType.
 
 2017-10-16 21:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * core/incluce/i_app.ch
+   * core\incluce\i_app.ch
      * Changed translation for Application.<property>.
      + Added new properties.
-   * core/include/i_pseudofunc.ch
+   * core\include\i_pseudofunc.ch
      + Added translate for function _OOHG_SetMultiple.
-   * core/include/i_var.ch
+   * core\include\i_var.ch
      * Changed translation for _OOHG_* vars.
-   * core/source/c_controlmisc.c
+   * core\source\c_controlmisc.c
      + TO*DO.
-   * core/source/h_application.prg
+   * core\source\h_application.prg
      * Static var changed to CLASS VAR.
      * Access to array of properties is now handled by methods
        with mutex protection.
-   * core/source/h_controlsmisc.prg
+   * core\source\h_controlsmisc.prg
      - Static var _OOHG_lMultiple.
      - Function _OOHG_SetMultiple.
    ; This changes should make thread safe the access to _oohg_* var.
 
 2017-10-16 20:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * core/source/c_gdiplus.c
+   * core\source\c_gdiplus.c
      * Some format.
 
 2017-10-16 20:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * core/source/h_edit_ex.prg
+   * core\source\h_edit_ex.prg
      - Call to function InitMessages.
 
 2017-10-16 09:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * core/compile_MINGW.bat
-   * core/oohg.hbc
+   * core\compile_MINGW.bat
+   * core\oohg.hbc
      + Set static building.
    + README.md
 
 2017-10-15 21:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   + core/.gitattributes
-   + core/.gitignore
+   + core\.gitattributes
+   + core\.gitignore
 
 2017-10-14 21:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * core/manual/*.*
+   * core\manual\*.*
      ; Files moved to doc repository.
 
 2017-10-14 00:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * core/ide/*.*
+   * core\ide\*.*
      ; Files moved to ide repository.
 
 2017-10-14 00:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * core/doc/*.*
-     ; Files moved to core/doc.
-   - core/doc
-   * core/ChangeLog.txt
+   * core\doc\*.*
+     ; Files moved to core\doc.
+   - core\doc
+   * core\ChangeLog.txt
      ! Previous entries fixed.
 
 2017-10-12 20:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   - core/samples/dbview/*.*
-   - core/samples/http/*.*
-   - core/samples/mpm/*.*
-   - core/samples/oohg/*.*
-   - core/samples
+   - core\samples\dbview\*.*
+   - core\samples\http\*.*
+   - core\samples\mpm\*.*
+   - core\samples\oohg\*.*
+   - core\samples
      ; Moved to a separated repository.
 
 2017-10-12 20:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   - core/distros/hb30mingw.iss
-   - core/distros/hb32mingw.iss
-   - core/distros/infoafter_bcc.txt
-   - core/distros/infoafter_mingw.txt
-   - core/distros/infobefore.txt
-   - core/distros/license.txt
-   - core/distros/lista.txt
-   - core/distros/makedistro.bat
-   - core/distros/makeexclude.txt
-   - core/distros/xhbbcc.iss
-   - core/distros
+   - core\distros\hb30mingw.iss
+   - core\distros\hb32mingw.iss
+   - core\distros\infoafter_bcc.txt
+   - core\distros\infoafter_mingw.txt
+   - core\distros\infobefore.txt
+   - core\distros\license.txt
+   - core\distros\lista.txt
+   - core\distros\makedistro.bat
+   - core\distros\makeexclude.txt
+   - core\distros\xhbbcc.iss
+   - core\distros
      ; Moved to a separated repository.
 
 2017-10-12 20:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   + core/*.*
+   + core\*.*
      ; Initial upload to GitHub from SourceForge.
 
 2017-10-01 13:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * source/h_application.prg
+   * source\h_application.prg
      ! Array access error on _OOHG_* vars.
 
 2017-10-01 12:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * include/i_var.ch
+   * include\i_var.ch
      - References to _OOHG_AllVars array.
      * Variables _OOHG_* are now defined as datas of TApplication
        object.
 
-   * source/bostaurus.prg
-   * source/h_activex.prg
-   * source/h_anigif.prg
-   * source/h_application.prg
-   * source/h_button.prg
-   * source/h_checkbox.prg
-   * source/h_checklist.prg
-   * source/h_combo.prg
-   * source/h_comm.prg
-   * source/h_datepicker.prg
-   * source/h_dialogs.prg
-   * source/h_edit.prg
-   * source/h_editbox.prg
-   * source/h_error.prg
-   * source/h_frame.prg
-   * source/h_hotkey.prg
-   * source/h_hotkeybox.prg
-   * source/h_hyperlink.prg
-   * source/h_image.prg
-   * source/h_ini.prg
-   * source/h_init.prg
-   * source/h_internal.prg
-   * source/h_ipaddress.prg
-   * source/h_label.prg
-   * source/h_media.prg
-   * source/h_menu.prg
-   * source/h_monthcal.prg
-   * source/h_notify.prg
-   * source/h_picture.prg
-   * source/h_progressbar.prg
-   * source/h_progressmeter.prg
-   * source/h_radio.prg
-   * source/h_registry.prg
-   * source/h_report.prg
-   * source/h_richeditbox.prg
-   * source/h_scroll.prg
-   * source/h_scrollbutton.prg
-   * source/h_scrsaver.prg
-   * source/h_slider.prg
-   * source/h_spinner.prg
-   * source/h_splitbox.prg
-   * source/h_status.prg
-   * source/h_textarray.prg
-   * source/h_textbox.prg
-   * source/h_timer.prg
-   * source/h_toolbar.prg
-   * source/h_tooltip.prg
-   * source/h_xbrowse.prg
-   * source/winprint.prg
+   * source\bostaurus.prg
+   * source\h_activex.prg
+   * source\h_anigif.prg
+   * source\h_application.prg
+   * source\h_button.prg
+   * source\h_checkbox.prg
+   * source\h_checklist.prg
+   * source\h_combo.prg
+   * source\h_comm.prg
+   * source\h_datepicker.prg
+   * source\h_dialogs.prg
+   * source\h_edit.prg
+   * source\h_editbox.prg
+   * source\h_error.prg
+   * source\h_frame.prg
+   * source\h_hotkey.prg
+   * source\h_hotkeybox.prg
+   * source\h_hyperlink.prg
+   * source\h_image.prg
+   * source\h_ini.prg
+   * source\h_init.prg
+   * source\h_internal.prg
+   * source\h_ipaddress.prg
+   * source\h_label.prg
+   * source\h_media.prg
+   * source\h_menu.prg
+   * source\h_monthcal.prg
+   * source\h_notify.prg
+   * source\h_picture.prg
+   * source\h_progressbar.prg
+   * source\h_progressmeter.prg
+   * source\h_radio.prg
+   * source\h_registry.prg
+   * source\h_report.prg
+   * source\h_richeditbox.prg
+   * source\h_scroll.prg
+   * source\h_scrollbutton.prg
+   * source\h_scrsaver.prg
+   * source\h_slider.prg
+   * source\h_spinner.prg
+   * source\h_splitbox.prg
+   * source\h_status.prg
+   * source\h_textarray.prg
+   * source\h_textbox.prg
+   * source\h_timer.prg
+   * source\h_toolbar.prg
+   * source\h_tooltip.prg
+   * source\h_xbrowse.prg
+   * source\winprint.prg
      - EMPTY( _OOHG_AllVars array ).
 
-   * source/h_application.prg
+   * source\h_application.prg
      + Method New to initialize application wide variables.
 
-   * source/h_init.prg
+   * source\h_init.prg
      - Initialization of application wide variables.
      - Public var _OOHG_AllVars.
      ! Errorlog errors in multithreaded apps.
 
-   * source/h_error.prg
+   * source\h_error.prg
      + ProcFile() info to error messages.
 
 2017-10-01 11:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * ./BuildApp_hbmk2.bat
+   * .\BuildApp_hbmk2.bat
      ! Order of parameters in hbmk2 call.
-   * source/h_tab.prg
-   * source/h_windows.prg
+   * source\h_tab.prg
+   * source\h_windows.prg
      * Format.
-   * source/h_edit_ex.prg
+   * source\h_edit_ex.prg
      - Unused public variable nImpLen.
      * Var hbprn is now local.
-   * source/winprint.prg
+   * source\winprint.prg
      - Defines for background modes.
      * Some comments.
      - EMPTY( hbprn ).
-   * include/winprint.ch
+   * include\winprint.ch
      + Defines for background modes.
 
 2017-09-28 18:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * include/i_report.ch
-   * include/miniprint.ch
-   * include/winprint.ch
-   * manual/DO_REPORT.HTM
-   * manual/HBPRINTER_CONSTANTS.HTM
-   * manual/MINIPRINT_CONSTANTS.HTM
+   * include\i_report.ch
+   * include\miniprint.ch
+   * include\winprint.ch
+   * manual\DO_REPORT.HTM
+   * manual\HBPRINTER_CONSTANTS.HTM
+   * manual\MINIPRINT_CONSTANTS.HTM
      * Some comments on paper sizes.
 
 2017-09-14 18:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * source/h_grid.prg
+   * source\h_grid.prg
      * Method Justify now can change the justification of all columns
        in a single call. Usage:
        One column change:   oGrid:Justify( nItem, nJust, lRedraw ) -> nJust
@@ -294,54 +307,54 @@
      * Function SetGridColumnJustify now returns current justification.
 
 2017-09-14 17:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * source/h_combobox.prg
+   * source\h_combobox.prg
      ! Incremental search text was not being reseted.
      ! GotFocus event was being fired twice.
      ! DisplayChange was not being fired.
      * Some format.
 
 2017-09-13 19:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * source/h_image.prg
-   * source/h_internal.prg
-   * source/h_notify.prg
-   * source/h_picture.prg
-   * source/h_progressmeter.prg
-   * source/h_textarray.prg
-   * source/h_windows.prg
+   * source\h_image.prg
+   * source\h_internal.prg
+   * source\h_notify.prg
+   * source\h_picture.prg
+   * source\h_progressmeter.prg
+   * source\h_textarray.prg
+   * source\h_windows.prg
      + Some comments.
 
 2017-09-13 19:29 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * include/i_hmg_compat.ch
+   * include\i_hmg_compat.ch
      + Some clauses to improve compatibility.
 
 2017-09-13 19:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * ide/prgs/formedit.prg
+   * ide\prgs\formedit.prg
      ! Statubar's items is displayed with wrong font after resetting
        font to default values.
      + Support for ON KEY, BKGNDCOLOR, DATEFORMAT and TIMEFORMAT clauses.
-   * ide/prgs/mgide.prg
+   * ide\prgs\mgide.prg
      * The items of the statusbar of method myInputWindow are now
        more customizable.
 
 2017-09-13 19:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * doc/classes.txt
-   * doc/Maintenance.txt
+   * doc\classes.txt
+   * doc\Maintenance.txt
      * Updated.
 
 2017-09-13 18:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * source/h_browse.prg
+   * source\h_browse.prg
      ! RTE "CALIAS__ method not found" when Browse was defined with
        FIXEDCONTROLS and FIXEDBLOCKS clauses.
 
 2017-09-09 13:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * source/h_grid.prg
+   * source\h_grid.prg
      + METHOD LastVisibleColumn( lEnd ): when lEnd is .F.
        (default value) returns the number of the column shown at
        grid's right side; when lEnd is .T. returns the number of the
        rightmost column with it's right border visible.
 
 2017-09-09 12:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * source/h_windows.prg
+   * source\h_windows.prg
      + Support for writing _OOHG_CALLDUMP() output to a text file
        named DumpLog.txt at the current folder.
        Usage: _OOHG_CALLDUMP( uTitle, cOutput ) where
@@ -351,26 +364,26 @@
          Defaults to S.
 
 2017-09-09 12:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * include/i_altsyntax.ch
+   * include\i_altsyntax.ch
      + Added clause BKGNDCOLOR.
-   * include/i_monthcal.ch
+   * include\i_monthcal.ch
      + Support for BKGNDCOLOR clause.
 
 2017-09-09 11:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * include/i_altsyntax.ch
-   * include/i_datepicker.ch
+   * include\i_altsyntax.ch
+   * include\i_datepicker.ch
      + Added clause DATEFORMAT in DATEPICKER control.
      + Added clause TIMEFORMAT in TIMEPICKER control.
      * Parameters UPDOWN and RIGHTALIGN in call to TTimePick():Define
        are now forced to .T. and .F. respectively.
      ; TIMEPICKER control always has UPDOWN style.
      ; TIMEPICKER control ignores RIGHTALIGN style.
-   * include/i_hmg_compat.ch
+   * include\i_hmg_compat.ch
      + PP rules to ignore BACKCOLOR, FONTCOLOR, TITLEBACKCOLOR,
        TITLEFONTCOLOR and TRAILINGFONTCOLOR clauses of DATEPICKER control.
      ; These clauses have no effect under when visual styles are on.
      - Unneeded PP rule related to RADIOGROUP control.
-   * source/h_datepicker.prg
+   * source\h_datepicker.prg
      + Support for new clauses in DATEPICKER and TIMEPICKER controls.
      + DATA cDateFormat and METHOD DateFormat in TDatePick class.
      + DATA cTimeFormat METHOD TimeFormat in TTimePick class.
@@ -384,17 +397,17 @@
      * Empty() replaced with HB_SYMBOL_UNUSED.
 
 2017-09-02 19:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * source/h_image.prg
+   * source\h_image.prg
      ! Image can't be cleared.
      ! Control disappears when an inexistent image is assigned.
 
 2017-09-01 17:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * source/h_tab.prg
+   * source\h_tab.prg
      ! Save data block of controls inside a Tab was not being evaluated.
 
 2017-08-26 00:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   + ./ChangeLog_005.txt
-   * ./ChangeLog.txt
+   + .\ChangeLog_005.txt
+   * .\ChangeLog.txt
      * Renamed to ChangeLog_005.txt and started a new one.
-   * manual/Changelog.htm
+   * manual\Changelog.htm
      * Updated.
