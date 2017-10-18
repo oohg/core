@@ -3,38 +3,38 @@
 #
 
 # oohg paths
-{win}incpaths=include
+incpaths=include
 
 # c compiler will search this folder for OOHG's libs
-{win}libpaths=${HG_ROOT}\${LIB_GUI}
+libpaths=${HG_ROOT}\${LIB_GUI}
 
 # libs must be statically linked to avoid "missing lib" runtime errors
--static
+ldflags=-static
 
 # add harbour contrib folder to search for additional include files
-{win}incpaths=${HG_HRB}\contrib\hbzebra
-{win}incpaths=${HG_HRB}\contrib\hbhpdf
+incpaths=${HG_HRB}\contrib\hbzebra
+incpaths=${HG_HRB}\contrib\hbhpdf
 
 # add app folder to search for additional include files
-{win}incpaths=${hb_curdir}
+incpaths=${hb_curdir}
 
 # app + oohg resources
-{win}sources=${hb_curdir}_temp.o
+sources=${hb_curdir}_temp.o
 
 # gui mode
-{win}gt=gtgui
+gt=gtgui
 
 # core lib
-{win}libs=oohg
+libs=oohg
 
 # printing libs
 libs=hbprinter miniprint bostaurus
 
 # harbour contribs
-{win}libs=hbct hbmisc hbtip hbziparc hbmzip minizip hbwin xhb hbzebra hbhpdf libhpdf png
+libs=hbct hbmisc hbtip hbziparc hbmzip minizip hbwin xhb hbzebra hbhpdf libhpdf png
 
 # optional libs for HB 3.0
-#{win}libs=socket mysqldll dll hbmysql rddleto
+#libs=socket mysqldll dll hbmysql rddleto
 
 # system
-{win}libs=msvfw32 vfw32
+libs=msvfw32 vfw32
