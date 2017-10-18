@@ -12,6 +12,9 @@
 # name of output file
 -o../lib/${hb_name}
 
+# function list
+-hbx=../${hb_name}.hbx
+
 # path to headers files (.ch)
 -i../include
 
