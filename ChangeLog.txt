@@ -8,6 +8,39 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2017-10-18 17:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog.txt
+     * Updated.
+   * core\source\bostaurus.prg
+   * core\source\h_activex.prg
+   * core\source\h_application.prg
+   * core\source\h_browse.prg
+   * core\source\h_button.prg
+   * core\source\h_checkbox.prg
+   * core\source\h_crypt.prg
+   * core\source\h_datepicker.prg
+   * core\source\h_dll.prg
+   * core\source\h_edit.prg
+   * core\source\h_edit_ex.prg
+   * core\source\h_grid.prg
+   * core\source\h_image.prg
+   * core\source\h_monthcal.prg
+   * core\source\h_msgbox.prg
+   * core\source\h_print.prg
+   * core\source\h_progressbar.prg
+   * core\source\h_report.prg
+   * core\source\h_scrollbutton.prg
+   * core\source\h_splitbox.prg
+   * core\source\h_status.prg
+   * core\source\h_textbox.prg
+   * core\source\h_tree.prg
+   * core\source\h_windows.prg
+   * core\source\h_xbrowse.prg
+   * core\source\h_miniprint.prg
+   * core\source\h_winprint.prg
+     - Trailing spaces.
+     * Some format.
+
 2017-10-18 15:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt
      * Updated.
