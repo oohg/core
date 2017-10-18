@@ -76,6 +76,7 @@
 
 
 CLASS TAniGIF FROM TImage
+
    DATA aDelays                   INIT {}
    DATA aInfo                     INIT { "", 0, 0 }
    DATA aPictures                 INIT {}
@@ -98,13 +99,12 @@ CLASS TAniGIF FROM TImage
    METHOD Version                 BLOCK { |Self| ::aInfo[ 1 ] }
 
    /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( ControlName, ParentForm, nCol, nRow, cFile, nWidth, nHeight, ;
                ProcedureName, nHelpId, lInvisible, lWhiteBack, lRtl, uBkClr, ;
                cTooltip, lBorder, lClientedge, lDisabled ) CLASS TAniGIF
-*------------------------------------------------------------------------------*
 
    ::Load( cFile )
 
@@ -120,30 +120,28 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, cFile, nWidth, nHeight, ;
 
    ::ShowNextFrame()
 
-   If ! HB_IsLogical( lDisabled ) .OR. ! lDisabled
+   IF ! HB_IsLogical( lDisabled ) .OR. ! lDisabled
       ::Play()
-   EndIf
+   ENDIF
 
-Return Self
+   RETURN SELF
 
-*------------------------------------------------------------------------------*
 METHOD FrameDelay( nFrame, nDelay )  CLASS TAniGIF
-*------------------------------------------------------------------------------*
-Local nMilliSeconds := 0
 
-   If HB_IsNumeric( nFrame ) .AND. nFrame > 0 .AND. nFrame <= ::FrameCount
-      If HB_IsNumeric( nDelay ) .AND. nDelay >= 0
+   LOCAL nMilliSeconds := 0
+
+   IF HB_IsNumeric( nFrame ) .AND. nFrame > 0 .AND. nFrame <= ::FrameCount
+      IF HB_IsNumeric( nDelay ) .AND. nDelay >= 0
          ::aDelays[ nFrame ] := nDelay
-      EndIf
+      ENDIF
       nMilliSeconds := ::aDelays[ nFrame ]
-   EndIf
+   ENDIF
 
-Return nMilliSeconds
+   RETURN nMilliSeconds
 
-*------------------------------------------------------------------------------*
 METHOD Load( cGIF ) CLASS TAniGIF
-*------------------------------------------------------------------------------*
-Local aInfo, aPictures, aDelays, nHandle, nSize, cStream, i, j, cHeader, cFile, lClean
+
+   LOCAL aInfo, aPictures, aDelays, nHandle, nSize, cStream, i, j, cHeader, cFile, lClean
 
    // any attempt to load a file resets the control
    ::aInfo     := { "", 0, 0 }
@@ -153,27 +151,27 @@ Local aInfo, aPictures, aDelays, nHandle, nSize, cStream, i, j, cHeader, cFile, 
    ASSIGN cGIF VALUE cGIF TYPE "CM" DEFAULT ""
    ::FileName := cGIF
 
-   If Empty( cGIF )
+   IF Empty( cGIF )
       Return .F.
-   ElseIf File( cGIF )
+   ELSEIF File( cGIF )
       cFile := cGIF
       lClean := .F.
-   Else
+   ELSE
       // try to load from resource
-      cFile := GetTempFolder() + '\' + cGIF + '_' + strzero( Seconds() * 100 , 8 )
-      If ! SaveResourceToFile( cGIF, cFile, "GIF" )
-         Return .F.
-      EndIf
+      cFile := GetTempFolder() + '\' + cGIF + '_' + StrZero( Seconds() * 100 , 8 )
+      IF ! SaveResourceToFile( cGIF, cFile, "GIF" )
+         RETURN .F.
+      ENDIF
       lClean := .T.
-   EndIf
+   ENDIF
 
    nHandle := FOpen( cFile )
-   If FError() <> 0
-      If lClean
+   IF FError() <> 0
+      IF lClean
          FErase( cFile )
-      EndIf
-      Return .F.
-   EndIf
+      ENDIF
+      RETURN .F.
+   ENDIF
 
    nSize   := FSeek( nHandle, 0, FS_END )
    cStream := Space( nSize )
@@ -181,22 +179,22 @@ Local aInfo, aPictures, aDelays, nHandle, nSize, cStream, i, j, cHeader, cFile, 
    FRead( nHandle, @cStream, nSize )
    FClose( nHandle )
 
-   If FError() # 0 .OR. Empty( cStream )
-      If lClean
+   IF FError() # 0 .OR. Empty( cStream )
+      IF lClean
          FErase( cFile )
-      EndIf
-      Return .F.
-   EndIf
+      ENDIF
+      RETURN .F.
+   ENDIF
 
    // header, version and frame size
    j := At( FRAME_END, cStream, 1 ) + 1
    cHeader := Left( cStream, j )
-   If Left( cHeader, 3 ) <> "GIF"
-      If lClean
+   IF Left( cHeader, 3 ) <> "GIF"
+      IF lClean
          FErase( cFile )
-      EndIf
-      Return .F.
-   EndIf
+      ENDIF
+      RETURN .F.
+   ENDIF
    aInfo := { SubStr( cHeader, 4, 3 ), ;           // Gif version
               Bin2W( SubStr( cHeader, 7, 2 ) ), ;  // Logical screen width
               Bin2W( SubStr( cHeader, 9, 2 ) ) }   // Logical screen height
@@ -206,64 +204,61 @@ Local aInfo, aPictures, aDelays, nHandle, nSize, cStream, i, j, cHeader, cFile, 
    aDelays := {}
 
    i := j + 2
-   Do While .T.
+   DO WHILE .T.
       j := At( FRAME_END, cStream, i ) + 3
-      If j > Len( FRAME_END )
+      IF j > Len( FRAME_END )
          aAdd( aPictures, cHeader + SubStr( cStream, i - 1, j - i ) )
          aAdd( aDelays, Bin2W( SubStr( Left( SubStr( cStream, i - 1, j - i ), 16 ), 4, 2 ) ) * 10 )
-      EndIf
+      ENDIF
 
-      If j == 3
-         Exit
-      Else
+      IF j == 3
+         EXIT
+      ELSE
          i := j
-      EndIf
-   End Do
+      ENDIF
+   ENDDO
 
-   If i < Len( cStream )
+   IF i < Len( cStream )
       aAdd( aPictures, cHeader + SubStr( cStream, i - 1, Len( cStream ) - i ) )
       aAdd( aDelays, Bin2W( SubStr( Left( SubStr( cStream, i - 1, Len( cStream ) - i ), 16 ), 4, 2 ) ) * 10 )
-   EndIf
+   ENDIF
 
    ::aInfo  := aInfo
    ::aPictures  := aPictures
    ::aDelays := aDelays
 
-   If lClean
+   IF lClean
       FErase( cFile )
-   EndIf
+   ENDIF
 
-Return ::FrameCount # 0
+   RETURN ::FrameCount # 0
 
-*------------------------------------------------------------------------------*
 METHOD Release() CLASS TAniGIF
-*------------------------------------------------------------------------------*
 
    ::oTimer:Release()
 
-Return ::Super:Release()
+   RETURN ::Super:Release()
 
-*------------------------------------------------------------------------------*
 METHOD ShowNextFrame() CLASS TAniGIF
-*------------------------------------------------------------------------------*
-Local nFrameCount := ::FrameCount
 
-   If nFrameCount == 0
+   LOCAL nFrameCount := ::FrameCount
+
+   IF nFrameCount == 0
       ::CurrentFrame := 0
-   Else
-      If ::CurrentFrame < nFrameCount
+   ELSE
+      IF ::CurrentFrame < nFrameCount
          ::CurrentFrame ++
-      Else
+      ELSE
          ::CurrentFrame := 1
-      EndIf
+      ENDIF
 
       ::Buffer := ::aPictures[ ::CurrentFrame ]
       ::oTimer:Value := ::FrameDelay( ::CurrentFrame )
 
       DO EVENTS
-   EndIf
+   ENDIF
 
-Return Nil
+   RETURN NIL
 
 
 #pragma BEGINDUMP
