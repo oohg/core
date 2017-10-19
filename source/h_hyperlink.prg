@@ -65,6 +65,7 @@
 #include "hbclass.ch"
 
 CLASS THyperLink FROM TLabel
+
    DATA Type        INIT "HYPERLINK" READONLY
    DATA URL         INIT ""
 
@@ -72,14 +73,13 @@ CLASS THyperLink FROM TLabel
    METHOD Address   SETGET
 
    /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( ControlName, ParentForm, x, y, Caption, url, w, h, fontname, ;
                fontsize, bold, BORDER, CLIENTEDGE, HSCROLL, VSCROLL, ;
                TRANSPARENT, aRGB_bk, aRGB_font, tooltip, HelpId, invisible, ;
                italic, autosize, handcursor, lRtl ) CLASS THyperLink
-*------------------------------------------------------------------------------*
 
    DEFAULT Url           TO "http://www.oohg.org"
    DEFAULT Caption       TO "www.oohg.org"
@@ -98,11 +98,10 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, url, w, h, fontname, ;
       ::Cursor := IDC_HAND
    EndIf
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD Address( cUrl ) CLASS THyperLink
-*------------------------------------------------------------------------------*
+
    If HB_IsString( cUrl )
       If Left( cUrl, 5 ) == "http:"
          ::OnClick := {|| ShellExecute( 0, "open", "rundll32.exe", "url.dll,FileProtocolHandler " + cUrl, , 1 ) }
@@ -123,4 +122,5 @@ METHOD Address( cUrl ) CLASS THyperLink
          MsgOOHGError( "Control: " + ::Name + " must have valid email or url defined. Program terminated." )
       EndIf
    EndIf
-Return ::URL
+
+   Return ::URL

@@ -64,12 +64,10 @@
 #include "i_windefs.ch"
 #include "hbclass.ch"
 
-
 #define HOTKEY_ID        1
 #define HOTKEY_MOD       2
 #define HOTKEY_KEY       3
 #define HOTKEY_ACTION    4
-
 
 STATIC _OOHG_aFormhWnd := {}, _OOHG_aFormObjects := {}               // TODO: Thread safe ?
 STATIC _OOHG_UserWindow := nil       // User's window
@@ -112,9 +110,9 @@ void _OOHG_SetMouseCoords( PHB_ITEM pSelf, int iCol, int iRow );
 
 #pragma ENDDUMP
 
-*------------------------------------------------------------------------------*
+
 CLASS TForm FROM TWindow
-*------------------------------------------------------------------------------*
+
    DATA oToolTip           INIT nil
    DATA Focused            INIT .T.
    DATA LastFocusedControl INIT 0
@@ -250,9 +248,8 @@ CLASS TForm FROM TWindow
    METHOD cNotifyIconToolTip    SETGET
    METHOD AddNotifyIcon
 
-ENDCLASS
+   ENDCLASS
 
-*------------------------------------------------------------------------------*
 METHOD Define( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
                nosysmenu, nocaption, InitProcedure, ReleaseProcedure, ;
                MouseDragProcedure, SizeProcedure, ClickProcedure, ;
@@ -266,9 +263,9 @@ METHOD Define( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
                DblClickProcedure, RDblClickProcedure, MDblClickProcedure, ;
                minwidth, maxwidth, minheight, maxheight, MoveProcedure, ;
                fontcolor ) CLASS TForm
-*------------------------------------------------------------------------------*
-Local nStyle := 0, nStyleEx := 0
-Local hParent
+
+   Local nStyle := 0, nStyleEx := 0
+   Local hParent
 
    If HB_IsLogical( child ) .AND. child
       ::Type := "C"
@@ -290,9 +287,8 @@ Local hParent
               DblClickProcedure, RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, minheight, maxheight, ;
               MoveProcedure, fontcolor )
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD Define2( FormName, Caption, x, y, w, h, Parent, helpbutton, nominimize, nomaximize, nosize, nosysmenu, ;
                 nocaption, virtualheight, virtualwidth, hscrollbox, vscrollbox, FontName, FontSize, aRGB, cursor, ;
                 icon, noshow, gotfocus, lostfocus, scrollleft, scrollright, scrollup, scrolldown, maximizeprocedure, ;
@@ -301,8 +297,8 @@ METHOD Define2( FormName, Caption, x, y, w, h, Parent, helpbutton, nominimize, n
                 nWindowType, lRtl, mdi, topmost, clientarea, restoreprocedure, RClickProcedure, MClickProcedure, ;
                 DblClickProcedure, RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, minheight, maxheight, ;
                 MoveProcedure, fontcolor ) CLASS TForm
-*------------------------------------------------------------------------------*
-Local Formhandle, aRet
+
+   Local Formhandle, aRet
 
    If _OOHG_GlobalRTL()
       lRtl := .T.
@@ -473,12 +469,12 @@ Local Formhandle, aRet
    _OOHG_ThisControl   := NIL
    _OOHG_ThisObject    := Self
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD EndWindow() CLASS TForm
-*------------------------------------------------------------------------------*
-LOCAL nPos
+
+   LOCAL nPos
+
    nPos := ASCAN( _OOHG_ActiveForm, { |o| o:Name == ::Name .AND. o:hWnd == ::hWnd } )
    If nPos > 0
       ::nOldw := ::ClientWidth
@@ -488,12 +484,13 @@ LOCAL nPos
    EndIf
   _PopEventInfo()
   ::lDefined := .T.
-Return Nil
 
-*------------------------------------------------------------------------------*
+   Return Nil
+
 METHOD Register( hWnd, cName ) CLASS TForm
-*------------------------------------------------------------------------------*
-Local mVar
+
+   Local mVar
+
    ::hWnd := hWnd
    ::StartInfo( hWnd )
    ::Name := cName
@@ -503,11 +500,11 @@ Local mVar
 
    mVar := "_" + cName
    Public &mVar. := Self
-RETURN Self
 
-*------------------------------------------------------------------------------*
+   RETURN Self
+
 METHOD Visible( lVisible, nFlags, nTime ) CLASS TForm
-*------------------------------------------------------------------------------*
+
    ASSIGN nFlags VALUE nFlags TYPE "N"
    ASSIGN nTime  VALUE nTime  TYPE "N" DEFAULT 200
    IF HB_IsLogical( lVisible )
@@ -537,31 +534,30 @@ METHOD Visible( lVisible, nFlags, nTime ) CLASS TForm
       ENDIF
       ::CheckClientsPos()
    ENDIF
-Return ::lVisible
 
-*------------------------------------------------------------------------------*
+   Return ::lVisible
+
 METHOD Show( nFlags, nTime ) CLASS TForm
-*------------------------------------------------------------------------------*
+
    IF PCOUNT() == 0
       ::Visible := .T.
    ELSE
       ::Visible( .T., nFlags, nTime )
    ENDIF
-RETURN .T.
 
-*------------------------------------------------------------------------------*
+   RETURN .T.
+
 METHOD Hide( nFlags, nTime ) CLASS TForm
-*------------------------------------------------------------------------------*
+
    IF PCOUNT() == 0
       ::Visible := .F.
    ELSE
       ::Visible( .F., nFlags, nTime )
    ENDIF
-RETURN .T.
 
-*------------------------------------------------------------------------------*
+   RETURN .T.
+
 METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
-*------------------------------------------------------------------------------*
 
    If ::Active
       MsgOOHGError( "Window: " + ::Name + " already active. Program terminated." )
@@ -615,34 +611,36 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
       ::MessageLoop()
    EndIf
 
-Return Nil
+   Return Nil
 
 STATIC FUNCTION TForm_WindowStructureClosed( Self )
+
    If ASCAN( _OOHG_ActiveForm, { |o| o:Name == ::Name .AND. o:hWnd == ::hWnd } ) > 0
       MsgOOHGError( "ACTIVATE WINDOW: DEFINE WINDOW structure for window " + ::Name + " is not closed. Program terminated." )
    EndIf
    AEVAL( ::SplitChildList, { |o| TForm_WindowStructureClosed( o ) } )
-Return nil
-// Local lClosed, I
-//    lClosed := ( ASCAN( _OOHG_ActiveForm, { |o| o:Name == ::Name .AND. o:hWnd == ::hWnd } ) == 0 )
-//    I := LEN( ::SplitChildList )
-//    DO WHILE I > 0 .AND. lClosed
-//       lClosed := TForm_WindowStructureClosed( ::SplitChildList[ I ] )
-//       I--
-//    ENDDO
-// Return lClosed
 
-*------------------------------------------------------------------------------*
+   Return nil
+
+   // Local lClosed, I
+   //    lClosed := ( ASCAN( _OOHG_ActiveForm, { |o| o:Name == ::Name .AND. o:hWnd == ::hWnd } ) == 0 )
+   //    I := LEN( ::SplitChildList )
+   //    DO WHILE I > 0 .AND. lClosed
+   //       lClosed := TForm_WindowStructureClosed( ::SplitChildList[ I ] )
+   //       I--
+   //    ENDDO
+   // Return lClosed
+
 METHOD MessageLoop() CLASS TForm
-*------------------------------------------------------------------------------*
+
    IF ::ActivateCount[ 3 ] .AND. ::ActivateCount[ 1 ] > 0
       _OOHG_DoMessageLoop( ::ActivateCount )
    ENDIF
-Return nil
 
-*------------------------------------------------------------------------------*
+   Return nil
+
 METHOD Release() CLASS TForm
-*------------------------------------------------------------------------------*
+
    If ! ::lReleasing
       If ! ::Active
          MsgOOHGError( "Window: " + ::Name + " is not active. Program terminated." )
@@ -659,24 +657,25 @@ METHOD Release() CLASS TForm
 
       ::Events_Destroy()
    Endif
-Return Nil
 
-*------------------------------------------------------------------------------*
+   Return Nil
+
 METHOD RefreshData() CLASS TForm
-*------------------------------------------------------------------------------*
+
    If HB_IsBlock( ::Block )
       ::Value := _OOHG_EVAL( ::Block )
    EndIf
    AEVAL( ::aControls, { |o| If( o:Container == nil, o:RefreshData(), ) } )
-Return nil
 
-*------------------------------------------------------------------------------*
+   Return nil
+
 METHOD SetActivationFocus() CLASS TForm
-*------------------------------------------------------------------------------*
-Local Sp, nSplit
+
+   Local Sp, nSplit
+
    nSplit := ASCAN( ::SplitChildList, { |o| o:Focused } )
    IF nSplit > 0
-////      ::SplitChildList:SetFocus()
+      ////      ::SplitChildList:SetFocus()
       ::SplitChildList[ nSplit ]:SetFocus()
    ELSEIF ::Focused
       Sp := GetFocus()
@@ -684,182 +683,181 @@ Local Sp, nSplit
          SetFocus( GetNextDlgTabItem( ::hWnd, 0, .F. ) )
       ENDIF
    ENDIF
-Return nil
 
-*------------------------------------------------------------------------------*
+   Return nil
+
 METHOD ProcessInitProcedure() CLASS TForm
-*------------------------------------------------------------------------------*
+
    if HB_IsBlock( ::OnInit )
       ::DoEvent( ::OnInit, "WINDOW_INIT" )
    EndIf
    AEVAL( ::SplitChildList, { |o| o:ProcessInitProcedure() } )
-Return nil
 
-*------------------------------------------------------------------------------*
+   Return nil
+
 METHOD NotifyIconObject() CLASS TForm
-*------------------------------------------------------------------------------*
+
    IF LEN( ::aNotifyIcons ) == 0
       TNotifyIcon():Define( "0", Self )
    ENDIF
-RETURN ::aNotifyIcons[ 1 ]
 
-*------------------------------------------------------------------------------*
+   RETURN ::aNotifyIcons[ 1 ]
+
 METHOD NotifyIcon( IconName ) CLASS TForm
-*------------------------------------------------------------------------------*
+
    IF PCOUNT() > 0
       ::NotifyIconObject:Picture := IconName
    ENDIF
-RETURN ::NotifyIconObject:Picture
 
-*------------------------------------------------------------------------------*
+   RETURN ::NotifyIconObject:Picture
+
 METHOD NotifyTooltip( TooltipText ) CLASS TForm
-*------------------------------------------------------------------------------*
+
    IF PCOUNT() > 0
       ::NotifyIconObject:ToolTip := TooltipText
    ENDIF
-RETURN ::NotifyIconObject:ToolTip
 
-*------------------------------------------------------------------------------*
+   RETURN ::NotifyIconObject:ToolTip
+
 METHOD NotifyIconLeftClick( bClick ) CLASS TForm
-*------------------------------------------------------------------------------*
+
    IF PCOUNT() > 0
       ::NotifyIconObject:OnClick := bClick
    ENDIF
-RETURN ::NotifyIconObject:OnClick
 
-*------------------------------------------------------------------------------*
+   RETURN ::NotifyIconObject:OnClick
+
 METHOD NotifyIconDblClick( bClick ) CLASS TForm
-*------------------------------------------------------------------------------*
+
    IF PCOUNT() > 0
       ::NotifyIconObject:OnDblClick := bClick
    ENDIF
-RETURN ::NotifyIconObject:OnDblClick
 
-*------------------------------------------------------------------------------*
+   RETURN ::NotifyIconObject:OnDblClick
+
 METHOD NotifyIconRightClick( bClick ) CLASS TForm
-*------------------------------------------------------------------------------*
+
    IF PCOUNT() > 0
       ::NotifyIconObject:OnRClick := bClick
    ENDIF
-RETURN ::NotifyIconObject:OnRClick
 
-*------------------------------------------------------------------------------*
+   RETURN ::NotifyIconObject:OnRClick
+
 METHOD NotifyIconRDblClick( bClick ) CLASS TForm
-*------------------------------------------------------------------------------*
+
    IF PCOUNT() > 0
       ::NotifyIconObject:OnRDblClick := bClick
    ENDIF
-RETURN ::NotifyIconObject:OnRDblClick
 
-*------------------------------------------------------------------------------*
+   RETURN ::NotifyIconObject:OnRDblClick
+
 METHOD NotifyIconMidClick( bClick ) CLASS TForm
-*------------------------------------------------------------------------------*
+
    IF PCOUNT() > 0
       ::NotifyIconObject:OnMClick := bClick
    ENDIF
-RETURN ::NotifyIconObject:OnMClick
 
-*------------------------------------------------------------------------------*
+   RETURN ::NotifyIconObject:OnMClick
+
 METHOD NotifyIconMDblClick( bClick ) CLASS TForm
-*------------------------------------------------------------------------------*
+
    IF PCOUNT() > 0
       ::NotifyIconObject:OnMDblClick := bClick
    ENDIF
-RETURN ::NotifyIconObject:OnMDblClick
 
-*------------------------------------------------------------------------------*
+   RETURN ::NotifyIconObject:OnMDblClick
+
 METHOD NotifyMenu( oMenu ) CLASS TForm
-*------------------------------------------------------------------------------*
+
    IF PCOUNT() > 0
       ::NotifyIconObject:ContextMenu := oMenu
    ENDIF
-RETURN ::NotifyIconObject:ContextMenu
 
-*------------------------------------------------------------------------------*
+   RETURN ::NotifyIconObject:ContextMenu
+
 METHOD cNotifyIconName( IconName ) CLASS TForm
-*------------------------------------------------------------------------------*
+
    // Only for possible compatibility
    IF PCOUNT() > 0
       ::NotifyIconObject:Picture := IconName
    ENDIF
-RETURN ::NotifyIconObject:Picture
 
-*------------------------------------------------------------------------------*
+   RETURN ::NotifyIconObject:Picture
+
 METHOD cNotifyIconToolTip( TooltipText ) CLASS TForm
-*------------------------------------------------------------------------------*
+
    // Only for possible compatibility
    IF PCOUNT() > 0
       ::NotifyIconObject:ToolTip := TooltipText
    ENDIF
 RETURN ::NotifyIconObject:ToolTip
 
-*------------------------------------------------------------------------------*
 METHOD AddNotifyIcon( cPicture, cToolTip, ProcedureName, ControlName ) CLASS TForm
-*------------------------------------------------------------------------------*
+
    IF EMPTY( ControlName )
       ControlName := "0"
    ENDIF
-RETURN TNotifyIcon():Define( ControlName, Self, cPicture, cToolTip, ProcedureName )
 
-*------------------------------------------------------------------------------*
+   RETURN TNotifyIcon():Define( ControlName, Self, cPicture, cToolTip, ProcedureName )
+
 METHOD Title( cTitle ) CLASS TForm
-*------------------------------------------------------------------------------*
-Return ( ::Caption := cTitle )
 
-*------------------------------------------------------------------------------*
+   Return ( ::Caption := cTitle )
+
 METHOD Height( nHeight ) CLASS TForm
-*------------------------------------------------------------------------------*
+
    if HB_IsNumeric( nHeight )
       ::SizePos( , , , nHeight )
    endif
-Return GetWindowHeight( ::hWnd )
 
-*------------------------------------------------------------------------------*
+   Return GetWindowHeight( ::hWnd )
+
 METHOD Width( nWidth ) CLASS TForm
-*------------------------------------------------------------------------------*
+
    if HB_IsNumeric( nWidth )
       ::SizePos( , , nWidth )
    endif
-Return GetWindowWidth( ::hWnd )
 
-*------------------------------------------------------------------------------*
+   Return GetWindowWidth( ::hWnd )
+
 METHOD Col( nCol ) CLASS TForm
-*------------------------------------------------------------------------------*
+
    if HB_IsNumeric( nCol )
       ::SizePos( , nCol )
    endif
-Return GetWindowCol( ::hWnd )
 
-*------------------------------------------------------------------------------*
+   Return GetWindowCol( ::hWnd )
+
 METHOD Row( nRow ) CLASS TForm
-*------------------------------------------------------------------------------*
+
    If HB_IsNumeric( nRow )
       ::SizePos( nRow )
    EndIf
-Return GetWindowRow( ::hWnd )
 
-*------------------------------------------------------------------------------*
+   Return GetWindowRow( ::hWnd )
+
 METHOD VirtualWidth( nSize ) CLASS TForm
-*------------------------------------------------------------------------------*
+
    If HB_IsNumeric( nSize )
       ::nVirtualWidth := nSize
       ValidateScrolls( Self, .T. )
    EndIf
-Return ::nVirtualWidth
 
-*------------------------------------------------------------------------------*
+   Return ::nVirtualWidth
+
 METHOD VirtualHeight( nSize ) CLASS TForm
-*------------------------------------------------------------------------------*
+
    If HB_IsNumeric( nSize )
       ::nVirtualHeight := nSize
       ValidateScrolls( Self, .T. )
    EndIf
-Return ::nVirtualHeight
 
-*------------------------------------------------------------------------------*
+   Return ::nVirtualHeight
+
 METHOD FocusedControl() CLASS TForm
-*------------------------------------------------------------------------------*
-Local hWnd, nPos
+
+   Local hWnd, nPos
+
    hWnd := GetFocus()
    nPos := 0
    DO WHILE nPos == 0
@@ -871,22 +869,22 @@ Local hWnd, nPos
          ENDIF
       ENDIF
    ENDDO
-Return if( nPos == 0, "", ::aControls[ nPos ]:Name )
 
-*------------------------------------------------------------------------------*
+   Return if( nPos == 0, "", ::aControls[ nPos ]:Name )
+
 METHOD Cursor( uValue ) CLASS TForm
-*------------------------------------------------------------------------------*
+
    IF uValue != nil
       IF SetWindowCursor( ::hWnd, uValue )
          ::uFormCursor := uValue
       ENDIF
    ENDIF
-Return ::uFormCursor
 
-*------------------------------------------------------------------------------*
+   Return ::uFormCursor
+
 METHOD AutoAdjust( nDivH, nDivW ) CLASS TForm
-*------------------------------------------------------------------------------*
-LOCAL lSwvisible
+
+   LOCAL lSwvisible
 
    lSwvisible := ::Visible
    If lSwvisible
@@ -899,12 +897,11 @@ LOCAL lSwvisible
       ::Show()
    ENDIF
 
-RETURN nil
+   RETURN nil
 
-*------------------------------------------------------------------------------*
 METHOD AdjustWindowSize( lSkip ) CLASS TForm
-*------------------------------------------------------------------------------*
-LOCAL nWidth, nHeight, nOldWidth, nOldHeight, n, oControl, nHeightUsed
+
+   LOCAL nWidth, nHeight, nOldWidth, nOldHeight, n, oControl, nHeightUsed
 
    nWidth  := ::ClientWidth
    nHeight := ::ClientHeight
@@ -941,17 +938,18 @@ LOCAL nWidth, nHeight, nOldWidth, nOldHeight, n, oControl, nHeightUsed
 
    AEVAL( ::aControls, { |o| If( o:Container == nil, o:Events_Size(), ) } )
 
-RETURN nil
+   RETURN nil
 
-*------------------------------------------------------------------------------*
 METHOD ClientsPos() CLASS TForm
-*------------------------------------------------------------------------------*
-Local aControls, nWidth, nHeight
+
+   Local aControls, nWidth, nHeight
+
    aControls := {}
    AEVAL( ::aControls, { |o| IF( o:Container == nil, AADD( aControls, o ), ) } )
    nWidth  := ::ClientWidth
    nHeight := ::ClientHeight
-Return ::ClientsPos2( aControls, nWidth, nHeight )
+
+   Return ::ClientsPos2( aControls, nWidth, nHeight )
 
 
 #pragma BEGINDUMP
@@ -998,9 +996,8 @@ HB_FUNC( SETFORMTOPMOST )
 #pragma ENDDUMP
 
 
- *----------------------------------
 Method GetWindowstate( ) CLASS Tform
-*----------------------------------
+
   If IsWindowmaximized( ::Hwnd )
      Return 2
   elseif IsWindowminimized( ::Hwnd )
@@ -1008,12 +1005,13 @@ Method GetWindowstate( ) CLASS Tform
   else
      Return 0
   EndIf
-Return nil
 
-*------------------------------------------------------------------------------*
+   Return nil
+
 METHOD SizePos( nRow, nCol, nWidth, nHeight ) CLASS TForm
-*------------------------------------------------------------------------------*
-local xRet, actpos:= { 0, 0, 0, 0 }
+
+   local xRet, actpos:= { 0, 0, 0, 0 }
+
    GetWindowRect( ::hWnd, actpos )
    If ! HB_IsNumeric( nCol )
       nCol := actpos[ 1 ]
@@ -1030,12 +1028,13 @@ local xRet, actpos:= { 0, 0, 0, 0 }
    xRet := MoveWindow( ::hWnd , nCol , nRow , nWidth , nHeight , .t. )
    //CGR
    ::CheckClientsPos()
-Return xRet
 
-*------------------------------------------------------------------------------*
+   Return xRet
+
 METHOD DeleteControl( oControl ) CLASS TForm
-*------------------------------------------------------------------------------*
-Local nPos
+
+   Local nPos
+
    // Removes INTERNAL window from ::SplitChildList
    nPos := aScan( ::SplitChildList, { |o| o:hWnd == oControl:hWnd } )
    If nPos > 0
@@ -1047,33 +1046,33 @@ Local nPos
    If nPos > 0
       _OOHG_DeleteArrayItem( ::aChildPopUp, nPos )
    EndIf
-Return ::Super:DeleteControl( oControl )
 
-*------------------------------------------------------------------------------*
+   Return ::Super:DeleteControl( oControl )
+
 METHOD OnHideFocusManagement() CLASS TForm
-*------------------------------------------------------------------------------*
-Return nil
 
-*------------------------------------------------------------------------------*
+   Return nil
+
 METHOD Closable( lCloseable ) CLASS TForm
-*------------------------------------------------------------------------------*
-Local lRet
+
+   Local lRet
+
    If IsWindowStyle( ::hWnd, WS_CAPTION ) .AND. IsWindowStyle( ::hWnd, WS_SYSMENU )
       lRet := MenuEnabled( GetSystemMenu( ::hWnd ), SC_CLOSE, lCloseable )
    Else
       lRet := .F.
    EndIf
-Return lRet
 
-*------------------------------------------------------------------------------*
+   Return lRet
+
 METHOD CheckInteractiveClose() CLASS TForm
-*------------------------------------------------------------------------------*
-Local lRet := .T.
-/*
-0 - close is not allowed
-1 - close is allowed, no question is asked before
-2 - close is allowed when question is answered yes
-*/
+
+   Local lRet := .T.
+   /*
+   0 - close is not allowed
+   1 - close is allowed, no question is asked before
+   2 - close is allowed when question is answered yes
+   */
    Do Case
       Case _OOHG_InteractiveClose == 0
          MsgStop( _OOHG_Messages( 1, 3 ) )
@@ -1081,12 +1080,13 @@ Local lRet := .T.
       Case _OOHG_InteractiveClose == 2
          lRet := MsgYesNo( _OOHG_Messages( 1, 1 ), _OOHG_Messages( 1, 2 ) )
    EndCase
-Return lRet
 
-*------------------------------------------------------------------------------*
+   Return lRet
+
 METHOD DoEvent( bBlock, cEventType, aParams ) CLASS TForm
-*------------------------------------------------------------------------------*
-Local lRetVal := .F.
+
+   Local lRetVal := .F.
+
    If ::lDestroyed
       lRetVal := .F.
    ElseIf HB_IsBlock( bBlock )
@@ -1099,12 +1099,12 @@ Local lRetVal := .F.
       lRetVal := _OOHG_Eval_Array( bBlock, aParams )
       _PopEventInfo()
    EndIf
-Return lRetVal
 
-*------------------------------------------------------------------------------*
+   Return lRetVal
+
 METHOD Events_Destroy() CLASS TForm
-*------------------------------------------------------------------------------*
-Local mVar
+
+   Local mVar
 
    ::ReleaseAttached()
 
@@ -1143,7 +1143,7 @@ Local mVar
       Endif
    Endif
 
-/*
+   /*
    We can´t remove hWnd from the arrays at this point
    because we need to use GetFormObjectByHandle() to
    process WM_NCDESTROY message. See ::Events_NCDestroy
@@ -1155,7 +1155,7 @@ Local mVar
       _OOHG_DeleteArrayItem( _OOHG_aFormhWnd, I )
       _OOHG_DeleteArrayItem( _OOHG_aFormObjects, I )
    ENDIF
-*/
+   */
 
    // Eliminates active modal
    IF Len( _OOHG_ActiveModal ) != 0 .AND. ATAIL( _OOHG_ActiveModal ):hWnd == ::hWnd
@@ -1165,12 +1165,11 @@ Local mVar
    ::Active := .F.
    ::Super:Release()
 
-Return nil
+   Return nil
 
-*------------------------------------------------------------------------------*
 METHOD Events_NCDestroy CLASS TForm
-*------------------------------------------------------------------------------*
-Local i
+
+   Local i
    /*
     * UnRegisterWindow( ::Name )
     *
@@ -1187,48 +1186,50 @@ Local i
       _OOHG_DeleteArrayItem( _OOHG_aFormhWnd, i )
       _OOHG_DeleteArrayItem( _OOHG_aFormObjects, i )
    EndIf
-Return Nil
 
-*------------------------------------------------------------------------------*
+   Return Nil
+
 METHOD Events_VScroll( wParam ) CLASS TForm
-*------------------------------------------------------------------------------*
-Local uRet, nAt
+
+   Local uRet, nAt
+
    uRet := ::VScrollBar:Events_VScroll( wParam )
    ::RowMargin := - ::VScrollBar:Value
    ::ScrollControls()
    IF ( nAt := aScan( ::aControls, { |c| c:Type == "MESSAGEBAR" .AND. c:Visible } ) ) > 0
       ::aControls[ nAt ]:Redraw()
    ENDIF
-Return uRet
 
-*------------------------------------------------------------------------------*
+   Return uRet
+
 METHOD Events_HScroll( wParam ) CLASS TForm
-*------------------------------------------------------------------------------*
-Local uRet
+
+   Local uRet
+
    uRet := ::HScrollBar:Events_HScroll( wParam )
    ::ColMargin := - ::HScrollBar:Value
    ::ScrollControls()
-Return uRet
 
-*------------------------------------------------------------------------------*
+   Return uRet
+
 METHOD ScrollControls() CLASS TForm
-*------------------------------------------------------------------------------*
+
    AEVAL( ::aControls, { |o| If( o:Container == nil, o:SizePos(), ) } )
    ReDrawWindow( ::hWnd )
-RETURN Self
 
-*------------------------------------------------------------------------------*
+   RETURN Self
+
 METHOD Topmost( lTopmost ) CLASS TForm
-*------------------------------------------------------------------------------*
+
    If HB_IsLogical( lTopmost )
       ::lTopmost := lTopmost
       SetFormTopmost( ::hWnd, lTopmost )
    EndIf
-Return ::lTopmost
 
-*------------------------------------------------------------------------------*
+   Return ::lTopmost
+
 METHOD HelpButton( lShow ) CLASS TForm
-*------------------------------------------------------------------------------*
+
    If HB_IsLogical( lShow )
       If lShow
          WindowExStyleFlag( ::hWnd, WS_EX_CONTEXTHELP, WS_EX_CONTEXTHELP )
@@ -1239,12 +1240,13 @@ METHOD HelpButton( lShow ) CLASS TForm
       EndIf
       SetWindowPos( ::hWnd, 0, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE + SWP_NOZORDER + SWP_NOACTIVATE + SWP_FRAMECHANGED )
    EndIf
-Return IsWindowExStyle( ::hWnd, WS_EX_CONTEXTHELP )
 
-*------------------------------------------------------------------------------*
+   Return IsWindowExStyle( ::hWnd, WS_EX_CONTEXTHELP )
+
 METHOD BackImage( uBackImage ) CLASS TForm
-*------------------------------------------------------------------------------*
-LOCAL hImageWork
+
+   LOCAL hImageWork
+
    If PCount() > 0
       If ::hBackImage != NIL
          DeleteObject( ::hBackImage )
@@ -1272,11 +1274,11 @@ LOCAL hImageWork
 
       ReDrawWindow( ::hWnd )
    EndIf
-Return ::hBackImage
 
-*------------------------------------------------------------------------------*
+   Return ::hBackImage
+
 METHOD Flash( nWhat, nTimes, nMilliseconds ) CLASS TForm
-*------------------------------------------------------------------------------*
+
    /*
     * nWhat            action
     * FLASHW_CAPTION   Flash the window caption.
@@ -1295,7 +1297,8 @@ METHOD Flash( nWhat, nTimes, nMilliseconds ) CLASS TForm
     * If the window caption was drawn as active before the call, the return value is .T.
     * Otherwise, the return value is .F.
     */
-Return FlashWindowEx( ::hWnd, nWhat, nTimes, nMilliseconds )
+
+   Return FlashWindowEx( ::hWnd, nWhat, nTimes, nMilliseconds )
 
 
 #pragma BEGINDUMP
@@ -1435,17 +1438,15 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
 
 #pragma ENDDUMP
 
-*------------------------------------------------------------------------------*
+
 FUNCTION _OOHG_TForm_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TForm
-*------------------------------------------------------------------------------*
-Local i, NextControlHandle, xRetVal
-Local oCtrl, lMinim, nOffset,nDesp
+
+   Local i, NextControlHandle, xRetVal
+   Local oCtrl, lMinim, nOffset,nDesp
 
    Do Case
 
-   ***********************************************************************
    case nMsg == WM_HOTKEY
-   ***********************************************************************
 
       // Process HotKeys
       i := ASCAN( ::aHotKeys, { |a| a[ HOTKEY_ID ] == wParam } )
@@ -1459,16 +1460,12 @@ Local oCtrl, lMinim, nOffset,nDesp
          ::DoEvent( ::aAcceleratorKeys[ i ][ HOTKEY_ACTION ], "ACCELERATOR" )
       EndIf
 
-   ***********************************************************************
    case nMsg == WM_ACTIVATE
-   ***********************************************************************
 
       If LoWord(wparam) == 0      // WA_INACTIVE
 
          aeval( ::aHotKeys, { |a| ReleaseHotKey( ::hWnd, a[ HOTKEY_ID ] ) } )
-
          ::LastFocusedControl := GetFocus()
-
          If ! ::ContainerReleasing
             ::DoEvent( ::OnLostFocus, "WINDOW_LOSTFOCUS" )
          EndIf
@@ -1481,42 +1478,30 @@ Local oCtrl, lMinim, nOffset,nDesp
 
       EndIf
 
-   ***********************************************************************
    case nMsg == WM_SETFOCUS
-   ***********************************************************************
 
       If ::Active .AND. ! ::lInternal
          _OOHG_UserWindow := Self
       EndIf
-
       aeval( ::aHotKeys, { |a| ReleaseHotKey( ::hWnd, a[ HOTKEY_ID ] ) } )
-
       aeval( ::aHotKeys, { |a| InitHotKey( ::hWnd, a[ HOTKEY_MOD ], a[ HOTKEY_KEY ], a[ HOTKEY_ID ] ) } )
-
       ::DoEvent( ::OnGotFocus, "WINDOW_GOTFOCUS" )
-
       If ! empty( ::LastFocusedControl )
          SetFocus( ::LastFocusedControl )
       EndIf
 
-   ***********************************************************************
    case nMsg == WM_HELP
-   ***********************************************************************
 
       Return ::HelpTopic( lParam )
 
-   ***********************************************************************
    case nMsg == WM_TASKBAR
-   ***********************************************************************
 
       i := ASCAN( ::aNotifyIcons, { |o| o:nTrayId == wParam } )
       If i > 0
          ::aNotifyIcons[ i ]:Events_TaskBar( lParam )
       EndIf
 
-   ***********************************************************************
    case nMsg == WM_NEXTDLGCTL
-   ***********************************************************************
 
       If LoWord( lParam ) != 0
          // wParam contains next control's handler
@@ -1538,9 +1523,7 @@ Local oCtrl, lMinim, nOffset,nDesp
       * To set the default control identifier!
       * Return 0
 
-   ***********************************************************************
    case nMsg == WM_PAINT
-   ***********************************************************************
 
       ::DefWindowProc( nMsg, wParam, lParam )
 
@@ -1570,41 +1553,34 @@ Local oCtrl, lMinim, nOffset,nDesp
 
       Return 1
 
-   ***********************************************************************
    case nMsg == WM_ENTERSIZEMOVE
-   ***********************************************************************
 
       If ! ! _OOHG_AutoAdjust .OR. ! ::lAdjust
          ::lEnterSizeMove := .T.
       EndIf
 
-   ***********************************************************************
    case nMsg == WM_MOVE
-   ***********************************************************************
 
       ::DoEvent( ::OnMove, "WINDOW_MOVE" )
 
-   ***********************************************************************
    case nMsg == WM_SIZE
-   ***********************************************************************
 
       IF ! ::lEnterSizeMove
          ValidateScrolls( Self, .T. )
          If ::Active
             lMinim := .F.
             DO CASE
-               CASE wParam == SIZE_MAXIMIZED
-                  ::DoEvent( ::OnMaximize, "WINDOW_MAXIMIZE" )
+            CASE wParam == SIZE_MAXIMIZED
+               ::DoEvent( ::OnMaximize, "WINDOW_MAXIMIZE" )
 
-               CASE wParam == SIZE_MINIMIZED
-                  ::DoEvent( ::OnMinimize, "WINDOW_MINIMIZE" )
-                  lMinim := .T.
+            CASE wParam == SIZE_MINIMIZED
+               ::DoEvent( ::OnMinimize, "WINDOW_MINIMIZE" )
+               lMinim := .T.
 
-               CASE wParam == SIZE_RESTORED
-                  ::DoEvent( ::OnRestore, "WINDOW_RESTORE" )
+            CASE wParam == SIZE_RESTORED
+               ::DoEvent( ::OnRestore, "WINDOW_RESTORE" )
 
             ENDCASE
-
             If ! lMinim
                ::AdjustWindowSize( lMinim )
             EndIf
@@ -1613,7 +1589,6 @@ Local oCtrl, lMinim, nOffset,nDesp
             If ::lDefined
                ::AdjustWindowSize()
             Endif
-
          EndIf
       Endif
 
@@ -1623,9 +1598,7 @@ Local oCtrl, lMinim, nOffset,nDesp
          Return 0
       EndIf
 
-   ***********************************************************************
    case nMsg == WM_EXITSIZEMOVE    //// cuando se cambia el tamaño por reajuste con el mouse
-   ***********************************************************************
 
       If ::Active .AND. ( ! _OOHG_AutoAdjust .OR. ! ::lAdjust .OR. ( ::nOldW # NIL .OR. ::nOldH # NIL ) .AND. ( ::nOldW # ::Width .OR. ::nOldH # ::Height ) )
          ::AdjustWindowSize()
@@ -1633,29 +1606,23 @@ Local oCtrl, lMinim, nOffset,nDesp
       Endif
       ::lEnterSizeMove := .F.
 
-   ***********************************************************************
    case nMsg == WM_SIZING
-   ***********************************************************************
 
       If _TForm_Sizing( wParam, lParam, ::MinWidth, ::MaxWidth, ::MinHeight, ::MaxHeight )
          ::DefWindowProc( nMsg, wParam, lParam )
          Return 1
       EndIf
 
-   ***********************************************************************
    case nMsg == WM_MOVING
-   ***********************************************************************
 
       If _TForm_Moving( lParam, ::ForceRow, ::ForceCol )
          ::DefWindowProc( nMsg, wParam, lParam )
          Return 1
       EndIf
 
-   ***********************************************************************
    case nMsg == WM_CLOSE
-   ***********************************************************************
 
-      NOTE : Since ::lReleasing could be changed on each process, it must be validated any time
+      // NOTE : Since ::lReleasing could be changed on each process, it must be validated any time
 
       // Process Interactive Close Event / Setting
       If ! ::lReleasing .AND. HB_IsBlock( ::OnInteractiveClose )
@@ -1695,24 +1662,22 @@ Local oCtrl, lMinim, nOffset,nDesp
        * WindowProc (redirected to _OOHG_WndProcForm()).
        */
 
-   ***********************************************************************
    case nMsg == WM_DESTROY
-   ***********************************************************************
 
       ::Events_Destroy()
 
-   ***********************************************************************
    otherwise
-   ***********************************************************************
 
       // return ::Super:Events( hWnd, nMsg, wParam, lParam )
       return ::TWindow:Events( hWnd, nMsg, wParam, lParam )
 
    EndCase
 
-Return nil
+   Return nil
+
 
 #pragma BEGINDUMP
+
 int _OOHG_AdjustSize( int iBorder, RECT * rect, int iMinWidth, int iMaxWidth, int iMinHeight, int iMaxHeight )
 {
    int iWidth, iHeight;
@@ -1816,13 +1781,14 @@ HB_FUNC_STATIC( _TFORM_MOVING )   // lParam, nForceRow, nForceCol
 
    hb_retl( _OOHG_AdjustPosition( ( RECT * ) hb_parnl( 1 ), iForceRow, iForceCol ) );
 }
+
 #pragma endDUMP
 
-*------------------------------------------------------------------------------*
+
 Procedure ValidateScrolls( Self, lMove )
-*------------------------------------------------------------------------------*
-Local hWnd, nVirtualWidth, nVirtualHeight
-Local aRect, w, h, hscroll, vscroll
+
+   Local hWnd, nVirtualWidth, nVirtualHeight
+   Local aRect, w, h, hscroll, vscroll
 
    If ! ValidHandler( ::hWnd ) .OR. ::HScrollBar == nil .OR. ::VScrollBar == nil
       Return
@@ -1898,15 +1864,12 @@ Local aRect, w, h, hscroll, vscroll
    If lMove .AND. ( vscroll .OR. hscroll )
       ::ScrollControls()
    EndIf
-Return
+
+   Return
 
 
-
-
-
-*------------------------------------------------------------------------------*
 CLASS TFormMain FROM TForm
-*------------------------------------------------------------------------------*
+
    DATA Type           INIT "A" READONLY
    DATA lFirstActivate INIT .F.
 
@@ -1915,9 +1878,9 @@ CLASS TFormMain FROM TForm
    METHOD Release
 
    METHOD CheckInteractiveClose
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
                nosysmenu, nocaption, initprocedure, ReleaseProcedure, ;
                MouseDragProcedure, SizeProcedure, ClickProcedure, ;
@@ -1931,8 +1894,8 @@ METHOD Define( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
                MClickProcedure, DblClickProcedure, RDblClickProcedure, ;
                MDblClickProcedure, minwidth, maxwidth, minheight, maxheight, ;
                MoveProcedure, fontcolor ) CLASS TFormMain
-*------------------------------------------------------------------------------*
-Local nStyle := 0, nStyleEx := 0
+
+   Local nStyle := 0, nStyleEx := 0
 
    If _OOHG_Main != nil
       MsgOOHGError( "Main window already defined. Program terminated." )
@@ -1955,38 +1918,36 @@ Local nStyle := 0, nStyleEx := 0
    ::NotifyIconObject:ToolTip := NotifyIconToolTip
    ::NotifyIconObject:OnClick := NotifyIconLeftClick
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD Activate( lNoStop, oWndLoop ) CLASS TFormMain
-*------------------------------------------------------------------------------*
-   ::lFirstActivate := .T.
-Return ::Super:Activate( lNoStop, oWndLoop )
 
-*------------------------------------------------------------------------------*
+   ::lFirstActivate := .T.
+
+   Return ::Super:Activate( lNoStop, oWndLoop )
+
 METHOD Release() CLASS TFormMain
-*------------------------------------------------------------------------------*
+
    _ReleaseWindowList( { Self } )
    ReleaseAllWindows()
-Return ::Super:Release()
 
-*------------------------------------------------------------------------------*
+   Return ::Super:Release()
+
 METHOD CheckInteractiveClose() CLASS TFormMain
-*------------------------------------------------------------------------------*
-Local lRet
+
+   Local lRet
+
    If _OOHG_InteractiveClose == 3
       lRet := MsgYesNo( _OOHG_Messages( 1, 1 ), _OOHG_Messages( 1, 2 ) )
    Else
       lRet := ::Super:CheckInteractiveClose()
    EndIf
-Return lRet
+
+   Return lRet
 
 
-
-
-*------------------------------------------------------------------------------*
 CLASS TFormModal FROM TForm
-*------------------------------------------------------------------------------*
+
    DATA Type           INIT "M" READONLY
    DATA LockedForms    INIT {}
    DATA oPrevWindow    INIT nil
@@ -1996,9 +1957,9 @@ CLASS TFormModal FROM TForm
    METHOD Activate
    METHOD Release
    METHOD OnHideFocusManagement
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( FormName, Caption, x, y, w, h, Parent, nosize, nosysmenu, ;
                nocaption, InitProcedure, ReleaseProcedure, ;
                MouseDragProcedure, SizeProcedure, ClickProcedure, ;
@@ -2012,9 +1973,9 @@ METHOD Define( FormName, Caption, x, y, w, h, Parent, nosize, nosysmenu, ;
                MDblClickProcedure, nominimize, nomaximize, maximizeprocedure, ;
                minimizeprocedure, minwidth, maxwidth, minheight, maxheight, ;
                MoveProcedure, fontcolor ) CLASS TFormModal
-*------------------------------------------------------------------------------*
-Local nStyle := WS_POPUP, nStyleEx := 0
-Local oParent, hParent
+
+   Local nStyle := WS_POPUP, nStyleEx := 0
+   Local oParent, hParent
 
    Empty( modalsize )
 
@@ -2037,11 +1998,10 @@ Local oParent, hParent
               DblClickProcedure, RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, minheight, maxheight, ;
               MoveProcedure, fontcolor )
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD Visible( lVisible ) CLASS TFormModal
-*------------------------------------------------------------------------------*
+
    If HB_IsLogical( lVisible )
       If lVisible
          // Find Previous window
@@ -2069,11 +2029,11 @@ METHOD Visible( lVisible ) CLASS TFormModal
          EnableWindow( ::hWnd )
       EndIf
    EndIf
-RETURN ( ::Super:Visible := lVisible )
 
-*------------------------------------------------------------------------------*
+   RETURN ( ::Super:Visible := lVisible )
+
 METHOD Activate( lNoStop, oWndLoop ) CLASS TFormModal
-*------------------------------------------------------------------------------*
+
    // Checks for non-stop window
    IF !HB_IsLogical( lNoStop )
       lNoStop := .F.
@@ -2084,21 +2044,21 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TFormModal
 
    // Since this window disables all other windows, it must be visible!
    ::lVisible := .T.
-Return ::Super:Activate( lNoStop, oWndLoop )
 
-*------------------------------------------------------------------------------*
+   Return ::Super:Activate( lNoStop, oWndLoop )
+
 METHOD Release() CLASS TFormModal
-*------------------------------------------------------------------------------*
+
    If ! ::lReleasing
       If ( Len( _OOHG_ActiveModal ) == 0 .OR. ATAIL( _OOHG_ActiveModal ):hWnd <> ::hWnd ) .AND. IsWindowVisible( ::hWnd )
          MsgOOHGError( "Non top modal window *" + ::Name + "* can't be released. Program terminated." )
       EndIf
    EndIf
-Return ::Super:Release()
 
-*------------------------------------------------------------------------------*
+   Return ::Super:Release()
+
 METHOD OnHideFocusManagement() CLASS TFormModal
-*------------------------------------------------------------------------------*
+
    // Re-enables locked forms
    AEVAL( ::LockedForms, { |o| IF( ValidHandler( o:hWnd ), EnableWindow( o:hWnd ), ) } )
    ::LockedForms := {}
@@ -2108,14 +2068,12 @@ METHOD OnHideFocusManagement() CLASS TFormModal
    Else
       ::oPrevWindow:SetFocus()
    EndIf
-Return ::Super:OnHideFocusManagement()
+
+   Return ::Super:OnHideFocusManagement()
 
 
-
-
-*------------------------------------------------------------------------------*
 CLASS TFormInternal FROM TForm
-*------------------------------------------------------------------------------*
+
    DATA Type           INIT "I" READONLY
    DATA lInternal      INIT .T.
    DATA lAdjust        INIT .F.
@@ -2129,9 +2087,9 @@ CLASS TFormInternal FROM TForm
 
    METHOD ContainerRow        BLOCK { |Self| IF( ::Container != NIL, IF( ValidHandler( ::Container:ContainerhWndValue ), 0, ::Container:ContainerRow ) + ::Container:RowMargin, ::Parent:RowMargin ) + ::Row }
    METHOD ContainerCol        BLOCK { |Self| IF( ::Container != NIL, IF( ValidHandler( ::Container:ContainerhWndValue ), 0, ::Container:ContainerCol ) + ::Container:ColMargin, ::Parent:ColMargin ) + ::Col }
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( FormName, Caption, x, y, w, h, oParent, aRGB, fontname, fontsize, ;
                ClickProcedure, MouseDragProcedure, MouseMoveProcedure, ;
                PaintProcedure, noshow, icon, GotFocus, LostFocus, Virtualheight, ;
@@ -2140,8 +2098,8 @@ METHOD Define( FormName, Caption, x, y, w, h, oParent, aRGB, fontname, fontsize,
                RClickProcedure, MClickProcedure, DblClickProcedure, ;
                RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, ;
                minheight, maxheight, fontcolor ) CLASS TFormInternal
-*------------------------------------------------------------------------------*
-Local nStyle := 0, nStyleEx := 0
+
+   Local nStyle := 0, nStyleEx := 0
 
    nStyle += WS_GROUP
    ::SearchParent( oParent )
@@ -2157,9 +2115,8 @@ Local nStyle := 0, nStyleEx := 0
               0, lRtl, mdi,, clientarea, nil, RClickProcedure, MClickProcedure, DblClickProcedure, ;
               RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, minheight, maxheight, nil, fontcolor )
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD Define2( FormName, Caption, x, y, w, h, Parent, helpbutton, nominimize, nomaximize, nosize, nosysmenu, ;
                 nocaption, virtualheight, virtualwidth, hscrollbox, vscrollbox, fontname, fontsize, aRGB, cursor, ;
                 icon, noshow, gotfocus, lostfocus, scrollleft, scrollright, scrollup, scrolldown, maximizeprocedure, ;
@@ -2168,7 +2125,6 @@ METHOD Define2( FormName, Caption, x, y, w, h, Parent, helpbutton, nominimize, n
                 nWindowType, lRtl, mdi, topmost, clientarea, restoreprocedure, RClickProcedure, MClickProcedure, ;
                 DblClickProcedure, RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, minheight, maxheight, ;
                 MoveProcedure, fontcolor ) CLASS TFormInternal
-*------------------------------------------------------------------------------*
 
    ::Super:Define2( FormName, Caption, x, y, w, h, Parent, helpbutton, nominimize, nomaximize, nosize, nosysmenu, ;
                     nocaption, virtualheight, virtualwidth, hscrollbox, vscrollbox, fontname, fontsize, aRGB, cursor, ;
@@ -2189,12 +2145,12 @@ METHOD Define2( FormName, Caption, x, y, w, h, Parent, helpbutton, nominimize, n
 
    ::ContainerhWndValue := ::hWnd
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD SizePos( nRow, nCol, nWidth, nHeight ) CLASS TFormInternal
-*------------------------------------------------------------------------------*
-Local uRet
+
+   Local uRet
+
    if HB_IsNumeric( nCol )
       ::nCol := nCol
    endif
@@ -2215,37 +2171,34 @@ Local uRet
    //CGR
    ::CheckClientsPos()
    ValidateScrolls( Self, .T. )
-Return uRet
 
-*------------------------------------------------------------------------------*
+   Return uRet
+
 METHOD Col( nCol ) CLASS TFormInternal
-*------------------------------------------------------------------------------*
+
    IF PCOUNT() > 0
       ::SizePos( , nCol )
    ENDIF
-RETURN ::nCol
 
-*------------------------------------------------------------------------------*
+   RETURN ::nCol
+
 METHOD Row( nRow ) CLASS TFormInternal
-*------------------------------------------------------------------------------*
+
    IF PCOUNT() > 0
       ::SizePos( nRow )
    ENDIF
-RETURN ::nRow
+
+   RETURN ::nRow
 
 
-
-
-
-*------------------------------------------------------------------------------*
 CLASS TFormSplit FROM TFormInternal
-*------------------------------------------------------------------------------*
+
    DATA Type           INIT "X" READONLY
 
    METHOD Define
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( FormName, w, h, break, grippertext, nocaption, title, aRGB, ;
                fontname, fontsize, gotfocus, lostfocus, virtualheight, ;
                VirtualWidth, Focused, scrollleft, scrollright, scrollup, ;
@@ -2253,8 +2206,8 @@ METHOD Define( FormName, w, h, break, grippertext, nocaption, title, aRGB, ;
                clientarea, RClickProcedure, MClickProcedure, ;
                DblClickProcedure, RDblClickProcedure, MDblClickProcedure, ;
                minwidth, maxwidth, minheight, maxheight, fontcolor ) CLASS TFormSplit
-*------------------------------------------------------------------------------*
-Local nStyle := 0, nStyleEx := 0
+
+   Local nStyle := 0, nStyleEx := 0
 
    nStyle += WS_GROUP
    ::SearchParent()
@@ -2281,11 +2234,11 @@ Local nStyle := 0, nStyleEx := 0
    ::SetSplitBoxInfo( Break, GripperText )
    ::Container:AddControl( Self )
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
+
 CLASS TFormMDIClient FROM TFormInternal
-*------------------------------------------------------------------------------*
+
    DATA Type           INIT "D" READONLY
    DATA nWidth         INIT 0
    DATA nHeight        INIT 0
@@ -2299,9 +2252,9 @@ CLASS TFormMDIClient FROM TFormInternal
    METHOD TileVertical                      BLOCK { |Self| SendMessage( ::hWnd, WM_MDITILE, 0, 0 ) }
    METHOD IconArrange                       BLOCK { |Self| SendMessage( ::hWnd, WM_MDIICONARRANGE, 0, 0 ) }
    METHOD ActiveChild
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( FormName, Caption, x, y, w, h, MouseDragProcedure, ;
                ClickProcedure, MouseMoveProcedure, aRGB, PaintProcedure, ;
                icon, fontname, fontsize, GotFocus, LostFocus, Virtualheight, ;
@@ -2310,15 +2263,15 @@ METHOD Define( FormName, Caption, x, y, w, h, MouseDragProcedure, ;
                clientarea, RClickProcedure, MClickProcedure, ;
                DblClickProcedure, RDblClickProcedure, MDblClickProcedure, ;
                minwidth, maxwidth, minheight, maxheight, fontcolor ) CLASS TFormMDIClient
-*------------------------------------------------------------------------------*
-Local nStyle := 0, nStyleEx := 0, aClientRect
+
+   Local nStyle := 0, nStyleEx := 0, aClientRect
 
    nStyle += WS_GROUP
    ::Focused := ( HB_IsLogical( Focused ) .AND. Focused )
    ::SearchParent( oParent )
 
-* ventana MDI FRAME
-*      nStyle   += WS_CLIPSIBLINGS + WS_CLIPCHILDREN // + WS_THICKFRAME
+   // ventana MDI FRAME
+   //      nStyle   += WS_CLIPSIBLINGS + WS_CLIPCHILDREN // + WS_THICKFRAME
    nStyle   += WS_CHILD + WS_CLIPCHILDREN
 
    aClientRect := { 0, 0, 0, 0 }
@@ -2350,10 +2303,13 @@ Local nStyle := 0, nStyleEx := 0, aClientRect
    _OOHG_AddMdi( ::hWnd, ::Parent:hWnd )
 
    ::Events_Size()
-Return Self
+
+   Return Self
 
 METHOD Events_Size() CLASS TFormMDIClient
-LOCAL aClientRect, nRow, nHeight, I, nTall
+
+   LOCAL aClientRect, nRow, nHeight, I, nTall
+
    aClientRect := { 0, 0, 0, 0 }
    GetClientRect( ::Parent:hWnd, aClientRect )
    nRow := aClientRect[ 2 ]
@@ -2369,46 +2325,47 @@ LOCAL aClientRect, nRow, nHeight, I, nTall
    NEXT
    ::SizePos( nRow, aClientRect[ 1 ], aClientRect[ 3 ] - aClientRect[ 1 ], nHeight )
    ::DoEvent( ::OnSize, "WINDOW_SIZE" )
-RETURN NIL
+
+   RETURN NIL
 
 METHOD Cascade( lSkipDisabled, lUseZOrder ) CLASS TFormMDIClient
-  LOCAL nFlags := 0
 
-  ASSIGN lSkipDisabled VALUE lSkipDisabled TYPE "L" DEFAULT .T.
-  ASSIGN lUseZOrder    VALUE lUseZOrder    TYPE "L" DEFAULT .T.
+   LOCAL nFlags := 0
 
-  IF lSkipDisabled
-     nFlags += 2
-  ENDIF
-  IF lUseZOrder
-     nFlags += 4
-  ENDIF
-RETURN SendMessage( ::hWnd, WM_MDICASCADE, nFlags, 0 )
+   ASSIGN lSkipDisabled VALUE lSkipDisabled TYPE "L" DEFAULT .T.
+   ASSIGN lUseZOrder    VALUE lUseZOrder    TYPE "L" DEFAULT .T.
+
+   IF lSkipDisabled
+      nFlags += 2
+   ENDIF
+   IF lUseZOrder
+      nFlags += 4
+   ENDIF
+
+   RETURN SendMessage( ::hWnd, WM_MDICASCADE, nFlags, 0 )
 
 METHOD ActiveChild() CLASS TFormMDIClient
+
    LOCAL nHandle, oWin
 
    nHandle := SendMessage( ::hWnd, WM_MDIGETACTIVE, 0, 0 )
    IF ValidHandler( nHandle )
       oWin := GetFormObjectByHandle( nHandle )
    ENDIF
-RETURN oWin
+
+   RETURN oWin
 
 
-
-
-
-*------------------------------------------------------------------------------*
 CLASS TFormMDIChild FROM TFormInternal
-*------------------------------------------------------------------------------*
+
    DATA Type           INIT "L" READONLY
 
    METHOD Define
    METHOD DefWindowProc(nMsg,wParam,lParam) BLOCK { |Self,nMsg,wParam,lParam| DefMDIChildProc( ::hWnd, nMsg, wParam, lParam ) }
    METHOD IsActive                          BLOCK { |Self| ::Parent:ActiveChild:hWnd == ::hWnd }
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
                nosysmenu, nocaption, initprocedure, ReleaseProcedure, ;
                MouseDragProcedure, SizeProcedure, ClickProcedure, ;
@@ -2421,8 +2378,8 @@ METHOD Define( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
                restoreprocedure, RClickProcedure, MClickProcedure, ;
                DblClickProcedure, RDblClickProcedure, MDblClickProcedure, ;
                minwidth, maxwidth, minheight, maxheight, MoveProcedure, fontcolor ) CLASS TFormMDIChild
-*------------------------------------------------------------------------------*
-Local nStyle := 0, nStyleEx := 0
+
+   Local nStyle := 0, nStyleEx := 0
 
    nStyle += WS_GROUP
    ::Focused := ( HB_IsLogical( Focused ) .AND. Focused )
@@ -2449,13 +2406,10 @@ Local nStyle := 0, nStyleEx := 0
               RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, minheight, maxheight, MoveProcedure, fontcolor )
 
    ::ProcessInitProcedure()
-Return Self
+
+   Return Self
 
 
-
-
-
-*------------------------------------------------------------------------------*
 FUNCTION DefineWindow( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
                        nosysmenu, nocaption, initprocedure, ReleaseProcedure, ;
                        MouseDragProcedure, SizeProcedure, ClickProcedure, ;
@@ -2472,12 +2426,12 @@ FUNCTION DefineWindow( FormName, Caption, x, y, w, h, nominimize, nomaximize, no
                        RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, ;
                        minheight, maxheight, MoveProcedure, cBackImage, lStretchBack, ;
                        fontcolor )
-*------------------------------------------------------------------------------*
-//Local nStyle := 0, nStyleEx := 0
-Local Self
-Local aError := {}
 
-///////////////////// Check for non-"implemented" parameters at Tform's subclasses....
+   //Local nStyle := 0, nStyleEx := 0
+   Local Self
+   Local aError := {}
+
+   ///////////////////// Check for non-"implemented" parameters at Tform's subclasses....
 
    If !HB_IsLogical( main )
       main := .F.
@@ -2620,77 +2574,74 @@ Local aError := {}
    ::lStretchBack := lStretchBack
    ::BackImage := cBackImage
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 Function _EndWindow()
-*------------------------------------------------------------------------------*
+
    If Len( _OOHG_ActiveForm ) > 0
       ATAIL( _OOHG_ActiveForm ):EndWindow()
    EndIf
-Return Nil
 
-*------------------------------------------------------------------------------*
+   Return Nil
+
 Function _OOHG_FormObjects()
-*------------------------------------------------------------------------------*
-Return aClone( _OOHG_aFormObjects )
 
-// Initializes C variables
-*------------------------------------------------------------------------------*
+   Return aClone( _OOHG_aFormObjects )
+
+   // Initializes C variables
 Procedure _OOHG_Init_C_Vars()
-*------------------------------------------------------------------------------*
+
    TForm()
    _OOHG_Init_C_Vars_C_Side( _OOHG_aFormhWnd, _OOHG_aFormObjects )
-Return
 
-*------------------------------------------------------------------------------*
+   Return
+
 Procedure _KillAllKeys()
-*------------------------------------------------------------------------------*
-Local I, hWnd
+
+   Local I, hWnd
+
    FOR I := 1 TO LEN( _OOHG_aFormhWnd )
       hWnd := _OOHG_aFormObjects[ I ]:hWnd
       AEVAL( _OOHG_aFormObjects[ I ]:aHotKeys, { |a| ReleaseHotKey( hWnd, a[ HOTKEY_ID ] ) } )
       AEVAL( _OOHG_aFormObjects[ I ]:aAcceleratorKeys, { |a| ReleaseHotKey( hWnd, a[ HOTKEY_ID ] ) } )
    NEXT
-Return
 
-*------------------------------------------------------------------------------*
+   Return
+
 Function GetFormObject( FormName )
-*------------------------------------------------------------------------------*
-Local mVar
-   mVar := '_' + FormName
-Return IF( Type( mVar ) == "O", &mVar, TForm() )
 
-*------------------------------------------------------------------------------*
+   Local mVar
+
+   mVar := '_' + FormName
+
+   Return IF( Type( mVar ) == "O", &mVar, TForm() )
+
 Function GetExistingFormObject( FormName )
-*------------------------------------------------------------------------------*
-Local mVar
+
+   Local mVar
+
    mVar := '_' + FormName
    If ! Type( mVar ) == "O"
       MsgOOHGError( "Window " + FormName + " not defined. Program terminated." )
    EndIf
-Return &mVar
 
-*------------------------------------------------------------------------------*
+   Return &mVar
+
 Function _IsWindowActive( FormName )
-*------------------------------------------------------------------------------*
-Return GetFormObject( FormName ):Active
 
-*------------------------------------------------------------------------------*
+   Return GetFormObject( FormName ):Active
+
 Function _IsWindowDefined( FormName )
-*------------------------------------------------------------------------------*
-Local mVar
+
+   Local mVar
+
    mVar := '_' + FormName
-Return ( Type( mVar ) == "O" )
 
+   Return ( Type( mVar ) == "O" )
 
-
-
-
-*------------------------------------------------------------------------------*
 Function _ActivateWindow( aForm, lNoWait )
-*------------------------------------------------------------------------------*
-Local z, aForm2, oWndActive, oWnd, lModal
+
+   Local z, aForm2, oWndActive, oWnd, lModal
 
    aForm2 := ACLONE( aForm )
 
@@ -2734,14 +2685,13 @@ Local z, aForm2, oWndActive, oWnd, lModal
       GetFormObject( aForm2[ 1 ] ):MessageLoop()
    Endif
 
-Return Nil
+   Return Nil
 
-*------------------------------------------------------------------------------*
 Function _ActivateAllWindows()
-*------------------------------------------------------------------------------*
-Local i
-Local aForm := {}, oWnd
-Local MainName := ''
+
+   Local i
+   Local aForm := {}, oWnd
+   Local MainName := ''
 
    // Not mandatory MAIN
    // If _OOHG_Main == nil
@@ -2754,7 +2704,7 @@ Local MainName := ''
       MsgOOHGError( "ACTIVATE WINDOW ALL: This command should be used at application startup only. Program terminated." )
    EndIf
 
-// WHY???   * Force NoShow And NoAutoRelease Styles For Non Main Windows
+   // WHY???   * Force NoShow And NoAutoRelease Styles For Non Main Windows
    * ( Force AutoRelease And Visible For Main )
 
    For i := 1 To LEN( _OOHG_aFormObjects )
@@ -2764,8 +2714,8 @@ Local MainName := ''
          oWnd:AutoRelease := .T.
          MainName := oWnd:Name
       ElseIf ! oWnd:lInternal
-//         oWnd:lVisible := .F.
-//         oWnd:AutoRelease := .F.
+         // oWnd:lVisible := .F.
+         // oWnd:AutoRelease := .F.
          aadd( aForm , oWnd:Name )
       EndIf
    Next i
@@ -2782,20 +2732,19 @@ Local MainName := ''
       _ActivateWindow( aForm )
    EndIf
 
-Return Nil
+   Return Nil
 
-*------------------------------------------------------------------------------*
 Function ReleaseAllWindows()
-*------------------------------------------------------------------------------*
+
    _ReleaseWindowList( _OOHG_aFormObjects )
    dbcloseall()
    ExitProcess( 0 )
-Return Nil
 
-*------------------------------------------------------------------------------*
+   Return Nil
+
 Function _ReleaseWindowList( aWindows )
-*------------------------------------------------------------------------------*
-Local i, oWnd
+
+   Local i, oWnd
 
    For i = 1 to len( aWindows )
       oWnd := aWindows[ i ]
@@ -2823,12 +2772,12 @@ Local i, oWnd
 
    Next i
 
-Return Nil
+   Return Nil
 
-*------------------------------------------------------------------------------*
 Function SearchParentWindow( lInternal )
-*------------------------------------------------------------------------------*
-LOCAL uParent, nPos
+
+   LOCAL uParent, nPos
+
    uParent := nil
 
    If lInternal
@@ -2876,81 +2825,72 @@ LOCAL uParent, nPos
       EndIf
 
    EndIf
-Return uParent
+
+   Return uParent
 
 #ifndef __XHARBOUR__
 STATIC FUNCTION RASCAN( aSource, bCode )
-LOCAL nPos
+
+   LOCAL nPos
+
    nPos := LEN( aSource )
    DO WHILE nPos > 0 .AND. ! EVAL( bCode, aSource[ nPos ], nPos )
       nPos--
    ENDDO
-RETURN nPos
+
+   RETURN nPos
 #endif
 
 
 
-
-
-*------------------------------------------------------------------------------*
 Function GetWindowType( FormName )
-*------------------------------------------------------------------------------*
-Return GetFormObject( FormName ):Type
 
-*------------------------------------------------------------------------------*
+   Return GetFormObject( FormName ):Type
+
 Function GetFormName( FormName )
-*------------------------------------------------------------------------------*
-Return GetFormObject( FormName ):Name
 
-*------------------------------------------------------------------------------*
+   Return GetFormObject( FormName ):Name
+
 Function GetFormToolTipHandle( FormName )
-*------------------------------------------------------------------------------*
-Return GetFormObject( FormName ):oToolTip:hWnd
 
-*------------------------------------------------------------------------------*
+   Return GetFormObject( FormName ):oToolTip:hWnd
+
 Function GetFormHandle( FormName )
-*------------------------------------------------------------------------------*
-Return GetFormObject( FormName ):hWnd
 
-*------------------------------------------------------------------------------*
+   Return GetFormObject( FormName ):hWnd
+
 Function _ReleaseWindow( FormName )
-*------------------------------------------------------------------------------*
-Return GetFormObject( FormName ):Release()
 
-*------------------------------------------------------------------------------*
+   Return GetFormObject( FormName ):Release()
+
 Function _ShowWindow( FormName )
-*------------------------------------------------------------------------------*
-Return GetFormObject( FormName ):Show()
 
-*------------------------------------------------------------------------------*
+   Return GetFormObject( FormName ):Show()
+
 Function _HideWindow( FormName )
-*------------------------------------------------------------------------------*
-Return GetFormObject( FormName ):Hide()
 
-*------------------------------------------------------------------------------*
+   Return GetFormObject( FormName ):Hide()
+
 Function _CenterWindow ( FormName )
-*------------------------------------------------------------------------------*
-Return GetFormObject( FormName ):Center()
 
-*------------------------------------------------------------------------------*
+   Return GetFormObject( FormName ):Center()
+
 Function _RestoreWindow ( FormName )
-*------------------------------------------------------------------------------*
-Return GetFormObject( FormName ):Restore()
 
-*------------------------------------------------------------------------------*
+   Return GetFormObject( FormName ):Restore()
+
 Function _MaximizeWindow ( FormName )
-*------------------------------------------------------------------------------*
-Return GetFormObject( FormName ):Maximize()
 
-*------------------------------------------------------------------------------*
+   Return GetFormObject( FormName ):Maximize()
+
 Function _MinimizeWindow ( FormName )
-*------------------------------------------------------------------------------*
-Return GetFormObject( FormName ):Minimize()
 
-*------------------------------------------------------------------------------*
+   Return GetFormObject( FormName ):Minimize()
+
 Function _SetWindowSizePos( FormName , row , col , width , height )
-*------------------------------------------------------------------------------*
-Return GetFormObject( FormName ):SizePos( row , col , width , height )
+
+   Return GetFormObject( FormName ):SizePos( row , col , width , height )
+
 
 EXTERN GetFormObjectByHandle
 
@@ -3344,43 +3284,39 @@ HB_FUNC( GETSYSTEMMENU )
    HMENUret( GetSystemMenu( HWNDparam( 1 ), FALSE ) );
 }
 
-
-
-
 #pragma ENDDUMP
 
 
-
-
-
 Function SetInteractiveClose( nValue )
-Local nRet := _OOHG_InteractiveClose
+
+   Local nRet := _OOHG_InteractiveClose
+
    If HB_IsNumeric( nValue ) .AND. nValue >= 0 .AND. nValue <= 3
       _OOHG_InteractiveClose := INT( nValue )
    EndIf
-Return nRet
 
+   Return nRet
 
-//------------------- inspection
 function inspector( oWind )
-local oWnd, oGrd, oCombo,n
-local aControls,aControlsNames,aData,s,ooobj_data
 
-aControls := owind:aControls
-aControlsNames:=owind:aControlsNames
+   local oWnd, oGrd, oCombo,n
+   local aControls,aControlsNames,aData,s,ooobj_data
 
-DEFINE WINDOW __OOHG_OBJ_INSPECTOR OBJ oWnd ;
-   AT 0,0 ;
-   WIDTH 400 ;
-   HEIGHT 300 ;
-   TITLE 'Object Inspector' ;
-   MODAL NOSIZE nomaximize nominimize
+   aControls := owind:aControls
+   aControlsNames:=owind:aControlsNames
 
-   @ 24,0 grid __oohg_obj_Inspector_Grid obj oGrd ;
-      height 240 width 394 ;
-      headers {"DATA","Values"};
-      widths {150,180};
-      on dblclick (selecciona(aControls[oCombo:value],aControlsNames[oCombo:value],oooBj_Data[this.cellrowindex]),carga(aControls[oCombo:value],oGrd,@ooobj_data))
+   DEFINE WINDOW __OOHG_OBJ_INSPECTOR OBJ oWnd ;
+      AT 0,0 ;
+      WIDTH 400 ;
+      HEIGHT 300 ;
+      TITLE 'Object Inspector' ;
+      MODAL NOSIZE nomaximize nominimize
+
+      @ 24,0 grid __oohg_obj_Inspector_Grid obj oGrd ;
+         height 240 width 394 ;
+         headers {"DATA","Values"};
+         widths {150,180};
+         on dblclick (selecciona(aControls[oCombo:value],aControlsNames[oCombo:value],oooBj_Data[this.cellrowindex]),carga(aControls[oCombo:value],oGrd,@ooobj_data))
 
    aData := {}
    n:=''
@@ -3406,11 +3342,13 @@ DEFINE WINDOW __OOHG_OBJ_INSPECTOR OBJ oWnd ;
 
    end window
    ownd:activate()
-return nil
 
+   return nil
 
 static function carga(oooBj,oGrd,oooBj_Data)
-local aData:={},n
+
+   local aData:={},n
+
    oGrd:DeleteAllItems()
    #ifdef __XHARBOUR__
    try
@@ -3434,36 +3372,31 @@ local aData:={},n
    #endif
    oGrd:ColumnsBetterAutoFit()
    oooBj_Data:=aData // retorna en variable por referencia
-return nil
+
+   return nil
 
 static function valor(xValue)
-local tipo,ret
 
-tipo := valtype(xValue)
+   local tipo,ret
+
+   tipo := valtype(xValue)
 
    do case
-      case tipo$'CSM'
-         ret:='String "'+xValue+'"'
-      case tipo='N'
-         ret:='Numeric '+str(xValue)
-      case tipo='A'
-         ret:='Array, len '+alltrim(str(len(xValue)))
-      case tipo='L'
-         ret:='Boolean : '+if(xValue,'True','False')
-      case tipo='B'
-         Ret:='Codeblock {|| ... }'
-      case tipo='D'
-         ret:='Date '+dtoc(xValue)
-      case tipo='t'
-         ret:='DateTime '+ttoc(xValue)
-      case tipo='O'
-         ret:='Object, class '+xValue:Classname()
-      otherwise
-         Ret:='Unknow type ...'
+   case tipo $'CSM' ; ret := 'String "' + xValue + '"'
+   case tipo = 'N'  ; ret := 'Numeric ' + str( xValue )
+   case tipo = 'A'  ; ret := 'Array, len ' + alltrim( str( len( xValue ) ) )
+   case tipo = 'L'  ; ret := 'Boolean : ' + iif( xValue, 'True', 'False' )
+   case tipo = 'B'  ; Ret := 'Codeblock {|| ... }'
+   case tipo = 'D'  ; ret := 'Date ' + dtoc( xValue )
+   case tipo = 't'  ; ret := 'DateTime ' + ttoc( xValue )
+   case tipo = 'O'  ; ret := 'Object, class ' + xValue:Classname()
+   otherwise        ; Ret := 'Unknow type ...'
    end case
-return ret
+
+   return ret
 
 static function selecciona(ooBj,name,Values)
+
    local oWnd, tipo ,lOk:=.f., oget
 
    tipo=valtype(values[2])
@@ -3496,4 +3429,5 @@ static function selecciona(ooBj,name,Values)
       msginfo('This value is not editable')
    end
    msginfo(name+' '+Values[1]+' '+valor(Values[2]))
-return nil
+
+   return nil

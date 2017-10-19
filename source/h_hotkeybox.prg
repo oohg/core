@@ -65,6 +65,7 @@
 #include "i_windefs.ch"
 
 CLASS THotKeyBox FROM TLabel
+
    DATA Type            INIT "HOTKEYBOX" READONLY
    DATA nWidth          INIT 120
    DATA nHeight         INIT 40
@@ -75,17 +76,17 @@ CLASS THotKeyBox FROM TLabel
    METHOD Value       SETGET
 
    /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( ControlName, ParentForm, x, y, w, h, uValue, ;
                FontName, FontSize, ToolTip, ;
                uLostFocus, uGotFocus, uChange, uEnter, ;
                HelpId, bold, italic, underline, strikeout, ;
                BackColor, FontColor, invisible, notabstop, lRtl, ;
                lDisabled, lNoAlt ) CLASS THotKeyBox
-*------------------------------------------------------------------------------*
-Local ControlHandle, nStyle := 0, nStyleEx := 0
+
+   Local ControlHandle, nStyle := 0, nStyleEx := 0
 
    ASSIGN ::nCol      VALUE x TYPE "N"
    ASSIGN ::nRow      VALUE y TYPE "N"
@@ -111,14 +112,15 @@ Local ControlHandle, nStyle := 0, nStyleEx := 0
    ASSIGN ::OnChange    VALUE uChange    TYPE "B"
    ASSIGN ::OnEnter     value uEnter     TYPE "B"
 
-return Self
+   return Self
 
-*------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS THotKeyBox
-*------------------------------------------------------------------------------*
-Return HotKeyBoxValue( ::hWnd, uValue, ::lForceAlt )
+
+   Return HotKeyBoxValue( ::hWnd, uValue, ::lForceAlt )
+
 
 #pragma BEGINDUMP
+
 #include <hbapi.h>
 #include <windows.h>
 #include <commctrl.h>

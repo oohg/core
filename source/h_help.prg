@@ -65,10 +65,9 @@
 
 STATIC _OOHG_ActiveHelpFile := ""
 
-*-------------------------------------------------------------
 Function SetHelpFile( cFile )
-*-------------------------------------------------------------
-LOCAL hFile
+
+   LOCAL hFile
 
    _OOHG_ActiveHelpFile := ""
 
@@ -88,12 +87,11 @@ LOCAL hFile
 
    FClose( hFile )
 
-Return .T.
+   Return .T.
 
-*-------------------------------------
 Function HelpTopic( nTopic , nMet )
-*-------------------------------------
-Local ret:=0
+
+   Local ret:=0
 
    If ! empty( _OOHG_ActiveHelpFile )
 
@@ -110,16 +108,18 @@ Local ret:=0
          ret := WinHelp( _OOHG_Main:hWnd, _OOHG_ActiveHelpFile, 1, nMet, nTopic )
       endif
    endif
-Return ret
 
-*-------------------------------------------------------------
+   Return ret
+
 Function GetActiveHelpFile()
-*-------------------------------------------------------------
-Return _OOHG_ActiveHelpFile
+
+   Return _OOHG_ActiveHelpFile
+
 
 EXTERN WINHELP, WINHLP
 
 #pragma BEGINDUMP
+
 #include <windows.h>
 #include "hbapi.h"
 #include "hbapiitm.h"
@@ -160,4 +160,5 @@ HB_FUNC( WINHLP )
 {
    HB_FUNCNAME( WINHELP )();
 }
+
 #pragma ENDDUMP

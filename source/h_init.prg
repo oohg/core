@@ -81,12 +81,12 @@ INIT PROCEDURE _OOHG_INIT()
    // TODO: Move to TApplication or make thread safe ?
    InitMessages()
 
-Return
+   Return
 
-*------------------------------------------------------------------------------*
+
 Procedure InitMessages( cLang )
-*------------------------------------------------------------------------------*
-Local aLang, aLangDefault, nAt
+
+   Local aLang, aLangDefault, nAt
 
    IF ! VALTYPE( cLang ) $ "CM" .OR. EMPTY( cLang )
       // [x]Harbour's default language
@@ -117,26 +117,31 @@ Local aLang, aLangDefault, nAt
    _OOHG_Messages[ 11 ] := InitMessagesMerge( aLang, aLangDefault, 11 )
    _OOHG_Messages[ 12 ] := InitMessagesMerge( aLang, aLangDefault, 12 )
 
-Return
+   Return
 
 FUNCTION _OOHG_Messages( nTable, nItem )
-RETURN IF( ( VALTYPE( nTable ) == "N" .AND. nTable >= 1 .AND. nTable <= LEN( _OOHG_Messages ) .AND. ;
+
+   RETURN IF( ( VALTYPE( nTable ) == "N" .AND. nTable >= 1 .AND. nTable <= LEN( _OOHG_Messages ) .AND. ;
              VALTYPE( nItem ) == "N" .AND. nItem >= 1 .AND. nItem <= LEN( _OOHG_Messages[ nTable] ) ), ;
              _OOHG_Messages[ nTable ][ nItem ], "" )
 
 STATIC FUNCTION InitMessagesMerge( aLang, aLangDefault, nTable )
-Local aReturn
+
+   Local aReturn
+
    aReturn := ACLONE( aLangDefault[ nTable ] )
    IF LEN( aLang ) >= nTable .AND. VALTYPE( aLang[ nTable ] ) == "A"
       AEVAL( aReturn, { |c,i| IF( LEN( aLang[ nTable ] ) >= i .AND. VALTYPE( aLang[ nTable ][ i ] ) $ "CM", aReturn[ i ] := aLang[ nTable ][ i ], c ) } )
    ENDIF
-RETURN aReturn
+
+   RETURN aReturn
 
 FUNCTION ooHG_Messages_EN // English (default)
-Local acMisc
-Local acBrowseButton, acBrowseError, acBrowseMessages
-Local acABMUser, acABMLabel, acABMButton, acABMError
-Local acButton, acLabel, acUser, acPrint
+
+   Local acMisc
+   Local acBrowseButton, acBrowseError, acBrowseMessages
+   Local acABMUser, acABMLabel, acABMButton, acABMError
+   Local acButton, acLabel, acUser, acPrint
 
    // MISC MESSAGES
    acMisc           := { 'Are you sure ?', ;
@@ -358,16 +363,16 @@ Local acButton, acLabel, acUser, acPrint
                          "Calc not found !!!", ;
                          "Error saving file: " }
 
-RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
+   RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
 
-/////////////////////////////////////////////////////////////
 // CROATIAN
-////////////////////////////////////////////////////////////
+
 FUNCTION ooHG_Messages_HR852 // Croatian
-Local acMisc
-Local acBrowseButton, acBrowseError, acBrowseMessages
-Local acABMUser, acABMLabel, acABMButton, acABMError
-Local acButton, acLabel, acUser, acPrint
+
+   Local acMisc
+   Local acBrowseButton, acBrowseError, acBrowseMessages
+   Local acABMUser, acABMLabel, acABMButton, acABMError
+   Local acButton, acLabel, acUser, acPrint
 
    // MISC MESSAGES
    acMisc           := { 'Are you sure ?', ;
@@ -402,16 +407,16 @@ Local acButton, acLabel, acUser, acPrint
    // PRINT MESSAGES
    acPrint          := {}
 
-RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
+   RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
 
-/////////////////////////////////////////////////////////////
 // BASQUE
-////////////////////////////////////////////////////////////
+
 FUNCTION ooHG_Messages_EU // Basque
-Local acMisc
-Local acBrowseButton, acBrowseError, acBrowseMessages
-Local acABMUser, acABMLabel, acABMButton, acABMError
-Local acButton, acLabel, acUser, acPrint
+
+   Local acMisc
+   Local acBrowseButton, acBrowseError, acBrowseMessages
+   Local acABMUser, acABMLabel, acABMButton, acABMError
+   Local acButton, acLabel, acUser, acPrint
 
    // MISC MESSAGES
    acMisc           := {}
@@ -516,16 +521,16 @@ Local acButton, acLabel, acUser, acPrint
    // PRINT MESSAGES
    acPrint          := {}
 
-RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
+   RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
 
-/////////////////////////////////////////////////////////////
 // FRENCH
-////////////////////////////////////////////////////////////
+
 FUNCTION ooHG_Messages_FR // French
-Local acMisc
-Local acBrowseButton, acBrowseError, acBrowseMessages
-Local acABMUser, acABMLabel, acABMButton, acABMError
-Local acButton, acLabel, acUser, acPrint
+
+   Local acMisc
+   Local acBrowseButton, acBrowseError, acBrowseMessages
+   Local acABMUser, acABMLabel, acABMButton, acABMError
+   Local acButton, acLabel, acUser, acPrint
 
    // MISC MESSAGES
    acMisc           := { 'Etes-vous sûre ?', ;
@@ -703,19 +708,20 @@ Local acButton, acLabel, acUser, acPrint
    // PRINT MESSAGES
    acPrint          := {}
 
-RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
+   RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
 
-/////////////////////////////////////////////////////////////
 // GERMAN
-////////////////////////////////////////////////////////////
+
 FUNCTION ooHG_Messages_DE // German
-RETURN ooHG_Messages_DEWIN()
+
+   RETURN ooHG_Messages_DEWIN()
 
 FUNCTION ooHG_Messages_DEWIN // German
-Local acMisc
-Local acBrowseButton, acBrowseError, acBrowseMessages
-Local acABMUser, acABMLabel, acABMButton, acABMError
-Local acButton, acLabel, acUser, acPrint
+
+   Local acMisc
+   Local acBrowseButton, acBrowseError, acBrowseMessages
+   Local acABMUser, acABMLabel, acABMButton, acABMError
+   Local acButton, acLabel, acUser, acPrint
 
    // MISC MESSAGES
    acMisc           := { 'Sind Sie sicher ?', ;
@@ -880,16 +886,16 @@ Local acButton, acLabel, acUser, acPrint
    // PRINT MESSAGES
    acPrint          := {}
 
-RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
+   RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
 
-/////////////////////////////////////////////////////////////
 // ITALIAN
-////////////////////////////////////////////////////////////
+
 FUNCTION ooHG_Messages_IT // Italian
-Local acMisc
-Local acBrowseButton, acBrowseError, acBrowseMessages
-Local acABMUser, acABMLabel, acABMButton, acABMError
-Local acButton, acLabel, acUser, acPrint
+
+   Local acMisc
+   Local acBrowseButton, acBrowseError, acBrowseMessages
+   Local acABMUser, acABMLabel, acABMButton, acABMError
+   Local acButton, acLabel, acUser, acPrint
 
    // MISC MESSAGES
    acMisc           := { 'Sei sicuro ?', ;
@@ -1067,25 +1073,28 @@ Local acButton, acLabel, acUser, acPrint
    // PRINT MESSAGES
    acPrint          := {}
 
-RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
+   RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
 
-/////////////////////////////////////////////////////////////
 // POLISH
-////////////////////////////////////////////////////////////
+
 FUNCTION ooHG_Messages_PL852 // Polish
-RETURN ooHG_Messages_PLWIN()
+
+   RETURN ooHG_Messages_PLWIN()
 
 FUNCTION ooHG_Messages_PLISO // Polish
-RETURN ooHG_Messages_PLWIN()
+
+   RETURN ooHG_Messages_PLWIN()
 
 FUNCTION ooHG_Messages_PLMAZ // Polish
-RETURN ooHG_Messages_PLWIN()
+
+   RETURN ooHG_Messages_PLWIN()
 
 FUNCTION ooHG_Messages_PLWIN // Polish
-Local acMisc
-Local acBrowseButton, acBrowseError, acBrowseMessages
-Local acABMUser, acABMLabel, acABMButton, acABMError
-Local acButton, acLabel, acUser, acPrint
+
+   Local acMisc
+   Local acBrowseButton, acBrowseError, acBrowseMessages
+   Local acABMUser, acABMLabel, acABMButton, acABMError
+   Local acButton, acLabel, acUser, acPrint
 
    // MISC MESSAGES
    acMisc           := { 'Czy jesteœ pewny ?', ;
@@ -1263,16 +1272,16 @@ Local acButton, acLabel, acUser, acPrint
    // PRINT MESSAGES
    acPrint          := {}
 
-RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
+   RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
 
-/////////////////////////////////////////////////////////////
 // PORTUGUESE
-////////////////////////////////////////////////////////////
+
 FUNCTION ooHG_Messages_PT // Portuguese
-Local acMisc
-Local acBrowseButton, acBrowseError, acBrowseMessages
-Local acABMUser, acABMLabel, acABMButton, acABMError
-Local acButton, acLabel, acUser, acPrint
+
+   Local acMisc
+   Local acBrowseButton, acBrowseError, acBrowseMessages
+   Local acABMUser, acABMLabel, acABMButton, acABMError
+   Local acButton, acLabel, acUser, acPrint
 
    // MISC MESSAGES
    acMisc           := { 'Você tem Certeza ?', ;
@@ -1450,22 +1459,24 @@ Local acButton, acLabel, acUser, acPrint
    // PRINT MESSAGES
    acPrint          := {}
 
-RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
+   RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
 
-/////////////////////////////////////////////////////////////
 // RUSSIAN
-////////////////////////////////////////////////////////////
+
 FUNCTION ooHG_Messages_RU866 // Russian
-RETURN ooHG_Messages_RUWIN()
+
+   RETURN ooHG_Messages_RUWIN()
 
 FUNCTION ooHG_Messages_RUKOI8 // Russian
-RETURN ooHG_Messages_RUWIN()
+
+   RETURN ooHG_Messages_RUWIN()
 
 FUNCTION ooHG_Messages_RUWIN // Russian
-Local acMisc
-Local acBrowseButton, acBrowseError, acBrowseMessages
-Local acABMUser, acABMLabel, acABMButton, acABMError
-Local acButton, acLabel, acUser, acPrint
+
+   Local acMisc
+   Local acBrowseButton, acBrowseError, acBrowseMessages
+   Local acABMUser, acABMLabel, acABMButton, acABMError
+   Local acButton, acLabel, acUser, acPrint
 
    // MISC MESSAGES
    acMisc           := { 'Âû óâåðåíû ?', ;
@@ -1562,19 +1573,20 @@ Local acButton, acLabel, acUser, acPrint
    // PRINT MESSAGES
    acPrint          := {}
 
-RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
+   RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
 
-/////////////////////////////////////////////////////////////
 // SPANISH
-////////////////////////////////////////////////////////////
+
 FUNCTION ooHG_Messages_ES // Spanish
-RETURN ooHG_Messages_ESWIN()
+
+   RETURN ooHG_Messages_ESWIN()
 
 FUNCTION ooHG_Messages_ESWIN // Spanish
-Local acMisc
-Local acBrowseButton, acBrowseError, acBrowseMessages
-Local acABMUser, acABMLabel, acABMButton, acABMError
-Local acButton, acLabel, acUser, acPrint
+
+   Local acMisc
+   Local acBrowseButton, acBrowseError, acBrowseMessages
+   Local acABMUser, acABMLabel, acABMButton, acABMError
+   Local acButton, acLabel, acUser, acPrint
 
    // MISC MESSAGES
    acMisc           := { '¿ Está seguro ?', ;
@@ -1796,16 +1808,16 @@ Local acButton, acLabel, acUser, acPrint
                          "No se detectó OpenCalc !!!", ;
                          "No se pudo guardar el archivo: " }
 
-RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
+   RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
 
-/////////////////////////////////////////////////////////////
 // FINNISH
-////////////////////////////////////////////////////////////
+
 FUNCTION ooHG_Messages_FI // Finnish
-Local acMisc
-Local acBrowseButton, acBrowseError, acBrowseMessages
-Local acABMUser, acABMLabel, acABMButton, acABMError
-Local acButton, acLabel, acUser, acPrint
+
+   Local acMisc
+   Local acBrowseButton, acBrowseError, acBrowseMessages
+   Local acABMUser, acABMLabel, acABMButton, acABMError
+   Local acButton, acLabel, acUser, acPrint
 
    // MISC MESSAGES
    acMisc           := { 'Oletko varma ?', ;
@@ -1983,16 +1995,16 @@ Local acButton, acLabel, acUser, acPrint
    // PRINT MESSAGES
    acPrint          := {}
 
-RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
+   RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
 
-/////////////////////////////////////////////////////////////
 // DUTCH
-////////////////////////////////////////////////////////////
+
 FUNCTION ooHG_Messages_NL // Dutch
-Local acMisc
-Local acBrowseButton, acBrowseError, acBrowseMessages
-Local acABMUser, acABMLabel, acABMButton, acABMError
-Local acButton, acLabel, acUser, acPrint
+
+   Local acMisc
+   Local acBrowseButton, acBrowseError, acBrowseMessages
+   Local acABMUser, acABMLabel, acABMButton, acABMError
+   Local acButton, acLabel, acUser, acPrint
 
    // MISC MESSAGES
    acMisc           := { 'Weet u het zeker?', ;
@@ -2170,25 +2182,28 @@ Local acButton, acLabel, acUser, acPrint
    // PRINT MESSAGES
    acPrint          := {}
 
-RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
+   RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
 
-/////////////////////////////////////////////////////////////
 // SLOVENIAN
-////////////////////////////////////////////////////////////
+
 FUNCTION ooHG_Messages_SLISO // Slovenian
-RETURN ooHG_Messages_SLWIN()
+
+   RETURN ooHG_Messages_SLWIN()
 
 FUNCTION ooHG_Messages_SL852 // Slovenian
-RETURN ooHG_Messages_SLWIN()
+
+   RETURN ooHG_Messages_SLWIN()
 
 FUNCTION ooHG_Messages_SL437 // Slovenian
-RETURN ooHG_Messages_SLWIN()
+
+   RETURN ooHG_Messages_SLWIN()
 
 FUNCTION ooHG_Messages_SLWIN // Slovenian
-Local acMisc
-Local acBrowseButton, acBrowseError, acBrowseMessages
-Local acABMUser, acABMLabel, acABMButton, acABMError
-Local acButton, acLabel, acUser, acPrint
+
+   Local acMisc
+   Local acBrowseButton, acBrowseError, acBrowseMessages
+   Local acABMUser, acABMLabel, acABMButton, acABMError
+   Local acButton, acLabel, acUser, acPrint
 
    // MISC MESSAGES
    acMisc           := { 'Ste preprièani ?', ;
@@ -2366,17 +2381,16 @@ Local acButton, acLabel, acUser, acPrint
    // PRINT MESSAGES
    acPrint          := {}
 
-RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
+   RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
 
-
-/////////////////////////////////////////////////////////////
 // TURKISH
-////////////////////////////////////////////////////////////
+
 FUNCTION ooHG_Messages_TR
-Local acMisc
-Local acBrowseButton, acBrowseError, acBrowseMessages
-Local acABMUser, acABMLabel, acABMButton, acABMError
-Local acButton, acLabel, acUser, acPrint
+
+   Local acMisc
+   Local acBrowseButton, acBrowseError, acBrowseMessages
+   Local acABMUser, acABMLabel, acABMButton, acABMError
+   Local acButton, acLabel, acUser, acPrint
 
    // MISC MESSAGES
    acMisc           := { 'Eminmisiniz ?', ;
@@ -2598,4 +2612,4 @@ Local acButton, acLabel, acUser, acPrint
                          "Hesap bulunamadý !!!", ;
                          "Dosya kaydýnda hata: " }
 
-RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
+   RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }

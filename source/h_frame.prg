@@ -64,6 +64,7 @@
 #include "hbclass.ch"
 
 CLASS TFrame FROM TControl
+
    DATA Type      INIT "FRAME" READONLY
    DATA nWidth    INIT 140
    DATA nHeight   INIT 140
@@ -74,15 +75,15 @@ CLASS TFrame FROM TControl
    METHOD Events_Color
 
    /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( ControlName, ParentForm, y, x, w, h, caption, fontname, ;
                fontsize, opaque, bold, italic, underline, strikeout, ;
                backcolor, fontcolor, transparent, lRtl, invisible, lDisabled ) CLASS TFrame
-*------------------------------------------------------------------------------*
-Local ControlHandle, nStyle
-Local oTab
+
+   Local ControlHandle, nStyle
+   Local oTab
 
    ASSIGN ::nCol      VALUE x           TYPE "N"
    ASSIGN ::nRow      VALUE y           TYPE "N"
@@ -122,12 +123,11 @@ Local oTab
    ::Transparent := transparent
    ::Caption := Caption
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD Caption( cCaption ) CLASS TFrame
-*------------------------------------------------------------------------------*
-Local cRet
+
+   Local cRet
 
    // Under XP, when caption is changed, part of the old text remains visible.
    cRet := ::Super:Caption( cCaption )
@@ -135,12 +135,12 @@ Local cRet
       ::Visible := .F.
       ::Visible := .T.
    EndIf
-Return cRet
 
-*------------------------------------------------------------------------------*
+   Return cRet
+
 METHOD Events_Color( wParam, nDefColor ) CLASS TFrame
-*------------------------------------------------------------------------------*
-Return Events_Color_InTab( Self, wParam, nDefColor )    // see h_controlmisc.prg
+
+   Return Events_Color_InTab( Self, wParam, nDefColor )    // see h_controlmisc.prg
 
 
 #pragma BEGINDUMP
