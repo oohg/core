@@ -2,6 +2,8 @@
 # $Id: miniprint.hbp,v 1.7 2016-12-10 18:52:26 fyurisich Exp $
 #
 
+-stop{!allwin}
+
 # build a static library
 -hblib
 

@@ -2,6 +2,8 @@
 # $Id: bostaurus.hbp,v 1.2 2016-12-10 18:52:26 fyurisich Exp $
 #
 
+-stop{!allwin}
+
 # build a static library
 -hblib
 
