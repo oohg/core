@@ -608,12 +608,11 @@ METHOD UpDateColors() CLASS TOBrowse
 
    ::DbGoTo( _RecNo )
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD PageDown( lAppend ) CLASS TOBrowse
-*------------------------------------------------------------------------------*
-Local _RecNo, s, cWorkArea
+
+   Local _RecNo, s, cWorkArea
 
    s := ::CurrentRow
 

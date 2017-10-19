@@ -66,6 +66,7 @@
 #include "hbclass.ch"
 
 CLASS TEdit FROM TText
+
    DATA Type             INIT "EDIT" READONLY
    DATA nOnFocusPos      INIT -4
    DATA OnHScroll        INIT Nil
@@ -79,17 +80,17 @@ CLASS TEdit FROM TText
    METHOD Events_Enter   BLOCK { || Nil }
 
    /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
                fontsize, tooltip, maxlength, gotfocus, change, lostfocus, ;
                readonly, break, HelpId, invisible, notabstop, bold, italic, ;
                underline, strikeout, field, backcolor, fontcolor, novscroll, ;
                nohscroll, lRtl, lNoBorder, OnFocusPos, OnHScroll, OnVScroll, ;
                lDisabled ) CLASS TEdit
-*------------------------------------------------------------------------------*
-Local nStyle := ES_MULTILINE + ES_WANTRETURN, nStyleEx := 0
+
+   Local nStyle := ES_MULTILINE + ES_WANTRETURN, nStyleEx := 0
 
    ASSIGN ::nWidth  VALUE w TYPE "N"
    ASSIGN ::nHeight VALUE h TYPE "N"
@@ -108,22 +109,23 @@ Local nStyle := ES_MULTILINE + ES_WANTRETURN, nStyleEx := 0
 
    ASSIGN ::OnHScroll VALUE OnHScroll TYPE "B"
    ASSIGN ::OnVScroll VALUE OnVScroll TYPE "B"
-Return Self
 
-*------------------------------------------------------------------------------*
+   Return Self
+
 METHOD LookForKey( nKey, nFlags ) CLASS TEdit
-*------------------------------------------------------------------------------*
-Local lDone
+
+   Local lDone
+
    lDone := ::Super:LookForKey( nKey, nFlags )
    If nKey == VK_ESCAPE .and. nFlags == 0
       lDone := .T.
    EndIf
-Return lDone
 
-*------------------------------------------------------------------------------*
+   Return lDone
+
 METHOD Events_Command( wParam ) CLASS TEdit
-*------------------------------------------------------------------------------*
-Local Hi_wParam := HiWord( wParam )
+
+   Local Hi_wParam := HiWord( wParam )
 
    If Hi_wParam == EN_HSCROLL
       ::DoEvent( ::OnHScroll, "HSCROLL" )
@@ -134,4 +136,4 @@ Local Hi_wParam := HiWord( wParam )
       Return Nil
    EndIf
 
-Return ::Super:Events_Command( wParam )
+   Return ::Super:Events_Command( wParam )

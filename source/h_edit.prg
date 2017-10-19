@@ -218,177 +218,178 @@ STATIC _aNumeroCampo   := {}                            // Numero de campo del l
  *              [bBuscar]    Bloque de código para la acción de buscar registro.
  *    Devuelve: NIL
  ****************************************************************************************/
+
 function ABM( cArea, cTitulo, aCampos, aEditables, bGuardar, bBuscar )
 
-// Declaración de variables locales.-------------------------------------------
-local nArea             // := 0                         // Area anterior.
-local nRegistro         // := 0                         // Numero de registro anterior.
-// local cMensaje          := ""                        // Mensajes al usuario.
-local nCampos              := 0                         // Numero de campos de la base.
-local nItem             // := 1                         // Indice de iteración.
-local nFila             // := 20                        // Fila de creación del control.
-local nColumna          // := 20                        // Columna de creación de control.
-local aEtiquetas        // := {}                        // Array con los controles LABEL.
-local aBrwCampos        // := {}                        // Títulos de columna del BROWSE.
-local aBrwAnchos        // := {}                        // Anchos de columna del BROWSE.
-local nBrwAnchoCampo    // := 0                         // Ancho del campo para el browse.
-local nBrwAnchoRegistro // := 0                         // Ancho del registro para el browse.
-local cMascara             := ""                        // Mascara de datos para el TEXTBOX.
-local nMascaraTotal     // := 0                         // Tamaño de la máscara de edición.
-local nMascaraDecimales // := 0                         // Tamaño de los decimales.
-Local _BackDeleted
+   // Declaración de variables locales.-------------------------------------------
+   local nArea             // := 0                         // Area anterior.
+   local nRegistro         // := 0                         // Numero de registro anterior.
+   // local cMensaje          := ""                        // Mensajes al usuario.
+   local nCampos              := 0                         // Numero de campos de la base.
+   local nItem             // := 1                         // Indice de iteración.
+   local nFila             // := 20                        // Fila de creación del control.
+   local nColumna          // := 20                        // Columna de creación de control.
+   local aEtiquetas        // := {}                        // Array con los controles LABEL.
+   local aBrwCampos        // := {}                        // Títulos de columna del BROWSE.
+   local aBrwAnchos        // := {}                        // Anchos de columna del BROWSE.
+   local nBrwAnchoCampo    // := 0                         // Ancho del campo para el browse.
+   local nBrwAnchoRegistro // := 0                         // Ancho del registro para el browse.
+   local cMascara             := ""                        // Mascara de datos para el TEXTBOX.
+   local nMascaraTotal     // := 0                         // Tamaño de la máscara de edición.
+   local nMascaraDecimales // := 0                         // Tamaño de los decimales.
+   Local _BackDeleted
 
-//IF EMPTY( DATE() )
+   //IF EMPTY( DATE() )
    /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
-//   EMPTY( HBPRN )
-//ENDIF
+   //   EMPTY( HBPRN )
+   //ENDIF
 
-////////// Gusrdar estado actual de SET DELETED y activarlo
-        _BackDeleted := set( _SET_DELETED )
-        SET DELETED ON
+   ////////// Gusrdar estado actual de SET DELETED y activarlo
+   _BackDeleted := set( _SET_DELETED )
+   SET DELETED ON
 
-// Control de parámetros.
-// Area de la base de datos.---------------------------------------------------
-if ( ! VALTYPE( cArea ) $"CM" ) .or. Empty( cArea )
-        MsgOOHGError( _OOHG_Messages( 8, 1 ), "" )
-else
-        _cArea       := cArea
-        _aEstructura := (_cArea)->( dbStruct() )
-        nCampos      := Len( _aEstructura )
-endif
+   // Control de parámetros.
+   // Area de la base de datos.---------------------------------------------------
+   if ( ! VALTYPE( cArea ) $"CM" ) .or. Empty( cArea )
+      MsgOOHGError( _OOHG_Messages( 8, 1 ), "" )
+   else
+      _cArea       := cArea
+      _aEstructura := (_cArea)->( dbStruct() )
+      nCampos      := Len( _aEstructura )
+   endif
 
-// Numero de campos.-----------------------------------------------------------
-if ( nCampos > 16 )
-        MsgOOHGError( _OOHG_Messages( 8, 2 ), "" )
-endif
+   // Numero de campos.-----------------------------------------------------------
+   if ( nCampos > 16 )
+      MsgOOHGError( _OOHG_Messages( 8, 2 ), "" )
+   endif
 
-// Titulo de la ventana.-------------------------------------------------------
-if ( ! VALTYPE( cTitulo ) $ "CM" ) .or. Empty( cTitulo )
-        _cTitulo := cArea
-else
-        _cTitulo := cTitulo
-endif
+   // Titulo de la ventana.-------------------------------------------------------
+   if ( ! VALTYPE( cTitulo ) $ "CM" ) .or. Empty( cTitulo )
+      _cTitulo := cArea
+   else
+      _cTitulo := cTitulo
+   endif
 
-// Nombre de los campos.-------------------------------------------------------
-_aCampos := Array( nCampos )
-if ( !HB_IsArray( aCampos ) ) .or. ( Len( aCampos ) != nCampos )
-        _aCampos   := Array( nCampos )
-        for nItem := 1 to nCampos
-                _aCampos[nItem] := Lower( _aEstructura[nItem,1] )
-        next
-else
-        for nItem := 1 to nCampos
-                if ! (VALTYPE( aCampos[nItem] )  $ "CM" )
-                        _aCampos[nItem] := Lower( _aEstructura[nItem,1] )
-                else
-                        _aCampos[nItem] := aCampos[nItem]
-                endif
-        next
-endif
+   // Nombre de los campos.-------------------------------------------------------
+   _aCampos := Array( nCampos )
+   if ( !HB_IsArray( aCampos ) ) .or. ( Len( aCampos ) != nCampos )
+      _aCampos   := Array( nCampos )
+      for nItem := 1 to nCampos
+         _aCampos[nItem] := Lower( _aEstructura[nItem,1] )
+      next
+   else
+      for nItem := 1 to nCampos
+         if ! (VALTYPE( aCampos[nItem] )  $ "CM" )
+            _aCampos[nItem] := Lower( _aEstructura[nItem,1] )
+         else
+            _aCampos[nItem] := aCampos[nItem]
+         endif
+      next
+   endif
 
-// Array de controles editables.-----------------------------------------------
-_aEditables := Array( nCampos )
-if ( !HB_IsArray( aEditables ) ) .or. ( Len( aEditables ) != nCampos )
-        _aEditables := Array( nCampos )
-        for nItem := 1 to nCampos
-                _aEditables[nItem] := .t.
-        next
-else
-        for nItem := 1 to nCampos
-                if !HB_IsLogical( aEditables[nItem] )
-                        _aEditables[nItem] := .t.
-                else
-                        _aEditables[nItem] := aEditables[nItem]
-                endif
-        next
-endif
+   // Array de controles editables.-----------------------------------------------
+   _aEditables := Array( nCampos )
+   if ( !HB_IsArray( aEditables ) ) .or. ( Len( aEditables ) != nCampos )
+      _aEditables := Array( nCampos )
+      for nItem := 1 to nCampos
+         _aEditables[nItem] := .t.
+      next
+   else
+      for nItem := 1 to nCampos
+         if !HB_IsLogical( aEditables[nItem] )
+            _aEditables[nItem] := .t.
+         else
+            _aEditables[nItem] := aEditables[nItem]
+         endif
+      next
+   endif
 
-// Bloque de codigo de la acción guardar.--------------------------------------
-if !HB_IsBlock( bGuardar )
-        _bGuardar := NIL
-else
-        _bGuardar := bGuardar
-endif
+   // Bloque de codigo de la acción guardar.--------------------------------------
+   if !HB_IsBlock( bGuardar )
+      _bGuardar := NIL
+   else
+      _bGuardar := bGuardar
+   endif
 
-// Bloque de código de la acción buscar.---------------------------------------
-if !HB_IsBlock( bBuscar )
-        _bBuscar := NIL
-else
-        _bBuscar := bBuscar
-endif
+   // Bloque de código de la acción buscar.---------------------------------------
+   if !HB_IsBlock( bBuscar )
+      _bBuscar := NIL
+   else
+      _bBuscar := bBuscar
+   endif
 
-// Inicialización de variables.------------------------------------------------
-aEtiquetas  := Array( nCampos, 3 )
-aBrwCampos  := Array( nCampos )
-aBrwAnchos  := Array( nCampos )
-_OOHG_aControles := Array( nCampos, 3)
+   // Inicialización de variables.------------------------------------------------
+   aEtiquetas  := Array( nCampos, 3 )
+   aBrwCampos  := Array( nCampos )
+   aBrwAnchos  := Array( nCampos )
+   _OOHG_aControles := Array( nCampos, 3)
 
-// Propiedades de las etiquetas.-----------------------------------------------
-nFila    := 20
-nColumna := 20
-for nItem := 1 to nCampos
-        aEtiquetas[nItem,1] := "lbl" + "Etiqueta" + AllTrim( Str( nItem ,4,0 ) )
-        aEtiquetas[nItem,2] := nFila
-        aEtiquetas[nItem,3] := nColumna
-        nFila += 25
-        if nFila >= 200
-                nFila    := 20
-                nColumna := 270
-        endif
-next
+   // Propiedades de las etiquetas.-----------------------------------------------
+   nFila    := 20
+   nColumna := 20
+   for nItem := 1 to nCampos
+      aEtiquetas[nItem,1] := "lbl" + "Etiqueta" + AllTrim( Str( nItem ,4,0 ) )
+      aEtiquetas[nItem,2] := nFila
+      aEtiquetas[nItem,3] := nColumna
+      nFila += 25
+      if nFila >= 200
+         nFila    := 20
+         nColumna := 270
+      endif
+   next
 
-// Propiedades del browse.-----------------------------------------------------
-for nItem := 1 to nCampos
-        aBrwCampos[nItem] := cArea + "->" + _aEstructura[nItem,1]
-        nBrwAnchoRegistro := _aEstructura[nItem,3] * 10
-        nBrwAnchoCampo    := Len( _aCampos[nItem] ) * 10
-        nBrwAnchoCampo    := iif( nBrwanchoCampo >= nBrwAnchoRegistro, nBrwanchoCampo, nBrwAnchoRegistro )
-        aBrwAnchos[nItem] := nBrwAnchoCampo
-next
+   // Propiedades del browse.-----------------------------------------------------
+   for nItem := 1 to nCampos
+      aBrwCampos[nItem] := cArea + "->" + _aEstructura[nItem,1]
+      nBrwAnchoRegistro := _aEstructura[nItem,3] * 10
+      nBrwAnchoCampo    := Len( _aCampos[nItem] ) * 10
+      nBrwAnchoCampo    := iif( nBrwanchoCampo >= nBrwAnchoRegistro, nBrwanchoCampo, nBrwAnchoRegistro )
+      aBrwAnchos[nItem] := nBrwAnchoCampo
+   next
 
-// Propiedades de los controles de edición.------------------------------------
-nFila    := 20
-nColumna := 20
-for nItem := 1 to nCampos
-        do case
-                case _aEstructura[nItem,2] == "C"        // Campo tipo caracter.
-                        _OOHG_aControles[nItem,1] := "txt" + "Control" + AllTrim( Str( nItem ,4,0) )
-                        _OOHG_aControles[nItem,2] := nFila
-                        _OOHG_aControles[nItem,3] := nColumna + 80
-                case _aEstructura[nItem,2] == "N"        // Campo tipo numerico.
-                        _OOHG_aControles[nItem,1] := "txn" + "Control" + AllTrim( Str( nItem ,4,0) )
-                        _OOHG_aControles[nItem,2] := nFila
-                        _OOHG_aControles[nItem,3] := nColumna + 80
-                case _aEstructura[nItem,2] == "D"        // Campo tipo fecha.
-                        _OOHG_aControles[nItem,1] := "dat" + "Control" + AllTrim( Str( nItem ,4,0) )
-                        _OOHG_aControles[nItem,2] := nFila
-                        _OOHG_aControles[nItem,3] := nColumna + 80
-                case _aEstructura[nItem,2] == "L"        // Campo tipo lógico.
-                        _OOHG_aControles[nItem,1] := "chk" + "Control" + AllTrim( Str( nItem ,4,0) )
-                        _OOHG_aControles[nItem,2] := nFila
-                        _OOHG_aControles[nItem,3] := nColumna + 80
-                case _aEstructura[nItem,2] == "M"        // Campo tipo memo.
-                        _OOHG_aControles[nItem,1] := "edt" + "Control" + AllTrim( Str( nItem ,4,0) )
-                        _OOHG_aControles[nItem,2] := nFila
-                        _OOHG_aControles[nItem,3] := nColumna + 80
-                        nFila += 25
-        endcase
-        nFila += 25
-        if nFila >= 200
-                nFila    := 20
-                nColumna := 270
-        endif
-next
+   // Propiedades de los controles de edición.------------------------------------
+   nFila    := 20
+   nColumna := 20
+   for nItem := 1 to nCampos
+      do case
+      case _aEstructura[nItem,2] == "C"        // Campo tipo caracter.
+         _OOHG_aControles[nItem,1] := "txt" + "Control" + AllTrim( Str( nItem ,4,0) )
+         _OOHG_aControles[nItem,2] := nFila
+         _OOHG_aControles[nItem,3] := nColumna + 80
+      case _aEstructura[nItem,2] == "N"        // Campo tipo numerico.
+         _OOHG_aControles[nItem,1] := "txn" + "Control" + AllTrim( Str( nItem ,4,0) )
+         _OOHG_aControles[nItem,2] := nFila
+         _OOHG_aControles[nItem,3] := nColumna + 80
+      case _aEstructura[nItem,2] == "D"        // Campo tipo fecha.
+         _OOHG_aControles[nItem,1] := "dat" + "Control" + AllTrim( Str( nItem ,4,0) )
+         _OOHG_aControles[nItem,2] := nFila
+         _OOHG_aControles[nItem,3] := nColumna + 80
+      case _aEstructura[nItem,2] == "L"        // Campo tipo lógico.
+         _OOHG_aControles[nItem,1] := "chk" + "Control" + AllTrim( Str( nItem ,4,0) )
+         _OOHG_aControles[nItem,2] := nFila
+         _OOHG_aControles[nItem,3] := nColumna + 80
+      case _aEstructura[nItem,2] == "M"        // Campo tipo memo.
+         _OOHG_aControles[nItem,1] := "edt" + "Control" + AllTrim( Str( nItem ,4,0) )
+         _OOHG_aControles[nItem,2] := nFila
+         _OOHG_aControles[nItem,3] := nColumna + 80
+         nFila += 25
+      endcase
+      nFila += 25
+      if nFila >= 200
+         nFila    := 20
+         nColumna := 270
+      endif
+   next
 
-// Propiedades de los botones.-------------------------------------------------
-_aBotones := { "btnCerrar", "btnNuevo", "btnEditar", ;
-              "btnBorrar", "btnBuscar", "btnIr",;
-              "btnListado","btnPrimero", "btnAnterior",;
-              "btnSiguiente", "btnUltimo", "btnGuardar",;
-              "btnCancelar" }
+   // Propiedades de los botones.-------------------------------------------------
+   _aBotones := { "btnCerrar", "btnNuevo", "btnEditar", ;
+                  "btnBorrar", "btnBuscar", "btnIr",;
+                  "btnListado","btnPrimero", "btnAnterior",;
+                  "btnSiguiente", "btnUltimo", "btnGuardar",;
+                  "btnCancelar" }
 
-// Defincinión de la ventana de edición.---------------------------------------
-define window wndABM ;
+   // Defincinión de la ventana de edición.---------------------------------------
+   define window wndABM ;
        at     0, 0 ;
        width  640 ;
        height 480 ;
@@ -399,276 +400,273 @@ define window wndABM ;
        size 8 ;
        on init ABMRefresh( ABM_MODO_VER ) ;
        backcolor ( GetFormObjectByHandle( GetActiveWindow() ):BackColor )
-end window
+   end window
 
-// Defincición del frame.------------------------------------------------------
-@  10,  10 frame frmFrame1 of wndABM width 510 height 290
+   // Defincición del frame.------------------------------------------------------
+   @  10,  10 frame frmFrame1 of wndABM width 510 height 290
 
-// Defincición de las etiquetas.-----------------------------------------------
-for nItem := 1 to nCampos
+   // Defincición de las etiquetas.-----------------------------------------------
+   for nItem := 1 to nCampos
 
-        @ aEtiquetas[nItem,2], aEtiquetas[nItem,3] label &( aEtiquetas[nItem,1] ) ;
-                of     wndABM ;
-                value  _aCampos[nItem] ;
-                width  70 ;
-                height 21 ;
-                font   "ms sans serif" ;
-                size   8
-next
+      @ aEtiquetas[nItem,2], aEtiquetas[nItem,3] label &( aEtiquetas[nItem,1] ) ;
+              of     wndABM ;
+              value  _aCampos[nItem] ;
+              width  70 ;
+              height 21 ;
+              font   "ms sans serif" ;
+              size   8
+   next
 
-@ 310, 535 label  lblLabel1 ;
-           of     wndABM ;
-           value  _OOHG_Messages( 6, 1 ) ;
-           width  85 ;
-           height 20 ;
-           font   "ms sans serif" ;
-           size   8
-@ 330, 535 label  lblRegistro ;
-           of     wndABM ;
-           value  "9999" ;
-           width  85 ;
-           height 20 ;
-           font   "ms sans serif" ;
-           size   8
-@ 350, 535 label  lblLabel2 ;
-           of     wndABM ;
-           value  _OOHG_Messages( 6, 2 ) ;
-           width  85 ;
-           height 20 ;
-           font   "ms sans serif" ;
-           size   8
-@ 370, 535 label  lblTotales ;
-           of     wndABM ;
-           value  "9999" ;
-           width  85 ;
-           height 20 ;
-           font   "ms sans serif" ;
-           size   8
+   @ 310, 535 label  lblLabel1 ;
+              of     wndABM ;
+              value  _OOHG_Messages( 6, 1 ) ;
+              width  85 ;
+              height 20 ;
+              font   "ms sans serif" ;
+              size   8
+   @ 330, 535 label  lblRegistro ;
+              of     wndABM ;
+              value  "9999" ;
+              width  85 ;
+              height 20 ;
+              font   "ms sans serif" ;
+              size   8
+   @ 350, 535 label  lblLabel2 ;
+              of     wndABM ;
+              value  _OOHG_Messages( 6, 2 ) ;
+              width  85 ;
+              height 20 ;
+              font   "ms sans serif" ;
+              size   8
+   @ 370, 535 label  lblTotales ;
+              of     wndABM ;
+              value  "9999" ;
+              width  85 ;
+              height 20 ;
+              font   "ms sans serif" ;
+              size   8
 
-// Defincición del browse.-----------------------------------------------------
-@ 310, 10 browse brwBrowse ;
-        of wndABM ;
-        width    510 ;
-        height   125 ;
-        headers  _aCampos ;
-        widths   aBrwAnchos ;
-        workarea &_cArea ;
-        fields   aBrwCampos ;
-        value    (_cArea)->( RecNo() ) ;
-        ON DBLCLICK ABMEventos( ABM_EVENTO_EDITAR ) ;
-        on change {|| (_cArea)->( dbGoTo( wndABM.brwBrowse.Value ) ), ABMRefresh( ABM_MODO_VER ) }
+   // Defincición del browse.-----------------------------------------------------
+   @ 310, 10 browse brwBrowse ;
+              of       wndABM ;
+              width    510 ;
+              height   125 ;
+              headers  _aCampos ;
+              widths   aBrwAnchos ;
+              workarea &_cArea ;
+              fields   aBrwCampos ;
+              value    (_cArea)->( RecNo() ) ;
+              ON DBLCLICK ABMEventos( ABM_EVENTO_EDITAR ) ;
+              on change {|| (_cArea)->( dbGoTo( wndABM.brwBrowse.Value ) ), ABMRefresh( ABM_MODO_VER ) }
 
-// Definición de los botones.--------------------------------------------------
-@ 400, 535 button btnCerrar ;
-        of      wndABM ;
-        caption _OOHG_Messages( 7, 1 ) ;
-        action  ABMEventos( ABM_EVENTO_SALIR ) ;
-        width   85 ;
-        height  30 ;
-        font    "ms sans serif" ;
-        size    8
-@ 20, 535 button btnNuevo ;
-        of      wndABM ;
-        caption _OOHG_Messages( 7, 2 ) ;
-        action  ABMEventos( ABM_EVENTO_NUEVO ) ;
-        width   85 ;
-        height  30 ;
-        font    "ms sans serif" ;
-        size    8 ;
-        notabstop
-@ 65, 535 button btnEditar ;
-        of      wndABM ;
-        caption _OOHG_Messages( 7, 3 ) ;
-        action  ABMEventos( ABM_EVENTO_EDITAR ) ;
-        width   85 ;
-        height  30 ;
-        font    "ms sans serif" ;
-        size    8 ;
-        notabstop
-@ 110, 535 button btnBorrar ;
-        of      wndABM ;
-        caption _OOHG_Messages( 7, 4 ) ;
-        action  ABMEventos( ABM_EVENTO_BORRAR ) ;
-        width   85 ;
-        height  30 ;
-        font    "ms sans serif" ;
-        size    8 ;
-        notabstop
-@ 155, 535 button btnBuscar ;
-        of      wndABM ;
-        caption _OOHG_Messages( 7, 5 ) ;
-        action  ABMEventos( ABM_EVENTO_BUSCAR ) ;
-        width   85 ;
-        height  30 ;
-        font    "ms sans serif" ;
-        size    8 ;
-        notabstop
-@ 200, 535 button btnIr ;
-        of      wndABM ;
-        caption _OOHG_Messages( 7, 6 ) ;
-        action  ABMEventos( ABM_EVENTO_IR ) ;
-        width   85 ;
-        height  30 ;
-        font    "ms sans serif" ;
-        size    8 ;
-        notabstop
-@ 245, 535 button btnListado ;
-        of      wndABM ;
-        caption _OOHG_Messages( 7, 7 ) ;
-        action  ABMEventos( ABM_EVENTO_LISTADO ) ;
-        width   85 ;
-        height  30 ;
-        font    "ms sans serif" ;
-        size    8 ;
-        notabstop
-@ 260, 20 button btnPrimero ;
-        of      wndABM ;
-        caption _OOHG_Messages( 7, 8 ) ;
-        action  ABMEventos( ABM_EVENTO_PRIMERO ) ;
-        width   70 ;
-        height  30 ;
-        font    "ms sans serif" ;
-        size    8 ;
-        notabstop
-@ 260, 100 button btnAnterior ;
-        of      wndABM ;
-        caption _OOHG_Messages( 7, 9 ) ;
-        action  ABMEventos( ABM_EVENTO_ANTERIOR ) ;
-        width   70 ;
-        height  30 ;
-        font    "ms sans serif" ;
-        size    8 ;
-        notabstop
-@ 260, 180 button btnSiguiente ;
-        of      wndABM ;
-        caption _OOHG_Messages( 7, 10 ) ;
-        action  ABMEventos( ABM_EVENTO_SIGUIENTE ) ;
-        width   70 ;
-        height  30 ;
-        font    "ms sans serif" ;
-        size    8 ;
-        notabstop
-@ 260, 260 button btnUltimo ;
-        of      wndABM ;
-        caption _OOHG_Messages( 7, 11 ) ;
-        action  ABMEventos( ABM_EVENTO_ULTIMO ) ;
-        width   70 ;
-        height  30 ;
-        font    "ms sans serif" ;
-        size    8 ;
-        notabstop
-@ 260, 355 button btnGuardar ;
-        of      wndABM ;
-        caption _OOHG_Messages( 7, 12 ) ;
-        action  ABMEventos( ABM_EVENTO_GUARDAR ) ;
-        width   70 ;
-        height  30 ;
-        font    "ms sans serif" ;
-        size    8
-@ 260, 435 button btnCancelar ;
-        of      wndABM ;
-        caption _OOHG_Messages( 7, 13 ) ;
-        action  ABMEventos( ABM_EVENTO_CANCELAR ) ;
-        width   70 ;
-        height  30 ;
-        font    "ms sans serif" ;
-        size    8
+   // Definición de los botones.--------------------------------------------------
+   @ 400, 535 button btnCerrar ;
+              of      wndABM ;
+              caption _OOHG_Messages( 7, 1 ) ;
+              action  ABMEventos( ABM_EVENTO_SALIR ) ;
+              width   85 ;
+              height  30 ;
+              font    "ms sans serif" ;
+              size    8
+   @ 20, 535 button btnNuevo ;
+              of      wndABM ;
+              caption _OOHG_Messages( 7, 2 ) ;
+              action  ABMEventos( ABM_EVENTO_NUEVO ) ;
+              width   85 ;
+              height  30 ;
+              font    "ms sans serif" ;
+              size    8 ;
+              notabstop
+   @ 65, 535 button btnEditar ;
+              of      wndABM ;
+              caption _OOHG_Messages( 7, 3 ) ;
+              action  ABMEventos( ABM_EVENTO_EDITAR ) ;
+              width   85 ;
+              height  30 ;
+              font    "ms sans serif" ;
+              size    8 ;
+              notabstop
+   @ 110, 535 button btnBorrar ;
+              of      wndABM ;
+              caption _OOHG_Messages( 7, 4 ) ;
+              action  ABMEventos( ABM_EVENTO_BORRAR ) ;
+              width   85 ;
+              height  30 ;
+              font    "ms sans serif" ;
+              size    8 ;
+              notabstop
+   @ 155, 535 button btnBuscar ;
+              of      wndABM ;
+              caption _OOHG_Messages( 7, 5 ) ;
+              action  ABMEventos( ABM_EVENTO_BUSCAR ) ;
+              width   85 ;
+              height  30 ;
+              font    "ms sans serif" ;
+              size    8 ;
+              notabstop
+   @ 200, 535 button btnIr ;
+              of      wndABM ;
+              caption _OOHG_Messages( 7, 6 ) ;
+              action  ABMEventos( ABM_EVENTO_IR ) ;
+              width   85 ;
+              height  30 ;
+              font    "ms sans serif" ;
+              size    8 ;
+              notabstop
+   @ 245, 535 button btnListado ;
+              of      wndABM ;
+              caption _OOHG_Messages( 7, 7 ) ;
+              action  ABMEventos( ABM_EVENTO_LISTADO ) ;
+              width   85 ;
+              height  30 ;
+              font    "ms sans serif" ;
+              size    8 ;
+              notabstop
+   @ 260, 20 button btnPrimero ;
+              of      wndABM ;
+              caption _OOHG_Messages( 7, 8 ) ;
+              action  ABMEventos( ABM_EVENTO_PRIMERO ) ;
+              width   70 ;
+              height  30 ;
+              font    "ms sans serif" ;
+              size    8 ;
+              notabstop
+   @ 260, 100 button btnAnterior ;
+              of      wndABM ;
+              caption _OOHG_Messages( 7, 9 ) ;
+              action  ABMEventos( ABM_EVENTO_ANTERIOR ) ;
+              width   70 ;
+              height  30 ;
+              font    "ms sans serif" ;
+              size    8 ;
+              notabstop
+   @ 260, 180 button btnSiguiente ;
+              of      wndABM ;
+              caption _OOHG_Messages( 7, 10 ) ;
+              action  ABMEventos( ABM_EVENTO_SIGUIENTE ) ;
+              width   70 ;
+              height  30 ;
+              font    "ms sans serif" ;
+              size    8 ;
+              notabstop
+   @ 260, 260 button btnUltimo ;
+              of      wndABM ;
+              caption _OOHG_Messages( 7, 11 ) ;
+              action  ABMEventos( ABM_EVENTO_ULTIMO ) ;
+              width   70 ;
+              height  30 ;
+              font    "ms sans serif" ;
+              size    8 ;
+              notabstop
+   @ 260, 355 button btnGuardar ;
+              of      wndABM ;
+              caption _OOHG_Messages( 7, 12 ) ;
+              action  ABMEventos( ABM_EVENTO_GUARDAR ) ;
+              width   70 ;
+              height  30 ;
+              font    "ms sans serif" ;
+              size    8
+   @ 260, 435 button btnCancelar ;
+              of      wndABM ;
+              caption _OOHG_Messages( 7, 13 ) ;
+              action  ABMEventos( ABM_EVENTO_CANCELAR ) ;
+              width   70 ;
+              height  30 ;
+              font    "ms sans serif" ;
+              size    8
 
-// Defincición de los controles de edición.------------------------------------
-for nItem := 1 to nCampos
-        do case
-                case _aEstructura[nItem,2] == "C"        // Campo tipo caracter.
+   // Defincición de los controles de edición.------------------------------------
+   for nItem := 1 to nCampos
+      do case
+      case _aEstructura[nItem,2] == "C"        // Campo tipo caracter.
 
-                        @ _OOHG_aControles[nItem,2], _OOHG_aControles[nItem,3] textbox &( _OOHG_aControles[nItem,1] ) ;
-                                of      wndABM ;
-                                height  21 ;
-                                value   "" ;
-                                width   iif( (_aEstructura[nItem,3] * 10)>160, 160, _aEstructura[nItem,3] * 10 ) ;
-                                font    "Arial" ;
-                                size    9 ;
-                                maxlength _aEstructura[nItem,3]
+         @ _OOHG_aControles[nItem,2], _OOHG_aControles[nItem,3] textbox &( _OOHG_aControles[nItem,1] ) ;
+                   of      wndABM ;
+                   height  21 ;
+                   value   "" ;
+                   width   iif( (_aEstructura[nItem,3] * 10)>160, 160, _aEstructura[nItem,3] * 10 ) ;
+                   font    "Arial" ;
+                   size    9 ;
+                   maxlength _aEstructura[nItem,3]
 
-                case _aEstructura[nItem,2] == "N"        // Campo tipo numerico
-                        if _aEstructura[nItem,4] == 0
+      case _aEstructura[nItem,2] == "N"        // Campo tipo numerico
+         if _aEstructura[nItem,4] == 0
 
-                                @ _OOHG_aControles[nItem,2], _OOHG_aControles[nItem,3] textbox &( _OOHG_aControles[nItem,1] ) ;
-                                        of      wndABM ;
-                                        height  21 ;
-                                        value   0 ;
-                                        width   iif( (_aEstructura[nItem,3] * 10)>160, 160, _aEstructura[nItem,3] * 10 ) ;
-                                        numeric ;
-                                        maxlength _aEstructura[nItem,3] ;
-                                        font "Arial" ;
-                                        size 9
-                        else
-                                nMascaraTotal     := _aEstructura[nItem,3]
-                                nMascaraDecimales := _aEstructura[nItem,4]
-                                cMascara := Replicate( "9", nMascaraTotal - (nMascaraDecimales + 1) )
-                                cMascara += "."
-                                cMascara += Replicate( "9", nMascaraDecimales )
+            @ _OOHG_aControles[nItem,2], _OOHG_aControles[nItem,3] textbox &( _OOHG_aControles[nItem,1] ) ;
+                      of      wndABM ;
+                      height  21 ;
+                      value   0 ;
+                      width   iif( (_aEstructura[nItem,3] * 10)>160, 160, _aEstructura[nItem,3] * 10 ) ;
+                      numeric ;
+                      maxlength _aEstructura[nItem,3] ;
+                      font "Arial" ;
+                      size 9
+         else
+            nMascaraTotal     := _aEstructura[nItem,3]
+            nMascaraDecimales := _aEstructura[nItem,4]
+            cMascara := Replicate( "9", nMascaraTotal - (nMascaraDecimales + 1) )
+            cMascara += "."
+            cMascara += Replicate( "9", nMascaraDecimales )
 
-                                @ _OOHG_aControles[nItem,2], _OOHG_aControles[nItem,3] textbox &( _OOHG_aControles[nItem,1] ) ;
-                                        of      wndABM ;
-                                        height  21 ;
-                                        value   0 ;
-                                        width   iif( (_aEstructura[nItem,3] * 10)>160, 160, _aEstructura[nItem,3] * 10 ) ;
-                                        numeric ;
-                                        inputmask cMascara
-                        endif
-                case _aEstructura[nItem,2] == "D"        // Campo tipo fecha.
+            @ _OOHG_aControles[nItem,2], _OOHG_aControles[nItem,3] textbox &( _OOHG_aControles[nItem,1] ) ;
+                      of      wndABM ;
+                      height  21 ;
+                      value   0 ;
+                      width   iif( (_aEstructura[nItem,3] * 10)>160, 160, _aEstructura[nItem,3] * 10 ) ;
+                      numeric ;
+                      inputmask cMascara
+         endif
+      case _aEstructura[nItem,2] == "D"        // Campo tipo fecha.
 
-                        @ _OOHG_aControles[nItem,2], _OOHG_aControles[nItem,3] datepicker &( _OOHG_aControles[nItem,1] ) ;
-                                of      wndABM ;
-                                value   Date() ;
-                                width   100 ;
-                                font    "Arial" ;
-                                size    9
+         @ _OOHG_aControles[nItem,2], _OOHG_aControles[nItem,3] datepicker &( _OOHG_aControles[nItem,1] ) ;
+                   of      wndABM ;
+                   value   Date() ;
+                   width   100 ;
+                   font    "Arial" ;
+                   size    9
 
-                        wndABM.&( _OOHG_aControles[nItem,1] ).Height := 21
-
-
-        case _aEstructura[nItem,2] == "L"        // Campo tipo logico.
-
-                        @ _OOHG_aControles[nItem,2], _OOHG_aControles[nItem,3] checkbox &( _OOHG_aControles[nItem,1] ) ;
-                                of      wndABM ;
-                                caption "" ;
-                                width   21 ;
-                                height  21 ;
-                                value   .t. ;
-                                font    "Arial" ;
-                                size    9
-                case _aEstructura[nItem,2] == "M"        // Campo tipo memo.
-
-                        @ _OOHG_aControles[nItem,2], _OOHG_aControles[nItem,3] editbox &( _OOHG_aControles[nItem,1] ) ;
-                                of     wndABM ;
-                                width  160 ;
-                                height 47
-        endcase
-next
-
-// Puntero de registros.------------------------------------------------------
-nArea     := Select()
-nRegistro := RecNo()
-dbSelectArea( _cArea )
-(_cArea)->( dbGoTop() )
-
-// Activación de la ventana.---------------------------------------------------
-center   window wndABM
-activate window wndABM
+         wndABM.&( _OOHG_aControles[nItem,1] ).Height := 21
 
 
-////////// Restaurar SET DELETED a su valor inicial
+      case _aEstructura[nItem,2] == "L"        // Campo tipo logico.
 
-        set( _SET_DELETED , _BackDeleted  )
+         @ _OOHG_aControles[nItem,2], _OOHG_aControles[nItem,3] checkbox &( _OOHG_aControles[nItem,1] ) ;
+                   of      wndABM ;
+                   caption "" ;
+                   width   21 ;
+                   height  21 ;
+                   value   .t. ;
+                   font    "Arial" ;
+                   size    9
+      case _aEstructura[nItem,2] == "M"        // Campo tipo memo.
 
+         @ _OOHG_aControles[nItem,2], _OOHG_aControles[nItem,3] editbox &( _OOHG_aControles[nItem,1] ) ;
+                   of     wndABM ;
+                   width  160 ;
+                   height 47
+      endcase
+   next
 
-// Salida.---------------------------------------------------------------------
-(_cArea )->( dbGoTop() )
-dbSelectArea( nArea )
-dbGoTo( nRegistro )
+   // Puntero de registros.------------------------------------------------------
+   nArea     := Select()
+   nRegistro := RecNo()
+   dbSelectArea( _cArea )
+   (_cArea)->( dbGoTop() )
 
-return ( nil )
+   // Activación de la ventana.---------------------------------------------------
+   center   window wndABM
+   activate window wndABM
 
+   ////////// Restaurar SET DELETED a su valor inicial
+
+   set( _SET_DELETED , _BackDeleted  )
+
+   // Salida.---------------------------------------------------------------------
+   (_cArea )->( dbGoTop() )
+   dbSelectArea( nArea )
+   dbGoTo( nRegistro )
+
+   return ( nil )
 
 
  /***************************************************************************************
@@ -678,89 +676,91 @@ return ( nil )
  *  Parámetros: nEstado    Valor numerico que indica el tipo de estado.
  *    Devuelve: NIL
  ***************************************************************************************/
+
 static function ABMRefresh( nEstado )
 
-// Declaración de variables locales.-------------------------------------------
-local nItem    // := 1                                  // Indice de iteración.
-// local cMensaje := ""                                 // Mensajes al usuario.
+   // Declaración de variables locales.-------------------------------------------
 
-// Refresco del cuadro de dialogo.
-do case
-        // Modo de visualización.----------------------------------------------
-        case nEstado == ABM_MODO_VER
+   local nItem    // := 1                                  // Indice de iteración.
 
-                // Estado de los controles.
-                // Botones Cerrar y Nuevo.
-                for nItem := 1 to 2
-                        wndABM.&( _aBotones[nItem] ).Enabled := .t.
-                next
+   // local cMensaje := ""                                 // Mensajes al usuario.
 
-                // Botones Guardar y Cancelar.
-                for nItem := ( Len( _aBotones ) - 1 ) to Len( _aBotones )
-                        wndABM.&( _aBotones[nItem] ).Enabled := .f.
-                next
+   // Refresco del cuadro de dialogo.
+   do case
 
-                // Resto de botones.
-                if (_cArea)->( RecCount() ) == 0
-                        wndABM.brwBrowse.Enabled := .f.
-                        for nItem := 3 to ( Len( _aBotones ) - 2 )
-                                wndABM.&( _aBotones[nItem] ).Enabled := .f.
-                        next
-                else
-                        wndABM.brwBrowse.Enabled := .t.
-                        for nItem := 3 to ( Len( _aBotones ) - 2 )
-                                wndABM.&( _aBotones[nItem] ).Enabled := .t.
-                        next
-                endif
+   // Modo de visualización.----------------------------------------------
+   case nEstado == ABM_MODO_VER
 
-                // Controles de edición.
-                for nItem := 1 to Len( _OOHG_aControles )
-                        wndABM.&( _OOHG_aControles[nItem,1] ).Enabled := .f.
-                next
+      // Estado de los controles.
+      // Botones Cerrar y Nuevo.
+      for nItem := 1 to 2
+         wndABM.&( _aBotones[nItem] ).Enabled := .t.
+      next
 
-                // Contenido de los controles.
-                // Controles de edición.
-                for nItem := 1 to Len( _OOHG_aControles )
-                        wndABM.&( _OOHG_aControles[nItem,1] ).Value := (_cArea)->( FieldGet( nItem ) )
-                next
+      // Botones Guardar y Cancelar.
+      for nItem := ( Len( _aBotones ) - 1 ) to Len( _aBotones )
+         wndABM.&( _aBotones[nItem] ).Enabled := .f.
+      next
 
-                // Numero de registro y total.
-                wndABM.lblRegistro.Value := AllTrim( Str( (_cArea)->(RecNo()) ) )
-                wndABM.lblTotales.Value  := AllTrim( Str( (_cArea)->(RecCount()) ) )
+      // Resto de botones.
+      if (_cArea)->( RecCount() ) == 0
+         wndABM.brwBrowse.Enabled := .f.
+         for nItem := 3 to ( Len( _aBotones ) - 2 )
+            wndABM.&( _aBotones[nItem] ).Enabled := .f.
+         next
+      else
+         wndABM.brwBrowse.Enabled := .t.
+         for nItem := 3 to ( Len( _aBotones ) - 2 )
+            wndABM.&( _aBotones[nItem] ).Enabled := .t.
+         next
+      endif
+
+      // Controles de edición.
+      for nItem := 1 to Len( _OOHG_aControles )
+         wndABM.&( _OOHG_aControles[nItem,1] ).Enabled := .f.
+      next
+
+      // Contenido de los controles.
+      // Controles de edición.
+      for nItem := 1 to Len( _OOHG_aControles )
+         wndABM.&( _OOHG_aControles[nItem,1] ).Value := (_cArea)->( FieldGet( nItem ) )
+      next
+
+      // Numero de registro y total.
+      wndABM.lblRegistro.Value := AllTrim( Str( (_cArea)->(RecNo()) ) )
+      wndABM.lblTotales.Value  := AllTrim( Str( (_cArea)->(RecCount()) ) )
 
         // Modo de edición.----------------------------------------------------
-        case nEstado == ABM_MODO_EDITAR
+   case nEstado == ABM_MODO_EDITAR
 
-                // Estado de los controles.
-                // Botones Guardar y Cancelar.
-                for nItem := ( Len( _aBotones ) - 1 ) to Len( _aBotones )
-                        wndABM.&( _aBotones[nItem] ).Enabled := .t.
-                next
+      // Estado de los controles.
+      // Botones Guardar y Cancelar.
+      for nItem := ( Len( _aBotones ) - 1 ) to Len( _aBotones )
+         wndABM.&( _aBotones[nItem] ).Enabled := .t.
+      next
 
-                // Resto de los botones.
-                for nItem := 1 to ( Len( _aBotones ) - 2 )
-                        wndABM.&( _aBotones[nItem] ).Enabled := .f.
-                next
-                wndABM.brwBrowse.Enabled := .f.
+      // Resto de los botones.
+      for nItem := 1 to ( Len( _aBotones ) - 2 )
+         wndABM.&( _aBotones[nItem] ).Enabled := .f.
+      next
+      wndABM.brwBrowse.Enabled := .f.
 
-                // Contenido de los controles.
-                // Controles de edición.
-                for nItem := 1 to Len( _OOHG_aControles )
-                        wndABM.&( _OOHG_aControles[nItem,1] ).Enabled := _aEditables[nItem]
-                next
+      // Contenido de los controles.
+      // Controles de edición.
+      for nItem := 1 to Len( _OOHG_aControles )
+         wndABM.&( _OOHG_aControles[nItem,1] ).Enabled := _aEditables[nItem]
+      next
 
-                // Numero de registro y total.
-                wndABM.lblRegistro.Value := AllTrim( Str( (_cArea)->(RecNo()) ) )
-                wndABM.lblTotales.Value  := AllTrim( Str( (_cArea)->(RecCount()) ) )
+      // Numero de registro y total.
+      wndABM.lblRegistro.Value := AllTrim( Str( (_cArea)->(RecNo()) ) )
+      wndABM.lblTotales.Value  := AllTrim( Str( (_cArea)->(RecCount()) ) )
 
-        // Control de error.---------------------------------------------------
-        otherwise
-                MsgOOHGError( _OOHG_Messages( 8, 3 ), "" )
-end case
+      // Control de error.---------------------------------------------------
+   otherwise
+      MsgOOHGError( _OOHG_Messages( 8, 3 ), "" )
+   end case
 
-return ( nil )
-
-
+   return ( nil )
 
  /***************************************************************************************
  *     Función: ABMEventos( nEvento )
@@ -769,164 +769,166 @@ return ( nil )
  *  Parámetros: nEvento    Valor numérico que indica el evento a ejecutar.
  *    Devuelve: NIL
  ****************************************************************************************/
+
 static function ABMEventos( nEvento )
 
-// Declaración de variables locales.-------------------------------------------
-local nItem      // := 1                                // Indice de iteración.
-// local cMensaje   := ""                               // Mensaje al usuario.
-local aValores      := {}                               // Valores de los campos de edición.
-local nRegistro  // := 0                                // Numero de registro.
-local lGuardar   // := .t.                              // Salida del bloque _bGuardar.
-local cModo      // := ""                               // Texto del modo.
-local cRegistro  // := ""                               // Numero de registro.
-Local wndABM        := GetFormObject( "wndABM" )
+   // Declaración de variables locales.-------------------------------------------
+   local nItem      // := 1                                // Indice de iteración.
+   // local cMensaje   := ""                               // Mensaje al usuario.
+   local aValores      := {}                               // Valores de los campos de edición.
+   local nRegistro  // := 0                                // Numero de registro.
+   local lGuardar   // := .t.                              // Salida del bloque _bGuardar.
+   local cModo      // := ""                               // Texto del modo.
+   local cRegistro  // := ""                               // Numero de registro.
+   Local wndABM        := GetFormObject( "wndABM" )
 
-// Gestión de eventos.
-do case
-        // Pulsación del botón CERRAR.-----------------------------------------
-        case nEvento == ABM_EVENTO_SALIR
-                wndABM:Release()
+   // Gestión de eventos.
+   do case
 
-        // Pulsación del botón NUEVO.------------------------------------------
-        case nEvento == ABM_EVENTO_NUEVO
-                _lEditar := .f.
-                cModo := _OOHG_Messages( 6, 3 )
-                wndABM:Title := wndABM:Title + cModo
+   // Pulsación del botón CERRAR.-----------------------------------------
+   case nEvento == ABM_EVENTO_SALIR
+      wndABM:Release()
 
-                // Pasa a modo de edición.
-                ABMRefresh( ABM_MODO_EDITAR )
+   // Pulsación del botón NUEVO.------------------------------------------
+   case nEvento == ABM_EVENTO_NUEVO
+      _lEditar := .f.
+      cModo := _OOHG_Messages( 6, 3 )
+      wndABM:Title := wndABM:Title + cModo
 
-                // Actualiza los valores de los controles de edición.
-                for nItem := 1 to Len( _OOHG_aControles )
-                        do case
-                                case _aEstructura[nItem, 2] == "C"
-                                        wndABM:Control( _OOHG_aControles[nItem,1] ):Value := ""
-                                case _aEstructura[nItem, 2] == "N"
-                                        wndABM:Control( _OOHG_aControles[nItem,1] ):Value := 0
-                                case _aEstructura[nItem, 2] == "D"
-                                        wndABM:Control( _OOHG_aControles[nItem,1] ):Value := Date()
-                                case _aEstructura[nItem, 2] == "L"
-                                        wndABM:Control( _OOHG_aControles[nItem,1] ):Value := .f.
-                                case _aEstructura[nItem, 2] == "M"
-                                        wndABM:Control( _OOHG_aControles[nItem,1] ):Value := ""
-                        endcase
-                next
+      // Pasa a modo de edición.
+      ABMRefresh( ABM_MODO_EDITAR )
 
-                // Esteblece el foco en el primer control.
-                wndABM:Control( _OOHG_aControles[1,1] ):SetFocus()
+      // Actualiza los valores de los controles de edición.
+      for nItem := 1 to Len( _OOHG_aControles )
+         do case
+         case _aEstructura[nItem, 2] == "C"
+            wndABM:Control( _OOHG_aControles[nItem,1] ):Value := ""
+         case _aEstructura[nItem, 2] == "N"
+            wndABM:Control( _OOHG_aControles[nItem,1] ):Value := 0
+         case _aEstructura[nItem, 2] == "D"
+            wndABM:Control( _OOHG_aControles[nItem,1] ):Value := Date()
+         case _aEstructura[nItem, 2] == "L"
+            wndABM:Control( _OOHG_aControles[nItem,1] ):Value := .f.
+         case _aEstructura[nItem, 2] == "M"
+            wndABM:Control( _OOHG_aControles[nItem,1] ):Value := ""
+         endcase
+      next
 
-        // Pulsación del botón EDITAR.-----------------------------------------
-        case nEvento == ABM_EVENTO_EDITAR
-                _lEditar := .t.
-                cModo := _OOHG_Messages( 6, 4 )
-                wndABM:Title := wndABM:Title + cModo
+      // Esteblece el foco en el primer control.
+      wndABM:Control( _OOHG_aControles[1,1] ):SetFocus()
 
-                // Pasa a modo de edicion.
-                ABMRefresh( ABM_MODO_EDITAR )
+   // Pulsación del botón EDITAR.-----------------------------------------
+   case nEvento == ABM_EVENTO_EDITAR
+      _lEditar := .t.
+      cModo := _OOHG_Messages( 6, 4 )
+      wndABM:Title := wndABM:Title + cModo
 
-                // Actualiza los valores de los controles de edición.
-                for nItem := 1 to Len( _OOHG_aControles )
-                        wndABM:Control( _OOHG_aControles[nItem,1] ):Value := (_cArea)->( FieldGet(nItem) )
-                next
+      // Pasa a modo de edicion.
+      ABMRefresh( ABM_MODO_EDITAR )
 
-                // Establece el foco en el primer coltrol.
-                wndABM:Control( _OOHG_aControles[1,1] ):SetFocus()
+      // Actualiza los valores de los controles de edición.
+      for nItem := 1 to Len( _OOHG_aControles )
+         wndABM:Control( _OOHG_aControles[nItem,1] ):Value := (_cArea)->( FieldGet(nItem) )
+      next
 
-        // Pulsación del botón BORRAR.-----------------------------------------
-        case nEvento == ABM_EVENTO_BORRAR
+      // Establece el foco en el primer coltrol.
+      wndABM:Control( _OOHG_aControles[1,1] ):SetFocus()
 
-                // Borra el registro si se acepta.
-                if MsgOKCancel( _OOHG_Messages( 5, 1 ), "" )
-                   if (_cArea)->( rlock() )
-                      (_cArea)->( dbDelete() )
-                      (_cArea)->( dbCommit() )
-                      (_cArea)->( dbunlock() )
-                      if .not. set( _SET_DELETED )
-                         set deleted on
-                      endif
-                      (_cArea)->( dbSkip() )
-                      if (_cArea)->( eof() )
-                         (_cArea)->( dbGoBottom() )
-                      endif
-                   else
-                      Msgstop( _OOHG_Messages( 11, 41 ), '' )
-                   endif
-                endif
+   // Pulsación del botón BORRAR.-----------------------------------------
+   case nEvento == ABM_EVENTO_BORRAR
 
-                // Refresca.
-                wndABM:brwBrowse:Refresh()
-                wndABM:brwBrowse:Value := (_cArea)->( RecNo() )
+      // Borra el registro si se acepta.
+      if MsgOKCancel( _OOHG_Messages( 5, 1 ), "" )
+         if (_cArea)->( rlock() )
+            (_cArea)->( dbDelete() )
+            (_cArea)->( dbCommit() )
+            (_cArea)->( dbunlock() )
+            if .not. set( _SET_DELETED )
+               set deleted on
+            endif
+            (_cArea)->( dbSkip() )
+            if (_cArea)->( eof() )
+               (_cArea)->( dbGoBottom() )
+            endif
+         else
+            Msgstop( _OOHG_Messages( 11, 41 ), '' )
+         endif
+      endif
 
-        // Pulsación del botón BUSCAR.-----------------------------------------
-        case nEvento == ABM_EVENTO_BUSCAR
-                if !HB_IsBlock( _bBuscar )
-                        if Empty( (_cArea)->( ordSetFocus() ) )
-                                msgExclamation( _OOHG_Messages( 5, 2 ), "" )
-                        else
-                                ABMBuscar()
-                        endif
-                else
-                        Eval( _bBuscar )
-                        wndABM:brwBrowse:Value := (_cArea)->( RecNo() )
-                endif
+      // Refresca.
+      wndABM:brwBrowse:Refresh()
+      wndABM:brwBrowse:Value := (_cArea)->( RecNo() )
 
-        // Pulsación del botón IR AL REGISTRO.---------------------------------
-        case nEvento == ABM_EVENTO_IR
-                cRegistro := InputBox( _OOHG_Messages( 6, 5 ), "" )
-                if !Empty( cRegistro )
-                        nRegistro := Val( cRegistro )
-                        if ( nRegistro != 0 ) .and. ( nRegistro <= (_cArea)->( RecCount() ) )
-                                (_cArea)->( dbGoTo( nRegistro ) )
-                                wndABM:brwBrowse:Value := nRegistro
-                        endif
-                endif
+   // Pulsación del botón BUSCAR.-----------------------------------------
+   case nEvento == ABM_EVENTO_BUSCAR
+      if !HB_IsBlock( _bBuscar )
+         if Empty( (_cArea)->( ordSetFocus() ) )
+            msgExclamation( _OOHG_Messages( 5, 2 ), "" )
+         else
+            ABMBuscar()
+         endif
+      else
+         Eval( _bBuscar )
+         wndABM:brwBrowse:Value := (_cArea)->( RecNo() )
+      endif
 
-        // Pulsación del botón LISTADO.----------------------------------------
-        case nEvento == ABM_EVENTO_LISTADO
-                ABMListado()
+   // Pulsación del botón IR AL REGISTRO.---------------------------------
+   case nEvento == ABM_EVENTO_IR
+      cRegistro := InputBox( _OOHG_Messages( 6, 5 ), "" )
+      if !Empty( cRegistro )
+         nRegistro := Val( cRegistro )
+         if ( nRegistro != 0 ) .and. ( nRegistro <= (_cArea)->( RecCount() ) )
+            (_cArea)->( dbGoTo( nRegistro ) )
+            wndABM:brwBrowse:Value := nRegistro
+         endif
+      endif
 
-        // Pulsación del botón PRIMERO.----------------------------------------
-        case nEvento == ABM_EVENTO_PRIMERO
-                (_cArea)->( dbGoTop() )
-                wndABM:brwBrowse:Value   := (_cArea)->( RecNo() )
-                wndABM:lblRegistro:Value := AllTrim( Str( (_cArea)->(RecNo()) ) )
-                wndABM:lblTotales:Value  := AllTrim( Str( (_cArea)->(RecCount()) ) )
+   // Pulsación del botón LISTADO.----------------------------------------
+   case nEvento == ABM_EVENTO_LISTADO
+      ABMListado()
 
-        // Pulsación del botón ANTERIOR.---------------------------------------
-        case nEvento == ABM_EVENTO_ANTERIOR
-                (_cArea)->( dbSkip( -1 ) )
-                wndABM:brwBrowse:Value   := (_cArea)->( RecNo() )
-                wndABM:lblRegistro:Value := AllTrim( Str( (_cArea)->(RecNo()) ) )
-                wndABM:lblTotales:Value  := AllTrim( Str( (_cArea)->(RecCount()) ) )
+   // Pulsación del botón PRIMERO.----------------------------------------
+   case nEvento == ABM_EVENTO_PRIMERO
+      (_cArea)->( dbGoTop() )
+      wndABM:brwBrowse:Value   := (_cArea)->( RecNo() )
+      wndABM:lblRegistro:Value := AllTrim( Str( (_cArea)->(RecNo()) ) )
+      wndABM:lblTotales:Value  := AllTrim( Str( (_cArea)->(RecCount()) ) )
+
+   // Pulsación del botón ANTERIOR.---------------------------------------
+   case nEvento == ABM_EVENTO_ANTERIOR
+      (_cArea)->( dbSkip( -1 ) )
+      wndABM:brwBrowse:Value   := (_cArea)->( RecNo() )
+      wndABM:lblRegistro:Value := AllTrim( Str( (_cArea)->(RecNo()) ) )
+      wndABM:lblTotales:Value  := AllTrim( Str( (_cArea)->(RecCount()) ) )
 
         // Pulsación del botón SIGUIENTE.--------------------------------------
-        case nEvento == ABM_EVENTO_SIGUIENTE
-                (_cArea)->( dbSkip( 1 ) )
-                iif( (_cArea)->( EOF() ) , (_cArea)->( DbGoBottom() ), Nil )
-                wndABM:brwBrowse:Value := (_cArea)->( RecNo() )
-                wndABM:lblRegistro:Value := AllTrim( Str( (_cArea)->(RecNo()) ) )
-                wndABM:lblTotales:Value  := AllTrim( Str( (_cArea)->(RecCount()) ) )
+   case nEvento == ABM_EVENTO_SIGUIENTE
+      (_cArea)->( dbSkip( 1 ) )
+      iif( (_cArea)->( EOF() ) , (_cArea)->( DbGoBottom() ), Nil )
+      wndABM:brwBrowse:Value := (_cArea)->( RecNo() )
+      wndABM:lblRegistro:Value := AllTrim( Str( (_cArea)->(RecNo()) ) )
+      wndABM:lblTotales:Value  := AllTrim( Str( (_cArea)->(RecCount()) ) )
 
-        // Pulsación del botón ULTIMO.-----------------------------------------
-        case nEvento == ABM_EVENTO_ULTIMO
-                (_cArea)->( dbGoBottom() )
-                wndABM:brwBrowse:Value   := (_cArea)->( RecNo() )
-                wndABM:lblRegistro:Value := AllTrim( Str( (_cArea)->(RecNo()) ) )
-                wndABM:lblTotales:Value  := AllTrim( Str( (_cArea)->(RecCount()) ) )
+   // Pulsación del botón ULTIMO.-----------------------------------------
+   case nEvento == ABM_EVENTO_ULTIMO
+      (_cArea)->( dbGoBottom() )
+      wndABM:brwBrowse:Value   := (_cArea)->( RecNo() )
+      wndABM:lblRegistro:Value := AllTrim( Str( (_cArea)->(RecNo()) ) )
+      wndABM:lblTotales:Value  := AllTrim( Str( (_cArea)->(RecCount()) ) )
 
-        // Pulsación del botón GUARDAR.----------------------------------------
-        case nEvento == ABM_EVENTO_GUARDAR
-                if ( !HB_IsBlock( _bGuardar ) )
+   // Pulsación del botón GUARDAR.----------------------------------------
+   case nEvento == ABM_EVENTO_GUARDAR
+      if ( !HB_IsBlock( _bGuardar ) )
 
-                        // Guarda el registro.
-                        if .not. _lEditar
-                                (_cArea)->( dbAppend() )
-                        endif
+         // Guarda el registro.
+         if .not. _lEditar
+            (_cArea)->( dbAppend() )
+         endif
 
          if (_cArea)->(rlock())
 
             for nItem := 1 to Len( _OOHG_aControles )
-                                 (_cArea)->( FieldPut( nItem, wndABM:Control( _OOHG_aControles[nItem,1] ):Value ) )
+               (_cArea)->( FieldPut( nItem, wndABM:Control( _OOHG_aControles[nItem,1] ):Value ) )
             next
 
             (_cArea)->( dbCommit() )
@@ -935,9 +937,9 @@ do case
 
             // Refresca el browse.
 
-                           wndABM:brwBrowse:Value := (_cArea)->( RecNo() )
-                           wndABM:brwBrowse:Refresh()
-                         wndABM:Title := SubStr( wndABM:Title, 1, Len(wndABM:Title) - 12 )
+            wndABM:brwBrowse:Value := (_cArea)->( RecNo() )
+            wndABM:brwBrowse:Refresh()
+            wndABM:Title := SubStr( wndABM:Title, 1, Len(wndABM:Title) - 12 )
 
          else
 
@@ -945,38 +947,38 @@ do case
 
          endif
 
-                else
+      else
 
-                        // Evalúa el bloque de código bGuardar.
-                        for nItem := 1 to Len( _OOHG_aControles )
-                                aAdd( aValores, wndABM:Control( _OOHG_aControles[nItem,1] ):Value )
-                        next
-                        lGuardar := Eval( _bGuardar, aValores, _lEditar )
-                        lGuardar := iif( !HB_IsLogical( lGuardar ) , .t., lGuardar )
-                        if lGuardar
-                                (_cArea)->( dbCommit() )
+         // Evalúa el bloque de código bGuardar.
+         for nItem := 1 to Len( _OOHG_aControles )
+            aAdd( aValores, wndABM:Control( _OOHG_aControles[nItem,1] ):Value )
+         next
+         lGuardar := Eval( _bGuardar, aValores, _lEditar )
+         lGuardar := iif( !HB_IsLogical( lGuardar ) , .t., lGuardar )
+         if lGuardar
+            (_cArea)->( dbCommit() )
 
-                                // Refresca el browse.
-                                wndABM:brwBrowse:Value := (_cArea)->( RecNo() )
-                                wndABM:brwBrowse:Refresh()
-                                wndABM:Title := SubStr( wndABM:Title, 1, Len(wndABM:Title) - 12 )
-                        endif
-                endif
+            // Refresca el browse.
+            wndABM:brwBrowse:Value := (_cArea)->( RecNo() )
+            wndABM:brwBrowse:Refresh()
+            wndABM:Title := SubStr( wndABM:Title, 1, Len(wndABM:Title) - 12 )
+         endif
+      endif
 
-        // Pulsación del botón CANCELAR.---------------------------------------
-        case nEvento == ABM_EVENTO_CANCELAR
+   // Pulsación del botón CANCELAR.---------------------------------------
+   case nEvento == ABM_EVENTO_CANCELAR
 
-                // Pasa a modo de visualización.
-                ABMRefresh( ABM_MODO_VER )
-                wndABM:Title := SubStr( wndABM:Title, 1, Len(wndABM:Title) - 12 )
+      // Pasa a modo de visualización.
+      ABMRefresh( ABM_MODO_VER )
+      wndABM:Title := SubStr( wndABM:Title, 1, Len(wndABM:Title) - 12 )
 
-        // Control de error.---------------------------------------------------
-        otherwise
-                MsgOOHGError( _OOHG_Messages( 8, 4 ), "" )
+      // Control de error.---------------------------------------------------
+   otherwise
+      MsgOOHGError( _OOHG_Messages( 8, 4 ), "" )
 
-endcase
+   endcase
 
-return ( nil )
+   return ( nil )
 
 
  /***************************************************************************************
@@ -988,53 +990,53 @@ return ( nil )
  ***************************************************************************************/
 static function ABMBuscar()
 
-// Declaración de variables locales.-------------------------------------------
-local nItem      // := 0                                // Indice de iteración.
-local aCampo        := {}                               // Nombre de los campos.
-local aTipoCampo    := {}                               // Matriz con los tipos de campo.
-local cCampo     // := ""                               // Nombre del campo.
-// local cMensaje   := ""                               // Mensaje al usuario.
-local nTipoCampo // := 0                                // Indice el tipo de campo.
-local cTipoCampo // := ""                               // Tipo de campo.
-local cModo      // := ""                               // Texto del modo de busqueda.
+   // Declaración de variables locales.-------------------------------------------
+   local nItem      // := 0                                // Indice de iteración.
+   local aCampo        := {}                               // Nombre de los campos.
+   local aTipoCampo    := {}                               // Matriz con los tipos de campo.
+   local cCampo     // := ""                               // Nombre del campo.
+   // local cMensaje   := ""                               // Mensaje al usuario.
+   local nTipoCampo // := 0                                // Indice el tipo de campo.
+   local cTipoCampo // := ""                               // Tipo de campo.
+   local cModo      // := ""                               // Texto del modo de busqueda.
 
-// Obtiene el nombre y el tipo de campo.---------------------------------------
-for nItem := 1 to Len( _aEstructura )
-        aAdd( aCampo, _aEstructura[nItem,1] )
-        aAdd( aTipoCampo, _aEstructura[nItem,2] )
-next
+   // Obtiene el nombre y el tipo de campo.---------------------------------------
+   for nItem := 1 to Len( _aEstructura )
+      aAdd( aCampo, _aEstructura[nItem,1] )
+      aAdd( aTipoCampo, _aEstructura[nItem,2] )
+   next
 
-// Evalua si el campo indexado existe y obtiene su tipo.-----------------------
-cCampo := Upper( (_cArea)->( ordSetFocus() ) )
-nTipoCampo := aScan( aCampo, cCampo )
-if nTipoCampo == 0
-        msgExclamation( _OOHG_Messages( 5, 3 ), "" )
-        return ( nil )
-endif
-cTipoCampo := aTipoCampo[nTipoCampo]
+   // Evalua si el campo indexado existe y obtiene su tipo.-----------------------
+   cCampo := Upper( (_cArea)->( ordSetFocus() ) )
+   nTipoCampo := aScan( aCampo, cCampo )
+   if nTipoCampo == 0
+      msgExclamation( _OOHG_Messages( 5, 3 ), "" )
+      return ( nil )
+   endif
+   cTipoCampo := aTipoCampo[nTipoCampo]
 
-// Comprueba si el tipo se puede buscar.---------------------------------------
-if ( cTipoCampo == "N" ) .or. ( cTipoCampo == "L" ) .or. ( cTipoCampo == "M" )
-        MsgExclamation( _OOHG_Messages( 5, 4 ), "" )
-        return ( nil )
-endif
+   // Comprueba si el tipo se puede buscar.---------------------------------------
+   if ( cTipoCampo == "N" ) .or. ( cTipoCampo == "L" ) .or. ( cTipoCampo == "M" )
+      MsgExclamation( _OOHG_Messages( 5, 4 ), "" )
+      return ( nil )
+   endif
 
-// Define la ventana de busqueda.----------------------------------------------
-define window wndABMBuscar ;
-                at 0, 0 ;
-                width  200 ;
-                height 160 ;
-                title _OOHG_Messages( 6, 6 ) ;
-                modal ;
-                nosysmenu ;
-                font "Serif" ;
-                size 8 ;
-                backcolor ( GetFormObjectByHandle( GetActiveWindow() ):BackColor )
-end window
+   // Define la ventana de busqueda.----------------------------------------------
+   define window wndABMBuscar ;
+             at 0, 0 ;
+             width  200 ;
+             height 160 ;
+             title _OOHG_Messages( 6, 6 ) ;
+             modal ;
+             nosysmenu ;
+             font "Serif" ;
+             size 8 ;
+             backcolor ( GetFormObjectByHandle( GetActiveWindow() ):BackColor )
+   end window
 
-// Define los controles de la ventana de busqueda.-----------------------------
-// Etiquetas
-@ 20, 20 label lblEtiqueta1 ;
+   // Define los controles de la ventana de busqueda.-----------------------------
+   // Etiquetas
+   @ 20, 20 label lblEtiqueta1 ;
         of wndABMBuscar ;
         value "" ;
         width 160 ;
@@ -1042,8 +1044,8 @@ end window
         font "ms sans serif" ;
         size 8
 
-// Botones.
-@ 80, 20 button btnGuardar ;
+   // Botones.
+   @ 80, 20 button btnGuardar ;
         of      wndABMBuscar ;
         caption "&" + _OOHG_Messages( 7, 5 ) ;
         action  {|| ABMBusqueda() } ;
@@ -1051,7 +1053,7 @@ end window
         height  30 ;
         font    "ms sans serif" ;
         size    8
-@ 80, 100 button btnCancelar ;
+   @ 80, 100 button btnCancelar ;
         of      wndABMBuscar ;
         caption "&" + _OOHG_Messages( 7, 13 ) ;
         action  {|| wndABMBuscar.Release } ;
@@ -1060,36 +1062,35 @@ end window
         font    "ms sans serif" ;
         size    8
 
-// Controles de edición.
-do case
-        case cTipoCampo == "C"
-                cModo := _OOHG_Messages( 6, 7 )
-                wndABMBuscar.lblEtiqueta1.Value := cModo
-                @ 45, 20 textbox txtBuscar ;
-                of wndABMBuscar ;
-                height 21 ;
-                value "" ;
-                width 160 ;
-                font "Arial" ;
-                size 9 ;
-                maxlength _aEstructura[nTipoCampo,3]
-        case cTipoCampo == "D"
-                cModo := _OOHG_Messages( 6, 8 )
-                wndABMBuscar.lblEtiqueta1.Value := cModo
-                @ 45, 20 datepicker txtBuscar ;
-                        of  wndABMBuscar ;
-                        value   Date() ;
-                        width   100 ;
-                        font    "Arial" ;
-                        size    9
-        endcase
+   // Controles de edición.
+   do case
+   case cTipoCampo == "C"
+      cModo := _OOHG_Messages( 6, 7 )
+      wndABMBuscar.lblEtiqueta1.Value := cModo
+      @ 45, 20 textbox txtBuscar ;
+      of wndABMBuscar ;
+      height 21 ;
+      value "" ;
+      width 160 ;
+      font "Arial" ;
+      size 9 ;
+      maxlength _aEstructura[nTipoCampo,3]
+   case cTipoCampo == "D"
+      cModo := _OOHG_Messages( 6, 8 )
+      wndABMBuscar.lblEtiqueta1.Value := cModo
+      @ 45, 20 datepicker txtBuscar ;
+                of  wndABMBuscar ;
+                value   Date() ;
+                width   100 ;
+                font    "Arial" ;
+                size    9
+   endcase
 
-// Activa la ventana.----------------------------------------------------------
-center window   wndABMBuscar
-activate window wndABMBuscar
+   // Activa la ventana.----------------------------------------------------------
+   center window   wndABMBuscar
+   activate window wndABMBuscar
 
-return ( nil )
-
+   return ( nil )
 
 
  /***************************************************************************************
@@ -1099,25 +1100,25 @@ return ( nil )
  *  Parámetros: Ninguno
  *    Devuelve: NIL
  ***************************************************************************************/
+
 static function ABMBusqueda()
 
-// Declaración de variables locales.-------------------------------------------
-local nRegistro := (_cArea)->( RecNo() )                // Registro anterior.
+   // Declaración de variables locales.-------------------------------------------
+   local nRegistro := (_cArea)->( RecNo() )                // Registro anterior.
 
-// Busca el registro.----------------------------------------------------------
-if (_cArea)->( dbSeek( wndABMBuscar.txtBuscar.Value ) )
-        nRegistro := (_cArea)->( RecNo() )
-else
-        msgExclamation( _OOHG_Messages( 5, 5 ), "" )
-        (_cArea)->(dbGoTo( nRegistro ) )
-endif
+   // Busca el registro.----------------------------------------------------------
+   if (_cArea)->( dbSeek( wndABMBuscar.txtBuscar.Value ) )
+      nRegistro := (_cArea)->( RecNo() )
+   else
+      msgExclamation( _OOHG_Messages( 5, 5 ), "" )
+      (_cArea)->(dbGoTo( nRegistro ) )
+   endif
 
-// Cierra y actualiza.---------------------------------------------------------
-wndABMBuscar.Release
-wndABM.brwBrowse.Value := nRegistro
+   // Cierra y actualiza.---------------------------------------------------------
+   wndABMBuscar.Release
+   wndABM.brwBrowse.Value := nRegistro
 
-return ( nil )
-
+   return ( nil )
 
 
  /***************************************************************************************
@@ -1127,36 +1128,36 @@ return ( nil )
  *  Parámetros: Ninguno
  *    Devuelve: NIL
  ***************************************************************************************/
+
 function ABMListado()
 
-// Declaración de variables locales.-------------------------------------------
-local nItem          // := 1                            // Indice de iteración.
-local aCamposListado    := {}                           // Matriz con los campos del listado.
-local aCamposTotales    := {}                           // Matriz con los campos totales.
-local nPrimero       // := 0                            // Registro inicial.
-local nUltimo        // := 0                            // Registro final.
-local nRegistro         := (_cArea)->( RecNo() )        // Registro anterior.
+   // Declaración de variables locales.-------------------------------------------
+   local nItem          // := 1                            // Indice de iteración.
+   local aCamposListado    := {}                           // Matriz con los campos del listado.
+   local aCamposTotales    := {}                           // Matriz con los campos totales.
+   local nPrimero       // := 0                            // Registro inicial.
+   local nUltimo        // := 0                            // Registro final.
+   local nRegistro         := (_cArea)->( RecNo() )        // Registro anterior.
 
-// Inicialización de variables.------------------------------------------------
-// Campos imprimibles.
-for nItem := 1 to Len( _aEstructura )
+   // Inicialización de variables.------------------------------------------------
+   // Campos imprimibles.
+   for nItem := 1 to Len( _aEstructura )
 
-        // Todos los campos son imprimibles menos los memo.
-        if _aEstructura[nItem,2] != "M"
-                aAdd( aCamposTotales, _aEstructura[nItem,1] )
-        endif
-next
+      // Todos los campos son imprimibles menos los memo.
+      if _aEstructura[nItem,2] != "M"
+         aAdd( aCamposTotales, _aEstructura[nItem,1] )
+      endif
+   next
 
-// Rango de registros.
-(_cArea)->( dbGoTop() )
-nPrimero := (_cArea)->( RecNo() )
-(_cArea)->( dbGoBottom() )
-nUltimo  := (_cArea)->( RecNo() )
-(_cArea)->( dbGoTo( nRegistro ) )
+   // Rango de registros.
+   (_cArea)->( dbGoTop() )
+   nPrimero := (_cArea)->( RecNo() )
+   (_cArea)->( dbGoBottom() )
+   nUltimo  := (_cArea)->( RecNo() )
+   (_cArea)->( dbGoTo( nRegistro ) )
 
-
-// Defincicón de la ventana del proceso.---------------------------------------
-define window wndABMListado ;
+   // Defincicón de la ventana del proceso.---------------------------------------
+   define window wndABMListado ;
         at 0, 0 ;
         width  420 ;
         height 295 ;
@@ -1167,35 +1168,35 @@ define window wndABMListado ;
         size 8 ;
         backcolor ( GetFormObjectByHandle( GetActiveWindow() ):BackColor )
 
-end window
+   end window
 
-// Definición de los controles.------------------------------------------------
-// Frame.
-@ 10, 10 frame frmFrame1 of wndABMListado width 390 height 205
+   // Definición de los controles.------------------------------------------------
+   // Frame.
+   @ 10, 10 frame frmFrame1 of wndABMListado width 390 height 205
 
-// Label.
-@ 20, 20 label lblLabel1 ;
+   // Label.
+   @ 20, 20 label lblLabel1 ;
         of wndABMListado ;
         value _OOHG_Messages( 6, 11 ) ;
         width 140 ;
         height 21 ;
         font "ms sans serif" ;
         size 8
-@ 20, 250 label lblLabel2 ;
+   @ 20, 250 label lblLabel2 ;
         of     wndABMListado ;
         value  _OOHG_Messages( 6, 12 ) ;
         width  140 ;
         height 21 ;
         font   "ms sans serif" ;
         size   8
-@ 160, 20 label lblLabel3 ;
+   @ 160, 20 label lblLabel3 ;
         of wndABMListado ;
         value _OOHG_Messages( 6, 13 ) ;
         width 140 ;
         height 21 ;
         font "ms sans serif" ;
         size 8
-@ 160, 250 label lblLabel4 ;
+   @ 160, 250 label lblLabel4 ;
         of wndABMListado ;
         value _OOHG_Messages( 6, 14 ) ;
         width 140 ;
@@ -1203,8 +1204,8 @@ end window
         font "ms sans serif" ;
         size 8
 
-// ListBox.
-@ 45, 20 listbox lbxListado ;
+   // ListBox.
+   @ 45, 20 listbox lbxListado ;
         of wndABMListado ;
         width 140 ;
         height 100 ;
@@ -1212,7 +1213,7 @@ end window
         value 1 ;
         font "Arial" ;
         size 9
-@ 45, 250 listbox lbxCampos ;
+   @ 45, 250 listbox lbxCampos ;
         of wndABMListado ;
         width 140 ;
         height 100 ;
@@ -1222,8 +1223,8 @@ end window
         size 9 ;
         sort
 
-// Spinner.
-@ 185, 20 spinner spnPrimero ;
+   // Spinner.
+   @ 185, 20 spinner spnPrimero ;
         of wndABMListado ;
         range 1, (_cArea)->( RecCount() ) ;
         value nPrimero ;
@@ -1231,7 +1232,7 @@ end window
         height 21 ;
         font "Arial" ;
         size 9
-@ 185, 250 spinner spnUltimo ;
+   @ 185, 250 spinner spnUltimo ;
         of wndABMListado ;
         range 1, (_cArea)->( RecCount() ) ;
         value nUltimo ;
@@ -1240,8 +1241,8 @@ end window
         font "Arial" ;
         size 9
 
-// Botones.
-@ 45, 170 button btnMas ;
+   // Botones.
+   @ 45, 170 button btnMas ;
         of      wndABMListado ;
         caption _OOHG_Messages( 7, 14 ) ;
         action  {|| ABMListadoEvento( ABM_LISTADO_MAS ) } ;
@@ -1249,7 +1250,7 @@ end window
         height  30 ;
         font    "ms sans serif" ;
         size    8
-@ 85, 170 button btnMenos ;
+   @ 85, 170 button btnMenos ;
         of      wndABMListado ;
         caption _OOHG_Messages( 7, 15 ) ;
         action  {|| ABMListadoEvento( ABM_LISTADO_MENOS ) } ;
@@ -1257,7 +1258,7 @@ end window
         height  30 ;
         font    "ms sans serif" ;
         size    8
-@ 225, 240 button btnImprimir ;
+   @ 225, 240 button btnImprimir ;
         of      wndABMListado ;
         caption _OOHG_Messages( 7, 16 ) ;
         action  {|| ABMListadoEvento( ABM_LISTADO_IMPRIMIR ) } ;
@@ -1266,7 +1267,7 @@ end window
         font    "ms sans serif" ;
         size    8 ;
         notabstop
-@ 225, 330 button btnCerrar ;
+   @ 225, 330 button btnCerrar ;
         of      wndABMListado ;
         caption _OOHG_Messages( 7, 17 ) ;
         action  {|| ABMListadoEvento( ABM_LISTADO_CERRAR ) } ;
@@ -1276,11 +1277,11 @@ end window
         size    8 ;
         notabstop
 
-// Activación de la ventana----------------------------------------------------
-center   window wndABMListado
-activate window wndABMListado
+   // Activación de la ventana----------------------------------------------------
+   center   window wndABMListado
+   activate window wndABMListado
 
-return ( nil )
+   return ( nil )
 
 
 
@@ -1291,108 +1292,108 @@ return ( nil )
  *  Parámetros: nEvento    Valor numérico con el tipo de evento a ejecutar.
  *    Devuelve: NIL
  ***************************************************************************************/
+
 function ABMListadoEvento( nEvento )
 
-// Declaración de variables locales.-------------------------------------------
-local cItem        // := ""                             // Nombre del item.
-local nItem        // := 0                              // Numero del item.
-local aCampo          := {}                             // Nombres de los campos.
-local nIndice      // := 0                              // Numero del campo.
-local nAnchoCampo  // := 0                              // Ancho del campo.
-local nAnchoTitulo // := 0                              // Ancho del título.
-local nTotal          := 0                              // Ancho total.
-// local cMensaje     := ""                             // Mensaje al usuario.
-local nPrimero        := wndABMListado.spnPrimero.Value // Registro inicial.
-local nUltimo         := wndABMListado.spnUltimo.Value  // Registro final.
+   // Declaración de variables locales.-------------------------------------------
+   local cItem        // := ""                             // Nombre del item.
+   local nItem        // := 0                              // Numero del item.
+   local aCampo          := {}                             // Nombres de los campos.
+   local nIndice      // := 0                              // Numero del campo.
+   local nAnchoCampo  // := 0                              // Ancho del campo.
+   local nAnchoTitulo // := 0                              // Ancho del título.
+   local nTotal          := 0                              // Ancho total.
+   // local cMensaje     := ""                             // Mensaje al usuario.
+   local nPrimero        := wndABMListado.spnPrimero.Value // Registro inicial.
+   local nUltimo         := wndABMListado.spnUltimo.Value  // Registro final.
 
-// Control de eventos.
-do case
-        // Cerrar el cuadro de dialogo de definición de listado.---------------
-        case nEvento == ABM_LISTADO_CERRAR
-                wndABMListado.Release
+   // Control de eventos.
+   do case
+   // Cerrar el cuadro de dialogo de definición de listado.---------------
+   case nEvento == ABM_LISTADO_CERRAR
+      wndABMListado.Release
 
-        // Añadir columna.-----------------------------------------------------
-        case nEvento == ABM_LISTADO_MAS
-                if .not. wndABMListado.lbxCampos.ItemCount == 0 .or. ;
-                         wndABMListado.lbxCampos.Value == 0
-                        nItem := wndABMListado.lbxCampos.Value
-                        cItem := wndABMListado.lbxCampos.Item( nItem )
-                        wndABMListado.lbxListado.addItem( cItem )
-                        delete item nItem from lbxCampos of wndABMListado
-                endif
+   // Añadir columna.-----------------------------------------------------
+   case nEvento == ABM_LISTADO_MAS
+      if .not. wndABMListado.lbxCampos.ItemCount == 0 .or. ;
+                   wndABMListado.lbxCampos.Value == 0
+         nItem := wndABMListado.lbxCampos.Value
+         cItem := wndABMListado.lbxCampos.Item( nItem )
+         wndABMListado.lbxListado.addItem( cItem )
+         delete item nItem from lbxCampos of wndABMListado
+      endif
 
-        // Quitar columna.-----------------------------------------------------
-        case nevento == ABM_LISTADO_MENOS
-                if .not. wndABMListado.lbxListado.ItemCount == 0 .or. ;
-                         wndABMListado.lbxListado.Value == 0
-                        nItem := wndABMListado.lbxListado.Value
-                        cItem := wndABMListado.lbxListado.Item( nItem )
-                        wndABMListado.lbxCampos.addItem( cItem )
-                        delete item nItem from lbxListado of wndABMListado
-                endif
+   // Quitar columna.-----------------------------------------------------
+   case nevento == ABM_LISTADO_MENOS
+      if .not. wndABMListado.lbxListado.ItemCount == 0 .or. ;
+                wndABMListado.lbxListado.Value == 0
+         nItem := wndABMListado.lbxListado.Value
+         cItem := wndABMListado.lbxListado.Item( nItem )
+         wndABMListado.lbxCampos.addItem( cItem )
+         delete item nItem from lbxListado of wndABMListado
+      endif
 
-        // Imprimir listado.---------------------------------------------------
-        case nevento == ABM_LISTADO_IMPRIMIR
+   // Imprimir listado.---------------------------------------------------
+   case nevento == ABM_LISTADO_IMPRIMIR
 
-                // Copia el contenido de los controles a las variables.
-                _aCamposListado := {}
-                for nItem := 1 to wndABMListado.lbxListado.ItemCount
-                        aAdd( _aCamposListado, wndABMListado.lbxListado.Item( nItem ) )
-                next
+      // Copia el contenido de los controles a las variables.
+      _aCamposListado := {}
+      for nItem := 1 to wndABMListado.lbxListado.ItemCount
+         aAdd( _aCamposListado, wndABMListado.lbxListado.Item( nItem ) )
+      next
 
-                // Establece el numero de orden del campo a listar.
-                _aNumeroCampo := {}
-                for nItem := 1 to Len( _aEstructura )
-                        aAdd( aCampo, _aEstructura[nItem,1] )
-                next
-                for nItem := 1 to Len( _aCamposListado )
-                        aAdd( _aNumeroCampo, aScan( aCampo, _aCamposListado[nItem] ) )
-                next
+      // Establece el numero de orden del campo a listar.
+      _aNumeroCampo := {}
+      for nItem := 1 to Len( _aEstructura )
+         aAdd( aCampo, _aEstructura[nItem,1] )
+      next
+      for nItem := 1 to Len( _aCamposListado )
+         aAdd( _aNumeroCampo, aScan( aCampo, _aCamposListado[nItem] ) )
+      next
 
-                // Establece el ancho del campo a listar.
-                _aAnchoCampo := {}
-                for nItem := 1 to Len( _aCamposListado )
-                        nIndice      := _aNumeroCampo[nItem]
-                        nAnchoTitulo := Len( _aCampos[nIndice] )
-                        nAnchoCampo  := _aEstructura[nIndice,3]
-                        if _aEstructura[nIndice,2] == "D"
-                                aAdd( _aAnchoCampo, iif( nAnchoTitulo > nAnchoCampo,;
-                                                         nAnchoTitulo+4,;
-                                                         nAnchoCampo+4 ) )
-                        else
-                                aAdd( _aAnchoCampo, iif( nAnchoTitulo > nAnchoCampo,;
-                                                         nAnchoTitulo+2,;
-                                                         nAnchoCampo+2 ) )
-                        endif
-                 next
+      // Establece el ancho del campo a listar.
+      _aAnchoCampo := {}
+      for nItem := 1 to Len( _aCamposListado )
+         nIndice      := _aNumeroCampo[nItem]
+         nAnchoTitulo := Len( _aCampos[nIndice] )
+         nAnchoCampo  := _aEstructura[nIndice,3]
+         if _aEstructura[nIndice,2] == "D"
+            aAdd( _aAnchoCampo, iif( nAnchoTitulo > nAnchoCampo,;
+                                nAnchoTitulo+4,;
+                                nAnchoCampo+4 ) )
+         else
+            aAdd( _aAnchoCampo, iif( nAnchoTitulo > nAnchoCampo,;
+                                nAnchoTitulo+2,;
+                                nAnchoCampo+2 ) )
+         endif
+      next
 
-                // Comprueba el tamaño del listado y lanza la impresión.
-                for nItem := 1 to Len( _aAnchoCampo )
+      // Comprueba el tamaño del listado y lanza la impresión.
+      for nItem := 1 to Len( _aAnchoCampo )
                         nTotal += _aAnchoCampo[nItem]
-                next
-                if nTotal > 164
+      next
+      if nTotal > 164
 
-                        // No cabe en la hoja.
-                        MsgExclamation( _OOHG_Messages( 5, 6 ), "" )
-                else
-                        if nTotal > 109
+         // No cabe en la hoja.
+         MsgExclamation( _OOHG_Messages( 5, 6 ), "" )
+      else
+         if nTotal > 109
 
-                                // Cabe en una hoja horizontal.
-                                ABMListadoImprimir( .t., nPrimero, nUltimo )
-                        else
+            // Cabe en una hoja horizontal.
+            ABMListadoImprimir( .t., nPrimero, nUltimo )
+         else
 
-                                // Cabe en una hoja vertical.
-                                ABMListadoImprimir( .f., nPrimero, nUltimo )
-                        endif
-                endif
+            // Cabe en una hoja vertical.
+            ABMListadoImprimir( .f., nPrimero, nUltimo )
+         endif
+      endif
 
         // Control de error.---------------------------------------------------
-        otherwise
-                MsgOOHGError( _OOHG_Messages( 8, 5 ), "" )
-endcase
+   otherwise
+      MsgOOHGError( _OOHG_Messages( 8, 5 ), "" )
+   endcase
 
-return ( nil )
-
+   return ( nil )
 
 
  /***************************************************************************************
@@ -1405,198 +1406,194 @@ return ( nil )
  *              nUltimo         Valor numérico con el último registro a imprimir.
  *    Devuelve: NIL
  ***************************************************************************************/
+
 function ABMListadoImprimir( lOrientacion, nPrimero, nUltimo )
 
-// Declaración de variables locales.-------------------------------------------
-local nLineas      := 0                                 // Numero de linea.
-local nPaginas  // := 0                                 // Numero de páginas.
-local nFila        := 13                                // Numero de fila.
-local nColumna     := 10                                // Numero de columna.
-local nItem     // := 1                                 // Indice de iteracion.
-local nIndice   // := 1                                 // Indice de campo.
-local lCabecera // := .t.                               // ¿Imprimir cabecera?.
-// local lPie      := .f.                               // ¿Imprimir pie?.
-local nPagina      := 1                                 // Numero de pagina.
-local lSalida   // := .t.                               // ¿Salir del listado?.
-local nRegistro    := (_cArea)->( RecNo() )             // Registro anterior.
-local cTexto    // := ""                                // Texto para lógicos.
-local oprint
+   // Declaración de variables locales.-------------------------------------------
+   local nLineas      := 0                                 // Numero de linea.
+   local nPaginas  // := 0                                 // Numero de páginas.
+   local nFila        := 13                                // Numero de fila.
+   local nColumna     := 10                                // Numero de columna.
+   local nItem     // := 1                                 // Indice de iteracion.
+   local nIndice   // := 1                                 // Indice de campo.
+   local lCabecera // := .t.                               // ¿Imprimir cabecera?.
+   // local lPie      := .f.                               // ¿Imprimir pie?.
+   local nPagina      := 1                                 // Numero de pagina.
+   local lSalida   // := .t.                               // ¿Salir del listado?.
+   local nRegistro    := (_cArea)->( RecNo() )             // Registro anterior.
+   local cTexto    // := ""                                // Texto para lógicos.
+   local oprint
 
-// Definición del rango del listado.-------------------------------------------
-(_cArea)->( dbGoTo( nPrimero ) )
-do while .not. ( (_cArea)->( RecNo() ) ) == nUltimo .or. ( (_cArea)->( Eof() ) )
-        nLineas++
-        (_cArea)->( dbSkip( 1 ) )
-enddo
-(_cArea)->( dbGoTo( nPrimero ) )
+   // Definición del rango del listado.-------------------------------------------
+   (_cArea)->( dbGoTo( nPrimero ) )
+   do while .not. ( (_cArea)->( RecNo() ) ) == nUltimo .or. ( (_cArea)->( Eof() ) )
+      nLineas++
+      (_cArea)->( dbSkip( 1 ) )
+   enddo
+   (_cArea)->( dbGoTo( nPrimero ) )
 
-// Inicialización de la impresora.---------------------------------------------
+   // Inicialización de la impresora.---------------------------------------------
+
+   oprint:=tprint()
+   oprint:init()   ////// printlibrary
+   oprint:selprinter(.T. , .T.  )  /// select,preview,landscape,papersize
+   if oprint:lprerror
+      oprint:release()
+      return nil
+   endif
+
+   // Control de errores.---------------------------------------------------------
+
+   // Definición de fuentes, rellenos y tipos de linea.---------------------------
+   // Fuentes.
+
+   // Inicio del listado.
+
+   oprint:begindoc()
+
+   lCabecera := .t.
+   lSalida   := .t.
+   do while lSalida
+
+      // Cabecera.-----------------------------------------------------------
+      if lCabecera
+         oprint:beginpage()
+         oprint:printdata(5,1,_OOHG_Messages(6,15) + _cTitulo,"times new roman",14,.T.) ///
+         oprint:printline(6,1,6,140)
+         oprint:printdata(7,1,_OOHG_messages(6,16) ,"times new roman",10,.T.) ///
+         oprint:printdata(7,30,date(),"times new roman",10,.F.) ///
+         oprint:printdata(8,1, _OOHG_messages(6,17) ,"times new roman",10,.T.) ///
+         oprint:printdata(8,30, alltrim(str(nprimero)),"times new roman",10,.F.) ///
+         oprint:printdata(8,40,_OOHG_messages(6,18) ,"times new roman",10,.T.) ///
+         oprint:printdata(8,60, alltrim(str(nultimo)),"times new roman",10,.F.) ///
+         oprint:printdata(9,1,_OOHG_messages(6,19) ,"times new roman",10,.T.) ///
+         oprint:printdata(9,30, ordname(),"times new roman",10,.F.) ///
+         nColumna := 1
+         for nItem := 1 to Len( _aNumeroCampo )
+            nIndice := _aNumeroCampo[nItem]
+            oprint:printdata(11,ncolumna,UPPER(_acampos[nindice]),,9,.T.) ///
+            nColumna += _aAnchoCampo[nItem] +2
+         next
+         lCabecera := .f.
+      endif
+
+      // Registros.-----------------------------------------------------------
+      nColumna := 1
+      for nItem := 1 to Len( _aNumeroCampo )
+         nIndice := _aNumeroCampo[nItem]
+         do case
+         case _aEstructura[nIndice,2] == "L"
+
+            cTexto := iif( (_cArea)->( FieldGet( nIndice ) ), _OOHG_Messages( 6, 20 ), _OOHG_Messages( 6, 21 ) )
+            oprint:printdata(nfila,ncolumna,ctexto, ,,)
+            nColumna += _aAnchoCampo[nItem] +2
+         case _aEstructura[nIndice,2] == "N"
+            oprint:printdata(nfila,ncolumna, (_cArea)->( FieldGet( nIndice ) ), ,,)
+            nColumna += _aAnchoCampo[nItem] +2
+
+         otherwise
+            oprint:printdata(nfila,ncolumna, (_cArea)->( FieldGet( nIndice ) ), ,,)
+            nColumna += _aAnchoCampo[nItem] +2
+         endcase
+      next
+      nFila++
+
+      (_cArea)->( dbSkip( 1 ) )
+
+      // Pie.-----------------------------------------------------------------
+      if lOrientacion
+         // Horizontal
+         if nFila > 43
+            nPaginas := Int( nLineas / 32 )
+            if .not. Mod( nLineas, 32 ) == 0
+               nPaginas++
+            endif
 
 
-oprint:=tprint()
-oprint:init()   ////// printlibrary
-oprint:selprinter(.T. , .T.  )  /// select,preview,landscape,papersize
-if oprint:lprerror
+            oprint:printline(45,10,45,140)
+            oprint:printdata(46,1,_OOHG_messages(6,22) + AllTrim( Str( nPagina ) )  ,"times new roman",10,.F.) ///
+            lCabecera := .t.
+            nPagina++
+            nFila := 13
+            oprint:endpage()
+         endif
+      else
+         // Vertical
+         if nFila > 53
+            nPaginas := Int( nLineas / 42 )
+            if .not. Mod( nLineas, 42 ) == 0
+               nPaginas++
+            endif
+
+            oprint:printline(55,1,55,140)
+
+
+            oprint:printdata(56,70,_OOHG_messages(6,22) + AllTrim( Str( nPagina ) )  ,"times new roman",10,.F.) ///
+            lCabecera := .t.
+            nPagina++
+            nFila := 13
+
+            oprint:endpage()
+         endif
+      endif
+      Empty( nPaginas )
+
+      // Comprobación del rango de registro.---------------------------------
+      if ( (_cArea)->( RecNo() ) == nUltimo )
+         nColumna := 1
+
+         // Imprime el último registro.
+         for nItem := 1 to Len( _aNumeroCampo )
+            nIndice := _aNumeroCampo[nItem]
+            do case
+            case _aEstructura[nIndice,2] == "L"
+               cTexto := iif( (_cArea)->( FieldGet( nIndice ) ), _OOHG_Messages( 6, 20 ), _OOHG_Messages( 6, 21 ) )
+               oprint:printdata(nfila,ncolumna, ctexto, ,,.F.)
+               nColumna += _aAnchoCampo[nItem]  +2
+            case _aEstructura[nIndice,2] == "N"
+               oprint:printdata(nfila,ncolumna, (_cArea)->( FieldGet( nIndice ) )    , ,,.F.)
+               nColumna += _aAnchoCampo[nItem] +2
+
+            otherwise
+               oprint:printdata(nfila,ncolumna, (_cArea)->( FieldGet( nIndice ) )    , ,,.F.)
+               nColumna += _aAnchoCampo[nItem] +2
+            endcase
+         next
+         lSalida := .f.
+      endif
+      if ( (_cArea)->( Eof() ) )
+         lSalida := .f.
+      endif
+   enddo
+
+   // Comprueba que se imprime el pie al finalizar.-------------------------------
+   if lOrientacion
+      // Horizontal
+      if nFila <= 43
+         nPaginas := Int( nLineas / 32 )
+         if .not. Mod( nLineas, 32 ) == 0
+            nPaginas++
+         endif
+         oprint:printline(45,1,45,140)
+         oprint:printdata(46,70,_OOHG_messages(6,22) + AllTrim( Str( nPagina ) )   ,"times new roman" ,10,.F.)
+      endif
+   else
+      // Vertical
+      if nFila <= 53
+         nPaginas := Int( nLineas / 42 )
+         if .not. Mod( nLineas, 42 ) == 0
+            nPaginas++
+         endif
+         oprint:printline(55,1,55,140)
+         oprint:printdata(56,70,_OOHG_messages(6,22) + AllTrim( Str( nPagina ) )   ,"times new roman" ,10,.F.)
+      endif
+   endif
+   Empty( nPaginas )
+   oprint:endpage()
+   oprint:enddoc()
    oprint:release()
-   return nil
-endif
+   release oprint
+   // Restaura.-------------------------------------------------------------------
+   (_cArea)->( dbGoTo( nRegistro ) )
 
-
-
-// Control de errores.---------------------------------------------------------
-
-
-// Definición de fuentes, rellenos y tipos de linea.---------------------------
-// Fuentes.
-
-// Inicio del listado.
-
-oprint:begindoc()
-
-
-lCabecera := .t.
-lSalida   := .t.
-do while lSalida
-
-        // Cabecera.-----------------------------------------------------------
-        if lCabecera
-                oprint:beginpage()
-oprint:printdata(5,1,_OOHG_Messages(6,15) + _cTitulo,"times new roman",14,.T.) ///
-oprint:printline(6,1,6,140)
-oprint:printdata(7,1,_OOHG_messages(6,16) ,"times new roman",10,.T.) ///
-oprint:printdata(7,30,date(),"times new roman",10,.F.) ///
-oprint:printdata(8,1, _OOHG_messages(6,17) ,"times new roman",10,.T.) ///
-oprint:printdata(8,30, alltrim(str(nprimero)),"times new roman",10,.F.) ///
-oprint:printdata(8,40,_OOHG_messages(6,18) ,"times new roman",10,.T.) ///
-oprint:printdata(8,60, alltrim(str(nultimo)),"times new roman",10,.F.) ///
-oprint:printdata(9,1,_OOHG_messages(6,19) ,"times new roman",10,.T.) ///
-oprint:printdata(9,30, ordname(),"times new roman",10,.F.) ///
-                nColumna := 1
-                for nItem := 1 to Len( _aNumeroCampo )
-                        nIndice := _aNumeroCampo[nItem]
-                        oprint:printdata(11,ncolumna,UPPER(_acampos[nindice]),,9,.T.) ///
-                        nColumna += _aAnchoCampo[nItem] +2
-                next
-                lCabecera := .f.
-        endif
-
-        // Registros.-----------------------------------------------------------
-        nColumna := 1
-        for nItem := 1 to Len( _aNumeroCampo )
-                nIndice := _aNumeroCampo[nItem]
-                do case
-                case _aEstructura[nIndice,2] == "L"
-
-                        cTexto := iif( (_cArea)->( FieldGet( nIndice ) ), _OOHG_Messages( 6, 20 ), _OOHG_Messages( 6, 21 ) )
-                        oprint:printdata(nfila,ncolumna,ctexto, ,,)
-                        nColumna += _aAnchoCampo[nItem] +2
-                case _aEstructura[nIndice,2] == "N"
-                        oprint:printdata(nfila,ncolumna, (_cArea)->( FieldGet( nIndice ) ), ,,)
-                        nColumna += _aAnchoCampo[nItem] +2
-
-                otherwise
-                        oprint:printdata(nfila,ncolumna, (_cArea)->( FieldGet( nIndice ) ), ,,)
-                        nColumna += _aAnchoCampo[nItem] +2
-                endcase
-        next
-        nFila++
-
-        (_cArea)->( dbSkip( 1 ) )
-
-        // Pie.-----------------------------------------------------------------
-        if lOrientacion
-                // Horizontal
-                if nFila > 43
-                        nPaginas := Int( nLineas / 32 )
-                        if .not. Mod( nLineas, 32 ) == 0
-                                nPaginas++
-                        endif
-
-
-                        oprint:printline(45,10,45,140)
-                        oprint:printdata(46,1,_OOHG_messages(6,22) + AllTrim( Str( nPagina ) )  ,"times new roman",10,.F.) ///
-                        lCabecera := .t.
-                        nPagina++
-                        nFila := 13
-                        oprint:endpage()
-                endif
-        else
-                // Vertical
-                if nFila > 53
-                        nPaginas := Int( nLineas / 42 )
-                        if .not. Mod( nLineas, 42 ) == 0
-                                nPaginas++
-                        endif
-
-                        oprint:printline(55,1,55,140)
-
-
-                        oprint:printdata(56,70,_OOHG_messages(6,22) + AllTrim( Str( nPagina ) )  ,"times new roman",10,.F.) ///
-                        lCabecera := .t.
-                        nPagina++
-                        nFila := 13
-
-                        oprint:endpage()
-                endif
-        endif
-        Empty( nPaginas )
-
-        // Comprobación del rango de registro.---------------------------------
-        if ( (_cArea)->( RecNo() ) == nUltimo )
-                nColumna := 1
-
-                // Imprime el último registro.
-                for nItem := 1 to Len( _aNumeroCampo )
-                        nIndice := _aNumeroCampo[nItem]
-                        do case
-                        case _aEstructura[nIndice,2] == "L"
-                                cTexto := iif( (_cArea)->( FieldGet( nIndice ) ), _OOHG_Messages( 6, 20 ), _OOHG_Messages( 6, 21 ) )
-                                oprint:printdata(nfila,ncolumna, ctexto, ,,.F.)
-                                nColumna += _aAnchoCampo[nItem]  +2
-                        case _aEstructura[nIndice,2] == "N"
-                                oprint:printdata(nfila,ncolumna, (_cArea)->( FieldGet( nIndice ) )    , ,,.F.)
-                                nColumna += _aAnchoCampo[nItem] +2
-
-                        otherwise
-                                oprint:printdata(nfila,ncolumna, (_cArea)->( FieldGet( nIndice ) )    , ,,.F.)
-                                nColumna += _aAnchoCampo[nItem] +2
-                        endcase
-                next
-                lSalida := .f.
-        endif
-        if ( (_cArea)->( Eof() ) )
-                lSalida := .f.
-        endif
-enddo
-
-// Comprueba que se imprime el pie al finalizar.-------------------------------
-if lOrientacion
-        // Horizontal
-        if nFila <= 43
-                nPaginas := Int( nLineas / 32 )
-                if .not. Mod( nLineas, 32 ) == 0
-                        nPaginas++
-                endif
-                oprint:printline(45,1,45,140)
-                oprint:printdata(46,70,_OOHG_messages(6,22) + AllTrim( Str( nPagina ) )   ,"times new roman" ,10,.F.)
-        endif
-else
-        // Vertical
-        if nFila <= 53
-                nPaginas := Int( nLineas / 42 )
-                if .not. Mod( nLineas, 42 ) == 0
-                        nPaginas++
-                endif
-                oprint:printline(55,1,55,140)
-                oprint:printdata(56,70,_OOHG_messages(6,22) + AllTrim( Str( nPagina ) )   ,"times new roman" ,10,.F.)
-        endif
-endif
-Empty( nPaginas )
-oprint:endpage()
-oprint:enddoc()
-oprint:release()
-release oprint
-// Restaura.-------------------------------------------------------------------
-(_cArea)->( dbGoTo( nRegistro ) )
-
-return ( nil )
+   return ( nil )

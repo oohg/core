@@ -328,22 +328,22 @@ Function SendData ( cDest , Data )
 
    EndIf
 
-Return Nil
+   Return Nil
 
-*------------------------------------------------------------------------------*
 Function SetCommStationName( st )
-*------------------------------------------------------------------------------*
+
    If ValType( st ) $ "CM" .AND. ! Empty( st )
       _OOHG_StationName   := st
       _OOHG_SendDataCount := 0
    EndIf
-Return _OOHG_StationName
 
-*------------------------------------------------------------------------------*
+   Return _OOHG_StationName
+
 Function SetCommPath( cph )
-*------------------------------------------------------------------------------*
+
    If ValType( cph ) $ "CM"
       _OOHG_CommPath := cph
    EndIf
    /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
-Return _OOHG_CommPath
+
+   Return _OOHG_CommPath

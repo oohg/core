@@ -81,218 +81,178 @@ STATIC _OOHG_lValidating := .F.       // If there's a ::SetFocus() call inside O
 #include "oohg.h"
 #pragma ENDDUMP
 
-*------------------------------------------------------------------------------*
 Function _Getvalue( ControlName, ParentForm )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):Value
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( ControlName, ParentForm ):Value
+
 Function _Setvalue( ControlName, ParentForm, Value )
-*------------------------------------------------------------------------------*
-Return ( GetControlObject( ControlName, ParentForm ):Value := Value )
 
-*------------------------------------------------------------------------------*
+   Return ( GetControlObject( ControlName, ParentForm ):Value := Value )
+
 Function _AddItem( ControlName, ParentForm, Value )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):AddItem( Value )
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( ControlName, ParentForm ):AddItem( Value )
+
 Function _DeleteItem( ControlName, ParentForm, Value )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):DeleteItem( Value )
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( ControlName, ParentForm ):DeleteItem( Value )
+
 Function _DeleteAllItems( ControlName, ParentForm )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):DeleteAllItems()
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( ControlName, ParentForm ):DeleteAllItems()
+
 Function GetControlName( ControlName, ParentForm )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):Name
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( ControlName, ParentForm ):Name
+
 Function GetControlHandle( ControlName, ParentForm )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):hWnd
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( ControlName, ParentForm ):hWnd
+
 Function GetControlContainerHandle( ControlName, ParentForm )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):Container:hWnd
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( ControlName, ParentForm ):Container:hWnd
+
 Function GetControlParentHandle( ControlName, ParentForm )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):ContainerhWnd     // :Parent:hWnd
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( ControlName, ParentForm ):ContainerhWnd     // :Parent:hWnd
+
 Function GetControlId( ControlName, ParentForm )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):Id
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( ControlName, ParentForm ):Id
+
 Function GetControlType( ControlName, ParentForm )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):Type
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( ControlName, ParentForm ):Type
+
 Function GetControlValue( ControlName, ParentForm )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):Value
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( ControlName, ParentForm ):Value
+
 Function _IsControlDefined( ControlName, FormName )
-*------------------------------------------------------------------------------*
-Local mVar
+
+   Local mVar
+
    mVar := '_' + FormName + '_' + ControlName
-Return ( Type( mVar ) == "O" .AND. ( &mVar ):hWnd != -1 )
 
-*------------------------------------------------------------------------------*
+   Return ( Type( mVar ) == "O" .AND. ( &mVar ):hWnd != -1 )
+
 Function _SetFocus( ControlName, ParentForm )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName , ParentForm ):SetFocus()
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( ControlName , ParentForm ):SetFocus()
+
 Function _DisableControl( ControlName, ParentForm )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):Enabled := .F.
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( ControlName, ParentForm ):Enabled := .F.
+
 Function _EnableControl( ControlName, ParentForm )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):Enabled := .T.
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( ControlName, ParentForm ):Enabled := .T.
+
 Function _ShowControl( ControlName, ParentForm )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):Show()
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( ControlName, ParentForm ):Show()
+
 Function _HideControl( ControlName, ParentForm )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):Hide()
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( ControlName, ParentForm ):Hide()
+
 Function _SetItem( ControlName, ParentForm, Item, Value )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):Item( Item, Value )
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( ControlName, ParentForm ):Item( Item, Value )
+
 Function _GetItem( ControlName, ParentForm, Item )
-*------------------------------------------------------------------------------*
-Return GetControlObject( Controlname, ParentForm ):Item( Item )
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( Controlname, ParentForm ):Item( Item )
+
 Function _SetControlSizePos( ControlName, ParentForm, row, col, width, height )
-*------------------------------------------------------------------------------*
-Return GetControlObject( Controlname, ParentForm ):SizePos( row, col, width, height )
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( Controlname, ParentForm ):SizePos( row, col, width, height )
+
 Function _GetItemCount( ControlName, ParentForm )
-*------------------------------------------------------------------------------*
-Return GetControlObject( Controlname, ParentForm ):ItemCount
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( Controlname, ParentForm ):ItemCount
+
 Function _GetControlRow( ControlName, ParentForm )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):Row
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( ControlName, ParentForm ):Row
+
 Function _GetControlCol( ControlName, ParentForm )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):Col
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( ControlName, ParentForm ):Col
+
 Function _GetControlWidth( ControlName, ParentForm )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):Width
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( ControlName, ParentForm ):Width
+
 Function _GetControlHeight( ControlName, ParentForm )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):Height
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( ControlName, ParentForm ):Height
+
 Function _SetControlCol( ControlName, ParentForm, Value )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):SizePos( , Value )
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( ControlName, ParentForm ):SizePos( , Value )
+
 Function _SetControlRow( ControlName, ParentForm, Value )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):SizePos( Value )
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( ControlName, ParentForm ):SizePos( Value )
+
 Function _SetControlWidth( ControlName, ParentForm, Value )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):SizePos( , , Value )
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( ControlName, ParentForm ):SizePos( , , Value )
+
 Function _SetControlHeight( ControlName, ParentForm, Value )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):SizePos( , , , Value )
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( ControlName, ParentForm ):SizePos( , , , Value )
+
 Function _SetPicture( ControlName, ParentForm, FileName )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):Picture := FileName
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( ControlName, ParentForm ):Picture := FileName
+
 Function _GetPicture( ControlName, ParentForm )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):Picture
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( ControlName, ParentForm ):Picture
+
 Function _GetControlAction( ControlName, ParentForm )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):OnClick
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( ControlName, ParentForm ):OnClick
+
 Function _GetToolTip( ControlName, ParentForm )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):ToolTip
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( ControlName, ParentForm ):ToolTip
+
 Function _SetToolTip( ControlName, ParentForm, Value  )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):ToolTip := Value
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( ControlName, ParentForm ):ToolTip := Value
+
 Function _SetRangeMin( ControlName, ParentForm, Value  )
-*------------------------------------------------------------------------------*
-Return ( GetControlObject( ControlName, ParentForm ):RangeMin := Value )
 
-*------------------------------------------------------------------------------*
+   Return ( GetControlObject( ControlName, ParentForm ):RangeMin := Value )
+
 Function _SetRangeMax( ControlName, ParentForm, Value  )
-*------------------------------------------------------------------------------*
-Return ( GetControlObject( ControlName, ParentForm ):RangeMax := Value )
 
-*------------------------------------------------------------------------------*
+   Return ( GetControlObject( ControlName, ParentForm ):RangeMax := Value )
+
 Function _GetRangeMin( ControlName, ParentForm )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):RangeMin
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( ControlName, ParentForm ):RangeMin
+
 Function _GetRangeMax( ControlName, ParentForm )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):RangeMax
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( ControlName, ParentForm ):RangeMax
+
 Function _SetMultiCaption( ControlName, ParentForm, Column, Value )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):Caption( Column, Value )
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( ControlName, ParentForm ):Caption( Column, Value )
+
 Function _GetMultiCaption( ControlName, ParentForm, Item )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):Caption( Item )
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( ControlName, ParentForm ):Caption( Item )
+
 Function InputWindow( Title, aLabels, aValues, aFormats, row, col, aButOKCancelCaptions, nLabelWidth, nControlWidth, nButtonWidth )
-*------------------------------------------------------------------------------*
-Local i, l, ControlRow, e := 0, LN, CN, r, c, nHeight, diff
-Local oInputWindow, aResult, nWidth, ControlCol, nSep
+
+   Local i, l, ControlRow, e := 0, LN, CN, r, c, nHeight, diff
+   Local oInputWindow, aResult, nWidth, ControlCol, nSep
 
    If ! HB_IsArray( aButOKCancelCaptions ) .OR. Len( aButOKCancelCaptions ) < 2
       aButOKCancelCaptions := { _OOHG_Messages( 1, 6 ), _OOHG_Messages( 1, 7 ) }
@@ -434,50 +394,47 @@ Local oInputWindow, aResult, nWidth, ControlCol, nSep
 
    oInputWindow:Activate()
 
-Return aResult
+   Return aResult
 
-*------------------------------------------------------------------------------*
 Function _InputWindowOk( oInputWindow, aResult )
-*------------------------------------------------------------------------------*
-Local i , l
+
+   Local i , l
+
    l := len( aResult )
    For i := 1 to l
       aResult[ i ] := oInputWindow:Control( 'Control_' + Alltrim( Str( i ) ) ):Value
    Next i
    oInputWindow:Release()
-Return Nil
 
-*------------------------------------------------------------------------------*
+   Return Nil
+
 Function _InputWindowCancel( oInputWindow, aResult )
-*------------------------------------------------------------------------------*
+
    afill( aResult, NIL )
    oInputWindow:Release()
-Return Nil
 
-*------------------------------------------------------------------------------*
+   Return Nil
+
 Function _ReleaseControl( ControlName, ParentForm )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):Release()
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( ControlName, ParentForm ):Release()
+
 Function _IsControlVisibleFromHandle( Handle )
-*------------------------------------------------------------------------------*
-Return GetControlObjectByHandle( Handle ):ContainerVisible
 
-*------------------------------------------------------------------------------*
+   Return GetControlObjectByHandle( Handle ):ContainerVisible
+
 Function _SetCaretPos( ControlName, FormName, Pos )
-*------------------------------------------------------------------------------*
-Return ( GetControlObject( ControlName, FormName ):CaretPos := Pos )
 
-*------------------------------------------------------------------------------*
+   Return ( GetControlObject( ControlName, FormName ):CaretPos := Pos )
+
 Function _GetCaretPos( ControlName, FormName )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, FormName ):CaretPos
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( ControlName, FormName ):CaretPos
+
 Function DefineProperty( cProperty, cControlName, cFormName, xValue )
-*------------------------------------------------------------------------------*
-Local oCtrl
+
+   Local oCtrl
+
    If HB_IsObject( cFormName )
       oCtrl := cFormName
    ElseIf HB_IsString( cControlName )
@@ -486,12 +443,12 @@ Local oCtrl
       oCtrl := GetExistingFormObject( cFormName )
    EndIf
    oCtrl:Property( cProperty, xValue )
-Return oCtrl:Property( cProperty )
 
-*------------------------------------------------------------------------------*
+   Return oCtrl:Property( cProperty )
+
 Function SetProperty( Arg1, Arg2, Arg3, Arg4, Arg5, Arg6 )
-*------------------------------------------------------------------------------*
-Local oWnd, oCtrl, nPos
+
+   Local oWnd, oCtrl, nPos
 
    if Pcount() == 3 // Window
 
@@ -1022,12 +979,11 @@ Local RetVal, oWnd, oCtrl, nPos
 
    EndIf
 
-Return RetVal
+   Return RetVal
 
-*------------------------------------------------------------------------------*
 Function DoMethod( ... )
-*------------------------------------------------------------------------------*
-Local RetVal, aPars, cMethod, oWnd, oCtrl
+
+   Local RetVal, aPars, cMethod, oWnd, oCtrl
 
    RetVal := Nil
 
@@ -1102,7 +1058,7 @@ Local RetVal, aPars, cMethod, oWnd, oCtrl
       EndIf
    EndIf
 
-Return RetVal
+   Return RetVal
 
 /*
  * This function returns .T. if msg is a METHOD (with or without SETGET)
@@ -1111,9 +1067,9 @@ Return RetVal
  * Note:
  * __objHasMethod( obj, msg ) doesn't recognizes SETGET methods as METHOD.
  */
-*------------------------------------------------------------------------------*
+
 Function _OOHG_HasMethod( obj, msg )
-*------------------------------------------------------------------------------*
+
    Local itm, aClsSel
 
    #ifndef __XHARBOUR__
@@ -1129,7 +1085,8 @@ Function _OOHG_HasMethod( obj, msg )
           EndIf
       EndIf
    Next
-Return .F.
+
+   Return .F.
 
 /*
  * This function returns .T. only if msg is a pure DATA.
@@ -1137,9 +1094,9 @@ Return .F.
  * Note:
  * __objHasData( obj, msg ) recognizes SETGET methods as DATA.
  */
-*------------------------------------------------------------------------------*
+
 Function _OOHG_HasData( obj, msg )
-*------------------------------------------------------------------------------*
+
    Local itm, aClsSel
 
    #ifndef __XHARBOUR__
@@ -1155,34 +1112,33 @@ Function _OOHG_HasData( obj, msg )
           EndIf
       EndIf
    Next
-Return .F.
 
-*--------------------------------------------------------*
+   Return .F.
+
 Function _dummy()
-*--------------------------------------------------------*
-Return Nil
 
-*--------------------------------------------------------*
+   Return Nil
+
 Function cFileNoPath( cPathMask )
-*--------------------------------------------------------*
-local n := RAt( "\", cPathMask )
-Return If( n > 0 .and. n < Len( cPathMask ), ;
-       Right( cPathMask, Len( cPathMask ) - n ), ;
-       If( ( n := At( ":", cPathMask ) ) > 0, ;
-       Right( cPathMask, Len( cPathMask ) - n ), cPathMask ) )
 
-*--------------------------------------------------------*
+   local n := RAt( "\", cPathMask )
+
+   Return If( n > 0 .and. n < Len( cPathMask ), ;
+          Right( cPathMask, Len( cPathMask ) - n ), ;
+          If( ( n := At( ":", cPathMask ) ) > 0, ;
+          Right( cPathMask, Len( cPathMask ) - n ), cPathMask ) )
+
 Function cFileNoExt( cPathMask )
-*--------------------------------------------------------*
-local cName := AllTrim( cFileNoPath( cPathMask ) )
-local n     := At( ".", cName )
-Return AllTrim( If( n > 0, Left( cName, n - 1 ), cName ) )
 
-*------------------------------------------------------------------------------*
+   local cName := AllTrim( cFileNoPath( cPathMask ) )
+   local n     := At( ".", cName )
+
+   Return AllTrim( If( n > 0, Left( cName, n - 1 ), cName ) )
+
 Function NoArray (OldArray)
-*------------------------------------------------------------------------------*
-Local NewArray := {}
-Local i
+
+   Local NewArray := {}
+   Local i
 
    If ValType ( OldArray ) == 'U'
       Return Nil
@@ -1200,35 +1156,27 @@ Local i
 
    Next i
 
-Return NewArray
+   Return NewArray
 
-*------------------------------------------------------------------------------*
 Function _SetFontColor ( ControlName, ParentForm , Value  )
-*------------------------------------------------------------------------------*
-Return ( GetControlObject( ControlName, ParentForm ):FontColor := Value )
 
-*------------------------------------------------------------------------------*
+   Return ( GetControlObject( ControlName, ParentForm ):FontColor := Value )
+
 Function _SetBackColor ( ControlName, ParentForm , Value  )
-*------------------------------------------------------------------------------*
-Return ( GetControlObject( ControlName, ParentForm ):BackColor := Value )
 
-*------------------------------------------------------------------------------*
+   Return ( GetControlObject( ControlName, ParentForm ):BackColor := Value )
+
 Function _SetStatusIcon( ControlName , ParentForm , Item , Icon )
-*------------------------------------------------------------------------------*
-Return SetStatusItemIcon( GetControlObject( ControlName, ParentForm ):hWnd, Item , Icon )
 
-*------------------------------------------------------------------------------*
+   Return SetStatusItemIcon( GetControlObject( ControlName, ParentForm ):hWnd, Item , Icon )
+
 Function _GetCaption( ControlName , ParentForm )
-*------------------------------------------------------------------------------*
-Return GetWindowText( GetControlObject( ControlName, ParentForm ):hWnd )
+
+   Return GetWindowText( GetControlObject( ControlName, ParentForm ):hWnd )
 
 
-
-
-
-*------------------------------------------------------------------------------*
 CLASS TControl FROM TWindow
-*------------------------------------------------------------------------------*
+
    DATA oToolTipCtrl         INIT Nil
    DATA cToolTip             INIT ""
    DATA AuxHandle            INIT 0
@@ -1293,11 +1241,11 @@ CLASS TControl FROM TWindow
    METHOD Events_MeasureItem BLOCK { || nil }
    METHOD Cursor             SETGET
 
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Cursor( hCursor ) CLASS TControl
-*------------------------------------------------------------------------------*
+
    IF PCOUNT() > 0
       IF VALTYPE( hCursor ) == "N"
         ::hCursor := LoadCursor( NIL, hCursor )
@@ -1311,43 +1259,43 @@ METHOD Cursor( hCursor ) CLASS TControl
         ENDIF
       ENDIF
    ENDIF
-RETURN ::hCursor
 
-*------------------------------------------------------------------------------*
+   RETURN ::hCursor
+
 METHOD Row( nRow ) CLASS TControl
-*------------------------------------------------------------------------------*
+
    IF PCOUNT() > 0
       ::SizePos( nRow )
    ENDIF
-RETURN ::nRow
 
-*------------------------------------------------------------------------------*
+   RETURN ::nRow
+
 METHOD Col( nCol ) CLASS TControl
-*------------------------------------------------------------------------------*
+
    IF PCOUNT() > 0
       ::SizePos( , nCol )
    ENDIF
-RETURN ::nCol
 
-*------------------------------------------------------------------------------*
+   RETURN ::nCol
+
 METHOD Width( nWidth ) CLASS TControl
-*------------------------------------------------------------------------------*
+
    IF PCOUNT() > 0
       ::SizePos( , , nWidth )
    ENDIF
-RETURN ::nWidth
 
-*------------------------------------------------------------------------------*
+   RETURN ::nWidth
+
 METHOD Height( nHeight ) CLASS TControl
-*------------------------------------------------------------------------------*
+
    IF PCOUNT() > 0
       ::SizePos( , , , nHeight )
    ENDIF
-RETURN ::nHeight
 
-*------------------------------------------------------------------------------*
+   RETURN ::nHeight
+
 METHOD oToolTip( oCtrl ) CLASS TControl
-*------------------------------------------------------------------------------*
+
    IF HB_IsObject( oCtrl )
       ::oToolTipCtrl := oCtrl
    ELSEIF HB_IsObject( ::oToolTipCtrl )
@@ -1357,12 +1305,13 @@ METHOD oToolTip( oCtrl ) CLASS TControl
    ELSE
       oCtrl := Nil
    ENDIF
-RETURN oCtrl
 
-*------------------------------------------------------------------------------*
+   RETURN oCtrl
+
 METHOD ToolTip( cToolTip ) CLASS TControl
-*------------------------------------------------------------------------------*
-LOCAL oCtrl
+
+   LOCAL oCtrl
+
    If PCount() > 0
       If ValType( cToolTip ) $ "CMB"
          ::cToolTip := cToolTip
@@ -1373,12 +1322,13 @@ LOCAL oCtrl
          oCtrl:Item( ::hWnd, cToolTip )
       EndIf
    EndIf
-Return ::cToolTip
 
-*------------------------------------------------------------------------------*
+   Return ::cToolTip
+
 FUNCTION _OOHG_GetNullName( cName )
-*------------------------------------------------------------------------------*
-STATIC nCtrl := 0
+
+   STATIC nCtrl := 0
+
    cName := IF( VALTYPE( cName ) $ "CM", UPPER( ALLTRIM( cName ) ), "0" )
    IF EMPTY( cName ) .OR. cName == "0" .OR. cName == "NONAME" .OR. cName == "NIL" .OR. cName == "NULL" .OR. cName == "NONE"
       // Caller must verify this name doesn't exists
@@ -1388,12 +1338,11 @@ STATIC nCtrl := 0
           nCtrl := 0
       ENDIF
    ENDIF
-RETURN cName
 
-*------------------------------------------------------------------------------*
+   RETURN cName
+
 METHOD SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, ;
                 BkColor, lEditBox, lRtl, xAnchor, lNoProc ) CLASS TControl
-*------------------------------------------------------------------------------*
 
    ::StartInfo( -1 )
    ::SearchParent( ParentForm )
@@ -1463,11 +1412,11 @@ METHOD SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, ;
       // Active form
       ::Anchor := ::Parent:nDefAnchor
    EndIf
-RETURN Self
 
-*------------------------------------------------------------------------------*
+   RETURN Self
+
 METHOD InitStyle( nStyle, nStyleEx, lInvisible, lNoTabStop, lDisabled ) CLASS TControl
-*------------------------------------------------------------------------------*
+
    If !HB_IsNumeric( nStyle )
       nStyle := 0
    EndIf
@@ -1493,12 +1442,11 @@ METHOD InitStyle( nStyle, nStyleEx, lInvisible, lNoTabStop, lDisabled ) CLASS TC
       nStyle += WS_DISABLED
    EndIf
 
-Return nStyle
+   Return nStyle
 
-*------------------------------------------------------------------------------*
 METHOD Register( hWnd, cName, HelpId, Visible, ToolTip, Id ) CLASS TControl
-*------------------------------------------------------------------------------*
-Local mVar
+
+   Local mVar
 
    // cName NO debe recibirse!!! Ya debe estar desde :SetForm()!!!!
    // ::Name   := _OOHG_GetNullName( ControlName )
@@ -1537,12 +1485,12 @@ Local mVar
 
    mVar := "_" + ::Parent:Name + "_" + ::Name
    Public &mVar. := Self
-RETURN Self
 
-*------------------------------------------------------------------------------*
+   RETURN Self
+
 METHOD Release() CLASS TControl
-*------------------------------------------------------------------------------*
-Local mVar, oCont
+
+   Local mVar, oCont
 
    // Erases events (for avoid wrong re-usage)
    ::OnClick        := nil
@@ -1593,11 +1541,10 @@ Local mVar, oCont
       __MVPUT( mVar , 0 )
    EndIf
 
-Return ::Super:Release()
+   Return ::Super:Release()
 
-*------------------------------------------------------------------------------*
 METHOD SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout, Angle, Fntwidth ) CLASS TControl
-*------------------------------------------------------------------------------*
+
    IF ::FontHandle > 0
       DeleteObject( ::FontHandle )
    ENDIF
@@ -1626,84 +1573,85 @@ METHOD SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout, Angle, F
       ::Fntwidth := FntWidth
    ENDIF
    ::FontHandle := _SetFont( ::hWnd, ::cFontName, ::nFontSize, ::Bold, ::Italic, ::Underline, ::Strikeout, ::FntAngle, ::FntWidth )
-Return Nil
 
-*------------------------------------------------------------------------------*
+   Return Nil
+
 METHOD FontName( cFontName ) CLASS TControl
-*------------------------------------------------------------------------------*
+
    If ValType( cFontName ) $ "CM"
       ::cFontName:=cFontName
       ::SetFont( cFontName )
    EndIf
-Return ::cFontName
 
-*------------------------------------------------------------------------------*
+   Return ::cFontName
+
 METHOD FontSize( nFontSize ) CLASS TControl
-*------------------------------------------------------------------------------*
+
    If HB_IsNumeric( nFontSize )
       ::nFontSize:=nFontSize
       ::SetFont( , nFontSize )
    EndIf
-Return ::nFontSize
 
-*------------------------------------------------------------------------------*
+   Return ::nFontSize
+
 METHOD FontBold( lBold ) CLASS TControl
-*------------------------------------------------------------------------------*
+
    If HB_IsLogical( lBold )
       ::Bold:=lBold
       ::SetFont( ,, lBold )
    EndIf
-Return ::Bold
 
-*------------------------------------------------------------------------------*
+   Return ::Bold
+
 METHOD FontItalic( lItalic ) CLASS TControl
-*------------------------------------------------------------------------------*
+
    If HB_IsLogical( lItalic )
       ::Italic:=lItalic
       ::SetFont( ,,, lItalic )
    EndIf
-Return ::Italic
 
-*------------------------------------------------------------------------------*
+   Return ::Italic
+
 METHOD FontUnderline( lUnderline ) CLASS TControl
-*------------------------------------------------------------------------------*
+
    If HB_IsLogical( lUnderline )
       ::Underline:=lUnderline
       ::SetFont( ,,,, lUnderline )
    EndIf
-Return ::Underline
 
-*------------------------------------------------------------------------------*
+   Return ::Underline
+
 METHOD FontStrikeout( lStrikeout ) CLASS TControl
-*------------------------------------------------------------------------------*
+
    If HB_Islogical( lStrikeout )
       ::StrikeOut:=lStrikeout
       ::SetFont( ,,,,, lStrikeout )
    EndIf
-Return ::Strikeout
 
-*------------------------------------------------------------------------------*
+   Return ::Strikeout
+
 METHOD FontAngle( nAngle ) CLASS TControl
-*------------------------------------------------------------------------------*
+
    If HB_IsNumeric( nAngle )
      ::FntAngle:=nAngle
       ::SetFont( ,,,,,, nAngle )
    EndIf
-Return ::FntAngle
 
-*------------------------------------------------------------------------------*
+   Return ::FntAngle
+
 METHOD FontWidth( nWidth ) CLASS TControl
-*------------------------------------------------------------------------------*
+
    If HB_IsNumeric( nWidth )
      ::FntWidth:=nWidth
       ::SetFont( ,,,,,,, nWidth )
    EndIf
-Return ::FntWidth
 
-*------------------------------------------------------------------------------*
+   Return ::FntWidth
+
 METHOD SizePos( Row, Col, Width, Height ) CLASS TControl
-*------------------------------------------------------------------------------*
-LOCAL xRet, nOldWidth, nOldHeight
+
+   LOCAL xRet, nOldWidth, nOldHeight
+
    nOldWidth := ::nWidth
    nOldHeight := ::nHeight
    IF HB_IsNumeric( Row )
@@ -1727,23 +1675,22 @@ LOCAL xRet, nOldWidth, nOldHeight
    EndIf
    AEVAL( ::aControls, { |o| o:SizePos() } )
    AEVAL( ::aControls, { |o| o:Events_Size() } )
-Return xRet
 
-*------------------------------------------------------------------------------*
+   Return xRet
+
 METHOD Move( Row, Col, Width, Height ) CLASS TControl
-*------------------------------------------------------------------------------*
-Return ::SizePos( Row, Col, Width, Height )
 
-*------------------------------------------------------------------------------*
+   Return ::SizePos( Row, Col, Width, Height )
+
 METHOD ForceHide() CLASS TControl
-*------------------------------------------------------------------------------*
+
    ::Super:ForceHide()
    AEVAL( ::aControls, { |o| o:ForceHide() } )
-Return nil
 
-*------------------------------------------------------------------------------*
+   Return nil
+
 METHOD SetVarBlock( cField, uValue ) CLASS TControl
-*------------------------------------------------------------------------------*
+
    If ValType( cField ) $ "CM" .AND. ! Empty( cField )
       ::VarName := AllTrim( cField )
    EndIf
@@ -1755,21 +1702,22 @@ METHOD SetVarBlock( cField, uValue ) CLASS TControl
    ElseIf PCount() > 1
       ::Value := uValue
    EndIf
-Return nil
 
-*------------------------------------------------------------------------------*
+   Return nil
+
 METHOD ClearBitMaps CLASS TControl
-*------------------------------------------------------------------------------*
+
    If ValidHandler( ::ImageList )
       ImageList_Destroy( ::ImageList )
    EndIf
    ::ImageList := 0
-Return Nil
 
-*------------------------------------------------------------------------------*
+   Return Nil
+
 METHOD AddBitMap( uImage ) CLASS TControl
-*------------------------------------------------------------------------------*
-Local nPos, nCount
+
+   Local nPos, nCount
+
    If ! ValidHandler( ::ImageList )
       If HB_IsArray( uImage )
          ::ImageList := ImageList_Init( uImage, ::ImageListColor, ::ImageListFlags )[ 1 ]
@@ -1795,13 +1743,13 @@ Local nPos, nCount
       EndIf
       SendMessage( ::hWnd, ::SetImageListCommand, ::SetImageListWParam, ::ImageList )
    Endif
-Return nPos
 
+   Return nPos
 
-*------------------------------------------------------------------------------*
 METHOD DoEvent( bBlock, cEventType, aParams ) CLASS TControl
-*------------------------------------------------------------------------------*
-Local lRetVal
+
+   Local lRetVal
+
    If ! ::Parent == nil .AND. ::Parent:lReleasing
       lRetVal := .F.
    ElseIf HB_IsBlock( bBlock )
@@ -1816,21 +1764,23 @@ Local lRetVal
    Else
       lRetVal := .F.
    EndIf
-Return lRetVal
 
-*------------------------------------------------------------------------------*
+   Return lRetVal
+
 METHOD DoEventMouseCoords( bBlock, cEventType ) CLASS TControl
-*------------------------------------------------------------------------------*
-Local aPos := GetCursorPos()
+
+   Local aPos := GetCursorPos()
+
    // TODO: Use GetClientRect instead
    aPos[ 1 ] -= GetWindowRow( ::hWnd )
    aPos[ 2 ] -= GetWindowCol( ::hWnd )
-Return ::DoEvent( bBlock, cEventType, aPos )
 
-*------------------------------------------------------------------------------*
+   Return ::DoEvent( bBlock, cEventType, aPos )
+
 METHOD DoLostFocus() CLASS TControl
-*------------------------------------------------------------------------------*
-Local uRet := Nil, nFocus, oFocus
+
+   Local uRet := Nil, nFocus, oFocus
+
    If ! ::ContainerReleasing
       nFocus := GetFocus()
       If nFocus > 0
@@ -1864,12 +1814,13 @@ Local uRet := Nil, nFocus, oFocus
 
       ::DoEvent( ::OnLostFocus, "LOSTFOCUS" )
    EndIf
-Return uRet
 
-*------------------------------------------------------------------------------*
+   Return uRet
+
 METHOD DoChange() CLASS TControl
-*------------------------------------------------------------------------------*
-Local xValue, cType, cOldType
+
+   Local xValue, cType, cOldType
+
    xValue   := ::Value
    cType    := VALTYPE( xValue )
    cOldType := VALTYPE( ::xOldValue )
@@ -1879,9 +1830,12 @@ Local xValue, cType, cOldType
       ::xOldValue := xValue
       ::DoEvent( ::OnChange, "CHANGE" )
    ENDIF
-Return nil
+
+   Return nil
+
 
 #pragma BEGINDUMP
+
 #define s_Super s_TWindow
 
 // -----------------------------------------------------------------------------
@@ -2146,10 +2100,10 @@ HB_FUNC( EVENTS_COLOR_INTAB )
 
 #pragma ENDDUMP
 
-*------------------------------------------------------------------------------*
+
 METHOD Events_Command( wParam ) CLASS TControl
-*------------------------------------------------------------------------------*
-Local Hi_wParam := HIWORD( wParam )
+
+   Local Hi_wParam := HIWORD( wParam )
 
    If Hi_wParam == BN_CLICKED .OR. Hi_wParam == STN_CLICKED  // Same value.....
       If ! ::NestedClick
@@ -2179,12 +2133,11 @@ Local Hi_wParam := HIWORD( wParam )
 
    EndIf
 
-Return nil
+   Return nil
 
-*------------------------------------------------------------------------------*
 METHOD FocusEffect CLASS TControl
-*------------------------------------------------------------------------------*
-Local lMod
+
+   Local lMod
 
    If     ! Empty( ::cFocusFontName )
       lMod := .T.
@@ -2300,11 +2253,10 @@ Local lMod
       ::ReDraw()
    EndIf
 
-Return Nil
+   Return Nil
 
-*------------------------------------------------------------------------------*
 METHOD Events_Enter() CLASS TControl
-*------------------------------------------------------------------------------*
+
    _OOHG_lSettingFocus := .F.
    ::DoEvent( ::OnEnter, "ENTER" )
    If ! _OOHG_lSettingFocus
@@ -2314,12 +2266,12 @@ METHOD Events_Enter() CLASS TControl
    Else
       _OOHG_lSettingFocus := .F.
    EndIf
-Return nil
 
-*------------------------------------------------------------------------------*
+   Return nil
+
 METHOD Events_Notify( wParam, lParam ) CLASS TControl
-*------------------------------------------------------------------------------*
-Local nNotify := GetNotifyCode( lParam )
+
+   Local nNotify := GetNotifyCode( lParam )
 
    Empty( wParam ) // DUMMY...
 
@@ -2336,12 +2288,12 @@ Local nNotify := GetNotifyCode( lParam )
 
    EndIf
 
-Return nil
+   Return nil
 
-*------------------------------------------------------------------------------*
 METHOD TabIndex( nNewIndex ) CLASS TControl
-*------------------------------------------------------------------------------*
-Local nCurIndex, i, nLen, j, aAux
+
+   Local nCurIndex, i, nLen, j, aAux
+
    If ::Parent == NIL
       nCurIndex := 0
    Else
@@ -2384,41 +2336,45 @@ Local nCurIndex, i, nLen, j, aAux
          nCurIndex := 0
       EndIf
    EndIf
-Return nCurIndex
 
-*------------------------------------------------------------------------------*
+   Return nCurIndex
+
 Function GetControlObject( ControlName, FormName )
-*------------------------------------------------------------------------------*
-Local mVar
-   mVar := '_' + FormName + '_' + ControlName
-Return IF( Type( mVar ) == "O", &mVar, TControl() )
 
-*------------------------------------------------------------------------------*
+   Local mVar
+
+   mVar := '_' + FormName + '_' + ControlName
+
+   Return IF( Type( mVar ) == "O", &mVar, TControl() )
+
 Function GetExistingControlObject( ControlName, FormName )
-*------------------------------------------------------------------------------*
-Local mVar
+
+   Local mVar
+
    mVar := '_' + FormName + '_' + ControlName
    If ! Type( mVar ) == "O"
       MsgOOHGError( "Control: " + ControlName + " of " + FormName + " not defined. Program terminated." )
    EndIf
-Return &mVar
 
-*------------------------------------------------------------------------------*
+   Return &mVar
+
 Function _GetId()
-*------------------------------------------------------------------------------*
-Local RetVal
+
+   Local RetVal
+
    Do While .T.
       RetVal := Int( hb_random( 59000 ) ) + 2001   // Lower than 0xF000
       If RetVal < 61440 .AND. aScan( _OOHG_aControlIds , { |a| a[ 1 ] == RetVal } ) == 0          // TODO: thread safe, move to h_application.prg
          Exit
       EndIf
    EndDo
-Return RetVal
 
-*------------------------------------------------------------------------------*
+   Return RetVal
+
 Function _KillAllTimers()
-*------------------------------------------------------------------------------*
-Local nIndex
+
+   Local nIndex
+
    // Since ::Release() removes the control from array, it can't be an AEVAL()
    nIndex := 1
    do while nIndex <= LEN( _OOHG_aControlObjects )
@@ -2428,21 +2384,24 @@ Local nIndex
           nIndex++
       endif
    enddo
-Return nil
 
-*------------------------------------------------------------------------------*
+   Return nil
+
 Function GetStartUpFolder()
-*------------------------------------------------------------------------------*
-Local StartUpFolder := GetProgramFileName()
-Return Left ( StartUpFolder , Rat ( '\' , StartUpFolder ) - 1 )
 
-// Initializes C variables
-*------------------------------------------------------------------------------*
+   Local StartUpFolder := GetProgramFileName()
+
+   Return Left ( StartUpFolder , Rat ( '\' , StartUpFolder ) - 1 )
+
+   // Initializes C variables
+
 Procedure _OOHG_Init_C_Vars_Controls()
-*------------------------------------------------------------------------------*
+
    TControl()
    _OOHG_Init_C_Vars_Controls_C_Side( _OOHG_aControlhWnd, _OOHG_aControlObjects, _OOHG_aControlIds )
-Return
+
+   Return
+
 
 EXTERN _OOHG_UnTransform
 
@@ -2663,10 +2622,8 @@ HB_FUNC( SETTABAFTER )
 #pragma ENDDUMP
 
 
-
-
-
 CLASS TControlGroup FROM TControl
+
    DATA Type      INIT "CONTROLGROUP" READONLY
    DATA lHidden   INIT .F.
 
@@ -2675,11 +2632,11 @@ CLASS TControlGroup FROM TControl
    METHOD Visible             SETGET
 
    METHOD AddControl
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( ControlName, ParentForm, x, y, w, h, Invisible, lDisabled ) CLASS TControlGroup
-*------------------------------------------------------------------------------*
+
    ASSIGN ::nCol    VALUE x TYPE "N"
    ASSIGN ::nRow    VALUE y TYPE "N"
    ASSIGN ::nWidth  VALUE w TYPE "N"
@@ -2688,32 +2645,33 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, Invisible, lDisabled ) CLASS
    ::SetForm( ControlName, ParentForm )
 
    ::InitStyle( ,, Invisible,, lDisabled )
-Return Self
 
-*------------------------------------------------------------------------------*
+   Return Self
+
 METHOD Enabled( lEnabled ) CLASS TControlGroup
-*------------------------------------------------------------------------------*
+
    IF HB_IsLogical( lEnabled )
       ::Super:Enabled := lEnabled
       AEVAL( ::aControls, { |o| o:Enabled := o:Enabled } )
    ENDIF
-RETURN ::Super:Enabled
 
-*------------------------------------------------------------------------------*
+   RETURN ::Super:Enabled
+
 METHOD Visible( lVisible ) CLASS TControlGroup
-*------------------------------------------------------------------------------*
+
    IF HB_IsLogical( lVisible )
       ::Super:Visible := lVisible
       AEVAL( ::aControls, { |o| o:Visible := o:Visible } )
    ENDIF
-RETURN ::lVisible
 
-*------------------------------------------------------------------------------*
+   RETURN ::lVisible
+
 METHOD AddControl( oCtrl, Row, Col ) CLASS TControlGroup
-*------------------------------------------------------------------------------*
+
    oCtrl:Visible := oCtrl:Visible
    ::Super:AddControl( oCtrl )
    oCtrl:Container := Self
    oCtrl:SizePos( Row, Col )
    oCtrl:Visible := oCtrl:Visible
-Return Nil
+
+   Return Nil

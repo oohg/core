@@ -227,7 +227,6 @@ METHOD SetFocus() CLASS TButton
 
 METHOD Picture( cPicture ) CLASS TButton
 
-
    LOCAL nAttrib, aPictSize
 
    IF ValType( cPicture ) $ "CM"
@@ -360,6 +359,7 @@ METHOD ImageMargin( aMargins ) CLASS TButton
    EndIf
 
    Return ::aImageMargin
+
 
 #pragma BEGINDUMP
 
@@ -638,9 +638,6 @@ HB_FUNC( TBUTTON_NOTIFY_CUSTOMDRAW )
 }
 
 #pragma ENDDUMP
-
-
-
 
 
 CLASS TButtonCheck FROM TButton

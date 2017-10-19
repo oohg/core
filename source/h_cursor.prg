@@ -67,4 +67,4 @@
 
 Function RC_CURSOR( cCursor )
 
-Return SetResCursor( LoadCursor( GetInstance(), cCursor ) )
+   Return SetResCursor( LoadCursor( GetInstance(), cCursor ) )

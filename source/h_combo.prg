@@ -1048,6 +1048,7 @@ METHOD InsertItem( nItem, uValue, uSource ) CLASS TCombo
 
 
 #pragma BEGINDUMP
+
 #include <hbapi.h>
 #include <hbvm.h>
 #include <hbstack.h>
@@ -1456,7 +1457,6 @@ HB_FUNC_STATIC( TCOMBO_ITEMHEIGHT )   // METHOD ItemHeight()
 #pragma ENDDUMP
 
 
-
 CLASS TListCombo FROM TControl STATIC
 
    METHOD Define
@@ -1620,6 +1620,7 @@ METHOD Events_VScroll( wParam ) CLASS TListCombo
    EndIf
 
    Return NIL
+
 
 #pragma BEGINDUMP
 
