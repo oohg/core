@@ -171,7 +171,7 @@ Local f
    IF HB_IsArray( uValue )
       ::Super:BackColor := uValue
       RedrawWindow( ::hWnd )
-		f := GetFocus()
+      f := GetFocus()
       setfocus( ::hWnd )
       setfocus( f )
    ENDIF
@@ -228,9 +228,9 @@ HB_FUNC( INITSLIDER )
    HWND hwnd, hbutton;
    int Style, StyleEx;
 
-	INITCOMMONCONTROLSEX  i;
+   INITCOMMONCONTROLSEX  i;
    i.dwSize = sizeof( INITCOMMONCONTROLSEX );
-	i.dwICC = ICC_DATE_CLASSES;
+   i.dwICC = ICC_DATE_CLASSES;
    InitCommonControlsEx( &i );
 
    hwnd = HWNDparam( 1 );

@@ -59,7 +59,6 @@
  * If you do not wish that, delete this exception notice.
  */
 
-
 #include "oohg.ch"
 #include "hbclass.ch"
 #include "i_windefs.ch"
@@ -72,6 +71,7 @@ STATIC _OOHG_BrowseFixedBlocks := .T.
 STATIC _OOHG_BrowseFixedControls := .F.
 
 CLASS TOBrowse FROM TXBrowse
+
    DATA Type                      INIT "BROWSE" READONLY
    DATA aRecMap                   INIT {}
    DATA RecCount                  INIT 0
@@ -120,7 +120,7 @@ CLASS TOBrowse FROM TXBrowse
    MESSAGE GoBottom               METHOD End
    MESSAGE GoTop                  METHOD Home
 
-/*
+   /*
    Available methods from TXBrowse:
       AddColumn
       AdjustRightScroll
@@ -203,10 +203,10 @@ CLASS TOBrowse FROM TXBrowse
       SetItemColor
       SetRangeColor
       SetSelectedColors
-*/
-ENDCLASS
+   */
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, aHeaders, aWidths, ;
                aFields, nValue, cFontName, nFontSize, cTooltip, bOnChange, ;
                bOnDblClick, aHeadClick, bOnGotFocus, bOnLostFocus, cWorkArea, ;
@@ -227,8 +227,8 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, aHeaders, a
                lNoShowAlways, lNone, lCBE, bOnRClick, lCheckBoxes, bOnCheck, ;
                bOnRowRefresh, aDefaultValues, bOnEditEnd, lAtFirst, ;
                bbeforeditcell ) CLASS TOBrowse
-*------------------------------------------------------------------------------*
-Local nWidth2, nCol2, oScroll, z
+
+   LOCAL nWidth2, nCol2, oScroll, z
 
    ASSIGN ::aFields     VALUE aFields      TYPE "A"
    ASSIGN ::aHeaders    VALUE aHeaders     TYPE "A" DEFAULT {}
@@ -391,9 +391,8 @@ Local nWidth2, nCol2, oScroll, z
 
    ::Value := nValue
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD Define3( ControlName, ParentForm, x, y, w, h, fontname, fontsize, ;
                 tooltip, aHeadClick, nogrid, aImage, break, HelpId, bold, ;
                 italic, underline, strikeout, edit, backcolor, fontcolor, ;
@@ -405,7 +404,6 @@ METHOD Define3( ControlName, ParentForm, x, y, w, h, fontname, fontsize, ;
                 lLikeExcel, lButtons, AllowDelete, DelMsg, lNoDelMsg, ;
                 AllowAppend, lNoModal, lFixedCtrls, lExtDbl, Value, lSilent, ;
                 lAltA, lNoShowAlways, lNone, lCBE, lCheckBoxes, lAtFirst ) CLASS TOBrowse
-*------------------------------------------------------------------------------*
 
    ::Define2( ControlName, ParentForm, x, y, w, h, ::aHeaders, ::aWidths, {}, ;
               , fontname, fontsize, tooltip, aHeadClick, nogrid, ;
@@ -425,13 +423,12 @@ METHOD Define3( ControlName, ParentForm, x, y, w, h, fontname, fontsize, ;
       ::nRecLastValue := Value
    EndIf
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD UpDate( nRow, lComplete ) CLASS TOBrowse
-*------------------------------------------------------------------------------*
-Local PageLength, aTemp, _BrowseRecMap, x, nRecNo, nCurrentLength
-Local lColor, aFields, cWorkArea, nWidth
+
+   Local PageLength, aTemp, _BrowseRecMap, x, nRecNo, nCurrentLength
+   Local lColor, aFields, cWorkArea, nWidth
 
    cWorkArea := ::WorkArea
 
@@ -560,12 +557,11 @@ Local lColor, aFields, cWorkArea, nWidth
       ::LoadHeaderImages( ::aHeaderImage )
    EndIf
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD UpDateColors() CLASS TOBrowse
-*------------------------------------------------------------------------------*
-Local aTemp, x, aFields, cWorkArea, nWidth, nLen, _RecNo
+
+   Local aTemp, x, aFields, cWorkArea, nWidth, nLen, _RecNo
 
    ::GridForeColor := Nil
    ::GridBackColor := Nil
@@ -658,12 +654,11 @@ Local _RecNo, s, cWorkArea
 
    ::BrowseOnChange()
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD PageUp() CLASS TOBrowse
-*------------------------------------------------------------------------------*
-Local _RecNo, cWorkArea
+
+   Local _RecNo, cWorkArea
 
    If ::CurrentRow == 1
       cWorkArea := ::WorkArea
@@ -688,12 +683,11 @@ Local _RecNo, cWorkArea
 
    ::BrowseOnChange()
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD Home() CLASS TOBrowse                         // METHOD GoTop
-*------------------------------------------------------------------------------*
-Local _RecNo, cWorkArea
+
+   Local _RecNo, cWorkArea
 
    cWorkArea := ::WorkArea
    If Select( cWorkArea ) == 0
@@ -709,12 +703,11 @@ Local _RecNo, cWorkArea
 
    ::BrowseOnChange()
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD End( lAppend ) CLASS TOBrowse                 // METHOD GoBottom
-*------------------------------------------------------------------------------*
-Local _RecNo, _BottomRec, cWorkArea
+
+   Local _RecNo, _BottomRec, cWorkArea
 
    cWorkArea := ::WorkArea
    If Select( cWorkArea ) == 0
@@ -735,12 +728,11 @@ Local _RecNo, _BottomRec, cWorkArea
 
    ::BrowseOnChange()
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD Up() CLASS TOBrowse
-*------------------------------------------------------------------------------*
-Local s, _RecNo, nLen, lDone := .F., cWorkArea
+
+   Local s, _RecNo, nLen, lDone := .F., cWorkArea
 
    s := ::CurrentRow
 
@@ -798,12 +790,11 @@ Local s, _RecNo, nLen, lDone := .F., cWorkArea
 
    ::BrowseOnChange()
 
-Return lDone
+   Return lDone
 
-*------------------------------------------------------------------------------*
 METHOD Down( lAppend ) CLASS TOBrowse
-*------------------------------------------------------------------------------*
-Local s, _RecNo, nLen, lDone := .F., cWorkArea
+
+   Local s, _RecNo, nLen, lDone := .F., cWorkArea
 
    s := ::CurrentRow
 
@@ -862,12 +853,11 @@ Local s, _RecNo, nLen, lDone := .F., cWorkArea
 
    ::BrowseOnChange()
 
-Return lDone
+   Return lDone
 
-*------------------------------------------------------------------------------*
 METHOD TopBottom( nDir ) CLASS TOBrowse
-*------------------------------------------------------------------------------*
-Local cWorkArea := ::WorkArea
+
+   Local cWorkArea := ::WorkArea
 
    If ::lDescending
       nDir := - nDir
@@ -880,12 +870,11 @@ Local cWorkArea := ::WorkArea
    ::Bof := .F.
    ::Eof := ( cWorkArea )->( Eof() )
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD DbSkip( nRows ) CLASS TOBrowse
-*------------------------------------------------------------------------------*
-Local cWorkArea := ::WorkArea
+
+   Local cWorkArea := ::WorkArea
 
    ASSIGN nRows VALUE nRows TYPE "N" DEFAULT 1
    If ! ::lDescending
@@ -904,23 +893,21 @@ Local cWorkArea := ::WorkArea
       EndIf
    EndIf
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD DbGoTo( nRecNo ) CLASS TOBrowse
-*------------------------------------------------------------------------------*
-Local cWorkArea := ::WorkArea
+
+   Local cWorkArea := ::WorkArea
 
    ( cWorkArea )->( DbGoTo( nRecNo ) )
    ::Bof := .F.
    ::Eof := ( cWorkArea )->( Eof() ) .OR. ( ( cWorkArea )->( Recno() ) > ( cWorkArea )->( RecCount() ) )
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD SetValue( Value, mp ) CLASS TOBrowse
-*------------------------------------------------------------------------------*
-Local _RecNo, m, cWorkArea
+
+   Local _RecNo, m, cWorkArea
 
    cWorkArea := ::WorkArea
 
@@ -983,12 +970,11 @@ Local _RecNo, m, cWorkArea
    ::BrowseOnChange()
    _OOHG_ThisEventType := ''
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD Delete() CLASS TOBrowse
-*------------------------------------------------------------------------------*
-Local Value, nRecNo, lSync, cWorkArea
+
+   Local Value, nRecNo, lSync, cWorkArea
 
    Value := ::Value
 
@@ -1040,12 +1026,11 @@ Local Value, nRecNo, lSync, cWorkArea
       ::DbGoTo( nRecNo )
    EndIf
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD EditItem_B( lAppend ) CLASS TOBrowse
-*------------------------------------------------------------------------------*
-Local nOldRecNo, nItem, cWorkArea, lRet, nNewRec
+
+   Local nOldRecNo, nItem, cWorkArea, lRet, nNewRec
 
    If ::FirstVisibleColumn == 0
       Return .F.
@@ -1080,12 +1065,11 @@ Local nOldRecNo, nItem, cWorkArea, lRet, nNewRec
       ::DbGoTo( nOldRecNo )
    EndIf
 
-Return lRet
+   Return lRet
 
-*------------------------------------------------------------------------------*
 METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, nOnFocusPos, lRefresh, lChange ) CLASS TOBrowse
-*------------------------------------------------------------------------------*
-Local lRet, BackRec, cWorkArea, lBefore
+
+   Local lRet, BackRec, cWorkArea, lBefore
 
    ASSIGN lAppend  VALUE lAppend  TYPE "L" DEFAULT .F.
    ASSIGN nRow     VALUE nRow     TYPE "N" DEFAULT ::CurrentRow
@@ -1122,7 +1106,8 @@ Local lRet, BackRec, cWorkArea, lBefore
       aAdd( ::aRecMap, ( cWorkArea )->( RecNo() ) )
    EndIf
 
-// xxx ::Super:EditCell refreshes the current row only, so here we must refresh entire grid when ::RefreshType == REFRESH_FORCE
+   // xxx ::Super:EditCell refreshes the current row only,
+   // so here we must refresh entire grid when ::RefreshType == REFRESH_FORCE
 
    ::DbGoTo( BackRec )
 
@@ -1175,12 +1160,11 @@ Local lRet, BackRec, cWorkArea, lBefore
       EndIf
    EndIf
 
-Return lRet
+   Return lRet
 
-*------------------------------------------------------------------------------*
 METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOBrowse
-*------------------------------------------------------------------------------*
-Local lRet, lSomethingEdited, lRowAppended, nRecNo, cWorkArea
+
+   Local lRet, lSomethingEdited, lRowAppended, nRecNo, cWorkArea
 
    ASSIGN lOneRow VALUE lOneRow TYPE "L" DEFAULT .T.
    If ::FullMove .OR. ! lOneRow
@@ -1317,12 +1301,11 @@ Local lRet, lSomethingEdited, lRowAppended, nRecNo, cWorkArea
 
    ::ScrollToLeft()
 
-Return lSomethingEdited
+   Return lSomethingEdited
 
-*------------------------------------------------------------------------------*
 METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOBrowse
-*------------------------------------------------------------------------------*
-Local lRet := .T., lRowEdited, lSomethingEdited, nRecNo, lRowAppended, nNewRec, nNextRec, cWorkArea
+
+   Local lRet := .T., lRowEdited, lSomethingEdited, nRecNo, lRowAppended, nNewRec, nNextRec, cWorkArea
 
    If ::FirstVisibleColumn == 0
       Return .F.
@@ -1610,12 +1593,11 @@ Local lRet := .T., lRowEdited, lSomethingEdited, nRecNo, lRowAppended, nNewRec, 
 
    ::ScrollToLeft()
 
-Return lSomethingEdited
+   Return lSomethingEdited
 
-*------------------------------------------------------------------------------*
 METHOD BrowseOnChange() CLASS TOBrowse
-*------------------------------------------------------------------------------*
-Local cWorkArea, lSync
+
+   Local cWorkArea, lSync
 
    If ::lUpdCols
       ::UpdateColors()
@@ -1636,21 +1618,18 @@ Local cWorkArea, lSync
 
    ::DoChange()
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD DoChange() CLASS TOBrowse
-*------------------------------------------------------------------------------*
 
    ::nRecLastValue := ::Value
    ::TGrid:DoChange()
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD FastUpdate( d, nRow ) CLASS TOBrowse
-*------------------------------------------------------------------------------*
-Local ActualRecord, RecordCount
+
+   Local ActualRecord, RecordCount
 
    // If vertical scrollbar is used it must be updated
    If ::lVScrollVisible
@@ -1674,11 +1653,10 @@ Local ActualRecord, RecordCount
       ::CurrentRow := nRow
    EndIf
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD ScrollUpdate() CLASS TOBrowse
-*------------------------------------------------------------------------------*
+
 Local ActualRecord, RecordCount, cWorkArea
 
    // If vertical scrollbar is used it must be updated
@@ -1714,11 +1692,9 @@ Local ActualRecord, RecordCount, cWorkArea
       EndIf
    EndIf
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD CurrentRow( nValue ) CLASS TOBrowse
-*------------------------------------------------------------------------------*
 
    If ValType( nValue ) == "N"
       If nValue < 1 .OR. nValue > ::ItemCount
@@ -1731,12 +1707,11 @@ METHOD CurrentRow( nValue ) CLASS TOBrowse
       ::nRowPos := ::FirstSelectedItem
    EndIf
 
-Return ::FirstSelectedItem
+   Return ::FirstSelectedItem
 
-*------------------------------------------------------------------------------*
 METHOD Refresh() CLASS TOBrowse
-*------------------------------------------------------------------------------*
-Local s, _RecNo, v, cWorkArea
+
+   Local s, _RecNo, v, cWorkArea
 
    cWorkArea := ::WorkArea
    If Select( cWorkArea ) == 0
@@ -1797,12 +1772,11 @@ Local s, _RecNo, v, cWorkArea
 
    ::DbGoTo( _RecNo )
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TOBrowse
-*------------------------------------------------------------------------------*
-Local nItem
+
+   Local nItem
 
    If ValType( uValue ) == "N"
       ::SetValue( uValue )
@@ -1819,20 +1793,17 @@ Local nItem
       EndIf
    EndIf
 
-Return uValue
+   Return uValue
 
-*------------------------------------------------------------------------------*
 METHOD RefreshData() CLASS TOBrowse
-*------------------------------------------------------------------------------*
 
    ::Refresh()
 
-Return ::TGrid:RefreshData()
+   Return ::TGrid:RefreshData()
 
-*------------------------------------------------------------------------------*
 METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TOBrowse
-*------------------------------------------------------------------------------*
-Local cWorkArea, _RecNo, nRow, uGridValue, aCellData, aPos
+
+   Local cWorkArea, _RecNo, nRow, uGridValue, aCellData, aPos
 
    If nMsg == WM_CHAR
       If wParam < 32
@@ -2004,12 +1975,11 @@ Local cWorkArea, _RecNo, nRow, uGridValue, aCellData, aPos
 
    EndIf
 
-Return ::Super:Events( hWnd, nMsg, wParam, lParam )
+   Return ::Super:Events( hWnd, nMsg, wParam, lParam )
 
-*------------------------------------------------------------------------------*
 METHOD Events_Notify( wParam, lParam ) CLASS TOBrowse
-*------------------------------------------------------------------------------*
-Local nvKey, r, DeltaSelect, lGo, uValue, nNotify := GetNotifyCode( lParam )
+
+   Local nvKey, r, DeltaSelect, lGo, uValue, nNotify := GetNotifyCode( lParam )
 
    If nNotify == NM_CLICK
       If ::lCheckBoxes
@@ -2166,12 +2136,11 @@ Local nvKey, r, DeltaSelect, lGo, uValue, nNotify := GetNotifyCode( lParam )
 
    EndIf
 
-Return ::Super:Events_Notify( wParam, lParam )
+   Return ::Super:Events_Notify( wParam, lParam )
 
-*------------------------------------------------------------------------------*
 METHOD SetScrollPos( nPos, VScroll ) CLASS TOBrowse
-*------------------------------------------------------------------------------*
-Local BackRec, cWorkArea := ::WorkArea
+
+   Local BackRec, cWorkArea := ::WorkArea
 
    If Select( cWorkArea ) == 0
       // Not workarea selected
@@ -2187,40 +2156,31 @@ Local BackRec, cWorkArea := ::WorkArea
       ::BrowseOnChange()
    EndIf
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 FUNCTION SetBrowseSync( lValue )
-*------------------------------------------------------------------------------*
 
    If ValType( lValue ) == "L"
       _OOHG_BrowseSyncStatus := lValue
    EndIf
 
-Return _OOHG_BrowseSyncStatus
+   Return _OOHG_BrowseSyncStatus
 
-*------------------------------------------------------------------------------*
 FUNCTION SetBrowseFixedBlocks( lValue )
-*------------------------------------------------------------------------------*
 
    If ValType( lValue ) == "L"
       _OOHG_BrowseFixedBlocks := lValue
    EndIf
 
-Return _OOHG_BrowseFixedBlocks
+   Return _OOHG_BrowseFixedBlocks
 
-*------------------------------------------------------------------------------*
 FUNCTION SetBrowseFixedControls( lValue )
-*------------------------------------------------------------------------------*
 
    If ValType( lValue ) == "L"
       _OOHG_BrowseFixedControls := lValue
    EndIf
 
-Return _OOHG_BrowseFixedControls
-
-
-
+   Return _OOHG_BrowseFixedControls
 
 
 CLASS TOBrowseByCell FROM TOBrowse
@@ -2257,7 +2217,7 @@ CLASS TOBrowseByCell FROM TOBrowse
    MESSAGE GoBottom               METHOD End
    MESSAGE GoTop                  METHOD Home
 
-/*
+   /*
    Available methods from TOBrowse:
          DbGoTo
          DbSkip
@@ -2347,10 +2307,10 @@ CLASS TOBrowseByCell FROM TOBrowse
       ScrollToRight
       SetItemColor
       SetRangeColor
-*/
-ENDCLASS
+   */
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define3( ControlName, ParentForm, x, y, w, h, fontname, fontsize, ;
                 tooltip, aHeadClick, nogrid, aImage, break, HelpId, bold, ;
                 italic, underline, strikeout, edit, backcolor, fontcolor, ;
@@ -2362,8 +2322,8 @@ METHOD Define3( ControlName, ParentForm, x, y, w, h, fontname, fontsize, ;
                 lLikeExcel, lButtons, AllowDelete, DelMsg, lNoDelMsg, ;
                 AllowAppend, lNoModal, lFixedCtrls, lExtDbl, Value, lSilent, ;
                 lAltA, lNoShowAlways, lNone, lCBE, lCheckBoxes, lAtFirst ) CLASS TOBrowseByCell
-*------------------------------------------------------------------------------*
-Local nAux
+
+   Local nAux
 
    Empty( InPlace )          // Forced to .T., it's needed for edit controls to work properly
    ASSIGN lFocusRect VALUE lFocusRect TYPE "L" DEFAULT .F.
@@ -2397,14 +2357,12 @@ Local nAux
       EndIf
    EndIf
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD AddColumn( nColIndex, xField, cHeader, nWidth, nJustify, uForeColor, ;
                   uBackColor, lNoDelete, uPicture, uEditControl, uHeadClick, ;
                   uValid, uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign, ;
                   uReplaceField, lRefresh, uReadOnly, uDefault ) CLASS TOBrowseByCell
-*------------------------------------------------------------------------------*
 
    nColIndex := ::Super:AddColumn( nColIndex, xField, cHeader, nWidth, nJustify, uForeColor, ;
                                    uBackColor, lNoDelete, uPicture, uEditControl, uHeadClick, ;
@@ -2416,20 +2374,16 @@ METHOD AddColumn( nColIndex, xField, cHeader, nWidth, nJustify, uForeColor, ;
       ::DoChange()
    EndIf
 
-Return nColIndex
+   Return nColIndex
 
-*------------------------------------------------------------------------------*
 METHOD DeleteAllItems() CLASS TOBrowseByCell
-*------------------------------------------------------------------------------*
 
    ::nRowPos := 0
    ::nColPos := 0
 
-Return ::Super:DeleteAllItems()
+   Return ::Super:DeleteAllItems()
 
-*------------------------------------------------------------------------------*
 METHOD DeleteColumn( nColIndex, lNoDelete ) CLASS TOBrowseByCell
-*------------------------------------------------------------------------------*
 
    nColIndex := ::Super:DeleteColumn( nColIndex, lNoDelete )
    If nColIndex > 0
@@ -2442,12 +2396,11 @@ METHOD DeleteColumn( nColIndex, lNoDelete ) CLASS TOBrowseByCell
       EndIf
    EndIf
 
-Return nColIndex
+   Return nColIndex
 
-*------------------------------------------------------------------------------*
 METHOD SetSelectedColors( aSelectedColors, lRedraw ) CLASS TOBrowseByCell
-*------------------------------------------------------------------------------*
-Local i, aColors[ 8 ]
+
+   Local i, aColors[ 8 ]
 
    If HB_IsArray( aSelectedColors )
       aSelectedColors := AClone( aSelectedColors )
@@ -2502,12 +2455,11 @@ Local i, aColors[ 8 ]
       aSelectedColors := AClone( ::aSelectedColors )
    EndIf
 
-Return aSelectedColors
+   Return aSelectedColors
 
-*------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TOBrowseByCell
-*------------------------------------------------------------------------------*
-Local nItem
+
+   Local nItem
 
    If HB_IsArray( uValue ) .AND. Len( uValue ) > 1
       If HB_IsNumeric( uValue[ 1 ] ) .AND. uValue[ 1 ] >= 0
@@ -2544,12 +2496,11 @@ Local nItem
       EndIf
    EndIf
 
-Return uValue
+   Return uValue
 
-*------------------------------------------------------------------------------*
 METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TOBrowseByCell
-*------------------------------------------------------------------------------*
-Local cWorkArea, _RecNo, aValue, uGridValue, nRow, nCol
+
+   Local cWorkArea, _RecNo, aValue, uGridValue, nRow, nCol
 
    If nMsg == WM_CHAR
       If wParam < 32
@@ -2689,12 +2640,11 @@ Local cWorkArea, _RecNo, aValue, uGridValue, nRow, nCol
 
    EndIf
 
-Return ::Super:Events( hWnd, nMsg, wParam, lParam )
+   Return ::Super:Events( hWnd, nMsg, wParam, lParam )
 
-*------------------------------------------------------------------------------*
 METHOD Events_Notify( wParam, lParam ) CLASS TOBrowseByCell
-*------------------------------------------------------------------------------*
-Local nvKey, r, DeltaSelect, lGo, aCellData, uValue, nNotify := GetNotifyCode( lParam )
+
+   Local nvKey, r, DeltaSelect, lGo, aCellData, uValue, nNotify := GetNotifyCode( lParam )
 
    If nNotify == NM_CLICK
       If ::lCheckBoxes
@@ -2858,12 +2808,11 @@ Local nvKey, r, DeltaSelect, lGo, aCellData, uValue, nNotify := GetNotifyCode( l
 
    EndIf
 
-Return ::Super:Events_Notify( wParam, lParam )
+   Return ::Super:Events_Notify( wParam, lParam )
 
-*------------------------------------------------------------------------------*
 METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, nOnFocusPos, lRefresh, lChange ) CLASS TOBrowseByCell
-*------------------------------------------------------------------------------*
-Local lRet, BackRec, cWorkArea
+
+   Local lRet, BackRec, cWorkArea
 
    ASSIGN lAppend  VALUE lAppend  TYPE "L" DEFAULT .F.
    ASSIGN nRow     VALUE nRow     TYPE "N" DEFAULT ::nRowPos
@@ -2972,20 +2921,16 @@ Local lRet, BackRec, cWorkArea
       EndIf
    EndIf
 
-Return lRet
+   Return lRet
 
-*------------------------------------------------------------------------------*
 METHOD EditCell2( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPos ) CLASS TOBrowseByCell
-*------------------------------------------------------------------------------*
 
    ASSIGN nRow VALUE nRow TYPE "N" DEFAULT ::nRowPos
    ASSIGN nCol VALUE nCol TYPE "N" DEFAULT ::nColPos
 
-Return ::Super:EditCell2( @nRow, @nCol, @EditControl, uOldValue, @uValue, cMemVar, nOnFocusPos )
+   Return ::Super:EditCell2( @nRow, @nCol, @EditControl, uOldValue, @uValue, cMemVar, nOnFocusPos )
 
-*------------------------------------------------------------------------------*
 METHOD EditItem_B( lAppend, lOneRow ) CLASS TOBrowseByCell
-*------------------------------------------------------------------------------*
 
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
    ASSIGN lOneRow VALUE lOneRow TYPE "L" DEFAULT .T.
@@ -3003,12 +2948,11 @@ METHOD EditItem_B( lAppend, lOneRow ) CLASS TOBrowseByCell
       Return .F.
    EndIf
 
-Return ::EditAllCells( , , lAppend, lOneRow, .T., ::RefreshType == REFRESH_DEFAULT .OR. ::RefreshType == REFRESH_FORCE )
+   Return ::EditAllCells( , , lAppend, lOneRow, .T., ::RefreshType == REFRESH_DEFAULT .OR. ::RefreshType == REFRESH_FORCE )
 
-*------------------------------------------------------------------------------*
 METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOBrowseByCell
-*------------------------------------------------------------------------------*
-Local lRet, lSomethingEdited, lRowAppended, nRecNo, cWorkArea, nNextCol
+
+   Local lRet, lSomethingEdited, lRowAppended, nRecNo, cWorkArea, nNextCol
 
    ASSIGN lOneRow VALUE lOneRow TYPE "L" DEFAULT .T.
    If ::FullMove .OR. ! lOneRow
@@ -3148,12 +3092,11 @@ Local lRet, lSomethingEdited, lRowAppended, nRecNo, cWorkArea, nNextCol
       ::CurrentCol := nNextCol
    EndDo
 
-Return lSomethingEdited
+   Return lSomethingEdited
 
-*------------------------------------------------------------------------------*
 METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOBrowseByCell
-*------------------------------------------------------------------------------*
-Local lSomethingEdited, nRecNo, lRet, lRowAppended, cWorkArea
+
+   Local lSomethingEdited, nRecNo, lRet, lRowAppended, cWorkArea
 
    If ::FirstVisibleColumn == 0
       Return .F.
@@ -3355,12 +3298,11 @@ Local lSomethingEdited, nRecNo, lRet, lRowAppended, cWorkArea
       nCol := ::nColPos
    EndDo
 
-Return lSomethingEdited
+   Return lSomethingEdited
 
-*------------------------------------------------------------------------------*
 METHOD BrowseOnChange() CLASS TOBrowseByCell
-*------------------------------------------------------------------------------*
-Local cWorkArea, lSync, nRec
+
+   Local cWorkArea, lSync, nRec
 
    If ::lUpdCols
       ::UpdateColors()
@@ -3382,12 +3324,11 @@ Local cWorkArea, lSync, nRec
 
    ::DoChange()
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD DoChange() CLASS TOBrowseByCell
-*------------------------------------------------------------------------------*
-Local xValue, cType, cOldType
+
+   Local xValue, cType, cOldType
 
    xValue   := ::Value
    cType    := ValType( xValue )
@@ -3405,12 +3346,11 @@ Local xValue, cType, cOldType
 
    ::nRecLastValue := xValue[ 1 ]
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD SetValue( Value, mp ) CLASS TOBrowseByCell
-*------------------------------------------------------------------------------*
-Local nRow, nCol, _RecNo, m, hWnd, cWorkArea
+
+   Local nRow, nCol, _RecNo, m, hWnd, cWorkArea
 
    cWorkArea := ::WorkArea
    If Select( cWorkArea ) == 0
@@ -3482,12 +3422,11 @@ Local nRow, nCol, _RecNo, m, hWnd, cWorkArea
       EndIf
    EndIf
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD Delete() CLASS TOBrowseByCell
-*------------------------------------------------------------------------------*
-Local Value, nRow, nRecNo, lSync, cWorkArea
+
+   Local Value, nRow, nRecNo, lSync, cWorkArea
 
    Value := ::Value
    nRow  := Value[ 1 ]
@@ -3543,12 +3482,11 @@ Local Value, nRow, nRecNo, lSync, cWorkArea
       ::DbGoTo( nRecNo )
    EndIf
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD Home() CLASS TOBrowseByCell                   // METHOD GoTop
-*------------------------------------------------------------------------------*
-Local _RecNo, aBefore, aAfter, lDone := .F., cWorkArea
+
+   Local _RecNo, aBefore, aAfter, lDone := .F., cWorkArea
 
    cWorkArea := ::WorkArea
    If Select( cWorkArea ) == 0
@@ -3567,12 +3505,11 @@ Local _RecNo, aBefore, aAfter, lDone := .F., cWorkArea
    lDone := ( aBefore[ 1 ] # aAfter[ 1 ] .OR. aBefore[ 2 ] # aAfter[ 2 ] )
    ::BrowseOnChange()
 
-Return lDone
+   Return lDone
 
-*------------------------------------------------------------------------------*
 METHOD End( lAppend ) CLASS TOBrowseByCell     // METHOD GoBottom
-*------------------------------------------------------------------------------*
-Local lDone := .F., aBefore, _Recno, cWorkArea
+
+   Local lDone := .F., aBefore, _Recno, cWorkArea
 
    cWorkArea := ::WorkArea
    If Select( cWorkArea ) == 0
@@ -3594,13 +3531,13 @@ Local lDone := .F., aBefore, _Recno, cWorkArea
    lDone := ( aBefore[ 1 ] # ::Value[ 1 ] .OR. aBefore[ 2 ] # ::Value[ 2 ] )
    ::BrowseOnChange()
 
-Return lDone
+   Return lDone
 
-//TODO: revisar desde aca
-*------------------------------------------------------------------------------*
+   //TODO: revisar desde aca
+
 METHOD PageUp() CLASS TOBrowseByCell
-*------------------------------------------------------------------------------*
-Local _RecNo, aBefore, lDone := .F., cWorkArea
+
+   Local _RecNo, aBefore, lDone := .F., cWorkArea
 
    cWorkArea := ::WorkArea
    If ::nRowPos == 1
@@ -3628,12 +3565,11 @@ Local _RecNo, aBefore, lDone := .F., cWorkArea
 
    ::BrowseOnChange()
 
-Return lDone
+   Return lDone
 
-*------------------------------------------------------------------------------*
 METHOD PageDown( lAppend ) CLASS TOBrowseByCell
-*------------------------------------------------------------------------------*
-Local _RecNo, s, lDone := .F., cWorkArea
+
+   Local _RecNo, s, lDone := .F., cWorkArea
 
    s := ::nRowPos
 
@@ -3680,12 +3616,11 @@ Local _RecNo, s, lDone := .F., cWorkArea
 
    ::BrowseOnChange()
 
-Return lDone
+   Return lDone
 
-*------------------------------------------------------------------------------*
 METHOD Up( lLast ) CLASS TOBrowseByCell
-*------------------------------------------------------------------------------*
-Local s, _RecNo, nLen, lDone := .F., cWorkArea
+
+   Local s, _RecNo, nLen, lDone := .F., cWorkArea
 
    s := ::nRowPos
 
@@ -3746,12 +3681,11 @@ Local s, _RecNo, nLen, lDone := .F., cWorkArea
 
    ::BrowseOnChange()
 
-Return lDone
+   Return lDone
 
-*------------------------------------------------------------------------------*
 METHOD Down( lAppend, lFirst ) CLASS TOBrowseByCell
-*------------------------------------------------------------------------------*
-Local s, _RecNo, nLen, lDone := .F., cWorkArea
+
+   Local s, _RecNo, nLen, lDone := .F., cWorkArea
 
    s := ::nRowPos
 
@@ -3816,12 +3750,11 @@ Local s, _RecNo, nLen, lDone := .F., cWorkArea
 
    ::BrowseOnChange()
 
-Return lDone
+   Return lDone
 
-*------------------------------------------------------------------------------*
 METHOD SetScrollPos( nPos, VScroll ) CLASS TOBrowseByCell
-*------------------------------------------------------------------------------*
-Local BackRec, cWorkArea
+
+   Local BackRec, cWorkArea
 
    cWorkArea := ::WorkArea
    If Select( cWorkArea ) == 0
@@ -3838,12 +3771,11 @@ Local BackRec, cWorkArea
       ::BrowseOnChange()
    EndIf
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD CurrentCol( nCol ) CLASS TOBrowseByCell
-*------------------------------------------------------------------------------*
-Local r, nClientWidth, nScrollWidth, lColChanged
+
+   Local r, nClientWidth, nScrollWidth, lColChanged
 
    If HB_IsNumeric( nCol ) .AND. nCol >= 0 .AND. nCol <= Len( ::aHeaders )
       If  nCol < 1 .OR. nCol > Len( ::aHeaders )
@@ -3887,12 +3819,11 @@ Local r, nClientWidth, nScrollWidth, lColChanged
       EndIf
    EndIf
 
-Return ::nColPos
+   Return ::nColPos
 
-*--------------------------------------------------------------------------*
 METHOD Left() CLASS TOBrowseByCell
-*--------------------------------------------------------------------------*
-Local aValue, nRec, nCol, lDone := .F.
+
+   Local aValue, nRec, nCol, lDone := .F.
 
    aValue := ::Value
    nRec := aValue[ 1 ]
@@ -3905,12 +3836,12 @@ Local aValue, nRec, nCol, lDone := .F.
          lDone := ::Up( .T. )
       EndIf
    EndIf
-Return lDone
 
-*--------------------------------------------------------------------------*
+   Return lDone
+
 METHOD Right( lAppend ) CLASS TOBrowseByCell
-*--------------------------------------------------------------------------*
-Local aValue, nRec, nCol, lDone := .F.
+
+   Local aValue, nRec, nCol, lDone := .F.
 
    aValue := ::Value
    nRec := aValue[ 1 ]
@@ -3930,4 +3861,5 @@ Local aValue, nRec, nCol, lDone := .F.
          EndIf
       EndIf
    EndIf
-Return lDone
+
+   Return lDone

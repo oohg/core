@@ -93,8 +93,8 @@
  *                      - Añadido soporte para lenguaje Ruso (Grigory Filiatov).
  *                      - Añadido soporte para lenguaje Catalán.
  *                      - Añadido soporte para lenguaje Portugués (Clovis Nogueira Jr).
- *			- Añadido soporte para lenguaja Polaco 852 (Janusz Poura).
- *			- Añadido soporte para lenguaje Francés (C. Jouniauxdiv).
+ *         - Añadido soporte para lenguaja Polaco 852 (Janusz Poura).
+ *         - Añadido soporte para lenguaje Francés (C. Jouniauxdiv).
  *              May 03  - Añadido soporte para lenguaje Italiano (Lupano Piero).
  *                      - Añadido soporte para lenguaje Alemán (Janusz Poura).
  *
@@ -837,20 +837,20 @@ do case
 
                 // Borra el registro si se acepta.
                 if MsgOKCancel( _OOHG_Messages( 5, 1 ), "" )
-	                if (_cArea)->( rlock() )
-        	           (_cArea)->( dbDelete() )
-                	   (_cArea)->( dbCommit() )
-	                   (_cArea)->( dbunlock() )
-        	           if .not. set( _SET_DELETED )
-                	      set deleted on
-	                   endif
-        	           (_cArea)->( dbSkip() )
-                	   if (_cArea)->( eof() )
-	                      (_cArea)->( dbGoBottom() )
-        	           endif
-	                else
+                   if (_cArea)->( rlock() )
+                      (_cArea)->( dbDelete() )
+                      (_cArea)->( dbCommit() )
+                      (_cArea)->( dbunlock() )
+                      if .not. set( _SET_DELETED )
+                         set deleted on
+                      endif
+                      (_cArea)->( dbSkip() )
+                      if (_cArea)->( eof() )
+                         (_cArea)->( dbGoBottom() )
+                      endif
+                   else
                       Msgstop( _OOHG_Messages( 11, 41 ), '' )
-	                endif
+                   endif
                 endif
 
                 // Refresca.
@@ -923,27 +923,27 @@ do case
                                 (_cArea)->( dbAppend() )
                         endif
 
-			if (_cArea)->(rlock())
+         if (_cArea)->(rlock())
 
             for nItem := 1 to Len( _OOHG_aControles )
                                  (_cArea)->( FieldPut( nItem, wndABM:Control( _OOHG_aControles[nItem,1] ):Value ) )
-				next
+            next
 
-				(_cArea)->( dbCommit() )
+            (_cArea)->( dbCommit() )
 
-				Unlock
+            Unlock
 
-				// Refresca el browse.
+            // Refresca el browse.
 
                            wndABM:brwBrowse:Value := (_cArea)->( RecNo() )
                            wndABM:brwBrowse:Refresh()
                          wndABM:Title := SubStr( wndABM:Title, 1, Len(wndABM:Title) - 12 )
 
-			else
+         else
 
-				MsgStop ('Record locked by another user')
+            MsgStop ('Record locked by another user')
 
-			endif
+         endif
 
                 else
 

@@ -68,21 +68,21 @@ Local Count
 Local objItem
 Local i
 
-	objZip := TOleAuto():New( "XStandard.Zip")
+   objZip := TOleAuto():New( "XStandard.Zip")
 
-	Count := objZip:Contents(zipfile):Count
+   Count := objZip:Contents(zipfile):Count
 
-	For i := 1 To Count
+   For i := 1 To Count
 
-		objItem := objZip:Contents(zipfile):Item(i)
+      objItem := objZip:Contents(zipfile):Item(i)
 
-		if valtype (block) = 'B'
-			Eval ( block , objItem:Name , i )
-		endif
+      if valtype (block) = 'B'
+         Eval ( block , objItem:Name , i )
+      endif
 
-		objZip:UnPack( zipfile , extractpath , objItem:Name )
+      objZip:UnPack( zipfile , extractpath , objItem:Name )
 
-	Next i
+   Next i
 
 RETURN
 
@@ -92,17 +92,17 @@ PROCEDURE HMG_ZIPFILE( zipfile , afiles , level , block , ovr )
 LOCAL oZip
 LOCAL I
 
-	oZip:=TOleAuto():New( "XStandard.Zip")
+   oZip:=TOleAuto():New( "XStandard.Zip")
 
-	if ovr == .t.
-		if file (zipfile)
-			delete file (zipfile)
-		endif
-	endif
+   if ovr == .t.
+      if file (zipfile)
+         delete file (zipfile)
+      endif
+   endif
 
-	For i := 1 To Len (afiles)
-		Eval ( block , aFiles [i] , i )
-		oZip:pack( afiles [i] , zipfile , , , level )
-	Next i
+   For i := 1 To Len (afiles)
+      Eval ( block , aFiles [i] , i )
+      oZip:pack( afiles [i] , zipfile , , , level )
+   Next i
 
 RETURN

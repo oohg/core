@@ -110,7 +110,7 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 
 HB_FUNC( INITVSCROLLBARBUTTON )
 {
-	HWND hbutton;
+   HWND hbutton;
    int Style;
 
    Style = WS_CHILD | WS_VISIBLE | SS_SUNKEN;

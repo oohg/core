@@ -93,45 +93,45 @@ Function _BeginScrSaver( cSSaver, lNoShow, cInit, cRelease, cPaint, nTimer, aBac
 
    IF lNoShow
 
-	DEFINE WINDOW &cSsaver AT 0, 0 ;
-		WIDTH x HEIGHT y ;
-		MAIN NOSHOW ;
-		TOPMOST NOSIZE NOCAPTION ;
-		ON GOTFOCUS SetCursorPos(x / 2, y / 2) ;
-		ON INIT (ShowCursor(.F.), ;
-			SystemParametersInfo( SPI_SCREENSAVERRUNNING, 1, @Dummy, 0 )) ;
-		ON RELEASE _ReleaseScrSaver(cRelease, cSSaver, cPaint) ;
-		ON MOUSECLICK (IF(_lValidScrSaver(), DoMethod (cSSaver,'Release'), )) ;
-		ON MOUSEMOVE (a := GetCursorPos(), IF( a[1] # y / 2 .AND. a[2] # x / 2, ;
-			IF(_lValidScrSaver(), DoMethod(cSSaver,'Release') , ), )) ;
-	      BACKCOLOR aBackClr
+   DEFINE WINDOW &cSsaver AT 0, 0 ;
+      WIDTH x HEIGHT y ;
+      MAIN NOSHOW ;
+      TOPMOST NOSIZE NOCAPTION ;
+      ON GOTFOCUS SetCursorPos(x / 2, y / 2) ;
+      ON INIT (ShowCursor(.F.), ;
+         SystemParametersInfo( SPI_SCREENSAVERRUNNING, 1, @Dummy, 0 )) ;
+      ON RELEASE _ReleaseScrSaver(cRelease, cSSaver, cPaint) ;
+      ON MOUSECLICK (IF(_lValidScrSaver(), DoMethod (cSSaver,'Release'), )) ;
+      ON MOUSEMOVE (a := GetCursorPos(), IF( a[1] # y / 2 .AND. a[2] # x / 2, ;
+         IF(_lValidScrSaver(), DoMethod(cSSaver,'Release') , ), )) ;
+         BACKCOLOR aBackClr
    ELSE
 
-	DEFINE WINDOW &cSsaver AT 0, 0 ;
-		WIDTH x HEIGHT y ;
-		MAIN ;
-		TOPMOST NOSIZE NOCAPTION ;
-		ON GOTFOCUS SetCursorPos(x / 2, y / 2) ;
-		ON INIT (ShowCursor(.F.), ;
-			SystemParametersInfo( SPI_SCREENSAVERRUNNING, 1, @Dummy, 0 )) ;
-		ON RELEASE _ReleaseScrSaver(cRelease, cSSaver, cPaint) ;
-		ON MOUSECLICK (IF(_lValidScrSaver(), DoMethod(cSSaver,'Release')  , )) ;
-		ON MOUSEMOVE (a := GetCursorPos(), IF( a[1] # y / 2 .AND. a[2] # x / 2, ;
-			IF(_lValidScrSaver(), DoMethod(cSSaver,'Release'), ), )) ;
-	      BACKCOLOR aBackClr
+   DEFINE WINDOW &cSsaver AT 0, 0 ;
+      WIDTH x HEIGHT y ;
+      MAIN ;
+      TOPMOST NOSIZE NOCAPTION ;
+      ON GOTFOCUS SetCursorPos(x / 2, y / 2) ;
+      ON INIT (ShowCursor(.F.), ;
+         SystemParametersInfo( SPI_SCREENSAVERRUNNING, 1, @Dummy, 0 )) ;
+      ON RELEASE _ReleaseScrSaver(cRelease, cSSaver, cPaint) ;
+      ON MOUSECLICK (IF(_lValidScrSaver(), DoMethod(cSSaver,'Release')  , )) ;
+      ON MOUSEMOVE (a := GetCursorPos(), IF( a[1] # y / 2 .AND. a[2] # x / 2, ;
+         IF(_lValidScrSaver(), DoMethod(cSSaver,'Release'), ), )) ;
+         BACKCOLOR aBackClr
    ENDIF
 
-	IF cPaint # NIL
-		DEFINE TIMER Timer_SSaver ;
-			INTERVAL nTimer * 1000 ;
-			ACTION Eval(cPaint)
-	ENDIF
+   IF cPaint # NIL
+      DEFINE TIMER Timer_SSaver ;
+         INTERVAL nTimer * 1000 ;
+         ACTION Eval(cPaint)
+   ENDIF
 
    END WINDOW
 
    IF cInit # NIL
 
-	Eval(cInit)
+   Eval(cInit)
 
    ENDIF
 
@@ -147,55 +147,55 @@ Function _ActivateScrSaver( aForm, cParam )
    cParam := Lower( cParam )
 
    DO CASE
-	CASE cParam = "/s" .or. cParam = "-s"
+   CASE cParam = "/s" .or. cParam = "-s"
 
-		_ActivateWindow( aForm )
+      _ActivateWindow( aForm )
 
-	CASE cParam = "/c" .or. cParam = "-c"
+   CASE cParam = "/c" .or. cParam = "-c"
 
-		IF _ScrSaverConfig # NIL
-			Eval(_ScrSaverConfig)
-		ELSE
-			MsgInfo( "This screen saver has no options that you configure." )
-		ENDIF
+      IF _ScrSaverConfig # NIL
+         Eval(_ScrSaverConfig)
+      ELSE
+         MsgInfo( "This screen saver has no options that you configure." )
+      ENDIF
 
-	CASE cParam = "/a" .or. cParam = "-a"
+   CASE cParam = "/a" .or. cParam = "-a"
 
-		ChangePassword(GetActiveWindow())
+      ChangePassword(GetActiveWindow())
 
-	CASE cParam = "/i" .or. cParam = "-i"
+   CASE cParam = "/i" .or. cParam = "-i"
 
-		cFileScr := GetModuleFileName( GetInstance() )
-		cFileDes := GetSystemFolder() + "\" + ;
+      cFileScr := GetModuleFileName( GetInstance() )
+      cFileDes := GetSystemFolder() + "\" + ;
             If( valtype(_ScrSaverFileName) $ "CM", _ScrSaverFileName, ;
-				cFileNoExt( cFileScr ) + ".SCR" )
+            cFileNoExt( cFileScr ) + ".SCR" )
 
-		IF File( cFileDes )
-			FErase( cFileDes )
-		ENDIF
+      IF File( cFileDes )
+         FErase( cFileDes )
+      ENDIF
 
-		Copy File (cFileScr) To (cFileDes)
+      Copy File (cFileScr) To (cFileDes)
 
-		IF File( cFileDes )
+      IF File( cFileDes )
 
-			IF IsWinXP()
-				EXECUTE FILE "Rundll32.exe" ;
-					PARAMETERS "desk.cpl,InstallScreenSaver " + ;
-					GetSystemFolder() + "\" + cFileNoExt( cFileScr ) + ".SCR"
-			ELSE
-				BEGIN INI FILE GetWindowsFolder() + "\" + 'system.ini'
-					SET SECTION "boot" ENTRY "SCRNSAVE.EXE" TO cFileDes
-				END INI
-			ENDIF
+         IF IsWinXP()
+            EXECUTE FILE "Rundll32.exe" ;
+               PARAMETERS "desk.cpl,InstallScreenSaver " + ;
+               GetSystemFolder() + "\" + cFileNoExt( cFileScr ) + ".SCR"
+         ELSE
+            BEGIN INI FILE GetWindowsFolder() + "\" + 'system.ini'
+               SET SECTION "boot" ENTRY "SCRNSAVE.EXE" TO cFileDes
+            END INI
+         ENDIF
 
-			MsgInfo( cFileNoPath( cFileDes ) + " installation successfully." )
+         MsgInfo( cFileNoPath( cFileDes ) + " installation successfully." )
 
-			IF _ScrSaverShow
-				SendMessage( GetFormHandle(_ActiveScrSaverName), WM_SYSCOMMAND, SC_SCREENSAVE )
-			ENDIF
-		ELSE
-			MsgStop( cFileNoPath( cFileDes ) + " installation no successfully.", "Error" )
-		ENDIF
+         IF _ScrSaverShow
+            SendMessage( GetFormHandle(_ActiveScrSaverName), WM_SYSCOMMAND, SC_SCREENSAVE )
+         ENDIF
+      ELSE
+         MsgStop( cFileNoPath( cFileDes ) + " installation no successfully.", "Error" )
+      ENDIF
 
    ENDCASE
 
@@ -206,17 +206,17 @@ Function _ReleaseScrSaver( cRelease, cSSaver, cPaint )
 *--------------------------------------------------------*
    Local Dummy := ""
 
-	IF cRelease # NIL
-		Eval(cRelease)
-	ENDIF
+   IF cRelease # NIL
+      Eval(cRelease)
+   ENDIF
 
-	ShowCursor(.T.)
+   ShowCursor(.T.)
 
-	IF cPaint # NIL
+   IF cPaint # NIL
                 SetProperty( cSSaver, "Timer_SSaver", "Enabled", .F. )
-	ENDIF
+   ENDIF
 
-	SystemParametersInfo( SPI_SCREENSAVERRUNNING, 0, @Dummy, 0 )
+   SystemParametersInfo( SPI_SCREENSAVERRUNNING, 0, @Dummy, 0 )
 
 Return Nil
 
@@ -224,18 +224,18 @@ Return Nil
 Function _lValidScrSaver()
 *--------------------------------------------------------*
    Local oReg, nValue := 1, lRet
-	OPEN REGISTRY oReg KEY HKEY_CURRENT_USER ;
-		SECTION "Control Panel\Desktop"
+   OPEN REGISTRY oReg KEY HKEY_CURRENT_USER ;
+      SECTION "Control Panel\Desktop"
 
-	GET VALUE nValue NAME "ScreenSaveUsePassword" OF oReg
+   GET VALUE nValue NAME "ScreenSaveUsePassword" OF oReg
 
-	CLOSE REGISTRY oReg
+   CLOSE REGISTRY oReg
 
-	IF nValue = 0 .AND. !IsWinXP()
-		lRet := VerifyPassword(GetActiveWindow())
-	ELSE
-		lRet := .T.
-	ENDIF
+   IF nValue = 0 .AND. !IsWinXP()
+      lRet := VerifyPassword(GetActiveWindow())
+   ELSE
+      lRet := .T.
+   ENDIF
 
 Return lRet
 

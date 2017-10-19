@@ -86,7 +86,7 @@ LOCAL hFile
 
    _OOHG_ActiveHelpFile := cFile
 
-	FClose( hFile )
+   FClose( hFile )
 
 Return .T.
 

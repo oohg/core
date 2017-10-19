@@ -168,7 +168,7 @@ Return Nil
 *------------------------------------------------------------------------------*
 Function PlayWaveFromResource(wave)
 *------------------------------------------------------------------------------*
-	c_PlayWave(wave,.t.,.f.,.f.,.f.,.f.)
+   c_PlayWave(wave,.t.,.f.,.f.,.f.,.f.)
 Return Nil
 
 
@@ -256,7 +256,7 @@ static LRESULT APIENTRY SubClassFuncB( HWND hWnd, UINT msg, WPARAM wParam, LPARA
 
 HB_FUNC( INITANIMATE )
 {
-	HWND hwnd;
+   HWND hwnd;
 
    hwnd = Animate_Create( HWNDparam( 1 ), NULL, hb_parni( 6 ), GetModuleHandle( NULL ) );
 

@@ -100,7 +100,7 @@ Local oTab
       caption := ""
       fontname := "Arial"
       fontsize := 1
-	EndIf
+   EndIf
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, , lRtl )
 
@@ -195,7 +195,7 @@ HB_FUNC( INITFRAME )
    StyleEx = _OOHG_RTL_Status( hb_parl( 9 ) );
 
    if ( ! hb_parl( 8 ) )   /* opaque */
-	{
+   {
       StyleEx = StyleEx | WS_EX_TRANSPARENT;
    }
 

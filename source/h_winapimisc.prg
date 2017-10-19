@@ -156,7 +156,7 @@ Return lFolder
 Function GetSpecialFolder( nCSIDL ) // Contributed By Ryszard Rylko
 *------------------------------------------------------------------------------*
 Local RetVal
-	RetVal := C_GETSPECIALFOLDER( nCSIDL )
+   RetVal := C_GETSPECIALFOLDER( nCSIDL )
 Return RetVal
 
 *------------------------------------------------------------------------------*
@@ -187,28 +187,28 @@ Return { aRetVal[ 1 ] + aRetVal[ 4 ], aRetVal[ 2 ], 'Build ' + aRetVal[ 3 ] }
 Function _Execute( nActiveWindowhandle, cOperation, cFile, cParaMeters, cDefault, nState )
 *------------------------------------------------------------------------------*
 
-	If ValType( nActiveWindowhandle ) == 'U'
-		nActiveWindowhandle := 0
-	EndIf
+   If ValType( nActiveWindowhandle ) == 'U'
+      nActiveWindowhandle := 0
+   EndIf
 
-	If ValType( cOperation ) == 'U'
-		cOperation := Nil
-	EndIf
+   If ValType( cOperation ) == 'U'
+      cOperation := Nil
+   EndIf
 
-	If ValType( cFile ) == 'U'
-		cFile := ""
-	EndIf
+   If ValType( cFile ) == 'U'
+      cFile := ""
+   EndIf
 
-	If ValType( cParaMeters ) == 'U'
-		cParaMeters := Nil
-	EndIf
+   If ValType( cParaMeters ) == 'U'
+      cParaMeters := Nil
+   EndIf
 
-	If ValType( cDefault ) == 'U'
-		 cDefault := Nil
-	EndIf
+   If ValType( cDefault ) == 'U'
+       cDefault := Nil
+   EndIf
 
-	If ValType( nState ) == 'U'
-		 nState := 10 // SW_SHOWDEFAULT
-	EndIf
+   If ValType( nState ) == 'U'
+       nState := 10 // SW_SHOWDEFAULT
+   EndIf
 
 Return ShellExecute( nActiveWindowhandle, cOperation, cFile, cParaMeters, cDefault, nState )

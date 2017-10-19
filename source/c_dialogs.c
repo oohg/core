@@ -86,88 +86,88 @@ HB_FUNC( CHOOSEFONT )
 
    strcpy ( lf.lfFaceName , hb_parc(1) ) ;
 
-	hwnd = GetActiveWindow() ;
-	hdc = GetDC(hwnd) ;
+   hwnd = GetActiveWindow() ;
+   hdc = GetDC(hwnd) ;
 
-	lf.lfHeight = -MulDiv( hb_parnl(2) , GetDeviceCaps(hdc, LOGPIXELSY) , 72 ) ;
+   lf.lfHeight = -MulDiv( hb_parnl(2) , GetDeviceCaps(hdc, LOGPIXELSY) , 72 ) ;
 
-	if ( hb_parl (3) )
-	{
-		lf.lfWeight = 700 ;
-	}
-	else
-	{
-		lf.lfWeight = 400 ;
-	}
+   if ( hb_parl (3) )
+   {
+      lf.lfWeight = 700 ;
+   }
+   else
+   {
+      lf.lfWeight = 400 ;
+   }
 
-	if ( hb_parl (4) )
-	{
-		lf.lfItalic = TRUE ;
-	}
-	else
-	{
-		lf.lfItalic = FALSE ;
-	}
+   if ( hb_parl (4) )
+   {
+      lf.lfItalic = TRUE ;
+   }
+   else
+   {
+      lf.lfItalic = FALSE ;
+   }
 
-	if ( hb_parl (6) )
-	{
-		 lf.lfUnderline = TRUE ;
-	}
-	else
-	{
-		 lf.lfUnderline = FALSE ;
-	}
+   if ( hb_parl (6) )
+   {
+       lf.lfUnderline = TRUE ;
+   }
+   else
+   {
+       lf.lfUnderline = FALSE ;
+   }
 
-	if ( hb_parl (7) )
-	{
-		 lf.lfStrikeOut = TRUE ;
-	}
-	else
-	{
-		 lf.lfStrikeOut = FALSE ;
-	}
+   if ( hb_parl (7) )
+   {
+       lf.lfStrikeOut = TRUE ;
+   }
+   else
+   {
+       lf.lfStrikeOut = FALSE ;
+   }
 
-	lf.lfCharSet = (BYTE) hb_parni( 8 ) ;
+   lf.lfCharSet = (BYTE) hb_parni( 8 ) ;
 
-	cf.lStructSize = sizeof(CHOOSEFONT);
-	cf.hwndOwner = hwnd ;
-	cf.hDC = (HDC)NULL;
-	cf.lpLogFont = &lf;
-	cf.Flags = CF_SCREENFONTS | CF_EFFECTS | CF_INITTOLOGFONTSTRUCT	;
-	cf.rgbColors = hb_parnl(5) ;
-	cf.lCustData = 0L;
-	cf.lpfnHook = (LPCFHOOKPROC)NULL;
-	cf.lpTemplateName = (LPSTR)NULL;
-	cf.hInstance = (HINSTANCE) NULL;
-	cf.lpszStyle = (LPSTR)NULL;
-	cf.nFontType = SCREEN_FONTTYPE;
-	cf.nSizeMin = 0;
-	cf.nSizeMax = 0;
+   cf.lStructSize = sizeof(CHOOSEFONT);
+   cf.hwndOwner = hwnd ;
+   cf.hDC = (HDC)NULL;
+   cf.lpLogFont = &lf;
+   cf.Flags = CF_SCREENFONTS | CF_EFFECTS | CF_INITTOLOGFONTSTRUCT   ;
+   cf.rgbColors = hb_parnl(5) ;
+   cf.lCustData = 0L;
+   cf.lpfnHook = (LPCFHOOKPROC)NULL;
+   cf.lpTemplateName = (LPSTR)NULL;
+   cf.hInstance = (HINSTANCE) NULL;
+   cf.lpszStyle = (LPSTR)NULL;
+   cf.nFontType = SCREEN_FONTTYPE;
+   cf.nSizeMin = 0;
+   cf.nSizeMax = 0;
 
-	if ( ! ChooseFont(&cf) )
-	{
-		hb_reta( 8 );
-		HB_STORC( "" , -1, 1 );
-		HB_STORNL( (LONG) 0 , -1, 2 );
-		HB_STORL( 0 , -1, 3 );
-		HB_STORL( 0 , -1, 4 );
-		HB_STORNL( 0 , -1, 5 );
-		HB_STORL( 0 , -1, 6 );
-		HB_STORL( 0 , -1, 7 );
-		HB_STORNI( 0 , -1, 8 );
-		return;
-	}
+   if ( ! ChooseFont(&cf) )
+   {
+      hb_reta( 8 );
+      HB_STORC( "" , -1, 1 );
+      HB_STORNL( (LONG) 0 , -1, 2 );
+      HB_STORL( 0 , -1, 3 );
+      HB_STORL( 0 , -1, 4 );
+      HB_STORNL( 0 , -1, 5 );
+      HB_STORL( 0 , -1, 6 );
+      HB_STORL( 0 , -1, 7 );
+      HB_STORNI( 0 , -1, 8 );
+      return;
+   }
 
-	PointSize = -MulDiv ( lf.lfHeight , 72 , GetDeviceCaps( hdc, LOGPIXELSY) ) ;
+   PointSize = -MulDiv ( lf.lfHeight , 72 , GetDeviceCaps( hdc, LOGPIXELSY) ) ;
 
-	if (lf.lfWeight == 700)
-	{
-		bold = 1;
-	}
-	else
-	{
-		bold = 0;
-	}
+   if (lf.lfWeight == 700)
+   {
+      bold = 1;
+   }
+   else
+   {
+      bold = 0;
+   }
 
    hb_reta( 8 );
    HB_STORC( lf.lfFaceName , -1, 1 );

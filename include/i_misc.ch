@@ -65,18 +65,18 @@ http://msdn.microsoft.com/en-us/library/windows/desktop/bb773205(v=vs.85).aspx
 ---------------------------------------------------------------------------*/
 
 #define BIF_RETURNONLYFSDIRS          0x0001
-#define BIF_DONTGOBELOWDOMAIN         0x0002   
+#define BIF_DONTGOBELOWDOMAIN         0x0002
 #define BIF_STATUSTEXT                0x0004
 #define BIF_RETURNFSANCESTORS         0x0008
 #define BIF_EDITBOX                   0x0010
 #define BIF_VALIDATE                  0x0020
 #define BIF_NEWDIALOGSTYLE            0x0040
 #define BIF_USENEWUI                  ( BIF_NEWDIALOGSTYLE + BIF_EDITBOX )
-#define BIF_BROWSEINCLUDEURLS         0x0080   
-#define BIF_BROWSEFORCOMPUTER         0x1000   
-#define BIF_BROWSEFORPRINTER          0x2000   
-#define BIF_BROWSEINCLUDEFILES        0x4000   
-#define BIF_SHAREABLE                 0x8000   
+#define BIF_BROWSEINCLUDEURLS         0x0080
+#define BIF_BROWSEFORCOMPUTER         0x1000
+#define BIF_BROWSEFORPRINTER          0x2000
+#define BIF_BROWSEINCLUDEFILES        0x4000
+#define BIF_SHAREABLE                 0x8000
 
 /*---------------------------------------------------------------------------
 SPECIAL FOLDERS (contributed by Richard Rylco)

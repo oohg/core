@@ -544,11 +544,11 @@ FUNCTION DB_CODE(cData, cKey, aFields, cPass, cFor, cWhile)
       cVal:=&cSeek
       Select &cAlias
       seek cVal
-	   rlock()
+      rlock()
       For i=1 to nFields
          FieldPut(i, &cTmpAlias->(FieldGet(i)))
       Next
-	   dbunlock()
+      dbunlock()
       Select &cTmpAlias
       skip
    Enddo

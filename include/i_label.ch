@@ -91,7 +91,7 @@
       [ INPUTMASK <picture> ] ;
       [ SUBCLASS <subclass> ] ;
       [ <disabled: DISABLED> ] ;
-	   [ <lcenteralign: VCENTERALIGN> ] ;
+      [ <lcenteralign: VCENTERALIGN> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TLabel(), [ <subclass>() ] ):Define( ;
             <(name)>, <(parent)>, <col>, <row>, <value>, <width>, <height>, ;

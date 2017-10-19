@@ -7997,14 +7997,14 @@ HB_FUNC( HEADER_HITTEST )
    ScreenToClient( hWnd, &point );
 
    index = -1;
-	for( i = 0; Header_GetItemRect( hWnd, i, &rc ); i ++ )
-	{
-		if( PtInRect( &rc, point ) )
-		{
-			index = i;
-			break;
-		}
-	}
+   for( i = 0; Header_GetItemRect( hWnd, i, &rc ); i ++ )
+   {
+      if( PtInRect( &rc, point ) )
+      {
+         index = i;
+         break;
+      }
+   }
 
    hb_retni( index + 1 );
 }

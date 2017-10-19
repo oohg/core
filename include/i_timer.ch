@@ -66,6 +66,6 @@
       [ ACTION <action> ] ;
       [ SUBCLASS <subclass> ] ;
       [ <disabled: DISABLED> ] ;
-	=> ;
+   => ;
       [ <obj> := ] _OOHG_SelectSubClass( TTimer(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <interval>, <{action}>, <.disabled.> )

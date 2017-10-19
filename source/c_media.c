@@ -72,54 +72,54 @@
 
 HB_FUNC ( PLAYBEEP )
 {
-	MessageBeep(0xFFFFFFFF);
+   MessageBeep(0xFFFFFFFF);
 }
 
 HB_FUNC ( PLAYASTERISK )
 {
-	MessageBeep(MB_ICONASTERISK);
+   MessageBeep(MB_ICONASTERISK);
 }
 
 HB_FUNC ( PLAYEXCLAMATION )
 {
-	MessageBeep(MB_ICONEXCLAMATION);
+   MessageBeep(MB_ICONEXCLAMATION);
 }
 
 HB_FUNC ( PLAYHAND )
 {
-	MessageBeep(MB_ICONHAND);
+   MessageBeep(MB_ICONHAND);
 }
 
 HB_FUNC ( PLAYQUESTION )
 {
-	MessageBeep(MB_ICONQUESTION);
+   MessageBeep(MB_ICONQUESTION);
 }
 
 HB_FUNC ( PLAYOK )
 {
-	MessageBeep(MB_OK);
+   MessageBeep(MB_OK);
 }
 
 HB_FUNC (C_PLAYWAVE)
 {
-	int Style = SND_ASYNC;
+   int Style = SND_ASYNC;
         HMODULE hmod=NULL;
-	if (  hb_parl(2) )
-		{
-		Style = Style | SND_RESOURCE ;
-		hmod = GetModuleHandle(NULL) ;
-		}
+   if (  hb_parl(2) )
+      {
+      Style = Style | SND_RESOURCE ;
+      hmod = GetModuleHandle(NULL) ;
+      }
         else
-		Style = Style | SND_FILENAME ;
+      Style = Style | SND_FILENAME ;
 
-	if (  hb_parl (3) )
-		Style = Style | SND_SYNC ;
-	if (  hb_parl (4) )
-		Style = Style | SND_NOSTOP ;
-	if (  hb_parl (5) )
-		Style = Style | SND_LOOP;
-	if (  hb_parl (6) )
-		Style = Style | SND_NODEFAULT;
+   if (  hb_parl (3) )
+      Style = Style | SND_SYNC ;
+   if (  hb_parl (4) )
+      Style = Style | SND_NOSTOP ;
+   if (  hb_parl (5) )
+      Style = Style | SND_LOOP;
+   if (  hb_parl (6) )
+      Style = Style | SND_NODEFAULT;
 
         hb_retl(PlaySound(hb_parc(1),hmod,Style));
 }

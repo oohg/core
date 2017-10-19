@@ -472,27 +472,27 @@ function ABM2( cArea, cTitulo, aNombreCampo, ;
 
 **** JK 104
 
-	// Opciones del usuario.
-	lSalida := .t.
+   // Opciones del usuario.
+   lSalida := .t.
 
-	if ValType( aOpciones ) != "A"
-		lSalida := .f.
-	elseif len(aOpciones)<1
-		lSalida := .f.
-	elseif Len( aOpciones[1] ) != 2
-		lSalida := .f.
-	else
-		for i := 1 to Len( aOpciones )
+   if ValType( aOpciones ) != "A"
+      lSalida := .f.
+   elseif len(aOpciones)<1
+      lSalida := .f.
+   elseif Len( aOpciones[1] ) != 2
+      lSalida := .f.
+   else
+      for i := 1 to Len( aOpciones )
          if ! ValType( aOpciones [i,ABM_OPC_TEXTO] ) $ "CM"
-				lSalida := .f.
-				exit
-			endif
-			if ValType( aOpciones [i,ABM_OPC_BLOQUE] ) != "B"
-				lSalida := .f.
-				exit
-			endif
-		next
-	endif
+            lSalida := .f.
+            exit
+         endif
+         if ValType( aOpciones [i,ABM_OPC_BLOQUE] ) != "B"
+            lSalida := .f.
+            exit
+         endif
+      next
+   endif
 
 **** END JK 104
 
@@ -961,7 +961,7 @@ static function ABM2Editar( lNuevo )
         local nAltoSplit     as numeric         // Alto de la ventana Split.
         local cTitulo        as character       // Título de la ventana.
         local cMascara       as array           // Máscara de edición de los controles numéricos.
-	local NANCHOCONTROL
+   local NANCHOCONTROL
 
         wndabm2edit.tbbNuevo.enabled:=.F.
         wndabm2edit.tbbEditar.enabled:=.F.
@@ -1087,7 +1087,7 @@ static function ABM2Editar( lNuevo )
                                         height _aControl[i,ABM_CON_HEIGHT]              ;
                                         width _aControl[i,ABM_CON_WIDTH] + 25           ;
                                         font "arial" size 9                             ;
-					SHOWNONE 					;
+               SHOWNONE                ;
                                         on gotfocus ABM2ConFoco()                       ;
                                         on lostfocus ABM2SinFoco()
                         case _aControl[i,ABM_CON_TYPE] == ABM_TEXTBOXN
@@ -2443,7 +2443,7 @@ static function ABM2DefinirColumnas( nAccion )
         local aCampoListado as array            // * Campos del listado.
         local i             as numeric          // * Indice de iteración.
         local nItem         as numeric          // * Numero del item seleccionado.
-	local cvalor
+   local cvalor
 
 ////////// Inicialización de variables.----------------------------------------
         aCampoBase  := {}

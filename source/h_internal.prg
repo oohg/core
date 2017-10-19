@@ -112,7 +112,7 @@ Local ControlHandle, nStyle, nStyleEx := 0
 
    if valtype( VirtualHeight ) != "N"
       VirtualHeight := 0
-	endif
+   endif
 
    if valtype( VirtualWidth ) != "N"
       VirtualWidth := 0

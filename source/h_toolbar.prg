@@ -106,7 +106,7 @@ CLASS TToolBar FROM TControl
    DATA Type                      INIT "TOOLBAR" READONLY
    DATA lAdjust                   INIT .T.
    DATA lfixfont                  INIT .T.
-   DATA lTop	                   INIT .T.
+   DATA lTop                      INIT .T.
    DATA nButtonHeight             INIT 0
    DATA nButtonWidth              INIT 0
    DATA lVertical                 INIT .F.
@@ -626,32 +626,32 @@ HB_FUNC( INITTOOLBAR )
       ExStyle |= WS_EX_CLIENTEDGE;
    }
 
-	if ( hb_parl( 10 ) )
-	{
-		Style = Style | TBSTYLE_FLAT;
-	}
+   if ( hb_parl( 10 ) )
+   {
+      Style = Style | TBSTYLE_FLAT;
+   }
 
-	if ( hb_parl( 11 ) )
-	{
-		Style = Style | CCS_BOTTOM;
-	}
+   if ( hb_parl( 11 ) )
+   {
+      Style = Style | CCS_BOTTOM;
+   }
 
-	if ( hb_parl( 12 ) )
-	{
-		Style = Style | TBSTYLE_LIST;
-	}
+   if ( hb_parl( 12 ) )
+   {
+      Style = Style | TBSTYLE_LIST;
+   }
 
-	if ( hb_parl( 13 ) )
-	{
-		Style = Style | CCS_NOPARENTALIGN | CCS_NODIVIDER | CCS_NORESIZE;
-	}
+   if ( hb_parl( 13 ) )
+   {
+      Style = Style | CCS_NOPARENTALIGN | CCS_NODIVIDER | CCS_NORESIZE;
+   }
 
-	if ( hb_parl( 17 ) )
-	{
-		Style = Style | CCS_VERT;
-	}
+   if ( hb_parl( 17 ) )
+   {
+      Style = Style | CCS_VERT;
+   }
 
-	hwndTB = CreateWindowEx( ExStyle, TOOLBARCLASSNAME, (LPSTR) NULL, Style, 0, 0, 0, 0, hwnd, (HMENU) hb_parni( 3 ), GetModuleHandle( NULL ), NULL );
+   hwndTB = CreateWindowEx( ExStyle, TOOLBARCLASSNAME, (LPSTR) NULL, Style, 0, 0, 0, 0, hwnd, (HMENU) hb_parni( 3 ), GetModuleHandle( NULL ), NULL );
 
    lpfnOldWndProc = (WNDPROC) SetWindowLong( (HWND) hwndTB, GWL_WNDPROC, (LONG) SubClassFunc );
 

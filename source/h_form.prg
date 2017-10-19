@@ -2093,7 +2093,7 @@ METHOD Release() CLASS TFormModal
       If ( Len( _OOHG_ActiveModal ) == 0 .OR. ATAIL( _OOHG_ActiveModal ):hWnd <> ::hWnd ) .AND. IsWindowVisible( ::hWnd )
          MsgOOHGError( "Non top modal window *" + ::Name + "* can't be released. Program terminated." )
       EndIf
-	EndIf
+   EndIf
 Return ::Super:Release()
 
 *------------------------------------------------------------------------------*
@@ -2105,9 +2105,9 @@ METHOD OnHideFocusManagement() CLASS TFormModal
 
    If ::oPrevWindow == nil
       // _OOHG_Main:SetFocus()
-	Else
+   Else
       ::oPrevWindow:SetFocus()
-	EndIf
+   EndIf
 Return ::Super:OnHideFocusManagement()
 
 
@@ -2748,14 +2748,14 @@ Local MainName := ''
    //    MsgOOHGError( "MAIN WINDOW not defined. Program terminated." )
    // EndIf
 
-	* If Already Active Windows Abort Command
+   * If Already Active Windows Abort Command
 
    If ascan( _OOHG_aFormObjects, { |o| o:Active .AND. ! o:lInternal } ) > 0
       MsgOOHGError( "ACTIVATE WINDOW ALL: This command should be used at application startup only. Program terminated." )
-	EndIf
+   EndIf
 
 // WHY???   * Force NoShow And NoAutoRelease Styles For Non Main Windows
-	* ( Force AutoRelease And Visible For Main )
+   * ( Force AutoRelease And Visible For Main )
 
    For i := 1 To LEN( _OOHG_aFormObjects )
       oWnd := _OOHG_aFormObjects[ i ]
@@ -2768,19 +2768,19 @@ Local MainName := ''
 //         oWnd:AutoRelease := .F.
          aadd( aForm , oWnd:Name )
       EndIf
-	Next i
+   Next i
 
-	aadd ( aForm , MainName )
+   aadd ( aForm , MainName )
 
-	* Check For Error And Call Activate Window Command
+   * Check For Error And Call Activate Window Command
 
    If Empty( MainName )
       MsgOOHGError( "ACTIVATE WINDOW ALL: Main window not defined. Program terminated." )
    ElseIf Len( aForm ) == 0
       MsgOOHGError( "ACTIVATE WINDOW ALL: No windows defined. Program terminated." )
-	Else
+   Else
       _ActivateWindow( aForm )
-	EndIf
+   EndIf
 
 Return Nil
 
@@ -3263,15 +3263,15 @@ MDICLIENT:
 
 MDICHILD:
    + "Título" automático de la ventana... rgch[]
-	mcs.szClass = "MdiChildWndClass";      // window class name
-	mcs.szTitle = rgch;                    // window title
-	mcs.hOwner  = GetModuleHandle(NULL);   // owner
-	mcs.x       = hb_parni (3);            // x position
-	mcs.y       = hb_parni (4);            // y position
-	mcs.cx      = hb_parni (5);            // width
-	mcs.cy      = hb_parni (6);            // height
-	mcs.style   = Style;                   // window style
-	mcs.lParam  = 0;                       // lparam
+   mcs.szClass = "MdiChildWndClass";      // window class name
+   mcs.szTitle = rgch;                    // window title
+   mcs.hOwner  = GetModuleHandle(NULL);   // owner
+   mcs.x       = hb_parni (3);            // x position
+   mcs.y       = hb_parni (4);            // y position
+   mcs.cx      = hb_parni (5);            // width
+   mcs.cy      = hb_parni (6);            // height
+   mcs.style   = Style;                   // window style
+   mcs.lParam  = 0;                       // lparam
     hwndChild = ( HWND ) SendMessage( HWNDparam( 1 ), WM_MDICREATE, 0, (LPARAM)(LPMDICREATESTRUCT) &mcs);
 */
    hwnd = CreateWindowEx( ExStyle, hb_parc( 7 ), hb_parc( 1 ), Style,
@@ -3312,15 +3312,15 @@ MDICLIENT:
 
 MDICHILD:
    + "Título" automático de la ventana... rgch[]
-	mcs.szClass = "MdiChildWndClass";      // window class name
-	mcs.szTitle = rgch;                    // window title
-	mcs.hOwner  = GetModuleHandle(NULL);   // owner
-	mcs.x       = hb_parni (3);            // x position
-	mcs.y       = hb_parni (4);            // y position
-	mcs.cx      = hb_parni (5);            // width
-	mcs.cy      = hb_parni (6);            // height
-	mcs.style   = Style;                   // window style
-	mcs.lParam  = 0;                       // lparam
+   mcs.szClass = "MdiChildWndClass";      // window class name
+   mcs.szTitle = rgch;                    // window title
+   mcs.hOwner  = GetModuleHandle(NULL);   // owner
+   mcs.x       = hb_parni (3);            // x position
+   mcs.y       = hb_parni (4);            // y position
+   mcs.cx      = hb_parni (5);            // width
+   mcs.cy      = hb_parni (6);            // height
+   mcs.style   = Style;                   // window style
+   mcs.lParam  = 0;                       // lparam
     hwndChild = ( HWND ) SendMessage( HWNDparam( 1 ), WM_MDICREATE, 0, (LPARAM)(LPMDICREATESTRUCT) &mcs);
 */
    hwnd = CreateWindowEx( ExStyle, "MDICLIENT", hb_parc( 1 ), Style,
@@ -3374,16 +3374,16 @@ DEFINE WINDOW __OOHG_OBJ_INSPECTOR OBJ oWnd ;
    WIDTH 400 ;
    HEIGHT 300 ;
    TITLE 'Object Inspector' ;
-	MODAL NOSIZE nomaximize nominimize
+   MODAL NOSIZE nomaximize nominimize
 
-	@ 24,0 grid __oohg_obj_Inspector_Grid obj oGrd ;
-		height 240 width 394 ;
-		headers {"DATA","Values"};
-		widths {150,180};
-		on dblclick (selecciona(aControls[oCombo:value],aControlsNames[oCombo:value],oooBj_Data[this.cellrowindex]),carga(aControls[oCombo:value],oGrd,@ooobj_data))
+   @ 24,0 grid __oohg_obj_Inspector_Grid obj oGrd ;
+      height 240 width 394 ;
+      headers {"DATA","Values"};
+      widths {150,180};
+      on dblclick (selecciona(aControls[oCombo:value],aControlsNames[oCombo:value],oooBj_Data[this.cellrowindex]),carga(aControls[oCombo:value],oGrd,@ooobj_data))
 
-	aData := {}
-	n:=''
+   aData := {}
+   n:=''
 
 #ifdef __XHARBOUR__
    #define ENUMINDEX hb_enumindex()
@@ -3391,49 +3391,49 @@ DEFINE WINDOW __OOHG_OBJ_INSPECTOR OBJ oWnd ;
    #define ENUMINDEX n:__enumindex
 #endif
 
-	for each n in aControlsNames
-	    s:=alltrim(n)
-		s:=left(s,len(s)-1)
+   for each n in aControlsNames
+       s:=alltrim(n)
+      s:=left(s,len(s)-1)
                 aadd (aData,aControls[ ENUMINDEX ]:type+' >> '+s)
                 aControlsNames[ ENUMINDEX ]:=S
-	next
+   next
 
-	@ 0,0 combobox __OOHG_OBJ_INSPECTOR_combo obj oCombo;
-		items aData value 1 width 394;
-		on change carga(aControls[oCombo:value],oGrd,@ooobj_data)
-	carga(aControls[1],oGrd,@ooobj_data)
+   @ 0,0 combobox __OOHG_OBJ_INSPECTOR_combo obj oCombo;
+      items aData value 1 width 394;
+      on change carga(aControls[oCombo:value],oGrd,@ooobj_data)
+   carga(aControls[1],oGrd,@ooobj_data)
 
 
-	end window
-	ownd:activate()
+   end window
+   ownd:activate()
 return nil
 
 
 static function carga(oooBj,oGrd,oooBj_Data)
 local aData:={},n
-	oGrd:DeleteAllItems()
-	#ifdef __XHARBOUR__
-	try
+   oGrd:DeleteAllItems()
+   #ifdef __XHARBOUR__
+   try
     aData  := __objGetValueList( oooBj, .T. )
-		if len(aData)>1
-			for n:=1 to len ( aData )
-				oGrd:additem({aData[n,1],valor(aData[n,2])})
-			next
-		end if
+      if len(aData)>1
+         for n:=1 to len ( aData )
+            oGrd:additem({aData[n,1],valor(aData[n,2])})
+         next
+      end if
         catch
-	end
-	#else
-	begin sequence
+   end
+   #else
+   begin sequence
     aData  := __objGetValueList( oooBj,.T.)
-		if len(aData)>1
-			for n:=1 to len ( aData )
-				oGrd:additem({aData[n,1],valor(aData[n,2])})
-			next
-		end if
-	end sequence
-	#endif
-	oGrd:ColumnsBetterAutoFit()
-	oooBj_Data:=aData // retorna en variable por referencia
+      if len(aData)>1
+         for n:=1 to len ( aData )
+            oGrd:additem({aData[n,1],valor(aData[n,2])})
+         next
+      end if
+   end sequence
+   #endif
+   oGrd:ColumnsBetterAutoFit()
+   oooBj_Data:=aData // retorna en variable por referencia
 return nil
 
 static function valor(xValue)
@@ -3441,59 +3441,59 @@ local tipo,ret
 
 tipo := valtype(xValue)
 
-	do case
-		case tipo$'CSM'
-			ret:='String "'+xValue+'"'
-		case tipo='N'
-			ret:='Numeric '+str(xValue)
-		case tipo='A'
-			ret:='Array, len '+alltrim(str(len(xValue)))
-		case tipo='L'
-			ret:='Boolean : '+if(xValue,'True','False')
-		case tipo='B'
-			Ret:='Codeblock {|| ... }'
-		case tipo='D'
-			ret:='Date '+dtoc(xValue)
+   do case
+      case tipo$'CSM'
+         ret:='String "'+xValue+'"'
+      case tipo='N'
+         ret:='Numeric '+str(xValue)
+      case tipo='A'
+         ret:='Array, len '+alltrim(str(len(xValue)))
+      case tipo='L'
+         ret:='Boolean : '+if(xValue,'True','False')
+      case tipo='B'
+         Ret:='Codeblock {|| ... }'
+      case tipo='D'
+         ret:='Date '+dtoc(xValue)
       case tipo='t'
          ret:='DateTime '+ttoc(xValue)
-		case tipo='O'
-			ret:='Object, class '+xValue:Classname()
-		otherwise
-			Ret:='Unknow type ...'
-	end case
+      case tipo='O'
+         ret:='Object, class '+xValue:Classname()
+      otherwise
+         Ret:='Unknow type ...'
+   end case
 return ret
 
 static function selecciona(ooBj,name,Values)
-	local oWnd, tipo ,lOk:=.f., oget
+   local oWnd, tipo ,lOk:=.f., oget
 
-	tipo=valtype(values[2])
-	if tipo$"CNDL"
-		Define window _oohg_change_value obj oWnd;
-			at 50,50 width 400 height 150;
-			title "Change value : "+name+'=>'+Values[1];
-			modal NOSIZE nomaximize nominimize
+   tipo=valtype(values[2])
+   if tipo$"CNDL"
+      Define window _oohg_change_value obj oWnd;
+         at 50,50 width 400 height 150;
+         title "Change value : "+name+'=>'+Values[1];
+         modal NOSIZE nomaximize nominimize
 
-		@ 10,10 label _oohg_change_value_lbl value "New value for "+name+'=>'+Values[1] autosize
+      @ 10,10 label _oohg_change_value_lbl value "New value for "+name+'=>'+Values[1] autosize
 
-		if tipo='C'
-			@ 40,20 textbox _oohg_change_value_txt obj oGet value Values[2]
-		elseif tipo='N'
-			@ 40,20 textbox _oohg_change_value_txt obj oGet  value Values[2] numeric
-		elseif tipo='D'
-			@ 40,20 textbox _oohg_change_value_txt obj oGet  value Values[2] date
-		elseif tipo='L'
-			@ 40,20 checkbox _oohg_change_value_txt obj oGet  value Values[2] caption "( Checked for true value )" autosize
-		end
-		@ 70,10 button _oohg_change_value_btnOK caption "Set value" action (Values[2]:=oGet:value , lOk:=.t., oWnd:release())
-		@ 70,150 button _oohg_change_value_btnno caption "Cancel" cancel action oWnd:release()
-		end window
-		oWnd:activate()
-		if lOk
-			__ObjSetValueList( ooBj , {Values} )
-			ooBj:refresh()
-		end
-	Else
-		msginfo('This value is not editable')
-	end
-	msginfo(name+' '+Values[1]+' '+valor(Values[2]))
+      if tipo='C'
+         @ 40,20 textbox _oohg_change_value_txt obj oGet value Values[2]
+      elseif tipo='N'
+         @ 40,20 textbox _oohg_change_value_txt obj oGet  value Values[2] numeric
+      elseif tipo='D'
+         @ 40,20 textbox _oohg_change_value_txt obj oGet  value Values[2] date
+      elseif tipo='L'
+         @ 40,20 checkbox _oohg_change_value_txt obj oGet  value Values[2] caption "( Checked for true value )" autosize
+      end
+      @ 70,10 button _oohg_change_value_btnOK caption "Set value" action (Values[2]:=oGet:value , lOk:=.t., oWnd:release())
+      @ 70,150 button _oohg_change_value_btnno caption "Cancel" cancel action oWnd:release()
+      end window
+      oWnd:activate()
+      if lOk
+         __ObjSetValueList( ooBj , {Values} )
+         ooBj:refresh()
+      end
+   Else
+      msginfo('This value is not editable')
+   end
+   msginfo(name+' '+Values[1]+' '+valor(Values[2]))
 return nil

@@ -671,10 +671,10 @@ This files are not present in BCC 551
 */
 
 typedef struct _MARGINS {
-	int cxLeftWidth;
-	int cxRightWidth;
-	int cyTopHeight;
-	int cyBottomHeight;
+   int cxLeftWidth;
+   int cxRightWidth;
+   int cyTopHeight;
+   int cyBottomHeight;
 } MARGINS, *PMARGINS;
 
 typedef HANDLE HTHEME;
@@ -735,22 +735,22 @@ typedef struct _DTTOPTS {
 } DTTOPTS, *PDTTOPTS;
 
 enum {
-	BP_PUSHBUTTON = 1,
-	BP_RADIOBUTTON = 2,
-	BP_CHECKBOX = 3,
-	BP_GROUPBOX = 4,
-	BP_USERBUTTON = 5
+   BP_PUSHBUTTON = 1,
+   BP_RADIOBUTTON = 2,
+   BP_CHECKBOX = 3,
+   BP_GROUPBOX = 4,
+   BP_USERBUTTON = 5
 };
 
 enum {
-	RBS_UNCHECKEDNORMAL = 1,
-	RBS_UNCHECKEDHOT = 2,
-	RBS_UNCHECKEDPRESSED = 3,
-	RBS_UNCHECKEDDISABLED = 4,
-	RBS_CHECKEDNORMAL = 5,
-	RBS_CHECKEDHOT = 6,
-	RBS_CHECKEDPRESSED = 7,
-	RBS_CHECKEDDISABLED = 8
+   RBS_UNCHECKEDNORMAL = 1,
+   RBS_UNCHECKEDHOT = 2,
+   RBS_UNCHECKEDPRESSED = 3,
+   RBS_UNCHECKEDDISABLED = 4,
+   RBS_CHECKEDNORMAL = 5,
+   RBS_CHECKEDHOT = 6,
+   RBS_CHECKEDPRESSED = 7,
+   RBS_CHECKEDDISABLED = 8
 };
 
 static WNDPROC lpfnOldWndProcA = 0, lpfnOldWndProcB = 0;
