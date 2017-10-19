@@ -65,6 +65,7 @@
 #include "i_windefs.ch"
 
 CLASS TCheckList FROM TGrid
+
    DATA Type                   INIT "CHECKLIST" READONLY
    DATA lCheckBoxes            INIT .T. READONLY
    DATA FullMove               INIT .F. READONLY
@@ -90,7 +91,7 @@ CLASS TCheckList FROM TGrid
    METHOD ItemImage            SETGET
    METHOD DoChange
 
-/*
+   /*
    This methods of TGrid class are also available:
 
    METHOD Define2
@@ -105,9 +106,9 @@ CLASS TCheckList FROM TGrid
    METHOD Events_Enter
    METHOD OnEnter
    METHOD Release
-*/
+   */
 
-// This methods of TGrid class are not needed:
+   // This methods of TGrid class are not needed:
 
    METHOD Left                 BLOCK { || Nil }
    METHOD Right                BLOCK { || Nil }
@@ -148,16 +149,16 @@ CLASS TCheckList FROM TGrid
    METHOD LoadHeaderImages     BLOCK { || Nil }
 
    /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( ControlName, ParentForm, x, y, w, h, aRows, v, fontname, ;
                fontsize, tooltip, change, gotfocus, lostfocus, aImage, just, ;
                break, HelpId, bold, italic, underline, strikeout, backcolor, ;
                fontcolor, lRtl, lDisabled, lNoTabStop, lInvisible, sort, ;
                descending, aSelectedColors, dblbffr, click ) CLASS TCheckList
-*------------------------------------------------------------------------------*
-LOCAL aHdr, aWidth, aJust, aPic, aEdC
+
+   LOCAL aHdr, aWidth, aJust, aPic, aEdC
 
    ASSIGN w          VALUE w          TYPE "N" DEFAULT ::nWidth
    ASSIGN v          VALUE v          TYPE "A" DEFAULT {}
@@ -198,8 +199,8 @@ LOCAL aHdr, aWidth, aJust, aPic, aEdC
       EndIf
    EndIf
 
-/*
-METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
+   /*
+   METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                aRows, value, fontname, fontsize, tooltip, change, dblclick, ;
                aHeadClick, gotfocus, lostfocus, nogrid, aImage, aJust, ;
                break, HelpId, bold, italic, underline, strikeout, ownerdata, ;
@@ -215,7 +216,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick ) CLASS TGrid
-*/
+   */
    ::Super:Define( ControlName, ParentForm, x, y, w, h, aHdr, aWidth, ;
                    {}, Nil, fontname, fontsize, tooltip, change, Nil, ;
                    Nil, gotfocus, lostfocus, .T., aImage, aJust, ;
@@ -243,12 +244,11 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
 
    ::Value := v
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD Value( aValue ) CLASS TCheckList
-*------------------------------------------------------------------------------*
-LOCAL lChanged, i, lOld, lSet, nFirst, aItems
+
+   LOCAL lChanged, i, lOld, lSet, nFirst, aItems
 
    If HB_IsArray( aValue )
       // do not use ::CheckItem to set the new value to avoid firing OnChange event more than once
@@ -286,12 +286,11 @@ LOCAL lChanged, i, lOld, lSet, nFirst, aItems
       EndIf
    Next
 
-Return aItems
+   Return aItems
 
-*------------------------------------------------------------------------------*
 METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TCheckList
-*------------------------------------------------------------------------------*
-Local nNext
+
+   Local nNext
 
    If nMsg == WM_LBUTTONDBLCLK
       // ignore double click on checkbox, it was processed as single click
@@ -323,13 +322,12 @@ Local nNext
       Return 1
    EndIf
 
-Return ::Super:Events( hWnd, nMsg, wParam, lParam )
+   Return ::Super:Events( hWnd, nMsg, wParam, lParam )
 
-*------------------------------------------------------------------------------*
 METHOD Events_Notify( wParam, lParam ) CLASS TCheckList
-*------------------------------------------------------------------------------*
-Local nNotify := GetNotifyCode( lParam )
-Local uValue, uRet, nItem
+
+   Local nNotify := GetNotifyCode( lParam )
+   Local uValue, uRet, nItem
 
    Empty( wParam )
 
@@ -403,23 +401,22 @@ Local uValue, uRet, nItem
 
    EndIf
 
-// TGrid's Event_Notify method must be skipped
-Return Nil
+   // TGrid's Event_Notify method must be skipped
 
-*------------------------------------------------------------------------------*
+   Return Nil
+
 METHOD Width( nWidth ) CLASS TCheckList
-*------------------------------------------------------------------------------*
+
    If pcount() > 0
       ::Super:Width( nWidth )
       ::Super:ColumnWidth( 1, ::ClientWidth )
    EndIf
 
-Return ::nWidth
+   Return ::nWidth
 
-*------------------------------------------------------------------------------*
 METHOD CheckItem( nItem, lChecked ) CLASS TCheckList
-*------------------------------------------------------------------------------*
-Local lRet, lOld
+
+   Local lRet, lOld
 
    If HB_IsNumeric( nItem ) .AND. nItem >= 1 .AND. nItem <= ::ItemCount
       lOld := ListView_GetCheckState( ::hwnd, nItem )
@@ -440,12 +437,11 @@ Local lRet, lOld
       lRet := .F.
    EndIf
 
-Return lRet
+   Return lRet
 
-*------------------------------------------------------------------------------*
 METHOD DeleteAllItems() CLASS TCheckList
-*------------------------------------------------------------------------------*
-Local aValue
+
+   Local aValue
 
    If ::ItemCount > 0
       aValue := ::Value
@@ -461,12 +457,11 @@ Local aValue
       EndIf
    EndIf
 
-Return Nil
+   Return Nil
 
-*------------------------------------------------------------------------------*
 METHOD AddItem( uItem, lChecked, uForeColor, uBackColor ) CLASS TCheckList
-*------------------------------------------------------------------------------*
-Local aRow
+
+   Local aRow
 
    If ValidHandler( ::ImageList )
       If Len( uItem ) # 2
@@ -491,12 +486,11 @@ Local aRow
       ::CheckItem( ::ItemCount, .T. )
    EndIf
 
-Return ::ItemCount
+   Return ::ItemCount
 
-*------------------------------------------------------------------------------*
 METHOD InsertItem( nItem, uItem, lChecked, uForeColor, uBackColor ) CLASS TCheckList
-*------------------------------------------------------------------------------*
-Local aRow, aValue
+
+   Local aRow, aValue
 
    If ValidHandler( ::ImageList )
       If Len( uItem ) # 2
@@ -524,12 +518,11 @@ Local aRow, aValue
       EndIf
    EndIf
 
-Return nItem
+   Return nItem
 
-*------------------------------------------------------------------------------*
 METHOD Sort( lDescending ) CLASS TCheckList
-*------------------------------------------------------------------------------*
-Local aValue, lRet
+
+   Local aValue, lRet
 
    ASSIGN lDescending VALUE lDescending TYPE "L" DEFAULT .F.
    aValue := ::Value
@@ -541,12 +534,11 @@ Local aValue, lRet
       ::DoChange()
    EndIf
 
-Return lRet
+   Return lRet
 
-*------------------------------------------------------------------------------*
 METHOD DeleteItem( nItem ) CLASS TCheckList
-*------------------------------------------------------------------------------*
-Local lChanged
+
+   Local lChanged
 
    lChanged := ( aScan( ::Value, nItem ) > 0 )
 
@@ -558,18 +550,15 @@ Local lChanged
       ::DoChange()
    EndIf
 
-Return Nil
+   Return Nil
 
-*------------------------------------------------------------------------------*
 METHOD ItemVisible( nItem ) CLASS TCheckList
-*------------------------------------------------------------------------------*
 
-Return ListView_EnsureVisible( ::hWnd, nItem )
+   Return ListView_EnsureVisible( ::hWnd, nItem )
 
-*------------------------------------------------------------------------------*
 METHOD Item( nItem, uItem, lChecked, uForeColor, uBackColor ) CLASS TCheckList
-*------------------------------------------------------------------------------*
-Local aRow
+
+   Local aRow
 
    If ValidHandler( ::ImageList )
       If Len( uItem ) # 2
@@ -590,18 +579,16 @@ Local aRow
       ::CheckItem( nItem, lChecked )
    EndIf
 
-Return uItem
+   Return uItem
 
-*------------------------------------------------------------------------------*
 METHOD SetRangeColor( uForeColor, uBackColor, nTop, nBottom ) CLASS TCheckList
-*------------------------------------------------------------------------------*
 
-Return ::Super:SetRangeColor( uForeColor, uBackColor, nTop, 1, nBottom, 1 )
+   Return ::Super:SetRangeColor( uForeColor, uBackColor, nTop, 1, nBottom, 1 )
 
-*------------------------------------------------------------------------------*
 METHOD DoChange() CLASS TCheckList
-*------------------------------------------------------------------------------*
-Local xValue, cType, cOldType
+
+   Local xValue, cType, cOldType
+
    xValue   := ::Value
    cType    := VALTYPE( xValue )
    cOldType := VALTYPE( ::xOldValue )
@@ -615,36 +602,27 @@ Local xValue, cType, cOldType
       ::xOldValue := xValue
       ::DoEvent( ::OnChange, "CHANGE" )
    ENDIF
-Return nil
 
-*------------------------------------------------------------------------------*
+   Return nil
+
 METHOD ItemCaption( nItem, cCaption ) CLASS TCheckList
-*------------------------------------------------------------------------------*
 
    If nItem < 1 .OR. nItem > ::ItemCount
       // return the same value as if the item exist and has no caption
       Return ""
    EndIf
 
-Return ::Super:CellCaption( nItem, 1, cCaption )
+   Return ::Super:CellCaption( nItem, 1, cCaption )
 
-*------------------------------------------------------------------------------*
 METHOD ItemImage( nItem, nImage ) CLASS TCheckList
-*------------------------------------------------------------------------------*
 
    If nItem < 1 .OR. nItem > ::ItemCount
       // return the same value as if the item exist and has no image
       Return -1
    EndIf
 
-Return ::Super:CellImage( nItem, 1, nImage )
+   Return ::Super:CellImage( nItem, 1, nImage )
 
-*------------------------------------------------------------------------------*
 FUNCTION ArraysAreEqual( array1, array2 )
-*------------------------------------------------------------------------------*
 
-Return aEqual( array1, array2 )
-
-/*
- * EOF
- */
+   Return aEqual( array1, array2 )

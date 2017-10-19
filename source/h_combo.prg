@@ -67,6 +67,7 @@
 STATIC _OOHG_ComboRefresh := .T.
 
 CLASS TCombo FROM TLabel
+
    DATA Type                  INIT "COMBO" READONLY
    DATA WorkArea              INIT ""
    DATA uField                INIT NIL
@@ -131,9 +132,9 @@ CLASS TCombo FROM TLabel
    METHOD ValueSource         SETGET
 
    /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( ControlName, ParentForm, x, y, w, rows, value, fontname, ;
                fontsize, tooltip, changeprocedure, h, gotfocus, lostfocus, ;
                uEnter, HelpId, invisible, notabstop, sort, bold, italic, ;
@@ -143,8 +144,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, rows, value, fontname, ;
                fontcolor, listwidth, onListDisplay, onListClose, ImageSource, ;
                ItemNumber, lDelayLoad, lIncremental, lWinSize, lRefresh, ;
                sourceorder, onrefresh, nLapse ) CLASS TCombo
-*------------------------------------------------------------------------------*
-Local ControlHandle, WorkArea, uField, nStyle
+
+   Local ControlHandle, WorkArea, uField, nStyle
 
    ASSIGN ::nCol          VALUE x TYPE "N"
    ASSIGN ::nRow          VALUE y TYPE "N"
@@ -247,21 +248,20 @@ Local ControlHandle, WorkArea, uField, nStyle
       ::oEditBox := TEditCombo():Define( Self, GetWindow( ::hWnd, GW_CHILD ) )
    EndIf
 
-RETURN Self
+   RETURN Self
 
-*------------------------------------------------------------------------------*
 METHOD Field( uField ) CLASS TCombo
-*------------------------------------------------------------------------------*
+
    If HB_IsBlock( uField )
       ::uField := uField
    ElseIf VALTYPE( uField ) $ "CM"
       ::uField := &( "{ || " + uField + " }" )
    EndIf
-RETURN ::uField
 
-*------------------------------------------------------------------------------*
+   RETURN ::uField
+
 METHOD ValueSource( uValue ) CLASS TCombo
-*------------------------------------------------------------------------------*
+
    If PCOUNT() > 0 .AND. HB_IsNil( uValue )
       ::aValues := {}
       ::uValueSource := NIL
@@ -279,20 +279,20 @@ METHOD ValueSource( uValue ) CLASS TCombo
          ::uValueSource := &( "{ || " + uValue + " }" )
       EndIf
    EndIf
-RETURN ::uValueSource
 
-*------------------------------------------------------------------------------*
+   RETURN ::uValueSource
+
 METHOD nHeight( nHeight ) CLASS TCombo
-*------------------------------------------------------------------------------*
+
    If HB_IsNumeric( nHeight ) .AND. ! ValidHandler( ::hWnd )
       ::nHeight2 := nHeight
    EndIf
-RETURN ::nHeight2
 
-*------------------------------------------------------------------------------*
+   RETURN ::nHeight2
+
 METHOD VisibleItems() CLASS TCombo
-*------------------------------------------------------------------------------*
-Local nRet
+
+   Local nRet
 
    If IsWindowStyle( ::hWnd, CBS_NOINTEGRALHEIGHT )
       nRet := ::nHeight / ::ItemHeight()
@@ -302,13 +302,13 @@ Local nRet
    Else
       nRet := SendMessage( ::hWnd, CB_GETMINVISIBLE, 0, 0 ) * 2
    EndIf
-RETURN nRet
 
-*------------------------------------------------------------------------------*
+   RETURN nRet
+
 METHOD Refresh() CLASS TCombo
-*------------------------------------------------------------------------------*
-Local BackRec, bField, aValues, uValue, bValueSource, lNoEval, BackOrd := NIL
-Local lRefreshImages, aImages, nMax, nCount, nArea
+
+   Local BackRec, bField, aValues, uValue, bValueSource, lNoEval, BackOrd := NIL
+   Local lRefreshImages, aImages, nMax, nCount, nArea
 
    If ( nArea := Select( ::WorkArea ) ) != 0
       If HB_IsBlock( ::ImageSource )
@@ -377,17 +377,15 @@ Local lRefreshImages, aImages, nMax, nCount, nArea
       ::DoEvent( ::OnRefresh, "REFRESH" )
    EndIf
 
-RETURN NIL
+   RETURN NIL
 
-*------------------------------------------------------------------------------*
 METHOD DisplayValue( cValue ) CLASS TCombo
-*------------------------------------------------------------------------------*
-Return ( ::Caption := cValue )
 
-*------------------------------------------------------------------------------*
+   Return ( ::Caption := cValue )
+
 METHOD Value( uValue ) CLASS TCombo
-*------------------------------------------------------------------------------*
-Local uRet
+
+   Local uRet
 
    If LEN( ::aValues ) == 0
       If HB_IsNumeric( uValue )
@@ -408,23 +406,24 @@ Local uRet
          uRet := 0
       EndIf
    EndIf
-RETURN uRet
 
-*------------------------------------------------------------------------------*
+   RETURN uRet
+
 METHOD Visible( lVisible ) CLASS TCombo
-*------------------------------------------------------------------------------*
+
    If HB_IsLogical( lVisible )
       ::Super:Visible := lVisible
       If ! lVisible
          SendMessage( ::hWnd, CB_SHOWDROPDOWN, 0, 0 )
       EndIf
    EndIf
-RETURN ::lVisible
 
-*------------------------------------------------------------------------------*
+   RETURN ::lVisible
+
 METHOD RefreshData() CLASS TCombo
-*------------------------------------------------------------------------------*
-Local lRefresh
+
+   Local lRefresh
+
    If HB_IsLogical( ::lRefresh )
       lRefresh := ::lRefresh
    Else
@@ -433,110 +432,107 @@ Local lRefresh
    If lRefresh
       ::Refresh()
    EndIf
-RETURN ::Super:RefreshData()
 
-*------------------------------------------------------------------------------*
+   RETURN ::Super:RefreshData()
+
 METHOD PreRelease() CLASS TCombo
-*------------------------------------------------------------------------------*
+
    If ! SendMessage( ::hWnd, CB_GETDROPPEDSTATE, 0, 0 ) == 0
       SendMessage( ::hWnd, CB_SHOWDROPDOWN, 0, 0 )
    EndIf
-Return ::Super:PreRelease()
 
-*------------------------------------------------------------------------------*
+   Return ::Super:PreRelease()
+
 METHOD ShowDropDown( lShow ) CLASS TCombo
-*------------------------------------------------------------------------------*
+
    ASSIGN lShow VALUE lShow TYPE "L" DEFAULT .T.
    If lShow
       SendMessage( ::hWnd, CB_SHOWDROPDOWN, 1, 0 )
    Else
       SendMessage( ::hWnd, CB_SHOWDROPDOWN, 0, 0 )
    EndIf
-RETURN NIL
 
-*------------------------------------------------------------------------------*
+   RETURN NIL
+
 METHOD AutoSizeDropDown( lResizeBox, nMinWidth, nMaxWidth ) CLASS TCombo
-*------------------------------------------------------------------------------*
-Local nCounter, nNewWidth, nScrollWidth := GetVScrollBarWidth()
 
-/*
-lResizeBox = Resize dropdown list and combobox (.t.) or dropdown list only (.f.)
-defaults to .f.
-*/
+   Local nCounter, nNewWidth, nScrollWidth := GetVScrollBarWidth()
+
+   /*
+   lResizeBox = Resize dropdown list and combobox (.t.) or dropdown list only (.f.)
+   defaults to .f.
+   */
    ASSIGN lResizeBox VALUE lResizeBox TYPE "L" DEFAULT .F.
 
-/*
-Compute the space needed to show the longest item in the dropdown list.
-The extra character "0" is added to provide room for the margin in the dropdown list.
-*/
+   /*
+   Compute the space needed to show the longest item in the dropdown list.
+   The extra character "0" is added to provide room for the margin in the dropdown list.
+   */
    nNewWidth := GetTextWidth( NIL, "0", ::FontHandle ) + ::IconWidth + nScrollWidth
 
    For nCounter := 1 to ::ItemCount
       nNewWidth := max( GetTextWidth( NIL, ::Item(nCounter) + "0", ::FontHandle ) + ::IconWidth + nScrollWidth, nNewWidth )
    Next
 
-/*
-nMinWidth = minimum width of dropdown list.
-If ommited or is less than 0, defaults to 0 if lResizeBox == .T. or to combobox width otherwise.
-*/
+   /*
+   nMinWidth = minimum width of dropdown list.
+   If ommited or is less than 0, defaults to 0 if lResizeBox == .T. or to combobox width otherwise.
+   */
    If ! HB_IsNumeric( nMinWidth ) .or. nMinWidth < 0
       nMinWidth := if( lResizeBox, 0, ::Width )
    EndIf
 
-/*
-If the computed value is less than the minimum, use the minimum.
-*/
+   /*
+   If the computed value is less than the minimum, use the minimum.
+   */
    nNewWidth := max( nNewWidth, nMinWidth )
 
-/*
-nMaxWidth = maximum width of dropdown list, if ommited defaults to longest item's width
-If no maximum specified or is less than minimun, use computed value as maximum.
-*/
+   /*
+   nMaxWidth = maximum width of dropdown list, if ommited defaults to longest item's width
+   If no maximum specified or is less than minimun, use computed value as maximum.
+   */
    If ! HB_IsNumeric( nMaxWidth ) .or. nMaxWidth < nMinWidth
       nMaxWidth := nNewWidth
    EndIf
 
-/*
-If the computed value is greater than the maximum, use the maximum.
-*/
+   /*
+   If the computed value is greater than the maximum, use the maximum.
+   */
    nNewWidth := min( nNewWidth, nMaxWidth )
 
-/*
-Resize combobox.
-Must be done before resizing dropdown list, because dropdown list's width is,
-always, at least equal to combobox width.
-*/
+   /*
+   Resize combobox.
+   Must be done before resizing dropdown list, because dropdown list's width is,
+   always, at least equal to combobox width.
+   */
    If lResizeBox
      ::width := nNewWidth
    EndIf
 
-/*
-Resize dropdown list
-*/
+   /*
+   Resize dropdown list
+   */
    ::SetDropDownWidth( nNewWidth )
 
-RETURN NIL
+   RETURN NIL
 
-*------------------------------------------------------------------------------*
 METHOD GetDropDownWidth() CLASS TCombo
-*------------------------------------------------------------------------------*
-Return ComboGetDroppedWidth( ::hWnd )
 
-*------------------------------------------------------------------------------*
+   Return ComboGetDroppedWidth( ::hWnd )
+
 METHOD SetDropDownWidth( nWidth ) CLASS TCombo
-*------------------------------------------------------------------------------*
-Local nNew := ComboSetDroppedWidth( ::hWnd, nWidth )
+
+   Local nNew := ComboSetDroppedWidth( ::hWnd, nWidth )
 
    If nNew == -1
      nNew := ComboGetDroppedWidth( ::hWnd )
    EndIf
 
-RETURN nNew
+   RETURN nNew
 
-*------------------------------------------------------------------------------*
 METHOD AutoSize( lValue ) CLASS TCombo
-*------------------------------------------------------------------------------*
-Local cCaption
+
+   Local cCaption
 
    If HB_IsLogical( lValue )
       ::lAutoSize := lValue
@@ -545,12 +541,12 @@ Local cCaption
          ::SizePos(, , GetTextWidth( NIL, cCaption + "0", ::FontHandle ) + ::IconWidth + GetVScrollBarWidth(), GetTextHeight( NIL, cCaption, ::FontHandle ) )
       EndIf
    EndIf
-RETURN ::lAutoSize
 
-*------------------------------------------------------------------------------*
+   RETURN ::lAutoSize
+
 METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TCombo
-*------------------------------------------------------------------------------*
-Local nArea, BackRec, nMax, i, nStart, bField, bValueSource, lNoEval, BackOrd := NIL
+
+   Local nArea, BackRec, nMax, i, nStart, bField, bValueSource, lNoEval, BackOrd := NIL
 
    If nMsg == WM_CHAR
       If ::lIncremental
@@ -825,12 +821,11 @@ Local nArea, BackRec, nMax, i, nStart, bField, bValueSource, lNoEval, BackOrd :=
 
    EndIf
 
-Return ::Super:Events( hWnd, nMsg, wParam, lParam )
+   Return ::Super:Events( hWnd, nMsg, wParam, lParam )
 
-*------------------------------------------------------------------------------*
 METHOD Events_Command( wParam ) CLASS TCombo
-*------------------------------------------------------------------------------*
-Local Hi_wParam := HIWORD( wParam ), nArea, BackRec, i, nMax, bField, bValueSource, lNoEval, BackOrd := NIL
+
+   Local Hi_wParam := HIWORD( wParam ), nArea, BackRec, i, nMax, bField, bValueSource, lNoEval, BackOrd := NIL
 
    if Hi_wParam == CBN_SELCHANGE
       If ::lAutosize
@@ -949,12 +944,11 @@ Local Hi_wParam := HIWORD( wParam ), nArea, BackRec, i, nMax, bField, bValueSour
 
    EndIf
 
-RETURN ::Super:Events_Command( wParam )
+   RETURN ::Super:Events_Command( wParam )
 
-*------------------------------------------------------------------------------*
 METHOD SetEditSel( nStart, nEnd ) CLASS TCombo
-*------------------------------------------------------------------------------*
-/*
+
+   /*
    start:
       -1 the selection, if any, is removed.
        0 is first character.
@@ -968,8 +962,9 @@ METHOD SetEditSel( nStart, nEnd ) CLASS TCombo
    This method is meaningfull only when de combo is in edit state.
    When the combo loses the focus, it gets out of edit state.
    When the combo gets the focus, all the text is selected.
-*/
-Local lRet
+   */
+
+   Local lRet
 
    If HB_IsNumeric( nStart ) .and. nStart >= -1 .and. HB_IsNumeric( nEnd ) .and. nEnd >= -1
       lRet := SendMessage( ::hWnd, CB_SETEDITSEL, 0, MakeLParam( nStart, nEnd ) )
@@ -977,12 +972,11 @@ Local lRet
       lRet := .F.
    EndIf
 
-RETURN lRet
+   RETURN lRet
 
-*------------------------------------------------------------------------------*
 METHOD GetEditSel() CLASS TCombo
-*------------------------------------------------------------------------------*
-/*
+
+   /*
    Returns an array with 2 items:
    1st. the starting position of the selection (zero-based value).
    2nd. the ending position of the selection (position of the first character
@@ -991,31 +985,32 @@ METHOD GetEditSel() CLASS TCombo
    This method is meaningfull only when de combo is in edit state.
    When the combo loses the focus, it gets out of edit state.
    When the combo gets the focus, all the text is selected.
-*/
-Local rRange := SendMessage( ::hWnd, CB_GETEDITSEL, 0, 0 )
+   */
 
-RETURN { LoWord( rRange ), HiWord( rRange ) }
+   Local rRange := SendMessage( ::hWnd, CB_GETEDITSEL, 0, 0 )
 
-*------------------------------------------------------------------------------*
+   RETURN { LoWord( rRange ), HiWord( rRange ) }
+
 METHOD CaretPos( nPos ) CLASS TCombo
-*------------------------------------------------------------------------------*
-/*
+
+   /*
    Returns the ending position of the selection (position of the first character
    after the last selected character). This value is the caret position.
 
    This method is meaningfull only when de combo is in edit state.
    When the combo loses the focus, it gets out of edit state, and this method returns 0.
    When the combo gets the focus, all the text is selected.
-*/
+   */
+
    If HB_IsNumeric( nPos )
       SendMessage( ::hWnd, CB_SETEDITSEL, 0, MakeLParam( nPos, nPos ) )
    EndIf
-RETURN HiWord( SendMessage( ::hWnd, CB_GETEDITSEL, NIL, NIL ) )
 
-*------------------------------------------------------------------------------*
+   RETURN HiWord( SendMessage( ::hWnd, CB_GETEDITSEL, NIL, NIL ) )
+
 METHOD ItemBySource( nItem, uValue ) CLASS TCombo
-*------------------------------------------------------------------------------*
-Local cRet, nPos
+
+   Local cRet, nPos
 
    If LEN( ::aValues ) == 0
       cRet := ComboItem( Self, nItem, uValue )
@@ -1030,25 +1025,26 @@ Local cRet, nPos
          EndIf
       EndIf
    EndIf
-RETURN cRet
 
-*------------------------------------------------------------------------------*
+   RETURN cRet
+
 METHOD AddItem( uValue, uSource ) CLASS TCombo
-*------------------------------------------------------------------------------*
+
    If PCOUNT() > 1 .AND. LEN( ::aValues ) > 0
       AADD( ::aValues, uSource )
    EndIf
-RETURN TCombo_Add_Item( Self, uValue )
 
-*------------------------------------------------------------------------------*
+   RETURN TCombo_Add_Item( Self, uValue )
+
 METHOD InsertItem( nItem, uValue, uSource ) CLASS TCombo
-*------------------------------------------------------------------------------*
+
    If PCOUNT() > 2 .AND. LEN( ::aValues ) > 0
       AADD( ::aValues, NIL )
       AINS( ::aValues, nItem )
       ::aValues[ nItem ] := uSource
    EndIf
-RETURN TCombo_Insert_Item( Self, nItem, uValue )
+
+   RETURN TCombo_Insert_Item( Self, nItem, uValue )
 
 
 #pragma BEGINDUMP
@@ -1461,27 +1457,26 @@ HB_FUNC_STATIC( TCOMBO_ITEMHEIGHT )   // METHOD ItemHeight()
 
 
 
-
-
 CLASS TListCombo FROM TControl STATIC
+
    METHOD Define
    METHOD Events_VScroll
 
    /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( Container, hWnd ) CLASS TListCombo
-*------------------------------------------------------------------------------*
+
    ::SetForm( , Container )
    InitListCombo( hWnd )
    ::Register( hWnd )
-RETURN Self
 
-*------------------------------------------------------------------------------*
+   RETURN Self
+
 METHOD Events_VScroll( wParam ) CLASS TListCombo
-*------------------------------------------------------------------------------*
-Local Lo_wParam := LoWord( wParam ), nArea, bField, bValueSource, lNoEval, BackRec, nLoad, i, BackOrd := NIL
+
+   Local Lo_wParam := LoWord( wParam ), nArea, bField, bValueSource, lNoEval, BackRec, nLoad, i, BackOrd := NIL
 
    If Lo_wParam == SB_LINEDOWN
       If ( nArea := Select( ::Container:WorkArea ) ) != 0
@@ -1623,7 +1618,8 @@ Local Lo_wParam := LoWord( wParam ), nArea, bField, bValueSource, lNoEval, BackR
       Return ::Super:Events_VScroll( wParam )
 
    EndIf
-Return NIL
+
+   Return NIL
 
 #pragma BEGINDUMP
 
@@ -1641,42 +1637,42 @@ HB_FUNC( INITLISTCOMBO )
 
 #pragma ENDDUMP
 
+
 Function SetComboRefresh( lValue )
+
    If HB_IsLogical( lValue )
       _OOHG_ComboRefresh := lValue
    EndIf
-Return _OOHG_ComboRefresh
 
-
-
-
+   Return _OOHG_ComboRefresh
 
 CLASS TEditCombo FROM TControl STATIC
+
    DATA LastKey INIT 0
 
    METHOD Define
    METHOD Events
 
    /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( Container, hWnd ) CLASS TEditCombo
-*------------------------------------------------------------------------------*
+
    ::SetForm( , Container )
    InitEditCombo( hWnd )
    ::Register( hWnd )
-RETURN Self
 
-*------------------------------------------------------------------------------*
+   RETURN Self
+
 METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TEditCombo
-*------------------------------------------------------------------------------*
 
    If nMsg == WM_KEYDOWN
       ::LastKey := wParam
    EndIf
 
-Return ::Super:Events( hWnd, nMsg, wParam, lParam )
+   Return ::Super:Events( hWnd, nMsg, wParam, lParam )
+
 
 #pragma BEGINDUMP
 
