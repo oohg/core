@@ -300,177 +300,177 @@ STATIC _cFiltro         AS Character            // Condición de filtro.
  *              bImprimir       Bloque de código para la acción imprimir.
  *    Devuelve: NIL
 ****************************************************************************************/
+
 function ABM2( cArea, cTitulo, aNombreCampo, ;
-               aAvisoCampo, aEditable, aVisibleEnTabla, ;
-               aOpciones, bGuardar, bBuscar, ;
-               bImprimir )
+          aAvisoCampo, aEditable, aVisibleEnTabla, ;
+          aOpciones, bGuardar, bBuscar, ;
+          bImprimir )
 
-////////// Declaración de variables locales.-----------------------------------
-        local   i              as numeric       // Indice de iteración.
-        local   k              as numeric       // Indice de iteración.
-        local   nArea          as numeric       // Numero del area de la bdd.
-        local   nRegistro      as numeric       // Número de regisrto de la bdd.
-        local   lSalida        as logical       // Control de bucle.
-        local   nVeces         as numeric       // Indice de iteración.
-        local   cIndice        as character     // Nombre del indice.
-        local   cIndiceActivo  as character     // Nombre del indice activo.
-        local   cClave         as character     // Clave del indice.
-        local   nInicio        as numeric       // Inicio de la cadena de busqueda.
-        local   nAnchoCampo    as numeric       // Ancho del campo actual.
-        local   nAnchoEtiqueta as numeric       // Ancho máximo de las etiquetas.
-        local   nFila          as numeric       // Fila de creación del control de edición.
-        local   nColumna       as numeric       // Columna de creación del control de edición.
-        local   aTextoOp       as numeric       // Texto de las opciones de usuario.
-        local   _BakExtendedNavigation          // Estado de SET NAVIAGTION.
-        Local _BackDeleted
-        Local cFiltroAnt     as character     // Condición del filtro anterior.
+   ////////// Declaración de variables locales.-----------------------------------
+   local   i              as numeric       // Indice de iteración.
+   local   k              as numeric       // Indice de iteración.
+   local   nArea          as numeric       // Numero del area de la bdd.
+   local   nRegistro      as numeric       // Número de regisrto de la bdd.
+   local   lSalida        as logical       // Control de bucle.
+   local   nVeces         as numeric       // Indice de iteración.
+   local   cIndice        as character     // Nombre del indice.
+   local   cIndiceActivo  as character     // Nombre del indice activo.
+   local   cClave         as character     // Clave del indice.
+   local   nInicio        as numeric       // Inicio de la cadena de busqueda.
+   local   nAnchoCampo    as numeric       // Ancho del campo actual.
+   local   nAnchoEtiqueta as numeric       // Ancho máximo de las etiquetas.
+   local   nFila          as numeric       // Fila de creación del control de edición.
+   local   nColumna       as numeric       // Columna de creación del control de edición.
+   local   aTextoOp       as numeric       // Texto de las opciones de usuario.
+   local   _BakExtendedNavigation          // Estado de SET NAVIAGTION.
+   Local _BackDeleted
+   Local cFiltroAnt     as character     // Condición del filtro anterior.
 
+   ////////// Gusrdar estado actual de SET DELETED y activarlo
+   _BackDeleted := set( _SET_DELETED )
+   SET DELETED ON
 
-////////// Gusrdar estado actual de SET DELETED y activarlo
-        _BackDeleted := set( _SET_DELETED )
-        SET DELETED ON
+   ////////// Desactivación de SET NAVIGATION.------------------------------------
+   _BakExtendedNavigation := _OOHG_ExtendedNavigation
+   _OOHG_ExtendedNavigation    := .F.
 
-////////// Desactivación de SET NAVIGATION.------------------------------------
-        _BakExtendedNavigation := _OOHG_ExtendedNavigation
-        _OOHG_ExtendedNavigation    := .F.
+   ////////// Control de parámetros.----------------------------------------------
+   // Area de la base de datos.
+   if ( ! ValType( cArea ) $ "CM" ) .or. Empty( cArea )
+      _cArea := Alias()
+      if _cArea == ""
+         msgExclamation( _OOHG_Messages( 11, 1 ), "EDIT EXTENDED" )
+         return NIL
+      endif
+   else
+      _cArea := cArea
+   endif
+   _aEstructura := (_cArea)->( dbStruct() )
 
-////////// Control de parámetros.----------------------------------------------
-        // Area de la base de datos.
-        if ( ! ValType( cArea ) $ "CM" ) .or. Empty( cArea )
-                _cArea := Alias()
-                if _cArea == ""
-                        msgExclamation( _OOHG_Messages( 11, 1 ), "EDIT EXTENDED" )
-                        return NIL
-                endif
-        else
-                _cArea := cArea
-        endif
-        _aEstructura := (_cArea)->( dbStruct() )
+   // Título de la ventana.
+   if ( cTitulo == NIL )
+      _cTitulo := _cArea
+   else
+      if ( ! Valtype( cTitulo ) $ "CM" )
+         _cTitulo := _cArea
+      else
+         _cTitulo := cTitulo
+      endif
+   endif
 
-        // Título de la ventana.
-        if ( cTitulo == NIL )
-                _cTitulo := _cArea
-        else
-                if ( ! Valtype( cTitulo ) $ "CM" )
-                        _cTitulo := _cArea
-                else
-                        _cTitulo := cTitulo
-                endif
-        endif
+   // Nombres de los campos.
+   lSalida := .t.
+   if ( ValType( aNombreCampo ) != "A" )
+      lSalida := .f.
+   else
+      if ( Len( aNombreCampo ) != Len( _aEstructura ) )
+         lSalida := .f.
+      else
+         for i := 1 to Len( aNombreCampo )
+            if ! ValType( aNombreCampo[i] ) $ "CM"
+               lSalida := .f.
+               exit
+            endif
+         next
+      endif
+   endif
+   if lSalida
+      _aNombreCampo := aNombreCampo
+   else
+      _aNombreCampo := {}
+      for i := 1 to Len( _aEstructura )
+         aAdd( _aNombreCampo, Upper( Left( _aEstructura[i,DBS_NAME], 1 ) ) + ;
+                   Lower( SubStr( _aEstructura[i,DBS_NAME], 2 ) ) )
+      next
+   endif
 
-        // Nombres de los campos.
-        lSalida := .t.
-        if ( ValType( aNombreCampo ) != "A" )
-                lSalida := .f.
-        else
-                if ( Len( aNombreCampo ) != Len( _aEstructura ) )
-                        lSalida := .f.
-                else
-                        for i := 1 to Len( aNombreCampo )
-                                if ! ValType( aNombreCampo[i] ) $ "CM"
-                                        lSalida := .f.
-                                        exit
-                                endif
-                        next
-                endif
-        endif
-        if lSalida
-                _aNombreCampo := aNombreCampo
-        else
-                _aNombreCampo := {}
-                for i := 1 to Len( _aEstructura )
-                        aAdd( _aNombreCampo, Upper( Left( _aEstructura[i,DBS_NAME], 1 ) ) + ;
-                                             Lower( SubStr( _aEstructura[i,DBS_NAME], 2 ) ) )
-                next
-        endif
+   // Texto de aviso en la barra de estado de la ventana de edición de registro.
+   lSalida := .t.
+   if ( ValType( aAvisoCampo ) != "A" )
+      lSalida := .f.
+   else
+      if ( Len( aAvisoCampo ) != Len( _aEstructura ) )
+         lSalida := .f.
+      else
+         for i := 1 to Len( aAvisoCampo )
+            if ! Valtype( aAvisoCampo[i] ) $ "CM"
+               lSalida := .f.
+               exit
+            endif
+         next
+      endif
+   endif
+   if !lSalida
+      aAvisoCampo := {}
+      for i := 1 to Len( _aEstructura )
+         do case
+         case _aEstructura[i,DBS_TYPE] == "C"
+            aAdd( aAvisoCampo, _OOHG_Messages( 11, 2 ) )
+         case _aEstructura[i,DBS_TYPE] == "N"
+            aAdd( aAvisoCampo, _OOHG_Messages( 11, 3 ) )
+         case _aEstructura[i,DBS_TYPE] == "D"
+            aAdd( aAvisoCampo, _OOHG_Messages( 11, 4 ) )
+         case _aEstructura[i,DBS_TYPE] == "L"
+            aAdd( aAvisoCampo, _OOHG_Messages( 11, 5 ) )
+         case _aEstructura[i,DBS_TYPE] == "M"
+            aAdd( aAvisoCampo, _OOHG_Messages( 11, 6 ) )
+         otherwise
+            aAdd( aAvisoCampo, _OOHG_Messages( 11, 7 ) )
+         endcase
+      next
+   endif
 
-        // Texto de aviso en la barra de estado de la ventana de edición de registro.
-        lSalida := .t.
-        if ( ValType( aAvisoCampo ) != "A" )
-                lSalida := .f.
-        else
-                if ( Len( aAvisoCampo ) != Len( _aEstructura ) )
-                        lSalida := .f.
-                else
-                        for i := 1 to Len( aAvisoCampo )
-                                if ! Valtype( aAvisoCampo[i] ) $ "CM"
-                                        lSalida := .f.
-                                        exit
-                                endif
-                        next
-                endif
-        endif
-        if !lSalida
-                aAvisoCampo := {}
-                for i := 1 to Len( _aEstructura )
-                        do case
-                                case _aEstructura[i,DBS_TYPE] == "C"
-                                        aAdd( aAvisoCampo, _OOHG_Messages( 11, 2 ) )
-                                case _aEstructura[i,DBS_TYPE] == "N"
-                                        aAdd( aAvisoCampo, _OOHG_Messages( 11, 3 ) )
-                                case _aEstructura[i,DBS_TYPE] == "D"
-                                        aAdd( aAvisoCampo, _OOHG_Messages( 11, 4 ) )
-                                case _aEstructura[i,DBS_TYPE] == "L"
-                                        aAdd( aAvisoCampo, _OOHG_Messages( 11, 5 ) )
-                                case _aEstructura[i,DBS_TYPE] == "M"
-                                        aAdd( aAvisoCampo, _OOHG_Messages( 11, 6 ) )
-                                otherwise
-                                        aAdd( aAvisoCampo, _OOHG_Messages( 11, 7 ) )
-                        endcase
-                next
-        endif
+   // Campos visibles en la tabla de la ventana de visualización de registros.
+   lSalida := .t.
+   if ( Valtype( aVisibleEnTabla ) != "A" )
+      lSalida := .f.
+   else
+      if Len( aVisibleEnTabla ) != Len( _aEstructura )
+         lSalida := .f.
+      else
+         for i := 1 to Len( aVisibleEnTabla )
+            if ValType( aVisibleEnTabla[i] ) != "L"
+               lSalida := .f.
+               exit
+            endif
+         next
+      endif
+   endif
+   if lSalida
+      _aVisibleEnTabla := aVisibleEnTabla
+   else
+      _aVisibleEnTabla := {}
+      for i := 1 to Len( _aEstructura )
+         aAdd( _aVisibleEnTabla, .t. )
+      next
+   endif
 
-        // Campos visibles en la tabla de la ventana de visualización de registros.
-        lSalida := .t.
-        if ( Valtype( aVisibleEnTabla ) != "A" )
-                lSalida := .f.
-        else
-                if Len( aVisibleEnTabla ) != Len( _aEstructura )
-                        lSalida := .f.
-                else
-                        for i := 1 to Len( aVisibleEnTabla )
-                                if ValType( aVisibleEnTabla[i] ) != "L"
-                                        lSalida := .f.
-                                        exit
-                                endif
-                        next
-                endif
-        endif
-        if lSalida
-                _aVisibleEnTabla := aVisibleEnTabla
-        else
-                _aVisibleEnTabla := {}
-                for i := 1 to Len( _aEstructura )
-                        aAdd( _aVisibleEnTabla, .t. )
-                next
-        endif
+   // Estado de los campos en la ventana de edición de registro.
+   lSalida := .t.
+   if ( ValType( aEditable ) != "A" )
+      lSalida := .f.
+   else
+      if Len( aEditable ) != Len( _aEstructura )
+         lSalida := .f.
+      else
+         for i := 1 to Len( aEditable )
+            if ValType( aEditable[i] ) != "L"
+               lSalida := .f.
+               exit
+            endif
+         next
+      endif
+   endif
+   if lSalida
+      _aEditable := aEditable
+   else
+      _aEditable := {}
+      for i := 1 to Len( _aEstructura )
+         aAdd( _aEditable, .t.)
+      next
+   endif
 
-        // Estado de los campos en la ventana de edición de registro.
-        lSalida := .t.
-        if ( ValType( aEditable ) != "A" )
-                lSalida := .f.
-        else
-                if Len( aEditable ) != Len( _aEstructura )
-                        lSalida := .f.
-                else
-                        for i := 1 to Len( aEditable )
-                                if ValType( aEditable[i] ) != "L"
-                                        lSalida := .f.
-                                        exit
-                                endif
-                        next
-                endif
-        endif
-        if lSalida
-                _aEditable := aEditable
-        else
-                _aEditable := {}
-                for i := 1 to Len( _aEstructura )
-                        aAdd( _aEditable, .t.)
-                next
-        endif
-
-**** JK 104
+   **** JK 104
 
    // Opciones del usuario.
    lSalida := .t.
@@ -494,51 +494,51 @@ function ABM2( cArea, cTitulo, aNombreCampo, ;
       next
    endif
 
-**** END JK 104
+   **** END JK 104
 
-        if lSalida
-                _aOpciones := aOpciones
-        else
-                _aOpciones := {}
-        endif
+   if lSalida
+      _aOpciones := aOpciones
+   else
+      _aOpciones := {}
+   endif
 
-        // Acción al guardar.
-        if ValType( bGuardar ) == "B"
-                _bGuardar := bGuardar
-        else
-                _bGuardar := NIL
-        endif
+   // Acción al guardar.
+   if ValType( bGuardar ) == "B"
+      _bGuardar := bGuardar
+   else
+      _bGuardar := NIL
+   endif
 
-        // Acción al buscar.
-        if ValType( bBuscar ) == "B"
-                _bBuscar := bBuscar
-        else
-                _bBuscar := NIL
-        endif
+   // Acción al buscar.
+   if ValType( bBuscar ) == "B"
+      _bBuscar := bBuscar
+   else
+      _bBuscar := NIL
+   endif
 
-        // Acción al buscar.
-        if ValType( bImprimir ) == "B"
-                _bImprimir := bImprimir
-        else
-                _bImprimir := NIL
-        endif
+   // Acción al buscar.
+   if ValType( bImprimir ) == "B"
+      _bImprimir := bImprimir
+   else
+      _bImprimir := NIL
+   endif
 
-////////// Selección del area de la bdd.---------------------------------------
-        nRegistro     := (_cArea)->( RecNo() )
-        nArea         := Select()
-        cIndiceActivo := (_cArea)->( ordSetFocus() )
-        cFiltroAnt    := (_cArea)->( dbFilter() )
-        dbSelectArea( _cArea )
-        (_cArea)->( dbGoTop() )
+   ////////// Selección del area de la bdd.---------------------------------------
+   nRegistro     := (_cArea)->( RecNo() )
+   nArea         := Select()
+   cIndiceActivo := (_cArea)->( ordSetFocus() )
+   cFiltroAnt    := (_cArea)->( dbFilter() )
+   dbSelectArea( _cArea )
+   (_cArea)->( dbGoTop() )
 
-////////// Inicialización de variables.----------------------------------------
-        // Filtro.
-        if (_cArea)->( dbFilter() ) == ""
-                _lFiltro := .f.
-        else
-                _lFiltro := .t.
-        endif
-        _cFiltro := (_cArea)->( dbFilter() )
+   ////////// Inicialización de variables.----------------------------------------
+   // Filtro.
+   if (_cArea)->( dbFilter() ) == ""
+      _lFiltro := .f.
+   else
+      _lFiltro := .t.
+   endif
+   _cFiltro := (_cArea)->( dbFilter() )
 
         // Indices de la base de datos.
         lSalida       := .t.
