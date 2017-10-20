@@ -76,9 +76,8 @@ Memvar _ScrSaverConfig
 
 #define MsgInfo( c ) MsgInfo( c, "Information" )
 
-*--------------------------------------------------------*
 Function _BeginScrSaver( cSSaver, lNoShow, cInit, cRelease, cPaint, nTimer, aBackClr )
-*--------------------------------------------------------*
+
    Local a := {}, x := GetDesktopWidth(), y := GetDesktopHeight(), Dummy := ""
 
    Public _ActiveScrSaverName := cSSaver
@@ -135,11 +134,10 @@ Function _BeginScrSaver( cSSaver, lNoShow, cInit, cRelease, cPaint, nTimer, aBac
 
    ENDIF
 
-Return Nil
+   Return Nil
 
-*--------------------------------------------------------*
 Function _ActivateScrSaver( aForm, cParam )
-*--------------------------------------------------------*
+
    Local cFileScr, cFileDes
 
    DEFAULT cParam TO if( _ScrSaverInstall, "-i", "-s" )
@@ -199,11 +197,10 @@ Function _ActivateScrSaver( aForm, cParam )
 
    ENDCASE
 
-Return Nil
+   Return Nil
 
-*--------------------------------------------------------*
 Function _ReleaseScrSaver( cRelease, cSSaver, cPaint )
-*--------------------------------------------------------*
+
    Local Dummy := ""
 
    IF cRelease # NIL
@@ -218,12 +215,12 @@ Function _ReleaseScrSaver( cRelease, cSSaver, cPaint )
 
    SystemParametersInfo( SPI_SCREENSAVERRUNNING, 0, @Dummy, 0 )
 
-Return Nil
+   Return Nil
 
-*--------------------------------------------------------*
 Function _lValidScrSaver()
-*--------------------------------------------------------*
+
    Local oReg, nValue := 1, lRet
+
    OPEN REGISTRY oReg KEY HKEY_CURRENT_USER ;
       SECTION "Control Panel\Desktop"
 
@@ -237,9 +234,8 @@ Function _lValidScrSaver()
       lRet := .T.
    ENDIF
 
-Return lRet
+   Return lRet
 
-*--------------------------------------------------------*
 Function IsWinXP()
-*--------------------------------------------------------*
-Return "XP"$OS()
+
+   Return "XP" $ OS()

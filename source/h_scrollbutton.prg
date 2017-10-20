@@ -65,6 +65,7 @@
 #include "i_windefs.ch"
 
 CLASS TScrollButton FROM TControl
+
    DATA Type            INIT "SCROLLBUTTON" READONLY
 
    DATA ladjust  INIT .F.
@@ -72,12 +73,12 @@ CLASS TScrollButton FROM TControl
    METHOD Define
 
    /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( ControlName, ParentForm, x, y, w, h ) CLASS TScrollButton
-*------------------------------------------------------------------------------*
-Local ControlHandle
+
+   Local ControlHandle
 
    ::SetForm( ControlName, ParentForm /* , FontName, FontSize, FontColor, BackColor,, lRtl */ )
 
@@ -90,7 +91,8 @@ Local ControlHandle
 
    ::Register( ControlHandle, ControlName /* , HelpId, , ToolTip */ )
 
-Return Self
+   Return Self
+
 
 EXTERN INITVSCROLLBARBUTTON
 

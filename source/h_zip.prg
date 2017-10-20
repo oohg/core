@@ -60,13 +60,12 @@
  */
 
 
-*------------------------------------------------------------------------------*
 PROCEDURE HMG_UNZIPFILE ( zipfile , block , extractpath )
-*------------------------------------------------------------------------------*
-Local ObjZip
-Local Count
-Local objItem
-Local i
+
+   Local ObjZip
+   Local Count
+   Local objItem
+   Local i
 
    objZip := TOleAuto():New( "XStandard.Zip")
 
@@ -84,13 +83,12 @@ Local i
 
    Next i
 
-RETURN
+   RETURN
 
-*------------------------------------------------------------------------------*
 PROCEDURE HMG_ZIPFILE( zipfile , afiles , level , block , ovr )
-*------------------------------------------------------------------------------*
-LOCAL oZip
-LOCAL I
+
+   LOCAL oZip
+   LOCAL I
 
    oZip:=TOleAuto():New( "XStandard.Zip")
 
@@ -105,4 +103,4 @@ LOCAL I
       oZip:pack( afiles [i] , zipfile , , , level )
    Next i
 
-RETURN
+   RETURN

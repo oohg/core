@@ -2058,5 +2058,3 @@ STATIC FUNCTION ListAsArray( cList, cDelimiter )
    ENDIF
 
    RETURN aList
-
-

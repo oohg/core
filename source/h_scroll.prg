@@ -66,6 +66,7 @@
 #include "i_windefs.ch"
 
 CLASS TScrollBar FROM TControl
+
    DATA Type         INIT "SCROLLBAR" READONLY
    DATA ScrollType   INIT SB_CTL
    DATA FromhWnd     INIT 0
@@ -122,16 +123,16 @@ CLASS TScrollBar FROM TControl
    MESSAGE Events_HScroll METHOD Events_VScroll
 
    /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( ControlName, ParentForm, x, y, w, h, RangeMin, RangeMax, ;
                change, lineup, linedown, pageup, pagedown, top, bottom, ;
                thumb, track, endtrack, HelpId, invisible, ToolTip, lRtl, ;
                nOrient, lSubControl, value, lDisabled, nLineSkip, nPageSkip, ;
                lAutoMove ) CLASS TScrollBar
-*------------------------------------------------------------------------------*
-Local ControlHandle, nStyle
+
+   Local ControlHandle, nStyle
 
    If ::nWidth == 0
       ::nWidth := GETVSCROLLBARWIDTH()
@@ -181,185 +182,184 @@ Local ControlHandle, nStyle
    ASSIGN ::OnTrack    VALUE track    TYPE "B"
    ASSIGN ::OnEndTrack VALUE endtrack TYPE "B"
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD Value( nValue ) CLASS TScrollBar
-*------------------------------------------------------------------------------*
+
    if HB_IsNumeric( nValue )
       SetScrollPos( ::FromhWnd, ::ScrollType, nValue / ::nFactor, .T. )
    endif
-Return GetScrollPos( ::FromhWnd, ::ScrollType ) * ::nFactor
 
-*------------------------------------------------------------------------------*
+   Return GetScrollPos( ::FromhWnd, ::ScrollType ) * ::nFactor
+
 METHOD RangeMin( nValue ) CLASS TScrollBar
-*------------------------------------------------------------------------------*
+
    ::SetRange( nValue, ::nRangeMax )
-Return ::nRangeMin
 
-*------------------------------------------------------------------------------*
+   Return ::nRangeMin
+
 METHOD RangeMax( nValue ) CLASS TScrollBar
-*------------------------------------------------------------------------------*
-   ::SetRange( ::nRangeMin, nValue )
-Return ::nRangeMax
 
-*------------------------------------------------------------------------------*
+   ::SetRange( ::nRangeMin, nValue )
+
+   Return ::nRangeMax
+
 METHOD SetRange( nRangeMin, nRangeMax ) CLASS TScrollBar
-*------------------------------------------------------------------------------*
-*LOCAL nMax
+
+   *LOCAL nMax
    If HB_IsNumeric( nRangeMin ) .OR. HB_IsNumeric( nRangeMax )
       ASSIGN ::nRangeMin VALUE nRangeMin TYPE "N"
       ASSIGN ::nRangeMax VALUE nRangeMax TYPE "N"
-*      nMax := MAX( ABS( ::nRangeMin ), ABS( ::nRangeMax ) )
-*      If nMax > 32000
-*         ::nFactor := INT( nMax / 32000 )
-*      Else
-*         ::nFactor := 1
-*      EndIf
+      * nMax := MAX( ABS( ::nRangeMin ), ABS( ::nRangeMax ) )
+      * If nMax > 32000
+      *    ::nFactor := INT( nMax / 32000 )
+      * Else
+      *    ::nFactor := 1
+      * EndIf
       SetScrollRange( ::FromhWnd, ::ScrollType, ::nRangeMin / ::nFactor, ::nRangeMax / ::nFactor, .T. )
    EndIf
-Return nil
 
-*------------------------------------------------------------------------------*
+   Return nil
+
 METHOD Page( nValue ) CLASS TScrollBar
-*------------------------------------------------------------------------------*
+
    if HB_IsNumeric( nValue )
       SetScrollPage( ::FromhWnd, ::ScrollType, nValue / ::nFactor )
    endif
-Return SetScrollPage( ::FromhWnd, ::ScrollType ) * ::nFactor
 
-*------------------------------------------------------------------------------*
+   Return SetScrollPage( ::FromhWnd, ::ScrollType ) * ::nFactor
+
 METHOD OnLineLeft( bAction ) CLASS TScrollBar
-*------------------------------------------------------------------------------*
+
    If PCOUNT() > 0
       ::OnLineUp := bAction
    EndIf
-Return ::OnLineUp
 
-*------------------------------------------------------------------------------*
+   Return ::OnLineUp
+
 METHOD OnLineRight( bAction ) CLASS TScrollBar
-*------------------------------------------------------------------------------*
+
    If PCOUNT() > 0
       ::OnLineDown := bAction
    EndIf
-Return ::OnLineDown
 
-*------------------------------------------------------------------------------*
+   Return ::OnLineDown
+
 METHOD OnPageLeft( bAction ) CLASS TScrollBar
-*------------------------------------------------------------------------------*
+
    If PCOUNT() > 0
       ::OnPageUp := bAction
    EndIf
-Return ::OnPageUp
 
-*------------------------------------------------------------------------------*
+   Return ::OnPageUp
+
 METHOD OnPageRight( bAction ) CLASS TScrollBar
-*------------------------------------------------------------------------------*
+
    If PCOUNT() > 0
       ::OnPageDown := bAction
    EndIf
-Return ::OnPageDown
 
-*------------------------------------------------------------------------------*
+   Return ::OnPageDown
+
 METHOD OnLeft( bAction ) CLASS TScrollBar
-*------------------------------------------------------------------------------*
+
    If PCOUNT() > 0
       ::OnTop := bAction
    EndIf
-Return ::OnTop
 
-*------------------------------------------------------------------------------*
+   Return ::OnTop
+
 METHOD OnRight( bAction ) CLASS TScrollBar
-*------------------------------------------------------------------------------*
+
    If PCOUNT() > 0
       ::OnBottom := bAction
    EndIf
-Return ::OnBottom
 
-*------------------------------------------------------------------------------*
+   Return ::OnBottom
+
 METHOD LineUp() CLASS TScrollBar
-*------------------------------------------------------------------------------*
+
    If ::lAutoMove
       ::Value := ::Value - ::nLineSkip
    EndIf
    _OOHG_EVAL( ::OnLineUp, Self )
    ::DoChange()
-Return Self
 
-*------------------------------------------------------------------------------*
+   Return Self
+
 METHOD LineDown() CLASS TScrollBar
-*------------------------------------------------------------------------------*
+
    If ::lAutoMove
       ::Value := ::Value + ::nLineSkip
    EndIf
    _OOHG_EVAL( ::OnLineDown, Self )
    ::DoChange()
-Return Self
 
-*------------------------------------------------------------------------------*
+   Return Self
+
 METHOD PageUp() CLASS TScrollBar
-*------------------------------------------------------------------------------*
+
    If ::lAutoMove
       ::Value := ::Value - ::nPageSkip
    EndIf
    _OOHG_EVAL( ::OnPageUp, Self )
    ::DoChange()
-Return Self
 
-*------------------------------------------------------------------------------*
+   Return Self
+
 METHOD PageDown() CLASS TScrollBar
-*------------------------------------------------------------------------------*
+
    If ::lAutoMove
       ::Value := ::Value + ::nPageSkip
    EndIf
    _OOHG_EVAL( ::OnPageDown, Self )
    ::DoChange()
-Return Self
 
-*------------------------------------------------------------------------------*
+   Return Self
+
 METHOD Top() CLASS TScrollBar
-*------------------------------------------------------------------------------*
+
    If ::lAutoMove
       ::Value := ::nRangeMin
    EndIf
    _OOHG_EVAL( ::OnTop, Self )
    ::DoChange()
-Return Self
 
-*------------------------------------------------------------------------------*
+   Return Self
+
 METHOD Bottom() CLASS TScrollBar
-*------------------------------------------------------------------------------*
+
    If ::lAutoMove
       ::Value := ::nRangeMax
    EndIf
    _OOHG_EVAL( ::OnBottom, Self )
    ::DoChange()
-Return Self
 
-*------------------------------------------------------------------------------*
+   Return Self
+
 METHOD Thumb( nPos ) CLASS TScrollBar
-*------------------------------------------------------------------------------*
+
    If ::lAutoMove
       ::Value := nPos
    EndIf
    _OOHG_EVAL( ::OnThumb, Self, nPos )
    ::DoChange()
-Return Self
 
-*------------------------------------------------------------------------------*
+   Return Self
+
 METHOD Track( nPos ) CLASS TScrollBar
-*------------------------------------------------------------------------------*
+
    If ::lAutoMove
       ::Value := nPos
    EndIf
    _OOHG_EVAL( ::OnTrack, Self, nPos )
    ::DoChange()
-Return Self
 
-*------------------------------------------------------------------------------*
+   Return Self
+
 METHOD Events_VScroll( wParam ) CLASS TScrollBar
-*------------------------------------------------------------------------------*
-Local Lo_wParam := LoWord( wParam )
+
+   Local Lo_wParam := LoWord( wParam )
 
    If Lo_wParam == SB_LINEDOWN         // .OR. Lo_wParam == SB_LINERIGHT
 
@@ -396,13 +396,16 @@ Local Lo_wParam := LoWord( wParam )
 
    EndIf
 
-Return nil
+   Return nil
 
 FUNCTION InitVScrollBar( hWnd, nCol, nRow, nWidth, nHeight, lRtl )
-RETURN InitScrollBar( hWnd, nCol, nRow, nWidth, nHeight, lRtl, SB_VERT )
+
+   RETURN InitScrollBar( hWnd, nCol, nRow, nWidth, nHeight, lRtl, SB_VERT )
 
 FUNCTION InitHScrollBar( hWnd, nCol, nRow, nWidth, nHeight, lRtl )
-RETURN InitScrollBar( hWnd, nCol, nRow, nWidth, nHeight, lRtl, SB_HORZ )
+
+   RETURN InitScrollBar( hWnd, nCol, nRow, nWidth, nHeight, lRtl, SB_HORZ )
+
 
 EXTERN GetVScrollbarWidth, GetHScrollbarHeight, SetScrollPos, SetScrollPage
 EXTERN SetScrollRange, GetScrollPos, IsScrollLockActive, _SetScroll
