@@ -66,6 +66,7 @@
 #include "i_windefs.ch"
 
 CLASS TList FROM TControl
+
    DATA Type                      INIT "LIST" READONLY
    DATA nWidth                    INIT 120
    DATA nHeight                   INIT 120
@@ -99,34 +100,35 @@ CLASS TList FROM TControl
    METHOD ColumnWidth             SETGET
    METHOD TopIndex                SETGET
    METHOD EnsureVisible
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
                fontsize, tooltip, changeprocedure, dblclick, gotfocus, ;
                lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
                italic, underline, strikeout, backcolor, fontcolor, lRtl, ;
                lDisabled, onenter, aImage, TextHeight, lAdjustImages, ;
                novscroll, multicol, colwidth, multitab, aWidth, dragitems ) CLASS TList
-*------------------------------------------------------------------------------*
-LOCAL nStyle := 0
+
+   LOCAL nStyle := 0
+
    ::Define2( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
               fontsize, tooltip, changeprocedure, dblclick, gotfocus, ;
               lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
               italic, underline, strikeout, backcolor, fontcolor, nStyle, ;
               lRtl, lDisabled, onenter, aImage, TextHeight, lAdjustImages, ;
               novscroll, multicol, colwidth, multitab, aWidth, dragitems )
-RETURN Self
 
-*------------------------------------------------------------------------------*
+   RETURN Self
+
 METHOD Define2( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
                 fontsize, tooltip, changeprocedure, dblclick, gotfocus, ;
                 lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
                 italic, underline, strikeout, backcolor, fontcolor, nStyle, ;
                 lRtl, lDisabled, onenter, aImage, TextHeight, lAdjustImages, ;
                 novscroll, multicol, colwidth, multitab, aWidth, dragitems ) CLASS TList
-*------------------------------------------------------------------------------*
-LOCAL ControlHandle, i
+
+   LOCAL ControlHandle, i
 
    ASSIGN ::nWidth        VALUE w             TYPE "N"
    ASSIGN ::nHeight       VALUE h             TYPE "N"
@@ -194,23 +196,20 @@ LOCAL ControlHandle, i
    ASSIGN ::OnDblClick  VALUE dblclick   TYPE "B"
    ASSIGN ::OnEnter     VALUE onenter    TYPE "B"
 
-RETURN Self
+   RETURN Self
 
-*------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TList
-*------------------------------------------------------------------------------*
 
    IF VALTYPE( uValue ) == "N"
       ListBoxSetCursel( ::hWnd, uValue )
       ::DoChange()
    ENDIF
 
-RETURN ListBoxGetCursel( ::hWnd )
+   RETURN ListBoxGetCursel( ::hWnd )
 
-*------------------------------------------------------------------------------*
 METHOD OnEnter( bEnter ) CLASS TList
-*------------------------------------------------------------------------------*
-LOCAL bRet
+
+   LOCAL bRet
 
    IF HB_IsBlock( bEnter )
       IF _OOHG_SameEnterDblClick
@@ -223,11 +222,9 @@ LOCAL bRet
       bRet := IIF( _OOHG_SameEnterDblClick, ::OnDblClick, ::bOnEnter )
    ENDIF
 
-RETURN bRet
+   RETURN bRet
 
-*------------------------------------------------------------------------------*
 METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TList
-*------------------------------------------------------------------------------*
 
    IF nMsg == WM_LBUTTONDBLCLK
       IF ! ::lFocused
@@ -249,12 +246,11 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TList
 
    ENDIF
 
-RETURN ::Super:Events( hWnd, nMsg, wParam, lParam )
+   RETURN ::Super:Events( hWnd, nMsg, wParam, lParam )
 
-*------------------------------------------------------------------------------*
 METHOD Events_Command( wParam ) CLASS TList
-*------------------------------------------------------------------------------*
-LOCAL Hi_wParam := HIWORD( wParam )
+
+   LOCAL Hi_wParam := HIWORD( wParam )
 
    IF Hi_wParam == LBN_SELCHANGE
       ::DoChange()
@@ -277,65 +273,60 @@ LOCAL Hi_wParam := HIWORD( wParam )
 
    ENDIF
 
-RETURN ::Super:Events_Command( wParam )
+   RETURN ::Super:Events_Command( wParam )
 
-*------------------------------------------------------------------------------*
 METHOD Events_Drag( lParam ) CLASS TList
-*------------------------------------------------------------------------------*
 
    SWITCH GET_DRAG_LIST_NOTIFICATION_CODE( lParam )
-      CASE DL_BEGINDRAG
-         ::DragItem := GET_DRAG_LIST_DRAGITEM( lParam )
-         RETURN 1
+   CASE DL_BEGINDRAG
+      ::DragItem := GET_DRAG_LIST_DRAGITEM( lParam )
+      RETURN 1
 
-      CASE DL_DRAGGING
-         ::DragTo := GET_DRAG_LIST_DRAGITEM( lParam )
+   CASE DL_DRAGGING
+      ::DragTo := GET_DRAG_LIST_DRAGITEM( lParam )
+      IF ::DragTo > ::DragItem
+         DRAG_LIST_DRAWINSERT( ::Parent:hWnd, lParam, ::DragTo + 1 )
+      ELSE
+         DRAG_LIST_DRAWINSERT( ::Parent:hWnd, lParam, ::DragTo )
+      ENDIF
+      IF ::DragTo <> -1
          IF ::DragTo > ::DragItem
-            DRAG_LIST_DRAWINSERT( ::Parent:hWnd, lParam, ::DragTo + 1 )
+            SetResCursor( LoadCursor( GetInstance(), "MINIGUI_DRAGDOWN" ) )
          ELSE
-            DRAG_LIST_DRAWINSERT( ::Parent:hWnd, lParam, ::DragTo )
+            SetResCursor( LoadCursor( GetInstance(), "MINIGUI_DRAGUP" ) )
          ENDIF
-         IF ::DragTo <> -1
-            IF ::DragTo > ::DragItem
-               SetResCursor( LoadCursor( GetInstance(), "MINIGUI_DRAGDOWN" ) )
-            ELSE
-               SetResCursor( LoadCursor( GetInstance(), "MINIGUI_DRAGUP" ) )
-            ENDIF
-            RETURN DL_CURSORSET
-         ENDIF
-         RETURN DL_STOPCURSOR
+         RETURN DL_CURSORSET
+      ENDIF
+      RETURN DL_STOPCURSOR
 
-      CASE DL_CANCELDRAG
-         ::DragItem := -1
-         EXIT
+   CASE DL_CANCELDRAG
+      ::DragItem := -1
+      EXIT
 
-      CASE DL_DROPPED
-         ::DragTo := GET_DRAG_LIST_DRAGITEM( lParam )
-         IF ::DragTo <> -1
-            DRAG_LIST_MOVE_ITEMS( lParam, ::DragItem, ::DragTo )
-         ENDIF
-         DRAG_LIST_DRAWINSERT( ::Parent:hWnd, lParam, -1 )
-         ::DragItem := -1
-         EXIT
+   CASE DL_DROPPED
+      ::DragTo := GET_DRAG_LIST_DRAGITEM( lParam )
+      IF ::DragTo <> -1
+         DRAG_LIST_MOVE_ITEMS( lParam, ::DragItem, ::DragTo )
+      ENDIF
+      DRAG_LIST_DRAWINSERT( ::Parent:hWnd, lParam, -1 )
+      ::DragItem := -1
+      EXIT
 
    END SWITCH
 
-RETURN Nil
+   RETURN Nil
 
-*------------------------------------------------------------------------------*
 METHOD AddItem( uValue ) CLASS TList
-*------------------------------------------------------------------------------*
 
    IF ::lMultiTab .AND. HB_IsArray( uValue )
       uValue := LB_Array2String( uValue )
    ENDIF
 
-RETURN ListBoxAddstring2( Self, uValue )
+   RETURN ListBoxAddstring2( Self, uValue )
 
-*------------------------------------------------------------------------------*
 METHOD Item( nItem, uValue ) CLASS TList
-*------------------------------------------------------------------------------*
-LOCAL cRet
+
+   LOCAL cRet
 
    IF ! HB_IsNil( uValue )
       ListBoxDeleteString( Self, nItem )
@@ -349,12 +340,11 @@ LOCAL cRet
       cRet := LB_String2Array( cRet )
    ENDIF
 
-RETURN cRet
+   RETURN cRet
 
-*------------------------------------------------------------------------------*
 METHOD InsertItem( nItem, uValue ) CLASS TList
-*------------------------------------------------------------------------------*
-LOCAL cRet
+
+   LOCAL cRet
 
    IF ! HB_IsNil( uValue )
       IF ::lMultiTab .AND. HB_IsArray( uValue )
@@ -367,31 +357,28 @@ LOCAL cRet
       cRet := LB_String2Array( cRet )
    ENDIF
 
-RETURN cRet
+   RETURN cRet
 
-*------------------------------------------------------------------------------*
 METHOD ColumnWidth( uValue ) CLASS TList
-*------------------------------------------------------------------------------*
 
    IF ValType( uValue ) == "N" .AND. uValue > 0
       ::nColWidth := uValue
       ListBoxSetColumnWidth( ::hWnd, uValue )
    ENDIF
 
-RETURN ::nColWidth
+   RETURN ::nColWidth
 
-*------------------------------------------------------------------------------*
 METHOD TopIndex( nTopIndex ) CLASS TList
-*------------------------------------------------------------------------------*
+
    IF ValType( nTopIndex ) == "N" .and. nTopIndex > 0
       ListBoxSetTopIndex( ::hWnd, nTopIndex )
    ENDIF
-RETURN ListBoxGetTopIndex( :: hWnd )
 
-*------------------------------------------------------------------------------*
+   RETURN ListBoxGetTopIndex( :: hWnd )
+
 FUNCTION LB_Array2String( aData, Sep )
-*------------------------------------------------------------------------------*
-LOCAL n, cData
+
+   LOCAL n, cData
 
    IF HB_IsArray( aData ) .AND. LEN( aData ) > 0
       ASSIGN Sep VALUE Sep TYPE "CM" DEFAULT Chr(9)
@@ -404,28 +391,26 @@ LOCAL n, cData
       cData := ""
    ENDIF
 
-RETURN cData
-
-
-
+   RETURN cData
 
 
 CLASS TListMulti FROM TList
+
    DATA Type                      INIT "MULTILIST" READONLY
 
    METHOD Define
    METHOD Value                   SETGET
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
                fontsize, tooltip, changeprocedure, dblclick, gotfocus, ;
                lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
                italic, underline, strikeout, backcolor, fontcolor, lRtl, ;
                lDisabled, onenter, aImage, TextHeight, lAdjustImages, ;
                novscroll, multicol, colwidth, multitab, aWidth, dragitems ) CLASS TListMulti
-*------------------------------------------------------------------------------*
-LOCAL nStyle := LBS_EXTENDEDSEL + LBS_MULTIPLESEL
+
+   LOCAL nStyle := LBS_EXTENDEDSEL + LBS_MULTIPLESEL
 
    ::Define2( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
               fontsize, tooltip, changeprocedure, dblclick, gotfocus, ;
@@ -434,11 +419,9 @@ LOCAL nStyle := LBS_EXTENDEDSEL + LBS_MULTIPLESEL
               lRtl, lDisabled, onenter, aImage, TextHeight, lAdjustImages, ;
               novscroll, multicol, colwidth, multitab, aWidth, dragitems )
 
-RETURN Self
+   RETURN Self
 
-*------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TListMulti
-*------------------------------------------------------------------------------*
 
    IF VALTYPE( uValue ) == "A"
       ListBoxSetMultiSel( ::hWnd, uValue )
@@ -446,10 +429,7 @@ METHOD Value( uValue ) CLASS TListMulti
       ListBoxSetMultiSel( ::hWnd, { uValue } )
    ENDIF
 
-RETURN ListBoxGetMultiSel( ::hWnd )
-
-
-
+   RETURN ListBoxGetMultiSel( ::hWnd )
 
 
 #pragma BEGINDUMP

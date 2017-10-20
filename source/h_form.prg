@@ -1782,7 +1782,7 @@ HB_FUNC_STATIC( _TFORM_MOVING )   // lParam, nForceRow, nForceCol
    hb_retl( _OOHG_AdjustPosition( ( RECT * ) hb_parnl( 1 ), iForceRow, iForceCol ) );
 }
 
-#pragma endDUMP
+#pragma ENDDUMP
 
 
 Procedure ValidateScrolls( Self, lMove )

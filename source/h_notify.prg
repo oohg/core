@@ -65,6 +65,7 @@
 #include "i_windefs.ch"
 
 CLASS TNotifyIcon FROM TControl
+
    DATA Type               INIT "NOTIFYICON" READONLY
    DATA cPicture           INIT ""
    DATA hImage             INIT nil
@@ -81,16 +82,17 @@ CLASS TNotifyIcon FROM TControl
    METHOD Events_TaskBar
 
    //
-//   METHOD Enabled
-//   METHOD Visible
+   //   METHOD Enabled
+   //   METHOD Visible
 
    /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( ControlName, ParentForm, cPicture, cToolTip, ProcedureName, invisible ) CLASS TNotifyIcon
-*------------------------------------------------------------------------------*
-LOCAL nTrayId
+
+   LOCAL nTrayId
+
    ::SetForm( ControlName, ParentForm )
    ::InitStyle( ,, Invisible )
    ::Register( 0, ControlName )
@@ -114,12 +116,12 @@ LOCAL nTrayId
    ASSIGN ::ToolTip VALUE cToolTip      TYPE "C"
    ASSIGN ::OnClick VALUE ProcedureName TYPE "B"
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD Release() CLASS TNotifyIcon
-*------------------------------------------------------------------------------*
-LOCAL nItem
+
+   LOCAL nItem
+
    DeleteObject( ::hImage )
    IF ::lCreated
       RemoveNotifyIcon( ::Parent:hWnd, ::nTrayId )
@@ -128,11 +130,11 @@ LOCAL nItem
    IF nItem > 0
       _OOHG_DeleteArrayItem( ::Parent:aNotifyIcons, nItem )
    ENDIF
-RETURN ::Super:Release()
 
-*------------------------------------------------------------------------------*
+   RETURN ::Super:Release()
+
 METHOD Picture( cPicture ) CLASS TNotifyIcon
-*------------------------------------------------------------------------------*
+
    IF VALTYPE( cPicture ) $ "CM"
       DeleteObject( ::hImage )
       ::cPicture := cPicture
@@ -148,11 +150,11 @@ METHOD Picture( cPicture ) CLASS TNotifyIcon
          ::lCreated := .T.   // This value can be set "any" time...
       EndIf
    EndIf
-Return ::cPicture
 
-*------------------------------------------------------------------------------*
+   Return ::cPicture
+
 METHOD Buffer( cBuffer ) CLASS TNotifyIcon
-*------------------------------------------------------------------------------*
+
    If VALTYPE( cBuffer ) $ "CM"
       DeleteObject( ::hImage )
       ::cPicture := ""
@@ -165,11 +167,11 @@ METHOD Buffer( cBuffer ) CLASS TNotifyIcon
          ::lCreated := .T.   // This value can be set "any" time...
       EndIf
    EndIf
-Return nil
 
-*------------------------------------------------------------------------------*
+   Return nil
+
 METHOD HIcon( hIcon ) CLASS TNotifyIcon
-*------------------------------------------------------------------------------*
+
    If ValType( hIcon ) $ "NP"
       DeleteObject( ::hImage )
       ::hImage := hIcon
@@ -182,19 +184,19 @@ METHOD HIcon( hIcon ) CLASS TNotifyIcon
          ::lCreated := .T.   // This value can be set "any" time...
       EndIf
    EndIf
-Return ::hImage
 
-*------------------------------------------------------------------------------*
+   Return ::hImage
+
 METHOD HBitMap( hBitMap ) CLASS TNotifyIcon
-*------------------------------------------------------------------------------*
+
    If ValType( hBitMap ) $ "NP"
       ::HIcon := hBitMap
    EndIf
-Return ::hImage
 
-*------------------------------------------------------------------------------*
+   Return ::hImage
+
 METHOD ToolTip( cToolTip ) CLASS TNotifyIcon
-*------------------------------------------------------------------------------*
+
    If PCOUNT() > 0
       If ! HB_IsString( cToolTip )
          cToolTip := ""
@@ -205,40 +207,40 @@ METHOD ToolTip( cToolTip ) CLASS TNotifyIcon
          ::lCreated := .T.   // This value can be set "any" time...
       EndIf
    EndIf
-Return ::cToolTip
 
-*------------------------------------------------------------------------------*
+   Return ::cToolTip
+
 METHOD Events_TaskBar( lParam ) CLASS TNotifyIcon
-*------------------------------------------------------------------------------*
 
    Do Case
-      Case lParam == WM_LBUTTONDOWN
-         ::DoEvent( ::OnClick, "WINDOW_NOTIFYLEFTCLICK" )
+   Case lParam == WM_LBUTTONDOWN
+      ::DoEvent( ::OnClick, "WINDOW_NOTIFYLEFTCLICK" )
 
-      Case lParam == WM_RBUTTONDOWN .OR. lParam == WM_CONTEXTMENU
-         If ::ContextMenu != nil
-            If _OOHG_ShowContextMenus()
-               ::ContextMenu:Activate()
-            Endif
-         Else
-            ::DoEvent( ::OnRClick, "WINDOW_NOTIFYDBLCLICK" )
-         EndIf
+   Case lParam == WM_RBUTTONDOWN .OR. lParam == WM_CONTEXTMENU
+      If ::ContextMenu != nil
+         If _OOHG_ShowContextMenus()
+            ::ContextMenu:Activate()
+         Endif
+      Else
+         ::DoEvent( ::OnRClick, "WINDOW_NOTIFYDBLCLICK" )
+      EndIf
 
-      Case lParam == WM_LBUTTONDBLCLK
-         ::DoEvent( ::OnDblClick, "WINDOW_NOTIFYDBLCLICK" )
+   Case lParam == WM_LBUTTONDBLCLK
+      ::DoEvent( ::OnDblClick, "WINDOW_NOTIFYDBLCLICK" )
 
-      Case lParam == WM_RBUTTONDBLCLK
-         ::DoEvent( ::OnRDblClick, "WINDOW_NOTIFYRDBLCLICK" )
+   Case lParam == WM_RBUTTONDBLCLK
+      ::DoEvent( ::OnRDblClick, "WINDOW_NOTIFYRDBLCLICK" )
 
-      Case lParam == WM_MBUTTONDOWN
-         ::DoEvent( ::OnMClick, "WINDOW_NOTIFYMIDCLICK" )
+   Case lParam == WM_MBUTTONDOWN
+      ::DoEvent( ::OnMClick, "WINDOW_NOTIFYMIDCLICK" )
 
-      Case lParam == WM_MBUTTONDBLCLK
-         ::DoEvent( ::OnMDblClick, "WINDOW_NOTIFYMDBLCLICK" )
+   Case lParam == WM_MBUTTONDBLCLK
+      ::DoEvent( ::OnMDblClick, "WINDOW_NOTIFYMDBLCLICK" )
 
    EndCase
 
-Return nil
+   Return nil
+
 
 #pragma BEGINDUMP
 

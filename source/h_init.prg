@@ -83,7 +83,6 @@ INIT PROCEDURE _OOHG_INIT()
 
    Return
 
-
 Procedure InitMessages( cLang )
 
    Local aLang, aLangDefault, nAt
