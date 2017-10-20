@@ -8,6 +8,10 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2017-10-20 11:11 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core/include/winprint.ch
+     ! RTE: HBPRN not defined.
+
 2017-10-18 17:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt
      * Updated.
@@ -40,6 +44,7 @@
    * core\source\h_winprint.prg
      - Trailing spaces.
      * Some format.
+     ; Thanks to José M. C. Quintas.
 
 2017-10-18 15:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt
@@ -302,7 +307,7 @@
    * source\h_tooltip.prg
    * source\h_xbrowse.prg
    * source\winprint.prg
-     - EMPTY( _OOHG_AllVars array ).
+     - EMPTY( _OOHG_AllVars ).
 
    * source\h_application.prg
      + Method New to initialize application wide variables.

@@ -129,8 +129,7 @@ MEMVAR HBPRN
 
 #xcommand END PAGE ;
    => ;
-      IIF( Type( "_OOHG_AllVars" ) == "A" .AND. ! Empty( _OOHG_ActiveFrame ), ;
-            Do( "_EndTabPage" ), hbprn:EndPage() )
+      iif( __DYNSISFUN( "TAPPLICATION" ) .AND. ! Empty( _OOHG_ActiveFrame ), Do( "_EndTabPage" ), hbprn:EndPage() )
 
 #xcommand END DOC ;
    => ;
