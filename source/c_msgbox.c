@@ -78,7 +78,7 @@
 HB_FUNC( C_MSGRETRYCANCEL )
 {
    int uType;
-   
+
    if( HB_ISNIL( 3 ) )
    {
       uType = MB_SYSTEMMODAL;
@@ -104,7 +104,7 @@ HB_FUNC( C_MSGOKCANCEL )
       uType = hb_parni( 3 );
    }
 
-	hb_retni ( MessageBox( GetActiveWindow(), hb_parc(1), hb_parc(2) , MB_OKCANCEL | MB_ICONQUESTION | uType ) ) ;
+   hb_retni ( MessageBox( GetActiveWindow(), hb_parc(1), hb_parc(2) , MB_OKCANCEL | MB_ICONQUESTION | uType ) ) ;
 }
 
 HB_FUNC( C_MSGYESNO )

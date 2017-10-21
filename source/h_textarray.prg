@@ -65,6 +65,7 @@
 #include "i_windefs.ch"
 
 CLASS TTextArray FROM TControl
+
    DATA Type       INIT "TEXTARRAY" READONLY
 
    METHOD Define
@@ -90,16 +91,16 @@ CLASS TTextArray FROM TControl
    METHOD Cls                  BLOCK { |Self| ::Clear() , ::DevPos( 0, 0 ) }
 
    /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( ControlName, ParentForm, x, y, w, h, RowCount, ColCount, ;
                BORDER, CLIENTEDGE, FontColor, BackColor, ProcedureName, ;
                fontname, fontsize, bold, italic, underline, strikeout, ;
                ToolTip, HelpId, invisible, lRtl, value, NoTabStop, lDisabled, ;
                GotFocus, LostFocus ) CLASS TTextArray
-*------------------------------------------------------------------------------*
-Local ControlHandle, nStyle, nStyleEx
+
+   Local ControlHandle, nStyle, nStyleEx
 
    ASSIGN ::nCol        VALUE x TYPE "N"
    ASSIGN ::nRow        VALUE y TYPE "N"
@@ -137,14 +138,15 @@ Local ControlHandle, nStyle, nStyleEx
    ASSIGN ::OnGotFocus  VALUE GotFocus      TYPE "B"
    ASSIGN ::OnLostFocus VALUE LostFocus     TYPE "B"
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout ) CLASS TTextArray
-*------------------------------------------------------------------------------*
+
    ::Super:SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout )
    TTextArray_SetFontSize( Self )
-Return Nil
+
+   Return Nil
+
 
 #pragma BEGINDUMP
 

@@ -227,10 +227,10 @@ CLASS HBPrinter
    METHOD PrintOption()
 #endif
 
-//   IF TIME() == "Z"
-//      /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
-//      EMPTY( HBPRN )
-//   ENDIF
+   //   IF TIME() == "Z"
+   //      /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
+   //      EMPTY( HBPRN )
+   //   ENDIF
 
    ENDCLASS
 
@@ -1226,41 +1226,48 @@ METHOD DeleteClipRgn() CLASS HBPrinter
    return self
 
 METHOD SetViewPortOrg(row,col) CLASS HBPrinter
+
   row:=if(row<>NIL,row,0)
   col:=if(col<>NIL,col,0)
        ::VIEWPORTORG:=::convert({row,col})
        rr_setviewportorg(::ViewportOrg)
-return self
+
+   return self
 
 METHOD GetViewPortOrg() CLASS HBPrinter
        rr_getviewportorg(::VIEWPORTORG)
-return self
+
+   return self
 
 METHOD End() CLASS HBPrinter
-local n,l
-  if ::PreviewMode
-    ::Metafiles:={}
-   if !::InMemory
-           l:=::curpage-1
-      for n := 1 to l
-          ferase(::BaseDoc + alltrim(strzero(n,4))+'.emf')
-           next
+
+   local n,l
+
+   if ::PreviewMode
+      ::Metafiles:={}
+      if !::InMemory
+         l:=::curpage-1
+         for n := 1 to l
+            ferase(::BaseDoc + alltrim(strzero(n,4))+'.emf')
+         next
+      endif
    endif
-  endif
-  if ::HDCRef!=0
+   if ::HDCRef!=0
       ef_resetprinter()
       rr_deletedc(::HDCRef)
-  endif
-  rr_deleteobjects(::Fonts[1])
-  rr_deleteobjects(::Brushes[1])
-  rr_deleteobjects(::Pens[1])
-  rr_deleteobjects(::Regions[1])
-  rr_deleteimagelists(::ImageLists[1])
-  rr_finish()
-return NIL
+   endif
+   rr_deleteobjects(::Fonts[1])
+   rr_deleteobjects(::Brushes[1])
+   rr_deleteobjects(::Pens[1])
+   rr_deleteobjects(::Regions[1])
+   rr_deleteimagelists(::ImageLists[1])
+   rr_finish()
+
+   return NIL
 
 METHOD DXCOLORS(par) CLASS HBPrinter
-static rgbColorNames:=;
+
+   static rgbColorNames:=;
    {{ "aliceblue",             0xfffff8f0 },;
     { "antiquewhite",          0xffd7ebfa },;
     { "aqua",                  0xffffff00 },;
@@ -1401,150 +1408,171 @@ static rgbColorNames:=;
     { "whitesmoke",            0xfff5f5f5 },;
     { "yellow",                0xff00ffff },;
     { "yellowgreen",           0xff32cd9a }}
-local ltemp:=0
-//rgbcolornames:=asort(rgbcolornames,,,{|x,y| x[2]<y[2]})
-if valtype(par)=="C"
-   par:=lower(alltrim(par))
-   aeval(rgbcolornames,{|x| if(x[1]==par,ltemp:=x[2],'')})
-   return ltemp
-elseif HB_IsNumeric(par)
-   return if(par<=len(rgbcolornames),rgbcolornames[par,2],0)
-endif
-return 0
+   local ltemp:=0
+
+   //rgbcolornames:=asort(rgbcolornames,,,{|x,y| x[2]<y[2]})
+   if valtype(par)=="C"
+      par:=lower(alltrim(par))
+      aeval(rgbcolornames,{|x| if(x[1]==par,ltemp:=x[2],'')})
+      return ltemp
+   elseif HB_IsNumeric(par)
+      return if(par<=len(rgbcolornames),rgbcolornames[par,2],0)
+   endif
+
+   return 0
 
 METHOD SetRGB(red,green,blue) CLASS HBPrinter
-return rr_setrgb(red,green,blue)
+
+   return rr_setrgb(red,green,blue)
 
 METHOD SetTextCharExtra(col) CLASS HBPrinter
-local p1:=::convert({0,0}),p2:=::convert({0,col})
-return rr_SetTextCharExtra(p2[2]-p1[2])
+
+   local p1:=::convert({0,0}),p2:=::convert({0,col})
+
+   return rr_SetTextCharExtra(p2[2]-p1[2])
 
 METHOD GetTextCharExtra() CLASS HBPrinter
-return rr_GetTextCharExtra()
+
+   return rr_GetTextCharExtra()
 
 METHOD SetTextJustification(col) CLASS HBPrinter
-local p1:=::convert({0,0}),p2:=::convert({0,col})
-return rr_SetTextJustification(p2[2]-p1[2])
+
+   local p1:=::convert({0,0}),p2:=::convert({0,col})
+
+   return rr_SetTextJustification(p2[2]-p1[2])
 
 METHOD GetTextJustification() CLASS HBPrinter
-return rr_GetTextJustification()
+
+   return rr_GetTextJustification()
 
 METHOD SetTextAlign(style) CLASS HBPrinter
-return rr_settextalign(style)
+
+   return rr_settextalign(style)
 
 METHOD GetTextAlign() CLASS HBPrinter
-return rr_gettextalign()
+
+   return rr_gettextalign()
 
 METHOD Picture(row,col,torow,tocol,cpicture,extrow,extcol,lImageSize) CLASS HBPrinter
-local lp1:=::convert({row,col}),lp2,lp3
- if torow==NIL
-    torow:=::maxrow
- endif
- if tocol==NIL
-    tocol:=::maxcol
- endif
- lp2:=::convert({torow,tocol},1)
- if extrow==NIL
-   extrow:=0
- endif
- if extcol==NIL
-    extcol:=0
- endif
- lp3:=::convert({extrow,extcol})
- rr_drawpicture(cpicture,lp1,lp2,lp3,lImageSize)
-return self
+
+   local lp1:=::convert({row,col}),lp2,lp3
+
+   if torow==NIL
+      torow:=::maxrow
+   endif
+   if tocol==NIL
+      tocol:=::maxcol
+   endif
+   lp2:=::convert({torow,tocol},1)
+   if extrow==NIL
+     extrow:=0
+   endif
+   if extcol==NIL
+      extcol:=0
+   endif
+   lp3:=::convert({extrow,extcol})
+   rr_drawpicture(cpicture,lp1,lp2,lp3,lImageSize)
+
+   return self
 
 static function str2file(ctxt,cfile)
-local hand,lrec
- hand:=fcreate(cfile)
- if hand<0
-    return 0
- endif
- lrec:=fwrite(hand,ctxt)
- fclose(hand)
-return lrec
+
+   local hand,lrec
+
+   hand:=fcreate(cfile)
+   if hand<0
+      return 0
+   endif
+   lrec:=fwrite(hand,ctxt)
+   fclose(hand)
+
+   return lrec
 
 static Function sayconvert(ltxt)
-  do case
-     case valtype(ltxt)$"MC"    ;  return ltxt
-     case HB_IsNumeric(ltxt)    ;  return str(ltxt)
-     case ValType(ltxt)=="T"    ;  return ttoc(ltxt)
-     case HB_IsDate(ltxt)       ;  return dtoc(ltxt)
-     case HB_IsLogical(ltxt)    ;  return if(ltxt,".T.",".F.")
-  endcase
-return ""
 
+   do case
+   case valtype(ltxt)$"MC"    ;  return ltxt
+   case HB_IsNumeric(ltxt)    ;  return str(ltxt)
+   case ValType(ltxt)=="T"    ;  return ttoc(ltxt)
+   case HB_IsDate(ltxt)       ;  return dtoc(ltxt)
+   case HB_IsLogical(ltxt)    ;  return if(ltxt,".T.",".F.")
+   endcase
 
+   return ""
 
 FUNCTION str2arr( cList, cDelimiter )
-LOCAL nPos
-LOCAL aList := {}
-local nlencd:=0
-LOCAL Asub
-DO CASE
- CASE VALTYPE(CDELIMITER)=='C'
-   cDelimiter:=if(cDelimiter==NIL,",",cDelimiter)
-   nlencd:=len(cdelimiter)
-   DO WHILE ( nPos := AT( cDelimiter, cList )) != 0
-      AADD( aList, SUBSTR( cList, 1, nPos - 1 ))
-      cList := SUBSTR( cList, nPos + nlencd )
-   ENDDO
-   AADD( aList, cList )
- CASE HB_IsNumeric(CDELIMITER)
-   DO WHILE len((nPos:=left(clist,cdelimiter)))==cdelimiter
-      aadd(alist,npos)
-      clist:=substr(clist,cdelimiter+1)
-   ENDDO
- CASE HB_IsArray(CDELIMITER)
-   AEVAL(CDELIMITER,{|X| NLENCD+=X})
-   DO WHILE len((nPos:=left(clist,NLENCD)))==NLENCD
-      asub:={}
-      aeval(cdelimiter,{|x| aadd(asub,left(npos,x)),npos:=substr(npos,x+1)})
-      aadd(alist,asub)
-      clist:=substr(clist,nlencd+1)
-   ENDDO
- ENDCASE
-RETURN ( aList )
+
+   LOCAL nPos
+   LOCAL aList := {}
+   local nlencd:=0
+   LOCAL Asub
+
+   DO CASE
+   CASE VALTYPE(CDELIMITER)=='C'
+      cDelimiter:=if(cDelimiter==NIL,",",cDelimiter)
+      nlencd:=len(cdelimiter)
+      DO WHILE ( nPos := AT( cDelimiter, cList )) != 0
+         AADD( aList, SUBSTR( cList, 1, nPos - 1 ))
+         cList := SUBSTR( cList, nPos + nlencd )
+      ENDDO
+      AADD( aList, cList )
+   CASE HB_IsNumeric(CDELIMITER)
+      DO WHILE len((nPos:=left(clist,cdelimiter)))==cdelimiter
+         aadd(alist,npos)
+         clist:=substr(clist,cdelimiter+1)
+      ENDDO
+   CASE HB_IsArray(CDELIMITER)
+      AEVAL(CDELIMITER,{|X| NLENCD+=X})
+      DO WHILE len((nPos:=left(clist,NLENCD)))==NLENCD
+         asub:={}
+         aeval(cdelimiter,{|x| aadd(asub,left(npos,x)),npos:=substr(npos,x+1)})
+         aadd(alist,asub)
+         clist:=substr(clist,nlencd+1)
+      ENDDO
+   ENDCASE
+
+   RETURN ( aList )
 
 METHOD ReportData(l_x1,l_x2,l_x3,l_x4,l_x5,l_x6) CLASS HBPrinter
-set device to print
-set printer to "hbprinter.rep" ADDITIVE
-set printer on
-set console off
- ? '-----------------',date(),time()
- ?
- ?? if(valtype(l_x1)<>"U",l_x1,",")
- ?? if(valtype(l_x2)<>"U",l_x2,",")
- ?? if(valtype(l_x3)<>"U",l_x3,",")
- ?? if(valtype(l_x4)<>"U",l_x4,",")
- ?? if(valtype(l_x5)<>"U",l_x5,",")
- ?? if(valtype(l_x6)<>"U",l_x6,",")
- ? 'HDC            :',::HDC
- ? 'HDCREF         :',::HDCREF
- ? 'PRINTERNAME    :',::PRINTERNAME
- ? 'PRINTEDEFAULT  :',::PRINTERDEFAULT
- ? 'VERT X HORZ SIZE         :',::DEVCAPS[1],"x",::DEVCAPS[2]
- ? 'VERT X HORZ RES          :',::DEVCAPS[3],"x",::DEVCAPS[4]
- ? 'VERT X HORZ LOGPIX       :',::DEVCAPS[5],"x",::DEVCAPS[6]
- ? 'VERT X HORZ PHYS. SIZE   :',::DEVCAPS[7],"x",::DEVCAPS[8]
- ? 'VERT X HORZ PHYS. OFFSET :',::DEVCAPS[9],"x",::DEVCAPS[10]
- ? 'VERT X HORZ FONT SIZE    :',::DEVCAPS[11],"x",::DEVCAPS[12]
- ? 'VERT X HORZ ROWS COLS    :',::DEVCAPS[13],"x",::DEVCAPS[14]
- ? 'ORIENTATION              :',::DEVCAPS[15]
- ? 'PAPER SIZE               :',::DEVCAPS[17]
-set printer off
-set printer to
-set console on
-set device to screen
-return self
 
+   set device to print
+   set printer to "hbprinter.rep" ADDITIVE
+   set printer on
+   set console off
+   ? '-----------------',date(),time()
+   ?
+   ?? if(valtype(l_x1)<>"U",l_x1,",")
+   ?? if(valtype(l_x2)<>"U",l_x2,",")
+   ?? if(valtype(l_x3)<>"U",l_x3,",")
+   ?? if(valtype(l_x4)<>"U",l_x4,",")
+   ?? if(valtype(l_x5)<>"U",l_x5,",")
+   ?? if(valtype(l_x6)<>"U",l_x6,",")
+   ? 'HDC            :',::HDC
+   ? 'HDCREF         :',::HDCREF
+   ? 'PRINTERNAME    :',::PRINTERNAME
+   ? 'PRINTEDEFAULT  :',::PRINTERDEFAULT
+   ? 'VERT X HORZ SIZE         :',::DEVCAPS[1],"x",::DEVCAPS[2]
+   ? 'VERT X HORZ RES          :',::DEVCAPS[3],"x",::DEVCAPS[4]
+   ? 'VERT X HORZ LOGPIX       :',::DEVCAPS[5],"x",::DEVCAPS[6]
+   ? 'VERT X HORZ PHYS. SIZE   :',::DEVCAPS[7],"x",::DEVCAPS[8]
+   ? 'VERT X HORZ PHYS. OFFSET :',::DEVCAPS[9],"x",::DEVCAPS[10]
+   ? 'VERT X HORZ FONT SIZE    :',::DEVCAPS[11],"x",::DEVCAPS[12]
+   ? 'VERT X HORZ ROWS COLS    :',::DEVCAPS[13],"x",::DEVCAPS[14]
+   ? 'ORIENTATION              :',::DEVCAPS[15]
+   ? 'PAPER SIZE               :',::DEVCAPS[17]
+   set printer off
+   set printer to
+   set console on
+   set device to screen
+
+   return self
 
 #ifndef NO_GUI
 
-**********************************************
 METHOD PrevThumb(nclick) CLASS HBPrinter
-**********************************************
-local i,spage
+
+   local i,spage
+
    if ::iloscstron==1
       return self
    endif
@@ -1581,12 +1609,11 @@ local i,spage
       endif
    next
 
-return self
+   return self
 
-**************************************
 METHOD PrevShow() CLASS HBPrinter
-**************************************
-local spos, hImage
+
+   local spos, hImage
 
    IF ::Thumbnails
       ::Prevthumb()
@@ -1627,12 +1654,12 @@ local spos, hImage
    endif
    rr_scrollwindow(::ahs[5,7],-spos[1]*::azoom[4],-spos[2]*::azoom[3])
    CShowControl(::ahs[6,7])
-return self
 
-**************************************
+   return self
+
 METHOD PrevPrint(n1) CLASS HBPrinter
-**************************************
-local i,ilkop,toprint:=.t.
+
+   local i,ilkop,toprint:=.t.
 
    IF .NOT. Eval(::BeforePrint)
       RETURN self
@@ -1713,12 +1740,12 @@ local i,ilkop,toprint:=.t.
    ::printingemf:=.f.
    ::Previewmode:=.t.
    Eval(::AfterPrint)
-return self
 
-**********************************
+   return self
+
 METHOD Preview() CLASS HBPrinter
-**********************************
-local i, pi, cLang, oHBPreview
+
+   local i, pi, cLang, oHBPreview
 
    ::aopisy := { "Preview", ;
                  "&Cancel", ;
@@ -1990,12 +2017,12 @@ local i, pi, cLang, oHBPreview
    if ::nwhattoprint<2
       ::ntopage:=::iloscstron
    endif
-//   for i:=1 to len(::aopisy)
-//      ctxt:=rr_loadstring(60000+i)
-//      if !empty(ctxt)
-//         ::aopisy[i]:=ctxt
-//      endif
-//   next
+   //   for i:=1 to len(::aopisy)
+   //      ctxt:=rr_loadstring(60000+i)
+   //      if !empty(ctxt)
+   //         ::aopisy[i]:=ctxt
+   //      endif
+   //   next
 
    if !::PreviewMode // .or. empty(::metafiles)
       return self
@@ -2046,7 +2073,7 @@ local i, pi, cLang, oHBPreview
 
          DEFINE SPLITBOX
                DEFINE TOOLBAR TB1 BUTTONSIZE 50,37 FONT 'Arial Narrow' SIZE 8 FLAT BREAK // RIGHTTEXT
-////                        BUTTON B1 CAPTION  ::aopisy[2]     PICTURE 'hbprint_close'   ACTION {||  ::oHBPreview1:Release(),if(::iloscstron>1 .and. ::thumbnails,_ReleaseWindow ("HBPREVIEW2" ),""), oHBPreview:Release()}
+                        //// BUTTON B1 CAPTION  ::aopisy[2]     PICTURE 'hbprint_close'   ACTION {||  ::oHBPreview1:Release(),if(::iloscstron>1 .and. ::thumbnails,_ReleaseWindow ("HBPREVIEW2" ),""), oHBPreview:Release()}
                         BUTTON B1 CAPTION  ::aopisy[2]     PICTURE 'hbprint_close'   ACTION MYCLOSEP(::iloscstron,::thumbnails ,oHBPreview,::oHBPreview1)
                         BUTTON B2 CAPTION  ::aopisy[3]    PICTURE 'hbprint_print'   ACTION {|| ::prevprint() }
                         if .NOT. ::NoButtonSave
@@ -2142,20 +2169,22 @@ local i, pi, cLang, oHBPreview
    ::PrevShow()
    ::oHBPreview1:i1:SetFocus()
    ACTIVATE WINDOW HBPREVIEW
-return nil
+
+   return nil
 
 FUNCTION MYCLOSEP( T1, T2, OT3, oHBPreview1 )
+
    oHBPreview1:Release()
    IF T1 > 1 .and. T2
      _ReleaseWindow ( "HBPREVIEW2" )
    ENDIF
    oT3:Release()
-return nil
 
-*******************************************
+   return nil
+
 METHOD PrintOption() CLASS HBPrinter
-*******************************************
-Local OKprint := .f.
+
+   Local OKprint := .f.
 
    If IsWIndowDefined(PrOpt) == .F.
 
@@ -2185,11 +2214,9 @@ Local OKprint := .f.
    PrOpt.textTo.Value := if( ::nwhattoprint< 2, ::iloscstron, ::ntopage )
    PrOpt.Activate
 
-Return OKPrint
+   Return OKPrint
 
 #endif // NO_GUI
-
-
 
 
 #pragma BEGINDUMP

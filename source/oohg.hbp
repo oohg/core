@@ -2,6 +2,8 @@
 # $Id: oohg.hbp,v 1.11 2017-07-09 20:08:04 guerra000 Exp $
 #
 
+-stop{!allwin}
+
 # build a static library
 -hblib
 
@@ -10,16 +12,19 @@
 -inc
 
 # name of output file
--o${HG_ROOT}\${LIB_GUI}\${hb_name}
+-o../lib/${hb_name}
+
+# function list
+-hbx=../${hb_name}.hbx
 
 # path to headers files (.ch)
--i${HG_ROOT}\include
+-i../include
 
 # harbour compiler flags
--n -q0 -ko -w3 -es2
+-n -q0 -w3 -es2
 
 # uncomment the following line to build .ppo files
-#-p${HG_ROOT}\source\ppo\
+#-p./ppo/
 
 # files to compile
 c_activex.c

@@ -1362,7 +1362,7 @@
      - Comment.
    * source/h_error.prg
      + Method PutMsg to OOHG_TErrorHtml class. With this method you
-       can write text to ErrorLog.htm 
+       can write text to ErrorLog.htm
    * source/h_grid.prg
      * DATA TGridByCell:nRowPos and TGridByCell:nColPos are now HIDDEN.
      + Support for EXTDBLCLICK clause in methods TGrid:Define,
@@ -3753,7 +3753,7 @@
    * include/i_xbrowse.ch
    * include/i_hmg_compat.ch
      ! Support for missing clauses ONGOTFOCUS, ONCHANGE, ONLOSTFOCUS,
-       ONDBLCLICK, ONCLICK, ONHEADCLICK, ONQUERYDATA, ONEDITCELL, 
+       ONDBLCLICK, ONCLICK, ONHEADCLICK, ONQUERYDATA, ONEDITCELL,
        ONENTER, ONCHECKCHANGE, ONABORTEDIT, ONDELETE, ONAPPEND and
        ON HEADRCLICK.
    * include/i_altsyntax.ch
@@ -3825,7 +3825,7 @@
 
 2014-03-22 10:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
-     + Method ScrollToPrior: scrolls to the left until the prior 
+     + Method ScrollToPrior: scrolls to the left until the prior
        column-start is shown at grid's x := 0.
      + Method ScrollToNext: scrolls to the right until the next
        column-start is shown at grid's x := 0.

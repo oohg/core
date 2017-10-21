@@ -65,6 +65,7 @@
 #include "i_windefs.ch"
 
 CLASS TProgressMeter FROM TLabel
+
    DATA Type        INIT "PROGRESSMETER" READONLY
    DATA nRangeMin   INIT 0
    DATA nRangeMax   INIT 100
@@ -85,15 +86,15 @@ CLASS TProgressMeter FROM TLabel
    METHOD Align               SETGET
 
    /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( ControlName, ParentForm, x, y, w, h, lo, hi, value, tooltip, ;
                fontname, fontsize, bold, italic, underline, strikeout, ;
                FontColor, BackColor, ProcedureName, HelpId, invisible, lRtl, ;
                CLIENTEDGE, lDisabled ) CLASS TProgressMeter
-*------------------------------------------------------------------------------*
-Local ControlHandle, nStyle, nStyleEx
+
+   Local ControlHandle, nStyle, nStyleEx
 
    IF FontColor != NIL
       ::FontColor := FontColor
@@ -135,45 +136,47 @@ Local ControlHandle, nStyle, nStyleEx
 
    ASSIGN ::OnClick     VALUE ProcedureName TYPE "B"
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TProgressMeter
-*------------------------------------------------------------------------------*
+
    IF VALTYPE( uValue ) == "N"
       ::nValue := uValue
       ::ReCalc()
    ENDIF
-RETURN ::nValue
 
-*------------------------------------------------------------------------------*
+   RETURN ::nValue
+
 METHOD ReCalc( lForce ) CLASS TProgressMeter
-*------------------------------------------------------------------------------*
-Local nPercent
+
+   Local nPercent
+
    IF ValType( lForce ) != "L"
       lForce := .F.
    ENDIF
    nPercent := ( ::nValue - ::RangeMin ) / ( ::RangeMax - ::RangeMin )
    ::SetPercent( nPercent * 100, lForce )
-RETURN nil
 
-*------------------------------------------------------------------------------*
+   RETURN nil
+
 METHOD RangeMin( uValue ) CLASS TProgressMeter
-*------------------------------------------------------------------------------*
+
    IF VALTYPE( uValue ) == "N"
       ::nRangeMin := uValue
       ::ReCalc()
    ENDIF
-RETURN ::nRangeMin
 
-*------------------------------------------------------------------------------*
+   RETURN ::nRangeMin
+
 METHOD RangeMax( uValue ) CLASS TProgressMeter
-*------------------------------------------------------------------------------*
+
    IF VALTYPE( uValue ) == "N"
       ::nRangeMax := uValue
       ::ReCalc()
    ENDIF
-RETURN ::nRangeMax
+
+   RETURN ::nRangeMax
+
 
 #pragma BEGINDUMP
 

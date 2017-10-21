@@ -72,65 +72,49 @@ STATIC _OOHG_MsgDefaultMode := Nil
 // See https://msdn.microsoft.com/en-us/library/windows/desktop/ms645505(v=vs.85).aspx
 
 
-*------------------------------------------------------------------------------*
 Function SetAutoTypeNoSpaces( lSet )
-*------------------------------------------------------------------------------*
 
    IF HB_IsLogical( lSet )
       _OOHG_AutoTypeNoSpaces := lSet
    ENDIF
 
-Return _OOHG_AutoTypeNoSpaces
+   Return _OOHG_AutoTypeNoSpaces
 
-
-*------------------------------------------------------------------------------*
 Function SetOneArrayItemPerLine( lSet )
-*------------------------------------------------------------------------------*
 
    IF HB_IsLogical( lSet )
       _OOHG_OneItemPerLine := lSet
    ENDIF
 
-Return _OOHG_OneItemPerLine
+   Return _OOHG_OneItemPerLine
 
-
-*------------------------------------------------------------------------------*
 Function SetMsgDefaultMessage( cMessage )
-*------------------------------------------------------------------------------*
 
    IF valtype( cMessage ) == "C"
       _OOHG_MsgDefaultMessage := cMessage
    ENDIF
 
-Return _OOHG_MsgDefaultMessage
+   Return _OOHG_MsgDefaultMessage
 
-
-*------------------------------------------------------------------------------*
 Function SetMsgDefaultTitle( cTitle )
-*------------------------------------------------------------------------------*
 
    IF valtype( cTitle ) == "C"
       _OOHG_MsgDefaultTitle := cTitle
    ENDIF
 
-Return _OOHG_MsgDefaultTitle
+   Return _OOHG_MsgDefaultTitle
 
-
-*------------------------------------------------------------------------------*
 Function SetMsgDefaultMode( nMode )
-*------------------------------------------------------------------------------*
 
    IF valtype( nMode ) == "N"
       _OOHG_MsgDefaultMode := nMode
    ENDIF
 
-Return _OOHG_MsgDefaultMode
+   Return _OOHG_MsgDefaultMode
 
-
-*------------------------------------------------------------------------------*
 Function MsgYesNo( Message, Title, lRevertDefault, Mode )
-*------------------------------------------------------------------------------*
-Local t
+
+   Local t
 
    DEFAULT Message TO _OOHG_MsgDefaultMessage
    DEFAULT Title TO _OOHG_MsgDefaultTitle
@@ -142,13 +126,11 @@ Local t
       t := c_msgyesno( Message, Title, Mode )
    ENDIF
 
-Return ( t == 6 )
+   Return ( t == 6 )
 
-
-*------------------------------------------------------------------------------*
 Function MsgYesNoCancel( Message, Title, Mode )
-*------------------------------------------------------------------------------*
-Local t
+
+   Local t
 
    DEFAULT Message TO _OOHG_MsgDefaultMessage
    DEFAULT Title TO _OOHG_MsgDefaultTitle
@@ -156,13 +138,11 @@ Local t
 
    t := c_msgyesnocancel( Message, Title, Mode )
 
-Return iif( t == 6, 1, iif( t == 7, 2, 0 ) )
+   Return iif( t == 6, 1, iif( t == 7, 2, 0 ) )
 
-
-*------------------------------------------------------------------------------*
 Function MsgRetryCancel( Message, Title, Mode )
-*------------------------------------------------------------------------------*
-Local t
+
+   Local t
 
    DEFAULT Message TO _OOHG_MsgDefaultMessage
    DEFAULT Title TO _OOHG_MsgDefaultTitle
@@ -170,13 +150,11 @@ Local t
 
    t := c_msgretrycancel( Message, Title, Mode )
 
-Return ( t == 4 )
+   Return ( t == 4 )
 
-
-*------------------------------------------------------------------------------*
 Function MsgOkCancel( Message, Title, Mode )
-*------------------------------------------------------------------------------*
-Local t
+
+   Local t
 
    DEFAULT Message TO _OOHG_MsgDefaultMessage
    DEFAULT Title TO _OOHG_MsgDefaultTitle
@@ -184,12 +162,9 @@ Local t
 
    t := c_msgokcancel( Message, Title, Mode )
 
-Return ( t == 1 )
+   Return ( t == 1 )
 
-
-*------------------------------------------------------------------------------*
 Function MsgInfo( Message, Title, Mode )
-*------------------------------------------------------------------------------*
 
    DEFAULT Message TO _OOHG_MsgDefaultMessage
    DEFAULT Title TO _OOHG_MsgDefaultTitle
@@ -197,12 +172,9 @@ Function MsgInfo( Message, Title, Mode )
 
    c_msginfo( Message, Title, Mode )
 
-Return Nil
+   Return Nil
 
-
-*------------------------------------------------------------------------------*
 Function MsgStop( Message, Title, Mode )
-*------------------------------------------------------------------------------*
 
    DEFAULT Message TO _OOHG_MsgDefaultMessage
    DEFAULT Title TO _OOHG_MsgDefaultTitle
@@ -210,12 +182,9 @@ Function MsgStop( Message, Title, Mode )
 
    c_msgstop( Message, Title, Mode )
 
-Return Nil
+   Return Nil
 
-
-*------------------------------------------------------------------------------*
 Function MsgExclamation( Message, Title, Mode )
-*------------------------------------------------------------------------------*
 
    DEFAULT Message TO _OOHG_MsgDefaultMessage
    DEFAULT Title TO _OOHG_MsgDefaultTitle
@@ -223,13 +192,11 @@ Function MsgExclamation( Message, Title, Mode )
 
    c_msgexclamation( Message, Title, Mode )
 
-Return Nil
+   Return Nil
 
-
-*------------------------------------------------------------------------------*
 Function MsgExclamationYesNo( Message, Title, Mode )
-*------------------------------------------------------------------------------*
-Local t
+
+   Local t
 
    DEFAULT Message TO _OOHG_MsgDefaultMessage
    DEFAULT Title TO _OOHG_MsgDefaultTitle
@@ -237,12 +204,9 @@ Local t
 
    t := c_msgexclamationyesno( Message, Title, Mode )
 
-Return ( t == 6 )
+   Return ( t == 6 )
 
-
-*------------------------------------------------------------------------------*
 Function MsgBox( Message, Title, Mode )
-*------------------------------------------------------------------------------*
 
    DEFAULT Message TO _OOHG_MsgDefaultMessage
    DEFAULT Title TO _OOHG_MsgDefaultTitle
@@ -250,16 +214,14 @@ Function MsgBox( Message, Title, Mode )
 
    c_msgbox( Message, Title, Mode )
 
-Return Nil
+   Return Nil
 
-
-*------------------------------------------------------------------------------*
 Function MsgInfoExt( cInfo, cTitulo, nSecs, aBackColor )
-*------------------------------------------------------------------------------*
-* (c) LuchoMiranda@telefonica.Net
-* modified by Ciro Vargas Clemow for ooHG
-*------------------------------------------------------------------------------*
-Local nWidth, nHeight
+
+   * (c) LuchoMiranda@telefonica.Net
+   * modified by Ciro Vargas Clemow for ooHG
+
+   Local nWidth, nHeight
 
    DEFAULT cInfo      TO _OOHG_MsgDefaultMessage
    DEFAULT cTitulo    TO _OOHG_MsgDefaultTitle
@@ -341,21 +303,15 @@ Local nWidth, nHeight
    _Win_1.Center
    _Win_1.Activate
 
-Return Nil
+   Return Nil
 
-
-*------------------------------------------------------------------------------*
 Function AutoMsgInfoExt( uInfo, cTitulo, nSecs )
-*------------------------------------------------------------------------------*
 
    MsgInfoExt( AutoType( uInfo ), cTitulo, Nsecs )
 
-Return nil
+   Return nil
 
-
-*------------------------------------------------------------------------------*
 Function AutoMsgBox( uMessage, cTitle, nMode )
-*------------------------------------------------------------------------------*
 
    DEFAULT cTitle TO _OOHG_MsgDefaultTitle
    DEFAULT nMode TO _OOHG_MsgDefaultMode
@@ -363,12 +319,9 @@ Function AutoMsgBox( uMessage, cTitle, nMode )
    uMessage :=  AutoType( uMessage )
    c_msgbox( uMessage, cTitle, nMode )
 
-Return Nil
+   Return Nil
 
-
-*------------------------------------------------------------------------------*
 Function AutoMsgExclamation( uMessage, cTitle, nMode )
-*------------------------------------------------------------------------------*
 
    DEFAULT cTitle TO _OOHG_MsgDefaultTitle
    DEFAULT nMode TO _OOHG_MsgDefaultMode
@@ -376,12 +329,9 @@ Function AutoMsgExclamation( uMessage, cTitle, nMode )
    uMessage := AutoType( uMessage )
    c_msgexclamation( uMessage, cTitle, nMode )
 
-Return Nil
+   Return Nil
 
-
-*------------------------------------------------------------------------------*
 Function AutoMsgStop( uMessage, cTitle, nMode )
-*------------------------------------------------------------------------------*
 
    DEFAULT cTitle TO _OOHG_MsgDefaultTitle
    DEFAULT nMode TO _OOHG_MsgDefaultMode
@@ -389,12 +339,9 @@ Function AutoMsgStop( uMessage, cTitle, nMode )
    uMessage := AutoType( uMessage )
    c_msgstop( uMessage, cTitle, nMode )
 
-Return Nil
+   Return Nil
 
-
-*------------------------------------------------------------------------------*
 Function AutoMsgInfo( uMessage, cTitle, nMode )
-*------------------------------------------------------------------------------*
 
    DEFAULT cTitle TO _OOHG_MsgDefaultTitle
    DEFAULT nMode TO _OOHG_MsgDefaultMode
@@ -402,13 +349,12 @@ Function AutoMsgInfo( uMessage, cTitle, nMode )
    uMessage := AutoType( uMessage )
    c_msginfo( uMessage, cTitle, nMode )
 
-Return Nil
+   Return Nil
 
 
-*------------------------------------------------------------------------------*
 Function AutoType( Message )
-*------------------------------------------------------------------------------*
-Local cMessage, cType, l, i
+
+   Local cMessage, cType, l, i
 
    cType := valtype( Message )
 
@@ -447,13 +393,11 @@ Local cMessage, cType, l, i
       cMessage := "???:" + cType + iif( _OOHG_AutoTypeNoSpaces, "", "   " )
    endcase
 
-Return cMessage
+   Return cMessage
 
-
-*------------------------------------------------------------------------------*
 Function _MsgBox( Message, Title, Style, Icon, SysModal, TopMost )
-*------------------------------------------------------------------------------*
-Local cMessage
+
+   Local cMessage
 
    DEFAULT Message TO _OOHG_MsgDefaultMessage
    DEFAULT Title TO _OOHG_MsgDefaultTitle
@@ -470,4 +414,4 @@ Local cMessage
       Style += MB_TOPMOST
    endif
 
-Return MessageBoxIndirect( Nil, cMessage, Title, Style, Icon )
+   Return MessageBoxIndirect( Nil, cMessage, Title, Style, Icon )

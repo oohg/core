@@ -65,6 +65,7 @@
 #include "hbclass.ch"
 
 CLASS TIpAddress FROM TLabel
+
    DATA Type          INIT "IPADDRESS" READONLY
    DATA nWidth        INIT 120
    DATA nHeight       INIT 24
@@ -74,15 +75,15 @@ CLASS TIpAddress FROM TLabel
    METHOD String      SETGET
 
    /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( ControlName, ParentForm, x, y, w, h, aValue, fontname, ;
                fontsize, tooltip, lostfocus, gotfocus, change, HelpId, ;
                invisible, notabstop, bold, italic, underline, strikeout, lRtl, ;
                lDisabled, FontColor, BackColor ) CLASS TIpAddress
-*------------------------------------------------------------------------------*
-Local ControlHandle, nStyle
+
+   Local ControlHandle, nStyle
 
    // Assign STANDARD values to optional params.
    ASSIGN ::nCol    VALUE x TYPE "N"
@@ -111,11 +112,10 @@ Local ControlHandle, nStyle
    ASSIGN ::OnGotFocus  VALUE gotfocus  TYPE "B"
    ASSIGN ::OnChange    VALUE Change    TYPE "B"
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TIpAddress
-*------------------------------------------------------------------------------*
+
    IF pcount() > 0
       If Len( uValue ) == 0
          ClearIpAddress( ::hWnd )
@@ -125,15 +125,17 @@ METHOD Value( uValue ) CLASS TIpAddress
          SetIPAddress( ::hWnd, uValue )
       EndIf
    ENDIF
-RETURN GetIPAddress( ::hWnd )
 
-*------------------------------------------------------------------------------*
+   RETURN GetIPAddress( ::hWnd )
+
 METHOD String( uValue ) CLASS TIpAddress
-*------------------------------------------------------------------------------*
+
    IF pcount() > 0
       ::Value := uValue
    ENDIF
-RETURN GetIPAddressString( ::hWnd )
+
+   RETURN GetIPAddressString( ::hWnd )
+
 
 #pragma BEGINDUMP
 

@@ -67,6 +67,7 @@
 STATIC _OOHG_ActiveTree := Nil
 
 CLASS TTree FROM TControl
+
    DATA Type                 INIT "TREE" READONLY
    DATA nWidth               INIT 120
    DATA nHeight              INIT 120
@@ -145,9 +146,9 @@ CLASS TTree FROM TControl
    METHOD SelectionID        SETGET
    METHOD IsItemValid
    METHOD BackColor          SETGET
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( ControlName, ParentForm, row, col, width, height, change, ;
                tooltip, fontname, fontsize, gotfocus, lostfocus, dblclick, ;
                break, value, HelpId, aImgNode, aImgItem, noBot, bold, italic, ;
@@ -156,8 +157,8 @@ METHOD Define( ControlName, ParentForm, row, col, width, height, change, ;
                lChkBox, lEdtLbl, lNoHScr, lNoScroll, lHotTrak, lNoLines, ;
                lNoBut, lDrag, lSingle, lNoBor, aSelCol, labeledit, valid, ;
                checkchange, indent, lSelBold, lDrop, aTarget, ondrop, lOwnToolTip ) CLASS TTree
-*------------------------------------------------------------------------------*
-Local Controlhandle, nStyle, ImgDefNode, ImgDefItem, aBitmaps := array(4), oCtrl
+
+   Local Controlhandle, nStyle, ImgDefNode, ImgDefItem, aBitmaps := array(4), oCtrl
 
    ASSIGN ::nWidth      VALUE Width    TYPE "N"
    ASSIGN ::nHeight     VALUE Height   TYPE "N"
@@ -302,12 +303,11 @@ Local Controlhandle, nStyle, ImgDefNode, ImgDefItem, aBitmaps := array(4), oCtrl
 
    _OOHG_ActiveTree := Self
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 FUNCTION AutoID( oTree )
-*------------------------------------------------------------------------------*
-Local Id
+
+   Local Id
 
    Do While .T.
       oTree:nLastIDNumber ++
@@ -319,14 +319,13 @@ Local Id
       EndIf
    EndDo
 
-Return Id
+   Return Id
 
-*------------------------------------------------------------------------------*
 METHOD AddItem( Value, Parent, Id, aImage, lChecked, lReadOnly, lBold, ;
                 lDisabled, lNoDrag, lAssignID ) CLASS TTree
-*------------------------------------------------------------------------------*
-Local TreeItemHandle, ImgDef, iUnSel, iSel, iID
-Local NewHandle, TempHandle, i, Pos, ChildHandle, BackHandle, ParentHandle, iPos
+
+   Local TreeItemHandle, ImgDef, iUnSel, iSel, iID
+   Local NewHandle, TempHandle, i, Pos, ChildHandle, BackHandle, ParentHandle, iPos
 
    ASSIGN lChecked  VALUE lChecked  TYPE "L" DEFAULT .F.
    ASSIGN lReadOnly VALUE lReadOnly TYPE "L" DEFAULT .F.
@@ -575,12 +574,11 @@ Local NewHandle, TempHandle, i, Pos, ChildHandle, BackHandle, ParentHandle, iPos
    ::CheckItem( iPos, lChecked )
    ::BoldItem( iPos, lBold )
 
-Return iPos
+   Return iPos
 
-*------------------------------------------------------------------------------*
 METHOD SelectionID( Id ) CLASS TTree
-*------------------------------------------------------------------------------*
-Local Handle, Pos, OldID, iID
+
+   Local Handle, Pos, OldID, iID
 
    Handle := TreeView_GetSelection( ::hWnd )
    If Handle == 0
@@ -638,13 +636,12 @@ Local Handle, Pos, OldID, iID
       MsgOOHGError( "SelectionID: Invalid Item Id. Program terminated." )
    EndIf
 
-Return ::aItemIDs[ iID ]
+   Return ::aItemIDs[ iID ]
 
-*------------------------------------------------------------------------------*
 METHOD DeleteItem( Item ) CLASS TTree
-*------------------------------------------------------------------------------*
-Local BeforeCount, AfterCount, DeletedCount, i, Pos, iID
-Local TreeItemHandle
+
+   Local BeforeCount, AfterCount, DeletedCount, i, Pos, iID
+   Local TreeItemHandle
 
    BeforeCount := TreeView_GetCount( ::hWnd )
 
@@ -692,11 +689,9 @@ Local TreeItemHandle
    aSize( ::aTreeNoDrag, AfterCount )
    aSize( ::aItemIDs, AfterCount )
 
-Return Nil
+   Return Nil
 
-*------------------------------------------------------------------------------*
 METHOD DeleteAllItems() CLASS TTree
-*------------------------------------------------------------------------------*
 
    TreeView_DeleteAllItems( ::hWnd )
    aSize( ::aTreeMap, 0 )
@@ -706,12 +701,11 @@ METHOD DeleteAllItems() CLASS TTree
    aSize( ::aTreeNoDrag, 0 )
    aSize( ::aItemIDs, 0 )
 
-Return Nil
+   Return Nil
 
-*------------------------------------------------------------------------------*
 METHOD Item( Item, Value ) CLASS TTree
-*------------------------------------------------------------------------------*
-Local ItemHandle
+
+   Local ItemHandle
 
    ItemHandle := ::ItemToHandle( Item )
 
@@ -719,40 +713,35 @@ Local ItemHandle
       TreeView_SetItemText( ::hWnd, ItemHandle, left( Value, 255 ) )
    EndIf
 
-Return TreeView_GetItemText( ::hWnd, ItemHandle )
+   Return TreeView_GetItemText( ::hWnd, ItemHandle )
 
-*------------------------------------------------------------------------------*
 METHOD Collapse( Item ) CLASS TTree
-*------------------------------------------------------------------------------*
-Local lOK
+
+   Local lOK
 
    lOK := ( SendMessage( ::hWnd, TVM_EXPAND, TVE_COLLAPSE, ::ItemToHandle( Item ) ) != 0 )
 
-Return lOK
+   Return lOK
 
-*------------------------------------------------------------------------------*
 METHOD Expand( Item ) CLASS TTree
-*------------------------------------------------------------------------------*
-Local lOK
+
+   Local lOK
 
    lOK := ( SendMessage( ::hWnd, TVM_EXPAND, TVE_EXPAND, ::ItemToHandle( Item ) ) != 0 )
 
-Return lOK
+   Return lOK
 
-*------------------------------------------------------------------------------*
 METHOD EndTree() CLASS TTree
-*------------------------------------------------------------------------------*
 
    If ( ::ItemIds .and. ::InitValue != Nil ) .OR. (! ::ItemIds .and. ::InitValue > 0 )
       TreeView_SelectItem( ::hWnd, ::ItemToHandle( ::InitValue ) )
    EndIf
 
-Return Nil
+   Return Nil
 
-*------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TTree
-*------------------------------------------------------------------------------*
-Local TreeItemHandle, Pos
+
+   Local TreeItemHandle, Pos
 
    If ::ItemIds
       // by id
@@ -803,12 +792,11 @@ Local TreeItemHandle, Pos
       EndIf
    EndIf
 
-Return uValue
+   Return uValue
 
-*------------------------------------------------------------------------------*
 METHOD OnEnter( bEnter ) CLASS TTree
-*------------------------------------------------------------------------------*
-LOCAL bRet
+
+   LOCAL bRet
 
    If HB_IsBlock( bEnter )
       If _OOHG_SameEnterDblClick
@@ -821,13 +809,12 @@ LOCAL bRet
       bRet := iif( _OOHG_SameEnterDblClick, ::OnDblClick, ::bOnEnter )
    EndIf
 
-Return bRet
+   Return bRet
 
-*------------------------------------------------------------------------------*
 Function _DefineTreeNode( text, aImage, Id, lChecked, lReadOnly, lBold, ;
                           lDisabled, lNoDrag, lAssignID )
-*------------------------------------------------------------------------------*
-Local ImgDef, iUnSel, iSel, Item, iID, iPos
+
+   Local ImgDef, iUnSel, iSel, Item, iID, iPos
 
    ASSIGN lChecked  VALUE lChecked  TYPE "L" DEFAULT .F.
    ASSIGN lReadOnly VALUE lReadOnly TYPE "L" DEFAULT .F.
@@ -922,21 +909,18 @@ Local ImgDef, iUnSel, iSel, Item, iID, iPos
    _OOHG_ActiveTree:CheckItem( iPos, lChecked )
    _OOHG_ActiveTree:BoldItem( iPos, lBold )
 
-Return iPos
+   Return iPos
 
-*------------------------------------------------------------------------------*
 Function _EndTreeNode()
-*------------------------------------------------------------------------------*
 
    aSize( _OOHG_ActiveTree:aTreeNode, len( _OOHG_ActiveTree:aTreeNode ) - 1 )
 
-Return Nil
+   Return Nil
 
-*------------------------------------------------------------------------------*
 Function _DefineTreeItem( text, aImage, Id, lChecked, lReadOnly, lBold, ;
                           lDisabled, lNoDrag, lAssignID )
-*------------------------------------------------------------------------------*
-Local Item, ImgDef, iUnSel, iSel, iID, iPos
+
+   Local Item, ImgDef, iUnSel, iSel, iID, iPos
 
    ASSIGN lChecked  VALUE lChecked  TYPE "L" DEFAULT .F.
    ASSIGN lReadOnly VALUE lReadOnly TYPE "L" DEFAULT .F.
@@ -1030,20 +1014,16 @@ Local Item, ImgDef, iUnSel, iSel, iID, iPos
    _OOHG_ActiveTree:CheckItem( iPos, lChecked )
    _OOHG_ActiveTree:BoldItem( iPos, lBold )
 
-Return iPos
+   Return iPos
 
-*------------------------------------------------------------------------------*
 Function _EndTree()
-*------------------------------------------------------------------------------*
 
    _OOHG_ActiveTree:EndTree()
    _OOHG_ActiveTree := Nil
 
-Return Nil
+   Return Nil
 
-*------------------------------------------------------------------------------*
 METHOD Indent( nPixels ) CLASS TTree
-*------------------------------------------------------------------------------*
 
    If HB_IsNumeric( nPixels )
       // set the item's indentation, if nPixels is less than the
@@ -1052,13 +1032,12 @@ METHOD Indent( nPixels ) CLASS TTree
    EndIf
    nPixels := TreeView_GetIndent( ::hWnd )
 
-Return nPixels
+   Return nPixels
 
-*------------------------------------------------------------------------------*
 METHOD Events_Notify( wParam, lParam ) CLASS TTree
-*------------------------------------------------------------------------------*
-Local nNotify := GetNotifyCode( lParam )
-Local cNewValue, lValid, TreeItemHandle, Item
+
+   Local nNotify := GetNotifyCode( lParam )
+   Local cNewValue, lValid, TreeItemHandle, Item
 
    If nNotify == NM_CUSTOMDRAW
       Return TreeView_Notify_CustomDraw( Self, lParam, ::HasDragFocus )
@@ -1190,12 +1169,11 @@ Local cNewValue, lValid, TreeItemHandle, Item
 
    EndIf
 
-Return ::Super:Events_Notify( wParam, lParam )
+   Return ::Super:Events_Notify( wParam, lParam )
 
-*------------------------------------------------------------------------------*
 METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TTree
-*------------------------------------------------------------------------------*
-Local nItem, lChecked, TargetHandle, i, oAux, Value
+
+   Local nItem, lChecked, TargetHandle, i, oAux, Value
 
    If nMsg == WM_APP + 8
       If HB_IsBlock( ::OnCheckChange )
@@ -1370,11 +1348,9 @@ Local nItem, lChecked, TargetHandle, i, oAux, Value
 
    EndIf
 
-Return ::Super:Events( hWnd, nMsg, wParam, lParam )
+   Return ::Super:Events( hWnd, nMsg, wParam, lParam )
 
-*------------------------------------------------------------------------------*
 Function TTree_OnMouseDrag( oOrigin, oTarget, wParam )
-*------------------------------------------------------------------------------*
 
    If oTarget:DropEnabled
       If oTarget:AutoScrollTimer == Nil
@@ -1400,12 +1376,11 @@ Function TTree_OnMouseDrag( oOrigin, oTarget, wParam )
       TreeView_OnMouseDrag( oOrigin:hWnd, oOrigin:ItemOnDrag, Nil, wParam )
    EndIf
 
-Return Nil
+   Return Nil
 
-*------------------------------------------------------------------------------*
 Function TTree_OnMouseDrop( oOrigin, oTarget, wParam )
-*------------------------------------------------------------------------------*
-Local TargetHandle, Item
+
+   Local TargetHandle, Item
 
    If oTarget:DropEnabled
       TargetHandle := TreeView_OnMouseDrop( oOrigin:hWnd, oOrigin:ItemOnDrag, oTarget:hWnd )
@@ -1419,12 +1394,11 @@ Local TargetHandle, Item
       EndIf
    EndIf
 
-Return Item
+   Return Item
 
-*------------------------------------------------------------------------------*
 METHOD ItemImages( Item, aImages ) CLASS TTree
-*------------------------------------------------------------------------------*
-Local ItemHandle, Pos
+
+   Local ItemHandle, Pos
 
    If HB_IsArray( aImages ) .AND. len( aImages ) >= 2 .AND. ;
       HB_IsNumeric( aImages[ 1 ] ) .AND. aImages[ 1 ] >= 0 .AND. ;
@@ -1466,12 +1440,11 @@ Local ItemHandle, Pos
       EndIf
    EndIf
 
-Return TreeView_GetImages( ::hWnd, ItemHandle )                                 // { iUnSel, iSel }
+   Return TreeView_GetImages( ::hWnd, ItemHandle )                                 // { iUnSel, iSel }
 
-*------------------------------------------------------------------------------*
 METHOD CopyItem( ItemFrom, oTarget, ItemTo, aId ) CLASS TTree
-*------------------------------------------------------------------------------*
-Local Pos, FromHandle, aItems, i, ItemOld, j, aImages
+
+   Local Pos, FromHandle, aItems, i, ItemOld, j, aImages
 
    // get the From item's handle
    If ::ItemIds
@@ -1540,13 +1513,12 @@ Local Pos, FromHandle, aItems, i, ItemOld, j, aImages
 
    // set focus to new item and return a reference to it
 
-Return oTarget:Value( aItems[ 1, 1 ] )
+   Return oTarget:Value( aItems[ 1, 1 ] )
 
-*------------------------------------------------------------------------------*
 METHOD MoveItem( ItemFrom, oTarget, ItemTo, aId ) CLASS TTree
-*------------------------------------------------------------------------------*
-Local Pos, FromHandle, ParentHandle, ToHandle
-Local aItems, i, ItemOld, j, aImages, ItemParent
+
+   Local Pos, FromHandle, ParentHandle, ToHandle
+   Local aItems, i, ItemOld, j, aImages, ItemParent
 
    // get the From item's handle
    If ::ItemIds
@@ -1704,12 +1676,11 @@ Local aItems, i, ItemOld, j, aImages, ItemParent
 
    // set focus to new item and return reference to it
 
-Return oTarget:Value( aItems[ 1, 1 ] )
+   Return oTarget:Value( aItems[ 1, 1 ] )
 
-*------------------------------------------------------------------------------*
 STATIC FUNCTION AddChildren( Self, ParentHandle, ChildHandle, aItems )
-*------------------------------------------------------------------------------*
-Local ParentPos, ParentItem, NextChild, NextPos, NextItem
+
+   Local ParentPos, ParentItem, NextChild, NextPos, NextItem
 
    If ChildHandle != 0
       ParentPos := aScan( ::aTreeMap, ParentHandle )
@@ -1746,33 +1717,28 @@ Local ParentPos, ParentItem, NextChild, NextPos, NextItem
       EndDo
    EndIf
 
-Return Nil
+   Return Nil
 
-*------------------------------------------------------------------------------*
 METHOD EditLabel() CLASS TTree
-*------------------------------------------------------------------------------*
 
    ::SetFocus()
 
    TreeView_EditLabel( ::hWnd, TreeView_GetSelection( ::hWnd ) )
 
-Return Nil
+   Return Nil
 
-*------------------------------------------------------------------------------*
 METHOD SelColor( aColor ) CLASS TTree
-*------------------------------------------------------------------------------*
 
   If aColor != Nil
       ::aSelColor := aColor
       ::Redraw()
    EndIf
 
-Return ::aSelColor
+   Return ::aSelColor
 
-*------------------------------------------------------------------------------*
 METHOD CheckItem( Item, lChecked ) CLASS TTree
-*------------------------------------------------------------------------------*
-Local ItemHandle, Pos
+
+   Local ItemHandle, Pos
 
    If HB_IsLogical( lChecked )
       //  set
@@ -1812,12 +1778,11 @@ Local ItemHandle, Pos
       EndIf
    EndIf
 
-Return TreeView_GetCheckState( ::hWnd, ItemHandle ) == 1
+   Return TreeView_GetCheckState( ::hWnd, ItemHandle ) == 1
 
-*------------------------------------------------------------------------------*
 METHOD BoldItem( Item, lBold ) CLASS TTree
-*------------------------------------------------------------------------------*
-Local ItemHandle, Pos
+
+   Local ItemHandle, Pos
 
    If HB_IsLogical( lBold )
       //  set
@@ -1857,12 +1822,11 @@ Local ItemHandle, Pos
       EndIf
    EndIf
 
-Return TreeView_GetBoldState( ::hWnd, ItemHandle )
+   Return TreeView_GetBoldState( ::hWnd, ItemHandle )
 
-*------------------------------------------------------------------------------*
 METHOD ItemReadonly( Item, lReadOnly ) CLASS TTree
-*------------------------------------------------------------------------------*
-Local Pos
+
+   Local Pos
 
    If HB_IsLogical( lReadOnly )
       // set
@@ -1898,12 +1862,11 @@ Local Pos
       EndIf
    EndIf
 
-Return ::aTreeRO[ Pos ]
+   Return ::aTreeRO[ Pos ]
 
-*------------------------------------------------------------------------------*
 METHOD ItemEnabled( Item, lEnabled ) CLASS TTree
-*------------------------------------------------------------------------------*
-Local Pos
+
+   Local Pos
 
    If HB_IsLogical( lEnabled )
       // set
@@ -1939,12 +1902,11 @@ Local Pos
       EndIf
    EndIf
 
-Return ::aTreeEnabled[ Pos ]
+   Return ::aTreeEnabled[ Pos ]
 
-*------------------------------------------------------------------------------*
 METHOD ItemDraggable( Item, lDraggable ) CLASS TTree
-*------------------------------------------------------------------------------*
-Local Pos
+
+   Local Pos
 
    If HB_IsLogical( lDraggable )
       // set
@@ -1980,12 +1942,11 @@ Local Pos
       EndIf
    EndIf
 
-Return ! ::aTreeNoDrag[ Pos ]
+   Return ! ::aTreeNoDrag[ Pos ]
 
-*------------------------------------------------------------------------------*
 METHOD GetParent( Item ) CLASS TTree
-*------------------------------------------------------------------------------*
-Local Pos, ItemHandle, ParentHandle, ParentItem
+
+   Local Pos, ItemHandle, ParentHandle, ParentItem
 
    If ::ItemIds
       Pos := aScan( ::aTreeIdMap, Item )
@@ -2012,12 +1973,11 @@ Local Pos, ItemHandle, ParentHandle, ParentItem
       ParentItem := aScan( ::aTreeMap, ParentHandle )
    EndIf
 
-Return ParentItem
+   Return ParentItem
 
-*------------------------------------------------------------------------------*
 METHOD GetChildren( Item ) CLASS TTree
-*------------------------------------------------------------------------------*
-Local Pos, ItemHandle, ChildHandle, ChildItem, ChildrenItems
+
+   Local Pos, ItemHandle, ChildHandle, ChildItem, ChildrenItems
 
    If ::ItemIds
       Pos := aScan( ::aTreeIdMap, Item )
@@ -2051,11 +2011,9 @@ Local Pos, ItemHandle, ChildHandle, ChildItem, ChildrenItems
       ChildHandle := TreeView_GetNextSibling( ::hWnd, ChildHandle )
    enddo
 
-Return ChildrenItems
+   Return ChildrenItems
 
-*------------------------------------------------------------------------------*
 METHOD LookForKey( nKey, nFlags ) CLASS TTree
-*------------------------------------------------------------------------------*
 
    If nKey == VK_ESCAPE .and. nFlags == 0
       If ::hWndEditCtrl != Nil
@@ -2069,12 +2027,11 @@ METHOD LookForKey( nKey, nFlags ) CLASS TTree
       EndIf
    EndIf
 
-Return ::Super:LookForKey( nKey, nFlags )
+   Return ::Super:LookForKey( nKey, nFlags )
 
-*------------------------------------------------------------------------------*
 METHOD IsItemCollapsed( Item ) CLASS TTree
-*------------------------------------------------------------------------------*
-Local ItemHandle, Pos
+
+   Local ItemHandle, Pos
 
    If ::ItemIds
       Pos := aScan( ::aTreeIdMap, Item )
@@ -2092,12 +2049,11 @@ Local ItemHandle, Pos
 
    ItemHandle := ::aTreeMap[ Pos ]
 
-Return TreeView_IsItemCollapsed( ::hWnd, ItemHandle )
+   Return TreeView_IsItemCollapsed( ::hWnd, ItemHandle )
 
-*------------------------------------------------------------------------------*
 METHOD IsItemValid( Item ) CLASS TTree
-*------------------------------------------------------------------------------*
-Local lRet
+
+   Local lRet
 
    If ::ItemIds
       lRet := aScan( ::aTreeIdMap, Item ) # 0
@@ -2105,12 +2061,11 @@ Local lRet
       lRet := HB_IsNumeric( Item ) .AND. Item == INT( Item ) .AND. Item >= 1 .AND. Item <= len( ::aTreeMap )
    EndIf
 
-Return lRet
+   Return lRet
 
-*------------------------------------------------------------------------------*
 METHOD HandleToItem( Handle) CLASS TTree
-*------------------------------------------------------------------------------*
-Local Pos
+
+   Local Pos
 
    Pos := aScan( ::aTreeMap, Handle )
 
@@ -2122,12 +2077,11 @@ Local Pos
       Pos := ::aTreeIdMap[ Pos ]
    EndIf
 
-Return Pos
+   Return Pos
 
-*------------------------------------------------------------------------------*
 METHOD ItemToHandle( Item ) CLASS TTree
-*------------------------------------------------------------------------------*
-Local Pos
+
+   Local Pos
 
    If ::ItemIds
       Pos := aScan( ::aTreeIdMap, Item )
@@ -2143,34 +2097,29 @@ Local Pos
       Pos := Item
    EndIf
 
-Return ::aTreeMap[ Pos ]
+   Return ::aTreeMap[ Pos ]
 
-*------------------------------------------------------------------------------*
 METHOD ItemVisible( Item ) CLASS TTree
-*------------------------------------------------------------------------------*
-// does not select item just shows it in the tree's window
-Return TreeView_EnsureVisible( ::hWnd, ::ItemToHandle( Item ) )
 
-*------------------------------------------------------------------------------*
+   // does not select item just shows it in the tree's window
+   Return TreeView_EnsureVisible( ::hWnd, ::ItemToHandle( Item ) )
+
 METHOD IsItemExpanded( Item ) CLASS TTree
-*------------------------------------------------------------------------------*
-// .T. when has children and the list is expanded
-Return TreeView_GetExpandedState( ::hWnd, ::ItemToHandle( Item ) )
 
-*------------------------------------------------------------------------------*
+   // .T. when has children and the list is expanded
+   Return TreeView_GetExpandedState( ::hWnd, ::ItemToHandle( Item ) )
+
 METHOD IsItemVisible( Item, lWhole ) CLASS TTree
-*------------------------------------------------------------------------------*
 
    ASSIGN lWhole VALUE lWhole TYPE "L" DEFAULT .F.
    // FALSE and item partially shown => item is visible
    // TRUE and item partially shown => item is NOT visible
 
-Return TREEVIEW_ISITEMVISIBLE( ::hWnd, ::ItemToHandle( Item ), lWhole )
+   Return TREEVIEW_ISITEMVISIBLE( ::hWnd, ::ItemToHandle( Item ), lWhole )
 
-*------------------------------------------------------------------------------*
 METHOD FirstVisible() CLASS TTree
-*------------------------------------------------------------------------------*
-LOCAL Handle, Item
+
+   LOCAL Handle, Item
 
    // first item shown in the control's window
    Handle := TreeView_GetFirstVisible( ::hWnd )
@@ -2183,12 +2132,11 @@ LOCAL Handle, Item
       Item := 0
    EndIf
 
-Return Item
+   Return Item
 
-*------------------------------------------------------------------------------*
 METHOD PrevVisible( Item ) CLASS TTree
-*------------------------------------------------------------------------------*
-LOCAL Handle, Prev
+
+   LOCAL Handle, Prev
 
    // previous item that could be shown
    // it may be outside the control's windows
@@ -2204,12 +2152,12 @@ LOCAL Handle, Prev
    Else
       Prev := 0
    EndIf
-Return Prev
 
-*------------------------------------------------------------------------------*
+   Return Prev
+
 METHOD NextVisible( Item ) CLASS TTree
-*------------------------------------------------------------------------------*
-LOCAL Handle, Next
+
+   LOCAL Handle, Next
 
    // next item that could be shown
    // it may be outside the control's windows
@@ -2226,12 +2174,11 @@ LOCAL Handle, Next
       Next := 0
    EndIf
 
-Return Next
+   Return Next
 
-*------------------------------------------------------------------------------*
 METHOD LastVisible( ) CLASS TTree
-*------------------------------------------------------------------------------*
-LOCAL Handle, Item
+
+   LOCAL Handle, Item
 
    // last item that could be shown
    // it may be outside the control's windows
@@ -2248,33 +2195,30 @@ LOCAL Handle, Item
       Item := 0
    EndIf
 
-Return Item
+   Return Item
 
-*------------------------------------------------------------------------------*
 METHOD VisibleCount() CLASS TTree
-*------------------------------------------------------------------------------*
-// number of items that can be fully visible in the control's window
-Return TreeView_GetVisibleCount( ::hWnd )
 
-*------------------------------------------------------------------------------*
+   // number of items that can be fully visible in the control's window
+   Return TreeView_GetVisibleCount( ::hWnd )
+
 METHOD ItemHeight( nHeight ) CLASS TTree
-*------------------------------------------------------------------------------*
-/* New height of every item in the tree view, in pixels.
- * Heights less than 1 will be set to 1.
- * If this argument is not even, it will be rounded down to the nearest even value.
- * If this argument is -1, the control will revert to using its default item height.
- */
 
- If HB_IsNumeric( nHeight ) .and. nHeight # 0
-    TreeView_SetItemHeight( ::hWnd, nHeight )
- EndIf
+   /* New height of every item in the tree view, in pixels.
+   * Heights less than 1 will be set to 1.
+   * If this argument is not even, it will be rounded down to the nearest even value.
+   * If this argument is -1, the control will revert to using its default item height.
+   */
 
-Return TreeView_GetItemHeight( ::hWnd )
+   If HB_IsNumeric( nHeight ) .and. nHeight # 0
+      TreeView_SetItemHeight( ::hWnd, nHeight )
+   EndIf
 
-*------------------------------------------------------------------------------*
+   Return TreeView_GetItemHeight( ::hWnd )
+
 METHOD Release() CLASS TTree
-*------------------------------------------------------------------------------*
-Local StateImageList := TreeView_GetImageList( ::hWnd, TVSIL_STATE )
+
+   Local StateImageList := TreeView_GetImageList( ::hWnd, TVSIL_STATE )
 
    If ::DragActive
       // this call fires WM_CAPTURECHANGED
@@ -2288,7 +2232,8 @@ Local StateImageList := TreeView_GetImageList( ::hWnd, TVSIL_STATE )
       ImageList_Destroy( StateImageList )
    EndIf
 
-Return ::Super:Release()
+   Return ::Super:Release()
+
 
 #pragma BEGINDUMP
 

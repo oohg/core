@@ -2,6 +2,8 @@
 # oohg.hbc
 #
 
+skip={!allwin}
+
 # oohg paths
 incpaths=include
 

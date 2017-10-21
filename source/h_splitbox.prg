@@ -65,6 +65,7 @@
 #include "i_windefs.ch"
 
 CLASS TSplitBox FROM TControl
+
    DATA Type                   INIT "SPLITBOX" READONLY
    DATA lForceBreak            INIT .T.
    DATA cGripperText           INIT ""
@@ -88,12 +89,12 @@ CLASS TSplitBox FROM TControl
    METHOD IsBandVisible
 
    /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( ParentForm, bottom, inverted, lRtl, noattached ) CLASS TSplitBox
-*------------------------------------------------------------------------------*
-Local ControlHandle, nStyle
+
+   Local ControlHandle, nStyle
 
    ::SetForm( , ParentForm,,,,,, lRtl )
 
@@ -132,20 +133,19 @@ Local ControlHandle, nStyle
 
    _OOHG_AddFrame( Self )
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD AddControl( oControl ) CLASS TSplitBox
-*------------------------------------------------------------------------------*
+
    AddSplitBoxItem( oControl:hWnd, ::hWnd, GetWindowWidth( oControl:hWnd ), ::lForceBreak, ::cGripperText, ::nMinWidth, ::nMinHeight, ::lInverted )
    ::lForceBreak  := .F.
    ::cGripperText := nil
    ::nMinWidth    := nil
-Return ::Super:AddControl( oControl )
 
-*------------------------------------------------------------------------------*
+   Return ::Super:AddControl( oControl )
+
 METHOD SetSplitBox( Break, GripperText, nMinWidth, nMinHeight ) CLASS TSplitBox
-*------------------------------------------------------------------------------*
+
    ::lForceBreak := ::lForceBreak .OR. ( ValType( Break ) == "L" .AND. Break )
    If ValType( GripperText ) $ "CM"
       ::cGripperText := GripperText
@@ -156,67 +156,57 @@ METHOD SetSplitBox( Break, GripperText, nMinWidth, nMinHeight ) CLASS TSplitBox
    If ValType( nMinHeight ) == "N"
       ::nMinHeight := nMinHeight
    EndIf
-Return .T.
 
-*------------------------------------------------------------------------------*
+   Return .T.
+
 METHOD BandGripperOFF( nBandId ) CLASS TSplitBox
-*------------------------------------------------------------------------------*
 
    SetBandStyle( ::hWnd, nBandId, RBBS_GRIPPERALWAYS, .F. )
    SetBandStyle( ::hWnd, nBandId, RBBS_NOGRIPPER, .T. )
 
-Return Nil
+   Return Nil
 
-*------------------------------------------------------------------------------*
 METHOD BandGripperON( nBandId ) CLASS TSplitBox
-*------------------------------------------------------------------------------*
 
    SetBandStyle( ::hWnd, nBandId, RBBS_NOGRIPPER, .F. )
    SetBandStyle( ::hWnd, nBandId, RBBS_GRIPPERALWAYS, .T. )
 
-Return Nil
+   Return Nil
 
-*------------------------------------------------------------------------------*
 METHOD BandHasGripper( nBandId ) CLASS TSplitBox
-*------------------------------------------------------------------------------*
 
-Return ! BandHasStyleSet( ::hWnd, nBandId, RBBS_NOGRIPPER )
+   Return ! BandHasStyleSet( ::hWnd, nBandId, RBBS_NOGRIPPER )
 
-*------------------------------------------------------------------------------*
 METHOD HideBand( nBandId ) CLASS TSplitBox
-*------------------------------------------------------------------------------*
 
    SetBandStyle( ::hWnd, nBandId, RBBS_HIDDEN, .T. )
 
-Return ( BandHasStyleSet( ::hWnd, nBandId, RBBS_HIDDEN ) == .T. )
+   Return ( BandHasStyleSet( ::hWnd, nBandId, RBBS_HIDDEN ) == .T. )
 
-*------------------------------------------------------------------------------*
 METHOD ShowBand( nBandId ) CLASS TSplitBox
-*------------------------------------------------------------------------------*
 
    SetBandStyle( ::hWnd, nBandId, RBBS_HIDDEN, .F. )
 
-Return ( BandHasStyleSet( ::hWnd, nBandId, RBBS_HIDDEN ) == .F. )
+   Return ( BandHasStyleSet( ::hWnd, nBandId, RBBS_HIDDEN ) == .F. )
 
-*------------------------------------------------------------------------------*
 METHOD IsBandVisible( nBandId ) CLASS TSplitBox
-*------------------------------------------------------------------------------*
 
-Return ! BandHasStyleSet( ::hWnd, nBandId, RBBS_HIDDEN )
+   Return ! BandHasStyleSet( ::hWnd, nBandId, RBBS_HIDDEN )
 
-*------------------------------------------------------------------------------*
 Function _EndSplitBox()
-*------------------------------------------------------------------------------*
-Return _OOHG_DeleteFrame( "SPLITBOX" )
 
-*------------------------------------------------------------------------------*
+   Return _OOHG_DeleteFrame( "SPLITBOX" )
+
 Function _ForceBreak( ParentForm )
-*------------------------------------------------------------------------------*
-Local oControl
+
+   Local oControl
+
    oControl := TControl()
    oControl:SetForm( , ParentForm )
    oControl:SetSplitBoxInfo( .T. )
-Return nil
+
+   Return nil
+
 
 EXTERN SetSplitBoxItem
 

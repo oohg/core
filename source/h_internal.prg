@@ -65,9 +65,8 @@
 #include "i_windefs.ch"
 #include "common.ch"
 
-*------------------------------------------------------------------------------*
 CLASS TInternal FROM TControl
-*------------------------------------------------------------------------------*
+
    DATA Type      INIT "INTERNAL" READONLY
    DATA nVirtualHeight INIT 0
    DATA nVirtualWidth  INIT 0
@@ -92,17 +91,17 @@ CLASS TInternal FROM TControl
    METHOD BackColorCode       SETGET
 
    /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( ControlName, ParentForm, x, y, OnClick, w, h, ;
                backcolor, tooltip, gotfocus, lostfocus, ;
                Transparent, BORDER, CLIENTEDGE, icon, ;
                Virtualheight, VirtualWidth, ;
                MouseDragProcedure, MouseMoveProcedure, ;
                NoTabStop, HelpId, invisible, lRtl ) CLASS TInternal
-*------------------------------------------------------------------------------*
-Local ControlHandle, nStyle, nStyleEx := 0
+
+   Local ControlHandle, nStyle, nStyleEx := 0
 
    ASSIGN ::nCol        VALUE x TYPE "N"
    ASSIGN ::nRow        VALUE y TYPE "N"
@@ -112,7 +111,7 @@ Local ControlHandle, nStyle, nStyleEx := 0
 
    if valtype( VirtualHeight ) != "N"
       VirtualHeight := 0
-	endif
+   endif
 
    if valtype( VirtualWidth ) != "N"
       VirtualWidth := 0
@@ -175,63 +174,66 @@ Local ControlHandle, nStyle, nStyleEx := 0
    ::OnMouseDrag := MouseDragProcedure
    ::OnMouseMove := MouseMoveProcedure
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD Events_VScroll( wParam ) CLASS TInternal
-*------------------------------------------------------------------------------*
-Local uRet
+
+   Local uRet
+
    uRet := ::VScrollBar:Events_VScroll( wParam )
    ::RowMargin := - ::VScrollBar:Value
    ::ScrollControls()
-Return uRet
 
-*------------------------------------------------------------------------------*
+   Return uRet
+
 METHOD Events_HScroll( wParam ) CLASS TInternal
-*------------------------------------------------------------------------------*
-Local uRet
+
+   Local uRet
+
    uRet := ::HScrollBar:Events_HScroll( wParam )
    ::ColMargin := - ::HScrollBar:Value
    ::ScrollControls()
-Return uRet
 
-*------------------------------------------------------------------------------*
+   Return uRet
+
 METHOD VirtualWidth( nSize ) CLASS TInternal
-*------------------------------------------------------------------------------*
+
    If valtype( nSize ) == "N"
       ::nVirtualWidth := nSize
       ValidateScrolls( Self, .T. )
    EndIf
-Return ::nVirtualWidth
 
-*------------------------------------------------------------------------------*
+   Return ::nVirtualWidth
+
 METHOD VirtualHeight( nSize ) CLASS TInternal
-*------------------------------------------------------------------------------*
+
    If valtype( nSize ) == "N"
       ::nVirtualHeight := nSize
       ValidateScrolls( Self, .T. )
    EndIf
-Return ::nVirtualHeight
 
-*------------------------------------------------------------------------------*
+   Return ::nVirtualHeight
+
 METHOD SizePos( Row, Col, Width, Height ) CLASS TInternal
-*------------------------------------------------------------------------------*
-LOCAL uRet
+
+   LOCAL uRet
+
    uRet := ::Super:SizePos( Row, Col, Width, Height )
    ValidateScrolls( Self, .T. )
-RETURN uRet
 
-*------------------------------------------------------------------------------*
+   RETURN uRet
+
 METHOD ScrollControls() CLASS TInternal
-*------------------------------------------------------------------------------*
+
    AEVAL( ::aControls, { |o| If( o:Container:hWnd == ::hWnd, o:SizePos(), ) } )
    ReDrawWindow( ::hWnd )
-RETURN Self
 
-*------------------------------------------------------------------------------*
+   RETURN Self
+
 Function _EndInternal()
-*------------------------------------------------------------------------------*
-Return _OOHG_DeleteFrame( "INTERNAL" )
+
+   Return _OOHG_DeleteFrame( "INTERNAL" )
+
 
 #pragma BEGINDUMP
 

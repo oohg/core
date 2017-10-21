@@ -62,10 +62,9 @@
 
 #include "oohg.ch"
 
-*------------------------------------------------------------------------------*
 Function GetColor( aInitColor )
-*------------------------------------------------------------------------------*
-Local aRetVal, nColor, nInitColor
+
+   Local aRetVal, nColor, nInitColor
 
    If HB_IsArray( aInitColor )
       nInitColor := RGB( aInitColor[ 1 ], aInitColor[ 2 ], aInitColor[ 3 ] )
@@ -82,25 +81,23 @@ Local aRetVal, nColor, nInitColor
    EndIf
 
    /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
-Return aRetVal
 
-*------------------------------------------------------------------------------*
+   Return aRetVal
+
 Function GetFolder( cTitle, cInitPath )
-*------------------------------------------------------------------------------*
-Return C_Browseforfolder( Nil, cTitle, Nil, Nil, cInitPath )
 
-*------------------------------------------------------------------------------*
+   Return C_Browseforfolder( Nil, cTitle, Nil, Nil, cInitPath )
+
 Function BrowseForFolder( nFolder, nFlag, cTitle, cInitPath ) // Contributed By Ryszard Rylko
-*------------------------------------------------------------------------------*
-Return C_BrowseForFolder( Nil, cTitle, nFlag, nFolder, cInitPath )
 
-*------------------------------------------------------------------------------*
+   Return C_BrowseForFolder( Nil, cTitle, nFlag, nFolder, cInitPath )
+
 Function GetFile( aFilter, title, cIniFolder, multiselect, nochangedir, cDefaultFileName, hidereadonly )
-*------------------------------------------------------------------------------*
-Local c := ''
-Local cFiles
-Local FilesList := {}
-Local n
+
+   Local c := ''
+   Local cFiles
+   Local FilesList := {}
+   Local n
 
    If HB_IsArray( aFilter )
       aEval( aFilter, { |a| c += a[ 1 ] + Chr( 0 ) + a[ 2 ] + Chr( 0 ) } )
@@ -129,23 +126,21 @@ Local n
       Endif
    Endif
 
-Return FilesList
+   Return FilesList
 
-*------------------------------------------------------------------------------*
 Function Putfile( aFilter, title, cIniFolder, nochangedir, cDefaultFileName, lForceExt )
-*------------------------------------------------------------------------------*
-Local c := ''
+
+   Local c := ''
 
    If HB_IsArray( aFilter )
       aEval( aFilter, { |a| c += a[ 1 ] + Chr( 0 ) + a[ 2 ] + Chr( 0 ) } )
    EndIf
 
-Return C_PutFile( c, title, cIniFolder, nochangedir, cDefaultFileName, lForceExt )
+   Return C_PutFile( c, title, cIniFolder, nochangedir, cDefaultFileName, lForceExt )
 
-*------------------------------------------------------------------------------*
 Function GetFont( cInitFontName, nInitFontSize, lBold, lItalic, anInitColor, lUnderLine, lStrikeOut, nCharset )
-*------------------------------------------------------------------------------*
-Local RetArray, Tmp, rgbcolor
+
+   Local RetArray, Tmp, rgbcolor
 
    If ! HB_IsString ( cInitFontName )
       cInitFontName := ""
@@ -190,4 +185,4 @@ Local RetArray, Tmp, rgbcolor
       RetArray[ 5 ] := { Nil, Nil, Nil }
    EndIf
 
-Return RetArray
+   Return RetArray

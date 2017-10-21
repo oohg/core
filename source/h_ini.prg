@@ -66,10 +66,9 @@
 
 STATIC _OOHG_ActiveIniFile := ''
 
-*-------------------------------------------------------------
 FUNCTION BeginIni(name, cIniFile )
-*-------------------------------------------------------------
-LOCAL hFile
+
+   LOCAL hFile
 
    * Unused Parameter
    EMPTY( name )
@@ -94,13 +93,15 @@ LOCAL hFile
    EndIf
 
    FClose( hFile )
-Return Nil
+
+   Return Nil
 
 
 // Code GetIni and SetIni based on source of Grigory Filatov
 
 Function _GetIni( cSection, cEntry, cDefault, uVar )
-Local cFile, cVar :=''
+
+   Local cFile, cVar :=''
 
    If !empty(_OOHG_ActiveIniFile)
       if valtype(cDefault) == 'U'
@@ -114,73 +115,88 @@ Local cFile, cVar :=''
       endif
    endif
    uVar := xValue(cVar,ValType( uVar))
-Return uVar
+
+   Return uVar
 
 Function _SetIni( cSection, cEntry, cValue )
-Local ret:=.f., cFile
+
+   Local ret:=.f., cFile
+
    If ! empty(_OOHG_ActiveIniFile)
       cFile := _OOHG_ActiveIniFile
       ret := WritePrivateProfileString( cSection, cEntry, xChar(cValue), cFile )
    endif
-Return ret
+
+   Return ret
 
 Function  _DelIniEntry( cSection, cEntry )
-Local ret:=.f., cFile
+
+   Local ret:=.f., cFile
+
    If !empty(_OOHG_ActiveIniFile)
       cFile := _OOHG_ActiveIniFile
       ret := DelIniEntry( cSection, cEntry, cFile )
    endif
-Return ret
+
+   Return ret
 
 Function  _DelIniSection( cSection )
-Local ret:=.f., cFile
+
+   Local ret:=.f., cFile
+
    If !empty(_OOHG_ActiveIniFile)
       cFile := _OOHG_ActiveIniFile
       ret := DelIniSection( cSection, cFile )
    endif
-Return ret
 
-*-------------------------------------------------------------
+   Return ret
+
 Function _EndIni()
-*-------------------------------------------------------------
+
    _OOHG_ActiveIniFile := ''
-Return Nil
 
-
+   Return Nil
 
 FUNCTION xChar( xValue )
-LOCAL cType := ValType( xValue )
-LOCAL cValue := "", nDecimals := Set( _SET_DECIMALS)
+
+   LOCAL cType := ValType( xValue )
+   LOCAL cValue := "", nDecimals := Set( _SET_DECIMALS)
+
    DO CASE
-      CASE cType $  "CM";  cValue := xValue
-      CASE cType == "N" ;  cValue := LTrim( Str( xValue, 20, nDecimals ) )
-      CASE cType == "D" ;  cValue := DToS( xValue )
-      CASE cType == "L" ;  cValue := IIf( xValue, "T", "F" )
-      CASE cType == "T" ;  cValue := TToS( xValue )
-      CASE cType == "A" ;  cValue := AToC( xValue )
-      CASE cType $  "UE";  cValue := "NIL"
-      CASE cType == "B" ;  cValue := "{|| ... }"
-      CASE cType == "O";   cValue := "{" + xValue:className + "}"
+   CASE cType $  "CM";  cValue := xValue
+   CASE cType == "N" ;  cValue := LTrim( Str( xValue, 20, nDecimals ) )
+   CASE cType == "D" ;  cValue := DToS( xValue )
+   CASE cType == "L" ;  cValue := IIf( xValue, "T", "F" )
+   CASE cType == "T" ;  cValue := TToS( xValue )
+   CASE cType == "A" ;  cValue := AToC( xValue )
+   CASE cType $  "UE";  cValue := "NIL"
+   CASE cType == "B" ;  cValue := "{|| ... }"
+   CASE cType == "O";   cValue := "{" + xValue:className + "}"
    ENDCASE
-RETURN cValue
+
+   RETURN cValue
 
 FUNCTION xValue( cValue, cType )
-LOCAL xValue
-   DO CASE
-      CASE cType $  "CM";  xValue := cValue
-      CASE cType == "D" ;  xValue := SToD( cValue )
-      CASE cType == "N" ;  xValue := Val( cValue )
-      CASE cType == "L" ;  xValue := ( cValue == 'T' )
-      CASE cType == "T" ;  xValue := SToT( cValue )
-      CASE cType == "A" ;  xValue := CToA( cValue )
-      OTHERWISE;           xValue := NIL                     // nil, block, object
-   ENDCASE
-RETURN xValue
 
+   LOCAL xValue
+
+   DO CASE
+   CASE cType $  "CM";  xValue := cValue
+   CASE cType == "D" ;  xValue := SToD( cValue )
+   CASE cType == "N" ;  xValue := Val( cValue )
+   CASE cType == "L" ;  xValue := ( cValue == 'T' )
+   CASE cType == "T" ;  xValue := SToT( cValue )
+   CASE cType == "A" ;  xValue := CToA( cValue )
+   OTHERWISE;           xValue := NIL                     // nil, block, object
+   ENDCASE
+
+   RETURN xValue
 
 FUNCTION AToC( aArray )
-LOCAL i, nLen := Len( aArray )
-LOCAL cType, cElement, cArray := ""
+
+   LOCAL i, nLen := Len( aArray )
+   LOCAL cType, cElement, cArray := ""
+
    FOR i := 1 TO nLen
       cElement := xChar( aArray[ i ] )
       IF ( cType := ValType( aArray[ i ] ) ) == "A"
@@ -189,10 +205,13 @@ LOCAL cType, cElement, cArray := ""
          cArray += Left( cType, 1) + str( Len( cElement ),4 ) + cElement
       ENDIF
    ENDFOR
-RETURN "A" + str( Len( cArray ),4 ) + cArray
+
+   RETURN "A" + str( Len( cArray ),4 ) + cArray
 
 FUNCTION CToA( cArray )
-LOCAL cType, nLen, aArray := {}
+
+   LOCAL cType, nLen, aArray := {}
+
    cArray := SubStr( cArray, 6 )    // strip off array and length
    WHILE Len( cArray ) > 0
       nLen := Val( SubStr( cArray, 2, 4 ) )
@@ -203,7 +222,9 @@ LOCAL cType, nLen, aArray := {}
       ENDIF
       cArray := SubStr( cArray, 6 + nLen )
    END
-RETURN aArray
+
+   RETURN aArray
+
 
 EXTERN GETPRIVATEPROFILESTRING, WRITEPRIVATEPROFILESTRING, DELINIENTRY, DELINISECTION
 
@@ -270,4 +291,5 @@ HB_FUNC( DELINISECTION )
                                        "",                 // String
                                        hb_parc( 2 ) ) );   // INI File
 }
+
 #pragma ENDDUMP

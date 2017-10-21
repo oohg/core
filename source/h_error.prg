@@ -69,9 +69,7 @@
 #include "common.ch"
 #include "hbclass.ch"
 
-*------------------------------------------------------------------------------*
 FUNCTION MsgOOHGError( cMessage )
-*------------------------------------------------------------------------------*
 
    // Kill timers and hot keys
    _KillAllTimers()
@@ -79,20 +77,17 @@ FUNCTION MsgOOHGError( cMessage )
 
    OwnErrorHandler():ErrorMessage( cMessage, 1 )
 
-RETURN Nil
+   RETURN Nil
 
-*------------------------------------------------------------------------------*
 PROCEDURE ErrorSys
-*------------------------------------------------------------------------------*
 
    ErrorBlock( { | oError | DefError( oError ) } )
 
-RETURN
+   RETURN
 
-*------------------------------------------------------------------------------*
 STATIC FUNCTION DefError( oError )
-*------------------------------------------------------------------------------*
-LOCAL cMessage
+
+   LOCAL cMessage
 
    // By default, division by zero results in zero
    IF oError:genCode == EG_ZERODIV .AND. ;
@@ -131,13 +126,12 @@ LOCAL cMessage
 
    OwnErrorHandler():ErrorMessage( cMessage, 2 )
 
-RETURN .F.
+   RETURN .F.
 
 // [vszakats]
-*------------------------------------------------------------------------------*
 FUNCTION _OOHG_ErrorMessage( oError )
-*------------------------------------------------------------------------------*
-LOCAL cMessage
+
+   LOCAL cMessage
 
    // start error message
    cMessage := iif( oError:severity > ES_WARNING, _OOHG_Messages( 1, 9 ), _OOHG_Messages( 1, 10 ) ) + " "
@@ -173,13 +167,12 @@ LOCAL cMessage
       cMessage += " (DOS " + _OOHG_Messages( 1, 9 ) + " " + LTrim( Str( oError:osCode ) ) + ")"
    ENDIF
 
-RETURN cMessage
+   RETURN cMessage
 
-*------------------------------------------------------------------------------*
 STATIC FUNCTION OwnErrorHandler()
-*------------------------------------------------------------------------------*
-Local oErrorLog
-MemVar _OOHG_TxtError
+
+   Local oErrorLog
+   MemVar _OOHG_TxtError
 
    IF TYPE( "_OOHG_TXTERROR" ) == "L" .AND. _OOHG_TxtError
       oErrorLog := OOHG_TErrorTxt():New()
@@ -189,11 +182,11 @@ MemVar _OOHG_TxtError
       oErrorLog := OOHG_TErrorHtml():New()
    ENDIF
 
-RETURN oErrorLog
-
+   RETURN oErrorLog
 
 
 CLASS OOHG_TErrorHtml
+
    DATA aMessages     INIT Nil
    DATA cBufferFile   INIT ""
    DATA cBufferScreen INIT ""
@@ -215,12 +208,11 @@ CLASS OOHG_TErrorHtml
    METHOD Write2
 
    /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
-ENDCLASS
+   ENDCLASS
 
-*------------------------------------------------------------------------------*
 METHOD New( cLang ) CLASS OOHG_TErrorHtml
-*------------------------------------------------------------------------------*
-LOCAL nAt
+
+   LOCAL nAt
 
    IF ! VALTYPE( cLang ) $ "CM" .OR. EMPTY( cLang )
       // [x]Harbour's default language
@@ -440,28 +432,21 @@ LOCAL nAt
                        "Program Error" }
    ENDCASE
 
-RETURN Self
+   RETURN Self
 
-*------------------------------------------------------------------------------*
 METHOD Write( cTxt ) CLASS OOHG_TErrorHtml
-*------------------------------------------------------------------------------*
 
    ::cBufferFile   += ::Write2( cTxt )
    ::cBufferScreen += cTxt + CHR( 13 ) + CHR( 10 )
 
-RETURN Nil
+   RETURN Nil
 
-*------------------------------------------------------------------------------*
 METHOD Write2( cTxt ) CLASS OOHG_TErrorHtml
-*------------------------------------------------------------------------------*
 
-RETURN RTRIM( cTxt ) + "<br>" + CHR( 13 ) + CHR( 10 )
+   RETURN RTRIM( cTxt ) + "<br>" + CHR( 13 ) + CHR( 10 )
 
-
-*------------------------------------------------------------------------------*
 METHOD FileHeader( cTitle ) CLASS OOHG_TErrorHtml
-*------------------------------------------------------------------------------*
-*
+
 RETURN "<HTML><HEAD><TITLE>" + cTitle + "</TITLE></HEAD>" + CHR( 13 ) + CHR( 10 ) + ;
        "<style> "                       + ;
          "body{ "                       + ;
@@ -494,10 +479,9 @@ RETURN "<HTML><HEAD><TITLE>" + cTitle + "</TITLE></HEAD>" + CHR( 13 ) + CHR( 10 
        "<BODY>" + CHR( 13 ) + CHR( 10 ) + ;
        "<H1 Align=Center>" + cTitle + "</H1><br>" + CHR( 13 ) + CHR( 10 )
 
-*------------------------------------------------------------------------------*
 METHOD CreateLog() CLASS OOHG_TErrorHtml
-*------------------------------------------------------------------------------*
-LOCAL nHdl, cFile, cTop, cBottom, nPos
+
+   LOCAL nHdl, cFile, cTop, cBottom, nPos
 
    IF EMPTY( ::Path )
       IF EMPTY( CurDir() )
@@ -528,12 +512,11 @@ LOCAL nHdl, cFile, cTop, cBottom, nPos
    FWRITE( nHdl, cBottom )
    FCLOSE( nHdl )
 
-RETURN Nil
+   RETURN Nil
 
-*------------------------------------------------------------------------------*
 METHOD DeleteLog() CLASS OOHG_TErrorHtml
-*------------------------------------------------------------------------------*
-LOCAL cFile
+
+   LOCAL cFile
 
    IF EMPTY( ::Path )
       IF EMPTY( CurDir() )
@@ -554,12 +537,11 @@ LOCAL cFile
       ERASE ( cFile )
    ENDIF
 
-RETURN ! FILE( cFile )
+   RETURN ! FILE( cFile )
 
-*------------------------------------------------------------------------------*
 METHOD CopyLog( cTo ) CLASS OOHG_TErrorHtml
-*------------------------------------------------------------------------------*
-LOCAL cFile
+
+   LOCAL cFile
 
    IF ! VALTYPE( cTo ) $ "CM"
       RETURN .F.
@@ -592,11 +574,9 @@ LOCAL cFile
 
    COPY FILE ( cFile ) TO ( cTo )
 
-RETURN FILE( cTo )
+   RETURN FILE( cTo )
 
-*------------------------------------------------------------------------------*
 METHOD ErrorMessage( cError, nPosition ) CLASS OOHG_TErrorHtml
-*------------------------------------------------------------------------------*
 
    #ifdef __ERROR_EVENTS__
       Local aEvents
@@ -639,12 +619,12 @@ METHOD ErrorMessage( cError, nPosition ) CLASS OOHG_TErrorHtml
    ::CreateLog()
    C_MSGSTOP( ::cBufferScreen, ::aMessages[12] )
    ExitProcess( 0 )
-RETURN Nil
 
-*------------------------------------------------------------------------------*
+   RETURN Nil
+
 METHOD PutMsg( cMsg, nPosition, lEvents ) CLASS OOHG_TErrorHtml
-*------------------------------------------------------------------------------*
-LOCAL aEvents
+
+   LOCAL aEvents
 
    ::cBufferFile += ::PreHeader()
    ::cBufferFile += ::Write2( cMsg )
@@ -669,41 +649,35 @@ LOCAL aEvents
 
    ::cBufferFile := ""
    ::cBufferScreen := ""
-RETURN Nil
 
-*------------------------------------------------------------------------------*
+   RETURN Nil
+
 METHOD ErrorHeader() CLASS OOHG_TErrorHtml
-*------------------------------------------------------------------------------*
 
    // Insert own header's data here
 
-RETURN Nil
-
+   RETURN Nil
 
 
 CLASS OOHG_TErrorTxt FROM OOHG_TErrorHtml
+
    DATA PreHeader     INIT " " + CHR( 13 ) + CHR( 10 ) + replicate( "-", 80 ) + CHR( 13 ) + CHR( 10 ) + " " + CHR( 13 ) + CHR( 10 )
    DATA PostHeader    INIT CHR( 13 ) + CHR( 10 ) + CHR( 13 ) + CHR( 10 )
    DATA FileName      INIT "ErrorLog.txt"
    DATA FileHeader    INIT ""
 
    METHOD Write2
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Write2( cTxt ) CLASS OOHG_TErrorTxt
-*------------------------------------------------------------------------------*
 
-RETURN RTRIM( cTxt ) + CHR( 13 ) + CHR( 10 )
+   RETURN RTRIM( cTxt ) + CHR( 13 ) + CHR( 10 )
 
-*------------------------------------------------------------------------------*
 Function ooHGVersion()
-*------------------------------------------------------------------------------*
 
-Return "ooHG Ver. 2017.08.25"
+   Return "ooHG Ver. 2017.08.25"
 
-*------------------------------------------------------------------------------*
 Function MiniGuiVersion()
-*------------------------------------------------------------------------------*
 
-Return ooHGVersion()
+   Return ooHGVersion()

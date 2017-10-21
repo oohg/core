@@ -2,6 +2,8 @@
 # $Id: bostaurus.hbp,v 1.2 2016-12-10 18:52:26 fyurisich Exp $
 #
 
+-stop{!allwin}
+
 # build a static library
 -hblib
 
@@ -10,16 +12,19 @@
 -inc
 
 # name of output file
--o${HG_ROOT}\${LIB_GUI}\${hb_name}
+-o../lib/${hb_name}
+
+# function list
+-hbx=../${hb_name}.hbx
 
 # path to headers files (.ch)
--i${HG_ROOT}\include
+-i../include
 
 # harbour compiler flags
--n -q0 -ko -w3 -es2
+-n -q0 -w3 -es2
 
 # uncomment this line to build .ppo files
-#-p${HG_ROOT}\source\ppo\
+#-p./ppo/
 
 # files to compile
 bostaurus.prg

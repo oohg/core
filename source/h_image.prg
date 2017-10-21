@@ -65,6 +65,7 @@
 #include "i_windefs.ch"
 
 CLASS TImage FROM TControl
+
    DATA Type            INIT "IMAGE" READONLY
    DATA cPicture        INIT ""
    DATA Stretch         INIT .F.
@@ -95,15 +96,15 @@ CLASS TImage FROM TControl
    METHOD Copy
 
    /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( ControlName, ParentForm, x, y, FileName, w, h, ProcedureName, ;
                HelpId, invisible, stretch, lWhiteBackground, lRtl, backcolor, ;
                cBuffer, hBitMap, autofit, imagesize, ToolTip, Border, ClientEdge, ;
                lNoLoadTrans, lNo3DColors, lNoDIB, lStyleTransp, aArea, lDisabled ) CLASS TImage
-*------------------------------------------------------------------------------*
-Local ControlHandle, nStyle, nStyleEx
+
+   Local ControlHandle, nStyle, nStyleEx
 
    ASSIGN ::nCol           VALUE x            TYPE "N"
    ASSIGN ::nRow           VALUE y            TYPE "N"
@@ -145,12 +146,12 @@ Local ControlHandle, nStyle, nStyleEx
 
    ASSIGN ::OnClick VALUE ProcedureName TYPE "B"
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD Picture( cPicture ) CLASS TImage
-*------------------------------------------------------------------------------*
-LOCAL nAttrib, aPictSize
+
+   LOCAL nAttrib, aPictSize
+
    IF VALTYPE( cPicture ) $ "CM"
       DeleteObject( ::hImage )
       ::cPicture := cPicture
@@ -179,7 +180,8 @@ LOCAL nAttrib, aPictSize
       ENDIF
       ::RePaint()
    ENDIF
-Return ::cPicture
+
+   Return ::cPicture
 
 *------------------------------------------------------------------------------*
 METHOD HBitMap( hBitMap ) CLASS TImage

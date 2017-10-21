@@ -66,7 +66,7 @@
       [ WIDTH <w> ] ;
       [ HEIGHT <h> ] ;
       [ <stretch: STRETCH> ] ;
-      [ HELPID <helpid> ] 		;
+      [ HELPID <helpid> ]       ;
       [ <invisible: INVISIBLE> ] ;
       [ <rtl: RTL> ] ;
       [ SUBCLASS <subclass> ] ;

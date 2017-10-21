@@ -85,7 +85,7 @@
       [ TITLEFONTCOLOR <titlefontcolor> ] ;
       [ TITLEBACKCOLOR <titlebackcolor> ] ;
       [ TRAILINGFONTCOLOR <trailingfontcolor> ] ;
-		[ <dummy5: BACKGROUNDCOLOR, BKGNDCOLOR> <backgroundcolor> ] ;
+      [ <dummy5: BACKGROUNDCOLOR, BKGNDCOLOR> <backgroundcolor> ] ;
       [ <multiselect: MULTISELECT> ] ;
       [ <dummy2: ONVIEWCHANGE, ON VIEWCHANGE> <viewchg> ] ;
       [ <dummy3: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;

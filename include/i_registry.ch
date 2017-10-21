@@ -162,33 +162,33 @@ WRAPPER COMMANDS FOR TREG32 CLASS
 ---------------------------------------------------------------------------*/
 
 #xcommand OPEN REGISTRY <oReg> KEY <hKey> SECTION <cKey> ;
-	=> ;
+   => ;
       <oReg> := TReg32():Create( <hKey>, <cKey> )
 
 #xcommand OPEN REGISTRY <oReg> KEY <hKey> SECTION <cKey> OLD ;
-	=> ;
+   => ;
       <oReg> := TReg32():New( <hKey>, <cKey> )
 
 #xcommand CREATE REGISTRY <oReg> KEY <hKey> SECTION <cKey> ;
-	=> ;
+   => ;
       <oReg> := TReg32():Create( <hKey>, <cKey> )
 
 #xcommand GET VALUE <uVar> [NAME <cKey> ] <of: OF, REGISTRY> <oReg> ;
-	=> ;
+   => ;
       <uVar> := <oReg>:Get( <cKey>, <uVar> )
 
 #xcommand SET VALUE <cKey> <of: OF, REGISTRY> <oReg>] [ TO <uVal> ] ;
-	=> ;
+   => ;
       <oReg>:Set( <cKey>, <uVal> )
 
 #xcommand DELETE VALUE <cKey> <of: OF, REGISTRY> <oReg> ;
-	=> ;
+   => ;
       <oReg>:Delete( <cKey> )
 
 #xcommand DELETE KEY <cKey> <of: OF, REGISTRY> <oReg> ;
-	=> ;
+   => ;
       <oReg>:KeyDelete( <cKey> )
 
 #xcommand CLOSE REGISTRY <oReg> ;
-	=> ;
+   => ;
       <oReg>:Close()

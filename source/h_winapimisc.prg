@@ -110,105 +110,112 @@
 #define CSIDL_FLAG_DONT_VERIFY          0x4000        // combine with CSIDL_ value to return an unverified folder path
 #define CSIDL_FLAG_MASK                 0xFF00        // mask for all possible flag values
 
-*------------------------------------------------------------------------------*
 Function GetWindowsFolder()
-*------------------------------------------------------------------------------*
-Local lFolder
-    lFolder := GETWINDOWSDIR()
-Return lFolder
 
-*------------------------------------------------------------------------------*
+   Local lFolder
+
+   lFolder := GETWINDOWSDIR()
+
+   Return lFolder
+
 Function GetSystemFolder()
-*------------------------------------------------------------------------------*
-Local lFolder
-  lFolder := GETSYSTEMDIR()
-Return lFolder
 
-*------------------------------------------------------------------------------*
+   Local lFolder
+
+   lFolder := GETSYSTEMDIR()
+
+   Return lFolder
+
 Function GetTempFolder()
-*------------------------------------------------------------------------------*
-Local lFolder
-  lFolder := GETTEMPDIR()
-Return lFolder
 
-*------------------------------------------------------------------------------*
+   Local lFolder
+
+   lFolder := GETTEMPDIR()
+
+   Return lFolder
+
 Function GetMyDocumentsFolder()
-*------------------------------------------------------------------------------*
-Local lFolder
-  lFolder := GETSPECIALFOLDER( CSIDL_PERSONAL )
-Return lFolder
 
-*------------------------------------------------------------------------------*
+   Local lFolder
+
+   lFolder := GETSPECIALFOLDER( CSIDL_PERSONAL )
+
+   Return lFolder
+
 Function GetDesktopFolder()
-*------------------------------------------------------------------------------*
-Local lFolder
-  lFolder := GETSPECIALFOLDER( CSIDL_DESKTOPDIRECTORY )
-Return lFolder
 
-*------------------------------------------------------------------------------*
+   Local lFolder
+
+   lFolder := GETSPECIALFOLDER( CSIDL_DESKTOPDIRECTORY )
+
+   Return lFolder
+
 Function GetProgramFilesFolder()
-*------------------------------------------------------------------------------*
-Local lFolder
-  lFolder := GETSPECIALFOLDER( CSIDL_PROGRAM_FILES )
-Return lFolder
 
-*------------------------------------------------------------------------------*
+   Local lFolder
+
+   lFolder := GETSPECIALFOLDER( CSIDL_PROGRAM_FILES )
+
+   Return lFolder
+
 Function GetSpecialFolder( nCSIDL ) // Contributed By Ryszard Rylko
-*------------------------------------------------------------------------------*
-Local RetVal
-	RetVal := C_GETSPECIALFOLDER( nCSIDL )
-Return RetVal
 
-*------------------------------------------------------------------------------*
+   Local RetVal
+
+   RetVal := C_GETSPECIALFOLDER( nCSIDL )
+
+   Return RetVal
+
 Function _GetCompactPath( cFile, nMax ) // Contributed By Jacek Kubica
-*------------------------------------------------------------------------------*
-Local cShort
+
+   Local cShort
+
    If ! HB_IsNumeric( nMax )
       nMax := 64
    EndIf
    cShort := Space( nMax )
-Return If( GETCOMPACTPATH( @cShort, cFile, nMax + 1, Nil ), cShort, cFile )
 
-*------------------------------------------------------------------------------*
+   Return If( GETCOMPACTPATH( @cShort, cFile, nMax + 1, Nil ), cShort, cFile )
+
 Procedure ProcessMessages
-*------------------------------------------------------------------------------*
-  Do While _ProcessMess()
-  EndDo
-Return
 
-*------------------------------------------------------------------------------*
+   Do While _ProcessMess()
+   EndDo
+
+   Return
+
 Function WindowsVersion()
-*------------------------------------------------------------------------------*
-Local aRetVal
+
+   Local aRetVal
+
    aRetVal := WinVersion()
-Return { aRetVal[ 1 ] + aRetVal[ 4 ], aRetVal[ 2 ], 'Build ' + aRetVal[ 3 ] }
 
-*------------------------------------------------------------------------------*
+   Return { aRetVal[ 1 ] + aRetVal[ 4 ], aRetVal[ 2 ], 'Build ' + aRetVal[ 3 ] }
+
 Function _Execute( nActiveWindowhandle, cOperation, cFile, cParaMeters, cDefault, nState )
-*------------------------------------------------------------------------------*
 
-	If ValType( nActiveWindowhandle ) == 'U'
-		nActiveWindowhandle := 0
-	EndIf
+   If ValType( nActiveWindowhandle ) == 'U'
+      nActiveWindowhandle := 0
+   EndIf
 
-	If ValType( cOperation ) == 'U'
-		cOperation := Nil
-	EndIf
+   If ValType( cOperation ) == 'U'
+      cOperation := Nil
+   EndIf
 
-	If ValType( cFile ) == 'U'
-		cFile := ""
-	EndIf
+   If ValType( cFile ) == 'U'
+      cFile := ""
+   EndIf
 
-	If ValType( cParaMeters ) == 'U'
-		cParaMeters := Nil
-	EndIf
+   If ValType( cParaMeters ) == 'U'
+      cParaMeters := Nil
+   EndIf
 
-	If ValType( cDefault ) == 'U'
-		 cDefault := Nil
-	EndIf
+   If ValType( cDefault ) == 'U'
+       cDefault := Nil
+   EndIf
 
-	If ValType( nState ) == 'U'
-		 nState := 10 // SW_SHOWDEFAULT
-	EndIf
+   If ValType( nState ) == 'U'
+       nState := 10 // SW_SHOWDEFAULT
+   EndIf
 
-Return ShellExecute( nActiveWindowhandle, cOperation, cFile, cParaMeters, cDefault, nState )
+   Return ShellExecute( nActiveWindowhandle, cOperation, cFile, cParaMeters, cDefault, nState )

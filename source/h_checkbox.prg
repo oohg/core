@@ -67,6 +67,7 @@
 
 
 CLASS TCheckBox FROM TLabel
+
    DATA Type       INIT "CHECKBOX" READONLY
    DATA cPicture   INIT ""
    DATA IconWidth  INIT 19
@@ -84,17 +85,17 @@ CLASS TCheckBox FROM TLabel
    METHOD Events_Notify
 
    /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
                fontsize, tooltip, changeprocedure, w, h, lostfocus, gotfocus, ;
                HelpId, invisible, notabstop, bold, italic, underline, ;
                strikeout, field, backcolor, fontcolor, transparent, autosize, ;
                lRtl, lDisabled, threestate, leftalign, drawby ) CLASS TCheckBox
-*------------------------------------------------------------------------------*
-Local ControlHandle, nStyle, nStyleEx := 0
-Local oTab
+
+   Local ControlHandle, nStyle, nStyleEx := 0
+   Local oTab
 
    ASSIGN ::lLibDraw    VALUE drawby      TYPE "L" DEFAULT _OOHG_UsesVisualStyle()
    ASSIGN ::nCol        VALUE x           TYPE "N"
@@ -151,12 +152,11 @@ Local oTab
    ASSIGN ::OnGotFocus  VALUE gotfocus  TYPE "B"
    ASSIGN ::OnChange    VALUE ChangeProcedure TYPE "B"
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TCheckBox
-*------------------------------------------------------------------------------*
-Local uState
+
+   Local uState
 
    IF HB_IsLogical( uValue )
       SendMessage( ::hWnd, BM_SETCHECK, if( uValue, BST_CHECKED, BST_UNCHECKED ), 0 )
@@ -175,28 +175,27 @@ Local uState
          uValue := Nil
       ENDIF
    ENDIF
-RETURN uValue
 
-*------------------------------------------------------------------------------*
+   RETURN uValue
+
 METHOD Events_Command( wParam ) CLASS TCheckBox
-*------------------------------------------------------------------------------*
-Local Hi_wParam := HIWORD( wParam )
+
+   Local Hi_wParam := HIWORD( wParam )
+
    If Hi_wParam == BN_CLICKED
       ::DoChange()
       Return nil
    EndIf
-Return ::Super:Events_Command( wParam )
 
-*------------------------------------------------------------------------------*
+   Return ::Super:Events_Command( wParam )
+
 METHOD Events_Color( wParam, nDefColor ) CLASS TCheckBox
-*------------------------------------------------------------------------------*
 
-Return Events_Color_InTab( Self, wParam, nDefColor )    // see h_controlmisc.prg
+   Return Events_Color_InTab( Self, wParam, nDefColor )    // see h_controlmisc.prg
 
-*------------------------------------------------------------------------------*
 METHOD Events_Notify( wParam, lParam ) CLASS TCheckBox
-*------------------------------------------------------------------------------*
-Local nNotify := GetNotifyCode( lParam )
+
+   Local nNotify := GetNotifyCode( lParam )
 
    If nNotify == NM_CUSTOMDRAW
       If ::lLibDraw .AND. ::IsVisualStyled .AND. _OOHG_UsesVisualStyle()
@@ -204,10 +203,7 @@ Local nNotify := GetNotifyCode( lParam )
       EndIf
    EndIf
 
-Return ::Super:Events_Notify( wParam, lParam )
-
-
-
+   Return ::Super:Events_Notify( wParam, lParam )
 
 
 #pragma BEGINDUMP
@@ -251,35 +247,35 @@ This files are not present in BCC 551
 */
 
 typedef struct _MARGINS {
-	int cxLeftWidth;
-	int cxRightWidth;
-	int cyTopHeight;
-	int cyBottomHeight;
+   int cxLeftWidth;
+   int cxRightWidth;
+   int cyTopHeight;
+   int cyBottomHeight;
 } MARGINS, *PMARGINS;
 
 typedef HANDLE HTHEME;
 
 enum {
-	BP_PUSHBUTTON = 1,
-	BP_RADIOBUTTON = 2,
-	BP_CHECKBOX = 3,
-	BP_GROUPBOX = 4,
-	BP_USERBUTTON = 5
+   BP_PUSHBUTTON = 1,
+   BP_RADIOBUTTON = 2,
+   BP_CHECKBOX = 3,
+   BP_GROUPBOX = 4,
+   BP_USERBUTTON = 5
 };
 
 enum {
-	CBS_UNCHECKEDNORMAL = 1,
-	CBS_UNCHECKEDHOT = 2,
-	CBS_UNCHECKEDPRESSED = 3,
-	CBS_UNCHECKEDDISABLED = 4,
-	CBS_CHECKEDNORMAL = 5,
-	CBS_CHECKEDHOT = 6,
-	CBS_CHECKEDPRESSED = 7,
-	CBS_CHECKEDDISABLED = 8,
-	CBS_MIXEDNORMAL = 9,
-	CBS_MIXEDHOT = 10,
-	CBS_MIXEDPRESSED = 11,
-	CBS_MIXEDDISABLED = 12
+   CBS_UNCHECKEDNORMAL = 1,
+   CBS_UNCHECKEDHOT = 2,
+   CBS_UNCHECKEDPRESSED = 3,
+   CBS_UNCHECKEDDISABLED = 4,
+   CBS_CHECKEDNORMAL = 5,
+   CBS_CHECKEDHOT = 6,
+   CBS_CHECKEDPRESSED = 7,
+   CBS_CHECKEDDISABLED = 8,
+   CBS_MIXEDNORMAL = 9,
+   CBS_MIXEDHOT = 10,
+   CBS_MIXEDPRESSED = 11,
+   CBS_MIXEDDISABLED = 12
 };
 
 static WNDPROC lpfnOldWndProc = 0;
@@ -291,8 +287,8 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 
 HB_FUNC( INITCHECKBOX )
 {
-	HWND hwnd;
-	HWND hbutton;
+   HWND hwnd;
+   HWND hbutton;
    int Style, StyleEx;
 
    hwnd = HWNDparam( 1 );
@@ -302,9 +298,9 @@ HB_FUNC( INITCHECKBOX )
    StyleEx = hb_parni( 11 ) | _OOHG_RTL_Status( hb_parl( 12 ) );
 
    hbutton = CreateWindowEx( StyleEx, "button" , hb_parc(2) ,
-	Style ,
-	hb_parni(4), hb_parni(5) , hb_parni(8), hb_parni(9) ,
-	hwnd,(HMENU)hb_parni(3) , GetModuleHandle(NULL) , NULL ) ;
+   Style ,
+   hb_parni(4), hb_parni(5) , hb_parni(8), hb_parni(9) ,
+   hwnd,(HMENU)hb_parni(3) , GetModuleHandle(NULL) , NULL ) ;
 
    lpfnOldWndProc = ( WNDPROC ) SetWindowLong( hbutton, GWL_WNDPROC, ( LONG ) SubClassFunc );
 
@@ -342,7 +338,7 @@ int TCheckBox_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption,
       { CBS_MIXEDNORMAL,     CBS_MIXEDHOT,     CBS_MIXEDPRESSED,     CBS_MIXEDDISABLED,     CBS_MIXEDNORMAL }
    };
 
- 	if( pCustomDraw->dwDrawStage == CDDS_PREERASE || pCustomDraw->dwDrawStage == CDDS_PREPAINT )
+    if( pCustomDraw->dwDrawStage == CDDS_PREERASE || pCustomDraw->dwDrawStage == CDDS_PREPAINT )
    {
       hInstDLL = LoadLibrary( "UXTHEME.DLL" );
       if( ! hInstDLL )

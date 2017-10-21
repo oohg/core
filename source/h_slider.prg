@@ -67,6 +67,7 @@
 
 
 CLASS TSlider FROM TControl
+
    DATA Type        INIT "SLIDER" READONLY
    DATA nRangeMin   INIT 0
    DATA nRangeMax   INIT 10
@@ -81,17 +82,14 @@ CLASS TSlider FROM TControl
    METHOD Events_Vscroll
 
    /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
-ENDCLASS
 
+   ENDCLASS
 
-
-
-*------------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, w, h, LO, HI, value, tooltip, ;
                change, vertical, noticks, both, top, left, HelpId, invisible, ;
                notabstop, backcolor, lRtl, lDisabled ) CLASS TSlider
-*------------------------------------------------------------------------------*
-Local ControlHandle, nStyle
+
+   Local ControlHandle, nStyle
 
    ASSIGN ::nCol        VALUE x  TYPE "N"
    ASSIGN ::nRow        VALUE y  TYPE "N"
@@ -130,72 +128,75 @@ Local ControlHandle, nStyle
 
    ASSIGN ::OnChange    VALUE Change    TYPE "B"
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
-METHOD Value( uValue ) CLASS TSlider
-*------------------------------------------------------------------------------*
+
+   METHOD Value( uValue ) CLASS TSlider
+
    IF HB_IsNumeric ( uValue )
       SendMessage( ::hWnd, TBM_SETPOS, 1, uValue )
       //// SendMessage( ::hwnd, WM_HSCROLL, TB_ENDTRACK,0)
       ::DoChange()
    ENDIF
-RETURN SendMessage( ::hWnd, TBM_GETPOS, 0, 0 )
 
-*------------------------------------------------------------------------------*
+   RETURN SendMessage( ::hWnd, TBM_GETPOS, 0, 0 )
+
 METHOD RangeMin( uValue ) CLASS TSlider
-*------------------------------------------------------------------------------*
+
    IF HB_IsNumeric ( uValue )
       ::nRangeMin := uValue
       If ValidHandler( ::hWnd )
          SetSliderRange( ::hWnd, uValue, ::nRangeMax )
       EndIf
    ENDIF
-RETURN ::nRangeMin
 
-*------------------------------------------------------------------------------*
+   RETURN ::nRangeMin
+
 METHOD RangeMax( uValue ) CLASS TSlider
-*------------------------------------------------------------------------------*
+
    IF HB_IsNumeric( uValue )
       ::nRangeMax := uValue
       If ValidHandler( ::hWnd )
          SetSliderRange( ::hWnd, ::nRangeMin, uValue )
       EndIf
    ENDIF
-RETURN ::nRangeMax
 
-*------------------------------------------------------------------------------*
+   RETURN ::nRangeMax
+
 METHOD BackColor( uValue ) CLASS TSlider
-*------------------------------------------------------------------------------*
-Local f
+
+   Local f
+
    IF HB_IsArray( uValue )
       ::Super:BackColor := uValue
       RedrawWindow( ::hWnd )
-		f := GetFocus()
+      f := GetFocus()
       setfocus( ::hWnd )
       setfocus( f )
    ENDIF
-RETURN ::Super:BackColor
 
-*------------------------------------------------*
+   RETURN ::Super:BackColor
+
 METHOD Events_Hscroll ( wParam )   CLASS TSlider
-*------------------------------------------------*
+
    IF loword( wParam ) == TB_ENDTRACK
       ::DoChange()
    ELSE
       Return ::Super:Events_HScroll( wParam )
    ENDIF
-Return NIL
 
-*-------------------------------------------------*
+   Return NIL
+
 METHOD Events_Vscroll ( wParam )   CLASS TSlider
-*-------------------------------------------------*
+
    IF loword( wParam ) == TB_ENDTRACK
       ::DoChange()
    ELSE
       Return ::Super:Events_VScroll( wParam )
    ENDIF
-Return NIL
+
+   Return NIL
+
 
 #pragma BEGINDUMP
 
@@ -228,9 +229,9 @@ HB_FUNC( INITSLIDER )
    HWND hwnd, hbutton;
    int Style, StyleEx;
 
-	INITCOMMONCONTROLSEX  i;
+   INITCOMMONCONTROLSEX  i;
    i.dwSize = sizeof( INITCOMMONCONTROLSEX );
-	i.dwICC = ICC_DATE_CLASSES;
+   i.dwICC = ICC_DATE_CLASSES;
    InitCommonControlsEx( &i );
 
    hwnd = HWNDparam( 1 );

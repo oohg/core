@@ -64,8 +64,9 @@
 
 
 Function DrawTextOut( window, row, col, string, fontcolor, backcolor, fontname, fontsize, bold, italic, underline, strikeout, transparent )
-Local oWnd, oControl
-Local row1, col1
+
+   Local oWnd, oControl
+   Local row1, col1
 
    oControl := TControl()
    oControl:SetForm( , window, FontName, FontSize, FontColor, BackColor )
@@ -80,11 +81,12 @@ Local row1, col1
       oWnd:GraphCommand := { | hWnd, aData | _OOHG_GraphCommand( hWnd, aData ) }
       aAdd( oWnd:GraphData, _OOHG_NewGraphCommand_Text( oWnd:hWnd, 0, row, col, row1, col1, oControl:FontColor, string, oControl:BackColor, transparent, bold, italic, underline, strikeout, oControl:fontname, oControl:fontsize ) )
    EndIf
-Return Nil
 
+   Return Nil
 
 Function DrawLine( window, row, col, row1, col1, penrgb, penwidth )
-Local oWnd := GetFormObject( window )
+
+   Local oWnd := GetFormObject( window )
 
    If oWnd:hWnd > 0
       If ValType( penrgb ) == "U"
@@ -93,20 +95,22 @@ Local oWnd := GetFormObject( window )
       If ValType( penwidth ) == "U"
          penwidth := 1
       EndIf
-/*
+      /*
       linedraw( oWnd:hWnd, row, col, row1, col1, penrgb, penwidth)
 
       aAdd ( oWnd:GraphTasks, { || linedraw( oWnd:hWnd, row, col, row1, col1, penrgb, penwidth) } )
-*/
+      */
       oWnd:GraphCommand := { | hWnd, aData | _OOHG_GraphCommand( hWnd, aData ) }
       aAdd( oWnd:GraphData, _OOHG_NewGraphCommand( oWnd:hWnd, 1, row, col, row1, col1, penrgb, penwidth ) )
    EndIf
-Return Nil
+
+   Return Nil
 
 
 Function DrawRect( window, row, col, row1, col1, penrgb, penwidth, fillrgb )
-Local oWnd := GetFormObject( window )
-Local fill
+
+   Local oWnd := GetFormObject( window )
+   Local fill
 
    If oWnd:hWnd > 0
       If ValType( penrgb ) == "U"
@@ -121,20 +125,21 @@ Local fill
       Else
          fill := .T.
       EndIf
-/*
+      /*
       rectdraw( oWnd:hWnd, row, col, row1, col1, penrgb, penwidth, fillrgb, fill)
 
       aAdd ( oWnd:GraphTasks, { || rectdraw( oWnd:hWnd, row, col, row1, col1, penrgb, penwidth, fillrgb, fill) } )
-*/
+      */
       oWnd:GraphCommand := { | hWnd, aData | _OOHG_GraphCommand( hWnd, aData ) }
       aAdd( oWnd:GraphData, _OOHG_NewGraphCommand( oWnd:hWnd, 2, row, col, row1, col1, penrgb, penwidth, fillrgb, fill ) )
    EndIf
-Return Nil
 
+   Return Nil
 
 Function DrawRoundRect( window, row, col, row1, col1, width, height, penrgb, penwidth, fillrgb )
-Local oWnd := GetFormObject( window )
-Local fill
+
+   Local oWnd := GetFormObject( window )
+   Local fill
 
    If oWnd:hWnd > 0
       If ValType( penrgb ) == "U"
@@ -149,20 +154,21 @@ Local fill
       Else
          fill := .T.
       EndIf
-/*
+      /*
       roundrectdraw( oWnd:hWnd, row, col, row1, col1, width, height, penrgb, penwidth, fillrgb, fill)
 
       aAdd ( oWnd:GraphTasks, { || roundrectdraw( oWnd:hWnd, row, col, row1, col1, width, height, penrgb, penwidth, fillrgb, fill) } )
-*/
+      */
       oWnd:GraphCommand := { | hWnd, aData | _OOHG_GraphCommand( hWnd, aData ) }
       aAdd( oWnd:GraphData, _OOHG_NewGraphCommand( oWnd:hWnd, 3, row, col, row1, col1, penrgb, penwidth, fillrgb, fill, , , , , width, height ) )
    EndIf
-Return Nil
 
+   Return Nil
 
 Function DrawEllipse( window, row, col, row1, col1, penrgb, penwidth, fillrgb )
-Local oWnd := GetFormObject( window )
-Local fill
+
+   Local oWnd := GetFormObject( window )
+   Local fill
 
    If oWnd:hWnd > 0
       If ValType( penrgb ) == "U"
@@ -177,19 +183,20 @@ Local fill
       Else
          fill := .T.
       EndIf
-/*
+      /*
       ellipsedraw( oWnd:hWnd, row, col, row1, col1, penrgb, penwidth, fillrgb, fill)
 
       aAdd ( oWnd:GraphTasks, { || ellipsedraw( oWnd:hWnd, row, col, row1, col1, penrgb, penwidth, fillrgb, fill) } )
-*/
+      */
       oWnd:GraphCommand := { | hWnd, aData | _OOHG_GraphCommand( hWnd, aData ) }
       aAdd( oWnd:GraphData, _OOHG_NewGraphCommand( oWnd:hWnd, 4, row, col, row1, col1, penrgb, penwidth, fillrgb, fill ) )
    EndIf
-Return Nil
 
+   Return Nil
 
 Function DrawArc( window, row, col, row1, col1, rowr, colr, rowr1, colr1, penrgb, penwidth )
-Local oWnd := GetFormObject( window )
+
+   Local oWnd := GetFormObject( window )
 
    If oWnd:hWnd > 0
       If ValType( penrgb ) == "U"
@@ -198,19 +205,20 @@ Local oWnd := GetFormObject( window )
       If ValType( penwidth ) == "U"
          penwidth := 1
       EndIf
-/*
+      /*
       arcdraw( oWnd:hWnd, row, col, row1, col1, rowr, colr, rowr1, colr1, penrgb, penwidth)
       aAdd ( oWnd:GraphTasks, { || arcdraw( oWnd:hWnd, row, col, row1, col1, rowr, colr, rowr1, colr1, penrgb, penwidth) } )
-*/
+      */
       oWnd:GraphCommand := { | hWnd, aData | _OOHG_GraphCommand( hWnd, aData ) }
       aAdd( oWnd:GraphData, _OOHG_NewGraphCommand( oWnd:hWnd, 5, row, col, row1, col1, penrgb, penwidth, , , rowr, colr, rowr1, colr1 ) )
    EndIf
-Return Nil
 
+   Return Nil
 
 Function DrawPie( window, row, col, row1, col1, rowr, colr, rowr1, colr1, penrgb, penwidth, fillrgb )
-Local oWnd := GetFormObject( window )
-Local fill
+
+   Local oWnd := GetFormObject( window )
+   Local fill
 
    If oWnd:hWnd > 0
       If ValType( penrgb ) == "U"
@@ -225,22 +233,23 @@ Local fill
       Else
          fill := .T.
       EndIf
-/*
+      /*
       piedraw( oWnd:hWnd, row, col, row1, col1, rowr, colr, rowr1, colr1, penrgb, penwidth, fillrgb, fill)
 
       aAdd ( oWnd:GraphTasks, { || piedraw( oWnd:hWnd, row, col, row1, col1, rowr, colr, rowr1, colr1, penrgb, penwidth, fillrgb, fill) } )
-*/
+      */
       oWnd:GraphCommand := { | hWnd, aData | _OOHG_GraphCommand( hWnd, aData ) }
       aAdd( oWnd:GraphData, _OOHG_NewGraphCommand( oWnd:hWnd, 6, row, col, row1, col1, penrgb, penwidth, fillrgb, fill, rowr, colr, rowr1, colr1 ) )
    EndIf
-Return Nil
 
+   Return Nil
 
 Function DrawPolygon( window, apoints, penrgb, penwidth, fillrgb )
-Local oWnd := GetFormObject( window )
-Local fill
-Local xarr
-Local yarr
+
+   Local oWnd := GetFormObject( window )
+   Local fill
+   Local xarr
+   Local yarr
 
    If oWnd:hWnd > 0
       If ValType( penrgb ) == "U"
@@ -258,20 +267,21 @@ Local yarr
       xarr := Array( Len( apoints ) )
       yarr := Array( Len( apoints ) )
       aEval( apoints, { |a, i| yarr[ i ] := a[ 1 ], xarr[ i ] := a[ 2 ] } )
-/*
+      /*
       polygondraw(oWnd:hWnd, xarr, yarr, penrgb, penwidth, fillrgb, fill)
       aAdd( oWnd:GraphTasks, {||polygondraw(oWnd:hWnd, xarr, yarr, penrgb, penwidth, fillrgb, fill)})
-*/
+      */
       oWnd:GraphCommand := { | hWnd, aData | _OOHG_GraphCommand( hWnd, aData ) }
       aAdd( oWnd:GraphData, _OOHG_NewGraphCommand( oWnd:hWnd, 8, yarr, xarr, , , penrgb, penwidth, fillrgb, fill ) )
    EndIf
-Return Nil
 
+   Return Nil
 
 Function DrawPolybezier( window, apoints, penrgb, penwidth )
-Local oWnd := GetFormObject( window )
-Local xarr
-Local yarr
+
+   Local oWnd := GetFormObject( window )
+   Local xarr
+   Local yarr
 
    If oWnd:hWnd > 0
       If ValType( penrgb ) == "U"
@@ -283,18 +293,19 @@ Local yarr
       xarr := Array( Len( apoints ) )
       yarr := Array( Len( apoints ) )
       aEval( apoints, { |a, i| yarr[ i ] := a[ 1 ], xarr[ i ] := a[ 2 ] } )
-/*
+      /*
       polybezierdraw(oWnd:hWnd, xarr, yarr, penrgb, penwidth)
       aAdd( oWnd:GraphTasks, {||polybezierdraw(oWnd:hWnd, xarr, yarr, penrgb, penwidth)})
-*/
+      */
       oWnd:GraphCommand := { | hWnd, aData | _OOHG_GraphCommand( hWnd, aData ) }
       aAdd( oWnd:GraphData, _OOHG_NewGraphCommand( oWnd:hWnd, 9, yarr, xarr, , , penrgb, penwidth ) )
    EndIf
-Return Nil
 
+   Return Nil
 
 Function EraseWindow( window )
-Local oWnd := GetFormObject( window )
+
+   Local oWnd := GetFormObject( window )
 
    If oWnd:hWnd > 0
       aEval( oWnd:GraphControls, {|a| DoMethod( window, a, "Release" ) } )
@@ -304,7 +315,8 @@ Local oWnd := GetFormObject( window )
       oWnd:GraphCommand := Nil
       RedrawWindow( oWnd:hWnd )
    EndIf
-Return Nil
+
+   Return Nil
 
 
 /* Copyright Alfredo Arteaga 14/10/2001 original idea
@@ -317,12 +329,14 @@ Return Nil
  *
  * Grigory Filatov 26/02/2004 translation #2 for MiniGUI
  */
+
 Procedure GraphShow( parent, nTop, nLeft, nBottom, nRight, nHeight, nWidth, aData, cTitle, aYVals, nBarD, nWideB, nSep, nXRanges, ;
    l3D, lGrid, lxGrid, lyGrid, lxVal, lyVal, lLegends, aSeries, aColors, uType, lViewVal, cPicture, nLegendWindth, lNoborder )
-Local nI, nJ, nPos, nMax, nMin, nMaxBar, nDeep
-Local nRange, nResH, nResV,  nWide, aPoint, cName
-Local nXMax, nXMin, nHigh, nRel, nZero, nRPos, nRNeg, nType, lError
-Local oWnd := GetFormObject( parent )
+
+   Local nI, nJ, nPos, nMax, nMin, nMaxBar, nDeep
+   Local nRange, nResH, nResV,  nWide, aPoint, cName
+   Local nXMax, nXMin, nHigh, nRel, nZero, nRPos, nRNeg, nType, lError
+   Local oWnd := GetFormObject( parent )
 
    DEFAULT cTitle   := ""
    DEFAULT nSep     := 0
@@ -330,11 +344,11 @@ Local oWnd := GetFormObject( parent )
    DEFAULT nLegendWindth := 50
    DEFAULT lNoborder := .F.
 
-/*
+   /*
    #define BARS   1
    #define LINES  2
    #define POINTS 3
- */
+    */
    lError := .F.
    If ValType( uType ) == "N"
       If uType == 1 .or. uType == 2 .or. uType == 3
@@ -634,7 +648,8 @@ Local oWnd := GetFormObject( parent )
 
    nMin := nMax / nMaxBar
    nPos := nLeft + ( ( nWide + nSep ) / 2 )            // first point graph
-//   nRange := ( ( nWide + nSep ) * Len( aSeries ) ) / 2
+
+   //   nRange := ( ( nWide + nSep ) * Len( aSeries ) ) / 2
 
    If lyVal .and. Len( aYVals ) > 0                // Show yLabels
       nWideB  := ( nRight - nLeft ) / ( nMax( aData ) + 1 )
@@ -736,11 +751,12 @@ Local oWnd := GetFormObject( parent )
          DrawLine( parent, nZero - 1, nLeft - 2, nZero - 1, nRight, RED )
       EndIf
    EndIf
-Return
 
+   Return
 
 Static Procedure DrawBar( parent, nY, nX, nHigh, nWidth, l3D, nDeep, aColor )
-Local nI, nColTop, nShadow, nH := nHigh
+
+   Local nI, nColTop, nShadow, nH := nHigh
 
    nColTop := ClrShadow( RGB( aColor[ 1 ], aColor[ 2 ], aColor[ 3 ] ), 15 )
    nShadow := ClrShadow( nColTop, 15 )
@@ -764,10 +780,11 @@ Local nI, nColTop, nShadow, nH := nHigh
       // Border
       DrawBox( parent, nY, nX, nH, nWidth, l3D, nDeep )
    EndIf
-Return
 
+   Return
 
 Static Procedure DrawBox( parent, nY, nX, nHigh, nWidth, l3D, nDeep )
+
    // Set Border
    DrawLine( parent, nX,                 nY,          nX - nHigh + nDeep, nY,          BLACK )  // Left
    DrawLine( parent, nX,                 nY + nWidth, nX - nHigh + nDeep, nY + nWidth, BLACK )  // Right
@@ -786,33 +803,37 @@ Static Procedure DrawBox( parent, nY, nX, nHigh, nWidth, l3D, nDeep )
          DrawLine( parent, nX,         nY,                  nX - nDeep,     nY + nDeep,          BLACK )
       EndIf
    EndIf
-Return
 
+   Return
 
 Static Procedure DrawPoint( parent, nType, nY, nX, nHigh, aColor )
+
    If nType == 3                      // POINTS
       Circle( parent, nX - nHigh - 3, nY - 3, 8, aColor )
    ElseIf nType == 2                  // LINES
       Circle( parent, nX - nHigh - 2, nY - 2, 6, aColor )
    EndIf
-Return
 
+   Return
 
 Static Procedure Circle( window, nCol, nRow, nWidth, aColor )
-   DrawEllipse( window, nCol, nRow, nCol + nWidth - 1, nRow + nWidth - 1, , , aColor )
-Return
 
+   DrawEllipse( window, nCol, nRow, nCol + nWidth - 1, nRow + nWidth - 1, , , aColor )
+
+   Return
 
 Static Function nMax( aData )
+
    Local nI, nMax := 0
 
    For nI := 1 To Len( aData )
       nMax := Max( Len( aData[ nI ] ), nMax )
    Next nI
-Return nMax
 
+   Return nMax
 
 Static Function DetMaxVal( nNum )
+
    Local nE, nMax, nMan, nVal, nOffset
 
    nE := 9
@@ -835,19 +856,21 @@ Static Function DetMaxVal( nNum )
 
       nE --
    EndDo
-Return nVal
 
+   Return nVal
 
 Static Function ClrShadow( nColor, nFactor )
+
    Local aHSL, aRGB
 
    aHSL := RGB2HSL( GetRed( nColor ), GetGreen( nColor ), GetBlue( nColor ) )
    aHSL[ 3 ] -= nFactor
    aRGB := HSL2RGB( aHSL[ 1 ], aHSL[ 2 ], aHSL[ 3 ] )
-Return RGB( aRGB[ 1 ], aRGB[ 2 ], aRGB[ 3 ] )
 
+   Return RGB( aRGB[ 1 ], aRGB[ 2 ], aRGB[ 3 ] )
 
 Static Function RGB2HSL( nR, nG, nB )
+
    Local nMax, nMin
    Local nH, nS, nL
 
@@ -890,13 +913,14 @@ Static Function RGB2HSL( nR, nG, nB )
    EndIf
    nS := Int( nS * 239 )
    nL := Int( nL * 239 )
-Return { nH, nS, nL }
 
+   Return { nH, nS, nL }
 
 Static Function HSL2RGB( nH, nS, nL )
-Local nFor
-Local nR, nG, nB
-Local nTmp1, nTmp2, aTmp3 := { 0, 0, 0 }
+
+   Local nFor
+   Local nR, nG, nB
+   Local nTmp1, nTmp2, aTmp3 := { 0, 0, 0 }
 
    nH /= 239
    nS /= 239
@@ -940,61 +964,65 @@ Local nTmp1, nTmp2, aTmp3 := { 0, 0, 0 }
       nG := aTmp3[ 2 ]
       nB := aTmp3[ 3 ]
    EndIf
-Return { Int( nR * 255 ), Int( nG * 255 ), Int( nB * 255 ) }
 
+   Return { Int( nR * 255 ), Int( nG * 255 ), Int( nB * 255 ) }
 
 Function DrawWindowBoxIn( window, row, col, rowr, colr )
-Local oWnd := GetFormObject( window )
 
-/*
+   Local oWnd := GetFormObject( window )
+
+   /*
    WndBoxInDraw( oWnd:hWnd, row, col, rowr, colr )
    aAdd ( oWnd:GraphTasks, { || WndBoxInDraw( oWnd:hWnd, row, col, rowr, colr ) } )
-*/
+   */
    oWnd:GraphCommand := { | hWnd, aData | _OOHG_GraphCommand( hWnd, aData ) }
    aAdd( oWnd:GraphData, _OOHG_NewGraphCommand( oWnd:hWnd, 7, row, col, rowr, colr ) )
-Return Nil
+
+   Return Nil
 
 
 Function DrawWindowBoxRaised( window, row, col, rowr, colr )
-Local oWnd := GetFormObject( window )
 
-/*
+   Local oWnd := GetFormObject( window )
+
+   /*
    WndBoxRaisedDraw( oWnd:hWnd, row, col, rowr, colr )
    aAdd ( oWnd:GraphTasks, { || WndBoxRaisedDraw( oWnd:hWnd, row, col, rowr, colr ) } )
-*/
+   */
    oWnd:GraphCommand := { | hWnd, aData | _OOHG_GraphCommand( hWnd, aData ) }
    aAdd( oWnd:GraphData, _OOHG_NewGraphCommand( oWnd:hWnd, 11, row, col, rowr, colr ) )
-Return Nil
 
+   Return Nil
 
 Function DrawPieGraph( window, fromrow, fromcol, torow, tocol, series, aname, colors, ctitle, depth, l3d, lxval, lsleg, lnoborder )
-Local topleftrow // := fromrow
-Local topleftcol // := fromcol
-Local toprightrow // := fromrow
-Local toprightcol // := tocol
-Local bottomrightrow // := torow
-Local bottomrightcol // := tocol
-Local bottomleftrow // := torow
-Local bottomleftcol // := fromcol
-// Local middletoprow := fromrow
-Local middletopcol // := fromcol + int(tocol - fromcol) / 2
-Local middleleftrow // := fromrow + int(torow - fromrow) / 2
-Local middleleftcol // := fromcol
-// Local middlebottomrow := torow
-Local middlebottomcol // := fromcol + int(tocol - fromcol) / 2
-Local middlerightrow // := fromrow + int(torow - fromrow) / 2
-Local middlerightcol // := tocol
-Local fromradialrow // := 0
-Local fromradialcol // := 0
-Local toradialrow // := 0
-Local toradialcol // := 0
-Local degrees := {}
-Local cumulative := {}
-Local j, i, sum := 0
-Local cname // := ""
-Local shadowcolor // := {}
-Local nPos
-Local oWnd := GetFormObject( window )
+
+   Local topleftrow // := fromrow
+   Local topleftcol // := fromcol
+   Local toprightrow // := fromrow
+   Local toprightcol // := tocol
+   Local bottomrightrow // := torow
+   Local bottomrightcol // := tocol
+   Local bottomleftrow // := torow
+   Local bottomleftcol // := fromcol
+   // Local middletoprow := fromrow
+   Local middletopcol // := fromcol + int(tocol - fromcol) / 2
+   Local middleleftrow // := fromrow + int(torow - fromrow) / 2
+   Local middleleftcol // := fromcol
+   // Local middlebottomrow := torow
+   Local middlebottomcol // := fromcol + int(tocol - fromcol) / 2
+   Local middlerightrow // := fromrow + int(torow - fromrow) / 2
+   Local middlerightcol // := tocol
+   Local fromradialrow // := 0
+   Local fromradialcol // := 0
+   Local toradialrow // := 0
+   Local toradialcol // := 0
+   Local degrees := {}
+   Local cumulative := {}
+   Local j, i, sum := 0
+   Local cname // := ""
+   Local shadowcolor // := {}
+   Local nPos
+   Local oWnd := GetFormObject( window )
 
    If ! lNoBorder
       DrawLine( window, torow,       fromcol,     torow,       tocol,       WHITE )
@@ -1214,4 +1242,5 @@ Local oWnd := GetFormObject( window )
          fromrow := fromrow + 20
       Next i
    EndIf
-Return Nil
+
+   Return Nil

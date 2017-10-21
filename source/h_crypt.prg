@@ -544,11 +544,11 @@ FUNCTION DB_CODE(cData, cKey, aFields, cPass, cFor, cWhile)
       cVal:=&cSeek
       Select &cAlias
       seek cVal
-	   rlock()
+      rlock()
       For i=1 to nFields
          FieldPut(i, &cTmpAlias->(FieldGet(i)))
       Next
-	   dbunlock()
+      dbunlock()
       Select &cTmpAlias
       skip
    Enddo
@@ -559,9 +559,11 @@ FUNCTION DB_CODE(cData, cKey, aFields, cPass, cFor, cWhile)
 
    RETURN NIL
 
+
 EXTERN CHARXOR
 
 #pragma BEGINDUMP
+
 #include "hbapi.h"
 #include "hbapiitm.h"
 #include <windows.h>
@@ -600,4 +602,5 @@ HB_FUNC( CHARXOR )
       hb_xfree( cRet );
    }
 }
+
 #pragma ENDDUMP

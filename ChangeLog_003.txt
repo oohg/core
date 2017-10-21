@@ -2093,7 +2093,7 @@
        instead of date value.
      - Misleading comments.
 
-2012-08-27 00:45 UTC-0500 Vicente Guerra <vicente@guerra.com.mx> 
+2012-08-27 00:45 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
    * source/h_hotkey.prg
      * Now it's possible to assign a hotkey to a specific control using
        ON KEY <key> TO ( <oControl> ) ACTION <bAction>
@@ -2449,8 +2449,8 @@
     + Added to _PushEventInfo() and _PopEventInfo() functions:
       _OOHG_ThisItemRowIndex
       _OOHG_ThisItemColIndex
-      _OOHG_ThisItemCellRow 
-      _OOHG_ThisItemCellCol 
+      _OOHG_ThisItemCellRow
+      _OOHG_ThisItemCellCol
       _OOHG_ThisItemCellWidth
       _OOHG_ThisItemCellHeight
       _OOHG_ThisItemCellValue
@@ -2961,7 +2961,7 @@
        backcolor instead on the selection color.
      ! Colors of the remaining cells of the selected row (items 5 to 8
        of SELECTEDCOLORS clause) default to system's colors (not
-       respecting the DYNAMICFORECOLOR, DYNAMICBACKCOLOR, FONTCOLOR 
+       respecting the DYNAMICFORECOLOR, DYNAMICBACKCOLOR, FONTCOLOR
        and the FONTCOLOR clauses).
 
 2012-04-24 16:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
@@ -3030,7 +3030,7 @@
 2012-04-03 16:30 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
    * source/h_print.prg
      ! fixed afontcolor use
-        
+
 2012-04-01 03:13 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./compile_MINGW.bat
      + Added CVS Id.
@@ -3273,7 +3273,7 @@
    * source/h_xbrowse.prg
      + Added DATA RefreshType.
      * Modified EditItem_B method to support NOREFRESH clause.
-     
+
 2012-03-08 22:15 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_browse.prg
      + Added DBCOMMIT after DBDELETE in DELETE method.
@@ -3328,7 +3328,7 @@
    * include/i_grid.ch
    * source/h_grid.prg
      + Added CHECKBOXES clause and CheckItem( nItem, lChecked ) method.
-     
+
 2012-02-22 04:45 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
      * nColPos and nRowPos DATAs changed to HIDDEN, the only method that
@@ -3459,8 +3459,8 @@
      + Added methods InsertPopup, InsertItem and InsertSeparator.
 
 2012-02-09 22:12 UTC+0100 Cayetano Gómez <cayetano@gomezgil.es>
-	* source/h_windows.prg
-		! Fine tunning clientpos2 method
+   * source/h_windows.prg
+      ! Fine tunning clientpos2 method
 
 2012-02-08 16:25 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_frame.prg
@@ -3480,15 +3480,15 @@
      * Updated.
 
 2012-02-08 16:28 UTC+0100 Cayetano Gómez <cayetano@gomezgil.es>
-	* source/h_toolbar.prg
-		+ added ltop DATA
-	* source/h_windows.prg
-		! Fixed clientpos2 method
-		  Thanks to Vicente Guerra for indications.
-	* include/i_textbox.ch
-		! Fixed mistake, (bwhen) => {bWhen}
-	* Changelog 
-		! Fixed year in many annotations
+   * source/h_toolbar.prg
+      + added ltop DATA
+   * source/h_windows.prg
+      ! Fixed clientpos2 method
+        Thanks to Vicente Guerra for indications.
+   * include/i_textbox.ch
+      ! Fixed mistake, (bwhen) => {bWhen}
+   * Changelog
+      ! Fixed year in many annotations
 
 2012-02-03 10:27 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_graph.prg
@@ -3526,7 +3526,7 @@
 2012-01-19 16:30 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_graph.prg
      ! Fixed cancelation when number of series exceds 16.
-     
+
 2012-01-18 02:21 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_windefs.ch
      + Added defines for EM_GETFIRSTVISIBLELINE and EM_LINESCROLL
@@ -3534,7 +3534,7 @@
    * source/h_textbox.prg
      ! Fixed: when editing a multiline editbox the changes are not
        visible because the text is scrolled to the first line.
-     
+
 2011-12-31 14:38 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/winprint.prg
    * source/h_textarray.prg
@@ -3550,7 +3550,7 @@
    * source/h_crypt.prg
      ! Fixed MinGW version 4.5.2-dw2 errors and warnings, in order to
        compile with Harbour 3.1 nightly distribution.
-     
+
 2011-12-15 18:28 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
    * source/h_listbox.prg
      + ::InsertItem() method added.
@@ -3604,7 +3604,7 @@
        CHR(10) when entering a new character at EOL.
        Corrected to insert new characters before EOF instead of
        overwriting (same behaviour as MS-Word).
-       
+
 2011-12-08 19:04 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
    * source/h_tree.prg
      ! Commented TTREE_FONTCOLOR() function. This code is not
@@ -3816,7 +3816,7 @@
 2011-11-08 20:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_tree.prg
      ! Fixed BCC compiler warnings.
-     
+
 2011-11-08 10:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt
      * Updated
@@ -3973,7 +3973,7 @@
    * source/h_button.prg
      + Added C definitions needed to compile with BCC.
      - Commented out includes of uxtheme.h and tmschema.h
-     
+
 2011-10-23 03:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt
      * Updated.
@@ -4022,7 +4022,7 @@
      ! Fixed: SORT clause wasn't working.
      ! Fixed: value returns 0 after changing item text (now, value
        return a reference to the item selected before text change).
-     
+
 2011-10-17 23:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt
      + Updated with TTREE class new events.
@@ -4355,7 +4355,7 @@
        an item is selected and to clear it when selection is changed.
    * source/makelib_mingw.bat
      ! Fixed missing % in variable expansion.
-     
+
 2011-09-02 20:19 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
    * source/h_error.prg
     * version updated.
@@ -4406,7 +4406,7 @@
    * samples/oohg/oohgrecord/xbrowsearray.prg
      + Added APPEND method to XBrowse_Array class.
      * Changed comments about methods used and not used by TXBROWSE class.
-     
+
 2011-08-30 22:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt
      * Added EDITGRID message of TXBROWSE class.
@@ -4578,13 +4578,13 @@
      + Added missing resource.
 
 2011-08-14 00:08:54 Cayetano Gomez  <cayetano@gomezgil.es>
-	* source/h_Label.prg
-	* source/h_form.prg
-	* source/h_controlmisc.prg
-	* source/c-font.c
-	  + angle,fontwidth to fonts
-	  ! resolved:focus effect in 'load windows'
-	  + added tcontrol:focuseffect to make code more simple
+   * source/h_Label.prg
+   * source/h_form.prg
+   * source/h_controlmisc.prg
+   * source/c-font.c
+     + angle,fontwidth to fonts
+     ! resolved:focus effect in 'load windows'
+     + added tcontrol:focuseffect to make code more simple
 
 2011-08-13 16:31 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_listbox.prg
@@ -4606,7 +4606,7 @@
    * ./compile_mingw.bat
      ! Fixed deleting _oohg_resconfig.h generates QAC warning.
    + resources/_oohg_resconfig.h
-    
+
 2011-08-08 14:23 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
    * source/h_form.prg
      ! Fixed xHarbour compilation.

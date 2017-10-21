@@ -64,6 +64,7 @@
 #include "hbclass.ch"
 
 CLASS TReg32
+
    DATA cRegKey
    DATA nKey
    DATA nHandle
@@ -79,12 +80,13 @@ CLASS TReg32
    METHOD Close() BLOCK {| Self | If( ::lError, , ( ::nError := RegCloseKey( ::nHandle ) ) ) }
 
    /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
-ENDCLASS
 
-//------------------------------------------------------------------------------
+   ENDCLASS
+
 METHOD New( nKey, cRegKey, lShowError ) CLASS TReg32
-//------------------------------------------------------------------------------
-Local nReturn, nHandle := 0
+
+   Local nReturn, nHandle := 0
+
    ASSIGN cRegKey VALUE cRegKey TYPE "C" DEFAULT ""
 
    If ( nReturn := RegOpenKeyExA( nKey, cRegKey, @nHandle ) ) == ERROR_SUCCESS
@@ -99,12 +101,13 @@ Local nReturn, nHandle := 0
    ::nError := nReturn
    ::nHandle := nHandle
    ::cRegKey := cRegKey
-Return Self
 
-//------------------------------------------------------------------------------
+   Return Self
+
 METHOD Create( nKey, cRegKey, lShowError ) CLASS TReg32
-//------------------------------------------------------------------------------
-Local nReturn, nHandle := 0
+
+   Local nReturn, nHandle := 0
+
    ASSIGN cRegKey VALUE cRegKey TYPE "C" DEFAULT ""
 
    If ( nReturn := RegCreateKey( nKey, cRegKey, @nHandle ) ) == ERROR_SUCCESS
@@ -121,12 +124,13 @@ Local nReturn, nHandle := 0
    ::lError := ( ::nError != ERROR_SUCCESS )
    ::nHandle := nHandle
    ::cRegKey := cRegKey
-Return Self
 
-//------------------------------------------------------------------------------
+   Return Self
+
 METHOD Get( cSubkey, uVar ) CLASS TReg32
-//------------------------------------------------------------------------------
-Local cValue := "", nType := 0, nLen := 0, cType
+
+   Local cValue := "", nType := 0, nLen := 0, cType
+
    If ! ::lError
       ::nError := RegQueryValueExA( ::nHandle, cSubkey, 0, @nType, @cValue, @nLen )
 
@@ -143,12 +147,13 @@ Local cValue := "", nType := 0, nLen := 0, cType
          uVar := CToT( uVar )
       EndCase
    EndIf
-Return uVar
 
-//------------------------------------------------------------------------------
+   Return uVar
+
 METHOD Set( cSubKey, uVar, nType ) CLASS TReg32
-//------------------------------------------------------------------------------
-Local cType, nLen
+
+   Local cType, nLen
+
    If ! ::lError
       cType := ValType( uVar )
 
@@ -184,23 +189,24 @@ Local cType, nLen
 
       ::nError := RegSetValueExA( ::nHandle, cSubkey, 0, nType, @uVar, nLen )
    EndIf
-Return Nil
 
-//------------------------------------------------------------------------------
+   Return Nil
+
 METHOD Delete( cSubKey ) CLASS TReg32
-//------------------------------------------------------------------------------
+
    If ! ::lError
       ::nError := RegDeleteValueA( ::nHandle, cSubkey )
    EndIf
-Return Nil
 
-//------------------------------------------------------------------------------
+   Return Nil
+
 METHOD KeyDelete( cSubKey ) CLASS TReg32
-//------------------------------------------------------------------------------
+
    If ! ::lError
       ::nError := RegDeleteKey( ::nHandle, cSubkey )
    EndIf
-Return Nil
+
+   Return Nil
 
 
 #pragma BEGINDUMP
@@ -365,28 +371,31 @@ HB_FUNC( REGCONNECTREGISTRY )
  * This functions were adapted from HMG Extended
  */
 
-//------------------------------------------------------------------------------
+
 FUNCTION IsRegistryKey( nKey, cRegKey )
-//------------------------------------------------------------------------------
-Local oReg, lExist
+
+   Local oReg, lExist
+
    oReg := TReg32():New( nKey, cRegKey, .F. )
    lExist := ! oReg:lError
    oReg:Close()
-Return lExist
 
-//------------------------------------------------------------------------------
+   Return lExist
+
 FUNCTION CreateRegistryKey( nKey, cRegKey )
-//------------------------------------------------------------------------------
-Local oReg, lSuccess
+
+   Local oReg, lSuccess
+
    oReg := TReg32():Create( nKey, cRegKey, .F. )
    lSuccess := ! oReg:lError
    oReg:Close()
-Return lSuccess
 
-//------------------------------------------------------------------------------
+   Return lSuccess
+
 FUNCTION GetRegistryValue( nKey, cRegKey, cRegVar, cType )
-//------------------------------------------------------------------------------
-Local oReg, uVal
+
+   Local oReg, uVal
+
    DEFAULT cRegVar TO '', cType TO 'C'
 
    oReg := TReg32():New( nKey, cRegKey, .F. )
@@ -408,12 +417,13 @@ Local oReg, uVal
       EndIf
    EndIf
    oReg:Close()
-Return uVal
 
-//------------------------------------------------------------------------------
+   Return uVal
+
 FUNCTION SetRegistryValue( nKey, cRegKey, cRegVar, uVal )
-//------------------------------------------------------------------------------
-Local oReg, lSuccess
+
+   Local oReg, lSuccess
+
    DEFAULT cRegVar TO ''
 
    oReg := TReg32():New( nKey, cRegKey, .F. )
@@ -422,12 +432,13 @@ Local oReg, lSuccess
       lSuccess := ( oReg:nError == ERROR_SUCCESS )
    EndIf
    oReg:Close()
-Return lSuccess
 
-//------------------------------------------------------------------------------
+   Return lSuccess
+
 FUNCTION DeleteRegistryVar( nKey, cRegKey, cRegVar )
-//------------------------------------------------------------------------------
-Local oReg, lSuccess
+
+   Local oReg, lSuccess
+
    DEFAULT cRegVar TO ''
 
    oReg := TReg32():New( nKey, cRegKey, .F. )
@@ -436,16 +447,18 @@ Local oReg, lSuccess
       lSuccess := ( oReg:nError == ERROR_SUCCESS )
    EndIf
    oReg:Close()
-Return lSuccess
 
-//------------------------------------------------------------------------------
+   Return lSuccess
+
 FUNCTION DeleteRegistryKey( nKey, cRegKey, cSubKey )
-//------------------------------------------------------------------------------
-Local oReg, lSuccess
+
+   Local oReg, lSuccess
+
    oReg := TReg32():New( nKey, cRegKey, .F. )
    If ( lSuccess := ! oReg:lError )
       oReg:KeyDelete( cSubKey )
       lSuccess := ( oReg:nError == ERROR_SUCCESS )
    EndIf
    oReg:Close()
-Return lSuccess
+
+   Return lSuccess

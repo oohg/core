@@ -64,6 +64,7 @@
 #include "hbclass.ch"
 
 CLASS TTimer FROM TControl
+
    DATA Type      INIT "TIMER" READONLY
    DATA Interval  INIT 0
 
@@ -73,22 +74,22 @@ CLASS TTimer FROM TControl
    METHOD Release
 
    /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( ControlName, ParentForm, Interval, ProcedureName, lDisabled ) CLASS TTimer
-*------------------------------------------------------------------------------*
+
    ::SetForm( ControlName, ParentForm )
    ::InitStyle( ,,,, lDisabled )
    ::Register( 0, ControlName, , , , _GetId() )
    ::OnClick  := ProcedureName
    // "Real" initialization
    ::Value := Interval
-Return Self
 
-*------------------------------------------------------------------------------*
+   Return Self
+
 METHOD Value( nValue ) CLASS TTimer
-*------------------------------------------------------------------------------*
+
    If VALTYPE( nValue ) == "N"
       If ::lEnabled
          KillTimer( ::Parent:hWnd, ::Id )
@@ -96,11 +97,11 @@ METHOD Value( nValue ) CLASS TTimer
       EndIf
       ::Interval := nValue
    EndIf
-RETURN ::Interval
 
-*------------------------------------------------------------------------------*
+   RETURN ::Interval
+
 METHOD Enabled( lEnabled ) CLASS TTimer
-*------------------------------------------------------------------------------*
+
    IF VALTYPE( lEnabled ) == "L" .AND. ::lEnabled != lEnabled
       IF lEnabled
          InitTimer( ::Parent:hWnd, ::Id, ::Interval )
@@ -109,16 +110,18 @@ METHOD Enabled( lEnabled ) CLASS TTimer
       ENDIF
       ::lEnabled := lEnabled
    ENDIF
-RETURN ::lEnabled
 
-*------------------------------------------------------------------------------*
+   RETURN ::lEnabled
+
 METHOD Release() CLASS TTimer
-*------------------------------------------------------------------------------*
+
    If ::lEnabled
       KillTimer( ::Parent:hWnd, ::Id )
    EndIf
    ::lEnabled := .F.
-RETURN ::Super:Release()
+
+   RETURN ::Super:Release()
+
 
 EXTERN InitTimer, KillTimer
 
@@ -164,4 +167,5 @@ HB_FUNC( KILLTIMER )
 {
    KillTimer( HWNDparam( 1 ), ( UINT ) hb_parni( 2 ) );
 }
+
 #pragma ENDDUMP

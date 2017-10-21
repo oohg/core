@@ -66,6 +66,7 @@
 #include "i_windefs.ch"
 
 CLASS TDatePick FROM TControl
+
    DATA Type                      INIT "DATEPICK" READONLY
    DATA nWidth                    INIT 120
    DATA nHeight                   INIT 24
@@ -78,16 +79,16 @@ CLASS TDatePick FROM TControl
    METHOD DateFormat              SETGET
 
    /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
                fontsize, tooltip, change, lostfocus, gotfocus, shownone, ;
                updown, rightalign, HelpId, invisible, notabstop, bold, ;
                italic, underline, strikeout, Field, Enter, lRtl, lDisabled, ;
                lNoBorder, DateFrom, DateTo, cDateFormat ) CLASS TDatePick
-*------------------------------------------------------------------------------*
-Local ControlHandle, nStyle, nStyleEx
+
+   Local ControlHandle, nStyle, nStyleEx
 
    ASSIGN ::nCol    VALUE x TYPE "N"
    ASSIGN ::nRow    VALUE y TYPE "N"
@@ -121,12 +122,11 @@ Local ControlHandle, nStyle, nStyleEx
    ASSIGN ::OnChange    VALUE Change    TYPE "B"
    ASSIGN ::OnEnter     VALUE Enter     TYPE "B"
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD DateFormat( cDateFormat ) CLASS TDatePick
-*------------------------------------------------------------------------------*
-Local lRes
+
+   Local lRes
 
    IF VALTYPE( cDateFormat ) == "C"
       // cDateFormat == "" means reset to default
@@ -136,11 +136,10 @@ Local lRes
       ENDIF
    ENDIF
 
-Return ::cDateFormat
+   Return ::cDateFormat
 
-*------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TDatePick
-*------------------------------------------------------------------------------*
+
    IF HB_IsDate( uValue )
       IF EMPTY( uValue )
          SetDatePickNull( ::hWnd )
@@ -153,12 +152,11 @@ METHOD Value( uValue ) CLASS TDatePick
       ::DoChange()
    ENDIF
 
-Return GetDatePick( ::hWnd )
+   Return GetDatePick( ::hWnd )
 
-*------------------------------------------------------------------------------*
 METHOD Events_Notify( wParam, lParam ) CLASS TDatePick
-*------------------------------------------------------------------------------*
-Local nNotify := GetNotifyCode( lParam )
+
+   Local nNotify := GetNotifyCode( lParam )
 
    IF nNotify == DTN_DATETIMECHANGE
       ::DoChange()
@@ -166,13 +164,11 @@ Local nNotify := GetNotifyCode( lParam )
 
    ENDIF
 
-Return ::Super:Events_Notify( wParam, lParam )
-
-
-
+   Return ::Super:Events_Notify( wParam, lParam )
 
 
 CLASS TTimePick FROM TControl
+
    DATA Type                      INIT "TIMEPICK" READONLY
    DATA nWidth                    INIT 120
    DATA nHeight                   INIT 24
@@ -182,16 +178,16 @@ CLASS TTimePick FROM TControl
    METHOD Value                   SETGET
    METHOD Events_Notify
    METHOD TimeFormat              SETGET
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
                fontsize, tooltip, change, lostfocus, gotfocus, shownone, ;
                updown, rightalign, HelpId, invisible, notabstop, bold, ;
                italic, underline, strikeout, Field, Enter, lRtl, lDisabled, ;
                lNoBorder, cTimeFormat ) CLASS TTimePick
-*------------------------------------------------------------------------------*
-Local ControlHandle, nStyle, nStyleEx
+
+   Local ControlHandle, nStyle, nStyleEx
 
    ASSIGN ::nCol    VALUE x TYPE "N"
    ASSIGN ::nRow    VALUE y TYPE "N"
@@ -226,12 +222,11 @@ Local ControlHandle, nStyle, nStyleEx
    ASSIGN ::OnChange    VALUE Change    TYPE "B"
    ASSIGN ::OnEnter     VALUE Enter     TYPE "B"
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD TimeFormat( cTimeFormat ) CLASS TTimePick
-*------------------------------------------------------------------------------*
-Local lRes
+
+   Local lRes
 
    IF VALTYPE( cTimeFormat ) == "C"
       // cTimeFormat == "" means reset to default
@@ -241,11 +236,10 @@ Local lRes
       ENDIF
    ENDIF
 
-Return ::cTimeFormat
+   Return ::cTimeFormat
 
-*------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TTimePick
-*------------------------------------------------------------------------------*
+
    IF VALTYPE( uValue ) == "C"
       IF EMPTY( uValue ) .AND. IsWindowStyle( ::hWnd, DTS_SHOWNONE )
          SetDatePickNull( ::hWnd )
@@ -262,12 +256,11 @@ METHOD Value( uValue ) CLASS TTimePick
        ::DoChange()
    ENDIF
 
-Return STRZERO( GetDatePickHour( ::hWnd ), 2 ) + ":" + STRZERO( GetDatePickMinute( ::hWnd ), 2 ) + ":" + STRZERO( GetDatePickSecond( ::hWnd ), 2 )
+   Return STRZERO( GetDatePickHour( ::hWnd ), 2 ) + ":" + STRZERO( GetDatePickMinute( ::hWnd ), 2 ) + ":" + STRZERO( GetDatePickSecond( ::hWnd ), 2 )
 
-*------------------------------------------------------------------------------*
 METHOD Events_Notify( wParam, lParam ) CLASS TTimePick
-*------------------------------------------------------------------------------*
-Local nNotify := GetNotifyCode( lParam )
+
+   Local nNotify := GetNotifyCode( lParam )
 
    IF nNotify == DTN_DATETIMECHANGE
       ::DoChange()
@@ -275,10 +268,7 @@ Local nNotify := GetNotifyCode( lParam )
 
    ENDIF
 
-Return ::Super:Events_Notify( wParam, lParam )
-
-
-
+   Return ::Super:Events_Notify( wParam, lParam )
 
 
 #pragma BEGINDUMP
