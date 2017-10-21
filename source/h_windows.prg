@@ -144,9 +144,8 @@ HB_FUNC( _OOHG_SETMOUSECOORDS )
 #pragma ENDDUMP
 
 
-*------------------------------------------------------------------------------*
 CLASS TWindow
-*------------------------------------------------------------------------------*
+
    DATA hWnd                      INIT 0
    DATA aControlInfo              INIT { CHR( 0 ) }
    DATA Name                      INIT ""
@@ -355,8 +354,10 @@ CLASS TWindow
    METHOD Polygon(apoints,defpen,defbrush,style)
    METHOD PolyBezier(apoints,defpen)
    METHOD PolyBezierTo(apoints,defpen)
-*/
-ENDCLASS
+   */
+
+   ENDCLASS
+
 
 #pragma BEGINDUMP
 
@@ -1012,34 +1013,34 @@ HB_FUNC( DISABLEVISUALSTYLE )
 
 #pragma ENDDUMP
 
-*------------------------------------------------------------------------------*
+
 METHOD IsVisualStyled CLASS TWindow
-*------------------------------------------------------------------------------*
+
    IF HB_IsNil( ::lVisualStyled )
       ::lVisualStyled := _OOHG_UsesVisualStyle()
    ENDIF
-RETURN ::lVisualStyled
 
-*------------------------------------------------------------------------------*
+   RETURN ::lVisualStyled
+
 METHOD DisableVisualStyle CLASS TWindow
-*------------------------------------------------------------------------------*
+
    IF ::IsVisualStyled
       IF DisableVisualStyle( ::hWnd )
          ::lVisualStyled := .F.
          ::Redraw()
       ENDIF
    ENDIF
-RETURN Nil
 
-*------------------------------------------------------------------------------*
+   RETURN Nil
+
 METHOD PreRelease() CLASS TWindow
-*------------------------------------------------------------------------------*
-   AEVAL( ::aControls, { |o| o:PreRelease() } )
-RETURN Self
 
-*------------------------------------------------------------------------------*
+   AEVAL( ::aControls, { |o| o:PreRelease() } )
+
+   RETURN Self
+
 METHOD Enabled( lEnabled ) CLASS TWindow
-*------------------------------------------------------------------------------*
+
    IF HB_IsLogical( lEnabled )
       ::lEnabled := lEnabled
       IF ::ContainerEnabled
@@ -1048,61 +1049,62 @@ METHOD Enabled( lEnabled ) CLASS TWindow
          DisableWindow( ::hWnd )
       ENDIF
    ENDIF
-RETURN ::lEnabled
 
-*------------------------------------------------------------------------------*
+   RETURN ::lEnabled
+
 METHOD TabStop( lTabStop ) CLASS TWindow
-*------------------------------------------------------------------------------*
+
    IF HB_IsLogical( lTabStop )
       WindowStyleFlag( ::hWnd, WS_TABSTOP, IF( lTabStop, WS_TABSTOP, 0 ) )
    ENDIF
-RETURN IsWindowStyle( ::hWnd, WS_TABSTOP )
 
-*------------------------------------------------------------------------------*
+   RETURN IsWindowStyle( ::hWnd, WS_TABSTOP )
+
 METHOD Style( nStyle ) CLASS TWindow
-*------------------------------------------------------------------------------*
+
    IF HB_IsNumeric( nStyle )
       SetWindowStyle( ::hWnd, nStyle )
    ENDIF
-RETURN GetWindowStyle( ::hWnd )
 
-*------------------------------------------------------------------------------*
+   RETURN GetWindowStyle( ::hWnd )
+
 METHOD RTL( lRTL ) CLASS TWindow
-*------------------------------------------------------------------------------*
+
    If HB_IsLogical( lRTL )
       _UpdateRTL( ::hWnd, lRtl )
       ::lRtl := lRtl
    EndIf
-Return ::lRtl
 
-*------------------------------------------------------------------------------*
+   Return ::lRtl
+
 METHOD Action( bAction ) CLASS TWindow
-*------------------------------------------------------------------------------*
+
    If PCount() > 0
       ::OnClick := bAction
    EndIf
-Return ::OnClick
 
-*------------------------------------------------------------------------------*
+   Return ::OnClick
+
 METHOD SaveData() CLASS TWindow
-*------------------------------------------------------------------------------*
+
    _OOHG_EVAL( ::Block, ::Value )
    AEVAL( ::aControls, { |o| If( o:Container == nil, o:SaveData(), ) } )
-Return nil
 
-*------------------------------------------------------------------------------*
+   Return nil
+
 METHOD RefreshData() CLASS TWindow
-*------------------------------------------------------------------------------*
+
    If HB_IsBlock( ::Block )
       ::Value := _OOHG_EVAL( ::Block )
    EndIf
    AEVAL( ::aControls, { |o| o:RefreshData() } )
-Return nil
 
-*------------------------------------------------------------------------------*
+   Return nil
+
 METHOD Print( y, x, y1, x1, lAll, cType, nQuality, nColorDepth ) CLASS TWindow
-*------------------------------------------------------------------------------*
-Local myobject, cWork, cExt
+
+   Local myobject, cWork, cExt
+
    If ValType( cType ) $ "CM"
      cType := Upper( cType )
    Else
@@ -1147,12 +1149,13 @@ Local myobject, cWork, cExt
    End
 
    FErase( cWork )
-return nil
 
-*------------------------------------------------------------------------------*
+   return nil
+
 METHOD SaveAs( cFile, lAll, cType, nQuality, nColorDepth ) CLASS TWindow
-*------------------------------------------------------------------------------*
-Local hBitMap, aSize
+
+   Local hBitMap, aSize
+
    If ValType( cType ) $ "CM"
      cType := Upper( cType )
    Else
@@ -1197,20 +1200,21 @@ Local hBitMap, aSize
       EndIf
    EndIf
    DeleteObject( hBitMap )
-return nil
 
-*------------------------------------------------------------------------------*
+   return nil
+
 METHOD AddControl( oControl ) CLASS TWindow
-*------------------------------------------------------------------------------*
+
    AADD( ::aControls,      oControl )
    AADD( ::aControlsNames, UPPER( ALLTRIM( oControl:Name ) ) + CHR( 255 ) )
    AADD( ::aCtrlsTabIndxs, Len( ::aControls ) )
-Return oControl
 
-*------------------------------------------------------------------------------*
+   Return oControl
+
 METHOD DeleteControl( oControl ) CLASS TWindow
-*------------------------------------------------------------------------------*
-Local nPos, nDelOrder
+
+   Local nPos, nDelOrder
+
    nPos := aScan( ::aControlsNames, UPPER( ALLTRIM( oControl:Name ) ) + CHR( 255 ) )
    IF nPos > 0
       _OOHG_DeleteArrayItem( ::aControls,       nPos )
@@ -1220,12 +1224,13 @@ Local nPos, nDelOrder
       // renumber to avoid gaps
       AEVAL( ::aCtrlsTabIndxs, { | nOrder, i | IIF( nOrder > nDelOrder, ::aCtrlsTabIndxs[ i ] --, NIL ) } )
    ENDIF
-Return oControl
 
-*------------------------------------------------------------------------------*
+   Return oControl
+
 METHOD SearchParent( uParent ) CLASS TWindow
-*------------------------------------------------------------------------------*
-Local nPos
+
+   Local nPos
+
    If ValType( uParent ) $ "CM" .AND. ! Empty( uParent )
       If ! _IsWindowDefined( uParent )
          MsgOOHGError( "Window: "+ uParent + " is not defined. Program terminated." )
@@ -1258,11 +1263,11 @@ Local nPos
          ::Parent := ::Container:Parent
       EndIf
    EndIf
-Return uParent
 
-*------------------------------------------------------------------------------*
+   Return uParent
+
 METHOD ParentDefaults( cFontName, nFontSize, uFontColor, lNoProc ) CLASS TWindow
-*------------------------------------------------------------------------------*
+
    // Font Name:
    If ValType( cFontName ) == "C" .AND. ! EMPTY( cFontName )
       // Specified font
@@ -1322,12 +1327,13 @@ METHOD ParentDefaults( cFontName, nFontSize, uFontColor, lNoProc ) CLASS TWindow
    ElseIf ::Parent != Nil
       ::lProcMsgsOnVisible := ::Parent:lProcMsgsOnVisible
    EndIf
-Return Self
 
-*------------------------------------------------------------------------------*
+   Return Self
+
 METHOD Error( xParam ) CLASS TWindow
-*------------------------------------------------------------------------------*
-Local nPos, cMessage
+
+   Local nPos, cMessage
+
    cMessage := __GetMessage()
 
    * nPos := aScan( ::aControlsNames, UPPER( ALLTRIM( cMessage ) ) + CHR( 255 ) )
@@ -1360,24 +1366,25 @@ Local nPos, cMessage
       EndIf
    EndIf
 
-Return ::MsgNotFound( cMessage )
+   Return ::MsgNotFound( cMessage )
 
-*------------------------------------------------------------------------------*
 METHOD Control( cControl ) CLASS TWindow
-*------------------------------------------------------------------------------*
-Local nPos
+
+   Local nPos
+
    nPos := aScan( ::aControlsNames, UPPER( ALLTRIM( cControl ) ) + CHR( 255 ) )
-Return IF( nPos > 0, ::aControls[ nPos ], nil )
+
+   Return IF( nPos > 0, ::aControls[ nPos ], nil )
 
 #define HOTKEY_ID        1
 #define HOTKEY_MOD       2
 #define HOTKEY_KEY       3
 #define HOTKEY_ACTION    4
 
-*------------------------------------------------------------------------------*
 METHOD HotKey( nKey, nFlags, bAction ) CLASS TWindow
-*------------------------------------------------------------------------------*
-Local nPos, nId, uRet := nil
+
+   Local nPos, nId, uRet := nil
+
    nPos := ASCAN( ::aHotKeys, { |a| a[ HOTKEY_KEY ] == nKey .AND. a[ HOTKEY_MOD ] == nFlags } )
    If nPos > 0
       uRet := ::aHotKeys[ nPos ][ HOTKEY_ACTION ]
@@ -1398,22 +1405,24 @@ Local nPos, nId, uRet := nil
          EndIf
       Endif
    EndIf
-Return uRet
 
-*------------------------------------------------------------------------------*
+   Return uRet
+
 METHOD SetKey( nKey, nFlags, bAction ) CLASS TWindow
-*------------------------------------------------------------------------------*
-Local bCode
+
+   Local bCode
+
    bCode := _OOHG_SetKey( ::aKeys, nKey, nFlags )
    If PCOUNT() > 2
       _OOHG_SetKey( ::aKeys, nKey, nFlags, bAction )
    EndIf
-Return bCode
 
-*------------------------------------------------------------------------------*
+   Return bCode
+
 METHOD AcceleratorKey( nKey, nFlags, bAction ) CLASS TWindow
-*------------------------------------------------------------------------------*
-Local nPos, nId, uRet := nil
+
+   Local nPos, nId, uRet := nil
+
    nPos := ASCAN( ::aAcceleratorKeys, { |a| a[ HOTKEY_KEY ] == nKey .AND. a[ HOTKEY_MOD ] == nFlags } )
    If nPos > 0
       uRet := ::aAcceleratorKeys[ nPos ][ HOTKEY_ACTION ]
@@ -1434,12 +1443,13 @@ Local nPos, nId, uRet := nil
          EndIf
       Endif
    EndIf
-Return uRet
 
-*------------------------------------------------------------------------------*
+   Return uRet
+
 METHOD LookForKey( nKey, nFlags ) CLASS TWindow
-*------------------------------------------------------------------------------*
-Local lDone
+
+   Local lDone
+
    If ::Active .AND. LookForKey_Check_HotKey( ::aKeys, nKey, nFlags, Self )
       lDone := .T.
    ElseIf ::Active .AND. LookForKey_Check_bKeyDown( ::bKeyDown, nKey, nFlags, Self )
@@ -1457,10 +1467,13 @@ Local lDone
          lDone := .F.
       EndIf
    EndIf
-Return lDone
+
+   Return lDone
 
 STATIC FUNCTION LookForKey_Check_HotKey( aKeys, nKey, nFlags, Self )
-Local nPos, lDone
+
+   Local nPos, lDone
+
    nPos := ASCAN( aKeys, { |a| a[ HOTKEY_KEY ] == nKey .AND. nFlags == a[ HOTKEY_MOD ] } )
    If nPos > 0
       ::DoEvent( aKeys[ nPos ][ HOTKEY_ACTION ], "HOTKEY", { nKey, nFlags } )
@@ -1468,12 +1481,13 @@ Local nPos, lDone
    Else
       lDone := .F.
    EndIf
-Return lDone
 
-*------------------------------------------------------------------------------*
+   Return lDone
+
 STATIC FUNCTION LookForKey_Check_bKeyDown( bKeyDown, nKey, nFlags, Self )
-*------------------------------------------------------------------------------*
-Local lDone
+
+   Local lDone
+
    If HB_IsBlock( bKeyDown )
       lDone := ::DoEvent( bKeyDown, "KEYDOWN", { nKey, nFlags } )
       If ! HB_IsLogical( lDone )
@@ -1482,12 +1496,13 @@ Local lDone
    Else
       lDone := .F.
    EndIf
-Return lDone
 
-*------------------------------------------------------------------------------*
+   Return lDone
+
 METHOD Property( cProperty, xValue ) CLASS TWindow
-*------------------------------------------------------------------------------*
-LOCAL nPos
+
+   LOCAL nPos
+
    cProperty := UPPER( ALLTRIM( cProperty ) )
    nPos := ASCAN( ::aProperties, { |a| a[ 1 ] == cProperty } )
    If PCOUNT() >= 2
@@ -1504,11 +1519,10 @@ LOCAL nPos
          xValue := nil
       EndIf
    EndIf
-Return xValue
 
-*------------------------------------------------------------------------------*
+   Return xValue
+
 METHOD ReleaseAttached() CLASS TWindow
-*------------------------------------------------------------------------------*
 
    // Release hot keys
    aEval( ::aHotKeys, { |a| ReleaseHotKey( ::hWnd, a[ HOTKEY_ID ] ) } )
@@ -1521,11 +1535,10 @@ METHOD ReleaseAttached() CLASS TWindow
       ::aControls[ 1 ]:Release()
    ENDDO
 
-Return nil
+   Return nil
 
-*------------------------------------------------------------------------------*
 METHOD SetRedraw( lRedraw ) CLASS TWindow
-*------------------------------------------------------------------------------*
+
    If HB_IsLogical( lRedraw )
       ::lRedraw := lRedraw
       If lRedraw
@@ -1535,11 +1548,11 @@ METHOD SetRedraw( lRedraw ) CLASS TWindow
          SendMessage( ::hWnd, WM_SETREDRAW, 0, 0 )
       EndIf
    EndIf
-Return ::lRedraw
 
-*------------------------------------------------------------------------------*
+   Return ::lRedraw
+
 METHOD Visible( lVisible ) CLASS TWindow
-*------------------------------------------------------------------------------*
+
    If HB_IsLogical( lVisible )
       ::lVisible := lVisible
       If ::ContainerVisible
@@ -1554,22 +1567,20 @@ METHOD Visible( lVisible ) CLASS TWindow
 
       ::CheckClientsPos()
    EndIf
-Return ::lVisible
 
-*------------------------------------------------------------------------------*
+   Return ::lVisible
+
 METHOD GetTextWidth( cString ) CLASS TWindow
-*------------------------------------------------------------------------------*
-Return GetTextWidth( nil, cString, ::FontHandle )
 
-*------------------------------------------------------------------------------*
+   Return GetTextWidth( nil, cString, ::FontHandle )
+
 METHOD GetTextHeight( cString ) CLASS TWindow
-*------------------------------------------------------------------------------*
-Return GetTextHeight( nil, cString, ::FontHandle )
 
-*------------------------------------------------------------------------------*
+   Return GetTextHeight( nil, cString, ::FontHandle )
+
 METHOD ClientWidth( nWidth ) CLASS TWindow
-*------------------------------------------------------------------------------*
-LOCAL aClientRect
+
+   LOCAL aClientRect
 
    If HB_IsNumeric( nWidth )
       aClientRect := { 0, 0, 0, 0 }
@@ -1580,12 +1591,12 @@ LOCAL aClientRect
    // Window may be greater than requested width... verify it again
    aClientRect := { 0, 0, 0, 0 }
    GetClientRect( ::hWnd, aClientRect )
-Return aClientRect[ 3 ] - aClientRect[ 1 ]
 
-*------------------------------------------------------------------------------*
+   Return aClientRect[ 3 ] - aClientRect[ 1 ]
+
 METHOD ClientHeight( nHeight ) CLASS TWindow
-*------------------------------------------------------------------------------*
-LOCAL aClientRect
+
+   LOCAL aClientRect
 
    If HB_IsNumeric( nHeight )
       aClientRect := { 0, 0, 0, 0 }
@@ -1596,12 +1607,13 @@ LOCAL aClientRect
    // Window may be greater than requested height... verify it again
    aClientRect := { 0, 0, 0, 0 }
    GetClientRect( ::hWnd, aClientRect )
-Return aClientRect[ 4 ] - aClientRect[ 2 ]
 
-*------------------------------------------------------------------------------*
+   Return aClientRect[ 4 ] - aClientRect[ 2 ]
+
 METHOD AdjustResize( nDivh, nDivw, lSelfOnly ) CLASS TWindow
-*------------------------------------------------------------------------------*
-LOCAL nFixedHeightUsed
+
+   LOCAL nFixedHeightUsed
+
    IF ::lAdjust
       //// nFixedHeightUsed = pixels used by non-scalable elements inside client area
       IF ::container == nil
@@ -1628,12 +1640,13 @@ LOCAL nFixedHeightUsed
          AEVAL( ::aControls, { |o| o:AdjustResize( nDivh, nDivw ) } )
       ENDIF
    ENDIF
-Return nil
 
-*------------------------------------------------------------------------------*
+   Return nil
+
 METHOD Anchor( xAnchor ) CLASS TWindow
-*------------------------------------------------------------------------------*
-LOCAL nTop, nLeft, nBottom, nRight
+
+   LOCAL nTop, nLeft, nBottom, nRight
+
    If HB_IsNumeric( xAnchor )
       ::nAnchor := INT( xAnchor ) % 16
    ElseIf HB_IsString( xAnchor )
@@ -1666,12 +1679,13 @@ LOCAL nTop, nLeft, nBottom, nRight
          ::nAnchor := nTop + nLeft + nBottom + nRight
       EndIf
    EndIf
-Return ::nAnchor
 
-*------------------------------------------------------------------------------*
+   Return ::nAnchor
+
 METHOD AdjustAnchor( nDeltaH, nDeltaW ) CLASS TWindow
-*------------------------------------------------------------------------------*
-LOCAL nAnchor, lTop, lLeft, lBottom, lRight, nRow, nCol, nWidth, nHeight, lChange
+
+   LOCAL nAnchor, lTop, lLeft, lBottom, lRight, nRow, nCol, nWidth, nHeight, lChange
+
    If ::nAnchor == NIL
       Return nil
    EndIf
@@ -1717,11 +1731,11 @@ LOCAL nAnchor, lTop, lLeft, lBottom, lRight, nRow, nCol, nWidth, nHeight, lChang
          ::SizePos( nRow, nCol, nWidth, nHeight )
       EndIf
    EndIf
-Return nil
 
-*------------------------------------------------------------------------------*
+   Return nil
+
 METHOD CheckClientsPos() CLASS TWindow
-*------------------------------------------------------------------------------*
+
    If ::ClientAdjust > 0
       If ::Container != NIL
          ::Container:ClientsPos()
@@ -1729,19 +1743,18 @@ METHOD CheckClientsPos() CLASS TWindow
          ::Parent:ClientsPos()
       EndIf
    EndIf
-Return nil
 
-*------------------------------------------------------------------------------*
+   Return nil
+
 METHOD ClientsPos() CLASS TWindow
-*------------------------------------------------------------------------------*
-Return ::ClientsPos2( ::aControls, ::Width, ::Height )
 
-*------------------------------------------------------------------------------*
+   Return ::ClientsPos2( ::aControls, ::Width, ::Height )
+
 METHOD ClientsPos2( aControls, nWidth, nHeight ) CLASS TWindow
-*------------------------------------------------------------------------------*
-// ajusta los controles dentro de la ventana por ClientAdjust
-local n, nAdjust, oControl, nRow := 0, nCol := 0
-local nOffset // desplazamientos por borde
+
+   // ajusta los controles dentro de la ventana por ClientAdjust
+   local n, nAdjust, oControl, nRow := 0, nCol := 0
+   local nOffset // desplazamientos por borde
 
 
    If ::IsAdjust
@@ -1813,12 +1826,13 @@ local nOffset // desplazamientos por borde
       EndIf
    Next
    ::IsAdjust := .F.
-Return nil
 
-*------------------------------------------------------------------------------*
+   Return nil
+
 METHOD Adjust( nAdjust ) CLASS TWindow
-*------------------------------------------------------------------------------*
-Local Adjustpos, newAdjust
+
+   Local Adjustpos, newAdjust
+
    If PCOUNT() > 0
       If HB_IsString( nAdjust )
          AdjustPos := upper( alltrim( nAdjust ) )
@@ -1846,12 +1860,13 @@ Local Adjustpos, newAdjust
          EndIf
       EndIf
    EndIf
-Return ::ClientAdjust
 
-*------------------------------------------------------------------------------*
+   Return ::ClientAdjust
+
 METHOD GetMaxCharsInWidth( cString, nWidth ) CLASS TWindow
-*------------------------------------------------------------------------------*
-Local nChars, nMin, nMax, nSize
+
+   Local nChars, nMin, nMax, nSize
+
    If ! VALTYPE( cString ) $ "CM" .OR. LEN( cString ) == 0 .OR. ! HB_ISNUMERIC( nWidth ) .OR. nWidth <= 0
       nChars := 0
    Else
@@ -1873,13 +1888,14 @@ Local nChars, nMin, nMax, nSize
          nChars := nMin
       EndIf
    EndIf
-Return nChars
 
-*------------------------------------------------------------------------------*
+   Return nChars
+
 METHOD DebugMessageName( nMsg ) CLASS TWindow
-*------------------------------------------------------------------------------*
-STATIC aNames := NIL
-LOCAL cName
+
+   STATIC aNames := NIL
+   LOCAL cName
+
    IF aNames == NIL
       aNames := { "WM_CREATE", "WM_DESTROY", "WM_MOVE", NIL, "WM_SIZE", ;
                   "WM_ACTIVATE", "WM_SETFOCUS", "WM_KILLFOCUS", NIL, "WM_ENABLE", ;
@@ -2010,12 +2026,13 @@ LOCAL cName
    ELSE
       cName := "(unknown_" + _OOHG_HEX( nMsg ) + ")"
    ENDIF
-RETURN cName
 
-*------------------------------------------------------------------------------*
+   RETURN cName
+
 METHOD DebugMessageQuery( nMsg, wParam, lParam ) CLASS TWindow
-*------------------------------------------------------------------------------*
-LOCAL cValue, oControl
+
+   LOCAL cValue, oControl
+
    IF nMsg == WM_COMMAND
       oControl := GetControlObjectById( LOWORD( wParam ) )
       IF oControl:Id == 0
@@ -2045,18 +2062,18 @@ LOCAL cValue, oControl
                 "(0x" + _OOHG_HEX( nMsg, 4 ) + ") " + ::DebugMessageName( nMsg ) + ;
                 " 0x" + _OOHG_HEX( wParam, 8 ) + " 0x" + _OOHG_HEX( lParam, 8 )
    ENDIF
-RETURN cValue
 
-*------------------------------------------------------------------------------*
+   RETURN cValue
+
 METHOD DebugMessageNameCommand( nCommand ) CLASS TWindow
-*------------------------------------------------------------------------------*
-RETURN _OOHG_HEX( nCommand, 4 )
 
-*------------------------------------------------------------------------------*
+   RETURN _OOHG_HEX( nCommand, 4 )
+
 METHOD DebugMessageNameNotify( nNotify ) CLASS TWindow
-*------------------------------------------------------------------------------*
-LOCAL cName
-STATIC aNames := NIL
+
+   LOCAL cName
+   STATIC aNames := NIL
+
    IF aNames == NIL
       aNames := { "NM_OUTOFMEMORY", "NM_CLICK", "NM_DBLCLK", "NM_RETURN", "NM_RCLICK", ;
                   "NM_RDBLCLK", "NM_SETFOCUS", "NM_KILLFOCUS", NIL, NIL, ;
@@ -2093,44 +2110,44 @@ STATIC aNames := NIL
    ELSE
       cName := _OOHG_HEX( 65536 - nNotify, 4 )
    ENDIF
-RETURN cName
 
-*------------------------------------------------------------------------------*
+   RETURN cName
+
 METHOD DebugMessageQueryNotify( cParentName, wParam, lParam ) CLASS TWindow
-*------------------------------------------------------------------------------*
-LOCAL cValue
+
+   LOCAL cValue
+
    EMPTY( wParam )
    cValue := cParentName + "." + ;
              IF( EMPTY( ::Name ), _OOHG_HEX( GethWndFrom( lParam ), 8 ), ::Name ) + ;
              ": WM_NOTIFY." + ::DebugMessageNameNotify( GetNotifyCode( lParam ) )
-RETURN cValue
 
-*------------------------------------------------------------------------------*
+   RETURN cValue
+
 METHOD LINE(nRow ,nCol ,nToRow ,nToCol ,nWidth ,aColor, nStyle ) CLASS TWindow
-*------------------------------------------------------------------------------*
+
    default aColor to {0,0,0}
    default nWidth to 1
    ::GetDc()
    c_Line(::hdc,nRow ,nCol ,nToRow ,nToCol ,nWidth ,aColor[1] ;
       ,aColor[2] ,aColor[3] ,.t. ,.t., !empty(nStyle) ,nStyle )
    ::ReleaseDc()
-return nil
 
-*------------------------------------------------------------------------------*
+   return nil
+
 METHOD FILL(nRow , nCol , nToRow , nToCol , aColor) CLASS TWindow
-*------------------------------------------------------------------------------*
 
    default aColor to {0,0,0}
    ::GetDc()
     C_FILL(::Hdc ,nRow ,nCol ,nToRow ,nToCol ,aColor[1] ,aColor[2] ,aColor[3] , .t. )
    ::ReleaseDc()
-Return nil
 
-*------------------------------------------------------------------------------*
+   Return nil
+
 METHOD Box (nRow ,nCol ,nToRow ,nToCol ,nWidth , aColor, ;
    nStyle, nBrStyle, aBrColor) CLASS TWindow
-*------------------------------------------------------------------------------*
-local lBrColor
+
+   local lBrColor
 
    default aColor to {0,0,0}
    default nWidth to 1
@@ -2147,13 +2164,13 @@ local lBrColor
       aColor[1] ,aColor[2] ,aColor[3] ,.t. ,.t., !empty(nStyle) ,nStyle , !empty(nBrStyle),;
       nBrStyle, lBrColor , aBrColor[1],aBrColor[2],aBrColor[3]  )
    ::ReleaseDc()
-Return nil
 
-*------------------------------------------------------------------------------*
+   Return nil
+
 METHOD ROUNDbox (nRow ,nCol ,nToRow ,nToCol ,nWidth , aColor, lStyle, ;
    nStyle, nBrStyle, aBrColor ) CLASS TWindow
-*------------------------------------------------------------------------------*
-local lBrushColor
+
+   local lBrushColor
 
    EMPTY( lStyle )
 
@@ -2173,13 +2190,12 @@ local lBrushColor
       nBrStyle, lBrushColor, aBrColor[1],aBrColor[2],aBrColor[3] )
    ::ReleaseDc()
 
-Return nil
+   Return nil
 
-*------------------------------------------------------------------------------*
 METHOD Ellipse (nRow ,nCol ,nToRow ,nToCol ,nWidth , aColor, lStyle, ;
    nStyle, nBrStyle, aBrColor ) CLASS TWindow
-*------------------------------------------------------------------------------*
-local lBrushColor
+
+   local lBrushColor
 
    EMPTY( lStyle )
 
@@ -2199,24 +2215,23 @@ local lBrushColor
       nBrStyle, lBrushColor, aBrColor[1],aBrColor[2],aBrColor[3] )
    ::ReleaseDc()
 
-Return nil
+   Return nil
 
-*------------------------------------------------------------------------------*
 METHOD Arc(nRow ,nCol ,nToRow ,nToCol,X1,Y1,X2,Y2 ,nWidth ,aColor, nStyle ) CLASS TWindow
-*------------------------------------------------------------------------------*
+
    default aColor to {0,0,0}
    default nWidth to 1
    ::GetDc()
    c_arc(::hdc,nRow ,nCol ,nToRow ,nToCol,X1,Y1,X2,Y2,nWidth ,aColor[1] ;
       ,aColor[2] ,aColor[3] ,.t. ,.t., !empty(nStyle) ,nStyle )
    ::ReleaseDc()
-return nil
 
-*------------------------------------------------------------------------------*
+   return nil
+
 METHOD Pie(nRow ,nCol ,nToRow ,nToCol,x1,y1,x2,y2,nWidth , aColor, lStyle, ;
    nStyle, nBrStyle, aBrColor ) CLASS TWindow
-*------------------------------------------------------------------------------*
-local lBrushColor
+
+   local lBrushColor
 
    EMPTY( lStyle )
 
@@ -2236,7 +2251,8 @@ local lBrushColor
       nBrStyle, lBrushColor, aBrColor[1],aBrColor[2],aBrColor[3] )
    ::ReleaseDc()
 
-Return nil
+   Return nil
+
 
 #pragma BEGINDUMP
 
@@ -2285,16 +2301,17 @@ HB_FUNC( _OOHG_HEX )   // nNum, nDigits
 
 #pragma ENDDUMP
 
-*------------------------------------------------------------------------------*
-FUNCTION _OOHG_AddFrame( oFrame )
-*------------------------------------------------------------------------------*
-   AADD( _OOHG_ActiveFrame, oFrame )
-Return oFrame
 
-*------------------------------------------------------------------------------*
+FUNCTION _OOHG_AddFrame( oFrame )
+
+   AADD( _OOHG_ActiveFrame, oFrame )
+
+   Return oFrame
+
 FUNCTION _OOHG_DeleteFrame( cType )
-*------------------------------------------------------------------------------*
-Local oCtrl
+
+   Local oCtrl
+
    If LEN( _OOHG_ActiveFrame ) == 0
       // ERROR: No FRAME started
       Return .F.
@@ -2306,33 +2323,35 @@ Local oCtrl
       // ERROR: No FRAME started
       Return .F.
    EndIf
-Return .T.
 
-*------------------------------------------------------------------------------*
+   Return .T.
+
 FUNCTION _OOHG_LastFrame()
-*------------------------------------------------------------------------------*
-Local cRet
+
+   Local cRet
+
    If LEN( _OOHG_ActiveFrame ) == 0
       cRet := ""
    Else
       cRet := ATAIL( _OOHG_ActiveFrame ):Type
    EndIf
-Return cRet
 
-*------------------------------------------------------------------------------*
+   Return cRet
+
 FUNCTION _OOHG_SelectSubClass( oClass, oSubClass, bAssign )
-*------------------------------------------------------------------------------*
-LOCAL oObj
+
+   LOCAL oObj
+
    oObj := If( VALTYPE( oSubClass ) == "O", oSubClass, oClass )
    If VALTYPE( bAssign ) == "B"
       EVAL( bAssign, oObj )
    EndIf
-Return oObj
 
-*------------------------------------------------------------------------------*
+   Return oObj
+
 Function InputBox ( cInputPrompt, cDialogCaption, cDefaultValue, nTimeout, cTimeoutValue, lMultiLine, nMaxLength )
-*------------------------------------------------------------------------------*
-Local RetVal, mo
+
+   Local RetVal, mo
 
    ASSIGN cInputPrompt   VALUE cInputPrompt   TYPE "C" DEFAULT ""
    ASSIGN cDialogCaption VALUE cDialogCaption TYPE "C" DEFAULT ""
@@ -2423,26 +2442,23 @@ Local RetVal, mo
    CENTER WINDOW _InputBox
    ACTIVATE WINDOW _InputBox
 
-Return RetVal
+   Return RetVal
 
-*------------------------------------------------------------------------------*
 Function _SetWindowRgn(name,col,row,w,h,lx)
-*------------------------------------------------------------------------------*
-Return c_SetWindowRgn( GetFormHandle( name ), col, row, w, h, lx )
 
-*------------------------------------------------------------------------------*
+   Return c_SetWindowRgn( GetFormHandle( name ), col, row, w, h, lx )
+
 Function _SetPolyWindowRgn(name,apoints,lx)
-*------------------------------------------------------------------------------*
-local apx:={},apy:={}
+
+   local apx:={},apy:={}
 
    aeval(apoints,{|x| aadd(apx,x[1]), aadd(apy,x[2])})
 
-Return c_SetPolyWindowRgn( GetFormHandle( name ), apx, apy, lx )
+   Return c_SetPolyWindowRgn( GetFormHandle( name ), apx, apy, lx )
 
-*------------------------------------------------------------------------------*
 Procedure _SetNextFocus()
-*------------------------------------------------------------------------------*
-Local oCtrl, hControl
+
+   Local oCtrl, hControl
 
    hControl := GetNextDlgTabITem( GetActiveWindow(), GetFocus(), .F. )
    oCtrl := GetControlObjectByHandle( hControl )
@@ -2452,12 +2468,11 @@ Local oCtrl, hControl
       InsertTab()
    EndIf
 
-Return
+   Return
 
-*------------------------------------------------------------------------------*
 Procedure _SetPrevFocus()
-*------------------------------------------------------------------------------*
-Local oCtrl, hControl
+
+   Local oCtrl, hControl
 
    hControl := GetNextDlgTabITem( GetActiveWindow(), GetFocus(), .T. )
    oCtrl := GetControlObjectByHandle( hControl )
@@ -2467,11 +2482,10 @@ Local oCtrl, hControl
       InsertShiftTab()
    EndIf
 
-Return
+   Return
 
-*------------------------------------------------------------------------------*
 Procedure _PushEventInfo()
-*------------------------------------------------------------------------------*
+
    aAdd( _OOHG_aEventInfo, { _OOHG_ThisForm, ;
                              _OOHG_ThisEventType, ;
                              _OOHG_ThisType, ;
@@ -2484,12 +2498,12 @@ Procedure _PushEventInfo()
                              _OOHG_ThisItemCellWidth, ;
                              _OOHG_ThisItemCellHeight, ;
                              _OOHG_ThisItemCellValue } )
-Return
+   Return
 
-*------------------------------------------------------------------------------*
 Procedure _PopEventInfo()
-*------------------------------------------------------------------------------*
-Local l
+
+   Local l
+
    l := Len( _OOHG_aEventInfo )
    If l > 0
       _OOHG_ThisForm           := _OOHG_aEventInfo[ l ][ 01 ]
@@ -2519,12 +2533,13 @@ Local l
       _OOHG_ThisItemCellHeight := 0
       _OOHG_ThisItemCellValue  := nil
    EndIf
-Return
 
-*------------------------------------------------------------------------------*
+   Return
+
 Function _ListEventInfo()
-*------------------------------------------------------------------------------*
-Local aEvents, nLen
+
+   Local aEvents, nLen
+
    If EMPTY( _OOHG_ThisObject )
       aEvents := {}
    Else
@@ -2538,18 +2553,24 @@ Local aEvents, nLen
       // TODO: Add line number / procedure name
       _PopEventInfo()
    EndIf
-Return aEvents
+
+   Return aEvents
 
 Function SetAppHotKey( nKey, nFlags, bAction )
-Local bCode
+
+   Local bCode
+
    bCode := _OOHG_SetKey( _OOHG_HotKeys, nKey, nFlags )
    If PCOUNT() > 2
       _OOHG_SetKey( _OOHG_HotKeys, nKey, nFlags, bAction )
    EndIf
-Return bCode
+
+   Return bCode
 
 Function SetAppHotKeyByName( cKey, bAction )
-Local aKey, bCode
+
+   Local aKey, bCode
+
    aKey := _DetermineKey( cKey )
    If aKey[ 1 ] != 0
       bCode := _OOHG_SetKey( _OOHG_HotKeys, aKey[ 1 ], aKey[ 2 ] )
@@ -2559,10 +2580,13 @@ Local aKey, bCode
    Else
       bCode := NIL
    EndIf
-Return bCode
+
+   Return bCode
 
 Function _OOHG_MacroCall( cMacro )
-Local uRet, oError
+
+   Local uRet, oError
+
    oError := ERRORBLOCK()
    ERRORBLOCK( { | e | _OOHG_MacroCall_Error( e ) } )
    BEGIN SEQUENCE
@@ -2571,20 +2595,27 @@ Local uRet, oError
       uRet := nil
    END SEQUENCE
    ERRORBLOCK( oError )
-Return uRet
+
+   Return uRet
 
 Static Function _OOHG_MacroCall_Error( oError )
+
    IF ! EMPTY( oError )
       BREAK oError
    ENDIF
-RETURN 1
+
+   RETURN 1
 
 FUNCTION ExitProcess( nExit )
+
    DBCloseAll()
-RETURN _ExitProcess2( nExit )
+
+   RETURN _ExitProcess2( nExit )
 
 FUNCTION _OOHG_UsesVisualStyle()
-RETURN ( GetComCtl32Version() >= 6 .AND. IsAppThemed() )
+
+   RETURN ( GetComCtl32Version() >= 6 .AND. IsAppThemed() )
+
 
 EXTERN IsXPThemeActive, IsAppThemed, GetComCtl32Version
 EXTERN _OOHG_Eval, EVAL
@@ -2787,8 +2818,11 @@ HB_FUNC( _OOHG_GETMOUSEROW )
 
 #pragma ENDDUMP
 
+
 Function _OOHG_GetArrayItem( uaArray, nItem, uExtra1, uExtra2 )
-Local uRet
+
+   Local uRet
+
    IF !HB_IsArray( uaArray )
       uRet := uaArray
    ElseIf LEN( uaArray ) >= nItem .AND. nItem >= 1
@@ -2799,9 +2833,11 @@ Local uRet
    IF HB_IsBlock( uRet )
       uRet := Eval( uRet, nItem, uExtra1, uExtra2 )
    ENDIF
-Return uRet
+
+   Return uRet
 
 Function _OOHG_DeleteArrayItem( aArray, nItem )
+
 #ifdef __XHARBOUR__
    Return ADel( aArray, nItem, .T. )
 #else
@@ -2809,11 +2845,14 @@ Function _OOHG_DeleteArrayItem( aArray, nItem )
       ADel( aArray, nItem )
       ASize( aArray, Len( aArray ) - 1 )
    ENDIF
+
    Return aArray
 #endif
 
 FUNCTION _OOHG_SetKey( aKeys, nKey, nFlags, bAction, nId )
-Local nPos, uRet := nil
+
+   Local nPos, uRet := nil
+
    nPos := ASCAN( aKeys, { |a| a[ HOTKEY_KEY ] == nKey .AND. a[ HOTKEY_MOD ] == nFlags } )
    If nPos > 0
       uRet := aKeys[ nPos ][ HOTKEY_ACTION ]
@@ -2834,20 +2873,26 @@ Local nPos, uRet := nil
          EndIf
       Endif
    EndIf
-Return uRet
+
+   Return uRet
 
 FUNCTION _OOHG_SetbKeyDown( bKeyDown )
-Local uRet
+
+   Local uRet
+
    uRet := _OOHG_bKeyDown
    If HB_IsBlock( bKeyDown )
       _OOHG_bKeyDown := bKeyDown
    ElseIf PCOUNT() > 0
       _OOHG_bKeyDown := nil
    EndIf
-Return uRet
+
+   Return uRet
 
 PROCEDURE _OOHG_CallDump( uTitle, cOutput )
-LOCAL nLevel, cText, oLog
+
+   LOCAL nLevel, cText, oLog
+
    cText := ""
    nLevel := 1
    DO WHILE ! Empty( PROCNAME( nLevel ) )
@@ -2873,26 +2918,28 @@ LOCAL nLevel, cText, oLog
    IF cOutput $ "BS"        // To File or Screen
       MSGINFO( cText, AutoType( uTitle ) )
    ENDIF
-Return
 
-*------------------------------------------------------------------------------*
+   Return
+
+
 CLASS TDynamicValues
-*------------------------------------------------------------------------------*
+
    DATA   oWnd
    METHOD New
    ERROR HANDLER Error
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD New( oWnd ) CLASS TDynamicValues
-*------------------------------------------------------------------------------*
-   ::oWnd := oWnd
-Return Self
 
-*------------------------------------------------------------------------------*
+   ::oWnd := oWnd
+
+   Return Self
+
 METHOD Error( xParam ) CLASS TDynamicValues
-*------------------------------------------------------------------------------*
-Local nPos, cMessage
+
+   Local nPos, cMessage
+
    cMessage := __GetMessage()
 
    If PCOUNT() >= 1 .AND. LEFT( cMessage, 1 ) == "_"
@@ -2922,8 +2969,7 @@ Local nPos, cMessage
 
    EndIf
 
-Return ::MsgNotFound( cMessage )
-
+   Return ::MsgNotFound( cMessage )
 
 
 #pragma BEGINDUMP

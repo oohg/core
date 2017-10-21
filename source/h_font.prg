@@ -60,62 +60,50 @@
  */
 
 
-*------------------------------------------------------------------------------*
 Function _GetFontName ( ControlName, ParentForm )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):cFontName
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( ControlName, ParentForm ):cFontName
+
 Function _GetFontSize ( ControlName, ParentForm )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):nFontSize
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( ControlName, ParentForm ):nFontSize
+
 Function _GetFontBold ( ControlName, ParentForm )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):Bold
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( ControlName, ParentForm ):Bold
+
 Function _GetFontItalic ( ControlName, ParentForm )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):Italic
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( ControlName, ParentForm ):Italic
+
 Function _GetFontUnderline ( ControlName, ParentForm )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):Underline
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( ControlName, ParentForm ):Underline
+
 Function _GetFontStrikeOut ( ControlName, ParentForm )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):Strikeout
 
-*------------------------------------------------------------------------------*
+  Return GetControlObject( ControlName, ParentForm ):Strikeout
+
 Function _SetFontName ( ControlName, ParentForm , Value )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):SetFont( Value )
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( ControlName, ParentForm ):SetFont( Value )
+
 Function _SetFontSize ( ControlName, ParentForm , Value  )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):SetFont( , Value )
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( ControlName, ParentForm ):SetFont( , Value )
+
 Function _SetFontBold ( ControlName, ParentForm , Value  )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):SetFont( , , Value )
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( ControlName, ParentForm ):SetFont( , , Value )
+
 Function _SetFontItalic ( ControlName, ParentForm , Value  )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):SetFont( , , , Value )
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( ControlName, ParentForm ):SetFont( , , , Value )
+
 Function _SetFontUnderline ( ControlName, ParentForm , Value  )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):SetFont( , , , , Value )
 
-*------------------------------------------------------------------------------*
+   Return GetControlObject( ControlName, ParentForm ):SetFont( , , , , Value )
+
 Function _SetFontStrikeOut ( ControlName, ParentForm , Value  )
-*------------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):SetFont( , , , , , Value )
+
+   Return GetControlObject( ControlName, ParentForm ):SetFont( , , , , , Value )

@@ -65,32 +65,29 @@
 
 #define _HOTKEYMETHOD   SetKey
 
-*------------------------------------------------------------------------------*
 Function _DefineHotKey( cParentForm, nMod, nKey, bAction )
-*------------------------------------------------------------------------------*
-Return ( TControl():SetForm( "", cParentForm ):Parent ):_HOTKEYMETHOD( nKey, nMod, bAction )
 
-*------------------------------------------------------------------------------*
+   Return ( TControl():SetForm( "", cParentForm ):Parent ):_HOTKEYMETHOD( nKey, nMod, bAction )
+
 Function _ReleaseHotKey( cParentForm, nMod, nKey )
-*------------------------------------------------------------------------------*
-Return ( TControl():SetForm( "", cParentForm ):Parent ):_HOTKEYMETHOD( nKey, nMod, nil )
 
-*------------------------------------------------------------------------------*
+   Return ( TControl():SetForm( "", cParentForm ):Parent ):_HOTKEYMETHOD( nKey, nMod, nil )
+
 Function _GetHotKey( cParentForm, nMod, nKey )
-*------------------------------------------------------------------------------*
-Return ( TControl():SetForm( "", cParentForm ):Parent ):_HOTKEYMETHOD( nKey, nMod )
 
-*------------------------------------------------------------------------------*
+   Return ( TControl():SetForm( "", cParentForm ):Parent ):_HOTKEYMETHOD( nKey, nMod )
+
 Function _PushKey( nKey )
-*------------------------------------------------------------------------------*
+
    Keybd_Event( nKey, .f. )
    Keybd_Event( nKey, .t. )
-Return Nil
 
-*------------------------------------------------------------------------------*
+   Return Nil
+
 Function _PushKeyCommand( cKey )
-*------------------------------------------------------------------------------*
-LOCAL aKey
+
+   LOCAL aKey
+
    aKey := _DetermineKey( cKey )
    IF aKey[ 1 ] != 0
       Keybd_Event( aKey[ 1 ], .f. )
@@ -98,14 +95,14 @@ LOCAL aKey
    ELSE
       MsgOOHGError( "PUSH KEY: Key combination name not valid: " + cKey + ". Program terminated." )
    ENDIF
-Return Nil
 
-*------------------------------------------------------------------------------*
+   Return Nil
+
 FUNCTION _DetermineKey( cKey )
-*------------------------------------------------------------------------------*
-LOCAL aKey, nAlt, nCtrl, nShift, nWin, nPos, cKey2, cText
 
-STATIC aKeyTables := { "LBUTTON", "RBUTTON", "CANCEL", "MBUTTON", "XBUTTON1", "XBUTTON2", ".7", "BACK", "TAB", ".10", ;
+   LOCAL aKey, nAlt, nCtrl, nShift, nWin, nPos, cKey2, cText
+
+   STATIC aKeyTables := { "LBUTTON", "RBUTTON", "CANCEL", "MBUTTON", "XBUTTON1", "XBUTTON2", ".7", "BACK", "TAB", ".10", ;
                        ".11", "CLEAR", "RETURN", ".14", ".15", "SHIFT", "CONTROL", "MENU", "PAUSE", "CAPITAL", ;
                        "KANA", ".22", "JUNJA", "FINAL", "HANJA", ".26", "ESCAPE", "CONVERT", "NONCONVERT", "ACCEPT", ;
                        "MODECHANGE", "SPACE", "PRIOR", "NEXT", "END", "HOME", "LEFT", "UP", "RIGHT", "DOWN", ;
@@ -154,12 +151,13 @@ STATIC aKeyTables := { "LBUTTON", "RBUTTON", "CANCEL", "MBUTTON", "XBUTTON1", "X
          ENDIF
       ENDIF
    ENDDO
-RETURN aKey
 
-*------------------------------------------------------------------------------*
+   RETURN aKey
+
 Function _DefineAnyKey( cParentForm, cKey, bAction )
-*------------------------------------------------------------------------------*
-LOCAL aKey, oBase, bCode
+
+   LOCAL aKey, oBase, bCode
+
    aKey := _DetermineKey( cKey )
    IF aKey[ 1 ] != 0
       oBase := TControl():SetForm( "", cParentForm )
@@ -172,12 +170,13 @@ LOCAL aKey, oBase, bCode
       MsgOOHGError( "HOTKEY: Key combination name not valid: " + cKey + ". Program terminated." )
       // bCode := NIL
    ENDIF
-Return bCode
 
-*------------------------------------------------------------------------------*
+   Return bCode
+
 Function _DefineAccelerator( cParentForm, cKey, bAction )
-*------------------------------------------------------------------------------*
-LOCAL aKey, oBase, bCode
+
+   LOCAL aKey, oBase, bCode
+
    aKey := _DetermineKey( cKey )
    IF aKey[ 1 ] != 0
       oBase := TControl():SetForm( "", cParentForm )
@@ -190,11 +189,14 @@ LOCAL aKey, oBase, bCode
       MsgOOHGError( "ACCELERATOR: Key combination name not valid: " + cKey + ". Program terminated." )
       // bCode := NIL
    ENDIF
-Return bCode
+
+   Return bCode
+
 
 EXTERN InitHotKey, ReleaseHotKey
 
 #pragma BEGINDUMP
+
 #include <hbapi.h>
 #include <windows.h>
 #include <commctrl.h>
@@ -209,13 +211,12 @@ HB_FUNC( RELEASEHOTKEY )   // ReleaseHotKey( hWnd, nHotKeyID )
 {
    UnregisterHotKey( HWNDparam( 1 ), hb_parni( 2 ) );
 }
+
 #pragma ENDDUMP
 
 
-
-
-
 CLASS THotKey FROM TControl
+
    DATA Type      INIT "HOTKEY" READONLY
    DATA nKey      INIT 0
    DATA nMod      INIT 0
@@ -226,12 +227,13 @@ CLASS THotKey FROM TControl
    METHOD Release
 
    /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( ControlName, ParentForm, nMod, nKey, bAction, lDisabled ) CLASS THotKey
-*------------------------------------------------------------------------------*
-LOCAL aKey
+
+   LOCAL aKey
+
    IF VALTYPE( nKey ) $ "CM"
       aKey := _DetermineKey( nKey )
       nKey := aKey[ 1 ]
@@ -259,12 +261,13 @@ LOCAL aKey
       ENDIF
    ENDIF
    ::Register( 0, ControlName )
-Return Self
 
-*------------------------------------------------------------------------------*
+   Return Self
+
 METHOD Enabled( lEnabled ) CLASS THotKey
-*------------------------------------------------------------------------------*
-LOCAL oBase
+
+   LOCAL oBase
+
    IF HB_IsLogical( lEnabled ) .AND. ::lEnabled != lEnabled
       oBase := IF( EMPTY( ::Container ), ::Parent, ::Container )
       IF lEnabled
@@ -274,10 +277,11 @@ LOCAL oBase
       ENDIF
       ::lEnabled := lEnabled
    ENDIF
-RETURN ::lEnabled
 
-*------------------------------------------------------------------------------*
+   RETURN ::lEnabled
+
 METHOD Release() CLASS THotKey
-*------------------------------------------------------------------------------*
+
    ::Enabled := .F.
-RETURN ::Super:Release()
+
+   RETURN ::Super:Release()

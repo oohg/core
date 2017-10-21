@@ -559,7 +559,7 @@ HB_FUNC( SETWINDOWBACKCOLOR )
 
 HB_FUNC (GETDESKTOPWIDTH)
 {
-	hb_retni ( GetSystemMetrics(SM_CXSCREEN) ) ;
+   hb_retni ( GetSystemMetrics(SM_CXSCREEN) ) ;
 }
 
 HB_FUNC (GETDESKTOPHEIGHT)
@@ -639,22 +639,22 @@ HB_FUNC (GETWINDOWHEIGHT)
 
 HB_FUNC (GETTITLEHEIGHT)
 {
-	hb_retni ( GetSystemMetrics( SM_CYCAPTION ) ) ;
+   hb_retni ( GetSystemMetrics( SM_CYCAPTION ) ) ;
 }
 
 HB_FUNC (GETEDGEHEIGHT)
 {
-	hb_retni ( GetSystemMetrics(  SM_CYEDGE ) ) ;
+   hb_retni ( GetSystemMetrics(  SM_CYEDGE ) ) ;
 }
 
 HB_FUNC (GETBORDERHEIGHT)
 {
-	hb_retni ( GetSystemMetrics(  SM_CYSIZEFRAME ) ) ;
+   hb_retni ( GetSystemMetrics(  SM_CYSIZEFRAME ) ) ;
 }
 
 HB_FUNC (GETBORDERWIDTH)
 {
-	hb_retni ( GetSystemMetrics( SM_CXSIZEFRAME ) ) ;
+   hb_retni ( GetSystemMetrics( SM_CXSIZEFRAME ) ) ;
 }
 
 HB_FUNC ( ISWINDOWVISIBLE )
@@ -816,23 +816,23 @@ HB_FUNC( GETGRIDNEWSTATE )
 HB_FUNC( GETGRIDDISPINFOINDEX )
 {
 
-	LV_DISPINFO* pDispInfo = (LV_DISPINFO*)hb_parnl(1);
+   LV_DISPINFO* pDispInfo = (LV_DISPINFO*)hb_parnl(1);
 
-	int iItem = pDispInfo->item.iItem;
+   int iItem = pDispInfo->item.iItem;
 
-	int iSubItem = pDispInfo->item.iSubItem;
+   int iSubItem = pDispInfo->item.iSubItem;
 
-	hb_reta( 2 );
-	HB_STORNI( iItem + 1 , -1, 1 );
-	HB_STORNI( iSubItem + 1 , -1, 2 );
+   hb_reta( 2 );
+   HB_STORNI( iItem + 1 , -1, 1 );
+   HB_STORNI( iSubItem + 1 , -1, 2 );
 
 }
 
 HB_FUNC( SETGRIDQUERYDATA )
 {
-	PHB_ITEM pValue = hb_itemNew( NULL );
-	LV_DISPINFO* pDispInfo = (LV_DISPINFO*)hb_parnl(1);
-	hb_itemCopy( pValue, hb_param( 2, HB_IT_STRING ));
+   PHB_ITEM pValue = hb_itemNew( NULL );
+   LV_DISPINFO* pDispInfo = (LV_DISPINFO*)hb_parnl(1);
+   hb_itemCopy( pValue, hb_param( 2, HB_IT_STRING ));
    pDispInfo->item.pszText = (LPTSTR) hb_itemGetCPtr( pValue );
 
 }

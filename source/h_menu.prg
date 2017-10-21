@@ -67,6 +67,7 @@
 STATIC _OOHG_xMenuActive := {}
 
 CLASS TMenu FROM TControl
+
    DATA lAdjust                   INIT .F.
    DATA lMain                     INIT .F.
    DATA Type                      INIT "MENU" READONLY
@@ -81,72 +82,74 @@ CLASS TMenu FROM TControl
    METHOD SetMenuBarColor
 
    /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( Parent, Name ) CLASS TMenu
-*------------------------------------------------------------------------------*
+
    ::SetForm( Name, Parent )
    ::Container := NIL
    ::Register( CreatePopUpMenu() )
    AADD( _OOHG_xMenuActive, Self )
-Return Self
 
-*------------------------------------------------------------------------------*
+   Return Self
+
 METHOD DisableVisualStyle CLASS TMenu
-*------------------------------------------------------------------------------*
+
    IF ::IsVisualStyled
       ::Parent:DisableVisualStyle()
       IF ! ::Parent:IsVisualStyled
          ::lVisualStyled := .F.
       ENDIF
    ENDIF
-RETURN Nil
 
-*------------------------------------------------------------------------------*
+   RETURN Nil
+
 METHOD Activate( nRow, nCol ) CLASS TMenu
-*------------------------------------------------------------------------------*
-Local aPos
+
+   Local aPos
+
    aPos := GetCursorPos()
    ASSIGN aPos[ 1 ] VALUE nRow TYPE "N"
    ASSIGN aPos[ 2 ] VALUE nCol TYPE "N"
    TrackPopupMenu( ::hWnd, aPos[ 2 ], aPos[ 1 ], ::Parent:hWnd )
-Return nil
 
-*------------------------------------------------------------------------------*
+   Return nil
+
 METHOD EndMenu() CLASS TMenu
-*------------------------------------------------------------------------------*
-Local nPos
+
+   Local nPos
+
    nPos := ASCAN( _OOHG_xMenuActive, { |o| o:hWnd == ::hWnd } )
    IF nPos > 0
       ADEL( _OOHG_xMenuActive, nPos )
       ASIZE( _OOHG_xMenuActive, LEN( _OOHG_xMenuActive ) - 1 )
    ENDIF
    ::Refresh()
-Return Nil
 
-*------------------------------------------------------------------------------*
+   Return Nil
+
 METHOD Refresh() CLASS TMenu
-*------------------------------------------------------------------------------*
+
    IF ::lMain
       DrawMenuBar( ::Parent:hWnd )
    ENDIF
-Return Nil
 
-
+   Return Nil
 
 
 CLASS TMenuMain FROM TMenu
+
    DATA lMain     INIT .T.
 
    METHOD Define
    METHOD Activate    BLOCK { || nil }
    METHOD Release     BLOCK { |Self| ::Parent:oMenu := nil, ::Super:Release() }
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( Parent, Name ) CLASS TMenuMain
-*------------------------------------------------------------------------------*
+
    ::SetForm( Name, Parent )
    ::Container := NIL
    ::Register( CreateMenu() )
@@ -157,59 +160,57 @@ METHOD Define( Parent, Name ) CLASS TMenuMain
    EndIf
    SetMenu( ::Parent:hWnd, ::hWnd )
    ::Parent:oMenu := Self
-Return Self
 
-
-
+   Return Self
 
 
 CLASS TMenuContext FROM TMenu
+
    METHOD Define
    METHOD Release     BLOCK { |Self| ::Parent:ContextMenu := nil, ::Super:Release() }
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( Parent, Name ) CLASS TMenuContext
-*------------------------------------------------------------------------------*
+
    ::Super:Define( Parent, Name )
    If ::Parent:ContextMenu != nil
       ::Parent:ContextMenu:Release()
    EndIf
    ::Parent:ContextMenu := Self
-Return Self
 
-
-
+   Return Self
 
 
 CLASS TMenuNotify FROM TMenu
+
    METHOD Define
    METHOD Release     BLOCK { |Self| ::Parent:NotifyMenu := nil, ::Super:Release() }
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( Parent, Name ) CLASS TMenuNotify
-*------------------------------------------------------------------------------*
+
    ::Super:Define( Parent, Name )
    IF ::Parent:NotifyMenu != nil
       ::Parent:NotifyMenu:Release()
    ENDIF
    ::Parent:NotifyMenu := Self
-Return Self
 
-
-
+   Return Self
 
 
 CLASS TMenuDropDown FROM TMenu
+
    METHOD Define
    METHOD Release
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( Button, Parent, Name ) CLASS TMenuDropDown
-*------------------------------------------------------------------------------*
-LOCAL oContainer
+
+   LOCAL oContainer
+
    If HB_IsObject( Button )
       Parent := Button:Parent
       Button := Button:Name
@@ -220,29 +221,28 @@ LOCAL oContainer
       oContainer:ContextMenu:Release()
    EndIf
    oContainer:ContextMenu := Self
-Return Self
 
-*------------------------------------------------------------------------------*
+   Return Self
+
 METHOD Release() CLASS TMenuDropDown
-*------------------------------------------------------------------------------*
+
    If ::Container != nil
       ::Container:ContextMenu := nil
    Endif
-Return ::Super:Release()
 
-*------------------------------------------------------------------------------*
+   Return ::Super:Release()
+
 Function _EndMenu()
-*------------------------------------------------------------------------------*
+
    IF LEN( _OOHG_xMenuActive ) > 0
       ATAIL( _OOHG_xMenuActive ):EndMenu()
    ENDIF
-Return Nil
 
-
-
+   Return Nil
 
 
 CLASS TMenuItem FROM TControl
+
    DATA Type      INIT "MENUITEM" READONLY
    DATA xId       INIT 0
    DATA lMain     INIT .F.
@@ -270,13 +270,14 @@ CLASS TMenuItem FROM TControl
    METHOD Stretch              SETGET
    METHOD DoEvent
    METHOD DefaultItem( nItem ) BLOCK { |Self,nItem| SetMenuDefaultItem( ::Container:hWnd, nItem ) }
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD DefinePopUp( Caption, Name, checked, disabled, Parent, hilited, Image, ;
                     lRight, lStretch, nBreak ) CLASS TMenuItem
-*------------------------------------------------------------------------------*
-LOCAL nStyle
+
+   LOCAL nStyle
+
    If Empty( Parent )
       Parent := ATAIL( _OOHG_xMenuActive )
    EndIf
@@ -297,13 +298,14 @@ LOCAL nStyle
       ::Enabled := .F.
    EndIf
    ::lIsPopUp := .T.
-Return Self
 
-*------------------------------------------------------------------------------*
+   Return Self
+
 METHOD InsertPopUp( Caption, Name, checked, disabled, Parent, hilited, Image, ;
                     lRight, lStretch, nBreak, nPos ) CLASS TMenuItem
-*------------------------------------------------------------------------------*
-LOCAL nStyle
+
+   LOCAL nStyle
+
    If Empty( Parent )
       Parent := ATAIL( _OOHG_xMenuActive )
    EndIf
@@ -325,13 +327,14 @@ LOCAL nStyle
       ::Enabled := .F.
    EndIf
    ::lIsPopUp := .T.
-Return Self
 
-*------------------------------------------------------------------------------*
+   Return Self
+
 METHOD DefineItem( caption, action, name, Image, checked, disabled, Parent, ;
                    hilited, lRight, lStretch, nBreak ) CLASS TMenuItem
-*------------------------------------------------------------------------------*
-Local nStyle, id
+
+   Local nStyle, id
+
    If Empty( Parent )
       Parent := ATAIL( _OOHG_xMenuActive )
    EndIf
@@ -352,13 +355,14 @@ Local nStyle, id
    if HB_IsLogical( disabled )  .AND. disabled
       ::Enabled := .F.
    EndIf
-Return Self
 
-*------------------------------------------------------------------------------*
+   Return Self
+
 METHOD InsertItem( caption, action, name, Image, checked, disabled, Parent, ;
                    hilited, lRight, lStretch, nBreak, nPos ) CLASS TMenuItem
-*------------------------------------------------------------------------------*
-Local nStyle, id
+
+   Local nStyle, id
+
    If Empty( Parent )
       Parent := ATAIL( _OOHG_xMenuActive )
    EndIf
@@ -380,28 +384,30 @@ Local nStyle, id
    if HB_IsLogical( disabled )  .AND. disabled
       ::Enabled := .F.
    EndIf
-Return Self
 
-*------------------------------------------------------------------------------*
+   Return Self
+
 METHOD DefineSeparator( name, Parent, lRight ) CLASS TMenuItem
-*------------------------------------------------------------------------------*
-Local nStyle, id
+
+   Local nStyle, id
+
    If Empty( Parent )
       Parent := ATAIL( _OOHG_xMenuActive )
    EndIf
    ::SetForm( Name, Parent )
    Id := _GetId()
    nStyle := MF_SEPARATOR + IF( HB_IsLogical( lRight ) .AND. lRight, MF_RIGHTJUSTIFY, 0 )
-//   AppendMenu( ::Container:hWnd, id, nStyle )
+   //   AppendMenu( ::Container:hWnd, id, nStyle )
    AppendMenu( ::Container:hWnd, Id, Nil, nStyle )
    ::Register( 0, Name, , , , Id )
    ::xId := ::Id
-Return Self
 
-*------------------------------------------------------------------------------*
+   Return Self
+
 METHOD InsertSeparator( name, Parent, lRight, nPos ) CLASS TMenuItem
-*------------------------------------------------------------------------------*
-Local nStyle, id
+
+   Local nStyle, id
+
    If Empty( Parent )
       Parent := ATAIL( _OOHG_xMenuActive )
    EndIf
@@ -412,43 +418,46 @@ Local nStyle, id
    InsertMenu( ::Container:hWnd, id, Nil, nStyle, nPos )
    ::Register( 0, Name, , , , Id )
    ::xId := ::Id
-Return Self
 
-*------------------------------------------------------------------------------*
+   Return Self
+
 METHOD Enabled( lEnabled ) CLASS TMenuItem
-*------------------------------------------------------------------------------*
-Local lRet
+
+   Local lRet
+
    lRet := MenuEnabled( ::Container:hWnd, ::xId, lEnabled )
    ::Container:Refresh()
-Return lRet
 
-*------------------------------------------------------------------------------*
+   Return lRet
+
 METHOD Checked( lChecked ) CLASS TMenuItem
-*------------------------------------------------------------------------------*
-Local lRet
+
+   Local lRet
+
    lRet := MenuChecked( ::Container:hWnd, ::xId, lChecked )
    ::Container:Refresh()
-Return lRet
 
-*------------------------------------------------------------------------------*
+   Return lRet
+
 METHOD Hilited( lHilited ) CLASS TMenuItem
-*------------------------------------------------------------------------------*
-Local lRet
+
+   Local lRet
+
    lRet := MenuHilited( ::Container:hWnd, ::xId, lHilited, ::Parent:hWnd )
    ::Container:Refresh()
-Return lRet
 
-*------------------------------------------------------------------------------*
+   Return lRet
+
 METHOD Caption( cCaption ) CLASS TMenuItem
-*------------------------------------------------------------------------------*
-Local cRet
+
+   Local cRet
+
    cRet := MenuCaption( ::Container:hWnd, ::xId, cCaption )
    ::Container:Refresh()
-Return cRet
 
-*------------------------------------------------------------------------------*
+   Return cRet
+
 METHOD Picture( Images ) CLASS TMenuItem
-*------------------------------------------------------------------------------*
 
    If HB_IsArray( Images )
       If LEN( Images ) > 1
@@ -487,30 +496,29 @@ METHOD Picture( Images ) CLASS TMenuItem
 
    ::hBitMaps := MenuItem_SetBitMaps( ::Container:hWnd, ::xId, ::aPicture[1], ::aPicture[2], ::lStretch, OSisWinVISTAorLater() )
 
-Return ::aPicture
+   Return ::aPicture
 
-*------------------------------------------------------------------------------*
 METHOD Stretch( lStretch ) CLASS TMenuItem
-*------------------------------------------------------------------------------*
-/*
+
+   /*
    When .F. (default behavior)
       XP clips big images to expected size (defined by system metrics' parameters
       SM_CXMENUCHECK and SM_CYMENUCHECK, usually 13x13 pixels).
       Vista and Win7 show big images at their real size.
    When .T.
      XP, Vista and Win7 scale down big images to expected size.
-*/
+   */
    If HB_IsLogical( lStretch )
       If lStretch != ::lStretch
          ::lStretch := lStretch
          ::Picture(::aPicture)
       Endif
    EndIf
-Return ::lStretch
 
-*------------------------------------------------------------------------------*
+   Return ::lStretch
+
 METHOD Release() CLASS TMenuItem
-*------------------------------------------------------------------------------*
+
    // Release bitmaps
    If ::hBitMaps[1] != nil
      DeleteObject( ::hBitMaps[1] )
@@ -523,31 +531,33 @@ METHOD Release() CLASS TMenuItem
 
    DeleteMenu( ::Container:hWnd, ::xId )
    ::Container:Refresh()
-Return ::Super:Release()
 
-*------------------------------------------------------------------------------*
+   Return ::Super:Release()
+
 METHOD EndPopUp() CLASS TMenuItem
-*------------------------------------------------------------------------------*
-Local nPos
+
+   Local nPos
+
    nPos := ASCAN( _OOHG_xMenuActive, { |o| o:hWnd == ::hWnd } )
    IF nPos > 0
       ADEL( _OOHG_xMenuActive, nPos )
       ASIZE( _OOHG_xMenuActive, LEN( _OOHG_xMenuActive ) - 1 )
    ENDIF
-Return Nil
 
-*------------------------------------------------------------------------------*
+   Return Nil
+
 METHOD SetItemsColor( uColor, lApplyToSubItems ) CLASS TMenuItem
-*------------------------------------------------------------------------------*
+
    IF ::lIsPopUp
       TMenuItemSetItemsColor( Self, uColor, lApplyToSubItems )
    ENDIF
-Return Nil
 
-*------------------------------------------------------------------------------*
+   Return Nil
+
 METHOD DoEvent( bBlock, cEventType, aParams ) CLASS TMenuItem
-*------------------------------------------------------------------------------*
-Local aNew, uCargo
+
+   Local aNew, uCargo
+
    IF HB_IsNil( ::Cargo ) .AND. HB_IsNil( ::Container:Cargo ) .AND. HB_IsNil( ::Parent:Cargo )
       aNew := aParams
    ELSE
@@ -570,15 +580,17 @@ Local aNew, uCargo
       aIns( aNew, 1 )
       aNew[ 1 ] := uCargo
    ENDIF
-Return ::Super:DoEvent( bBlock, cEventType, aNew )
 
-*------------------------------------------------------------------------------*
+   Return ::Super:DoEvent( bBlock, cEventType, aNew )
+
 Function _EndMenuPopup()
-*------------------------------------------------------------------------------*
+
    IF LEN( _OOHG_xMenuActive ) > 0
       ATAIL( _OOHG_xMenuActive ):EndPopUp()
    ENDIF
-Return Nil
+
+   Return Nil
+
 
 EXTERN TrackPopUpMenu, SetMenuDefaultItem, GetMenuBarHeight
 

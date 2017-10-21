@@ -602,38 +602,38 @@ CREATE CLASS tPdf
    METHOD BookAdd
    METHOD BookClose
    METHOD BookOpen
-METHOD _OOHG_Box
-METHOD _OOHG_Line
-METHOD Box
-METHOD Box1
+   METHOD _OOHG_Box
+   METHOD _OOHG_Line
+   METHOD Box
+   METHOD Box1
    METHOD Center
-METHOD Close
-METHOD Image
-METHOD Length
+   METHOD Close
+   METHOD Image
+   METHOD Length
    METHOD NewLine
-METHOD NewPage
-METHOD PageSize
-METHOD PageOrient
-METHOD PageNumber
-METHOD Reverse
+   METHOD NewPage
+   METHOD PageSize
+   METHOD PageOrient
+   METHOD PageNumber
+   METHOD Reverse
    METHOD RJust
-METHOD SetFont
-METHOD SetLPI
-METHOD StringB
-METHOD TextCount
-METHOD Text
-METHOD OpenHeader
-METHOD EditOnHeader
-METHOD EditOffHeader
-METHOD CloseHeader
-METHOD DeleteHeader
-METHOD EnableHeader
-METHOD DisableHeader
-METHOD SaveHeader
-METHOD Header
-METHOD DrawHeader
-METHOD Margins
-METHOD CreateHeader
+   METHOD SetFont
+   METHOD SetLPI
+   METHOD StringB
+   METHOD TextCount
+   METHOD Text
+   METHOD OpenHeader
+   METHOD EditOnHeader
+   METHOD EditOffHeader
+   METHOD CloseHeader
+   METHOD DeleteHeader
+   METHOD EnableHeader
+   METHOD DisableHeader
+   METHOD SaveHeader
+   METHOD Header
+   METHOD DrawHeader
+   METHOD Margins
+   METHOD CreateHeader
    METHOD ImageInfo
    METHOD TIFFInfo
    METHOD JPEGInfo
@@ -659,39 +659,36 @@ METHOD CreateHeader
    METHOD TextNextPara
    METHOD Execute
 
-ENDCLASS
-
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   ENDCLASS
 
 METHOD Init( cFile, nLen, lOptimize )
 
    DEFAULT nLen      TO 200
    DEFAULT lOptimize TO .F.
 
-
-::aReport := array( PARAMLEN )
+   ::aReport := array( PARAMLEN )
 
    ::nFontName    := 9
    ::nFontSize    := 10
-::aReport[ LPI  ] := 6
-::aReport[ PAGESIZE ] := "LETTER"
-::aReport[ PAGEORIENT   ] := "P"
-::aReport[ PAGEX] := 8.5 * 72
-::aReport[ PAGEY] := 11.0 * 72
-::aReport[ REPORTWIDTH  ] := nLen // 200 // should be as parameter
-::aReport[ REPORTPAGE   ] := 0
-::aReport[ REPORTLINE   ] := 0   // 5
+   ::aReport[ LPI  ] := 6
+   ::aReport[ PAGESIZE ] := "LETTER"
+   ::aReport[ PAGEORIENT   ] := "P"
+   ::aReport[ PAGEX] := 8.5 * 72
+   ::aReport[ PAGEY] := 11.0 * 72
+   ::aReport[ REPORTWIDTH  ] := nLen // 200 // should be as parameter
+   ::aReport[ REPORTPAGE   ] := 0
+   ::aReport[ REPORTLINE   ] := 0   // 5
    ::nFontNamePrev  := 0
    ::nFontSizePrev  := 0
-::aReport[ PAGEBUFFER   ] := ""
+   ::aReport[ PAGEBUFFER   ] := ""
    ::lIsPageActive := .F.
    ::nDocLen := 0
-::aReport[ REPORTOBJ] := 1   //2
-::aReport[ TYPE1] := { "Times-Roman", "Times-Bold", "Times-Italic", "Times-BoldItalic", ;
+   ::aReport[ REPORTOBJ] := 1   //2
+   ::aReport[ TYPE1] := { "Times-Roman", "Times-Bold", "Times-Italic", "Times-BoldItalic", ;
    "Helvetica", "Helvetica-Bold", "Helvetica-Oblique", "Helvetica-BoldOblique", ;
    "Courier", "Courier-Bold", "Courier-Oblique", "Courier-BoldOblique" }
-::aReport[ MARGINS  ] := .t.
-::aReport[ HEADEREDIT   ] := .f.
+   ::aReport[ MARGINS  ] := .t.
+   ::aReport[ HEADEREDIT   ] := .f.
    ::nNextObj    := 0
    ::nPdfTop     := 1  // top
    ::nPdfLeft    := 10 // left & right
@@ -711,12 +708,11 @@ METHOD Init( cFile, nLen, lOptimize )
    ::aFontWidth  := { ::afo1, ::afo2, ::afo3 }
    ::WriteToFile( "%PDF-1.3" + CRLF )
 
-RETURN self
-
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN self
 
 METHOD AtSay( cString, nRow, nCol, cUnits, lExact, cId )
-local _nFont, lReverse, nAt
+
+   local _nFont, lReverse, nAt
 
    DEFAULT nRow   TO ::aReport[ REPORTLINE ]
    DEFAULT cUnits TO "R"
@@ -788,12 +784,11 @@ local _nFont, lReverse, nAt
       ENDIF
    ENDIF
 
-RETURN self
-
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN self
 
 METHOD Normal()
-local cName := ::GetFontInfo( "NAME" )
+
+   local cName := ::GetFontInfo( "NAME" )
 
    IF cName = "Times"
       ::nFontName := 1
@@ -806,12 +801,12 @@ local cName := ::GetFontInfo( "NAME" )
    IF ascan( ::aFonts, { |arr| arr[ 1 ] == ::nFontName } ) == 0
       aadd( ::aFonts, { ::nFontName, ++::nNextObj } )
    ENDIF
-RETURN self
 
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN self
 
 METHOD Italic()
-local cName := ::GetFontInfo( "NAME" )
+
+   local cName := ::GetFontInfo( "NAME" )
 
    IF cName = "Times"
       ::nFontName := 3
@@ -824,12 +819,12 @@ local cName := ::GetFontInfo( "NAME" )
    IF ascan( ::aFonts, { |arr| arr[ 1 ] == ::nFontName } ) == 0
       aadd( ::aFonts, { ::nFontName, ++::nNextObj } )
    ENDIF
-RETURN self
 
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN self
 
 METHOD Bold()
-local cName := ::GetFontInfo( "NAME" )
+
+   local cName := ::GetFontInfo( "NAME" )
 
    IF cName == "Times"
       ::nFontName := 2
@@ -842,12 +837,12 @@ local cName := ::GetFontInfo( "NAME" )
    IF ascan( ::aFonts, { |arr| arr[ 1 ] == ::nFontName } ) == 0
       aadd( ::aFonts, { ::nFontName, ++::nNextObj } )
    ENDIF
-RETURN self
 
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN self
 
 METHOD BoldItalic()
-local cName := ::GetFontInfo( "NAME" )
+
+   local cName := ::GetFontInfo( "NAME" )
 
    IF cName == "Times"
       ::nFontName := 4
@@ -860,32 +855,30 @@ local cName := ::GetFontInfo( "NAME" )
    IF ascan( ::aFonts, { |arr| arr[ 1 ] == ::nFontName } ) == 0
       aadd( ::aFonts, { ::nFontName, ++::nNextObj } )
    ENDIF
-RETURN self
 
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN self
 
 METHOD BookAdd( cTitle, nLevel, nPage, nLine )
-   aadd( ::aBookMarks, { nLevel, alltrim( cTitle ), 0, 0, 0, 0, 0, 0, nPage, IIF( nLevel == 1, ::aReport[ PAGEY ], ::aReport[ PAGEY ] - nLine * 72 / ::aReport[ LPI ] ) })
-RETURN self
 
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   aadd( ::aBookMarks, { nLevel, alltrim( cTitle ), 0, 0, 0, 0, 0, 0, nPage, IIF( nLevel == 1, ::aReport[ PAGEY ], ::aReport[ PAGEY ] - nLine * 72 / ::aReport[ LPI ] ) })
+
+   RETURN self
 
 METHOD BookClose( )
-   ::aBookMarks := nil
-RETURN self
 
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   ::aBookMarks := nil
+
+   RETURN self
 
 METHOD BookOpen( )
+
    ::aBookMarks := {}
-RETURN self
 
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN self
 
-*------------------------------------------------------------------------------*
 METHOD _OOHG_Box( x1, y1, x2, y2, nBorder, cBColor, cFColor )
-*------------------------------------------------------------------------------*
-LOCAL cBoxColor, cFilColor
+
+   LOCAL cBoxColor, cFilColor
 
    DEFAULT nBorder TO 0
    DEFAULT cBColor TO ""
@@ -930,39 +923,39 @@ LOCAL cBoxColor, cFilColor
       ::aReport[ PAGEBUFFER ] += CRLF + "0 g " + cFilColor + ltrim(str(::M2X( y1 ))) + " " + ltrim(str(::M2Y( x1 ))) + " " + ltrim(str(::M2X( y2 - y1 ))) + " -" + ltrim(str(::M2X( x2 - x1 ))) + " re f 0 g"
    ENDIF
 
-/*
-% Draw a rectangle with a 1-unit red border, filled with light blue.
-1.0 0.0 0.0 RG   % Red for stroke color
-0.5 0.75 1.0 rg  % Light blue for fill color
-200 300 50 75 re % x y w h re adds a rectangular subpath with the lower left corner at (x, y) with width w and height h.
-B
+   /*
+   % Draw a rectangle with a 1-unit red border, filled with light blue.
+   1.0 0.0 0.0 RG   % Red for stroke color
+   0.5 0.75 1.0 rg  % Light blue for fill color
+   200 300 50 75 re % x y w h re adds a rectangular subpath with the lower left corner at (x, y) with width w and height h.
+   B
 
-To draw a round rectangle, draw one side, a curve, another side, a curve, another sise, a curve, another side, a curve.
-Set the starting point with
-x0 y0 m
-Then draw a side, with
-x1 y1 l
-Then draw a curve, with
-x2 y2 x3 y3 x4 y4 c         x2 y2 and x3 y3 are the control points
+   To draw a round rectangle, draw one side, a curve, another side, a curve, another sise, a curve, another side, a curve.
+   Set the starting point with
+   x0 y0 m
+   Then draw a side, with
+   x1 y1 l
+   Then draw a curve, with
+   x2 y2 x3 y3 x4 y4 c         x2 y2 and x3 y3 are the control points
 
-See PDF reference manual at
-http://www.adobe.com/content/dam/Adobe/en/devnet/acrobat/pdfs/pdf_reference_1-7.pdf
+   See PDF reference manual at
+   http://www.adobe.com/content/dam/Adobe/en/devnet/acrobat/pdfs/pdf_reference_1-7.pdf
 
-The position of the control points must be calculated, see
-http://nacho4d-nacho4d.blogspot.com/2011/05/bezier-paths-rounded-corners-rectangles.html
-*/
+   The position of the control points must be calculated, see
+   http://nacho4d-nacho4d.blogspot.com/2011/05/bezier-paths-rounded-corners-rectangles.html
+   */
    IF nBorder > 0
       ::aReport[ PAGEBUFFER ] += CRLF + "0 g " + cBoxColor + ltrim(str(::M2X( y1 ))) + " " + ltrim(str(::M2Y( x1 ))) + " " + ltrim(str(::M2X( y2 - y1 ))) + " -" + ltrim(str(::M2X( nBorder ))) + " re f"
       ::aReport[ PAGEBUFFER ] += CRLF + "0 g " + cBoxColor + ltrim(str(::M2X( y2 - nBorder ))) + " " + ltrim(str(::M2Y( x1 ))) + " " + ltrim(str(::M2X( nBorder ))) + " -" + ltrim(str(::M2X( x2 - x1 ))) + " re f"
       ::aReport[ PAGEBUFFER ] += CRLF + "0 g " + cBoxColor + ltrim(str(::M2X( y1 ))) + " " + ltrim(str(::M2Y( x2 - nBorder ))) + " " + ltrim(str(::M2X( y2 - y1 ))) + " -" + ltrim(str(::M2X( nBorder ))) + " re f"
       ::aReport[ PAGEBUFFER ] += CRLF + "0 g " + cBoxColor + ltrim(str(::M2X( y1 ))) + " " + ltrim(str(::M2Y( x1 ))) + " " + ltrim(str(::M2X( nBorder ))) + " -" + ltrim(str(::M2X( x2 - x1 ))) + " re f 0 g"
    ENDIF
-RETURN Self
 
-*------------------------------------------------------------------------------*
+   RETURN Self
+
 METHOD _OOHG_Line( x1, y1, x2, y2, nBorder, cBColor )
-*------------------------------------------------------------------------------*
-LOCAL cBoxColor
+
+   LOCAL cBoxColor
 
    DEFAULT nBorder TO 0
    DEFAULT cBColor TO ""
@@ -1002,16 +995,17 @@ LOCAL cBoxColor
             ltrim(str(::M2X( y1 + nBorder ))) + " " + ltrim(str(::M2Y( x1 ))) + " l h f"
       ENDIF
    ENDIF
-RETURN Self
+
+   RETURN Self
 
 METHOD Box( x1, y1, x2, y2, nBorder, nShade, cUnits, cColor, cId )
 
-local cBoxColor
+   local cBoxColor
 
-DEFAULT nBorder TO 0
-DEFAULT nShade  TO 0
-DEFAULT cUnits  TO "M"
-DEFAULT cColor  TO ""
+   DEFAULT nBorder TO 0
+   DEFAULT nShade  TO 0
+   DEFAULT cUnits  TO "M"
+   DEFAULT cColor  TO ""
 
    IF ! ::lIsPageActive
       ::NewPage()
@@ -1019,93 +1013,88 @@ DEFAULT cColor  TO ""
 
    cBoxColor := ""
    IF !empty( cColor )
-  cBoxColor := " " + Chr_RGB( substr( cColor, 2, 1 )) + " " + ;
- Chr_RGB( substr( cColor, 3, 1 )) + " " + ;
- Chr_RGB( substr( cColor, 4, 1 )) + " rg "
-  IF empty( alltrim( cBoxColor ) )
- cBoxColor := ""
-  ENDIF
+      cBoxColor := " " + Chr_RGB( substr( cColor, 2, 1 )) + " " + ;
+         Chr_RGB( substr( cColor, 3, 1 )) + " " + ;
+         Chr_RGB( substr( cColor, 4, 1 )) + " rg "
+      IF empty( alltrim( cBoxColor ) )
+         cBoxColor := ""
+      ENDIF
    ENDIF
 
    IF ::aReport[ HEADEREDIT ]
-  return ::Header( "PDFBOX", cId, { x1, y1, x2, y2, nBorder, nShade, cUnits } )
+      return ::Header( "PDFBOX", cId, { x1, y1, x2, y2, nBorder, nShade, cUnits } )
    ENDIF
 
    IF cUnits == "M"
-  y1 += 0.5
-  y2 += 0.5
-
-  IF nShade > 0
- ::aReport[ PAGEBUFFER ] += CRLF + transform( 1.00 - nShade / 100.00, "9.99") + " g " + cBoxColor + ltrim(str(::M2X( y1 ))) + " " + ltrim(str(::M2Y( x1 ))) + " " + ltrim(str(::M2X( y2 - y1 ))) + " -" + ltrim(str(::M2X( x2 - x1 ))) + " re f 0 g"
-  ENDIF
-
-  IF nBorder > 0
- ::aReport[ PAGEBUFFER ] += CRLF + "0 g " + ltrim(str(::M2X( y1 ))) + " " + ltrim(str(::M2Y( x1 ))) + " " + ltrim(str(::M2X( y2 - y1 ))) + " -" + ltrim(str(::M2X( nBorder ))) + " re f"
- ::aReport[ PAGEBUFFER ] += CRLF + "0 g " + ltrim(str(::M2X( y2 - nBorder ))) + " " + ltrim(str(::M2Y( x1 ))) + " " + ltrim(str(::M2X( nBorder ))) + " -" + ltrim(str(::M2X( x2 - x1 ))) + " re f"
- ::aReport[ PAGEBUFFER ] += CRLF + "0 g " + ltrim(str(::M2X( y1 ))) + " " + ltrim(str(::M2Y( x2 - nBorder ))) + " " + ltrim(str(::M2X( y2 - y1 ))) + " -" + ltrim(str(::M2X( nBorder ))) + " re f"
- ::aReport[ PAGEBUFFER ] += CRLF + "0 g " + ltrim(str(::M2X( y1 ))) + " " + ltrim(str(::M2Y( x1 ))) + " " + ltrim(str(::M2X( nBorder ))) + " -" + ltrim(str(::M2X( x2 - x1 ))) + " re f"
-  ENDIF
+      y1 += 0.5
+      y2 += 0.5
+      IF nShade > 0
+         ::aReport[ PAGEBUFFER ] += CRLF + transform( 1.00 - nShade / 100.00, "9.99") + " g " + cBoxColor + ltrim(str(::M2X( y1 ))) + " " + ltrim(str(::M2Y( x1 ))) + " " + ltrim(str(::M2X( y2 - y1 ))) + " -" + ltrim(str(::M2X( x2 - x1 ))) + " re f 0 g"
+      ENDIF
+      IF nBorder > 0
+         ::aReport[ PAGEBUFFER ] += CRLF + "0 g " + ltrim(str(::M2X( y1 ))) + " " + ltrim(str(::M2Y( x1 ))) + " " + ltrim(str(::M2X( y2 - y1 ))) + " -" + ltrim(str(::M2X( nBorder ))) + " re f"
+         ::aReport[ PAGEBUFFER ] += CRLF + "0 g " + ltrim(str(::M2X( y2 - nBorder ))) + " " + ltrim(str(::M2Y( x1 ))) + " " + ltrim(str(::M2X( nBorder ))) + " -" + ltrim(str(::M2X( x2 - x1 ))) + " re f"
+         ::aReport[ PAGEBUFFER ] += CRLF + "0 g " + ltrim(str(::M2X( y1 ))) + " " + ltrim(str(::M2Y( x2 - nBorder ))) + " " + ltrim(str(::M2X( y2 - y1 ))) + " -" + ltrim(str(::M2X( nBorder ))) + " re f"
+         ::aReport[ PAGEBUFFER ] += CRLF + "0 g " + ltrim(str(::M2X( y1 ))) + " " + ltrim(str(::M2Y( x1 ))) + " " + ltrim(str(::M2X( nBorder ))) + " -" + ltrim(str(::M2X( x2 - x1 ))) + " re f"
+      ENDIF
    ELSEIF cUnits == "D"// "Dots"
-  IF nShade > 0
- ::aReport[ PAGEBUFFER ] += CRLF + transform( 1.00 - nShade / 100.00, "9.99") + " g " + cBoxColor + ltrim(str( y1 )) + " " + ltrim(str( ::aReport[ PAGEY ] - x1 )) + " " + ltrim(str( y2 - y1 )) + " -" + ltrim(str( x2 - x1 )) + " re f 0 g"
-  ENDIF
-
-  IF nBorder > 0
-/*
-1
- ÚÄÄÄÄÄ¿
-   4 ³ ³ 2
- ÀÄÄÄÄÄÙ
-3
-*/
- ::aReport[ PAGEBUFFER ] += CRLF + "0 g " + ltrim(str( y1 )) + " " + ltrim(str( ::aReport[ PAGEY ] - x1 )) + " " + ltrim(str( y2 - y1 )) + " -" + ltrim(str( nBorder )) + " re f"
- ::aReport[ PAGEBUFFER ] += CRLF + "0 g " + ltrim(str( y2 - nBorder )) + " " + ltrim(str( ::aReport[ PAGEY ] - x1 )) + " " + ltrim(str( nBorder )) + " -" + ltrim(str( x2 - x1 )) + " re f"
- ::aReport[ PAGEBUFFER ] += CRLF + "0 g " + ltrim(str( y1 )) + " " + ltrim(str( ::aReport[ PAGEY ] - x2 + nBorder )) + " " + ltrim(str( y2 - y1 )) + " -" + ltrim(str( nBorder )) + " re f"
- ::aReport[ PAGEBUFFER ] += CRLF + "0 g " + ltrim(str( y1 )) + " " + ltrim(str( ::aReport[ PAGEY ] - x1 )) + " " + ltrim(str( nBorder )) + " -" + ltrim(str( x2 - x1 )) + " re f"
-  ENDIF
+      IF nShade > 0
+         ::aReport[ PAGEBUFFER ] += CRLF + transform( 1.00 - nShade / 100.00, "9.99") + " g " + cBoxColor + ltrim(str( y1 )) + " " + ltrim(str( ::aReport[ PAGEY ] - x1 )) + " " + ltrim(str( y2 - y1 )) + " -" + ltrim(str( x2 - x1 )) + " re f 0 g"
+      ENDIF
+      IF nBorder > 0
+         /*
+         1
+         ÚÄÄÄÄÄ¿
+         4 ³ ³ 2
+         ÀÄÄÄÄÄÙ
+         3
+         */
+         ::aReport[ PAGEBUFFER ] += CRLF + "0 g " + ltrim(str( y1 )) + " " + ltrim(str( ::aReport[ PAGEY ] - x1 )) + " " + ltrim(str( y2 - y1 )) + " -" + ltrim(str( nBorder )) + " re f"
+         ::aReport[ PAGEBUFFER ] += CRLF + "0 g " + ltrim(str( y2 - nBorder )) + " " + ltrim(str( ::aReport[ PAGEY ] - x1 )) + " " + ltrim(str( nBorder )) + " -" + ltrim(str( x2 - x1 )) + " re f"
+         ::aReport[ PAGEBUFFER ] += CRLF + "0 g " + ltrim(str( y1 )) + " " + ltrim(str( ::aReport[ PAGEY ] - x2 + nBorder )) + " " + ltrim(str( y2 - y1 )) + " -" + ltrim(str( nBorder )) + " re f"
+         ::aReport[ PAGEBUFFER ] += CRLF + "0 g " + ltrim(str( y1 )) + " " + ltrim(str( ::aReport[ PAGEY ] - x1 )) + " " + ltrim(str( nBorder )) + " -" + ltrim(str( x2 - x1 )) + " re f"
+      ENDIF
    ENDIF
-RETURN self
 
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN self
 
 METHOD Box1( nTop, nLeft, nBottom, nRight, nBorderWidth, cBorderColor, cBoxColor )
 
-DEFAULT nBorderWidth to 0.5
-DEFAULT cBorderColor to chr(0) + chr(0) + chr(0)
-DEFAULT cBoxColor to chr(255) + chr(255) + chr(255)
+   DEFAULT nBorderWidth to 0.5
+   DEFAULT cBorderColor to chr(0) + chr(0) + chr(0)
+   DEFAULT cBoxColor to chr(255) + chr(255) + chr(255)
 
    IF ! ::lIsPageActive
       ::NewPage()
    ENDIF
 
    ::aReport[ PAGEBUFFER ] +=  CRLF + ;
- Chr_RGB( substr( cBorderColor, 1, 1 )) + " " + ;
- Chr_RGB( substr( cBorderColor, 2, 1 )) + " " + ;
- Chr_RGB( substr( cBorderColor, 3, 1 )) + ;
- " RG" + ;
- CRLF + ;
- Chr_RGB( substr( cBoxColor, 1, 1 )) + " " + ;
- Chr_RGB( substr( cBoxColor, 2, 1 )) + " " + ;
- Chr_RGB( substr( cBoxColor, 3, 1 )) + ;
- " rg" + ;
- CRLF + ltrim(str( nBorderWidth )) + " w" + ;
- CRLF + ltrim( str ( nLeft + nBorderWidth / 2 )) + " " + ;
- CRLF + ltrim( str ( ::aReport[ PAGEY ] - nBottom + nBorderWidth / 2)) + " " + ;
- CRLF + ltrim( str ( nRight - nLeft -  nBorderWidth )) + ;
- CRLF + ltrim( str ( nBottom - nTop - nBorderWidth )) + " " + ;
- " re" + ;
- CRLF + "B"
-return nil
-
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+      Chr_RGB( substr( cBorderColor, 1, 1 )) + " " + ;
+      Chr_RGB( substr( cBorderColor, 2, 1 )) + " " + ;
+      Chr_RGB( substr( cBorderColor, 3, 1 )) + ;
+      " RG" + ;
+      CRLF + ;
+      Chr_RGB( substr( cBoxColor, 1, 1 )) + " " + ;
+      Chr_RGB( substr( cBoxColor, 2, 1 )) + " " + ;
+      Chr_RGB( substr( cBoxColor, 3, 1 )) + ;
+      " rg" + ;
+      CRLF + ltrim(str( nBorderWidth )) + " w" + ;
+      CRLF + ltrim( str ( nLeft + nBorderWidth / 2 )) + " " + ;
+      CRLF + ltrim( str ( ::aReport[ PAGEY ] - nBottom + nBorderWidth / 2)) + " " + ;
+      CRLF + ltrim( str ( nRight - nLeft -  nBorderWidth )) + ;
+      CRLF + ltrim( str ( nBottom - nTop - nBorderWidth )) + " " + ;
+      " re" + ;
+      CRLF + "B"
+      return nil
 
 METHOD Center( cString, nRow, nCol, cUnits, lExact, cId )
 
-local nLen, nAt
-DEFAULT nRow TO ::aReport[ REPORTLINE ]
-DEFAULT cUnits TO "R"
-DEFAULT lExact TO .f.
-DEFAULT nCol TO IIF( cUnits == "R", ::aReport[ REPORTWIDTH ] / 2, ::aReport[ PAGEX ] / 72 * 25.4 / 2 )
+   local nLen, nAt
+
+   DEFAULT nRow TO ::aReport[ REPORTLINE ]
+   DEFAULT cUnits TO "R"
+   DEFAULT lExact TO .f.
+   DEFAULT nCol TO IIF( cUnits == "R", ::aReport[ REPORTWIDTH ] / 2, ::aReport[ PAGEX ] / 72 * 25.4 / 2 )
 
    IF ::aReport[ HEADEREDIT ]
       return ::Header( "PDFCENTER", cId, { cString, nRow, nCol, cUnits, lExact } )
@@ -1123,15 +1112,15 @@ DEFAULT nCol TO IIF( cUnits == "R", ::aReport[ REPORTWIDTH ] / 2, ::aReport[ PAG
       ENDIF
    ENDIF
    ::AtSay( cString, ::R2M( nRow ), IIF( cUnits == "R", ::nPdfLeft + ( ::aReport[ PAGEX ] / 72 * 25.4 - 2 * ::nPdfLeft ) * nCol / ::aReport[ REPORTWIDTH ], nCol ) - nLen, "M", lExact )
-RETURN self
 
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN self
 
 METHOD Close()
 
-local nI, cTemp, nCurLevel, nObj1, nLast, nCount, nFirst, nRecno, nBooklen
 
-//   FIELD FIRST, PREV, NEXT, LAST, COUNT, PARENT, PAGE, COORD, TITLE, LEVEL
+   local nI, cTemp, nCurLevel, nObj1, nLast, nCount, nFirst, nRecno, nBooklen
+
+   //   FIELD FIRST, PREV, NEXT, LAST, COUNT, PARENT, PAGE, COORD, TITLE, LEVEL
 
    ::ClosePage()
 
@@ -1157,16 +1146,16 @@ local nI, cTemp, nCurLevel, nObj1, nLast, nCount, nFirst, nRecno, nBooklen
    ++::aReport[ REPORTOBJ ]
    aadd( ::aRefs, ::nDocLen )
    cTemp := ltrim(str( ::aReport[ REPORTOBJ ] )) + " 0 obj" + CRLF + ;
-"<<" + CRLF + ;
-"/Producer ()" + CRLF + ;
-"/Title ()" + CRLF + ;
-"/Author ()" + CRLF + ;
-"/Creator ()" + CRLF + ;
-"/Subject ()" + CRLF + ;
-"/Keywords ()" + CRLF + ;
-"/CreationDate (D:" + str(year(date()), 4) + padl( month(date()), 2, "0") + padl( day(date()), 2, "0") + substr( time(), 1, 2 ) + substr( time(), 4, 2 ) + substr( time(), 7, 2 ) + ")" + CRLF + ;
-">>" + CRLF + ;
-"endobj" + CRLF
+      "<<" + CRLF + ;
+      "/Producer ()" + CRLF + ;
+      "/Title ()" + CRLF + ;
+      "/Author ()" + CRLF + ;
+      "/Creator ()" + CRLF + ;
+      "/Subject ()" + CRLF + ;
+      "/Keywords ()" + CRLF + ;
+      "/CreationDate (D:" + str(year(date()), 4) + padl( month(date()), 2, "0") + padl( day(date()), 2, "0") + substr( time(), 1, 2 ) + substr( time(), 4, 2 ) + substr( time(), 7, 2 ) + ")" + CRLF + ;
+      ">>" + CRLF + ;
+      "endobj" + CRLF
    ::WriteToFile( cTemp )
 
    // root
@@ -1208,50 +1197,50 @@ local nI, cTemp, nCurLevel, nObj1, nLast, nCount, nFirst, nRecno, nBooklen
 
       ++::aReport[ REPORTOBJ ]
       nRecno := 1
-  FOR nI := 1 to nBookLen
- //cTemp := IIF ( nI > 1, CRLF, "") + ltrim(str( ::aReport[ REPORTOBJ ] + nI - 1)) + " 0 obj" + CRLF + ;
- cTemp := CRLF + ltrim( str( ::aReport[ REPORTOBJ ] + nI - 1 ) ) + " 0 obj" + CRLF + ;
- "<<" + CRLF + ;
- "/Parent " + ltrim( str( ::aBookMarks[ nRecno ][ BOOKPARENT ] ) ) + " 0 R" + CRLF + ;
- "/Dest [" + ltrim( str( ::aPages[ ::aBookMarks[ nRecno ][ BOOKPAGE ] ] ) ) + " 0 R /XYZ 0 " + ltrim( str( ::aBookMarks[ nRecno ][ BOOKCOORD ] ) ) + " 0]" + CRLF + ;
- "/Title (" + alltrim( ::aBookMarks[ nRecno ][ BOOKTITLE ]) + ")" + CRLF + ;
- IIF( ::aBookMarks[ nRecno ][ BOOKPREV ] > 0, "/Prev " + ltrim(str( ::aBookMarks[ nRecno ][ BOOKPREV ])) + " 0 R" + CRLF, "") + ;
- IIF( ::aBookMarks[ nRecno ][ BOOKNEXT ] > 0, "/Next " + ltrim(str( ::aBookMarks[ nRecno ][ BOOKNEXT ])) + " 0 R" + CRLF, "") + ;
- IIF( ::aBookMarks[ nRecno ][ BOOKFIRST ] > 0, "/First " + ltrim(str( ::aBookMarks[ nRecno ][ BOOKFIRST ])) + " 0 R" + CRLF, "") + ;
- IIF( ::aBookMarks[ nRecno ][ BOOKLAST ] > 0, "/Last " + ltrim(str( ::aBookMarks[ nRecno ][ BOOKLAST ])) + " 0 R" + CRLF, "") + ;
- IIF( ::aBookMarks[ nRecno ][ BOOKCOUNT ] <> 0, "/Count " + ltrim(str( ::aBookMarks[ nRecno ][ BOOKCOUNT ])) + CRLF, "") + ;
- ">>" + CRLF + "endobj" + CRLF
-// "/Dest [" + ltrim(str( ::aBookMarks[ nRecno ][ BOOKPAGE ] * 3 )) + " 0 R /XYZ 0 " + ltrim( str( ::aBookMarks[ nRecno ][ BOOKCOORD ])) + " 0]" + CRLF + ;
-// "/Dest [" + ltrim(str( ::aPages[ nRecno ] )) + " 0 R /XYZ 0 " + ltrim( str( ::aBookMarks[ nRecno ][ BOOKCOORD ])) + " 0]" + CRLF + ;
+      FOR nI := 1 to nBookLen
+         //cTemp := IIF ( nI > 1, CRLF, "") + ltrim(str( ::aReport[ REPORTOBJ ] + nI - 1)) + " 0 obj" + CRLF + ;
+         cTemp := CRLF + ltrim( str( ::aReport[ REPORTOBJ ] + nI - 1 ) ) + " 0 obj" + CRLF + ;
+                  "<<" + CRLF + ;
+                  "/Parent " + ltrim( str( ::aBookMarks[ nRecno ][ BOOKPARENT ] ) ) + " 0 R" + CRLF + ;
+                  "/Dest [" + ltrim( str( ::aPages[ ::aBookMarks[ nRecno ][ BOOKPAGE ] ] ) ) + " 0 R /XYZ 0 " + ltrim( str( ::aBookMarks[ nRecno ][ BOOKCOORD ] ) ) + " 0]" + CRLF + ;
+                  "/Title (" + alltrim( ::aBookMarks[ nRecno ][ BOOKTITLE ]) + ")" + CRLF + ;
+                  IIF( ::aBookMarks[ nRecno ][ BOOKPREV ] > 0, "/Prev " + ltrim(str( ::aBookMarks[ nRecno ][ BOOKPREV ])) + " 0 R" + CRLF, "") + ;
+                  IIF( ::aBookMarks[ nRecno ][ BOOKNEXT ] > 0, "/Next " + ltrim(str( ::aBookMarks[ nRecno ][ BOOKNEXT ])) + " 0 R" + CRLF, "") + ;
+                  IIF( ::aBookMarks[ nRecno ][ BOOKFIRST ] > 0, "/First " + ltrim(str( ::aBookMarks[ nRecno ][ BOOKFIRST ])) + " 0 R" + CRLF, "") + ;
+                  IIF( ::aBookMarks[ nRecno ][ BOOKLAST ] > 0, "/Last " + ltrim(str( ::aBookMarks[ nRecno ][ BOOKLAST ])) + " 0 R" + CRLF, "") + ;
+                  IIF( ::aBookMarks[ nRecno ][ BOOKCOUNT ] <> 0, "/Count " + ltrim(str( ::aBookMarks[ nRecno ][ BOOKCOUNT ])) + CRLF, "") + ;
+                  ">>" + CRLF + "endobj" + CRLF
+         // "/Dest [" + ltrim(str( ::aBookMarks[ nRecno ][ BOOKPAGE ] * 3 )) + " 0 R /XYZ 0 " + ltrim( str( ::aBookMarks[ nRecno ][ BOOKCOORD ])) + " 0]" + CRLF + ;
+         // "/Dest [" + ltrim(str( ::aPages[ nRecno ] )) + " 0 R /XYZ 0 " + ltrim( str( ::aBookMarks[ nRecno ][ BOOKCOORD ])) + " 0]" + CRLF + ;
 
- aadd( ::aRefs, ::nDocLen + 2 )
-   ::WriteToFile( cTemp )
- ++nRecno
-  NEXT
-  ::BookClose()
+         aadd( ::aRefs, ::nDocLen + 2 )
+         ::WriteToFile( cTemp )
+         ++nRecno
+      NEXT
+      ::BookClose()
 
-  ::aReport[ REPORTOBJ ] += nBookLen - 1
+      ::aReport[ REPORTOBJ ] += nBookLen - 1
    ELSE
-  cTemp := ltrim(str( ::aReport[ REPORTOBJ ] )) + " 0 obj" + CRLF + "<< /Type /Outlines /Count 0 >>" + CRLF + "endobj" + CRLF
-  aadd( ::aRefs, ::nDocLen )
-   ::WriteToFile( cTemp )
+      cTemp := ltrim(str( ::aReport[ REPORTOBJ ] )) + " 0 obj" + CRLF + "<< /Type /Outlines /Count 0 >>" + CRLF + "endobj" + CRLF
+      aadd( ::aRefs, ::nDocLen )
+      ::WriteToFile( cTemp )
    ENDIF
 
    ::WriteToFile( CRLF )
 
    ++::aReport[ REPORTOBJ ]
    cTemp := "xref" + CRLF + ;
-   "0 " + ltrim(str( ::aReport[ REPORTOBJ ] )) + CRLF +;
-   padl( ::aRefs[ 1 ], 10, "0") + " 65535 f" + CRLF
+            "0 " + ltrim(str( ::aReport[ REPORTOBJ ] )) + CRLF +;
+            padl( ::aRefs[ 1 ], 10, "0") + " 65535 f" + CRLF
 
    for nI := 2 to len( ::aRefs )
-  cTemp += padl( ::aRefs[ nI ], 10, "0") + " 00000 n" + CRLF
+      cTemp += padl( ::aRefs[ nI ], 10, "0") + " 00000 n" + CRLF
    next
 
    cTemp += "trailer << /Size " + ltrim(str( ::aReport[ REPORTOBJ ] )) + " /Root " + ltrim(str( nObj1 - 1 )) + " 0 R /Info " + ltrim(str( nObj1 - 2 )) + " 0 R >>" + CRLF + ;
-"startxref" + CRLF + ;
-ltrim(str( ::nDocLen )) + CRLF + ;
-"%%EOF" + CRLF
+            "startxref" + CRLF + ;
+            ltrim(str( ::nDocLen )) + CRLF + ;
+            "%%EOF" + CRLF
    ::WriteToFile( cTemp )
 
    fclose( ::nHandle )
@@ -1259,56 +1248,53 @@ ltrim(str( ::nDocLen )) + CRLF + ;
 
    ::aReport := nil
 
-RETURN self
-
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN self
 
 METHOD Image( cFile, nRow, nCol, cUnits, nHeight, nWidth, cId )
 
-DEFAULT nRow TO ::aReport[ REPORTLINE ]
-DEFAULT nCol TO 0
-DEFAULT nHeight TO 0
-DEFAULT nWidth  TO 0
-DEFAULT cUnits  TO "R"
-DEFAULT cId TO  ""
+   DEFAULT nRow TO ::aReport[ REPORTLINE ]
+   DEFAULT nCol TO 0
+   DEFAULT nHeight TO 0
+   DEFAULT nWidth  TO 0
+   DEFAULT cUnits  TO "R"
+   DEFAULT cId TO  ""
 
    IF ! ::lIsPageActive
       ::NewPage()
    ENDIF
 
    IF ::aReport[ HEADEREDIT ]
-  return ::Header( "PDFIMAGE", cId, { cFile, nRow, nCol, cUnits, nHeight, nWidth } )
+      return ::Header( "PDFIMAGE", cId, { cFile, nRow, nCol, cUnits, nHeight, nWidth } )
    ENDIF
 
    IF cUnits == "M"
-  nRow:= ::aReport[ PAGEY ] - ::M2Y( nRow )
-  nCol:= ::M2X( nCol )
-  nHeight := ::aReport[ PAGEY ] - ::M2Y( nHeight )
-  nWidth  := ::M2X( nWidth )
+      nRow:= ::aReport[ PAGEY ] - ::M2Y( nRow )
+      nCol:= ::M2X( nCol )
+      nHeight := ::aReport[ PAGEY ] - ::M2Y( nHeight )
+      nWidth  := ::M2X( nWidth )
    ELSEIF cUnits == "R"
-  //IF .not. lExact
-  //   ::CheckLine( nRow )
-  //   nRow := nRow + ::aReportStyle[ PDFTOP]
-  //ENDIF
-  nRow := ::aReport[ PAGEY ] - ::R2D( nRow )
-  nCol := ::M2X( ::nPdfLeft ) + ;
-  nCol * 100.00 / ::aReport[ REPORTWIDTH ] * ;
-  ( ::aReport[ PAGEX ] - ::M2X( ::nPdfLeft ) * 2 - 9.0 ) / 100.00
-  nHeight := ::aReport[ PAGEY ] - ::R2D( nHeight )
-  nWidth := ::M2X( ::nPdfLeft ) + ;
-  nWidth * 100.00 / ::aReport[ REPORTWIDTH ] * ;
-  ( ::aReport[ PAGEX ] - ::M2X( ::nPdfLeft ) * 2 - 9.0 ) / 100.00
+      //IF .not. lExact
+      //   ::CheckLine( nRow )
+      //   nRow := nRow + ::aReportStyle[ PDFTOP]
+      //ENDIF
+      nRow := ::aReport[ PAGEY ] - ::R2D( nRow )
+      nCol := ::M2X( ::nPdfLeft ) + ;
+              nCol * 100.00 / ::aReport[ REPORTWIDTH ] * ;
+              ( ::aReport[ PAGEX ] - ::M2X( ::nPdfLeft ) * 2 - 9.0 ) / 100.00
+      nHeight := ::aReport[ PAGEY ] - ::R2D( nHeight )
+      nWidth := ::M2X( ::nPdfLeft ) + ;
+                nWidth * 100.00 / ::aReport[ REPORTWIDTH ] * ;
+      ( ::aReport[ PAGEX ] - ::M2X( ::nPdfLeft ) * 2 - 9.0 ) / 100.00
    ELSEIF cUnits == "D"
    ENDIF
 
    aadd( ::aPageImages, { cFile, nRow, nCol, nHeight, nWidth } )
 
-RETURN self
-
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN self
 
 METHOD Length( cString )
-local nWidth := 0.00, nI, nLen, nArr, nAdd := ( ::nFontName - 1 ) % 4
+
+   local nWidth := 0.00, nI, nLen, nArr, nAdd := ( ::nFontName - 1 ) % 4
 
    nLen := len( cString )
    IF right( cString, 1 ) == chr( 255 ) .or. right( cString, 1 ) == chr( 254 )
@@ -1325,9 +1311,8 @@ local nWidth := 0.00, nI, nLen, nArr, nAdd := ( ::nFontName - 1 ) % 4
    For nI:= 1 To nLen
       nWidth += ::aFontWidth[ nArr ][ ( asc( substr( cString, nI, 1 ) ) - 32 ) * 4 + 1 + nAdd ] * 25.4 * ::nFontSize / 720.00 / 100.00
    Next
-RETURN nWidth
 
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN nWidth
 
 METHOD NewLine( n )
 
@@ -1339,9 +1324,7 @@ METHOD NewLine( n )
       ::aReport[ REPORTLINE ] += n
    ENDIF
 
-RETURN ::aReport[ REPORTLINE ]
-
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN ::aReport[ REPORTLINE ]
 
 METHOD NewPage( _cPageSize, _cPageOrient, _nLpi, _cFontName, _nFontType, _nFontSize )
 
@@ -1375,85 +1358,78 @@ METHOD NewPage( _cPageSize, _cPageOrient, _nLpi, _cFontName, _nFontType, _nFontS
    ::nFontNamePrev := 0
    ::nFontSizePrev := 0
 
-RETURN self
-
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN self
 
 METHOD PageSize( _cPageSize )
 
-local nSize, aSize := { { "LETTER",8.50, 11.00 }, ;
-{ "LEGAL" ,8.50, 14.00 }, ;
-{ "LEDGER",   11.00, 17.00 }, ;
-{ "EXECUTIVE", 7.25, 10.50 }, ;
-{ "A4",8.27, 11.69 }, ;
-{ "A3",   11.69, 16.54 }, ;
-{ "JIS B4",   10.12, 14.33 }, ;
-{ "JIS B5",7.16, 10.12 }, ;
-{ "JPOST", 3.94,  5.83 }, ;
-{ "JPOSTD",5.83,  7.87 }, ;
-{ "COM10", 4.12,  9.50 }, ;
-{ "MONARCH",   3.87,  7.50 }, ;
-{ "C5",6.38,  9.01 }, ;
-{ "DL",4.33,  8.66 }, ;
-{ "B5",6.93,  9.84 } }
+   local nSize, aSize := { ;
+         { "LETTER",8.50, 11.00 }, ;
+         { "LEGAL" ,8.50, 14.00 }, ;
+         { "LEDGER",   11.00, 17.00 }, ;
+         { "EXECUTIVE", 7.25, 10.50 }, ;
+         { "A4",8.27, 11.69 }, ;
+         { "A3",   11.69, 16.54 }, ;
+         { "JIS B4",   10.12, 14.33 }, ;
+         { "JIS B5",7.16, 10.12 }, ;
+         { "JPOST", 3.94,  5.83 }, ;
+         { "JPOSTD",5.83,  7.87 }, ;
+         { "COM10", 4.12,  9.50 }, ;
+         { "MONARCH",   3.87,  7.50 }, ;
+         { "C5",6.38,  9.01 }, ;
+         { "DL",4.33,  8.66 }, ;
+         { "B5",6.93,  9.84 } }
 
-DEFAULT _cPageSize TO "LETTER"
+   DEFAULT _cPageSize TO "LETTER"
 
    nSize := ascan( aSize, { |arr| arr[ 1 ] = _cPageSize } )
 
    /*
    IF nSize = 0 .or. nSize > 2
-  nSize := 1
+      nSize := 1
    ENDIF
    */
 
    ::aReport[ PAGESIZE ] := aSize[ nSize ][ 1 ]
 
    IF ::aReport[ PAGEORIENT ] = "P"
-  ::aReport[ PAGEX ] := aSize[ nSize ][ 2 ] * 72
-  ::aReport[ PAGEY ] := aSize[ nSize ][ 3 ] * 72
+      ::aReport[ PAGEX ] := aSize[ nSize ][ 2 ] * 72
+      ::aReport[ PAGEY ] := aSize[ nSize ][ 3 ] * 72
    ELSE
-  ::aReport[ PAGEX ] := aSize[ nSize ][ 3 ] * 72
-  ::aReport[ PAGEY ] := aSize[ nSize ][ 2 ] * 72
+      ::aReport[ PAGEX ] := aSize[ nSize ][ 3 ] * 72
+      ::aReport[ PAGEY ] := aSize[ nSize ][ 2 ] * 72
    ENDIF
 
-RETURN self
-
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN self
 
 METHOD PageOrient( _cPageOrient )
 
-DEFAULT _cPageOrient TO "P"
+   DEFAULT _cPageOrient TO "P"
 
    ::aReport[ PAGEORIENT ] := _cPageOrient
    ::PageSize( ::aReport[ PAGESIZE ] )
-RETURN self
 
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN self
 
 METHOD PageNumber( n )
 
-DEFAULT n TO 0
+   DEFAULT n TO 0
    IF n > 0
-  ::aReport[ REPORTPAGE ] := n // NEW !!!
+      ::aReport[ REPORTPAGE ] := n // NEW !!!
    ENDIF
-RETURN ::aReport[ REPORTPAGE ]
 
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN ::aReport[ REPORTPAGE ]
 
 METHOD Reverse( cString )
 
-RETURN cString + chr(255)
-
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN cString + chr(255)
 
 METHOD RJust( cString, nRow, nCol, cUnits, lExact, cId )
 
-local nLen, nAdj := 1.0, nAt
+   local nLen, nAdj := 1.0, nAt
 
-DEFAULT nRow TO ::aReport[ REPORTLINE ]
-DEFAULT cUnits TO "R"
-DEFAULT lExact TO .f.
+   DEFAULT nRow TO ::aReport[ REPORTLINE ]
+   DEFAULT cUnits TO "R"
+   DEFAULT lExact TO .f.
 
    IF ::aReport[ HEADEREDIT ]
       return ::Header( "PDFRJUST", cId, { cString, nRow, nCol, cUnits, lExact } )
@@ -1472,15 +1448,14 @@ DEFAULT lExact TO .f.
       ENDIF
    ENDIF
    ::AtSay( cString, ::R2M( nRow ), IIF( cUnits == "R", ::nPdfLeft + ( ::aReport[ PAGEX ] / 72 * 25.4 - 2 * ::nPdfLeft ) * nCol / ::aReport[ REPORTWIDTH ] - nAdj, nCol ) - nLen, "M", lExact )
-RETURN self
 
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN self
 
 METHOD SetFont( _cFont, _nType, _nSize, cId )
 
-DEFAULT _cFont TO "Times"
-DEFAULT _nType TO 0
-DEFAULT _nSize TO 10
+   DEFAULT _cFont TO "Times"
+   DEFAULT _nType TO 0
+   DEFAULT _nSize TO 10
 
    IF ::aReport[ HEADEREDIT ]
       return ::Header( "PDFSETFONT", cId, { _cFont, _nType, _nSize } )
@@ -1502,49 +1477,44 @@ DEFAULT _nSize TO 10
    IF ascan( ::aFonts, { |arr| arr[1] == ::nFontName } ) == 0
       aadd( ::aFonts, { ::nFontName, ++::nNextObj } )
    ENDIF
-RETURN self
 
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN self
 
 METHOD SetLPI(_nLpi)
 
-local cLpi := alltrim(str(_nLpi))
-DEFAULT _nLpi TO 6
+   local cLpi := alltrim(str(_nLpi))
+
+   DEFAULT _nLpi TO 6
 
    cLpi := iif(cLpi$"1;2;3;4;6;8;12;16;24;48",cLpi,"6")
    ::aReport[ LPI ] := val( cLpi )
 
    ::PageSize( ::aReport[ PAGESIZE ] )
-RETURN self
 
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN self
 
 METHOD StringB( cString )
 
-cString := strtran( cString, "(", "\(" )
-cString := strtran( cString, ")", "\)" )
+   cString := strtran( cString, "(", "\(" )
+   cString := strtran( cString, ")", "\)" )
 
-RETURN cString
-
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN cString
 
 METHOD TextCount( cString, nTop, nLeft, nLength, nTab, nJustify, cUnits )
 
-RETURN ::Text( cString, nTop, nLeft, nLength, nTab, nJustify, cUnits, .f. )
-
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN ::Text( cString, nTop, nLeft, nLength, nTab, nJustify, cUnits, .f. )
 
 METHOD Text( cString, nTop, nLeft, nLength, nTab, nJustify, cUnits, cColor, lPrint )
 
-local cDelim := chr(0)+chr(9)+chr(10)+chr(13)+chr(26)+chr(32)+chr(138)+chr(141)
-local nI, cTemp, cToken, k, nL, nRow, nLines, nLineLen, nStart
-local lParagraph, nSpace, nNew, nTokenLen, nCRLF, nTokens, nLen
+   local cDelim := chr(0)+chr(9)+chr(10)+chr(13)+chr(26)+chr(32)+chr(138)+chr(141)
+   local nI, cTemp, cToken, k, nL, nRow, nLines, nLineLen, nStart
+   local lParagraph, nSpace, nNew, nTokenLen, nCRLF, nTokens, nLen
 
-DEFAULT nTab TO -1
-DEFAULT cUnits   TO 'R'
-DEFAULT nJustify TO 4
-DEFAULT lPrint   TO .t.
-DEFAULT cColor   TO ""
+   DEFAULT nTab TO -1
+   DEFAULT cUnits   TO 'R'
+   DEFAULT nJustify TO 4
+   DEFAULT lPrint   TO .t.
+   DEFAULT cColor   TO ""
 
    IF cUnits == "M"
       nTop := ::M2R( nTop )
@@ -1579,7 +1549,7 @@ DEFAULT cColor   TO ""
    lParagraph := .t.
    nI := 1
 
-   while nI <= nTokens
+   do while nI <= nTokens
       cToken := token( cString, cDelim, nI )
       nTokenLen := ::length( cToken )
       nLen := len( cToken )
@@ -1644,204 +1614,187 @@ DEFAULT cColor   TO ""
       ENDIF
    enddo
 
-RETURN nLines
-
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN nLines
 
 METHOD UnderLine( cString )
 
-RETURN cString + chr(254)
-
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN cString + chr(254)
 
 METHOD OpenHeader( cFile )
 
-local nAt, cCmd
+   local nAt, cCmd
 
-DEFAULT cFile TO ''
+   DEFAULT cFile TO ''
 
    IF !empty( cFile )
-  cFile := alltrim( cFile )
-  IF len( cFile ) > 12 .or. ;
- at( ' ', cFile ) > 0 .or. ;
- ( at( ' ', cFile ) == 0 .and. len( cFile ) > 8 ) .or. ;
- ( ( nAt := at( '.', cFile )) > 0 .and. len( substr( cFile, nAt + 1 )) > 3 )
+      cFile := alltrim( cFile )
+      IF len( cFile ) > 12 .or. ;
+            at( ' ', cFile ) > 0 .or. ;
+            ( at( ' ', cFile ) == 0 .and. len( cFile ) > 8 ) .or. ;
+            ( ( nAt := at( '.', cFile )) > 0 .and. len( substr( cFile, nAt + 1 )) > 3 )
 
- cCmd := "copy " + cFile + " temp.tmp > nul"
- RunExternal( cCmd )
-
- cFile := "temp.tmp"
-  ENDIF
-  // ::aHeader := FT_RestArr( cFile, @nErrorCode )
-  ::aHeader := File2Array( cFile )
+         cCmd := "copy " + cFile + " temp.tmp > nul"
+         RunExternal( cCmd )
+         cFile := "temp.tmp"
+      ENDIF
+      // ::aHeader := FT_RestArr( cFile, @nErrorCode )
+      ::aHeader := File2Array( cFile )
    ELSE
-  ::aHeader := {}
+      ::aHeader := {}
    ENDIF
    ::aReport[ MARGINS ] := .t.
 
-RETURN self
-
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN self
 
 METHOD EditOnHeader()
 
-::aReport[ HEADEREDIT ] := .t.
-::aReport[ MARGINS ] := .t.
+   ::aReport[ HEADEREDIT ] := .t.
+   ::aReport[ MARGINS ] := .t.
 
-RETURN self
-
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN self
 
 METHOD EditOffHeader()
 
-::aReport[ HEADEREDIT ] := .f.
-::aReport[ MARGINS] := .t.
+   ::aReport[ HEADEREDIT ] := .f.
+   ::aReport[ MARGINS] := .t.
 
-RETURN self
-
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN self
 
 METHOD CloseHeader()
 
    ::aHeader := {}
    ::aReport[ MARGINS ] := .f.
-RETURN self
 
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN self
 
 METHOD DeleteHeader( cId )
 
-local nRet := -1, nId
+   local nRet := -1, nId
+
    cId := upper( cId )
    nId := ascan( ::aHeader, {| arr | arr[ 3 ] == cId })
    IF nId > 0
-  nRet := len( ::aHeader ) - 1
-  aDel( ::aHeader, nId )
-  aSize( ::aHeader, nRet )
-  ::aReport[ MARGINS ] := .t.
+      nRet := len( ::aHeader ) - 1
+      aDel( ::aHeader, nId )
+      aSize( ::aHeader, nRet )
+      ::aReport[ MARGINS ] := .t.
    ENDIF
-RETURN nRet
 
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN nRet
 
 METHOD EnableHeader( cId )
 
-local nId
+   local nId
+
    cId := upper( cId )
    nId := ascan( ::aHeader, {| arr | arr[ 3 ] == cId })
    IF nId > 0
-  ::aHeader[ nId ][ 1 ] := .t.
-  ::aReport[ MARGINS ] := .t.
+      ::aHeader[ nId ][ 1 ] := .t.
+      ::aReport[ MARGINS ] := .t.
    ENDIF
-RETURN self
 
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN self
 
 METHOD DisableHeader( cId )
 
-local nId
+   local nId
+
    cId := upper( cId )
    nId := ascan( ::aHeader, {| arr | arr[ 3 ] == cId })
    IF nId > 0
-  ::aHeader[ nId ][ 1 ] := .f.
-  ::aReport[ MARGINS ] := .t.
+      ::aHeader[ nId ][ 1 ] := .f.
+      ::aReport[ MARGINS ] := .t.
    ENDIF
-RETURN self
 
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN self
 
 METHOD SaveHeader( cFile )
 
-local cCmd
+   local cCmd
 
-Array2File( 'temp.tmp', ::aHeader )
+   Array2File( 'temp.tmp', ::aHeader )
 
-cCmd := "copy temp.tmp " + cFile + " > nul"
-RunExternal( cCmd )
+   cCmd := "copy temp.tmp " + cFile + " > nul"
+   RunExternal( cCmd )
 
-RETURN self
-
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN self
 
 METHOD Header( cFunction, cId, arr )
 
-local nId, nI, nLen, nIdLen
+   local nId, nI, nLen, nIdLen
+
    nId := 0
    IF !empty( cId )
-  cId := upper( cId )
-  nId := ascan( ::aHeader, {| arr | arr[ 3 ] == cId })
+      cId := upper( cId )
+      nId := ascan( ::aHeader, {| arr | arr[ 3 ] == cId })
    ENDIF
    IF nId == 0
-  nLen := len( ::aHeader )
-  IF empty( cId )
- cId := cFunction
- nIdLen := len( cId )
- for nI := 1 to nLen
-IF ::aHeader[ nI ][ 2 ] == cId
-   IF val( substr( ::aHeader[ nI ][ 3 ], nIdLen + 1 ) ) > nId
-  nId := val( substr( ::aHeader[ nI ][ 3 ], nIdLen + 1 ) )
-   ENDIF
-ENDIF
- next
- ++nId
- cId += ltrim(str(nId))
-  ENDIF
-  aadd( ::aHeader, { .t., cFunction, cId } )
-  ++nLen
-  for nI := 1 to len( arr )
- aadd( ::aHeader[ nLen ], arr[ nI ] )
-  next
+      nLen := len( ::aHeader )
+      IF empty( cId )
+         cId := cFunction
+         nIdLen := len( cId )
+         for nI := 1 to nLen
+            IF ::aHeader[ nI ][ 2 ] == cId
+               IF val( substr( ::aHeader[ nI ][ 3 ], nIdLen + 1 ) ) > nId
+                  nId := val( substr( ::aHeader[ nI ][ 3 ], nIdLen + 1 ) )
+               ENDIF
+            ENDIF
+         next
+         ++nId
+         cId += ltrim(str(nId))
+      ENDIF
+      aadd( ::aHeader, { .t., cFunction, cId } )
+      ++nLen
+      for nI := 1 to len( arr )
+         aadd( ::aHeader[ nLen ], arr[ nI ] )
+      next
    ELSE
-  aSize( ::aHeader[ nId ], 3 )
-  for nI := 1 to len( arr )
- aadd( ::aHeader[ nId ], arr[ nI ] )
-  next
+      aSize( ::aHeader[ nId ], 3 )
+      for nI := 1 to len( arr )
+         aadd( ::aHeader[ nId ], arr[ nI ] )
+      next
    ENDIF
-RETURN cId
 
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN cId
 
 METHOD DrawHeader()
 
-local nI, _nFont, _nSize, nLen := len( ::aHeader )
+   local nI, _nFont, _nSize, nLen := len( ::aHeader )
 
    IF nLen > 0
 
-  // save font
-  _nFont := ::nFontName
-  _nSize := ::nFontSize
+      // save font
+      _nFont := ::nFontName
+      _nSize := ::nFontSize
+      for nI := 1 to nLen
+         IF ::aHeader[ nI ][ 1 ] // enabled
+            do case
+            case ::aHeader[ nI ][ 2 ] == "PDFATSAY"
+               ::AtSay( ::aHeader[ nI ][ 4 ], ::aHeader[ nI ][ 5 ], ::aHeader[ nI ][ 6 ], ::aHeader[ nI ][ 7 ], ::aHeader[ nI ][ 8 ], ::aHeader[ nI ][ 3 ] )
 
-  for nI := 1 to nLen
- IF ::aHeader[ nI ][ 1 ] // enabled
-do case
-case ::aHeader[ nI ][ 2 ] == "PDFATSAY"
-   ::AtSay( ::aHeader[ nI ][ 4 ], ::aHeader[ nI ][ 5 ], ::aHeader[ nI ][ 6 ], ::aHeader[ nI ][ 7 ], ::aHeader[ nI ][ 8 ], ::aHeader[ nI ][ 3 ] )
+            case ::aHeader[ nI ][ 2 ] == "PDFCENTER"
+               ::Center( ::aHeader[ nI ][ 4 ], ::aHeader[ nI ][ 5 ], ::aHeader[ nI ][ 6 ], ::aHeader[ nI ][ 7 ], ::aHeader[ nI ][ 8 ], ::aHeader[ nI ][ 3 ] )
 
-case ::aHeader[ nI ][ 2 ] == "PDFCENTER"
-   ::Center( ::aHeader[ nI ][ 4 ], ::aHeader[ nI ][ 5 ], ::aHeader[ nI ][ 6 ], ::aHeader[ nI ][ 7 ], ::aHeader[ nI ][ 8 ], ::aHeader[ nI ][ 3 ] )
+            case ::aHeader[ nI ][ 2 ] == "PDFRJUST"
+               ::RJust( ::aHeader[ nI ][ 4 ], ::aHeader[ nI ][ 5 ], ::aHeader[ nI ][ 6 ], ::aHeader[ nI ][ 7 ], ::aHeader[ nI ][ 8 ], ::aHeader[ nI ][ 3 ] )
 
-case ::aHeader[ nI ][ 2 ] == "PDFRJUST"
-   ::RJust( ::aHeader[ nI ][ 4 ], ::aHeader[ nI ][ 5 ], ::aHeader[ nI ][ 6 ], ::aHeader[ nI ][ 7 ], ::aHeader[ nI ][ 8 ], ::aHeader[ nI ][ 3 ] )
+            case ::aHeader[ nI ][ 2 ] == "PDFBOX"
+               ::Box( ::aHeader[ nI ][ 4 ], ::aHeader[ nI ][ 5 ], ::aHeader[ nI ][ 6 ], ::aHeader[ nI ][ 7 ], ::aHeader[ nI ][ 8 ], ::aHeader[ nI ][ 9 ], ::aHeader[ nI ][ 10 ], ::aHeader[ nI ][ 3 ] )
 
-case ::aHeader[ nI ][ 2 ] == "PDFBOX"
-   ::Box( ::aHeader[ nI ][ 4 ], ::aHeader[ nI ][ 5 ], ::aHeader[ nI ][ 6 ], ::aHeader[ nI ][ 7 ], ::aHeader[ nI ][ 8 ], ::aHeader[ nI ][ 9 ], ::aHeader[ nI ][ 10 ], ::aHeader[ nI ][ 3 ] )
+            case ::aHeader[ nI ][ 2 ] == "PDFSETFONT"
+               ::SetFont( ::aHeader[ nI ][ 4 ], ::aHeader[ nI ][ 5 ], ::aHeader[ nI ][ 6 ], ::aHeader[ nI ][ 3 ] )
 
-case ::aHeader[ nI ][ 2 ] == "PDFSETFONT"
-   ::SetFont( ::aHeader[ nI ][ 4 ], ::aHeader[ nI ][ 5 ], ::aHeader[ nI ][ 6 ], ::aHeader[ nI ][ 3 ] )
+            case ::aHeader[ nI ][ 2 ] == "PDFIMAGE"
+               ::Image( ::aHeader[ nI ][ 4 ], ::aHeader[ nI ][ 5 ], ::aHeader[ nI ][ 6 ], ::aHeader[ nI ][ 7 ], ::aHeader[ nI ][ 8 ], ::aHeader[ nI ][ 9 ], ::aHeader[ nI ][ 3 ] )
 
-case ::aHeader[ nI ][ 2 ] == "PDFIMAGE"
-   ::Image( ::aHeader[ nI ][ 4 ], ::aHeader[ nI ][ 5 ], ::aHeader[ nI ][ 6 ], ::aHeader[ nI ][ 7 ], ::aHeader[ nI ][ 8 ], ::aHeader[ nI ][ 9 ], ::aHeader[ nI ][ 3 ] )
-
-endcase
- ENDIF
-  next
+            endcase
+         ENDIF
+      next
       ::nFontName := _nFont
       ::nFontSize := _nSize
-
       IF ::aReport[ MARGINS ]
          ::Margins()
       ENDIF
-
    ELSE
       IF ::aReport[ MARGINS ]
          ::nPdfTop := 1 // top
@@ -1851,174 +1804,150 @@ endcase
          ::aReport[ MARGINS ] := .f.
       ENDIF
    ENDIF
-RETURN self
 
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN self
 
 METHOD Margins( nTop, nLeft, nBottom )
 
-local nI, nLen := len( ::aHeader ), nTemp, aTemp, nHeight
+   local nI, nLen := len( ::aHeader ), nTemp, aTemp, nHeight
 
    for nI := 1 to nLen
-  IF ::aHeader[ nI ][ 1 ] // enabled
-
- IF ::aHeader[ nI ][ 2 ] == "PDFSETFONT"
-
- ELSEIF ::aHeader[ nI ][ 2 ] == "PDFIMAGE"
-IF ::aHeader[ nI ][ 8 ] == 0 // picture in header, first at all, not at any page yet
-   aTemp := ::ImageInfo( ::aHeader[ nI ][ 4 ] )
-   IF LEN( aTemp ) != 0
-      nHeight := aTemp[ IMAGE_HEIGHT ] / aTemp[ IMAGE_YRES ] * 25.4
-      IF ::aHeader[ nI ][ 7 ] == "D"
-         nHeight := ::M2X( nHeight )
+      IF ::aHeader[ nI ][ 1 ] // enabled
+         IF ::aHeader[ nI ][ 2 ] == "PDFSETFONT"
+         ELSEIF ::aHeader[ nI ][ 2 ] == "PDFIMAGE"
+            IF ::aHeader[ nI ][ 8 ] == 0 // picture in header, first at all, not at any page yet
+               aTemp := ::ImageInfo( ::aHeader[ nI ][ 4 ] )
+               IF LEN( aTemp ) != 0
+                  nHeight := aTemp[ IMAGE_HEIGHT ] / aTemp[ IMAGE_YRES ] * 25.4
+                  IF ::aHeader[ nI ][ 7 ] == "D"
+                     nHeight := ::M2X( nHeight )
+                  ENDIF
+               ELSE
+                  nHeight := ::aHeader[ nI ][ 8 ]
+               ENDIF
+            ELSE
+               nHeight := ::aHeader[ nI ][ 8 ]
+            ENDIF
+            IF ::aHeader[ nI ][ 7 ] == "M"
+               nTemp := ::aReport[ PAGEY ] / 72 * 25.4 / 2
+               IF ::aHeader[ nI ][ 5 ] < nTemp
+                  nTemp := ( ::aHeader[ nI ][ 5 ] + nHeight ) * ::aReport[ LPI ] / 25.4 // top
+                  IF nTemp > ::nPdfTop
+                     ::nPdfTop := nTemp
+                  ENDIF
+               ELSE
+                  nTemp := ::aHeader[ nI ][ 5 ] * ::aReport[ LPI ] / 25.4 // top
+                  IF nTemp < ::nPdfBottom
+                     ::nPdfBottom := nTemp
+                  ENDIF
+               ENDIF
+            ELSEIF ::aHeader[ nI ][ 7 ] == "D"
+               nTemp := ::aReport[ PAGEY ] / 2
+               IF ::aHeader[ nI ][ 5 ] < nTemp
+                  nTemp := ( ::aHeader[ nI ][ 5 ] + nHeight ) * ::aReport[ LPI ] / 72 // top
+                  IF nTemp > ::nPdfTop
+                     ::nPdfTop := nTemp
+                  ENDIF
+               ELSE
+                  nTemp := ::aHeader[ nI ][ 5 ] * ::aReport[ LPI ] / 72 // top
+                  IF nTemp < ::nPdfBottom
+                     ::nPdfBottom := nTemp
+                  ENDIF
+               ENDIF
+            ENDIF
+         ELSEIF ::aHeader[ nI ][ 2 ] == "PDFBOX"
+            IF ::aHeader[ nI ][ 10 ] == "M"
+               nTemp := ::aReport[ PAGEY ] / 72 * 25.4 / 2
+               IF ::aHeader[ nI ][ 4 ] < nTemp .and. ;
+                  ::aHeader[ nI ][ 6 ] < nTemp
+                  nTemp := ::aHeader[ nI ][ 6 ] * ::aReport[ LPI ] / 25.4 // top
+                  IF nTemp > ::nPdfTop
+                     ::nPdfTop := nTemp
+                  ENDIF
+               ELSEIF ::aHeader[ nI ][ 4 ] < nTemp .and. ;
+                  ::aHeader[ nI ][ 6 ] > nTemp
+                  nTemp := ( ::aHeader[ nI ][ 4 ] + ::aHeader[ nI ][ 8 ] ) * ::aReport[ LPI ] / 25.4 // top
+                  IF nTemp > ::nPdfTop
+                     ::nPdfTop := nTemp
+                  ENDIF
+                  nTemp := ( ::aHeader[ nI ][ 6 ] - ::aHeader[ nI ][ 8 ] ) * ::aReport[ LPI ] / 25.4 // top
+                  IF nTemp < ::nPdfBottom
+                     ::nPdfBottom := nTemp
+                  ENDIF
+               ELSEIF ::aHeader[ nI ][ 4 ] > nTemp .and. ;
+                  ::aHeader[ nI ][ 6 ] > nTemp
+                  nTemp := ::aHeader[ nI ][ 4 ] * ::aReport[ LPI ] / 25.4 // top
+                  IF nTemp < ::nPdfBottom
+                     ::nPdfBottom := nTemp
+                  ENDIF
+               ENDIF
+            ELSEIF ::aHeader[ nI ][ 10 ] == "D"
+               nTemp := ::aReport[ PAGEY ] / 2
+               IF ::aHeader[ nI ][ 4 ] < nTemp .and. ;
+                  ::aHeader[ nI ][ 6 ] < nTemp
+                  nTemp := ::aHeader[ nI ][ 6 ] / ::aReport[ LPI ] // top
+                  IF nTemp > ::nPdfTop
+                     ::nPdfTop := nTemp
+                  ENDIF
+               ELSEIF ::aHeader[ nI ][ 4 ] < nTemp .and. ;
+                  ::aHeader[ nI ][ 6 ] > nTemp
+                  nTemp := ( ::aHeader[ nI ][ 4 ] + ::aHeader[ nI ][ 8 ] ) / ::aReport[ LPI ] // top
+                  IF nTemp > ::nPdfTop
+                     ::nPdfTop := nTemp
+                  ENDIF
+                  nTemp := ( ::aHeader[ nI ][ 6 ] - ::aHeader[ nI ][ 8 ] ) / ::aReport[ LPI ] // top
+                  IF nTemp < ::nPdfBottom
+                     ::nPdfBottom := nTemp
+                  ENDIF
+               ELSEIF ::aHeader[ nI ][ 4 ] > nTemp .and. ;
+                  ::aHeader[ nI ][ 6 ] > nTemp
+                  nTemp := ::aHeader[ nI ][ 4 ] / ::aReport[ LPI ] // top
+                  IF nTemp < ::nPdfBottom
+                     ::nPdfBottom := nTemp
+                  ENDIF
+               ENDIF
+            ENDIF
+         ELSE
+            IF ::aHeader[ nI ][ 7 ] == "R"
+               nTemp := ::aHeader[ nI ][ 5 ] // top
+               IF ::aHeader[ nI ][ 5 ] > ::aReport[ PAGEY ] / 72 * ::aReport[ LPI ] / 2
+                  IF nTemp < ::nPdfBottom
+                     ::nPdfBottom := nTemp
+                  ENDIF
+               ELSE
+                  IF nTemp > ::nPdfTop
+                     ::nPdfTop := nTemp
+                  ENDIF
+               ENDIF
+            ELSEIF ::aHeader[ nI ][ 7 ] == "M"
+               nTemp := ::aHeader[ nI ][ 5 ] * ::aReport[ LPI ] / 25.4 // top
+               IF ::aHeader[ nI ][ 5 ] > ::aReport[ PAGEY ] / 72 * 25.4 / 2
+                  IF nTemp < ::nPdfBottom
+                     ::nPdfBottom := nTemp
+                  ENDIF
+               ELSE
+                  IF nTemp > ::nPdfTop
+                     ::nPdfTop := nTemp
+                  ENDIF
+               ENDIF
+            ELSEIF ::aHeader[ nI ][ 7 ] == "D"
+               nTemp := ::aHeader[ nI ][ 5 ] / ::aReport[ LPI ] // top
+               IF ::aHeader[ nI ][ 5 ] > ::aReport[ PAGEY ] / 2
+                  IF nTemp < ::nPdfBottom
+                     ::nPdfBottom := nTemp
+                  ENDIF
+               ELSE
+                  IF nTemp > ::nPdfTop
+                    ::nPdfTop := nTemp
+                  ENDIF
+               ENDIF
+            ENDIF
+         ENDIF
       ENDIF
-   ELSE
-      nHeight := ::aHeader[ nI ][ 8 ]
-   ENDIF
-ELSE
-   nHeight := ::aHeader[ nI ][ 8 ]
-ENDIF
-
-IF ::aHeader[ nI ][ 7 ] == "M"
-
-   nTemp := ::aReport[ PAGEY ] / 72 * 25.4 / 2
-
-   IF ::aHeader[ nI ][ 5 ] < nTemp
-  nTemp := ( ::aHeader[ nI ][ 5 ] + nHeight ) * ::aReport[ LPI ] / 25.4 // top
-  IF nTemp > ::nPdfTop
-  ::nPdfTop := nTemp
-  ENDIF
-   ELSE
-  nTemp := ::aHeader[ nI ][ 5 ] * ::aReport[ LPI ] / 25.4 // top
-  IF nTemp < ::nPdfBottom
- ::nPdfBottom := nTemp
-  ENDIF
-   ENDIF
-
-ELSEIF ::aHeader[ nI ][ 7 ] == "D"
-   nTemp := ::aReport[ PAGEY ] / 2
-
-   IF ::aHeader[ nI ][ 5 ] < nTemp
-  nTemp := ( ::aHeader[ nI ][ 5 ] + nHeight ) * ::aReport[ LPI ] / 72 // top
-  IF nTemp > ::nPdfTop
- ::nPdfTop := nTemp
-  ENDIF
-   ELSE
-  nTemp := ::aHeader[ nI ][ 5 ] * ::aReport[ LPI ] / 72 // top
-  IF nTemp < ::nPdfBottom
- ::nPdfBottom := nTemp
-  ENDIF
-
-   ENDIF
-
-ENDIF
-
- ELSEIF ::aHeader[ nI ][ 2 ] == "PDFBOX"
-
-IF ::aHeader[ nI ][ 10 ] == "M"
-
-   nTemp := ::aReport[ PAGEY ] / 72 * 25.4 / 2
-
-   IF ::aHeader[ nI ][ 4 ] < nTemp .and. ;
-  ::aHeader[ nI ][ 6 ] < nTemp
-  nTemp := ::aHeader[ nI ][ 6 ] * ::aReport[ LPI ] / 25.4 // top
-  IF nTemp > ::nPdfTop
- ::nPdfTop := nTemp
-  ENDIF
-   ELSEIF ::aHeader[ nI ][ 4 ] < nTemp .and. ;
-  ::aHeader[ nI ][ 6 ] > nTemp
-
-  nTemp := ( ::aHeader[ nI ][ 4 ] + ::aHeader[ nI ][ 8 ] ) * ::aReport[ LPI ] / 25.4 // top
-  IF nTemp > ::nPdfTop
- ::nPdfTop := nTemp
-  ENDIF
-
-  nTemp := ( ::aHeader[ nI ][ 6 ] - ::aHeader[ nI ][ 8 ] ) * ::aReport[ LPI ] / 25.4 // top
-  IF nTemp < ::nPdfBottom
- ::nPdfBottom := nTemp
-  ENDIF
-
-   ELSEIF ::aHeader[ nI ][ 4 ] > nTemp .and. ;
-  ::aHeader[ nI ][ 6 ] > nTemp
-  nTemp := ::aHeader[ nI ][ 4 ] * ::aReport[ LPI ] / 25.4 // top
-  IF nTemp < ::nPdfBottom
- ::nPdfBottom := nTemp
-  ENDIF
-   ENDIF
-
-ELSEIF ::aHeader[ nI ][ 10 ] == "D"
-   nTemp := ::aReport[ PAGEY ] / 2
-
-   IF ::aHeader[ nI ][ 4 ] < nTemp .and. ;
-  ::aHeader[ nI ][ 6 ] < nTemp
-  nTemp := ::aHeader[ nI ][ 6 ] / ::aReport[ LPI ] // top
-  IF nTemp > ::nPdfTop
- ::nPdfTop := nTemp
-  ENDIF
-   ELSEIF ::aHeader[ nI ][ 4 ] < nTemp .and. ;
-  ::aHeader[ nI ][ 6 ] > nTemp
-
-  nTemp := ( ::aHeader[ nI ][ 4 ] + ::aHeader[ nI ][ 8 ] ) / ::aReport[ LPI ] // top
-  IF nTemp > ::nPdfTop
- ::nPdfTop := nTemp
-  ENDIF
-
-  nTemp := ( ::aHeader[ nI ][ 6 ] - ::aHeader[ nI ][ 8 ] ) / ::aReport[ LPI ] // top
-  IF nTemp < ::nPdfBottom
- ::nPdfBottom := nTemp
-  ENDIF
-
-   ELSEIF ::aHeader[ nI ][ 4 ] > nTemp .and. ;
-  ::aHeader[ nI ][ 6 ] > nTemp
-  nTemp := ::aHeader[ nI ][ 4 ] / ::aReport[ LPI ] // top
-  IF nTemp < ::nPdfBottom
- ::nPdfBottom := nTemp
-  ENDIF
-   ENDIF
-
-ENDIF
-
- ELSE
-IF ::aHeader[ nI ][ 7 ] == "R"
-   nTemp := ::aHeader[ nI ][ 5 ] // top
-   IF ::aHeader[ nI ][ 5 ] > ::aReport[ PAGEY ] / 72 * ::aReport[ LPI ] / 2
-  IF nTemp < ::nPdfBottom
- ::nPdfBottom := nTemp
-  ENDIF
-   ELSE
-  IF nTemp > ::nPdfTop
- ::nPdfTop := nTemp
-  ENDIF
-   ENDIF
-ELSEIF ::aHeader[ nI ][ 7 ] == "M"
-   nTemp := ::aHeader[ nI ][ 5 ] * ::aReport[ LPI ] / 25.4 // top
-   IF ::aHeader[ nI ][ 5 ] > ::aReport[ PAGEY ] / 72 * 25.4 / 2
-  IF nTemp < ::nPdfBottom
- ::nPdfBottom := nTemp
-  ENDIF
-   ELSE
-  IF nTemp > ::nPdfTop
- ::nPdfTop := nTemp
-  ENDIF
-   ENDIF
-ELSEIF ::aHeader[ nI ][ 7 ] == "D"
-   nTemp := ::aHeader[ nI ][ 5 ] / ::aReport[ LPI ] // top
-   IF ::aHeader[ nI ][ 5 ] > ::aReport[ PAGEY ] / 2
-  IF nTemp < ::nPdfBottom
- ::nPdfBottom := nTemp
-  ENDIF
-   ELSE
-  IF nTemp > ::nPdfTop
- ::nPdfTop := nTemp
-  ENDIF
-   ENDIF
-ENDIF
- ENDIF
-  ENDIF
    next
 
    IF nTop <> NIL
-  ::nPdfTop := nTop
+      ::nPdfTop := nTop
    ENDIF
    IF nLeft <> NIL
       ::nPdfLeft := nLeft
@@ -2029,80 +1958,77 @@ ENDIF
 
    ::aReport[ MARGINS ] := .f.
 
-RETURN self
-
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN self
 
 METHOD CreateHeader( _file, _size, _orient, _lpi, _width )
 
-local ;
-   aReportStyle := {  ;
- { 1, 2,   3,   4,5, 6}, ; //"Default"
- { 2.475, 4.0, 4.9, 6.4,  7.5,  64.0  }, ; //"P6"
- { 3.3  , 5.4, 6.5, 8.6, 10.0,  85.35 }, ; //"P8"
- { 2.475, 4.0, 4.9, 6.4,  7.5,  48.9  }, ; //"L6"
- { 3.3  , 5.4, 6.5, 8.6, 10.0,  65.2  }, ; //"L8"
- { 2.475, 4.0, 4.9, 6.4,  7.5,  82.0  }, ; //"P6"
- { 3.3  , 5.4, 6.5, 8.6, 10.0, 109.35 }  ; //"P8"
-   }
-local nStyle := 1, nAdd := 0.00
+   local aReportStyle := {  ;
+         { 1, 2,   3,   4,5, 6}, ; //"Default"
+         { 2.475, 4.0, 4.9, 6.4,  7.5,  64.0  }, ; //"P6"
+         { 3.3  , 5.4, 6.5, 8.6, 10.0,  85.35 }, ; //"P8"
+         { 2.475, 4.0, 4.9, 6.4,  7.5,  48.9  }, ; //"L6"
+         { 3.3  , 5.4, 6.5, 8.6, 10.0,  65.2  }, ; //"L8"
+         { 2.475, 4.0, 4.9, 6.4,  7.5,  82.0  }, ; //"P6"
+         { 3.3  , 5.4, 6.5, 8.6, 10.0, 109.35 }  ; //"P8"
+         }
+   local nStyle := 1, nAdd := 0.00
 
-DEFAULT _size TO ::aReport[ PAGESIZE ]
-DEFAULT _orient TO ::aReport[ PAGEORIENT ]
-DEFAULT _lpi TO ::aReport[ LPI ]
-DEFAULT _width TO 200
+   DEFAULT _size TO ::aReport[ PAGESIZE ]
+   DEFAULT _orient TO ::aReport[ PAGEORIENT ]
+   DEFAULT _lpi TO ::aReport[ LPI ]
+   DEFAULT _width TO 200
 
    IF _size == "LETTER"
-  IF _orient == "P"
- IF _lpi == 6
-nStyle := 2
- ELSEIF _lpi == 8
-nStyle := 3
- ENDIF
-  ELSEIF _orient == "L"
- IF _lpi == 6
-nStyle := 4
- ELSEIF _lpi == 8
-nStyle := 5
- ENDIF
-  ENDIF
+      IF _orient == "P"
+         IF _lpi == 6
+            nStyle := 2
+         ELSEIF _lpi == 8
+            nStyle := 3
+         ENDIF
+      ELSEIF _orient == "L"
+         IF _lpi == 6
+            nStyle := 4
+         ELSEIF _lpi == 8
+            nStyle := 5
+         ENDIF
+      ENDIF
    ELSEIF _size == "LEGAL"
-  IF _orient == "P"
- IF _lpi == 6
-nStyle := 6
- ELSEIF _lpi == 8
-nStyle := 7
- ENDIF
-  ELSEIF _orient == "L"
- IF _lpi == 6
-nStyle := 4
- ELSEIF _lpi == 8
-nStyle := 5
- ENDIF
-  ENDIF
+      IF _orient == "P"
+         IF _lpi == 6
+            nStyle := 6
+         ELSEIF _lpi == 8
+            nStyle := 7
+         ENDIF
+      ELSEIF _orient == "L"
+         IF _lpi == 6
+            nStyle := 4
+         ELSEIF _lpi == 8
+            nStyle := 5
+         ENDIF
+      ENDIF
    ENDIF
 
    ::EditOnHeader()
 
    IF _size == "LEGAL"
-  nAdd := 76.2
+      nAdd := 76.2
    ENDIF
 
    IF _orient == "P"
-  ::Box(   5.0, 5.0, 274.0 + nAdd, 210.0,  1.0 )
-  ::Box(   6.5, 6.5, 272.5 + nAdd, 208.5,  0.5 )
+      ::Box(   5.0, 5.0, 274.0 + nAdd, 210.0,  1.0 )
+      ::Box(   6.5, 6.5, 272.5 + nAdd, 208.5,  0.5 )
 
-  ::Box(  11.5, 9.5,  22.0   , 205.5,  0.5, 5 )
-  ::Box(  23.0, 9.5,  33.5   , 205.5,  0.5, 5 )
-  ::Box(  34.5, 9.5, 267.5 + nAdd, 205.5,  0.5 )
+      ::Box(  11.5, 9.5,  22.0   , 205.5,  0.5, 5 )
+      ::Box(  23.0, 9.5,  33.5   , 205.5,  0.5, 5 )
+      ::Box(  34.5, 9.5, 267.5 + nAdd, 205.5,  0.5 )
 
    ELSE
-  ::Box(  5.0, 5.0, 210.0, 274.0 + nAdd, 1.0 )
-  ::Box(  6.5, 6.5, 208.5, 272.5 + nAdd, 0.5 )
+      ::Box(  5.0, 5.0, 210.0, 274.0 + nAdd, 1.0 )
+      ::Box(  6.5, 6.5, 208.5, 272.5 + nAdd, 0.5 )
 
-  ::Box( 11.5, 9.5,  22.0, 269.5 + nAdd, 0.5, 5 )
-  ::Box( 23.0, 9.5,  33.5, 269.5 + nAdd, 0.5, 5 )
-  ::Box( 34.5, 9.5, 203.5, 269.5 + nAdd, 0.5 )
+      ::Box( 11.5, 9.5,  22.0, 269.5 + nAdd, 0.5, 5 )
+      ::Box( 23.0, 9.5,  33.5, 269.5 + nAdd, 0.5, 5 )
+      ::Box( 34.5, 9.5, 203.5, 269.5 + nAdd, 0.5 )
    ENDIF
 
    ::SetFont("Arial", 1, 10)
@@ -2125,37 +2051,36 @@ nStyle := 5
 
    ::EditOffHeader()
    ::SaveHeader( _file )
-RETURN self
 
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN self
 
 METHOD ImageInfo( cFile )
-local cTemp := upper( substr( cFile, rat( ".", cFile ) + 1 ) ), aTemp := {}
 
-* TODO: Check for resource
+   local cTemp := upper( substr( cFile, rat( ".", cFile ) + 1 ) ), aTemp := {}
+
+   * TODO: Check for resource
 
    do case
-      case ! file( cFile )
-         aTemp := {}
-      case cTemp == "TIF" .OR. cTemp == "TIFF"
-         aTemp := ::TIFFInfo( cFile )
-      case cTemp == "JPG" .OR. cTemp == "JPEG"
-         aTemp := ::JPEGInfo( cFile )
-      case cTemp == "BMP"
-         aTemp := ::BMPInfo( cFile )
+   case ! file( cFile )
+      aTemp := {}
+   case cTemp == "TIF" .OR. cTemp == "TIFF"
+      aTemp := ::TIFFInfo( cFile )
+   case cTemp == "JPG" .OR. cTemp == "JPEG"
+      aTemp := ::JPEGInfo( cFile )
+   case cTemp == "BMP"
+      aTemp := ::BMPInfo( cFile )
    endcase
-RETURN aTemp
 
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN aTemp
 
 METHOD TIFFInfo( cFile )
-local c40 := chr( 0 ) + chr( 0 ) + chr( 0 ) + chr( 0 )
-// local aType  := {"BYTE","ASCII","SHORT","LONG","RATIONAL","SBYTE","UNDEFINED","SSHORT","SLONG","SRATIONAL","FLOAT","DOUBLE"}
-local aCount := { 1, 1, 2, 4, 8, 1, 1, 2, 4, 8, 4, 8 }
-local nHandle, cValues, c2, nFieldType, nCount, nPos, nTag, nValues
-local nOffset, cTemp, cIFDNext, nIFD, nFields, nn
 
-local nWidth := 0, nHeight := 0, nBits := 1, nFrom := 0, nLength := 0, xRes := 0, yRes := 0, aTemp := {}
+   local c40 := chr( 0 ) + chr( 0 ) + chr( 0 ) + chr( 0 )
+   // local aType  := {"BYTE","ASCII","SHORT","LONG","RATIONAL","SBYTE","UNDEFINED","SSHORT","SLONG","SRATIONAL","FLOAT","DOUBLE"}
+   local aCount := { 1, 1, 2, 4, 8, 1, 1, 2, 4, 8, 4, 8 }
+   local nHandle, cValues, c2, nFieldType, nCount, nPos, nTag, nValues
+   local nOffset, cTemp, cIFDNext, nIFD, nFields, nn
+   local nWidth := 0, nHeight := 0, nBits := 1, nFrom := 0, nLength := 0, xRes := 0, yRes := 0, aTemp := {}
 
    nHandle := fopen( cFile )
 
@@ -2316,14 +2241,13 @@ local nWidth := 0, nHeight := 0, nBits := 1, nFrom := 0, nLength := 0, xRes := 0
    aadd( aTemp, 1 )
    aadd( aTemp, NIL )
 
-return aTemp
-
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   return aTemp
 
 METHOD JPEGInfo( cFile )
-local cBuffer, nAt, nHandle
-local nWidth, nHeight, nBits := 8, nFrom := 0
-local nLength, xRes, yRes, aTemp := {}
+
+   local cBuffer, nAt, nHandle
+   local nWidth, nHeight, nBits := 8, nFrom := 0
+   local nLength, xRes, yRes, aTemp := {}
 
    nHandle := fopen( cFile )
    cBuffer := space( 1024 )
@@ -2349,14 +2273,13 @@ local nLength, xRes, yRes, aTemp := {}
    aadd( aTemp, 0 )
    aadd( aTemp, NIL )
 
-return aTemp
-
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   return aTemp
 
 METHOD BMPInfo( cFile )
-local cBuffer, nHandle
-local nWidth, nHeight, nBits, nFrom
-local nLength, xRes, yRes, aTemp := {}
+
+   local cBuffer, nHandle
+   local nWidth, nHeight, nBits, nFrom
+   local nLength, xRes, yRes, aTemp := {}
 
    nHandle := fopen( cFile )
    cBuffer := space( 56 )
@@ -2395,21 +2318,22 @@ local nLength, xRes, yRes, aTemp := {}
       aadd( aTemp, 54 )
    ENDIF
 
-return aTemp
-
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   return aTemp
 
 METHOD WriteToFile( cBuffer )
-LOCAL nCount
+
+   LOCAL nCount
+
    nCount := len( cBuffer )
    fwrite( ::nHandle, cBuffer )
    ::nDocLen += nCount
-RETURN nCount
 
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN nCount
 
 METHOD BookCount( nRecno, nCurLevel )
-local nTempLevel, nCount := 0, nLen := len( ::aBookMarks )
+
+   local nTempLevel, nCount := 0, nLen := len( ::aBookMarks )
+
    ++nRecno
    DO WHILE nRecno <= nLen
       nTempLevel := ::aBookMarks[ nRecno ][ BOOKLEVEL ]
@@ -2422,24 +2346,26 @@ local nTempLevel, nCount := 0, nLen := len( ::aBookMarks )
       ENDIF
       ++nRecno
    ENDDO
-return -1 * nCount
 
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   return -1 * nCount
 
 METHOD BookFirst( nRecno, nCurLevel, nObj )
-local nFirst := 0, nLen := len( ::aBookMarks )
+
+   local nFirst := 0, nLen := len( ::aBookMarks )
+
    ++nRecno
    IF nRecno <= nLen
       IF nCurLevel + 1 == ::aBookMarks[ nRecno ][ BOOKLEVEL ]
          nFirst := nRecno
       ENDIF
    ENDIF
-return IIF( nFirst == 0, nFirst, nObj + nFirst )
 
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   return IIF( nFirst == 0, nFirst, nObj + nFirst )
 
 METHOD BookLast( nRecno, nCurLevel, nObj )
-local nLast := 0, nLen := len( ::aBookMarks )
+
+   local nLast := 0, nLen := len( ::aBookMarks )
+
    ++nRecno
    IF nRecno <= nLen
       IF nCurLevel + 1 == ::aBookMarks[ nRecno ][ BOOKLEVEL ]
@@ -2451,12 +2377,13 @@ local nLast := 0, nLen := len( ::aBookMarks )
          enddo
       ENDIF
    ENDIF
-return IIF( nLast == 0, nLast, nObj + nLast )
 
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   return IIF( nLast == 0, nLast, nObj + nLast )
 
 METHOD BookNext( nRecno, nCurLevel, nObj )
-local nTempLevel, nNext := 0, nLen := len( ::aBookMarks )
+
+   local nTempLevel, nNext := 0, nLen := len( ::aBookMarks )
+
    ++nRecno
    DO WHILE nRecno <= nLen
       nTempLevel := ::aBookMarks[ nRecno ][ BOOKLEVEL ]
@@ -2470,13 +2397,14 @@ local nTempLevel, nNext := 0, nLen := len( ::aBookMarks )
       ENDIF
       ++nRecno
    enddo
-return IIF( nNext == 0, nNext, nObj + nNext )
 
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   return IIF( nNext == 0, nNext, nObj + nNext )
 
 METHOD BookParent( nRecno, nCurLevel, nObj )
-local nTempLevel
-local nParent := 0
+
+   local nTempLevel
+   local nParent := 0
+
    --nRecno
    DO WHILE nRecno > 0
       nTempLevel := ::aBookMarks[ nRecno ][ BOOKLEVEL ]
@@ -2486,13 +2414,14 @@ local nParent := 0
       ENDIF
       --nRecno
    enddo
-return IIF( nParent == 0, nObj - 1, nObj + nParent )
 
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   return IIF( nParent == 0, nObj - 1, nObj + nParent )
 
 METHOD BookPrev( nRecno, nCurLevel, nObj )
-local nTempLevel
-local nPrev := 0
+
+   local nTempLevel
+   local nPrev := 0
+
    --nRecno
    DO WHILE nRecno > 0
       nTempLevel := ::aBookMarks[ nRecno ][ BOOKLEVEL ]
@@ -2506,9 +2435,8 @@ local nPrev := 0
       ENDIF
       --nRecno
    enddo
-return IIF( nPrev == 0, nPrev, nObj + nPrev )
 
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   return IIF( nPrev == 0, nPrev, nObj + nPrev )
 
 METHOD CheckLine( nRow )
 
@@ -2517,12 +2445,12 @@ METHOD CheckLine( nRow )
       nRow := ::aReport[ REPORTLINE ]
    ENDIF
    ::aReport[ REPORTLINE ] := nRow
-RETURN self
 
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN self
 
 METHOD GetFontInfo( cParam )
-local cRet
+
+   local cRet
 
    IF cParam == "NAME"
       IF left( ::aReport[ TYPE1 ][ ::nFontName ], 5 ) == "Times"
@@ -2536,80 +2464,66 @@ local cRet
       cRet := INT( ( ::nFontName - 1 ) % 4 )
    ENDIF
 
-return cRet
-
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   return cRet
 
 METHOD M2R( mm )
 
-return int( ::aReport[ LPI ] * mm / 25.4 )
-
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   return int( ::aReport[ LPI ] * mm / 25.4 )
 
 METHOD M2X( n )
 
-return n * 72 / 25.4
-
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   return n * 72 / 25.4
 
 METHOD M2Y( n )
 
-return ::aReport[ PAGEY ] - n * 72 / 25.4
-
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   return ::aReport[ PAGEY ] - n * 72 / 25.4
 
 METHOD R2D( nRow )
 
-return ::aReport[ PAGEY ] - nRow * 72 / ::aReport[ LPI ]
-
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   return ::aReport[ PAGEY ] - nRow * 72 / ::aReport[ LPI ]
 
 METHOD R2M( nRow )
 
-return 25.4 * nRow / ::aReport[ LPI ]
-
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   return 25.4 * nRow / ::aReport[ LPI ]
 
 METHOD X2M( n )
 
-return n * 25.4 / 72
-
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   return n * 25.4 / 72
 
 METHOD TextPrint( nI, nLeft, lParagraph, nJustify, nSpace, nNew, nLength, nLineLen, nLines, nStart, cString, cDelim, cColor, lPrint )
 
-local nFinish, nL, nB, nJ, cToken, nRow
+   local nFinish, nL, nB, nJ, cToken, nRow
 
    nFinish := nI
 
    nL := nLeft
    IF lParagraph
-  IF nJustify <> 2
- nL += nSpace * nNew
-  ENDIF
+      IF nJustify <> 2
+         nL += nSpace * nNew
+      ENDIF
    ENDIF
 
    IF nJustify == 3 // right
-  nL += nLength - nLineLen
+      nL += nLength - nLineLen
    ELSEIF nJustify == 2 // center
-  nL += ( nLength - nLineLen ) / 2
+      nL += ( nLength - nLineLen ) / 2
    ENDIF
 
    ++nLines
    IF lPrint
-  nRow := ::NewLine( 1 )
+      nRow := ::NewLine( 1 )
    ENDIF
    nB := nSpace
    IF nJustify == 4
-  nB := ( nLength - nLineLen + ( nFinish - nStart ) * nSpace ) / ( nFinish - nStart )
+      nB := ( nLength - nLineLen + ( nFinish - nStart ) * nSpace ) / ( nFinish - nStart )
    ENDIF
    for nJ := nStart to nFinish
-  cToken := token( cString, cDelim, nJ )
-  IF lPrint
- // version 0.02
- ::AtSay( cColor + cToken, ::R2M( nRow + ::nPdfTop ), nL, "M" )
-  ENDIF
-  nL += ::Length( cToken ) + nB
+      cToken := token( cString, cDelim, nJ )
+      IF lPrint
+         // version 0.02
+         ::AtSay( cColor + cToken, ::R2M( nRow + ::nPdfTop ), nL, "M" )
+      ENDIF
+      nL += ::Length( cToken ) + nB
    next
 
    nStart := nFinish + 1
@@ -2619,12 +2533,12 @@ local nFinish, nL, nB, nJ, cToken, nRow
    nLineLen := 0.00
    nLineLen += nSpace * nNew
 
-RETURN self
-
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN self
 
 METHOD TextNextPara( cString, cDelim, nI )
-local nAt, cAt, nCRLF, nNew, nRat, nRet := 0
+
+   local nAt, cAt, nCRLF, nNew, nRat, nRet := 0
+
    // check if next spaces paragraph(s)
    nAt := attoken( cString, cDelim, nI ) + len( token( cString, cDelim, nI ) )
    cAt := substr( cString, nAt, attoken( cString, cDelim, nI + 1 ) - nAt )
@@ -2634,12 +2548,12 @@ local nAt, cAt, nCRLF, nNew, nRat, nRet := 0
    IF nCRLF > 1 .or. ( nCRLF == 1 .and. nNew > 0 )
       nRet := nCRLF
    ENDIF
-RETURN nRet
 
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN nRet
 
 METHOD ClosePage()
-local cTemp, cBuffer, nBuffer, nRead, nI, k, nImage, nFont, nImageHandle, aImageInfo
+
+   local cTemp, cBuffer, nBuffer, nRead, nI, k, nImage, nFont, nImageHandle, aImageInfo
 
    aadd( ::aRefs, ::nDocLen )
 
@@ -2902,62 +2816,55 @@ local cTemp, cBuffer, nBuffer, nRead, nI, k, nImage, nFont, nImageHandle, aImage
 
    ::lIsPageActive := .F.
 
-RETURN self
-
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN self
 
 METHOD FilePrint( /* cFile */ )
-/*
-local cPathAcro := "c:\progra~1\Adobe\Acroba~1.0\Reader"
-local cRun := cPathAcro + "\AcroRd32.exe /t " + cFile + " " + ;
-              chr( 34 ) + "HP LaserJet 5/5M PostScript" + chr( 34 ) + " " + ;
-              chr( 34 ) + "LPT1" + chr( 34 )
 
+   /*
+   local cPathAcro := "c:\progra~1\Adobe\Acroba~1.0\Reader"
+   local cRun := cPathAcro + "\AcroRd32.exe /t " + cFile + " " + ;
+                 chr( 34 ) + "HP LaserJet 5/5M PostScript" + chr( 34 ) + " " + ;
+                 chr( 34 ) + "LPT1" + chr( 34 )
    IF ( ! RunExternal( cRun, 'print' ) )
       alert( "Error printing to Acrobat Reader." )
       break
    ENDIF
-*/
+   */
 
-RETURN self
-
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN self
 
 METHOD Execute( /* cFile */ )
 
-/*
-//  Replace cPathAcro with the path at your system
-local cPathAcro := "c:\progra~1\Adobe\Acroba~1.0\Reader"
-local cRun := cPathAcro + "\AcroRd32.exe /t " + cFile + " " + chr(34) + "HP LaserJet 5/5M PostScript" + chr(34) + " " + chr(34) + "LPT1" + chr(34)
+   /*
+   //  Replace cPathAcro with the path at your system
+   local cPathAcro := "c:\progra~1\Adobe\Acroba~1.0\Reader"
+   local cRun := cPathAcro + "\AcroRd32.exe /t " + cFile + " " + chr(34) + "HP LaserJet 5/5M PostScript" + chr(34) + " " + chr(34) + "LPT1" + chr(34)
 
-   IF ( ! RunExternal( cRun, 'open', cFile ) )
-      alert("Error printing to Acrobat Reader.")
-      break
-   ENDIF
-*/
+      IF ( ! RunExternal( cRun, 'open', cFile ) )
+         alert("Error printing to Acrobat Reader.")
+         break
+      ENDIF
+   */
 
-RETURN self
+   RETURN self
 
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
 
 static function FilePos( nHandle )
-return ( FSEEK( nHandle, 0, FS_RELATIVE ) )
 
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   return ( FSEEK( nHandle, 0, FS_RELATIVE ) )
+
 /*
 static function stuff( cStr, nBeg, nDel, cIns )
-return PosIns( PosDel( cStr, nBeg, nDel ), cIns, nBeg )
+
+   return PosIns( PosDel( cStr, nBeg, nDel ), cIns, nBeg )
 */
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
 
 static function Chr_RGB( cChar )
-return str( asc( cChar ) / 255, 4, 2 )
 
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   return str( asc( cChar ) / 255, 4, 2 )
 
 static function TimeAsAMPM( cTime )
+
    IF VAL( cTime ) < 12
       cTime += " am"
    ELSEIF VAL( cTime ) = 12
@@ -2966,49 +2873,45 @@ static function TimeAsAMPM( cTime )
       cTime := STR( VAL( cTime ) - 12, 2 ) + SUBSTR( cTime, 3 ) + " pm"
    ENDIF
    cTime := left( cTime, 5 ) + substr( cTime, 10 )
-return cTime
 
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   return cTime
 
 static function FileSize( cFile )
-LOCAL nLength, nHandle
+
+  LOCAL nLength, nHandle
 
    nHandle := fOpen( cFile )
    nLength := fSeek( nHandle, 0, FS_END )
    fClose( nHandle )
 
-return ( nLength )
-
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   return ( nLength )
 
 static FUNCTION NumToken( cString, cDelimiter )
-RETURN AllToken( cString, cDelimiter )
 
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN AllToken( cString, cDelimiter )
 
 static FUNCTION Token( cString, cDelimiter, nPointer )
-RETURN AllToken( cString, cDelimiter, nPointer, 1 )
 
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN AllToken( cString, cDelimiter, nPointer, 1 )
 
 static function AtToken( cString, cDelimiter, nPointer )
-return AllToken( cString, cDelimiter, nPointer, 2 )
 
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   return AllToken( cString, cDelimiter, nPointer, 2 )
 
 static function AllToken( cString, cDelimiter, nPointer, nAction )
-local nTokens := 0
-local nPos:= 1
-local nLen:= len( cString )
-local nStart
-local cRet:= 0
+
+   local nTokens := 0
+   local nPos:= 1
+   local nLen:= len( cString )
+   local nStart
+   local cRet:= 0
 
    DEFAULT cDelimiter TO chr(0)+chr(9)+chr(10)+chr(13)+chr(26)+chr(32)+chr(138)+chr(141)
    DEFAULT nAction to 0
 
-// nAction == 0 - numtoken
-// nAction == 1 - token
-// nAction == 2 - attoken
+   // nAction == 0 - numtoken
+   // nAction == 1 - token
+   // nAction == 2 - attoken
 
    while nPos <= nLen
       if .not. substr( cString, nPos, 1 ) $ cDelimiter
@@ -3036,18 +2939,18 @@ local cRet:= 0
       cRet := nTokens
    enddo
 
-RETURN cRet
+   RETURN cRet
 
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
 //
 // next 3 function written by Peter Kulek
 // modified for compatibility with common.ch by V.K.
 // modified DATE processing by V.K.
 //
 static function Array2File( cFile, aRay, nDepth, hFile )
-local nBytes := 0
-local i
-local lOpen  := ( hFile <> nil )
+
+   local nBytes := 0
+   local i
+   local lOpen  := ( hFile <> nil )
 
    nDepth := if( ISNUMBER( nDepth ), nDepth, 0 )
    //if hFile == NIL
@@ -3069,12 +2972,11 @@ local lOpen  := ( hFile <> nil )
       fClose( hFile )
    endif
 
-return( nBytes )
-
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   return ( nBytes )
 
 static function WriteData(hFile,xData)
-local cData  := valtype(xData)
+
+   local cData  := valtype(xData)
 
    if ISCHARACTER(xData)
       cData += i2bin( len( xData ) ) + xData
@@ -3090,15 +2992,14 @@ local cData  := valtype(xData)
       cData += i2bin( 0 )   // NIL
    endif
 
-return( fWrite( hFile, cData, len( cData ) ) )
-
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   return ( fWrite( hFile, cData, len( cData ) ) )
 
 static function File2Array( cFile, nLen, hFile )
-LOCAL cData, cType, nDataLen, nBytes
-local nDepth := 0
-local aRay   := {}
-local lOpen  := ( hFile <> nil )
+
+   LOCAL cData, cType, nDataLen, nBytes
+   local nDepth := 0
+   local aRay   := {}
+   local lOpen  := ( hFile <> nil )
 
    if hFile == NIL // First Timer
       if ( hFile := fOpen( cFile,FO_READ ) ) == -1
@@ -3147,12 +3048,12 @@ local lOpen  := ( hFile <> nil )
       fClose( hFile )
    endif
 
-return ( aRay )
-
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   return ( aRay )
 
 static FUNCTION PDF_HEX( nNum, nLen )
-LOCAL cHex, nDigit
+
+   LOCAL cHex, nDigit
+
    cHex := ""
    DO WHILE nLen > 0
       nDigit := nNum % 16
@@ -3160,36 +3061,33 @@ LOCAL cHex, nDigit
       cHex := IF( nDigit > 9, CHR( nDigit + 55 ), CHR( nDigit + 48 ) ) + cHex
       nLen--
    ENDDO
-RETURN cHex
 
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN cHex
 
 static FUNCTION NumAt( cSearch, cString )
-LOCAL n := 0, nAt, nPos := 0
+
+   LOCAL n := 0, nAt, nPos := 0
 
    WHILE ( nAt := at( cSearch, substr( cString, nPos + 1 ) ) ) > 0
       nPos += nAt
       ++n
    ENDDO
 
-RETURN n
-
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   RETURN n
 
 static function RunExternal( cCmd, cVerb, cFile )
-local lRet := .t.
 
-/*
+   local lRet := .t.
+
+   /*
    #ifdef __CLP__
       lRet := SwpRunCmd( cCmd, 0, '', '' )
    #endif
-*/
+   */
    If cVerb <> nil  //GetDeskTopWindow()
       ShellExecute( , cVerb, cFile, , , 1 )
    Else
       __Run( cCmd )
    EndIf
 
-return lRet
-
-//ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\\
+   return lRet

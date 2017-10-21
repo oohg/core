@@ -66,6 +66,7 @@
 #include "i_windefs.ch"
 
 CLASS TEditRich FROM TEdit
+
    DATA Type                      INIT "RICHEDIT" READONLY
    DATA nWidth                    INIT 120
    DATA nHeight                   INIT 240
@@ -90,17 +91,17 @@ CLASS TEditRich FROM TEdit
    METHOD GetCharFromPos
 
    /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
                fontsize, tooltip, maxlength, gotfocus, change, lostfocus, ;
                readonly, break, HelpId, invisible, notabstop, bold, italic, ;
                underline, strikeout, field, backcolor, lRtl, lDisabled, ;
                selchange, fontcolor, nohidesel, OnFocusPos, novscroll, ;
                nohscroll, file, type, OnHScroll, OnVScroll ) CLASS TEditRich
-*------------------------------------------------------------------------------*
-Local ControlHandle, nStyle
+
+   Local ControlHandle, nStyle
 
    ASSIGN ::nWidth  VALUE w TYPE "N"
    ASSIGN ::nHeight VALUE h TYPE "N"
@@ -137,39 +138,43 @@ Local ControlHandle, nStyle
    ASSIGN ::OnChange    VALUE change     TYPE "B"
    ASSIGN ::OnSelChange VALUE selchange  TYPE "B"
    ASSIGN ::nOnFocusPos VALUE OnFocusPos TYPE "N"
-Return Self
 
-*------------------------------------------------------------------------------*
+   Return Self
+
 METHOD LoadFile( cFile, nType ) CLASS TEditRich
-*------------------------------------------------------------------------------*
-Local lRet := .F.
+
+   Local lRet := .F.
+
    ASSIGN cFile VALUE cFile TYPE "C" DEFAULT ""
    ASSIGN nType VALUE nType TYPE "N" DEFAULT 2
    If ! Empty( cFile ) .and. File( cFile )
       lRet := FileStreamIn( ::hWnd, cFile, nType )
    EndIf
-Return lRet
 
-*------------------------------------------------------------------------------*
+   Return lRet
+
 METHOD SaveFile( cFile, nType ) CLASS TEditRich
-*------------------------------------------------------------------------------*
-Local lRet := .F.
+
+   Local lRet := .F.
+
    ASSIGN cFile VALUE cFile TYPE "C" DEFAULT ""
    ASSIGN nType VALUE nType TYPE "N" DEFAULT 2
    If ! Empty( cFile )
       lRet := FileStreamOut( ::hWnd, cFile, nType )
    EndIf
-Return lRet
 
-*------------------------------------------------------------------------------*
+   Return lRet
+
 METHOD RichValue( cValue ) CLASS TEditRich
-*------------------------------------------------------------------------------*
+
    If VALTYPE( cValue ) $ "CM"
       RichStreamIn( ::hWnd, cValue )
    EndIf
-RETURN RichStreamOut( ::hWnd )
+
+   RETURN RichStreamOut( ::hWnd )
 
 #pragma BEGINDUMP
+
 #include "hbapi.h"
 #include "hbvm.h"
 #include "hbstack.h"
@@ -711,11 +716,11 @@ HB_FUNC_STATIC( TEDITRICH_GETCHARFROMPOS )           // METHOD GetCharFromPos( n
 
 #pragma ENDDUMP
 
-*------------------------------------------------------------------------------*
+
 FUNCTION TEditRich_Events2( hWnd, nMsg, wParam, lParam )
-*------------------------------------------------------------------------------*
-Local Self := QSelf()
-Local cText, lRet
+
+   Local Self := QSelf()
+   Local cText, lRet
 
    If nMsg == WM_KEYDOWN .AND. wParam == VK_Z .AND. ( GetKeyFlagState() == MOD_CONTROL .OR. GetKeyFlagState() == MOD_CONTROL + MOD_SHIFT )
 
@@ -738,48 +743,45 @@ Local cText, lRet
 
    Endif
 
-Return ::Super:Events( hWnd, nMsg, wParam, lParam )
+   Return ::Super:Events( hWnd, nMsg, wParam, lParam )
 
-*------------------------------------------------------------------------------*
 METHOD Events_Notify( wParam, lParam ) CLASS TEditRich
-*------------------------------------------------------------------------------*
-Local nNotify := GetNotifyCode( lParam )
+
+   Local nNotify := GetNotifyCode( lParam )
 
    If nNotify == EN_SELCHANGE
-     If ! ::lSelChanging
-        ::lSelChanging := .T.
-        ::DoEvent( ::OnSelChange, "SELCHANGE" )
-        ::lSelChanging := .F.
-     EndIf
+      If ! ::lSelChanging
+         ::lSelChanging := .T.
+         ::DoEvent( ::OnSelChange, "SELCHANGE" )
+         ::lSelChanging := .F.
+      EndIf
    EndIf
 
-Return ::Super:Events_Notify( wParam, lParam )
+   Return ::Super:Events_Notify( wParam, lParam )
 
-*------------------------------------------------------------------------------*
 METHOD GetSelText( lTranslate ) CLASS TEditRich
-*------------------------------------------------------------------------------*
-Local cSelText := RichEdit_GetSelText( ::hWnd )
+
+   Local cSelText := RichEdit_GetSelText( ::hWnd )
 
    If HB_IsLogical( lTranslate ) .AND. lTranslate
      cSelText := StrTran( cSelText, Chr(13), Chr(13) + Chr(10) )
    EndIf
 
-Return cSelText
+   Return cSelText
 
-*------------------------------------------------------------------------------*
 METHOD MaxLength( nLen ) CLASS TEditRich
-*------------------------------------------------------------------------------*
+
    If HB_IsNumeric( nLen )
       SendMessage( ::hWnd, EM_EXLIMITTEXT, 0, nLen )
    EndIf
-Return SendMessage( ::hWnd, EM_GETLIMITTEXT, 0, 0 )
 
-*------------------------------------------------------------------------------*
+   Return SendMessage( ::hWnd, EM_GETLIMITTEXT, 0, 0 )
+
 METHOD GetLastVisibleLine CLASS TEditRich
-*------------------------------------------------------------------------------*
-LOCAL aRect, nChar
+
+   LOCAL aRect, nChar
 
    aRect := ::GetRect()            // top, left, bottom, right
    nChar := ::GetCharFromPos( aRect[3] - 2, aRect[2] + 1 )
 
-Return ::GetLineFromChar( nChar )
+   Return ::GetLineFromChar( nChar )

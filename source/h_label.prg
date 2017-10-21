@@ -66,6 +66,7 @@
 #include "i_windefs.ch"
 
 CLASS TLabel FROM TControl
+
    DATA Type      INIT "LABEL" READONLY
    DATA lAutoSize INIT .F.
    DATA IconWidth INIT 0
@@ -84,17 +85,17 @@ CLASS TLabel FROM TControl
    METHOD SetFont
 
    /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( ControlName, ParentForm, x, y, Caption, w, h, fontname, ;
                fontsize, bold, BORDER, CLIENTEDGE, HSCROLL, VSCROLL, ;
                lTRANSPARENT, aRGB_bk, aRGB_font, ProcedureName, tooltip, ;
                HelpId, invisible, italic, underline, strikeout, autosize, ;
                rightalign, centeralign, lRtl, lNoWordWrap, lNoPrefix, ;
                cPicture, lDisabled, lCenterAlign ) CLASS TLabel
-*------------------------------------------------------------------------------*
-Local ControlHandle, nStyle, nStyleEx
+
+   Local ControlHandle, nStyle, nStyleEx
 
    ASSIGN ::nCol        VALUE x TYPE "N"
    ASSIGN ::nRow        VALUE y TYPE "N"
@@ -138,11 +139,10 @@ Local ControlHandle, nStyle, nStyleEx
    ASSIGN ::AutoSize VALUE autosize TYPE "L" DEFAULT ::AutoSize
    ASSIGN ::OnClick  VALUE ProcedureName TYPE "B"
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD Value( cValue ) CLASS TLabel
-*------------------------------------------------------------------------------*
+
    If PCOUNT() > 0
       If VALTYPE( ::Picture ) $ "CM"
          ::Caption := TRANSFORM( cValue, ::Picture )
@@ -150,11 +150,11 @@ METHOD Value( cValue ) CLASS TLabel
          ::Caption := cValue
       EndIf
    Endif
-Return ::Caption
 
-*------------------------------------------------------------------------------*
+   Return ::Caption
+
 METHOD Caption( cValue ) CLASS TLabel
-*------------------------------------------------------------------------------*
+
    IF VALTYPE( cValue ) $ "CM"
       if ::lAutoSize
          ::SizePos( , , GetTextWidth( nil, cValue , ::FontHandle ) + ::IconWidth, GetTextHeight( nil, cValue , ::FontHandle ) )
@@ -166,22 +166,23 @@ METHOD Caption( cValue ) CLASS TLabel
    Else
       cValue := GetWindowText( ::hWnd )
    EndIf
-RETURN cValue
 
-*------------------------------------------------------------------------------*
+   RETURN cValue
+
 METHOD SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout, Angle, Width ) CLASS Tlabel
-*------------------------------------------------------------------------------*
+
    ///local cCaption
    ::Super:SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout, Angle, Width )
    If ::lAutosize
       ::AutoSize( .T. )
    EndIf
-RETURN Nil
 
-*------------------------------------------------------------------------------*
+   RETURN Nil
+
 METHOD AutoSize( lValue ) CLASS TLabel
-*------------------------------------------------------------------------------*
-Local cCaption
+
+   Local cCaption
+
    If HB_IsLogical( lValue )
       ::lAutoSize := lValue
       If lValue
@@ -189,12 +190,13 @@ Local cCaption
          ::SizePos( , , GetTextWidth( Nil, cCaption, ::FontHandle ) + ::IconWidth, GetTextHeight( Nil, cCaption, ::FontHandle ) )
       EndIf
    EndIf
-RETURN ::lAutoSize
 
-*------------------------------------------------------------------------------*
+   RETURN ::lAutoSize
+
 METHOD Align( nAlign ) CLASS TLabel
-*------------------------------------------------------------------------------*
-Return WindowStyleFlag( ::hWnd, 0x3F, nAlign )
+
+   Return WindowStyleFlag( ::hWnd, 0x3F, nAlign )
+
 
 EXTERN InitLabel
 
@@ -229,4 +231,5 @@ HB_FUNC( INITLABEL )
 
    HWNDret( hbutton );
 }
+
 #pragma ENDDUMP

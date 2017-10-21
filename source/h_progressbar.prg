@@ -66,6 +66,7 @@
 #include "i_windefs.ch"
 
 CLASS TProgressBar FROM TControl
+
    DATA Type        INIT "PROGRESSBAR" READONLY
    DATA nRangeMin   INIT 0
    DATA nRangeMax   INIT 100
@@ -88,14 +89,14 @@ CLASS TProgressBar FROM TControl
    METHOD IsMarqueeRunning
 
    /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( ControlName, ParentForm, x, y, w, h, lo, hi, tooltip, ;
                vertical, smooth, HelpId, invisible, nValue, BackColor, ;
                BarColor, lRtl, nVelocity ) CLASS TProgressBar
-*------------------------------------------------------------------------------*
-Local ControlHandle
+
+   Local ControlHandle
 
    ASSIGN vertical  VALUE vertical  TYPE "L" DEFAULT .F.
    ASSIGN smooth    VALUE smooth    TYPE "L" DEFAULT .F.
@@ -130,11 +131,9 @@ Local ControlHandle
       ::SetStyleMarquee( nVelocity )
    endif
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD SetStyleMarquee( nVelocity ) CLASS TProgressBar
-*------------------------------------------------------------------------------*
 
    if ! IsWindowStyle( ::hWnd, PBS_MARQUEE )
      ::Style( ::Style() + PBS_MARQUEE )
@@ -148,11 +147,9 @@ METHOD SetStyleMarquee( nVelocity ) CLASS TProgressBar
       ::StopMarquee()
    endif
 
-Return Nil
+   Return Nil
 
-*------------------------------------------------------------------------------*
 METHOD SetStyleNormal( uValue ) CLASS TProgressBar
-*------------------------------------------------------------------------------*
 
    if IsWindowStyle( ::hWnd, PBS_MARQUEE )
       ::StopMarquee()
@@ -166,23 +163,17 @@ METHOD SetStyleNormal( uValue ) CLASS TProgressBar
       ::value := uValue
    endif
 
-Return Nil
+   Return Nil
 
-*------------------------------------------------------------------------------*
 METHOD IsStyleMarquee() CLASS TProgressBar
-*------------------------------------------------------------------------------*
 
-Return IsWindowStyle( ::hWnd, PBS_MARQUEE )
+   Return IsWindowStyle( ::hWnd, PBS_MARQUEE )
 
-*------------------------------------------------------------------------------*
 METHOD IsStyleNormal() CLASS TProgressBar
-*------------------------------------------------------------------------------*
 
-Return ! IsWindowStyle( ::hWnd, PBS_MARQUEE )
+   Return ! IsWindowStyle( ::hWnd, PBS_MARQUEE )
 
-*------------------------------------------------------------------------------*
 METHOD StartMarquee() CLASS TProgressBar
-*------------------------------------------------------------------------------*
 
    if IsWindowStyle( ::hWnd, PBS_MARQUEE )
       if ! ::lRunning
@@ -197,11 +188,9 @@ METHOD StartMarquee() CLASS TProgressBar
       endif
    endif
 
-Return Nil
+   Return Nil
 
-*------------------------------------------------------------------------------*
 METHOD StopMarquee() CLASS TProgressBar
-*------------------------------------------------------------------------------*
 
    if IsWindowStyle( ::hWnd, PBS_MARQUEE )
       if ::lRunning
@@ -216,39 +205,37 @@ METHOD StopMarquee() CLASS TProgressBar
       endif
    endif
 
-Return Nil
+   Return Nil
 
-*------------------------------------------------------------------------------*
 METHOD IsMarqueeRunning() CLASS TProgressBar
-*------------------------------------------------------------------------------*
 
-Return ::lRunning
+   Return ::lRunning
 
-*------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TProgressBar
-*------------------------------------------------------------------------------*
+
    IF HB_IsNumeric( uValue )
       SendMessage( ::hWnd, PBM_SETPOS, uValue, 0 )
    ENDIF
-RETURN SendMessage( ::hWnd, PBM_GETPOS, 0, 0)
 
-*------------------------------------------------------------------------------*
+   RETURN SendMessage( ::hWnd, PBM_GETPOS, 0, 0)
+
 METHOD RangeMin( uValue ) CLASS TProgressBar
-*------------------------------------------------------------------------------*
+
    IF HB_IsNumeric( uValue )
       ::nRangeMin := uValue
       SetProgressBarRange( ::hWnd, uValue, ::nRangeMax )
    ENDIF
-RETURN ::nRangeMin
 
-*------------------------------------------------------------------------------*
+   RETURN ::nRangeMin
+
 METHOD RangeMax( uValue ) CLASS TProgressBar
-*------------------------------------------------------------------------------*
+
    IF HB_IsNumeric( uValue )
       ::nRangeMax := uValue
       SetProgressBarRange( ::hWnd, ::nRangeMin, uValue )
    ENDIF
-RETURN ::nRangeMax
+
+   RETURN ::nRangeMax
 
 *------------------------------------------------------------------------------*
 METHOD FontColor( uValue ) CLASS TProgressBar

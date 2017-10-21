@@ -66,7 +66,7 @@
 
 EXTERN PtrStr
 
-#PRAGMA BEGINDUMP
+#pragma BEGINDUMP
 
 #include "windows.h"
 #include "hbapi.h"
@@ -243,4 +243,4 @@ HB_FUNC( PTRSTR )
    hb_retc( ( LPSTR ) hb_parnl( 1 ) );
 }
 
-#PRAGMA ENDDUMP
+#pragma ENDDUMP

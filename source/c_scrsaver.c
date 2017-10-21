@@ -80,63 +80,63 @@ typedef VOID (WINAPI *PWDCHANGEPASSWORD) (LPCSTR lpcRegkeyname,HWND hwnd,UINT ui
 
 HB_FUNC( VERIFYPASSWORD )
 {
-	// Under NT, we return TRUE immediately. This lets the saver quit,
-	// and the system manages passwords. Under '95, we call VerifyScreenSavePwd.
-	// This checks the appropriate registry key and, if necessary,
-	// pops up a verify dialog
+   // Under NT, we return TRUE immediately. This lets the saver quit,
+   // and the system manages passwords. Under '95, we call VerifyScreenSavePwd.
+   // This checks the appropriate registry key and, if necessary,
+   // pops up a verify dialog
 
-	HWND hwnd;
-	HINSTANCE hpwdcpl;
-	VERIFYSCREENSAVEPWD VerifyScreenSavePwd;
-	BOOL bres;
+   HWND hwnd;
+   HINSTANCE hpwdcpl;
+   VERIFYSCREENSAVEPWD VerifyScreenSavePwd;
+   BOOL bres;
 
-	if(GetVersion() < 0x80000000)
-		hb_retl( TRUE );
+   if(GetVersion() < 0x80000000)
+      hb_retl( TRUE );
 
-	hpwdcpl = LoadLibrary("PASSWORD.CPL");
+   hpwdcpl = LoadLibrary("PASSWORD.CPL");
 
-	if(hpwdcpl == NULL)
-	{
-		hb_retl( FALSE );
-	}
+   if(hpwdcpl == NULL)
+   {
+      hb_retl( FALSE );
+   }
 
-	VerifyScreenSavePwd = (VERIFYSCREENSAVEPWD)GetProcAddress(hpwdcpl, "VerifyScreenSavePwd");
-	if(VerifyScreenSavePwd==NULL)
-	{
-		FreeLibrary(hpwdcpl);
-		hb_retl( FALSE );
-	}
+   VerifyScreenSavePwd = (VERIFYSCREENSAVEPWD)GetProcAddress(hpwdcpl, "VerifyScreenSavePwd");
+   if(VerifyScreenSavePwd==NULL)
+   {
+      FreeLibrary(hpwdcpl);
+      hb_retl( FALSE );
+   }
 
         hwnd = HWNDparam( 1 );
 
         bres = VerifyScreenSavePwd(hwnd);
-	FreeLibrary(hpwdcpl);
+   FreeLibrary(hpwdcpl);
 
-	hb_retl( bres );
+   hb_retl( bres );
 }
 
 HB_FUNC( CHANGEPASSWORD )
 {
-	// This only ever gets called under '95, when started with the /a option.
-	HWND hwnd;
+   // This only ever gets called under '95, when started with the /a option.
+   HWND hwnd;
 
-	HINSTANCE hmpr = LoadLibrary("MPR.DLL");
-	PWDCHANGEPASSWORD PwdChangePassword;
+   HINSTANCE hmpr = LoadLibrary("MPR.DLL");
+   PWDCHANGEPASSWORD PwdChangePassword;
 
-	if(hmpr == NULL)
-		hb_retl( FALSE );
+   if(hmpr == NULL)
+      hb_retl( FALSE );
 
-	PwdChangePassword = (PWDCHANGEPASSWORD)GetProcAddress(hmpr, "PwdChangePasswordA");
+   PwdChangePassword = (PWDCHANGEPASSWORD)GetProcAddress(hmpr, "PwdChangePasswordA");
 
-	if(PwdChangePassword == NULL)
-	{
-		FreeLibrary(hmpr);
-		hb_retl( FALSE );
-	}
+   if(PwdChangePassword == NULL)
+   {
+      FreeLibrary(hmpr);
+      hb_retl( FALSE );
+   }
 
         hwnd = HWNDparam( 1 );
-	PwdChangePassword("SCRSAVE", hwnd, 0, 0);
-	FreeLibrary(hmpr);
+   PwdChangePassword("SCRSAVE", hwnd, 0, 0);
+   FreeLibrary(hmpr);
 
-	hb_retl( TRUE );
+   hb_retl( TRUE );
 }

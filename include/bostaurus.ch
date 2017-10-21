@@ -129,7 +129,7 @@
 #define BF_FLAT                                    0x4000
 #define BF_MONO                                    0x8000
 
-// BT_DRAW_HDC_FILLEDOBJECT()   
+// BT_DRAW_HDC_FILLEDOBJECT()
 // Type
 #define BT_FILLRECTANGLE                           1
 #define BT_FILLELLIPSE                             2
@@ -188,7 +188,7 @@
 #define BT_HDC_OPAQUE                              0
 #define BT_HDC_TRANSPARENT                         1
 
-// BT_BMP_SAVEFILE() 
+// BT_BMP_SAVEFILE()
 // nTypePicture
 #define BT_FILEFORMAT_BMP                          0
 #define BT_FILEFORMAT_JPG                          1
@@ -203,7 +203,7 @@
 #define BT_BITMAP_CAPTURE_CLIENTAREA               2
 
 // BT_BMP_GETINFO()
-// Info 
+// Info
 #define BT_BITMAP_INFO_WIDTH                       0
 #define BT_BITMAP_INFO_HEIGHT                      1
 #define BT_BITMAP_INFO_BITSPIXEL                   2

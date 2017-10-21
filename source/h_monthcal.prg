@@ -66,6 +66,7 @@
 #include "i_windefs.ch"
 
 CLASS TMonthCal FROM TControl
+
    DATA Type                      INIT "MONTHCAL" READONLY
    DATA OnViewChange              INIT Nil
    DATA aBoldDays                 INIT {}
@@ -91,16 +92,15 @@ CLASS TMonthCal FROM TControl
    METHOD IsBoldDay               BLOCK { |Self, dDay| aScan( ::aBoldDays, dDay ) > 0 }
 
    /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
                fontsize, tooltip, notoday, notodaycircle, weeknumbers, ;
                change, HelpId, invisible, notabstop, bold, italic, ;
                underline, strikeout, lRtl, lDisabled, fontcolor, backcolor, ;
                titlefontcolor, titlebackcolor, trailingfontcolor, ;
                backgroundcolor, viewchg, gotfocus, lostfocus ) CLASS TMonthCal
-*------------------------------------------------------------------------------*
 
    ::Define2( ControlName, ParentForm, x, y, w, h, value, fontname, ;
               fontsize, tooltip, notoday, notodaycircle, weeknumbers, ;
@@ -109,17 +109,16 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
               titlefontcolor, titlebackcolor, trailingfontcolor, ;
               backgroundcolor, viewchg, 0, gotfocus, lostfocus )
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD Define2( ControlName, ParentForm, x, y, w, h, value, fontname, ;
                 fontsize, tooltip, notoday, notodaycircle, weeknumbers, ;
                 change, HelpId, invisible, notabstop, bold, italic, ;
                 underline, strikeout, lRtl, lDisabled, fontcolor, backcolor, ;
                 titlefontcolor, titlebackcolor, trailingfontcolor, ;
                 backgroundcolor, viewchg, nStyle, gotfocus, lostfocus ) CLASS TMonthCal
-*------------------------------------------------------------------------------*
-Local ControlHandle
+
+   Local ControlHandle
 
    ASSIGN ::nCol    VALUE x TYPE "N"
    ASSIGN ::nRow    VALUE y TYPE "N"
@@ -156,33 +155,29 @@ Local ControlHandle
    ASSIGN ::OnGotFocus   VALUE gotfocus  TYPE "B"
    ASSIGN ::OnLostFocus  VALUE lostfocus TYPE "B"
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TMonthCal
-*------------------------------------------------------------------------------*
 
    IF ValType( uValue ) == "D"
       SetMonthCal( ::hWnd, uValue )
    ENDIF
 
-Return GetMonthCalDate( ::hWnd )
+   Return GetMonthCalDate( ::hWnd )
 
-*------------------------------------------------------------------------------*
 METHOD SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout ) CLASS TMonthCal
-*------------------------------------------------------------------------------*
-Local uRet
+
+   Local uRet
 
    uRet := ::Super:SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout )
    AdjustMonthCalSize( ::hWnd, ::ContainerCol, ::ContainerRow )
    ::SizePos( , , GetWindowWidth( ::hWnd ), GetWindowHeight( ::hWnd ) )
 
-Return uRet
+   Return uRet
 
-*------------------------------------------------------------------------------*
 METHOD Events_Notify( wParam, lParam ) CLASS TMonthCal
-*------------------------------------------------------------------------------*
-Local nNotify := GetNotifyCode( lParam )
+
+   Local nNotify := GetNotifyCode( lParam )
 
    If nNotify == MCN_SELECT
       ::DoChange()
@@ -201,11 +196,9 @@ Local nNotify := GetNotifyCode( lParam )
 
    EndIf
 
-Return ::Super:Events_Notify( wParam, lParam )
+   Return ::Super:Events_Notify( wParam, lParam )
 
-*------------------------------------------------------------------------------*
 METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TMonthCal
-*------------------------------------------------------------------------------*
 
    If nMsg == WM_MOUSEACTIVATE
       ::SetFocus()
@@ -221,11 +214,9 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TMonthCal
 
    EndIf
 
-Return ::Super:Events( hWnd, nMsg, wParam, lParam )
+   Return ::Super:Events( hWnd, nMsg, wParam, lParam )
 
-*------------------------------------------------------------------------------*
 METHOD CurrentView( nView ) CLASS TMonthCal
-*------------------------------------------------------------------------------*
 
    /*
    nView valid values are:
@@ -245,34 +236,29 @@ METHOD CurrentView( nView ) CLASS TMonthCal
       SendMessage( ::hWnd, MCM_SETCURRENTVIEW, 0, nView )
    ENDIF
 
-Return SendMessage( ::hWnd, MCM_GETCURRENTVIEW, 0, 0 )
+   Return SendMessage( ::hWnd, MCM_GETCURRENTVIEW, 0, 0 )
 
-*------------------------------------------------------------------------------*
 METHOD Width( nWidth ) CLASS TMonthCal
-*------------------------------------------------------------------------------*
 
    IF HB_IsNumeric( nWidth )
       AdjustMonthCalSize( ::hWnd, ::ContainerCol, ::ContainerRow )
       ::SizePos( , , GetWindowWidth( ::hWnd ), GetWindowHeight( ::hWnd ) )
    EndIf
 
-Return ::nWidth
+   Return ::nWidth
 
-*------------------------------------------------------------------------------*
 METHOD Height( nHeight ) CLASS TMonthCal
-*------------------------------------------------------------------------------*
 
    IF HB_IsNumeric( nHeight )
       AdjustMonthCalSize( ::hWnd, ::ContainerCol, ::ContainerRow )
       ::SizePos( , , GetWindowWidth( ::hWnd ), GetWindowHeight( ::hWnd ) )
    EndIf
 
-Return ::nHeight
+   Return ::nHeight
 
-*------------------------------------------------------------------------------*
 METHOD AddBoldDay( dDay ) CLASS TMonthCal
-*------------------------------------------------------------------------------*
-Local i
+
+   Local i
 
    i := aScan( ::aBoldDays, { |d| d >= dDay } )
    IF i == 0
@@ -285,12 +271,11 @@ Local i
       SetDayState( Self )
    ENDIF
 
-Return Nil
+   Return Nil
 
-*------------------------------------------------------------------------------*
 METHOD DelBoldDay( dDay ) CLASS TMonthCal
-*------------------------------------------------------------------------------*
-Local i
+
+   Local i
 
    i := aScan( ::aBoldDays, dDay )
    IF i > 0
@@ -299,29 +284,26 @@ Local i
       SetDayState( Self )
    ENDIF
 
-Return Nil
-
-
-
+   Return Nil
 
 
 CLASS TMonthCalMulti FROM TMonthCal
+
    DATA Type                      INIT "MONTHCALMULTI" READONLY
 
    METHOD Define
    METHOD DoChange
    METHOD MaxSelCount             SETGET
    METHOD Value                   SETGET
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
                fontsize, tooltip, notoday, notodaycircle, weeknumbers, ;
                change, HelpId, invisible, notabstop, bold, italic, ;
                underline, strikeout, lRtl, lDisabled, fontcolor, backcolor, ;
                titlefontcolor, titlebackcolor, trailingfontcolor, ;
                backgroundcolor, viewchg, gotfocus, lostfocus ) CLASS TMonthCalMulti
-*------------------------------------------------------------------------------*
 
    ::Define2( ControlName, ParentForm, x, y, w, h, value, fontname, ;
               fontsize, tooltip, notoday, notodaycircle, weeknumbers, ;
@@ -330,22 +312,19 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
               titlefontcolor, titlebackcolor, trailingfontcolor, ;
               backgroundcolor, viewchg, MCS_MULTISELECT, gotfocus, lostfocus )
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD MaxSelCount( nMax ) CLASS TMonthCalMulti
-*------------------------------------------------------------------------------*
 
    IF HB_IsNumeric( nMax )
       SendMessage( ::hWnd, MCM_SETMAXSELCOUNT, nMax, 0 )
    ENDIF
 
-Return SendMessage( ::hWnd, MCM_GETMAXSELCOUNT, 0, 0 )
+   Return SendMessage( ::hWnd, MCM_GETMAXSELCOUNT, 0, 0 )
 
-*------------------------------------------------------------------------------*
 METHOD DoChange() CLASS TMonthCalMulti
-*------------------------------------------------------------------------------*
-Local xValue, cType, cOldType
+
+   Local xValue, cType, cOldType
 
    xValue   := ::Value
    cType    := ValType( xValue )
@@ -360,26 +339,20 @@ Local xValue, cType, cOldType
       ::DoEvent( ::OnChange, "CHANGE" )
    EndIf
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TMonthCalMulti
-*------------------------------------------------------------------------------*
 
    IF HB_IsArray( uValue ) .AND. Len( uValue ) > 1 .AND. HB_IsDate( uValue[ 1 ] ) .AND. HB_IsDate( uValue[ 2 ] )
       SetMonthCalRange( ::hWnd, uValue[ 1 ], uValue[ 2 ] )
    ENDIF
 
-Return GetMonthCalRange( ::hWnd )
+   Return GetMonthCalRange( ::hWnd )
 
 
-
-
-
-*------------------------------------------------------------------------------*
 FUNCTION SetDayState( Self )
-*------------------------------------------------------------------------------*
-Local aData, nCount, aDays, dStart, iNextD, dEnd, dEoM, nMonth, dDay, nLen
+
+   Local aData, nCount, aDays, dStart, iNextD, dEnd, dEoM, nMonth, dDay, nLen
 
    aData  := GetMonthRange( ::hWnd )
    nCount := aData[ 1 ]
@@ -417,12 +390,11 @@ Local aData, nCount, aDays, dStart, iNextD, dEnd, dEoM, nMonth, dDay, nLen
 
    C_SETDAYSTATE( ::hWnd, nCount, aDays )
 
-Return Nil
+   Return Nil
 
-*------------------------------------------------------------------------------*
 FUNCTION RetDayState( Self, lParam )
-*------------------------------------------------------------------------------*
-Local aData, nCount, aDays, dStart, iNextD, dEoM, nMonth, dDay, nLen
+
+   Local aData, nCount, aDays, dStart, iNextD, dEoM, nMonth, dDay, nLen
 
    aData  := GetDayStateData( lParam )
    nCount := aData[ 1 ]
@@ -459,10 +431,7 @@ Local aData, nCount, aDays, dStart, iNextD, dEoM, nMonth, dDay, nLen
 
    C_RETDAYSTATE( lParam, nCount, aDays )
 
-Return Nil
-
-
-
+   Return Nil
 
 
 #pragma BEGINDUMP

@@ -164,7 +164,7 @@
       [ <dummy19: ONEDITCELLEND, ON EDITCELLEND> <editend> ] ;
       [ <efv: EDITFIRSTVISIBLE> ] ;
       [ <dummy20: ONBEFOREEDITCELL, ON BEFOREEDITCELL> <beforedit> ] ;
-	=> ;
+   => ;
       [ <obj> := ] _OOHG_SelectSubClass( IIF( <.bycell.>, TXBrowseByCell(), ;
             TXBrowse() ), [ <subclass>() ] ):Define( <(name)>, <(parent)>, ;
             <col>, <row>, <w>, <h>, <headers>, <widths>, <Fields>, ;

@@ -69,8 +69,8 @@
 #include "oohg.ch"
 #include "hbclass.ch"
 
-//-----------------------------------------------------------------------------------------------//
 CLASS TActiveX FROM TControl
+
    DATA Type      INIT "ACTIVEX" READONLY
    DATA nWidth    INIT nil
    DATA nHeight   INIT nil
@@ -91,13 +91,13 @@ CLASS TActiveX FROM TControl
    METHOD EventMap( nMsg, xExec, oSelf )  // oSkAr 20070829
 
    /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, cProgId, ;
                lNoTabStop, lDisabled, lInvisible ) CLASS TActiveX
-*------------------------------------------------------------------------------*
-LOCAL nStyle, oError, nControlHandle, bErrorBlock, hSink
+
+   LOCAL nStyle, oError, nControlHandle, bErrorBlock, hSink
 
    ASSIGN ::nCol    VALUE nCol    TYPE "N"
    ASSIGN ::nRow    VALUE nRow    TYPE "N"
@@ -136,15 +136,15 @@ LOCAL nStyle, oError, nControlHandle, bErrorBlock, hSink
    SetupConnectionPoint( ::hAtl, @hSink, ::aAxEv, ::aAxExec )
    ::hSink := hSink
 
-Return Self
+   RETURN SELF
 
-*------------------------------------------------------------------------------*
 METHOD Release() CLASS TActiveX
-*------------------------------------------------------------------------------*
+
    ::oOle := Nil
    SHUTDOWNCONNECTIONPOINT( ::hSink )
    ReleaseDispatch( ::hAtl )
-Return ::Super:Release()
+
+   RETURN ::Super:Release()
 
 //-----------------------------------------------------------------------------------------------//
 /*
@@ -179,9 +179,11 @@ Return ::Super:Release()
       Return NIL
 
  */
-//-----------------------------------------------------------------------------------------------//
+
 METHOD EventMap( nMsg, xExec, oSelf )
+
    LOCAL nAt
+
    nAt := AScan( ::aAxEv, nMsg )
    IF nAt == 0
       AAdd( ::aAxEv, nMsg )
@@ -189,19 +191,21 @@ METHOD EventMap( nMsg, xExec, oSelf )
       nAt := Len( ::aAxEv )
    ENDIF
    ::aAxExec[ nAt ] := { xExec, oSelf }
-RETURN NIL
+
+   RETURN NIL
 
 #ifndef __XHARBOUR__       //// si es harbour
 #ifndef __BORLANDC__       //// y no es borlandc
-*------------------------------------------------------------------------------*
-METHOD __Error( ... )
-*------------------------------------------------------------------------------*
-Local cMessage
-cMessage := __GetMessage()
 
-//   IF SubStr( cMessage, 1, 1 ) == "_"
-//      cMessage := SubStr( cMessage, 2 )
-//   ENDIF
+METHOD __Error( ... )
+
+   LOCAL cMessage
+
+   cMessage := __GetMessage()
+
+   //   IF SubStr( cMessage, 1, 1 ) == "_"
+   //      cMessage := SubStr( cMessage, 2 )
+   //   ENDIF
 
    RETURN HB_ExecFromArray( ::oOle, cMessage, HB_aParams() )
 

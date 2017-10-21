@@ -65,6 +65,7 @@
 #include "i_windefs.ch"
 
 CLASS TButton FROM TControl
+
    DATA Type            INIT "BUTTON" READONLY
    DATA lNoTransparent  INIT .F.
    DATA nWidth          INIT 100
@@ -95,9 +96,9 @@ CLASS TButton FROM TControl
    METHOD ImageMargin   SETGET
 
    /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h, ;
                fontname, fontsize, tooltip, GotFocus, LostFocus, flat, ;
                NoTabStop, HelpId, invisible, bold, italic, underline, ;
@@ -105,8 +106,8 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h, ;
                cImage, lNoLoadTrans, lScale, lCancel, cAlign, lMultiLine, ;
                drawby, aImageMargin, OnMouseMove, lNo3DColors, lAutoFit, ;
                lNoDIB, backcolor, lNoHotLight ) CLASS TButton
-*------------------------------------------------------------------------------*
-Local ControlHandle, nStyle, lBitMap, i
+
+   Local ControlHandle, nStyle, lBitMap, i
 
    ASSIGN ::nCol    VALUE x TYPE "N"
    ASSIGN ::nRow    VALUE y TYPE "N"
@@ -196,9 +197,8 @@ Local ControlHandle, nStyle, lBitMap, i
    ASSIGN ::OnGotFocus  VALUE GotFocus      TYPE "B"
    ASSIGN ::OnMouseMove VALUE OnMouseMove   TYPE "B"
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD DefineImage( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h, ;
                     fontname, fontsize, tooltip, gotfocus, lostfocus, flat, ;
                     NoTabStop, HelpId, invisible, bold, italic, underline, ;
@@ -206,28 +206,29 @@ METHOD DefineImage( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h,
                     cImage, lNoLoadTrans, lScale, lCancel, cAlign, lMultiLine, ;
                     drawby, aImageMargin, OnMouseMove, lNo3DColors, lAutoFit, ;
                     lNoDIB, backcolor, lNoHotLight ) CLASS TButton
-*------------------------------------------------------------------------------*
+
    If Empty( cBuffer )
       cBuffer := ""
    EndIf
-Return ::Define( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h, ;
-                 fontname, fontsize, tooltip, gotfocus, lostfocus, flat, ;
-                 NoTabStop, HelpId, invisible, bold, italic, underline, ;
-                 strikeout, lRtl, lNoPrefix, lDisabled, cBuffer, hBitMap, ;
-                 cImage, lNoLoadTrans, lScale, lCancel, cAlign, lMultiLine, ;
-                 drawby, aImageMargin, OnMouseMove, lNo3DColors, lAutoFit, ;
-                 lNoDIB, backcolor, lNoHotLight )
 
-*------------------------------------------------------------------------------*
+   Return ::Define( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h, ;
+                    fontname, fontsize, tooltip, gotfocus, lostfocus, flat, ;
+                    NoTabStop, HelpId, invisible, bold, italic, underline, ;
+                    strikeout, lRtl, lNoPrefix, lDisabled, cBuffer, hBitMap, ;
+                    cImage, lNoLoadTrans, lScale, lCancel, cAlign, lMultiLine, ;
+                    drawby, aImageMargin, OnMouseMove, lNo3DColors, lAutoFit, ;
+                    lNoDIB, backcolor, lNoHotLight )
+
 METHOD SetFocus() CLASS TButton
-*------------------------------------------------------------------------------*
-   SendMessage( ::hWnd , BM_SETSTYLE , LOWORD( BS_DEFPUSHBUTTON ) , 1 )
-Return ::Super:SetFocus()
 
-*------------------------------------------------------------------------------*
+   SendMessage( ::hWnd , BM_SETSTYLE , LOWORD( BS_DEFPUSHBUTTON ) , 1 )
+
+   Return ::Super:SetFocus()
+
 METHOD Picture( cPicture ) CLASS TButton
-*------------------------------------------------------------------------------*
-LOCAL nAttrib, aPictSize
+
+   LOCAL nAttrib, aPictSize
+
    IF ValType( cPicture ) $ "CM"
       DeleteObject( ::hImage )
       ::cPicture := cPicture
@@ -255,11 +256,11 @@ LOCAL nAttrib, aPictSize
       ENDIF
       ::RePaint()
    ENDIF
-Return ::cPicture
 
-*------------------------------------------------------------------------------*
+   Return ::cPicture
+
 METHOD HBitMap( hBitMap ) CLASS TButton
-*------------------------------------------------------------------------------*
+
    If ValType( hBitMap ) $ "NP"
       DeleteObject( ::hImage )
       ::hImage := hBitMap
@@ -270,11 +271,11 @@ METHOD HBitMap( hBitMap ) CLASS TButton
       ::RePaint()
       ::cPicture := ""
    EndIf
-Return ::hImage
 
-*------------------------------------------------------------------------------*
+   Return ::hImage
+
 METHOD Buffer( cBuffer ) CLASS TButton
-*------------------------------------------------------------------------------*
+
    If ValType( cBuffer ) $ "CM"
       DeleteObject( ::hImage )
       ::hImage := _OOHG_BitmapFromBuffer( Self, cBuffer, ::AutoFit .AND. ! ::ImageSize .AND. ! ::Stretch )
@@ -285,16 +286,15 @@ METHOD Buffer( cBuffer ) CLASS TButton
       ::RePaint()
       ::cPicture := ""
    EndIf
-Return nil
 
-*------------------------------------------------------------------------------*
+   Return nil
+
 METHOD Value( uValue ) CLASS TButton
-*------------------------------------------------------------------------------*
-Return ( ::Caption := uValue )
 
-*------------------------------------------------------------------------------*
+   Return ( ::Caption := uValue )
+
 METHOD RePaint() CLASS TButton
-*------------------------------------------------------------------------------*
+
    IF ValidHandler( ::hImage )
       IF ValidHandler( ::AuxHandle )
          DeleteObject( ::AuxHandle )
@@ -310,26 +310,27 @@ METHOD RePaint() CLASS TButton
          SendMessage( ::hWnd, BM_SETIMAGE, IMAGE_BITMAP, ::hImage )
       ENDIF
    ENDIF
-RETURN Self
 
-*------------------------------------------------------------------------------*
+   RETURN Self
+
 METHOD SizePos( Row, Col, Width, Height ) CLASS TButton
-*------------------------------------------------------------------------------*
-LOCAL uRet
+
+   LOCAL uRet
+
    uRet := ::Super:SizePos( Row, Col, Width, Height )
    ::RePaint()
-RETURN uRet
 
-*------------------------------------------------------------------------------*
+   RETURN uRet
+
 METHOD Release() CLASS TButton
-*------------------------------------------------------------------------------*
-   DeleteObject( ::hImage )
-RETURN ::Super:Release()
 
-*------------------------------------------------------------------------------*
+   DeleteObject( ::hImage )
+
+   RETURN ::Super:Release()
+
 METHOD Events_Notify( wParam, lParam ) CLASS TButton
-*------------------------------------------------------------------------------*
-Local nNotify := GetNotifyCode( lParam )
+
+   Local nNotify := GetNotifyCode( lParam )
 
    If nNotify == NM_CUSTOMDRAW
       If ::lLibDraw .AND. ::IsVisualStyled .AND. _OOHG_UsesVisualStyle()
@@ -337,12 +338,11 @@ Local nNotify := GetNotifyCode( lParam )
       EndIf
    EndIf
 
-Return ::Super:Events_Notify( wParam, lParam )
+   Return ::Super:Events_Notify( wParam, lParam )
 
-*------------------------------------------------------------------------------*
 METHOD ImageMargin( aMargins ) CLASS TButton
-*------------------------------------------------------------------------------*
-LOCAL i
+
+   LOCAL i
 
    If HB_IsArray( aMargins )
       For i := 1 to MIN( 4, LEN( aMargins ) )
@@ -358,7 +358,8 @@ LOCAL i
       ::RePaint()
    EndIf
 
-Return ::aImageMargin
+   Return ::aImageMargin
+
 
 #pragma BEGINDUMP
 
@@ -405,27 +406,27 @@ Return ::aImageMargin
 #endif
 
 typedef struct _MARGINS {
-	int cxLeftWidth;
-	int cxRightWidth;
-	int cyTopHeight;
-	int cyBottomHeight;
+   int cxLeftWidth;
+   int cxRightWidth;
+   int cyTopHeight;
+   int cyBottomHeight;
 } MARGINS, *PMARGINS;
 typedef HANDLE HTHEME;
 
 enum {
-	BP_PUSHBUTTON = 1,
-	BP_RADIOBUTTON = 2,
-	BP_CHECKBOX = 3,
-	BP_GROUPBOX = 4,
-	BP_USERBUTTON = 5
+   BP_PUSHBUTTON = 1,
+   BP_RADIOBUTTON = 2,
+   BP_CHECKBOX = 3,
+   BP_GROUPBOX = 4,
+   BP_USERBUTTON = 5
 };
 
 enum {
-	PBS_NORMAL = 1,
-	PBS_HOT = 2,
-	PBS_PRESSED = 3,
-	PBS_DISABLED = 4,
-	PBS_DEFAULTED = 5
+   PBS_NORMAL = 1,
+   PBS_HOT = 2,
+   PBS_PRESSED = 3,
+   PBS_DISABLED = 4,
+   PBS_DEFAULTED = 5
 };
 
 static WNDPROC lpfnOldWndProc = 0;
@@ -639,10 +640,8 @@ HB_FUNC( TBUTTON_NOTIFY_CUSTOMDRAW )
 #pragma ENDDUMP
 
 
-
-
-
 CLASS TButtonCheck FROM TButton
+
    DATA Type      INIT "CHECKBUTTON" READONLY
    DATA nWidth    INIT 100
    DATA nHeight   INIT 28
@@ -651,9 +650,9 @@ CLASS TButtonCheck FROM TButton
    METHOD DefineImage
    METHOD Value       SETGET
    METHOD Events_Command
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
                fontsize, tooltip, changeprocedure, w, h, lostfocus, gotfocus, ;
                HelpId, invisible, notabstop, bold, italic, underline, ;
@@ -661,8 +660,8 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
                lNoLoadTrans, lScale, lNo3DColors, lAutoFit, lNoDIB, backcolor, ;
                lDisabled, drawby, aImageMargin, OnMouseMove, cAlign, lMultiLine, ;
                flat, lNoHotLight ) CLASS TButtonCheck
-*------------------------------------------------------------------------------*
-Local ControlHandle, nStyle, lBitMap, i
+
+   Local ControlHandle, nStyle, lBitMap, i
 
    ASSIGN ::nCol    VALUE x TYPE "N"
    ASSIGN ::nRow    VALUE y TYPE "N"
@@ -758,9 +757,8 @@ Local ControlHandle, nStyle, lBitMap, i
    ASSIGN ::OnChange    VALUE ChangeProcedure TYPE "B"
    ASSIGN ::OnMouseMove VALUE OnMouseMove     TYPE "B"
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD DefineImage( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
                     fontsize, tooltip, changeprocedure, w, h, lostfocus, gotfocus, ;
                     HelpId, invisible, notabstop, bold, italic, underline, ;
@@ -768,34 +766,36 @@ METHOD DefineImage( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
                     lNoLoadTrans, lScale, lNo3DColors, lAutoFit, lNoDIB, backcolor, ;
                     lDisabled, drawby, aImageMargin, OnMouseMove, cAlign, lMultiLine, ;
                     flat, lNoHotLight ) CLASS TButtonCheck
-*------------------------------------------------------------------------------*
+
    If Empty( cBuffer )
       cBuffer := ""
    EndIf
-Return ::Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
-                 fontsize, tooltip, changeprocedure, w, h, lostfocus, gotfocus, ;
-                 HelpId, invisible, notabstop, bold, italic, underline, ;
-                 strikeout, field, lRtl, cImage, cBuffer, hBitMap, ;
-                 lNoLoadTrans, lScale, lNo3DColors, lAutoFit, lNoDIB, backcolor, ;
-                 lDisabled, drawby, aImageMargin, OnMouseMove, cAlign, lMultiLine, ;
-                 flat, lNoHotLight )
 
-*------------------------------------------------------------------------------*
+   Return ::Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
+                    fontsize, tooltip, changeprocedure, w, h, lostfocus, gotfocus, ;
+                    HelpId, invisible, notabstop, bold, italic, underline, ;
+                    strikeout, field, lRtl, cImage, cBuffer, hBitMap, ;
+                    lNoLoadTrans, lScale, lNo3DColors, lAutoFit, lNoDIB, backcolor, ;
+                    lDisabled, drawby, aImageMargin, OnMouseMove, cAlign, lMultiLine, ;
+                    flat, lNoHotLight )
+
 METHOD Value( uValue ) CLASS TButtonCheck
-*------------------------------------------------------------------------------*
+
    IF ValType( uValue ) == "L"
       SendMessage( ::hWnd, BM_SETCHECK, if( uValue, BST_CHECKED, BST_UNCHECKED ), 0 )
       ::DoChange()
    ELSE
       uValue := ( SendMessage( ::hWnd, BM_GETCHECK , 0 , 0 ) == BST_CHECKED )
    ENDIF
-RETURN uValue
 
-*------------------------------------------------------------------------------*
+   RETURN uValue
+
 METHOD Events_Command( wParam ) CLASS TButtonCheck
-*------------------------------------------------------------------------------*
-Local Hi_wParam := HIWORD( wParam )
+
+   Local Hi_wParam := HIWORD( wParam )
+
    If Hi_wParam == BN_CLICKED
       ::DoChange()
    EndIf
-Return ::Super:Events_Command( wParam )
+
+   Return ::Super:Events_Command( wParam )

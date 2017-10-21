@@ -261,14 +261,14 @@
 2011-06-27 20:45:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_print.prg
     * barcode printing without fonts (second approach)
-    +  added barcode printing to PDFPRINT   (I don't know if it's ok) 
-    ! fixed call to FILLRECT in order to print barcodes in hbprinter.  
+    +  added barcode printing to PDFPRINT   (I don't know if it's ok)
+    ! fixed call to FILLRECT in order to print barcodes in hbprinter.
 
 2011-06-24 20:30:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_print.prg
     +  added barcode printing without fonts  (first approach)
   * source/winprint.prg
-    ! fixed problm saving documents in hbprint preview 
+    ! fixed problm saving documents in hbprint preview
 
 2011-06-15 14:38 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_form.prg
@@ -324,12 +324,12 @@
     ! fix problem autoadjusting first column.
 
 2011-05-06 18:40 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
-  * source/winprint.prg   
+  * source/winprint.prg
     ! fixed no printing problem reported by Bruno.
   * source/h_print.prg
   * source/h_pdf.prg
     ! fixed problem in line spacing and improvement of PDF print.
-  * source/h_textbox.prg 
+  * source/h_textbox.prg
     +  added When clause.
 
 2011-04-21 10:59 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
@@ -341,7 +341,7 @@
 
 2011-04-20 18:40 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/miniprint.prg
-  * include/miniprint.ch 
+  * include/miniprint.ch
     + changed preview (better look) added more drawing options.
       contributed by Cayetano fixed little problems by ciro.
   * source/h_windows.prg
@@ -408,7 +408,7 @@
 2011-03-02 13:42 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_grid
     + ::ColumnHide( ncol ) , ::ColumnShow(  ncol ), ::Columnbetterautofit( ncol), ::ColumnsBetterautoFit() Methods added
-    ! updated toexcel() 
+    ! updated toexcel()
   * source/h_print
     ! updated excel printing.
 

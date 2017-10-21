@@ -313,7 +313,7 @@ wchar_t * AnsiToWide( const char * szString );
 #ifdef MAKEWORD
    #undef MAKEWORD
 #endif
-#define MAKEWORD(a, b)	((WORD)(((BYTE)((DWORD_PTR)(a) & 0xff)) | (((WORD)((BYTE)((DWORD_PTR)(b) & 0xff))) << 8)))
+#define MAKEWORD(a, b)   ((WORD)(((BYTE)((DWORD_PTR)(a) & 0xff)) | (((WORD)((BYTE)((DWORD_PTR)(b) & 0xff))) << 8)))
 
 #ifdef MAKELONG
    #undef MAKELONG

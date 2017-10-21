@@ -65,6 +65,7 @@
 #include "i_windefs.ch"
 
 CLASS TPlayer FROM TControl
+
    DATA Type      INIT "PLAYER" READONLY
 
    METHOD Define
@@ -91,14 +92,14 @@ CLASS TPlayer FROM TControl
    METHOD Position           SETGET
 
    /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( ControlName, ParentForm, file, col, row, w, h, noasw, noasm, ;
                noed, nom, noo, nop, sha, shm, shn, shp, HelpId, Invisible, ;
                NoTabStop, lDisabled, lRtl ) CLASS TPlayer
-*------------------------------------------------------------------------------*
-Local hh, nStyle
+
+   Local hh, nStyle
 
    ASSIGN ::nCol    VALUE col TYPE "N"
    ASSIGN ::nRow    VALUE row TYPE "N"
@@ -127,33 +128,32 @@ Local hh, nStyle
 
    ::Register( hh, ControlName, HelpId )
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD Release() CLASS TPlayer
-*------------------------------------------------------------------------------*
-   mcifunc( ::hWnd, 5 )
-RETURN ::Super:Release()
 
-*------------------------------------------------------------------------------*
+   mcifunc( ::hWnd, 5 )
+
+   RETURN ::Super:Release()
+
 METHOD Volume( nVolume ) CLASS TPlayer
-*------------------------------------------------------------------------------*
+
    IF HB_IsNumeric( nVolume )
       mcifunc( ::hWnd, 15, nVolume )
    ENDIF
-Return mcifunc( ::hWnd, 19 )
 
-*------------------------------------------------------------------------------*
+   Return mcifunc( ::hWnd, 19 )
+
 METHOD Position( nPosition ) CLASS TPlayer
-*------------------------------------------------------------------------------*
+
    IF HB_IsNumeric( nPosition )
       mcifunc( ::hWnd, 20, nPosition )
    ENDIF
-Return mcifunc( ::hWnd, 18 )
 
-*------------------------------------------------------------------------------*
+   Return mcifunc( ::hWnd, 18 )
+
 Function PlayWave(wave,r,s,ns,l,nd)
-*------------------------------------------------------------------------------*
+
    if PCount() == 1
       r := .F.
       s := .F.
@@ -163,19 +163,18 @@ Function PlayWave(wave,r,s,ns,l,nd)
    endif
 
    c_PlayWave(wave,r,s,ns,l,nd)
-Return Nil
 
-*------------------------------------------------------------------------------*
+   Return Nil
+
 Function PlayWaveFromResource(wave)
-*------------------------------------------------------------------------------*
-	c_PlayWave(wave,.t.,.f.,.f.,.f.,.f.)
-Return Nil
 
+   c_PlayWave(wave,.t.,.f.,.f.,.f.,.f.)
 
-
+   Return Nil
 
 
 CLASS TAnimateBox FROM TControl
+
    DATA Type      INIT "ANIMATEBOX" READONLY
 
    METHOD Define
@@ -186,14 +185,14 @@ CLASS TAnimateBox FROM TControl
    METHOD Stop               BLOCK { |Self| stopanimate( ::hWnd ) }
    METHOD Close              BLOCK { |Self| closeanimate( ::hWnd ) }
    METHOD Seek(Frame)        BLOCK { |Self,Frame| seekanimate( ::hWnd, Frame ) }
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, lAutoplay, ;
                lCenter, lTransparent, cFile, nHelpId, lInvisible, lNoTabStop, ;
                lDisabled, lRtl, cToolTip ) CLASS TAnimateBox
-*------------------------------------------------------------------------------*
-Local hh, nStyle
+
+   Local hh, nStyle
 
    ASSIGN ::nCol    VALUE nCol    TYPE "N"
    ASSIGN ::nRow    VALUE nRow    TYPE "N"
@@ -216,12 +215,13 @@ Local hh, nStyle
       ::Open( cFile )
    EndIf
 
-Return Self
+   Return Self
 
 
 EXTERN MCIFUNC
 
 #pragma BEGINDUMP
+
 #include <hbapi.h>
 #include <windows.h>
 #include <vfw.h>
@@ -256,7 +256,7 @@ static LRESULT APIENTRY SubClassFuncB( HWND hWnd, UINT msg, WPARAM wParam, LPARA
 
 HB_FUNC( INITANIMATE )
 {
-	HWND hwnd;
+   HWND hwnd;
 
    hwnd = Animate_Create( HWNDparam( 1 ), NULL, hb_parni( 6 ), GetModuleHandle( NULL ) );
 

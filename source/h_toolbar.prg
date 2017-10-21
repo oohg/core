@@ -102,11 +102,13 @@ STATIC _OOHG_ActiveToolBar := Nil    // Active toolbar
 
 #pragma ENDDUMP
 
+
 CLASS TToolBar FROM TControl
+
    DATA Type                      INIT "TOOLBAR" READONLY
    DATA lAdjust                   INIT .T.
    DATA lfixfont                  INIT .T.
-   DATA lTop	                   INIT .T.
+   DATA lTop                      INIT .T.
    DATA nButtonHeight             INIT 0
    DATA nButtonWidth              INIT 0
    DATA lVertical                 INIT .F.
@@ -124,15 +126,15 @@ CLASS TToolBar FROM TControl
    METHOD DeleteButton
 
    /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( ControlName, ParentForm, x, y, w, h, caption, ProcedureName, ;
                fontname, fontsize, tooltip, flat, bottom, righttext, break, ;
                bold, italic, underline, strikeout, border, lRtl, lNoTabStop, ;
                lVertical, lOwnToolTip ) CLASS TToolBar
-*------------------------------------------------------------------------------*
-Local ControlHandle, id, lSplitActive, nStyle, oCtrl
+
+   Local ControlHandle, id, lSplitActive, nStyle, oCtrl
 
    If ValType( caption ) == 'U'
       caption := ""
@@ -195,13 +197,13 @@ Local ControlHandle, id, lSplitActive, nStyle, oCtrl
    ::Tooltip := tooltip
 
    ASSIGN ::OnClick VALUE ProcedureName TYPE "B"
-Return Self
 
-*------------------------------------------------------------------------------*
+   Return Self
+
 FUNCTION _EndToolBar( lBreak )
-*------------------------------------------------------------------------------*
-Local w, MinWidth, MinHeight
-Local Self
+
+   Local w, MinWidth, MinHeight
+   Local Self
 
    Self := _OOHG_ActiveToolBar
 
@@ -223,35 +225,34 @@ Local Self
 
    _OOHG_ActiveToolBar := Nil
 
-Return Nil
+   Return Nil
 
-*------------------------------------------------------------------------------*
 METHOD Height( nHeight ) CLASS TToolBar
-*------------------------------------------------------------------------------*
+
    If HB_IsNumeric( nHeight )
       ::SizePos( Nil, Nil, Nil, nHeight )
    EndIf
-Return GetWindowHeight( ::hWnd )
 
-*------------------------------------------------------------------------------*
+   Return GetWindowHeight( ::hWnd )
+
 METHOD Width( nWidth ) CLASS TToolBar
-*------------------------------------------------------------------------------*
+
    If HB_IsNumeric( nWidth )
       ::SizePos( Nil, Nil, nWidth )
    EndIf
-Return GetWindowWidth( ::hWnd )
 
-*------------------------------------------------------------------------------*
+   Return GetWindowWidth( ::hWnd )
+
 METHOD Events_Size() CLASS TToolBar
-*------------------------------------------------------------------------------*
-   SendMessage( ::hWnd, TB_AUTOSIZE, 0, 0 )
-Return ::Super:Events_Size()
 
-*------------------------------------------------------------------------------*
+   SendMessage( ::hWnd, TB_AUTOSIZE, 0, 0 )
+
+   Return ::Super:Events_Size()
+
 METHOD Events_Notify( wParam, lParam ) CLASS TToolBar
-*------------------------------------------------------------------------------*
-Local nNotify := GetNotifyCode( lParam )
-Local ws, x, aPos, cToolTip
+
+   Local nNotify := GetNotifyCode( lParam )
+   Local ws, x, aPos, cToolTip
 
    If nNotify == TBN_DROPDOWN
       ws := GetButtonPos( lParam )
@@ -278,7 +279,7 @@ Local ws, x, aPos, cToolTip
       EndIf
       Return Nil
 
-/*
+   /*
    If nNotify == TBN_ENDDRAG  // -702
       ws := GetButtonPos( lParam )
       x  := aScan( ::aControls, { |o| o:Id == ws } )
@@ -290,7 +291,7 @@ Local ws, x, aPos, cToolTip
          ::aControls[ x ]:ContextMenu:Activate( aPos[2]+HiWord(ws)+(aPos[4]-aPos[2]-HiWord(ws))/2, aPos[1]+LoWord(ws) )
       EndIf
       Return Nil
-*/
+   */
 
    ElseIf nNotify == TBN_GETINFOTIP
       ws := _ToolBarGetInfoTip( lParam )
@@ -307,22 +308,21 @@ Local ws, x, aPos, cToolTip
 
    EndIf
 
-Return ::Super:Events_Notify( wParam, lParam )
+   Return ::Super:Events_Notify( wParam, lParam )
 
-*------------------------------------------------------------------------------*
 METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TToolBar
-*------------------------------------------------------------------------------*
+
    If nMsg == WM_COMMAND .AND. LOWORD( wParam ) != 0
       // Prevents a double menu click
       Return Nil
    EndIf
-Return ::Super:Events( hWnd, nMsg, wParam, lParam )
 
-*------------------------------------------------------------------------------*
+   Return ::Super:Events( hWnd, nMsg, wParam, lParam )
+
 METHOD Events_Command( wParam ) CLASS TToolBar
-*------------------------------------------------------------------------------*
-Local Hi_wParam := HIWORD( wParam )
-Local oControl
+
+   Local Hi_wParam := HIWORD( wParam )
+   Local oControl
 
    If Hi_wParam == BN_CLICKED
       oControl := GetControlObjectById( LOWORD( wParam ), ::Parent:hWnd )
@@ -334,12 +334,11 @@ Local oControl
       Return 1
    EndIf
 
-Return ::Super:Events_Command( wParam )
+   Return ::Super:Events_Command( wParam )
 
-*------------------------------------------------------------------------------*
 METHOD LookForKey( nKey, nFlags ) CLASS TToolBar
-*------------------------------------------------------------------------------*
-Local ButtonIndex, i, oControl
+
+   Local ButtonIndex, i, oControl
 
    If nKey == VK_RETURN .AND. nFlags == 0
       ::Events_Enter()
@@ -360,21 +359,19 @@ Local ButtonIndex, i, oControl
       Return .T.
    EndIf
 
-Return ::Super:LookForKey( nKey, nFlags )
+   Return ::Super:LookForKey( nKey, nFlags )
 
-*------------------------------------------------------------------------------*
 METHOD AddButton( ControlName, x, y, Caption, ProcedureName, w, h, image, ;
                   tooltip, gotfocus, lostfocus, flat, separator, autosize, ;
                   check, group, dropdown, WholeDropdown ) CLASS TToolBar
-*------------------------------------------------------------------------------*
-Return TToolButton():Define( ControlName, x, y, Caption, ProcedureName, w, h, image, ;
+
+   Return TToolButton():Define( ControlName, x, y, Caption, ProcedureName, w, h, image, ;
                              tooltip, gotfocus, lostfocus, flat, separator, autosize, ;
                              check, group, dropdown, WholeDropdown, Self )
 
-*------------------------------------------------------------------------------*
 METHOD DeleteButton( nButtonIndex ) CLASS TToolBar
-*------------------------------------------------------------------------------*
-Local i, oControl, lRet := .F.
+
+   Local i, oControl, lRet := .F.
 
    If nButtonIndex > 0 .AND. nButtonIndex <= GetButtonBarCount( ::hWnd )
       i := aScan( ::aControls, { |o| o:Type == "TOOLBUTTON" .AND. o:Position == nButtonIndex } )
@@ -385,12 +382,11 @@ Local i, oControl, lRet := .F.
       EndIf
    EndIf
 
-Return lRet
-
-
+   Return lRet
 
 
 CLASS TToolButton FROM TControl
+
    DATA Type      INIT "TOOLBUTTON" READONLY
    DATA Position  INIT 0
    DATA hImage    INIT 0
@@ -409,14 +405,14 @@ CLASS TToolButton FROM TControl
    METHOD Caption       SETGET
    METHOD RePaint
    METHOD Events_Notify
-ENDCLASS
 
-*------------------------------------------------------------------------------*
+   ENDCLASS
+
 METHOD Define( ControlName, x, y, Caption, ProcedureName, w, h, image, ;
                tooltip, gotfocus, lostfocus, flat, separator, autosize, ;
                check, group, dropdown, WholeDropdown, toolbar ) CLASS TToolButton
-*------------------------------------------------------------------------------*
-Local id, nPos
+
+   Local id, nPos
 
    ASSIGN ::nCol    VALUE x TYPE "N"
    ASSIGN ::nRow    VALUE y TYPE "N"
@@ -462,19 +458,18 @@ Local id, nPos
    ASSIGN ::OnLostFocus VALUE lostfocus     TYPE "B"
    ASSIGN ::OnGotFocus  VALUE gotfocus      TYPE "B"
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD Value( lValue ) CLASS TToolButton
-*------------------------------------------------------------------------------*
+
    If ValType( lValue ) == "L"
       CheckButtonBar( ::ContainerhWnd, ::Position - 1, lValue )
    EndIf
-Return IsButtonBarChecked( ::ContainerhWnd, ::Position - 1 )
 
-*------------------------------------------------------------------------------*
+   Return IsButtonBarChecked( ::ContainerhWnd, ::Position - 1 )
+
 METHOD Enabled( lEnabled ) CLASS TToolButton
-*------------------------------------------------------------------------------*
+
    If ValType( lEnabled ) == "L"
       ::Super:Enabled := lEnabled
       If lEnabled
@@ -483,12 +478,12 @@ METHOD Enabled( lEnabled ) CLASS TToolButton
          cDisableToolbarButton( ::ContainerhWnd, ::Id )
       EndIf
    EndIf
-Return ::Super:Enabled
 
-*------------------------------------------------------------------------------*
+   Return ::Super:Enabled
+
 METHOD Events_Notify( wParam, lParam ) CLASS TToolButton
-*------------------------------------------------------------------------------*
-Local cToolTip, nNotify := GetNotifyCode( lParam )
+
+   Local cToolTip, nNotify := GetNotifyCode( lParam )
 
    If nNotify == TTN_NEEDTEXT
       cToolTip := ::ToolTip
@@ -501,42 +496,41 @@ Local cToolTip, nNotify := GetNotifyCode( lParam )
       Return Nil
    EndIf
 
-Return ::Super:Events_Notify( wParam, lParam )
+   Return ::Super:Events_Notify( wParam, lParam )
 
-*------------------------------------------------------------------------------*
 METHOD Picture( cPicture ) CLASS TToolButton
-*------------------------------------------------------------------------------*
-Local nAttrib
+
+   Local nAttrib
 
    If ValType( cPicture ) $ "CM"
       nAttrib := LR_LOADMAP3DCOLORS + LR_LOADTRANSPARENT
       ::HBitMap := _OOHG_BitmapFromFile( ::Container, cPicture, nAttrib, .F. )
       ::cPicture := cPicture
    EndIf
-Return ::cPicture
 
-*------------------------------------------------------------------------------*
+   Return ::cPicture
+
 METHOD HBitMap( hBitMap ) CLASS TToolButton
-*------------------------------------------------------------------------------*
+
    If ValType( hBitMap ) $ "NP"
       DeleteObject( ::hImage )
       ::hImage := hBitMap
       ::RePaint()
       ::cPicture := ""
    EndIf
-Return ::hImage
 
-*------------------------------------------------------------------------------*
+   Return ::hImage
+
 METHOD Buffer( cBuffer ) CLASS TToolButton
-*------------------------------------------------------------------------------*
+
    If ValType( cBuffer ) $ "CM"
       ::HBitMap := _OOHG_BitmapFromBuffer( ::Container, cBuffer, .F. )
    EndIf
-Return Nil
 
-*------------------------------------------------------------------------------*
+   Return Nil
+
 METHOD Release() CLASS TToolButton
-*------------------------------------------------------------------------------*
+
    If HB_IsObject( ::oHotKey )
       ::oHotKey:Release()
    EndIf
@@ -544,19 +538,19 @@ METHOD Release() CLASS TToolButton
       SendMessage( ::ContainerhWnd, TB_DELETEBUTTON, ::Position - 1, 0 )
    EndIf
    DeleteObject( ::hImage )
-Return ::Super:Release()
 
-*------------------------------------------------------------------------------*
+   Return ::Super:Release()
+
 METHOD Caption( caption ) CLASS TToolButton
-*------------------------------------------------------------------------------*
+
    If ValType( caption ) $ "CM"
       SetToolButtonCaption( ::ContainerhWnd, ::Position - 1, caption )
    EndIf
-Return GetToolButtonCaption( ::ContainerhWnd, ::Position - 1 )
 
-*------------------------------------------------------------------------------*
+   Return GetToolButtonCaption( ::ContainerhWnd, ::Position - 1 )
+
 METHOD RePaint() CLASS TToolButton
-*------------------------------------------------------------------------------*
+
    If ValidHandler( ::hImage )
       HB_INLINE( ::ContainerhWnd, ::hImage, ::Id ){
          HWND         hwndTB;
@@ -592,9 +586,8 @@ METHOD RePaint() CLASS TToolButton
          SendMessage( hwndTB, TB_CHANGEBITMAP, iId, iPos );
       }
    EndIf
-Return Self
 
-
+   Return Self
 
 
 #pragma BEGINDUMP
@@ -626,32 +619,32 @@ HB_FUNC( INITTOOLBAR )
       ExStyle |= WS_EX_CLIENTEDGE;
    }
 
-	if ( hb_parl( 10 ) )
-	{
-		Style = Style | TBSTYLE_FLAT;
-	}
+   if ( hb_parl( 10 ) )
+   {
+      Style = Style | TBSTYLE_FLAT;
+   }
 
-	if ( hb_parl( 11 ) )
-	{
-		Style = Style | CCS_BOTTOM;
-	}
+   if ( hb_parl( 11 ) )
+   {
+      Style = Style | CCS_BOTTOM;
+   }
 
-	if ( hb_parl( 12 ) )
-	{
-		Style = Style | TBSTYLE_LIST;
-	}
+   if ( hb_parl( 12 ) )
+   {
+      Style = Style | TBSTYLE_LIST;
+   }
 
-	if ( hb_parl( 13 ) )
-	{
-		Style = Style | CCS_NOPARENTALIGN | CCS_NODIVIDER | CCS_NORESIZE;
-	}
+   if ( hb_parl( 13 ) )
+   {
+      Style = Style | CCS_NOPARENTALIGN | CCS_NODIVIDER | CCS_NORESIZE;
+   }
 
-	if ( hb_parl( 17 ) )
-	{
-		Style = Style | CCS_VERT;
-	}
+   if ( hb_parl( 17 ) )
+   {
+      Style = Style | CCS_VERT;
+   }
 
-	hwndTB = CreateWindowEx( ExStyle, TOOLBARCLASSNAME, (LPSTR) NULL, Style, 0, 0, 0, 0, hwnd, (HMENU) hb_parni( 3 ), GetModuleHandle( NULL ), NULL );
+   hwndTB = CreateWindowEx( ExStyle, TOOLBARCLASSNAME, (LPSTR) NULL, Style, 0, 0, 0, 0, hwnd, (HMENU) hb_parni( 3 ), GetModuleHandle( NULL ), NULL );
 
    lpfnOldWndProc = (WNDPROC) SetWindowLong( (HWND) hwndTB, GWL_WNDPROC, (LONG) SubClassFunc );
 
