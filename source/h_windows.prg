@@ -106,17 +106,13 @@ STATIC _OOHG_bKeyDown := nil         // Application-wide WM_KEYDOWN handler
    #define hb_dynsymSymbol( pDynSym )        ( ( pDynSym )->pSymbol )
 #endif
 
-// C static variables                 // TODO: Thread safe ?
-int  _OOHG_ShowContextMenus = 1;      //
-int  _OOHG_GlobalRTL = 0;             // Force RTL functionality
-int  _OOHG_NestedSameEvent = 0;       // Allows to nest an event currently performed (i.e. CLICK button)
-int  _OOHG_MouseCol = 0;              // Mouse's column
-int  _OOHG_MouseRow = 0;              // Mouse's row
-#ifdef __BORLANDC__
-PHB_ITEM __thread _OOHG_LastSelf = NULL;
-#else
-__thread PHB_ITEM _OOHG_LastSelf = NULL;
-#endif
+// C static variables                            // TODO: Thread safe ?
+static int      _OOHG_ShowContextMenus = 1;
+static int      _OOHG_GlobalRTL = 0;             // Force RTL functionality
+static int      _OOHG_NestedSameEvent = 0;       // Allows to nest an event currently performed (i.e. CLICK button)
+static int      _OOHG_MouseCol = 0;              // Mouse's column
+static int      _OOHG_MouseRow = 0;              // Mouse's row
+static PHB_ITEM _OOHG_LastSelf = NULL;
 
 void _OOHG_SetMouseCoords( PHB_ITEM pSelf, int iCol, int iRow )
 {

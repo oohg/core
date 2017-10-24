@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: BuildApp_hbmk2.bat,v 1.2 2017-10-01 14:33:00 fyurisich Exp $
+rem $Id: BuildApp_hbmk2.bat $
 rem
 
 REM *** Check for .prg ***
@@ -73,7 +73,7 @@ set NO_LOG=YES
 shift
 goto LOOP_START
 :SUPPRESS_RUN
-set RUNEXE=-norun
+set RUNEXE=-run-
 shift
 goto LOOP_START
 :LOOP_END

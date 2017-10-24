@@ -209,8 +209,8 @@ Function MsgExclamationYesNo( Message, Title, Mode )
 Function MsgBox( Message, Title, Mode )
 
    DEFAULT Message TO _OOHG_MsgDefaultMessage
-   DEFAULT Title TO _OOHG_MsgDefaultTitle
-   DEFAULT Mode TO _OOHG_MsgDefaultMode
+   DEFAULT Title   TO _OOHG_MsgDefaultTitle
+   DEFAULT Mode    TO _OOHG_MsgDefaultMode
 
    c_msgbox( Message, Title, Mode )
 
@@ -218,21 +218,18 @@ Function MsgBox( Message, Title, Mode )
 
 Function MsgInfoExt( cInfo, cTitulo, nSecs, aBackColor )
 
-   * (c) LuchoMiranda@telefonica.Net
-   * modified by Ciro Vargas Clemow for ooHG
-
-   Local nWidth, nHeight
+   Local nWidth, nHeight, _Win_1
 
    DEFAULT cInfo      TO _OOHG_MsgDefaultMessage
    DEFAULT cTitulo    TO _OOHG_MsgDefaultTitle
    DEFAULT nSecs      TO 0
    DEFAULT aBackColor TO {204, 216, 124}
 
-   cInfo   := StrTran( StrTran(cInfo, Chr( 13 ), CRLF), CRLF + Chr( 10 ), CRLF )
+   cInfo   := StrTran( StrTran( cInfo, Chr( 13 ), CRLF ), CRLF + Chr( 10 ), CRLF )
    nWidth  := Max( 100, Max( MaxLine( cInfo ), Len( cTitulo ) ) * 12 )
    nHeight := MLCount( cInfo ) * 20
 
-   DEFINE WINDOW _Win_1 ;
+   DEFINE WINDOW 0 ;
       AT 0, 0 ;
       WIDTH nWidth ;
       HEIGHT 115 + nHeight ;
@@ -244,64 +241,61 @@ Function MsgInfoExt( cInfo, cTitulo, nSecs, aBackColor )
       MINHEIGHT 115 + nHeight ;
       MAXHEIGHT 115 + nHeight
 
-      ON KEY ESCAPE ACTION ThisWindow:Release()
-      ON KEY RETURN ACTION ThisWindow:Release()
+      _Win_1 := _OOHG_ThisForm
+
+      ON KEY ESCAPE ACTION _Win_1:Release()
+      ON KEY RETURN ACTION _Win_1:Release()
 
       IF nSecs >= 1
-         DEFINE TIMER _timer__x ;
+         DEFINE TIMER 0 ;
             INTERVAL nSecs * 1000 ;
-            ACTION _Win_1.Release
+            ACTION _Win_1:Release()
       ENDIF
+
+      @ 12, 00 LABEL Label_1 ;
+         VALUE cTitulo ;
+         WIDTH _Win_1:ClientWidth ;
+         HEIGHT 40 ;
+         FONT "Times NEW Roman" ;
+         SIZE 18 ;
+         TRANSPARENT ;
+         FONTCOLOR {0, 0, 0} ;
+         CENTERALIGN
+
+      @ 46, 00 LABEL Label_2 ;
+         VALUE "" ;
+         WIDTH _Win_1:ClientWidth ;
+         HEIGHT 20 + nHeight ;
+         FONT "Arial" ;
+         SIZE 13 ;
+         BOLD ;
+         BORDER ;
+         CLIENTEDGE ;
+         BACKCOLOR {248, 244, 199} ;
+         FONTCOLOR {250, 50, 100} ;
+         CENTERALIGN
+
+      @ 56, 00 LABEL Label_3 ;
+         VALUE cInfo ;
+         WIDTH _Win_1:ClientWidth ;
+         HEIGHT nHeight ;
+         FONT "Times NEW Roman" ;
+         SIZE 14 ;
+         TRANSPARENT ;
+         BACKCOLOR {177, 156, 037} ;
+         FONTCOLOR {0, 0, 0} ;
+         CENTERALIGN
+
+      @ _Win_1:ClientHeight - 40, ( _Win_1:ClientWidth - 60 ) / 2  BUTTON Button_1 ;
+         ACTION _Win_1:Release() ;
+         WIDTH 60 ;
+         HEIGHT 25 ;
+         ICON "MINIGUI_EDIT_OK"
    END WINDOW
 
-   @ 12, 00 LABEL Label_1 ;
-      PARENT _Win_1 ;
-      VALUE cTitulo ;
-      WIDTH _Win_1.ClientWidth ;
-      HEIGHT 40 ;
-      FONT "Times NEW Roman" ;
-      SIZE 18 ;
-      TRANSPARENT ;
-      FONTCOLOR {0, 0, 0} ;
-      CENTERALIGN
-
-   @ 46, 00 LABEL Label_2 ;
-      PARENT _Win_1 ;
-      VALUE "" ;
-      WIDTH _Win_1.ClientWidth ;
-      HEIGHT 20 + nHeight ;
-      FONT "Arial" ;
-      SIZE 13 ;
-      BOLD ;
-      BORDER ;
-      CLIENTEDGE ;
-      BACKCOLOR {248, 244, 199} ;
-      FONTCOLOR {250, 50, 100} ;
-      CENTERALIGN
-
-   @ 56, 00 LABEL Label_3 ;
-      PARENT _Win_1 ;
-      VALUE cInfo ;
-      WIDTH _Win_1.ClientWidth ;
-      HEIGHT nHeight ;
-      FONT "Times NEW Roman" ;
-      SIZE 14 ;
-      TRANSPARENT ;
-      BACKCOLOR {177, 156, 037} ;
-      FONTCOLOR {0, 0, 0} ;
-      CENTERALIGN
-
-   @ _Win_1.Height - 40, ( _Win_1.ClientWidth - 60 ) / 2  BUTTON Button_1 ;
-      PARENT _Win_1 ;
-      ACTION _Win_1.Release ;
-      WIDTH 60 ;
-      HEIGHT 25 ;
-      ICON "MINIGUI_EDIT_OK"
-
-    _Win_1.Button_1.SetFocus()
-
-   _Win_1.Center
-   _Win_1.Activate
+   _Win_1:Button_1:SetFocus()
+   _Win_1:Center()
+   _Win_1:Activate()
 
    Return Nil
 

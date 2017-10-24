@@ -8,6 +8,20 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2017-10-23 22:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\BuildApp_hbmk2.bat
+     * Id.
+     * Flag -norun changed by -run-
+   * core\ChangeLog_002.txt
+     ! Typo.
+   + core\oohg_license_template.txt
+   * core\source\h_msgbox.prg
+     * Function MsgInfoExt no longer creates it's window
+       with a fixed name.
+   * core\source\h_windows.prg
+     * Change made 2017-10-16 at 23:10 was reverted because
+       it generates a GPF under Harbour 3.4 and MinGW 7.1
+
 2017-10-21 00:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt
      * Updated.
@@ -112,7 +126,7 @@
      ; Thanks to José M. C. Quintas.
 
 2017-10-20 11:11 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * core/include/winprint.ch
+   * core\include\winprint.ch
      ! RTE: HBPRN not defined.
 
 2017-10-18 17:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
@@ -152,7 +166,7 @@
 2017-10-18 15:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt
      * Updated.
-   * resources/CompileRes_mingw.bat
+   * resources\CompileRes_mingw.bat
      ! Wrong label.
 
 2017-10-17 21:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
