@@ -7,3 +7,6 @@ http://sourceforge.net/projects/oohg/files/
 
 To ask for help, join the users group at
 http://es.groups.yahoo.com/group/oohg/join
+
+To contribute, please fork and submit pull requests at
+https://oohg.github.io

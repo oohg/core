@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: compile_bcc.bat,v 1.20 2016-09-01 00:36:51 fyurisich Exp $
+rem $Id: compile_bcc.bat $
 rem
 cls
 
@@ -35,6 +35,7 @@ set EXTRA=
 set NO_RUN=FALSE
 set PRG_LOG=
 set C_LOG=
+set C_DEFXHB=TRUE
 :LOOP_START
 if "%2"==""    goto LOOP_END
 if "%2"=="/c"  goto COMP_CONSOLE
@@ -65,6 +66,10 @@ if "%2"=="/l"  goto USELOG
 if "%2"=="-l"  goto USELOG
 if "%2"=="/L"  goto USELOG
 if "%2"=="-L"  goto USELOG
+if "%2"=="/h"  goto ISNOTXHB
+if "%2"=="-h"  goto ISNOTXHB
+if "%2"=="/H"  goto ISNOTXHB
+if "%2"=="-H"  goto ISNOTXHB
 set EXTRA=%EXTRA% %2
 shift
 goto LOOP_START
@@ -93,6 +98,8 @@ set PRG_LOG=-q0 1^>error.lst 2^>^&1
 set C_LOG=>error.lst
 shift
 goto LOOP_START
+:ISNOTXHB
+set C_DEFXHB=FALSE
 :LOOP_END
 
 rem *** Set GT and Check for Debug or Console Switch ***
@@ -121,7 +128,8 @@ rem *** Check for Errors in Harbour Compilation ***
 if errorlevel 1 goto EXIT1
 
 rem *** Compile with BCC and Check for Errors ***
-%HG_BCC%\bin\bcc32 -c -O2 -tW -M -w -I%HG_HRB%\include;%HG_BCC%\include;%HG_ROOT%\include; -L%HG_BCC%\lib; %TFILE%.c %C_LOG%
+if     "%C_DEFXHB%"=="TRUE" %HG_BCC%\bin\bcc32 -c -O2 -tW -M -w -I%HG_HRB%\include;%HG_BCC%\include;%HG_ROOT%\include; -L%HG_BCC%\lib; -D__XHARBOUR__ %TFILE%.c %C_LOG%
+if not "%C_DEFXHB%"=="TRUE" %HG_BCC%\bin\bcc32 -c -O2 -tW -M -w -I%HG_HRB%\include;%HG_BCC%\include;%HG_ROOT%\include; -L%HG_BCC%\lib;                %TFILE%.c %C_LOG%
 if errorlevel 1 goto EXIT2
 
 rem *** Process Resource File and Check for Errors ***
