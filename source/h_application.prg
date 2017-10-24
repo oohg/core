@@ -102,8 +102,8 @@
 
 CLASS TApplication
 
-   CLASSDATA oAppObj              INIT NIL HIDDEN
-   CLASSDATA hClsMtx              INIT NIL HIDDEN
+   CLASSVAR oAppObj               INIT NIL HIDDEN
+   CLASSVAR hClsMtx               INIT NIL HIDDEN
 
    DATA aVars                     INIT NIL HIDDEN
    DATA ArgC                      INIT NIL READONLY
@@ -118,6 +118,7 @@ CLASS TApplication
 
    METHOD BackColor               SETGET
    METHOD Col                     SETGET
+   METHOD CreateGlobalMutex       HIDDEN
    METHOD Cursor                  SETGET
    METHOD Height                  SETGET
    METHOD HelpButton              SETGET
@@ -174,6 +175,10 @@ CLASS TApplication
 METHOD Define() CLASS TApplication
 
    IF ::oAppObj == NIL
+      IF ! ::CreateGlobalMutex()
+         MsgOOHGError( "TApplication: Global mutex can't be created. Program terminated." )
+      ENDIF
+
       ::aVars := Array( NUMBER_OF_APP_WIDE_VARS )
 
       ::aVars[ NDX_OOHG_ACTIVECONTROLINFO ]  := {}
@@ -954,3 +959,47 @@ STATIC FUNCTION GetCommandLineArgs
    NEXT i
 
    RETURN ( aArgs )
+
+
+#pragma BEGINDUMP
+
+#ifndef HB_OS_WIN_32_USED
+   #define HB_OS_WIN_32_USED
+#endif
+
+#ifndef _WIN32_IE
+   #define _WIN32_IE 0x0500
+#endif
+#if ( _WIN32_IE < 0x0500 )
+   #undef _WIN32_IE
+   #define _WIN32_IE 0x0500
+#endif
+
+#ifndef _WIN32_WINNT
+   #define _WIN32_WINNT 0x0501
+#endif
+#if ( _WIN32_WINNT < 0x0501 )
+   #undef _WIN32_WINNT
+   #define _WIN32_WINNT 0x0501
+#endif
+
+#include <windows.h>
+#include <hbapi.h>
+
+static HANDLE hGlobalMutex = NULL;
+
+HB_FUNC_STATIC( TAPPLICATION_CREATEGLOBALMUTEX )
+{
+   if( ! hGlobalMutex )
+   {
+      hGlobalMutex = CreateMutex( NULL, FALSE, NULL );
+   }
+   hb_retl( hGlobalMutex != NULL );
+}
+
+HANDLE _OOHG_GlobalMutex( void )
+{
+   return hGlobalMutex;
+}
+
+#pragma ENDDUMP
