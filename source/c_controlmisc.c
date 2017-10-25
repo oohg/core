@@ -78,6 +78,7 @@
    #define hb_dynsymSymbol( pDynSym )        ( ( pDynSym )->pSymbol )
 #endif
 
+//  TODO: Thread safe ?
 PHB_SYMB *s_Symbols = NULL;
 
 char *s_SymbolNames[] = { "EVENTS_NOTIFY",
