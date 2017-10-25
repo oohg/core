@@ -108,8 +108,6 @@
 #xtranslate Application.WindowStyle                => TApplication():Define():WindowStyle()
 #xtranslate Application.WindowStyle := <arg>       => TApplication():Define():WindowStyle( <arg> )
 
-#translate <p:Application,App>.Cargo => _HMG_MainCargo
-
 #xtranslate SET DEFAULT ICON TO <cIcon> ;
    => ;
       _OOHG_Main_Icon := <cIcon>
