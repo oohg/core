@@ -92,7 +92,7 @@ typedef   int (CALLBACK *DYNACALL9)(int d1,int d2,int d3,int d4,int d5,int d6,in
 
 HINSTANCE HB_LoadDll( char *DllName )
 {
-   // TODO: Thread safe?
+   // Thread safe.
    static int DllCnt = 0;
    static int RegUnload = 0;
    if( ! RegUnload )
