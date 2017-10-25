@@ -461,9 +461,8 @@ METHOD Define2( FormName, Caption, x, y, w, h, Parent, helpbutton, nominimize, n
       AADD( GetFormObjectByHandle( Parent ):aChildPopUp , Self )
    EndIf
 
-   // Assigns ThisForm the currently defined window
    _PushEventInfo()
-   _OOHG_ThisForm := Self
+   _OOHG_ThisForm      := Self
    _OOHG_ThisEventType := "WINDOW_DEFINE"
    _OOHG_ThisType      := "W"
    _OOHG_ThisControl   := NIL
@@ -1622,9 +1621,7 @@ FUNCTION _OOHG_TForm_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TForm
 
    case nMsg == WM_CLOSE
 
-      // NOTE : Since ::lReleasing could be changed on each process, it must be validated any time
-
-      // Process Interactive Close Event / Setting
+      // ::lReleasing must be checked every time because it can be changed by any process.
       If ! ::lReleasing .AND. HB_IsBlock( ::OnInteractiveClose )
          xRetVal := ::DoEvent( ::OnInteractiveClose, "WINDOW_ONINTERACTIVECLOSE" )
          If HB_IsLogical( xRetVal ) .AND. ! xRetVal
@@ -1636,14 +1633,13 @@ FUNCTION _OOHG_TForm_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TForm
          Return 1
       EndIf
 
-      // Process AutoRelease Property
+      // Process AutoRelease property
       If ! ::lReleasing .AND. ! ::AutoRelease
          ::Hide()
          Return 1
       EndIf
 
-      // If Not AutoRelease Destroy Window
-
+      // Destroy window
       _ReleaseWindowList( { Self } )
 
       If ::Type == "A"
@@ -2689,48 +2685,33 @@ Function _ActivateWindow( aForm, lNoWait )
 
 Function _ActivateAllWindows()
 
-   Local i
-   Local aForm := {}, oWnd
-   Local MainName := ''
+   Local i, aForm := {}, oWnd, MainName := '', MainhWnd
 
-   // Not mandatory MAIN
-   // If _OOHG_Main == nil
-   //    MsgOOHGError( "MAIN WINDOW not defined. Program terminated." )
-   // EndIf
-
-   * If Already Active Windows Abort Command
-
+   // Abort if a window is already active
    If ascan( _OOHG_aFormObjects, { |o| o:Active .AND. ! o:lInternal } ) > 0
       MsgOOHGError( "ACTIVATE WINDOW ALL: This command should be used at application startup only. Program terminated." )
    EndIf
 
-   // WHY???   * Force NoShow And NoAutoRelease Styles For Non Main Windows
-   * ( Force AutoRelease And Visible For Main )
-
+   // Identify Main and force AutoRelease and Visible properties
+   MainhWnd := _OOHG_Main:hWnd
    For i := 1 To LEN( _OOHG_aFormObjects )
       oWnd := _OOHG_aFormObjects[ i ]
-      If oWnd:hWnd == _OOHG_Main:hWnd
+      If oWnd:hWnd == MainhWnd
          oWnd:lVisible := .T.
          oWnd:AutoRelease := .T.
          MainName := oWnd:Name
       ElseIf ! oWnd:lInternal
-         // oWnd:lVisible := .F.
-         // oWnd:AutoRelease := .F.
-         aadd( aForm , oWnd:Name )
+         aadd( aForm, oWnd:Name )
       EndIf
    Next i
 
-   aadd ( aForm , MainName )
-
-   * Check For Error And Call Activate Window Command
-
    If Empty( MainName )
-      MsgOOHGError( "ACTIVATE WINDOW ALL: Main window not defined. Program terminated." )
-   ElseIf Len( aForm ) == 0
-      MsgOOHGError( "ACTIVATE WINDOW ALL: No windows defined. Program terminated." )
-   Else
-      _ActivateWindow( aForm )
+      MsgOOHGError( "ACTIVATE WINDOW ALL: Main window is not defined. Program terminated." )
    EndIf
+
+   aadd( aForm, MainName )
+
+   _ActivateWindow( aForm )
 
    Return Nil
 
@@ -2841,8 +2822,6 @@ STATIC FUNCTION RASCAN( aSource, bCode )
    RETURN nPos
 #endif
 
-
-
 Function GetWindowType( FormName )
 
    Return GetFormObject( FormName ):Type
@@ -2887,9 +2866,9 @@ Function _MinimizeWindow ( FormName )
 
    Return GetFormObject( FormName ):Minimize()
 
-Function _SetWindowSizePos( FormName , row , col , width , height )
+Function _SetWindowSizePos( FormName, row, col, width, height )
 
-   Return GetFormObject( FormName ):SizePos( row , col , width , height )
+   Return GetFormObject( FormName ):SizePos( row, col, width, height )
 
 
 EXTERN GetFormObjectByHandle
