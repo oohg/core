@@ -109,7 +109,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
    ::Register( ControlHandle, ControlName, HelpId, , ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
 
-   ::SetRange(DateFrom, DateTo)
+   ::SetRange( DateFrom, DateTo )
 
    ::SetVarBlock( Field, Value )
 
@@ -373,7 +373,7 @@ HB_FUNC( SETDATEPICKNULL )
    SendMessage( HWNDparam( 1 ), DTM_SETSYSTEMTIME, GDT_NONE, (LPARAM) 0 );
 }
 
-HB_FUNC_STATIC( TDATEPICK_SETRANGE )
+HB_FUNC_STATIC( TDATEPICK_SETRANGE )      // METHOD SetRange( DateFrom, DateTo )
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
