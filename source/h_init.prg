@@ -62,44 +62,43 @@
 
 #include "oohg.ch"
 
-#define ABM_CRLF HB_OsNewLine()
+#ifndef __XHARBOUR__
+   REQUEST DBFNTX, DBFDBT
+   ANNOUNCE hb_GTSYS
+#endif
 
-STATIC _OOHG_Messages := { {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {} }          // TODO: Thread safe ?
+STATIC _OOHG_Messages := { {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {} }          // TODO: Thread safe ?   Move to TApplication ?
 
 INIT PROCEDURE _OOHG_INIT()
 
-   TApplication():New()
+   // Init mutexes
+   TApplication():Define()
 
    // TODO: Move to TApplication ?
    _GETDDLMESSAGE()
 
-#ifndef __XHARBOUR__
-   REQUEST DBFNTX,DBFDBT
-   ANNOUNCE HB_GTSYS
-#endif
-
    // TODO: Move to TApplication or make thread safe ?
    InitMessages()
 
-   Return
+   RETURN
 
-Procedure InitMessages( cLang )
+PROCEDURE InitMessages( cLang )
 
-   Local aLang, aLangDefault, nAt
+   LOCAL aLang, aLangDefault, nAt
 
-   IF ! VALTYPE( cLang ) $ "CM" .OR. EMPTY( cLang )
+   IF ! ValType( cLang ) $ "CM" .OR. Empty( cLang )
       // [x]Harbour's default language
       cLang := Set( _SET_LANGUAGE )
    ENDIF
    IF ( nAt := At( ".", cLang ) ) > 0
-      cLang := LEFT( cLang, nAt - 1 )
+      cLang := Left( cLang, nAt - 1 )
    ENDIF
-   cLang := UPPER( ALLTRIM( cLang ) )
+   cLang := Upper( AllTrim( cLang ) )
 
    aLang := _OOHG_MacroCall( "ooHG_Messages_" + cLang + "()" )
    aLangDefault := ooHG_Messages_EN()
 
-   IF VALTYPE( aLang ) != "A"
+   IF ValType( aLang ) != "A"
       aLang := {}
    ENDIF
 
@@ -116,31 +115,31 @@ Procedure InitMessages( cLang )
    _OOHG_Messages[ 11 ] := InitMessagesMerge( aLang, aLangDefault, 11 )
    _OOHG_Messages[ 12 ] := InitMessagesMerge( aLang, aLangDefault, 12 )
 
-   Return
+   RETURN
 
 FUNCTION _OOHG_Messages( nTable, nItem )
 
-   RETURN IF( ( VALTYPE( nTable ) == "N" .AND. nTable >= 1 .AND. nTable <= LEN( _OOHG_Messages ) .AND. ;
-             VALTYPE( nItem ) == "N" .AND. nItem >= 1 .AND. nItem <= LEN( _OOHG_Messages[ nTable] ) ), ;
+   RETURN iif( ( ValType( nTable ) == "N" .AND. nTable >= 1 .AND. nTable <= Len( _OOHG_Messages ) .AND. ;
+             ValType( nItem ) == "N" .AND. nItem >= 1 .AND. nItem <= Len( _OOHG_Messages[ nTable] ) ), ;
              _OOHG_Messages[ nTable ][ nItem ], "" )
 
 STATIC FUNCTION InitMessagesMerge( aLang, aLangDefault, nTable )
 
-   Local aReturn
+   LOCAL aReturn
 
-   aReturn := ACLONE( aLangDefault[ nTable ] )
-   IF LEN( aLang ) >= nTable .AND. VALTYPE( aLang[ nTable ] ) == "A"
-      AEVAL( aReturn, { |c,i| IF( LEN( aLang[ nTable ] ) >= i .AND. VALTYPE( aLang[ nTable ][ i ] ) $ "CM", aReturn[ i ] := aLang[ nTable ][ i ], c ) } )
+   aReturn := AClone( aLangDefault[ nTable ] )
+   IF Len( aLang ) >= nTable .AND. ValType( aLang[ nTable ] ) == "A"
+      AEval( aReturn, { |c,i| iif( Len( aLang[ nTable ] ) >= i .AND. ValType( aLang[ nTable ][ i ] ) $ "CM", aReturn[ i ] := aLang[ nTable ][ i ], c ) } )
    ENDIF
 
    RETURN aReturn
 
 FUNCTION ooHG_Messages_EN // English (default)
 
-   Local acMisc
-   Local acBrowseButton, acBrowseError, acBrowseMessages
-   Local acABMUser, acABMLabel, acABMButton, acABMError
-   Local acButton, acLabel, acUser, acPrint
+   LOCAL acMisc
+   LOCAL acBrowseButton, acBrowseError, acBrowseMessages
+   LOCAL acABMUser, acABMLabel, acABMButton, acABMError
+   LOCAL acButton, acLabel, acUser, acPrint
 
    // MISC MESSAGES
    acMisc           := { 'Are you sure ?', ;
@@ -177,12 +176,12 @@ FUNCTION ooHG_Messages_EN // English (default)
                          'Delete Item' }
 
    // EDIT MESSAGES
-   acABMUser        := { Chr(13)+"Delete record"+Chr(13)+"Are you sure ?"+Chr(13), ;
-                         Chr(13)+"Index file missing"+Chr(13)+"Can't do search"+Chr(13), ;
-                         Chr(13)+"Can't find index field"+Chr(13)+"Can't do search"+Chr(13), ;
-                         Chr(13)+"Can't do search by"+Chr(13)+"fields memo or logic"+Chr(13), ;
-                         Chr(13)+"Record not found"+Chr(13), ;
-                         Chr(13)+"Too many cols"+Chr(13)+"The report can't fit in the sheet"+Chr(13) }
+   acABMUser        := { CRLF + "Delete record" + CRLF + "Are you sure ?" + CRLF, ;
+                         CRLF + "Index file missing" + CRLF + "Can't do search" + CRLF, ;
+                         CRLF + "Can't find index field" + CRLF + "Can't do search" + CRLF, ;
+                         CRLF + "Can't do search by" + CRLF + "fields memo or logic" + CRLF, ;
+                         CRLF + "Record not found" + CRLF, ;
+                         CRLF + "Too many cols" + CRLF + "The report don't fit in the sheet" + CRLF }
    acABMLabel       := { "Record", ;
                          "Record count", ;
                          "       (New)", ;
@@ -223,7 +222,7 @@ FUNCTION ooHG_Messages_EN // English (default)
                          "Remove", ;
                          "Print", ;
                          "Close" }
-   acABMError       := { "EDIT, workarea name missing", ;
+   acABMError       := { "EDIT, workarea name is missing", ;
                          "EDIT, this workarea has more than 16 fields", ;
                          "EDIT, refresh mode out of range (please report bug)", ;
                          "EDIT, main event number out of range (please report bug)", ;
@@ -273,47 +272,47 @@ FUNCTION ooHG_Messages_EN // English (default)
                          "Lower Than", ;                                        // 30
                          "Greater or Equal Than", ;                             // 31
                          "Lower or Equal Than" }                                // 32
-   acUser           := { ABM_CRLF + "Can't find an active area.   "  + ABM_CRLF + "Please select any area before call EDIT   " + ABM_CRLF, ;     // 1
-                         "Type the field value (any text)", ;                                                                                    // 2
-                         "Type the field value (any number)", ;                                                                                  // 3
-                         "Select the date", ;                                                                                                    // 4
-                         "Check for true value", ;                                                                                               // 5
-                         "Enter the field value", ;                                                                                              // 6
-                         "Select any record and press OK", ;                                                                                     // 7
-                         ABM_CRLF + "You are going to delete the active record   " + ABM_CRLF + "Are you sure?    " + ABM_CRLF, ;                // 8
-                         ABM_CRLF + "There isn't any active order   " + ABM_CRLF + "Please select one   " + ABM_CRLF, ;                          // 9
-                         ABM_CRLF + "Can't do searches by fields memo or logic   " + ABM_CRLF, ;                                                 // 10
-                         ABM_CRLF + "Record not found   " + ABM_CRLF, ;                                                                          // 11
-                         "Select the field to include to list", ;                                                                                // 12
-                         "Select the field to exclude from list", ;                                                                              // 13
-                         "Select the printer", ;                                                                                                 // 14
-                         "Push button to include field", ;                                                                                       // 15
-                         "Push button to exclude field", ;                                                                                       // 16
-                         "Push button to select the first record to print", ;                                                                    // 17
-                         "Push button to select the last record to print", ;                                                                     // 18
-                         ABM_CRLF + "No more fields to include   " + ABM_CRLF, ;                                                                 // 19
-                         ABM_CRLF + "First select the field to include   " + ABM_CRLF, ;                                                         // 20
-                         ABM_CRLF + "No more fields to exlude   " + ABM_CRLF, ;                                                                  // 21
-                         ABM_CRLF + "First select th field to exclude   " + ABM_CRLF, ;                                                          // 22
-                         ABM_CRLF + "You don't select any field   " + ABM_CRLF + "Please select the fields to include on print   " + ABM_CRLF, ; // 23
-                         ABM_CRLF + "Too many fields   " + ABM_CRLF + "Reduce number of fields   " + ABM_CRLF, ;                                 // 24
-                         ABM_CRLF + "Printer not ready   " + ABM_CRLF, ;                                                                         // 25
-                         "Ordered by", ;                                                                                                         // 26
-                         "From record", ;                                                                                                        // 27
-                         "To record", ;                                                                                                          // 28
-                         "Yes", ;                                                                                                                // 29
-                         "No", ;                                                                                                                 // 30
-                         "Page:", ;                                                                                                              // 31
-                         ABM_CRLF + "Please select a printer   " + ABM_CRLF, ;                                                                   // 32
-                         "Filtered by", ;                                                                                                        // 33
-                         ABM_CRLF + "There is an active filter    " + ABM_CRLF, ;                                                                // 34
-                         ABM_CRLF + "Can't filter by memo fields    " + ABM_CRLF, ;                                                              // 35
-                         ABM_CRLF + "Select the field to filter    " + ABM_CRLF, ;                                                               // 36
-                         ABM_CRLF + "Select any operator to filter    " + ABM_CRLF, ;                                                            // 37
-                         ABM_CRLF + "Type any value to filter    " + ABM_CRLF, ;                                                                 // 38
-                         ABM_CRLF + "There isn't any active filter    " + ABM_CRLF, ;                                                            // 39
-                         ABM_CRLF + "Deactivate filter?   " + ABM_CRLF, ;                                                                        // 40
-                         ABM_CRLF + "Record locked by another user    " + ABM_CRLF }                                                             // 41
+   acUser           := { CRLF + "Can't find an active area.   " + CRLF + "Please select any area before call EDIT   " + CRLF, ;      // 1
+                         "Type the field value (any text)", ;                                                                        // 2
+                         "Type the field value (any number)", ;                                                                      // 3
+                         "Select the date", ;                                                                                        // 4
+                         "Check for true value", ;                                                                                   // 5
+                         "Enter the field value", ;                                                                                  // 6
+                         "Select any record and press OK", ;                                                                         // 7
+                         CRLF + "You are going to delete the active record   " + CRLF + "Are you sure?    " + CRLF, ;                // 8
+                         CRLF + "There isn't any active order   " + CRLF + "Please select one   " + CRLF, ;                          // 9
+                         CRLF + "Can't do searches by fields memo or logic   " + CRLF, ;                                             // 10
+                         CRLF + "Record not found   " + CRLF, ;                                                                      // 11
+                         "Select the field to include to list", ;                                                                    // 12
+                         "Select the field to exclude from list", ;                                                                  // 13
+                         "Select the printer", ;                                                                                     // 14
+                         "Push button to include field", ;                                                                           // 15
+                         "Push button to exclude field", ;                                                                           // 16
+                         "Push button to select the first record to print", ;                                                        // 17
+                         "Push button to select the last record to print", ;                                                         // 18
+                         CRLF + "No more fields to include   " + CRLF, ;                                                             // 19
+                         CRLF + "First select the field to include   " + CRLF, ;                                                     // 20
+                         CRLF + "No more fields to exlude   " + CRLF, ;                                                              // 21
+                         CRLF + "First select th field to exclude   " + CRLF, ;                                                      // 22
+                         CRLF + "You don't select any field   " + CRLF + "Please select the fields to include on print   " + CRLF, ; // 23
+                         CRLF + "Too many fields   " + CRLF + "Reduce number of fields   " + CRLF, ;                                 // 24
+                         CRLF + "Printer not ready   " + CRLF, ;                                                                     // 25
+                         "Ordered by", ;                                                                                             // 26
+                         "From record", ;                                                                                            // 27
+                         "To record", ;                                                                                              // 28
+                         "Yes", ;                                                                                                    // 29
+                         "No", ;                                                                                                     // 30
+                         "Page:", ;                                                                                                  // 31
+                         CRLF + "Please select a printer   " + CRLF, ;                                                               // 32
+                         "Filtered by", ;                                                                                            // 33
+                         CRLF + "There is an active filter    " + CRLF, ;                                                            // 34
+                         CRLF + "Can't filter by memo fields    " + CRLF, ;                                                          // 35
+                         CRLF + "Select the field to filter    " + CRLF, ;                                                           // 36
+                         CRLF + "Select any operator to filter    " + CRLF, ;                                                        // 37
+                         CRLF + "Type any value to filter    " + CRLF, ;                                                             // 38
+                         CRLF + "There isn't any active filter    " + CRLF, ;                                                        // 39
+                         CRLF + "Deactivate filter?   " + CRLF, ;                                                                    // 40
+                         CRLF + "Record locked by another user    " + CRLF }                                                         // 41
 
    // PRINT MESSAGES
    acPrint          := { "Print preview pending, close first", ;
@@ -335,8 +334,8 @@ FUNCTION ooHG_Messages_EN // English (default)
                          'Preview -----> ', ;
                          "Close", ;
                          "Close", ;
-                         "Zoom +", ;
-                         "Zoom +", ;
+                         "Zoom + ", ;
+                         "Zoom + ", ;
                          "Zoom -", ;
                          "Zoom -", ;
                          "Print", ;
@@ -364,14 +363,12 @@ FUNCTION ooHG_Messages_EN // English (default)
 
    RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
 
-// CROATIAN
-
 FUNCTION ooHG_Messages_HR852 // Croatian
 
-   Local acMisc
-   Local acBrowseButton, acBrowseError, acBrowseMessages
-   Local acABMUser, acABMLabel, acABMButton, acABMError
-   Local acButton, acLabel, acUser, acPrint
+   LOCAL acMisc
+   LOCAL acBrowseButton, acBrowseError, acBrowseMessages
+   LOCAL acABMUser, acABMLabel, acABMButton, acABMError
+   LOCAL acButton, acLabel, acUser, acPrint
 
    // MISC MESSAGES
    acMisc           := { 'Are you sure ?', ;
@@ -408,14 +405,12 @@ FUNCTION ooHG_Messages_HR852 // Croatian
 
    RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
 
-// BASQUE
-
 FUNCTION ooHG_Messages_EU // Basque
 
-   Local acMisc
-   Local acBrowseButton, acBrowseError, acBrowseMessages
-   Local acABMUser, acABMLabel, acABMButton, acABMError
-   Local acButton, acLabel, acUser, acPrint
+   LOCAL acMisc
+   LOCAL acBrowseButton, acBrowseError, acBrowseMessages
+   LOCAL acABMUser, acABMLabel, acABMButton, acABMError
+   LOCAL acButton, acLabel, acUser, acPrint
 
    // MISC MESSAGES
    acMisc           := {}
@@ -475,61 +470,59 @@ FUNCTION ooHG_Messages_EU // Basque
                          "Txikiago", ;                                          // 30
                          "Handiago edo Berdin", ;                               // 31
                          "Txikiago edo Berdin" }                                // 32
-   acUser           := { ABM_CRLF + "Ezin da area aktiborik aurkitu.   "  + ABM_CRLF + "Mesedez aukeratu area EDIT deitu baino lehen   " + ABM_CRLF, ; // 1
-                         "Eremuaren balioa idatzi (edozein testu)", ;                                                                                  // 2
-                         "Eremuaren balioa idatzi (edozein zenbaki)", ;                                                                                // 3
-                         "Data aukeratu", ;                                                                                                            // 4
-                         "Markatu egiazko baliorako", ;                                                                                                // 5
-                         "Eremuaren balioa sartu", ;                                                                                                   // 6
-                         "Edozein erregistro aukeratu eta OK sakatu", ;                                                                                // 7
-                         ABM_CRLF + "Erregistro aktiboa ezabatuko duzu   " + ABM_CRLF + "Ziur zaude?    " + ABM_CRLF, ;                                // 8
-                         ABM_CRLF + "Ez dago orden aktiborik   " + ABM_CRLF + "Mesedez aukeratu bat   " + ABM_CRLF, ;                                  // 9
-                         ABM_CRLF + "Memo edo eremu logikoen arabera ezin bilaketarik egin   " + ABM_CRLF, ;                                           // 10
-                         ABM_CRLF + "Erregistroa ez da aurkitu   " + ABM_CRLF, ;                                                                       // 11
-                         "Zerrendan sartzeko eremua aukeratu", ;                                                                                       // 12
-                         "Zerrendatik kentzeko eremua aukeratu", ;                                                                                     // 13
-                         "Inprimagailua aukeratu", ;                                                                                                   // 14
-                         "Sakatu botoia eremua sartzeko", ;                                                                                            // 15
-                         "Sakatu botoia eremua kentzeko", ;                                                                                            // 16
-                         "Sakatu botoia inprimatzeko lehenengo erregistroa aukeratzeko", ;                                                             // 17
-                         "Sakatu botoia inprimatzeko azken erregistroa aukeratzeko", ;                                                                 // 18
-                         ABM_CRLF + "Sartzeko eremu gehiagorik ez   " + ABM_CRLF, ;                                                                    // 19
-                         ABM_CRLF + "Lehenago aukeratu sartzeko eremua   " + ABM_CRLF, ;                                                               // 20
-                         ABM_CRLF + "Kentzeko eremu gehiagorik ez   " + ABM_CRLF, ;                                                                    // 21
-                         ABM_CRLF + "Lehenago aukeratu kentzeko eremua   " + ABM_CRLF, ;                                                               // 22
-                         ABM_CRLF + "Ez duzu eremurik aukeratu  " + ABM_CRLF + "Mesedez aukeratu inprimaketan sartzeko eremuak   " + ABM_CRLF, ;       // 23
-                         ABM_CRLF + "Eremu gehiegi   " + ABM_CRLF + "Murriztu eremu kopurua   " + ABM_CRLF, ;                                          // 24
-                         ABM_CRLF + "Inprimagailua ez dago prest   " + ABM_CRLF, ;                                                                     // 25
-                         "Ordenatuta honen arabera:", ;                                                                                                // 26
-                         "Erregistro honetatik:", ;                                                                                                    // 27
-                         "Erregistro honetara:", ;                                                                                                     // 28
-                         "Bai", ;                                                                                                                      // 29
-                         "Ez", ;                                                                                                                       // 30
-                         "Orrialdea:", ;                                                                                                               // 31
-                         ABM_CRLF + "Mesedez aukeratu inprimagailua   " + ABM_CRLF, ;                                                                  // 32
-                         "Iragazita honen arabera:", ;                                                                                                 // 33
-                         ABM_CRLF + "Iragazki aktiboa dago    " + ABM_CRLF, ;                                                                          // 34
-                         ABM_CRLF + "Ezin iragazi Memo eremuen arabera    " + ABM_CRLF, ;                                                              // 35
-                         ABM_CRLF + "Iragazteko eremua aukeratu    " + ABM_CRLF, ;                                                                     // 36
-                         ABM_CRLF + "Iragazteko edozein eragile aukeratu    " + ABM_CRLF, ;                                                            // 37
-                         ABM_CRLF + "Idatzi edozein balio iragazteko    " + ABM_CRLF, ;                                                                // 38
-                         ABM_CRLF + "Ez dago iragazki aktiborik    " + ABM_CRLF, ;                                                                     // 39
-                         ABM_CRLF + "Iragazkia kendu?   " + ABM_CRLF, ;                                                                                // 40
-                         ABM_CRLF + "Record locked by another user" + ABM_CRLF }                                                                       // 41
+   acUser           := { CRLF + "Ezin da area aktiborik aurkitu.   " + CRLF + "Mesedez aukeratu area EDIT deitu baino lehen   " + CRLF, ;  // 1
+                         "Eremuaren balioa idatzi (edozein testu)", ;                                                                      // 2
+                         "Eremuaren balioa idatzi (edozein zenbaki)", ;                                                                    // 3
+                         "Data aukeratu", ;                                                                                                // 4
+                         "Markatu egiazko baliorako", ;                                                                                    // 5
+                         "Eremuaren balioa sartu", ;                                                                                       // 6
+                         "Edozein erregistro aukeratu eta OK sakatu", ;                                                                    // 7
+                         CRLF + "Erregistro aktiboa ezabatuko duzu   " + CRLF + "Ziur zaude?    " + CRLF, ;                                // 8
+                         CRLF + "Ez dago orden aktiborik   " + CRLF + "Mesedez aukeratu bat   " + CRLF, ;                                  // 9
+                         CRLF + "Memo edo eremu logikoen arabera ezin bilaketarik egin   " + CRLF, ;                                       // 10
+                         CRLF + "Erregistroa ez da aurkitu   " + CRLF, ;                                                                   // 11
+                         "Zerrendan sartzeko eremua aukeratu", ;                                                                           // 12
+                         "Zerrendatik kentzeko eremua aukeratu", ;                                                                         // 13
+                         "Inprimagailua aukeratu", ;                                                                                       // 14
+                         "Sakatu botoia eremua sartzeko", ;                                                                                // 15
+                         "Sakatu botoia eremua kentzeko", ;                                                                                // 16
+                         "Sakatu botoia inprimatzeko lehenengo erregistroa aukeratzeko", ;                                                 // 17
+                         "Sakatu botoia inprimatzeko azken erregistroa aukeratzeko", ;                                                     // 18
+                         CRLF + "Sartzeko eremu gehiagorik ez   " + CRLF, ;                                                                // 19
+                         CRLF + "Lehenago aukeratu sartzeko eremua   " + CRLF, ;                                                           // 20
+                         CRLF + "Kentzeko eremu gehiagorik ez   " + CRLF, ;                                                                // 21
+                         CRLF + "Lehenago aukeratu kentzeko eremua   " + CRLF, ;                                                           // 22
+                         CRLF + "Ez duzu eremurik aukeratu  " + CRLF + "Mesedez aukeratu inprimaketan sartzeko eremuak   " + CRLF, ;       // 23
+                         CRLF + "Eremu gehiegi   " + CRLF + "Murriztu eremu kopurua   " + CRLF, ;                                          // 24
+                         CRLF + "Inprimagailua ez dago prest   " + CRLF, ;                                                                 // 25
+                         "Ordenatuta honen arabera:", ;                                                                                    // 26
+                         "Erregistro honetatik:", ;                                                                                        // 27
+                         "Erregistro honetara:", ;                                                                                         // 28
+                         "Bai", ;                                                                                                          // 29
+                         "Ez", ;                                                                                                           // 30
+                         "Orrialdea:", ;                                                                                                   // 31
+                         CRLF + "Mesedez aukeratu inprimagailua   " + CRLF, ;                                                              // 32
+                         "Iragazita honen arabera:", ;                                                                                     // 33
+                         CRLF + "Iragazki aktiboa dago    " + CRLF, ;                                                                      // 34
+                         CRLF + "Ezin iragazi Memo eremuen arabera    " + CRLF, ;                                                          // 35
+                         CRLF + "Iragazteko eremua aukeratu    " + CRLF, ;                                                                 // 36
+                         CRLF + "Iragazteko edozein eragile aukeratu    " + CRLF, ;                                                        // 37
+                         CRLF + "Idatzi edozein balio iragazteko    " + CRLF, ;                                                            // 38
+                         CRLF + "Ez dago iragazki aktiborik    " + CRLF, ;                                                                 // 39
+                         CRLF + "Iragazkia kendu?   " + CRLF, ;                                                                            // 40
+                         CRLF + "Record locked by another user" + CRLF }                                                                   // 41
 
    // PRINT MESSAGES
    acPrint          := {}
 
    RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
 
-// FRENCH
-
 FUNCTION ooHG_Messages_FR // French
 
-   Local acMisc
-   Local acBrowseButton, acBrowseError, acBrowseMessages
-   Local acABMUser, acABMLabel, acABMButton, acABMError
-   Local acButton, acLabel, acUser, acPrint
+   LOCAL acMisc
+   LOCAL acBrowseButton, acBrowseError, acBrowseMessages
+   LOCAL acABMUser, acABMLabel, acABMButton, acABMError
+   LOCAL acButton, acLabel, acUser, acPrint
 
    // MISC MESSAGES
    acMisc           := { 'Etes-vous sûre ?', ;
@@ -566,12 +559,12 @@ FUNCTION ooHG_Messages_FR // French
                          'Supprimer Élément' }
 
    // EDIT MESSAGES
-   acABMUser        := { Chr(13)+"Suppression d'enregistrement"+Chr(13)+"Etes-vous sûre ?"+Chr(13), ;
-                         Chr(13)+"Index manquant"+Chr(13)+"Recherche impossible"+Chr(13), ;
-                         Chr(13)+"Champ Index introuvable"+Chr(13)+"Recherche impossible"+Chr(13), ;
-                         Chr(13)+"Recherche impossible"+Chr(13)+"sur champs memo ou logique"+Chr(13), ;
-                         Chr(13)+"Enregistrement non trouvé"+Chr(13), ;
-                         Chr(13)+"Trop de colonnes"+Chr(13)+"L'état ne peut être imprimé"+Chr(13) }
+   acABMUser        := { CRLF + "Suppression d'enregistrement" + CRLF + "Etes-vous sûre ?" + CRLF, ;
+                         CRLF + "Index manquant" + CRLF + "Recherche impossible" + CRLF, ;
+                         CRLF + "Champ Index introuvable" + CRLF + "Recherche impossible" + CRLF, ;
+                         CRLF + "Recherche impossible" + CRLF + "sur champs memo ou logique" + CRLF, ;
+                         CRLF + "Enregistrement non trouvé" + CRLF, ;
+                         CRLF + "Trop de colonnes" + CRLF + "L'état ne peut être imprimé" + CRLF }
    acABMLabel       := { "Enregistrement", ;
                          "Nb. total enr.", ;
                          "   (Ajouter)", ;
@@ -662,54 +655,52 @@ FUNCTION ooHG_Messages_FR // French
                          "Plus petit", ;                                        // 30
                          "Plus grand ou égal", ;                                // 31
                          "Plus petit ou égal" }                                 // 32
-   acUser           := { ABM_CRLF + "Ne peut trouver une base active.   "  + ABM_CRLF + "Sélectionner une base avant la fonction EDIT  " + ABM_CRLF, ;           // 1
-                         "Entrer la valeur du champ (du texte)", ;                                                                                               // 2
-                         "Entrer la valeur du champ (un nombre)", ;                                                                                              // 3
-                         "Sélectionner la date", ;                                                                                                               // 4
-                         "Vérifier la valeur logique", ;                                                                                                         // 5
-                         "Entrer la valeur du champ", ;                                                                                                          // 6
-                         "Sélectionner un enregistrement et appuyer sur OK", ;                                                                                   // 7
-                         ABM_CRLF + "Vous voulez détruire l'enregistrement actif  " + ABM_CRLF + "Etes-vous sûre?   " + ABM_CRLF, ;                              // 8
-                         ABM_CRLF + "Il n'y a pas d'ordre actif   " + ABM_CRLF + "Sélectionner en un   " + ABM_CRLF, ;                                           // 9
-                         ABM_CRLF + "Ne peut faire de recherche sur champ memo ou logique   " + ABM_CRLF, ;                                                      // 10
-                         ABM_CRLF + "Enregistrement non trouvé  " + ABM_CRLF, ;                                                                                  // 11
-                         "Sélectionner le champ à inclure à la liste", ;                                                                                         // 12
-                         "Sélectionner le champ à exclure de la liste", ;                                                                                        // 13
-                         "Sélectionner l'imprimante", ;                                                                                                          // 14
-                         "Appuyer sur le bouton pour inclure un champ", ;                                                                                        // 15
-                         "Appuyer sur le bouton pour exclure un champ", ;                                                                                        // 16
-                         "Appuyer sur le bouton pour sélectionner le premier enregistrement à imprimer", ;                                                       // 17
-                         "Appuyer sur le bouton pour sélectionner le dernier champ à imprimer", ;                                                                // 18
-                         ABM_CRLF + "Plus de champs à inclure   " + ABM_CRLF, ;                                                                                  // 19
-                         ABM_CRLF + "Sélectionner d'abord les champs à inclure   " + ABM_CRLF, ;                                                                 // 20
-                         ABM_CRLF + "Plus de champs à exclure   " + ABM_CRLF, ;                                                                                  // 21
-                         ABM_CRLF + "Sélectionner d'abord les champs à exclure   " + ABM_CRLF, ;                                                                 // 22
-                         ABM_CRLF + "Vous n'avez sélectionné aucun champ   " + ABM_CRLF + "Sélectionner les champs à inclure dans l'impression   " + ABM_CRLF, ; // 23
-                         ABM_CRLF + "Trop de champs   " + ABM_CRLF + "Réduiser le nombre de champs   " + ABM_CRLF, ;                                             // 24
-                         ABM_CRLF + "Imprimante pas prête   " + ABM_CRLF, ;                                                                                      // 25
-                         "Trié par", ;                                                                                                                           // 26
-                         "De l'enregistrement", ;                                                                                                                // 27
-                         "A l'enregistrement", ;                                                                                                                 // 28
-                         "Oui", ;                                                                                                                                // 29
-                         "Non", ;                                                                                                                                // 30
-                         "Page:", ;                                                                                                                              // 31
-                         ABM_CRLF + "Sélectionner une imprimante   " + ABM_CRLF, ;                                                                               // 32
-                         "Filtré par", ;                                                                                                                         // 33
-                         ABM_CRLF + "Il y a un filtre actif    " + ABM_CRLF, ;                                                                                   // 34
-                         ABM_CRLF + "Filtre impossible sur champ memo    " + ABM_CRLF, ;                                                                         // 35
-                         ABM_CRLF + "Sélectionner un champ de filtre    " + ABM_CRLF, ;                                                                          // 36
-                         ABM_CRLF + "Sélectionner un opérateur de filtre   " + ABM_CRLF, ;                                                                       // 37
-                         ABM_CRLF + "Entrer une valeur au filtre    " + ABM_CRLF, ;                                                                              // 38
-                         ABM_CRLF + "Il n'y a aucun filtre actif    " + ABM_CRLF, ;                                                                              // 39
-                         ABM_CRLF + "Désactiver le filtre?   " + ABM_CRLF, ;                                                                                     // 40
-                         ABM_CRLF + "Record locked by another user" + ABM_CRLF }                                                                                 // 41
+   acUser           := { CRLF + "Ne peut trouver une base active.   " + CRLF + "Sélectionner une base avant la fonction EDIT  " + CRLF, ;            // 1
+                         "Entrer la valeur du champ (du texte)", ;                                                                                   // 2
+                         "Entrer la valeur du champ (un nombre)", ;                                                                                  // 3
+                         "Sélectionner la date", ;                                                                                                   // 4
+                         "Vérifier la valeur logique", ;                                                                                             // 5
+                         "Entrer la valeur du champ", ;                                                                                              // 6
+                         "Sélectionner un enregistrement et appuyer sur OK", ;                                                                       // 7
+                         CRLF + "Vous voulez détruire l'enregistrement actif  " + CRLF + "Etes-vous sûre?   " + CRLF, ;                              // 8
+                         CRLF + "Il n'y a pas d'ordre actif   " + CRLF + "Sélectionner en un   " + CRLF, ;                                           // 9
+                         CRLF + "Ne peut faire de recherche sur champ memo ou logique   " + CRLF, ;                                                  // 10
+                         CRLF + "Enregistrement non trouvé  " + CRLF, ;                                                                              // 11
+                         "Sélectionner le champ à inclure à la liste", ;                                                                             // 12
+                         "Sélectionner le champ à exclure de la liste", ;                                                                            // 13
+                         "Sélectionner l'imprimante", ;                                                                                              // 14
+                         "Appuyer sur le bouton pour inclure un champ", ;                                                                            // 15
+                         "Appuyer sur le bouton pour exclure un champ", ;                                                                            // 16
+                         "Appuyer sur le bouton pour sélectionner le premier enregistrement à imprimer", ;                                           // 17
+                         "Appuyer sur le bouton pour sélectionner le dernier champ à imprimer", ;                                                    // 18
+                         CRLF + "Plus de champs à inclure   " + CRLF, ;                                                                              // 19
+                         CRLF + "Sélectionner d'abord les champs à inclure   " + CRLF, ;                                                             // 20
+                         CRLF + "Plus de champs à exclure   " + CRLF, ;                                                                              // 21
+                         CRLF + "Sélectionner d'abord les champs à exclure   " + CRLF, ;                                                             // 22
+                         CRLF + "Vous n'avez sélectionné aucun champ   " + CRLF + "Sélectionner les champs à inclure dans l'impression   " + CRLF, ; // 23
+                         CRLF + "Trop de champs   " + CRLF + "Réduiser le nombre de champs   " + CRLF, ;                                             // 24
+                         CRLF + "Imprimante pas prête   " + CRLF, ;                                                                                  // 25
+                         "Trié par", ;                                                                                                               // 26
+                         "De l'enregistrement", ;                                                                                                    // 27
+                         "A l'enregistrement", ;                                                                                                     // 28
+                         "Oui", ;                                                                                                                    // 29
+                         "Non", ;                                                                                                                    // 30
+                         "Page:", ;                                                                                                                  // 31
+                         CRLF + "Sélectionner une imprimante   " + CRLF, ;                                                                           // 32
+                         "Filtré par", ;                                                                                                             // 33
+                         CRLF + "Il y a un filtre actif    " + CRLF, ;                                                                               // 34
+                         CRLF + "Filtre impossible sur champ memo    " + CRLF, ;                                                                     // 35
+                         CRLF + "Sélectionner un champ de filtre    " + CRLF, ;                                                                      // 36
+                         CRLF + "Sélectionner un opérateur de filtre   " + CRLF, ;                                                                   // 37
+                         CRLF + "Entrer une valeur au filtre    " + CRLF, ;                                                                          // 38
+                         CRLF + "Il n'y a aucun filtre actif    " + CRLF, ;                                                                          // 39
+                         CRLF + "Désactiver le filtre?   " + CRLF, ;                                                                                 // 40
+                         CRLF + "Record locked by another user" + CRLF }                                                                             // 41
 
    // PRINT MESSAGES
    acPrint          := {}
 
    RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
-
-// GERMAN
 
 FUNCTION ooHG_Messages_DE // German
 
@@ -717,10 +708,10 @@ FUNCTION ooHG_Messages_DE // German
 
 FUNCTION ooHG_Messages_DEWIN // German
 
-   Local acMisc
-   Local acBrowseButton, acBrowseError, acBrowseMessages
-   Local acABMUser, acABMLabel, acABMButton, acABMError
-   Local acButton, acLabel, acUser, acPrint
+   LOCAL acMisc
+   LOCAL acBrowseButton, acBrowseError, acBrowseMessages
+   LOCAL acABMUser, acABMLabel, acABMButton, acABMError
+   LOCAL acButton, acLabel, acUser, acPrint
 
    // MISC MESSAGES
    acMisc           := { 'Sind Sie sicher ?', ;
@@ -744,12 +735,12 @@ FUNCTION ooHG_Messages_DEWIN // German
                          'Element Löschen' }
 
    // EDIT MESSAGES
-   acABMUser        := { Chr(13)+"Datensatz loeschen"+Chr(13)+"Sind Sie sicher ?"+Chr(13), ;
-                         Chr(13)+" Falscher Indexdatensatz"+Chr(13)+"Suche unmoeglich"+Chr(13), ;
-                         Chr(13)+"Man kann nicht Indexdatenfeld finden"+Chr(13)+"Suche unmoeglich"+Chr(13), ;
-                         Chr(13)+"Suche unmoeglich nach"+Chr(13)+"Feld memo oder logisch"+Chr(13), ;
-                         Chr(13)+"Datensatz nicht gefunden"+Chr(13), ;
-                         Chr(13)+" zu viele Spalten"+Chr(13)+"Zu wenig Platz  fuer die Meldung auf dem Blatt" + Chr(13) }
+   acABMUser        := { CRLF + "Datensatz loeschen" + CRLF + "Sind Sie sicher ?" + CRLF, ;
+                         CRLF + " Falscher Indexdatensatz" + CRLF + "Suche unmoeglich" + CRLF, ;
+                         CRLF + "Man kann nicht Indexdatenfeld finden" + CRLF + "Suche unmoeglich" + CRLF, ;
+                         CRLF + "Suche unmoeglich nach" + CRLF + "Feld memo oder logisch" + CRLF, ;
+                         CRLF + "Datensatz nicht gefunden" + CRLF, ;
+                         CRLF + " zu viele Spalten" + CRLF + "Zu wenig Platz  fuer die Meldung auf dem Blatt" + CRLF }
    acABMLabel       := { "Datensatz", ;
                          "Menge der Dat.", ;
                          "       (Neu)", ;
@@ -840,61 +831,59 @@ FUNCTION ooHG_Messages_DEWIN // German
                          "Kleiner als", ;                                       // 30
                          "Größer oder gleich als", ;                            // 31
                          "Kleiner oder gleich als" }                            // 32
-   acUser           := { ABM_CRLF + "Kein aktiver Arbeitsbereich gefunden.   "  + ABM_CRLF + "Bitte einen Arbeitsbereich auswählen vor dem Aufruf von EDIT   " + ABM_CRLF, ; // 1
-                         "Einen Text eingeben (alphanumerisch)", ;                                                                                                           // 2
-                         "Eine Zahl eingeben", ;                                                                                                                             // 3
-                         "Datum auswählen", ;                                                                                                                                // 4
-                         "Für positive Auswahl einen Haken setzen", ;                                                                                                        // 5
-                         "Einen Text eingeben (alphanumerisch)", ;                                                                                                           // 6
-                         "Einen Datensatz wählen und mit OK bestätigen", ;                                                                                                   // 7
-                         ABM_CRLF + "Sie sind im Begriff, den aktiven Datensatz zu löschen.   " + ABM_CRLF + "Sind Sie sicher?    " + ABM_CRLF, ;                            // 8
-                         ABM_CRLF + "Es ist keine Sortierung aktiv.   " + ABM_CRLF + "Bitte wählen Sie eine Sortierung   " + ABM_CRLF, ;                                     // 9
-                         ABM_CRLF + "Suche nach den Feldern memo oder logisch nicht möglich.   " + ABM_CRLF, ;                                                               // 10
-                         ABM_CRLF + "Datensatz nicht gefunden   " + ABM_CRLF, ;                                                                                              // 11
-                         "Bitte ein Feld zum Hinzufügen zur Liste wählen", ;                                                                                                 // 12
-                         "Bitte ein Feld zum Entfernen aus der Liste wählen ", ;                                                                                             // 13
-                         "Drucker auswählen", ;                                                                                                                              // 14
-                         "Schaltfläche  Feld hinzufügen", ;                                                                                                                  // 15
-                         "Schaltfläche  Feld Entfernen", ;                                                                                                                   // 16
-                         "Schaltfläche  Auswahl erster zu druckender Datensatz", ;                                                                                           // 17
-                         "Schaltfläche  Auswahl letzte zu druckender Datensatz", ;                                                                                           // 18
-                         ABM_CRLF + "Keine Felder zum Hinzufügen mehr vorhanden   " + ABM_CRLF, ;                                                                            // 19
-                         ABM_CRLF + "Bitte erst ein Feld zum Hinzufügen wählen   " + ABM_CRLF, ;                                                                             // 20
-                         ABM_CRLF + "Keine Felder zum Entfernen vorhanden   " + ABM_CRLF, ;                                                                                  // 21
-                         ABM_CRLF + "Bitte ein Feld zum Entfernen wählen   " + ABM_CRLF, ;                                                                                   // 22
-                         ABM_CRLF + "Kein Feld ausgewählt   " + ABM_CRLF + "Bitte die Felder für den Ausdruck auswählen   " + ABM_CRLF, ;                                    // 23
-                         ABM_CRLF + "Zu viele Felder   " + ABM_CRLF + "Bitte Anzahl der Felder reduzieren   " + ABM_CRLF, ;                                                  // 24
-                         ABM_CRLF + "Drucker nicht bereit   " + ABM_CRLF, ;                                                                                                  // 25
-                         "Sortiert nach", ;                                                                                                                                  // 26
-                         "Von Datensatz", ;                                                                                                                                  // 27
-                         "Bis Datensatz", ;                                                                                                                                  // 28
-                         "Ja", ;                                                                                                                                             // 29
-                         "Nein", ;                                                                                                                                           // 30
-                         "Seite:", ;                                                                                                                                         // 31
-                         ABM_CRLF + "Bitte einen Drucker wählen   " + ABM_CRLF, ;                                                                                            // 32
-                         "Filtered by", ;                                                                                                                                    // 33
-                         ABM_CRLF + "Es ist kein aktiver Filter vorhanden    " + ABM_CRLF, ;                                                                                 // 34
-                         ABM_CRLF + "Kann nicht nach Memo-Feldern filtern    " + ABM_CRLF, ;                                                                                 // 35
-                         ABM_CRLF + "Feld zum Filtern auswählen    " + ABM_CRLF, ;                                                                                           // 36
-                         ABM_CRLF + "Einen Operator zum Filtern auswählen    " + ABM_CRLF, ;                                                                                 // 37
-                         ABM_CRLF + "Bitte einen Wert für den Filter angeben    " + ABM_CRLF, ;                                                                              // 38
-                         ABM_CRLF + "Es ist kein aktiver Filter vorhanden    " + ABM_CRLF, ;                                                                                 // 39
-                         ABM_CRLF + "Filter deaktivieren?   " + ABM_CRLF, ;                                                                                                  // 40
-                         ABM_CRLF + "Record locked by another user" + ABM_CRLF }                                                                                             // 41
+   acUser           := { CRLF + "Kein aktiver Arbeitsbereich gefunden.   " + CRLF + "Bitte einen Arbeitsbereich auswählen vor dem Aufruf von EDIT   " + CRLF, ;  // 1
+                         "Einen Text eingeben (alphanumerisch)", ;                                                                                               // 2
+                         "Eine Zahl eingeben", ;                                                                                                                 // 3
+                         "Datum auswählen", ;                                                                                                                    // 4
+                         "Für positive Auswahl einen Haken setzen", ;                                                                                            // 5
+                         "Einen Text eingeben (alphanumerisch)", ;                                                                                               // 6
+                         "Einen Datensatz wählen und mit OK bestätigen", ;                                                                                       // 7
+                         CRLF + "Sie sind im Begriff, den aktiven Datensatz zu löschen.   " + CRLF + "Sind Sie sicher?    " + CRLF, ;                            // 8
+                         CRLF + "Es ist keine Sortierung aktiv.   " + CRLF + "Bitte wählen Sie eine Sortierung   " + CRLF, ;                                     // 9
+                         CRLF + "Suche nach den Feldern memo oder logisch nicht möglich.   " + CRLF, ;                                                           // 10
+                         CRLF + "Datensatz nicht gefunden   " + CRLF, ;                                                                                          // 11
+                         "Bitte ein Feld zum Hinzufügen zur Liste wählen", ;                                                                                     // 12
+                         "Bitte ein Feld zum Entfernen aus der Liste wählen ", ;                                                                                 // 13
+                         "Drucker auswählen", ;                                                                                                                  // 14
+                         "Schaltfläche  Feld hinzufügen", ;                                                                                                      // 15
+                         "Schaltfläche  Feld Entfernen", ;                                                                                                       // 16
+                         "Schaltfläche  Auswahl erster zu druckender Datensatz", ;                                                                               // 17
+                         "Schaltfläche  Auswahl letzte zu druckender Datensatz", ;                                                                               // 18
+                         CRLF + "Keine Felder zum Hinzufügen mehr vorhanden   " + CRLF, ;                                                                        // 19
+                         CRLF + "Bitte erst ein Feld zum Hinzufügen wählen   " + CRLF, ;                                                                         // 20
+                         CRLF + "Keine Felder zum Entfernen vorhanden   " + CRLF, ;                                                                              // 21
+                         CRLF + "Bitte ein Feld zum Entfernen wählen   " + CRLF, ;                                                                               // 22
+                         CRLF + "Kein Feld ausgewählt   " + CRLF + "Bitte die Felder für den Ausdruck auswählen   " + CRLF, ;                                    // 23
+                         CRLF + "Zu viele Felder   " + CRLF + "Bitte Anzahl der Felder reduzieren   " + CRLF, ;                                                  // 24
+                         CRLF + "Drucker nicht bereit   " + CRLF, ;                                                                                              // 25
+                         "Sortiert nach", ;                                                                                                                      // 26
+                         "Von Datensatz", ;                                                                                                                      // 27
+                         "Bis Datensatz", ;                                                                                                                      // 28
+                         "Ja", ;                                                                                                                                 // 29
+                         "Nein", ;                                                                                                                               // 30
+                         "Seite:", ;                                                                                                                             // 31
+                         CRLF + "Bitte einen Drucker wählen   " + CRLF, ;                                                                                        // 32
+                         "Filtered by", ;                                                                                                                        // 33
+                         CRLF + "Es ist kein aktiver Filter vorhanden    " + CRLF, ;                                                                             // 34
+                         CRLF + "Kann nicht nach Memo-Feldern filtern    " + CRLF, ;                                                                             // 35
+                         CRLF + "Feld zum Filtern auswählen    " + CRLF, ;                                                                                       // 36
+                         CRLF + "Einen Operator zum Filtern auswählen    " + CRLF, ;                                                                             // 37
+                         CRLF + "Bitte einen Wert für den Filter angeben    " + CRLF, ;                                                                          // 38
+                         CRLF + "Es ist kein aktiver Filter vorhanden    " + CRLF, ;                                                                             // 39
+                         CRLF + "Filter deaktivieren?   " + CRLF, ;                                                                                              // 40
+                         CRLF + "Record locked by another user" + CRLF }                                                                                         // 41
 
    // PRINT MESSAGES
    acPrint          := {}
 
    RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
 
-// ITALIAN
-
 FUNCTION ooHG_Messages_IT // Italian
 
-   Local acMisc
-   Local acBrowseButton, acBrowseError, acBrowseMessages
-   Local acABMUser, acABMLabel, acABMButton, acABMError
-   Local acButton, acLabel, acUser, acPrint
+   LOCAL acMisc
+   LOCAL acBrowseButton, acBrowseError, acBrowseMessages
+   LOCAL acABMUser, acABMLabel, acABMButton, acABMError
+   LOCAL acButton, acLabel, acUser, acPrint
 
    // MISC MESSAGES
    acMisc           := { 'Sei sicuro ?', ;
@@ -931,12 +920,12 @@ FUNCTION ooHG_Messages_IT // Italian
                          'Cancella Item' }
 
    // EDIT MESSAGES
-   acABMUser        := { Chr(13)+"Cancellare il record"+Chr(13)+"Sei sicuro ?"+Chr(13), ;
-                         Chr(13)+"File indice mancante"+Chr(13)+"Ricerca impossibile"+Chr(13), ;
-                         Chr(13)+"Campo indice mancante"+Chr(13)+"Ricerca impossibile"+Chr(13), ;
-                         Chr(13)+"Ricerca impossibile per"+Chr(13)+"campi memo o logici"+Chr(13), ;
-                         Chr(13)+"Record non trovato"+Chr(13), ;
-                         Chr(13)+"Troppe colonne"+Chr(13)+"Il report non può essere stampato"+Chr(13) }
+   acABMUser        := { CRLF + "Cancellare il record" + CRLF + "Sei sicuro ?" + CRLF, ;
+                         CRLF + "File indice mancante" + CRLF + "Ricerca impossibile" + CRLF, ;
+                         CRLF + "Campo indice mancante" + CRLF + "Ricerca impossibile" + CRLF, ;
+                         CRLF + "Ricerca impossibile per" + CRLF + "campi memo o logici" + CRLF, ;
+                         CRLF + "Record non trovato" + CRLF, ;
+                         CRLF + "Troppe colonne" + CRLF + "Il report non può essere stampato" + CRLF }
    acABMLabel       := { "Record", ;
                          "Record totali", ;
                          "  (Aggiungi)", ;
@@ -1027,54 +1016,52 @@ FUNCTION ooHG_Messages_IT // Italian
                          "Minore di", ;                                         // 30
                          "Maggiore o uguale a", ;                               // 31
                          "Minore o uguale a" }                                  // 32
-   acUser           := { ABM_CRLF + "Nessuna area attiva.   "  + ABM_CRLF + "Selezionare un'area prima della chiamata a EDIT   " + ABM_CRLF, ; // 1
-                         "Digitare valore campo (testo)", ;                                                                                    // 2
-                         "Digitare valore campo (numerico)", ;                                                                                 // 3
-                         "Selezionare data", ;                                                                                                 // 4
-                         "Attivare per valore TRUE", ;                                                                                         // 5
-                         "Inserire valore campo", ;                                                                                            // 6
-                         "Seleziona un record and premi OK", ;                                                                                 // 7
-                         ABM_CRLF + "Cancellazione record attivo   " + ABM_CRLF + "Sei sicuro?      " + ABM_CRLF, ;                            // 8
-                         ABM_CRLF + "Nessun ordinamento attivo     " + ABM_CRLF + "Selezionarne uno " + ABM_CRLF, ;                            // 9
-                         ABM_CRLF + "Ricerca non possibile su campi MEMO o LOGICI   " + ABM_CRLF, ;                                            // 10
-                         ABM_CRLF + "Record non trovato   " + ABM_CRLF, ;                                                                      // 11
-                         "Seleziona campo da includere nel listato", ;                                                                         // 12
-                         "Seleziona campo da escludere dal listato", ;                                                                         // 13
-                         "Selezionare la stampante", ;                                                                                         // 14
-                         "Premi per includere il campo", ;                                                                                     // 15
-                         "Premi per escludere il campo", ;                                                                                     // 16
-                         "Premi per selezionare il primo record da stampare", ;                                                                // 17
-                         "Premi per selezionare l'ultimo record da stampare", ;                                                                // 18
-                         ABM_CRLF + "Nessun altro campo da inserire   " + ABM_CRLF, ;                                                          // 19
-                         ABM_CRLF + "Prima seleziona il campo da includere " + ABM_CRLF, ;                                                     // 20
-                         ABM_CRLF + "Nessun altro campo da escludere       " + ABM_CRLF, ;                                                     // 21
-                         ABM_CRLF + "Prima seleziona il campo da escludere " + ABM_CRLF, ;                                                     // 22
-                         ABM_CRLF + "Nessun campo selezionato     " + ABM_CRLF + "Selezionare campi da includere nel listato   " + ABM_CRLF, ; // 23
-                         ABM_CRLF + "Troppi campi !   " + ABM_CRLF + "Redurre il numero di campi   " + ABM_CRLF, ;                             // 24
-                         ABM_CRLF + "Stampante non pronta..!   " + ABM_CRLF, ;                                                                 // 25
-                         "Ordinato per", ;                                                                                                     // 26
-                         "Dal record", ;                                                                                                       // 27
-                         "Al  record", ;                                                                                                       // 28
-                         "Si", ;                                                                                                               // 29
-                         "No", ;                                                                                                               // 30
-                         "Pagina:", ;                                                                                                          // 31
-                         ABM_CRLF + "Selezionare una stampante   " + ABM_CRLF, ;                                                               // 32
-                         "Filtrato per ", ;                                                                                                    // 33
-                         ABM_CRLF + "Esiste un filtro attivo     " + ABM_CRLF, ;                                                               // 34
-                         ABM_CRLF + "Filtro non previsto per campi MEMO   " + ABM_CRLF, ;                                                      // 35
-                         ABM_CRLF + "Selezionare campo da filtrare        " + ABM_CRLF, ;                                                      // 36
-                         ABM_CRLF + "Selezionare un OPERATORE per filtro  " + ABM_CRLF, ;                                                      // 37
-                         ABM_CRLF + "Digitare un valore per filtro        " + ABM_CRLF, ;                                                      // 38
-                         ABM_CRLF + "Nessun filtro attivo    " + ABM_CRLF, ;                                                                   // 39
-                         ABM_CRLF + "Disattivare filtro ?   " + ABM_CRLF, ;                                                                    // 40
-                         ABM_CRLF + "Record bloccato da altro utente" + ABM_CRLF }                                                             // 41
+   acUser           := { CRLF + "Nessuna area attiva.   " + CRLF + "Selezionare un'area prima della chiamata a EDIT   " + CRLF, ;  // 1
+                         "Digitare valore campo (testo)", ;                                                                        // 2
+                         "Digitare valore campo (numerico)", ;                                                                     // 3
+                         "Selezionare data", ;                                                                                     // 4
+                         "Attivare per valore TRUE", ;                                                                             // 5
+                         "Inserire valore campo", ;                                                                                // 6
+                         "Seleziona un record and premi OK", ;                                                                     // 7
+                         CRLF + "Cancellazione record attivo   " + CRLF + "Sei sicuro?      " + CRLF, ;                            // 8
+                         CRLF + "Nessun ordinamento attivo     " + CRLF + "Selezionarne uno " + CRLF, ;                            // 9
+                         CRLF + "Ricerca non possibile su campi MEMO o LOGICI   " + CRLF, ;                                        // 10
+                         CRLF + "Record non trovato   " + CRLF, ;                                                                  // 11
+                         "Seleziona campo da includere nel listato", ;                                                             // 12
+                         "Seleziona campo da escludere dal listato", ;                                                             // 13
+                         "Selezionare la stampante", ;                                                                             // 14
+                         "Premi per includere il campo", ;                                                                         // 15
+                         "Premi per escludere il campo", ;                                                                         // 16
+                         "Premi per selezionare il primo record da stampare", ;                                                    // 17
+                         "Premi per selezionare l'ultimo record da stampare", ;                                                    // 18
+                         CRLF + "Nessun altro campo da inserire   " + CRLF, ;                                                      // 19
+                         CRLF + "Prima seleziona il campo da includere " + CRLF, ;                                                 // 20
+                         CRLF + "Nessun altro campo da escludere       " + CRLF, ;                                                 // 21
+                         CRLF + "Prima seleziona il campo da escludere " + CRLF, ;                                                 // 22
+                         CRLF + "Nessun campo selezionato     " + CRLF + "Selezionare campi da includere nel listato   " + CRLF, ; // 23
+                         CRLF + "Troppi campi !   " + CRLF + "Redurre il numero di campi   " + CRLF, ;                             // 24
+                         CRLF + "Stampante non pronta..!   " + CRLF, ;                                                             // 25
+                         "Ordinato per", ;                                                                                         // 26
+                         "Dal record", ;                                                                                           // 27
+                         "Al  record", ;                                                                                           // 28
+                         "Si", ;                                                                                                   // 29
+                         "No", ;                                                                                                   // 30
+                         "Pagina:", ;                                                                                              // 31
+                         CRLF + "Selezionare una stampante   " + CRLF, ;                                                           // 32
+                         "Filtrato per ", ;                                                                                        // 33
+                         CRLF + "Esiste un filtro attivo     " + CRLF, ;                                                           // 34
+                         CRLF + "Filtro non previsto per campi MEMO   " + CRLF, ;                                                  // 35
+                         CRLF + "Selezionare campo da filtrare        " + CRLF, ;                                                  // 36
+                         CRLF + "Selezionare un OPERATORE per filtro  " + CRLF, ;                                                  // 37
+                         CRLF + "Digitare un valore per filtro        " + CRLF, ;                                                  // 38
+                         CRLF + "Nessun filtro attivo    " + CRLF, ;                                                               // 39
+                         CRLF + "Disattivare filtro ?   " + CRLF, ;                                                                // 40
+                         CRLF + "Record bloccato da altro utente" + CRLF }                                                         // 41
 
    // PRINT MESSAGES
    acPrint          := {}
 
    RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
-
-// POLISH
 
 FUNCTION ooHG_Messages_PL852 // Polish
 
@@ -1090,10 +1077,10 @@ FUNCTION ooHG_Messages_PLMAZ // Polish
 
 FUNCTION ooHG_Messages_PLWIN // Polish
 
-   Local acMisc
-   Local acBrowseButton, acBrowseError, acBrowseMessages
-   Local acABMUser, acABMLabel, acABMButton, acABMError
-   Local acButton, acLabel, acUser, acPrint
+   LOCAL acMisc
+   LOCAL acBrowseButton, acBrowseError, acBrowseMessages
+   LOCAL acABMUser, acABMLabel, acABMButton, acABMError
+   LOCAL acButton, acLabel, acUser, acPrint
 
    // MISC MESSAGES
    acMisc           := { 'Czy jesteœ pewny ?', ;
@@ -1130,12 +1117,12 @@ FUNCTION ooHG_Messages_PLWIN // Polish
                          'Skasuj Item' }
 
    // EDIT MESSAGES
-   acABMUser        := { Chr(13)+"Usuni©cie rekordu"+Chr(13)+"Jeste˜ pewny ?"+Chr(13), ;
-                         Chr(13)+"Bˆ©dny zbi¢r Indeksowy"+Chr(13)+"Nie mo¾na szuka†"+Chr(13), ;
-                         Chr(13)+"Nie mo¾na znale˜† pola indeksu"+Chr(13)+"Nie mo¾na szuka†"+Chr(13), ;
-                         Chr(13)+"Nie mo¾na szukaæ wg"+Chr(13)+"pola memo lub logicznego"+Chr(13), ;
-                         Chr(13)+"Rekordu nie znaleziono"+Chr(13), ;
-                         Chr(13)+"Zbyt wiele kolumn"+Chr(13)+"Raport nie mo¾e zmie˜ci† si© na arkuszu"+Chr(13) }
+   acABMUser        := { CRLF + "Usuni©cie rekordu" + CRLF + "Jeste˜ pewny ?" + CRLF, ;
+                         CRLF + "Bˆ©dny zbi¢r Indeksowy" + CRLF + "Nie mo¾na szuka†" + CRLF, ;
+                         CRLF + "Nie mo¾na znale˜† pola indeksu" + CRLF + "Nie mo¾na szuka†" + CRLF, ;
+                         CRLF + "Nie mo¾na szukaæ wg" + CRLF + "pola memo lub logicznego" + CRLF, ;
+                         CRLF + "Rekordu nie znaleziono" + CRLF, ;
+                         CRLF + "Zbyt wiele kolumn" + CRLF + "Raport nie mo¾e zmie˜ci† si© na arkuszu" + CRLF }
    acABMLabel       := { "Rekord", ;
                          "Liczba rekord¢w", ;
                          "      (Nowy)", ;
@@ -1226,61 +1213,59 @@ FUNCTION ooHG_Messages_PLWIN // Polish
                          "Mniejszy ", ;                                         // 30
                          "Wiêkszy lub równy ", ;                                // 31
                          "Mniejszy lub równy" }                                 // 32
-   acUser           := { ABM_CRLF + "Aktywny obszar nie odnaleziony   "  + ABM_CRLF + "Wybierz obszar przed wywo³aniem EDIT   " + ABM_CRLF, ;   // 1
-                         "Poszukiwany ci¹g znaków (dowolny tekst)", ;                                                                           // 2
-                         "Poszukiwana wartoœæ (dowolna liczba)", ;                                                                              // 3
-                         "Wybierz datê", ;                                                                                                      // 4
-                         "Check for true value", ;                                                                                              // 5
-                         "Wprowaæ wartoœæ", ;                                                                                                   // 6
-                         "Wybierz dowolny rekord i naciœcij OK", ;                                                                              // 7
-                         ABM_CRLF + "Wybra³eœ opcjê kasowania rekordu   " + ABM_CRLF + "Czy jesteœ pewien?    " + ABM_CRLF, ;                   // 8
-                         ABM_CRLF + "Brak aktywnych indeksów   " + ABM_CRLF + "Wybierz    " + ABM_CRLF, ;                                       // 9
-                         ABM_CRLF + "Nie mo¿na szukaæ w polach typu MEMO lub LOGIC   " + ABM_CRLF, ;                                            // 10
-                         ABM_CRLF + "Rekord nie znaleziony   " + ABM_CRLF, ;                                                                    // 11
-                         "Wybierz rekord który nale¿y dodaæ do listy", ;                                                                        // 12
-                         "Wybierz rekord który nale¿y wy³¹czyæ z listy", ;                                                                      // 13
-                         "Wybierz drukarkê", ;                                                                                                  // 14
-                         "Kliknij na przycisk by dodaæ pole", ;                                                                                 // 15
-                         "Kliknij na przycisk by odj¹æ pole", ;                                                                                 // 16
-                         "Kliknij, aby wybraæ pierwszy rekord do druku", ;                                                                      // 17
-                         "Kliknij, aby wybraæ ostatni rekord do druku", ;                                                                       // 18
-                         ABM_CRLF + "Brak pól do w³¹czenia   " + ABM_CRLF, ;                                                                    // 19
-                         ABM_CRLF + "Najpierw wybierz pola do w³¹czenia   " + ABM_CRLF, ;                                                       // 20
-                         ABM_CRLF + "Brak pól do wy³¹czenia   " + ABM_CRLF, ;                                                                   // 21
-                         ABM_CRLF + "Najpierw wybierz pola do wy³¹czenia   " + ABM_CRLF, ;                                                      // 22
-                         ABM_CRLF + "Nie wybra³eœ ¿adnych pól   " + ABM_CRLF + "Najpierw wybierz pola do w³¹czenia do wydruku   " + ABM_CRLF, ; // 23
-                         ABM_CRLF + "Za wiele pól   " + ABM_CRLF + "Zredukuj liczbê pól   " + ABM_CRLF, ;                                       // 24
-                         ABM_CRLF + "Drukarka nie gotowa   " + ABM_CRLF, ;                                                                      // 25
-                         "Porz¹dek wg", ;                                                                                                       // 26
-                         "Od rekordu", ;                                                                                                        // 27
-                         "Do rekordu", ;                                                                                                        // 28
-                         "Tak", ;                                                                                                               // 29
-                         "Nie", ;                                                                                                               // 30
-                         "Strona:", ;                                                                                                           // 31
-                         ABM_CRLF + "Wybierz drukarkê   " + ABM_CRLF, ;                                                                         // 32
-                         "Filtrowanie wg", ;                                                                                                    // 33
-                         ABM_CRLF + "Brak aktywnego filtru    " + ABM_CRLF, ;                                                                   // 34
-                         ABM_CRLF + "Nie mo¿na filtrowaæ wg. pól typu MEMO    " + ABM_CRLF, ;                                                   // 35
-                         ABM_CRLF + "Wybierz pola dla filtru    " + ABM_CRLF, ;                                                                 // 36
-                         ABM_CRLF + "Wybierz operator porównania dla filtru    " + ABM_CRLF, ;                                                  // 37
-                         ABM_CRLF + "Wpisz dowoln¹ wartoœæ dla filtru    " + ABM_CRLF, ;                                                        // 38
-                         ABM_CRLF + "Brak aktywnego filtru    " + ABM_CRLF, ;                                                                   // 39
-                         ABM_CRLF + "Deaktywowaæ filtr?   " + ABM_CRLF, ;                                                                       // 40
-                         ABM_CRLF + "Record locked by another user" + ABM_CRLF }                                                                // 41
+   acUser           := { CRLF + "Aktywny obszar nie odnaleziony   " + CRLF + "Wybierz obszar przed wywo³aniem EDIT   " + CRLF, ;    // 1
+                         "Poszukiwany ci¹g znaków (dowolny tekst)", ;                                                               // 2
+                         "Poszukiwana wartoœæ (dowolna liczba)", ;                                                                  // 3
+                         "Wybierz datê", ;                                                                                          // 4
+                         "Check for true value", ;                                                                                  // 5
+                         "Wprowaæ wartoœæ", ;                                                                                       // 6
+                         "Wybierz dowolny rekord i naciœcij OK", ;                                                                  // 7
+                         CRLF + "Wybra³eœ opcjê kasowania rekordu   " + CRLF + "Czy jesteœ pewien?    " + CRLF, ;                   // 8
+                         CRLF + "Brak aktywnych indeksów   " + CRLF + "Wybierz    " + CRLF, ;                                       // 9
+                         CRLF + "Nie mo¿na szukaæ w polach typu MEMO lub LOGIC   " + CRLF, ;                                        // 10
+                         CRLF + "Rekord nie znaleziony   " + CRLF, ;                                                                // 11
+                         "Wybierz rekord który nale¿y dodaæ do listy", ;                                                            // 12
+                         "Wybierz rekord który nale¿y wy³¹czyæ z listy", ;                                                          // 13
+                         "Wybierz drukarkê", ;                                                                                      // 14
+                         "Kliknij na przycisk by dodaæ pole", ;                                                                     // 15
+                         "Kliknij na przycisk by odj¹æ pole", ;                                                                     // 16
+                         "Kliknij, aby wybraæ pierwszy rekord do druku", ;                                                          // 17
+                         "Kliknij, aby wybraæ ostatni rekord do druku", ;                                                           // 18
+                         CRLF + "Brak pól do w³¹czenia   " + CRLF, ;                                                                // 19
+                         CRLF + "Najpierw wybierz pola do w³¹czenia   " + CRLF, ;                                                   // 20
+                         CRLF + "Brak pól do wy³¹czenia   " + CRLF, ;                                                               // 21
+                         CRLF + "Najpierw wybierz pola do wy³¹czenia   " + CRLF, ;                                                  // 22
+                         CRLF + "Nie wybra³eœ ¿adnych pól   " + CRLF + "Najpierw wybierz pola do w³¹czenia do wydruku   " + CRLF, ; // 23
+                         CRLF + "Za wiele pól   " + CRLF + "Zredukuj liczbê pól   " + CRLF, ;                                       // 24
+                         CRLF + "Drukarka nie gotowa   " + CRLF, ;                                                                  // 25
+                         "Porz¹dek wg", ;                                                                                           // 26
+                         "Od rekordu", ;                                                                                            // 27
+                         "Do rekordu", ;                                                                                            // 28
+                         "Tak", ;                                                                                                   // 29
+                         "Nie", ;                                                                                                   // 30
+                         "Strona:", ;                                                                                               // 31
+                         CRLF + "Wybierz drukarkê   " + CRLF, ;                                                                     // 32
+                         "Filtrowanie wg", ;                                                                                        // 33
+                         CRLF + "Brak aktywnego filtru    " + CRLF, ;                                                               // 34
+                         CRLF + "Nie mo¿na filtrowaæ wg. pól typu MEMO    " + CRLF, ;                                               // 35
+                         CRLF + "Wybierz pola dla filtru    " + CRLF, ;                                                             // 36
+                         CRLF + "Wybierz operator porównania dla filtru    " + CRLF, ;                                              // 37
+                         CRLF + "Wpisz dowoln¹ wartoœæ dla filtru    " + CRLF, ;                                                    // 38
+                         CRLF + "Brak aktywnego filtru    " + CRLF, ;                                                               // 39
+                         CRLF + "Deaktywowaæ filtr?   " + CRLF, ;                                                                   // 40
+                         CRLF + "Record locked by another user" + CRLF }                                                            // 41
 
    // PRINT MESSAGES
    acPrint          := {}
 
    RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
 
-// PORTUGUESE
-
 FUNCTION ooHG_Messages_PT // Portuguese
 
-   Local acMisc
-   Local acBrowseButton, acBrowseError, acBrowseMessages
-   Local acABMUser, acABMLabel, acABMButton, acABMError
-   Local acButton, acLabel, acUser, acPrint
+   LOCAL acMisc
+   LOCAL acBrowseButton, acBrowseError, acBrowseMessages
+   LOCAL acABMUser, acABMLabel, acABMButton, acABMError
+   LOCAL acButton, acLabel, acUser, acPrint
 
    // MISC MESSAGES
    acMisc           := { 'Você tem Certeza ?', ;
@@ -1317,12 +1302,12 @@ FUNCTION ooHG_Messages_PT // Portuguese
                          'Apaga Item' }
 
    // EDIT MESSAGES
-   acABMUser        := { Chr(13)+"Ser  apagado o registro atual"+Chr(13)+"Tem certeza?"+Chr(13), ;
-                         Chr(13)+"NÆo existe um ¡ndice ativo"+Chr(13)+"NÆo ‚ poss¡vel realizar a busca"+Chr(13), ;
-                         Chr(13)+"NÆo encontrado o campo ¡ndice"+Chr(13)+"NÆo ‚ poss¡vel realizar a busca"+Chr(13), ;
-                         Chr(13)+"NÆo ‚ poss¡vel realizar busca"+Chr(13)+"por campos memo ou l¢gicos"+Chr(13), ;
-                         Chr(13)+"Registro nÆo encontrado"+Chr(13), ;
-                         Chr(13)+"Inclu¡das colunas em excesso"+Chr(13)+"A listagem completa nÆo caber  na tela"+Chr(13) }
+   acABMUser        := { CRLF + "Ser  apagado o registro atual" + CRLF + "Tem certeza?" + CRLF, ;
+                         CRLF + "NÆo existe um ¡ndice ativo" + CRLF + "NÆo ‚ poss¡vel realizar a busca" + CRLF, ;
+                         CRLF + "NÆo encontrado o campo ¡ndice" + CRLF + "NÆo ‚ poss¡vel realizar a busca" + CRLF, ;
+                         CRLF + "NÆo ‚ poss¡vel realizar busca" + CRLF + "por campos memo ou l¢gicos" + CRLF, ;
+                         CRLF + "Registro nÆo encontrado" + CRLF, ;
+                         CRLF + "Inclu¡das colunas em excesso" + CRLF + "A listagem completa nÆo caber  na tela" + CRLF }
    acABMLabel       := { "Registro Atual", ;
                          "Total Registros", ;
                          "      (Novo)", ;
@@ -1413,54 +1398,52 @@ FUNCTION ooHG_Messages_PT // Portuguese
                          "Menor que", ;                                         // 30
                          "Maior ou igual que", ;                                // 31
                          "Menor ou igual que" }                                 // 32
-   acUser           := { ABM_CRLF + "Não ha uma area ativa   "  + ABM_CRLF + "Por favor selecione uma area antes de chamar a EDIT EXTENDED   " + ABM_CRLF, ; // 1
-                         "Introduza o valor do campo (texto)", ;                                                                                             // 2
-                         "Introduza o valor do campo (numérico)", ;                                                                                          // 3
-                         "Selecione a data", ;                                                                                                               // 4
-                         "Ative o indicar para valor verdadero", ;                                                                                           // 5
-                         "Introduza o valor do campo", ;                                                                                                     // 6
-                         "Selecione um registro e tecle Ok", ;                                                                                               // 7
-                         ABM_CRLF + "Confirma apagar o registro ativo   " + ABM_CRLF + "Tem certeza?    " + ABM_CRLF, ;                                      // 8
-                         ABM_CRLF + "Não ha um índice seleccionado    " + ABM_CRLF + "Por favor selecione un   " + ABM_CRLF, ;                               // 9
-                         ABM_CRLF + "Não se pode realizar busca por campos tipo memo ou lógico   " + ABM_CRLF, ;                                             // 10
-                         ABM_CRLF + "Registro não encontrado   " + ABM_CRLF, ;                                                                               // 11
-                         "Selecione o campo a incluir na lista", ;                                                                                           // 12
-                         "Selecione o campo a excluir da lista", ;                                                                                           // 13
-                         "Selecione a impressora", ;                                                                                                         // 14
-                         "Precione o botão para incluir o campo", ;                                                                                          // 15
-                         "Precione o botão para excluir o campo", ;                                                                                          // 16
-                         "Precione o botão para selecionar o primeiro registro a imprimir", ;                                                                // 17
-                         "Precione o botão para selecionar o último registro a imprimir", ;                                                                  // 18
-                         ABM_CRLF + "Foram incluidos todos os campos   " + ABM_CRLF, ;                                                                       // 19
-                         ABM_CRLF + "Primeiro seleccione o campo a incluir   " + ABM_CRLF, ;                                                                 // 20
-                         ABM_CRLF + "Não ha campos para excluir   " + ABM_CRLF, ;                                                                            // 21
-                         ABM_CRLF + "Primeiro selecione o campo a excluir   " + ABM_CRLF, ;                                                                  // 22
-                         ABM_CRLF + "Não ha selecionado nenhum campo   " + ABM_CRLF, ;                                                                       // 23
-                         ABM_CRLF + "A lista não cabe na página   " + ABM_CRLF + "Reduza o número de campos   " + ABM_CRLF, ;                                // 24
-                         ABM_CRLF + "A impressora não está disponível   " + ABM_CRLF, ;                                                                      // 25
-                         "Ordenado por", ;                                                                                                                   // 26
-                         "Do registro", ;                                                                                                                    // 27
-                         "Até registro", ;                                                                                                                   // 28
-                         "Sim", ;                                                                                                                            // 29
-                         "Não", ;                                                                                                                            // 30
-                         "Página:", ;                                                                                                                        // 31
-                         ABM_CRLF + "Por favor selecione uma impressora   " + ABM_CRLF, ;                                                                    // 32
-                         "Filtrado por", ;                                                                                                                   // 33
-                         ABM_CRLF + "Não ha um filtro ativo    " + ABM_CRLF, ;                                                                               // 34
-                         ABM_CRLF + "Não se pode filtrar por campos memo    " + ABM_CRLF, ;                                                                  // 35
-                         ABM_CRLF + "Selecione o campo a filtrar    " + ABM_CRLF, ;                                                                          // 36
-                         ABM_CRLF + "Selecione o operador de comparação    " + ABM_CRLF, ;                                                                   // 37
-                         ABM_CRLF + "Introduza o valor do filtro    " + ABM_CRLF, ;                                                                          // 38
-                         ABM_CRLF + "Não ha nenhum filtro ativo    " + ABM_CRLF, ;                                                                           // 39
-                         ABM_CRLF + "Eliminar o filtro ativo?   " + ABM_CRLF, ;                                                                              // 40
-                         ABM_CRLF + "Registro bloqueado por outro usuário" + ABM_CRLF }                                                                      // 41
+   acUser           := { CRLF + "Não ha uma area ativa   " + CRLF + "Por favor selecione uma area antes de chamar a EDIT EXTENDED   " + CRLF, ;  // 1
+                         "Introduza o valor do campo (texto)", ;                                                                                 // 2
+                         "Introduza o valor do campo (numérico)", ;                                                                              // 3
+                         "Selecione a data", ;                                                                                                   // 4
+                         "Ative o indicar para valor verdadero", ;                                                                               // 5
+                         "Introduza o valor do campo", ;                                                                                         // 6
+                         "Selecione um registro e tecle Ok", ;                                                                                   // 7
+                         CRLF + "Confirma apagar o registro ativo   " + CRLF + "Tem certeza?    " + CRLF, ;                                      // 8
+                         CRLF + "Não ha um índice seleccionado    " + CRLF + "Por favor selecione un   " + CRLF, ;                               // 9
+                         CRLF + "Não se pode realizar busca por campos tipo memo ou lógico   " + CRLF, ;                                         // 10
+                         CRLF + "Registro não encontrado   " + CRLF, ;                                                                           // 11
+                         "Selecione o campo a incluir na lista", ;                                                                               // 12
+                         "Selecione o campo a excluir da lista", ;                                                                               // 13
+                         "Selecione a impressora", ;                                                                                             // 14
+                         "Precione o botão para incluir o campo", ;                                                                              // 15
+                         "Precione o botão para excluir o campo", ;                                                                              // 16
+                         "Precione o botão para selecionar o primeiro registro a imprimir", ;                                                    // 17
+                         "Precione o botão para selecionar o último registro a imprimir", ;                                                      // 18
+                         CRLF + "Foram incluidos todos os campos   " + CRLF, ;                                                                   // 19
+                         CRLF + "Primeiro seleccione o campo a incluir   " + CRLF, ;                                                             // 20
+                         CRLF + "Não ha campos para excluir   " + CRLF, ;                                                                        // 21
+                         CRLF + "Primeiro selecione o campo a excluir   " + CRLF, ;                                                              // 22
+                         CRLF + "Não ha selecionado nenhum campo   " + CRLF, ;                                                                   // 23
+                         CRLF + "A lista não cabe na página   " + CRLF + "Reduza o número de campos   " + CRLF, ;                                // 24
+                         CRLF + "A impressora não está disponível   " + CRLF, ;                                                                  // 25
+                         "Ordenado por", ;                                                                                                       // 26
+                         "Do registro", ;                                                                                                        // 27
+                         "Até registro", ;                                                                                                       // 28
+                         "Sim", ;                                                                                                                // 29
+                         "Não", ;                                                                                                                // 30
+                         "Página:", ;                                                                                                            // 31
+                         CRLF + "Por favor selecione uma impressora   " + CRLF, ;                                                                // 32
+                         "Filtrado por", ;                                                                                                       // 33
+                         CRLF + "Não ha um filtro ativo    " + CRLF, ;                                                                           // 34
+                         CRLF + "Não se pode filtrar por campos memo    " + CRLF, ;                                                              // 35
+                         CRLF + "Selecione o campo a filtrar    " + CRLF, ;                                                                      // 36
+                         CRLF + "Selecione o operador de comparação    " + CRLF, ;                                                               // 37
+                         CRLF + "Introduza o valor do filtro    " + CRLF, ;                                                                      // 38
+                         CRLF + "Não ha nenhum filtro ativo    " + CRLF, ;                                                                       // 39
+                         CRLF + "Eliminar o filtro ativo?   " + CRLF, ;                                                                          // 40
+                         CRLF + "Registro bloqueado por outro usuário" + CRLF }                                                                  // 41
 
    // PRINT MESSAGES
    acPrint          := {}
 
    RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
-
-// RUSSIAN
 
 FUNCTION ooHG_Messages_RU866 // Russian
 
@@ -1472,10 +1455,10 @@ FUNCTION ooHG_Messages_RUKOI8 // Russian
 
 FUNCTION ooHG_Messages_RUWIN // Russian
 
-   Local acMisc
-   Local acBrowseButton, acBrowseError, acBrowseMessages
-   Local acABMUser, acABMLabel, acABMButton, acABMError
-   Local acButton, acLabel, acUser, acPrint
+   LOCAL acMisc
+   LOCAL acBrowseButton, acBrowseError, acBrowseMessages
+   LOCAL acABMUser, acABMLabel, acABMButton, acABMError
+   LOCAL acButton, acLabel, acUser, acPrint
 
    // MISC MESSAGES
    acMisc           := { 'Âû óâåðåíû ?', ;
@@ -1512,12 +1495,12 @@ FUNCTION ooHG_Messages_RUWIN // Russian
                          'Delete Item' }
 
    // EDIT MESSAGES
-   acABMUser        := { Chr(13)+"Óäàëåíèå çàïèñè."+Chr(13)+"Âû óâåðåíû ?"+Chr(13), ;
-                         Chr(13)+"Îòñóòñòâóåò èíäåêñíûé ôàéë"+Chr(13)+"Ïîèñê íåâîçìîæåí"+Chr(13), ;
-                         Chr(13)+"Îòñóòñòâóåò èíäåêñíîå ïîëå"+Chr(13)+"Ïîèñê íåâîçìîæåí"+Chr(13), ;
-                         Chr(13)+"Ïîèñê íåâîçìîæåí ïî"+Chr(13)+"ìåìî èëè ëîãè÷åñêèì ïîëÿì"+Chr(13), ;
-                         Chr(13)+"Çàïèñü íå íàéäåíà"+Chr(13), ;
-                         Chr(13)+"Ñëèøêîì ìíîãî êîëîíîê"+Chr(13)+"Îò÷åò íå ïîìåñòèòñÿ íà ëèñòå"+Chr(13) }
+   acABMUser        := { CRLF + "Óäàëåíèå çàïèñè." + CRLF + "Âû óâåðåíû ?" + CRLF, ;
+                         CRLF + "Îòñóòñòâóåò èíäåêñíûé ôàéë" + CRLF + "Ïîèñê íåâîçìîæåí" + CRLF, ;
+                         CRLF + "Îòñóòñòâóåò èíäåêñíîå ïîëå" + CRLF + "Ïîèñê íåâîçìîæåí" + CRLF, ;
+                         CRLF + "Ïîèñê íåâîçìîæåí ïî" + CRLF + "ìåìî èëè ëîãè÷åñêèì ïîëÿì" + CRLF, ;
+                         CRLF + "Çàïèñü íå íàéäåíà" + CRLF, ;
+                         CRLF + "Ñëèøêîì ìíîãî êîëîíîê" + CRLF + "Îò÷åò íå ïîìåñòèòñÿ íà ëèñòå" + CRLF }
    acABMLabel       := { "Çàïèñü", ;
                          "Âñåãî çàïèñåé", ;
                          "     (Íîâàÿ)", ;
@@ -1574,18 +1557,16 @@ FUNCTION ooHG_Messages_RUWIN // Russian
 
    RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
 
-// SPANISH
-
 FUNCTION ooHG_Messages_ES // Spanish
 
    RETURN ooHG_Messages_ESWIN()
 
 FUNCTION ooHG_Messages_ESWIN // Spanish
 
-   Local acMisc
-   Local acBrowseButton, acBrowseError, acBrowseMessages
-   Local acABMUser, acABMLabel, acABMButton, acABMError
-   Local acButton, acLabel, acUser, acPrint
+   LOCAL acMisc
+   LOCAL acBrowseButton, acBrowseError, acBrowseMessages
+   LOCAL acABMUser, acABMLabel, acABMButton, acABMError
+   LOCAL acButton, acLabel, acUser, acPrint
 
    // MISC MESSAGES
    acMisc           := { '¿ Está seguro ?', ;
@@ -1622,12 +1603,12 @@ FUNCTION ooHG_Messages_ESWIN // Spanish
                          'Eliminar Item' }
 
    // EDIT MESSAGES
-   acABMUser        := { Chr(13)+"Va a eliminar el registro actual"+Chr(13)+"¿ Está seguro ?"+Chr(13), ;
-                         Chr(13)+"No hay un índice activo"+Chr(13)+"No se puede realizar la búsqueda"+Chr(13), ;
-                         Chr(13)+"No se encuentra el campo índice"+Chr(13)+"No se puede realizar la búsqueda"+Chr(13), ;
-                         Chr(13)+"No se pueden realizar búsquedas"+Chr(13)+"por campos memo o lógico"+Chr(13), ;
-                         Chr(13)+"Registro no encontrado"+Chr(13), ;
-                         Chr(13)+"Ha inclído demasiadas columnas"+Chr(13)+"El listado no cabe en la hoja"+Chr(13) }
+   acABMUser        := { CRLF + "Va a eliminar el registro actual" + CRLF + "¿ Está seguro ?" + CRLF, ;
+                         CRLF + "No hay un índice activo" + CRLF + "No se puede realizar la búsqueda" + CRLF, ;
+                         CRLF + "No se encuentra el campo índice" + CRLF + "No se puede realizar la búsqueda" + CRLF, ;
+                         CRLF + "No se pueden realizar búsquedas" + CRLF + "por campos memo o lógico" + CRLF, ;
+                         CRLF + "Registro no encontrado" + CRLF, ;
+                         CRLF + "Ha inclído demasiadas columnas" + CRLF + "El listado no cabe en la hoja" + CRLF }
    acABMLabel       := { "Registro Actual", ;
                          "Registros Totales", ;
                          "     (Nuevo)", ;
@@ -1718,47 +1699,47 @@ FUNCTION ooHG_Messages_ESWIN // Spanish
                          "Menor que", ;                                         // 30
                          "Mayor o igual que", ;                                 // 31
                          "Menor o igual que" }                                  // 32
-   acUser           := { ABM_CRLF + "No hay un area activa   "  + ABM_CRLF + "Por favor seleccione un area antes de llamar a EDIT EXTENDED   " + ABM_CRLF, ; // 1
-                         "Introduzca el valor del campo (texto)", ;                                                                                          // 2
-                         "Introduzca el valor del campo (numérico)", ;                                                                                       // 3
-                         "Seleccione la fecha", ;                                                                                                            // 4
-                         "Active la casilla para indicar un valor verdadero", ;                                                                              // 5
-                         "Introduzca el valor del campo", ;                                                                                                  // 6
-                         "Seleccione un registro y pulse aceptar", ;                                                                                         // 7
-                         ABM_CRLF + "Se dispone a borrar el registro activo   " + ABM_CRLF + "¿Está seguro?    " + ABM_CRLF, ;                               // 8
-                         ABM_CRLF + "No se ha seleccionado un indice   " + ABM_CRLF + "Por favor seleccione uno   " + ABM_CRLF, ;                            // 9
-                         ABM_CRLF + "No se pueden realizar búsquedas por campos tipo memo o lógico   " + ABM_CRLF, ;                                         // 10
-                         ABM_CRLF + "Registro no encontrado   " + ABM_CRLF, ;                                                                                // 11
-                         "Seleccione el campo a incluir en el listado", ;                                                                                    // 12
-                         "Seleccione el campo a excluir del listado", ;                                                                                      // 13
-                         "Seleccione la impresora", ;                                                                                                        // 14
-                         "Pulse el botón para incluir el campo", ;                                                                                           // 15
-                         "Pulse el botón para excluir el campo", ;                                                                                           // 16
-                         "Pulse el botón para seleccionar el primer registro a imprimir", ;                                                                  // 17
-                         "Pulse el botón para seleccionar el último registro a imprimir", ;                                                                  // 18
-                         ABM_CRLF + "Ha incluido todos los campos   " + ABM_CRLF, ;                                                                          // 19
-                         ABM_CRLF + "Primero seleccione el campo a incluir   " + ABM_CRLF, ;                                                                 // 20
-                         ABM_CRLF + "No hay campos para excluir   " + ABM_CRLF, ;                                                                            // 21
-                         ABM_CRLF + "Primero seleccione el campo a excluir   " + ABM_CRLF, ;                                                                 // 22
-                         ABM_CRLF + "No ha seleccionado ningún campo   " + ABM_CRLF, ;                                                                       // 23
-                         ABM_CRLF + "El listado no cabe en la página   " + ABM_CRLF + "Reduzca el numero de campos   " + ABM_CRLF, ;                         // 24
-                         ABM_CRLF + "La impresora no está disponible   " + ABM_CRLF, ;                                                                       // 25
-                         "Ordenado por", ;                                                                                                                   // 26
-                         "Del registro", ;                                                                                                                   // 27
-                         "Al registro", ;                                                                                                                    // 28
-                         "Sí", ;                                                                                                                             // 29
-                         "No", ;                                                                                                                             // 30
-                         "Página:", ;                                                                                                                        // 31
-                         ABM_CRLF + "Por favor seleccione una impresora   " + ABM_CRLF, ;                                                                    // 32
-                         "Filtrado por", ;                                                                                                                   // 33
-                         ABM_CRLF + "No hay un filtro activo    " + ABM_CRLF, ;                                                                              // 34
-                         ABM_CRLF + "No se puede filtrar por campos memo    " + ABM_CRLF, ;                                                                  // 35
-                         ABM_CRLF + "Seleccione el campo a filtrar    " + ABM_CRLF, ;                                                                        // 36
-                         ABM_CRLF + "Seleccione el operador de comparación    " + ABM_CRLF, ;                                                                // 37
-                         ABM_CRLF + "Introduzca el valor del filtro    " + ABM_CRLF, ;                                                                       // 38
-                         ABM_CRLF + "No hay ningún filtro activo    " + ABM_CRLF, ;                                                                          // 39
-                         ABM_CRLF + "¿Eliminar el filtro activo?   " + ABM_CRLF, ;                                                                           // 40
-                         ABM_CRLF + "Registro bloqueado por otro usuario    " + ABM_CRLF }                                                                   // 41
+   acUser           := { CRLF + "No hay un area activa   " + CRLF + "Por favor seleccione un area antes de llamar a EDIT EXTENDED   " + CRLF, ;  // 1
+                         "Introduzca el valor del campo (texto)", ;                                                                              // 2
+                         "Introduzca el valor del campo (numérico)", ;                                                                           // 3
+                         "Seleccione la fecha", ;                                                                                                // 4
+                         "Active la casilla para indicar un valor verdadero", ;                                                                  // 5
+                         "Introduzca el valor del campo", ;                                                                                      // 6
+                         "Seleccione un registro y pulse aceptar", ;                                                                             // 7
+                         CRLF + "Se dispone a borrar el registro activo   " + CRLF + "¿Está seguro?    " + CRLF, ;                               // 8
+                         CRLF + "No se ha seleccionado un indice   " + CRLF + "Por favor seleccione uno   " + CRLF, ;                            // 9
+                         CRLF + "No se pueden realizar búsquedas por campos tipo memo o lógico   " + CRLF, ;                                     // 10
+                         CRLF + "Registro no encontrado   " + CRLF, ;                                                                            // 11
+                         "Seleccione el campo a incluir en el listado", ;                                                                        // 12
+                         "Seleccione el campo a excluir del listado", ;                                                                          // 13
+                         "Seleccione la impresora", ;                                                                                            // 14
+                         "Pulse el botón para incluir el campo", ;                                                                               // 15
+                         "Pulse el botón para excluir el campo", ;                                                                               // 16
+                         "Pulse el botón para seleccionar el primer registro a imprimir", ;                                                      // 17
+                         "Pulse el botón para seleccionar el último registro a imprimir", ;                                                      // 18
+                         CRLF + "Ha incluido todos los campos   " + CRLF, ;                                                                      // 19
+                         CRLF + "Primero seleccione el campo a incluir   " + CRLF, ;                                                             // 20
+                         CRLF + "No hay campos para excluir   " + CRLF, ;                                                                        // 21
+                         CRLF + "Primero seleccione el campo a excluir   " + CRLF, ;                                                             // 22
+                         CRLF + "No ha seleccionado ningún campo   " + CRLF, ;                                                                   // 23
+                         CRLF + "El listado no cabe en la página   " + CRLF + "Reduzca el numero de campos   " + CRLF, ;                         // 24
+                         CRLF + "La impresora no está disponible   " + CRLF, ;                                                                   // 25
+                         "Ordenado por", ;                                                                                                       // 26
+                         "Del registro", ;                                                                                                       // 27
+                         "Al registro", ;                                                                                                        // 28
+                         "Sí", ;                                                                                                                 // 29
+                         "No", ;                                                                                                                 // 30
+                         "Página:", ;                                                                                                            // 31
+                         CRLF + "Por favor seleccione una impresora   " + CRLF, ;                                                                // 32
+                         "Filtrado por", ;                                                                                                       // 33
+                         CRLF + "No hay un filtro activo    " + CRLF, ;                                                                          // 34
+                         CRLF + "No se puede filtrar por campos memo    " + CRLF, ;                                                              // 35
+                         CRLF + "Seleccione el campo a filtrar    " + CRLF, ;                                                                    // 36
+                         CRLF + "Seleccione el operador de comparación    " + CRLF, ;                                                            // 37
+                         CRLF + "Introduzca el valor del filtro    " + CRLF, ;                                                                   // 38
+                         CRLF + "No hay ningún filtro activo    " + CRLF, ;                                                                      // 39
+                         CRLF + "¿Eliminar el filtro activo?   " + CRLF, ;                                                                       // 40
+                         CRLF + "Registro bloqueado por otro usuario    " + CRLF }                                                               // 41
 
    // PRINT MESSAGES
    acPrint          := { "Vista previa de impresión pendiente, ciérrela primero", ;
@@ -1780,8 +1761,8 @@ FUNCTION ooHG_Messages_ESWIN // Spanish
                          'Vista previa -----> ', ;
                          "Cerrar", ;
                          "Cerrar", ;
-                         "Zoom +", ;
-                         "Zoom +", ;
+                         "Zoom + ", ;
+                         "Zoom + ", ;
                          "Zoom -", ;
                          "Zoom -", ;
                          "Imprimir", ;
@@ -1809,14 +1790,12 @@ FUNCTION ooHG_Messages_ESWIN // Spanish
 
    RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
 
-// FINNISH
-
 FUNCTION ooHG_Messages_FI // Finnish
 
-   Local acMisc
-   Local acBrowseButton, acBrowseError, acBrowseMessages
-   Local acABMUser, acABMLabel, acABMButton, acABMError
-   Local acButton, acLabel, acUser, acPrint
+   LOCAL acMisc
+   LOCAL acBrowseButton, acBrowseError, acBrowseMessages
+   LOCAL acABMUser, acABMLabel, acABMButton, acABMError
+   LOCAL acButton, acLabel, acUser, acPrint
 
    // MISC MESSAGES
    acMisc           := { 'Oletko varma ?', ;
@@ -1853,12 +1832,12 @@ FUNCTION ooHG_Messages_FI // Finnish
                          'Poista Rivi' }
 
    // EDIT MESSAGES
-   acABMUser        := { Chr(13)+"Poista tietue"+Chr(13)+"Oletko varma?"+Chr(13), ;
-                         Chr(13)+"Indeksi tiedosto puuttuu"+Chr(13)+"En voihakea"+Chr(13), ;
-                         Chr(13)+"Indeksikenttä ei löydy"+Chr(13)+"En voihakea"+Chr(13), ;
-                         Chr(13)+"En voi hakea memo"+Chr(13)+"tai loogisen kentän mukaan"+Chr(13), ;
-                         Chr(13)+"Tietue ei löydy"+Chr(13), ;
-                         Chr(13)+"Liian monta saraketta"+Chr(13)+"raportti ei mahdu sivulle"+Chr(13) }
+   acABMUser        := { CRLF + "Poista tietue" + CRLF + "Oletko varma?" + CRLF, ;
+                         CRLF + "Indeksi tiedosto puuttuu" + CRLF + "En voihakea" + CRLF, ;
+                         CRLF + "Indeksikenttä ei löydy" + CRLF + "En voihakea" + CRLF, ;
+                         CRLF + "En voi hakea memo" + CRLF + "tai loogisen kentän mukaan" + CRLF, ;
+                         CRLF + "Tietue ei löydy" + CRLF, ;
+                         CRLF + "Liian monta saraketta" + CRLF + "raportti ei mahdu sivulle" + CRLF }
    acABMLabel       := { "Tietue", ;
                          "Tietue lukumäärä", ;
                          "       (Uusi)", ;
@@ -1949,61 +1928,59 @@ FUNCTION ooHG_Messages_FI // Finnish
                          "Pienempi kuin", ;                                     // 30
                          "Isompi tai sama kuin", ;                              // 31
                          "Pienempi tai sama kuin" }                             // 32
-   acUser           := { ABM_CRLF + "Työalue ei löydy.   "  + ABM_CRLF + "Valitse työaluetta ennenkun kutsut Edit  " + ABM_CRLF, ; // 1
-                         "Anna kenttä arvo (tekstiä)", ;                                                                           // 2
-                         "Anna kenttä arvo (numeerinen)", ;                                                                        // 3
-                         "Valitse päiväys", ;                                                                                      // 4
-                         "Tarkista tosi arvo", ;                                                                                   // 5
-                         "Anna kenttä arvo", ;                                                                                     // 6
-                         "Valitse joku tietue ja paina OK", ;                                                                      // 7
-                         ABM_CRLF + "Olet poistamassa aktiivinen tietue   "+ABM_CRLF + "Oletko varma?    " + ABM_CRLF, ;           // 8
-                         ABM_CRLF + "Ei aktiivista lajittelua   " + ABM_CRLF+"Valitse lajittelu   " + ABM_CRLF, ;                  // 9
-                         ABM_CRLF + "En voi hakea memo tai loogiseten kenttien perusteella  " + ABM_CRLF, ;                        // 10
-                         ABM_CRLF + "Tietue ei löydy   " + ABM_CRLF, ;                                                             // 11
-                         "Valitse listaan lisättävät kentät", ;                                                                    // 12
-                         "Valitse EI lisättävät kentät", ;                                                                         // 13
-                         "Valitse tulostin", ;                                                                                     // 14
-                         "Paina näppäin lisäätäksesi kenttä", ;                                                                    // 15
-                         "Paina näppäin poistaaksesi kenttä", ;                                                                    // 16
-                         "Paina näppäin valittaaksesi ensimmäinen tulostettava tietue", ;                                          // 17
-                         "Paina näppäin valittaaksesi viimeinen tulostettava tietue", ;                                            // 18
-                         ABM_CRLF + "Ei lisää kenttiä   " + ABM_CRLF, ;                                                            // 19
-                         ABM_CRLF + "Valitse ensin lisättävä kenttä   "+ABM_CRLF, ;                                                // 20
-                         ABM_CRLF + "EI Lisää ohitettavia kenttiä   " +ABM_CRLF, ;                                                 // 21
-                         ABM_CRLF + "Valitse ensin ohitettava kenttä   " +ABM_CRLF, ;                                              // 22
-                         ABM_CRLF + "Et valinnut kenttiä   " + ABM_CRLF + "Valitse tulosteen kentät   " + ABM_CRLF, ;              // 23
-                         ABM_CRLF + "Liikaa kenttiä   " + ABM_CRLF + "Vähennä kenttä lukumäärä   " + ABM_CRLF, ;                   // 24
-                         ABM_CRLF + "Tulostin ei valmiina   " + ABM_CRLF, ;                                                        // 25
-                         "Lajittelu", ;                                                                                            // 26
-                         "Tietueesta", ;                                                                                           // 27
-                         "Tietueeseen", ;                                                                                          // 28
-                         "Kyllä", ;                                                                                                // 29
-                         "EI", ;                                                                                                   // 30
-                         "Sivu:", ;                                                                                                // 31
-                         ABM_CRLF + "Valitse tulostin   " + ABM_CRLF, ;                                                            // 32
-                         "Lajittelu", ;                                                                                            // 33
-                         ABM_CRLF + "Aktiivinen suodin olemassa    " + ABM_CRLF, ;                                                 // 34
-                         ABM_CRLF + "En voi suodattaa memo kenttiä    "+ABM_CRLF, ;                                                // 35
-                         ABM_CRLF + "Valitse suodattava kenttä    " + ABM_CRLF, ;                                                  // 36
-                         ABM_CRLF + "Valitse suodattava operaattori    " +ABM_CRLF, ;                                              // 37
-                         ABM_CRLF + "Anna suodatusarvo    " + ABM_CRLF, ;                                                          // 38
-                         ABM_CRLF + "Ei aktiivisia suotimia    " + ABM_CRLF, ;                                                     // 39
-                         ABM_CRLF + "Poista suodin?   " + ABM_CRLF, ;                                                              // 40
-                         ABM_CRLF + "Tietue lukittu    " + ABM_CRLF }                                                              // 41
+   acUser           := { CRLF + "Työalue ei löydy.   " + CRLF + "Valitse työaluetta ennenkun kutsut Edit  " + CRLF, ;  // 1
+                         "Anna kenttä arvo (tekstiä)", ;                                                               // 2
+                         "Anna kenttä arvo (numeerinen)", ;                                                            // 3
+                         "Valitse päiväys", ;                                                                          // 4
+                         "Tarkista tosi arvo", ;                                                                       // 5
+                         "Anna kenttä arvo", ;                                                                         // 6
+                         "Valitse joku tietue ja paina OK", ;                                                          // 7
+                         CRLF + "Olet poistamassa aktiivinen tietue   " + CRLF + "Oletko varma?    " + CRLF, ;         // 8
+                         CRLF + "Ei aktiivista lajittelua   " + CRLF + "Valitse lajittelu   " + CRLF, ;                // 9
+                         CRLF + "En voi hakea memo tai loogiseten kenttien perusteella  " + CRLF, ;                    // 10
+                         CRLF + "Tietue ei löydy   " + CRLF, ;                                                         // 11
+                         "Valitse listaan lisättävät kentät", ;                                                        // 12
+                         "Valitse EI lisättävät kentät", ;                                                             // 13
+                         "Valitse tulostin", ;                                                                         // 14
+                         "Paina näppäin lisäätäksesi kenttä", ;                                                        // 15
+                         "Paina näppäin poistaaksesi kenttä", ;                                                        // 16
+                         "Paina näppäin valittaaksesi ensimmäinen tulostettava tietue", ;                              // 17
+                         "Paina näppäin valittaaksesi viimeinen tulostettava tietue", ;                                // 18
+                         CRLF + "Ei lisää kenttiä   " + CRLF, ;                                                        // 19
+                         CRLF + "Valitse ensin lisättävä kenttä   " + CRLF, ;                                          // 20
+                         CRLF + "EI Lisää ohitettavia kenttiä   " + CRLF, ;                                            // 21
+                         CRLF + "Valitse ensin ohitettava kenttä   " + CRLF, ;                                         // 22
+                         CRLF + "Et valinnut kenttiä   " + CRLF + "Valitse tulosteen kentät   " + CRLF, ;              // 23
+                         CRLF + "Liikaa kenttiä   " + CRLF + "Vähennä kenttä lukumäärä   " + CRLF, ;                   // 24
+                         CRLF + "Tulostin ei valmiina   " + CRLF, ;                                                    // 25
+                         "Lajittelu", ;                                                                                // 26
+                         "Tietueesta", ;                                                                               // 27
+                         "Tietueeseen", ;                                                                              // 28
+                         "Kyllä", ;                                                                                    // 29
+                         "EI", ;                                                                                       // 30
+                         "Sivu:", ;                                                                                    // 31
+                         CRLF + "Valitse tulostin   " + CRLF, ;                                                        // 32
+                         "Lajittelu", ;                                                                                // 33
+                         CRLF + "Aktiivinen suodin olemassa    " + CRLF, ;                                             // 34
+                         CRLF + "En voi suodattaa memo kenttiä    " + CRLF, ;                                          // 35
+                         CRLF + "Valitse suodattava kenttä    " + CRLF, ;                                              // 36
+                         CRLF + "Valitse suodattava operaattori    " + CRLF, ;                                         // 37
+                         CRLF + "Anna suodatusarvo    " + CRLF, ;                                                      // 38
+                         CRLF + "Ei aktiivisia suotimia    " + CRLF, ;                                                 // 39
+                         CRLF + "Poista suodin?   " + CRLF, ;                                                          // 40
+                         CRLF + "Tietue lukittu    " + CRLF }                                                          // 41
 
    // PRINT MESSAGES
    acPrint          := {}
 
    RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
 
-// DUTCH
-
 FUNCTION ooHG_Messages_NL // Dutch
 
-   Local acMisc
-   Local acBrowseButton, acBrowseError, acBrowseMessages
-   Local acABMUser, acABMLabel, acABMButton, acABMError
-   Local acButton, acLabel, acUser, acPrint
+   LOCAL acMisc
+   LOCAL acBrowseButton, acBrowseError, acBrowseMessages
+   LOCAL acABMUser, acABMLabel, acABMButton, acABMError
+   LOCAL acButton, acLabel, acUser, acPrint
 
    // MISC MESSAGES
    acMisc           := { 'Weet u het zeker?', ;
@@ -2040,12 +2017,12 @@ FUNCTION ooHG_Messages_NL // Dutch
                          'Verwijder Item' }
 
    // EDIT MESSAGES
-   acABMUser        := { Chr(13)+"Verwijder regel"+Chr(13)+"Weet u het zeker ?"+Chr(13), ;
-                         Chr(13)+"Index bestand is er niet"+Chr(13)+"Kan niet zoeken"+Chr(13), ;
-                         Chr(13)+"Kan index veld niet vinden"+Chr(13)+"Kan niet zoeken"+Chr(13), ;
-                         Chr(13)+"Kan niet zoeken op"+Chr(13)+"Memo of logische velden"+Chr(13), ;
-                         Chr(13)+"Regel niet gevonden"+Chr(13), ;
-                         Chr(13)+"Te veel rijen"+Chr(13)+"Het rapport past niet op het papier"+Chr(13) }
+   acABMUser        := { CRLF + "Verwijder regel" + CRLF + "Weet u het zeker ?" + CRLF, ;
+                         CRLF + "Index bestand is er niet" + CRLF + "Kan niet zoeken" + CRLF, ;
+                         CRLF + "Kan index veld niet vinden" + CRLF + "Kan niet zoeken" + CRLF, ;
+                         CRLF + "Kan niet zoeken op" + CRLF + "Memo of logische velden" + CRLF, ;
+                         CRLF + "Regel niet gevonden" + CRLF, ;
+                         CRLF + "Te veel rijen" + CRLF + "Het rapport past niet op het papier" + CRLF }
    acABMLabel       := { "Regel", ;
                          "Regel aantal", ;
                          "       (Nieuw)", ;
@@ -2136,54 +2113,52 @@ FUNCTION ooHG_Messages_NL // Dutch
                          "Kleiner dan", ;                                       // 30
                          "Groter dan of gelijk aan", ;                          // 31
                          "Kleiner dan of gelijk aan" }                          // 32
-   acUser           := { ABM_CRLF + "Kan geen actief werkgebied vinden   "  + ABM_CRLF + "Selecteer A.U.B. een actief werkgebied voor BEWERKEN aan te roepen   " + ABM_CRLF, ; // 1
-                         "Geef de veld waarde (een tekst)", ;                                                                                                                  // 2
-                         "Geef de veld waarde (een nummer)", ;                                                                                                                 // 3
-                         "Selecteer de datum", ;                                                                                                                               // 4
-                         "Controleer voor geldige waarde", ;                                                                                                                   // 5
-                         "Geef de veld waarde", ;                                                                                                                              // 6
-                         "Selecteer een regel en druk op OK", ;                                                                                                                // 7
-                         ABM_CRLF + "Je gaat het actieve regel verwijderen  " + ABM_CRLF + "Zeker weten?    " + ABM_CRLF, ;                                                    // 8
-                         ABM_CRLF + "Er is geen actieve volgorde " + ABM_CRLF + "Selecteer er A.U.B. een   " + ABM_CRLF, ;                                                     // 9
-                         ABM_CRLF + "Kan niet zoeken in memo of logische velden   " + ABM_CRLF, ;                                                                              // 10
-                         ABM_CRLF + "Regel niet gevonden   " +ABM_CRLF, ;                                                                                                      // 11
-                         "Selecteer het veld om in de lijst in te sluiten", ;                                                                                                  // 12
-                         "Selecteer het veld om uit de lijst te halen", ;                                                                                                      // 13
-                         "Selecteer de printer", ;                                                                                                                             // 14
-                         "Druk op de knop om het veld in te sluiten", ;                                                                                                        // 15
-                         "Druk op de knop om het veld uit te sluiten", ;                                                                                                       // 16
-                         "Druk op de knop om het eerste veld te selecteren om te printen", ;                                                                                   // 17
-                         "Druk op de knop om het laatste veld te selecteren om te printen", ;                                                                                  // 18
-                         ABM_CRLF + "Geen velden meer om in te sluiten   " + ABM_CRLF, ;                                                                                       // 19
-                         ABM_CRLF + "Selecteer eerst het veld om in te sluiten   " + ABM_CRLF, ;                                                                               // 20
-                         ABM_CRLF + "Geen velden meer om uit te sluiten   " + ABM_CRLF, ;                                                                                      // 21
-                         ABM_CRLF + "Selecteer eerst het veld om uit te sluiten   " + ABM_CRLF, ;                                                                              // 22
-                         ABM_CRLF + "Je hebt geen velden geselecteerd   " + ABM_CRLF + "Selecteer A.U.B. de velden om in te sluiten om te printen   " + ABM_CRLF, ;            // 23
-                         ABM_CRLF + "Teveel velden   " + ABM_CRLF + "Selecteer minder velden   " + ABM_CRLF, ;                                                                 // 24
-                         ABM_CRLF + "Printer niet klaar   " + ABM_CRLF, ;                                                                                                      // 25
-                         "Volgorde op", ;                                                                                                                                      // 26
-                         "Van regel", ;                                                                                                                                        // 27
-                         "Tot regel", ;                                                                                                                                        // 28
-                         "Ja", ;                                                                                                                                               // 29
-                         "Nee", ;                                                                                                                                              // 30
-                         "Pagina:", ;                                                                                                                                          // 31
-                         ABM_CRLF + "Selecteer A.U.B. een printer " + ABM_CRLF, ;                                                                                              // 32
-                         "Gefilterd op", ;                                                                                                                                     // 33
-                         ABM_CRLF + "Er is een actief filter    " + ABM_CRLF, ;                                                                                                // 34
-                         ABM_CRLF + "Kan niet filteren op memo velden    " + ABM_CRLF, ;                                                                                       // 35
-                         ABM_CRLF + "Selecteer het veld om op te filteren    " + ABM_CRLF, ;                                                                                   // 36
-                         ABM_CRLF + "Selecteer een operator om te filteren    " + ABM_CRLF, ;                                                                                  // 37
-                         ABM_CRLF + "Type een waarde om te filteren " + ABM_CRLF, ;                                                                                            // 38
-                         ABM_CRLF + "Er is geen actief filter    "+ ABM_CRLF, ;                                                                                                // 39
-                         ABM_CRLF + "Deactiveer filter?   " + ABM_CRLF, ;                                                                                                      // 40
-                         ABM_CRLF + "Regel geblokkeerd door een andere gebuiker" + ABM_CRLF }                                                                                  // 41
+   acUser           := { CRLF + "Kan geen actief werkgebied vinden   " + CRLF + "Selecteer A.U.B. een actief werkgebied voor BEWERKEN aan te roepen   " + CRLF, ;  // 1
+                         "Geef de veld waarde (een tekst)", ;                                                                                                      // 2
+                         "Geef de veld waarde (een nummer)", ;                                                                                                     // 3
+                         "Selecteer de datum", ;                                                                                                                   // 4
+                         "Controleer voor geldige waarde", ;                                                                                                       // 5
+                         "Geef de veld waarde", ;                                                                                                                  // 6
+                         "Selecteer een regel en druk op OK", ;                                                                                                    // 7
+                         CRLF + "Je gaat het actieve regel verwijderen  " + CRLF + "Zeker weten?    " + CRLF, ;                                                    // 8
+                         CRLF + "Er is geen actieve volgorde " + CRLF + "Selecteer er A.U.B. een   " + CRLF, ;                                                     // 9
+                         CRLF + "Kan niet zoeken in memo of logische velden   " + CRLF, ;                                                                          // 10
+                         CRLF + "Regel niet gevonden   " + CRLF, ;                                                                                                 // 11
+                         "Selecteer het veld om in de lijst in te sluiten", ;                                                                                      // 12
+                         "Selecteer het veld om uit de lijst te halen", ;                                                                                          // 13
+                         "Selecteer de printer", ;                                                                                                                 // 14
+                         "Druk op de knop om het veld in te sluiten", ;                                                                                            // 15
+                         "Druk op de knop om het veld uit te sluiten", ;                                                                                           // 16
+                         "Druk op de knop om het eerste veld te selecteren om te printen", ;                                                                       // 17
+                         "Druk op de knop om het laatste veld te selecteren om te printen", ;                                                                      // 18
+                         CRLF + "Geen velden meer om in te sluiten   " + CRLF, ;                                                                                   // 19
+                         CRLF + "Selecteer eerst het veld om in te sluiten   " + CRLF, ;                                                                           // 20
+                         CRLF + "Geen velden meer om uit te sluiten   " + CRLF, ;                                                                                  // 21
+                         CRLF + "Selecteer eerst het veld om uit te sluiten   " + CRLF, ;                                                                          // 22
+                         CRLF + "Je hebt geen velden geselecteerd   " + CRLF + "Selecteer A.U.B. de velden om in te sluiten om te printen   " + CRLF, ;            // 23
+                         CRLF + "Teveel velden   " + CRLF + "Selecteer minder velden   " + CRLF, ;                                                                 // 24
+                         CRLF + "Printer niet klaar   " + CRLF, ;                                                                                                  // 25
+                         "Volgorde op", ;                                                                                                                          // 26
+                         "Van regel", ;                                                                                                                            // 27
+                         "Tot regel", ;                                                                                                                            // 28
+                         "Ja", ;                                                                                                                                   // 29
+                         "Nee", ;                                                                                                                                  // 30
+                         "Pagina:", ;                                                                                                                              // 31
+                         CRLF + "Selecteer A.U.B. een printer " + CRLF, ;                                                                                          // 32
+                         "Gefilterd op", ;                                                                                                                         // 33
+                         CRLF + "Er is een actief filter    " + CRLF, ;                                                                                            // 34
+                         CRLF + "Kan niet filteren op memo velden    " + CRLF, ;                                                                                   // 35
+                         CRLF + "Selecteer het veld om op te filteren    " + CRLF, ;                                                                               // 36
+                         CRLF + "Selecteer een operator om te filteren    " + CRLF, ;                                                                              // 37
+                         CRLF + "Type een waarde om te filteren " + CRLF, ;                                                                                        // 38
+                         CRLF + "Er is geen actief filter    " + CRLF, ;                                                                                           // 39
+                         CRLF + "Deactiveer filter?   " + CRLF, ;                                                                                                  // 40
+                         CRLF + "Regel geblokkeerd door een andere gebuiker" + CRLF }                                                                              // 41
 
    // PRINT MESSAGES
    acPrint          := {}
 
    RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
-
-// SLOVENIAN
 
 FUNCTION ooHG_Messages_SLISO // Slovenian
 
@@ -2199,10 +2174,10 @@ FUNCTION ooHG_Messages_SL437 // Slovenian
 
 FUNCTION ooHG_Messages_SLWIN // Slovenian
 
-   Local acMisc
-   Local acBrowseButton, acBrowseError, acBrowseMessages
-   Local acABMUser, acABMLabel, acABMButton, acABMError
-   Local acButton, acLabel, acUser, acPrint
+   LOCAL acMisc
+   LOCAL acBrowseButton, acBrowseError, acBrowseMessages
+   LOCAL acABMUser, acABMLabel, acABMButton, acABMError
+   LOCAL acButton, acLabel, acUser, acPrint
 
    // MISC MESSAGES
    acMisc           := { 'Ste preprièani ?', ;
@@ -2239,12 +2214,12 @@ FUNCTION ooHG_Messages_SLWIN // Slovenian
                          'Briši Vrstico' }
 
    // EDIT MESSAGES
-   acABMUser        := { Chr(13)+"Briši vrstico"+Chr(13)+"Ste preprièani ?"+Chr(13), ;
-                         Chr(13)+"Manjka indeksna datoteka"+Chr(13)+"Ne morem iskati"+Chr(13), ;
-                         Chr(13)+"Ne najdem indeksnega polja"+Chr(13)+"Ne morem iskati"+Chr(13), ;
-                         Chr(13)+"Ne morem iskati po"+Chr(13)+"memo ali logiènih poljih"+Chr(13), ;
-                         Chr(13)+"Ne najdem vrstice"+Chr(13), ;
-                         Chr(13)+"Preveè kolon"+Chr(13)+"Poroèilo ne gre na list"+Chr(13) }
+   acABMUser        := { CRLF + "Briši vrstico" + CRLF + "Ste preprièani ?" + CRLF, ;
+                         CRLF + "Manjka indeksna datoteka" + CRLF + "Ne morem iskati" + CRLF, ;
+                         CRLF + "Ne najdem indeksnega polja" + CRLF + "Ne morem iskati" + CRLF, ;
+                         CRLF + "Ne morem iskati po" + CRLF + "memo ali logiènih poljih" + CRLF, ;
+                         CRLF + "Ne najdem vrstice" + CRLF, ;
+                         CRLF + "Preveè kolon" + CRLF + "Poroèilo ne gre na list" + CRLF }
    acABMLabel       := { "Vrstica", ;
                          "Število vrstic", ;
                          "       (Nova)", ;
@@ -2335,61 +2310,59 @@ FUNCTION ooHG_Messages_SLWIN // Slovenian
                          "Manjše od", ;                                         // 30
                          "Veèje ali enako od", ;                                // 31
                          "Manjše ali enako od" }                                // 32
-   acUser           := { ABM_CRLF + "Can't find an active area.   "  + ABM_CRLF + "Please select any area before call EDIT   " + ABM_CRLF, ; // 1
-                         "Vnesi vrednost (tekst)", ;                                                                                         // 2
-                         "Vnesi vrednost (številka)", ;                                                                                      // 3
-                         "Izberi datum", ;                                                                                                   // 4
-                         "Oznaèi za logièni DA", ;                                                                                           // 5
-                         "Vnesi vrednost", ;                                                                                                 // 6
-                         "Izberi vrstico in pritisni <V redu>", ;                                                                            // 7
-                         ABM_CRLF + "Pobrisali boste trenutno vrstico   " + ABM_CRLF + "Ste preprièani?    " + ABM_CRLF, ;                   // 8
-                         ABM_CRLF + "Ni aktivnega indeksa   " + ABM_CRLF + "Prosimo, izberite ga   " + ABM_CRLF, ;                           // 9
-                         ABM_CRLF + "Ne morem iskati po logiènih oz. memo poljih   " + ABM_CRLF, ;                                           // 10
-                         ABM_CRLF + "Ne najdem vrstice   " + ABM_CRLF, ;                                                                     // 11
-                         "Izberite polje, ki bo vkljuèeno na listo", ;                                                                       // 12
-                         "Izberite polje, ki NI vkljuèeno na listo", ;                                                                       // 13
-                         "Izberite tisklanik", ;                                                                                             // 14
-                         "Pritisnite gumb za vkljuèitev polja", ;                                                                            // 15
-                         "Pritisnite gumb za izkljuèitev polja", ;                                                                           // 16
-                         "Pritisnite gumb za izbor prve vrstice za tiskanje", ;                                                              // 17
-                         "Pritisnite gumb za izbor zadnje vrstice za tiskanje", ;                                                            // 18
-                         ABM_CRLF + "Ni veè polj za dodajanje   " + ABM_CRLF, ;                                                              // 19
-                         ABM_CRLF + "Najprej izberite ppolje za vkljuèitev   " + ABM_CRLF, ;                                                 // 20
-                         ABM_CRLF + "Ni veè polj za izkljuèitev   " + ABM_CRLF, ;                                                            // 21
-                         ABM_CRLF + "Najprej izberite polje za izkljuèitev   " + ABM_CRLF, ;                                                 // 22
-                         ABM_CRLF + "Niste izbrali nobenega polja   " + ABM_CRLF + "Prosom, izberite polje za tiskalnje   " + ABM_CRLF, ;    // 23
-                         ABM_CRLF + "Preveè polj   " + ABM_CRLF + "Zmanjšajte število polj   " + ABM_CRLF, ;                                 // 24
-                         ABM_CRLF + "Tiskalnik ni pripravljen   " + ABM_CRLF, ;                                                              // 25
-                         "Urejeno po", ;                                                                                                     // 26
-                         "Od vrstice", ;                                                                                                     // 27
-                         "do vrstice", ;                                                                                                     // 28
-                         "Ja", ;                                                                                                             // 29
-                         "Ne", ;                                                                                                             // 30
-                         "Stran:", ;                                                                                                         // 31
-                         ABM_CRLF + "Izberite tiskalnik   " + ABM_CRLF, ;                                                                    // 32
-                         "Filtrirano z", ;                                                                                                   // 33
-                         ABM_CRLF + "Aktiven filter v uporabi    " + ABM_CRLF, ;                                                             // 34
-                         ABM_CRLF + "Ne morem filtrirati z memo polji    " + ABM_CRLF, ;                                                     // 35
-                         ABM_CRLF + "Izberi polje za filtriranje    " + ABM_CRLF, ;                                                          // 36
-                         ABM_CRLF + "Izberi operator za filtriranje    " + ABM_CRLF, ;                                                       // 37
-                         ABM_CRLF + "Vnesi vrednost za filtriranje    " + ABM_CRLF, ;                                                        // 38
-                         ABM_CRLF + "Ni aktivnega filtra    " + ABM_CRLF, ;                                                                  // 39
-                         ABM_CRLF + "Deaktiviram filter?   " + ABM_CRLF, ;                                                                   // 40
-                         ABM_CRLF + "Vrstica zaklenjena - uporablja jo drug uporabnik    " + ABM_CRLF }                                      // 41
+   acUser           := { CRLF + "Can't find an active area.   " + CRLF + "Please select any area before call EDIT   " + CRLF, ;  // 1
+                         "Vnesi vrednost (tekst)", ;                                                                             // 2
+                         "Vnesi vrednost (številka)", ;                                                                          // 3
+                         "Izberi datum", ;                                                                                       // 4
+                         "Oznaèi za logièni DA", ;                                                                               // 5
+                         "Vnesi vrednost", ;                                                                                     // 6
+                         "Izberi vrstico in pritisni <V redu>", ;                                                                // 7
+                         CRLF + "Pobrisali boste trenutno vrstico   " + CRLF + "Ste preprièani?    " + CRLF, ;                   // 8
+                         CRLF + "Ni aktivnega indeksa   " + CRLF + "Prosimo, izberite ga   " + CRLF, ;                           // 9
+                         CRLF + "Ne morem iskati po logiènih oz. memo poljih   " + CRLF, ;                                       // 10
+                         CRLF + "Ne najdem vrstice   " + CRLF, ;                                                                 // 11
+                         "Izberite polje, ki bo vkljuèeno na listo", ;                                                           // 12
+                         "Izberite polje, ki NI vkljuèeno na listo", ;                                                           // 13
+                         "Izberite tisklanik", ;                                                                                 // 14
+                         "Pritisnite gumb za vkljuèitev polja", ;                                                                // 15
+                         "Pritisnite gumb za izkljuèitev polja", ;                                                               // 16
+                         "Pritisnite gumb za izbor prve vrstice za tiskanje", ;                                                  // 17
+                         "Pritisnite gumb za izbor zadnje vrstice za tiskanje", ;                                                // 18
+                         CRLF + "Ni veè polj za dodajanje   " + CRLF, ;                                                          // 19
+                         CRLF + "Najprej izberite ppolje za vkljuèitev   " + CRLF, ;                                             // 20
+                         CRLF + "Ni veè polj za izkljuèitev   " + CRLF, ;                                                        // 21
+                         CRLF + "Najprej izberite polje za izkljuèitev   " + CRLF, ;                                             // 22
+                         CRLF + "Niste izbrali nobenega polja   " + CRLF + "Prosom, izberite polje za tiskalnje   " + CRLF, ;    // 23
+                         CRLF + "Preveè polj   " + CRLF + "Zmanjšajte število polj   " + CRLF, ;                                 // 24
+                         CRLF + "Tiskalnik ni pripravljen   " + CRLF, ;                                                          // 25
+                         "Urejeno po", ;                                                                                         // 26
+                         "Od vrstice", ;                                                                                         // 27
+                         "do vrstice", ;                                                                                         // 28
+                         "Ja", ;                                                                                                 // 29
+                         "Ne", ;                                                                                                 // 30
+                         "Stran:", ;                                                                                             // 31
+                         CRLF + "Izberite tiskalnik   " + CRLF, ;                                                                // 32
+                         "Filtrirano z", ;                                                                                       // 33
+                         CRLF + "Aktiven filter v uporabi    " + CRLF, ;                                                         // 34
+                         CRLF + "Ne morem filtrirati z memo polji    " + CRLF, ;                                                 // 35
+                         CRLF + "Izberi polje za filtriranje    " + CRLF, ;                                                      // 36
+                         CRLF + "Izberi operator za filtriranje    " + CRLF, ;                                                   // 37
+                         CRLF + "Vnesi vrednost za filtriranje    " + CRLF, ;                                                    // 38
+                         CRLF + "Ni aktivnega filtra    " + CRLF, ;                                                              // 39
+                         CRLF + "Deaktiviram filter?   " + CRLF, ;                                                               // 40
+                         CRLF + "Vrstica zaklenjena - uporablja jo drug uporabnik    " + CRLF }                                  // 41
 
    // PRINT MESSAGES
    acPrint          := {}
 
    RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
 
-// TURKISH
-
 FUNCTION ooHG_Messages_TR
 
-   Local acMisc
-   Local acBrowseButton, acBrowseError, acBrowseMessages
-   Local acABMUser, acABMLabel, acABMButton, acABMError
-   Local acButton, acLabel, acUser, acPrint
+   LOCAL acMisc
+   LOCAL acBrowseButton, acBrowseError, acBrowseMessages
+   LOCAL acABMUser, acABMLabel, acABMButton, acABMError
+   LOCAL acButton, acLabel, acUser, acPrint
 
    // MISC MESSAGES
    acMisc           := { 'Eminmisiniz ?', ;
@@ -2426,12 +2399,12 @@ FUNCTION ooHG_Messages_TR
                          'Öðeyi Sil' }
 
    // EDIT MESSAGES
-   acABMUser        := { Chr(13)+"Kayýt sil"+Chr(13)+"Eminmisiniz ?"+Chr(13), ;
-                         Chr(13)+"Index dosyasý kayýp"+Chr(13)+"Arama iþlemi yapýlamýyor"+Chr(13), ;
-                         Chr(13)+"Index dosyasý bulunamadý"+Chr(13)+"Arama iþlemi yapýlamýyor"+Chr(13), ;
-                         Chr(13)+"Arama yapýlamaz"+Chr(13)+"Not ve mantýksal alanlarda"+Chr(13), ;
-                         Chr(13)+"Kayýt bulunamadý"+Chr(13), ;
-                         Chr(13)+"kolon sayýsý fazla"+Chr(13)+" Rapor sayfasýna sýðmýyor"+Chr(13) }
+   acABMUser        := { CRLF + "Kayýt sil" + CRLF + "Eminmisiniz ?" + CRLF, ;
+                         CRLF + "Index dosyasý kayýp" + CRLF + "Arama iþlemi yapýlamýyor" + CRLF, ;
+                         CRLF + "Index dosyasý bulunamadý" + CRLF + "Arama iþlemi yapýlamýyor" + CRLF, ;
+                         CRLF + "Arama yapýlamaz" + CRLF + "Not ve mantýksal alanlarda" + CRLF, ;
+                         CRLF + "Kayýt bulunamadý" + CRLF, ;
+                         CRLF + "kolon sayýsý fazla" + CRLF + " Rapor sayfasýna sýðmýyor" + CRLF }
    acABMLabel       := { "Kayýt", ;
                          "Kayýt sayýsý", ;
                          "       Yeni", ;
@@ -2522,47 +2495,47 @@ FUNCTION ooHG_Messages_TR
                          "den Küçük", ;                                                                                                      // 30
                          "Büyük veya eþit", ;                                                                                                // 31
                          "Küçük veya eþit" }                                                                                                 // 32
-   acUser           := { ABM_CRLF + "Aktif database bulunamadý.   "  + ABM_CRLF + "Lütfen seçiminizi düzeltin   " + ABM_CRLF, ;              // 1
-                         "alan text tanýmlý", ;                                                                                              // 2
-                         "alan sayýsal tanýmlý", ;                                                                                           // 3
-                         "Tarih seç", ;                                                                                                      // 4
-                         "Doðru deðiþkeni iþaretleyin", ;                                                                                    // 5
-                         "Alan deðiþkeni girin", ;                                                                                           // 6
-                         "Kayýt seçimi yaparak onaylayýn", ;                                                                                 // 7
-                         ABM_CRLF + "Aktif kaydý siliyorsunuz.  " + ABM_CRLF + "Eminmisiniz ?    " + ABM_CRLF, ;                             // 8
-                         ABM_CRLF + "Aktif sýralama yok   " + ABM_CRLF + "Lütfen seçim yapýn " + ABM_CRLF, ;                                 // 9
-                         ABM_CRLF + "Not alanlarý ve mantýksal alanlarda arama yapýlamaz " + ABM_CRLF, ;                                     // 10
-                         ABM_CRLF + "Kayýt yok  " + ABM_CRLF, ;                                                                              // 11
-                         "Tanýmlý alan listesi Seçimi", ;                                                                                    // 12
-                         "Listeden alanlarý seçiniz", ;                                                                                      // 13
-                         "Yazýcý Seçimi", ;                                                                                                  // 14
-                         "Tanýmlý alanlarý seç", ;                                                                                           // 15
-                         "Seçilmiþ alanlar", ;                                                                                               // 16
-                         "Yazdýrýlacak ilk kayýt seçimi", ;                                                                                  // 17
-                         "Yazdýrýlacak son kayýt seçimi", ;                                                                                  // 18
-                         ABM_CRLF + "Seçilmiþ alan çok fazla  " + ABM_CRLF, ;                                                                // 19
-                         ABM_CRLF + "Ýlk alanlarý tanýmlayýn  " + ABM_CRLF, ;                                                                // 20
-                         ABM_CRLF + "Alanlar tanýmlanmamýþ   " + ABM_CRLF, ;                                                                 // 21
-                         ABM_CRLF + "Önce alan tanýmlanmalý " + ABM_CRLF, ;                                                                  // 22
-                         ABM_CRLF + "Hiç alan seçmediniz  " + ABM_CRLF + "Yazdýrmadan önce alanlar tanýmlanmýþ olmalý " + ABM_CRLF, ;        // 23
-                         ABM_CRLF + "Çok fazla alan var " + ABM_CRLF + "Alan sayýsýný uygun hale getirin " + ABM_CRLF, ;                     // 24
-                         ABM_CRLF + "Yazýcý hazýr deðil " + ABM_CRLF, ;                                                                      // 25
-                         "Sýralama ", ;                                                                                                      // 26
-                         "ilk kayýt ", ;                                                                                                     // 27
-                         "son kayýt", ;                                                                                                      // 28
-                         "Evet", ;                                                                                                           // 29
-                         "Hayýr", ;                                                                                                          // 30
-                         "Sayfa:", ;                                                                                                         // 31
-                         ABM_CRLF + "Lütfen yazýcý seçin  " + ABM_CRLF, ;                                                                    // 32
-                         "Filtreleme ", ;                                                                                                    // 33
-                         ABM_CRLF + "Aktif filtre " + ABM_CRLF, ;                                                                            // 34
-                         ABM_CRLF + "Not alanlarýnda filtreleme yapýlamaz " + ABM_CRLF, ;                                                    // 35
-                         ABM_CRLF + "Filtre için alan seç " + ABM_CRLF, ;                                                                    // 36
-                         ABM_CRLF + "Filtre için Ýþlem seç  " + ABM_CRLF, ;                                                                  // 37
-                         ABM_CRLF + "Alan tipi filtrelemeye uymuyor " + ABM_CRLF, ;                                                          // 38
-                         ABM_CRLF + "Aktif hiç filtre yok  " + ABM_CRLF, ;                                                                   // 39
-                         ABM_CRLF + "Filtre Ýptali ?   " + ABM_CRLF, ;                                                                       // 40
-                         ABM_CRLF + "Diðer kullanýcýlar kaydý kullanýyor " + ABM_CRLF }                                                      // 41
+   acUser           := { CRLF + "Aktif database bulunamadý.   " + CRLF + "Lütfen seçiminizi düzeltin   " + CRLF, ;               // 1
+                         "alan text tanýmlý", ;                                                                                  // 2
+                         "alan sayýsal tanýmlý", ;                                                                               // 3
+                         "Tarih seç", ;                                                                                          // 4
+                         "Doðru deðiþkeni iþaretleyin", ;                                                                        // 5
+                         "Alan deðiþkeni girin", ;                                                                               // 6
+                         "Kayýt seçimi yaparak onaylayýn", ;                                                                     // 7
+                         CRLF + "Aktif kaydý siliyorsunuz.  " + CRLF + "Eminmisiniz ?    " + CRLF, ;                             // 8
+                         CRLF + "Aktif sýralama yok   " + CRLF + "Lütfen seçim yapýn " + CRLF, ;                                 // 9
+                         CRLF + "Not alanlarý ve mantýksal alanlarda arama yapýlamaz " + CRLF, ;                                 // 10
+                         CRLF + "Kayýt yok  " + CRLF, ;                                                                          // 11
+                         "Tanýmlý alan listesi Seçimi", ;                                                                        // 12
+                         "Listeden alanlarý seçiniz", ;                                                                          // 13
+                         "Yazýcý Seçimi", ;                                                                                      // 14
+                         "Tanýmlý alanlarý seç", ;                                                                               // 15
+                         "Seçilmiþ alanlar", ;                                                                                   // 16
+                         "Yazdýrýlacak ilk kayýt seçimi", ;                                                                      // 17
+                         "Yazdýrýlacak son kayýt seçimi", ;                                                                      // 18
+                         CRLF + "Seçilmiþ alan çok fazla  " + CRLF, ;                                                            // 19
+                         CRLF + "Ýlk alanlarý tanýmlayýn  " + CRLF, ;                                                            // 20
+                         CRLF + "Alanlar tanýmlanmamýþ   " + CRLF, ;                                                             // 21
+                         CRLF + "Önce alan tanýmlanmalý " + CRLF, ;                                                              // 22
+                         CRLF + "Hiç alan seçmediniz  " + CRLF + "Yazdýrmadan önce alanlar tanýmlanmýþ olmalý " + CRLF, ;        // 23
+                         CRLF + "Çok fazla alan var " + CRLF + "Alan sayýsýný uygun hale getirin " + CRLF, ;                     // 24
+                         CRLF + "Yazýcý hazýr deðil " + CRLF, ;                                                                  // 25
+                         "Sýralama ", ;                                                                                          // 26
+                         "ilk kayýt ", ;                                                                                         // 27
+                         "son kayýt", ;                                                                                          // 28
+                         "Evet", ;                                                                                               // 29
+                         "Hayýr", ;                                                                                              // 30
+                         "Sayfa:", ;                                                                                             // 31
+                         CRLF + "Lütfen yazýcý seçin  " + CRLF, ;                                                                // 32
+                         "Filtreleme ", ;                                                                                        // 33
+                         CRLF + "Aktif filtre " + CRLF, ;                                                                        // 34
+                         CRLF + "Not alanlarýnda filtreleme yapýlamaz " + CRLF, ;                                                // 35
+                         CRLF + "Filtre için alan seç " + CRLF, ;                                                                // 36
+                         CRLF + "Filtre için Ýþlem seç  " + CRLF, ;                                                              // 37
+                         CRLF + "Alan tipi filtrelemeye uymuyor " + CRLF, ;                                                      // 38
+                         CRLF + "Aktif hiç filtre yok  " + CRLF, ;                                                               // 39
+                         CRLF + "Filtre Ýptali ?   " + CRLF, ;                                                                   // 40
+                         CRLF + "Diðer kullanýcýlar kaydý kullanýyor " + CRLF }                                                  // 41
 
    // PRINT MESSAGES
    acPrint          := { "Yazýcý önizlemesi oluþturuluyor , bekleyin", ;
