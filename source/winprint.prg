@@ -1253,7 +1253,7 @@ METHOD End() CLASS HBPrinter
       endif
    endif
    if ::HDCRef!=0
-      ef_resetprinter()
+      rr_resetprinter()
       rr_deletedc(::HDCRef)
    endif
    rr_deleteobjects(::Fonts[1])
@@ -2172,7 +2172,7 @@ METHOD Preview() CLASS HBPrinter
 
    return nil
 
-FUNCTION MYCLOSEP( T1, T2, OT3, oHBPreview1 )
+STATIC FUNCTION MYCLOSEP( T1, T2, OT3, oHBPreview1 )
 
    oHBPreview1:Release()
    IF T1 > 1 .and. T2
@@ -2343,10 +2343,6 @@ HB_FUNC (RR_FINISH)
  memset(&hbmp,0,sizeof(hbmp));
 
 }
-HB_FUNC (JK_ODD)
-{
-  hb_retl(hb_parni(1) % 2);
-}
 
 HB_FUNC (RR_PRINTERNAME)
 {
@@ -2464,7 +2460,7 @@ void rr_getdevmode()
 }
 
 
-HB_FUNC (EF_RESETPRINTER)
+HB_FUNC (RR_RESETPRINTER)
 {
  if ( pi22 )
     SetPrinter(hPrinter, 2, (LPBYTE)pi22,0);
