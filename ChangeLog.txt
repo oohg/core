@@ -8,6 +8,55 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2017-10-26 20:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog.txt
+     * Updated.
+   * core\include\i_grid.ch
+     * Changed translations of commands SET GRIDFIXEDCONTROLS.
+     + Clause KEYSLIKECLIPPER. When present, keys behave like
+       Clipper's browse. Applies to TGridByCell only.
+   * core\include\i_pseudofunc.ch
+     + Added xtranslate for function SetGridFixedControls.
+   * core\include\i_var.ch
+     + Added xtranslate for pseudo var _OOHG_GridFixedControls.
+   * core\source\h_application.prg
+     * Added support for _OOHG_GridFixedControls.
+   * core\source\h_grid.prg
+     - STATIC var and function SetGridFixedControls were
+       substituted by TApplication method and pseudo-function.
+       This should make the class thread safe.
+     + DATA lKeysLikeClipper.
+     + DATA lKeysOn. When .F. the editcontrols will ignore all
+       exit keys and user defined keys except ESCAPE and RETURN.
+     + MESSAGE End to class TGrid.
+     + MESSAGE Home to class TGrid.
+     + MESSAGE PanToLeft to class TGrid.
+     + MESSAGE PanToRight to class TGrid.
+     + New parameter klc to TGrid's methods Define, Define2
+       and Define4.
+     * Some comments.
+     * Some format.
+     * Changed Empty( <var> ) to HB_SYMBOL_UNUSED( <var> ).
+     + METHOD End to class TGridByCell.
+     + METHOD Home to class TGridByCell.
+     + METHOD End to class TGridByCell.
+     + METHOD MoveToFirstCol to class TGridByCell.
+     + METHOD MoveToFirstVisibleCol to class TGridByCell.
+     + METHOD MoveToLastCol to class TGridByCell.
+     + METHOD MoveToLastVisibleCol to class TGridByCell.
+     * Methods Right, Left, Up and Down of TGridByCell now
+       honor ::FullMove.
+     * Method Up accepts parameter lLast. When .T. the
+       column changes to the righmost one.
+     * Method EditCell of TGridByCell now uses methods to
+       move the selected cell.
+
+2017-10-26 20:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\winprint.prg
+     * Function MYCLOSEP is now STATIC.
+     - Function JK_ODD
+     * Funcion EF_RESETPRINTER renamed to RR_RESETPRINTER.
+
 2017-10-25 22:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt
      * Updated.
@@ -26,7 +75,7 @@
      + Clause EDITCELLVALUE.
    * core\include\i_pseudofunc.ch
      * Id.
-     + Added xtranslates for funcions SetBrowseFixedBlocks,
+     + Added xtranslates for functions SetBrowseFixedBlocks,
        SetBrowseFixedControls, SetBrowseSync, SetXBrowseFixedBlocks
        and SetXBrowseFixedControls.
    * core\include\i_var.ch

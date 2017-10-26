@@ -103,7 +103,8 @@
 #define NDX_BROWSE_FIXEDCONTROLS       34
 #define NDX_XBROWSE_FIXEDBLOCKS        35
 #define NDX_XBROWSE_FIXEDCONTROLS      36
-#define NUMBER_OF_APP_WIDE_VARS        36
+#define NDX_GRID_FIXEDCONTROLS         37
+#define NUMBER_OF_APP_WIDE_VARS        37
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TApplication
@@ -174,6 +175,7 @@ CLASS TApplication
    METHOD Value_Pos34             SETGET
    METHOD Value_Pos35             SETGET
    METHOD Value_Pos36             SETGET
+   METHOD Value_Pos37             SETGET
    METHOD Width                   SETGET
 
    MESSAGE Cargo                  METHOD Value_Pos31
@@ -228,6 +230,7 @@ METHOD Define() CLASS TApplication
       ::aVars[ NDX_BROWSE_FIXEDCONTROLS ]    := .F.
       ::aVars[ NDX_XBROWSE_FIXEDBLOCKS ]     := .T.
       ::aVars[ NDX_XBROWSE_FIXEDCONTROLS ]   := .F.
+      ::aVars[ NDX_GRID_FIXEDCONTROLS ]      := .F.
 
       ::ArgC     := hb_argc()
       ::Args     := GetCommandLineArgs()
@@ -1056,6 +1059,20 @@ METHOD Value_Pos36( uValue ) CLASS TApplication
       ::aVars[ NDX_XBROWSE_FIXEDCONTROLS ] := uValue
    ENDIF
    uRet := ::aVars[ NDX_XBROWSE_FIXEDCONTROLS ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Value_Pos37( uValue ) CLASS TApplication
+
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   IF uValue != NIL
+      ::aVars[ NDX_GRID_FIXEDCONTROLS ] := uValue
+   ENDIF
+   uRet := ::aVars[ NDX_GRID_FIXEDCONTROLS ]
    hb_mutexUnlock( ::hClsMtx )
 
    RETURN ( uRet )

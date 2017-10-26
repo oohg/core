@@ -132,3 +132,7 @@
 #xtranslate SetXBrowseFixedControls( <lValue> ) ;
    => ;
       _OOHG_XBrowseFixedControls := <lValue>
+
+#xtranslate SetGridFixedControls( <lValue> ) ;
+   => ;
+      _OOHG_GridFixedControls := <lValue>

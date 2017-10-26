@@ -166,6 +166,7 @@ STANDARD VERSION
       [ <efv: EDITFIRSTVISIBLE> ] ;
       [ <dummy20: ONBEFOREEDITCELL, ON BEFOREEDITCELL> <beforedit> ] ;
       [ EDITCELLVALUE <edtval> ] ;
+      [ <klc: KEYSLIKECLIPPER> ] ;
    =>;
       [ <obj> := ] _OOHG_SelectSubClass( IIF( <.bycell.>, TGridByCell(), ;
             IIF( <.multiselect.>, TGridMulti(), TGrid() ) ), ;
@@ -194,7 +195,8 @@ STANDARD VERSION
             <{bheadrclick}>, ! <.noclick.>, ! <.norclick.>, <.extdbl.>, ;
             <.silent.>, Upper( #<alta> ) == "ENABLEALTA", <.noshow.>, ;
             Upper( #<none> ) == "NONEUNSELS", <.cbe.>, <{rclick}>, ;
-            <{oninsert}>, <{editend}>, ! <.efv.>, <{beforedit}>, <{edtval}> )
+            <{oninsert}>, <{editend}>, ! <.efv.>, <{beforedit}>, <{edtval}>, ;
+            <.klc.> )
 
 /*---------------------------------------------------------------------------
 SPLITBOX VERSION
@@ -296,6 +298,7 @@ SPLITBOX VERSION
       [ <efv: EDITFIRSTVISIBLE> ] ;
       [ <dummy20: ONBEFOREEDITCELL, ON BEFOREEDITCELL> <beforedit> ] ;
       [ EDITCELLVALUE <edtval> ] ;
+      [ <klc: KEYSLIKECLIPPER> ] ;
    =>;
       [ <obj> := ] _OOHG_SelectSubClass( IIF( <.bycell.>, TGridByCell(), ;
             IIF( <.multiselect.>, TGridMulti(), TGrid() ) ), ;
@@ -324,12 +327,13 @@ SPLITBOX VERSION
             <{bheadrclick}>, ! <.noclick.>, ! <.norclick.>, <.extdbl.>, ;
             <.silent.>, Upper( #<alta> ) == "ENABLEALTA", <.noshow.>, ;
             Upper( #<none> ) == "NONEUNSELS", <.cbe.>, <{rclick}>, ;
-            <{oninsert}>, <{editend}>, ! <.efv.>, <{beforedit}>, <{edtval}> )
+            <{oninsert}>, <{editend}>, ! <.efv.>, <{beforedit}>, <{edtval}>, ;
+            <.klc.> )
 
 #command SET GRIDFIXEDCONTROLS ON ;
    => ;
-      SetGridFixedControls( .T. )
+      _OOHG_GridFixedControls := .T.
 
 #command SET GRIDFIXEDCONTROLS OFF ;
    => ;
-      SetGridFixedControls( .F. )
+      _OOHG_GridFixedControls := .F.

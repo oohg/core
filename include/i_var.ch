@@ -99,6 +99,7 @@ APPLICATION WIDE VARIABLES USED BY OOHG MODULES
 #xtranslate _OOHG_BrowseFixedControls  => TApplication():Define():Value_Pos34
 #xtranslate _OOHG_XBrowseFixedBlocks   => TApplication():Define():Value_Pos35
 #xtranslate _OOHG_XBrowseFixedControls => TApplication():Define():Value_Pos36
+#xtranslate _OOHG_GridFixedControls    => TApplication():Define():Value_Pos37
 
 /*---------------------------------------------------------------------------
 PSEUDO VARIABLES USED BY OOHG MODULES
