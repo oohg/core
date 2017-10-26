@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.146 2017-09-09 14:37:53 fyurisich Exp $
+ * $Id: i_altsyntax.ch $
  */
 /*
  * ooHG source code:
@@ -245,7 +245,7 @@ AUXILIARY VARIABLES
 
 
 #xtranslate _OOHG_ActiveControlPicture                => _OOHG_ActiveControlInfo \[ 232 \]
-
+#xtranslate _OOHG_ActiveControlEditCellValue          => _OOHG_ActiveControlInfo \[ 233 \]
 #xtranslate _OOHG_ActiveControlItems                  => _OOHG_ActiveControlInfo \[ 234 \]
 
 #xtranslate _OOHG_ActiveControlShowNone               => _OOHG_ActiveControlInfo \[ 236 \]
@@ -2517,7 +2517,8 @@ GRID
       _OOHG_ActiveControlDisplayChange    := NIL ;;
       _OOHG_ActiveControlOnRClick         := NIL ;;
       _OOHG_ActiveControlOnInsert         := NIL ;;
-      _OOHG_ActiveControlDisplayEdit      := .T.
+      _OOHG_ActiveControlDisplayEdit      := .T. ;;
+      _OOHG_ActiveControlEditCellValue    := NIL
 
 #xcommand SILENT <silent> ;
    => ;
@@ -2691,6 +2692,10 @@ GRID
    => ;
       _OOHG_ActiveControlDisplayEdit := ! <efv>
 
+#xcommand EDITCELLVALUE <edtval> ;
+   => ;
+      _OOHG_ActiveControlEditCellValue := <{edtval}>
+
 #xcommand END GRID ;
    => ;
       _OOHG_SelectSubClass( IIF( _OOHG_ActiveControlByCell, TGridByCell(), IIF( _OOHG_ActiveControlMultiSelect, TGridMulti(), TGrid() ) ), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
@@ -2786,7 +2791,8 @@ GRID
             _OOHG_ActiveControlOnInsert, ;
             _OOHG_ActiveControlEditCellEnd, ;
             _OOHG_ActiveControlDisplayEdit, ;
-            _OOHG_ActiveControlBeforeEditCell )
+            _OOHG_ActiveControlBeforeEditCell, ;
+            _OOHG_ActiveControlEditCellValue )
 
 /*---------------------------------------------------------------------------
 BROWSE
@@ -2876,7 +2882,8 @@ BROWSE
       _OOHG_ActiveControlOnCheckChange    := NIL ;;
       _OOHG_ActiveControlOnTextFilled     := NIL ;;
       _OOHG_ActiveControlDefaultYear      := NIL ;;
-      _OOHG_ActiveControlDisplayEdit      := .T.
+      _OOHG_ActiveControlDisplayEdit      := .T. ;;
+      _OOHG_ActiveControlEditCellValue    := NIL
 
 #xcommand DELETEWHEN <delwhen> ;
    => ;
@@ -3057,7 +3064,8 @@ BROWSE
             _OOHG_ActiveControlDefaultYear, ;
             _OOHG_ActiveControlEditCellEnd, ;
             _OOHG_ActiveControlDisplayEdit, ;
-            _OOHG_ActiveControlBeforeEditCell )
+            _OOHG_ActiveControlBeforeEditCell, ;
+            _OOHG_ActiveControlEditCellValue )
 
 /*---------------------------------------------------------------------------
 XBROWSE
@@ -3141,7 +3149,8 @@ XBROWSE
       _OOHG_ActiveControlOnCheckChange    := NIL ;;
       _OOHG_ActiveControlOnTextFilled     := NIL ;;
       _OOHG_ActiveControlDefaultYear      := NIL ;;
-      _OOHG_ActiveControlDisplayEdit      := .T.
+      _OOHG_ActiveControlDisplayEdit      := .T. ;;
+      _OOHG_ActiveControlEditCellValue    := NIL
 
 #xcommand END XBROWSE ;
    => ;
@@ -3242,7 +3251,8 @@ XBROWSE
             _OOHG_ActiveControlDefaultYear, ;
             _OOHG_ActiveControlEditCellEnd, ;
             _OOHG_ActiveControlDisplayEdit, ;
-            _OOHG_ActiveControlBeforeEditCell )
+            _OOHG_ActiveControlBeforeEditCell, ;
+            _OOHG_ActiveControlEditCellValue )
 
 /*---------------------------------------------------------------------------
 HYPERLINK

@@ -8,6 +8,163 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2017-10-24 22:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog.txt
+     * Updated.
+
+2017-10-25 19:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_altsyntax.ch
+     * Id.
+     + Clause EDITCELLVALUE to grid, browse and xbrowse.
+   * core\include\i_browse.ch
+     * Id.
+     + Clause EDITCELLVALUE.
+     * Changed translations of commands SET BROWSESYNC,
+       SET BROWSEFIXEDBLOCKS and SET BROWSEFIXEDCONTROLS.
+   * core\include\i_grid.ch
+     * Id.
+     + Clause EDITCELLVALUE.
+   * core\include\i_pseudofunc.ch
+     * Id.
+     + Added xtranslates for funcions SetBrowseFixedBlocks,
+       SetBrowseFixedControls, SetBrowseSync, SetXBrowseFixedBlocks
+       and SetXBrowseFixedControls.
+   * core\include\i_var.ch
+     * Id.
+     + Added xtranslates for pseudo vars _OOHG_BrowseSyncStatus,
+       _OOHG_BrowseFixedBlocks, _OOHG_BrowseFixedControls,
+       _OOHG_XBrowseFixedBlocks and _OOHG_XBrowseFixedControls.
+   * core\include\i_xbrowse.ch
+     * Id.
+     + Clause EDITCELLVALUE.
+     * Changed translations of commands SET XBROWSEFIXEDBLOCKS and
+       SET XBROWSEFIXEDCONTROLS.
+   * core\source\h_application.prg
+     * Id.
+     * Added support for _OOHG_BrowseSyncStatus,
+       _OOHG_BrowseFixedBlocks, _OOHG_BrowseFixedControls,
+       _OOHG_XBrowseFixedBlocks and _OOHG_XBrowseFixedControls.
+     * Changed case style of some words according Harbour's syntax.
+   * core\source\h_browse.prg
+     * Id.
+     - STATIC vars and functions SetBrowseSync, SetBrowseFixedBlocks
+       and SetBrowseFixedBlocks were substituted by TApplication methods
+       and pseudo-functions. This should make the class thread safe.
+     * Changed some comments.
+     + Support for clause EDITCELLVALUE bCodeBlock.
+       The bCodeblock is evaluated by method EditCell2 just
+       before the cell edition starts.
+       The codeblock receives 3 parametes: nCol, nRow and uOldValue,
+       where nRow and nCol identify the cell that will be edited and
+       uOldValue is the 'face value' to show.
+       It should return uOldValue or another value of the same type.
+       Note that changes to uOldValue do not affect the data source.
+     * Changed Empty( <var> ) to HB_SYMBOL_UNUSED( <var> ).
+     + Default value for CheckBeforeEdit parameter at method Define3
+       of class TOBrowseByCell.
+     ! Method EditGrid of TOBrowseByCell when edition was ended
+       because of mouse exit.
+     % Method SetValue of class TOBrowseByCell.
+     * Methods Left and Right of TOBrowseByCell now return .T. if
+       and only if row and or col where changed.
+     * Changed some var names to improve readability.
+   * core\source\h_grid.prg
+     * Id.
+     + Support for clause EDITCELLVALUE bCodeBlock.
+       The bCodeblock is evaluated by method EditCell2 just
+       before the cell edition starts.
+       The codeblock receives 3 parametes: nCol, nRow and uOldValue,
+       where nRow and nCol identify the cell that will be edited and
+       uOldValue is the 'face value' to show.
+       It should return uOldValue or another value of the same type.
+       Note that changes to uOldValue do not affect the grid's cell.
+   * core\source\h_xbrowse.prg
+     * Id.
+     - STATIC vars and functions SetXBrowseFixedBlocks and
+       SetX BrowseFixedBlocks were substituted by TApplication methods
+       and pseudo-functions. This should make the class thread safe.
+     + Support for clause EDITCELLVALUE bCodeBlock.
+       The bCodeblock is evaluated by method EditCell2 just
+       before the cell edition starts.
+       The codeblock receives 3 parametes: nCol, nRow and uOldValue,
+       where nRow and nCol identify the cell that will be edited and
+       uOldValue is the 'face value' to show.
+       It should return uOldValue or another value of the same type.
+       Note that changes to uOldValue do not affect the data source.
+     * Some format.
+
+2017-10-25 22:31 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\winprint.prg
+     * hb_osnewline() replaced by Chr(13)+Chr(10).
+
+2017-10-25 22:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_init.prg
+     * ABM_CRLF and Chr(13) replaced by CRLF.
+     * Call to TApplication's method New replaced by Define.
+     * Some comments.
+     * Some messages.
+     * Changed case style of some words according Harbour's syntax.
+
+2017-10-25 22:01 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_edit_ex.prg
+     - Removed unneeded define.
+
+2017-10-25 20:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_form.prg
+     * Some format.
+     * Some comments.
+     - Removed unneeded code from function _ActivateAllWindows.
+
+2017-10-25 20:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_dll.prg
+     + Comment.
+
+2017-10-25 20:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_datepicker.prg
+     * Changed some format.
+     + Comment.
+
+2017-10-25 20:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_controlmisc.c
+     + Comment.
+
+2017-10-25 19:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_app.ch
+     - Wrong xtranslate.
+
+2017-10-24 21:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_activex.c
+     * Some unused code was commented out.
+     * Two global vars were made local.
+     * Some format.
+     * Use _OOHG_GlobalMutex to initialize static var.
+     ; Module is thread safe.
+
+2017-10-24 20:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_application.prg
+     * CLASSDATA changed to CLASSVAR to avoid inheritance.
+     + Hidden method CreateGlobalMutex to set a C level mutex
+       called _OOHG_GlobalMutex at startup. The purpose of this
+       mutex is to enable thread safe use of C static vars.
+
+2017-10-24 18:39 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\compile_bcc.bat
+     + Switch /H for harbour.
+     + Use D__XHARBOUR__ in bcc32 calls.
+   * core\ofmt.bat
+   * core\oide.bat
+     + Added variable to set path.
+   * core\README.md
+     + Link to GitHub.
+
+2017-10-24 18:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\bostaurus.hbp
+   * core\source\hbprinter.hbp
+   * core\source\miniprint.hbp
+   * core\source\oohg.hbp
+     * Some flags and comments.
+     ; Build will generate .hbx file. Thanks to José M. C. Quintas.
+
 2017-10-23 22:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\BuildApp_hbmk2.bat
      * Id.
@@ -166,7 +323,7 @@
 2017-10-18 15:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt
      * Updated.
-   * resources\CompileRes_mingw.bat
+   * core\resources\CompileRes_mingw.bat
      ! Wrong label.
 
 2017-10-17 21:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
@@ -250,7 +407,7 @@
    * core\source\h_windows.prg
    * core\source\h_windows.prg
    * core\source\h_xbrowse.prg
-     * Some casing changed.
+     * Changed case style of some words.
 
 2017-10-16 22:31 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\c_winapimisc.c
@@ -264,7 +421,7 @@
    * core\source\h_form.prg
      + Added DATA uFormCursor with current cursor's name.
      ! Method TForm:Cursor is now truly setget.
-     * Some casing.
+     * Changed case style of some words.
 
 2017-10-16 21:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_form.prg
@@ -301,6 +458,7 @@
      * Static var changed to CLASS VAR.
      * Access to array of properties is now handled by methods
        with mutex protection.
+     * Method New was renamed Define.
    * core\source\h_controlsmisc.prg
      - Static var _OOHG_lMultiple.
      - Function _OOHG_SetMultiple.
@@ -366,7 +524,7 @@
      ; Initial upload to GitHub from SourceForge.
 
 2017-10-01 13:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * source\h_application.prg
+   * core\source\h_application.prg
      ! Array access error on _OOHG_* vars.
 
 2017-10-01 12:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>

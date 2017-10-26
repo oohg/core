@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.160 2017-10-01 15:52:27 fyurisich Exp $
+ * $Id: h_xbrowse.prg $
  */
 /*
  * ooHG source code:
@@ -67,10 +67,6 @@
 
 #define GO_TOP    -1
 #define GO_BOTTOM  1
-
-// TODO: Thread safe ?
-STATIC _OOHG_XBrowseFixedBlocks := .T.
-STATIC _OOHG_XBrowseFixedControls := .F.
 
 CLASS TXBrowse FROM TGrid
 
@@ -241,7 +237,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                bBeforeAutofit, lLikeExcel, lButtons, lNoDelMsg, lFixedCtrls, ;
                lNoShowEmptyRow, lUpdCols, bHeadRClick, lNoModal, lExtDbl, ;
                lSilent, lAltA, lNoShowAlways, onrclick, lCheckBoxes, oncheck, ;
-               rowrefresh, aDefaultValues, editend, lAtFirst, bbeforeditcell ) CLASS TXBrowse
+               rowrefresh, aDefaultValues, editend, lAtFirst, bbeforeditcell, ;
+               bEditCellValue ) CLASS TXBrowse
 
    Local nWidth2, nCol2, oScroll, z
 
@@ -386,7 +383,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               oncheck, abortedit, click, bbeforecolmove, baftercolmove, ;
               bbeforecolsize, baftercolsize, bbeforeautofit, ondelete, ;
               bdelwhen, onappend, bheadrclick, onrclick, editend, rowrefresh, ;
-              bbeforeditcell )
+              bbeforeditcell, bEditCellValue )
 
    Return Self
 
@@ -407,7 +404,7 @@ METHOD Define4( change, dblclick, gotfocus, lostfocus, editcell, onenter, ;
                 oncheck, abortedit, click, bbeforecolmove, baftercolmove, ;
                 bbeforecolsize, baftercolsize, bbeforeautofit, ondelete, ;
                 bDelWhen, onappend, bheadrclick, onrclick, editend, rowrefresh, ;
-                bbeforeditcell ) CLASS TXBrowse
+                bbeforeditcell, bEditCellValue ) CLASS TXBrowse
 
    // Must be set after control is initialized
    ASSIGN ::OnChange         VALUE change         TYPE "B"
@@ -432,6 +429,7 @@ METHOD Define4( change, dblclick, gotfocus, lostfocus, editcell, onenter, ;
    ASSIGN ::OnEditCellEnd    VALUE editend        TYPE "B"
    ASSIGN ::OnRefreshRow     VALUE rowrefresh     TYPE "B"
    ASSIGN ::OnBeforeEditCell VALUE bbeforeditcell TYPE "B"
+   ASSIGN ::bEditCellValue   VALUE bEditCellValue TYPE "B"
 
    Return Self
 
@@ -1579,12 +1577,11 @@ METHOD GoBottom( lAppend ) CLASS TXBrowse
       ::DoChange()
    EndIf
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD SetScrollPos( nPos, VScroll ) CLASS TXBrowse
-*------------------------------------------------------------------------------*
-Local aPosition
+
+   Local aPosition
 
    If ::lLocked
       // Do nothing!
@@ -1618,12 +1615,11 @@ Local aPosition
       ::DoChange()
    EndIf
 
-Return Self
+   Return Self
 
-*------------------------------------------------------------------------------*
 METHOD Delete() CLASS TXBrowse
-*------------------------------------------------------------------------------*
-Local Value
+
+   Local Value
 
    If ::lLocked
       Return .F.
@@ -4409,20 +4405,3 @@ HB_FUNC_STATIC( TXBROWSE_ADJUSTRIGHTSCROLL )
 }
 
 #pragma ENDDUMP
-
-
-FUNCTION SetXBrowseFixedBlocks( lValue )
-
-   If ValType( lValue ) == "L"
-      _OOHG_XBrowseFixedBlocks := lValue
-   EndIf
-
-   Return _OOHG_XBrowseFixedBlocks
-
-FUNCTION SetXBrowseFixedControls( lValue )
-
-   If ValType( lValue ) == "L"
-      _OOHG_XBrowseFixedControls := lValue
-   EndIf
-
-   Return _OOHG_XBrowseFixedControls

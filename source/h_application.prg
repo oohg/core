@@ -1,5 +1,5 @@
 /*
- * $Id: h_application.prg,v 1.11 2017-10-01 16:04:16 fyurisich Exp $
+ * $Id: h_application.prg $
  */
 /*
  * ooHG source code:
@@ -98,8 +98,14 @@
 #define NDX_OOHG_MAIN_ICON             29
 #define NDX_OOHG_MULTIPLEINSTANCES     30
 #define NDX_OOHG_APP_CARGO             31
-#define NUMBER_OF_APP_WIDE_VARS        31
+#define NDX_BROWSE_SYNCSTATUS          32
+#define NDX_BROWSE_FIXEDBLOCKS         33
+#define NDX_BROWSE_FIXEDCONTROLS       34
+#define NDX_XBROWSE_FIXEDBLOCKS        35
+#define NDX_XBROWSE_FIXEDCONTROLS      36
+#define NUMBER_OF_APP_WIDE_VARS        36
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TApplication
 
    CLASSVAR oAppObj               INIT NIL HIDDEN
@@ -163,6 +169,11 @@ CLASS TApplication
    METHOD Value_Pos29             SETGET
    METHOD Value_Pos30             SETGET
    METHOD Value_Pos31             SETGET
+   METHOD Value_Pos32             SETGET
+   METHOD Value_Pos33             SETGET
+   METHOD Value_Pos34             SETGET
+   METHOD Value_Pos35             SETGET
+   METHOD Value_Pos36             SETGET
    METHOD Width                   SETGET
 
    MESSAGE Cargo                  METHOD Value_Pos31
@@ -172,6 +183,7 @@ CLASS TApplication
 
    ENDCLASS
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Define() CLASS TApplication
 
    IF ::oAppObj == NIL
@@ -211,13 +223,18 @@ METHOD Define() CLASS TApplication
       ::aVars[ NDX_OOHG_THISTYPE ]           := ''
       ::aVars[ NDX_OOHG_MAIN_ICON ]          := NIL
       ::aVars[ NDX_OOHG_MULTIPLEINSTANCES ]  := .T.
+      ::aVars[ NDX_BROWSE_SYNCSTATUS ]       := .F.
+      ::aVars[ NDX_BROWSE_FIXEDBLOCKS ]      := .T.
+      ::aVars[ NDX_BROWSE_FIXEDCONTROLS ]    := .F.
+      ::aVars[ NDX_XBROWSE_FIXEDBLOCKS ]     := .T.
+      ::aVars[ NDX_XBROWSE_FIXEDCONTROLS ]   := .F.
 
-      ::ArgC     := HB_ArgC()
+      ::ArgC     := hb_argc()
       ::Args     := GetCommandLineArgs()
       ::ExeName  := GetProgramFileName()
       ::Drive    := Left( ::ExeName, 1 )
       ::Path     := Left( ::ExeName, RAt( '\', ::ExeName ) - 1 )
-      ::FileName := Substr( ::ExeName, RAt( '\', ::ExeName ) + 1 )
+      ::FileName := SubStr( ::ExeName, RAt( '\', ::ExeName ) + 1 )
 
       ::hClsMtx := hb_mutexCreate()
       ::oAppObj := Self
@@ -225,6 +242,7 @@ METHOD Define() CLASS TApplication
 
    RETURN ( ::oAppObj )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD BackColor( uColor ) CLASS TApplication
 
    LOCAL oMain, uRet := NIL
@@ -232,12 +250,12 @@ METHOD BackColor( uColor ) CLASS TApplication
    hb_mutexLock( ::hClsMtx )
    IF PCount() > 0
       oMain := ::aVars[ NDX_OOHG_MAIN ]
-      IF HB_IsObject( oMain )
+      IF HB_ISOBJECT( oMain )
          uRet := oMain:BackColor( uColor )
       ENDIF
    ELSE
       oMain := ::aVars[ NDX_OOHG_MAIN ]
-      IF HB_IsObject( oMain )
+      IF HB_ISOBJECT( oMain )
          uRet := oMain:BackColor()
       ENDIF
    ENDIF
@@ -245,6 +263,7 @@ METHOD BackColor( uColor ) CLASS TApplication
 
    RETURN ( uRet )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Col( nCol ) CLASS TApplication
 
    LOCAL oMain, uRet := NIL
@@ -252,12 +271,12 @@ METHOD Col( nCol ) CLASS TApplication
    hb_mutexLock( ::hClsMtx )
    If PCount() > 0
       oMain := ::aVars[ NDX_OOHG_MAIN ]
-      If HB_IsObject( oMain )
+      If HB_ISOBJECT( oMain )
          uRet := oMain:Col( nCol )
       ENDIF
    ELSE
       oMain := ::aVars[ NDX_OOHG_MAIN ]
-      If HB_IsObject( oMain )
+      If HB_ISOBJECT( oMain )
          uRet := oMain:Col()
       ENDIF
    ENDIF
@@ -265,6 +284,7 @@ METHOD Col( nCol ) CLASS TApplication
 
    RETURN ( uRet )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Cursor( uValue ) CLASS TApplication
 
    LOCAL oMain, uRet := NIL
@@ -272,12 +292,12 @@ METHOD Cursor( uValue ) CLASS TApplication
    hb_mutexLock( ::hClsMtx )
    IF PCount() > 0
       oMain := ::aVars[ NDX_OOHG_MAIN ]
-      IF HB_IsObject( oMain )
+      IF HB_ISOBJECT( oMain )
          uRet := oMain:Cursor( uValue )
       ENDIF
    ELSE
       oMain := ::aVars[ NDX_OOHG_MAIN ]
-      IF HB_IsObject( oMain )
+      IF HB_ISOBJECT( oMain )
          uRet := oMain:Cursor()
       ENDIF
    ENDIF
@@ -285,19 +305,21 @@ METHOD Cursor( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD hWnd CLASS TApplication
 
    LOCAL oMain, uRet := NIL
 
    hb_mutexLock( ::hClsMtx )
    oMain := ::aVars[ NDX_OOHG_MAIN ]
-   IF HB_IsObject( oMain )
+   IF HB_ISOBJECT( oMain )
       uRet := oMain:hWnd
    ENDIF
    hb_mutexUnlock( ::hClsMtx )
 
    RETURN ( uRet )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD MainClientHeight( nHeight ) CLASS TApplication
 
    LOCAL oMain, uRet := NIL
@@ -305,12 +327,12 @@ METHOD MainClientHeight( nHeight ) CLASS TApplication
    hb_mutexLock( ::hClsMtx )
    IF PCount() > 0
       oMain := ::aVars[ NDX_OOHG_MAIN ]
-      IF HB_IsObject( oMain )
+      IF HB_ISOBJECT( oMain )
          uRet := oMain:ClientHeight( nHeight )
       ENDIF
    ELSE
       oMain := ::aVars[ NDX_OOHG_MAIN ]
-      IF HB_IsObject( oMain )
+      IF HB_ISOBJECT( oMain )
          uRet := oMain:ClientHeight()
       ENDIF
    ENDIF
@@ -318,6 +340,7 @@ METHOD MainClientHeight( nHeight ) CLASS TApplication
 
    RETURN ( uRet )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD MainClientWidth( nHeight ) CLASS TApplication
 
    LOCAL oMain, uRet := NIL
@@ -325,12 +348,12 @@ METHOD MainClientWidth( nHeight ) CLASS TApplication
    hb_mutexLock( ::hClsMtx )
    IF PCount() > 0
       oMain := ::aVars[ NDX_OOHG_MAIN ]
-      IF HB_IsObject( oMain )
+      IF HB_ISOBJECT( oMain )
          uRet := oMain:ClientWidth( nHeight )
       ENDIF
    ELSE
       oMain := ::aVars[ NDX_OOHG_MAIN ]
-      IF HB_IsObject( oMain )
+      IF HB_ISOBJECT( oMain )
          uRet := oMain:ClientWidth()
       ENDIF
    ENDIF
@@ -338,19 +361,21 @@ METHOD MainClientWidth( nHeight ) CLASS TApplication
 
    RETURN ( uRet )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD MainName CLASS TApplication
 
    LOCAL oMain, uRet := NIL
 
    hb_mutexLock( ::hClsMtx )
    oMain := ::aVars[ NDX_OOHG_MAIN ]
-   IF HB_IsObject( oMain )
+   IF HB_ISOBJECT( oMain )
       uRet := oMain:Name
    ENDIF
    hb_mutexUnlock( ::hClsMtx )
 
    RETURN ( uRet )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD MainObject CLASS TApplication
 
    LOCAL uRet
@@ -361,6 +386,7 @@ METHOD MainObject CLASS TApplication
 
    RETURN ( uRet )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD MainStyle( nStyle ) CLASS TApplication
 
    LOCAL oMain, uRet := NIL
@@ -368,12 +394,12 @@ METHOD MainStyle( nStyle ) CLASS TApplication
    hb_mutexLock( ::hClsMtx )
    IF PCount() > 0
       oMain := ::aVars[ NDX_OOHG_MAIN ]
-      IF HB_IsObject( oMain )
+      IF HB_ISOBJECT( oMain )
          uRet := oMain:Style( nStyle )
       ENDIF
    ELSE
       oMain := ::aVars[ NDX_OOHG_MAIN ]
-      IF HB_IsObject( oMain )
+      IF HB_ISOBJECT( oMain )
          uRet := oMain:Style()
       ENDIF
    ENDIF
@@ -381,6 +407,7 @@ METHOD MainStyle( nStyle ) CLASS TApplication
 
    RETURN ( uRet )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Height( nHeight ) CLASS TApplication
 
    LOCAL oMain, uRet := NIL
@@ -388,12 +415,12 @@ METHOD Height( nHeight ) CLASS TApplication
    hb_mutexLock( ::hClsMtx )
    IF PCount() > 0
       oMain := ::aVars[ NDX_OOHG_MAIN ]
-      IF HB_IsObject( oMain )
+      IF HB_ISOBJECT( oMain )
          uRet := oMain:Height( nHeight )
       ENDIF
    ELSE
       oMain := ::aVars[ NDX_OOHG_MAIN ]
-      IF HB_IsObject( oMain )
+      IF HB_ISOBJECT( oMain )
          uRet := oMain:Height()
       ENDIF
    ENDIF
@@ -401,7 +428,7 @@ METHOD Height( nHeight ) CLASS TApplication
 
    RETURN ( uRet )
 
-
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD HelpButton( lShow ) CLASS TApplication
 
    LOCAL oMain, uRet := NIL
@@ -409,12 +436,12 @@ METHOD HelpButton( lShow ) CLASS TApplication
    hb_mutexLock( ::hClsMtx )
    IF PCount() > 0
       oMain := ::aVars[ NDX_OOHG_MAIN ]
-      IF HB_IsObject( oMain )
+      IF HB_ISOBJECT( oMain )
          uRet := oMain:HelpButton( lShow )
       ENDIF
    ELSE
       oMain := ::aVars[ NDX_OOHG_MAIN ]
-      IF HB_IsObject( oMain )
+      IF HB_ISOBJECT( oMain )
          uRet := oMain:HelpButton()
       ENDIF
    ENDIF
@@ -422,6 +449,7 @@ METHOD HelpButton( lShow ) CLASS TApplication
 
    RETURN ( uRet )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD MultipleInstances( lMultiple, lWarning ) CLASS TApplication
 
    LOCAL lBefore, lRet
@@ -432,14 +460,14 @@ METHOD MultipleInstances( lMultiple, lWarning ) CLASS TApplication
    ELSE
       lBefore := ::aVars[ NDX_OOHG_MULTIPLEINSTANCES ]
 
-      IF HB_IsLogical( lMultiple )
+      IF HB_ISLOGICAL( lMultiple )
          ::aVars[ NDX_OOHG_MULTIPLEINSTANCES ] := lMultiple
-      ELSEIf HB_IsNumeric( lMultiple )
+      ELSEIF HB_ISNUMERIC( lMultiple )
          ::aVars[ NDX_OOHG_MULTIPLEINSTANCES ] := ( lMultiple != 0 )
-      ELSEIf VALTYPE( lMultiple ) $ "CM"
-         IF UPPER( ALLTRIM( lMultiple ) ) == "ON"
+      ELSEIF ValType( lMultiple ) $ "CM"
+         IF Upper( AllTrim( lMultiple ) ) == "ON"
             ::aVars[ NDX_OOHG_MULTIPLEINSTANCES ] := .T.
-         ELSEIf UPPER( ALLTRIM( lMultiple ) ) == "OFF"
+         ELSEIF Upper( AllTrim( lMultiple ) ) == "OFF"
             ::aVars[ NDX_OOHG_MULTIPLEINSTANCES ] := .F.
          ENDIF
       ENDIF
@@ -450,9 +478,9 @@ METHOD MultipleInstances( lMultiple, lWarning ) CLASS TApplication
             CloseHandle( ::AppMutex )
             ::AppMutex := NIL
          ELSE
-            ::AppMutex := CreateMutex( , .T., STRTRAN( GetModuleFileName(), '\', '_' ) )
-            IF EMPTY( ::AppMutex ) .OR. _OOHG_GetLastError() > 0
-               IF HB_IsLogical( lWarning ) .AND. lWarning
+            ::AppMutex := CreateMutex( , .T., StrTran( GetModuleFileName(), '\', '_' ) )
+            IF Empty( ::AppMutex ) .OR. _OOHG_GetLastError() > 0
+               IF HB_ISLOGICAL( lWarning ) .AND. lWarning
                   MsgStop( _OOHG_Messages( 1, 4 ) )
                ENDIF
                ExitProcess(0)
@@ -464,6 +492,7 @@ METHOD MultipleInstances( lMultiple, lWarning ) CLASS TApplication
 
    RETURN ( lRet )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Row( nRow ) CLASS TApplication
 
    LOCAL oMain, uRet := NIL
@@ -471,12 +500,12 @@ METHOD Row( nRow ) CLASS TApplication
    hb_mutexLock( ::hClsMtx )
    IF PCount() > 0
       oMain := ::aVars[ NDX_OOHG_MAIN ]
-      IF HB_IsObject( oMain )
+      IF HB_ISOBJECT( oMain )
          uRet := oMain:Row( nRow )
       ENDIF
    ELSE
       oMain := ::aVars[ NDX_OOHG_MAIN ]
-      IF HB_IsObject( oMain )
+      IF HB_ISOBJECT( oMain )
          uRet := oMain:Row()
       ENDIF
    ENDIF
@@ -484,6 +513,7 @@ METHOD Row( nRow ) CLASS TApplication
 
    RETURN ( uRet )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Title( cTitle ) CLASS TApplication
 
    LOCAL oMain, uRet := NIL
@@ -491,12 +521,12 @@ METHOD Title( cTitle ) CLASS TApplication
    hb_mutexLock( ::hClsMtx )
    IF PCount() > 0
       oMain := ::aVars[ NDX_OOHG_MAIN ]
-      IF HB_IsObject( oMain )
+      IF HB_ISOBJECT( oMain )
          uRet := oMain:Title( cTitle )
       ENDIF
    ELSE
       oMain := ::aVars[ NDX_OOHG_MAIN ]
-      IF HB_IsObject( oMain )
+      IF HB_ISOBJECT( oMain )
          uRet := oMain:Title()
       ENDIF
    ENDIF
@@ -504,6 +534,7 @@ METHOD Title( cTitle ) CLASS TApplication
 
    RETURN ( uRet )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD TopMost( lTopmost ) CLASS TApplication
 
    LOCAL oMain, uRet := NIL
@@ -511,12 +542,12 @@ METHOD TopMost( lTopmost ) CLASS TApplication
    hb_mutexLock( ::hClsMtx )
    IF PCount() > 0
       oMain := ::aVars[ NDX_OOHG_MAIN ]
-      IF HB_IsObject( oMain )
+      IF HB_ISOBJECT( oMain )
          uRet := oMain:TopMost( lTopmost )
       ENDIF
    ELSE
       oMain := ::aVars[ NDX_OOHG_MAIN ]
-      IF HB_IsObject( oMain )
+      IF HB_ISOBJECT( oMain )
          uRet := oMain:TopMost()
       ENDIF
    ENDIF
@@ -524,6 +555,7 @@ METHOD TopMost( lTopmost ) CLASS TApplication
 
    RETURN ( uRet )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value_Pos01( uValue ) CLASS TApplication
 
    LOCAL uRet
@@ -537,6 +569,7 @@ METHOD Value_Pos01( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value_Pos02( uValue ) CLASS TApplication
 
    LOCAL uRet
@@ -550,6 +583,7 @@ METHOD Value_Pos02( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value_Pos03( uValue ) CLASS TApplication
 
    LOCAL uRet
@@ -563,6 +597,7 @@ METHOD Value_Pos03( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value_Pos04( uValue ) CLASS TApplication
 
    LOCAL uRet
@@ -576,6 +611,7 @@ METHOD Value_Pos04( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value_Pos05( uValue ) CLASS TApplication
 
    LOCAL uRet
@@ -589,6 +625,7 @@ METHOD Value_Pos05( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value_Pos06( uValue ) CLASS TApplication
 
    LOCAL uRet
@@ -602,6 +639,7 @@ METHOD Value_Pos06( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value_Pos07( uValue ) CLASS TApplication
 
    LOCAL uRet
@@ -615,6 +653,7 @@ METHOD Value_Pos07( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value_Pos08( uValue ) CLASS TApplication
 
    LOCAL uRet
@@ -628,6 +667,7 @@ METHOD Value_Pos08( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value_Pos09( uValue ) CLASS TApplication
 
    LOCAL uRet
@@ -641,6 +681,7 @@ METHOD Value_Pos09( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value_Pos10( uValue ) CLASS TApplication
 
    LOCAL uRet
@@ -655,6 +696,7 @@ METHOD Value_Pos10( uValue ) CLASS TApplication
    RETURN ( uRet )
 
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value_Pos11( uValue ) CLASS TApplication
 
    LOCAL uRet
@@ -668,6 +710,7 @@ METHOD Value_Pos11( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value_Pos12( uValue ) CLASS TApplication
 
    LOCAL uRet
@@ -681,6 +724,7 @@ METHOD Value_Pos12( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value_Pos13( uValue ) CLASS TApplication
 
    LOCAL uRet
@@ -694,6 +738,7 @@ METHOD Value_Pos13( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value_Pos14( uValue ) CLASS TApplication
 
    LOCAL uRet
@@ -707,6 +752,7 @@ METHOD Value_Pos14( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value_Pos15( uValue ) CLASS TApplication
 
    LOCAL uRet
@@ -720,6 +766,7 @@ METHOD Value_Pos15( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value_Pos16( uValue ) CLASS TApplication
 
    LOCAL uRet
@@ -733,6 +780,7 @@ METHOD Value_Pos16( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value_Pos17( uValue ) CLASS TApplication
 
    LOCAL uRet
@@ -746,6 +794,7 @@ METHOD Value_Pos17( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value_Pos18( uValue ) CLASS TApplication
 
    LOCAL uRet
@@ -759,6 +808,7 @@ METHOD Value_Pos18( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value_Pos19( uValue ) CLASS TApplication
 
    LOCAL uRet
@@ -772,6 +822,7 @@ METHOD Value_Pos19( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value_Pos20( uValue ) CLASS TApplication
 
    LOCAL uRet
@@ -785,6 +836,7 @@ METHOD Value_Pos20( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value_Pos21( uValue ) CLASS TApplication
 
    LOCAL uRet
@@ -798,6 +850,7 @@ METHOD Value_Pos21( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value_Pos22( uValue ) CLASS TApplication
 
    LOCAL uRet
@@ -811,6 +864,7 @@ METHOD Value_Pos22( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value_Pos23( uValue ) CLASS TApplication
 
    LOCAL uRet
@@ -824,6 +878,7 @@ METHOD Value_Pos23( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value_Pos24( uValue ) CLASS TApplication
 
    LOCAL uRet
@@ -837,6 +892,7 @@ METHOD Value_Pos24( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value_Pos25( uValue ) CLASS TApplication
 
    LOCAL uRet
@@ -850,6 +906,7 @@ METHOD Value_Pos25( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value_Pos26( uValue ) CLASS TApplication
 
    LOCAL uRet
@@ -863,6 +920,7 @@ METHOD Value_Pos26( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value_Pos27( uValue ) CLASS TApplication
 
    LOCAL uRet
@@ -876,6 +934,7 @@ METHOD Value_Pos27( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value_Pos28( uValue ) CLASS TApplication
 
    LOCAL uRet
@@ -889,6 +948,7 @@ METHOD Value_Pos28( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value_Pos29( uValue ) CLASS TApplication
 
    LOCAL uRet
@@ -902,6 +962,7 @@ METHOD Value_Pos29( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value_Pos30( uValue ) CLASS TApplication
 
    LOCAL uRet
@@ -915,6 +976,7 @@ METHOD Value_Pos30( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value_Pos31( uValue ) CLASS TApplication
 
    LOCAL uRet
@@ -928,6 +990,77 @@ METHOD Value_Pos31( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Value_Pos32( uValue ) CLASS TApplication
+
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   IF uValue != NIL
+      ::aVars[ NDX_BROWSE_SYNCSTATUS ] := uValue
+   ENDIF
+   uRet := ::aVars[ NDX_BROWSE_SYNCSTATUS ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Value_Pos33( uValue ) CLASS TApplication
+
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   IF uValue != NIL
+      ::aVars[ NDX_BROWSE_FIXEDBLOCKS ] := uValue
+   ENDIF
+   uRet := ::aVars[ NDX_BROWSE_FIXEDBLOCKS ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Value_Pos34( uValue ) CLASS TApplication
+
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   IF uValue != NIL
+      ::aVars[ NDX_BROWSE_FIXEDCONTROLS ] := uValue
+   ENDIF
+   uRet := ::aVars[ NDX_BROWSE_FIXEDCONTROLS ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Value_Pos35( uValue ) CLASS TApplication
+
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   IF uValue != NIL
+      ::aVars[ NDX_XBROWSE_FIXEDBLOCKS ] := uValue
+   ENDIF
+   uRet := ::aVars[ NDX_XBROWSE_FIXEDBLOCKS ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Value_Pos36( uValue ) CLASS TApplication
+
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   IF uValue != NIL
+      ::aVars[ NDX_XBROWSE_FIXEDCONTROLS ] := uValue
+   ENDIF
+   uRet := ::aVars[ NDX_XBROWSE_FIXEDCONTROLS ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Width( nWidth ) CLASS TApplication
 
    LOCAL oMain, uRet := NIL
@@ -935,12 +1068,12 @@ METHOD Width( nWidth ) CLASS TApplication
    hb_mutexLock( ::hClsMtx )
    IF PCount() > 0
       oMain := ::aVars[ NDX_OOHG_MAIN ]
-      IF HB_IsObject( oMain )
+      IF HB_ISOBJECT( oMain )
          uRet := oMain:Width( nWidth )
       ENDIF
    ELSE
       oMain := ::aVars[ NDX_OOHG_MAIN ]
-      IF HB_IsObject( oMain )
+      IF HB_ISOBJECT( oMain )
          uRet := oMain:Width()
       ENDIF
    ENDIF
@@ -948,19 +1081,20 @@ METHOD Width( nWidth ) CLASS TApplication
 
    RETURN ( uRet )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 STATIC FUNCTION GetCommandLineArgs
 
    LOCAL i, nCount, aArgs
 
-   nCount := HB_ArgC()
+   nCount := hb_argc()
    aArgs := {}
-   FOR i := 1 To nCount
-      aAdd( aArgs, HB_ArgV( i ) )
+   FOR i := 1 TO nCount
+      aAdd( aArgs, hb_argv( i ) )
    NEXT i
 
    RETURN ( aArgs )
 
-
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 #pragma BEGINDUMP
 
 #ifndef HB_OS_WIN_32_USED
@@ -988,6 +1122,7 @@ STATIC FUNCTION GetCommandLineArgs
 
 static HANDLE hGlobalMutex = NULL;
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC_STATIC( TAPPLICATION_CREATEGLOBALMUTEX )
 {
    if( ! hGlobalMutex )
@@ -997,6 +1132,7 @@ HB_FUNC_STATIC( TAPPLICATION_CREATEGLOBALMUTEX )
    hb_retl( hGlobalMutex != NULL );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HANDLE _OOHG_GlobalMutex( void )
 {
    return hGlobalMutex;

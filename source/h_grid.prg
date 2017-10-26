@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.310 2017-09-14 21:56:34 fyurisich Exp $
+ * $Id: h_grid.prg $
  */
 /*
  * ooHG source code:
@@ -91,6 +91,7 @@ CLASS TGrid FROM TControl
    DATA bBeforeColSize            INIT Nil
    DATA bCompareItems             INIT Nil
    DATA bDelWhen                  INIT Nil
+   DATA bEditCellValue            INIT Nil
    DATA bHeadRClick               INIT Nil
    DATA bOnEnter                  INIT Nil
    DATA bPosition                 INIT 0
@@ -273,7 +274,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
-               oninsert, editend, lAtFirst, bbeforeditcell ) CLASS TGrid
+               oninsert, editend, lAtFirst, bbeforeditcell, bEditCellValue ) CLASS TGrid
 
    ::Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
               value, fontname, fontsize, tooltip, aHeadClick, nogrid, ;
@@ -294,7 +295,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               onenter, oncheck, abortedit, click, bbeforecolmove, baftercolmove, ;
               bbeforecolsize, baftercolsize, bbeforeautofit, ondelete, ;
               bdelwhen, onappend, bheadrclick, onrclick, oninsert, editend, ;
-              bbeforeditcell )
+              bbeforeditcell, bEditCellValue )
 
    Return Self
 
@@ -491,7 +492,7 @@ METHOD Define4( change, dblclick, gotfocus, lostfocus, ondispinfo, editcell, ;
                 onenter, oncheck, abortedit, click, bbeforecolmove, baftercolmove, ;
                 bbeforecolsize, baftercolsize, bbeforeautofit, ondelete, ;
                 bDelWhen, onappend, bheadrclick, onrclick, oninsert, editend, ;
-                bbeforeditcell ) CLASS TGrid
+                bbeforeditcell, bEditCellValue ) CLASS TGrid
 
    // Must be set after control is initialized
    ASSIGN ::OnChange         VALUE change         TYPE "B"
@@ -517,6 +518,7 @@ METHOD Define4( change, dblclick, gotfocus, lostfocus, ondispinfo, editcell, ;
    ASSIGN ::OnInsert         VALUE oninsert       TYPE "B"
    ASSIGN ::OnEditCellEnd    VALUE editend        TYPE "B"
    ASSIGN ::OnBeforeEditCell VALUE bbeforeditcell TYPE "B"
+   ASSIGN ::bEditCellValue   VALUE bEditCellValue TYPE "B"
 
    Return Self
 
@@ -2413,9 +2415,11 @@ METHOD EditCell2( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusP
       EndIf
    EndIf
 
-   // Cell value
+   // Get the initial value of the EditControl
    If ValType( uOldValue ) == "U"
       uValue := ::Cell( nRow, nCol )
+   ElseIf HB_IsBlock( ::bEditCellValue )
+      uValue := Eval( ::bEditCellValue, nCol, nRow, uOldValue )
    Else
       uValue := uOldValue
    EndIf
@@ -3927,7 +3931,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
-               oninsert, editend, lAtFirst, bbeforeditcell ) CLASS TGridMulti
+               oninsert, editend, lAtFirst, bbeforeditcell, bEditCellValue ) CLASS TGridMulti
 
    Local nStyle := 0
 
@@ -3952,7 +3956,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               onenter, oncheck, abortedit, click, bBeforeColMove, bAfterColMove, ;
               bBeforeColSize, bAfterColSize, bBeforeAutofit, onDelete, ;
               bDelWhen, onappend, bHeadRClick, onrclick, oninsert, editend, ;
-              bbeforeditcell )
+              bbeforeditcell, bEditCellValue )
 
    Return Self
 
@@ -4122,7 +4126,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
-               oninsert, editend, lAtFirst, bbeforeditcell ) CLASS TGridByCell
+               oninsert, editend, lAtFirst, bbeforeditcell, bEditCellValue ) CLASS TGridByCell
 
    ASSIGN lFocusRect          VALUE lFocusRect TYPE "L" DEFAULT .F.
    ASSIGN lNone               VALUE lNone      TYPE "L" DEFAULT .T.
@@ -4150,7 +4154,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               onenter, oncheck, abortedit, click, bBeforeColMove, bAfterColMove, ;
               bBeforeColSize, bAfterColSize, bBeforeAutofit, onDelete, ;
               bDelWhen, onappend, bHeadRClick, onrclick, oninsert, editend, ;
-              bbeforeditcell )
+              bbeforeditcell, bEditCellValue )
 
    Return Self
 

@@ -1,5 +1,5 @@
 /*
- * $Id: i_pseudofunc.ch,v 1.11 2017-08-25 19:26:28 fyurisich Exp $
+ * $Id: i_pseudofunc.ch $
  */
 /*
  * ooHG source code:
@@ -112,3 +112,23 @@
 #xtranslate _OOHG_SetMultiple( <lMultiple>, <lWarning> ) ;
    => ;
       TApplication():Define():MultipleInstances( <lMultiple>, <lWarning> )
+
+#xtranslate SetBrowseFixedBlocks( <lValue> ) ;
+   => ;
+      _OOHG_BrowseFixedBlocks := <lValue>
+
+#xtranslate SetBrowseFixedControls( <lValue> ) ;
+   => ;
+      _OOHG_BrowseFixedControls := <lValue>
+
+#xtranslate SetBrowseSync( <lValue> ) ;
+   => ;
+      _OOHG_BrowseSyncStatus := <lValue>
+
+#xtranslate SetXBrowseFixedBlocks( <lValue> ) ;
+   => ;
+      _OOHG_XBrowseFixedBlocks := <lValue>
+
+#xtranslate SetXBrowseFixedControls( <lValue> ) ;
+   => ;
+      _OOHG_XBrowseFixedControls := <lValue>

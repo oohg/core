@@ -1,5 +1,5 @@
 /*
- * $Id: i_xbrowse.ch,v 1.48 2017-08-25 19:26:28 fyurisich Exp $
+ * $Id: i_xbrowse.ch $
  */
 /*
  * ooHG source code:
@@ -164,6 +164,7 @@
       [ <dummy19: ONEDITCELLEND, ON EDITCELLEND> <editend> ] ;
       [ <efv: EDITFIRSTVISIBLE> ] ;
       [ <dummy20: ONBEFOREEDITCELL, ON BEFOREEDITCELL> <beforedit> ] ;
+      [ EDITCELLVALUE <edtval> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( IIF( <.bycell.>, TXBrowseByCell(), ;
             TXBrowse() ), [ <subclass>() ] ):Define( <(name)>, <(parent)>, ;
@@ -194,19 +195,21 @@
             <.noshowempty.>, <.upcol.>, <{bheadrclick}>, <.nomodal.>, ;
             <.extdbl.>, <.silent.>, ! Upper( #<alta> ) == "DISABLEALTA", ;
             <.noshow.>, <{rclick}>, <.checkboxes.>, <{checkchange}>, ;
-            <{rowrefresh}>, <aDefVal>, <{editend}>, ! <.efv.>, <{beforedit}> )
+            <{rowrefresh}>, <aDefVal>, <{editend}>, ! <.efv.>, <{beforedit}>, ;
+            <{edtval}> )
 
 #command SET XBROWSEFIXEDBLOCKS ON ;
    => ;
-      SetXBrowseFixedBlocks( .T. )
+      _OOHG_XBrowseFixedBlocks := .T.
 
 #command SET XBROWSEFIXEDBLOCKS OFF ;
    => ;
-      SetXBrowseFixedBlocks( .F. )
+      _OOHG_XBrowseFixedBlocks := .F.
 
 #command SET XBROWSEFIXEDCONTROLS ON ;
    => ;
-      SetXBrowseFixedControls( .T. )
+      _OOHG_XBrowseFixedControls := .T.
+
 #command SET XBROWSEFIXEDCONTROLS OFF ;
    => ;
-      SetXBrowseFixedControls( .F. )
+      _OOHG_XBrowseFixedControls := .F.

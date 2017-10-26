@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.184 2017-09-13 21:02:24 fyurisich Exp $
+ * $Id: h_browse.prg $
  */
 /*
  * ooHG source code:
@@ -65,10 +65,6 @@
 
 #define GO_TOP    -1
 #define GO_BOTTOM  1
-
-STATIC _OOHG_BrowseSyncStatus := .F.
-STATIC _OOHG_BrowseFixedBlocks := .T.
-STATIC _OOHG_BrowseFixedControls := .F.
 
 CLASS TOBrowse FROM TXBrowse
 
@@ -190,6 +186,7 @@ CLASS TOBrowse FROM TXBrowse
       ItemHeight
       Justify
       LastColInOrder
+      LastVisibleColumn
       LoadHeaderImages
       NextColInOrder
       OnEnter
@@ -226,7 +223,7 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, aHeaders, a
                lFixedCtrls, bHeadRClick, lExtDbl, lNoModal, lSilent, lAltA, ;
                lNoShowAlways, lNone, lCBE, bOnRClick, lCheckBoxes, bOnCheck, ;
                bOnRowRefresh, aDefaultValues, bOnEditEnd, lAtFirst, ;
-               bbeforeditcell ) CLASS TOBrowse
+               bbeforeditcell, bEditCellValue ) CLASS TOBrowse
 
    LOCAL nWidth2, nCol2, oScroll, z
 
@@ -387,7 +384,7 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, aHeaders, a
               bOnCheck, bOnAbortEdit, bOnClick, bBeforeColMove, bAfterColMove, ;
               bBeforeColSize, bAfterColSize, bBeforeAutoFit, bOnDelete, ;
               bDelWhen, bOnAppend, bHeadRClick, bOnRClick, bOnEditEnd, bOnRowRefresh, ;
-              bbeforeditcell )
+              bbeforeditcell, bEditCellValue )
 
    ::Value := nValue
 
@@ -1105,7 +1102,7 @@ METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, n
       aAdd( ::aRecMap, ( cWorkArea )->( RecNo() ) )
    EndIf
 
-   // xxx ::Super:EditCell refreshes the current row only,
+   // ::Super:EditCell refreshes the current row only,
    // so here we must refresh entire grid when ::RefreshType == REFRESH_FORCE
 
    ::DbGoTo( BackRec )
@@ -1115,7 +1112,7 @@ METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, n
          ::Value := aTail( ::aRecMap )
       Else
          If ! ::lCalledFromClass .AND. ::bPosition == 9                  // MOUSE EXIT
-            // Edition window lost focus
+            // Editing window lost focus
             ::bPosition := 0                   // This restores the processing of click messages
             If ::nDelayedClick[ 1 ] > 0
                // A click message was delayed
@@ -1246,7 +1243,7 @@ METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOB
          EndIf
 
          If ::bPosition == 9                  // MOUSE EXIT
-            // Edition window lost focus
+            // Editing window lost focus
             ::bPosition := 0                   // This restores the processing of click messages
             If ::nDelayedClick[ 1 ] > 0
                // A click message was delayed
@@ -1422,7 +1419,7 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOBrows
          EndIf
          Exit
       ElseIf ::bPosition == 9
-         // Edition window lost focus
+         // Editing window lost focus
          ::bPosition := 0                   // This restores the processing of click messages
          If ::nDelayedClick[ 1 ] > 0
             // A click message was delayed
@@ -1469,7 +1466,7 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOBrows
          EndIf
          Exit
       ElseIf ( HB_IsLogical( lOneRow ) .AND. lOneRow ) .OR. ( ! HB_IsLogical( lOneRow ) .AND. ! ::FullMove ) .OR. ( lRowAppended .AND. ! ::AllowAppend )
-         // Stop If it's not fullmove editing or
+         // Stop if it's not fullmove or
          // If caller wants to edit only one row or
          // if, after appending a new row, appends are not allowed anymore
          If lRowAppended
@@ -2157,30 +2154,6 @@ METHOD SetScrollPos( nPos, VScroll ) CLASS TOBrowse
 
    Return Self
 
-FUNCTION SetBrowseSync( lValue )
-
-   If ValType( lValue ) == "L"
-      _OOHG_BrowseSyncStatus := lValue
-   EndIf
-
-   Return _OOHG_BrowseSyncStatus
-
-FUNCTION SetBrowseFixedBlocks( lValue )
-
-   If ValType( lValue ) == "L"
-      _OOHG_BrowseFixedBlocks := lValue
-   EndIf
-
-   Return _OOHG_BrowseFixedBlocks
-
-FUNCTION SetBrowseFixedControls( lValue )
-
-   If ValType( lValue ) == "L"
-      _OOHG_BrowseFixedControls := lValue
-   EndIf
-
-   Return _OOHG_BrowseFixedControls
-
 
 CLASS TOBrowseByCell FROM TOBrowse
    DATA Type                      INIT "BROWSEBYCELL" READONLY
@@ -2294,6 +2267,7 @@ CLASS TOBrowseByCell FROM TOBrowse
       ItemHeight
       Justify
       LastColInOrder
+      LastVisibleColumn
       LoadHeaderImages
       NextColInOrder
       OnEnter
@@ -2324,9 +2298,11 @@ METHOD Define3( ControlName, ParentForm, x, y, w, h, fontname, fontsize, ;
 
    Local nAux
 
-   Empty( InPlace )          // Forced to .T., it's needed for edit controls to work properly
+   HB_SYMBOL_UNUSED( InPlace )          // Forced to .T., it's needed for edit controls to work properly
+   HB_SYMBOL_UNUSED( lNone )
+
    ASSIGN lFocusRect VALUE lFocusRect TYPE "L" DEFAULT .F.
-   Empty( lNone )
+   ASSIGN lCBE       VALUE lCBE       TYPE "L" DEFAULT .T.
 
    ::Define2( ControlName, ParentForm, x, y, w, h, ::aHeaders, ::aWidths, {}, ;
               , fontname, fontsize, tooltip, aHeadClick, nogrid, ;
@@ -3035,7 +3011,7 @@ METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOB
          EndIf
 
          If ::bPosition == 9                     // MOUSE EXIT
-            // Edition window lost focus
+            // Editing window lost focus
             ::bPosition := 0                   // This restores click messages processing
             If ::nDelayedClick[ 1 ] > 0
                // A click message was delayed
@@ -3163,7 +3139,7 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOBrows
       EndIf
 
       /*
-       * ::OnEditCell() may change ::nRowPos and/or ::nColPos
+       * ::OnEditCell may change ::nRowPos and/or ::nColPos
        * using ::Up(), ::Down(), ::Left(), ::Right(), ::PageUp(),
        * ::PageDown(), ::GoTop() and/or ::GoBottom()
        */
@@ -3227,7 +3203,7 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOBrows
            EndIf
          EndIf
       ElseIf ::bPosition == 9                        // MOUSE EXIT
-         // Edition window lost focus
+         // Editing window lost focus
          ::bPosition := 0                   // This restores click messages processing
          If ::nDelayedClick[ 1 ] > 0
             // A click message was delayed
@@ -3263,16 +3239,23 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOBrows
                ::ContextMenu:Cargo := ::nDelayedClick[ 4 ]
                ::ContextMenu:Activate()
             EndIf
-         ElseIf lRowAppended
-            // A new row was added and partially edited: set as new value and refresh the control
-            ::SetValue( { aTail( ::aRecMap ), nCol }, nRow )
+
+            If lRefresh
+               ::Refresh()
+            EndIf
          Else
-            // The user aborted the edition of an existing row: refresh the control without changing it's value
+            If lRowAppended
+               // A new row was added and partially edited: set as new value and refresh the control
+               ::SetValue( { aTail( ::aRecMap ), nCol }, nRow )
+            Else
+               // The user aborted the edition of an existing row: refresh the control without changing it's value
+            EndIf
+
+            If lRefresh
+               ::Refresh()
+            EndIf
+            Exit
          EndIf
-         If lRefresh
-            ::Refresh()
-         EndIf
-         Exit
       Else                                           // OK
          If ::FullMove
             ::Right( .F. )
@@ -3349,7 +3332,7 @@ METHOD DoChange() CLASS TOBrowseByCell
 
 METHOD SetValue( Value, mp ) CLASS TOBrowseByCell
 
-   Local nRow, nCol, _RecNo, m, hWnd, cWorkArea
+   Local nRow, nCol, _RecNo, m, cWorkArea
 
    cWorkArea := ::WorkArea
    If Select( cWorkArea ) == 0
@@ -3357,9 +3340,8 @@ METHOD SetValue( Value, mp ) CLASS TOBrowseByCell
       Return Self
    EndIf
 
-   hWnd := ::hWnd
    If _OOHG_ThisEventType == 'BROWSE_ONCHANGE'
-      If hWnd == _OOHG_ThisControl:hWnd
+      If ::hWnd == _OOHG_ThisControl:hWnd
          MsgOOHGError( "BROWSEBYCELL: Value property can't be changed inside ONCHANGE event. Program terminated." )
       EndIf
    EndIf
@@ -3822,15 +3804,15 @@ METHOD CurrentCol( nCol ) CLASS TOBrowseByCell
 
 METHOD Left() CLASS TOBrowseByCell
 
-   Local aValue, nRec, nCol, lDone := .F.
+   Local aBefore, nRec, nCol, lDone := .F., aAfter
 
-   aValue := ::Value
-   nRec := aValue[ 1 ]
-   nCol := aValue[ 2 ]
+   aBefore := ::Value
+   nRec := aBefore[ 1 ]
+   nCol := aBefore[ 2 ]
    If nRec > 0 .AND. nCol >= 1 .AND. nCol <= Len( ::aHeaders )
       If nCol # ::FirstColInOrder
-         ::Value := { nRec, ::PriorColInOrder( nCol ) }
-         lDone := .T.
+         aAfter := ( ::Value := { nRec, ::PriorColInOrder( nCol ) } )
+         lDone := ( aAfter[ 1 ] # nRec .OR. aAfter[ 2 ] # nCol )
       ElseIf ::FullMove
          lDone := ::Up( .T. )
       EndIf
@@ -3840,15 +3822,15 @@ METHOD Left() CLASS TOBrowseByCell
 
 METHOD Right( lAppend ) CLASS TOBrowseByCell
 
-   Local aValue, nRec, nCol, lDone := .F.
+   Local aBefore, nRec, nCol, lDone := .F., aAfter
 
-   aValue := ::Value
-   nRec := aValue[ 1 ]
-   nCol := aValue[ 2 ]
+   aBefore := ::Value
+   nRec := aBefore[ 1 ]
+   nCol := aBefore[ 2 ]
    If nRec > 0 .AND. nCol >= 1 .AND. nCol <= Len( ::aHeaders )
       If nCol # ::LastColInOrder
-         ::Value := { nRec, ::NextColInOrder( nCol ) }
-         lDone := .T.
+         aAfter := ( ::Value := { nRec, ::NextColInOrder( nCol ) } )
+         lDone := ( aAfter[ 1 ] # nRec .OR. aAfter[ 2 ] # nCol )
       ElseIf ::FullMove
          If ::Down( .F., .T. )
             lDone := .T.
