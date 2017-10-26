@@ -8,11 +8,11 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
-2017-10-24 22:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2017-10-25 22:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt
      * Updated.
 
-2017-10-25 19:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2017-10-25 22:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\i_altsyntax.ch
      * Id.
      + Clause EDITCELLVALUE to grid, browse and xbrowse.
