@@ -206,10 +206,6 @@
 #define NO_HBPRN_DECLARATION
 #include "winprint.ch"
 
-// Declaración de definiciones.------------------------------------------------
-// Generales.
-#define ABM_CRLF                HB_OsNewLine()
-
 // Estructura de la etiquetas.
 #define ABM_LBL_LEN             5
 #define ABM_LBL_NAME            1
