@@ -827,7 +827,7 @@ METHOD Say(row,col,txt,defname,lcolor,lalign)    CLASS HBPrinter
    case valtype(txt)=="U"    ;  aadd(atxt,"NIL")
    case valtype(txt)$"BO"    ;  aadd(atxt,"")
    case HB_IsArray(txt)      ;  aeval(txt,{|x| aadd(atxt,sayconvert(x)) })
-   case valtype(txt)$"MC"    ;  atxt:=str2arr(txt,hb_osnewline())
+   case valtype(txt)$"MC"    ;  atxt:=str2arr( txt, Chr( 13 ) + Chr( 10 ) )
    endcase
    apos:=::convert({row,col})
    if lcolor<>NIL
