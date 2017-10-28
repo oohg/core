@@ -145,7 +145,7 @@ FUNCTION ooHG_Messages_EN // English (default)
    acMisc           := { 'Are you sure ?', ;
                          'Close Window', ;
                          'Close not allowed', ;
-                         'Program Already Running', ;
+                         'Program is already running', ;
                          'Edit', ;
                          'Ok', ;
                          'Cancel', ;
