@@ -3,12 +3,10 @@ rem
 rem $Id: BuildApp_hbmk2.bat $
 rem
 
-:MAIN
-
-   REM *** Check for .prg ***
-   if "%1"=="" goto EXIT
-   if exist %1.prg goto CONTINUE
-   if not exist %1.hbp goto ERREXIT1
+REM *** Check for .prg ***
+if "%1"=="" goto EXIT
+if exist %1.prg goto CONTINUE
+if not exist %1.hbp goto ERREXIT1
 
 :CONTINUE
 

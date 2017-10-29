@@ -6,7 +6,7 @@ rem
 rem   HG_ROOT, HG_HRB, HG_BCC, HG_VC, HG_PC, HG_MINGW, LIB_GUI, LIB_HRB, BIN_HRB
 rem
 
-:MAIN
+:OPTIONS
 
    if "%1"=="SETUPNONE" goto SETUPNONE
    if "%1"=="SETUPXHB"  goto SETUPXHB

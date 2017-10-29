@@ -4,7 +4,7 @@ rem $Id: makelib.bat,v 1.40 2015-03-18 01:22:30 fyurisich Exp $
 rem
 cls
 
-:MAIN
+:PARAMS
 
    if /I "%1"=="HB30" goto CHECK30
    if /I "%1"=="HB32" goto CHECK32

@@ -2,10 +2,10 @@
 rem
 rem $Id: buildapp.bat,v 1.14 2015-03-12 22:35:09 fyurisich Exp $
 rem
+cls
 
-:MAIN
+:PATH
 
-   cls
    if /I "%1"=="/C" goto CLEAN_PATH
    if "%HG_ROOT%"=="" set HG_ROOT=c:\oohg
    set HG_CLEAN=

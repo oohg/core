@@ -2,45 +2,42 @@
 rem
 rem $Id: compile_pc.bat,v 1.10 2015-03-12 00:58:16 fyurisich Exp $
 rem
+cls
 
-:MAIN
+REM *** Check for .prg ***
+if "%1"=="" goto EXIT
+if not exist %1.prg goto ERREXIT1
 
-   cls
+rem *** Delete Old Executable ***
+if exist %1.exe del %1.exe
+if exist %1.exe goto ERREXIT2
 
-   REM *** Check for .prg ***
-   if "%1"=="" goto EXIT
-   if not exist %1.prg goto ERREXIT1
+rem *** Set Paths ***
+if "%HG_ROOT%"=="" set HG_ROOT=c:\oohg
+if "%HG_HRB%"==""  set HG_HRB=c:\oohg\harbour
+if "%HG_PC%"==""   set HG_PC=c:\pellesc
 
-   rem *** Delete Old Executable ***
-   if exist %1.exe del %1.exe
-   if exist %1.exe goto ERREXIT2
+rem *** Set EnvVars ***
+if "%LIB_GUI%"=="" set LIB_GUI=lib
+if "%LIB_HRB%"=="" set LIB_HRB=lib
+if "%BIN_HRB%"=="" set BIN_HRB=bin
 
-   rem *** Set Paths ***
-   if "%HG_ROOT%"=="" set HG_ROOT=c:\oohg
-   if "%HG_HRB%"==""  set HG_HRB=c:\oohg\harbour
-   if "%HG_PC%"==""   set HG_PC=c:\pellesc
+rem *** To Build with Nightly Harbour ***
+rem *** For 32 bits MSVC ***
+rem set LIB_GUI=lib\hb\pocc
+rem set LIB_HRB=lib\win\pocc
+rem set BIN_HRB=bin or bin\win\pocc
 
-   rem *** Set EnvVars ***
-   if "%LIB_GUI%"=="" set LIB_GUI=lib
-   if "%LIB_HRB%"=="" set LIB_HRB=lib
-   if "%BIN_HRB%"=="" set BIN_HRB=bin
+rem *** Set GT and Check for Debug Switch ***
+set HG_USE_GT=gtwin
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 %9 ) do if "%%a"=="/d" goto DEBUG_COMP
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/D" goto DEBUG_COMP
 
-   rem *** To Build with Nightly Harbour ***
-   rem *** For 32 bits MSVC ***
-   rem set LIB_GUI=lib\hb\pocc
-   rem set LIB_HRB=lib\win\pocc
-   rem set BIN_HRB=bin or bin\win\pocc
+rem *** Set GT and Compile with Harbour ***
+if exist %HG_HRB%\%LIB_HRB%\gtgui.lib set HG_USE_GT=gtgui
+%HG_HRB%\%BIN_HRB%\harbour %1.prg -n -i%HG_HRB%\include;%HG_ROOT%\include; %2 %3
 
-   rem *** Set GT and Check for Debug Switch ***
-   set HG_USE_GT=gtwin
-   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 %9 ) do if "%%a"=="/d" goto DEBUG_COMP
-   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/D" goto DEBUG_COMP
-
-   rem *** Set GT and Compile with Harbour ***
-   if exist %HG_HRB%\%LIB_HRB%\gtgui.lib set HG_USE_GT=gtgui
-   %HG_HRB%\%BIN_HRB%\harbour %1.prg -n -i%HG_HRB%\include;%HG_ROOT%\include; %2 %3
-
-   goto C_COMP
+goto C_COMP
 
 
 :DEBUG_COMP

@@ -2,10 +2,10 @@
 rem
 rem $Id: BuildLib.bat,v 1.9 2015-03-14 01:11:45 fyurisich Exp $
 rem
+cls
 
-:MAIN
+:PARAMS
 
-   cls
    if /I "%1"=="HB30" goto CHECK30
    if /I "%1"=="HB32" goto CHECK32
 

@@ -2,43 +2,40 @@
 rem
 rem $Id: compile_bcc.bat $
 rem
+cls
 
-:MAIN
+REM *** Check for .prg ***
+if "%1"=="" goto EXIT
+if not exist %1.prg goto ERREXIT1
 
-   cls
+rem *** Delete Old Executable ***
+if exist %1.exe del %1.exe
+if exist %1.exe goto ERREXIT2
 
-   REM *** Check for .prg ***
-   if "%1"=="" goto EXIT
-   if not exist %1.prg goto ERREXIT1
+rem *** Set Paths ***
+if "%HG_ROOT%"=="" set HG_ROOT=c:\oohg
+if "%HG_HRB%"==""  set HG_HRB=c:\oohg\harbour
+if "%HG_BCC%"==""  set HG_BCC=c:\borland\bcc55
 
-   rem *** Delete Old Executable ***
-   if exist %1.exe del %1.exe
-   if exist %1.exe goto ERREXIT2
+rem *** Set EnvVars ***
+if "%LIB_GUI%"=="" set LIB_GUI=lib
+if "%LIB_HRB%"=="" set LIB_HRB=lib
+if "%BIN_HRB%"=="" set BIN_HRB=bin
 
-   rem *** Set Paths ***
-   if "%HG_ROOT%"=="" set HG_ROOT=c:\oohg
-   if "%HG_HRB%"==""  set HG_HRB=c:\oohg\harbour
-   if "%HG_BCC%"==""  set HG_BCC=c:\borland\bcc55
+rem *** To Build with Nightly Harbour ***
+rem *** For 32 bits BCC ***
+rem set LIB_GUI=lib\hb\bcc
+rem set LIB_HRB=lib\win\bcc
+rem set BIN_HRB=bin or bin\win\bcc
 
-   rem *** Set EnvVars ***
-   if "%LIB_GUI%"=="" set LIB_GUI=lib
-   if "%LIB_HRB%"=="" set LIB_HRB=lib
-   if "%BIN_HRB%"=="" set BIN_HRB=bin
-
-   rem *** To Build with Nightly Harbour ***
-   rem *** For 32 bits BCC ***
-   rem set LIB_GUI=lib\hb\bcc
-   rem set LIB_HRB=lib\win\bcc
-   rem set BIN_HRB=bin or bin\win\bcc
-
-   rem *** Parse Switches ***
-   set TFILE=%1
-   set COMP_TYPE=STD
-   set EXTRA=
-   set NO_RUN=FALSE
-   set PRG_LOG=
-   set C_LOG=
-   set C_DEFXHB=TRUE
+rem *** Parse Switches ***
+set TFILE=%1
+set COMP_TYPE=STD
+set EXTRA=
+set NO_RUN=FALSE
+set PRG_LOG=
+set C_LOG=
+set C_DEFXHB=TRUE
 
 :LOOP_START
 
