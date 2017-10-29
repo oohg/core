@@ -165,6 +165,7 @@
       [ <efv: EDITFIRSTVISIBLE> ] ;
       [ <dummy20: ONBEFOREEDITCELL, ON BEFOREEDITCELL> <beforedit> ] ;
       [ EDITCELLVALUE <edtval> ] ;
+      [ <klc: KEYSLIKECLIPPER> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( IIF( <.bycell.>, TXBrowseByCell(), ;
             TXBrowse() ), [ <subclass>() ] ):Define( <(name)>, <(parent)>, ;
@@ -196,7 +197,7 @@
             <.extdbl.>, <.silent.>, ! Upper( #<alta> ) == "DISABLEALTA", ;
             <.noshow.>, <{rclick}>, <.checkboxes.>, <{checkchange}>, ;
             <{rowrefresh}>, <aDefVal>, <{editend}>, ! <.efv.>, <{beforedit}>, ;
-            <{edtval}> )
+            <{edtval}>, <.klc.> )
 
 #command SET XBROWSEFIXEDBLOCKS ON ;
    => ;

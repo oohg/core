@@ -223,7 +223,7 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, aHeaders, a
                lFixedCtrls, bHeadRClick, lExtDbl, lNoModal, lSilent, lAltA, ;
                lNoShowAlways, lNone, lCBE, bOnRClick, lCheckBoxes, bOnCheck, ;
                bOnRowRefresh, aDefaultValues, bOnEditEnd, lAtFirst, ;
-               bbeforeditcell, bEditCellValue ) CLASS TOBrowse
+               bbeforeditcell, bEditCellValue, klc ) CLASS TOBrowse
 
    LOCAL nWidth2, nCol2, oScroll, z
 
@@ -320,7 +320,7 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, aHeaders, a
               lDblBffr, lFocusRect, lPLM, lFixedCols, lFixedWidths, ;
               lLikeExcel, lButtons, lAllowDelete, cDelMsg, lNoDelMsg, ;
               lAllowAppend, lNoModal, lFixedCtrls, lExtDbl, nValue, lSilent, ;
-              lAltA, lNoShowAlways, lNone, lCBE, lCheckBoxes, lAtFirst )
+              lAltA, lNoShowAlways, lNone, lCBE, lCheckBoxes, lAtFirst, klc )
 
    ::nWidth := nWidth
 
@@ -400,7 +400,7 @@ METHOD Define3( ControlName, ParentForm, x, y, w, h, fontname, fontsize, ;
                 dblbffr, lFocusRect, lPLM, lFixedCols, lFixedWidths, ;
                 lLikeExcel, lButtons, AllowDelete, DelMsg, lNoDelMsg, ;
                 AllowAppend, lNoModal, lFixedCtrls, lExtDbl, Value, lSilent, ;
-                lAltA, lNoShowAlways, lNone, lCBE, lCheckBoxes, lAtFirst ) CLASS TOBrowse
+                lAltA, lNoShowAlways, lNone, lCBE, lCheckBoxes, lAtFirst, klc ) CLASS TOBrowse
 
    ::Define2( ControlName, ParentForm, x, y, w, h, ::aHeaders, ::aWidths, {}, ;
               , fontname, fontsize, tooltip, aHeadClick, nogrid, ;
@@ -414,7 +414,7 @@ METHOD Define3( ControlName, ParentForm, x, y, w, h, fontname, fontsize, ;
               lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
               DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
               , , lExtDbl, lSilent, lAltA, ;
-              lNoShowAlways, lNone, lCBE, lAtFirst )
+              lNoShowAlways, lNone, lCBE, lAtFirst, klc )
 
    If ValType( Value ) == "N"
       ::nRecLastValue := Value
@@ -2175,8 +2175,14 @@ CLASS TOBrowseByCell FROM TOBrowse
    METHOD End
    METHOD Events
    METHOD Events_Notify
+   METHOD GoBottom
+   METHOD GoTop
    METHOD Home
    METHOD Left
+   METHOD MoveToFirstCol
+   METHOD MoveToFirstVisibleCol
+   METHOD MoveToLastCol
+   METHOD MoveToLastVisibleCol
    METHOD PageDown
    METHOD PageUp
    METHOD Right
@@ -2185,9 +2191,6 @@ CLASS TOBrowseByCell FROM TOBrowse
    METHOD SetValue
    METHOD Up
    METHOD Value                   SETGET
-
-   MESSAGE GoBottom               METHOD End
-   MESSAGE GoTop                  METHOD Home
 
    /*
    Available methods from TOBrowse:
@@ -2271,6 +2274,8 @@ CLASS TOBrowseByCell FROM TOBrowse
       LoadHeaderImages
       NextColInOrder
       OnEnter
+      PanToLeft
+      PanToRight
       PriorColInOrder
       Release
       ScrollToCol
@@ -2294,7 +2299,7 @@ METHOD Define3( ControlName, ParentForm, x, y, w, h, fontname, fontsize, ;
                 dblbffr, lFocusRect, lPLM, lFixedCols, lFixedWidths, ;
                 lLikeExcel, lButtons, AllowDelete, DelMsg, lNoDelMsg, ;
                 AllowAppend, lNoModal, lFixedCtrls, lExtDbl, Value, lSilent, ;
-                lAltA, lNoShowAlways, lNone, lCBE, lCheckBoxes, lAtFirst ) CLASS TOBrowseByCell
+                lAltA, lNoShowAlways, lNone, lCBE, lCheckBoxes, lAtFirst, klc ) CLASS TOBrowseByCell
 
    Local nAux
 
@@ -2316,7 +2321,7 @@ METHOD Define3( ControlName, ParentForm, x, y, w, h, fontname, fontsize, ;
               lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
               DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
               , , lExtDbl, lSilent, lAltA, ;
-              lNoShowAlways, .T., lCBE, lAtFirst )
+              lNoShowAlways, .T., lCBE, lAtFirst, klc )
 
    // By default, search in the current column
    ::SearchCol := -1
@@ -2473,9 +2478,67 @@ METHOD Value( uValue ) CLASS TOBrowseByCell
 
    Return uValue
 
+METHOD MoveToFirstCol CLASS TOBrowseByCell
+
+   Local aBefore, nCol, aAfter, lDone := .F.
+
+   aBefore := ::Value
+   nCol := ::FirstColInOrder
+   If nCol # 0
+      ::Value := { aBefore[ 1 ], nCol }
+      aAfter := ::Value
+      lDone := ( aAfter[ 1 ] # aBefore[ 1 ] .OR. aAfter[ 2 ] # aBefore[ 2 ] )
+   EndIf
+
+   Return lDone
+
+METHOD MoveToLastCol CLASS TOBrowseByCell
+
+   Local aBefore, nCol, aAfter, lDone := .F.
+
+   aBefore := ::Value
+   nCol := ::LastColInOrder
+   If nCol # 0
+      ::Value := { aBefore[ 1 ], nCol }
+      aAfter := ::Value
+      lDone := ( aAfter[ 1 ] # aBefore[ 1 ] .OR. aAfter[ 2 ] # aBefore[ 2 ] )
+   EndIf
+
+   Return lDone
+
+METHOD MoveToFirstVisibleCol CLASS TOBrowseByCell
+
+   Local aBefore, nCol, aAfter, lDone := .F.
+
+   aBefore := ::Value
+   ::ScrollToPrior()
+   nCol := ::FirstVisibleColumn
+   If nCol # 0
+      ::Value := { aBefore[ 1 ], nCol }
+      aAfter := ::Value
+      lDone := ( aAfter[ 1 ] # aBefore[ 1 ] .OR. aAfter[ 2 ] # aBefore[ 2 ] )
+   EndIf
+
+   Return lDone
+
+METHOD MoveToLastVisibleCol CLASS TOBrowseByCell
+
+   Local aBefore, nCol, aAfter, lDone := .F.
+
+   aBefore := ::Value
+   ::ScrollToPrior()
+   nCol := ::LastVisibleColumn
+   If nCol # 0
+      ::Value := { aBefore[ 1 ], nCol }
+      aAfter := ::Value
+      lDone := ( aAfter[ 1 ] # aBefore[ 1 ] .OR. aAfter[ 2 ] # aBefore[ 2 ] )
+   EndIf
+
+   Return lDone
+
 METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TOBrowseByCell
 
-   Local cWorkArea, _RecNo, aValue, uGridValue, nRow, nCol
+   Local cWorkArea, _RecNo, aValue, uGridValue, nRow
 
    If nMsg == WM_CHAR
       If wParam < 32
@@ -2573,29 +2636,66 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TOBrowseByCell
       Do Case
       Case Select( ::WorkArea ) == 0
          // No database open
-      Case wParam == VK_HOME
-         ::Home()
-         Return 0
-      Case wParam == VK_END
-         ::End()
-         Return 0
-      Case wParam == VK_PRIOR
-         ::PageUp()
-         Return 0
-      Case wParam == VK_NEXT
-         ::PageDown()
-         Return 0
       Case wParam == VK_UP
-         ::Up()
+         If GetKeyFlagState() == MOD_CONTROL
+            If ! ::lKeysLikeClipper
+               ::GoTop( ::nColPos )
+            EndIf
+         Else
+            ::Up()
+         EndIf
          Return 0
       Case wParam == VK_DOWN
-         ::Down()
+         If GetKeyFlagState() == MOD_CONTROL
+            If ! ::lKeysLikeClipper
+               ::GoBottom( .F., ::nColPos )
+            EndIf
+         Else
+            ::Down()
+         EndIf
+         Return 0
+      Case wParam == VK_PRIOR
+         If ::lKeysLikeClipper .AND. GetKeyFlagState() == MOD_CONTROL
+            ::GoTop()
+         Else
+            ::PageUp()
+         EndIf
+         Return 0
+      Case wParam == VK_NEXT
+         If ::lKeysLikeClipper .AND. GetKeyFlagState() == MOD_CONTROL
+            ::GoBottom()
+         Else
+            ::PageDown()
+         Endif
+         Return 0
+      Case wParam == VK_HOME
+         If ::lKeysLikeClipper
+            If GetKeyFlagState() == MOD_CONTROL
+               ::MoveToFirstCol()
+            Else
+               ::MoveToFirstVisibleCol()
+            EndIf
+         Else
+            ::GoTop()
+         EndIf
+         Return 0
+      Case wParam == VK_END
+         If ::lKeysLikeClipper
+            If GetKeyFlagState() == MOD_CONTROL
+               ::MoveToLastCol()
+            Else
+               ::MoveToLastVisibleCol()
+            EndIf
+         Else
+            ::GoBottom()
+         EndIf
          Return 0
       Case wParam == VK_LEFT
          If GetKeyFlagState() == MOD_CONTROL
-            nCol := ::FirstColInOrder
-            If nCol # 0
-               ::Value := { ::nRowPos, nCol }
+            If ::lKeysLikeClipper
+               ::PanToLeft()
+            Else
+               ::MoveToFirstCol()
             EndIf
          Else
             ::Left()
@@ -2603,9 +2703,10 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TOBrowseByCell
          Return 0
       Case wParam == VK_RIGHT
          If GetKeyFlagState() == MOD_CONTROL
-            nCol := ::LastColInOrder
-            If nCol # 0
-               ::Value := { ::nRowPos, nCol }
+            If ::lKeysLikeClipper
+               ::PanToRight()
+            Else
+               ::MoveToLastCol()
             EndIf
          Else
             ::Right()
@@ -2785,15 +2886,16 @@ METHOD Events_Notify( wParam, lParam ) CLASS TOBrowseByCell
 
    Return ::Super:Events_Notify( wParam, lParam )
 
-METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, nOnFocusPos, lRefresh, lChange ) CLASS TOBrowseByCell
+METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, nOnFocusPos, lRefresh, lChange, lKeys ) CLASS TOBrowseByCell
 
-   Local lRet, BackRec, cWorkArea
+   Local lRet, BackRec, cWorkArea, lBefore
 
    ASSIGN lAppend  VALUE lAppend  TYPE "L" DEFAULT .F.
    ASSIGN nRow     VALUE nRow     TYPE "N" DEFAULT ::nRowPos
    ASSIGN nCol     VALUE nCol     TYPE "N" DEFAULT ::nColPos
    ASSIGN lRefresh VALUE lRefresh TYPE "L" DEFAULT ( ::RefreshType == REFRESH_FORCE )
    ASSIGN lChange  VALUE lChange  TYPE "L" DEFAULT ::lChangeBeforeEdit
+   ASSIGN lKeys    VALUE lKeys    TYPE "L" DEFAULT .T.
 
    If nRow < 1 .OR. nRow > ::ItemCount .OR. nCol < 1 .OR. nCol > Len( ::aHeaders ) .OR. aScan( ::aHiddenCols, nCol ) # 0
       Return .F.
@@ -2816,9 +2918,10 @@ METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, n
       ::DbGoTo( ::aRecMap[ nRow ] )
    EndIf
 
+   lBefore := ::lCalledFromClass
    ::lCalledFromClass := .T.
    lRet := ::TXBrowse:EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, nOnFocusPos )
-   ::lCalledFromClass := .F.
+   ::lCalledFromClass := lBefore
 
    If lRet .AND. lAppend
       aAdd( ::aRecMap, ( cWorkArea )->( RecNo() ) )
@@ -2827,76 +2930,113 @@ METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, n
    ::DbGoTo( BackRec )
 
    If lRet
-      If lAppend .AND. lChange
-         ::Value := { aTail( ::aRecMap ), nCol }
-      Else
-         If ! ::lCalledFromClass .AND. ::bPosition == 9                  // MOUSE EXIT
-            // Edition window lost focus
-            ::bPosition := 0                   // This restores the processing of click messages
-            If ::nDelayedClick[ 1 ] > 0
-               // A click message was delayed
-               If ::nDelayedClick[ 3 ] <= 0
-                  ::SetValue( { ::aRecMap[ ::nDelayedClick[ 1 ] ], ::nDelayedClick[ 2 ] }, ::nDelayedClick[ 1 ] )
-               EndIf
+      If ! ::lCalledFromClass .AND. ::bPosition == 9                  // MOUSE EXIT
+      // Editing window lost focus
+         ::bPosition := 0                   // This restores the processing of click messages
+         If ::nDelayedClick[ 1 ] > 0
+            // A click message was delayed
+            If ::nDelayedClick[ 3 ] <= 0
+               ::SetValue( { ::aRecMap[ ::nDelayedClick[ 1 ] ], ::nDelayedClick[ 2 ] }, ::nDelayedClick[ 1 ] )
+            EndIf
 
-               If HB_IsNil( ::nDelayedClick[ 4 ] )
-                  If HB_IsBlock( ::OnClick )
-                     If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
-                        If ! ::NestedClick
-                           ::NestedClick := ! _OOHG_NestedSameEvent()
-                           ::DoEventMouseCoords( ::OnClick, "CLICK" )
-                           ::NestedClick := .F.
-                        EndIf
-                     EndIf
-                  EndIf
-               Else
-                  If HB_IsBlock( ::OnRClick )
-                     If ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
-                        ::DoEventMouseCoords( ::OnRClick, "RCLICK" )
+            If HB_IsNil( ::nDelayedClick[ 4 ] )
+               If HB_IsBlock( ::OnClick )
+                  If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
+                     If ! ::NestedClick
+                        ::NestedClick := ! _OOHG_NestedSameEvent()
+                        ::DoEventMouseCoords( ::OnClick, "CLICK" )
+                        ::NestedClick := .F.
                      EndIf
                   EndIf
                EndIf
-
-               If ::nDelayedClick[ 3 ] > 0
-                  // change check mark
-                  ::CheckItem( ::nDelayedClick[ 3 ], ! ::CheckItem( ::nDelayedClick[ 3 ] ) )
-               EndIf
-
-               // fire context menu
-               If ! HB_IsNil( ::nDelayedClick[ 4 ] ) .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
-                  ::ContextMenu:Cargo := ::nDelayedClick[ 4 ]
-                  ::ContextMenu:Activate()
+            Else
+               If HB_IsBlock( ::OnRClick )
+                  If ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
+                     ::DoEventMouseCoords( ::OnRClick, "RCLICK" )
+                  EndIf
                EndIf
             EndIf
+
+            If ::nDelayedClick[ 3 ] > 0
+               // change check mark
+               ::CheckItem( ::nDelayedClick[ 3 ], ! ::CheckItem( ::nDelayedClick[ 3 ] ) )
+            EndIf
+
+            // fire context menu
+            If ! HB_IsNil( ::nDelayedClick[ 4 ] ) .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
+               ::ContextMenu:Cargo := ::nDelayedClick[ 4 ]
+               ::ContextMenu:Activate()
+            EndIf
          EndIf
-         If lRefresh
-            ::Refresh()
-         EndIf
+      ElseIf lAppend
+         ::Value := { aTail( ::aRecMap ), nCol }
       EndIf
 
-      // ::bPosition is set by TGridControl()
-      If ::bPosition == 1                            // UP
-         ::Up()
-      ElseIf ::bPosition == 2                        // RIGHT
-         ::Right( .F. )
-      ElseIf ::bPosition == 3                        // LEFT
-         ::Left()
-      ElseIf ::bPosition == 4                        // HOME
-         ::GoTop()
-      ElseIf ::bPosition == 5                        // END
-         ::GoBottom( .F. )
-      ElseIf ::bPosition == 6                        // DOWN
-         ::Down( .F. )
-      ElseIf ::bPosition == 7                        // PRIOR
-         ::PageUp()
-      ElseIf ::bPosition == 8                        // NEXT
-         ::PageDown( .F. )
-      ElseIf ::bPosition == 9                        // MOUSE EXIT
-      Else                                           // OK
+      If lRefresh
+         ::Refresh()
+      EndIf
+
+      If ! ::lCalledFromClass .AND. lKeys
+         // ::bPosition is set by TGridControl()
+         If ::bPosition == 1                            // UP
+            ::Up()
+         ElseIf ::bPosition == 2                        // RIGHT
+            ::Right( .F. )
+         ElseIf ::bPosition == 12                       // CTRL+RIGHT
+            If ::lKeysLikeClipper
+               // Should never happen
+            Else
+               ::MoveToLastCol()
+            EndIf
+         ElseIf ::bPosition == 3                        // LEFT
+            ::Left()
+         ElseIf ::bPosition == 13                       // CTRL+LEFT
+            If ::lKeysLikeClipper
+               // Should never happen
+            Else
+               ::MoveToFirstCol()
+            EndIf
+         ElseIf ::bPosition == 4                        // HOME
+            ::Home()
+         ElseIf ::bPosition == 14                       // CTRL+HOME
+            If ::lKeysLikeClipper
+               ::MoveToFirstCol()
+            Else
+               // Should never happen
+            EndIf
+         ElseIf ::bPosition == 5                        // END
+            ::End( .F. )
+         ElseIf ::bPosition == 15                       // CTRL+END
+            If ::lKeysLikeClipper
+               ::MoveToLastCol()
+            Else
+               // Should never happen
+            EndIf
+         ElseIf ::bPosition == 6                        // DOWN
+            ::Down( .F. )
+         ElseIf ::bPosition == 7                        // PRIOR
+            ::PageUp()
+         ElseIf ::bPosition == 17                       // CTRL+PRIOR
+            If ::lKeysLikeClipper
+               ::GoTop()
+            Else
+               // Should never happen
+            EndIf
+         ElseIf ::bPosition == 8                        // NEXT
+            ::PageDown( .F. )
+         ElseIf ::bPosition == 18                       // CTRL+NEXT
+            If ::lKeysLikeClipper
+               ::GoBottom()
+            Else
+               // Should never happen
+            Endif
+         ElseIf ::bPosition == 9                        // MOUSE EXIT
+         Else                                           // OK
+         EndIf
       EndIf
    EndIf
 
-   Return lRet
+Return lRet
 
 METHOD EditCell2( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPos ) CLASS TOBrowseByCell
 
@@ -2993,7 +3133,7 @@ METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOB
          ::DbGoTo( nRecNo )
 
          ::lCalledFromClass := .T.
-         lRet := ::EditCell( ::nRowPos, ::nColPos, , , , , lAppend, , .F., .F. )
+         lRet := ::EditCell( ::nRowPos, ::nColPos, , , , , lAppend, , .F., .F., .F. )
          ::lCalledFromClass := .F.
 
          If ! lRet
@@ -3117,7 +3257,7 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOBrows
 
          lRowAppended := .F.
          ::lCalledFromClass := .T.
-         lRet := ::EditCell( nRow, nCol, , , , , lAppend, , lRefresh, .F. )
+         lRet := ::EditCell( nRow, nCol, , , , , lAppend, , lRefresh, .F., .F. )
          ::lCalledFromClass := .F.
 
          If ! lRet
@@ -3141,7 +3281,7 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOBrows
       /*
        * ::OnEditCell may change ::nRowPos and/or ::nColPos
        * using ::Up(), ::Down(), ::Left(), ::Right(), ::PageUp(),
-       * ::PageDown(), ::GoTop() and/or ::GoBottom()
+       * ::Home(), ::End(), ::PageDown(), ::GoTop() and/or ::GoBottom()
        */
 
       // ::bPosition is set by TGridControl()
@@ -3166,12 +3306,17 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOBrows
             Exit
          EndIf
       ElseIf ::bPosition == 4                        // HOME
-         If ! ::GoTop() .OR. ! ::FullMove .OR. ( lOneRow .AND. ::Value[ 1 ] # ::aRecMap[ nRow ] )
-            Exit
+         If ::lKeysLikeClipper
+            If ! ::MoveToFirstVisibleCol() .OR. ! ::FullMove .OR. ( lOneRow .AND. ::Value[ 1 ] # ::aRecMap[ nRow ] )
+               Exit
+            EndIf
+         Else
+            If ! ::Home() .OR. ! ::FullMove .OR. ( lOneRow .AND. ::Value[ 1 ] # ::aRecMap[ nRow ] )
+               Exit
+            EndIf
          EndIf
       ElseIf ::bPosition == 5                        // END
-         ::GoBottom()
-         If ! ::FullMove .OR. ( lOneRow .AND. ::Value[ 1 ] # ::aRecMap[ nRow ] )
+         If ! ::End() .OR. ! ::FullMove .OR. ( lOneRow .AND. ::Value[ 1 ] # ::aRecMap[ nRow ] )
             Exit
          EndIf
       ElseIf ::bPosition == 6                        // DOWN
@@ -3202,6 +3347,58 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOBrows
               Exit
            EndIf
          EndIf
+      ElseIf ::bPosition == 12                       // CTRL+RIGHT
+         If ::lKeysLikeClipper
+            // Should never happen
+            Exit
+         Else
+            If ! ::MoveToLastCol() .OR. ( lOneRow .AND. ::Value[ 1 ] # ::aRecMap[ nRow ] )
+               Exit
+            EndIf
+         EndIf
+      ElseIf ::bPosition == 13                       // CTRL+LEFT
+         If ::lKeysLikeClipper
+            // Should never happen
+            Exit
+         Else
+            If ! ::MoveToFirstCol() .OR. ( lOneRow .AND. ::Value[ 1 ] # ::aRecMap[ nRow ] )
+               Exit
+            EndIf
+         EndIf
+      ElseIf ::bPosition == 14                       // CTRL+HOME
+         If ::lKeysLikeClipper
+            If ! ::MoveToFirstCol() .OR. ( lOneRow .AND. ::Value[ 1 ] # ::aRecMap[ nRow ] )
+               Exit
+            EndIf
+         Else
+            // Should never happen
+            Exit
+         EndIf
+      ElseIf ::bPosition == 15                       // CTRL+END
+         If ::lKeysLikeClipper
+            If ! ::MoveToLastCol() .OR. ( lOneRow .AND. ::Value[ 1 ] # ::aRecMap[ nRow ] )
+               Exit
+            EndIf
+         Else
+            // Should never happen
+            Exit
+         EndIf
+      ElseIf ::bPosition == 17                       // CTRL+PRIOR
+         If ::lKeysLikeClipper
+            If ! ::GoTop() .OR. ! ::FullMove .OR. ( lOneRow .AND. ::Value[ 1 ] # ::aRecMap[ nRow ] )
+               Exit
+            EndIf
+         Else
+            // Should never happen
+         EndIf
+      ElseIf ::bPosition == 18                       // CTRL+NEXT
+         If ::lKeysLikeClipper
+            If ! ::GoBottom() .OR. ! ::FullMove .OR. ( lOneRow .AND. ::Value[ 1 ] # ::aRecMap[ nRow ] )
+               Exit
+            EndIf
+         Else
+            // Should never happen
+         Endif
       ElseIf ::bPosition == 9                        // MOUSE EXIT
          // Editing window lost focus
          ::bPosition := 0                   // This restores click messages processing
@@ -3465,7 +3662,19 @@ METHOD Delete() CLASS TOBrowseByCell
 
    Return Self
 
-METHOD Home() CLASS TOBrowseByCell                   // METHOD GoTop
+METHOD Home() CLASS TOBrowseByCell
+
+   Local lDone
+
+   If ::lKeysLikeClipper
+      lDone := ::MoveToFirstVisibleCol()
+   Else
+      lDone := ::GoTop( ::FirstColInOrder )
+   EndIf
+
+   Return lDone
+
+METHOD GoTop( nCol ) CLASS TOBrowseByCell
 
    Local _RecNo, aBefore, aAfter, lDone := .F., cWorkArea
 
@@ -3474,6 +3683,13 @@ METHOD Home() CLASS TOBrowseByCell                   // METHOD GoTop
       ::RecCount := 0
       Return lDone
    EndIf
+   If ! HB_IsNumeric( nCol )
+      If ::lKeysLikeClipper
+         nCol := ::CurrentCol
+      Else
+         nCol := ::FirstColInOrder
+      EndIf
+   EndIf
    aBefore := ::Value
    _RecNo := ( cWorkArea )->( RecNo() )
    ::TopBottom( GO_TOP )
@@ -3481,21 +3697,40 @@ METHOD Home() CLASS TOBrowseByCell                   // METHOD GoTop
    ::Update()
    ::DbGoTo( _RecNo )
    ::CurrentRow := 1
-   ::CurrentCol := ::FirstColInOrder
+   ::CurrentCol := nCol
    aAfter := ::Value
    lDone := ( aBefore[ 1 ] # aAfter[ 1 ] .OR. aBefore[ 2 ] # aAfter[ 2 ] )
    ::BrowseOnChange()
 
    Return lDone
 
-METHOD End( lAppend ) CLASS TOBrowseByCell     // METHOD GoBottom
+METHOD End( lAppend ) CLASS TOBrowseByCell
 
-   Local lDone := .F., aBefore, _Recno, cWorkArea
+   Local lDone
+
+   If ::lKeysLikeClipper
+      lDone := ::MoveToLastVisibleCol()
+   Else
+      lDone := ::GoBottom( lAppend, ::LastColInOrder )
+   EndIf
+
+   Return lDone
+
+METHOD GoBottom( lAppend, nCol ) CLASS TOBrowseByCell
+
+   Local lDone := .F., aBefore, _Recno, cWorkArea, aAfter
 
    cWorkArea := ::WorkArea
    If Select( cWorkArea ) == 0
       ::RecCount := 0
       Return lDone
+   EndIf
+   If ! HB_IsNumeric( nCol )
+      If ::lKeysLikeClipper
+         nCol := ::CurrentCol
+      Else
+         nCol := ::LastColInOrder
+      EndIf
    EndIf
    aBefore := ::Value
    _RecNo := ( cWorkArea )->( RecNo() )
@@ -3508,24 +3743,26 @@ METHOD End( lAppend ) CLASS TOBrowseByCell     // METHOD GoBottom
    ::Update()
    ::DbGoTo( _RecNo )
    ::CurrentRow := Len( ::aRecMap )
-   ::CurrentCol := If( lAppend, ::FirstColInOrder, ::LastColInOrder )
-   lDone := ( aBefore[ 1 ] # ::Value[ 1 ] .OR. aBefore[ 2 ] # ::Value[ 2 ] )
+   ::CurrentCol := If( lAppend, ::FirstColInOrder, nCol )
+   aAfter := ::Value
+   lDone := ( aAfter[ 1 ] # aBefore[ 1 ] .OR. aAfter[ 2 ] # aBefore[ 2 ] )
    ::BrowseOnChange()
 
    Return lDone
 
-   //TODO: revisar desde aca
-
 METHOD PageUp() CLASS TOBrowseByCell
 
-   Local _RecNo, aBefore, lDone := .F., cWorkArea
+   Local _RecNo, s, aBefore, lDone := .F., cWorkArea, aAfter
 
-   cWorkArea := ::WorkArea
-   If ::nRowPos == 1
+   s := ::nRowPos
+
+   If s == 1 .OR. ::lKeysLikeClipper
+      cWorkArea := ::WorkArea
       If Select( cWorkArea ) == 0
          ::RecCount := 0
          Return lDone
       EndIf
+
       aBefore := ::Value
       _RecNo := ( cWorkArea )->( RecNo() )
       If Len( ::aRecMap ) == 0
@@ -3534,11 +3771,18 @@ METHOD PageUp() CLASS TOBrowseByCell
          ::DbGoTo( ::aRecMap[ 1 ] )
       EndIf
       ::DbSkip( - ::CountPerPage + 1 )
+      If ::Bof()
+         s := 1
+      EndIf
       ::ScrollUpdate()
       ::Update()
       ::DbGoTo( _RecNo )
-      ::CurrentRow := 1
-      lDone := ( aBefore[ 1 ] # ::Value[ 1 ] .OR. aBefore[ 2 ] # ::Value[ 2 ] )
+      If ! ::lKeysLikeClipper .OR. s > Len( ::aRecMap )
+         s := 1
+      EndIf
+      ::CurrentRow := s
+      aAfter := ::Value
+      lDone := ( aAfter[ 1 ] # aBefore[ 1 ] .OR. aAfter[ 2 ] # aBefore[ 2 ] )
    Else
       ::FastUpdate( 1 - ::nRowPos, 1 )
       lDone := .T.
@@ -3550,19 +3794,19 @@ METHOD PageUp() CLASS TOBrowseByCell
 
 METHOD PageDown( lAppend ) CLASS TOBrowseByCell
 
-   Local _RecNo, s, lDone := .F., cWorkArea
+   Local _RecNo, s, lDone := .F., cWorkArea, aBefore, aAfter
 
    s := ::nRowPos
 
-   If  s >= Len( ::aRecMap )
+   If  s >= Len( ::aRecMap ) .OR. ::lKeysLikeClipper
       cWorkArea := ::WorkArea
       If Select( cWorkArea ) == 0
          ::RecCount := 0
          Return lDone
       EndIf
 
+      aBefore := ::Value
       _RecNo := ( cWorkArea )->( RecNo() )
-
       If Len( ::aRecMap ) == 0
          ::TopBottom( GO_BOTTOM )
          ::DbSkip( - ::CountPerPage + 1 )
@@ -3575,6 +3819,10 @@ METHOD PageDown( lAppend ) CLASS TOBrowseByCell
             ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
             If lAppend
                lDone := ::AppendItem()
+            ElseIf s < Len( ::aRecMap )
+               ::CurrentRow := Len( ::aRecMap )
+               lDone := .T.
+               ::BrowseOnChange()
             EndIf
             Return lDone
          EndIf
@@ -3584,12 +3832,21 @@ METHOD PageDown( lAppend ) CLASS TOBrowseByCell
       If Len( ::aRecMap ) == 0
          ::DbGoTo( 0 )
       Else
-         ::DbGoTo( ::aRecMap[ Len( ::aRecMap ) ] )
-         lDone := .T.
+         If ::lKeysLikeClipper .AND. s <= Len( ::aRecMap )
+            ::DbGoTo( ::aRecMap[ s ] )
+         Else
+            ::DbGoTo( ::aRecMap[ Len( ::aRecMap ) ] )
+         EndIf
+         aAfter := ::Value
+         lDone := ( aAfter[ 1 ] # aBefore[ 1 ] .OR. aAfter[ 2 ] # aBefore[ 2 ] )
       EndIf
       ::ScrollUpdate()
       ::DbGoTo( _RecNo )
-      ::CurrentRow := Len( ::aRecMap )
+      If ::lKeysLikeClipper .AND. s <= Len( ::aRecMap )
+         ::CurrentRow := s
+      Else
+         ::CurrentRow := Len( ::aRecMap )
+      EndIf
    Else
       ::FastUpdate( ::CountPerPage - s, Len( ::aRecMap ) )
       lDone := .T.
@@ -3601,7 +3858,7 @@ METHOD PageDown( lAppend ) CLASS TOBrowseByCell
 
 METHOD Up( lLast ) CLASS TOBrowseByCell
 
-   Local s, _RecNo, nLen, lDone := .F., cWorkArea
+Local s, _RecNo, nLen, lDone := .F., cWorkArea, aBefore, aAfter
 
    s := ::nRowPos
 
@@ -3612,8 +3869,8 @@ METHOD Up( lLast ) CLASS TOBrowseByCell
          Return lDone
       EndIf
 
+      aBefore := ::Value
       _RecNo := ( cWorkArea )->( RecNo() )
-
       If Len( ::aRecMap ) == 0
          ::TopBottom( GO_TOP )
          ::DbSkip( -1 )
@@ -3645,7 +3902,6 @@ METHOD Up( lLast ) CLASS TOBrowseByCell
             ::SetRedraw( .T. )
          EndIf
       EndIf
-
       ::ScrollUpdate()
       ::DbGoTo( _RecNo )
       ::CurrentRow := 1
@@ -3653,20 +3909,24 @@ METHOD Up( lLast ) CLASS TOBrowseByCell
          ::CurrentCol := ::LastColInOrder
       EndIf
       If Len( ::aRecMap ) != 0
-         lDone := .T.
+         aAfter := ::Value
+         lDone := ( aAfter[ 1 ] # aBefore[ 1 ] .OR. aAfter[ 2 ] # aBefore[ 2 ] )
       EndIf
    Else
       ::FastUpdate( -1, s - 1 )
+      If HB_IsLogical( lLast ) .AND. lLast
+         ::CurrentCol := ::LastColInOrder
+      EndIf
       lDone := .T.
    EndIf
 
    ::BrowseOnChange()
 
-   Return lDone
+Return lDone
 
 METHOD Down( lAppend, lFirst ) CLASS TOBrowseByCell
 
-   Local s, _RecNo, nLen, lDone := .F., cWorkArea
+Local s, _RecNo, nLen, lDone := .F., cWorkArea, aBefore, aAfter
 
    s := ::nRowPos
 
@@ -3677,8 +3937,8 @@ METHOD Down( lAppend, lFirst ) CLASS TOBrowseByCell
          Return lDone
       EndIf
 
+      aBefore := ::Value
       _RecNo := ( cWorkArea )->( RecNo() )
-
       If Len( ::aRecMap ) == 0
          ::TopBottom( GO_TOP )
          ::DbSkip()
@@ -3716,22 +3976,23 @@ METHOD Down( lAppend, lFirst ) CLASS TOBrowseByCell
          ::DbGoTo( 0 )
       Else
          ::DbGoTo( ATail( ::aRecMap ) )
-         lDone := .T.
+         aAfter := ::Value
+         lDone := ( aAfter[ 1 ] # aBefore[ 1 ] .OR. aAfter[ 2 ] # aBefore[ 2 ] )
       EndIf
       ::ScrollUpdate()
       ::DbGoTo( _RecNo )
       ::CurrentRow := Len( ::aRecMap )
-      If HB_IsLogical( lFirst ) .AND. lFirst
-         ::CurrentCol := ::FirstColInOrder
-      EndIf
    Else
       ::FastUpdate( 1, s + 1 )
       lDone := .T.
    EndIf
+   If HB_IsLogical( lFirst ) .AND. lFirst
+      ::CurrentCol := ::FirstColInOrder
+   EndIf
 
    ::BrowseOnChange()
 
-   Return lDone
+Return lDone
 
 METHOD SetScrollPos( nPos, VScroll ) CLASS TOBrowseByCell
 

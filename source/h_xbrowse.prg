@@ -238,7 +238,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lNoShowEmptyRow, lUpdCols, bHeadRClick, lNoModal, lExtDbl, ;
                lSilent, lAltA, lNoShowAlways, onrclick, lCheckBoxes, oncheck, ;
                rowrefresh, aDefaultValues, editend, lAtFirst, bbeforeditcell, ;
-               bEditCellValue ) CLASS TXBrowse
+               bEditCellValue, klc ) CLASS TXBrowse
 
    Local nWidth2, nCol2, oScroll, z
 
@@ -316,7 +316,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
               DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
               , , lExtDbl, lSilent, lAltA, ;
-              lNoShowAlways, .F., .T., lAtFirst )
+              lNoShowAlways, .F., .T., lAtFirst, klc )
 
    ::FixBlocks( lFixedBlocks )
 
@@ -450,7 +450,6 @@ METHOD ToolTip( cToolTip ) CLASS TXBrowse
    Return ::Super:ToolTip()
 
 METHOD HelpId( nHelpId ) CLASS TXBrowse
-
 
    If HB_IsNumeric( nHelpId )
       ::nHelpId := nHelpId
@@ -1664,7 +1663,7 @@ METHOD EditItem( lAppend, lOneRow, nItem, lChange ) CLASS TXBrowse
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
    ASSIGN lOneRow VALUE lOneRow TYPE "L" DEFAULT .T.
    // to work properly, nItem and the data source record must be synchronized
-   Empty( lChange )
+   HB_SYMBOL_UNUSED( lChange )
 
    If ! ::lLocked
       If ::InPlace .AND. ::lForceInPlace
@@ -1881,7 +1880,7 @@ METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPo
    EndIf
 
    // to work properly, nRow and the data source record must be synchronized
-   Empty( lChange )
+   HB_SYMBOL_UNUSED( lChange )
    ::SetControlValue( nRow, nCol )                                // Second parameter is needed by TXBrowseByCell:EditCell
 
    If lAppend
@@ -2022,6 +2021,8 @@ METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowse
 
    Local lRet, lSomethingEdited
 
+   HB_SYMBOL_UNUSED( lChange)
+
    If ::FullMove
       Return ::EditGrid( nRow, nCol, lAppend, lOneRow, lChange )
    EndIf
@@ -2060,7 +2061,6 @@ METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowse
          Return .F.
       EndIf
       // to work properly, nRow and the data source record must be synchronized
-      Empty( lChange)
       ::SetControlValue( nRow )
    EndIf
 
@@ -2169,6 +2169,8 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowse
 
    Local lRet, lSomethingEdited
 
+   HB_SYMBOL_UNUSED( lChange)
+
    If ::lLocked
       Return .F.
    EndIf
@@ -2204,7 +2206,6 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowse
          Return .F.
       EndIf
       // to work properly, nRow and the data source record must be synchronized
-      Empty( lChange)
       ::SetControlValue( nRow )
    EndIf
 
@@ -2873,12 +2874,18 @@ CLASS TXBrowseByCell FROM TXBrowse
    METHOD EditAllCells
    METHOD EditCell
    METHOD EditGrid
+   METHOD End
    METHOD Events
    METHOD Events_Notify
    METHOD GoBottom
    METHOD GoTop
+   METHOD Home
    METHOD Left
    METHOD MoveTo
+   METHOD MoveToFirstCol
+   METHOD MoveToFirstVisibleCol
+   METHOD MoveToLastCol
+   METHOD MoveToLastVisibleCol
    METHOD Refresh
    METHOD Right
    METHOD SetControlValue         SETGET
@@ -3013,12 +3020,13 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
                 lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
                 DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
                 lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
-                lNoShowAlways, lNone, lCBE, lAtFirst ) CLASS TXBrowseByCell
+                lNoShowAlways, lNone, lCBE, lAtFirst, klc ) CLASS TXBrowseByCell
 
-   Empty( nStyle )
+   HB_SYMBOL_UNUSED( nStyle )
+   HB_SYMBOL_UNUSED( lNone )
+   HB_SYMBOL_UNUSED( lCBE )
+
    ASSIGN lFocusRect VALUE lFocusRect TYPE "L" DEFAULT .F.
-   Empty( lNone )
-   Empty( lCBE )
 
    ::Super:Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
                     value, fontname, fontsize, tooltip, aHeadClick, nogrid, ;
@@ -3032,7 +3040,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
                     lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
                     DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
                     lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
-                    lNoShowAlways, .F., .T., lAtFirst )
+                    lNoShowAlways, .F., .T., lAtFirst, klc )
 
    // By default, search in the current column
    ::SearchCol := -1
@@ -3084,7 +3092,7 @@ METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPo
    EndIf
 
    // ::Value change is done in ::Super:EditCell, after aditional validations
-   Empty( lChange )
+   HB_SYMBOL_UNUSED( lChange)
 
    lBefore := ::lCalledFromClass
    ::lCalledFromClass := .T.
@@ -3156,6 +3164,8 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowseByCell
 
    Local lRet, lSomethingEdited
 
+   HB_SYMBOL_UNUSED( lChange)
+
    If ::lLocked
       Return .F.
    EndIf
@@ -3193,7 +3203,6 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowseByCell
          Return .F.
       EndIf
       // to work properly, nRow and the data source record must be synchronized
-      Empty( lChange)
       ::SetControlValue( nRow, nCol )
    EndIf
 
@@ -3363,6 +3372,8 @@ METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowseByCel
 
    Local lRet, lSomethingEdited
 
+   HB_SYMBOL_UNUSED( lChange)
+
    If ::FullMove
       Return ::EditGrid( nRow, nCol, lAppend, lOneRow, lChange )
    EndIf
@@ -3402,7 +3413,6 @@ METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowseByCel
          Return .F.
       EndIf
       // to work properly, nRow and the data source record must be synchronized
-      Empty( lChange)
       ::SetControlValue( nRow, nCol )
    EndIf
 
@@ -3552,6 +3562,76 @@ METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowseByCel
 
    Return lSomethingEdited
 
+METHOD MoveToFirstCol CLASS TXBrowseByCell
+
+   Local aBefore, nCol, aAfter, lDone := .F.
+
+   aBefore := ::Value
+   nCol := ::FirstColInOrder
+   If nCol # 0
+      ::Value := { aBefore[ 1 ], nCol }
+      aAfter := ::Value
+      lDone := ( aAfter[ 1 ] # aBefore[ 1 ] .OR. aAfter[ 2 ] # aBefore[ 2 ] )
+      If lDone
+         ::DoChange()
+      EndIf
+   EndIf
+
+   Return lDone
+
+METHOD MoveToLastCol CLASS TXBrowseByCell
+
+   Local aBefore, nCol, aAfter, lDone := .F.
+
+   aBefore := ::Value
+   nCol := ::LastColInOrder
+   If nCol # 0
+      ::Value := { aBefore[ 1 ], nCol }
+      aAfter := ::Value
+      lDone := ( aAfter[ 1 ] # aBefore[ 1 ] .OR. aAfter[ 2 ] # aBefore[ 2 ] )
+      If lDone
+         ::DoChange()
+      EndIf
+   EndIf
+
+   Return lDone
+
+METHOD MoveToFirstVisibleCol CLASS TXBrowseByCell
+
+   Local aBefore, nCol, aAfter, lDone := .F.
+
+   aBefore := ::Value
+   ::ScrollToPrior()
+   nCol := ::FirstVisibleColumn
+   If nCol # 0
+      ::Value := { aBefore[ 1 ], nCol }
+      aAfter := ::Value
+      lDone := ( aAfter[ 1 ] # aBefore[ 1 ] .OR. aAfter[ 2 ] # aBefore[ 2 ] )
+      If lDone
+         ::DoChange()
+      EndIf
+   EndIf
+
+   Return lDone
+
+METHOD MoveToLastVisibleCol CLASS TXBrowseByCell
+
+   Local aBefore, nCol, aAfter, lDone := .F.
+
+   aBefore := ::Value
+   ::ScrollToPrior()
+   nCol := ::LastVisibleColumn
+   If nCol # 0
+      ::Value := { aBefore[ 1 ], nCol }
+      aAfter := ::Value
+      lDone := ( aAfter[ 1 ] # aBefore[ 1 ] .OR. aAfter[ 2 ] # aBefore[ 2 ] )
+      If lDone
+         ::DoChange()
+      EndIf
+   EndIf
+
+   Return lDone
+
 METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TXBrowseByCell
 
    Local aCellData, cWorkArea, uGridValue, nSearchCol, nRow, nCol, aPos
@@ -3651,46 +3731,67 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TXBrowseByCell
    ElseIf nMsg == WM_KEYDOWN
       Do Case
       Case ::FirstVisibleColumn == 0
-      Case wParam == VK_HOME
-         ::GoTop()
-         Return 0
-      Case wParam == VK_END
-         ::GoBottom()
-         Return 0
-      Case wParam == VK_PRIOR
-         ::PageUp()
-         Return 0
-      Case wParam == VK_NEXT
-         ::PageDown()
-         Return 0
-      Case wParam == VK_UP
-         If GetKeyFlagState() == MOD_CONTROL
-            If ! ::lLocked
-               ::TopBottom( GO_TOP )
-               ::Refresh( { 1, ::CurrentCol } )
-               ::DoChange()
-            EndIf
-         Else
-            ::Up()
-         EndIf
-         Return 0
+         // Do nothing
       Case wParam == VK_DOWN
          If GetKeyFlagState() == MOD_CONTROL
-            If ! ::lLocked
-               ::TopBottom( GO_BOTTOM )
-               ::Refresh( { ::CountPerPage, ::CurrentCol } )
-               ::DoChange()
+            If ! ::lKeysLikeClipper
+               ::GoBottom( .F., ::nColPos )
             EndIf
          Else
             ::Down()
          EndIf
          Return 0
+      Case wParam == VK_UP
+         If GetKeyFlagState() == MOD_CONTROL
+            If ! ::lKeysLikeClipper
+               ::GoTop( ::nColPos )
+            EndIf
+         Else
+            ::Up()
+         EndIf
+         Return 0
+      Case wParam == VK_PRIOR
+         If ::lKeysLikeClipper .AND. GetKeyFlagState() == MOD_CONTROL
+            ::GoTop()
+         Else
+            ::PageUp()
+         EndIf
+         Return 0
+      Case wParam == VK_NEXT
+         If ::lKeysLikeClipper .AND. GetKeyFlagState() == MOD_CONTROL
+            ::GoBottom()
+         Else
+            ::PageDown()
+         Endif
+         Return 0
+      Case wParam == VK_HOME
+         If ::lKeysLikeClipper
+            If GetKeyFlagState() == MOD_CONTROL
+               ::MoveToFirstCol()
+            Else
+               ::MoveToFirstVisibleCol()
+            EndIf
+         Else
+            ::GoTop()
+         EndIf
+         Return 0
+      Case wParam == VK_END
+         If ::lKeysLikeClipper
+            If GetKeyFlagState() == MOD_CONTROL
+               ::MoveToLastCol()
+            Else
+               ::MoveToLastVisibleCol()
+            EndIf
+         Else
+            ::GoBottom()
+         EndIf
+         Return 0
       Case wParam == VK_LEFT
          If GetKeyFlagState() == MOD_CONTROL
-            nCol := ::FirstColInOrder
-            If nCol # 0
-               ::CurrentCol := nCol
-               ::DoChange()
+            If ::lKeysLikeClipper
+               ::PanToLeft()
+            Else
+               ::MoveToFirstCol()
             EndIf
          Else
             ::Left()
@@ -3698,10 +3799,10 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TXBrowseByCell
          Return 0
       Case wParam == VK_RIGHT
          If GetKeyFlagState() == MOD_CONTROL
-            nCol := ::LastColInOrder
-            If nCol # 0
-               ::CurrentCol := nCol
-               ::DoChange()
+            If ::lKeysLikeClipper
+               ::PanToRight()
+            Else
+               ::MoveToLastCol()
             EndIf
          Else
             ::Right()
@@ -3976,27 +4077,75 @@ METHOD Events_Notify( wParam, lParam ) CLASS TXBrowseByCell
 
    Return ::TGrid:Events_Notify( wParam, lParam )
 
-METHOD GoBottom( lAppend ) CLASS TXBrowseByCell
+METHOD GoBottom( lAppend, nCol ) CLASS TXBrowseByCell
+
+   Local lRet := .F.
 
    If ! ::lLocked
-      ::TopBottom( GO_BOTTOM )
-      ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
-      // If it's for APPEND, leaves a blank line ;)
-      ::Refresh( { ::CountPerPage - IIf( lAppend, 1, 0 ), IIf( lAppend, ::FirstColInOrder, ::LastColInOrder ) } )
-      ::DoChange()
+      If ! HB_IsNumeric( nCol )
+         If ::lKeysLikeClipper
+            nCol := ::nColPos
+         Else
+            nCol := ::LastColInOrder
+         EndIf
+      EndIf
+      If nCol # 0
+         ::TopBottom( GO_BOTTOM )
+         // If it's for APPEND, leaves a blank line ;)
+         ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
+         ::Refresh( { ::CountPerPage - IIf( lAppend, 1, 0 ), IIf( lAppend, ::FirstColInOrder, nCol ) } )
+         ::DoChange()
+         lRet := .T.
+      EndIf
    EndIf
 
-   Return Self
+   Return lRet
 
-METHOD GoTop() CLASS TXBrowseByCell
+METHOD End( lAppend ) CLASS TXBrowseByCell
+
+   Local lDone
+
+   If ::lKeysLikeClipper
+      lDone := ::MoveToLastVisibleCol()
+   Else
+      lDone := ::GoBottom( lAppend, ::LastColInOrder )
+   EndIf
+
+   Return lDone
+
+METHOD GoTop( nCol ) CLASS TXBrowseByCell
+
+   Local lRet := .F.
 
    If ! ::lLocked
-      ::TopBottom( GO_TOP )
-      ::Refresh( { 1, ::FirstColInOrder } )
-      ::DoChange()
+      If ! HB_IsNumeric( nCol )
+         If ::lKeysLikeClipper
+            nCol := ::nColPos
+         Else
+            nCol := ::FirstColInOrder
+         EndIf
+      EndIf
+      If nCol # 0
+         ::TopBottom( GO_TOP )
+         ::Refresh( { 1, nCol } )
+         ::DoChange()
+         lRet := .T.
+      EndIf
    EndIf
 
-   Return Self
+   Return lRet
+
+METHOD Home() CLASS TXBrowseByCell
+
+   Local lDone
+
+   If ::lKeysLikeClipper
+      lDone := ::MoveToFirstVisibleCol()
+   Else
+      lDone := ::GoTop( ::FirstColInOrder )
+   EndIf
+
+   Return lDone
 
 METHOD Left() CLASS TXBrowseByCell
 

@@ -180,6 +180,7 @@ STANDARD VERSION
       [ <efv: EDITFIRSTVISIBLE> ] ;
       [ <dummy19: ONBEFOREEDITCELL, ON BEFOREEDITCELL> <beforedit> ] ;
       [ EDITCELLVALUE <edtval> ] ;
+      [ <klc: KEYSLIKECLIPPER> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( IIF( <.bycell.>, TOBrowseByCell(), TOBrowse() ), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, ;
@@ -214,7 +215,7 @@ STANDARD VERSION
             ! Upper( #<alta> ) == "DISABLEALTA", <.noshow.>, ;
             Upper( #<none> ) == "NONEUNSELS", <.cbe.>, <{rclick}>, ;
             <.checkboxes.>, <{checkchange}>, <{rowrefresh}>, <aDefVal>, ;
-            <{editend}>, ! <.efv.>, <{beforedit}>, <{edtval}> )
+            <{editend}>, ! <.efv.>, <{beforedit}>, <{edtval}>, <.klc.> )
 
 #command SET BROWSESYNC ON ;
    => ;

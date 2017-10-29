@@ -8,6 +8,99 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2017-10-29 12:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog.txt
+     * Updated.
+
+   * core\include\i_altsyntax.ch
+   * core\include\i_browse.ch
+   * core\include\i_xbrowse.ch
+     + Added support for KEYSLIKECLIPPER clause.
+       See below.
+   * core\source\h_browse.prg
+     + Added support for KEYSLIKECLIPPER clause to TOBrowseByCell's methods.
+     + Added methods MoveToFirstCol, MoveToFirstVisibleCol, MoveToLastCol
+       and MoveToLastVisibleCol to class TOBrowseByCell.
+     * Methods Home and End of class TOBrowseByCell no longer move record
+       pointer when KEYSLIKECLIPPER clause is present. They just change the
+       selected cell to the first/last visible column on the current row.
+     + Added parameter lKeys to method EditCell of class TOBrowseByCell.
+       Set to .F. to stop processing exit keys after edition end.
+       It's like "edit this cell and stay here afterwards". Defaults to .T.
+     ! Method EditCell of class TOBrowseByCell was not refreshing after
+       appending a record.
+     + Added support for KEYSLIKECLIPPER clause to methods EditCell and
+       EditGrid of class TOBrowseByCell.
+   * core\source\h_xbrowse.prg
+     + Added support for KEYSLIKECLIPPER clause to TXBrowseByCell's methods.
+     * Changed Empty( <var> ) to HB_SYMBOL_UNUSED( <var> ).
+     + Added methods MoveToFirstCol, MoveToFirstVisibleCol, MoveToLastCol
+       and MoveToLastVisibleCol to class TXBrowseByCell.
+     * Methods Home and End of class TXBrowseByCell no longer move record
+       pointer when KEYSLIKECLIPPER clause is present. They just change the
+       selected cell to the first/last visible column on the current row.
+
+   ; Key's expected behavior in Clipper's Browse mode:
+
+       Key          Action
+       ------------------------------------------------------------------------
+       Up           Move up one row (previous record).
+       Down         Move down one row (next record).
+       Left         Move one column to the left (previous field).
+       Right        Move one column to the right (next field).
+       Ctrl+Left    Pan one column to the left.
+       Ctrl+Right   Pan one column to the right.
+       Home         Move to the leftmost visible column.
+       End          Move to the rightmost visible column.
+       Ctrl+Home    Move to the leftmost column.
+       Ctrl+End     Move to the rightmost column.
+       PgUp         Move to the previous screen.
+                    If cursor was on, lets say 4th row of 12 visible rows,
+                    pressing that key should show next 12 rows and position
+                    cursor on 4th of them. If there are no more rows to load,
+                    cursor should be placed at last row. Cursor should remain
+                    in the same column.
+       PgDn         Move to the next screen.
+                    If cursor was on, lets say 4th row of 12 visible rows,
+                    pressing that key should show previous 12 rows and position
+                    cursor on 4th of them. If there are no more rows to load,
+                    cursor should be placed at first row. Cursor should remain
+                    in the same column.
+       Ctrl+PgUp    Move to the first record.
+                    Cursor should remain in the same column.
+       Ctrl+PgDn    Move to the last record.
+                    Cursor should remain in the same column.
+
+2017-10-29 12:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\.gitignore
+     + resul.txt file.
+   * core\BuildApp_hbmk2.bat
+     * -q to -q0
+   * core\compile_bcc.bat
+   * core\compile_MINGW.bat
+   * core\compile_pc.bat
+   * core\compile_vc.bat
+     * -n to -n1
+   * core\source\common_make.bat
+     * -w2 to -w3.
+     + Added support for message redirection.
+   * core\source\makelib_bcc.bat
+   * core\source\xml.bat
+     * Improved message redirection to resul.txt file.
+
+2017-10-29 12:01 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_edit.prg
+   * core\source\h_edit_ex.prg
+   * core\source\h_graph.prg
+   * core\source\h_pdf.prg
+   * core\source\h_print.prg
+   * core\source\h_windows.prg
+     ! Some xHarbour's compiler warnings.
+
+2017-10-28 09:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_init.prg
+     * Message changed.
+
 2017-10-26 20:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt
      * Updated.
