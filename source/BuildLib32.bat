@@ -16,15 +16,17 @@ if "%BIN_HRB%"==""  set BIN_HRB=bin
 goto BUILD
 
 :CLEAN_PATH
-set HG_ROOT=c:\oohg
-set HG_HRB=c:\oohg\hb32
-set HG_MINGW=c:\oohg\hb32\comp\mingw
-set LIB_GUI=lib\hb\mingw
-set LIB_HRB=lib\win\mingw
-set BIN_HRB=bin
-shift
+
+   set HG_ROOT=c:\oohg
+   set HG_HRB=c:\oohg\hb32
+   set HG_MINGW=c:\oohg\hb32\comp\mingw
+   set LIB_GUI=lib\hb\mingw
+   set LIB_HRB=lib\win\mingw
+   set BIN_HRB=bin
+   shift
 
 :BUILD
-set HG_CCOMP=%HG_MINGW%
-set HBMK2_WORDIR=
-call BuildLib_hbmk2.bat %1 %2 %3 %4 %5 %6 %7 %8 %9
+
+   set HG_CCOMP=%HG_MINGW%
+   set HBMK2_WORDIR=
+   call BuildLib_hbmk2.bat %1 %2 %3 %4 %5 %6 %7 %8 %9

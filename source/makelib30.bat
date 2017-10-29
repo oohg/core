@@ -16,13 +16,15 @@ if "%BIN_HRB%"==""  set BIN_HRB=bin
 goto BUILD
 
 :CLEAN_PATH
-set HG_ROOT=c:\oohg
-set HG_HRB=c:\oohg\hb30
-set HG_MINGW=c:\oohg\hb30\comp\mingw
-set LIB_GUI=lib
-set LIB_HRB=lib
-set BIN_HRB=bin
-shift
+
+   set HG_ROOT=c:\oohg
+   set HG_HRB=c:\oohg\hb30
+   set HG_MINGW=c:\oohg\hb30\comp\mingw
+   set LIB_GUI=lib
+   set LIB_HRB=lib
+   set BIN_HRB=bin
+   shift
 
 :BUILD
-call makelib_mingw.bat
+
+   call makelib_mingw.bat

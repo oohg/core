@@ -11,7 +11,8 @@ start %HG_FMT%\ofmt.exe %*
 goto END
 
 :NOT_INSTALLED
-echo Missing %HG_FMT%\ofmt.exe
-echo.
+
+   echo Missing %HG_FMT%\ofmt.exe
+   echo.
 
 :END

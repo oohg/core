@@ -16,33 +16,36 @@ rem /// Checks Harbour/xHarbour
 if exist %1 goto XHARBOUR_COMPILE
 
 :HARBOUR_COMPILE
-SET OOHG_X_FLAGS=-i"%hg_hrb%\include;%hg_root%\include" -n1 -w3 -gc0 -es2 %2
-GOTO PRG_COMPILE
+
+   SET OOHG_X_FLAGS=-i"%hg_hrb%\include;%hg_root%\include" -n1 -w3 -gc0 -es2 %2
+   GOTO PRG_COMPILE
 
 :XHARBOUR_COMPILE
-SET OOHG_X_FLAGS=-i"%hg_hrb%\include;%hg_root%\include" -n1 -w2 -gc0 -es2 %2
-GOTO PRG_COMPILE
 
-rem /// Compile PRG source files
+   SET OOHG_X_FLAGS=-i"%hg_hrb%\include;%hg_root%\include" -n1 -w2 -gc0 -es2 %2
+   GOTO PRG_COMPILE
+
+   rem /// Compile PRG source files
 
 :PRG_COMPILE
-%hg_hrb%\%BIN_HRB%\harbour %HG_FILES1_PRG% %OOHG_X_FLAGS%
-if errorlevel 1 goto EXIT
-%hg_hrb%\%BIN_HRB%\harbour %HG_FILES2_PRG% %OOHG_X_FLAGS%
-if errorlevel 1 goto EXIT
-if exist winprint.prg  %hg_hrb%\%BIN_HRB%\harbour winprint  %OOHG_X_FLAGS%
-if errorlevel 1 goto EXIT
-if exist miniprint.prg %hg_hrb%\%BIN_HRB%\harbour miniprint %OOHG_X_FLAGS%
-if errorlevel 1 goto EXIT
-if exist bostaurus.prg %hg_hrb%\%BIN_HRB%\harbour bostaurus %OOHG_X_FLAGS%
-if errorlevel 1 goto EXIT
 
-GOTO EXIT
+   %hg_hrb%\%BIN_HRB%\harbour %HG_FILES1_PRG% %OOHG_X_FLAGS%
+   if errorlevel 1 goto EXIT
+   %hg_hrb%\%BIN_HRB%\harbour %HG_FILES2_PRG% %OOHG_X_FLAGS%
+   if errorlevel 1 goto EXIT
+   if exist winprint.prg  %hg_hrb%\%BIN_HRB%\harbour winprint  %OOHG_X_FLAGS%
+   if errorlevel 1 goto EXIT
+   if exist miniprint.prg %hg_hrb%\%BIN_HRB%\harbour miniprint %OOHG_X_FLAGS%
+   if errorlevel 1 goto EXIT
+   if exist bostaurus.prg %hg_hrb%\%BIN_HRB%\harbour bostaurus %OOHG_X_FLAGS%
+   if errorlevel 1 goto EXIT
+   GOTO EXIT
 
 :INFO
-echo ooHG - Library compilation.
-echo .
-echo This file must be called from MAKELIB.BAT
-echo .
+
+   echo ooHG - Library compilation.
+   echo .
+   echo This file must be called from MAKELIB.BAT
+   echo .
 
 :EXIT

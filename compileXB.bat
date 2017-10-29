@@ -16,15 +16,16 @@ if "%BIN_HRB%"=="" set BIN_HRB=bin
 goto COMPILE
 
 :CLEAN_PATH
-set HG_ROOT=c:\oohg
-set HG_HRB=c:\oohg\xhbcc
-set HG_MINGW=c:\Borland\BCC55
-set LIB_GUI=lib\xhb\bcc
-set LIB_HRB=lib
-set BIN_HRB=bin
-shift
+
+   set HG_ROOT=c:\oohg
+   set HG_HRB=c:\oohg\xhbcc
+   set HG_MINGW=c:\Borland\BCC55
+   set LIB_GUI=lib\xhb\bcc
+   set LIB_HRB=lib
+   set BIN_HRB=bin
+   shift
 
 :COMPILE
 
-rem *** Call Compiler Specific Batch File ***
-call %HG_ROOT%\compile_bcc.bat %1 %2 %3 %4 %5 %6 %7 %8 %9
+   rem *** Call Compiler Specific Batch File ***
+   call %HG_ROOT%\compile_bcc.bat %1 %2 %3 %4 %5 %6 %7 %8 %9
