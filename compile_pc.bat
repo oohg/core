@@ -35,7 +35,7 @@ for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/D" goto DEBUG_COMP
 
 rem *** Set GT and Compile with Harbour ***
 if exist %HG_HRB%\%LIB_HRB%\gtgui.lib set HG_USE_GT=gtgui
-%HG_HRB%\%BIN_HRB%\harbour %1.prg -n -i%HG_HRB%\include;%HG_ROOT%\include; %2 %3
+%HG_HRB%\%BIN_HRB%\harbour %1.prg -n1 -i%HG_HRB%\include;%HG_ROOT%\include; %2 %3
 
 goto C_COMP
 
@@ -43,7 +43,7 @@ goto C_COMP
 :DEBUG_COMP
 rem *** Compile with Harbour Using -b Option ***
 ECHO OPTIONS NORUNATSTARTUP > INIT.CLD
-%HG_HRB%\%BIN_HRB%\harbour %1.prg -n -b -i%HG_HRB%\include;%HG_ROOT%\include; %2 %3
+%HG_HRB%\%BIN_HRB%\harbour %1.prg -n1 -b -i%HG_HRB%\include;%HG_ROOT%\include; %2 %3
 
 
 :C_COMP

@@ -111,7 +111,7 @@ set HG_USE_GT=gtgui gtwin
 
 :PRG_COMP
 rem *** Compile with (x)Harbour ***
-%HG_HRB%\%BIN_HRB%\harbour %TFILE%.prg -n %EXTRA% -i%HG_HRB%\include;%HG_ROOT%\include; %PRG_LOG%
+%HG_HRB%\%BIN_HRB%\harbour %TFILE%.prg -n1 %EXTRA% -i%HG_HRB%\include;%HG_ROOT%\include; %PRG_LOG%
 
 rem *** Continue with .c Compilation ***
 goto C_COMP
@@ -120,7 +120,7 @@ goto C_COMP
 :DEBUG_COMP
 rem *** Compile with Harbour Using -b Option ***
 echo OPTIONS NORUNATSTARTUP > INIT.CLD
-%HG_HRB%\%BIN_HRB%\harbour %TFILE%.prg -n -b %EXTRA% -i%HG_HRB%\include;%HG_ROOT%\include; %PRG_LOG%
+%HG_HRB%\%BIN_HRB%\harbour %TFILE%.prg -n1 -b %EXTRA% -i%HG_HRB%\include;%HG_ROOT%\include; %PRG_LOG%
 
 
 :C_COMP
