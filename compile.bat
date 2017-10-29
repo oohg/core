@@ -2,10 +2,10 @@
 rem
 rem $Id: compile.bat,v 1.22 2015-03-18 01:22:29 fyurisich Exp $
 rem
-cls
 
-:PATH
+:MAIN
 
+   cls
    if /I "%1"=="/C" goto CLEAN_PATH
    if "%HG_ROOT%"=="" set HG_ROOT=c:\oohg
    set HG_CLEAN=
