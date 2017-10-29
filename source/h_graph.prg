@@ -647,9 +647,6 @@ Procedure GraphShow( parent, nTop, nLeft, nBottom, nRight, nHeight, nWidth, aDat
    EndDo
 
    nMin := nMax / nMaxBar
-   nPos := nLeft + ( ( nWide + nSep ) / 2 )            // first point graph
-
-   //   nRange := ( ( nWide + nSep ) * Len( aSeries ) ) / 2
 
    If lyVal .and. Len( aYVals ) > 0                // Show yLabels
       nWideB  := ( nRight - nLeft ) / ( nMax( aData ) + 1 )

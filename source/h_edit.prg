@@ -234,7 +234,7 @@ function ABM( cArea, cTitulo, aCampos, aEditables, bGuardar, bBuscar )
    local aBrwAnchos        // := {}                        // Anchos de columna del BROWSE.
    local nBrwAnchoCampo    // := 0                         // Ancho del campo para el browse.
    local nBrwAnchoRegistro // := 0                         // Ancho del registro para el browse.
-   local cMascara             := ""                        // Mascara de datos para el TEXTBOX.
+   local cMascara          // := ""                        // Mascara de datos para el TEXTBOX.
    local nMascaraTotal     // := 0                         // Tamaño de la máscara de edición.
    local nMascaraDecimales // := 0                         // Tamaño de los decimales.
    Local _BackDeleted
@@ -1413,7 +1413,7 @@ function ABMListadoImprimir( lOrientacion, nPrimero, nUltimo )
    local nLineas      := 0                                 // Numero de linea.
    local nPaginas  // := 0                                 // Numero de páginas.
    local nFila        := 13                                // Numero de fila.
-   local nColumna     := 10                                // Numero de columna.
+   local nColumna  // := 10                                // Numero de columna.
    local nItem     // := 1                                 // Indice de iteracion.
    local nIndice   // := 1                                 // Indice de campo.
    local lCabecera // := .t.                               // ¿Imprimir cabecera?.

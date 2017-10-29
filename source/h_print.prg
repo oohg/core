@@ -4532,7 +4532,7 @@ FUNCTION _Codabar( cCode, lShowErrors )
 
 FUNCTION _Code128( cCode, cMode, lShowErrors )
 
-   LOCAL nSum := 0, cBarcode, cCar
+   LOCAL nSum, cBarcode, cCar
    LOCAL cTemp, n, nCar, nCount := 0
    LOCAL lCodeC := .F., lCodeA := .F.
 
@@ -4800,7 +4800,6 @@ FUNCTION _Upc( cCode, nLen )
    k := k + Upc_Check( cCode, nLen )                                 // check digit
 
    nLen++
-   cBarcode := ""
    cRight := Right( k, nLen / 2 )
    cLeft := Left( k, nLen / 2 )
 
