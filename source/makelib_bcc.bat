@@ -62,34 +62,35 @@ if errorlevel 2 goto EXIT3
 if exist bostaurus.obj %HG_BCC%\bin\tlib %HG_ROOT%\%LIB_GUI%\bostaurus +bostaurus.obj >> resul.txt
 if errorlevel 2 goto EXIT3
 
-:EXIT3
 
-   rem *** Cleanup ***
-   IF EXIST %HG_ROOT%\%LIB_GUI%\oohg.bak      del %HG_ROOT%\%LIB_GUI%\oohg.bak
-   IF EXIST %HG_ROOT%\%LIB_GUI%\hbprinter.bak del %HG_ROOT%\%LIB_GUI%\hbprinter.bak
-   IF EXIST %HG_ROOT%\%LIB_GUI%\miniprint.bak del %HG_ROOT%\%LIB_GUI%\miniprint.bak
-   IF EXIST %HG_ROOT%\%LIB_GUI%\bostaurus.bak del %HG_ROOT%\%LIB_GUI%\bostaurus.bak
+:EXIT3
+rem *** Cleanup ***
+IF EXIST %HG_ROOT%\%LIB_GUI%\oohg.bak      del %HG_ROOT%\%LIB_GUI%\oohg.bak
+IF EXIST %HG_ROOT%\%LIB_GUI%\hbprinter.bak del %HG_ROOT%\%LIB_GUI%\hbprinter.bak
+IF EXIST %HG_ROOT%\%LIB_GUI%\miniprint.bak del %HG_ROOT%\%LIB_GUI%\miniprint.bak
+IF EXIST %HG_ROOT%\%LIB_GUI%\bostaurus.bak del %HG_ROOT%\%LIB_GUI%\bostaurus.bak
+
 
 :EXIT2
+rem *** Cleanup ***
+del *.obj
 
-   rem *** Cleanup ***
-   del *.obj
 
 :EXIT1
+rem *** Cleanup ***
+del h_*.c
+if exist winprint.c  del winprint.c
+if exist miniprint.c del miniprint.c
+if exist bostaurus.c del bostaurus.c
+SET OOHG_X_FLAGS=
+SET HG_FILES1_PRG=
+SET HG_FILES2_PRG=
+SET HG_FILES_C=
 
-   rem *** Cleanup ***
-   del h_*.c
-   if exist winprint.c  del winprint.c
-   if exist miniprint.c del miniprint.c
-   if exist bostaurus.c del bostaurus.c
-   SET OOHG_X_FLAGS=
-   SET HG_FILES1_PRG=
-   SET HG_FILES2_PRG=
-   SET HG_FILES_C=
 
 :SHOW_RESULT
+if not exist resul.txt goto EXIT
+type resul.txt | more
 
-   if not exist resul.txt goto EXIT
-   type resul.txt | more
 
 :EXIT

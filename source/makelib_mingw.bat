@@ -81,31 +81,28 @@ if exist bostaurus.o %HG_MINGW%\bin\ar rc %HG_ROOT%\%LIB_GUI%\libbostaurus.a bos
 if errorlevel 2 goto EXIT3
 
 :SUCCESS
+echo BUILD FINISHED !!!
+echo Look for new libs at %HG_ROOT%\%LIB_GUI%
 
-   echo BUILD FINISHED !!!
-   echo Look for new libs at %HG_ROOT%\%LIB_GUI%
-
-   rem *** This are compatibility commands for current CVS version ***
-   if /I .%LIB_GUI%.==.LIB. goto EXIT2
-   if exist %HG_ROOT%\%LIB_GUI%\liboohg.a      copy %HG_ROOT%\%LIB_GUI%\liboohg.a      %HG_ROOT%\lib\liboohg.a
-   if exist %HG_ROOT%\%LIB_GUI%\libhbprinter.a copy %HG_ROOT%\%LIB_GUI%\libhbprinter.a %HG_ROOT%\lib\libhbprinter.a
-   if exist %HG_ROOT%\%LIB_GUI%\libminiprint.a copy %HG_ROOT%\%LIB_GUI%\libminiprint.a %HG_ROOT%\lib\libminiprint.a
-   if exist %HG_ROOT%\%LIB_GUI%\libbostaurus.a copy %HG_ROOT%\%LIB_GUI%\libbostaurus.a %HG_ROOT%\lib\libbostaurus.a
+rem *** This are compatibility commands for current CVS version ***
+if /I .%LIB_GUI%.==.LIB. goto EXIT2
+if exist %HG_ROOT%\%LIB_GUI%\liboohg.a      copy %HG_ROOT%\%LIB_GUI%\liboohg.a      %HG_ROOT%\lib\liboohg.a
+if exist %HG_ROOT%\%LIB_GUI%\libhbprinter.a copy %HG_ROOT%\%LIB_GUI%\libhbprinter.a %HG_ROOT%\lib\libhbprinter.a
+if exist %HG_ROOT%\%LIB_GUI%\libminiprint.a copy %HG_ROOT%\%LIB_GUI%\libminiprint.a %HG_ROOT%\lib\libminiprint.a
+if exist %HG_ROOT%\%LIB_GUI%\libbostaurus.a copy %HG_ROOT%\%LIB_GUI%\libbostaurus.a %HG_ROOT%\lib\libbostaurus.a
 
 :EXIT2
-
-   set PATH=%TPATH%
-   set TPATH=
-   for %%a in (*.o) do del %%a
+set PATH=%TPATH%
+set TPATH=
+for %%a in (*.o) do del %%a
 
 :EXIT1
+for %%a in (h_*.c) do del %%a
+if exist winprint.c  del winprint.c
+if exist miniprint.c del miniprint.c
+if exist bostaurus.c del bostaurus.c
 
-   for %%a in (h_*.c) do del %%a
-   if exist winprint.c  del winprint.c
-   if exist miniprint.c del miniprint.c
-   if exist bostaurus.c del bostaurus.c
-
-   set OOHG_X_FLAGS=
-   set HG_FILES1_PRG=
-   set HG_FILES2_PRG=
-   set HG_FILES_C=
+set OOHG_X_FLAGS=
+set HG_FILES1_PRG=
+set HG_FILES2_PRG=
+set HG_FILES_C=

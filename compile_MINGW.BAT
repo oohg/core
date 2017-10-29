@@ -312,37 +312,36 @@ set TFILE=
 set NO_RUN=
 goto EXIT
 
-:EXIT4
 
-   rem *** Cleanup ***
-  if exist _temp.o del _temp.o
+:EXIT4
+rem *** Cleanup ***
+if exist _temp.o del _temp.o
+
 
 :EXIT3
+rem *** Cleanup ***
+if exist _temp.rc del _temp.rc
+del _oohg_resconfig.h
+del %TFILE%.o
 
-   rem *** Cleanup ***
-   if exist _temp.rc del _temp.rc
-   del _oohg_resconfig.h
-   del %TFILE%.o
 
 :EXIT2
+rem *** Cleanup ***
+del %TFILE%.c
 
-   rem *** Cleanup ***
-   del %TFILE%.c
 
 :EXIT1
-
-   rem *** Cleanup ***
-   set THR_LIB=
-   set COMP_TYPE=
-   set EXTRA=
-   set PATH=%TPATH%
-   set TPATH=
-   set NO_RUN=
-   set RC_FILE=
-   set PRG_LOG=
-   set C_LOG=
+rem *** Cleanup ***
+set THR_LIB=
+set COMP_TYPE=
+set EXTRA=
+set PATH=%TPATH%
+set TPATH=
+set NO_RUN=
+set RC_FILE=
+set PRG_LOG=
+set C_LOG=
 
 :EXIT
-
-   rem *** Cleanup ***
-   if exist init.cld del init.cld
+rem *** Cleanup ***
+if exist init.cld del init.cld
