@@ -1749,7 +1749,7 @@ METHOD ClientsPos() CLASS TWindow
 METHOD ClientsPos2( aControls, nWidth, nHeight ) CLASS TWindow
 
    // ajusta los controles dentro de la ventana por ClientAdjust
-   local n, nAdjust, oControl, nRow := 0, nCol := 0
+   local n, nAdjust, oControl, nRow, nCol
    local nOffset // desplazamientos por borde
 
 

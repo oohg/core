@@ -90,7 +90,7 @@ windres -i _temp.rc -o _temp.o
 
 rem *** Compile and Link ***
 if "%NO_LOG%"=="YES" hbmk2 %EXTRA% %TFILE% %HG_ROOT%\oohg.hbc %RUNEXE%
-if not "%NO_LOG%"=="YES" hbmk2 %EXTRA% %TFILE% %HG_ROOT%\oohg.hbc >> output.log 2>&1 %RUNEXE% -prgflag=-q
+if not "%NO_LOG%"=="YES" hbmk2 %EXTRA% %TFILE% %HG_ROOT%\oohg.hbc >> output.log 2>&1 %RUNEXE% -prgflag=-q0
 if exist output.log type output.log
 
 rem *** Cleanup ***

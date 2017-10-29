@@ -247,7 +247,7 @@ AUXILIARY VARIABLES
 #xtranslate _OOHG_ActiveControlPicture                => _OOHG_ActiveControlInfo \[ 232 \]
 #xtranslate _OOHG_ActiveControlEditCellValue          => _OOHG_ActiveControlInfo \[ 233 \]
 #xtranslate _OOHG_ActiveControlItems                  => _OOHG_ActiveControlInfo \[ 234 \]
-
+#xtranslate _OOHG_ActiveControlKeysLikeClipper        => _OOHG_ActiveControlInfo \[ 235 \]
 #xtranslate _OOHG_ActiveControlShowNone               => _OOHG_ActiveControlInfo \[ 236 \]
 #xtranslate _OOHG_ActiveControlUpDown                 => _OOHG_ActiveControlInfo \[ 237 \]
 #xtranslate _OOHG_ActiveControlRight                  => _OOHG_ActiveControlInfo \[ 238 \]
@@ -2518,7 +2518,8 @@ GRID
       _OOHG_ActiveControlOnRClick         := NIL ;;
       _OOHG_ActiveControlOnInsert         := NIL ;;
       _OOHG_ActiveControlDisplayEdit      := .T. ;;
-      _OOHG_ActiveControlEditCellValue    := NIL
+      _OOHG_ActiveControlEditCellValue    := NIL ;;
+      _OOHG_ActiveControlKeysLikeClipper  := .F.
 
 #xcommand SILENT <silent> ;
    => ;
@@ -2792,7 +2793,8 @@ GRID
             _OOHG_ActiveControlEditCellEnd, ;
             _OOHG_ActiveControlDisplayEdit, ;
             _OOHG_ActiveControlBeforeEditCell, ;
-            _OOHG_ActiveControlEditCellValue )
+            _OOHG_ActiveControlEditCellValue, ;
+            _OOHG_ActiveControlKeysLikeClipper )
 
 /*---------------------------------------------------------------------------
 BROWSE
@@ -2883,7 +2885,8 @@ BROWSE
       _OOHG_ActiveControlOnTextFilled     := NIL ;;
       _OOHG_ActiveControlDefaultYear      := NIL ;;
       _OOHG_ActiveControlDisplayEdit      := .T. ;;
-      _OOHG_ActiveControlEditCellValue    := NIL
+      _OOHG_ActiveControlEditCellValue    := NIL ;;
+      _OOHG_ActiveControlKeysLikeClipper  := .F.
 
 #xcommand DELETEWHEN <delwhen> ;
    => ;
@@ -2960,6 +2963,10 @@ BROWSE
 #xcommand DEFAULTVALUES <aDefVal> ;
    => ;
       _OOHG_ActiveControlDefaultYear := <aDefVal>
+
+#xcommand KEYSLIKECLIPPER <klc> ;
+   => ;
+      _OOHG_ActiveControlKeysLikeClipper := <klc>
 
 #xcommand END BROWSE ;
    => ;
@@ -3065,7 +3072,8 @@ BROWSE
             _OOHG_ActiveControlEditCellEnd, ;
             _OOHG_ActiveControlDisplayEdit, ;
             _OOHG_ActiveControlBeforeEditCell, ;
-            _OOHG_ActiveControlEditCellValue )
+            _OOHG_ActiveControlEditCellValue, ;
+            _OOHG_ActiveControlKeysLikeClipper )
 
 /*---------------------------------------------------------------------------
 XBROWSE
@@ -3150,7 +3158,8 @@ XBROWSE
       _OOHG_ActiveControlOnTextFilled     := NIL ;;
       _OOHG_ActiveControlDefaultYear      := NIL ;;
       _OOHG_ActiveControlDisplayEdit      := .T. ;;
-      _OOHG_ActiveControlEditCellValue    := NIL
+      _OOHG_ActiveControlEditCellValue    := NIL ;;
+      _OOHG_ActiveControlKeysLikeClipper  := .F.
 
 #xcommand END XBROWSE ;
    => ;
@@ -3252,7 +3261,8 @@ XBROWSE
             _OOHG_ActiveControlEditCellEnd, ;
             _OOHG_ActiveControlDisplayEdit, ;
             _OOHG_ActiveControlBeforeEditCell, ;
-            _OOHG_ActiveControlEditCellValue )
+            _OOHG_ActiveControlEditCellValue, ;
+            _OOHG_ActiveControlKeysLikeClipper )
 
 /*---------------------------------------------------------------------------
 HYPERLINK

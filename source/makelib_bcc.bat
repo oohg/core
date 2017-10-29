@@ -26,7 +26,7 @@ if exist %HG_ROOT%\%LIB_GUI%\bostaurus.lib del %HG_ROOT%\%LIB_GUI%\bostaurus.lib
 rem *** Compile with Harbour ***
 echo Compiling prg files ...
 if exist resul.txt del resul.txt
-call common_make "%HG_HRB%\%LIB_HRB%\tip.lib" -q >> resul.txt
+call common_make "%HG_HRB%\%LIB_HRB%\tip.lib" -q0 ">> resul.txt 2>&1"
 if errorlevel 1 goto EXIT1
 echo. >> resul.txt
 

@@ -1100,7 +1100,6 @@ static function ABM2Editar( lNuevo )
                   on lostfocus ABM2SinFoco( i )                   ;
                   on enter ABM2AlEntrar()
          else
-            cMascara := ""
             cMascara := Replicate( "9", _aEstructura[i,DBS_LEN] -   ;
                   ( _aEstructura[i,DBS_DEC] + 1 ) )
             cMascara += "."
@@ -1651,7 +1650,6 @@ static function ABM2Buscar()
       else
 
                 // Con decimales.
-                cMascara := ""
                 cMascara := Replicate( "9", _aEstructura[nControl,DBS_LEN] - ;
                                             ( _aEstructura[nControl,DBS_DEC] + 1 ) )
                 cMascara += "."
@@ -1922,7 +1920,6 @@ static function ABM2ControlFiltro()
       else
 
          // Con decimales.
-         cMascara := ""
          cMascara := Replicate( "9", _aEstructura[nControl,DBS_LEN] - ;
                                      ( _aEstructura[nControl,DBS_DEC] + 1 ) )
          cMascara += "."
@@ -2579,7 +2576,7 @@ static function ABM2Listado( aImpresoras )
    local nPosicion     as numeric          // * Posición del campo.
    local aNumeroCampo  as array            // * Numeros de los campos.
    local aAncho        as array            // * Anchos de las columnas.
-   local nAncho        as array            // * Ancho de las columna actual.
+   local nAncho        as numeric          // * Ancho de las columna actual.
    local lPrevio       as logical          // * Previsualizar.
    local lVistas       as logical          // * Vistas en miniatura.
    local nImpresora    as numeric          // * Numero de la impresora.
@@ -2644,7 +2641,6 @@ static function ABM2Listado( aImpresoras )
 
    ////////// Obtiene el ancho de impresión.--------------------------------------
    aAncho := {}
-   nAncho := 0
    for i := 1 to Len( aNumeroCampo )
       nCampo := aNumeroCampo[i]
       do case

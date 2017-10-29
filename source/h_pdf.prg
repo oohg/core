@@ -1542,8 +1542,6 @@ METHOD Text( cString, nTop, nLeft, nLength, nTab, nJustify, cUnits, cColor, lPri
       nLeft := nLeft - nLength
    ENDIF
 
-   nL := nLeft
-   nL += nNew * nSpace
    nLineLen := nSpace * nNew - nSpace
 
    lParagraph := .t.

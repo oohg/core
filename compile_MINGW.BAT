@@ -139,7 +139,7 @@ goto STD_COMP
 
 :CONSOLE_COMP
 rem *** Compile with Harbour and Check for Errors ***
-%HG_HRB%\%BIN_HRB%\harbour %TFILE%.prg -n %EXTRA% -i%HG_HRB%\include;%HG_ROOT%\include;. %PRG_LOG%
+%HG_HRB%\%BIN_HRB%\harbour %TFILE%.prg -n1 %EXTRA% -i%HG_HRB%\include;%HG_ROOT%\include;. %PRG_LOG%
 if errorlevel 1 goto EXIT1
 
 rem *** Compile .c Files and Check for Errors ***
@@ -186,7 +186,7 @@ goto CLEANUP
 :DEBUG_COMP
 rem *** Compile with Harbour and Check for Errors ***
 echo OPTIONS NORUNATSTARTUP > init.cld
-%HG_HRB%\%BIN_HRB%\harbour %TFILE%.prg -n %EXTRA% -b -i%HG_HRB%\include;%HG_ROOT%\include;. %PRG_LOG%
+%HG_HRB%\%BIN_HRB%\harbour %TFILE%.prg -n1 %EXTRA% -b -i%HG_HRB%\include;%HG_ROOT%\include;. %PRG_LOG%
 if errorlevel 1 goto EXIT1
 
 rem *** Compile .c Files and Check for Errors ***
@@ -232,7 +232,7 @@ goto CLEANUP
 
 :STD_COMP
 rem *** Compile with Harbour and Check for Errors ***
-%HG_HRB%\%BIN_HRB%\harbour %TFILE%.prg -n %EXTRA% -i%HG_HRB%\include;%HG_ROOT%\include;. %PRG_LOG%
+%HG_HRB%\%BIN_HRB%\harbour %TFILE%.prg -n1 %EXTRA% -i%HG_HRB%\include;%HG_ROOT%\include;. %PRG_LOG%
 if errorlevel 1 goto EXIT1
 
 rem *** Compile .c Files and Check for Errors ***
