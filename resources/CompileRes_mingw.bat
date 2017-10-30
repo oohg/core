@@ -3,86 +3,97 @@ rem
 rem $Id: CompileRes_mingw.bat,v 1.3 2017-08-23 00:11:23 fyurisich Exp $
 rem
 
-echo Compiling oohg.o ...
+:MAIN
 
-if /I not "%1"=="/NOCLS" cls
-if /I "%1"=="/NOCLS" shift
+   echo Compiling oohg.o ...
 
-if /I "%1"=="HB30" goto CONTINUE
-if /I "%1"=="HB32" goto CONTINUE
-goto SYNTAX
+   if /I not "%1"=="/NOCLS" cls
+   if /I "%1"=="/NOCLS" shift
+
+   if /I "%1"=="HB30" goto CONTINUE
+   if /I "%1"=="HB32" goto CONTINUE
+   goto SYNTAX
 
 :CONTINUE
-if ".%HG_ROOT%."==".." set HG_ROOT=c:\oohg
-if ".%HG_MINGW%."==".." goto CCOMP
-goto CHECK
+
+   if ".%HG_ROOT%."==".." set HG_ROOT=c:\oohg
+   if ".%HG_MINGW%."==".." goto CCOMP
+   goto CHECK
 
 :CCOMP
-if /I "%1"=="HB30" set HG_MINGW=c:\oohg\hb30\comp\mingw
-if /I "%1"=="HB32" set HG_MINGW=c:\oohg\hb32\comp\mingw
+
+   if /I "%1"=="HB30" set HG_MINGW=c:\oohg\hb30\comp\mingw
+   if /I "%1"=="HB32" set HG_MINGW=c:\oohg\hb32\comp\mingw
 
 :CHECK
-if not exist %HG_MINGW%\bin\windres.exe goto NO_MINGW
 
-if /I "%1"=="HB30" ( if exist oohg_hb30.o del oohg_hb30.o )
-if /I "%1"=="HB30" ( if exist oohg_hb30.o goto ERROR4 )
+   if not exist %HG_MINGW%\bin\windres.exe goto NO_MINGW
 
-if /I "%1"=="HB32" ( if exist oohg_hb32.o del oohg_hb32.o )
-if /I "%1"=="HB32" ( if exist oohg_hb32.o goto ERROR5 )
+   if /I "%1"=="HB30" ( if exist oohg_hb30.o del oohg_hb30.o )
+   if /I "%1"=="HB30" ( if exist oohg_hb30.o goto ERROR4 )
 
-if exist _oohg_resconfig.h del _oohg_resconfig.h
-if exist _oohg_resconfig.h goto ERROR2
+   if /I "%1"=="HB32" ( if exist oohg_hb32.o del oohg_hb32.o )
+   if /I "%1"=="HB32" ( if exist oohg_hb32.o goto ERROR5 )
 
-echo #define oohgpath %HG_ROOT%\RESOURCES > _oohg_resconfig.h
-if not exist _oohg_resconfig.h goto ERROR3
+   if exist _oohg_resconfig.h del _oohg_resconfig.h
+   if exist _oohg_resconfig.h goto ERROR2
 
-set TPATH=%PATH%
-set PATH=%HG_MINGW%\bin
+   echo #define oohgpath %HG_ROOT%\RESOURCES > _oohg_resconfig.h
+   if not exist _oohg_resconfig.h goto ERROR3
 
-if /I "%1"=="HB30" ( windres -i oohg.rc -o oohg_hb30.o )
-if /I "%1"=="HB32" ( windres -i oohg.rc -o oohg_hb32.o )
+   set TPATH=%PATH%
+   set PATH=%HG_MINGW%\bin
 
-set PATH=%TPATH%
-set TPATH=
+   if /I "%1"=="HB30" ( windres -i oohg.rc -o oohg_hb30.o )
+   if /I "%1"=="HB32" ( windres -i oohg.rc -o oohg_hb32.o )
 
-rem Do not delete _oohg_resconfig.h, QAC/QPM needs it
-if /I "%1"=="HB30" ( if exist oohg_hb30.o echo oohg_hb30.o builded ok. )
-if /I "%1"=="HB30" ( if not exist oohg_hb30.o echo Error building oohg_hb30.o. )
+   set PATH=%TPATH%
+   set TPATH=
 
-if /I "%1"=="HB32" ( if exist oohg_hb32.o echo oohg_hb32.o builded ok. )
-if /I "%1"=="HB32" ( if not exist oohg_hb32.o echo Error building oohg_hb32.o. )
+   rem Do not delete _oohg_resconfig.h, QAC/QPM needs it
+   if /I "%1"=="HB30" ( if exist oohg_hb30.o echo oohg_hb30.o builded ok. )
+   if /I "%1"=="HB30" ( if not exist oohg_hb30.o echo Error building oohg_hb30.o. )
 
-echo.
-goto EXIT
+   if /I "%1"=="HB32" ( if exist oohg_hb32.o echo oohg_hb32.o builded ok. )
+   if /I "%1"=="HB32" ( if not exist oohg_hb32.o echo Error building oohg_hb32.o. )
+
+   echo.
+   goto EXIT
 
 :NO_MINGW
-echo MINGW not found !!!
-echo.
-goto EXIT
+
+   echo MINGW not found !!!
+   echo.
+   goto EXIT
 
 :ERROR2
-echo Can not delete old _oohg_resconfig.h !!!
-goto EXIT
+
+   echo Can not delete old _oohg_resconfig.h !!!
+   goto EXIT
 
 :ERROR3
-echo Can not create new _oohg_resconfig.h !!!
-goto EXIT
+
+   echo Can not create new _oohg_resconfig.h !!!
+   goto EXIT
 
 :ERROR4
-echo Can not delete old oohg_hb30.o !!!
-goto EXIT
+
+   echo Can not delete old oohg_hb30.o !!!
+   goto EXIT
 
 :ERROR5
-echo Can not delete old oohg_hb32.o !!!
-goto EXIT
+
+   echo Can not delete old oohg_hb32.o !!!
+   goto EXIT
 
 :SYNTAX
-echo Syntax:
-echo    To build with Harbour 3.0 and MinGW
-echo       CompileRes_mingw [/NOCLS] HB30
-echo   To build with Harbour 3.2 and MinGW
-echo       CompileRes_mingw [/NOCLS] HB32
-echo.
-goto EXIT
+
+   echo Syntax:
+   echo    To build with Harbour 3.0 and MinGW
+   echo       CompileRes_mingw [/NOCLS] HB30
+   echo   To build with Harbour 3.2 and MinGW
+   echo       CompileRes_mingw [/NOCLS] HB32
+   echo.
+   goto EXIT
 
 :EXIT
