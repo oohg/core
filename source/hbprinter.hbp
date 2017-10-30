@@ -24,6 +24,10 @@
 # harbour compiler flags
 -n -q0 -w3 -es2
 
+#alerts on exit
+-beep
+-exitstr
+
 # uncomment the following line to build .ppo files
 #-p.\ppo\
 

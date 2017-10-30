@@ -5,13 +5,12 @@
  * ooHG source code:
  * <file description>
  *
- * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
- * Copyright 2015-2017 Fernando Yurisich <fyurisich@oohg.org>
- * https://sourceforge.net/projects/oohg/
+ * Copyright <year-year> <name> <mail or project>
+ * https://oohg.github.io
  *
- * Adapted from the original BOS TAURUS Graphic Library for HMG
- * Copyright 2012-2015 by Dr. Claudio Soto (from Uruguay).
- * mail: <srvet@adinet.com.uy>
+ * Adapted from <project name and/or file>
+ * Copyright <year> by <person or project>
+ * <mail or internet site>
  *
  * Portions of this project are based upon Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
