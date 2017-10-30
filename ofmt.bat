@@ -1,17 +1,20 @@
 @echo off
 
-rem *** Sets ***
-if .%HG_FMT%.==.. set HG_FMT=%~dp0fmt
+:MAIN
 
-rem *** Check ***
-if not exist %HG_FMT%\ofmt.exe goto NOT_INSTALLED
+   rem *** Sets ***
+   if .%HG_FMT%.==.. set HG_FMT=%~dp0fmt
 
-rem *** Execute ***
-start %HG_FMT%\ofmt.exe %*
-goto END
+   rem *** Check ***
+   if not exist %HG_FMT%\ofmt.exe goto NOT_INSTALLED
+
+   rem *** Execute ***
+   start %HG_FMT%\ofmt.exe %*
+   goto END
 
 :NOT_INSTALLED
-echo Missing %HG_FMT%\ofmt.exe
-echo.
+
+   echo Missing %HG_FMT%\ofmt.exe
+   echo.
 
 :END
