@@ -3,29 +3,36 @@ rem
 rem $Id: compile.bat,v 1.22 2015-03-18 01:22:29 fyurisich Exp $
 rem
 
-:MAIN
+:COMPILE
 
    cls
-   if /I "%1"=="/C" set HG_ROOT=c:\oohg
-   if /I "%1"=="/C" set HB_CLEAN=/C
-   if /I "%1"=="/C" shift
    if not exist compile.bat goto :SYNTAX
+   if /I "%1"=="/C" call :CLEAN_ALL
+   if /I "%1"=="/C" shift
 
    if /I "%1"=="HB30" (
-      call ::COMPILE30 %HG_CLEAN% %1 %2 %3 %4 %5 %6 %7 %8 %9 ) ^
+      call ::COMPILE_HB30 %1 %2 %3 %4 %5 %6 %7 %8 %9 ) ^
    else if /I "%1"=="HB32" (
-      call ::COMPILE32 %HG_CLEAN% %1 %2 %3 %4 %5 %6 %7 %8 %9 ) ^
+      call ::COMPILE_HB32 %1 %2 %3 %4 %5 %6 %7 %8 %9 ) ^
    else if /I "%1"=="XB"   (
-      call ::COMPILEXB %HG_CLEAN% %1 %2 %3 %4 %5 %6 %7 %8 %9 ) ^
+      call ::COMPILE_XB %1 %2 %3 %4 %5 %6 %7 %8 %9 ) ^
    else (
       goto :SYNTAX )
-   set HG_CLEAN=
+   goto :END
+
+:AUTODETECT
+
+   if exist %HRB%\hbmake.exe             call :COMPILE XB
+   if exist %HRB%\hbmk2.exe              call :COMPILE HB32
+   if exist c:\oohg\hb30\bin\hbmk2.exe   call :COMPILE /C HB30
+   if exist c:\oohg\hb32\bin\hbmk2.exe   call :COMPILE /C HB32
+   if exist c:\oohg\xhbcc\bin\hbmake.exe call :COMPILE /C XB
    goto :END
 
 :SYNTAX
 
    echo.
-   echo Syntax to build (from compile.bat folder):
+   echo Syntax to build (run inside compile.bat folder):
    echo.
    echo compile [/C] HB30 file [options]  (Harbour 3.0 + Mingw)
    echo compile [/C] HB32 file [options]  (Harbour 3.2 + Mingw)
@@ -33,11 +40,9 @@ rem
    echo.
    goto :END
 
-:COMPILE30
+:COMPILE_HB30
 
    shift
-   if /I "%1"=="/C" call :CLEAR_ALL
-   if /I "%1"=="/C" shift
    if "%HG_ROOT%"==""  set HG_ROOT=c:\oohg
    if "%HG_HRB%"==""   set HG_HRB=c:\oohg\hb30
    if "%HG_MINGW%"=="" set HG_MINGW=c:\oohg\hb30\comp\mingw
@@ -48,11 +53,9 @@ rem
    call %HG_ROOT%\compile_mingw.bat %1 %2 %3 %4 %5 %6 %7 %8 %9
    goto :END
 
-:COMPILE32
+:COMPILE_HB32
 
    shift
-   if /I "%1"=="/C" call :CLEAR_ALL
-   if /I "%1"=="/C" shift
    if "%HG_ROOT%"==""  set HG_ROOT=c:\oohg
    if "%HG_HRB%"==""   set HG_HRB=c:\oohg\hb32
    if "%HG_MINGW%"=="" set HG_MINGW=c:\oohg\hb32\comp\mingw
@@ -63,11 +66,9 @@ rem
    call %HG_ROOT%\compile_mingw.bat %1 %2 %3 %4 %5 %6 %7 %8 %9
    goto :END
 
-:COMPILEXB
+:COMPILE_XB
 
    shift
-   if /I "%1"=="/C" call :CLEAR_ALL
-   if /I "%1"=="/C" shift
    if "%HG_ROOT%"==""  set HG_ROOT=c:\oohg
    if "%HG_HRB%"==""   set HG_HRB=c:\oohg\xhbcc
    if "%HG_BCC%"==""   set HG_BCC=c:\Borland\BCC55
@@ -78,7 +79,7 @@ rem
    call %HG_ROOT%\compile_bcc.bat %1 %2 %3 %4 %5 %6 %7 %8 %9
    goto :END
 
-:CLEAR_ALL
+:CLEAN_ALL
 
    set HG_ROOT=
    set HG_HRB=
