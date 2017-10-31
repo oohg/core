@@ -7,8 +7,8 @@ rem
 
    cls
    if not exist buildlib.bat goto :SYNTAX
-   if /I "%1"=="HB30" goto :HB30
-   if /I "%1"=="HB32" goto :HB32
+   if /I "%1"=="HB30" goto :BUILD_HB30
+   if /I "%1"=="HB32" goto :BUILD_HB32
 
 :SYNTAX
 
@@ -19,19 +19,7 @@ rem
    echo.
    goto :END
 
-:HB30
-
-   call ::HB30MAIN %*
-   goto :END
-
-:HB32
-
-   call ::HB32MAIN %*
-   goto :END
-
-rem --- build30.bat
-
-:HB30MAIN
+:BUILD_HB30
 
    cls
 
@@ -44,10 +32,6 @@ rem --- build30.bat
    if "%LIB_GUI%"==""  set LIB_GUI=lib
    if "%LIB_HRB%"==""  set LIB_HRB=lib
    if "%BIN_HRB%"==""  set BIN_HRB=bin
-   goto :HB30BUILD
-
-:HB30BUILD
-
    set HG_CCOMP=%HG_MINGW%
    set HBMK2_WORDIR=-workdir=%HG_ROOT%\%LIB_GUI%\.hbmk
    call BuildLib_hbmk2.bat %1 %2 %3 %4 %5 %6 %7 %8 %9
@@ -64,9 +48,7 @@ rem --- build30.bat
    set BIN_HRB=
    goto :END
 
-rem --- build32.bat
-
-:HB32MAIN
+:BUILD_HB32
 
    cls
 
@@ -79,10 +61,6 @@ rem --- build32.bat
    if "%LIB_GUI%"==""  set LIB_GUI=lib\hb\mingw
    if "%LIB_HRB%"==""  set LIB_HRB=lib\win\mingw
    if "%BIN_HRB%"==""  set BIN_HRB=bin
-   goto :HB32BUILD
-
-:HB32BUILD
-
    set HG_CCOMP=%HG_MINGW%
    set HBMK2_WORDIR=
    call BuildLib_hbmk2.bat %1 %2 %3 %4 %5 %6 %7 %8 %9
