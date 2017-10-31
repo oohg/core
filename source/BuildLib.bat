@@ -38,16 +38,6 @@ rem
    set HBMK2_WORDIR=
    goto :END
 
-:CLEAN_PATH
-
-   set HB_ROOT=
-   set HG_HRB=
-   set HG_MINGW=
-   set LIB_GUI=
-   set LIB_HRB=
-   set BIN_HRB=
-   goto :END
-
 :BUILD_HB32
 
    cls
@@ -64,6 +54,16 @@ rem
    set HG_CCOMP=%HG_MINGW%
    set HBMK2_WORDIR=
    call BuildLib_hbmk2.bat %1 %2 %3 %4 %5 %6 %7 %8 %9
+   goto :END
+
+:CLEAN_PATH
+
+   set HG_ROOT=
+   set HG_HRB=
+   set HG_MINGW=
+   set LIB_GUI=
+   set LIB_HRB=
+   set BIN_HRB=
    goto :END
 
 :END
