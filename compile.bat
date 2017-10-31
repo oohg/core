@@ -12,11 +12,13 @@ rem
    if not exist compile.bat goto :SYNTAX
 
    if /I "%1"=="HB30" (
-      call ::COMPILE30 %HG_CLEAN% %*
-        ) else if /I "%1"=="HB32" (
-      call ::COMPILE32 %HG_CLEAN% %*
-        ) else if /I "%1"=="XB"   (
-      call ::COMPILEXB %HG_CLEAN% %* ) else ( goto :SYNTAX )
+      call ::COMPILE30 %HG_CLEAN% %* ) ^
+   else if /I "%1"=="HB32" (
+      call ::COMPILE32 %HG_CLEAN% %* ) ^
+   else if /I "%1"=="XB"   (
+      call ::COMPILEXB %HG_CLEAN% %* ) ^
+   else (
+      goto :SYNTAX )
    set HG_CLEAN=
    goto :END
 

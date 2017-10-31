@@ -8,11 +8,13 @@ rem
    cls
    if not exist makelib.bat goto :SYNTAX
    if /I "%1"=="HB30" (
-      call :MAKELIB_30 %*
-      ) else if /I "%1"=="HB32" (
-         call :MAKELIB_32 %* ) else if /I "%1"=="XB" (
-            call :MAKELIB_XB %* ) else (
-               goto :SYNTAX )
+      call :MAKELIB_30 %* ) ^
+   else if /I "%1"=="HB32" (
+      call :MAKELIB_32 %* ) ^
+   else if /I "%1"=="XB" (
+      call :MAKELIB_XB %* ) ^
+   else (
+      goto :SYNTAX )
    goto :END
 
 :SYNTAX
