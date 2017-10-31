@@ -3,7 +3,7 @@ rem
 rem $Id: makelib_bcc.bat,v 1.23 2015-12-09 19:49:32 guerra000 Exp $
 rem
 
-:MAIN
+:MAKELIB_BCC
 
    cls
    rem *** Set Paths ***
@@ -29,42 +29,42 @@ rem
    echo Compiling prg files ...
    if exist resul.txt del resul.txt
    call common_make "%HG_HRB%\%LIB_HRB%\tip.lib" -q0 ">> resul.txt 2>&1"
-   if errorlevel 1 goto EXIT1
+   if errorlevel 1 goto :EXIT1_BCC
    echo. >> resul.txt
 
    rem *** Compile with BCC ***
    echo Compiling c files ...
    set OOHG_X_FLAGS=-c -O2 -tW -tWM -d -a8 -OS -5 -6 -w -I%HG_HRB%\include;%HG_BCC%\include;%HG_ROOT%\include; -L%HG_HRB%\%LIB_HRB%;%HG_BCC%\lib; -D__XHARBOUR__
    for %%a in ( %HG_FILES1_PRG% ) do if not errorlevel 1 %HG_BCC%\bin\bcc32 %OOHG_X_FLAGS% %%a.c >> resul.txt
-   if errorlevel 1 goto EXIT2
+   if errorlevel 1 goto :EXIT2_BCC
    for %%a in ( %HG_FILES2_PRG% ) do if not errorlevel 1 %HG_BCC%\bin\bcc32 %OOHG_X_FLAGS% %%a.c >> resul.txt
-   if errorlevel 1 goto EXIT2
+   if errorlevel 1 goto :EXIT2_BCC
    for %%a in ( %HG_FILES_C% )    do if not errorlevel 1 %HG_BCC%\bin\bcc32 %OOHG_X_FLAGS% %%a.c >> resul.txt
-   if errorlevel 1 goto EXIT2
+   if errorlevel 1 goto :EXIT2_BCC
    if exist winprint.c  %HG_BCC%\bin\bcc32 %OOHG_X_FLAGS% winprint.c >> resul.txt
-   if errorlevel 1 goto EXIT2
+   if errorlevel 1 goto :EXIT2_BCC
    if exist miniprint.c %HG_BCC%\bin\bcc32 %OOHG_X_FLAGS% miniprint.c >> resul.txt
-   if errorlevel 1 goto EXIT2
+   if errorlevel 1 goto :EXIT2_BCC
    if exist bostaurus.c %HG_BCC%\bin\bcc32 %OOHG_X_FLAGS% bostaurus.c >> resul.txt
-   if errorlevel 1 goto EXIT2
+   if errorlevel 1 goto :EXIT2_BCC
    echo. >> resul.txt
 
    rem *** Build Libraries ***
    echo Building libraries ...
    for %%a in ( %HG_FILES1_PRG% ) do if not errorlevel 2 %HG_BCC%\bin\tlib %HG_ROOT%\%LIB_GUI%\oohg +%%a.obj /P32 >> resul.txt
-   if errorlevel 2 goto EXIT3
+   if errorlevel 2 goto :EXIT3_BCC
    for %%a in ( %HG_FILES2_PRG% ) do if not errorlevel 2 %HG_BCC%\bin\tlib %HG_ROOT%\%LIB_GUI%\oohg +%%a.obj /P32 >> resul.txt
-   if errorlevel 2 goto EXIT3
+   if errorlevel 2 goto :EXIT3_BCC
    for %%a in ( %HG_FILES_C% )    do if not errorlevel 2 %HG_BCC%\bin\tlib %HG_ROOT%\%LIB_GUI%\oohg +%%a.obj /P32 >> resul.txt
-   if errorlevel 2 goto EXIT3
+   if errorlevel 2 goto :EXIT3_BCC
    if exist winprint.obj  %HG_BCC%\bin\tlib %HG_ROOT%\%LIB_GUI%\hbprinter +winprint.obj >> resul.txt
-   if errorlevel 2 goto EXIT3
+   if errorlevel 2 goto :EXIT3_BCC
    if exist miniprint.obj %HG_BCC%\bin\tlib %HG_ROOT%\%LIB_GUI%\miniprint +miniprint.obj >> resul.txt
-   if errorlevel 2 goto EXIT3
+   if errorlevel 2 goto :EXIT3_BCC
    if exist bostaurus.obj %HG_BCC%\bin\tlib %HG_ROOT%\%LIB_GUI%\bostaurus +bostaurus.obj >> resul.txt
-   if errorlevel 2 goto EXIT3
+   if errorlevel 2 goto :EXIT3_BCC
 
-:EXIT3
+:EXIT3_BCC
 
    rem *** Cleanup ***
    IF EXIST %HG_ROOT%\%LIB_GUI%\oohg.bak      del %HG_ROOT%\%LIB_GUI%\oohg.bak
@@ -72,12 +72,12 @@ rem
    IF EXIST %HG_ROOT%\%LIB_GUI%\miniprint.bak del %HG_ROOT%\%LIB_GUI%\miniprint.bak
    IF EXIST %HG_ROOT%\%LIB_GUI%\bostaurus.bak del %HG_ROOT%\%LIB_GUI%\bostaurus.bak
 
-:EXIT2
+:EXIT2_BCC
 
    rem *** Cleanup ***
    del *.obj
 
-:EXIT1
+:EXIT1_BCC
 
    rem *** Cleanup ***
    del h_*.c
@@ -89,9 +89,9 @@ rem
    SET HG_FILES2_PRG=
    SET HG_FILES_C=
 
-:SHOW_RESULT
+:SHOW_RESULT_BCC
 
-   if not exist resul.txt goto EXIT
+   if not exist resul.txt goto :END
    type resul.txt | more
 
-:EXIT
+:END

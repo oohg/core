@@ -3,7 +3,7 @@ rem
 rem $Id: makelib_pc.bat,v 1.6 2015-11-07 22:39:57 fyurisich Exp $
 rem
 
-:MAIN
+:MAKELIB_PC
 
    cls
    rem *** Set Paths ***
@@ -27,22 +27,22 @@ rem
 
    rem *** Compile with Harbour ***
    call common_make "%HG_HRB%\%LIB_HRB%\tip.lib"
-   if errorlevel 1 goto EXIT1
+   if errorlevel 1 goto :EXIT1_PC
 
    rem *** Compile with Pelles C ***
    set OOHG_X_FLAGS= /Ze /Zx /Go /Tx86-coff /I%HG_PC%\include /I%HG_PC%\include\Win /I%HG_HRB%\include /I%HG_ROOT%\include /D__WIN32__
    for %%a in (%HG_FILES1_PRG%) do if not errorlevel 1 %HG_PC%\bin\pocc %OOHG_X_FLAGS% %%a.c
-   if errorlevel 1 goto EXIT2
+   if errorlevel 1 goto :EXIT2_PC
    for %%a in (%HG_FILES2_PRG%) do if not errorlevel 1 %HG_PC%\bin\pocc %OOHG_X_FLAGS% %%a.c
-   if errorlevel 1 goto EXIT2
+   if errorlevel 1 goto :EXIT2_PC
    for %%a in (%HG_FILES_C%)    do if not errorlevel 1 %HG_PC%\bin\pocc %OOHG_X_FLAGS% %%a.c
-   if errorlevel 1 goto EXIT2
+   if errorlevel 1 goto :EXIT2_PC
    if exist winprint.c  %HG_PC%\bin\pocc %OOHG_X_FLAGS% winprint.c
-   if errorlevel 1 goto EXIT2
+   if errorlevel 1 goto :EXIT2_PC
    if exist miniprint.c %HG_PC%\bin\pocc %OOHG_X_FLAGS% miniprint.c
-   if errorlevel 1 goto EXIT2
+   if errorlevel 1 goto :EXIT2_PC
    if exist bostaurus.c %HG_PC%\bin\pocc %OOHG_X_FLAGS% bostaurus.c
-   if errorlevel 1 goto EXIT2
+   if errorlevel 1 goto :EXIT2_PC
 
    rem *** Build Libraries ***
    echo /out:%HG_ROOT%\%LIB_GUI%\oohg.lib >%HG_ROOT%\%LIB_GUI%\oohg.def
@@ -50,15 +50,15 @@ rem
    for %%a in (%HG_FILES2_PRG%) do echo %%a.obj >>%HG_ROOT%\%LIB_GUI%\oohg.def
    for %%a in (%HG_FILES_C%)    do echo %%a.obj >>%HG_ROOT%\%LIB_GUI%\oohg.def
    %HG_PC%\bin\polib @%HG_ROOT%\lib\oohg.def
-   if errorlevel 2 goto EXIT3
+   if errorlevel 2 goto :EXIT3_PC
    if exist winprint.obj  %HG_PC%\bin\polib /out:%HG_ROOT%\%LIB_GUI%\hbprinter winprint.obj
-   if errorlevel 2 goto EXIT3
+   if errorlevel 2 goto :EXIT3_PC
    if exist miniprint.obj %HG_PC%\bin\polib /out:%HG_ROOT%\%LIB_GUI%\miniprint miniprint.obj
-   if errorlevel 2 goto EXIT3
+   if errorlevel 2 goto :EXIT3_PC
    if exist bostaurus.obj %HG_PC%\bin\polib /out:%HG_ROOT%\%LIB_GUI%\bostaurus bostaurus.obj
-   if errorlevel 2 goto EXIT3
+   if errorlevel 2 goto :EXIT3_PC
 
-:EXIT3
+:EXIT3_PC
 
    rem *** Delete Unwanted Files ***
    if exist %HG_ROOT%\%LIB_GUI%\oohg.def      del %HG_ROOT%\%LIB_GUI%\oohg.def
@@ -67,12 +67,12 @@ rem
    if exist %HG_ROOT%\%LIB_GUI%\miniprint.bak del %HG_ROOT%\%LIB_GUI%\miniprint.bak
    if exist %HG_ROOT%\%LIB_GUI%\bostaurus.bak del %HG_ROOT%\%LIB_GUI%\bostaurus.bak
 
-:EXIT2
+:EXIT2_PC
 
    rem *** Delete Unwanted Files ***
    del *.obj
 
-:EXIT1
+:EXIT1_PC
 
    rem *** Delete Unwanted Files ***
    del h_*.c
@@ -85,3 +85,5 @@ rem
    set HG_FILES1_PRG=
    set HG_FILES2_PRG=
    set HG_FILES_C=
+
+:END
