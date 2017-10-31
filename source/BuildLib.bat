@@ -36,7 +36,8 @@ rem --- build30.bat
    cls
 
    rem *** Set Paths ***
-   if /I "%1"=="/C" goto :HB30CLEAN_PATH
+   if /I "%1"=="/C" call :CLEAN_PATH
+   if /I "%1"=="/C" shift /1
    if "%HG_ROOT%"==""  set HG_ROOT=c:\oohg
    if "%HG_HRB%"==""   set HG_HRB=c:\oohg\hb30
    if "%HG_MINGW%"=="" set HG_MINGW=c:\oohg\hb30\comp\mingw
@@ -44,16 +45,6 @@ rem --- build30.bat
    if "%LIB_HRB%"==""  set LIB_HRB=lib
    if "%BIN_HRB%"==""  set BIN_HRB=bin
    goto :HB30BUILD
-
-:HB30CLEAN_PATH
-
-   set HG_ROOT=c:\oohg
-   set HG_HRB=c:\oohg\hb30
-   set HG_MINGW=c:\oohg\hb30\comp\mingw
-   set LIB_GUI=lib
-   set LIB_HRB=lib
-   set BIN_HRB=bin
-   shift
 
 :HB30BUILD
 
@@ -63,6 +54,16 @@ rem --- build30.bat
    set HBMK2_WORDIR=
    goto :END
 
+:CLEAN_PATH
+
+   set HB_ROOT=
+   set HG_HRB=
+   set HG_MINGW=
+   set LIB_GUI=
+   set LIB_HRB=
+   set BIN_HRB=
+   goto :END
+
 rem --- build32.bat
 
 :HB32MAIN
@@ -70,7 +71,8 @@ rem --- build32.bat
    cls
 
    rem *** Set Paths ***
-   if /I "%1"=="/C" goto :HB32CLEAN_PATH
+   if /I "%1"=="/C" call :CLEAN_PATH
+   if /i "%1"=="/C" shift /1
    if "%HG_ROOT%"==""  set HG_ROOT=c:\oohg
    if "%HG_HRB%"==""   set HG_HRB=c:\oohg\hb32
    if "%HG_MINGW%"=="" set HG_MINGW=c:\oohg\hb32\comp\mingw
@@ -78,16 +80,6 @@ rem --- build32.bat
    if "%LIB_HRB%"==""  set LIB_HRB=lib\win\mingw
    if "%BIN_HRB%"==""  set BIN_HRB=bin
    goto :HB32BUILD
-
-:HB32CLEAN_PATH
-
-   set HG_ROOT=c:\oohg
-   set HG_HRB=c:\oohg\hb32
-   set HG_MINGW=c:\oohg\hb32\comp\mingw
-   set LIB_GUI=lib\hb\mingw
-   set LIB_HRB=lib\win\mingw
-   set BIN_HRB=bin
-   shift
 
 :HB32BUILD
 
