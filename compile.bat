@@ -11,12 +11,12 @@ rem
    if /I "%1"=="/C" shift /1
    if not exist compile.bat goto :SYNTAX
 
-   if /I "%1"=="HB30" call ::COMPILE30 %HG_CLEAN% %*
-   if /I "%1"=="HB32" call ::COMPILE32 %HG_CLEAN% %*
-   if /I "%1"=="XB"   call ::COMPILEXB %HG_CLEAN% %*
-
-   if /I not "%1"=="HB30" if /I not "%1"=="HB32" if /I not "%1"=="XB" goto :SYNTAX
-
+   if /I "%1"=="HB30" (
+      call ::COMPILE30 %HG_CLEAN% %*
+        ) else if /I "%1"=="HB32" (
+      call ::COMPILE32 %HG_CLEAN% %*
+        ) else if /I "%1"=="XB"   (
+      call ::COMPILEXB %HG_CLEAN% %* ) else ( goto :SYNTAX )
    set HG_CLEAN=
    goto :END
 
@@ -33,6 +33,7 @@ rem
 
 :COMPILE30
 
+   shift /1
    if /I "%1"=="/C" call :CLEAR_ALL
    if /I "%1"=="/C" shift /1
    if "%HG_ROOT%"==""  set HG_ROOT=c:\oohg
@@ -47,6 +48,7 @@ rem
 
 :COMPILE32
 
+   shift /1
    if /I "%1"=="/C" call :CLEAR_ALL
    if /I "%1"=="/C" shift /1
    if "%HG_ROOT%"==""  set HG_ROOT=c:\oohg
@@ -61,6 +63,7 @@ rem
 
 :COMPILEXB
 
+   shift /1
    if /I "%1"=="/C" call :CLEAR_ALL
    if /I "%1"=="/C" shift /1
    if "%HG_ROOT%"==""  set HG_ROOT=c:\oohg
