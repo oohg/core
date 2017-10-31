@@ -3,99 +3,91 @@ rem
 rem $Id: compile.bat,v 1.22 2015-03-18 01:22:29 fyurisich Exp $
 rem
 
-:MAIN
+:COMPILE
 
    cls
-   if /I "%1"=="/C" goto CLEAN_PATH
-   if "%HG_ROOT%"=="" set HG_ROOT=c:\oohg
-   set HG_CLEAN=
-   goto PARAMS
+   if not exist compile.bat goto :SYNTAX
+   if /I "%1"=="/C" call :CLEAN_ALL
+   if /I "%1"=="/C" shift
 
-:CLEAN_PATH
+   if /I "%1"=="HB30" (
+      call ::COMPILE_HB30 %1 %2 %3 %4 %5 %6 %7 %8 %9 ) ^
+   else if /I "%1"=="HB32" (
+      call ::COMPILE_HB32 %1 %2 %3 %4 %5 %6 %7 %8 %9 ) ^
+   else if /I "%1"=="XB"   (
+      call ::COMPILE_XB %1 %2 %3 %4 %5 %6 %7 %8 %9 ) ^
+   else (
+      goto :SYNTAX )
+   goto :END
 
-   set HG_ROOT=c:\oohg
-   set HG_CLEAN=/C
-   shift
+:AUTODETECT
 
-:PARAMS
-
-   if /I "%1"=="HB30" goto CHECK30
-   if /I "%1"=="HB32" goto CHECK32
-   if /I "%1"=="XB"   goto CHECKXB
-
-:NOVERSION
-
-   if not exist %HG_ROOT%\compile30.bat goto NOVERSION2
-   if exist %HG_ROOT%\compile32.bat goto SYNTAX
-   if exist %HG_ROOT%\compileXB.bat goto SYNTAX
-   goto HB30
-
-:NOVERSION2
-
-   if not exist %HG_ROOT%\compile32.bat goto NOVERSION3
-   if exist %HG_ROOT%\compileXB.bat goto SYNTAX
-   goto HB32
-
-:NOVERSION3
-
-   if exist %HG_ROOT%\compileXB.bat goto XB
-   echo File compile30.bat not found !!!
-   echo File compile32.bat not found !!!
-   echo File compileXB.bat not found !!!
-   echo.
-   goto END
+   if exist %HRB%\hbmake.exe             call :COMPILE XB
+   if exist %HRB%\hbmk2.exe              call :COMPILE HB32
+   if exist c:\oohg\hb30\bin\hbmk2.exe   call :COMPILE /C HB30
+   if exist c:\oohg\hb32\bin\hbmk2.exe   call :COMPILE /C HB32
+   if exist c:\oohg\xhbcc\bin\hbmake.exe call :COMPILE /C XB
+   goto :END
 
 :SYNTAX
 
-   echo Syntax:
-   echo    To build with Harbour 3.0 and MinGW
-   echo       compile [/C] HB30 file [options]
-   echo   To build with Harbour 3.2 and MinGW
-   echo       compile [/C] HB32 file [options]
-   echo   To build with xHarbour and BCC
-   echo       compile [/C] XB file [options]
    echo.
-   goto END
+   echo Syntax to build (run inside compile.bat folder):
+   echo.
+   echo compile [/C] HB30 file [options]  (Harbour 3.0 + Mingw)
+   echo compile [/C] HB32 file [options]  (Harbour 3.2 + Mingw)
+   echo compile [/C] XB   file [options]  (XHarbour + Bcc)
+   echo.
+   goto :END
 
-:CHECK30
+:COMPILE_HB30
 
    shift
-   if exist %HG_ROOT%\compile30.bat goto HB30
-   echo File compile30.bat not found !!!
-   echo.
-   goto END
+   if "%HG_ROOT%"==""  set HG_ROOT=c:\oohg
+   if "%HG_HRB%"==""   set HG_HRB=c:\oohg\hb30
+   if "%HG_MINGW%"=="" set HG_MINGW=c:\oohg\hb30\comp\mingw
+   if "%LIB_GUI%"==""  set LIB_GUI=lib
+   if "%LIB_HRB%"==""  set LIB_HRB=lib
+   if "%BIN_HRB%"==""  set BIN_HRB=bin
+   set HG_RC=%HG_ROOT%\resources\oohg_hb30.o
+   call %HG_ROOT%\compile_mingw.bat %1 %2 %3 %4 %5 %6 %7 %8 %9
+   goto :END
 
-:CHECK32
-
-   shift
-   if exist %HG_ROOT%\compile32.bat goto HB32
-   echo File compile32.bat not found !!!
-   echo.
-   goto END
-
-:CHECKXB
+:COMPILE_HB32
 
    shift
-   if exist %HG_ROOT%\compileXB.bat goto XB
-   echo File compileXB.bat not found !!!
-   echo.
-   goto END
+   if "%HG_ROOT%"==""  set HG_ROOT=c:\oohg
+   if "%HG_HRB%"==""   set HG_HRB=c:\oohg\hb32
+   if "%HG_MINGW%"=="" set HG_MINGW=c:\oohg\hb32\comp\mingw
+   if "%LIB_GUI%"==""  set LIB_GUI=lib\hb\mingw
+   if "%LIB_HRB%"==""  set LIB_HRB=lib\win\mingw
+   if "%BIN_HRB%"==""  set BIN_HRB=bin
+   set HG_RC=%HG_ROOT%\resources\oohg_hb32.o
+   call %HG_ROOT%\compile_mingw.bat %1 %2 %3 %4 %5 %6 %7 %8 %9
+   goto :END
 
-:HB30
+:COMPILE_XB
 
-   call %HG_ROOT%\compile30.bat %HG_CLEAN% %1 %2 %3 %4 %5 %6 %7 %8 %9
-   goto END
+   shift
+   if "%HG_ROOT%"==""  set HG_ROOT=c:\oohg
+   if "%HG_HRB%"==""   set HG_HRB=c:\oohg\xhbcc
+   if "%HG_BCC%"==""   set HG_BCC=c:\Borland\BCC55
+   if "%HG_MINGW%"=="" set HG_MINGW=c:\Borland\BCC55
+   if "%LIB_GUI%"==""  set LIB_GUI=lib\xhb\bcc
+   if "%LIB_HRB%"==""  set LIB_HRB=lib
+   if "%BIN_HRB%"==""  set BIN_HRB=bin
+   call %HG_ROOT%\compile_bcc.bat %1 %2 %3 %4 %5 %6 %7 %8 %9
+   goto :END
 
-:HB32
+:CLEAN_ALL
 
-   call %HG_ROOT%\compile32.bat %HG_CLEAN% %1 %2 %3 %4 %5 %6 %7 %8 %9
-   goto END
-
-:XB
-
-   call %HG_ROOT%\compileXB.bat %HG_CLEAN% %1 %2 %3 %4 %5 %6 %7 %8 %9
-   goto END
+   set HG_ROOT=
+   set HG_HRB=
+   set HG_MINGW=
+   set HG_BCC=
+   set LIB_GUI=
+   set LIB_HRB=
+   set BIN_HRB=
+   goto :END
 
 :END
-
-   set HG_CLEAN=

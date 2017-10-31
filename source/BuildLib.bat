@@ -6,59 +6,64 @@ rem
 :MAIN
 
    cls
-   if /I "%1"=="HB30" goto CHECK30
-   if /I "%1"=="HB32" goto CHECK32
+   if not exist buildlib.bat goto :SYNTAX
+   if /I "%1"=="HB30" goto :BUILD_HB30
+   if /I "%1"=="HB32" goto :BUILD_HB32
 
-:NOVERSION
+:SYNTAX
 
-   if exist buildlib30.bat goto CONTINUE
-   if exist buildlib32.bat goto HB32
-   echo File buildlib30.bat not found !!!
-   echo File buildlib32.bat not found !!!
+   echo Syntax:  (from source folder - buildlib.bat)
    echo.
-   echo This file must be executed from SOURCE folder !!!
+   echo  buildlib HB30 [options]  (Harbour 3.0)
+   echo  buildlib HB32 [options]  (Harbour 3.2)
    echo.
-   goto END
+   goto :END
 
-:CONTINUE
+:BUILD_HB30
 
-   if not exist buildlib32.bat goto HB30
-   echo Syntax:
-   echo    To build with Harbour 3.0
-   echo       buildlib HB30 [options]
-   echo   To build with Harbour 3.2
-   echo       buildlib HB32 [options]
-   echo.
-   goto END
+   cls
 
-:CHECK30
+   rem *** Set Paths ***
+   if /I "%1"=="/C" call :CLEAN_PATH
+   if /I "%1"=="/C" shift
+   if "%HG_ROOT%"==""  set HG_ROOT=c:\oohg
+   if "%HG_HRB%"==""   set HG_HRB=c:\oohg\hb30
+   if "%HG_MINGW%"=="" set HG_MINGW=c:\oohg\hb30\comp\mingw
+   if "%LIB_GUI%"==""  set LIB_GUI=lib
+   if "%LIB_HRB%"==""  set LIB_HRB=lib
+   if "%BIN_HRB%"==""  set BIN_HRB=bin
+   set HG_CCOMP=%HG_MINGW%
+   set HBMK2_WORDIR=-workdir=%HG_ROOT%\%LIB_GUI%\.hbmk
+   call BuildLib_hbmk2.bat %1 %2 %3 %4 %5 %6 %7 %8 %9
+   set HBMK2_WORDIR=
+   goto :END
 
-   shift
-   if exist buildlib30.bat goto HB30
-   echo File buildlib30.bat not found !!!
-   echo.
-   echo This file must be executed from SOURCE folder !!!
-   echo.
-   goto END
+:BUILD_HB32
 
-:CHECK32
+   cls
 
-   shift
-   if exist buildlib32.bat goto HB32
-   echo File buildlib32.bat not found !!!
-   echo.
-   echo This file must be executed from SOURCE folder !!!
-   echo.
-   goto END
+   rem *** Set Paths ***
+   if /I "%1"=="/C" call :CLEAN_PATH
+   if /i "%1"=="/C" shift
+   if "%HG_ROOT%"==""  set HG_ROOT=c:\oohg
+   if "%HG_HRB%"==""   set HG_HRB=c:\oohg\hb32
+   if "%HG_MINGW%"=="" set HG_MINGW=c:\oohg\hb32\comp\mingw
+   if "%LIB_GUI%"==""  set LIB_GUI=lib\hb\mingw
+   if "%LIB_HRB%"==""  set LIB_HRB=lib\win\mingw
+   if "%BIN_HRB%"==""  set BIN_HRB=bin
+   set HG_CCOMP=%HG_MINGW%
+   set HBMK2_WORDIR=
+   call BuildLib_hbmk2.bat %1 %2 %3 %4 %5 %6 %7 %8 %9
+   goto :END
 
-:HB30
+:CLEAN_PATH
 
-   call buildlib30.bat %1 %2 %3 %4 %5 %6 %7 %8 %9
-   goto END
-
-:HB32
-
-   call buildlib32.bat %1 %2 %3 %4 %5 %6 %7 %8 %9
-   goto END
+   set HG_ROOT=
+   set HG_HRB=
+   set HG_MINGW=
+   set LIB_GUI=
+   set LIB_HRB=
+   set BIN_HRB=
+   goto :END
 
 :END
