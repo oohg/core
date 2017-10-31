@@ -36,8 +36,7 @@ rem --- build30.bat
    cls
 
    rem *** Set Paths ***
-   if "%1"=="/C" goto :HB30CLEAN_PATH
-   if "%1"=="/c" goto :HB30CLEAN_PATH
+   if /I "%1"=="/C" goto :HB30CLEAN_PATH
    if "%HG_ROOT%"==""  set HG_ROOT=c:\oohg
    if "%HG_HRB%"==""   set HG_HRB=c:\oohg\hb30
    if "%HG_MINGW%"=="" set HG_MINGW=c:\oohg\hb30\comp\mingw
@@ -71,8 +70,7 @@ rem --- build32.bat
    cls
 
    rem *** Set Paths ***
-   if "%1"=="/C" goto :HB32CLEAN_PATH
-   if "%1"=="/c" goto :HB32CLEAN_PATH
+   if /I "%1"=="/C" goto :HB32CLEAN_PATH
    if "%HG_ROOT%"==""  set HG_ROOT=c:\oohg
    if "%HG_HRB%"==""   set HG_HRB=c:\oohg\hb32
    if "%HG_MINGW%"=="" set HG_MINGW=c:\oohg\hb32\comp\mingw
