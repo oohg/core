@@ -6,59 +6,27 @@ rem
 :MAIN
 
    cls
-   if /I "%1"=="HB30" goto :CHECK30
-   if /I "%1"=="HB32" goto :CHECK32
+   if not exist buildlib.bat goto :SYNTAX
+   if /I "%1"=="HB30" goto :HB30
+   if /I "%1"=="HB32" goto :HB32
 
-:NOVERSION
+:SYNTAX
 
-   if exist buildlib30.bat goto CONTINUE
-   if exist buildlib32.bat goto :HB32
-   echo File buildlib30.bat not found !!!
-   echo File buildlib32.bat not found !!!
+   echo Syntax:  (from source folder - buildlib.bat)
    echo.
-   echo This file must be executed from SOURCE folder !!!
-   echo.
-   goto :END
-
-:CONTINUE
-
-   if not exist buildlib.bat goto :HB30
-   echo Syntax:
-   echo    To build with Harbour 3.0
-   echo       buildlib HB30 [options]
-   echo   To build with Harbour 3.2
-   echo       buildlib HB32 [options]
-   echo.
-   goto :END
-
-:CHECK30
-
-   shift
-   if exist buildlib.bat goto :HB30
-   echo File buildlib.bat not found !!!
-   echo.
-   echo This file must be executed from SOURCE folder !!!
-   echo.
-   goto :END
-
-:CHECK32
-
-   shift
-   if exist buildlib.bat goto :HB32
-   echo File buildlib.bat not found !!!
-   echo.
-   echo This file must be executed from SOURCE folder !!!
+   echo  buildlib HB30 [options]  (Harbour 3.0)
+   echo  buildlib HB32 [options]  (Harbour 3.2)
    echo.
    goto :END
 
 :HB30
 
-   call ::HB30MAIN %1 %2 %3 %4 %5 %6 %7 %8 %9
+   call ::HB30MAIN %*
    goto :END
 
 :HB32
 
-   call ::HB32MAIN %1 %2 %3 %4 %5 %6 %7 %8 %9
+   call ::HB32MAIN %*
    goto :END
 
 rem --- build30.bat
