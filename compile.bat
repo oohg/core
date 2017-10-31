@@ -11,9 +11,9 @@ rem
    if /I "%1"=="/C" shift /1
    if not exist compile.bat goto :SYNTAX
 
-   if /I "%1"=="HB30" call ::COMPILE30 %HG_CLEAN% %1 %2 %3 %4 %5 %6 %7 %8 %9
-   if /I "%1"=="HB32" call ::COMPILE32 %HG_CLEAN% %1 %2 %3 %4 %5 %6 %7 %8 %9
-   if /I "%1"=="XB"   call ::COMPILEXB %HG_CLEAN% %1 %2 %3 %4 %5 %6 %7 %8 %9
+   if /I "%1"=="HB30" call ::COMPILE30 %HG_CLEAN% %*
+   if /I "%1"=="HB32" call ::COMPILE32 %HG_CLEAN% %*
+   if /I "%1"=="XB"   call ::COMPILEXB %HG_CLEAN% %*
 
    if /I not "%1"=="HB30" if /I not "%1"=="HB32" if /I not "%1"=="XB" goto :SYNTAX
 
