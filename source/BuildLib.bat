@@ -22,7 +22,7 @@ rem
 
 :CONTINUE
 
-   if not exist buildlib32.bat goto :HB30
+   if not exist buildlib.bat goto :HB30
    echo Syntax:
    echo    To build with Harbour 3.0
    echo       buildlib HB30 [options]
@@ -34,8 +34,8 @@ rem
 :CHECK30
 
    shift
-   if exist buildlib30.bat goto :HB30
-   echo File buildlib30.bat not found !!!
+   if exist buildlib.bat goto :HB30
+   echo File buildlib.bat not found !!!
    echo.
    echo This file must be executed from SOURCE folder !!!
    echo.
@@ -44,8 +44,8 @@ rem
 :CHECK32
 
    shift
-   if exist buildlib32.bat goto :HB32
-   echo File buildlib32.bat not found !!!
+   if exist buildlib.bat goto :HB32
+   echo File buildlib.bat not found !!!
    echo.
    echo This file must be executed from SOURCE folder !!!
    echo.
