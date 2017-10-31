@@ -8,15 +8,15 @@ rem
    cls
    if /I "%1"=="/C" set HG_ROOT=c:\oohg
    if /I "%1"=="/C" set HB_CLEAN=/C
-   if /I "%1"=="/C" shift /1
+   if /I "%1"=="/C" shift
    if not exist compile.bat goto :SYNTAX
 
    if /I "%1"=="HB30" (
-      call ::COMPILE30 %HG_CLEAN% %* ) ^
+      call ::COMPILE30 %HG_CLEAN% %1 %2 %3 %4 %5 %6 %7 %8 %9 ) ^
    else if /I "%1"=="HB32" (
-      call ::COMPILE32 %HG_CLEAN% %* ) ^
+      call ::COMPILE32 %HG_CLEAN% %1 %2 %3 %4 %5 %6 %7 %8 %9 ) ^
    else if /I "%1"=="XB"   (
-      call ::COMPILEXB %HG_CLEAN% %* ) ^
+      call ::COMPILEXB %HG_CLEAN% %1 %2 %3 %4 %5 %6 %7 %8 %9 ) ^
    else (
       goto :SYNTAX )
    set HG_CLEAN=
@@ -35,9 +35,9 @@ rem
 
 :COMPILE30
 
-   shift /1
+   shift
    if /I "%1"=="/C" call :CLEAR_ALL
-   if /I "%1"=="/C" shift /1
+   if /I "%1"=="/C" shift
    if "%HG_ROOT%"==""  set HG_ROOT=c:\oohg
    if "%HG_HRB%"==""   set HG_HRB=c:\oohg\hb30
    if "%HG_MINGW%"=="" set HG_MINGW=c:\oohg\hb30\comp\mingw
@@ -45,14 +45,14 @@ rem
    if "%LIB_HRB%"==""  set LIB_HRB=lib
    if "%BIN_HRB%"==""  set BIN_HRB=bin
    set HG_RC=%HG_ROOT%\resources\oohg_hb30.o
-   call %HG_ROOT%\compile_mingw.bat %*
+   call %HG_ROOT%\compile_mingw.bat %1 %2 %3 %4 %5 %6 %7 %8 %9
    goto :END
 
 :COMPILE32
 
-   shift /1
+   shift
    if /I "%1"=="/C" call :CLEAR_ALL
-   if /I "%1"=="/C" shift /1
+   if /I "%1"=="/C" shift
    if "%HG_ROOT%"==""  set HG_ROOT=c:\oohg
    if "%HG_HRB%"==""   set HG_HRB=c:\oohg\hb32
    if "%HG_MINGW%"=="" set HG_MINGW=c:\oohg\hb32\comp\mingw
@@ -60,14 +60,14 @@ rem
    if "%LIB_HRB%"==""  set LIB_HRB=lib\win\mingw
    if "%BIN_HRB%"==""  set BIN_HRB=bin
    set HG_RC=%HG_ROOT%\resources\oohg_hb32.o
-   call %HG_ROOT%\compile_mingw.bat %*
+   call %HG_ROOT%\compile_mingw.bat %1 %2 %3 %4 %5 %6 %7 %8 %9
    goto :END
 
 :COMPILEXB
 
-   shift /1
+   shift
    if /I "%1"=="/C" call :CLEAR_ALL
-   if /I "%1"=="/C" shift /1
+   if /I "%1"=="/C" shift
    if "%HG_ROOT%"==""  set HG_ROOT=c:\oohg
    if "%HG_HRB%"==""   set HG_HRB=c:\oohg\xhbcc
    if "%HG_BCC%"==""   set HG_BCC=c:\Borland\BCC55
@@ -75,7 +75,7 @@ rem
    if "%LIB_GUI%"==""  set LIB_GUI=lib\xhb\bcc
    if "%LIB_HRB%"==""  set LIB_HRB=lib
    if "%BIN_HRB%"==""  set BIN_HRB=bin
-   call %HG_ROOT%\compile_bcc.bat %*
+   call %HG_ROOT%\compile_bcc.bat %1 %2 %3 %4 %5 %6 %7 %8 %9
    goto :END
 
 :CLEAR_ALL

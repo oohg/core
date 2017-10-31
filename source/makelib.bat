@@ -8,11 +8,11 @@ rem
    cls
    if not exist makelib.bat goto :SYNTAX
    if /I "%1"=="HB30" (
-      call :MAKELIB_30 %* ) ^
+      call :MAKELIB_30 %1 %2 %3 %4 %5 %6 %7 %8 %9 ) ^
    else if /I "%1"=="HB32" (
-      call :MAKELIB_32 %* ) ^
+      call :MAKELIB_32 %1 %2 %3 %4 %5 %6 %7 %8 %9 ) ^
    else if /I "%1"=="XB" (
-      call :MAKELIB_XB %* ) ^
+      call :MAKELIB_XB %1 %2 %3 %4 %5 %6 %7 %8 %9 ) ^
    else (
       goto :SYNTAX )
    goto :END
@@ -29,9 +29,9 @@ rem
 
 :MAKELIB_XB
 
-   shift /1
+   shift
    if /I "%1"=="/C" call :CLEAN_PATH
-   if /I "%1"=="/C" shift /1
+   if /I "%1"=="/C" shift
    if "%HG_ROOT%"=="" set HG_ROOT=c:\oohg
    if "%HG_HRB%"==""  set HG_HRB=c:\oohg\xhbcc
    if "%HG_BCC%"==""  set HG_BCC=c:\Borland\BCC55
@@ -43,9 +43,9 @@ rem
 
 :MAKELIB_30
 
-   shift /1
+   shift
    if /I "%1"=="/C" call :CLEAN_PATH
-   if /I "%1"=="/C" shift /1
+   if /I "%1"=="/C" shift
    if "%HG_ROOT%"==""  set HG_ROOT=c:\oohg
    if "%HG_HRB%"==""   set HG_HRB=c:\oohg\hb30
    if "%HG_MINGW%"=="" set HG_MINGW=c:\oohg\hb30\comp\mingw
@@ -57,9 +57,9 @@ rem
 
 :MAKELIB_32
 
-   shift /1
+   shift
    if /I "%1"=="/C" call :CLEAN_PATH
-   if /I "%1"=="/C" shift /1
+   if /I "%1"=="/C" shift
    if "%HG_ROOT%"==""  set HG_ROOT=c:\oohg
    if "%HG_HRB%"==""   set HG_HRB=c:\oohg\hb32
    if "%HG_MINGW%"=="" set HG_MINGW=c:\oohg\hb32\comp\mingw

@@ -25,7 +25,7 @@ rem
 
    rem *** Set Paths ***
    if /I "%1"=="/C" call :CLEAN_PATH
-   if /I "%1"=="/C" shift /1
+   if /I "%1"=="/C" shift
    if "%HG_ROOT%"==""  set HG_ROOT=c:\oohg
    if "%HG_HRB%"==""   set HG_HRB=c:\oohg\hb30
    if "%HG_MINGW%"=="" set HG_MINGW=c:\oohg\hb30\comp\mingw
@@ -44,7 +44,7 @@ rem
 
    rem *** Set Paths ***
    if /I "%1"=="/C" call :CLEAN_PATH
-   if /i "%1"=="/C" shift /1
+   if /i "%1"=="/C" shift
    if "%HG_ROOT%"==""  set HG_ROOT=c:\oohg
    if "%HG_HRB%"==""   set HG_HRB=c:\oohg\hb32
    if "%HG_MINGW%"=="" set HG_MINGW=c:\oohg\hb32\comp\mingw
