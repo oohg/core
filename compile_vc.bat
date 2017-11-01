@@ -95,28 +95,20 @@ rem
    if exist %HG_ROOT%\%LIB_GUI%\miniprint.lib echo %HG_ROOT%\%LIB_GUI%\miniprint.lib >> vc.lnk
 
    rem *** ODBC Libraries ***
-   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/o" echo %HG_HRB%\%LIB_HRB%\hbodbc.lib >> vc.lnk
-   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/o" echo %HG_HRB%\%LIB_HRB%\odbc32.lib >> vc.lnk
-   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/O" echo %HG_HRB%\%LIB_HRB%\hbodbc.lib >> vc.lnk
-   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/O" echo %HG_HRB%\%LIB_HRB%\odbc32.lib >> vc.lnk
+   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if /I "%%a"=="/o" echo %HG_HRB%\%LIB_HRB%\hbodbc.lib >> vc.lnk
+   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if /I "%%a"=="/o" echo %HG_HRB%\%LIB_HRB%\odbc32.lib >> vc.lnk
 
    rem *** ZIP Libraries ***
-   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/z" echo %HG_HRB%\%LIB_HRB%\zlib1.lib >> vc.lnk
-   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/z" echo %HG_HRB%\%LIB_HRB%\ziparchive.lib >> vc.lnk
-   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/Z" echo %HG_HRB%\%LIB_HRB%\zlib1.lib >> vc.lnk
-   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/Z" echo %HG_HRB%\%LIB_HRB%\ziparchive.lib >> vc.lnk
+   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if /I "%%a"=="/z" echo %HG_HRB%\%LIB_HRB%\zlib1.lib >> vc.lnk
+   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if /I "%%a"=="/z" echo %HG_HRB%\%LIB_HRB%\ziparchive.lib >> vc.lnk
 
    rem *** ADS Libraries ***
-   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/a" echo %HG_HRB%\%LIB_HRB%\rddads.lib >> vc.lnk
-   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/a" echo %HG_HRB%\%LIB_HRB%\ace32.lib >> vc.lnk
-   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/A" echo %HG_HRB%\%LIB_HRB%\rddads.lib >> vc.lnk
-   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/A" echo %HG_HRB%\%LIB_HRB%\ace32.lib >> vc.lnk
+   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if /I "%%a"=="/a" echo %HG_HRB%\%LIB_HRB%\rddads.lib >> vc.lnk
+   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if /I "%%a"=="/a" echo %HG_HRB%\%LIB_HRB%\ace32.lib >> vc.lnk
 
    rem *** MySql Libraries ***
-   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/m" echo %HG_HRB%\%LIB_HRB%\mysql.lib >> vc.lnk
-   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/m" echo %HG_HRB%\%LIB_HRB%\libmysqldll.lib >> vc.lnk
-   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/M" echo %HG_HRB%\%LIB_HRB%\mysql.lib >> vc.lnk
-   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/M" echo %HG_HRB%\%LIB_HRB%\libmysqldll.lib >> vc.lnk
+   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if /I "%%a"=="/m" echo %HG_HRB%\%LIB_HRB%\mysql.lib >> vc.lnk
+   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if /I "%%a"=="/m" echo %HG_HRB%\%LIB_HRB%\libmysqldll.lib >> vc.lnk
 
    rem *** VC-dependant Libraries ***
    for %%a in (user32 ws2_32 winspool ole32 oleaut32 advapi32 winmm mpr) do echo %%a.lib >> vc.lnk

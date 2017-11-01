@@ -102,7 +102,6 @@ rem
    if "%HG_ROOT%"==""  set HG_ROOT=c:\oohg
    if "%HG_HRB%"==""   set HG_HRB=c:\oohg\xhbcc
    if "%HG_BCC%"==""   set HG_BCC=c:\Borland\BCC55
-   if "%HG_MINGW%"=="" set HG_MINGW=c:\Borland\BCC55
    if "%LIB_GUI%"==""  set LIB_GUI=lib\xhb\bcc
    if "%LIB_HRB%"==""  set LIB_HRB=lib
    if "%BIN_HRB%"==""  set BIN_HRB=bin
@@ -114,6 +113,7 @@ rem
    set HG_ROOT=c:\oohg
    set HG_HRB=
    set HG_MINGW=
+   set HG_BCC=
    set LIB_GUI=
    set LIB_HRB=
    set BIN_HRB=
