@@ -47,7 +47,7 @@ rem
    echo   To build with xHarbour and BCC
    echo       compile [/C] XB file [options]
    echo.
-   goto END
+   goto :END
 
 :TEST_HB30
 

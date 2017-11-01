@@ -3,71 +3,88 @@ rem
 rem $Id: buildapp.bat,v 1.14 2015-03-12 22:35:09 fyurisich Exp $
 rem
 
-:MAIN
+rem todo: not to check buildapp30.bat buildapp32.bat
+
+:BUILDAPP
 
    cls
-   if /I "%1"=="/C" goto CLEAN_PATH
+   if /I "%1"=="/C" call :CLEAN_PATH
+   if /I "%1"=="/C" shift
+
    if "%HG_ROOT%"=="" set HG_ROOT=c:\oohg
-   set HG_CLEAN=
-   goto PARAMS
 
-:CLEAN_PATH
+   if /I "%1"=="HB30" goto :TEST_HB30
+   if /I "%1"=="HB32" goto :TEST_HB32
 
-   set HG_ROOT=c:\oohg
-   set HG_CLEAN=/C
-   shift
+:DETECT_HB30
 
-:PARAMS
-
-   if /I "%1"=="HB30" goto CHECK30
-   if /I "%1"=="HB32" goto CHECK32
-
-:NOVERSION
-
-   if exist %HG_ROOT%\buildapp30.bat goto CONTINUE
-   if exist %HG_ROOT%\buildapp32.bat goto HB32
-   echo File buildapp30.bat not found !!!
-   echo File buildapp32.bat not found !!!
+   if exist %HG_ROOT%\compile30.bat goto :DETECT_HB32
+   if exist %HG_ROOT%\compile.bat goto :COMPILE_HB32
+   echo File compile30.bat not found !!!
+   echo File compile32.bat not found !!!
    echo.
-   goto END
+   goto :END
 
-:CONTINUE
+:DETECT_HB32
 
-   if not exist %HG_ROOT%\buildapp32.bat goto HB30
+   if not exist %HG_ROOT%\compile32.bat goto :COMPILE_HB30
    echo Syntax:
    echo    To build with Harbour 3.0
    echo       buildapp [/C] HB30 file [options]
    echo   To build with Harbour 3.2
    echo       buildapp [/C] HB32 file [options]
    echo.
-   goto END
+   goto :END
 
-:CHECK30
-
-   shift
-   if exist %HG_ROOT%\buildapp30.bat goto HB30
-   echo File buildapp30.bat not found !!!
-   echo.
-   goto END
-
-:CHECK32
+:TEST_HB30
 
    shift
-   if exist %HG_ROOT%\buildapp32.bat goto HB32
-   echo File buildapp32.bat not found !!!
+   if exist %HG_ROOT%\compile30.bat goto :COMPILE_HB30
+   echo File compile30.bat not found !!!
    echo.
-   goto END
+   goto :END
 
-:HB30
+:TEST_HB32
 
-   call %HG_ROOT%\buildapp30.bat %HG_CLEAN% %1 %2 %3 %4 %5 %6 %7 %8 %9
-   goto END
+   shift
+   if exist %HG_ROOT%\compile32.bat goto :COMPILE_HB32
+   echo File compile32.bat not found !!!
+   echo.
+   goto :END
 
-:HB32
+:COMPILE_HB30
 
-   call %HG_ROOT%\buildapp32.bat %HG_CLEAN% %1 %2 %3 %4 %5 %6 %7 %8 %9
-   goto END
+   if "%HG_ROOT%"==""  set HG_ROOT=c:\oohg
+   if "%HG_HRB%"==""   set HG_HRB=c:\oohg\hb30
+   if "%HG_MINGW%"=="" set HG_MINGW=c:\oohg\hb30\comp\mingw
+   if "%LIB_GUI%"==""  set LIB_GUI=lib
+   if "%LIB_HRB%"==""  set LIB_HRB=lib
+   if "%BIN_HRB%"==""  set BIN_HRB=bin
+   set HG_CCOMP=%HG_MINGW%
+   call %HG_ROOT%\BuildApp_hbmk2.bat %1 %2 %3 %4 %5 %6 %7 %8 %9
+   goto :END
+
+:COMPILE_HB32
+
+   if "%HG_ROOT%"==""  set HG_ROOT=c:\oohg
+   if "%HG_HRB%"==""   set HG_HRB=c:\oohg\hb32
+   if "%HG_MINGW%"=="" set HG_MINGW=c:\oohg\hb32\comp\mingw
+   if "%LIB_GUI%"==""  set LIB_GUI=lib\hb\mingw
+   if "%LIB_HRB%"==""  set LIB_HRB=lib\win\mingw
+   if "%BIN_HRB%"==""  set BIN_HRB=bin
+   set HG_CCOMP=%HG_MINGW%
+   call %HG_ROOT%\BuildApp_hbmk2.bat %1 %2 %3 %4 %5 %6 %7 %8 %9
+   goto :END
+
+:CLEAN_PATH
+
+   set HG_ROOT=c:\oohg
+   set HG_HRB=
+   set HG_MINGW=
+   set HG_BCC=
+   set LIB_GUI=
+   set LIB_HRB=
+   set BIN_HRB=
+   goto :END
 
 :END
-
-   set HG_CLEAN=
