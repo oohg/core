@@ -3,47 +3,39 @@ rem
 rem $Id: compile.bat,v 1.22 2015-03-18 01:22:29 fyurisich Exp $
 rem
 
-:MAIN
+:COMPILE
 
    cls
-   if /I "%1"=="/C" goto CLEAN_PATH
+   if /I "%1"=="/C" call :CLEAN_PATH
+   if /I "%1"=="/C" shift
+
    if "%HG_ROOT%"=="" set HG_ROOT=c:\oohg
-   set HG_CLEAN=
-   goto PARAMS
 
-:CLEAN_PATH
+   if /I "%1"=="HB30" goto :TEST_HB30
+   if /I "%1"=="HB32" goto :TEST_HB32
+   if /I "%1"=="XB"   goto :TEST_XB
 
-   set HG_ROOT=c:\oohg
-   set HG_CLEAN=/C
-   shift
+:DETECT_HB30
 
-:PARAMS
+   if not exist %HG_ROOT%\compile30.bat goto :DETECT_HB32
+   if exist %HG_ROOT%\compile32.bat goto :SYNTAX
+   if exist %HG_ROOT%\compileXB.bat goto :SYNTAX
+   goto :COMPILE_HB30
 
-   if /I "%1"=="HB30" goto CHECK30
-   if /I "%1"=="HB32" goto CHECK32
-   if /I "%1"=="XB"   goto CHECKXB
+:DETECT_HB32
 
-:NOVERSION
+   if not exist %HG_ROOT%\compile32.bat goto :DETECT_XB
+   if exist %HG_ROOT%\compileXB.bat goto :SYNTAX
+   goto :COMPILE_HB32
 
-   if not exist %HG_ROOT%\compile30.bat goto NOVERSION2
-   if exist %HG_ROOT%\compile32.bat goto SYNTAX
-   if exist %HG_ROOT%\compileXB.bat goto SYNTAX
-   goto HB30
+:DETECT_XB
 
-:NOVERSION2
-
-   if not exist %HG_ROOT%\compile32.bat goto NOVERSION3
-   if exist %HG_ROOT%\compileXB.bat goto SYNTAX
-   goto HB32
-
-:NOVERSION3
-
-   if exist %HG_ROOT%\compileXB.bat goto XB
+   if exist %HG_ROOT%\compileXB.bat goto :COMPILE_XB
    echo File compile30.bat not found !!!
    echo File compile32.bat not found !!!
    echo File compileXB.bat not found !!!
    echo.
-   goto END
+   goto :END
 
 :SYNTAX
 
@@ -55,47 +47,76 @@ rem
    echo   To build with xHarbour and BCC
    echo       compile [/C] XB file [options]
    echo.
-   goto END
+   goto :END
 
-:CHECK30
+:TEST_HB30
 
    shift
-   if exist %HG_ROOT%\compile30.bat goto HB30
+   if exist %HG_ROOT%\compile30.bat goto :COMPILE_HB30
    echo File compile30.bat not found !!!
    echo.
-   goto END
+   goto :END
 
-:CHECK32
+:TEST_HB32
 
    shift
-   if exist %HG_ROOT%\compile32.bat goto HB32
+   if exist %HG_ROOT%\compile32.bat goto :COMPILE_HB32
    echo File compile32.bat not found !!!
    echo.
-   goto END
+   goto :END
 
-:CHECKXB
+:TEST_XB
 
    shift
-   if exist %HG_ROOT%\compileXB.bat goto XB
+   if exist %HG_ROOT%\compileXB.bat goto :COMPILE_XB
    echo File compileXB.bat not found !!!
    echo.
-   goto END
+   goto :END
 
-:HB30
+:COMPILE_HB30
 
-   call %HG_ROOT%\compile30.bat %HG_CLEAN% %1 %2 %3 %4 %5 %6 %7 %8 %9
-   goto END
+   if "%HG_ROOT%"==""  set HG_ROOT=c:\oohg
+   if "%HG_HRB%"==""   set HG_HRB=c:\oohg\hb30
+   if "%HG_MINGW%"=="" set HG_MINGW=c:\oohg\hb30\comp\mingw
+   if "%LIB_GUI%"==""  set LIB_GUI=lib
+   if "%LIB_HRB%"==""  set LIB_HRB=lib
+   if "%BIN_HRB%"==""  set BIN_HRB=bin
+   set HG_RC=%HG_ROOT%\resources\oohg_hb30.o
+   call %HG_ROOT%\compile_mingw.bat %1 %2 %3 %4 %5 %6 %7 %8 %9
+   goto :END
 
-:HB32
+:COMPILE_HB32
 
-   call %HG_ROOT%\compile32.bat %HG_CLEAN% %1 %2 %3 %4 %5 %6 %7 %8 %9
-   goto END
+   if "%HG_ROOT%"==""  set HG_ROOT=c:\oohg
+   if "%HG_HRB%"==""   set HG_HRB=c:\oohg\hb32
+   if "%HG_MINGW%"=="" set HG_MINGW=c:\oohg\hb32\comp\mingw
+   if "%LIB_GUI%"==""  set LIB_GUI=lib\hb\mingw
+   if "%LIB_HRB%"==""  set LIB_HRB=lib\win\mingw
+   if "%BIN_HRB%"==""  set BIN_HRB=bin
+   set HG_RC=%HG_ROOT%\resources\oohg_hb32.o
+   call %HG_ROOT%\compile_mingw.bat %1 %2 %3 %4 %5 %6 %7 %8 %9
+   goto :END
 
-:XB
+:COMPILE_XB
 
-   call %HG_ROOT%\compileXB.bat %HG_CLEAN% %1 %2 %3 %4 %5 %6 %7 %8 %9
-   goto END
+   if "%HG_ROOT%"==""  set HG_ROOT=c:\oohg
+   if "%HG_HRB%"==""   set HG_HRB=c:\oohg\xhbcc
+   if "%HG_BCC%"==""   set HG_BCC=c:\Borland\BCC55
+   if "%LIB_GUI%"==""  set LIB_GUI=lib\xhb\bcc
+   if "%LIB_HRB%"==""  set LIB_HRB=lib
+   if "%BIN_HRB%"==""  set BIN_HRB=bin
+   call %HG_ROOT%\compile_bcc.bat %1 %2 %3 %4 %5 %6 %7 %8 %9
+   goto :END
+
+:CLEAN_PATH
+
+   set HG_ROOT=c:\oohg
+   set HG_HRB=
+   set HG_MINGW=
+   set HG_BCC=
+   set LIB_GUI=
+   set LIB_HRB=
+   set BIN_HRB=
+   goto :END
 
 :END
-
-   set HG_CLEAN=

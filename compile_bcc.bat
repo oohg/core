@@ -43,38 +43,20 @@ rem
 :LOOP_START
 
    if "%2"==""    goto LOOP_END
-   if "%2"=="/c"  goto COMP_CONSOLE
-   if "%2"=="-c"  goto COMP_CONSOLE
-   if "%2"=="/C"  goto COMP_CONSOLE
-   if "%2"=="-C"  goto COMP_CONSOLE
-   if "%2"=="/d"  goto COMP_DEBUG
-   if "%2"=="-d"  goto COMP_DEBUG
-   if "%2"=="/D"  goto COMP_DEBUG
-   if "%2"=="-D"  goto COMP_DEBUG
-   if "%2"=="-p"  goto PPO
-   if "%2"=="/p"  goto PPO
-   if "%2"=="-P"  goto PPO
-   if "%2"=="/P"  goto PPO
-   if "%2"=="-w3" goto W3
-   if "%2"=="/w3" goto W3
-   if "%2"=="-W3" goto W3
-   if "%2"=="/W3" goto W3
-   if "%2"=="-nr" goto NORUN
-   if "%2"=="-Nr" goto NORUN
-   if "%2"=="-nR" goto NORUN
-   if "%2"=="-NR" goto NORUN
-   if "%2"=="/nr" goto NORUN
-   if "%2"=="/Nr" goto NORUN
-   if "%2"=="/nR" goto NORUN
-   if "%2"=="/NR" goto NORUN
-   if "%2"=="/l"  goto USELOG
-   if "%2"=="-l"  goto USELOG
-   if "%2"=="/L"  goto USELOG
-   if "%2"=="-L"  goto USELOG
-   if "%2"=="/h"  goto ISNOTXHB
-   if "%2"=="-h"  goto ISNOTXHB
-   if "%2"=="/H"  goto ISNOTXHB
-   if "%2"=="-H"  goto ISNOTXHB
+   if /I "%2"=="-c"  goto COMP_CONSOLE
+   if /I "%2"=="/c"  goto COMP_CONSOLE
+   if /I "%2"=="-d"  goto COMP_DEBUG
+   if /I "%2"=="/d"  goto COMP_DEBUG
+   if /I "%2"=="-p"  goto PPO
+   if /I "%2"=="/p"  goto PPO
+   if /I "%2"=="-w3" goto W3
+   if /I "%2"=="/w3" goto W3
+   if /I "%2"=="-nr" goto NORUN
+   if /I "%2"=="/nr" goto NORUN
+   if /I "%2"=="-l"  goto USELOG
+   if /I "%2"=="/l"  goto USELOG
+   if /I "%2"=="-h"  goto ISNOTXHB
+   if /I "%2"=="/h"  goto ISNOTXHB
    set EXTRA=%EXTRA% %2
    shift
    goto LOOP_START
@@ -183,28 +165,20 @@ rem
    if exist %HG_ROOT%\%LIB_GUI%\miniprint.lib echo %HG_ROOT%\%LIB_GUI%\miniprint.lib + >> b32.bc
 
    rem *** ODBC Libraries ***
-   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/o" echo %HG_HRB%\%LIB_HRB%\hbodbc.lib + >> b32.bc
-   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/o" echo %HG_HRB%\%LIB_HRB%\odbc32.lib + >> b32.bc
-   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/O" echo %HG_HRB%\%LIB_HRB%\hbodbc.lib + >> b32.bc
-   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/O" echo %HG_HRB%\%LIB_HRB%\odbc32.lib + >> b32.bc
+   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if /I "%%a"=="/o" echo %HG_HRB%\%LIB_HRB%\hbodbc.lib + >> b32.bc
+   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if /I "%%a"=="/o" echo %HG_HRB%\%LIB_HRB%\odbc32.lib + >> b32.bc
 
    rem *** ZIP Libraries ***
-   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/z" echo %HG_HRB%\%LIB_HRB%\zlib1.lib + >> b32.bc
-   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/z" echo %HG_HRB%\%LIB_HRB%\ziparchive.lib + >> b32.bc
-   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/Z" echo %HG_HRB%\%LIB_HRB%\zlib1.lib + >> b32.bc
-   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/Z" echo %HG_HRB%\%LIB_HRB%\ziparchive.lib + >> b32.bc
+   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if /I "%%a"=="/z" echo %HG_HRB%\%LIB_HRB%\zlib1.lib + >> b32.bc
+   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if /I "%%a"=="/z" echo %HG_HRB%\%LIB_HRB%\ziparchive.lib + >> b32.bc
 
    rem *** ADS Libraries ***
-   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/a" echo %HG_HRB%\%LIB_HRB%\rddads.lib + >> b32.bc
-   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/a" echo %HG_HRB%\%LIB_HRB%\ace32.lib + >> b32.bc
-   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/A" echo %HG_HRB%\%LIB_HRB%\rddads.lib + >> b32.bc
-   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/A" echo %HG_HRB%\%LIB_HRB%\ace32.lib + >> b32.bc
+   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if /I "%%a"=="/a" echo %HG_HRB%\%LIB_HRB%\rddads.lib + >> b32.bc
+   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if /I "%%a"=="/a" echo %HG_HRB%\%LIB_HRB%\ace32.lib + >> b32.bc
 
    rem *** MySql Libraries ***
-   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/m" echo %HG_HRB%\%LIB_HRB%\mysql.lib + >> b32.bc
-   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/m" echo %HG_HRB%\%LIB_HRB%\libmysqldll.lib + >> b32.bc
-   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/M" echo %HG_HRB%\%LIB_HRB%\mysql.lib + >> b32.bc
-   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/M" echo %HG_HRB%\%LIB_HRB%\libmysqldll.lib + >> b32.bc
+   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if /I "%%a"=="/m" echo %HG_HRB%\%LIB_HRB%\mysql.lib + >> b32.bc
+   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if /I "%%a"=="/m" echo %HG_HRB%\%LIB_HRB%\libmysqldll.lib + >> b32.bc
 
    rem *** BCC-dependant Libraries ***
    echo cw32.lib + >> b32.bc
