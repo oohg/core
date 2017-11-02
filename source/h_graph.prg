@@ -834,7 +834,6 @@ Static Function DetMaxVal( nNum )
    Local nE, nMax, nMan, nVal, nOffset
 
    nE := 9
-   nVal := 0
    nNum := Abs( nNum )
 
    Do While .T.
@@ -854,7 +853,7 @@ Static Function DetMaxVal( nNum )
       nE --
    EndDo
 
-   Return nVal
+   RETURN iif( HB_ISNIL( nVal ), 0, nVal )
 
 Static Function ClrShadow( nColor, nFactor )
 
