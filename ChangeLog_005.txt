@@ -463,7 +463,7 @@
    + resources/dragdown.cur
    + resources/dragup.cur
    - resources/oohg.o
-     ; Rename oohg_hb30.o or oohg_hb32.o as oohg.o if needed.
+     ; Copy oohg_hb30.o or oohg_hb32.o to oohg.o if needed.
    * resources/oohg.rc
      + MINIGUI_DRAGUP and MINIGUI_DRAGDOWN cursors.
      * Format.
