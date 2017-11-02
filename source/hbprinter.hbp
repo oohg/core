@@ -26,7 +26,6 @@
 
 #alerts on exit
 -beep
--exitstr
 
 # uncomment the following line to build .ppo files
 #-p.\ppo\
