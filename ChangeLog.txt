@@ -1,4 +1,4 @@
-/*
+*
  * $Id$
  */
 
@@ -7,6 +7,109 @@
  * For example:
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
+
+2017-11-02 18:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog.txt
+     * Updated.
+   * core\BuildApp_hbmk2.bat
+     % Improved.
+     ! Do not try to compile an RC file if neither app's nor oohg's exist.
+     ! App's RC file is not compiled when oohg's doesn't exists.
+     * Now _temp.rc is part of the call to hbmk2.
+   * core\oohg.hbc
+     ! Lib bindings are dynamic instead of static.
+     * Resource file is not forced anymore into building chain.
+       To compile and app that has an RC file using hbmk2 you must add
+       'app.rc' to the command line or to the hbp file.
+       To make oohg's resources available to your app, you must include
+       (manually or using and #include directive) the content of oohg.rc
+       file into your app's RC file.
+       e.g.
+                   #include "C:\OOHG\RESOURCES\OOHG.RC"
+                   I1 PNG image.png
+                   ...
+
+2017-11-02 18:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\makelib_bcc.bat
+     * Command's output cleaned.
+     ! Label not found error.
+
+2017-11-02 18:13 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\makelib.bat
+     * References to compile*.bat changed to makelib*.bat
+
+2017-11-02 18:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\buildlib.bat
+     * References to compile*.bat changed to buildlib*.bat
+
+2017-11-02 18:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\compile.bat
+     * Error message.
+
+2017-11-02 18:09 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\compileXB.bat
+     * Format.
+
+2017-11-02 18:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\buildapp.bat
+     * References to compile*.bat changed to buildapp*.bat
+     * Some comments.
+
+2017-10-02 17:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\buildapp30.bat
+   * core\buildapp32.bat
+     * Content moved to buildapp.bat
+     * Now they call buildapp.bat
+   * core\buildapp.bat
+     * Added content from buildapp30.bat and buildapp32.bat
+
+   * core\compile30.bat
+   * core\compile32.bat
+   * core\compileXB.bat
+     * Content moved to compile.bat
+     * Now they call compile.bat
+   * core\compile.bat
+     * Added content from compile30.bat and compile32.bat
+
+   * core\compile_bcc.bat
+   * core\compile_pc.bat
+   * core\compile_vc.bat
+     % Improved.
+
+   * core\source\buildlib30.bat
+   * core\source\buildlib32.bat
+     * Content moved to source\buildlib.bat
+     * Now they call source\buildlib.bat
+   * core\source\buildlib.bat
+     * Added content from source\buildlib30.bat and source\buildlib32.bat
+
+   * core\source\makelib30.bat
+   * core\source\makelib32.bat
+   * core\source\makelibXB.bat
+     * Content moved to source\makelib.bat
+     * Now they call source\makelib.bat
+   * core\source\makelib.bat
+     * Added content from source\makelib30.bat and source\makelib32.bat
+
+   ; Thanks to José M. C. Quintas.
+
+2017-11-02 15:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_graph.prg
+     * Pacified xHarbour warning.
+
+2017-11-02 14:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   - core\source\xml.bat
+
+2017-11-02 14:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog_005.txt
+     ! Comment on oohg_hbxx.o files.
+
+2017-11-02 14:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\bostaurus.hbp
+   * core\source\hbprinter.hbp
+   * core\source\miniprint.hbp
+   * core\source\oohg.hbp
+     - Removed switch not supported by HB30.
 
 2017-10-30 19:26 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt

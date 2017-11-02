@@ -6,15 +6,15 @@ rem
 :MAIN
 
    REM *** Check for .prg ***
-   if "%1"=="" goto EXIT
-   if exist %1.prg goto CONTINUE
-   if not exist %1.hbp goto ERREXIT1
+   if "%1"=="" goto :END
+   if exist %1.prg goto :CONTINUE
+   if not exist %1.hbp goto :ERROR1
 
 :CONTINUE
 
    rem *** Delete Old Executable and Log ***
    if exist %1.exe     del %1.exe
-   if exist %1.exe     goto ERREXIT2
+   if exist %1.exe     goto :ERROR2
    if exist output.log del output.log
 
    rem *** Set Paths ***
@@ -52,38 +52,26 @@ rem
 
 :LOOP_START
 
-   if "%2"==""    goto LOOP_END
-   if "%2"=="/sl" goto SUPPRESS_LOG
-   if "%2"=="/sL" goto SUPPRESS_LOG
-   if "%2"=="/Sl" goto SUPPRESS_LOG
-   if "%2"=="/SL" goto SUPPRESS_LOG
-   if "%2"=="-sl" goto SUPPRESS_LOG
-   if "%2"=="-sL" goto SUPPRESS_LOG
-   if "%2"=="-Sl" goto SUPPRESS_LOG
-   if "%2"=="-SL" goto SUPPRESS_LOG
-   if "%2"=="-nr" goto SUPPRESS_RUN
-   if "%2"=="-nR" goto SUPPRESS_RUN
-   if "%2"=="-Nr" goto SUPPRESS_RUN
-   if "%2"=="-NR" goto SUPPRESS_RUN
-   if "%2"=="/nr" goto SUPPRESS_RUN
-   if "%2"=="/nR" goto SUPPRESS_RUN
-   if "%2"=="/Nr" goto SUPPRESS_RUN
-   if "%2"=="/NR" goto SUPPRESS_RUN
+   if "%2"==""       goto :LOOP_END
+   if /I "%2"=="/SL" goto :SUPPRESS_LOG
+   if /I "%2"=="-SL" goto :SUPPRESS_LOG
+   if /I "%2"=="-NR" goto :SUPPRESS_RUN
+   if /I "%2"=="/NR" goto :SUPPRESS_RUN
    set EXTRA=%EXTRA% %2
    shift
-   goto LOOP_START
+   goto :LOOP_START
 
 :SUPPRESS_LOG
 
    set NO_LOG=YES
    shift
-   goto LOOP_START
+   goto :LOOP_START
 
 :SUPPRESS_RUN
 
    set RUNEXE=-run-
    shift
-   goto LOOP_START
+   goto :LOOP_START
 
 :LOOP_END
 
@@ -94,12 +82,16 @@ rem
    rem *** Process Resource File ***
    echo Compiling %TFILE% ...
    echo #define oohgpath %HG_ROOT%\RESOURCES > _oohg_resconfig.h
-   copy /b %HG_ROOT%\resources\oohg.rc+%TFILE%.rc _temp.rc > nul
-   windres -i _temp.rc -o _temp.o
+   copy /b %HG_ROOT%\resources\oohg.rc + %TFILE%.rc _temp.rc > nul
+   if exist _temp.rc goto :BUILD
+   copy /b %TFILE%.rc _temp.rc > nul
+   if not exist _temp.rc goto :ERROR3
+
+:BUILD
 
    rem *** Compile and Link ***
-   if "%NO_LOG%"=="YES" hbmk2 %EXTRA% %TFILE% %HG_ROOT%\oohg.hbc %RUNEXE%
-   if not "%NO_LOG%"=="YES" hbmk2 %EXTRA% %TFILE% %HG_ROOT%\oohg.hbc >> output.log 2>&1 %RUNEXE% -prgflag=-q0
+   if     "%NO_LOG%"=="YES" hbmk2 %EXTRA% %TFILE% _temp.rc %HG_ROOT%\oohg.hbc %RUNEXE% -prgflag=-q0
+   if not "%NO_LOG%"=="YES" hbmk2 %EXTRA% %TFILE% _temp.rc %HG_ROOT%\oohg.hbc %RUNEXE% -prgflag=-q0 >> output.log 2>&1
    if exist output.log type output.log
 
    rem *** Cleanup ***
@@ -107,15 +99,25 @@ rem
    if exist _temp.* del _temp.*
    set PATH=%TPATH%
    set TPATH=
-   goto EXIT
+   set TFILE=
+   set RUNEXE=
+   set NO_LOG=
+   set EXTRA=
+   goto :END
 
-:ERREXIT1
+:ERROR1
 
-   echo FILE %TFILE%.prg OR %TFILE%.hbp NOT FOUND !!!
-   goto EXIT
+   echo COMPILE ERROR: Neither file %TFILE%.prg nor %TFILE%.hbp were found !!!
+   goto :END
 
-:ERREXIT2
+:ERROR2
 
-   echo COMPILE ERROR: IS %TFILE%.EXE RUNNING ?
+   echo COMPILE ERROR: is %TFILE%.exe running ?
+   goto :END
 
-:EXIT
+:ERROR3
+
+   echo COMPILE ERROR: Neither file %TFILE%.rc nor oohg.rc were found !!!
+   goto :END
+
+:END

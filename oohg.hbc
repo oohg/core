@@ -9,7 +9,7 @@ incpaths=include
 libpaths=${HG_ROOT}\${LIB_GUI}
 
 # libs must be statically linked to avoid "missing lib" runtime errors
-ldflags=-static
+fullstatic=YES
 
 # add harbour contrib folder to search for additional include files
 incpaths=${HG_HRB}\contrib\hbzebra
@@ -17,9 +17,6 @@ incpaths=${HG_HRB}\contrib\hbhpdf
 
 # add app folder to search for additional include files
 incpaths=${hb_curdir}
-
-# app + oohg resources
-sources=${hb_curdir}_temp.o
 
 # gui mode
 gt=gtgui
