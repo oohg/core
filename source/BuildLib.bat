@@ -13,10 +13,10 @@ rem
 
 :DETECT_HB30
 
-   if exist ..\compile30.bat goto :DETECT_HB32
-   if exist ..\compile32.bat goto :COMPILE_HB32
-   echo File ..\compile30.bat not found !!!
-   echo File ..\compile32.bat not found !!!
+   if exist buildlib30.bat goto :DETECT_HB32
+   if exist buildlib32.bat goto :COMPILE_HB32
+   echo File buildlib30.bat not found !!!
+   echo File buildlib32.bat not found !!!
    echo.
    echo This file must be executed from SOURCE folder !!!
    echo.
@@ -24,7 +24,7 @@ rem
 
 :DETECT_HB32
 
-   if not exist ..\compile32.bat goto :COMPILE_HB30
+   if not exist buildlib32.bat goto :COMPILE_HB30
    echo Syntax:
    echo    To build with Harbour 3.0
    echo       buildlib HB30 [options]
@@ -36,8 +36,8 @@ rem
 :TEST_HB30
 
    shift
-   if exist ..\compile30.bat goto :COMPILE_HB30
-   echo File ..\compile30.bat not found !!!
+   if exist buildlib30.bat goto :COMPILE_HB30
+   echo File buildlib30.bat not found !!!
    echo.
    echo This file must be executed from SOURCE folder !!!
    echo.
@@ -46,8 +46,8 @@ rem
 :TEST_HB32
 
    shift
-   if exist ..\compile32.bat goto :COMPILE_HB32
-   echo File ..\compile32.bat not found !!!
+   if exist buildlib32.bat goto :COMPILE_HB32
+   echo File buildlib32.bat not found !!!
    echo.
    echo This file must be executed from SOURCE folder !!!
    echo.
