@@ -90,8 +90,8 @@ rem
 :BUILD
 
    rem *** Compile and Link ***
-   if     "%NO_LOG%"=="YES" hbmk2 %EXTRA% %TFILE% _temp.rc %HG_ROOT%\oohg.hbc %RUNEXE% -prgflag=-q0
-   if not "%NO_LOG%"=="YES" hbmk2 %EXTRA% %TFILE% _temp.rc %HG_ROOT%\oohg.hbc %RUNEXE% -prgflag=-q0 >> output.log 2>&1
+   if     "%NO_LOG%"=="YES" hbmk2 %TFILE% _temp.rc %HG_ROOT%\oohg.hbc %RUNEXE% -prgflag=-q0 %EXTRA%
+   if not "%NO_LOG%"=="YES" hbmk2 %TFILE% _temp.rc %HG_ROOT%\oohg.hbc %RUNEXE% -prgflag=-q0 %EXTRA% >> output.log 2>&1
    if exist output.log type output.log
 
    rem *** Cleanup ***
