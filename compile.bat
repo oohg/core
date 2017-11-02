@@ -31,9 +31,9 @@ rem
 :DETECT_XB
 
    if exist %HG_ROOT%\compileXB.bat goto :COMPILE_XB
-   echo File compile30.bat not found !!!
-   echo File compile32.bat not found !!!
-   echo File compileXB.bat not found !!!
+   echo File %HG_ROOT%\compile30.bat not found !!!
+   echo File %HG_ROOT%\compile32.bat not found !!!
+   echo File %HG_ROOT%\compileXB.bat not found !!!
    echo.
    goto :END
 
