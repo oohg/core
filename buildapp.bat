@@ -1,9 +1,7 @@
 @echo off
 rem
-rem $Id: buildapp.bat,v 1.14 2015-03-12 22:35:09 fyurisich Exp $
+rem $Id: buildapp.bat $
 rem
-
-rem todo: not to check buildapp30.bat buildapp32.bat
 
 :BUILDAPP
 
@@ -18,16 +16,16 @@ rem todo: not to check buildapp30.bat buildapp32.bat
 
 :DETECT_HB30
 
-   if exist %HG_ROOT%\compile30.bat goto :DETECT_HB32
-   if exist %HG_ROOT%\compile.bat goto :COMPILE_HB32
-   echo File compile30.bat not found !!!
-   echo File compile32.bat not found !!!
+   if exist %HG_ROOT%\BuildApp30.bat goto :DETECT_HB32
+   if exist %HG_ROOT%\BuildApp32.bat goto :COMPILE_HB32
+   echo File %HG_ROOT%\BuildApp30.bat not found !!!
+   echo File %HG_ROOT%\BuildApp32.bat not found !!!
    echo.
    goto :END
 
 :DETECT_HB32
 
-   if not exist %HG_ROOT%\compile32.bat goto :COMPILE_HB30
+   if not exist %HG_ROOT%\BuildApp32.bat goto :COMPILE_HB30
    echo Syntax:
    echo    To build with Harbour 3.0
    echo       buildapp [/C] HB30 file [options]
@@ -39,16 +37,16 @@ rem todo: not to check buildapp30.bat buildapp32.bat
 :TEST_HB30
 
    shift
-   if exist %HG_ROOT%\compile30.bat goto :COMPILE_HB30
-   echo File compile30.bat not found !!!
+   if exist %HG_ROOT%\BuildApp30.bat goto :COMPILE_HB30
+   echo File %HG_ROOT%\BuildApp30.bat not found !!!
    echo.
    goto :END
 
 :TEST_HB32
 
    shift
-   if exist %HG_ROOT%\compile32.bat goto :COMPILE_HB32
-   echo File compile32.bat not found !!!
+   if exist %HG_ROOT%\BuildApp32.bat goto :COMPILE_HB32
+   echo File %HG_ROOT%\BuildApp32.bat not found !!!
    echo.
    goto :END
 
