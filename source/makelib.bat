@@ -1,9 +1,7 @@
 @echo off
 rem
-rem $Id: makelib.bat,v 1.40 2015-03-18 01:22:30 fyurisich Exp $
+rem $Id $
 rem
-
-rem todo: not to check makelib30.bat, makelib32.bat, makelibxb.bat
 
 :MAKELIB
 
@@ -16,23 +14,23 @@ rem todo: not to check makelib30.bat, makelib32.bat, makelibxb.bat
 
 :DETECT_HB30
 
-   if not exist ..\compile30.bat goto :DETECT_HB32
-   if exist ..\compile32.bat goto :SYNTAX
-   if exist ..\compilexb.bat goto :SYNTAX
+   if not exist makelib30.bat goto :DETECT_HB32
+   if exist makelib32.bat goto :SYNTAX
+   if exist makelibXB.bat goto :SYNTAX
    goto :COMPILE_HB30
 
 :DETECT_HB32
 
-   if not exist ..\compile32.bat goto :DETECT_XB
-   if exist ..\compilexb.bat goto :SYNTAX
+   if not exist makelib32.bat goto :DETECT_XB
+   if exist makelibXB.bat goto :SYNTAX
    goto :COMPILE_HB32
 
 :DETECT_XB
 
-   if exist ..\compilexb.bat goto :COMPILE_XB
-   echo File ..\compile30.bat not found !!!
-   echo File ..zcompile32.bat not found !!!
-   echo File ..xcompilexb.bat not found !!!
+   if exist makelibXB.bat goto :COMPILE_XB
+   echo File makelib30.bat not found !!!
+   echo File makelib32.bat not found !!!
+   echo File makelibXB.bat not found !!!
    echo.
    echo This file must be executed from SOURCE folder !!!
    echo.
@@ -53,8 +51,8 @@ rem todo: not to check makelib30.bat, makelib32.bat, makelibxb.bat
 :TEST_HB30
 
    shift
-   if exist ..\compile30.bat goto :COMPILE_HB30
-   echo File ..\makelib30.bat not found !!!
+   if exist makelib30.bat goto :COMPILE_HB30
+   echo File makelib30.bat not found !!!
    echo.
    echo This file must be executed from SOURCE folder !!!
    echo.
@@ -63,8 +61,8 @@ rem todo: not to check makelib30.bat, makelib32.bat, makelibxb.bat
 :TEST_HB32
 
    shift
-   if exist compile32.bat goto :COMPILE_HB32
-   echo File ..\compile32.bat not found !!!
+   if exist makelib32.bat goto :COMPILE_HB32
+   echo File makelib32.bat not found !!!
    echo.
    echo This file must be executed from SOURCE folder !!!
    echo.
@@ -73,8 +71,8 @@ rem todo: not to check makelib30.bat, makelib32.bat, makelibxb.bat
 :TEST_XB
 
    shift
-   if exist compilexb.bat goto :COMPILE_XB
-   echo File ..\compilexb.bat not found !!!
+   if exist makelibXB.bat goto :COMPILE_XB
+   echo File makelibXB.bat not found !!!
    echo.
    echo This file must be executed from SOURCE folder !!!
    echo.
