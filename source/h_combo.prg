@@ -30,7 +30,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this software; see the file COPYING.  If not, write to
+ * along with this software; see the file LICENSE.txt. If not, write to
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
  *
@@ -130,8 +130,6 @@ CLASS TCombo FROM TLabel
    METHOD VisibleItems
    METHOD Field               SETGET
    METHOD ValueSource         SETGET
-
-   /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
 
    ENDCLASS
 
@@ -1462,8 +1460,6 @@ CLASS TListCombo FROM TControl STATIC
    METHOD Define
    METHOD Events_VScroll
 
-   /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
-
    ENDCLASS
 
 METHOD Define( Container, hWnd ) CLASS TListCombo
@@ -1653,8 +1649,6 @@ CLASS TEditCombo FROM TControl STATIC
 
    METHOD Define
    METHOD Events
-
-   /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
 
    ENDCLASS
 

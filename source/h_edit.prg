@@ -30,7 +30,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this software; see the file COPYING.  If not, write to
+ * along with this software; see the file LICENSE.txt. If not, write to
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
  *
@@ -208,13 +208,13 @@ STATIC _aNumeroCampo   := {}                            // Numero de campo del l
  /***************************************************************************************
  *     Función: ABM( cArea, [cTitulo], [aCampos], [aEditables], [bGuardar], [bBuscar] )
  *       Autor: Cristóbal Mollá.
- * Descripción: Crea un dialogo de altas, bajas y modificaciones a partir
+ * Descripción: Crea un diálogo de altas, bajas y modificaciones a partir
  *              de la estructura del area de datos pasada.
- *  Parámetros: cArea        Cadena de texto con el nombre del area de la BDD.
+ *  Parámetros: cArea        Cadena de texto con el nombre del área de la BDD.
  *              [cTitulo]    Cadena de texto con el título de la ventana.
  *              [aCampos]    Array con cadenas de texto para las etiquetas de los campos.
  *              [aEditables] Array de valores lógicos que indican si el campo es editable.
- *              [bGuardar]   Bloque de codigo para la acción de guardar registro.
+ *              [bGuardar]   Bloque de código para la acción de guardar registro.
  *              [bBuscar]    Bloque de código para la acción de buscar registro.
  *    Devuelve: NIL
  ****************************************************************************************/
@@ -222,11 +222,11 @@ STATIC _aNumeroCampo   := {}                            // Numero de campo del l
 function ABM( cArea, cTitulo, aCampos, aEditables, bGuardar, bBuscar )
 
    // Declaración de variables locales.-------------------------------------------
-   local nArea             // := 0                         // Area anterior.
-   local nRegistro         // := 0                         // Numero de registro anterior.
+   local nArea             // := 0                         // Área anterior.
+   local nRegistro         // := 0                         // Número de registro anterior.
    // local cMensaje          := ""                        // Mensajes al usuario.
-   local nCampos              := 0                         // Numero de campos de la base.
-   local nItem             // := 1                         // Indice de iteración.
+   local nCampos              := 0                         // Número de campos de la base.
+   local nItem             // := 1                         // Índice de iteración.
    local nFila             // := 20                        // Fila de creación del control.
    local nColumna          // := 20                        // Columna de creación de control.
    local aEtiquetas        // := {}                        // Array con los controles LABEL.
@@ -234,22 +234,17 @@ function ABM( cArea, cTitulo, aCampos, aEditables, bGuardar, bBuscar )
    local aBrwAnchos        // := {}                        // Anchos de columna del BROWSE.
    local nBrwAnchoCampo    // := 0                         // Ancho del campo para el browse.
    local nBrwAnchoRegistro // := 0                         // Ancho del registro para el browse.
-   local cMascara          // := ""                        // Mascara de datos para el TEXTBOX.
+   local cMascara          // := ""                        // Máscara de datos para el TEXTBOX.
    local nMascaraTotal     // := 0                         // Tamaño de la máscara de edición.
    local nMascaraDecimales // := 0                         // Tamaño de los decimales.
    Local _BackDeleted
 
-   //IF EMPTY( DATE() )
-   /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
-   //   EMPTY( HBPRN )
-   //ENDIF
-
-   ////////// Gusrdar estado actual de SET DELETED y activarlo
+   ////////// Guardar estado actual de SET DELETED y activarlo
    _BackDeleted := set( _SET_DELETED )
    SET DELETED ON
 
    // Control de parámetros.
-   // Area de la base de datos.---------------------------------------------------
+   // Área de la base de datos.---------------------------------------------------
    if ( ! VALTYPE( cArea ) $"CM" ) .or. Empty( cArea )
       MsgOOHGError( _OOHG_Messages( 8, 1 ), "" )
    else
@@ -258,12 +253,12 @@ function ABM( cArea, cTitulo, aCampos, aEditables, bGuardar, bBuscar )
       nCampos      := Len( _aEstructura )
    endif
 
-   // Numero de campos.-----------------------------------------------------------
+   // Número de campos.-----------------------------------------------------------
    if ( nCampos > 16 )
       MsgOOHGError( _OOHG_Messages( 8, 2 ), "" )
    endif
 
-   // Titulo de la ventana.-------------------------------------------------------
+   // Título de la ventana.-------------------------------------------------------
    if ( ! VALTYPE( cTitulo ) $ "CM" ) .or. Empty( cTitulo )
       _cTitulo := cArea
    else
@@ -304,7 +299,7 @@ function ABM( cArea, cTitulo, aCampos, aEditables, bGuardar, bBuscar )
       next
    endif
 
-   // Bloque de codigo de la acción guardar.--------------------------------------
+   // Bloque de código de la acción guardar.--------------------------------------
    if !HB_IsBlock( bGuardar )
       _bGuardar := NIL
    else
@@ -388,7 +383,7 @@ function ABM( cArea, cTitulo, aCampos, aEditables, bGuardar, bBuscar )
                   "btnSiguiente", "btnUltimo", "btnGuardar",;
                   "btnCancelar" }
 
-   // Defincinión de la ventana de edición.---------------------------------------
+   // Definición de la ventana de edición.---------------------------------------
    define window wndABM ;
        at     0, 0 ;
        width  640 ;
@@ -402,10 +397,10 @@ function ABM( cArea, cTitulo, aCampos, aEditables, bGuardar, bBuscar )
        backcolor ( GetFormObjectByHandle( GetActiveWindow() ):BackColor )
    end window
 
-   // Defincición del frame.------------------------------------------------------
+   // Definición del frame.------------------------------------------------------
    @  10,  10 frame frmFrame1 of wndABM width 510 height 290
 
-   // Defincición de las etiquetas.-----------------------------------------------
+   // Definición de las etiquetas.-----------------------------------------------
    for nItem := 1 to nCampos
 
       @ aEtiquetas[nItem,2], aEtiquetas[nItem,3] label &( aEtiquetas[nItem,1] ) ;
@@ -446,7 +441,7 @@ function ABM( cArea, cTitulo, aCampos, aEditables, bGuardar, bBuscar )
               font   "ms sans serif" ;
               size   8
 
-   // Defincición del browse.-----------------------------------------------------
+   // Definición del browse.-----------------------------------------------------
    @ 310, 10 browse brwBrowse ;
               of       wndABM ;
               width    510 ;
@@ -575,7 +570,7 @@ function ABM( cArea, cTitulo, aCampos, aEditables, bGuardar, bBuscar )
               font    "ms sans serif" ;
               size    8
 
-   // Defincición de los controles de edición.------------------------------------
+   // Definición de los controles de edición.------------------------------------
    for nItem := 1 to nCampos
       do case
       case _aEstructura[nItem,2] == "C"        // Campo tipo caracter.
@@ -589,7 +584,7 @@ function ABM( cArea, cTitulo, aCampos, aEditables, bGuardar, bBuscar )
                    size    9 ;
                    maxlength _aEstructura[nItem,3]
 
-      case _aEstructura[nItem,2] == "N"        // Campo tipo numerico
+      case _aEstructura[nItem,2] == "N"        // Campo tipo numérico
          if _aEstructura[nItem,4] == 0
 
             @ _OOHG_aControles[nItem,2], _OOHG_aControles[nItem,3] textbox &( _OOHG_aControles[nItem,1] ) ;
@@ -628,7 +623,7 @@ function ABM( cArea, cTitulo, aCampos, aEditables, bGuardar, bBuscar )
          wndABM.&( _OOHG_aControles[nItem,1] ).Height := 21
 
 
-      case _aEstructura[nItem,2] == "L"        // Campo tipo logico.
+      case _aEstructura[nItem,2] == "L"        // Campo tipo lógico.
 
          @ _OOHG_aControles[nItem,2], _OOHG_aControles[nItem,3] checkbox &( _OOHG_aControles[nItem,1] ) ;
                    of      wndABM ;

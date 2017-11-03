@@ -30,7 +30,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this software; see the file COPYING.  If not, write to
+ * along with this software; see the file LICENSE.txt. If not, write to
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
  *
@@ -80,8 +80,6 @@ CLASS TMenu FROM TControl
    METHOD Release                 BLOCK { |Self| DestroyMenu( ::hWnd ), ::Super:Release() }
    METHOD Separator               BLOCK { |Self| TMenuItem():DefineSeparator( , Self ) }
    METHOD SetMenuBarColor
-
-   /* HB_SYMBOL_UNUSED( _OOHG_AllVars ) */
 
    ENDCLASS
 

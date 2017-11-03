@@ -9,6 +9,16 @@
  */
 
 2017-11-02 21:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\*.*
+   * core\source\*.c
+     * COPYING changed to LICENSE.txt
+   * core\source\*.prg
+     * COPYING changed to LICENSE.txt
+     - Remove some commented out code.
+   * core\source\h_edit.prg
+     * Changed some comments.
+
+2017-11-02 21:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt
      * Updated.
    * core\BuildApp30.bat
