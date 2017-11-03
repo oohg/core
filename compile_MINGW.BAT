@@ -1,6 +1,6 @@
 @echo off
 rem
-rem compile_MINGW.BAT
+rem $Id: compile_MINGW.bat $
 rem
 
 :MAIN

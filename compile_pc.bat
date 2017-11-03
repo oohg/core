@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: compile_pc.bat,v 1.10 2015-03-12 00:58:16 fyurisich Exp $
+rem $Id: compile_pc.bat $
 rem
 
 :MAIN

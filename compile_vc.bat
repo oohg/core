@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: compile_vc.bat,v 1.4 2015-03-12 00:58:16 fyurisich Exp $
+rem $Id: compile_vc.bat $
 rem
 
 :MAIN

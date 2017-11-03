@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog_003.txt,v 1.1 2017-08-23 00:10:47 fyurisich Exp $
+ * $Id: ChangeLog_003.txt $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>

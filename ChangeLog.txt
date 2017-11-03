@@ -1,5 +1,5 @@
-*
- * $Id$
+/*
+ * $Id:$
  */
 
 /* Use this format for the entry headers:
@@ -7,6 +7,35 @@
  * For example:
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
+
+2017-11-02 21:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog.txt
+     * Updated.
+   * core\BuildApp30.bat
+   * core\BuildApp32.bat
+   * core\ChangeLog_001.txt
+   * core\ChangeLog_002.txt
+   * core\ChangeLog_003.txt
+   * core\ChangeLog_004.txt
+   * core\ChangeLog_005.txt
+   * core\compile.bat
+   * core\compile30.bat
+   * core\compile32.bat
+   * core\compile_MINGW.BAT
+   * core\compile_pc.bat
+   * core\compile_vc.bat
+   * core\compileXB.bat
+   * core\ofmt.bat
+   * core\oide.bat
+   * core\oohg.hbc
+     * Id.
+
+2017-11-02 20:59 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   - core\oohgaux.bat
+
+2017-11-02 20:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\BuildApp_hbmk2.bat
+     !  Additional hbmk2 parameters are ignored.
 
 2017-11-02 18:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt

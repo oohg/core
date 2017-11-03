@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: compile.bat,v 1.22 2015-03-18 01:22:29 fyurisich Exp $
+rem $Id: compile.bat $
 rem
 
 :COMPILE
