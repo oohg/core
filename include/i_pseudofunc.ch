@@ -136,3 +136,11 @@
 #xtranslate SetGridFixedControls( <lValue> ) ;
    => ;
       _OOHG_GridFixedControls := <lValue>
+
+#xtranslate MiniGuiVersion() ;
+   => ;
+      ooHGVersion()
+
+#xtranslate ooHGVersion() ;
+   => ;
+      "ooHG Ver. 2017.08.25"

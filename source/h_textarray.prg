@@ -1326,7 +1326,7 @@ void _OOHG_TextArray_Register( void )
       char cBuffError[ 1000 ];
       sprintf( cBuffError, "_OOHG_TEXTARRAY Registration Failed! Error %i", ( int ) GetLastError() );
       MessageBox( 0, cBuffError, "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
-      ExitProcess( 0 );
+      ExitProcess( 1 );
    }
 
    bRegistered = 1;

@@ -617,7 +617,7 @@ METHOD ErrorMessage( cError, nPosition ) CLASS OOHG_TErrorHtml
    dbcloseall()
    ::CreateLog()
    C_MSGSTOP( ::cBufferScreen, ::aMessages[12] )
-   ExitProcess( 0 )
+   ExitProcess( 1 )
 
    RETURN Nil
 
@@ -672,11 +672,3 @@ CLASS OOHG_TErrorTxt FROM OOHG_TErrorHtml
 METHOD Write2( cTxt ) CLASS OOHG_TErrorTxt
 
    RETURN RTRIM( cTxt ) + CHR( 13 ) + CHR( 10 )
-
-Function ooHGVersion()
-
-   Return "ooHG Ver. 2017.08.25"
-
-Function MiniGuiVersion()
-
-   Return ooHGVersion()

@@ -2719,7 +2719,7 @@ Function ReleaseAllWindows()
 
    _ReleaseWindowList( _OOHG_aFormObjects )
    dbcloseall()
-   ExitProcess( 0 )
+   ExitProcess( _OOHG_ErrorLevel )
 
    Return Nil
 

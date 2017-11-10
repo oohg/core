@@ -8447,7 +8447,7 @@ static int TGrid_Notify_CustomDraw_GetSelColor( PHB_ITEM pSelf, unsigned int x )
 
    sprintf( cBuffError, "GridSelectedColors is not a valid array !!!" );
    MessageBox( 0, cBuffError, "Error", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
-   ExitProcess( 0 );
+   ExitProcess( 1 );
    return 0;
 }
 

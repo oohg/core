@@ -569,8 +569,8 @@ TODO: Try to implement this GRID clauses using COLUMNCONTROLS:
 #xtranslate GRID [ <x> ] ALLOWDELETE ;
    => GRID [ <x> ] DELETE
 
-#xtranslate DIALOG ;
-   => PARENT
+#xtranslate @ [ <x> ] DIALOG ;
+   => @ [ <x> ] PARENT
 
 #xtranslate ID <nId> [ <x> ] ;
    => [ <x> ]

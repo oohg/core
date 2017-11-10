@@ -104,7 +104,8 @@
 #define NDX_XBROWSE_FIXEDBLOCKS        35
 #define NDX_XBROWSE_FIXEDCONTROLS      36
 #define NDX_GRID_FIXEDCONTROLS         37
-#define NUMBER_OF_APP_WIDE_VARS        37
+#define NDX_OOHG_ERRORLEVEL            38
+#define NUMBER_OF_APP_WIDE_VARS        38
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TApplication
@@ -176,9 +177,11 @@ CLASS TApplication
    METHOD Value_Pos35             SETGET
    METHOD Value_Pos36             SETGET
    METHOD Value_Pos37             SETGET
+   METHOD Value_Pos38             SETGET
    METHOD Width                   SETGET
 
    MESSAGE Cargo                  METHOD Value_Pos31
+   MESSAGE ErrorLevel             METHOD Value_Pos38
    MESSAGE FormObject             METHOD MainObject
    MESSAGE Handle                 METHOD hWnd
    MESSAGE Icon                   METHOD Value_Pos29
@@ -231,6 +234,7 @@ METHOD Define() CLASS TApplication
       ::aVars[ NDX_XBROWSE_FIXEDBLOCKS ]     := .T.
       ::aVars[ NDX_XBROWSE_FIXEDCONTROLS ]   := .F.
       ::aVars[ NDX_GRID_FIXEDCONTROLS ]      := .F.
+      ::aVars[ NDX_OOHG_ERRORLEVEL ]         := 0
 
       ::ArgC     := hb_argc()
       ::Args     := GetCommandLineArgs()
@@ -486,7 +490,7 @@ METHOD MultipleInstances( lMultiple, lWarning ) CLASS TApplication
                IF HB_ISLOGICAL( lWarning ) .AND. lWarning
                   MsgStop( _OOHG_Messages( 1, 4 ) )
                ENDIF
-               ExitProcess(0)
+               ExitProcess( 1 )
             ENDIF
          ENDIF
       ENDIF
@@ -1073,6 +1077,20 @@ METHOD Value_Pos37( uValue ) CLASS TApplication
       ::aVars[ NDX_GRID_FIXEDCONTROLS ] := uValue
    ENDIF
    uRet := ::aVars[ NDX_GRID_FIXEDCONTROLS ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Value_Pos38( uValue ) CLASS TApplication
+
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   IF uValue != NIL
+      ::aVars[ NDX_OOHG_ERRORLEVEL ] := uValue
+   ENDIF
+   uRet := ::aVars[ NDX_OOHG_ERRORLEVEL ]
    hb_mutexUnlock( ::hClsMtx )
 
    RETURN ( uRet )
