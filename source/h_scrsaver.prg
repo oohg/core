@@ -1,8 +1,5 @@
 /*
- * $Id: h_scrsaver.prg,v 1.10 2017-10-01 15:52:27 fyurisich Exp $
- */
-/*
- * ooHG source code:
+ * h_scrsaver.prg,v 1.10
  * Screen saver functions
  *
  * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>

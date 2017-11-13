@@ -1,8 +1,5 @@
 /*
- * $Id: h_richeditbox.prg,v 1.44 2017-10-01 15:52:27 fyurisich Exp $
- */
-/*
- * ooHG source code:
+ * h_richeditbox.prg,v 1.44
  * RichEdit control
  *
  * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>

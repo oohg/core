@@ -1,8 +1,5 @@
 /*
- * $Id: h_application.prg $
- */
-/*
- * ooHG source code:
+ * h_application.prg
  * Application object
  *
  * Based upon

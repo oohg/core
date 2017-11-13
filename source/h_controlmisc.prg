@@ -1,8 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.166 2017-08-25 19:42:18 fyurisich Exp $
- */
-/*
- * ooHG source code:
+ * h_controlmisc.prg,v 1.166
  * Generic control and miscelaneous related functions
  *
  * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>

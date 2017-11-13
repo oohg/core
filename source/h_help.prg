@@ -1,8 +1,5 @@
 /*
- * $Id: h_help.prg,v 1.9 2017-08-25 19:42:21 fyurisich Exp $
- */
-/*
- * ooHG source code:
+ * h_help.prg,v 1.9
  * Help files functions
  *
  * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>

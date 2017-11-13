@@ -1,8 +1,5 @@
 /*
- * $Id: h_monthcal.prg,v 1.24 2017-10-01 15:52:26 fyurisich Exp $
- */
-/*
- * ooHG source code:
+ * h_monthcal.prg,v 1.24
  * MonthCal and MonthCalMulti controls
  *
  * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>

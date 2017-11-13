@@ -1,8 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.77 2017-08-25 19:42:18 fyurisich Exp $
- */
-/*
- * ooHG source code:
+ * h_form.prg,v 1.77
  * Forms handling functions
  *
  * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>

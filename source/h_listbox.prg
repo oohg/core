@@ -1,8 +1,5 @@
 /*
- * $Id: h_listbox.prg,v 1.42 2017-08-25 19:42:21 fyurisich Exp $
- */
-/*
- * ooHG source code:
+ * h_listbox.prg,v 1.42
  * ListBox and ListBoxMulti controls
  *
  * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>

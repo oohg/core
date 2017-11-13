@@ -1,8 +1,5 @@
 /*
- * $Id: h_zip.prg,v 1.5 2017-08-25 19:42:22 fyurisich Exp $
- */
-/*
- * ooHG source code:
+ * h_zip.prg,v 1.5
  * HMG zip and unzip functions
  *
  * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>

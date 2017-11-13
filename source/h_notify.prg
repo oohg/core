@@ -1,8 +1,5 @@
 /*
- * $Id: h_notify.prg,v 1.5 2017-10-01 15:52:26 fyurisich Exp $
- */
-/*
- * ooHG source code:
+ * h_notify.prg,v 1.5
  * Notify icon control
  *
  * Copyright 2009-2017 Vicente Guerra <vicente@guerra.com.mx>

@@ -1,8 +1,5 @@
 /*
- * $Id: h_ini.prg,v 1.13 2017-10-01 15:52:26 fyurisich Exp $
- */
-/*
- * ooHG source code:
+ * h_ini.prg,v 1.13
  * INI files functions
  *
  * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>

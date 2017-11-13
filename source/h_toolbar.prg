@@ -1,8 +1,5 @@
 /*
- * $Id: h_toolbar.prg,v 1.53 2017-10-01 15:52:27 fyurisich Exp $
- */
-/*
- * ooHG source code:
+ * h_toolbar.prg,v 1.53
  * ToolBar and ToolButton controls
  *
  * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>

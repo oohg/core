@@ -1,8 +1,5 @@
 /*
- * $Id: h_scrollbutton.prg,v 1.10 2017-10-01 15:52:27 fyurisich Exp $
- */
-/*
- * ooHG source code:
+ * h_scrollbutton.prg,v 1.10
  * ScrollButton control
  *
  * Copyright 2006-2017 Vicente Guerra <vicente@guerra.com.mx>

@@ -1,8 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.271 2017-10-01 14:33:01 fyurisich Exp $
- */
-/*
- * ooHG source code:
+ * h_windows.prg,v 1.271
  * TWindow class and window handling functions
  *
  * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>

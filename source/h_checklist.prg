@@ -1,8 +1,5 @@
 /*
- * $Id: h_checklist.prg,v 1.27 2017-10-01 15:52:26 fyurisich Exp $
- */
-/*
- * ooHG source code:
+ * h_checklist.prg,v 1.27
  * CheckList control
  *
  * Copyright 2012-2017 Fernando Yurisich <fyurisich@oohg.org>

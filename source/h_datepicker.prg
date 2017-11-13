@@ -1,8 +1,5 @@
 /*
- * $Id: h_datepicker.prg,v 1.30 2017-10-01 15:52:26 fyurisich Exp $
- */
-/*
- * ooHG source code:
+ * h_datepicker.prg,v 1.30
  * DatePicker and TimePicker controls
  *
  * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>

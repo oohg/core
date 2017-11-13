@@ -1,8 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.55 2017-10-01 15:52:27 fyurisich Exp $
- */
-/*
- * ooHG source code:
+ * h_status.prg,v 1.55
  * Statusbar control
  *
  * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>

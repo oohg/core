@@ -1,8 +1,5 @@
 /*
- * $Id: h_splitbox.prg,v 1.27 2017-10-01 15:52:27 fyurisich Exp $
- */
-/*
- * ooHG source code:
+ * h_splitbox.prg,v 1.27
  * SplitBox control
  *
  * Copyright 2006-2017 Vicente Guerra <vicente@guerra.com.mx>

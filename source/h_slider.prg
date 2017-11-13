@@ -1,8 +1,5 @@
 /*
- * $Id: h_slider.prg,v 1.27 2017-10-01 15:52:27 fyurisich Exp $
- */
-/*
- * ooHG source code:
+ * h_slider.prg,v 1.27
  * Slider control
  *
  * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>

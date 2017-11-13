@@ -1,8 +1,5 @@
 /*
- * $Id: h_anigif.prg,v 1.3 2017-10-01 15:52:26 fyurisich Exp $
- */
-/*
- * ooHG source code:
+ * h_anigif.prg,v 1.3
  * Animate GIF control
  *
  * Copyright 2016-2017 Fernando Yurisich <fyurisich@oohg.org>

@@ -1,8 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.68 2017-10-01 15:52:27 fyurisich Exp $
- */
-/*
- * ooHG source code:
+ * winprint.prg,v 1.68
  * HBPRINTER printing library
  *
  * Based upon:
