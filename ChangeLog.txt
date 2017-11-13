@@ -295,7 +295,6 @@
    * core\source\h_grid.prg
      - STATIC var and function SetGridFixedControls were
        substituted by TApplication method and pseudo-function.
-       This should make the class thread safe.
      + DATA lKeysLikeClipper.
      + DATA lKeysOn. When .F. the editcontrols will ignore all
        exit keys and user defined keys except ESCAPE and RETURN.
