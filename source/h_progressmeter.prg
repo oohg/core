@@ -1,5 +1,8 @@
 /*
- * h_progressmeter.prg,v 1.27
+ * $Id: h_progressmeter.prg,v 1.27 2017-10-01 15:52:27 fyurisich Exp $
+ */
+/*
+ * ooHG source code:
  * ProgressMeter control
  *
  * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>

@@ -1,5 +1,8 @@
 /*
- * h_tab.prg,v 1.75
+ * $Id: h_tab.prg,v 1.75 2017-10-01 14:33:01 fyurisich Exp $
+ */
+/*
+ * ooHG source code:
  * Tab control
  *
  * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>

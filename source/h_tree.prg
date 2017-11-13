@@ -1,5 +1,7 @@
 /*
- * h_tree.prg,v 1.51
+ * $Id: h_tree.prg,v 1.51 2017-08-25 19:42:22 fyurisich Exp $
+ */
+/*
  * ooHG source code:
  * Tree control
  *

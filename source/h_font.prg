@@ -1,5 +1,8 @@
 /*
- * h_font.prg,v 1.8
+ * $Id: h_font.prg,v 1.8 2017-08-25 19:42:18 fyurisich Exp $
+ */
+/*
+ * ooHG source code:
  * Font functions
  *
  * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>

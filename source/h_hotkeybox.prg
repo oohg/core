@@ -1,5 +1,8 @@
 /*
- * h_hotkeybox.prg,v 1.16
+ * $Id: h_hotkeybox.prg,v 1.16 2017-10-01 15:52:26 fyurisich Exp $
+ */
+/*
+ * ooHG source code:
  * HotKeyBox control
  *
  * Copyright 2006-2017 Vicente Guerra <vicente@guerra.com.mx>

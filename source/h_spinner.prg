@@ -1,5 +1,8 @@
 /*
- * h_spinner.prg,v 1.28
+ * $Id: h_spinner.prg,v 1.28 2017-10-01 15:52:27 fyurisich Exp $
+ */
+/*
+ * ooHG source code:
  * Spinner control
  *
  * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>

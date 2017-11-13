@@ -1,5 +1,8 @@
 /*
- * h_xbrowse.prg
+ * $Id: h_xbrowse.prg $
+ */
+/*
+ * ooHG source code:
  * XBrowse and XBrowseByCell controls
  * ooHGRecord and TVirtualField classes
  *

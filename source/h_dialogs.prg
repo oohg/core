@@ -1,5 +1,8 @@
 /*
- * h_dialogs.prg,v 1.20
+ * $Id: h_dialogs.prg,v 1.20 2017-10-01 15:52:26 fyurisich Exp $
+ */
+/*
+ * ooHG source code:
  * Miscelaneous dialogs functions
  *
  * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>

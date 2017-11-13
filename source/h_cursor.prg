@@ -1,5 +1,8 @@
 /*
- * h_cursor.prg,v 1.5
+ * $Id: h_cursor.prg,v 1.5 2017-08-25 19:42:18 fyurisich Exp $
+ */
+/*
+ * ooHG source code:
  * PRG cursor functions
  *
  * Based upon

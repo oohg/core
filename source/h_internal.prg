@@ -1,5 +1,8 @@
 /*
- * h_internal.prg,v 1.17
+ * $Id: h_internal.prg,v 1.17 2017-10-01 15:52:26 fyurisich Exp $
+ */
+/*
+ * ooHG source code:
  * Internal Window control
  *
  * Copyright 2006-2017 Vicente Guerra <vicente@guerra.com.mx>

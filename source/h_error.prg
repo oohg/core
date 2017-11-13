@@ -1,5 +1,8 @@
 /*
- * h_error.prg,v 1.69
+ * $Id: h_error.prg,v 1.69 2017-10-01 15:52:26 fyurisich Exp $
+ */
+/*
+ * ooHG source code:
  * Error handling system
  *
  * Based upon

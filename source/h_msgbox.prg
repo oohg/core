@@ -1,5 +1,8 @@
 /*
- * h_msgbox.prg,v 1.27
+ * $Id: h_msgbox.prg,v 1.27 2017-08-25 19:42:22 fyurisich Exp $
+ */
+/*
+ * ooHG source code:
  * Messaging functions
  *
  * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>

@@ -1,5 +1,8 @@
 /*
- * h_browse.prg
+ * $Id: h_browse.prg $
+ */
+/*
+ * ooHG source code:
  * Browse and BrowseByCell controls
  *
  * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>

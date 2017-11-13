@@ -1,5 +1,8 @@
 /*
- * h_crypt.prg,v 1.10
+ * $Id: h_crypt.prg,v 1.10 2017-08-25 19:42:18 fyurisich Exp $
+ */
+/*
+ * ooHG source code:
  * XOR based crypto functions
  *
  * Based upon

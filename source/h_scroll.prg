@@ -1,5 +1,8 @@
 /*
- * h_scroll.prg,v 1.30
+ * $Id: h_scroll.prg,v 1.30 2017-10-01 15:52:27 fyurisich Exp $
+ */
+/*
+ * ooHG source code:
  * Scrollbar control
  *
  * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>

@@ -1,5 +1,8 @@
 /*
- * h_grid.prg
+ * $Id: h_grid.prg $
+ */
+/*
+ * ooHG source code:
  * Grid, GridMulti, GridByCell and GridControl controls
  *
  * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>

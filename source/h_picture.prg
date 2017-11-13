@@ -1,5 +1,8 @@
 /*
- * h_picture.prg,v 1.35
+ * $Id: h_picture.prg,v 1.35 2017-10-01 15:52:27 fyurisich Exp $
+ */
+/*
+ * ooHG source code:
  * Picture control
  *
  * Copyright 2009-2017 Vicente Guerra <vicente@guerra.com.mx>

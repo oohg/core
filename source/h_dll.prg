@@ -1,5 +1,8 @@
 /*
- * h_dll.prg,v 1.11
+ * $Id: h_dll.prg,v 1.11 2017-08-25 19:42:18 fyurisich Exp $
+ */
+/*
+ * ooHG source code:
  * DLL access functions
  *
  * Based upon

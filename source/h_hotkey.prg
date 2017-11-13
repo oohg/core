@@ -1,5 +1,8 @@
 /*
- * h_hotkey.prg,v 1.20
+ * $Id: h_hotkey.prg,v 1.20 2017-10-01 15:52:26 fyurisich Exp $
+ */
+/*
+ * ooHG source code:
  * HotKey control and related functions
  *
  * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>

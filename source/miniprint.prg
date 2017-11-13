@@ -1,5 +1,8 @@
 /*
- * miniprint.prg,v 1.59
+ * $Id: miniprint.prg,v 1.59 2017-08-26 02:54:27 fyurisich Exp $
+ */
+/*
+ * ooHG source code:
  * MINIPRINT printing library
  *
  * Based upon

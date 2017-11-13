@@ -1,5 +1,8 @@
 /*
- * h_print.prg,v 1.152
+ * $Id: h_print.prg,v 1.152 2017-08-25 19:42:22 fyurisich Exp $
+ */
+/*
+ * ooHG source code:
  * TPrint object
  *
  * Copyright 2006-2017 Vicente Guerra <vicente@guerra.com.mx>

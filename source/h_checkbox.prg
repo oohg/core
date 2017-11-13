@@ -1,5 +1,8 @@
 /*
- * h_checkbox.prg,v 1.50
+ * $Id: h_checkbox.prg,v 1.50 2017-10-01 15:52:26 fyurisich Exp $
+ */
+/*
+ * ooHG source code:
  * CheckBox control
  *
  * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>

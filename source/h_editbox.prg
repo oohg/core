@@ -1,5 +1,8 @@
 /*
- * h_editbox.prg,v 1.32
+ * $Id: h_editbox.prg,v 1.32 2017-10-01 15:52:26 fyurisich Exp $
+ */
+/*
+ * ooHG source code:
  * EditBox control
  *
  * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>

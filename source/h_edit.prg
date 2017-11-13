@@ -1,5 +1,8 @@
 /*
- * h_edit.prg,v 1.27
+ * $Id: h_edit.prg,v 1.27 2017-10-01 15:52:26 fyurisich Exp $
+ */
+/*
+ * ooHG source code:
  * EDIT WORKAREA command
  *
  * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>

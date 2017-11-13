@@ -1,5 +1,8 @@
 /*
- * h_edit_ex.prg,v 1.20
+ * $Id: h_edit_ex.prg,v 1.20 2017-10-01 14:33:00 fyurisich Exp $
+ */
+/*
+ * ooHG source code:
  * EDIT EXTENDED command
  *
  * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>

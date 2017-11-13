@@ -1,5 +1,8 @@
 /*
- * h_winapimisc.prg,v 1.7
+ * $Id: h_winapimisc.prg,v 1.7 2017-08-25 19:42:22 fyurisich Exp $
+ */
+/*
+ * ooHG source code:
  * Windows API functions
  *
  * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>

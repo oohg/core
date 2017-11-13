@@ -1,5 +1,8 @@
 /*
- * h_textbox.prg,v 1.109
+ * $Id: h_textbox.prg,v 1.109 2017-10-01 15:52:27 fyurisich Exp $
+ */
+/*
+ * ooHG source code:
  * TextBox control
  *
  * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>

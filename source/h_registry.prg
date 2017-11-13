@@ -1,5 +1,8 @@
 /*
- * h_registry.prg,v 1.10
+ * $Id: h_registry.prg,v 1.10 2017-10-01 15:52:27 fyurisich Exp $
+ */
+/*
+ * ooHG source code:
  * TReg32 class and registry functions
  *
  * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>

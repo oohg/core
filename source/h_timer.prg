@@ -1,5 +1,8 @@
 /*
- * h_timer.prg,v 1.15
+ * $Id: h_timer.prg,v 1.15 2017-10-01 15:52:27 fyurisich Exp $
+ */
+/*
+ * ooHG source code:
  * Timer control
  *
  * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>

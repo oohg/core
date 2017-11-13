@@ -1,5 +1,8 @@
 /*
- * h_label.prg,v 1.37
+ * $Id: h_label.prg,v 1.37 2017-10-01 15:52:26 fyurisich Exp $
+ */
+/*
+ * ooHG source code:
  * Label control
  *
  * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>

@@ -1,5 +1,8 @@
 /*
- * h_graph.prg,v 1.16
+ * $Id: h_graph.prg,v 1.16 2017-08-25 19:42:18 fyurisich Exp $
+ */
+/*
+ * ooHG source code:
  * Graphic functions
  *
  * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>

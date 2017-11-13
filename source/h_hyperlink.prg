@@ -1,5 +1,8 @@
 /*
- * h_hyperlink.prg,v 1.16
+ * $Id: h_hyperlink.prg,v 1.16 2017-10-01 15:52:26 fyurisich Exp $
+ */
+/*
+ * ooHG source code:
  * HyperLink control
  *
  * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>

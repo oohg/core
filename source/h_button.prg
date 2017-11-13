@@ -1,5 +1,8 @@
 /*
- * h_button.prg,v 1.83
+ * $Id: h_button.prg,v 1.83 2017-10-01 15:52:26 fyurisich Exp $
+ */
+/*
+ * ooHG source code:
  * Button and CheckButton controls
  *
  * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>

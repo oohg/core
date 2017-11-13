@@ -1,5 +1,8 @@
 /*
- * h_activex.prg,v 1.19
+ * $Id: h_activex.prg,v 1.19 2017-10-01 15:52:26 fyurisich Exp $
+ */
+/*
+ * ooHG source code:
  * ActiveX control
  *
  * Based upon
