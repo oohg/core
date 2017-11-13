@@ -7124,8 +7124,8 @@ HB_FUNC_STATIC( TGRID_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
    WPARAM wParam = (WPARAM) hb_parni( 3 );
    LPARAM lParam = (LPARAM) hb_parnl( 4 );
    PHB_ITEM pSelf = hb_stackSelfItem();
-   static PHB_SYMB s_Events2 = 0;
-   static PHB_SYMB s_Notify2 = 0;
+   static PHB_SYMB s_Events2 = 0;                             //  TODO: Thread safe ?
+   static PHB_SYMB s_Notify2 = 0;                             //  TODO: Thread safe ?
    BOOL bDefault = TRUE;
 
    switch( message )
@@ -7339,7 +7339,7 @@ HB_FUNC_STATIC( LISTVIEW_SETCOLUMNORDER )
    hb_retl( bRet );
 }
 
-static WNDPROC lpfnOldWndProc = 0;
+static WNDPROC lpfnOldWndProc = 0;                      //  TODO: Thread safe ?
 
 static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
