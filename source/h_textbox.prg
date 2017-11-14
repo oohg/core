@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.109 2017-10-01 15:52:27 fyurisich Exp $
+ * $Id: h_textbox.prg $
  */
 /*
  * ooHG source code:

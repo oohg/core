@@ -1,5 +1,5 @@
 /*
- * $Id: h_report.prg,v 1.55 2017-10-01 15:52:27 fyurisich Exp $
+ * $Id: h_report.prg $
  */
 /*
  * ooHG source code:

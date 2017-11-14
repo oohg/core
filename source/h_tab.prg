@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.75 2017-10-01 14:33:01 fyurisich Exp $
+ * $Id: h_tab.prg $
  */
 /*
  * ooHG source code:

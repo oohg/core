@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.77 2017-08-25 19:42:18 fyurisich Exp $
+ * $Id: h_form.prg $
  */
 /*
  * ooHG source code:

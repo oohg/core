@@ -1,5 +1,5 @@
 /*
- * $Id: h_slider.prg,v 1.27 2017-10-01 15:52:27 fyurisich Exp $
+ * $Id: h_slider.prg $
  */
 /*
  * ooHG source code:

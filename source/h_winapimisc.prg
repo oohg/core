@@ -1,5 +1,5 @@
 /*
- * $Id: h_winapimisc.prg,v 1.7 2017-08-25 19:42:22 fyurisich Exp $
+ * $Id: h_winapimisc.prg $
  */
 /*
  * ooHG source code:

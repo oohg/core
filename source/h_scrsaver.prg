@@ -1,5 +1,5 @@
 /*
- * $Id: h_scrsaver.prg,v 1.10 2017-10-01 15:52:27 fyurisich Exp $
+ * $Id: h_scrsaver.prg $
  */
 /*
  * ooHG source code:

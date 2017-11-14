@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.prg,v 1.59 2017-08-26 02:54:27 fyurisich Exp $
+ * $Id: miniprint.prg $
  */
 /*
  * ooHG source code:

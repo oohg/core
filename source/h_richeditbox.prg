@@ -1,5 +1,5 @@
 /*
- * $Id: h_richeditbox.prg,v 1.44 2017-10-01 15:52:27 fyurisich Exp $
+ * $Id: h_richeditbox.prg $
  */
 /*
  * ooHG source code:

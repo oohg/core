@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.271 2017-10-01 14:33:01 fyurisich Exp $
+ * $Id: h_windows.prg $
  */
 /*
  * ooHG source code:

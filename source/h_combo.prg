@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.93 2017-10-01 15:52:26 fyurisich Exp $
+ * $Id: h_combo.prg $
  */
 /*
  * ooHG source code:

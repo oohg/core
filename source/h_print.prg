@@ -1,5 +1,5 @@
 /*
- * $Id: h_print.prg,v 1.152 2017-08-25 19:42:22 fyurisich Exp $
+ * $Id: h_print.prg $
  */
 /*
  * ooHG source code:

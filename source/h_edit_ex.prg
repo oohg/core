@@ -1,5 +1,5 @@
 /*
- * $Id: h_edit_ex.prg,v 1.20 2017-10-01 14:33:00 fyurisich Exp $
+ * $Id: h_edit_ex.prg $
  */
 /*
  * ooHG source code:

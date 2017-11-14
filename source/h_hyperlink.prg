@@ -1,5 +1,5 @@
 /*
- * $Id: h_hyperlink.prg,v 1.16 2017-10-01 15:52:26 fyurisich Exp $
+ * $Id: h_hyperlink.prg $
  */
 /*
  * ooHG source code:

@@ -1,5 +1,5 @@
 /*
- * $Id: h_listbox.prg,v 1.42 2017-08-25 19:42:21 fyurisich Exp $
+ * $Id: h_listbox.prg $
  */
 /*
  * ooHG source code:

@@ -1,5 +1,5 @@
 /*
- * $Id: h_error.prg,v 1.69 2017-10-01 15:52:26 fyurisich Exp $
+ * $Id: h_error.prg $
  */
 /*
  * ooHG source code:
