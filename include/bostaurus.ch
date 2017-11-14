@@ -1,5 +1,5 @@
 /*
- * $Id: bostaurus.ch,v 1.7 2017-08-26 02:54:07 fyurisich Exp $
+ * $Id: bostaurus.ch $
  */
 /*
  * ooHG source code:

@@ -1,5 +1,8 @@
 /*
  * $Id: bostaurus.prg $
+ */
+/*
+ * ooHG source code:
  * Bos Taurus library code
  *
  * Based upon

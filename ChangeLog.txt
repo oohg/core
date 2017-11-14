@@ -8,6 +8,86 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2017-11-13 18:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog.txt
+     * Updated.
+   * core\include\bostaurus.ch
+   * core\source\bostaurus.prg
+     * Id.
+
+2017-11-13 13:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+    * core\source\h_activex.prg
+    * core\source\h_anigif.prg
+    * core\source\h_application.prg
+    * core\source\h_browse.prg
+    * core\source\h_button.prg
+    * core\source\h_checkbox.prg
+    * core\source\h_checklist.prg
+    * core\source\h_combo.prg
+    * core\source\h_comm.prg
+    * core\source\h_controlmisc.prg
+    * core\source\h_crypt.prg
+    * core\source\h_cursor.prg
+    * core\source\h_datepicker.prg
+    * core\source\h_dialogs.prg
+    * core\source\h_dll.prg
+    * core\source\h_edit.prg
+    * core\source\h_edit_ex.prg
+    * core\source\h_editbox.prg
+    * core\source\h_error.prg
+    * core\source\h_font.prg
+    * core\source\h_form.prg
+    * core\source\h_frame.prg
+    * core\source\h_graph.prg
+    * core\source\h_grid.prg
+    * core\source\h_help.prg
+    * core\source\h_hotkey.prg
+    * core\source\h_hotkeybox.prg
+    * core\source\h_hyperlink.prg
+    * core\source\h_image.prg
+    * core\source\h_ini.prg
+    * core\source\h_init.prg
+    * core\source\h_internal.prg
+    * core\source\h_ipaddress.prg
+    * core\source\h_label.prg
+    * core\source\h_listbox.prg
+    * core\source\h_media.prg
+    * core\source\h_menu.prg
+    * core\source\h_monthcal.prg
+    * core\source\h_msgbox.prg
+    * core\source\h_notify.prg
+    * core\source\h_pdf.prg
+    * core\source\h_picture.prg
+    * core\source\h_print.prg
+    * core\source\h_progressbar.prg
+    * core\source\h_progressmeter.prg
+    * core\source\h_radio.prg
+    * core\source\h_registry.prg
+    * core\source\h_report.prg
+    * core\source\h_richeditbox.prg
+    * core\source\h_scroll.prg
+    * core\source\h_scrollbutton.prg
+    * core\source\h_scrsaver.prg
+    * core\source\h_slider.prg
+    * core\source\h_spinner.prg
+    * core\source\h_splitbox.prg
+    * core\source\h_status.prg
+    * core\source\h_tab.prg
+    * core\source\h_textarray.prg
+    * core\source\h_textbox.prg
+    * core\source\h_timer.prg
+    * core\source\h_toolbar.prg
+    * core\source\h_tooltip.prg
+    * core\source\h_tree.prg
+    * core\source\h_winapimisc.prg
+    * core\source\h_windows.prg
+    * core\source\h_xbrowse.prg
+    * core\source\h_zip.prg
+    * core\source\miniprint.prg
+    * core\source\winprint.prg
+      * Id.
+     ; Thanks to José M. C. Quintas.
+
 2017-11-13 21:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt
      * Updated.
