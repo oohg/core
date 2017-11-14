@@ -1,8 +1,5 @@
 /*
- * $Id: bostaurus.prg,v 1.11 2017-10-01 15:52:26 fyurisich Exp $
- */
-/*
- * ooHG source code:
+ * $Id: bostaurus.prg $
  * Bos Taurus library code
  *
  * Based upon

@@ -1,5 +1,5 @@
 /*
- * $Id: h_ini.prg,v 1.13 2017-10-01 15:52:26 fyurisich Exp $
+ * $Id: h_ini.prg $
  */
 /*
  * ooHG source code:

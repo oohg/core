@@ -1,5 +1,5 @@
 /*
- * $Id: h_font.prg,v 1.8 2017-08-25 19:42:18 fyurisich Exp $
+ * $Id: h_font.prg $
  */
 /*
  * ooHG source code:

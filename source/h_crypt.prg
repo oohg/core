@@ -1,5 +1,5 @@
 /*
- * $Id: h_crypt.prg,v 1.10 2017-08-25 19:42:18 fyurisich Exp $
+ * $Id: h_crypt.prg $
  */
 /*
  * ooHG source code:

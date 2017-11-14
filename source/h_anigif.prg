@@ -1,5 +1,5 @@
 /*
- * $Id: h_anigif.prg,v 1.3 2017-10-01 15:52:26 fyurisich Exp $
+ * $Id: h_anigif.prg $
  */
 /*
  * ooHG source code:

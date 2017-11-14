@@ -1,5 +1,5 @@
 /*
- * $Id: h_notify.prg,v 1.5 2017-10-01 15:52:26 fyurisich Exp $
+ * $Id: h_notify.prg $
  */
 /*
  * ooHG source code:

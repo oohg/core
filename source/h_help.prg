@@ -1,5 +1,5 @@
 /*
- * $Id: h_help.prg,v 1.9 2017-08-25 19:42:21 fyurisich Exp $
+ * $Id: h_help.prg $
  */
 /*
  * ooHG source code:

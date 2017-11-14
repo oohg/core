@@ -1,5 +1,5 @@
 /*
- * $Id: h_dll.prg,v 1.11 2017-08-25 19:42:18 fyurisich Exp $
+ * $Id: h_dll.prg $
  */
 /*
  * ooHG source code:

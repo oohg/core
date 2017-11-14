@@ -1,5 +1,5 @@
 /*
- * $Id: h_datepicker.prg,v 1.30 2017-10-01 15:52:26 fyurisich Exp $
+ * $Id: h_datepicker.prg $
  */
 /*
  * ooHG source code:

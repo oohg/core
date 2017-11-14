@@ -1,5 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.55 2017-10-01 15:52:27 fyurisich Exp $
+ * $Id: h_status.prg $
  */
 /*
  * ooHG source code:

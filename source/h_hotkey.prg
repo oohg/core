@@ -1,5 +1,5 @@
 /*
- * $Id: h_hotkey.prg,v 1.20 2017-10-01 15:52:26 fyurisich Exp $
+ * $Id: h_hotkey.prg $
  */
 /*
  * ooHG source code:

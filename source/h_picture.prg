@@ -1,5 +1,5 @@
 /*
- * $Id: h_picture.prg,v 1.35 2017-10-01 15:52:27 fyurisich Exp $
+ * $Id: h_picture.prg $
  */
 /*
  * ooHG source code:

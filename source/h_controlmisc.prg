@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.166 2017-08-25 19:42:18 fyurisich Exp $
+ * $Id: h_controlmisc.prg $
  */
 /*
  * ooHG source code:

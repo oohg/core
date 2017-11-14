@@ -1,5 +1,5 @@
 /*
- * $Id: h_editbox.prg,v 1.32 2017-10-01 15:52:26 fyurisich Exp $
+ * $Id: h_editbox.prg $
  */
 /*
  * ooHG source code:

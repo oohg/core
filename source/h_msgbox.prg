@@ -1,5 +1,5 @@
 /*
- * $Id: h_msgbox.prg,v 1.27 2017-08-25 19:42:22 fyurisich Exp $
+ * $Id: h_msgbox.prg $
  */
 /*
  * ooHG source code:

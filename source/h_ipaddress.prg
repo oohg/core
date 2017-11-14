@@ -1,5 +1,5 @@
 /*
- * $Id: h_ipaddress.prg,v 1.22 2017-10-01 15:52:26 fyurisich Exp $
+ * $Id: h_ipaddress.prg $
  */
 /*
  * ooHG source code:

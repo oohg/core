@@ -1,5 +1,5 @@
 /*
- * $Id: h_monthcal.prg,v 1.24 2017-10-01 15:52:26 fyurisich Exp $
+ * $Id: h_monthcal.prg $
  */
 /*
  * ooHG source code:

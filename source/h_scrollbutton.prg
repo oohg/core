@@ -1,5 +1,5 @@
 /*
- * $Id: h_scrollbutton.prg,v 1.10 2017-10-01 15:52:27 fyurisich Exp $
+ * $Id: h_scrollbutton.prg $
  */
 /*
  * ooHG source code:

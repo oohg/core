@@ -1,5 +1,5 @@
 /*
-* $Id: h_pdf.prg,v 1.22 2017-08-25 19:42:22 fyurisich Exp $
+* $Id: h_pdf.prg $
 */
 /*
  * ooHG source code:

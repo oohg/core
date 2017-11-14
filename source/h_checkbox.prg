@@ -1,5 +1,5 @@
 /*
- * $Id: h_checkbox.prg,v 1.50 2017-10-01 15:52:26 fyurisich Exp $
+ * $Id: h_checkbox.prg $
  */
 /*
  * ooHG source code:

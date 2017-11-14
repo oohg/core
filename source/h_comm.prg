@@ -1,5 +1,5 @@
 /*
- * $Id: h_comm.prg,v 1.11 2017-10-01 15:52:26 fyurisich Exp $
+ * $Id: h_comm.prg $
  */
 /*
  * ooHG source code:

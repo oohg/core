@@ -1,5 +1,5 @@
 /*
- * $Id: h_menu.prg,v 1.48 2017-10-01 15:52:26 fyurisich Exp $
+ * $Id: h_menu.prg $
  */
 /*
  * ooHG source code:
