@@ -1,5 +1,5 @@
 /*
- * $Id: i_progressbar.ch,v 1.10 2017-08-25 19:26:28 fyurisich Exp $
+ * $Id: i_progressbar.ch $
  */
 /*
  * ooHG source code:

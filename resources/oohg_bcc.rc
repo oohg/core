@@ -1,5 +1,5 @@
 //
-// $Id: oohg_bcc.rc,v 1.5 2017-08-23 00:11:23 fyurisich Exp $
+// $Id: oohg_bcc.rc $
 //
 // Use CompileRes_bcc.bat to build oohg.res from this file using Borland compiler
 

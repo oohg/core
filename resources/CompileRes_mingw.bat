@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: CompileRes_mingw.bat,v 1.3 2017-08-23 00:11:23 fyurisich Exp $
+rem $Id: CompileRes_mingw.bat $
 rem
 
 :MAIN

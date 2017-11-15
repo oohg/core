@@ -1,5 +1,5 @@
 /*
- * $Id: i_media.ch,v 1.12 2017-08-25 19:26:28 fyurisich Exp $
+ * $Id: i_media.ch $
  */
 /*
  * ooHG source code:

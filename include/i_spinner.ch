@@ -1,5 +1,5 @@
 /*
- * $Id: i_spinner.ch,v 1.13 2017-08-25 19:26:28 fyurisich Exp $
+ * $Id: i_spinner.ch $
  */
 /*
  * ooHG source code:

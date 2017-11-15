@@ -1,5 +1,5 @@
 /*
- * $Id: i_checklist.ch,v 1.12 2017-08-25 19:26:27 fyurisich Exp $
+ * $Id: i_checklist.ch $
  */
 /*
  * ooHG source code:

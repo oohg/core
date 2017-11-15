@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.ch,v 1.19 2017-10-01 14:33:00 fyurisich Exp $
+ * $Id: winprint.ch $
  */
 /*
  * ooHG source code:

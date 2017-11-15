@@ -1,5 +1,5 @@
 /*
- * $Id: c_activex.c,v 1.18 2017-08-25 19:42:17 fyurisich Exp $
+ * $Id: c_activex.c $
  */
 /*
  * ooHG source code:

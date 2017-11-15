@@ -1,5 +1,5 @@
 /*
- * $Id: i_checkbox.ch,v 1.20 2017-08-25 19:26:27 fyurisich Exp $
+ * $Id: i_checkbox.ch $
  */
 /*
  * ooHG source code:

@@ -1,5 +1,5 @@
 /*
- * $Id: i_report.ch,v 1.16 2017-09-28 21:33:03 fyurisich Exp $
+ * $Id: i_report.ch $
  */
 /*
  * ooHG source code:

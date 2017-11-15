@@ -1,5 +1,5 @@
 /*
- * $Id: i_tab.ch,v 1.14 2017-08-25 19:26:28 fyurisich Exp $
+ * $Id: i_tab.ch $
  */
 /*
  * ooHG source code:

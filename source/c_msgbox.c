@@ -1,5 +1,5 @@
 /*
- * $Id: c_msgbox.c,v 1.12 2017-08-25 19:42:17 fyurisich Exp $
+ * $Id: c_msgbox.c $
  */
 /*
  * ooHG source code:

@@ -1,5 +1,5 @@
 /*
- * $Id: c_progressbar.c,v 1.10 2017-08-25 19:42:17 fyurisich Exp $
+ * $Id: c_progressbar.c $
  */
 /*
  * ooHG source code:

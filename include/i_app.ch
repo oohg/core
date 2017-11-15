@@ -1,5 +1,5 @@
 /*
- * $Id: i_app.ch,v 1.5 2017-08-25 19:26:27 fyurisich Exp $
+ * $Id: i_app.ch $
  */
 /*
  * ooHG source code:

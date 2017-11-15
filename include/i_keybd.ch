@@ -1,5 +1,5 @@
 /*
- * $Id: i_keybd.ch,v 1.13 2017-08-25 19:26:28 fyurisich Exp $
+ * $Id: i_keybd.ch $
  */
 /*
  * ooHG source code:

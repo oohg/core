@@ -1,5 +1,5 @@
 /*
- * $Id: i_textarray.ch,v 1.8 2017-08-25 19:26:28 fyurisich Exp $
+ * $Id: i_textarray.ch $
  */
 /*
  * ooHG source code:

@@ -1,5 +1,5 @@
 /*
- * $Id: c_winapimisc.c,v 1.31 2017-08-25 19:42:17 fyurisich Exp $
+ * $Id: c_winapimisc.c $
  */
 /*
  * ooHG source code:

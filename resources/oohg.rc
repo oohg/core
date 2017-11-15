@@ -1,5 +1,5 @@
 //
-// $Id: oohg.rc,v 1.10 2017-08-23 00:11:23 fyurisich Exp $
+// $Id: oohg.rc $
 //
 // Use CompileRes_mingw.bat to build oohg.o from this file using MinGW compiler
 

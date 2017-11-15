@@ -1,5 +1,5 @@
 /*
- * $Id: i_this.ch,v 1.14 2017-08-25 19:26:28 fyurisich Exp $
+ * $Id: i_this.ch $
  */
 /*
  * ooHG source code:

@@ -1,5 +1,5 @@
 /*
- * $Id: i_controlmisc.ch,v 1.14 2017-08-25 19:26:27 fyurisich Exp $
+ * $Id: i_controlmisc.ch $
  */
 /*
  * ooHG source code:

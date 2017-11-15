@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: BuildLib.bat,v 1.9 2015-03-14 01:11:45 fyurisich Exp $
+rem $Id: BuildLib.bat $
 rem
 
 :BUILDLIB

@@ -1,5 +1,5 @@
 /*
- * $Id: i_dll.ch,v 1.8 2017-08-25 19:26:27 fyurisich Exp $
+ * $Id: i_dll.ch $
  */
 /*
  * ooHG source code:

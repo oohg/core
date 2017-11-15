@@ -1,5 +1,5 @@
 /*
- * $Id: i_editbox.ch,v 1.16 2017-08-25 19:26:27 fyurisich Exp $
+ * $Id: i_editbox.ch $
  */
 /*
  * ooHG source code:

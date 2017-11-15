@@ -1,5 +1,5 @@
 /*
- * $Id: i_hyperlink.ch,v 1.10 2017-08-25 19:26:27 fyurisich Exp $
+ * $Id: i_hyperlink.ch $
  */
 /*
  * ooHG source code:

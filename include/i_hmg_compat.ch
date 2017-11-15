@@ -1,5 +1,5 @@
 /*
- * $Id: i_hmg_compat.ch,v 1.60 2017-09-13 22:29:09 fyurisich Exp $
+ * $Id: i_hmg_compat.ch $
  */
 /*
  * ooHG source code:

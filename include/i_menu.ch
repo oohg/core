@@ -1,5 +1,5 @@
 /*
- * $Id: i_menu.ch,v 1.16 2017-08-25 19:26:28 fyurisich Exp $
+ * $Id: i_menu.ch $
  */
 /*
  * ooHG source code:

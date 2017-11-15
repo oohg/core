@@ -1,5 +1,5 @@
 /*
- * $Id: c_graph.c,v 1.12 2017-08-25 19:42:17 fyurisich Exp $
+ * $Id: c_graph.c $
  */
 /*
  * ooHG source code:

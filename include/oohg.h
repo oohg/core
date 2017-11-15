@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.h,v 1.75 2017-08-25 19:26:28 fyurisich Exp $
+ * $Id: oohg.h $
  */
 /*
  * ooHG source code:

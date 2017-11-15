@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: makelib_mingw.bat,v 1.44 2017-07-09 21:45:54 fyurisich Exp $
+rem $Id: makelib_mingw.bat $
 rem
 
 :MAIN

@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: CompileRes_bcc.bat,v 1.1 2015-03-18 01:22:30 fyurisich Exp $
+rem $Id: CompileRes_bcc.bat $
 rem
 
 :MAIN

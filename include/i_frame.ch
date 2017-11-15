@@ -1,5 +1,5 @@
 /*
- * $Id: i_frame.ch,v 1.11 2017-08-25 19:26:27 fyurisich Exp $
+ * $Id: i_frame.ch $
  */
 /*
  * ooHG source code:

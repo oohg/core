@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: common_make.bat,v 1.31 2017-07-09 20:08:03 guerra000 Exp $
+rem $Id: common_make.bat $
 rem
 
 :MAIN

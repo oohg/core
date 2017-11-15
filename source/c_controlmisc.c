@@ -1,5 +1,5 @@
 /*
- * $Id: c_controlmisc.c,v 1.79 2017-08-25 19:42:17 fyurisich Exp $
+ * $Id: c_controlmisc.c $
  */
 /*
  * ooHG source code:

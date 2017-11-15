@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.ch,v 1.18 2017-09-28 21:33:03 fyurisich Exp $
+ * $Id: miniprint.ch $
  */
 /*
  * ooHG source code:

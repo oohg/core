@@ -1,5 +1,5 @@
 /*
- * $Id: i_tree.ch,v 1.17 2017-08-25 19:26:28 fyurisich Exp $
+ * $Id: i_tree.ch $
  */
 /*
  * ooHG source code:

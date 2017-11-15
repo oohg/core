@@ -1,5 +1,5 @@
 /*
- * $Id: i_anigif.ch,v 1.2 2017-08-25 19:26:27 fyurisich Exp $
+ * $Id: i_anigif.ch $
  */
 /*
  * ooHG source code:

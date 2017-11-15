@@ -1,5 +1,5 @@
 /*
- * $Id: i_internal.ch,v 1.9 2017-08-25 19:26:28 fyurisich Exp $
+ * $Id: i_internal.ch $
  */
 /*
  * ooHG source code:

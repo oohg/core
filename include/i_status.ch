@@ -1,5 +1,5 @@
 /*
- * $Id: i_status.ch,v 1.15 2017-08-25 19:26:28 fyurisich Exp $
+ * $Id: i_status.ch $
  */
 /*
  * ooHG source code:

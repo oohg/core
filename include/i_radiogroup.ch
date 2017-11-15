@@ -1,5 +1,5 @@
 /*
- * $Id: i_radiogroup.ch,v 1.19 2017-08-25 19:26:28 fyurisich Exp $
+ * $Id: i_radiogroup.ch $
  */
 /*
  * ooHG source code:

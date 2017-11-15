@@ -1,5 +1,5 @@
 /*
- * $Id: i_window.ch,v 1.71 2017-08-25 19:26:28 fyurisich Exp $
+ * $Id: i_window.ch $
  */
 /*
  * ooHG source code:

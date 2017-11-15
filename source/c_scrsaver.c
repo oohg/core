@@ -1,5 +1,5 @@
 /*
- * $Id: c_scrsaver.c,v 1.6 2017-08-25 19:42:17 fyurisich Exp $
+ * $Id: c_scrsaver.c $
  */
 /*
  * ooHG source code:

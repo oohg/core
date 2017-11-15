@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: makelib_bcc.bat,v 1.23 2015-12-09 19:49:32 guerra000 Exp $
+rem $Id: makelib_bcc.bat $
 rem
 
 :MAIN

@@ -1,5 +1,5 @@
 /*
- * $Id: c_gdiplus.c,v 1.23 2017-08-25 19:42:17 fyurisich Exp $
+ * $Id: c_gdiplus.c $
  */
 /*
  * ooHG source code:

@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: makelib_pc.bat,v 1.6 2015-11-07 22:39:57 fyurisich Exp $
+rem $Id: makelib_pc.bat $
 rem
 
 :MAIN

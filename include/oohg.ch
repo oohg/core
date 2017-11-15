@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.ch,v 1.28 2017-08-25 19:26:28 fyurisich Exp $
+ * $Id: oohg.ch $
  */
 /*
  * ooHG source code:

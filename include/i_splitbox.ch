@@ -1,5 +1,5 @@
 /*
- * $Id: i_splitbox.ch,v 1.11 2017-08-25 19:26:28 fyurisich Exp $
+ * $Id: i_splitbox.ch $
  */
 /*
  * ooHG source code:

@@ -1,5 +1,5 @@
 /*
- * $Id: i_button.ch,v 1.34 2017-08-25 19:26:27 fyurisich Exp $
+ * $Id: i_button.ch $
  */
 /*
  * ooHG source code:

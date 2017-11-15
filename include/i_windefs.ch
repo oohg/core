@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.79 2017-08-25 19:26:28 fyurisich Exp $
+ * $Id: i_windefs.ch $
  */
 /*
  * ooHG source code:

@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: BuildLib_hbmk2.bat,v 1.2 2015-11-07 22:39:57 fyurisich Exp $
+rem $Id: BuildLib_hbmk2.bat $
 rem
 rem Build ooHG libraries from official distro
 rem

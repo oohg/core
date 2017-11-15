@@ -1,5 +1,5 @@
 /*
- * $Id: c_resource.c,v 1.7 2017-08-25 19:42:17 fyurisich Exp $
+ * $Id: c_resource.c $
  */
 /*
  * ooHG source code:

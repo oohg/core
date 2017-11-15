@@ -1,5 +1,5 @@
 /*
- * $Id: i_richeditbox.ch,v 1.18 2017-08-25 19:26:28 fyurisich Exp $
+ * $Id: i_richeditbox.ch $
  */
 /*
  * ooHG source code:

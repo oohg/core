@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id $
+rem $Id makelib.bat $
 rem
 
 :MAKELIB

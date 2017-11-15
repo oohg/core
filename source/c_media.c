@@ -1,5 +1,5 @@
 /*
- * $Id: c_media.c,v 1.7 2017-08-25 19:42:17 fyurisich Exp $
+ * $Id: c_media.c $
  */
 /*
  * ooHG source code:

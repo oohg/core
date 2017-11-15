@@ -1,5 +1,5 @@
 /*
- * $Id: i_label.ch,v 1.17 2017-08-25 19:26:28 fyurisich Exp $
+ * $Id: i_label.ch $
  */
 /*
  * ooHG source code:

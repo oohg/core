@@ -1,5 +1,5 @@
 /*
- * $Id: c_dialogs.c,v 1.19 2017-08-25 19:42:17 fyurisich Exp $
+ * $Id: c_dialogs.c $
  */
 /*
  * ooHG source code:

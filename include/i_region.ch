@@ -1,5 +1,5 @@
 /*
- * $Id: i_region.ch,v 1.7 2017-08-25 19:26:28 fyurisich Exp $
+ * $Id: i_region.ch $
  */
 /*
  * ooHG source code:

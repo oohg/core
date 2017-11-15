@@ -1,5 +1,5 @@
 /*
- * $Id: i_hb_compat.ch,v 1.7 2017-08-25 19:26:27 fyurisich Exp $
+ * $Id: i_hb_compat.ch $
  */
 /*
  * ooHG source code:

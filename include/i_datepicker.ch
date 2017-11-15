@@ -1,5 +1,5 @@
 /*
- * $Id: i_datepicker.ch,v 1.15 2017-09-09 14:37:53 fyurisich Exp $
+ * $Id: i_datepicker.ch $
  */
 /*
  * ooHG source code:

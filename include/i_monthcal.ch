@@ -1,5 +1,5 @@
 /*
- * $Id: i_monthcal.ch,v 1.13 2017-09-09 15:02:24 fyurisich Exp $
+ * $Id: i_monthcal.ch $
  */
 /*
  * ooHG source code:

@@ -1,5 +1,5 @@
 /*
- * $Id: c_cursor.c,v 1.11 2017-08-25 19:42:17 fyurisich Exp $
+ * $Id: c_cursor.c $
  */
 /*
  * ooHG source code:
