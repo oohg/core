@@ -1115,10 +1115,6 @@ Function _OOHG_HasData( obj, msg )
 
    Return .F.
 
-Function _dummy()
-
-   Return Nil
-
 Function cFileNoPath( cPathMask )
 
    local n := RAt( "\", cPathMask )
@@ -2273,7 +2269,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TControl
 
    Local nNotify := GetNotifyCode( lParam )
 
-   Empty( wParam ) // DUMMY...
+   HB_SYMBOL_UNUSED( wParam )
 
    If     nNotify == NM_KILLFOCUS
       Return ::DoLostFocus()

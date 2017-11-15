@@ -136,7 +136,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TToolTip
    Local nNotify := GetNotifyCode( lParam )
    Local oControl, cToolTip
 
-   Empty( wParam ) // DUMMY...
+   HB_SYMBOL_UNUSED( wParam )
 
    If     nNotify == TTN_GETDISPINFO
       oControl := GetControlObjectByHandle( _GetToolTipGetDispInfoHWnd( lParam ) )

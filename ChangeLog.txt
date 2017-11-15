@@ -8,6 +8,22 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2017-11-13 17:32 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog.txt
+     * Updated.
+   * core\source\h_controlmisc.prg
+     * Changed Empty( <var> ) to HB_SYMBOL_UNUSED( <var> ).
+     - Removed no longer used _dummy function.
+   * core\source\h_tooltip.prg
+     * Changed Empty( <var> ) to HB_SYMBOL_UNUSED( <var> ).
+
+2017-11-13 17:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\*.*
+   * core\resources\*.*
+   * core\source\*.c
+   * core\source\*.bat
+     * Id.
+
 2017-11-13 18:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt
      * Updated.
