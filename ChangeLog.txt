@@ -8,7 +8,7 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
-2017-11-13 17:32 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2017-11-15 17:32 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt
      * Updated.
    * core\source\h_controlmisc.prg
@@ -17,7 +17,7 @@
    * core\source\h_tooltip.prg
      * Changed Empty( <var> ) to HB_SYMBOL_UNUSED( <var> ).
 
-2017-11-13 17:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2017-11-15 17:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\*.*
    * core\resources\*.*
    * core\source\*.c
