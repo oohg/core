@@ -8,10 +8,10 @@
  * Based upon
  * BOS TAURUS Graphic Library for HMG
  * Copyright 2012-2015 by Dr. Claudio Soto (from Uruguay).
- * <srvet@adinet.com.uy> http://srvet.blogspot.com
+ * <srvet@adinet.com.uy> http://srvet.blogspot.com.uy/
  *
  * Copyright 2015-2017 Fernando Yurisich <fyurisich@oohg.org>
- * https://sourceforge.net/projects/oohg/
+ * https://oohg.github.io/
  */
 /*
  * This program is free software; you can redistribute it and/or modify

@@ -6,7 +6,7 @@
  * TReg32 class and registry functions
  *
  * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
- * https://sourceforge.net/projects/oohg/
+ * https://oohg.github.io/
  *
  * Portions of this project are based upon Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>

@@ -10,7 +10,7 @@
  * Copyright 2007 P.Chornyj <myorg63@mail.ru>
  *
  * Copyright 2013-2017 Fernando Yurisich <fyurisich@oohg.org>
- * https://sourceforge.net/projects/oohg/
+ * https://oohg.github.io/
  *
  * Portions of this project are based upon Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>

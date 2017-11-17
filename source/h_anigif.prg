@@ -6,7 +6,7 @@
  * Animate GIF control
  *
  * Copyright 2016-2017 Fernando Yurisich <fyurisich@oohg.org>
- * https://sourceforge.net/projects/oohg/
+ * https://oohg.github.io/
  *
  * Based upon an HMG sample by
  * P.Chornyj <myorg63@mail.ru>

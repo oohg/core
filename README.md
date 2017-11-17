@@ -6,7 +6,7 @@ To download ooHG binaries please visit
 http://sourceforge.net/projects/oohg/files/
 
 To ask for help, join the users group at
-http://es.groups.yahoo.com/group/oohg/join
+https://es.groups.yahoo.com/neo/groups/oohg/info?showJoinPopup=true
 
 To contribute, please fork and submit pull requests at
 https://oohg.github.io

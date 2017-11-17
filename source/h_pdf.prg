@@ -11,7 +11,7 @@
  * Pritpal Bedi, http://www.vouchcac.com
  *
  * Copyright 2007-2017 Ciro Vargas Clemow <cvc@oohg.org>
- * https://sourceforge.net/projects/oohg/
+ * https://oohg.github.io/
  *
  * Portions of this project are based upon Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>

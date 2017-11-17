@@ -6,7 +6,7 @@
  * HyperLink control
  *
  * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
- * https://sourceforge.net/projects/oohg/
+ * https://oohg.github.io/
  *
  * Portions of this project are based upon Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -79,8 +79,8 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, url, w, h, fontname, ;
                TRANSPARENT, aRGB_bk, aRGB_font, tooltip, HelpId, invisible, ;
                italic, autosize, handcursor, lRtl ) CLASS THyperLink
 
-   DEFAULT Url           TO "http://www.oohg.org"
-   DEFAULT Caption       TO "www.oohg.org"
+   DEFAULT Url           TO "https://oohg.github.io/"
+   DEFAULT Caption       TO "oohg at github"
    DEFAULT aRGB_font     TO {0,0,255}
    DEFAULT handcursor    TO .F.
 
