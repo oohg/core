@@ -91,37 +91,37 @@ FUNCTION _BeginScrSaver( cSSaver, lNoShow, cInit, cRelease, cPaint, nTimer, aBac
             ON MOUSEMOVE (a := GetCursorPos(), IF( a[1] # y / 2 .AND. a[2] # x / 2, ;
             IF(_lValidScrSaver(), DoMethod(cSSaver,'Release') , ), )) ;
             BACKCOLOR aBackClr
-      ELSE
+   ELSE
 
-         DEFINE WINDOW &cSsaver AT 0, 0 ;
-               WIDTH x HEIGHT y ;
-               MAIN ;
-               TOPMOST NOSIZE NOCAPTION ;
-               ON GOTFOCUS SetCursorPos(x / 2, y / 2) ;
-               ON INIT (ShowCursor(.F.), ;
-               SystemParametersInfo( SPI_SCREENSAVERRUNNING, 1, @Dummy, 0 )) ;
-               ON RELEASE _ReleaseScrSaver(cRelease, cSSaver, cPaint) ;
-               ON MOUSECLICK (IF(_lValidScrSaver(), DoMethod(cSSaver,'Release')  , )) ;
-               ON MOUSEMOVE (a := GetCursorPos(), IF( a[1] # y / 2 .AND. a[2] # x / 2, ;
-               IF(_lValidScrSaver(), DoMethod(cSSaver,'Release'), ), )) ;
-               BACKCOLOR aBackClr
-         ENDIF
+      DEFINE WINDOW &cSsaver AT 0, 0 ;
+            WIDTH x HEIGHT y ;
+            MAIN ;
+            TOPMOST NOSIZE NOCAPTION ;
+            ON GOTFOCUS SetCursorPos(x / 2, y / 2) ;
+            ON INIT (ShowCursor(.F.), ;
+            SystemParametersInfo( SPI_SCREENSAVERRUNNING, 1, @Dummy, 0 )) ;
+            ON RELEASE _ReleaseScrSaver(cRelease, cSSaver, cPaint) ;
+            ON MOUSECLICK (IF(_lValidScrSaver(), DoMethod(cSSaver,'Release')  , )) ;
+            ON MOUSEMOVE (a := GetCursorPos(), IF( a[1] # y / 2 .AND. a[2] # x / 2, ;
+            IF(_lValidScrSaver(), DoMethod(cSSaver,'Release'), ), )) ;
+            BACKCOLOR aBackClr
+   ENDIF
 
-         IF cPaint # NIL
-            DEFINE TIMER Timer_SSaver ;
-               INTERVAL nTimer * 1000 ;
-               ACTION Eval(cPaint)
-         ENDIF
+   IF cPaint # NIL
+      DEFINE TIMER Timer_SSaver ;
+         INTERVAL nTimer * 1000 ;
+         ACTION Eval(cPaint)
+   ENDIF
 
-      END WINDOW
+   END WINDOW
 
-      IF cInit # NIL
+   IF cInit # NIL
 
-         Eval(cInit)
+      Eval(cInit)
 
-      ENDIF
+   ENDIF
 
-      RETURN NIL
+   RETURN NIL
 
 FUNCTION _ActivateScrSaver( aForm, cParam )
 
