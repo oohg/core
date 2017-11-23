@@ -1,10 +1,8 @@
 /*
-TEST ONLY !!!!!!!!!!!!!!!
-Testing over HMG3 + HMG EXTENDED + HWGUI + OOHG
-
-2017.10.09.1215 - Do not insert blank line if line have continuation (;)
-2017.11.23.0000 - Method inside CREATECLASS/CLASS
+MGFORMAT - Format source code (indent, line space, first words to upper)
+Test over HMG3 + HMG EXTENDED + HWGUI + OOHG
 */
+
 #include "directry.ch"
 #include "inkey.ch"
 #include "hbclass.ch"
@@ -66,8 +64,7 @@ STATIC FUNCTION FormatDir( cPath, nKey, nContYes, nContNo )
 
 STATIC FUNCTION FormatFile( cFile, nContYes, nContNo )
 
-   LOCAL cTxtPrg, cTxtPrgAnt, acPrgLines, oElement
-   LOCAL lPrg := .T.
+   LOCAL cTxtPrg, cTxtPrgAnt, acPrgLines, oElement, lPrgSource := .T.
    LOCAL oFormat := FormatClass():New()
 
    cTxtPrgAnt := MemoRead( cFile )
@@ -93,16 +90,16 @@ STATIC FUNCTION FormatFile( cFile, nContYes, nContNo )
       FOR EACH oElement IN acPrgLines
          oElement := Trim( oElement )
          DO CASE
-         CASE IsBeginDump( oElement ) ; lPrg := .F.
-         CASE ! lPrg
+         CASE IsBeginDump( oElement ) ; lPrgSource := .F.
+         CASE ! lPrgSource
             IF IsEndDump( oElement )
-               lPrg := .T.
+               lPrgSource := .T.
             ENDIF
          OTHERWISE
             FormatIndent( @oElement, oFormat )
          ENDCASE
       NEXT
-      FormatRest( @cTxtPrg, @acPrgLines )
+      FormatEmptyLine( @cTxtPrg, @acPrgLines )
    ELSE
       cTxtPrg := ""
       FOR EACH oElement IN acPrgLines
@@ -130,9 +127,7 @@ STATIC FUNCTION FormatFile( cFile, nContYes, nContNo )
 
 FUNCTION FormatIndent( cLinePrg, oFormat )
 
-   LOCAL cThisLineUpper
-
-   LOCAL nIdent2 := 0
+   LOCAL cThisLineUpper, nIdent2 := 0
 
    cThisLineUpper := AllTrim( Upper( cLinePrg ) )
    IF Left( cThisLineUpper, 2 ) == FMT_COMMENT_OPEN .AND. ! FMT_COMMENT_CLOSE $ cThisLineUpper
@@ -195,18 +190,18 @@ FUNCTION FormatIndent( cLinePrg, oFormat )
 
    RETURN NIL
 
-FUNCTION FormatRest( cTxtPrg, acPrgLines )
+FUNCTION FormatEmptyLine( cTxtPrg, acPrgLines )
 
-   LOCAL cThisLineUpper, nLine := 1, lPrg := .T.
+   LOCAL cThisLineUpper, nLine := 1, lPrgSource := .T.
    LOCAL oFormat := FormatClass():New()
 
    cTxtPrg  := ""
    DO WHILE nLine <= Len( acPrgLines )
       cThisLineUpper := Upper( AllTrim( acPrgLines[ nLine ] ) )
       DO CASE
-      CASE IsEndDump( cThisLineUpper ) ;   lPrg := .T.
-      CASE ! lPrg
-      CASE IsBeginDump( cThisLineUpper ) ; lPrg := .T.
+      CASE IsEndDump( cThisLineUpper ) ;   lPrgSource := .T.
+      CASE ! lPrgSource
+      CASE IsBeginDump( cThisLineUpper ) ; lPrgSource := .T.
       CASE oFormat:lComment .AND. IsEndComment( cThisLineUpper ); oFormat:lComment := .F.
       CASE oFormat:lComment
       CASE IsEmptyComment( cThisLineUpper )
@@ -218,8 +213,8 @@ FUNCTION FormatRest( cTxtPrg, acPrgLines )
             nLine += 1
             LOOP
          ENDIF
-      CASE Left( acPrgLines[ nLine ], 1 ) != " " .AND. IsCmdType( FMT_BLANK_LINE, cThisLineUpper );  cTxtPrg += hb_Eol(); oFormat:lEmptyLine := .T.
-      CASE Left( cThisLineUpper, 6 )  == "RETURN";       cTxtPrg += hb_Eol(); oFormat:lEmptyLine := .T.
+      CASE Left( acPrgLines[ nLine ], 1 ) != " " .AND. IsCmdType( FMT_BLANK_LINE, cThisLineUpper ) ;  cTxtPrg += hb_Eol(); oFormat:lEmptyLine := .T.
+      CASE Left( cThisLineUpper, 6 )  == "RETURN" .AND. At( "RETURN", acPrgLines[ nLine ] ) < 5    ;  cTxtPrg += hb_Eol(); oFormat:lEmptyLine := .T.
       ENDCASE
       IF oFormat:lDeclareVar .AND. ;
          Right( cTxtPrg, 3 ) != ";" + hb_Eol() .AND. ;
@@ -232,7 +227,7 @@ FUNCTION FormatRest( cTxtPrg, acPrgLines )
       ENDIF
       cTxtPrg += acPrgLines[ nLine ] + hb_Eol()
       DO CASE
-      CASE ! lPrg
+      CASE ! lPrgSource
       CASE oFormat:lComment
       CASE ";" $ cThisLineUpper
       CASE Left( acPrgLines[ nLine ], 1 ) != " " .AND. IsCmdType( FMT_BLANK_LINE,  cThisLineUpper ); cTxtPrg += hb_Eol(); cThisLineUpper := ""
