@@ -1,0 +1,64 @@
+To work with oohg as a addon:
+
+1) Be sure your Harbour/xHarbour is working fine
+
+   Remember that Harbour 3.2 and previous versions need HB_INSTALL_PREFIX
+   set HB_INSTALL_PREFIX=c:\harbour
+
+   Create a test.prg:
+
+   PROCEDURE Main
+
+      ? "Hello world"
+
+      RETURN
+
+   On Harbour:  hbmk2 test.prg -n
+   On XHarbour: hbmk2 test.prg -n -xhb
+
+   If all ok, goto (6)
+
+2) Be sure Harbour and C compiler are on path
+   Check folders name where you install them
+
+   example:
+
+   set PATH=%PATH%
+
+3) if you are using MSVC or BCC or POCC may be you need setup include and lib folders
+   Check folders name where you install them.
+   May be C compiler have a BAT to setp this, like on MSVC
+
+   example:
+
+   set INCLUDE=c:\harbour\comp\msvc2010\include
+   set LIB=c:\harbour\comp\msvc2010\lib
+
+4) If you are using XHarbour, then you need download hbmk2.exe from Harbour
+   download to harbour\bin folder
+
+5) Make test (1) to confirm if all ok
+
+6) If you want OOHG on any folder, then create/update HBMK.HBC on harbour\bin folder
+   Check where you install oohg, and set root path to this folder
+
+   libpaths=c:\oohg\drafts
+
+7) Create oohg library, on oohg\drafts folder
+   hbmk2 oohgall.hbp
+
+8) To test, go to oohg\samples\oohg and type
+
+   Harbour:  hbmk2 maindemooop oohg.hbc
+   XHarbour: hbmk2 maindemooop oohg.hbc -xhb
+
+   note: -xhb is needed to use external Harbour.exe
+
+9) If you do not want hidden .hbmk folders, you can use your workdir,
+   but be sure to delete content when change project
+   If you do not delete workdir content, may be one project mix files of another
+
+   Example:
+
+   del c:\temp
+   hbmk2 maindemooop oohg.hbc -workdir=c:\temp
