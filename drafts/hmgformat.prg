@@ -627,7 +627,7 @@ STATIC FUNCTION FmtList( nType )
       aList := { ;
          "END", ;
          "ENDCASE", ;
-         "ENDCLASS", ;
+         ; // "ENDCLASS", ;
          "ENDIF", ;
          "ENDDO", ;
          "ENDFOR", ;
