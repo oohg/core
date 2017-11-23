@@ -3,6 +3,7 @@ To work with oohg as a addon:
 1) Be sure your Harbour/xHarbour is working fine
 
    Remember that Harbour 3.2 and previous versions need HB_INSTALL_PREFIX
+   Will be needed to work as addons too
    set HB_INSTALL_PREFIX=c:\harbour
 
    Create a test.prg:
@@ -62,3 +63,12 @@ To work with oohg as a addon:
 
    del c:\temp
    hbmk2 maindemooop oohg.hbc -workdir=c:\temp
+
+10) If you have more than one Harbour version on machine, or Harbour/XHarbour,
+    or more than one C compiler, repeat operation for each one you will use.
+
+Only to remember about Harbour variables:
+
+HB_INSTALL_PREFIX = Harbour root PATH
+HB_COMPILER       = C compiler, may be mingw, msvc, bcc, mingw64, msvc64, bcc64, pocc, pocc64
+HB_COMPILER_VER   = version of C compiler as example 0701
