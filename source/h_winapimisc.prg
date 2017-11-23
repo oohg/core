@@ -1,64 +1,52 @@
 /*
- * $Id: h_winapimisc.prg $
- */
+* $Id: h_winapimisc.prg $
+*/
 /*
- * ooHG source code:
- * Windows API functions
- *
- * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
- * https://oohg.github.io/
- *
- * Portions of this project are based upon Harbour MiniGUI library.
- * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
- *
- * Portions of this project are based upon Harbour GUI framework for Win32.
- * Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
- * Copyright 2001 Antonio Linares <alinares@fivetech.com>
- *
- * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2017, https://harbour.github.io/
- */
+* ooHG source code:
+* Windows API functions
+* Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
+* https://oohg.github.io/
+* Portions of this project are based upon Harbour MiniGUI library.
+* Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
+* Portions of this project are based upon Harbour GUI framework for Win32.
+* Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
+* Copyright 2001 Antonio Linares <alinares@fivetech.com>
+* Portions of this project are based upon Harbour Project.
+* Copyright 1999-2017, https://harbour.github.io/
+*/
 /*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this software; see the file LICENSE.txt. If not, write to
- * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
- *
- * As a special exception, the ooHG Project gives permission for
- * additional uses of the text contained in its release of ooHG.
- *
- * The exception is that, if you link the ooHG libraries with other
- * files to produce an executable, this does not by itself cause the
- * resulting executable to be covered by the GNU General Public License.
- * Your use of that executable is in no way restricted on account of
- * linking the ooHG library code into it.
- *
- * This exception does not however invalidate any other reasons why
- * the executable file might be covered by the GNU General Public License.
- *
- * This exception applies only to the code released by the ooHG
- * Project under the name ooHG. If you copy code from other
- * ooHG Project or Free Software Foundation releases into a copy of
- * ooHG, as the General Public License permits, the exception does
- * not apply to the code that you add in this way. To avoid misleading
- * anyone as to the status of such modified files, you must delete
- * this exception notice from them.
- *
- * If you write modifications of your own for ooHG, it is your choice
- * whether to permit this exception to apply to your modifications.
- * If you do not wish that, delete this exception notice.
- */
-
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2, or (at your option)
+* any later version.
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* You should have received a copy of the GNU General Public License
+* along with this software; see the file LICENSE.txt. If not, write to
+* the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+* Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
+* As a special exception, the ooHG Project gives permission for
+* additional uses of the text contained in its release of ooHG.
+* The exception is that, if you link the ooHG libraries with other
+* files to produce an executable, this does not by itself cause the
+* resulting executable to be covered by the GNU General Public License.
+* Your use of that executable is in no way restricted on account of
+* linking the ooHG library code into it.
+* This exception does not however invalidate any other reasons why
+* the executable file might be covered by the GNU General Public License.
+* This exception applies only to the code released by the ooHG
+* Project under the name ooHG. If you copy code from other
+* ooHG Project or Free Software Foundation releases into a copy of
+* ooHG, as the General Public License permits, the exception does
+* not apply to the code that you add in this way. To avoid misleading
+* anyone as to the status of such modified files, you must delete
+* this exception notice from them.
+* If you write modifications of your own for ooHG, it is your choice
+* whether to permit this exception to apply to your modifications.
+* If you do not wish that, delete this exception notice.
+*/
 
 #define CSIDL_DESKTOP                   0x0000        // <desktop>
 #define CSIDL_INTERNET                  0x0001        // Internet Explorer (icon on desktop)
@@ -110,112 +98,112 @@
 #define CSIDL_FLAG_DONT_VERIFY          0x4000        // combine with CSIDL_ value to return an unverified folder path
 #define CSIDL_FLAG_MASK                 0xFF00        // mask for all possible flag values
 
-Function GetWindowsFolder()
+FUNCTION GetWindowsFolder()
 
-   Local lFolder
+   LOCAL lFolder
 
    lFolder := GETWINDOWSDIR()
 
-   Return lFolder
+   RETURN lFolder
 
-Function GetSystemFolder()
+FUNCTION GetSystemFolder()
 
-   Local lFolder
+   LOCAL lFolder
 
    lFolder := GETSYSTEMDIR()
 
-   Return lFolder
+   RETURN lFolder
 
-Function GetTempFolder()
+FUNCTION GetTempFolder()
 
-   Local lFolder
+   LOCAL lFolder
 
    lFolder := GETTEMPDIR()
 
-   Return lFolder
+   RETURN lFolder
 
-Function GetMyDocumentsFolder()
+FUNCTION GetMyDocumentsFolder()
 
-   Local lFolder
+   LOCAL lFolder
 
    lFolder := GETSPECIALFOLDER( CSIDL_PERSONAL )
 
-   Return lFolder
+   RETURN lFolder
 
-Function GetDesktopFolder()
+FUNCTION GetDesktopFolder()
 
-   Local lFolder
+   LOCAL lFolder
 
    lFolder := GETSPECIALFOLDER( CSIDL_DESKTOPDIRECTORY )
 
-   Return lFolder
+   RETURN lFolder
 
-Function GetProgramFilesFolder()
+FUNCTION GetProgramFilesFolder()
 
-   Local lFolder
+   LOCAL lFolder
 
    lFolder := GETSPECIALFOLDER( CSIDL_PROGRAM_FILES )
 
-   Return lFolder
+   RETURN lFolder
 
-Function GetSpecialFolder( nCSIDL ) // Contributed By Ryszard Rylko
+FUNCTION GetSpecialFolder( nCSIDL ) // Contributed By Ryszard Rylko
 
-   Local RetVal
+   LOCAL RetVal
 
    RetVal := C_GETSPECIALFOLDER( nCSIDL )
 
-   Return RetVal
+   RETURN RetVal
 
-Function _GetCompactPath( cFile, nMax ) // Contributed By Jacek Kubica
+FUNCTION _GetCompactPath( cFile, nMax ) // Contributed By Jacek Kubica
 
-   Local cShort
+   LOCAL cShort
 
-   If ! HB_IsNumeric( nMax )
+   IF ! HB_IsNumeric( nMax )
       nMax := 64
-   EndIf
+   ENDIF
    cShort := Space( nMax )
 
-   Return If( GETCOMPACTPATH( @cShort, cFile, nMax + 1, Nil ), cShort, cFile )
+   RETURN If( GETCOMPACTPATH( @cShort, cFile, nMax + 1, Nil ), cShort, cFile )
 
-Procedure ProcessMessages
+PROCEDURE ProcessMessages
 
-   Do While _ProcessMess()
-   EndDo
+   DO WHILE _ProcessMess()
+   ENDDO
 
-   Return
+   RETURN
 
-Function WindowsVersion()
+FUNCTION WindowsVersion()
 
-   Local aRetVal
+   LOCAL aRetVal
 
    aRetVal := WinVersion()
 
-   Return { aRetVal[ 1 ] + aRetVal[ 4 ], aRetVal[ 2 ], 'Build ' + aRetVal[ 3 ] }
+   RETURN { aRetVal[ 1 ] + aRetVal[ 4 ], aRetVal[ 2 ], 'Build ' + aRetVal[ 3 ] }
 
-Function _Execute( nActiveWindowhandle, cOperation, cFile, cParaMeters, cDefault, nState )
+FUNCTION _Execute( nActiveWindowhandle, cOperation, cFile, cParaMeters, cDefault, nState )
 
-   If ValType( nActiveWindowhandle ) == 'U'
+   IF ValType( nActiveWindowhandle ) == 'U'
       nActiveWindowhandle := 0
-   EndIf
+   ENDIF
 
-   If ValType( cOperation ) == 'U'
+   IF ValType( cOperation ) == 'U'
       cOperation := Nil
-   EndIf
+   ENDIF
 
-   If ValType( cFile ) == 'U'
+   IF ValType( cFile ) == 'U'
       cFile := ""
-   EndIf
+   ENDIF
 
-   If ValType( cParaMeters ) == 'U'
+   IF ValType( cParaMeters ) == 'U'
       cParaMeters := Nil
-   EndIf
+   ENDIF
 
-   If ValType( cDefault ) == 'U'
-       cDefault := Nil
-   EndIf
+   IF ValType( cDefault ) == 'U'
+      cDefault := Nil
+   ENDIF
 
-   If ValType( nState ) == 'U'
-       nState := 10 // SW_SHOWDEFAULT
-   EndIf
+   IF ValType( nState ) == 'U'
+      nState := 10 // SW_SHOWDEFAULT
+   ENDIF
 
-   Return ShellExecute( nActiveWindowhandle, cOperation, cFile, cParaMeters, cDefault, nState )
+   RETURN ShellExecute( nActiveWindowhandle, cOperation, cFile, cParaMeters, cDefault, nState )

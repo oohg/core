@@ -1,64 +1,52 @@
 /*
- * $Id: h_monthcal.prg $
- */
+* $Id: h_monthcal.prg $
+*/
 /*
- * ooHG source code:
- * MonthCal and MonthCalMulti controls
- *
- * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
- * https://oohg.github.io/
- *
- * Portions of this project are based upon Harbour MiniGUI library.
- * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
- *
- * Portions of this project are based upon Harbour GUI framework for Win32.
- * Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
- * Copyright 2001 Antonio Linares <alinares@fivetech.com>
- *
- * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2017, https://harbour.github.io/
- */
+* ooHG source code:
+* MonthCal and MonthCalMulti controls
+* Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
+* https://oohg.github.io/
+* Portions of this project are based upon Harbour MiniGUI library.
+* Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
+* Portions of this project are based upon Harbour GUI framework for Win32.
+* Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
+* Copyright 2001 Antonio Linares <alinares@fivetech.com>
+* Portions of this project are based upon Harbour Project.
+* Copyright 1999-2017, https://harbour.github.io/
+*/
 /*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this software; see the file LICENSE.txt. If not, write to
- * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
- *
- * As a special exception, the ooHG Project gives permission for
- * additional uses of the text contained in its release of ooHG.
- *
- * The exception is that, if you link the ooHG libraries with other
- * files to produce an executable, this does not by itself cause the
- * resulting executable to be covered by the GNU General Public License.
- * Your use of that executable is in no way restricted on account of
- * linking the ooHG library code into it.
- *
- * This exception does not however invalidate any other reasons why
- * the executable file might be covered by the GNU General Public License.
- *
- * This exception applies only to the code released by the ooHG
- * Project under the name ooHG. If you copy code from other
- * ooHG Project or Free Software Foundation releases into a copy of
- * ooHG, as the General Public License permits, the exception does
- * not apply to the code that you add in this way. To avoid misleading
- * anyone as to the status of such modified files, you must delete
- * this exception notice from them.
- *
- * If you write modifications of your own for ooHG, it is your choice
- * whether to permit this exception to apply to your modifications.
- * If you do not wish that, delete this exception notice.
- */
-
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2, or (at your option)
+* any later version.
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* You should have received a copy of the GNU General Public License
+* along with this software; see the file LICENSE.txt. If not, write to
+* the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+* Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
+* As a special exception, the ooHG Project gives permission for
+* additional uses of the text contained in its release of ooHG.
+* The exception is that, if you link the ooHG libraries with other
+* files to produce an executable, this does not by itself cause the
+* resulting executable to be covered by the GNU General Public License.
+* Your use of that executable is in no way restricted on account of
+* linking the ooHG library code into it.
+* This exception does not however invalidate any other reasons why
+* the executable file might be covered by the GNU General Public License.
+* This exception applies only to the code released by the ooHG
+* Project under the name ooHG. If you copy code from other
+* ooHG Project or Free Software Foundation releases into a copy of
+* ooHG, as the General Public License permits, the exception does
+* not apply to the code that you add in this way. To avoid misleading
+* anyone as to the status of such modified files, you must delete
+* this exception notice from them.
+* If you write modifications of your own for ooHG, it is your choice
+* whether to permit this exception to apply to your modifications.
+* If you do not wish that, delete this exception notice.
+*/
 
 #include "oohg.ch"
 #include "common.ch"
@@ -94,45 +82,45 @@ CLASS TMonthCal FROM TControl
    ENDCLASS
 
 METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
-               fontsize, tooltip, notoday, notodaycircle, weeknumbers, ;
-               change, HelpId, invisible, notabstop, bold, italic, ;
-               underline, strikeout, lRtl, lDisabled, fontcolor, backcolor, ;
-               titlefontcolor, titlebackcolor, trailingfontcolor, ;
-               backgroundcolor, viewchg, gotfocus, lostfocus ) CLASS TMonthCal
+      fontsize, tooltip, notoday, notodaycircle, weeknumbers, ;
+      change, HelpId, invisible, notabstop, bold, italic, ;
+      underline, strikeout, lRtl, lDisabled, fontcolor, backcolor, ;
+      titlefontcolor, titlebackcolor, trailingfontcolor, ;
+      backgroundcolor, viewchg, gotfocus, lostfocus ) CLASS TMonthCal
 
    ::Define2( ControlName, ParentForm, x, y, w, h, value, fontname, ;
-              fontsize, tooltip, notoday, notodaycircle, weeknumbers, ;
-              change, HelpId, invisible, notabstop, bold, italic, ;
-              underline, strikeout, lRtl, lDisabled, fontcolor, backcolor, ;
-              titlefontcolor, titlebackcolor, trailingfontcolor, ;
-              backgroundcolor, viewchg, 0, gotfocus, lostfocus )
+      fontsize, tooltip, notoday, notodaycircle, weeknumbers, ;
+      change, HelpId, invisible, notabstop, bold, italic, ;
+      underline, strikeout, lRtl, lDisabled, fontcolor, backcolor, ;
+      titlefontcolor, titlebackcolor, trailingfontcolor, ;
+      backgroundcolor, viewchg, 0, gotfocus, lostfocus )
 
-   Return Self
+   RETURN Self
 
 METHOD Define2( ControlName, ParentForm, x, y, w, h, value, fontname, ;
-                fontsize, tooltip, notoday, notodaycircle, weeknumbers, ;
-                change, HelpId, invisible, notabstop, bold, italic, ;
-                underline, strikeout, lRtl, lDisabled, fontcolor, backcolor, ;
-                titlefontcolor, titlebackcolor, trailingfontcolor, ;
-                backgroundcolor, viewchg, nStyle, gotfocus, lostfocus ) CLASS TMonthCal
+      fontsize, tooltip, notoday, notodaycircle, weeknumbers, ;
+      change, HelpId, invisible, notabstop, bold, italic, ;
+      underline, strikeout, lRtl, lDisabled, fontcolor, backcolor, ;
+      titlefontcolor, titlebackcolor, trailingfontcolor, ;
+      backgroundcolor, viewchg, nStyle, gotfocus, lostfocus ) CLASS TMonthCal
 
-   Local ControlHandle
+   LOCAL ControlHandle
 
    ASSIGN ::nCol    VALUE x TYPE "N"
    ASSIGN ::nRow    VALUE y TYPE "N"
    ASSIGN ::nWidth  VALUE w TYPE "N"
    ASSIGN ::nHeight VALUE h TYPE "N"
 
-   If ! HB_IsDate( value )
+   IF ! HB_IsDate( value )
       value := DATE()
-   EndIf
+   ENDIF
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize,,,, lRtl )
 
    nStyle += ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + MCS_DAYSTATE + ;
-             IF( HB_IsLogical( notoday )       .AND. notoday,       MCS_NOTODAY,       0 ) + ;
-             IF( HB_IsLogical( notodaycircle ) .AND. notodaycircle, MCS_NOTODAYCIRCLE, 0 ) + ;
-             IF( HB_IsLogical( weeknumbers )   .AND. weeknumbers,   MCS_WEEKNUMBERS,   0 )
+      IF( HB_IsLogical( notoday )       .AND. notoday,       MCS_NOTODAY,       0 ) + ;
+      IF( HB_IsLogical( notodaycircle ) .AND. notodaycircle, MCS_NOTODAYCIRCLE, 0 ) + ;
+      IF( HB_IsLogical( weeknumbers )   .AND. weeknumbers,   MCS_WEEKNUMBERS,   0 )
 
    ControlHandle := InitMonthCal( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, nStyle, ::lRtl )
 
@@ -153,7 +141,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, value, fontname, ;
    ASSIGN ::OnGotFocus   VALUE gotfocus  TYPE "B"
    ASSIGN ::OnLostFocus  VALUE lostfocus TYPE "B"
 
-   Return Self
+   RETURN Self
 
 METHOD Value( uValue ) CLASS TMonthCal
 
@@ -161,58 +149,63 @@ METHOD Value( uValue ) CLASS TMonthCal
       SetMonthCal( ::hWnd, uValue )
    ENDIF
 
-   Return GetMonthCalDate( ::hWnd )
+   RETURN GetMonthCalDate( ::hWnd )
 
 METHOD SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout ) CLASS TMonthCal
 
-   Local uRet
+   LOCAL uRet
 
    uRet := ::Super:SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout )
    AdjustMonthCalSize( ::hWnd, ::ContainerCol, ::ContainerRow )
    ::SizePos( , , GetWindowWidth( ::hWnd ), GetWindowHeight( ::hWnd ) )
 
-   Return uRet
+   RETURN uRet
 
 METHOD Events_Notify( wParam, lParam ) CLASS TMonthCal
 
-   Local nNotify := GetNotifyCode( lParam )
+   LOCAL nNotify := GetNotifyCode( lParam )
 
-   If nNotify == MCN_SELECT
+   IF nNotify == MCN_SELECT
       ::DoChange()
-      Return Nil
 
-   ElseIf nNotify == MCN_SELCHANGE
+      RETURN NIL
+
+   ELSEIF nNotify == MCN_SELCHANGE
       ::DoChange()
-      Return Nil
 
-   ElseIf nNotify == MCN_VIEWCHANGE
+      RETURN NIL
+
+   ELSEIF nNotify == MCN_VIEWCHANGE
       ::DoEvent( ::OnViewChange, "VIEWCHANGE", GetViewChangeData( lParam ) )
-      Return Nil
 
-   ElseIF nNotify == MCN_GETDAYSTATE
+      RETURN NIL
+
+   ELSEIF nNotify == MCN_GETDAYSTATE
       RetDayState( Self, lParam )
 
-   EndIf
+   ENDIF
 
-   Return ::Super:Events_Notify( wParam, lParam )
+   RETURN ::Super:Events_Notify( wParam, lParam )
 
 METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TMonthCal
 
-   If nMsg == WM_MOUSEACTIVATE
+   IF nMsg == WM_MOUSEACTIVATE
       ::SetFocus()
-      Return 1
 
-   ElseIf nMsg == WM_SETFOCUS
+      RETURN 1
+
+   ELSEIF nMsg == WM_SETFOCUS
       GetFormObjectByHandle( ::ContainerhWnd ):LastFocusedControl := ::hWnd
       ::FocusEffect()
       ::DoEvent( ::OnGotFocus, "GOTFOCUS" )
 
-   ElseIf nMsg == WM_KILLFOCUS
-      Return ::DoLostFocus()
+   ELSEIF nMsg == WM_KILLFOCUS
 
-   EndIf
+      RETURN ::DoLostFocus()
 
-   Return ::Super:Events( hWnd, nMsg, wParam, lParam )
+   ENDIF
+
+   RETURN ::Super:Events( hWnd, nMsg, wParam, lParam )
 
 METHOD CurrentView( nView ) CLASS TMonthCal
 
@@ -234,29 +227,29 @@ METHOD CurrentView( nView ) CLASS TMonthCal
       SendMessage( ::hWnd, MCM_SETCURRENTVIEW, 0, nView )
    ENDIF
 
-   Return SendMessage( ::hWnd, MCM_GETCURRENTVIEW, 0, 0 )
+   RETURN SendMessage( ::hWnd, MCM_GETCURRENTVIEW, 0, 0 )
 
 METHOD Width( nWidth ) CLASS TMonthCal
 
    IF HB_IsNumeric( nWidth )
       AdjustMonthCalSize( ::hWnd, ::ContainerCol, ::ContainerRow )
       ::SizePos( , , GetWindowWidth( ::hWnd ), GetWindowHeight( ::hWnd ) )
-   EndIf
+   ENDIF
 
-   Return ::nWidth
+   RETURN ::nWidth
 
 METHOD Height( nHeight ) CLASS TMonthCal
 
    IF HB_IsNumeric( nHeight )
       AdjustMonthCalSize( ::hWnd, ::ContainerCol, ::ContainerRow )
       ::SizePos( , , GetWindowWidth( ::hWnd ), GetWindowHeight( ::hWnd ) )
-   EndIf
+   ENDIF
 
-   Return ::nHeight
+   RETURN ::nHeight
 
 METHOD AddBoldDay( dDay ) CLASS TMonthCal
 
-   Local i
+   LOCAL i
 
    i := aScan( ::aBoldDays, { |d| d >= dDay } )
    IF i == 0
@@ -269,11 +262,11 @@ METHOD AddBoldDay( dDay ) CLASS TMonthCal
       SetDayState( Self )
    ENDIF
 
-   Return Nil
+   RETURN NIL
 
 METHOD DelBoldDay( dDay ) CLASS TMonthCal
 
-   Local i
+   LOCAL i
 
    i := aScan( ::aBoldDays, dDay )
    IF i > 0
@@ -282,8 +275,7 @@ METHOD DelBoldDay( dDay ) CLASS TMonthCal
       SetDayState( Self )
    ENDIF
 
-   Return Nil
-
+   RETURN NIL
 
 CLASS TMonthCalMulti FROM TMonthCal
 
@@ -297,20 +289,20 @@ CLASS TMonthCalMulti FROM TMonthCal
    ENDCLASS
 
 METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
-               fontsize, tooltip, notoday, notodaycircle, weeknumbers, ;
-               change, HelpId, invisible, notabstop, bold, italic, ;
-               underline, strikeout, lRtl, lDisabled, fontcolor, backcolor, ;
-               titlefontcolor, titlebackcolor, trailingfontcolor, ;
-               backgroundcolor, viewchg, gotfocus, lostfocus ) CLASS TMonthCalMulti
+      fontsize, tooltip, notoday, notodaycircle, weeknumbers, ;
+      change, HelpId, invisible, notabstop, bold, italic, ;
+      underline, strikeout, lRtl, lDisabled, fontcolor, backcolor, ;
+      titlefontcolor, titlebackcolor, trailingfontcolor, ;
+      backgroundcolor, viewchg, gotfocus, lostfocus ) CLASS TMonthCalMulti
 
    ::Define2( ControlName, ParentForm, x, y, w, h, value, fontname, ;
-              fontsize, tooltip, notoday, notodaycircle, weeknumbers, ;
-              change, HelpId, invisible, notabstop, bold, italic, ;
-              underline, strikeout, lRtl, lDisabled, fontcolor, backcolor, ;
-              titlefontcolor, titlebackcolor, trailingfontcolor, ;
-              backgroundcolor, viewchg, MCS_MULTISELECT, gotfocus, lostfocus )
+      fontsize, tooltip, notoday, notodaycircle, weeknumbers, ;
+      change, HelpId, invisible, notabstop, bold, italic, ;
+      underline, strikeout, lRtl, lDisabled, fontcolor, backcolor, ;
+      titlefontcolor, titlebackcolor, trailingfontcolor, ;
+      backgroundcolor, viewchg, MCS_MULTISELECT, gotfocus, lostfocus )
 
-   Return Self
+   RETURN Self
 
 METHOD MaxSelCount( nMax ) CLASS TMonthCalMulti
 
@@ -318,26 +310,26 @@ METHOD MaxSelCount( nMax ) CLASS TMonthCalMulti
       SendMessage( ::hWnd, MCM_SETMAXSELCOUNT, nMax, 0 )
    ENDIF
 
-   Return SendMessage( ::hWnd, MCM_GETMAXSELCOUNT, 0, 0 )
+   RETURN SendMessage( ::hWnd, MCM_GETMAXSELCOUNT, 0, 0 )
 
 METHOD DoChange() CLASS TMonthCalMulti
 
-   Local xValue, cType, cOldType
+   LOCAL xValue, cType, cOldType
 
    xValue   := ::Value
    cType    := ValType( xValue )
    cOldType := ValType( ::xOldValue )
    cType    := If( cType == "M", "C", cType )
    cOldType := If( cOldType == "M", "C", cOldType )
-   If ( cOldType == "U" .OR. ! cType == cOldType .OR. ;
-        ( HB_IsArray( xValue ) .AND. ! HB_IsArray( ::xOldValue ) ) .OR. ;
-        ( ! HB_IsArray( xValue ) .AND. HB_IsArray( ::xOldValue ) ) .OR. ;
-        ! aEqual( xValue, ::xOldValue ) )
+   IF ( cOldType == "U" .OR. ! cType == cOldType .OR. ;
+         ( HB_IsArray( xValue ) .AND. ! HB_IsArray( ::xOldValue ) ) .OR. ;
+         ( ! HB_IsArray( xValue ) .AND. HB_IsArray( ::xOldValue ) ) .OR. ;
+         ! aEqual( xValue, ::xOldValue ) )
       ::xOldValue := xValue
       ::DoEvent( ::OnChange, "CHANGE" )
-   EndIf
+   ENDIF
 
-   Return Self
+   RETURN Self
 
 METHOD Value( uValue ) CLASS TMonthCalMulti
 
@@ -345,17 +337,17 @@ METHOD Value( uValue ) CLASS TMonthCalMulti
       SetMonthCalRange( ::hWnd, uValue[ 1 ], uValue[ 2 ] )
    ENDIF
 
-   Return GetMonthCalRange( ::hWnd )
-
+   RETURN GetMonthCalRange( ::hWnd )
 
 FUNCTION SetDayState( Self )
 
-   Local aData, nCount, aDays, dStart, iNextD, dEnd, dEoM, nMonth, dDay, nLen
+   LOCAL aData, nCount, aDays, dStart, iNextD, dEnd, dEoM, nMonth, dDay, nLen
 
    aData  := GetMonthRange( ::hWnd )
    nCount := aData[ 1 ]
    IF nCount < 1
-      Return Nil
+
+      RETURN NIL
    ENDIF
 
    aDays := Array( nCount * 32 )
@@ -388,16 +380,17 @@ FUNCTION SetDayState( Self )
 
    C_SETDAYSTATE( ::hWnd, nCount, aDays )
 
-   Return Nil
+   RETURN NIL
 
 FUNCTION RetDayState( Self, lParam )
 
-   Local aData, nCount, aDays, dStart, iNextD, dEoM, nMonth, dDay, nLen
+   LOCAL aData, nCount, aDays, dStart, iNextD, dEoM, nMonth, dDay, nLen
 
    aData  := GetDayStateData( lParam )
    nCount := aData[ 1 ]
    IF nCount < 1
-      Return Nil
+
+      RETURN NIL
    ENDIF
 
    aDays := Array( nCount * 32 )
@@ -429,8 +422,7 @@ FUNCTION RetDayState( Self, lParam )
 
    C_RETDAYSTATE( lParam, nCount, aDays )
 
-   Return Nil
-
+   RETURN NIL
 
 #pragma BEGINDUMP
 
@@ -471,6 +463,7 @@ static WNDPROC lpfnOldWndProc = 0;
 
 static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
+
    return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
 }
 

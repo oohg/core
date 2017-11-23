@@ -1,64 +1,52 @@
 /*
- * $Id: h_label.prg $
- */
+* $Id: h_label.prg $
+*/
 /*
- * ooHG source code:
- * Label control
- *
- * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
- * https://oohg.github.io/
- *
- * Portions of this project are based upon Harbour MiniGUI library.
- * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
- *
- * Portions of this project are based upon Harbour GUI framework for Win32.
- * Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
- * Copyright 2001 Antonio Linares <alinares@fivetech.com>
- *
- * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2017, https://harbour.github.io/
- */
+* ooHG source code:
+* Label control
+* Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
+* https://oohg.github.io/
+* Portions of this project are based upon Harbour MiniGUI library.
+* Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
+* Portions of this project are based upon Harbour GUI framework for Win32.
+* Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
+* Copyright 2001 Antonio Linares <alinares@fivetech.com>
+* Portions of this project are based upon Harbour Project.
+* Copyright 1999-2017, https://harbour.github.io/
+*/
 /*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this software; see the file LICENSE.txt. If not, write to
- * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
- *
- * As a special exception, the ooHG Project gives permission for
- * additional uses of the text contained in its release of ooHG.
- *
- * The exception is that, if you link the ooHG libraries with other
- * files to produce an executable, this does not by itself cause the
- * resulting executable to be covered by the GNU General Public License.
- * Your use of that executable is in no way restricted on account of
- * linking the ooHG library code into it.
- *
- * This exception does not however invalidate any other reasons why
- * the executable file might be covered by the GNU General Public License.
- *
- * This exception applies only to the code released by the ooHG
- * Project under the name ooHG. If you copy code from other
- * ooHG Project or Free Software Foundation releases into a copy of
- * ooHG, as the General Public License permits, the exception does
- * not apply to the code that you add in this way. To avoid misleading
- * anyone as to the status of such modified files, you must delete
- * this exception notice from them.
- *
- * If you write modifications of your own for ooHG, it is your choice
- * whether to permit this exception to apply to your modifications.
- * If you do not wish that, delete this exception notice.
- */
-
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2, or (at your option)
+* any later version.
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* You should have received a copy of the GNU General Public License
+* along with this software; see the file LICENSE.txt. If not, write to
+* the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+* Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
+* As a special exception, the ooHG Project gives permission for
+* additional uses of the text contained in its release of ooHG.
+* The exception is that, if you link the ooHG libraries with other
+* files to produce an executable, this does not by itself cause the
+* resulting executable to be covered by the GNU General Public License.
+* Your use of that executable is in no way restricted on account of
+* linking the ooHG library code into it.
+* This exception does not however invalidate any other reasons why
+* the executable file might be covered by the GNU General Public License.
+* This exception applies only to the code released by the ooHG
+* Project under the name ooHG. If you copy code from other
+* ooHG Project or Free Software Foundation releases into a copy of
+* ooHG, as the General Public License permits, the exception does
+* not apply to the code that you add in this way. To avoid misleading
+* anyone as to the status of such modified files, you must delete
+* this exception notice from them.
+* If you write modifications of your own for ooHG, it is your choice
+* whether to permit this exception to apply to your modifications.
+* If you do not wish that, delete this exception notice.
+*/
 
 #include "oohg.ch"
 #include "common.ch"
@@ -87,13 +75,13 @@ CLASS TLabel FROM TControl
    ENDCLASS
 
 METHOD Define( ControlName, ParentForm, x, y, Caption, w, h, fontname, ;
-               fontsize, bold, BORDER, CLIENTEDGE, HSCROLL, VSCROLL, ;
-               lTRANSPARENT, aRGB_bk, aRGB_font, ProcedureName, tooltip, ;
-               HelpId, invisible, italic, underline, strikeout, autosize, ;
-               rightalign, centeralign, lRtl, lNoWordWrap, lNoPrefix, ;
-               cPicture, lDisabled, lCenterAlign ) CLASS TLabel
+      fontsize, bold, BORDER, CLIENTEDGE, HSCROLL, VSCROLL, ;
+      lTRANSPARENT, aRGB_bk, aRGB_font, ProcedureName, tooltip, ;
+      HelpId, invisible, italic, underline, strikeout, autosize, ;
+      rightalign, centeralign, lRtl, lNoWordWrap, lNoPrefix, ;
+      cPicture, lDisabled, lCenterAlign ) CLASS TLabel
 
-   Local ControlHandle, nStyle, nStyleEx
+   LOCAL ControlHandle, nStyle, nStyleEx
 
    ASSIGN ::nCol        VALUE x TYPE "N"
    ASSIGN ::nRow        VALUE y TYPE "N"
@@ -106,22 +94,22 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, w, h, fontname, ;
    ::SetForm( ControlName, ParentForm, FontName, FontSize, aRGB_font, aRGB_bk, , lRtl )
 
    nStyle := ::InitStyle( ,, Invisible, .T., lDisabled ) + ;
-             if( HB_IsLogical( BORDER )       .AND. BORDER,        WS_BORDER,      0 ) + ;
-             if( HB_IsLogical( HSCROLL )      .AND. HSCROLL,       WS_HSCROLL,     0 ) + ;
-             if( HB_IsLogical( VSCROLL )      .AND. VSCROLL,       WS_VSCROLL,     0 ) + ;
-             if( HB_IsLogical( lNoPrefix )    .AND. lNoPrefix,     SS_NOPREFIX,    0 ) + ;
-             if( HB_IsLogical( lCenterAlign ) .AND. lCenterAlign,  SS_CENTERIMAGE, 0 )
+      if( HB_IsLogical( BORDER )       .AND. BORDER,        WS_BORDER,      0 ) + ;
+      if( HB_IsLogical( HSCROLL )      .AND. HSCROLL,       WS_HSCROLL,     0 ) + ;
+      if( HB_IsLogical( VSCROLL )      .AND. VSCROLL,       WS_VSCROLL,     0 ) + ;
+      if( HB_IsLogical( lNoPrefix )    .AND. lNoPrefix,     SS_NOPREFIX,    0 ) + ;
+      if( HB_IsLogical( lCenterAlign ) .AND. lCenterAlign,  SS_CENTERIMAGE, 0 )
 
-   If HB_IsLogical( lNoWordWrap )  .AND. lNoWordWrap
+   IF HB_IsLogical( lNoWordWrap )  .AND. lNoWordWrap
       nStyle += SS_LEFTNOWORDWRAP
-   ElseIf HB_IsLogical( centeralign ) .AND. centeralign
+   ELSEIF HB_IsLogical( centeralign ) .AND. centeralign
       nStyle += SS_CENTER
-   ElseIf HB_IsLogical( rightalign ) .AND. rightalign
+   ELSEIF HB_IsLogical( rightalign ) .AND. rightalign
       nStyle += SS_RIGHT
-   EndIf
+   ENDIF
 
    nStyleEx := if( HB_IsLogical( CLIENTEDGE )  .AND. CLIENTEDGE,   WS_EX_CLIENTEDGE,  0 ) + ;
-               if( ::Transparent, WS_EX_TRANSPARENT, 0 )
+      if( ::Transparent, WS_EX_TRANSPARENT, 0 )
 
    Controlhandle := InitLabel( ::ContainerhWnd, "", 0, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, nStyle, nStyleEx, ::lRtl )
 
@@ -130,40 +118,40 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, w, h, fontname, ;
 
    ::Value := Caption
 
-   If ::Transparent
+   IF ::Transparent
       RedrawWindowControlRect( ::ContainerhWnd, ::ContainerRow, ::ContainerCol, ::ContainerRow + ::Height, ::ContainerCol + ::Width )
-   EndIf
+   ENDIF
 
    ASSIGN ::AutoSize VALUE autosize TYPE "L" DEFAULT ::AutoSize
    ASSIGN ::OnClick  VALUE ProcedureName TYPE "B"
 
-   Return Self
+   RETURN Self
 
 METHOD Value( cValue ) CLASS TLabel
 
-   If PCOUNT() > 0
-      If VALTYPE( ::Picture ) $ "CM"
+   IF PCOUNT() > 0
+      IF VALTYPE( ::Picture ) $ "CM"
          ::Caption := TRANSFORM( cValue, ::Picture )
-      Else
+      ELSE
          ::Caption := cValue
-      EndIf
-   Endif
+      ENDIF
+   ENDIF
 
-   Return ::Caption
+   RETURN ::Caption
 
 METHOD Caption( cValue ) CLASS TLabel
 
    IF VALTYPE( cValue ) $ "CM"
-      if ::lAutoSize
+      IF ::lAutoSize
          ::SizePos( , , GetTextWidth( nil, cValue , ::FontHandle ) + ::IconWidth, GetTextHeight( nil, cValue , ::FontHandle ) )
-      EndIf
+      ENDIF
       SetWindowText( ::hWnd , cValue )
-      If ::Transparent
+      IF ::Transparent
          RedrawWindowControlRect( ::ContainerhWnd, ::ContainerRow, ::ContainerCol, ::ContainerRow + ::Height, ::ContainerCol + ::Width )
-      EndIf
-   Else
+      ENDIF
+   ELSE
       cValue := GetWindowText( ::hWnd )
-   EndIf
+   ENDIF
 
    RETURN cValue
 
@@ -171,32 +159,31 @@ METHOD SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout, Angle, W
 
    ///local cCaption
    ::Super:SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout, Angle, Width )
-   If ::lAutosize
+   IF ::lAutosize
       ::AutoSize( .T. )
-   EndIf
+   ENDIF
 
-   RETURN Nil
+   RETURN NIL
 
 METHOD AutoSize( lValue ) CLASS TLabel
 
-   Local cCaption
+   LOCAL cCaption
 
-   If HB_IsLogical( lValue )
+   IF HB_IsLogical( lValue )
       ::lAutoSize := lValue
-      If lValue
+      IF lValue
          cCaption := GetWindowText( ::hWnd )
          ::SizePos( , , GetTextWidth( Nil, cCaption, ::FontHandle ) + ::IconWidth, GetTextHeight( Nil, cCaption, ::FontHandle ) )
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
    RETURN ::lAutoSize
 
 METHOD Align( nAlign ) CLASS TLabel
 
-   Return WindowStyleFlag( ::hWnd, 0x3F, nAlign )
+   RETURN WindowStyleFlag( ::hWnd, 0x3F, nAlign )
 
-
-EXTERN InitLabel
+   EXTERN InitLabel
 
 #pragma BEGINDUMP
 
@@ -209,6 +196,7 @@ static WNDPROC lpfnOldWndProc = 0;
 
 static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
+
    return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
 }
 

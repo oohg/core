@@ -1,64 +1,52 @@
 /*
- * $Id: h_richeditbox.prg $
- */
+* $Id: h_richeditbox.prg $
+*/
 /*
- * ooHG source code:
- * RichEdit control
- *
- * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
- * https://oohg.github.io/
- *
- * Portions of this project are based upon Harbour MiniGUI library.
- * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
- *
- * Portions of this project are based upon Harbour GUI framework for Win32.
- * Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
- * Copyright 2001 Antonio Linares <alinares@fivetech.com>
- *
- * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2017, https://harbour.github.io/
- */
+* ooHG source code:
+* RichEdit control
+* Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
+* https://oohg.github.io/
+* Portions of this project are based upon Harbour MiniGUI library.
+* Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
+* Portions of this project are based upon Harbour GUI framework for Win32.
+* Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
+* Copyright 2001 Antonio Linares <alinares@fivetech.com>
+* Portions of this project are based upon Harbour Project.
+* Copyright 1999-2017, https://harbour.github.io/
+*/
 /*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this software; see the file LICENSE.txt. If not, write to
- * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
- *
- * As a special exception, the ooHG Project gives permission for
- * additional uses of the text contained in its release of ooHG.
- *
- * The exception is that, if you link the ooHG libraries with other
- * files to produce an executable, this does not by itself cause the
- * resulting executable to be covered by the GNU General Public License.
- * Your use of that executable is in no way restricted on account of
- * linking the ooHG library code into it.
- *
- * This exception does not however invalidate any other reasons why
- * the executable file might be covered by the GNU General Public License.
- *
- * This exception applies only to the code released by the ooHG
- * Project under the name ooHG. If you copy code from other
- * ooHG Project or Free Software Foundation releases into a copy of
- * ooHG, as the General Public License permits, the exception does
- * not apply to the code that you add in this way. To avoid misleading
- * anyone as to the status of such modified files, you must delete
- * this exception notice from them.
- *
- * If you write modifications of your own for ooHG, it is your choice
- * whether to permit this exception to apply to your modifications.
- * If you do not wish that, delete this exception notice.
- */
-
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2, or (at your option)
+* any later version.
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* You should have received a copy of the GNU General Public License
+* along with this software; see the file LICENSE.txt. If not, write to
+* the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+* Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
+* As a special exception, the ooHG Project gives permission for
+* additional uses of the text contained in its release of ooHG.
+* The exception is that, if you link the ooHG libraries with other
+* files to produce an executable, this does not by itself cause the
+* resulting executable to be covered by the GNU General Public License.
+* Your use of that executable is in no way restricted on account of
+* linking the ooHG library code into it.
+* This exception does not however invalidate any other reasons why
+* the executable file might be covered by the GNU General Public License.
+* This exception applies only to the code released by the ooHG
+* Project under the name ooHG. If you copy code from other
+* ooHG Project or Free Software Foundation releases into a copy of
+* ooHG, as the General Public License permits, the exception does
+* not apply to the code that you add in this way. To avoid misleading
+* anyone as to the status of such modified files, you must delete
+* this exception notice from them.
+* If you write modifications of your own for ooHG, it is your choice
+* whether to permit this exception to apply to your modifications.
+* If you do not wish that, delete this exception notice.
+*/
 
 #include "oohg.ch"
 #include "common.ch"
@@ -93,13 +81,13 @@ CLASS TEditRich FROM TEdit
    ENDCLASS
 
 METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
-               fontsize, tooltip, maxlength, gotfocus, change, lostfocus, ;
-               readonly, break, HelpId, invisible, notabstop, bold, italic, ;
-               underline, strikeout, field, backcolor, lRtl, lDisabled, ;
-               selchange, fontcolor, nohidesel, OnFocusPos, novscroll, ;
-               nohscroll, file, type, OnHScroll, OnVScroll ) CLASS TEditRich
+      fontsize, tooltip, maxlength, gotfocus, change, lostfocus, ;
+      readonly, break, HelpId, invisible, notabstop, bold, italic, ;
+      underline, strikeout, field, backcolor, lRtl, lDisabled, ;
+      selchange, fontcolor, nohidesel, OnFocusPos, novscroll, ;
+      nohscroll, file, type, OnHScroll, OnVScroll ) CLASS TEditRich
 
-   Local ControlHandle, nStyle
+   LOCAL ControlHandle, nStyle
 
    ASSIGN ::nWidth  VALUE w TYPE "N"
    ASSIGN ::nHeight VALUE h TYPE "N"
@@ -109,10 +97,10 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .T., lRtl )
 
    nStyle := ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + ;
-             if( HB_IsLogical( readonly ) .AND. readonly, ES_READONLY, 0 ) + ;
-             if( HB_IsLogical( nohidesel ) .AND. nohidesel, ES_NOHIDESEL, 0 ) + ;
-             if( HB_IsLogical( novscroll ) .AND. novscroll, ES_AUTOVSCROLL, WS_VSCROLL ) + ;
-             if( HB_IsLogical( nohscroll ) .AND. nohscroll, 0, WS_HSCROLL )
+      if( HB_IsLogical( readonly ) .AND. readonly, ES_READONLY, 0 ) + ;
+      if( HB_IsLogical( nohidesel ) .AND. nohidesel, ES_NOHIDESEL, 0 ) + ;
+      if( HB_IsLogical( novscroll ) .AND. novscroll, ES_AUTOVSCROLL, WS_VSCROLL ) + ;
+      if( HB_IsLogical( nohscroll ) .AND. nohscroll, 0, WS_HSCROLL )
 
    ::SetSplitBoxInfo( Break, )
    ControlHandle := InitRichEditBox( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, maxlength, ::lRtl )
@@ -120,11 +108,11 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
    ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
 
-   If Empty( file )
+   IF Empty( file )
       ::SetVarBlock( Field, Value )
-   Else
+   ELSE
       ::LoadFile( file, type )
-   EndIf
+   ENDIF
 
    ::BackColor := ::BackColor
    ::FontColor := ::FontColor
@@ -137,37 +125,37 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
    ASSIGN ::OnSelChange VALUE selchange  TYPE "B"
    ASSIGN ::nOnFocusPos VALUE OnFocusPos TYPE "N"
 
-   Return Self
+   RETURN Self
 
 METHOD LoadFile( cFile, nType ) CLASS TEditRich
 
-   Local lRet := .F.
+   LOCAL lRet := .F.
 
    ASSIGN cFile VALUE cFile TYPE "C" DEFAULT ""
    ASSIGN nType VALUE nType TYPE "N" DEFAULT 2
-   If ! Empty( cFile ) .and. File( cFile )
+   IF ! Empty( cFile ) .and. File( cFile )
       lRet := FileStreamIn( ::hWnd, cFile, nType )
-   EndIf
+   ENDIF
 
-   Return lRet
+   RETURN lRet
 
 METHOD SaveFile( cFile, nType ) CLASS TEditRich
 
-   Local lRet := .F.
+   LOCAL lRet := .F.
 
    ASSIGN cFile VALUE cFile TYPE "C" DEFAULT ""
    ASSIGN nType VALUE nType TYPE "N" DEFAULT 2
-   If ! Empty( cFile )
+   IF ! Empty( cFile )
       lRet := FileStreamOut( ::hWnd, cFile, nType )
-   EndIf
+   ENDIF
 
-   Return lRet
+   RETURN lRet
 
 METHOD RichValue( cValue ) CLASS TEditRich
 
-   If VALTYPE( cValue ) $ "CM"
+   IF VALTYPE( cValue ) $ "CM"
       RichStreamIn( ::hWnd, cValue )
-   EndIf
+   ENDIF
 
    RETURN RichStreamOut( ::hWnd )
 
@@ -189,6 +177,7 @@ static WNDPROC lpfnOldWndProc = 0;
 
 static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
+
    return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
 }
 
@@ -303,6 +292,7 @@ EDITSTREAMCALLBACK CALLBACK EditStreamCallbackIn( DWORD_PTR dwCookie, LPBYTE pbB
       si->lRead += lMax;
       *pcb = lMax;
    }
+
    return 0;
 }
 
@@ -356,6 +346,7 @@ EDITSTREAMCALLBACK CALLBACK EditStreamCallbackOut( DWORD_PTR dwCookie, LPBYTE pb
       si->lSize = cb;
       *pcb = cb;
    }
+
    return 0;
 }
 
@@ -414,10 +405,12 @@ EDITSTREAMCALLBACK CALLBACK EditStreamCallbackFileIn( DWORD_PTR dwCookie, LPBYTE
 
    if( ReadFile( hFile, (LPVOID) pbBuff, cb, (LPDWORD) pcb, NULL ) )
    {
+
       return (EDITSTREAMCALLBACK) 0;
    }
    else
    {
+
       return (EDITSTREAMCALLBACK) -1;
    }
 }
@@ -428,10 +421,12 @@ EDITSTREAMCALLBACK CALLBACK EditStreamCallbackFileOut( DWORD_PTR dwCookie, LPBYT
 
    if( WriteFile( hFile, (LPVOID) pbBuff, cb, (LPDWORD) pcb, NULL ) )
    {
+
       return (EDITSTREAMCALLBACK) 0;
    }
    else
    {
+
       return (EDITSTREAMCALLBACK) -1;
    }
 }
@@ -714,66 +709,68 @@ HB_FUNC_STATIC( TEDITRICH_GETCHARFROMPOS )           // METHOD GetCharFromPos( n
 
 #pragma ENDDUMP
 
-
 FUNCTION TEditRich_Events2( hWnd, nMsg, wParam, lParam )
 
-   Local Self := QSelf()
-   Local cText, lRet
+   LOCAL Self := QSelf()
+   LOCAL cText, lRet
 
-   If nMsg == WM_KEYDOWN .AND. wParam == VK_Z .AND. ( GetKeyFlagState() == MOD_CONTROL .OR. GetKeyFlagState() == MOD_CONTROL + MOD_SHIFT )
+   IF nMsg == WM_KEYDOWN .AND. wParam == VK_Z .AND. ( GetKeyFlagState() == MOD_CONTROL .OR. GetKeyFlagState() == MOD_CONTROL + MOD_SHIFT )
 
       cText := ::Value
       ::Value := ::xUndo
       ::xUndo := cText
-      Return 1
 
-   ElseIf nMsg == WM_LBUTTONDBLCLK
+      RETURN 1
+
+   ELSEIF nMsg == WM_LBUTTONDBLCLK
       lRet := ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
-      If HB_IsLogical( lRet ) .AND. lRet
-         If ::lDefault
+      IF HB_IsLogical( lRet ) .AND. lRet
+         IF ::lDefault
             // Do default action: select word
-            Return Nil
-         Else
+
+            RETURN NIL
+         ELSE
             // Prevent default action
-            Return 1
-         EndIf
-      EndIf
 
-   Endif
+            RETURN 1
+         ENDIF
+      ENDIF
 
-   Return ::Super:Events( hWnd, nMsg, wParam, lParam )
+   ENDIF
+
+   RETURN ::Super:Events( hWnd, nMsg, wParam, lParam )
 
 METHOD Events_Notify( wParam, lParam ) CLASS TEditRich
 
-   Local nNotify := GetNotifyCode( lParam )
+   LOCAL nNotify := GetNotifyCode( lParam )
 
-   If nNotify == EN_SELCHANGE
-      If ! ::lSelChanging
+   IF nNotify == EN_SELCHANGE
+      IF ! ::lSelChanging
          ::lSelChanging := .T.
          ::DoEvent( ::OnSelChange, "SELCHANGE" )
          ::lSelChanging := .F.
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
-   Return ::Super:Events_Notify( wParam, lParam )
+   RETURN ::Super:Events_Notify( wParam, lParam )
 
 METHOD GetSelText( lTranslate ) CLASS TEditRich
 
-   Local cSelText := RichEdit_GetSelText( ::hWnd )
+   LOCAL cSelText := RichEdit_GetSelText( ::hWnd )
 
-   If HB_IsLogical( lTranslate ) .AND. lTranslate
-     cSelText := StrTran( cSelText, Chr(13), Chr(13) + Chr(10) )
-   EndIf
+   IF HB_IsLogical( lTranslate ) .AND. lTranslate
+      cSelText := StrTran( cSelText, Chr(13), Chr(13) + Chr(10) )
+   ENDIF
 
-   Return cSelText
+   RETURN cSelText
 
 METHOD MaxLength( nLen ) CLASS TEditRich
 
-   If HB_IsNumeric( nLen )
+   IF HB_IsNumeric( nLen )
       SendMessage( ::hWnd, EM_EXLIMITTEXT, 0, nLen )
-   EndIf
+   ENDIF
 
-   Return SendMessage( ::hWnd, EM_GETLIMITTEXT, 0, 0 )
+   RETURN SendMessage( ::hWnd, EM_GETLIMITTEXT, 0, 0 )
 
 METHOD GetLastVisibleLine CLASS TEditRich
 
@@ -782,4 +779,4 @@ METHOD GetLastVisibleLine CLASS TEditRich
    aRect := ::GetRect()            // top, left, bottom, right
    nChar := ::GetCharFromPos( aRect[3] - 2, aRect[2] + 1 )
 
-   Return ::GetLineFromChar( nChar )
+   RETURN ::GetLineFromChar( nChar )

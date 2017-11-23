@@ -1,90 +1,78 @@
 /*
- * $Id: h_hotkey.prg $
- */
+* $Id: h_hotkey.prg $
+*/
 /*
- * ooHG source code:
- * HotKey control and related functions
- *
- * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
- * https://oohg.github.io/
- *
- * Portions of this project are based upon Harbour MiniGUI library.
- * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
- *
- * Portions of this project are based upon Harbour GUI framework for Win32.
- * Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
- * Copyright 2001 Antonio Linares <alinares@fivetech.com>
- *
- * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2017, https://harbour.github.io/
- */
+* ooHG source code:
+* HotKey control and related functions
+* Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
+* https://oohg.github.io/
+* Portions of this project are based upon Harbour MiniGUI library.
+* Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
+* Portions of this project are based upon Harbour GUI framework for Win32.
+* Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
+* Copyright 2001 Antonio Linares <alinares@fivetech.com>
+* Portions of this project are based upon Harbour Project.
+* Copyright 1999-2017, https://harbour.github.io/
+*/
 /*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this software; see the file LICENSE.txt. If not, write to
- * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
- *
- * As a special exception, the ooHG Project gives permission for
- * additional uses of the text contained in its release of ooHG.
- *
- * The exception is that, if you link the ooHG libraries with other
- * files to produce an executable, this does not by itself cause the
- * resulting executable to be covered by the GNU General Public License.
- * Your use of that executable is in no way restricted on account of
- * linking the ooHG library code into it.
- *
- * This exception does not however invalidate any other reasons why
- * the executable file might be covered by the GNU General Public License.
- *
- * This exception applies only to the code released by the ooHG
- * Project under the name ooHG. If you copy code from other
- * ooHG Project or Free Software Foundation releases into a copy of
- * ooHG, as the General Public License permits, the exception does
- * not apply to the code that you add in this way. To avoid misleading
- * anyone as to the status of such modified files, you must delete
- * this exception notice from them.
- *
- * If you write modifications of your own for ooHG, it is your choice
- * whether to permit this exception to apply to your modifications.
- * If you do not wish that, delete this exception notice.
- */
-
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2, or (at your option)
+* any later version.
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* You should have received a copy of the GNU General Public License
+* along with this software; see the file LICENSE.txt. If not, write to
+* the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+* Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
+* As a special exception, the ooHG Project gives permission for
+* additional uses of the text contained in its release of ooHG.
+* The exception is that, if you link the ooHG libraries with other
+* files to produce an executable, this does not by itself cause the
+* resulting executable to be covered by the GNU General Public License.
+* Your use of that executable is in no way restricted on account of
+* linking the ooHG library code into it.
+* This exception does not however invalidate any other reasons why
+* the executable file might be covered by the GNU General Public License.
+* This exception applies only to the code released by the ooHG
+* Project under the name ooHG. If you copy code from other
+* ooHG Project or Free Software Foundation releases into a copy of
+* ooHG, as the General Public License permits, the exception does
+* not apply to the code that you add in this way. To avoid misleading
+* anyone as to the status of such modified files, you must delete
+* this exception notice from them.
+* If you write modifications of your own for ooHG, it is your choice
+* whether to permit this exception to apply to your modifications.
+* If you do not wish that, delete this exception notice.
+*/
 
 #include "oohg.ch"
 #include "hbclass.ch"
 
 #define _HOTKEYMETHOD   SetKey
 
-Function _DefineHotKey( cParentForm, nMod, nKey, bAction )
+FUNCTION _DefineHotKey( cParentForm, nMod, nKey, bAction )
 
-   Return ( TControl():SetForm( "", cParentForm ):Parent ):_HOTKEYMETHOD( nKey, nMod, bAction )
+   RETURN ( TControl():SetForm( "", cParentForm ):Parent ):_HOTKEYMETHOD( nKey, nMod, bAction )
 
-Function _ReleaseHotKey( cParentForm, nMod, nKey )
+FUNCTION _ReleaseHotKey( cParentForm, nMod, nKey )
 
-   Return ( TControl():SetForm( "", cParentForm ):Parent ):_HOTKEYMETHOD( nKey, nMod, nil )
+   RETURN ( TControl():SetForm( "", cParentForm ):Parent ):_HOTKEYMETHOD( nKey, nMod, nil )
 
-Function _GetHotKey( cParentForm, nMod, nKey )
+FUNCTION _GetHotKey( cParentForm, nMod, nKey )
 
-   Return ( TControl():SetForm( "", cParentForm ):Parent ):_HOTKEYMETHOD( nKey, nMod )
+   RETURN ( TControl():SetForm( "", cParentForm ):Parent ):_HOTKEYMETHOD( nKey, nMod )
 
-Function _PushKey( nKey )
+FUNCTION _PushKey( nKey )
 
    Keybd_Event( nKey, .f. )
    Keybd_Event( nKey, .t. )
 
-   Return Nil
+   RETURN NIL
 
-Function _PushKeyCommand( cKey )
+FUNCTION _PushKeyCommand( cKey )
 
    LOCAL aKey
 
@@ -96,29 +84,29 @@ Function _PushKeyCommand( cKey )
       MsgOOHGError( "PUSH KEY: Key combination name not valid: " + cKey + ". Program terminated." )
    ENDIF
 
-   Return Nil
+   RETURN NIL
 
 FUNCTION _DetermineKey( cKey )
 
    LOCAL aKey, nAlt, nCtrl, nShift, nWin, nPos, cKey2, cText
 
    STATIC aKeyTables := { "LBUTTON", "RBUTTON", "CANCEL", "MBUTTON", "XBUTTON1", "XBUTTON2", ".7", "BACK", "TAB", ".10", ;
-                       ".11", "CLEAR", "RETURN", ".14", ".15", "SHIFT", "CONTROL", "MENU", "PAUSE", "CAPITAL", ;
-                       "KANA", ".22", "JUNJA", "FINAL", "HANJA", ".26", "ESCAPE", "CONVERT", "NONCONVERT", "ACCEPT", ;
-                       "MODECHANGE", "SPACE", "PRIOR", "NEXT", "END", "HOME", "LEFT", "UP", "RIGHT", "DOWN", ;
-                       "SELECT", "PRINT", "EXECUTE", "SNAPSHOT", "INSERT", "DELETE", "HELP", "0", "1", "2", ;
-                       "3", "4", "5", "6", "7", "8", "9", ".58", ".59", ".60", ;
-                       ".61", ".62", ".63", ".64", "A", "B", "C", "D", "E", "F", ;
-                       "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", ;
-                       "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", ;
-                       "LWIN", "RWIN", "APPS", ".94", "SLEEP", "NUMPAD0", "NUMPAD1", "NUMPAD2", "NUMPAD3", "NUMPAD4", ;
-                       "NUMPAD5", "NUMPAD6", "NUMPAD7", "NUMPAD8", "NUMPAD9", "MULTIPLY", "ADD", "SEPARATOR", "SUBTRACT", "DECIMAL", ;
-                       "DIVIDE", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", ;
-                       "F10", "F11", "F12", "F13", "F14", "F15", "F16", "F17", "F18", "F19", ;
-                       "F20", "F21", "F22", "F23", "F24", ".136", ".137", ".138", ".139", ".140", ;
-                       ".141", ".142", ".143", "NUMLOCK", "SCROLL", ".146", ".147", ".148", ".149", ".150", ;
-                       ".151", ".152", ".153", ".154", ".155", ".156", ".157", ".158", ".159", "LSHIFT", ;
-                       "RSHIFT", "LCONTROL", "RCONTROL", "LMENU", "RMENU" } // 165
+      ".11", "CLEAR", "RETURN", ".14", ".15", "SHIFT", "CONTROL", "MENU", "PAUSE", "CAPITAL", ;
+      "KANA", ".22", "JUNJA", "FINAL", "HANJA", ".26", "ESCAPE", "CONVERT", "NONCONVERT", "ACCEPT", ;
+      "MODECHANGE", "SPACE", "PRIOR", "NEXT", "END", "HOME", "LEFT", "UP", "RIGHT", "DOWN", ;
+      "SELECT", "PRINT", "EXECUTE", "SNAPSHOT", "INSERT", "DELETE", "HELP", "0", "1", "2", ;
+      "3", "4", "5", "6", "7", "8", "9", ".58", ".59", ".60", ;
+      ".61", ".62", ".63", ".64", "A", "B", "C", "D", "E", "F", ;
+      "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", ;
+      "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", ;
+      "LWIN", "RWIN", "APPS", ".94", "SLEEP", "NUMPAD0", "NUMPAD1", "NUMPAD2", "NUMPAD3", "NUMPAD4", ;
+      "NUMPAD5", "NUMPAD6", "NUMPAD7", "NUMPAD8", "NUMPAD9", "MULTIPLY", "ADD", "SEPARATOR", "SUBTRACT", "DECIMAL", ;
+      "DIVIDE", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", ;
+      "F10", "F11", "F12", "F13", "F14", "F15", "F16", "F17", "F18", "F19", ;
+      "F20", "F21", "F22", "F23", "F24", ".136", ".137", ".138", ".139", ".140", ;
+      ".141", ".142", ".143", "NUMLOCK", "SCROLL", ".146", ".147", ".148", ".149", ".150", ;
+      ".151", ".152", ".153", ".154", ".155", ".156", ".157", ".158", ".159", "LSHIFT", ;
+      "RSHIFT", "LCONTROL", "RCONTROL", "LMENU", "RMENU" } // 165
 
    aKey := { 0, 0 }
    nAlt := nCtrl := nShift := nWin := 0
@@ -131,7 +119,7 @@ FUNCTION _DetermineKey( cKey )
          cKey2 := ""
          IF nPos != 0
             aKey := { nPos, nAlt + nCtrl + nShift + nWin }
-         // ELSE
+            // ELSE
             // "Key" description not recognized
          ENDIF
       ELSE
@@ -154,7 +142,7 @@ FUNCTION _DetermineKey( cKey )
 
    RETURN aKey
 
-Function _DefineAnyKey( cParentForm, cKey, bAction )
+FUNCTION _DefineAnyKey( cParentForm, cKey, bAction )
 
    LOCAL aKey, oBase, bCode
 
@@ -171,9 +159,9 @@ Function _DefineAnyKey( cParentForm, cKey, bAction )
       // bCode := NIL
    ENDIF
 
-   Return bCode
+   RETURN bCode
 
-Function _DefineAccelerator( cParentForm, cKey, bAction )
+FUNCTION _DefineAccelerator( cParentForm, cKey, bAction )
 
    LOCAL aKey, oBase, bCode
 
@@ -190,10 +178,9 @@ Function _DefineAccelerator( cParentForm, cKey, bAction )
       // bCode := NIL
    ENDIF
 
-   Return bCode
+   RETURN bCode
 
-
-EXTERN InitHotKey, ReleaseHotKey
+   EXTERN InitHotKey, ReleaseHotKey
 
 #pragma BEGINDUMP
 
@@ -213,7 +200,6 @@ HB_FUNC( RELEASEHOTKEY )   // ReleaseHotKey( hWnd, nHotKeyID )
 }
 
 #pragma ENDDUMP
-
 
 CLASS THotKey FROM TControl
 
@@ -260,7 +246,7 @@ METHOD Define( ControlName, ParentForm, nMod, nKey, bAction, lDisabled ) CLASS T
    ENDIF
    ::Register( 0, ControlName )
 
-   Return Self
+   RETURN Self
 
 METHOD Enabled( lEnabled ) CLASS THotKey
 

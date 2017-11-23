@@ -1,186 +1,175 @@
 /*
- * $Id: h_dialogs.prg $
- */
+* $Id: h_dialogs.prg $
+*/
 /*
- * ooHG source code:
- * Miscelaneous dialogs functions
- *
- * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
- * https://oohg.github.io/
- *
- * Portions of this project are based upon Harbour MiniGUI library.
- * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
- *
- * Portions of this project are based upon Harbour GUI framework for Win32.
- * Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
- * Copyright 2001 Antonio Linares <alinares@fivetech.com>
- *
- * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2017, https://harbour.github.io/
- */
+* ooHG source code:
+* Miscelaneous dialogs functions
+* Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
+* https://oohg.github.io/
+* Portions of this project are based upon Harbour MiniGUI library.
+* Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
+* Portions of this project are based upon Harbour GUI framework for Win32.
+* Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
+* Copyright 2001 Antonio Linares <alinares@fivetech.com>
+* Portions of this project are based upon Harbour Project.
+* Copyright 1999-2017, https://harbour.github.io/
+*/
 /*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this software; see the file LICENSE.txt. If not, write to
- * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
- *
- * As a special exception, the ooHG Project gives permission for
- * additional uses of the text contained in its release of ooHG.
- *
- * The exception is that, if you link the ooHG libraries with other
- * files to produce an executable, this does not by itself cause the
- * resulting executable to be covered by the GNU General Public License.
- * Your use of that executable is in no way restricted on account of
- * linking the ooHG library code into it.
- *
- * This exception does not however invalidate any other reasons why
- * the executable file might be covered by the GNU General Public License.
- *
- * This exception applies only to the code released by the ooHG
- * Project under the name ooHG. If you copy code from other
- * ooHG Project or Free Software Foundation releases into a copy of
- * ooHG, as the General Public License permits, the exception does
- * not apply to the code that you add in this way. To avoid misleading
- * anyone as to the status of such modified files, you must delete
- * this exception notice from them.
- *
- * If you write modifications of your own for ooHG, it is your choice
- * whether to permit this exception to apply to your modifications.
- * If you do not wish that, delete this exception notice.
- */
-
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2, or (at your option)
+* any later version.
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* You should have received a copy of the GNU General Public License
+* along with this software; see the file LICENSE.txt. If not, write to
+* the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+* Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
+* As a special exception, the ooHG Project gives permission for
+* additional uses of the text contained in its release of ooHG.
+* The exception is that, if you link the ooHG libraries with other
+* files to produce an executable, this does not by itself cause the
+* resulting executable to be covered by the GNU General Public License.
+* Your use of that executable is in no way restricted on account of
+* linking the ooHG library code into it.
+* This exception does not however invalidate any other reasons why
+* the executable file might be covered by the GNU General Public License.
+* This exception applies only to the code released by the ooHG
+* Project under the name ooHG. If you copy code from other
+* ooHG Project or Free Software Foundation releases into a copy of
+* ooHG, as the General Public License permits, the exception does
+* not apply to the code that you add in this way. To avoid misleading
+* anyone as to the status of such modified files, you must delete
+* this exception notice from them.
+* If you write modifications of your own for ooHG, it is your choice
+* whether to permit this exception to apply to your modifications.
+* If you do not wish that, delete this exception notice.
+*/
 
 #include "oohg.ch"
 
-Function GetColor( aInitColor )
+FUNCTION GetColor( aInitColor )
 
-   Local aRetVal, nColor, nInitColor
+   LOCAL aRetVal, nColor, nInitColor
 
-   If HB_IsArray( aInitColor )
+   IF HB_IsArray( aInitColor )
       nInitColor := RGB( aInitColor[ 1 ], aInitColor[ 2 ], aInitColor[ 3 ] )
-   ElseIf HB_IsNumeric( aInitColor )
+   ELSEIF HB_IsNumeric( aInitColor )
       nInitColor := aInitColor
-   EndIf
+   ENDIF
 
    nColor := ChooseColor( Nil, nInitColor )
 
-   If nColor == -1
+   IF nColor == -1
       aRetVal := { Nil, Nil, Nil }
-   Else
+   ELSE
       aRetVal := { GetRed( nColor ), GetGreen( nColor ), GetBlue( nColor ) }
-   EndIf
+   ENDIF
 
-   Return aRetVal
+   RETURN aRetVal
 
-Function GetFolder( cTitle, cInitPath )
+FUNCTION GetFolder( cTitle, cInitPath )
 
-   Return C_Browseforfolder( Nil, cTitle, Nil, Nil, cInitPath )
+   RETURN C_Browseforfolder( Nil, cTitle, Nil, Nil, cInitPath )
 
-Function BrowseForFolder( nFolder, nFlag, cTitle, cInitPath ) // Contributed By Ryszard Rylko
+FUNCTION BrowseForFolder( nFolder, nFlag, cTitle, cInitPath ) // Contributed By Ryszard Rylko
 
-   Return C_BrowseForFolder( Nil, cTitle, nFlag, nFolder, cInitPath )
+   RETURN C_BrowseForFolder( Nil, cTitle, nFlag, nFolder, cInitPath )
 
-Function GetFile( aFilter, title, cIniFolder, multiselect, nochangedir, cDefaultFileName, hidereadonly )
+FUNCTION GetFile( aFilter, title, cIniFolder, multiselect, nochangedir, cDefaultFileName, hidereadonly )
 
-   Local c := ''
-   Local cFiles
-   Local FilesList := {}
-   Local n
+   LOCAL c := ''
+   LOCAL cFiles
+   LOCAL FilesList := {}
+   LOCAL n
 
-   If HB_IsArray( aFilter )
+   IF HB_IsArray( aFilter )
       aEval( aFilter, { |a| c += a[ 1 ] + Chr( 0 ) + a[ 2 ] + Chr( 0 ) } )
-   EndIf
+   ENDIF
 
-   If ! HB_IsLogical( multiselect )
+   IF ! HB_IsLogical( multiselect )
       multiselect := .f.
-   EndIf
+   ENDIF
 
-   If ! multiselect
-      Return C_GetFile( c, title, cIniFolder, multiselect, nochangedir, cDefaultFileName, hidereadonly )
-   EndIf
+   IF ! multiselect
+
+      RETURN C_GetFile( c, title, cIniFolder, multiselect, nochangedir, cDefaultFileName, hidereadonly )
+   ENDIF
 
    cFiles := C_GetFile( c, title, cIniFolder, multiselect, nochangedir, cDefaultFileName, hidereadonly )
 
-   If Len( cFiles ) > 0
-      If HB_IsArray( cFiles )
-         For n := 1 To Len( cFiles )
-            If At( "\\", cFiles[ n ] ) > 0
+   IF Len( cFiles ) > 0
+      IF HB_IsArray( cFiles )
+         FOR n := 1 To Len( cFiles )
+            IF At( "\\", cFiles[ n ] ) > 0
                cFiles[ n ] := StrTran( cFiles[ n ], "\\", "\" )
-            EndIf
-         Next
+            ENDIF
+         NEXT
          FilesList := aClone( cFiles )
-      Else
+      ELSE
          aAdd( FilesList, cFiles )
-      Endif
-   Endif
+      ENDIF
+   ENDIF
 
-   Return FilesList
+   RETURN FilesList
 
-Function Putfile( aFilter, title, cIniFolder, nochangedir, cDefaultFileName, lForceExt )
+FUNCTION Putfile( aFilter, title, cIniFolder, nochangedir, cDefaultFileName, lForceExt )
 
-   Local c := ''
+   LOCAL c := ''
 
-   If HB_IsArray( aFilter )
+   IF HB_IsArray( aFilter )
       aEval( aFilter, { |a| c += a[ 1 ] + Chr( 0 ) + a[ 2 ] + Chr( 0 ) } )
-   EndIf
+   ENDIF
 
-   Return C_PutFile( c, title, cIniFolder, nochangedir, cDefaultFileName, lForceExt )
+   RETURN C_PutFile( c, title, cIniFolder, nochangedir, cDefaultFileName, lForceExt )
 
-Function GetFont( cInitFontName, nInitFontSize, lBold, lItalic, anInitColor, lUnderLine, lStrikeOut, nCharset )
+FUNCTION GetFont( cInitFontName, nInitFontSize, lBold, lItalic, anInitColor, lUnderLine, lStrikeOut, nCharset )
 
-   Local RetArray, Tmp, rgbcolor
+   LOCAL RetArray, Tmp, rgbcolor
 
-   If ! HB_IsString ( cInitFontName )
+   IF ! HB_IsString ( cInitFontName )
       cInitFontName := ""
-   EndIf
+   ENDIF
 
-   If ! HB_Isnumeric ( nInitFontSize )
+   IF ! HB_Isnumeric ( nInitFontSize )
       nInitFontSize := 0
-   EndIf
+   ENDIF
 
-   If ! HB_IsLogical( lBold )
+   IF ! HB_IsLogical( lBold )
       lBold := .F.
-   EndIf
+   ENDIF
 
-   If ! HB_IsLogical ( lItalic )
+   IF ! HB_IsLogical ( lItalic )
       lItalic := .F.
-   EndIf
+   ENDIF
 
-   If ! HB_IsArray ( anInitColor )
+   IF ! HB_IsArray ( anInitColor )
       rgbcolor := 0
-   Else
+   ELSE
       rgbcolor := RGB( anInitColor[1], anInitColor[2], anInitColor[3] )
-   EndIf
+   ENDIF
 
-   If ! HB_IsLogical ( lUnderLine )
+   IF ! HB_IsLogical ( lUnderLine )
       lUnderLine := .F.
-   EndIf
+   ENDIF
 
-   If ! HB_IsLogical ( lStrikeOut )
+   IF ! HB_IsLogical ( lStrikeOut )
       lStrikeOut := .F.
-   EndIf
+   ENDIF
 
-   If ! HB_IsNumeric ( nCharSet )
+   IF ! HB_IsNumeric ( nCharSet )
       nCharSet := 0
-   EndIf
+   ENDIF
 
    RetArray := ChooseFont( cInitFontName, nInitFontSize, lBold, lItalic, rgbcolor, lUnderLine, lStrikeOut, nCharSet )
 
-   If ! Empty( RetArray[ 1 ] )
+   IF ! Empty( RetArray[ 1 ] )
       Tmp := RetArray[ 5 ]
       RetArray[ 5 ] := { GetRed( Tmp ), GetGreen( Tmp ), GetBlue( Tmp ) }
-   Else
+   ELSE
       RetArray[ 5 ] := { Nil, Nil, Nil }
-   EndIf
+   ENDIF
 
-   Return RetArray
+   RETURN RetArray

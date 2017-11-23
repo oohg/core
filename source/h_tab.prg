@@ -1,64 +1,52 @@
 /*
- * $Id: h_tab.prg $
- */
+* $Id: h_tab.prg $
+*/
 /*
- * ooHG source code:
- * Tab control
- *
- * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
- * https://oohg.github.io/
- *
- * Portions of this project are based upon Harbour MiniGUI library.
- * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
- *
- * Portions of this project are based upon Harbour GUI framework for Win32.
- * Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
- * Copyright 2001 Antonio Linares <alinares@fivetech.com>
- *
- * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2017, https://harbour.github.io/
- */
+* ooHG source code:
+* Tab control
+* Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
+* https://oohg.github.io/
+* Portions of this project are based upon Harbour MiniGUI library.
+* Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
+* Portions of this project are based upon Harbour GUI framework for Win32.
+* Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
+* Copyright 2001 Antonio Linares <alinares@fivetech.com>
+* Portions of this project are based upon Harbour Project.
+* Copyright 1999-2017, https://harbour.github.io/
+*/
 /*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this software; see the file LICENSE.txt. If not, write to
- * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
- *
- * As a special exception, the ooHG Project gives permission for
- * additional uses of the text contained in its release of ooHG.
- *
- * The exception is that, if you link the ooHG libraries with other
- * files to produce an executable, this does not by itself cause the
- * resulting executable to be covered by the GNU General Public License.
- * Your use of that executable is in no way restricted on account of
- * linking the ooHG library code into it.
- *
- * This exception does not however invalidate any other reasons why
- * the executable file might be covered by the GNU General Public License.
- *
- * This exception applies only to the code released by the ooHG
- * Project under the name ooHG. If you copy code from other
- * ooHG Project or Free Software Foundation releases into a copy of
- * ooHG, as the General Public License permits, the exception does
- * not apply to the code that you add in this way. To avoid misleading
- * anyone as to the status of such modified files, you must delete
- * this exception notice from them.
- *
- * If you write modifications of your own for ooHG, it is your choice
- * whether to permit this exception to apply to your modifications.
- * If you do not wish that, delete this exception notice.
- */
-
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2, or (at your option)
+* any later version.
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* You should have received a copy of the GNU General Public License
+* along with this software; see the file LICENSE.txt. If not, write to
+* the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+* Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
+* As a special exception, the ooHG Project gives permission for
+* additional uses of the text contained in its release of ooHG.
+* The exception is that, if you link the ooHG libraries with other
+* files to produce an executable, this does not by itself cause the
+* resulting executable to be covered by the GNU General Public License.
+* Your use of that executable is in no way restricted on account of
+* linking the ooHG library code into it.
+* This exception does not however invalidate any other reasons why
+* the executable file might be covered by the GNU General Public License.
+* This exception applies only to the code released by the ooHG
+* Project under the name ooHG. If you copy code from other
+* ooHG Project or Free Software Foundation releases into a copy of
+* ooHG, as the General Public License permits, the exception does
+* not apply to the code that you add in this way. To avoid misleading
+* anyone as to the status of such modified files, you must delete
+* this exception notice from them.
+* If you write modifications of your own for ooHG, it is your choice
+* whether to permit this exception to apply to your modifications.
+* If you do not wish that, delete this exception notice.
+*/
 
 #include "oohg.ch"
 #include "hbclass.ch"
@@ -105,18 +93,18 @@ CLASS TTabDirect FROM TTabRaw
    ENDCLASS
 
 METHOD Define( ControlName, ParentForm, x, y, w, h, aCaptions, aPageMap, ;
-               value, fontname, fontsize, tooltip, change, Buttons, Flat, ;
-               HotTrack, Vertical, notabstop, aMnemonic, bold, italic, ;
-               underline, strikeout, Images, lRtl, lInternals, Invisible, ;
-               lDisabled, multiline, lNoProc ) CLASS TTabDirect
+      value, fontname, fontsize, tooltip, change, Buttons, Flat, ;
+      HotTrack, Vertical, notabstop, aMnemonic, bold, italic, ;
+      underline, strikeout, Images, lRtl, lInternals, Invisible, ;
+      lDisabled, multiline, lNoProc ) CLASS TTabDirect
 
    LOCAL z, Caption, Image, aControls, Mnemonic
 
    ::Super:Define( ControlName, ParentForm, x, y, w, h, , ;
-                   , fontname, fontsize, tooltip, , Buttons, Flat, ;
-                   HotTrack, Vertical, notabstop, bold, italic, ;
-                   underline, strikeout, , lRtl, Invisible, ;
-                   lDisabled, multiline )
+      , fontname, fontsize, tooltip, , Buttons, Flat, ;
+      HotTrack, Vertical, notabstop, bold, italic, ;
+      underline, strikeout, , lRtl, Invisible, ;
+      lDisabled, multiline )
 
    IF HB_IsLogical( lNoProc )
       ::lProcMsgsOnVisible := ! lNoProc
@@ -196,7 +184,7 @@ METHOD EndTab() CLASS TTabDirect
       ::Value := ::nFirstValue
    ENDIF
 
-   RETURN Nil
+   RETURN NIL
 
 METHOD Refresh() CLASS TTabDirect
 
@@ -222,14 +210,14 @@ METHOD Refresh() CLASS TTabDirect
       ENDIF
    ENDIF
 
-   RETURN Nil
+   RETURN NIL
 
 METHOD RefreshData() CLASS TTabDirect
 
    ::Super:RefreshData()
    AEVAL( ::aPages, { |o| o:RefreshData() } )
 
-   RETURN Nil
+   RETURN NIL
 
 METHOD Release() CLASS TTabDirect
 
@@ -242,7 +230,7 @@ METHOD SizePos( Row, Col, Width, Height ) CLASS TTabDirect
    ::Super:SizePos( Row, Col, Width, Height )
    AEVAL( ::aPages, { |o| o:Events_Size() } )
 
-   RETURN Nil
+   RETURN NIL
 
 METHOD Value( nValue ) CLASS TTabDirect
 
@@ -318,7 +306,7 @@ METHOD AdjustResize( nDivh, nDivw, lSelfOnly ) CLASS TTabDirect
    ::Super:AdjustResize( nDivh, nDivw, .T. )
    AEVAL( ::aPages, { |o| o:AdjustResize( nDivh, nDivw, lSelfOnly ) } )
 
-   RETURN Nil
+   RETURN NIL
 
 METHOD AddPage( Position, Caption, Image, aControls, Mnemonic, Name, oSubClass ) CLASS TTabDirect
 
@@ -387,7 +375,7 @@ METHOD AddPage( Position, Caption, Image, aControls, Mnemonic, Name, oSubClass )
 
    RETURN oPage
 
-Function _BeginTabPage( caption, image, Position, Name, oSubClass )
+FUNCTION _BeginTabPage( caption, image, Position, Name, oSubClass )
 
    LOCAL oCtrl, oPage
 
@@ -402,13 +390,13 @@ Function _BeginTabPage( caption, image, Position, Name, oSubClass )
 
    RETURN oPage
 
-Function _EndTabPage()
+FUNCTION _EndTabPage()
 
    _OOHG_DeleteFrame( "TABPAGE" )
 
-   RETURN Nil
+   RETURN NIL
 
-Function _EndTab()
+FUNCTION _EndTab()
 
    IF _OOHG_LastFrame() == "TABPAGE"
       // ERROR: Last page not finished
@@ -416,7 +404,7 @@ Function _EndTab()
    ENDIF
    ATAIL( _OOHG_ActiveFrame ):EndTab()
 
-   RETURN Nil
+   RETURN NIL
 
 METHOD AddControl( oCtrl, PageNumber, Row, Col ) CLASS TTabDirect
 
@@ -444,7 +432,7 @@ METHOD AddControl( oCtrl, PageNumber, Row, Col ) CLASS TTabDirect
 
    ::aPages[ PageNumber ]:AddControl( oCtrl, Row, Col )
 
-   RETURN Nil
+   RETURN NIL
 
 METHOD DeletePage( Position ) CLASS TTabDirect
 
@@ -467,7 +455,7 @@ METHOD DeletePage( Position ) CLASS TTabDirect
       ::Refresh()
    ENDIF
 
-   RETURN Nil
+   RETURN NIL
 
 METHOD DeleteControl( oCtrl ) CLASS TTabDirect
 
@@ -508,7 +496,7 @@ METHOD HidePage( nPage ) CLASS TTabDirect
       ENDIF
    ENDIF
 
-   RETURN Nil
+   RETURN NIL
 
 METHOD ShowPage( nPage ) CLASS TTabDirect
 
@@ -524,7 +512,7 @@ METHOD ShowPage( nPage ) CLASS TTabDirect
       // Enable hotkey!
    ENDIF
 
-   RETURN Nil
+   RETURN NIL
 
 METHOD Caption( nColumn, uValue ) CLASS TTabDirect
 
@@ -566,8 +554,7 @@ METHOD SaveData() CLASS TTabDirect
    _OOHG_EVAL( ::Block, ::Value )
    AEVAL( ::aPages, { |o| o:SaveData() } )
 
-   RETURN Nil
-
+   RETURN NIL
 
 CLASS TTabCombo FROM TMultiPage
 
@@ -579,14 +566,14 @@ CLASS TTabCombo FROM TMultiPage
    ENDCLASS
 
 METHOD Define( ControlName, ParentForm, x, y, w, h, aCaptions, aPageMap, ;
-               value, fontname, fontsize, tooltip, change, Buttons, Flat, ;
-               HotTrack, Vertical, notabstop, aMnemonic, bold, italic, ;
-               underline, strikeout, Images, lRtl, lInternals, Invisible, ;
-               lDisabled, multiline, lNoProc ) CLASS TTabCombo
+      value, fontname, fontsize, tooltip, change, Buttons, Flat, ;
+      HotTrack, Vertical, notabstop, aMnemonic, bold, italic, ;
+      underline, strikeout, Images, lRtl, lInternals, Invisible, ;
+      lDisabled, multiline, lNoProc ) CLASS TTabCombo
 
    ::Super:Define( ControlName, ParentForm, x, y, w, h, , , ;
-                   FontName, FontSize, bold, italic, underline, strikeout, ;
-                   Invisible, lDisabled, lRtl, change, value, lNoProc )
+      FontName, FontSize, bold, italic, underline, strikeout, ;
+      Invisible, lDisabled, lRtl, change, value, lNoProc )
 
    // Unused...
    EMPTY( Buttons )
@@ -595,7 +582,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aCaptions, aPageMap, ;
    EMPTY( Vertical )
    EMPTY( multiline )
    @ 0,0 COMBOBOX 0 OBJ ::oContainerBase PARENT ( Self ) ;
-         ITEMS {} TOOLTIP tooltip
+      ITEMS {} TOOLTIP tooltip
    IF HB_IsLogical( notabstop ) .and. notabstop
       ::oContainerBase:TabStop := .F.
    ENDIF
@@ -611,7 +598,6 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aCaptions, aPageMap, ;
 
    RETURN Self
 
-
 CLASS TTabRadio FROM TMultiPage
 
    DATA Type                INIT "TAB" READONLY
@@ -622,14 +608,14 @@ CLASS TTabRadio FROM TMultiPage
    ENDCLASS
 
 METHOD Define( ControlName, ParentForm, x, y, w, h, aCaptions, aPageMap, ;
-               value, fontname, fontsize, tooltip, change, Buttons, Flat, ;
-               HotTrack, Vertical, notabstop, aMnemonic, bold, italic, ;
-               underline, strikeout, Images, lRtl, lInternals, Invisible, ;
-               lDisabled, multiline, lNoProc ) CLASS TTabRadio
+      value, fontname, fontsize, tooltip, change, Buttons, Flat, ;
+      HotTrack, Vertical, notabstop, aMnemonic, bold, italic, ;
+      underline, strikeout, Images, lRtl, lInternals, Invisible, ;
+      lDisabled, multiline, lNoProc ) CLASS TTabRadio
 
    ::Super:Define( ControlName, ParentForm, x, y, w, h, , , ;
-                   FontName, FontSize, bold, italic, underline, strikeout, ;
-                   Invisible, lDisabled, lRtl, change, value, lNoProc )
+      FontName, FontSize, bold, italic, underline, strikeout, ;
+      Invisible, lDisabled, lRtl, change, value, lNoProc )
 
    // Unused...
    EMPTY( Buttons )
@@ -637,7 +623,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aCaptions, aPageMap, ;
    EMPTY( HotTrack )
    EMPTY( multiline )
    @ 0,0 RADIO 0 OBJ ::oContainerBase PARENT ( Self ) ;
-         OPTIONS {} TOOLTIP tooltip HORIZONTAL
+      OPTIONS {} TOOLTIP tooltip HORIZONTAL
    IF HB_IsLogical( Vertical )
       ::oContainerBase:lHorizontal := ! Vertical
    ENDIF
@@ -656,7 +642,6 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aCaptions, aPageMap, ;
 
    RETURN Self
 
-
 CLASS TTabMulti FROM TMultiPage
 
    DATA Type                INIT "TAB" READONLY
@@ -668,21 +653,21 @@ CLASS TTabMulti FROM TMultiPage
    ENDCLASS
 
 METHOD Define( ControlName, ParentForm, x, y, w, h, aCaptions, aPageMap, ;
-               value, fontname, fontsize, tooltip, change, Buttons, Flat, ;
-               HotTrack, Vertical, notabstop, aMnemonic, bold, italic, ;
-               underline, strikeout, Images, lRtl, lInternals, Invisible, ;
-               lDisabled, multiline, lNoProc ) CLASS TTabMulti
+      value, fontname, fontsize, tooltip, change, Buttons, Flat, ;
+      HotTrack, Vertical, notabstop, aMnemonic, bold, italic, ;
+      underline, strikeout, Images, lRtl, lInternals, Invisible, ;
+      lDisabled, multiline, lNoProc ) CLASS TTabMulti
 
    ::Super:Define( ControlName, ParentForm, x, y, w, h, , , ;
-                   FontName, FontSize, bold, italic, underline, strikeout, ;
-                   Invisible, lDisabled, lRtl, change, value, lNoProc )
+      FontName, FontSize, bold, italic, underline, strikeout, ;
+      Invisible, lDisabled, lRtl, change, value, lNoProc )
 
    ::oContainerBase := TTabRaw()
    ::oContainerBase:Define( , Self, 0, 0, w, h, , ;
-                            , , , tooltip, , Buttons, Flat, ;
-                            HotTrack, Vertical, notabstop, , , ;
-                            , , , , , ;
-                            , multiline )
+      , , , tooltip, , Buttons, Flat, ;
+      HotTrack, Vertical, notabstop, , , ;
+      , , , , , ;
+      , multiline )
 
    ASSIGN ::lInternals VALUE lInternals TYPE "L"
 
@@ -712,7 +697,6 @@ METHOD AddPage( Position, Caption, Image, aControls, Mnemonic, Name, oSubClass )
    oPage:nFixedHeightUsed := ::oContainerBase:TabsAreaHeight()
 
    RETURN oPage
-
 
 CLASS TMultiPage FROM TControlGroup
 
@@ -762,8 +746,8 @@ CLASS TMultiPage FROM TControlGroup
    ENDCLASS
 
 METHOD Define( ControlName, ParentForm, x, y, w, h, FontColor, BackColor, ;
-               FontName, FontSize, bold, italic, underline, strikeout, ;
-               Invisible, lDisabled, lRtl, change, value, lNoProc ) CLASS TMultiPage
+      FontName, FontSize, bold, italic, underline, strikeout, ;
+      Invisible, lDisabled, lRtl, change, value, lNoProc ) CLASS TMultiPage
 
    ASSIGN ::nWidth  VALUE w TYPE "N"
    ASSIGN ::nHeight VALUE h TYPE "N"
@@ -831,7 +815,7 @@ METHOD CreatePages( aCaptions, Images, aPageMap, aMnemonic ) CLASS TMultiPage
       z++
    ENDDO
 
-   RETURN Nil
+   RETURN NIL
 
 METHOD Refresh() CLASS TMultiPage
 
@@ -857,14 +841,14 @@ METHOD Refresh() CLASS TMultiPage
       ENDIF
    ENDIF
 
-   RETURN Nil
+   RETURN NIL
 
 METHOD RefreshData() CLASS TMultiPage
 
    ::Super:RefreshData()
    AEVAL( ::aPages, { |o| o:RefreshData() } )
 
-   RETURN Nil
+   RETURN NIL
 
 METHOD Release() CLASS TMultiPage
 
@@ -880,7 +864,7 @@ METHOD SizePos( Row, Col, Width, Height ) CLASS TMultiPage
    ENDIF
    AEVAL( ::aPages, { |o| o:Events_Size() } )
 
-   RETURN Nil
+   RETURN NIL
 
 METHOD Value( nValue ) CLASS TMultiPage
 
@@ -954,7 +938,7 @@ METHOD AdjustResize( nDivh, nDivw, lSelfOnly ) CLASS TMultiPage
    ::Super:AdjustResize( nDivh, nDivw, .T. )
    AEVAL( ::aPages, { |o| o:AdjustResize( nDivh, nDivw, lSelfOnly ) } )
 
-   RETURN Nil
+   RETURN NIL
 
 METHOD AddPage( Position, Caption, Image, aControls, Mnemonic, Name, oSubClass ) CLASS TMultiPage
 
@@ -1026,6 +1010,7 @@ METHOD AddControl( oCtrl, PageNumber, Row, Col ) CLASS TMultiPage
    ENDIF
 
    IF LEN( ::aPages ) == 0
+
       RETURN ::Super:AddControl( oCtrl )
    ENDIF
 
@@ -1049,7 +1034,7 @@ METHOD AddControl( oCtrl, PageNumber, Row, Col ) CLASS TMultiPage
 
    ::aPages[ PageNumber ]:AddControl( oCtrl, Row, Col )
 
-   RETURN Nil
+   RETURN NIL
 
 METHOD DeleteControl( oCtrl ) CLASS TMultiPage
 
@@ -1078,7 +1063,7 @@ METHOD DeletePage( Position ) CLASS TMultiPage
       ::Refresh()
    ENDIF
 
-   RETURN Nil
+   RETURN NIL
 
 METHOD RealPosition( nPage ) CLASS TMultiPage
 
@@ -1115,7 +1100,7 @@ METHOD HidePage( nPage ) CLASS TMultiPage
       ENDIF
    ENDIF
 
-   RETURN Nil
+   RETURN NIL
 
 METHOD ShowPage( nPage ) CLASS TMultiPage
 
@@ -1128,7 +1113,7 @@ METHOD ShowPage( nPage ) CLASS TMultiPage
       // Enable hotkey!
    ENDIF
 
-   RETURN Nil
+   RETURN NIL
 
 METHOD Caption( nColumn, uValue ) CLASS TMultiPage
 
@@ -1178,7 +1163,7 @@ METHOD EndTab() CLASS TMultiPage
       ::Value := 1
    ENDIF
 
-   RETURN Nil
+   RETURN NIL
 
 METHOD ContainerValue( nValue ) CLASS TMultiPage
 
@@ -1198,7 +1183,7 @@ METHOD DeleteItem( nItem ) CLASS TMultiPage
       ::ContainerValue := MIN( nValue, ::ContainerItemCount )
    ENDIF
 
-   RETURN Nil
+   RETURN NIL
 
 METHOD bBeforeChange( bCode ) CLASS TMultiPage
 
@@ -1229,8 +1214,7 @@ METHOD SaveData() CLASS TMultiPage
    _OOHG_EVAL( ::Block, ::Value )
    AEVAL( ::aPages, { |o| o:SaveData() } )
 
-   RETURN Nil
-
+   RETURN NIL
 
 CLASS TTabRaw FROM TControl
 
@@ -1254,10 +1238,10 @@ CLASS TTabRaw FROM TControl
    ENDCLASS
 
 METHOD Define( ControlName, ParentForm, x, y, w, h, aCaptions, ;
-               value, fontname, fontsize, tooltip, change, Buttons, Flat, ;
-               HotTrack, Vertical, notabstop, bold, italic, ;
-               underline, strikeout, Images, lRtl, Invisible, ;
-               lDisabled, multiline ) CLASS TTabRaw
+      value, fontname, fontsize, tooltip, change, Buttons, Flat, ;
+      HotTrack, Vertical, notabstop, bold, italic, ;
+      underline, strikeout, Images, lRtl, Invisible, ;
+      lDisabled, multiline ) CLASS TTabRaw
 
    LOCAL Caption, Image, z, nStyle
    LOCAL ControlHandle
@@ -1277,11 +1261,11 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aCaptions, ;
    ASSIGN ::nCol    VALUE x TYPE "N"
 
    nStyle := ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + ;
-             IF( ValType( Vertical ) == "L"  .AND. Vertical,   TCS_VERTICAL, 0 ) + ;
-             IF( ValType( HotTrack ) == "L"  .AND. HotTrack,   TCS_HOTTRACK, 0 ) + ;
-             IF( ValType( Flat ) == "L"      .AND. Flat,       TCS_FLATBUTTONS, 0 ) + ;
-             IF( ValType( Buttons ) == "L"   .AND. Buttons,    TCS_BUTTONS, 0 ) + ;
-             IF( ValType( multiline ) == "L" .AND. multiline,  TCS_MULTILINE, 0 )
+      IF( ValType( Vertical ) == "L"  .AND. Vertical,   TCS_VERTICAL, 0 ) + ;
+      IF( ValType( HotTrack ) == "L"  .AND. HotTrack,   TCS_HOTTRACK, 0 ) + ;
+      IF( ValType( Flat ) == "L"      .AND. Flat,       TCS_FLATBUTTONS, 0 ) + ;
+      IF( ValType( Buttons ) == "L"   .AND. Buttons,    TCS_BUTTONS, 0 ) + ;
+      IF( ValType( multiline ) == "L" .AND. multiline,  TCS_MULTILINE, 0 )
 
    ControlHandle = InitTabControl( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, {}, value, nStyle, ::lRtl )
 
@@ -1335,13 +1319,13 @@ METHOD InsertItem( nPosition, cCaption, xImage ) CLASS TTabRaw
       SetTabPageImage( ::hWnd, nPosition, xImage )
    ENDIF
 
-   RETURN Nil
+   RETURN NIL
 
 METHOD DeleteItem( nPosition ) CLASS TTabRaw
 
    TabCtrl_DeleteItem( ::hWnd, nPosition - 1 )
 
-   RETURN Nil
+   RETURN NIL
 
 METHOD Caption( nColumn, uValue ) CLASS TTabRaw
 
@@ -1363,7 +1347,7 @@ METHOD Picture( nColumn, uValue ) CLASS TTabRaw
       ::Refresh()
    ENDIF
 
-   RETURN Nil
+   RETURN NIL
 
 METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TTabRaw
 
@@ -1388,16 +1372,18 @@ METHOD Events_Notify( wParam, lParam ) CLASS TTabRaw
    IF nNotify == TCN_SELCHANGE
       ::Refresh()
       ::DoChange()
-      RETURN Nil
+
+      RETURN NIL
 
    ELSEIF nNotify == TCN_SELCHANGING
-      If HB_IsBlock( ::bBeforeChange )
+      IF HB_IsBlock( ::bBeforeChange )
          lGo := Eval( ::bBeforeChange, ::Value )
-         If HB_IsLogical( lGo ) .and. ! lGo
+         IF HB_IsLogical( lGo ) .and. ! lGo
             // Prevent the action
+
             RETURN 1
-         EndIf
-      EndIf
+         ENDIF
+      ENDIF
 
    ENDIF
 
@@ -1410,7 +1396,6 @@ METHOD TabsAreaHeight() CLASS TTabRaw
    aRect := TabCtrl_GetItemRect( ::hWnd, 0 )
 
    RETURN ( aRect[ 4 ] - aRect[ 2 ] ) * TabCtrl_GetRowCount( ::hWnd )
-
 
 CLASS TTabPage FROM TControlGroup
 
@@ -1448,7 +1433,7 @@ METHOD Events_Size() CLASS TTabPage
    ::SizePos( , , oTab:Width, oTab:Height )
    ::Parent:Redraw()
 
-   RETURN Nil
+   RETURN NIL
 
 METHOD AdjustResize( nDivh, nDivw, lSelfOnly ) CLASS TTabPage
 
@@ -1472,15 +1457,14 @@ METHOD AdjustResize( nDivh, nDivw, lSelfOnly ) CLASS TTabPage
       ENDIF
    ENDIF
 
-   RETURN Nil
+   RETURN NIL
 
 METHOD SaveData() CLASS TTabPage
 
    _OOHG_EVAL( ::Block, ::Value )
    AEVAL( ::aControls, { |o| o:SaveData() } )
 
-   RETURN Nil
-
+   RETURN NIL
 
 CLASS TTabPageInternal FROM TFormInternal
 
@@ -1507,13 +1491,13 @@ METHOD Define( ControlName, ParentForm ) CLASS TTabPageInternal
    ::SearchParent( ParentForm )
    aArea := _OOHG_TabPage_GetArea( ::Container )
    ::Super:Define( ControlName,, aArea[ 1 ], aArea[ 2 ], aArea[ 3 ], aArea[ 4 ], ParentForm )
-   END WINDOW
-   ::ContainerhWndValue := ::hWnd
+END WINDOW
+::ContainerhWndValue := ::hWnd
 
-   ::RowMargin := - aArea[ 2 ]
-   ::ColMargin := - aArea[ 1 ]
+::RowMargin := - aArea[ 2 ]
+::ColMargin := - aArea[ 1 ]
 
-   RETURN Self
+RETURN Self
 
 METHOD Events_Size() CLASS TTabPageInternal
 
@@ -1525,7 +1509,7 @@ METHOD Events_Size() CLASS TTabPageInternal
    ::SizePos( aArea[ 2 ], aArea[ 1 ], aArea[ 3 ], aArea[ 4 ] )
    ::ScrollControls()
 
-   RETURN Nil
+   RETURN NIL
 
 METHOD AdjustResize( nDivh, nDivw, lSelfOnly ) CLASS TTabPageInternal
 
@@ -1549,7 +1533,7 @@ METHOD AdjustResize( nDivh, nDivw, lSelfOnly ) CLASS TTabPageInternal
       ENDIF
    ENDIF
 
-   RETURN Nil
+   RETURN NIL
 
 STATIC FUNCTION _OOHG_TabPage_GetArea( oTab )
 
@@ -1560,9 +1544,8 @@ STATIC FUNCTION _OOHG_TabPage_GetArea( oTab )
 
    RETURN { aRect[ 1 ], aRect[ 2 ], aRect[ 3 ] - aRect[ 1 ], aRect[ 4 ] - aRect[ 2 ] } // { Col, Row, Width, Height }
 
-
-EXTERN InitTabControl, SetTabCaption
-EXTERN TabCtrl_SetCurSel, TabCtrl_GetCurSel, TabCtrl_InsertItem, TabCtrl_DeleteItem, TabCtrl_GetItemRect, TabCtrl_GetRowCount
+   EXTERN InitTabControl, SetTabCaption
+   EXTERN TabCtrl_SetCurSel, TabCtrl_GetCurSel, TabCtrl_InsertItem, TabCtrl_DeleteItem, TabCtrl_GetItemRect, TabCtrl_GetRowCount
 
 #pragma BEGINDUMP
 
@@ -1587,6 +1570,7 @@ static WNDPROC lpfnOldWndProc = 0;
 
 static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
+
    return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
 }
 

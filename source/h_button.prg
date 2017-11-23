@@ -1,64 +1,52 @@
 /*
- * $Id: h_button.prg $
- */
+* $Id: h_button.prg $
+*/
 /*
- * ooHG source code:
- * Button and CheckButton controls
- *
- * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
- * https://oohg.github.io/
- *
- * Portions of this project are based upon Harbour MiniGUI library.
- * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
- *
- * Portions of this project are based upon Harbour GUI framework for Win32.
- * Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
- * Copyright 2001 Antonio Linares <alinares@fivetech.com>
- *
- * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2017, https://harbour.github.io/
- */
+* ooHG source code:
+* Button and CheckButton controls
+* Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
+* https://oohg.github.io/
+* Portions of this project are based upon Harbour MiniGUI library.
+* Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
+* Portions of this project are based upon Harbour GUI framework for Win32.
+* Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
+* Copyright 2001 Antonio Linares <alinares@fivetech.com>
+* Portions of this project are based upon Harbour Project.
+* Copyright 1999-2017, https://harbour.github.io/
+*/
 /*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this software; see the file LICENSE.txt. If not, write to
- * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
- *
- * As a special exception, the ooHG Project gives permission for
- * additional uses of the text contained in its release of ooHG.
- *
- * The exception is that, if you link the ooHG libraries with other
- * files to produce an executable, this does not by itself cause the
- * resulting executable to be covered by the GNU General Public License.
- * Your use of that executable is in no way restricted on account of
- * linking the ooHG library code into it.
- *
- * This exception does not however invalidate any other reasons why
- * the executable file might be covered by the GNU General Public License.
- *
- * This exception applies only to the code released by the ooHG
- * Project under the name ooHG. If you copy code from other
- * ooHG Project or Free Software Foundation releases into a copy of
- * ooHG, as the General Public License permits, the exception does
- * not apply to the code that you add in this way. To avoid misleading
- * anyone as to the status of such modified files, you must delete
- * this exception notice from them.
- *
- * If you write modifications of your own for ooHG, it is your choice
- * whether to permit this exception to apply to your modifications.
- * If you do not wish that, delete this exception notice.
- */
-
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2, or (at your option)
+* any later version.
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* You should have received a copy of the GNU General Public License
+* along with this software; see the file LICENSE.txt. If not, write to
+* the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+* Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
+* As a special exception, the ooHG Project gives permission for
+* additional uses of the text contained in its release of ooHG.
+* The exception is that, if you link the ooHG libraries with other
+* files to produce an executable, this does not by itself cause the
+* resulting executable to be covered by the GNU General Public License.
+* Your use of that executable is in no way restricted on account of
+* linking the ooHG library code into it.
+* This exception does not however invalidate any other reasons why
+* the executable file might be covered by the GNU General Public License.
+* This exception applies only to the code released by the ooHG
+* Project under the name ooHG. If you copy code from other
+* ooHG Project or Free Software Foundation releases into a copy of
+* ooHG, as the General Public License permits, the exception does
+* not apply to the code that you add in this way. To avoid misleading
+* anyone as to the status of such modified files, you must delete
+* this exception notice from them.
+* If you write modifications of your own for ooHG, it is your choice
+* whether to permit this exception to apply to your modifications.
+* If you do not wish that, delete this exception notice.
+*/
 
 #include "oohg.ch"
 #include "hbclass.ch"
@@ -98,14 +86,14 @@ CLASS TButton FROM TControl
    ENDCLASS
 
 METHOD Define( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h, ;
-               fontname, fontsize, tooltip, GotFocus, LostFocus, flat, ;
-               NoTabStop, HelpId, invisible, bold, italic, underline, ;
-               strikeout, lRtl, lNoPrefix, lDisabled, cBuffer, hBitMap, ;
-               cImage, lNoLoadTrans, lScale, lCancel, cAlign, lMultiLine, ;
-               drawby, aImageMargin, OnMouseMove, lNo3DColors, lAutoFit, ;
-               lNoDIB, backcolor, lNoHotLight ) CLASS TButton
+      fontname, fontsize, tooltip, GotFocus, LostFocus, flat, ;
+      NoTabStop, HelpId, invisible, bold, italic, underline, ;
+      strikeout, lRtl, lNoPrefix, lDisabled, cBuffer, hBitMap, ;
+      cImage, lNoLoadTrans, lScale, lCancel, cAlign, lMultiLine, ;
+      drawby, aImageMargin, OnMouseMove, lNo3DColors, lAutoFit, ;
+      lNoDIB, backcolor, lNoHotLight ) CLASS TButton
 
-   Local ControlHandle, nStyle, lBitMap, i
+   LOCAL ControlHandle, nStyle, lBitMap, i
 
    ASSIGN ::nCol    VALUE x TYPE "N"
    ASSIGN ::nRow    VALUE y TYPE "N"
@@ -113,26 +101,26 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h, ;
    ASSIGN ::nHeight VALUE h TYPE "N"
 
    lBitMap := ( ( ValType( cImage ) $ "CM" .AND. ! Empty( cImage ) ) .OR. ;
-                ( ValType( cBuffer ) $ "CM" .AND. ! Empty( cBuffer ) ) .OR. ;
-                ValidHandler( hBitMap ) ) .AND. ;
-              ( ! ValType( Caption ) $ "CM" .OR. Empty( Caption ) )
+      ( ValType( cBuffer ) $ "CM" .AND. ! Empty( cBuffer ) ) .OR. ;
+      ValidHandler( hBitMap ) ) .AND. ;
+      ( ! ValType( Caption ) $ "CM" .OR. Empty( Caption ) )
 
-   If HB_IsArray( aImageMargin )
-      For i := 1 to MIN( 4, LEN( aImageMargin ) )
-         If HB_IsNumeric( aImageMargin[i] )
+   IF HB_IsArray( aImageMargin )
+      FOR i := 1 to MIN( 4, LEN( aImageMargin ) )
+         IF HB_IsNumeric( aImageMargin[i] )
             ::aImageMargin[i] := aImageMargin[i]
-         EndIf
-      Next
-   ElseIf HB_IsNumeric( aImageMargin )
+         ENDIF
+      NEXT
+   ELSEIF HB_IsNumeric( aImageMargin )
       ::aImageMargin := {aImageMargin, aImageMargin, aImageMargin, aImageMargin}
-   EndIf
+   ENDIF
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, , backcolor, , lRtl )
    nStyle := ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + BS_PUSHBUTTON + ;
-             if( ValType( flat ) == "L"      .AND. flat,         BS_FLAT, 0 )     + ;
-             if( ValType( lNoPrefix ) == "L" .AND. lNoPrefix,    SS_NOPREFIX, 0 ) + ;
-             if( lBitMap,                                        BS_BITMAP, 0 ) + ;
-             if( ValType( lMultiLine ) == "L" .AND. lMultiLine,  BS_MULTILINE, 0 )
+      if( ValType( flat ) == "L"      .AND. flat,         BS_FLAT, 0 )     + ;
+      if( ValType( lNoPrefix ) == "L" .AND. lNoPrefix,    SS_NOPREFIX, 0 ) + ;
+      if( lBitMap,                                        BS_BITMAP, 0 ) + ;
+      if( ValType( lMultiLine ) == "L" .AND. lMultiLine,  BS_MULTILINE, 0 )
 
    ControlHandle := InitButton( ::ContainerhWnd, Caption, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, ::lRtl, nStyle )
 
@@ -150,16 +138,16 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h, ;
    ASSIGN ::lNoDIBSection  VALUE lNoDIB       TYPE "L"
    ASSIGN ::lNoHotLight    VALUE lNoHotLight  TYPE "L"
 
-   If ( ( ValType( cImage ) $ "CM" .AND. ! Empty( cImage ) ) .OR. ;
-        ( ValType( cBuffer ) $ "CM" .AND. ! Empty( cBuffer ) ) .OR. ;
-        ValidHandler( hBitMap ) )
+   IF ( ( ValType( cImage ) $ "CM" .AND. ! Empty( cImage ) ) .OR. ;
+         ( ValType( cBuffer ) $ "CM" .AND. ! Empty( cBuffer ) ) .OR. ;
+         ValidHandler( hBitMap ) )
       // The button has an image
-      If Empty( ::Caption )
+      IF Empty( ::Caption )
          DEFAULT cAlign TO "CENTER"
-      Else
+      ELSE
          DEFAULT cAlign TO "LEFT"
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
    IF ValType( cAlign ) $ "CM"
       cAlign := ALLTRIM( UPPER( cAlign ) )
@@ -183,45 +171,45 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h, ;
    ENDIF
 
    ::Picture := cImage
-   If ! ValidHandler( ::hImage )
+   IF ! ValidHandler( ::hImage )
       ::Buffer := cBuffer
-      If ! ValidHandler( ::hImage )
+      IF ! ValidHandler( ::hImage )
          ::HBitMap := hBitMap
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
    ASSIGN ::OnClick     VALUE ProcedureName TYPE "B"
    ASSIGN ::OnLostFocus VALUE LostFocus     TYPE "B"
    ASSIGN ::OnGotFocus  VALUE GotFocus      TYPE "B"
    ASSIGN ::OnMouseMove VALUE OnMouseMove   TYPE "B"
 
-   Return Self
+   RETURN Self
 
 METHOD DefineImage( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h, ;
-                    fontname, fontsize, tooltip, gotfocus, lostfocus, flat, ;
-                    NoTabStop, HelpId, invisible, bold, italic, underline, ;
-                    strikeout, lRtl, lNoPrefix, lDisabled, cBuffer, hBitMap, ;
-                    cImage, lNoLoadTrans, lScale, lCancel, cAlign, lMultiLine, ;
-                    drawby, aImageMargin, OnMouseMove, lNo3DColors, lAutoFit, ;
-                    lNoDIB, backcolor, lNoHotLight ) CLASS TButton
+      fontname, fontsize, tooltip, gotfocus, lostfocus, flat, ;
+      NoTabStop, HelpId, invisible, bold, italic, underline, ;
+      strikeout, lRtl, lNoPrefix, lDisabled, cBuffer, hBitMap, ;
+      cImage, lNoLoadTrans, lScale, lCancel, cAlign, lMultiLine, ;
+      drawby, aImageMargin, OnMouseMove, lNo3DColors, lAutoFit, ;
+      lNoDIB, backcolor, lNoHotLight ) CLASS TButton
 
-   If Empty( cBuffer )
+   IF Empty( cBuffer )
       cBuffer := ""
-   EndIf
+   ENDIF
 
-   Return ::Define( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h, ;
-                    fontname, fontsize, tooltip, gotfocus, lostfocus, flat, ;
-                    NoTabStop, HelpId, invisible, bold, italic, underline, ;
-                    strikeout, lRtl, lNoPrefix, lDisabled, cBuffer, hBitMap, ;
-                    cImage, lNoLoadTrans, lScale, lCancel, cAlign, lMultiLine, ;
-                    drawby, aImageMargin, OnMouseMove, lNo3DColors, lAutoFit, ;
-                    lNoDIB, backcolor, lNoHotLight )
+   RETURN ::Define( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h, ;
+      fontname, fontsize, tooltip, gotfocus, lostfocus, flat, ;
+      NoTabStop, HelpId, invisible, bold, italic, underline, ;
+      strikeout, lRtl, lNoPrefix, lDisabled, cBuffer, hBitMap, ;
+      cImage, lNoLoadTrans, lScale, lCancel, cAlign, lMultiLine, ;
+      drawby, aImageMargin, OnMouseMove, lNo3DColors, lAutoFit, ;
+      lNoDIB, backcolor, lNoHotLight )
 
 METHOD SetFocus() CLASS TButton
 
    SendMessage( ::hWnd , BM_SETSTYLE , LOWORD( BS_DEFPUSHBUTTON ) , 1 )
 
-   Return ::Super:SetFocus()
+   RETURN ::Super:SetFocus()
 
 METHOD Picture( cPicture ) CLASS TButton
 
@@ -236,12 +224,12 @@ METHOD Picture( cPicture ) CLASS TButton
 
          nAttrib := LR_DEFAULTCOLOR
          IF aPictSize[ 3 ] <= 8
-           IF ! ::lNo3DColors
-              nAttrib += LR_LOADMAP3DCOLORS
-           ENDIF
-           IF ! ::lNoTransparent
-              nAttrib += LR_LOADTRANSPARENT
-           ENDIF
+            IF ! ::lNo3DColors
+               nAttrib += LR_LOADMAP3DCOLORS
+            ENDIF
+            IF ! ::lNoTransparent
+               nAttrib += LR_LOADTRANSPARENT
+            ENDIF
          ENDIF
       ELSE
          nAttrib := LR_CREATEDIBSECTION
@@ -255,11 +243,11 @@ METHOD Picture( cPicture ) CLASS TButton
       ::RePaint()
    ENDIF
 
-   Return ::cPicture
+   RETURN ::cPicture
 
 METHOD HBitMap( hBitMap ) CLASS TButton
 
-   If ValType( hBitMap ) $ "NP"
+   IF ValType( hBitMap ) $ "NP"
       DeleteObject( ::hImage )
       ::hImage := hBitMap
       IF ::ImageSize
@@ -268,13 +256,13 @@ METHOD HBitMap( hBitMap ) CLASS TButton
       ENDIF
       ::RePaint()
       ::cPicture := ""
-   EndIf
+   ENDIF
 
-   Return ::hImage
+   RETURN ::hImage
 
 METHOD Buffer( cBuffer ) CLASS TButton
 
-   If ValType( cBuffer ) $ "CM"
+   IF ValType( cBuffer ) $ "CM"
       DeleteObject( ::hImage )
       ::hImage := _OOHG_BitmapFromBuffer( Self, cBuffer, ::AutoFit .AND. ! ::ImageSize .AND. ! ::Stretch )
       IF ::ImageSize
@@ -283,13 +271,13 @@ METHOD Buffer( cBuffer ) CLASS TButton
       ENDIF
       ::RePaint()
       ::cPicture := ""
-   EndIf
+   ENDIF
 
-   Return nil
+   RETURN NIL
 
 METHOD Value( uValue ) CLASS TButton
 
-   Return ( ::Caption := uValue )
+   RETURN ( ::Caption := uValue )
 
 METHOD RePaint() CLASS TButton
 
@@ -328,36 +316,36 @@ METHOD Release() CLASS TButton
 
 METHOD Events_Notify( wParam, lParam ) CLASS TButton
 
-   Local nNotify := GetNotifyCode( lParam )
+   LOCAL nNotify := GetNotifyCode( lParam )
 
-   If nNotify == NM_CUSTOMDRAW
-      If ::lLibDraw .AND. ::IsVisualStyled .AND. _OOHG_UsesVisualStyle()
-         Return TButton_Notify_CustomDraw( lParam, ! ::lNoHotLight, ( GetFormObjectByHandle( ::ContainerhWnd ):LastFocusedControl == ::hWnd ) )
-      EndIf
-   EndIf
+   IF nNotify == NM_CUSTOMDRAW
+      IF ::lLibDraw .AND. ::IsVisualStyled .AND. _OOHG_UsesVisualStyle()
 
-   Return ::Super:Events_Notify( wParam, lParam )
+         RETURN TButton_Notify_CustomDraw( lParam, ! ::lNoHotLight, ( GetFormObjectByHandle( ::ContainerhWnd ):LastFocusedControl == ::hWnd ) )
+      ENDIF
+   ENDIF
+
+   RETURN ::Super:Events_Notify( wParam, lParam )
 
 METHOD ImageMargin( aMargins ) CLASS TButton
 
    LOCAL i
 
-   If HB_IsArray( aMargins )
-      For i := 1 to MIN( 4, LEN( aMargins ) )
-         If HB_IsNumeric( aMargins[i] )
+   IF HB_IsArray( aMargins )
+      FOR i := 1 to MIN( 4, LEN( aMargins ) )
+         IF HB_IsNumeric( aMargins[i] )
             ::aImageMargin[i] := aMargins[i]
-         EndIf
-      Next
+         ENDIF
+      NEXT
 
       ::RePaint()
-   ElseIf HB_IsNumeric( aMargins )
+   ELSEIF HB_IsNumeric( aMargins )
       ::aImageMargin := {aMargins, aMargins, aMargins, aMargins}
 
       ::RePaint()
-   EndIf
+   ENDIF
 
-   Return ::aImageMargin
-
+   RETURN ::aImageMargin
 
 #pragma BEGINDUMP
 
@@ -431,6 +419,7 @@ static WNDPROC lpfnOldWndProc = 0;
 
 static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
+
    return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
 }
 
@@ -544,6 +533,7 @@ int TButton_Notify_CustomDraw( LPARAM lParam, BOOL bHotLight, BOOL bFocused )
    hInstDLL = LoadLibrary( "UXTHEME.DLL" );
    if( ! hInstDLL )
    {
+
       return CDRF_DODEFAULT;
    }
 
@@ -554,6 +544,7 @@ int TButton_Notify_CustomDraw( LPARAM lParam, BOOL bHotLight, BOOL bFocused )
       if( ! dwProcDrawThemeParentBackground )
       {
          FreeLibrary( hInstDLL );
+
          return CDRF_DODEFAULT;
       }
       ( dwProcDrawThemeParentBackground )( pCustomDraw->hdr.hwndFrom, pCustomDraw->hdc, &pCustomDraw->rc );
@@ -566,6 +557,7 @@ int TButton_Notify_CustomDraw( LPARAM lParam, BOOL bHotLight, BOOL bFocused )
       if( ! dwProcOpenThemeData )
       {
          FreeLibrary( hInstDLL );
+
          return CDRF_DODEFAULT;
       }
 
@@ -573,6 +565,7 @@ int TButton_Notify_CustomDraw( LPARAM lParam, BOOL bHotLight, BOOL bFocused )
       if( ! hTheme )
       {
          FreeLibrary( hInstDLL );
+
          return CDRF_DODEFAULT;
       }
 
@@ -604,6 +597,7 @@ int TButton_Notify_CustomDraw( LPARAM lParam, BOOL bHotLight, BOOL bFocused )
       if( ! dwProcDrawThemeBackground )
       {
          FreeLibrary( hInstDLL );
+
          return CDRF_DODEFAULT;
       }
       ( dwProcDrawThemeBackground )( hTheme, pCustomDraw->hdc, BP_PUSHBUTTON, state_id, &pCustomDraw->rc, NULL );
@@ -613,6 +607,7 @@ int TButton_Notify_CustomDraw( LPARAM lParam, BOOL bHotLight, BOOL bFocused )
       if( ! dwProcGetThemeBackgroundContentRect )
       {
          FreeLibrary( hInstDLL );
+
          return CDRF_DODEFAULT;
       }
       ( dwProcGetThemeBackgroundContentRect )( hTheme, pCustomDraw->hdc, BP_PUSHBUTTON, state_id, &pCustomDraw->rc, &content_rect );
@@ -637,7 +632,6 @@ HB_FUNC( TBUTTON_NOTIFY_CUSTOMDRAW )
 
 #pragma ENDDUMP
 
-
 CLASS TButtonCheck FROM TButton
 
    DATA Type      INIT "CHECKBUTTON" READONLY
@@ -652,14 +646,14 @@ CLASS TButtonCheck FROM TButton
    ENDCLASS
 
 METHOD Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
-               fontsize, tooltip, changeprocedure, w, h, lostfocus, gotfocus, ;
-               HelpId, invisible, notabstop, bold, italic, underline, ;
-               strikeout, field, lRtl, cImage, cBuffer, hBitMap, ;
-               lNoLoadTrans, lScale, lNo3DColors, lAutoFit, lNoDIB, backcolor, ;
-               lDisabled, drawby, aImageMargin, OnMouseMove, cAlign, lMultiLine, ;
-               flat, lNoHotLight ) CLASS TButtonCheck
+      fontsize, tooltip, changeprocedure, w, h, lostfocus, gotfocus, ;
+      HelpId, invisible, notabstop, bold, italic, underline, ;
+      strikeout, field, lRtl, cImage, cBuffer, hBitMap, ;
+      lNoLoadTrans, lScale, lNo3DColors, lAutoFit, lNoDIB, backcolor, ;
+      lDisabled, drawby, aImageMargin, OnMouseMove, cAlign, lMultiLine, ;
+      flat, lNoHotLight ) CLASS TButtonCheck
 
-   Local ControlHandle, nStyle, lBitMap, i
+   LOCAL ControlHandle, nStyle, lBitMap, i
 
    ASSIGN ::nCol    VALUE x TYPE "N"
    ASSIGN ::nRow    VALUE y TYPE "N"
@@ -667,28 +661,28 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
    ASSIGN ::nHeight VALUE h TYPE "N"
 
    lBitMap := ( ( ValType( cImage ) $ "CM" .AND. ! Empty( cImage ) ) .OR. ;
-                ( ValType( cBuffer ) $ "CM" .AND. ! Empty( cBuffer ) ) .OR. ;
-                ValidHandler( hBitMap ) ) .AND. ;
-              ( ! ValType( Caption ) $ "CM" .OR. Empty( Caption ) )
+      ( ValType( cBuffer ) $ "CM" .AND. ! Empty( cBuffer ) ) .OR. ;
+      ValidHandler( hBitMap ) ) .AND. ;
+      ( ! ValType( Caption ) $ "CM" .OR. Empty( Caption ) )
 
-   If HB_IsArray( aImageMargin )
-      For i := 1 to MIN( 4, LEN( aImageMargin ) )
-         If HB_IsNumeric( aImageMargin[i] )
+   IF HB_IsArray( aImageMargin )
+      FOR i := 1 to MIN( 4, LEN( aImageMargin ) )
+         IF HB_IsNumeric( aImageMargin[i] )
             ::aImageMargin[i] := aImageMargin[i]
-         EndIf
-      Next
-   ElseIf HB_IsNumeric( aImageMargin )
+         ENDIF
+      NEXT
+   ELSEIF HB_IsNumeric( aImageMargin )
       ::aImageMargin := {aImageMargin, aImageMargin, aImageMargin, aImageMargin}
-   EndIf
+   ENDIF
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, , backcolor, , lRtl )
 
    nStyle := ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + ;
-             BS_AUTOCHECKBOX + ;
-             BS_PUSHLIKE + ;
-             if( ValType( flat ) == "L"      .AND. flat,         BS_FLAT, 0 )     + ;
-             if( lBitMap,                                        BS_BITMAP, 0 ) + ;
-             if( ValType( lMultiLine ) == "L" .AND. lMultiLine,  BS_MULTILINE, 0 )
+      BS_AUTOCHECKBOX + ;
+      BS_PUSHLIKE + ;
+      if( ValType( flat ) == "L"      .AND. flat,         BS_FLAT, 0 )     + ;
+      if( lBitMap,                                        BS_BITMAP, 0 ) + ;
+      if( ValType( lMultiLine ) == "L" .AND. lMultiLine,  BS_MULTILINE, 0 )
 
    ControlHandle := InitButton( ::ContainerhWnd, Caption, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, ::lRtl, nStyle )
 
@@ -705,16 +699,16 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
    ASSIGN ::lNoDIBSection  VALUE lNoDIB       TYPE "L"
    ASSIGN ::lNoHotLight    VALUE lNoHotLight  TYPE "L"
 
-   If ( ( ValType( cImage ) $ "CM" .AND. ! Empty( cImage ) ) .OR. ;
-        ( ValType( cBuffer ) $ "CM" .AND. ! Empty( cBuffer ) ) .OR. ;
-        ValidHandler( hBitMap ) )
+   IF ( ( ValType( cImage ) $ "CM" .AND. ! Empty( cImage ) ) .OR. ;
+         ( ValType( cBuffer ) $ "CM" .AND. ! Empty( cBuffer ) ) .OR. ;
+         ValidHandler( hBitMap ) )
       // The button has an image
-      If Empty( ::Caption )
+      IF Empty( ::Caption )
          DEFAULT cAlign TO "CENTER"
-      Else
+      ELSE
          DEFAULT cAlign TO "LEFT"
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
    IF ValType( cAlign ) $ "CM"
       cAlign := ALLTRIM( UPPER( cAlign ) )
@@ -738,16 +732,16 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
    ENDIF
 
    ::Picture := cImage
-   If ! ValidHandler( ::hImage )
+   IF ! ValidHandler( ::hImage )
       ::Buffer := cBuffer
-      If ! ValidHandler( ::hImage )
+      IF ! ValidHandler( ::hImage )
          ::HBitMap := hBitMap
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
-   If ! HB_IsLogical( Value )
+   IF ! HB_IsLogical( Value )
       Value := .F.
-   EndIf
+   ENDIF
    ::SetVarBlock( Field, Value )
 
    ASSIGN ::OnLostFocus VALUE lostfocus       TYPE "B"
@@ -755,27 +749,27 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
    ASSIGN ::OnChange    VALUE ChangeProcedure TYPE "B"
    ASSIGN ::OnMouseMove VALUE OnMouseMove     TYPE "B"
 
-   Return Self
+   RETURN Self
 
 METHOD DefineImage( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
-                    fontsize, tooltip, changeprocedure, w, h, lostfocus, gotfocus, ;
-                    HelpId, invisible, notabstop, bold, italic, underline, ;
-                    strikeout, field, lRtl, cImage, cBuffer, hBitMap, ;
-                    lNoLoadTrans, lScale, lNo3DColors, lAutoFit, lNoDIB, backcolor, ;
-                    lDisabled, drawby, aImageMargin, OnMouseMove, cAlign, lMultiLine, ;
-                    flat, lNoHotLight ) CLASS TButtonCheck
+      fontsize, tooltip, changeprocedure, w, h, lostfocus, gotfocus, ;
+      HelpId, invisible, notabstop, bold, italic, underline, ;
+      strikeout, field, lRtl, cImage, cBuffer, hBitMap, ;
+      lNoLoadTrans, lScale, lNo3DColors, lAutoFit, lNoDIB, backcolor, ;
+      lDisabled, drawby, aImageMargin, OnMouseMove, cAlign, lMultiLine, ;
+      flat, lNoHotLight ) CLASS TButtonCheck
 
-   If Empty( cBuffer )
+   IF Empty( cBuffer )
       cBuffer := ""
-   EndIf
+   ENDIF
 
-   Return ::Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
-                    fontsize, tooltip, changeprocedure, w, h, lostfocus, gotfocus, ;
-                    HelpId, invisible, notabstop, bold, italic, underline, ;
-                    strikeout, field, lRtl, cImage, cBuffer, hBitMap, ;
-                    lNoLoadTrans, lScale, lNo3DColors, lAutoFit, lNoDIB, backcolor, ;
-                    lDisabled, drawby, aImageMargin, OnMouseMove, cAlign, lMultiLine, ;
-                    flat, lNoHotLight )
+   RETURN ::Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
+      fontsize, tooltip, changeprocedure, w, h, lostfocus, gotfocus, ;
+      HelpId, invisible, notabstop, bold, italic, underline, ;
+      strikeout, field, lRtl, cImage, cBuffer, hBitMap, ;
+      lNoLoadTrans, lScale, lNo3DColors, lAutoFit, lNoDIB, backcolor, ;
+      lDisabled, drawby, aImageMargin, OnMouseMove, cAlign, lMultiLine, ;
+      flat, lNoHotLight )
 
 METHOD Value( uValue ) CLASS TButtonCheck
 
@@ -790,10 +784,10 @@ METHOD Value( uValue ) CLASS TButtonCheck
 
 METHOD Events_Command( wParam ) CLASS TButtonCheck
 
-   Local Hi_wParam := HIWORD( wParam )
+   LOCAL Hi_wParam := HIWORD( wParam )
 
-   If Hi_wParam == BN_CLICKED
+   IF Hi_wParam == BN_CLICKED
       ::DoChange()
-   EndIf
+   ENDIF
 
-   Return ::Super:Events_Command( wParam )
+   RETURN ::Super:Events_Command( wParam )

@@ -1,64 +1,52 @@
 /*
- * $Id: h_textarray.prg $
- */
+* $Id: h_textarray.prg $
+*/
 /*
- * ooHG source code:
- * TTextArray control source code
- *
- * Copyright 2006-2017 Vicente Guerra <vicente@guerra.com.mx>
- * https://oohg.github.io/
- *
- * Portions of this project are based upon Harbour MiniGUI library.
- * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
- *
- * Portions of this project are based upon Harbour GUI framework for Win32.
- * Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
- * Copyright 2001 Antonio Linares <alinares@fivetech.com>
- *
- * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2017, https://harbour.github.io/
- */
+* ooHG source code:
+* TTextArray control source code
+* Copyright 2006-2017 Vicente Guerra <vicente@guerra.com.mx>
+* https://oohg.github.io/
+* Portions of this project are based upon Harbour MiniGUI library.
+* Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
+* Portions of this project are based upon Harbour GUI framework for Win32.
+* Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
+* Copyright 2001 Antonio Linares <alinares@fivetech.com>
+* Portions of this project are based upon Harbour Project.
+* Copyright 1999-2017, https://harbour.github.io/
+*/
 /*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this software; see the file LICENSE.txt. If not, write to
- * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
- *
- * As a special exception, the ooHG Project gives permission for
- * additional uses of the text contained in its release of ooHG.
- *
- * The exception is that, if you link the ooHG libraries with other
- * files to produce an executable, this does not by itself cause the
- * resulting executable to be covered by the GNU General Public License.
- * Your use of that executable is in no way restricted on account of
- * linking the ooHG library code into it.
- *
- * This exception does not however invalidate any other reasons why
- * the executable file might be covered by the GNU General Public License.
- *
- * This exception applies only to the code released by the ooHG
- * Project under the name ooHG. If you copy code from other
- * ooHG Project or Free Software Foundation releases into a copy of
- * ooHG, as the General Public License permits, the exception does
- * not apply to the code that you add in this way. To avoid misleading
- * anyone as to the status of such modified files, you must delete
- * this exception notice from them.
- *
- * If you write modifications of your own for ooHG, it is your choice
- * whether to permit this exception to apply to your modifications.
- * If you do not wish that, delete this exception notice.
- */
-
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2, or (at your option)
+* any later version.
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* You should have received a copy of the GNU General Public License
+* along with this software; see the file LICENSE.txt. If not, write to
+* the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+* Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
+* As a special exception, the ooHG Project gives permission for
+* additional uses of the text contained in its release of ooHG.
+* The exception is that, if you link the ooHG libraries with other
+* files to produce an executable, this does not by itself cause the
+* resulting executable to be covered by the GNU General Public License.
+* Your use of that executable is in no way restricted on account of
+* linking the ooHG library code into it.
+* This exception does not however invalidate any other reasons why
+* the executable file might be covered by the GNU General Public License.
+* This exception applies only to the code released by the ooHG
+* Project under the name ooHG. If you copy code from other
+* ooHG Project or Free Software Foundation releases into a copy of
+* ooHG, as the General Public License permits, the exception does
+* not apply to the code that you add in this way. To avoid misleading
+* anyone as to the status of such modified files, you must delete
+* this exception notice from them.
+* If you write modifications of your own for ooHG, it is your choice
+* whether to permit this exception to apply to your modifications.
+* If you do not wish that, delete this exception notice.
+*/
 
 #include "oohg.ch"
 #include "hbclass.ch"
@@ -93,12 +81,12 @@ CLASS TTextArray FROM TControl
    ENDCLASS
 
 METHOD Define( ControlName, ParentForm, x, y, w, h, RowCount, ColCount, ;
-               BORDER, CLIENTEDGE, FontColor, BackColor, ProcedureName, ;
-               fontname, fontsize, bold, italic, underline, strikeout, ;
-               ToolTip, HelpId, invisible, lRtl, value, NoTabStop, lDisabled, ;
-               GotFocus, LostFocus ) CLASS TTextArray
+      BORDER, CLIENTEDGE, FontColor, BackColor, ProcedureName, ;
+      fontname, fontsize, bold, italic, underline, strikeout, ;
+      ToolTip, HelpId, invisible, lRtl, value, NoTabStop, lDisabled, ;
+      GotFocus, LostFocus ) CLASS TTextArray
 
-   Local ControlHandle, nStyle, nStyleEx
+   LOCAL ControlHandle, nStyle, nStyleEx
 
    ASSIGN ::nCol        VALUE x TYPE "N"
    ASSIGN ::nRow        VALUE y TYPE "N"
@@ -112,7 +100,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, RowCount, ColCount, ;
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, , lRtl )
 
    nStyle := ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + ;
-             if( ValType( BORDER ) == "L"    .AND. BORDER,     WS_BORDER,   0 )
+      if( ValType( BORDER ) == "L"    .AND. BORDER,     WS_BORDER,   0 )
 
    nStyleEx := if( ValType( CLIENTEDGE ) == "L"   .AND. CLIENTEDGE,   WS_EX_CLIENTEDGE,  0 )
 
@@ -126,9 +114,9 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, RowCount, ColCount, ;
 
    ::Write( value )
 
-*   If ::Transparent
-*      RedrawWindowControlRect( ::ContainerhWnd, ::ContainerRow, ::ContainerCol, ::ContainerRow + ::Height, ::ContainerCol + ::Width )
-*   EndIf
+   *   If ::Transparent
+   *      RedrawWindowControlRect( ::ContainerhWnd, ::ContainerRow, ::ContainerCol, ::ContainerRow + ::Height, ::ContainerCol + ::Width )
+   *   EndIf
 
    DEFINE TIMER 0 OF ( Self ) INTERVAL 500 ACTION TTextArray_CursorTimer( Self )
 
@@ -136,15 +124,14 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, RowCount, ColCount, ;
    ASSIGN ::OnGotFocus  VALUE GotFocus      TYPE "B"
    ASSIGN ::OnLostFocus VALUE LostFocus     TYPE "B"
 
-   Return Self
+   RETURN Self
 
 METHOD SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout ) CLASS TTextArray
 
    ::Super:SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout )
    TTextArray_SetFontSize( Self )
 
-   Return Nil
-
+   RETURN NIL
 
 #pragma BEGINDUMP
 
@@ -166,6 +153,7 @@ typedef struct {
 
 static BOOL IsSameChar( PCHARCELL pCell1, PCHARCELL pCell2 )
 {
+
    return ( pCell1->FontColor == pCell2->FontColor &&
             pCell1->BackColor == pCell2->BackColor );
 }
@@ -196,6 +184,7 @@ static WNDPROC lpfnOldWndProc = 0;
 
 static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
+
    return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
 }
 
@@ -236,6 +225,7 @@ static void RePaint( POCTRL oSelf, HDC hdc2, RECT *updateRect )
 
    if( ! ValidHandler( oSelf->hWnd ) )
    {
+
       return;
    }
 
@@ -1307,6 +1297,7 @@ HB_FUNC_STATIC( TTEXTARRAY_ASSUMEFIXED )   // ( lAssumeFixed )
 
 static LRESULT CALLBACK _OOHG_TextArray_WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
 {
+
    return DefWindowProc( hWnd, message, wParam, lParam );
 }
 

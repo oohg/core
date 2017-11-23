@@ -1,87 +1,73 @@
 /*
- * $Id: winprint.prg $
- */
+* $Id: winprint.prg $
+*/
 /*
- * ooHG source code:
- * HBPRINTER printing library
- *
- * Based upon:
- * HBPRINT and HBPRINTER libraries
- * Copyright 2002 Richard Rylko <rrylko@poczta.onet.pl>
- * http://rrylko.republika.pl
- * Original contributions made by
- * Eduardo Fernandes <modalsist@yahoo.com.br> and
- * Mitja Podgornik <yamamoto@rocketmail.com>
- *
- * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
- * https://oohg.github.io/
- *
- * Portions of this project are based upon Harbour MiniGUI library.
- * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
- *
- * Portions of this project are based upon Harbour GUI framework for Win32.
- * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- * Copyright 2001 Antonio Linares <alinares@fivetech.com>
- *
- * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2017, https://harbour.github.io/
- */
+* ooHG source code:
+* HBPRINTER printing library
+* Based upon:
+* HBPRINT and HBPRINTER libraries
+* Copyright 2002 Richard Rylko <rrylko@poczta.onet.pl>
+* http://rrylko.republika.pl
+* Original contributions made by
+* Eduardo Fernandes <modalsist@yahoo.com.br> and
+* Mitja Podgornik <yamamoto@rocketmail.com>
+* Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
+* https://oohg.github.io/
+* Portions of this project are based upon Harbour MiniGUI library.
+* Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
+* Portions of this project are based upon Harbour GUI framework for Win32.
+* Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
+* Copyright 2001 Antonio Linares <alinares@fivetech.com>
+* Portions of this project are based upon Harbour Project.
+* Copyright 1999-2017, https://harbour.github.io/
+*/
 /*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this software; see the file LICENSE.txt. If not, write to
- * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
- *
- * As a special exception, the ooHG Project gives permission for
- * additional uses of the text contained in its release of ooHG.
- *
- * The exception is that, if you link the ooHG libraries with other
- * files to produce an executable, this does not by itself cause the
- * resulting executable to be covered by the GNU General Public License.
- * Your use of that executable is in no way restricted on account of
- * linking the ooHG library code into it.
- *
- * This exception does not however invalidate any other reasons why
- * the executable file might be covered by the GNU General Public License.
- *
- * This exception applies only to the code released by the ooHG
- * Project under the name ooHG. If you copy code from other
- * ooHG Project or Free Software Foundation releases into a copy of
- * ooHG, as the General Public License permits, the exception does
- * not apply to the code that you add in this way. To avoid misleading
- * anyone as to the status of such modified files, you must delete
- * this exception notice from them.
- *
- * If you write modifications of your own for ooHG, it is your choice
- * whether to permit this exception to apply to your modifications.
- * If you do not wish that, delete this exception notice.
- */
-
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2, or (at your option)
+* any later version.
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* You should have received a copy of the GNU General Public License
+* along with this software; see the file LICENSE.txt. If not, write to
+* the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+* Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
+* As a special exception, the ooHG Project gives permission for
+* additional uses of the text contained in its release of ooHG.
+* The exception is that, if you link the ooHG libraries with other
+* files to produce an executable, this does not by itself cause the
+* resulting executable to be covered by the GNU General Public License.
+* Your use of that executable is in no way restricted on account of
+* linking the ooHG library code into it.
+* This exception does not however invalidate any other reasons why
+* the executable file might be covered by the GNU General Public License.
+* This exception applies only to the code released by the ooHG
+* Project under the name ooHG. If you copy code from other
+* ooHG Project or Free Software Foundation releases into a copy of
+* ooHG, as the General Public License permits, the exception does
+* not apply to the code that you add in this way. To avoid misleading
+* anyone as to the status of such modified files, you must delete
+* this exception notice from them.
+* If you write modifications of your own for ooHG, it is your choice
+* whether to permit this exception to apply to your modifications.
+* If you do not wish that, delete this exception notice.
+*/
 
 #include "hbclass.ch"
 
 /*
- * Define NO_GUI macro for non-ooHG compilation.
- * It allows to compile HBPRINTER library for console mode.
- * Fully functional but no preview.
- */
+* Define NO_GUI macro for non-ooHG compilation.
+* It allows to compile HBPRINTER library for console mode.
+* Fully functional but no preview.
+*/
 #ifndef NO_GUI
-   #include "oohg.ch"
+#include "oohg.ch"
 #endif
 
 #define NO_HBPRN_DECLARATION
 #include "winprint.ch"
-
 
 CLASS HBPrinter
 
@@ -219,19 +205,19 @@ CLASS HBPrinter
    METHOD GetTextExtent(ctext,apoint,deffont)
    METHOD End()
    METHOD ReportData(l_x1,l_x2,l_x3,l_x4,l_x5,l_x6)
-#ifndef NO_GUI
+   #ifndef NO_GUI
    METHOD Preview()
    METHOD PrevPrint(n1)
    METHOD PrevShow()
    METHOD PrevThumb(nclick)
    METHOD PrintOption()
-#endif
+   #endif
 
    ENDCLASS
 
 METHOD New() CLASS HBPrinter
 
-   local aprnport
+   LOCAL aprnport
 
    aprnport:=rr_getprinters()
    IF aprnport<>",,"
@@ -245,11 +231,11 @@ METHOD New() CLASS HBPrinter
    ::TimeStamp := strzero( Seconds() * 100 , 8 )
    ::BaseDoc := rr_GetTempFolder() + '\' + ::TimeStamp + "_HBPrinter_preview_"
 
-   return self
+   RETURN self
 
 METHOD SelectPrinter( cPrinter ,lPrev ) CLASS HBPrinter
 
-   local txtp:="",txtb:="",t:={0,0,1,.t.}
+   LOCAL txtp:="",txtb:="",t:={0,0,1,.t.}
 
    IF cPrinter == Nil
       ::hDCRef := rr_getdc(::PrinterDefault)
@@ -271,11 +257,11 @@ METHOD SelectPrinter( cPrinter ,lPrev ) CLASS HBPrinter
    ENDIF
    IF HB_IsLogical(lPrev)
       #ifndef NO_GUI
-         if lprev
-            ::PreviewMode:=.t.
-         endif
+      IF lprev
+         ::PreviewMode:=.t.
+      ENDIF
       #else
-         ::PreviewMode:=.f.
+      ::PreviewMode:=.f.
       #endif
    ENDIF
    IF ::hDC==0
@@ -300,7 +286,7 @@ METHOD SelectPrinter( cPrinter ,lPrev ) CLASS HBPrinter
       ::setunits(::units)
    ENDIF
 
-   Return Nil
+   RETURN NIL
 
 METHOD SetDevMode(what,newvalue) CLASS HBPrinter
 
@@ -308,50 +294,51 @@ METHOD SetDevMode(what,newvalue) CLASS HBPrinter
    rr_getdevicecaps(::DEVCAPS,::Fonts[3])
    ::setunits(::units)
 
-   Return Self
+   RETURN Self
 
 METHOD StartDoc(ldocname) CLASS HBPrinter
 
-  ::Printing:=.t.
-  if ldocname<>NIL
-     ::DOCNAME:=ldocname
-  endif
-  if !::PreviewMode
+   ::Printing:=.t.
+   IF ldocname<>NIL
+      ::DOCNAME:=ldocname
+   ENDIF
+   IF !::PreviewMode
       rr_startdoc(::DOCNAME)
-  endif
+   ENDIF
 
-   return self
+   RETURN self
 
 METHOD SetPage(orient,size,fontname) CLASS HBPrinter
 
-   local lhand:=::getobjbyname(fontname,"F")
-   if size<>NIL
+   LOCAL lhand:=::getobjbyname(fontname,"F")
+
+   IF size<>NIL
       ::SetDevMode(DM_PAPERSIZE,size)
-   endif
-   if orient<>NIL
+   ENDIF
+   IF orient<>NIL
       ::SetDevMode(DM_ORIENTATION,orient)
-   endif
-   if lhand<>0
+   ENDIF
+   IF lhand<>0
       ::Fonts[3]:=lhand
-   endif
+   ENDIF
    rr_getdevicecaps(::DEVCAPS,::Fonts[3])
    ::setunits(::units)
 
-   return Self
+   RETURN Self
 
 METHOD Startpage() CLASS HBPrinter
 
-   if ::PreviewMode
-      if ::InMemory
+   IF ::PreviewMode
+      IF ::InMemory
          ::hDC:=rr_createmfile()
-      else
+      ELSE
          ::hDC:=rr_createfile( ::BaseDoc + alltrim(strzero(::CurPage,4))+'.emf')
          ::CurPage := ::CurPage + 1
       end
-   else
+   ELSE
       rr_Startpage()
-   endif
-   if !::Printingemf
+   ENDIF
+   IF !::Printingemf
       rr_selectcliprgn(::Regions[1,1])
       rr_setviewportorg(::ViewPortOrg)
       rr_settextcolor(::textcolor)
@@ -360,69 +347,69 @@ METHOD Startpage() CLASS HBPrinter
       rr_selectbrush(::Brushes[1,1])
       rr_selectpen(::Pens[1,1])
       rr_selectfont(::Fonts[1,1])
-   endif
+   ENDIF
 
-   return self
+   RETURN self
 
 METHOD Endpage() CLASS HBPrinter
 
-   if ::PreviewMode
-      if ::InMemory
+   IF ::PreviewMode
+      IF ::InMemory
          aadd(::MetaFiles,{rr_closemfile(),::DEVCAPS[1],::DEVCAPS[2],::DEVCAPS[3],::DEVCAPS[4],::DEVCAPS[15],::DEVCAPS[17]})
-      else
+      ELSE
          rr_closefile()
          aadd(::MetaFiles,{::BaseDoc + strzero(::CurPage-1,4)+'.emf',::DEVCAPS[1],::DEVCAPS[2],::DEVCAPS[3],::DEVCAPS[4],::DEVCAPS[15],::DEVCAPS[17]})
       end
-   else
+   ELSE
       rr_endpage()
-   endif
+   ENDIF
 
-   return self
+   RETURN self
 
 METHOD SaveMetaFiles(number) CLASS HBPrinter
 
-   Local n,l
+   LOCAL n,l
 
-   If Empty(number)
+   IF Empty(number)
       number:=NIL
-   EndIf
-   if ::PreviewMode
-      if ::InMemory
-         if number==NIL
+   ENDIF
+   IF ::PreviewMode
+      IF ::InMemory
+         IF number==NIL
             aeval(::METAFILES,{|x,xi| str2file(x[1],"page"+alltrim(str(xi))+".emf") })
-         else
+         ELSE
             str2file(::METAFILES[number,1],"page"+alltrim(str(number))+".emf")
-         endif
-      else
-         if number<>NIL
+         ENDIF
+      ELSE
+         IF number<>NIL
             COPY FILE (::BaseDoc + alltrim(strzero(number,4))+'.emf') to ("page"+alltrim(strzero(number,4))+".emf")
-         else
+         ELSE
             l:=::curpage-1
-            for n := 1 to l
+            FOR n := 1 to l
                COPY FILE (::BaseDoc + alltrim(strzero(n,4))+'.emf') to ("page"+alltrim(strzero(n,4))+".emf")
             end
-         endif
-      endif
-   endif
+         ENDIF
+      ENDIF
+   ENDIF
 
-   return self
+   RETURN self
 
 METHOD EndDoc() CLASS HBPrinter
 
-   if ::PreviewMode
+   IF ::PreviewMode
       ::preview()
-   else
-     rr_enddoc()
-   endif
+   ELSE
+      rr_enddoc()
+   ENDIF
    ::Printing:=.f.
 
-   return self
+   RETURN self
 
 METHOD SetTextColor(clr) CLASS HBPrinter
 
-   local lret:=::Textcolor
+   LOCAL lret:=::Textcolor
 
-   if clr<>NIL
+   IF clr<>NIL
 
       // BEGIN RL 2003-08-03
 
@@ -434,21 +421,21 @@ METHOD SetTextColor(clr) CLASS HBPrinter
 
       // END RL
 
-   endif
+   ENDIF
 
-   return lret
+   RETURN lret
 
 METHOD SetPolyFillMode(style) CLASS HBPrinter
 
-   local lret:=::PolyFillMode
+   LOCAL lret:=::PolyFillMode
 
    ::PolyFillMode:=rr_setpolyfillmode(style)
 
-   return lret
+   RETURN lret
 
 METHOD SetBkColor(clr) CLASS HBPrinter
 
-   local lret:=::BkColor
+   LOCAL lret:=::BkColor
 
    // BEGIN RL 2003-08-03
 
@@ -460,24 +447,25 @@ METHOD SetBkColor(clr) CLASS HBPrinter
 
    // END RL
 
-   return lret
+   RETURN lret
 
 METHOD SetBkMode(nmode) CLASS HBPrinter
 
-   local lret:=::Bkmode
+   LOCAL lret:=::Bkmode
 
    ::BkMode:=nmode
    rr_setbkmode(nmode)
 
-   return lret
+   RETURN lret
 
 METHOD DefineBrush(defname,lstyle,lcolor,lhatch) CLASS HBPrinter
 
-   local lhand:=::getobjbyname(defname,"B")
+   LOCAL lhand:=::getobjbyname(defname,"B")
 
-   if lhand<>0
-      return self
-   endif
+   IF lhand<>0
+
+      RETURN self
+   ENDIF
 
    // BEGIN RL 2003-08-03
 
@@ -493,36 +481,37 @@ METHOD DefineBrush(defname,lstyle,lcolor,lhatch) CLASS HBPrinter
    aadd(::Brushes[1],rr_createbrush(lstyle,lcolor,lhatch))
    aadd(::Brushes[2],upper(alltrim(defname)))
 
-   return self
+   RETURN self
 
 METHOD SelectBrush(defname) CLASS HBPrinter
 
-   local lhand:=::getobjbyname(defname,"B")
+   LOCAL lhand:=::getobjbyname(defname,"B")
 
-   if lhand<>0
+   IF lhand<>0
       rr_selectbrush(lhand)
       ::Brushes[1,1]:=lhand
-   endif
+   ENDIF
 
-   return self
+   RETURN self
 
 METHOD ModifyBrush(defname,lstyle,lcolor,lhatch) CLASS HBPrinter
 
-   local lhand:=0,lpos
+   LOCAL lhand:=0,lpos
 
-   if defname=="*"
+   IF defname=="*"
       lpos:=ascan(::Brushes[1],::Brushes[1,1],2)
-      if lpos>1
+      IF lpos>1
          lhand:=::Brushes[1,lpos]
-      endif
-   else
+      ENDIF
+   ELSE
       lhand:=::getobjbyname(defname,"B")
       lpos:=::getobjbyname(defname,"B",.t.)
-   endif
-   if lhand==0 .or. lpos==0
+   ENDIF
+   IF lhand==0 .or. lpos==0
       ::error:=1
-      return self
-   endif
+
+      RETURN self
+   ENDIF
    lstyle:=if(lstyle==NIL,-1,lstyle)
 
    // BEGIN RL 2003-08-03
@@ -536,19 +525,20 @@ METHOD ModifyBrush(defname,lstyle,lcolor,lhatch) CLASS HBPrinter
    lcolor:=if(lcolor==NIL,-1,lcolor)
    lhatch:=if(lhatch==NIL,-1,lhatch)
    ::Brushes[1,lpos]:=rr_modifybrush(lhand,lstyle,lcolor,lhatch)
-   if lhand==::Brushes[1,1]
+   IF lhand==::Brushes[1,1]
       ::selectbrush(::Brushes[2,lpos])
-   endif
+   ENDIF
 
-   return self
+   RETURN self
 
 METHOD DefinePen(defname,lstyle,lwidth,lcolor) CLASS HBPrinter
 
-   local lhand:=::getobjbyname(defname,"P")
+   LOCAL lhand:=::getobjbyname(defname,"P")
 
-   if lhand<>0
-      return self
-   endif
+   IF lhand<>0
+
+      RETURN self
+   ENDIF
 
    // BEGIN RL 2003-08-03
 
@@ -558,31 +548,32 @@ METHOD DefinePen(defname,lstyle,lwidth,lcolor) CLASS HBPrinter
 
    // END RL
 
-  lstyle:=if(lstyle==NIL,PS_SOLID,lstyle)
-  lcolor:=if(lcolor==NIL,0xFFFFFF,lcolor)
-  lwidth:=if(lwidth==NIL,0,lwidth)
-  aadd(::Pens[1],rr_createpen(lstyle,lwidth,lcolor))
-  aadd(::Pens[2],upper(alltrim(defname)))
+   lstyle:=if(lstyle==NIL,PS_SOLID,lstyle)
+   lcolor:=if(lcolor==NIL,0xFFFFFF,lcolor)
+   lwidth:=if(lwidth==NIL,0,lwidth)
+   aadd(::Pens[1],rr_createpen(lstyle,lwidth,lcolor))
+   aadd(::Pens[2],upper(alltrim(defname)))
 
-  return self
+   RETURN self
 
 METHOD ModifyPen(defname,lstyle,lwidth,lcolor) CLASS HBPrinter
 
-   local lhand:=0,lpos
+   LOCAL lhand:=0,lpos
 
-   if defname=="*"
+   IF defname=="*"
       lpos:=ascan(::Pens[1],::Pens[1,1],2)
-      if lpos>1
+      IF lpos>1
          lhand:=::Pens[1,lpos]
-      endif
-   else
+      ENDIF
+   ELSE
       lhand:=::getobjbyname(defname,"P")
       lpos:=::getobjbyname(defname,"P",.t.)
-   endif
-   if lhand==0 .or. lpos<=1
+   ENDIF
+   IF lhand==0 .or. lpos<=1
       ::error:=1
-      return self
-   endif
+
+      RETURN self
+   ENDIF
 
    lstyle:=if(lstyle==NIL,-1,lstyle)
 
@@ -594,44 +585,45 @@ METHOD ModifyPen(defname,lstyle,lwidth,lcolor) CLASS HBPrinter
 
    // END RL
 
-  lcolor:=if(lcolor==NIL,-1,lcolor)
-  lwidth:=if(lwidth==NIL,-1,lwidth)
-  ::Pens[1,lpos]:=rr_modifypen(lhand,lstyle,lwidth,lcolor)
-  if lhand==::Pens[1,1]
-     ::selectpen(::Pens[2,lpos])
-  endif
+   lcolor:=if(lcolor==NIL,-1,lcolor)
+   lwidth:=if(lwidth==NIL,-1,lwidth)
+   ::Pens[1,lpos]:=rr_modifypen(lhand,lstyle,lwidth,lcolor)
+   IF lhand==::Pens[1,1]
+      ::selectpen(::Pens[2,lpos])
+   ENDIF
 
-  return self
+   RETURN self
 
 METHOD SelectPen(defname) CLASS HBPrinter
 
-   local lhand:=::getobjbyname(defname,"P")
+   LOCAL lhand:=::getobjbyname(defname,"P")
 
-   if lhand<>0
+   IF lhand<>0
       rr_selectpen(lhand)
       ::Pens[1,1]:=lhand
-   endif
+   ENDIF
 
-   return self
+   RETURN self
 
 METHOD DefineFont(defname,lfontname,lfontsize,lfontwidth,langle,lweight,litalic,lunderline,lstrikeout) CLASS HBPrinter
 
-   local lhand:=::getobjbyname(lfontname,"F")
+   LOCAL lhand:=::getobjbyname(lfontname,"F")
 
-   if lhand<>0
-      return self
-   endif
+   IF lhand<>0
+
+      RETURN self
+   ENDIF
    lfontname:=if(lfontname==NIL,"",upper(alltrim(lfontname)))
-   if lfontsize==NIL
+   IF lfontsize==NIL
       lfontsize:=-1
-   endif
+   ENDIF
 
-   if lfontwidth==NIL
+   IF lfontwidth==NIL
       lfontwidth:=0
-   endif
-   if langle==NIL
+   ENDIF
+   IF langle==NIL
       langle:=-1
-   endif
+   ENDIF
    lweight:=if(empty(lweight),0,1)
    litalic:=if(empty(litalic),0,1)
    lunderline:=if(empty(lunderline),0,1)
@@ -640,193 +632,195 @@ METHOD DefineFont(defname,lfontname,lfontsize,lfontwidth,langle,lweight,litalic,
    aadd(::Fonts[2],upper(alltrim(defname)))
    aadd(::Fonts[4],{lfontname,lfontsize,lfontwidth,langle,lweight,litalic,lunderline,lstrikeout})
 
-   return self
+   RETURN self
 
 METHOD ModifyFont(defname,lfontname,lfontsize,lfontwidth,langle,lweight,lnweight,litalic,lnitalic,lunderline,lnunderline,lstrikeout,lnstrikeout) CLASS HBPrinter
 
-   local lhand:=0,lpos
+   LOCAL lhand:=0,lpos
 
-   if defname=="*"
+   IF defname=="*"
       lpos:=ascan(::Fonts[1],::Fonts[1,1],2)
-      if lpos>1
+      IF lpos>1
          lhand:=::Fonts[1,lpos]
-      endif
-   else
+      ENDIF
+   ELSE
       lhand:=::getobjbyname(defname,"F")
       lpos:=::getobjbyname(defname,"F",.t.)
-   endif
-   if lhand==0 .or. lpos<=1
+   ENDIF
+   IF lhand==0 .or. lpos<=1
       ::error:=1
-      return self
-   endif
 
-   if lfontname<>NIL
-     ::Fonts[4,lpos,1]:=upper(alltrim(lfontname))
-   endif
+      RETURN self
+   ENDIF
 
-   if lfontsize<>NIL
+   IF lfontname<>NIL
+      ::Fonts[4,lpos,1]:=upper(alltrim(lfontname))
+   ENDIF
+
+   IF lfontsize<>NIL
       ::Fonts[4,lpos,2]:=lfontsize
-   endif
-   if lfontwidth<>NIL
+   ENDIF
+   IF lfontwidth<>NIL
       ::Fonts[4,lpos,3]:=lfontwidth
-   endif
-   if langle<>NIL
+   ENDIF
+   IF langle<>NIL
       ::Fonts[4,lpos,4]:=langle
-   endif
-   if lweight
+   ENDIF
+   IF lweight
       ::Fonts[4,lpos,5]:=1
-   endif
-   if lnweight
+   ENDIF
+   IF lnweight
       ::Fonts[4,lpos,5]:=0
-   endif
-   if litalic
+   ENDIF
+   IF litalic
       ::Fonts[4,lpos,6]:=1
-   endif
-   if lnitalic
+   ENDIF
+   IF lnitalic
       ::Fonts[4,lpos,6]:=0
-   endif
-   if lunderline
-     ::Fonts[4,lpos,7]:=1
-   endif
-   if lnunderline
-     ::Fonts[4,lpos,7]:=0
-   endif
-   if lstrikeout
+   ENDIF
+   IF lunderline
+      ::Fonts[4,lpos,7]:=1
+   ENDIF
+   IF lnunderline
+      ::Fonts[4,lpos,7]:=0
+   ENDIF
+   IF lstrikeout
       ::Fonts[4,lpos,8]:=1
-   endif
-   if lnstrikeout
-     ::Fonts[4,lpos,8]:=0
-   endif
+   ENDIF
+   IF lnstrikeout
+      ::Fonts[4,lpos,8]:=0
+   ENDIF
 
    ::Fonts[1,lpos]:=rr_createfont(::Fonts[4,lpos,1],::Fonts[4,lpos,2],-::Fonts[4,lpos,3],::Fonts[4,lpos,4]*10,::Fonts[4,lpos,5],::Fonts[4,lpos,6],::Fonts[4,lpos,7],::Fonts[4,lpos,8])
 
-   if lhand==::Fonts[1,1]
+   IF lhand==::Fonts[1,1]
       ::selectfont(::Fonts[2,lpos])
-   endif
+   ENDIF
    rr_deleteobjects({0,lhand})
 
-   return self
+   RETURN self
 
 METHOD SelectFont(defname) CLASS HBPrinter
 
-   local lhand:=::getobjbyname(defname,"F")
-   if lhand<>0
+   LOCAL lhand:=::getobjbyname(defname,"F")
+
+   IF lhand<>0
       rr_selectfont(lhand)
       ::Fonts[1,1]:=lhand
-   endif
+   ENDIF
 
-   return self
+   RETURN self
 
 METHOD SetUnits(newvalue,r,c,lAbsolute) CLASS HBPrinter
 
-   local oldvalue:=::UNITS
+   LOCAL oldvalue:=::UNITS
 
-   If HB_IsString(newvalue)
+   IF HB_IsString(newvalue)
       newvalue := UPPER( ALLTRIM( newvalue ) )
-      If newvalue == "ROWCOL"
+      IF newvalue == "ROWCOL"
          newvalue := 0
-      ElseIf newvalue == "MM"
+      ELSEIF newvalue == "MM"
          newvalue := 1
-      ElseIf newvalue == "INCHES"
+      ELSEIF newvalue == "INCHES"
          newvalue := 2
-      ElseIf newvalue == "PIXELS"
+      ELSEIF newvalue == "PIXELS"
          newvalue := 3
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
    newvalue:=if(HB_IsNumeric(newvalue),newvalue,0)
    ::UNITS:=if(newvalue<0 .or. newvalue>4,0,newvalue)
-   do case
-   case ::Units==0
+   DO CASE
+   CASE ::Units==0
       ::MaxRow:=::DevCaps[13]-1
       ::MaxCol:=::DevCaps[14]-1
-   case ::Units==1
+   CASE ::Units==1
       ::MaxRow:=::DevCaps[1]-1
       ::MaxCol:=::DevCaps[2]-1
-   case ::Units==2
+   CASE ::Units==2
       ::MaxRow:=(::DevCaps[1]/25.4)-1
       ::MaxCol:=(::DevCaps[2]/25.4)-1
-   case ::Units==3
+   CASE ::Units==3
       ::MaxRow:=::DevCaps[3]
       ::MaxCol:=::DevCaps[4]
-   case ::Units==4
-      if HB_IsNumeric(r)
+   CASE ::Units==4
+      IF HB_IsNumeric(r)
          ::MaxRow:=r-1
-      endif
-      if HB_IsNumeric(c)
+      ENDIF
+      IF HB_IsNumeric(c)
          ::MaxCol:=c-1
-      endif
-   endcase
-   If Hb_IsLogical( lAbsolute )
+      ENDIF
+   ENDCASE
+   IF Hb_IsLogical( lAbsolute )
       ::lAbsoluteCoords := lAbsolute
-   EndIf
+   ENDIF
 
-   return oldvalue
+   RETURN oldvalue
 
 METHOD Convert(arr,lsize) CLASS HBPrinter
 
-   local aret:=aclone(arr)
+   LOCAL aret:=aclone(arr)
 
-   do case
-   case ::UNITS==0
+   DO CASE
+   CASE ::UNITS==0
       aret[1]:=(arr[1])*::DEVCAPS[11]
       aret[2]:=(arr[2])*::DEVCAPS[12]
-   case ::UNITS==3
-   case ::UNITS==4
+   CASE ::UNITS==3
+   CASE ::UNITS==4
       aret[1]:=(arr[1])*::DEVCAPS[3]/(::maxrow+1)
       aret[2]:=(arr[2])*::DEVCAPS[4]/(::maxcol+1)
-   case ::UNITS==1
+   CASE ::UNITS==1
       aret[1]:=(arr[1])*::DEVCAPS[5]/25.4-if(! ::lAbsoluteCoords .AND. lsize==NIL,::DEVCAPS[9 ],0)
       aret[2]:=(arr[2])*::DEVCAPS[6]/25.4-if(! ::lAbsoluteCoords .AND. lsize==NIL,::DEVCAPS[10],0)
-   case ::UNITS==2
+   CASE ::UNITS==2
       aret[1]:=(arr[1])*::DEVCAPS[5]-if(! ::lAbsoluteCoords .AND. lsize==NIL,::DEVCAPS[9 ],0)
       aret[2]:=(arr[2])*::DEVCAPS[6]-if(! ::lAbsoluteCoords .AND. lsize==NIL,::DEVCAPS[10],0)
-   otherwise
+   OTHERWISE
       aret[1]:=(arr[1])*::DEVCAPS[11]
       aret[2]:=(arr[2])*::DEVCAPS[12]
-   endcase
+   ENDCASE
 
-   return aret
+   RETURN aret
 
 METHOD DrawText(row,col,torow,tocol,txt,style,defname,lNoWordBreak) CLASS HBPrinter
 
-   local lhf:=::getobjbyname(defname,"F")
+   LOCAL lhf:=::getobjbyname(defname,"F")
 
-  if torow==NIL
-     torow:=::maxrow
-  endif
-  if tocol==NIL
-     tocol:=::maxcol
-  endif
-  rr_drawtext(::Convert({row,col}),::Convert({torow,tocol}),txt,style,lhf,lNoWordBreak)
+   IF torow==NIL
+      torow:=::maxrow
+   ENDIF
+   IF tocol==NIL
+      tocol:=::maxcol
+   ENDIF
+   rr_drawtext(::Convert({row,col}),::Convert({torow,tocol}),txt,style,lhf,lNoWordBreak)
 
-   return self
+   RETURN self
 
 METHOD TEXTOUT(row,col,txt,defname) CLASS HBPrinter
 
-   local lhf:=::getobjbyname(defname,"F")
+   LOCAL lhf:=::getobjbyname(defname,"F")
 
    rr_textout(txt,::Convert({row,col}),lhf,rat(" ",txt))
 
-   return self
+   RETURN self
 
 METHOD Say(row,col,txt,defname,lcolor,lalign)    CLASS HBPrinter
 
-   local atxt:={},i,lhf:=::getobjbyname(defname,"F"),oldalign
-   local apos
+   LOCAL atxt:={},i,lhf:=::getobjbyname(defname,"F"),oldalign
+   LOCAL apos
 
-   do case
-   case HB_IsNumeric(txt)    ;  aadd(atxt,str(txt))
-   case valtype(txt)=="T"    ;  aadd(atxt,ttoc(txt))
-   case HB_IsDate(txt)       ;  aadd(atxt,dtoc(txt))
-   case HB_IsLogical(txt)    ;  aadd(atxt,if(txt,".T.",".F."))
-   case valtype(txt)=="U"    ;  aadd(atxt,"NIL")
-   case valtype(txt)$"BO"    ;  aadd(atxt,"")
-   case HB_IsArray(txt)      ;  aeval(txt,{|x| aadd(atxt,sayconvert(x)) })
-   case valtype(txt)$"MC"    ;  atxt:=str2arr( txt, Chr( 13 ) + Chr( 10 ) )
-   endcase
+   DO CASE
+   CASE HB_IsNumeric(txt)    ;  aadd(atxt,str(txt))
+   CASE valtype(txt)=="T"    ;  aadd(atxt,ttoc(txt))
+   CASE HB_IsDate(txt)       ;  aadd(atxt,dtoc(txt))
+   CASE HB_IsLogical(txt)    ;  aadd(atxt,if(txt,".T.",".F."))
+   CASE valtype(txt)=="U"    ;  aadd(atxt,"NIL")
+   CASE valtype(txt)$"BO"    ;  aadd(atxt,"")
+   CASE HB_IsArray(txt)      ;  aeval(txt,{|x| aadd(atxt,sayconvert(x)) })
+   CASE valtype(txt)$"MC"    ;  atxt:=str2arr( txt, Chr( 13 ) + Chr( 10 ) )
+   ENDCASE
    apos:=::convert({row,col})
-   if lcolor<>NIL
-     // BEGIN RL 2003-08-03
+   IF lcolor<>NIL
+      // BEGIN RL 2003-08-03
 
       IF HB_IsNumeric (lcolor)
          rr_settextcolor(lcolor)
@@ -834,423 +828,431 @@ METHOD Say(row,col,txt,defname,lcolor,lalign)    CLASS HBPrinter
          rr_settextcolor( RR_SETRGB ( lcolor [1] , lcolor [2] , lcolor [3] ) )
       ENDIF
 
-     // END RL
+      // END RL
 
-   endif
-   if lalign<>NIL
+   ENDIF
+   IF lalign<>NIL
       oldalign:=rr_gettextalign()
       rr_settextalign(lalign)
-   endif
-   for i:=1 to len(atxt)
+   ENDIF
+   FOR i:=1 to len(atxt)
       rr_textout(atxt[i],apos,lhf,rat(" ",atxt[i]))
       apos[1]+=::DEVCAPS[11]
-   next
-   if lalign<>NIL
+   NEXT
+   IF lalign<>NIL
       rr_settextalign(oldalign)
-   endif
+   ENDIF
 
-   if lcolor<>NIL
+   IF lcolor<>NIL
       rr_settextcolor(::textcolor)
-   endif
+   ENDIF
 
-   return self
+   RETURN self
 
 METHOD DefineImageList(defname,cpicture,nicons) CLASS HBPrinter
 
-   local lhi:=::getobjbyname(defname,"I"),w:=0,h:=0,hand
+   LOCAL lhi:=::getobjbyname(defname,"I"),w:=0,h:=0,hand
 
-   if lhi<>0
-      return self
-   endif
+   IF lhi<>0
+
+      RETURN self
+   ENDIF
    hand:=rr_createimagelist(cpicture,nicons,@w,@h)
-   if hand<>0 .and. w>0 .and. h>0
-     aadd(::imagelists[1],{hand,nicons,w,h})
-     aadd(::imagelists[2],upper(alltrim(defname)))
-   endif
+   IF hand<>0 .and. w>0 .and. h>0
+      aadd(::imagelists[1],{hand,nicons,w,h})
+      aadd(::imagelists[2],upper(alltrim(defname)))
+   ENDIF
 
-   return self
+   RETURN self
 
 METHOD DRAWIMAGELIST(defname,nicon,row,col,torow,tocol,lstyle,color) CLASS HBPrinter
 
-   local lhi:=::getobjbyname(defname,"I")
+   LOCAL lhi:=::getobjbyname(defname,"I")
 
-   if empty(lhi)
-      return self
-   endif
-   if color==NIL
-     color:=-1
-   endif
-   if torow==NIL
+   IF empty(lhi)
+
+      RETURN self
+   ENDIF
+   IF color==NIL
+      color:=-1
+   ENDIF
+   IF torow==NIL
       torow:=::maxrow
-   endif
-   if tocol==NIL
-    tocol:=::maxcol
-   endif
+   ENDIF
+   IF tocol==NIL
+      tocol:=::maxcol
+   ENDIF
    ::error:=rr_drawimagelist(lhi[1],nicon,::convert({row,col}),::convert({torow-row,tocol-col}),lhi[3],lhi[4],lstyle,color)
 
-   return self
+   RETURN self
 
 METHOD Rectangle(row,col,torow,tocol,defpen,defbrush) CLASS HBPrinter
 
-   local lhp:=::getobjbyname(defpen,"P"),lhb:=::getobjbyname(defbrush,"B")
+   LOCAL lhp:=::getobjbyname(defpen,"P"),lhb:=::getobjbyname(defbrush,"B")
 
-   if torow==NIL
+   IF torow==NIL
       torow:=::maxrow
-   endif
-   if tocol==NIL
+   ENDIF
+   IF tocol==NIL
       tocol:=::maxcol
-   endif
+   ENDIF
    ::error=rr_rectangle(::convert({row,col}),::convert({torow,tocol}),lhp,lhb)
 
-   return self
+   RETURN self
 
 METHOD FrameRect(row,col,torow,tocol,defbrush) CLASS HBPrinter
 
-   local lhb:=::getobjbyname(defbrush,"B")
+   LOCAL lhb:=::getobjbyname(defbrush,"B")
 
-   if torow==NIL
+   IF torow==NIL
       torow:=::maxrow
-   endif
-   if tocol==NIL
-     tocol:=::maxcol
-   endif
+   ENDIF
+   IF tocol==NIL
+      tocol:=::maxcol
+   ENDIF
    ::error=rr_framerect(::convert({row,col}),::convert({torow,tocol}),lhb)
 
-   return self
+   RETURN self
 
 METHOD RoundRect(row,col,torow,tocol,widthellipse,heightellipse,defpen,defbrush) CLASS HBPrinter
 
-   local lhp:=::getobjbyname(defpen,"P"),lhb:=::getobjbyname(defbrush,"B")
+   LOCAL lhp:=::getobjbyname(defpen,"P"),lhb:=::getobjbyname(defbrush,"B")
 
-   if torow==NIL
-     torow := ::maxrow
-   endif
-   if tocol==NIL
+   IF torow==NIL
+      torow := ::maxrow
+   ENDIF
+   IF tocol==NIL
       tocol := ::maxcol
-   endif
-   if widthellipse == NIL
-     widthellipse := 0
-   endif
-   if heightellipse == NIL
-     heightellipse := 0
-   endif
+   ENDIF
+   IF widthellipse == NIL
+      widthellipse := 0
+   ENDIF
+   IF heightellipse == NIL
+      heightellipse := 0
+   ENDIF
    ::error=rr_roundrect(::convert({row,col}),::convert({torow,tocol}),::convert({widthellipse,heightellipse}),lhp,lhb)
 
-   return self
+   RETURN self
 
 METHOD FillRect(row,col,torow,tocol,defbrush) CLASS HBPrinter
 
-   local lhb:=::getobjbyname(defbrush,"B")
+   LOCAL lhb:=::getobjbyname(defbrush,"B")
 
-   if torow==NIL
+   IF torow==NIL
       torow:=::maxrow
-    endif
-   if tocol==NIL
+   ENDIF
+   IF tocol==NIL
       tocol:=::maxcol
-   endif
+   ENDIF
    ::error=rr_fillrect(::convert({row,col}),::convert({torow,tocol}),lhb)
 
-   return self
+   RETURN self
 
 METHOD InvertRect(row,col,torow,tocol) CLASS HBPrinter
 
-   if torow==NIL
-     torow:=::maxrow
-   endif
-   if tocol==NIL
+   IF torow==NIL
+      torow:=::maxrow
+   ENDIF
+   IF tocol==NIL
       tocol:=::maxcol
-   endif
+   ENDIF
    ::error=rr_invertrect(::convert({row,col}),::convert({torow,tocol}))
 
-   return self
+   RETURN self
 
 METHOD Ellipse(row,col,torow,tocol,defpen,defbrush) CLASS HBPrinter
 
-   local lhp:=::getobjbyname(defpen,"P"),lhb:=::getobjbyname(defbrush,"B")
+   LOCAL lhp:=::getobjbyname(defpen,"P"),lhb:=::getobjbyname(defbrush,"B")
 
-   if torow==NIL
-     torow:=::maxrow
-   endif
-   if tocol==NIL
-     tocol:=::maxcol
-   endif
+   IF torow==NIL
+      torow:=::maxrow
+   ENDIF
+   IF tocol==NIL
+      tocol:=::maxcol
+   ENDIF
    ::error=rr_ellipse(::convert({row,col}),::convert({torow,tocol}),lhp,lhb)
 
-   return self
+   RETURN self
 
 METHOD Arc(row,col,torow,tocol,rowsarc,colsarc,rowearc,colearc,defpen) CLASS HBPrinter
 
-   local lhp:=::getobjbyname(defpen,"P")
+   LOCAL lhp:=::getobjbyname(defpen,"P")
 
-   if torow==NIL
+   IF torow==NIL
       torow:=::maxrow
-   endif
-   if tocol==NIL
-     tocol:=::maxcol
-   endif
+   ENDIF
+   IF tocol==NIL
+      tocol:=::maxcol
+   ENDIF
    ::error=rr_arc(::convert({row,col}),::convert({torow,tocol}),::convert({rowsarc,colsarc}),::convert({rowearc,colearc}),lhp)
 
-   return self
+   RETURN self
 
 METHOD ArcTo(row,col,torow,tocol,rowrad1,colrad1,rowrad2,colrad2,defpen) CLASS HBPrinter
 
-   local lhp:=::getobjbyname(defpen,"P")
+   LOCAL lhp:=::getobjbyname(defpen,"P")
 
-   if torow==NIL
+   IF torow==NIL
       torow:=::maxrow
-   endif
-   if tocol==NIL
+   ENDIF
+   IF tocol==NIL
       tocol:=::maxcol
-   endif
+   ENDIF
    ::error=rr_arcto(::convert({row,col}),::convert({torow,tocol}),::convert({rowrad1,colrad1}),::convert({rowrad2,colrad2}),lhp)
 
-   return self
+   RETURN self
 
 METHOD Chord(row,col,torow,tocol,rowrad1,colrad1,rowrad2,colrad2,defpen,defbrush) CLASS HBPrinter
 
-   local lhp:=::getobjbyname(defpen,"P"),lhb:=::getobjbyname(defbrush,"B")
+   LOCAL lhp:=::getobjbyname(defpen,"P"),lhb:=::getobjbyname(defbrush,"B")
 
-   if torow==NIL
+   IF torow==NIL
       torow:=::maxrow
-   endif
-   if tocol==NIL
+   ENDIF
+   IF tocol==NIL
       tocol:=::maxcol
-   endif
+   ENDIF
    ::error=rr_chord(::convert({row,col}),::convert({torow,tocol}),::convert({rowrad1,colrad1}),::convert({rowrad2,colrad2}),lhp,lhb)
 
-   return self
+   RETURN self
 
 METHOD Pie(row,col,torow,tocol,rowrad1,colrad1,rowrad2,colrad2,defpen,defbrush) CLASS HBPrinter
 
-   local lhp:=::getobjbyname(defpen,"P"),lhb:=::getobjbyname(defbrush,"B")
+   LOCAL lhp:=::getobjbyname(defpen,"P"),lhb:=::getobjbyname(defbrush,"B")
 
-   if torow==NIL
+   IF torow==NIL
       torow:=::maxrow
-   endif
-   if tocol==NIL
+   ENDIF
+   IF tocol==NIL
       tocol:=::maxcol
-   endif
+   ENDIF
    ::error=rr_pie(::convert({row,col}),::convert({torow,tocol}),::convert({rowrad1,colrad1}),::convert({rowrad2,colrad2}),lhp,lhb)
 
-   return self
+   RETURN self
 
 METHOD Polygon(apoints,defpen,defbrush,style) CLASS HBPrinter
 
-   local apx:={},apy:={},temp
-   local lhp:=::getobjbyname(defpen,"P"),lhb:=::getobjbyname(defbrush,"B")
+   LOCAL apx:={},apy:={},temp
+   LOCAL lhp:=::getobjbyname(defpen,"P"),lhb:=::getobjbyname(defbrush,"B")
 
    aeval(apoints,{|x| temp:=::convert(x),aadd(apx,temp[2]), aadd(apy,temp[1])})
    ::error:=rr_polygon(apx,apy,lhp,lhb,style)
 
-   return self
+   RETURN self
 
 METHOD PolyBezier(apoints,defpen) CLASS HBPrinter
 
-   local apx:={},apy:={},temp
-   local lhp:=::getobjbyname(defpen,"P")
+   LOCAL apx:={},apy:={},temp
+   LOCAL lhp:=::getobjbyname(defpen,"P")
 
    aeval(apoints,{|x| temp:=::convert(x),aadd(apx,temp[2]), aadd(apy,temp[1])})
    ::error:=rr_polybezier(apx,apy,lhp)
 
-   return self
+   RETURN self
 
 METHOD PolyBezierTo(apoints,defpen) CLASS HBPrinter
 
-   local apx:={},apy:={},temp
-   local lhp:=::getobjbyname(defpen,"P")
+   LOCAL apx:={},apy:={},temp
+   LOCAL lhp:=::getobjbyname(defpen,"P")
 
    aeval(apoints,{|x| temp:=::convert(x),aadd(apx,temp[2]), aadd(apy,temp[1])})
 
    ::error:=rr_polybezierto(apx,apy,lhp)
 
-   return self
+   RETURN self
 
 METHOD Line(row,col,torow,tocol,defpen) CLASS HBPrinter
 
-   local lhp:=::getobjbyname(defpen,"P")
+   LOCAL lhp:=::getobjbyname(defpen,"P")
 
-   if torow==NIL
+   IF torow==NIL
       torow:=::maxrow
-   endif
-   if tocol==NIL
+   ENDIF
+   IF tocol==NIL
       tocol:=::maxcol
-   endif
+   ENDIF
    ::error=rr_line(::convert({row,col}),::convert({torow,tocol}),lhp)
 
-   return self
+   RETURN self
 
 METHOD LineTo(row,col,defpen) CLASS HBPrinter
 
-   local lhp:=::getobjbyname(defpen,"P")
+   LOCAL lhp:=::getobjbyname(defpen,"P")
 
    ::error=rr_lineto(::convert({row,col}),lhp)
 
-   return self
+   RETURN self
 
 METHOD GetTextExtent(ctext,apoint,deffont) CLASS HBPrinter
 
-   local lhf:=::getobjbyname(deffont,"F")
+   LOCAL lhf:=::getobjbyname(deffont,"F")
 
    ::error=rr_gettextextent(ctext,apoint,lhf)
 
-   return self
+   RETURN self
 
 METHOD GetObjByName(defname,what,retpos) CLASS HBPrinter
 
-   local lfound,lret:=0,aref,ahref
+   LOCAL lfound,lret:=0,aref,ahref
 
-   if valtype(defname)=="C"
-      do case
-      case what=="F" ; aref:=::Fonts[2]      ; ahref:=::Fonts[1]
-      case what=="B" ; aref:=::Brushes[2]    ; ahref:=::Brushes[1]
-      case what=="P" ; aref:=::Pens[2]       ; ahref:=::Pens[1]
-      case what=="R" ; aref:=::Regions[2]    ; ahref:=::Regions[1]
-      case what=="I" ; aref:=::ImageLists[2] ; ahref:=::ImageLists[1]
-      endcase
+   IF valtype(defname)=="C"
+      DO CASE
+      CASE what=="F" ; aref:=::Fonts[2]      ; ahref:=::Fonts[1]
+      CASE what=="B" ; aref:=::Brushes[2]    ; ahref:=::Brushes[1]
+      CASE what=="P" ; aref:=::Pens[2]       ; ahref:=::Pens[1]
+      CASE what=="R" ; aref:=::Regions[2]    ; ahref:=::Regions[1]
+      CASE what=="I" ; aref:=::ImageLists[2] ; ahref:=::ImageLists[1]
+      ENDCASE
       lfound:=ascan(aref,upper(alltrim(defname)))
-      if lfound>0
-         if aref[lfound]==upper(alltrim(defname))
-            if retpos<>NIL
-              lret:=lfound
-            else
-              lret:=ahref[lfound]
-            endif
-         endif
-      endif
-   endif
+      IF lfound>0
+         IF aref[lfound]==upper(alltrim(defname))
+            IF retpos<>NIL
+               lret:=lfound
+            ELSE
+               lret:=ahref[lfound]
+            ENDIF
+         ENDIF
+      ENDIF
+   ENDIF
 
-   return lret
+   RETURN lret
 
 METHOD DefineRectRgn(defname,row,col,torow,tocol) CLASS HBPrinter
 
-   local lhand:=::getobjbyname(defname,"R")
+   LOCAL lhand:=::getobjbyname(defname,"R")
 
-   if lhand<>0
-      return self
-   endif
-   if torow==NIL
+   IF lhand<>0
+
+      RETURN self
+   ENDIF
+   IF torow==NIL
       torow:=::maxrow
-   endif
-   if tocol==NIL
+   ENDIF
+   IF tocol==NIL
       tocol:=::maxcol
-   endif
+   ENDIF
    aadd(::Regions[1],rr_creatergn(::convert({row,col}),::convert({torow,tocol}),1))
    aadd(::Regions[2],upper(alltrim(defname)))
 
-   return self
+   RETURN self
 
 METHOD DefineEllipticRgn(defname,row,col,torow,tocol) CLASS HBPrinter
 
-   local lhand:=::getobjbyname(defname,"R")
+   LOCAL lhand:=::getobjbyname(defname,"R")
 
-   if lhand<>0
-      return self
-   endif
-   if torow==NIL
+   IF lhand<>0
+
+      RETURN self
+   ENDIF
+   IF torow==NIL
       torow:=::maxrow
-   endif
-   if tocol==NIL
+   ENDIF
+   IF tocol==NIL
       tocol:=::maxcol
-   endif
+   ENDIF
    aadd(::Regions[1],rr_creatergn(::convert({row,col}),::convert({torow,tocol}),2))
    aadd(::Regions[2],upper(alltrim(defname)))
 
-   return self
+   RETURN self
 
 METHOD DefineRoundRectRgn(defname,row,col,torow,tocol,widthellipse,heightellipse) CLASS HBPrinter
 
-   local lhand:=::getobjbyname(defname,"R")
+   LOCAL lhand:=::getobjbyname(defname,"R")
 
-   if lhand<>0
-      return self
-   endif
-   if torow==NIL
-     torow:=::maxrow
-   endif
-   if tocol==NIL
+   IF lhand<>0
+
+      RETURN self
+   ENDIF
+   IF torow==NIL
+      torow:=::maxrow
+   ENDIF
+   IF tocol==NIL
       tocol:=::maxcol
-   endif
+   ENDIF
    aadd(::Regions[1],rr_creatergn(::convert({row,col}),::convert({torow,tocol}),3,::convert({widthellipse,heightellipse})))
    aadd(::Regions[2],upper(alltrim(defname)))
 
-   return self
+   RETURN self
 
 METHOD DefinePolygonRgn(defname,apoints,style) CLASS HBPrinter
 
-   local apx:={},apy:={},temp
-   local lhand:=::getobjbyname(defname,"R")
+   LOCAL apx:={},apy:={},temp
+   LOCAL lhand:=::getobjbyname(defname,"R")
 
-   if lhand<>0
-      return self
-   endif
+   IF lhand<>0
+
+      RETURN self
+   ENDIF
    aeval(apoints,{|x| temp:=::convert(x),aadd(apx,temp[2]), aadd(apy,temp[1])})
    aadd(::Regions[1],rr_createPolygonrgn(apx,apy,style))
    aadd(::Regions[2],upper(alltrim(defname)))
 
-   return self
+   RETURN self
 
 METHOD CombineRgn(defname,reg1,reg2,style) CLASS HBPrinter
 
-   local lr1:=::getobjbyname(reg1,"R"),lr2:=::getobjbyname(reg2,"R")
-   local lhand:=::getobjbyname(defname,"R")
+   LOCAL lr1:=::getobjbyname(reg1,"R"),lr2:=::getobjbyname(reg2,"R")
+   LOCAL lhand:=::getobjbyname(defname,"R")
 
-   if lhand<>0 .or. lr1==0 .or. lr2==0
-      return self
-   endif
+   IF lhand<>0 .or. lr1==0 .or. lr2==0
+
+      RETURN self
+   ENDIF
    aadd(::Regions[1],rr_combinergn(lr1,lr2,style))
    aadd(::Regions[2],upper(alltrim(defname)))
 
-   return self
+   RETURN self
 
 METHOD SelectClipRgn(defname) CLASS HBPrinter
 
-   local lhand:=::getobjbyname(defname,"R")
+   LOCAL lhand:=::getobjbyname(defname,"R")
 
-   if lhand<>0
+   IF lhand<>0
       rr_selectcliprgn(lhand)
       ::Regions[1,1]:=lhand
-   endif
+   ENDIF
 
-   return self
+   RETURN self
 
 METHOD DeleteClipRgn() CLASS HBPrinter
 
    ::Regions[1,1]:=0
    rr_deletecliprgn()
 
-   return self
+   RETURN self
 
 METHOD SetViewPortOrg(row,col) CLASS HBPrinter
 
-  row:=if(row<>NIL,row,0)
-  col:=if(col<>NIL,col,0)
-       ::VIEWPORTORG:=::convert({row,col})
-       rr_setviewportorg(::ViewportOrg)
+   row:=if(row<>NIL,row,0)
+   col:=if(col<>NIL,col,0)
+   ::VIEWPORTORG:=::convert({row,col})
+   rr_setviewportorg(::ViewportOrg)
 
-   return self
+   RETURN self
 
 METHOD GetViewPortOrg() CLASS HBPrinter
-       rr_getviewportorg(::VIEWPORTORG)
 
-   return self
+   rr_getviewportorg(::VIEWPORTORG)
+
+   RETURN self
 
 METHOD End() CLASS HBPrinter
 
-   local n,l
+   LOCAL n,l
 
-   if ::PreviewMode
+   IF ::PreviewMode
       ::Metafiles:={}
-      if !::InMemory
+      IF !::InMemory
          l:=::curpage-1
-         for n := 1 to l
+         FOR n := 1 to l
             ferase(::BaseDoc + alltrim(strzero(n,4))+'.emf')
-         next
-      endif
-   endif
-   if ::HDCRef!=0
+         NEXT
+      ENDIF
+   ENDIF
+   IF ::HDCRef!=0
       rr_resetprinter()
       rr_deletedc(::HDCRef)
-   endif
+   ENDIF
    rr_deleteobjects(::Fonts[1])
    rr_deleteobjects(::Brushes[1])
    rr_deleteobjects(::Pens[1])
@@ -1258,248 +1260,251 @@ METHOD End() CLASS HBPrinter
    rr_deleteimagelists(::ImageLists[1])
    rr_finish()
 
-   return NIL
+   RETURN NIL
 
 METHOD DXCOLORS(par) CLASS HBPrinter
 
-   static rgbColorNames:=;
-   {{ "aliceblue",             0xfffff8f0 },;
-    { "antiquewhite",          0xffd7ebfa },;
-    { "aqua",                  0xffffff00 },;
-    { "aquamarine",            0xffd4ff7f },;
-    { "azure",                 0xfffffff0 },;
-    { "beige",                 0xffdcf5f5 },;
-    { "bisque",                0xffc4e4ff },;
-    { "black",                 0xff000000 },;
-    { "blanchedalmond",        0xffcdebff },;
-    { "blue",                  0xffff0000 },;
-    { "blueviolet",            0xffe22b8a },;
-    { "brown",                 0xff2a2aa5 },;
-    { "burlywood",             0xff87b8de },;
-    { "cadetblue",             0xffa09e5f },;
-    { "chartreuse",            0xff00ff7f },;
-    { "chocolate",             0xff1e69d2 },;
-    { "coral",                 0xff507fff },;
-    { "cornflowerblue",        0xffed9564 },;
-    { "cornsilk",              0xffdcf8ff },;
-    { "crimson",               0xff3c14dc },;
-    { "cyan",                  0xffffff00 },;
-    { "darkblue",              0xff8b0000 },;
-    { "darkcyan",              0xff8b8b00 },;
-    { "darkgoldenrod",         0xff0b86b8 },;
-    { "darkgray",              0xffa9a9a9 },;
-    { "darkgreen",             0xff006400 },;
-    { "darkkhaki",             0xff6bb7bd },;
-    { "darkmagenta",           0xff8b008b },;
-    { "darkolivegreen",        0xff2f6b55 },;
-    { "darkorange",            0xff008cff },;
-    { "darkorchid",            0xffcc3299 },;
-    { "darkred",               0xff00008b },;
-    { "darksalmon",            0xff7a96e9 },;
-    { "darkseagreen",          0xff8fbc8f },;
-    { "darkslateblue",         0xff8b3d48 },;
-    { "darkslategray",         0xff4f4f2f },;
-    { "darkturquoise",         0xffd1ce00 },;
-    { "darkviolet",            0xffd30094 },;
-    { "deeppink",              0xff9314ff },;
-    { "deepskyblue",           0xffffbf00 },;
-    { "dimgray",               0xff696969 },;
-    { "dodgerblue",            0xffff901e },;
-    { "firebrick",             0xff2222b2 },;
-    { "floralwhite",           0xfff0faff },;
-    { "forestgreen",           0xff228b22 },;
-    { "fuchsia",               0xffff00ff },;
-    { "gainsboro",             0xffdcdcdc },;
-    { "ghostwhite",            0xfffff8f8 },;
-    { "gold",                  0xff00d7ff },;
-    { "goldenrod",             0xff20a5da },;
-    { "gray",                  0xff808080 },;
-    { "green",                 0xff008000 },;
-    { "greenyellow",           0xff2fffad },;
-    { "honeydew",              0xfff0fff0 },;
-    { "hotpink",               0xffb469ff },;
-    { "indianred",             0xff5c5ccd },;
-    { "indigo",                0xff82004b },;
-    { "ivory",                 0xfff0ffff },;
-    { "khaki",                 0xff8ce6f0 },;
-    { "lavender",              0xfffae6e6 },;
-    { "lavenderblush",         0xfff5f0ff },;
-    { "lawngreen",             0xff00fc7c },;
-    { "lemonchiffon",          0xffcdfaff },;
-    { "lightblue",             0xffe6d8ad },;
-    { "lightcoral",            0xff8080f0 },;
-    { "lightcyan",             0xffffffe0 },;
-    { "lightgoldenrodyellow",  0xffd2fafa },;
-    { "lightgreen",            0xff90ee90 },;
-    { "lightgrey",             0xffd3d3d3 },;
-    { "lightpink",             0xffc1b6ff },;
-    { "lightsalmon",           0xff7aa0ff },;
-    { "lightseagreen",         0xffaab220 },;
-    { "lightskyblue",          0xffface87 },;
-    { "lightslategray",        0xff998877 },;
-    { "lightsteelblue",        0xffdec4b0 },;
-    { "lightyellow",           0xffe0ffff },;
-    { "lime",                  0xff00ff00 },;
-    { "limegreen",             0xff32cd32 },;
-    { "linen",                 0xffe6f0fa },;
-    { "magenta",               0xffff00ff },;
-    { "maroon",                0xff000080 },;
-    { "mediumaquamarine",      0xffaacd66 },;
-    { "mediumblue",            0xffcd0000 },;
-    { "mediumorchid",          0xffd355ba },;
-    { "mediumpurple",          0xffdb7093 },;
-    { "mediumseagreen",        0xff71b33c },;
-    { "mediumslateblue",       0xffee687b },;
-    { "mediumspringgreen",     0xff9afa00 },;
-    { "mediumturquoise",       0xffccd148 },;
-    { "mediumvioletred",       0xff8515c7 },;
-    { "midnightblue",          0xff701919 },;
-    { "mintcream",             0xfffafff5 },;
-    { "mistyrose",             0xffe1e4ff },;
-    { "moccasin",              0xffb5e4ff },;
-    { "navajowhite",           0xffaddeff },;
-    { "navy",                  0xff800000 },;
-    { "oldlace",               0xffe6f5fd },;
-    { "olive",                 0xff008080 },;
-    { "olivedrab",             0xff238e6b },;
-    { "orange",                0xff00a5ff },;
-    { "orangered",             0xff0045ff },;
-    { "orchid",                0xffd670da },;
-    { "palegoldenrod",         0xffaae8ee },;
-    { "palegreen",             0xff98fb98 },;
-    { "paleturquoise",         0xffeeeeaf },;
-    { "palevioletred",         0xff9370db },;
-    { "papayawhip",            0xffd5efff },;
-    { "peachpuff",             0xffb9daff },;
-    { "peru",                  0xff3f85cd },;
-    { "pink",                  0xffcbc0ff },;
-    { "plum",                  0xffdda0dd },;
-    { "powderblue",            0xffe6e0b0 },;
-    { "purple",                0xff800080 },;
-    { "red",                   0xff0000ff },;
-    { "rosybrown",             0xff8f8fbc },;
-    { "royalblue",             0xffe16941 },;
-    { "saddlebrown",           0xff13458b },;
-    { "salmon",                0xff7280fa },;
-    { "sandybrown",            0xff60a4f4 },;
-    { "seagreen",              0xff578b2e },;
-    { "seashell",              0xffeef5ff },;
-    { "sienna",                0xff2d52a0 },;
-    { "silver",                0xffc0c0c0 },;
-    { "skyblue",               0xffebce87 },;
-    { "slateblue",             0xffcd5a6a },;
-    { "slategray",             0xff908070 },;
-    { "snow",                  0xfffafaff },;
-    { "springgreen",           0xff7fff00 },;
-    { "steelblue",             0xffb48246 },;
-    { "tan",                   0xff8cb4d2 },;
-    { "teal",                  0xff808000 },;
-    { "thistle",               0xffd8bfd8 },;
-    { "tomato",                0xff4763ff },;
-    { "turquoise",             0xffd0e040 },;
-    { "violet",                0xffee82ee },;
-    { "wheat",                 0xffb3def5 },;
-    { "white",                 0xffffffff },;
-    { "whitesmoke",            0xfff5f5f5 },;
-    { "yellow",                0xff00ffff },;
-    { "yellowgreen",           0xff32cd9a }}
-   local ltemp:=0
+   STATIC rgbColorNames:=;
+      {{ "aliceblue",             0xfffff8f0 },;
+      { "antiquewhite",          0xffd7ebfa },;
+      { "aqua",                  0xffffff00 },;
+      { "aquamarine",            0xffd4ff7f },;
+      { "azure",                 0xfffffff0 },;
+      { "beige",                 0xffdcf5f5 },;
+      { "bisque",                0xffc4e4ff },;
+      { "black",                 0xff000000 },;
+      { "blanchedalmond",        0xffcdebff },;
+      { "blue",                  0xffff0000 },;
+      { "blueviolet",            0xffe22b8a },;
+      { "brown",                 0xff2a2aa5 },;
+      { "burlywood",             0xff87b8de },;
+      { "cadetblue",             0xffa09e5f },;
+      { "chartreuse",            0xff00ff7f },;
+      { "chocolate",             0xff1e69d2 },;
+      { "coral",                 0xff507fff },;
+      { "cornflowerblue",        0xffed9564 },;
+      { "cornsilk",              0xffdcf8ff },;
+      { "crimson",               0xff3c14dc },;
+      { "cyan",                  0xffffff00 },;
+      { "darkblue",              0xff8b0000 },;
+      { "darkcyan",              0xff8b8b00 },;
+      { "darkgoldenrod",         0xff0b86b8 },;
+      { "darkgray",              0xffa9a9a9 },;
+      { "darkgreen",             0xff006400 },;
+      { "darkkhaki",             0xff6bb7bd },;
+      { "darkmagenta",           0xff8b008b },;
+      { "darkolivegreen",        0xff2f6b55 },;
+      { "darkorange",            0xff008cff },;
+      { "darkorchid",            0xffcc3299 },;
+      { "darkred",               0xff00008b },;
+      { "darksalmon",            0xff7a96e9 },;
+      { "darkseagreen",          0xff8fbc8f },;
+      { "darkslateblue",         0xff8b3d48 },;
+      { "darkslategray",         0xff4f4f2f },;
+      { "darkturquoise",         0xffd1ce00 },;
+      { "darkviolet",            0xffd30094 },;
+      { "deeppink",              0xff9314ff },;
+      { "deepskyblue",           0xffffbf00 },;
+      { "dimgray",               0xff696969 },;
+      { "dodgerblue",            0xffff901e },;
+      { "firebrick",             0xff2222b2 },;
+      { "floralwhite",           0xfff0faff },;
+      { "forestgreen",           0xff228b22 },;
+      { "fuchsia",               0xffff00ff },;
+      { "gainsboro",             0xffdcdcdc },;
+      { "ghostwhite",            0xfffff8f8 },;
+      { "gold",                  0xff00d7ff },;
+      { "goldenrod",             0xff20a5da },;
+      { "gray",                  0xff808080 },;
+      { "green",                 0xff008000 },;
+      { "greenyellow",           0xff2fffad },;
+      { "honeydew",              0xfff0fff0 },;
+      { "hotpink",               0xffb469ff },;
+      { "indianred",             0xff5c5ccd },;
+      { "indigo",                0xff82004b },;
+      { "ivory",                 0xfff0ffff },;
+      { "khaki",                 0xff8ce6f0 },;
+      { "lavender",              0xfffae6e6 },;
+      { "lavenderblush",         0xfff5f0ff },;
+      { "lawngreen",             0xff00fc7c },;
+      { "lemonchiffon",          0xffcdfaff },;
+      { "lightblue",             0xffe6d8ad },;
+      { "lightcoral",            0xff8080f0 },;
+      { "lightcyan",             0xffffffe0 },;
+      { "lightgoldenrodyellow",  0xffd2fafa },;
+      { "lightgreen",            0xff90ee90 },;
+      { "lightgrey",             0xffd3d3d3 },;
+      { "lightpink",             0xffc1b6ff },;
+      { "lightsalmon",           0xff7aa0ff },;
+      { "lightseagreen",         0xffaab220 },;
+      { "lightskyblue",          0xffface87 },;
+      { "lightslategray",        0xff998877 },;
+      { "lightsteelblue",        0xffdec4b0 },;
+      { "lightyellow",           0xffe0ffff },;
+      { "lime",                  0xff00ff00 },;
+      { "limegreen",             0xff32cd32 },;
+      { "linen",                 0xffe6f0fa },;
+      { "magenta",               0xffff00ff },;
+      { "maroon",                0xff000080 },;
+      { "mediumaquamarine",      0xffaacd66 },;
+      { "mediumblue",            0xffcd0000 },;
+      { "mediumorchid",          0xffd355ba },;
+      { "mediumpurple",          0xffdb7093 },;
+      { "mediumseagreen",        0xff71b33c },;
+      { "mediumslateblue",       0xffee687b },;
+      { "mediumspringgreen",     0xff9afa00 },;
+      { "mediumturquoise",       0xffccd148 },;
+      { "mediumvioletred",       0xff8515c7 },;
+      { "midnightblue",          0xff701919 },;
+      { "mintcream",             0xfffafff5 },;
+      { "mistyrose",             0xffe1e4ff },;
+      { "moccasin",              0xffb5e4ff },;
+      { "navajowhite",           0xffaddeff },;
+      { "navy",                  0xff800000 },;
+      { "oldlace",               0xffe6f5fd },;
+      { "olive",                 0xff008080 },;
+      { "olivedrab",             0xff238e6b },;
+      { "orange",                0xff00a5ff },;
+      { "orangered",             0xff0045ff },;
+      { "orchid",                0xffd670da },;
+      { "palegoldenrod",         0xffaae8ee },;
+      { "palegreen",             0xff98fb98 },;
+      { "paleturquoise",         0xffeeeeaf },;
+      { "palevioletred",         0xff9370db },;
+      { "papayawhip",            0xffd5efff },;
+      { "peachpuff",             0xffb9daff },;
+      { "peru",                  0xff3f85cd },;
+      { "pink",                  0xffcbc0ff },;
+      { "plum",                  0xffdda0dd },;
+      { "powderblue",            0xffe6e0b0 },;
+      { "purple",                0xff800080 },;
+      { "red",                   0xff0000ff },;
+      { "rosybrown",             0xff8f8fbc },;
+      { "royalblue",             0xffe16941 },;
+      { "saddlebrown",           0xff13458b },;
+      { "salmon",                0xff7280fa },;
+      { "sandybrown",            0xff60a4f4 },;
+      { "seagreen",              0xff578b2e },;
+      { "seashell",              0xffeef5ff },;
+      { "sienna",                0xff2d52a0 },;
+      { "silver",                0xffc0c0c0 },;
+      { "skyblue",               0xffebce87 },;
+      { "slateblue",             0xffcd5a6a },;
+      { "slategray",             0xff908070 },;
+      { "snow",                  0xfffafaff },;
+      { "springgreen",           0xff7fff00 },;
+      { "steelblue",             0xffb48246 },;
+      { "tan",                   0xff8cb4d2 },;
+      { "teal",                  0xff808000 },;
+      { "thistle",               0xffd8bfd8 },;
+      { "tomato",                0xff4763ff },;
+      { "turquoise",             0xffd0e040 },;
+      { "violet",                0xffee82ee },;
+      { "wheat",                 0xffb3def5 },;
+      { "white",                 0xffffffff },;
+      { "whitesmoke",            0xfff5f5f5 },;
+      { "yellow",                0xff00ffff },;
+      { "yellowgreen",           0xff32cd9a }}
+   LOCAL ltemp:=0
 
    //rgbcolornames:=asort(rgbcolornames,,,{|x,y| x[2]<y[2]})
-   if valtype(par)=="C"
+   IF valtype(par)=="C"
       par:=lower(alltrim(par))
       aeval(rgbcolornames,{|x| if(x[1]==par,ltemp:=x[2],'')})
-      return ltemp
-   elseif HB_IsNumeric(par)
-      return if(par<=len(rgbcolornames),rgbcolornames[par,2],0)
-   endif
 
-   return 0
+      RETURN ltemp
+   ELSEIF HB_IsNumeric(par)
+
+      RETURN if(par<=len(rgbcolornames),rgbcolornames[par,2],0)
+   ENDIF
+
+   RETURN 0
 
 METHOD SetRGB(red,green,blue) CLASS HBPrinter
 
-   return rr_setrgb(red,green,blue)
+   RETURN rr_setrgb(red,green,blue)
 
 METHOD SetTextCharExtra(col) CLASS HBPrinter
 
-   local p1:=::convert({0,0}),p2:=::convert({0,col})
+   LOCAL p1:=::convert({0,0}),p2:=::convert({0,col})
 
-   return rr_SetTextCharExtra(p2[2]-p1[2])
+   RETURN rr_SetTextCharExtra(p2[2]-p1[2])
 
 METHOD GetTextCharExtra() CLASS HBPrinter
 
-   return rr_GetTextCharExtra()
+   RETURN rr_GetTextCharExtra()
 
 METHOD SetTextJustification(col) CLASS HBPrinter
 
-   local p1:=::convert({0,0}),p2:=::convert({0,col})
+   LOCAL p1:=::convert({0,0}),p2:=::convert({0,col})
 
-   return rr_SetTextJustification(p2[2]-p1[2])
+   RETURN rr_SetTextJustification(p2[2]-p1[2])
 
 METHOD GetTextJustification() CLASS HBPrinter
 
-   return rr_GetTextJustification()
+   RETURN rr_GetTextJustification()
 
 METHOD SetTextAlign(style) CLASS HBPrinter
 
-   return rr_settextalign(style)
+   RETURN rr_settextalign(style)
 
 METHOD GetTextAlign() CLASS HBPrinter
 
-   return rr_gettextalign()
+   RETURN rr_gettextalign()
 
 METHOD Picture(row,col,torow,tocol,cpicture,extrow,extcol,lImageSize) CLASS HBPrinter
 
-   local lp1:=::convert({row,col}),lp2,lp3
+   LOCAL lp1:=::convert({row,col}),lp2,lp3
 
-   if torow==NIL
+   IF torow==NIL
       torow:=::maxrow
-   endif
-   if tocol==NIL
+   ENDIF
+   IF tocol==NIL
       tocol:=::maxcol
-   endif
+   ENDIF
    lp2:=::convert({torow,tocol},1)
-   if extrow==NIL
-     extrow:=0
-   endif
-   if extcol==NIL
+   IF extrow==NIL
+      extrow:=0
+   ENDIF
+   IF extcol==NIL
       extcol:=0
-   endif
+   ENDIF
    lp3:=::convert({extrow,extcol})
    rr_drawpicture(cpicture,lp1,lp2,lp3,lImageSize)
 
-   return self
+   RETURN self
 
-static function str2file(ctxt,cfile)
+STATIC FUNCTION str2file(ctxt,cfile)
 
-   local hand,lrec
+   LOCAL hand,lrec
 
    hand:=fcreate(cfile)
-   if hand<0
-      return 0
-   endif
+   IF hand<0
+
+      RETURN 0
+   ENDIF
    lrec:=fwrite(hand,ctxt)
    fclose(hand)
 
-   return lrec
+   RETURN lrec
 
-static Function sayconvert(ltxt)
+STATIC FUNCTION sayconvert(ltxt)
 
-   do case
-   case valtype(ltxt)$"MC"    ;  return ltxt
-   case HB_IsNumeric(ltxt)    ;  return str(ltxt)
-   case ValType(ltxt)=="T"    ;  return ttoc(ltxt)
-   case HB_IsDate(ltxt)       ;  return dtoc(ltxt)
-   case HB_IsLogical(ltxt)    ;  return if(ltxt,".T.",".F.")
-   endcase
+   DO CASE
+   CASE valtype(ltxt)$"MC"    ;  return ltxt
+   CASE HB_IsNumeric(ltxt)    ;  return str(ltxt)
+   CASE ValType(ltxt)=="T"    ;  return ttoc(ltxt)
+   CASE HB_IsDate(ltxt)       ;  return dtoc(ltxt)
+   CASE HB_IsLogical(ltxt)    ;  return if(ltxt,".T.",".F.")
+   ENDCASE
 
-   return ""
+   RETURN ""
 
 FUNCTION str2arr( cList, cDelimiter )
 
    LOCAL nPos
    LOCAL aList := {}
-   local nlencd:=0
+   LOCAL nlencd:=0
    LOCAL Asub
 
    DO CASE
@@ -1530,10 +1535,10 @@ FUNCTION str2arr( cList, cDelimiter )
 
 METHOD ReportData(l_x1,l_x2,l_x3,l_x4,l_x5,l_x6) CLASS HBPrinter
 
-   set device to print
-   set printer to "hbprinter.rep" ADDITIVE
-   set printer on
-   set console off
+   SET device to print
+   SET PRINTER TO "hbprinter.rep" ADDITIVE
+   SET PRINTER ON
+   SET CONSOLE OFF
    ? '-----------------',date(),time()
    ?
    ?? if(valtype(l_x1)<>"U",l_x1,",")
@@ -1555,60 +1560,63 @@ METHOD ReportData(l_x1,l_x2,l_x3,l_x4,l_x5,l_x6) CLASS HBPrinter
    ? 'VERT X HORZ ROWS COLS    :',::DEVCAPS[13],"x",::DEVCAPS[14]
    ? 'ORIENTATION              :',::DEVCAPS[15]
    ? 'PAPER SIZE               :',::DEVCAPS[17]
-   set printer off
-   set printer to
-   set console on
-   set device to screen
+   SET PRINTER OFF
+   SET PRINTER TO
+   SET CONSOLE ON
+   SET device to screen
 
-   return self
+   RETURN self
 
-#ifndef NO_GUI
+   #ifndef NO_GUI
 
 METHOD PrevThumb(nclick) CLASS HBPrinter
 
-   local i,spage
+   LOCAL i,spage
 
-   if ::iloscstron==1
-      return self
-   endif
-   if nclick<>NIL
+   IF ::iloscstron==1
+
+      RETURN self
+   ENDIF
+   IF nclick<>NIL
       ::page:=::ngroup*15+nclick
       ::prevshow()
       SetProperty ( 'hbpreview' , 'combo_1' , 'value' , ::Page )
-      return self
-   endif
-   if int((::page-1)/15)<>::ngroup
+
+      RETURN self
+   ENDIF
+   IF int((::page-1)/15)<>::ngroup
       ::ngroup:=int((::page-1)/15)
-   else
-      return self
-   endif
+   ELSE
+
+      RETURN self
+   ENDIF
    spage:=::ngroup*15
 
-   for i:=1 to 15
-      if i+spage>::iloscstron
+   FOR i:=1 to 15
+      IF i+spage>::iloscstron
          HideWindow(::ath[i,5])
-      else
-         if ::Metafiles[i+spage,2]>=::Metafiles[i+spage,3]
+      ELSE
+         IF ::Metafiles[i+spage,2]>=::Metafiles[i+spage,3]
             ::ath[i,3]:=::dy-5
             ::ath[i,4]:=::dx*::Metafiles[i+spage,3]/::Metafiles[i+spage,2]-5
-         else
+         ELSE
             ::ath[i,4]:=::dx-5
             ::ath[i,3]:=::dy*::Metafiles[i+spage,2]/::Metafiles[i+spage,3]-5
-         endif
-         if ::InMemory
+         ENDIF
+         IF ::InMemory
             rr_playthumb(::ath[i],::Metafiles[i+spage],alltrim(str(i+spage)),i)
-         else
+         ELSE
             rr_playfthumb(::ath[i],::Metafiles[i+spage,1],alltrim(str(i+spage)),i)
-         endif
+         ENDIF
          CShowControl(::ath[i,5])
-      endif
-   next
+      ENDIF
+   NEXT
 
-   return self
+   RETURN self
 
 METHOD PrevShow() CLASS HBPrinter
 
-   local spos, hImage
+   LOCAL spos, hImage
 
    IF ::Thumbnails
       ::Prevthumb()
@@ -1616,162 +1624,164 @@ METHOD PrevShow() CLASS HBPrinter
 
    spos:={GetScrollpos(::ahs[5,7],SB_HORZ)/::azoom[4],GetScrollpos(::ahs[5,7],SB_VERT)/(::azoom[3])}
 
-   if ::MetaFiles[::page,2]>=::MetaFiles[::page,3]
+   IF ::MetaFiles[::page,2]>=::MetaFiles[::page,3]
       ::azoom[3]:=(::ahs[5,3])*::scale-60
       ::azoom[4]:=(::ahs[5,3]*::MetaFiles[::page,3]/::MetaFiles[::page,2])*::scale-60
-   else
+   ELSE
       ::azoom[3]:=(::ahs[5,4]*::MetaFiles[::page,2]/::MetaFiles[::page,3])*::scale-60
       ::azoom[4]:=(::ahs[5,4])*::scale-60
-   endif
+   ENDIF
    GetControlObject( "StatusBar", "hbpreview" ):Item( 1, ::aopisy[ 15 ] + " " + alltrim( str( ::page ) ) )
 
-   if ::azoom[3]<30
+   IF ::azoom[3]<30
       ::scale:=::scale*1.25
       ::prevshow()
       msgstop(::aopisy[18],"")
-   endif
+   ENDIF
    HideWindow(::ahs[6,7])
    ::oHBPreview1:i1:SizePos( ,, ::azoom[4], ::azoom[3] )
    ::oHBPreview1:VirtualHeight := ::azoom[3]+20
    ::oHBPreview1:VirtualWidth := ::azoom[4]+20
 
-   if ::InMemory
+   IF ::InMemory
       hImage := rr_previewplay(::ahs[6,7],::METAFILES[::page],::azoom)
-   else
+   ELSE
       hImage := rr_previewfplay(::ahs[6,7],::METAFILES[::page,1],::azoom)
-   endif
-   if ! ValidHandler( hImage )
+   ENDIF
+   IF ! ValidHandler( hImage )
       ::scale:=::scale/1.25
       ::PrevShow()
       msgstop(::aopisy[18],::aopisy[1])
-   else
+   ELSE
       ::oHBPreview1:i1:hbitmap := hImage
-   endif
+   ENDIF
    rr_scrollwindow(::ahs[5,7],-spos[1]*::azoom[4],-spos[2]*::azoom[3])
    CShowControl(::ahs[6,7])
 
-   return self
+   RETURN self
 
 METHOD PrevPrint(n1) CLASS HBPrinter
 
-   local i,ilkop,toprint:=.t.
+   LOCAL i,ilkop,toprint:=.t.
 
    IF .NOT. Eval(::BeforePrint)
+
       RETURN self
    ENDIF
 
    ::Previewmode:=.f.
    ::Printingemf:=.t.
    rr_lalabye(1)
-   if n1<>NIL
+   IF n1<>NIL
       ::startdoc()
       ::setpage(::MetaFiles[n1,6],::MetaFiles[n1,7])
       ::startpage()
-      if ::InMemory
+      IF ::InMemory
          rr_PlayEnhMetaFile(::MetaFiles[n1],::hDCRef)
-      else
+      ELSE
          rr_PlayFEnhMetaFile(::MetaFiles[n1],::hDCRef)
       end
       ::endpage()
       ::enddoc()
-   else
-      for ilkop = 1 to ::nCopies
-         if .NOT. Eval(::BeforePrintCopy, ilkop)
+   ELSE
+      FOR ilkop = 1 to ::nCopies
+         IF .NOT. Eval(::BeforePrintCopy, ilkop)
             rr_lalabye(0)
             ::printingemf:=.f.
             ::Previewmode:=.t.
-            return self
-         endif
+
+            RETURN self
+         ENDIF
          ::startdoc()
-         for i:=max(1,::nFromPage) to min(::iloscstron,::nToPage)
-            do case
-               case ::PrintOpt==1                    ; toprint:=.t.
-               case ::PrintOpt==2 .or. ::PrintOpt==4 ; toprint:=!(i%2==0)
-               case ::PrintOpt==3 .or. ::PrintOpt==5 ; toprint:=(i%2==0)
-            endcase
-            if toprint
+         FOR i:=max(1,::nFromPage) to min(::iloscstron,::nToPage)
+            DO CASE
+            CASE ::PrintOpt==1                    ; toprint:=.t.
+            CASE ::PrintOpt==2 .or. ::PrintOpt==4 ; toprint:=!(i%2==0)
+            CASE ::PrintOpt==3 .or. ::PrintOpt==5 ; toprint:=(i%2==0)
+            ENDCASE
+            IF toprint
                toprint:=.f.
                ::setpage(::MetaFiles[i,6],::MetaFiles[i,7])
                ::startpage()
                //rr_PlayEnhMetaFile(::MetaFiles[i],::hDCRef)
-               if ::InMemory
+               IF ::InMemory
                   rr_PlayEnhMetaFile(::MetaFiles[i],::hDCRef)
-               else
+               ELSE
                   rr_PlayFEnhMetaFile(::MetaFiles[i],::hDCRef)
                end
 
                ::endpage()
-            endif
-         next i
+            ENDIF
+         NEXT i
          ::enddoc()
 
-         if ::PrintOpt==4 .or. ::PrintOpt==5
+         IF ::PrintOpt==4 .or. ::PrintOpt==5
             MsgBox(::aopisy[30],::aopisy[29])
             ::startdoc()
-            for i:=max(1,::nFromPage) to min(::iloscstron,::nToPage)
-               do case
-                  case ::PrintOpt==4 ; toprint:=(i%2==0)
-                  case ::PrintOpt==5 ; toprint:=!(i%2==0)
-               endcase
-               if toprint
+            FOR i:=max(1,::nFromPage) to min(::iloscstron,::nToPage)
+               DO CASE
+               CASE ::PrintOpt==4 ; toprint:=(i%2==0)
+               CASE ::PrintOpt==5 ; toprint:=!(i%2==0)
+               ENDCASE
+               IF toprint
                   toprint:=.f.
                   ::setpage(::MetaFiles[i,6],::MetaFiles[i,7])
                   ::startpage()
                   //rr_PlayEnhMetaFile(::MetaFiles[i],::hDCRef)
-                  if ::InMemory
+                  IF ::InMemory
                      rr_PlayEnhMetaFile(::MetaFiles[i],::hDCRef)
-                  else
+                  ELSE
                      rr_PlayFEnhMetaFile(::MetaFiles[i],::hDCRef)
                   end
 
                   ::endpage()
-               endif
-            next i
+               ENDIF
+            NEXT i
             ::enddoc()
-         endif
-      next ilkop
-   endif
+         ENDIF
+      NEXT ilkop
+   ENDIF
    rr_lalabye(0)
    ::printingemf:=.f.
    ::Previewmode:=.t.
    Eval(::AfterPrint)
 
-   return self
+   RETURN self
 
 METHOD Preview() CLASS HBPrinter
 
-   local i, pi, cLang, oHBPreview
+   LOCAL i, pi, cLang, oHBPreview
 
    ::aopisy := { "Preview", ;
-                 "&Cancel", ;
-                 "&Print", ;
-                 "&Save", ;
-                 "&First", ;
-                 "P&revious", ;
-                 "&Next", ;
-                 "&Last", ;
-                 "Zoom In", ;
-                 "Zoom Out", ;
-                 "&Options", ;
-                 "Go To Page:", ;
-                 "Page preview ", ;
-                 "Thumbnails preview", ;
-                 "Page", ;
-                 "Print only current page", ;
-                 "Pages:", ;
-                 "No more zoom !", ;
-                 "Print options", ;
-                 "Print from", ;
-                 "to", ;
-                 "Copies", ;
-                 "Print Range", ;
-                 "All from range", ;
-                 "Odd only", ;
-                 "Even only", ;
-                 "All but odd first", ;
-                 "All but even first", ;
-                 "Printing ....", ;
-                 "Waiting for paper change..." }
+      "&Cancel", ;
+      "&Print", ;
+      "&Save", ;
+      "&First", ;
+      "P&revious", ;
+      "&Next", ;
+      "&Last", ;
+      "Zoom In", ;
+      "Zoom Out", ;
+      "&Options", ;
+      "Go To Page:", ;
+      "Page preview ", ;
+      "Thumbnails preview", ;
+      "Page", ;
+      "Print only current page", ;
+      "Pages:", ;
+      "No more zoom !", ;
+      "Print options", ;
+      "Print from", ;
+      "to", ;
+      "Copies", ;
+      "Print Range", ;
+      "All from range", ;
+      "Odd only", ;
+      "Even only", ;
+      "All but odd first", ;
+      "All but even first", ;
+      "Printing ....", ;
+      "Waiting for paper change..." }
 
    ::iloscstron := len( ::metafiles )
    ::ngroup     := -1
@@ -1789,229 +1799,229 @@ METHOD Preview() CLASS HBPrinter
    ENDIF
    cLang := UPPER( ALLTRIM( cLang ) )
 
-   do case
-   case cLang == "EN"
+   DO CASE
+   CASE cLang == "EN"
       ::aopisy := { "Preview", ;
-                    "&Cancel", ;
-                    "&Print", ;
-                    "&Save", ;
-                    "&First", ;
-                    "P&revious", ;
-                    "&Next", ;
-                    "&Last", ;
-                    "Zoom In", ;
-                    "Zoom Out", ;
-                    "&Options", ;
-                    "Go to Page:", ;
-                    "Page preview ", ;
-                    "Thumbnails preview", ;
-                    "Page", ;
-                    "Print only actual page", ;
-                    "Pages:", ;
-                    "No more zoom !", ;
-                    "Print options", ;
-                    "Print from", ;
-                    "to", ;
-                    "Copies", ;
-                    "Print Range", ;
-                    "All from range", ;
-                    "Odd only", ;
-                    "Even only", ;
-                    "All but odd first", ;
-                    "All but even first", ;
-                    "Printing ....", ;
-                    "Waiting for paper change..." }
-   case cLang == "ES"
+         "&Cancel", ;
+         "&Print", ;
+         "&Save", ;
+         "&First", ;
+         "P&revious", ;
+         "&Next", ;
+         "&Last", ;
+         "Zoom In", ;
+         "Zoom Out", ;
+         "&Options", ;
+         "Go to Page:", ;
+         "Page preview ", ;
+         "Thumbnails preview", ;
+         "Page", ;
+         "Print only actual page", ;
+         "Pages:", ;
+         "No more zoom !", ;
+         "Print options", ;
+         "Print from", ;
+         "to", ;
+         "Copies", ;
+         "Print Range", ;
+         "All from range", ;
+         "Odd only", ;
+         "Even only", ;
+         "All but odd first", ;
+         "All but even first", ;
+         "Printing ....", ;
+         "Waiting for paper change..." }
+   CASE cLang == "ES"
       ::aopisy := { "Vista Previa", ;
-                    "&Salir", ;
-                    "&Imprimir", ;
-                    "&Guardar", ;
-                    "&Primera", ;
-                    "&Anterior", ;
-                    "&Siguiente", ;
-                    "&Última", ;
-                    "Zoom +", ;
-                    "Zoom -", ;
-                    "&Opciones", ;
-                    "Ir a Página:", ;
-                    "Página ", ;
-                    "Miniaturas", ;
-                    "Página", ;
-                    "Imprimir página actual", ;
-                    "Páginas:", ;
-                    "Zoom Máximo/Mínimo", ;
-                    "Opciones de Impresión", ;
-                    "Imprimir de", ;
-                    "a", ;
-                    "Copias", ;
-                    "Imprimir rango", ;
-                    "Todo a partir de", ;
-                    "Solo impares", ;
-                    "Solo pares", ;
-                    "Todo (impares primero)", ;
-                    "Todo (pares primero)", ;
-                    "Imprimiendo ....", ;
-                    "Esperando cambio de papel..." }
-   case cLang == "IT"
+         "&Salir", ;
+         "&Imprimir", ;
+         "&Guardar", ;
+         "&Primera", ;
+         "&Anterior", ;
+         "&Siguiente", ;
+         "&Última", ;
+         "Zoom +", ;
+         "Zoom -", ;
+         "&Opciones", ;
+         "Ir a Página:", ;
+         "Página ", ;
+         "Miniaturas", ;
+         "Página", ;
+         "Imprimir página actual", ;
+         "Páginas:", ;
+         "Zoom Máximo/Mínimo", ;
+         "Opciones de Impresión", ;
+         "Imprimir de", ;
+         "a", ;
+         "Copias", ;
+         "Imprimir rango", ;
+         "Todo a partir de", ;
+         "Solo impares", ;
+         "Solo pares", ;
+         "Todo (impares primero)", ;
+         "Todo (pares primero)", ;
+         "Imprimiendo ....", ;
+         "Esperando cambio de papel..." }
+   CASE cLang == "IT"
       ::aopisy := { "Anteprima", ;
-                    "&Cancella", ;
-                    "S&tampa", ;
-                    "&Salva", ;
-                    "&Primo", ;
-                    "&Indietro", ;
-                    "&Avanti", ;
-                    "&Ultimo", ;
-                    "Zoom In", ;
-                    "Zoom Out", ;
-                    "&Opzioni", ;
-                    "Pagina:", ;
-                    "Pagina anteprima ", ;
-                    "Miniatura Anteprima", ;
-                    "Pagina", ;
-                    "Stampa solo pagina attuale", ;
-                    "Pagine:", ;
-                    "Limite zoom !", ;
-                    "Opzioni Stampa", ;
-                    "Stampa da", ;
-                    "a", ;
-                    "Copie", ;
-                    "Range Stampa", ;
-                    "Tutte", ;
-                    "Solo dispari", ;
-                    "Solo pari", ;
-                    "Tutte iniziando dispari", ;
-                    "Tutte iniziando pari", ;
-                    "Stampa in corso ....", ;
-                    "Attendere cambio carta..." }
-   case cLang == "PLWIN"
+         "&Cancella", ;
+         "S&tampa", ;
+         "&Salva", ;
+         "&Primo", ;
+         "&Indietro", ;
+         "&Avanti", ;
+         "&Ultimo", ;
+         "Zoom In", ;
+         "Zoom Out", ;
+         "&Opzioni", ;
+         "Pagina:", ;
+         "Pagina anteprima ", ;
+         "Miniatura Anteprima", ;
+         "Pagina", ;
+         "Stampa solo pagina attuale", ;
+         "Pagine:", ;
+         "Limite zoom !", ;
+         "Opzioni Stampa", ;
+         "Stampa da", ;
+         "a", ;
+         "Copie", ;
+         "Range Stampa", ;
+         "Tutte", ;
+         "Solo dispari", ;
+         "Solo pari", ;
+         "Tutte iniziando dispari", ;
+         "Tutte iniziando pari", ;
+         "Stampa in corso ....", ;
+         "Attendere cambio carta..." }
+   CASE cLang == "PLWIN"
       ::aopisy := { "Podgl¹d", ;
-                    "&Rezygnuj", ;
-                    "&Drukuj", ;
-                    "Zapisz", ;
-                    "Pierwsza", ;
-                    "Poprzednia", ;
-                    "Nastêpna", ;
-                    "Ostatnia", ;
-                    "Powiêksz", ;
-                    "Pomniejsz", ;
-                    "Opc&je", ;
-                    "IdŸ do strony:", ;
-                    "Podgl¹d strony", ;
-                    "Podgl¹d miniaturek", ;
-                    "Strona", ;
-                    "Drukuj aktualn¹ stronê", ;
-                    "Stron:", ;
-                    "Nie mozna wiêcej !", ;
-                    "Opcje drukowania", ;
-                    "Drukuj od", ;
-                    "do", ;
-                    "Kopii", ;
-                    "Zakres", ;
-                    "Wszystkie z zakresu", ;
-                    "Tylko nieparzyste", ;
-                    "Tylko parzyste", ;
-                    "Najpierw nieparzyste", ;
-                    "Najpierw parzyste", ;
-                    "Drukowanie ....", ;
-                    "Czekam na zmiane papieru..."}
-   case cLang == "PT"
+         "&Rezygnuj", ;
+         "&Drukuj", ;
+         "Zapisz", ;
+         "Pierwsza", ;
+         "Poprzednia", ;
+         "Nastêpna", ;
+         "Ostatnia", ;
+         "Powiêksz", ;
+         "Pomniejsz", ;
+         "Opc&je", ;
+         "IdŸ do strony:", ;
+         "Podgl¹d strony", ;
+         "Podgl¹d miniaturek", ;
+         "Strona", ;
+         "Drukuj aktualn¹ stronê", ;
+         "Stron:", ;
+         "Nie mozna wiêcej !", ;
+         "Opcje drukowania", ;
+         "Drukuj od", ;
+         "do", ;
+         "Kopii", ;
+         "Zakres", ;
+         "Wszystkie z zakresu", ;
+         "Tylko nieparzyste", ;
+         "Tylko parzyste", ;
+         "Najpierw nieparzyste", ;
+         "Najpierw parzyste", ;
+         "Drukowanie ....", ;
+         "Czekam na zmiane papieru..."}
+   CASE cLang == "PT"
       ::aopisy := { "Inspeção Prévia", ;
-                    "&Cancelar", ;
-                    "&Imprimir", ;
-                    "&Salvar", ;
-                    "&Primera", ;
-                    "&Anterior", ;
-                    "Próximo", ;
-                    "&Último", ;
-                    "Zoom +", ;
-                    "Zoom -", ;
-                    "&Opções", ;
-                    "Pag.:", ;
-                    "Página ", ;
-                    "Miniaturas", ;
-                    "Pag.", ;
-                    "Imprimir somente a pag. atual", ;
-                    "Páginas:", ;
-                    "Zoom Máximo/Minimo", ;
-                    "Opções de Impressão", ;
-                    "Imprimir de", ;
-                    "Esta", ;
-                    "Cópias", ;
-                    "Imprimir rango", ;
-                    "Tudo a partir desta", ;
-                    "Só Ímpares", ;
-                    "Só Pares", ;
-                    "Todas as Ímpares Primeiro", ;
-                    "Todas Pares primero", ;
-                    "Imprimindo ....", ;
-                    "Esperando por papel..." }
-   case cLang == "DEWIN"
+         "&Cancelar", ;
+         "&Imprimir", ;
+         "&Salvar", ;
+         "&Primera", ;
+         "&Anterior", ;
+         "Próximo", ;
+         "&Último", ;
+         "Zoom +", ;
+         "Zoom -", ;
+         "&Opções", ;
+         "Pag.:", ;
+         "Página ", ;
+         "Miniaturas", ;
+         "Pag.", ;
+         "Imprimir somente a pag. atual", ;
+         "Páginas:", ;
+         "Zoom Máximo/Minimo", ;
+         "Opções de Impressão", ;
+         "Imprimir de", ;
+         "Esta", ;
+         "Cópias", ;
+         "Imprimir rango", ;
+         "Tudo a partir desta", ;
+         "Só Ímpares", ;
+         "Só Pares", ;
+         "Todas as Ímpares Primeiro", ;
+         "Todas Pares primero", ;
+         "Imprimindo ....", ;
+         "Esperando por papel..." }
+   CASE cLang == "DEWIN"
       ::aopisy := { "Vorschau", ;
-                    "&Abbruch", ;
-                    "&Drucken", ;
-                    "&Speichern", ;
-                    "&Erste", ;
-                    "&Vorige", ;
-                    "&Nächste", ;
-                    "&Letzte", ;
-                    "Ver&größern", ;
-                    "Ver&kleinern", ;
-                    "&Optionen", ;
-                    "Seite:", ;
-                    "Seitenvorschau", ;
-                    "Überblick", ;
-                    "Seite", ;
-                    "Aktuelle Seite drucken", ;
-                    "Seiten:", ;
-                    "Maximum erreicht!", ;
-                    "Druckeroptionen", ;
-                    "Drucke von", ;
-                    "bis", ;
-                    "Anzahl", ;
-                    "Bereich", ;
-                    "Alle Seiten", ;
-                    "Ungerade Seiten", ;
-                    "Gerade Seiten", ;
-                    "Alles ungerade Seiten zuerst", ;
-                    "Alles gerade Seiten zuerst", ;
-                    "Druckt ....", ;
-                    "Bitte Papier nachlegen..." }
-   case cLang == 'FR'
+         "&Abbruch", ;
+         "&Drucken", ;
+         "&Speichern", ;
+         "&Erste", ;
+         "&Vorige", ;
+         "&Nächste", ;
+         "&Letzte", ;
+         "Ver&größern", ;
+         "Ver&kleinern", ;
+         "&Optionen", ;
+         "Seite:", ;
+         "Seitenvorschau", ;
+         "Überblick", ;
+         "Seite", ;
+         "Aktuelle Seite drucken", ;
+         "Seiten:", ;
+         "Maximum erreicht!", ;
+         "Druckeroptionen", ;
+         "Drucke von", ;
+         "bis", ;
+         "Anzahl", ;
+         "Bereich", ;
+         "Alle Seiten", ;
+         "Ungerade Seiten", ;
+         "Gerade Seiten", ;
+         "Alles ungerade Seiten zuerst", ;
+         "Alles gerade Seiten zuerst", ;
+         "Druckt ....", ;
+         "Bitte Papier nachlegen..." }
+   CASE cLang == 'FR'
       ::aopisy := { "Prévisualisation", ;
-                    "&Abandonner", ;
-                    "&Imprimer", ;
-                    "&Sauver", ;
-                    "&Premier", ;
-                    "P&récédent", ;
-                    "&Suivant", ;
-                    "&Dernier", ;
-                    "Zoom +", ;
-                    "Zoom -", ;
-                    "&Options", ;
-                    "Aller à la page:", ;
-                    "Aperçu de la page", ;
-                    "Aperçu affichettes", ;
-                    "Page", ;
-                    "Imprimer la page en cours", ;
-                    "Pages:", ;
-                    "Plus de zoom !", ;
-                    "Options d'impression", ;
-                    "Imprimer de", ;
-                    "à", ;
-                    "Copies", ;
-                    "Intervalle d'impression", ;
-                    "Tout dans l'intervalle", ;
-                    "Impair seulement", ;
-                    "Pair seulement", ;
-                    "Tout mais impair d'abord", ;
-                    "Tout mais pair d'abord", ;
-                    "Impression ....", ;
-                    "Attente de changement de papier..." }
-   endcase
+         "&Abandonner", ;
+         "&Imprimer", ;
+         "&Sauver", ;
+         "&Premier", ;
+         "P&récédent", ;
+         "&Suivant", ;
+         "&Dernier", ;
+         "Zoom +", ;
+         "Zoom -", ;
+         "&Options", ;
+         "Aller à la page:", ;
+         "Aperçu de la page", ;
+         "Aperçu affichettes", ;
+         "Page", ;
+         "Imprimer la page en cours", ;
+         "Pages:", ;
+         "Plus de zoom !", ;
+         "Options d'impression", ;
+         "Imprimer de", ;
+         "à", ;
+         "Copies", ;
+         "Intervalle d'impression", ;
+         "Tout dans l'intervalle", ;
+         "Impair seulement", ;
+         "Pair seulement", ;
+         "Tout mais impair d'abord", ;
+         "Tout mais pair d'abord", ;
+         "Impression ....", ;
+         "Attente de changement de papier..." }
+   ENDCASE
 
-   if ::nwhattoprint<2
+   IF ::nwhattoprint<2
       ::ntopage:=::iloscstron
-   endif
+   ENDIF
    //   for i:=1 to len(::aopisy)
    //      ctxt:=rr_loadstring(60000+i)
    //      if !empty(ctxt)
@@ -2019,172 +2029,173 @@ METHOD Preview() CLASS HBPrinter
    //      endif
    //   next
 
-   if !::PreviewMode // .or. empty(::metafiles)
-      return self
-   endif
+   IF !::PreviewMode // .or. empty(::metafiles)
+
+      RETURN self
+   ENDIF
    aadd(::ahs,{0,0,0,0,0,0,0})
    rr_getwindowrect(::ahs[1])
 
-   for pi=1 to ::iloscstron
+   FOR pi=1 to ::iloscstron
       AADD(::npages,padl(pi,4))
-   next pi
+   NEXT pi
 
-   if ::PreviewRect[3]>0 .and. ::PreviewRect[4]>0
+   IF ::PreviewRect[3]>0 .and. ::PreviewRect[4]>0
       ::ahs[1,1]:=::Previewrect[1]
       ::ahs[1,2]:=::Previewrect[2]
       ::ahs[1,3]:=::Previewrect[3]
       ::ahs[1,4]:=::Previewrect[4]
       ::ahs[1,5]:=::Previewrect[3]-::Previewrect[1]+1
       ::ahs[1,6]:=::Previewrect[4]-::Previewrect[2]+1
-   else
+   ELSE
       ::ahs[1,1]+=10
       ::ahs[1,2]+=10
       ::ahs[1,3]-=10
       ::ahs[1,4]-=10
       ::ahs[1,5]:=::ahs[1,3]-::ahs[1,1]+1
       ::ahs[1,6]:=::ahs[1,4]-::ahs[1,2]+1
-   endif
+   ENDIF
 
    DEFINE WINDOW HBPREVIEW OBJ oHBPreview AT  ::ahs[1,1] , ::ahs[1,1] ;
-          WIDTH ::ahs[1,6] HEIGHT ::ahs[1,5]-45 ;
-          TITLE ::aopisy[1] ICON 'zzz_Printicon' ;
-          MODAL NOSIZE ;
-          FONT 'Arial' SIZE 9
+         WIDTH ::ahs[1,6] HEIGHT ::ahs[1,5]-45 ;
+         TITLE ::aopisy[1] ICON 'zzz_Printicon' ;
+         MODAL NOSIZE ;
+         FONT 'Arial' SIZE 9
 
-         oHBPreview:HotKey(  27, 0, {|| oHBPreview:Release() } )
-         oHBPreview:HotKey( 107, 0, {|| ::scale:=::scale*1.25,:: PrevShow () } )
-         oHBPreview:HotKey( 109, 0, {|| ::scale:=::scale/1.25,:: PrevShow () } )
+      oHBPreview:HotKey(  27, 0, {|| oHBPreview:Release() } )
+      oHBPreview:HotKey( 107, 0, {|| ::scale:=::scale*1.25,:: PrevShow () } )
+      oHBPreview:HotKey( 109, 0, {|| ::scale:=::scale/1.25,:: PrevShow () } )
 
-         DEFINE STATUSBAR
+      DEFINE STATUSBAR
 
-                        STATUSITEM ::aopisy[15]+" "+alltrim(str(::page)) WIDTH 100
-                        STATUSITEM ::aopisy[16] WIDTH 200 ICON 'zzz_Printicon'  ACTION ::PREVPRINT(::PAGE) RAISED
-                        STATUSITEM ::aopisy[17]+" "+alltrim(str(::iloscstron)) WIDTH 100
+         STATUSITEM ::aopisy[15]+" "+alltrim(str(::page)) WIDTH 100
+         STATUSITEM ::aopisy[16] WIDTH 200 ICON 'zzz_Printicon'  ACTION ::PREVPRINT(::PAGE) RAISED
+         STATUSITEM ::aopisy[17]+" "+alltrim(str(::iloscstron)) WIDTH 100
 
-         END STATUSBAR
+      END STATUSBAR
 
-               @ 15, ::ahs[1,6]-150 LABEL prl VALUE ::aopisy[12] WIDTH 80 HEIGHT 18 FONT 'Arial' SIZE 08 TRANSPARENT
-               @ 13 ,::ahs[1,6]-77  COMBOBOX combo_1  ITEMS ::npages VALUE 1 WIDTH 58 FONT 'Arial' SIZE  8 ON CHANGE {|| ::page := ::CurPage:=HBPREVIEW.combo_1.value,::PrevShow(),::oHBPreview1:setfocus() }
+      @ 15, ::ahs[1,6]-150 LABEL prl VALUE ::aopisy[12] WIDTH 80 HEIGHT 18 FONT 'Arial' SIZE 08 TRANSPARENT
+      @ 13 ,::ahs[1,6]-77  COMBOBOX combo_1  ITEMS ::npages VALUE 1 WIDTH 58 FONT 'Arial' SIZE  8 ON CHANGE {|| ::page := ::CurPage:=HBPREVIEW.combo_1.value,::PrevShow(),::oHBPreview1:setfocus() }
 
-         DEFINE SPLITBOX
-               DEFINE TOOLBAR TB1 BUTTONSIZE 50,37 FONT 'Arial Narrow' SIZE 8 FLAT BREAK // RIGHTTEXT
-                        //// BUTTON B1 CAPTION  ::aopisy[2]     PICTURE 'hbprint_close'   ACTION {||  ::oHBPreview1:Release(),if(::iloscstron>1 .and. ::thumbnails,_ReleaseWindow ("HBPREVIEW2" ),""), oHBPreview:Release()}
-                        BUTTON B1 CAPTION  ::aopisy[2]     PICTURE 'hbprint_close'   ACTION MYCLOSEP(::iloscstron,::thumbnails ,oHBPreview,::oHBPreview1)
-                        BUTTON B2 CAPTION  ::aopisy[3]    PICTURE 'hbprint_print'   ACTION {|| ::prevprint() }
-                        if .NOT. ::NoButtonSave
-                          BUTTON B3 CAPTION  ::aopisy[4]     PICTURE 'hbprint_save'    ACTION {|| ::savemetafiles()}
-                        endif
-                        if ::iloscstron>1
-                           BUTTON B4 CAPTION  ::aopisy[5]    PICTURE 'hbprint_top'     ACTION {|| ::page := ::CurPage:=1,HBPREVIEW.combo_1.value:=::page, ::PrevShow() }
-                           BUTTON B5 CAPTION  ::aopisy[6] PICTURE 'hbprint_back'    ACTION {|| ::page :=::CurPage:=if(::page==1,1,::page-1),HBPREVIEW.combo_1.value:=::page, ::PrevShow() }
-                           BUTTON B6 CAPTION  ::aopisy[7]     PICTURE 'hbprint_next'    ACTION {|| ::page := ::CurPage:=if(::page==::iloscstron,::page,::page+1) , HBPREVIEW.combo_1.value:=::page,::PrevShow() }
-                           BUTTON B7 CAPTION  ::aopisy[8]     PICTURE 'hbprint_end'     ACTION {|| ::page := ::CurPage:=::iloscstron,HBPREVIEW.combo_1.value:=::page,::PrevShow() }
-                        endif
-                        BUTTON B8 CAPTION  ::aopisy[9]  PICTURE 'hbprint_zoomin'  ACTION {|| ::scale:=::scale*1.25,::PrevShow() }
-                        BUTTON B9 CAPTION  ::aopisy[10] PICTURE 'hbprint_zoomout' ACTION {|| ::scale:=::scale/1.25,::PrevShow() }
-                        if .NOT. ::NoButtonOptions
-                          BUTTON B10 CAPTION ::aopisy[11] PICTURE 'hbprint_option' ACTION {|| ::PrintOption() }
-                        endif
-               END TOOLBAR
+      DEFINE SPLITBOX
+         DEFINE TOOLBAR TB1 BUTTONSIZE 50,37 FONT 'Arial Narrow' SIZE 8 FLAT BREAK // RIGHTTEXT
+            //// BUTTON B1 CAPTION  ::aopisy[2]     PICTURE 'hbprint_close'   ACTION {||  ::oHBPreview1:Release(),if(::iloscstron>1 .and. ::thumbnails,_ReleaseWindow ("HBPREVIEW2" ),""), oHBPreview:Release()}
+            BUTTON B1 CAPTION  ::aopisy[2]     PICTURE 'hbprint_close'   ACTION MYCLOSEP(::iloscstron,::thumbnails ,oHBPreview,::oHBPreview1)
+            BUTTON B2 CAPTION  ::aopisy[3]    PICTURE 'hbprint_print'   ACTION {|| ::prevprint() }
+            IF .NOT. ::NoButtonSave
+               BUTTON B3 CAPTION  ::aopisy[4]     PICTURE 'hbprint_save'    ACTION {|| ::savemetafiles()}
+            ENDIF
+            IF ::iloscstron>1
+               BUTTON B4 CAPTION  ::aopisy[5]    PICTURE 'hbprint_top'     ACTION {|| ::page := ::CurPage:=1,HBPREVIEW.combo_1.value:=::page, ::PrevShow() }
+               BUTTON B5 CAPTION  ::aopisy[6] PICTURE 'hbprint_back'    ACTION {|| ::page :=::CurPage:=if(::page==1,1,::page-1),HBPREVIEW.combo_1.value:=::page, ::PrevShow() }
+               BUTTON B6 CAPTION  ::aopisy[7]     PICTURE 'hbprint_next'    ACTION {|| ::page := ::CurPage:=if(::page==::iloscstron,::page,::page+1) , HBPREVIEW.combo_1.value:=::page,::PrevShow() }
+               BUTTON B7 CAPTION  ::aopisy[8]     PICTURE 'hbprint_end'     ACTION {|| ::page := ::CurPage:=::iloscstron,HBPREVIEW.combo_1.value:=::page,::PrevShow() }
+            ENDIF
+            BUTTON B8 CAPTION  ::aopisy[9]  PICTURE 'hbprint_zoomin'  ACTION {|| ::scale:=::scale*1.25,::PrevShow() }
+            BUTTON B9 CAPTION  ::aopisy[10] PICTURE 'hbprint_zoomout' ACTION {|| ::scale:=::scale/1.25,::PrevShow() }
+            IF .NOT. ::NoButtonOptions
+               BUTTON B10 CAPTION ::aopisy[11] PICTURE 'hbprint_option' ACTION {|| ::PrintOption() }
+            ENDIF
+         END TOOLBAR
 
-               aadd(::ahs,{0,0,0,0,0,0,oHBPreview:hWnd})
-               rr_getclientrect(::ahs[2])
+         aadd(::ahs,{0,0,0,0,0,0,oHBPreview:hWnd})
+         rr_getclientrect(::ahs[2])
 
-               aadd(::ahs,{0,0,0,0,0,0,oHBPreview:Tb1:hWnd})
-               rr_getclientrect(::ahs[3])
-               aadd(::ahs,{0,0,0,0,0,0,oHBPreview:StatusBar:hWnd})
-               rr_getclientrect(::ahs[4])
+         aadd(::ahs,{0,0,0,0,0,0,oHBPreview:Tb1:hWnd})
+         rr_getclientrect(::ahs[3])
+         aadd(::ahs,{0,0,0,0,0,0,oHBPreview:StatusBar:hWnd})
+         rr_getclientrect(::ahs[4])
 
-               DEFINE WINDOW 0 OBJ ::oHBPreview1 ;
-                      WIDTH ::ahs[2,6]-15  HEIGHT ::ahs[2,5]-::ahs[3,5]-::ahs[4,5]-10 ;
-                      VIRTUAL WIDTH ::ahs[2,6] -5;
-                      VIRTUAL HEIGHT ::ahs[2,5]-::ahs[3,5]-::ahs[4,5] ;
-                      TITLE ::aopisy[13]   SPLITCHILD  GRIPPERTEXT "P" ;
-                      NOSYSMENU NOCAPTION ;
-                      ON MOUSECLICK  ( ::oHBPreview1:setfocus() )
+         DEFINE WINDOW 0 OBJ ::oHBPreview1 ;
+               WIDTH ::ahs[2,6]-15  HEIGHT ::ahs[2,5]-::ahs[3,5]-::ahs[4,5]-10 ;
+               VIRTUAL WIDTH ::ahs[2,6] -5;
+               VIRTUAL HEIGHT ::ahs[2,5]-::ahs[3,5]-::ahs[4,5] ;
+               TITLE ::aopisy[13]   SPLITCHILD  GRIPPERTEXT "P" ;
+               NOSYSMENU NOCAPTION ;
+               ON MOUSECLICK  ( ::oHBPreview1:setfocus() )
 
-                      ::oHBPreview1:VScrollbar:nLineSkip := 20
-                      ::oHBPreview1:HScrollbar:nLineSkip := 20
+            ::oHBPreview1:VScrollbar:nLineSkip := 20
+            ::oHBPreview1:HScrollbar:nLineSkip := 20
 
-                      aadd(::ahs,{0,0,0,0,0,0, ::oHBPreview1:hWnd})
-                      rr_getclientrect(::ahs[5])
-                      @ ::ahs[5,2]+10,::ahs[5,1]+10 IMAGE I1  PICTURE "" WIDTH ::ahs[5,6]-10 HEIGHT ::ahs[5,5]-10
-                      aadd(::ahs,{0,0,0,0,0,0,::oHBPreview1:i1:hWnd})
-                      rr_getclientrect(::ahs[6])
+            aadd(::ahs,{0,0,0,0,0,0, ::oHBPreview1:hWnd})
+            rr_getclientrect(::ahs[5])
+            @ ::ahs[5,2]+10,::ahs[5,1]+10 IMAGE I1  PICTURE "" WIDTH ::ahs[5,6]-10 HEIGHT ::ahs[5,5]-10
+            aadd(::ahs,{0,0,0,0,0,0,::oHBPreview1:i1:hWnd})
+            rr_getclientrect(::ahs[6])
 
-               END WINDOW
+         END WINDOW
 
-               IF ::THUMBNAILS .and. ::iloscstron>1
-                  DEFINE WINDOW HBPREVIEW2  ;
-                      WIDTH ::ahs[2,6]-15  HEIGHT ::ahs[2,5]-::ahs[3,5]-::ahs[4,5]-10 ;
-                      TITLE ::aopisy[14]   SPLITCHILD      GRIPPERTEXT "T"
-                      aadd(::ahs,{0,0,0,0,0,0,GetFormHandle("hbpreview2")})
-                      rr_getClientRect(::ahs[7])
-                      ::dx:=(::ahs[5,6]-20)/5-5
-                      ::dy:=::ahs[5,5]/3-5
-                      for i:=1 to 15
-                         aadd(::ath,{0,0,0,0,0})
-                         if ::Metafiles[1,2]>=::Metafiles[1,3]
-                             ::ath[i,3]:=::dy-5
-                             ::ath[i,4]:=::dx*::Metafiles[1,3]/::Metafiles[1,2]-5
-                         else
-                             ::ath[i,4]:=::dx-5
-                             ::ath[i,3]:=::dy*::Metafiles[1,2]/::Metafiles[1,3]-5
-                         endif
-                         ::ath[i,1]:=int((i-1)/5)*::dy+5
-                         ::ath[i,2]:=((i-1)%5)*::dx+5
-                       next
-                       @ ::ath[1 ,1],::ath[1 ,2]  image it1  of hbpreview2 picture "" action {|| ::Prevthumb(1 ) } width ::ath[1 ,4] height ::ath[1 ,3]
-                       @ ::ath[2 ,1],::ath[2 ,2]  image it2  of hbpreview2 picture "" action {|| ::Prevthumb(2 ) } width ::ath[2 ,4] height ::ath[2 ,3]
-                       @ ::ath[3 ,1],::ath[3 ,2]  image it3  of hbpreview2 picture "" action {|| ::Prevthumb(3 ) } width ::ath[3 ,4] height ::ath[3 ,3]
-                       @ ::ath[4 ,1],::ath[4 ,2]  image it4  of hbpreview2 picture "" action {|| ::Prevthumb(4 ) } width ::ath[4 ,4] height ::ath[4 ,3]
-                       @ ::ath[5 ,1],::ath[5 ,2]  image it5  of hbpreview2 picture "" action {|| ::Prevthumb(5 ) } width ::ath[5 ,4] height ::ath[5 ,3]
-                       @ ::ath[6 ,1],::ath[6 ,2]  image it6  of hbpreview2 picture "" action {|| ::Prevthumb(6 ) } width ::ath[6 ,4] height ::ath[6 ,3]
-                       @ ::ath[7 ,1],::ath[7 ,2]  image it7  of hbpreview2 picture "" action {|| ::Prevthumb(7 ) } width ::ath[7 ,4] height ::ath[7 ,3]
-                       @ ::ath[8 ,1],::ath[8 ,2]  image it8  of hbpreview2 picture "" action {|| ::Prevthumb(8 ) } width ::ath[8 ,4] height ::ath[8 ,3]
-                       @ ::ath[9 ,1],::ath[9 ,2]  image it9  of hbpreview2 picture "" action {|| ::Prevthumb(9 ) } width ::ath[9 ,4] height ::ath[9 ,3]
-                       @ ::ath[10,1],::ath[10,2]  image it10 of hbpreview2 picture "" action {|| ::Prevthumb(10) } width ::ath[10,4] height ::ath[10,3]
-                       @ ::ath[11,1],::ath[11,2]  image it11 of hbpreview2 picture "" action {|| ::Prevthumb(11) } width ::ath[11,4] height ::ath[11,3]
-                       @ ::ath[12,1],::ath[12,2]  image it12 of hbpreview2 picture "" action {|| ::Prevthumb(12) } width ::ath[12,4] height ::ath[12,3]
-                       @ ::ath[13,1],::ath[13,2]  image it13 of hbpreview2 picture "" action {|| ::Prevthumb(13) } width ::ath[13,4] height ::ath[13,3]
-                       @ ::ath[14,1],::ath[14,2]  image it14 of hbpreview2 picture "" action {|| ::Prevthumb(14) } width ::ath[14,4] height ::ath[14,3]
-                       @ ::ath[15,1],::ath[15,2]  image it15 of hbpreview2 picture "" action {|| ::Prevthumb(15) } width ::ath[15,4] height ::ath[15,3]
+         IF ::THUMBNAILS .and. ::iloscstron>1
+            DEFINE WINDOW HBPREVIEW2  ;
+                  WIDTH ::ahs[2,6]-15  HEIGHT ::ahs[2,5]-::ahs[3,5]-::ahs[4,5]-10 ;
+                  TITLE ::aopisy[14]   SPLITCHILD      GRIPPERTEXT "T"
+               aadd(::ahs,{0,0,0,0,0,0,GetFormHandle("hbpreview2")})
+               rr_getClientRect(::ahs[7])
+               ::dx:=(::ahs[5,6]-20)/5-5
+               ::dy:=::ahs[5,5]/3-5
+               FOR i:=1 to 15
+                  aadd(::ath,{0,0,0,0,0})
+                  IF ::Metafiles[1,2]>=::Metafiles[1,3]
+                     ::ath[i,3]:=::dy-5
+                     ::ath[i,4]:=::dx*::Metafiles[1,3]/::Metafiles[1,2]-5
+                  ELSE
+                     ::ath[i,4]:=::dx-5
+                     ::ath[i,3]:=::dy*::Metafiles[1,2]/::Metafiles[1,3]-5
+                  ENDIF
+                  ::ath[i,1]:=int((i-1)/5)*::dy+5
+                  ::ath[i,2]:=((i-1)%5)*::dx+5
+               NEXT
+               @ ::ath[1 ,1],::ath[1 ,2]  image it1  of hbpreview2 picture "" action {|| ::Prevthumb(1 ) } width ::ath[1 ,4] height ::ath[1 ,3]
+               @ ::ath[2 ,1],::ath[2 ,2]  image it2  of hbpreview2 picture "" action {|| ::Prevthumb(2 ) } width ::ath[2 ,4] height ::ath[2 ,3]
+               @ ::ath[3 ,1],::ath[3 ,2]  image it3  of hbpreview2 picture "" action {|| ::Prevthumb(3 ) } width ::ath[3 ,4] height ::ath[3 ,3]
+               @ ::ath[4 ,1],::ath[4 ,2]  image it4  of hbpreview2 picture "" action {|| ::Prevthumb(4 ) } width ::ath[4 ,4] height ::ath[4 ,3]
+               @ ::ath[5 ,1],::ath[5 ,2]  image it5  of hbpreview2 picture "" action {|| ::Prevthumb(5 ) } width ::ath[5 ,4] height ::ath[5 ,3]
+               @ ::ath[6 ,1],::ath[6 ,2]  image it6  of hbpreview2 picture "" action {|| ::Prevthumb(6 ) } width ::ath[6 ,4] height ::ath[6 ,3]
+               @ ::ath[7 ,1],::ath[7 ,2]  image it7  of hbpreview2 picture "" action {|| ::Prevthumb(7 ) } width ::ath[7 ,4] height ::ath[7 ,3]
+               @ ::ath[8 ,1],::ath[8 ,2]  image it8  of hbpreview2 picture "" action {|| ::Prevthumb(8 ) } width ::ath[8 ,4] height ::ath[8 ,3]
+               @ ::ath[9 ,1],::ath[9 ,2]  image it9  of hbpreview2 picture "" action {|| ::Prevthumb(9 ) } width ::ath[9 ,4] height ::ath[9 ,3]
+               @ ::ath[10,1],::ath[10,2]  image it10 of hbpreview2 picture "" action {|| ::Prevthumb(10) } width ::ath[10,4] height ::ath[10,3]
+               @ ::ath[11,1],::ath[11,2]  image it11 of hbpreview2 picture "" action {|| ::Prevthumb(11) } width ::ath[11,4] height ::ath[11,3]
+               @ ::ath[12,1],::ath[12,2]  image it12 of hbpreview2 picture "" action {|| ::Prevthumb(12) } width ::ath[12,4] height ::ath[12,3]
+               @ ::ath[13,1],::ath[13,2]  image it13 of hbpreview2 picture "" action {|| ::Prevthumb(13) } width ::ath[13,4] height ::ath[13,3]
+               @ ::ath[14,1],::ath[14,2]  image it14 of hbpreview2 picture "" action {|| ::Prevthumb(14) } width ::ath[14,4] height ::ath[14,3]
+               @ ::ath[15,1],::ath[15,2]  image it15 of hbpreview2 picture "" action {|| ::Prevthumb(15) } width ::ath[15,4] height ::ath[15,3]
 
-                       for i:=1 to 15
-                          ::ath[i,5]:=GetControlHandle("it"+alltrim(str(i)),"hbpreview2")
-                          rr_playthumb(::ath[i],::Metafiles[i],alltrim(str(i)),i)
-                          if i>=::iloscstron
-                            exit
-                          endif
-                       next
-                  END WINDOW
-               ENDIF
-         END SPLITBOX
+               FOR i:=1 to 15
+                  ::ath[i,5]:=GetControlHandle("it"+alltrim(str(i)),"hbpreview2")
+                  rr_playthumb(::ath[i],::Metafiles[i],alltrim(str(i)),i)
+                  IF i>=::iloscstron
+                     EXIT
+                  ENDIF
+               NEXT
+            END WINDOW
+         ENDIF
+      END SPLITBOX
    END WINDOW
    ::PrevShow()
    ::oHBPreview1:i1:SetFocus()
    ACTIVATE WINDOW HBPREVIEW
 
-   return nil
+   RETURN NIL
 
 STATIC FUNCTION MYCLOSEP( T1, T2, OT3, oHBPreview1 )
 
    oHBPreview1:Release()
    IF T1 > 1 .and. T2
-     _ReleaseWindow ( "HBPREVIEW2" )
+      _ReleaseWindow ( "HBPREVIEW2" )
    ENDIF
    oT3:Release()
 
-   return nil
+   RETURN NIL
 
 METHOD PrintOption() CLASS HBPrinter
 
-   Local OKprint := .f.
+   LOCAL OKprint := .f.
 
-   If IsWIndowDefined(PrOpt) == .F.
+   IF IsWIndowDefined(PrOpt) == .F.
 
       DEFINE WINDOW PrOpt AT 270,346 WIDTH 298 HEIGHT 134 TITLE ::aopisy[19] ICON 'zzz_Printicon' ;
-             MODAL NOSIZE FONT 'Arial' SIZE  9
+            MODAL NOSIZE FONT 'Arial' SIZE  9
 
          @ 2,1    FRAME   PrOptFrame  WIDTH 291 HEIGHT 105
          @ 19,9   LABEL   label_11  VALUE ::aopisy[20] WIDTH 87 HEIGHT 16 FONT 'Arial' SIZE 9 BOLD
@@ -2197,22 +2208,21 @@ METHOD PrintOption() CLASS HBPrinter
          @ 50,90  COMBOBOX prnCombo VALUE ::PRINTOPT ITEMS {::aopisy[24],::aopisy[25],::aopisy[26],::aopisy[27],::aopisy[28]}  WIDTH 195 FONT 'Arial' SIZE 9
 
          @ 82,90 BUTTON button_14 CAPTION "OK";
-           ACTION {|| ::nFromPage:=PrOpt.textFrom.Value,::nToPage:=PrOpt.textTo.Value,::nCopies:=max(PrOpt.textCopies.Value,1),::PrintOpt:=PrOpt.prnCombo.Value , PrOpt.Release} ;
-           WIDTH 110 HEIGHT 19 ;
-           FONT 'Arial' SIZE 9
+            ACTION {|| ::nFromPage:=PrOpt.textFrom.Value,::nToPage:=PrOpt.textTo.Value,::nCopies:=max(PrOpt.textCopies.Value,1),::PrintOpt:=PrOpt.prnCombo.Value , PrOpt.Release} ;
+            WIDTH 110 HEIGHT 19 ;
+            FONT 'Arial' SIZE 9
 
       END WINDOW
-   endif
+   ENDIF
    PrOpt.Title := ::aopisy[19]
    PrOpt.textCopies.Value := ::nCopies
    PrOpt.textFrom.Value := max( ::nfrompage, 1 )
    PrOpt.textTo.Value := if( ::nwhattoprint< 2, ::iloscstron, ::ntopage )
    PrOpt.Activate
 
-   Return OKPrint
+   RETURN OKPrint
 
-#endif // NO_GUI
-
+   #endif // NO_GUI
 
 #pragma BEGINDUMP
 
@@ -2359,7 +2369,6 @@ HB_FUNC (RR_PRINTDIALOG)
   hwnd = GetActiveWindow() ;
   pdlg.hwndOwner  = hwnd ;
 
-
   if ( PrintDlg( &pdlg ) )
     {
       hDC = pdlg.hDC;
@@ -2401,8 +2410,6 @@ HB_FUNC (RR_PRINTDIALOG)
   hb_retnl((LONG) hDC);
 }
 
-
-
 HB_FUNC (RR_GETDC)
 {
   if (osvi.dwPlatformId == VER_PLATFORM_WIN32_NT)
@@ -2421,7 +2428,6 @@ HB_FUNC (RR_GETDC)
   hDCRef=hDC;
   hb_retnl((LONG) hDC);
 }
-
 
 void rr_getdevmode()
 {
@@ -2454,7 +2460,6 @@ void rr_getdevmode()
     hpen   = (HPEN) GetCurrentObject(hDC,OBJ_PEN);
 }
 
-
 HB_FUNC (RR_RESETPRINTER)
 {
  if ( pi22 )
@@ -2463,8 +2468,6 @@ HB_FUNC (RR_RESETPRINTER)
  GlobalFree(pi22);
  pi22=NULL;
 }
-
-
 
 HB_FUNC (RR_DELETEDC)
 {
@@ -2574,9 +2577,9 @@ HB_FUNC (RR_GETDEFAULTPRINTER)
     }
   }
   hb_retc(PrinterDefault);
+
   return ;
 }
-
 
 HB_FUNC (RR_GETPRINTERS)
 {
@@ -2609,6 +2612,7 @@ HB_FUNC (RR_GETPRINTERS)
    if (pBuffer == NULL)
    {
       hb_retc(",,");
+
       return;
    }
    EnumPrinters(flags, NULL,level, ( BYTE * ) pBuffer, dwSize, &dwSize, &dwPrinters);
@@ -2616,6 +2620,7 @@ HB_FUNC (RR_GETPRINTERS)
    if (dwPrinters == 0)
    {
       hb_retc(",,");
+
       return;
    }
    cBuffer = (char *) GlobalAlloc(GPTR, dwPrinters*256);
@@ -2659,6 +2664,7 @@ HB_FUNC (RR_GETPRINTERS)
    hb_retc(cBuffer);
    GlobalFree(pBuffer);
    GlobalFree(cBuffer);
+
    return;
 }
 
@@ -3025,7 +3031,6 @@ HB_FUNC (RR_MODIFYFONT)
      hb_retnl((LONG) hb_parnl(1));
 }
 
-
 HB_FUNC (RR_SELECTFONT)
 {
    SelectObject(hDC,(HFONT) hb_parnl(1));
@@ -3136,7 +3141,6 @@ HB_FUNC( RR_DRAWTEXT )
    }
 }
 
-
 HB_FUNC (RR_RECTANGLE)
 {
  LONG xpen  = hb_parnl(3);
@@ -3173,7 +3177,6 @@ HB_FUNC (RR_CLOSEFILE)
 {
    DeleteEnhMetaFile(CloseEnhMetaFile( hDC ));
 }
-
 
 HB_FUNC (RR_CREATEMFILE)
 {
@@ -3224,8 +3227,6 @@ HB_FUNC (RR_CREATEPOLYGONRGN)
   }
   hb_retnl((LONG) CreatePolygonRgn(apoints,number,hb_parni(3)));
 }
-
-
 
 HB_FUNC (RR_COMBINERGN)
 {
@@ -3306,9 +3307,9 @@ HB_FUNC (RR_PICTURE)
     HRGN hrgn1;
     POINT lpp;
 
-
     hFile = CreateFile(hb_parc(1), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
     if (hFile == INVALID_HANDLE_VALUE)
+
         return;
     nFileSize = GetFileSize(hFile, NULL);
     hGlobal = GlobalAlloc(GMEM_MOVEABLE, nFileSize);
@@ -3322,6 +3323,7 @@ HB_FUNC (RR_PICTURE)
     iStream->lpVtbl->Release(iStream);
     if (iPicture==NULL)
          {
+
            return;
          }
     iPicture->lpVtbl->get_Width(iPicture,&lWidth);
@@ -3408,6 +3410,7 @@ LPVOID rr_loadpicturefromresource(char * resname,LONG *lwidth,LONG *lheight)
                      hSource = FindResource( hinstance, resname, "BITMAP" );
                      if( ! hSource )
                      {
+
                         return NULL;
                      }
                   }
@@ -3418,17 +3421,20 @@ LPVOID rr_loadpicturefromresource(char * resname,LONG *lwidth,LONG *lheight)
       hGlobalres = LoadResource( hinstance, hSource );
       if( hGlobalres == NULL )
       {
+
          return NULL;
       }
       lpVoid = LockResource( hGlobalres );
       if( lpVoid == NULL )
       {
+
          return NULL;
       }
       nSize = SizeofResource(hinstance, hSource);
       hGlobal=GlobalAlloc(GPTR, nSize);
       if( hGlobal == NULL )
       {
+
          return NULL;
       }
       memcpy(hGlobal,lpVoid, nSize);
@@ -3437,6 +3443,7 @@ LPVOID rr_loadpicturefromresource(char * resname,LONG *lwidth,LONG *lheight)
       if( iStream == NULL )
       {
          GlobalFree( hGlobal );
+
          return NULL;
       }
       OleLoadPicture(iStream, nSize, TRUE, &IID_IPicture, (LPVOID *) iPictureRef);
@@ -3448,6 +3455,7 @@ LPVOID rr_loadpicturefromresource(char * resname,LONG *lwidth,LONG *lheight)
       iPicture->lpVtbl->get_Width( iPicture,  lwidth );
       iPicture->lpVtbl->get_Height( iPicture, lheight );
    }
+
    return iPicture;
 }
 
@@ -3463,6 +3471,7 @@ LPVOID rr_loadpicture( char * filename, LONG * lwidth, LONG * lheight )
 //    int lw,lh;
     hFile = CreateFile(filename, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
     if (hFile == INVALID_HANDLE_VALUE)
+
         return NULL;
     nFileSize = GetFileSize(hFile, NULL);
     hGlobal = GlobalAlloc(GMEM_MOVEABLE, nFileSize+4096);
@@ -3474,6 +3483,7 @@ LPVOID rr_loadpicture( char * filename, LONG * lwidth, LONG * lheight )
        {
           GlobalUnlock(hGlobal);
           GlobalFree(hGlobal);
+
           return NULL;
        }
     OleLoadPicture(iStream, nFileSize, TRUE, &IID_IPicture, (LPVOID*) iPictureRef);
@@ -3486,6 +3496,7 @@ LPVOID rr_loadpicture( char * filename, LONG * lwidth, LONG * lheight )
           iPicture->lpVtbl->get_Width(iPicture ,lwidth);
           iPicture->lpVtbl->get_Height(iPicture,lheight);
        }
+
     return iPicture;
 }
 
@@ -3508,6 +3519,7 @@ HB_FUNC( RR_DRAWPICTURE )
     BOOL bImageSize = hb_parl( 5 );
 
    if( ! hb_parclen( 1 ) )
+
      return ;
 
    ipic = (IPicture *) rr_loadpicture( ( char * ) hb_parc( 1 ), &lwidth, &lheight );
@@ -3517,6 +3529,7 @@ HB_FUNC( RR_DRAWPICTURE )
    }
    if( ! ipic )
    {
+
       return ;
    }
 
@@ -3560,8 +3573,6 @@ HB_FUNC( RR_DRAWPICTURE )
   hb_retni(0);
 }
 
-
-
 HB_FUNC (RR_CREATEIMAGELIST)
 {
  HBITMAP hbmpx ;
@@ -3573,6 +3584,7 @@ HB_FUNC (RR_CREATEIMAGELIST)
  if (hbmpx==NULL)
        hbmpx = (HBITMAP)LoadImage(GetModuleHandle(NULL),hb_parc(1),IMAGE_BITMAP,0,0,LR_CREATEDIBSECTION);
  if (hbmpx==NULL)
+
      return ;
  GetObject(hbmpx,sizeof(BITMAP),&bm);
  number=hb_parni(2);
@@ -3590,7 +3602,6 @@ HB_FUNC (RR_CREATEIMAGELIST)
  DeleteObject(hbmpx);
  hb_retnl((LONG) himl);
 }
-
 
 HB_FUNC (RR_DRAWIMAGELIST)
 {
@@ -3618,8 +3629,6 @@ HB_FUNC (RR_DRAWIMAGELIST)
  DeleteDC(tempdc);
  DeleteObject(hbmpx);
 }
-
-
 
 HB_FUNC (RR_POLYGON)
 {
@@ -3684,7 +3693,6 @@ HB_FUNC (RR_POLYBEZIERTO)
   if (xpen!=0) SelectObject(hDC , hpen);
 }
 
-
 HB_FUNC (RR_GETTEXTEXTENT)
 {
   LONG xfont =hb_parnl(3);
@@ -3709,7 +3717,6 @@ HB_FUNC (RR_ROUNDRECT)
 
  if (xbrush!=0) SelectObject(hDC ,(HBRUSH) hbrush);
  if (xpen!=0) SelectObject(hDC ,(HPEN) hpen);
-
 
 }
 

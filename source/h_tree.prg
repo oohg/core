@@ -1,64 +1,52 @@
 /*
- * $Id: h_tree.prg $
- */
+* $Id: h_tree.prg $
+*/
 /*
- * ooHG source code:
- * Tree control
- *
- * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
- * https://oohg.github.io/
- *
- * Portions of this project are based upon Harbour MiniGUI library.
- * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
- *
- * Portions of this project are based upon Harbour GUI framework for Win32.
- * Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
- * Copyright 2001 Antonio Linares <alinares@fivetech.com>
- *
- * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2017, https://harbour.github.io/
- */
+* ooHG source code:
+* Tree control
+* Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
+* https://oohg.github.io/
+* Portions of this project are based upon Harbour MiniGUI library.
+* Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
+* Portions of this project are based upon Harbour GUI framework for Win32.
+* Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
+* Copyright 2001 Antonio Linares <alinares@fivetech.com>
+* Portions of this project are based upon Harbour Project.
+* Copyright 1999-2017, https://harbour.github.io/
+*/
 /*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this software; see the file LICENSE.txt. If not, write to
- * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
- *
- * As a special exception, the ooHG Project gives permission for
- * additional uses of the text contained in its release of ooHG.
- *
- * The exception is that, if you link the ooHG libraries with other
- * files to produce an executable, this does not by itself cause the
- * resulting executable to be covered by the GNU General Public License.
- * Your use of that executable is in no way restricted on account of
- * linking the ooHG library code into it.
- *
- * This exception does not however invalidate any other reasons why
- * the executable file might be covered by the GNU General Public License.
- *
- * This exception applies only to the code released by the ooHG
- * Project under the name ooHG. If you copy code from other
- * ooHG Project or Free Software Foundation releases into a copy of
- * ooHG, as the General Public License permits, the exception does
- * not apply to the code that you add in this way. To avoid misleading
- * anyone as to the status of such modified files, you must delete
- * this exception notice from them.
- *
- * If you write modifications of your own for ooHG, it is your choice
- * whether to permit this exception to apply to your modifications.
- * If you do not wish that, delete this exception notice.
- */
-
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2, or (at your option)
+* any later version.
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* You should have received a copy of the GNU General Public License
+* along with this software; see the file LICENSE.txt. If not, write to
+* the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+* Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
+* As a special exception, the ooHG Project gives permission for
+* additional uses of the text contained in its release of ooHG.
+* The exception is that, if you link the ooHG libraries with other
+* files to produce an executable, this does not by itself cause the
+* resulting executable to be covered by the GNU General Public License.
+* Your use of that executable is in no way restricted on account of
+* linking the ooHG library code into it.
+* This exception does not however invalidate any other reasons why
+* the executable file might be covered by the GNU General Public License.
+* This exception applies only to the code released by the ooHG
+* Project under the name ooHG. If you copy code from other
+* ooHG Project or Free Software Foundation releases into a copy of
+* ooHG, as the General Public License permits, the exception does
+* not apply to the code that you add in this way. To avoid misleading
+* anyone as to the status of such modified files, you must delete
+* this exception notice from them.
+* If you write modifications of your own for ooHG, it is your choice
+* whether to permit this exception to apply to your modifications.
+* If you do not wish that, delete this exception notice.
+*/
 
 #include "oohg.ch"
 #include "hbclass.ch"
@@ -150,15 +138,15 @@ CLASS TTree FROM TControl
    ENDCLASS
 
 METHOD Define( ControlName, ParentForm, row, col, width, height, change, ;
-               tooltip, fontname, fontsize, gotfocus, lostfocus, dblclick, ;
-               break, value, HelpId, aImgNode, aImgItem, noBot, bold, italic, ;
-               underline, strikeout, itemids, lRtl, onenter, lDisabled, ;
-               invisible, notabstop, fontcolor, BackColor, lFullRowSel, ;
-               lChkBox, lEdtLbl, lNoHScr, lNoScroll, lHotTrak, lNoLines, ;
-               lNoBut, lDrag, lSingle, lNoBor, aSelCol, labeledit, valid, ;
-               checkchange, indent, lSelBold, lDrop, aTarget, ondrop, lOwnToolTip ) CLASS TTree
+      tooltip, fontname, fontsize, gotfocus, lostfocus, dblclick, ;
+      break, value, HelpId, aImgNode, aImgItem, noBot, bold, italic, ;
+      underline, strikeout, itemids, lRtl, onenter, lDisabled, ;
+      invisible, notabstop, fontcolor, BackColor, lFullRowSel, ;
+      lChkBox, lEdtLbl, lNoHScr, lNoScroll, lHotTrak, lNoLines, ;
+      lNoBut, lDrag, lSingle, lNoBor, aSelCol, labeledit, valid, ;
+      checkchange, indent, lSelBold, lDrop, aTarget, ondrop, lOwnToolTip ) CLASS TTree
 
-   Local Controlhandle, nStyle, ImgDefNode, ImgDefItem, aBitmaps := array(4), oCtrl
+   LOCAL Controlhandle, nStyle, ImgDefNode, ImgDefItem, aBitmaps := array(4), oCtrl
 
    ASSIGN ::nWidth      VALUE Width    TYPE "N"
    ASSIGN ::nHeight     VALUE Height   TYPE "N"
@@ -171,36 +159,36 @@ METHOD Define( ControlName, ParentForm, row, col, width, height, change, ;
    ::SetForm( ControlName, ParentForm, FontName, FontSize, , , .t., lRtl )
 
    nStyle := ::InitStyle( nStyle, , invisible, notabstop, lDisabled )
-   If HB_IsLogical( lFullRowSel ) .AND. lFullRowSel
+   IF HB_IsLogical( lFullRowSel ) .AND. lFullRowSel
       nStyle += TVS_FULLROWSELECT
-   ElseIf ! HB_IsLogical( lNoLines ) .OR. ! lNoLines
+   ELSEIF ! HB_IsLogical( lNoLines ) .OR. ! lNoLines
       nStyle += TVS_HASLINES
 
-      If ! HB_IsLogical( noBot ) .OR. ! noBot
+      IF ! HB_IsLogical( noBot ) .OR. ! noBot
          nStyle += TVS_LINESATROOT
-      EndIf
-   EndIf
-   If ! HB_IsLogical( lDrag ) .OR. ! lDrag
+      ENDIF
+   ENDIF
+   IF ! HB_IsLogical( lDrag ) .OR. ! lDrag
       nStyle += TVS_DISABLEDRAGDROP
-   EndIf
-   If HB_IsLogical( lEdtLbl ) .AND. lEdtLbl
+   ENDIF
+   IF HB_IsLogical( lEdtLbl ) .AND. lEdtLbl
       nStyle += TVS_EDITLABELS
       ::ReadOnly := .F.
-   EndIf
-   If HB_IsLogical( lNoScroll ) .AND. lNoScroll
+   ENDIF
+   IF HB_IsLogical( lNoScroll ) .AND. lNoScroll
       nStyle += TVS_NOSCROLL
-   ElseIf HB_IsLogical( lNoHScr ) .AND. lNoHScr
+   ELSEIF HB_IsLogical( lNoHScr ) .AND. lNoHScr
       nStyle += TVS_NOHSCROLL
-   EndIf
-   If ! HB_IsLogical( lNoBut ) .OR. ! lNoBut
+   ENDIF
+   IF ! HB_IsLogical( lNoBut ) .OR. ! lNoBut
       nStyle += TVS_HASBUTTONS
-   EndIf
-   If HB_IsLogical( lHotTrak ) .AND. lHotTrak
+   ENDIF
+   IF HB_IsLogical( lHotTrak ) .AND. lHotTrak
       nStyle += TVS_TRACKSELECT
-   EndIf
-   If HB_IsLogical( lSingle ) .AND. lSingle
+   ENDIF
+   IF HB_IsLogical( lSingle ) .AND. lSingle
       nStyle += TVS_SINGLEEXPAND
-   EndIf
+   ENDIF
    nStyle += TVS_SHOWSELALWAYS
 
    ASSIGN lChkBox VALUE lChkBox TYPE "L" DEFAULT .F.
@@ -214,26 +202,26 @@ METHOD Define( ControlName, ParentForm, row, col, width, height, change, ;
    ImgDefNode := iif( HB_IsArray( aImgNode ), len( aImgNode ), 0 )
    ImgDefItem := iif( HB_IsArray( aImgItem ), len( aImgItem ), 0 )
 
-   If ImgDefNode > 0
+   IF ImgDefNode > 0
       // node default
       aBitmaps[ 1 ] := aImgNode[ 1 ]
       aBitmaps[ 2 ] := aImgNode[ ImgDefNode ]
 
-      If ImgDefItem > 0
+      IF ImgDefItem > 0
          // item default
          aBitmaps[ 3 ] := aImgItem[ 1 ]
          aBitmaps[ 4 ] := aImgItem[ ImgDefItem ]
-      else
+      ELSE
          // copy node default if there's no item default
          aBitmaps[ 3 ] := aImgNode[ 1 ]
          aBitmaps[ 4 ] := aImgNode[ ImgDefNode ]
-      EndIf
+      ENDIF
 
       ::ImageListColor := GetSysColor( COLOR_3DFACE )
       ::ImageListFlags := LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
 
       ::AddBitMap( aBitmaps )
-   EndIf
+   ENDIF
 
    ::aTreeMap     := {}
    ::aTreeIdMap   := {}
@@ -243,11 +231,11 @@ METHOD Define( ControlName, ParentForm, row, col, width, height, change, ;
    ::aTreeNoDrag  := {}
    ::aItemIDs     := {}
 
-   If ::ItemIds
+   IF ::ItemIds
       ::InitValue := Value
-   Else
+   ELSE
       ASSIGN ::InitValue VALUE Value TYPE "N" DEFAULT 0
-   EndIf
+   ENDIF
 
    ::BackColor := BackColor
 
@@ -266,22 +254,22 @@ METHOD Define( ControlName, ParentForm, row, col, width, height, change, ;
    ASSIGN ::aTarget       VALUE aTarget     TYPE "A" DEFAULT { Self }
 
    // this functions is called in WM_MOUSEMOVE event
-   If ! HB_IsBlock( ::OnMouseDrag )
-     ::OnMouseDrag := {|oOrigin, oTarget, wParam| TTree_OnMouseDrag( oOrigin, oTarget, wParam ) }
-   EndIf
+   IF ! HB_IsBlock( ::OnMouseDrag )
+      ::OnMouseDrag := {|oOrigin, oTarget, wParam| TTree_OnMouseDrag( oOrigin, oTarget, wParam ) }
+   ENDIF
 
    // this functions is called in WM_LBUTTONUP event
-   If ! HB_IsBlock( ::OnMouseDrop )
-     ::OnMouseDrop := {|oOrigin, oTarget, wParam| TTree_OnMouseDrop( oOrigin, oTarget, wParam ) }
-   EndIf
+   IF ! HB_IsBlock( ::OnMouseDrop )
+      ::OnMouseDrop := {|oOrigin, oTarget, wParam| TTree_OnMouseDrop( oOrigin, oTarget, wParam ) }
+   ENDIF
 
    ASSIGN lOwnToolTip VALUE lOwnToolTip TYPE "L" DEFAULT .F.
-   If ! lOwnToolTip .AND. ! HB_IsObject( :: Parent:oToolTip )
+   IF ! lOwnToolTip .AND. ! HB_IsObject( :: Parent:oToolTip )
       lOwnToolTip := .T.
-   EndIf
-   If lOwnToolTip
+   ENDIF
+   IF lOwnToolTip
       oCtrl := TToolTip():Define( Nil, Self )
-      If HB_IsObject( ::Parent:oToolTip )
+      IF HB_IsObject( ::Parent:oToolTip )
          WITH OBJECT ::Parent:oToolTip
             oCtrl:AutoPopTime := :AutoPopTime
             oCtrl:InitialTime := :InitialTime
@@ -292,40 +280,40 @@ METHOD Define( ControlName, ParentForm, row, col, width, height, change, ;
             oCtrl:WindowWidth := :WindowWidth
             oCtrl:MultiLine   := :MultiLine
          END WITH
-      EndIf
+      ENDIF
       ::oToolTip := oCtrl
-   Else
+   ELSE
       // Use parent's tooltip
       oCtrl :=  ::oToolTip
-   EndIf
+   ENDIF
    SendMessage( ::hWnd, TVM_SETTOOLTIPS, oCtrl:hWnd , 0 )
    ::Tooltip := tooltip
 
    _OOHG_ActiveTree := Self
 
-   Return Self
+   RETURN Self
 
 FUNCTION AutoID( oTree )
 
-   Local Id
+   LOCAL Id
 
-   Do While .T.
+   DO WHILE .T.
       oTree:nLastIDNumber ++
 
       Id := oTree:Name + "_" + ltrim(str( oTree:nLastIDNumber ) )
 
-      If aScan( oTree:aTreeIdMap, Id) == 0
-         Exit
-      EndIf
-   EndDo
+      IF aScan( oTree:aTreeIdMap, Id) == 0
+         EXIT
+      ENDIF
+   ENDDO
 
-   Return Id
+   RETURN Id
 
 METHOD AddItem( Value, Parent, Id, aImage, lChecked, lReadOnly, lBold, ;
-                lDisabled, lNoDrag, lAssignID ) CLASS TTree
+      lDisabled, lNoDrag, lAssignID ) CLASS TTree
 
-   Local TreeItemHandle, ImgDef, iUnSel, iSel, iID
-   Local NewHandle, TempHandle, i, Pos, ChildHandle, BackHandle, ParentHandle, iPos
+   LOCAL TreeItemHandle, ImgDef, iUnSel, iSel, iID
+   LOCAL NewHandle, TempHandle, i, Pos, ChildHandle, BackHandle, ParentHandle, iPos
 
    ASSIGN lChecked  VALUE lChecked  TYPE "L" DEFAULT .F.
    ASSIGN lReadOnly VALUE lReadOnly TYPE "L" DEFAULT .F.
@@ -336,72 +324,72 @@ METHOD AddItem( Value, Parent, Id, aImage, lChecked, lReadOnly, lBold, ;
 
    ImgDef := iif( HB_IsArray( aImage ), len( aImage ), 0 )
 
-   If ( ::ItemIds .and. Parent == Nil ) .OR. ( ! ::ItemIds .and. Parent == 0 )
-      If ImgDef == 0
+   IF ( ::ItemIds .and. Parent == Nil ) .OR. ( ! ::ItemIds .and. Parent == 0 )
+      IF ImgDef == 0
          // pointer to default node bitmaps, no bitmap loaded
          iUnsel := 0
          iSel   := 1
-      Else
-         If HB_IsNumeric( aImage[ 1 ] )
+      ELSE
+         IF HB_IsNumeric( aImage[ 1 ] )
             iUnSel := aImage[ 1 ]
-         Else
-            If ! ValidHandler( ::ImageList )
+         ELSE
+            IF ! ValidHandler( ::ImageList )
                ::ImageListColor := GetSysColor( COLOR_3DFACE )
                ::ImageListFlags := LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
-            EndIf
+            ENDIF
 
             iUnSel := ::AddBitMap( aImage[ 1 ] ) - 1
-         EndIf
+         ENDIF
 
-         If ImgDef == 1
+         IF ImgDef == 1
             // if only one bitmap in array isel = iunsel, only one bitmap loaded
             iSel := iUnSel
-         Else
-            If HB_IsNumeric( aImage[ 2 ] )
+         ELSE
+            IF HB_IsNumeric( aImage[ 2 ] )
                iSel := aImage[ 2 ]
-            Else
-               If ! ValidHandler( ::ImageList )
+            ELSE
+               IF ! ValidHandler( ::ImageList )
                   ::ImageListColor := GetSysColor( COLOR_3DFACE )
                   ::ImageListFlags := LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
-               EndIf
+               ENDIF
 
                iSel := ::AddBitMap( aImage[ 2 ] ) - 1
-            EndIf
-         EndIf
-      EndIf
+            ENDIF
+         ENDIF
+      ENDIF
 
-      If ::ItemIds
-         If Id == Nil
-            If lAssignID
+      IF ::ItemIds
+         IF Id == Nil
+            IF lAssignID
                Id := AutoID( Self )
-            Else
+            ELSE
                MsgOOHGError( "Additem: Item Id Is Nil. Program terminated." )
-            EndIf
-         ElseIf aScan( ::aTreeIdMap, Id ) != 0
-            If lAssignID
+            ENDIF
+         ELSEIF aScan( ::aTreeIdMap, Id ) != 0
+            IF lAssignID
                Id := AutoID( Self )
-            Else
+            ELSE
                MsgOOHGError( "Additem: Item Id Already In Use. Program terminated." )
-            EndIf
-         EndIf
+            ENDIF
+         ENDIF
 
          aAdd( ::aItemIDs, Id )
          iID := len( ::aItemIDs )
-      Else
-         If Id == Nil
+      ELSE
+         IF Id == Nil
             iID := 0
-         ElseIf aScan( ::aTreeIdMap, Id ) == 0
+         ELSEIF aScan( ::aTreeIdMap, Id ) == 0
             aAdd( ::aItemIDs, Id )
             iID := len( ::aItemIDs )
-         ElseIf lAssignID
+         ELSEIF lAssignID
             Id := AutoID( Self )
 
             aAdd( ::aItemIDs, Id )
             iID := len( ::aItemIDs )
-         Else
+         ELSE
             MsgOOHGError( "Additem: Item Id Already In Use. Program terminated." )
-         EndIf
-      EndIf
+         ENDIF
+      ENDIF
 
       NewHandle := AddTreeItem( ::hWnd, 0, Value, iUnsel, iSel, iID )
 
@@ -413,93 +401,93 @@ METHOD AddItem( Value, Parent, Id, aImage, lChecked, lReadOnly, lBold, ;
       aAdd( ::aTreeNoDrag, lNoDrag )
 
       // set return value
-      If ::ItemIds
-        iPos := Id
-      Else
-        iPos := len( ::aTreeMap )
-      EndIf
-   Else
-      If ::ItemIds
+      IF ::ItemIds
+         iPos := Id
+      ELSE
+         iPos := len( ::aTreeMap )
+      ENDIF
+   ELSE
+      IF ::ItemIds
          Pos := aScan( ::aTreeIdMap, Parent )
 
-         If Pos == 0
+         IF Pos == 0
             MsgOOHGError( "Additem: Invalid Parent Reference. Program terminated." )
-         EndIf
+         ENDIF
 
          TreeItemHandle := ::aTreeMap[ Pos ]
-      Else
-         If Parent < 1 .OR. Parent > len( ::aTreeMap )
+      ELSE
+         IF Parent < 1 .OR. Parent > len( ::aTreeMap )
             MsgOOHGError( "Additem: Invalid Parent Reference. Program terminated." )
-         EndIf
+         ENDIF
 
          TreeItemHandle := ::aTreeMap[ Parent ]
-      EndIf
+      ENDIF
 
-      If ImgDef == 0
+      IF ImgDef == 0
          // pointer to default item bitmaps, no bitmap loaded
          iUnsel := 2
          iSel   := 3
-      Else
-         If HB_IsNumeric( aImage[ 1 ] )
+      ELSE
+         IF HB_IsNumeric( aImage[ 1 ] )
             iUnSel := aImage[ 1 ]
-         Else
-            If ! ValidHandler( ::ImageList )
+         ELSE
+            IF ! ValidHandler( ::ImageList )
                ::ImageListColor := GetSysColor( COLOR_3DFACE )
                ::ImageListFlags := LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
-            EndIf
+            ENDIF
 
             iUnSel := ::AddBitMap( aImage[ 1 ] ) - 1
-         EndIf
+         ENDIF
 
-         If ImgDef == 1
+         IF ImgDef == 1
             // if only one bitmap in array isel = iunsel, only one bitmap loaded
             iSel := iUnSel
-         Else
-            If HB_IsNumeric( aImage[ 2 ] )
+         ELSE
+            IF HB_IsNumeric( aImage[ 2 ] )
                iSel := aImage[ 2 ]
-            Else
-               If ! ValidHandler( ::ImageList )
+            ELSE
+               IF ! ValidHandler( ::ImageList )
                   ::ImageListColor := GetSysColor( COLOR_3DFACE )
                   ::ImageListFlags := LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
-               EndIf
+               ENDIF
 
                iSel := ::AddBitMap( aImage[ 2 ] ) - 1
-            EndIf
-         EndIf
-      EndIf
+            ENDIF
+         ENDIF
+      ENDIF
 
-      If ::ItemIds
-         If Id == Nil
-            If lAssignID
+      IF ::ItemIds
+         IF Id == Nil
+            IF lAssignID
                Id := AutoID( Self )
-            Else
+            ELSE
                MsgOOHGError( "Additem: Item Id Is Nil. Program terminated." )
-            EndIf
-         ElseIf aScan( ::aTreeIdMap, Id ) != 0
-            If lAssignID
+            ENDIF
+         ELSEIF aScan( ::aTreeIdMap, Id ) != 0
+            IF lAssignID
                Id := AutoID( Self )
-            Else
+            ELSE
                MsgOOHGError( "Additem: Item Id Already In Use. Program terminated." )
-            EndIf
-         EndIf
+            ENDIF
+         ENDIF
 
          aAdd( ::aItemIDs, Id )
          iID := len( ::aItemIDs )
-      Else
-         If Id == Nil
+      ELSE
+         IF Id == Nil
             iID := 0
-         ElseIf aScan( ::aTreeIdMap, Id ) == 0
+         ELSEIF aScan( ::aTreeIdMap, Id ) == 0
             aAdd( ::aItemIDs, Id )
             iID := len( ::aItemIDs )
-         ElseIf lAssignID
+         ELSEIF lAssignID
             Id := AutoID( Self )
 
             aAdd( ::aItemIDs, Id )
             iID := len( ::aItemIDs )
-         Else
+         ELSE
             MsgOOHGError( "Additem: Item Id Already In Use. Program terminated." )
-         EndIf
-      EndIf
+         ENDIF
+      ENDIF
 
       // add new element
       NewHandle := AddTreeItem( ::hWnd, TreeItemHandle, Value, iUnsel, iSel, iID )
@@ -508,34 +496,34 @@ METHOD AddItem( Value, Parent, Id, aImage, lChecked, lReadOnly, lBold, ;
       TempHandle := TreeView_GetChild( ::hWnd, TreeItemHandle )
 
       i := 0
-      Do While .t.
+      DO WHILE .t.
          i++
 
-         If TempHandle == NewHandle
-            Exit
-         EndIf
+         IF TempHandle == NewHandle
+            EXIT
+         ENDIF
 
          ChildHandle := TreeView_GetChild( ::hWnd, TempHandle )
 
-         If ChildHandle == 0
+         IF ChildHandle == 0
             BackHandle := TempHandle
             TempHandle := TreeView_GetNextSibling( ::hWnd, TempHandle )
-         Else
+         ELSE
             i++
             BackHandle := Childhandle
             TempHandle := TreeView_GetNextSibling( ::hWnd, ChildHandle )
-         EndIf
+         ENDIF
 
-         Do While TempHandle == 0
+         DO WHILE TempHandle == 0
             ParentHandle := TreeView_GetParent( ::hWnd, BackHandle )
 
             TempHandle := TreeView_GetNextSibling( ::hWnd, ParentHandle )
 
-            If TempHandle == 0
+            IF TempHandle == 0
                BackHandle := ParentHandle
-            EndIf
-         EndDo
-      EndDo
+            ENDIF
+         ENDDO
+      ENDDO
 
       // insert new element
       aSize( ::aTreeMap, TreeView_GetCount( ::hWnd ) )
@@ -544,11 +532,11 @@ METHOD AddItem( Value, Parent, Id, aImage, lChecked, lReadOnly, lBold, ;
       aSize( ::aTreeEnabled, TreeView_GetCount( ::hWnd ) )
       aSize( ::aTreeNoDrag, TreeView_GetCount( ::hWnd ) )
 
-      If ::ItemIds
+      IF ::ItemIds
          iPos := Pos + i
-      Else
+      ELSE
          iPos := Parent + i
-      EndIf
+      ENDIF
 
       aIns( ::aTreeMap, iPos )
       aIns( ::aTreeIdMap, iPos )
@@ -564,59 +552,60 @@ METHOD AddItem( Value, Parent, Id, aImage, lChecked, lReadOnly, lBold, ;
       ::aTreeNoDrag[ iPos ]  := lNoDrag
 
       // set return value
-      If ::ItemIds
-        iPos := Id
-      Else
-        iPos := iPos
-      EndIf
-   EndIf
+      IF ::ItemIds
+         iPos := Id
+      ELSE
+         iPos := iPos
+      ENDIF
+   ENDIF
 
    ::CheckItem( iPos, lChecked )
    ::BoldItem( iPos, lBold )
 
-   Return iPos
+   RETURN iPos
 
 METHOD SelectionID( Id ) CLASS TTree
 
-   Local Handle, Pos, OldID, iID
+   LOCAL Handle, Pos, OldID, iID
 
    Handle := TreeView_GetSelection( ::hWnd )
-   If Handle == 0
-      Return Nil
-   EndIf
+   IF Handle == 0
+
+      RETURN NIL
+   ENDIF
 
    Pos := aScan( ::aTreeMap, Handle )
-   If Pos == 0
+   IF Pos == 0
       MsgOOHGError( "SelectionID: Item Selected Is Invalid. Program terminated." )
-   EndIf
+   ENDIF
 
-   If pcount() > 0
+   IF pcount() > 0
       // set
       OldID := ::aTreeIdMap[ Pos ]
 
-      If Id != OldID
-         If OldID != Nil
+      IF Id != OldID
+         IF OldID != Nil
             iID := aScan( ::aItemIDs, OldID )
-            If iID == 0
+            IF iID == 0
                MsgOOHGError( "SelectionID: Invalid Item Id. Program terminated." )
-            EndIf
+            ENDIF
 
             aDel( ::aItemIDs, iID )
             aSize( ::aItemIDs, len( ::aItemIDs ) - 1 )
-         EndIf
+         ENDIF
 
-         If Id == Nil
-            If ::ItemIds
+         IF Id == Nil
+            IF ::ItemIds
                // items without ID are not allowed, goto get
-            Else
+            ELSE
                ::aTreeIdMap[ Pos ] := Nil
 
                TreeView_SetSelectionID( ::hWnd, 0 )
-            EndIf
-         Else
-            If aScan( ::aTreeIdMap, Id ) > 0
+            ENDIF
+         ELSE
+            IF aScan( ::aTreeIdMap, Id ) > 0
                MsgOOHGError( "SelectionID: Item Id Already In Use. Program terminated." )
-            EndIf
+            ENDIF
 
             ::aTreeIdMap[ Pos ] := Id
 
@@ -624,40 +613,41 @@ METHOD SelectionID( Id ) CLASS TTree
             iID := len( ::aItemIDs )
 
             TreeView_SetSelectionID( ::hWnd, iID )
-         EndIf
-      EndIf
-   EndIf
+         ENDIF
+      ENDIF
+   ENDIF
 
    // get
    iID := TreeView_GetSelectionID( ::hWnd )
-   If iID == 0
-      Return Nil
-   ElseIf iID < 0 .OR. iID > len( ::aItemIDs )
-      MsgOOHGError( "SelectionID: Invalid Item Id. Program terminated." )
-   EndIf
+   IF iID == 0
 
-   Return ::aItemIDs[ iID ]
+      RETURN NIL
+   ELSEIF iID < 0 .OR. iID > len( ::aItemIDs )
+      MsgOOHGError( "SelectionID: Invalid Item Id. Program terminated." )
+   ENDIF
+
+   RETURN ::aItemIDs[ iID ]
 
 METHOD DeleteItem( Item ) CLASS TTree
 
-   Local BeforeCount, AfterCount, DeletedCount, i, Pos, iID
-   Local TreeItemHandle
+   LOCAL BeforeCount, AfterCount, DeletedCount, i, Pos, iID
+   LOCAL TreeItemHandle
 
    BeforeCount := TreeView_GetCount( ::hWnd )
 
-   If ::ItemIds
+   IF ::ItemIds
       Pos := aScan( ::aTreeIdMap, Item )
 
-      If Pos == 0
+      IF Pos == 0
          MsgOOHGError( "DeleteItem: Invalid Item Id. Program terminated." )
-      EndIf
-   Else
-      If Item > BeforeCount .OR. Item < 1
+      ENDIF
+   ELSE
+      IF Item > BeforeCount .OR. Item < 1
          MsgOOHGError( "DeleteItem: Invalid Item Reference. Program terminated." )
-      EndIf
+      ENDIF
 
       Pos := Item
-   EndIf
+   ENDIF
 
    TreeItemHandle := ::aTreeMap[ Pos ]
    TreeView_DeleteItem( ::hWnd, TreeItemHandle )
@@ -665,22 +655,22 @@ METHOD DeleteItem( Item ) CLASS TTree
    AfterCount := TreeView_GetCount( ::hWnd )
    DeletedCount := BeforeCount - AfterCount
 
-   For i := 1 To DeletedCount
-      If ::aTreeIdMap[ Pos ] # Nil
+   FOR i := 1 To DeletedCount
+      IF ::aTreeIdMap[ Pos ] # Nil
          iID := aScan( ::aItemIDs, ::aTreeIdMap[ Pos ] )
-         If iID == 0
+         IF iID == 0
             MsgOOHGError( "DeleteItem: Invalid Item Id. Program terminated." )
-         EndIf
+         ENDIF
 
          aDel( ::aItemIDs, iID )
-      EndIf
+      ENDIF
 
       aDel( ::aTreeMap, Pos )
       aDel( ::aTreeIdMap, Pos )
       aDel( ::aTreeRO, Pos )
       aDel( ::aTreeEnabled, Pos )
       aDel( ::aTreeNoDrag, Pos )
-   Next i
+   NEXT i
 
    aSize( ::aTreeMap, AfterCount )
    aSize( ::aTreeIdMap, AfterCount )
@@ -689,7 +679,7 @@ METHOD DeleteItem( Item ) CLASS TTree
    aSize( ::aTreeNoDrag, AfterCount )
    aSize( ::aItemIDs, AfterCount )
 
-   Return Nil
+   RETURN NIL
 
 METHOD DeleteAllItems() CLASS TTree
 
@@ -701,120 +691,120 @@ METHOD DeleteAllItems() CLASS TTree
    aSize( ::aTreeNoDrag, 0 )
    aSize( ::aItemIDs, 0 )
 
-   Return Nil
+   RETURN NIL
 
 METHOD Item( Item, Value ) CLASS TTree
 
-   Local ItemHandle
+   LOCAL ItemHandle
 
    ItemHandle := ::ItemToHandle( Item )
 
-   If valtype( Value ) $ "CM"
+   IF valtype( Value ) $ "CM"
       TreeView_SetItemText( ::hWnd, ItemHandle, left( Value, 255 ) )
-   EndIf
+   ENDIF
 
-   Return TreeView_GetItemText( ::hWnd, ItemHandle )
+   RETURN TreeView_GetItemText( ::hWnd, ItemHandle )
 
 METHOD Collapse( Item ) CLASS TTree
 
-   Local lOK
+   LOCAL lOK
 
    lOK := ( SendMessage( ::hWnd, TVM_EXPAND, TVE_COLLAPSE, ::ItemToHandle( Item ) ) != 0 )
 
-   Return lOK
+   RETURN lOK
 
 METHOD Expand( Item ) CLASS TTree
 
-   Local lOK
+   LOCAL lOK
 
    lOK := ( SendMessage( ::hWnd, TVM_EXPAND, TVE_EXPAND, ::ItemToHandle( Item ) ) != 0 )
 
-   Return lOK
+   RETURN lOK
 
 METHOD EndTree() CLASS TTree
 
-   If ( ::ItemIds .and. ::InitValue != Nil ) .OR. (! ::ItemIds .and. ::InitValue > 0 )
+   IF ( ::ItemIds .and. ::InitValue != Nil ) .OR. (! ::ItemIds .and. ::InitValue > 0 )
       TreeView_SelectItem( ::hWnd, ::ItemToHandle( ::InitValue ) )
-   EndIf
+   ENDIF
 
-   Return Nil
+   RETURN NIL
 
 METHOD Value( uValue ) CLASS TTree
 
-   Local TreeItemHandle, Pos
+   LOCAL TreeItemHandle, Pos
 
-   If ::ItemIds
+   IF ::ItemIds
       // by id
-      If uValue != Nil
+      IF uValue != Nil
          // set
          TreeItemHandle := ::ItemToHandle( uValue )
          TreeView_SelectItem( ::hWnd, TreeItemHandle )
-      Endif
+      ENDIF
 
       // get
       TreeItemHandle := TreeView_GetSelection( ::hWnd )
-      If TreeItemHandle == 0
+      IF TreeItemHandle == 0
          // no item selected
          uValue := Nil
-      Else
+      ELSE
          Pos := aScan( ::aTreeMap, TreeItemHandle )
-         If Pos == 0
+         IF Pos == 0
             MsgOOHGError( "Value: Invalid Item Id. Program terminated." )
-         EndIf
+         ENDIF
 
          uValue := ::aTreeIdMap[ Pos ]
-      EndIf
-   Else
+      ENDIF
+   ELSE
       // by item reference
-      If HB_IsNumeric( uValue )
+      IF HB_IsNumeric( uValue )
          // set
-         If uValue == 0
+         IF uValue == 0
             // select no item
             TreeItemHandle := 0
-         Else
+         ELSE
             TreeItemHandle := ::ItemToHandle( uValue )
-         EndIf
+         ENDIF
          TreeView_SelectItem( ::hWnd, TreeItemHandle )
-      EndIf
+      ENDIF
 
       // get
       TreeItemHandle := TreeView_GetSelection( ::hWnd )
-      If TreeItemHandle == 0
+      IF TreeItemHandle == 0
          // no item selected
          uValue := 0
-      Else
+      ELSE
          Pos := aScan( ::aTreeMap, TreeItemHandle )
-         If Pos == 0
+         IF Pos == 0
             MsgOOHGError( "Value: Invalid Item Reference. Program terminated." )
-         EndIf
+         ENDIF
 
          uValue := Pos
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
-   Return uValue
+   RETURN uValue
 
 METHOD OnEnter( bEnter ) CLASS TTree
 
    LOCAL bRet
 
-   If HB_IsBlock( bEnter )
-      If _OOHG_SameEnterDblClick
+   IF HB_IsBlock( bEnter )
+      IF _OOHG_SameEnterDblClick
          ::OnDblClick := bEnter
-      Else
+      ELSE
          ::bOnEnter := bEnter
-      EndIf
+      ENDIF
       bRet := bEnter
-   Else
+   ELSE
       bRet := iif( _OOHG_SameEnterDblClick, ::OnDblClick, ::bOnEnter )
-   EndIf
+   ENDIF
 
-   Return bRet
+   RETURN bRet
 
-Function _DefineTreeNode( text, aImage, Id, lChecked, lReadOnly, lBold, ;
-                          lDisabled, lNoDrag, lAssignID )
+FUNCTION _DefineTreeNode( text, aImage, Id, lChecked, lReadOnly, lBold, ;
+      lDisabled, lNoDrag, lAssignID )
 
-   Local ImgDef, iUnSel, iSel, Item, iID, iPos
+   LOCAL ImgDef, iUnSel, iSel, Item, iID, iPos
 
    ASSIGN lChecked  VALUE lChecked  TYPE "L" DEFAULT .F.
    ASSIGN lReadOnly VALUE lReadOnly TYPE "L" DEFAULT .F.
@@ -825,71 +815,71 @@ Function _DefineTreeNode( text, aImage, Id, lChecked, lReadOnly, lBold, ;
 
    ImgDef := iif( HB_IsArray( aImage ), len( aImage ), 0 )
 
-   If ImgDef == 0
+   IF ImgDef == 0
       // pointer to default node bitmaps, no bitmap loaded
       iUnsel := 0
       iSel   := 1
-   Else
-      If HB_IsNumeric( aImage[ 1 ] )
+   ELSE
+      IF HB_IsNumeric( aImage[ 1 ] )
          iUnSel := aImage[ 1 ]
-      Else
-         If ! ValidHandler( _OOHG_ActiveTree:ImageList )
+      ELSE
+         IF ! ValidHandler( _OOHG_ActiveTree:ImageList )
             _OOHG_ActiveTree:ImageListColor := GetSysColor( COLOR_3DFACE )
             _OOHG_ActiveTree:ImageListFlags := LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
-         EndIf
+         ENDIF
 
          iUnSel := _OOHG_ActiveTree:AddBitMap( aImage[ 1 ] ) - 1
-      EndIf
+      ENDIF
 
-      If ImgDef == 1
+      IF ImgDef == 1
          // if only one bitmap in array isel = iunsel, only one bitmap loaded
          iSel := iUnSel
-      Else
-         If HB_IsNumeric( aImage[ 2 ] )
+      ELSE
+         IF HB_IsNumeric( aImage[ 2 ] )
             iSel := aImage[ 2 ]
-         Else
-            If ! ValidHandler( _OOHG_ActiveTree:ImageList )
+         ELSE
+            IF ! ValidHandler( _OOHG_ActiveTree:ImageList )
                _OOHG_ActiveTree:ImageListColor := GetSysColor( COLOR_3DFACE )
                _OOHG_ActiveTree:ImageListFlags := LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
-            EndIf
+            ENDIF
 
             iSel := _OOHG_ActiveTree:AddBitMap( aImage[ 2 ] ) - 1
-         EndIf
-      EndIf
-   EndIf
+         ENDIF
+      ENDIF
+   ENDIF
 
-   If _OOHG_ActiveTree:ItemIds
-      If Id == Nil
-         If lAssignID
+   IF _OOHG_ActiveTree:ItemIds
+      IF Id == Nil
+         IF lAssignID
             Id := AutoID( _OOHG_ActiveTree )
-         Else
+         ELSE
             MsgOOHGError( "Define Node Function: Item Id Is Nil. Program terminated." )
-         EndIf
-      ElseIf aScan( _OOHG_ActiveTree:aTreeIdMap, Id ) != 0
-         If lAssignID
+         ENDIF
+      ELSEIF aScan( _OOHG_ActiveTree:aTreeIdMap, Id ) != 0
+         IF lAssignID
             Id := AutoID( _OOHG_ActiveTree )
-         Else
+         ELSE
             MsgOOHGError( "Define Node Function: Item Id Already In Use. Program terminated." )
-         EndIf
-      EndIf
+         ENDIF
+      ENDIF
 
       aAdd( _OOHG_ActiveTree:aItemIDs, Id )
       iID := len( _OOHG_ActiveTree:aItemIDs )
-   Else
-      If Id == Nil
+   ELSE
+      IF Id == Nil
          iID := 0
-      ElseIf aScan( _OOHG_ActiveTree:aTreeIdMap, Id ) == 0
+      ELSEIF aScan( _OOHG_ActiveTree:aTreeIdMap, Id ) == 0
          aAdd( _OOHG_ActiveTree:aItemIDs, Id )
          iID := len( _OOHG_ActiveTree:aItemIDs )
-      ElseIf lAssignID
+      ELSEIF lAssignID
          Id := AutoID( _OOHG_ActiveTree )
 
          aAdd( _OOHG_ActiveTree:aItemIDs, Id )
          iID := len( _OOHG_ActiveTree:aItemIDs )
-      Else
+      ELSE
          MsgOOHGError( "Define Node Function: Item Id Already In Use. Program terminated." )
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
    Item := AddTreeItem( _OOHG_ActiveTree:hWnd, aTail( _OOHG_ActiveTree:aTreeNode ), text, iUnsel, iSel, iID )
 
@@ -900,27 +890,27 @@ Function _DefineTreeNode( text, aImage, Id, lChecked, lReadOnly, lBold, ;
    aAdd( _OOHG_ActiveTree:aTreeEnabled, ! lDisabled )
    aAdd( _OOHG_ActiveTree:aTreeNoDrag, lNoDrag )
 
-   If _OOHG_ActiveTree:ItemIds
+   IF _OOHG_ActiveTree:ItemIds
       iPos := Id
-   Else
+   ELSE
       iPos := len( _OOHG_ActiveTree:aTreeMap )
-   EndIf
+   ENDIF
 
    _OOHG_ActiveTree:CheckItem( iPos, lChecked )
    _OOHG_ActiveTree:BoldItem( iPos, lBold )
 
-   Return iPos
+   RETURN iPos
 
-Function _EndTreeNode()
+FUNCTION _EndTreeNode()
 
    aSize( _OOHG_ActiveTree:aTreeNode, len( _OOHG_ActiveTree:aTreeNode ) - 1 )
 
-   Return Nil
+   RETURN NIL
 
-Function _DefineTreeItem( text, aImage, Id, lChecked, lReadOnly, lBold, ;
-                          lDisabled, lNoDrag, lAssignID )
+FUNCTION _DefineTreeItem( text, aImage, Id, lChecked, lReadOnly, lBold, ;
+      lDisabled, lNoDrag, lAssignID )
 
-   Local Item, ImgDef, iUnSel, iSel, iID, iPos
+   LOCAL Item, ImgDef, iUnSel, iSel, iID, iPos
 
    ASSIGN lChecked  VALUE lChecked  TYPE "L" DEFAULT .F.
    ASSIGN lReadOnly VALUE lReadOnly TYPE "L" DEFAULT .F.
@@ -931,71 +921,71 @@ Function _DefineTreeItem( text, aImage, Id, lChecked, lReadOnly, lBold, ;
 
    ImgDef := iif( HB_IsArray( aImage ), len( aImage ), 0 )
 
-   If ImgDef == 0
+   IF ImgDef == 0
       // pointer to default node bitmaps, no bitmap loaded
       iUnsel := 2
       iSel   := 3
-   Else
-      If HB_IsNumeric( aImage[ 1 ] )
+   ELSE
+      IF HB_IsNumeric( aImage[ 1 ] )
          iUnSel := aImage[ 1 ]
-      Else
-         If ! ValidHandler( _OOHG_ActiveTree:ImageList )
+      ELSE
+         IF ! ValidHandler( _OOHG_ActiveTree:ImageList )
             _OOHG_ActiveTree:ImageListColor := GetSysColor( COLOR_3DFACE )
             _OOHG_ActiveTree:ImageListFlags := LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
-         EndIf
+         ENDIF
 
          iUnSel := _OOHG_ActiveTree:AddBitMap( aImage[ 1 ] ) - 1
-      EndIf
+      ENDIF
 
-      If ImgDef == 1
+      IF ImgDef == 1
          // if only one bitmap in array isel = iunsel, only one bitmap loaded
          iSel := iUnSel
-      Else
-         If HB_IsNumeric( aImage[ 2 ] )
+      ELSE
+         IF HB_IsNumeric( aImage[ 2 ] )
             iSel := aImage[ 2 ]
-         Else
-            If ! ValidHandler( _OOHG_ActiveTree:ImageList )
+         ELSE
+            IF ! ValidHandler( _OOHG_ActiveTree:ImageList )
                _OOHG_ActiveTree:ImageListColor := GetSysColor( COLOR_3DFACE )
                _OOHG_ActiveTree:ImageListFlags := LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
-            EndIf
+            ENDIF
 
             iSel := _OOHG_ActiveTree:AddBitMap( aImage[ 2 ] ) - 1
-         EndIf
-      EndIf
-   EndIf
+         ENDIF
+      ENDIF
+   ENDIF
 
-   If _OOHG_ActiveTree:ItemIds
-      If Id == Nil
-         If lAssignID
+   IF _OOHG_ActiveTree:ItemIds
+      IF Id == Nil
+         IF lAssignID
             Id := AutoID( _OOHG_ActiveTree )
-         Else
+         ELSE
             MsgOOHGError( "Define Item Function: Item Id Is Nil. Program terminated." )
-         EndIf
-      ElseIf aScan( _OOHG_ActiveTree:aTreeIdMap, Id ) != 0
-         If lAssignID
+         ENDIF
+      ELSEIF aScan( _OOHG_ActiveTree:aTreeIdMap, Id ) != 0
+         IF lAssignID
             Id := AutoID( _OOHG_ActiveTree )
-         Else
+         ELSE
             MsgOOHGError( "Define Item Function: Item Id Already In Use. Program terminated." )
-         EndIf
-      EndIf
+         ENDIF
+      ENDIF
 
       aAdd( _OOHG_ActiveTree:aItemIDs, Id )
       iID := len( _OOHG_ActiveTree:aItemIDs )
-   Else
-      If Id == Nil
+   ELSE
+      IF Id == Nil
          iID := 0
-      ElseIf aScan( _OOHG_ActiveTree:aTreeIdMap, Id ) == 0
+      ELSEIF aScan( _OOHG_ActiveTree:aTreeIdMap, Id ) == 0
          aAdd( _OOHG_ActiveTree:aItemIDs, Id )
          iID := len( _OOHG_ActiveTree:aItemIDs )
-      ElseIf lAssignID
+      ELSEIF lAssignID
          Id := AutoID( _OOHG_ActiveTree )
 
          aAdd( _OOHG_ActiveTree:aItemIDs, Id )
          iID := len( _OOHG_ActiveTree:aItemIDs )
-      Else
+      ELSE
          MsgOOHGError( "Define Item Function: Item Id Already In Use. Program terminated." )
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
    Item := AddTreeItem( _OOHG_ActiveTree:hWnd, aTail( _OOHG_ActiveTree:aTreeNode ), text, iUnSel, iSel, iID )
 
@@ -1005,151 +995,165 @@ Function _DefineTreeItem( text, aImage, Id, lChecked, lReadOnly, lBold, ;
    aAdd( _OOHG_ActiveTree:aTreeEnabled, ! lDisabled )
    aAdd( _OOHG_ActiveTree:aTreeNoDrag, lNoDrag )
 
-   If _OOHG_ActiveTree:ItemIds
+   IF _OOHG_ActiveTree:ItemIds
       iPos := Id
-   Else
+   ELSE
       iPos := len( _OOHG_ActiveTree:aTreeMap )
-   EndIf
+   ENDIF
 
    _OOHG_ActiveTree:CheckItem( iPos, lChecked )
    _OOHG_ActiveTree:BoldItem( iPos, lBold )
 
-   Return iPos
+   RETURN iPos
 
-Function _EndTree()
+FUNCTION _EndTree()
 
    _OOHG_ActiveTree:EndTree()
    _OOHG_ActiveTree := Nil
 
-   Return Nil
+   RETURN NIL
 
 METHOD Indent( nPixels ) CLASS TTree
 
-   If HB_IsNumeric( nPixels )
+   IF HB_IsNumeric( nPixels )
       // set the item's indentation, if nPixels is less than the
       // system-defined minimum width, the new width is set to the minimum.
       TreeView_SetIndent( ::hWnd, nPixels )
-   EndIf
+   ENDIF
    nPixels := TreeView_GetIndent( ::hWnd )
 
-   Return nPixels
+   RETURN nPixels
 
 METHOD Events_Notify( wParam, lParam ) CLASS TTree
 
-   Local nNotify := GetNotifyCode( lParam )
-   Local cNewValue, lValid, TreeItemHandle, Item
+   LOCAL nNotify := GetNotifyCode( lParam )
+   LOCAL cNewValue, lValid, TreeItemHandle, Item
 
-   If nNotify == NM_CUSTOMDRAW
-      Return TreeView_Notify_CustomDraw( Self, lParam, ::HasDragFocus )
+   IF nNotify == NM_CUSTOMDRAW
 
-   ElseIf nNotify == TVN_SELCHANGING
+      RETURN TreeView_Notify_CustomDraw( Self, lParam, ::HasDragFocus )
+
+   ELSEIF nNotify == TVN_SELCHANGING
       TreeItemHandle := TreeView_ActualSelectedItem( lParam )
 
-      If TreeItemHandle == 0
+      IF TreeItemHandle == 0
          // allow
-         Return 0
-      Else
-         If ::ItemEnabled( ::HandleToItem( TreeItemHandle ) )
-            // allow
-            Return 0
-         Else
-            // abort
-            Return 1
-         EndIf
-      EndIf
 
-   ElseIf nNotify == TVN_SELCHANGED
-      If ::lSelBold
+         RETURN 0
+      ELSE
+         IF ::ItemEnabled( ::HandleToItem( TreeItemHandle ) )
+            // allow
+
+            RETURN 0
+         ELSE
+            // abort
+
+            RETURN 1
+         ENDIF
+      ENDIF
+
+   ELSEIF nNotify == TVN_SELCHANGED
+      IF ::lSelBold
          TreeItemHandle := TreeView_PreviousSelectedItem( lParam )
-         If TreeItemHandle != 0
+         IF TreeItemHandle != 0
             TreeView_SetBoldState( ::hWnd, TreeItemHandle, .F. )
-         EndIf
+         ENDIF
 
          TreeItemHandle := TreeView_ActualSelectedItem( lParam )
-         If TreeItemHandle != 0
+         IF TreeItemHandle != 0
             TreeView_SetBoldState( ::hWnd, TreeItemHandle, .T. )
-         EndIf
-      EndIf
+         ENDIF
+      ENDIF
 
       ::DoChange()
-      Return Nil
 
-   ElseIf nNotify == TVN_BEGINLABELEDIT
-     If ::ReadOnly .OR. ::ItemReadOnly( ::Value ) .OR. ! ::ItemEnabled( ::Value )
-        // abort editing
-        Return 1
-      EndIf
+      RETURN NIL
+
+   ELSEIF nNotify == TVN_BEGINLABELEDIT
+      IF ::ReadOnly .OR. ::ItemReadOnly( ::Value ) .OR. ! ::ItemEnabled( ::Value )
+         // abort editing
+
+         RETURN 1
+      ENDIF
 
       ::hWndEditCtrl := SendMessage( ::hWnd, TVM_GETEDITCONTROL, 0, 0 )
-      if ::hWndEditCtrl == Nil
+      IF ::hWndEditCtrl == Nil
          // abort editing
-         Return 1
-      EndIf
+
+         RETURN 1
+      ENDIF
 
       SubClassEditCtrl( ::hWndEditCtrl, ::hWnd )
       // allow editing
-      Return 0
 
-   ElseIf nNotify == TVN_ENDLABELEDIT
+      RETURN 0
+
+   ELSEIF nNotify == TVN_ENDLABELEDIT
       ::hWndEditCtrl := Nil
 
       cNewValue := TreeView_LabelValue( lParam )
 
       // editing was aborted
-      If cNewValue == Nil
+      IF cNewValue == Nil
          // revert to original value
-         Return 0
-      EndIf
 
-      If HB_IsBlock( ::Valid )
+         RETURN 0
+      ENDIF
+
+      IF HB_IsBlock( ::Valid )
          lValid := Eval( ::Valid, ::Value, cNewValue )
 
-         If HB_IsLogical( lValid ) .AND. ! lValid
+         IF HB_IsLogical( lValid ) .AND. ! lValid
             // force label editing after exit
             ::EditLabel()
 
             // revert to original value
-            Return 0
-         EndIf
-      EndIf
+
+            RETURN 0
+         ENDIF
+      ENDIF
 
       ::Item( ::Value, cNewValue )
       ::DoEvent( ::OnLabelEdit, "TREEVIEW_LABELEDIT", {::Value, ::Item( ::Value )} )
 
       // confirm new value
-      Return 1
 
-   ElseIf nNotify == NM_CLICK .OR. nNotify == NM_DBLCLK
+      RETURN 1
+
+   ELSEIF nNotify == NM_CLICK .OR. nNotify == NM_DBLCLK
       TreeItemHandle := TreeView_GetItemHit( lParam )
 
-      If TreeItemHandle == 0
+      IF TreeItemHandle == 0
          // no item was clicked, allow default processing
-         Return 0
-      EndIf
 
-      If ! ::ItemEnabled( ::HandleToItem( TreeItemHandle ) )
+         RETURN 0
+      ENDIF
+
+      IF ! ::ItemEnabled( ::HandleToItem( TreeItemHandle ) )
          // item is disabled, abort processing
-         Return 1
-      EndIf
 
-      If TreeView_HitIsOnStateIcon( lParam )
+         RETURN 1
+      ENDIF
+
+      IF TreeView_HitIsOnStateIcon( lParam )
          // trigger OnCheckChange procedure, see Events method
          PostMessage( ::hWnd, WM_APP + 8, 0, TreeItemHandle )
-      EndIf
+      ENDIF
 
       // allow default processing
-      Return 0
 
-   ElseIf nNotify == TVN_BEGINDRAG
+      RETURN 0
+
+   ELSEIF nNotify == TVN_BEGINDRAG
       TreeItemHandle := TreeView_ActualSelectedItem( lParam )
       Item := ::HandleToItem( TreeItemHandle )
 
-      If ::ItemEnabled( Item ) .AND. ::ItemDraggable( Item )
+      IF ::ItemEnabled( Item ) .AND. ::ItemDraggable( Item )
          // if the treeview has no imagelist it's not possible to create a drag image
-         If ValidHandler( ::ImageList )
-            If ::lSelBold
+         IF ValidHandler( ::ImageList )
+            IF ::lSelBold
                ::BoldItem( ::Value, .F. )
-            EndIf
+            ENDIF
 
             // must be set before creating drag image to avoid problems in TreeView_Notify_CustomDraw
             ::DragActive := .T.
@@ -1157,172 +1161,172 @@ METHOD Events_Notify( wParam, lParam ) CLASS TTree
 
             ::DragImageList := TreeView_BeginDrag( ::hWnd, lParam )
 
-            If ValidHandler( ::DragImageList )
+            IF ValidHandler( ::DragImageList )
                ::ItemOnDrag := TreeItemHandle
-            Else
+            ELSE
                ::DragActive := .F.
-            EndIf
-         EndIf
-      EndIf
+            ENDIF
+         ENDIF
+      ENDIF
 
-      Return Nil
+      RETURN NIL
 
-   EndIf
+   ENDIF
 
-   Return ::Super:Events_Notify( wParam, lParam )
+   RETURN ::Super:Events_Notify( wParam, lParam )
 
 METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TTree
 
-   Local nItem, lChecked, TargetHandle, i, oAux, Value
+   LOCAL nItem, lChecked, TargetHandle, i, oAux, Value
 
-   If nMsg == WM_APP + 8
-      If HB_IsBlock( ::OnCheckChange )
+   IF nMsg == WM_APP + 8
+      IF HB_IsBlock( ::OnCheckChange )
          nItem := ::HandleToItem( GetItemHWND( lParam ) )
          lChecked := ::CheckItem( nItem )
 
          ::DoEvent( ::OnCheckChange, "TREEVIEW_CHANGECHECK", {nItem, lChecked} )
-      EndIf
+      ENDIF
 
-      Return Nil
+      RETURN NIL
 
-   ElseIf nMsg == WM_MOUSEMOVE
-      If ::DragActive .and. ! ::DragEnding
-         If HB_IsObject( ::LastTarget )
+   ELSEIF nMsg == WM_MOUSEMOVE
+      IF ::DragActive .and. ! ::DragEnding
+         IF HB_IsObject( ::LastTarget )
             ::LastTarget:HasDragFocus := .F.
-         EndIf
+         ENDIF
 
          _OOHG_SetMouseCoords( Self, LOWORD( lParam ), HIWORD( lParam ) )
 
          TargetHandle := GetWindowUnderCursor()
 
-         If ValidHandler( TargetHandle )
-            For i := 1 to len( ::aTarget )
-               If HB_IsObject( ::aTarget[ i ] )
+         IF ValidHandler( TargetHandle )
+            FOR i := 1 to len( ::aTarget )
+               IF HB_IsObject( ::aTarget[ i ] )
                   oAux := ::aTarget[ i ]
-               ElseIf HB_IsBlock( ::aTarget[ i ] )
+               ELSEIF HB_IsBlock( ::aTarget[ i ] )
                   oAux := Eval( ::aTarget[ i ] )
 
-                  If ! HB_IsObject( oAux )
+                  IF ! HB_IsObject( oAux )
                      oAux := Nil
-                  EndIf
-               Else
+                  ENDIF
+               ELSE
                   oAux := Nil
-               Endif
+               ENDIF
 
-               If oAux:hWnd == TargetHandle
-                  Exit
-               EndIf
-            Next i
+               IF oAux:hWnd == TargetHandle
+                  EXIT
+               ENDIF
+            NEXT i
 
-            If i <= len( ::aTarget ) .AND. oAux:DropEnabled
-               If HB_IsObject( ::LastTarget )
-                  If ::LastTarget:hWnd # oAux:hWnd
-                     If __objHasData( ::LastTarget, "AutoScrollTimer" )
-                        If HB_IsObject( ::LastTarget:AutoScrollTimer )
+            IF i <= len( ::aTarget ) .AND. oAux:DropEnabled
+               IF HB_IsObject( ::LastTarget )
+                  IF ::LastTarget:hWnd # oAux:hWnd
+                     IF __objHasData( ::LastTarget, "AutoScrollTimer" )
+                        IF HB_IsObject( ::LastTarget:AutoScrollTimer )
                            ::LastTarget:AutoScrollTimer:Release()
                            ::LastTarget:AutoScrollTimer := Nil
-                        EndIf
-                     EndIf
-                     If __objHasData( ::LastTarget, "AutoExpandTimer" )
-                        If HB_IsObject( ::LastTarget:AutoExpandTimer )
+                        ENDIF
+                     ENDIF
+                     IF __objHasData( ::LastTarget, "AutoExpandTimer" )
+                        IF HB_IsObject( ::LastTarget:AutoExpandTimer )
                            ::LastTarget:AutoExpandTimer:Release()
                            ::LastTarget:AutoExpandTimer := Nil
-                        EndIf
-                     EndIf
-                  EndIf
-               EndIf
+                        ENDIF
+                     ENDIF
+                  ENDIF
+               ENDIF
 
                ::LastTarget := oAux
                oAux:HasDragFocus := .T.
 
                _OOHG_EVAL( oAux:OnMouseDrag, Self, oAux, wParam )
 
-               Return Nil
-            EndIf
-         EndIf
+               RETURN NIL
+            ENDIF
+         ENDIF
 
          // when dragging over no target, change cursor to NO and drag image
          TreeView_OnMouseDrag( ::hWnd, ::ItemOnDrag, Nil, wParam )
-      EndIf
+      ENDIF
 
-      Return Nil
+      RETURN NIL
 
-   ElseIf nMsg == WM_LBUTTONUP     // ver WM_RBUTTONUP
-      If ::DragActive
+   ELSEIF nMsg == WM_LBUTTONUP     // ver WM_RBUTTONUP
+      IF ::DragActive
          ::DragEnding := .T.
 
-         If HB_IsObject( ::LastTarget )
+         IF HB_IsObject( ::LastTarget )
             ::LastTarget:HasDragFocus := .F.
 
-            If __objHasData( ::LastTarget, "AutoScrollTimer" )
-               If HB_IsObject( ::LastTarget:AutoScrollTimer )
+            IF __objHasData( ::LastTarget, "AutoScrollTimer" )
+               IF HB_IsObject( ::LastTarget:AutoScrollTimer )
                   ::LastTarget:AutoScrollTimer:Enabled := .F.
-               EndIf
-            EndIf
-            If __objHasData( ::LastTarget, "AutoExpandTimer" )
-               If HB_IsObject( ::LastTarget:AutoExpandTimer )
+               ENDIF
+            ENDIF
+            IF __objHasData( ::LastTarget, "AutoExpandTimer" )
+               IF HB_IsObject( ::LastTarget:AutoExpandTimer )
                   ::LastTarget:AutoExpandTimer:Enabled := .F.
-               EndIf
-            EndIf
-         EndIf
+               ENDIF
+            ENDIF
+         ENDIF
 
          TargetHandle := GetWindowUnderCursor()
 
-         If ValidHandler( TargetHandle )
-            For i := 1 to len( ::aTarget )
-               If HB_IsObject( ::aTarget[ i ] )
+         IF ValidHandler( TargetHandle )
+            FOR i := 1 to len( ::aTarget )
+               IF HB_IsObject( ::aTarget[ i ] )
                   oAux := ::aTarget[ i ]
-               ElseIf HB_IsBlock( ::aTarget[ i ] )
+               ELSEIF HB_IsBlock( ::aTarget[ i ] )
                   oAux := Eval( ::aTarget[ i ] )
 
-                  If ! HB_IsObject( oAux )
+                  IF ! HB_IsObject( oAux )
                      oAux := Nil
-                  EndIf
-               Else
+                  ENDIF
+               ELSE
                   oAux := Nil
-               Endif
+               ENDIF
 
-               If oAux:hWnd == TargetHandle
-                  Exit
-               EndIf
-            Next
+               IF oAux:hWnd == TargetHandle
+                  EXIT
+               ENDIF
+            NEXT
 
-            If i <= len( ::aTarget ) .AND. oAux:DropEnabled
+            IF i <= len( ::aTarget ) .AND. oAux:DropEnabled
                _OOHG_SetMouseCoords( Self, LOWORD( lParam ), HIWORD( lParam ) )
 
                ::CtrlLastDrop := oAux
                ::ItemLastDrop := _OOHG_EVAL( oAux:OnMouseDrop, Self, oAux, wParam )
-            Else
+            ELSE
                ::CtrlLastDrop := Nil
                ::ItemLastDrop := Nil
-            EndIf
-         Else
+            ENDIF
+         ELSE
             ::CtrlLastDrop := Nil
             ::ItemLastDrop := Nil
-         EndIf
+         ENDIF
 
          // this call fires WM_CAPTURECHANGED
          ReleaseCapture()
-      EndIf
+      ENDIF
 
-   ElseIf nMsg == WM_CANCELMODE .OR. nMsg == WM_CAPTURECHANGED
-      If ::DragActive
-         If HB_IsObject( ::LastTarget )
+   ELSEIF nMsg == WM_CANCELMODE .OR. nMsg == WM_CAPTURECHANGED
+      IF ::DragActive
+         IF HB_IsObject( ::LastTarget )
             ::LastTarget:HasDragFocus := .F.
 
-            If __objHasData( ::LastTarget, "AutoScrollTimer" )
-               If HB_IsObject( ::LastTarget:AutoScrollTimer )
+            IF __objHasData( ::LastTarget, "AutoScrollTimer" )
+               IF HB_IsObject( ::LastTarget:AutoScrollTimer )
                   ::LastTarget:AutoScrollTimer:Release()
                   ::LastTarget:AutoScrollTimer := Nil
-               EndIf
-            EndIf
-            If __objHasData( ::LastTarget, "AutoExpandTimer" )
-               If HB_IsObject( ::LastTarget:AutoExpandTimer )
+               ENDIF
+            ENDIF
+            IF __objHasData( ::LastTarget, "AutoExpandTimer" )
+               IF HB_IsObject( ::LastTarget:AutoExpandTimer )
                   ::LastTarget:AutoExpandTimer:Release()
                   ::LastTarget:AutoExpandTimer := Nil
-               EndIf
-            EndIf
-         EndIf
+               ENDIF
+            ENDIF
+         ENDIF
 
          ImageList_EndDrag()
          ImageList_Destroy( ::DragImageList )
@@ -1330,262 +1334,262 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TTree
          ::ItemOnDrag := 0
          ::DragActive := .F.
 
-         If HB_IsObject( ::LastTarget )
-           ::LastTarget:Redraw()
-         EndIf
+         IF HB_IsObject( ::LastTarget )
+            ::LastTarget:Redraw()
+         ENDIF
          ::LastTarget := Nil
 
          Value := ::Value
-         If ! Empty( Value ) .AND. ::lSelBold
+         IF ! Empty( Value ) .AND. ::lSelBold
             ::BoldItem( ::Value, .T. )
-         EndIf
+         ENDIF
          ::Redraw()
 
-         If HB_IsObject( ::CtrlLastDrop ) .AND. ::ItemLastDrop != Nil
+         IF HB_IsObject( ::CtrlLastDrop ) .AND. ::ItemLastDrop != Nil
             _OOHG_EVAL( ::CtrlLastDrop:OnDrop, ::ItemLastDrop )
-         EndIf
-      EndIf
+         ENDIF
+      ENDIF
 
-   EndIf
+   ENDIF
 
-   Return ::Super:Events( hWnd, nMsg, wParam, lParam )
+   RETURN ::Super:Events( hWnd, nMsg, wParam, lParam )
 
-Function TTree_OnMouseDrag( oOrigin, oTarget, wParam )
+FUNCTION TTree_OnMouseDrag( oOrigin, oTarget, wParam )
 
-   If oTarget:DropEnabled
-      If oTarget:AutoScrollTimer == Nil
+   IF oTarget:DropEnabled
+      IF oTarget:AutoScrollTimer == Nil
          // this timer fires the autoscroll function
          DEFINE TIMER 0 OBJ oTarget:AutoScrollTimer ;
             OF (oTarget) ;
             INTERVAL 200 ;
             ACTION TreeView_AutoScroll( oTarget:hWnd, oOrigin:hWnd, oOrigin:ItemOnDrag )
-      EndIf
+      ENDIF
 
-      If oTarget:AutoExpandTimer == Nil
+      IF oTarget:AutoExpandTimer == Nil
          // this timer fires the autoexpand function
          DEFINE TIMER 0 OBJ oTarget:AutoExpandTimer ;
             OF (oTarget) ;
             INTERVAL 1000 ;
             ACTION TreeView_AutoExpand( oTarget:hWnd, oOrigin:hWnd, oOrigin:ItemOnDrag )
-      EndIf
+      ENDIF
 
       // Drag image and change cursor acordingly to target
       TreeView_OnMouseDrag( oOrigin:hWnd, oOrigin:ItemOnDrag, oTarget:hWnd, wParam )
-   Else
+   ELSE
       // when dragging over no target, change cursor to NO and drag image
       TreeView_OnMouseDrag( oOrigin:hWnd, oOrigin:ItemOnDrag, Nil, wParam )
-   EndIf
+   ENDIF
 
-   Return Nil
+   RETURN NIL
 
-Function TTree_OnMouseDrop( oOrigin, oTarget, wParam )
+FUNCTION TTree_OnMouseDrop( oOrigin, oTarget, wParam )
 
-   Local TargetHandle, Item
+   LOCAL TargetHandle, Item
 
-   If oTarget:DropEnabled
+   IF oTarget:DropEnabled
       TargetHandle := TreeView_OnMouseDrop( oOrigin:hWnd, oOrigin:ItemOnDrag, oTarget:hWnd )
 
-      If TargetHandle # 0
-         If wParam == MK_CONTROL
+      IF TargetHandle # 0
+         IF wParam == MK_CONTROL
             Item := oOrigin:CopyItem( oOrigin:HandleToItem(oOrigin:ItemOnDrag), oTarget, oTarget:HandleToItem( TargetHandle ) )
-         Else
+         ELSE
             Item := oOrigin:MoveItem( oOrigin:HandleToItem(oOrigin:ItemOnDrag), oTarget, oTarget:HandleToItem( TargetHandle ) )
-         EndIf
-      EndIf
-   EndIf
+         ENDIF
+      ENDIF
+   ENDIF
 
-   Return Item
+   RETURN Item
 
 METHOD ItemImages( Item, aImages ) CLASS TTree
 
-   Local ItemHandle, Pos
+   LOCAL ItemHandle, Pos
 
-   If HB_IsArray( aImages ) .AND. len( aImages ) >= 2 .AND. ;
-      HB_IsNumeric( aImages[ 1 ] ) .AND. aImages[ 1 ] >= 0 .AND. ;
-      HB_IsNumeric( aImages[ 2 ] ) .AND. aImages[ 2 ] >= 0
+   IF HB_IsArray( aImages ) .AND. len( aImages ) >= 2 .AND. ;
+         HB_IsNumeric( aImages[ 1 ] ) .AND. aImages[ 1 ] >= 0 .AND. ;
+         HB_IsNumeric( aImages[ 2 ] ) .AND. aImages[ 2 ] >= 0
       //  set
-      If ::ItemIds
+      IF ::ItemIds
          Pos := aScan( ::aTreeIdMap, Item )
 
-         If Pos == 0
+         IF Pos == 0
             MsgOOHGError( "ItemImages: Invalid Item Id. Program terminated." )
-         EndIf
+         ENDIF
 
          ItemHandle := ::aTreeMap[ Pos ]
-      Else
-         If Item < 1 .OR. Item > len( ::aTreeMap )
+      ELSE
+         IF Item < 1 .OR. Item > len( ::aTreeMap )
             MsgOOHGError( "ItemImages: Invalid Item Reference. Program terminated." )
-         EndIf
+         ENDIF
 
          ItemHandle := ::aTreeMap[ Item ]
-      EndIf
+      ENDIF
 
       TreeView_SetImages( ::hWnd, ItemHandle, aImages[ 1 ], aImages[ 2 ] )      // iUnSel, iSel
-   Else
+   ELSE
       // get
-      If ::ItemIds
+      IF ::ItemIds
          Pos := aScan( ::aTreeIdMap, Item )
 
-         If Pos == 0
+         IF Pos == 0
             MsgOOHGError( "ItemImages: Invalid Item Id. Program terminated." )
-         EndIf
+         ENDIF
 
          ItemHandle := ::aTreeMap[ Pos ]
-      Else
-         If Item < 1 .OR. Item > len( ::aTreeMap )
+      ELSE
+         IF Item < 1 .OR. Item > len( ::aTreeMap )
             MsgOOHGError( "ItemImages: Invalid Item Reference. Program terminated." )
-         EndIf
+         ENDIF
 
          ItemHandle := ::aTreeMap[ Item ]
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
-   Return TreeView_GetImages( ::hWnd, ItemHandle )                                 // { iUnSel, iSel }
+   RETURN TreeView_GetImages( ::hWnd, ItemHandle )                                 // { iUnSel, iSel }
 
 METHOD CopyItem( ItemFrom, oTarget, ItemTo, aId ) CLASS TTree
 
-   Local Pos, FromHandle, aItems, i, ItemOld, j, aImages
+   LOCAL Pos, FromHandle, aItems, i, ItemOld, j, aImages
 
    // get the From item's handle
-   If ::ItemIds
+   IF ::ItemIds
       Pos := aScan( ::aTreeIdMap, ItemFrom )
 
-      If Pos == 0
+      IF Pos == 0
          MsgOOHGError( "CopyItem: Invalid Origin Item Id. Program terminated." )
-      EndIf
-   Else
-      If ItemFrom < 1 .OR. ItemFrom > len( ::aTreeMap )
+      ENDIF
+   ELSE
+      IF ItemFrom < 1 .OR. ItemFrom > len( ::aTreeMap )
          MsgOOHGError( "CopyItem: Invalid Origin Item Reference. Program terminated." )
-      EndIf
+      ENDIF
 
       Pos := ItemFrom
-   EndIf
+   ENDIF
    FromHandle := ::aTreeMap[ Pos ]
 
    // store the item and it's subitems into an array
    aItems := {}
 
    aAdd( aItems, { ItemFrom, ;                                                  // Id or Pos of the origin item
-                   ::Item( ItemFrom ), ;                                        // value
-                   ItemTo, ;                                                     // Id or Pos of the parent
-                   if( ::ItemIds, ItemFrom, ::aTreeIdMap[ ItemFrom ] ), ;       // id of the origin item
-                   ::ItemImages( ItemFrom ), ;                                  // images
-                   ::CheckItem( ItemFrom ), ;                                   // checked
-                   ::ItemReadonly( ItemFrom ), ;                                // readonly
-                   ::BoldItem( ItemFrom ), ;                                    // bold
-                   ! ::ItemEnabled( ItemFrom ), ;                               // disabled
-                   ! ::ItemDraggable( ItemFrom ) } )                            // no drag
+   ::Item( ItemFrom ), ;                                        // value
+   ItemTo, ;                                                     // Id or Pos of the parent
+   if( ::ItemIds, ItemFrom, ::aTreeIdMap[ ItemFrom ] ), ;       // id of the origin item
+   ::ItemImages( ItemFrom ), ;                                  // images
+   ::CheckItem( ItemFrom ), ;                                   // checked
+   ::ItemReadonly( ItemFrom ), ;                                // readonly
+   ::BoldItem( ItemFrom ), ;                                    // bold
+   ! ::ItemEnabled( ItemFrom ), ;                               // disabled
+   ! ::ItemDraggable( ItemFrom ) } )                            // no drag
 
    // store it's children
    AddChildren( Self, FromHandle, TreeView_GetChild( ::hWnd, FromHandle ), aItems )
 
    // if aId has not enough elements to assign to new items, add Nil ones
    // AddItem method will handle missing or duplicated IDs
-   If HB_IsArray( aId )
+   IF HB_IsArray( aId )
       aSize( aId, len( aItems ) )
-   Else
+   ELSE
       i := aId
 
       aId := Array( len( aItems ) )
 
       aId[ 1 ] := i
-   EndIf
+   ENDIF
 
    // insert new items
-   For i := 1 to len( aItems )
+   FOR i := 1 to len( aItems )
       ItemOld := aItems[ i, 1 ]
 
       aItems[ i, 1 ] := oTarget:AddItem( aItems[ i, 2 ], aItems[ i, 3 ], aId[ i ], aItems[ i, 5 ], aItems[ i, 6 ], aItems[ i, 7 ], aItems[ i, 8 ], aItems[ i, 9 ], aItems[ i, 10 ], .T. )
 
       // change parent of children in the rest of the list
-      For j := i + 1 to len( aItems )
-         If ValType( aItems[ j, 3 ] ) == ValType( ItemOld ) .AND. aItems[ j, 3 ] == ItemOld
+      FOR j := i + 1 to len( aItems )
+         IF ValType( aItems[ j, 3 ] ) == ValType( ItemOld ) .AND. aItems[ j, 3 ] == ItemOld
             aItems[ j, 3 ] := aItems[ i, 1 ]
-         EndIf
-      Next j
-   Next i
+         ENDIF
+      NEXT j
+   NEXT i
 
    // if To item has item images, change them to node images
    aImages := oTarget:ItemImages( ItemTo )
-   If aImages[ 1 ] == 2 .AND. aImages[ 2 ] == 3
+   IF aImages[ 1 ] == 2 .AND. aImages[ 2 ] == 3
       oTarget:ItemImages( ItemTo, { 0, 1 } )
-   EndIf
+   ENDIF
 
    // set focus to new item and return a reference to it
 
-   Return oTarget:Value( aItems[ 1, 1 ] )
+   RETURN oTarget:Value( aItems[ 1, 1 ] )
 
 METHOD MoveItem( ItemFrom, oTarget, ItemTo, aId ) CLASS TTree
 
-   Local Pos, FromHandle, ParentHandle, ToHandle
-   Local aItems, i, ItemOld, j, aImages, ItemParent
+   LOCAL Pos, FromHandle, ParentHandle, ToHandle
+   LOCAL aItems, i, ItemOld, j, aImages, ItemParent
 
    // get the From item's handle
-   If ::ItemIds
+   IF ::ItemIds
       Pos := aScan( ::aTreeIdMap, ItemFrom )
 
-      If Pos == 0
+      IF Pos == 0
          MsgOOHGError( "MoveItem: Invalid Origin Item Id. Program terminated." )
-      EndIf
-   Else
-      If ItemFrom < 1 .OR. ItemFrom > len( ::aTreeMap )
+      ENDIF
+   ELSE
+      IF ItemFrom < 1 .OR. ItemFrom > len( ::aTreeMap )
          MsgOOHGError( "MoveItem: Invalid Origin Item Reference. Program terminated." )
-      EndIf
+      ENDIF
 
       Pos := ItemFrom
-   EndIf
+   ENDIF
    FromHandle := ::aTreeMap[ Pos ]
 
    // get the handle of the From item's parent
    ItemParent := ::GetParent( ItemFrom )
-   If ItemParent == Nil
+   IF ItemParent == Nil
       ParentHandle := 0
-   Else
-      If ::ItemIds
+   ELSE
+      IF ::ItemIds
          Pos := aScan( ::aTreeIdMap, ItemParent )
 
-         If Pos == 0
+         IF Pos == 0
             MsgOOHGError( "MoveItem: Invalid Origin Parent Id. Program terminated." )
-         EndIf
-      Else
-         If ItemParent < 1 .OR. ItemParent > len( ::aTreeMap )
+         ENDIF
+      ELSE
+         IF ItemParent < 1 .OR. ItemParent > len( ::aTreeMap )
             MsgOOHGError( "MoveItem: Invalid Origin Parent Reference. Program terminated." )
-         EndIf
+         ENDIF
 
          Pos := ItemParent
-      EndIf
+      ENDIF
       ParentHandle := ::aTreeMap[ Pos ]
-   EndIf
+   ENDIF
 
    // get the To item's handle
-   If oTarget:ItemIds
+   IF oTarget:ItemIds
       Pos := aScan( oTarget:aTreeIdMap, ItemTo )
 
-      If Pos == 0
+      IF Pos == 0
          MsgOOHGError( "MoveItem: Invalid Target Item Id. Program terminated." )
-      EndIf
-   Else
-      If ItemTo < 1 .OR. ItemTo > len( oTarget:aTreeMap )
+      ENDIF
+   ELSE
+      IF ItemTo < 1 .OR. ItemTo > len( oTarget:aTreeMap )
          MsgOOHGError( "MoveItem: Invalid Target Item Reference. Program terminated." )
-      EndIf
+      ENDIF
 
       Pos := ItemTo
-   EndIf
+   ENDIF
    ToHandle := oTarget:aTreeMap[ Pos ]
 
    // store the item and it's subitems into an array
    aItems := {}
 
    aAdd( aItems, { ItemFrom, ;                                                  // Id or Pos of the origin item
-                   ::Item( ItemFrom ), ;                                        // value
-                   Nil, ;                                                       // Id or Pos of the parent
-                   if( ::ItemIds, ItemFrom, ::aTreeIdMap[ ItemFrom ] ), ;       // id of the new item
-                   ::ItemImages( ItemFrom ), ;                                  // images
-                   ::CheckItem( ItemFrom ), ;                                   // checked
-                   ::ItemReadonly( ItemFrom ), ;                                // readonly
-                   ::BoldItem( ItemFrom ), ;                                    // bold
-                   ! ::ItemEnabled( ItemFrom ), ;                               // disabled
-                   ! ::ItemDraggable( ItemFrom ) } )                            // no drag
+   ::Item( ItemFrom ), ;                                        // value
+   Nil, ;                                                       // Id or Pos of the parent
+   if( ::ItemIds, ItemFrom, ::aTreeIdMap[ ItemFrom ] ), ;       // id of the new item
+   ::ItemImages( ItemFrom ), ;                                  // images
+   ::CheckItem( ItemFrom ), ;                                   // checked
+   ::ItemReadonly( ItemFrom ), ;                                // readonly
+   ::BoldItem( ItemFrom ), ;                                    // bold
+   ! ::ItemEnabled( ItemFrom ), ;                               // disabled
+   ! ::ItemDraggable( ItemFrom ) } )                            // no drag
 
    // store it's children
    AddChildren( Self, FromHandle, TreeView_GetChild( ::hWnd, FromHandle ), aItems )
@@ -1597,11 +1601,11 @@ METHOD MoveItem( ItemFrom, oTarget, ItemTo, aId ) CLASS TTree
    // search for the To item's handle to get the item's reference
    // because it may have changed after deleting old items (only if target == origin)
    Pos := aScan( oTarget:aTreeMap, ToHandle )
-   If oTarget:ItemIds
+   IF oTarget:ItemIds
       ItemTo := oTarget:aTreeIdMap[ Pos ]
-   Else
+   ELSE
       ItemTo := Pos
-   EndIf
+   ENDIF
 
    // put the resulting item's reference as parent of first item in array
    aItems[ 1, 3 ] := ItemTo
@@ -1609,115 +1613,115 @@ METHOD MoveItem( ItemFrom, oTarget, ItemTo, aId ) CLASS TTree
    // assign IDs
    // if aId is nil, use origin IDs already loaded in aItems
    // AddItem method will handle missing or duplicated IDs
-   If aId != Nil
-      If HB_IsArray( aId )
+   IF aId != Nil
+      IF HB_IsArray( aId )
          aSize( aId, len( aItems ) )
-      Else
+      ELSE
          i := aId
 
          aId := Array( len( aItems ) )
 
          aId[ 1 ] := i
-      EndIf
+      ENDIF
 
-      For i := 1 to len( aItems )
-          aItems[ i, 4 ] := aId[ i ]
-      Next i
-   EndIf
+      FOR i := 1 to len( aItems )
+         aItems[ i, 4 ] := aId[ i ]
+      NEXT i
+   ENDIF
 
    // insert new items
-   For i := 1 to len( aItems )
+   FOR i := 1 to len( aItems )
       ItemOld := aItems[ i, 1 ]
 
       aItems[ i, 1 ] := oTarget:AddItem( aItems[ i, 2 ], aItems[ i, 3 ], aItems[ i, 4 ], aItems[ i, 5 ], aItems[ i, 6 ], aItems[ i, 7 ], aItems[ i, 8 ], aItems[ i, 9 ], aItems[ i, 10 ], .T. )
 
       // change parent of children in the rest of the list
-      For j := i + 1 to len( aItems )
-         If ValType( aItems[ j, 3 ] ) == ValType( ItemOld ) .AND. aItems[ j, 3 ] == ItemOld
+      FOR j := i + 1 to len( aItems )
+         IF ValType( aItems[ j, 3 ] ) == ValType( ItemOld ) .AND. aItems[ j, 3 ] == ItemOld
             aItems[ j, 3 ] := aItems[ i, 1 ]
-         EndIf
-      Next j
-   Next i
+         ENDIF
+      NEXT j
+   NEXT i
 
    // search for the To item's handle to get the item's reference
    // because it may have changed after inserting new items
    Pos := aScan( oTarget:aTreeMap, ToHandle )
-   If oTarget:ItemIds
+   IF oTarget:ItemIds
       ItemTo := oTarget:aTreeIdMap[ Pos ]
-   Else
+   ELSE
       ItemTo := Pos
-   EndIf
+   ENDIF
 
    // if To item has item images, change them to node images
    aImages := oTarget:ItemImages( ItemTo )
-   If aImages[ 1 ] == 2 .AND. aImages[ 2 ] == 3
+   IF aImages[ 1 ] == 2 .AND. aImages[ 2 ] == 3
       oTarget:ItemImages( ItemTo, { 0, 1 } )
-   EndIf
+   ENDIF
 
    // if parent of From item has node images but has no children left
    // change images to item images except if it's root item
-   If ParentHandle != 0
+   IF ParentHandle != 0
       Pos := aScan( ::aTreeMap, ParentHandle )
-      If ::ItemIds
+      IF ::ItemIds
          ItemTo := ::aTreeIdMap[ Pos ]
-      Else
+      ELSE
          ItemTo := Pos
-      EndIf
+      ENDIF
 
       aImages := ::ItemImages( ItemTo )
-      If aImages[ 1 ] == 0 .AND. aImages[ 2 ] == 1
-         If len(::GetChildren( ItemTo ) ) == 0
-            If ::GetParent( ItemTo ) != Nil
+      IF aImages[ 1 ] == 0 .AND. aImages[ 2 ] == 1
+         IF len(::GetChildren( ItemTo ) ) == 0
+            IF ::GetParent( ItemTo ) != Nil
                ::ItemImages( ItemTo, { 2, 3 } )
-            EndIf
-         EndIf
-      EndIf
-   EndIf
+            ENDIF
+         ENDIF
+      ENDIF
+   ENDIF
 
    // set focus to new item and return reference to it
 
-   Return oTarget:Value( aItems[ 1, 1 ] )
+   RETURN oTarget:Value( aItems[ 1, 1 ] )
 
 STATIC FUNCTION AddChildren( Self, ParentHandle, ChildHandle, aItems )
 
-   Local ParentPos, ParentItem, NextChild, NextPos, NextItem
+   LOCAL ParentPos, ParentItem, NextChild, NextPos, NextItem
 
-   If ChildHandle != 0
+   IF ChildHandle != 0
       ParentPos := aScan( ::aTreeMap, ParentHandle )
-      If ParentPos == 0
+      IF ParentPos == 0
          MsgOOHGError( "AddChildren Function: Invalid Parent Item. Program terminated." )
-      EndIf
+      ENDIF
       ParentItem := if( Self:ItemIds, Self:aTreeIdMap[ ParentPos ], ParentPos )
 
       NextChild := ChildHandle
 
-      Do While NextChild != 0
+      DO WHILE NextChild != 0
          NextPos := aScan( ::aTreeMap, NextChild )
-         If NextPos == 0
+         IF NextPos == 0
             MsgOOHGError( "AddChildren Function: Invalid Child Item. Program terminated." )
-         EndIf
+         ENDIF
          NextItem := if( Self:ItemIds, Self:aTreeIdMap[ NextPos ], NextPos )
 
          aAdd( aItems, { NextItem, ;
-                         Self:Item( NextItem ), ;
-                         ParentItem, ;
-                         if( Self:ItemIds, NextItem, Self:aTreeIdMap[ NextItem ] ), ;
-                         Self:ItemImages( NextItem ), ;
-                         Self:CheckItem( NextItem ), ;
-                         Self:ItemReadonly( NextItem ), ;
-                         Self:BoldItem( NextItem ), ;
-                         ! Self:ItemEnabled( NextItem ), ;                               // disabled
-                         ! Self:ItemDraggable( NextItem ) } )                            // no drag
+            Self:Item( NextItem ), ;
+            ParentItem, ;
+            if( Self:ItemIds, NextItem, Self:aTreeIdMap[ NextItem ] ), ;
+            Self:ItemImages( NextItem ), ;
+            Self:CheckItem( NextItem ), ;
+            Self:ItemReadonly( NextItem ), ;
+            Self:BoldItem( NextItem ), ;
+            ! Self:ItemEnabled( NextItem ), ;                               // disabled
+         ! Self:ItemDraggable( NextItem ) } )                            // no drag
 
          // add sub-children
          AddChildren( Self, NextChild, TreeView_GetChild( Self:hWnd, NextChild ), aItems )
 
          // next sibling
          NextChild := TreeView_GetNextSibling( Self:hWnd, NextChild )
-      EndDo
-   EndIf
+      ENDDO
+   ENDIF
 
-   Return Nil
+   RETURN NIL
 
 METHOD EditLabel() CLASS TTree
 
@@ -1725,273 +1729,273 @@ METHOD EditLabel() CLASS TTree
 
    TreeView_EditLabel( ::hWnd, TreeView_GetSelection( ::hWnd ) )
 
-   Return Nil
+   RETURN NIL
 
 METHOD SelColor( aColor ) CLASS TTree
 
-  If aColor != Nil
+   IF aColor != Nil
       ::aSelColor := aColor
       ::Redraw()
-   EndIf
+   ENDIF
 
-   Return ::aSelColor
+   RETURN ::aSelColor
 
 METHOD CheckItem( Item, lChecked ) CLASS TTree
 
-   Local ItemHandle, Pos
+   LOCAL ItemHandle, Pos
 
-   If HB_IsLogical( lChecked )
+   IF HB_IsLogical( lChecked )
       //  set
-      If ::ItemIds
+      IF ::ItemIds
          Pos := aScan( ::aTreeIdMap, Item )
 
-         If Pos == 0
+         IF Pos == 0
             MsgOOHGError( "CheckItem: Invalid Item Id. Program terminated." )
-         EndIf
+         ENDIF
 
          ItemHandle := ::aTreeMap[ Pos ]
-      Else
-         If Item < 1 .OR. Item > len( ::aTreeMap )
+      ELSE
+         IF Item < 1 .OR. Item > len( ::aTreeMap )
             MsgOOHGError( "CheckItem: Invalid Item Reference. Program terminated." )
-         EndIf
+         ENDIF
 
          ItemHandle := ::aTreeMap[ Item ]
-      EndIf
+      ENDIF
 
       TreeView_SetCheckState( ::hWnd, ItemHandle, lChecked )
-   Else
+   ELSE
       // get
-      If ::ItemIds
+      IF ::ItemIds
          Pos := aScan( ::aTreeIdMap, Item )
 
-         If Pos == 0
+         IF Pos == 0
             MsgOOHGError( "CheckItem: Invalid Item Id. Program terminated." )
-         EndIf
+         ENDIF
 
          ItemHandle := ::aTreeMap[ Pos ]
-      Else
-         If Item < 1 .OR. Item > len( ::aTreeMap )
+      ELSE
+         IF Item < 1 .OR. Item > len( ::aTreeMap )
             MsgOOHGError( "CheckItem: Invalid Item Reference. Program terminated." )
-         EndIf
+         ENDIF
 
          ItemHandle := ::aTreeMap[ Item ]
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
-   Return TreeView_GetCheckState( ::hWnd, ItemHandle ) == 1
+   RETURN TreeView_GetCheckState( ::hWnd, ItemHandle ) == 1
 
 METHOD BoldItem( Item, lBold ) CLASS TTree
 
-   Local ItemHandle, Pos
+   LOCAL ItemHandle, Pos
 
-   If HB_IsLogical( lBold )
+   IF HB_IsLogical( lBold )
       //  set
-      If ::ItemIds
+      IF ::ItemIds
          Pos := aScan( ::aTreeIdMap, Item )
 
-         If Pos == 0
+         IF Pos == 0
             MsgOOHGError( "BoldItem: Invalid Item Id. Program terminated." )
-         EndIf
+         ENDIF
 
          ItemHandle := ::aTreeMap[ Pos ]
-      Else
-         If Item < 1 .OR. Item > len( ::aTreeMap )
+      ELSE
+         IF Item < 1 .OR. Item > len( ::aTreeMap )
             MsgOOHGError( "BoldItem: Invalid Item Reference. Program terminated." )
-         EndIf
+         ENDIF
 
          ItemHandle := ::aTreeMap[ Item ]
-      EndIf
+      ENDIF
 
       TreeView_SetBoldState( ::hWnd, ItemHandle, lBold )
-   Else
+   ELSE
       // get
-      If ::ItemIds
+      IF ::ItemIds
          Pos := aScan( ::aTreeIdMap, Item )
 
-         If Pos == 0
+         IF Pos == 0
             MsgOOHGError( "BoldItem: Invalid Item Id. Program terminated." )
-         EndIf
+         ENDIF
 
          ItemHandle := ::aTreeMap[ Pos ]
-      Else
-         If Item < 1 .OR. Item > len( ::aTreeMap )
+      ELSE
+         IF Item < 1 .OR. Item > len( ::aTreeMap )
             MsgOOHGError( "BoldItem: Invalid Item Reference. Program terminated." )
-         EndIf
+         ENDIF
 
          ItemHandle := ::aTreeMap[ Item ]
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
-   Return TreeView_GetBoldState( ::hWnd, ItemHandle )
+   RETURN TreeView_GetBoldState( ::hWnd, ItemHandle )
 
 METHOD ItemReadonly( Item, lReadOnly ) CLASS TTree
 
-   Local Pos
+   LOCAL Pos
 
-   If HB_IsLogical( lReadOnly )
+   IF HB_IsLogical( lReadOnly )
       // set
-      If ::ItemIds
+      IF ::ItemIds
          Pos := aScan( ::aTreeIdMap, Item )
 
-         If Pos == 0
+         IF Pos == 0
             MsgOOHGError( "ItemReadonly: Invalid Item Id. Program terminated." )
-         EndIf
-      Else
-         If Item < 1 .OR. Item > len( ::aTreeMap )
+         ENDIF
+      ELSE
+         IF Item < 1 .OR. Item > len( ::aTreeMap )
             MsgOOHGError( "ItemReadonly: Invalid Item Reference. Program terminated." )
-         EndIf
+         ENDIF
 
          Pos := Item
-      EndIf
+      ENDIF
 
       ::aTreeRO[ Pos ] := lReadOnly
-   Else
+   ELSE
       // get
-      If ::ItemIds
+      IF ::ItemIds
          Pos := aScan( ::aTreeIdMap, Item )
 
-         If Pos == 0
+         IF Pos == 0
             MsgOOHGError( "ItemReadonly: Invalid Item Id. Program terminated." )
-         EndIf
-      Else
-         If Item < 1 .OR. Item > len( ::aTreeMap )
+         ENDIF
+      ELSE
+         IF Item < 1 .OR. Item > len( ::aTreeMap )
             MsgOOHGError( "ItemReadonly: Invalid Item Reference. Program terminated." )
-         EndIf
+         ENDIF
 
          Pos := Item
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
-   Return ::aTreeRO[ Pos ]
+   RETURN ::aTreeRO[ Pos ]
 
 METHOD ItemEnabled( Item, lEnabled ) CLASS TTree
 
-   Local Pos
+   LOCAL Pos
 
-   If HB_IsLogical( lEnabled )
+   IF HB_IsLogical( lEnabled )
       // set
-      If ::ItemIds
+      IF ::ItemIds
          Pos := aScan( ::aTreeIdMap, Item )
 
-         If Pos == 0
+         IF Pos == 0
             MsgOOHGError( "ItemEnabled: Invalid Item Id. Program terminated." )
-         EndIf
-      Else
-         If Item < 1 .OR. Item > len( ::aTreeMap )
+         ENDIF
+      ELSE
+         IF Item < 1 .OR. Item > len( ::aTreeMap )
             MsgOOHGError( "ItemEnabled: Invalid Item Reference. Program terminated." )
-         EndIf
+         ENDIF
 
          Pos := Item
-      EndIf
+      ENDIF
 
       ::aTreeEnabled[ Pos ] := lEnabled
-   Else
+   ELSE
       // get
-      If ::ItemIds
+      IF ::ItemIds
          Pos := aScan( ::aTreeIdMap, Item )
 
-         If Pos == 0
+         IF Pos == 0
             MsgOOHGError( "ItemEnabled: Invalid Item Id. Program terminated." )
-         EndIf
-      Else
-         If Item < 1 .OR. Item > len( ::aTreeMap )
+         ENDIF
+      ELSE
+         IF Item < 1 .OR. Item > len( ::aTreeMap )
             MsgOOHGError( "ItemEnabled: Invalid Item Reference. Program terminated." )
-         EndIf
+         ENDIF
 
          Pos := Item
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
-   Return ::aTreeEnabled[ Pos ]
+   RETURN ::aTreeEnabled[ Pos ]
 
 METHOD ItemDraggable( Item, lDraggable ) CLASS TTree
 
-   Local Pos
+   LOCAL Pos
 
-   If HB_IsLogical( lDraggable )
+   IF HB_IsLogical( lDraggable )
       // set
-      If ::ItemIds
+      IF ::ItemIds
          Pos := aScan( ::aTreeIdMap, Item )
 
-         If Pos == 0
+         IF Pos == 0
             MsgOOHGError( "ItemDraggable: Invalid Item Id. Program terminated." )
-         EndIf
-      Else
-         If Item < 1 .OR. Item > len( ::aTreeMap )
+         ENDIF
+      ELSE
+         IF Item < 1 .OR. Item > len( ::aTreeMap )
             MsgOOHGError( "ItemDraggable: Invalid Item Reference. Program terminated." )
-         EndIf
+         ENDIF
 
          Pos := Item
-      EndIf
+      ENDIF
 
       ::aTreeNoDrag[ Pos ] := ! lDraggable
-   Else
+   ELSE
       // get
-      If ::ItemIds
+      IF ::ItemIds
          Pos := aScan( ::aTreeIdMap, Item )
 
-         If Pos == 0
+         IF Pos == 0
             MsgOOHGError( "ItemDraggable: Invalid Item Id. Program terminated." )
-         EndIf
-      Else
-         If Item < 1 .OR. Item > len( ::aTreeMap )
+         ENDIF
+      ELSE
+         IF Item < 1 .OR. Item > len( ::aTreeMap )
             MsgOOHGError( "ItemDraggable: Invalid Item Reference. Program terminated." )
-         EndIf
+         ENDIF
 
          Pos := Item
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
-   Return ! ::aTreeNoDrag[ Pos ]
+   RETURN ! ::aTreeNoDrag[ Pos ]
 
 METHOD GetParent( Item ) CLASS TTree
 
-   Local Pos, ItemHandle, ParentHandle, ParentItem
+   LOCAL Pos, ItemHandle, ParentHandle, ParentItem
 
-   If ::ItemIds
+   IF ::ItemIds
       Pos := aScan( ::aTreeIdMap, Item )
 
-      If Pos == 0
+      IF Pos == 0
          MsgOOHGError( "GetParent: Invalid Item Id. Program terminated." )
-      EndIf
-   Else
-      If Item < 1 .OR. Item > len( ::aTreeMap )
+      ENDIF
+   ELSE
+      IF Item < 1 .OR. Item > len( ::aTreeMap )
          MsgOOHGError( "GetParent: Invalid Item Reference. Program terminated." )
-      EndIf
+      ENDIF
 
       Pos := Item
-   EndIf
+   ENDIF
 
    ItemHandle := ::aTreeMap[ Pos ]
    ParentHandle := TreeView_GetParent( ::hWnd, ItemHandle )
 
-   If ParentHandle == 0
+   IF ParentHandle == 0
       ParentItem := Nil
-   ElseIf ::ItemIds
+   ELSEIF ::ItemIds
       ParentItem := ::aTreeIdMap[ aScan( ::aTreeMap, ParentHandle ) ]
-   Else
+   ELSE
       ParentItem := aScan( ::aTreeMap, ParentHandle )
-   EndIf
+   ENDIF
 
-   Return ParentItem
+   RETURN ParentItem
 
 METHOD GetChildren( Item ) CLASS TTree
 
-   Local Pos, ItemHandle, ChildHandle, ChildItem, ChildrenItems
+   LOCAL Pos, ItemHandle, ChildHandle, ChildItem, ChildrenItems
 
-   If ::ItemIds
+   IF ::ItemIds
       Pos := aScan( ::aTreeIdMap, Item )
 
-      If Pos == 0
+      IF Pos == 0
          MsgOOHGError( "GetChildren: Invalid Item Id. Program terminated." )
-      EndIf
-   Else
-      If Item < 1 .OR. Item > len( ::aTreeMap )
+      ENDIF
+   ELSE
+      IF Item < 1 .OR. Item > len( ::aTreeMap )
          MsgOOHGError( "GetChildren: Invalid Item Reference. Program terminated." )
-      EndIf
+      ENDIF
 
       Pos := Item
-   EndIf
+   ENDIF
 
    ItemHandle := ::aTreeMap[ Pos ]
 
@@ -1999,115 +2003,118 @@ METHOD GetChildren( Item ) CLASS TTree
 
    ChildHandle := TreeView_GetChild( ::hWnd, ItemHandle )
 
-   do while ChildHandle != 0
-      If ::ItemIds
+   DO WHILE ChildHandle != 0
+      IF ::ItemIds
          ChildItem := ::aTreeIdMap[ aScan( ::aTreeMap, ChildHandle ) ]
-      Else
+      ELSE
          ChildItem := aScan( ::aTreeMap, ChildHandle )
-      EndIf
+      ENDIF
 
       aAdd( ChildrenItems, ChildItem )
 
       ChildHandle := TreeView_GetNextSibling( ::hWnd, ChildHandle )
-   enddo
+   ENDDO
 
-   Return ChildrenItems
+   RETURN ChildrenItems
 
 METHOD LookForKey( nKey, nFlags ) CLASS TTree
 
-   If nKey == VK_ESCAPE .and. nFlags == 0
-      If ::hWndEditCtrl != Nil
-         Return Nil
+   IF nKey == VK_ESCAPE .and. nFlags == 0
+      IF ::hWndEditCtrl != Nil
 
-      ElseIf ::DragActive
+         RETURN NIL
+
+      ELSEIF ::DragActive
          // this call fires WM_CAPTURECHANGED
          ReleaseCapture()
 
-         Return Nil
-      EndIf
-   EndIf
+         RETURN NIL
+      ENDIF
+   ENDIF
 
-   Return ::Super:LookForKey( nKey, nFlags )
+   RETURN ::Super:LookForKey( nKey, nFlags )
 
 METHOD IsItemCollapsed( Item ) CLASS TTree
 
-   Local ItemHandle, Pos
+   LOCAL ItemHandle, Pos
 
-   If ::ItemIds
+   IF ::ItemIds
       Pos := aScan( ::aTreeIdMap, Item )
 
-      If Pos == 0
+      IF Pos == 0
          MsgOOHGError( "IsItemCollapsed: Invalid Item Id. Program terminated." )
-      EndIf
-   Else
-      If Item < 1 .OR. Item > len( ::aTreeMap )
+      ENDIF
+   ELSE
+      IF Item < 1 .OR. Item > len( ::aTreeMap )
          MsgOOHGError( "IsItemCollapsed: Invalid Item Reference. Program terminated." )
-      EndIf
+      ENDIF
 
       Pos := Item
-   EndIf
+   ENDIF
 
    ItemHandle := ::aTreeMap[ Pos ]
 
-   Return TreeView_IsItemCollapsed( ::hWnd, ItemHandle )
+   RETURN TreeView_IsItemCollapsed( ::hWnd, ItemHandle )
 
 METHOD IsItemValid( Item ) CLASS TTree
 
-   Local lRet
+   LOCAL lRet
 
-   If ::ItemIds
+   IF ::ItemIds
       lRet := aScan( ::aTreeIdMap, Item ) # 0
-   Else
+   ELSE
       lRet := HB_IsNumeric( Item ) .AND. Item == INT( Item ) .AND. Item >= 1 .AND. Item <= len( ::aTreeMap )
-   EndIf
+   ENDIF
 
-   Return lRet
+   RETURN lRet
 
 METHOD HandleToItem( Handle) CLASS TTree
 
-   Local Pos
+   LOCAL Pos
 
    Pos := aScan( ::aTreeMap, Handle )
 
-   If Pos == 0
+   IF Pos == 0
       MsgOOHGError( "HandleToItem: Invalid Item Handle. Program terminated." )
-   EndIf
+   ENDIF
 
-   If ::ItemIds
+   IF ::ItemIds
       Pos := ::aTreeIdMap[ Pos ]
-   EndIf
+   ENDIF
 
-   Return Pos
+   RETURN Pos
 
 METHOD ItemToHandle( Item ) CLASS TTree
 
-   Local Pos
+   LOCAL Pos
 
-   If ::ItemIds
+   IF ::ItemIds
       Pos := aScan( ::aTreeIdMap, Item )
 
-      If Pos == 0
+      IF Pos == 0
          MsgOOHGError( "ItemToHandle: Invalid Id Reference. Program terminated." )
-      EndIf
-   Else
-      If Item < 1 .OR. Item > len( ::aTreeMap )
+      ENDIF
+   ELSE
+      IF Item < 1 .OR. Item > len( ::aTreeMap )
          MsgOOHGError( "ItemToHandle: Invalid Item Reference. Program terminated." )
-      EndIf
+      ENDIF
 
       Pos := Item
-   EndIf
+   ENDIF
 
-   Return ::aTreeMap[ Pos ]
+   RETURN ::aTreeMap[ Pos ]
 
 METHOD ItemVisible( Item ) CLASS TTree
 
    // does not select item just shows it in the tree's window
-   Return TreeView_EnsureVisible( ::hWnd, ::ItemToHandle( Item ) )
+
+   RETURN TreeView_EnsureVisible( ::hWnd, ::ItemToHandle( Item ) )
 
 METHOD IsItemExpanded( Item ) CLASS TTree
 
    // .T. when has children and the list is expanded
-   Return TreeView_GetExpandedState( ::hWnd, ::ItemToHandle( Item ) )
+
+   RETURN TreeView_GetExpandedState( ::hWnd, ::ItemToHandle( Item ) )
 
 METHOD IsItemVisible( Item, lWhole ) CLASS TTree
 
@@ -2115,7 +2122,7 @@ METHOD IsItemVisible( Item, lWhole ) CLASS TTree
    // FALSE and item partially shown => item is visible
    // TRUE and item partially shown => item is NOT visible
 
-   Return TREEVIEW_ISITEMVISIBLE( ::hWnd, ::ItemToHandle( Item ), lWhole )
+   RETURN TREEVIEW_ISITEMVISIBLE( ::hWnd, ::ItemToHandle( Item ), lWhole )
 
 METHOD FirstVisible() CLASS TTree
 
@@ -2124,15 +2131,15 @@ METHOD FirstVisible() CLASS TTree
    // first item shown in the control's window
    Handle := TreeView_GetFirstVisible( ::hWnd )
 
-   If ValidHandler( Handle )
+   IF ValidHandler( Handle )
       Item := ::HandleToItem( Handle )
-   ElseIf ::ItemIds
+   ELSEIF ::ItemIds
       Item := Nil
-   Else
+   ELSE
       Item := 0
-   EndIf
+   ENDIF
 
-   Return Item
+   RETURN Item
 
 METHOD PrevVisible( Item ) CLASS TTree
 
@@ -2145,15 +2152,15 @@ METHOD PrevVisible( Item ) CLASS TTree
    // IsItemVisible method
    Handle := TreeView_GetPrevVisible( ::hWnd, ::ItemToHandle( Item ) )
 
-   If ValidHandler( Handle )
+   IF ValidHandler( Handle )
       Prev := ::HandleToItem( Handle )
-   ElseIf ::ItemIds
+   ELSEIF ::ItemIds
       Prev := Nil
-   Else
+   ELSE
       Prev := 0
-   EndIf
+   ENDIF
 
-   Return Prev
+   RETURN Prev
 
 METHOD NextVisible( Item ) CLASS TTree
 
@@ -2166,15 +2173,15 @@ METHOD NextVisible( Item ) CLASS TTree
    // IsItemVisible method
    Handle := TreeView_GetNextVisible( ::hWnd, ::ItemToHandle( Item ) )
 
-   If ValidHandler( Handle )
-      Next := ::HandleToItem( Handle )
-   ElseIf ::ItemIds
-      Next := Nil
-   Else
-      Next := 0
-   EndIf
+   IF ValidHandler( Handle )
+   NEXT := ::HandleToItem( Handle )
+ELSEIF ::ItemIds
+NEXT := Nil
+ELSE
+NEXT := 0
+ENDIF
 
-   Return Next
+RETURN Next
 
 METHOD LastVisible( ) CLASS TTree
 
@@ -2187,20 +2194,21 @@ METHOD LastVisible( ) CLASS TTree
    // IsItemVisible method
    Handle := TreeView_GetLastVisible( ::hWnd )
 
-   If ValidHandler( Handle )
+   IF ValidHandler( Handle )
       Item := ::HandleToItem( Handle )
-   ElseIf ::ItemIds
+   ELSEIF ::ItemIds
       Item := Nil
-   Else
+   ELSE
       Item := 0
-   EndIf
+   ENDIF
 
-   Return Item
+   RETURN Item
 
 METHOD VisibleCount() CLASS TTree
 
    // number of items that can be fully visible in the control's window
-   Return TreeView_GetVisibleCount( ::hWnd )
+
+   RETURN TreeView_GetVisibleCount( ::hWnd )
 
 METHOD ItemHeight( nHeight ) CLASS TTree
 
@@ -2210,30 +2218,29 @@ METHOD ItemHeight( nHeight ) CLASS TTree
    * If this argument is -1, the control will revert to using its default item height.
    */
 
-   If HB_IsNumeric( nHeight ) .and. nHeight # 0
+   IF HB_IsNumeric( nHeight ) .and. nHeight # 0
       TreeView_SetItemHeight( ::hWnd, nHeight )
-   EndIf
+   ENDIF
 
-   Return TreeView_GetItemHeight( ::hWnd )
+   RETURN TreeView_GetItemHeight( ::hWnd )
 
 METHOD Release() CLASS TTree
 
-   Local StateImageList := TreeView_GetImageList( ::hWnd, TVSIL_STATE )
+   LOCAL StateImageList := TreeView_GetImageList( ::hWnd, TVSIL_STATE )
 
-   If ::DragActive
+   IF ::DragActive
       // this call fires WM_CAPTURECHANGED
       ReleaseCapture()
-   EndIf
+   ENDIF
 
    ::OnLabelEdit := Nil
    ::OnCheckChange := Nil
 
-   If ValidHandler( StateImageList )
+   IF ValidHandler( StateImageList )
       ImageList_Destroy( StateImageList )
-   EndIf
+   ENDIF
 
-   Return ::Super:Release()
-
+   RETURN ::Super:Release()
 
 #pragma BEGINDUMP
 
@@ -2277,6 +2284,7 @@ static WNDPROC lpfnOldWndProc = 0;
 
 static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
+
    return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
 }
 
@@ -2534,11 +2542,13 @@ static LRESULT APIENTRY SubClassFuncEditCtrl( HWND hWnd, UINT msg, WPARAM wParam
          if( m->wParam == VK_ESCAPE )
          {
             TreeView_EndEditLabelNow( hwndTreeView, (WPARAM) TRUE );
+
             return DLGC_WANTMESSAGE;
          }
          else if( m->wParam == VK_RETURN )
          {
             TreeView_EndEditLabelNow( hwndTreeView, (WPARAM) FALSE );
+
             return DLGC_WANTMESSAGE;
          }
       }
@@ -2579,6 +2589,7 @@ int Treeview_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL lOnDrag )
    /* stage 1: whole control */
    if( lptvcd->nmcd.dwDrawStage == CDDS_PREPAINT )
    {
+
       return CDRF_NOTIFYITEMDRAW;
    }
    /* stage 2: for each item */
@@ -2633,15 +2644,18 @@ int Treeview_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL lOnDrag )
          lptvcd->clrText = ( ( oSelf->lFontColor == -1 ) ? GetSysColor( COLOR_WINDOWTEXT ) : (COLORREF) oSelf->lFontColor );
          lptvcd->clrTextBk = ( ( oSelf->lBackColor == -1 ) ? GetSysColor( COLOR_WINDOW ) : (COLORREF) oSelf->lBackColor ) ;
       }
+
       return CDRF_NEWFONT;
    }
    /* stage 3: for each subitem of the focused item */
    else if( lptvcd->nmcd.dwDrawStage == ( CDDS_SUBITEM | CDDS_ITEMPREPAINT ) )
    {
+
       return CDRF_DODEFAULT;
    }
    else
    {
+
       return CDRF_DODEFAULT;
    }
 }
@@ -2753,7 +2767,6 @@ HB_FUNC( TREEVIEW_SETCHECKSTATE )
  * TreeView_GetImageList( :hWnd, TVSIL_NORMAL )
  * Retrieves the normal image list, which contains selected, nonselected, and
  * overlay images for the items of a tree-view control.
- *
  * TreeView_GetImageList( :hWnd, TVSIL_STATE )
  * Retrieves the state image list. You can use state images to indicate
  * application-defined item states. A state image is displayed to the left
@@ -2904,6 +2917,7 @@ BOOL IsTargetChild( HWND hTree, HTREEITEM hOrigin, HTREEITEM hDestination )
       hitemChild = TreeView_GetParent( hTree, hitemChild );
       if( ( hitemChild == hOrigin ) )
       {
+
          return TRUE;
       }
    }
@@ -3024,6 +3038,7 @@ HB_FUNC( TREEVIEW_AUTOSCROLL )
 
    if( ! htiTarget )
    {
+
       return;
    }
 
@@ -3144,22 +3159,26 @@ HB_FUNC( TREEVIEW_AUTOEXPAND )
 
    if( ! htiTarget )
    {
+
       return;
    }
 
    /* don't expand if target is the same as the origin */
    if( hTreeTarget == hTreeOrigin && htiTarget == htiOrigin )
    {
+
       return;
    }
    /* don't expand if target is the origin's parent */
    else if( hTreeTarget == hTreeOrigin && htiTarget == TreeView_GetParent( hTreeTarget, htiOrigin ) )
    {
+
       return;
    }
    /* don't expand if target is child of the origin */
    else if( hTreeTarget == hTreeOrigin && IsTargetChild( hTreeTarget, htiOrigin, htiTarget ) )
    {
+
       return;
    }
    else
@@ -3184,6 +3203,7 @@ HB_FUNC( TREEVIEW_AUTOEXPAND )
       }
       else
       {
+
          return;
       }
    }

@@ -1,64 +1,52 @@
 /*
- * $Id: h_internal.prg $
- */
+* $Id: h_internal.prg $
+*/
 /*
- * ooHG source code:
- * Internal Window control
- *
- * Copyright 2006-2017 Vicente Guerra <vicente@guerra.com.mx>
- * https://oohg.github.io/
- *
- * Portions of this project are based upon Harbour MiniGUI library.
- * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
- *
- * Portions of this project are based upon Harbour GUI framework for Win32.
- * Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
- * Copyright 2001 Antonio Linares <alinares@fivetech.com>
- *
- * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2017, https://harbour.github.io/
- */
+* ooHG source code:
+* Internal Window control
+* Copyright 2006-2017 Vicente Guerra <vicente@guerra.com.mx>
+* https://oohg.github.io/
+* Portions of this project are based upon Harbour MiniGUI library.
+* Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
+* Portions of this project are based upon Harbour GUI framework for Win32.
+* Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
+* Copyright 2001 Antonio Linares <alinares@fivetech.com>
+* Portions of this project are based upon Harbour Project.
+* Copyright 1999-2017, https://harbour.github.io/
+*/
 /*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this software; see the file LICENSE.txt. If not, write to
- * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
- *
- * As a special exception, the ooHG Project gives permission for
- * additional uses of the text contained in its release of ooHG.
- *
- * The exception is that, if you link the ooHG libraries with other
- * files to produce an executable, this does not by itself cause the
- * resulting executable to be covered by the GNU General Public License.
- * Your use of that executable is in no way restricted on account of
- * linking the ooHG library code into it.
- *
- * This exception does not however invalidate any other reasons why
- * the executable file might be covered by the GNU General Public License.
- *
- * This exception applies only to the code released by the ooHG
- * Project under the name ooHG. If you copy code from other
- * ooHG Project or Free Software Foundation releases into a copy of
- * ooHG, as the General Public License permits, the exception does
- * not apply to the code that you add in this way. To avoid misleading
- * anyone as to the status of such modified files, you must delete
- * this exception notice from them.
- *
- * If you write modifications of your own for ooHG, it is your choice
- * whether to permit this exception to apply to your modifications.
- * If you do not wish that, delete this exception notice.
- */
-
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2, or (at your option)
+* any later version.
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* You should have received a copy of the GNU General Public License
+* along with this software; see the file LICENSE.txt. If not, write to
+* the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+* Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
+* As a special exception, the ooHG Project gives permission for
+* additional uses of the text contained in its release of ooHG.
+* The exception is that, if you link the ooHG libraries with other
+* files to produce an executable, this does not by itself cause the
+* resulting executable to be covered by the GNU General Public License.
+* Your use of that executable is in no way restricted on account of
+* linking the ooHG library code into it.
+* This exception does not however invalidate any other reasons why
+* the executable file might be covered by the GNU General Public License.
+* This exception applies only to the code released by the ooHG
+* Project under the name ooHG. If you copy code from other
+* ooHG Project or Free Software Foundation releases into a copy of
+* ooHG, as the General Public License permits, the exception does
+* not apply to the code that you add in this way. To avoid misleading
+* anyone as to the status of such modified files, you must delete
+* this exception notice from them.
+* If you write modifications of your own for ooHG, it is your choice
+* whether to permit this exception to apply to your modifications.
+* If you do not wish that, delete this exception notice.
+*/
 
 #include 'oohg.ch'
 #include 'hbclass.ch'
@@ -93,13 +81,13 @@ CLASS TInternal FROM TControl
    ENDCLASS
 
 METHOD Define( ControlName, ParentForm, x, y, OnClick, w, h, ;
-               backcolor, tooltip, gotfocus, lostfocus, ;
-               Transparent, BORDER, CLIENTEDGE, icon, ;
-               Virtualheight, VirtualWidth, ;
-               MouseDragProcedure, MouseMoveProcedure, ;
-               NoTabStop, HelpId, invisible, lRtl ) CLASS TInternal
+      backcolor, tooltip, gotfocus, lostfocus, ;
+      Transparent, BORDER, CLIENTEDGE, icon, ;
+      Virtualheight, VirtualWidth, ;
+      MouseDragProcedure, MouseMoveProcedure, ;
+      NoTabStop, HelpId, invisible, lRtl ) CLASS TInternal
 
-   Local ControlHandle, nStyle, nStyleEx := 0
+   LOCAL ControlHandle, nStyle, nStyleEx := 0
 
    ASSIGN ::nCol        VALUE x TYPE "N"
    ASSIGN ::nRow        VALUE y TYPE "N"
@@ -107,22 +95,22 @@ METHOD Define( ControlName, ParentForm, x, y, OnClick, w, h, ;
    ASSIGN ::nHeight     VALUE h TYPE "N"
    ASSIGN ::Transparent VALUE Transparent TYPE "L" DEFAULT .F.
 
-   if valtype( VirtualHeight ) != "N"
+   IF valtype( VirtualHeight ) != "N"
       VirtualHeight := 0
-   endif
+   ENDIF
 
-   if valtype( VirtualWidth ) != "N"
+   IF valtype( VirtualWidth ) != "N"
       VirtualWidth := 0
-   endif
+   ENDIF
 
    ::SetForm( ControlName, ParentForm,,,, backcolor,, lRtl )
 
    nStyle := ::InitStyle( ,, Invisible, NoTabStop ) + ;
-             if( ValType( BORDER ) == "L"    .AND. BORDER,     WS_BORDER, 0 )  + ;
-             SS_NOTIFY
+      if( ValType( BORDER ) == "L"    .AND. BORDER,     WS_BORDER, 0 )  + ;
+      SS_NOTIFY
 
    nStyleEx += if( ValType( CLIENTEDGE ) == "L" .AND. CLIENTEDGE, WS_EX_CLIENTEDGE, 0 ) + ;
-               if( ::Transparent, WS_EX_TRANSPARENT, 0 )
+      if( ::Transparent, WS_EX_TRANSPARENT, 0 )
    nStyleEx += WS_EX_CONTROLPARENT
 
    Controlhandle := InitInternal( ::ContainerhWnd, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, nStyle, nStyleEx, ::lRtl )
@@ -130,26 +118,26 @@ METHOD Define( ControlName, ParentForm, x, y, OnClick, w, h, ;
    ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
 
    ::HScrollBar := TScrollBar():Define( "0", Self,,,,,,,, ;
-                   { |Scroll| _OOHG_Eval( ::OnScrollLeft, Scroll ) }, ;
-                   { |Scroll| _OOHG_Eval( ::OnScrollRight, Scroll ) }, ;
-                   { |Scroll| _OOHG_Eval( ::OnHScrollBox, Scroll ) }, ;
-                   { |Scroll| _OOHG_Eval( ::OnHScrollBox, Scroll ) }, ;
-                   { |Scroll| _OOHG_Eval( ::OnHScrollBox, Scroll ) }, ;
-                   { |Scroll| _OOHG_Eval( ::OnHScrollBox, Scroll ) }, ;
-                   { |Scroll,n| _OOHG_Eval( ::OnHScrollBox, Scroll, n ) }, ;
-                   ,,,,,, SB_HORZ, .T. )
+      { |Scroll| _OOHG_Eval( ::OnScrollLeft, Scroll ) }, ;
+      { |Scroll| _OOHG_Eval( ::OnScrollRight, Scroll ) }, ;
+      { |Scroll| _OOHG_Eval( ::OnHScrollBox, Scroll ) }, ;
+      { |Scroll| _OOHG_Eval( ::OnHScrollBox, Scroll ) }, ;
+      { |Scroll| _OOHG_Eval( ::OnHScrollBox, Scroll ) }, ;
+      { |Scroll| _OOHG_Eval( ::OnHScrollBox, Scroll ) }, ;
+      { |Scroll,n| _OOHG_Eval( ::OnHScrollBox, Scroll, n ) }, ;
+      ,,,,,, SB_HORZ, .T. )
    ::HScrollBar:nLineSkip  := 1
    ::HScrollBar:nPageSkip  := 20
 
    ::VScrollBar := TScrollBar():Define( "0", Self,,,,,,,, ;
-                   { |Scroll| _OOHG_Eval( ::OnScrollUp, Scroll ) }, ;
-                   { |Scroll| _OOHG_Eval( ::OnScrollDown, Scroll ) }, ;
-                   { |Scroll| _OOHG_Eval( ::OnVScrollBox, Scroll ) }, ;
-                   { |Scroll| _OOHG_Eval( ::OnVScrollBox, Scroll ) }, ;
-                   { |Scroll| _OOHG_Eval( ::OnVScrollBox, Scroll ) }, ;
-                   { |Scroll| _OOHG_Eval( ::OnVScrollBox, Scroll ) }, ;
-                   { |Scroll,n| _OOHG_Eval( ::OnVScrollBox, Scroll, n ) }, ;
-                   ,,,,,, SB_VERT, .T. )
+      { |Scroll| _OOHG_Eval( ::OnScrollUp, Scroll ) }, ;
+      { |Scroll| _OOHG_Eval( ::OnScrollDown, Scroll ) }, ;
+      { |Scroll| _OOHG_Eval( ::OnVScrollBox, Scroll ) }, ;
+      { |Scroll| _OOHG_Eval( ::OnVScrollBox, Scroll ) }, ;
+      { |Scroll| _OOHG_Eval( ::OnVScrollBox, Scroll ) }, ;
+      { |Scroll| _OOHG_Eval( ::OnVScrollBox, Scroll ) }, ;
+      { |Scroll,n| _OOHG_Eval( ::OnVScrollBox, Scroll, n ) }, ;
+      ,,,,,, SB_VERT, .T. )
    ::VScrollBar:nLineSkip  := 1
    ::VScrollBar:nPageSkip  := 20
 
@@ -159,9 +147,9 @@ METHOD Define( ControlName, ParentForm, x, y, OnClick, w, h, ;
 
    ::hCursor := LoadCursorFromFile( icon )
 
-   If ::Transparent
+   IF ::Transparent
       RedrawWindowControlRect( ::ContainerhWnd, ::ContainerRow, ::ContainerCol, ::ContainerRow + ::Height, ::ContainerCol + ::Width )
-   EndIf
+   ENDIF
 
    ::ContainerhWndValue := ::hWnd
    _OOHG_AddFrame( Self )
@@ -172,45 +160,45 @@ METHOD Define( ControlName, ParentForm, x, y, OnClick, w, h, ;
    ::OnMouseDrag := MouseDragProcedure
    ::OnMouseMove := MouseMoveProcedure
 
-   Return Self
+   RETURN Self
 
 METHOD Events_VScroll( wParam ) CLASS TInternal
 
-   Local uRet
+   LOCAL uRet
 
    uRet := ::VScrollBar:Events_VScroll( wParam )
    ::RowMargin := - ::VScrollBar:Value
    ::ScrollControls()
 
-   Return uRet
+   RETURN uRet
 
 METHOD Events_HScroll( wParam ) CLASS TInternal
 
-   Local uRet
+   LOCAL uRet
 
    uRet := ::HScrollBar:Events_HScroll( wParam )
    ::ColMargin := - ::HScrollBar:Value
    ::ScrollControls()
 
-   Return uRet
+   RETURN uRet
 
 METHOD VirtualWidth( nSize ) CLASS TInternal
 
-   If valtype( nSize ) == "N"
+   IF valtype( nSize ) == "N"
       ::nVirtualWidth := nSize
       ValidateScrolls( Self, .T. )
-   EndIf
+   ENDIF
 
-   Return ::nVirtualWidth
+   RETURN ::nVirtualWidth
 
 METHOD VirtualHeight( nSize ) CLASS TInternal
 
-   If valtype( nSize ) == "N"
+   IF valtype( nSize ) == "N"
       ::nVirtualHeight := nSize
       ValidateScrolls( Self, .T. )
-   EndIf
+   ENDIF
 
-   Return ::nVirtualHeight
+   RETURN ::nVirtualHeight
 
 METHOD SizePos( Row, Col, Width, Height ) CLASS TInternal
 
@@ -228,10 +216,9 @@ METHOD ScrollControls() CLASS TInternal
 
    RETURN Self
 
-Function _EndInternal()
+FUNCTION _EndInternal()
 
-   Return _OOHG_DeleteFrame( "INTERNAL" )
-
+   RETURN _OOHG_DeleteFrame( "INTERNAL" )
 
 #pragma BEGINDUMP
 
@@ -261,6 +248,7 @@ static WNDPROC lpfnOldWndProc = 0;
 
 static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
+
    return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
 }
 
@@ -268,6 +256,7 @@ static BOOL bRegistered = 0;       // TODO: Thread safe ?
 
 static LRESULT CALLBACK _OOHG_TInternal_WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
 {
+
    return DefWindowProc( hWnd, message, wParam, lParam );
 }
 

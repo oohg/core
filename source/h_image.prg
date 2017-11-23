@@ -1,64 +1,52 @@
 /*
- * $Id: h_image.prg $
- */
+* $Id: h_image.prg $
+*/
 /*
- * ooHG source code:
- * Image control
- *
- * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
- * https://oohg.github.io/
- *
- * Portions of this project are based upon Harbour MiniGUI library.
- * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
- *
- * Portions of this project are based upon Harbour GUI framework for Win32.
- * Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
- * Copyright 2001 Antonio Linares <alinares@fivetech.com>
- *
- * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2017, https://harbour.github.io/
- */
+* ooHG source code:
+* Image control
+* Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
+* https://oohg.github.io/
+* Portions of this project are based upon Harbour MiniGUI library.
+* Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
+* Portions of this project are based upon Harbour GUI framework for Win32.
+* Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
+* Copyright 2001 Antonio Linares <alinares@fivetech.com>
+* Portions of this project are based upon Harbour Project.
+* Copyright 1999-2017, https://harbour.github.io/
+*/
 /*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this software; see the file LICENSE.txt. If not, write to
- * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
- *
- * As a special exception, the ooHG Project gives permission for
- * additional uses of the text contained in its release of ooHG.
- *
- * The exception is that, if you link the ooHG libraries with other
- * files to produce an executable, this does not by itself cause the
- * resulting executable to be covered by the GNU General Public License.
- * Your use of that executable is in no way restricted on account of
- * linking the ooHG library code into it.
- *
- * This exception does not however invalidate any other reasons why
- * the executable file might be covered by the GNU General Public License.
- *
- * This exception applies only to the code released by the ooHG
- * Project under the name ooHG. If you copy code from other
- * ooHG Project or Free Software Foundation releases into a copy of
- * ooHG, as the General Public License permits, the exception does
- * not apply to the code that you add in this way. To avoid misleading
- * anyone as to the status of such modified files, you must delete
- * this exception notice from them.
- *
- * If you write modifications of your own for ooHG, it is your choice
- * whether to permit this exception to apply to your modifications.
- * If you do not wish that, delete this exception notice.
- */
-
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2, or (at your option)
+* any later version.
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* You should have received a copy of the GNU General Public License
+* along with this software; see the file LICENSE.txt. If not, write to
+* the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+* Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
+* As a special exception, the ooHG Project gives permission for
+* additional uses of the text contained in its release of ooHG.
+* The exception is that, if you link the ooHG libraries with other
+* files to produce an executable, this does not by itself cause the
+* resulting executable to be covered by the GNU General Public License.
+* Your use of that executable is in no way restricted on account of
+* linking the ooHG library code into it.
+* This exception does not however invalidate any other reasons why
+* the executable file might be covered by the GNU General Public License.
+* This exception applies only to the code released by the ooHG
+* Project under the name ooHG. If you copy code from other
+* ooHG Project or Free Software Foundation releases into a copy of
+* ooHG, as the General Public License permits, the exception does
+* not apply to the code that you add in this way. To avoid misleading
+* anyone as to the status of such modified files, you must delete
+* this exception notice from them.
+* If you write modifications of your own for ooHG, it is your choice
+* whether to permit this exception to apply to your modifications.
+* If you do not wish that, delete this exception notice.
+*/
 
 #include "oohg.ch"
 #include "hbclass.ch"
@@ -98,11 +86,11 @@ CLASS TImage FROM TControl
    ENDCLASS
 
 METHOD Define( ControlName, ParentForm, x, y, FileName, w, h, ProcedureName, ;
-               HelpId, invisible, stretch, lWhiteBackground, lRtl, backcolor, ;
-               cBuffer, hBitMap, autofit, imagesize, ToolTip, Border, ClientEdge, ;
-               lNoLoadTrans, lNo3DColors, lNoDIB, lStyleTransp, aArea, lDisabled ) CLASS TImage
+      HelpId, invisible, stretch, lWhiteBackground, lRtl, backcolor, ;
+      cBuffer, hBitMap, autofit, imagesize, ToolTip, Border, ClientEdge, ;
+      lNoLoadTrans, lNo3DColors, lNoDIB, lStyleTransp, aArea, lDisabled ) CLASS TImage
 
-   Local ControlHandle, nStyle, nStyleEx
+   LOCAL ControlHandle, nStyle, nStyleEx
 
    ASSIGN ::nCol           VALUE x            TYPE "N"
    ASSIGN ::nRow           VALUE y            TYPE "N"
@@ -118,12 +106,12 @@ METHOD Define( ControlName, ParentForm, x, y, FileName, w, h, ProcedureName, ;
    ASSIGN lDisabled        VALUE lDisabled    TYPE "L" DEFAULT .F.
 
    ::SetForm( ControlName, ParentForm,,,, BackColor,, lRtl )
-   If HB_IsLogical( lWhiteBackground ) .AND. lWhiteBackground
+   IF HB_IsLogical( lWhiteBackground ) .AND. lWhiteBackground
       ::BackColor := WHITE
-   EndIf
+   ENDIF
 
    nStyle := ::InitStyle( ,, Invisible, .T., lDisabled ) + ;
-             if( ValType( Border ) == "L" .AND. Border, WS_BORDER, 0 )
+      if( ValType( Border ) == "L" .AND. Border, WS_BORDER, 0 )
 
    nStyleEx := if( ValType( ClientEdge ) == "L" .AND. ClientEdge, WS_EX_CLIENTEDGE, 0 )
    IF HB_IsLogical( lStyleTransp ) .AND. lStyleTransp
@@ -135,16 +123,16 @@ METHOD Define( ControlName, ParentForm, x, y, FileName, w, h, ProcedureName, ;
    ::Register( ControlHandle, ControlName, HelpId, , ToolTip )
 
    ::Picture := FileName
-   If ! ValidHandler( ::hImage )
+   IF ! ValidHandler( ::hImage )
       ::Buffer := cBuffer
-      If ! ValidHandler( ::hImage )
+      IF ! ValidHandler( ::hImage )
          ::HBitMap := hBitMap
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
    ASSIGN ::OnClick VALUE ProcedureName TYPE "B"
 
-   Return Self
+   RETURN Self
 
 METHOD Picture( cPicture ) CLASS TImage
 
@@ -159,12 +147,12 @@ METHOD Picture( cPicture ) CLASS TImage
 
          nAttrib := LR_DEFAULTCOLOR
          IF aPictSize[ 3 ] <= 8
-           IF ! ::lNo3DColors
-              nAttrib += LR_LOADMAP3DCOLORS
-           ENDIF
-           IF ! ::lNoTransparent
-              nAttrib += LR_LOADTRANSPARENT
-           ENDIF
+            IF ! ::lNo3DColors
+               nAttrib += LR_LOADMAP3DCOLORS
+            ENDIF
+            IF ! ::lNoTransparent
+               nAttrib += LR_LOADTRANSPARENT
+            ENDIF
          ENDIF
       ELSE
          nAttrib := LR_CREATEDIBSECTION
@@ -179,12 +167,11 @@ METHOD Picture( cPicture ) CLASS TImage
       ::RePaint()
    ENDIF
 
-   Return ::cPicture
+   RETURN ::cPicture
 
-*------------------------------------------------------------------------------*
 METHOD HBitMap( hBitMap ) CLASS TImage
-*------------------------------------------------------------------------------*
-   If ValType( hBitMap ) $ "NP"
+
+   IF ValType( hBitMap ) $ "NP"
       DeleteObject( ::hImage )
       ::hImage := hBitMap
       IF ::ImageSize
@@ -193,13 +180,13 @@ METHOD HBitMap( hBitMap ) CLASS TImage
       ENDIF
       ::RePaint()
       ::cPicture := ""
-   EndIf
-Return ::hImage
+   ENDIF
 
-*------------------------------------------------------------------------------*
+   RETURN ::hImage
+
 METHOD Buffer( cBuffer ) CLASS TImage
-*------------------------------------------------------------------------------*
-   If VALTYPE( cBuffer ) $ "CM"
+
+   IF VALTYPE( cBuffer ) $ "CM"
       DeleteObject( ::hImage )
       // load image at full size
       ::hImage := _OOHG_BitmapFromBuffer( Self, cBuffer, .F. )
@@ -209,38 +196,39 @@ METHOD Buffer( cBuffer ) CLASS TImage
       ENDIF
       ::RePaint()
       ::cPicture := ""
-   EndIf
-Return nil
+   ENDIF
 
-*------------------------------------------------------------------------------*
+   RETURN NIL
+
 METHOD OnClick( bOnClick ) CLASS TImage
-*------------------------------------------------------------------------------*
-   If PCOUNT() > 0
+
+   IF PCOUNT() > 0
       ::bOnClick := bOnClick
       WindowStyleFlag( ::hWnd, SS_NOTIFY, IF( ValType( bOnClick ) == "B", SS_NOTIFY, 0 ) )
       TImage_SetNotify( Self, HB_IsBlock( bOnClick ) )
-   EndIf
-Return ::bOnClick
+   ENDIF
 
-*------------------------------------------------------------------------------*
+   RETURN ::bOnClick
+
 METHOD ToolTip( cToolTip ) CLASS TImage
-*------------------------------------------------------------------------------*
-   If PCOUNT() > 0
-      TImage_SetToolTip( Self,  ( ValType( cToolTip ) $ "CM" .AND. ! Empty( cToolTip ) ) .OR. HB_IsBlock( cToolTip ) )
-   EndIf
-Return ::Super:ToolTip( cToolTip )
 
-*------------------------------------------------------------------------------*
+   IF PCOUNT() > 0
+      TImage_SetToolTip( Self,  ( ValType( cToolTip ) $ "CM" .AND. ! Empty( cToolTip ) ) .OR. HB_IsBlock( cToolTip ) )
+   ENDIF
+
+   RETURN ::Super:ToolTip( cToolTip )
+
 METHOD SizePos( Row, Col, Width, Height ) CLASS TImage
-*------------------------------------------------------------------------------*
-LOCAL uRet
+
+   LOCAL uRet
+
    uRet := ::Super:SizePos( Row, Col, Width, Height )
    ::RePaint()
-RETURN uRet
 
-*------------------------------------------------------------------------------*
+   RETURN uRet
+
 METHOD RePaint() CLASS TImage
-*------------------------------------------------------------------------------*
+
    IF ValidHandler( ::hImage )
       IF ValidHandler( ::AuxHandle )
          DeleteObject( ::AuxHandle )
@@ -256,29 +244,31 @@ METHOD RePaint() CLASS TImage
    ELSE
       PaintBkGnd( ::hWnd, ::BackColor )
    ENDIF
-RETURN Self
 
-*------------------------------------------------------------------------------*
+   RETURN Self
+
 METHOD Release() CLASS TImage
-*------------------------------------------------------------------------------*
-   DeleteObject( ::hImage )
-RETURN ::Super:Release()
 
-*------------------------------------------------------------------------------*
+   DeleteObject( ::hImage )
+
+   RETURN ::Super:Release()
+
 METHOD OriginalSize() CLASS TImage
-*------------------------------------------------------------------------------*
-Local aRet
+
+   LOCAL aRet
+
    IF ValidHandler( ::hImage )
       aRet := { _OOHG_BitMapWidth( ::hImage ), _OOHG_BitMapHeight( ::hImage ) }
    ELSE
       aRet := { 0, 0 }
    ENDIF
-RETURN aRet
 
-*------------------------------------------------------------------------------*
+   RETURN aRet
+
 METHOD CurrentSize() CLASS TImage
-*------------------------------------------------------------------------------*
-Local aRet
+
+   LOCAL aRet
+
    IF ValidHandler( ::AuxHandle )
       aRet := { _OOHG_BitMapWidth( ::AuxHandle ), _OOHG_BitMapHeight( ::AuxHandle ) }
    ELSEIF ValidHandler( ::hImage )
@@ -286,22 +276,22 @@ Local aRet
    ELSE
       aRet := { 0, 0 }
    ENDIF
-RETURN aRet
 
-*------------------------------------------------------------------------------*
+   RETURN aRet
+
 METHOD Blend( hSprite, nImgX, nImgY, nImgW, nImgH, aColor, nSprX, nSprY, nSprW, nSprH ) CLASS TImage
-*------------------------------------------------------------------------------*
+
    _OOHG_BlendImage( ::hImage, nImgX, nImgY, nImgW, nImgH, hSprite, aColor, nSprX, nSprY, nSprW, nSprH )
    ::RePaint()
-RETURN Self
 
-*------------------------------------------------------------------------------*
+   RETURN Self
+
 METHOD Copy( lAsDIB ) CLASS TImage
-*------------------------------------------------------------------------------*
+
    DEFAULT lAsDIB TO ! ::lNoDIBSection
    // Do not forget to call DeleteObject
-RETURN _OOHG_CopyBitmap( ::hImage, 0, 0 )
 
+   RETURN _OOHG_CopyBitmap( ::hImage, 0, 0 )
 
 #pragma BEGINDUMP
 
@@ -320,6 +310,7 @@ static WNDPROC lpfnOldWndProc = 0;
 
 static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
+
    return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
 }
 
@@ -366,6 +357,7 @@ BOOL PtInExcludeArea( PHB_ITEM pArea, int x, int y )
                       ( hb_arrayGetNL( pSector, 2 ) <= y ) &&
                       ( y < hb_arrayGetNL( pSector, 4 ) ) )
                   {
+
                      return TRUE;
                   }
                }
