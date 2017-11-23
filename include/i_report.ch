@@ -58,7 +58,6 @@
  * If you do not wish that, delete this exception notice.
  */
 
-
 #xcommand DO REPORT ;
       TITLE <ctitle> ;
       HEADERS <aheaders1>, <aheaders2> ;

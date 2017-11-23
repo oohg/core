@@ -58,7 +58,6 @@
  * If you do not wish that, delete this exception notice.
  */
 
-
 #xtranslate SET HELPFILE TO <cFile> ;
    => ;
       SetHelpFile( <cFile> )

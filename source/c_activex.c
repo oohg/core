@@ -66,7 +66,6 @@
  *
  */
 
-
 #ifndef CINTERFACE
    #define CINTERFACE 1
 #endif

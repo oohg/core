@@ -58,7 +58,6 @@
  * If you do not wish that, delete this exception notice.
  */
 
-
 #define CHKL_JTFY_LEFT        0
 #define CHKL_JTFY_RIGHT       1
 #define CHKL_JTFY_CENTER      2

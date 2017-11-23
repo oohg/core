@@ -58,6 +58,5 @@
  * If you do not wish that, delete this exception notice.
  */
 
-
 #include "oohg.ch"
 #include "i_hmg_compat.ch"

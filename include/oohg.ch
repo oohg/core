@@ -58,7 +58,6 @@
  * If you do not wish that, delete this exception notice.
  */
 
-
 #ifndef __OOHG__
 #define __OOHG__
 

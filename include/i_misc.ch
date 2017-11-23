@@ -58,7 +58,6 @@
  * If you do not wish that, delete this exception notice.
  */
 
-
 /*---------------------------------------------------------------------------
 BROWSEINFO FLAGS FOR BrowseForFolder() (contributed by Richard Rylco)
 http://msdn.microsoft.com/en-us/library/windows/desktop/bb773205(v=vs.85).aspx

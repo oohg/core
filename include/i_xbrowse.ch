@@ -58,7 +58,6 @@
  * If you do not wish that, delete this exception notice.
  */
 
-
 #define XBROWSE_JTFY_LEFT        0
 #define XBROWSE_JTFY_RIGHT       1
 #define XBROWSE_JTFY_CENTER      2

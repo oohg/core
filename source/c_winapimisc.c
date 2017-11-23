@@ -59,7 +59,6 @@
  * If you do not wish that, delete this exception notice.
  */
 
-
 #ifndef _WIN32_IE
    #define _WIN32_IE 0x0500
 #endif

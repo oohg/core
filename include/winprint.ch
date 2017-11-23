@@ -58,7 +58,6 @@
  * If you do not wish that, delete this exception notice.
  */
 
-
 #ifndef NO_HBPRN_DECLARATION
 MEMVAR HBPRN
 #endif

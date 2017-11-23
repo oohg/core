@@ -58,7 +58,6 @@
  * If you do not wish that, delete this exception notice.
  */
 
-
 #xcommand DEFINE STATUSBAR ;
       [ <dummy1: OF, PARENT> <parent> ] ;
       [ OBJ <obj> ] ;

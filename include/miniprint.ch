@@ -58,7 +58,6 @@
  * If you do not wish that, delete this exception notice.
  */
 
-
 #xcommand SELECT PRINTER <cPrinter> ;
       [ <lOrientation: ORIENTATION> <nOrientation> ] ;
       [ <lPaperSize: PAPERSIZE> <nPaperSize> ] ;

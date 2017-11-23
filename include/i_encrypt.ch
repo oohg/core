@@ -58,7 +58,6 @@
  * If you do not wish that, delete this exception notice.
  */
 
-
 #xcommand ENCODE FILE <file> [PASSWORD <password>] ;
    => ;
       db_Encrypt( <(file)>, <(password)> )

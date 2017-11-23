@@ -58,7 +58,6 @@
  * If you do not wish that, delete this exception notice.
  */
 
-
 #translate CRLF => Chr(13) + Chr(10)
 
 #xcommand BEGIN INI ;

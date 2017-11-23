@@ -59,7 +59,6 @@
  * If you do not wish that, delete this exception notice.
  */
 
-
 #define _WIN32_IE      0x0500
 
 #include <windows.h>

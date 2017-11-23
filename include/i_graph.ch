@@ -60,7 +60,6 @@
  * If you do not wish that, delete this exception notice.
  */
 
-
 #xcommand DRAW TEXT IN WINDOW <windowname> ;
       AT <nRow>, <nCol> ;
       VALUE <cString> ;

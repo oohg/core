@@ -59,7 +59,6 @@
  * If you do not wish that, delete this exception notice.
  */
 
-
 #define HB_OS_WIN_32_USED
 #include "hbapi.h"
 #include "windows.h"
@@ -85,7 +84,6 @@ HB_FUNC(LOADICON) // handle of dll/NULL , resource name/id
     hb_retnl((LONG)hIco);
 }
 
-
 HB_FUNC( EXTRACTICON )
 {
 
@@ -94,13 +92,11 @@ HB_FUNC( EXTRACTICON )
                         hb_parni( 2 ) ) );     // Icon Index
 }
 
-
 HB_FUNC(LOADRESOURCE)
 {
    hb_retnl( ( LONG ) LoadResource( ( HINSTANCE ) hb_parnl( 1 ),
                                   ( HRSRC ) hb_parni( 2 ) ) );
 }
-
 
 HB_FUNC( FINDRESOURCE ) // ( hResources, cResourceName, nResType )
 {

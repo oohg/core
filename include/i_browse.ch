@@ -59,7 +59,6 @@
  * If you do not wish that, delete this exception notice.
  */
 
-
 #define REFRESH_FORCE           0
 #define REFRESH_NO              1
 #define REFRESH_DEFAULT        -1

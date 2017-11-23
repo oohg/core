@@ -58,7 +58,6 @@
  * If you do not wish that, delete this exception notice.
  */
 
-
 #command ENABLE MENUITEM <control> OF <form>;
          =>;
          GetControlObject( <(control)>, <(form)> ):Enabled := .T.
@@ -328,4 +327,3 @@
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TMenuItem(), [ <subclass>() ] ): ;
             InsertSeparator( <(name)>, <parent>, <.right.>, <nPos> )
-

@@ -58,7 +58,6 @@
  * If you do not wish that, delete this exception notice.
  */
 
-
 #ifndef __OOHG_HMG_COMPAT__
 
 #define __OOHG_HMG_COMPAT__

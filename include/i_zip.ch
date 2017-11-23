@@ -58,7 +58,6 @@
  * If you do not wish that, delete this exception notice.
  */
 
-
 #command UNCOMPRESS [ FILE ] <zipfile> ;
       [ EXTRACTPATH <extractpath> ] ;
       [ RESULT [ TO ] <lSuccess> ] ;

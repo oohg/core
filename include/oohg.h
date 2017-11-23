@@ -58,7 +58,6 @@
  * If you do not wish that, delete this exception notice.
  */
 
-
 #ifdef OOHG_HWND_POINTER
    #define HWNDparam( pos )          ( ( HWND ) hb_parptr( pos ) )
    #define HWNDret( hWnd )           ( hb_retptr( hWnd ) )
@@ -319,4 +318,3 @@ wchar_t * AnsiToWide( const char * szString );
    #undef MAKELONG
 #endif
 #define MAKELONG(a, b)  ((LONG)(((WORD)((DWORD_PTR)(a) & 0xffff)) | (((DWORD)((WORD)((DWORD_PTR)(b) & 0xffff))) << 16)))
-

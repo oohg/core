@@ -58,7 +58,6 @@
  * If you do not wish that, delete this exception notice.
  */
 
-
 #define AQUA    {   0, 255, 255 }
 #define BLACK   {   0,   0,   0 }
 #define BLUE    {   0,   0, 255 }

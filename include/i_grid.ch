@@ -58,7 +58,6 @@
  * If you do not wish that, delete this exception notice.
  */
 
-
 #define GRID_JTFY_LEFT      0
 #define GRID_JTFY_RIGHT     1
 #define GRID_JTFY_CENTER    2

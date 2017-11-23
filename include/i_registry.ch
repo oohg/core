@@ -58,7 +58,6 @@
  * If you do not wish that, delete this exception notice.
  */
 
-
 /*---------------------------------------------------------------------------
 THIS DEFINES ARE PART OF THE "REGISTRY FUNCTIONS FOR HARBOUR"
 Contributed by Luiz Rafael Culik <culik@sl.conex.net>)

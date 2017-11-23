@@ -59,7 +59,6 @@
  * If you do not wish that, delete this exception notice.
  */
 
-
 /*---------------------------------------------------------------------------
 AUXILIARY VARIABLES
 ---------------------------------------------------------------------------*/
@@ -141,7 +140,6 @@ AUXILIARY VARIABLES
 #xtranslate _OOHG_ActiveControlOnSelChange            => _OOHG_ActiveControlInfo \[ 126 \]
 #xtranslate _OOHG_ActiveControlOnListDisplay          => _OOHG_ActiveControlInfo \[ 127 \]
 #xtranslate _OOHG_ActiveControlOnListClose            => _OOHG_ActiveControlInfo \[ 128 \]
-
 
 #xtranslate _OOHG_ActiveControlFixedWidths            => _OOHG_ActiveControlInfo \[ 131 \]
 #xtranslate _OOHG_ActiveControlAbortEdit              => _OOHG_ActiveControlInfo \[ 132 \]
@@ -243,7 +241,6 @@ AUXILIARY VARIABLES
 #xtranslate _OOHG_ActiveControlAction                 => _OOHG_ActiveControlInfo \[ 228 \]
 #xtranslate _OOHG_ActiveControlFlat                   => _OOHG_ActiveControlInfo \[ 229 \]
 
-
 #xtranslate _OOHG_ActiveControlPicture                => _OOHG_ActiveControlInfo \[ 232 \]
 #xtranslate _OOHG_ActiveControlEditCellValue          => _OOHG_ActiveControlInfo \[ 233 \]
 #xtranslate _OOHG_ActiveControlItems                  => _OOHG_ActiveControlInfo \[ 234 \]
@@ -258,7 +255,6 @@ AUXILIARY VARIABLES
 #xtranslate _OOHG_ActiveControlHeaders                => _OOHG_ActiveControlInfo \[ 243 \]
 #xtranslate _OOHG_ActiveControlWidths                 => _OOHG_ActiveControlInfo \[ 244 \]
 #xtranslate _OOHG_ActiveControlOnDblClick             => _OOHG_ActiveControlInfo \[ 245 \]
-
 
 #xtranslate _OOHG_ActiveControlOnHeadClick            => _OOHG_ActiveControlInfo \[ 248 \]
 #xtranslate _OOHG_ActiveControlNoLines                => _OOHG_ActiveControlInfo \[ 249 \]
