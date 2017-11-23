@@ -55,7 +55,7 @@ rem
 
    rem ---------- call :MAIN COMPILER RESET
    call :MAIN COMPILER HB30
-   cd source
+   cd ..\source
    call :MAIN COMPILE ^
       h_activex h_anigif h_application h_browse h_button ^
          c_windows
