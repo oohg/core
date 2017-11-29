@@ -164,6 +164,13 @@ FUNCTION FormatIndent( cLinePrg, oFormat )
    IF Empty( cLinePrg )
       cLinePrg := ""
    ELSE
+      IF ! oFormat:lComment
+         IF Left( AllTrim( cLinePrg ), 1 ) == "#" .AND. ! oFormat:lComment
+            nIdent2 := -oFormat:nIdent // 0 col
+         ELSEIF AScan( { "ENDCLASS", " END CLASS" },,, { | e | Upper( AllTrim( cLinePrg ) ) == e } ) != 0
+            nIdent2 := 1 - oFormat:nIdent // 1 col
+         ENDIF
+      ENDIF
       cLinePrg := Space( ( Max( oFormat:nIdent + nIdent2, 0 ) ) * 3 ) + AllTrim( cLinePrg )
    ENDIF
    IF oFormat:lComment
@@ -201,7 +208,7 @@ FUNCTION FormatEmptyLine( cTxtPrg, acPrgLines )
       DO CASE
       CASE IsEndDump( cThisLineUpper ) ;   lPrgSource := .T.
       CASE ! lPrgSource
-      CASE IsBeginDump( cThisLineUpper ) ; lPrgSource := .T.
+      CASE IsBeginDump( cThisLineUpper ) ; lPrgSource := .F.
       CASE oFormat:lComment .AND. IsEndComment( cThisLineUpper ); oFormat:lComment := .F.
       CASE oFormat:lComment
       CASE IsEmptyComment( cThisLineUpper )
@@ -214,7 +221,8 @@ FUNCTION FormatEmptyLine( cTxtPrg, acPrgLines )
             LOOP
          ENDIF
       CASE Left( acPrgLines[ nLine ], 1 ) != " " .AND. IsCmdType( FMT_BLANK_LINE, cThisLineUpper ) ;  cTxtPrg += hb_Eol(); oFormat:lEmptyLine := .T.
-      CASE Left( cThisLineUpper, 6 )  == "RETURN" .AND. At( "RETURN", acPrgLines[ nLine ] ) < 5    ;  cTxtPrg += hb_Eol(); oFormat:lEmptyLine := .T.
+      CASE Left( cThisLineUpper, 7 )  == "RETURN " .AND. At( "RETURN", acPrgLines[ nLine ] ) < 5   ;  cTxtPrg += hb_Eol(); oFormat:lEmptyLine := .T.
+      CASE cThisLineUpper == "RETURN" .AND. At( "RETURN", acPrgLines[ nLine ] ) < 5   ;  cTxtPrg += hb_Eol(); oFormat:lEmptyLine := .T.
       ENDCASE
       IF oFormat:lDeclareVar .AND. ;
          Right( cTxtPrg, 3 ) != ";" + hb_Eol() .AND. ;
