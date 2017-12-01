@@ -1,6 +1,8 @@
 /*
 MGFORMAT - Format source code (indent, line space, first words to upper)
 Test over HMG3 + HMG EXTENDED + HWGUI + OOHG
+
+2017.12.01 - Try to solve continuation with comments, anything like this: IF .T. ; ENDIF
 */
 
 #include "directry.ch"
@@ -68,7 +70,7 @@ STATIC FUNCTION FormatFile( cFile, nContYes, nContNo )
    LOCAL oFormat := FormatClass():New()
 
    cTxtPrgAnt := MemoRead( cFile )
-   IF "HB_INLINE" $ cTxtPrgAnt // fonte C embutido no PRG - não #pragma begin dump
+   IF "HB_INLINE" $ cTxtPrgAnt // C source inside PRG source, but not #pragma begindump
       ? cFile
       ? Space(3) + " ignored because have HB_INLINE"
       RETURN NIL
@@ -145,7 +147,7 @@ FUNCTION FormatIndent( cLinePrg, oFormat )
    ENDIF
    // line continuation, without comment, will ident next
    IF ! ( Left( cThisLineUpper, 1 ) == "*" .OR. Left( cThisLineUpper, 2 ) == "//" .OR. oFormat:lComment )
-      oFormat:lContinue := Right( cThisLineUpper, 1 ) == ";"
+      oFormat:lContinue := IsLineContinue( cThisLineUpper )
    ENDIF
    IF ! oFormat:lComment
       FormatCase( @cLinePrg )
@@ -228,7 +230,7 @@ FUNCTION FormatEmptyLine( cTxtPrg, acPrgLines )
          Right( cTxtPrg, 3 ) != ";" + hb_Eol() .AND. ;
          ! IsCmdType( FMT_DECLARE_VAR, cThisLineUpper )
          oFormat:lDeclareVar := .F.
-         IF ! Empty( acPrgLines[ nLine ] ) .AND. ! oFormat:lEmptyLine .AND. ! ";" $ cThisLineUpper
+         IF ! Empty( acPrgLines[ nLine ] ) .AND. ! oFormat:lEmptyLine .AND. ! IsLineContinue( cThisLineUpper )
             cTxtPrg += hb_Eol()
             oFormat:lEmptyLine := .T.
          ENDIF
@@ -237,7 +239,7 @@ FUNCTION FormatEmptyLine( cTxtPrg, acPrgLines )
       DO CASE
       CASE ! lPrgSource
       CASE oFormat:lComment
-      CASE ";" $ cThisLineUpper
+      CASE IsLineContinue( cThisLineUpper )
       CASE Left( acPrgLines[ nLine ], 1 ) != " " .AND. IsCmdType( FMT_BLANK_LINE,  cThisLineUpper ); cTxtPrg += hb_Eol(); cThisLineUpper := ""
       CASE IsCmdType( FMT_DECLARE_VAR, cThisLineUpper ) ; oFormat:lDeclareVar := .T.
       ENDCASE
@@ -283,6 +285,31 @@ STATIC FUNCTION IsBeginDump( cText )
 STATIC FUNCTION IsEndDump( cText )
 
    RETURN Lower( Left( AllTrim( cText ), 15 ) ) == "#" + "pragma enddump"
+
+STATIC FUNCTION IsLineContinue( cText )
+
+   LOCAL nPos
+
+   // May be IF .T.; ENDIF, or xxx ; // comment
+
+   IF .NOT. ";" $ cText
+      RETURN .F.
+   ENDIF
+   IF "//" $ cText
+      cText := Trim( Substr( cText, 1, At( "//", cText ) - 1 ) )
+   ENDIF
+   IF Right( cText, 1 ) == ";"
+      RETURN .T.
+   ENDIF
+   nPos  := hb_At( ";", cText )
+   IF "/*" $ cText .AND. At( "/*", cText ) < nPos
+      RETURN .F.
+   ENDIF
+   IF ["] $ cText .AND. Rat( ["], cText ) > nPos
+      RETURN .F.
+   ENDIF
+
+   RETURN .T.
 
 STATIC FUNCTION IsBeginComment( cText )
 
@@ -685,3 +712,4 @@ STATIC FUNCTION FmtList( nType )
    ENDCASE
 
    RETURN aList
+
