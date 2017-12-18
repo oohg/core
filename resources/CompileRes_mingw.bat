@@ -3,31 +3,42 @@ rem
 rem $Id: CompileRes_mingw.bat $
 rem
 
-:MAIN
+:COMPILERES_MINGW
 
-   echo Compiling oohg.o ...
+   echo Compiling oohg.rc ...
 
    if /I not "%1"=="/NOCLS" cls
    if /I "%1"=="/NOCLS" shift
 
    if /I "%1"=="HB30" goto CONTINUE
    if /I "%1"=="HB32" goto CONTINUE
-   goto SYNTAX
+
+:SYNTAX
+
+   echo Syntax:
+   echo    To build with Harbour 3.0 and MinGW
+   echo       CompileRes_mingw [/NOCLS] HB30
+   echo   To build with Harbour 3.2 and MinGW
+   echo       CompileRes_mingw [/NOCLS] HB32
+   echo.
+   goto EXIT
+
 
 :CONTINUE
 
-   if ".%HG_ROOT%."==".." set HG_ROOT=c:\oohg
-   if ".%HG_MINGW%."==".." goto CCOMP
-   goto CHECK
+   if not "%HG_MINGW%"=="" goto CHECK
 
-:CCOMP
+   if not "%HG_ROOT%"=="" set HG_MINGW=%HG_ROOT%
+   if "%HG_ROOT%"=="" set HG_MINGW=%~dp0..
 
-   if /I "%1"=="HB30" set HG_MINGW=c:\oohg\hb30\comp\mingw
-   if /I "%1"=="HB32" set HG_MINGW=c:\oohg\hb32\comp\mingw
+   if /I "%1"=="HB30" set HG_MINGW=%HG_MINGW%\hb30\comp\mingw
+   if /I "%1"=="HB32" set HG_MINGW=%HG_MINGW%\hb32\comp\mingw
 
 :CHECK
 
-   if not exist %HG_MINGW%\bin\windres.exe goto NO_MINGW
+   if not exist "%HG_MINGW%\bin\windres.exe" goto NO_MINGW
+
+:COMPILE
 
    if /I "%1"=="HB30" ( if exist oohg_hb30.o del oohg_hb30.o )
    if /I "%1"=="HB30" ( if exist oohg_hb30.o goto ERROR4 )
@@ -84,16 +95,6 @@ rem
 :ERROR5
 
    echo Can not delete old oohg_hb32.o !!!
-   goto EXIT
-
-:SYNTAX
-
-   echo Syntax:
-   echo    To build with Harbour 3.0 and MinGW
-   echo       CompileRes_mingw [/NOCLS] HB30
-   echo   To build with Harbour 3.2 and MinGW
-   echo       CompileRes_mingw [/NOCLS] HB32
-   echo.
    goto EXIT
 
 :EXIT

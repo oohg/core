@@ -3,21 +3,23 @@ rem
 rem $Id: ofmt.bat $
 rem
 
-:MAIN
+:OFMT
 
-   rem *** Sets ***
-   if .%HG_FMT%.==.. set HG_FMT=%~dp0fmt
+   if not "%HG_FMT%" == "" goto CHECK
+   set HG_FMT=%~dp0fmt
 
-   rem *** Check ***
-   if not exist %HG_FMT%\ofmt.exe goto NOT_INSTALLED
+:CHECK
 
-   rem *** Execute ***
-   start %HG_FMT%\ofmt.exe %*
+   if not exist "%HG_FMT%\ofmt.exe" goto NOT_INSTALLED
+
+:EXECUTE
+
+   start "%HG_FMT%\ofmt.exe" %*
    goto END
 
 :NOT_INSTALLED
 
-   echo Missing %HG_FMT%\ofmt.exe
+   echo File %HG_FMT%\ofmt.exe not found !!!
    echo.
 
 :END

@@ -3,48 +3,48 @@ rem
 rem $Id: BuildApp_hbmk2.bat $
 rem
 
-:MAIN
+:BUILDAPP_HBMK2
 
-   REM *** Check for .prg ***
-   if "%1"=="" goto :END
-   if exist %1.prg goto :CONTINUE
-   if not exist %1.hbp goto :ERROR1
+   if not "%HG_ROOT%" == "" goto CHECK
+
+   set THIS_DRIVE_AND_PATH=%~dp0
+   set HG_ROOT=%THIS_DRIVE_AND_PATH%
+   if "%THIS_DRIVE_AND_PATH:~-1%" == "\" set HG_ROOT=%THIS_DRIVE_AND_PATH:~0,-1%
+   set THIS_DRIVE_AND_PATH=
+
+:CHECK
+
+   if "%1" == "" goto ERROR1
+   if exist %1.prg goto CONTINUE
+   if not exist %1.hbp goto ERROR2
 
 :CONTINUE
 
-   rem *** Delete Old Executable and Log ***
-   if exist %1.exe     del %1.exe
-   if exist %1.exe     goto :ERROR2
+   rem TODO: test for BuildApp30.bat and/or BuildApp32.bat ?
+
+   if "%HG_HRB%"   == "" set HG_HRB=%HG_ROOT%\hb32
+   if "%HG_MINGW%" == "" set HG_MINGW=%HG_CCOMP%
+   if "%HG_MINGW%" == "" set HG_MINGW=%HG_HRB%\comp\mingw
+   if "%HG_CCOMP%" == "" set HG_CCOMP=%HG_MINGW%
+   if "%LIB_GUI%"  == "" set LIB_GUI=lib\hb\mingw
+   if "%LIB_HRB%"  == "" set LIB_HRB=lib\win\mingw
+   if "%BIN_HRB%"  == "" set BIN_HRB=bin
+
+:CLEAN_EXE
+
+   if exist %1.exe del %1.exe
+   if exist %1.exe goto ERROR3
    if exist output.log del output.log
+   if exist output.log goto ERROR4
 
-   rem *** Set Paths ***
-   if "%HG_ROOT%"==""  set HG_ROOT=c:\oohg
-   if "%HG_HRB%"==""   set HG_HRB=c:\oohg\hb30
-   if "%HG_CCOMP%"=="" set HG_CCOMP=c:\oohg\hb30\comp\mingw
+:MORE_SETS
 
-   rem *** To Build with Nightly Harbour ***
-   rem set HG_HRB=c:\oohg\hb32
-   rem *** For 32 bits MinGW ***
-   rem set HG_CCOMP=c:\oohg\hb32\comp\mingw
-   rem *** For 64 bits MinGW ***
-   rem set HG_CCOMP=c:\oohg\hb3264\comp\mingw
+   rem *** Set PATH ***
+   set TPATH=%PATH%
+   set PATH=%HG_CCOMP%\bin;%HG_HRB%\%BIN_HRB%
 
-   rem *** Set EnvVars ***
-   if "%LIB_GUI%"=="" set LIB_GUI=lib
-   if "%LIB_HRB%"=="" set LIB_HRB=lib
-   if "%BIN_HRB%"=="" set BIN_HRB=bin
+:PARSE_SWITCHES
 
-   rem *** To Build with Nightly Harbour ***
-   rem *** For 32 bits MinGW ***
-   rem set LIB_GUI=lib\hb\mingw
-   rem set LIB_HRB=lib\win\mingw
-   rem set BIN_HRB=bin or bin\win\mingw
-   rem *** For 64 bits MinGW ***
-   rem set LIB_GUI=lib\hb\mingw64
-   rem set LIB_HRB=lib\win\mingw64
-   rem set BIN_HRB=bin or bin\win\mingw64
-
-   rem *** Parse Switches ***
    set TFILE=%1
    set NO_LOG=NO
    set RUNEXE=-run
@@ -52,47 +52,45 @@ rem
 
 :LOOP_START
 
-   if "%2"==""       goto :LOOP_END
-   if /I "%2"=="/SL" goto :SUPPRESS_LOG
-   if /I "%2"=="-SL" goto :SUPPRESS_LOG
-   if /I "%2"=="-NR" goto :SUPPRESS_RUN
-   if /I "%2"=="/NR" goto :SUPPRESS_RUN
+   if    "%2" == ""    goto LOOP_END
+   if /I "%2" == "/SL" goto SUPPRESS_LOG
+   if /I "%2" == "-SL" goto SUPPRESS_LOG
+   if /I "%2" == "-NR" goto SUPPRESS_RUN
+   if /I "%2" == "/NR" goto SUPPRESS_RUN
    set EXTRA=%EXTRA% %2
    shift
-   goto :LOOP_START
+   goto LOOP_START
 
 :SUPPRESS_LOG
 
    set NO_LOG=YES
    shift
-   goto :LOOP_START
+   goto LOOP_START
 
 :SUPPRESS_RUN
 
    set RUNEXE=-run-
    shift
-   goto :LOOP_START
+   goto LOOP_START
 
 :LOOP_END
-
-   rem *** Set PATH ***
-   set TPATH=%PATH%
-   set PATH=%HG_CCOMP%\bin;%HG_HRB%\%BIN_HRB%
 
    rem *** Process Resource File ***
    echo Compiling %TFILE% ...
    echo #define oohgpath %HG_ROOT%\RESOURCES > _oohg_resconfig.h
-   copy /b %HG_ROOT%\resources\oohg.rc + %TFILE%.rc _temp.rc > nul
-   if exist _temp.rc goto :BUILD
+   copy /b "%HG_ROOT%\resources\oohg.rc" + "%TFILE%.rc" _temp.rc > nul
+   if exist _temp.rc goto BUILD
    copy /b %TFILE%.rc _temp.rc > nul
-   if not exist _temp.rc goto :ERROR3
+   if not exist _temp.rc goto ERROR5
 
 :BUILD
 
    rem *** Compile and Link ***
-   if     "%NO_LOG%"=="YES" hbmk2 %TFILE% _temp.rc %HG_ROOT%\oohg.hbc %RUNEXE% -prgflag=-q0 %EXTRA%
-   if not "%NO_LOG%"=="YES" hbmk2 %TFILE% _temp.rc %HG_ROOT%\oohg.hbc %RUNEXE% -prgflag=-q0 %EXTRA% >> output.log 2>&1
+   if     "%NO_LOG%" == "YES" hbmk2 %TFILE% _temp.rc %HG_ROOT%\oohg.hbc %RUNEXE% -prgflag=-q0 %EXTRA%
+   if not "%NO_LOG%" == "YES" hbmk2 %TFILE% _temp.rc %HG_ROOT%\oohg.hbc %RUNEXE% -prgflag=-q0 %EXTRA% >> output.log 2>&1
    if exist output.log type output.log
+
+:CLEANUP
 
    rem *** Cleanup ***
    if exist _oohg_resconfig.h del _oohg_resconfig.h
@@ -103,21 +101,31 @@ rem
    set RUNEXE=
    set NO_LOG=
    set EXTRA=
-   goto :END
+   goto END
 
 :ERROR1
 
-   echo COMPILE ERROR: Neither file %TFILE%.prg nor %TFILE%.hbp were found !!!
-   goto :END
+   echo COMPILE ERROR: No file specified !!!
+   goto END
 
 :ERROR2
 
-   echo COMPILE ERROR: is %TFILE%.exe running ?
-   goto :END
+   echo COMPILE ERROR: Neither file %TFILE%.prg nor %TFILE%.hbp were found !!!
+   goto END
 
 :ERROR3
 
+   echo COMPILE ERROR: Is %TFILE%.exe running ?
+   goto END
+
+:ERROR4
+
+   echo COMPILE ERROR: Can't delete output.log !!!
+   goto END
+
+:ERROR5
+
    echo COMPILE ERROR: Neither file %TFILE%.rc nor oohg.rc were found !!!
-   goto :END
+   goto END
 
 :END

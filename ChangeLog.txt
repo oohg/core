@@ -8,10 +8,52 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2017-12-18 20:01 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog.txt
+     * Updated.
+   * core\ChangeLog_003.txt
+     ! Typo.
+   * core\buildapp.bat
+   * core\BuildApp30.bat
+   * core\BuildApp32.bat
+   * core\BuildApp_hbmk2.bat
+   * core\compile.bat
+   * core\compile30.bat
+   * core\compile32.bat
+   * core\compile_bcc.bat
+   * core\compile_MINGW.BAT
+   * core\compileXB.bat
+   * core\ofmt.bat
+   * core\oide.bat
+   * core\resources\CompileRes.bat
+   * core\resources\CompileRes_bcc.bat
+   * core\resources\CompileRes_mingw.bat
+   * core\source\buildlib.bat
+   * core\source\BuildLib30.bat
+   * core\source\BuildLib32.bat
+   * core\source\BuildLib_hbmk2.bat
+   * core\source\common_make.bat
+   * core\source\makelib.bat
+   * core\source\makelib_30.bat
+   * core\source\makelib_32.bat
+   * core\source\makelib_bcc.bat
+   * core\source\makelib_mingw.bat
+   * core\source\makelibXB.bat
+     * Run without adding C:\OOHG to PATH.
+     * Changed some remarks and labels to improve readability.
+
+   - core\compile_pc.bat
+   - core\compile_vc.bat
+   - core\source\makelib_pc.bat
+   - core\source\makelib_vc.bat
+
+   * core\compile_MINGW.BAT
+     !  Error: gcc: error : unrecognized option '-static-libstdc++'
+
 2017-11-17 20:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt
      * Updated.
-   * *.*
+   * core\*.*
      * References to sourceforge changed to github.
 
 2017-11-15 17:32 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>

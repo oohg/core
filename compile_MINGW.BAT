@@ -1,61 +1,50 @@
 @echo off
 rem
-rem $Id: compile_MINGW.bat $
+rem $Id: compile_mingw.bat $
 rem
 
-:MAIN
+:COMPILE_MINGW
 
-   cls
+   if not "%HG_ROOT%" == "" goto CHECK
 
-   REM *** Check for .prg ***
-   if "%1"=="" goto EXIT
-   if not exist %1.prg goto ERREXIT1
+   set THIS_DRIVE_AND_PATH=%~dp0
+   set HG_ROOT=%THIS_DRIVE_AND_PATH%
+   if "%THIS_DRIVE_AND_PATH:~-1%" == "\" set HG_ROOT=%THIS_DRIVE_AND_PATH:~0,-1%
+   set THIS_DRIVE_AND_PATH=
 
-   rem *** Delete Old Executable ***
+:CHECK
+
+   if "%1" == "" goto ERROR1
+   if not exist %1.prg goto ERROR2
+
+   if "%HG_HRB%"   == "" set HG_HRB=%HG_ROOT%\hb32
+   if "%HG_MINGW%" == "" set HG_MINGW=%HG_CCOMP%
+   if "%HG_MINGW%" == "" set HG_MINGW=%HG_HRB%\comp\mingw
+   if "%HG_CCOMP%" == "" set HG_CCOMP=%HG_MINGW%
+   if "%LIB_GUI%"  == "" set LIB_GUI=lib\hb\mingw
+   if "%LIB_HRB%"  == "" set LIB_HRB=lib\win\mingw
+   if "%BIN_HRB%"  == "" set BIN_HRB=bin
+   if "%HG_RC%"    == "" set HG_RC=%HG_ROOT%\resources\oohg_hb32.o
+
+:CLEAN_EXE
+
    if exist %1.exe del %1.exe
-   if exist %1.exe goto ERREXIT2
+   if exist %1.exe goto ERROR3
 
-   rem *** Set Paths ***
-   if "%HG_ROOT%"==""  set HG_ROOT=c:\oohg
-   if "%HG_HRB%"==""   set HG_HRB=c:\oohg\harbour
-   if "%HG_MINGW%"=="" set HG_MINGW=c:\oohg\mingw
-
-   rem *** To Build with Nightly Harbour ***
-   rem set HG_HRB=c:\hb32
-   rem *** For 32 bits MinGW ***
-   rem set HG_MINGW=%HG_HRB%\comp\mingw
-   rem *** For 64 bits MinGW ***
-   rem set HG_MINGW=%HG_HRB%\comp\mingw64
-
-   rem *** Set EnvVars ***
-   if "%LIB_GUI%"=="" set LIB_GUI=lib
-   if "%LIB_HRB%"=="" set LIB_HRB=lib
-   if "%BIN_HRB%"=="" set BIN_HRB=bin
-
-   rem *** Set Paths ***
-   if "%HG_RC%"=="" set HG_RC=%HG_ROOT%\resources\oohg.o
-
-   rem *** To Build with Nightly Harbour ***
-   rem *** For 32 bits MinGW ***
-   rem set LIB_GUI=lib\hb\mingw
-   rem set LIB_HRB=lib\win\mingw
-   rem set BIN_HRB=bin or bin\win\mingw
-   rem *** For 64 bits MinGW ***
-   rem set LIB_GUI=lib\hb\mingw64
-   rem set LIB_HRB=lib\win\mingw64
-   rem set BIN_HRB=bin or bin\win\mingw64
+:MORE_SETS
 
    rem *** Third Party Libraries ***
    rem set THR_LIB=-lsocket -liphlpapi -lmysqldll -ldll -lhbmysql -lrddleto -lrddado -lhbusrrdd
 
    rem *** Force static linking of this libs ***
-   set STATIC_LIBS=-static -static-libgcc -static-libstdc++
+   set STATIC_LIBS=-static -static-libgcc
 
    rem *** Set PATH ***
    set TPATH=%PATH%
    set PATH=%HG_MINGW%\bin;%HG_HRB%\%BIN_HRB%
 
-   rem *** Parse Switches ***
+:PARSE_SWITCHES
+
    set TFILE=%1
    set COMP_TYPE=STD
    set EXTRA=
@@ -66,39 +55,39 @@ rem
 
 :LOOP_START
 
-   if "%2"==""    goto LOOP_END
-   if "%2"=="/d"  goto COMP_DEBUG
-   if "%2"=="-d"  goto COMP_DEBUG
-   if "%2"=="/D"  goto COMP_DEBUG
-   if "%2"=="-D"  goto COMP_DEBUG
-   if "%2"=="/c"  goto COMP_CONSOLE
-   if "%2"=="-c"  goto COMP_CONSOLE
-   if "%2"=="/C"  goto COMP_CONSOLE
-   if "%2"=="-C"  goto COMP_CONSOLE
-   if "%2"=="/i"  goto NORC
-   if "%2"=="-i"  goto NORC
-   if "%2"=="/I"  goto NORC
-   if "%2"=="-I"  goto NORC
-   if "%2"=="-p"  goto PPO
-   if "%2"=="/p"  goto PPO
-   if "%2"=="-P"  goto PPO
-   if "%2"=="/P"  goto PPO
-   if "%2"=="-w3" goto W3
-   if "%2"=="/w3" goto W3
-   if "%2"=="-W3" goto W3
-   if "%2"=="/W3" goto W3
-   if "%2"=="-nr" goto NORUN
-   if "%2"=="-Nr" goto NORUN
-   if "%2"=="-nR" goto NORUN
-   if "%2"=="-NR" goto NORUN
-   if "%2"=="/nr" goto NORUN
-   if "%2"=="/Nr" goto NORUN
-   if "%2"=="/nR" goto NORUN
-   if "%2"=="/NR" goto NORUN
-   if "%2"=="/l"  goto USELOG
-   if "%2"=="-l"  goto USELOG
-   if "%2"=="/L"  goto USELOG
-   if "%2"=="-L"  goto USELOG
+   if "%2" == ""    goto LOOP_END
+   if "%2" == "/d"  goto COMP_DEBUG
+   if "%2" == "-d"  goto COMP_DEBUG
+   if "%2" == "/D"  goto COMP_DEBUG
+   if "%2" == "-D"  goto COMP_DEBUG
+   if "%2" == "/c"  goto COMP_CONSOLE
+   if "%2" == "-c"  goto COMP_CONSOLE
+   if "%2" == "/C"  goto COMP_CONSOLE
+   if "%2" == "-C"  goto COMP_CONSOLE
+   if "%2" == "/i"  goto NORC
+   if "%2" == "-i"  goto NORC
+   if "%2" == "/I"  goto NORC
+   if "%2" == "-I"  goto NORC
+   if "%2" == "-p"  goto PPO
+   if "%2" == "/p"  goto PPO
+   if "%2" == "-P"  goto PPO
+   if "%2" == "/P"  goto PPO
+   if "%2" == "-w3" goto W3
+   if "%2" == "/w3" goto W3
+   if "%2" == "-W3" goto W3
+   if "%2" == "/W3" goto W3
+   if "%2" == "-nr" goto NORUN
+   if "%2" == "-Nr" goto NORUN
+   if "%2" == "-nR" goto NORUN
+   if "%2" == "-NR" goto NORUN
+   if "%2" == "/nr" goto NORUN
+   if "%2" == "/Nr" goto NORUN
+   if "%2" == "/nR" goto NORUN
+   if "%2" == "/NR" goto NORUN
+   if "%2" == "/l"  goto USELOG
+   if "%2" == "-l"  goto USELOG
+   if "%2" == "/L"  goto USELOG
+   if "%2" == "-L"  goto USELOG
    set EXTRA=%EXTRA% %2
    shift
    goto LOOP_START
@@ -149,10 +138,10 @@ rem
 :LOOP_END
 
    rem *** Check for Console Switch ***
-   if "%COMP_TYPE%"=="CONSOLE" goto CONSOLE_COMP
+   if "%COMP_TYPE%" == "CONSOLE" goto CONSOLE_COMP
 
    rem *** Check for Debug Switch ***
-   if "%COMP_TYPE%"=="DEBUG" goto DEBUG_COMP
+   if "%COMP_TYPE%" == "DEBUG" goto DEBUG_COMP
 
    goto STD_COMP
 
@@ -160,22 +149,22 @@ rem
 
    rem *** Compile with Harbour and Check for Errors ***
    %HG_HRB%\%BIN_HRB%\harbour %TFILE%.prg -n1 %EXTRA% -i%HG_HRB%\include;%HG_ROOT%\include;. %PRG_LOG%
-   if errorlevel 1 goto EXIT1
+   if errorlevel 1 goto CLEANUP1
 
    rem *** Compile .c Files and Check for Errors ***
    gcc -I. -I%HG_HRB%\include -I%HG_ROOT%\include -Wall -c %TFILE%.c -o%TFILE%.o
    rem *** To Use -mno-cygwin Switch ***
    rem gcc -I. -I%HG_HRB%\include -I%HG_ROOT%\include -mno-cygwin -Wall -c %TFILE%.c -o%TFILE%.o
-   if errorlevel 1 goto EXIT2
+   if errorlevel 1 goto CLEANUP2
 
    rem *** Check for Exclude OOHG Resource Switch ***
-   if not "%RC_FILE%"=="TRUE" GOTO CONSOLE_COMP_WITHOUT_RC
+   if not "%RC_FILE%" == "TRUE" GOTO CONSOLE_COMP_WITHOUT_RC
 
    rem *** Process Resource File and OOHG Resource File ***
    echo #define oohgpath %HG_ROOT%\RESOURCES > _oohg_resconfig.h
    if exist %TFILE%.rc copy /b %HG_ROOT%\resources\ooHG.rc+%TFILE%.rc _temp.rc > nul
    if exist %TFILE%.rc windres -i _temp.rc -o _temp.o
-   if errorlevel 1 goto EXIT3
+   if errorlevel 1 goto CLEANUP3
 
    rem *** Link ***
    if     exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o _temp.o -L. -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI% -Wl,--start-group -looHG -lhbprinter -lminiprint -lbostaurus -lgtgui -lgtwin -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbzebra -lhbhpdf -llibhpdf -lpng -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -lmsimg32 -Wl,--end-group %STATIC_LIBS% %C_LOG%
@@ -191,7 +180,7 @@ rem
    rem *** Process Resource File Without OOHG Resource ***
    if exist %TFILE%.rc copy /b %TFILE%.rc _temp.rc > nul
    if exist %TFILE%.rc windres -i _temp.rc -o _temp.o
-   if errorlevel 1 goto EXIT3
+   if errorlevel 1 goto CLEANUP3
 
    rem *** Link ***
    if     exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o _temp.o -L. -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI% -Wl,--start-group -looHG -lhbprinter -lminiprint -lbostaurus -lgtgui -lgtwin -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbzebra -lhbhpdf -llibhpdf -lpng -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -lmsimg32 -Wl,--end-group %STATIC_LIBS% %C_LOG%
@@ -207,22 +196,22 @@ rem
    rem *** Compile with Harbour and Check for Errors ***
    echo OPTIONS NORUNATSTARTUP > init.cld
    %HG_HRB%\%BIN_HRB%\harbour %TFILE%.prg -n1 %EXTRA% -b -i%HG_HRB%\include;%HG_ROOT%\include;. %PRG_LOG%
-   if errorlevel 1 goto EXIT1
+   if errorlevel 1 goto CLEANUP1
 
    rem *** Compile .c Files and Check for Errors ***
    gcc -I. -I%HG_HRB%\include -I%HG_ROOT%\include -Wall -c %TFILE%.c -o%TFILE%.o
    rem *** To Use -mno-cygwin Switch ***
    rem gcc -I. -I%HG_HRB%\include -I%HG_ROOT%\include -mno-cygwin -Wall -c %TFILE%.c -o%TFILE%.o
-   if errorlevel 1 goto EXIT2
+   if errorlevel 1 goto CLEANUP2
 
    rem *** Check for Exclude OOHG Resource Switch ***
-   if not "%RC_FILE%"=="TRUE" GOTO DEBUG_COMP_WITHOUT_RC
+   if not "%RC_FILE%" == "TRUE" GOTO DEBUG_COMP_WITHOUT_RC
 
    rem *** Process Resource File and OOHG Resource File ***
    echo #define oohgpath %HG_ROOT%\RESOURCES > _oohg_resconfig.h
    if exist %TFILE%.rc copy /b %HG_ROOT%\resources\ooHG.rc+%TFILE%.rc _temp.rc > nul
    if exist %TFILE%.rc windres -i _temp.rc -o _temp.o
-   if errorlevel 1 goto EXIT3
+   if errorlevel 1 goto CLEANUP3
 
    rem *** Link ***
    if     exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o _temp.o -L. -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI% -Wl,--start-group -looHG -lhbprinter -lminiprint -lbostaurus -lhbdebug -lgtgui -lgtwin -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbzebra -lhbhpdf -llibhpdf -lpng -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -lmsimg32 -Wl,--end-group %STATIC_LIBS% %C_LOG%
@@ -238,7 +227,7 @@ rem
    rem *** Process Resource File Without OOHG Resource ***
    if exist %TFILE%.rc copy /b %TFILE%.rc _temp.rc > nul
    if exist %TFILE%.rc windres -i _temp.rc -o _temp.o
-   if errorlevel 1 goto EXIT3
+   if errorlevel 1 goto CLEANUP3
 
    rem *** Link ***
    if     exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o _temp.o -L. -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI% -Wl,--start-group -looHG -lhbprinter -lminiprint -lbostaurus -lhbdebug -lgtgui -lgtwin -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbzebra -lhbhpdf -llibhpdf -lpng -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -lmsimg32 -Wl,--end-group %STATIC_LIBS% %C_LOG%
@@ -253,7 +242,7 @@ rem
 
    rem *** Compile with Harbour and Check for Errors ***
    %HG_HRB%\%BIN_HRB%\harbour %TFILE%.prg -n1 %EXTRA% -i%HG_HRB%\include;%HG_ROOT%\include;. %PRG_LOG%
-   if errorlevel 1 goto EXIT1
+   if errorlevel 1 goto CLEANUP1
 
    rem *** Compile .c Files and Check for Errors ***
    gcc -I. -I%HG_HRB%\include -I%HG_ROOT%\include -Wall -c %TFILE%.c -o%TFILE%.o
@@ -261,13 +250,13 @@ rem
    rem gcc -I. -I%HG_HRB%\include -I%HG_ROOT%\include -mno-cygwin -Wall -c %TFILE%.c -o%TFILE%.o
 
    rem *** Check for Exclude OOHG Resource Switch ***
-   if not "%RC_FILE%"=="TRUE" GOTO STD_COMP_WITHOUT_RC
+   if not "%RC_FILE%" == "TRUE" GOTO STD_COMP_WITHOUT_RC
 
    rem *** Process Resource File ***
    echo #define oohgpath %HG_ROOT%\RESOURCES > _oohg_resconfig.h
    if exist %TFILE%.rc copy /b %HG_ROOT%\resources\ooHG.rc+%TFILE%.rc _temp.rc > nul
    if exist %TFILE%.rc windres -i _temp.rc -o _temp.o
-   if errorlevel 1 goto EXIT3
+   if errorlevel 1 goto CLEANUP3
 
    rem *** Link ***
    if     exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o _temp.o -mwindows -L. -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI% -Wl,--start-group -looHG -lhbprinter -lminiprint -lbostaurus -lgtgui -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbzebra -lhbhpdf -llibhpdf -lpng -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -lmsimg32 -Wl,--end-group %STATIC_LIBS% %C_LOG%
@@ -283,7 +272,7 @@ rem
    rem *** Process Resource File Without OOHG Resource ***
    if exist %TFILE%.rc copy /b %TFILE%.rc _temp.rc > nul
    if exist %TFILE%.rc windres -i _temp.rc -o _temp.o
-   if errorlevel 1 goto EXIT3
+   if errorlevel 1 goto CLEANUP3
 
    rem *** Link ***
    if     exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o _temp.o -mwindows -L. -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI% -Wl,--start-group -looHG -lhbprinter -lminiprint -lbostaurus -lgtgui -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbzebra -lhbhpdf -llibhpdf -lpng -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -lmsimg32 -Wl,--end-group %STATIC_LIBS% %C_LOG%
@@ -294,20 +283,25 @@ rem
 
    goto CLEANUP
 
-:ERREXIT1
+:ERROR1
 
-   echo FILE %1.PRG NOT FOUND !!!
-   goto EXIT
+   echo COMPILE ERROR: No file specified !!!
+   goto END
 
-:ERREXIT2
+:ERROR2
 
-   echo COMPILE ERROR: IS %1.EXE RUNNING ?
-   goto EXIT
+   echo File %1.prg not found !!!
+   goto END
+
+:ERROR3
+
+   echo COMPILE ERROR: Is %1.exe running ?
+   goto END
 
 :CLEANUP
 
    rem *** Check for Errors in Linking ***
-   if errorlevel 1 goto EXIT4
+   if errorlevel 1 goto CLEANUP4
 
    rem *** Cleanup ***
    if exist _temp.o del _temp.o
@@ -323,31 +317,32 @@ rem
    set RC_FILE=
    set PRG_LOG=
    set C_LOG=
+   set STATIC_LIBS=
 
    rem *** Execute ***
-   if "%NO_RUN%"=="FALSE" %TFILE%
+   if "%NO_RUN%" == "FALSE" %TFILE%
    set TFILE=
    set NO_RUN=
-   goto EXIT
+   goto END
 
-:EXIT4
+:CLEANUP4
 
    rem *** Cleanup ***
    if exist _temp.o del _temp.o
 
-:EXIT3
+:CLEANUP3
 
    rem *** Cleanup ***
    if exist _temp.rc del _temp.rc
    del _oohg_resconfig.h
    del %TFILE%.o
 
-:EXIT2
+:CLEANUP2
 
    rem *** Cleanup ***
    del %TFILE%.c
 
-:EXIT1
+:CLEANUP1
 
    rem *** Cleanup ***
    set THR_LIB=
@@ -360,7 +355,7 @@ rem
    set PRG_LOG=
    set C_LOG=
 
-:EXIT
+:END
 
    rem *** Cleanup ***
    if exist init.cld del init.cld

@@ -3,35 +3,36 @@ rem
 rem $Id: compile_bcc.bat $
 rem
 
-:MAIN
+:COMPILE_BCC
 
-   cls
+   if not "%HG_ROOT%" == "" goto CHECK
 
-   REM *** Check for .prg ***
-   if "%1"=="" goto EXIT
-   if not exist %1.prg goto ERREXIT1
+   set THIS_DRIVE_AND_PATH=%~dp0
+   set HG_ROOT=%THIS_DRIVE_AND_PATH%
+   if "%THIS_DRIVE_AND_PATH:~-1%" == "\" set HG_ROOT=%THIS_DRIVE_AND_PATH:~0,-1%
+   set THIS_DRIVE_AND_PATH=
 
-   rem *** Delete Old Executable ***
+:CHECK
+
+   if "%1" == "" goto END
+   if not exist %1.prg goto ERROR1
+
+   if "%HG_HRB%"   == "" set HG_HRB=%HG_ROOT%\xhbcc
+   if "%HG_BCC%"   == "" set HG_BCC=%HG_CCOMP%
+   if "%HG_BCC%"   == "" set HG_BCC=c:\Borland\BCC55
+   if "%HG_CCOMP%" == "" set HG_CCOMP=%HG_BCC%
+   if "%LIB_GUI%"  == "" set LIB_GUI=lib\xhb\bcc
+   if "%LIB_HRB%"  == "" set LIB_HRB=lib
+   if "%BIN_HRB%"  == "" set BIN_HRB=bin
+   if "%HG_RC%"    == "" set HG_RC=%HG_ROOT%\resources\oohg.res
+
+:CLEAN_EXE
+
    if exist %1.exe del %1.exe
-   if exist %1.exe goto ERREXIT2
+   if exist %1.exe goto ERROR2
 
-   rem *** Set Paths ***
-   if "%HG_ROOT%"=="" set HG_ROOT=c:\oohg
-   if "%HG_HRB%"==""  set HG_HRB=c:\oohg\harbour
-   if "%HG_BCC%"==""  set HG_BCC=c:\borland\bcc55
+:PARSE_SWITCHES
 
-   rem *** Set EnvVars ***
-   if "%LIB_GUI%"=="" set LIB_GUI=lib
-   if "%LIB_HRB%"=="" set LIB_HRB=lib
-   if "%BIN_HRB%"=="" set BIN_HRB=bin
-
-   rem *** To Build with Nightly Harbour ***
-   rem *** For 32 bits BCC ***
-   rem set LIB_GUI=lib\hb\bcc
-   rem set LIB_HRB=lib\win\bcc
-   rem set BIN_HRB=bin or bin\win\bcc
-
-   rem *** Parse Switches ***
    set TFILE=%1
    set COMP_TYPE=STD
    set EXTRA=
@@ -42,21 +43,21 @@ rem
 
 :LOOP_START
 
-   if "%2"==""    goto LOOP_END
-   if /I "%2"=="-c"  goto COMP_CONSOLE
-   if /I "%2"=="/c"  goto COMP_CONSOLE
-   if /I "%2"=="-d"  goto COMP_DEBUG
-   if /I "%2"=="/d"  goto COMP_DEBUG
-   if /I "%2"=="-p"  goto PPO
-   if /I "%2"=="/p"  goto PPO
-   if /I "%2"=="-w3" goto W3
-   if /I "%2"=="/w3" goto W3
-   if /I "%2"=="-nr" goto NORUN
-   if /I "%2"=="/nr" goto NORUN
-   if /I "%2"=="-l"  goto USELOG
-   if /I "%2"=="/l"  goto USELOG
-   if /I "%2"=="-h"  goto ISNOTXHB
-   if /I "%2"=="/h"  goto ISNOTXHB
+   if    "%2" == ""    goto LOOP_END
+   if /I "%2" == "-c"  goto COMP_CONSOLE
+   if /I "%2" == "/c"  goto COMP_CONSOLE
+   if /I "%2" == "-d"  goto COMP_DEBUG
+   if /I "%2" == "/d"  goto COMP_DEBUG
+   if /I "%2" == "-p"  goto PPO
+   if /I "%2" == "/p"  goto PPO
+   if /I "%2" == "-w3" goto W3
+   if /I "%2" == "/w3" goto W3
+   if /I "%2" == "-nr" goto NORUN
+   if /I "%2" == "/nr" goto NORUN
+   if /I "%2" == "-l"  goto USELOG
+   if /I "%2" == "/l"  goto USELOG
+   if /I "%2" == "-h"  goto ISNOTXHB
+   if /I "%2" == "/h"  goto ISNOTXHB
    set EXTRA=%EXTRA% %2
    shift
    goto LOOP_START
@@ -106,8 +107,8 @@ rem
 
    rem *** Set GT and Check for Debug or Console Switch ***
    set HG_USE_GT=gtwin gtgui
-   if "%COMP_TYPE%"=="DEBUG" goto DEBUG_COMP
-   if "%COMP_TYPE%"=="CONSOLE" goto PRG_COMP
+   if "%COMP_TYPE%" == "DEBUG" goto DEBUG_COMP
+   if "%COMP_TYPE%" == "CONSOLE" goto PRG_COMP
    set HG_USE_GT=gtgui gtwin
 
 :PRG_COMP
@@ -127,16 +128,16 @@ rem
 :C_COMP
 
    rem *** Check for Errors in Harbour Compilation ***
-   if errorlevel 1 goto EXIT1
+   if errorlevel 1 goto CLEANUP1
 
    rem *** Compile with BCC and Check for Errors ***
-   if     "%C_DEFXHB%"=="TRUE" %HG_BCC%\bin\bcc32 -c -O2 -tW -M -w -I%HG_HRB%\include;%HG_BCC%\include;%HG_ROOT%\include; -L%HG_BCC%\lib; -D__XHARBOUR__ %TFILE%.c %C_LOG%
-   if not "%C_DEFXHB%"=="TRUE" %HG_BCC%\bin\bcc32 -c -O2 -tW -M -w -I%HG_HRB%\include;%HG_BCC%\include;%HG_ROOT%\include; -L%HG_BCC%\lib;                %TFILE%.c %C_LOG%
-   if errorlevel 1 goto EXIT2
+   if     "%C_DEFXHB%" == "TRUE" %HG_BCC%\bin\bcc32 -c -O2 -tW -M -w -I%HG_HRB%\include;%HG_BCC%\include;%HG_ROOT%\include; -L%HG_BCC%\lib; -D__XHARBOUR__ %TFILE%.c %C_LOG%
+   if not "%C_DEFXHB%" == "TRUE" %HG_BCC%\bin\bcc32 -c -O2 -tW -M -w -I%HG_HRB%\include;%HG_BCC%\include;%HG_ROOT%\include; -L%HG_BCC%\lib;                %TFILE%.c %C_LOG%
+   if errorlevel 1 goto CLEANUP2
 
    rem *** Process Resource File and Check for Errors ***
    if exist %TFILE%.rc %HG_BCC%\bin\brc32 -r %TFILE%.rc %C_LOG%
-   if errorlevel 1 goto EXIT3
+   if errorlevel 1 goto CLEANUP3
 
    rem *** Build Response File ***
    echo c0w32.obj + > b32.bc
@@ -165,20 +166,20 @@ rem
    if exist %HG_ROOT%\%LIB_GUI%\miniprint.lib echo %HG_ROOT%\%LIB_GUI%\miniprint.lib + >> b32.bc
 
    rem *** ODBC Libraries ***
-   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if /I "%%a"=="/o" echo %HG_HRB%\%LIB_HRB%\hbodbc.lib + >> b32.bc
-   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if /I "%%a"=="/o" echo %HG_HRB%\%LIB_HRB%\odbc32.lib + >> b32.bc
+   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if /I "%%a" == "/o" echo %HG_HRB%\%LIB_HRB%\hbodbc.lib + >> b32.bc
+   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if /I "%%a" == "/o" echo %HG_HRB%\%LIB_HRB%\odbc32.lib + >> b32.bc
 
    rem *** ZIP Libraries ***
-   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if /I "%%a"=="/z" echo %HG_HRB%\%LIB_HRB%\zlib1.lib + >> b32.bc
-   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if /I "%%a"=="/z" echo %HG_HRB%\%LIB_HRB%\ziparchive.lib + >> b32.bc
+   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if /I "%%a" == "/z" echo %HG_HRB%\%LIB_HRB%\zlib1.lib + >> b32.bc
+   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if /I "%%a" == "/z" echo %HG_HRB%\%LIB_HRB%\ziparchive.lib + >> b32.bc
 
    rem *** ADS Libraries ***
-   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if /I "%%a"=="/a" echo %HG_HRB%\%LIB_HRB%\rddads.lib + >> b32.bc
-   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if /I "%%a"=="/a" echo %HG_HRB%\%LIB_HRB%\ace32.lib + >> b32.bc
+   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if /I "%%a" == "/a" echo %HG_HRB%\%LIB_HRB%\rddads.lib + >> b32.bc
+   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if /I "%%a" == "/a" echo %HG_HRB%\%LIB_HRB%\ace32.lib + >> b32.bc
 
    rem *** MySql Libraries ***
-   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if /I "%%a"=="/m" echo %HG_HRB%\%LIB_HRB%\mysql.lib + >> b32.bc
-   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if /I "%%a"=="/m" echo %HG_HRB%\%LIB_HRB%\libmysqldll.lib + >> b32.bc
+   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if /I "%%a" == "/m" echo %HG_HRB%\%LIB_HRB%\mysql.lib + >> b32.bc
+   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if /I "%%a" == "/m" echo %HG_HRB%\%LIB_HRB%\libmysqldll.lib + >> b32.bc
 
    rem *** BCC-dependant Libraries ***
    echo cw32.lib + >> b32.bc
@@ -187,37 +188,38 @@ rem
 
    rem *** Resource Files ***
    if exist %TFILE%.res echo %TFILE%.res + >> b32.bc
-   if exist %HG_ROOT%\resources\oohg.res echo %HG_ROOT%\resources\oohg.res + >> b32.bc
+   if exist %HG_RC% echo %HG_RC% + >> b32.bc
 
    rem *** Check for Debug Switch ***
-   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/d" GOTO DEBUG_LINK
-   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/D" GOTO DEBUG_LINK
+   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a" == "/d" GOTO DEBUG_LINK
+   for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a" == "/D" GOTO DEBUG_LINK
 
    rem *** Link ***
    %HG_BCC%\bin\ilink32 -Gn -Tpe -aa -L%HG_BCC%\lib;%HG_BCC%\lib\psdk; @b32.bc %C_LOG%
 
-   goto CLEANUP
+   goto CLEANUP5
 
 :DEBUG_LINK
 
    rem *** Link ***
    %HG_BCC%\bin\ilink32 -Gn -Tpe -ap -L%HG_BCC%\lib;%HG_BCC%\lib\psdk; @b32.bc %C_LOG%
-   goto CLEANUP
 
-:ERREXIT1
+   goto CLEANUP5
 
-   echo FILE %1.PRG NOT FOUND !!!
-   goto EXIT
+:ERROR1
 
-:ERREXIT2
+   echo File %1.prg not found !!!
+   goto END
 
-   echo COMPILE ERROR: IS %1.EXE RUNNING ?
-   goto EXIT
+:ERROR2
 
-:CLEANUP
+   echo COMPILE ERROR: Is %1.exe running ?
+   goto END
+
+:CLEANUP5
 
    rem *** Check for Errors in Linking ***
-   if errorlevel 1 goto EXIT4
+   if errorlevel 1 goto CLEANUP4
 
    rem *** Cleanup ***
    del *.tds
@@ -232,12 +234,12 @@ rem
    set C_LOG=
 
    rem *** Execute ***
-   if "%NO_RUN%"=="FALSE" %TFILE%
+   if "%NO_RUN%" == "FALSE" %TFILE%
    set TFILE=
    set NO_RUN=
-   goto EXIT
+   goto END
 
-:EXIT4
+:CLEANUP4
 
    rem *** Cleanup ***
    del b32.bc
@@ -245,17 +247,17 @@ rem
    del %TFILE%.obj
    del %TFILE%.tds
 
-:EXIT3
+:CLEANUP3
 
    rem *** Cleanup ***
    if exist %TFILE%.res del %TFILE%.res
 
-:EXIT2
+:CLEANUP2
 
    rem *** Cleanup ***
    del %TFILE%.c
 
-:EXIT1
+:CLEANUP1
 
    rem *** Cleanup ***
    set HG_USE_GT=
@@ -264,7 +266,7 @@ rem
    set PRG_LOG=
    set C_LOG=
 
-:EXIT
+:END
 
    rem *** Cleanup ***
    if exist init.cld del init.cld

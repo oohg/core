@@ -3,21 +3,23 @@ rem
 rem $Id: oide.bat $
 rem
 
-:MAIN
+:OIDE
 
-   rem *** Sets ***
-   if .%HG_IDE%.==.. set HG_IDE=%~dp0ide
+   if not .%HG_IDE%.==.. goto CHECK
+   set HG_IDE=%~dp0ide
 
-   rem *** Check ***
-   if not exist %HG_IDE%\oide.exe goto NOT_INSTALLED
+:CHECK
 
-   rem *** Execute ***
-   start %HG_IDE%\oide.exe %*
+   if not exist "%HG_IDE%\oide.exe" goto NOT_INSTALLED
+
+:EXECUTE
+
+   start "%HG_IDE%\oide.exe" %*
    goto END
 
 :NOT_INSTALLED
 
-   echo Missing %HG_IDE%\oide.exe
+   echo File %HG_IDE%\oide.exe not found !!!
    echo.
 
 :END

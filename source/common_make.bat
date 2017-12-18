@@ -5,7 +5,10 @@ rem
 
 :MAIN
 
-   if "%1"=="" goto INFO
+   if "%1"         == "" goto INFO
+   if "%HG_ROOT%"  == "" goto INFO
+   if "%HG_HRB%"   == "" goto INFO
+   if "%BIN_HRB%"  == "" goto INFO
 
    rem *** File list ***
    set HG_FILES1_PRG=h_error h_windows h_form h_ipaddress h_monthcal h_help h_status h_tree h_toolbar h_init h_media h_winapimisc h_slider h_button h_checkbox h_combo h_controlmisc h_datepicker h_editbox h_dialogs h_grid h_image h_label h_listbox h_menu h_msgbox h_frame h_progressbar h_radio h_spinner h_tab h_textbox h_application h_notify
@@ -17,42 +20,40 @@ rem
 
 :HARBOUR_COMPILE
 
-   set OOHG_X_FLAGS=-i"%hg_hrb%\include;%hg_root%\include" -n1 -w3 -gc0 -es2 %2
+   set OOHG_X_FLAGS=-i"%HG_HRB%\include;%HG_ROOT%\include" -n1 -w3 -gc0 -es2 %2
    goto PRG_COMPILE
 
 :XHARBOUR_COMPILE
 
-   set OOHG_X_FLAGS=-i"%hg_hrb%\include;%hg_root%\include" -n1 -w3 -gc0 -es2 %2
+   set OOHG_X_FLAGS=-i"%HG_HRB%\include;%HG_ROOT%\include" -n1 -w3 -gc0 -es2 %2
    goto PRG_COMPILE
-
-   rem *** Compile PRG source files ***
 
 :PRG_COMPILE
 
+   echo Compiling prg files ...
    for %%a in ( %HG_FILES1_PRG% %HG_FILES2_PRG% ) do (
-      %hg_hrb%\%BIN_HRB%\harbour %%a %OOHG_X_FLAGS% %~3
+      %HG_HRB%\%BIN_HRB%\harbour %%a %OOHG_X_FLAGS% %~3
       if errorlevel 1 (
          set OOHG_FILE=%%a
          goto ERROR ) )
-   if exist winprint.prg  %hg_hrb%\%BIN_HRB%\harbour winprint  %OOHG_X_FLAGS% %~3
+   if exist winprint.prg  %HG_HRB%\%BIN_HRB%\harbour winprint  %OOHG_X_FLAGS% %~3
    if errorlevel 1 goto ERROR
-   if exist miniprint.prg %hg_hrb%\%BIN_HRB%\harbour miniprint %OOHG_X_FLAGS% %~3
+   if exist miniprint.prg %HG_HRB%\%BIN_HRB%\harbour miniprint %OOHG_X_FLAGS% %~3
    if errorlevel 1 goto ERROR
-   if exist bostaurus.prg %hg_hrb%\%BIN_HRB%\harbour bostaurus %OOHG_X_FLAGS% %~3
+   if exist bostaurus.prg %HG_HRB%\%BIN_HRB%\harbour bostaurus %OOHG_X_FLAGS% %~3
    if errorlevel 1 goto ERROR
    goto END
 
 :INFO
 
-   echo ooHG - Library compilation.
-   echo .
-   echo This file must be called from MAKELIB.BAT
+   echo This file must be called from MAKELIB.BAT !!!
    echo .
    goto END
 
 :ERROR
 
-   if not .%3.==.. echo Error compiling %OOHG_FILE%.prg
+   if not .%3.==.. echo Error compiling %OOHG_FILE%.prg !!!
+   if not .%3.==.. echo .
    set OOHG_FILE=
 
 :END
