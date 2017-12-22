@@ -11,14 +11,13 @@ Test over HMG3 + HMG EXTENDED + HWGUI + OOHG
 
 #define FMT_COMMENT_OPEN  "/" + "*"
 #define FMT_COMMENT_CLOSE "*" + "/"
-#define FMT_TO_UPPER      1
-#define FMT_TO_LOWER      2
-#define FMT_GO_AHEAD      3
-#define FMT_GO_BACK       4
-#define FMT_SELF_BACK     5
-#define FMT_BLANK_LINE    6
-#define FMT_DECLARE_VAR   7
-#define FMT_AT_BEGIN      8
+#define FMT_TO_CASE       1
+#define FMT_GO_AHEAD      2
+#define FMT_GO_BACK       3
+#define FMT_SELF_BACK     4
+#define FMT_BLANK_LINE    5
+#define FMT_DECLARE_VAR   6
+#define FMT_AT_BEGIN      7
 
 FUNCTION Main()
 
@@ -48,12 +47,13 @@ STATIC FUNCTION FormatDir( cPath, nKey, nContYes, nContNo )
       CASE "D" $ oELement[ F_ATTR ]
          FormatDir( cPath + oElement[ F_NAME ] + "\", @nKey, @nContYes, @nContNo )
       CASE Upper( Right( oElement[ F_NAME ], 4 ) ) == ".PRG" .OR. ;
+           Upper( Right( oElement[ F_NAME ], 4 ) ) == ".FMG" .OR. ;
            Upper( RIght( oElement[ F_NAME ], 3 ) ) == ".CH" .OR. ;
            Upper( Right( oElement[ F_NAME ], 2 ) ) == ".H" .OR. ;
-           Upper( Right( oElement[ F_NAME ], 4 ) ) == ".FMG" .OR. ;
            Upper( Right( oElement[ F_NAME ], 4 ) ) == ".BAT" .OR. ;
            Upper( Right( oElement[ F_NAME ], 2 ) ) == ".C" .OR. ;
-           Upper( Right( oElement[ F_NAME ], 4 ) ) == ".CPP"
+           Upper( Right( oElement[ F_NAME ], 4 ) ) == ".CPP" .OR. ;
+           Upper( Right( oElement[ F_NAME ], 4 ) ) == ".TXT"
          FormatFile( cPath + oElement[ F_NAME ], @nContYes, @nContNo )
       ENDCASE
       nKey := iif( nKey == 27, nKey, Inkey() )
@@ -179,9 +179,9 @@ FUNCTION FormatIndent( cLinePrg, oFormat )
       RETURN NIL
    ENDIF
    DO CASE
-   CASE ";" $ cThisLineUpper .AND. hb_LeftEq( cThisLineUpper, "IF " ) .AND. Right( cThisLineUpper, 5 ) == "ENDIF"
-   CASE ";" $ cThisLineUpper .AND. hb_LeftEq( cThisLineUpper, "DO WHILE " ) .AND. Right( cThisLineUpper, 5 ) == "ENDDO"
-   CASE ";" $ cThisLineUpper .AND. hb_LeftEq( cThisLineUpper, "WHILE " ) .AND. Right( cThisLineUpper, 5 ) == "ENDDO"
+   CASE ";" $ cThisLineUpper .AND. hb_LeftEq( cThisLineUpper, "IF " ) .AND. "ENDIF" $ cThisLineUpper
+   CASE ";" $ cThisLineUpper .AND. hb_LeftEq( cThisLineUpper, "DO WHILE " ) .AND. "ENDDO"$ cThisLineUpper
+   CASE ";" $ cThisLineUpper .AND. hb_LeftEq( cThisLineUpper, "WHILE " ) .AND. "ENDDO" $ cThisLineUpper
    OTHERWISE
       IF IsCmdType( FMT_SELF_BACK, cThisLineUpper ) .OR. IsCmdType( FMT_GO_AHEAD, cThisLineUpper )
          IF ! Left( cThisLineUpper, 6 ) == "METHOD" .OR. ! oFormat:lIsClass
@@ -257,11 +257,8 @@ FUNCTION FormatCase( cLinePrg )
    LOCAL nPos
 
    cLinePrg := AllTrim( cLinePrg )
-   IF IsCmdType( FMT_TO_UPPER, cLinePrg, @nPos )
-      cLinePrg := Upper( FmtList( FMT_TO_UPPER )[ nPos ] ) + Substr( cLinePrg, Len( FmtList( FMT_TO_UPPER )[ nPos ] ) + 1 )
-   ENDIF
-   IF isCmdType( FMT_TO_LOWER, cLinePrg, @nPos )
-      cLinePrg := Lower( FmtList( FMT_TO_LOWER )[ nPos ] ) + Substr( cLinePrg, Len( FmtList( FMT_TO_LOWER )[ nPos ] ) + 1 )
+   IF IsCmdType( FMT_TO_CASE, cLinePrg, @nPos )
+      cLinePrg := FmtList( FMT_TO_CASE )[ nPos ] + Substr( cLinePrg, Len( FmtList( FMT_TO_CASE )[ nPos ] ) + 1 )
    ENDIF
 
    RETURN NIL
@@ -302,10 +299,13 @@ STATIC FUNCTION IsLineContinue( cText )
       RETURN .T.
    ENDIF
    nPos  := hb_At( ";", cText )
-   IF "/*" $ cText .AND. At( "/*", cText ) < nPos
-      RETURN .F.
+   IF "/*" $ cText
+      IF At( "/*", cText ) < nPos
+         RETURN .F.
+      ENDIF
+      cText := Trim( Substr( cText, 1, At( "/*", cText ) - 1 ) )
    ENDIF
-   IF ["] $ cText .AND. Rat( ["], cText ) > nPos
+   IF nPos < Len( cText ) // tem algo além do ;, talvez IF x; ENDIF
       RETURN .F.
    ENDIF
 
@@ -356,9 +356,20 @@ STATIC FUNCTION FmtList( nType )
    LOCAL aList
 
    DO CASE
-   CASE nType == FMT_TO_UPPER
+   CASE nType == FMT_TO_CASE
 
       aList := { ;
+         "#command", ;
+         "#define", ;
+         "#else", ;
+         "#endif", ;
+         "#ifdef", ;
+         "#ifndef", ;
+         "#include", ;
+         "#pragma", ;
+         "#pragma begindump", ;
+         "#pragma enddump", ;
+         "#translate", ;
          "ACCEPT", ;
          "ACTIVATE WINDOW", ;
          "ANNOUNCE", ;
@@ -427,7 +438,9 @@ STATIC FUNCTION FmtList( nType )
          "EJECT", ;
          "ELSE", ;
          "ELSEIF", ;
+         "END", ;
          "END BUTTON", ;
+         "END BUTTONEX", ;
          "END CLASS", ;
          "END CASE", ;
          "END CHECKBOX", ;
@@ -438,9 +451,12 @@ STATIC FUNCTION FmtList( nType )
          "END FRAME", ;
          "END GRID", ;
          "END IF", ;
+         "END IMAGE", ;
          "END INI", ;
          "END LABEL", ;
+         "END MENU", ;
          "END PAGE", ;
+         "END POPUP", ;
          "END PRINTDOC", ;
          "END PRINTPAGE", ;
          "END SEQUENCE", ;
@@ -451,14 +467,16 @@ STATIC FUNCTION FmtList( nType )
          "END TEXTBOX", ;
          "END TIMEPICKER", ;
          "END WINDOW", ;
+         "END WITH", ;
          "ENDCASE", ;
          "ENDCLASS", ;
          "ENDDO", ;
+         "ENDFOR", ;
          "ENDIF", ;
          "ENDSEQUENCE", ;
          "ENDSWITCH", ;
          "ENDTEXT", ;
-         "ENDFOR", ;
+         "ENDWITH", ;
          "ERASE", ;
          "EXECUTE FILE", ;
          "EXIT", ;
@@ -485,8 +503,10 @@ STATIC FUNCTION FmtList( nType )
          "LOOP", ;
          "MEMVAR", ;
          "MENU", ;
+         "MENUITEM", ;
          "METHOD", ;
          "NEXT", ;
+         "ON KEY ESCAPE ACTION", ;
          "OTHER", ;
          "OTHERWISE", ;
          "PACK", ;
@@ -509,20 +529,28 @@ STATIC FUNCTION FmtList( nType )
          "RESTORE", ;
          "RETURN", ;
          "RETURN NIL", ;
+         "RETURN SELF", ;
          "RUN", ;
          "SAVE", ;
          "SEEK", ;
          "SELECT", ;
+         "SEPARATOR", ;
          "SET", ;
          "SET ALTERNATE ON", ;
          "SET ALTERNATE OFF", ;
          "SET ALTERNATE TO", ;
+         "SET AUTOADJUST ON", ;
+         "SET AUTOADJUST OFF", ;
+         "SET BROWSESYNC ON", ;
+         "SET BROWSESYNC OFF", ;
          "SET CENTURY ON", ;
          "SET CENTURY OFF", ;
+         "SET CODEPAGE TO", ;
          "SET CONFIRM ON", ;
          "SET CONFIRM OFF", ;
          "SET CONSOLE ON", ;
          "SET CONSOLE OFF", ;
+         "SET DEFAULT TO", ;
          "SET DATE", ;
          "SET DATE ANSI", ;
          "SET DATE BRITISH", ;
@@ -530,13 +558,20 @@ STATIC FUNCTION FmtList( nType )
          "SET DELETED ON", ;
          "SET DELETED OFF", ;
          "SET EPOCH TO", ;
+         "SET INTERACTIVE CLOSE ON", ;
+         "SET INTERACTIVE CLOSE OFF", ;
+         "SET LANGUAGE TO", ;
          "SET MULTIPLE ON", ;
          "SET MULTIPLE OFF", ;
+         "SET NAVIGATION EXTENDED", ;
+         "SET PATH TO", ;
          "SET PRINTER OFF", ;
          "SET PRINTER ON", ;
          "SET PRINTER TO", ;
          "SET RELATION TO", ;
          "SET SECTION", ;
+         "SET TOOLTIPBALOON ON", ;
+         "SET TOOLTIPBALOON OFF", ;
          "SKIP", ;
          "SORT", ;
          "START PRINTDOC", ;
@@ -559,20 +594,6 @@ STATIC FUNCTION FmtList( nType )
          "WHILE", ;
          "WITH OBJECT", ;
          "ZAP" }
-
-   CASE nType == FMT_TO_LOWER
-      aList := { ;
-         "#COMMAND", ;
-         "#DEFINE", ;
-         "#ELSE", ;
-         "#ENDIF", ;
-         "#IFDEF", ;
-         "#IFNDEF", ;
-         "#PRAGMA", ;
-         "#INCLUDE", ;
-         "#PRAGMA BEGINDUMP", ;
-         "#PRAGMA ENDDUMP", ;
-         "#TRANSLATE" }
 
    CASE nType == FMT_GO_AHEAD
       aList := { ;
@@ -662,6 +683,7 @@ STATIC FUNCTION FmtList( nType )
          "ENDDO", ;
          "ENDFOR", ;
          "ENDSWITCH", ;
+         "ENDWITH", ;
          "NEXT" }
 
    CASE nType == FMT_SELF_BACK
