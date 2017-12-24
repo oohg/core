@@ -110,6 +110,7 @@ STATIC FUNCTION FormatFile( cFile, nContYes, nContNo )
    ENDIF
    // save if changed
    IF ! cTxtPrg == cTxtPrgAnt
+      MakeBackup( cFile )
       nContYes += 1
       ? nContYes, nContNo, "Formatted " + cFile
       fErase( cFile )
@@ -355,8 +356,9 @@ STATIC FUNCTION FmtList( nType )
 
    LOCAL aList
 
+   // only first world of line
    DO CASE
-   CASE nType == FMT_TO_CASE
+   CASE nType == FMT_TO_CASE // word(s) will be on this case, upper or lower
 
       aList := { ;
          "#command", ;
@@ -595,7 +597,7 @@ STATIC FUNCTION FmtList( nType )
          "WITH OBJECT", ;
          "ZAP" }
 
-   CASE nType == FMT_GO_AHEAD
+   CASE nType == FMT_GO_AHEAD // after this, lines will be indented ahead
       aList := { ;
          "BEGIN", ;
          "CLASS", ;
@@ -673,7 +675,7 @@ STATIC FUNCTION FmtList( nType )
          "WHILE", ;
          "WITH OBJECT" }
 
-   CASE nType == FMT_GO_BACK
+   CASE nType == FMT_GO_BACK // including this, lines will be indented back
 
       aList := { ;
          "END", ;
@@ -686,7 +688,7 @@ STATIC FUNCTION FmtList( nType )
          "ENDWITH", ;
          "NEXT" }
 
-   CASE nType == FMT_SELF_BACK
+   CASE nType == FMT_SELF_BACK // this line will be indented back
       aList := { ;
          "CASE", ;
          "CATCH", ;
@@ -696,7 +698,7 @@ STATIC FUNCTION FmtList( nType )
          "OTHERWISE", ;
          "RECOVER" }
 
-   CASE nType == FMT_BLANK_LINE
+   CASE nType == FMT_BLANK_LINE // a blank line before this line
       aList := { ;
          "CLASS", ;
          "CREATE CLASS", ;
@@ -711,7 +713,7 @@ STATIC FUNCTION FmtList( nType )
          "STATIC PROC", ;
          "STATIC PROCEDURE" }
 
-   CASE nType == FMT_DECLARE_VAR
+   CASE nType == FMT_DECLARE_VAR // only to group declarations
       aList := { ;
          "FIELD", ;
          "LOCAL", ;
@@ -719,7 +721,7 @@ STATIC FUNCTION FmtList( nType )
          "PRIVATE", ;
          "PUBLIC" }
 
-   CASE nType == FMT_AT_BEGIN
+   CASE nType == FMT_AT_BEGIN // this will be at ZERO Column
 
       aList := { ;
          "CREATE CLASS", ;
@@ -735,3 +737,15 @@ STATIC FUNCTION FmtList( nType )
 
    RETURN aList
 
+FUNCTION MakeBackup( cFile )
+
+   LOCAL cFileBak
+
+   IF "." $ cFile
+      cFileBak := Substr( cFile, 1, Rat( ".", cFile ) ) + "bak"
+   ELSE
+      cFileBak := cFile + ".bak"
+   ENDIF
+   hb_MemoWrit( cFileBak, MemoRead( cFile ) )
+
+   RETURN NIL
