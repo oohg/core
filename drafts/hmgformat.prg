@@ -80,6 +80,7 @@ STATIC FUNCTION FormatFile( cFile, nContYes, nContNo )
    cTxtPrg    := StrTran( cTxtPrg, Chr(13) + Chr(10), Chr(10) )
    cTxtPrg    := StrTran( cTxtPrg, Chr(13), Chr(10) )
    cTxtPrg    := StrTran( cTxtPrg, Chr(10) + Chr(10) + Chr(10), Chr(10) + Chr(10) )
+   cTxtPrg    := StrTran( cTxtPrg, "return(nil)", "return nil" )
    acPrgLines := hb_RegExSplit( Chr(10), cTxtPrg )
    DO WHILE .T.
       IF Len( acPrgLines ) < 1 .OR. ! Empty( acPrgLines[ Len( acPrgLines ) ] )
@@ -508,6 +509,10 @@ STATIC FUNCTION FmtList( nType )
          "MENUITEM", ;
          "METHOD", ;
          "NEXT", ;
+         "ON KEY F5 ACTION", ;
+         "ON KEY F6 ACTION", ;
+         "ON KEY F7 ACTION", ;
+         "ON KEY F8 ACTION", ;
          "ON KEY ESCAPE ACTION", ;
          "OTHER", ;
          "OTHERWISE", ;
@@ -535,6 +540,7 @@ STATIC FUNCTION FmtList( nType )
          "RUN", ;
          "SAVE", ;
          "SEEK", ;
+         "SELE", ;
          "SELECT", ;
          "SEPARATOR", ;
          "SET", ;
@@ -560,8 +566,8 @@ STATIC FUNCTION FmtList( nType )
          "SET DELETED ON", ;
          "SET DELETED OFF", ;
          "SET EPOCH TO", ;
-         "SET INTERACTIVE CLOSE ON", ;
-         "SET INTERACTIVE CLOSE OFF", ;
+         "SET INTERACTIVECLOSE ON", ;
+         "SET INTERACTIVECLOSE OFF", ;
          "SET LANGUAGE TO", ;
          "SET MULTIPLE ON", ;
          "SET MULTIPLE OFF", ;
@@ -572,8 +578,8 @@ STATIC FUNCTION FmtList( nType )
          "SET PRINTER TO", ;
          "SET RELATION TO", ;
          "SET SECTION", ;
-         "SET TOOLTIPBALOON ON", ;
-         "SET TOOLTIPBALOON OFF", ;
+         "SET TOOLTIPBALLOON ON", ;
+         "SET TOOLTIPBALLOON OFF", ;
          "SKIP", ;
          "SORT", ;
          "START PRINTDOC", ;
@@ -746,6 +752,8 @@ FUNCTION MakeBackup( cFile )
    ELSE
       cFileBak := cFile + ".bak"
    ENDIF
-   hb_MemoWrit( cFileBak, MemoRead( cFile ) )
+   IF .F.
+      hb_MemoWrit( cFileBak, MemoRead( cFile ) )
+   ENDIF
 
    RETURN NIL
