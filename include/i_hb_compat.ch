@@ -58,7 +58,6 @@
  * If you do not wish that, delete this exception notice.
  */
 
-
 #ifndef __XHARBOUR__
 
 #xtranslate CurDrive( [<x>] ) ;
@@ -66,7 +65,6 @@
       HB_CurDrive( <x> )
 
 #endif
-
 
 #if defined( HB_ARCH_64BIT )
 

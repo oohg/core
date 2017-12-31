@@ -1,64 +1,52 @@
 /*
- * $Id: h_checklist.prg $
- */
+* $Id: h_checklist.prg $
+*/
 /*
- * ooHG source code:
- * CheckList control
- *
- * Copyright 2012-2017 Fernando Yurisich <fyurisich@oohg.org>
- * https://oohg.github.io/
- *
- * Portions of this project are based upon Harbour MiniGUI library.
- * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
- *
- * Portions of this project are based upon Harbour GUI framework for Win32.
- * Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
- * Copyright 2001 Antonio Linares <alinares@fivetech.com>
- *
- * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2017, https://harbour.github.io/
- */
+* ooHG source code:
+* CheckList control
+* Copyright 2012-2017 Fernando Yurisich <fyurisich@oohg.org>
+* https://oohg.github.io/
+* Portions of this project are based upon Harbour MiniGUI library.
+* Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
+* Portions of this project are based upon Harbour GUI framework for Win32.
+* Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
+* Copyright 2001 Antonio Linares <alinares@fivetech.com>
+* Portions of this project are based upon Harbour Project.
+* Copyright 1999-2017, https://harbour.github.io/
+*/
 /*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this software; see the file LICENSE.txt. If not, write to
- * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
- *
- * As a special exception, the ooHG Project gives permission for
- * additional uses of the text contained in its release of ooHG.
- *
- * The exception is that, if you link the ooHG libraries with other
- * files to produce an executable, this does not by itself cause the
- * resulting executable to be covered by the GNU General Public License.
- * Your use of that executable is in no way restricted on account of
- * linking the ooHG library code into it.
- *
- * This exception does not however invalidate any other reasons why
- * the executable file might be covered by the GNU General Public License.
- *
- * This exception applies only to the code released by the ooHG
- * Project under the name ooHG. If you copy code from other
- * ooHG Project or Free Software Foundation releases into a copy of
- * ooHG, as the General Public License permits, the exception does
- * not apply to the code that you add in this way. To avoid misleading
- * anyone as to the status of such modified files, you must delete
- * this exception notice from them.
- *
- * If you write modifications of your own for ooHG, it is your choice
- * whether to permit this exception to apply to your modifications.
- * If you do not wish that, delete this exception notice.
- */
-
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2, or (at your option)
+* any later version.
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* You should have received a copy of the GNU General Public License
+* along with this software; see the file LICENSE.txt. If not, write to
+* the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+* Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
+* As a special exception, the ooHG Project gives permission for
+* additional uses of the text contained in its release of ooHG.
+* The exception is that, if you link the ooHG libraries with other
+* files to produce an executable, this does not by itself cause the
+* resulting executable to be covered by the GNU General Public License.
+* Your use of that executable is in no way restricted on account of
+* linking the ooHG library code into it.
+* This exception does not however invalidate any other reasons why
+* the executable file might be covered by the GNU General Public License.
+* This exception applies only to the code released by the ooHG
+* Project under the name ooHG. If you copy code from other
+* ooHG Project or Free Software Foundation releases into a copy of
+* ooHG, as the General Public License permits, the exception does
+* not apply to the code that you add in this way. To avoid misleading
+* anyone as to the status of such modified files, you must delete
+* this exception notice from them.
+* If you write modifications of your own for ooHG, it is your choice
+* whether to permit this exception to apply to your modifications.
+* If you do not wish that, delete this exception notice.
+*/
 
 #include "oohg.ch"
 #include "hbclass.ch"
@@ -151,10 +139,10 @@ CLASS TCheckList FROM TGrid
    ENDCLASS
 
 METHOD Define( ControlName, ParentForm, x, y, w, h, aRows, v, fontname, ;
-               fontsize, tooltip, change, gotfocus, lostfocus, aImage, just, ;
-               break, HelpId, bold, italic, underline, strikeout, backcolor, ;
-               fontcolor, lRtl, lDisabled, lNoTabStop, lInvisible, sort, ;
-               descending, aSelectedColors, dblbffr, click ) CLASS TCheckList
+      fontsize, tooltip, change, gotfocus, lostfocus, aImage, just, ;
+      break, HelpId, bold, italic, underline, strikeout, backcolor, ;
+      fontcolor, lRtl, lDisabled, lNoTabStop, lInvisible, sort, ;
+      descending, aSelectedColors, dblbffr, click ) CLASS TCheckList
 
    LOCAL aHdr, aWidth, aJust, aPic, aEdC
 
@@ -163,24 +151,24 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aRows, v, fontname, ;
    ASSIGN sort       VALUE sort       TYPE "L" DEFAULT .F.
    ASSIGN descending VALUE descending TYPE "L" DEFAULT .F.
 
-   If HB_IsArray( aImage ) .AND. Len( aImage ) > 0
+   IF HB_IsArray( aImage ) .AND. Len( aImage ) > 0
       aHdr := {''}
       aWidth := { 0 }
       aJust := { just }
       aPic := {.T.}
       aEdC := { {'IMAGEDATA', {'TEXTBOX', 'CHARACTER'}} }
 
-      If HB_IsArray( aRows )
-         If aScan( aRows, { |a| ! HB_IsArray( a ) .OR. ;
-                                Len( a ) # 2 .OR. ;
-                                ! ValType( a[1] ) $ "CM" .OR. ;
-                                ValType( a[2] ) # "N" } ) > 0
+      IF HB_IsArray( aRows )
+         IF aScan( aRows, { |a| ! HB_IsArray( a ) .OR. ;
+               Len( a ) # 2 .OR. ;
+               ! ValType( a[1] ) $ "CM" .OR. ;
+               ValType( a[2] ) # "N" } ) > 0
             MsgOOHGError( "CheckList.Define: Invalid items. Program terminated." )
-         EndIf
-      Else
+         ENDIF
+      ELSE
          aRows := {}
-      EndIf
-   Else
+      ENDIF
+   ELSE
       aHdr := {''}
       aWidth := { 0 }
       aJust := { just }
@@ -188,260 +176,268 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aRows, v, fontname, ;
       aPic := Nil
       aEdC := { {'TEXTBOX', 'CHARACTER'} }
 
-      If HB_IsArray( aRows )
-         If aScan( aRows, { |a| ! ValType( a ) $ "CM" } ) > 0
+      IF HB_IsArray( aRows )
+         IF aScan( aRows, { |a| ! ValType( a ) $ "CM" } ) > 0
             MsgOOHGError( "CheckList.Define: Invalid items. Program terminated." )
-         EndIf
-      Else
+         ENDIF
+      ELSE
          aRows := {}
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
    /*
    METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
-               aRows, value, fontname, fontsize, tooltip, change, dblclick, ;
-               aHeadClick, gotfocus, lostfocus, nogrid, aImage, aJust, ;
-               break, HelpId, bold, italic, underline, strikeout, ownerdata, ;
-               ondispinfo, itemcount, editable, backcolor, fontcolor, ;
-               dynamicbackcolor, dynamicforecolor, aPicture, lRtl, inplace, ;
-               editcontrols, readonly, valid, validmessages, editcell, ;
-               aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
-               onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
-               aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
-               lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
-               bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
-               bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
-               bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
-               lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
-               lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick ) CLASS TGrid
+   aRows, value, fontname, fontsize, tooltip, change, dblclick, ;
+   aHeadClick, gotfocus, lostfocus, nogrid, aImage, aJust, ;
+   break, HelpId, bold, italic, underline, strikeout, ownerdata, ;
+   ondispinfo, itemcount, editable, backcolor, fontcolor, ;
+   dynamicbackcolor, dynamicforecolor, aPicture, lRtl, inplace, ;
+   editcontrols, readonly, valid, validmessages, editcell, ;
+   aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
+   onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
+   aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
+   lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
+   bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
+   bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
+   bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
+   lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
+   lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick ) CLASS TGrid
    */
    ::Super:Define( ControlName, ParentForm, x, y, w, h, aHdr, aWidth, ;
-                   {}, Nil, fontname, fontsize, tooltip, change, Nil, ;
-                   Nil, gotfocus, lostfocus, .T., aImage, aJust, ;
-                   break, HelpId, bold, italic, underline, strikeout, .F., ;
-                   Nil, Nil, .F., backcolor, fontcolor, ;
-                   Nil, Nil, aPic, lRtl, .F., ;
-                   aEdC, .T., Nil, Nil, Nil, ;
-                   Nil, lDisabled, lNoTabStop, lInvisible, .F., ;
-                   Nil, Nil, Nil, .F., ;
-                   aSelectedColors, Nil, .T., Nil, dblbffr, ;
-                   .F., .F., .T., Nil, click, .T., ;
-                   Nil, Nil, Nil, Nil, ;
-                   Nil, Nil, Nil, Nil, Nil, ;
-                   Nil, Nil, Nil, Nil, Nil, Nil, ;
-                   .T., Nil, Nil, Nil, ;
-                   Nil, Nil, .F., .F., .F., Nil, Nil )
+      {}, Nil, fontname, fontsize, tooltip, change, Nil, ;
+      Nil, gotfocus, lostfocus, .T., aImage, aJust, ;
+      break, HelpId, bold, italic, underline, strikeout, .F., ;
+      Nil, Nil, .F., backcolor, fontcolor, ;
+      Nil, Nil, aPic, lRtl, .F., ;
+      aEdC, .T., Nil, Nil, Nil, ;
+      Nil, lDisabled, lNoTabStop, lInvisible, .F., ;
+      Nil, Nil, Nil, .F., ;
+      aSelectedColors, Nil, .T., Nil, dblbffr, ;
+      .F., .F., .T., Nil, click, .T., ;
+      Nil, Nil, Nil, Nil, ;
+      Nil, Nil, Nil, Nil, Nil, ;
+      Nil, Nil, Nil, Nil, Nil, Nil, ;
+      .T., Nil, Nil, Nil, ;
+      Nil, Nil, .F., .F., .F., Nil, Nil )
 
    aEval( aRows, { |u| ::AddItem( u ) } )
 
    ::Width := w
 
-   If Sort
-     ::Sort( descending )
-   EndIf
+   IF Sort
+      ::Sort( descending )
+   ENDIF
 
    ::Value := v
 
-   Return Self
+   RETURN Self
 
 METHOD Value( aValue ) CLASS TCheckList
 
    LOCAL lChanged, i, lOld, lSet, nFirst, aItems
 
-   If HB_IsArray( aValue )
+   IF HB_IsArray( aValue )
       // do not use ::CheckItem to set the new value to avoid firing OnChange event more than once
       lChanged := .F.
       nFirst := 0
 
-      For i := 1 to ::ItemCount
+      FOR i := 1 to ::ItemCount
          lOld := ListView_GetCheckState( ::hwnd, i )
          lSet := ( aScan( aValue, i ) > 0 )
 
-         If lSet # lOld
-            If ListView_SetCheckState( ::hwnd, i, lSet ) == lSet
+         IF lSet # lOld
+            IF ListView_SetCheckState( ::hwnd, i, lSet ) == lSet
                lChanged := .T.
                ::LastChangedItem := i
-               If lSet .and. nFirst == 0
-                 nFirst := i
-               EndIf
-            EndIf
-         EndIf
-      Next i
+               IF lSet .and. nFirst == 0
+                  nFirst := i
+               ENDIF
+            ENDIF
+         ENDIF
+      NEXT i
 
-      If lChanged
-         If nFirst > 0
+      IF lChanged
+         IF nFirst > 0
             ::ItemVisible( nFirst )
-         EndIf
+         ENDIF
 
          ::DoChange()
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
    aItems := {}
-   For i := 1 to ::ItemCount
-      If ListView_GetCheckState( ::hwnd, i )
+   FOR i := 1 to ::ItemCount
+      IF ListView_GetCheckState( ::hwnd, i )
          aAdd( aItems, i )
-      EndIf
-   Next
+      ENDIF
+   NEXT
 
-   Return aItems
+   RETURN aItems
 
 METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TCheckList
 
-   Local nNext
+   LOCAL nNext
 
-   If nMsg == WM_LBUTTONDBLCLK
+   IF nMsg == WM_LBUTTONDBLCLK
       // ignore double click on checkbox, it was processed as single click
-      If ListView_HitOnCheckBox( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ), GetCursorCol() - GetWindowCol( ::hWnd ) ) == 0
-         If HB_IsBlock( ::OnDblClick )
+      IF ListView_HitOnCheckBox( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ), GetCursorCol() - GetWindowCol( ::hWnd ) ) == 0
+         IF HB_IsBlock( ::OnDblClick )
             ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
-         EndIf
-      EndIf
-      Return 1
+         ENDIF
+      ENDIF
 
-   ElseIf nMsg == WM_CONTEXTMENU
+      RETURN 1
+
+   ELSEIF nMsg == WM_CONTEXTMENU
       // ignore right click on checkbox
-      If ListView_HitOnCheckBox( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ), GetCursorCol() - GetWindowCol( ::hWnd ) ) > 0
-         Return 1
-      EndIf
+      IF ListView_HitOnCheckBox( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ), GetCursorCol() - GetWindowCol( ::hWnd ) ) > 0
 
-   ElseIf nMsg == WM_MOUSEWHEEL
-      If GET_WHEEL_DELTA_WPARAM( wParam ) > 0
+         RETURN 1
+      ENDIF
+
+   ELSEIF nMsg == WM_MOUSEWHEEL
+      IF GET_WHEEL_DELTA_WPARAM( wParam ) > 0
          nNext := ::FirstSelectedItem - 1
-         If nNext > 0
+         IF nNext > 0
             ListView_SetCursel( ::hWnd, nNext )
-         EndIf
-      Else
+         ENDIF
+      ELSE
          nNext := ::FirstSelectedItem + 1
-         If nNext <= ::ItemCount
+         IF nNext <= ::ItemCount
             ListView_SetCursel( ::hWnd, nNext )
-         EndIf
-      EndIf
-      Return 1
-   EndIf
+         ENDIF
+      ENDIF
 
-   Return ::Super:Events( hWnd, nMsg, wParam, lParam )
+      RETURN 1
+   ENDIF
+
+   RETURN ::Super:Events( hWnd, nMsg, wParam, lParam )
 
 METHOD Events_Notify( wParam, lParam ) CLASS TCheckList
 
-   Local nNotify := GetNotifyCode( lParam )
-   Local uValue, uRet, nItem
+   LOCAL nNotify := GetNotifyCode( lParam )
+   LOCAL uValue, uRet, nItem
 
    Empty( wParam )
 
-   If nNotify == NM_CUSTOMDRAW
+   IF nNotify == NM_CUSTOMDRAW
       // hide the horizontal scrollbar if any is shown
-      If ::Super:ColumnWidth( 1 ) # ::ClientWidth
+      IF ::Super:ColumnWidth( 1 ) # ::ClientWidth
          ::Super:ColumnWidth( 1, ::ClientWidth )
-      EndIf
+      ENDIF
 
       // this is the same as TGrid's
       uValue := ::FirstSelectedItem
       uRet := TGrid_Notify_CustomDraw( Self, lParam, .F., uValue, 0, ::lCheckBoxes, ::lFocusRect, ::lNoGrid, ::lPLM )
       ListView_SetCursel( ::hWnd, uValue )
-      Return uRet
 
-   ElseIf nNotify == LVN_KEYDOWN .AND. GetGridvKey( lParam ) == VK_SPACE
+      RETURN uRet
+
+   ELSEIF nNotify == LVN_KEYDOWN .AND. GetGridvKey( lParam ) == VK_SPACE
       // detect item
       nItem := ::FirstSelectedItem
-      If nItem > 0
+      IF nItem > 0
          // change check mark
          ::CheckItem( nItem, ! ::CheckItem( nItem ) )
          // skip default action
-         Return 1
-      EndIf
 
-   ElseIf nNotify == LVN_ENDSCROLL
+         RETURN 1
+      ENDIF
+
+   ELSEIF nNotify == LVN_ENDSCROLL
       // There is a bug in ListView under XP that causes the gridlines to be
       // incorrectly scrolled when the left button is clicked to scroll.
       // This is supposedly documented at KB 813791.
       RedrawWindow( ::hWnd )
 
-   ElseIf nNotify == NM_CLICK
+   ELSEIF nNotify == NM_CLICK
       // detect item
       nItem := ListView_HitOnCheckBox( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ), GetCursorCol() - GetWindowCol( ::hWnd ) )
-      If nItem > 0
+      IF nItem > 0
          // change check mark
          ::CheckItem( nItem, ! ::CheckItem( nItem ) )
-      Else
-         If HB_IsBlock( ::OnClick )
-            If ! ::NestedClick
+      ELSE
+         IF HB_IsBlock( ::OnClick )
+            IF ! ::NestedClick
                ::NestedClick := ! _OOHG_NestedSameEvent()
                ::DoEventMouseCoords( ::OnClick, "CLICK" )
                ::NestedClick := .F.
-            EndIf
-         EndIf
-      EndIf
+            ENDIF
+         ENDIF
+      ENDIF
       // skip default action
-      Return 1
 
-   ElseIf nNotify == NM_RCLICK
+      RETURN 1
+
+   ELSEIF nNotify == NM_RCLICK
       // detect item
       nItem := ListView_HitOnCheckBox( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ), GetCursorCol() - GetWindowCol( ::hWnd ) )
-      If nItem > 0
+      IF nItem > 0
          // change check mark
          ::CheckItem( nItem, ! ::CheckItem( nItem ) )
          // this changes the checkbox
-         Return 1
-      Else
-         If HB_IsBlock( ::OnRClick )
+
+         RETURN 1
+      ELSE
+         IF HB_IsBlock( ::OnRClick )
             ::DoEventMouseCoords( ::OnRClick, "RCLICK" )
-         EndIf
-      EndIf
+         ENDIF
+      ENDIF
 
-   ElseIf nNotify == NM_KILLFOCUS
-      Return ::DoLostFocus()
+   ELSEIF nNotify == NM_KILLFOCUS
 
-   ElseIf nNotify == NM_SETFOCUS
+      RETURN ::DoLostFocus()
+
+   ELSEIF nNotify == NM_SETFOCUS
       GetFormObjectByHandle( ::ContainerhWnd ):LastFocusedControl := ::hWnd
       ::FocusEffect()
       ::DoEvent( ::OnGotFocus, "GOTFOCUS" )
 
-   EndIf
+   ENDIF
 
    // TGrid's Event_Notify method must be skipped
 
-   Return Nil
+   RETURN NIL
 
 METHOD Width( nWidth ) CLASS TCheckList
 
-   If pcount() > 0
+   IF pcount() > 0
       ::Super:Width( nWidth )
       ::Super:ColumnWidth( 1, ::ClientWidth )
-   EndIf
+   ENDIF
 
-   Return ::nWidth
+   RETURN ::nWidth
 
 METHOD CheckItem( nItem, lChecked ) CLASS TCheckList
 
-   Local lRet, lOld
+   LOCAL lRet, lOld
 
-   If HB_IsNumeric( nItem ) .AND. nItem >= 1 .AND. nItem <= ::ItemCount
+   IF HB_IsNumeric( nItem ) .AND. nItem >= 1 .AND. nItem <= ::ItemCount
       lOld := ListView_GetCheckState( ::hwnd, nItem )
 
-      If HB_IsLogical( lChecked ) .AND. lChecked # lOld
+      IF HB_IsLogical( lChecked ) .AND. lChecked # lOld
          ListView_SetCheckState( ::hwnd, nItem, lChecked )
 
          lRet := ListView_GetCheckState( ::hwnd, nItem )
 
-         If lRet # lOld
+         IF lRet # lOld
             ::LastChangedItem := nItem
             ::DoChange()
-         EndIf
-      Else
+         ENDIF
+      ELSE
          lRet := lOld
-      EndIf
-   Else
+      ENDIF
+   ELSE
       lRet := .F.
-   EndIf
+   ENDIF
 
-   Return lRet
+   RETURN lRet
 
 METHOD DeleteAllItems() CLASS TCheckList
 
-   Local aValue
+   LOCAL aValue
 
-   If ::ItemCount > 0
+   IF ::ItemCount > 0
       aValue := ::Value
 
       ListViewReset( ::hWnd )
@@ -450,28 +446,28 @@ METHOD DeleteAllItems() CLASS TCheckList
 
       ::LastChangedItem := 0
 
-      If ! ArraysAreEqual( ::Value, aValue )
+      IF ! ArraysAreEqual( ::Value, aValue )
          ::DoChange()
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
-   Return Nil
+   RETURN NIL
 
 METHOD AddItem( uItem, lChecked, uForeColor, uBackColor ) CLASS TCheckList
 
-   Local aRow
+   LOCAL aRow
 
-   If ValidHandler( ::ImageList )
-      If Len( uItem ) # 2
+   IF ValidHandler( ::ImageList )
+      IF Len( uItem ) # 2
          MsgOOHGError( "CheckList.AddItem: Item size mismatch. Program terminated." )
-      ElseIf ! HB_IsArray( uItem ) .OR. ! ValType( uItem[1] ) $ "CM" .OR. ValType( uItem[2] ) # "N"
+      ELSEIF ! HB_IsArray( uItem ) .OR. ! ValType( uItem[1] ) $ "CM" .OR. ValType( uItem[2] ) # "N"
          MsgOOHGError( "CheckList.AddItem: Invalid item. Program terminated." )
-      EndIf
-   Else
-      If ! ValType( uItem ) $ "CM"
+      ENDIF
+   ELSE
+      IF ! ValType( uItem ) $ "CM"
          MsgOOHGError( "CheckList.AddItem: Invalid item. Program terminated." )
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
    aRow := { uItem }
 
    ::Super:AddItem( aRow, uForeColor, uBackColor )
@@ -480,63 +476,63 @@ METHOD AddItem( uItem, lChecked, uForeColor, uBackColor ) CLASS TCheckList
    // it's not necessary to change ::LastChangedItem unless
    // the new item is checked
 
-   If HB_IsLogical( lChecked ) .and. lChecked
+   IF HB_IsLogical( lChecked ) .and. lChecked
       ::CheckItem( ::ItemCount, .T. )
-   EndIf
+   ENDIF
 
-   Return ::ItemCount
+   RETURN ::ItemCount
 
 METHOD InsertItem( nItem, uItem, lChecked, uForeColor, uBackColor ) CLASS TCheckList
 
-   Local aRow, aValue
+   LOCAL aRow, aValue
 
-   If ValidHandler( ::ImageList )
-      If Len( uItem ) # 2
+   IF ValidHandler( ::ImageList )
+      IF Len( uItem ) # 2
          MsgOOHGError( "CheckList.InsertItem: Item size mismatch. Program terminated." )
-      ElseIf ! HB_IsArray( uItem ) .OR. ! ValType( uItem[1] ) $ "CM" .OR. ValType( uItem[2] ) # "N"
+      ELSEIF ! HB_IsArray( uItem ) .OR. ! ValType( uItem[1] ) $ "CM" .OR. ValType( uItem[2] ) # "N"
          MsgOOHGError( "CheckList.InsertItem: Invalid item. Program terminated." )
-      EndIf
-   Else
-      If ! ValType( uItem ) $ "CM"
+      ENDIF
+   ELSE
+      IF ! ValType( uItem ) $ "CM"
          MsgOOHGError( "CheckList.InsertItem: Invalid item. Program terminated." )
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
    aRow := { uItem }
 
    aValue := ::Value
 
    nItem := ::Super:InsertItem( nItem, aRow, uForeColor, uBackColor )
 
-   If nItem > 0
-      If HB_IsLogical( lChecked ) .and. lChecked
+   IF nItem > 0
+      IF HB_IsLogical( lChecked ) .and. lChecked
          ::CheckItem( nItem, .T. )
-      ElseIf ! ArraysAreEqual( ::Value, aValue )
+      ELSEIF ! ArraysAreEqual( ::Value, aValue )
          ::LastChangedItem := nItem
          ::DoChange()
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
-   Return nItem
+   RETURN nItem
 
 METHOD Sort( lDescending ) CLASS TCheckList
 
-   Local aValue, lRet
+   LOCAL aValue, lRet
 
    ASSIGN lDescending VALUE lDescending TYPE "L" DEFAULT .F.
    aValue := ::Value
 
    lRet := ::Super:SortColumn( 1, lDescending )
 
-   If ! ArraysAreEqual( ::Value, aValue )
+   IF ! ArraysAreEqual( ::Value, aValue )
       ::LastChangedItem := 0
       ::DoChange()
-   EndIf
+   ENDIF
 
-   Return lRet
+   RETURN lRet
 
 METHOD DeleteItem( nItem ) CLASS TCheckList
 
-   Local lChanged
+   LOCAL lChanged
 
    lChanged := ( aScan( ::Value, nItem ) > 0 )
 
@@ -544,48 +540,48 @@ METHOD DeleteItem( nItem ) CLASS TCheckList
 
    ::LastChangedItem := 0
 
-   If lChanged
+   IF lChanged
       ::DoChange()
-   EndIf
+   ENDIF
 
-   Return Nil
+   RETURN NIL
 
 METHOD ItemVisible( nItem ) CLASS TCheckList
 
-   Return ListView_EnsureVisible( ::hWnd, nItem )
+   RETURN ListView_EnsureVisible( ::hWnd, nItem )
 
 METHOD Item( nItem, uItem, lChecked, uForeColor, uBackColor ) CLASS TCheckList
 
-   Local aRow
+   LOCAL aRow
 
-   If ValidHandler( ::ImageList )
-      If Len( uItem ) # 2
+   IF ValidHandler( ::ImageList )
+      IF Len( uItem ) # 2
          MsgOOHGError( "CheckList.Item: Item size mismatch. Program terminated." )
-      ElseIf ! HB_IsArray( uItem ) .OR. ! ValType( uItem[1] ) $ "CM" .OR. ValType( uItem[2] ) # "N"
+      ELSEIF ! HB_IsArray( uItem ) .OR. ! ValType( uItem[1] ) $ "CM" .OR. ValType( uItem[2] ) # "N"
          MsgOOHGError( "CheckList.Item: Invalid item. Program terminated." )
-      EndIf
-   Else
-      If ! ValType( uItem ) $ "CM"
+      ENDIF
+   ELSE
+      IF ! ValType( uItem ) $ "CM"
          MsgOOHGError( "CheckList.Item: Invalid item. Program terminated." )
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
    aRow := { uItem }
 
    uItem := ::Super:Item( nItem, aRow, uForeColor, uBackColor)
 
-   If HB_IsLogical( lChecked )
+   IF HB_IsLogical( lChecked )
       ::CheckItem( nItem, lChecked )
-   EndIf
+   ENDIF
 
-   Return uItem
+   RETURN uItem
 
 METHOD SetRangeColor( uForeColor, uBackColor, nTop, nBottom ) CLASS TCheckList
 
-   Return ::Super:SetRangeColor( uForeColor, uBackColor, nTop, 1, nBottom, 1 )
+   RETURN ::Super:SetRangeColor( uForeColor, uBackColor, nTop, 1, nBottom, 1 )
 
 METHOD DoChange() CLASS TCheckList
 
-   Local xValue, cType, cOldType
+   LOCAL xValue, cType, cOldType
 
    xValue   := ::Value
    cType    := VALTYPE( xValue )
@@ -593,34 +589,36 @@ METHOD DoChange() CLASS TCheckList
    cType    := IF( cType    == "M", "C", cType )
    cOldType := IF( cOldType == "M", "C", cOldType )
    IF cOldType == "U" .OR. ;
-      ! cType == cOldType .OR. ;
-      IF( cType == "A", ;
-          ! ArraysAreEqual( xValue, ::xOldValue ), ;
-          ! xValue == ::xOldValue )
+         ! cType == cOldType .OR. ;
+         IF( cType == "A", ;
+         ! ArraysAreEqual( xValue, ::xOldValue ), ;
+         ! xValue == ::xOldValue )
       ::xOldValue := xValue
       ::DoEvent( ::OnChange, "CHANGE" )
    ENDIF
 
-   Return nil
+   RETURN NIL
 
 METHOD ItemCaption( nItem, cCaption ) CLASS TCheckList
 
-   If nItem < 1 .OR. nItem > ::ItemCount
+   IF nItem < 1 .OR. nItem > ::ItemCount
       // return the same value as if the item exist and has no caption
-      Return ""
-   EndIf
 
-   Return ::Super:CellCaption( nItem, 1, cCaption )
+      RETURN ""
+   ENDIF
+
+   RETURN ::Super:CellCaption( nItem, 1, cCaption )
 
 METHOD ItemImage( nItem, nImage ) CLASS TCheckList
 
-   If nItem < 1 .OR. nItem > ::ItemCount
+   IF nItem < 1 .OR. nItem > ::ItemCount
       // return the same value as if the item exist and has no image
-      Return -1
-   EndIf
 
-   Return ::Super:CellImage( nItem, 1, nImage )
+      RETURN -1
+   ENDIF
+
+   RETURN ::Super:CellImage( nItem, 1, nImage )
 
 FUNCTION ArraysAreEqual( array1, array2 )
 
-   Return aEqual( array1, array2 )
+   RETURN aEqual( array1, array2 )

@@ -58,7 +58,6 @@
  * If you do not wish that, delete this exception notice.
  */
 
-
 #translate IsControlDefined( <ControlName>, <FormName> ) ;
    => ;
       _IsControlDefined( <(ControlName)>, <(FormName)> )

@@ -58,7 +58,6 @@
  * If you do not wish that, delete this exception notice.
  */
 
-
 #translate SET LANGUAGE TO SPANISH ;
    => ;
       REQUEST HB_LANG_ES ;;

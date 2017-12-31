@@ -58,7 +58,6 @@
  * If you do not wish that, delete this exception notice.
  */
 
-
 #command DEFINE INTERNAL <name> ;
       [ AT <row>, <col> ] ;
       [ OBJ <obj> ] ;

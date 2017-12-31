@@ -1,64 +1,52 @@
 /*
- * $Id: h_msgbox.prg $
- */
+* $Id: h_msgbox.prg $
+*/
 /*
- * ooHG source code:
- * Messaging functions
- *
- * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
- * https://oohg.github.io/
- *
- * Portions of this project are based upon Harbour MiniGUI library.
- * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
- *
- * Portions of this project are based upon Harbour GUI framework for Win32.
- * Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
- * Copyright 2001 Antonio Linares <alinares@fivetech.com>
- *
- * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2017, https://harbour.github.io/
- */
+* ooHG source code:
+* Messaging functions
+* Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
+* https://oohg.github.io/
+* Portions of this project are based upon Harbour MiniGUI library.
+* Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
+* Portions of this project are based upon Harbour GUI framework for Win32.
+* Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
+* Copyright 2001 Antonio Linares <alinares@fivetech.com>
+* Portions of this project are based upon Harbour Project.
+* Copyright 1999-2017, https://harbour.github.io/
+*/
 /*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this software; see the file LICENSE.txt. If not, write to
- * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
- *
- * As a special exception, the ooHG Project gives permission for
- * additional uses of the text contained in its release of ooHG.
- *
- * The exception is that, if you link the ooHG libraries with other
- * files to produce an executable, this does not by itself cause the
- * resulting executable to be covered by the GNU General Public License.
- * Your use of that executable is in no way restricted on account of
- * linking the ooHG library code into it.
- *
- * This exception does not however invalidate any other reasons why
- * the executable file might be covered by the GNU General Public License.
- *
- * This exception applies only to the code released by the ooHG
- * Project under the name ooHG. If you copy code from other
- * ooHG Project or Free Software Foundation releases into a copy of
- * ooHG, as the General Public License permits, the exception does
- * not apply to the code that you add in this way. To avoid misleading
- * anyone as to the status of such modified files, you must delete
- * this exception notice from them.
- *
- * If you write modifications of your own for ooHG, it is your choice
- * whether to permit this exception to apply to your modifications.
- * If you do not wish that, delete this exception notice.
- */
-
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2, or (at your option)
+* any later version.
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* You should have received a copy of the GNU General Public License
+* along with this software; see the file LICENSE.txt. If not, write to
+* the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+* Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
+* As a special exception, the ooHG Project gives permission for
+* additional uses of the text contained in its release of ooHG.
+* The exception is that, if you link the ooHG libraries with other
+* files to produce an executable, this does not by itself cause the
+* resulting executable to be covered by the GNU General Public License.
+* Your use of that executable is in no way restricted on account of
+* linking the ooHG library code into it.
+* This exception does not however invalidate any other reasons why
+* the executable file might be covered by the GNU General Public License.
+* This exception applies only to the code released by the ooHG
+* Project under the name ooHG. If you copy code from other
+* ooHG Project or Free Software Foundation releases into a copy of
+* ooHG, as the General Public License permits, the exception does
+* not apply to the code that you add in this way. To avoid misleading
+* anyone as to the status of such modified files, you must delete
+* this exception notice from them.
+* If you write modifications of your own for ooHG, it is your choice
+* whether to permit this exception to apply to your modifications.
+* If you do not wish that, delete this exception notice.
+*/
 
 #include 'oohg.ch'
 #include 'i_windefs.ch'
@@ -71,50 +59,49 @@ STATIC _OOHG_MsgDefaultMode := Nil
 // Nil equals MB_SYSTEMMODAL, other valid values are MB_APPLMODAL and MB_TASKMODAL
 // See https://msdn.microsoft.com/en-us/library/windows/desktop/ms645505(v=vs.85).aspx
 
-
-Function SetAutoTypeNoSpaces( lSet )
+FUNCTION SetAutoTypeNoSpaces( lSet )
 
    IF HB_IsLogical( lSet )
       _OOHG_AutoTypeNoSpaces := lSet
    ENDIF
 
-   Return _OOHG_AutoTypeNoSpaces
+   RETURN _OOHG_AutoTypeNoSpaces
 
-Function SetOneArrayItemPerLine( lSet )
+FUNCTION SetOneArrayItemPerLine( lSet )
 
    IF HB_IsLogical( lSet )
       _OOHG_OneItemPerLine := lSet
    ENDIF
 
-   Return _OOHG_OneItemPerLine
+   RETURN _OOHG_OneItemPerLine
 
-Function SetMsgDefaultMessage( cMessage )
+FUNCTION SetMsgDefaultMessage( cMessage )
 
    IF valtype( cMessage ) == "C"
       _OOHG_MsgDefaultMessage := cMessage
    ENDIF
 
-   Return _OOHG_MsgDefaultMessage
+   RETURN _OOHG_MsgDefaultMessage
 
-Function SetMsgDefaultTitle( cTitle )
+FUNCTION SetMsgDefaultTitle( cTitle )
 
    IF valtype( cTitle ) == "C"
       _OOHG_MsgDefaultTitle := cTitle
    ENDIF
 
-   Return _OOHG_MsgDefaultTitle
+   RETURN _OOHG_MsgDefaultTitle
 
-Function SetMsgDefaultMode( nMode )
+FUNCTION SetMsgDefaultMode( nMode )
 
    IF valtype( nMode ) == "N"
       _OOHG_MsgDefaultMode := nMode
    ENDIF
 
-   Return _OOHG_MsgDefaultMode
+   RETURN _OOHG_MsgDefaultMode
 
-Function MsgYesNo( Message, Title, lRevertDefault, Mode )
+FUNCTION MsgYesNo( Message, Title, lRevertDefault, Mode )
 
-   Local t
+   LOCAL t
 
    DEFAULT Message TO _OOHG_MsgDefaultMessage
    DEFAULT Title TO _OOHG_MsgDefaultTitle
@@ -126,11 +113,11 @@ Function MsgYesNo( Message, Title, lRevertDefault, Mode )
       t := c_msgyesno( Message, Title, Mode )
    ENDIF
 
-   Return ( t == 6 )
+   RETURN ( t == 6 )
 
-Function MsgYesNoCancel( Message, Title, Mode )
+FUNCTION MsgYesNoCancel( Message, Title, Mode )
 
-   Local t
+   LOCAL t
 
    DEFAULT Message TO _OOHG_MsgDefaultMessage
    DEFAULT Title TO _OOHG_MsgDefaultTitle
@@ -138,11 +125,11 @@ Function MsgYesNoCancel( Message, Title, Mode )
 
    t := c_msgyesnocancel( Message, Title, Mode )
 
-   Return iif( t == 6, 1, iif( t == 7, 2, 0 ) )
+   RETURN iif( t == 6, 1, iif( t == 7, 2, 0 ) )
 
-Function MsgRetryCancel( Message, Title, Mode )
+FUNCTION MsgRetryCancel( Message, Title, Mode )
 
-   Local t
+   LOCAL t
 
    DEFAULT Message TO _OOHG_MsgDefaultMessage
    DEFAULT Title TO _OOHG_MsgDefaultTitle
@@ -150,11 +137,11 @@ Function MsgRetryCancel( Message, Title, Mode )
 
    t := c_msgretrycancel( Message, Title, Mode )
 
-   Return ( t == 4 )
+   RETURN ( t == 4 )
 
-Function MsgOkCancel( Message, Title, Mode )
+FUNCTION MsgOkCancel( Message, Title, Mode )
 
-   Local t
+   LOCAL t
 
    DEFAULT Message TO _OOHG_MsgDefaultMessage
    DEFAULT Title TO _OOHG_MsgDefaultTitle
@@ -162,9 +149,9 @@ Function MsgOkCancel( Message, Title, Mode )
 
    t := c_msgokcancel( Message, Title, Mode )
 
-   Return ( t == 1 )
+   RETURN ( t == 1 )
 
-Function MsgInfo( Message, Title, Mode )
+FUNCTION MsgInfo( Message, Title, Mode )
 
    DEFAULT Message TO _OOHG_MsgDefaultMessage
    DEFAULT Title TO _OOHG_MsgDefaultTitle
@@ -172,9 +159,9 @@ Function MsgInfo( Message, Title, Mode )
 
    c_msginfo( Message, Title, Mode )
 
-   Return Nil
+   RETURN NIL
 
-Function MsgStop( Message, Title, Mode )
+FUNCTION MsgStop( Message, Title, Mode )
 
    DEFAULT Message TO _OOHG_MsgDefaultMessage
    DEFAULT Title TO _OOHG_MsgDefaultTitle
@@ -182,9 +169,9 @@ Function MsgStop( Message, Title, Mode )
 
    c_msgstop( Message, Title, Mode )
 
-   Return Nil
+   RETURN NIL
 
-Function MsgExclamation( Message, Title, Mode )
+FUNCTION MsgExclamation( Message, Title, Mode )
 
    DEFAULT Message TO _OOHG_MsgDefaultMessage
    DEFAULT Title TO _OOHG_MsgDefaultTitle
@@ -192,11 +179,11 @@ Function MsgExclamation( Message, Title, Mode )
 
    c_msgexclamation( Message, Title, Mode )
 
-   Return Nil
+   RETURN NIL
 
-Function MsgExclamationYesNo( Message, Title, Mode )
+FUNCTION MsgExclamationYesNo( Message, Title, Mode )
 
-   Local t
+   LOCAL t
 
    DEFAULT Message TO _OOHG_MsgDefaultMessage
    DEFAULT Title TO _OOHG_MsgDefaultTitle
@@ -204,9 +191,9 @@ Function MsgExclamationYesNo( Message, Title, Mode )
 
    t := c_msgexclamationyesno( Message, Title, Mode )
 
-   Return ( t == 6 )
+   RETURN ( t == 6 )
 
-Function MsgBox( Message, Title, Mode )
+FUNCTION MsgBox( Message, Title, Mode )
 
    DEFAULT Message TO _OOHG_MsgDefaultMessage
    DEFAULT Title   TO _OOHG_MsgDefaultTitle
@@ -214,11 +201,11 @@ Function MsgBox( Message, Title, Mode )
 
    c_msgbox( Message, Title, Mode )
 
-   Return Nil
+   RETURN NIL
 
-Function MsgInfoExt( cInfo, cTitulo, nSecs, aBackColor )
+FUNCTION MsgInfoExt( cInfo, cTitulo, nSecs, aBackColor )
 
-   Local nWidth, nHeight, _Win_1
+   LOCAL nWidth, nHeight, _Win_1
 
    DEFAULT cInfo      TO _OOHG_MsgDefaultMessage
    DEFAULT cTitulo    TO _OOHG_MsgDefaultTitle
@@ -230,16 +217,16 @@ Function MsgInfoExt( cInfo, cTitulo, nSecs, aBackColor )
    nHeight := MLCount( cInfo ) * 20
 
    DEFINE WINDOW 0 ;
-      AT 0, 0 ;
-      WIDTH nWidth ;
-      HEIGHT 115 + nHeight ;
-      NOCAPTION ;
-      BACKCOLOR aBackColor ;
-      TOPMOST ;
-      MINWIDTH nWidth ;
-      MAXWIDTH nWidth ;
-      MINHEIGHT 115 + nHeight ;
-      MAXHEIGHT 115 + nHeight
+         AT 0, 0 ;
+         WIDTH nWidth ;
+         HEIGHT 115 + nHeight ;
+         NOCAPTION ;
+         BACKCOLOR aBackColor ;
+         TOPMOST ;
+         MINWIDTH nWidth ;
+         MAXWIDTH nWidth ;
+         MINHEIGHT 115 + nHeight ;
+         MAXHEIGHT 115 + nHeight
 
       _Win_1 := _OOHG_ThisForm
 
@@ -297,15 +284,15 @@ Function MsgInfoExt( cInfo, cTitulo, nSecs, aBackColor )
    _Win_1:Center()
    _Win_1:Activate()
 
-   Return Nil
+   RETURN NIL
 
-Function AutoMsgInfoExt( uInfo, cTitulo, nSecs )
+FUNCTION AutoMsgInfoExt( uInfo, cTitulo, nSecs )
 
    MsgInfoExt( AutoType( uInfo ), cTitulo, Nsecs )
 
-   Return nil
+   RETURN NIL
 
-Function AutoMsgBox( uMessage, cTitle, nMode )
+FUNCTION AutoMsgBox( uMessage, cTitle, nMode )
 
    DEFAULT cTitle TO _OOHG_MsgDefaultTitle
    DEFAULT nMode TO _OOHG_MsgDefaultMode
@@ -313,9 +300,9 @@ Function AutoMsgBox( uMessage, cTitle, nMode )
    uMessage :=  AutoType( uMessage )
    c_msgbox( uMessage, cTitle, nMode )
 
-   Return Nil
+   RETURN NIL
 
-Function AutoMsgExclamation( uMessage, cTitle, nMode )
+FUNCTION AutoMsgExclamation( uMessage, cTitle, nMode )
 
    DEFAULT cTitle TO _OOHG_MsgDefaultTitle
    DEFAULT nMode TO _OOHG_MsgDefaultMode
@@ -323,9 +310,9 @@ Function AutoMsgExclamation( uMessage, cTitle, nMode )
    uMessage := AutoType( uMessage )
    c_msgexclamation( uMessage, cTitle, nMode )
 
-   Return Nil
+   RETURN NIL
 
-Function AutoMsgStop( uMessage, cTitle, nMode )
+FUNCTION AutoMsgStop( uMessage, cTitle, nMode )
 
    DEFAULT cTitle TO _OOHG_MsgDefaultTitle
    DEFAULT nMode TO _OOHG_MsgDefaultMode
@@ -333,9 +320,9 @@ Function AutoMsgStop( uMessage, cTitle, nMode )
    uMessage := AutoType( uMessage )
    c_msgstop( uMessage, cTitle, nMode )
 
-   Return Nil
+   RETURN NIL
 
-Function AutoMsgInfo( uMessage, cTitle, nMode )
+FUNCTION AutoMsgInfo( uMessage, cTitle, nMode )
 
    DEFAULT cTitle TO _OOHG_MsgDefaultTitle
    DEFAULT nMode TO _OOHG_MsgDefaultMode
@@ -343,69 +330,68 @@ Function AutoMsgInfo( uMessage, cTitle, nMode )
    uMessage := AutoType( uMessage )
    c_msginfo( uMessage, cTitle, nMode )
 
-   Return Nil
+   RETURN NIL
 
+FUNCTION AutoType( Message )
 
-Function AutoType( Message )
-
-   Local cMessage, cType, l, i
+   LOCAL cMessage, cType, l, i
 
    cType := valtype( Message )
 
-   do case
-   case cType $ "CNLDM"
+   DO CASE
+   CASE cType $ "CNLDM"
       cMessage := transform( Message, "@" ) + iif( _OOHG_AutoTypeNoSpaces, "", "   " )
-   case cType == "O"
+   CASE cType == "O"
       cMessage := Message:ClassName() + " :Object:" + iif( _OOHG_AutoTypeNoSpaces, "", "   " )
-   case cType == "A"
+   CASE cType == "A"
       l := len( Message )
       cMessage := ""
-      for i := 1 to l
-         if _OOHG_OneItemPerLine
+      FOR i := 1 to l
+         IF _OOHG_OneItemPerLine
             cMessage := cMessage + iif( i == l, AutoType( Message[ i ] ), AutoType( Message[ i ] ) + iif( _OOHG_AutoTypeNoSpaces, "", "   " ) + chr( 13 ) + chr( 10 ) )
-         else
+         ELSE
             cMessage := cMessage + iif( i == l, AutoType( Message[ i ] ) + chr( 13 ) + chr( 10 ), AutoType( Message[ i ] ) + iif( _OOHG_AutoTypeNoSpaces, "", "   " ) )
-         endif
-      next i
-   case cType == "B"
+         ENDIF
+      NEXT i
+   CASE cType == "B"
       cMessage := "{|| Codeblock }" + iif( _OOHG_AutoTypeNoSpaces, "", "   " )
-   case cType == "H"
+   CASE cType == "H"
       cMessage := ":Hash:" + iif( _OOHG_AutoTypeNoSpaces, "", "   " )
-   case cType == "P"
+   CASE cType == "P"
       #ifdef __XHARBOUR__
-         cMessage :=  ltrim( Hb_ValToStr( Message )) + " HexToNum()=> " + ltrim( str( HexToNum( substr( Hb_ValToStr( Message ), 3 ) ) ) ) + iif( _OOHG_AutoTypeNoSpaces, "", "   " )
+      cMessage :=  ltrim( Hb_ValToStr( Message )) + " HexToNum()=> " + ltrim( str( HexToNum( substr( Hb_ValToStr( Message ), 3 ) ) ) ) + iif( _OOHG_AutoTypeNoSpaces, "", "   " )
       #else
-         cMessage :=  ltrim( Hb_ValToStr( Message )) + " Hb_HexToNum()=> " + ltrim( str( Hb_HexToNum( substr( Hb_ValToStr( Message ), 3 ) ) ) ) + iif( _OOHG_AutoTypeNoSpaces, "", "   " )
+      cMessage :=  ltrim( Hb_ValToStr( Message )) + " Hb_HexToNum()=> " + ltrim( str( Hb_HexToNum( substr( Hb_ValToStr( Message ), 3 ) ) ) ) + iif( _OOHG_AutoTypeNoSpaces, "", "   " )
       #endif
-   case cType == "T"
+   CASE cType == "T"
       cMessage := "t'" + hb_TSToStr( Message, .T. ) + "'" + iif( _OOHG_AutoTypeNoSpaces, "", "   " )
-   case cType == "S"
+   CASE cType == "S"
       cMessage := "@" + Message:name + "()" + iif( _OOHG_AutoTypeNoSpaces, "", "   " )
-   case cMessage == NIL
+   CASE cMessage == NIL
       cMessage := "<NIL>" + iif( _OOHG_AutoTypeNoSpaces, "", "   " )
-   otherwise
+   OTHERWISE
       cMessage := "???:" + cType + iif( _OOHG_AutoTypeNoSpaces, "", "   " )
-   endcase
+   ENDCASE
 
-   Return cMessage
+   RETURN cMessage
 
-Function _MsgBox( Message, Title, Style, Icon, SysModal, TopMost )
+FUNCTION _MsgBox( Message, Title, Style, Icon, SysModal, TopMost )
 
-   Local cMessage
+   LOCAL cMessage
 
    DEFAULT Message TO _OOHG_MsgDefaultMessage
    DEFAULT Title TO _OOHG_MsgDefaultTitle
 
    cMessage := AutoType( Message )
 
-   if ! HB_IsLogical( SysModal ) .OR. SysModal
+   IF ! HB_IsLogical( SysModal ) .OR. SysModal
       Style += MB_SYSTEMMODAL
-   else
-       Style += MB_APPLMODAL
-   endif
+   ELSE
+      Style += MB_APPLMODAL
+   ENDIF
 
-   if ! HB_IsLogical( TopMost ) .OR. TopMost
+   IF ! HB_IsLogical( TopMost ) .OR. TopMost
       Style += MB_TOPMOST
-   endif
+   ENDIF
 
-   Return MessageBoxIndirect( Nil, cMessage, Title, Style, Icon )
+   RETURN MessageBoxIndirect( Nil, cMessage, Title, Style, Icon )

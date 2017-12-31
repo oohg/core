@@ -1,69 +1,56 @@
 /*
- * $Id: h_tooltip.prg $
- */
+* $Id: h_tooltip.prg $
+*/
 /*
- * ooHG source code:
- * Tooltip control
- *
- * Copyright 2008-2017 Vicente Guerra <vicente@guerra.com.mx>
- * https://oohg.github.io/
- *
- * Portions of this project are based upon Harbour MiniGUI library.
- * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
- *
- * Portions of this project are based upon Harbour GUI framework for Win32.
- * Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
- * Copyright 2001 Antonio Linares <alinares@fivetech.com>
- *
- * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2017, https://harbour.github.io/
- */
+* ooHG source code:
+* Tooltip control
+* Copyright 2008-2017 Vicente Guerra <vicente@guerra.com.mx>
+* https://oohg.github.io/
+* Portions of this project are based upon Harbour MiniGUI library.
+* Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
+* Portions of this project are based upon Harbour GUI framework for Win32.
+* Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
+* Copyright 2001 Antonio Linares <alinares@fivetech.com>
+* Portions of this project are based upon Harbour Project.
+* Copyright 1999-2017, https://harbour.github.io/
+*/
 /*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this software; see the file LICENSE.txt. If not, write to
- * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
- *
- * As a special exception, the ooHG Project gives permission for
- * additional uses of the text contained in its release of ooHG.
- *
- * The exception is that, if you link the ooHG libraries with other
- * files to produce an executable, this does not by itself cause the
- * resulting executable to be covered by the GNU General Public License.
- * Your use of that executable is in no way restricted on account of
- * linking the ooHG library code into it.
- *
- * This exception does not however invalidate any other reasons why
- * the executable file might be covered by the GNU General Public License.
- *
- * This exception applies only to the code released by the ooHG
- * Project under the name ooHG. If you copy code from other
- * ooHG Project or Free Software Foundation releases into a copy of
- * ooHG, as the General Public License permits, the exception does
- * not apply to the code that you add in this way. To avoid misleading
- * anyone as to the status of such modified files, you must delete
- * this exception notice from them.
- *
- * If you write modifications of your own for ooHG, it is your choice
- * whether to permit this exception to apply to your modifications.
- * If you do not wish that, delete this exception notice.
- */
-
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2, or (at your option)
+* any later version.
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* You should have received a copy of the GNU General Public License
+* along with this software; see the file LICENSE.txt. If not, write to
+* the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+* Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
+* As a special exception, the ooHG Project gives permission for
+* additional uses of the text contained in its release of ooHG.
+* The exception is that, if you link the ooHG libraries with other
+* files to produce an executable, this does not by itself cause the
+* resulting executable to be covered by the GNU General Public License.
+* Your use of that executable is in no way restricted on account of
+* linking the ooHG library code into it.
+* This exception does not however invalidate any other reasons why
+* the executable file might be covered by the GNU General Public License.
+* This exception applies only to the code released by the ooHG
+* Project under the name ooHG. If you copy code from other
+* ooHG Project or Free Software Foundation releases into a copy of
+* ooHG, as the General Public License permits, the exception does
+* not apply to the code that you add in this way. To avoid misleading
+* anyone as to the status of such modified files, you must delete
+* this exception notice from them.
+* If you write modifications of your own for ooHG, it is your choice
+* whether to permit this exception to apply to your modifications.
+* If you do not wish that, delete this exception notice.
+*/
 
 #include "oohg.ch"
 #include "i_windefs.ch"
 #include "hbclass.ch"
-
 
 STATIC _OOHG_ToolTipInitialTime := 0
 STATIC _OOHG_ToolTipAutoPopTime := 0
@@ -71,7 +58,6 @@ STATIC _OOHG_ToolTipReShowTime := 0
 STATIC _OOHG_ToolTipMultiLine := .F.
 STATIC _OOHG_ToolTipBalloon := .F.
 STATIC _OOHG_ToolTipClose := .F.
-
 
 CLASS TToolTip FROM TControl
 
@@ -110,228 +96,227 @@ METHOD Define( ControlName, ParentForm, nInitial, nAutoPop, nReShow, lMulti, lBa
    ::SetForm( ControlName, ParentForm )
    ControlHandle := InitToolTip( ::ContainerhWnd, lBalloon, lClose )
    ::Register( ControlHandle, ControlName )
-   If nInitial > 0
+   IF nInitial > 0
       ::InitialTime := nInitial
-   EndIf
-   If nAutoPop > 0
+   ENDIF
+   IF nAutoPop > 0
       ::AutoPopTime := nAutoPop
-   EndIf
-   If nReShow > 0
+   ENDIF
+   IF nReShow > 0
       ::ReshowTime := nReShow
-   EndIf
+   ENDIF
    ::MultiLine := lMulti
 
-   Return Self
+   RETURN Self
 
 METHOD Item( hWnd, cToolTip ) CLASS TToolTip
 
-   If VALTYPE( cToolTip ) $ "CM" .OR. HB_IsBlock( cToolTip )
+   IF VALTYPE( cToolTip ) $ "CM" .OR. HB_IsBlock( cToolTip )
       SetToolTip( hWnd, cToolTip, ::hWnd )
-   EndIf
+   ENDIF
 
    RETURN GetToolTip( hWnd, ::hWnd )
 
 METHOD Events_Notify( wParam, lParam ) CLASS TToolTip
 
-   Local nNotify := GetNotifyCode( lParam )
-   Local oControl, cToolTip
+   LOCAL nNotify := GetNotifyCode( lParam )
+   LOCAL oControl, cToolTip
 
    HB_SYMBOL_UNUSED( wParam )
 
-   If     nNotify == TTN_GETDISPINFO
+   IF     nNotify == TTN_GETDISPINFO
       oControl := GetControlObjectByHandle( _GetToolTipGetDispInfoHWnd( lParam ) )
       cToolTip := oControl:cToolTip
       IF HB_IsBlock( cToolTip )
          oControl:DoEvent( { || cToolTip := EVAL( cToolTip, oControl ) }, "TOOLTIP" )
-      EndIf
+      ENDIF
       _SetToolTipGetDispInfo( lParam, cToolTip )
 
-   EndIf
+   ENDIF
 
-   Return ::Super:Events_Notify( wParam, lParam )
+   RETURN ::Super:Events_Notify( wParam, lParam )
 
 METHOD WindowWidth( nWidth ) CLASS TToolTip
 
-   If HB_IsNumeric( nWidth )
+   IF HB_IsNumeric( nWidth )
       SendMessage( ::hWnd, TTM_SETMAXTIPWIDTH, 0, nWidth )
       ::nWindowWidth := nWidth
       ::lMultiLine := ( nWidth >= 0 )
-   EndIf
+   ENDIF
 
-   Return ::nWindowWidth
+   RETURN ::nWindowWidth
 
 METHOD MultiLine( lMultiLine ) CLASS TToolTip
 
-   If HB_IsLogical( lMultiLine ) .AND. ! lMultiLine == ::lMultiLine
+   IF HB_IsLogical( lMultiLine ) .AND. ! lMultiLine == ::lMultiLine
       ::lMultiLine := lMultiLine
-      If lMultiLine
-         If ::nWindowWidth >= 0
+      IF lMultiLine
+         IF ::nWindowWidth >= 0
             SendMessage( ::hWnd, TTM_SETMAXTIPWIDTH, 0, ::nWindowWidth )
-         Else
+         ELSE
             SendMessage( ::hWnd, TTM_SETMAXTIPWIDTH, 0, 200 )   // Any "default" value
-         Endif
-      Else
+         ENDIF
+      ELSE
          SendMessage( ::hWnd, TTM_SETMAXTIPWIDTH, 0, -1 )
-      Endif
-   EndIf
+      ENDIF
+   ENDIF
 
-   Return ::lMultiLine
+   RETURN ::lMultiLine
 
-Function _SetToolTipBalloon( lNewBalloon )
+FUNCTION _SetToolTipBalloon( lNewBalloon )
 
-   Local oReg, lYesNo := Nil, lOldBalloon := _OOHG_ToolTipBalloon
+   LOCAL oReg, lYesNo := Nil, lOldBalloon := _OOHG_ToolTipBalloon
 
-   If HB_IsLogical( lNewBalloon )
-      If lNewBalloon
+   IF HB_IsLogical( lNewBalloon )
+      IF lNewBalloon
          oReg := TReg32():New( HKEY_CURRENT_USER, "Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", .F. )
          oReg:Get( "EnableBalloonTips", lYesNo )
          oReg:Close()
-      EndIf
+      ENDIF
       _OOHG_ToolTipBalloon := lNewBalloon
-   Endif
+   ENDIF
 
-   return lOldBalloon
+   RETURN lOldBalloon
 
-Function _SetToolTipClose( lNewClose )
+FUNCTION _SetToolTipClose( lNewClose )
 
-   Local lOldClose := _OOHG_ToolTipClose
+   LOCAL lOldClose := _OOHG_ToolTipClose
 
-   If HB_IsLogical( lNewClose )
+   IF HB_IsLogical( lNewClose )
       _OOHG_ToolTipClose := lNewClose
-   Endif
+   ENDIF
 
-   return lOldClose
+   RETURN lOldClose
 
-Function _SetToolTipInitialTime( nMilliSec )
+FUNCTION _SetToolTipInitialTime( nMilliSec )
 
-   Local lOldInitialTime := _OOHG_ToolTipInitialTime
+   LOCAL lOldInitialTime := _OOHG_ToolTipInitialTime
 
-   If HB_IsNumeric( nMilliSec ) .AND. nMilliSec > 0
+   IF HB_IsNumeric( nMilliSec ) .AND. nMilliSec > 0
       _OOHG_ToolTipInitialTime := nMilliSec
-   EndIf
+   ENDIF
 
-   Return lOldInitialTime
+   RETURN lOldInitialTime
 
-Function _SetToolTipAutoPopTime( nMilliSec )
+FUNCTION _SetToolTipAutoPopTime( nMilliSec )
 
-   Local lOldAutoPopTime := _OOHG_ToolTipAutoPopTime
+   LOCAL lOldAutoPopTime := _OOHG_ToolTipAutoPopTime
 
-   If HB_IsNumeric( nMilliSec ) .AND. nMilliSec > 0
+   IF HB_IsNumeric( nMilliSec ) .AND. nMilliSec > 0
       _OOHG_ToolTipAutoPopTime := nMilliSec
-   EndIf
+   ENDIF
 
-   Return lOldAutoPopTime
+   RETURN lOldAutoPopTime
 
-Function _SetToolTipReShowTime( nMilliSec )
+FUNCTION _SetToolTipReShowTime( nMilliSec )
 
-   Local lOldReShowTime := _OOHG_ToolTipReShowTime
+   LOCAL lOldReShowTime := _OOHG_ToolTipReShowTime
 
-   If HB_IsNumeric( nMilliSec ) .AND. nMilliSec > 0
+   IF HB_IsNumeric( nMilliSec ) .AND. nMilliSec > 0
       _OOHG_ToolTipReShowTime := nMilliSec
-   EndIf
+   ENDIF
 
-   Return lOldReShowTime
+   RETURN lOldReShowTime
 
-Function _SetToolTipMultiLine( lNewMultiLine )
+FUNCTION _SetToolTipMultiLine( lNewMultiLine )
 
-   Local lOldMultiLine := _OOHG_ToolTipMultiLine
+   LOCAL lOldMultiLine := _OOHG_ToolTipMultiLine
 
-   If HB_IsLogical( lNewMultiLine )
+   IF HB_IsLogical( lNewMultiLine )
       _OOHG_ToolTipMultiLine := lNewMultiLine
-   EndIf
+   ENDIF
 
-   Return lOldMultiLine
+   RETURN lOldMultiLine
 
 METHOD InitialTime( nMilliSecs ) CLASS TToolTip
 
-   If PCount() > 0
+   IF PCount() > 0
       /* nMilliSec := -1 returns the initial time (amount of time the mouse
-         must remain stationary on a control before the tooltip appears) to
-         its default value = GetDoubleClickTime()
+      must remain stationary on a control before the tooltip appears) to
+      its default value = GetDoubleClickTime()
       */
       SetInitialTime( ::hWnd, nMilliSecs )
-   EndIf
+   ENDIF
 
-   Return GetInitialTime( ::hWnd )
+   RETURN GetInitialTime( ::hWnd )
 
 METHOD AutoPopTime( nMilliSecs ) CLASS TToolTip
 
-   If PCount() > 0
+   IF PCount() > 0
       /* nMilliSec := -1 returns the autopop time (amount of time a tooltip
-         remains visible if the mouse is stationary on the control) to its
-         default value = GetDoubleClickTime() * 10
+      remains visible if the mouse is stationary on the control) to its
+      default value = GetDoubleClickTime() * 10
       */
       SetAutoPopTime( ::hWnd, nMilliSecs )
-   EndIf
+   ENDIF
 
-   Return GetAutoPopTime( ::hWnd )
+   RETURN GetAutoPopTime( ::hWnd )
 
 METHOD ReshowTime( nMilliSecs ) CLASS TToolTip
 
-   If PCount() > 0
+   IF PCount() > 0
       /* nMilliSec := -1 returns the reshow time (amount of time it takes for
-         subsequent tooltip windows to appear as the mouse moves from one
-         control to another) to its default value = GetDoubleClickTime() / 5
+      subsequent tooltip windows to appear as the mouse moves from one
+      control to another) to its default value = GetDoubleClickTime() / 5
       */
       SetReshowTime( ::hWnd, nMilliSecs )
-   EndIf
+   ENDIF
 
-   Return GetReshowTime( ::hWnd )
+   RETURN GetReshowTime( ::hWnd )
 
 METHOD ResetDelays( nMilliSecs ) CLASS TToolTip
 
    /* Sets all three delay times to default proportions. The autopop time will
-      be ten times the initial time and the reshow time will be one fifth the
-      initial time. Use nMilliSec > 0 to specify a new initial time. Use a
-      negative value to return all three delay times to their default values.
-      Use 0 to retain the current initial time.
+   be ten times the initial time and the reshow time will be one fifth the
+   initial time. Use nMilliSec > 0 to specify a new initial time. Use a
+   negative value to return all three delay times to their default values.
+   Use 0 to retain the current initial time.
    */
    ASSIGN nMilliSecs VALUE nMilliSecs TYPE "N" DEFAULT -1
-   If nMilliSecs == 0
-     nMilliSecs := ::InitialTime()
-   EndIf
+   IF nMilliSecs == 0
+      nMilliSecs := ::InitialTime()
+   ENDIF
    SetDelayTime( ::hWnd, nMilliSecs )
 
-   Return Nil
+   RETURN NIL
 
 METHOD Icon( uIcon ) CLASS TToolTip
 
    /*
-    * uIcon valid values are:
-    * TTI_NONE    - no icon
-    * TTI_INFO    - info icon
-    * TTI_WARNING - warning icon
-    * a handle to icon
-    * a resource name
-    * a filename
-    */
-   If HB_IsNumeric( uIcon )
-      If ::nIcon > TTI_ERROR .AND. ValidHandler( ::nIcon )
+   * uIcon valid values are:
+   * TTI_NONE    - no icon
+   * TTI_INFO    - info icon
+   * TTI_WARNING - warning icon
+   * a handle to icon
+   * a resource name
+   * a filename
+   */
+   IF HB_IsNumeric( uIcon )
+      IF ::nIcon > TTI_ERROR .AND. ValidHandler( ::nIcon )
          DeleteObject( ::nIcon )
-      EndIf
+      ENDIF
       ::cIcon := ''
       ::nIcon := uIcon
       TToolTip_SetIconAndTitle( ::hWnd, ::nIcon, Left( ::cTitle, 99 ) )
-   ElseIf ValType( uIcon ) $ "CM"
-      If ::nIcon > TTI_ERROR .AND. ValidHandler( ::nIcon )
+   ELSEIF ValType( uIcon ) $ "CM"
+      IF ::nIcon > TTI_ERROR .AND. ValidHandler( ::nIcon )
          DeleteObject( ::nIcon )
-      EndIf
+      ENDIF
       ::cIcon := uIcon
       ::nIcon := LoadIcon( GetInstance(), uIcon )
       TToolTip_SetIconAndTitle( ::hWnd, ::nIcon, Left( ::cTitle, 99 ) )
-   EndIf
+   ENDIF
 
    RETURN TToolTip_GetIcon( ::hWnd )
 
 METHOD Title( cTitle ) CLASS TToolTip
 
-   If ValType( cTitle ) $ "CM"
+   IF ValType( cTitle ) $ "CM"
       ::cTitle := cTitle
       TToolTip_SetIconAndTitle( ::hWnd, ::nIcon, Left( ::cTitle, 99 ) )
-   EndIf
+   ENDIF
 
    RETURN TToolTip_GetTitle( ::hWnd )
-
 
 #pragma BEGINDUMP
 
@@ -367,6 +352,7 @@ static WNDPROC lpfnOldWndProc = 0;
 
 static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
+
    return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
 }
 

@@ -1,68 +1,55 @@
 /*
- * $Id: h_error.prg $
- */
+* $Id: h_error.prg $
+*/
 /*
- * ooHG source code:
- * Error handling system
- *
- * Based upon
- * Original source code of Antonio Novo
- * Copyright 2003 <novoantonio@hotmail.com>
- *
- * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
- * https://oohg.github.io/
- *
- * Portions of this project are based upon Harbour MiniGUI library.
- * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
- *
- * Portions of this project are based upon Harbour GUI framework for Win32.
- * Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
- * Copyright 2001 Antonio Linares <alinares@fivetech.com>
- *
- * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2017, https://harbour.github.io/
- */
+* ooHG source code:
+* Error handling system
+* Based upon
+* Original source code of Antonio Novo
+* Copyright 2003 <novoantonio@hotmail.com>
+* Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
+* https://oohg.github.io/
+* Portions of this project are based upon Harbour MiniGUI library.
+* Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
+* Portions of this project are based upon Harbour GUI framework for Win32.
+* Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
+* Copyright 2001 Antonio Linares <alinares@fivetech.com>
+* Portions of this project are based upon Harbour Project.
+* Copyright 1999-2017, https://harbour.github.io/
+*/
 /*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this software; see the file LICENSE.txt. If not, write to
- * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
- *
- * As a special exception, the ooHG Project gives permission for
- * additional uses of the text contained in its release of ooHG.
- *
- * The exception is that, if you link the ooHG libraries with other
- * files to produce an executable, this does not by itself cause the
- * resulting executable to be covered by the GNU General Public License.
- * Your use of that executable is in no way restricted on account of
- * linking the ooHG library code into it.
- *
- * This exception does not however invalidate any other reasons why
- * the executable file might be covered by the GNU General Public License.
- *
- * This exception applies only to the code released by the ooHG
- * Project under the name ooHG. If you copy code from other
- * ooHG Project or Free Software Foundation releases into a copy of
- * ooHG, as the General Public License permits, the exception does
- * not apply to the code that you add in this way. To avoid misleading
- * anyone as to the status of such modified files, you must delete
- * this exception notice from them.
- *
- * If you write modifications of your own for ooHG, it is your choice
- * whether to permit this exception to apply to your modifications.
- * If you do not wish that, delete this exception notice.
- */
-
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2, or (at your option)
+* any later version.
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* You should have received a copy of the GNU General Public License
+* along with this software; see the file LICENSE.txt. If not, write to
+* the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+* Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
+* As a special exception, the ooHG Project gives permission for
+* additional uses of the text contained in its release of ooHG.
+* The exception is that, if you link the ooHG libraries with other
+* files to produce an executable, this does not by itself cause the
+* resulting executable to be covered by the GNU General Public License.
+* Your use of that executable is in no way restricted on account of
+* linking the ooHG library code into it.
+* This exception does not however invalidate any other reasons why
+* the executable file might be covered by the GNU General Public License.
+* This exception applies only to the code released by the ooHG
+* Project under the name ooHG. If you copy code from other
+* ooHG Project or Free Software Foundation releases into a copy of
+* ooHG, as the General Public License permits, the exception does
+* not apply to the code that you add in this way. To avoid misleading
+* anyone as to the status of such modified files, you must delete
+* this exception notice from them.
+* If you write modifications of your own for ooHG, it is your choice
+* whether to permit this exception to apply to your modifications.
+* If you do not wish that, delete this exception notice.
+*/
 
 #include "oohg.ch"
 #include "error.ch"
@@ -77,7 +64,7 @@ FUNCTION MsgOOHGError( cMessage )
 
    OwnErrorHandler():ErrorMessage( cMessage, 1 )
 
-   RETURN Nil
+   RETURN NIL
 
 PROCEDURE ErrorSys
 
@@ -91,28 +78,32 @@ STATIC FUNCTION DefError( oError )
 
    // By default, division by zero results in zero
    IF oError:genCode == EG_ZERODIV .AND. ;
-      oError:canSubstitute
+         oError:canSubstitute
+
       RETURN 0
    ENDIF
 
    // By default, retry on RDD lock error failure */
    IF oError:genCode == EG_LOCK .AND. ;
-      oError:canRetry
+         oError:canRetry
+
       RETURN .T.
    ENDIF
 
    // Set NetErr() if there was a database open error
    IF oError:genCode == EG_OPEN .AND. ;
-      oError:osCode == 32 .AND. ;
-      oError:canDefault
+         oError:osCode == 32 .AND. ;
+         oError:canDefault
       NetErr( .T. )
+
       RETURN .F.
    ENDIF
 
    // Set NetErr() if there was a lock error on dbAppend()
    IF oError:genCode == EG_APPENDLOCK .AND. ;
-      oError:canDefault
+         oError:canDefault
       NetErr( .T. )
+
       RETURN .F.
    ENDIF
 
@@ -128,7 +119,8 @@ STATIC FUNCTION DefError( oError )
 
    RETURN .F.
 
-// [vszakats]
+   // [vszakats]
+
 FUNCTION _OOHG_ErrorMessage( oError )
 
    LOCAL cMessage
@@ -171,8 +163,8 @@ FUNCTION _OOHG_ErrorMessage( oError )
 
 STATIC FUNCTION OwnErrorHandler()
 
-   Local oErrorLog
-   MemVar _OOHG_TxtError
+   LOCAL oErrorLog
+   MEMVAR _OOHG_TxtError
 
    IF TYPE( "_OOHG_TXTERROR" ) == "L" .AND. _OOHG_TxtError
       oErrorLog := OOHG_TErrorTxt():New()
@@ -183,7 +175,6 @@ STATIC FUNCTION OwnErrorHandler()
    ENDIF
 
    RETURN oErrorLog
-
 
 CLASS OOHG_TErrorHtml
 
@@ -225,210 +216,210 @@ METHOD New( cLang ) CLASS OOHG_TErrorHtml
    DO CASE
    CASE ::cLang == "HR852"                            // Croatian
       ::aMessages := { "ooHG Errors Log", ;
-                       "Application: ", ;
-                       "Date: ", ;
-                       "Time: ", ;
-                       "Version: ", ;
-                       "Alias in use: ", ;
-                       "Computer Name: ", ;
-                       "User Name: ", ;
-                       "Error: ", ;
-                       "Called from ", ;
-                       "Events:", ;
-                       "Program Error" }
+         "Application: ", ;
+         "Date: ", ;
+         "Time: ", ;
+         "Version: ", ;
+         "Alias in use: ", ;
+         "Computer Name: ", ;
+         "User Name: ", ;
+         "Error: ", ;
+         "Called from ", ;
+         "Events:", ;
+         "Program Error" }
 
    CASE ::cLang == "EU"                               // Basque
       ::aMessages := { "ooHG Errors Log", ;
-                       "Application: ", ;
-                       "Date: ", ;
-                       "Time: ", ;
-                       "Version: ", ;
-                       "Alias in use: ", ;
-                       "Computer Name: ", ;
-                       "User Name: ", ;
-                       "Error: ", ;
-                       "Called from ", ;
-                       "Events:", ;
-                       "Program Error" }
+         "Application: ", ;
+         "Date: ", ;
+         "Time: ", ;
+         "Version: ", ;
+         "Alias in use: ", ;
+         "Computer Name: ", ;
+         "User Name: ", ;
+         "Error: ", ;
+         "Called from ", ;
+         "Events:", ;
+         "Program Error" }
 
    CASE ::cLang == "FR"                               // French
       ::aMessages := { "ooHG Errors Log", ;
-                       "Application: ", ;
-                       "Date: ", ;
-                       "Time: ", ;
-                       "Version: ", ;
-                       "Alias in use: ", ;
-                       "Computer Name: ", ;
-                       "User Name: ", ;
-                       "Error: ", ;
-                       "Called from ", ;
-                       "Events:", ;
-                       "Program Error" }
+         "Application: ", ;
+         "Date: ", ;
+         "Time: ", ;
+         "Version: ", ;
+         "Alias in use: ", ;
+         "Computer Name: ", ;
+         "User Name: ", ;
+         "Error: ", ;
+         "Called from ", ;
+         "Events:", ;
+         "Program Error" }
 
    CASE ::cLang == "DEWIN" .OR. ;
-        ::cLang == "DE"                               // German
+         ::cLang == "DE"                               // German
       ::aMessages := { "ooHG Errors Log", ;
-                       "Application: ", ;
-                       "Date: ", ;
-                       "Time: ", ;
-                       "Version: ", ;
-                       "Alias in use: ", ;
-                       "Computer Name: ", ;
-                       "User Name: ", ;
-                       "Error: ", ;
-                       "Called from ", ;
-                       "Events:", ;
-                       "Program Error" }
+         "Application: ", ;
+         "Date: ", ;
+         "Time: ", ;
+         "Version: ", ;
+         "Alias in use: ", ;
+         "Computer Name: ", ;
+         "User Name: ", ;
+         "Error: ", ;
+         "Called from ", ;
+         "Events:", ;
+         "Program Error" }
 
    CASE ::cLang == "IT"                               // Italian
       ::aMessages := { "ooHG Errors Log", ;
-                       "Application: ", ;
-                       "Date: ", ;
-                       "Time: ", ;
-                       "Version: ", ;
-                       "Alias in use: ", ;
-                       "Computer Name: ", ;
-                       "User Name: ", ;
-                       "Error: ", ;
-                       "Called from ", ;
-                       "Events:", ;
-                       "Program Error" }
+         "Application: ", ;
+         "Date: ", ;
+         "Time: ", ;
+         "Version: ", ;
+         "Alias in use: ", ;
+         "Computer Name: ", ;
+         "User Name: ", ;
+         "Error: ", ;
+         "Called from ", ;
+         "Events:", ;
+         "Program Error" }
 
    CASE ::cLang == "PLWIN" .OR. ;
-        ::cLang == "PL852" .OR. ;
-        ::cLang == "PLISO" .OR. ;
-        ::cLang == ""      .OR. ;
-        ::cLang == "PLMAZ"                            // Polish
+         ::cLang == "PL852" .OR. ;
+         ::cLang == "PLISO" .OR. ;
+         ::cLang == ""      .OR. ;
+         ::cLang == "PLMAZ"                            // Polish
       ::aMessages := { "ooHG Errors Log", ;
-                       "Application: ", ;
-                       "Date: ", ;
-                       "Time: ", ;
-                       "Version: ", ;
-                       "Alias in use: ", ;
-                       "Computer Name: ", ;
-                       "User Name: ", ;
-                       "Error: ", ;
-                       "Called from ", ;
-                       "Events:", ;
-                       "Program Error" }
+         "Application: ", ;
+         "Date: ", ;
+         "Time: ", ;
+         "Version: ", ;
+         "Alias in use: ", ;
+         "Computer Name: ", ;
+         "User Name: ", ;
+         "Error: ", ;
+         "Called from ", ;
+         "Events:", ;
+         "Program Error" }
 
    CASE ::cLang == "PT"                               // Portuguese
       ::aMessages := { "ooHG Errors Log", ;
-                       "Application: ", ;
-                       "Date: ", ;
-                       "Time: ", ;
-                       "Version: ", ;
-                       "Alias in use: ", ;
-                       "Computer Name: ", ;
-                       "User Name: ", ;
-                       "Error: ", ;
-                       "Called from ", ;
-                       "Events:", ;
-                       "Program Error" }
+         "Application: ", ;
+         "Date: ", ;
+         "Time: ", ;
+         "Version: ", ;
+         "Alias in use: ", ;
+         "Computer Name: ", ;
+         "User Name: ", ;
+         "Error: ", ;
+         "Called from ", ;
+         "Events:", ;
+         "Program Error" }
 
    CASE ::cLang == "RUWIN" .OR. ;
-        ::cLang == "RU866" .OR. ;
-        ::cLang == "RUKOI8"                           // Russian
+         ::cLang == "RU866" .OR. ;
+         ::cLang == "RUKOI8"                           // Russian
       ::aMessages := { "ooHG Errors Log", ;
-                       "Application: ", ;
-                       "Date: ", ;
-                       "Time: ", ;
-                       "Version: ", ;
-                       "Alias in use: ", ;
-                       "Computer Name: ", ;
-                       "User Name: ", ;
-                       "Error: ", ;
-                       "Called from ", ;
-                       "Events:", ;
-                       "Program Error" }
+         "Application: ", ;
+         "Date: ", ;
+         "Time: ", ;
+         "Version: ", ;
+         "Alias in use: ", ;
+         "Computer Name: ", ;
+         "User Name: ", ;
+         "Error: ", ;
+         "Called from ", ;
+         "Events:", ;
+         "Program Error" }
 
    CASE ::cLang == "ES"    .OR. ;
-        ::cLang == "ESWIN"                            // Spanish
+         ::cLang == "ESWIN"                            // Spanish
       ::aMessages := { "Registro de Errores de ooHG", ;
-                       "Aplicación: ", ;
-                       "Fecha: ", ;
-                       "Hora: ", ;
-                       "Versión: ", ;
-                       "Alias en uso: ", ;
-                       "Nombre de Equipo: ", ;
-                       "Nombre de Usuario: ", ;
-                       "Error: ", ;
-                       "Llamada desde ", ;
-                       "Eventos:", ;
-                       "Error de Programa" }
+         "Aplicación: ", ;
+         "Fecha: ", ;
+         "Hora: ", ;
+         "Versión: ", ;
+         "Alias en uso: ", ;
+         "Nombre de Equipo: ", ;
+         "Nombre de Usuario: ", ;
+         "Error: ", ;
+         "Llamada desde ", ;
+         "Eventos:", ;
+         "Error de Programa" }
 
    CASE ::cLang == "FI"                               // Finnish
       ::aMessages := { "ooHG Errors Log", ;
-                       "Application: ", ;
-                       "Date: ", ;
-                       "Time: ", ;
-                       "Version: ", ;
-                       "Alias in use: ", ;
-                       "Computer Name: ", ;
-                       "User Name: ", ;
-                       "Error: ", ;
-                       "Called from ", ;
-                       "Events:", ;
-                       "Program Error" }
+         "Application: ", ;
+         "Date: ", ;
+         "Time: ", ;
+         "Version: ", ;
+         "Alias in use: ", ;
+         "Computer Name: ", ;
+         "User Name: ", ;
+         "Error: ", ;
+         "Called from ", ;
+         "Events:", ;
+         "Program Error" }
 
    CASE ::cLang == "NL"                               // Dutch
       ::aMessages := { "ooHG Errors Log", ;
-                       "Application: ", ;
-                       "Date: ", ;
-                       "Time: ", ;
-                       "Version: ", ;
-                       "Alias in use: ", ;
-                       "Computer Name: ", ;
-                       "User Name: ", ;
-                       "Error: ", ;
-                       "Called from ", ;
-                       "Events:", ;
-                       "Program Error" }
+         "Application: ", ;
+         "Date: ", ;
+         "Time: ", ;
+         "Version: ", ;
+         "Alias in use: ", ;
+         "Computer Name: ", ;
+         "User Name: ", ;
+         "Error: ", ;
+         "Called from ", ;
+         "Events:", ;
+         "Program Error" }
 
    CASE ::cLang == "SLWIN" .OR. ;
-        ::cLang == "SLISO" .OR. ;
-        ::cLang == "SL852" .OR. ;
-        ::cLang == "SL437"                            // Slovenian
+         ::cLang == "SLISO" .OR. ;
+         ::cLang == "SL852" .OR. ;
+         ::cLang == "SL437"                            // Slovenian
       ::aMessages := { "ooHG Errors Log", ;
-                       "Application: ", ;
-                       "Date: ", ;
-                       "Time: ", ;
-                       "Version: ", ;
-                       "Alias in use: ", ;
-                       "Computer Name: ", ;
-                       "User Name: ", ;
-                       "Error: ", ;
-                       "Called from ", ;
-                       "Events:", ;
-                       "Program Error" }
+         "Application: ", ;
+         "Date: ", ;
+         "Time: ", ;
+         "Version: ", ;
+         "Alias in use: ", ;
+         "Computer Name: ", ;
+         "User Name: ", ;
+         "Error: ", ;
+         "Called from ", ;
+         "Events:", ;
+         "Program Error" }
 
    CASE ::cLang == "TR"                            // Turkish
       ::aMessages := { "ooHG Errors Log", ;
-                       "Application: ", ;
-                       "Date: ", ;
-                       "Time: ", ;
-                       "Version: ", ;
-                       "Alias in use: ", ;
-                       "Computer Name: ", ;
-                       "User Name: ", ;
-                       "Error: ", ;
-                       "Called from ", ;
-                       "Events:", ;
-                       "Program Error" }
+         "Application: ", ;
+         "Date: ", ;
+         "Time: ", ;
+         "Version: ", ;
+         "Alias in use: ", ;
+         "Computer Name: ", ;
+         "User Name: ", ;
+         "Error: ", ;
+         "Called from ", ;
+         "Events:", ;
+         "Program Error" }
 
    OTHERWISE                                          // Default to English
       ::aMessages := { "ooHG Errors Log", ;
-                       "Application: ", ;
-                       "Date: ", ;
-                       "Time: ", ;
-                       "Version: ", ;
-                       "Alias in use: ", ;
-                       "Computer Name: ", ;
-                       "User Name: ", ;
-                       "Error: ", ;
-                       "Called from ", ;
-                       "Events:", ;
-                       "Program Error" }
+         "Application: ", ;
+         "Date: ", ;
+         "Time: ", ;
+         "Version: ", ;
+         "Alias in use: ", ;
+         "Computer Name: ", ;
+         "User Name: ", ;
+         "Error: ", ;
+         "Called from ", ;
+         "Events:", ;
+         "Program Error" }
    ENDCASE
 
    RETURN Self
@@ -438,7 +429,7 @@ METHOD Write( cTxt ) CLASS OOHG_TErrorHtml
    ::cBufferFile   += ::Write2( cTxt )
    ::cBufferScreen += cTxt + CHR( 13 ) + CHR( 10 )
 
-   RETURN Nil
+   RETURN NIL
 
 METHOD Write2( cTxt ) CLASS OOHG_TErrorHtml
 
@@ -446,37 +437,37 @@ METHOD Write2( cTxt ) CLASS OOHG_TErrorHtml
 
 METHOD FileHeader( cTitle ) CLASS OOHG_TErrorHtml
 
-RETURN "<HTML><HEAD><TITLE>" + cTitle + "</TITLE></HEAD>" + CHR( 13 ) + CHR( 10 ) + ;
-       "<style> "                       + ;
-         "body{ "                       + ;
-           "font-family: sans-serif;"   + ;
-           "background-color: #ffffff;" + ;
-           "font-size: 75%;"            + ;
-           "color: #000000;"            + ;
-           "}"                          + ;
-         "h1{"                          + ;
-           "font-family: sans-serif;"   + ;
-           "font-size: 150%;"           + ;
-           "color: #0000cc;"            + ;
-           "font-weight: bold;"         + ;
-           "background-color: #f0f0f0;" + ;
-           "}"                          + ;
-         ".updated{"                    + ;
-           "font-family: sans-serif;"   + ;
-           "color: #cc0000;"            + ;
-           "font-size: 110%;"           + ;
-           "}"                          + ;
-         ".normaltext{"                 + ;
-          "font-family: sans-serif;"    + ;
-          "font-size: 100%;"            + ;
-          "color: #000000;"             + ;
-          "font-weight: normal;"        + ;
-          "text-transform: none;"       + ;
-          "text-decoration: none;"      + ;
-        "}"                             + ;
-       "</style>"                       + ;
-       "<BODY>" + CHR( 13 ) + CHR( 10 ) + ;
-       "<H1 Align=Center>" + cTitle + "</H1><br>" + CHR( 13 ) + CHR( 10 )
+   RETURN "<HTML><HEAD><TITLE>" + cTitle + "</TITLE></HEAD>" + CHR( 13 ) + CHR( 10 ) + ;
+      "<style> "                       + ;
+      "body{ "                       + ;
+      "font-family: sans-serif;"   + ;
+      "background-color: #ffffff;" + ;
+      "font-size: 75%;"            + ;
+      "color: #000000;"            + ;
+      "}"                          + ;
+      "h1{"                          + ;
+      "font-family: sans-serif;"   + ;
+      "font-size: 150%;"           + ;
+      "color: #0000cc;"            + ;
+      "font-weight: bold;"         + ;
+      "background-color: #f0f0f0;" + ;
+      "}"                          + ;
+      ".updated{"                    + ;
+      "font-family: sans-serif;"   + ;
+      "color: #cc0000;"            + ;
+      "font-size: 110%;"           + ;
+      "}"                          + ;
+      ".normaltext{"                 + ;
+      "font-family: sans-serif;"    + ;
+      "font-size: 100%;"            + ;
+      "color: #000000;"             + ;
+      "font-weight: normal;"        + ;
+      "text-transform: none;"       + ;
+      "text-decoration: none;"      + ;
+      "}"                             + ;
+      "</style>"                       + ;
+      "<BODY>" + CHR( 13 ) + CHR( 10 ) + ;
+      "<H1 Align=Center>" + cTitle + "</H1><br>" + CHR( 13 ) + CHR( 10 )
 
 METHOD CreateLog() CLASS OOHG_TErrorHtml
 
@@ -484,9 +475,9 @@ METHOD CreateLog() CLASS OOHG_TErrorHtml
 
    IF EMPTY( ::Path )
       IF EMPTY( CurDir() )
-        cFile := '\'
+         cFile := '\'
       ELSE
-        cFile := '\' + CurDir() + '\'
+         cFile := '\' + CurDir() + '\'
       ENDIF
    ELSE
       IF RIGHT( ::Path, 1 ) == '\'
@@ -511,7 +502,7 @@ METHOD CreateLog() CLASS OOHG_TErrorHtml
    FWRITE( nHdl, cBottom )
    FCLOSE( nHdl )
 
-   RETURN Nil
+   RETURN NIL
 
 METHOD DeleteLog() CLASS OOHG_TErrorHtml
 
@@ -519,9 +510,9 @@ METHOD DeleteLog() CLASS OOHG_TErrorHtml
 
    IF EMPTY( ::Path )
       IF EMPTY( CurDir() )
-        cFile := '\'
+         cFile := '\'
       ELSE
-        cFile := '\' + CurDir() + '\'
+         cFile := '\' + CurDir() + '\'
       ENDIF
    ELSE
       IF RIGHT( ::Path, 1 ) == '\'
@@ -543,20 +534,22 @@ METHOD CopyLog( cTo ) CLASS OOHG_TErrorHtml
    LOCAL cFile
 
    IF ! VALTYPE( cTo ) $ "CM"
+
       RETURN .F.
    ENDIF
    IF FILE( cTo )
       ERASE ( cTo )
       IF FILE( cTo )
+
          RETURN .F.
       ENDIF
    ENDIF
 
    IF EMPTY( ::Path )
       IF EMPTY( CurDir() )
-        cFile := '\'
+         cFile := '\'
       ELSE
-        cFile := '\' + CurDir() + '\'
+         cFile := '\' + CurDir() + '\'
       ENDIF
    ELSE
       IF RIGHT( ::Path, 1 ) == '\'
@@ -568,6 +561,7 @@ METHOD CopyLog( cTo ) CLASS OOHG_TErrorHtml
    cFile += ::FileName
 
    IF ! FILE( cFile )
+
       RETURN .F.
    ENDIF
 
@@ -578,7 +572,8 @@ METHOD CopyLog( cTo ) CLASS OOHG_TErrorHtml
 METHOD ErrorMessage( cError, nPosition ) CLASS OOHG_TErrorHtml
 
    #ifdef __ERROR_EVENTS__
-      Local aEvents
+   LOCAL aEvents
+
    #endif
 
    // Header
@@ -599,19 +594,19 @@ METHOD ErrorMessage( cError, nPosition ) CLASS OOHG_TErrorHtml
    nPosition++
    DO WHILE ! Empty( ProcName( nPosition ) )
       ::Write( ::aMessages[10] + ;
-               ProcName( nPosition ) + ;
-               " (" + ;
-               AllTrim( Str( ProcLine( nPosition ) ) ) + ;
-               ")" + ;
-               iif( Empty( ProcFile( nPosition ) ), "", " in " + ProcFile( nPosition ) ) )
+         ProcName( nPosition ) + ;
+         " (" + ;
+         AllTrim( Str( ProcLine( nPosition ) ) ) + ;
+         ")" + ;
+         iif( Empty( ProcFile( nPosition ) ), "", " in " + ProcFile( nPosition ) ) )
       nPosition ++
    ENDDO
 
    // Event list
    #ifdef __ERROR_EVENTS__
-      aEvents := _ListEventInfo()
-      ::Write( ::aMessages[11] )
-      AEVAL( aEvents, { | c | ::Write( c ) } )
+   aEvents := _ListEventInfo()
+   ::Write( ::aMessages[11] )
+   AEVAL( aEvents, { | c | ::Write( c ) } )
    #endif
 
    dbcloseall()
@@ -619,7 +614,7 @@ METHOD ErrorMessage( cError, nPosition ) CLASS OOHG_TErrorHtml
    C_MSGSTOP( ::cBufferScreen, ::aMessages[12] )
    ExitProcess( 1 )
 
-   RETURN Nil
+   RETURN NIL
 
 METHOD PutMsg( cMsg, nPosition, lEvents ) CLASS OOHG_TErrorHtml
 
@@ -649,14 +644,13 @@ METHOD PutMsg( cMsg, nPosition, lEvents ) CLASS OOHG_TErrorHtml
    ::cBufferFile := ""
    ::cBufferScreen := ""
 
-   RETURN Nil
+   RETURN NIL
 
 METHOD ErrorHeader() CLASS OOHG_TErrorHtml
 
    // Insert own header's data here
 
-   RETURN Nil
-
+   RETURN NIL
 
 CLASS OOHG_TErrorTxt FROM OOHG_TErrorHtml
 

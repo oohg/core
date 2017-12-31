@@ -1,0 +1,11 @@
+incpaths=../include
+libpaths=${hb_install_prefix}/addons/oohg/lib/win/${hb_comp}
+incpaths=./
+sources=../resources/oohgaddon.rc
+gui=yes
+libs=oohg_core
+libs=oohg_hbprinter oohg_miniprint oohg_bostaurus
+libs=hbzebra.hbc hbhpdf.hbc hbct.hbc hbmisc.hbc hbtip.hbc hbziparc.hbc
+libs=hbmzip.hbc minizip hbwin.hbc
+libs=xhb
+libs=msvfw32 vfw32

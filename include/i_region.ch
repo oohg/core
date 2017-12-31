@@ -58,7 +58,6 @@
  * If you do not wish that, delete this exception notice.
  */
 
-
 #xtranslate SET REGION OF <name> RECTANGULAR <row>, <col>, <w>, <h> ;
    => ;
       _SetWindowRgn( <(name)>, <col>, <row>, <w>, <h>, 1 )

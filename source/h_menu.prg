@@ -1,64 +1,52 @@
 /*
- * $Id: h_menu.prg $
- */
+* $Id: h_menu.prg $
+*/
 /*
- * ooHG source code:
- * Menu controls
- *
- * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
- * https://oohg.github.io/
- *
- * Portions of this project are based upon Harbour MiniGUI library.
- * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
- *
- * Portions of this project are based upon Harbour GUI framework for Win32.
- * Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
- * Copyright 2001 Antonio Linares <alinares@fivetech.com>
- *
- * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2017, https://harbour.github.io/
- */
+* ooHG source code:
+* Menu controls
+* Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
+* https://oohg.github.io/
+* Portions of this project are based upon Harbour MiniGUI library.
+* Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
+* Portions of this project are based upon Harbour GUI framework for Win32.
+* Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
+* Copyright 2001 Antonio Linares <alinares@fivetech.com>
+* Portions of this project are based upon Harbour Project.
+* Copyright 1999-2017, https://harbour.github.io/
+*/
 /*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this software; see the file LICENSE.txt. If not, write to
- * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
- *
- * As a special exception, the ooHG Project gives permission for
- * additional uses of the text contained in its release of ooHG.
- *
- * The exception is that, if you link the ooHG libraries with other
- * files to produce an executable, this does not by itself cause the
- * resulting executable to be covered by the GNU General Public License.
- * Your use of that executable is in no way restricted on account of
- * linking the ooHG library code into it.
- *
- * This exception does not however invalidate any other reasons why
- * the executable file might be covered by the GNU General Public License.
- *
- * This exception applies only to the code released by the ooHG
- * Project under the name ooHG. If you copy code from other
- * ooHG Project or Free Software Foundation releases into a copy of
- * ooHG, as the General Public License permits, the exception does
- * not apply to the code that you add in this way. To avoid misleading
- * anyone as to the status of such modified files, you must delete
- * this exception notice from them.
- *
- * If you write modifications of your own for ooHG, it is your choice
- * whether to permit this exception to apply to your modifications.
- * If you do not wish that, delete this exception notice.
- */
-
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2, or (at your option)
+* any later version.
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* You should have received a copy of the GNU General Public License
+* along with this software; see the file LICENSE.txt. If not, write to
+* the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+* Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
+* As a special exception, the ooHG Project gives permission for
+* additional uses of the text contained in its release of ooHG.
+* The exception is that, if you link the ooHG libraries with other
+* files to produce an executable, this does not by itself cause the
+* resulting executable to be covered by the GNU General Public License.
+* Your use of that executable is in no way restricted on account of
+* linking the ooHG library code into it.
+* This exception does not however invalidate any other reasons why
+* the executable file might be covered by the GNU General Public License.
+* This exception applies only to the code released by the ooHG
+* Project under the name ooHG. If you copy code from other
+* ooHG Project or Free Software Foundation releases into a copy of
+* ooHG, as the General Public License permits, the exception does
+* not apply to the code that you add in this way. To avoid misleading
+* anyone as to the status of such modified files, you must delete
+* this exception notice from them.
+* If you write modifications of your own for ooHG, it is your choice
+* whether to permit this exception to apply to your modifications.
+* If you do not wish that, delete this exception notice.
+*/
 
 #include "oohg.ch"
 #include "hbclass.ch"
@@ -90,7 +78,7 @@ METHOD Define( Parent, Name ) CLASS TMenu
    ::Register( CreatePopUpMenu() )
    AADD( _OOHG_xMenuActive, Self )
 
-   Return Self
+   RETURN Self
 
 METHOD DisableVisualStyle CLASS TMenu
 
@@ -101,22 +89,22 @@ METHOD DisableVisualStyle CLASS TMenu
       ENDIF
    ENDIF
 
-   RETURN Nil
+   RETURN NIL
 
 METHOD Activate( nRow, nCol ) CLASS TMenu
 
-   Local aPos
+   LOCAL aPos
 
    aPos := GetCursorPos()
    ASSIGN aPos[ 1 ] VALUE nRow TYPE "N"
    ASSIGN aPos[ 2 ] VALUE nCol TYPE "N"
    TrackPopupMenu( ::hWnd, aPos[ 2 ], aPos[ 1 ], ::Parent:hWnd )
 
-   Return nil
+   RETURN NIL
 
 METHOD EndMenu() CLASS TMenu
 
-   Local nPos
+   LOCAL nPos
 
    nPos := ASCAN( _OOHG_xMenuActive, { |o| o:hWnd == ::hWnd } )
    IF nPos > 0
@@ -125,7 +113,7 @@ METHOD EndMenu() CLASS TMenu
    ENDIF
    ::Refresh()
 
-   Return Nil
+   RETURN NIL
 
 METHOD Refresh() CLASS TMenu
 
@@ -133,8 +121,7 @@ METHOD Refresh() CLASS TMenu
       DrawMenuBar( ::Parent:hWnd )
    ENDIF
 
-   Return Nil
-
+   RETURN NIL
 
 CLASS TMenuMain FROM TMenu
 
@@ -152,15 +139,14 @@ METHOD Define( Parent, Name ) CLASS TMenuMain
    ::Container := NIL
    ::Register( CreateMenu() )
    AADD( _OOHG_xMenuActive, Self )
-   If ::Parent:oMenu != nil
+   IF ::Parent:oMenu != nil
       // Error: MAIN MENU already defined for this window
       ::Parent:oMenu:Release()
-   EndIf
+   ENDIF
    SetMenu( ::Parent:hWnd, ::hWnd )
    ::Parent:oMenu := Self
 
-   Return Self
-
+   RETURN Self
 
 CLASS TMenuContext FROM TMenu
 
@@ -172,13 +158,12 @@ CLASS TMenuContext FROM TMenu
 METHOD Define( Parent, Name ) CLASS TMenuContext
 
    ::Super:Define( Parent, Name )
-   If ::Parent:ContextMenu != nil
+   IF ::Parent:ContextMenu != nil
       ::Parent:ContextMenu:Release()
-   EndIf
+   ENDIF
    ::Parent:ContextMenu := Self
 
-   Return Self
-
+   RETURN Self
 
 CLASS TMenuNotify FROM TMenu
 
@@ -195,8 +180,7 @@ METHOD Define( Parent, Name ) CLASS TMenuNotify
    ENDIF
    ::Parent:NotifyMenu := Self
 
-   Return Self
-
+   RETURN Self
 
 CLASS TMenuDropDown FROM TMenu
 
@@ -209,35 +193,34 @@ METHOD Define( Button, Parent, Name ) CLASS TMenuDropDown
 
    LOCAL oContainer
 
-   If HB_IsObject( Button )
+   IF HB_IsObject( Button )
       Parent := Button:Parent
       Button := Button:Name
-   EndIf
+   ENDIF
    ::Super:Define( Parent, Name )
    oContainer := GetControlObject( Button, ::Parent:Name )
-   If oContainer:ContextMenu != nil
+   IF oContainer:ContextMenu != nil
       oContainer:ContextMenu:Release()
-   EndIf
+   ENDIF
    oContainer:ContextMenu := Self
 
-   Return Self
+   RETURN Self
 
 METHOD Release() CLASS TMenuDropDown
 
-   If ::Container != nil
+   IF ::Container != nil
       ::Container:ContextMenu := nil
-   Endif
+   ENDIF
 
-   Return ::Super:Release()
+   RETURN ::Super:Release()
 
-Function _EndMenu()
+FUNCTION _EndMenu()
 
    IF LEN( _OOHG_xMenuActive ) > 0
       ATAIL( _OOHG_xMenuActive ):EndMenu()
    ENDIF
 
-   Return Nil
-
+   RETURN NIL
 
 CLASS TMenuItem FROM TControl
 
@@ -272,126 +255,126 @@ CLASS TMenuItem FROM TControl
    ENDCLASS
 
 METHOD DefinePopUp( Caption, Name, checked, disabled, Parent, hilited, Image, ;
-                    lRight, lStretch, nBreak ) CLASS TMenuItem
+      lRight, lStretch, nBreak ) CLASS TMenuItem
 
    LOCAL nStyle
 
-   If Empty( Parent )
+   IF Empty( Parent )
       Parent := ATAIL( _OOHG_xMenuActive )
-   EndIf
+   ENDIF
    ::SetForm( Name, Parent )
    ::Register( CreatePopupMenu(), Name )
    ::xId := ::hWnd
    AADD( _OOHG_xMenuActive, Self )
    nStyle := MF_POPUP + MF_STRING + IF( ValType( lRight ) == "L" .AND. lRight, MF_RIGHTJUSTIFY, 0 ) + ;
-             IF( ValType( nBreak ) != "N", 0, IF( nBreak == 1, MF_MENUBREAK, MF_MENUBARBREAK ) )
+      IF( ValType( nBreak ) != "N", 0, IF( nBreak == 1, MF_MENUBREAK, MF_MENUBARBREAK ) )
    AppendMenu( ::Container:hWnd, ::hWnd, Caption, nStyle )
-   if HB_IsLogical( lStretch ) .AND. lStretch
+   IF HB_IsLogical( lStretch ) .AND. lStretch
       ::Stretch := .T.
-   EndIf
+   ENDIF
    ::Picture := image
    ::Checked := checked
    ::Hilited := hilited
-   if HB_IsLogical( disabled ) .AND. disabled
+   IF HB_IsLogical( disabled ) .AND. disabled
       ::Enabled := .F.
-   EndIf
+   ENDIF
    ::lIsPopUp := .T.
 
-   Return Self
+   RETURN Self
 
 METHOD InsertPopUp( Caption, Name, checked, disabled, Parent, hilited, Image, ;
-                    lRight, lStretch, nBreak, nPos ) CLASS TMenuItem
+      lRight, lStretch, nBreak, nPos ) CLASS TMenuItem
 
    LOCAL nStyle
 
-   If Empty( Parent )
+   IF Empty( Parent )
       Parent := ATAIL( _OOHG_xMenuActive )
-   EndIf
+   ENDIF
    ::SetForm( Name, Parent )
    ::Register( CreatePopupMenu(), Name )
    ::xId := ::hWnd
    AADD( _OOHG_xMenuActive, Self )
    nStyle := MF_BYPOSITION + MF_POPUP + MF_STRING + IF( ValType( lRight ) == "L" .AND. lRight, MF_RIGHTJUSTIFY, 0 ) + ;
-             IF( ValType( nBreak ) != "N", 0, IF( nBreak == 1, MF_MENUBREAK, MF_MENUBARBREAK ) )
+      IF( ValType( nBreak ) != "N", 0, IF( nBreak == 1, MF_MENUBREAK, MF_MENUBARBREAK ) )
    ASSIGN nPos VALUE nPos TYPE "N" DEFAULT -1       // Append to the end
    InsertMenu( ::Container:hWnd, ::hWnd, Caption, nStyle, nPos )
-   if HB_IsLogical( lStretch ) .AND. lStretch
+   IF HB_IsLogical( lStretch ) .AND. lStretch
       ::Stretch := .T.
-   EndIf
+   ENDIF
    ::Picture := image
    ::Checked := checked
    ::Hilited := hilited
-   if HB_IsLogical( disabled ) .AND. disabled
+   IF HB_IsLogical( disabled ) .AND. disabled
       ::Enabled := .F.
-   EndIf
+   ENDIF
    ::lIsPopUp := .T.
 
-   Return Self
+   RETURN Self
 
 METHOD DefineItem( caption, action, name, Image, checked, disabled, Parent, ;
-                   hilited, lRight, lStretch, nBreak ) CLASS TMenuItem
+      hilited, lRight, lStretch, nBreak ) CLASS TMenuItem
 
-   Local nStyle, id
+   LOCAL nStyle, id
 
-   If Empty( Parent )
+   IF Empty( Parent )
       Parent := ATAIL( _OOHG_xMenuActive )
-   EndIf
+   ENDIF
    ::SetForm( Name, Parent )
    Id := _GetId()
    nStyle := MF_STRING + IF( HB_IsLogical( lRight ) .AND. lRight, MF_RIGHTJUSTIFY, 0 ) + ;
-             IF( ValType( nBreak ) != "N", 0, IF( nBreak == 1, MF_MENUBREAK, MF_MENUBARBREAK ) )
+      IF( ValType( nBreak ) != "N", 0, IF( nBreak == 1, MF_MENUBREAK, MF_MENUBARBREAK ) )
    AppendMenu( ::Container:hWnd, id, caption, nStyle )
    ::Register( 0, Name, , , , Id )
    ::xId := ::Id
    ::OnClick := action
-   if HB_IsLogical( lStretch ) .AND. lStretch
+   IF HB_IsLogical( lStretch ) .AND. lStretch
       ::Stretch := .T.
-   EndIf
+   ENDIF
    ::Picture := image
    ::Checked := checked
    ::Hilited := hilited
-   if HB_IsLogical( disabled )  .AND. disabled
+   IF HB_IsLogical( disabled )  .AND. disabled
       ::Enabled := .F.
-   EndIf
+   ENDIF
 
-   Return Self
+   RETURN Self
 
 METHOD InsertItem( caption, action, name, Image, checked, disabled, Parent, ;
-                   hilited, lRight, lStretch, nBreak, nPos ) CLASS TMenuItem
+      hilited, lRight, lStretch, nBreak, nPos ) CLASS TMenuItem
 
-   Local nStyle, id
+   LOCAL nStyle, id
 
-   If Empty( Parent )
+   IF Empty( Parent )
       Parent := ATAIL( _OOHG_xMenuActive )
-   EndIf
+   ENDIF
    ::SetForm( Name, Parent )
    Id := _GetId()
    nStyle := MF_BYPOSITION + MF_STRING + IF( HB_IsLogical( lRight ) .AND. lRight, MF_RIGHTJUSTIFY, 0 ) + ;
-             IF( ValType( nBreak ) != "N", 0, IF( nBreak == 1, MF_MENUBREAK, MF_MENUBARBREAK ) )
+      IF( ValType( nBreak ) != "N", 0, IF( nBreak == 1, MF_MENUBREAK, MF_MENUBARBREAK ) )
    ASSIGN nPos VALUE nPos TYPE "N" DEFAULT -1       // Append to the end
    InsertMenu( ::Container:hWnd, id, caption, nStyle, nPos )
    ::Register( 0, Name, , , , Id )
    ::xId := ::Id
    ::OnClick := action
-   if HB_IsLogical( lStretch ) .AND. lStretch
+   IF HB_IsLogical( lStretch ) .AND. lStretch
       ::Stretch := .T.
-   EndIf
+   ENDIF
    ::Picture := image
    ::Checked := checked
    ::Hilited := hilited
-   if HB_IsLogical( disabled )  .AND. disabled
+   IF HB_IsLogical( disabled )  .AND. disabled
       ::Enabled := .F.
-   EndIf
+   ENDIF
 
-   Return Self
+   RETURN Self
 
 METHOD DefineSeparator( name, Parent, lRight ) CLASS TMenuItem
 
-   Local nStyle, id
+   LOCAL nStyle, id
 
-   If Empty( Parent )
+   IF Empty( Parent )
       Parent := ATAIL( _OOHG_xMenuActive )
-   EndIf
+   ENDIF
    ::SetForm( Name, Parent )
    Id := _GetId()
    nStyle := MF_SEPARATOR + IF( HB_IsLogical( lRight ) .AND. lRight, MF_RIGHTJUSTIFY, 0 )
@@ -400,15 +383,15 @@ METHOD DefineSeparator( name, Parent, lRight ) CLASS TMenuItem
    ::Register( 0, Name, , , , Id )
    ::xId := ::Id
 
-   Return Self
+   RETURN Self
 
 METHOD InsertSeparator( name, Parent, lRight, nPos ) CLASS TMenuItem
 
-   Local nStyle, id
+   LOCAL nStyle, id
 
-   If Empty( Parent )
+   IF Empty( Parent )
       Parent := ATAIL( _OOHG_xMenuActive )
-   EndIf
+   ENDIF
    ::SetForm( Name, Parent )
    Id := _GetId()
    nStyle := MF_BYPOSITION + MF_SEPARATOR + IF( HB_IsLogical( lRight ) .AND. lRight, MF_RIGHTJUSTIFY, 0 )
@@ -417,124 +400,125 @@ METHOD InsertSeparator( name, Parent, lRight, nPos ) CLASS TMenuItem
    ::Register( 0, Name, , , , Id )
    ::xId := ::Id
 
-   Return Self
+   RETURN Self
 
 METHOD Enabled( lEnabled ) CLASS TMenuItem
 
-   Local lRet
+   LOCAL lRet
 
    lRet := MenuEnabled( ::Container:hWnd, ::xId, lEnabled )
    ::Container:Refresh()
 
-   Return lRet
+   RETURN lRet
 
 METHOD Checked( lChecked ) CLASS TMenuItem
 
-   Local lRet
+   LOCAL lRet
 
    lRet := MenuChecked( ::Container:hWnd, ::xId, lChecked )
    ::Container:Refresh()
 
-   Return lRet
+   RETURN lRet
 
 METHOD Hilited( lHilited ) CLASS TMenuItem
 
-   Local lRet
+   LOCAL lRet
 
    lRet := MenuHilited( ::Container:hWnd, ::xId, lHilited, ::Parent:hWnd )
    ::Container:Refresh()
 
-   Return lRet
+   RETURN lRet
 
 METHOD Caption( cCaption ) CLASS TMenuItem
 
-   Local cRet
+   LOCAL cRet
 
    cRet := MenuCaption( ::Container:hWnd, ::xId, cCaption )
    ::Container:Refresh()
 
-   Return cRet
+   RETURN cRet
 
 METHOD Picture( Images ) CLASS TMenuItem
 
-   If HB_IsArray( Images )
-      If LEN( Images ) > 1
+   IF HB_IsArray( Images )
+      IF LEN( Images ) > 1
          // Change checked bitmap
-         If VALTYPE( Images[2] ) # "CM"
+         IF VALTYPE( Images[2] ) # "CM"
             ::aPicture[2] := Images[2]
-         Else
+         ELSE
             ::aPicture[2] := ""
-         EndIf
-      EndIf
+         ENDIF
+      ENDIF
 
-      If LEN( Images ) > 0
+      IF LEN( Images ) > 0
          // Change unchecked bitmap
-         If VALTYPE( Images[1] ) # "CM"
+         IF VALTYPE( Images[1] ) # "CM"
             ::aPicture[1] := Images[1]
-         Else
+         ELSE
             ::aPicture[1] := ""
-         Endif
-      EndIf
-   ElseIf VALTYPE( Images ) $ "CM"
+         ENDIF
+      ENDIF
+   ELSEIF VALTYPE( Images ) $ "CM"
       // Change unchecked bitmap only
       ::aPicture[1] := Images
-   Else
-      Return ::aPicture
-   Endif
+   ELSE
+
+      RETURN ::aPicture
+   ENDIF
 
    // Release old images
-   If ::hBitMaps[1] != nil
-     DeleteObject( ::hBitMaps[1] )
-     ::hBitMaps[1] := nil
-   Endif
-   If ::hBitMaps[2] != nil
-     DeleteObject( ::hBitMaps[2] )
-     ::hBitMaps[2] := nil
-   Endif
+   IF ::hBitMaps[1] != nil
+      DeleteObject( ::hBitMaps[1] )
+      ::hBitMaps[1] := nil
+   ENDIF
+   IF ::hBitMaps[2] != nil
+      DeleteObject( ::hBitMaps[2] )
+      ::hBitMaps[2] := nil
+   ENDIF
 
    ::hBitMaps := MenuItem_SetBitMaps( ::Container:hWnd, ::xId, ::aPicture[1], ::aPicture[2], ::lStretch, OSisWinVISTAorLater() )
 
-   Return ::aPicture
+   RETURN ::aPicture
 
 METHOD Stretch( lStretch ) CLASS TMenuItem
 
    /*
    When .F. (default behavior)
-      XP clips big images to expected size (defined by system metrics' parameters
-      SM_CXMENUCHECK and SM_CYMENUCHECK, usually 13x13 pixels).
-      Vista and Win7 show big images at their real size.
+   XP clips big images to expected size (defined by system metrics' parameters
+   SM_CXMENUCHECK and SM_CYMENUCHECK, usually 13x13 pixels).
+   Vista and Win7 show big images at their real size.
    When .T.
-     XP, Vista and Win7 scale down big images to expected size.
+   XP, Vista and Win7 scale down big images to expected size.
    */
-   If HB_IsLogical( lStretch )
-      If lStretch != ::lStretch
+   IF HB_IsLogical( lStretch )
+      IF lStretch != ::lStretch
          ::lStretch := lStretch
          ::Picture(::aPicture)
-      Endif
-   EndIf
+      ENDIF
+   ENDIF
 
-   Return ::lStretch
+   RETURN ::lStretch
 
 METHOD Release() CLASS TMenuItem
 
    // Release bitmaps
-   If ::hBitMaps[1] != nil
-     DeleteObject( ::hBitMaps[1] )
-     ::hBitMaps[1] := nil
-   Endif
-   If ::hBitMaps[2] != nil
-     DeleteObject( ::hBitMaps[2] )
-     ::hBitMaps[2] := nil
-   Endif
+   IF ::hBitMaps[1] != nil
+      DeleteObject( ::hBitMaps[1] )
+      ::hBitMaps[1] := nil
+   ENDIF
+   IF ::hBitMaps[2] != nil
+      DeleteObject( ::hBitMaps[2] )
+      ::hBitMaps[2] := nil
+   ENDIF
 
    DeleteMenu( ::Container:hWnd, ::xId )
    ::Container:Refresh()
 
-   Return ::Super:Release()
+   RETURN ::Super:Release()
 
 METHOD EndPopUp() CLASS TMenuItem
 
-   Local nPos
+   LOCAL nPos
 
    nPos := ASCAN( _OOHG_xMenuActive, { |o| o:hWnd == ::hWnd } )
    IF nPos > 0
@@ -542,7 +526,7 @@ METHOD EndPopUp() CLASS TMenuItem
       ASIZE( _OOHG_xMenuActive, LEN( _OOHG_xMenuActive ) - 1 )
    ENDIF
 
-   Return Nil
+   RETURN NIL
 
 METHOD SetItemsColor( uColor, lApplyToSubItems ) CLASS TMenuItem
 
@@ -550,11 +534,11 @@ METHOD SetItemsColor( uColor, lApplyToSubItems ) CLASS TMenuItem
       TMenuItemSetItemsColor( Self, uColor, lApplyToSubItems )
    ENDIF
 
-   Return Nil
+   RETURN NIL
 
 METHOD DoEvent( bBlock, cEventType, aParams ) CLASS TMenuItem
 
-   Local aNew, uCargo
+   LOCAL aNew, uCargo
 
    IF HB_IsNil( ::Cargo ) .AND. HB_IsNil( ::Container:Cargo ) .AND. HB_IsNil( ::Parent:Cargo )
       aNew := aParams
@@ -579,18 +563,17 @@ METHOD DoEvent( bBlock, cEventType, aParams ) CLASS TMenuItem
       aNew[ 1 ] := uCargo
    ENDIF
 
-   Return ::Super:DoEvent( bBlock, cEventType, aNew )
+   RETURN ::Super:DoEvent( bBlock, cEventType, aNew )
 
-Function _EndMenuPopup()
+FUNCTION _EndMenuPopup()
 
    IF LEN( _OOHG_xMenuActive ) > 0
       ATAIL( _OOHG_xMenuActive ):EndPopUp()
    ENDIF
 
-   Return Nil
+   RETURN NIL
 
-
-EXTERN TrackPopUpMenu, SetMenuDefaultItem, GetMenuBarHeight
+   EXTERN TrackPopUpMenu, SetMenuDefaultItem, GetMenuBarHeight
 
 #pragma BEGINDUMP
 

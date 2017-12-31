@@ -1,0 +1,7 @@
+-hblib
+-o${hb_install_prefix}/addons/oohg/lib/win/${hb_comp}/${hb_name}
+-hbx=${hb_install_prefix}/addons/oohg/${hb_name}.hbx
+-i../include
+-n -q0 -w0 -es0
+-beep
+../source/miniprint.prg

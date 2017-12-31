@@ -1,64 +1,52 @@
 /*
- * $Id: h_controlmisc.prg $
- */
+* $Id: h_controlmisc.prg $
+*/
 /*
- * ooHG source code:
- * Generic control and miscelaneous related functions
- *
- * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
- * https://oohg.github.io/
- *
- * Portions of this project are based upon Harbour MiniGUI library.
- * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
- *
- * Portions of this project are based upon Harbour GUI framework for Win32.
- * Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
- * Copyright 2001 Antonio Linares <alinares@fivetech.com>
- *
- * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2017, https://harbour.github.io/
- */
+* ooHG source code:
+* Generic control and miscelaneous related functions
+* Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
+* https://oohg.github.io/
+* Portions of this project are based upon Harbour MiniGUI library.
+* Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
+* Portions of this project are based upon Harbour GUI framework for Win32.
+* Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
+* Copyright 2001 Antonio Linares <alinares@fivetech.com>
+* Portions of this project are based upon Harbour Project.
+* Copyright 1999-2017, https://harbour.github.io/
+*/
 /*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this software; see the file LICENSE.txt. If not, write to
- * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
- *
- * As a special exception, the ooHG Project gives permission for
- * additional uses of the text contained in its release of ooHG.
- *
- * The exception is that, if you link the ooHG libraries with other
- * files to produce an executable, this does not by itself cause the
- * resulting executable to be covered by the GNU General Public License.
- * Your use of that executable is in no way restricted on account of
- * linking the ooHG library code into it.
- *
- * This exception does not however invalidate any other reasons why
- * the executable file might be covered by the GNU General Public License.
- *
- * This exception applies only to the code released by the ooHG
- * Project under the name ooHG. If you copy code from other
- * ooHG Project or Free Software Foundation releases into a copy of
- * ooHG, as the General Public License permits, the exception does
- * not apply to the code that you add in this way. To avoid misleading
- * anyone as to the status of such modified files, you must delete
- * this exception notice from them.
- *
- * If you write modifications of your own for ooHG, it is your choice
- * whether to permit this exception to apply to your modifications.
- * If you do not wish that, delete this exception notice.
- */
-
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2, or (at your option)
+* any later version.
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* You should have received a copy of the GNU General Public License
+* along with this software; see the file LICENSE.txt. If not, write to
+* the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+* Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
+* As a special exception, the ooHG Project gives permission for
+* additional uses of the text contained in its release of ooHG.
+* The exception is that, if you link the ooHG libraries with other
+* files to produce an executable, this does not by itself cause the
+* resulting executable to be covered by the GNU General Public License.
+* Your use of that executable is in no way restricted on account of
+* linking the ooHG library code into it.
+* This exception does not however invalidate any other reasons why
+* the executable file might be covered by the GNU General Public License.
+* This exception applies only to the code released by the ooHG
+* Project under the name ooHG. If you copy code from other
+* ooHG Project or Free Software Foundation releases into a copy of
+* ooHG, as the General Public License permits, the exception does
+* not apply to the code that you add in this way. To avoid misleading
+* anyone as to the status of such modified files, you must delete
+* this exception notice from them.
+* If you write modifications of your own for ooHG, it is your choice
+* whether to permit this exception to apply to your modifications.
+* If you do not wish that, delete this exception notice.
+*/
 
 #include "oohg.ch"
 #include "hbclass.ch"
@@ -81,293 +69,293 @@ STATIC _OOHG_lValidating := .F.       // If there's a ::SetFocus() call inside O
 #include "oohg.h"
 #pragma ENDDUMP
 
-Function _Getvalue( ControlName, ParentForm )
+FUNCTION _Getvalue( ControlName, ParentForm )
 
-   Return GetControlObject( ControlName, ParentForm ):Value
+   RETURN GetControlObject( ControlName, ParentForm ):Value
 
-Function _Setvalue( ControlName, ParentForm, Value )
+FUNCTION _Setvalue( ControlName, ParentForm, Value )
 
-   Return ( GetControlObject( ControlName, ParentForm ):Value := Value )
+   RETURN ( GetControlObject( ControlName, ParentForm ):Value := Value )
 
-Function _AddItem( ControlName, ParentForm, Value )
+FUNCTION _AddItem( ControlName, ParentForm, Value )
 
-   Return GetControlObject( ControlName, ParentForm ):AddItem( Value )
+   RETURN GetControlObject( ControlName, ParentForm ):AddItem( Value )
 
-Function _DeleteItem( ControlName, ParentForm, Value )
+FUNCTION _DeleteItem( ControlName, ParentForm, Value )
 
-   Return GetControlObject( ControlName, ParentForm ):DeleteItem( Value )
+   RETURN GetControlObject( ControlName, ParentForm ):DeleteItem( Value )
 
-Function _DeleteAllItems( ControlName, ParentForm )
+FUNCTION _DeleteAllItems( ControlName, ParentForm )
 
-   Return GetControlObject( ControlName, ParentForm ):DeleteAllItems()
+   RETURN GetControlObject( ControlName, ParentForm ):DeleteAllItems()
 
-Function GetControlName( ControlName, ParentForm )
+FUNCTION GetControlName( ControlName, ParentForm )
 
-   Return GetControlObject( ControlName, ParentForm ):Name
+   RETURN GetControlObject( ControlName, ParentForm ):Name
 
-Function GetControlHandle( ControlName, ParentForm )
+FUNCTION GetControlHandle( ControlName, ParentForm )
 
-   Return GetControlObject( ControlName, ParentForm ):hWnd
+   RETURN GetControlObject( ControlName, ParentForm ):hWnd
 
-Function GetControlContainerHandle( ControlName, ParentForm )
+FUNCTION GetControlContainerHandle( ControlName, ParentForm )
 
-   Return GetControlObject( ControlName, ParentForm ):Container:hWnd
+   RETURN GetControlObject( ControlName, ParentForm ):Container:hWnd
 
-Function GetControlParentHandle( ControlName, ParentForm )
+FUNCTION GetControlParentHandle( ControlName, ParentForm )
 
-   Return GetControlObject( ControlName, ParentForm ):ContainerhWnd     // :Parent:hWnd
+   RETURN GetControlObject( ControlName, ParentForm ):ContainerhWnd     // :Parent:hWnd
 
-Function GetControlId( ControlName, ParentForm )
+FUNCTION GetControlId( ControlName, ParentForm )
 
-   Return GetControlObject( ControlName, ParentForm ):Id
+   RETURN GetControlObject( ControlName, ParentForm ):Id
 
-Function GetControlType( ControlName, ParentForm )
+FUNCTION GetControlType( ControlName, ParentForm )
 
-   Return GetControlObject( ControlName, ParentForm ):Type
+   RETURN GetControlObject( ControlName, ParentForm ):Type
 
-Function GetControlValue( ControlName, ParentForm )
+FUNCTION GetControlValue( ControlName, ParentForm )
 
-   Return GetControlObject( ControlName, ParentForm ):Value
+   RETURN GetControlObject( ControlName, ParentForm ):Value
 
-Function _IsControlDefined( ControlName, FormName )
+FUNCTION _IsControlDefined( ControlName, FormName )
 
-   Local mVar
+   LOCAL mVar
 
    mVar := '_' + FormName + '_' + ControlName
 
-   Return ( Type( mVar ) == "O" .AND. ( &mVar ):hWnd != -1 )
+   RETURN ( Type( mVar ) == "O" .AND. ( &mVar ):hWnd != -1 )
 
-Function _SetFocus( ControlName, ParentForm )
+FUNCTION _SetFocus( ControlName, ParentForm )
 
-   Return GetControlObject( ControlName , ParentForm ):SetFocus()
+   RETURN GetControlObject( ControlName , ParentForm ):SetFocus()
 
-Function _DisableControl( ControlName, ParentForm )
+FUNCTION _DisableControl( ControlName, ParentForm )
 
-   Return GetControlObject( ControlName, ParentForm ):Enabled := .F.
+   RETURN GetControlObject( ControlName, ParentForm ):Enabled := .F.
 
-Function _EnableControl( ControlName, ParentForm )
+FUNCTION _EnableControl( ControlName, ParentForm )
 
-   Return GetControlObject( ControlName, ParentForm ):Enabled := .T.
+   RETURN GetControlObject( ControlName, ParentForm ):Enabled := .T.
 
-Function _ShowControl( ControlName, ParentForm )
+FUNCTION _ShowControl( ControlName, ParentForm )
 
-   Return GetControlObject( ControlName, ParentForm ):Show()
+   RETURN GetControlObject( ControlName, ParentForm ):Show()
 
-Function _HideControl( ControlName, ParentForm )
+FUNCTION _HideControl( ControlName, ParentForm )
 
-   Return GetControlObject( ControlName, ParentForm ):Hide()
+   RETURN GetControlObject( ControlName, ParentForm ):Hide()
 
-Function _SetItem( ControlName, ParentForm, Item, Value )
+FUNCTION _SetItem( ControlName, ParentForm, Item, Value )
 
-   Return GetControlObject( ControlName, ParentForm ):Item( Item, Value )
+   RETURN GetControlObject( ControlName, ParentForm ):Item( Item, Value )
 
-Function _GetItem( ControlName, ParentForm, Item )
+FUNCTION _GetItem( ControlName, ParentForm, Item )
 
-   Return GetControlObject( Controlname, ParentForm ):Item( Item )
+   RETURN GetControlObject( Controlname, ParentForm ):Item( Item )
 
-Function _SetControlSizePos( ControlName, ParentForm, row, col, width, height )
+FUNCTION _SetControlSizePos( ControlName, ParentForm, row, col, width, height )
 
-   Return GetControlObject( Controlname, ParentForm ):SizePos( row, col, width, height )
+   RETURN GetControlObject( Controlname, ParentForm ):SizePos( row, col, width, height )
 
-Function _GetItemCount( ControlName, ParentForm )
+FUNCTION _GetItemCount( ControlName, ParentForm )
 
-   Return GetControlObject( Controlname, ParentForm ):ItemCount
+   RETURN GetControlObject( Controlname, ParentForm ):ItemCount
 
-Function _GetControlRow( ControlName, ParentForm )
+FUNCTION _GetControlRow( ControlName, ParentForm )
 
-   Return GetControlObject( ControlName, ParentForm ):Row
+   RETURN GetControlObject( ControlName, ParentForm ):Row
 
-Function _GetControlCol( ControlName, ParentForm )
+FUNCTION _GetControlCol( ControlName, ParentForm )
 
-   Return GetControlObject( ControlName, ParentForm ):Col
+   RETURN GetControlObject( ControlName, ParentForm ):Col
 
-Function _GetControlWidth( ControlName, ParentForm )
+FUNCTION _GetControlWidth( ControlName, ParentForm )
 
-   Return GetControlObject( ControlName, ParentForm ):Width
+   RETURN GetControlObject( ControlName, ParentForm ):Width
 
-Function _GetControlHeight( ControlName, ParentForm )
+FUNCTION _GetControlHeight( ControlName, ParentForm )
 
-   Return GetControlObject( ControlName, ParentForm ):Height
+   RETURN GetControlObject( ControlName, ParentForm ):Height
 
-Function _SetControlCol( ControlName, ParentForm, Value )
+FUNCTION _SetControlCol( ControlName, ParentForm, Value )
 
-   Return GetControlObject( ControlName, ParentForm ):SizePos( , Value )
+   RETURN GetControlObject( ControlName, ParentForm ):SizePos( , Value )
 
-Function _SetControlRow( ControlName, ParentForm, Value )
+FUNCTION _SetControlRow( ControlName, ParentForm, Value )
 
-   Return GetControlObject( ControlName, ParentForm ):SizePos( Value )
+   RETURN GetControlObject( ControlName, ParentForm ):SizePos( Value )
 
-Function _SetControlWidth( ControlName, ParentForm, Value )
+FUNCTION _SetControlWidth( ControlName, ParentForm, Value )
 
-   Return GetControlObject( ControlName, ParentForm ):SizePos( , , Value )
+   RETURN GetControlObject( ControlName, ParentForm ):SizePos( , , Value )
 
-Function _SetControlHeight( ControlName, ParentForm, Value )
+FUNCTION _SetControlHeight( ControlName, ParentForm, Value )
 
-   Return GetControlObject( ControlName, ParentForm ):SizePos( , , , Value )
+   RETURN GetControlObject( ControlName, ParentForm ):SizePos( , , , Value )
 
-Function _SetPicture( ControlName, ParentForm, FileName )
+FUNCTION _SetPicture( ControlName, ParentForm, FileName )
 
-   Return GetControlObject( ControlName, ParentForm ):Picture := FileName
+   RETURN GetControlObject( ControlName, ParentForm ):Picture := FileName
 
-Function _GetPicture( ControlName, ParentForm )
+FUNCTION _GetPicture( ControlName, ParentForm )
 
-   Return GetControlObject( ControlName, ParentForm ):Picture
+   RETURN GetControlObject( ControlName, ParentForm ):Picture
 
-Function _GetControlAction( ControlName, ParentForm )
+FUNCTION _GetControlAction( ControlName, ParentForm )
 
-   Return GetControlObject( ControlName, ParentForm ):OnClick
+   RETURN GetControlObject( ControlName, ParentForm ):OnClick
 
-Function _GetToolTip( ControlName, ParentForm )
+FUNCTION _GetToolTip( ControlName, ParentForm )
 
-   Return GetControlObject( ControlName, ParentForm ):ToolTip
+   RETURN GetControlObject( ControlName, ParentForm ):ToolTip
 
-Function _SetToolTip( ControlName, ParentForm, Value  )
+FUNCTION _SetToolTip( ControlName, ParentForm, Value  )
 
-   Return GetControlObject( ControlName, ParentForm ):ToolTip := Value
+   RETURN GetControlObject( ControlName, ParentForm ):ToolTip := Value
 
-Function _SetRangeMin( ControlName, ParentForm, Value  )
+FUNCTION _SetRangeMin( ControlName, ParentForm, Value  )
 
-   Return ( GetControlObject( ControlName, ParentForm ):RangeMin := Value )
+   RETURN ( GetControlObject( ControlName, ParentForm ):RangeMin := Value )
 
-Function _SetRangeMax( ControlName, ParentForm, Value  )
+FUNCTION _SetRangeMax( ControlName, ParentForm, Value  )
 
-   Return ( GetControlObject( ControlName, ParentForm ):RangeMax := Value )
+   RETURN ( GetControlObject( ControlName, ParentForm ):RangeMax := Value )
 
-Function _GetRangeMin( ControlName, ParentForm )
+FUNCTION _GetRangeMin( ControlName, ParentForm )
 
-   Return GetControlObject( ControlName, ParentForm ):RangeMin
+   RETURN GetControlObject( ControlName, ParentForm ):RangeMin
 
-Function _GetRangeMax( ControlName, ParentForm )
+FUNCTION _GetRangeMax( ControlName, ParentForm )
 
-   Return GetControlObject( ControlName, ParentForm ):RangeMax
+   RETURN GetControlObject( ControlName, ParentForm ):RangeMax
 
-Function _SetMultiCaption( ControlName, ParentForm, Column, Value )
+FUNCTION _SetMultiCaption( ControlName, ParentForm, Column, Value )
 
-   Return GetControlObject( ControlName, ParentForm ):Caption( Column, Value )
+   RETURN GetControlObject( ControlName, ParentForm ):Caption( Column, Value )
 
-Function _GetMultiCaption( ControlName, ParentForm, Item )
+FUNCTION _GetMultiCaption( ControlName, ParentForm, Item )
 
-   Return GetControlObject( ControlName, ParentForm ):Caption( Item )
+   RETURN GetControlObject( ControlName, ParentForm ):Caption( Item )
 
-Function InputWindow( Title, aLabels, aValues, aFormats, row, col, aButOKCancelCaptions, nLabelWidth, nControlWidth, nButtonWidth )
+FUNCTION InputWindow( Title, aLabels, aValues, aFormats, row, col, aButOKCancelCaptions, nLabelWidth, nControlWidth, nButtonWidth )
 
-   Local i, l, ControlRow, e := 0, LN, CN, r, c, nHeight, diff
-   Local oInputWindow, aResult, nWidth, ControlCol, nSep
+   LOCAL i, l, ControlRow, e := 0, LN, CN, r, c, nHeight, diff
+   LOCAL oInputWindow, aResult, nWidth, ControlCol, nSep
 
-   If ! HB_IsArray( aButOKCancelCaptions ) .OR. Len( aButOKCancelCaptions ) < 2
+   IF ! HB_IsArray( aButOKCancelCaptions ) .OR. Len( aButOKCancelCaptions ) < 2
       aButOKCancelCaptions := { _OOHG_Messages( 1, 6 ), _OOHG_Messages( 1, 7 ) }
-   EndIf
+   ENDIF
 
-   If ! HB_IsNumeric( nLabelWidth ) .OR. nLabelWidth <= 10
+   IF ! HB_IsNumeric( nLabelWidth ) .OR. nLabelWidth <= 10
       nLabelWidth := 110
-   EndIf
+   ENDIF
 
-   If ! HB_IsNumeric( nControlWidth ) .OR. nControlWidth <= 10
+   IF ! HB_IsNumeric( nControlWidth ) .OR. nControlWidth <= 10
       nControlWidth := 140
-   EndIf
+   ENDIF
 
-   If ! HB_IsNumeric( nButtonWidth ) .OR. nButtonWidth <= 30
+   IF ! HB_IsNumeric( nButtonWidth ) .OR. nButtonWidth <= 30
       nButtonWidth := 100
-   EndIf
+   ENDIF
 
    l := Len( aLabels )
 
    aResult := Array( l )
 
-   For i := 1 to l
-      If ValType( aValues[i] ) == 'C'
-         If HB_IsNumeric( aFormats[i] )
-            If aFormats[i] > 32
+   FOR i := 1 to l
+      IF ValType( aValues[i] ) == 'C'
+         IF HB_IsNumeric( aFormats[i] )
+            IF aFormats[i] > 32
                e++
-            Endif
-         EndIf
-      EndIf
+            ENDIF
+         ENDIF
+      ENDIF
 
-      if HB_IsMemo( aValues[i] )
+      IF HB_IsMemo( aValues[i] )
          e++
-      EndIf
-   Next i
+      ENDIF
+   NEXT i
 
-   If ! HB_IsNumeric( row ) .or. ! HB_IsNumeric( col )
+   IF ! HB_IsNumeric( row ) .or. ! HB_IsNumeric( col )
       r := 0
       c := 0
-   Else
+   ELSE
       r := row
       c := col
       nHeight := ( l * 30 ) + 90 + ( e * 60 )
 
-      If r + nHeight > GetDeskTopHeight()
+      IF r + nHeight > GetDeskTopHeight()
          diff :=  r + nHeight - GetDeskTopHeight()
          r := r - diff
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
    nWidth := Max( nLabelWidth + nControlWidth + 30, nButtonWidth * 2 + 30 )
 
    ControlCol := nLabelWidth + 10
 
    DEFINE WINDOW _InputWindow OBJ oInputWindow ;
-      AT r,c ;
-      CLIENTAREA ;
-      WIDTH nWidth ;
-      HEIGHT ( l * 30 ) + 90 + ( e * 60 ) ;
-      TITLE Title ;
-      MODAL ;
-      NOSIZE ;
-      BACKCOLOR ( GetFormObjectByHandle( GetActiveWindow() ):BackColor )
+         AT r,c ;
+         CLIENTAREA ;
+         WIDTH nWidth ;
+         HEIGHT ( l * 30 ) + 90 + ( e * 60 ) ;
+         TITLE Title ;
+         MODAL ;
+         NOSIZE ;
+         BACKCOLOR ( GetFormObjectByHandle( GetActiveWindow() ):BackColor )
 
       ControlRow :=  10
 
-      For i := 1 to l
+      FOR i := 1 to l
          LN := 'Label_' + Alltrim( Str( i, 2, 0 ) )
          CN := 'Control_' + Alltrim( Str( i, 2, 0 ) )
 
          @ ControlRow, 10 LABEL &LN OF _InputWindow VALUE aLabels[i] WIDTH nLabelWidth NOWORDWRAP
 
-         Do Case
-         Case HB_IsLogical( aValues[i] )
+         DO CASE
+         CASE HB_IsLogical( aValues[i] )
             @ ControlRow, ControlCol CHECKBOX &CN OF _InputWindow CAPTION '' VALUE aValues[i] WIDTH nControlWidth
             ControlRow := ControlRow + 30
 
-         Case HB_IsDate( aValues[i] )
-            If ValType( aFormats[i] ) $ 'CM' .AND. upper( aFormats[i] ) == "SHOWNONE"
+         CASE HB_IsDate( aValues[i] )
+            IF ValType( aFormats[i] ) $ 'CM' .AND. upper( aFormats[i] ) == "SHOWNONE"
                @ ControlRow, ControlCol DATEPICKER &CN  OF _InputWindow VALUE aValues[i] WIDTH nControlWidth SHOWNONE
                ControlRow := ControlRow + 30
-            Else
+            ELSE
                @ ControlRow, ControlCol DATEPICKER &CN  OF _InputWindow VALUE aValues[i] WIDTH nControlWidth
                ControlRow := ControlRow + 30
-            EndIf
+            ENDIF
 
-         Case HB_IsNumeric( aValues[i] )
-            If HB_IsArray( aFormats[i] )
+         CASE HB_IsNumeric( aValues[i] )
+            IF HB_IsArray( aFormats[i] )
                @ ControlRow, ControlCol COMBOBOX &CN  OF _InputWindow ITEMS aFormats[i] VALUE aValues[i] WIDTH nControlWidth  FONT 'Arial' SIZE 10
                ControlRow := ControlRow + 30
-            ElseIf  ValType( aFormats[i] ) $ 'CM'
-               If At( '.', aFormats[i] ) > 0
+            ELSEIF  ValType( aFormats[i] ) $ 'CM'
+               IF At( '.', aFormats[i] ) > 0
                   @ ControlRow, ControlCol TEXTBOX &CN  OF _InputWindow VALUE aValues[i] WIDTH nControlWidth FONT 'Arial' SIZE 10 NUMERIC INPUTMASK aFormats[i]
-               Else
+               ELSE
                   @ ControlRow, ControlCol TEXTBOX &CN  OF _InputWindow VALUE aValues[i] WIDTH nControlWidth FONT 'Arial' SIZE 10 MAXLENGTH Len( aFormats[i] ) NUMERIC
-               EndIf
+               ENDIF
                ControlRow := ControlRow + 30
-            Endif
+            ENDIF
 
-         Case ValType( aValues[i] ) == 'C'
-            If HB_IsNumeric( aFormats[i] )
-               If  aFormats[i] <= 32
+         CASE ValType( aValues[i] ) == 'C'
+            IF HB_IsNumeric( aFormats[i] )
+               IF  aFormats[i] <= 32
                   @ ControlRow, ControlCol TEXTBOX &CN  OF _InputWindow VALUE aValues[i] WIDTH nControlWidth FONT 'Arial' SIZE 10 MAXLENGTH aFormats[i]
                   ControlRow := ControlRow + 30
-               Else
+               ELSE
                   @ ControlRow, ControlCol EDITBOX &CN  OF _InputWindow WIDTH nControlWidth HEIGHT 90 VALUE aValues[i] FONT 'Arial' SIZE 10 MAXLENGTH aFormats[i]
                   ControlRow := ControlRow + 94
-               EndIf
-            EndIf
+               ENDIF
+            ENDIF
 
-         Case HB_IsMemo( aValues[i] )
+         CASE HB_IsMemo( aValues[i] )
             @ ControlRow, ControlCol EDITBOX &CN  OF _InputWindow WIDTH nControlWidth HEIGHT 90 VALUE aValues[i] FONT 'Arial' SIZE 10
             ControlRow := ControlRow + 94
 
-         EndCase
-      Next i
+         ENDCASE
+      NEXT i
 
       nSep := int( ( nWidth - 2 * nButtonWidth ) / 3 )
 
@@ -388,716 +376,687 @@ Function InputWindow( Title, aLabels, aValues, aFormats, row, col, aButOKCancelC
       oInputWindow:Control_1:SetFocus()
    END WINDOW
 
-   If ! HB_IsNumeric( row ) .or. ! HB_IsNumeric( col )
+   IF ! HB_IsNumeric( row ) .or. ! HB_IsNumeric( col )
       oInputWindow:Center()
-   EndIf
+   ENDIF
 
    oInputWindow:Activate()
 
-   Return aResult
+   RETURN aResult
 
-Function _InputWindowOk( oInputWindow, aResult )
+FUNCTION _InputWindowOk( oInputWindow, aResult )
 
-   Local i , l
+   LOCAL i , l
 
    l := len( aResult )
-   For i := 1 to l
+   FOR i := 1 to l
       aResult[ i ] := oInputWindow:Control( 'Control_' + Alltrim( Str( i ) ) ):Value
-   Next i
+   NEXT i
    oInputWindow:Release()
 
-   Return Nil
+   RETURN NIL
 
-Function _InputWindowCancel( oInputWindow, aResult )
+FUNCTION _InputWindowCancel( oInputWindow, aResult )
 
    afill( aResult, NIL )
    oInputWindow:Release()
 
-   Return Nil
+   RETURN NIL
 
-Function _ReleaseControl( ControlName, ParentForm )
+FUNCTION _ReleaseControl( ControlName, ParentForm )
 
-   Return GetControlObject( ControlName, ParentForm ):Release()
+   RETURN GetControlObject( ControlName, ParentForm ):Release()
 
-Function _IsControlVisibleFromHandle( Handle )
+FUNCTION _IsControlVisibleFromHandle( Handle )
 
-   Return GetControlObjectByHandle( Handle ):ContainerVisible
+   RETURN GetControlObjectByHandle( Handle ):ContainerVisible
 
-Function _SetCaretPos( ControlName, FormName, Pos )
+FUNCTION _SetCaretPos( ControlName, FormName, Pos )
 
-   Return ( GetControlObject( ControlName, FormName ):CaretPos := Pos )
+   RETURN ( GetControlObject( ControlName, FormName ):CaretPos := Pos )
 
-Function _GetCaretPos( ControlName, FormName )
+FUNCTION _GetCaretPos( ControlName, FormName )
 
-   Return GetControlObject( ControlName, FormName ):CaretPos
+   RETURN GetControlObject( ControlName, FormName ):CaretPos
 
-Function DefineProperty( cProperty, cControlName, cFormName, xValue )
+FUNCTION DefineProperty( cProperty, cControlName, cFormName, xValue )
 
-   Local oCtrl
+   LOCAL oCtrl
 
-   If HB_IsObject( cFormName )
+   IF HB_IsObject( cFormName )
       oCtrl := cFormName
-   ElseIf HB_IsString( cControlName )
+   ELSEIF HB_IsString( cControlName )
       oCtrl := GetExistingControlObject( cControlName, cFormName )
-   Else
+   ELSE
       oCtrl := GetExistingFormObject( cFormName )
-   EndIf
+   ENDIF
    oCtrl:Property( cProperty, xValue )
 
-   Return oCtrl:Property( cProperty )
+   RETURN oCtrl:Property( cProperty )
 
-Function SetProperty( Arg1, Arg2, Arg3, Arg4, Arg5, Arg6 )
+FUNCTION SetProperty( Arg1, Arg2, Arg3, Arg4, Arg5, Arg6 )
 
-   Local oWnd, oCtrl, nPos
+   LOCAL oWnd, oCtrl, nPos
 
-   if Pcount() == 3 // Window
+   IF Pcount() == 3 // Window
 
       oWnd := GetExistingFormObject( Arg1 )
       Arg2 := Upper( Arg2 )
 
-      If Arg2 == "TITLE"
+      IF Arg2 == "TITLE"
          oWnd:Title := Arg3
 
-      ELseIf Arg2 == "HEIGHT"
+      ELSEIF Arg2 == "HEIGHT"
          oWnd:Height := Arg3
 
-      ElseIf Arg2 == "WIDTH"
+      ELSEIF Arg2 == "WIDTH"
          oWnd:Width := Arg3
 
-      ElseIf Arg2 == "COL"
+      ELSEIF Arg2 == "COL"
          oWnd:Col := Arg3
 
-      ElseIf Arg2 == "ROW"
+      ELSEIF Arg2 == "ROW"
          oWnd:Row := Arg3
 
-      ElseIf Arg2 == "NOTIFYICON"
+      ELSEIF Arg2 == "NOTIFYICON"
          oWnd:NotifyIcon := Arg3
 
-      ElseIf Arg2 == "NOTIFYTOOLTIP"
+      ELSEIF Arg2 == "NOTIFYTOOLTIP"
          oWnd:NotifyTooltip := Arg3
 
-      ElseIf Arg2 == "BACKCOLOR"
+      ELSEIF Arg2 == "BACKCOLOR"
          oWnd:BackColor := Arg3
 
-      ElseIf Arg2 == "CURSOR"
+      ELSEIF Arg2 == "CURSOR"
          oWnd:Cursor := Arg3
 
-      ElseIf Arg2 == "CLOSABLE"
+      ELSEIF Arg2 == "CLOSABLE"
          oWnd:Closeable := Arg3
 
-      Else
+      ELSE
          // Pseudo-property
          nPos := ASCAN( oWnd:aProperties, { |a| a[ 1 ] == Arg2 } )
-         If nPos > 0
+         IF nPos > 0
             oWnd:aProperties[ nPos ][ 2 ] := Arg3
-         EndIf
+         ENDIF
 
-      EndIf
+      ENDIF
 
-   ElseIf Pcount() == 4 // CONTROL
+   ELSEIF Pcount() == 4 // CONTROL
 
       oCtrl := GetExistingControlObject( Arg2, Arg1 )
       Arg3 := Upper( Arg3 )
 
-      If     Arg3 == "VALUE"
+      IF     Arg3 == "VALUE"
          oCtrl:Value := Arg4
 
-      ElseIf Arg3 == "ALLOWEDIT"
+      ELSEIF Arg3 == "ALLOWEDIT"
          oCtrl:AllowEdit := Arg4
 
-      ElseIf Arg3 == "ALLOWAPPEND"
+      ELSEIF Arg3 == "ALLOWAPPEND"
          oCtrl:AllowAppend := Arg4
 
-      ElseIf Arg3 == "ALLOWDELETE"
+      ELSEIF Arg3 == "ALLOWDELETE"
          oCtrl:AllowDelete := Arg4
 
-      ElseIf Arg3 == "PICTURE"
+      ELSEIF Arg3 == "PICTURE"
          oCtrl:Picture := Arg4
 
-      ElseIf Arg3 == "TOOLTIP"
+      ELSEIF Arg3 == "TOOLTIP"
          oCtrl:Tooltip := Arg4
 
-      ElseIf Arg3 == "FONTNAME"
+      ELSEIF Arg3 == "FONTNAME"
          oCtrl:SetFont( Arg4 )
 
-      ElseIf Arg3 == "FONTSIZE"
+      ELSEIF Arg3 == "FONTSIZE"
          oCtrl:SetFont( , Arg4 )
 
-      ElseIf Arg3 == "FONTBOLD"
+      ELSEIF Arg3 == "FONTBOLD"
          oCtrl:SetFont( , , Arg4 )
 
-      ElseIf Arg3 == "FONTITALIC"
+      ELSEIF Arg3 == "FONTITALIC"
          oCtrl:SetFont( , , , Arg4 )
 
-      ElseIf Arg3 == "FONTUNDERLINE"
+      ELSEIF Arg3 == "FONTUNDERLINE"
          oCtrl:SetFont( , , , , Arg4 )
 
-      ElseIf Arg3 == "FONTSTRIKEOUT"
+      ELSEIF Arg3 == "FONTSTRIKEOUT"
          oCtrl:SetFont( , , , , , Arg4 )
 
-      ElseIf Arg3 == "CAPTION"
+      ELSEIF Arg3 == "CAPTION"
          oCtrl:Caption := Arg4
 
-      ElseIf Arg3 == "DISPLAYVALUE"
+      ELSEIF Arg3 == "DISPLAYVALUE"
          oCtrl:Caption := Arg4
 
-      ElseIf Arg3 == "ROW"
+      ELSEIF Arg3 == "ROW"
          oCtrl:Row := Arg4
 
-      ElseIf Arg3 == "COL"
+      ELSEIF Arg3 == "COL"
          oCtrl:Col := Arg4
 
-      ElseIf Arg3 == "WIDTH"
+      ELSEIF Arg3 == "WIDTH"
          oCtrl:Width := Arg4
 
-      ElseIf Arg3 == "HEIGHT"
+      ELSEIF Arg3 == "HEIGHT"
          oCtrl:Height := Arg4
 
-      ElseIf Arg3 == "VISIBLE"
+      ELSEIF Arg3 == "VISIBLE"
          oCtrl:Visible := Arg4
 
-      ElseIf Arg3 == "ENABLED"
+      ELSEIF Arg3 == "ENABLED"
          oCtrl:Enabled := Arg4
 
-      ElseIf Arg3 == "CHECKED"
+      ELSEIF Arg3 == "CHECKED"
          oCtrl:Checked := Arg4
 
-      ElseIf Arg3 == "RANGEMIN"
+      ELSEIF Arg3 == "RANGEMIN"
          oCtrl:RangeMin := Arg4
 
-      ElseIf Arg3 == "RANGEMAX"
+      ELSEIF Arg3 == "RANGEMAX"
          oCtrl:RangeMax := Arg4
 
-      ElseIf Arg3 == "REPEAT"
-         If Arg4 == .t.
+      ELSEIF Arg3 == "REPEAT"
+         IF Arg4 == .t.
             oCtrl:RepeatOn()
-         Else
+         ELSE
             oCtrl:RepeatOff()
-         EndIf
+         ENDIF
 
-      ElseIf Arg3 == "SPEED"
+      ELSEIF Arg3 == "SPEED"
          oCtrl:Speed( Arg4 )
 
-      ElseIf Arg3 == "VOLUME"
+      ELSEIF Arg3 == "VOLUME"
          oCtrl:Volume( Arg4 )
 
-      ElseIf Arg3 == "ZOOM"
+      ELSEIF Arg3 == "ZOOM"
          oCtrl:Zoom( Arg4 )
 
-      ElseIf Arg3 == "POSITION"
-         If Arg4 == 0
+      ELSEIF Arg3 == "POSITION"
+         IF Arg4 == 0
             oCtrl:PositionHome()
-         ElseIf Arg4 == 1
+         ELSEIF Arg4 == 1
             oCtrl:PositionEnd()
-         EndIf
+         ENDIF
 
-      ElseIf Arg3 == "CARETPOS"
+      ELSEIF Arg3 == "CARETPOS"
          oCtrl:CaretPos := Arg4
 
-      ElseIf Arg3 == "BACKCOLOR"
+      ELSEIF Arg3 == "BACKCOLOR"
          oCtrl:BackColor := Arg4
 
-      ElseIf Arg3 == "FONTCOLOR"
+      ELSEIF Arg3 == "FONTCOLOR"
          oCtrl:FontColor := Arg4
 
-      ElseIf Arg3 == "FORECOLOR"
+      ELSEIF Arg3 == "FORECOLOR"
          oCtrl:FontColor := Arg4
 
-      ElseIf Arg3 == "ADDRESS"
+      ELSEIF Arg3 == "ADDRESS"
          oCtrl:Address := Arg4
 
-      ElseIf Arg3 == "READONLY" .OR. Arg3 == "DISABLEEDIT"
+      ELSEIF Arg3 == "READONLY" .OR. Arg3 == "DISABLEEDIT"
          oCtrl:ReadOnly := Arg4
 
-      ElseIf Arg3 == "ITEMCOUNT"
+      ELSEIF Arg3 == "ITEMCOUNT"
          ListView_SetItemCount( oCtrl:hWnd, Arg4 )
 
-      ElseIf Arg3 == "GETPARENT"
+      ELSEIF Arg3 == "GETPARENT"
          oCtrl:GetParent( Arg4 )
 
-      ElseIf Arg3 == "GETCHILDREN"
+      ELSEIF Arg3 == "GETCHILDREN"
          oCtrl:GetChildren( Arg4 )
 
-      ElseIf Arg3 == "INDENT"
+      ELSEIF Arg3 == "INDENT"
          oCtrl:Indent( Arg4 )
 
-      ElseIf Arg3 == "SELCOLOR"
+      ELSEIF Arg3 == "SELCOLOR"
          oCtrl:SelColor( Arg4 )
 
-      ElseIf Arg3 == "ONCHANGE"
+      ELSEIF Arg3 == "ONCHANGE"
          oCtrl:OnChange := Arg4
 
-      ElseIf Arg3 == "MAXLENGTH"
+      ELSEIF Arg3 == "MAXLENGTH"
          oCtrl:MaxLength := Arg4
 
-      Else
+      ELSE
          // Pseudo-property
          nPos := ASCAN( oCtrl:aProperties, { |a| a[ 1 ] == Arg3 } )
-         If nPos > 0
+         IF nPos > 0
             oCtrl:aProperties[ nPos ][ 2 ] := Arg4
-         EndIf
+         ENDIF
 
-      EndIf
+      ENDIF
 
-   ElseIf Pcount() == 5 // CONTROL (WITH ARGUMENT OR TOOLBAR BUTTON)
+   ELSEIF Pcount() == 5 // CONTROL (WITH ARGUMENT OR TOOLBAR BUTTON)
 
       oCtrl := GetExistingControlObject( Arg2, Arg1 )
       Arg3 := Upper( Arg3 )
 
-      If Arg3 == "CAPTION"
+      IF Arg3 == "CAPTION"
          oCtrl:Caption( Arg4, Arg5 )
 
-      ElseIf Arg3 == "HEADER"
+      ELSEIF Arg3 == "HEADER"
          oCtrl:Header( Arg4, Arg5 )
 
-      ElseIf Arg3 == "ITEM"
+      ELSEIF Arg3 == "ITEM"
          oCtrl:Item( Arg4, Arg5 )
 
-      ElseIf Arg3 == "CHECKITEM"
+      ELSEIF Arg3 == "CHECKITEM"
          oCtrl:CheckItem( Arg4, Arg5 )
 
-      ElseIf Arg3 == "BOLDITEM"
+      ELSEIF Arg3 == "BOLDITEM"
          oCtrl:BoldItem( Arg4, Arg5 )
 
-      ElseIf Arg3 == "ITEMREADONLY"
+      ELSEIF Arg3 == "ITEMREADONLY"
          oCtrl:ItemReadonly( Arg4, Arg5 )
 
-      ElseIf Arg3 == "ITEMENABLED"
+      ELSEIF Arg3 == "ITEMENABLED"
          oCtrl:ItemEnabled( Arg4, Arg5 )
 
-      ElseIf Arg3 == "ENABLED"
+      ELSEIF Arg3 == "ENABLED"
          oCtrl:ItemEnabled( Arg4, Arg5 )
 
-      ElseIf Arg3 == "ITEMDRAGGABLE"
+      ELSEIF Arg3 == "ITEMDRAGGABLE"
          oCtrl:ItemDraggable( Arg4, Arg5 )
 
-      ElseIf Arg3 == "ICON"
+      ELSEIF Arg3 == "ICON"
          _SetStatusIcon( Arg2, Arg1, Arg4, Arg5 )
 
-      ElseIf Arg3 == "COLUMNWIDTH"
+      ELSEIF Arg3 == "COLUMNWIDTH"
          oCtrl:ColumnWidth( Arg4, Arg5 )
 
-      ElseIf Arg3 == "PICTURE"
+      ELSEIF Arg3 == "PICTURE"
          oCtrl:Picture( Arg4, Arg5 )
 
-      ElseIf Arg3 == "IMAGE"
+      ELSEIF Arg3 == "IMAGE"
          oCtrl:Picture( Arg4, Arg5 )
 
-      Else
+      ELSE
          // If Property Not Matched Look For ToolBar Button
 
-         If oCtrl:Type == "TOOLBAR"
+         IF oCtrl:Type == "TOOLBAR"
 
-            If oCtrl:hWnd != GetControlObject( Arg3 , Arg1 ):Container:hWnd
+            IF oCtrl:hWnd != GetControlObject( Arg3 , Arg1 ):Container:hWnd
                MsgOOHGError('Control Does Not Belong To Container')
-            EndIf
+            ENDIF
 
             SetProperty( Arg1, Arg3, Arg4, Arg5 )
-         EndIf
+         ENDIF
 
-      EndIf
+      ENDIF
 
-   ElseIf Pcount() == 6 // CONTROL (WITH 2 ARGUMENTS)
+   ELSEIF Pcount() == 6 // CONTROL (WITH 2 ARGUMENTS)
 
       oCtrl := GetExistingControlObject( Arg2, Arg1 )
       Arg3 := Upper( Arg3 )
 
-      If     Arg3 == "CELL"
+      IF     Arg3 == "CELL"
          oCtrl:Cell( Arg4 , Arg5 , Arg6 )
 
-      Else
+      ELSE
          SetProperty( Arg1, Arg4, Arg5, Arg6 )
 
-      EndIf
+      ENDIF
 
-   EndIf
+   ENDIF
 
-Return Nil
+   RETURN NIL
 
-*------------------------------------------------------------------------------*
-Function GetProperty( Arg1, Arg2, Arg3, Arg4, Arg5 )
-*------------------------------------------------------------------------------*
-Local RetVal, oWnd, oCtrl, nPos
+FUNCTION GetProperty( Arg1, Arg2, Arg3, Arg4, Arg5 )
 
-   If Pcount() == 2 // WINDOW
+   LOCAL RetVal, oWnd, oCtrl, nPos
+
+   IF Pcount() == 2 // WINDOW
 
       oWnd := GetExistingFormObject( Arg1 )
       Arg2 := Upper( Arg2 )
 
-      If Arg2 == 'TITLE'
+      IF Arg2 == 'TITLE'
          RetVal := oWnd:Title
 
-      ElseIf Arg2 == 'FOCUSEDCONTROL'
+      ELSEIF Arg2 == 'FOCUSEDCONTROL'
          RetVal := oWnd:FocusedControl()
 
-      ElseIf Arg2 == 'NAME'
+      ELSEIF Arg2 == 'NAME'
          RetVal := oWnd:Name
 
-      ElseIf Arg2 == 'HEIGHT'
+      ELSEIF Arg2 == 'HEIGHT'
          RetVal := oWnd:Height
 
-      ElseIf Arg2 == 'WIDTH'
+      ELSEIF Arg2 == 'WIDTH'
          RetVal := oWnd:Width
 
-      ElseIf Arg2 == 'CLOSABLE'
+      ELSEIF Arg2 == 'CLOSABLE'
          RetVal := oWnd:Closable
 
-      ElseIf Arg2 == 'COL'
+      ELSEIF Arg2 == 'COL'
          RetVal := oWnd:Col
 
-      ElseIf Arg2 == 'ROW'
+      ELSEIF Arg2 == 'ROW'
          RetVal := oWnd:Row
 
-      ElseIf Arg2 == "NOTIFYICON"
+      ELSEIF Arg2 == "NOTIFYICON"
          RetVal := oWnd:NotifyIcon
 
-      ElseIf Arg2 == "NOTIFYTOOLTIP"
+      ELSEIF Arg2 == "NOTIFYTOOLTIP"
          RetVal := oWnd:NotifyTooltip
 
-      ElseIf Arg2 == "BACKCOLOR"
+      ELSEIF Arg2 == "BACKCOLOR"
          RetVal := oWnd:BackColor
 
-      ElseIf Arg2 == "HWND"
+      ELSEIF Arg2 == "HWND"
          RetVal := oWnd:hWnd
 
-      ElseIf Arg2 == "OBJECT"
+      ELSEIF Arg2 == "OBJECT"
          RetVal := oWnd
 
-      Else
+      ELSE
          // Pseudo-property
          nPos := ASCAN( oWnd:aProperties, { |a| a[ 1 ] == Arg2 } )
-         If nPos > 0
+         IF nPos > 0
             RetVal := oWnd:aProperties[ nPos ][ 2 ]
-         EndIf
+         ENDIF
 
-      EndIf
+      ENDIF
 
-   ElseIf Pcount() == 3 // CONTROL
+   ELSEIF Pcount() == 3 // CONTROL
 
       oCtrl := GetExistingControlObject( Arg2, Arg1 )
       Arg3 := Upper( Arg3 )
 
-      If     Arg3 == 'VALUE'
+      IF     Arg3 == 'VALUE'
          RetVal := oCtrl:Value
 
-      ElseIf Arg3 == 'NAME'
+      ELSEIF Arg3 == 'NAME'
          RetVal := oCtrl:Name
 
-      ElseIf Arg3 == 'ALLOWEDIT'
+      ELSEIF Arg3 == 'ALLOWEDIT'
          RetVal := oCtrl:AllowEdit
 
-      ElseIf Arg3 == 'ALLOWAPPEND'
+      ELSEIF Arg3 == 'ALLOWAPPEND'
          RetVal := oCtrl:AllowAppend
 
-      ElseIf Arg3 == 'ALLOWDELETE'
+      ELSEIF Arg3 == 'ALLOWDELETE'
          RetVal := oCtrl:AllowDelete
 
-      ElseIf Arg3 == 'PICTURE'
+      ELSEIF Arg3 == 'PICTURE'
          RetVal := oCtrl:Picture
 
-      ElseIf Arg3 == 'TOOLTIP'
+      ELSEIF Arg3 == 'TOOLTIP'
          RetVal := oCtrl:Tooltip
 
-      ElseIf Arg3 == 'FONTNAME'
+      ELSEIF Arg3 == 'FONTNAME'
          RetVal := oCtrl:cFontName
 
-      ElseIf Arg3 == 'FONTSIZE'
+      ELSEIF Arg3 == 'FONTSIZE'
          RetVal := oCtrl:nFontSize
 
-      ElseIf Arg3 == 'FONTBOLD'
+      ELSEIF Arg3 == 'FONTBOLD'
          RetVal := oCtrl:Bold
 
-      ElseIf Arg3 == 'FONTITALIC'
+      ELSEIF Arg3 == 'FONTITALIC'
          RetVal := oCtrl:Italic
 
-      ElseIf Arg3 == 'FONTUNDERLINE'
+      ELSEIF Arg3 == 'FONTUNDERLINE'
          RetVal := oCtrl:Underline
 
-      ElseIf Arg3 == 'FONTSTRIKEOUT'
+      ELSEIF Arg3 == 'FONTSTRIKEOUT'
          RetVal := oCtrl:Strikeout
 
-      ElseIf Arg3 == 'CAPTION'
+      ELSEIF Arg3 == 'CAPTION'
          RetVal := oCtrl:Caption
 
-      ElseIf Arg3 == 'DISPLAYVALUE'
+      ELSEIF Arg3 == 'DISPLAYVALUE'
          RetVal := GetWindowText( oCtrl:hWnd )
 
-      ElseIf Arg3 == 'ROW'
+      ELSEIF Arg3 == 'ROW'
          RetVal := oCtrl:Row
 
-      ElseIf Arg3 == 'COL'
+      ELSEIF Arg3 == 'COL'
          RetVal := oCtrl:Col
 
-      ElseIf Arg3 == 'WIDTH'
+      ELSEIF Arg3 == 'WIDTH'
          RetVal := oCtrl:Width
 
-      ElseIf Arg3 == 'HEIGHT'
+      ELSEIF Arg3 == 'HEIGHT'
          RetVal := oCtrl:Height
 
-      ElseIf Arg3 == 'VISIBLE'
+      ELSEIF Arg3 == 'VISIBLE'
          RetVal := oCtrl:Visible
 
-      ElseIf Arg3 == 'ENABLED'
+      ELSEIF Arg3 == 'ENABLED'
          RetVal := oCtrl:Enabled
 
-      ElseIf Arg3 == 'CHECKED'
+      ELSEIF Arg3 == 'CHECKED'
          RetVal := oCtrl:Checked
 
-      ElseIf Arg3 == 'ITEMCOUNT'
+      ELSEIF Arg3 == 'ITEMCOUNT'
          RetVal := oCtrl:ItemCount()
 
-      ElseIf Arg3 == 'RANGEMIN'
+      ELSEIF Arg3 == 'RANGEMIN'
          RetVal := oCtrl:RangeMin
 
-      ElseIf Arg3 == 'RANGEMAX'
+      ELSEIF Arg3 == 'RANGEMAX'
          RetVal := oCtrl:RangeMax
 
-      ElseIf Arg3 == 'LENGTH'
+      ELSEIF Arg3 == 'LENGTH'
          RetVal := oCtrl:Length
 
-      ElseIf Arg3 == 'MAXLENGTH'
+      ELSEIF Arg3 == 'MAXLENGTH'
          RetVal := oCtrl:MaxLength
 
-      ElseIf Arg3 == 'POSITION'
+      ELSEIF Arg3 == 'POSITION'
          RetVal := oCtrl:Position
 
-      ElseIf Arg3 == 'CARETPOS'
+      ELSEIF Arg3 == 'CARETPOS'
          RetVal := oCtrl:CaretPos
 
-      ElseIf Arg3 == 'BACKCOLOR'
+      ELSEIF Arg3 == 'BACKCOLOR'
          RetVal := oCtrl:BackColor
 
-      ElseIf Arg3 == 'FONTCOLOR'
+      ELSEIF Arg3 == 'FONTCOLOR'
          RetVal := oCtrl:FontColor
 
-      ElseIf Arg3 == 'FORECOLOR'
+      ELSEIF Arg3 == 'FORECOLOR'
          RetVal := oCtrl:BackColor
 
-      ElseIf Arg3 == 'ADDRESS'
+      ELSEIF Arg3 == 'ADDRESS'
          RetVal := oCtrl:Address
 
-      ElseIf Arg3 == "HWND"
+      ELSEIF Arg3 == "HWND"
          RetVal := oCtrl:hWnd
 
-      ElseIf Arg3 == "OBJECT"
+      ELSEIF Arg3 == "OBJECT"
          RetVal := oCtrl
 
-      ElseIf Arg3 == "INDENT"
+      ELSEIF Arg3 == "INDENT"
          RetVal := oCtrl:Indent()
 
-      ElseIf Arg3 == "SELCOLOR"
+      ELSEIF Arg3 == "SELCOLOR"
          RetVal := oCtrl:SelColor()
 
-      ElseIf Arg3 == "READONLY" .OR. Arg3 == "DISABLEEDIT"
+      ELSEIF Arg3 == "READONLY" .OR. Arg3 == "DISABLEEDIT"
          RetVal := oCtrl:ReadOnly()
 
-      Else
+      ELSE
          // Pseudo-property
          nPos := ASCAN( oCtrl:aProperties, { |a| a[ 1 ] == Arg3 } )
-         If nPos > 0
+         IF nPos > 0
             RetVal := oCtrl:aProperties[ nPos ][ 2 ]
-         EndIf
+         ENDIF
 
-      EndIf
+      ENDIF
 
-   ElseIf Pcount() == 4 // CONTROL (WITH ARGUMENT OR TOOLBAR BUTTON)
+   ELSEIF Pcount() == 4 // CONTROL (WITH ARGUMENT OR TOOLBAR BUTTON)
 
       oCtrl := GetExistingControlObject( Arg2, Arg1 )
       Arg3 := Upper( Arg3 )
 
-      If     Arg3 == "ITEM"
+      IF     Arg3 == "ITEM"
          RetVal := oCtrl:Item( Arg4 )
 
-      ElseIf Arg3 == "CAPTION"
+      ELSEIF Arg3 == "CAPTION"
          RetVal := oCtrl:Caption( Arg4 )
 
-      ElseIf Arg3 == "HEADER"
+      ELSEIF Arg3 == "HEADER"
          RetVal := oCtrl:Header( Arg4 )
 
-      ElseIf Arg3 == "COLUMNWIDTH"
+      ELSEIF Arg3 == "COLUMNWIDTH"
          RetVal := oCtrl:ColumnWidth( Arg4 )
 
-      ElseIf Arg3 == "PICTURE"
+      ELSEIF Arg3 == "PICTURE"
          RetVal := oCtrl:Picture( Arg4 )
 
-      ElseIf Arg3 == "IMAGE"
+      ELSEIF Arg3 == "IMAGE"
          RetVal := oCtrl:Picture( Arg4 )
 
-      ElseIf Arg3 == "GETPARENT"
+      ELSEIF Arg3 == "GETPARENT"
          RetVal := oCtrl:GetParent( Arg4 )
 
-      ElseIf Arg3 == "GETCHILDREN"
+      ELSEIF Arg3 == "GETCHILDREN"
          RetVal := oCtrl:GetChildren( Arg4 )
 
-      ElseIf Arg3 == "CHECKITEM"
+      ELSEIF Arg3 == "CHECKITEM"
          RetVal := oCtrl:CheckItem( Arg4 )
 
-      ElseIf Arg3 == "BOLDITEM"
+      ELSEIF Arg3 == "BOLDITEM"
          RetVal := oCtrl:BoldItem( Arg4 )
 
-      ElseIf Arg3 == "ITEMREADONLY"
+      ELSEIF Arg3 == "ITEMREADONLY"
          RetVal := oCtrl:ItemReadonly( Arg4 )
 
-      ElseIf Arg3 == "ITEMENABLED"
+      ELSEIF Arg3 == "ITEMENABLED"
          RetVal := oCtrl:ItemEnabled( Arg4 )
 
-      ElseIf Arg3 == "ENABLED"
+      ELSEIF Arg3 == "ENABLED"
          RetVal := oCtrl:ItemEnabled( Arg4 )
 
-      ElseIf Arg3 == "ITEMDRAGGABLE"
+      ELSEIF Arg3 == "ITEMDRAGGABLE"
          RetVal := oCtrl:ItemDraggable( Arg4 )
 
-      ElseIf Arg3 == "HANDLETOITEM"
+      ELSEIF Arg3 == "HANDLETOITEM"
          RetVal := oCtrl:HandleToItem( Arg4 )
 
-      Else
+      ELSE
 
          // If Property Not Matched Look For Contained Control
          // With No Arguments (ToolBar Button)
 
-         If oCtrl:Type == "TOOLBAR"
+         IF oCtrl:Type == "TOOLBAR"
 
-            If oCtrl:hWnd != GetControlObject( Arg3 , Arg1 ):Container:hWnd
+            IF oCtrl:hWnd != GetControlObject( Arg3 , Arg1 ):Container:hWnd
                MsgOOHGError('Control Does Not Belong To Container')
-            EndIf
+            ENDIF
 
             RetVal := GetProperty( Arg1 , Arg3 , Arg4 )
 
-         EndIf
+         ENDIF
 
-      EndIf
+      ENDIF
 
-   ElseIf Pcount() == 5 // CONTROL (WITH 2 ARGUMENTS)
+   ELSEIF Pcount() == 5 // CONTROL (WITH 2 ARGUMENTS)
 
       oCtrl := GetExistingControlObject( Arg2, Arg1 )
       Arg3 := Upper( Arg3 )
 
-      If     Arg3 == "CELL"
+      IF     Arg3 == "CELL"
          RetVal := oCtrl:Cell( Arg4 , Arg5 )
 
-      EndIf
+      ENDIF
 
-   EndIf
+   ENDIF
 
-   Return RetVal
+   RETURN RetVal
 
-Function DoMethod( ... )
+FUNCTION DoMethod( ... )
 
-   Local RetVal, aPars, cMethod, oWnd, oCtrl
+   LOCAL RetVal, aPars, cMethod, oWnd, oCtrl
 
    RetVal := Nil
 
-   If PCount() == 2 // WINDOW
+   IF PCount() == 2 // WINDOW
       aPars := HB_aParams()
 
       cMethod := Upper( aPars[2] )
 
-      If cMethod == 'ACTIVATE'
-         If HB_IsArray( aPars[1] )
+      IF cMethod == 'ACTIVATE'
+         IF HB_IsArray( aPars[1] )
             RetVal := _ActivateWindow( aPars[1] )
-         Else
+         ELSE
             oWnd := GetExistingFormObject( aPars[1] )
             RetVal := oWnd:Activate()
-         EndIf
-      ElseIf cMethod == 'SETFOCUS'
-         If oWnd:Active
+         ENDIF
+      ELSEIF cMethod == 'SETFOCUS'
+         IF oWnd:Active
             oWnd := GetExistingFormObject( aPars[1] )
             RetVal := oWnd:SetFocus()
-         EndIf
-      Else
+         ENDIF
+      ELSE
          oWnd := GetExistingFormObject( aPars[1] )
-         If _OOHG_HasMethod( oWnd, cMethod )
+         IF _OOHG_HasMethod( oWnd, cMethod )
             RetVal := oWnd:&( cMethod )()
-         EndIf
-      EndIf
+         ENDIF
+      ENDIF
 
-   ElseIf PCount() > 2
+   ELSEIF PCount() > 2
       aPars := HB_aParams()
 
       oCtrl := GetExistingControlObject( aPars[2], aPars[1] )
       cMethod := Upper( aPars[3] )
 
-      If PCount() == 3 // CONTROL WITHOUT ARGUMENTS
-         If cMethod == 'SAVE'
+      IF PCount() == 3 // CONTROL WITHOUT ARGUMENTS
+         IF cMethod == 'SAVE'
             RetVal := oCtrl:SaveData()
-         ElseIf cMethod == 'ACTION'
+         ELSEIF cMethod == 'ACTION'
             RetVal := oCtrl:DoEvent( oCtrl:OnClick, "CLICK" )
-         ElseIf cMethod == 'ONCLICK'
+         ELSEIF cMethod == 'ONCLICK'
             RetVal := oCtrl:DoEvent( oCtrl:OnClick, "CLICK" )
-         ElseIf cMethod == 'ONGOTFOCUS'
+         ELSEIF cMethod == 'ONGOTFOCUS'
             RetVal := oCtrl:DoEvent( oCtrl:OnGotFocus, "GOTFOCUS" )
-         ElseIf cMethod == 'ONLOSTFOCUS'
+         ELSEIF cMethod == 'ONLOSTFOCUS'
             RetVal := oCtrl:DoEvent( oCtrl:OnLostFocus, "LOSTFOCUS" )
-         ElseIf cMethod == 'ONDBLCLICK'
+         ELSEIF cMethod == 'ONDBLCLICK'
             RetVal := oCtrl:DoEvent( oCtrl:OnDblClick, "DBLCLICK" )
-         ElseIf cMethod == 'ONCHANGE'
+         ELSEIF cMethod == 'ONCHANGE'
             RetVal := oCtrl:DoEvent( oCtrl:OnChange, "CHANGE" )
-         ElseIf _OOHG_HasMethod( oCtrl, cMethod )
+         ELSEIF _OOHG_HasMethod( oCtrl, cMethod )
             RetVal := oCtrl:&( cMethod )()
-         EndIf
+         ENDIF
 
-      Else // CONTROL WITH ARGUMENTS
+      ELSE // CONTROL WITH ARGUMENTS
          // Handle exceptions
-         If PCount() == 7
-            If cMethod == 'ADDCONTROL'
+         IF PCount() == 7
+            IF cMethod == 'ADDCONTROL'
                RetVal := oCtrl:AddControl( GetControlObject( aPars[4], aPars[1] ), aPars[5], aPars[6], aPars[7] )
 
-               Return RetVal
-            EndIf
-         EndIf
+               RETURN RetVal
+            ENDIF
+         ENDIF
 
          // Handle other methods
-         If _OOHG_HasMethod( oCtrl, cMethod )
+         IF _OOHG_HasMethod( oCtrl, cMethod )
             aDel( aPars, 1 )
             aDel( aPars, 1 )
             aDel( aPars, 1 )
             aSize( aPars, Len( aPars ) - 3 )
 
             RetVal := HB_ExecFromArray( oCtrl, cMethod, aPars )
-         EndIf
-      EndIf
-   EndIf
+         ENDIF
+      ENDIF
+   ENDIF
 
-   Return RetVal
+   RETURN RetVal
 
-/*
- * This function returns .T. if msg is a METHOD (with or without SETGET)
- * or an INLINE (even if in the parent class msg is a DATA).
- *
- * Note:
- * __objHasMethod( obj, msg ) doesn't recognizes SETGET methods as METHOD.
- */
+   /*
+   * This function returns .T. if msg is a METHOD (with or without SETGET)
+   * or an INLINE (even if in the parent class msg is a DATA).
+   * Note:
+   * __objHasMethod( obj, msg ) doesn't recognizes SETGET methods as METHOD.
+   */
 
-Function _OOHG_HasMethod( obj, msg )
+FUNCTION _OOHG_HasMethod( obj, msg )
 
-   Local itm, aClsSel
-
-   #ifndef __XHARBOUR__
-   aClsSel := obj:ClassSel( HB_MSGLISTPURE, HB_OO_CLSTP_EXPORTED, .T. )
-   #else
-   aClsSel := obj:ClassFullSel( HB_MSGLISTPURE, HB_OO_CLSTP_EXPORTED )
-   #endif
-
-   For EACH itm in aClsSel
-      If itm[ HB_OO_DATA_TYPE ] == HB_OO_MSG_METHOD .or. itm[ HB_OO_DATA_TYPE ] == HB_OO_MSG_INLINE
-          If itm[ HB_OO_DATA_SYMBOL ] == msg
-             Return .T.
-          EndIf
-      EndIf
-   Next
-
-   Return .F.
-
-/*
- * This function returns .T. only if msg is a pure DATA.
- *
- * Note:
- * __objHasData( obj, msg ) recognizes SETGET methods as DATA.
- */
-
-Function _OOHG_HasData( obj, msg )
-
-   Local itm, aClsSel
+   LOCAL itm, aClsSel
 
    #ifndef __XHARBOUR__
    aClsSel := obj:ClassSel( HB_MSGLISTPURE, HB_OO_CLSTP_EXPORTED, .T. )
@@ -1105,71 +1064,99 @@ Function _OOHG_HasData( obj, msg )
    aClsSel := obj:ClassFullSel( HB_MSGLISTPURE, HB_OO_CLSTP_EXPORTED )
    #endif
 
-   For EACH itm in aClsSel
-      If itm[ HB_OO_DATA_TYPE ] == HB_OO_MSG_DATA
-          If itm[ HB_OO_DATA_SYMBOL ] ==  msg
-             Return .T.
-          EndIf
-      EndIf
-   Next
+   FOR EACH itm in aClsSel
+      IF itm[ HB_OO_DATA_TYPE ] == HB_OO_MSG_METHOD .or. itm[ HB_OO_DATA_TYPE ] == HB_OO_MSG_INLINE
+         IF itm[ HB_OO_DATA_SYMBOL ] == msg
 
-   Return .F.
+            RETURN .T.
+         ENDIF
+      ENDIF
+   NEXT
 
-Function cFileNoPath( cPathMask )
+   RETURN .F.
 
-   local n := RAt( "\", cPathMask )
+   /*
+   * This function returns .T. only if msg is a pure DATA.
+   * Note:
+   * __objHasData( obj, msg ) recognizes SETGET methods as DATA.
+   */
 
-   Return If( n > 0 .and. n < Len( cPathMask ), ;
-          Right( cPathMask, Len( cPathMask ) - n ), ;
-          If( ( n := At( ":", cPathMask ) ) > 0, ;
-          Right( cPathMask, Len( cPathMask ) - n ), cPathMask ) )
+FUNCTION _OOHG_HasData( obj, msg )
 
-Function cFileNoExt( cPathMask )
+   LOCAL itm, aClsSel
 
-   local cName := AllTrim( cFileNoPath( cPathMask ) )
-   local n     := At( ".", cName )
+   #ifndef __XHARBOUR__
+   aClsSel := obj:ClassSel( HB_MSGLISTPURE, HB_OO_CLSTP_EXPORTED, .T. )
+   #else
+   aClsSel := obj:ClassFullSel( HB_MSGLISTPURE, HB_OO_CLSTP_EXPORTED )
+   #endif
 
-   Return AllTrim( If( n > 0, Left( cName, n - 1 ), cName ) )
+   FOR EACH itm in aClsSel
+      IF itm[ HB_OO_DATA_TYPE ] == HB_OO_MSG_DATA
+         IF itm[ HB_OO_DATA_SYMBOL ] ==  msg
 
-Function NoArray (OldArray)
+            RETURN .T.
+         ENDIF
+      ENDIF
+   NEXT
 
-   Local NewArray := {}
-   Local i
+   RETURN .F.
 
-   If ValType ( OldArray ) == 'U'
-      Return Nil
-   Else
+FUNCTION cFileNoPath( cPathMask )
+
+   LOCAL n := RAt( "\", cPathMask )
+
+   RETURN If( n > 0 .and. n < Len( cPathMask ), ;
+      Right( cPathMask, Len( cPathMask ) - n ), ;
+      If( ( n := At( ":", cPathMask ) ) > 0, ;
+      Right( cPathMask, Len( cPathMask ) - n ), cPathMask ) )
+
+FUNCTION cFileNoExt( cPathMask )
+
+   LOCAL cName := AllTrim( cFileNoPath( cPathMask ) )
+   LOCAL n     := At( ".", cName )
+
+   RETURN AllTrim( If( n > 0, Left( cName, n - 1 ), cName ) )
+
+FUNCTION NoArray (OldArray)
+
+   LOCAL NewArray := {}
+   LOCAL i
+
+   IF ValType ( OldArray ) == 'U'
+
+      RETURN NIL
+   ELSE
       aSize( NewArray , Len (OldArray) )
-   EndIf
+   ENDIF
 
-   For i := 1 To Len ( OldArray )
+   FOR i := 1 To Len ( OldArray )
 
-      If OldArray [i] == .t.
+      IF OldArray [i] == .t.
          NewArray [i] := .f.
-      Else
+      ELSE
          NewArray [i] := .t.
-      EndIf
+      ENDIF
 
-   Next i
+   NEXT i
 
-   Return NewArray
+   RETURN NewArray
 
-Function _SetFontColor ( ControlName, ParentForm , Value  )
+FUNCTION _SetFontColor ( ControlName, ParentForm , Value  )
 
-   Return ( GetControlObject( ControlName, ParentForm ):FontColor := Value )
+   RETURN ( GetControlObject( ControlName, ParentForm ):FontColor := Value )
 
-Function _SetBackColor ( ControlName, ParentForm , Value  )
+FUNCTION _SetBackColor ( ControlName, ParentForm , Value  )
 
-   Return ( GetControlObject( ControlName, ParentForm ):BackColor := Value )
+   RETURN ( GetControlObject( ControlName, ParentForm ):BackColor := Value )
 
-Function _SetStatusIcon( ControlName , ParentForm , Item , Icon )
+FUNCTION _SetStatusIcon( ControlName , ParentForm , Item , Icon )
 
-   Return SetStatusItemIcon( GetControlObject( ControlName, ParentForm ):hWnd, Item , Icon )
+   RETURN SetStatusItemIcon( GetControlObject( ControlName, ParentForm ):hWnd, Item , Icon )
 
-Function _GetCaption( ControlName , ParentForm )
+FUNCTION _GetCaption( ControlName , ParentForm )
 
-   Return GetWindowText( GetControlObject( ControlName, ParentForm ):hWnd )
-
+   RETURN GetWindowText( GetControlObject( ControlName, ParentForm ):hWnd )
 
 CLASS TControl FROM TWindow
 
@@ -1237,22 +1224,21 @@ CLASS TControl FROM TWindow
    METHOD Events_MeasureItem BLOCK { || nil }
    METHOD Cursor             SETGET
 
-
    ENDCLASS
 
 METHOD Cursor( hCursor ) CLASS TControl
 
    IF PCOUNT() > 0
       IF VALTYPE( hCursor ) == "N"
-        ::hCursor := LoadCursor( NIL, hCursor )
-        IF ::hCursor == 0 .AND. hCursor == IDC_HAND
-           ::hCursor := LoadCursor( GetInstance(), 'MINIGUI_FINGER' )
-        ENDIF
+         ::hCursor := LoadCursor( NIL, hCursor )
+         IF ::hCursor == 0 .AND. hCursor == IDC_HAND
+            ::hCursor := LoadCursor( GetInstance(), 'MINIGUI_FINGER' )
+         ENDIF
       ELSEIF VALTYPE( hCursor ) $ "CM"
-        ::hCursor := LoadCursor( GetInstance(), hCursor )
-        IF ::hCursor == 0
-           ::hCursor := LoadCursorFromFile( hCursor )
-        ENDIF
+         ::hCursor := LoadCursor( GetInstance(), hCursor )
+         IF ::hCursor == 0
+            ::hCursor := LoadCursorFromFile( hCursor )
+         ENDIF
       ENDIF
    ENDIF
 
@@ -1308,18 +1294,18 @@ METHOD ToolTip( cToolTip ) CLASS TControl
 
    LOCAL oCtrl
 
-   If PCount() > 0
-      If ValType( cToolTip ) $ "CMB"
+   IF PCount() > 0
+      IF ValType( cToolTip ) $ "CMB"
          ::cToolTip := cToolTip
-      Else
+      ELSE
          ::cToolTip := ""
-      EndIf
-      If HB_IsObject( oCtrl := ::oToolTip )
+      ENDIF
+      IF HB_IsObject( oCtrl := ::oToolTip )
          oCtrl:Item( ::hWnd, cToolTip )
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
-   Return ::cToolTip
+   RETURN ::cToolTip
 
 FUNCTION _OOHG_GetNullName( cName )
 
@@ -1331,118 +1317,118 @@ FUNCTION _OOHG_GetNullName( cName )
       cName := "NULL" + STRZERO( nCtrl, 10 )
       nCtrl++
       IF nCtrl > 9999999999
-          nCtrl := 0
+         nCtrl := 0
       ENDIF
    ENDIF
 
    RETURN cName
 
 METHOD SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, ;
-                BkColor, lEditBox, lRtl, xAnchor, lNoProc ) CLASS TControl
+      BkColor, lEditBox, lRtl, xAnchor, lNoProc ) CLASS TControl
 
    ::StartInfo( -1 )
    ::SearchParent( ParentForm )
 
    ::ParentDefaults( FontName, FontSize, FontColor, lNoProc )
 
-   If HB_IsLogical( lEditBox ) .AND. lEditBox
+   IF HB_IsLogical( lEditBox ) .AND. lEditBox
       // Background Color (edit or listbox):
-      If ValType( BkColor ) $ "ANCM"
+      IF ValType( BkColor ) $ "ANCM"
          // Specified color
          ::BackColor := BkColor
-      ElseIf ValType( ::BackColor ) $ "ANCM"
+      ELSEIF ValType( ::BackColor ) $ "ANCM"
          // Pre-registered
-      ElseIf ::Container != nil
+      ELSEIF ::Container != nil
          // Active frame
          ::BackColor := ::Container:DefBkColorEdit
-      ElseIf ValType( ::Parent:DefBkColorEdit ) $ "ANCM"
+      ELSEIF ValType( ::Parent:DefBkColorEdit ) $ "ANCM"
          // Active form
          ::BackColor := ::Parent:DefBkColorEdit
-      Else
-          // Default
-      EndIf
-   Else
+      ELSE
+         // Default
+      ENDIF
+   ELSE
       // Background Color (static):
-      If ValType( BkColor ) $ "ANCM"
+      IF ValType( BkColor ) $ "ANCM"
          // Specified color
          ::BackColor := BkColor
-      ElseIf ValType( ::BackColor ) $ "ANCM"
+      ELSEIF ValType( ::BackColor ) $ "ANCM"
          // Pre-registered
-      ElseIf ::Container != nil
+      ELSEIF ::Container != nil
          // Active frame
          ::BackColor := ::Container:BackColor
-      ElseIf ValType( ::Parent:BackColor ) $ "ANCM"
+      ELSEIF ValType( ::Parent:BackColor ) $ "ANCM"
          // Active form
          ::BackColor := ::Parent:BackColor
-      Else
-          // Default
-      EndIf
-   EndIf
+      ELSE
+         // Default
+      ENDIF
+   ENDIF
 
    ::Name := _OOHG_GetNullName( ControlName )
 
-   If _IsControlDefined( ::Name, ::Parent:Name )
+   IF _IsControlDefined( ::Name, ::Parent:Name )
       MsgOOHGError( _OOHG_Messages( 3, 4 ) + ::Name + _OOHG_Messages( 3, 5 ) + ::Parent:Name + _OOHG_Messages( 3, 6 ) )
-   EndIf
+   ENDIF
 
    // Right-to-left
-   If _OOHG_GlobalRTL()
+   IF _OOHG_GlobalRTL()
       ::lRtl := .T.
-   ElseIf HB_IsLogical( lRtl )
+   ELSEIF HB_IsLogical( lRtl )
       ::lRtl := lRtl
-   ElseIf ! Empty( ::Container )
+   ELSEIF ! Empty( ::Container )
       ::lRtl := ::Container:lRtl
-   ElseIf ! Empty( ::Parent )
+   ELSEIF ! Empty( ::Parent )
       ::lRtl := ::Parent:lRtl
-   Else
+   ELSE
       ::lRtl := .F.
-   EndIf
+   ENDIF
 
    // Anchor
-   If ValType( xAnchor ) $ "NCM"
+   IF ValType( xAnchor ) $ "NCM"
       ::Anchor := xAnchor
-   ElseIf ::Container != nil
+   ELSEIF ::Container != nil
       // Active frame
       ::Anchor := ::Container:nDefAnchor
-   Else
+   ELSE
       // Active form
       ::Anchor := ::Parent:nDefAnchor
-   EndIf
+   ENDIF
 
    RETURN Self
 
 METHOD InitStyle( nStyle, nStyleEx, lInvisible, lNoTabStop, lDisabled ) CLASS TControl
 
-   If !HB_IsNumeric( nStyle )
+   IF !HB_IsNumeric( nStyle )
       nStyle := 0
-   EndIf
-   If !HB_IsNumeric( nStyleEx )
+   ENDIF
+   IF !HB_IsNumeric( nStyleEx )
       nStyleEx := 0
-   EndIf
+   ENDIF
 
-   If HB_IsLogical( lInvisible )
+   IF HB_IsLogical( lInvisible )
       ::lVisible := ! lInvisible
-   EndIf
-   If ::ContainerVisible
+   ENDIF
+   IF ::ContainerVisible
       nStyle += WS_VISIBLE
-   EndIf
+   ENDIF
 
-   If !HB_IsLogical( lNoTabStop ) .OR. ! lNoTabStop
+   IF !HB_IsLogical( lNoTabStop ) .OR. ! lNoTabStop
       nStyle += WS_TABSTOP
-   EndIf
+   ENDIF
 
-   If HB_IsLogical( lDisabled )
+   IF HB_IsLogical( lDisabled )
       ::lEnabled := ! lDisabled
-   EndIf
-   If ! ::ContainerEnabled
+   ENDIF
+   IF ! ::ContainerEnabled
       nStyle += WS_DISABLED
-   EndIf
+   ENDIF
 
-   Return nStyle
+   RETURN nStyle
 
 METHOD Register( hWnd, cName, HelpId, Visible, ToolTip, Id ) CLASS TControl
 
-   Local mVar
+   LOCAL mVar
 
    // cName NO debe recibirse!!! Ya debe estar desde :SetForm()!!!!
    // ::Name   := _OOHG_GetNullName( ControlName )
@@ -1468,11 +1454,11 @@ METHOD Register( hWnd, cName, HelpId, Visible, ToolTip, Id ) CLASS TControl
 
    ::ToolTip := ToolTip
 
-   If HB_IsNumeric( Id )
+   IF HB_IsNumeric( Id )
       ::Id := Id
-   Else
+   ELSE
       ::Id := GetDlgCtrlId( ::hWnd )
-   EndIf
+   ENDIF
 
    AADD( _OOHG_aControlhWnd,    hWnd )
    AADD( _OOHG_aControlObjects, Self )
@@ -1480,13 +1466,13 @@ METHOD Register( hWnd, cName, HelpId, Visible, ToolTip, Id ) CLASS TControl
    AADD( _OOHG_aControlNames,   UPPER( ::Parent:Name + CHR( 255 ) + ::Name ) )
 
    mVar := "_" + ::Parent:Name + "_" + ::Name
-   Public &mVar. := Self
+   PUBLIC &mVar. := Self
 
    RETURN Self
 
 METHOD Release() CLASS TControl
 
-   Local mVar, oCont
+   LOCAL mVar, oCont
 
    // Erases events (for avoid wrong re-usage)
    ::OnClick        := nil
@@ -1525,19 +1511,19 @@ METHOD Release() CLASS TControl
 
    ::Parent:DeleteControl( Self )
 
-   If ValidHandler( ::hWnd )
+   IF ValidHandler( ::hWnd )
       ReleaseControl( ::hWnd )
-   EndIf
+   ENDIF
 
    DeleteObject( ::FontHandle )
    DeleteObject( ::AuxHandle )
 
    mVar := '_' + ::Parent:Name + '_' + ::Name
-   If type ( mVar ) != 'U'
+   IF type ( mVar ) != 'U'
       __MVPUT( mVar , 0 )
-   EndIf
+   ENDIF
 
-   Return ::Super:Release()
+   RETURN ::Super:Release()
 
 METHOD SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout, Angle, Fntwidth ) CLASS TControl
 
@@ -1570,79 +1556,79 @@ METHOD SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout, Angle, F
    ENDIF
    ::FontHandle := _SetFont( ::hWnd, ::cFontName, ::nFontSize, ::Bold, ::Italic, ::Underline, ::Strikeout, ::FntAngle, ::FntWidth )
 
-   Return Nil
+   RETURN NIL
 
 METHOD FontName( cFontName ) CLASS TControl
 
-   If ValType( cFontName ) $ "CM"
+   IF ValType( cFontName ) $ "CM"
       ::cFontName:=cFontName
       ::SetFont( cFontName )
-   EndIf
+   ENDIF
 
-   Return ::cFontName
+   RETURN ::cFontName
 
 METHOD FontSize( nFontSize ) CLASS TControl
 
-   If HB_IsNumeric( nFontSize )
+   IF HB_IsNumeric( nFontSize )
       ::nFontSize:=nFontSize
       ::SetFont( , nFontSize )
-   EndIf
+   ENDIF
 
-   Return ::nFontSize
+   RETURN ::nFontSize
 
 METHOD FontBold( lBold ) CLASS TControl
 
-   If HB_IsLogical( lBold )
+   IF HB_IsLogical( lBold )
       ::Bold:=lBold
       ::SetFont( ,, lBold )
-   EndIf
+   ENDIF
 
-   Return ::Bold
+   RETURN ::Bold
 
 METHOD FontItalic( lItalic ) CLASS TControl
 
-   If HB_IsLogical( lItalic )
+   IF HB_IsLogical( lItalic )
       ::Italic:=lItalic
       ::SetFont( ,,, lItalic )
-   EndIf
+   ENDIF
 
-   Return ::Italic
+   RETURN ::Italic
 
 METHOD FontUnderline( lUnderline ) CLASS TControl
 
-   If HB_IsLogical( lUnderline )
+   IF HB_IsLogical( lUnderline )
       ::Underline:=lUnderline
       ::SetFont( ,,,, lUnderline )
-   EndIf
+   ENDIF
 
-   Return ::Underline
+   RETURN ::Underline
 
 METHOD FontStrikeout( lStrikeout ) CLASS TControl
 
-   If HB_Islogical( lStrikeout )
+   IF HB_Islogical( lStrikeout )
       ::StrikeOut:=lStrikeout
       ::SetFont( ,,,,, lStrikeout )
-   EndIf
+   ENDIF
 
-   Return ::Strikeout
+   RETURN ::Strikeout
 
 METHOD FontAngle( nAngle ) CLASS TControl
 
-   If HB_IsNumeric( nAngle )
-     ::FntAngle:=nAngle
+   IF HB_IsNumeric( nAngle )
+      ::FntAngle:=nAngle
       ::SetFont( ,,,,,, nAngle )
-   EndIf
+   ENDIF
 
-   Return ::FntAngle
+   RETURN ::FntAngle
 
 METHOD FontWidth( nWidth ) CLASS TControl
 
-   If HB_IsNumeric( nWidth )
-     ::FntWidth:=nWidth
+   IF HB_IsNumeric( nWidth )
+      ::FntWidth:=nWidth
       ::SetFont( ,,,,,,, nWidth )
-   EndIf
+   ENDIF
 
-   Return ::FntWidth
+   RETURN ::FntWidth
 
 METHOD SizePos( Row, Col, Width, Height ) CLASS TControl
 
@@ -1666,89 +1652,89 @@ METHOD SizePos( Row, Col, Width, Height ) CLASS TControl
    ::CheckClientsPos()
 
    // Anchor
-   If nOldWidth != ::nWidth .OR. nOldHeight != ::nHeight
+   IF nOldWidth != ::nWidth .OR. nOldHeight != ::nHeight
       AEVAL( ::aControls, { |o| o:AdjustAnchor( ::nHeight - nOldHeight, ::nWidth - nOldWidth ) } )
-   EndIf
+   ENDIF
    AEVAL( ::aControls, { |o| o:SizePos() } )
    AEVAL( ::aControls, { |o| o:Events_Size() } )
 
-   Return xRet
+   RETURN xRet
 
 METHOD Move( Row, Col, Width, Height ) CLASS TControl
 
-   Return ::SizePos( Row, Col, Width, Height )
+   RETURN ::SizePos( Row, Col, Width, Height )
 
 METHOD ForceHide() CLASS TControl
 
    ::Super:ForceHide()
    AEVAL( ::aControls, { |o| o:ForceHide() } )
 
-   Return nil
+   RETURN NIL
 
 METHOD SetVarBlock( cField, uValue ) CLASS TControl
 
-   If ValType( cField ) $ "CM" .AND. ! Empty( cField )
+   IF ValType( cField ) $ "CM" .AND. ! Empty( cField )
       ::VarName := AllTrim( cField )
-   EndIf
-   If ValType( ::VarName ) $ "CM" .AND. ! Empty( ::VarName )
+   ENDIF
+   IF ValType( ::VarName ) $ "CM" .AND. ! Empty( ::VarName )
       ::Block := &( "{ | _x_ | if( PCount() == 0, ( " + ::VarName + " ), ( " + ::VarName + " := _x_ ) ) }" )
-   EndIf
-   If HB_IsBlock( ::Block )
+   ENDIF
+   IF HB_IsBlock( ::Block )
       ::Value := EVAL( ::Block )
-   ElseIf PCount() > 1
+   ELSEIF PCount() > 1
       ::Value := uValue
-   EndIf
+   ENDIF
 
-   Return nil
+   RETURN NIL
 
 METHOD ClearBitMaps CLASS TControl
 
-   If ValidHandler( ::ImageList )
+   IF ValidHandler( ::ImageList )
       ImageList_Destroy( ::ImageList )
-   EndIf
+   ENDIF
    ::ImageList := 0
 
-   Return Nil
+   RETURN NIL
 
 METHOD AddBitMap( uImage ) CLASS TControl
 
-   Local nPos, nCount
+   LOCAL nPos, nCount
 
-   If ! ValidHandler( ::ImageList )
-      If HB_IsArray( uImage )
+   IF ! ValidHandler( ::ImageList )
+      IF HB_IsArray( uImage )
          ::ImageList := ImageList_Init( uImage, ::ImageListColor, ::ImageListFlags )[ 1 ]
-      Else
+      ELSE
          ::ImageList := ImageList_Init( { uImage }, ::ImageListColor, ::ImageListFlags )[ 1 ]
-      EndIf
-      If ValidHandler( ::ImageList )
+      ENDIF
+      IF ValidHandler( ::ImageList )
          nPos := 1
          SendMessage( ::hWnd, ::SetImageListCommand, ::SetImageListWParam, ::ImageList )
-      Else
+      ELSE
          nPos := 0
-      EndIf
-   Else
+      ENDIF
+   ELSE
       nCount := ImageList_GetImageCount( ::ImageList )
-      If HB_IsArray( uImage )
+      IF HB_IsArray( uImage )
          nPos := ImageList_Add( ::ImageList, uImage[ 1 ], ::ImageListFlags, ::ImageListColor )
          AEVAL( uImage, { |c| ImageList_Add( ::ImageList, c, ::ImageListFlags, ::ImageListColor ) }, 2 )
-      Else
+      ELSE
          nPos := ImageList_Add( ::ImageList, uImage, ::ImageListFlags, ::ImageListColor )
-      EndIf
-      If nCount == ImageList_GetImageCount( ::ImageList )
+      ENDIF
+      IF nCount == ImageList_GetImageCount( ::ImageList )
          nPos := 0
-      EndIf
+      ENDIF
       SendMessage( ::hWnd, ::SetImageListCommand, ::SetImageListWParam, ::ImageList )
-   Endif
+   ENDIF
 
-   Return nPos
+   RETURN nPos
 
 METHOD DoEvent( bBlock, cEventType, aParams ) CLASS TControl
 
-   Local lRetVal
+   LOCAL lRetVal
 
-   If ! ::Parent == nil .AND. ::Parent:lReleasing
+   IF ! ::Parent == nil .AND. ::Parent:lReleasing
       lRetVal := .F.
-   ElseIf HB_IsBlock( bBlock )
+   ELSEIF HB_IsBlock( bBlock )
       _PushEventInfo()
       _OOHG_ThisForm      := ::Parent
       _OOHG_ThisType      := "C"
@@ -1757,65 +1743,67 @@ METHOD DoEvent( bBlock, cEventType, aParams ) CLASS TControl
       _OOHG_ThisObject    := Self
       lRetVal := _OOHG_Eval_Array( bBlock, aParams )
       _PopEventInfo()
-   Else
+   ELSE
       lRetVal := .F.
-   EndIf
+   ENDIF
 
-   Return lRetVal
+   RETURN lRetVal
 
 METHOD DoEventMouseCoords( bBlock, cEventType ) CLASS TControl
 
-   Local aPos := GetCursorPos()
+   LOCAL aPos := GetCursorPos()
 
    // TODO: Use GetClientRect instead
    aPos[ 1 ] -= GetWindowRow( ::hWnd )
    aPos[ 2 ] -= GetWindowCol( ::hWnd )
 
-   Return ::DoEvent( bBlock, cEventType, aPos )
+   RETURN ::DoEvent( bBlock, cEventType, aPos )
 
 METHOD DoLostFocus() CLASS TControl
 
-   Local uRet := Nil, nFocus, oFocus
+   LOCAL uRet := Nil, nFocus, oFocus
 
-   If ! ::ContainerReleasing
+   IF ! ::ContainerReleasing
       nFocus := GetFocus()
-      If nFocus > 0
+      IF nFocus > 0
          oFocus := GetControlObjectByHandle( nFocus )
-         If ! oFocus:lCancel
-            If _OOHG_lValidating
-               Return Nil
-            EndIf
+         IF ! oFocus:lCancel
+            IF _OOHG_lValidating
+
+               RETURN NIL
+            ENDIF
             _OOHG_lValidating := .T.
             uRet := _OOHG_Eval( ::postBlock, Self )
-            If HB_IsLogical( uRet ) .AND. ! uRet
+            IF HB_IsLogical( uRet ) .AND. ! uRet
                ::SetFocus()
                _OOHG_lValidating := .F.
-               Return 1
-            EndIf
+
+               RETURN 1
+            ENDIF
             _OOHG_lValidating := .F.
             uRet := Nil
-         EndIf
-      EndIf
-      If ! ( Empty( ::cFocusFontName ) .AND. Empty( ::nFocusFontSize ) .AND. Empty( ::FocusBold ) .AND. ;
-             Empty( ::FocusItalic ) .AND. Empty( ::FocusUnderline ) .AND. Empty( ::FocusStrikeout ) )
+         ENDIF
+      ENDIF
+      IF ! ( Empty( ::cFocusFontName ) .AND. Empty( ::nFocusFontSize ) .AND. Empty( ::FocusBold ) .AND. ;
+            Empty( ::FocusItalic ) .AND. Empty( ::FocusUnderline ) .AND. Empty( ::FocusStrikeout ) )
          ::SetFont( ::cFontName, ::nFontSize, ::Bold, ::Italic, ::Underline, ::Strikeout )
          ::Refresh()
-      EndIF
-      If ! Empty( ::FocusColor )
+      ENDIF
+      IF ! Empty( ::FocusColor )
          ::FontColor := ::OldColor
-      EndIf
-      If ! Empty( ::FocusBackColor )
+      ENDIF
+      IF ! Empty( ::FocusBackColor )
          ::BackColor:=::OldBackColor
-      EndIf
+      ENDIF
 
       ::DoEvent( ::OnLostFocus, "LOSTFOCUS" )
-   EndIf
+   ENDIF
 
-   Return uRet
+   RETURN uRet
 
 METHOD DoChange() CLASS TControl
 
-   Local xValue, cType, cOldType
+   LOCAL xValue, cType, cOldType
 
    xValue   := ::Value
    cType    := VALTYPE( xValue )
@@ -1827,8 +1815,7 @@ METHOD DoChange() CLASS TControl
       ::DoEvent( ::OnChange, "CHANGE" )
    ENDIF
 
-   Return nil
-
+   RETURN NIL
 
 #pragma BEGINDUMP
 
@@ -1934,6 +1921,7 @@ HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )
       oSelf->BrushHandle = GetStockObject( NULL_BRUSH );
       oSelf->lOldBackColor = -1;
       hb_retnl( (LONG) oSelf->BrushHandle );
+
       return;
    }
 
@@ -2005,6 +1993,7 @@ HB_FUNC( EVENTS_COLOR_INTAB )
                oSelf->BrushHandle = GetStockObject( NULL_BRUSH );
                oSelf->lOldBackColor = -1;
                hb_retnl( (LONG) oSelf->BrushHandle );
+
                return;
             }
 
@@ -2027,6 +2016,7 @@ HB_FUNC( EVENTS_COLOR_INTAB )
             SetBrushOrgEx( hdc, -rc.left, -rc.top, NULL );
 
             hb_retnl( (LONG) oSelf->BrushHandle );
+
             return;
          }
       }
@@ -2059,6 +2049,7 @@ HB_FUNC( EVENTS_COLOR_INTAB )
                SetBrushOrgEx( hdc, -rc.left, -rc.top, NULL );
 
                hb_retnl( (LONG) oSelf->BrushHandle );
+
                return;
             }
          }
@@ -2073,6 +2064,7 @@ HB_FUNC( EVENTS_COLOR_INTAB )
          oSelf->BrushHandle = GetStockObject( NULL_BRUSH );
          oSelf->lOldBackColor = -1;
          hb_retnl( (LONG) oSelf->BrushHandle );
+
          return;
       }
 
@@ -2096,310 +2088,311 @@ HB_FUNC( EVENTS_COLOR_INTAB )
 
 #pragma ENDDUMP
 
-
 METHOD Events_Command( wParam ) CLASS TControl
 
-   Local Hi_wParam := HIWORD( wParam )
+   LOCAL Hi_wParam := HIWORD( wParam )
 
-   If Hi_wParam == BN_CLICKED .OR. Hi_wParam == STN_CLICKED  // Same value.....
-      If ! ::NestedClick
+   IF Hi_wParam == BN_CLICKED .OR. Hi_wParam == STN_CLICKED  // Same value.....
+      IF ! ::NestedClick
          ::NestedClick := ! _OOHG_NestedSameEvent()
          ::DoEventMouseCoords( ::OnClick, "CLICK" )
          ::NestedClick := .F.
-      EndIf
+      ENDIF
 
-   elseif Hi_wParam == EN_CHANGE
+   ELSEIF Hi_wParam == EN_CHANGE
       ::DoChange()
 
-   elseif Hi_wParam == EN_KILLFOCUS
-      Return ::DoLostFocus()
+   ELSEIF Hi_wParam == EN_KILLFOCUS
 
-   elseif Hi_wParam == EN_SETFOCUS
+      RETURN ::DoLostFocus()
+
+   ELSEIF Hi_wParam == EN_SETFOCUS
       GetFormObjectByHandle( ::ContainerhWnd ):LastFocusedControl := ::hWnd
       ::FocusEffect()
       ::DoEvent( ::OnGotFocus, "GOTFOCUS" )
 
-   elseif Hi_wParam == BN_KILLFOCUS
-      Return ::DoLostFocus()
+   ELSEIF Hi_wParam == BN_KILLFOCUS
 
-   elseif Hi_wParam == BN_SETFOCUS
+      RETURN ::DoLostFocus()
+
+   ELSEIF Hi_wParam == BN_SETFOCUS
       GetFormObjectByHandle( ::ContainerhWnd ):LastFocusedControl := ::hWnd
       ::FocusEffect()
       ::DoEvent( ::OnGotFocus, "GOTFOCUS" )
 
-   EndIf
+   ENDIF
 
-   Return nil
+   RETURN NIL
 
 METHOD FocusEffect CLASS TControl
 
-   Local lMod
+   LOCAL lMod
 
-   If     ! Empty( ::cFocusFontName )
+   IF     ! Empty( ::cFocusFontName )
       lMod := .T.
-   ElseIf ! Empty( ::nFocusFontSize )
+   ELSEIF ! Empty( ::nFocusFontSize )
       lMod := .T.
-   ElseIf ! Empty( ::FocusBold )
+   ELSEIF ! Empty( ::FocusBold )
       lMod := .T.
-   ElseIf ! Empty( ::FocusItalic )
+   ELSEIF ! Empty( ::FocusItalic )
       lMod := .T.
-   ElseIf ! Empty( ::FocusUnderline )
+   ELSEIF ! Empty( ::FocusUnderline )
       lMod := .T.
-   ElseIf ! Empty( ::FocusStrikeout )
+   ELSEIF ! Empty( ::FocusStrikeout )
       lMod := .T.
-   ElseIf ::Parent == Nil
+   ELSEIF ::Parent == Nil
       lMod := .F.
-   ElseIf ( _OOHG_HasData( ::Parent, "CFOCUSFONTNAME" ) .OR. _OOHG_HasMethod( ::Parent, "CFOCUSFONTNAME" ) ) .AND. ! Empty( ::Parent:cFocusFontName )
+   ELSEIF ( _OOHG_HasData( ::Parent, "CFOCUSFONTNAME" ) .OR. _OOHG_HasMethod( ::Parent, "CFOCUSFONTNAME" ) ) .AND. ! Empty( ::Parent:cFocusFontName )
       lMod := .T.
-   ElseIf ( _OOHG_HasData( ::Parent, "NFOCUSFONTSIZE" ) .OR. _OOHG_HasMethod( ::Parent, "NFOCUSFONTSIZE" ) ) .AND. ! Empty( ::Parent:nFocusFontSize )
+   ELSEIF ( _OOHG_HasData( ::Parent, "NFOCUSFONTSIZE" ) .OR. _OOHG_HasMethod( ::Parent, "NFOCUSFONTSIZE" ) ) .AND. ! Empty( ::Parent:nFocusFontSize )
       lMod := .T.
-   ElseIf ( _OOHG_HasData( ::Parent, "FOCUSBOLD" )      .OR. _OOHG_HasMethod( ::Parent, "FOCUSBOLD" ) )      .AND. ! Empty( ::Parent:FocusBold )
+   ELSEIF ( _OOHG_HasData( ::Parent, "FOCUSBOLD" )      .OR. _OOHG_HasMethod( ::Parent, "FOCUSBOLD" ) )      .AND. ! Empty( ::Parent:FocusBold )
       lMod := .T.
-   ElseIf ( _OOHG_HasData( ::Parent, "FOCUSITALIC" )    .OR. _OOHG_HasMethod( ::Parent, "FOCUSITALIC" ) )    .AND. ! Empty( ::Parent:FocusItalic )
+   ELSEIF ( _OOHG_HasData( ::Parent, "FOCUSITALIC" )    .OR. _OOHG_HasMethod( ::Parent, "FOCUSITALIC" ) )    .AND. ! Empty( ::Parent:FocusItalic )
       lMod := .T.
-   ElseIf ( _OOHG_HasData( ::Parent, "FOCUSUNDERLINE" ) .OR. _OOHG_HasMethod( ::Parent, "FOCUSUNDERLINE" ) ) .AND. ! Empty( ::Parent:FocusUnderline )
+   ELSEIF ( _OOHG_HasData( ::Parent, "FOCUSUNDERLINE" ) .OR. _OOHG_HasMethod( ::Parent, "FOCUSUNDERLINE" ) ) .AND. ! Empty( ::Parent:FocusUnderline )
       lMod := .T.
-   ElseIf ( _OOHG_HasData( ::Parent, "FOCUSSTRIKEOUT" ) .OR. _OOHG_HasMethod( ::Parent, "FOCUSSTRIKEOUT" ) ) .AND. ! Empty( ::Parent:FocusStrikeout )
+   ELSEIF ( _OOHG_HasData( ::Parent, "FOCUSSTRIKEOUT" ) .OR. _OOHG_HasMethod( ::Parent, "FOCUSSTRIKEOUT" ) ) .AND. ! Empty( ::Parent:FocusStrikeout )
       lMod := .T.
-   Else
+   ELSE
       lMod := .F.
-   EndIf
+   ENDIF
 
-   If lMod
-      If Empty( ::cFocusFontName )
-         If ::Parent != Nil .AND. ( _OOHG_HasData( ::Parent, "CFOCUSFONTNAME" ) .OR. _OOHG_HasMethod( ::Parent, "CFOCUSFONTNAME" ) ) .AND. ! Empty( ::Parent:cFocusFontName )
+   IF lMod
+      IF Empty( ::cFocusFontName )
+         IF ::Parent != Nil .AND. ( _OOHG_HasData( ::Parent, "CFOCUSFONTNAME" ) .OR. _OOHG_HasMethod( ::Parent, "CFOCUSFONTNAME" ) ) .AND. ! Empty( ::Parent:cFocusFontName )
             ::cFocusFontName := ::Parent:cFocusFontName
-         EndIf
-      EndIf
-      If Empty( ::cFocusFontName )
+         ENDIF
+      ENDIF
+      IF Empty( ::cFocusFontName )
          ::cFocusFontName := ::cFontName
-      EndIf
+      ENDIF
 
-      If Empty( ::nFocusFontSize )
-         If ::Parent != Nil .AND. ( _OOHG_HasData( ::Parent, "NFOCUSFONTSIZE" ) .OR. _OOHG_HasMethod( ::Parent, "NFOCUSFONTSIZE" ) ) .AND. ! Empty( ::Parent:nFocusFontSize )
+      IF Empty( ::nFocusFontSize )
+         IF ::Parent != Nil .AND. ( _OOHG_HasData( ::Parent, "NFOCUSFONTSIZE" ) .OR. _OOHG_HasMethod( ::Parent, "NFOCUSFONTSIZE" ) ) .AND. ! Empty( ::Parent:nFocusFontSize )
             ::nFocusFontSize := ::Parent:nFocusFontSize
-         EndIf
-      EndIf
-      If Empty( ::nFocusFontSize )
+         ENDIF
+      ENDIF
+      IF Empty( ::nFocusFontSize )
          ::nFocusFontSize := ::nFontSize
-      EndIf
+      ENDIF
 
-      If Empty( ::FocusBold )
-         If ::Parent != Nil .AND. ( _OOHG_HasData( ::Parent, "FOCUSBOLD" ) .OR. _OOHG_HasMethod( ::Parent, "FOCUSBOLD" ) ) .AND. ! Empty( ::Parent:FocusBold )
+      IF Empty( ::FocusBold )
+         IF ::Parent != Nil .AND. ( _OOHG_HasData( ::Parent, "FOCUSBOLD" ) .OR. _OOHG_HasMethod( ::Parent, "FOCUSBOLD" ) ) .AND. ! Empty( ::Parent:FocusBold )
             ::FocusBold := ::Parent:FocusBold
-         EndIf
-      EndIf
-      If Empty( ::FocusBold )
+         ENDIF
+      ENDIF
+      IF Empty( ::FocusBold )
          ::FocusBold := ::Bold
-      EndIf
+      ENDIF
 
-      If Empty( ::FocusItalic )
-         If ::Parent != Nil .AND. ( _OOHG_HasData( ::Parent, "FOCUSITALIC" ) .OR. _OOHG_HasMethod( ::Parent, "FOCUSITALIC" ) ) .AND. ! Empty( ::Parent:FocusItalic )
+      IF Empty( ::FocusItalic )
+         IF ::Parent != Nil .AND. ( _OOHG_HasData( ::Parent, "FOCUSITALIC" ) .OR. _OOHG_HasMethod( ::Parent, "FOCUSITALIC" ) ) .AND. ! Empty( ::Parent:FocusItalic )
             ::FocusItalic := ::Parent:FocusItalic
-         EndIf
-      EndIf
-      If Empty( ::FocusItalic )
+         ENDIF
+      ENDIF
+      IF Empty( ::FocusItalic )
          ::FocusItalic := ::Italic
-      EndIf
+      ENDIF
 
-      If Empty( ::FocusUnderline )
-         If ::Parent != Nil .AND. ( _OOHG_HasData( ::Parent, "FOCUSUNDERLINE" ) .OR. _OOHG_HasMethod( ::Parent, "FOCUSUNDERLINE" ) ) .AND. ! Empty( ::Parent:FocusUnderline )
+      IF Empty( ::FocusUnderline )
+         IF ::Parent != Nil .AND. ( _OOHG_HasData( ::Parent, "FOCUSUNDERLINE" ) .OR. _OOHG_HasMethod( ::Parent, "FOCUSUNDERLINE" ) ) .AND. ! Empty( ::Parent:FocusUnderline )
             ::FocusUnderline := ::Parent:FocusUnderline
-         EndIf
-      EndIf
-      If Empty( ::FocusUnderline )
+         ENDIF
+      ENDIF
+      IF Empty( ::FocusUnderline )
          ::FocusUnderline := ::Underline
-      EndIf
+      ENDIF
 
-      If Empty( ::FocusStrikeout )
-         If ::Parent != Nil .AND. ( _OOHG_HasData( ::Parent, "FOCUSSTRIKEOUT" ) .OR. _OOHG_HasMethod( ::Parent, "FOCUSSTRIKEOUT" ) ) .AND. ! Empty( ::Parent:FocusStrikeout )
+      IF Empty( ::FocusStrikeout )
+         IF ::Parent != Nil .AND. ( _OOHG_HasData( ::Parent, "FOCUSSTRIKEOUT" ) .OR. _OOHG_HasMethod( ::Parent, "FOCUSSTRIKEOUT" ) ) .AND. ! Empty( ::Parent:FocusStrikeout )
             ::FocusStrikeout := ::Parent:FocusStrikeout
-         EndIf
-      EndIf
-      If Empty( ::FocusStrikeout )
+         ENDIF
+      ENDIF
+      IF Empty( ::FocusStrikeout )
          ::FocusStrikeout := ::Strikeout
-      EndIf
+      ENDIF
 
       ::FontHandle := _SetFont( ::hWnd, ::cFocusFontName, ::nFocusFontSize, ::FocusBold, ::FocusItalic, ::FocusUnderline, ::FocusStrikeout, ::FntAngle, ::FntWidth )
-   EndIf
+   ENDIF
 
-   If ! Empty( ::FocusColor )
+   IF ! Empty( ::FocusColor )
       ::OldColor := ::FontColor
       ::FontColor := ::FocusColor
       lMod := .T.
-   ElseIf ::Parent != Nil .AND. ( _OOHG_HasData( ::Parent, "FOCUSCOLOR" ) .OR. _OOHG_HasMethod( ::Parent, "FOCUSCOLOR" ) ) .AND. ! Empty( ::Parent:FocusColor )
+   ELSEIF ::Parent != Nil .AND. ( _OOHG_HasData( ::Parent, "FOCUSCOLOR" ) .OR. _OOHG_HasMethod( ::Parent, "FOCUSCOLOR" ) ) .AND. ! Empty( ::Parent:FocusColor )
       ::OldColor := ::FontColor
       ::FocusColor := ::Parent:FocusColor
       ::FontColor := ::FocusColor
       lMod := .T.
-   EndIf
+   ENDIF
 
-   If ! Empty( ::FocusBackColor )
+   IF ! Empty( ::FocusBackColor )
       ::OldBackColor := ::BackColor
       ::BackColor := ::FocusBackColor
       lMod := .T.
-   ElseIf ::Parent != Nil .AND. ( _OOHG_HasData( ::Parent, "FOCUSBACKCOLOR" ) .OR. _OOHG_HasMethod( ::Parent, "FOCUSBACKCOLOR" ) ) .AND. ! Empty( ::Parent:FocusBackColor )
+   ELSEIF ::Parent != Nil .AND. ( _OOHG_HasData( ::Parent, "FOCUSBACKCOLOR" ) .OR. _OOHG_HasMethod( ::Parent, "FOCUSBACKCOLOR" ) ) .AND. ! Empty( ::Parent:FocusBackColor )
       ::OldBackColor := ::BackColor
       ::FocusBackColor := ::Parent:FocusBackColor
       ::BackColor  := ::FocusBackColor
       lMod := .T.
-   EndIf
+   ENDIF
 
-   If lMod
+   IF lMod
       ::ReDraw()
-   EndIf
+   ENDIF
 
-   Return Nil
+   RETURN NIL
 
 METHOD Events_Enter() CLASS TControl
 
    _OOHG_lSettingFocus := .F.
    ::DoEvent( ::OnEnter, "ENTER" )
-   If ! _OOHG_lSettingFocus
-      If _OOHG_ExtendedNavigation
+   IF ! _OOHG_lSettingFocus
+      IF _OOHG_ExtendedNavigation
          _SetNextFocus()
-      EndIf
-   Else
+      ENDIF
+   ELSE
       _OOHG_lSettingFocus := .F.
-   EndIf
+   ENDIF
 
-   Return nil
+   RETURN NIL
 
 METHOD Events_Notify( wParam, lParam ) CLASS TControl
 
-   Local nNotify := GetNotifyCode( lParam )
+   LOCAL nNotify := GetNotifyCode( lParam )
 
    HB_SYMBOL_UNUSED( wParam )
 
-   If     nNotify == NM_KILLFOCUS
-      Return ::DoLostFocus()
+   IF     nNotify == NM_KILLFOCUS
 
-   ElseIf nNotify == NM_SETFOCUS
+      RETURN ::DoLostFocus()
+
+   ELSEIF nNotify == NM_SETFOCUS
       GetFormObjectByHandle( ::ContainerhWnd ):LastFocusedControl := ::hWnd
       ::FocusEffect()
       ::DoEvent( ::OnGotFocus, "GOTFOCUS" )
 
-   ElseIf nNotify == TVN_SELCHANGED
+   ELSEIF nNotify == TVN_SELCHANGED
       ::DoChange()
 
-   EndIf
+   ENDIF
 
-   Return nil
+   RETURN NIL
 
 METHOD TabIndex( nNewIndex ) CLASS TControl
 
-   Local nCurIndex, i, nLen, j, aAux
+   LOCAL nCurIndex, i, nLen, j, aAux
 
-   If ::Parent == NIL
+   IF ::Parent == NIL
       nCurIndex := 0
-   Else
+   ELSE
       i := aScan( ::Parent:aControlsNames, Upper( AllTrim( ::Name ) ) + Chr( 255 ) )
-      If i > 0
+      IF i > 0
          nCurIndex := ::Parent:aCtrlsTabIndxs[ i ]
-         If HB_IsNumeric( nNewIndex ) .AND. nNewIndex != nCurIndex
+         IF HB_IsNumeric( nNewIndex ) .AND. nNewIndex != nCurIndex
             nLen := LEN( ::Parent:aControls )
             // update indexes in array
-            For j := 1 TO nLen
+            FOR j := 1 TO nLen
                IF nCurIndex > nNewIndex
                   // control is moved upward in the tab order
                   IF ::Parent:aCtrlsTabIndxs[ j ] < nCurIndex .AND. ::Parent:aCtrlsTabIndxs[ j ] >= nNewIndex
                      ::Parent:aCtrlsTabIndxs[ j ] ++
-                  EndIf
-               Else
+                  ENDIF
+               ELSE
                   // control is moved downward in the tab order
                   IF ::Parent:aCtrlsTabIndxs[ j ] > nCurIndex .AND. ::Parent:aCtrlsTabIndxs[ j ] <= nNewIndex
                      ::Parent:aCtrlsTabIndxs[ j ] --
-                  EndIf
-               EndIf
-            Next
+                  ENDIF
+               ENDIF
+            NEXT
             ::Parent:aCtrlsTabIndxs[ i ] := nCurIndex := nNewIndex
             // change tab order
             aAux := {}
-            For j := 1 to nLen
+            FOR j := 1 to nLen
                AADD( aAux, { ::Parent:aControls[ j ], ::Parent:aCtrlsTabIndxs[ j ] } )
-            Next j
+            NEXT j
             ASORT( aAux, nil, nil, { | x, y | x[ 2 ] < y[ 2 ] } )
-            For j := 2 to nLen
+            FOR j := 2 to nLen
                SetTabAfter( aAux[ j, 1 ]:hWnd, aAux[ j - 1, 1 ]:hWnd )
-            Next j
+            NEXT j
             // renumber tab indexes so they remain 1-based
-            For j := 1 to nLen
+            FOR j := 1 to nLen
                i := aScan( ::Parent:aControlsNames, Upper( AllTrim( aAux[ j, 1 ]:Name ) ) + Chr( 255 ) )
                ::Parent:aCtrlsTabIndxs[ i ] := j
-            Next j
-         EndIf
+            NEXT j
+         ENDIF
       ELSE
          nCurIndex := 0
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
-   Return nCurIndex
+   RETURN nCurIndex
 
-Function GetControlObject( ControlName, FormName )
+FUNCTION GetControlObject( ControlName, FormName )
 
-   Local mVar
-
-   mVar := '_' + FormName + '_' + ControlName
-
-   Return IF( Type( mVar ) == "O", &mVar, TControl() )
-
-Function GetExistingControlObject( ControlName, FormName )
-
-   Local mVar
+   LOCAL mVar
 
    mVar := '_' + FormName + '_' + ControlName
-   If ! Type( mVar ) == "O"
+
+   RETURN IF( Type( mVar ) == "O", &mVar, TControl() )
+
+FUNCTION GetExistingControlObject( ControlName, FormName )
+
+   LOCAL mVar
+
+   mVar := '_' + FormName + '_' + ControlName
+   IF ! Type( mVar ) == "O"
       MsgOOHGError( "Control: " + ControlName + " of " + FormName + " not defined. Program terminated." )
-   EndIf
+   ENDIF
 
-   Return &mVar
+   RETURN &mVar
 
-Function _GetId()
+FUNCTION _GetId()
 
-   Local RetVal
+   LOCAL RetVal
 
-   Do While .T.
+   DO WHILE .T.
       RetVal := Int( hb_random( 59000 ) ) + 2001   // Lower than 0xF000
-      If RetVal < 61440 .AND. aScan( _OOHG_aControlIds , { |a| a[ 1 ] == RetVal } ) == 0          // TODO: thread safe, move to h_application.prg
-         Exit
-      EndIf
-   EndDo
+      IF RetVal < 61440 .AND. aScan( _OOHG_aControlIds , { |a| a[ 1 ] == RetVal } ) == 0          // TODO: thread safe, move to h_application.prg
+         EXIT
+      ENDIF
+   ENDDO
 
-   Return RetVal
+   RETURN RetVal
 
-Function _KillAllTimers()
+FUNCTION _KillAllTimers()
 
-   Local nIndex
+   LOCAL nIndex
 
    // Since ::Release() removes the control from array, it can't be an AEVAL()
    nIndex := 1
-   do while nIndex <= LEN( _OOHG_aControlObjects )
-      if _OOHG_aControlObjects[ nIndex ]:Type == "TIMER"
+   DO WHILE nIndex <= LEN( _OOHG_aControlObjects )
+      IF _OOHG_aControlObjects[ nIndex ]:Type == "TIMER"
          _OOHG_aControlObjects[ nIndex ]:Release()
-      else
-          nIndex++
-      endif
-   enddo
+      ELSE
+         nIndex++
+      ENDIF
+   ENDDO
 
-   Return nil
+   RETURN NIL
 
-Function GetStartUpFolder()
+FUNCTION GetStartUpFolder()
 
-   Local StartUpFolder := GetProgramFileName()
+   LOCAL StartUpFolder := GetProgramFileName()
 
-   Return Left ( StartUpFolder , Rat ( '\' , StartUpFolder ) - 1 )
+   RETURN Left ( StartUpFolder , Rat ( '\' , StartUpFolder ) - 1 )
 
    // Initializes C variables
 
-Procedure _OOHG_Init_C_Vars_Controls()
+PROCEDURE _OOHG_Init_C_Vars_Controls()
 
    TControl()
    _OOHG_Init_C_Vars_Controls_C_Side( _OOHG_aControlhWnd, _OOHG_aControlObjects, _OOHG_aControlIds )
 
-   Return
+   RETURN
 
-
-EXTERN _OOHG_UnTransform
+   EXTERN _OOHG_UnTransform
 
 #pragma BEGINDUMP
 
@@ -2617,7 +2610,6 @@ HB_FUNC( SETTABAFTER )
 
 #pragma ENDDUMP
 
-
 CLASS TControlGroup FROM TControl
 
    DATA Type      INIT "CONTROLGROUP" READONLY
@@ -2642,7 +2634,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, Invisible, lDisabled ) CLASS
 
    ::InitStyle( ,, Invisible,, lDisabled )
 
-   Return Self
+   RETURN Self
 
 METHOD Enabled( lEnabled ) CLASS TControlGroup
 
@@ -2670,4 +2662,4 @@ METHOD AddControl( oCtrl, Row, Col ) CLASS TControlGroup
    oCtrl:SizePos( Row, Col )
    oCtrl:Visible := oCtrl:Visible
 
-   Return Nil
+   RETURN NIL

@@ -1,64 +1,52 @@
 /*
- * $Id: h_print.prg $
- */
+* $Id: h_print.prg $
+*/
 /*
- * ooHG source code:
- * TPrint object
- *
- * Copyright 2006-2017 Vicente Guerra <vicente@guerra.com.mx>
- * https://oohg.github.io/
- *
- * Portions of this project are based upon Harbour MiniGUI library.
- * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
- *
- * Portions of this project are based upon Harbour GUI framework for Win32.
- * Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
- * Copyright 2001 Antonio Linares <alinares@fivetech.com>
- *
- * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2017, https://harbour.github.io/
- */
+* ooHG source code:
+* TPrint object
+* Copyright 2006-2017 Vicente Guerra <vicente@guerra.com.mx>
+* https://oohg.github.io/
+* Portions of this project are based upon Harbour MiniGUI library.
+* Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
+* Portions of this project are based upon Harbour GUI framework for Win32.
+* Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
+* Copyright 2001 Antonio Linares <alinares@fivetech.com>
+* Portions of this project are based upon Harbour Project.
+* Copyright 1999-2017, https://harbour.github.io/
+*/
 /*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this software; see the file LICENSE.txt. If not, write to
- * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
- *
- * As a special exception, the ooHG Project gives permission for
- * additional uses of the text contained in its release of ooHG.
- *
- * The exception is that, if you link the ooHG libraries with other
- * files to produce an executable, this does not by itself cause the
- * resulting executable to be covered by the GNU General Public License.
- * Your use of that executable is in no way restricted on account of
- * linking the ooHG library code into it.
- *
- * This exception does not however invalidate any other reasons why
- * the executable file might be covered by the GNU General Public License.
- *
- * This exception applies only to the code released by the ooHG
- * Project under the name ooHG. If you copy code from other
- * ooHG Project or Free Software Foundation releases into a copy of
- * ooHG, as the General Public License permits, the exception does
- * not apply to the code that you add in this way. To avoid misleading
- * anyone as to the status of such modified files, you must delete
- * this exception notice from them.
- *
- * If you write modifications of your own for ooHG, it is your choice
- * whether to permit this exception to apply to your modifications.
- * If you do not wish that, delete this exception notice.
- */
-
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2, or (at your option)
+* any later version.
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* You should have received a copy of the GNU General Public License
+* along with this software; see the file LICENSE.txt. If not, write to
+* the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+* Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
+* As a special exception, the ooHG Project gives permission for
+* additional uses of the text contained in its release of ooHG.
+* The exception is that, if you link the ooHG libraries with other
+* files to produce an executable, this does not by itself cause the
+* resulting executable to be covered by the GNU General Public License.
+* Your use of that executable is in no way restricted on account of
+* linking the ooHG library code into it.
+* This exception does not however invalidate any other reasons why
+* the executable file might be covered by the GNU General Public License.
+* This exception applies only to the code released by the ooHG
+* Project under the name ooHG. If you copy code from other
+* ooHG Project or Free Software Foundation releases into a copy of
+* ooHG, as the General Public License permits, the exception does
+* not apply to the code that you add in this way. To avoid misleading
+* anyone as to the status of such modified files, you must delete
+* this exception notice from them.
+* If you write modifications of your own for ooHG, it is your choice
+* whether to permit this exception to apply to your modifications.
+* If you do not wish that, delete this exception notice.
+*/
 
 #include 'hbclass.ch'
 #include 'oohg.ch'
@@ -165,7 +153,6 @@ FUNCTION TPrint( cLibX )
    ENDIF
 
    RETURN o_Print_
-
 
 CLASS TPRINTBASE
 
@@ -364,6 +351,7 @@ METHOD SetCpl( nCpl ) CLASS TPRINTBASE
 METHOD Release() CLASS TPRINTBASE
 
    IF ::Exit
+
       RETURN NIL
    ENDIF
    ::ReleaseX()
@@ -378,6 +366,7 @@ METHOD Init() CLASS TPRINTBASE
       ENDIF
       ::lPrError := .T.
       ::Exit := .T.
+
       RETURN NIL
    ENDIF
    ::InitX()
@@ -388,6 +377,7 @@ METHOD SelPrinter( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, lHide, 
 
    IF ::Exit
       ::lPrError := .T.
+
       RETURN NIL
    ENDIF
 
@@ -418,17 +408,17 @@ METHOD BeginDoc( cDocm ) CLASS TPRINTBASE
 
    // See ::Init()
    DEFINE WINDOW _modalhide ;
-      AT 0,0 ;
-      WIDTH 0 HEIGHT 0 ;
-      TITLE cTitle MODAL NOSHOW NOSIZE NOSYSMENU NOCAPTION
+         AT 0,0 ;
+         WIDTH 0 HEIGHT 0 ;
+         TITLE cTitle MODAL NOSHOW NOSIZE NOSYSMENU NOCAPTION
    END WINDOW
    ACTIVATE WINDOW _modalhide NOWAIT
 
    IF ! IsWindowDefined( _oohg_winreport )
       DEFINE WINDOW _oohg_winreport ;
-         AT 0,0 ;
-         WIDTH 400 HEIGHT 120 ;
-         TITLE cTitle CHILD NOSIZE NOSYSMENU NOCAPTION
+            AT 0,0 ;
+            WIDTH 400 HEIGHT 120 ;
+            TITLE cTitle CHILD NOSIZE NOSYSMENU NOCAPTION
 
          @ 5, 5 FRAME myframe WIDTH 390 HEIGHT 110
 
@@ -612,9 +602,9 @@ METHOD PrintData( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, 
       cText := DtoC( uData )
    CASE cType == 'L'
       cText := IIF( uData, 'T', 'F' )
-   /*
+      /*
       TODO: use setted language
-   */
+      */
    CASE cType == 'M'
       cText := uData
    CASE cType == 'T'
@@ -689,7 +679,7 @@ METHOD PrintBarcode( nLin, nCol, cBarcode, cType, aColor, lHori, nWidth, nHeight
       ENDIF
       ::nvFij := ( 12 / 1.65 )
       ::nhFij := ( 12 / 3.70 )
-    ENDIF
+   ENDIF
 
    DO CASE
    CASE cType = "CODE128A"
@@ -1029,7 +1019,8 @@ METHOD PrintDos( cFile ) CLASS TPRINTBASE
 
    RETURN Self
 
-// Based upon an example of Lucho Miranda (elsanes)
+   // Based upon an example of Lucho Miranda (elsanes)
+
 METHOD PrintRaw( cFile ) CLASS TPRINTBASE
 
    LOCAL nResult, cMsg, aData
@@ -1047,6 +1038,7 @@ METHOD PrintRaw( cFile ) CLASS TPRINTBASE
          IF ::lShowErrors
             MsgStop( _OOHG_Messages( 12, 11 ), _OOHG_Messages( 12, 12 ) )
          ENDIF
+
          RETURN NIL
       ENDIF
 
@@ -1056,15 +1048,16 @@ METHOD PrintRaw( cFile ) CLASS TPRINTBASE
       IF nResult # 1
          IF ::lShowErrors
             aData := { {  1, cFile + _OOHG_Messages( 12, 4 ) }, ;
-                       { -1, _OOHG_Messages( 12, 5 ) }, ;
-                       { -2, _OOHG_Messages( 12, 6 ) }, ;
-                       { -3, _OOHG_Messages( 12, 7 ) }, ;
-                       { -4, _OOHG_Messages( 12, 8 ) }, ;
-                       { -5, _OOHG_Messages( 12, 9 ) }, ;
-                       { -6, cFile + _OOHG_Messages( 12, 10 ) } }
+               { -1, _OOHG_Messages( 12, 5 ) }, ;
+               { -2, _OOHG_Messages( 12, 6 ) }, ;
+               { -3, _OOHG_Messages( 12, 7 ) }, ;
+               { -4, _OOHG_Messages( 12, 8 ) }, ;
+               { -5, _OOHG_Messages( 12, 9 ) }, ;
+               { -6, cFile + _OOHG_Messages( 12, 10 ) } }
             cMsg := aData[ aScan( aData, { | x | x[ 1 ] == nResult } ), 2 ]
             MsgStop( cMsg, _OOHG_Messages( 12, 12 ) )
          ENDIF
+
          RETURN NIL
       ENDIF
    ENDIF
@@ -1088,7 +1081,6 @@ METHOD SetRawPrinter( cPrinter ) CLASS TPRINTBASE
    ENDCASE
 
    RETURN Self
-
 
 CLASS TMINIPRINT FROM TPRINTBASE
 
@@ -1179,25 +1171,25 @@ METHOD BeginDocX() CLASS TMINIPRINT
 
    START PRINTDOC NAME ::Cargo
 
-   RETURN Self
+      RETURN Self
 
 METHOD EndDocX() CLASS TMINIPRINT
 
-   END PRINTDOC
+END PRINTDOC
 
-   RETURN Self
+RETURN Self
 
 METHOD BeginPageX() CLASS TMINIPRINT
 
    START PRINTPAGE
 
-   RETURN Self
+      RETURN Self
 
 METHOD EndPageX() CLASS TMINIPRINT
 
-   END PRINTPAGE
+END PRINTPAGE
 
-   RETURN Self
+RETURN Self
 
 METHOD ReleaseX() CLASS TMINIPRINT
 
@@ -1664,6 +1656,7 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
          ::cPrinter := GetPrinter()
          IF Empty( ::cPrinter )
             ::lPrError := .T.
+
             RETURN NIL
          ENDIF
 
@@ -1730,6 +1723,7 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
       ::cPrinter := cPrinterX
       IF Empty( ::cPrinter )
          ::lPrError := .T.
+
          RETURN NIL
       ENDIF
 
@@ -1765,6 +1759,7 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
 
    IF ! lSucess
       ::lPrError := .T.
+
       RETURN NIL
    ENDIF
 
@@ -1773,7 +1768,6 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
 METHOD GetDefPrinterX() CLASS TMINIPRINT
 
    RETURN GetDefaultPrinter()
-
 
 CLASS THBPRINTER FROM TPRINTBASE
 
@@ -1860,9 +1854,9 @@ METHOD BeginDocX() CLASS THBPRINTER
 
 METHOD EndDocX() CLASS THBPRINTER
 
-   END DOC
+END DOC
 
-   RETURN Self
+RETURN Self
 
 METHOD BeginPageX() CLASS THBPRINTER
 
@@ -1872,9 +1866,9 @@ METHOD BeginPageX() CLASS THBPRINTER
 
 METHOD EndPageX() CLASS THBPRINTER
 
-   END PAGE
+END PAGE
 
-   RETURN Self
+RETURN Self
 
 METHOD ReleaseX() CLASS THBPRINTER
 
@@ -2059,6 +2053,7 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
 
    IF HBPRNERROR != 0
       ::lPrError := .T.
+
       RETURN NIL
    ENDIF
 
@@ -2156,7 +2151,6 @@ METHOD SetPreviewSizeX( nSize ) CLASS THBPRINTER
 
    RETURN Self
 
-
 CLASS TDOSPRINT FROM TPRINTBASE
 
    DATA cBusca                    INIT ""                    READONLY
@@ -2220,6 +2214,7 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
             MsgStop( _OOHG_Messages( 12, 13 ), _OOHG_Messages( 12, 12 ) )
          ENDIF
          ::lPrError := .T.
+
          RETURN NIL
       ENDIF
    ENDIF
@@ -2232,12 +2227,12 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
       ::aPorts:= ASort( aLocalPorts() )
 
       DEFINE WINDOW myselprinter ;
-         AT 0, 0 ;
-         WIDTH 345 ;
-         HEIGHT GetTitleHeight() + 100 ;
-         TITLE _OOHG_Messages( 12, 14 ) ;
-         MODAL ;
-         NOSIZE
+            AT 0, 0 ;
+            WIDTH 345 ;
+            HEIGHT GetTitleHeight() + 100 ;
+            TITLE _OOHG_Messages( 12, 14 ) ;
+            MODAL ;
+            NOSIZE
 
          @ 15, 10 COMBOBOX combo_1 ITEMS ::aPorts VALUE 1 WIDTH 320
 
@@ -2296,10 +2291,10 @@ METHOD EndDocX() CLASS TDOSPRINT
       wr := MemoRead( ( ::cTempFile ) )
 
       DEFINE WINDOW print_preview  ;
-         AT 0, 0 ;
-         WIDTH nx HEIGHT ny - 70 - 40 ;
-         TITLE _OOHG_Messages( 12, 17 ) + ::cTempFile + " " + ::cPrintLibrary ;
-         MODAL
+            AT 0, 0 ;
+            WIDTH nx HEIGHT ny - 70 - 40 ;
+            TITLE _OOHG_Messages( 12, 17 ) + ::cTempFile + " " + ::cPrintLibrary ;
+            MODAL
 
          @ 42, 0 RICHEDITBOX edit_p ;
             OF print_preview ;
@@ -2412,6 +2407,7 @@ METHOD SearchString( cTarget) CLASS TDOSPRINT
    ::cString := ""
    ::cString := InputBox( _OOHG_Messages( 12, 30 ), _OOHG_Messages( 12, 31 ) )
    IF Empty( ::cString )
+
       RETURN NIL
    ENDIF
    print_preview.but_6.Enabled := .T.
@@ -2455,7 +2451,6 @@ STATIC FUNCTION AtPlus( cSearch, cAll, nStart )
    NEXT i
 
    RETURN nPos
-
 
 CLASS TRAWPRINT FROM TDOSPRINT
 
@@ -2511,12 +2506,12 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
       ::aPrinters := ASort( aPrinters() )
 
       DEFINE WINDOW myselprinter  ;
-         AT 0, 0 ;
-         WIDTH 345 ;
-         HEIGHT GetTitleHeight() + 100 ;
-         TITLE _OOHG_Messages( 12, 14 ) ;
-         MODAL ;
-         NOSIZE
+            AT 0, 0 ;
+            WIDTH 345 ;
+            HEIGHT GetTitleHeight() + 100 ;
+            TITLE _OOHG_Messages( 12, 14 ) ;
+            MODAL ;
+            NOSIZE
 
          @ 15, 10 COMBOBOX combo_1 ITEMS ::aPrinters VALUE aScan( ::aPrinters, GetDefaultPrinter() ) WIDTH 320
 
@@ -2537,8 +2532,8 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
 
    RETURN Self
 
+   // Based upon a contribution of Jose Miguel josemisu@yahoo.com.ar
 
-// Based upon a contribution of Jose Miguel josemisu@yahoo.com.ar
 CLASS TEXCELPRINT FROM TPRINTBASE
 
    DATA oExcel                    INIT NIL                   READONLY
@@ -2572,21 +2567,22 @@ METHOD InitX() CLASS TEXCELPRINT
 
    #ifndef __XHARBOUR__
    IF ( ::oExcel := win_oleCreateObject( "Excel.Application" ) ) = NIL
-   #else
-   ::oExcel := TOleAuto():New( "Excel.Application" )
-   IF Ole2TxtError() != 'S_OK'
-   #endif
-      IF ::lShowErrors
-         MsgStop( _OOHG_Messages( 12, 34 ), _OOHG_Messages( 12, 12 ) )
-      ENDIF
-      ::lPrError := .T.
-      ::Exit := .T.
-      RETURN NIL
-   ENDIF
-   ::oExcel:Visible := .F.
-   ::oExcel:DisplayAlerts :=.F.
+      #else
+      ::oExcel := TOleAuto():New( "Excel.Application" )
+      IF Ole2TxtError() != 'S_OK'
+         #endif
+         IF ::lShowErrors
+            MsgStop( _OOHG_Messages( 12, 34 ), _OOHG_Messages( 12, 12 ) )
+         ENDIF
+         ::lPrError := .T.
+         ::Exit := .T.
 
-   RETURN Self
+         RETURN NIL
+      ENDIF
+      ::oExcel:Visible := .F.
+      ::oExcel:DisplayAlerts :=.F.
+
+      RETURN Self
 
 METHOD BeginDocX() CLASS TEXCELPRINT
 
@@ -2754,15 +2750,15 @@ METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen,
    ::oHoja:Cells( nLin, aLinCellX ):Font:Color := RGB( aColor[ 3 ], aColor[ 2 ], aColor[ 1 ] )
    ::oHoja:Cells( nLin, aLinCellX ):Orientation := nAngle
    /*
-      Orientation valid values are:
-      -90 <= nAngle <= 90
-      xlDownward   -4170 Text runs from top to bottom (each
-                         character is rotated -90 degrees).
-      xlHorizontal -4128 Text runs horizontally.
-      xlUpward     -4171 Text runs from bottom to top (each
-                         character is rotated 90 degrees).
-      xlVertical   -4166 Text runs from top to bottom (but
-                         characters are not rotated).
+   Orientation valid values are:
+   -90 <= nAngle <= 90
+   xlDownward   -4170 Text runs from top to bottom (each
+   character is rotated -90 degrees).
+   xlHorizontal -4128 Text runs horizontally.
+   xlUpward     -4171 Text runs from bottom to top (each
+   character is rotated 90 degrees).
+   xlVertical   -4166 Text runs from top to bottom (but
+   characters are not rotated).
    */
    ::oHoja:Cells( nLin, aLinCellX ):Font:Underline := IIF( lUnder, 2, -4142 )  // xlUnderlineStyleSingle , xlUnderlineStyleNone
    ::oHoja:Cells( nLin, aLinCellX ):Font:StrikeThrough := lStrike
@@ -2786,21 +2782,20 @@ METHOD EndPageX() CLASS TEXCELPRINT
 
    RETURN Self
 
-
-// Label Header
-#define TXT_ELEMS  12
-#define TXT_OPCO1   1
-#define TXT_OPCO2   2
-#define TXT_LEN1    3
-#define TXT_LEN2    4
-#define TXT_ROW1    5
-#define TXT_ROW2    6
-#define TXT_COL1    7
-#define TXT_COL2    8
-#define TXT_RGBAT1  9
-#define TXT_RGBAT2 10
-#define TXT_RGBAT3 11
-#define TXT_LEN    12
+   // Label Header
+   #define TXT_ELEMS  12
+   #define TXT_OPCO1   1
+   #define TXT_OPCO2   2
+   #define TXT_LEN1    3
+   #define TXT_LEN2    4
+   #define TXT_ROW1    5
+   #define TXT_ROW2    6
+   #define TXT_COL1    7
+   #define TXT_COL2    8
+   #define TXT_RGBAT1  9
+   #define TXT_RGBAT2 10
+   #define TXT_RGBAT3 11
+   #define TXT_LEN    12
 
 CLASS TSPREADSHEETPRINT FROM TPRINTBASE
 
@@ -2857,41 +2852,41 @@ METHOD EndDocX() CLASS TSPREADSHEETPRINT
    LOCAL i, anHeader, nLen, nI, cEof
 
    FOR i := 1 TO Len( ::aDoc )
-     // This array holds the record marker
-     anHeader := Array( TXT_ELEMS )
-     anHeader[ TXT_OPCO1 ]  :=  4
-     anHeader[ TXT_OPCO2 ]  :=  0
-     anHeader[ TXT_LEN1 ]   := 10
-     anHeader[ TXT_LEN2 ]   :=  0
-     anHeader[ TXT_ROW2 ]   :=  0
-     anHeader[ TXT_COL2 ]   :=  0
-     anHeader[ TXT_RGBAT1 ] :=  0
-     anHeader[ TXT_RGBAT2 ] :=  0
-     anHeader[ TXT_RGBAT3 ] :=  0
-     anHeader[ TXT_LEN ]    :=  2
+      // This array holds the record marker
+      anHeader := Array( TXT_ELEMS )
+      anHeader[ TXT_OPCO1 ]  :=  4
+      anHeader[ TXT_OPCO2 ]  :=  0
+      anHeader[ TXT_LEN1 ]   := 10
+      anHeader[ TXT_LEN2 ]   :=  0
+      anHeader[ TXT_ROW2 ]   :=  0
+      anHeader[ TXT_COL2 ]   :=  0
+      anHeader[ TXT_RGBAT1 ] :=  0
+      anHeader[ TXT_RGBAT2 ] :=  0
+      anHeader[ TXT_RGBAT3 ] :=  0
+      anHeader[ TXT_LEN ]    :=  2
 
-     nLen := Len( RTrim( ::aDoc[ i ] ) )
+      nLen := Len( RTrim( ::aDoc[ i ] ) )
 
-     // Length of the text to write
-     anHeader[ TXT_LEN ]    := nLen
+      // Length of the text to write
+      anHeader[ TXT_LEN ]    := nLen
 
-     // Record length
-     anHeader[ TXT_LEN1 ]   := 8 + nLen
+      // Record length
+      anHeader[ TXT_LEN1 ]   := 8 + nLen
 
-     // BIFF format starts from zero
-     // Passed data starts from one
-     nI                     := i - 1
-     anHeader[ TXT_ROW1 ]   := nI - ( Int( nI / 256 ) * 256 )
-     anHeader[ TXT_ROW2 ]   := Int( nI / 256 )
-     anHeader[ TXT_COL1 ]   := 1 - 1
+      // BIFF format starts from zero
+      // Passed data starts from one
+      nI                     := i - 1
+      anHeader[ TXT_ROW1 ]   := nI - ( Int( nI / 256 ) * 256 )
+      anHeader[ TXT_ROW2 ]   := Int( nI / 256 )
+      anHeader[ TXT_COL1 ]   := 1 - 1
 
-     // Write header
-     AEval( anHeader, { | v | FWrite( ::nXls, Chr( v ), 1 ) } )
+      // Write header
+      AEval( anHeader, { | v | FWrite( ::nXls, Chr( v ), 1 ) } )
 
-     // Write data
-     FOR nI := 1 TO nLen
-       FWrite( ::nXls, SubStr( RTrim( ::aDoc[ i ] ), nI, 1 ), 1 )
-     NEXT nI
+      // Write data
+      FOR nI := 1 TO nLen
+         FWrite( ::nXls, SubStr( RTrim( ::aDoc[ i ] ), nI, 1 ), 1 )
+      NEXT nI
    NEXT i
 
    cEof := Chr( 10 ) + Chr( 0 ) + Chr( 0 ) + Chr( 0 )
@@ -2904,6 +2899,7 @@ METHOD EndDocX() CLASS TSPREADSHEETPRINT
          IF ::lShowErrors
             MsgStop( _OOHG_Messages( 12, 35 ) + Chr( 13 ) + Chr( 13 ) + _OOHG_Messages( 12, 36 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( 12, 12 ) )
          ENDIF
+
          RETURN NIL
       ENDIF
    ENDIF
@@ -2949,8 +2945,7 @@ METHOD EndPageX() CLASS TSPREADSHEETPRINT
 
    RETURN Self
 
-
-// CLASS THTMLPRINT
+   // CLASS THTMLPRINT
 
 FUNCTION THtmlPrint
 
@@ -2971,13 +2966,13 @@ FUNCTION THtmlPrint
       oBase:Release()
 
       IF ! lError
+
          RETURN THtmlPrintFromCalc()
       ENDIF
    ENDIF
 
    RETURN THtmlPrintFromExcel()
    // ENDCLASS
-
 
 CLASS THTMLPRINTFROMEXCEL FROM TEXCELPRINT
 
@@ -3041,7 +3036,6 @@ METHOD InitX() CLASS THTMLPRINTFROMEXCEL
    ::cPrintLibrary := "HTMLPRINTFROMEXCEL"
 
    RETURN Self
-
 
 CLASS THTMLPRINTFROMCALC FROM TCALCPRINT
 
@@ -3110,9 +3104,8 @@ METHOD InitX() CLASS THTMLPRINTFROMCALC
 
    RETURN Self
 
-
-#define RTF_FONT_TABLE  2
-#define RTF_COLOR_TABLE 3
+   #define RTF_FONT_TABLE  2
+   #define RTF_COLOR_TABLE 3
 
 CLASS TRTFPRINT FROM TPRINTBASE
 
@@ -3138,8 +3131,8 @@ CLASS TRTFPRINT FROM TPRINTBASE
    /*
    TODO: Add BeginPageX
    TODO: Add SetFontX to change default font, adding it
-         to the font table if is not included (only if
-         the font table is already initialized).
+   to the font table if is not included (only if
+   the font table is already initialized).
    */
 
    ENDCLASS
@@ -3364,15 +3357,15 @@ METHOD EndPageX() CLASS TRTFPRINT
 
       IF ::cUnits = "MM"
          ::aPrintRtf[ Len( ::aPrintRtf ) ] := ::aPrintRtf[ Len( ::aPrintRtf ) ] + "\tab " + ;
-                                              IIF( ::aLinCelda[ i1, 6 ], "\b ", "" ) + ;
-                                              IIF( ::aLinCelda[ i1, 7 ], "\i ", "" ) + ;
-                                              IIF( ::aLinCelda[ i1, 8 ], "\ul ", "" ) + ;
-                                              IIF( ::aLinCelda[ i1, 9 ], "\strike ", "" ) + ;
-                                              ::aLinCelda[ i1, 3 ] + ;
-                                              IIF( ::aLinCelda[ i1, 6 ], "\b0", "" ) + ;
-                                              IIF( ::aLinCelda[ i1, 7 ], "\i0", "" ) + ;
-                                              IIF( ::aLinCelda[ i1, 8 ], "\ul0 ", "" ) + ;
-                                              IIF( ::aLinCelda[ i1, 9 ], "\strike0 ", "" )
+            IIF( ::aLinCelda[ i1, 6 ], "\b ", "" ) + ;
+            IIF( ::aLinCelda[ i1, 7 ], "\i ", "" ) + ;
+            IIF( ::aLinCelda[ i1, 8 ], "\ul ", "" ) + ;
+            IIF( ::aLinCelda[ i1, 9 ], "\strike ", "" ) + ;
+            ::aLinCelda[ i1, 3 ] + ;
+            IIF( ::aLinCelda[ i1, 6 ], "\b0", "" ) + ;
+            IIF( ::aLinCelda[ i1, 7 ], "\i0", "" ) + ;
+            IIF( ::aLinCelda[ i1, 8 ], "\ul0 ", "" ) + ;
+            IIF( ::aLinCelda[ i1, 9 ], "\strike0 ", "" )
       ELSE
          IF ::aLinCelda[ i1, 6 ]        // Bold
             ::aPrintRtf[ Len( ::aPrintRtf ) ] += "\b "
@@ -3380,7 +3373,7 @@ METHOD EndPageX() CLASS TRTFPRINT
          IF ::aLinCelda[ i1, 7 ]        // Italic
             ::aPrintRtf[ Len( ::aPrintRtf ) ] += "\i "
          ENDIF
-        IF ::aLinCelda[ i1, 8 ]        // Underline
+         IF ::aLinCelda[ i1, 8 ]        // Underline
             ::aPrintRtf[ Len( ::aPrintRtf ) ] += "\ul "
          ENDIF
          IF ::aLinCelda[ i1, 9 ]        // Strikeout
@@ -3417,21 +3410,21 @@ METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen,
 
    LOCAL nFontTableStart, i, j, aFonts, cFontNumber, cNext, nParLevel, cFontName
    LOCAL nNextFont := 201, aFontTable := { {"0",   "TIMES NEW ROMAN" }, ;
-                                        {"2",   "COURIER NEW" }, ;
-                                        {"106", "TIMES NEW ROMAN CE" }, ;
-                                        {"107", "TIMES NEW ROMAN CYR" }, ;
-                                        {"109", "TIMES NEW ROMAN GREEK" }, ;
-                                        {"110", "TIMES NEW ROMAN TUR" }, ;
-                                        {"111", "TIMES NEW ROMAN (HEBREW)" }, ;
-                                        {"112", "TIMES NEW ROMAN (ARABIC)" }, ;
-                                        {"113", "TIMES NEW ROMAN BALTIC" }, ;
-                                        {"122", "COURIER NEW CE" }, ;
-                                        {"123", "COURIER NEW CYR" }, ;
-                                        {"125", "COURIER NEW GREEK" }, ;
-                                        {"126", "COURIER NEW TUR" }, ;
-                                        {"127", "COURIER NEW (HEBREW)" }, ;
-                                        {"128", "COURIER NEW (ARABIC)" }, ;
-                                        {"129", "COURIER NEW BALTIC" } }
+      {"2",   "COURIER NEW" }, ;
+      {"106", "TIMES NEW ROMAN CE" }, ;
+      {"107", "TIMES NEW ROMAN CYR" }, ;
+      {"109", "TIMES NEW ROMAN GREEK" }, ;
+      {"110", "TIMES NEW ROMAN TUR" }, ;
+      {"111", "TIMES NEW ROMAN (HEBREW)" }, ;
+      {"112", "TIMES NEW ROMAN (ARABIC)" }, ;
+      {"113", "TIMES NEW ROMAN BALTIC" }, ;
+      {"122", "COURIER NEW CE" }, ;
+      {"123", "COURIER NEW CYR" }, ;
+      {"125", "COURIER NEW GREEK" }, ;
+      {"126", "COURIER NEW TUR" }, ;
+      {"127", "COURIER NEW (HEBREW)" }, ;
+      {"128", "COURIER NEW (ARABIC)" }, ;
+      {"129", "COURIER NEW BALTIC" } }
 
    Empty( uData )
    Empty( cFont )
@@ -3440,10 +3433,10 @@ METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen,
    Empty( nAngle )
    Empty( nWidth )
    /*
-     TODO: Add support for new fonts using cFont.
-           They must be added to font table if it's already initialized.
-           aFontTable should become a DATA.
-           Add color support using aColor.
+   TODO: Add support for new fonts using cFont.
+   They must be added to font table if it's already initialized.
+   aFontTable should become a DATA.
+   Add color support using aColor.
    */
 
    nLin++
@@ -3576,8 +3569,8 @@ METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen,
 
          IF ::lIndentAll .AND. ::cUnits == "ROWCOL"
             /*
-               Useful for printing the RichValue of a RichEditBox: if it has more than one line,
-               all lines are placed at the column specified in the PrintData call.
+            Useful for printing the RichValue of a RichEditBox: if it has more than one line,
+            all lines are placed at the column specified in the PrintData call.
             */
             cText := StrTran( cText, "\par ", "\par " + space( nCol ) )
             cText := StrTran( cText, "\par" + chr(13) + chr(10), "\par " + space( nCol ) )
@@ -3628,7 +3621,6 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
 
    RETURN Self
 
-
 CLASS TCSVPRINT FROM TPRINTBASE
 
    DATA aPrintCsv                 INIT {}                    READONLY
@@ -3678,6 +3670,7 @@ METHOD EndDocX() CLASS TCSVPRINT
          IF ::lShowErrors
             MsgStop( _OOHG_Messages( 12, 39 ) + Chr( 13 ) + Chr( 13 ) + _OOHG_Messages( 12, 36 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( 12, 12 ) )
          ENDIF
+
          RETURN NIL
       ENDIF
    ENDIF
@@ -3734,7 +3727,6 @@ METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen,
    aAdd( ::aLinCelda, { nLin, nCol, Space( ::nLMargin ) + cText } )
 
    RETURN Self
-
 
 CLASS TPDFPRINT FROM TPRINTBASE
 
@@ -3829,6 +3821,7 @@ METHOD EndDocX() CLASS TPDFPRINT
          IF ::lShowErrors
             MsgStop( _OOHG_Messages( 12, 40 ) + Chr( 13 ) + Chr( 13 ) + _OOHG_Messages( 12, 36 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( 12, 12 ) )
          ENDIF
+
          RETURN NIL
       ENDIF
    ENDIF
@@ -3913,10 +3906,12 @@ METHOD PrintImageX( nLin, nCol, nLinF, nColF, cImage, uSorR ) CLASS TPDFPRINT
       cImage := Upper( cImage )
       // The only supported image formats are jpg and tiff.
       IF aScan( { ".jpg", ".jpeg", ".tif", ".tiff" }, LOWER( SUBSTR( cImage, RAT( ".", cImage ) ) ) ) == 0
+
          RETURN NIL
       ENDIF
    ELSE
-     RETURN NIL
+
+      RETURN NIL
    ENDIF
 
    nLinF := nLinF - nLin
@@ -3995,7 +3990,7 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
    ::cPageOrient := IIF( lLandscape, "L", "P" )
    nPos := aScan( ::aPaper, { | x | x[ 1 ] = nPaperSize } )
 
-   If nPos > 0
+   IF nPos > 0
       ::cPageSize := ::aPaper[ nPos ][ 2 ]
    ELSE
       ::cPageSize := "LETTER"
@@ -4005,8 +4000,8 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
 
    RETURN Self
 
+   // CALC contributed by Jose Miguel, adapted by CVC
 
-// CALC contributed by Jose Miguel, adapted by CVC
 CLASS TCALCPRINT FROM TPRINTBASE
 
    DATA oCell                     INIT NIL                   READONLY
@@ -4048,27 +4043,27 @@ METHOD InitX() CLASS TCALCPRINT
    BEGIN SEQUENCE
       #ifndef __XHARBOUR__
       IF ( ::oServiceManager := win_oleCreateObject( "com.sun.star.ServiceManager" ) ) == NIL
-      #else
-      ::oServiceManager := TOleAuto():New( "com.sun.star.ServiceManager" )
-      IF Ole2TxtError() != 'S_OK'
-      #endif
-         BREAK
-      ENDIF
-      IF ( ::oDesktop := ::oServiceManager:CreateInstance( "com.sun.star.frame.Desktop" ) ) == NIL
-         BREAK
-      ENDIF
-      uRet := Self
-   RECOVER
-      IF ::lShowErrors
-         MsgStop( _OOHG_Messages( 12, 44 ), _OOHG_Messages( 12, 12 ) )
-      ENDIF
-      ::lPrError := .T.
-      ::Exit := .T.
-      uRet := NIL
-   END SEQUENCE
-   ErrorBlock( bErrorBlock )
+         #else
+         ::oServiceManager := TOleAuto():New( "com.sun.star.ServiceManager" )
+         IF Ole2TxtError() != 'S_OK'
+            #endif
+            BREAK
+         ENDIF
+         IF ( ::oDesktop := ::oServiceManager:CreateInstance( "com.sun.star.frame.Desktop" ) ) == NIL
+            BREAK
+         ENDIF
+         uRet := Self
+      RECOVER
+         IF ::lShowErrors
+            MsgStop( _OOHG_Messages( 12, 44 ), _OOHG_Messages( 12, 12 ) )
+         ENDIF
+         ::lPrError := .T.
+         ::Exit := .T.
+         uRet := NIL
+      END SEQUENCE
+      ErrorBlock( bErrorBlock )
 
-   RETURN uRet
+      RETURN uRet
 
 METHOD ReleaseX() CLASS TCALCPRINT
 
@@ -4230,10 +4225,10 @@ METHOD EndPageX() CLASS TCALCPRINT
    // Resize
    ::oSheet:GetColumns():SetPropertyValue( "OptimalWidth", .T. )
    // Restore the anchor
-   For i := 1 to oPage:GetCount
+   FOR i := 1 to oPage:GetCount
       oGraph := oPage:GetByIndex( i - 1 )
       oGraph:Anchor := aAnchor[i]
-   Next i
+   NEXT i
 
    IF ::lSeparateSheets
       // Add new sheet
@@ -4303,11 +4298,11 @@ METHOD PrintImageX( nLin, nCol, nLinF, nColF, cImage, aResol, aSize ) CLASS TCAL
       cName := StrTran( SubStr( cImage, RAt( '\', cImage ) + 1 ), '.', '_' ) + StrTran( Time(), ":", "_" )
 
       /*
-       * OO scales the image using it's resolution.
-       * This data is not available using Windows functions,
-       * it must be calculated from the image's file.
-       * So we use aResol parameter.
-       */
+      * OO scales the image using it's resolution.
+      * This data is not available using Windows functions,
+      * it must be calculated from the image's file.
+      * So we use aResol parameter.
+      */
 
       oSize := ::oServiceManager:Bridge_GetStruct( "com.sun.star.awt.Size" )
       IF aResol == NIL
@@ -4370,36 +4365,35 @@ FUNCTION OO_ConvertToURL( cFile )
 
    RETURN "file:" + cFile
 
+   // Barcode related defines and functions
 
-// Barcode related defines and functions
+   #define CODABAR_CODES { "101010001110", ;
+      "101011100010", ;
+      "101000101110", ;
+      "111000101010", ;
+      "101110100010", ;
+      "111010100010", ;
+      "100010101110", ;
+      "100010111010", ;
+      "100011101010", ;
+      "111010001010", ;
+      "101000111010", ;
+      "101110001010", ;
+      "11101011101110", ;
+      "11101110101110", ;
+      "11101110111010", ;
+      "10111011101110", ;
+      "10111000100010", ;
+      "10001000101110", ;
+      "10100011100010", ;
+      "10111000100010", ;
+      "10001000101110", ;
+      "10100010001110", ;
+      "10100011100010" }
 
-#define CODABAR_CODES { "101010001110", ;
-                        "101011100010", ;
-                        "101000101110", ;
-                        "111000101010", ;
-                        "101110100010", ;
-                        "111010100010", ;
-                        "100010101110", ;
-                        "100010111010", ;
-                        "100011101010", ;
-                        "111010001010", ;
-                        "101000111010", ;
-                        "101110001010", ;
-                        "11101011101110", ;
-                        "11101110101110", ;
-                        "11101110111010", ;
-                        "10111011101110", ;
-                        "10111000100010", ;
-                        "10001000101110", ;
-                        "10100011100010", ;
-                        "10111000100010", ;
-                        "10001000101110", ;
-                        "10100010001110", ;
-                        "10100011100010" }
+   #define CODABAR_CHARS '0123456789-$:/.+ABCDTN*E'
 
-#define CODABAR_CHARS '0123456789-$:/.+ABCDTN*E'
-
-// Important: this function does not set the start and end codes
+   // Important: this function does not set the start and end codes
 
 FUNCTION _Codabar( cCode, lShowErrors )
 
@@ -4410,6 +4404,7 @@ FUNCTION _Codabar( cCode, lShowErrors )
       IF lShowErrors
          MsgStop( _OOHG_Messages( 12, 42 ), _OOHG_Messages( 12, 12 ) )
       ENDIF
+
       RETURN NIL
    ENDIF
    cCode := Upper( cCode )
@@ -4421,114 +4416,113 @@ FUNCTION _Codabar( cCode, lShowErrors )
 
    RETURN cBarcode
 
-#define CODE128_CODES {"212222", ;
-                       "222122", ;
-                       "222221", ;
-                       "121223", ;
-                       "121322", ;
-                       "131222", ;
-                       "122213", ;
-                       "122312", ;
-                       "132212", ;
-                       "221213", ;
-                       "221312", ;
-                       "231212", ;
-                       "112232", ;
-                       "122132", ;
-                       "122231", ;
-                       "113222", ;
-                       "123122", ;
-                       "123221", ;
-                       "223211", ;
-                       "221132", ;
-                       "221231", ;
-                       "213212", ;
-                       "223112", ;
-                       "312131", ;
-                       "311222", ;
-                       "321122", ;
-                       "321221", ;
-                       "312212", ;
-                       "322112", ;
-                       "322211", ;
-                       "212123", ;
-                       "212321", ;
-                       "232121", ;
-                       "111323", ;
-                       "131123", ;
-                       "131321", ;
-                       "112313", ;
-                       "132113", ;
-                       "132311", ;
-                       "211313", ;
-                       "231113", ;
-                       "231311", ;
-                       "112133", ;
-                       "112331", ;
-                       "132131", ;
-                       "113123", ;
-                       "113321", ;
-                       "133121", ;
-                       "313121", ;
-                       "211331", ;
-                       "231131", ;
-                       "213113", ;
-                       "213311", ;
-                       "213131", ;
-                       "311123", ;
-                       "311321", ;
-                       "331121", ;
-                       "312113", ;
-                       "312311", ;
-                       "332111", ;
-                       "314111", ;
-                       "221411", ;
-                       "431111", ;
-                       "111224", ;
-                       "111422", ;
-                       "121124", ;
-                       "121421", ;
-                       "141122", ;
-                       "141221", ;
-                       "112214", ;
-                       "112412", ;
-                       "122114", ;
-                       "122411", ;
-                       "142112", ;
-                       "142211", ;
-                       "241211", ;
-                       "221114", ;
-                       "413111", ;
-                       "241112", ;
-                       "134111", ;
-                       "111242", ;
-                       "121142", ;
-                       "121241", ;
-                       "114212", ;
-                       "124112", ;
-                       "124211", ;
-                       "411212", ;
-                       "421112", ;
-                       "421211", ;
-                       "212141", ;
-                       "214121", ;
-                       "412121", ;
-                       "111143", ;
-                       "111341", ;
-                       "131141", ;
-                       "114113", ;
-                       "114311", ;
-                       "411113", ;
-                       "411311", ;
-                       "113141", ;
-                       "114131", ;
-                       "311141", ;
-                       "411131", ;
-                       "211412", ;
-                       "211214", ;
-                       "211232", ;
-                       "2331112" }
-
+   #define CODE128_CODES {"212222", ;
+      "222122", ;
+      "222221", ;
+      "121223", ;
+      "121322", ;
+      "131222", ;
+      "122213", ;
+      "122312", ;
+      "132212", ;
+      "221213", ;
+      "221312", ;
+      "231212", ;
+      "112232", ;
+      "122132", ;
+      "122231", ;
+      "113222", ;
+      "123122", ;
+      "123221", ;
+      "223211", ;
+      "221132", ;
+      "221231", ;
+      "213212", ;
+      "223112", ;
+      "312131", ;
+      "311222", ;
+      "321122", ;
+      "321221", ;
+      "312212", ;
+      "322112", ;
+      "322211", ;
+      "212123", ;
+      "212321", ;
+      "232121", ;
+      "111323", ;
+      "131123", ;
+      "131321", ;
+      "112313", ;
+      "132113", ;
+      "132311", ;
+      "211313", ;
+      "231113", ;
+      "231311", ;
+      "112133", ;
+      "112331", ;
+      "132131", ;
+      "113123", ;
+      "113321", ;
+      "133121", ;
+      "313121", ;
+      "211331", ;
+      "231131", ;
+      "213113", ;
+      "213311", ;
+      "213131", ;
+      "311123", ;
+      "311321", ;
+      "331121", ;
+      "312113", ;
+      "312311", ;
+      "332111", ;
+      "314111", ;
+      "221411", ;
+      "431111", ;
+      "111224", ;
+      "111422", ;
+      "121124", ;
+      "121421", ;
+      "141122", ;
+      "141221", ;
+      "112214", ;
+      "112412", ;
+      "122114", ;
+      "122411", ;
+      "142112", ;
+      "142211", ;
+      "241211", ;
+      "221114", ;
+      "413111", ;
+      "241112", ;
+      "134111", ;
+      "111242", ;
+      "121142", ;
+      "121241", ;
+      "114212", ;
+      "124112", ;
+      "124211", ;
+      "411212", ;
+      "421112", ;
+      "421211", ;
+      "212141", ;
+      "214121", ;
+      "412121", ;
+      "111143", ;
+      "111341", ;
+      "131141", ;
+      "114113", ;
+      "114311", ;
+      "411113", ;
+      "411311", ;
+      "113141", ;
+      "114131", ;
+      "311141", ;
+      "411131", ;
+      "211412", ;
+      "211214", ;
+      "211232", ;
+      "2331112" }
 
 FUNCTION _Code128( cCode, cMode, lShowErrors )
 
@@ -4541,6 +4535,7 @@ FUNCTION _Code128( cCode, cMode, lShowErrors )
       IF lShowErrors
          MsgStop( _OOHG_Messages( 12, 42 ), _OOHG_Messages( 12, 12 ) )
       ENDIF
+
       RETURN NIL
    ENDIF
    IF ! Empty( cMode )
@@ -4550,6 +4545,7 @@ FUNCTION _Code128( cCode, cMode, lShowErrors )
          IF lShowErrors
             MsgStop( _OOHG_Messages( 12, 43 ), _OOHG_Messages( 12, 12 ) )
          ENDIF
+
          RETURN NIL
       ENDIF
    ENDIF
@@ -4629,52 +4625,52 @@ FUNCTION _Code128( cCode, cMode, lShowErrors )
 
    RETURN cBarcode
 
-#define CODE3_9_CODES { '1110100010101110', ;
-                        '1011100010101110', ;
-                        '1110111000101010', ;
-                        '1010001110101110', ;
-                        '1110100011101010', ;
-                        '1011100011101010', ;
-                        '1010001011101110', ;
-                        '1110100010111010', ;
-                        '1011100010111010', ;
-                        '1010001110111010', ;
-                        '1110101000101110', ;
-                        '1011101000101110', ;
-                        '1110111010001010', ;
-                        '1010111000101110', ;
-                        '1110101110001010', ; //E
-                        '1011101110001010', ;
-                        '1010100011101110', ;
-                        '1110101000111010', ;
-                        '1011101000111010', ;
-                        '1010111000111010', ;
-                        '1110101010001110', ; //K
-                        '1011101010001110', ;
-                        '1110111010100010', ;
-                        '1010111010001110', ;
-                        '1110101110100010', ;
-                        '1011101110100010', ; //P
-                        '1010101110001110', ;
-                        '1110101011100010', ;
-                        '1011101011100010', ;
-                        '1010111011100010', ;
-                        '1110001010101110', ;
-                        '1000111010101110', ;
-                        '1110001110101010', ;
-                        '1000101110101110', ;
-                        '1110001011101010', ;
-                        '1000111011101010', ; //Z
-                        '1000101011101110', ;
-                        '1110001010111010', ;
-                        '1000111010111010', ; // ' '
-                        '1000101110111010', ;
-                        '1000100010100010', ;
-                        '1000100010100010', ;
-                        '1000101000100010', ;
-                        '1010001000100010'}
+   #define CODE3_9_CODES { '1110100010101110', ;
+      '1011100010101110', ;
+      '1110111000101010', ;
+      '1010001110101110', ;
+      '1110100011101010', ;
+      '1011100011101010', ;
+      '1010001011101110', ;
+      '1110100010111010', ;
+      '1011100010111010', ;
+      '1010001110111010', ;
+      '1110101000101110', ;
+      '1011101000101110', ;
+      '1110111010001010', ;
+      '1010111000101110', ;
+      '1110101110001010', ; //E
+   '1011101110001010', ;
+      '1010100011101110', ;
+      '1110101000111010', ;
+      '1011101000111010', ;
+      '1010111000111010', ;
+      '1110101010001110', ; //K
+   '1011101010001110', ;
+      '1110111010100010', ;
+      '1010111010001110', ;
+      '1110101110100010', ;
+      '1011101110100010', ; //P
+   '1010101110001110', ;
+      '1110101011100010', ;
+      '1011101011100010', ;
+      '1010111011100010', ;
+      '1110001010101110', ;
+      '1000111010101110', ;
+      '1110001110101010', ;
+      '1000101110101110', ;
+      '1110001011101010', ;
+      '1000111011101010', ; //Z
+   '1000101011101110', ;
+      '1110001010111010', ;
+      '1000111010111010', ; // ' '
+   '1000101110111010', ;
+      '1000100010100010', ;
+      '1000100010100010', ;
+      '1000101000100010', ;
+      '1010001000100010'}
 
-#define CODE3_9_CHARS '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ-. *$/+%'
+   #define CODE3_9_CHARS '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ-. *$/+%'
 
 FUNCTION _Code3_9( cCode, lCheck, lShowErrors )
 
@@ -4685,6 +4681,7 @@ FUNCTION _Code3_9( cCode, lCheck, lShowErrors )
       IF lShowErrors
          MsgStop( _OOHG_Messages( 12, 42 ), _OOHG_Messages( 12, 12 ) )
       ENDIF
+
       RETURN NIL
    ENDIF
    DEFAULT lCheck TO .F.
@@ -4700,7 +4697,7 @@ FUNCTION _Code3_9( cCode, lCheck, lShowErrors )
       IF n > 0              // Other characters are ignored
          cBarcode := cBarcode + CODE3_9_CODES[ m ]
          nCheck += ( m - 1 )
-     ENDIF
+      ENDIF
    NEXT
 
    IF lCheck
@@ -4709,10 +4706,10 @@ FUNCTION _Code3_9( cCode, lCheck, lShowErrors )
 
    RETURN cBarcode
 
-#define EAN_RIGHT "1110010110011011011001000010101110010011101010000100010010010001110100"
-#define EAN_LEFT1 "0001101001100100100110111101010001101100010101111011101101101110001011"
-#define EAN_LEFT2 "0100111011001100110110100001001110101110010000101001000100010010010111"
-#define EAN_FIRST "ooooooooeoeeooeeoeooeeeooeooeeoeeooeoeeeoooeoeoeoeoeeooeeoeo"
+   #define EAN_RIGHT "1110010110011011011001000010101110010011101010000100010010010001110100"
+   #define EAN_LEFT1 "0001101001100100100110111101010001101100010101111011101101101110001011"
+   #define EAN_LEFT2 "0100111011001100110110100001001110101110010000101001000100010010010111"
+   #define EAN_FIRST "ooooooooeoeeooeeoeooeeeooeooeeoeeooeoeeeoooeoeoeoeoeeooeeoeo"
 
 FUNCTION _Ean13( cCode, lShowErrors )
 
@@ -4723,6 +4720,7 @@ FUNCTION _Ean13( cCode, lShowErrors )
       IF lShowErrors
          MsgStop( _OOHG_Messages( 12, 42 ), _OOHG_Messages( 12, 12 ) )
       ENDIF
+
       RETURN NIL
    ENDIF
 
@@ -4867,9 +4865,9 @@ FUNCTION Upc_Check( cCode, nLen )
 
    RETURN Str( nControl, 1, 0 )
 
-#define EAN_PARITY [eeoooeoeooeooeoeoooeoeeooooeeooooeeoeoeooeooeooeoe]
+   #define EAN_PARITY [eeoooeoeooeooeoeoooeoeeooooeeooooeeoeoeooeooeooeoe]
 
-// EAN 5 digit supplement
+   // EAN 5 digit supplement
 
 FUNCTION _Sup5( cCode, lShowErrors )
 
@@ -4880,14 +4878,15 @@ FUNCTION _Sup5( cCode, lShowErrors )
       IF lShowErrors
          MsgStop( _OOHG_Messages( 12, 42 ), _OOHG_Messages( 12, 12 ) )
       ENDIF
+
       RETURN NIL
    ENDIF
    k := Left( AllTrim( cCode ) + '00000', 5 )
    cControl := Right( Str( Val( SubStr( k, 1, 1 ) ) * 3 + ;
-                           Val( SubStr( k, 3, 1 ) ) * 3 + ;
-                           Val( SubStr( k, 5, 1 ) ) * 3 + ;
-                           Val( SubStr( k, 2, 1 ) ) * 9 + ;
-                           Val( SubStr( k, 4, 1 ) ) * 9, 5, 0 ), 1 )
+      Val( SubStr( k, 3, 1 ) ) * 3 + ;
+      Val( SubStr( k, 5, 1 ) ) * 3 + ;
+      Val( SubStr( k, 2, 1 ) ) * 9 + ;
+      Val( SubStr( k, 4, 1 ) ) * 9, 5, 0 ), 1 )
    cControl := SubStr( EAN_FIRST, Val( cControl ) * 6 + 2, 5 )
 
    FOR n := 1 TO 5
@@ -4904,18 +4903,18 @@ FUNCTION _Sup5( cCode, lShowErrors )
 
    RETURN cBarcode
 
-#define CODE25_CODES { "00110", ;
-                       "10001", ;
-                       "01001", ;
-                       "11000", ;
-                       "00101", ;
-                       "10100", ;
-                       "01100", ;
-                       "00011", ;
-                       "10010", ;
-                       "01010" }
+   #define CODE25_CODES { "00110", ;
+      "10001", ;
+      "01001", ;
+      "11000", ;
+      "00101", ;
+      "10100", ;
+      "01100", ;
+      "00011", ;
+      "10010", ;
+      "01010" }
 
-// Code 25 interleaved
+   // Code 25 interleaved
 
 FUNCTION _Int25( cCode, lMode, lShowErrors )
 
@@ -4926,6 +4925,7 @@ FUNCTION _Int25( cCode, lMode, lShowErrors )
       IF lShowErrors
          MsgStop( _OOHG_Messages( 12, 42 ), _OOHG_Messages( 12, 12 ) )
       ENDIF
+
       RETURN NIL
    ENDIF
    DEFAULT lMode TO .T.
@@ -4973,7 +4973,7 @@ FUNCTION _Int25( cCode, lMode, lShowErrors )
 
    RETURN cBarCode
 
-// Matrix 25
+   // Matrix 25
 
 FUNCTION _Mat25( cCode, lCheck, lShowErrors )
 
@@ -4984,6 +4984,7 @@ FUNCTION _Mat25( cCode, lCheck, lShowErrors )
       IF lShowErrors
          MsgStop( _OOHG_Messages( 12, 42 ), _OOHG_Messages( 12, 12 ) )
       ENDIF
+
       RETURN NIL
    ENDIF
    DEFAULT lCheck TO .F.
@@ -4991,8 +4992,8 @@ FUNCTION _Mat25( cCode, lCheck, lShowErrors )
    cCode := Transform( cCode, '@9' ) // get rid of characters
    IF lCheck
       FOR n := 1 TO Len( cCode ) STEP 2
-           nCheck += Val( SubStr( cCode, n, 1 ) ) * 3 + Val( SubStr( cCode, n + 1, 1 ) )
-      next
+         nCheck += Val( SubStr( cCode, n, 1 ) ) * 3 + Val( SubStr( cCode, n + 1, 1 ) )
+      NEXT
       cCode += Right( Str( nCheck, 10, 0 ), 1 )
    ENDIF
 
@@ -5010,13 +5011,14 @@ FUNCTION _Mat25( cCode, lCheck, lShowErrors )
       ENDIF
       IF SubStr( cPre, n + 1, 1) = '1'
          cBarcode+='000'
-      else
+      ELSE
          cBarcode+='0'
       end
-   next
-return cBarcode
+   NEXT
 
-// Industrial 25
+   RETURN cBarcode
+
+   // Industrial 25
 
 FUNCTION _Ind25( cCode, lCheck, lShowErrors )
 
@@ -5027,6 +5029,7 @@ FUNCTION _Ind25( cCode, lCheck, lShowErrors )
       IF lShowErrors
          MsgStop( _OOHG_Messages( 12, 42 ), _OOHG_Messages( 12, 12 ) )
       ENDIF
+
       RETURN NIL
    ENDIF
    DEFAULT lCheck TO .F.
@@ -5048,15 +5051,14 @@ FUNCTION _Ind25( cCode, lCheck, lShowErrors )
 
    // interleaving
    FOR n := 1 TO Len( cPre )
-     IF substr( cPre, n, 1 ) = '1'
+      IF substr( cPre, n, 1 ) = '1'
          cBarCode += '1110'
-     ELSE
+      ELSE
          cBarCode += '10'
-     ENDIF
+      ENDIF
    NEXT
 
    RETURN cBarCode
-
 
 #pragma BEGINDUMP
 
@@ -5124,6 +5126,7 @@ HB_FUNC( GETPRINTERSINFO )
    if ( pBuffer == NULL )
    {
       hb_retc( ",," );
+
       return;
    }
    EnumPrinters( flags, NULL, level, (BYTE *) pBuffer, dwSize, &dwSize, &dwPrinters );
@@ -5131,6 +5134,7 @@ HB_FUNC( GETPRINTERSINFO )
    if ( dwPrinters == 0 )
    {
       hb_retc( ",," );
+
       return;
    }
    cBuffer = (char *) GlobalAlloc( GPTR, dwPrinters * 256 );
@@ -5156,10 +5160,10 @@ HB_FUNC( GETPRINTERSINFO )
    hb_retc( cBuffer );
    GlobalFree( pBuffer );
    GlobalFree( cBuffer );
+
    return;
 }
 
-//----------------------------------------------------------------------------//
 HB_FUNC( PIXELSPERINCHX )
 {
    HDC hDC;
@@ -5177,7 +5181,6 @@ HB_FUNC( PIXELSPERINCHX )
    hb_retni( iDPI );
 }
 
-//----------------------------------------------------------------------------//
 HB_FUNC( PIXELSPERINCHY )
 {
    HDC hDC;

@@ -1,64 +1,52 @@
 /*
- * $Id: h_radio.prg $
- */
+* $Id: h_radio.prg $
+*/
 /*
- * ooHG source code:
- * RadioGroup control
- *
- * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
- * https://oohg.github.io/
- *
- * Portions of this project are based upon Harbour MiniGUI library.
- * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
- *
- * Portions of this project are based upon Harbour GUI framework for Win32.
- * Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
- * Copyright 2001 Antonio Linares <alinares@fivetech.com>
- *
- * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2017, https://harbour.github.io/
- */
+* ooHG source code:
+* RadioGroup control
+* Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
+* https://oohg.github.io/
+* Portions of this project are based upon Harbour MiniGUI library.
+* Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
+* Portions of this project are based upon Harbour GUI framework for Win32.
+* Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
+* Copyright 2001 Antonio Linares <alinares@fivetech.com>
+* Portions of this project are based upon Harbour Project.
+* Copyright 1999-2017, https://harbour.github.io/
+*/
 /*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this software; see the file LICENSE.txt. If not, write to
- * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
- *
- * As a special exception, the ooHG Project gives permission for
- * additional uses of the text contained in its release of ooHG.
- *
- * The exception is that, if you link the ooHG libraries with other
- * files to produce an executable, this does not by itself cause the
- * resulting executable to be covered by the GNU General Public License.
- * Your use of that executable is in no way restricted on account of
- * linking the ooHG library code into it.
- *
- * This exception does not however invalidate any other reasons why
- * the executable file might be covered by the GNU General Public License.
- *
- * This exception applies only to the code released by the ooHG
- * Project under the name ooHG. If you copy code from other
- * ooHG Project or Free Software Foundation releases into a copy of
- * ooHG, as the General Public License permits, the exception does
- * not apply to the code that you add in this way. To avoid misleading
- * anyone as to the status of such modified files, you must delete
- * this exception notice from them.
- *
- * If you write modifications of your own for ooHG, it is your choice
- * whether to permit this exception to apply to your modifications.
- * If you do not wish that, delete this exception notice.
- */
-
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2, or (at your option)
+* any later version.
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* You should have received a copy of the GNU General Public License
+* along with this software; see the file LICENSE.txt. If not, write to
+* the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+* Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
+* As a special exception, the ooHG Project gives permission for
+* additional uses of the text contained in its release of ooHG.
+* The exception is that, if you link the ooHG libraries with other
+* files to produce an executable, this does not by itself cause the
+* resulting executable to be covered by the GNU General Public License.
+* Your use of that executable is in no way restricted on account of
+* linking the ooHG library code into it.
+* This exception does not however invalidate any other reasons why
+* the executable file might be covered by the GNU General Public License.
+* This exception applies only to the code released by the ooHG
+* Project under the name ooHG. If you copy code from other
+* ooHG Project or Free Software Foundation releases into a copy of
+* ooHG, as the General Public License permits, the exception does
+* not apply to the code that you add in this way. To avoid misleading
+* anyone as to the status of such modified files, you must delete
+* this exception notice from them.
+* If you write modifications of your own for ooHG, it is your choice
+* whether to permit this exception to apply to your modifications.
+* If you do not wish that, delete this exception notice.
+*/
 
 #include "oohg.ch"
 #include "common.ch"
@@ -105,12 +93,12 @@ CLASS TRadioGroup FROM TLabel
    ENDCLASS
 
 METHOD Define( ControlName, ParentForm, x, y, aOptions, Value, fontname, ;
-               fontsize, tooltip, change, width, spacing, HelpId, invisible, ;
-               notabstop, bold, italic, underline, strikeout, backcolor, ;
-               fontcolor, transparent, autosize, horizontal, lDisabled, lRtl, ;
-               height, drawby, bkgrnd, left, readonly ) CLASS TRadioGroup
+      fontsize, tooltip, change, width, spacing, HelpId, invisible, ;
+      notabstop, bold, italic, underline, strikeout, backcolor, ;
+      fontcolor, transparent, autosize, horizontal, lDisabled, lRtl, ;
+      height, drawby, bkgrnd, left, readonly ) CLASS TRadioGroup
 
-   Local i, oItem, uToolTip, uReadOnly
+   LOCAL i, oItem, uToolTip, uReadOnly
 
    ASSIGN ::nCol        VALUE x           TYPE "N"
    ASSIGN ::nRow        VALUE y           TYPE "N"
@@ -124,13 +112,13 @@ METHOD Define( ControlName, ParentForm, x, y, aOptions, Value, fontname, ;
    ASSIGN aOptions      VALUE aOptions    TYPE "A" DEFAULT {}
    ASSIGN ::lLibDraw    VALUE drawby      TYPE "L" DEFAULT _OOHG_UsesVisualStyle()
 
-   If HB_IsObject( bkgrnd )
+   IF HB_IsObject( bkgrnd )
       ::oBkGrnd := bkgrnd
-   EndIf
+   ENDIF
 
    IF HB_IsLogical( NoTabStop )
       ::TabStop := ! NoTabStop
-   EndIf
+   ENDIF
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, , lRtl )
    ::InitStyle( , , Invisible, ! ::TabStop, lDisabled )
@@ -140,48 +128,48 @@ METHOD Define( ControlName, ParentForm, x, y, aOptions, Value, fontname, ;
 
    x := ::Col
    y := ::Row
-   For i = 1 to LEN( aOptions )
-      If HB_IsArray( tooltip ) .AND. LEN( tooltip ) >= i
+   FOR i = 1 to LEN( aOptions )
+      IF HB_IsArray( tooltip ) .AND. LEN( tooltip ) >= i
          uToolTip := tooltip[ i ]
-      Else
+      ELSE
          uToolTip := ::ToolTip
-      EndIf
-      If HB_IsArray( readonly ) .AND. LEN( readonly ) >= i
+      ENDIF
+      IF HB_IsArray( readonly ) .AND. LEN( readonly ) >= i
          uReadOnly := readonly[ i ]
-      Else
+      ELSE
          uReadOnly := readonly
-      EndIf
+      ENDIF
 
       oItem := TRadioItem():Define( , Self, x, y, ::nWidth, ::nHeight, ;
-               aOptions[ i ], .F., ( i == 1 ), ;
-               ::AutoSize, ::Transparent, , , ;
-               , , , , , , ;
-               uToolTip, ::HelpId, , .T., uReadOnly, , ;
-               bkgrnd, ::LeftAlign )
+         aOptions[ i ], .F., ( i == 1 ), ;
+         ::AutoSize, ::Transparent, , , ;
+         , , , , , , ;
+         uToolTip, ::HelpId, , .T., uReadOnly, , ;
+         bkgrnd, ::LeftAlign )
 
       AADD( ::aOptions, oItem )
-      If ::lHorizontal
+      IF ::lHorizontal
          x += ::nSpacing
-      Else
+      ELSE
          y += ::nSpacing
-      EndIf
-   Next
+      ENDIF
+   NEXT
 
    ::Value := Value
 
-   If ! HB_IsNumeric( Value ) .AND. LEN( ::aOptions ) > 0
+   IF ! HB_IsNumeric( Value ) .AND. LEN( ::aOptions ) > 0
       ::aOptions[ 1 ]:TabStop := .T.
-   EndIf
+   ENDIF
 
    ::SetFont( , , bold, italic, underline, strikeout )
 
    ASSIGN ::OnChange VALUE Change TYPE "B"
 
-   Return Self
+   RETURN Self
 
 METHOD GroupHeight() CLASS TRadioGroup
 
-   Local nRet, oFirst, oLast
+   LOCAL nRet, oFirst, oLast
 
    IF ::lHorizontal
       nRet := ::Height
@@ -199,7 +187,7 @@ METHOD GroupHeight() CLASS TRadioGroup
 
 METHOD GroupWidth() CLASS TRadioGroup
 
-   Local nRet, oFirst, oLast
+   LOCAL nRet, oFirst, oLast
 
    IF ::lHorizontal
       IF LEN( ::aOptions ) > 0
@@ -219,11 +207,11 @@ METHOD SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout ) CLASS T
 
    AEVAL( ::aOptions, { |o| o:SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout ) } )
 
-   RETURN Nil
+   RETURN NIL
 
 METHOD SizePos( Row, Col, Width, Height ) CLASS TRadioGroup
 
-   Local nDeltaRow, nDeltaCol, uRet
+   LOCAL nDeltaRow, nDeltaCol, uRet
 
    nDeltaRow := ::Row
    nDeltaCol := ::Col
@@ -238,64 +226,64 @@ METHOD Value( nValue ) CLASS TRadioGroup
 
    LOCAL i, lSetFocus
 
-   If HB_IsNumeric( nValue )
+   IF HB_IsNumeric( nValue )
       nValue := INT( nValue )
       lSetFocus := ( ASCAN( ::aOptions, { |o| o:hWnd == GetFocus() } ) > 0 )
-      For i := 1 TO LEN( ::aOptions )
+      FOR i := 1 TO LEN( ::aOptions )
          ::aOptions[ i ]:Value := ( i == nValue )
-      Next
+      NEXT
       nValue := ::Value
-      For i := 1 TO LEN( ::aOptions )
+      FOR i := 1 TO LEN( ::aOptions )
          ::aOptions[ i ]:TabStop := ( ::TabStop .AND. i == MAX( nValue, 1 ) )
-      Next
-      If lSetFocus
-         If nValue > 0
+      NEXT
+      IF lSetFocus
+         IF nValue > 0
             ::aOptions[ nValue ]:SetFocus()
-         EndIf
-      EndIf
+         ENDIF
+      ENDIF
       ::DoChange()
-   EndIf
+   ENDIF
 
    RETURN ASCAN( ::aOptions, { |o| o:Value } )
 
 METHOD Enabled( lEnabled ) CLASS TRadioGroup
 
-   If HB_IsLogical( lEnabled )
+   IF HB_IsLogical( lEnabled )
       ::Super:Enabled := lEnabled
       AEVAL( ::aControls, { |o| o:Enabled := o:Enabled } )
-   EndIf
+   ENDIF
 
    RETURN ::Super:Enabled
 
 METHOD SetFocus() CLASS TRadioGroup
 
-   Local nValue
+   LOCAL nValue
 
    nValue := ::Value
-   If nValue >= 1 .AND. nValue <= LEN( ::aOptions )
+   IF nValue >= 1 .AND. nValue <= LEN( ::aOptions )
       ::aOptions[ nValue ]:SetFocus()
-   Else
+   ELSE
       ::aOptions[ 1 ]:SetFocus()
-   EndIf
+   ENDIF
 
-   Return Self
+   RETURN Self
 
 METHOD Visible( lVisible ) CLASS TRadioGroup
 
-   If HB_IsLogical( lVisible )
+   IF HB_IsLogical( lVisible )
       ::Super:Visible := lVisible
-      If lVisible
+      IF lVisible
          AEVAL( ::aControls, { |o| o:Visible := o:Visible } )
-      Else
+      ELSE
          AEVAL( ::aControls, { |o| o:ForceHide() } )
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
    RETURN ::lVisible
 
 METHOD AddItem( cCaption, nImage, uToolTip ) CLASS TRadioGroup
 
-   Return ::InsertItem( ::ItemCount + 1, cCaption, nImage, uToolTip )
+   RETURN ::InsertItem( ::ItemCount + 1, cCaption, nImage, uToolTip )
 
    /*
    TODO:
@@ -306,7 +294,7 @@ METHOD AddItem( cCaption, nImage, uToolTip ) CLASS TRadioGroup
 
 METHOD InsertItem( nPosition, cCaption, nImage, uToolTip, bkgrnd, uLeftAlign, uReadOnly ) CLASS TRadioGroup
 
-   Local nPos2, Spacing, oItem, x, y, nValue, hWnd
+   LOCAL nPos2, Spacing, oItem, x, y, nValue, hWnd
 
    EMPTY( nImage )
    IF  ( ! VALTYPE( uToolTip ) $ "CM" .OR. EMPTY( uToolTip ) ) .AND. ! HB_IsBlock( uToolTip )
@@ -316,175 +304,174 @@ METHOD InsertItem( nPosition, cCaption, nImage, uToolTip, bkgrnd, uLeftAlign, uR
 
    nValue := ::Value
 
-   If HB_IsNumeric( ::nSpacing )
+   IF HB_IsNumeric( ::nSpacing )
       Spacing := ::nSpacing
-   Else
+   ELSE
       Spacing := IF( ::lHorizontal, ::nWidth, ::nHeight )
-   EndIf
+   ENDIF
 
    nPosition := INT( nPosition )
-   If nPosition < 1 .OR. nPosition > LEN( ::aOptions )
+   IF nPosition < 1 .OR. nPosition > LEN( ::aOptions )
       nPosition := LEN( ::aOptions ) + 1
-   EndIf
+   ENDIF
 
    AADD( ::aOptions, Nil )
    AINS( ::aOptions, nPosition )
    nPos2 := LEN( ::aOptions )
    DO WHILE nPos2 > nPosition
-      If ::lHorizontal
+      IF ::lHorizontal
          ::aOptions[ nPos2 ]:Col += Spacing
-      Else
+      ELSE
          ::aOptions[ nPos2 ]:Row += Spacing
-      EndIf
+      ENDIF
       nPos2--
    ENDDO
 
-   If nPosition == 1
+   IF nPosition == 1
       x := ::Col
       y := ::Row
-      If LEN( ::aOptions ) > 1
+      IF LEN( ::aOptions ) > 1
          WindowStyleFlag( ::aOptions[ 2 ]:hWnd, WS_GROUP, 0 )
-      EndIf
-   Else
+      ENDIF
+   ELSE
       x := ::aOptions[ nPosition - 1 ]:Col
       y := ::aOptions[ nPosition - 1 ]:Row
-      If ::lHorizontal
+      IF ::lHorizontal
          x += Spacing
-      Else
+      ELSE
          y += Spacing
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
    oItem := TRadioItem():Define( , Self, x, y, ::Width, ::Height, ;
-            cCaption, .F., ( nPosition == 1 ), ;
-            ::AutoSize, ::Transparent, , , ;
-            , , , , , , ;
-            uToolTip, ::HelpId, , .T., uReadOnly, , ;
-            bkgrnd, uLeftAlign )
+      cCaption, .F., ( nPosition == 1 ), ;
+      ::AutoSize, ::Transparent, , , ;
+      , , , , , , ;
+      uToolTip, ::HelpId, , .T., uReadOnly, , ;
+      bkgrnd, uLeftAlign )
    ::aOptions[ nPosition ] := oItem
 
-   If nPosition > 1
+   IF nPosition > 1
       SetWindowPos( oItem:hWnd, ::aOptions[ nPosition - 1 ]:hWnd, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE )
-   ElseIf LEN( ::aOptions ) >= 2
+   ELSEIF LEN( ::aOptions ) >= 2
       hWnd:= GetWindow( ::aOptions[ 2 ]:hWnd, GW_HWNDPREV )
       SetWindowPos( oItem:hWnd, hWnd, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE )
-   Endif
+   ENDIF
 
-   If nValue >= nPosition
+   IF nValue >= nPosition
       ::Value := ::Value
-   EndIf
+   ENDIF
 
-   Return Nil
+   RETURN NIL
 
 METHOD DeleteItem( nItem ) CLASS TRadioGroup
 
-   Local nValue
+   LOCAL nValue
 
    nItem := INT( nItem )
-   If nItem >= 1 .AND. nItem <= LEN( ::aOptions )
+   IF nItem >= 1 .AND. nItem <= LEN( ::aOptions )
       nValue := ::Value
       ::aOptions[ nItem ]:Release()
       _OOHG_DeleteArrayItem( ::aOptions, nItem )
-      If nItem == 1 .AND. LEN( ::aOptions ) > 0
+      IF nItem == 1 .AND. LEN( ::aOptions ) > 0
          WindowStyleFlag( ::aOptions[ 1 ]:hWnd, WS_GROUP, WS_GROUP )
-      EndIf
-      If nValue >= nItem
+      ENDIF
+      IF nValue >= nItem
          ::Value := nValue
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
-   If nValue >= nItem
+   IF nValue >= nItem
       ::Value := ::Value
-   EndIf
+   ENDIF
 
-   Return Nil
+   RETURN NIL
 
 METHOD Caption( nItem, uValue ) CLASS TRadioGroup
 
-   Return ( ::aOptions[ nItem ]:Caption := uValue )
+   RETURN ( ::aOptions[ nItem ]:Caption := uValue )
 
 METHOD AdjustResize( nDivh, nDivw, lSelfOnly ) CLASS TRadioGroup
 
-   If HB_IsNumeric( ::nSpacing )
-      If ::lHorizontal
+   IF HB_IsNumeric( ::nSpacing )
+      IF ::lHorizontal
          ::Spacing := ::nSpacing * nDivw
-      Else
+      ELSE
          ::Spacing := ::nSpacing * nDivh
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
-   Return ::Super:AdjustResize( nDivh, nDivw, lSelfOnly )
+   RETURN ::Super:AdjustResize( nDivh, nDivw, lSelfOnly )
 
 METHOD Spacing( nSpacing ) CLASS TRadioGroup
 
-   Local x, y, i, oCtrl
+   LOCAL x, y, i, oCtrl
 
-   If HB_IsNumeric( nSpacing )
+   IF HB_IsNumeric( nSpacing )
       x := ::Col
       y := ::Row
-      For i = 1 to LEN( ::aOptions )
+      FOR i = 1 to LEN( ::aOptions )
          oCtrl := ::aOptions[ i ]
          oCtrl:Visible := .F.
          oCtrl:SizePos( y, x )
          oCtrl:Visible := .T.
-         If ::lHorizontal
+         IF ::lHorizontal
             x += nSpacing
-         Else
+         ELSE
             y += nSpacing
-         EndIf
-      Next
+         ENDIF
+      NEXT
       ::nSpacing := nSpacing
-   EndIf
+   ENDIF
 
-   Return ::nSpacing
+   RETURN ::nSpacing
 
 METHOD ItemEnabled( nItem, lEnabled ) CLASS TRadioGroup
 
-   If HB_IsLogical( lEnabled )
+   IF HB_IsLogical( lEnabled )
       ::aOptions[ nItem ]:Enabled := lEnabled
-   EndIf
+   ENDIF
 
-   Return ::aOptions[ nItem ]:Enabled
+   RETURN ::aOptions[ nItem ]:Enabled
 
 METHOD ItemReadonly( nItem, lReadOnly ) CLASS TRadioGroup
 
-   If HB_IsLogical( lReadOnly )
+   IF HB_IsLogical( lReadOnly )
       ::aOptions[ nItem ]:Enabled := ! lReadOnly
-   EndIf
+   ENDIF
 
-   Return ! ::aOptions[ nItem ]:Enabled
+   RETURN ! ::aOptions[ nItem ]:Enabled
 
 METHOD ReadOnly( uReadOnly ) CLASS TRadioGroup
 
-  Local i, aReadOnly
+   LOCAL i, aReadOnly
 
-   If HB_IsLogical( uReadOnly )
+   IF HB_IsLogical( uReadOnly )
       aReadOnly := ARRAY( LEN( ::aOptions ) )
       AFILL( aReadOnly, uReadOnly )
-   ElseIf HB_IsArray( uReadOnly )
+   ELSEIF HB_IsArray( uReadOnly )
       aReadOnly := ARRAY( LEN( ::aOptions ) )
-      For i := 1 TO LEN( uReadOnly )
-         If HB_IsLogical( uReadOnly[ i ] )
+      FOR i := 1 TO LEN( uReadOnly )
+         IF HB_IsLogical( uReadOnly[ i ] )
             aReadOnly[ i ] := uReadOnly[ i ]
-         EndIf
-      Next i
-   EndIf
+         ENDIF
+      NEXT i
+   ENDIF
 
-   If HB_IsArray( aReadOnly )
-      For i := 1 TO LEN( ::aOptions )
-         If HB_IsLogical( aReadOnly[ i ] )
+   IF HB_IsArray( aReadOnly )
+      FOR i := 1 TO LEN( ::aOptions )
+         IF HB_IsLogical( aReadOnly[ i ] )
             ::aOptions[ i ]:Enabled := ! aReadOnly[ i ]
-         EndIf
-      Next i
-   Else
+         ENDIF
+      NEXT i
+   ELSE
       aReadOnly := ARRAY( LEN( ::aOptions ) )
-   EndIf
+   ENDIF
 
-   For i := 1 TO LEN( ::aOptions )
+   FOR i := 1 TO LEN( ::aOptions )
       aReadOnly[ i ] := ! ::aOptions[ i ]:Enabled
-   Next i
+   NEXT i
 
-   Return aReadOnly
-
+   RETURN aReadOnly
 
 CLASS TRadioItem FROM TLabel
 
@@ -506,13 +493,13 @@ CLASS TRadioItem FROM TLabel
    ENDCLASS
 
 METHOD Define( ControlName, ParentForm, x, y, width, height, ;
-               caption, value, lFirst, ;
-               autosize, transparent, fontcolor, backcolor, ;
-               fontname, fontsize, bold, italic, underline, strikeout, ;
-               tooltip, HelpId, invisible, notabstop, lDisabled, lRtl, ;
-               bkgrnd, left ) CLASS TRadioItem
+      caption, value, lFirst, ;
+      autosize, transparent, fontcolor, backcolor, ;
+      fontname, fontsize, bold, italic, underline, strikeout, ;
+      tooltip, HelpId, invisible, notabstop, lDisabled, lRtl, ;
+      bkgrnd, left ) CLASS TRadioItem
 
-   Local ControlHandle, nStyle, oContainer
+   LOCAL ControlHandle, nStyle, oContainer
 
    ASSIGN ::nCol      VALUE x      TYPE "N"
    ASSIGN ::nRow      VALUE y      TYPE "N"
@@ -522,111 +509,116 @@ METHOD Define( ControlName, ParentForm, x, y, width, height, ;
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor,, lRtl )
 
-   If HB_IsObject( bkgrnd )
+   IF HB_IsObject( bkgrnd )
       ::oBkGrnd := bkgrnd
-   ElseIf ::Parent:Type == "RADIOGROUP"
+   ELSEIF ::Parent:Type == "RADIOGROUP"
       ::oBkGrnd := ::Parent:oBkGrnd
-   Endif
+   ENDIF
 
    nStyle := ::InitStyle( ,, Invisible, notabstop, lDisabled )
 
-   If HB_IsLogical( lFirst ) .AND. lFirst
+   IF HB_IsLogical( lFirst ) .AND. lFirst
       ControlHandle := InitRadioGroup( ::ContainerhWnd, ::ContainerCol, ::ContainerRow, nStyle, ::lRtl, ::Width, ::Height, ::LeftAlign )
-   Else
+   ELSE
       ControlHandle := InitRadioButton( ::ContainerhWnd, ::ContainerCol, ::ContainerRow, nStyle, ::lRtl, ::Width, ::Height, ::LeftAlign )
-   EndIf
+   ENDIF
 
    ::Register( ControlHandle,, HelpId,, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
 
-   If _OOHG_UsesVisualStyle()
+   IF _OOHG_UsesVisualStyle()
       oContainer := ::Container
       DO WHILE ! oContainer == Nil
-         If oContainer:Type == "TAB"
+         IF oContainer:Type == "TAB"
             ::TabHandle := oContainer:hWnd
             EXIT
-         EndIf
+         ENDIF
          oContainer := oContainer:Container
       ENDDO
-   EndIf
+   ENDIF
 
    ::Transparent := transparent
    ::AutoSize    := autosize
    ::Caption     := caption
    ::Value       := value
 
-   Return Self
+   RETURN Self
 
 METHOD Value( lValue ) CLASS TRadioItem
 
    LOCAL lOldValue
 
-   If HB_IsLogical( lValue )
+   IF HB_IsLogical( lValue )
       lOldValue := ( SendMessage( ::hWnd, BM_GETCHECK, 0, 0 ) == BST_CHECKED )
-      If ! lValue == lOldValue
+      IF ! lValue == lOldValue
          SendMessage( ::hWnd, BM_SETCHECK, IF( lValue, BST_CHECKED, BST_UNCHECKED ), 0 )
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
-   Return ( SendMessage( ::hWnd, BM_GETCHECK, 0, 0 ) == BST_CHECKED )
+   RETURN ( SendMessage( ::hWnd, BM_GETCHECK, 0, 0 ) == BST_CHECKED )
 
 METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TRadioItem
 
-   If nMsg == WM_LBUTTONDBLCLK
-      If HB_IsBlock( ::OnDblClick )
+   IF nMsg == WM_LBUTTONDBLCLK
+      IF HB_IsBlock( ::OnDblClick )
          ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
-      ElseIf ! ::Container == Nil
+      ELSEIF ! ::Container == Nil
          ::Container:DoEventMouseCoords( ::Container:OnDblClick, "DBLCLICK" )
-      EndIf
-      Return Nil
-   ElseIf nMsg == WM_RBUTTONUP
-      If HB_IsBlock( ::OnRClick )
+      ENDIF
+
+      RETURN NIL
+   ELSEIF nMsg == WM_RBUTTONUP
+      IF HB_IsBlock( ::OnRClick )
          ::DoEventMouseCoords( ::OnRClick, "RCLICK" )
-      ElseIf ! ::Container == Nil
+      ELSEIF ! ::Container == Nil
          ::Container:DoEventMouseCoords( ::Container:OnRClick, "RCLICK" )
-      EndIf
-      Return Nil
-   EndIf
+      ENDIF
+
+      RETURN NIL
+   ENDIF
 
    RETURN ::Super:Events( hWnd, nMsg, wParam, lParam )
 
 METHOD Events_Command( wParam ) CLASS TRadioItem
 
-   Local Hi_wParam := HIWORD( wParam )
+   LOCAL Hi_wParam := HIWORD( wParam )
+
    /*
    Local lTab
+
    */
-   If Hi_wParam == BN_CLICKED
-      If ! ::Container == Nil
+   IF Hi_wParam == BN_CLICKED
+      IF ! ::Container == Nil
          /*
          lTab := ( ::Container:TabStop .AND. ::Value )
          If ! lTab == ::TabStop
-            ::TabStop := lTab
+         ::TabStop := lTab
          EndIf
          */
          ::Container:DoChange()
-      EndIf
-      Return Nil
-   EndIf
+      ENDIF
 
-   Return ::Super:Events_Command( wParam )
+      RETURN NIL
+   ENDIF
+
+   RETURN ::Super:Events_Command( wParam )
 
 METHOD Events_Color( wParam, nDefColor ) CLASS TRadioItem
 
-   Return Events_Color_InTab( Self, wParam, nDefColor )    // see h_controlmisc.prg
+   RETURN Events_Color_InTab( Self, wParam, nDefColor )    // see h_controlmisc.prg
 
 METHOD Events_Notify( wParam, lParam ) CLASS TRadioItem
 
-   Local nNotify := GetNotifyCode( lParam )
+   LOCAL nNotify := GetNotifyCode( lParam )
 
-   If nNotify == NM_CUSTOMDRAW
-      If ! ::Container == Nil .AND. ::Container:lLibDraw .AND. ::Container:IsVisualStyled .AND. _OOHG_UsesVisualStyle()
-         Return TRadioItem_Notify_CustomDraw( Self, lParam, ::Caption, HB_IsObject( ::oBkGrnd ), ::LeftAlign )
-      EndIf
-   EndIf
+   IF nNotify == NM_CUSTOMDRAW
+      IF ! ::Container == Nil .AND. ::Container:lLibDraw .AND. ::Container:IsVisualStyled .AND. _OOHG_UsesVisualStyle()
 
-   Return ::Super:Events_Notify( wParam, lParam )
+         RETURN TRadioItem_Notify_CustomDraw( Self, lParam, ::Caption, HB_IsObject( ::oBkGrnd ), ::LeftAlign )
+      ENDIF
+   ENDIF
 
+   RETURN ::Super:Events_Notify( wParam, lParam )
 
 #pragma BEGINDUMP
 
@@ -754,11 +746,13 @@ static WNDPROC lpfnOldWndProcA = 0, lpfnOldWndProcB = 0;
 
 static LRESULT APIENTRY SubClassFuncA( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
+
    return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProcA );
 }
 
 static LRESULT APIENTRY SubClassFuncB( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
+
    return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProcB );
 }
 
@@ -837,6 +831,7 @@ int TRadioItem_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption
       hInstDLL = LoadLibrary( "UXTHEME.DLL" );
       if( ! hInstDLL )
       {
+
          return CDRF_DODEFAULT;
       }
 
@@ -852,6 +847,7 @@ int TRadioItem_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption
       if( ! ( dwProcCloseThemeData && dwProcDrawThemeBackground && dwProcDrawThemeParentBackground && dwProcDrawThemeTextEx && dwProcGetThemeBackgroundContentRect && dwProcGetThemePartSize && dwProcIsThemeBackgroundPartiallyTransparent && dwProcOpenThemeData ) )
       {
          FreeLibrary( hInstDLL );
+
          return CDRF_DODEFAULT;
       }
 
@@ -859,6 +855,7 @@ int TRadioItem_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption
       if( ! hTheme )
       {
          FreeLibrary( hInstDLL );
+
          return CDRF_DODEFAULT;
       }
 

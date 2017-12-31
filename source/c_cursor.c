@@ -64,7 +64,6 @@
  * If you do not wish that, delete this exception notice.
  */
 
-
 #define _WIN32_IE      0x0500
 #define HB_OS_WIN_32_USED
 #define _WIN32_WINNT   0x0400

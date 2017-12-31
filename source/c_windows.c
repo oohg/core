@@ -59,7 +59,6 @@
  * If you do not wish that, delete this exception notice.
  */
 
-
 #ifndef HB_OS_WIN_32_USED
    #define HB_OS_WIN_32_USED
 #endif
@@ -98,10 +97,6 @@
 #define IS_WIN30_DIB(lpbi)  ((*(LPDWORD)(lpbi)) == sizeof(BITMAPINFOHEADER))
 #define RECTWIDTH(lpRect)     ((lpRect)->right - (lpRect)->left)
 #define RECTHEIGHT(lpRect)    ((lpRect)->bottom - (lpRect)->top)
-
-
-
-
 
 
 #include <shlobj.h>
@@ -662,7 +657,6 @@ HB_FUNC ( ISWINDOWVISIBLE )
    hb_retl( IsWindowVisible( HWNDparam( 1 ) ) ) ;
 }
 
-
 HB_FUNC ( ISWINDOWMAXIMIZED )
 {
    hb_retl( IsZoomed( HWNDparam( 1 ) ) ) ;
@@ -1093,7 +1087,6 @@ WORD DIBNumColors(LPSTR lpDIB)
     // allows for (i.e. lpbi->biClrUsed can be set to some value).
     // If this is the case, return the appropriate value.
 
-
     if (IS_WIN30_DIB(lpDIB))
     {
         DWORD dwClrUsed;
@@ -1305,7 +1298,6 @@ WORD SaveDIB(HDIB hDib, LPSTR lpFileName)
     fh = CreateFile(lpFileName, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS,
             FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, NULL);
 
-
     // Get a pointer to the DIB memory, the first of which contains
     // a BITMAPINFO structure
 
@@ -1323,16 +1315,13 @@ WORD SaveDIB(HDIB hDib, LPSTR lpFileName)
         return 1;
     }
 
-
     bmfHdr.bfType = ((WORD) ('M' << 8) | 'B'); // is always "BM"
 
     dwDIBSize = *(LPDWORD)lpBI + PaletteSize((LPSTR)lpBI);
 
-
     dwBmBitsSize = ((((lpBI->biWidth)*((DWORD)lpBI->biBitCount))+ 31) / 32 * 4) *  lpBI->biHeight;
     dwDIBSize += dwBmBitsSize;
     lpBI->biSizeImage = dwBmBitsSize;
-
 
     bmfHdr.bfSize = dwDIBSize + sizeof(BITMAPFILEHEADER);
     bmfHdr.bfReserved1 = 0;

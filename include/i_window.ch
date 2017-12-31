@@ -58,7 +58,6 @@
  * If you do not wish that, delete this exception notice.
  */
 
-
 /*---------------------------------------------------------------------------
 DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
 ---------------------------------------------------------------------------*/

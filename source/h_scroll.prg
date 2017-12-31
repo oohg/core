@@ -1,64 +1,52 @@
 /*
- * $Id: h_scroll.prg $
- */
+* $Id: h_scroll.prg $
+*/
 /*
- * ooHG source code:
- * Scrollbar control
- *
- * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
- * https://oohg.github.io/
- *
- * Portions of this project are based upon Harbour MiniGUI library.
- * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
- *
- * Portions of this project are based upon Harbour GUI framework for Win32.
- * Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
- * Copyright 2001 Antonio Linares <alinares@fivetech.com>
- *
- * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2017, https://harbour.github.io/
- */
+* ooHG source code:
+* Scrollbar control
+* Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
+* https://oohg.github.io/
+* Portions of this project are based upon Harbour MiniGUI library.
+* Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
+* Portions of this project are based upon Harbour GUI framework for Win32.
+* Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
+* Copyright 2001 Antonio Linares <alinares@fivetech.com>
+* Portions of this project are based upon Harbour Project.
+* Copyright 1999-2017, https://harbour.github.io/
+*/
 /*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this software; see the file LICENSE.txt. If not, write to
- * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
- *
- * As a special exception, the ooHG Project gives permission for
- * additional uses of the text contained in its release of ooHG.
- *
- * The exception is that, if you link the ooHG libraries with other
- * files to produce an executable, this does not by itself cause the
- * resulting executable to be covered by the GNU General Public License.
- * Your use of that executable is in no way restricted on account of
- * linking the ooHG library code into it.
- *
- * This exception does not however invalidate any other reasons why
- * the executable file might be covered by the GNU General Public License.
- *
- * This exception applies only to the code released by the ooHG
- * Project under the name ooHG. If you copy code from other
- * ooHG Project or Free Software Foundation releases into a copy of
- * ooHG, as the General Public License permits, the exception does
- * not apply to the code that you add in this way. To avoid misleading
- * anyone as to the status of such modified files, you must delete
- * this exception notice from them.
- *
- * If you write modifications of your own for ooHG, it is your choice
- * whether to permit this exception to apply to your modifications.
- * If you do not wish that, delete this exception notice.
- */
-
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2, or (at your option)
+* any later version.
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* You should have received a copy of the GNU General Public License
+* along with this software; see the file LICENSE.txt. If not, write to
+* the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+* Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
+* As a special exception, the ooHG Project gives permission for
+* additional uses of the text contained in its release of ooHG.
+* The exception is that, if you link the ooHG libraries with other
+* files to produce an executable, this does not by itself cause the
+* resulting executable to be covered by the GNU General Public License.
+* Your use of that executable is in no way restricted on account of
+* linking the ooHG library code into it.
+* This exception does not however invalidate any other reasons why
+* the executable file might be covered by the GNU General Public License.
+* This exception applies only to the code released by the ooHG
+* Project under the name ooHG. If you copy code from other
+* ooHG Project or Free Software Foundation releases into a copy of
+* ooHG, as the General Public License permits, the exception does
+* not apply to the code that you add in this way. To avoid misleading
+* anyone as to the status of such modified files, you must delete
+* this exception notice from them.
+* If you write modifications of your own for ooHG, it is your choice
+* whether to permit this exception to apply to your modifications.
+* If you do not wish that, delete this exception notice.
+*/
 
 #include "oohg.ch"
 #include "hbclass.ch"
@@ -125,19 +113,19 @@ CLASS TScrollBar FROM TControl
    ENDCLASS
 
 METHOD Define( ControlName, ParentForm, x, y, w, h, RangeMin, RangeMax, ;
-               change, lineup, linedown, pageup, pagedown, top, bottom, ;
-               thumb, track, endtrack, HelpId, invisible, ToolTip, lRtl, ;
-               nOrient, lSubControl, value, lDisabled, nLineSkip, nPageSkip, ;
-               lAutoMove ) CLASS TScrollBar
+      change, lineup, linedown, pageup, pagedown, top, bottom, ;
+      thumb, track, endtrack, HelpId, invisible, ToolTip, lRtl, ;
+      nOrient, lSubControl, value, lDisabled, nLineSkip, nPageSkip, ;
+      lAutoMove ) CLASS TScrollBar
 
-   Local ControlHandle, nStyle
+   LOCAL ControlHandle, nStyle
 
-   If ::nWidth == 0
+   IF ::nWidth == 0
       ::nWidth := GETVSCROLLBARWIDTH()
-   EndIf
-   If ::nHeight == 0
+   ENDIF
+   IF ::nHeight == 0
       ::nHeight := GETHSCROLLBARHEIGHT()
-   EndIf
+   ENDIF
    ASSIGN ::nWidth    VALUE w         TYPE "N"
    ASSIGN ::nHeight   VALUE h         TYPE "N"
    ASSIGN ::nRangeMin VALUE RangeMin  TYPE "N"
@@ -153,16 +141,16 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, RangeMin, RangeMax, ;
 
    nStyle := ::InitStyle( ,, Invisible, .T., lDisabled )
 
-   If HB_IsLogical( lSubControl ) .AND. lSubControl
+   IF HB_IsLogical( lSubControl ) .AND. lSubControl
       ::ScrollType := ::nOrient
       ::Register( 0,             ControlName, HelpId,, ToolTip, 0 )
       ::FromhWnd := IF( ::Container != nil, ::Container:hWnd, ::ContainerhWnd )
-   Else
+   ELSE
       ::ScrollType := SB_CTL
       ControlHandle := InitScrollBar( ::ContainerhWnd, ::ContainerCol, ::ContainerRow, ::Width, ::Height, ::lRtl, ::nOrient, nStyle )
       ::Register( ControlHandle, ControlName, HelpId,, ToolTip, ControlHandle )
       ::FromhWnd := ControlHandle
-   EndIf
+   ENDIF
 
    ::SetRange( ::nRangeMin, ::nRangeMax )
    SetScrollRange( ::FromhWnd, ::ScrollType, ::nRangeMin, ::nRangeMax, .T. )
@@ -180,32 +168,32 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, RangeMin, RangeMax, ;
    ASSIGN ::OnTrack    VALUE track    TYPE "B"
    ASSIGN ::OnEndTrack VALUE endtrack TYPE "B"
 
-   Return Self
+   RETURN Self
 
 METHOD Value( nValue ) CLASS TScrollBar
 
-   if HB_IsNumeric( nValue )
+   IF HB_IsNumeric( nValue )
       SetScrollPos( ::FromhWnd, ::ScrollType, nValue / ::nFactor, .T. )
-   endif
+   ENDIF
 
-   Return GetScrollPos( ::FromhWnd, ::ScrollType ) * ::nFactor
+   RETURN GetScrollPos( ::FromhWnd, ::ScrollType ) * ::nFactor
 
 METHOD RangeMin( nValue ) CLASS TScrollBar
 
    ::SetRange( nValue, ::nRangeMax )
 
-   Return ::nRangeMin
+   RETURN ::nRangeMin
 
 METHOD RangeMax( nValue ) CLASS TScrollBar
 
    ::SetRange( ::nRangeMin, nValue )
 
-   Return ::nRangeMax
+   RETURN ::nRangeMax
 
 METHOD SetRange( nRangeMin, nRangeMax ) CLASS TScrollBar
 
    *LOCAL nMax
-   If HB_IsNumeric( nRangeMin ) .OR. HB_IsNumeric( nRangeMax )
+   IF HB_IsNumeric( nRangeMin ) .OR. HB_IsNumeric( nRangeMax )
       ASSIGN ::nRangeMin VALUE nRangeMin TYPE "N"
       ASSIGN ::nRangeMax VALUE nRangeMax TYPE "N"
       * nMax := MAX( ABS( ::nRangeMin ), ABS( ::nRangeMax ) )
@@ -215,186 +203,187 @@ METHOD SetRange( nRangeMin, nRangeMax ) CLASS TScrollBar
       *    ::nFactor := 1
       * EndIf
       SetScrollRange( ::FromhWnd, ::ScrollType, ::nRangeMin / ::nFactor, ::nRangeMax / ::nFactor, .T. )
-   EndIf
+   ENDIF
 
-   Return nil
+   RETURN NIL
 
 METHOD Page( nValue ) CLASS TScrollBar
 
-   if HB_IsNumeric( nValue )
+   IF HB_IsNumeric( nValue )
       SetScrollPage( ::FromhWnd, ::ScrollType, nValue / ::nFactor )
-   endif
+   ENDIF
 
-   Return SetScrollPage( ::FromhWnd, ::ScrollType ) * ::nFactor
+   RETURN SetScrollPage( ::FromhWnd, ::ScrollType ) * ::nFactor
 
 METHOD OnLineLeft( bAction ) CLASS TScrollBar
 
-   If PCOUNT() > 0
+   IF PCOUNT() > 0
       ::OnLineUp := bAction
-   EndIf
+   ENDIF
 
-   Return ::OnLineUp
+   RETURN ::OnLineUp
 
 METHOD OnLineRight( bAction ) CLASS TScrollBar
 
-   If PCOUNT() > 0
+   IF PCOUNT() > 0
       ::OnLineDown := bAction
-   EndIf
+   ENDIF
 
-   Return ::OnLineDown
+   RETURN ::OnLineDown
 
 METHOD OnPageLeft( bAction ) CLASS TScrollBar
 
-   If PCOUNT() > 0
+   IF PCOUNT() > 0
       ::OnPageUp := bAction
-   EndIf
+   ENDIF
 
-   Return ::OnPageUp
+   RETURN ::OnPageUp
 
 METHOD OnPageRight( bAction ) CLASS TScrollBar
 
-   If PCOUNT() > 0
+   IF PCOUNT() > 0
       ::OnPageDown := bAction
-   EndIf
+   ENDIF
 
-   Return ::OnPageDown
+   RETURN ::OnPageDown
 
 METHOD OnLeft( bAction ) CLASS TScrollBar
 
-   If PCOUNT() > 0
+   IF PCOUNT() > 0
       ::OnTop := bAction
-   EndIf
+   ENDIF
 
-   Return ::OnTop
+   RETURN ::OnTop
 
 METHOD OnRight( bAction ) CLASS TScrollBar
 
-   If PCOUNT() > 0
+   IF PCOUNT() > 0
       ::OnBottom := bAction
-   EndIf
+   ENDIF
 
-   Return ::OnBottom
+   RETURN ::OnBottom
 
 METHOD LineUp() CLASS TScrollBar
 
-   If ::lAutoMove
+   IF ::lAutoMove
       ::Value := ::Value - ::nLineSkip
-   EndIf
+   ENDIF
    _OOHG_EVAL( ::OnLineUp, Self )
    ::DoChange()
 
-   Return Self
+   RETURN Self
 
 METHOD LineDown() CLASS TScrollBar
 
-   If ::lAutoMove
+   IF ::lAutoMove
       ::Value := ::Value + ::nLineSkip
-   EndIf
+   ENDIF
    _OOHG_EVAL( ::OnLineDown, Self )
    ::DoChange()
 
-   Return Self
+   RETURN Self
 
 METHOD PageUp() CLASS TScrollBar
 
-   If ::lAutoMove
+   IF ::lAutoMove
       ::Value := ::Value - ::nPageSkip
-   EndIf
+   ENDIF
    _OOHG_EVAL( ::OnPageUp, Self )
    ::DoChange()
 
-   Return Self
+   RETURN Self
 
 METHOD PageDown() CLASS TScrollBar
 
-   If ::lAutoMove
+   IF ::lAutoMove
       ::Value := ::Value + ::nPageSkip
-   EndIf
+   ENDIF
    _OOHG_EVAL( ::OnPageDown, Self )
    ::DoChange()
 
-   Return Self
+   RETURN Self
 
 METHOD Top() CLASS TScrollBar
 
-   If ::lAutoMove
+   IF ::lAutoMove
       ::Value := ::nRangeMin
-   EndIf
+   ENDIF
    _OOHG_EVAL( ::OnTop, Self )
    ::DoChange()
 
-   Return Self
+   RETURN Self
 
 METHOD Bottom() CLASS TScrollBar
 
-   If ::lAutoMove
+   IF ::lAutoMove
       ::Value := ::nRangeMax
-   EndIf
+   ENDIF
    _OOHG_EVAL( ::OnBottom, Self )
    ::DoChange()
 
-   Return Self
+   RETURN Self
 
 METHOD Thumb( nPos ) CLASS TScrollBar
 
-   If ::lAutoMove
+   IF ::lAutoMove
       ::Value := nPos
-   EndIf
+   ENDIF
    _OOHG_EVAL( ::OnThumb, Self, nPos )
    ::DoChange()
 
-   Return Self
+   RETURN Self
 
 METHOD Track( nPos ) CLASS TScrollBar
 
-   If ::lAutoMove
+   IF ::lAutoMove
       ::Value := nPos
-   EndIf
+   ENDIF
    _OOHG_EVAL( ::OnTrack, Self, nPos )
    ::DoChange()
 
-   Return Self
+   RETURN Self
 
 METHOD Events_VScroll( wParam ) CLASS TScrollBar
 
-   Local Lo_wParam := LoWord( wParam )
+   LOCAL Lo_wParam := LoWord( wParam )
 
-   If Lo_wParam == SB_LINEDOWN         // .OR. Lo_wParam == SB_LINERIGHT
+   IF Lo_wParam == SB_LINEDOWN         // .OR. Lo_wParam == SB_LINERIGHT
 
       ::LineDown()
 
-   elseif Lo_wParam == SB_LINEUP       // .OR. Lo_wParam == SB_LINELEFT
+   ELSEIF Lo_wParam == SB_LINEUP       // .OR. Lo_wParam == SB_LINELEFT
       ::LineUp()
 
-   elseif Lo_wParam == SB_PAGEUP       // .OR. Lo_wParam == SB_PAGELEFT
+   ELSEIF Lo_wParam == SB_PAGEUP       // .OR. Lo_wParam == SB_PAGELEFT
 
       ::PageUp()
 
-   elseif Lo_wParam == SB_PAGEDOWN     // .OR. Lo_wParam == SB_PAGERIGHT
+   ELSEIF Lo_wParam == SB_PAGEDOWN     // .OR. Lo_wParam == SB_PAGERIGHT
       ::PageDown()
 
-   elseif Lo_wParam == SB_TOP          // .OR. Lo_wParam == SB_LEFT
+   ELSEIF Lo_wParam == SB_TOP          // .OR. Lo_wParam == SB_LEFT
       ::Top()
 
-   elseif Lo_wParam == SB_BOTTOM       // .OR. Lo_wParam == SB_RIGHT
+   ELSEIF Lo_wParam == SB_BOTTOM       // .OR. Lo_wParam == SB_RIGHT
       ::Bottom()
 
-   elseif Lo_wParam == SB_THUMBPOSITION
+   ELSEIF Lo_wParam == SB_THUMBPOSITION
       ::Thumb( HiWord( wParam ) )
 
-   elseif Lo_wParam == SB_THUMBTRACK
+   ELSEIF Lo_wParam == SB_THUMBTRACK
       ::Track( HiWord( wParam ) )
 
-   elseif Lo_wParam == TB_ENDTRACK
+   ELSEIF Lo_wParam == TB_ENDTRACK
       _OOHG_EVAL( ::OnEndTrack, Self, HiWord( wParam ) )
       ::DoChange()
 
-   else
-      Return ::Super:Events_VScroll( wParam )
+   ELSE
 
-   EndIf
+      RETURN ::Super:Events_VScroll( wParam )
 
-   Return nil
+   ENDIF
+
+   RETURN NIL
 
 FUNCTION InitVScrollBar( hWnd, nCol, nRow, nWidth, nHeight, lRtl )
 
@@ -404,10 +393,9 @@ FUNCTION InitHScrollBar( hWnd, nCol, nRow, nWidth, nHeight, lRtl )
 
    RETURN InitScrollBar( hWnd, nCol, nRow, nWidth, nHeight, lRtl, SB_HORZ )
 
-
-EXTERN GetVScrollbarWidth, GetHScrollbarHeight, SetScrollPos, SetScrollPage
-EXTERN SetScrollRange, GetScrollPos, IsScrollLockActive, _SetScroll
-EXTERN InitScrollbar, SetScrollInfo, GetScrollRangeMin, GetScrollRangeMax
+   EXTERN GetVScrollbarWidth, GetHScrollbarHeight, SetScrollPos, SetScrollPage
+   EXTERN SetScrollRange, GetScrollPos, IsScrollLockActive, _SetScroll
+   EXTERN InitScrollbar, SetScrollInfo, GetScrollRangeMin, GetScrollRangeMax
 
 #pragma BEGINDUMP
 
@@ -420,6 +408,7 @@ static WNDPROC lpfnOldWndProc = 0;
 
 static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
+
    return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
 }
 

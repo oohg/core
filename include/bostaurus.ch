@@ -59,16 +59,13 @@
  * If you do not wish that, delete this exception notice.
  */
 
-
 // BT_INFONAME()
 #define _BT_INFO_NAME_                             "Bos Taurus"
-
 
 // BT_INFOVERSION()
 #define _BT_INFO_MAJOR_VERSION_                    1
 #define _BT_INFO_MINOR_VERSION_                    0
 #define _BT_INFO_PATCHLEVEL_                       5
-
 
 // BT_INFOAUTHOR()
 #define _BT_INFO_AUTHOR_                           "(c) Dr. Claudio Soto (from Uruguay)"

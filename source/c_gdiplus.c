@@ -63,7 +63,6 @@
  * If you do not wish that, delete this exception notice.
  */
 
-
 #include <windows.h>
 #include "hbapi.h"
 #include "hbapiitm.h"

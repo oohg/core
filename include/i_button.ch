@@ -59,7 +59,6 @@
  * If you do not wish that, delete this exception notice.
  */
 
-
 #xcommand @ <row>, <col> BUTTON <name> ;
       [ OBJ <obj> ] ;
       [ <dummy1: OF, PARENT> <parent> ] ;

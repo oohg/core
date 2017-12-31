@@ -1,73 +1,61 @@
 /*
- * $Id: h_scrsaver.prg $
- */
+* $Id: h_scrsaver.prg $
+*/
 /*
- * ooHG source code:
- * Screen saver functions
- *
- * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
- * https://oohg.github.io/
- *
- * Portions of this project are based upon Harbour MiniGUI library.
- * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
- *
- * Portions of this project are based upon Harbour GUI framework for Win32.
- * Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
- * Copyright 2001 Antonio Linares <alinares@fivetech.com>
- *
- * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2017, https://harbour.github.io/
- */
+* ooHG source code:
+* Screen saver functions
+* Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
+* https://oohg.github.io/
+* Portions of this project are based upon Harbour MiniGUI library.
+* Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
+* Portions of this project are based upon Harbour GUI framework for Win32.
+* Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
+* Copyright 2001 Antonio Linares <alinares@fivetech.com>
+* Portions of this project are based upon Harbour Project.
+* Copyright 1999-2017, https://harbour.github.io/
+*/
 /*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this software; see the file LICENSE.txt. If not, write to
- * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
- *
- * As a special exception, the ooHG Project gives permission for
- * additional uses of the text contained in its release of ooHG.
- *
- * The exception is that, if you link the ooHG libraries with other
- * files to produce an executable, this does not by itself cause the
- * resulting executable to be covered by the GNU General Public License.
- * Your use of that executable is in no way restricted on account of
- * linking the ooHG library code into it.
- *
- * This exception does not however invalidate any other reasons why
- * the executable file might be covered by the GNU General Public License.
- *
- * This exception applies only to the code released by the ooHG
- * Project under the name ooHG. If you copy code from other
- * ooHG Project or Free Software Foundation releases into a copy of
- * ooHG, as the General Public License permits, the exception does
- * not apply to the code that you add in this way. To avoid misleading
- * anyone as to the status of such modified files, you must delete
- * this exception notice from them.
- *
- * If you write modifications of your own for ooHG, it is your choice
- * whether to permit this exception to apply to your modifications.
- * If you do not wish that, delete this exception notice.
- */
-
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2, or (at your option)
+* any later version.
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* You should have received a copy of the GNU General Public License
+* along with this software; see the file LICENSE.txt. If not, write to
+* the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+* Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
+* As a special exception, the ooHG Project gives permission for
+* additional uses of the text contained in its release of ooHG.
+* The exception is that, if you link the ooHG libraries with other
+* files to produce an executable, this does not by itself cause the
+* resulting executable to be covered by the GNU General Public License.
+* Your use of that executable is in no way restricted on account of
+* linking the ooHG library code into it.
+* This exception does not however invalidate any other reasons why
+* the executable file might be covered by the GNU General Public License.
+* This exception applies only to the code released by the ooHG
+* Project under the name ooHG. If you copy code from other
+* ooHG Project or Free Software Foundation releases into a copy of
+* ooHG, as the General Public License permits, the exception does
+* not apply to the code that you add in this way. To avoid misleading
+* anyone as to the status of such modified files, you must delete
+* this exception notice from them.
+* If you write modifications of your own for ooHG, it is your choice
+* whether to permit this exception to apply to your modifications.
+* If you do not wish that, delete this exception notice.
+*/
 
 #include "oohg.ch"
 #include "common.ch"
 
-Memvar _ActiveScrSaverName
-Memvar _ScrSaverInstall
-Memvar _ScrSaverFileName
-Memvar _ScrSaverShow
-Memvar _ScrSaverConfig
+MEMVAR _ActiveScrSaverName
+MEMVAR _ScrSaverInstall
+MEMVAR _ScrSaverFileName
+MEMVAR _ScrSaverShow
+MEMVAR _ScrSaverConfig
 
 #define WM_SYSCOMMAND 274     // &H112
 #define SC_SCREENSAVE 61760   // &HF140
@@ -76,47 +64,47 @@ Memvar _ScrSaverConfig
 
 #define MsgInfo( c ) MsgInfo( c, "Information" )
 
-Function _BeginScrSaver( cSSaver, lNoShow, cInit, cRelease, cPaint, nTimer, aBackClr )
+FUNCTION _BeginScrSaver( cSSaver, lNoShow, cInit, cRelease, cPaint, nTimer, aBackClr )
 
-   Local a := {}, x := GetDesktopWidth(), y := GetDesktopHeight(), Dummy := ""
+   LOCAL a := {}, x := GetDesktopWidth(), y := GetDesktopHeight(), Dummy := ""
 
-   Public _ActiveScrSaverName := cSSaver
-   Public _ScrSaverInstall := .f.
-   Public _ScrSaverFileName := 0
-   Public _ScrSaverConfig := NIL
+   PUBLIC _ActiveScrSaverName := cSSaver
+   PUBLIC _ScrSaverInstall := .f.
+   PUBLIC _ScrSaverFileName := 0
+   PUBLIC _ScrSaverConfig := NIL
 
    DEFAULT nTimer TO 1
 
-   Set InterActiveClose Off
+   SET InterActiveClose Off
 
    IF lNoShow
 
-   DEFINE WINDOW &cSsaver AT 0, 0 ;
-      WIDTH x HEIGHT y ;
-      MAIN NOSHOW ;
-      TOPMOST NOSIZE NOCAPTION ;
-      ON GOTFOCUS SetCursorPos(x / 2, y / 2) ;
-      ON INIT (ShowCursor(.F.), ;
-         SystemParametersInfo( SPI_SCREENSAVERRUNNING, 1, @Dummy, 0 )) ;
-      ON RELEASE _ReleaseScrSaver(cRelease, cSSaver, cPaint) ;
-      ON MOUSECLICK (IF(_lValidScrSaver(), DoMethod (cSSaver,'Release'), )) ;
-      ON MOUSEMOVE (a := GetCursorPos(), IF( a[1] # y / 2 .AND. a[2] # x / 2, ;
-         IF(_lValidScrSaver(), DoMethod(cSSaver,'Release') , ), )) ;
-         BACKCOLOR aBackClr
+      DEFINE WINDOW &cSsaver AT 0, 0 ;
+            WIDTH x HEIGHT y ;
+            MAIN NOSHOW ;
+            TOPMOST NOSIZE NOCAPTION ;
+            ON GOTFOCUS SetCursorPos(x / 2, y / 2) ;
+            ON INIT (ShowCursor(.F.), ;
+            SystemParametersInfo( SPI_SCREENSAVERRUNNING, 1, @Dummy, 0 )) ;
+            ON RELEASE _ReleaseScrSaver(cRelease, cSSaver, cPaint) ;
+            ON MOUSECLICK (IF(_lValidScrSaver(), DoMethod (cSSaver,'Release'), )) ;
+            ON MOUSEMOVE (a := GetCursorPos(), IF( a[1] # y / 2 .AND. a[2] # x / 2, ;
+            IF(_lValidScrSaver(), DoMethod(cSSaver,'Release') , ), )) ;
+            BACKCOLOR aBackClr
    ELSE
 
-   DEFINE WINDOW &cSsaver AT 0, 0 ;
-      WIDTH x HEIGHT y ;
-      MAIN ;
-      TOPMOST NOSIZE NOCAPTION ;
-      ON GOTFOCUS SetCursorPos(x / 2, y / 2) ;
-      ON INIT (ShowCursor(.F.), ;
-         SystemParametersInfo( SPI_SCREENSAVERRUNNING, 1, @Dummy, 0 )) ;
-      ON RELEASE _ReleaseScrSaver(cRelease, cSSaver, cPaint) ;
-      ON MOUSECLICK (IF(_lValidScrSaver(), DoMethod(cSSaver,'Release')  , )) ;
-      ON MOUSEMOVE (a := GetCursorPos(), IF( a[1] # y / 2 .AND. a[2] # x / 2, ;
-         IF(_lValidScrSaver(), DoMethod(cSSaver,'Release'), ), )) ;
-         BACKCOLOR aBackClr
+      DEFINE WINDOW &cSsaver AT 0, 0 ;
+            WIDTH x HEIGHT y ;
+            MAIN ;
+            TOPMOST NOSIZE NOCAPTION ;
+            ON GOTFOCUS SetCursorPos(x / 2, y / 2) ;
+            ON INIT (ShowCursor(.F.), ;
+            SystemParametersInfo( SPI_SCREENSAVERRUNNING, 1, @Dummy, 0 )) ;
+            ON RELEASE _ReleaseScrSaver(cRelease, cSSaver, cPaint) ;
+            ON MOUSECLICK (IF(_lValidScrSaver(), DoMethod(cSSaver,'Release')  , )) ;
+            ON MOUSEMOVE (a := GetCursorPos(), IF( a[1] # y / 2 .AND. a[2] # x / 2, ;
+            IF(_lValidScrSaver(), DoMethod(cSSaver,'Release'), ), )) ;
+            BACKCOLOR aBackClr
    ENDIF
 
    IF cPaint # NIL
@@ -129,15 +117,15 @@ Function _BeginScrSaver( cSSaver, lNoShow, cInit, cRelease, cPaint, nTimer, aBac
 
    IF cInit # NIL
 
-   Eval(cInit)
+      Eval(cInit)
 
    ENDIF
 
-   Return Nil
+   RETURN NIL
 
-Function _ActivateScrSaver( aForm, cParam )
+FUNCTION _ActivateScrSaver( aForm, cParam )
 
-   Local cFileScr, cFileDes
+   LOCAL cFileScr, cFileDes
 
    DEFAULT cParam TO if( _ScrSaverInstall, "-i", "-s" )
 
@@ -164,14 +152,14 @@ Function _ActivateScrSaver( aForm, cParam )
 
       cFileScr := GetModuleFileName( GetInstance() )
       cFileDes := GetSystemFolder() + "\" + ;
-            If( valtype(_ScrSaverFileName) $ "CM", _ScrSaverFileName, ;
-            cFileNoExt( cFileScr ) + ".SCR" )
+         If( valtype(_ScrSaverFileName) $ "CM", _ScrSaverFileName, ;
+         cFileNoExt( cFileScr ) + ".SCR" )
 
       IF File( cFileDes )
          FErase( cFileDes )
       ENDIF
 
-      Copy File (cFileScr) To (cFileDes)
+      COPY File (cFileScr) To (cFileDes)
 
       IF File( cFileDes )
 
@@ -196,11 +184,11 @@ Function _ActivateScrSaver( aForm, cParam )
 
    ENDCASE
 
-   Return Nil
+   RETURN NIL
 
-Function _ReleaseScrSaver( cRelease, cSSaver, cPaint )
+FUNCTION _ReleaseScrSaver( cRelease, cSSaver, cPaint )
 
-   Local Dummy := ""
+   LOCAL Dummy := ""
 
    IF cRelease # NIL
       Eval(cRelease)
@@ -209,16 +197,16 @@ Function _ReleaseScrSaver( cRelease, cSSaver, cPaint )
    ShowCursor(.T.)
 
    IF cPaint # NIL
-                SetProperty( cSSaver, "Timer_SSaver", "Enabled", .F. )
+      SetProperty( cSSaver, "Timer_SSaver", "Enabled", .F. )
    ENDIF
 
    SystemParametersInfo( SPI_SCREENSAVERRUNNING, 0, @Dummy, 0 )
 
-   Return Nil
+   RETURN NIL
 
-Function _lValidScrSaver()
+FUNCTION _lValidScrSaver()
 
-   Local oReg, nValue := 1, lRet
+   LOCAL oReg, nValue := 1, lRet
 
    OPEN REGISTRY oReg KEY HKEY_CURRENT_USER ;
       SECTION "Control Panel\Desktop"
@@ -233,8 +221,8 @@ Function _lValidScrSaver()
       lRet := .T.
    ENDIF
 
-   Return lRet
+   RETURN lRet
 
-Function IsWinXP()
+FUNCTION IsWinXP()
 
-   Return "XP" $ OS()
+   RETURN "XP" $ OS()

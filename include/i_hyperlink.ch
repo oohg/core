@@ -58,7 +58,6 @@
  * If you do not wish that, delete this exception notice.
  */
 
-
 #command @ <row>, <col> HYPERLINK <name> ;
       [ OBJ <obj> ] ;
       [ <dummy1: OF, PARENT> <parent> ] ;

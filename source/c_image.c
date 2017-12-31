@@ -59,7 +59,6 @@
  * If you do not wish that, delete this exception notice.
  */
 
-
 #ifndef CINTERFACE
    #define CINTERFACE
 #endif

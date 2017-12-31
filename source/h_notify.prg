@@ -1,64 +1,52 @@
 /*
- * $Id: h_notify.prg $
- */
+* $Id: h_notify.prg $
+*/
 /*
- * ooHG source code:
- * Notify icon control
- *
- * Copyright 2009-2017 Vicente Guerra <vicente@guerra.com.mx>
- * https://oohg.github.io/
- *
- * Portions of this project are based upon Harbour MiniGUI library.
- * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
- *
- * Portions of this project are based upon Harbour GUI framework for Win32.
- * Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
- * Copyright 2001 Antonio Linares <alinares@fivetech.com>
- *
- * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2017, https://harbour.github.io/
- */
+* ooHG source code:
+* Notify icon control
+* Copyright 2009-2017 Vicente Guerra <vicente@guerra.com.mx>
+* https://oohg.github.io/
+* Portions of this project are based upon Harbour MiniGUI library.
+* Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
+* Portions of this project are based upon Harbour GUI framework for Win32.
+* Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
+* Copyright 2001 Antonio Linares <alinares@fivetech.com>
+* Portions of this project are based upon Harbour Project.
+* Copyright 1999-2017, https://harbour.github.io/
+*/
 /*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this software; see the file LICENSE.txt. If not, write to
- * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
- *
- * As a special exception, the ooHG Project gives permission for
- * additional uses of the text contained in its release of ooHG.
- *
- * The exception is that, if you link the ooHG libraries with other
- * files to produce an executable, this does not by itself cause the
- * resulting executable to be covered by the GNU General Public License.
- * Your use of that executable is in no way restricted on account of
- * linking the ooHG library code into it.
- *
- * This exception does not however invalidate any other reasons why
- * the executable file might be covered by the GNU General Public License.
- *
- * This exception applies only to the code released by the ooHG
- * Project under the name ooHG. If you copy code from other
- * ooHG Project or Free Software Foundation releases into a copy of
- * ooHG, as the General Public License permits, the exception does
- * not apply to the code that you add in this way. To avoid misleading
- * anyone as to the status of such modified files, you must delete
- * this exception notice from them.
- *
- * If you write modifications of your own for ooHG, it is your choice
- * whether to permit this exception to apply to your modifications.
- * If you do not wish that, delete this exception notice.
- */
-
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2, or (at your option)
+* any later version.
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* You should have received a copy of the GNU General Public License
+* along with this software; see the file LICENSE.txt. If not, write to
+* the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+* Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
+* As a special exception, the ooHG Project gives permission for
+* additional uses of the text contained in its release of ooHG.
+* The exception is that, if you link the ooHG libraries with other
+* files to produce an executable, this does not by itself cause the
+* resulting executable to be covered by the GNU General Public License.
+* Your use of that executable is in no way restricted on account of
+* linking the ooHG library code into it.
+* This exception does not however invalidate any other reasons why
+* the executable file might be covered by the GNU General Public License.
+* This exception applies only to the code released by the ooHG
+* Project under the name ooHG. If you copy code from other
+* ooHG Project or Free Software Foundation releases into a copy of
+* ooHG, as the General Public License permits, the exception does
+* not apply to the code that you add in this way. To avoid misleading
+* anyone as to the status of such modified files, you must delete
+* this exception notice from them.
+* If you write modifications of your own for ooHG, it is your choice
+* whether to permit this exception to apply to your modifications.
+* If you do not wish that, delete this exception notice.
+*/
 
 #include "oohg.ch"
 #include "hbclass.ch"
@@ -113,7 +101,7 @@ METHOD Define( ControlName, ParentForm, cPicture, cToolTip, ProcedureName, invis
    ASSIGN ::ToolTip VALUE cToolTip      TYPE "C"
    ASSIGN ::OnClick VALUE ProcedureName TYPE "B"
 
-   Return Self
+   RETURN Self
 
 METHOD Release() CLASS TNotifyIcon
 
@@ -142,102 +130,101 @@ METHOD Picture( cPicture ) CLASS TNotifyIcon
       //       *** Convert from BMP to ICO
       //    EndIf
       // EndIf
-      If ValidHandler( ::hImage )
+      IF ValidHandler( ::hImage )
          SetNotifyIconData( ::Parent:hWnd, ::nTrayId, ::lCreated, ::hImage )
          ::lCreated := .T.   // This value can be set "any" time...
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
-   Return ::cPicture
+   RETURN ::cPicture
 
 METHOD Buffer( cBuffer ) CLASS TNotifyIcon
 
-   If VALTYPE( cBuffer ) $ "CM"
+   IF VALTYPE( cBuffer ) $ "CM"
       DeleteObject( ::hImage )
       ::cPicture := ""
       ::hImage := _OOHG_BitmapFromBuffer( Self, cBuffer, 0, .F., .T. )
       // If ! ValidHandler( ::hImage )
       //    *** Convert from BMP to ICO
       // EndIf
-      If ValidHandler( ::hImage )
+      IF ValidHandler( ::hImage )
          SetNotifyIconData( ::Parent:hWnd, ::nTrayId, ::lCreated, ::hImage )
          ::lCreated := .T.   // This value can be set "any" time...
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
-   Return nil
+   RETURN NIL
 
 METHOD HIcon( hIcon ) CLASS TNotifyIcon
 
-   If ValType( hIcon ) $ "NP"
+   IF ValType( hIcon ) $ "NP"
       DeleteObject( ::hImage )
       ::hImage := hIcon
       ::cPicture := ""
       // If ! ValidHandler( ::hImage )
       //    *** Convert from BMP to ICO
       // EndIf
-      If ValidHandler( ::hImage )
+      IF ValidHandler( ::hImage )
          SetNotifyIconData( ::Parent:hWnd, ::nTrayId, ::lCreated, ::hImage )
          ::lCreated := .T.   // This value can be set "any" time...
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
-   Return ::hImage
+   RETURN ::hImage
 
 METHOD HBitMap( hBitMap ) CLASS TNotifyIcon
 
-   If ValType( hBitMap ) $ "NP"
+   IF ValType( hBitMap ) $ "NP"
       ::HIcon := hBitMap
-   EndIf
+   ENDIF
 
-   Return ::hImage
+   RETURN ::hImage
 
 METHOD ToolTip( cToolTip ) CLASS TNotifyIcon
 
-   If PCOUNT() > 0
-      If ! HB_IsString( cToolTip )
+   IF PCOUNT() > 0
+      IF ! HB_IsString( cToolTip )
          cToolTip := ""
-      EndIf
+      ENDIF
       ::cToolTip := cToolTip
-      If ::lCreated .OR. ! EMPTY( ::cToolTip )
+      IF ::lCreated .OR. ! EMPTY( ::cToolTip )
          SetNotifyIconData( ::Parent:hWnd, ::nTrayId, ::lCreated, , ::cToolTip )
          ::lCreated := .T.   // This value can be set "any" time...
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
-   Return ::cToolTip
+   RETURN ::cToolTip
 
 METHOD Events_TaskBar( lParam ) CLASS TNotifyIcon
 
-   Do Case
-   Case lParam == WM_LBUTTONDOWN
+   DO CASE
+   CASE lParam == WM_LBUTTONDOWN
       ::DoEvent( ::OnClick, "WINDOW_NOTIFYLEFTCLICK" )
 
-   Case lParam == WM_RBUTTONDOWN .OR. lParam == WM_CONTEXTMENU
-      If ::ContextMenu != nil
-         If _OOHG_ShowContextMenus()
+   CASE lParam == WM_RBUTTONDOWN .OR. lParam == WM_CONTEXTMENU
+      IF ::ContextMenu != nil
+         IF _OOHG_ShowContextMenus()
             ::ContextMenu:Activate()
-         Endif
-      Else
+         ENDIF
+      ELSE
          ::DoEvent( ::OnRClick, "WINDOW_NOTIFYDBLCLICK" )
-      EndIf
+      ENDIF
 
-   Case lParam == WM_LBUTTONDBLCLK
+   CASE lParam == WM_LBUTTONDBLCLK
       ::DoEvent( ::OnDblClick, "WINDOW_NOTIFYDBLCLICK" )
 
-   Case lParam == WM_RBUTTONDBLCLK
+   CASE lParam == WM_RBUTTONDBLCLK
       ::DoEvent( ::OnRDblClick, "WINDOW_NOTIFYRDBLCLICK" )
 
-   Case lParam == WM_MBUTTONDOWN
+   CASE lParam == WM_MBUTTONDOWN
       ::DoEvent( ::OnMClick, "WINDOW_NOTIFYMIDCLICK" )
 
-   Case lParam == WM_MBUTTONDBLCLK
+   CASE lParam == WM_MBUTTONDBLCLK
       ::DoEvent( ::OnMDblClick, "WINDOW_NOTIFYMDBLCLICK" )
 
-   EndCase
+   ENDCASE
 
-   Return nil
-
+   RETURN NIL
 
 #pragma BEGINDUMP
 

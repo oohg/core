@@ -58,7 +58,6 @@
  * If you do not wish that, delete this exception notice.
  */
 
-
 #xcommand SET TOOLTIPCLOSE <x: ON, OFF> ;
    => ;
       _SetToolTipClose( Upper( <(x)> ) == "ON" )

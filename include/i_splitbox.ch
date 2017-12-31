@@ -58,7 +58,6 @@
  * If you do not wish that, delete this exception notice.
  */
 
-
 #xcommand DEFINE SPLITBOX ;
       [ OBJ <obj> ] ;
       [ <dummy1: OF, PARENT> <parent> ] ;

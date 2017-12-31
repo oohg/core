@@ -1,70 +1,57 @@
 /*
- * $Id: h_slider.prg $
- */
+* $Id: h_slider.prg $
+*/
 /*
- * ooHG source code:
- * Slider control
- *
- * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
- * https://oohg.github.io/
- *
- * Portions of this project are based upon Harbour MiniGUI library.
- * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
- *
- * Portions of this project are based upon Harbour GUI framework for Win32.
- * Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
- * Copyright 2001 Antonio Linares <alinares@fivetech.com>
- *
- * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2017, https://harbour.github.io/
- */
+* ooHG source code:
+* Slider control
+* Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
+* https://oohg.github.io/
+* Portions of this project are based upon Harbour MiniGUI library.
+* Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
+* Portions of this project are based upon Harbour GUI framework for Win32.
+* Copyright 2001 Alexander S. Kresin <alex@belacy.belgorod.su>
+* Copyright 2001 Antonio Linares <alinares@fivetech.com>
+* Portions of this project are based upon Harbour Project.
+* Copyright 1999-2017, https://harbour.github.io/
+*/
 /*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this software; see the file LICENSE.txt. If not, write to
- * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
- *
- * As a special exception, the ooHG Project gives permission for
- * additional uses of the text contained in its release of ooHG.
- *
- * The exception is that, if you link the ooHG libraries with other
- * files to produce an executable, this does not by itself cause the
- * resulting executable to be covered by the GNU General Public License.
- * Your use of that executable is in no way restricted on account of
- * linking the ooHG library code into it.
- *
- * This exception does not however invalidate any other reasons why
- * the executable file might be covered by the GNU General Public License.
- *
- * This exception applies only to the code released by the ooHG
- * Project under the name ooHG. If you copy code from other
- * ooHG Project or Free Software Foundation releases into a copy of
- * ooHG, as the General Public License permits, the exception does
- * not apply to the code that you add in this way. To avoid misleading
- * anyone as to the status of such modified files, you must delete
- * this exception notice from them.
- *
- * If you write modifications of your own for ooHG, it is your choice
- * whether to permit this exception to apply to your modifications.
- * If you do not wish that, delete this exception notice.
- */
-
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2, or (at your option)
+* any later version.
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* You should have received a copy of the GNU General Public License
+* along with this software; see the file LICENSE.txt. If not, write to
+* the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+* Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
+* As a special exception, the ooHG Project gives permission for
+* additional uses of the text contained in its release of ooHG.
+* The exception is that, if you link the ooHG libraries with other
+* files to produce an executable, this does not by itself cause the
+* resulting executable to be covered by the GNU General Public License.
+* Your use of that executable is in no way restricted on account of
+* linking the ooHG library code into it.
+* This exception does not however invalidate any other reasons why
+* the executable file might be covered by the GNU General Public License.
+* This exception applies only to the code released by the ooHG
+* Project under the name ooHG. If you copy code from other
+* ooHG Project or Free Software Foundation releases into a copy of
+* ooHG, as the General Public License permits, the exception does
+* not apply to the code that you add in this way. To avoid misleading
+* anyone as to the status of such modified files, you must delete
+* this exception notice from them.
+* If you write modifications of your own for ooHG, it is your choice
+* whether to permit this exception to apply to your modifications.
+* If you do not wish that, delete this exception notice.
+*/
 
 #include "oohg.ch"
 #include "common.ch"
 #include "hbclass.ch"
 #include "i_windefs.ch"
-
 
 CLASS TSlider FROM TControl
 
@@ -84,10 +71,10 @@ CLASS TSlider FROM TControl
    ENDCLASS
 
 METHOD Define( ControlName, ParentForm, x, y, w, h, LO, HI, value, tooltip, ;
-               change, vertical, noticks, both, top, left, HelpId, invisible, ;
-               notabstop, backcolor, lRtl, lDisabled ) CLASS TSlider
+      change, vertical, noticks, both, top, left, HelpId, invisible, ;
+      notabstop, backcolor, lRtl, lDisabled ) CLASS TSlider
 
-   Local ControlHandle, nStyle
+   LOCAL ControlHandle, nStyle
 
    ASSIGN ::nCol        VALUE x  TYPE "N"
    ASSIGN ::nRow        VALUE y  TYPE "N"
@@ -98,38 +85,37 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, LO, HI, value, tooltip, ;
 
    ASSIGN vertical VALUE vertical TYPE "L" DEFAULT .F.
    ASSIGN both     VALUE both     TYPE "L" DEFAULT .F.
-   If ::nWidth == 0
+   IF ::nWidth == 0
       ::nWidth := if( vertical, 35 + if( both, 5, 0 ), 120 )
-   Endif
-   If ::nHeight == 0
+   ENDIF
+   IF ::nHeight == 0
       ::nHeight := if( vertical, 120, 35 + if( both, 5, 0 ) )
-   Endif
+   ENDIF
 
    ::SetForm( ControlName, ParentForm, , , , BackColor, , lRtl )
 
-    nStyle := ::InitStyle( ,, invisible, notabstop, lDisabled ) + ;
-             if( HB_IsLogical( vertical ) .AND. vertical,   TBS_VERT,    0 ) + ;
-             if( HB_IsLogical( noticks )     .AND. noticks,    TBS_NOTICKS, TBS_AUTOTICKS ) + ;
-             if( HB_IsLogical( both )        .AND. both,       TBS_BOTH,    0 ) + ;
-             if( HB_IsLogical( top )         .AND. top,        TBS_TOP,     0 ) + ;
-             if( HB_IsLogical( left )       .AND. left,       TBS_LEFT,    0 )
+   nStyle := ::InitStyle( ,, invisible, notabstop, lDisabled ) + ;
+      if( HB_IsLogical( vertical ) .AND. vertical,   TBS_VERT,    0 ) + ;
+      if( HB_IsLogical( noticks )     .AND. noticks,    TBS_NOTICKS, TBS_AUTOTICKS ) + ;
+      if( HB_IsLogical( both )        .AND. both,       TBS_BOTH,    0 ) + ;
+      if( HB_IsLogical( top )         .AND. top,        TBS_TOP,     0 ) + ;
+      if( HB_IsLogical( left )       .AND. left,       TBS_LEFT,    0 )
 
    ControlHandle := InitSlider( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, ::RangeMin, ::RangeMax, nStyle, ::lRtl )
 
    ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
 
-   If HB_IsNumeric( value )
+   IF HB_IsNumeric( value )
       ::Value := value
-   Else
+   ELSE
       ::Value := Int( ( ::RangeMax - ::RangeMin ) / 2 )
-   EndIf
+   ENDIF
 
    ASSIGN ::OnChange    VALUE Change    TYPE "B"
 
-   Return Self
+   RETURN Self
 
-
-   METHOD Value( uValue ) CLASS TSlider
+METHOD Value( uValue ) CLASS TSlider
 
    IF HB_IsNumeric ( uValue )
       SendMessage( ::hWnd, TBM_SETPOS, 1, uValue )
@@ -143,9 +129,9 @@ METHOD RangeMin( uValue ) CLASS TSlider
 
    IF HB_IsNumeric ( uValue )
       ::nRangeMin := uValue
-      If ValidHandler( ::hWnd )
+      IF ValidHandler( ::hWnd )
          SetSliderRange( ::hWnd, uValue, ::nRangeMax )
-      EndIf
+      ENDIF
    ENDIF
 
    RETURN ::nRangeMin
@@ -154,16 +140,16 @@ METHOD RangeMax( uValue ) CLASS TSlider
 
    IF HB_IsNumeric( uValue )
       ::nRangeMax := uValue
-      If ValidHandler( ::hWnd )
+      IF ValidHandler( ::hWnd )
          SetSliderRange( ::hWnd, ::nRangeMin, uValue )
-      EndIf
+      ENDIF
    ENDIF
 
    RETURN ::nRangeMax
 
 METHOD BackColor( uValue ) CLASS TSlider
 
-   Local f
+   LOCAL f
 
    IF HB_IsArray( uValue )
       ::Super:BackColor := uValue
@@ -180,21 +166,22 @@ METHOD Events_Hscroll ( wParam )   CLASS TSlider
    IF loword( wParam ) == TB_ENDTRACK
       ::DoChange()
    ELSE
-      Return ::Super:Events_HScroll( wParam )
+
+      RETURN ::Super:Events_HScroll( wParam )
    ENDIF
 
-   Return NIL
+   RETURN NIL
 
 METHOD Events_Vscroll ( wParam )   CLASS TSlider
 
    IF loword( wParam ) == TB_ENDTRACK
       ::DoChange()
    ELSE
-      Return ::Super:Events_VScroll( wParam )
+
+      RETURN ::Super:Events_VScroll( wParam )
    ENDIF
 
-   Return NIL
-
+   RETURN NIL
 
 #pragma BEGINDUMP
 
@@ -219,6 +206,7 @@ static WNDPROC lpfnOldWndProc = 0;
 
 static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
+
    return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
 }
 
