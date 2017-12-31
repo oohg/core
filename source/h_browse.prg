@@ -1120,7 +1120,7 @@ METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, n
                   ::SetValue( ::aRecMap[ ::nDelayedClick[ 1 ] ], ::nDelayedClick[ 1 ] )
                EndIf
 
-               If HB_IsNil( ::nDelayedClick[ 4 ] )
+               If ::nDelayedClick[ 4 ] == NIL
                   If HB_IsBlock( ::OnClick )
                      If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
                         If ! ::NestedClick
@@ -1144,7 +1144,7 @@ METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, n
                EndIf
 
                // fire context menu
-               If ! HB_IsNil( ::nDelayedClick[ 4 ] ) .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
+               If ! ::nDelayedClick[ 4 ] == NIL .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
                   ::ContextMenu:Cargo := ::nDelayedClick[ 4 ]
                   ::ContextMenu:Activate()
                EndIf
@@ -1251,7 +1251,7 @@ METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOB
                   ::SetValue( ::aRecMap[ ::nDelayedClick[ 1 ] ], ::nDelayedClick[ 1 ] )
                EndIf
 
-               If HB_IsNil( ::nDelayedClick[ 4 ] )
+               If ::nDelayedClick[ 4 ] == NIL
                   If HB_IsBlock( ::OnClick )
                      If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
                         If ! ::NestedClick
@@ -1275,7 +1275,7 @@ METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOB
                EndIf
 
                // fire context menu
-               If ! HB_IsNil( ::nDelayedClick[ 4 ] ) .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
+               If ! ::nDelayedClick[ 4 ] == NIL .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
                   ::ContextMenu:Cargo := ::nDelayedClick[ 4 ]
                   ::ContextMenu:Activate()
                EndIf
@@ -1427,7 +1427,7 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOBrows
                ::SetValue( ::aRecMap[ ::nDelayedClick[ 1 ] ], ::nDelayedClick[ 1 ] )
             EndIf
 
-            If HB_IsNil( ::nDelayedClick[ 4 ] )
+            If ::nDelayedClick[ 4 ] == NIL
                If HB_IsBlock( ::OnClick )
                   If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
                      If ! ::NestedClick
@@ -1451,7 +1451,7 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOBrows
             EndIf
 
             // fire context menu
-            If ! HB_IsNil( ::nDelayedClick[ 4 ] ) .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
+            If ! ::nDelayedClick[ 4 ] == NIL .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
                ::ContextMenu:Cargo := ::nDelayedClick[ 4 ]
                ::ContextMenu:Activate()
             EndIf
@@ -2939,7 +2939,7 @@ METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, n
                ::SetValue( { ::aRecMap[ ::nDelayedClick[ 1 ] ], ::nDelayedClick[ 2 ] }, ::nDelayedClick[ 1 ] )
             EndIf
 
-            If HB_IsNil( ::nDelayedClick[ 4 ] )
+            If ::nDelayedClick[ 4 ] == NIL
                If HB_IsBlock( ::OnClick )
                   If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
                      If ! ::NestedClick
@@ -2963,7 +2963,7 @@ METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, n
             EndIf
 
             // fire context menu
-            If ! HB_IsNil( ::nDelayedClick[ 4 ] ) .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
+            If ! ::nDelayedClick[ 4 ] == NIL .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
                ::ContextMenu:Cargo := ::nDelayedClick[ 4 ]
                ::ContextMenu:Activate()
             EndIf
@@ -3159,7 +3159,7 @@ METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOB
                   ::SetValue( { ::aRecMap[ ::nDelayedClick[ 1 ] ], ::nDelayedClick[ 2 ] }, ::nDelayedClick[ 1 ] )
                EndIf
 
-               If HB_IsNil( ::nDelayedClick[ 4 ] )
+               If ::nDelayedClick[ 4 ] == NIL
                   If HB_IsBlock( ::OnClick )
                      If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
                         If ! ::NestedClick
@@ -3183,7 +3183,7 @@ METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOB
                EndIf
 
                // fire context menu
-               If ! HB_IsNil( ::nDelayedClick[ 4 ] ) .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
+               If ! ::nDelayedClick[ 4 ] == NIL .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
                   ::ContextMenu:Cargo := ::nDelayedClick[ 4 ]
                   ::ContextMenu:Activate()
                EndIf
@@ -3408,7 +3408,7 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOBrows
                ::SetValue( { ::aRecMap[ ::nDelayedClick[ 1 ] ], ::nDelayedClick[ 2 ] }, ::nDelayedClick[ 1 ] )
             EndIf
 
-            If HB_IsNil( ::nDelayedClick[ 4 ] )
+            If ::nDelayedClick[ 4 ] == NIL
                If HB_IsBlock( ::OnClick )
                   If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
                      If ! ::NestedClick
@@ -3432,7 +3432,7 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOBrows
             EndIf
 
             // fire context menu
-            If ! HB_IsNil( ::nDelayedClick[ 4 ] ) .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
+            If ! ::nDelayedClick[ 4 ] == NIL .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
                ::ContextMenu:Cargo := ::nDelayedClick[ 4 ]
                ::ContextMenu:Activate()
             EndIf

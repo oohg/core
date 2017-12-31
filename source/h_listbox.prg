@@ -328,7 +328,7 @@ METHOD Item( nItem, uValue ) CLASS TList
 
    LOCAL cRet
 
-   IF ! HB_IsNil( uValue )
+   IF ! uValue == NIL
       ListBoxDeleteString( Self, nItem )
       IF ::lMultiTab .AND. HB_IsArray( uValue )
          uValue := LB_Array2String( uValue )
@@ -346,7 +346,7 @@ METHOD InsertItem( nItem, uValue ) CLASS TList
 
    LOCAL cRet
 
-   IF ! HB_IsNil( uValue )
+   IF ! uValue == NIL
       IF ::lMultiTab .AND. HB_IsArray( uValue )
          uValue := LB_Array2String( uValue )
       ENDIF

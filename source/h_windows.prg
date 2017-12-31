@@ -1012,7 +1012,7 @@ HB_FUNC( DISABLEVISUALSTYLE )
 
 METHOD IsVisualStyled CLASS TWindow
 
-   IF HB_IsNil( ::lVisualStyled )
+   IF ::lVisualStyled == NIL
       ::lVisualStyled := _OOHG_UsesVisualStyle()
    ENDIF
 

@@ -992,7 +992,7 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TGrid
                   ::SetControlValue( ::nDelayedClick[ 1 ] )
                EndIf
 
-               If HB_IsNil( ::nDelayedClick[ 4 ] )
+               If ::nDelayedClick[ 4 ] == NIL
                   If HB_IsBlock( ::OnClick )
                      If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
                         If ! ::NestedClick
@@ -1016,7 +1016,7 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TGrid
                EndIf
 
                // fire context menu
-               If ! HB_IsNil( ::nDelayedClick[ 4 ] ) .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
+               If ! ::nDelayedClick[ 4 ] == NIL .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
                   ::ContextMenu:Cargo := ::nDelayedClick[ 4 ]
                   ::ContextMenu:Activate()
                EndIf
@@ -2328,7 +2328,7 @@ METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPo
                      ::SetControlValue( ::nDelayedClick[ 1 ] )
                   EndIf
 
-                  If HB_IsNil( ::nDelayedClick[ 4 ] )
+                  If ::nDelayedClick[ 4 ] == NIL
                      If HB_IsBlock( ::OnClick )
                         If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
                            If ! ::NestedClick
@@ -2352,7 +2352,7 @@ METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPo
                   EndIf
 
                   // fire context menu
-                  If ! HB_IsNil( ::nDelayedClick[ 4 ] ) .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
+                  If ! ::nDelayedClick[ 4 ] == NIL .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
                      ::ContextMenu:Cargo := ::nDelayedClick[ 4 ]
                      ::ContextMenu:Activate()
                   EndIf
@@ -2616,7 +2616,7 @@ METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TGrid
                   ::SetControlValue( ::nDelayedClick[ 1 ], ::nDelayedClick[ 2 ] )           // Second parameter is needed by TGridByCell:EditAllCells
                EndIf
 
-               If HB_IsNil( ::nDelayedClick[ 4 ] )
+               If ::nDelayedClick[ 4 ] == NIL
                   If HB_IsBlock( ::OnClick )
                      If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
                         If ! ::NestedClick
@@ -2640,7 +2640,7 @@ METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TGrid
                EndIf
 
                // fire context menu
-               If ! HB_IsNil( ::nDelayedClick[ 4 ] ) .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
+               If ! ::nDelayedClick[ 4 ] == NIL .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
                   ::ContextMenu:Cargo := ::nDelayedClick[ 4 ]
                   ::ContextMenu:Activate()
                EndIf
@@ -4116,7 +4116,7 @@ CLASS TGridByCell FROM TGrid
    METHOD PageDown
    METHOD PageUp
    METHOD Right
-   METHOD SetControlValue         BLOCK { |Self, nRow, nCol| If( HB_IsNil( nCol ), nCol := 1, ), ::Value := { nRow, nCol } }
+   METHOD SetControlValue         BLOCK { |Self, nRow, nCol| If( nCol == NIL, nCol := 1, ), ::Value := { nRow, nCol } }
    METHOD SetSelectedColors
    METHOD Up
    METHOD Value                   SETGET
@@ -4531,7 +4531,7 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TGridByCell
                ::Value := { ::nDelayedClick[ 1 ], ::nDelayedClick[ 2 ] }
             EndIf
 
-            If HB_IsNil( ::nDelayedClick[ 4 ] )
+            If ::nDelayedClick[ 4 ] == NIL
                If HB_IsBlock( ::OnClick )
                   If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
                      If ! ::NestedClick
@@ -4555,7 +4555,7 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TGridByCell
             EndIf
 
             // fire context menu
-            If ! HB_IsNil( ::nDelayedClick[ 4 ] ) .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
+            If ! ::nDelayedClick[ 4 ] == NIL .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
                ::ContextMenu:Cargo := ::nDelayedClick[ 4 ]
                ::ContextMenu:Activate()
             EndIf
@@ -4963,7 +4963,7 @@ METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPo
                ::Value := { ::nDelayedClick[ 1 ], ::nDelayedClick[ 2 ] }
             EndIf
 
-            If HB_IsNil( ::nDelayedClick[ 4 ] )
+            If ::nDelayedClick[ 4 ] == NIL
                If HB_IsBlock( ::OnClick )
                   If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
                      If ! ::NestedClick
@@ -4987,7 +4987,7 @@ METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPo
             EndIf
 
             // fire context menu
-            If ! HB_IsNil( ::nDelayedClick[ 4 ] ) .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
+            If ! ::nDelayedClick[ 4 ] == NIL .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
                ::ContextMenu:Cargo := ::nDelayedClick[ 4 ]
                ::ContextMenu:Activate()
             EndIf
