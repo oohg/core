@@ -853,7 +853,7 @@ Static Function DetMaxVal( nNum )
       nE --
    EndDo
 
-   RETURN iif( HB_ISNIL( nVal ), 0, nVal )
+   RETURN iif( nVal == NIL, 0, nVal )
 
 Static Function ClrShadow( nColor, nFactor )
 

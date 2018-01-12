@@ -8,6 +8,18 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2017-12-31 08:12 UTC-0300 Jose Quintas
+   * h_browse.prg
+   * h_combo.prg
+   * h_datepicker.prg
+   * h_graph.prg
+   * h_grid.prg
+   * h_listbox.prg
+   * h_menu.prg
+   * h_window.prg
+   * h_xbrowse.prg
+     * do not require hb_IsNil() from bad xhb.lib
+
 2017-12-18 20:01 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt
      * Updated.

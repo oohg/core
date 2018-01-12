@@ -1907,7 +1907,7 @@ METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPo
       // Show default values in the edit row
       aNewI := ::Item( nRow )
       For i := 1 to Len( ::aHeaders )
-         If ! HB_IsNil( ::aDefaultValues[ i ] )
+         If ! ::aDefaultValues[ i ] == NIL
             aNewI[ i ] := aItem[ i ]
          EndIf
       Next i
@@ -1972,7 +1972,7 @@ METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPo
                ::MoveTo( ::nDelayedClick[ 1 ], ::nRowPos )
             EndIf
 
-            If HB_IsNil( ::nDelayedClick[ 4 ] )
+            If ::nDelayedClick[ 4 ] == NIL
                If HB_IsBlock( ::OnClick )
                   If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
                      If ! ::NestedClick
@@ -1996,7 +1996,7 @@ METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPo
             EndIf
 
             // fire context menu
-            If ! HB_IsNil( ::nDelayedClick[ 4 ] ) .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
+            If ! ::nDelayedClick[ 4 ] == NIL .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
                ::ContextMenu:Cargo := ::nDelayedClick[ 4 ]
                ::ContextMenu:Activate()
             EndIf
@@ -2103,7 +2103,7 @@ METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowse
                   ::MoveTo( ::nDelayedClick[ 1 ], ::nRowPos )
                EndIf
 
-               If HB_IsNil( ::nDelayedClick[ 4 ] )
+               If ::nDelayedClick[ 4 ] == NIL
                   If HB_IsBlock( ::OnClick )
                      If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
                         If ! ::NestedClick
@@ -2127,7 +2127,7 @@ METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowse
                EndIf
 
                // fire context menu
-               If ! HB_IsNil( ::nDelayedClick[ 4 ] ) .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
+               If ! ::nDelayedClick[ 4 ] == NIL .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
                   ::ContextMenu:Cargo := ::nDelayedClick[ 4 ]
                   ::ContextMenu:Activate()
                EndIf
@@ -2246,7 +2246,7 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowse
                   ::MoveTo( ::nDelayedClick[ 1 ], ::nRowPos )
                EndIf
 
-               If HB_IsNil( ::nDelayedClick[ 4 ] )
+               If ::nDelayedClick[ 4 ] == NIL
                   If HB_IsBlock( ::OnClick )
                      If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
                         If ! ::NestedClick
@@ -2270,7 +2270,7 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowse
                EndIf
 
                // fire context menu
-               If ! HB_IsNil( ::nDelayedClick[ 4 ] ) .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
+               If ! ::nDelayedClick[ 4 ] == NIL .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
                   ::ContextMenu:Cargo := ::nDelayedClick[ 4 ]
                   ::ContextMenu:Activate()
                EndIf
@@ -2322,7 +2322,7 @@ METHOD GetCellType( nCol, EditControl, uOldValue, cMemVar, bReplaceField, lAppen
 
    If ValType( uOldValue ) == "U"
       ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
-      If ! lAppend .OR. HB_IsNil( ::aDefaultValues[ nCol ] )
+      If ! lAppend .OR. ::aDefaultValues[ nCol ] == NIL
          uOldValue := EVAL( ::ColumnBlock( nCol, .T. ), ::WorkArea )
       ElseIf HB_IsBlock( ::aDefaultValues[ nCol ] )
          uOldValue := EVAL( ::aDefaultValues[ nCol ], nCol )
@@ -3122,7 +3122,7 @@ METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPo
                ::MoveTo( { ::nDelayedClick[ 1 ], ::nDelayedClick[ 2 ] }, { ::nRowPos, ::nColPos } )
             EndIf
 
-            If HB_IsNil( ::nDelayedClick[ 4 ] )
+            If ::nDelayedClick[ 4 ] == NIL
                If HB_IsBlock( ::OnClick )
                   If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
                      If ! ::NestedClick
@@ -3146,7 +3146,7 @@ METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPo
             EndIf
 
             // fire context menu
-            If ! HB_IsNil( ::nDelayedClick[ 4 ] ) .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
+            If ! ::nDelayedClick[ 4 ] == NIL .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
                ::ContextMenu:Cargo := ::nDelayedClick[ 4 ]
                ::ContextMenu:Activate()
             EndIf
@@ -3309,7 +3309,7 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowseByCell
                ::MoveTo( { ::nDelayedClick[ 1 ], ::nDelayedClick[ 2 ] }, { ::nRowPos, ::nColPos } )
             EndIf
 
-            If HB_IsNil( ::nDelayedClick[ 4 ] )
+            If ::nDelayedClick[ 4 ] == NIL
                If HB_IsBlock( ::OnClick )
                   If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
                      If ! ::NestedClick
@@ -3333,7 +3333,7 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowseByCell
             EndIf
 
             // fire context menu
-            If ! HB_IsNil( ::nDelayedClick[ 4 ] ) .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
+            If ! ::nDelayedClick[ 4 ] == NIL .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
                ::ContextMenu:Cargo := ::nDelayedClick[ 4 ]
                ::ContextMenu:Activate()
             EndIf
@@ -3504,7 +3504,7 @@ METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowseByCel
                ::MoveTo( { ::nDelayedClick[ 1 ], ::nDelayedClick[ 2 ] }, { ::nRowPos, ::nColPos } )
             EndIf
 
-            If HB_IsNil( ::nDelayedClick[ 4 ] )
+            If ::nDelayedClick[ 4 ] == NIL
                If HB_IsBlock( ::OnClick )
                   If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0
                      If ! ::NestedClick
@@ -3528,7 +3528,7 @@ METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowseByCel
             EndIf
 
             // fire context menu
-            If ! HB_IsNil( ::nDelayedClick[ 4 ] ) .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
+            If ! ::nDelayedClick[ 4 ] == NIL .AND. ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. ::nDelayedClick[ 3 ] <= 0 )
                ::ContextMenu:Cargo := ::nDelayedClick[ 4 ]
                ::ContextMenu:Activate()
             EndIf

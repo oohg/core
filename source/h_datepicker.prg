@@ -246,7 +246,7 @@ METHOD Value( uValue ) CLASS TTimePick
       ENDIF
        ::DoChange()
    ELSEIF PCOUNT() > 0
-      IF HB_IsNil( uValue ) .AND. IsWindowStyle( ::hWnd, DTS_SHOWNONE )
+      IF uValue == NIL .AND. IsWindowStyle( ::hWnd, DTS_SHOWNONE )
          SetDatePickNull( ::hWnd )
       ELSE
          SetTimePick( ::hWnd, VAL( LEFT( TIME(), 2 ) ), VAL( SUBSTR( TIME(), 4, 2 ) ), VAL( SUBSTR( TIME(), 7, 2) ) )

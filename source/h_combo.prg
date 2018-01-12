@@ -260,7 +260,7 @@ METHOD Field( uField ) CLASS TCombo
 
 METHOD ValueSource( uValue ) CLASS TCombo
 
-   If PCOUNT() > 0 .AND. HB_IsNil( uValue )
+   If PCOUNT() > 0 .AND. uValue == NIL
       ::aValues := {}
       ::uValueSource := NIL
    ElseIf HB_IsArray( uValue )

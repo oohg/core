@@ -556,10 +556,10 @@ METHOD DoEvent( bBlock, cEventType, aParams ) CLASS TMenuItem
 
    Local aNew, uCargo
 
-   IF HB_IsNil( ::Cargo ) .AND. HB_IsNil( ::Container:Cargo ) .AND. HB_IsNil( ::Parent:Cargo )
+   IF ::Cargo == NIL .AND. ::Container:Cargo == NIL .AND. ::Parent:Cargo == NIL
       aNew := aParams
    ELSE
-      IF HB_IsNil( aParams )
+      IF aParams == NIL
          aNew := {}
       ELSEIF HB_IsArray( aParams )
          aNew := aClone( aParams )
@@ -567,9 +567,9 @@ METHOD DoEvent( bBlock, cEventType, aParams ) CLASS TMenuItem
          aNew := { aParams }
       ENDIF
 
-      IF ! HB_IsNil( ::Cargo )
+      IF ! ::Cargo == NIL
          uCargo := ::Cargo
-      ELSEIF ! HB_IsNil( ::Container:Cargo )
+      ELSEIF ! ::Container:Cargo == NIL
          uCargo := ::Container:Cargo
       ELSE
          uCargo := ::Parent:Cargo
