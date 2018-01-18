@@ -14,6 +14,10 @@ rem -info to see informational messages
 
    cls
 
+   pushd "%~dp0"
+   set HG_START_DP_BUILDLIB_BAT=%CD%
+   popd
+
    if /I not "%1" == "/C" goto ROOT
    shift
    set HG_ROOT=
@@ -28,7 +32,9 @@ rem -info to see informational messages
 :ROOT
 
    if not "%HG_ROOT%" == "" goto TEST
-   set HG_ROOT=%~dp0..
+   pushd "%HG_START_DP_BUILDLIB_BAT%\.."
+   set HG_ROOT=%CD%
+   popd
 
 :TEST
 
@@ -37,10 +43,10 @@ rem -info to see informational messages
 
 :DETECT_HB30
 
-   if exist "%~dp0.\BuildLib30.bat" goto DETECT_HB32
-   if exist "%~dp0.\BuildLib32.bat" goto COMPILE_HB32
-   echo File %~dp0BuildLib30.bat not found !!!
-   echo File %~dp0BuildLib32.bat not found !!!
+   if exist "%HG_START_DP_BUILDLIB_BAT%\BuildLib30.bat" goto DETECT_HB32
+   if exist "%HG_START_DP_BUILDLIB_BAT%\BuildLib32.bat" goto COMPILE_HB32
+   echo File %HG_START_DP_BUILDLIB_BAT%\BuildLib30.bat not found !!!
+   echo File %HG_START_DP_BUILDLIB_BAT%\BuildLib32.bat not found !!!
    echo.
    echo This file must be executed from SOURCE folder !!!
    echo.
@@ -48,7 +54,7 @@ rem -info to see informational messages
 
 :DETECT_HB32
 
-   if not exist "%~dp0.\BuildLib32.bat" goto COMPILE_HB30
+   if not exist "%HG_START_DP_BUILDLIB_BAT%\BuildLib32.bat" goto COMPILE_HB30
    echo Syntax:
    echo    To build with Harbour 3.0
    echo       buildlib HB30 [options]
@@ -60,8 +66,8 @@ rem -info to see informational messages
 :TEST_HB30
 
    shift
-   if exist "%~dp0.\BuildLib30.bat" goto COMPILE_HB30
-   echo File %~dp0BuildLib30.bat not found !!!
+   if exist "%HG_START_DP_BUILDLIB_BAT%\BuildLib30.bat" goto COMPILE_HB30
+   echo File %HG_START_DP_BUILDLIB_BAT%\BuildLib30.bat not found !!!
    echo.
    echo This file must be executed from SOURCE folder !!!
    echo.
@@ -70,8 +76,8 @@ rem -info to see informational messages
 :TEST_HB32
 
    shift
-   if exist "%~dp0.\BuildLib32.bat" goto COMPILE_HB32
-   echo File %~dp0BuildLib32.bat not found !!!
+   if exist "%HG_START_DP_BUILDLIB_BAT%\BuildLib32.bat" goto COMPILE_HB32
+   echo File %HG_START_DP_BUILDLIB_BAT%\BuildLib32.bat not found !!!
    echo.
    echo This file must be executed from SOURCE folder !!!
    echo.
@@ -86,7 +92,7 @@ rem -info to see informational messages
    if "%LIB_GUI%"  == "" set LIB_GUI=lib
    if "%LIB_HRB%"  == "" set LIB_HRB=lib
    if "%BIN_HRB%"  == "" set BIN_HRB=bin
-   call "%~dp0.\BuildLib_hbmk2.bat" %1 %2 %3 %4 %5 %6 %7 %8 %9
+   call "%HG_START_DP_BUILDLIB_BAT%\BuildLib_hbmk2.bat" %1 %2 %3 %4 %5 %6 %7 %8 %9
    goto END
 
 :COMPILE_HB32
@@ -98,7 +104,9 @@ rem -info to see informational messages
    if "%LIB_GUI%"  == "" set LIB_GUI=lib\hb\mingw
    if "%LIB_HRB%"  == "" set LIB_HRB=lib\win\mingw
    if "%BIN_HRB%"  == "" set BIN_HRB=bin
-   call "%~dp0.\BuildLib_hbmk2.bat" %1 %2 %3 %4 %5 %6 %7 %8 %9
+   call "%HG_START_DP_BUILDLIB_BAT%\BuildLib_hbmk2.bat" %1 %2 %3 %4 %5 %6 %7 %8 %9
    goto END
 
 :END
+
+   set HG_START_DP_BUILDLIB_BAT=

@@ -6,7 +6,10 @@ rem
 :OIDE
 
    if not .%HG_IDE%.==.. goto CHECK
-   set HG_IDE=%~dp0ide
+
+   pushd "%~dp0"
+   set HG_IDE=%CD%\ide
+   popd
 
 :CHECK
 

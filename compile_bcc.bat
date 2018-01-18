@@ -7,10 +7,9 @@ rem
 
    if not "%HG_ROOT%" == "" goto CHECK
 
-   set THIS_DRIVE_AND_PATH=%~dp0
-   set HG_ROOT=%THIS_DRIVE_AND_PATH%
-   if "%THIS_DRIVE_AND_PATH:~-1%" == "\" set HG_ROOT=%THIS_DRIVE_AND_PATH:~0,-1%
-   set THIS_DRIVE_AND_PATH=
+   pushd "%~dp0"
+   set HG_ROOT=%CD%
+   popd
 
 :CHECK
 

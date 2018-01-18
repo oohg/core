@@ -6,7 +6,10 @@ rem
 :OFMT
 
    if not "%HG_FMT%" == "" goto CHECK
-   set HG_FMT=%~dp0fmt
+
+   pushd "%~dp0"
+   set HG_FMT=%CD%\fmt
+   popd
 
 :CHECK
 

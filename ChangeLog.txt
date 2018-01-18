@@ -8,17 +8,33 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-01-18 20:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog.txt
+     * Updated.
+   * core\buildapp.bat
+   * core\BuildApp_hbmk2.bat
+   * core\compile.bat
+   * core\compile_bcc.bat
+   * core\compile_MINGW.BAT
+   * core\ofmt.bat
+   * core\oide.bat
+   * core\resources\CompileRes.bat
+   * core\resources\CompileRes_mingw.bat
+   * core\source\buildlib.bat
+   * core\source\makelib.bat
+     * Deduce HG_ROOT from .bat's starting folder if not set.
+
 2017-12-31 08:12 UTC-0300 Jose Quintas
-   * h_browse.prg
-   * h_combo.prg
-   * h_datepicker.prg
-   * h_graph.prg
-   * h_grid.prg
-   * h_listbox.prg
-   * h_menu.prg
-   * h_window.prg
-   * h_xbrowse.prg
-     * do not require hb_IsNil() from bad xhb.lib
+   * core\source\h_browse.prg
+   * core\source\h_combo.prg
+   * core\source\h_datepicker.prg
+   * core\source\h_graph.prg
+   * core\source\h_grid.prg
+   * core\source\h_listbox.prg
+   * core\source\h_menu.prg
+   * core\source\h_window.prg
+   * core\source\h_xbrowse.prg
+     * hb_IsNil() replace by '== NIL' to avoid using xhb library.
 
 2017-12-18 20:01 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt

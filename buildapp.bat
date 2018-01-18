@@ -7,6 +7,10 @@ rem
 
    cls
 
+   pushd "%~dp0"
+   set HG_START_DP_BUILDAPP_BAT=%CD%
+   popd
+
    if /I not "%1" == "/C" goto ROOT
    shift
    set HG_ROOT=
@@ -21,11 +25,7 @@ rem
 :ROOT
 
    if not "%HG_ROOT%" == "" goto TEST
-
-   set THIS_DRIVE_AND_PATH=%~dp0
-   set HG_ROOT=%THIS_DRIVE_AND_PATH%
-   if "%THIS_DRIVE_AND_PATH:~-1%" == "\" set HG_ROOT=%THIS_DRIVE_AND_PATH:~0,-1%
-   set THIS_DRIVE_AND_PATH=
+   set HG_ROOT=%HG_START_DP_BUILDAPP_BAT%
 
 :TEST
 
@@ -100,3 +100,5 @@ rem
    goto END
 
 :END
+
+   set HG_START_DP_BUILDAPP_BAT=

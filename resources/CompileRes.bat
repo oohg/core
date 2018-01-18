@@ -6,23 +6,31 @@ rem
 :COMPILERES
 
    cls
-   if exist "%~dp0.\CompileRes_bcc.bat" goto BCC
-   if exist "%~dp0.\CompileRes_mingw.bat" goto MINGW
 
-   echo File %~dp0CompileRes_bcc.bat not found !!!
-   echo FIle %~dp0CompileRes_mingw.bat not found !!!
+   setlocal
+   pushd "%~dp0"
+   set HG_START_DP_COMPILERES_BAT=%CD%
+   popd
+
+   if exist "%HG_START_DP_COMPILERES_BAT%\CompileRes_bcc.bat" goto BCC
+   if exist "%HG_START_DP_COMPILERES_BAT%\CompileRes_mingw.bat" goto MINGW
+
+   echo File %HG_START_DP_COMPILERES_BAT%\CompileRes_bcc.bat not found !!!
+   echo FIle %HG_START_DP_COMPILERES_BAT%\CompileRes_mingw.bat not found !!!
    echo.
    goto EXIT
 
 :BCC
 
-   call "%~dp0.\CompileRes_bcc.bat" /NOCLS
-   if exist "%~dp0.\CompileRes_mingw.bat" goto MINGW
+   call "%HG_START_DP_COMPILERES_BAT%\CompileRes_bcc.bat" /NOCLS
+   if exist "%HG_START_DP_COMPILERES_BAT%\CompileRes_mingw.bat" goto MINGW
    goto EXIT
 
 :MINGW
 
-   if exist "%~dp0..\compile30.bat" call "%~dp0.\CompileRes_mingw.bat" /NOCLS HB30
-   if exist "%~dp0..\compile32.bat" call "%~dp0.\CompileRes_mingw.bat" /NOCLS HB32
+   if exist "%HG_START_DP_COMPILERES_BAT%\..\compile30.bat" call "%HG_START_DP_COMPILERES_BAT%\CompileRes_mingw.bat" /NOCLS HB30
+   if exist "%HG_START_DP_COMPILERES_BAT%\..\compile32.bat" call "%HG_START_DP_COMPILERES_BAT%\CompileRes_mingw.bat" /NOCLS HB32
 
 :EXIT
+
+   set HG_START_DP_COMPILERES_BAT=

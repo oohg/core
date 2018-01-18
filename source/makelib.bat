@@ -7,6 +7,10 @@ rem
 
    cls
 
+   pushd "%~dp0"
+   set HG_START_DP_MAKELIB_BAT=%CD%
+   popd
+
    if /I not "%1" == "/C" goto ROOT
    shift
    set HG_ROOT=
@@ -21,7 +25,9 @@ rem
 :ROOT
 
    if not "%HG_ROOT%" == "" goto TEST
-   set HG_ROOT=%~dp0..
+   pushd "%HG_START_DP_MAKELIB_BAT%\.."
+   set HG_ROOT=%CD%
+   popd
 
 :TEST
 
@@ -31,23 +37,23 @@ rem
 
 :DETECT_HB30
 
-   if not exist "%~dp0.\MakeLib30.bat" goto DETECT_HB32
-   if exist "%~dp0.\MakeLib32.bat" goto SYNTAX
-   if exist "%~dp0.\MakeLibXB.bat" goto SYNTAX
+   if not exist "%HG_START_DP_MAKELIB_BAT%\MakeLib30.bat" goto DETECT_HB32
+   if exist "%HG_START_DP_MAKELIB_BAT%\MakeLib32.bat" goto SYNTAX
+   if exist "%HG_START_DP_MAKELIB_BAT%\MakeLibXB.bat" goto SYNTAX
    goto COMPILE_HB30
 
 :DETECT_HB32
 
-   if not exist "%~dp0.\MakeLib32.bat" goto DETECT_XB
-   if exist "%~dp0.\MakeLibXB.bat" goto SYNTAX
+   if not exist "%HG_START_DP_MAKELIB_BAT%\MakeLib32.bat" goto DETECT_XB
+   if exist "%HG_START_DP_MAKELIB_BAT%\MakeLibXB.bat" goto SYNTAX
    goto COMPILE_HB32
 
 :DETECT_XB
 
-   if exist "%~dp0.\MakeLibXB.bat" goto COMPILE_XB
-   echo File %~dp0MakeLib30.bat not found !!!
-   echo File %~dp0MakeLib32.bat not found !!!
-   echo File %~dp0MakeLibXB.bat not found !!!
+   if exist "%HG_START_DP_MAKELIB_BAT%\MakeLibXB.bat" goto COMPILE_XB
+   echo File %HG_START_DP_MAKELIB_BAT%\MakeLib30.bat not found !!!
+   echo File %HG_START_DP_MAKELIB_BAT%\MakeLib32.bat not found !!!
+   echo File %HG_START_DP_MAKELIB_BAT%\MakeLibXB.bat not found !!!
    echo.
    echo This file must be executed from SOURCE folder !!!
    echo.
@@ -68,8 +74,8 @@ rem
 :TEST_HB30
 
    shift
-   if exist "%~dp0.\MakeLib30.bat" goto COMPILE_HB30
-   echo File %~dp0MakeLib30.bat not found !!!
+   if exist "%HG_START_DP_MAKELIB_BAT%\MakeLib30.bat" goto COMPILE_HB30
+   echo File %HG_START_DP_MAKELIB_BAT%\MakeLib30.bat not found !!!
    echo.
    echo This file must be executed from SOURCE folder !!!
    echo.
@@ -78,8 +84,8 @@ rem
 :TEST_HB32
 
    shift
-   if exist "%~dp0.\MakeLib32.bat" goto COMPILE_HB32
-   echo File %~dp0MakeLib32.bat not found !!!
+   if exist "%HG_START_DP_MAKELIB_BAT%\MakeLib32.bat" goto COMPILE_HB32
+   echo File %HG_START_DP_MAKELIB_BAT%\MakeLib32.bat not found !!!
    echo.
    echo This file must be executed from SOURCE folder !!!
    echo.
@@ -88,8 +94,8 @@ rem
 :TEST_XB
 
    shift
-   if exist "%~dp0.\MakeLibXB.bat" goto COMPILE_XB
-   echo File %~dp0MakeLibXB.bat not found !!!
+   if exist "%HG_START_DP_MAKELIB_BAT%\MakeLibXB.bat" goto COMPILE_XB
+   echo File %HG_START_DP_MAKELIB_BAT%\MakeLibXB.bat not found !!!
    echo.
    echo This file must be executed from SOURCE folder !!!
    echo.
@@ -104,7 +110,7 @@ rem
    if "%LIB_GUI%"  == "" set LIB_GUI=lib
    if "%LIB_HRB%"  == "" set LIB_HRB=lib
    if "%BIN_HRB%"  == "" set BIN_HRB=bin
-   call "%~dp0.\MakeLib_mingw.bat"
+   call "%HG_START_DP_MAKELIB_BAT%\MakeLib_mingw.bat"
    goto END
 
 :COMPILE_HB32
@@ -116,7 +122,7 @@ rem
    if "%LIB_GUI%"  == "" set LIB_GUI=lib\hb\mingw
    if "%LIB_HRB%"  == "" set LIB_HRB=lib\win\mingw
    if "%BIN_HRB%"  == "" set BIN_HRB=bin
-   call "%~dp0.\MakeLib_mingw.bat"
+   call "%HG_START_DP_MAKELIB_BAT%\MakeLib_mingw.bat"
    goto END
 
 :COMPILE_XB
@@ -128,7 +134,9 @@ rem
    if "%LIB_GUI%"  == "" set LIB_GUI=lib\xhb\bcc
    if "%LIB_HRB%"  == "" set LIB_HRB=lib
    if "%BIN_HRB%"  == "" set BIN_HRB=bin
-   call "%~dp0.\MakeLib_bcc.bat"
+   call "%HG_START_DP_MAKELIB_BAT%\MakeLib_bcc.bat"
    goto END
 
 :END
+
+   set HG_START_DP_MAKELIB_BAT=

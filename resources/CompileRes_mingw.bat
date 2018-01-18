@@ -7,6 +7,11 @@ rem
 
    echo Compiling oohg.rc ...
 
+   setlocal
+   pushd "%~dp0"
+   set HG_START_DP_COMPILERES_MINGW_BAT=%CD%
+   popd
+
    if /I not "%1"=="/NOCLS" cls
    if /I "%1"=="/NOCLS" shift
 
@@ -28,8 +33,15 @@ rem
 
    if not "%HG_MINGW%"=="" goto CHECK
 
-   if not "%HG_ROOT%"=="" set HG_MINGW=%HG_ROOT%
-   if "%HG_ROOT%"=="" set HG_MINGW=%~dp0..
+   if not "%HG_ROOT%"=="" goto SETFROMROOT
+
+   pushd "%HG_START_DP_COMPILERES_MINGW_BAT%\.."
+   set HG_ROOT=%CD%
+   popd
+
+:SETFROMROOT
+
+   set HG_MINGW=%HG_ROOT%
 
    if /I "%1"=="HB30" set HG_MINGW=%HG_MINGW%\hb30\comp\mingw
    if /I "%1"=="HB32" set HG_MINGW=%HG_MINGW%\hb32\comp\mingw
@@ -73,7 +85,7 @@ rem
 
 :NO_MINGW
 
-   echo MINGW not found !!!
+   echo MINGW for %1 not found !!!
    echo.
    goto EXIT
 
@@ -98,3 +110,5 @@ rem
    goto EXIT
 
 :EXIT
+
+   set HG_START_DP_COMPILERES_MINGW_BAT=
