@@ -63,7 +63,23 @@
 
 #xtranslate CurDrive( [<x>] ) ;
    => ;
-      HB_CurDrive( <x> )
+      hb_CurDrive( <x> )
+
+#xtranslate TToC( [<x,...>] ) ;
+   => ;
+      hb_TToC( <x> )
+
+#xtranslate CToT( [<x,...>] ) ;
+   => ;
+      hb_CToT( <x> )
+
+#xtranslate PrintFileRaw( [<x,...>] ) ;
+   => ;
+      win_PrintFileRaw( <x> )
+
+#xtranslate GetDefaultPrinter( [<x,...>] ) ;
+   => ;
+      win_PrinterGetDefault( <x> )
 
 #endif
 
@@ -72,14 +88,14 @@
 
 #xtranslate WIN_OEMTOANSI( <arg1> ) ;
    => ;
-      HB_OEMTOANSI( <arg1> )
+      hb_OEMToANSI( <arg1> )
 
 #xtranslate WIN_ANSITOOEM( <arg1> ) ;
    => ;
-      HB_ANSITOOEM( <arg1> )
+      hb_ANSIToOEM( <arg1> )
 
 #xtranslate TIP_HTMLTOSTR( <arg1> ) ;
    => ;
-      HTMLTOOEM( <arg1> )
+      HtmlToOEM( <arg1> )
 
 #endif

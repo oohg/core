@@ -293,6 +293,7 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
       [ MAXHEIGHT <maxheight> ] ;
       [ BACKIMAGE <backimage> [ <stretch: STRETCH> ] ] ;
    => ;
+      DECLARE WINDOW <w> ;;
       [ <obj> := ] DefineWindow( <(w)>, <title>, <col>, <row>, <wi>, <h>, ;
             <.nominimize.>, <.nomaximize.>, <.nosize.>, <.nosysmenu.>, ;
             <.nocaption.>, <{InitProcedure}>, <{ReleaseProcedure}>, ;
@@ -312,8 +313,7 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
             <{MClickProcedure}>, <{DblClickProcedure}>, ;
             <{RDblClickProcedure}>, <{MDblClickProcedure}>, <minwidth>, ;
             <maxwidth>, <minheight>, <maxheight>, <{MoveProcedure}>, ;
-            <backimage>, <.stretch.>, <FontColor> ) ;;
-      DECLARE WINDOW <w>
+            <backimage>, <.stretch.>, <FontColor> )
 
 #xcommand LOAD WINDOW <w> ;
    => ;

@@ -8,6 +8,22 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-01-18 21:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog.txt
+     * Updated.
+   * core\include\i_hb_compat.ch
+     + Translates for TTOC, CTOT, PrintFileRaw and GetDefaultPrinter
+       so xhb library is no longer need by core.
+     * Changed the casing of some functions.
+   * core\include\i_window.ch
+     ! win.control.property syntax is not recognized by preprocessor
+       when used in DEFINE WINDOW sentence.
+   * core\source\h_checklist.prg
+     + T*O*D*O.
+   * core\source\h_tab.prg
+     * Changed Empty( <var> ) to HB_SYMBOL_UNUSED( <var> ).
+     * Changed the casing of some functions and keywords.
+
 2018-01-18 20:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt
      * Updated.

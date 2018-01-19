@@ -108,6 +108,43 @@ CLASS TCheckList FROM TGrid
    METHOD Release
    */
 
+   /*
+   TODO: Check if this methods are needed or must be NIL.
+
+   METHOD AddBitMap
+   METHOD AdjustResize
+   METHOD Append                  SETGET
+   METHOD CellCaption             BLOCK { | Self, nRow, nCol, uValue | CellRawValue( ::hWnd, nRow, nCol, 1, uValue ) }
+   METHOD CellImage               BLOCK { | Self, nRow, nCol, uValue | CellRawValue( ::hWnd, nRow, nCol, 2, uValue ) }
+   METHOD CheckItem               SETGET
+   METHOD ColumnOrder             SETGET
+   METHOD CompareItems
+   METHOD Define4
+   METHOD FirstColInOrder
+   METHOD FirstVisibleColumn
+   METHOD FirstVisibleItem
+   METHOD FixControls             SETGET
+   METHOD HeaderHeight
+   METHOD HeaderSetFont
+   METHOD ItemHeight
+   METHOD Justify
+   METHOD LastColInOrder
+   METHOD LastVisibleColumn
+   METHOD NextColInOrder
+   METHOD PriorColInOrder
+   METHOD ScrollToCol
+   METHOD ScrollToLeft
+   METHOD ScrollToNext
+   METHOD ScrollToPrior
+   METHOD ScrollToRight
+   METHOD SetControlValue         BLOCK { |Self, nRow, nCol| Empty( nCol ), ::Value := nRow }
+   METHOD SortColumn
+   METHOD SortItems
+
+   MESSAGE PanToLeft              METHOD ScrollToPrior
+   MESSAGE PanToRight             METHOD ScrollToNext
+   */
+
    // This methods of TGrid class are not needed:
 
    METHOD Left                 BLOCK { || Nil }

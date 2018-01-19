@@ -73,12 +73,12 @@ CLASS TTabDirect FROM TTabRaw
    // DATA Type                      INIT "TAB" READONLY
    DATA aPages                    INIT {}
    DATA lInternals                INIT .F.
-   DATA nFirstValue               INIT Nil
+   DATA nFirstValue               INIT NIL
 
    METHOD Define
    METHOD EndTab
    METHOD EndPage             BLOCK { || _OOHG_DeleteFrame( "TABPAGE" ) }
-   METHOD ItemCount           BLOCK { |Self| LEN( ::aPages ) }
+   METHOD ItemCount           BLOCK { |Self| Len( ::aPages ) }
 
    METHOD Refresh
    METHOD RefreshData
@@ -130,43 +130,43 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aCaptions, aPageMap, ;
       ::BackColor := -1
    ENDIF
 
-   IF ! ::lInternals .AND. ! EMPTY( ::Container )
+   IF ! ::lInternals .AND. ! Empty( ::Container )
       SetWindowPos( ::hWnd, 0, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE )
    ENDIF
 
    _OOHG_AddFrame( Self )
 
    // Add page by page
-   IF ! HB_IsArray( aCaptions )
+   IF ! HB_ISARRAY( aCaptions )
       aCaptions := {}
    ENDIF
-   IF ! HB_IsArray( Images )
+   IF ! HB_ISARRAY( Images )
       Images := {}
    ENDIF
-   IF ! HB_IsArray( aPageMap )
+   IF ! HB_ISARRAY( aPageMap )
       aPageMap := {}
    ENDIF
-   IF ! HB_IsArray( aMnemonic )
+   IF ! HB_ISARRAY( aMnemonic )
       aMnemonic := {}
    ENDIF
    z := 1
-   DO WHILE z <= LEN( aCaptions ) .AND. z <= LEN( Images ) .AND. z <= LEN( aPageMap )
-      IF z <= LEN( aCaptions ) .AND. VALTYPE( aCaptions[ z ] ) $ "CM"
+   DO WHILE z <= Len( aCaptions ) .AND. z <= Len( Images ) .AND. z <= Len( aPageMap )
+      IF z <= Len( aCaptions ) .AND. ValType( aCaptions[ z ] ) $ "CM"
          Caption := aCaptions[ z ]
       ELSE
          Caption := ""
       ENDIF
-      IF z <= LEN( Images ) .AND. VALTYPE( Images[ z ] ) $ "CM"
+      IF z <= Len( Images ) .AND. ValType( Images[ z ] ) $ "CM"
          Image := Images[ z ]
       ELSE
          Image := ""
       ENDIF
-      IF z <= LEN( aPageMap ) .AND. HB_IsArray( aPageMap[ z ] )
+      IF z <= Len( aPageMap ) .AND. HB_ISARRAY( aPageMap[ z ] )
          aControls := aPageMap[ z ]
       ELSE
          aControls := Nil
       ENDIF
-      IF z <= LEN( aMnemonic ) .AND. HB_IsBlock( aMnemonic[ z ] )
+      IF z <= Len( aMnemonic ) .AND. HB_IsBlock( aMnemonic[ z ] )
          Mnemonic := aMnemonic[ z ]
       ELSE
          Mnemonic := Nil
@@ -175,7 +175,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aCaptions, aPageMap, ;
       z++
    ENDDO
 
-   IF HB_IsNumeric( value )
+   IF HB_ISNUMERIC( value )
       ::Value := value
    ELSE
       ::Value := 1
@@ -192,7 +192,7 @@ METHOD EndTab() CLASS TTabDirect
       ::EndPage()
    ENDIF
    _OOHG_DeleteFrame( ::Type )
-   IF HB_IsNumeric( ::nFirstValue ) .AND. ! ::Value == ::nFirstValue
+   IF HB_ISNUMERIC( ::nFirstValue ) .AND. ! ::Value == ::nFirstValue
       ::Value := ::nFirstValue
    ENDIF
 
@@ -205,7 +205,7 @@ METHOD Refresh() CLASS TTabDirect
    nFocused := GetFocus()
    nPage := IF( ::Visible, ::Value, 0 )
    AEVAL( ::aPages, { |p,i| p:Position := i , p:ForceHide() } )
-   IF nPage >= 1 .AND. nPage <= LEN( ::aPages )
+   IF nPage >= 1 .AND. nPage <= Len( ::aPages )
       ::aPages[ nPage ]:Show()
       IF ! ::lProcMsgsOnVisible
          ProcessMessages()
@@ -248,7 +248,7 @@ METHOD Value( nValue ) CLASS TTabDirect
 
    LOCAL nPos, nCount
 
-   IF HB_IsNumeric( nValue )
+   IF HB_ISNUMERIC( nValue )
       nPos := ::RealPosition( nValue )
       IF nPos != 0
          TabCtrl_SetCurSel( ::hWnd, nPos )
@@ -269,7 +269,7 @@ METHOD Enabled( lEnabled ) CLASS TTabDirect
    IF HB_IsLogical( lEnabled )
       ::Super:Enabled := lEnabled
       nPos := ::Value
-      IF nPos <= LEN( ::aPages ) .AND. nPos >= 1
+      IF nPos <= Len( ::aPages ) .AND. nPos >= 1
          ::aPages[ nPos ]:Enabled := ::aPages[ nPos ]:Enabled
       ENDIF
    ENDIF
@@ -284,7 +284,7 @@ METHOD Visible( lVisible ) CLASS TTabDirect
       ::Super:Visible := lVisible
       nPos := ::Value
       aPages := ::aPages
-      IF nPos <= LEN( aPages ) .AND. nPos >= 1
+      IF nPos <= Len( aPages ) .AND. nPos >= 1
          IF lVisible .AND. aPages[ nPos ]:Visible
             aPages[ nPos ]:Visible := .T.
          ELSE
@@ -303,7 +303,7 @@ METHOD ForceHide() CLASS TTabDirect
    LOCAL nPos
 
    nPos := ::Value
-   IF nPos <= LEN( ::aPages ) .AND. nPos >= 1
+   IF nPos <= Len( ::aPages ) .AND. nPos >= 1
       ::aPages[ nPos ]:ForceHide()
    ENDIF
 
@@ -324,8 +324,8 @@ METHOD AddPage( Position, Caption, Image, aControls, Mnemonic, Name, oSubClass )
 
    LOCAL oPage, nPos
 
-   IF !HB_IsNumeric( Position ) .OR. Position < 1 .OR. Position > LEN( ::aPages )
-      Position := LEN( ::aPages ) + 1
+   IF !HB_ISNUMERIC( Position ) .OR. Position < 1 .OR. Position > Len( ::aPages )
+      Position := Len( ::aPages ) + 1
    ENDIF
 
    IF ! ValType( Image ) $ 'CM'
@@ -365,13 +365,13 @@ METHOD AddPage( Position, Caption, Image, aControls, Mnemonic, Name, oSubClass )
 
    ::InsertItem( ::RealPosition( Position ), Caption, oPage:nImage )
 
-   IF HB_IsArray( aControls )
+   IF HB_ISARRAY( aControls )
       AEVAL( aControls, { |o| ::AddControl( o, Position ) } )
    ENDIF
 
    nPos := At( '&', Caption )
-   IF nPos > 0 .AND. nPos < LEN( Caption )
-      IF !HB_IsBlock( Mnemonic )
+   IF nPos > 0 .AND. nPos < Len( Caption )
+      IF ! HB_IsBlock( Mnemonic )
          Mnemonic := { || oPage:SetFocus() }
       ENDIF
       DEFINE HOTKEY 0 PARENT ( ::Parent ) KEY "ALT+" + SubStr( Caption, nPos + 1, 1 ) ACTION ::DoEvent( Mnemonic, "CHANGE" )
@@ -387,7 +387,7 @@ METHOD AddPage( Position, Caption, Image, aControls, Mnemonic, Name, oSubClass )
 
    RETURN oPage
 
-Function _BeginTabPage( caption, image, Position, Name, oSubClass )
+FUNCTION _BeginTabPage( caption, image, Position, Name, oSubClass )
 
    LOCAL oCtrl, oPage
 
@@ -402,13 +402,13 @@ Function _BeginTabPage( caption, image, Position, Name, oSubClass )
 
    RETURN oPage
 
-Function _EndTabPage()
+FUNCTION _EndTabPage()
 
    _OOHG_DeleteFrame( "TABPAGE" )
 
    RETURN Nil
 
-Function _EndTab()
+FUNCTION _EndTab()
 
    IF _OOHG_LastFrame() == "TABPAGE"
       // ERROR: Last page not finished
@@ -424,19 +424,19 @@ METHOD AddControl( oCtrl, PageNumber, Row, Col ) CLASS TTabDirect
       oCtrl := ::Parent:Control( oCtrl )
    ENDIF
 
-   IF ! HB_IsNumeric( PageNumber ) .OR. PageNumber > LEN( ::aPages )
-      PageNumber := LEN( ::aPages )
+   IF ! HB_ISNUMERIC( PageNumber ) .OR. PageNumber > Len( ::aPages )
+      PageNumber := Len( ::aPages )
    ENDIF
 
    IF PageNumber < 1
       PageNumber := 1
    ENDIF
 
-   IF ! HB_IsNumeric( Row )
+   IF ! HB_ISNUMERIC( Row )
       Row := oCtrl:ContainerRow - ::ContainerRow
    ENDIF
 
-   IF ! HB_IsNumeric( Col )
+   IF ! HB_ISNUMERIC( Col )
       Col := oCtrl:ContainerCol - ::ContainerCol
    ENDIF
 
@@ -450,8 +450,8 @@ METHOD DeletePage( Position ) CLASS TTabDirect
 
    LOCAL nValue, nRealPosition
 
-   IF !HB_IsNumeric( Position ) .OR. Position < 1 .OR. Position > LEN( ::aPages )
-      Position := LEN( ::aPages )
+   IF !HB_ISNUMERIC( Position ) .OR. Position < 1 .OR. Position > Len( ::aPages )
+      Position := Len( ::aPages )
    ENDIF
 
    nValue := ::Value
@@ -477,7 +477,7 @@ METHOD RealPosition( nPage ) CLASS TTabDirect
 
    LOCAL nCount := 0
 
-   IF nPage >= 1 .AND. nPage <= LEN( ::aPages ) .AND. ! ::aPages[ nPage ]:lHidden
+   IF nPage >= 1 .AND. nPage <= Len( ::aPages ) .AND. ! ::aPages[ nPage ]:lHidden
       AEVAL( ::aPages, { |o| IF( o:lHidden, , nCount++ ) }, 1, nPage )
    ENDIF
 
@@ -487,7 +487,7 @@ METHOD HidePage( nPage ) CLASS TTabDirect
 
    LOCAL nPos
 
-   IF nPage >= 1 .AND. nPage <= LEN( ::aPages ) .AND. ! ::aPages[ nPage ]:lHidden
+   IF nPage >= 1 .AND. nPage <= Len( ::aPages ) .AND. ! ::aPages[ nPage ]:lHidden
       nPos := ::Value
       // Disable hotkey!
       ::DeleteItem( ::RealPosition( nPage ) )
@@ -514,7 +514,7 @@ METHOD ShowPage( nPage ) CLASS TTabDirect
 
    LOCAL nRealPosition
 
-   IF nPage >= 1 .AND. nPage <= LEN( ::aPages ) .AND. ::aPages[ nPage ]:lHidden
+   IF nPage >= 1 .AND. nPage <= Len( ::aPages ) .AND. ::aPages[ nPage ]:lHidden
       ::aPages[ nPage ]:lHidden := .F.
       nRealPosition := ::RealPosition( nPage )
       ::InsertItem( nRealPosition, ::aPages[ nPage ]:Caption, ::aPages[ nPage ]:nImage )
@@ -532,12 +532,12 @@ METHOD Caption( nColumn, uValue ) CLASS TTabDirect
 
    nRealPosition := ::RealPosition( nColumn )
    IF nRealPosition > 0
-      IF VALTYPE( uValue ) $ "CM"
+      IF ValType( uValue ) $ "CM"
          ::Super:Caption( nRealPosition, uValue )
       ENDIF
       ::aPages[ nColumn ]:Caption := ::Super:Caption( nRealPosition )
    ELSE
-      IF VALTYPE( uValue ) $ "CM"
+      IF ValType( uValue ) $ "CM"
          ::aPages[ nColumn ]:Caption := uValue
       ENDIF
    ENDIF
@@ -549,7 +549,7 @@ METHOD Picture( nColumn, uValue ) CLASS TTabDirect
    LOCAL oPage, nRealPosition
 
    oPage := ::aPages[ nColumn ]
-   IF VALTYPE( uValue ) $ "CM"
+   IF ValType( uValue ) $ "CM"
       oPage:Picture := uValue
       oPage:nImage := ::AddBitMap( uValue ) - 1
       nRealPosition := ::RealPosition( nColumn )
@@ -588,12 +588,12 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aCaptions, aPageMap, ;
                    FontName, FontSize, bold, italic, underline, strikeout, ;
                    Invisible, lDisabled, lRtl, change, value, lNoProc )
 
-   // Unused...
-   EMPTY( Buttons )
-   EMPTY( Flat )
-   EMPTY( HotTrack )
-   EMPTY( Vertical )
-   EMPTY( multiline )
+   HB_SYMBOL_UNUSED( Buttons )
+   HB_SYMBOL_UNUSED( Flat )
+   HB_SYMBOL_UNUSED( HotTrack )
+   HB_SYMBOL_UNUSED( Vertical )
+   HB_SYMBOL_UNUSED( multiline )
+
    @ 0,0 COMBOBOX 0 OBJ ::oContainerBase PARENT ( Self ) ;
          ITEMS {} TOOLTIP tooltip
    IF HB_IsLogical( notabstop ) .and. notabstop
@@ -631,17 +631,17 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aCaptions, aPageMap, ;
                    FontName, FontSize, bold, italic, underline, strikeout, ;
                    Invisible, lDisabled, lRtl, change, value, lNoProc )
 
-   // Unused...
-   EMPTY( Buttons )
-   EMPTY( Flat )
-   EMPTY( HotTrack )
-   EMPTY( multiline )
+   HB_SYMBOL_UNUSED( Buttons )
+   HB_SYMBOL_UNUSED( Flat )
+   HB_SYMBOL_UNUSED( HotTrack )
+   HB_SYMBOL_UNUSED( multiline )
+
    @ 0,0 RADIO 0 OBJ ::oContainerBase PARENT ( Self ) ;
          OPTIONS {} TOOLTIP tooltip HORIZONTAL
-   IF HB_IsLogical( Vertical )
+   IF HB_ISLOGICAL( Vertical )
       ::oContainerBase:lHorizontal := ! Vertical
    ENDIF
-   IF HB_IsLogical( notabstop ) .and. notabstop
+   IF HB_ISLOGICAL( notabstop ) .and. notabstop
       ::oContainerBase:TabStop := .F.
    ENDIF
 
@@ -718,13 +718,13 @@ CLASS TMultiPage FROM TControlGroup
 
    DATA Type                      INIT "MULTIPAGE" READONLY
    DATA aPages                    INIT {}
-   DATA oContainerBase            INIT Nil
+   DATA oContainerBase            INIT NIL
    DATA oPageClass                INIT TTabPage()
-   DATA nFirstValue               INIT Nil
+   DATA nFirstValue               INIT NIL
 
    METHOD Define
    METHOD CreatePages
-   METHOD ItemCount               BLOCK { |Self| LEN( ::aPages ) }
+   METHOD ItemCount               BLOCK { |Self| Len( ::aPages ) }
    METHOD Refresh
    METHOD RefreshData
    METHOD Release
@@ -775,7 +775,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, FontColor, BackColor, ;
    ::Register( 0 )
    ::SetFont( ,, bold, italic, underline, strikeout )
 
-   IF HB_IsNumeric( value )
+   IF HB_ISNUMERIC( value )
       ::nFirstValue := value
    ENDIF
 
@@ -792,37 +792,37 @@ METHOD CreatePages( aCaptions, Images, aPageMap, aMnemonic ) CLASS TMultiPage
 
    LOCAL z, Caption, Image, aControls, Mnemonic
 
-   IF ! HB_IsArray( aCaptions )
+   IF ! HB_ISARRAY( aCaptions )
       aCaptions := {}
    ENDIF
-   IF ! HB_IsArray( Images )
+   IF ! HB_ISARRAY( Images )
       Images := {}
    ENDIF
-   IF ! HB_IsArray( aPageMap )
+   IF ! HB_ISARRAY( aPageMap )
       aPageMap := {}
    ENDIF
-   IF ! HB_IsArray( aMnemonic )
+   IF ! HB_ISARRAY( aMnemonic )
       aMnemonic := {}
    ENDIF
 
    z := 1
-   DO WHILE z <= LEN( aCaptions ) .AND. z <= LEN( Images ) .AND. z <= LEN( aPageMap )
-      IF z <= LEN( aCaptions ) .AND. VALTYPE( aCaptions[ z ] ) $ "CM"
+   DO WHILE z <= Len( aCaptions ) .AND. z <= Len( Images ) .AND. z <= Len( aPageMap )
+      IF z <= Len( aCaptions ) .AND. ValType( aCaptions[ z ] ) $ "CM"
          Caption := aCaptions[ z ]
       ELSE
          Caption := ""
       ENDIF
-      IF z <= LEN( Images ) .AND. VALTYPE( Images[ z ] ) $ "CM"
+      IF z <= Len( Images ) .AND. ValType( Images[ z ] ) $ "CM"
          Image := Images[ z ]
       ELSE
          Image := ""
       ENDIF
-      IF z <= LEN( aPageMap ) .AND. HB_IsArray( aPageMap[ z ] )
+      IF z <= Len( aPageMap ) .AND. HB_ISARRAY( aPageMap[ z ] )
          aControls := aPageMap[ z ]
       ELSE
          aControls := Nil
       ENDIF
-      IF z <= LEN( aMnemonic ) .AND. HB_IsBlock( aMnemonic[ z ] )
+      IF z <= Len( aMnemonic ) .AND. HB_IsBlock( aMnemonic[ z ] )
          Mnemonic := aMnemonic[ z ]
       ELSE
          Mnemonic := Nil
@@ -840,7 +840,7 @@ METHOD Refresh() CLASS TMultiPage
    nFocused := GetFocus()
    nPage := IF( ::Visible, ::Value, 0 )
    AEVAL( ::aPages, { |p,i| p:Position := i , p:ForceHide() } )
-   IF nPage >= 1 .AND. nPage <= LEN( ::aPages )
+   IF nPage >= 1 .AND. nPage <= Len( ::aPages )
       ::aPages[ nPage ]:Show()
       IF ! ::lProcMsgsOnVisible
          ProcessMessages()
@@ -886,7 +886,7 @@ METHOD Value( nValue ) CLASS TMultiPage
 
    LOCAL nPos, nCount
 
-   IF HB_IsNumeric( nValue )
+   IF HB_ISNUMERIC( nValue )
       nPos := ::RealPosition( nValue )
       IF nPos != 0
          ::ContainerValue := nPos
@@ -905,7 +905,7 @@ METHOD Enabled( lEnabled ) CLASS TMultiPage
    IF HB_IsLogical( lEnabled )
       ::Super:Enabled := lEnabled
       nPos := ::Value
-      IF nPos <= LEN( ::aPages ) .AND. nPos >= 1
+      IF nPos <= Len( ::aPages ) .AND. nPos >= 1
          ::aPages[ nPos ]:Enabled := ::aPages[ nPos ]:Enabled
       ENDIF
    ENDIF
@@ -920,7 +920,7 @@ METHOD Visible( lVisible ) CLASS TMultiPage
       ::Super:Visible := lVisible
       nPos := ::Value
       aPages := ::aPages
-      IF nPos <= LEN( aPages ) .AND. nPos >= 1
+      IF nPos <= Len( aPages ) .AND. nPos >= 1
          IF lVisible .AND. aPages[ nPos ]:Visible
             aPages[ nPos ]:Visible := .T.
          ELSE
@@ -939,7 +939,7 @@ METHOD ForceHide() CLASS TMultiPage
    LOCAL nPos
 
    nPos := ::Value
-   IF nPos <= LEN( ::aPages ) .AND. nPos >= 1
+   IF nPos <= Len( ::aPages ) .AND. nPos >= 1
       ::aPages[ nPos ]:ForceHide()
    ENDIF
 
@@ -960,8 +960,8 @@ METHOD AddPage( Position, Caption, Image, aControls, Mnemonic, Name, oSubClass )
 
    LOCAL oPage, nPos
 
-   IF !HB_IsNumeric( Position ) .OR. Position < 1 .OR. Position > LEN( ::aPages )
-      Position := LEN( ::aPages ) + 1
+   IF !HB_ISNUMERIC( Position ) .OR. Position < 1 .OR. Position > Len( ::aPages )
+      Position := Len( ::aPages ) + 1
    ENDIF
 
    IF ! ValType( Image ) $ 'CM'
@@ -971,12 +971,12 @@ METHOD AddPage( Position, Caption, Image, aControls, Mnemonic, Name, oSubClass )
    IF ! ValType( Caption ) $ 'CM'
       Caption := ''
    ELSE
-      IF ! EMPTY( Image ) .AND. IsXPThemeActive() .AND. At( '&' , Caption ) != 0
+      IF ! Empty( Image ) .AND. IsXPThemeActive() .AND. At( '&' , Caption ) != 0
          Caption := Space( 3 ) + Caption
       ENDIF
    ENDIF
 
-   IF HB_IsObject( oSubClass )
+   IF HB_ISOBJECT( oSubClass )
       oPage := oSubClass
    ELSE
       oPage := __clsInst( ::oPageClass:ClassH )
@@ -987,8 +987,8 @@ METHOD AddPage( Position, Caption, Image, aControls, Mnemonic, Name, oSubClass )
    oPage:Picture   := Image
    oPage:Position  := Position
 
-   AADD( ::aPages, Nil )
-   AINS( ::aPages, Position )
+   AAdd( ::aPages, Nil )
+   AIns( ::aPages, Position )
    ::aPages[ Position ] := oPage
 
    oPage:Events_Size()
@@ -999,13 +999,13 @@ METHOD AddPage( Position, Caption, Image, aControls, Mnemonic, Name, oSubClass )
 
    ::InsertItem( ::RealPosition( Position ), Caption, oPage:nImage )
 
-   IF HB_IsArray( aControls )
-      AEVAL( aControls, { |o| ::AddControl( o, Position ) } )
+   IF HB_ISARRAY( aControls )
+      AEval( aControls, { |o| ::AddControl( o, Position ) } )
    ENDIF
 
    nPos := At( '&', Caption )
-   IF nPos > 0 .AND. nPos < LEN( Caption )
-      IF !HB_IsBlock( Mnemonic )
+   IF nPos > 0 .AND. nPos < Len( Caption )
+      IF ! HB_ISBLOCK( Mnemonic )
          Mnemonic := { || oPage:SetFocus() }
       ENDIF
       DEFINE HOTKEY 0 PARENT ( ::Parent ) KEY "ALT+" + SubStr( Caption, nPos + 1, 1 ) ACTION ::DoEvent( Mnemonic, "CHANGE" )
@@ -1025,23 +1025,23 @@ METHOD AddControl( oCtrl, PageNumber, Row, Col ) CLASS TMultiPage
       oCtrl := ::Parent:Control( oCtrl )
    ENDIF
 
-   IF LEN( ::aPages ) == 0
+   IF Len( ::aPages ) == 0
       RETURN ::Super:AddControl( oCtrl )
    ENDIF
 
-   IF ! HB_IsNumeric( PageNumber ) .OR. PageNumber > LEN( ::aPages )
-      PageNumber := LEN( ::aPages )
+   IF ! HB_ISNUMERIC( PageNumber ) .OR. PageNumber > Len( ::aPages )
+      PageNumber := Len( ::aPages )
    ENDIF
 
    IF PageNumber < 1
       PageNumber := 1
    ENDIF
 
-   IF ! HB_IsNumeric( Row )
+   IF ! HB_ISNUMERIC( Row )
       Row := oCtrl:ContainerRow - ::ContainerRow
    ENDIF
 
-   IF ! HB_IsNumeric( Col )
+   IF ! HB_ISNUMERIC( Col )
       Col := oCtrl:ContainerCol - ::ContainerCol
    ENDIF
 
@@ -1061,8 +1061,8 @@ METHOD DeletePage( Position ) CLASS TMultiPage
 
    LOCAL nValue, nRealPosition
 
-   IF !HB_IsNumeric( Position ) .OR. Position < 1 .OR. Position > LEN( ::aPages )
-      Position := LEN( ::aPages )
+   IF !HB_ISNUMERIC( Position ) .OR. Position < 1 .OR. Position > Len( ::aPages )
+      Position := Len( ::aPages )
    ENDIF
 
    nValue := ::Value
@@ -1084,7 +1084,7 @@ METHOD RealPosition( nPage ) CLASS TMultiPage
 
    LOCAL nCount := 0
 
-   IF nPage >= 1 .AND. nPage <= LEN( ::aPages ) .AND. ! ::aPages[ nPage ]:lHidden
+   IF nPage >= 1 .AND. nPage <= Len( ::aPages ) .AND. ! ::aPages[ nPage ]:lHidden
       AEVAL( ::aPages, { |o| IF( o:lHidden, , nCount++ ) }, 1, nPage )
    ENDIF
 
@@ -1094,7 +1094,7 @@ METHOD HidePage( nPage ) CLASS TMultiPage
 
    LOCAL nPos
 
-   IF nPage >= 1 .AND. nPage <= LEN( ::aPages ) .AND. ! ::aPages[ nPage ]:lHidden
+   IF nPage >= 1 .AND. nPage <= Len( ::aPages ) .AND. ! ::aPages[ nPage ]:lHidden
       nPos := ::Value
       // Disable hotkey!
       ::DeleteItem( ::RealPosition( nPage ) )
@@ -1119,7 +1119,7 @@ METHOD HidePage( nPage ) CLASS TMultiPage
 
 METHOD ShowPage( nPage ) CLASS TMultiPage
 
-   IF nPage >= 1 .AND. nPage <= LEN( ::aPages ) .AND. ::aPages[ nPage ]:lHidden
+   IF nPage >= 1 .AND. nPage <= Len( ::aPages ) .AND. ::aPages[ nPage ]:lHidden
       ::aPages[ nPage ]:lHidden := .F.
       ::InsertItem( ::RealPosition( nPage ), ::aPages[ nPage ]:Caption, ::aPages[ nPage ]:nImage )
       IF ::Value == nPage
@@ -1137,12 +1137,12 @@ METHOD Caption( nColumn, uValue ) CLASS TMultiPage
    oPage := ::aPages[ nColumn ]
    nRealPosition := ::RealPosition( nColumn )
    IF nRealPosition > 0
-      IF VALTYPE( uValue ) $ "CM"
+      IF ValType( uValue ) $ "CM"
          ::ContainerCaption( nRealPosition, uValue )
       ENDIF
       oPage:Caption := ::ContainerCaption( nRealPosition )
    ELSE
-      IF VALTYPE( uValue ) $ "CM"
+      IF ValType( uValue ) $ "CM"
          oPage:Caption := uValue
       ENDIF
    ENDIF
@@ -1155,7 +1155,7 @@ METHOD Picture( nColumn, uValue ) CLASS TMultiPage
 
    oPage := ::aPages[ nColumn ]
    nRealPosition := ::RealPosition( nColumn )
-   IF VALTYPE( uValue ) $ "CM"
+   IF ValType( uValue ) $ "CM"
       oPage:Picture := uValue
       oPage:nImage := ::oContainerBase:AddBitMap( uValue ) - 1
       IF nRealPosition > 0
@@ -1172,7 +1172,7 @@ METHOD EndTab() CLASS TMultiPage
       ::EndPage()
    ENDIF
    _OOHG_DeleteFrame( ::Type )
-   IF HB_IsNumeric( ::nFirstValue ) .AND. ! ::Value == ::nFirstValue
+   IF HB_ISNUMERIC( ::nFirstValue ) .AND. ! ::Value == ::nFirstValue
       ::Value := ::nFirstValue
    ELSEIF ::Value == 0
       ::Value := 1
@@ -1182,7 +1182,7 @@ METHOD EndTab() CLASS TMultiPage
 
 METHOD ContainerValue( nValue ) CLASS TMultiPage
 
-   IF HB_IsNumeric( nValue )
+   IF HB_ISNUMERIC( nValue )
       ::oContainerBase:Value := nValue
    ENDIF
 
@@ -1264,10 +1264,10 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aCaptions, ;
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize,,,, lRtl )
 
-   IF ! HB_IsArray( aCaptions )
+   IF ! HB_ISARRAY( aCaptions )
       aCaptions := {}
    ENDIF
-   IF ! HB_IsArray( Images )
+   IF ! HB_ISARRAY( Images )
       Images := {}
    ENDIF
 
@@ -1290,13 +1290,13 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aCaptions, ;
 
    // Add page by page
    z := 1
-   DO WHILE z <= LEN( aCaptions ) .AND. z <= LEN( Images )
-      IF z <= LEN( Images ) .AND. VALTYPE( Images[ z ] ) $ "CM"
+   DO WHILE z <= Len( aCaptions ) .AND. z <= Len( Images )
+      IF z <= Len( Images ) .AND. ValType( Images[ z ] ) $ "CM"
          Image := Images[ z ]
       ELSE
          Image := ""
       ENDIF
-      IF z <= LEN( aCaptions ) .AND. VALTYPE( aCaptions[ z ] ) $ "CM"
+      IF z <= Len( aCaptions ) .AND. ValType( aCaptions[ z ] ) $ "CM"
          Caption := aCaptions[ z ]
       ELSE
          Caption := ""
@@ -1305,7 +1305,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aCaptions, ;
       z++
    ENDDO
 
-   IF HB_IsNumeric( value )
+   IF HB_ISNUMERIC( value )
       ::Value := value
    ELSE
       ::Value := 1
@@ -1317,7 +1317,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aCaptions, ;
 
 METHOD Value( nValue ) CLASS TTabRaw
 
-   IF HB_IsNumeric( nValue )
+   IF HB_ISNUMERIC( nValue )
       TabCtrl_SetCurSel( ::hWnd, nValue )
       ::DoChange()
    ENDIF
@@ -1328,10 +1328,10 @@ METHOD InsertItem( nPosition, cCaption, xImage ) CLASS TTabRaw
 
    TABCTRL_INSERTITEM( ::hWnd, nPosition - 1, cCaption )
 
-   IF VALTYPE( xImage ) $ "CM"
+   IF ValType( xImage ) $ "CM"
       xImage := ::AddBitMap( xImage ) - 1
    ENDIF
-   IF HB_IsNumeric( xImage ) .AND. xImage >= 0
+   IF HB_ISNUMERIC( xImage ) .AND. xImage >= 0
       SetTabPageImage( ::hWnd, nPosition, xImage )
    ENDIF
 
@@ -1345,7 +1345,7 @@ METHOD DeleteItem( nPosition ) CLASS TTabRaw
 
 METHOD Caption( nColumn, uValue ) CLASS TTabRaw
 
-   IF VALTYPE( uValue ) $ "CM"
+   IF ValType( uValue ) $ "CM"
       SetTabCaption( ::hWnd, nColumn, uValue )
       ::Refresh()
    ENDIF
@@ -1354,11 +1354,11 @@ METHOD Caption( nColumn, uValue ) CLASS TTabRaw
 
 METHOD Picture( nColumn, uValue ) CLASS TTabRaw
 
-   IF VALTYPE( uValue ) $ "CM"
+   IF ValType( uValue ) $ "CM"
       // ::Picture( nColumn ) := uValue
       uValue := ::AddBitMap( uValue ) - 1
    ENDIF
-   IF HB_IsNumeric( uValue )
+   IF HB_ISNUMERIC( uValue )
       SetTabPageImage( ::hWnd, nColumn, uValue )
       ::Refresh()
    ENDIF
@@ -1391,13 +1391,13 @@ METHOD Events_Notify( wParam, lParam ) CLASS TTabRaw
       RETURN Nil
 
    ELSEIF nNotify == TCN_SELCHANGING
-      If HB_IsBlock( ::bBeforeChange )
+      IF HB_IsBlock( ::bBeforeChange )
          lGo := Eval( ::bBeforeChange, ::Value )
          If HB_IsLogical( lGo ) .and. ! lGo
             // Prevent the action
             RETURN 1
-         EndIf
-      EndIf
+         ENDIF
+      ENDIF
 
    ENDIF
 
