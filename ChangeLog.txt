@@ -8,6 +8,26 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-01-20 18:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog.txt
+     * Updated.
+   * core\source\h_scroll.prg
+     * Format.
+     * Methods LineUp, LineDown, PageUp, PageDown, Top, Bottom, Thumb and
+       Track now return the result of evaluating their respective codeblocks.
+   * core\source\h_browse.prg
+     * Methods PageUp, PageDown, Home and End of TOBrowse now return .T./.F.
+       on success/failure.
+     * Return 0 after processing scrollbar's events.
+     ! App freezes when adding a record by clicking in the scrollbar's
+       down arrow.
+   * core\source\h_xbrowse.prg
+     * Methods Up, PageUp and PageDown of TXBrowse now return .T./.F.
+       on success/failure.
+     * Return 0 after processing scrollbar's events.
+     ! App freezes when adding a record by clicking in the scrollbar's
+       down arrow.
+
 2018-01-18 21:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt
      * Updated.

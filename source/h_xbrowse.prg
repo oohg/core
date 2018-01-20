@@ -349,11 +349,11 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
 
    oScroll:Define( , Self )
    ::VScroll := oScroll
-   ::VScroll:OnLineUp   := { || ::SetFocus():Up() }
-   ::VScroll:OnLineDown := { || ::SetFocus():Down() }
-   ::VScroll:OnPageUp   := { || ::SetFocus():PageUp() }
-   ::VScroll:OnPageDown := { || ::SetFocus():PageDown() }
-   ::VScroll:OnThumb    := { |VScroll,Pos| ::SetFocus():SetScrollPos( Pos, VScroll ) }
+   ::VScroll:OnLineUp   := { || ::SetFocus():Up(), 0 }
+   ::VScroll:OnLineDown := { || ::SetFocus():Down(), 0 }
+   ::VScroll:OnPageUp   := { || ::SetFocus():PageUp(), 0 }
+   ::VScroll:OnPageDown := { || ::SetFocus():PageDown(), 0 }
+   ::VScroll:OnThumb    := { |VScroll,Pos| ::SetFocus():SetScrollPos( Pos, VScroll ), 0 }
    ::VScroll:ToolTip    := tooltip
    ::VScroll:HelpId     := HelpId
 
@@ -1425,7 +1425,7 @@ METHOD DbSkip( nRows ) CLASS TXBrowse
 
 METHOD Up() CLASS TXBrowse
 
-   Local nValue
+   Local nValue, lRet := .F.
 
    If ! ::lLocked .AND. ::DbSkip( -1 ) == -1
       nValue := ::CurrentRow
@@ -1444,9 +1444,10 @@ METHOD Up() CLASS TXBrowse
          ::CurrentRow := nValue
       EndIf
       ::DoChange()
+      lRet := .T.
    EndIf
 
-   Return Self
+   Return lRet
 
 METHOD Down( lAppend ) CLASS TXBrowse
 
@@ -1472,6 +1473,9 @@ METHOD Down( lAppend ) CLASS TXBrowse
          ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT ::AllowAppend
          If lAppend
             lRet := ::AppendItem()
+            // Kill scrollbar's events...
+            ::VScroll:Enabled := .F.
+            ::VScroll:Enabled := .T.
          EndIf
       EndIf
    EndIf
@@ -1500,16 +1504,19 @@ METHOD AppendItem( lAppend ) CLASS TXBrowse
 
 METHOD PageUp() CLASS TXBrowse
 
+   Local lRet := .F.
+
    If ! ::lLocked .AND. ::DbSkip( -::CountPerPage ) != 0
       ::Refresh()
       ::DoChange()
+      lRet := .T.
    EndIf
 
-   Return Self
+   Return lRet
 
 METHOD PageDown( lAppend ) CLASS TXBrowse
 
-   Local nSkip, nCountPerPage
+   Local nSkip, nCountPerPage, lRet := .F.
 
    If ::lLocked
       // Do not move
@@ -1521,15 +1528,19 @@ METHOD PageDown( lAppend ) CLASS TXBrowse
          ::DoChange()
          ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT ::AllowAppend
          If lAppend
-            ::AppendItem()
+            lRet := ::AppendItem()
+            // Kill scrollbar's events...
+            ::VScroll:Enabled := .F.
+            ::VScroll:Enabled := .T.
          EndIf
       ElseIf nSkip != 0
          ::Refresh( , .T. )
          ::DoChange()
+         lRet := .T.
       EndIf
    EndIf
 
-   Return Self
+   Return lRet
 
 METHOD TopBottom( nDir ) CLASS TXBrowse
 
@@ -1687,7 +1698,7 @@ METHOD EditItem( lAppend, lOneRow, nItem, lChange ) CLASS TXBrowse
          ::SetControlValue( nItem )
       EndIf
       If ::lVScrollVisible
-         // Kills scrollbar's events...
+         // Kill scrollbar's events...
          ::VScroll:Enabled := .F.
          ::VScroll:Enabled := .T.
       EndIf
@@ -3560,41 +3571,41 @@ METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowseByCel
 
 METHOD MoveToFirstCol CLASS TXBrowseByCell
 
-   Local aBefore, nCol, aAfter, lDone := .F.
+   Local aBefore, nCol, aAfter, lRet := .F.
 
    aBefore := ::Value
    nCol := ::FirstColInOrder
    If nCol # 0
       ::Value := { aBefore[ 1 ], nCol }
       aAfter := ::Value
-      lDone := ( aAfter[ 1 ] # aBefore[ 1 ] .OR. aAfter[ 2 ] # aBefore[ 2 ] )
-      If lDone
+      lRet := ( aAfter[ 1 ] # aBefore[ 1 ] .OR. aAfter[ 2 ] # aBefore[ 2 ] )
+      If lRet
          ::DoChange()
       EndIf
    EndIf
 
-   Return lDone
+   Return lRet
 
 METHOD MoveToLastCol CLASS TXBrowseByCell
 
-   Local aBefore, nCol, aAfter, lDone := .F.
+   Local aBefore, nCol, aAfter, lRet := .F.
 
    aBefore := ::Value
    nCol := ::LastColInOrder
    If nCol # 0
       ::Value := { aBefore[ 1 ], nCol }
       aAfter := ::Value
-      lDone := ( aAfter[ 1 ] # aBefore[ 1 ] .OR. aAfter[ 2 ] # aBefore[ 2 ] )
-      If lDone
+      lRet := ( aAfter[ 1 ] # aBefore[ 1 ] .OR. aAfter[ 2 ] # aBefore[ 2 ] )
+      If lRet
          ::DoChange()
       EndIf
    EndIf
 
-   Return lDone
+   Return lRet
 
 METHOD MoveToFirstVisibleCol CLASS TXBrowseByCell
 
-   Local aBefore, nCol, aAfter, lDone := .F.
+   Local aBefore, nCol, aAfter, lRet := .F.
 
    aBefore := ::Value
    ::ScrollToPrior()
@@ -3602,17 +3613,17 @@ METHOD MoveToFirstVisibleCol CLASS TXBrowseByCell
    If nCol # 0
       ::Value := { aBefore[ 1 ], nCol }
       aAfter := ::Value
-      lDone := ( aAfter[ 1 ] # aBefore[ 1 ] .OR. aAfter[ 2 ] # aBefore[ 2 ] )
-      If lDone
+      lRet := ( aAfter[ 1 ] # aBefore[ 1 ] .OR. aAfter[ 2 ] # aBefore[ 2 ] )
+      If lRet
          ::DoChange()
       EndIf
    EndIf
 
-   Return lDone
+   Return lRet
 
 METHOD MoveToLastVisibleCol CLASS TXBrowseByCell
 
-   Local aBefore, nCol, aAfter, lDone := .F.
+   Local aBefore, nCol, aAfter, lRet := .F.
 
    aBefore := ::Value
    ::ScrollToPrior()
@@ -3620,13 +3631,13 @@ METHOD MoveToLastVisibleCol CLASS TXBrowseByCell
    If nCol # 0
       ::Value := { aBefore[ 1 ], nCol }
       aAfter := ::Value
-      lDone := ( aAfter[ 1 ] # aBefore[ 1 ] .OR. aAfter[ 2 ] # aBefore[ 2 ] )
-      If lDone
+      lRet := ( aAfter[ 1 ] # aBefore[ 1 ] .OR. aAfter[ 2 ] # aBefore[ 2 ] )
+      If lRet
          ::DoChange()
       EndIf
    EndIf
 
-   Return lDone
+   Return lRet
 
 METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TXBrowseByCell
 
@@ -4099,15 +4110,15 @@ METHOD GoBottom( lAppend, nCol ) CLASS TXBrowseByCell
 
 METHOD End( lAppend ) CLASS TXBrowseByCell
 
-   Local lDone
+   Local lRet
 
    If ::lKeysLikeClipper
-      lDone := ::MoveToLastVisibleCol()
+      lRet := ::MoveToLastVisibleCol()
    Else
-      lDone := ::GoBottom( lAppend, ::LastColInOrder )
+      lRet := ::GoBottom( lAppend, ::LastColInOrder )
    EndIf
 
-   Return lDone
+   Return lRet
 
 METHOD GoTop( nCol ) CLASS TXBrowseByCell
 
@@ -4133,15 +4144,15 @@ METHOD GoTop( nCol ) CLASS TXBrowseByCell
 
 METHOD Home() CLASS TXBrowseByCell
 
-   Local lDone
+   Local lRet
 
    If ::lKeysLikeClipper
-      lDone := ::MoveToFirstVisibleCol()
+      lRet := ::MoveToFirstVisibleCol()
    Else
-      lDone := ::GoTop( ::FirstColInOrder )
+      lRet := ::GoTop( ::FirstColInOrder )
    EndIf
 
-   Return lDone
+   Return lRet
 
 METHOD Left() CLASS TXBrowseByCell
 
@@ -4238,6 +4249,9 @@ METHOD Right( lAppend ) CLASS TXBrowseByCell
                ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT ::AllowAppend
                If lAppend
                   lRet := ::AppendItem()
+                  // Kill scrollbar's events...
+                  ::VScroll:Enabled := .F.
+                  ::VScroll:Enabled := .T.
                EndIf
             EndIf
          EndIf
@@ -4297,6 +4311,9 @@ METHOD Down( lAppend ) CLASS TXBrowseByCell
       ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT ::AllowAppend
       If lAppend
          lRet := ::AppendItem()
+         // Kill scrollbar's events...
+         ::VScroll:Enabled := .F.
+         ::VScroll:Enabled := .T.
       EndIf
    EndIf
 

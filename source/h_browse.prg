@@ -357,11 +357,11 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, aHeaders, a
 
    oScroll:Define( , Self )
    ::VScroll := oScroll
-   ::VScroll:OnLineUp   := { || ::SetFocus():Up() }
-   ::VScroll:OnLineDown := { || ::SetFocus():Down() }
-   ::VScroll:OnPageUp   := { || ::SetFocus():PageUp() }
-   ::VScroll:OnPageDown := { || ::SetFocus():PageDown() }
-   ::VScroll:OnThumb    := { |VScroll,Pos| ::SetFocus():SetScrollPos( Pos, VScroll ) }
+   ::VScroll:OnLineUp   := { || ::SetFocus():Up(), 0 }
+   ::VScroll:OnLineDown := { || ::SetFocus():Down(), 0 }
+   ::VScroll:OnPageUp   := { || ::SetFocus():PageUp(), 0 }
+   ::VScroll:OnPageDown := { || ::SetFocus():PageDown(), 0 }
+   ::VScroll:OnThumb    := { |VScroll,Pos| ::SetFocus():SetScrollPos( Pos, VScroll ), 0 }
    ::VScroll:ToolTip    := cTooltip
    ::VScroll:HelpId     := nHelpId
 
@@ -609,7 +609,7 @@ METHOD UpDateColors() CLASS TOBrowse
 
 METHOD PageDown( lAppend ) CLASS TOBrowse
 
-   Local _RecNo, s, cWorkArea
+   Local _RecNo, s, cWorkArea, lRet := .F.
 
    s := ::CurrentRow
 
@@ -618,7 +618,7 @@ METHOD PageDown( lAppend ) CLASS TOBrowse
 
       If Select( cWorkArea ) == 0
          ::RecCount := 0
-         Return Self
+         Return lRet
       EndIf
 
       _RecNo := ( cWorkArea )->( RecNo() )
@@ -634,33 +634,40 @@ METHOD PageDown( lAppend ) CLASS TOBrowse
             ::DbGoTo( _RecNo )
             ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
             If lAppend
-               ::AppendItem()
+               lRet := ::AppendItem()
+               // Kill scrollbar's events...
+               ::VScroll:Enabled := .F.
+               ::VScroll:Enabled := .T.
             EndIf
-            Return Self
+            Return lRet
          EndIf
          ::DbSkip( -1 )
       EndIf
       ::Update()
       ::ScrollUpdate()
-      ::CurrentRow := Len( ::aRecMap )
       ::DbGoTo( _RecNo )
+      ::CurrentRow := Len( ::aRecMap )
+      If Len( ::aRecMap ) != 0
+         lRet := .T.
+      EndIf
    Else
       ::FastUpdate( ::CountPerPage - s, Len( ::aRecMap ) )
+      lRet := .T.
    EndIf
 
    ::BrowseOnChange()
 
-   Return Self
+   Return lRet
 
 METHOD PageUp() CLASS TOBrowse
 
-   Local _RecNo, cWorkArea
+   Local _RecNo, cWorkArea, lRet := .F.
 
    If ::CurrentRow == 1
       cWorkArea := ::WorkArea
       If Select( cWorkArea ) == 0
          ::RecCount := 0
-         Return Self
+         Return lRet
       EndIf
       _RecNo := ( cWorkArea )->( RecNo() )
       If Len( ::aRecMap ) == 0
@@ -673,22 +680,26 @@ METHOD PageUp() CLASS TOBrowse
       ::Update()
       ::DbGoTo( _RecNo )
       ::CurrentRow := 1
+      If Len( ::aRecMap ) != 0
+         lRet := .T.
+      EndIf
    Else
       ::FastUpdate( 1 - ::CurrentRow, 1 )
+      lRet := .T.
    EndIf
 
    ::BrowseOnChange()
 
-   Return Self
+   Return lRet
 
 METHOD Home() CLASS TOBrowse                         // METHOD GoTop
 
-   Local _RecNo, cWorkArea
+   Local _RecNo, cWorkArea, lRet := .F.
 
    cWorkArea := ::WorkArea
    If Select( cWorkArea ) == 0
       ::RecCount := 0
-      Return Self
+      Return lRet
    EndIf
    _RecNo := ( cWorkArea )->( RecNo() )
    ::TopBottom( GO_TOP )
@@ -696,10 +707,13 @@ METHOD Home() CLASS TOBrowse                         // METHOD GoTop
    ::Update()
    ::DbGoTo( _RecNo )
    ::CurrentRow := 1
+   If Len( ::aRecMap ) != 0
+      lRet := .T.
+   EndIf
 
    ::BrowseOnChange()
 
-   Return Self
+   Return lRet
 
 METHOD End( lAppend ) CLASS TOBrowse                 // METHOD GoBottom
 
@@ -708,7 +722,7 @@ METHOD End( lAppend ) CLASS TOBrowse                 // METHOD GoBottom
    cWorkArea := ::WorkArea
    If Select( cWorkArea ) == 0
       ::RecCount := 0
-      Return Self
+      Return .F.
    EndIf
    _RecNo := ( cWorkArea )->( RecNo() )
    ::TopBottom( GO_BOTTOM )
@@ -724,11 +738,11 @@ METHOD End( lAppend ) CLASS TOBrowse                 // METHOD GoBottom
 
    ::BrowseOnChange()
 
-   Return Self
+   Return .T.
 
 METHOD Up() CLASS TOBrowse
 
-   Local s, _RecNo, nLen, lDone := .F., cWorkArea
+   Local s, _RecNo, nLen, lRet := .F., cWorkArea
 
    s := ::CurrentRow
 
@@ -736,7 +750,7 @@ METHOD Up() CLASS TOBrowse
       cWorkArea := ::WorkArea
       If Select( cWorkArea ) == 0
          ::RecCount := 0
-         Return lDone
+         Return lRet
       EndIf
 
       _RecNo := ( cWorkArea )->( RecNo() )
@@ -751,7 +765,7 @@ METHOD Up() CLASS TOBrowse
          ::DbSkip( -1 )
          If ::Bof()
             ::DbGoTo( _RecNo )
-            Return lDone
+            Return lRet
          EndIf
          // Add one record at the top
          aAdd( ::aRecMap, Nil )
@@ -777,20 +791,20 @@ METHOD Up() CLASS TOBrowse
       ::DbGoTo( _RecNo )
       ::CurrentRow := 1
       If Len( ::aRecMap ) != 0
-         lDone := .T.
+         lRet := .T.
       EndIf
    Else
       ::FastUpdate( -1, s - 1 )
-      lDone := .T.
+      lRet := .T.
    EndIf
 
    ::BrowseOnChange()
 
-   Return lDone
+   Return lRet
 
 METHOD Down( lAppend ) CLASS TOBrowse
 
-   Local s, _RecNo, nLen, lDone := .F., cWorkArea
+   Local s, _RecNo, nLen, lRet := .F., cWorkArea
 
    s := ::CurrentRow
 
@@ -798,7 +812,7 @@ METHOD Down( lAppend ) CLASS TOBrowse
       cWorkArea := ::WorkArea
       If Select( cWorkArea ) == 0
          ::RecCount := 0
-         Return lDone
+         Return lRet
       EndIf
 
       _RecNo := ( cWorkArea )->( RecNo() )
@@ -815,9 +829,12 @@ METHOD Down( lAppend ) CLASS TOBrowse
             ::DbGoTo( _RecNo )
             ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT ::AllowAppend
             If lAppend
-               lDone := ::AppendItem()
+               lRet := ::AppendItem()
+               // Kill scrollbar's events...
+               ::VScroll:Enabled := .F.
+               ::VScroll:Enabled := .T.
             EndIf
-            Return lDone
+            Return lRet
          EndIf
          // Add one record at the bottom
          aAdd( ::aRecMap, ( cWorkArea )->( RecNo() ) )
@@ -840,16 +857,16 @@ METHOD Down( lAppend ) CLASS TOBrowse
       ::DbGoTo( _RecNo )
       ::CurrentRow := Len( ::aRecMap )
       If Len( ::aRecMap ) != 0
-         lDone := .T.
+         lRet := .T.
       EndIf
    Else
       ::FastUpdate( 1, s + 1 )
-      lDone := .T.
+      lRet := .T.
    EndIf
 
    ::BrowseOnChange()
 
-   Return lDone
+   Return lRet
 
 METHOD TopBottom( nDir ) CLASS TOBrowse
 
@@ -2480,35 +2497,35 @@ METHOD Value( uValue ) CLASS TOBrowseByCell
 
 METHOD MoveToFirstCol CLASS TOBrowseByCell
 
-   Local aBefore, nCol, aAfter, lDone := .F.
+   Local aBefore, nCol, aAfter, lRet := .F.
 
    aBefore := ::Value
    nCol := ::FirstColInOrder
    If nCol # 0
       ::Value := { aBefore[ 1 ], nCol }
       aAfter := ::Value
-      lDone := ( aAfter[ 1 ] # aBefore[ 1 ] .OR. aAfter[ 2 ] # aBefore[ 2 ] )
+      lRet := ( aAfter[ 1 ] # aBefore[ 1 ] .OR. aAfter[ 2 ] # aBefore[ 2 ] )
    EndIf
 
-   Return lDone
+   Return lRet
 
 METHOD MoveToLastCol CLASS TOBrowseByCell
 
-   Local aBefore, nCol, aAfter, lDone := .F.
+   Local aBefore, nCol, aAfter, lRet := .F.
 
    aBefore := ::Value
    nCol := ::LastColInOrder
    If nCol # 0
       ::Value := { aBefore[ 1 ], nCol }
       aAfter := ::Value
-      lDone := ( aAfter[ 1 ] # aBefore[ 1 ] .OR. aAfter[ 2 ] # aBefore[ 2 ] )
+      lRet := ( aAfter[ 1 ] # aBefore[ 1 ] .OR. aAfter[ 2 ] # aBefore[ 2 ] )
    EndIf
 
-   Return lDone
+   Return lRet
 
 METHOD MoveToFirstVisibleCol CLASS TOBrowseByCell
 
-   Local aBefore, nCol, aAfter, lDone := .F.
+   Local aBefore, nCol, aAfter, lRet := .F.
 
    aBefore := ::Value
    ::ScrollToPrior()
@@ -2516,14 +2533,14 @@ METHOD MoveToFirstVisibleCol CLASS TOBrowseByCell
    If nCol # 0
       ::Value := { aBefore[ 1 ], nCol }
       aAfter := ::Value
-      lDone := ( aAfter[ 1 ] # aBefore[ 1 ] .OR. aAfter[ 2 ] # aBefore[ 2 ] )
+      lRet := ( aAfter[ 1 ] # aBefore[ 1 ] .OR. aAfter[ 2 ] # aBefore[ 2 ] )
    EndIf
 
-   Return lDone
+   Return lRet
 
 METHOD MoveToLastVisibleCol CLASS TOBrowseByCell
 
-   Local aBefore, nCol, aAfter, lDone := .F.
+   Local aBefore, nCol, aAfter, lRet := .F.
 
    aBefore := ::Value
    ::ScrollToPrior()
@@ -2531,10 +2548,10 @@ METHOD MoveToLastVisibleCol CLASS TOBrowseByCell
    If nCol # 0
       ::Value := { aBefore[ 1 ], nCol }
       aAfter := ::Value
-      lDone := ( aAfter[ 1 ] # aBefore[ 1 ] .OR. aAfter[ 2 ] # aBefore[ 2 ] )
+      lRet := ( aAfter[ 1 ] # aBefore[ 1 ] .OR. aAfter[ 2 ] # aBefore[ 2 ] )
    EndIf
 
-   Return lDone
+   Return lRet
 
 METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TOBrowseByCell
 
@@ -3664,24 +3681,24 @@ METHOD Delete() CLASS TOBrowseByCell
 
 METHOD Home() CLASS TOBrowseByCell
 
-   Local lDone
+   Local lRet
 
    If ::lKeysLikeClipper
-      lDone := ::MoveToFirstVisibleCol()
+      lRet := ::MoveToFirstVisibleCol()
    Else
-      lDone := ::GoTop( ::FirstColInOrder )
+      lRet := ::GoTop( ::FirstColInOrder )
    EndIf
 
-   Return lDone
+   Return lRet
 
 METHOD GoTop( nCol ) CLASS TOBrowseByCell
 
-   Local _RecNo, aBefore, aAfter, lDone := .F., cWorkArea
+   Local _RecNo, aBefore, aAfter, lRet := .F., cWorkArea
 
    cWorkArea := ::WorkArea
    If Select( cWorkArea ) == 0
       ::RecCount := 0
-      Return lDone
+      Return lRet
    EndIf
    If ! HB_IsNumeric( nCol )
       If ::lKeysLikeClipper
@@ -3699,31 +3716,31 @@ METHOD GoTop( nCol ) CLASS TOBrowseByCell
    ::CurrentRow := 1
    ::CurrentCol := nCol
    aAfter := ::Value
-   lDone := ( aBefore[ 1 ] # aAfter[ 1 ] .OR. aBefore[ 2 ] # aAfter[ 2 ] )
+   lRet := ( aBefore[ 1 ] # aAfter[ 1 ] .OR. aBefore[ 2 ] # aAfter[ 2 ] )
    ::BrowseOnChange()
 
-   Return lDone
+   Return lRet
 
 METHOD End( lAppend ) CLASS TOBrowseByCell
 
-   Local lDone
+   Local lRet
 
    If ::lKeysLikeClipper
-      lDone := ::MoveToLastVisibleCol()
+      lRet := ::MoveToLastVisibleCol()
    Else
-      lDone := ::GoBottom( lAppend, ::LastColInOrder )
+      lRet := ::GoBottom( lAppend, ::LastColInOrder )
    EndIf
 
-   Return lDone
+   Return lRet
 
 METHOD GoBottom( lAppend, nCol ) CLASS TOBrowseByCell
 
-   Local lDone := .F., aBefore, _Recno, cWorkArea, aAfter
+   Local lRet := .F., aBefore, _Recno, cWorkArea, aAfter
 
    cWorkArea := ::WorkArea
    If Select( cWorkArea ) == 0
       ::RecCount := 0
-      Return lDone
+      Return lRet
    EndIf
    If ! HB_IsNumeric( nCol )
       If ::lKeysLikeClipper
@@ -3745,14 +3762,14 @@ METHOD GoBottom( lAppend, nCol ) CLASS TOBrowseByCell
    ::CurrentRow := Len( ::aRecMap )
    ::CurrentCol := If( lAppend, ::FirstColInOrder, nCol )
    aAfter := ::Value
-   lDone := ( aAfter[ 1 ] # aBefore[ 1 ] .OR. aAfter[ 2 ] # aBefore[ 2 ] )
+   lRet := ( aAfter[ 1 ] # aBefore[ 1 ] .OR. aAfter[ 2 ] # aBefore[ 2 ] )
    ::BrowseOnChange()
 
-   Return lDone
+   Return lRet
 
 METHOD PageUp() CLASS TOBrowseByCell
 
-   Local _RecNo, s, aBefore, lDone := .F., cWorkArea, aAfter
+   Local _RecNo, s, aBefore, lRet := .F., cWorkArea, aAfter
 
    s := ::nRowPos
 
@@ -3760,7 +3777,7 @@ METHOD PageUp() CLASS TOBrowseByCell
       cWorkArea := ::WorkArea
       If Select( cWorkArea ) == 0
          ::RecCount := 0
-         Return lDone
+         Return lRet
       EndIf
 
       aBefore := ::Value
@@ -3782,19 +3799,19 @@ METHOD PageUp() CLASS TOBrowseByCell
       EndIf
       ::CurrentRow := s
       aAfter := ::Value
-      lDone := ( aAfter[ 1 ] # aBefore[ 1 ] .OR. aAfter[ 2 ] # aBefore[ 2 ] )
+      lRet := ( aAfter[ 1 ] # aBefore[ 1 ] .OR. aAfter[ 2 ] # aBefore[ 2 ] )
    Else
       ::FastUpdate( 1 - ::nRowPos, 1 )
-      lDone := .T.
+      lRet := .T.
    EndIf
 
    ::BrowseOnChange()
 
-   Return lDone
+   Return lRet
 
 METHOD PageDown( lAppend ) CLASS TOBrowseByCell
 
-   Local _RecNo, s, lDone := .F., cWorkArea, aBefore, aAfter
+   Local _RecNo, s, lRet := .F., cWorkArea, aBefore, aAfter
 
    s := ::nRowPos
 
@@ -3802,7 +3819,7 @@ METHOD PageDown( lAppend ) CLASS TOBrowseByCell
       cWorkArea := ::WorkArea
       If Select( cWorkArea ) == 0
          ::RecCount := 0
-         Return lDone
+         Return lRet
       EndIf
 
       aBefore := ::Value
@@ -3818,13 +3835,16 @@ METHOD PageDown( lAppend ) CLASS TOBrowseByCell
             ::DbGoTo( _RecNo )
             ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
             If lAppend
-               lDone := ::AppendItem()
+               lRet := ::AppendItem()
+               // Kill scrollbar's events...
+               ::VScroll:Enabled := .F.
+               ::VScroll:Enabled := .T.
             ElseIf s < Len( ::aRecMap )
                ::CurrentRow := Len( ::aRecMap )
-               lDone := .T.
+               lRet := .T.
                ::BrowseOnChange()
             EndIf
-            Return lDone
+            Return lRet
          EndIf
          ::DbSkip( -1 )
       EndIf
@@ -3838,7 +3858,7 @@ METHOD PageDown( lAppend ) CLASS TOBrowseByCell
             ::DbGoTo( ::aRecMap[ Len( ::aRecMap ) ] )
          EndIf
          aAfter := ::Value
-         lDone := ( aAfter[ 1 ] # aBefore[ 1 ] .OR. aAfter[ 2 ] # aBefore[ 2 ] )
+         lRet := ( aAfter[ 1 ] # aBefore[ 1 ] .OR. aAfter[ 2 ] # aBefore[ 2 ] )
       EndIf
       ::ScrollUpdate()
       ::DbGoTo( _RecNo )
@@ -3849,16 +3869,16 @@ METHOD PageDown( lAppend ) CLASS TOBrowseByCell
       EndIf
    Else
       ::FastUpdate( ::CountPerPage - s, Len( ::aRecMap ) )
-      lDone := .T.
+      lRet := .T.
    EndIf
 
    ::BrowseOnChange()
 
-   Return lDone
+   Return lRet
 
 METHOD Up( lLast ) CLASS TOBrowseByCell
 
-Local s, _RecNo, nLen, lDone := .F., cWorkArea, aBefore, aAfter
+Local s, _RecNo, nLen, lRet := .F., cWorkArea, aBefore, aAfter
 
    s := ::nRowPos
 
@@ -3866,7 +3886,7 @@ Local s, _RecNo, nLen, lDone := .F., cWorkArea, aBefore, aAfter
       cWorkArea := ::WorkArea
       If Select( cWorkArea ) == 0
          ::RecCount := 0
-         Return lDone
+         Return lRet
       EndIf
 
       aBefore := ::Value
@@ -3881,7 +3901,7 @@ Local s, _RecNo, nLen, lDone := .F., cWorkArea, aBefore, aAfter
          ::DbSkip( -1 )
          If ::Bof()
             ::DbGoTo( _RecNo )
-            Return lDone
+            Return lRet
          EndIf
          // Add one record at the top
          aAdd( ::aRecMap, Nil )
@@ -3910,23 +3930,23 @@ Local s, _RecNo, nLen, lDone := .F., cWorkArea, aBefore, aAfter
       EndIf
       If Len( ::aRecMap ) != 0
          aAfter := ::Value
-         lDone := ( aAfter[ 1 ] # aBefore[ 1 ] .OR. aAfter[ 2 ] # aBefore[ 2 ] )
+         lRet := ( aAfter[ 1 ] # aBefore[ 1 ] .OR. aAfter[ 2 ] # aBefore[ 2 ] )
       EndIf
    Else
       ::FastUpdate( -1, s - 1 )
       If HB_IsLogical( lLast ) .AND. lLast
          ::CurrentCol := ::LastColInOrder
       EndIf
-      lDone := .T.
+      lRet := .T.
    EndIf
 
    ::BrowseOnChange()
 
-Return lDone
+Return lRet
 
 METHOD Down( lAppend, lFirst ) CLASS TOBrowseByCell
 
-Local s, _RecNo, nLen, lDone := .F., cWorkArea, aBefore, aAfter
+Local s, _RecNo, nLen, lRet := .F., cWorkArea, aBefore, aAfter
 
    s := ::nRowPos
 
@@ -3934,7 +3954,7 @@ Local s, _RecNo, nLen, lDone := .F., cWorkArea, aBefore, aAfter
       cWorkArea := ::WorkArea
       If Select( cWorkArea ) == 0
          ::RecCount := 0
-         Return lDone
+         Return lRet
       EndIf
 
       aBefore := ::Value
@@ -3951,9 +3971,12 @@ Local s, _RecNo, nLen, lDone := .F., cWorkArea, aBefore, aAfter
             ::DbGoTo( _RecNo )
             ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT ::AllowAppend
             If lAppend
-               lDone := ::AppendItem()
+               lRet := ::AppendItem()
+               // Kill scrollbar's events...
+               ::VScroll:Enabled := .F.
+               ::VScroll:Enabled := .T.
             EndIf
-            Return lDone
+            Return lRet
          EndIf
          // Add one record at the bottom
          aAdd( ::aRecMap, ( cWorkArea )->( RecNo() ) )
@@ -3977,14 +4000,14 @@ Local s, _RecNo, nLen, lDone := .F., cWorkArea, aBefore, aAfter
       Else
          ::DbGoTo( ATail( ::aRecMap ) )
          aAfter := ::Value
-         lDone := ( aAfter[ 1 ] # aBefore[ 1 ] .OR. aAfter[ 2 ] # aBefore[ 2 ] )
+         lRet := ( aAfter[ 1 ] # aBefore[ 1 ] .OR. aAfter[ 2 ] # aBefore[ 2 ] )
       EndIf
       ::ScrollUpdate()
       ::DbGoTo( _RecNo )
       ::CurrentRow := Len( ::aRecMap )
    Else
       ::FastUpdate( 1, s + 1 )
-      lDone := .T.
+      lRet := .T.
    EndIf
    If HB_IsLogical( lFirst ) .AND. lFirst
       ::CurrentCol := ::FirstColInOrder
@@ -3992,7 +4015,7 @@ Local s, _RecNo, nLen, lDone := .F., cWorkArea, aBefore, aAfter
 
    ::BrowseOnChange()
 
-Return lDone
+Return lRet
 
 METHOD SetScrollPos( nPos, VScroll ) CLASS TOBrowseByCell
 
@@ -4065,7 +4088,7 @@ METHOD CurrentCol( nCol ) CLASS TOBrowseByCell
 
 METHOD Left() CLASS TOBrowseByCell
 
-   Local aBefore, nRec, nCol, lDone := .F., aAfter
+   Local aBefore, nRec, nCol, lRet := .F., aAfter
 
    aBefore := ::Value
    nRec := aBefore[ 1 ]
@@ -4073,17 +4096,17 @@ METHOD Left() CLASS TOBrowseByCell
    If nRec > 0 .AND. nCol >= 1 .AND. nCol <= Len( ::aHeaders )
       If nCol # ::FirstColInOrder
          aAfter := ( ::Value := { nRec, ::PriorColInOrder( nCol ) } )
-         lDone := ( aAfter[ 1 ] # nRec .OR. aAfter[ 2 ] # nCol )
+         lRet := ( aAfter[ 1 ] # nRec .OR. aAfter[ 2 ] # nCol )
       ElseIf ::FullMove
-         lDone := ::Up( .T. )
+         lRet := ::Up( .T. )
       EndIf
    EndIf
 
-   Return lDone
+   Return lRet
 
 METHOD Right( lAppend ) CLASS TOBrowseByCell
 
-   Local aBefore, nRec, nCol, lDone := .F., aAfter
+   Local aBefore, nRec, nCol, lRet := .F., aAfter
 
    aBefore := ::Value
    nRec := aBefore[ 1 ]
@@ -4091,17 +4114,17 @@ METHOD Right( lAppend ) CLASS TOBrowseByCell
    If nRec > 0 .AND. nCol >= 1 .AND. nCol <= Len( ::aHeaders )
       If nCol # ::LastColInOrder
          aAfter := ( ::Value := { nRec, ::NextColInOrder( nCol ) } )
-         lDone := ( aAfter[ 1 ] # nRec .OR. aAfter[ 2 ] # nCol )
+         lRet := ( aAfter[ 1 ] # nRec .OR. aAfter[ 2 ] # nCol )
       ElseIf ::FullMove
          If ::Down( .F., .T. )
-            lDone := .T.
+            lRet := .T.
          Else
             ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
             If lAppend
-               lDone := ::AppendItem()
+               lRet := ::AppendItem()
             EndIf
          EndIf
       EndIf
    EndIf
 
-   Return lDone
+   Return lRet
