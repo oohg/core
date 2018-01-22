@@ -299,9 +299,9 @@ CLASS TWindow
    METHOD Visible             SETGET
    METHOD Show                BLOCK { |Self| ::Visible := .T. }
    METHOD Hide                BLOCK { |Self| ::Visible := .F. }
-   METHOD ForceHide           BLOCK { |Self| HideWindow( ::hWnd ) , ::CheckClientsPos() }
+   METHOD ForceHide           BLOCK { |Self| HideWindow( ::hWnd ), ::CheckClientsPos(), ProcessMessages() }
    METHOD ReDraw              BLOCK { |Self| RedrawWindow( ::hWnd ) }
-   METHOD DefWindowProc(nMsg,wParam,lParam)       BLOCK { |Self,nMsg,wParam,lParam| DefWindowProc( ::hWnd, nMsg, wParam, lParam ) }
+   METHOD DefWindowProc( nMsg, wParam, lParam )       BLOCK { |Self, nMsg, wParam, lParam| DefWindowProc( ::hWnd, nMsg, wParam, lParam ) }
    METHOD GetTextWidth
    METHOD GetTextHeight
    METHOD GetMaxCharsInWidth

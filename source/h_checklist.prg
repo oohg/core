@@ -434,6 +434,11 @@ METHOD Events_Notify( wParam, lParam ) CLASS TCheckList
       ::FocusEffect()
       ::DoEvent( ::OnGotFocus, "GOTFOCUS" )
 
+   ElseIf nNotify == LVN_INSERTITEM
+      IF ::Container != NIL
+         RedrawWindow( ::ContainerhWnd )
+      ENDIF
+
    EndIf
 
    // TGrid's Event_Notify method must be skipped

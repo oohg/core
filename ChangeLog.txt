@@ -8,6 +8,19 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-01-22 20:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog.txt
+     * Updated.
+   * core\source\h_checklist.prg
+     ! Control has no border nor scrollbar when is placed in a Tab and
+       it's items are loaded after control's creation.
+   * core\source\h_windows.prg
+     * Some format.
+   * core\source\h_xbrowse.prg
+     ! Visibility should be restore instead of forced.
+   * core\include\i_windefs.prg
+     + LVN_INSERTITEM.
+
 2018-01-20 18:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt
      * Updated.

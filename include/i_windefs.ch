@@ -446,6 +446,7 @@ LISTVIEW CONTROL
 #define LVN_KEYDOWN                   ( -155 )
 #define LVN_COLUMNCLICK               ( -108 )
 #define LVN_ITEMCHANGED               ( -101 )
+#define LVN_INSERTITEM                ( -102 )
 
 /*---------------------------------------------------------------------------
 LISTBOX CONTROL

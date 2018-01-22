@@ -1137,7 +1137,7 @@ METHOD Visible( lVisible ) CLASS TXBrowse
 
    If ValType( lVisible ) == "L"
       ::Super:Visible := lVisible
-      aEval( ::aControls, { |o| o:Visible := lVisible } )
+      aEval( ::aControls, { |o| o:Visible := o:Visible } )
    EndIf
 
    Return ::lVisible
