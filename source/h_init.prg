@@ -117,11 +117,26 @@ PROCEDURE InitMessages( cLang )
 
    RETURN
 
-FUNCTION _OOHG_Messages( nTable, nItem )
+FUNCTION _OOHG_Messages( nTable, nItem, nSubItem )
 
-   RETURN iif( ( ValType( nTable ) == "N" .AND. nTable >= 1 .AND. nTable <= Len( _OOHG_Messages ) .AND. ;
-             ValType( nItem ) == "N" .AND. nItem >= 1 .AND. nItem <= Len( _OOHG_Messages[ nTable] ) ), ;
-             _OOHG_Messages[ nTable ][ nItem ], "" )
+   LOCAL uData, cRet
+
+   IF ValType( nTable ) == "N" .AND. nTable >= 1 .AND. nTable <= Len( _OOHG_Messages )
+      IF ValType( nItem ) == "N" .AND. nItem >= 1 .AND. nItem <= Len( _OOHG_Messages[ nTable] )
+         uData := _OOHG_Messages[ nTable ][ nItem ]
+         IF ValType( nSubItem ) == "N" .AND. HB_ISARRAY( uData ) .AND. nSubItem >= 1 .AND. nSubItem <= Len( uData )
+            cRet := uData[ nSubItem ]
+         ELSE
+            cRet := uData
+         ENDIF
+      ELSE
+         cRet := ""
+      ENDIF
+   ELSE
+      cRet := ""
+   ENDIF
+
+   RETURN cRet
 
 STATIC FUNCTION InitMessagesMerge( aLang, aLangDefault, nTable )
 
@@ -315,51 +330,51 @@ FUNCTION ooHG_Messages_EN // English (default)
                          CRLF + "Record locked by another user    " + CRLF }                                                         // 41
 
    // PRINT MESSAGES
-   acPrint          := { "Print preview pending, close first", ;
-                         "ooHG printing", ;
-                         "Auxiliar printing command", ;
-                         " PRINTED OK !!!", ;
-                         "Invalid parameters passed to function !!!", ;
-                         "WinAPI OpenPrinter() call failed !!!", ;
-                         "WinAPI StartDocPrinter() call failed !!!", ;
-                         "WinAPI StartPagePrinter() call failed !!!", ;
-                         "WinAPI malloc() call failed !!!", ;
-                         " NOT FOUND !!!", ;
-                         "No printer found !!!", ;
-                         "Error", ;
-                         "Port is not valid !!!", ;
-                         "Select printer", ;
-                         "OK", ;
-                         "Cancel", ;
-                         'Preview -----> ', ;
-                         "Close", ;
-                         "Close", ;
-                         "Zoom + ", ;
-                         "Zoom + ", ;
-                         "Zoom -", ;
-                         "Zoom -", ;
-                         "Print", ;
-                         "Print mode: ", ;
-                         "Search", ;
-                         "Search", ;
-                         "Next search", ;
-                         "Next search", ;
-                         'Text: ', ;
-                         'Search string', ;
-                         "Search ended.", ;
-                         "Information", ;
-                         'Excel not found !!!', ;
-                         "XLS extension not asociated !!!", ;
-                         "File saved in: ", ;
-                         "HTML extension not asociated !!!", ;
-                         "RTF extension not asociated !!!", ;
-                         "CSV extension not asociated !!!", ;
-                         "PDF extension not asociated !!!", ;
-                         "ODT extension not asociated !!!", ;
-                         'Barcodes require a character value !!!', ;
-                         'Code 128 modes are A, B or C (character values) !!!', ;
-                         "Calc not found !!!", ;
-                         "Error saving file: " }
+   acPrint          := { "Print preview pending, close first", ;                                                                     // 1
+                         "ooHG printing", ;                                                                                          // 2
+                         "Auxiliar printing command", ;                                                                              // 3
+                         " PRINTED OK !!!", ;                                                                                        // 4
+                         "Invalid parameters passed to function !!!", ;                                                              // 5
+                         "WinAPI OpenPrinter() call failed !!!", ;                                                                   // 6
+                         "WinAPI StartDocPrinter() call failed !!!", ;                                                               // 7
+                         "WinAPI StartPagePrinter() call failed !!!", ;                                                              // 8
+                         "WinAPI malloc() call failed !!!", ;                                                                        // 9
+                         " NOT FOUND !!!", ;                                                                                         // 10
+                         "No printer found !!!", ;                                                                                   // 11
+                         "Error", ;                                                                                                  // 12
+                         "Port is not valid !!!", ;                                                                                  // 13
+                         "Select printer", ;                                                                                         // 14
+                         "OK", ;                                                                                                     // 15
+                         "Cancel", ;                                                                                                 // 16
+                         'Preview -----> ', ;                                                                                        // 17
+                         "Close", ;                                                                                                  // 18
+                         "Close", ;                                                                                                  // 19
+                         "Zoom + ", ;                                                                                                // 20
+                         "Zoom + ", ;                                                                                                // 21
+                         "Zoom -", ;                                                                                                 // 22
+                         "Zoom -", ;                                                                                                 // 23
+                         { "Print", "Save" }, ;                                                                                      // 24
+                         { "Print mode: ", "Save mode: " }, ;                                                                        // 25
+                         "Search", ;                                                                                                 // 26
+                         "Search", ;                                                                                                 // 27
+                         "Next search", ;                                                                                            // 28
+                         "Next search", ;                                                                                            // 29
+                         'Text: ', ;                                                                                                 // 30
+                         'Search string', ;                                                                                          // 31
+                         "Search ended.", ;                                                                                          // 32
+                         "Information", ;                                                                                            // 33
+                         'Excel not found !!!', ;                                                                                    // 34
+                         "XLS extension not asociated !!!", ;                                                                        // 35
+                         "File saved in: ", ;                                                                                        // 36
+                         "HTML extension not asociated !!!", ;                                                                       // 37
+                         "RTF extension not asociated !!!", ;                                                                        // 38
+                         "CSV extension not asociated !!!", ;                                                                        // 39
+                         "PDF extension not asociated !!!", ;                                                                        // 40
+                         "ODT extension not asociated !!!", ;                                                                        // 41
+                         'Barcodes require a character value !!!', ;                                                                 // 42
+                         'Code 128 modes are A, B or C (character values) !!!', ;                                                    // 43
+                         "Calc not found !!!", ;                                                                                     // 44
+                         "Error saving file: " }                                                                                     // 45
 
    RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
 

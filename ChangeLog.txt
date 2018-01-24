@@ -8,6 +8,19 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-01-24 17:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog.txt
+     * Updated.
+   * core\source\h_init.prg
+     * Function _OOHG_Messages now accepts a 3rd parameter 'nSubItem' to enable
+       support for items of array type instead of string.
+       See items 24 and 25 of acPrint array at function ooHG_Messages_EN.
+   * core\source\h_print.prg
+     + Class TTxtPrint. This class generates TXT files but do not print them.
+       To print them use TDosPrint.
+     * Version changed to 4.20
+     * Some format.
+
 2018-01-22 20:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt
      * Updated.
