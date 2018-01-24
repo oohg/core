@@ -8,6 +8,10 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-01-24 18:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_checklist.prg
+     ! Control does not scroll properly with mouse wheel.
+
 2018-01-24 17:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt
      * Updated.

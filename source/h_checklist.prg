@@ -94,96 +94,19 @@ CLASS TCheckList FROM TGrid
    /*
    This methods of TGrid class are also available:
 
-   METHOD Define2
-   METHOD SetItemColor
-   METHOD SetSelectedColors
-   METHOD InsertBlank
-   METHOD ItemCount            BLOCK { | Self | ListViewGetItemCount( ::hWnd ) }
+   METHOD BackColor            SETGET
    METHOD CountPerPage         BLOCK { | Self | ListViewGetCountPerPage( ::hWnd ) }
+   METHOD Define2
+   METHOD Events_Enter
    METHOD FirstSelectedItem    BLOCK { | Self | ListView_GetFirstItem( ::hWnd ) }
    METHOD FontColor            SETGET
-   METHOD BackColor            SETGET
-   METHOD Events_Enter
+   METHOD InsertBlank
+   METHOD ItemCount            BLOCK { | Self | ListViewGetItemCount( ::hWnd ) }
    METHOD OnEnter
    METHOD Release
+   METHOD SetItemColor
+   METHOD SetSelectedColors
    */
-
-   /*
-   TODO: Check if this methods are needed or must be NIL.
-
-   METHOD AddBitMap
-   METHOD AdjustResize
-   METHOD Append                  SETGET
-   METHOD CellCaption             BLOCK { | Self, nRow, nCol, uValue | CellRawValue( ::hWnd, nRow, nCol, 1, uValue ) }
-   METHOD CellImage               BLOCK { | Self, nRow, nCol, uValue | CellRawValue( ::hWnd, nRow, nCol, 2, uValue ) }
-   METHOD CheckItem               SETGET
-   METHOD ColumnOrder             SETGET
-   METHOD CompareItems
-   METHOD Define4
-   METHOD FirstColInOrder
-   METHOD FirstVisibleColumn
-   METHOD FirstVisibleItem
-   METHOD FixControls             SETGET
-   METHOD HeaderHeight
-   METHOD HeaderSetFont
-   METHOD ItemHeight
-   METHOD Justify
-   METHOD LastColInOrder
-   METHOD LastVisibleColumn
-   METHOD NextColInOrder
-   METHOD PriorColInOrder
-   METHOD ScrollToCol
-   METHOD ScrollToLeft
-   METHOD ScrollToNext
-   METHOD ScrollToPrior
-   METHOD ScrollToRight
-   METHOD SetControlValue         BLOCK { |Self, nRow, nCol| Empty( nCol ), ::Value := nRow }
-   METHOD SortColumn
-   METHOD SortItems
-
-   MESSAGE PanToLeft              METHOD ScrollToPrior
-   MESSAGE PanToRight             METHOD ScrollToNext
-   */
-
-   // This methods of TGrid class are not needed:
-
-   METHOD Left                 BLOCK { || Nil }
-   METHOD Right                BLOCK { || Nil }
-   METHOD Up                   BLOCK { || Nil }
-   METHOD Down                 BLOCK { || Nil }
-   METHOD PageDown             BLOCK { || Nil }
-   METHOD PageUp               BLOCK { || Nil }
-   METHOD GoTop                BLOCK { || Nil }
-   METHOD GoBottom             BLOCK { || Nil }
-   METHOD AddColumn            BLOCK { || Nil }
-   METHOD DeleteColumn         BLOCK { || Nil }
-   METHOD Cell                 BLOCK { || Nil }
-   METHOD EditCell             BLOCK { || Nil }
-   METHOD EditCell2            BLOCK { || Nil }
-   METHOD EditAllCells         BLOCK { || Nil }
-   METHOD EditItem             BLOCK { || Nil }
-   METHOD EditItem2            BLOCK { || Nil }
-   METHOD EditGrid             BLOCK { || Nil }
-   METHOD IsColumnReadOnly     BLOCK { || Nil }
-   METHOD IsColumnWhen         BLOCK { || Nil }
-   METHOD ToExcel              BLOCK { || Nil }
-   METHOD ToOpenOffice         BLOCK { || Nil }
-   METHOD AppendItem           BLOCK { || Nil }
-   METHOD ColumnCount          BLOCK { || Nil }
-   METHOD ColumnAutoFit        BLOCK { || Nil }
-   METHOD ColumnAutoFitH       BLOCK { || Nil }
-   METHOD ColumnsAutoFit       BLOCK { || Nil }
-   METHOD ColumnsAutoFitH      BLOCK { || Nil }
-   METHOD ColumnBetterAutoFit  BLOCK { || Nil }
-   METHOD ColumnsBetterAutoFit BLOCK { || Nil }
-   METHOD ColumnHide           BLOCK { || Nil }
-   METHOD ColumnShow           BLOCK { || Nil }
-   METHOD ColumnWidth          BLOCK { || Nil }
-   METHOD SortColumn           BLOCK { || Nil }
-   METHOD Header               BLOCK { || Nil }
-   METHOD HeaderImage          BLOCK { || Nil }
-   METHOD HeaderImageAlign     BLOCK { || Nil }
-   METHOD LoadHeaderImages     BLOCK { || Nil }
 
    ENDCLASS
 
@@ -347,15 +270,17 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TCheckList
          nNext := ::FirstSelectedItem - 1
          If nNext > 0
             ListView_SetCursel( ::hWnd, nNext )
+            ListView_EnsureVisible( ::hWnd, nNext )
          EndIf
       Else
          nNext := ::FirstSelectedItem + 1
          If nNext <= ::ItemCount
             ListView_SetCursel( ::hWnd, nNext )
+            ListView_EnsureVisible( ::hWnd, nNext )
          EndIf
       EndIf
       Return 1
-   EndIf
+ EndIf
 
    Return ::Super:Events( hWnd, nMsg, wParam, lParam )
 
