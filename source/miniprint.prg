@@ -1549,7 +1549,7 @@ PROCEDURE _HMG_PRINTER_InitUserMessages()
          _HMG_PRINTER_UserMessages [102] := 'Nessuna stampatore è installata in questo sistema.'
          _HMG_PRINTER_UserMessages [103] := 'Closing preview... Please Wait...'
 
-      Case cLang == "PLWIN"  .OR. cLang == "PL852"  .OR. cLang == "PLISO"  .OR. cLang == ""  .OR. cLang == "PLMAZ"
+      Case cLang == "PLWIN" .OR. cLang == "PL852" .OR. cLang == "PLISO" .OR. cLang == "PLMAZ"
    ///////////////////////////////////////////////////////////////////
    // POLISH
    ///////////////////////////////////////////////////////////////////

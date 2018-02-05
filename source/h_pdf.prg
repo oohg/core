@@ -2972,25 +2972,25 @@ static function Array2File( cFile, aRay, nDepth, hFile )
 
    return ( nBytes )
 
-static function WriteData(hFile,xData)
+STATIC FUNCTION WriteData( hFile, xData )
 
-   local cData  := valtype(xData)
+   LOCAL cData  := ValType( xData )
 
-   if ISCHARACTER(xData)
-      cData += i2bin( len( xData ) ) + xData
-   elseif ISNUMBER(xData)
-      cData += i2bin( len( alltrim( str( xData ) ) ) ) + alltrim( str( xData ) )
-   elseif ISDATE( xData )
-      cData += i2bin( 8 ) + dtos(xData)
-   elseif ISLOGICAL(xData)
-      cData += i2bin( 1 ) + if( xData, 'T', 'F' )
-   elseif ISARRAY( xData )
-      cData += i2bin( len( xData ) )
-   else
-      cData += i2bin( 0 )   // NIL
-   endif
+   IF HB_ISSTRING( xData )
+      cData += I2Bin( Len( xData ) ) + xData
+   ELSEIF HB_ISNUMERIC( xData )
+      cData += I2Bin( Len( AllTrim( Str( xData ) ) ) ) + AllTrim( Str( xData ) )
+   ELSEIF HB_ISDATE( xData )
+      cData += I2Bin( 8 ) + DToS( xData )
+   ELSEIF HB_ISLOGICAL( xData )
+      cData += I2Bin( 1 ) + iif( xData, 'T', 'F' )
+   ELSEIF HB_ISARRAY( xData )
+      cData += I2Bin( Len( xData ) )
+   ELSE
+      cData += I2Bin( 0 )   // NIL
+   ENDIF
 
-   return ( fWrite( hFile, cData, len( cData ) ) )
+   RETURN ( FWrite( hFile, cData, Len( cData ) ) )
 
 static function File2Array( cFile, nLen, hFile )
 

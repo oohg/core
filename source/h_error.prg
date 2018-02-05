@@ -69,6 +69,7 @@
 #include "common.ch"
 #include "hbclass.ch"
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION MsgOOHGError( cMessage )
 
    // Kill timers and hot keys
@@ -77,14 +78,16 @@ FUNCTION MsgOOHGError( cMessage )
 
    OwnErrorHandler():ErrorMessage( cMessage, 1 )
 
-   RETURN Nil
+   RETURN NIL
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 PROCEDURE ErrorSys
 
    ErrorBlock( { | oError | DefError( oError ) } )
 
    RETURN
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 STATIC FUNCTION DefError( oError )
 
    LOCAL cMessage
@@ -128,8 +131,9 @@ STATIC FUNCTION DefError( oError )
 
    RETURN .F.
 
-// [vszakats]
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION _OOHG_ErrorMessage( oError )
+// [vszakats]
 
    LOCAL cMessage
 
@@ -137,21 +141,21 @@ FUNCTION _OOHG_ErrorMessage( oError )
    cMessage := iif( oError:severity > ES_WARNING, _OOHG_Messages( 1, 9 ), _OOHG_Messages( 1, 10 ) ) + " "
 
    // add subsystem name if available
-   IF ISCHARACTER( oError:subsystem )
+   IF HB_ISSTRING( oError:subsystem )
       cMessage += oError:subsystem()
    ELSE
       cMessage += "???"
    ENDIF
 
    // add subsystem's error code if available
-   IF ISNUMBER( oError:subCode )
+   IF HB_ISNUMERIC( oError:subCode )
       cMessage += "/" + LTrim( Str( oError:subCode ) )
    ELSE
       cMessage += "/???"
    ENDIF
 
    // add error description if available
-   IF ISCHARACTER( oError:description )
+   IF HB_ISSTRING( oError:description )
       cMessage += "  " + oError:description
    ENDIF
 
@@ -169,12 +173,13 @@ FUNCTION _OOHG_ErrorMessage( oError )
 
    RETURN cMessage
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 STATIC FUNCTION OwnErrorHandler()
 
-   Local oErrorLog
-   MemVar _OOHG_TxtError
+   LOCAL oErrorLog
+   MEMVAR _OOHG_TxtError
 
-   IF TYPE( "_OOHG_TXTERROR" ) == "L" .AND. _OOHG_TxtError
+   IF Type( "_OOHG_TXTERROR" ) == "L" .AND. _OOHG_TxtError
       oErrorLog := OOHG_TErrorTxt():New()
    ELSEIF TYPE( "_OOHG_TXTERROR" ) == "O"
       oErrorLog := _OOHG_TxtError
@@ -185,16 +190,17 @@ STATIC FUNCTION OwnErrorHandler()
    RETURN oErrorLog
 
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS OOHG_TErrorHtml
 
-   DATA aMessages     INIT Nil
-   DATA cBufferFile   INIT ""
-   DATA cBufferScreen INIT ""
-   DATA cLang         INIT ""
-   DATA FileName      INIT "ErrorLog.htm"
-   DATA Path          INIT ""
-   DATA PostHeader    INIT '</p>'
-   DATA PreHeader     INIT '<HR>' + CHR( 13 ) + CHR( 10 ) + '<p class="updated">'
+   DATA aMessages                 INIT NIL
+   DATA cBufferFile               INIT ""
+   DATA cBufferScreen             INIT ""
+   DATA cLang                     INIT ""
+   DATA FileName                  INIT "ErrorLog.htm"
+   DATA Path                      INIT ""
+   DATA PostHeader                INIT '</p>'
+   DATA PreHeader                 INIT '<HR>' + CRLF + '<p class="updated">'
 
    METHOD CopyLog
    METHOD CreateLog
@@ -209,18 +215,19 @@ CLASS OOHG_TErrorHtml
 
    ENDCLASS
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD New( cLang ) CLASS OOHG_TErrorHtml
 
    LOCAL nAt
 
-   IF ! VALTYPE( cLang ) $ "CM" .OR. EMPTY( cLang )
+   IF ! ValType( cLang ) $ "CM" .OR. Empty( cLang )
       // [x]Harbour's default language
       cLang := Set( _SET_LANGUAGE )
    ENDIF
    IF ( nAt := At( ".", cLang ) ) > 0
-      cLang := LEFT( cLang, nAt - 1 )
+      cLang := Left( cLang, nAt - 1 )
    ENDIF
-   ::cLang := UPPER( ALLTRIM( cLang ) )
+   ::cLang := Upper( AllTrim( cLang ) )
 
    DO CASE
    CASE ::cLang == "HR852"                            // Croatian
@@ -297,7 +304,6 @@ METHOD New( cLang ) CLASS OOHG_TErrorHtml
    CASE ::cLang == "PLWIN" .OR. ;
         ::cLang == "PL852" .OR. ;
         ::cLang == "PLISO" .OR. ;
-        ::cLang == ""      .OR. ;
         ::cLang == "PLMAZ"                            // Polish
       ::aMessages := { "ooHG Errors Log", ;
                        "Application: ", ;
@@ -326,9 +332,9 @@ METHOD New( cLang ) CLASS OOHG_TErrorHtml
                        "Events:", ;
                        "Program Error" }
 
-   CASE ::cLang == "RUWIN" .OR. ;
-        ::cLang == "RU866" .OR. ;
-        ::cLang == "RUKOI8"                           // Russian
+   CASE ::cLang == "RUKOI8" .OR. ;
+        ::cLang == "RU866"  .OR. ;
+        ::cLang == "RUWIN"                            // Russian
       ::aMessages := { "ooHG Errors Log", ;
                        "Application: ", ;
                        "Date: ", ;
@@ -342,8 +348,8 @@ METHOD New( cLang ) CLASS OOHG_TErrorHtml
                        "Events:", ;
                        "Program Error" }
 
-   CASE ::cLang == "ES"    .OR. ;
-        ::cLang == "ESWIN"                            // Spanish
+   CASE ::cLang == "ESWIN" .OR. ;
+        ::cLang == "ES"                               // Spanish
       ::aMessages := { "Registro de Errores de ooHG", ;
                        "Aplicación: ", ;
                        "Fecha: ", ;
@@ -402,7 +408,7 @@ METHOD New( cLang ) CLASS OOHG_TErrorHtml
                        "Events:", ;
                        "Program Error" }
 
-   CASE ::cLang == "TR"                            // Turkish
+   CASE ::cLang == "TR"                               // Turkish
       ::aMessages := { "ooHG Errors Log", ;
                        "Application: ", ;
                        "Date: ", ;
@@ -433,63 +439,67 @@ METHOD New( cLang ) CLASS OOHG_TErrorHtml
 
    RETURN Self
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Write( cTxt ) CLASS OOHG_TErrorHtml
 
    ::cBufferFile   += ::Write2( cTxt )
-   ::cBufferScreen += cTxt + CHR( 13 ) + CHR( 10 )
+   ::cBufferScreen += cTxt + CRLF
 
-   RETURN Nil
+   RETURN NIL
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Write2( cTxt ) CLASS OOHG_TErrorHtml
 
-   RETURN RTRIM( cTxt ) + "<br>" + CHR( 13 ) + CHR( 10 )
+   RETURN RTrim( cTxt ) + "<br>" + CRLF
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD FileHeader( cTitle ) CLASS OOHG_TErrorHtml
 
-RETURN "<HTML><HEAD><TITLE>" + cTitle + "</TITLE></HEAD>" + CHR( 13 ) + CHR( 10 ) + ;
-       "<style> "                       + ;
-         "body{ "                       + ;
-           "font-family: sans-serif;"   + ;
-           "background-color: #ffffff;" + ;
-           "font-size: 75%;"            + ;
-           "color: #000000;"            + ;
-           "}"                          + ;
-         "h1{"                          + ;
-           "font-family: sans-serif;"   + ;
-           "font-size: 150%;"           + ;
-           "color: #0000cc;"            + ;
-           "font-weight: bold;"         + ;
-           "background-color: #f0f0f0;" + ;
-           "}"                          + ;
-         ".updated{"                    + ;
-           "font-family: sans-serif;"   + ;
-           "color: #cc0000;"            + ;
-           "font-size: 110%;"           + ;
-           "}"                          + ;
-         ".normaltext{"                 + ;
-          "font-family: sans-serif;"    + ;
-          "font-size: 100%;"            + ;
-          "color: #000000;"             + ;
-          "font-weight: normal;"        + ;
-          "text-transform: none;"       + ;
-          "text-decoration: none;"      + ;
-        "}"                             + ;
-       "</style>"                       + ;
-       "<BODY>" + CHR( 13 ) + CHR( 10 ) + ;
-       "<H1 Align=Center>" + cTitle + "</H1><br>" + CHR( 13 ) + CHR( 10 )
+RETURN "<HTML><HEAD><TITLE>" + cTitle + "</TITLE></HEAD>" + CRLF + ;
+       "<style> "                                                + ;
+         "body{ "                                                + ;
+           "font-family: sans-serif;"                            + ;
+           "background-color: #ffffff;"                          + ;
+           "font-size: 75%;"                                     + ;
+           "color: #000000;"                                     + ;
+           "}"                                                   + ;
+         "h1{"                                                   + ;
+           "font-family: sans-serif;"                            + ;
+           "font-size: 150%;"                                    + ;
+           "color: #0000cc;"                                     + ;
+           "font-weight: bold;"                                  + ;
+           "background-color: #f0f0f0;"                          + ;
+           "}"                                                   + ;
+         ".updated{"                                             + ;
+           "font-family: sans-serif;"                            + ;
+           "color: #cc0000;"                                     + ;
+           "font-size: 110%;"                                    + ;
+           "}"                                                   + ;
+         ".normaltext{"                                          + ;
+          "font-family: sans-serif;"                             + ;
+          "font-size: 100%;"                                     + ;
+          "color: #000000;"                                      + ;
+          "font-weight: normal;"                                 + ;
+          "text-transform: none;"                                + ;
+          "text-decoration: none;"                               + ;
+        "}"                                                      + ;
+       "</style>"                                                + ;
+       "<BODY>" + CRLF                                           + ;
+       "<H1 Align=Center>" + cTitle + "</H1><br>" + CRLF
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD CreateLog() CLASS OOHG_TErrorHtml
 
    LOCAL nHdl, cFile, cTop, cBottom, nPos
 
-   IF EMPTY( ::Path )
-      IF EMPTY( CurDir() )
+   IF Empty( ::Path )
+      IF Empty( CurDir() )
         cFile := '\'
       ELSE
         cFile := '\' + CurDir() + '\'
       ENDIF
    ELSE
-      IF RIGHT( ::Path, 1 ) == '\'
+      IF Right( ::Path, 1 ) == '\'
          cFile := ::Path
       ELSE
          cFile := ::Path + '\'
@@ -497,34 +507,35 @@ METHOD CreateLog() CLASS OOHG_TErrorHtml
    ENDIF
    cFile += ::FileName
 
-   cBottom := MEMOREAD( cFile )
-   nPos := AT( ::PreHeader(), cBottom )
+   cBottom := MemoRead( cFile )
+   nPos := At( ::PreHeader(), cBottom )
    IF nPos == 0
       cTop := ::FileHeader( ::aMessages[1] )
    ELSE
-      cTop := LEFT( cBottom, nPos - 1 )
-      cBottom := SUBSTR( cBottom, nPos )
+      cTop := Left( cBottom, nPos - 1 )
+      cBottom := SubStr( cBottom, nPos )
    ENDIF
-   nHdl := FCREATE( cFile )
-   FWRITE( nHdl, cTop )
-   FWRITE( nHdl, ::cBufferFile )
-   FWRITE( nHdl, cBottom )
-   FCLOSE( nHdl )
+   nHdl := FCreate( cFile )
+   FWrite( nHdl, cTop )
+   FWrite( nHdl, ::cBufferFile )
+   FWrite( nHdl, cBottom )
+   FClose( nHdl )
 
-   RETURN Nil
+   RETURN NIL
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD DeleteLog() CLASS OOHG_TErrorHtml
 
    LOCAL cFile
 
-   IF EMPTY( ::Path )
-      IF EMPTY( CurDir() )
+   IF Empty( ::Path )
+      IF Empty( CurDir() )
         cFile := '\'
       ELSE
         cFile := '\' + CurDir() + '\'
       ENDIF
    ELSE
-      IF RIGHT( ::Path, 1 ) == '\'
+      IF Right( ::Path, 1 ) == '\'
          cFile := ::Path
       ELSE
          cFile := ::Path + '\'
@@ -538,11 +549,12 @@ METHOD DeleteLog() CLASS OOHG_TErrorHtml
 
    RETURN ! FILE( cFile )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD CopyLog( cTo ) CLASS OOHG_TErrorHtml
 
    LOCAL cFile
 
-   IF ! VALTYPE( cTo ) $ "CM"
+   IF ! ValType( cTo ) $ "CM"
       RETURN .F.
    ENDIF
    IF FILE( cTo )
@@ -552,14 +564,14 @@ METHOD CopyLog( cTo ) CLASS OOHG_TErrorHtml
       ENDIF
    ENDIF
 
-   IF EMPTY( ::Path )
-      IF EMPTY( CurDir() )
+   IF Empty( ::Path )
+      IF Empty( CurDir() )
         cFile := '\'
       ELSE
         cFile := '\' + CurDir() + '\'
       ENDIF
    ELSE
-      IF RIGHT( ::Path, 1 ) == '\'
+      IF Right( ::Path, 1 ) == '\'
          cFile := ::Path
       ELSE
          cFile := ::Path + '\'
@@ -575,6 +587,7 @@ METHOD CopyLog( cTo ) CLASS OOHG_TErrorHtml
 
    RETURN FILE( cTo )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD ErrorMessage( cError, nPosition ) CLASS OOHG_TErrorHtml
 
    #ifdef __ERROR_EVENTS__
@@ -582,12 +595,12 @@ METHOD ErrorMessage( cError, nPosition ) CLASS OOHG_TErrorHtml
    #endif
 
    // Header
-   ::cBufferScreen += ooHGVersion() + CHR( 13 ) + CHR( 10 ) + cError + CHR( 13 ) + CHR( 10 )
+   ::cBufferScreen += OOHGVersion() + CRLF + cError + CRLF
 
    ::cBufferFile   += ::PreHeader()
    ::cBufferFile   += ::Write2( ::aMessages[2] + GetProgramFileName() )
-   ::cBufferFile   += ::Write2( ::aMessages[3] + Dtoc( Date() ) + "  " + ::aMessages[4] + Time() )
-   ::cBufferFile   += ::Write2( ::aMessages[5] + ooHGVersion() )
+   ::cBufferFile   += ::Write2( ::aMessages[3] + DToC( Date() ) + "  " + ::aMessages[4] + Time() )
+   ::cBufferFile   += ::Write2( ::aMessages[5] + OOHGVersion() )
    ::cBufferFile   += ::Write2( ::aMessages[6] + Alias() )
    ::cBufferFile   += ::Write2( ::aMessages[7] + NetName() )
    ::cBufferFile   += ::Write2( ::aMessages[8] + NetName( 1 ) )
@@ -611,16 +624,17 @@ METHOD ErrorMessage( cError, nPosition ) CLASS OOHG_TErrorHtml
    #ifdef __ERROR_EVENTS__
       aEvents := _ListEventInfo()
       ::Write( ::aMessages[11] )
-      AEVAL( aEvents, { | c | ::Write( c ) } )
+      AEval( aEvents, { | c | ::Write( c ) } )
    #endif
 
-   dbcloseall()
+   dbCloseAll()
    ::CreateLog()
    C_MSGSTOP( ::cBufferScreen, ::aMessages[12] )
    ExitProcess( 1 )
 
-   RETURN Nil
+   RETURN NIL
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD PutMsg( cMsg, nPosition, lEvents ) CLASS OOHG_TErrorHtml
 
    LOCAL aEvents
@@ -629,7 +643,7 @@ METHOD PutMsg( cMsg, nPosition, lEvents ) CLASS OOHG_TErrorHtml
    ::cBufferFile += ::Write2( cMsg )
    ::cBufferFile += ::PostHeader()
 
-   IF HB_IsNumeric( nPosition )
+   IF HB_ISNUMERIC( nPosition )
       // Called functions
       nPosition++
       DO WHILE ! Empty( ProcName( nPosition ) )
@@ -637,11 +651,11 @@ METHOD PutMsg( cMsg, nPosition, lEvents ) CLASS OOHG_TErrorHtml
       ENDDO
    ENDIF
 
-   IF HB_IsLogical( lEvents ) .and. lEvents
+   IF HB_ISLOGICAL( lEvents ) .AND. lEvents
       // Event list
       aEvents := _ListEventInfo()
       ::Write( ::aMessages[11] )
-      AEVAL( aEvents, { | c | ::Write( c ) } )
+      AEval( aEvents, { | c | ::Write( c ) } )
    ENDIF
 
    ::CreateLog()
@@ -649,26 +663,29 @@ METHOD PutMsg( cMsg, nPosition, lEvents ) CLASS OOHG_TErrorHtml
    ::cBufferFile := ""
    ::cBufferScreen := ""
 
-   RETURN Nil
+   RETURN NIL
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD ErrorHeader() CLASS OOHG_TErrorHtml
 
    // Insert own header's data here
 
-   RETURN Nil
+   RETURN NIL
 
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS OOHG_TErrorTxt FROM OOHG_TErrorHtml
 
-   DATA PreHeader     INIT " " + CHR( 13 ) + CHR( 10 ) + replicate( "-", 80 ) + CHR( 13 ) + CHR( 10 ) + " " + CHR( 13 ) + CHR( 10 )
-   DATA PostHeader    INIT CHR( 13 ) + CHR( 10 ) + CHR( 13 ) + CHR( 10 )
-   DATA FileName      INIT "ErrorLog.txt"
-   DATA FileHeader    INIT ""
+   DATA PreHeader                 INIT " " + CRLF + Replicate( "-", 80 ) + CRLF + " " + CRLF
+   DATA PostHeader                INIT CRLF + CRLF
+   DATA FileName                  INIT "ErrorLog.txt"
+   DATA FileHeader                INIT ""
 
    METHOD Write2
 
    ENDCLASS
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Write2( cTxt ) CLASS OOHG_TErrorTxt
 
-   RETURN RTRIM( cTxt ) + CHR( 13 ) + CHR( 10 )
+   RETURN RTrim( cTxt ) + CRLF

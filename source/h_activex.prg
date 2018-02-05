@@ -115,7 +115,7 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, cProgId, ;
 
    ::Register( nControlHandle, ControlName )
 
-   bErrorBlock := ErrorBlock( { |x| break( x ) } )
+   bErrorBlock := ErrorBlock( { |x| Break( x ) } )
    #ifdef __XHARBOUR__
       TRY
          ::oOle := ToleAuto():New( ::hAtl )

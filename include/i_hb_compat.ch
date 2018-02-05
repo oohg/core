@@ -61,6 +61,10 @@
 
 #ifndef __XHARBOUR__
 
+#xtranslate HexToNum( [<x>] ) ;
+   => ;
+      hb_HexToNum( <x> )
+
 #xtranslate CurDrive( [<x>] ) ;
    => ;
       hb_CurDrive( <x> )
@@ -86,11 +90,11 @@
 
 #if defined( HB_ARCH_64BIT )
 
-#xtranslate WIN_OEMTOANSI( <arg1> ) ;
+#xtranslate win_OemToAnsi( <arg1> ) ;
    => ;
       hb_OEMToANSI( <arg1> )
 
-#xtranslate WIN_ANSITOOEM( <arg1> ) ;
+#xtranslate win_AnsiToOem( <arg1> ) ;
    => ;
       hb_ANSIToOEM( <arg1> )
 

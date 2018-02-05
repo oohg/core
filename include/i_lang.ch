@@ -62,77 +62,77 @@
 #translate SET LANGUAGE TO SPANISH ;
    => ;
       REQUEST HB_LANG_ES ;;
-      HB_LANGSELECT( "ES" ) ;;
+      hb_langSelect( "ES" ) ;;
       InitMessages()
 
 #translate SET LANGUAGE TO ENGLISH ;
    => ;
       REQUEST HB_LANG_EN ;;
-      HB_LANGSELECT( "EN" ) ;;
+      hb_langSelect( "EN" ) ;;
       InitMessages()
 
 #translate SET LANGUAGE TO FRENCH ;
    => ;
       REQUEST HB_LANG_FR ;;
-      HB_LANGSELECT( "FR" ) ;;
+      hb_langSelect( "FR" ) ;;
       InitMessages()
 
 #translate SET LANGUAGE TO PORTUGUESE ;
    => ;
       REQUEST HB_LANG_PT ;;
-      HB_LANGSELECT( "PT" ) ;;
+      hb_langSelect( "PT" ) ;;
       InitMessages()
 
 #translate SET LANGUAGE TO GERMAN ;
    => ;
       REQUEST HB_LANG_DEWIN ;;
-      HB_LANGSELECT( "DEWIN" ) ;;
+      hb_langSelect( "DEWIN" ) ;;
       InitMessages()
 
 #translate SET LANGUAGE TO RUSSIAN ;
    => ;
       REQUEST HB_LANG_RUWIN ;;
-      HB_LANGSELECT( "RUWIN" ) ;;
+      hb_langSelect( "RUWIN" ) ;;
       InitMessages()
 
 #translate SET LANGUAGE TO ITALIAN ;
    => ;
       REQUEST HB_LANG_IT ;;
-      HB_LANGSELECT( "IT" ) ;;
+      hb_langSelect( "IT" ) ;;
       InitMessages()
 
 #translate SET LANGUAGE TO POLISH ;
    => ;
       REQUEST HB_LANG_PLWIN ;;
-      HB_LANGSELECT( "PLWIN" ) ;;
+      hb_langSelect( "PLWIN" ) ;;
       InitMessages()
 
 #translate SET LANGUAGE TO BASQUE ;
    => ;
       REQUEST HB_LANG_EU ;;
-      HB_LANGSELECT( "EU" ) ;;
+      hb_langSelect( "EU" ) ;;
       InitMessages()
 
 #translate SET LANGUAGE TO CROATIAN ;;
    => ;
       REQUEST HB_LANG_HR852 ;;
-      HB_LANGSELECT( "HR852" ) ;;
+      hb_langSelect( "HR852" ) ;;
       InitMessages()
 
 #translate SET LANGUAGE TO SLOVENIAN ;
    => ;
       REQUEST HB_LANG_SLWIN ;;
-      HB_LANGSELECT( "SLWIN" ) ;;
+      hb_langSelect( "SLWIN" ) ;;
       InitMessages()
 
 #translate SET LANGUAGE TO TURKISH ;
    => ;
       REQUEST HB_LANG_TR ;;
-      HB_LANGSELECT( "TR" ) ;;
+      hb_langSelect( "TR" ) ;;
       InitMessages()
 
 /*---------------------------------------------------------------------------
-LANGUAGES NOT SUPPORTED BY HB_LANGSELECT()       // TODO: Check Harbour 3.2
+LANGUAGES NOT SUPPORTED BY hb_langSelect()       // TODO: Check Harbour 3.2
 ---------------------------------------------------------------------------*/
 
 #translate SET LANGUAGE TO FINNISH ;

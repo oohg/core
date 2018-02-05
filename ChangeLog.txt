@@ -8,6 +8,35 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-02-05 18:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog.txt
+     * Updated.
+   * core\include\i_hb_compat.ch
+     + HexToNum translation.
+     * Format.
+   * core\include\i_lang.ch
+   * core\include\i_pseudofunc.ch
+   * core\include\i_windefs.ch
+   * core\source\h_activex.prg
+     * Format.
+   * core\source\h_error.prg
+     * Format.
+     * Use CRLF constant.
+     * Use HB_ISSTRING instead of ISCHARACTER.
+     * Use HB_ISNUMERIC instead of ISNUMBER.
+   * core\source\h_msgbox.prg
+     * Format.
+     - Removed #ifdef.
+   * core\source\h_pdf.prg
+     * Use HB_ISSTRING instead of ISCHARACTER.
+     * Use HB_ISNUMERIC instead of ISNUMBER.
+     * Use HB_ISDATA instead of ISDATE.
+     * Use HB_ISLOGICAL instead of ISLOGICAL.
+     * Use HB_ISARRAY instead of ISARRAY.
+     * Format.
+   * core\source\miniprint.prg
+     - Unneeded code.
+
 2018-01-24 18:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_checklist.prg
      ! Control does not scroll properly with mouse wheel.

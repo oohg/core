@@ -95,15 +95,15 @@
 
 #xtranslate LB_String2Array( <cData> [, <Sep> ] ) ;
    => ;
-      hb_ATokens( <cData>, iif( HB_IsString( <Sep> ) , <Sep> , Chr(9) ) )
+      hb_ATokens( <cData>, iif( HB_ISSTRING( <Sep> ) , <Sep> , Chr(9) ) )
 
-#xtranslate ISWINXPORLATER() ;
+#xtranslate IsWinXPOrLater() ;
    => ;
-      OSISWINXPORLATER()
+      OSIsWinXPOrLater()
 
-#xtranslate ISVISTAORLATER() ;
+#xtranslate IsVistaOrLater() ;
    => ;
-      OSISWINVISTAORLATER()
+      OSIsWinVistaOrLater()
 
 #xtranslate MsgAlert( <c>, <t> ) ;
    => ;
@@ -139,8 +139,8 @@
 
 #xtranslate MiniGuiVersion() ;
    => ;
-      ooHGVersion()
+      OOHGVersion()
 
-#xtranslate ooHGVersion() ;
+#xtranslate OOHGVersion() ;
    => ;
-      "ooHG Ver. 2017.08.25"
+      "OOHG Ver. 2017.08.25"
