@@ -1200,6 +1200,8 @@ CLASS TControl FROM TWindow
    METHOD SetForm
    METHOD InitStyle
    METHOD Register
+   METHOD AddToCtrlsArrays
+   METHOD DelFromCtrlsArrays
    METHOD TabIndex           SETGET
    METHOD Refresh            BLOCK { |self| ::ReDraw() }
    METHOD Release
@@ -1474,15 +1476,36 @@ METHOD Register( hWnd, cName, HelpId, Visible, ToolTip, Id ) CLASS TControl
       ::Id := GetDlgCtrlId( ::hWnd )
    EndIf
 
-   AADD( _OOHG_aControlhWnd,    hWnd )
-   AADD( _OOHG_aControlObjects, Self )
-   AADD( _OOHG_aControlIds,     { ::Id, ::Parent:hWnd } )
-   AADD( _OOHG_aControlNames,   UPPER( ::Parent:Name + CHR( 255 ) + ::Name ) )
+   ::AddToCtrlsArrays()
 
    mVar := "_" + ::Parent:Name + "_" + ::Name
    Public &mVar. := Self
 
    RETURN Self
+
+METHOD AddToCtrlsArrays() CLASS TControl
+
+   AAdd( _OOHG_aControlhWnd, ::hWnd )
+   AAdd( _OOHG_aControlObjects, Self )
+   AAdd( _OOHG_aControlIds, { ::Id, ::Parent:hWnd } )
+   AAdd( _OOHG_aControlNames, Upper( ::Parent:Name + Chr( 255 ) + ::Name ) )
+
+   RETURN NIL
+
+METHOD DelFromCtrlsArrays() CLASS TControl
+
+   LOCAL nPos
+
+   nPos := aScan( _OOHG_aControlNames, { |c| c == Upper( ::Parent:Name + Chr( 255 ) + ::Name ) } )
+
+   IF nPos > 0
+      _OOHG_DeleteArrayItem( _OOHG_aControlhWnd, nPos )
+      _OOHG_DeleteArrayItem( _OOHG_aControlObjects, nPos )
+      _OOHG_DeleteArrayItem( _OOHG_aControlIds, nPos )
+      _OOHG_DeleteArrayItem( _OOHG_aControlNames, nPos )
+   ENDIF
+
+   RETURN NIL
 
 METHOD Release() CLASS TControl
 
@@ -1509,19 +1532,12 @@ METHOD Release() CLASS TControl
       oCont:LastFocusedControl := 0
    ENDIF
 
-   // Removes from container
+   // Remove from container
    IF ::Container != nil
       ::Container:DeleteControl( Self )
    ENDIF
 
-   // Delete it from arrays
-   mVar := aScan( _OOHG_aControlNames, { |c| c == UPPER( ::Parent:Name + CHR( 255 ) + ::Name ) } )
-   IF mVar > 0
-      _OOHG_DeleteArrayItem( _OOHG_aControlhWnd,    mVar )
-      _OOHG_DeleteArrayItem( _OOHG_aControlObjects, mVar )
-      _OOHG_DeleteArrayItem( _OOHG_aControlIds,     mVar )
-      _OOHG_DeleteArrayItem( _OOHG_aControlNames,   mVar )
-   ENDIF
+   ::DelFromCtrlsArrays()
 
    ::Parent:DeleteControl( Self )
 

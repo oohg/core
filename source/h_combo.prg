@@ -435,11 +435,15 @@ METHOD RefreshData() CLASS TCombo
 
 METHOD PreRelease() CLASS TCombo
 
-   If ! SendMessage( ::hWnd, CB_GETDROPPEDSTATE, 0, 0 ) == 0
+   IF ! SendMessage( ::hWnd, CB_GETDROPPEDSTATE, 0, 0 ) == 0
       SendMessage( ::hWnd, CB_SHOWDROPDOWN, 0, 0 )
-   EndIf
+   ENDIF
 
-   Return ::Super:PreRelease()
+   IF HB_ISOBJECT( ::oEditBox )
+      ::oEditBox:Release()
+   ENDIF
+
+   RETURN ::Super:PreRelease()
 
 METHOD ShowDropDown( lShow ) CLASS TCombo
 
@@ -1645,29 +1649,43 @@ Function SetComboRefresh( lValue )
 
 CLASS TEditCombo FROM TControl STATIC
 
-   DATA LastKey INIT 0
+   DATA LastKey                   INIT 0
+   DATA Type                      INIT "EDITCOMBO"
 
    METHOD Define
    METHOD Events
+   METHOD Release
 
    ENDCLASS
 
-METHOD Define( Container, hWnd ) CLASS TEditCombo
+METHOD Define( Parent, hWnd ) CLASS TEditCombo
 
-   ::SetForm( , Container )
+   ::Name   := _OOHG_GetNullName()
+   ::Parent := Parent
+   ::hWnd   := hWnd
+
+   ::AddToCtrlsArrays()
+
    InitEditCombo( hWnd )
-   ::Register( hWnd )
 
    RETURN Self
 
 METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TEditCombo
 
-   If nMsg == WM_KEYDOWN
+   HB_SYMBOL_UNUSED( hWnd )
+   HB_SYMBOL_UNUSED( lParam )
+
+   IF nMsg == WM_KEYDOWN
       ::LastKey := wParam
-   EndIf
+   ENDIF
 
-   Return ::Super:Events( hWnd, nMsg, wParam, lParam )
+   RETURN NIL
 
+METHOD Release() CLASS TEditCombo
+
+   ::DelFromCtrlsArrays()
+
+   RETURN NIL
 
 #pragma BEGINDUMP
 

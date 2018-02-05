@@ -8,6 +8,20 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-02-05 18:17 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog.txt
+     * Updated.
+   * core\source\h_combo.prg
+     * Format.
+     ! COMBOBOX with DISPLAYEDIT clause does not display select item
+       after the form is resized when SET AUTOADJUST is ON.
+     * TEditCombo control is explicitly released on Combo's release.
+     + Data Type and method Release to TEditCombo.
+   * core\source\h_controlmisc.prg
+     + Methods AddToCtrlsArrays and DelFromCtrlsArrays to add/delete
+       controls from _OOHG_aControlhWnd, _OOHG_aControlObjects,
+       _OOHG_aControlIds and _OOHG_aControlNames arrays.
+
 2018-02-05 18:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt
      * Updated.
