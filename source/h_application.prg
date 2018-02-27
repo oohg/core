@@ -105,7 +105,8 @@
 #define NDX_XBROWSE_FIXEDCONTROLS      36
 #define NDX_GRID_FIXEDCONTROLS         37
 #define NDX_OOHG_ERRORLEVEL            38
-#define NUMBER_OF_APP_WIDE_VARS        38
+#define NDX_OOHG_WINRELEASESAMEORDER   39
+#define NUMBER_OF_APP_WIDE_VARS        39
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TApplication
@@ -178,6 +179,7 @@ CLASS TApplication
    METHOD Value_Pos36             SETGET
    METHOD Value_Pos37             SETGET
    METHOD Value_Pos38             SETGET
+   METHOD Value_Pos39             SETGET
    METHOD Width                   SETGET
 
    MESSAGE Cargo                  METHOD Value_Pos31
@@ -198,43 +200,44 @@ METHOD Define() CLASS TApplication
 
       ::aVars := Array( NUMBER_OF_APP_WIDE_VARS )
 
-      ::aVars[ NDX_OOHG_ACTIVECONTROLINFO ]  := {}
-      ::aVars[ NDX_OOHG_ACTIVEFRAME ]        := {}
-      ::aVars[ NDX_OOHG_ADJUSTFONT ]         := .T.
-      ::aVars[ NDX_OOHG_ADJUSTWIDTH ]        := .T.
-      ::aVars[ NDX_OOHG_AUTOADJUST ]         := .F.
-      ::aVars[ NDX_OOHG_DEFAULTFONTCOLOR ]   := NIL
-      ::aVars[ NDX_OOHG_DEFAULTFONTNAME ]    := 'Arial'
-      ::aVars[ NDX_OOHG_DEFAULTFONTSIZE ]    := 9
-      ::aVars[ NDX_OOHG_DIALOGCANCELLED ]    := .F.
-      ::aVars[ NDX_OOHG_EXTENDEDNAVIGATION ] := .F.
-      ::aVars[ NDX_OOHG_MAIN ]               := NIL
-      ::aVars[ NDX_OOHG_SAMEENTERDBLCLICK ]  := .F.
-      ::aVars[ NDX_OOHG_TEMPWINDOWNAME ]     := ""
-      ::aVars[ NDX_OOHG_THISCONTROL ]        := NIL
-      ::aVars[ NDX_OOHG_THISEVENTTYPE ]      := ''
-      ::aVars[ NDX_OOHG_THISFORM ]           := NIL
-      ::aVars[ NDX_OOHG_THISITEMCELLCOL ]    := 0
-      ::aVars[ NDX_OOHG_THISITEMCELLHEIGHT ] := 0
-      ::aVars[ NDX_OOHG_THISITEMCELLROW ]    := 0
-      ::aVars[ NDX_OOHG_THISITEMCELLVALUE ]  := NIL
-      ::aVars[ NDX_OOHG_THISITEMCELLWIDTH ]  := 0
-      ::aVars[ NDX_OOHG_THISITEMCOLINDEX ]   := 0
-      ::aVars[ NDX_OOHG_THISITEMROWINDEX ]   := 0
-      ::aVars[ NDX_OOHG_THISOBJECT ]         := ''
-      ::aVars[ NDX_OOHG_THISQUERYCOLINDEX ]  := 0
-      ::aVars[ NDX_OOHG_THISQUERYDATA ]      := ""
-      ::aVars[ NDX_OOHG_THISQUERYROWINDEX ]  := 0
-      ::aVars[ NDX_OOHG_THISTYPE ]           := ''
-      ::aVars[ NDX_OOHG_MAIN_ICON ]          := NIL
-      ::aVars[ NDX_OOHG_MULTIPLEINSTANCES ]  := .T.
-      ::aVars[ NDX_BROWSE_SYNCSTATUS ]       := .F.
-      ::aVars[ NDX_BROWSE_FIXEDBLOCKS ]      := .T.
-      ::aVars[ NDX_BROWSE_FIXEDCONTROLS ]    := .F.
-      ::aVars[ NDX_XBROWSE_FIXEDBLOCKS ]     := .T.
-      ::aVars[ NDX_XBROWSE_FIXEDCONTROLS ]   := .F.
-      ::aVars[ NDX_GRID_FIXEDCONTROLS ]      := .F.
-      ::aVars[ NDX_OOHG_ERRORLEVEL ]         := 0
+      ::aVars[ NDX_OOHG_ACTIVECONTROLINFO ]   := {}
+      ::aVars[ NDX_OOHG_ACTIVEFRAME ]         := {}
+      ::aVars[ NDX_OOHG_ADJUSTFONT ]          := .T.
+      ::aVars[ NDX_OOHG_ADJUSTWIDTH ]         := .T.
+      ::aVars[ NDX_OOHG_AUTOADJUST ]          := .F.
+      ::aVars[ NDX_OOHG_DEFAULTFONTCOLOR ]    := NIL
+      ::aVars[ NDX_OOHG_DEFAULTFONTNAME ]     := 'Arial'
+      ::aVars[ NDX_OOHG_DEFAULTFONTSIZE ]     := 9
+      ::aVars[ NDX_OOHG_DIALOGCANCELLED ]     := .F.
+      ::aVars[ NDX_OOHG_EXTENDEDNAVIGATION ]  := .F.
+      ::aVars[ NDX_OOHG_MAIN ]                := NIL
+      ::aVars[ NDX_OOHG_SAMEENTERDBLCLICK ]   := .F.
+      ::aVars[ NDX_OOHG_TEMPWINDOWNAME ]      := ""
+      ::aVars[ NDX_OOHG_THISCONTROL ]         := NIL
+      ::aVars[ NDX_OOHG_THISEVENTTYPE ]       := ''
+      ::aVars[ NDX_OOHG_THISFORM ]            := NIL
+      ::aVars[ NDX_OOHG_THISITEMCELLCOL ]     := 0
+      ::aVars[ NDX_OOHG_THISITEMCELLHEIGHT ]  := 0
+      ::aVars[ NDX_OOHG_THISITEMCELLROW ]     := 0
+      ::aVars[ NDX_OOHG_THISITEMCELLVALUE ]   := NIL
+      ::aVars[ NDX_OOHG_THISITEMCELLWIDTH ]   := 0
+      ::aVars[ NDX_OOHG_THISITEMCOLINDEX ]    := 0
+      ::aVars[ NDX_OOHG_THISITEMROWINDEX ]    := 0
+      ::aVars[ NDX_OOHG_THISOBJECT ]          := ''
+      ::aVars[ NDX_OOHG_THISQUERYCOLINDEX ]   := 0
+      ::aVars[ NDX_OOHG_THISQUERYDATA ]       := ""
+      ::aVars[ NDX_OOHG_THISQUERYROWINDEX ]   := 0
+      ::aVars[ NDX_OOHG_THISTYPE ]            := ''
+      ::aVars[ NDX_OOHG_MAIN_ICON ]           := NIL
+      ::aVars[ NDX_OOHG_MULTIPLEINSTANCES ]   := .T.
+      ::aVars[ NDX_BROWSE_SYNCSTATUS ]        := .F.
+      ::aVars[ NDX_BROWSE_FIXEDBLOCKS ]       := .T.
+      ::aVars[ NDX_BROWSE_FIXEDCONTROLS ]     := .F.
+      ::aVars[ NDX_XBROWSE_FIXEDBLOCKS ]      := .T.
+      ::aVars[ NDX_XBROWSE_FIXEDCONTROLS ]    := .F.
+      ::aVars[ NDX_GRID_FIXEDCONTROLS ]       := .F.
+      ::aVars[ NDX_OOHG_WINRELEASESAMEORDER ] := .T.
+      ::aVars[ NDX_OOHG_ERRORLEVEL ]          := 0
 
       ::ArgC     := hb_argc()
       ::Args     := GetCommandLineArgs()
@@ -1091,6 +1094,20 @@ METHOD Value_Pos38( uValue ) CLASS TApplication
       ::aVars[ NDX_OOHG_ERRORLEVEL ] := uValue
    ENDIF
    uRet := ::aVars[ NDX_OOHG_ERRORLEVEL ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Value_Pos39( uValue ) CLASS TApplication
+
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   IF uValue != NIL
+      ::aVars[ NDX_OOHG_WINRELEASESAMEORDER ] := uValue
+   ENDIF
+   uRet := ::aVars[ NDX_OOHG_WINRELEASESAMEORDER ]
    hb_mutexUnlock( ::hClsMtx )
 
    RETURN ( uRet )

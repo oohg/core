@@ -8,6 +8,18 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-02-27 14:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog.txt
+     * Updated.
+   * core\include\i_app.ch
+     ! Typo.
+   * core\include\i_var.ch
+   * core\source\h_application.prg
+   * core\source\h_form.prg
+     + _OOHG_WinReleaseSameOrder global var.
+       When set to .F. the release order of forms is inverted, so the last
+       defined forms if released in the first place. Defaults to .T.
+
 2018-02-05 18:17 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt
      * Updated.

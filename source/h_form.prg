@@ -2715,45 +2715,52 @@ Function _ActivateAllWindows()
 
    Return Nil
 
-Function ReleaseAllWindows()
+FUNCTION ReleaseAllWindows()
 
    _ReleaseWindowList( _OOHG_aFormObjects )
-   dbcloseall()
+   dbCloseAll()
    ExitProcess( _OOHG_ErrorLevel )
 
-   Return Nil
+   RETURN NIL
 
-Function _ReleaseWindowList( aWindows )
+FUNCTION _ReleaseWindowList( aWindows )
 
-   Local i, oWnd
+   LOCAL i, oWnd, nFrom, nTo
 
-   For i = 1 to len( aWindows )
+   IF _OOHG_WinReleaseSameOrder
+      nFrom := 1
+      nTo := Len( aWindows )
+   ELSE
+      nFrom := Len( aWindows )
+      nTo := 1
+   ENDIF
+
+   FOR i := nFrom TO nTo
       oWnd := aWindows[ i ]
-      If ! oWnd:lReleasing
+      IF ! oWnd:lReleasing
          oWnd:lReleasing := .T.
-         If oWnd:Active
+         IF oWnd:Active
             oWnd:DoEvent( oWnd:OnRelease, "WINDOW_RELEASE" )
-         EndIf
+         ENDIF
          oWnd:lDestroyed := .T.
          oWnd:PreRelease()
 
          // ON RELEASE for child windows
          _ReleaseWindowList( oWnd:aChildPopUp )
          oWnd:aChildPopUp := {}
-      Endif
+      ENDIF
 
-      If ! Empty( oWnd:NotifyIcon )
+      IF ! Empty( oWnd:NotifyIcon )
          oWnd:NotifyIconObject:Release()
-      EndIf
+      ENDIF
 
       aeval( oWnd:aHotKeys, { |a| ReleaseHotKey( oWnd:hWnd, a[ HOTKEY_ID ] ) } )
       oWnd:aHotKeys := {}
       aeval( oWnd:aAcceleratorKeys, { |a| ReleaseHotKey( oWnd:hWnd, a[ HOTKEY_ID ] ) } )
       oWnd:aAcceleratorKeys := {}
+   NEXT i
 
-   Next i
-
-   Return Nil
+   RETURN NIL
 
 Function SearchParentWindow( lInternal )
 
