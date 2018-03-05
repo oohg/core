@@ -2725,29 +2725,42 @@ FUNCTION ReleaseAllWindows()
 
 FUNCTION _ReleaseWindowList( aWindows )
 
-   LOCAL i, oWnd, nFrom, nTo
+   LOCAL i, oWnd, nFrom, nTo, nStep, lSameOrder
 
-   IF _OOHG_WinReleaseSameOrder
+   lSameOrder := _OOHG_WinReleaseSameOrder
+
+   IF lSameOrder
       nFrom := 1
       nTo := Len( aWindows )
+      nStep := 1
    ELSE
       nFrom := Len( aWindows )
       nTo := 1
+      nStep := -1
    ENDIF
 
-   FOR i := nFrom TO nTo
+   FOR i := nFrom TO nTo STEP nStep
       oWnd := aWindows[ i ]
       IF ! oWnd:lReleasing
          oWnd:lReleasing := .T.
+
+         IF ! lSameOrder
+            // ON RELEASE for child windows
+            _ReleaseWindowList( oWnd:aChildPopUp )
+            oWnd:aChildPopUp := {}
+         ENDIF
+
          IF oWnd:Active
             oWnd:DoEvent( oWnd:OnRelease, "WINDOW_RELEASE" )
          ENDIF
          oWnd:lDestroyed := .T.
          oWnd:PreRelease()
 
-         // ON RELEASE for child windows
-         _ReleaseWindowList( oWnd:aChildPopUp )
-         oWnd:aChildPopUp := {}
+         IF lSameOrder
+            // ON RELEASE for child windows
+            _ReleaseWindowList( oWnd:aChildPopUp )
+            oWnd:aChildPopUp := {}
+         ENDIF
       ENDIF
 
       IF ! Empty( oWnd:NotifyIcon )
