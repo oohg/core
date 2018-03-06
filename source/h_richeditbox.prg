@@ -89,6 +89,13 @@ CLASS TEditRich FROM TEdit
    METHOD SaveFile
    METHOD GetLastVisibleLine
    METHOD GetCharFromPos
+   METHOD GetSelFont
+   METHOD SetSelFont
+
+   MESSAGE SetSelTextColor        METHOD SetSelectionTextColor
+   MESSAGE SetSelBackColor        METHOD SetSelectionBackColor
+   MESSAGE GetSelectionFont       METHOD GetSelFont
+   MESSAGE SetSelectionFont       METHOD SetSelFont
 
    ENDCLASS
 
@@ -170,6 +177,30 @@ METHOD RichValue( cValue ) CLASS TEditRich
    EndIf
 
    RETURN RichStreamOut( ::hWnd )
+
+METHOD GetSelFont( lSelection ) CLASS TEditRich
+
+   LOCAL aRet, nTextColor
+
+   ASSIGN lSelection VALUE lSelection TYPE "L" DEFAULT .T.               // .F. means control's default font
+
+   aRet := GetFontRTF( ::hWnd, iif( lSelection, 1, 0 ) )                 // { cFontName, nFontSize, lBold, lItalic, nTextColor, lUnderline, lStrikeout, nCharset }
+
+   IF ! Empty( aRet[ 1 ] )
+      nTextColor := aRet[ 5 ]
+      aRet[ 5 ] := { GetRed( nTextColor ), GetGreen( nTextColor ), GetBlue( nTextColor ) }
+   ELSE
+      aRet[ 5 ] := { NIL, NIL, NIL }
+   ENDIF
+
+   RETURN aRet
+
+METHOD SetSelFont( lSelection, cFontName, nFontSize, lBold, lItalic, aTextColor, lUnderline, lStrikeout, nMask ) CLASS TEditRich
+
+   ASSIGN lSelection VALUE lSelection TYPE "L" DEFAULT .T.               // .F. means control's default font
+
+   RETURN SetFontRTF( ::hWnd, iif( lSelection, 1, 0 ), cFontName, nFontSize, lBold, lItalic, RGB( aTextColor[1], aTextColor[2], aTextColor[3] ), lUnderline, lStrikeout, nMask )
+
 
 #pragma BEGINDUMP
 
@@ -710,6 +741,130 @@ HB_FUNC_STATIC( TEDITRICH_GETCHARFROMPOS )           // METHOD GetCharFromPos( n
    pnt.y = hb_parni( 1 );
 
    hb_retni( SendMessage( oSelf->hWnd, EM_CHARFROMPOS, 0, (LPARAM) &pnt ) );        // zero-based index
+}
+
+// -----------------------------------------------------------------------------
+HB_FUNC( GETFONTRTF )
+// -----------------------------------------------------------------------------
+// GetFontRTF( hWnd, nSel ) -> { cFontName, nFontSize, lBold, lItalic, nTextColor, lUnderline, lStrikeout, nCharset }
+{
+   CHARFORMAT  cF;
+   long        PointSize;
+   int         bold;
+   int         Italic;
+   int         Underline;
+   int         StrikeOut;
+   int         SelText;
+   HWND        hWnd = HWNDparam( 1 );
+
+   cF.cbSize = sizeof( CHARFORMAT );
+   cF.dwMask = CFM_BOLD | CFM_ITALIC | CFM_UNDERLINE | CFM_SIZE;
+   if( hb_parni( 2 ) > 0 )
+   {
+      SelText = SCF_SELECTION;
+   }
+   else
+   {
+      SelText = SCF_DEFAULT;
+   }
+
+   SendMessage( hWnd, EM_GETCHARFORMAT, (WPARAM) SelText, (LPARAM) &cF );
+
+   PointSize = cF.yHeight / 20;
+
+   bold = ( cF.dwEffects & CFE_BOLD ) ? 1 : 0;
+   Italic = ( cF.dwEffects & CFE_ITALIC ) ? 1 : 0;
+   Underline = ( cF.dwEffects & CFE_UNDERLINE ) ? 1 : 0;
+   StrikeOut = ( cF.dwEffects & CFE_STRIKEOUT ) ? 1 : 0;
+
+   hb_reta( 8 );
+   HB_STORC( cF.szFaceName, -1, 1 );
+   HB_STORNL( (LONG) PointSize, -1, 2 );
+   HB_STORL( bold, -1, 3 );
+   HB_STORL( Italic, -1, 4 );
+   HB_STORNL( cF.crTextColor, -1, 5 );
+   HB_STORL( Underline, -1, 6 );
+   HB_STORL( StrikeOut, -1, 7 );
+   HB_STORNI( cF.bCharSet, -1, 8 );
+}
+
+// -----------------------------------------------------------------------------
+HB_FUNC( SETFONTRTF )
+// -----------------------------------------------------------------------------
+// SetFontRTF( hWnd, nSel, cFontName, nFontSize, lBold, lItalic, nTextColor, lUnderline, lStrikeout, nMask )
+// See https://msdn.microsoft.com/en-us/library/windows/desktop/bb788026(v=vs.85).aspx
+// See https://msdn.microsoft.com/en-us/library/windows/desktop/bb774230(v=vs.85).aspx
+// See https://msdn.microsoft.com/en-us/library/windows/desktop/bb787881(v=vs.85).aspx
+{
+   LRESULT     lResult;
+   CHARFORMAT  cF;
+   DWORD       Mask;
+   DWORD       Effects = 0;
+   int         SelText = SCF_SELECTION;
+   HWND        hWnd = HWNDparam( 1 );
+
+   cF.cbSize = sizeof( CHARFORMAT );
+   Mask = SendMessage( hWnd, EM_GETCHARFORMAT, (WPARAM) SelText, (LPARAM) &cF );
+
+   if( hb_parni( 10 ) > 0 )
+   {
+      Mask = hb_parni( 10 );
+   }
+
+   if( hb_parni( 2 ) > 0 )
+   {
+      SelText = SCF_SELECTION | SCF_WORD;
+   }
+
+   if( hb_parni( 2 ) < 0 )
+   {
+      SelText = SCF_ALL;
+   }
+
+   if( hb_parl( 5 ) )
+   {
+      Effects = Effects | CFE_BOLD;
+   }
+
+   if( hb_parl( 6 ) )
+   {
+      Effects = Effects | CFE_ITALIC;
+   }
+
+   if( hb_parl( 8 ) )
+   {
+      Effects = Effects | CFE_UNDERLINE;
+   }
+
+   if( hb_parl( 9 ) )
+   {
+      Effects = Effects | CFE_STRIKEOUT;
+   }
+
+   cF.dwMask = Mask;
+   cF.dwEffects = Effects;
+   if( hb_parnl( 4 ) )
+   {
+      cF.yHeight = hb_parnl( 4 ) * 20;
+   }
+
+   cF.crTextColor = hb_parnl( 7 );
+
+   if( strlen( hb_parc( 3 ) ) )
+   {
+      lstrcpy( cF.szFaceName, hb_parc( 3 ) );
+   }
+
+   lResult = SendMessage( hWnd, EM_SETCHARFORMAT, (WPARAM) SelText, (LPARAM) &cF );
+
+   if( lResult )
+   {
+      hb_retl( TRUE );
+   }
+   else
+   {
+      hb_retl( FALSE );
+   }
 }
 
 #pragma ENDDUMP

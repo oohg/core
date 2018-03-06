@@ -8,6 +8,24 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-03-05 21:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog.txt
+     * Updated.
+   * core\source\h_richeditbox.prg
+     + Methods GetSelFont and SetSelFont to get/set the font of
+       the control's selected text.
+     + Messages GetSelectionFont and SetSelectionFont as aliases
+       of methods GetSelFont and SetSelFont.
+     + Messages SetSelTextColor and SetSelBackColor as aliases
+       of method SetSelectionTextColor and SetSelectionBackColor.
+
+2018-03-05 20:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_form.prg
+     ! Function _ReleaseWindowList is not releasing all child windows
+       because of missing STEP clause.
+     * Function _ReleaseWindowList now realeases child forms before
+       releasing the form if _OOHG_WinReleaseSameOrder is set to .F.
+
 2018-02-27 14:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt
      * Updated.
