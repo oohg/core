@@ -77,6 +77,14 @@
    => ;
       hb_CToT( <x> )
 
+#xtranslate TToS( [<x,...>] ) ;
+   => ;
+      hb_TToS( <x> )
+
+#xtranslate SToT( [<x,...>] ) ;
+   => ;
+      hb_SToT( <x> )
+
 #xtranslate PrintFileRaw( [<x,...>] ) ;
    => ;
       win_PrintFileRaw( <x> )
