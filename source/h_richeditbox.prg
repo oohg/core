@@ -127,14 +127,14 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
    ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
 
+   ::BackColor := ::BackColor
+   ::FontColor := ::FontColor
+
    If Empty( file )
       ::SetVarBlock( Field, Value )
    Else
       ::LoadFile( file, type )
    EndIf
-
-   ::BackColor := ::BackColor
-   ::FontColor := ::FontColor
 
    ASSIGN ::OnHScroll   VALUE OnHScroll  TYPE "B"
    ASSIGN ::OnVScroll   VALUE OnVScroll  TYPE "B"
