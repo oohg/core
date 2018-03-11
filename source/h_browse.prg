@@ -223,7 +223,7 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, aHeaders, a
                lFixedCtrls, bHeadRClick, lExtDbl, lNoModal, lSilent, lAltA, ;
                lNoShowAlways, lNone, lCBE, bOnRClick, lCheckBoxes, bOnCheck, ;
                bOnRowRefresh, aDefaultValues, bOnEditEnd, lAtFirst, ;
-               bbeforeditcell, bEditCellValue, klc ) CLASS TOBrowse
+               bbeforeditcell, bEditCellValue, klc, lLabelTip ) CLASS TOBrowse
 
    LOCAL nWidth2, nCol2, oScroll, z
 
@@ -320,7 +320,7 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, aHeaders, a
               lDblBffr, lFocusRect, lPLM, lFixedCols, lFixedWidths, ;
               lLikeExcel, lButtons, lAllowDelete, cDelMsg, lNoDelMsg, ;
               lAllowAppend, lNoModal, lFixedCtrls, lExtDbl, nValue, lSilent, ;
-              lAltA, lNoShowAlways, lNone, lCBE, lCheckBoxes, lAtFirst, klc )
+              lAltA, lNoShowAlways, lNone, lCBE, lCheckBoxes, lAtFirst, klc, lLabelTip )
 
    ::nWidth := nWidth
 
@@ -400,7 +400,8 @@ METHOD Define3( ControlName, ParentForm, x, y, w, h, fontname, fontsize, ;
                 dblbffr, lFocusRect, lPLM, lFixedCols, lFixedWidths, ;
                 lLikeExcel, lButtons, AllowDelete, DelMsg, lNoDelMsg, ;
                 AllowAppend, lNoModal, lFixedCtrls, lExtDbl, Value, lSilent, ;
-                lAltA, lNoShowAlways, lNone, lCBE, lCheckBoxes, lAtFirst, klc ) CLASS TOBrowse
+                lAltA, lNoShowAlways, lNone, lCBE, lCheckBoxes, lAtFirst, klc, ;
+                lLabelTip ) CLASS TOBrowse
 
    ::Define2( ControlName, ParentForm, x, y, w, h, ::aHeaders, ::aWidths, {}, ;
               , fontname, fontsize, tooltip, aHeadClick, nogrid, ;
@@ -414,7 +415,7 @@ METHOD Define3( ControlName, ParentForm, x, y, w, h, fontname, fontsize, ;
               lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
               DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
               , , lExtDbl, lSilent, lAltA, ;
-              lNoShowAlways, lNone, lCBE, lAtFirst, klc )
+              lNoShowAlways, lNone, lCBE, lAtFirst, klc, lLabelTip )
 
    If ValType( Value ) == "N"
       ::nRecLastValue := Value
@@ -2316,7 +2317,8 @@ METHOD Define3( ControlName, ParentForm, x, y, w, h, fontname, fontsize, ;
                 dblbffr, lFocusRect, lPLM, lFixedCols, lFixedWidths, ;
                 lLikeExcel, lButtons, AllowDelete, DelMsg, lNoDelMsg, ;
                 AllowAppend, lNoModal, lFixedCtrls, lExtDbl, Value, lSilent, ;
-                lAltA, lNoShowAlways, lNone, lCBE, lCheckBoxes, lAtFirst, klc ) CLASS TOBrowseByCell
+                lAltA, lNoShowAlways, lNone, lCBE, lCheckBoxes, lAtFirst, klc, ;
+                lLabelTip ) CLASS TOBrowseByCell
 
    Local nAux
 
@@ -2338,7 +2340,7 @@ METHOD Define3( ControlName, ParentForm, x, y, w, h, fontname, fontsize, ;
               lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
               DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
               , , lExtDbl, lSilent, lAltA, ;
-              lNoShowAlways, .T., lCBE, lAtFirst, klc )
+              lNoShowAlways, .T., lCBE, lAtFirst, klc, lLabelTip )
 
    // By default, search in the current column
    ::SearchCol := -1

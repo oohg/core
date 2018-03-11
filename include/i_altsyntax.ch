@@ -260,6 +260,7 @@ AUXILIARY VARIABLES
 #xtranslate _OOHG_ActiveControlOnDblClick             => _OOHG_ActiveControlInfo \[ 245 \]
 
 
+#xtranslate _OOHG_ActiveControlCellToolTip            => _OOHG_ActiveControlInfo \[ 247 \]
 #xtranslate _OOHG_ActiveControlOnHeadClick            => _OOHG_ActiveControlInfo \[ 248 \]
 #xtranslate _OOHG_ActiveControlNoLines                => _OOHG_ActiveControlInfo \[ 249 \]
 #xtranslate _OOHG_ActiveControlImage                  => _OOHG_ActiveControlInfo \[ 250 \]
@@ -2519,7 +2520,8 @@ GRID
       _OOHG_ActiveControlOnInsert         := NIL ;;
       _OOHG_ActiveControlDisplayEdit      := .T. ;;
       _OOHG_ActiveControlEditCellValue    := NIL ;;
-      _OOHG_ActiveControlKeysLikeClipper  := .F.
+      _OOHG_ActiveControlKeysLikeClipper  := .F. ;;
+      _OOHG_ActiveControlCellToolTip      := .F.
 
 #xcommand SILENT <silent> ;
    => ;
@@ -2794,7 +2796,8 @@ GRID
             _OOHG_ActiveControlDisplayEdit, ;
             _OOHG_ActiveControlBeforeEditCell, ;
             _OOHG_ActiveControlEditCellValue, ;
-            _OOHG_ActiveControlKeysLikeClipper )
+            _OOHG_ActiveControlKeysLikeClipper, ;
+            _OOHG_ActiveControlCellToolTip )
 
 /*---------------------------------------------------------------------------
 BROWSE
@@ -2886,7 +2889,8 @@ BROWSE
       _OOHG_ActiveControlDefaultYear      := NIL ;;
       _OOHG_ActiveControlDisplayEdit      := .T. ;;
       _OOHG_ActiveControlEditCellValue    := NIL ;;
-      _OOHG_ActiveControlKeysLikeClipper  := .F.
+      _OOHG_ActiveControlKeysLikeClipper  := .F. ;;
+      _OOHG_ActiveControlCellToolTip      := .F.
 
 #xcommand DELETEWHEN <delwhen> ;
    => ;
@@ -2968,6 +2972,10 @@ BROWSE
    => ;
       _OOHG_ActiveControlKeysLikeClipper := <klc>
 
+#xcommand CELLTOOLTIP <ctt> ;
+   => ;
+      _OOHG_ActiveControlCellToolTip := <ctt>
+            
 #xcommand END BROWSE ;
    => ;
       _OOHG_SelectSubClass( IIF( _OOHG_ActiveControlByCell, TOBrowseByCell(), TOBrowse() ), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
@@ -3073,7 +3081,8 @@ BROWSE
             _OOHG_ActiveControlDisplayEdit, ;
             _OOHG_ActiveControlBeforeEditCell, ;
             _OOHG_ActiveControlEditCellValue, ;
-            _OOHG_ActiveControlKeysLikeClipper )
+            _OOHG_ActiveControlKeysLikeClipper, ;
+            _OOHG_ActiveControlCellToolTip )
 
 /*---------------------------------------------------------------------------
 XBROWSE
@@ -3159,7 +3168,8 @@ XBROWSE
       _OOHG_ActiveControlDefaultYear      := NIL ;;
       _OOHG_ActiveControlDisplayEdit      := .T. ;;
       _OOHG_ActiveControlEditCellValue    := NIL ;;
-      _OOHG_ActiveControlKeysLikeClipper  := .F.
+      _OOHG_ActiveControlKeysLikeClipper  := .F. ;;
+      _OOHG_ActiveControlCellToolTip      := .F.
 
 #xcommand END XBROWSE ;
    => ;
@@ -3262,7 +3272,8 @@ XBROWSE
             _OOHG_ActiveControlDisplayEdit, ;
             _OOHG_ActiveControlBeforeEditCell, ;
             _OOHG_ActiveControlEditCellValue, ;
-            _OOHG_ActiveControlKeysLikeClipper )
+            _OOHG_ActiveControlKeysLikeClipper, ;
+            _OOHG_ActiveControlCellToolTip )
 
 /*---------------------------------------------------------------------------
 HYPERLINK

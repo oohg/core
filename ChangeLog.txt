@@ -8,6 +8,28 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-03-11 20:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog.txt
+     * Updated.
+   * core\source\h_richeditbox.prg
+     ; At define time the FONTCOLOR clause will be ignored if the
+       VALUE clause contains RTF text with a color table.
+     ; The FONTCOLOR applies to ALL the control's text.
+     ; Method SetFont applies new font to ALL the control's text.
+   * core\include\i_altsyntax.ch
+   * core\include\i_browse.ch
+   * core\include\i_grid.ch
+   * core\include\i_xbrowse.ch
+   * core\source\h_browse.prg
+   * core\source\h_grid.prg
+   * core\source\h_xbrowse.prg
+     + CELLTOOLTIP clause. For columns that partially display the
+       cell's text, the control will show the full text in a
+       superimposed tooltip window when the mouse is placed over
+       the cell.
+   * core\source\h_checklist.prg
+     + Added missing parameters for clarity.
+
 2018-03-10 17:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt
      * Updated.

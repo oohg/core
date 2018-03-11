@@ -173,7 +173,9 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aRows, v, fontname, ;
                bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
                bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
-               lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick ) CLASS TGrid
+               lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
+               oninsert, editend, lAtFirst, bbeforeditcell, bEditCellValue, klc, ;
+               lLabelTip ) CLASS TGrid
    */
    ::Super:Define( ControlName, ParentForm, x, y, w, h, aHdr, aWidth, ;
                    {}, Nil, fontname, fontsize, tooltip, change, Nil, ;
@@ -190,7 +192,9 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aRows, v, fontname, ;
                    Nil, Nil, Nil, Nil, Nil, ;
                    Nil, Nil, Nil, Nil, Nil, Nil, ;
                    .T., Nil, Nil, Nil, ;
-                   Nil, Nil, .F., .F., .F., Nil, Nil )
+                   Nil, Nil, .F., .F., .F., Nil, Nil, ;
+                   Nil, Nil, Nil, Nil, Nil, Nil, ;
+                   Nil )
 
    aEval( aRows, { |u| ::AddItem( u ) } )
 

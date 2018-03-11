@@ -279,7 +279,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
-               oninsert, editend, lAtFirst, bbeforeditcell, bEditCellValue, klc ) CLASS TGrid
+               oninsert, editend, lAtFirst, bbeforeditcell, bEditCellValue, klc, ;
+               lLabelTip ) CLASS TGrid
 
    ::Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
               value, fontname, fontsize, tooltip, aHeadClick, nogrid, ;
@@ -293,7 +294,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
               DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
               lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
-              lNoShowAlways, lNone, lCBE, lAtFirst, klc )
+              lNoShowAlways, lNone, lCBE, lAtFirst, klc, lLabelTip )
 
    // Must be set after control is initialized
    ::Define4( change, dblclick, gotfocus, lostfocus, ondispinfo, editcell, ;
@@ -316,7 +317,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
                 lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
                 DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
                 lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
-                lNoShowAlways, lNone, lCBE, lAtFirst, klc ) CLASS TGrid
+                lNoShowAlways, lNone, lCBE, lAtFirst, klc, lLabelTip ) CLASS TGrid
 
    Local ControlHandle, aImageList, i
 
@@ -383,6 +384,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
    ASSIGN ::lChangeBeforeEdit VALUE lCBE              TYPE "L"
    ASSIGN ::lAtFirstCol       VALUE lAtFirst          TYPE "L"
    ASSIGN ::lKeysLikeClipper  VALUE klc               TYPE "L"
+   ASSIGN lLabelTip           VALUE lLabelTip         TYPE "L" DEFAULT .F.
 
    /*
     * This must be placed before calling ::Register because when the
@@ -414,7 +416,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
    AEval( ::Picture, { |x,i| ::Picture[ i ] := If( ( ValType( x ) $ "CM" .AND. ! Empty( x ) ) .OR. HB_IsLogical( x ), x, Nil ) } )
 
    ::SetSplitBoxInfo( Break )
-   ControlHandle := InitListView( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, '', 0, If( ::lNoGrid, 0, 1 ), ownerdata, itemcount, nStyle, ::lRtl, ::lCheckBoxes, OSisWinXPorLater() .AND. lDblBffr )
+   ControlHandle := InitListView( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, '', 0, If( ::lNoGrid, 0, 1 ), ownerdata, itemcount, nStyle, ::lRtl, ::lCheckBoxes, OSisWinXPorLater() .AND. lDblBffr, lLabelTip )
 
    If HB_IsArray( aImage )
       // Can't use ::AddBitMap( aImage ) because control is not registered yet
@@ -3938,7 +3940,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
-               oninsert, editend, lAtFirst, bbeforeditcell, bEditCellValue, klc ) CLASS TGridMulti
+               oninsert, editend, lAtFirst, bbeforeditcell, bEditCellValue, klc, ;
+               lLabelTip ) CLASS TGridMulti
 
    Local nStyle := 0
 
@@ -3956,7 +3959,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
               DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
               lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
-              lNoShowAlways, .T., lCBE, lAtFirst, klc )
+              lNoShowAlways, .T., lCBE, lAtFirst, klc, lLabelTip )
 
    // Must be set after control is initialized
    ::Define4( change, dblclick, gotfocus, lostfocus, ondispinfo, editcell, ;
@@ -4139,7 +4142,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
-               oninsert, editend, lAtFirst, bbeforeditcell, bEditCellValue, klc ) CLASS TGridByCell
+               oninsert, editend, lAtFirst, bbeforeditcell, bEditCellValue, klc, ;
+               lLabelTip ) CLASS TGridByCell
 
    ASSIGN lFocusRect VALUE lFocusRect TYPE "L" DEFAULT .F.
    ASSIGN lNone      VALUE lNone      TYPE "L" DEFAULT .T.
@@ -4157,7 +4161,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
               DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
               lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
-              lNoShowAlways, .T., lCBE, lAtFirst, klc )
+              lNoShowAlways, .T., lCBE, lAtFirst, klc, lLabelTip )
 
    // Search the current column
    ::SearchCol := -1
@@ -7109,8 +7113,12 @@ EXTERN GetGridVKey, TGrid_Notify_CustomDraw
    #define LVS_EX_DOUBLEBUFFER 0x00010000
 #endif
 
+#ifndef LVS_EX_LABELTIP
+   #define LVS_EX_LABELTIP 0x00004000
+#endif
+
 #ifndef WM_MOUSEWHEEL
-   #define WM_MOUSEWHEEL  0x020A
+   #define WM_MOUSEWHEEL 0x020A
 #endif
 
 #define s_Super s_TControl
@@ -7400,6 +7408,10 @@ HB_FUNC( INITLISTVIEW )
    if ( hb_parl( 15 ) )
    {
       extStyle = extStyle | LVS_EX_DOUBLEBUFFER;
+   }
+   if ( hb_parl( 16 ) )
+   {
+      extStyle = extStyle | LVS_EX_LABELTIP;
    }
    SendMessage( hwnd, LVM_SETEXTENDEDLISTVIEWSTYLE, 0, extStyle );
 
