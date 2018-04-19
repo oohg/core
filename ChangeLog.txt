@@ -8,6 +8,17 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-04-19 20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog.txt
+     * Updated.
+   * core\include\oohg.h
+     * Some var names.
+   * core\source\c_font.c
+     * Format.
+     * Some var names.
+   * core\source\c_graph.c
+     - Redundant declaration.
+
 2018-04-19 19:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt
      * Updated.

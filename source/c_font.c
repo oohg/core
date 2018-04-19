@@ -75,7 +75,7 @@
 #include "tchar.h"
 #include "oohg.h"
 
-HFONT PrepareFont( char *Fontname, int FontSize, int Weight, int Italic, int Underline, int StrikeOut, int Angle, int Width )
+HFONT PrepareFont( char *FontName, int FontSize, int Weight, int Italic, int Underline, int StrikeOut, int Escapement, int Orientation )
 {
    HDC  hDC;
    int cyp;
@@ -91,9 +91,23 @@ HFONT PrepareFont( char *Fontname, int FontSize, int Weight, int Italic, int Und
 
    FontSize = ( FontSize * cyp ) / 72 ;
 
-   return CreateFont ( 0-FontSize, 0, Angle, Width, Weight, Italic, Underline, StrikeOut,
-      DEFAULT_CHARSET, OUT_TT_PRECIS, CLIP_DEFAULT_PRECIS,
-      DEFAULT_QUALITY, FF_DONTCARE, Fontname ) ;
+  int     nHeight            = 0 - FontSize;
+  int     nWidth             = 0;
+  int     nEscapement        = Escapement;
+  int     nOrientation       = Orientation;
+  int     fnWeight           = Weight;
+  DWORD   fdwItalic          = (DWORD) Italic;
+  DWORD   fdwUnderline       = (DWORD) Underline;
+  DWORD   fdwStrikeOut       = (DWORD) StrikeOut;
+  DWORD   fdwCharSet         = (DWORD) DEFAULT_CHARSET;
+  DWORD   fdwOutputPrecision = (DWORD) OUT_TT_PRECIS;
+  DWORD   fdwClipPrecision   = (DWORD) CLIP_DEFAULT_PRECIS;
+  DWORD   fdwQuality         = (DWORD) DEFAULT_QUALITY;
+  DWORD   fdwPitchAndFamily  = (DWORD) FF_DONTCARE;
+  LPCTSTR lpszFace           = (LPCTSTR) FontName;
+
+   return CreateFont( nHeight, nWidth, nEscapement, nOrientation, fnWeight, fdwItalic, fdwUnderline, fdwStrikeOut,
+      fdwCharSet, fdwOutputPrecision, fdwClipPrecision, fdwQuality, fdwPitchAndFamily, lpszFace );
 }
 
 HB_FUNC ( _SETFONT )
@@ -104,31 +118,29 @@ HB_FUNC ( _SETFONT )
    int underline = 0;
    int strikeout = 0;
 
-   if ( hb_parl (4) )
+   if ( hb_parl( 4 ) )
    {
       bold = FW_BOLD;
    }
 
-   if ( hb_parl (5) )
+   if ( hb_parl( 5 ) )
    {
       italic = 1;
    }
 
-   if ( hb_parl (6) )
+   if ( hb_parl( 6 ) )
    {
       underline = 1;
    }
 
-   if ( hb_parl (7) )
+   if ( hb_parl( 7 ) )
    {
       strikeout = 1;
    }
 
-        font = PrepareFont ( ( char * ) hb_parc(2) ,
-                        (LPARAM) hb_parni(3) ,
-                        bold , italic, underline, strikeout, hb_parnl(8), hb_parnl(9) ) ;
-    SendMessage( HWNDparam( 1 ) , (UINT)WM_SETFONT,(WPARAM) font , 1 ) ;
-   hb_retnl ( (LONG) font );
+   font = PrepareFont ( (char *) hb_parc(2), hb_parni(3), bold, italic, underline, strikeout, hb_parnl(8), hb_parnl(9) ) ;
+   SendMessage( HWNDparam( 1 ), (UINT) WM_SETFONT, (WPARAM) font, 1 ) ;
+   hb_retnl( (LONG) font );
 }
 
 HB_FUNC ( SETFONTNAMESIZE )

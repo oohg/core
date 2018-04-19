@@ -411,8 +411,6 @@ struct _OOHG_GraphData {
    char points;
 };
 
-HFONT PrepareFont( char *Fontname, int FontSize, int Weight, int Italic, int Underline, int StrikeOut, int Angle, int Width );
-
 void _OOHG_GraphCommand( HDC hDC, struct _OOHG_GraphData *pData )
 {
    HGDIOBJ hgdiobj, hgdiobj2;
