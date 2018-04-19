@@ -8,6 +8,26 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-04-19 19:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog.txt
+     * Updated.
+   * core\source\h_grid.prg
+     ! CheckItem method wrongly returns .T. instead of .F.
+       for non-existent items.
+     * Some format.
+     * TGrid_AddColumnColor, TGrid_CreateColorArray and TGrid_FillColorArea
+       functions now receive Self instead of hWnd.
+     * Vars _OOHG_ThisForm, _OOHG_ThisType, _OOHG_ThisControl and
+       _OOHG_ThisObject are set before evaluating block colors in
+       TGrid_AddColumnColor, TGrid_CreateColorArray and TGrid_FillColorArea
+       functions. Now you can access grid's properties and methods in block
+       colors used by AddColumn, SetColumn, SetItemColor and SetRangeColor
+       methods. Note that because AddColumn adds the new column _after_
+       evaluating the block colors, you can´t use the column's content 
+       inside the block.
+     * Parameters nTop, nLeft, nBottom and nRight of SetRangeColor method
+       now default to 1, 1, ::ItemCount and Len( ::aHeaders ).
+
 2018-03-11 20:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt
      * Updated.

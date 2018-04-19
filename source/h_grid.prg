@@ -718,27 +718,27 @@ METHOD Append( lAppend ) CLASS TGrid
 
 METHOD CheckItem( nItem, lChecked ) CLASS TGrid
 
-   Local lRet, lOld
+   LOCAL lRet, lOld
 
-   If ::lCheckBoxes .AND. HB_IsNumeric( nItem )
+   IF ::lCheckBoxes .AND. HB_ISNUMERIC( nItem ) .AND. nItem >= 1 .AND. nItem <= ::ItemCount
       lOld := ListView_GetCheckState( ::hwnd, nItem )
 
-      If HB_IsLogical( lChecked ) .AND. lChecked # lOld
+      IF HB_ISLOGICAL( lChecked ) .AND. lChecked # lOld
          ListView_SetCheckState( ::hwnd, nItem, lChecked )
 
          lRet := ListView_GetCheckState( ::hwnd, nItem )
 
-         If lRet # lOld
+         IF lRet # lOld
             ::DoEvent( ::OnCheckChange, "CHECKCHANGE", { nItem } )
-         EndIf
-      Else
+         ENDIF
+      ELSE
          lRet := lOld
-      EndIf
-   Else
+      ENDIF
+   ELSE
       lRet := .F.
-   EndIf
+   ENDIF
 
-   Return lRet
+   RETURN lRet
 
 METHOD SetSelectedColors( aSelectedColors, lRedraw ) CLASS TGrid
 
@@ -1843,14 +1843,14 @@ METHOD AddColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor,
    // Update Foreground Color
    uGridColor := ::GridForeColor
    uDynamicColor := ::DynamicForeColor
-   TGrid_AddColumnColor( @uGridColor, nColIndex, uForeColor, @uDynamicColor, nColumns, ::ItemCount, lNoDelete, ::hWnd )
+   TGrid_AddColumnColor( @uGridColor, nColIndex, uForeColor, @uDynamicColor, nColumns, ::ItemCount, lNoDelete, Self )
    ::GridForeColor := uGridColor
    ::DynamicForeColor := uDynamicColor
 
    // Update Background Color
    uGridColor := ::GridBackColor
    uDynamicColor := ::DynamicBackColor
-   TGrid_AddColumnColor( @uGridColor, nColIndex, uBackColor, @uDynamicColor, nColumns, ::ItemCount, lNoDelete, ::hWnd )
+   TGrid_AddColumnColor( @uGridColor, nColIndex, uBackColor, @uDynamicColor, nColumns, ::ItemCount, lNoDelete, Self )
    ::GridBackColor := uGridColor
    ::DynamicBackColor := uDynamicColor
 
@@ -1940,51 +1940,57 @@ METHOD AddColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor,
    Return nColIndex
 
 // aGrid and uDynamicColor may be passed by reference
-STATIC FUNCTION TGrid_AddColumnColor( aGrid, nColumn, uColor, uDynamicColor, nWidth, nItemCount, lNoDelete, hWnd )
+STATIC FUNCTION TGrid_AddColumnColor( aGrid, nColumn, uColor, uDynamicColor, nWidth, nItemCount, lNoDelete, Self )
 
-   Local uTemp, x
+   LOCAL uTemp, x
 
-   If ValType( uDynamicColor ) == "A"
-      If Len( uDynamicColor ) < nWidth
+   IF ValType( uDynamicColor ) == "A"
+      IF Len( uDynamicColor ) < nWidth
          ASize( uDynamicColor, nWidth )
-      EndIf
+      ENDIF
       AIns( uDynamicColor, nColumn )
       uDynamicColor[ nColumn ] := uColor
-   ElseIf ValType( uColor ) $ "ANB"
+   ELSEIF ValType( uColor ) $ "ANB"
       uTemp := uDynamicColor
       uDynamicColor := Array( nWidth )
       AFill( uDynamicColor, uTemp )
       uDynamicColor[ nColumn ] := uColor
-   EndIf
+   ENDIF
 
-   If ! lNoDelete
-      uDynamicColor := Nil
-   ElseIf HB_IsArray( aGrid ) .OR. ValType( uColor ) $ "ANB" .OR. ValType( uDynamicColor ) $ "ANB"
-      If HB_IsArray( aGrid )
-         If Len( aGrid ) < nItemCount
+   IF ! lNoDelete
+      uDynamicColor := NIL
+   ELSEIF HB_ISARRAY( aGrid ) .OR. ValType( uColor ) $ "ANB" .OR. ValType( uDynamicColor ) $ "ANB"
+      IF HB_ISARRAY( aGrid )
+         IF Len( aGrid ) < nItemCount
             ASize( aGrid, nItemCount )
-         Else
+         ELSE
             nItemCount := Len( aGrid )
-         EndIf
-      Else
+         ENDIF
+      ELSE
          aGrid := Array( nItemCount )
-      EndIf
-      For x := 1 To nItemCount
-         If HB_IsArray( aGrid[ x ] )
-            If Len( aGrid[ x ] ) < nWidth
+      ENDIF
+      _PushEventInfo()
+      _OOHG_ThisForm    := ::Parent
+      _OOHG_ThisType    := "C"
+      _OOHG_ThisControl := Self
+      _OOHG_ThisObject  := Self
+      FOR x := 1 TO nItemCount
+         IF HB_ISARRAY( aGrid[ x ] )
+            IF Len( aGrid[ x ] ) < nWidth
                 ASize( aGrid[ x ], nWidth )
-            EndIf
+            ENDIF
             AIns( aGrid[ x ], nColumn )
-         Else
+         ELSE
             aGrid[ x ] := Array( nWidth )
-         EndIf
-         _SetThisCellInfo( hWnd, x, nColumn, Nil )
+         ENDIF
+         _SetThisCellInfo( Self:hWnd, x, nColumn, NIL )
          aGrid[ x ][ nColumn ] := _OOHG_GetArrayItem( uDynamicColor, nColumn, x )
          _ClearThisCellInfo()
-      Next
-   EndIf
+      NEXT
+      _PopEventInfo()
+   ENDIF
 
-   Return Nil
+   RETURN NIL
 
 METHOD SetColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor, ;
                   lNoDelete, uPicture, uEditControl, uHeadClick, uValid, ;
@@ -2030,14 +2036,14 @@ METHOD SetColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor,
    // Update Foreground Color
    uGridColor := ::GridForeColor
    uDynamicColor := ::DynamicForeColor
-   TGrid_AddColumnColor( @uGridColor, nColIndex, uForeColor, @uDynamicColor, nColumns, ::ItemCount, lNoDelete, ::hWnd )
+   TGrid_AddColumnColor( @uGridColor, nColIndex, uForeColor, @uDynamicColor, nColumns, ::ItemCount, lNoDelete, Self )
    ::GridForeColor := uGridColor
    ::DynamicForeColor := uDynamicColor
 
    // Update Background Color
    uGridColor := ::GridBackColor
    uDynamicColor := ::DynamicBackColor
-   TGrid_AddColumnColor( @uGridColor, nColIndex, uBackColor, @uDynamicColor, nColumns, ::ItemCount, lNoDelete, ::hWnd )
+   TGrid_AddColumnColor( @uGridColor, nColIndex, uBackColor, @uDynamicColor, nColumns, ::ItemCount, lNoDelete, Self )
    ::GridBackColor := uGridColor
    ::DynamicBackColor := uDynamicColor
 
@@ -3396,49 +3402,55 @@ METHOD SetItemColor( nItem, uForeColor, uBackColor, uExtra, lSetThisCellInfo ) C
    ElseIf Len( uExtra ) < nWidth
       ASize( uExtra, nWidth )
    EndIf
-   ::GridForeColor := TGrid_CreateColorArray( ::GridForeColor, nItem, uForeColor, ::DynamicForeColor, nWidth, uExtra, ::hWnd, lSetThisCellInfo )
-   ::GridBackColor := TGrid_CreateColorArray( ::GridBackColor, nItem, uBackColor, ::DynamicBackColor, nWidth, uExtra, ::hWnd, lSetThisCellInfo )
+   ::GridForeColor := TGrid_CreateColorArray( ::GridForeColor, nItem, uForeColor, ::DynamicForeColor, nWidth, uExtra, Self, lSetThisCellInfo )
+   ::GridBackColor := TGrid_CreateColorArray( ::GridBackColor, nItem, uBackColor, ::DynamicBackColor, nWidth, uExtra, Self, lSetThisCellInfo )
 
    Return Self
 
-STATIC FUNCTION TGrid_CreateColorArray( aGrid, nItem, uColor, uDynamicColor, nWidth, uExtra, hWnd, lSetThisCellInfo )
+STATIC FUNCTION TGrid_CreateColorArray( aGrid, nItem, uColor, uDynamicColor, nWidth, uExtra, Self, lSetThisCellInfo )
 
-   Local aTemp, nLen
+   LOCAL aTemp, nLen
 
-   If ! ValType( uColor ) $ "ANB" .AND. ValType( uDynamicColor ) $ "ANB"
+   IF ! ValType( uColor ) $ "ANB" .AND. ValType( uDynamicColor ) $ "ANB"
       uColor := uDynamicColor
-   EndIf
-   If ValType( uColor ) $ "ANB"
-      If HB_IsArray( aGrid )
-         If Len( aGrid ) < nItem
+   ENDIF
+   IF ValType( uColor ) $ "ANB"
+      IF HB_ISARRAY( aGrid )
+         IF Len( aGrid ) < nItem
             ASize( aGrid, nItem )
-         EndIf
+         ENDIF
       ELSE
          aGrid := Array( nItem )
-      EndIf
+      ENDIF
       aTemp := Array( nWidth )
-      If HB_IsArray( uColor ) .AND. Len( uColor ) < nWidth
+      IF HB_ISARRAY( uColor ) .AND. Len( uColor ) < nWidth
          nLen := Len( uColor )
          uColor := AClone( uColor )
-         If ValType( uDynamicColor ) $ "NB"
+         IF ValType( uDynamicColor ) $ "NB"
             ASize( uColor, nWidth )
             AFill( uColor, uDynamicColor, nLen + 1 )
-         ElseIf HB_IsArray( uDynamicColor ) .AND. Len( uDynamicColor ) > nLen
+         ELSEIF HB_ISARRAY( uDynamicColor ) .AND. Len( uDynamicColor ) > nLen
             ASize( uColor, Min( nWidth, Len( uDynamicColor ) ) )
             AEval( uColor, { |x,i| uColor[ i ] := uDynamicColor[ i ], x }, nLen + 1 )
-         EndIf
-      EndIf
-      If HB_IsLogical( lSetThisCellInfo ) .AND. ! lSetThisCellInfo
+         ENDIF
+      ENDIF
+      _PushEventInfo()
+      _OOHG_ThisForm    := ::Parent
+      _OOHG_ThisType    := "C"
+      _OOHG_ThisControl := Self
+      _OOHG_ThisObject  := Self
+      IF HB_ISLOGICAL( lSetThisCellInfo ) .AND. ! lSetThisCellInfo
          // Set lSetThisCellInfo to .F. to avoid endless loop when calling this function inside the ON QUERYDATA block.
          AEval( aTemp, { |x,i| aTemp[ i ] := _OOHG_GetArrayItem( uColor, i, nItem, uExtra ), x } )
-      Else
-         AEval( aTemp, { |x,i| _SetThisCellInfo( hWnd, nItem, i, uExtra[ i ] ), aTemp[ i ] := _OOHG_GetArrayItem( uColor, i, nItem, uExtra ), x } )
+      ELSE
+         AEval( aTemp, { |x,i| _SetThisCellInfo( Self:hWnd, nItem, i, uExtra[ i ] ), aTemp[ i ] := _OOHG_GetArrayItem( uColor, i, nItem, uExtra ), x } )
          _ClearThisCellInfo()
-      EndIf
+      ENDIF
       aGrid[ nItem ] := aTemp
-   EndIf
+      _PopEventInfo()
+   ENDIF
 
-   Return aGrid
+   RETURN aGrid
 
 METHOD Justify( uPar1, uPar2, uPar3 ) CLASS TGrid
 
@@ -3600,59 +3612,71 @@ METHOD Release() CLASS TGrid
 
 METHOD SetRangeColor( uForeColor, uBackColor, nTop, nLeft, nBottom, nRight ) CLASS TGrid
 
-   Local nAux, nLong := ::ItemCount
+   LOCAL nAux, nLong := ::ItemCount, nWidth := Len( ::aHeaders )
 
-   If ! HB_IsNumeric( nBottom )
-      nBottom := nTop
-   EndIf
-   If ! HB_IsNumeric( nRight )
-      nRight := nLeft
-   EndIf
-   If nTop > nBottom
+   IF ! HB_ISNUMERIC( nTop )
+      nTop := 1
+   ENDIF
+   IF ! HB_ISNUMERIC( nBottom )
+      nBottom := nLong
+   ENDIF
+   IF ! HB_ISNUMERIC( nLeft )
+      nLeft := 1
+   ENDIF
+   IF ! HB_ISNUMERIC( nRight )
+      nRight := nWidth
+   ENDIF
+   IF nTop > nBottom
       nAux := nBottom
       nBottom := nTop
       nTop := nAux
-   EndIf
-   If nLeft > nRight
+   ENDIF
+   IF nLeft > nRight
       nAux := nRight
       nRight := nLeft
       nLeft := nAux
-   EndIf
-   If nBottom > nLong
+   ENDIF
+   IF nBottom > nLong
       nBottom := nLong
-   EndIf
-   If nRight > Len( ::aHeaders )
-      nRight := Len( ::aHeaders )
-   EndIf
-   If nTop <= nLong .AND. nLeft <= Len( ::aHeaders ) .AND. nTop >= 1 .AND. nLeft >= 1
-      ::GridForeColor := TGrid_FillColorArea( ::GridForeColor, uForeColor, nTop, nLeft, nBottom, nRight, ::hWnd )
-      ::GridBackColor := TGrid_FillColorArea( ::GridBackColor, uBackColor, nTop, nLeft, nBottom, nRight, ::hWnd )
-   EndIf
+   ENDIF
+   IF nRight > nWidth
+      nRight := nWidth
+   ENDIF
+   IF nTop <= nLong .AND. nLeft <= nWidth .AND. nTop >= 1 .AND. nLeft >= 1
+      ::GridForeColor := TGrid_FillColorArea( ::GridForeColor, uForeColor, nTop, nLeft, nBottom, nRight, Self )
+      ::GridBackColor := TGrid_FillColorArea( ::GridBackColor, uBackColor, nTop, nLeft, nBottom, nRight, Self )
+   ENDIF
 
-   Return Self
+   RETURN Self
 
-STATIC FUNCTION TGrid_FillColorArea( aGrid, uColor, nTop, nLeft, nBottom, nRight, hWnd )
+STATIC FUNCTION TGrid_FillColorArea( aGrid, uColor, nTop, nLeft, nBottom, nRight, Self )
 
-   Local nAux
+   LOCAL nAux
 
-   If ValType( uColor ) $ "ANB"
-      If ! HB_IsArray( aGrid )
+   IF ValType( uColor ) $ "ANB"
+      IF ! HB_ISARRAY( aGrid )
          aGrid := Array( nBottom )
-      ElseIf Len( aGrid ) < nBottom
+      ELSEIF Len( aGrid ) < nBottom
          ASize( aGrid, nBottom )
-      EndIf
-      For nAux := nTop To nBottom
-         If ! HB_IsArray( aGrid[ nAux ] )
+      ENDIF
+      _PushEventInfo()
+      _OOHG_ThisForm    := ::Parent
+      _OOHG_ThisType    := "C"
+      _OOHG_ThisControl := Self
+      _OOHG_ThisObject  := Self
+      FOR nAux := nTop TO nBottom
+         IF ! HB_ISARRAY( aGrid[ nAux ] )
             aGrid[ nAux ] := Array( nRight )
-         ElseIf Len( aGrid[ nAux ] ) < nRight
+         ELSEIF Len( aGrid[ nAux ] ) < nRight
             ASize( aGrid[ nAux ], nRight )
-         EndIf
-         AEval( aGrid[ nAux ], { |x,i| _SetThisCellInfo( hWnd, nAux, i ), aGrid[ nAux ][ i ] := _OOHG_GetArrayItem( uColor, i, nAux ), x }, nLeft, ( nRight - nLeft + 1 ) )
+         ENDIF
+         AEval( aGrid[ nAux ], { |x,i| _SetThisCellInfo( Self:hWnd, nAux, i ), aGrid[ nAux ][ i ] := _OOHG_GetArrayItem( uColor, i, nAux ), x }, nLeft, ( nRight - nLeft + 1 ) )
          _ClearThisCellInfo()
-      Next
-   EndIf
+      NEXT
+      _PopEventInfo()
+   ENDIF
 
-   Return aGrid
+   RETURN aGrid
 
 METHOD ColumnWidth( nColumn, nWidth ) CLASS TGrid
 
