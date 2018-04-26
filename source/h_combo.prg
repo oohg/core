@@ -112,7 +112,7 @@ CLASS TCombo FROM TLabel
    METHOD Events_MeasureItem
    METHOD AddItem
    METHOD DeleteItem(nPos)    BLOCK { |Self,nPos| ComboboxDeleteString( ::hWnd, nPos ) }
-   METHOD DeleteAllItems      BLOCK { |Self| ComboboxReset( ::hWnd ), ::xOldValue := NIL }
+   METHOD DeleteAllItems      BLOCK { |Self| ComboboxReset( ::hWnd ), ::xOldValue := NIL, ::OldValue := NIL }
    METHOD Item                BLOCK { |Self, nItem, uValue| ComboItem( Self, nItem, uValue ) }
    METHOD ItemBySource
    METHOD InsertItem

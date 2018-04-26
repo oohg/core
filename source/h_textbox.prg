@@ -418,6 +418,7 @@ METHOD Events_Command( wParam ) CLASS TText
          ::xUndo := ::xPrevUndo
          ::lPrevUndo := .F.
       EndIf
+      Return Nil
 
    ElseIf Hi_wParam == EN_KILLFOCUS
       If ! ::When_Procesing

@@ -3538,6 +3538,7 @@ METHOD DoChange() CLASS TOBrowseByCell
         ( HB_IsArray( xValue ) .AND. ! HB_IsArray( ::xOldValue ) ) .OR. ;
         ( ! HB_IsArray( xValue ) .AND. HB_IsArray( ::xOldValue ) ) .OR. ;
         ! AEqual( xValue, ::xOldValue ) )
+      ::OldValue  := ::xOldValue
       ::xOldValue := xValue
       ::DoEvent( ::OnChange, "CHANGE" )
    EndIf

@@ -1189,6 +1189,7 @@ CLASS TControl FROM TWindow
    DATA lCancel              INIT .F.
    DATA OnEnter              INIT nil
    DATA xOldValue            INIT nil
+   DATA OldValue             INIT nil
    DATA OldColor
    DATA OldBackColor
 
@@ -1839,6 +1840,7 @@ METHOD DoChange() CLASS TControl
    cType    := IF( cType    == "M", "C", cType )
    cOldType := IF( cOldType == "M", "C", cOldType )
    IF cOldType == "U" .OR. ! cType == cOldType .OR. ! xValue == ::xOldValue
+      ::OldValue  := ::xOldValue
       ::xOldValue := xValue
       ::DoEvent( ::OnChange, "CHANGE" )
    ENDIF

@@ -568,6 +568,7 @@ METHOD DoChange() CLASS TCheckList
       IF( cType == "A", ;
           ! ArraysAreEqual( xValue, ::xOldValue ), ;
           ! xValue == ::xOldValue )
+      ::OldValue  := ::xOldValue
       ::xOldValue := xValue
       ::DoEvent( ::OnChange, "CHANGE" )
    ENDIF

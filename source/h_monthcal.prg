@@ -333,6 +333,7 @@ METHOD DoChange() CLASS TMonthCalMulti
         ( HB_IsArray( xValue ) .AND. ! HB_IsArray( ::xOldValue ) ) .OR. ;
         ( ! HB_IsArray( xValue ) .AND. HB_IsArray( ::xOldValue ) ) .OR. ;
         ! aEqual( xValue, ::xOldValue ) )
+      ::OldValue  := ::xOldValue
       ::xOldValue := xValue
       ::DoEvent( ::OnChange, "CHANGE" )
    EndIf

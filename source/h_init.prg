@@ -1593,9 +1593,9 @@ FUNCTION ooHG_Messages_ESWIN // Spanish
                          'Cancelar', ;
                          'Pag.', ;
                          'Error', ;
-                         'Peligro', ;
+                         'Advertencia', ;
                          'Editar Memo', ;
-                         "ooHG can't determine cell type for INPLACE edit." }
+                         "OOHG no puede determinar el tipo de celda para la edición INPLACE." }
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Agregar", ;

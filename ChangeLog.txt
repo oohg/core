@@ -8,6 +8,25 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-04-26 20:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog.txt
+     * Updated.
+   * core\source\h_browse.prg
+   * core\source\h_checklist.prg
+   * core\source\h_combo.prg
+   * core\source\h_controlmisc.prg
+   * core\source\h_grid.prg
+   * core\source\h_monthcal.prg
+     + DATA OldValue. It's set to control's previous value
+       before calling event OnChange.
+     ; Do not use DATA xOldValue because is meant to be used
+       internally by controls.
+   * core\source\h_init.prg
+     * Spanish translation of 'Warning' is now "Advertencia".
+     + Missing translation.
+   * core\source\h_textbox.prg
+     ! DoChange is called twice when processing EN_CHANGE message.
+
 2018-04-19 20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt
      * Updated.
