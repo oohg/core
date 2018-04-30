@@ -5711,7 +5711,7 @@ CLASS TGridControl
    DATA nOnFocusPos               INIT Nil
    DATA lNoModal                  INIT .F.
 
-   METHOD New                     BLOCK { | Self | Self }
+   METHOD New                     BLOCK { | Self | _OOHG_Eval( _OOHG_InitTGridControlDatas, Self ) }
    METHOD CreateWindow
    METHOD Valid
    METHOD Str2Val( uValue )       BLOCK { | Self, uValue | Empty( Self ), uValue }
@@ -5881,6 +5881,8 @@ COLUMNCONTROLS syntax:
 {'TEXTBOX', cType, cPicture, cFunction, nOnFocusPos, lButtons, aImages, lLikeExcel, cEditKey, lNoModal}
 */
 METHOD New( cPicture, cFunction, cType, nOnFocusPos, lButtons, aImages, oGrid, lLikeExcel, cEditKey, lNoModal ) CLASS TGridControlTextBox
+
+   _OOHG_Eval( _OOHG_InitTGridControlDatas, Self )
 
    ::cMask := ""
    If ValType( cPicture ) $ "CM" .AND. ! Empty( cPicture )
@@ -6163,6 +6165,8 @@ COLUMNCONTROLS syntax:
 */
 METHOD New( cPicture, cFunction, cType, nOnFocusPos, aImages, oGrid, lLikeExcel, cEditKey, lNoModal, bAction, bAction2 ) CLASS TGridControlTextBoxAction
 
+   _OOHG_Eval( _OOHG_InitTGridControlDatas, Self )
+
    ::cMask := ""
    If ValType( cPicture ) $ "CM" .AND. ! Empty( cPicture )
       ::cMask := cPicture
@@ -6304,6 +6308,8 @@ CLASS TGridControlMemo FROM TGridControl
    {'MEMO', cTitle, lCleanCRLF, nWidth, nHeight, lSize, lNoHScroll}
    */
 METHOD New( cTitle, lCleanCRLF, oGrid, nWidth, nHeight, lSize, lNoHScroll ) CLASS TGridControlMemo
+
+   _OOHG_Eval( _OOHG_InitTGridControlDatas, Self )
 
    If ValType( cTitle ) $ "CM" .AND. ! Empty( cTitle )
       ::cTitle := cTitle
@@ -6453,6 +6459,8 @@ COLUMNCONTROLS syntax:
 */
 METHOD New( lUpDown, lShowNone, lButtons, aImages, oGrid, lNoModal ) CLASS TGridControlDatePicker
 
+   _OOHG_Eval( _OOHG_InitTGridControlDatas, Self )
+
    If ! HB_IsLogical( lUpDown )
       lUpDown := .F.
    EndIf
@@ -6528,6 +6536,8 @@ COLUMNCONTROLS syntax:
 {'COMBOBOX', aItems, aValues, cRetValType, lButtons, aImages, lNoModal}
 */
 METHOD New( aItems, oGrid, aValues, cRetValType, lButtons, aImages, lNoModal ) CLASS TGridControlComboBox
+
+   _OOHG_Eval( _OOHG_InitTGridControlDatas, Self )
 
    DEFAULT cRetValType TO "NUMERIC"
    If HB_IsArray( aItems )
@@ -6668,6 +6678,8 @@ COLUMNCONTROLS syntax:
 */
 METHOD New( aItems, oGrid, lIncremental, lWinSize, lButtons, aImages, lNoModal ) CLASS TGridControlComboBoxText
 
+   _OOHG_Eval( _OOHG_InitTGridControlDatas, Self )
+
    ASSIGN ::lIncremental VALUE lIncremental TYPE "L" DEFAULT .F.
    ASSIGN ::lWinSize     VALUE lWinSize     TYPE "L" DEFAULT .F.
    If HB_IsArray( aItems )
@@ -6757,6 +6769,8 @@ COLUMNCONTROLS syntax:
 */
 METHOD New( nRangeMin, nRangeMax, lButtons, aImages, oGrid, lNoModal ) CLASS TGridControlSpinner
 
+   _OOHG_Eval( _OOHG_InitTGridControlDatas, Self )
+
    If HB_IsNumeric( nRangeMin )
       ::nRangeMin := nRangeMin
    EndIf
@@ -6813,6 +6827,8 @@ COLUMNCONTROLS syntax:
 */
 METHOD New( cTrue, cFalse, lButtons, aImages, oGrid, lNoModal ) CLASS TGridControlCheckBox
 
+   _OOHG_Eval( _OOHG_InitTGridControlDatas, Self )
+
    If ValType( cTrue ) $ "CM"
       ::cTrue := cTrue
    EndIf
@@ -6867,6 +6883,8 @@ COLUMNCONTROLS syntax:
 {'IMAGELIST', lButtons, aImages, lNoModal}
 */
 METHOD New( oGrid, lButtons, aImages, lNoModal ) CLASS TGridControlImageList
+
+   _OOHG_Eval( _OOHG_InitTGridControlDatas, Self )
 
    ::oGrid := oGrid
    If ! Empty( ::oGrid ) .AND. ValidHandler( ::oGrid:ImageList )
@@ -6936,6 +6954,8 @@ COLUMNCONTROLS syntax:
 {'IMAGEDATA', oData, lButtons, aImages, lNoModal}
 */
 METHOD New( oGrid, oData, lButtons, aImages, lNoModal ) CLASS TGridControlImageData
+
+   _OOHG_Eval( _OOHG_InitTGridControlDatas, Self )
 
    ::oGrid := oGrid
    If oData == Nil
@@ -7037,6 +7057,8 @@ COLUMNCONTROLS syntax:
 {'LCOMBOBOX', cTrue, cFalse, lButtons, aImages, lNoModal}
 */
 METHOD New( cTrue, cFalse, lButtons, aImages, oGrid, lNoModal ) CLASS TGridControlLComboBox
+
+   _OOHG_Eval( _OOHG_InitTGridControlDatas, Self )
 
    If ValType( cTrue ) $ "CM"
       ::cTrue := cTrue

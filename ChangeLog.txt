@@ -8,6 +8,17 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-04-30 11:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog.txt
+     * Updated.
+   * core\include\i_var.ch
+   * core\source\h_application.prg
+   * core\source\h_grid.prg
+     + _OOHG_InitTGridControlDatas global var.
+       When setted to a codeblock it'll be evaluated whenever a
+       new TGridControl is created. It can be used to change the
+       default values of its datas. Defaults to NIL.
+
 2018-04-26 20:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt
      * Updated.
