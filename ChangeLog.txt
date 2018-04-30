@@ -8,6 +8,28 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-04-30 13:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   ; DATA nOnFocusPos controls the behaviour of textbox, editbox and
+     richeditbox controls whenever those controls got the focus.
+
+   ; When nOnFocusPos is < -3, no text is selected, and the caret
+     is placed before the first character.
+   ; When nOnFocusPos == -3, the control's leftmost non-blank
+     characters are selected, the first character becomes the
+     anchor point and the caret is placed after the last character.
+   ; When nOnFocusPos == -2, all the text is selected, the first
+     character becomes the anchor point and the caret is placed
+     after the last character.
+   ; When nOnFocusPos == -1, no text is selected and the caret is
+     placed after the last character.
+   ; When nOnFocusPos >= 0 and < Len(text), no text is selected
+     and the caret is placed before the corresponding character,
+     being 0 the first.
+   ; When nOnFocusPos >= Len(text), it behaves likes -1.
+
+   ; For editbox and richeditbox controls defaults to -4.
+   ; For textbox controls defaults to -2.
+
 2018-04-30 11:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt
      * Updated.
