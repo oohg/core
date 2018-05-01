@@ -8,27 +8,34 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-05-01 19:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog.txt
+     ! Previous entries.
+   * core\include\i_exec.ch
+     * Some format.
+
 2018-05-01 10:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * .\ChangeLog.txt
+   * core\ChangeLog.txt
      ! Typos.
-   ! Method Value of ComboBox controls with VALUESOURCE returns 0
-     when you try to set an invalid value and the allowed values
-     are of type character, instead of returning an empty string.
+   * core\source\h_combo.prg
+     ! Method Value of ComboBox controls with VALUESOURCE returns 0
+       when you try to set an invalid value and the allowed values
+       are of type character, instead of returning an empty string.
 
 2018-04-30 22:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * .\ChangeLog.txt
-   * .\ChangeLog_003.txt
-   * .\ChangeLog_004.txt
-   * .\ChangeLog_005.txt
+   * core\ChangeLog.txt
+   * core\ChangeLog_003.txt
+   * core\ChangeLog_004.txt
+   * core\ChangeLog_005.txt
      ! Typos and missing entries.
 
 2018-04-30 20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * .\ChangeLog.txt
-   * .\ChangeLog_001.txt
-   * .\ChangeLog_002.txt
-   * .\ChangeLog_003.txt
-   * .\ChangeLog_004.txt
-   * .\ChangeLog_005.txt
+   * core\ChangeLog.txt
+   * core\ChangeLog_001.txt
+   * core\ChangeLog_002.txt
+   * core\ChangeLog_003.txt
+   * core\ChangeLog_004.txt
+   * core\ChangeLog_005.txt
      * Slash chars in paths changed by backslash chars.
      * Minor corrections.
 
@@ -1373,7 +1380,7 @@
      + ProcFile() info to error messages.
 
 2017-10-01 11:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * .\BuildApp_hbmk2.bat
+   * core\BuildApp_hbmk2.bat
      ! Order of parameters in hbmk2 call.
    * source\h_tab.prg
    * source\h_windows.prg
@@ -1507,8 +1514,8 @@
      ! Save data block of controls inside a Tab was not being evaluated.
 
 2017-08-26 00:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   + .\ChangeLog_005.txt
-   * .\ChangeLog.txt
+   + core\ChangeLog_005.txt
+   * core\ChangeLog.txt
      * Renamed to ChangeLog_005.txt and started a new one.
    * manual\Changelog.htm
      * Updated.

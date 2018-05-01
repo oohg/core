@@ -61,11 +61,11 @@
 
 #xcommand EXECUTE FILE <executable> WAIT ;
    => ;
-      WaitRun ( <executable>, 5 )
+      WaitRun( <executable>, 5 )
 
 #xcommand EXECUTE FILE <executable> WAIT MAXIMIZE ;
    => ;
-   WaitRun( <executable>, 3 )
+      WaitRun( <executable>, 3 )
 
 #xcommand EXECUTE FILE <executable> WAIT MINIMIZE ;
    => ;
