@@ -400,6 +400,8 @@ METHOD Value( uValue ) CLASS TCombo
       uRet := ComboGetCursel( ::hWnd )
       If uRet >= 1 .AND. uRet <= LEN( ::aValues )
          uRet := ::aValues[ uRet ]
+      ElseIf VALTYPE( ::aValues[ 1 ] ) $ "CM"
+         uRet := ""
       Else
          uRet := 0
       EndIf
