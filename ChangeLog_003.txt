@@ -1526,11 +1526,11 @@
      + Added various definitions at C level in order to compile
        with BCC 5.5.1 (this compiler does not has uxtheme.h nor
        tmschema.h files).
-   * source\h_checkbox.ch
+   * source\h_checkbox.prg
      * Changed location of #define BST_HOT.
 
 2013-05-25 12:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * source\h_checkbox.ch
+   * source\h_checkbox.prg
      + Added various definitions at C level in order to compile
        with BCC 5.5.1 (this compiler does not has uxtheme.h nor
        tmschema.h files).
@@ -3433,7 +3433,7 @@
 
 2012-02-13 13:58 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source\h_windows.prg
-     ! Fixed missing / throws compiler error.
+     ! Fixed compiler error.
 
 2012-02-13 16:03 UTC+0100 Cayetano GÃ³mez <cayetano@gomezgil.es>
    * source\h_windows.prg
@@ -4036,7 +4036,7 @@
        Nodes and items can be enabled or disabled at control creation.
        Any user action on a disabled node/item is ignored.
      + Added NODRAG clause to node and item defines.
-       When specified, nodes and items canÂ´t be dragged.
+       When specified, nodes and items can´t be dragged.
    * include\i_windefs.ch
      + Added WM_CANCELMODE, WM_CAPTURECHANGED, TVN_SELCHANGING,
        MK_CONTROL and TVN_BEGINDRAG defines.
@@ -4091,7 +4091,7 @@
      + Added METHOD ItemEnabled to enable/disable a node or item.
      + Added METHOD CopyItem to copy an item (and it's subitems) from
        one tree object to another (or the same).
-     + Added METHOD MoveItem to move an item (and itÂ´s subitems) from
+     + Added METHOD MoveItem to move an item (and it´s subitems) from
        one tree object to another (or the same).
      + Added STATIC FUNCTION AddChildren, used by METHODS CopyItem
        and MoveItem.

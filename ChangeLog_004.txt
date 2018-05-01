@@ -838,7 +838,7 @@
      ! Controls are always placed outside tabs.
      ! Not all tab pages are shown in "Control's TabStop Order" window.
      ! Error message displayed when editing tab's properties.
-     ! Page's images names not save/loaded properly.
+     ! Page's images names not saved/loaded properly.
      ! RTE when creating a new tab control.
      ! Not all controls in tab pages are saved.
      ! Wrong value property of IPADDRESS control.
@@ -2737,7 +2737,7 @@
        It´s measured in DPI.
        Parameter aSize: declares the image size. Takes an array
        {nHorSize, nVerSize} or a number (equivalent to {nSize, nSize}).
-       It´s measured in 100/th of MM.
+       It´s measured in 100th of MM.
        Resolution takes precedence over size.
      + Public function OO_ConvertToURL( cFile ).
      + C-functions PixelsPerInchX() and PixelsPerInchY(). They return

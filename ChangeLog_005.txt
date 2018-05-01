@@ -3403,7 +3403,7 @@
        to process WM_NOTIFY message.
      * LVN_KEYDOWN handler in TGridByCell:Events_Notify() now checks
        ::FirstVisibleColumn.
-     * Function _GetGridCellData now uses tan array holding item and
+     * Function _GetGridCellData now uses an array holding item and
        subitem number (derived from lParam) instead of lParam.
      ! ListView_IsItemVisible() returns .T. for an item placed under the
        grid's header.
