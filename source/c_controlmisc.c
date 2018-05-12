@@ -523,7 +523,7 @@ HB_FUNC( GETTEXTWIDTH )  // returns the width of a string in pixels
    hb_retni( LOWORD( sz.cx ) );
 }
 
-HB_FUNC( GETTEXTHEIGHT )  // returns the width of a string in pixels
+HB_FUNC( GETTEXTHEIGHT )  // returns the height of a string in pixels
 {
    HDC   hDC        = ( HDC ) HWNDparam( 1 );
    HWND  hWnd = 0;
