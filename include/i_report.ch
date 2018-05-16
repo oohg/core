@@ -91,16 +91,16 @@
 
 #command REPORTFORMWIN <frm> ;
       [ HEADING <head> ] ;
-      [ <plain:PLAIN> ] ;
-      [ <noej:NOEJECT> ] ;
-      [ <sum:SUMMARY> ] ;
-      [ <nocon:NOCONSOLE> ] ;
-      [ <prn:TO PRINTER> ] [ TO FILE <(f)> ] ;
+      [ <plain: PLAIN> ] ;
+      [ <noej: NOEJECT> ] ;
+      [ <sum: SUMMARY> ] ;
+      [ <nocon: NOCONSOLE> ] ;
+      [ <prn: TO PRINTER> ] [ TO FILE <(f)> ] ;
       [ FOR <for> ] ;
       [ WHILE <while> ] ;
       [ NEXT <next> ] ;
       [ RECORD <rec> ] ;
-      [ <rest:REST> ] ;
+      [ <rest: REST> ] ;
       [ ALL ] ;
    => ;
       __ReportFormwin( <(frm)>, <.prn.>, <(f)>, <.nocon.>, <{for}>, <{while}>, ;

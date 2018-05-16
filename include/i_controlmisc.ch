@@ -171,7 +171,7 @@ STANDARD CURSORS
    => ;
       SetProperty ( <(Arg1)>, <(Arg2)>, <(Arg3)>, \{<Arg4>\} )
 
-#translate SET MULTIPLE <x:ON,OFF> [<warning: WARNING>] ;
+#translate SET MULTIPLE <x: ON,OFF> [<warning: WARNING>] ;
    => ;
       _OOHG_SetMultiple( <(x)>, <.warning.> )
 

@@ -109,15 +109,15 @@ ANIMATEBOX COMMANDS
    => ;
       GetControlObject( <(ControlName)>, <(ParentForm)> ):Release()
 
-#xtranslate  OpenAnimateBox( <ControlName>, <ParentForm>, <FileName> );
+#xtranslate OpenAnimateBox( <ControlName>, <ParentForm>, <FileName> );
    => ;
       GetControlObject( <(ControlName)>, <(ParentForm)> ):Open( <FileName> )
 
-#xtranslate  PlayAnimateBox( <ControlName>, <ParentForm> );
+#xtranslate PlayAnimateBox( <ControlName>, <ParentForm> );
    => ;
       GetControlObject( <(ControlName)>, <(ParentForm)> ):Play()
 
-#xtranslate  SeekAnimateBox( <ControlName>, <ParentForm>, <frame> );
+#xtranslate SeekAnimateBox( <ControlName>, <ParentForm>, <frame> );
    => ;
       GetControlObject( <(ControlName)>, <(ParentForm)> ):Seek( <frame> )
 

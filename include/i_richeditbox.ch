@@ -69,10 +69,10 @@ STANDARD VERSION
       [ HEIGHT <h> ] ;
       [ FIELD <field> ] ;
       [ FILE <file> ] ;
-      [ <plain : PLAINTEXT> ] ;
+      [ <plain: PLAINTEXT> ] ;
       [ FILETYPE <type> ] ;
       [ VALUE <value> ] ;
-      [ < readonly: READONLY > ] ;
+      [ <readonly: READONLY> ] ;
       [ FONT <f> ] ;
       [ SIZE <s> ] ;
       [ <bold: BOLD> ] ;
@@ -122,10 +122,10 @@ SPLITBOX VERSION
       [ HEIGHT <h> ] ;
       [ FIELD <field> ] ;
       [ FILE <file> ] ;
-      [ <plain : PLAINTEXT> ] ;
+      [ <plain: PLAINTEXT> ] ;
       [ FILETYPE <type> ] ;
       [ VALUE <value> ] ;
-      [ < readonly: READONLY > ] ;
+      [ <readonly: READONLY> ] ;
       [ FONT <f> ] ;
       [ SIZE <s> ] ;
       [ <bold: BOLD> ] ;

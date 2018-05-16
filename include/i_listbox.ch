@@ -96,8 +96,8 @@ STANDARD VERSION
       [ TEXTHEIGHT <textheight> ] ;
       [ <novscroll: NOVSCROLL> ] ;
       [ <multicolumn: MULTICOLUMN> [ COLUMNWIDTH <nColWidth> ] ] ;
-      [ <multitab : MULTITAB> [ TABSWIDTH <aWidth> ] ] ;
-      [ <dragitems : DRAGITEMS> ] ;
+      [ <multitab: MULTITAB> [ TABSWIDTH <aWidth> ] ] ;
+      [ <dragitems: DRAGITEMS> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( ;
             IIF( <.multiselect.>, TListMulti(), TList() ), [ <subclass>() ] ): ;
@@ -148,8 +148,8 @@ SPLITBOX VERSION
       [ TEXTHEIGHT <textheight> ] ;
       [ <novscroll: NOVSCROLL> ] ;
       [ <multicolumn: MULTICOLUMN> [ COLUMNWIDTH <nColWidth> ] ] ;
-      [ <multitab : MULTITAB> [ TABSWIDTH <aWidth> ] ] ;
-      [ <dragitems : DRAGITEMS> ] ;
+      [ <multitab: MULTITAB> [ TABSWIDTH <aWidth> ] ] ;
+      [ <dragitems: DRAGITEMS> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( ;
             IIF( <.multiselect.>, TListMulti(), TList() ), [ <subclass>() ] ): ;

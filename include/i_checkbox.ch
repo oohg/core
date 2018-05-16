@@ -83,8 +83,8 @@
       [ HELPID <helpid> ] ;
       [ <invisible: INVISIBLE> ] ;
       [ <notabstop: NOTABSTOP> ] ;
-      [ <autosize: AUTOSIZE > ] ;
-      [ <disabled: DISABLED > ] ;
+      [ <autosize: AUTOSIZE> ] ;
+      [ <disabled: DISABLED> ] ;
       [ SUBCLASS <subclass> ] ;
       [ <rtl: RTL> ] ;
       [ <threestate: THREESTATE> ] ;

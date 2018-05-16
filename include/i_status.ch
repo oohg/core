@@ -104,7 +104,7 @@
             <(styl)>, <(align)> )
 
 #xcommand DATE ;
-      [ <w: WIDTH > <nSize> ] ;
+      [ <w: WIDTH> <nSize> ] ;
       [ ACTION <uAction> ] ;
       [ TOOLTIP <cToolTip> ] ;
       [ <styl: FLAT, RAISED> ] ;

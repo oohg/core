@@ -59,7 +59,9 @@
  */
 
 
-#translate CRLF => Chr(13) + Chr(10)
+#translate CRLF ;
+   => ;
+      Chr(13) + Chr(10)
 
 #xcommand BEGIN INI ;
       [ <file: FILENAME, FILE, DISK> <cIniFile> ] ;

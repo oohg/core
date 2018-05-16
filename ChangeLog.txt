@@ -8,6 +8,37 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-05-16 17:13 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_checkbox.ch
+   * core\include\i_comm.ch
+   * core\include\i_controlmisc.ch
+   * core\include\i_checkbox.ch
+   * core\include\i_datepicker.ch
+   * core\include\i_editbox.ch
+   * core\include\i_encrypt.ch
+   * core\include\i_hmg_compat.ch
+   * core\include\i_ini.ch
+   * core\include\i_listbox.ch
+   * core\include\i_media.ch
+   * core\include\i_menu.ch
+   * core\include\i_report.ch
+   * core\include\i_richeditbox.ch
+   * core\include\i_status.ch
+   * core\include\i_textbox.ch
+   * core\include\i_checkbox.ch
+     * Format.
+   * core\include\miniprint.ch
+     ! Typos that prevent using BRUSHCOLOR color in some commands.
+   * core\include\winprint.ch
+     + SET POLYFILL MODE ALTERNATE command.
+     + SET POLYFILL MODE WINDING command.
+     - ALTERNATE defined constant.
+     - WINDING defined constant.
+     + POLYFILL_ALTERNATE defined constant.
+     + POLYFILL_WINDING defined constant.
+   * core\ChangeLog.txt
+     * Updated.
+
 2018-05-12 11:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt
      * Updated.

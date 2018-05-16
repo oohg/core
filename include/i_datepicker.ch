@@ -73,9 +73,9 @@
       [ <underline: UNDERLINE> ] ;
       [ <strikeout: STRIKEOUT> ] ;
       [ TOOLTIP <tooltip> ] ;
-      [ < shownone: SHOWNONE > ] ;
-      [ < updown: UPDOWN > ] ;
-      [ < rightalign: RIGHTALIGN > ] ;
+      [ <shownone: SHOWNONE> ] ;
+      [ <updown: UPDOWN> ] ;
+      [ <rightalign: RIGHTALIGN> ] ;
       [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
       [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
       [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
@@ -112,9 +112,9 @@
       [ <underline: UNDERLINE> ] ;
       [ <strikeout: STRIKEOUT> ] ;
       [ TOOLTIP <tooltip> ] ;
-      [ < shownone: SHOWNONE > ] ;
-      [ < updown: UPDOWN > ] ;
-      [ < rightalign: RIGHTALIGN > ] ;
+      [ <shownone: SHOWNONE> ] ;
+      [ <updown: UPDOWN> ] ;
+      [ <rightalign: RIGHTALIGN> ] ;
       [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
       [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
       [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;

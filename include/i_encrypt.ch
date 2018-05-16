@@ -72,11 +72,11 @@
       db_Code( <(file)>, <(key)>, { <(fields)> }, <(password)>, <(for)>, ;
             <(while)> )
 
-#command ENCODE <file1> TO <file2> [ PASSWORD <password> ] [ <del:DELETE> ] ;
+#command ENCODE <file1> TO <file2> [ PASSWORD <password> ] [ <del: DELETE> ] ;
       => ;
          fi_Code( <(file1)>, <(password)>, <(file2)>, <.del.> )
 
-#command DECODE <file1> TO <file2> [ PASSWORD <password> ] [ <del:DELETE> ] ;
+#command DECODE <file1> TO <file2> [ PASSWORD <password> ] [ <del: DELETE> ] ;
       => ;
          fi_Decode( <(file1)>, <(password)>, <(file2)>, <.del.> )
 

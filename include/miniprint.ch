@@ -370,7 +370,7 @@
 #xcommand @ <Row>, <Col> PRINT FILL TO <ToRow>, <ToCol> ;
       [ <lcolor: COLOR> <aColor> ] ;
       [ <lBrushStyle: BRUSHSTYLE> <nBrStyle> ] ;
-      [ <lBrushColor: BRUESHCOLOR> <aBrColor> ] ;
+      [ <lBrushColor: BRUSHCOLOR> <aBrColor> ] ;
    => ;
       _HMG_PRINTER_H_Fill( _HMG_PRINTER_hDC, <Row>, <Col>, <ToRow>, <ToCol>, ;
          <aColor>\[1\], <aColor>\[2\], <aColor>\[3\], <.lcolor.>, ;
@@ -392,7 +392,7 @@
 #xcommand @ <Row>, <Col> PRINT ELLIPSE TO <ToRow>, <ToCol> ;
       [ <lcolor: COLOR> <aColor> ] ;
       [ <lBrushStyle: BRUSHSTYLE> <nBrStyle> ] ;
-      [ <lBrushColor: BRUESHCOLOR> <aBrColor> ] ;
+      [ <lBrushColor: BRUSHCOLOR> <aBrColor> ] ;
    => ;
       _HMG_PRINTER_H_Ellipse( _HMG_PRINTER_hDC, <Row>, <Col>, <ToRow>, ;
          <ToCol>, <aColor>\[1\], <aColor>\[2\], <aColor>\[3\], <.lcolor.>, ;
@@ -402,7 +402,7 @@
       LIMITS <x1>, <y1>, <x2>, <y2> ;
       [ <lcolor: COLOR> <aColor> ] ;
       [ <lBrushStyle: BRUSHSTYLE> <nBrStyle> ] ;
-      [ <lBrushColor: BRUESHCOLOR> <aBrColor> ] ;
+      [ <lBrushColor: BRUSHCOLOR> <aBrColor> ] ;
    => ;
       _HMG_PRINTER_H_Arc( _HMG_PRINTER_hDC, <Row>, <Col>, <ToRow>, <ToCol>, ;
          <x1>, <y1>, <x2>, <y2>, <aColor>\[1\], <aColor>\[2\], <aColor>\[3\], ;
@@ -412,7 +412,7 @@
       LIMITS <x1>, <y1>, <x2>, <y2> ;
       [ <lcolor: COLOR> <aColor> ] ;
       [ <lBrushStyle: BRUSHSTYLE> <nBrStyle> ] ;
-      [ <lBrushColor: BRUESHCOLOR> <aBrColor> ] ;
+      [ <lBrushColor: BRUSHCOLOR> <aBrColor> ] ;
    => ;
       _HMG_PRINTER_H_Pie( _HMG_PRINTER_hDC, <Row>, <Col>, <ToRow>, <ToCol>, ;
          <x1>, <y1>, <x2>, <y2>, <aColor>\[1\], <aColor>\[2\], <aColor>\[3\], ;

@@ -59,10 +59,10 @@
  */
 
 
-#xtranslate SET StationName TO <st> ;
+#xtranslate SET STATIONNAME TO <st> ;
    => ;
       SetCommStationName( <st> )
 
-#xtranslate SET CommPath TO <cph> ;
+#xtranslate SET COMMPATH TO <cph> ;
    => ;
       SetCommPath( <cph> )

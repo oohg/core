@@ -548,13 +548,21 @@ MEMVAR HBPRN
    => ;
       hbprn:SetPolyFillMode( <mode> )
 
+#xcommand SET POLYFILL MODE ALTERNATE ;
+   => ;
+      hbprn:SetPolyFillMode( POLYFILL_ALTERNATE )
+
+#xcommand SET POLYFILL MODE WINDING ;
+   => ;
+      hbprn:SetPolyFillMode( POLYFILL_WINDING )
+
 #xcommand SET POLYFILL ALTERNATE ;
    => ;
-      hbprn:SetPolyFillMode( ALTERNATE )
+      hbprn:SetPolyFillMode( POLYFILL_ALTERNATE )
 
 #xcommand SET POLYFILL WINDING ;
    => ;
-      hbprn:SetPolyFillMode( WINDING )
+      hbprn:SetPolyFillMode( POLYFILL_WINDING )
 
 #xcommand GET POLYFILL MODE TO <mode> ;
    => ;
@@ -781,8 +789,8 @@ COMBINERGN() STYLES
 POLYFILL() MODES
 ---------------------------------------------------------------------------*/
 
-#define ALTERNATE                             1
-#define WINDING                               2
+#define POLYFILL_ALTERNATE                    1
+#define POLYFILL_WINDING                      2
 #define POLYFILL_LAST                         2
 
 /*---------------------------------------------------------------------------

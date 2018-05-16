@@ -70,7 +70,7 @@ STANDARD VERSION
       [ HEIGHT <h> ] ;
       [ FIELD <field> ] ;
       [ VALUE <value> ] ;
-      [ < readonly: READONLY > ] ;
+      [ <readonly: READONLY> ] ;
       [ FONT <f> ] ;
       [ SIZE <s> ] ;
       [ <bold: BOLD> ] ;
@@ -115,7 +115,7 @@ SPLITBOX VERSION
       [ HEIGHT <h> ] ;
       [ FIELD <field> ] ;
       [ VALUE <value> ] ;
-      [ < readonly: READONLY > ] ;
+      [ <readonly: READONLY> ] ;
       [ FONT <f> ] ;
       [ SIZE <s> ] ;
       [ <bold: BOLD> ] ;

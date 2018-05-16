@@ -66,7 +66,7 @@
       [ WIDTH <width> ] ;
       [ FIELD <field> ] ;
       [ VALUE <value> ] ;
-      [ < readonly: READONLY > ] ;
+      [ <readonly: READONLY> ] ;
       [ FONT <fontname> ] ;
       [ SIZE <fontsize> ] ;
       [ <bold: BOLD> ] ;
@@ -96,7 +96,7 @@
       [ FOCUSEDPOS <focusedpos> ] ;
       [ <disabled: DISABLED> ] ;
       [ VALID <valid> ] ;
-      [ < date: DATE > ] ;
+      [ <date: DATE> ] ;
       [ DEFAULTYEAR <year> ] ;
       [ <numeric: NUMERIC> ] ;
       [ <dummy2: INPUTMASK, PICTURE> <inputmask> ] ;

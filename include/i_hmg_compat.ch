@@ -267,7 +267,7 @@ TODO: Try to implement this BROWSE clauses using COLUMNCONTROLS:
       [ <nohotlight: NOHOTLIGHT> ] ;
       [ <flat: FLAT> ] ;
       [ <lnoldtr: NOLOADTRANSPARENT> ] ;
-      [ <noxpstyle: NOXPSTYLE > ] ;
+      [ <noxpstyle: NOXPSTYLE> ] ;
       [ <dummy02: ON GOTFOCUS> <gotfocus> ] ;
       [ <dummy04: ON LOSTFOCUS> <lostfocus> ] ;
       [ <notabstop: NOTABSTOP> ] ;
@@ -305,7 +305,7 @@ TODO: Try to implement this BROWSE clauses using COLUMNCONTROLS:
 /*
 TODO: Try to implement this BUTTONEX clauses
       [ FONTCOLOR <fontcolor> ] ;
-      [ <noxpstyle: NOXPSTYLE > ] ;
+      [ <noxpstyle: NOXPSTYLE> ] ;
       [ <default: DEFAULT> ] ;
 */
 
