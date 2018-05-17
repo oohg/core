@@ -3628,6 +3628,17 @@
    + ide\txts\overview.txt
    + ide\txts\tips.txt
    + ide\txts\whatsnew.txt
+     ; Initial upload.
+     ; Thanks to Ciro Vargas for his permission to
+       incorporate this work to OOHG repository.
+     ; Thanks to the following persons for their
+       help to the developement of the ide:
+       - Eduar Saavedra <edst_ed@yahoo.com>
+       - Mirity Andor <ytir@freemail.hu>
+       - Pierpaolo Martinello <pier.martinello[at]alice.it>
+       - Miguel Juarez <migsoft@oohg.org>
+       - Paola Bruccoleri <pbruccoleri@gmail.com>
+       - Gustavo Carlos Asborno <gcasborno@gmail.com>
 
 2014-04-11 23:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source\h_grid.prg

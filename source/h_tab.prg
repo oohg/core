@@ -443,6 +443,10 @@ METHOD AddControl( oCtrl, PageNumber, Row, Col ) CLASS TTabDirect
    oCtrl:lProcMsgsOnVisible := ::lProcMsgsOnVisible
 
    ::aPages[ PageNumber ]:AddControl( oCtrl, Row, Col )
+   oCtrl:Container := ::aPages[ PageNumber ]
+   IF oCtrl:Type == "TAB"
+      SetWindowPos( oCtrl:oContainerBase:hWnd, 0, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE )
+   ENDIF
 
    RETURN Nil
 
@@ -1048,6 +1052,10 @@ METHOD AddControl( oCtrl, PageNumber, Row, Col ) CLASS TMultiPage
    oCtrl:lProcMsgsOnVisible := ::lProcMsgsOnVisible
 
    ::aPages[ PageNumber ]:AddControl( oCtrl, Row, Col )
+   oCtrl:Container := ::aPages[ PageNumber ]
+   IF oCtrl:Type == "TAB"
+      SetWindowPos( oCtrl:oContainerBase:hWnd, 0, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE )
+   ENDIF
 
    RETURN Nil
 
