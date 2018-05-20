@@ -8,6 +8,15 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-05-19 22:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog.txt
+     * Updated.
+   * core\source\h_label.prg
+     ! LABEL with TRANSPARENT clause is not painted correctly
+       after font change.
+   * core\source\c_font.c
+     * Some format.
+
 2018-05-17 17:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt
      * Updated.
