@@ -10,7 +10,7 @@
  * Victor K., http://www.ihaveparts.com, and
  * Pritpal Bedi, http://www.vouchcac.com
  *
- * Copyright 2007-2017 Ciro Vargas Clemow <cvc@oohg.org>
+ * Copyright 2007-2018 Ciro Vargas Clemow <cvc@oohg.org>
  * https://oohg.github.io/
  *
  * Portions of this project are based upon Harbour MiniGUI library.
@@ -21,7 +21,7 @@
  * Copyright 2001 Antonio Linares <alinares@fivetech.com>
  *
  * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2017, https://harbour.github.io/
+ * Copyright 1999-2018, https://harbour.github.io/
  */
 /*
  * This program is free software; you can redistribute it and/or modify

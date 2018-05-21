@@ -13,7 +13,7 @@
  * Eduardo Fernandes <modalsist@yahoo.com.br> and
  * Mitja Podgornik <yamamoto@rocketmail.com>
  *
- * Copyright 2005-2017 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2018 Vicente Guerra <vicente@guerra.com.mx>
  * https://oohg.github.io/
  *
  * Portions of this project are based upon Harbour MiniGUI library.
@@ -24,7 +24,7 @@
  * Copyright 2001 Antonio Linares <alinares@fivetech.com>
  *
  * Portions of this project are based upon Harbour Project.
- * Copyright 1999-2017, https://harbour.github.io/
+ * Copyright 1999-2018, https://harbour.github.io/
  */
 /*
  * This program is free software; you can redistribute it and/or modify

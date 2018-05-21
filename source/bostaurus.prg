@@ -10,7 +10,7 @@
  * Copyright 2012-2015 by Dr. Claudio Soto (from Uruguay).
  * <srvet@adinet.com.uy> http://srvet.blogspot.com.uy/
  *
- * Copyright 2015-2017 Fernando Yurisich <fyurisich@oohg.org>
+ * Copyright 2015-2018 Fernando Yurisich <fyurisich@oohg.org>
  * https://oohg.github.io/
  */
 /*
