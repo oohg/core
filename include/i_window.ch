@@ -549,3 +549,11 @@ FLASH
 #xtranslate FLASH WINDOW <FormName> [ ALL ] COUNT <nTimes> INTERVAL <nMilliseconds> ;
    => ;
       FlashWindowEx( GetFormHandle( <"FormName"> ), 3, <nTimes>, <nMilliseconds> )   // FLASHW_ALL (FLASHW_CAPTION + FLASHW_TRAY)
+
+/*---------------------------------------------------------------------------
+WINDOW STATUS, see METHOD GetWindowState() CLASS TForm
+---------------------------------------------------------------------------*/
+
+#define FORM_MAXIMIZED 2
+#define FORM_MINIMIZED 1
+#define FORM_NORMAL    0

@@ -995,17 +995,19 @@ HB_FUNC( SETFORMTOPMOST )
 #pragma ENDDUMP
 
 
-Method GetWindowstate( ) CLASS Tform
+METHOD GetWindowState() CLASS TForm
 
-  If IsWindowmaximized( ::Hwnd )
-     Return 2
-  elseif IsWindowminimized( ::Hwnd )
-     Return 1
-  else
-     Return 0
-  EndIf
+  LOCAL uRet
 
-   Return nil
+  IF IsWindowMaximized( ::hWnd )
+     uRet := FORM_MAXIMIZED
+  ELSEIF IsWindowMinimized( ::hWnd )
+     uRet := FORM_MINIMIZED
+  ELSE
+     uRet := FORM_NORMAL
+  ENDIF
+
+  RETURN uRet
 
 METHOD SizePos( nRow, nCol, nWidth, nHeight ) CLASS TForm
 

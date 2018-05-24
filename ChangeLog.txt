@@ -8,6 +8,14 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-05-24 19:09 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog.txt
+     * Updated.
+    * include\source\i_window.prg
+      + Added window status constants.
+    * core\source\h_form.prg
+      * Use new window status constants.
+
 2018-05-21 10:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt
      * Updated.
