@@ -8,6 +8,18 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-05-27 11:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   - core\source\c_progressbar.c
+     * Code was moved to core\source\h_progressbar.prg
+   * core\source\h_progressbar.prg
+     + Code from core\source\c_progressbar.c
+     * Format.
+   * core\ChangeLog.txt
+     * Updated.
+   * core\source\common_make.bat
+   * core\source\makelib_mingw.bat
+     - c_progressbar.c
+
 2018-05-24 19:09 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt
      * Updated.
