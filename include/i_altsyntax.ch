@@ -422,6 +422,10 @@ AUXILIARY VARIABLES
    => ;
       _OOHG_ActiveControlNoTabStop := ! <tabstop>
 
+#xcommand NOTABSTOP <notabstop> ;
+   => ;
+      _OOHG_ActiveControlNoTabStop := <notabstop>
+
 #xcommand VISIBLE <visible> ;
    => ;
       _OOHG_ActiveControlInvisible := ! <visible>

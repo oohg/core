@@ -501,7 +501,6 @@ TODO: Try to implement this BUTTONEX clauses
       [ <delete: DELETE> ] ;
       [ DYNAMICDISPLAY <dynamicdisplay> ] ;
       [ ON SAVE <onsave> ] ;
-      [ <fixedcols: FIXEDCOLS> ] ;
    => ;
       @ <row>, <col> BROWSE <name> ;
             [ PARENT <parent> ] ;
@@ -543,10 +542,10 @@ TODO: Try to implement this BUTTONEX clauses
             [ HEADERIMAGES <headerimages> ] ;
             [ <bycell> ] ;
             [ <append> ] ;
-            [ <delete> ]
+            [ <delete> ] ;
 
 /*
-TODO: Try to implement this GRID clauses using COLUMNCONTROLS:
+TODO: implement this clauses:
       [ ON SAVE <onsave> ] ;
       [ DYNAMICDISPLAY <dynamicdisplay> ] ;
 */

@@ -8,6 +8,17 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-05-30 17:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_altsyntax.ch
+     + NOTABSTOP clause.
+   * core\include\i_hmg_compat.ch
+     - Unneeded clause.
+   * core\source\h_label.prg
+     * Method Value now validates the new value before assigning.
+       Now the method is coherent with method Caption.
+   * core\ChangeLog.txt
+     * Updated.
+
 2018-05-27 11:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    - core\source\c_progressbar.c
      * Code was moved to core\source\h_progressbar.prg

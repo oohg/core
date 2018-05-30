@@ -141,29 +141,29 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, w, h, fontname, ;
 
 METHOD Value( cValue ) CLASS TLabel
 
-   If PCOUNT() > 0
-      If VALTYPE( ::Picture ) $ "CM"
-         ::Caption := TRANSFORM( cValue, ::Picture )
-      Else
+   IF ValType( cValue ) $ "CFLN"
+      IF ValType( ::Picture ) $ "CM"
+         ::Caption := Transform( cValue, ::Picture )
+      ELSE
          ::Caption := cValue
-      EndIf
-   Endif
+      ENDIF
+   ENDIF
 
-   Return ::Caption
+   RETURN ::Caption
 
 METHOD Caption( cValue ) CLASS TLabel
 
-   IF VALTYPE( cValue ) $ "CM"
-      if ::lAutoSize
-         ::SizePos( , , GetTextWidth( nil, cValue , ::FontHandle ) + ::IconWidth, GetTextHeight( nil, cValue , ::FontHandle ) )
-      EndIf
+   IF ValType( cValue ) $ "CM"
+      IF ::lAutoSize
+         ::SizePos( , , GetTextWidth( NIL, cValue , ::FontHandle ) + ::IconWidth, GetTextHeight( NIL, cValue , ::FontHandle ) )
+      ENDIF
       SetWindowText( ::hWnd , cValue )
-      If ::Transparent
+      IF ::Transparent
          RedrawWindowControlRect( ::ContainerhWnd, ::ContainerRow, ::ContainerCol, ::ContainerRow + ::Height, ::ContainerCol + ::Width )
-      EndIf
-   Else
+      ENDIF
+   ELSE
       cValue := GetWindowText( ::hWnd )
-   EndIf
+   ENDIF
 
    RETURN cValue
 
