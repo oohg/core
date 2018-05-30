@@ -8,6 +8,12 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-05-30 17:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\oohg.hbp
+     - c_progressbar.c
+   * core\ChangeLog.txt
+     * Updated.
+
 2018-05-30 17:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\i_altsyntax.ch
      + NOTABSTOP clause.

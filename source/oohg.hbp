@@ -41,7 +41,6 @@ c_graph.c
 c_image.c
 c_media.c
 c_msgbox.c
-c_progressbar.c
 c_resource.c
 c_scrsaver.c
 c_winapimisc.c
