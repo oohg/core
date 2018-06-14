@@ -8,6 +8,24 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-06-14 18:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog.txt
+     * Updated.
+   * core\include\oohg.h
+     + Some defines to enable support for 64 bit builds.
+   * core\source\h_application.prg
+     ! Some vars can't be set to NIL.
+   * core\source\h_browse.prg
+     ! At define time, On Change event must be set after
+       setting the control's initial value.
+   * core\source\h_combo.prg
+     * The initialization of some properties was moved before
+       the setting of the control's events.
+   * core\source\h_window.prg
+     + Method BringToTop.
+   * core\source\h_window.prg
+     * Extra space removed from function call.
+
 2018-05-30 17:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\oohg.hbp
      - c_progressbar.c

@@ -644,7 +644,7 @@ METHOD Value_Pos06( uValue ) CLASS TApplication
    LOCAL uRet
 
    hb_mutexLock( ::hClsMtx )
-   IF uValue != NIL
+   IF PCount() > 0
       ::aVars[ NDX_OOHG_DEFAULTFONTCOLOR ] := uValue
    ENDIF
    uRet := ::aVars[ NDX_OOHG_DEFAULTFONTCOLOR ]
@@ -715,7 +715,7 @@ METHOD Value_Pos11( uValue ) CLASS TApplication
    LOCAL uRet
 
    hb_mutexLock( ::hClsMtx )
-   IF uValue != NIL
+   IF HB_ISOBJECT( uValue )
       ::aVars[ NDX_OOHG_MAIN ] := uValue
    ENDIF
    uRet := ::aVars[ NDX_OOHG_MAIN ]
@@ -757,7 +757,7 @@ METHOD Value_Pos14( uValue ) CLASS TApplication
    LOCAL uRet
 
    hb_mutexLock( ::hClsMtx )
-   IF uValue != NIL
+   IF PCount() > 0
       ::aVars[ NDX_OOHG_THISCONTROL ] := uValue
    ENDIF
    uRet := ::aVars[ NDX_OOHG_THISCONTROL ]
@@ -785,7 +785,7 @@ METHOD Value_Pos16( uValue ) CLASS TApplication
    LOCAL uRet
 
    hb_mutexLock( ::hClsMtx )
-   IF uValue != NIL
+   IF PCount() > 0
       ::aVars[ NDX_OOHG_THISFORM ] := uValue
    ENDIF
    uRet := ::aVars[ NDX_OOHG_THISFORM ]
@@ -841,7 +841,7 @@ METHOD Value_Pos20( uValue ) CLASS TApplication
    LOCAL uRet
 
    hb_mutexLock( ::hClsMtx )
-   IF uValue != NIL
+   IF PCount() > 0
       ::aVars[ NDX_OOHG_THISITEMCELLVALUE ] := uValue
    ENDIF
    uRet := ::aVars[ NDX_OOHG_THISITEMCELLVALUE ]
@@ -967,7 +967,7 @@ METHOD Value_Pos29( uValue ) CLASS TApplication
    LOCAL uRet
 
    hb_mutexLock( ::hClsMtx )
-   IF uValue != NIL
+   IF PCount() > 0
       ::aVars[ NDX_OOHG_MAIN_ICON ] := uValue
    ENDIF
    uRet := ::aVars[ NDX_OOHG_MAIN_ICON ]
@@ -1121,7 +1121,7 @@ METHOD Value_Pos40( uValue ) CLASS TApplication
    LOCAL uRet
 
    hb_mutexLock( ::hClsMtx )
-   IF uValue != NIL
+   IF PCount() > 0
       ::aVars[ NDX_OOHG_INITTGRIDCONTROLDATAS ] := uValue
    ENDIF
    uRet := ::aVars[ NDX_OOHG_INITTGRIDCONTROLDATAS ]

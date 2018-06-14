@@ -280,7 +280,7 @@ CLASS TWindow
    METHOD DeleteControl
    METHOD SearchParent
    METHOD ParentDefaults
-
+   METHOD BringToTop          BLOCK { |Self| BringWindowToTop( ::hWnd ) }
    METHOD Events_Size         BLOCK { || nil }
    METHOD Events_VScroll      BLOCK { || nil }
    METHOD Events_HScroll      BLOCK { || nil }
@@ -1157,7 +1157,7 @@ METHOD SaveAs( cFile, lAll, cType, nQuality, nColorDepth ) CLASS TWindow
    Else
      cType := "BMP"
    EndIf
-   bringwindowtotop( ::hWnd )
+   ::BringToTop()
    hBitMap := ::GetBitMap( lAll )
    aSize := _OOHG_SizeOfHBitmap( hBitMap )
    If cType == "BMP"

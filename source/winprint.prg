@@ -3913,7 +3913,7 @@ HB_FUNC( RR_PLAYTHUMB )
    PlayEnhMetaFile(tmpDC ,hh,&rect);
    DeleteEnhMetaFile(hh);
    TextOut(tmpDC,(int)rect.right/2-5,(int)rect.bottom/2-5,hb_parc(3),hb_parclen(3));
-   SendMessage((HWND) HB_PARNL (1,5),(UINT)STM_SETIMAGE,(WPARAM)IMAGE_BITMAP,(LPARAM) hbmp[i]);
+   SendMessage((HWND) HB_PARNL(1,5),(UINT)STM_SETIMAGE,(WPARAM)IMAGE_BITMAP,(LPARAM) hbmp[i]);
    ReleaseDC((HWND) HB_PARNL(1,5),imgDC);
    DeleteDC(tmpDC);
 }
@@ -3935,7 +3935,7 @@ HB_FUNC( RR_PLAYFTHUMB )
    PlayEnhMetaFile(tmpDC ,hh,&rect);
    DeleteEnhMetaFile(hh);
    TextOut(tmpDC,(int)rect.right/2-5,(int)rect.bottom/2-5,hb_parc(3),hb_parclen(3));
-   SendMessage((HWND) HB_PARNL (1,5),(UINT)STM_SETIMAGE,(WPARAM)IMAGE_BITMAP,(LPARAM) hbmp[i]);
+   SendMessage((HWND) HB_PARNL(1,5),(UINT)STM_SETIMAGE,(WPARAM)IMAGE_BITMAP,(LPARAM) hbmp[i]);
    ReleaseDC((HWND) HB_PARNL(1,5),imgDC);
    DeleteDC(tmpDC);
 }

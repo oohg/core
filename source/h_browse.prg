@@ -379,14 +379,13 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, aHeaders, a
 
    ::lChangeBeforeEdit := .F.
 
-   // Must be set after control is initialized
+   ::Value := nValue
+
    ::Define4( bOnChange, bOnDblClick, bOnGotFocus, bOnLostFocus, bOnEditCell, bOnEnter, ;
               bOnCheck, bOnAbortEdit, bOnClick, bBeforeColMove, bAfterColMove, ;
               bBeforeColSize, bAfterColSize, bBeforeAutoFit, bOnDelete, ;
               bDelWhen, bOnAppend, bHeadRClick, bOnRClick, bOnEditEnd, bOnRowRefresh, ;
               bbeforeditcell, bEditCellValue )
-
-   ::Value := nValue
 
    Return Self
 

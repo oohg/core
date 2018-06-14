@@ -231,6 +231,11 @@ METHOD Define( ControlName, ParentForm, x, y, w, rows, value, fontname, ;
       ::SelectFirstItem()
    EndIf
 
+   ::oListBox := TListCombo():Define( Self, ComboBoxGetListhWnd( ::hWnd ) )
+   If displaychange
+      ::oEditBox := TEditCombo():Define( Self, GetWindow( ::hWnd, GW_CHILD ) )
+   EndIf
+
    ::Value := Value
 
    ASSIGN ::OnClick       VALUE ondisplaychangeprocedure TYPE "B"
@@ -240,11 +245,6 @@ METHOD Define( ControlName, ParentForm, x, y, w, rows, value, fontname, ;
    ASSIGN ::OnEnter       VALUE uEnter                   TYPE "B"
    ASSIGN ::onListDisplay VALUE onListDisplay            TYPE "B"
    ASSIGN ::onListClose   VALUE onListClose              TYPE "B"
-
-   ::oListBox := TListCombo():Define( Self, ComboBoxGetListhWnd( ::hWnd ) )
-   If displaychange
-      ::oEditBox := TEditCombo():Define( Self, GetWindow( ::hWnd, GW_CHILD ) )
-   EndIf
 
    RETURN Self
 
