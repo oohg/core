@@ -86,7 +86,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
                readonly, break, HelpId, invisible, notabstop, bold, italic, ;
                underline, strikeout, field, backcolor, fontcolor, novscroll, ;
                nohscroll, lRtl, lNoBorder, OnFocusPos, OnHScroll, OnVScroll, ;
-               lDisabled ) CLASS TEdit
+               lDisabled, nInsType ) CLASS TEdit
 
    Local nStyle := ES_MULTILINE + ES_WANTRETURN, nStyleEx := 0
 
@@ -103,7 +103,9 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
               lostfocus, gotfocus, change, nil, .f., HelpId, ;
               readonly, bold, italic, underline, strikeout, field, ;
               backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
-              .F., nStyleEx, lNoBorder, OnFocusPos, lDisabled )
+              .F., nStyleEx, lNoBorder, OnFocusPos, lDisabled, ;
+              NIL, NIL, NIL, NIL, NIL, NIL, ;
+              NIL, NIL, nInsType ) 
 
    ASSIGN ::OnHScroll VALUE OnHScroll TYPE "B"
    ASSIGN ::OnVScroll VALUE OnVScroll TYPE "B"

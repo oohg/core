@@ -95,6 +95,7 @@ STANDARD VERSION
       [ <dummy06: ONVSCROLL, ON VSCROLL> <vscroll> ] ;
       [ <dummy07: ONHSCROLL, ON HSCROLL> <hscroll> ] ;
       [ <disabled: DISABLED> ] ;
+      [ INSERTTYPE <nInsType> ] ;
    => ;
       [ <obj> := ] TEdit():Define( <(name)>, <(parent)>, <col>, <row>, <w>, ;
             <h>, <value>, <f>, <s>, <tooltip>, <maxlength>, <{gotfocus}>, ;
@@ -102,7 +103,7 @@ STANDARD VERSION
             <.invisible.>, <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, ;
             <.strikeout.>, <(field)>, <backcolor>, <fontcolor>, <.novscroll.>, ;
             <.nohscroll.>, <.rtl.>, <.noborder.>, <focusedpos>, <{hscroll}>, ;
-            <{vscroll}>, <.disabled.> )
+            <{vscroll}>, <.disabled.>, <nInsType> )
 
 /*---------------------------------------------------------------------------
 SPLITBOX VERSION
@@ -141,6 +142,7 @@ SPLITBOX VERSION
       [ <dummy06: ONVSCROLL, ON VSCROLL> <vscroll> ] ;
       [ <dummy07: ONHSCROLL, ON HSCROLL> <hscroll> ] ;
       [ <disabled: DISABLED> ] ;
+      [ INSERTTYPE <nInsType> ] ;
    => ;
       [ <obj> := ] TEdit():Define( <(name)>, <(parent)>,,, <w>, <h>, <value>, ;
             <f>, <s>, <tooltip>, <maxlength>, <{gotfocus}>, <{change}>, ;
@@ -148,4 +150,4 @@ SPLITBOX VERSION
             <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
             <(field)>, <backcolor>, <fontcolor>, <.novscroll.>, <.nohscroll.>, ;
             <.rtl.>, <.noborder.>, <focusedpos>, <{hscroll}>, <{vscroll}>, ;
-            <.disabled.> )
+            <.disabled.>, <nInsType> )

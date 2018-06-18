@@ -79,7 +79,7 @@
       [ <invisible: INVISIBLE> ] ;
       [ <disabled: DISABLED> ] ;
       [ SUBCLASS <subclass> ] ;
-=>;
+=> ;
       [ <obj> := ] _OOHG_SelectSubClass( TFrame(), [ <subclass>() ] ): ;
          Define( <(name)>, <(parent)>, <row>, <col>, <w>, <h>, <caption>, ;
          <fontname>, <fontsize>, <.opaque.>, <.bold.>, <.italic.>, ;

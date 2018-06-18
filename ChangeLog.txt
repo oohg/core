@@ -8,6 +8,29 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-06-18 11:32 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog.txt
+     * Updated.
+   * core\include\i_altsyntax.ch
+   * core\include\i_editbox.ch
+   * core\include\i_richeditbox.ch
+   * core\source\h_editbox.prg
+   * core\source\h_richeditbox.prg
+     + INSERTTYPE clause to EDITBOX and RICHEDITBOX controls.
+   * core\include\i_frame.ch
+   * core\include\i_graph.ch
+   * core\include\i_grid.ch
+   * core\include\i_menu.ch
+     * Format.
+   * core\include\i_hyperlink.ch
+   * core\include\i_progressbar.ch
+   * core\include\i_spinner.ch
+     + SUBCLASS clause.
+   * core\source\h_grid.prg
+     ! ON CHANGE event is not fired when the selection
+       of a multiselect grid is changed by clicking on
+       an already selected item.
+
 2018-06-14 18:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt
      * Updated.

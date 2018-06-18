@@ -83,10 +83,11 @@
       [ HELPID <helpid> ] ;
       [ <invisible: INVISIBLE> ] ;
       [ <rtl: RTL> ] ;
+      [ SUBCLASS <subclass> ] ;
    => ;
-      [ <obj> := ] THyperLink():Define( ;
-            <(name)>, <(parent)>, <col>, <row>, <value>, <address>, ;
-            <width>, <height>, <fontname>, <fontsize>, <.bold.>, <.border.>, ;
-            <.clientedge.>, <.hscroll.>, <.vscroll.>, <.transparent.>, ;
-            [ <backcolor> ], [ <fontcolor> ], <tooltip>, <helpid>, ;
-            <.invisible.>, <.italic.>, <.autosize.>, <.handcursor.>, <.rtl.> )
+      [ <obj> := ] _OOHG_SelectSubClass( THyperLink(), [ <subclass>() ] ): ;
+         Define( <(name)>, <(parent)>, <col>, <row>, <value>, <address>, ;
+         <width>, <height>, <fontname>, <fontsize>, <.bold.>, <.border.>, ;
+         <.clientedge.>, <.hscroll.>, <.vscroll.>, <.transparent.>, ;
+         [ <backcolor> ], [ <fontcolor> ], <tooltip>, <helpid>, ;
+         <.invisible.>, <.italic.>, <.autosize.>, <.handcursor.>, <.rtl.> )

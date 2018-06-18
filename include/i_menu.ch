@@ -60,27 +60,27 @@
 
 
 #command ENABLE MENUITEM <control> OF <form>;
-         =>;
+         => ;
          GetControlObject( <(control)>, <(form)> ):Enabled := .T.
 
 #command DISABLE MENUITEM <control> OF <form>;
-         =>;
+         => ;
          GetControlObject( <(control)>, <(form)> ):Enabled := .F.
 
 #command CHECK MENUITEM <control> OF <form>;
-         =>;
+         => ;
          GetControlObject( <(control)>, <(form)> ):Checked := .T.
 
 #command UNCHECK MENUITEM <control> OF <form>;
-         =>;
+         => ;
          GetControlObject( <(control)>, <(form)> ):Checked := .F.
 
 #command HILITE MENUITEM <control> OF <form>;
-         =>;
+         => ;
          GetControlObject( <(control)>, <(form)> ):Hilited := .T.
 
 #command DEHILITE MENUITEM <control> OF <form>;
-         =>;
+         => ;
          GetControlObject( <(control)>, <(form)> ):Hilited := .F.
 
 #xcommand DEFINE MAIN MENU ;

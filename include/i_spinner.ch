@@ -88,8 +88,10 @@
       [ <noborder: NOBORDER> ] ;
       [ <disabled: DISABLED> ] ;
       [ <boundtext: BOUNDTEXT> ] ;
+      [ SUBCLASS <subclass> ] ;
    => ;
-      [ <obj> := ] TSpinner():Define( <(name)>, <(parent)>, <col>, <row>, <w>, ;
+      [ <obj> := ] _OOHG_SelectSubClass( TSpinner(), [ <subclass>() ] ): ;
+            Define( <(name)>, <(parent)>, <col>, <row>, <w>, ;
             <value>, <fontname>, <fontsize>, <rl>, <rh>, <tooltip>, <{change}>, ;
             <{lostfocus}>, <{gotfocus}>, <h>, <helpid>, <.invisible.>, ;
             <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;

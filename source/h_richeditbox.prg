@@ -104,7 +104,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
                readonly, break, HelpId, invisible, notabstop, bold, italic, ;
                underline, strikeout, field, backcolor, lRtl, lDisabled, ;
                selchange, fontcolor, nohidesel, OnFocusPos, novscroll, ;
-               nohscroll, file, type, OnHScroll, OnVScroll ) CLASS TEditRich
+               nohscroll, file, type, OnHScroll, OnVScroll, nInsType ) CLASS TEditRich
 
    Local ControlHandle, nStyle
 
@@ -143,6 +143,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
    ASSIGN ::OnChange    VALUE change     TYPE "B"
    ASSIGN ::OnSelChange VALUE selchange  TYPE "B"
    ASSIGN ::nOnFocusPos VALUE OnFocusPos TYPE "N"
+   ASSIGN ::nInsertType VALUE nInsType   TYPE "N"
 
    Return Self
 

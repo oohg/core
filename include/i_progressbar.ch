@@ -75,8 +75,10 @@
       [ FORECOLOR <barcolor> ] ;
       [ <rtl: RTL> ] ;
       [ MARQUEE <nVelocity> ] ;
+      [ SUBCLASS <subclass> ] ;
    => ;
-      [ <obj> := ] TProgressBar():Define( <(name)>, <(parent)>, <col>, ;
+      [ <obj> := ] _OOHG_SelectSubClass( TProgressBar(), [ <subclass>() ] ): ;
+            Define( <(name)>, <(parent)>, <col>, ;
             <row>, <w>, <h>, <lo>, <hi>, <tooltip>, <.vertical.>, ;
             <.smooth.>, <helpid>, <.invisible.>, <v>, [ <backcolor> ], ;
             [ <barcolor> ], <.rtl.>, <nVelocity> )

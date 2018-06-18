@@ -153,7 +153,7 @@
       POINTS <pointsarr> ;
       [ PENCOLOR <penrgb> ] ;
       [ PENWIDTH <penwidth> ] ;
-   =>;
+   => ;
       DrawPolyBezier( <(windowname)>, [<pointsarr>], [<penrgb>], <penwidth> )
 
 #xcommand ERASE WINDOW <windowname> ;

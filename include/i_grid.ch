@@ -168,7 +168,7 @@ STANDARD VERSION
       [ EDITCELLVALUE <edtval> ] ;
       [ <klc: KEYSLIKECLIPPER> ] ;
       [ <ctt: CELLTOOLTIP> ] ;
-   =>;
+   => ;
       [ <obj> := ] _OOHG_SelectSubClass( IIF( <.bycell.>, TGridByCell(), ;
             IIF( <.multiselect.>, TGridMulti(), TGrid() ) ), ;
             [ <subclass>() ] ):Define( <(name)>, <(parent)>, <col>, <row>, ;
@@ -301,7 +301,7 @@ SPLITBOX VERSION
       [ EDITCELLVALUE <edtval> ] ;
       [ <klc: KEYSLIKECLIPPER> ] ;
       [ <ctt: CELLTOOLTIP> ] ;
-   =>;
+   => ;
       [ <obj> := ] _OOHG_SelectSubClass( IIF( <.bycell.>, TGridByCell(), ;
             IIF( <.multiselect.>, TGridMulti(), TGrid() ) ), ;
             [ <subclass>() ] ):Define( <(name)>, <(parent)>, , , <w>, <h>, ;

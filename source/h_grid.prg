@@ -4006,6 +4006,7 @@ METHOD Value( uValue ) CLASS TGridMulti
          If Len( uValue ) > 0
             ListView_EnsureVisible( ::hWnd, uValue[ 1 ] )
          EndIf
+         ::DoChange()
          aRet := ListViewGetMultiSel( ::hWnd )
       EndIf
    Else
@@ -4014,7 +4015,7 @@ METHOD Value( uValue ) CLASS TGridMulti
 
    Return aRet
 
-FUNCTION aEqual( array1, array2 )
+FUNCTION AEqual( array1, array2 )
 
    Local lRet, nLen, i, cType
 
@@ -4039,7 +4040,7 @@ FUNCTION aEqual( array1, array2 )
          lRet := .F.
       ENDIF
    ELSE
-      MsgOOHGError( 'ArraysAreEqual: Argument is not an array !!!' )
+      MsgOOHGError( 'AEqual: Argument is not an array !!!' )
    ENDIF
 
    Return lRet
@@ -4110,6 +4111,11 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGridMulti
          Return Nil
       EndIf
 
+   ElseIf nNotify == LVN_ITEMCHANGED
+      Return Nil
+
+   ElseIf nNotify == NM_CLICK
+      ::DoChange()
    EndIf
 
    Return ::Super:Events_Notify( wParam, lParam )
