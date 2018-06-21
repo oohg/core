@@ -64,98 +64,101 @@
 #include "hbclass.ch"
 #include "i_windefs.ch"
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TImage FROM TControl
 
-   DATA Type            INIT "IMAGE" READONLY
-   DATA cPicture        INIT ""
-   DATA Stretch         INIT .F.
-   DATA AutoFit         INIT .T.
-   DATA bOnClick        INIT ""
-   DATA nWidth          INIT 100
-   DATA nHeight         INIT 100
-   DATA hImage          INIT nil
-   DATA ImageSize       INIT .F.
-   DATA lNoDIBSection   INIT .F.
-   DATA lNo3DColors     INIT .F.
-   DATA lNoTransparent  INIT .F.
-   DATA aExcludeArea    INIT {}
+   DATA aExcludeArea              INIT {}
+   DATA AutoFit                   INIT .T.
+   DATA bOnClick                  INIT ""
+   DATA cPicture                  INIT ""
+   DATA hImage                    INIT NIL
+   DATA ImageSize                 INIT .F.
+   DATA lNo3DColors               INIT .F.
+   DATA lNoDIBSection             INIT .F.
+   DATA lNoTransparent            INIT .F.
+   DATA nHeight                   INIT 100
+   DATA nWidth                    INIT 100
+   DATA Stretch                   INIT .F.
+   DATA Type                      INIT "IMAGE" READONLY
 
-   METHOD Define
-   METHOD Picture       SETGET
-   METHOD HBitMap       SETGET
-   METHOD Buffer        SETGET
-   METHOD OnClick       SETGET
-   METHOD ToolTip       SETGET
-   METHOD Events
-   METHOD SizePos
-   METHOD RePaint
-   METHOD Release
-   METHOD OriginalSize
-   METHOD CurrentSize
    METHOD Blend
+   METHOD Buffer                  SETGET
    METHOD Copy
+   METHOD CurrentSize
+   METHOD Define
+   METHOD Events
+   METHOD HBitMap                 SETGET
+   METHOD OnClick                 SETGET
+   METHOD OriginalSize
+   METHOD Picture                 SETGET
+   METHOD Release
+   METHOD RePaint
+   METHOD SizePos
+   METHOD ToolTip                 SETGET
 
    ENDCLASS
 
-METHOD Define( ControlName, ParentForm, x, y, FileName, w, h, ProcedureName, ;
-               HelpId, invisible, stretch, lWhiteBackground, lRtl, backcolor, ;
-               cBuffer, hBitMap, autofit, imagesize, ToolTip, Border, ClientEdge, ;
-               lNoLoadTrans, lNo3DColors, lNoDIB, lStyleTransp, aArea, lDisabled ) CLASS TImage
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Define( cControlName, uParentForm, nCol, nRow, cFileName, nWidth, nHeight, bOnClick, nHelpId, lInvisible, ;
+      lStretch, lWhiteBackground, lRtl, uBackColor, cBuffer, hBitMap, lAutofit, lImagesize, cToolTip, lBorder, ;
+      lClientEdge, lNoLoadTrans, lNo3DColors, lNoDIB, lStyleTransp, aArea, lDisabled, bOnChange ) CLASS TImage
 
-   Local ControlHandle, nStyle, nStyleEx
+   LOCAL nControlHandle, nStyle, nStyleEx
 
-   ASSIGN ::nCol           VALUE x            TYPE "N"
-   ASSIGN ::nRow           VALUE y            TYPE "N"
-   ASSIGN ::nWidth         VALUE w            TYPE "N"
-   ASSIGN ::nHeight        VALUE h            TYPE "N"
-   ASSIGN ::Stretch        VALUE stretch      TYPE "L"
-   ASSIGN ::AutoFit        VALUE autofit      TYPE "L"
-   ASSIGN ::ImageSize      VALUE imagesize    TYPE "L"
+   ASSIGN ::nCol           VALUE nCol         TYPE "N"
+   ASSIGN ::nRow           VALUE nRow         TYPE "N"
+   ASSIGN ::nWidth         VALUE nWidth       TYPE "N"
+   ASSIGN ::nHeight        VALUE nHeight      TYPE "N"
+   ASSIGN ::Stretch        VALUE lStretch     TYPE "L"
+   ASSIGN ::AutoFit        VALUE lAutofit     TYPE "L"
+   ASSIGN ::ImageSize      VALUE lImagesize   TYPE "L"
    ASSIGN ::lNoTransparent VALUE lNoLoadTrans TYPE "L"
    ASSIGN ::lNo3DColors    VALUE lNo3DColors  TYPE "L"
    ASSIGN ::lNoDIBSection  VALUE lNoDIB       TYPE "L"
    ASSIGN ::aExcludeArea   VALUE aArea        TYPE "A"
    ASSIGN lDisabled        VALUE lDisabled    TYPE "L" DEFAULT .F.
 
-   ::SetForm( ControlName, ParentForm,,,, BackColor,, lRtl )
-   If HB_IsLogical( lWhiteBackground ) .AND. lWhiteBackground
+   ::SetForm( cControlName, uParentForm, , , , uBackColor, , lRtl )
+   IF HB_ISLOGICAL( lWhiteBackground ) .AND. lWhiteBackground
       ::BackColor := WHITE
-   EndIf
+   ENDIF
 
-   nStyle := ::InitStyle( ,, Invisible, .T., lDisabled ) + ;
-             if( ValType( Border ) == "L" .AND. Border, WS_BORDER, 0 )
+   nStyle := ::InitStyle( , , lInvisible, .T., lDisabled ) + ;
+                iif( HB_ISLOGICAL( lBorder ) .AND. lBorder, WS_BORDER, 0 )
 
-   nStyleEx := if( ValType( ClientEdge ) == "L" .AND. ClientEdge, WS_EX_CLIENTEDGE, 0 )
-   IF HB_IsLogical( lStyleTransp ) .AND. lStyleTransp
+   nStyleEx := iif( HB_ISLOGICAL( lClientEdge ) .AND. lClientEdge, WS_EX_CLIENTEDGE, 0 )
+   IF HB_ISLOGICAL( lStyleTransp ) .AND. lStyleTransp
       nStyleEx += WS_EX_TRANSPARENT
    ENDIF
 
-   ControlHandle := InitImage( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, ::lRtl, nStyleEx )
+   nControlHandle := INITIMAGE( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, ::lRtl, nStyleEx )
 
-   ::Register( ControlHandle, ControlName, HelpId, , ToolTip )
+   ::Register( nControlHandle, cControlName, nHelpId, , cToolTip )
 
-   ::Picture := FileName
-   If ! ValidHandler( ::hImage )
+   ::Picture := cFileName
+   IF ! VALIDHANDLER( ::hImage )
       ::Buffer := cBuffer
-      If ! ValidHandler( ::hImage )
+      IF ! ValidHandler( ::hImage )
          ::HBitMap := hBitMap
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
-   ASSIGN ::OnClick VALUE ProcedureName TYPE "B"
+   ASSIGN ::OnClick  VALUE bOnClick  TYPE "B"
+   ASSIGN ::OnChange VALUE bOnChange TYPE "B"
 
-   Return Self
+   RETURN Self
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Picture( cPicture ) CLASS TImage
 
    LOCAL nAttrib, aPictSize
 
-   IF VALTYPE( cPicture ) $ "CM"
-      DeleteObject( ::hImage )
+   IF ValType( cPicture ) $ "CM"
+      DELETEOBJECT( ::hImage )
       ::cPicture := cPicture
 
       IF ::lNoDIBSection
-         aPictSize := _OOHG_SizeOfBitmapFromFile( cPicture )      // width, height, depth
+         aPictSize := _OOHG_SIZEOFBITMAPFROMFILE( cPicture )      // {width, height, depth}
 
          nAttrib := LR_DEFAULTCOLOR
          IF aPictSize[ 3 ] <= 8
@@ -171,141 +174,159 @@ METHOD Picture( cPicture ) CLASS TImage
       ENDIF
 
       // load image at full size
-      ::hImage := _OOHG_BitmapFromFile( Self, cPicture, nAttrib, .F. )
+      ::hImage := _OOHG_BITMAPFROMFILE( Self, cPicture, nAttrib, .F. )
       IF ::ImageSize
-         ::nWidth  := _OOHG_BitMapWidth( ::hImage )
-         ::nHeight := _OOHG_BitMapHeight( ::hImage )
+         ::nWidth  := _OOHG_BITMAPWIDTH( ::hImage )
+         ::nHeight := _OOHG_BITMAPHEIGHT( ::hImage )
       ENDIF
       ::RePaint()
+
+      ::DoEvent( ::OnChange, "CHANGE" )
    ENDIF
 
-   Return ::cPicture
+   RETURN ::cPicture
 
-*------------------------------------------------------------------------------*
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD HBitMap( hBitMap ) CLASS TImage
-*------------------------------------------------------------------------------*
-   If ValType( hBitMap ) $ "NP"
-      DeleteObject( ::hImage )
+
+   IF ValType( hBitMap ) $ "NP"
+      DELETEOBJECT( ::hImage )
       ::hImage := hBitMap
       IF ::ImageSize
-         ::nWidth  := _OOHG_BitMapWidth( ::hImage )
-         ::nHeight := _OOHG_BitMapHeight( ::hImage )
+         ::nWidth  := _OOHG_BITMAPWIDTH( ::hImage )
+         ::nHeight := _OOHG_BITMAPHEIGHT( ::hImage )
       ENDIF
       ::RePaint()
       ::cPicture := ""
-   EndIf
-Return ::hImage
 
-*------------------------------------------------------------------------------*
+      ::DoEvent( ::OnChange, "CHANGE" )
+   ENDIF
+
+   RETURN ::hImage
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Buffer( cBuffer ) CLASS TImage
-*------------------------------------------------------------------------------*
-   If VALTYPE( cBuffer ) $ "CM"
-      DeleteObject( ::hImage )
+
+   IF ValType( cBuffer ) $ "CM"
+      DELETEOBJECT( ::hImage )
       // load image at full size
-      ::hImage := _OOHG_BitmapFromBuffer( Self, cBuffer, .F. )
+      ::hImage := _OOHG_BITMAPFROMBUFFER( Self, cBuffer, .F. )
       IF ::ImageSize
-         ::nWidth  := _OOHG_BitMapWidth( ::hImage )
-         ::nHeight := _OOHG_BitMapHeight( ::hImage )
+         ::nWidth  := _OOHG_BITMAPWIDTH( ::hImage )
+         ::nHeight := _OOHG_BITMAPHEIGHT( ::hImage )
       ENDIF
       ::RePaint()
       ::cPicture := ""
-   EndIf
-Return nil
 
-*------------------------------------------------------------------------------*
+      ::DoEvent( ::OnChange, "CHANGE" )
+   ENDIF
+
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD OnClick( bOnClick ) CLASS TImage
-*------------------------------------------------------------------------------*
-   If PCOUNT() > 0
+
+   IF PCount() > 0
       ::bOnClick := bOnClick
-      WindowStyleFlag( ::hWnd, SS_NOTIFY, IF( ValType( bOnClick ) == "B", SS_NOTIFY, 0 ) )
-      TImage_SetNotify( Self, HB_IsBlock( bOnClick ) )
-   EndIf
-Return ::bOnClick
+      WINDOWSTYLEFLAG( ::hWnd, SS_NOTIFY, iif( HB_ISBLOCK( bOnClick ), SS_NOTIFY, 0 ) )
+      TIMAGE_SETNOTIFY( Self, HB_ISBLOCK( bOnClick ) )
+   ENDIF
 
-*------------------------------------------------------------------------------*
-METHOD ToolTip( cToolTip ) CLASS TImage
-*------------------------------------------------------------------------------*
-   If PCOUNT() > 0
-      TImage_SetToolTip( Self,  ( ValType( cToolTip ) $ "CM" .AND. ! Empty( cToolTip ) ) .OR. HB_IsBlock( cToolTip ) )
-   EndIf
-Return ::Super:ToolTip( cToolTip )
+   RETURN ::bOnClick
 
-*------------------------------------------------------------------------------*
-METHOD SizePos( Row, Col, Width, Height ) CLASS TImage
-*------------------------------------------------------------------------------*
-LOCAL uRet
-   uRet := ::Super:SizePos( Row, Col, Width, Height )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD ToolTip( uToolTip ) CLASS TImage
+
+   IF PCount() > 0
+      TIMAGE_SETTOOLTIP( Self,  ( ValType( uToolTip ) $ "CM" .AND. ! Empty( uToolTip ) ) .OR. HB_ISBLOCK( uToolTip ) )
+   ENDIF
+
+   RETURN ::Super:ToolTip( uToolTip )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD SizePos( nRow, nCol, nWidth, nHeight ) CLASS TImage
+
+   LOCAL uRet
+
+   uRet := ::Super:SizePos( nRow, nCol, nWidth, nHeight )
    ::RePaint()
-RETURN uRet
 
-*------------------------------------------------------------------------------*
+   RETURN uRet
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD RePaint() CLASS TImage
-*------------------------------------------------------------------------------*
-   IF ValidHandler( ::hImage )
-      IF ValidHandler( ::AuxHandle )
-         DeleteObject( ::AuxHandle )
+
+   IF VALIDHANDLER( ::hImage )
+      IF VALIDHANDLER( ::AuxHandle )
+         DELETEOBJECT( ::AuxHandle )
       ENDIF
-      ::AuxHandle := nil
+      ::AuxHandle := NIL
       ::Super:SizePos()
       IF ::Stretch .OR. ::AutoFit
-         ::AuxHandle := _OOHG_SetBitmap( Self, ::hImage, STM_SETIMAGE, ::Stretch, ::AutoFit )
+         ::AuxHandle := _OOHG_SETBITMAP( Self, ::hImage, STM_SETIMAGE, ::Stretch, ::AutoFit )
       ELSE
-         SendMessage( ::hWnd, STM_SETIMAGE, IMAGE_BITMAP, ::hImage )
+         SENDMESSAGE( ::hWnd, STM_SETIMAGE, IMAGE_BITMAP, ::hImage )
       ENDIF
       ::Parent:Redraw()
    ELSE
-      PaintBkGnd( ::hWnd, ::BackColor )
+      PAINTBKGND( ::hWnd, ::BackColor )
    ENDIF
-RETURN Self
 
-*------------------------------------------------------------------------------*
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Release() CLASS TImage
-*------------------------------------------------------------------------------*
-   DeleteObject( ::hImage )
-RETURN ::Super:Release()
 
-*------------------------------------------------------------------------------*
+   DELETEOBJECT( ::hImage )
+
+   RETURN ::Super:Release()
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD OriginalSize() CLASS TImage
-*------------------------------------------------------------------------------*
-Local aRet
-   IF ValidHandler( ::hImage )
-      aRet := { _OOHG_BitMapWidth( ::hImage ), _OOHG_BitMapHeight( ::hImage ) }
+
+   LOCAL aRet
+
+   IF VALIDHANDLER( ::hImage )
+      aRet := { _OOHG_BITMAPWIDTH( ::hImage ), _OOHG_BITMAPHEIGHT( ::hImage ) }
    ELSE
       aRet := { 0, 0 }
    ENDIF
-RETURN aRet
 
-*------------------------------------------------------------------------------*
+   RETURN aRet
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD CurrentSize() CLASS TImage
-*------------------------------------------------------------------------------*
-Local aRet
-   IF ValidHandler( ::AuxHandle )
-      aRet := { _OOHG_BitMapWidth( ::AuxHandle ), _OOHG_BitMapHeight( ::AuxHandle ) }
-   ELSEIF ValidHandler( ::hImage )
-      aRet := { _OOHG_BitMapWidth( ::hImage ), _OOHG_BitMapHeight( ::hImage ) }
+
+   LOCAL aRet
+
+   IF VALIDHANDLER( ::AuxHandle )
+      aRet := { _OOHG_BITMAPWIDTH( ::AuxHandle ), _OOHG_BITMAPHEIGHT( ::AuxHandle ) }
+   ELSEIF VALIDHANDLER( ::hImage )
+      aRet := { _OOHG_BITMAPWIDTH( ::hImage ), _OOHG_BITMAPHEIGHT( ::hImage ) }
    ELSE
       aRet := { 0, 0 }
    ENDIF
-RETURN aRet
 
-*------------------------------------------------------------------------------*
+   RETURN aRet
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Blend( hSprite, nImgX, nImgY, nImgW, nImgH, aColor, nSprX, nSprY, nSprW, nSprH ) CLASS TImage
-*------------------------------------------------------------------------------*
-   _OOHG_BlendImage( ::hImage, nImgX, nImgY, nImgW, nImgH, hSprite, aColor, nSprX, nSprY, nSprW, nSprH )
+
+   _OOHG_BLENDIMAGE( ::hImage, nImgX, nImgY, nImgW, nImgH, hSprite, aColor, nSprX, nSprY, nSprW, nSprH )
    ::RePaint()
-RETURN Self
 
-*------------------------------------------------------------------------------*
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Copy( lAsDIB ) CLASS TImage
-*------------------------------------------------------------------------------*
+
    DEFAULT lAsDIB TO ! ::lNoDIBSection
-   // Do not forget to call DeleteObject
-RETURN _OOHG_CopyBitmap( ::hImage, 0, 0 )
+
+   RETURN _OOHG_COPYBITMAP( ::hImage, 0, 0 )      // Do not forget to call DeleteObject
 
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 #pragma BEGINDUMP
-
-#define s_Super s_TControl
 
 #include "hbapi.h"
 #include "hbapiitm.h"
@@ -316,14 +337,18 @@ RETURN _OOHG_CopyBitmap( ::hImage, 0, 0 )
 #include <commctrl.h>
 #include "oohg.h"
 
+#define s_Super s_TControl
+
 static WNDPROC lpfnOldWndProc = 0;
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
    return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
 }
 
-HB_FUNC( INITIMAGE )   // ( hWnd, hMenu, nCol, nRow, nWidth, nHeight, nStyle, lRtl, nStyleEx )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( INITIMAGE )          /* FUNCTION InitImage( hWnd, hMenu, nCol, nRow, nWidth, nHeight, nStyle, lRtl, nStyleEx ) -> hWnd */
 {
    HWND h;
    int Style, StyleEx;
@@ -336,11 +361,12 @@ HB_FUNC( INITIMAGE )   // ( hWnd, hMenu, nCol, nRow, nWidth, nHeight, nStyle, lR
                        hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
                        HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL ) ;
 
-   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( h, GWL_WNDPROC, ( LONG ) SubClassFunc );
+   lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( h, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
 
    HWNDret( h );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 BOOL PtInExcludeArea( PHB_ITEM pArea, int x, int y )
 {
    PHB_ITEM pSector;
@@ -377,12 +403,13 @@ BOOL PtInExcludeArea( PHB_ITEM pArea, int x, int y )
    return FALSE;
 }
 
-HB_FUNC_STATIC( TIMAGE_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TImage
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC_STATIC( TIMAGE_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TImage -> nRet */
 {
-   HWND hWnd      = ( HWND )   hb_parnl( 1 );
-   UINT message   = ( UINT )   hb_parni( 2 );
-   WPARAM wParam  = ( WPARAM ) hb_parni( 3 );
-   LPARAM lParam  = ( LPARAM ) hb_parnl( 4 );
+   HWND hWnd = HWNDparam( 1 );
+   UINT message = (UINT) hb_parni( 2 );
+   WPARAM wParam = (WPARAM) hb_parni( 3 );
+   LPARAM lParam = (LPARAM) HB_PARNL( 4 );
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
    POINT pt;
@@ -427,7 +454,8 @@ HB_FUNC_STATIC( TIMAGE_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam )
    }
 }
 
-HB_FUNC( TIMAGE_SETNOTIFY )   // ( oSelf, lHit )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( TIMAGE_SETNOTIFY )          /* FUNCTION TImage_SetNotify( Self, lHit ) -> NIL */
 {
    PHB_ITEM pSelf = hb_param( 1, HB_IT_ANY );
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
@@ -436,7 +464,8 @@ HB_FUNC( TIMAGE_SETNOTIFY )   // ( oSelf, lHit )
    hb_ret();
 }
 
-HB_FUNC( TIMAGE_SETTOOLTIP )   // ( oSelf, lShow )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( TIMAGE_SETTOOLTIP )          /* FUNCTION TImage_SetToolTip( Self, lShow ) -> NIL */
 {
    PHB_ITEM pSelf = hb_param( 1, HB_IT_ANY );
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );

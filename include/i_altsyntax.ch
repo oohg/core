@@ -1685,7 +1685,8 @@ IMAGE
             _OOHG_ActiveControlNoDIBSection, ;
             _OOHG_ActiveControlTransparent, ;
             _OOHG_ActiveControlExcludeArea, ;
-            _OOHG_ActiveControlDisabled )
+            _OOHG_ActiveControlDisabled, ;
+            _OOHG_ActiveControlOnChange )
 
 /*---------------------------------------------------------------------------
 ANIGIF

@@ -86,6 +86,7 @@
       [ <style: TRANSPARENT> ] ;
       [ EXCLUDEAREA <area> ] ;
       [ <disabled: DISABLED> ] ;
+      [ <dummy3: ONCHANGE, ON CHANGE> <change> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TImage(), [ <subclass>() ] ):Define( ;
             <(name)>, <(parent)>, <col>, <row>, <filename>, <w>, <h>, ;
@@ -93,4 +94,4 @@
             <.whitebackground.>, <.rtl.>, <backcolor>, <buffer>, <hbitmap>, ;
             ! <.noresize.>, <.imagesize.>, <tooltip>, <.border.>, ;
             <.clientedge.>, <.notrans.>, <.no3dcolors.>, <.nodib.>, <.style.>, ;
-            <area>, <.disabled.> )
+            <area>, <.disabled.>, <{change}> )

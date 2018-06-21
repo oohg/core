@@ -8,6 +8,23 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-06-20 22:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog.txt
+     * Updated.
+   * core\include\i_altsyntax.ch
+   * core\include\i_image.ch
+     + ON CHANGE to IMAGE control.
+   * core\include\oohg.h
+     * Some defines for 64 bit support.
+   * core\source\h_image.prg
+     * Format.
+     + ON CHANGE event.
+     * Replaced SetWindowLong call by SetWindowLongPtr call.
+     * Replaced LONG cast by LONG_PTR cast.
+     * Replaced HWND cast by HWNDparam cast.
+     * Replaced hb_parnl call by HB_PARNL call.
+     ; This module should be 64 bit ready.
+
 2018-06-18 11:32 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt
      * Updated.
