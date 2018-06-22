@@ -644,7 +644,7 @@ HB_FUNC( INITTOOLBAR )
 
    hwndTB = CreateWindowEx( ExStyle, TOOLBARCLASSNAME, (LPSTR) NULL, Style, 0, 0, 0, 0, hwnd, (HMENU) hb_parni( 3 ), GetModuleHandle( NULL ), NULL );
 
-   lpfnOldWndProc = (WNDPROC) SetWindowLong( (HWND) hwndTB, GWL_WNDPROC, (LONG) SubClassFunc );
+   lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hwndTB, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
 
    if( hb_parni( 6 ) && hb_parni( 7 ) )
    {

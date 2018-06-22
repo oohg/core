@@ -1988,7 +1988,7 @@ HB_FUNC( EVENTS_COLOR_INTAB )
    BOOL bTransparent;
    BOOL bDefault;
    HWND hwnd;
-   LONG style;
+   LONG_PTR style;
 
    if( oSelf->lFontColor != -1 )
    {
@@ -2010,7 +2010,7 @@ HB_FUNC( EVENTS_COLOR_INTAB )
 
       if( bTransparent || bDefault )
       {
-         style = GetWindowLong( hwnd, GWL_STYLE );
+         style = GetWindowLongPtr( hwnd, GWL_STYLE );
 
          if( style & TCS_BUTTONS )
          {

@@ -536,7 +536,7 @@ HB_FUNC ( GETSYSCOLOR )
 
 HB_FUNC ( SETWINDOWLONG )
 {
-   hb_retnl( SetWindowLong( HWNDparam( 1 ), hb_parni( 2 ), hb_parnl( 3 ) ) );
+   HB_RETNL( SetWindowLongPtr( HWNDparam( 1 ), hb_parni( 2 ), HB_PARNL( 3 ) ) );
 }
 
 /**************************************************************************************/

@@ -1626,7 +1626,7 @@ HB_FUNC( INITTABCONTROL )
 
    TabCtrl_SetCurSel( hbutton, hb_parni( 8 ) - 1 );
 
-   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFunc );
+   lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hbutton, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
 
    HWNDret( hbutton );
 }

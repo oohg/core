@@ -426,7 +426,7 @@ HB_FUNC( INITTOOLTIP )
 
    if( htooltip )
    {
-      lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) htooltip, GWL_WNDPROC, ( LONG ) SubClassFunc );
+      lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( htooltip, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
    }
 
    HWNDret( htooltip );

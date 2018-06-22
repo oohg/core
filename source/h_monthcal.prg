@@ -496,7 +496,7 @@ HB_FUNC( INITMONTHCAL )
                                hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
                                hwnd, HMENUparam( 2 ), GetModuleHandle( NULL ), NULL ) ;
 
-   lpfnOldWndProc = (WNDPROC) SetWindowLong( (HWND) hmonthcal, GWL_WNDPROC, (LONG) SubClassFunc );
+   lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hmonthcal, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
 
    HWNDret( hmonthcal );
 }
@@ -507,7 +507,7 @@ HB_FUNC( ADJUSTMONTHCALSIZE )
    RECT rMin;
    int iToday;
 
-   if( ( GetWindowLong( hWnd, GWL_STYLE ) & MCS_NOTODAY ) == MCS_NOTODAY )
+   if( ( GetWindowLongPtr( hWnd, GWL_STYLE ) & MCS_NOTODAY ) == MCS_NOTODAY )
    {
       iToday = 0;
    }

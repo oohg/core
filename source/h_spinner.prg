@@ -304,7 +304,7 @@ HB_FUNC( INITSPINNER )
    SendMessage ( hupdown, UDM_SETBUDDY, ( WPARAM ) hb_parnl( 11 ), ( LPARAM ) NULL );
    SendMessage ( hupdown, UDM_SETRANGE32, (WPARAM) hb_parni( 7 ), ( LPARAM ) hb_parni( 8 ) );
 
-   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hupdown, GWL_WNDPROC, ( LONG ) SubClassFunc );
+   lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hupdown, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
 
    HWNDret( hupdown );
 }

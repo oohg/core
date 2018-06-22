@@ -289,7 +289,7 @@ HB_FUNC( INITSPLITBOX )
    rbi.himl   = ( HIMAGELIST ) NULL;
    SendMessage( hwndRB, RB_SETBARINFO, 0, ( LPARAM ) &rbi );
 
-   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( hwndRB, GWL_WNDPROC, ( LONG ) SubClassFunc );
+   lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hwndRB, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
 
    HWNDret( hwndRB );
 }

@@ -200,7 +200,7 @@ HB_FUNC( INITFRAME )
    hbutton = CreateWindowEx( StyleEx, "BUTTON", hb_parc( 7 ), Style,
              hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
              hwnd, ( HMENU ) hb_parni( 2 ), GetModuleHandle( NULL ), NULL );
-   lpfnOldWndProcA = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFuncA );
+   lpfnOldWndProcA = (WNDPROC) SetWindowLongPtr( hbutton, GWL_WNDPROC, (LONG_PTR) SubClassFuncA );
 
    HWNDret( hbutton );
 }

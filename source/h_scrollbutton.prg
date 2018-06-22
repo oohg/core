@@ -118,7 +118,7 @@ HB_FUNC( INITVSCROLLBARBUTTON )
    hbutton = CreateWindow( "static", "", Style, hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ),
                            ( HWND ) hb_parnl( 1 ), ( HMENU ) NULL, GetModuleHandle( NULL ), NULL );
 
-   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFunc );
+   lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hbutton, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
 
    hb_retnl( ( LONG ) hbutton );
 }

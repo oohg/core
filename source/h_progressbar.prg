@@ -356,7 +356,7 @@ HB_FUNC( INITPROGRESSBAR )          /* FUNCTION InitProgressBar( ContainerhWnd, 
    SendMessage( hbutton, PBM_SETRANGE, 0, MAKELONG( hb_parni( 7 ), hb_parni( 8 ) ) );
    SendMessage( hbutton, PBM_SETPOS, (WPARAM) hb_parni( 12 ), 0 );
 
-   lpfnOldWndProc = (WNDPROC) SetWindowLong( (HWND) hbutton, GWL_WNDPROC, (LONG) SubClassFunc );
+   lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hbutton, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
 
    HWNDret( hbutton );
 }

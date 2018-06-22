@@ -464,7 +464,7 @@ HB_FUNC( INITLISTBOX )
                              hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
                              hwnd, (HMENU) hb_parni( 2 ), GetModuleHandle( NULL ), NULL );
 
-   lpfnOldWndProc = (WNDPROC) SetWindowLong( (HWND) hbutton, GWL_WNDPROC, (LONG) SubClassFunc );
+   lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hbutton, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
 
    if( hb_parl( 9 ) )
       MakeDragList( hbutton );

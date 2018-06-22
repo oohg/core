@@ -4506,11 +4506,11 @@ HB_FUNC_STATIC( TXBROWSE_ADJUSTRIGHTSCROLL )
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
-   LONG lStyle;
+   LONG_PTR lStyle;
    BOOL bChanged = 0;
    PHB_ITEM pVScroll, pRet;
 
-   lStyle = GetWindowLong( oSelf->hWnd, GWL_STYLE );
+   lStyle = GetWindowLongPtr( oSelf->hWnd, GWL_STYLE );
    if( lStyle & WS_VSCROLL )
    {
       lStyle = ( lStyle & WS_HSCROLL ) ? 1 : 0;

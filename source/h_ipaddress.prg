@@ -198,7 +198,7 @@ HB_FUNC( INITIPADDRESS )
                 hb_parni( 3 ), hb_parni( 4 ) ,hb_parni( 5 ), hb_parni( 6 ),
                 hWnd, HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
 
-   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hIpAddress, GWL_WNDPROC, ( LONG ) SubClassFunc );
+   lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hIpAddress, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
 
    HWNDret( hIpAddress );
 }

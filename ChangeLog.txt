@@ -8,6 +8,45 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-06-22 17:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog.txt
+     * Updated.
+   * core\source\bostaurus.prg
+   * core\source\c_dialogs.c
+   * core\source\c_winapimisc.c
+   * core\source\c_windows.c
+   * core\source\h_button.prg
+   * core\source\h_checkbox.prg
+   * core\source\h_controlmisc.prg
+   * core\source\h_datepicker.prg
+   * core\source\h_form.prg
+   * core\source\h_frame.prg
+   * core\source\h_grid.prg
+   * core\source\h_hotkeybox.prg
+   * core\source\h_internal.prg
+   * core\source\h_ipaddress.prg
+   * core\source\h_label.prg
+   * core\source\h_listbox.prg
+   * core\source\h_media.prg
+   * core\source\h_monthcal.prg
+   * core\source\h_picture.prg
+   * core\source\h_progressbar.prg
+   * core\source\h_radio.prg
+   * core\source\h_richeditbox.prg
+   * core\source\h_scroll.prg
+   * core\source\h_scrollbutton.prg
+   * core\source\h_slider.prg
+   * core\source\h_tab.prg
+   * core\source\h_textarray.prg
+   * core\source\h_textbox.prg
+   * core\source\h_toolbar.prg
+   * core\source\h_tooltip.prg
+   * core\source\h_tree.prg
+   * core\source\h_windows.prg
+   * core\source\h_xbrowse.prg
+   * core\source\winprint.prg
+     * Some changes for 64 bit support.
+
 2018-06-20 22:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt
      * Updated.

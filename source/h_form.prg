@@ -1430,7 +1430,7 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
          hb_vmPush( pSelf );
          HWNDpush( hWnd );
          hb_vmPushLong( message );
-         hb_vmPushLong( wParam );
+         hb_vmPushLong( wParam );             // TODO: hb_vmPushNumInt( wParam );
          hb_vmPushLong( lParam );
          hb_vmDo( 5 );
          break;
@@ -2929,7 +2929,7 @@ int _OOHG_SearchFormHandleInArray( HWND hWnd )
       #ifdef OOHG_HWND_POINTER
          if( hWnd == ( HWND ) hb_arrayGetPtr( _OOHG_aFormhWnd, ulCount ) )
       #else
-         if( ( LONG ) hWnd == hb_arrayGetNL( _OOHG_aFormhWnd, ulCount ) )
+         if( (LONG_PTR) hWnd == HB_ARRAYGETNL( _OOHG_aFormhWnd, ulCount ) )
       #endif
       {
          ulPos = ulCount;
@@ -3171,8 +3171,8 @@ HB_FUNC( REGISTERWINDOW )
    }
 
    hb_reta( 2 );
-   HB_STORNL( (LONG) hbrush, -1, 1 );
-   HB_STORL( (LONG) bError, -1, 2 );
+   HB_STORNL( (LONG_PTR) hbrush, -1, 1 );
+   HB_STORL( (int) bError, -1, 2 );
 }
 
 HB_FUNC( UNREGISTERWINDOW )

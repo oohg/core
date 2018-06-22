@@ -1366,9 +1366,10 @@ WORD SaveDIB(HDIB hDib, LPSTR lpFileName)
 HB_FUNC( _UPDATERTL )
 {
    HWND hwnd;
-   LONG myret;
+   LONG_PTR myret;
+
    hwnd = HWNDparam( 1 );
-   myret = GetWindowLong( hwnd, GWL_EXSTYLE );
+   myret = GetWindowLongPtr( hwnd, GWL_EXSTYLE );
    if( hb_parnl( 2 ) )
    {
       myret = myret |  WS_EX_LTRREADING |  WS_EX_LEFT |  WS_EX_LEFTSCROLLBAR;
@@ -1381,7 +1382,7 @@ HB_FUNC( _UPDATERTL )
 //      myret = myret                    |  WS_EX_LTRREADING |  WS_EX_LEFT;
 //      myret = myret &~ WS_EX_LAYOUTRTL &~ WS_EX_RTLREADING &~ WS_EX_RIGHT;
    }
-   SetWindowLong( hwnd, GWL_EXSTYLE, myret );
+   SetWindowLongPtr( hwnd, GWL_EXSTYLE, myret );
 
    hb_retni( myret );
 }
@@ -1413,63 +1414,63 @@ HB_FUNC( GETSYSTEMMETRICS )
 
 HB_FUNC( GETWINDOWSTYLE )
 {
-   hb_retnl( GetWindowLong( HWNDparam( 1 ), GWL_STYLE ) );
+   HB_RETNL( GetWindowLongPtr( HWNDparam( 1 ), GWL_STYLE ) );
 }
 
 HB_FUNC( SETWINDOWEXSTYLE )
 {
-   hb_retnl( SetWindowLong( HWNDparam( 1 ), GWL_EXSTYLE, hb_parnl( 2 ) ) );
+   HB_RETNL( SetWindowLongPtr( HWNDparam( 1 ), GWL_EXSTYLE, HB_PARNL( 2 ) ) );
 }
 
 HB_FUNC( SETWINDOWSTYLE )
 {
-   hb_retnl( SetWindowLong( HWNDparam( 1 ), GWL_STYLE, hb_parnl( 2 ) ) );
+   HB_RETNL( SetWindowLongPtr( HWNDparam( 1 ), GWL_STYLE, HB_PARNL( 2 ) ) );
 }
 
 HB_FUNC( ISWINDOWSTYLE )
 {
-   LONG ulRequest = hb_parnl( 2 );
+   LONG_PTR ulRequest = HB_PARNL( 2 );
 
-   hb_retl( ( GetWindowLong( HWNDparam( 1 ), GWL_STYLE ) & ulRequest ) == ulRequest );
+   hb_retl( ( GetWindowLongPtr( HWNDparam( 1 ), GWL_STYLE ) & ulRequest ) == ulRequest );
 }
 
 HB_FUNC( ISWINDOWEXSTYLE )
 {
-   LONG ulRequest = hb_parnl( 2 );
+   LONG_PTR ulRequest = HB_PARNL( 2 );
 
-   hb_retl( ( GetWindowLong( HWNDparam( 1 ), GWL_EXSTYLE ) & ulRequest ) == ulRequest );
+   hb_retl( ( GetWindowLongPtr( HWNDparam( 1 ), GWL_EXSTYLE ) & ulRequest ) == ulRequest );
 }
 
 HB_FUNC( WINDOWSTYLEFLAG )
 {
    HWND hWnd;
-   long lMask;
+   LONG_PTR lMask;
 
    hWnd = HWNDparam( 1 );
-   lMask = hb_parnl( 2 );
+   lMask = HB_PARNL( 2 );
    if( HB_ISNUM( 3 ) )
    {
-      SetWindowLong( hWnd, GWL_STYLE, ( ( GetWindowLong( hWnd, GWL_STYLE ) & ( ~ lMask ) ) | ( hb_parnl( 3 ) & lMask ) ) );
+      SetWindowLongPtr( hWnd, GWL_STYLE, ( ( GetWindowLongPtr( hWnd, GWL_STYLE ) & ( ~ lMask ) ) | ( HB_PARNL( 3 ) & lMask ) ) );
       RedrawWindow( hWnd, 0, 0, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
    }
 
-   hb_retnl( GetWindowLong( HWNDparam( 1 ), GWL_STYLE ) & hb_parnl( 2 ) );
+   HB_RETNL( GetWindowLongPtr( HWNDparam( 1 ), GWL_STYLE ) & HB_PARNL( 2 ) );
 }
 
 HB_FUNC( WINDOWEXSTYLEFLAG )
 {
    HWND hWnd;
-   long lMask;
+   LONG_PTR lMask;
 
    hWnd = HWNDparam( 1 );
-   lMask = hb_parnl( 2 );
+   lMask = HB_PARNL( 2 );
    if( HB_ISNUM( 3 ) )
    {
-      SetWindowLong( hWnd, GWL_EXSTYLE, ( ( GetWindowLong( hWnd, GWL_EXSTYLE ) & ( ~ lMask ) ) | ( hb_parnl( 3 ) & lMask ) ) );
+      SetWindowLongPtr( hWnd, GWL_EXSTYLE, ( ( GetWindowLongPtr( hWnd, GWL_EXSTYLE ) & ( ~ lMask ) ) | ( hb_parnl( 3 ) & lMask ) ) );
       RedrawWindow( hWnd, 0, 0, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
    }
 
-   hb_retnl( GetWindowLong( HWNDparam( 1 ), GWL_EXSTYLE ) & hb_parnl( 2 ) );
+   HB_RETNL( GetWindowLongPtr( HWNDparam( 1 ), GWL_EXSTYLE ) & HB_PARNL( 2 ) );
 }
 
 HB_FUNC( ANIMATEWINDOW )                // hWnd, nTime, nFlags, lHide
@@ -1565,7 +1566,7 @@ HB_FUNC( SETLAYEREDWINDOWATTRIBUTES )   // hWnd, color, opacity, flag (LWA_COLOR
       hb_retl( FALSE );
    }
 
-   SetWindowLong( hWnd, GWL_EXSTYLE, GetWindowLong( hWnd, GWL_EXSTYLE ) | WS_EX_LAYERED );
+   SetWindowLongPtr( hWnd, GWL_EXSTYLE, GetWindowLongPtr( hWnd, GWL_EXSTYLE ) | WS_EX_LAYERED );
    bRet = ( pfnSetLayeredWindowAttributes )( hWnd, crKey, bAlpha, dwFlags );
 
    FreeLibrary( hLib );

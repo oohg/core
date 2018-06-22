@@ -469,7 +469,7 @@ HB_FUNC( INITSCROLLBAR )  // ( hWnd, nCol, nRow, nWidth, nHeight, lRtl, nType )
                    1     // redraw flag
  );
 
-   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hscrollbar, GWL_WNDPROC, ( LONG ) SubClassFunc );
+   lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hscrollbar, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
 
    HWNDret( hscrollbar );
 }
@@ -514,10 +514,10 @@ HB_FUNC( ISSCROLLLOCKACTIVE )
 HB_FUNC( _SETSCROLL )
 {
    HWND hWnd = HWNDparam( 1 );
-   LONG nStyle;
+   LONG_PTR nStyle;
    BOOL bChange = 0;
 
-   nStyle = GetWindowLong( hWnd, GWL_STYLE );
+   nStyle = GetWindowLongPtr( hWnd, GWL_STYLE );
 
    if( HB_ISLOG( 2 ) )
    {
@@ -565,7 +565,7 @@ HB_FUNC( _SETSCROLL )
 
    if( bChange )
    {
-      SetWindowLong( hWnd, GWL_STYLE, nStyle );
+      SetWindowLongPtr( hWnd, GWL_STYLE, nStyle );
       SetWindowPos( hWnd, 0, 0, 0, 0, 0, SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOMOVE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_NOCOPYBITS | SWP_NOOWNERZORDER | SWP_NOSENDCHANGING );
    }
 

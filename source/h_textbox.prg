@@ -556,7 +556,7 @@ HB_FUNC( INITTEXTBOX )
       SendMessage( hedit, ( UINT ) EM_LIMITTEXT, ( WPARAM) hb_parni( 8 ), ( LPARAM ) 0 );
    }
 
-   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( hedit, GWL_WNDPROC, ( LONG ) SubClassFunc );
+   lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hedit, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
 
    HWNDret( hedit );
 }
@@ -615,7 +615,7 @@ HB_FUNC_STATIC( TTEXT_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
       case WM_KEYDOWN:
       case WM_LBUTTONDOWN:
       case WM_UNDO:
-         if( ( GetWindowLong( hWnd, GWL_STYLE ) & ES_READONLY ) == 0 )
+         if( ( GetWindowLongPtr( hWnd, GWL_STYLE ) & ES_READONLY ) == 0 )
          {
             HB_FUNCNAME( TTEXT_EVENTS2 )();
             break;
@@ -1189,7 +1189,7 @@ HB_FUNC_STATIC( TTEXTPICTURE_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lP
       case WM_KEYDOWN:
       case WM_LBUTTONDOWN:
       case WM_UNDO:
-         if( ( GetWindowLong( hWnd, GWL_STYLE ) & ES_READONLY ) == 0 )
+         if( ( GetWindowLongPtr( hWnd, GWL_STYLE ) & ES_READONLY ) == 0 )
          {
             HB_FUNCNAME( TTEXTPICTURE_EVENTS2 )();
             break;

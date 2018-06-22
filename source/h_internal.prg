@@ -313,7 +313,7 @@ HB_FUNC( INITINTERNAL )
              hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ),
              hwnd, NULL, GetModuleHandle( NULL ), NULL );
 
-   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( hbutton, GWL_WNDPROC, ( LONG ) SubClassFunc );
+   lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hbutton, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
 
    HWNDret( hbutton );
 }

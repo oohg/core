@@ -461,7 +461,7 @@ HB_FUNC( INITPICTURECONTROL )
              hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ),
              hwnd, NULL, GetModuleHandle( NULL ), NULL );
 
-   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( hbutton, GWL_WNDPROC, ( LONG ) SubClassFunc );
+   lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hbutton, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
 
    HWNDret( hbutton );
 }
@@ -679,7 +679,7 @@ HB_FUNC_STATIC( TPICTURE_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam
 
             ScrollInfo.cbSize = sizeof( SCROLLINFO );
             ScrollInfo.fMask = SIF_PAGE | SIF_POS | SIF_RANGE | SIF_TRACKPOS;
-            if( ! ( GetWindowLong( hWnd, GWL_STYLE ) & WS_HSCROLL ) || ! GetScrollInfo( oSelf->hWnd, SB_HORZ, &ScrollInfo ) )
+            if( ! ( GetWindowLongPtr( hWnd, GWL_STYLE ) & WS_HSCROLL ) || ! GetScrollInfo( oSelf->hWnd, SB_HORZ, &ScrollInfo ) )
             {
                memset( &ScrollInfo, 0, sizeof( ScrollInfo ) );
                wParam = 0;
@@ -744,7 +744,7 @@ HB_FUNC_STATIC( TPICTURE_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam
 
             ScrollInfo.cbSize = sizeof( SCROLLINFO );
             ScrollInfo.fMask = SIF_PAGE | SIF_POS | SIF_RANGE | SIF_TRACKPOS;
-            if( ! ( GetWindowLong( hWnd, GWL_STYLE ) & WS_VSCROLL ) || ! GetScrollInfo( oSelf->hWnd, SB_VERT, &ScrollInfo ) )
+            if( ! ( GetWindowLongPtr( hWnd, GWL_STYLE ) & WS_VSCROLL ) || ! GetScrollInfo( oSelf->hWnd, SB_VERT, &ScrollInfo ) )
             {
                memset( &ScrollInfo, 0, sizeof( ScrollInfo ) );
                wParam = 0;
@@ -897,7 +897,7 @@ HB_FUNC( TPICTURE_SETNOTIFY )   // ( oSelf, lHit )
    PHB_ITEM pSelf = hb_param( 1, HB_IT_ANY );
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
-   oSelf->lAux[ 0 ] = ( hb_parl( 2 ) || ( GetWindowLong( oSelf->hWnd, GWL_STYLE ) & ( WS_HSCROLL | WS_VSCROLL ) ) );
+   oSelf->lAux[ 0 ] = ( hb_parl( 2 ) || ( GetWindowLongPtr( oSelf->hWnd, GWL_STYLE ) & ( WS_HSCROLL | WS_VSCROLL ) ) );
    hb_ret();
 }
 
@@ -913,7 +913,7 @@ HB_FUNC( TPICTURE_SETTOOLTIP )   // ( oSelf, lShow )
 HB_FUNC( SCROLLS )   // ( hWnd, nWidth, nHeight )
 {
    HWND hWnd;
-   long lStyle, lOldStyle;
+   LONG_PTR lStyle, lOldStyle;
    int iWidth, iHeight, iClientWidth, iClientHeight;
    int iScrollWidth, iScrollHeight;
    int iRangeHorz, iRangeVert, iPosHorz, iPosVert, iPageHorz, iPageVert;
@@ -934,7 +934,7 @@ HB_FUNC( SCROLLS )   // ( hWnd, nWidth, nHeight )
    iScrollWidth  = GetSystemMetrics( SM_CXVSCROLL );
    iScrollHeight = GetSystemMetrics( SM_CXHSCROLL );
 
-   lOldStyle = lStyle = GetWindowLong( hWnd, GWL_STYLE );
+   lOldStyle = lStyle = GetWindowLongPtr( hWnd, GWL_STYLE );
    GetClientRect( hWnd, &rect );
    iClientWidth  = rect.right  - rect.left + ( ( lStyle & WS_VSCROLL ) ? iScrollWidth  : 0 );
    iClientHeight = rect.bottom - rect.top  + ( ( lStyle & WS_HSCROLL ) ? iScrollHeight : 0 );
@@ -1007,7 +1007,7 @@ HB_FUNC( SCROLLS )   // ( hWnd, nWidth, nHeight )
 
    if( bChanged )
    {
-      SetWindowLong( hWnd, GWL_STYLE, lStyle );
+      SetWindowLongPtr( hWnd, GWL_STYLE, lStyle );
       if( iRangeHorz || ( lOldStyle & WS_HSCROLL ) )
       {
          ScrollInfo.cbSize = sizeof( SCROLLINFO );

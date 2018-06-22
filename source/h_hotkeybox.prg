@@ -155,7 +155,7 @@ HB_FUNC( INITHOTKEYBOX )
                            GetModuleHandle( NULL ),
                            NULL );
 
-   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( hedit, GWL_WNDPROC, ( LONG ) SubClassFunc );
+   lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hedit, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
 
    HWNDret( hedit );
 }

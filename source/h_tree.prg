@@ -2287,7 +2287,7 @@ HB_FUNC( INITTREE )
    HWND hWndTV;
    UINT iStyle;
    int StyleEx;
-   LONG CurStyle;
+   LONG_PTR CurStyle;
 
    iStyle = hb_parni( 6 ) | WS_CHILD | TVS_NOTOOLTIPS ;
 
@@ -2305,12 +2305,12 @@ HB_FUNC( INITTREE )
                             hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ),
                             HWNDparam( 1 ), NULL, GetModuleHandle( NULL ), NULL );
 
-   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hWndTV, GWL_WNDPROC, ( LONG ) SubClassFunc );
+   lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hWndTV, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
 
    if( hb_parl( 8 ) )
    {
-      CurStyle = GetWindowLong(hWndTV, GWL_STYLE);
-      SetWindowLong(hWndTV, GWL_STYLE, CurStyle | TVS_CHECKBOXES);
+      CurStyle = GetWindowLongPtr(hWndTV, GWL_STYLE);
+      SetWindowLongPtr(hWndTV, GWL_STYLE, CurStyle | TVS_CHECKBOXES);
    }
 
    HWNDret( hWndTV );
@@ -2550,7 +2550,7 @@ static LRESULT APIENTRY SubClassFuncEditCtrl( HWND hWnd, UINT msg, WPARAM wParam
 HB_FUNC( SUBCLASSEDITCTRL )
 {
    hwndTreeView = HWNDparam( 3 ) ;
-   lpfnOldWndProcEditCtrl = ( WNDPROC ) SetWindowLong( HWNDparam( 1 ), GWL_WNDPROC, ( LONG ) SubClassFuncEditCtrl );
+   lpfnOldWndProcEditCtrl = (WNDPROC) SetWindowLongPtr( HWNDparam( 1 ), GWL_WNDPROC, (LONG_PTR) SubClassFuncEditCtrl );
 }
 
 HB_FUNC( TREEVIEW_GETKEYDOWN )

@@ -652,7 +652,7 @@ HB_FUNC_STATIC( TWINDOW_ACCEPTFILES )
       DragAcceptFiles( oSelf->hWnd, hb_parl( 1 ) );
    }
 
-   hb_retl( ( GetWindowLong( oSelf->hWnd, GWL_EXSTYLE ) & WS_EX_ACCEPTFILES ) == WS_EX_ACCEPTFILES );
+   hb_retl( ( GetWindowLongPtr( oSelf->hWnd, GWL_EXSTYLE ) & WS_EX_ACCEPTFILES ) == WS_EX_ACCEPTFILES );
 }
 
 static UINT _OOHG_ListBoxDragNotification = 0;            // TODO: Thread safe ?

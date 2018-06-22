@@ -300,7 +300,7 @@ HB_FUNC( INITCHECKBOX )
    hb_parni(4), hb_parni(5) , hb_parni(8), hb_parni(9) ,
    hwnd,(HMENU)hb_parni(3) , GetModuleHandle(NULL) , NULL ) ;
 
-   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( hbutton, GWL_WNDPROC, ( LONG ) SubClassFunc );
+   lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hbutton, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
 
    HWNDret( hbutton );
 }
@@ -321,7 +321,7 @@ int TCheckBox_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption,
    CALL_DRAWTHEMEPARENTBACKGROUND dwProcDrawThemeParentBackground;
    CALL_OPENTHEMEDATA dwProcOpenThemeData;
    HTHEME hTheme;
-   LONG style, state;
+   LONG_PTR style, state;
    int state_id, checkState, drawState, iNeeded;
    CALL_DRAWTHEMEBACKGROUND dwProcDrawThemeBackground;
    CALL_GETTHEMEBACKGROUNDCONTENTRECT dwProcGetThemeBackgroundContentRect;
@@ -366,7 +366,7 @@ int TCheckBox_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption,
 
       /* determine state for DrawThemeBackground()
          note: order of these tests is significant */
-      style = GetWindowLong( pCustomDraw->hdr.hwndFrom, GWL_STYLE );
+      style = GetWindowLongPtr( pCustomDraw->hdr.hwndFrom, GWL_STYLE );
       state = SendMessage( pCustomDraw->hdr.hwndFrom, BM_GETSTATE, 0, 0 );
 
       if( state & BST_INDETERMINATE )

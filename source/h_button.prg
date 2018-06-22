@@ -447,7 +447,7 @@ HB_FUNC( INITBUTTON )
                              hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ), hb_parni( 7 ),
                              HWNDparam( 1 ), ( HMENU ) hb_parni( 3 ), GetModuleHandle( NULL ), NULL );
 
-   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( hbutton, GWL_WNDPROC, ( LONG ) SubClassFunc );
+   lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hbutton, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
 
    HWNDret( hbutton );
 }
@@ -534,7 +534,7 @@ int TButton_Notify_CustomDraw( LPARAM lParam, BOOL bHotLight, BOOL bFocused )
    CALL_DRAWTHEMEPARENTBACKGROUND dwProcDrawThemeParentBackground;
    CALL_OPENTHEMEDATA dwProcOpenThemeData;
    HTHEME hTheme;
-   LONG style;
+   LONG_PTR style;
    int state_id;
    CALL_DRAWTHEMEBACKGROUND dwProcDrawThemeBackground;
    CALL_GETTHEMEBACKGROUNDCONTENTRECT dwProcGetThemeBackgroundContentRect;
@@ -578,7 +578,7 @@ int TButton_Notify_CustomDraw( LPARAM lParam, BOOL bHotLight, BOOL bFocused )
 
       /* determine state for DrawThemeBackground()
          note: order of these tests is significant */
-      style = GetWindowLong( pCustomDraw->hdr.hwndFrom, GWL_STYLE );
+      style = GetWindowLongPtr( pCustomDraw->hdr.hwndFrom, GWL_STYLE );
 
       state_id = PBS_NORMAL;
 

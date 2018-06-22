@@ -352,7 +352,7 @@ static void RePaint( POCTRL oSelf, HDC hdc2, RECT *updateRect )
 static void Redraw( POCTRL oSelf, int iCol1, int iRow1, int iCol2, int iRow2 )
 {
    int iAux, iPos;
-   LONG lStyle, lStyle2;
+   LONG_PTR lStyle, lStyle2;
    RECT rect;
    BOOL bHorizontal, bVertical, bChange;
    SCROLLINFO ScrollInfo;
@@ -368,7 +368,7 @@ static void Redraw( POCTRL oSelf, int iCol1, int iRow1, int iCol2, int iRow2 )
 
       bHorizontal = bVertical = bChange = 0;
       GetClientRect( oSelf->hWnd, &rect );
-      lStyle = GetWindowLong( oSelf->hWnd, GWL_STYLE );
+      lStyle = GetWindowLongPtr( oSelf->hWnd, GWL_STYLE );
       if( lStyle & WS_HSCROLL )
       {
          rect.bottom += GetSystemMetrics( SM_CYHSCROLL );
@@ -397,7 +397,7 @@ static void Redraw( POCTRL oSelf, int iCol1, int iRow1, int iCol2, int iRow2 )
                 ( bVertical   ? WS_VSCROLL : 0 );
       if( lStyle != lStyle2 )
       {
-         SetWindowLong( oSelf->hWnd, GWL_STYLE, lStyle2 );
+         SetWindowLongPtr( oSelf->hWnd, GWL_STYLE, lStyle2 );
          RePaint( oSelf, NULL, NULL );
          bChange = 1;
       }
@@ -1369,7 +1369,6 @@ HB_FUNC( INITTEXTARRAY )          /* FUNCTION InitTextArray( hWnd, nCol, nRow, n
 {
    HWND hwnd;
    HWND hbutton;
-
    int Style, ExStyle;
 
    if( ! bRegistered )
@@ -1385,7 +1384,7 @@ HB_FUNC( INITTEXTARRAY )          /* FUNCTION InitTextArray( hWnd, nCol, nRow, n
              hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ),
              hwnd, NULL, GetModuleHandle( NULL ), NULL );
 
-   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( hbutton, GWL_WNDPROC, ( LONG ) SubClassFunc );
+   lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hbutton, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
 
    HWNDret( hbutton );
 }

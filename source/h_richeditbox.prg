@@ -245,7 +245,7 @@ HB_FUNC( INITRICHEDITBOX )
               Style, hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
               hwnd, (HMENU) HWNDparam( 2 ), GetModuleHandle( NULL ), NULL );
 
-      lpfnOldWndProc = ( WNDPROC ) SetWindowLong( hwndRE, GWL_WNDPROC, ( LONG ) SubClassFunc );
+      lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hwndRE, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
 
       if( hb_parni( 8 ) != 0 )
       {
@@ -631,7 +631,7 @@ HB_FUNC_STATIC( TEDITRICH_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lPara
           break;
 
       case WM_KEYDOWN:
-         if( ( GetWindowLong( hWnd, GWL_STYLE ) & ES_READONLY ) == 0 )
+         if( ( GetWindowLongPtr( hWnd, GWL_STYLE ) & ES_READONLY ) == 0 )
          {
             HB_FUNCNAME( TEDITRICH_EVENTS2 )();
             break;

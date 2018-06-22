@@ -333,7 +333,7 @@ HB_FUNC( INITDATEPICK )
              hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
              hwnd, HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
 
-   lpfnOldWndProcA = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFuncA );
+   lpfnOldWndProcA = (WNDPROC) SetWindowLongPtr( hbutton, GWL_WNDPROC, (LONG_PTR) SubClassFuncA );
 
    HWNDret( hbutton );
 }
@@ -429,7 +429,7 @@ HB_FUNC( INITTIMEPICK )
              hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
              hwnd, HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
 
-   lpfnOldWndProcB = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFuncB );
+   lpfnOldWndProcB = (WNDPROC) SetWindowLongPtr( hbutton, GWL_WNDPROC, (LONG_PTR) SubClassFuncB );
 
    HWNDret( hbutton );
 }

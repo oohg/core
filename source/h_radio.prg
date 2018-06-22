@@ -775,7 +775,7 @@ HB_FUNC( INITRADIOGROUP )
                              hb_parni( 2 ), hb_parni( 3 ), hb_parni( 6 ), hb_parni( 7 ),
                              HWNDparam( 1 ), ( HMENU ) NULL, GetModuleHandle( NULL ), NULL );
 
-   lpfnOldWndProcA = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFuncA );
+   lpfnOldWndProcA = (WNDPROC) SetWindowLongPtr( hbutton, GWL_WNDPROC, (LONG_PTR) SubClassFuncA );
 
    HWNDret( hbutton );
 }
@@ -793,7 +793,7 @@ HB_FUNC( INITRADIOBUTTON )
                              hb_parni( 2 ), hb_parni( 3 ), hb_parni( 6 ), hb_parni( 7 ),
                              HWNDparam( 1 ), ( HMENU ) NULL, GetModuleHandle( NULL ), NULL );
 
-   lpfnOldWndProcB = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFuncB );
+   lpfnOldWndProcB = (WNDPROC) SetWindowLongPtr( hbutton, GWL_WNDPROC, (LONG_PTR) SubClassFuncB );
 
    HWNDret( hbutton );
 }
@@ -823,7 +823,7 @@ int TRadioItem_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption
    HMODULE hInstDLL;
    HTHEME hTheme;
    int state_id, checkState, drawState;
-   LONG style, state;
+   LONG_PTR style, state;
    RECT content_rect, aux_rect;
    SIZE s;
    static const int rb_states[2][5] =
@@ -863,7 +863,7 @@ int TRadioItem_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption
       }
 
       /* determine control's state, note that the order of these tests is significant */
-      style = GetWindowLong( pCustomDraw->hdr.hwndFrom, GWL_STYLE );
+      style = GetWindowLongPtr( pCustomDraw->hdr.hwndFrom, GWL_STYLE );
       state = SendMessage( pCustomDraw->hdr.hwndFrom, BM_GETSTATE, 0, 0 );
       if( state & BST_CHECKED )
       {

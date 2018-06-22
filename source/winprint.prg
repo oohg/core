@@ -2254,32 +2254,7 @@ METHOD PrintOption() CLASS HBPrinter
 #include <olectl.h>
 #include <ocidl.h>
 #include <commctrl.h>
-
-#ifdef __XHARBOUR__
-   #define HB_STORNI( n, x, y )   hb_storni( n, x, y )
-   #define HB_STORNL( n, x, y )   hb_stornl( n, x, y )
-   #define HB_STORL( n, x, y )    hb_storl( n, x, y )
-   #define HB_STORC( n, x, y )    hb_storc( n, x, y )
-   #define HB_PARNI( n, x )       hb_parni( n, x )
-   #define HB_PARNL( n, x )       hb_parnl( n, x )
-   #define HB_STORPTR( n, x, y )  hb_storptr( n, x, y )
-   #define HB_PARC( n, x )        hb_parc( n, x )
-   #define HB_PARCLEN( n, x )     hb_parclen( n, x )
-   #define HB_PARNL3( n, x, y )   hb_parnl( n, x, y )
-   #define HB_STORNI2( n, x )     hb_storni( n, x )
-#else
-   #define HB_STORNI( n, x, y )   hb_storvni( n, x, y )
-   #define HB_STORNL( n, x, y )   hb_storvnl( n, x, y )
-   #define HB_STORL( n, x, y )    hb_storvl( n, x, y )
-   #define HB_STORC( n, x, y )    hb_storvc( n, x, y )
-   #define HB_PARNI( n, x )       hb_parvni( n, x )
-   #define HB_PARNL( n, x )       hb_parvnl( n, x )
-   #define HB_STORPTR( n, x, y )  hb_storvptr( n, x, y )
-   #define HB_PARC( n, x )        hb_parvc( n, x )
-   #define HB_PARCLEN( n, x )     hb_parvclen( n, x )
-   #define HB_PARNL3( n, x, y )   hb_parvnl( n, x, y )
-   #define HB_STORNI2( n, x )     hb_storvni( n, x )
-#endif
+#include "oohg.h"
 
 // TODO: Thread safe ?
 static HDC hDC=NULL;
@@ -2816,7 +2791,7 @@ HB_FUNC (RR_DELETEOBJECTS)
 {
  UINT i;
  for(i = 2; i <= hb_parinfa(1,0); i++)
-    DeleteObject((HGDIOBJ) HB_PARNL( 1, i ));
+    DeleteObject((HGDIOBJ) HB_PARNL2( 1, i ));
 }
 HB_FUNC (RR_DELETEIMAGELISTS)
 {
@@ -3073,7 +3048,7 @@ HB_FUNC( RR_DRAWTEXT )
    int   iAlign = 0, iNoWordBreak;
    LONG  w, h;
 
-   SetRect( &rect, HB_PARNL(1, 2), HB_PARNL(1, 1), HB_PARNL(2, 2), HB_PARNL(2, 1) );
+   SetRect( &rect, HB_PARNL2(1, 2), HB_PARNL2(1, 1), HB_PARNL2(2, 2), HB_PARNL2(2, 1) );
    iNoWordBreak = hb_parl( 6 );
 
    if( xfont != 0 )
@@ -3143,7 +3118,7 @@ HB_FUNC (RR_RECTANGLE)
  LONG xbrush= hb_parnl(4);
    if (xpen!=0) SelectObject(hDC ,(HPEN) xpen);
    if (xbrush!=0) SelectObject(hDC ,(HBRUSH) xbrush);
-   hb_retni(Rectangle(hDC,HB_PARNL(1,2),HB_PARNL(1,1),HB_PARNL(2,2),HB_PARNL(2,1)));
+   hb_retni(Rectangle(hDC,HB_PARNL2(1,2),HB_PARNL2(1,1),HB_PARNL2(2,2),HB_PARNL2(2,1)));
    if (xpen!=0) SelectObject(hDC ,hpen);
    if (xbrush!=0) SelectObject(hDC ,hbrush);
 }
@@ -3821,7 +3796,7 @@ HB_FUNC (RR_INVERTRECT)
 HB_FUNC (RR_GETWINDOWRECT)
 {
   RECT rect;
-  HWND hwnd=(HWND) HB_PARNL(1,7);
+  HWND hwnd=(HWND) HB_PARNL2(1,7);
   if (hwnd==0)
       hwnd= GetDesktopWindow();
   GetWindowRect(hwnd,&rect);
@@ -3836,7 +3811,7 @@ HB_FUNC (RR_GETWINDOWRECT)
 HB_FUNC (RR_GETCLIENTRECT)
 {
   RECT rect;
-  GetClientRect((HWND) HB_PARNL(1,7),&rect);
+  GetClientRect((HWND) HB_PARNL2(1,7),&rect);
   HB_STORNI(rect.top,1,1);
   HB_STORNI(rect.left,1,2);
   HB_STORNI(rect.bottom,1,3);
@@ -3862,7 +3837,7 @@ HB_FUNC (RR_PREVIEWPLAY)
               ReleaseDC((HWND) hb_parnl(1),imgDC);
               hb_retnl( 0 );
            }
-        SetRect(&rect ,0,0,HB_PARNL(3,4),HB_PARNL(3,3));
+        SetRect(&rect ,0,0,HB_PARNL2(3,4),HB_PARNL2(3,3));
         himgbmp=CreateCompatibleBitmap(imgDC,rect.right,rect.bottom);
         SelectObject(tmpDC,(HBITMAP) himgbmp);
         FillRect(tmpDC,&rect,(HBRUSH) GetStockObject(WHITE_BRUSH));
@@ -3886,7 +3861,7 @@ HB_FUNC (RR_PREVIEWFPLAY)
               ReleaseDC((HWND) hb_parnl(1),imgDC);
               hb_retnl( 0 );
            }
-        SetRect(&rect ,0,0,HB_PARNL(3,4),HB_PARNL(3,3));
+        SetRect(&rect ,0,0,HB_PARNL2(3,4),HB_PARNL2(3,3));
         himgbmp=CreateCompatibleBitmap(imgDC,rect.right,rect.bottom);
         SelectObject(tmpDC,(HBITMAP) himgbmp);
         FillRect(tmpDC,&rect,(HBRUSH) GetStockObject(WHITE_BRUSH));
@@ -3901,7 +3876,7 @@ HB_FUNC( RR_PLAYTHUMB )
 {
    RECT rect;
    HDC tmpDC;
-   HDC imgDC=GetWindowDC((HWND) HB_PARNL(1,5));
+   HDC imgDC=GetWindowDC((HWND) HB_PARNL2(1,5));
    HENHMETAFILE hh=SetEnhMetaFileBits((UINT) HB_PARCLEN(2,1), ( BYTE * ) HB_PARC(2,1));
    int i;
    i= hb_parni(4)-1;
@@ -3913,8 +3888,8 @@ HB_FUNC( RR_PLAYTHUMB )
    PlayEnhMetaFile(tmpDC ,hh,&rect);
    DeleteEnhMetaFile(hh);
    TextOut(tmpDC,(int)rect.right/2-5,(int)rect.bottom/2-5,hb_parc(3),hb_parclen(3));
-   SendMessage((HWND) HB_PARNL(1,5),(UINT)STM_SETIMAGE,(WPARAM)IMAGE_BITMAP,(LPARAM) hbmp[i]);
-   ReleaseDC((HWND) HB_PARNL(1,5),imgDC);
+   SendMessage((HWND) HB_PARNL2(1,5),(UINT)STM_SETIMAGE,(WPARAM)IMAGE_BITMAP,(LPARAM) hbmp[i]);
+   ReleaseDC((HWND) HB_PARNL2(1,5),imgDC);
    DeleteDC(tmpDC);
 }
 
@@ -3922,7 +3897,7 @@ HB_FUNC( RR_PLAYFTHUMB )
 {
    RECT rect;
    HDC tmpDC;
-   HDC imgDC=GetWindowDC((HWND) HB_PARNL(1,5));
+   HDC imgDC=GetWindowDC((HWND) HB_PARNL2(1,5));
    HENHMETAFILE hh= GetEnhMetaFile( HB_PARC(2,1) ) ;
    //SetEnhMetaFileBits((UINT) HB_PARCLEN(2,1), ( BYTE * ) HB_PARC(2,1));
    int i;
@@ -3935,8 +3910,8 @@ HB_FUNC( RR_PLAYFTHUMB )
    PlayEnhMetaFile(tmpDC ,hh,&rect);
    DeleteEnhMetaFile(hh);
    TextOut(tmpDC,(int)rect.right/2-5,(int)rect.bottom/2-5,hb_parc(3),hb_parclen(3));
-   SendMessage((HWND) HB_PARNL(1,5),(UINT)STM_SETIMAGE,(WPARAM)IMAGE_BITMAP,(LPARAM) hbmp[i]);
-   ReleaseDC((HWND) HB_PARNL(1,5),imgDC);
+   SendMessage((HWND) HB_PARNL2(1,5),(UINT)STM_SETIMAGE,(WPARAM)IMAGE_BITMAP,(LPARAM) hbmp[i]);
+   ReleaseDC((HWND) HB_PARNL2(1,5),imgDC);
    DeleteDC(tmpDC);
 }
 
@@ -3944,7 +3919,7 @@ HB_FUNC( RR_PLAYENHMETAFILE )
 {
    RECT rect;
    HENHMETAFILE hh=SetEnhMetaFileBits((UINT) HB_PARCLEN(1,1), ( BYTE * ) HB_PARC(1,1));
-   SetRect(&rect,0,0,HB_PARNL(1,5),HB_PARNL(1,4));
+   SetRect(&rect,0,0,HB_PARNL2(1,5),HB_PARNL2(1,4));
    PlayEnhMetaFile((HDC) hb_parnl(2),hh,&rect);
    DeleteEnhMetaFile(hh);
 }
@@ -3954,7 +3929,7 @@ HB_FUNC( RR_PLAYFENHMETAFILE )
    RECT rect;
    HENHMETAFILE hh = GetEnhMetaFile( HB_PARC(1,1) ) ;
    // hh=SetEnhMetaFileBits((UINT) HB_PARCLEN(1,1), ( BYTE * ) HB_PARC(1,1));
-   SetRect(&rect,0,0,HB_PARNL(1,5),HB_PARNL(1,4));
+   SetRect(&rect,0,0,HB_PARNL2(1,5),HB_PARNL2(1,4));
    PlayEnhMetaFile((HDC) hb_parnl(2),hh,&rect);
    DeleteEnhMetaFile(hh);
 }

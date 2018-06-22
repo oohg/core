@@ -377,7 +377,7 @@ HB_FUNC( CHOOSECOLOR )
 
    for( i = 0 ; i < 16 ; i++ )
    {
-      crCustClr[ i ] = ( HB_ISARRAY( 3 ) ? (COLORREF) HB_PARNL( 3, i + 1 ) : GetSysColor( COLOR_BTNFACE ) );
+      crCustClr[ i ] = ( HB_ISARRAY( 3 ) ? (COLORREF) HB_PARNL2( 3, i + 1 ) : GetSysColor( COLOR_BTNFACE ) );
    }
 
    cc.lStructSize    = sizeof( CHOOSECOLOR ) ;

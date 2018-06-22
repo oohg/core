@@ -586,7 +586,7 @@ HB_FUNC( INITMESSAGEBAR )
 
    hWndSB = CreateStatusWindow( iStyle, hb_parc( 2 ), HWNDparam( 1 ), hb_parni ( 3 ) );
 
-   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( hWndSB, GWL_WNDPROC, ( LONG ) SubClassFunc );
+   lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hWndSB, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
 
    HWNDret( hWndSB );
 }

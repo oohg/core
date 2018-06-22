@@ -1517,18 +1517,18 @@ HB_FUNC( BT_DC_DELETE )    // ( { Type, hWnd, hBitmap, hDC, PaintStruct } )
    BT_STRUCT BT;
 
    BT.Type = (INT)  HB_PARNI( 1, 1 );
-   BT.hWnd = (HWND) HB_PARNL( 1, 2 );
-   BT.hDC  = (HDC)  HB_PARNL( 1, 3 );
+   BT.hWnd = (HWND) HB_PARNL2( 1, 2 );
+   BT.hDC  = (HDC)  HB_PARNL2( 1, 3 );
 
    // PAINTSTRUCT
-   BT.PaintStruct.hdc            = (HDC)  HB_PARNL( 1,  4 );             // HDC  hdc;
-   BT.PaintStruct.fErase         = (BOOL) HB_PARNI( 1,  5 );             // BOOL fErase;
-   BT.PaintStruct.rcPaint.left   = (LONG) HB_PARNL( 1,  6 );             // RECT rcPaint.left;
-   BT.PaintStruct.rcPaint.top    = (LONG) HB_PARNL( 1,  7 );             // RECT rcPaint.top;
-   BT.PaintStruct.rcPaint.right  = (LONG) HB_PARNL( 1,  8 );             // RECT rcPaint.right;
-   BT.PaintStruct.rcPaint.bottom = (LONG) HB_PARNL( 1,  9 );             // RECT rcPaint.bottom;
-   BT.PaintStruct.fRestore       = (BOOL) HB_PARNI( 1, 10 );             // BOOL fRestore;
-   BT.PaintStruct.fIncUpdate     = (BOOL) HB_PARNI( 1, 11 );             // BOOL fIncUpdate;
+   BT.PaintStruct.hdc            = (HDC)  HB_PARNL2( 1,  4 );             // HDC  hdc;
+   BT.PaintStruct.fErase         = (BOOL) HB_PARNI( 1,  5 );              // BOOL fErase;
+   BT.PaintStruct.rcPaint.left   = (LONG) HB_PARNL2( 1,  6 );             // RECT rcPaint.left;
+   BT.PaintStruct.rcPaint.top    = (LONG) HB_PARNL2( 1,  7 );             // RECT rcPaint.top;
+   BT.PaintStruct.rcPaint.right  = (LONG) HB_PARNL2( 1,  8 );             // RECT rcPaint.right;
+   BT.PaintStruct.rcPaint.bottom = (LONG) HB_PARNL2( 1,  9 );             // RECT rcPaint.bottom;
+   BT.PaintStruct.fRestore       = (BOOL) HB_PARNI( 1, 10 );              // BOOL fRestore;
+   BT.PaintStruct.fIncUpdate     = (BOOL) HB_PARNI( 1, 11 );              // BOOL fIncUpdate;
    for( i = 0; i < 32; i++ )
        BT.PaintStruct.rgbReserved[ i ] = (BYTE) HB_PARNI( 1, 12 + i );    // BYTE rgbReserved[32];
 
@@ -2526,7 +2526,7 @@ HB_FUNC( BT_BMP_LOADFILE )    // ( cFileBMP, ClrOnClr )
 HB_FUNC( BT_BITMAPLOADEMF )    // ( cFileName, [ aRGBBackgroundColor ], [ nNewWidth ], [ nNewHeight ], [ ModeStretch ] )
 {
    TCHAR         *FileName       = (TCHAR *) hb_parc( 1 );
-   COLORREF      BackgroundColor = (COLORREF) RGB( HB_PARNL( 2, 1 ), HB_PARNL( 2, 2 ), HB_PARNL( 2, 3 ) );
+   COLORREF      BackgroundColor = (COLORREF) RGB( HB_PARNL2( 2, 1 ), HB_PARNL2( 2, 2 ), HB_PARNL2( 2, 3 ) );
    INT           ModeStretch     = HB_ISNUM( 5 ) ? (INT) hb_parnl( 5 ) : BT_SCALE;
    HDC           memDC;
    HBITMAP       hBitmap;

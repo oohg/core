@@ -6541,7 +6541,7 @@ CLASS TGridControlComboBox FROM TGridControl
 COLUMNCONTROLS syntax:
 {'COMBOBOX', aItems, aValues, cRetValType, lButtons, aImages, lNoModal}
 */
-METHOD New( aItems, oGrid, aValues, cRetValType, lButtons, aImages, lNoModal ) CLASS TGridControlComboBox
+METHOD New( aItems, oGrid, aValues, cRetValType, lButtons, aImages, lNoModal ) CLASS TGridControlComboBox              // TODO: Add delayedload
 
    _OOHG_Eval( _OOHG_InitTGridControlDatas, Self )
 
@@ -7471,7 +7471,7 @@ HB_FUNC( INITLISTVIEW )
 
    if( ! bVisible )
    {
-      SetWindowLong( hwnd, GWL_STYLE, style & ( ~ WS_VISIBLE ) );
+      SetWindowLongPtr( hwnd, GWL_STYLE, style & ( ~ WS_VISIBLE ) );
       MoveWindow( hwnd, iCol, iNewRow, iWidth, iHeight, TRUE );
    }
 
@@ -7480,7 +7480,7 @@ HB_FUNC( INITLISTVIEW )
       ListView_SetItemCount( hwnd, hb_parni( 11 ) ) ;
    }
 
-   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( hwnd, GWL_WNDPROC, ( LONG ) SubClassFunc );
+   lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hwnd, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
 
    HWNDret( hwnd );
 }
@@ -8578,7 +8578,7 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
                   lplvcd->clrText   = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 1 );
                   lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 2 );
                }
-               else if( GetWindowLong( lplvcd->nmcd.hdr.hwndFrom, GWL_STYLE ) & LVS_SHOWSELALWAYS )
+               else if( GetWindowLongPtr( lplvcd->nmcd.hdr.hwndFrom, GWL_STYLE ) & LVS_SHOWSELALWAYS )
                {
                   lplvcd->clrText   = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 3 );
                   lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 4 );
@@ -8596,7 +8596,7 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
                   lplvcd->clrText   = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 5 );
                   lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 6 );
                }
-               else if( GetWindowLong( lplvcd->nmcd.hdr.hwndFrom, GWL_STYLE ) & LVS_SHOWSELALWAYS )
+               else if( GetWindowLongPtr( lplvcd->nmcd.hdr.hwndFrom, GWL_STYLE ) & LVS_SHOWSELALWAYS )
                {
                   lplvcd->clrText   = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 7 );
                   lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 8 );
@@ -8623,7 +8623,7 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
                lplvcd->clrText   = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 1 );
                lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 2 );
             }
-            else if( GetWindowLong( lplvcd->nmcd.hdr.hwndFrom, GWL_STYLE ) & LVS_SHOWSELALWAYS )
+            else if( GetWindowLongPtr( lplvcd->nmcd.hdr.hwndFrom, GWL_STYLE ) & LVS_SHOWSELALWAYS )
             {
                lplvcd->clrText   = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 3 );
                lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 4 );
@@ -8655,7 +8655,7 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
             lplvcd->nmcd.uItemState -= CDIS_SELECTED;
          }
       }
-      else if( GetWindowLong( lplvcd->nmcd.hdr.hwndFrom, GWL_STYLE ) & LVS_SHOWSELALWAYS )
+      else if( GetWindowLongPtr( lplvcd->nmcd.hdr.hwndFrom, GWL_STYLE ) & LVS_SHOWSELALWAYS )
       {
          if( LI.state & LVIS_SELECTED )
          {
@@ -8701,7 +8701,7 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
                {
                   lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 2 );
                }
-               else if( GetWindowLong( lplvcd->nmcd.hdr.hwndFrom, GWL_STYLE ) & LVS_SHOWSELALWAYS )
+               else if( GetWindowLongPtr( lplvcd->nmcd.hdr.hwndFrom, GWL_STYLE ) & LVS_SHOWSELALWAYS )
                {
                   lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 4 );
                }
@@ -8716,7 +8716,7 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
                {
                   lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 6 );
                }
-               else if( GetWindowLong( lplvcd->nmcd.hdr.hwndFrom, GWL_STYLE ) & LVS_SHOWSELALWAYS )
+               else if( GetWindowLongPtr( lplvcd->nmcd.hdr.hwndFrom, GWL_STYLE ) & LVS_SHOWSELALWAYS )
                {
                   lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 8 );
                }
@@ -8736,7 +8736,7 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
             {
                lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 2 );
             }
-            else if( GetWindowLong( lplvcd->nmcd.hdr.hwndFrom, GWL_STYLE ) & LVS_SHOWSELALWAYS )
+            else if( GetWindowLongPtr( lplvcd->nmcd.hdr.hwndFrom, GWL_STYLE ) & LVS_SHOWSELALWAYS )
             {
                lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 4 );
             }

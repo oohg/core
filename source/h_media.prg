@@ -265,7 +265,7 @@ HB_FUNC( INITANIMATE )
       return;
    }
 
-//   lpfnOldWndProcA = ( WNDPROC ) SetWindowLong( ( HWND ) hwnd, GWL_WNDPROC, ( LONG ) SubClassFuncA );
+//   lpfnOldWndProcA = (WNDPROC) SetWindowLongPtr( hwnd, GWL_WNDPROC, (LONG_PTR) SubClassFuncA );
 
    MoveWindow( hwnd, hb_parnl( 2 ), hb_parnl( 3 ), hb_parnl( 4 ), hb_parnl( 5 ), TRUE );
    HWNDret( hwnd );
@@ -314,7 +314,7 @@ HB_FUNC( INITPLAYER )
       return;
    }
 
-//   lpfnOldWndProcB = ( WNDPROC ) SetWindowLong( ( HWND ) hwnd, GWL_WNDPROC, ( LONG ) SubClassFuncB );
+//   lpfnOldWndProcB = (WNDPROC) SetWindowLongPtr( hwnd, GWL_WNDPROC, (LONG_PTR) SubClassFuncB );
 
    MoveWindow( hwnd, hb_parnl( 3 ), hb_parnl( 4 ), hb_parnl( 5 ), hb_parnl( 6 ), TRUE );
    HWNDret( hwnd );
