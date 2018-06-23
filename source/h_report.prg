@@ -207,8 +207,8 @@ METHOD easyreport1(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,
    NEXT i
    IF grpby<>NIL
       grpby:=upper(grpby)
-      grpby:=strtran(grpby,'"','')   //// a¤adi esto por inconvenientes en el rompimiento de control
-      grpby:=strtran(grpby,"'","")   //// a¤adi esto por inconvenientes en el rompimiento de control
+      grpby:=strtran(grpby,'"','')   //// añadi esto por inconvenientes en el rompimiento de control
+      grpby:=strtran(grpby,"'","")   //// añadi esto por inconvenientes en el rompimiento de control
    ENDIF
    select(calias)
    lmode:=.T.
@@ -330,7 +330,7 @@ METHOD easyreport1(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,
       ENDIF
    endcase
 
-   oprint:selprinter(lselect,lpreview,llandscape,npapersize,,,-2)
+   oprint:selprinter(lselect,lpreview,llandscape,npapersize)
    IF oprint:lprerror
       oprint:release()
       RETURN NIL
