@@ -147,7 +147,7 @@ rem
 
    rem *** Compiler Libraries ***
    for %%a in ( rtl   vm   %HG_USE_GT% lang   codepage macro   rdd   dbfntx dbfcdx dbffpt common   debug   pp   ct             ) do if exist %HG_HRB%\%LIB_HRB%\%%a.lib echo %HG_HRB%\%LIB_HRB%\%%a.lib + >> b32.bc
-   for %%a in ( hbrtl hbvm %HG_USE_GT% hblang hbcpage  hbmacro hbrdd rddntx rddcdx rddfpt hbcommon hbdebug hbpp hbct hbwin xhb ) do if exist %HG_HRB%\%LIB_HRB%\%%a.lib echo %HG_HRB%\%LIB_HRB%\%%a.lib + >> b32.bc
+   for %%a in ( hbrtl hbvm             hblang hbcpage  hbmacro hbrdd rddntx rddcdx rddfpt hbcommon hbdebug hbpp hbct hbwin xhb ) do if exist %HG_HRB%\%LIB_HRB%\%%a.lib echo %HG_HRB%\%LIB_HRB%\%%a.lib + >> b32.bc
 
    rem *** Harbour-dependant Libraries ***
    for %%a in (dbfdbt hbsix tip hsx pcrepos) do if exist %HG_HRB%\%LIB_HRB%\%%a.lib echo %HG_HRB%\%LIB_HRB%\%%a.lib + >> b32.bc
