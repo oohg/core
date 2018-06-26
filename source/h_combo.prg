@@ -115,6 +115,7 @@ CLASS TCombo FROM TLabel
    METHOD DeleteAllItems      BLOCK { |Self| ComboboxReset( ::hWnd ), ::xOldValue := NIL, ::OldValue := NIL }
    METHOD Item                BLOCK { |Self, nItem, uValue| ComboItem( Self, nItem, uValue ) }
    METHOD ItemBySource
+   METHOD ItemValue           
    METHOD InsertItem
    METHOD ItemCount           BLOCK { |Self| ComboboxGetItemCount( ::hWnd ) }
    METHOD ShowDropDown
@@ -608,7 +609,7 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TCombo
                            i ++
                         EndDo
                         // search again
-                        ::nLastFound := ComboBoxFindString( ::oListBox:hWnd, - 1, ::cText )
+                        ::nLastFound := ComboBoxFindString( ::oListBox:hWnd, -1, ::cText )
                         If ::nLastFound > 0
                           Exit
                         EndIf
@@ -918,7 +919,7 @@ METHOD Events_Command( wParam ) CLASS TCombo
                   EndDo
 
                   // search again
-                  ::nLastFound := ComboBoxFindString( ::oListBox:hWnd, - 1, ::cText )
+                  ::nLastFound := ComboBoxFindString( ::oListBox:hWnd, -1, ::cText )
                   If ::nLastFound > 0
                     Exit
                   EndIf
@@ -1011,6 +1012,24 @@ METHOD CaretPos( nPos ) CLASS TCombo
    EndIf
 
    RETURN HiWord( SendMessage( ::hWnd, CB_GETEDITSEL, NIL, NIL ) )
+
+METHOD ItemValue( cText ) CLASS TCombo
+
+   LOCAL nPos, uRet
+
+   nPos := ComboBoxFindStringExact( ::hWnd, -1, cText )
+
+   IF Len( ::aValues ) == 0
+      uRet := nPos
+   ELSEIF nPos >= 1 .AND. nPos <= Len( ::aValues )
+      uRet := ::aValues[ nPos ]
+   ELSEIF ValType( ::aValues[ 1 ] ) $ "CM"
+      uRet := ""
+   ELSE
+      uRet := 0
+   ENDIF
+
+   RETURN uRet
 
 METHOD ItemBySource( nItem, uValue ) CLASS TCombo
 
@@ -1405,7 +1424,12 @@ HB_FUNC( TCOMBO_INSERT_ITEM )   // Called from METHOD InsertItem( Self, nItem, u
 
 HB_FUNC( COMBOBOXFINDSTRING )
 {
-   hb_retni( SendMessage( HWNDparam( 1 ), LB_FINDSTRING, ( WPARAM ) hb_parni( 2 ), ( LPARAM ) hb_parc( 3 ) ) + 1 );
+   hb_retni( SendMessage( HWNDparam( 1 ), CB_FINDSTRING, ( WPARAM ) hb_parni( 2 ), ( LPARAM ) hb_parc( 3 ) ) + 1 );
+}
+
+HB_FUNC( COMBOBOXFINDSTRINGEXACT )
+{
+   hb_retni( SendMessage( HWNDparam( 1 ), CB_FINDSTRINGEXACT, ( WPARAM ) hb_parni( 2 ), ( LPARAM ) hb_parc( 3 ) ) + 1 );
 }
 
 #ifndef CB_GETCOMBOBOXINFO
